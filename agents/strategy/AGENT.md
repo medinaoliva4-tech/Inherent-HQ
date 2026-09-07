@@ -116,6 +116,7 @@ agents/strategy/
 ├── AGENT.md          ← estás acá
 ├── METHOD.md         ← el método completo, 8 capas
 ├── OUTPUTS.md        ← qué produce exactamente, y qué no
+├── CORRELACION.md    ← qué campo viene de dónde
 ├── PROCESS.md        ← el proceso operativo con gates
 ├── archetypes/       ← 8 ejes → 11 arquetipos
 ├── playbooks/        ← ingeniería inversa · MCPs · buenas prácticas

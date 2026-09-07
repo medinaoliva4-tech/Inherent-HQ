@@ -17,6 +17,7 @@ agents/strategy/
 ├── playbooks/                # ingeniería inversa, MCPs y buenas prácticas
 ├── templates/                # los 6 entregables canónicos
 ├── OUTPUTS.md                # mapa completo de outputs
+├── CORRELACION.md            # cómo se encadenan los entregables
 ├── qa/                       # gates de calidad
 └── clients/                  # un cliente = una carpeta
 ```
