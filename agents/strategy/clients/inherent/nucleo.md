@@ -17,6 +17,7 @@
 | **Estructura de oferta** | 4 paquetes. *"Cada paquete es un punto de partida. Los precios son base y se ajustan a la profundidad, alcance y ritmo de tu operación"* |
 | **Mecanismo de venta** | Llamada de 30 min. *"Sin compromiso. Hablamos de tu negocio y te decimos honestamente si podemos ayudarte y cómo"* |
 | **Tono declarado** | Sobrio, anti-marketing, de criterio. Página de Filosofía: *"Este documento no es marketing. Es la manera en que entendemos los negocios. Cada servicio que ofrecemos nace de estas ideas, no al revés. Léelo con calma"* |
+| **IP declarada** | *"**Quince ideas para diseñar empresas modernas.** No son slogans. Son las creencias que aplicamos en cada proyecto"* — un cuerpo de doctrina propio, publicado y anterior al servicio |
 | **Audiencia actual** | 2 clientes activos, ambos **a precio costo** y ambos por relación personal: [@naoguatemala](https://www.instagram.com/naoguatemala/) y [@akaisushigt_](https://www.instagram.com/akaisushigt_/) — ambos del rubro gastronómico, en Guatemala |
 | **Diferenciación percibida por ellos** | Integración ("todo en un lugar") + honestidad en la venta + una filosofía de negocio explícita anterior al servicio — `[percepción del cliente, no verificado]` |
 
@@ -130,8 +131,30 @@ cambia el canal principal y el tipo de prueba. **No lo asumo.** → Ver pregunta
 ---
 
 **Fuentes y herramientas**
-- MCPs usados: `Firecrawl` (firecrawl_search — 2 consultas exitosas sobre inherentglobal.com)
-- MCPs no disponibles: `WebFetch` bloqueado por el proxy de egress para inherentglobal.com →
-  no se pudo leer el cuerpo completo de las páginas, solo títulos y descripciones indexadas
-- Confianza general: 🟡 **parcial** — el retrato de la empresa está bien soportado por evidencia
-  del propio sitio; la economía unitaria está incompleta (3 de 5 campos)
+
+⚠️ **No se pudo acceder al sitio desde este entorno.** `inherentglobal.com` está **bloqueado por
+política de egress de la organización**. Verificado por tres vías independientes:
+
+| Intento | Resultado |
+|---|---|
+| `WebFetch` | `EGRESS_BLOCKED — Access to inherentglobal.com is blocked by the network egress proxy` |
+| `curl` (apex y www) | `CONNECT tunnel failed, response 403` · `connect_rejected (organization policy)` |
+| Chromium / Playwright | Mismo proxy → mismo bloqueo. No aporta |
+
+**Lo que sí se obtuvo:** `Firecrawl` (4 búsquedas, 3 útiles) devolvió **título y descripción indexada
+de 4 páginas** del sitio — `/`, `/filosofia.html`, `/paquetes.html`, `/agendar.html`. Ese texto es
+del propio sitio, pero es **metadata y extracto, no el cuerpo completo**.
+
+**Qué falta por esto:**
+- Los **precios reales** de los 4 paquetes → alimenta directo la objeción "muy caro" (Capa 4)
+- Las **15 ideas de la Filosofía** → material de activos distintivos e IP (Capa 4.5)
+- El **detalle de cada especialidad** → alcance real de la oferta
+- Casos o clientes publicados, si los hay
+
+**Cómo desbloquearlo** (cualquiera sirve):
+1. Pegar el texto de `/`, `/filosofia.html` y `/paquetes.html` en el chat
+2. Agregar `inherentglobal.com` a la allowlist de red del environment
+3. Exportar las páginas a PDF y subirlas a Drive → se leen con el MCP de Drive
+
+- Confianza general: 🟡 **parcial** — el retrato está soportado por texto del propio sitio, pero
+  **no verificado contra el cuerpo completo**. La economía unitaria está incompleta (3 de 5 campos)
