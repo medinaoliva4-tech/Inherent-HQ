@@ -16,6 +16,7 @@ agents/strategy/
 ├── archetypes/               # 8 ejes + 11 arquetipos de empresa
 ├── playbooks/                # ingeniería inversa, MCPs y buenas prácticas
 ├── templates/                # los 6 entregables canónicos
+├── OUTPUTS.md                # mapa completo de outputs
 ├── qa/                       # gates de calidad
 └── clients/                  # un cliente = una carpeta
 ```
