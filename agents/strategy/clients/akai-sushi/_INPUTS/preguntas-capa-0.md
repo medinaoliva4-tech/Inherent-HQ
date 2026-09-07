@@ -1,13 +1,26 @@
 # Preguntas Capa 0 — Akai Sushi
 **Fecha:** 2026-09-07 · **Para:** cliente / Rodrigo
-**Por qué existe:** el núcleo (`nucleo.md`) está en borrador parcial. Estas son las respuestas que
-faltan para cerrar la Capa 0 y pasar el Gate 1. Sin las marcadas 🔴 el método se bloquea.
+**Actualizado:** 2026-09-07 — el cliente eligió cerrar el arquetipo antes de correr la Capa 1.
 
 ---
 
-## 🔴 BLOQUEANTES
+## 🚦 PRIORIDAD 1 — los 3 números que cierran el arquetipo
+> Sin esto la clasificación queda como hipótesis y la Capa 1 puede investigar el terreno equivocado.
 
-### 1 · WIN — ¿qué significa ganar en los próximos 12 meses?
+| # | Dato | Formato de respuesta | Respuesta |
+|---|---|---|---|
+| 1 | **Ticket promedio en salón** | Q___ por persona (o por mesa, aclarando cuál) | |
+| 2 | **Frecuencia de visita del cliente recurrente** | ___ veces por mes | |
+| 3 | **Mix de ingreso** | salón ___% / delivery propio ___% / agregadores ___% | |
+
+**Si no hay dato exacto:** poné el rango que el equipo sabe con certeza (ej. "ticket entre Q90 y Q120").
+Un rango honesto sirve. Una estimación inventada no — se marca `⚠️ SIN DATOS` y seguimos.
+
+---
+
+## 🔴 PRIORIDAD 2 — bloqueantes del Gate 1 (antes de Capa 2)
+
+### A · WIN — ¿qué significa ganar en los próximos 12 meses?
 Específico y verificable. *"Ser el mejor sushi de Guatemala" no cuenta.*
 Ejemplos de forma válida:
 - "Llenar los lunes a jueves en zona 16 hasta 70% de ocupación"
@@ -21,7 +34,7 @@ Ejemplos de forma válida:
 
 ---
 
-### 2 · Economía unitaria
+### B · Economía unitaria
 | Dato | Respuesta |
 |---|---|
 | Ticket promedio en salón (Q) | |
@@ -37,23 +50,22 @@ Ejemplos de forma válida:
 
 ## 🟡 IMPORTANTES (no bloquean, pero degradan la calidad)
 
-### 3 · Mix de ingreso
-- % salón / % delivery propio / % agregadores (PedidosYa + Uber Eats):
+### C · Rentabilidad del delivery y del 2x1
 - ¿Cuánto se llevan los agregadores de comisión?
 - ¿El 2x1 de martes y jueves es rentable o es compra de tráfico?
 
-### 4 · Sucursales y marca
+### D · Sucursales y marca
 - ¿**Akai Sushi & Oriental** en Antigua (@akaioriental) es la misma empresa, una franquicia, o una marca ajena?
 - ¿Hay plan de tercera sucursal? ¿Dónde?
 - ¿Las dos sucursales actuales tienen el mismo perfil de cliente o son negocios distintos?
 
-### 5 · Restricciones
+### E · Restricciones
 - Presupuesto de pauta mensual (aparte del retainer de Q2,500):
 - ¿Quién graba en el local? ¿Hay alguien del staff que pueda capturar material?
 - ¿Quién aprueba y en cuánto tiempo?
 - ¿Hay cara visible? (dueño, chef, sushiman con carisma)
 
-### 6 · Competencia según ellos
+### F · Competencia según ellos
 - ¿Contra quién sienten que compiten hoy? (nombres concretos)
 - ¿Por qué creen que un cliente elige a otro en vez de a Akai?
 - ¿Qué dicen los clientes que más les gusta? ¿Y de qué se quejan?

@@ -51,6 +51,26 @@ observación, se confirma en Capa 1.
 
 ---
 
+### A.3 — Problema declarado por el cliente
+> Registro literal de lo que el cliente/equipo identifica como su problema hoy. `[percepción del
+> cliente, no verificado]` — la Capa 1 comprueba si coincide con lo que muestra el mercado.
+
+| # | Problema declarado | Qué lo comprobaría |
+|---|---|---|
+| 1 | **No llenan entre semana.** Días valle de lunes a jueves. | Ocupación por franja y por día (POS) · rentabilidad real del 2x1 |
+| 2 | **El contenido no mueve nada.** Publican pero no se traduce en visitas. | Alcance vs visitas atribuidas · guardados y compartidos · búsquedas de marca |
+| 3 | **No son opción por defecto.** La marca no aparece en la cabeza en el momento de decisión dentro del radio. | Share of voice local · volumen y recencia de reseñas en Google · búsquedas de marca vs categoría |
+
+**Consistencia con la evidencia disponible:**
+- El 2x1 fijo de martes y jueves es coherente con el problema #1 → 🟡 señal, no prueba.
+- El benchmark de A.2 (ER de 0.11%–1.01% en piezas propias vs 3.05% en el repost de UGC) es
+  coherente con el problema #2 → 🟡 señal, muestra de 5.
+- No hay evidencia disponible todavía sobre el problema #3 → ⚠️ requiere Google Business Profile.
+
+🛑 Esta sección **registra**, no diagnostica ni recomienda. El diagnóstico es Capa 2.
+
+---
+
 ## B. WIN — ¿qué significa ganar para ESTA marca?
 
 > **WIN:** ⚠️ SIN DATOS — **BLOQUEANTE**
@@ -111,8 +131,17 @@ sugiere que hay días valle — pero es 🟡 señal, no dato.
 **Por qué:** local físico + ticket de impulso + recurrencia alta + límite por capacidad → regla 4 del
 mapeo de arquetipos.
 
-🟡 **HIPÓTESIS, NO CLASIFICACIÓN CERRADA.** Se cierra cuando entren ticket promedio, frecuencia real
-de visita y mix salón/delivery.
+🟡 **HIPÓTESIS, NO CLASIFICACIÓN CERRADA.**
+
+**Qué falta exactamente para cerrarla** (decisión del cliente: cerrar arquetipo antes de Capa 1):
+
+| Dato | Qué eje resuelve | Por qué cambia la estrategia |
+|---|---|---|
+| **Ticket promedio real en salón** (Q) | Eje 3 — ticket y ciclo | Si el ticket es alto, no es `impulso`: el arquetipo se corre hacia `09 Hospitalidad` y el canal rey deja de ser Google Maps |
+| **Frecuencia de visita del cliente recurrente** (veces/mes) | Eje 4 — frecuencia | Si es <1/mes, no es `alta recurrencia`: el WIN deja de ser "más visitas por cliente" y pasa a ser "más clientes nuevos" |
+| **Mix de ingreso salón / delivery propio / agregadores** (%) | Ejes 5 y 7 — geografía y motor de demanda | Si los agregadores mandan, el motor es `captura` pura vía marketplace y el radio se define por cobertura de reparto, no por ubicación |
+
+Ficha del arquetipo leída: `archetypes/01-local-alta-frecuencia.md` ✅
 
 ---
 
