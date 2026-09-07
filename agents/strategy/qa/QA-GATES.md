@@ -7,6 +7,8 @@ Checklist por capa. **Ninguna capa se entrega sin pasar su bloque completo.**
 ## Capa 0 — Foundation
 - [ ] El WIN es específico y verificable, no una aspiración genérica ("ser la mejor marca" no vale)
 - [ ] Las restricciones reales están documentadas (presupuesto, equipo, capacidad, tiempo)
+- [ ] **Economía unitaria**: ticket, margen, capacidad de entrega y punto de equilibrio, o `⚠️ SIN DATOS` + viabilidad no verificada
+- [ ] Si la capacidad de entrega está al tope, está declarado que la estrategia no es generar más demanda
 - [ ] La diferenciación declarada por el cliente está marcada como **percepción**, no como hecho
 - [ ] Los 8 ejes están respondidos o marcados `⚠️ SIN DATOS`
 - [ ] Hay arquetipo asignado (+ modificador si es híbrido) y se leyó la ficha completa
@@ -19,6 +21,9 @@ Checklist por capa. **Ninguna capa se entrega sin pasar su bloque completo.**
 - [ ] Cada patrón marcado 🟢 (3+ fuentes) / 🟡 (1-2) / ⚪ (ruido), con conteo
 - [ ] Hay CEPs listados (8-15) y priorizados (3-5)
 - [ ] El motor de demanda dominante está declarado (captura vs creación) y justificado
+- [ ] **Ciclo de compra** declarado, y con él el lag mínimo de medición del lagging
+- [ ] **Share of voice** estimado por jugador, con la brecha propia (o `🟡 SOM no disponible`)
+- [ ] **Estados de consciencia** con distribución estimada y evidencia
 - [ ] El mapa 2x2 tiene ejes justificados para **esta** categoría, no genéricos
 - [ ] El white space está **dibujado en el mapa**, no solo mencionado
 - [ ] El mapa de objeciones usa el lenguaje literal del comprador
@@ -43,6 +48,9 @@ Checklist por capa. **Ninguna capa se entrega sin pasar su bloque completo.**
 - [ ] Hay condiciones de invalidación definidas
 
 ## Capa 4 — Posicionamiento
+- [ ] **Categoría** declarada: existente / redefinida / nueva
+- [ ] **Enemigo** declarado, y sale del mapa de objeciones o del de saturación
+- [ ] **Mecanismo único** declarado, y verificado contra el mapa de saturación (si todos lo dicen, no es único)
 - [ ] El territorio es relevante, defendible con una UNFAIR real, y no está ocupado según el 2x2
 - [ ] Hay 3-5 CEPs elegidos para poseer, no todos
 - [ ] La promesa está en el lenguaje del comprador, no en jerga de marca
@@ -63,13 +71,15 @@ Checklist por capa. **Ninguna capa se entrega sin pasar su bloque completo.**
 - [ ] Las funciones elegidas (Hero/Series/Proof/Utility/Conversion/Community) tienen justificación
 - [ ] El mix de pilares sale del arquetipo, no de una fórmula universal
 - [ ] Las 4 temperaturas están cubiertas (frío/tibio/caliente/cliente)
+- [ ] Cada tipo de pieza tiene **awareness stage y ángulo**, además de función y temperatura
+- [ ] Hay **jerarquía de mensaje** en 3 niveles, y ninguna pieza cambia la promesa
 - [ ] **Cada canal tiene una función distinta.** Si dos hacen lo mismo, uno sobra
 - [ ] Cada tipo de pieza se traza hacia atrás hasta una MUST BE TRUE
 - [ ] No hay piezas concretas ni copies (eso es de Creative)
 
 ## Capa 7 — Calendario
 - [ ] Están los 4 tipos de alcance (owned/paid/earned/borrowed) con rol asignado
-- [ ] Hay balance marca/activación declarado
+- [ ] Hay balance marca/activación declarado **y justificado contra las condiciones de 7.2**
 - [ ] La cadencia cabe en la capacidad de producción real del cliente
 - [ ] La estacionalidad y las fases del movimiento están reflejadas
 - [ ] No hay ideas día por día (eso es de Creative)
@@ -77,6 +87,9 @@ Checklist por capa. **Ninguna capa se entrega sin pasar su bloque completo.**
 ## Capa 8 — Medición
 - [ ] Hay KPIs en las 4 alturas (negocio / comportamiento / marca / contenido)
 - [ ] Se mide contra el **objetivo**, no contra métricas de contenido
+- [ ] Los KPIs están separados en **leading** y **lagging**, con su frecuencia de lectura
+- [ ] El lag mínimo del lagging = el ciclo de compra de la categoría, declarado
+- [ ] Hay **cadencia de revisión** (semana / mes / trimestre / 6 meses)
 - [ ] Hay baseline registrado o `⚠️ SIN BASELINE`
 - [ ] Está respondido explícitamente si el movimiento **compounde** o no
 

@@ -26,8 +26,11 @@ Si el input es escaso: **documentá menos**. Nunca completes con inferencia sin 
 1. **A — La empresa**: qué hace, visión, propósito, oferta, precio, tono, visuales, audiencia actual,
    diferenciación *percibida por ellos*
 2. **B — WIN**: qué significa ganar, específico y verificable. Operacionalizá el "#1": **¿#1 en qué?**
-3. **C — Restricciones reales**: presupuesto, equipo, capacidad, velocidad de aprobación, legales
-4. **D — Arquetipo**: → invocá `st-arquetipo`
+3. **C — Economía unitaria**: ticket promedio, margen bruto, capacidad de entrega, punto de
+   equilibrio. **No es money model** (eso es de Growth) — es la restricción de viabilidad.
+   Si faltan: `⚠️ SIN DATOS` + declarar **viabilidad no verificada**. Nunca estimarlos.
+4. **D — Restricciones reales**: presupuesto, equipo, capacidad de producción, aprobación, legales
+5. **E — Arquetipo**: → invocá `st-arquetipo`
 
 ## Reglas duras
 - **Nunca recomendás ni decidís.** Si escribís "por lo tanto la marca debería…", te saliste del rol.
@@ -35,6 +38,8 @@ Si el input es escaso: **documentá menos**. Nunca completes con inferencia sin 
   y la Capa 1 la comprueba.
 - Toda diferenciación declarada por el cliente va como `[percepción del cliente, no verificado]`.
 - **"Ser la mejor marca del mercado" no es un WIN válido.** Pedí especificidad.
+- **Si la capacidad de entrega ya está al tope**, declaralo: la estrategia no será generar más
+  demanda sino filtrar mejor o subir precio. Sin ese dato el sistema se equivoca de problema.
 
 ## Cierre
 Correr el bloque **Capa 0** de `qa/QA-GATES.md`.

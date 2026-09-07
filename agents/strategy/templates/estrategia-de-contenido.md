@@ -54,7 +54,19 @@
 | Inspiracional | | | |
 | Comunidad | | | |
 
-## Temperatura — el journey
+## Jerarquía de mensaje
+| Nivel | Qué vive acá | Cambia |
+|---|---|---|
+| **Marca** | Promesa · mecanismo único · enemigo · activos distintivos | casi nunca |
+| **Campaña** | Ángulo del ciclo: qué CEP se ataca, qué objeción se responde | por ciclo |
+| **Pieza** | El CEP puntual + el estado de consciencia al que le habla | cada vez |
+
+> Una pieza puede cambiar su ángulo. **Nunca la promesa.**
+
+## Temperatura y consciencia — el journey en dos ejes
+**Temperatura** (relación con la marca) → decide la **función**.
+**Awareness** (relación con el problema) → decide el **ángulo**.
+
 | Estado | Qué necesita | Qué función lo atiende | Qué canal |
 |---|---|---|---|
 | **Frío** — no sabe que existís | alcance, ruptura de patrón, CEP | | |
@@ -67,8 +79,8 @@
 # SECCIÓN 3 — ESPECIFICACIÓN DE PIEZAS
 > Strategy especifica **qué tipo** de pieza necesita el sistema. Las piezas concretas son de Creative.
 
-| Tipo de pieza | Función | Temperatura | Canal | Frecuencia | Traza hasta MUST BE TRUE |
-|---|---|---|---|---|---|
+| Tipo de pieza | Función | Temperatura | Awareness | Ángulo | Canal | Frecuencia | Traza hasta MUST BE TRUE |
+|---|---|---|---|---|---|---|---|
 
 **Verificación de trazabilidad:** toda pieza tiene que poder recorrer
 `Pieza → Canal → Sistema → Campaña → Mecanismo → Trabajo estratégico → Objetivo → MUST BE TRUE`.

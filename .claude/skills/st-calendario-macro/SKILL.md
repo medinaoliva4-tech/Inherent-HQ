@@ -27,7 +27,21 @@ Plantilla: `templates/calendario-estrategico.csv`
 **Volvé a mirar las UNFAIR:** si hay acceso privilegiado a una comunidad, medio, creador o
 distribución física, la distribución tiene que explotarlo. Es donde más se desperdicia ventaja.
 
-## 7.2 — El calendario
+## 7.2 — Balance marca / activación
+
+Punto de partida **60/40 a favor de marca**. Se rompe con justificación:
+
+| Situación | Balance |
+|---|---|
+| Marca nueva, sin memoria | 70/30 marca |
+| Categoría de captura pura (1.2c) | 40/60 activación |
+| Ventana de lanzamiento / temporada alta | 30/70 activación |
+| **Capacidad de entrega al tope** (Capa 0) | 80/20 marca |
+| **Punto de equilibrio no cubierto** (Capa 0) | 40/60 activación |
+
+Un balance sin justificación contra estas condiciones es un balance elegido por costumbre.
+
+## 7.3 — El calendario
 
 Columnas fijas:
 ```

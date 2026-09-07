@@ -30,7 +30,22 @@ Específico y verificable en el tiempo. *"Ser la mejor marca del mercado" no es 
 
 **¿#1 en qué?** [revenue · market share · preferencia · relevancia cultural · categoría · territorio · experiencia]
 
-## C. Restricciones reales
+## C. Economía unitaria (restricción, no estrategia)
+
+> Strategy no diseña el money model — eso es de Growth. Pero sin estos números no puede saber si la
+> estrategia es viable. Si faltan: `⚠️ SIN DATOS` + **viabilidad no verificada**. Nunca se estiman.
+
+| | Valor | Fuente |
+|---|---|---|
+| **Ticket promedio** | | |
+| **Margen bruto** | | |
+| **Capacidad de entrega** (clientes/mes que puede atender hoy) | | |
+| **Punto de equilibrio** (clientes/mes para no perder) | | |
+| **¿Está la capacidad al tope?** | sí / no | |
+
+→ Si la capacidad está al tope: **la estrategia no es generar más demanda**, es filtrar mejor o subir precio.
+
+## D. Restricciones reales
 
 | | |
 |---|---|
@@ -41,7 +56,7 @@ Específico y verificable en el tiempo. *"Ser la mejor marca del mercado" no es 
 | **Restricciones legales / regulatorias** | |
 | **Prioridades declaradas** | |
 
-## D. Clasificación por arquetipo
+## E. Clasificación por arquetipo
 
 | Eje | Valor |
 |---|---|

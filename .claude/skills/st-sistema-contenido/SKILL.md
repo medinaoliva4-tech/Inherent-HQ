@@ -47,7 +47,9 @@ Dos preguntas: ¿aprovecha algo **unfair**? ¿resuelve mejor que comunicación o
 **El mix lo dicta el arquetipo**, no una fórmula universal. Se ajusta por momento (lanzamiento,
 temporada, crisis).
 
-**6.3 Temperatura** — todo sistema plano falla:
+**6.3 Temperatura + awareness** — dos ejes distintos:
+**temperatura** (relación con la marca) decide la **función** · **awareness** (relación con el
+problema, de 1.5) decide el **ángulo**. Todo sistema plano falla:
 ```
 FRÍO      alcance, ruptura de patrón, CEP
 TIBIO     prueba, mecanismo, objeciones
@@ -58,7 +60,12 @@ CLIENTE   recurrencia, referidos, pertenencia
 **6.4 Rol por canal** — **cada canal tiene una función distinta. Si dos hacen lo mismo, uno sobra.**
 Por canal: función, temperatura, formatos, cadencia, métrica que lo juzga, qué NO se hace ahí.
 
-**6.5 Especificación, no producción.** Strategy define qué **tipo** de pieza necesita el sistema.
+**6.5 Jerarquía de mensaje** — qué se dice siempre y qué cambia:
+`Marca` promesa, mecanismo único, enemigo, activos (casi nunca cambia) ·
+`Campaña` el ángulo del ciclo (por ciclo) · `Pieza` el CEP y el awareness al que le habla (cada vez).
+**Una pieza puede cambiar su ángulo; nunca la promesa.**
+
+**6.6 Especificación, no producción.** Strategy define qué **tipo** de pieza necesita el sistema.
 Las piezas día por día son de Creative; los assets son de Production.
 
 ---

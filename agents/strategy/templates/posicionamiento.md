@@ -78,6 +78,17 @@ relevancia · fricción · memoria · distribución]
 
 # SECCIÓN 3 — TERRITORIO (Capa 4)
 
+## Declaración de posicionamiento
+
+| # | Decisión | |
+|---|---|---|
+| **a** | **Categoría** | `existente` / `redefinida` / `nueva` → [cuál y por qué] |
+| **b** | **Enemigo** | [competidor · statu quo · creencia instalada · hábito · "no hacer nada"] |
+| **c** | **Mecanismo único** | [por qué lo nuestro funciona — el *cómo*, no el *qué*] |
+
+**Verificación del enemigo:** ¿sale del mapa de objeciones o del mapa de saturación? [cuál]
+**Verificación del mecanismo:** ¿aparece en el mapa de saturación? → si sí, **no es único**
+
 ## Territorio elegido
 **Es:** [el espacio que ocupamos]
 **No es:** [lo que explícitamente no somos]

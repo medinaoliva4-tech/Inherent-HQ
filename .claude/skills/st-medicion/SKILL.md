@@ -30,6 +30,20 @@ movió ninguna MUST BE TRUE es ruido caro. Declaralo si pasa.
 **Métricas que mienten en este arquetipo:** leelas en la ficha `archetypes/NN-*.md` sección 7 y
 listalas explícitamente como ignoradas.
 
+## 8.1b — Leading vs lagging
+**Leading** (retención, guardados, búsquedas de marca, consultas, SOV) → se leen **semanal**.
+**Lagging** (revenue, clientes, share of market, awareness) → se leen **trimestral o más**.
+
+🛑 **El lag mínimo del lagging es el ciclo de compra de la categoría** (de 1.2). Leerlo antes
+produce un falso negativo. Si el ciclo es de 4 meses, a las 6 semanas los leading son lo único legible.
+
+## 8.1c — Cadencia de revisión
+`semana` leading → formatos y slots · `mes` comportamiento → mix, canal, balance ·
+`trimestre` lagging → objetivo, movimiento, renuncias · `6 meses` → se re-corre la Capa 1 entera.
+
+**Las 3 Verdades no se tocan por una semana mala.** Solo se actualizan si: una MBT se cumplió o
+estaba mal planteada · apareció/se creó/se cayó una UNFAIR · un GO GET se ejecutó o el contexto cambió.
+
 ## 8.2 — Baseline
 Sin línea base no hay medición, hay anécdota. Se registra **antes** de empezar.
 Si no hay: `⚠️ SIN BASELINE — este ciclo se establece como referencia`.

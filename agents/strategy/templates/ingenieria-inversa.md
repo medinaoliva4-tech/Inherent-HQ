@@ -31,6 +31,9 @@
 **Motor de demanda dominante:** `captura` / `creación` · **Mezcla estimada:** __% / __%
 **Justificación:**
 
+**Ciclo de compra:** [tiempo entre el disparo y la compra]
+→ **Lag mínimo de medición del lagging:** [mismo plazo]
+
 **Estacionalidad y ocasiones:**
 
 ## 1.3 — Ingeniería inversa de media
@@ -47,6 +50,14 @@
 ### Descomposición en 7 capas (mínimo 15 piezas)
 | # | Fuente | Anillo | Gancho | Promesa | Mecanismo | Prueba | Formato | Distribución | Oferta/CTA | Señal de que funciona |
 |---|---|---|---|---|---|---|---|---|---|---|
+
+### Share of voice vs share of market
+| Jugador | SOV estimado | SOM estimado | Lectura |
+|---|---|---|---|
+| | | | SOV>SOM invierte / SOV<SOM cosecha |
+| **NOSOTROS** | | | **Brecha:** |
+
+*(sin datos de share de negocio: `🟡 SOM no disponible — brecha no calculable`)*
 
 ### Patrones por capa
 | Capa | Patrón observado | Fuentes | Marca |
@@ -66,6 +77,17 @@
 ## 1.5 — Audiencia real
 **Datos disponibles:** [analytics, CRM, ventas, MCPs]
 **Lenguaje literal del comprador:** [citas textuales de reviews, comentarios, DMs]
+**Estados de consciencia — distribución estimada del mercado:**
+| Estado | % aprox. | Evidencia | Qué necesita escuchar |
+|---|---|---|---|
+| Unaware | | | que el problema existe |
+| Problem aware | | | que hay una forma de resolverlo |
+| Solution aware | | | por qué esta forma y no otra |
+| Product aware | | | prueba, diferencia, objeción |
+| Most aware | | | la oferta y por qué ahora |
+
+> Awareness = relación con el **problema**. Temperatura = relación con la **marca**. No son lo mismo.
+
 **Huecos:** ⚠️ SIN DATOS — [qué falta]
 
 ---

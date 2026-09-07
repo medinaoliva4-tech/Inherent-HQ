@@ -36,8 +36,17 @@ Plantilla: `templates/posicionamiento.md` secciones 2-5.
 
 ## CAPA 4 — Posicionamiento
 
-**4.1 Territorio** — relevante para el comprador + defendible con una UNFAIR real + no ocupado
-según el mapa 2x2. Se escribe qué **es** y qué **no es**.
+**4.1 Declaración de posicionamiento** — cuatro decisiones explícitas:
+
+| | |
+|---|---|
+| **Categoría** | `existente` / `redefinida` / `nueva` |
+| **Enemigo** | Competidor, statu quo, creencia, hábito o "no hacer nada". Sale del mapa de objeciones o del de saturación |
+| **Mecanismo único** | Por qué lo nuestro funciona. Se verifica contra el mapa de saturación: si todos lo dicen, no es único |
+| **Territorio** | Qué **es** y qué **no es**. Relevante + defendible con una UNFAIR + no ocupado en el 2x2 |
+
+> Una marca sin enemigo declarado produce comunicación amable e invisible.
+> Sin mecanismo único, la promesa es un adjetivo.
 
 **4.2 CEPs a poseer** — 3-5 de los priorizados en 1.2. No todos.
 

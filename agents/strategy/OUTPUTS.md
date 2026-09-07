@@ -12,7 +12,7 @@ agente no lo produce.**
 | **A · Entregables de archivo** | 7 | `clients/<cliente>/` |
 | **B · Outputs de sesión** | 6 | En la conversación (Buzz) |
 | **C · Outputs externos** | 3 | Notion · Drive · Eden — solo con gate |
-| **Sub-outputs nombrados** | 46 | Dentro de los 7 entregables |
+| **Sub-outputs nombrados** | 60 | Dentro de los 7 entregables |
 
 ---
 
@@ -36,8 +36,9 @@ agente no lo produce.**
 |---|---|
 | **A · Retrato de la empresa** | Qué hace, visión, propósito, oferta, precio, tono, visuales, audiencia actual, diferenciación percibida |
 | **B · WIN operacionalizado** | Qué significa ganar, específico y verificable + `¿#1 en qué?` |
-| **C · Restricciones reales** | Presupuesto, equipo, capacidad de producción, velocidad de aprobación, legales |
-| **D · Clasificación** | 8 ejes respondidos + arquetipo dominante + modificador + justificación |
+| **C · Economía unitaria** | Ticket, margen bruto, capacidad de entrega, punto de equilibrio — restricción de viabilidad, no money model |
+| **D · Restricciones reales** | Presupuesto, equipo, capacidad de producción, velocidad de aprobación, legales |
+| **E · Clasificación** | 8 ejes respondidos + arquetipo dominante + modificador + justificación |
 | **Huecos abiertos** | Lista de `⚠️ SIN DATOS` con qué falta y cómo conseguirlo |
 
 **Restricción:** describe, no decide. Toda diferenciación declarada por el cliente sale como
@@ -53,12 +54,15 @@ agente no lo produce.**
 | **1.2 Lista de CEPs** | 8-15 momentos de entrada en lenguaje del comprador, con quién los ocupa hoy |
 | **1.2b CEPs priorizados** | 3-5 elegidos, con criterio |
 | **1.2c Motor de demanda** | `captura` vs `creación` + mezcla estimada + justificación |
-| **1.2d Estacionalidad** | Ocasiones datadas de la categoría |
+| **1.2d Ciclo de compra** | Tiempo del disparo a la compra → **lag mínimo de medición del lagging** |
+| **1.2e Estacionalidad** | Ocasiones datadas de la categoría |
 | **1.3a Universo — 5 anillos** | Directos, categoría, sustitutos, referentes fuera, creadores. Con marca de **verificado por MCP** |
 | **1.3b Tabla de descomposición** | 15+ piezas × 7 capas (gancho, promesa, mecanismo, prueba, formato, distribución, oferta) |
 | **1.3c Patrones por capa** | Uno por capa, con conteo de fuentes y marca 🟢/🟡/⚪ |
 | **1.4 Señales culturales** | 3-5, separando tendencia real de ruido |
+| **1.3d Share of voice / market** | SOV por jugador vs su SOM + la brecha propia |
 | **1.5 Audiencia real** | Datos disponibles + **lenguaje literal del comprador** (citas textuales) |
+| **1.5b Estados de consciencia** | Distribución del mercado en unaware → most aware, con evidencia |
 | **Mapa de saturación** | Qué hace todo el mundo, por capa, con nivel de saturación |
 | **Mapa 2x2** | Ejes justificados para esta categoría + competidores + marca hoy + **white space dibujado** |
 | **Mapa de objeciones** | Objeción literal · frecuencia · quién la resuelve · cómo |
@@ -92,6 +96,9 @@ agente no lo produce.**
 ### Secciones 3-5 — Territorio (Capa 4)
 | Sub-output | Qué es |
 |---|---|
+| **Categoría** | `existente` / `redefinida` / `nueva` |
+| **Enemigo** | Competidor, statu quo, creencia, hábito o "no hacer nada" |
+| **Mecanismo único** | Por qué lo nuestro funciona — verificado contra el mapa de saturación |
 | **Territorio** | Qué **es** y qué **no es** + verificación de los 3 criterios |
 | **CEPs a poseer** | 3-5, con quién los ocupa hoy y por qué podemos ganarlos |
 | **Promesa** | Una frase, en lenguaje del comprador |
@@ -116,7 +123,8 @@ agente no lo produce.**
 | **Idea de campaña** | La idea + cómo vive en el tiempo + filtro D/N/R |
 | **Funciones + pesos** | Hero / Series / Proof / Utility / Conversion / Community, con % |
 | **Pilares + mix** | Mix base del arquetipo + ajuste + de qué función cuelga cada uno |
-| **Temperatura** | Frío / tibio / caliente / cliente → qué función y canal atiende cada uno |
+| **Temperatura + awareness** | Dos ejes: temperatura decide la función, awareness decide el ángulo |
+| **Jerarquía de mensaje** | Qué se dice siempre (marca) / por campaña / por pieza |
 | **Especificación de piezas** | Tipo · función · temperatura · canal · frecuencia · **traza a MBT** |
 
 **Restricción:** especifica **tipos** de pieza. No escribe ideas, copies ni guiones.
@@ -148,7 +156,7 @@ frecuencia · balance · objetivo_del_slot · traza_a_must_be_true · estado
 |---|---|
 | **Distribución** | Rol de owned / paid / earned / borrowed, apalancando las UNFAIR |
 | **Grilla de slots** | Un slot por fila, con las 12 columnas completas |
-| **Balance marca/activación** | Declarado explícitamente, no implícito |
+| **Balance marca/activación** | 60/40 de partida, con justificación contra las 5 condiciones que lo rompen |
 | **Fases del movimiento** | Cómo se despliega en el tiempo + estacionalidad |
 
 **Restricción:** 🚦 GATE 3. No baja a ideas día por día ni copies — eso lo convierte Creative.
@@ -162,6 +170,8 @@ frecuencia · balance · objetivo_del_slot · traza_a_must_be_true · estado
 |---|---|
 | **KPIs por altura** | Negocio · comportamiento · marca · contenido, con baseline, meta, fuente y frecuencia |
 | **Métricas ignoradas** | Las que mienten en este arquetipo, listadas explícitamente |
+| **Leading vs lagging** | Separados, con frecuencia de lectura y el lag mínimo = ciclo de compra |
+| **Cadencia de revisión** | Semana / mes / trimestre / 6 meses, con qué se puede cambiar en cada una |
 | **Baseline** | Punto de partida registrado, o `⚠️ SIN BASELINE` |
 | **Condiciones de invalidación** | Señal · qué significaría · qué haríamos |
 | **Compounding** | Las 10 dimensiones evaluadas + veredicto 🟢/🔴 |

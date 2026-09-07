@@ -67,6 +67,24 @@ guardrails.
 - Restricciones reales: presupuesto, equipo, capacidad de producción, tiempo, legales
 - Prioridades declaradas
 
+**Economía unitaria — como restricción, no como estrategia**
+
+Strategy **no diseña** el money model (eso es de Growth). Pero sin estos cuatro números no puede
+saber si una estrategia es viable, y termina proponiendo cosas que el negocio no aguanta.
+
+| Dato | Por qué lo necesita Strategy |
+|---|---|
+| **Ticket promedio** | Decide cuánto se puede gastar en adquirir un cliente, y por lo tanto si paid es opción |
+| **Margen bruto** | Un margen de 15% no soporta la misma estrategia que uno de 70% |
+| **Capacidad de entrega** | Cuántos clientes más puede atender hoy sin romperse |
+| **Punto de equilibrio** | Cuántos clientes/mes necesita para no perder — el piso del objetivo |
+
+Si no están: `⚠️ SIN DATOS` y se declara que la estrategia queda con **viabilidad no verificada**.
+Nunca se estiman.
+
+> **Consecuencia directa:** si la capacidad de entrega ya está al tope, la estrategia no es generar
+> más demanda — es filtrar mejor o subir el precio. Sin este dato el agente se equivoca de problema.
+
 **Regla dura**
 > La visión del cliente se respeta, pero **no se toma como verdad de mercado**.
 > Si el CEO dice "nuestra ventaja es el servicio", Foundation lo registra. La Capa 1 comprueba si
@@ -110,6 +128,10 @@ entra a esta categoría**.
   - **Captura** → la demanda ya existe y se busca (search, mapas, comparación, recomendación)
   - **Creación** → la demanda es latente y se despierta (feed, descubrimiento, cultura)
   - Casi toda marca tiene mezcla. La pregunta es **cuál manda**, porque define el canal principal.
+- **Ciclo de compra**: cuánto pasa entre el disparo y la compra. Un restaurante decide en 20
+  minutos; un B2B enterprise en 4 meses. **Esto define el horizonte de medición y cuánto contenido
+  de consideración hace falta** — medir a 30 días una categoría con ciclo de 4 meses da un falso
+  negativo.
 - **Estacionalidad y ocasiones** reales de la categoría.
 
 ### 1.3 — Ingeniería inversa de media
@@ -122,6 +144,18 @@ Universo a estudiar (5 anillos, no solo "competidores"):
 Cada pieza ganadora se descompone en **7 capas**:
 `Gancho · Promesa · Mecanismo · Prueba · Formato · Distribución · Oferta/CTA`
 
+**Share of voice vs share of market.** Con la evidencia recolectada se estima cuánta de la
+conversación/pauta de la categoría ocupa cada jugador, y se compara con su participación de negocio.
+
+| Lectura | Qué significa |
+|---|---|
+| **SOV > SOM** | Está invirtiendo por encima de su tamaño → probablemente va a crecer |
+| **SOV < SOM** | Está cosechando marca construida antes → vulnerable a que alguien entre |
+| **Nuestra brecha** | La diferencia entre lo que ocupamos y lo que somos: dice si el problema es de mensaje o de volumen |
+
+Si no hay datos de share de negocio, se estima solo SOV y se marca
+`🟡 SOM no disponible — brecha no calculable`.
+
 → Protocolo completo y MCPs en `playbooks/INGENIERIA-INVERSA.md`.
 
 ### 1.4 — Cultura y señales
@@ -133,6 +167,21 @@ Cada pieza ganadora se descompone en **7 capas**:
 - Datos disponibles: analytics propias, MCPs conectados, CRM, ventas.
 - Lenguaje literal del comprador (reviews, comentarios, DMs, objeciones de venta).
 - Si no hay datos: `⚠️ SIN DATOS — [qué falta y cómo conseguirlo]`. **Nunca inventar un perfil.**
+
+**Estados de consciencia (awareness stages).** Dónde está el mercado respecto al **problema**, no
+respecto a la marca. Se estima la distribución aproximada:
+
+| Estado | Qué sabe | Qué necesita escuchar |
+|---|---|---|
+| **Unaware** | No sabe que tiene el problema | Que el problema existe y le está costando algo |
+| **Problem aware** | Sabe el problema, no la solución | Que hay una forma de resolverlo |
+| **Solution aware** | Conoce el tipo de solución, no las marcas | Por qué esta forma y no otra |
+| **Product aware** | Nos conoce, no está convencido | Prueba, diferencia, respuesta a la objeción |
+| **Most aware** | Convencido, no compró | La oferta y por qué ahora |
+
+> **No confundir con temperatura (6.3).** Awareness es la relación con **el problema**; temperatura
+> es la relación con **la marca**. Alguien puede estar most-aware del problema y frío con nosotros.
+> El awareness define **el ángulo** de la pieza; la temperatura define **su función**.
 
 **Regla dura de toda la Capa 1**
 > 🛑 Si un output de esta capa dice "por lo tanto la marca debería…", se salió de su rol.
@@ -232,9 +281,25 @@ no duele.
 # CAPA 4 — POSICIONAMIENTO
 ### ¿Qué lugar ocupamos en la cabeza del comprador?
 
-**4.1 TERRITORIO**
+**4.1 TERRITORIO — la declaración de posicionamiento**
 El espacio que se decide ocupar. Tiene que ser: relevante para el comprador, defendible con las
 UNFAIR de la Capa 2, y no ocupado (o mal ocupado) según el mapa de la Capa 1.
+
+Cuatro decisiones explícitas, ninguna implícita:
+
+| # | Decisión | Pregunta |
+|---|---|---|
+| **a** | **Categoría** | ¿En qué categoría competimos? `existente` (peleamos dentro) · `redefinida` (misma categoría, otras reglas) · `nueva` (creamos una) |
+| **b** | **Enemigo** | ¿Contra qué estamos? No siempre es un competidor: puede ser el statu quo, una creencia instalada, un hábito, o "no hacer nada" |
+| **c** | **Mecanismo único** | ¿Por qué lo nuestro funciona, y por qué no lo pueden decir los demás? Es el *cómo*, no el *qué* |
+| **d** | **Territorio** | El espacio resultante: qué **es** y qué **no es** |
+
+> **El enemigo es lo que le da tensión al posicionamiento.** Una marca sin enemigo declarado
+> produce comunicación amable e invisible. El enemigo sale del **mapa de objeciones** (contra qué
+> está peleando el comprador) y del **mapa de saturación** (qué asume toda la categoría).
+>
+> **El mecanismo único es lo que hace creíble la promesa.** Sin él, la promesa es un adjetivo.
+> Se verifica contra el mapa de saturación: si todos dicen el mismo mecanismo, no es único.
 
 **4.2 CEPs A POSEER**
 De los CEPs priorizados en 1.2: **cuáles vamos a poseer**. Un CEP poseído es cuando la marca es la
@@ -325,8 +390,21 @@ no el sistema. Cuelgan de las funciones de 6.1 y **el mix lo dicta el arquetipo,
 universal**. Un mix por defecto se define en la ficha del arquetipo y se ajusta por momento
 (lanzamiento, temporada alta, crisis).
 
-**6.3 TEMPERATURA — el journey**
-Todo sistema plano falla. Cada pieza sirve a un estado:
+**6.3 TEMPERATURA Y CONSCIENCIA — el journey en dos ejes**
+Todo sistema plano falla. Cada pieza se ubica en **dos ejes que no son el mismo**:
+
+- **Temperatura** (relación con la marca) → decide **qué función** de contenido usa
+- **Awareness stage** (relación con el problema, de 1.5) → decide **qué ángulo** tiene
+
+```
+                    unaware → problem → solution → product → most aware
+       frío           ▓▓▓▓      ▓▓▓▓       ▓▓
+       tibio                    ▓▓▓▓      ▓▓▓▓       ▓▓▓
+       caliente                             ▓▓       ▓▓▓▓      ▓▓▓▓
+       cliente                                                  ▓▓▓▓
+```
+
+La temperatura, en detalle:
 
 ```
 FRÍO      no sabe que existís      → alcance, ruptura de patrón, CEP
@@ -339,7 +417,20 @@ CLIENTE   ya compró                → recurrencia, referidos, pertenencia
 Cada canal tiene **una función distinta**. Si dos canales hacen lo mismo, uno sobra.
 Se define por canal: función, temperatura que atiende, formatos, cadencia, qué métrica lo juzga.
 
-**6.5 ESPECIFICACIÓN DE PIEZAS — no producción**
+**6.5 JERARQUÍA DE MENSAJE**
+Qué se dice siempre, qué cambia por campaña y qué cambia por pieza. Sin esto, cada pieza reinventa
+el mensaje y la marca no acumula memoria.
+
+| Nivel | Qué vive acá | Cada cuánto cambia |
+|---|---|---|
+| **Marca** | Promesa, mecanismo único, enemigo, activos distintivos | Casi nunca — cambiarlo reinicia la memoria |
+| **Campaña** | El ángulo del ciclo: qué CEP se ataca, qué objeción se responde | Por ciclo |
+| **Pieza** | La entrada concreta: el CEP puntual y el estado de consciencia al que le habla | Cada vez |
+
+**Regla:** una pieza puede cambiar su ángulo libremente, **nunca la promesa**. Si una pieza necesita
+una promesa distinta para funcionar, o la promesa está mal o la pieza no es nuestra.
+
+**6.6 ESPECIFICACIÓN DE PIEZAS — no producción**
 Strategy define **qué tipo de pieza** necesita el sistema y por qué. Las piezas concretas día por
 día son de Creative; los assets son de Production. Aquí se especifica, no se produce.
 
@@ -368,7 +459,25 @@ Si no se puede trazar, la pregunta correcta es: **¿por qué estamos haciendo es
 Aquí vuelven a entrar las **UNFAIR**: si tenemos acceso privilegiado a una comunidad, medio,
 creador o distribución física, la distribución debe explotarlo.
 
-**7.2 CALENDARIO ESTRATÉGICO (macro)**
+**7.2 BALANCE MARCA / ACTIVACIÓN**
+
+El punto de partida es **60% marca / 40% activación** — construir memoria pesa más que cosechar
+demanda, porque la demanda que se cosecha hoy la construyó el trabajo de marca de ayer.
+
+**Cuándo se rompe, y hacia dónde:**
+
+| Situación | Balance | Por qué |
+|---|---|---|
+| Marca nueva, sin memoria | **70/30 marca** | No hay nada que cosechar todavía |
+| Categoría de captura pura (1.2c) | **40/60 activación** | La demanda ya existe: la pelea es interceptarla |
+| Ventana de lanzamiento o temporada alta | **30/70 activación** | Ventana corta, se cosecha lo construido |
+| Capacidad de entrega al tope (Capa 0) | **80/20 marca** | Generar más demanda no sirve: se construye precio y preferencia |
+| Punto de equilibrio no cubierto (Capa 0) | **40/60 activación** | Supervivencia primero; se recupera el balance después |
+
+**Regla dura:** el balance se declara y se justifica contra estas condiciones. Un balance elegido
+sin justificación es un balance elegido por costumbre.
+
+**7.3 CALENDARIO ESTRATÉGICO (macro)**
 Lo que Strategy entrega:
 `frecuencia por canal · función y pilar por slot · balance marca/activación · temperatura ·
 momentos y estacionalidad · fases del movimiento`
@@ -393,6 +502,41 @@ Lo que Strategy **no** entrega: ideas día por día, copies, guiones. Eso es de 
 
 **Regla dura:** métricas de contenido **nunca** validan una estrategia por sí solas. Un Reel viral
 que no movió ninguna MUST BE TRUE es ruido caro.
+
+**8.1b LEADING VS LAGGING**
+
+Las cuatro alturas se leen a distinta velocidad. Confundirlas hace que se abandone una estrategia
+antes de que pudiera funcionar.
+
+| | Qué son | Ejemplos | Se leen |
+|---|---|---|---|
+| **Leading** | Predicen el resultado. Se mueven primero | Retención de contenido, guardados, búsquedas de marca, consultas, share of voice | Semanal |
+| **Lagging** | Confirman el resultado. Se mueven último | Revenue, clientes nuevos, share of market, awareness | Trimestral o más |
+
+**La regla del ciclo de compra:** el lag mínimo entre acción y resultado es **el ciclo de compra
+de la categoría** (de 1.2). Medir el lagging antes de ese plazo produce falsos negativos.
+
+> Si el ciclo es de 4 meses y a las 6 semanas no hay ventas, eso no es evidencia de nada. Los
+> leading indicators son lo único legible en ese momento.
+
+**8.1c CADENCIA DE REVISIÓN**
+
+| Cada | Qué se revisa | Qué se puede cambiar |
+|---|---|---|
+| **Semana** | Leading indicators | Formatos, ángulos, slots del calendario |
+| **Mes** | Comportamiento + leading | Mix de funciones, rol de un canal, balance marca/activación |
+| **Trimestre** | Lagging + objetivo del ciclo | El objetivo, el movimiento elegido, las renuncias |
+| **6 meses** | Capa 1 completa | La evidencia entera se re-corre |
+
+**Regla de actualización de las 3 Verdades** — no se tocan por resultados de una semana:
+
+| Se actualiza | Cuándo |
+|---|---|
+| **MUST BE TRUE** | Una condición se cumplió, o el diagnóstico probó que estaba mal planteada |
+| **UNFAIR** | Se descubrió una ventaja no documentada, o un movimiento creó una nueva, o la evidencia mostró que una no era única |
+| **GO GET** | Un candidato se ejecutó, o el contexto abrió/cerró una posibilidad |
+
+Cambiar una VERDAD sin una de estas razones es cambiar de estrategia, no aprender.
 
 **8.2 BASELINE**
 Sin línea base no hay medición, hay anécdota. Se registra el punto de partida **antes** de empezar.
@@ -441,6 +585,14 @@ Registro explícito de qué se integró, qué se movió y qué se corrigió.
 | **Se agregó activos distintivos (4.5)** | El filtro de 3 preguntas existía, la construcción de activos no | La distintividad se construye con consistencia, no con una evaluación puntual |
 | **Se agregó temperatura del journey (6.3)** | No existía | Un sistema de contenido plano no convierte |
 | **Se agregó KPIs por altura y baseline (8.1-8.2)** | "RESPONSE" existía sin definición de qué se mide | Sin baseline y sin separar altura de métrica, todo se juzga por métricas de contenido |
+| **Se agregó economía unitaria (Capa 0)** | No existía | Sin ticket, margen, capacidad de entrega y punto de equilibrio, Strategy propone cosas que el negocio no aguanta. Es restricción, no money model |
+| **Se agregó ciclo de compra (1.2)** | No existía | Define el lag mínimo de medición. Sin él, la Capa 8 lee el lagging antes de tiempo y da falsos negativos |
+| **Se agregó share of voice vs share of market (1.3)** | No existía | Dice si el problema es de mensaje o de volumen, y quién está invirtiendo por encima de su tamaño |
+| **Se agregó estados de consciencia (1.5 y 6.3)** | No existía | Awareness (relación con el problema) define el ángulo; temperatura (relación con la marca) define la función. Son ejes distintos |
+| **Se agregó categoría, enemigo y mecanismo único (4.1)** | El territorio estaba, estas tres decisiones no | Sin enemigo la comunicación es amable e invisible; sin mecanismo único la promesa es un adjetivo |
+| **Se agregó jerarquía de mensaje (6.5)** | No existía | Sin ella cada pieza reinventa el mensaje y la marca no acumula memoria |
+| **Se agregó la regla de balance marca/activación (7.2)** | El calendario tenía la columna `balance` sin regla | 60/40 como punto de partida, con las cinco condiciones que lo rompen |
+| **Se agregó leading vs lagging y cadencia de revisión (8.1b-c)** | No existía | Confundirlos hace abandonar una estrategia antes de que pudiera funcionar |
 | **Se movió ASSETS fuera de Strategy** | Era el paso 09 del framework | Viola la regla de no duplicación: assets son de Production, piezas de Creative. Strategy especifica, no produce |
 | **Se degradaron los 5 pilares de contenido** | Eran el modelo de sistema de contenido | Los pilares son temas, no sistema. El sistema son las funciones (Hero/Series/Proof/Utility/Conversion/Community) y el mix lo dicta el arquetipo |
 | **Se fusionó la duplicación MUST BE TRUE / OBJECTIVE** | El framework ya lo notaba | Objetivo = seleccionar cuál MUST BE TRUE se mueve este ciclo. Queda explícito, no como dos pasos |

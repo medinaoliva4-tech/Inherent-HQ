@@ -24,10 +24,10 @@ description: >
 | | Bloque | Qué produce |
 |---|---|---|
 | **1.1** | Categoría y reglas del juego | Cómo se compra, qué genera confianza, el default de categoría |
-| **1.2** | Demanda y CEPs | 8-15 momentos de entrada, 3-5 priorizados, motor dominante |
-| **1.3** | Ingeniería inversa de media | 5 anillos · 15+ piezas en 7 capas · patrones |
+| **1.2** | Demanda y CEPs | 8-15 momentos de entrada, 3-5 priorizados, motor dominante, **ciclo de compra**, estacionalidad |
+| **1.3** | Ingeniería inversa de media | 5 anillos · 15+ piezas en 7 capas · patrones · **share of voice vs share of market** |
 | **1.4** | Cultura y señales | 3-5 señales, separando tendencia de ruido |
-| **1.5** | Audiencia real | Datos + lenguaje literal del comprador |
+| **1.5** | Audiencia real | Datos + lenguaje literal + **distribución de estados de consciencia** |
 
 ## Los 3 mapas de cierre
 `saturación` · `2x2 con white space dibujado` · `objeciones en lenguaje literal`
@@ -53,6 +53,9 @@ description: >
   o link de referencia.
 - **Un error o timeout no es un cero.** Nunca reportes un fallo como "no hay datos".
 - Si falta un MCP: `⚠️ SIN [MCP] — [qué evidencia falta]`. No rellenar con inferencia.
+- **El ciclo de compra define el lag de medición.** Declararlo acá evita que la Capa 8 lea el
+  lagging antes de tiempo y produzca un falso negativo.
+- **Awareness ≠ temperatura.** Awareness es la relación con el problema; temperatura, con la marca.
 
 ## Cierre
 Correr el bloque **Capa 1** de `qa/QA-GATES.md`. Registrar fecha del relevamiento, MCPs usados y
