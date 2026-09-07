@@ -156,5 +156,8 @@ del propio sitio, pero es **metadata y extracto, no el cuerpo completo**.
 2. Agregar `inherentglobal.com` a la allowlist de red del environment
 3. Exportar las páginas a PDF y subirlas a Drive → se leen con el MCP de Drive
 
+> **Regla de fuentes vigente** (`_INPUTS/REGLA-DE-FUENTES.md`): solo se usa la información que el
+> usuario entrega directamente. No se consultan otros repos, cuentas ni workspaces.
+
 - Confianza general: 🟡 **parcial** — el retrato está soportado por texto del propio sitio, pero
   **no verificado contra el cuerpo completo**. La economía unitaria está incompleta (3 de 5 campos)
