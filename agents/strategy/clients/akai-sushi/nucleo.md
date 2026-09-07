@@ -1,7 +1,7 @@
 # Núcleo de Marca — Akai Sushi (GT)
 **Fecha:** 2026-09-07 · **Fuentes:** Instagram @akaisushigt_ · Facebook @akaisushiz16 · Uber Eats GT · PedidosYa GT · Inherent OS (Account `akai`) · Notion (Growth KB — Playbook Hormozi, §6)
 **Capa 0 · Gate humano:** ⬜ pendiente
-**Estado:** 🟡 BORRADOR PARCIAL — secciones B, C y D sin input del cliente. No apto para Gate 1 todavía.
+**Estado:** 🟡 BORRADOR PARCIAL — Sección A y **Sección E (arquetipo) CERRADAS**. Secciones B, C y D incompletas → **no apto para Gate 1 todavía**, pero suficiente para habilitar la Capa 1.
 
 > Esta capa **describe**, no decide. La visión del cliente se registra tal cual; la Capa 1 comprueba
 > si es verdad de mercado.
@@ -17,7 +17,7 @@
 | **Qué significa éxito para ellos** | ⚠️ SIN DATOS — requiere input del cliente |
 | **Propósito y valores** | Declarado en bio de IG: *"Calidad, precio justo y todos felices alrededor de la mesa."* `[percepción del cliente, no verificado]` 🟢 fuente: bio IG |
 | **Producto / oferta actual** | Rollos, sopas, ensaladas (sunomono), bowls, postres, "platillos para compartir". Promo estructural: **2x1 martes y jueves**. Señal de precio de entrada baja: hashtag propio `#SushiPor14`. 🟢 fuente: captions IG, Uber Eats, TikTok |
-| **Precio y estructura de ingreso** | Rollos ~**Q75** en Uber Eats (ej. *Bueno kani roll*, *Moto moto roll*). Precio en salón no verificado (los agregadores suelen inflar). Mix de ingreso salón vs delivery: ⚠️ SIN DATOS 🟡 fuente única: Uber Eats GT |
+| **Precio y estructura de ingreso** | **Ticket promedio en salón: Q100.** Rollos ~Q75 en Uber Eats (ej. *Bueno kani roll*, *Moto moto roll*) — los agregadores inflan sobre el precio de salón. Mix salón/delivery/agregadores: ⚠️ SIN DATOS 🟢 ticket: cliente · 🟡 precio agregador: Uber Eats GT |
 | **Tono y voz declarados** | Cálido, familiar, emocional-cursi ("amor a primera vista… amor al primer roll", "todos felices alrededor de la mesa", "viernes familiar"). Alternado con tono promocional duro (2x1, precios). 🟢 fuente: 5 captions IG analizados |
 | **Elementos visuales existentes** | Color de marca registrado en Inherent OS: `#8FA76B`. Guidelines: *Positioning & promise*, *Tone of voice*, *Logo & lockups* = DONE · *Colour system* = DRAFT · *Typography*, *Photography direction*, *Motion & edit rules*, *Do/don't* = **MISSING**. 🟢 fuente: Inherent OS (Guideline, account `akai`) |
 | **Audiencia actual** (la que tienen, no la que quieren) | Guatemala ciudad + corredor Fraijanes/Carretera a El Salvador. Hashtags de la propia marca apuntan a `#GuateFoodie`, `#GuatemalaEats`, `#Zona16Food`. Perfil demográfico real: ⚠️ SIN DATOS (requiere Meta Business Suite) |
@@ -33,6 +33,22 @@
 | Sitio web | ninguno detectado | ⚠️ ausente |
 | Google Business / Maps | no verificado desde acá | ⚠️ SIN DATOS |
 | TikTok propio | no detectado (sí hay UGC de terceros bajo "Akai Sushi Zona 16") | ⚠️ ausente o no encontrado |
+
+### A.1.b — 🔴 Colisión de marca: "Akai Sushi & Oriental" (Antigua)
+**Confirmado por el cliente: es una franquicia AJENA. No hay relación societaria ni operativa.**
+
+| | |
+|---|---|
+| Quién es | `@akaioriental` · Antigua Guatemala · Tripadvisor 4.3 (#133 de 418 restaurantes de Antigua) |
+| Qué comparte con el cliente | El **nombre** (Akai + sushi), la categoría, y **la misma mecánica de 2x1 martes y jueves** |
+| Qué NO comparte | Dueño, operación, cocina, control de calidad, reseñas |
+| Hecho observado | Sus reseñas públicas mencionan *"inconsistencias de calidad y problemas de servicio"* junto a *"la mejor relación calidad-precio"* 🟡 fuente: Tripadvisor, agregado |
+
+**Consecuencias registradas (no recomendaciones):**
+1. **La reputación no es propia.** Un guatemalteco que busca "Akai sushi" recibe resultados de dos operaciones distintas. La calificación de Antigua se lee como si fuera de Akai GT.
+2. **El nombre no es un activo defendible por sí solo.** Cualquier estrategia de posicionamiento que dependa de "Akai" como identificador único arranca comprometida.
+3. **El 2x1 mar/jue tampoco es propio.** Es una mecánica compartida en la categoría, no un diferenciador.
+4. ⚠️ SIN DATOS — situación registral de la marca (¿quién tiene el registro en el RPI de Guatemala?).
 
 ### A.2 — Benchmark de rendimiento del feed (muestra de 5 reels, 2025-2026)
 > Muestra pequeña — 🟡 señal a confirmar, no patrón. Baseline completo pendiente.
@@ -118,38 +134,67 @@ sugiere que hay días valle — pero es 🟡 señal, no dato.
 |---|---|---|
 | 1 · Quién compra | `B2C` | 🟢 |
 | 2 · Qué se vende | `producto físico` + `experiencia` (salón) | 🟢 |
-| 3 · Ticket y ciclo | `impulso` (ticket bajo-medio, decisión en minutos) | 🟡 — falta ticket promedio real |
-| 4 · Frecuencia | `alta recurrencia` (la promo semanal fija 2x1 mar/jue implica ritual semanal buscado) | 🟡 |
+| 3 · Ticket y ciclo | **`impulso`** — Q100 por persona, decisión en minutos | 🟢 cliente |
+| 4 · Frecuencia | **`alta recurrencia`** — el cohorte más fiel visita **10 veces/mes** | 🟢 cohorte top · ⚠️ promedio general SIN DATOS |
 | 5 · Geografía | `local físico` — 2 radios: zona 16 y corredor Fraijanes | 🟢 |
-| 6 · Dónde vive la confianza | `prueba social` (reviews, UGC, agregadores) | 🟡 — Google/Maps sin verificar |
-| 7 · Motor de demanda | `captura` dominante (search + mapas + agregadores + recomendación) con capa de `creación` en feed | 🟡 |
+| 6 · Dónde vive la confianza | `prueba social` — **contaminada** por la franquicia ajena de Antigua (A.1.b) | 🟡 |
+| 7 · Motor de demanda | `captura` dominante (default del arquetipo) | 🟡 — no cerrable sin el mix de ingreso |
 | 8 · Límite de escala | `capacidad` (mesas × turnos × cocina) | 🟢 |
 
-**Arquetipo dominante (hipótesis):** `01 — Local Alta Frecuencia`
-**Modificador (hipótesis):** `09 — Hospitalidad / Experiencia` — el "viernes familiar" y el
-"alrededor de la mesa" apuntan a ocasión, no solo a comida.
-**Por qué:** local físico + ticket de impulso + recurrencia alta + límite por capacidad → regla 4 del
-mapeo de arquetipos.
+**Arquetipo dominante:** `01 — Local Alta Frecuencia` ✅ **CERRADO**
+**Modificador:** *ninguno*
+**Ficha leída:** `archetypes/01-local-alta-frecuencia.md` ✅
 
-🟡 **HIPÓTESIS, NO CLASIFICACIÓN CERRADA.**
+**Por qué se cierra en 01 y se descarta el modificador 09 Hospitalidad:**
+La hipótesis inicial proponía `09 Hospitalidad / Experiencia` como modificador, apoyada en el
+lenguaje de la marca ("viernes familiar", "todos felices alrededor de la mesa"). **La evidencia lo
+descarta.** Un ticket de Q100 con un cohorte que visita 10 veces al mes describe un **hábito**, no
+una ocasión especial. Hospitalidad vive de la ocasión: ticket alto, frecuencia baja, decisión
+anticipada. Akai es lo contrario.
 
-**Qué falta exactamente para cerrarla** (decisión del cliente: cerrar arquetipo antes de Capa 1):
+### E.1 — Tensión registrada: lo que la marca dice vs. lo que sus mejores clientes hacen
 
-| Dato | Qué eje resuelve | Por qué cambia la estrategia |
+| | La marca comunica | El cohorte fiel se comporta |
 |---|---|---|
-| **Ticket promedio real en salón** (Q) | Eje 3 — ticket y ciclo | Si el ticket es alto, no es `impulso`: el arquetipo se corre hacia `09 Hospitalidad` y el canal rey deja de ser Google Maps |
-| **Frecuencia de visita del cliente recurrente** (veces/mes) | Eje 4 — frecuencia | Si es <1/mes, no es `alta recurrencia`: el WIN deja de ser "más visitas por cliente" y pasa a ser "más clientes nuevos" |
-| **Mix de ingreso salón / delivery propio / agregadores** (%) | Ejes 5 y 7 — geografía y motor de demanda | Si los agregadores mandan, el motor es `captura` pura vía marketplace y el radio se define por cobertura de reparto, no por ubicación |
+| Ocasión | "viernes familiar", salida especial | visita **10 veces/mes** — ~2-3 por semana |
+| Implicancia de frecuencia | mensual o quincenal | casi diaria-semanal |
+| Arquetipo implícito | 09 Hospitalidad | **01 Local Alta Frecuencia** |
 
-Ficha del arquetipo leída: `archetypes/01-local-alta-frecuencia.md` ✅
+🛑 **Se registra, no se resuelve.** La lectura de esta tensión es Capa 2; la decisión, Capa 3-4.
+
+### E.2 — Qué queda fijado por el arquetipo 01 (de la ficha, para las capas siguientes)
+| Dimensión | Lo que manda en 01 |
+|---|---|
+| **Cómo gana** | Densidad de radio × frecuencia. **No por alcance.** |
+| **Motor** | 70% captura (Google Business Profile, reviews, delivery apps, búsqueda local) · 30% creación (feed) |
+| **Confianza** | Prueba social + evidencia sensorial. La destruyen: reseñas sin responder, fotos de stock, local vacío |
+| **Mix de funciones** | Proof 35% · Utility 20% · Community 20% · Hero 15% · Conversion 10% |
+| **Métricas que importan** | Clientes nuevos/mes · visitas por cliente/mes · ticket promedio · reseñas nuevas y rating · búsquedas de marca · ocupación por franja |
+| **Métricas que mienten** | Seguidores totales · alcance nacional · views sin conversión a visita |
+| **Trampas del arquetipo** | Vender alcance en vez de radio · ignorar Google · publicar solo promos · no medir capacidad · fotos de stock |
+
+> **Nota de correlación con los problemas declarados (A.3):** los tres problemas que reporta el
+> cliente coinciden con tres de las cinco trampas nombradas en la ficha del arquetipo. Se registra
+> la coincidencia; la verificación es Capa 1.
 
 ---
 
 ## Huecos abiertos
-- 🔴 **BLOQUEANTE** — WIN sin definir (Sección B). Sin esto no hay Capa 2.
-- 🔴 **BLOQUEANTE** — economía unitaria completa (Sección C). Sin capacidad no se sabe qué problema resolver.
-- ⚠️ SIN DATOS — mix de ingreso salón vs delivery vs agregadores.
-- ⚠️ SIN DATOS — demografía real de audiencia → sacar de Meta Business Suite.
-- ⚠️ SIN DATOS — rating y volumen de reseñas en Google Maps por sucursal.
-- ⚠️ SIN DATOS — relación con **Akai Sushi & Oriental (Antigua, @akaioriental)**: ¿misma empresa, franquicia o marca ajena? Cambia el terreno competitivo de la Capa 1.
-- ⚠️ SIN DATOS — acceso a Meta Business Suite y Google Business Profile para la Capa 8 (baseline).
+
+### 🔴 Bloqueantes del Gate 1
+- **WIN sin definir** (Sección B). Sin esto no hay Capa 2 ni Capa 3.
+- **Economía unitaria incompleta** (Sección C). Falta margen bruto, capacidad por sucursal y punto de equilibrio. Sin capacidad no se sabe si el problema es *generar demanda* o *filtrar y monetizar mejor la que ya hay* — y con "no llenan entre semana" declarado, ese dato define el ciclo entero.
+
+### 🟡 Degradan la calidad, no bloquean Capa 1
+- Mix de ingreso salón / delivery propio / agregadores — declarado **indefinido** por el cliente. Deja el Eje 7 en 🟡.
+- Frecuencia **promedio** de visita (tenemos solo el cohorte top: 10/mes).
+- Demografía real de audiencia → Meta Business Suite.
+- Rating y volumen de reseñas en Google Maps por sucursal → define el problema #3 declarado.
+- Rentabilidad real del 2x1 de martes y jueves.
+- Situación registral de la marca "Akai" en Guatemala (por la franquicia ajena de Antigua).
+
+### ✅ Resuelto en esta iteración
+- ~~Ticket promedio~~ → Q100 en salón.
+- ~~Frecuencia de visita~~ → 10/mes en el cohorte más fiel.
+- ~~Relación con Akai Sushi & Oriental (Antigua)~~ → **franquicia ajena, sin relación**. Registrado en A.1.b.
+- ~~Arquetipo~~ → `01 Local Alta Frecuencia`, sin modificador. **CERRADO.**
