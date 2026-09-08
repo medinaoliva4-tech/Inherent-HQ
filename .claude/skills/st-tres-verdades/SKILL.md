@@ -45,10 +45,7 @@ experiencias de producto · comunidad · activaciones · medios estratégicos ·
 Filtro: **¿puede mover desproporcionadamente alguna MUST BE TRUE?**
 
 🛑 **Son candidatos, no decisiones.** Sin presupuesto, sin timeline, sin "elegimos este".
-Elegir es de la Capa 5.
-
-## Cierre
-Correr el bloque **Capa 2** de `qa/QA-GATES.md`.
+Elegir y bajar a pasos es de la Capa 4.
 
 ## Handoff
-→ `st-posicionamiento` (Capas 3-4: objetivo, renuncias, territorio)
+→ `st-posicionamiento` (Capas 3-4: objetivo, ingeniería inversa financiera, renuncias, estrategia)

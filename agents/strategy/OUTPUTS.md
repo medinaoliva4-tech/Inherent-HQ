@@ -9,10 +9,10 @@ agente no lo produce.**
 
 | Tipo | Cantidad | Dónde vive |
 |---|---|---|
-| **A · Entregables de archivo** | 7 | `clients/<cliente>/` |
-| **B · Outputs de sesión** | 6 | En la conversación (Buzz) |
-| **C · Outputs externos** | 3 | Notion · Drive · Eden — solo con gate |
-| **Sub-outputs nombrados** | 60 | Dentro de los 7 entregables |
+| **A · Entregables de archivo** | 3 | `clients/<cliente>/` |
+| **B · Instrumentos de recolección** | 3 | `templates/` — se copian por cliente |
+| **C · Outputs de sesión** | 4 | En la conversación (Buzz) |
+| **D · Outputs externos** | 3 | Notion · Drive · Eden — solo con gate |
 
 ---
 
@@ -20,13 +20,10 @@ agente no lo produce.**
 
 | # | Archivo | Capa | Skill | Gate | Lo consume |
 |---|---|---|---|---|---|
-| 1 | `nucleo.md` | 0 | `st-foundation` + `st-arquetipo` | 🚦 GATE 1 | Capas 1-8 · todo el sistema |
-| 2 | `ingenieria-inversa.md` | 1 | `st-ingenieria-inversa` | — | Capas 2, 4, 6 |
-| 3 | `posicionamiento.md` | 2-4 | `st-tres-verdades` + `st-posicionamiento` | 🚦 GATE 2 | Capas 5-8 · Creative · Growth |
-| 4 | `estrategia-de-contenido.md` | 5-6 | `st-sistema-contenido` | — | Capa 7 · Creative |
-| 5 | `contenido-por-canal.md` | 6 | `st-sistema-contenido` | — | Capa 7 · Social Media |
-| 6 | `calendario-estrategico.csv` | 7 | `st-calendario-macro` | 🚦 GATE 3 | Creative · Growth · Content |
-| 7 | `medicion.md` | 8 | `st-medicion` | — | Analytics → vuelve a Capa 2 |
+| 1 | `nucleo.md` | 0 | `st-foundation` + `st-arquetipo` | 🚦 GATE | Todo el sistema |
+| 2 | `ingenieria-inversa.md` | 1 | `st-ingenieria-inversa` | — | Capas 3-4 |
+| 3 | `posicionamiento.md` | 2-4 | `st-tres-verdades` + `st-posicionamiento` | 🚦 GATE | Contenido/Calendar · Creative · Growth |
+| 4 | `estrategia-de-contenido.md` | 4 | `st-posicionamiento` | — | Creative |
 
 ---
 
@@ -34,14 +31,14 @@ agente no lo produce.**
 
 | Sub-output | Qué es |
 |---|---|
-| **A · Retrato de la empresa** | Qué hace, visión, propósito, oferta, precio, tono, visuales, audiencia actual, diferenciación percibida |
-| **B · WIN operacionalizado** | Qué significa ganar, específico y verificable + `¿#1 en qué?` |
-| **C · Economía unitaria** | Ticket, margen bruto, capacidad de entrega, punto de equilibrio — restricción de viabilidad, no money model |
-| **D · Restricciones reales** | Presupuesto, equipo, capacidad de producción, velocidad de aprobación, legales |
-| **E · Clasificación** | 8 ejes respondidos + arquetipo dominante + modificador + justificación |
-| **Huecos abiertos** | Lista de `⚠️ SIN DATOS` con qué falta y cómo conseguirlo |
+| **A · Retrato de la empresa** | Qué hace, visión, propósito, oferta, precio, tono, visuales, audiencia actual — sale del `formulario-cliente.md` |
+| **B · WIN** | Qué significa ganar, específico y verificable |
+| **C · Economía unitaria** | Ticket, margen bruto, capacidad de entrega, punto de equilibrio — sale de `unit-economics.csv` |
+| **D · Restricciones reales** | Presupuesto, equipo, capacidad de producción, aprobación, legales |
+| **E · Clasificación** | 8 ejes + arquetipo dominante + modificador |
+| **Huecos abiertos** | `⚠️ SIN DATOS` con qué falta y cómo conseguirlo |
 
-**Restricción:** describe, no decide. Toda diferenciación declarada por el cliente sale como
+**Restricción:** describe, no decide. La diferenciación declarada por el cliente sale como
 `[percepción del cliente, no verificado]`.
 
 ---
@@ -50,162 +47,91 @@ agente no lo produce.**
 
 | Sub-output | Qué es |
 |---|---|
-| **1.1 Reglas de la categoría** | Cómo se compra y se descubre, qué genera y destruye confianza, códigos vigentes y agotados, el default de categoría |
-| **1.2 Lista de CEPs** | 8-15 momentos de entrada en lenguaje del comprador, con quién los ocupa hoy |
-| **1.2b CEPs priorizados** | 3-5 elegidos, con criterio |
-| **1.2c Motor de demanda** | `captura` vs `creación` + mezcla estimada + justificación |
-| **1.2d Ciclo de compra** | Tiempo del disparo a la compra → **lag mínimo de medición del lagging** |
-| **1.2e Estacionalidad** | Ocasiones datadas de la categoría |
-| **1.3a Universo — 5 anillos** | Directos, categoría, sustitutos, referentes fuera, creadores. Con marca de **verificado por MCP** |
-| **1.3b Tabla de descomposición** | 15+ piezas × 7 capas (gancho, promesa, mecanismo, prueba, formato, distribución, oferta) |
-| **1.3c Patrones por capa** | Uno por capa, con conteo de fuentes y marca 🟢/🟡/⚪ |
-| **1.4 Señales culturales** | 3-5, separando tendencia real de ruido |
-| **1.3d Share of voice / market** | SOV por jugador vs su SOM + la brecha propia |
-| **1.5 Audiencia real** | Datos disponibles + **lenguaje literal del comprador** (citas textuales) |
-| **1.5b Estados de consciencia** | Distribución del mercado en unaware → most aware, con evidencia |
-| **Mapa de saturación** | Qué hace todo el mundo, por capa, con nivel de saturación |
-| **Mapa 2x2** | Ejes justificados para esta categoría + competidores + marca hoy + **white space dibujado** |
-| **Mapa de objeciones** | Objeción literal · frecuencia · quién la resuelve · cómo |
-| **Tabla de hipótesis** | Patrón → hipótesis propia → qué UNFAIR apalancaría → filtro D/N/R |
-| **Bloque de fuentes** | MCPs usados, MCPs no disponibles, fecha, confianza 🟢/🟡/🔴, fecha de re-corrida |
+| **1.1 Cómo se compra/descubre** | Observación directa de los canales donde está el cliente |
+| **1.2 Demanda por crear** | CEPs + volumen disponible (AdWhispr/Eden) — registrado en `demanda.csv`. El volumen es lo que valida la ingeniería inversa financiera de la Capa 3 |
+| **1.3 Audience behavior** | Análisis de seguidores de un competidor: qué consumen, con qué interactúan, funnel real |
+| **1.4 Awareness stages** | Distribución estimada del mercado frente al problema |
 
-**Restricción:** 🛑 no recomienda. Termina en patrón observado.
+**Restricción:** 🛑 no recomienda. Termina en observación.
 
 ---
 
 ## 3 · `posicionamiento.md` — Capas 2-4
 
-### Sección 1 — Diagnóstico (Capa 2)
+### Sección 1 — Análisis (Capa 2)
 | Sub-output | Qué es |
 |---|---|
-| **MUST BE TRUE** | Condiciones para ganar + **dónde está la marca HOY** en cada una + fuente |
-| **UNFAIR** | Ventajas reales con doble filtro (difícil de replicar Y relevante) + a qué MBT sirve + verificación |
-| **UNFAIR descartadas** | Ventajas reales que no sirven al objetivo, y por qué |
-| **GO GET** | Candidatos de movimiento + qué UNFAIR apalancan + qué MBT podrían mover |
+| **MUST BE TRUE** | Condiciones para ser #1 |
+| **UNFAIR** | Ventajas reales, difícil de replicar + relevantes |
+| **GO GET** | Candidatos a provocar |
 
-### Sección 2 — Decisión (Capa 3)
+### Sección 2 — Objetivo (Capa 3)
 | Sub-output | Qué es |
 |---|---|
-| **Objetivo del ciclo** | Cuál MBT se mueve (1-2) + horizonte + métrica |
-| **Comportamiento** | Persona concreta + `estado actual → estado deseado` |
-| **Problema** | Un obstáculo nombrado, con evidencia |
-| **Renuncias** | Audiencias, canales, mensajes y oportunidades que quedan **afuera**, y por qué |
-| **Recursos** | Presupuesto, horas, capacidad + veredicto de si el alcance cabe |
-| **Riesgos e invalidación** | Riesgo · señal temprana · qué haríamos |
+| **Objetivo agresivo del ciclo** | 1-2 MUST BE TRUE elegidas |
+| **Ingeniería inversa financiera** | Meta → ticket → clientes necesarios → conversión → volumen necesario |
+| **Renuncias** | Qué queda afuera este ciclo, y por qué |
 
-### Secciones 3-5 — Territorio (Capa 4)
+### Sección 3 — Estrategia (Capa 4)
 | Sub-output | Qué es |
 |---|---|
-| **Categoría** | `existente` / `redefinida` / `nueva` |
-| **Enemigo** | Competidor, statu quo, creencia, hábito o "no hacer nada" |
-| **Mecanismo único** | Por qué lo nuestro funciona — verificado contra el mapa de saturación |
-| **Territorio** | Qué **es** y qué **no es** + verificación de los 3 criterios |
-| **CEPs a poseer** | 3-5, con quién los ocupa hoy y por qué podemos ganarlos |
-| **Promesa** | Una frase, en lenguaje del comprador |
-| **RTBs** | Pruebas, no adjetivos |
-| **Objeciones + respuesta** | Las 3-5 principales, del mapa de objeciones |
-| **Filtro D/N/R** | Distinctiveness · Novelty · Relevance, las tres explícitas |
-| **Prueba del logo** | ¿Con el logo de un competidor alguien nota la diferencia? |
-| **Activos distintivos** | Color, tipografía, personaje, formato, frase, apertura, sonido, ritmo + estado |
+| **Pasos puntuales** | La ingeniería inversa de cómo se logra el objetivo, con fechas |
+| **Promesa / Posicionamiento / ICP** | Soporte de la estrategia, no el outcome principal |
+| **Historia** | Héroe (ICP) · Villano (contra qué está la promesa) · Solución (nosotros) |
 
-**Restricción:** 🚦 GATE 2 — el gate más importante. Todo lo que sigue depende de esto.
+**Restricción:** 🚦 GATE — el más importante. Todo lo que sigue depende de esto.
 
 ---
 
-## 4 · `estrategia-de-contenido.md` — Capas 5-6
+## 4 · `estrategia-de-contenido.md` — Capa 4
 
 | Sub-output | Qué es |
 |---|---|
-| **Movimiento elegido** | 1-2, con qué UNFAIR apalanca y qué MBT mueve |
-| **Movimientos descartados** | Cuáles y por qué |
-| **Trabajo estratégico** | `La comunicación tiene que ___ para que ___` |
-| **Mecanismo** | Prueba / asociación / experiencia / historia / utilidad / identidad / espectáculo + por qué |
-| **Idea de campaña** | La idea + cómo vive en el tiempo + filtro D/N/R |
-| **Funciones + pesos** | Hero / Series / Proof / Utility / Conversion / Community, con % |
-| **Pilares + mix** | Mix base del arquetipo + ajuste + de qué función cuelga cada uno |
-| **Temperatura + awareness** | Dos ejes: temperatura decide la función, awareness decide el ángulo |
-| **Jerarquía de mensaje** | Qué se dice siempre (marca) / por campaña / por pieza |
-| **Especificación de piezas** | Tipo · función · temperatura · canal · frecuencia · **traza a MBT** |
+| **Promesa, posicionamiento e ICP** | Desarrollados en detalle para handoff a Creative |
+| **Historia completa** | Héroe / villano / solución, con el razonamiento detrás de cada rol |
 
-**Restricción:** especifica **tipos** de pieza. No escribe ideas, copies ni guiones.
+**Restricción:** no escribe ideas, copies ni guiones — eso es de Creative, que interpreta la
+historia. No arma calendario ni distribución — eso es de Contenido/Calendar.
 
 ---
 
-## 5 · `contenido-por-canal.md` — Capa 6.4
+# B · Instrumentos de recolección
 
-| Sub-output | Qué es |
-|---|---|
-| **Tabla resumen** | Canal · función única · temperatura · métrica que lo juzga · prioridad |
-| **Ficha por canal** | Función única, temperatura, funciones de contenido, pilares, formatos, cadencia, métrica, **qué NO se hace ahí**, por qué este canal para este arquetipo |
-| **Canales descartados** | Cuáles y por qué quedan afuera este ciclo |
-| **Verificación** | Ningún canal duplica función · las 4 temperaturas cubiertas · la cadencia cabe en la capacidad real |
+Cada instrumento existe porque alimenta un cálculo o una decisión puntual más adelante — nunca
+"para tener el dato".
 
-**Restricción:** cada canal tiene **una función distinta**. Si dos hacen lo mismo, uno sobra.
-
----
-
-## 6 · `calendario-estrategico.csv` — Capa 7
-
-**12 columnas fijas:**
-```
-semana · fase_del_movimiento · canal · funcion · pilar · temperatura · formato ·
-frecuencia · balance · objetivo_del_slot · traza_a_must_be_true · estado
-```
-
-| Sub-output | Qué es |
-|---|---|
-| **Distribución** | Rol de owned / paid / earned / borrowed, apalancando las UNFAIR |
-| **Grilla de slots** | Un slot por fila, con las 12 columnas completas |
-| **Balance marca/activación** | 60/40 de partida, con justificación contra las 5 condiciones que lo rompen |
-| **Fases del movimiento** | Cómo se despliega en el tiempo + estacionalidad |
-
-**Restricción:** 🚦 GATE 3. No baja a ideas día por día ni copies — eso lo convierte Creative.
-**Todo slot sin `traza_a_must_be_true` se elimina.**
+| # | Instrumento | Qué levanta | Capa | Se usa en |
+|---|---|---|---|---|
+| 1 | `templates/formulario-cliente.md` | Visión, propósito, tono, audiencia actual, restricciones | 0 | Retrato de `nucleo.md` |
+| 2 | `templates/unit-economics.csv` | Costeo del menú/producto/servicio → ticket, margen, capacidad | 0 | Ingeniería inversa financiera (Capa 3.2) |
+| 3 | `templates/demanda.csv` | CEPs + volumen, audience behavior, awareness stage | 1 | Volumen valida Capa 3.2 · audience behavior escribe la promesa y la historia (Capa 4) |
 
 ---
 
-## 7 · `medicion.md` — Capa 8
-
-| Sub-output | Qué es |
-|---|---|
-| **KPIs por altura** | Negocio · comportamiento · marca · contenido, con baseline, meta, fuente y frecuencia |
-| **Métricas ignoradas** | Las que mienten en este arquetipo, listadas explícitamente |
-| **Leading vs lagging** | Separados, con frecuencia de lectura y el lag mínimo = ciclo de compra |
-| **Cadencia de revisión** | Semana / mes / trimestre / 6 meses, con qué se puede cambiar en cada una |
-| **Baseline** | Punto de partida registrado, o `⚠️ SIN BASELINE` |
-| **Condiciones de invalidación** | Señal · qué significaría · qué haríamos |
-| **Compounding** | Las 10 dimensiones evaluadas + veredicto 🟢/🔴 |
-| **Aprendizaje → verdades** | Qué aprendimos · qué VERDAD actualiza · nueva redacción |
-| **UNFAIR nueva** | ¿El movimiento creó una ventaja que antes no existía? |
-
----
-
-# B · Outputs de sesión
+# C · Outputs de sesión
 No son archivos. El agente los emite en la conversación de Buzz.
 
-| # | Output | Cuándo | Forma |
-|---|---|---|---|
-| 1 | **Pre-flight** | Siempre, antes de producir | `PRE-FLIGHT — Cliente · Arquetipo · Capa · Skills · MCPs · Gate → PASS \| BLOQUEADO` |
-| 2 | **Bloqueo** | Falta un input o una capa previa | Qué falta exactamente + cómo desbloquearlo |
-| 3 | **Clasificación de arquetipo** | Cierre de Capa 0 | Dominante + modificador + por qué |
-| 4 | **Solicitud de gate** | Capas 0, 4 y 7 | Qué se aprueba + qué desbloquea + qué pasa si se cambia |
-| 5 | **Reporte de QA** | Antes de cada entrega | Checklist de la capa con ítems fallados marcados |
-| 6 | **Bloque de HANDOFF** | Al cerrar el ciclo | Entregables, gates, movimiento, renuncias, huecos, confianza, siguiente depto |
+| # | Output | Cuándo |
+|---|---|---|
+| 1 | **Pre-flight** | Siempre, antes de producir |
+| 2 | **Bloqueo** | Falta un input o una capa previa |
+| 3 | **Clasificación de arquetipo** | Cierre de Capa 0 |
+| 4 | **Bloque de HANDOFF** | Al cerrar el ciclo |
 
 ---
 
-# C · Outputs externos
+# D · Outputs externos
 **Solo con gate.** El repositorio es siempre la fuente de verdad; esto son copias.
 
 | Destino | Qué se publica | Permiso |
 |---|---|---|
-| **Notion** | Entregable como página, para que el equipo lo consulte | `ask` — confirma antes |
+| **Notion** | Entregable como página | `ask` |
 | **Google Drive** | Entregable aprobado, visible para el cliente | `ask` — solo post-gate |
-| **Eden board** | Evidencia cruda de la Capa 1 (piezas, ads, posts) | `ask` — confirma antes |
+| **Eden board** | Evidencia cruda de la Capa 1 | `ask` |
 
 ---
 
-# D · Qué NO produce
+# E · Qué NO produce
 
 | No produce | De quién es |
 |---|---|
@@ -216,32 +142,20 @@ No son archivos. El agente los emite en la conversación de Buzz.
 | Publicaciones, programación, pauta | **Social Media / Media Buy** |
 | Dashboards y reportes de performance | **Analytics** |
 
-Strategy entrega **hasta plataforma estratégica + calendario macro**, y hace handoff.
-
 ---
 
-# Trazabilidad completa
-
-Cada output se encadena. Nada existe suelto:
+# Trazabilidad
 
 ```
-nucleo.md            WIN + arquetipo + restricciones
+nucleo.md            WIN + arquetipo + ticket/margen (unit economics)
+      ↓                    ticket → Capa 3.2
+ingenieria-inversa    canales + demanda/volumen + audience behavior + awareness
+      ↓                    volumen → valida Capa 3.2 · audience behavior → promesa/historia
+posicionamiento       MBT → UNFAIR → GO GET → objetivo → ing. inversa financiera → renuncias
+                       → pasos → promesa/posicionamiento/ICP → historia
       ↓
-ingenieria-inversa   patrones + CEPs + white space + objeciones
-      ↓
-posicionamiento      MBT → UNFAIR → GO GET → objetivo → renuncias → territorio
-      ↓
-estrategia-contenido movimiento → mecanismo → campaña → funciones → piezas
-      ↓
-contenido-por-canal  rol único por canal
-      ↓
-calendario           slots con traza a MBT
-      ↓
-medicion             KPIs → aprendizaje → COMPOUND
+estrategia-contenido  detalle de promesa/ICP/historia para Creative
       ↺
-      vuelve a posicionamiento (Capa 2) para el ciclo siguiente
+      al cerrar el ciclo, vuelve a posicionamiento (Capa 2) para el siguiente
+      → handoff a Contenido/Calendar (arma distribución y cadencia), Growth y Creative
 ```
-
-**Estándar:** toda pieza especificada tiene que poder recorrer el camino inverso
-`Pieza → Canal → Sistema → Campaña → Mecanismo → Trabajo estratégico → Objetivo → MUST BE TRUE`.
-Si no puede, se elimina.

@@ -4,51 +4,48 @@
 
 ---
 
-# SECCIÓN 1 — DIAGNÓSTICO (Capa 2 · Las 3 Verdades)
+# SECCIÓN 1 — ANÁLISIS (Capa 2 · Las 3 Verdades)
 
-## TRUTH 01 — WHAT MUST BE TRUE?
-> ¿Qué tendría que ser cierto para que esta empresa gane?
+## ¿Qué tiene que ser verdad para ser #1? (MUST BE TRUE)
 
-**WIN operacionalizado:** [de `nucleo.md`, con métrica]
-
-| # | Condición (MUST BE TRUE) | ¿Dónde está la marca HOY? | Fuente |
+| # | Condición | ¿Dónde está la marca HOY? | Fuente |
 |---|---|---|---|
 | A | | | |
 | B | | | |
 | C | | | |
 
-## TRUTH 02 — WHAT IS UNFAIR?
-> ¿Qué ya tenemos que hace que la comparación deje de ser equivalente?
-> **Filtro doble: difícil de replicar Y relevante a una MUST BE TRUE.**
+## ¿Qué ya tenemos que nadie puede copiar o imitar? (UNFAIR)
+> Filtro doble: difícil de replicar Y relevante a una MUST BE TRUE.
 
-| Categoría | Ventaja | Fuente | ¿A qué MUST BE TRUE sirve? | Verificado / Percepción |
-|---|---|---|---|---|
+| Ventaja | Fuente | ¿A qué MUST BE TRUE sirve? | Verificado / Percepción |
+|---|---|---|---|
 
-**Descartadas** (ventajas reales que no sirven al objetivo): [cuáles y por qué]
+## ¿Qué podemos ir a buscar o provocar? (GO GET)
+> Candidatos, no decisiones.
 
-## TRUTH 03 — WHAT CAN WE GO GET?
-> ¿Qué podemos provocar deliberadamente? — **candidatos, no decisiones**
-
-| Candidato | ¿Qué UNFAIR apalanca? | ¿Qué MUST BE TRUE podría mover desproporcionadamente? |
+| Candidato | ¿Qué UNFAIR apalanca? | ¿Qué MUST BE TRUE podría mover? |
 |---|---|---|
 
 ---
 
-# SECCIÓN 2 — DECISIÓN (Capa 3)
+# SECCIÓN 2 — OBJETIVO (Capa 3)
 
-## Objetivo — ¿qué debe cambiar?
+## Objetivo agresivo del ciclo
 **MUST BE TRUE que movemos este ciclo:** [A, B — máximo dos]
-**Horizonte:** [período] · **Se mide con:** [métrica]
+**Horizonte:** [período]
 
-## Comportamiento — ¿qué conducta cambia?
-**Quién:** [persona concreta, no "el público"]
-| Estado actual | Estado deseado |
+## Ingeniería inversa financiera
+> Solo si el objetivo tiene una meta de facturación/volumen. Se baja a números concretos antes de
+> pasar a la estrategia.
+
+| | Valor |
 |---|---|
-
-## Problema — ¿qué lo está impidiendo?
-**Obstáculo principal:** [awareness · confianza · percepción · salience · precio · disponibilidad ·
-relevancia · fricción · memoria · distribución]
-**Evidencia:**
+| **Meta de facturación / volumen** | |
+| **Ticket promedio** (de `nucleo.md`) | |
+| **Clientes necesarios** (meta ÷ ticket) | |
+| **Tasa de conversión estimada** | |
+| **Volumen de personas/alcance necesario** (clientes necesarios ÷ conversión) | |
+| **¿Ese volumen existe en el CEP elegido?** (de `ingenieria-inversa.md` 1.2) | sí / no |
 
 ## Renuncias — ¿qué NO vamos a hacer?
 > Sin renuncias no hay estrategia, hay lista de deseos.
@@ -58,88 +55,35 @@ relevancia · fricción · memoria · distribución]
 | Audiencias | |
 | Canales | |
 | Mensajes | |
-| Oportunidades | |
-
-## Recursos reales
-| | |
-|---|---|
-| Presupuesto asignado | |
-| Horas de equipo | |
-| Capacidad de producción | |
-| **¿El alcance cabe acá?** | ✅ / ⚠️ hay que ajustar [qué] |
-
-## Riesgos y condiciones de invalidación
-> ¿Qué tendría que pasar para saber que esta estrategia estaba equivocada?
-
-| Riesgo | Señal temprana | Qué haríamos |
-|---|---|---|
 
 ---
 
-# SECCIÓN 3 — TERRITORIO (Capa 4)
+# SECCIÓN 3 — ESTRATEGIA (Capa 4)
 
-## Declaración de posicionamiento
+## Ingeniería inversa de pasos
+> El outcome principal. Cómo se llega al objetivo, con datos y fechas puntuales — no un plan
+> genérico.
 
-| # | Decisión | |
-|---|---|---|
-| **a** | **Categoría** | `existente` / `redefinida` / `nueva` → [cuál y por qué] |
-| **b** | **Enemigo** | [competidor · statu quo · creencia instalada · hábito · "no hacer nada"] |
-| **c** | **Mecanismo único** | [por qué lo nuestro funciona — el *cómo*, no el *qué*] |
+| # | Paso | Dato puntual | Fecha |
+|---|---|---|---|
 
-**Verificación del enemigo:** ¿sale del mapa de objeciones o del mapa de saturación? [cuál]
-**Verificación del mecanismo:** ¿aparece en el mapa de saturación? → si sí, **no es único**
+## Promesa · Posicionamiento · ICP
+*(Soporte de la estrategia, no el outcome principal)*
 
-## Territorio elegido
-**Es:** [el espacio que ocupamos]
-**No es:** [lo que explícitamente no somos]
+**Promesa** (una frase, en el lenguaje del comprador — sale de 1.3 audience behavior):
+>
 
-| Criterio | Cumple |
+**Cómo nos vamos a posicionar:**
+
+**Cómo nos tiene posicionado el mercado hoy** (de `ingenieria-inversa.md`):
+
+**ICP — cliente ideal:** [quién es, sale de Capa 0 + Capa 1]
+
+## La historia — héroe, villano, solución
+> Strategy define esto. Cómo se cuenta en piezas concretas es de Creative.
+
+| Rol | Quién/qué es |
 |---|---|
-| Relevante para el comprador | ✅/⬜ + evidencia |
-| Defendible con una UNFAIR real | ✅/⬜ + cuál |
-| No ocupado según el mapa 2x2 | ✅/⬜ |
-
-## CEPs a poseer (3-5)
-| CEP | ¿Quién lo ocupa hoy? | Por qué podemos ganarlo |
-|---|---|---|
-
-## Promesa · RTB · Objeciones
-**Promesa** (una frase, lenguaje del comprador):
-> 
-
-**Reasons to believe** — pruebas, no adjetivos:
-1. 
-2. 
-3. 
-
-**Objeciones y respuesta:**
-| Objeción (literal) | Qué la responde |
-|---|---|
-
----
-
-# SECCIÓN 4 — DISTINTIVIDAD
-
-| Filtro | Respuesta | ¿Pasa? |
-|---|---|---|
-| **Distinctiveness** — ¿puede sentirse inequívocamente como nosotros? | | ✅/❌ |
-| **Novelty** — ¿hay algo que la gente no vea todos los días? | | ✅/❌ |
-| **Relevance** — ¿esa novedad importa para la audiencia y el objetivo? | | ✅/❌ |
-
-**Prueba del logo:** si le ponemos el logo de un competidor, ¿alguien nota la diferencia?
-→ [sí / **no → volver a Capa 2**]
-
----
-
-# SECCIÓN 5 — ACTIVOS DISTINTIVOS
-> Se refuerzan con consistencia, no se reinventan cada ciclo.
-
-| Activo | Qué es | Estado |
-|---|---|---|
-| Color | | existente / a construir |
-| Tipografía | | |
-| Personaje / cara | | |
-| Formato recurrente | | |
-| Frase / estructura de apertura | | |
-| Sonido / música | | |
-| Ritmo de edición / encuadre | | |
+| **Héroe** | [el ICP — nunca la marca] |
+| **Villano** | [contra qué está la promesa] |
+| **Solución / final feliz** | [nosotros — por qué tenemos el resultado] |

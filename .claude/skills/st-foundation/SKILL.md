@@ -41,9 +41,12 @@ Si el input es escaso: **documentá menos**. Nunca completes con inferencia sin 
 - **Si la capacidad de entrega ya está al tope**, declaralo: la estrategia no será generar más
   demanda sino filtrar mejor o subir precio. Sin ese dato el sistema se equivoca de problema.
 
+## Instrumentos
+- Enviar `templates/formulario-cliente.md` como Google Form → alimenta secciones A y D
+- Completar `templates/unit-economics.csv` con el cliente (costeo real) → alimenta sección C
+
 ## Cierre
-Correr el bloque **Capa 0** de `qa/QA-GATES.md`.
-🚦 **GATE 1** — el núcleo lo aprueba un humano antes de pasar a Capa 1.
+🚦 **GATE** — el núcleo lo aprueba un humano antes de pasar a Capa 1.
 
 ## Handoff
 → `st-arquetipo` (obligatorio) → `st-ingenieria-inversa`
