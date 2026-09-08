@@ -1,0 +1,415 @@
+<title>Cómo Piensa Strategy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Caveat:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --paper:#faf8f4;
+    --paper-2:#f1efe9;
+    --ink:#171512;
+    --ink-2:#4a463f;
+    --ink-3:#8a8578;
+    --line:#171512;
+    --line-soft:#c9c4b6;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15130f;
+      --paper-2:#1d1a15;
+      --ink:#f3f0e8;
+      --ink-2:#c7c2b4;
+      --ink-3:#8a8578;
+      --line:#f3f0e8;
+      --line-soft:#3a362d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15130f;
+    --paper-2:#1d1a15;
+    --ink:#f3f0e8;
+    --ink-2:#c7c2b4;
+    --ink-3:#8a8578;
+    --line:#f3f0e8;
+    --line-soft:#3a362d;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    margin:0;
+    line-height:1.5;
+  }
+  .deck{max-width:920px;margin:0 auto;padding:0 28px;}
+
+  .hand{font-family:'Caveat',cursive;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  section{padding:88px 0;border-bottom:1px solid var(--line-soft);}
+  section:last-of-type{border-bottom:none;}
+
+  .tag{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-3);
+    margin-bottom:18px;
+  }
+  .tag .n{
+    width:26px;height:26px;border:1.5px solid var(--line);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);font-size:12px;
+  }
+
+  h1{
+    font-size:clamp(34px,6vw,58px);
+    font-weight:800;
+    line-height:1.05;
+    letter-spacing:-.01em;
+    text-wrap:balance;
+    margin:0 0 18px;
+  }
+  h2{
+    font-size:clamp(26px,4vw,38px);
+    font-weight:800;
+    line-height:1.1;
+    text-wrap:balance;
+    margin:0 0 14px;
+  }
+  p.lede{
+    font-size:19px;
+    color:var(--ink-2);
+    max-width:62ch;
+    margin:0 0 8px;
+  }
+  p{margin:0 0 14px;color:var(--ink-2);max-width:65ch;}
+  strong{color:var(--ink);font-weight:600;}
+
+  .cover{padding-top:64px;}
+  .cover .kicker{
+    font-family:'Caveat',cursive;
+    font-size:26px;
+    color:var(--ink-2);
+    margin-bottom:6px;
+  }
+  .cover .sub{margin-top:22px;font-size:17px;color:var(--ink-3);max-width:56ch;}
+
+  .figure{margin:36px 0 8px;}
+  .figure svg{width:100%;height:auto;display:block;overflow:visible;}
+  figcaption{
+    font-size:14px;color:var(--ink-3);margin-top:14px;max-width:60ch;
+  }
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px;}
+  @media (max-width:720px){.grid2{grid-template-columns:1fr;}}
+  .card{
+    border:1.5px solid var(--line);border-radius:2px;padding:20px 22px;
+  }
+  .card .k{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;display:block;
+  }
+  .card .v{font-size:16px;color:var(--ink);}
+
+  .arrowlabel{font-family:'Caveat',cursive;font-size:19px;fill:var(--ink);}
+  .boxtext{font-family:'Archivo',sans-serif;font-weight:600;font-size:13px;fill:var(--ink);}
+  .boxtext-sm{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:var(--ink-3);}
+
+  .closing{text-align:left;}
+  .closing h2{font-size:clamp(32px,5vw,46px);}
+  .northstar-word{font-family:'Caveat',cursive;font-weight:700;}
+
+  ul.plain{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-direction:column;gap:10px;}
+  ul.plain li{
+    display:flex;gap:12px;align-items:baseline;font-size:16px;color:var(--ink-2);
+  }
+  ul.plain li .dot{color:var(--ink);font-weight:800;}
+</style>
+
+<div class="deck">
+
+  <!-- COVER -->
+  <section class="cover">
+    <div class="kicker">Departamento de Estrategia — Inherent</div>
+    <h1>Cómo piensa Strategy,<br>de punta a punta</h1>
+    <p class="sub">Este documento no es la estrategia de un cliente — es el mapa de cómo se
+      construye una: qué se junta, para qué sirve cada dato, y qué se entrega al final.
+      Ningún dato se recolecta sin saber dónde se usa después.</p>
+
+    <div class="figure">
+      <svg viewBox="0 0 915 200" role="img" aria-label="El método completo en cinco capas: Contexto, Evidencia, Análisis, Objetivo y Estrategia, cada una alimentando a la siguiente.">
+        <!-- 5 boxes -->
+        <g class="mono">
+          <!-- box template repeated -->
+          <g>
+            <rect x="10" y="70" width="150" height="64" fill="none" stroke="currentColor" stroke-width="1.6" rx="1"/>
+            <text x="85" y="97" text-anchor="middle" class="boxtext">CONTEXTO</text>
+            <text x="85" y="115" text-anchor="middle" class="boxtext-sm">capa 0</text>
+          </g>
+          <g>
+            <rect x="195" y="70" width="150" height="64" fill="none" stroke="currentColor" stroke-width="1.6" rx="1"/>
+            <text x="270" y="97" text-anchor="middle" class="boxtext">EVIDENCIA</text>
+            <text x="270" y="115" text-anchor="middle" class="boxtext-sm">capa 1</text>
+          </g>
+          <g>
+            <rect x="380" y="70" width="150" height="64" fill="none" stroke="currentColor" stroke-width="1.6" rx="1"/>
+            <text x="455" y="97" text-anchor="middle" class="boxtext">ANÁLISIS</text>
+            <text x="455" y="115" text-anchor="middle" class="boxtext-sm">capa 2</text>
+          </g>
+          <g>
+            <rect x="565" y="70" width="150" height="64" fill="none" stroke="currentColor" stroke-width="1.6" rx="1"/>
+            <text x="640" y="97" text-anchor="middle" class="boxtext">OBJETIVO</text>
+            <text x="640" y="115" text-anchor="middle" class="boxtext-sm">capa 3</text>
+          </g>
+          <g>
+            <rect x="750" y="70" width="150" height="64" fill="none" stroke="currentColor" stroke-width="2.2" rx="1"/>
+            <text x="825" y="97" text-anchor="middle" class="boxtext">ESTRATEGIA</text>
+            <text x="825" y="115" text-anchor="middle" class="boxtext-sm">capa 4</text>
+          </g>
+        </g>
+        <!-- arrows -->
+        <g stroke="currentColor" stroke-width="1.4" fill="none">
+          <path d="M162 102 C172 98, 182 106, 193 102" marker-end="url(#arrowhead)"/>
+          <path d="M347 102 C357 98, 367 106, 378 102" marker-end="url(#arrowhead)"/>
+          <path d="M532 102 C542 98, 552 106, 563 102" marker-end="url(#arrowhead)"/>
+          <path d="M717 102 C727 98, 737 106, 748 102" marker-end="url(#arrowhead)"/>
+        </g>
+        <defs>
+          <marker id="arrowhead" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <polygon points="0 0, 8 3.5, 0 7" fill="currentColor"/>
+          </marker>
+        </defs>
+        <text x="457" y="175" text-anchor="middle" class="arrowlabel">cada capa reduce lo que decide la siguiente</text>
+      </svg>
+      <figcaption>Fig. 1 — El pipeline completo. Nada arranca sin el input de la capa anterior; el
+        calendario de contenido (Contenido/Calendar) empieza donde termina la Capa 4.</figcaption>
+    </div>
+  </section>
+
+  <!-- CAPA 0 -->
+  <section>
+    <span class="tag"><span class="n">0</span> Contexto</span>
+    <h2>Antes de mirar afuera, entender qué empresa intentamos hacer ganar</h2>
+    <p class="lede">Nada acá se adivina. Se levanta con instrumentos concretos, y cada instrumento
+      tiene un destino ya decidido.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <span class="k">Instrumento</span>
+        <span class="v">Google Form al cliente</span>
+        <p style="margin-top:10px;font-size:14.5px;">Visión, propósito, tono, audiencia actual,
+          restricciones reales.</p>
+      </div>
+      <div class="card">
+        <span class="k">Instrumento</span>
+        <span class="v">Excel de unit economics</span>
+        <p style="margin-top:10px;font-size:14.5px;">Se costea el producto/servicio real (el menú,
+          el curso, el plan) → ticket, margen, capacidad, punto de equilibrio.</p>
+      </div>
+    </div>
+
+    <div class="figure">
+      <svg viewBox="0 0 700 130" role="img" aria-label="El ticket promedio y el margen que salen del Excel de unit economics alimentan directamente el cálculo de la Capa 3.">
+        <rect x="20" y="30" width="240" height="60" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="140" y="55" text-anchor="middle" class="boxtext">UNIT ECONOMICS</text>
+        <text x="140" y="72" text-anchor="middle" class="boxtext-sm">ticket · margen · capacidad</text>
+        <path d="M262 60 C320 40, 380 80, 440 60" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arrowhead)"/>
+        <text x="350" y="38" text-anchor="middle" class="arrowlabel">alimenta a →</text>
+        <rect x="440" y="30" width="240" height="60" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <text x="560" y="55" text-anchor="middle" class="boxtext">CAPA 3 · OBJETIVO</text>
+        <text x="560" y="72" text-anchor="middle" class="boxtext-sm">ingeniería inversa financiera</text>
+      </svg>
+      <figcaption>Fig. 2 — Nada se junta "porque sí": el ticket promedio de hoy es el número que la
+        Capa 3 usa para saber cuánta gente hace falta alcanzar.</figcaption>
+    </div>
+
+    <p style="margin-top:26px;"><strong>Cierre de esta capa:</strong> clasificar el arquetipo — un
+      restaurante, una marca personal y un SaaS no comparten canales ni motor de demanda. →
+      <span class="mono">nucleo.md</span> · gate humano.</p>
+  </section>
+
+  <!-- CAPA 1 -->
+  <section>
+    <span class="tag"><span class="n">1</span> Evidencia</span>
+    <h2>Se observa lo que ya existe — nunca se interpreta todavía</h2>
+    <p class="lede">Liviana a propósito: lo mínimo para decidir con criterio en la Capa 2, no un
+      informe de mercado.</p>
+
+    <ul class="plain">
+      <li><span class="dot">·</span> <strong>1.1 Cómo se compra y se descubre</strong> — se entra a
+        los canales reales del cliente y se mira, con fecha.</li>
+      <li><span class="dot">·</span> <strong>1.2 Demanda por crear</strong> — los CEPs (momentos de
+        entrada) + el volumen real de cada uno.</li>
+      <li><span class="dot">·</span> <strong>1.3 Audience behavior</strong> — vía los seguidores de
+        un competidor: qué consumen, con qué interactúan de verdad.</li>
+      <li><span class="dot">·</span> <strong>1.4 Awareness stages</strong> — dónde está el mercado
+        frente al problema, no frente a la marca.</li>
+    </ul>
+
+    <div class="figure">
+      <svg viewBox="0 0 760 210" role="img" aria-label="El volumen de demanda por CEP se junta en la Capa 1 y se usa en la Capa 3 para validar si alcanza la meta; el audience behavior se usa en la Capa 4 para escribir la promesa y la historia.">
+        <rect x="20" y="20" width="220" height="56" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="130" y="43" text-anchor="middle" class="boxtext">VOLUMEN POR CEP</text>
+        <text x="130" y="59" text-anchor="middle" class="boxtext-sm">demanda.csv · 1.2</text>
+
+        <rect x="20" y="128" width="220" height="56" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="130" y="151" text-anchor="middle" class="boxtext">AUDIENCE BEHAVIOR</text>
+        <text x="130" y="167" text-anchor="middle" class="boxtext-sm">demanda.csv · 1.3</text>
+
+        <path d="M242 48 C 380 48, 380 48, 480 48" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arrowhead)"/>
+        <text x="360" y="34" text-anchor="middle" class="arrowlabel">¿alcanza la meta?</text>
+        <rect x="480" y="20" width="250" height="56" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <text x="605" y="43" text-anchor="middle" class="boxtext">CAPA 3 · VALIDACIÓN</text>
+        <text x="605" y="59" text-anchor="middle" class="boxtext-sm">volumen necesario vs disponible</text>
+
+        <path d="M242 156 C 380 156, 380 156, 480 156" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arrowhead)"/>
+        <text x="360" y="142" text-anchor="middle" class="arrowlabel">escribe la voz</text>
+        <rect x="480" y="128" width="250" height="56" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <text x="605" y="151" text-anchor="middle" class="boxtext">CAPA 4 · PROMESA + HISTORIA</text>
+        <text x="605" y="167" text-anchor="middle" class="boxtext-sm">lenguaje real del comprador</text>
+      </svg>
+      <figcaption>Fig. 3 — Los dos números que más se recolectan en esta capa, y exactamente a qué
+        decisión llegan.</figcaption>
+    </div>
+  </section>
+
+  <!-- CAPA 2 -->
+  <section>
+    <span class="tag"><span class="n">2</span> Análisis</span>
+    <h2>Las 3 Verdades — cómo puede ganar esta empresa</h2>
+    <p class="lede">Con el contexto y la evidencia ya juntos, se resume en tres preguntas. No tiene
+      que ser extenso — tiene que ser usable.</p>
+
+    <div class="figure">
+      <svg viewBox="0 0 700 300" role="img" aria-label="Las tres verdades: qué tiene que ser cierto para ganar, qué ventaja ya tenemos, y qué podemos ir a buscar; las tres alimentan la decisión de la Capa 3.">
+        <circle cx="200" cy="90" r="82" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="200" y="82" text-anchor="middle" class="boxtext">MUST BE TRUE</text>
+        <text x="200" y="100" text-anchor="middle" class="boxtext-sm">qué tiene que ser verdad</text>
+
+        <circle cx="500" cy="90" r="82" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="500" y="82" text-anchor="middle" class="boxtext">UNFAIR</text>
+        <text x="500" y="100" text-anchor="middle" class="boxtext-sm">qué ya tenemos, nadie copia</text>
+
+        <circle cx="350" cy="220" r="82" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="350" y="212" text-anchor="middle" class="boxtext">GO GET</text>
+        <text x="350" y="230" text-anchor="middle" class="boxtext-sm">qué podemos ir a buscar</text>
+
+        <text x="350" y="290" text-anchor="middle" class="arrowlabel">las tres, juntas → el objetivo del ciclo</text>
+      </svg>
+      <figcaption>Fig. 4 — No son tres documentos separados: se leen juntas para elegir 1-2
+        objetivos agresivos en la Capa 3.</figcaption>
+    </div>
+  </section>
+
+  <!-- INGENIERIA INVERSA -->
+  <section>
+    <span class="tag"><span class="n">3</span> Objetivo</span>
+    <h2>La ingeniería inversa financiera</h2>
+    <p class="lede">Ningún objetivo se queda en abstracto. Se baja a un número de gente que hace
+      falta alcanzar, antes de gastar un peso en producir contenido.</p>
+
+    <div class="figure">
+      <svg viewBox="0 0 820 160" role="img" aria-label="Cadena de cálculo: meta de facturación dividido ticket promedio da clientes necesarios; clientes necesarios dividido tasa de conversión da el volumen de personas que hace falta alcanzar.">
+        <g class="mono">
+          <rect x="10" y="50" width="170" height="60" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <text x="95" y="76" text-anchor="middle" class="boxtext">$ 100.000</text>
+          <text x="95" y="93" text-anchor="middle" class="boxtext-sm">meta / mes</text>
+
+          <text x="200" y="86" text-anchor="middle" class="arrowlabel">÷ ticket $100</text>
+          <path d="M182 80 L 280 80" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arrowhead)"/>
+
+          <rect x="290" y="50" width="170" height="60" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <text x="375" y="76" text-anchor="middle" class="boxtext">1.000</text>
+          <text x="375" y="93" text-anchor="middle" class="boxtext-sm">clientes necesarios</text>
+
+          <text x="490" y="86" text-anchor="middle" class="arrowlabel">÷ conv. 1%</text>
+          <path d="M462 80 L 560 80" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arrowhead)"/>
+
+          <rect x="570" y="50" width="240" height="60" fill="none" stroke="currentColor" stroke-width="2.2"/>
+          <text x="690" y="76" text-anchor="middle" class="boxtext">100.000 personas</text>
+          <text x="690" y="93" text-anchor="middle" class="boxtext-sm">volumen a alcanzar</text>
+        </g>
+      </svg>
+      <figcaption>Fig. 5 — Ejemplo con números reales. Este volumen se compara contra el de la Capa 1
+        (Fig. 3): si no alcanza, el objetivo está mal puesto, no falta contenido.</figcaption>
+    </div>
+  </section>
+
+  <!-- CAPA 4 / trazabilidad -->
+  <section>
+    <span class="tag"><span class="n">4</span> Estrategia</span>
+    <h2>El outcome principal: pasos, no un documento</h2>
+    <p class="lede">Promesa, posicionamiento e ICP son soporte. Lo que se entrega es la ingeniería
+      inversa de <strong>cómo</strong> se llega al objetivo — pasos con datos y fechas puntuales —
+      y la historia que los comunica.</p>
+
+    <div class="figure">
+      <svg viewBox="0 0 700 220" role="img" aria-label="La historia tiene tres roles: el héroe es el ICP, nunca la marca; el villano es contra qué está la promesa; la solución es la marca, con el resultado.">
+        <rect x="20" y="30" width="190" height="70" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="115" y="58" text-anchor="middle" class="boxtext">HÉROE</text>
+        <text x="115" y="76" text-anchor="middle" class="boxtext-sm">el ICP — nunca la marca</text>
+
+        <path d="M212 65 L 255 65" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arrowhead)"/>
+        <text x="233" y="52" text-anchor="middle" class="arrowlabel">enfrenta a</text>
+
+        <rect x="260" y="30" width="190" height="70" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="355" y="58" text-anchor="middle" class="boxtext">VILLANO</text>
+        <text x="355" y="76" text-anchor="middle" class="boxtext-sm">contra qué está la promesa</text>
+
+        <path d="M452 65 L 495 65" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#arrowhead)"/>
+        <text x="473" y="52" text-anchor="middle" class="arrowlabel">resuelve</text>
+
+        <rect x="500" y="30" width="190" height="70" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <text x="595" y="58" text-anchor="middle" class="boxtext">SOLUCIÓN</text>
+        <text x="595" y="76" text-anchor="middle" class="boxtext-sm">nosotros — el resultado</text>
+
+        <text x="355" y="150" text-anchor="middle" class="arrowlabel">esto lo interpreta Creative en piezas — Strategy define los roles, no el guion</text>
+      </svg>
+      <figcaption>Fig. 6 — La historia que sale de la Capa 4. No se decide el gancho ni el formato
+        acá; se decide quién es cada rol.</figcaption>
+    </div>
+  </section>
+
+  <!-- ECOSISTEMA -->
+  <section class="closing">
+    <span class="tag"><span class="n">✓</span> Lo que realmente se construye</span>
+    <h2>La estrategia no es el producto final —<br>
+      es el <span class="northstar-word">North Star</span> de un ecosistema</h2>
+    <p class="lede">Todo lo anterior converge en un solo lugar: el objetivo, la promesa, el
+      posicionamiento y la historia de <span class="mono">posicionamiento.md</span>. Eso no se
+      queda en Strategy — es lo que cada área ejecuta por su cuenta, bajo la misma dirección.</p>
+
+    <div class="figure">
+      <svg viewBox="0 0 820 260" role="img" aria-label="El North Star que produce Strategy se reparte hacia Contenido/Calendar, Growth, Creative, Branding y Production, cada uno ejecutando su propia parte del ecosistema bajo la misma dirección.">
+        <circle cx="410" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <text x="410" y="55" text-anchor="middle" class="boxtext">NORTH STAR</text>
+        <text x="410" y="72" text-anchor="middle" class="boxtext-sm">objetivo · promesa · historia</text>
+
+        <g stroke="currentColor" stroke-width="1.3" fill="none">
+          <path d="M375 108 C 300 150, 200 170, 110 200" marker-end="url(#arrowhead)"/>
+          <path d="M395 112 C 350 155, 300 175, 270 205" marker-end="url(#arrowhead)"/>
+          <path d="M410 112 L 410 205" marker-end="url(#arrowhead)"/>
+          <path d="M425 112 C 470 155, 520 175, 550 205" marker-end="url(#arrowhead)"/>
+          <path d="M445 108 C 520 150, 620 170, 710 200" marker-end="url(#arrowhead)"/>
+        </g>
+
+        <g class="mono">
+          <text x="90" y="222" text-anchor="middle" class="boxtext-sm">Contenido/</text>
+          <text x="90" y="235" text-anchor="middle" class="boxtext-sm">Calendar</text>
+          <text x="255" y="222" text-anchor="middle" class="boxtext-sm">Growth</text>
+          <text x="410" y="222" text-anchor="middle" class="boxtext-sm">Creative</text>
+          <text x="555" y="222" text-anchor="middle" class="boxtext-sm">Branding</text>
+          <text x="710" y="222" text-anchor="middle" class="boxtext-sm">Production</text>
+        </g>
+      </svg>
+      <figcaption>Fig. 7 — El ecosistema no lo arma Strategy solo: lo arman todas las áreas,
+        cada una a su ritmo, sin perder de vista el mismo North Star.</figcaption>
+    </div>
+
+    <p style="margin-top:30px;font-size:16px;">Por eso ningún documento de Strategy vive suelto.
+      Cada uno se puede trazar hacia atrás hasta el <span class="mono">WIN</span> de
+      <span class="mono">nucleo.md</span> — y hacia adelante, hasta la parte del ecosistema que
+      construye.</p>
+  </section>
+
+</div>

@@ -1,14 +1,14 @@
 # Proceso Operativo — Agente de Estrategia
 
-Cómo se ejecuta una estrategia de punta a punta. Secuencial y con gates. **Ninguna capa arranca sin
-el input de la anterior.**
+Cómo se ejecuta una estrategia de punta a punta. Secuencial. **Ninguna capa arranca sin el input de
+la anterior.**
 
 ---
 
 ## Antes de todo — Pre-flight
 
 ```
-PRE-FLIGHT — Cliente: [x] · Arquetipo: [x o SIN CLASIFICAR] · Capa: [0-8]
+PRE-FLIGHT — Cliente: [x] · Arquetipo: [x o SIN CLASIFICAR] · Capa: [0-4]
 Skills: [x] · MCPs disponibles: [x] · Gate humano: [sí/no] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
@@ -20,16 +20,17 @@ mínimo de la capa · el pedido pisa otro departamento.
 
 ## Modos de entrada
 
-El usuario no siempre pide el proceso completo. Tres modos:
-
 | Pedido | Qué corre |
 |---|---|
-| *"Armá la estrategia de X"* | **Completo** — Capas 0 → 7, con 3 gates |
-| *"Investigá la competencia de X"* | **Solo Capa 1** — entrega `ingenieria-inversa.md` |
-| *"¿Cuál es el posicionamiento de X?"* | **Capas 2-4** — requiere Capas 0-1 hechas |
-| *"Armá el calendario de X"* | **Capas 6-7** — requiere Capas 0-5 hechas |
+| *"Armá la estrategia de X"* | **Completo** — Capas 0 → 4, con gate en Capa 4 |
+| *"Levantá el contexto de X"* | **Solo Capa 0** — envía el formulario y arma `nucleo.md` |
+| *"Investigá la competencia/demanda de X"* | **Solo Capa 1** — entrega `ingenieria-inversa.md` |
+| *"¿Cuál es el objetivo/posicionamiento/la historia de X?"* | **Capas 2-4** — requiere Capas 0-1 hechas |
 
 **Si falta una capa previa:** se dice qué falta y se ofrece correrla. **No se improvisa el faltante.**
+
+**Dónde termina Strategy:** en la Capa 4. El calendario de contenido y la distribución
+(owned/paid/earned/borrowed) son de la etapa Contenido/Calendar, no de Strategy.
 
 ---
 
@@ -42,103 +43,61 @@ clients/<cliente>/
 ├── nucleo.md
 ├── ingenieria-inversa.md
 ├── posicionamiento.md
-├── estrategia-de-contenido.md
-├── contenido-por-canal.md
-├── calendario-estrategico.csv
-└── medicion.md
+└── estrategia-de-contenido.md
 ```
 Copiar las plantillas de `templates/`. Verificar si el cliente ya existe en Notion o Inherent OS
 antes de arrancar de cero.
 
 ---
 
-### ▸ Paso 2 — CAPA 0 · Foundation
-**Input:** brief, sitio, redes, material previo, conversación con el cliente
+### ▸ Paso 2 — CAPA 0 · Contexto
+**Input:** formulario de cliente + Excel de unit economics + material previo
 **Skill:** `st-foundation` → `st-arquetipo`
-**Output:** `nucleo.md` secciones A-B + arquetipo asignado
+**Instrumentos:** `templates/formulario-cliente.md` (enviar como Google Form) ·
+`templates/unit-economics.csv` (completar con el cliente)
+**Output:** `nucleo.md` + arquetipo asignado
+**Se usa después en:** el ticket promedio de acá alimenta la ingeniería inversa financiera (Capa 3.2)
 
 Si el input es escaso: **documentá menos, no completes con inferencia.** Marcá los huecos.
 
-**Cierre obligatorio:** clasificar por los 8 ejes y asignar arquetipo (dominante + modificador si
-es híbrido). Leer la ficha completa antes de seguir.
-
-🚦 **GATE 1 — Aprobación del núcleo.** Un humano confirma que el retrato de la empresa es correcto
+🚦 **GATE — Aprobación del núcleo.** Un humano confirma que el retrato de la empresa es correcto
 antes de gastar tiempo mirando afuera.
 
 ---
 
-### ▸ Paso 3 — CAPA 1 · Evidencia e ingeniería inversa
+### ▸ Paso 3 — CAPA 1 · Evidencia
 **Input:** núcleo + arquetipo
-**Skill:** `st-ingenieria-inversa` · **Playbooks:** `INGENIERIA-INVERSA.md` + `MCP-PLAYBOOK.md`
+**Skill:** `st-ingenieria-inversa`
+**Instrumento:** `templates/demanda.csv` (CEPs + volumen, audience behavior, awareness stage)
 **Output:** `ingenieria-inversa.md`
+**Se usa después en:** el volumen de demanda valida la ingeniería inversa financiera (Capa 3.2) ·
+el audience behavior escribe la promesa (Capa 4.2) y la historia (Capa 4.3) · awareness ordena los
+pasos (Capa 4.1)
 
-Cinco bloques, ninguno opcional:
-`1.1 categoría · 1.2 demanda y CEPs · 1.3 ingeniería inversa de media · 1.4 cultura · 1.5 audiencia`
+Cuatro bloques, livianos: `1.1 cómo se compra/descubre · 1.2 demanda por crear (+volumen) · 1.3
+audience behavior vía seguidores de competidor · 1.4 awareness stages`.
 
-Mínimos: 5 anillos con fuentes · 15 piezas descompuestas en 7 capas · 3 mapas (saturación, 2x2,
-objeciones) · todo marcado 🟢/🟡/⚪.
-
-🛑 **Esta capa no recomienda.** Termina en patrón observado.
+🛑 **Esta capa no recomienda.** Termina en observación.
 
 ---
 
-### ▸ Paso 4 — CAPAS 2-4 · Verdades, decisión y posicionamiento
+### ▸ Paso 4 — CAPAS 2-4 · Análisis, objetivo y estrategia
 **Input:** núcleo + evidencia
 **Skills:** `st-tres-verdades` → `st-posicionamiento`
-**Output:** `posicionamiento.md`
+**Output:** `posicionamiento.md` + `estrategia-de-contenido.md`
 
 ```
-CAPA 2  WHAT MUST BE TRUE → WHAT IS UNFAIR → WHAT CAN WE GO GET   (diagnóstico)
-CAPA 3  Objetivo · Comportamiento · Problema · Renuncias · Recursos · Riesgos   (decisión)
-CAPA 4  Territorio · CEPs a poseer · Promesa/RTB/Objeciones · Distintividad · Activos
+CAPA 2  MUST BE TRUE → UNFAIR → GO GET                        (análisis)
+CAPA 3  Objetivo agresivo → ingeniería inversa financiera → renuncias   (decisión)
+CAPA 4  Pasos puntuales → promesa/posicionamiento/ICP → historia (héroe/villano/solución)
 ```
 
-Si el territorio falla el filtro de distintividad (Distinctive / Novel / Relevant), **se vuelve a la
-Capa 2 y se elige otro camino.** No se fuerza.
+**Chequeo obligatorio en Capa 3:** el volumen de demanda de `demanda.csv` ¿alcanza el volumen que
+pide la ingeniería inversa financiera? Si no, el objetivo está mal puesto — se ajusta acá, no en
+Capa 4.
 
-🚦 **GATE 2 — Aprobación del posicionamiento y del movimiento elegido.** El gate más importante del
-proceso. Todo lo que sigue depende de esto.
-
----
-
-### ▸ Paso 5 — CAPAS 5-6 · Movimiento y sistema
-**Input:** posicionamiento aprobado
-**Skill:** `st-sistema-contenido`
-**Output:** `estrategia-de-contenido.md` + `contenido-por-canal.md`
-
-```
-CAPA 5  Movimiento elegido (1-2) → Trabajo estratégico → Mecanismo → Idea de campaña
-CAPA 6  Funciones → Pilares (mix del arquetipo) → Temperatura → Rol por canal → Especificación
-```
-
-**Verificación de trazabilidad:** cada tipo de pieza especificado tiene que poder trazarse hasta
-una MUST BE TRUE. Si no, se elimina.
-
----
-
-### ▸ Paso 6 — CAPA 7 · Distribución y calendario macro
-**Input:** sistema de contenido
-**Skill:** `st-calendario-macro`
-**Output:** `calendario-estrategico.csv`
-
-Owned / Paid / Earned / Borrowed + frecuencia, función, pilar, temperatura y balance
-marca/activación por slot.
-
-**No incluye:** ideas concretas, copies ni guiones. Eso es de Creative.
-
-🚦 **GATE 3 — Aprobación del calendario.** Antes del handoff.
-
----
-
-### ▸ Paso 7 — CAPA 8 · Medición
-**Input:** objetivo + sistema
-**Skill:** `st-medicion`
-**Output:** `medicion.md`
-
-KPIs por altura (negocio / comportamiento / marca / contenido) + baseline + condiciones de
-invalidación + evaluación de compounding.
-
-Sin baseline: `⚠️ SIN BASELINE — este ciclo se establece como referencia`.
+🚦 **GATE — Aprobación del objetivo, el posicionamiento y la historia.** El gate más importante del
+proceso. Con esto Strategy cierra su parte.
 
 ---
 
@@ -147,25 +106,26 @@ Sin baseline: `⚠️ SIN BASELINE — este ciclo se establece como referencia`.
 Al cerrar, entregá el bloque:
 
 ```markdown
-## HANDOFF — Strategy → Growth / Creative
+## HANDOFF — Strategy → Contenido/Calendar · Growth · Creative
 - Cliente: · Arquetipo: · Fecha:
-- Entregables: [rutas de los 6 + medicion.md]
-- Gates aprobados: núcleo [✅/⬜] · posicionamiento [✅/⬜] · calendario [✅/⬜]
-- Movimiento elegido: [uno o dos]
-- MUST BE TRUE que se está moviendo este ciclo:
-- Renuncias explícitas de este ciclo:
+- Entregables: [rutas de los 3]
+- Gates aprobados: núcleo [✅/⬜] · objetivo/estrategia [✅/⬜]
+- Objetivo del ciclo + volumen/conversión necesarios (ingeniería inversa financiera)
+- Renuncias explícitas de este ciclo
+- Pasos puntuales con fechas
+- Historia: héroe / villano / solución
 - Huecos de evidencia abiertos: [⚠️ SIN DATOS pendientes]
-- Confianza general: 🟢 / 🟡 / 🔴
-- Siguiente: Growth (monetización) · Creative (piezas concretas)
+- Siguiente: Contenido/Calendar (distribución y cadencia) · Growth (monetización) · Creative
+  (piezas concretas, interpreta la historia)
 ```
 
 ---
 
 ## Ciclo
 
-```
-CAPA 8 → aprendizaje → actualizar LAS 3 VERDADES (Capa 2) → nuevo ciclo
-```
+Cuando termina un ciclo, se revisa si se cumplió el objetivo y se vuelve a la Capa 2 para el
+siguiente — puede aparecer una UNFAIR nueva (un movimiento que funcionó y se repitió) o puede
+confirmarse/descartarse una MUST BE TRUE.
 
-La Capa 1 se re-corre completa a los **6 meses**, o antes si cambia significativamente la categoría,
-la oferta o el contexto competitivo.
+La Capa 1 se re-corre si cambia significativamente la categoría, la oferta o el contexto
+competitivo.

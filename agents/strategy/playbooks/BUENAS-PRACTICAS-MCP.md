@@ -78,15 +78,16 @@ suscripciones. Si una tarea lo requiere, se para y se pide autorización.
 
 ## 5. Contexto y costo
 
-**El contexto es el recurso escaso.** Un entregable de estrategia necesita 15 piezas bien
-descompuestas, no 300 mal leídas.
+**El contexto es el recurso escaso.** La Capa 1 es liviana a propósito: alcanza con lo suficiente
+para decidir en la Capa 2, no con volcar todo lo que un MCP devuelve.
 
 - Pedí campos mínimos cuando el MCP lo permita (`minimal_output`, `page_size`)
 - Guardá la evidencia cruda en un board o archivo, no en el hilo de la conversación
 - Resumí a medida que avanzás: cada bloque de la Capa 1 cierra con su tabla, no con el volcado
 
-**Regla del 15.** Si llevás más de 15 llamadas a MCPs en una capa y no tenés todavía una tabla que
-mostrar, el problema no es la falta de datos: es la falta de hipótesis.
+**Si llevás muchas llamadas a MCPs y no tenés todavía nada que mostrar,** el problema no es la
+falta de datos: es la falta de foco. Volvé a la pregunta concreta de la Capa 1 (cómo se compra,
+demanda, audience behavior, awareness).
 
 ---
 

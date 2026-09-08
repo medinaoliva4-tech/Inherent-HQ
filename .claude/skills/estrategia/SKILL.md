@@ -2,12 +2,12 @@
 name: estrategia
 description: >
   Orquestador del Agente de Estrategia de Inherent. Úsala SIEMPRE que el pedido tenga que ver con
-  estrategia de marca, posicionamiento, crecimiento, plan de contenido, calendario estratégico,
-  investigación de competencia, ingeniería inversa de media, onboarding de un cliente nuevo, o
-  cuando alguien diga "armá la estrategia de X", "qué está haciendo la competencia de X",
-  "cuál es el posicionamiento de X", "armá el calendario de X", "analizá esta marca".
-  Clasifica el pedido, identifica en qué capa del método estamos, y dirige a la skill correcta.
-  Es la puerta de entrada — nunca produzcas un entregable de estrategia sin pasar por acá.
+  estrategia de marca, posicionamiento, crecimiento, objetivo del ciclo, historia de marca,
+  investigación de competencia/demanda, onboarding de un cliente nuevo, o cuando alguien diga "armá
+  la estrategia de X", "qué está haciendo la competencia de X", "cuál es el posicionamiento de X",
+  "analizá esta marca". Clasifica el pedido, identifica en qué capa del método estamos, y dirige a
+  la skill correcta. Es la puerta de entrada — nunca produzcas un entregable de estrategia sin pasar
+  por acá. No cubre el calendario de contenido — eso es de Contenido/Calendar.
 ---
 
 # Estrategia — Orquestador
@@ -18,7 +18,7 @@ antes de responder cualquier cosa.
 ## 1. Pre-flight (obligatorio, primero)
 
 ```
-PRE-FLIGHT — Cliente: [x] · Arquetipo: [x o SIN CLASIFICAR] · Capa: [0-8]
+PRE-FLIGHT — Cliente: [x] · Arquetipo: [x o SIN CLASIFICAR] · Capa: [0-4]
 Skills: [x] · MCPs disponibles: [x] · Gate humano: [sí/no] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
@@ -30,22 +30,23 @@ que falta; no rellenes con inferencia.**
 
 | Lo que piden | Capas | Skill |
 |---|---|---|
-| "Armá la estrategia de X" / cliente nuevo | 0 → 7 completo | `st-foundation` → todas |
+| "Armá la estrategia de X" / cliente nuevo | 0 → 4 completo | `st-foundation` → todas |
 | "Entendamos la marca" / onboarding | 0 | `st-foundation` |
 | "¿Qué tipo de empresa es?" | 0 cierre | `st-arquetipo` |
-| "Investigá la competencia" / "qué está funcionando" | 1 | `st-ingenieria-inversa` |
+| "Investigá la competencia/demanda de X" | 1 | `st-ingenieria-inversa` |
 | "¿Cómo puede ganar?" / diagnóstico | 2 | `st-tres-verdades` |
-| "¿Cuál es el posicionamiento?" | 2-4 | `st-tres-verdades` → `st-posicionamiento` |
-| "Armá el plan de contenido" | 5-6 | `st-sistema-contenido` |
-| "Armá el calendario" | 7 | `st-calendario-macro` |
-| "¿Cómo medimos?" / "¿funcionó?" | 8 | `st-medicion` |
+| "¿Cuál es el objetivo/posicionamiento/la historia?" | 2-4 | `st-tres-verdades` → `st-posicionamiento` |
 
 **Si falta una capa previa:** decílo y ofrecé correrla. Nunca improvises el faltante.
 
+**Strategy termina en Capa 4.** "Armá el calendario" no es de Strategy — es de Contenido/Calendar.
+Decílo y ofrecé el handoff (pasos con fecha, promesa, historia) para que esa etapa lo tome.
+
 ## 3. Verificá alcance
 
-Si el pedido es de **Growth** (precio, oferta, money model, funnel), **Creative** (ideas concretas,
-copies, guiones), **Branding** (paleta, tipografía), **Production** (piezas, edición) o
+Si el pedido es de **Growth** (precio, oferta, money model, funnel), **Contenido/Calendar**
+(distribución, cadencia, calendario), **Creative** (ideas concretas, copies, guiones, cómo se cuenta
+la historia), **Branding** (paleta, tipografía), **Production** (piezas, edición) o
 **publicación/pauta** → decílo en una línea y ofrecé lo que sí podés hacer desde Strategy.
 
 ## 4. Archivos que leés
@@ -55,7 +56,6 @@ copies, guiones), **Branding** (paleta, tipografía), **Production** (piezas, ed
 | `agents/strategy/AGENT.md` | `agents/strategy/METHOD.md` — la capa que corresponde |
 | `agents/strategy/PROCESS.md` | `agents/strategy/archetypes/NN-*.md` — la ficha del cliente |
 | | `agents/strategy/playbooks/*` — para Capa 1 |
-| | `agents/strategy/qa/QA-GATES.md` — antes de entregar |
 
 ## 5. Formato de respuesta
 
@@ -64,5 +64,5 @@ Lo que requiera decisión del usuario va marcado como **pregunta o acción expl�
 
 ## 6. Cierre
 
-Antes de entregar cualquier capa: correr su bloque de `qa/QA-GATES.md`. Si un ítem falla, se
-corrige — no se entrega con el ítem fallado sin marcarlo.
+Antes de entregar cualquier capa, releé sus reglas duras en `METHOD.md` y verificá que no falte
+nada marcado como obligatorio. Si algo falla, se corrige — no se entrega sin marcarlo.

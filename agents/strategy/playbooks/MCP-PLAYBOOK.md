@@ -30,18 +30,23 @@ inventa el dato que ese MCP hubiera dado.
 ## Los 4 MCPs centrales
 
 ### 🔴 AdWhispr — inteligencia de anuncios y demanda
-**Para qué sirve en estrategia:** es la fuente de verdad sobre **quién está pagando por atención** y
-**qué mensaje están pagando**. Un anuncio que lleva 6 meses corriendo es un mensaje validado con
-dinero real.
+**Para qué sirve en estrategia:** dimensionar la demanda por crear (1.2) y verificar competidores
+reales para la Capa 1 — nunca listarlos de memoria.
 
 **Secuencia correcta:**
 ```
 1. get_my_brand / save_my_brand   → dar contexto del cliente al MCP
 2. find_competitors               → devuelve anunciantes VERIFICADOS (activos ahora)
-3. add_brand (con pageId)         → si una marca verificada no está trackeada
-4. get_brand_ads (con brandId, sortBy: longevity) → los ganadores probados
-5. research_keywords              → dimensionar la demanda de captura
+3. research_keywords              → dimensionar la demanda por crear
 ```
+
+**⏳ "MetaSpark por OpenRouter" — identificado, no conectado todavía.** Es **Muse Spark**
+(developer.meta.com/ai/models/muse-spark), el modelo agéntico de Meta accesible vía OpenRouter. Es
+un **modelo de lenguaje**, no una fuente de datos: no scrapea Instagram/Facebook por sí mismo — su
+uso real sería como motor de un agente (el de Comunicación / "Buzz") al que se le dan herramientas
+de datos para investigar demanda, no como reemplazo de AdWhispr/Eden. No está conectado como MCP en
+esta sesión de Claude Code. Mientras no se conecte esa integración, la demanda por crear se
+dimensiona con AdWhispr + Eden directamente.
 
 **Trampa crítica — dos tipos de ID que no se mezclan:**
 - `brandId` = UUID → lo usan `get_brand_ads`, `get_brand_stats`, `search_ads`
@@ -57,16 +62,15 @@ propio, se marcan explícitamente como `🟡 no verificados`.
 ---
 
 ### 🟣 Eden — inteligencia social y de creadores
-**Para qué sirve en estrategia:** es el motor de la ingeniería inversa de contenido orgánico.
-Encuentra outliers, descompone qué títulos/formatos ganan, e identifica quién ya tiene la audiencia.
+**Para qué sirve en estrategia:** es la herramienta de 1.3 (audience behavior). Resuelve un
+competidor de referencia y muestra qué contenido consume y con qué interactúa su audiencia.
 
 **Secuencia correcta:**
 ```
-1. eden_search_social_content     → búsqueda global por tema/categoría
-2. eden_resolve_creator           → resolver handles antes de analizar
-3. eden_analyze_creator           → base de rendimiento del creador (para detectar outliers)
-4. eden_study_top_titles / eden_study_top_carousels → patrones de formato
-5. eden_create_board + eden_save_posts_to_board → archivar la evidencia
+1. eden_resolve_creator           → resolver el competidor de referencia (nunca adivinar el handle)
+2. eden_analyze_creator           → qué contenido consume su audiencia, qué rinde por encima de la media
+3. eden_search_social_content     → búsqueda global por tema/categoría, si hace falta más contexto
+4. eden_create_board + eden_save_posts_to_board → archivar la evidencia (opcional)
 ```
 
 **Reglas propias del MCP (respetarlas):**

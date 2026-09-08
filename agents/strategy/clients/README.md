@@ -8,16 +8,13 @@ clients/<cliente>/
 ├── nucleo.md                    # Capa 0   🚦 gate
 ├── ingenieria-inversa.md        # Capa 1
 ├── posicionamiento.md           # Capas 2-4  🚦 gate
-├── estrategia-de-contenido.md   # Capas 5-6
-├── contenido-por-canal.md       # Capa 6
-├── calendario-estrategico.csv   # Capa 7   🚦 gate
-└── medicion.md                  # Capa 8
+└── estrategia-de-contenido.md   # Capa 4
 ```
 
 ## Al iniciar un cliente
 
 1. Crear la carpeta con el nombre en minúsculas y guiones: `clients/nombre-cliente/`
-2. Copiar las 7 plantillas de `../templates/`
+2. Copiar las plantillas de `../templates/` (entregables + instrumentos)
 3. Buscar material previo en Notion / Inherent OS / Drive antes de arrancar de cero
 4. Guardar el material crudo en `_INPUTS/`
 5. Correr `PROCESS.md` desde el Paso 2
