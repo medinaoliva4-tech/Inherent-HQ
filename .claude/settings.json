@@ -54,7 +54,10 @@
       "mcp__Inherent_O_S__get_record",
       "mcp__Google_Drive__search_files",
       "mcp__Google_Drive__read_file_content",
-      "mcp__Google_Drive__get_file_metadata"
+      "mcp__Google_Drive__get_file_metadata",
+      "Bash(apt-get:*)",
+      "Bash(python3:*)",
+      "Bash(whisper:*)"
     ],
     "ask": [
       "mcp__Eden__eden_create_board",
@@ -99,6 +102,18 @@
       "mcp__Higgsfield__tiktok_connect",
       "mcp__Higgsfield__publish_website",
       "mcp__Higgsfield__deploy_website"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
     ]
   }
 }
