@@ -120,7 +120,7 @@ ahí los outputs que el equipo va a consultar y mantener.
 | **Google Drive** | Exportar entregables aprobados para el cliente | Solo después del gate humano |
 | **Gmail / Calendar** | Coordinación, no estrategia | Nunca enviar sin autorización explícita |
 | **Inherent OS** | Datos propios: clientes, registros, histórico | Leer libremente; escribir solo con intención declarada |
-| **Higgsfield** | Generación de media | **Fuera del alcance de Strategy.** Es de Creative/Production |
+| **Higgsfield** | Generación de media | **Fuera del alcance de Strategy.** Es de **Production** — Creative dirige, no genera |
 | **Zapier** | Comodín para apps sin MCP propio | `discover` → `inspect` → `execute`. Nunca ejecutar escritura sin gate |
 | **GitHub / Vercel** | Infraestructura del repo | No es herramienta de estrategia |
 

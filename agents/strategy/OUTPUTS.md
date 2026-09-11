@@ -20,8 +20,8 @@ agente no lo produce.**
 
 | # | Archivo | Capa | Skill | Gate | Lo consume |
 |---|---|---|---|---|---|
-| 1 | `nucleo.md` | 0 | `st-foundation` + `st-arquetipo` | 🚦 GATE 1 | Capas 1-8 · todo el sistema |
-| 2 | `ingenieria-inversa.md` | 1 | `st-ingenieria-inversa` | — | Capas 2, 4, 6 |
+| 1 | `nucleo.md` | 0 | `st-foundation` + `st-arquetipo` | 🚦 GATE 1 | Capas 1-8 · todo el sistema · **Creative** |
+| 2 | `ingenieria-inversa.md` | 1 | `st-ingenieria-inversa` | — | Capas 2, 4, 6 · **Creative** (arranca su swipe file de la tabla 15×7) |
 | 3 | `posicionamiento.md` | 2-4 | `st-tres-verdades` + `st-posicionamiento` | 🚦 GATE 2 | Capas 5-8 · Creative · Growth |
 | 4 | `estrategia-de-contenido.md` | 5-6 | `st-sistema-contenido` | — | Capa 7 · Creative |
 | 5 | `contenido-por-canal.md` | 6 | `st-sistema-contenido` | — | Capa 7 · Social Media |
@@ -210,9 +210,9 @@ No son archivos. El agente los emite en la conversación de Buzz.
 | No produce | De quién es |
 |---|---|
 | Precios, money model, oferta, funnel, LTV/CAC | **Growth** |
-| Ideas día por día, copies, guiones, conceptos | **Creative** |
+| Ideas día por día, conceptos, copies, guiones, **shot lists**, brief por pieza | **Creative** |
 | Paleta, tipografía, guidelines, moodboard | **Branding** |
-| Shot lists, piezas, edición, assets finales | **Production** |
+| Diseño, foto, rodaje, edición, assets finales | **Production** |
 | Publicaciones, programación, pauta | **Social Media / Media Buy** |
 | Dashboards y reportes de performance | **Analytics** |
 
