@@ -3,7 +3,7 @@ name: cr-adaptacion
 description: >
   Capa 6 del método de Creatividad — adaptación por plataforma y ensamblado del Excel. Multiplica un
   concepto core en varias filas, una por canal con slot, con las specs y el tono que premia cada
-  plataforma, y ensambla el entregable definitivo: ideas-de-contenido.csv con sus 26 columnas,
+  plataforma, y ensambla el entregable definitivo: ideas-de-contenido.csv con sus 31 columnas,
   su hipótesis y su traza a MUST BE TRUE. Úsala cuando pidan "adaptalo a los otros canales",
   "armá el Excel", "el calendario de contenido lleno", "repurposing". Adaptar, no copiar-pegar:
   publicar lo mismo idéntico en todos lados el algoritmo lo penaliza.
@@ -14,7 +14,7 @@ description: >
 Leé `agents/creative/METHOD.md` sección **CAPA 6** + `toolkit/07-plataformas.md`.
 Plantillas: `templates/adaptacion-por-canal.md` + `templates/ideas-de-contenido.csv`
 
-**Input obligatorio:** `direccion-creativa.md` + los slots del `calendario-estrategico.csv`.
+**Input obligatorio:** `direccion-creativa.md` + los slots del ③ calendario.
 
 ## 6.1 — Un concepto → N filas
 ```
@@ -31,7 +31,7 @@ Plantillas: `templates/adaptacion-por-canal.md` + `templates/ideas-de-contenido.
 | El concepto · el insight y el arco · **la promesa** · el activo distintivo · `traza_a_must_be_true` | Duración y ritmo · factura visual · tono · audio y texto en pantalla · el CTA si cambia la etapa |
 
 🛑 **Solo se multiplica hacia canales que tienen slot** en el calendario. Un canal sin slot no existe
-para Creative — agregarlo es pisar la Capa 7 de Strategy.
+para Creative — agregarlo es pisar la ③ Marketing.
 
 ## 6.2 — Qué cambia por canal
 
@@ -45,19 +45,20 @@ para Creative — agregarlo es pisar la Capa 7 de Strategy.
 
 Tabla completa por canal: `toolkit/07-plataformas.md`.
 
-## 6.3 — Ensamblar el Excel: las 26 columnas
+## 6.3 — Ensamblar el Excel: las 31 columnas
 ```
-id · slot_origen · fecha · canal · formato · pilar · funcion · temperatura · awareness ·
-objetivo_del_slot · goal_del_arte · concepto · hook · guion · copy · layout_de_texto ·
-composicion_encuadre · referencia_visual · estetica_mood · elementos_graficos · audio_musica ·
-hipotesis · aprobacion_claim · traza_a_must_be_true · handoff · estado
+id · campana · slot_origen · fecha · canal · formato · pilar · funcion · temperatura ·
+awareness · objetivo_del_slot · goal_del_arte · emocion · mezcla · concepto · hook · guion · copy ·
+layout_de_texto · escenas · encuadres · duraciones · referencia_visual · estetica_mood ·
+elementos_graficos · audio_musica · hipotesis · aprobacion_claim · traza_a_must_be_true ·
+handoff · estado
 ```
 
-**Heredadas de Strategy** (se copian, no se generan): `slot_origen` `canal` `formato` `pilar`
+**Heredadas de ③ Marketing** (se copian, no se generan): `slot_origen` `canal` `formato` `pilar`
 `funcion` `temperatura` `awareness` `objetivo_del_slot` `traza_a_must_be_true`.
 **Derivadas por Creative:** `goal_del_arte` (de la función) y `fecha` (el día dentro de la semana).
 **Producidas por Creative:** `concepto` `hook` `guion` `copy` `layout_de_texto`
-`composicion_encuadre` `referencia_visual` `estetica_mood` `elementos_graficos` `audio_musica`
+`escenas` `encuadres` `duraciones` `referencia_visual` `estetica_mood` `elementos_graficos` `audio_musica`
 `hipotesis`.
 
 Vocabularios cerrados y valores válidos: `templates/README.md`.
@@ -82,7 +83,7 @@ Si una fila no se puede trazar hacia atrás, **se elimina**. La pregunta correct
 - **Sin watermark**, declarado. Watermark de otra app = alcance muerto.
 - **Hook temprano en todas** — 2s en TikTok.
 - **Ningún par de canales comparte `funcion`**, y ningún canal recibe una función que
-  `contenido-por-canal.md` no le asigne (Strategy §6.4). Si pasó, se devuelve el slot.
+  ③ plan por canal no le asigne (③ Marketing §6.4). Si pasó, se devuelve el slot.
 - **El "qué NO se hace acá"** de cada canal se respeta en todas sus filas.
 - **El total de filas cabe en la capacidad de producción real.** El repurposing ahorra ideación,
   **no producción**.
@@ -95,6 +96,7 @@ Correr el bloque **Capa 6** de `qa/QA-GATES.md`.
 revisión.** Recordá: *la calidad del hand-off es la calidad del Excel.*
 
 ## Handoff
-Emitir el bloque HANDOFF de `PROCESS.md` → Production (foto · video · diseño) y Content (armado y
-QA final). El Excel **es la interfaz**: si Production tiene que preguntar algo, el brief estaba
-incompleto — y eso se corrige en el brief, no por chat.
+Emitir el bloque HANDOFF de `PROCESS.md` → **⑤ Producción** (lo que hay que grabar o fotografiar) y
+**⑥A Diseño gráfico** (lo que se arma con material existente). El Excel **es la interfaz**: si ⑤, ⑥A
+o ⑦ tienen que preguntar algo, el brief estaba incompleto — y eso se corrige en el brief, no por
+chat.
