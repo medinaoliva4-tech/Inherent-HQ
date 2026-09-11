@@ -1,0 +1,7 @@
+campana,fase,fecha_inicio,fecha_fin,hito,fecha_prep_inicio,dependencia,responsable,canal,naturaleza,funcion,estado
+C1 Apertura de temporada,preparacion,2026-03-02,2026-03-20,Briefs y produccion listos,2026-03-02,ninguna,[nombre],-,-,demanda,propuesto
+C1 Apertura de temporada,expectativa,2026-03-21,2026-03-27,Cuenta regresiva con payload real,2026-03-02,C1 preparacion,[nombre],Instagram,organica,demanda,propuesto
+C1 Apertura de temporada,lanzamiento,2026-03-28,2026-03-30,Dia 1 de temporada,2026-03-02,C1 expectativa,[nombre],Instagram + Email,mixta,activacion,propuesto
+C1 Apertura de temporada,sostenimiento,2026-03-31,2026-04-20,Presion sostenida con pauta,2026-03-15,C1 lanzamiento,[nombre],Meta Ads,pautada,activacion,propuesto
+C1 Apertura de temporada,cierre,2026-04-21,2026-04-25,Ultimo llamado con fecha real,2026-04-10,C1 sostenimiento,[nombre],Email + Historias,mixta,activacion,propuesto
+C2 Presencia de marca,lanzamiento,2026-05-10,2026-05-10,Evento / colaboracion,2026-04-05,ninguna,[nombre],Presencial,organica,marca,propuesto
