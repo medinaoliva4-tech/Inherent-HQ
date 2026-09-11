@@ -25,7 +25,7 @@ Plantilla: `templates/conceptos.md` sección 2.
 | 4 | **Plan** | **3 pasos** que bajan el miedo a actuar | el mecanismo único |
 | 5 | **Llamado** | Directo (BOFU) o transicional (TOFU) | el `goal_del_arte` |
 | 6 | **Éxito** | El después, **visible** | el después de la promesa |
-| 7 | **Fracaso evitado** | El costo de no hacer nada | el **enemigo** de Strategy |
+| 7 | **Fracaso evitado** | El costo de no hacer nada | el **enemigo** de ③ Marketing |
 
 ## Los tres niveles del problema
 
@@ -45,7 +45,7 @@ Plantilla: `templates/conceptos.md` sección 2.
 - **La marca entra como guía, nunca antes del problema.** Si entra en el segundo 1, es un anuncio y
   se saltea.
 - **El plan tiene 3 pasos.** Uno es una orden, cinco es un curso.
-- **El fracaso evitado no se inventa.** Sale del enemigo real de Strategy, no de un miedo fabricado.
+- **El fracaso evitado no se inventa.** Sale del enemigo real de ③ Marketing, no de un miedo fabricado.
   Exagerarlo se lee como manipulación y quema la confianza.
 - **El arco cabe** en un Reel de 30s o un carrusel de 5 slides. Se declara la distribución.
 
