@@ -6,7 +6,7 @@ description: >
   y proporción, safe zones, mood y elementos gráficos; y para video, el shot list con las 8
   propiedades por toma más las tomas de cobertura. Úsala cuando pidan "el layout", "dónde va cada
   texto", "la estética", "el mood", "el shot list", "qué tomas necesitamos". Creative dirige y
-  especifica; Production ejecuta en Figma, cámara y edición.
+  especifica; ⑤ Producción ejecuta en Figma, cámara y edición.
 ---
 
 # Capa 5 — Forma
@@ -62,7 +62,7 @@ Sin cobertura el editor no puede cubrir cortes y **el video queda plano**.
 - **Safe zones respetadas.** Un texto tapado por la UI es un texto que no existe.
 - **La paleta, la tipografía y el lente son de Branding.** Creative los **aplica**; no los define ni
   los estira.
-- **Los activos distintivos de Strategy §4.5 se refuerzan, no se reinventan** cada pieza. Es lo que
+- **Los activos distintivos de ③ Marketing §4.5 se refuerzan, no se reinventan** cada pieza. Es lo que
   hace que la marca acumule memoria.
 - **Nada de adjetivos como instrucción.** *"Impactante"*, *"limpio"*, *"moderno"* no son
   especificaciones.
@@ -71,14 +71,14 @@ Sin cobertura el editor no puede cubrir cortes y **el video queda plano**.
 - **La toma 1 es el frame 1 visual** definido en el hook de la Capa 4, y dura lo que ese frame ocupa
   antes del siguiente corte. **Acá se verifica el cruce** (en la Capa 4 el shot list todavía no existe).
 - **Las duraciones suman** al total del formato del canal.
-- **Si el shot list no cabe en la capacidad de producción** (`nucleo.md` §C/D), se recorta acá y se
+- **Si el shot list no cabe en la capacidad de producción** (① núcleo §C/D), se recorta acá y se
   declara. Un plan de rodaje imposible no es un plan.
 - 🛑 **Creative no ejecuta.** Nada de archivos de diseño, mockups finales, tomas grabadas, media
   generada ni edición. El shot list y la especificación de layout son el límite exacto del
   departamento.
 
 ## Qué columnas del Excel llena
-`layout_de_texto` · `estetica_mood` · `elementos_graficos` · `composicion_encuadre` (el shot list) ·
+`layout_de_texto` · `estetica_mood` · `elementos_graficos` · `escenas` + `encuadres` + `duraciones` (el shot list) ·
 `audio_musica` (el audio declarado por toma).
 
 ## Cierre
