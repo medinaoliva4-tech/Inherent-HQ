@@ -18,7 +18,7 @@ clients/<cliente>/
 
 1. Verificar que existe `agents/strategy/clients/<cliente>/` con sus gates aprobados.
    **Si no existe, Creative no arranca** — se pide la estrategia primero.
-2. Crear la carpeta con **el mismo nombre canónico** que usa Strategy: `clients/nombre-cliente/`
+2. Crear la carpeta con **el mismo nombre canónico** que usa ③ Marketing: `clients/nombre-cliente/`
 3. Copiar las 7 plantillas de `../templates/`
 4. Guardar en `_INPUTS/` el brand kit de Branding y el banco de assets
 5. Correr `PROCESS.md` desde el Paso 2
@@ -30,7 +30,7 @@ Drive y Buzz. Si los dos nombres no coinciden, la traza entre departamentos se r
 
 ## Regla de no duplicación de archivos
 
-🛑 **Nunca se copia un archivo de Strategy dentro de la carpeta de Creative.** Se cita su ruta:
+🛑 **Nunca se copia un archivo de ③ Marketing dentro de la carpeta de Creative.** Se cita su ruta:
 
 ```markdown
 Promesa: ver `agents/strategy/clients/<cliente>/posicionamiento.md` §4.3
