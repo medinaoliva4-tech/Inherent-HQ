@@ -1,0 +1,26 @@
+# Material y exports de video — pesados, no van al repo
+agents/video/projects/**/_INPUTS/
+agents/video/projects/**/_EXPORTS/
+agents/video/projects/**/*.png
+agents/video/projects/**/*.jpg
+agents/video/projects/**/*.jpeg
+
+# Formatos pesados, en cualquier lado
+*.mp4
+*.mov
+*.mxf
+*.wav
+*.aiff
+*.mp3
+*.m4a
+*.cube
+
+# Proyectos de editor
+*.prproj
+*.aep
+*.drp
+*.fcpbundle
+
+# Sistema
+.DS_Store
+Thumbs.db
