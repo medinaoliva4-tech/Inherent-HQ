@@ -10,15 +10,37 @@ es lo primero que se lee en cada sesión: define quién sos y cómo arrancás.
 
 ## Agentes disponibles
 
-| Agente | Carpeta | Qué hace | Estado |
-|---|---|---|---|
-| **Strategy** | `agents/strategy/` | Estrategia de posicionamiento y crecimiento por ingeniería inversa conectada con media | ✅ Operativo |
-| **Creative** | `agents/creative/` | Conceptos, ideas de contenido y dirección creativa — de la estrategia al brief por pieza | ✅ Operativo |
-| Growth | — | Monetización, money model, funnel | ⬜ Pendiente |
-| Branding | — | Guidelines, lenguaje visual y de tono | ⬜ Pendiente |
-| Production | — | Pre / producción / post | ⬜ Pendiente |
-| Content | — | Armado y QA de piezas finales | ⬜ Pendiente |
-| Analytics | — | Medición y aprendizajes | ⬜ Pendiente |
+El flujo de Inherent tiene **8 departamentos**, en este orden:
+
+```
+① Comprensión → ② Estrategia → ③ Marketing → ④ Creatividad → ⑤ Producción →  ⑥A Diseño  → ⑦ Posting → ⑧B Ads
+                      ↓                ↑                                    ⑥B Video ↗
+                 ②B Branding ──────────┘
+```
+
+| # | Departamento | Carpeta | Qué hace | Estado |
+|---|---|---|---|---|
+| **①** | Comprensión | — *(hoy dentro de `agents/strategy/` Capa 0)* | Ordena la realidad del negocio y del cliente antes de estrategia | 🟡 Parcial |
+| **②** | Estrategia | — *(hoy dentro de `agents/strategy/` Capas 1-4)* | 3 verdades, ICP, posicionamiento, ingeniería inversa | 🟡 Parcial |
+| **②B** | Branding | — | Guidelines, tono de voz, dirección visual | ⬜ Pendiente |
+| **③** | Marketing | — *(hoy dentro de `agents/strategy/` Capas 5-7)* | Campañas, canales, fechas, pilares, frecuencia, calendario | 🟡 Parcial |
+| **④** | **Creatividad** | `agents/creative/` | Ideas, conceptos, hooks, copy, guion y dirección — el brief por pieza | ✅ Operativo |
+| **⑤** | **Producción** | `agents/production/` | Desglose, jornadas, recursos, presupuesto, rodaje y entrega del material | ✅ Operativo |
+| **⑥A** | Diseño gráfico | — | Composición, layout, elementos gráficos, export de lo estático | ⬜ Pendiente |
+| **⑥B** | Video Editing | `agents/video/` | Del material crudo al master por plataforma | 🔵 En el PR #4 |
+| **⑦** | Posting | — | Captions finales, programación y publicación | ⬜ Pendiente |
+| **⑧B** | Ads | — | Segmentación, presupuesto de pauta, optimización | ⬜ Pendiente |
+
+> 🔄 **Transición.** Hoy el repo tiene **un solo agente** (`agents/strategy/`) que cubre ①, ② y ③
+> juntos. Los agentes de aguas abajo ya están escritos contra los departamentos separados, con el
+> mapeo capa→departamento centralizado en `agents/creative/CORRELACION.md ⓪.1`. Cuando ①②③ se
+> separen, cambian **las rutas**, no los métodos.
+
+> ⚠️ **Huecos conocidos del flujo**, anotados y todavía sin decidir: **⑧A Orgánico** (implícito en el
+> "8B" de Ads) y **medición / aprendizaje de negocio** (ningún departamento cierra el círculo hacia ①
+> y ②). El tercer hueco, **⑥B Edición de video**, lo cubre el PR #4 — ⑤ Producción ya está escrito
+> contra él: entrega RAW y selects, y el montaje, el color de entrega y las versiones por plataforma
+> son de ⑥B.
 
 ---
 
@@ -40,7 +62,7 @@ es lo primero que se lee en cada sesión: define quién sos y cómo arrancás.
 Antes de ejecutar, respondé en una línea:
 
 ```
-PRE-FLIGHT — Agente: [strategy/creative] · Cliente: [x] · Arquetipo: [x o SIN CLASIFICAR]
+PRE-FLIGHT — Agente: [strategy/creative/production] · Cliente: [x] · Arquetipo: [x o SIN CLASIFICAR]
 Capa: [0-8] · Skills: [x] · MCPs: [x] · Inputs de departamentos previos: [x] · Gate humano: [sí/no]
 → PASS | BLOQUEADO: [qué falta]
 ```
@@ -56,26 +78,38 @@ Nunca rellenes con inferencia sin marcarla.
    `[percepción del cliente, no verificado]` o `⚠️ SIN DATOS`. Nunca inventes datos, competidores,
    métricas ni tendencias.
 2. **Patrón ≠ señal.** 3+ fuentes independientes = `🟢 patrón`. 1-2 = `🟡 señal a confirmar`.
-3. **Nunca saltes capas.** Los métodos son secuenciales — `agents/strategy/METHOD.md` (8 capas) y
-   `agents/creative/METHOD.md` (8 capas). Si falta el input de una capa, se bloquea; no se improvisa
-   el faltante.
+3. **Nunca saltes capas.** Los tres métodos son secuenciales y tienen 8 capas cada uno:
+   `agents/strategy/METHOD.md`, `agents/creative/METHOD.md` y `agents/production/METHOD.md`.
+   Si falta el input de una capa, se bloquea; no se improvisa el faltante. En ⑤ Producción esto es
+   especialmente caro: **presupuestar sin consolidar infla el costo entre 3 y 5 veces**.
 4. **Ingeniería inversa produce patrones, no recomendaciones.** Si un output de la Capa 1 empieza
    con "por lo tanto deberíamos…", se salió de su rol.
 5. **No copiar.** La ingeniería inversa se traduce a hipótesis propias filtradas por distintividad,
    nunca a réplica del competidor.
 6. **Gate humano.** En Strategy: núcleo, posicionamiento y calendario. En Creative: brief,
-   conceptos y el Excel de ideas. Los aprueba un humano antes del handoff. El agente propone;
-   no cierra.
+   conceptos y el Excel de ideas. En Producción: **presupuesto, plan de rodaje y entrega**. Los
+   aprueba un humano antes del handoff. El agente propone; no cierra. Y nada se compromete afuera
+   —una reserva, una convocatoria, una compra— antes de su gate.
 7. **No duplicar otros departamentos.** Cada agente tiene un punto de corte declarado:
-   - **Strategy** llega hasta plataforma estratégica + calendario macro.
-   - **Creative** llega hasta el brief completo por pieza (concepto, hook, copy, layout, shot list).
-   Monetización es de Growth. Guidelines son de Branding. Ejecución de assets es de Production.
-   Armado y QA final es de Content. Dashboards son de Analytics.
-8. **Lo que produce otro departamento se cita, no se reescribe.** Un campo de Strategy que se copia
-   con otras palabras dentro de Creative crea una segunda versión de la verdad, y en dos ciclos las
-   dos no coinciden. Se cita con su ruta: `agents/strategy/clients/<cliente>/posicionamiento.md §4.3`.
-9. **Nada destructivo sin autorización.** No publicar, no pautar, no enviar al cliente, no borrar,
-   no sobrescribir aprobados.
+   - **①②③** (hoy `agents/strategy/`) llega hasta el plan de campañas + calendario.
+   - **④ Creatividad** llega hasta el brief completo por pieza: concepto, emoción, hook, copy,
+     guion, layout, escenas, encuadres, duraciones y qué elementos gráficos pedir.
+   - **⑤ Producción** llega hasta el material base entregado y nombrado: RAW ordenado + selects.
+     La post —montaje, color de entrega, versiones— es de **⑥B Video Editing**.
+   Guidelines son de ②B Branding. Composición, elementos gráficos y export de lo estático son de
+   ⑥A Diseño; el montaje y los masters son de ⑥B Video Editing.
+   Publicar es de ⑦ Posting. La pauta es de ⑧B Ads.
+8. **Lo que produce otro departamento se cita, no se reescribe — y nunca se edita.** Un campo que se
+   copia con otras palabras crea una segunda versión de la verdad, y en dos ciclos las dos no
+   coinciden. Se cita con su ruta:
+   `agents/strategy/clients/<cliente>/posicionamiento.md §4.3`.
+9. **La intención no se cambia aguas abajo: se devuelve.** Si algo no es producible o no es
+   diseñable como está, vuelve al departamento que lo decidió, con motivo y **al menos dos
+   alternativas concretas**. Resolverlo por cuenta propia es cómo se rompe una campaña sin que nadie
+   lo haya decidido — y se descubre tarde, cuando ya no hay presupuesto para volver.
+10. **Nada destructivo sin autorización.** No publicar, no pautar, no enviar al cliente, no borrar,
+    no sobrescribir aprobados. En ⑤ Producción incluye **no borrar material crudo**, ni el descarte:
+    se marca, no se elimina.
 
 ---
 
