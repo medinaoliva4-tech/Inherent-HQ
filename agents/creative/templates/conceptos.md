@@ -16,7 +16,7 @@
 ### Insight
 > **El dolor o deseo específico:**
 
-**Cita literal que lo respalda:** *"..."* — fuente: `ingenieria-inversa.md` §1.5
+**Cita literal que lo respalda:** *"..."* — fuente: ② ingeniería inversa §1.5
 
 **Insights descartados y por qué:**
 | Candidato | Por qué era genérico |
@@ -36,7 +36,7 @@
 | 2 | | ⬜ |
 | 3 | | ⬜ |
 
-**Cuelga de la idea de campaña de Strategy §5.4:** ✅ / ❌ — [cómo]
+**Cuelga de la idea de campaña de ③ Marketing §5.4:** ✅ / ❌ — [cómo]
 
 ### Derivación *(1 línea cada una, todas de la misma idea)*
 | | |

@@ -9,33 +9,37 @@
 
 ## A. Contexto cargado
 
-| Fuente | Archivo | Estado | Ruta |
+| Departamento | Qué aporta | Estado | Ruta |
 |---|---|---|---|
-| Strategy · posicionamiento | `posicionamiento.md` | ⬜ / ✅ | `agents/strategy/clients/<cliente>/...` |
-| Strategy · sistema de contenido | `estrategia-de-contenido.md` | ⬜ / ✅ | |
-| Strategy · rol por canal | `contenido-por-canal.md` | ⬜ / ✅ | |
-| Strategy · calendario | `calendario-estrategico.csv` | ⬜ / ✅ | |
-| Strategy · evidencia | `ingenieria-inversa.md` | ⬜ / ✅ | |
-| Strategy · núcleo | `nucleo.md` | ⬜ / ✅ | |
-| Branding · guidelines y lente | | ⬜ / ✅ | |
-| Growth · ads y claims aprobados | | ⬜ / ⚠️ | |
+| **① Comprensión** | Audiencia · competencia · precios · **capacidad de producción** | ⬜ / ✅ | `agents/strategy/clients/<cliente>/nucleo.md` |
+| **② Estrategia** | Posicionamiento: promesa · mecanismo · enemigo · activos · objeciones · CEPs | ⬜ / ✅ | |
+| **② Estrategia** | Ingeniería inversa: tabla 15×7 · saturación · lenguaje literal · estados de consciencia | ⬜ / ✅ | |
+| **③ Marketing** | Plan de campañas · fechas de preparación · lanzamientos | ⬜ / ✅ | |
+| **③ Marketing** | Sistema de contenido: funciones · **pilares y mix** · frecuencia · jerarquía de mensaje | ⬜ / ✅ | |
+| **③ Marketing** | Plan por canal: función única y **qué NO se hace ahí** | ⬜ / ✅ | |
+| **③ Marketing** | Calendario: los slots del ciclo | ⬜ / ✅ | |
+| **②B Branding** | Guidelines · tono · dirección visual · do's & don'ts · banco de assets | ⬜ / ✅ | |
+| **⑧B Ads** | Creativos que rinden · claims aprobados | ⬜ / ⚠️ | |
 
-**Gate 2 de Strategy (posicionamiento):** ⬜ / ✅ → si ⬜, **BLOQUEADO**
+**Posicionamiento aprobado:** ⬜ / ✅ → si ⬜, **BLOQUEADO**
+**Plan de campañas aprobado:** ⬜ / ✅ → si ⬜, **BLOQUEADO**
+
+**Campañas de este ciclo:** [nombres] · **Reparto 70/20/10 previsto:** [n / n / n]
 
 ## B. Extracto de estrategia *(citado, no reescrito)*
 
 | | Valor | Ruta de origen |
 |---|---|---|
-| **Promesa** | | `posicionamiento.md` §4.3 |
+| **Promesa** | | ② posicionamiento §4.3 |
 | **Mecanismo único** | | §4.1c |
 | **Enemigo** | | §4.1b |
 | **Territorio — qué es / qué no es** | | §4.1d |
 | **Activos distintivos** | | §4.5 |
 | **CEPs a poseer** | | §4.2 |
 | **Objeciones principales + RTB** | | §4.3 |
-| **Idea de campaña** | | `estrategia-de-contenido.md` §5.4 |
+| **Idea de campaña** | | ③ sistema de contenido §5.4 |
 
-## C. Jerarquía de mensaje *(la ley del bloque — copiada tal cual de Strategy 6.5)*
+## C. Jerarquía de mensaje *(la ley del bloque — copiada tal cual de ③ Marketing 6.5)*
 
 | Nivel | Qué vive acá | Cambia |
 |---|---|---|
@@ -63,23 +67,23 @@
 |---|---|---|---|---|---|---|---|---|---|---|
 | | | | | | | | | | | |
 
-**Slots devueltos a Strategy:** [los que no tienen traza · **dos canales con la misma `funcion`** ·
-un canal con una función que `contenido-por-canal.md` no le asigna · `goal_del_arte` que contradice
+**Slots devueltos a ③ Marketing:** [los que no tienen traza · **dos canales con la misma `funcion`** ·
+un canal con una función que ③ plan por canal no le asigna · `goal_del_arte` que contradice
 el `objetivo_del_slot`]
 
 ## F. Traducción de cada slot → `goal_del_arte`
 
-*(derivada de `playbooks/TRADUCCION-STRATEGY.md` — no elegida)*
+*(derivada de `playbooks/TRADUCCION-DE-SLOT.md` — no elegida)*
 
 | slot_origen | funcion | temperatura | awareness | → goal_del_arte | Etapa | Caja de hook candidata | Familia de CTA | Ángulo (lo dicta awareness) | fecha (día en la semana) | ¿temperatura atípica? |
 |---|---|---|---|---|---|---|---|---|---|---|
 | | | | | | | | | | | 🟡 / no |
 
 > `goal_del_arte` del vocabulario cerrado: `alcance · memoria · valor-de-uso · confianza · accion ·
-> pertenencia`. `awareness` con la etiqueta literal de Strategy. La **semana no se toca**; solo se
+> pertenencia`. `awareness` con la etiqueta literal de ③ Marketing. La **semana no se toca**; solo se
 > fija el día.
 
-## G. Función y vetos por canal *(de `contenido-por-canal.md`)*
+## G. Función y vetos por canal *(de ③ plan por canal)*
 
 | Canal | Función única | Temperatura que atiende | Formatos | Métrica que lo juzga | **Qué NO se hace acá** |
 |---|---|---|---|---|---|
@@ -89,13 +93,13 @@ el `objetivo_del_slot`]
 
 | | Valor | Fuente |
 |---|---|---|
-| **Capacidad de producción** | [n piezas/semana] | `nucleo.md` §C/D |
+| **Capacidad de producción** | [n piezas/semana] | ① núcleo §C/D |
 | **→ Filas que caben este bloque** | [n] | |
 | **Do's de Branding** | | |
 | **Don'ts de Branding** | | |
-| **Claims ya aprobados** | | Growth |
+| **Claims ya aprobados** | | ⑧B Ads |
 | **Banco de assets disponible** | | `_INPUTS/` |
-| **Velocidad de aprobación** | | `nucleo.md` §D |
+| **Velocidad de aprobación** | | ① núcleo §D |
 
 ---
 

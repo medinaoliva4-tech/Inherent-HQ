@@ -6,9 +6,9 @@
 
 ---
 
-## 1.1 Heredado de Strategy *(punto de partida — no se re-cosecha)*
+## 1.1 Heredado de ③ Marketing *(punto de partida — no se re-cosecha)*
 
-De `ingenieria-inversa.md` §1.3b (tabla 15×7):
+De la ② ingeniería inversa §1.3b (tabla 15×7):
 
 | # de fila | Capa | Patrón | Marca | Aplica a qué slot |
 |---|---|---|---|---|
@@ -39,7 +39,7 @@ De `ingenieria-inversa.md` §1.3b (tabla 15×7):
 |---|---|---|---|---|---|---|
 | | | | | | | |
 
-## 1.7 Verificación anti-default *(contra el mapa de saturación de Strategy)*
+## 1.7 Verificación anti-default *(contra el mapa de saturación de ② Estrategia)*
 
 | Patrón | ¿Está en el mapa de saturación? | Veredicto |
 |---|---|---|

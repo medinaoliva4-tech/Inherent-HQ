@@ -1,7 +1,7 @@
 # Dirección Creativa — [Cliente]
 **Bloque:** [x] · **Conceptos de referencia:** `conceptos.md` · **Capas 4-5**
 
-> Creative **especifica**; Production ejecuta. Nada de archivos de diseño, tomas grabadas ni media
+> Creative **especifica**; ⑤ Producción ejecuta. Nada de archivos de diseño, tomas grabadas ni media
 > generada.
 
 ---
@@ -11,7 +11,7 @@
 # Pieza [id] — slot `[slot_origen]`
 **Canal:** [x] · **Formato:** [x] · **Concepto:** [BIG IDEA en 1 frase]
 **`goal_del_arte`:** [alcance / memoria / valor-de-uso / confianza / accion / pertenencia]
-**Etapa:** TOFU / MOFU / BOFU / Post-compra · **`objetivo_del_slot`:** [de Strategy] · **Traza:** [letra]
+**Etapa:** TOFU / MOFU / BOFU / Post-compra · **`objetivo_del_slot`:** [de ③ Marketing] · **Traza:** [letra]
 
 ---
 
@@ -59,7 +59,7 @@
 | | |
 |---|---|
 | **Familia de CTA** | engagement / tráfico / conversión — **según el `goal_del_arte`** |
-| **Lenguaje del comprador usado** | *"..."* (cita de `ingenieria-inversa.md` §1.5) |
+| **Lenguaje del comprador usado** | *"..."* (cita de la ② ingeniería inversa §1.5) |
 | **`aprobacion_claim`** | N/A / ⏸️ pendiente-branding / ⏸️ pendiente-growth / aprobado |
 | **Qué claim exactamente** | |
 
@@ -74,7 +74,7 @@
 | **Safe zones** | |
 | **Mood / estética** | [paleta, iluminación, acabado — del lente de Branding] |
 | **Elementos gráficos** | [del banco de assets] |
-| **Activos distintivos reforzados** | [de `posicionamiento.md` §4.5] |
+| **Activos distintivos reforzados** | [de ② posicionamiento §4.5] |
 
 ## SECCIÓN 4 — Shot list (Capa 5) · *solo video*
 

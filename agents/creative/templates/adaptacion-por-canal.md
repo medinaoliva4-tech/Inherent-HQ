@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|---|---|---|
 | | | | | | | | | |
 
-> **Función única** y **Qué NO se hace acá** se copian de `contenido-por-canal.md`. No se
+> **Función única** y **Qué NO se hace acá** se copian de ③ plan por canal. No se
 > reinterpretan, y ningún par de canales comparte función.
 
 ---
@@ -39,7 +39,7 @@ el slot cambia de etapa
 
 | Canal | Por qué queda afuera |
 |---|---|
-| | no tiene slot en el calendario / está en las renuncias de Strategy §3.4 |
+| | no tiene slot en el calendario / está en las renuncias de ③ Marketing §3.4 |
 
 ---
 
@@ -48,7 +48,7 @@ el slot cambia de etapa
 - [ ] Ninguna pieza es idéntica en dos canales
 - [ ] **Sin watermark**, declarado en cada fila
 - [ ] Hook temprano en todas (2s en TikTok)
-- [ ] **Ningún par de canales comparte `funcion`**, y ninguno recibe una función que `contenido-por-canal.md` no le asigne *(si pasó → devuelto a Strategy)*
+- [ ] **Ningún par de canales comparte `funcion`**, y ninguno recibe una función que ③ plan por canal no le asigne *(si pasó → devuelto a ③ Marketing)*
 - [ ] El **"qué NO se hace acá"** de cada canal está respetado en todas sus filas
 - [ ] El total de filas cabe en la capacidad de producción real: [n] filas vs. [n] de capacidad
 - [ ] Cada fila adaptada conserva la traza del concepto

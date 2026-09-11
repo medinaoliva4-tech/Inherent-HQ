@@ -2,8 +2,8 @@
 **Bloque medido:** [x] · **Fecha:** [fecha] · **Capa 7**
 **Excel de referencia:** `_historico/[bloque]-ideas-de-contenido.csv`
 
-> Mide **patrones creativos**, no resultado de negocio. Revenue, share y awareness son de Strategy
-> Capa 8; los dashboards son de Analytics.
+> Mide **patrones creativos**, no resultado de negocio. Revenue, share y awareness son de ③ Marketing
+> Capa 8; los dashboards son de ③ Marketing.
 
 ---
 
@@ -67,11 +67,11 @@ abandonarla.
 | 2 | | | |
 | 3 | | | |
 
-## 8. Devoluciones a Strategy
+## 8. Devoluciones aguas arriba
 
 *(lo que Creative detectó y no le corresponde arreglar)*
 
-| Qué se detectó | A qué capa de Strategy le toca |
+| Qué se detectó | A qué capa de ③ Marketing le toca |
 |---|---|
 | | |
 
