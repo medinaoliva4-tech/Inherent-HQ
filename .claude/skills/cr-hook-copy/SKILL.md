@@ -21,14 +21,14 @@ de Branding + el lenguaje literal del comprador.
 `pattern-interrupt · list-number · curiosity-gap · question · pain · bold-claim · story-tease`
 
 **Qué caja elegir:** no por gusto. Sale del `goal_del_arte` (tabla en
-`playbooks/TRADUCCION-STRATEGY.md`) y del banco de hooks propios que ya ganaron.
+`playbooks/TRADUCCION-DE-SLOT.md`) y del banco de hooks propios que ya ganaron.
 
 Requisitos propios de algunas cajas:
 - **pattern-interrupt** → define el **frame 1 visual**
 - **list-number** → cada número = **un slide o una toma**
 - **curiosity-gap** y **story-tease** → 🛑 **el cierre se escribe en el mismo brief**
 - **pain** → el dolor **real** del avatar, nunca genérico
-- **bold-claim** con dato, precio o promesa → ⏸️ **aprobación de Branding/Growth**
+- **bold-claim** con dato, precio o promesa → ⏸️ **aprobación de ②B Branding o ⑧B Ads**
 
 ## 4.2 — La estructura
 ```
@@ -74,9 +74,9 @@ temperatura `Frío` le pide matrimonio a un desconocido.
 - **Legible en mute** y en 1 segundo.
 - **Todo gap o tease se cierra en el mismo brief.**
 - **1 idea y 1 CTA por pieza.**
-- **El copy usa el lenguaje literal del comprador** (`ingenieria-inversa.md` §1.5), no jerga de
+- **El copy usa el lenguaje literal del comprador** (② ingeniería inversa §1.5), no jerga de
   marca. Si el comprador dice *"me da pena"*, la pieza dice *"me da pena"*.
-- 🛑 **El copy puede cambiar el ángulo; nunca la promesa** (jerarquía de mensaje, Strategy §6.5).
+- 🛑 **El copy puede cambiar el ángulo; nunca la promesa** (jerarquía de mensaje, ③ Marketing §6.5).
 - 🛑 **Claims, precios y promesas van `⏸️ PENDIENTE APROBACIÓN`** con el nombre de quién valida.
   Creative no los cierra sola.
 - **El balance del slot se respeta:** `Marca` → CTA suave · `Activación` → CTA directo.
