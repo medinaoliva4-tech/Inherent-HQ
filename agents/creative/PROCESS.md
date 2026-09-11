@@ -9,18 +9,26 @@ arranca sin el input de la anterior.**
 
 ```
 PRE-FLIGHT — Cliente: [x] · Arquetipo: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
-Strategy: núcleo [✅/⬜] evidencia [✅/⬜] posicionamiento [✅/⬜] contenido [✅/⬜] canal [✅/⬜] calendario [✅/⬜]
-Branding: [✅/⬜] · Growth: [✅/⚠️]
+① Comprensión: negocio+audiencia [✅/⬜] capacidad [✅/⬜]
+② Estrategia: posicionamiento [✅/⬜] ingeniería inversa [✅/⬜]
+③ Marketing: campañas [✅/⬜] pilares+mix [✅/⬜] canal [✅/⬜] calendario [✅/⬜]
+②B Branding: [✅/⬜] · ⑧B Ads: [✅/⚠️]
+Campañas del ciclo: [nombres] · Mezcla 70/20/10: [✅ verificable / ⬜ al cierre]
 Skills: [x] · MCPs disponibles: [x] · Gate humano: [sí/no] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
 **Se bloquea si:** no hay cliente identificado · no existe la carpeta del cliente · falta un
-entregable bloqueante de Strategy o Branding · el Gate 2 de Strategy (posicionamiento) no está
-aprobado · falta el input mínimo de la capa · el pedido pisa otro departamento.
+entregable bloqueante de Comprensión, Estrategia, Marketing o Branding · el posicionamiento no está
+aprobado · el plan de campañas no está aprobado · falta el input mínimo de la capa · el pedido pisa
+otro departamento.
 
-> 🛑 **Sin `posicionamiento.md` aprobado y `calendario-estrategico.csv`, Creative no idea.** No se
-> reconstruye la estrategia leyendo los otros archivos.
+> 🛑 **Sin posicionamiento aprobado y sin plan de campañas, Creative no idea.** No se reconstruye la
+> estrategia ni el plan leyendo los otros archivos.
+
+> 🔄 **Mientras el repo no separe los departamentos**, los tres primeros se leen de
+> `agents/strategy/` con el mapeo de `AGENT.md`. El pre-flight se declara igual: lo que se verifica
+> es el **contenido**, no el nombre de la carpeta.
 
 ---
 
@@ -56,19 +64,20 @@ agents/creative/clients/<cliente>/
 └── aprendizaje-creativo.md
 ```
 
-Copiar las plantillas de `templates/`. **El nombre de la carpeta es el mismo nombre canónico que usa
-Strategy** — `agents/strategy/clients/<cliente>/` es de donde se leen los inputs. Nunca se duplica
-un archivo de Strategy dentro de Creative: se cita su ruta.
+Copiar las plantillas de `templates/`. **El nombre de la carpeta es el mismo nombre canónico que usan
+los departamentos de aguas arriba** — de ahí se leen los inputs. Nunca se duplica un archivo de otro
+departamento dentro de Creative: se cita su ruta.
 
 ---
 
 ### ▸ Paso 2 — CAPA 0 · Brief
-**Input:** los 6 entregables de Strategy + Branding
+**Input:** los entregables de Comprensión, Estrategia, Marketing y Branding
 **Skill:** `cr-brief`
 **Output:** `brief-creativo.md`
 
-Cargar contexto → leer los slots del ciclo → traducir cada slot con
-`playbooks/TRADUCCION-STRATEGY.md` → declarar el filtro de audiencia.
+Cargar contexto → **agrupar los slots del ciclo por campaña** → traducir cada slot con
+`playbooks/TRADUCCION-DE-SLOT.md` → declarar el filtro de audiencia → declarar el reparto
+70/20/10 previsto para el ciclo.
 
 Si falta un bloqueante: **BLOQUEADO**, con el nombre exacto del archivo que falta.
 
@@ -78,13 +87,13 @@ gastar tiempo ideando sobre una lectura equivocada.
 ---
 
 ### ▸ Paso 3 — CAPA 1 · Referencia
-**Input:** brief + `ingenieria-inversa.md` de Strategy
+**Input:** brief + la ingeniería inversa de **② Estrategia**
 **Skill:** `cr-swipe-file` · **Playbook:** `SWIPE-FILE.md`
 **Output:** `swipe-file.md`
 
-Arrancar de la tabla 15×7 de Strategy → cosechar **solo el hueco** → filtrar por longevidad →
-extraer patrón → organizar por pilar y tipo de hook → traducir a hipótesis → verificar contra el
-mapa de saturación.
+Arrancar de la tabla 15×7 de Estrategia → cosechar **solo el hueco** en Meta Ad Library / Meta Spark
+→ filtrar por longevidad → extraer patrón → organizar por pilar y tipo de hook → traducir a
+hipótesis → verificar contra el mapa de saturación → **clasificar cada patrón en 70 / 20 / 10**.
 
 🛑 **Nunca se guarda por gusto estético.** Sin señal de rendimiento va `⚪ ruido`.
 
@@ -119,7 +128,7 @@ CAPA 5  Grid · jerarquía · foco único · layout de texto · safe zones · mo
 ```
 
 Todo Bold Claim con dato, precio o promesa se marca `⏸️ PENDIENTE APROBACIÓN` y se nombra quién lo
-valida (Branding o Growth).
+valida (Branding o Ads).
 
 ---
 
@@ -128,7 +137,7 @@ valida (Branding o Growth).
 **Skill:** `cr-adaptacion`
 **Output:** `adaptacion-por-canal.md` + `ideas-de-contenido.csv`
 
-Un concepto → N filas, **solo hacia canales que tienen slot**. Specs por canal. 26 columnas
+Un concepto → N filas, **solo hacia canales que tienen slot**. Specs por canal. 31 columnas
 completas por fila. Hipótesis escrita en cada fila.
 
 **Verificación de trazabilidad:** toda fila recorre
@@ -157,40 +166,47 @@ Sin métricas: `⚠️ SIN DATOS — [qué falta y a quién pedírselo]`. **Nunc
 Al cerrar el bloque, entregá:
 
 ```markdown
-## HANDOFF — Creative → Production / Content
+## HANDOFF — Creative → Producción / Diseño gráfico
 - Cliente: · Arquetipo: · Bloque: · Fecha:
 - Entregables: [rutas de los 6 + aprendizaje-creativo.md]
 - Gates aprobados: brief [✅/⬜] · conceptos [✅/⬜] · Excel [✅/⬜]
-- Filas totales: [n] · por canal: [desglose]
+- Filas totales: [n] · por campaña: [desglose] · por canal: [desglose]
+- Reparto 70/20/10 del ciclo: [n / n / n] → [✅ cumple / ⚠️ desviado + por qué]
+- Filas que necesitan rodaje: [n] → van a ⑤ Producción
+- Filas 100 % gráficas (sin rodaje): [n] → van directo a ⑥A Diseño gráfico
 - BIG IDEAS de este bloque: [1 frase cada una]
-- MUST BE TRUE que se está moviendo: [las letras, heredadas de Strategy]
+- MUST BE TRUE que se está moviendo: [las letras, heredadas de ② Estrategia]
 - Claims pendientes de aprobación: [⏸️ lista, con quién los valida]
 - Huecos abiertos: [⚠️ SIN DATOS pendientes]
 - Filas descartadas por no trazar: [n + por qué]
 - Confianza general: 🟢 / 🟡 / 🔴
-- Siguiente: Production (foto · video · diseño) · Content (armado y QA final)
+- Siguiente: ⑤ Producción (lo que hay que grabar o fotografiar) · ⑥A Diseño gráfico (lo que se arma con material existente)
 ```
 
 **Reglas del handoff:**
 - Una fila `PENDIENTE` no se libera. O se completa, o se saca del bloque y se declara.
-- El Excel es **la interfaz**. Si Production tiene que preguntar algo, el brief estaba incompleto —
-  y eso se corrige en el brief, no por chat.
+- El Excel es **la interfaz**. Si Producción, Diseño o Posting tienen que preguntar algo, el brief
+  estaba incompleto — y eso se corrige en el brief, no por chat.
 
 ---
 
-## Devoluciones a Strategy
+## Devoluciones aguas arriba
 
-Creative no corrige la estrategia, pero **sí la devuelve** cuando la encuentra rota. Se declara y se
+Creative no corrige el plan, pero **sí lo devuelve** cuando lo encuentra roto. Se declara y se
 escala; no se resuelve por cuenta propia:
 
-| Lo que Creative detecta | Qué hace |
-|---|---|
-| La cadencia del calendario no cabe en la capacidad de producción | Declara el exceso y devuelve a Strategy (su Capa 7) |
-| Un slot no tiene `traza_a_must_be_true` | No produce la fila. Devuelve el slot |
-| **Dos canales distintos** con la misma `funcion` | Devuelve: Strategy define una función **distinta por canal** — *"si dos canales hacen lo mismo, uno sobra"* (su 6.4) |
-| Un canal con una `funcion` que `contenido-por-canal.md` no le asigna | Devuelve el slot: el calendario contradice el sistema |
-| Ninguna idea sobrevive el filtro D/N/R en un territorio | Devuelve: puede ser que el territorio no sea distintivo (su Capa 4) |
-| La promesa no es escribible en el lenguaje del comprador | Devuelve con las 3 objeciones que la contradicen |
+| Lo que Creative detecta | A quién vuelve | Qué hace |
+|---|---|---|
+| La cadencia del calendario no cabe en la capacidad de producción | **③ Marketing** | Declara el exceso en filas concretas y devuelve el bloque |
+| Un slot no tiene `traza_a_must_be_true` | **③ Marketing** | No produce la fila. Devuelve el slot |
+| **Dos canales distintos** con la misma `funcion` | **③ Marketing** | Devuelve: cada canal necesita una función **distinta** — si dos hacen lo mismo, uno sobra |
+| Un canal con una `funcion` que el plan de canal no le asigna | **③ Marketing** | Devuelve el slot: el calendario contradice el plan |
+| Una campaña sin fechas de preparación suficientes para producir | **③ Marketing** | Devuelve con el mínimo de días que la producción necesita |
+| Los pilares y su mix no cierran con la frecuencia pedida | **③ Marketing** | Declara la diferencia. **No reajusta el mix por su cuenta** |
+| Ninguna idea sobrevive el filtro D/N/R en un territorio | **② Estrategia** | Devuelve: puede ser que el territorio no sea distintivo |
+| La promesa no es escribible en el lenguaje del comprador | **② Estrategia** | Devuelve con las 3 objeciones que la contradicen |
+| El lenguaje literal del comprador está vacío o es inventado | **① Comprensión** | Devuelve: sin citas textuales el copy se escribe a ciegas |
+| Las guidelines contradicen lo que el concepto necesita | **②B Branding** | Declara la contradicción. No la resuelve sola |
 
 ---
 
