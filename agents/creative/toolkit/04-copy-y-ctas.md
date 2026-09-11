@@ -60,12 +60,12 @@ todo es la falla más común, la más barata de arreglar y la que más margen de
 5. **Jerarquía explícita.** Se escribe qué es título, qué es subtítulo y qué es CTA.
 6. **El guion se entrega por tramo y atado al timing** de `02-hooks.md`. Y en estáticos se escribe
    `N/A — formato estático sin voz`, **nunca se deja vacío**.
-7. **El copy usa el lenguaje literal del comprador** (`ingenieria-inversa.md` 1.5), no jerga de
+7. **El copy usa el lenguaje literal del comprador** (② ingeniería inversa 1.5), no jerga de
    marca. Si el comprador dice *"me da pena"*, la pieza dice *"me da pena"*.
 8. **Claims, precios y promesas van `⏸️ PENDIENTE APROBACIÓN`** con el nombre de quién valida —
    en el guion igual que en el copy.
 9. **El copy y el guion pueden cambiar el ángulo; nunca la promesa.** Es la jerarquía de mensaje de
-   Strategy §6.5.
+   ③ Marketing §6.5.
 10. **1 CTA por pieza.** Dos CTAs = ninguno.
 
 ---

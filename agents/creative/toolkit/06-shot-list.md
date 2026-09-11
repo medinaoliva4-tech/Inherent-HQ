@@ -1,5 +1,5 @@
 # 06 — Shot List
-`Capa 5 · columnas: composicion_encuadre, audio_musica`
+`Capa 5 · columnas: escenas, encuadres, duraciones, audio_musica`
 
 ## Qué decide
 
@@ -56,7 +56,7 @@ No son opcionales. Sin cobertura el editor no puede cubrir cortes y **el video q
    ese frame ocupa antes del siguiente corte. No se decide dos veces. *(Se verifica en la Capa 5,
    cuando el shot list existe — no en la Capa 4.)*
 5. **El audio se declara por toma**, no al final. *"Le ponemos música"* no es una instrucción.
-6. **Si el shot list no cabe en la capacidad de producción del cliente** (`nucleo.md` C/D), se recorta
+6. **Si el shot list no cabe en la capacidad de producción del cliente** (① núcleo C/D), se recorta
    acá y se declara — no se entrega un plan de rodaje imposible.
 7. **Creative no filma ni edita.** El shot list es el límite exacto del departamento.
 
@@ -90,11 +90,11 @@ No son opcionales. Sin cobertura el editor no puede cubrir cortes y **el video q
 | No declarar el audio por toma | Se graba sin micro y no hay vuelta atrás |
 | Shot list que excede la capacidad de producción | No se rueda, o se rueda mal y con prisa |
 | Definir el frame 1 distinto del hook | La pieza arranca con otra cosa de la que prometió el brief |
-| Entregar el video editado | Se cruzó la frontera con Production |
+| Entregar el video editado | Se cruzó la frontera con ⑤ Producción |
 
 ---
 
 ## Qué columnas del Excel llena
 
-`composicion_encuadre` (el shot list completo) y `audio_musica`.
-**Hand-off:** Production — video.
+`escenas`, `encuadres`, `duraciones` (el shot list completo) y `audio_musica`.
+**Hand-off:** ⑤ Producción — video.

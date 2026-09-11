@@ -1,4 +1,4 @@
-# Toolkit Creativo — 7 taxonomías
+# Toolkit Creativo — 8 taxonomías
 
 **Por qué existe esto.** Un hook no se improvisa, un CTA no se elige por costumbre y un layout no se
 describe con adjetivos. Cada decisión creativa sale de una **taxonomía cerrada**, para que sea
@@ -13,9 +13,10 @@ del bloque decide cuál.
 | `02-hooks.md` | 4 | Con qué entra la pieza y cómo se estructura | `hook` |
 | `03-arco-narrativo.md` | 3 | Quién es el héroe y qué transformación se cuenta | `concepto` `copy` |
 | `04-copy-y-ctas.md` | 4 | Qué dice y qué pide, en texto y en voz | `guion` `copy` `layout_de_texto` |
-| `05-arte-y-layout.md` | 5 | Cómo se ve y en qué orden se lee | `layout_de_texto` `estetica_mood` `elementos_graficos` |
-| `06-shot-list.md` | 5 | Cómo se filma | `composicion_encuadre` `audio_musica` |
+| `05-arte-y-layout.md` | 5 | Cómo se ve y en qué orden se lee | `layout_de_texto` `estetica_mood` |
+| `06-shot-list.md` | 5 | Cómo se filma | `escenas` `encuadres` `duraciones` `audio_musica` |
 | `07-plataformas.md` | 6 | Cómo vive en cada canal | `audio_musica` + specs del `formato` |
+| `08-elementos-graficos.md` | 5 | Qué capas gráficas lleva encima, de 4 familias cerradas | `elementos_graficos` |
 
 ---
 

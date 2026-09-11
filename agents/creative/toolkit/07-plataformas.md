@@ -55,14 +55,14 @@ Acá se multiplica el output **sin multiplicar el trabajo**.
 ## Reglas duras
 
 1. **Solo se multiplica hacia canales que tienen slot** en el calendario. Un canal sin slot no existe
-   para Creative — agregarlo es pisar la Capa 7 de Strategy.
+   para Creative — agregarlo es pisar la ③ Marketing.
 2. **Nunca la misma pieza idéntica en dos canales.** Cada fila del Excel tiene sus specs.
 3. **Sin watermark.** Se declara explícitamente en el brief.
 4. **Hook temprano en todas** — y en TikTok, a los 2s.
-5. **Cada canal mantiene la función única que le asignó `contenido-por-canal.md`** (Strategy §6.4).
+5. **Cada canal mantiene la función única que le asignó ③ plan por canal** (③ Marketing §6.4).
    Si **dos canales comparten `funcion`**, o un canal recibe una función que ese archivo no le
-   asigna, se devuelve el slot a Strategy. Y el **"qué NO se hace acá"** de cada canal se respeta.
-6. **El número de adaptaciones cabe en la capacidad de producción** (`nucleo.md` C/D). El repurposing
+   asigna, se devuelve el slot a ③ Marketing. Y el **"qué NO se hace acá"** de cada canal se respeta.
+6. **El número de adaptaciones cabe en la capacidad de producción** (① núcleo C/D). El repurposing
    ahorra ideación, no producción.
 7. **Cada fila adaptada conserva la traza.** Cinco filas de un concepto trazan a la misma
    MUST BE TRUE.
@@ -104,4 +104,4 @@ Acá se multiplica el output **sin multiplicar el trabajo**.
 `audio_musica`, y las **specs** del `formato` que el calendario ya fijó (duración, ratio, resolución).
 **Es la capa que multiplica filas:** un concepto entra, N filas salen.
 **No elige el `formato`:** es heredado (única excepción: el caso `🟡 propuesto por Creative` de
-`playbooks/TRADUCCION-STRATEGY.md`).
+`playbooks/TRADUCCION-DE-SLOT.md`).

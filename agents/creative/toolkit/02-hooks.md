@@ -17,11 +17,11 @@ acá, no en edición.** Eso es lo que levanta el porcentaje de piezas que funcio
 | 3 | **Curiosity Gap** | Necesidad de cerrar | MOFU, confianza | 🛑 **El cierre se escribe en el mismo brief** |
 | 4 | **Question** | Autoselección | Segmenta: le habla al buyer persona | La pregunta usa el lenguaje literal del comprador |
 | 5 | **Pain / Frustration** | Reconocimiento | Frío y BOFU | Usa el dolor **real** del avatar, nunca genérico |
-| 6 | **Bold Claim** | Provocación | Cuando hay dato o resultado | ⏸️ Con dato, precio o promesa → **aprobación de Branding/Growth** |
+| 6 | **Bold Claim** | Provocación | Cuando hay dato o resultado | ⏸️ Con dato, precio o promesa → **aprobación de ②B Branding o ⑧B Ads** |
 | 7 | **Story / Tease** | Arco abierto | Comunidad, marca personal | 🛑 **El cierre se escribe en el mismo brief** |
 
 **Qué caja elegir:** no por gusto. Sale del `goal_del_arte` (tabla en
-`playbooks/TRADUCCION-STRATEGY.md`) y del banco de hooks propios que ya ganaron.
+`playbooks/TRADUCCION-DE-SLOT.md`) y del banco de hooks propios que ya ganaron.
 
 ---
 
@@ -51,7 +51,7 @@ a los 25-30s; el carrusel traduce el timing a slides (`slide 1 = hook`, `2-4 = b
 6. **1 idea por pieza.** Dos hooks compitiendo = ninguno funciona.
 7. **Todo Bold Claim con dato, precio o promesa va `⏸️ PENDIENTE APROBACIÓN`** con el nombre de quién
    lo valida.
-8. **El hook no cambia la promesa.** Puede cambiar el ángulo — la promesa es de Strategy.
+8. **El hook no cambia la promesa.** Puede cambiar el ángulo — la promesa es de ③ Marketing.
 
 ---
 
@@ -93,4 +93,4 @@ a los 25-30s; el carrusel traduce el timing a slides (`slide 1 = hook`, `2-4 = b
 
 `hook` (tipo + texto exacto). **Aporta a:** `guion`, `copy` y `audio_musica`.
 **No llena `formato`:** es heredado del calendario (única excepción: el caso `🟡 propuesto por
-Creative` de `playbooks/TRADUCCION-STRATEGY.md`).
+Creative` de `playbooks/TRADUCCION-DE-SLOT.md`).

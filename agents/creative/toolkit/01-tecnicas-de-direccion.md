@@ -56,7 +56,7 @@ Poner la idea en un lugar **completamente ajeno o inesperado**.
 Aplicar una emoción que **incomode un poco**: miedo, ego, vergüenza, enojo.
 
 - Crear un sentimiento real, no una pieza bonita pero tibia
-- Sale del **problema interno** del arco (Capa 3) y del enemigo declarado por Strategy
+- Sale del **problema interno** del arco (Capa 3) y del enemigo declarado por ③ Marketing
 - **Con cuidado y ética.** Tensión no es crueldad, ni miedo inventado, ni vergüenza sobre el cuerpo
   o la identidad de alguien
 - **Dónde pesa:** infoproducto, B2B, marca personal, alto ticket
@@ -88,7 +88,7 @@ Aplicar una emoción que **incomode un poco**: miedo, ego, vergüenza, enojo.
 | Paso | Qué se hizo |
 |---|---|
 | **Técnica 1 — Escala** | El número del resultado (`+40%`) ocupa el 70% de la pantalla |
-| **Técnica 2 — Tensión** | Ángulo de miedo competitivo, tomado del enemigo declarado por Strategy |
+| **Técnica 2 — Tensión** | Ángulo de miedo competitivo, tomado del enemigo declarado por ③ Marketing |
 | **BIG IDEA** | *"El testimonio que da miedo no leer."* |
 | **Derivación** | Hook: Bold Claim con dato · Tono: directo, sin adornos · Estética: editorial oscuro, 1 acento |
 | **Filtro D/N/R** | D ✅ (el acento y el encuadre son activos distintivos) · N ✅ (la categoría hace testimonios sonrientes, no tensos) · R ✅ (responde la objeción #1 del mapa) |
@@ -111,4 +111,4 @@ Aplicar una emoción que **incomode un poco**: miedo, ego, vergüenza, enojo.
 
 ## Qué columna del Excel llena
 
-`concepto` (la BIG IDEA). **Alimenta:** `hook`, `estetica_mood` y `composicion_encuadre`.
+`concepto` (la BIG IDEA). **Alimenta:** `hook`, `emocion`, `estetica_mood` y `escenas`.

@@ -4,7 +4,7 @@
 ## Qué decide
 
 Cómo se ve la pieza y **en qué orden se lee**. Traduce la estética en instrucciones precisas para que
-Production ejecute sin adivinar. **Creative dirige; Production arma.**
+⑤ Producción ejecute sin adivinar. **Creative dirige; ⑤ Producción arma.**
 
 ---
 
@@ -61,12 +61,12 @@ La diferencia: la segunda **no admite interpretación**. Eso es dirección.
 3. **Safe zones respetadas**, canal por canal. Un texto tapado por la UI es un texto que no existe.
 4. **Coherencia con Branding.** La paleta, la tipografía y el lente son de Branding. Creative los
    **aplica**, no los define ni los estira.
-5. **Los activos distintivos de Strategy (4.5) se refuerzan**, no se reinventan cada pieza. Es lo que
+5. **Los activos distintivos de ③ Marketing (4.5) se refuerzan**, no se reinventan cada pieza. Es lo que
    hace que la marca acumule memoria.
 6. **Los elementos gráficos salen del banco de assets.** Si hace falta uno nuevo, se pide a Branding.
 7. **Foto real antes que stock** — en casi todos los arquetipos, y obligatorio en los locales, donde
    la evidencia real vence a la producción cara.
-8. **Se especifica, no se ejecuta.** Nada de archivos de diseño ni mockups finales: eso es Production.
+8. **Se especifica, no se ejecuta.** Nada de archivos de diseño ni mockups finales: eso es ⑤ Producción.
 
 ---
 
@@ -99,10 +99,10 @@ La diferencia: la segunda **no admite interpretación**. Eso es dirección.
 | Reinventar los activos distintivos cada pieza | Se reinicia la memoria de marca en cada publicación |
 | Fotos de stock donde la evidencia real gana | En locales y servicios, el stock destruye confianza |
 | Describir con adjetivos (*"impactante", "limpio"*) | No es una instrucción: el ejecutor adivina |
-| Entregar un mockup en vez de la especificación | Se cruzó la frontera con Production |
+| Entregar un mockup en vez de la especificación | Se cruzó la frontera con ⑤ Producción |
 
 ---
 
 ## Qué columnas del Excel llena
 
-`layout_de_texto`, `estetica_mood`, `elementos_graficos`. **Aporta a:** `composicion_encuadre`.
+`layout_de_texto`, `estetica_mood`, `elementos_graficos`. **Aporta a:** `encuadres`.

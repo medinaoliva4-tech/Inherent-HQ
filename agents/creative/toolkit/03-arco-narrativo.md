@@ -13,13 +13,13 @@ no solo se vea.
 
 | # | Pieza | Cómo se aplica | De dónde sale |
 |---|---|---|---|
-| 1 | **Héroe** | Es el **cliente**, no la marca. La pieza arranca desde su deseo | Avatar de Strategy (`ingenieria-inversa.md` 1.5) |
-| 2 | **Problema** | Externo (lo tangible) · **interno** (cómo lo hace sentir) · filosófico (por qué está mal) | Mapa de objeciones de Strategy |
+| 1 | **Héroe** | Es el **cliente**, no la marca. La pieza arranca desde su deseo | Avatar de ③ Marketing (② ingeniería inversa 1.5) |
+| 2 | **Problema** | Externo (lo tangible) · **interno** (cómo lo hace sentir) · filosófico (por qué está mal) | Mapa de objeciones de ③ Marketing |
 | 3 | **Guía** | Acá entra la marca: **empatía + autoridad**. Yoda, no Luke | Empatía = el insight · Autoridad = los RTB |
 | 4 | **Plan** | 3 pasos simples que bajan el miedo a actuar | Derivados del **mecanismo único** |
 | 5 | **Llamado** | Directo (agendá, comprá) o transicional (descargá, guardá) | El `goal_del_arte` |
 | 6 | **Éxito** | El después, **visible**. La transformación pintada | El después de la promesa |
-| 7 | **Fracaso evitado** | El costo de no hacer nada. Urgencia sin agresividad | El **enemigo** declarado por Strategy |
+| 7 | **Fracaso evitado** | El costo de no hacer nada. Urgencia sin agresividad | El **enemigo** declarado por ③ Marketing |
 
 ---
 
@@ -48,7 +48,7 @@ Elegir el nivel es la decisión más importante del arco.
 5. **La marca aparece como guía, nunca antes del problema.** Si la marca entra en el segundo 1, la
    pieza es un anuncio y se saltea.
 6. **El plan tiene 3 pasos.** Uno es una orden, cinco es un curso.
-7. **El fracaso evitado no se inventa.** Sale del enemigo real de Strategy, no de un miedo fabricado.
+7. **El fracaso evitado no se inventa.** Sale del enemigo real de ③ Marketing, no de un miedo fabricado.
 
 ---
 
