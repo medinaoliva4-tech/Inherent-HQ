@@ -20,7 +20,7 @@ Branding. Si falta alguno, **DETENÉ** y corré esa capa primero.
 ## El proceso
 
 **1 · Insight.** El dolor o deseo **específico**, con cita literal del comprador que lo respalda.
-Si Strategy no lo dejó explícito, escribí **3 candidatos y elegí el más específico**.
+Si ③ Marketing no lo dejó explícito, escribí **3 candidatos y elegí el más específico**.
 ```
 ❌ "quiere crecer"                                    → genérico, no sirve
 ✅ "le da pena mandarle su Instagram a un cliente"    → específico, se puede atacar
@@ -38,7 +38,7 @@ Tensión"* es auditable; *"lo hice más impactante"* no. Las técnicas se encade
 **3 · Escribir 3 BIG IDEAS**, **1 frase cada una**. Si no cabe en una frase, no es una idea: son dos.
 
 **4 · Elegir 1** y verificar que conecta **insight + marca**, y que **cuelga de la idea de campaña**
-de Strategy §5.4 — no compite con ella.
+de ③ Marketing §5.4 — no compite con ella.
 
 **5 · Derivar** en 1 línea cada uno: **hook, tono y dirección estética**. Si los tres no salen de la
 misma idea, la idea no está organizando la pieza.
@@ -56,7 +56,7 @@ misma idea, la idea no está organizando la pieza.
 ## Reglas duras
 - **1 idea por pieza, en 1 frase.**
 - **La idea nunca requiere cambiar la promesa.** Si la necesita, o la promesa está mal (y eso se
-  devuelve a Strategy) o la idea no es nuestra.
+  devuelve a ③ Marketing) o la idea no es nuestra.
 - **La técnica se aplica a la referencia, no a la promesa.**
 - **Toda idea pasa por el filtro del avatar** del brief §D: si no le habla, se descarta **antes de
   escribirla**.
