@@ -2,12 +2,12 @@
 name: cr-swipe-file
 description: >
   Capa 1 del método de Creatividad — investigación de referencias y análisis de piezas ganadoras.
-  Arranca de la tabla 15x7 que Strategy ya descompuso, cosecha solo el hueco, filtra por longevidad
+  Arranca de la tabla 15x7 que ③ Marketing ya descompuso, cosecha solo el hueco, filtra por longevidad
   (un ad de 60-90+ días es un ad que paga) y outliers contra su propia base, extrae el patrón —
   nunca la imagen — y lo traduce a hipótesis verificadas contra el mapa de saturación. Úsala cuando
   pidan "buscá referencias", "qué está funcionando en este formato", "analizá estos ads",
   "armá el swipe file", "qué hooks están ganando". No re-mapea la categoría: eso es Capa 1 de
-  Strategy y ya está hecha.
+  ③ Marketing y ya está hecha.
 ---
 
 # Capa 1 — Swipe File
@@ -24,13 +24,13 @@ description: >
 
 | | Paso | Qué produce |
 |---|---|---|
-| **0** | Arrancar de la tabla **15×7** de Strategy | Qué ya está resuelto, citado por # de fila |
+| **0** | Arrancar de la tabla **15×7** de ③ Marketing | Qué ya está resuelto, citado por # de fila |
 | **1** | Calcular **el hueco** | Qué formato / canal / tipo de hook falta cosechar |
 | **2** | Filtrar por **señal** | Escala `⏱️`: `⏱️60-90+d` · `⏱️30-60d` · `⏱️outlier` · `⏱️estable` · <30d se descarta |
 | **3** | Diseccionar | hook · ángulo · formato · estructura · prueba · CTA |
 | **4** | Organizar la bóveda | Por **pilar** y por **tipo de hook** |
 | **5** | Traducir a hipótesis | Patrón → hipótesis nuestra, atada a un slot |
-| **6** | **Verificar anti-default** | Cruce contra el **mapa de saturación** de Strategy |
+| **6** | **Verificar anti-default** | Cruce contra el **mapa de saturación** de ③ Marketing |
 
 ## Secuencia de MCPs
 ```
@@ -52,7 +52,7 @@ outlier — y sin eso la referencia entró por gusto, no por señal.
   conteo de fuentes independientes (3+ = 🟢). Un ad `⏱️90d` de una sola fuente sigue siendo 🟡.
 - 🛑 **Patrón, no imagen.** Se extrae la estructura. El link va a `referencia_visual` para que el
   ejecutor **vea** la referencia, pero lo que se dirige es el patrón.
-- 🛑 **No re-mapees la categoría.** Strategy ya lo hizo. Solo se cosecha el hueco.
+- 🛑 **No re-mapees la categoría.** ③ Marketing ya lo hizo. Solo se cosecha el hueco.
 - 🛑 **Verificá contra el mapa de saturación.** Un patrón ganador que además es el default de
   categoría nos vuelve invisibles al adoptarlo.
 - **"Ganadora" es relativo a su propia base.** Un post con muchas views de una cuenta enorme puede
