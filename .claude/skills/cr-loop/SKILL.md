@@ -53,17 +53,17 @@ gana → se remixa (mismo ángulo, nuevo visual) → se refresca ANTES de que la
 4. **Banco de hooks** actualizado — los ganadores propios entran a la bóveda y van primero
 5. Qué **sube al tope de qué ficha** del `toolkit/`
 6. **3 hipótesis** para la próxima ronda
-7. **Devoluciones a Strategy** — lo que Creative detectó y no le toca arreglar
+7. **Devoluciones aguas arriba** — lo que Creative detectó y no le toca arreglar
 
-## Frontera con Analytics y Strategy
+## Frontera con ③ Marketing y ③ Marketing
 | Departamento | Su pregunta |
 |---|---|
 | **Creative** Capa 7 | *¿Qué patrón creativo ganó y qué entra al próximo brief?* |
-| **Strategy** Capa 8 | *¿Se movió la MUST BE TRUE? ¿Compoundea?* |
-| **Analytics** | Los dashboards y el reporte de performance |
+| **③ Marketing** Capa 8 | *¿Se movió la MUST BE TRUE? ¿Compoundea?* |
+| **③ Marketing** | Los dashboards y el reporte de performance |
 
 Tres preguntas distintas sobre los mismos datos. **Ninguna reemplaza a otra, y Creative no escribe
-las otras dos.** Una pieza que rindió bien pero no movió nada estratégico se **devuelve a Strategy**;
+las otras dos.** Una pieza que rindió bien pero no movió nada estratégico se **devuelve a ③ Marketing**;
 no se declara victoria desde acá.
 
 ## Cierre
