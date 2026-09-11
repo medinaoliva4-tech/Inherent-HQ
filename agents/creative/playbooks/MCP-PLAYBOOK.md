@@ -9,7 +9,7 @@ inventa el dato que ese MCP hubiera dado.
 > llamar, presupuesto de 3 intentos, distinguir error de cero, patrón ≠ señal, citar la fuente,
 > leer es libre y escribir requiere intención declarada.
 >
-> *(Nota de arquitectura: ese archivo es transversal al repo, no propio de Strategy. Cuando exista un
+> *(Nota de arquitectura: ese archivo es transversal al repo, no propio de ③ Marketing. Cuando exista un
 > tercer agente conviene moverlo a `playbooks/` en la raíz. No se duplica mientras tanto.)*
 
 ---
@@ -30,7 +30,7 @@ inventa el dato que ese MCP hubiera dado.
 | Landings, páginas de venta, reviews, prensa | **Firecrawl** / **WebFetch** | `firecrawl_search` · `WebFetch` |
 | Leer la Knowledge Base del departamento | **Notion** | `notion-fetch` · `notion-search` |
 | Publicar brief o conceptos para el equipo | **Notion** | `notion-create-pages` |
-| Entregar el Excel aprobado a Production | **Google Drive** | `create_file` · `share_file` |
+| Entregar el Excel aprobado a ⑤ Producción | **Google Drive** | `create_file` · `share_file` |
 | Datos internos del sistema Inherent | **Inherent OS** | `list_models` · `list_records` |
 | Cualquier app sin MCP propio | **Zapier** | `discover_zapier_actions` |
 
@@ -60,7 +60,7 @@ creativo validado con dinero real.
 engagement**. Un ad con mucho engagement y poca antigüedad es un test, no un ganador.
 
 **Frontera:** 🛑 Creative **no lanza ni edita campañas**. `launch_*` y `update_budget` están en
-`deny` para todo el repo. La compra y optimización de pauta es de Growth.
+`deny` para todo el repo. La compra y optimización de pauta es de ⑧B Ads.
 
 ---
 
@@ -105,7 +105,7 @@ comprador.
 - `firecrawl_search` → reviews, comentarios, prensa, referencias de categoría
 - `WebFetch` → cuando ya se tiene la URL exacta de una landing y se quiere una lectura dirigida
 
-**Nota:** Strategy ya construyó el **mapa de objeciones** en `ingenieria-inversa.md`. Creative arranca
+**Nota:** ③ Marketing ya construyó el **mapa de objeciones** en ② ingeniería inversa. Creative arranca
 de ahí. Firecrawl se usa para el **hueco**: la objeción específica del formato o del ángulo de este
 bloque.
 
@@ -116,10 +116,10 @@ bloque.
 | MCP | Rol en Creative | Precaución |
 |---|---|---|
 | **Notion** | Leer la Knowledge Base del departamento; publicar brief y conceptos | `ask` antes de escribir. El repo es la fuente de verdad del método |
-| **Google Drive / Sheets** | Entregar el Excel aprobado a Production | **Solo post-GATE 3.** Nunca un Excel con filas `PENDIENTE` |
+| **Google Drive / Sheets** | Entregar el Excel aprobado a ⑤ Producción | **Solo post-GATE 3.** Nunca un Excel con filas `PENDIENTE` |
 | **Inherent OS** | Histórico del cliente, piezas anteriores | Leer libremente; escribir solo con intención declarada |
-| **Higgsfield** y generadores de media | **Fuera del alcance de Creative** | Creative **dirige**; la generación de media es de Production |
-| **Figma y herramientas de diseño** | **Fuera del alcance de Creative** | Creative especifica el layout; el archivo lo arma Production |
+| **Higgsfield** y generadores de media | **Fuera del alcance de Creative** | Creative **dirige**; la generación de media es de ⑤ Producción |
+| **Figma y herramientas de diseño** | **Fuera del alcance de Creative** | Creative especifica el layout; el archivo lo arma ⑤ Producción |
 | **Zapier** | Comodín para apps sin MCP propio | `discover` → `inspect` → `execute`. Nunca escritura sin gate |
 | **Gmail / Calendar** | Coordinación, no creatividad | Nunca enviar sin autorización explícita |
 
@@ -137,7 +137,7 @@ bloque.
 5.  Eden      study_top_titles / study_top_carousels  → patrones de formato del canal
 6.  Firecrawl landings + reviews                      → objeciones y lenguaje literal del hueco
 7.  Diseccionar en los 6 elementos → marcar 🟢/🟡/⚪ → tabla de hipótesis
-8.  Cruzar cada patrón contra el MAPA DE SATURACIÓN de Strategy → descartar defaults
+8.  Cruzar cada patrón contra el MAPA DE SATURACIÓN de ③ Marketing → descartar defaults
 9.  (con gate) Eden create_board → archivar la bóveda
 ```
 
