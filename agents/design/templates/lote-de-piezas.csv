@@ -1,0 +1,5 @@
+id_pieza,fecha,canal,formato,dimensiones,funcion,pilar,temperatura,titular,copy_en_pieza,cta,asset_base,slides,layout,estado_diseno,traza_calendario,link_figma,export
+P001,2026-10-06,Instagram,feed-4x5,1080x1350,Hero,Entretenimiento,Frío,Titular de máximo 8 palabras,,,fotos/originales/IMG_0412.jpg,1,Foto + scrim,En brief,CAL-W1-IG-01,,
+P002,2026-10-07,Instagram,carrusel,1080x1350,Utility,Educativo,Tibio,Portada del carrusel,Texto por slide en el brief,Guardá este post,fotos/originales/IMG_0455.jpg,6,Lista,En brief,CAL-W1-IG-02,,
+P003,2026-10-08,Instagram,story,1080x1920,Proof,Educativo,Tibio,Titular corto,,Deslizá para ver,ASSET FALTANTE,1,Titular pleno,PENDIENTE — resuelve tipográfica,CAL-W1-IG-03,,
+P004,2026-10-09,Facebook,feed-1x1,1080x1080,Conversion,Promocional,Caliente,Titular de oferta,,,fotos/recortes/producto-01.png,1,Sticker central,BLOQUEADO — Conversion sin CTA,CAL-W1-FB-01,,

@@ -8,6 +8,10 @@ de Claude Code.
 **Agente de Estrategia** — construye una estrategia de posicionamiento y crecimiento completa por
 ingeniería inversa conectada con media, adaptada al tipo de empresa del cliente.
 
+**Agente de Diseño** — toma la guía de marca, el contenido producido y el calendario creativo, y
+entrega piezas visuales estáticas listas para publicar o pautar, por formato (feed / story /
+carrusel) y canal (Instagram / Facebook).
+
 ```
 agents/strategy/
 ├── AGENT.md                  # quién es el agente, qué entrega, qué no hace
@@ -22,14 +26,35 @@ agents/strategy/
 └── clients/                  # un cliente = una carpeta
 ```
 
+```
+agents/design/
+├── AGENT.md                  # quién es el agente, qué entrega, qué no hace
+├── METHOD.md                 # el método completo — 8 capas (D0-D7)
+├── PROCESS.md                # el proceso operativo paso a paso, con 3 gates
+├── systems/                  # tokens · composición · tipografía · color · elementos · formatos
+├── playbooks/                # Figma · assets y MCPs
+├── templates/                # los entregables
+├── OUTPUTS.md                # mapa completo de outputs
+├── CORRELACION.md            # de dónde viene cada campo
+├── qa/                       # gates de calidad
+└── clients/                  # un cliente = una carpeta
+```
+
 ## Cómo se usa
 
 Desde Buzz, hablale al agente en lenguaje natural:
 
+**Estrategia**
 - *"Armá la estrategia de [cliente]"* → corre el método completo desde la Capa 0
 - *"Investigá qué está haciendo la competencia de [cliente]"* → Capa 1, ingeniería inversa
 - *"¿Cuál es el posicionamiento de [cliente]?"* → Capa 4
 - *"Armá el calendario estratégico de [cliente]"* → Capa 7
+
+**Diseño**
+- *"Diseñá las piezas de [cliente] de [mes]"* → corre el método completo desde D0
+- *"Armá el sistema visual de [cliente]"* → D0, tokens y contraste
+- *"Adaptá esto a story"* → D6
+- *"Revisá estas piezas"* → D7, QA en 3 pasadas
 
 Las skills de `.claude/skills/` se activan solas según el pedido.
 
@@ -46,9 +71,30 @@ Las skills de `.claude/skills/` se activan solas según el pedido.
 
 Plus `medicion.md` (Capa 8) cuando hay datos disponibles.
 
+## Entregables del agente de Diseño
+
+| # | Archivo | Capa | Gate |
+|---|---|---|---|
+| 1 | `sistema-visual.md` | D0 · Tokens, contraste, grillas, layouts | 🚦 |
+| 2 | `lote-de-piezas.csv` | D1 · Lectura del calendario creativo | — |
+| 3 | `briefs/<id_pieza>.md` | D2 · Decisión por pieza | — |
+| 4 | `ruta-visual.md` | D3-D4 · Composición y capas gráficas | 🚦 |
+| 5 | Archivo Figma | D5-D6 · Construcción y adaptación | — |
+| 6 | `entrega.md` + `/exports` | D7 · QA y handoff | 🚦 |
+
 ## Estado
 
 | Agente | Estado |
 |---|---|
 | Strategy | ✅ Operativo |
+| Design | ✅ Operativo |
 | Growth / Creative / Branding / Production / Content / Analytics | ⬜ Pendiente |
+
+## Handoffs entre agentes
+
+```
+Strategy  ──► calendario macro, posicionamiento, activos distintivos ──► Creative ──► Design
+Branding  ──► guía de marca ────────────────────────────────────────────────────► Design
+Production ──► fotos y assets ──────────────────────────────────────────────────► Design
+Design    ──► exports aprobados ──► Content (publica) · Media Buy (pauta)
+```

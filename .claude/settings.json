@@ -41,7 +41,14 @@
       "mcp__Inherent_O_S__get_record",
       "mcp__Google_Drive__search_files",
       "mcp__Google_Drive__read_file_content",
-      "mcp__Google_Drive__get_file_metadata"
+      "mcp__Google_Drive__get_file_metadata",
+      "mcp__Google_Drive__download_file_content",
+      "mcp__Eden__eden_read_media_card",
+      "mcp__Eden__eden_search_captures",
+      "mcp__Higgsfield__remove_background",
+      "mcp__Higgsfield__upscale_image",
+      "mcp__Higgsfield__show_medias",
+      "mcp__Higgsfield__show_generation_by_ids"
     ],
     "ask": [
       "mcp__Eden__eden_create_board",
@@ -52,7 +59,13 @@
       "mcp__Google_Drive__create_file",
       "mcp__Google_Drive__share_file",
       "mcp__Inherent_O_S__create_record",
-      "mcp__Inherent_O_S__update_record"
+      "mcp__Inherent_O_S__update_record",
+      "mcp__Higgsfield__generate_image",
+      "mcp__Higgsfield__generate_image_batch",
+      "mcp__Higgsfield__outpaint_image",
+      "mcp__Higgsfield__reframe",
+      "mcp__Higgsfield__media_upload",
+      "mcp__Higgsfield__media_import_url"
     ],
     "deny": [
       "mcp__AdWhispr_Ads__launch_campaign",
@@ -66,7 +79,11 @@
       "mcp__Eden__eden_schedule_post",
       "mcp__Gmail__send_message",
       "mcp__Inherent_O_S__delete_record",
-      "mcp__Google_Drive__trash_file"
+      "mcp__Google_Drive__trash_file",
+      "mcp__Higgsfield__tiktok_publish",
+      "mcp__Higgsfield__tiktok_prepare_publish",
+      "mcp__Eden__eden_create_scheduling_draft",
+      "mcp__Eden__eden_upload_scheduling_media"
     ]
   }
 }
