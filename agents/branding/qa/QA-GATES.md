@@ -32,7 +32,7 @@ Checklist por capa. **Ninguna capa se entrega sin pasar su bloque completo.**
 ## Capa B2 — Concepto y personalidad
 - [ ] La idea madre es **una frase** y resuelve al menos **2 de 3** decisiones de diseño concretas
 - [ ] La idea madre no es el slogan ni la promesa
-- [ ] El punto de vista sale del **enemigo declarado en Strategy**, citado
+- [ ] El punto de vista sale del **enemigo declarado en ② Estrategia**, citado
 - [ ] Está escrito **a quién repele** la marca
 - [ ] La verdad emocional tiene origen (objeción literal o audiencia real), no es invención
 - [ ] Hay 3-5 rasgos, **cada uno con contraste** (`X pero Y`)
@@ -68,52 +68,64 @@ Checklist por capa. **Ninguna capa se entrega sin pasar su bloque completo.**
 - [ ] El descarte de la dirección no elegida está documentado por escrito
 - [ ] 🚦 GATE B2 registrado con estado
 
-## Capa B5 — Sistema visual
-- [ ] **Todos los valores son concretos.** Ningún *"gris oscuro"* ni *"sans moderna"*
-- [ ] Logo: variaciones, área de respiro, tamaño mínimo y usos prohibidos
-- [ ] Cada color tiene **rol y trabajo** declarado
-- [ ] Hay proporción de reparto y **un solo acento**
-- [ ] **Contraste verificado par por par**, con ratio escrito, mínimo AA
-- [ ] Combinaciones prohibidas listadas
-- [ ] El sistema funciona en fondo claro **y** oscuro
-- [ ] El sistema sobrevive en blanco y negro
-- [ ] Si hay impresión: conversión CMYK **verificada**, no asumida
+## Capa B5 — Lenguaje visual
+- [ ] **Los valores de identidad son concretos.** Ningún *"gris oscuro"* ni *"sans moderna"*
+- [ ] 🛑 **No se fijó ningún valor de ejecución** — escala, grillas, márgenes, safe areas, scrim ni tokens
+- [ ] Logo: variaciones, área de respiro, tamaño mínimo, usos prohibidos y **frecuencia**
+- [ ] Está declarado en qué piezas va el logo y en cuáles no
+- [ ] Cada color tiene **rol** y **dónde se usa / dónde no**
+- [ ] Hay armonía declarada, proporción de reparto y **un solo acento**
+- [ ] Está respondido el **chequeo de categoría**: ¿esta paleta nos hace ver igual que la competencia?
 - [ ] La justificación del color cita el mapa de saturación, **no psicología del color**
+- [ ] **Piso de contraste declarado** (4.5:1 · 7:1 sobre foto) y paleta base verificada contra él
+- [ ] Combinaciones prohibidas listadas
+- [ ] El lenguaje funciona en fondo claro **y** oscuro, y sobrevive en blanco y negro
+- [ ] Si hay impresión: conversión CMYK **verificada**, no asumida
 - [ ] 1-2 familias tipográficas (3 solo con justificación escrita)
-- [ ] Cada rol tipográfico tiene familia, peso, tamaño, interlineado y tracking
+- [ ] Cada rol tipográfico tiene familia, **por qué esa** y pesos en uso
 - [ ] Hay contraste real de pesos (nunca `Light + Regular`)
 - [ ] **`ñ`, tildes y signos de apertura verificados carácter por carácter**
 - [ ] Licencia declarada con tipo y poseedor + fallback web-safe
-- [ ] Grilla con márgenes, columnas y espacio en blanco mínimo
-- [ ] Jerarquía declarada en 3 niveles
-- [ ] Estilo fotográfico con tratamiento concreto y su lista de "nunca"
-- [ ] Límite de elementos gráficos por pieza
-- [ ] Los activos distintivos de `posicionamiento.md` Sección 5 están **todos** codificados
-- [ ] Cada decisión visual traza a una decisión estratégica o a un rasgo
+- [ ] Principios de composición declarados: densidad, espacio, trazo y forma, 3 niveles, simetría
+- [ ] Está declarado **dónde vive el reconocimiento** (tipografía / color / forma / foto)
+- [ ] Tratamiento fotográfico escrito para que **⑤ Producción** pueda dirigir en cámara, con su "nunca"
+- [ ] Está declarado cuál de las 5 familias de elementos gráficos aplica y cuáles están prohibidas
+- [ ] Los activos distintivos de `posicionamiento.md` §5 están **todos** codificados, con su plazo
+- [ ] Cada decisión traza a un eje de B4, a un rasgo o a la idea madre
 
-## Capa B6 — Aplicaciones y gobernanza
+## Capa B6 — Reglas y gobernanza
 - [ ] Están cubiertos **todos** los puntos de contacto declarados en B0.3 — ninguno omitido
-- [ ] Cada uno tiene medidas, jerarquía, tono y su "qué NO se hace acá"
-- [ ] Hay sistema de portadas con zona segura y tamaño mínimo legible en thumbnail
+- [ ] Cada uno tiene rol, tono, densidad y su "qué NO se hace acá"
+- [ ] 🛑 **No hay medidas ni specs por formato** — eso es de ⑥A Diseño
+- [ ] Voz visual definida para ⑦ Posting: densidad, mayúsculas, longitud de titular, CTA, palabras
 - [ ] Está declarado qué se repite siempre, qué puede variar y qué no se repite seguido
-- [ ] **El sistema no se rompe si se atrasa una pieza** — sin damero ni ratios fijos frágiles
+- [ ] **La marca no se rompe si se atrasa una pieza** — sin damero ni ratios fijos frágiles
 - [ ] Las reglas duras están en lista corta y concreta
-- [ ] **Test final de reconocimiento corrido, con evidencia**, los 5 ítems
-- [ ] **El ejecutor real armó una pieza siguiendo la guía y le salió sin preguntar**
+- [ ] **Test de reconocimiento corrido, con evidencia**, los 5 ítems
+- [ ] El test está **comparado contra B1.2** y el resultado se dice tal cual
 - [ ] Gobernanza: quién aprueba, cada cuánto se revisa, cómo se pide excepción
 - [ ] Archivos fuente y licencias con ubicación declarada
 - [ ] 🚦 GATE B3 registrado con estado
 
+## El consolidado — `guia-aplicable.md`
+- [ ] Tiene las **12 secciones**, en el mismo orden que `agents/design/templates/guia-aplicable.md`
+- [ ] **No se le cambió la estructura** — ⑥A Diseño tiene que poder correr D0 **Modo A**
+- [ ] La sección **0 · El intel** permite rastrear todo lo que sigue
+- [ ] La sección **10 · Qué decidió Branding** lista todo lo que no venía en el intel, con su porqué
+- [ ] Cada sección dice **qué departamento la consume**
+- [ ] No agrega información nueva: consolida lo que ya está en los 6 entregables
+- [ ] Está el bloque HANDOFF completo
+
 ---
 
 ## Coherencia global — antes del handoff
-- [ ] La plataforma **no contradice** el posicionamiento de Strategy
+- [ ] La plataforma **no contradice** el posicionamiento de ② Estrategia
 - [ ] El sistema visual **no contradice** la personalidad
 - [ ] El tono de voz y el sistema visual dicen lo mismo — si uno es sobrio y el otro grita, hay error
-- [ ] La cadencia y complejidad del sistema **caben en la capacidad real** del ejecutor
+- [ ] La complejidad del lenguaje **cabe en la capacidad real** declarada en B0.3
 - [ ] Si la marca promete premium, el sistema lo **demuestra** — no lo declara
-- [ ] Ningún entregable pisa a Strategy, Growth, Creative, Production o Content
+- [ ] Ningún entregable pisa a ② Estrategia, ③ Marketing, ④ Creatividad, ⑤ Producción, ⑥A Diseño, ⑥B Video, ⑦ Posting ni ⑧B Ads
 - [ ] Los 3 gates humanos están registrados con estado
-- [ ] Lo que haya que devolver a Strategy está reportado, no maquillado
+- [ ] Lo que haya que devolver a ② Estrategia está reportado, con dos alternativas,, no maquillado
 - [ ] Todo faltante está marcado `BLOQUEADO` o `PENDIENTE`, ninguno omitido en silencio
-- [ ] `brand-guidelines.md` está consolidado y la página 0 se puede leer en 30 segundos
+- [ ] `guia-aplicable.md` está consolidado y ⑥A Diseño puede correr **D0 Modo A** con él

@@ -51,7 +51,7 @@ formal ↔ coloquial · serio ↔ divertido · distante ↔ cercano · sobrio �
 - **El tono se sostiene igual en un presupuesto que en un caption.** Esa coherencia entre todos los
   puntos de contacto es lo que construye confianza — y la confianza es lo que justifica el precio.
 - **No escribas copy final.** Definís el sistema y mostrás ejemplos. Las piezas concretas son de
-  **Creative**.
+  **④ Creatividad**.
 - El glosario propio (cómo llamamos al producto, al cliente, al proceso) es obligatorio: es lo que
   usa el equipo del cliente todos los días.
 
@@ -64,4 +64,4 @@ los dos está mal. **Se resuelve antes del consolidado**, no después.
 Correr el bloque **Capa B3** de `agents/branding/qa/QA-GATES.md`.
 
 ## Handoff
-→ `br-aplicaciones` (el tono de cada punto de contacto entra en B6.1)
+→ `br-guia-aplicable` (el tono de cada punto de contacto entra en B6.1)

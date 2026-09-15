@@ -4,7 +4,7 @@
 abogado no copia la provocación: copia el **pensamiento estratégico**. Aplicar el mismo registro a
 los dos garantiza que uno de los dos se rompa.
 
-**Qué es y qué no es.** El **arquetipo de empresa** (1-11, de Strategy) dice *cómo gana el negocio*:
+**Qué es y qué no es.** El **arquetipo de empresa** (1-11, de ② Estrategia) dice *cómo gana el negocio*:
 motor de demanda, canales, métricas. El **modo de marca** dice *con qué registro se construye la
 identidad*: cuánto riesgo tolera, dónde vive el valor percibido, qué recursos puede usar.
 
@@ -100,7 +100,7 @@ DTC, fitness, café, indumentaria, comunidades.
 
 Punto de partida, **no regla**. La evidencia del cliente manda sobre la tabla.
 
-| # | Arquetipo (Strategy) | Modo dominante típico | Modificadores frecuentes |
+| # | Arquetipo (② Estrategia) | Modo dominante típico | Modificadores frecuentes |
 |---|---|---|---|
 | 01 | Local Alta Frecuencia | **Local** | Lifestyle · Rebelde |
 | 02 | Local Alto Ticket | **Local** | Premium · Formal |

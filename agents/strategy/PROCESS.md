@@ -147,7 +147,7 @@ Sin baseline: `⚠️ SIN BASELINE — este ciclo se establece como referencia`.
 Al cerrar, entregá el bloque:
 
 ```markdown
-## HANDOFF — Strategy → Branding / Growth / Creative
+## HANDOFF — Strategy → Growth / Creative
 - Cliente: · Arquetipo: · Fecha:
 - Entregables: [rutas de los 6 + medicion.md]
 - Gates aprobados: núcleo [✅/⬜] · posicionamiento [✅/⬜] · calendario [✅/⬜]
@@ -156,8 +156,7 @@ Al cerrar, entregá el bloque:
 - Renuncias explícitas de este ciclo:
 - Huecos de evidencia abiertos: [⚠️ SIN DATOS pendientes]
 - Confianza general: 🟢 / 🟡 / 🔴
-- Siguiente: **Branding** (identidad y guidelines — requiere el gate 2 aprobado) ·
-  Growth (monetización) · Creative (piezas concretas)
+- Siguiente: Growth (monetización) · Creative (el brief de cada pieza)
 ```
 
 ---

@@ -1,0 +1,5 @@
+id_pieza,fecha,canal,formato,goal,nivel_1,nivel_2,nivel_3,cta,foto_sugerida,slides,notas
+P001,2026-10-06,Instagram,feed-4x5,autoridad,El titular que se lee primero (máx. 8 palabras),La línea de contexto que lo hace entendible,Firma o dato chico,,fotos/originales/IMG_0412.jpg,1,
+P002,2026-10-07,Instagram,carrusel,educar,El hook de la portada,Un punto por slide,Numeración 1/6,Guardá este post,fotos/originales/IMG_0455.jpg,6,Seamless si el arte lo permite
+P003,2026-10-08,Instagram,story,comunidad,Titular corto,,Firma,Deslizá,,1,Sin foto — resolver tipográfica
+P004,2026-10-09,Facebook,feed-1x1,vender,El titular de la oferta,La condición,La vigencia,Reservá ahora,fotos/recortes/producto-01.png,1,

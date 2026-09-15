@@ -3,6 +3,10 @@
 Cómo Branding decide y especifica color. **El color no se elige por significado: se elige por
 contraste con la categoría y por función dentro del sistema.**
 
+> 🛑 **Alcance: la paleta base y el piso de contraste.**
+> La matriz de contraste medida par por par, los scrims y los tokens son de **⑥A Diseño**:
+> `agents/design/systems/COLOR-Y-CONTRASTE.md`.
+
 ---
 
 ## La regla que gobierna este playbook
@@ -95,13 +99,14 @@ El acento vale porque es escaso. **Si el acento está en todos lados, deja de ac
 
 ## Contraste y accesibilidad
 
-**No opcional.** Se verifica cada par texto/fondo que el sistema permita.
+**No opcional.** Branding **declara el piso** y verifica que la paleta base lo permita.
+⑥A Diseño **mide cada par en cada pieza**.
 
 | Caso | Ratio mínimo |
 |---|---|
-| Texto normal | **4.5:1** |
-| Texto grande (≥24px o ≥19px bold) | **3:1** |
-| Elementos de interfaz y bordes | **3:1** |
+| Texto legible en miniatura | **4.5:1** |
+| Texto sobre foto | **7:1** o scrim obligatorio |
+| Texto grande | **3:1** |
 
 Tabla de salida:
 
@@ -118,13 +123,15 @@ alguien las va a usar.
 
 - [ ] Cada color tiene **rol** y **trabajo** declarado
 - [ ] Hay proporción de reparto
-- [ ] Contraste verificado par por par, con ratio escrito
+- [ ] Piso de contraste declarado y paleta base verificada contra él
 - [ ] Combinaciones prohibidas listadas
 - [ ] El sistema funciona en **fondo claro y fondo oscuro**
 - [ ] El sistema **sobrevive en blanco y negro** (si no, el contraste depende solo del tono → frágil)
 - [ ] Si hay impresión: conversión CMYK verificada, no asumida
 - [ ] La justificación cita el **mapa de saturación**, no un diccionario de color
+- [ ] Está respondido el chequeo de categoría: ¿esta paleta nos hace ver igual que la competencia?
 - [ ] Ningún color entró porque *"queda lindo"*
+- [ ] 🛑 No se fijaron scrims ni tokens — eso es de ⑥A Diseño
 
 ---
 

@@ -1,7 +1,7 @@
 # Playbook — Auditoría y Saturación Visual (Capa B1)
 
 Cómo se hace la ingeniería inversa **visual** de una categoría. Es el equivalente de la Capa 1 de
-Strategy, pero mirando forma en vez de mensaje.
+② Estrategia, pero mirando forma en vez de mensaje.
 
 🛑 **Esta capa no decide nada.** Termina en mapa. Si aparece un *"por lo tanto"*, salió del rol.
 

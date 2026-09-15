@@ -25,9 +25,9 @@ Branding** — es de otro departamento.
 | 2 | `plataforma-de-marca.md` | B2 | posicionamiento + auditoría | ✅ |
 | 3 | `tono-de-voz.md` | B3 | plataforma aprobada | — |
 | 4 | `direccion-visual.md` | B4 | plataforma + auditoría | ✅ |
-| 5 | `sistema-visual.md` | B5 | dirección aprobada | — |
-| 6 | `aplicaciones-y-reglas.md` | B6 | sistema visual | — |
-| 7 | `brand-guidelines.md` | consolidado | los 6 anteriores | ✅ |
+| 5 | `lenguaje-visual.md` | B5 | dirección aprobada | — |
+| 6 | `reglas-de-marca.md` | B6 | lenguaje visual | — |
+| 7 | **`guia-aplicable.md`** | consolidado | los 6 anteriores | ✅ |
 
 ---
 
@@ -42,7 +42,7 @@ Branding** — es de otro departamento.
 | — Mínimo de ilegibilidad | Qué convención no se puede romper | declarado |
 | 4 Referencias | URL, fecha, principio extraído, forma descartada | todas con fuente |
 | 5 Hallazgos | 🟢/🟡/⚪ con conteo | **5-8** |
-| 6 Devolución a Strategy | Qué contradice al posicionamiento | o `N/A` |
+| 6 Devolución a ② Estrategia | Qué contradice al posicionamiento | o `N/A` |
 
 🛑 **No recomienda nada.**
 
@@ -90,43 +90,51 @@ Branding** — es de otro departamento.
 
 ---
 
-## 5 · `sistema-visual.md` — Capa B5
+## 5 · `lenguaje-visual.md` — Capa B5
 
 | Sección | Qué contiene |
 |---|---|
-| 1 Logo | Versiones · respiro · tamaño mínimo · usos prohibidos |
-| 2 Color | Tabla por rol con HEX/RGB/CMYK · reparto · **contraste verificado** · prohibidas |
-| 3 Tipografía | Escala por rol con peso, tamaño, interlineado, tracking · licencia · `ñ` · fallback |
-| 4 Composición | Márgenes · columnas · espacio en blanco mínimo · jerarquía en 3 niveles |
-| 5 Fotografía | Sujeto · encuadre · luz · tratamiento con valores · mezcla de planos · "nunca" |
-| 6 Elementos gráficos | Iconos · patrones · texturas · **límite por pieza** |
-| 7 Motion | Cortes · transiciones · animación de texto · subtítulos · apertura/cierre |
+| 1 Logo | Versiones · respiro · tamaño mínimo · usos prohibidos · **frecuencia** |
+| 2 Color | Paleta por rol con HEX/RGB/CMYK · armonía · reparto · chequeo de categoría · **piso** de contraste |
+| 3 Tipografía | Familias, por qué, pesos en uso · licencia · `ñ` · fallback |
+| 4 Principios de composición | Densidad · espacio · trazo y forma · 3 niveles · simetría |
+| 5 Tratamiento fotográfico | Luz · encuadre · paleta · gente · dirección en cámara · post · "nunca" |
+| 6 Lenguaje gráfico | Cuál de las 5 familias aplica y con qué carácter |
+| 7 Motion | Carácter del movimiento — o `N/A` |
 | 8 Sonido | Música · voz · sonido de marca — o `N/A` |
-| 9 Activos distintivos | Los de `posicionamiento.md` Sección 5, con valor concreto |
-| 10 Trazabilidad | Cada decisión visual → su origen |
+| 9 Activos distintivos | Los de `posicionamiento.md` §5, con identidad concreta |
+| 10 Trazabilidad | Cada decisión → su origen |
 
-**Regla del entregable:** todo valor es concreto. `#0F1115`, no *"gris oscuro"*.
+**Regla del entregable:** los valores de **identidad** son concretos (`#0F1115`, `Inter Tight`).
+Los valores de **ejecución** no se fijan — son de ⑥A Diseño.
 
 ---
 
-## 6 · `aplicaciones-y-reglas.md` — Capa B6
+## 6 · `reglas-de-marca.md` — Capa B6
 
 | Sección | Qué contiene |
 |---|---|
-| 1 Puntos de contacto | Todos los declarados en B0.3, con medidas, jerarquía, tono y "qué NO" |
-| 2 Sistema de portadas | Grilla · zona segura · palabras máximas · legibilidad en thumbnail |
+| 1 Rol por punto de contacto | Los declarados en B0.3, con rol, tono, densidad y "qué NO" |
+| 2 Voz visual | Densidad, mayúsculas, longitud de titular, CTA, palabras → ⑦ Posting |
 | 3 Coherencia sin uniformidad | Qué se repite · qué varía · qué no se repite seguido |
 | 4 Reglas duras | Lista corta de "nunca" |
-| 5 Test de reconocimiento | 5 pruebas con evidencia — la última la corre **el ejecutor real** |
+| 5 Test de reconocimiento | 5 pruebas con evidencia, comparadas contra B1.2 |
 | 6 Gobernanza | Aprobaciones · revisión · excepciones · archivos fuente |
 
 ---
 
-## 7 · `brand-guidelines.md` — consolidado
+## 7 · `guia-aplicable.md` — el consolidado
 
-Lo que reciben Creative, Production y Content. Su **página 0 se lee en 30 segundos**: idea madre,
-promesa, territorio, enemigo, personalidad, color, tipografía, los 3 "nunca" y la pregunta de
-control.
+El entregable que importa. Lo consumen ③ Marketing, ④ Creatividad, ⑤ Producción, ⑥A Diseño y
+⑦ Posting.
+
+**12 secciones**, en el mismo orden que `agents/design/templates/guia-aplicable.md`:
+intel · dirección · referencias · color · tipografía · tratamiento fotográfico · lenguaje gráfico ·
+voz visual · activos distintivos · uso del logo · **qué decidió Branding** · aplicación por
+departamento.
+
+🛑 **No se le cambia la estructura.** Si Branding la entrega, ⑥A Diseño corre en **D0 Modo A** y la
+traduce a tokens. Si la estructura cambia, Diseño tiene que traducir dos veces.
 
 🚦 Gate humano antes del handoff.
 
@@ -142,7 +150,7 @@ control.
 | **Bloqueo** | Cuando falta un input | `BLOQUEADO: [qué falta exactamente]` |
 | **Advertencia de modo degradado** | Branding sin posicionamiento aprobado | bloque ⚠️ de `PROCESS.md` |
 | **Solicitud de gate** | Al cerrar B2, B4 y el consolidado | 🚦 con qué se aprueba exactamente |
-| **Devolución a Strategy** | Cuando el territorio no se puede vestir | tabla de `PROCESS.md` |
+| **Devolución a ② Estrategia** | Cuando el territorio no se puede vestir | tabla de `PROCESS.md` — motivo + 2 alternativas |
 | **Handoff** | Al cerrar | bloque `HANDOFF` |
 
 ---
@@ -153,8 +161,8 @@ Siempre **bajo confirmación** — son escrituras.
 
 | Destino | Qué se sube | Tool |
 |---|---|---|
-| Notion | Guidelines consolidado, auditoría | `notion-create-pages` |
-| Google Drive | Guidelines para el cliente | `create_file`, `share_file` |
+| Notion | Guía aplicable consolidada, auditoría | `notion-create-pages` |
+| Google Drive | Guía aplicable para el cliente | `create_file`, `share_file` |
 | Eden | Board de moodboard y referencias con fuente | `eden_create_board` |
 | Inherent OS | Registro del cliente | `create_record` |
 
@@ -166,19 +174,21 @@ Nada se envía al cliente sin gate humano aprobado.
 
 | No produce | De quién es |
 |---|---|
-| Territorio, enemigo, promesa, CEPs, renuncias | **Strategy** |
-| Calendario, pilares, rol por canal | **Strategy** (Capas 6-7) |
+| Territorio, enemigo, promesa, CEPs, renuncias, arquetipo | **② Estrategia** |
+| Campañas, canales, fechas, frecuencia de contenido, presupuesto | **③ Marketing** |
+| Ideas, big ideas, hooks, copy final, pilares de contenido, shot list | **④ Creatividad** |
+| Fotografía y video producidos | **⑤ Producción** |
+| **Tokens, escala tipográfica, grillas, safe areas, scrim, layout, componentes, export** | **⑥A Diseño** |
+| Montaje, color de entrega, masters | **⑥B Video** |
+| Captions finales, hashtags, horarios, publicar | **⑦ Posting** |
+| Pauta y optimización | **⑧B Ads** |
+| Conversación y comunidad | **⑨ Community** |
 | Precio, oferta, money model | **Growth** |
-| Ideas concretas, conceptos de campaña, copies finales, guiones | **Creative** |
-| Piezas finales, shot list, edición, motion producido, retoque | **Production** |
-| Armado del feed pieza por pieza, QA de publicación | **Content** |
-| Publicar, programar, pautar | **Social / Media Buy** |
-| Performance del contenido | **Analytics** |
-| El logo **diseñado** en vectores | **Production** — Branding lo **especifica** |
 
-> Branding entrega **la especificación**, no el archivo final. La diferencia importa: un manual que
-> dice `Inter Tight SemiBold 32/36, tracking -2%, #0F1115 sobre #F5F3EE` es ejecutable por
-> cualquiera. Un `.ai` sin manual, no.
+> **Branding entrega dirección; ⑥A Diseño entrega realidad.** Un manual que dice
+> `#0F1115 · Inter Tight · curvas suaves · espacio en blanco protagonista` es ejecutable. Un manual
+> que fija `margen 64px` obliga a Diseño a romperlo en la primera story — y ahí el manual deja de
+> valer.
 
 ---
 ---
@@ -186,22 +196,22 @@ Nada se envía al cliente sin gate humano aprobado.
 # Trazabilidad completa
 
 ```
-posicionamiento.md (Strategy)
+posicionamiento.md (② Estrategia)
    ├─ territorio ────────────► dirección visual (B4)
    ├─ enemigo ───────────────► punto de vista (B2.2)
    ├─ promesa + RTBs ────────► sistema verbal (B3)
    ├─ objeciones ────────────► verdad emocional (B2.3)
    └─ activos distintivos ───► activos codificados (B5.9)
 
-nucleo.md (Strategy)
+nucleo.md (① Comprensión / ② Estrategia)
    ├─ arquetipo ─────────────► modo de marca (B0.4)
    └─ restricciones ─────────► superficie y viabilidad (B0.3)
 
-ingenieria-inversa.md (Strategy)
+ingenieria-inversa.md (② Estrategia)
    └─ media descompuesta ────► saturación visual (B1.3)
 
                               ↓
-                    brand-guidelines.md
+                    guia-aplicable.md  🚦
                               ↓
-              Creative · Production · Content
+   ③ Marketing · ④ Creatividad · ⑤ Producción · ⑥A Diseño (D0 Modo A) · ⑦ Posting
 ```

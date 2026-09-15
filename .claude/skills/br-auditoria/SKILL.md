@@ -64,7 +64,7 @@ sistema de portadas · registro verbal`
 - El **registro verbal** (capa 8) alimenta directo la lista de palabras prohibidas de B3.2. No lo
   saltees.
 
-## Si encontrás algo que contradice a Strategy
+## Si encontrás algo que contradice a ② Estrategia
 
 Va a la sección 6 del entregable y **se reporta**. Ejemplos: el territorio ya está visualmente
 ocupado por un competidor fuerte, o el activo distintivo listado lo usa toda la categoría.

@@ -33,13 +33,36 @@ Un moodboard no es una auditoría. Una paleta no es una personalidad.
 | **B2** | Concepto y personalidad | ¿Qué es esta marca y cómo se comporta? | `plataforma-de-marca.md` 🚦 |
 | **B3** | Sistema verbal | ¿Cómo habla? | `tono-de-voz.md` |
 | **B4** | Dirección visual | ¿Qué estilo traduce ese concepto? | `direccion-visual.md` 🚦 |
-| **B5** | Sistema visual | ¿Con qué elementos y valores exactos? | `sistema-visual.md` |
-| **B6** | Aplicaciones y gobernanza | ¿Cómo vive en cada punto de contacto? | `aplicaciones-y-reglas.md` 🚦 |
+| **B5** | Lenguaje visual | ¿Con qué elementos de identidad? | `lenguaje-visual.md` |
+| **B6** | Reglas y gobernanza | ¿Qué es obligatorio, qué puede variar, qué nunca? | `reglas-de-marca.md` |
 
 🚦 = gate humano obligatorio.
 
-**Consolidado final:** `brand-guidelines.md` — el documento que reciben Creative, Production y
-Content.
+**Consolidado final:** `guia-aplicable.md` 🚦 — el documento que consumen **⑥A Diseño (D0 Modo A)**,
+**⑤ Producción**, **④ Creatividad** y **⑦ Posting**.
+
+---
+
+## 🛑 Dónde termina Branding y empieza Diseño
+
+```
+Branding entrega DIRECCIÓN  →  cómo debe verse · cómo debe sentirse · inspiraciones · fuentes
+Diseño entrega REALIDAD     →  el sistema operable, los tokens y las piezas
+```
+
+| Branding fija | Diseño resuelve |
+|---|---|
+| Paleta base y rol de cada color | Scrim, espaciado, radios, matriz de contraste medida |
+| Familias tipográficas y pesos en uso | Escala, ratios, interlineado, tracking, cortes de línea |
+| Logo, versiones y uso | Grillas, márgenes y safe areas por formato |
+| Estética, tono visual y tratamiento fotográfico | Layout, composición y componentes |
+| Qué familias de elementos gráficos existen | Qué elemento entra en qué pieza |
+| Activos distintivos y el piso de contraste | La medición par por par |
+
+**Si dudás:** ¿esta decisión vale igual para una story, un cartel y un packaging? Si sí, es de
+Branding. Si cambia según el formato, es de Diseño.
+
+Detalle completo en `AGENT.md` → *El límite con ⑥A Diseño*.
 
 ---
 ---
@@ -49,7 +72,7 @@ Content.
 
 No produce archivo. Produce el **encuadre declarado en sesión** que habilita todo lo demás.
 
-### B0.1 — Insumos de Strategy
+### B0.1 — Insumos de ② Estrategia
 
 | Campo que heredás | De dónde | Qué condiciona en Branding |
 |---|---|---|
@@ -85,12 +108,15 @@ Dónde tiene que funcionar esta identidad. Sin esto, el sistema se diseña para 
 | Físico | local, señalética, packaging, uniforme, vehículo, merch |
 | Impresión | ¿hay? → entonces hay CMYK/Pantone y hay que verificar la conversión |
 | Comercial | propuesta, presupuesto, factura, contrato |
-| Quién ejecuta | diseñador interno / freelance / el dueño en Canva / Production |
+| Quién ejecuta | **⑥A Diseño** / diseñador interno del cliente / freelance / el dueño en Canva |
 | Capacidad real | cuántas piezas por semana puede sostener ese ejecutor |
 
-> **Regla de viabilidad.** Un sistema que exige un diseñador senior no sirve para un cliente que
-> publica desde el celular. La identidad se diseña **para quien la va a ejecutar**, no para el
-> portfolio. Si el sistema no cabe en la capacidad, se simplifica acá — no se descubre en B6.
+> **Regla de viabilidad.** Un lenguaje que exige un diseñador senior no sirve para un cliente que
+> publica desde el celular. La identidad se define **para quien la va a ejecutar**, no para el
+> portfolio. Si no cabe en la capacidad, se simplifica acá — no se descubre en B6.
+>
+> Si el ejecutor es **⑥A Diseño**, la guía puede ser más ambiciosa: Diseño resuelve los valores
+> concretos. Si es el dueño en Canva, el lenguaje tiene que sobrevivir sin sistema de tokens.
 
 ### B0.4 — Modo de marca
 
@@ -121,7 +147,7 @@ Assets existentes: [x] · Referencias del cliente: [n, con URL]
 # CAPA B1 — AUDITORÍA Y SATURACIÓN VISUAL
 ### ¿Qué tiene hoy y cómo se ve la categoría?
 
-**Esta capa no decide.** Igual que la Capa 1 de Strategy: organiza lo que existe. Si escribís
+**Esta capa no decide.** Igual que la Capa 1 de ② Estrategia: organiza lo que existe. Si escribís
 *"por lo tanto deberíamos usar verde"*, te saliste del rol.
 
 Playbook operativo: `playbooks/AUDITORIA-VISUAL.md`.
@@ -210,7 +236,7 @@ El corazón del departamento. Sin esto, todo lo visual es decoración.
 Una frase. El norte al que se vuelve cuando no sabés qué color usar, qué tono elegir o cómo
 responder un mensaje.
 
-**No es un slogan** (eso es de Creative) ni la promesa (eso es de Strategy). Es el concepto que
+**No es un slogan** (eso es de ④ Creatividad) ni la promesa (eso es de ② Estrategia). Es el concepto que
 gobierna las decisiones internas.
 
 **Prueba de la idea madre:** poné tres decisiones de diseño pendientes al lado. Si la idea no
@@ -225,7 +251,7 @@ resuelve al menos dos, no es una idea madre — es una frase linda.
 ### B2.2 — Punto de vista
 
 Una marca sin opinión es invisible. El punto de vista **sale del enemigo declarado en Capa 4 de
-Strategy** — acá se convierte en algo que la marca puede sostener en público.
+② Estrategia** — acá se convierte en algo que la marca puede sostener en público.
 
 | | |
 |---|---|
@@ -239,7 +265,7 @@ Strategy** — acá se convierte en algo que la marca puede sostener en público
 
 ### B2.3 — Verdad emocional no dicha
 
-Qué siente el comprador y no dice en voz alta. Sale de las objeciones literales de Strategy y de
+Qué siente el comprador y no dice en voz alta. Sale de las objeciones literales de ② Estrategia y de
 la audiencia real (`ingenieria-inversa.md` 1.5).
 
 > *El cuidado del cabello no es verse bien: es una declaración personal.*
@@ -328,7 +354,7 @@ técnico     ├─────●────┤  simple
 
 ### B3.4 — Mensaje por temperatura
 
-Hereda las 4 temperaturas de `estrategia-de-contenido.md` (Capa 6 de Strategy). **La promesa nunca
+Hereda las 4 temperaturas de `estrategia-de-contenido.md` (Capa 6 de ② Estrategia). **La promesa nunca
 cambia** — cambia cómo se dice.
 
 | Temperatura | Qué se dice | Qué NO se dice |
@@ -399,7 +425,7 @@ Todas las imágenes del moodboard con **fuente y URL**.
 
 ### B4.3 — Filtro de distintividad
 
-Heredado de la Capa 4 de Strategy, aplicado ahora a lo visual:
+Heredado de la Capa 4 de ② Estrategia, aplicado ahora a lo visual:
 
 | Filtro | Pregunta | Pasa |
 |---|---|---|
@@ -423,170 +449,251 @@ lo que evita volver a discutirlo en tres meses.
 ---
 ---
 
-# CAPA B5 — SISTEMA VISUAL
-### ¿Con qué elementos y valores exactos?
+# CAPA B5 — LENGUAJE VISUAL
+### ¿Con qué elementos de identidad?
 
-Acá se diseña **un sistema, no un logo**. Valores concretos siempre: `#0F1115`, no *"gris oscuro"*.
+Acá se define **el lenguaje**, no el sistema operable. Los valores de identidad son concretos
+(`#0F1115`, `Inter Tight`, `pesos 400/700`). Los valores de ejecución **no se fijan**: son de
+⑥A Diseño.
 
-Playbooks: `playbooks/COLOR.md` · `playbooks/TIPOGRAFIA.md` · `playbooks/COMPOSICION-Y-ESTETICA.md`.
+Playbooks: `playbooks/COLOR.md` · `playbooks/TIPOGRAFIA.md` · `playbooks/ESTETICA.md`.
 
 ### B5.1 — Logo
 
 Principal · horizontal · vertical · isotipo · monocromo · versión para fondo oscuro.
-Área de respiro · tamaño mínimo (px y mm) · usos prohibidos · qué hacer sobre foto.
+Área de respiro · tamaño mínimo · sobre qué fondos sí y no · usos prohibidos · **frecuencia**.
 
 > **No se pone el logo en todo.** El objetivo es que te reconozcan **sin** el logo. Si necesitás
-> ponerlo gigante y repetido, el sistema visual no es suficientemente fuerte.
+> ponerlo gigante y repetido, el lenguaje visual no es suficientemente fuerte. Declará en qué
+> piezas va y en cuáles no.
 
-Si el logo no se rediseña: se documenta el existente con sus reglas. Eso también es entregable.
+Si el logo no se rediseña: se documenta el existente con sus reglas. **Eso también es entregable.**
 
 ### B5.2 — Color
 
-| Rol | Nombre | HEX | RGB | CMYK / Pantone | Uso |
-|---|---|---|---|---|---|
-| Primario | | | | | |
-| Secundario | | | | | |
-| Acento | | | | | |
-| Neutros (3-5) | | | | | |
-| Fondo claro / oscuro | | | | | |
-| Semánticos (éxito/error) | | | | | |
+| Rol | Nombre | HEX | RGB | CMYK / Pantone | Dónde se usa | 🛑 Dónde no |
+|---|---|---|---|---|---|---|
+| Primario | | | | | | |
+| Secundario | | | | | | |
+| Acento | | | | | | |
+| Neutro claro / oscuro | | | | | | |
 
 Además:
+- **Armonía elegida** (monocromática / análoga / complementaria / tríada) y **por qué**
 - **Proporción de reparto** — ej. `60 neutro / 30 primario / 10 acento`
-- **Contraste verificado** — ratio de cada combinación texto/fondo, mínimo AA (4.5:1 texto normal)
-- **Combinaciones prohibidas**
-- **Justificación** — contra el mapa de saturación, **no** contra psicología del color
-- Si hay impresión: **la conversión RGB→CMYK se verifica**, no se asume. Un HEX puede no tener
-  equivalente exacto en tinta.
+- **Chequeo de categoría:** ¿esta paleta hace que el cliente se vea igual que su competencia?
+  Se responde contra el mapa de saturación de B1.3, **no** contra psicología del color
+- **Piso de contraste declarado:** 4.5:1 para texto legible en miniatura, 7:1 o scrim sobre foto
+- **Verificación de la paleta base:** que los pares principales texto/fondo lleguen al piso
+- Si hay impresión: **la conversión RGB→CMYK se verifica**, no se asume
+
+🛑 **La matriz de contraste completa, par por par y por pieza, la mide ⑥A Diseño.** Vos declarás el
+piso y comprobás que la paleta base lo permita. Ver `agents/design/systems/COLOR-Y-CONTRASTE.md`.
 
 ### B5.3 — Tipografía
 
 **1-2 familias. Tres solo con criterio probado.**
 
-| Rol | Familia | Peso | Tamaño | Interlineado | Tracking |
-|---|---|---|---|---|---|
-| Display | | | | | |
-| Título | | | | | |
-| Subtítulo | | | | | |
-| Cuerpo | | | | | |
-| CTA / botón | | | | | |
-| Dato / caption | | | | | |
+| Rol | Familia | Por qué esta | Pesos en uso |
+|---|---|---|---|
+| Titulares | | | |
+| Cuerpo | | | |
+| Acento / dato | | | |
 
-- **Contraste de pesos:** si usás `Light`, saltá a `Medium` o `Bold`. `Light + Regular` no es
+- **Contraste entre las dos:** serif+sans · una familia con salto de peso grande · —
+- **Personalidad que transmite** — contra un rasgo de B2.4
+- **Contraste de pesos:** si hay `Light`, el salto va a `Medium` o `Bold`. `Light + Regular` no es
   contraste, es error.
-- **Licencia** declarada (desktop / web / app) y **quién la tiene**.
-- **Soporte verificado:** `ñ`, tildes, `¿`, `¡`, comillas. Una tipografía sin `ñ` no entra.
-- **Alternativa web-safe / fallback** para email y sistemas que no la soportan.
+- **Licencia** declarada (tipo · fundición · quién la posee · costo) y **fallback web-safe**
+- **Soporte verificado:** `ñ`, tildes, `¿`, `¡`, comillas. **Una tipografía sin `ñ` no entra.**
+- **Legibilidad a tamaño chico y comprimida:** verificada
 
-### B5.4 — Composición y grilla
+🛑 **La escala tipográfica —tamaños, interlineado, tracking, ratios— es de ⑥A Diseño.** Ver
+`agents/design/systems/TIPOGRAFIA.md`. Vos elegís la familia y el carácter; Diseño la hace entrar
+en cada formato.
 
-Márgenes · columnas · gutters · jerarquía en 3 niveles · reparto de peso visual · uso de la regla
-de tercios · espacio en blanco mínimo · qué se ve primero en cada formato.
+### B5.4 — Principios de composición
 
-> **La composición sostiene todo.** Podés tener buena tipografía, buen color y buenas fotos: si la
-> composición está mal, el diseño se cae igual. Componer es decidir con intención qué va, dónde va,
-> qué tamaño tiene y cómo se relaciona con lo demás.
+No la grilla: **el principio**. Lo que tiene que sentirse igual en una story, un cartel y un menú.
 
-### B5.5 — Fotografía e imagen
+| | Qué se declara |
+|---|---|
+| **Densidad** | ¿la marca respira o satura? Rango, no número |
+| **Espacio en blanco** | ¿es protagonista o es sobra? |
+| **Trazo y forma** | curvas suaves · ángulos duros · mixto — **y por qué** |
+| **Niveles de jerarquía** | máximo 3. Es regla de marca, no de pieza |
+| **Simetría** | centrada · asimétrica · mixta |
+| **Dónde vive el reconocimiento** | en la tipografía · en el color · en la forma · en la foto |
 
-Sujeto · encuadre · luz · paleta dentro de la foto · dirección de arte · personas (¿reales del
-cliente o modelos?) · tratamiento/preset con valores · mezcla de planos (general / medio / detalle)
-· qué nunca (stock genérico, sobreedición, HDR, filtros de moda).
+> **La forma comunica antes que el texto.** Curvas = natural, suave, cómodo. Ángulos duros =
+> preciso, técnico, agresivo. Es la lectura más rápida que hace el cerebro sobre una marca.
+
+🛑 **Grillas, márgenes, gutters y safe areas por formato son de ⑥A Diseño.**
+
+### B5.5 — Tratamiento fotográfico → ⑤ Producción
+
+El campo que más usa Producción. Se escribe para que alguien pueda dirigir en cámara.
+
+| Campo | Definición |
+|---|---|
+| **Luz** | natural · dura · suave · contrastada |
+| **Encuadre** | amplio · medio · detalle — y la mezcla esperada |
+| **Paleta de la foto** | cálida · fría · neutra · saturada · desaturada |
+| **Con o sin gente** | y si son personas reales del cliente o modelos |
+| **Dirección de arte en cámara** | qué debe aparecer, qué nunca |
+| **Post** | nivel de retoque, virado, grano |
+| **🛑 Qué nunca** | stock genérico · sobreedición · HDR · filtros de moda |
+
+**Referencias fotográficas** con URL.
 
 > Mientras más artificial se vuelve el mundo, **más valor tiene lo humano**: personas reales,
 > procesos reales, decisiones reales. No significa hacerlo mal — significa que se note verdadero.
 
-### B5.6 — Elementos gráficos
+### B5.6 — Lenguaje gráfico → ⑥A Diseño
 
-Iconos (familia, grosor, esquinas) · patrones · texturas · gradientes · formas · marcos y bordes ·
-líneas. Y el **límite**: cuántos elementos por pieza como máximo.
+Qué familias existen en esta marca y con qué carácter. Las cinco familias son las de
+`agents/design/systems/ELEMENTOS-GRAFICOS.md`:
 
-### B5.7 — Motion y ritmo
+| Familia | ¿Aplica? | Carácter | Rol en la marca |
+|---|---|---|---|
+| Ilustraciones | sí / no | | |
+| Assets PNG / stickers | sí / no | | |
+| Texturas | sí / no | | |
+| Pinceladas | sí / no | | |
+| Formas gráficas | sí / no | | |
 
-Velocidad de corte · tipo de transición · animación de texto (entrada/salida/duración) · subtítulos
-(tipografía, posición, estilo) · apertura y cierre recurrentes · uso del logo en video.
+🛑 **Qué elemento concreto entra en qué pieza lo decide ⑥A Diseño**, con su presupuesto de máximo
+3 familias por pieza. Vos declarás cuáles existen y cuáles están prohibidas.
+
+### B5.7 — Motion y ritmo → ⑥B Video
+
+Carácter del movimiento, no el keyframe: velocidad de corte · tipo de transición · si el texto
+entra o aparece · estilo de subtítulos · apertura y cierre recurrentes · uso del logo en video.
 
 ### B5.8 — Sonido
 
-Si aplica: tipo de música, tempo, voz (género, edad, registro), sonido de marca, silencio.
+Si aplica: tipo de música, tempo, voz (registro, ritmo), sonido de marca, cuándo el silencio.
 
 ### B5.9 — Activos distintivos codificados
 
-La Sección 5 de `posicionamiento.md` lista los activos. **Acá se les pone valor concreto.**
+La Sección 5 de `posicionamiento.md` lista los activos. **Acá se les pone identidad concreta.**
 
-| Activo | Estado en Strategy | Especificación en Branding |
-|---|---|---|
-| Color | a construir | `#E4FF1A` al 10% de reparto, siempre sobre neutro oscuro |
-| Formato recurrente | existente | Cover con banda inferior 120px, título en 2 líneas máx |
+| Activo | Estado en ② Estrategia | Especificación de Branding | Dónde aparece siempre |
+|---|---|---|---|
+| Color | a construir | `#E4FF1A` al 10% de reparto, sobre neutro oscuro | toda pieza de nivel 1 |
+| Formato recurrente | existente | banda inferior con título en 2 líneas máx | portadas |
 
 > Los activos distintivos **se refuerzan con consistencia, no se reinventan cada ciclo**. Un activo
-> cambiado a los 6 meses nunca llega a ser activo.
+> cambiado a los 6 meses nunca llega a ser activo. Declará cuánto tiempo no se toca.
+
+**La prueba:** ¿qué hace reconocible a la marca **al 10% de tamaño, sin leer el logo**?
 
 ---
 ---
 
-# CAPA B6 — APLICACIONES, REGLAS Y GOBERNANZA
-### ¿Cómo vive en cada punto de contacto?
+# CAPA B6 — REGLAS Y GOBERNANZA
+### ¿Qué es obligatorio, qué puede variar, qué nunca?
 
 La marca no vive en el manual. Vive en la web, las redes, el equipo, el producto, los presupuestos,
 la atención al cliente y la entrega.
 
-### B6.1 — Punto de contacto por punto de contacto
+### B6.1 — Rol de marca por punto de contacto
 
-Solo los que se declararon en B0.3. Cada uno:
+Solo los declarados en B0.3. Por cada uno, **el rol y las reglas de marca** — no las medidas.
 
 | | |
 |---|---|
-| **Qué elementos entran** | |
-| **Jerarquía** | qué se ve primero |
-| **Especificación** | medidas, márgenes, tamaños de texto |
-| **Qué NO se hace acá** | |
+| **Qué tiene que lograr** | |
+| **Qué elementos de identidad son obligatorios** | |
+| **Tono** | de `tono-de-voz.md` §5 |
+| **Densidad permitida** | |
+| **🛑 Qué NO se hace acá** | |
 
-Cubrir según superficie: **feed** (post / carrusel / cover de reel) · **stories y highlights** ·
-**web** (hero, secciones, botones) · **WhatsApp** (foto de perfil, catálogo, mensajes fijos) ·
+Cubrir según superficie: **feed** · **stories y highlights** · **web** · **WhatsApp** ·
 **propuesta y presupuesto** · **email** · **packaging** · **local y señalética** · **merch** ·
 **presentación comercial**.
 
-### B6.2 — Sistema de portadas
+🛑 **Las medidas, zonas seguras y specs por formato son de ⑥A Diseño** — ver
+`agents/design/systems/FORMATOS-Y-CANALES.md`.
 
-Lo que hace que un feed se reconozca de un scroll. Grilla de la cover, zona segura, cantidad máxima
-de palabras, tamaño mínimo legible **en thumbnail**, dónde va el logo (si va).
+### B6.2 — Voz visual → ⑦ Posting
+
+| | |
+|---|---|
+| **Densidad de texto en pieza** | baja / media |
+| **Mayúsculas** | |
+| **Longitud de titular** | máx. __ palabras |
+| **Tono del CTA** | suave / directo / urgente |
+| **5 palabras que la marca usa** | |
+| **5 palabras que la marca nunca diría** | |
 
 ### B6.3 — Coherencia sin uniformidad
 
 | | |
 |---|---|
-| **Qué se repite siempre** | lo que construye reconocimiento |
-| **Qué puede variar** | el rango permitido |
-| **Qué nunca se repite seguido** | mismo encuadre, mismo color dominante o misma cantidad de texto en dos posts consecutivos |
+| **Qué se repite SIEMPRE** | los activos codificados de B5.9 |
+| **Qué PUEDE variar** | el rango permitido |
+| **Qué NUNCA se repite seguido** | mismo encuadre, mismo color dominante o misma densidad de texto en dos piezas consecutivas |
 
-> La consistencia viene del **tratamiento**, no de forzar todo a los colores de marca. Un feed
-> donde cada pieza es idéntica no es coherente: es aburrido. Y un sistema que se rompe porque se
-> atrasó un post es un sistema frágil — evitá damero, tercios rígidos y ratios fijos.
+> La consistencia viene del **tratamiento**, no de forzar cada objeto a los colores de marca. Un
+> feed donde cada pieza es idéntica no es coherente: es aburrido.
+
+**Chequeo de fragilidad:** ¿la marca se rompe si se atrasa una pieza? Nada de damero, tercios
+estrictos ni ratios fijos de foto/gráfica. Si el sistema depende de que nunca falle la agenda,
+está mal pensado.
 
 ### B6.4 — Reglas duras
 
-La lista de **nunca**. Corta, concreta, sin explicaciones largas. Es lo que más se consulta.
+La lista de **nunca**. Corta, concreta, sin explicaciones. Es lo que más se consulta.
 
-### B6.5 — Test final de reconocimiento
+### B6.5 — Test de reconocimiento
 
-| Prueba | Criterio | Resultado |
-|---|---|---|
-| 3 piezas sin logo, mezcladas con 3 de competidores | ¿Se identifican las nuestras? | ✅/❌ |
-| Feed a tamaño thumbnail | ¿Se lee el texto? ¿Se distingue el sistema? | ✅/❌ |
-| Contraste de cada par texto/fondo | ≥ 4.5:1 | ✅/❌ |
-| Pieza en blanco y negro | ¿Sobrevive sin color? | ✅/❌ |
-| El ejecutor real arma una pieza siguiendo la guía | ¿Le sale sin preguntar? | ✅/❌ |
+| Prueba | Criterio |
+|---|---|
+| 3 piezas sin logo mezcladas con 3 de competidores | ¿Se identifican las nuestras? |
+| Piezas al 10% de tamaño | ¿Se distingue la marca? |
+| La paleta base contra el piso de contraste | ¿Llega a 4.5:1? |
+| Pieza en blanco y negro | ¿Sobrevive sin color? |
+| **⑥A Diseño construye una pieza con la guía** | **¿Le sale sin preguntar la dirección?** |
 
-**El último ítem es el que define si el entregable está terminado.**
+**El último ítem define si el entregable está terminado.** Si Diseño tiene que preguntarte la
+*dirección*, falta guía. Si te pregunta un *margen*, no es tu problema: es su oficio.
+
+Compará contra **B1.2** — la prueba del logo tapado del inicio. Si no mejoró, se dice. No se esconde.
 
 ### B6.6 — Gobernanza
 
-Quién aprueba qué · cada cuánto se revisa el sistema (default: **6 meses**, o antes si cambia el
+Quién aprueba qué · cada cuánto se revisa (default: **6 meses**, o antes si cambia el
 posicionamiento) · cómo se pide una excepción y quién la autoriza · dónde viven los archivos fuente
 y las licencias · qué hace que esta guía quede obsoleta.
 
-🚦 **GATE B3 — el `brand-guidelines.md` lo aprueba un humano antes del handoff.**
+---
+---
+
+# EL CONSOLIDADO — `guia-aplicable.md`
+
+No agrega información nueva: **consolida y prioriza** para quien la va a usar.
+
+🛑 **Su estructura replica `agents/design/templates/guia-aplicable.md` a propósito.** Es el mismo
+artefacto: si Branding lo entrega, ⑥A Diseño corre en **D0 Modo A** y lo traduce a tokens en vez de
+construirlo. Cambiarle la estructura obliga a Diseño a traducir dos veces.
+
+| Sección | Qué lleva | Quién la consume |
+|---|---|---|
+| 0 · El intel | Trazabilidad de todo lo que sigue | todos |
+| 1 · Dirección | Cómo debe verse · cómo debe sentirse · qué NO es | ⑥A Diseño |
+| 2 · Referencias | Qué tomamos y qué no de cada una | ⑥A Diseño · ⑤ Producción |
+| 3 · Color | Paleta, armonía, chequeo de categoría | ⑥A Diseño |
+| 4 · Tipografía | Familias, pesos, verificaciones | ⑥A Diseño |
+| 5 · Tratamiento fotográfico | Dirección de arte en cámara | **⑤ Producción** |
+| 6 · Lenguaje gráfico | Qué familias existen | ⑥A Diseño |
+| 7 · Voz visual | Densidad, mayúsculas, CTA, palabras | **⑦ Posting** |
+| 8 · Activos distintivos | Qué hace reconocible la marca | todos |
+| 9 · Uso del logo | Versiones, mínimo, resguardo, frecuencia | todos |
+| 10 · Qué decidió Branding | Todo lo que no venía en el intel | 🚦 el gate |
+| 11 · Aplicación por departamento | Qué toma cada uno | todos |
+
+🚦 **GATE B3 — la guía aplicable la aprueba un humano antes del handoff.**
 
 ---
 ---
@@ -594,11 +701,13 @@ y las licencias · qué hace que esta guía quede obsoleta.
 ## Ciclo
 
 ```
-Strategy Capa 4 aprobada → Branding B0 → … → B6 → handoff
-                                              ↓
-        Analytics / Capa 8 de Strategy → ¿el sistema se reconoce? ¿se ejecuta?
-                                              ↓
-                          revisión de B5-B6 (no de B2, salvo que cambie el posicionamiento)
+② Estrategia Capa 4 aprobada → Branding B0 → … → B6 → guia-aplicable.md
+                                                            ↓
+                          ③ Marketing · ④ Creatividad · ⑤ Producción · ⑥A Diseño · ⑦ Posting
+                                                            ↓
+                      ⑥A Diseño D7 y ③ mk-lectura → ¿la marca se reconoce? ¿la guía se ejecuta?
+                                                            ↓
+                  revisión de B5-B6 (no de B2, salvo que cambie el posicionamiento)
 ```
 
 **Qué se revisa y cuándo:**
@@ -606,7 +715,7 @@ Strategy Capa 4 aprobada → Branding B0 → … → B6 → handoff
 | Cambió | Se re-corre |
 |---|---|
 | Nada, pasaron 6 meses | B6 (aplicaciones) — chequeo de deriva |
-| El ejecutor o la capacidad | B5.4-B6 |
+| El ejecutor o la capacidad | B6 |
 | El territorio o el enemigo | **Todo desde B2** |
 | Nuevo canal o punto de contacto | B6.1 |
 

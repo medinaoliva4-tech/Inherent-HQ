@@ -72,7 +72,7 @@ competidores. ¿Se distinguen?
 | Distinctiveness | **Copycat** — relevante pero indistinguible |
 | Relevance | **Diferenciación random** — diferente pero no importa |
 
-Si falla alguna: **volvé a B4.1 y mové los ejes. No se fuerza.** Es el mismo bucle que Strategy
+Si falla alguna: **volvé a B4.1 y mové los ejes. No se fuerza.** Es el mismo bucle que ② Estrategia
 tiene entre Capa 4 y Capa 2.
 
 ---
@@ -98,4 +98,4 @@ Correr el bloque **Capa B4** de `agents/branding/qa/QA-GATES.md`.
 🚦 **GATE B2** — el gate más importante del departamento. B5 y B6 dependen de esto.
 
 ## Handoff
-→ `br-sistema-visual`
+→ `br-lenguaje-visual`

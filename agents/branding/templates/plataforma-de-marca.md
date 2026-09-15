@@ -9,7 +9,7 @@
 
 > **[una frase]**
 
-**Qué NO es:** no es el slogan (eso es de Creative) ni la promesa (eso es de Strategy). Es el norte
+**Qué NO es:** no es el slogan (eso es de ④ Creatividad) ni la promesa (eso es de ② Estrategia). Es el norte
 al que se vuelve cuando hay que decidir.
 
 ## Prueba de la idea madre
@@ -26,7 +26,7 @@ al que se vuelve cuando hay que decidir.
 
 # 2 · PUNTO DE VISTA
 
-**Enemigo heredado de Strategy:** [cita literal de `posicionamiento.md` 3.b]
+**Enemigo heredado de ② Estrategia:** [cita literal de `posicionamiento.md` 3.b]
 
 | | |
 |---|---|

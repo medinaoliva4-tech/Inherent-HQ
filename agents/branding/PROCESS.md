@@ -8,8 +8,9 @@ el output de la anterior.**
 ## Antes de todo — Pre-flight
 
 ```
-PRE-FLIGHT — Cliente: [x] · Arquetipo: [NN o SIN CLASIFICAR] · Modo de marca: [x] · Capa: [B0-B6]
-Skills: [x] · MCPs disponibles: [x] · Gate humano: [sí/no] · Output: [ruta]
+PRE-FLIGHT — Agente: branding · Cliente: [x] · Arquetipo: [NN o SIN CLASIFICAR]
+Modo de marca: [x] · Capa: [B0-B6] · Skills: [x] · MCPs: [x]
+Inputs de departamentos previos: [posicionamiento ✅/⬜ · nucleo ✅/⬜] · Gate humano: [sí/no]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
@@ -27,7 +28,7 @@ estrategia.** Tres salidas, en este orden:
 |---|---|
 | Existe `posicionamiento.md` **aprobado** | ✅ Corrés el método completo |
 | Existe pero **sin gate humano** | ⚠️ Corrés B0-B1 y frenás en B2. Pedís la aprobación |
-| **No existe** | 🛑 BLOQUEADO. Ofrecés correr Strategy Capas 0-4 primero |
+| **No existe** | 🛑 BLOQUEADO. Ofrecés correr ② Estrategia Capas 0-4 primero (skill `estrategia`) |
 
 Si el cliente insiste en avanzar sin estrategia, se puede — pero **declarado en el encabezado de
 todos los entregables**:
@@ -36,7 +37,7 @@ todos los entregables**:
 ⚠️ BRANDING SIN POSICIONAMIENTO APROBADO
 Territorio, enemigo y promesa fueron reconstruidos por Branding desde [fuente].
 Esto es una hipótesis, no una decisión estratégica. Todo el sistema queda sujeto a revisión
-cuando Strategy cierre la Capa 4.
+cuando ② Estrategia cierre la Capa 4.
 ```
 
 **Nunca se entrega branding sin estrategia sin ese bloque.** Un sistema visual construido sobre una
@@ -54,8 +55,9 @@ hipótesis no declarada se convierte en la estrategia por default, y nadie lo re
 | *"Definí el tono de voz de X"* | **B3** — requiere plataforma |
 | *"Necesito la dirección visual / un moodboard"* | **B4** — requiere B1 + B2 |
 | *"Armá la paleta y las tipografías"* | **B5** — requiere dirección elegida |
-| *"¿Cómo aplico esto en el feed / la web?"* | **B6** — requiere sistema visual |
-| *"Armame el manual de marca"* | **Consolidado** — requiere B1-B6 completas |
+| *"¿Qué es obligatorio y qué nunca?"* | **B6** — requiere lenguaje visual |
+| *"Armame el manual / la guía de marca"* | **Consolidado** — requiere B1-B6 completas |
+| *"Diseñá las piezas"* | 🛑 Es **⑥A Diseño** — skill `diseno`. Le pasás `guia-aplicable.md` |
 
 **Si falta una capa previa:** se dice qué falta y se ofrece correrla. **No se improvisa el faltante.**
 
@@ -71,9 +73,9 @@ agents/branding/clients/<cliente>/
 ├── plataforma-de-marca.md
 ├── tono-de-voz.md
 ├── direccion-visual.md
-├── sistema-visual.md
-├── aplicaciones-y-reglas.md
-└── brand-guidelines.md
+├── lenguaje-visual.md
+├── reglas-de-marca.md
+└── guia-aplicable.md
 ```
 Copiar las plantillas de `templates/`. **Antes de arrancar de cero:** leer
 `agents/strategy/clients/<cliente>/` y buscar material previo en Notion, Drive e Inherent OS.
@@ -146,29 +148,34 @@ Si falla el filtro: **se vuelve a B4.1 y se mueven los ejes. No se fuerza.**
 
 ---
 
-### ▸ Paso 7 — CAPA B5 · Sistema visual
+### ▸ Paso 7 — CAPA B5 · Lenguaje visual
 **Input:** dirección aprobada
-**Skill:** `br-sistema-visual` · **Playbooks:** `COLOR.md` · `TIPOGRAFIA.md` ·
-`COMPOSICION-Y-ESTETICA.md`
-**Output:** `sistema-visual.md`
+**Skill:** `br-lenguaje-visual` · **Playbooks:** `COLOR.md` · `TIPOGRAFIA.md` · `ESTETICA.md`
+**Output:** `lenguaje-visual.md`
 
-Logo · color · tipografía · composición · fotografía · elementos gráficos · motion · sonido ·
-activos distintivos codificados.
+Logo · color · tipografía · principios de composición · tratamiento fotográfico · lenguaje gráfico ·
+motion · sonido · activos distintivos codificados.
 
-**Valores concretos siempre.** Un sistema con *"azul oscuro"* en lugar de `#0B1F3A` no es un
-sistema, es una intención.
+**Valores de identidad concretos.** Un lenguaje con *"azul oscuro"* en lugar de `#0B1F3A` no es un
+lenguaje, es una intención.
+
+🛑 **Valores de ejecución, no.** Escala, grillas, márgenes, safe areas, scrim y tokens son de
+**⑥A Diseño**. Ver `AGENT.md` → *El límite con ⑥A Diseño*.
 
 ---
 
-### ▸ Paso 8 — CAPA B6 · Aplicaciones y gobernanza
-**Input:** sistema visual
-**Skill:** `br-aplicaciones`
-**Output:** `aplicaciones-y-reglas.md` → y después el consolidado `brand-guidelines.md`
+### ▸ Paso 8 — CAPA B6 · Reglas y gobernanza
+**Input:** lenguaje visual
+**Skill:** `br-guia-aplicable`
+**Output:** `reglas-de-marca.md` → y después el consolidado `guia-aplicable.md`
 
-Punto de contacto por punto de contacto · sistema de portadas · rango de variación permitido ·
-reglas duras · **test final de reconocimiento** · gobernanza.
+Rol de marca por punto de contacto · voz visual · rango de variación permitido · reglas duras ·
+**test de reconocimiento** · gobernanza. Después se consolida la guía.
 
-🚦 **GATE B3 — el guidelines aprobado antes del handoff.**
+🛑 La guía **replica la estructura de `agents/design/templates/guia-aplicable.md`**, para que
+⑥A Diseño corra en **D0 Modo A** y la traduzca a tokens en vez de reconstruirla.
+
+🚦 **GATE B3 — la guía aplicable aprobada antes del handoff.**
 
 ---
 
@@ -177,19 +184,21 @@ reglas duras · **test final de reconocimiento** · gobernanza.
 Al cerrar, entregá el bloque:
 
 ```markdown
-## HANDOFF — Branding → Creative / Production / Content
+## HANDOFF — ②B Branding → ③ Marketing / ④ Creatividad / ⑤ Producción / ⑥A Diseño / ⑦ Posting
 - Cliente: · Arquetipo: NN · Modo de marca: · Fecha:
+- Guía aplicable: agents/branding/clients/<cliente>/guia-aplicable.md
 - Entregables: [rutas de los 7]
-- Gates aprobados: plataforma [✅/⬜] · dirección visual [✅/⬜] · guidelines [✅/⬜]
+- Gates aprobados: plataforma [✅/⬜] · dirección visual [✅/⬜] · guía [✅/⬜]
 - Idea madre:
-- Territorio que sostiene el sistema: [cita de posicionamiento.md]
+- Dirección — cómo debe verse / cómo debe sentirse:
+- Territorio que la sostiene: [cita con ruta y §]
 - Activos distintivos codificados: [lista]
 - Reglas duras (los "nunca"): [lista corta]
-- Ejecutor previsto y su capacidad:
 - Archivos fuente y licencias: [dónde viven]
+- ⑥A Diseño puede correr en D0 Modo A (traducción): sí / no
 - Huecos abiertos: [⚠️ SIN DATOS / PENDIENTE]
+- Devoluciones a ② Estrategia: [o N/A]
 - Confianza general: 🟢 / 🟡 / 🔴
-- Siguiente: Creative (conceptos y piezas) · Production (assets) · Content (armado y QA)
 ```
 
 ---
@@ -197,13 +206,13 @@ Al cerrar, entregá el bloque:
 ## Qué devuelve Branding hacia atrás
 
 Branding a veces **encuentra que el posicionamiento no se puede vestir**. Cuando pasa, no se
-maquilla: se devuelve.
+maquilla: se devuelve a ② Estrategia **con motivo y al menos dos alternativas concretas**.
 
 | Hallazgo | Qué hacés |
 |---|---|
-| El territorio ya está visualmente ocupado por un competidor fuerte | Lo reportás a Strategy con la evidencia de B1.3 |
+| El territorio ya está visualmente ocupado por un competidor fuerte | Lo devolvés a ② Estrategia con la evidencia de B1.3 |
 | La promesa dice *premium* y las restricciones no lo sostienen | Lo declarás: sin producción, el sistema va a leerse falso |
 | No hay ninguna UNFAIR que se pueda mostrar | Lo reportás: el sistema no va a tener qué demostrar |
 | El activo distintivo listado ya lo usa la categoría entera | Lo reportás: no es distintivo |
 
-**Devolver a Strategy no es fallar.** Entregar una identidad linda sobre una estrategia rota, sí.
+**Devolver a ② Estrategia no es fallar.** Entregar una identidad linda sobre una estrategia rota, sí.

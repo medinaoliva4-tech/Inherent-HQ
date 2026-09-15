@@ -45,7 +45,7 @@ una idea madre — es una frase linda. Se vuelve a escribir.
 | *"Salud sin miedo"* | Personas relajadas, sin instrumental, sin blanco clínico |
 | *"No negocies tu mañana"* | Luz natural, ritual, silencio visual, cero ofertas gritadas |
 
-**No es el slogan** (eso es de Creative) **ni la promesa** (eso es de Strategy).
+**No es el slogan** (eso es de ④ Creatividad) **ni la promesa** (eso es de ② Estrategia).
 
 ---
 
@@ -66,7 +66,7 @@ Cada rasgo se define por **comportamiento observable**, con su columna *"cómo N
 
 ## Punto de vista
 
-Sale del **enemigo declarado en la Capa 4 de Strategy** — se cita literal y se convierte en algo
+Sale del **enemigo declarado en la Capa 4 de ② Estrategia** — se cita literal y se convierte en algo
 que la marca pueda sostener en público.
 
 > Una buena marca atrae a quienes piensan igual y **repele a quienes no encajan**. Si no repele a

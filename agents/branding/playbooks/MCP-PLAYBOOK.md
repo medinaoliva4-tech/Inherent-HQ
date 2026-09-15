@@ -37,7 +37,7 @@ mirar **el feed real de una cuenta** y **qué formato visual rinde en una catego
 
 **Secuencia para el mapa de saturación (B1.3):**
 ```
-1. eden_resolve_creator        → resolver cada handle que dio el cliente o que salió de Strategy
+1. eden_resolve_creator        → resolver cada handle que dio el cliente o que salió de ② Estrategia
 2. eden_analyze_creator        → leer el perfil: qué publica, en qué formato, con qué frecuencia
 3. eden_study_top_carousels    → descomponer los estáticos y carruseles que ganan
 4. eden_study_top_titles       → el registro verbal: cómo titulan

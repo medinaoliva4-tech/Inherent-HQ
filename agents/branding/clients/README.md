@@ -9,9 +9,9 @@ clients/<cliente>/
 ├── plataforma-de-marca.md      # B2  🚦
 ├── tono-de-voz.md              # B3
 ├── direccion-visual.md         # B4  🚦
-├── sistema-visual.md           # B5
-├── aplicaciones-y-reglas.md    # B6
-└── brand-guidelines.md         # consolidado  🚦
+├── lenguaje-visual.md           # B5
+├── reglas-de-marca.md    # B6
+└── guia-aplicable.md         # consolidado  🚦
 ```
 
 ## Antes de crear la carpeta
@@ -24,4 +24,4 @@ clients/<cliente>/
 
 ## Nombre de la carpeta
 
-Slug en minúsculas, sin tildes ni espacios: `mi-cliente-sa`. **El mismo slug que usa Strategy.**
+Slug en minúsculas, sin tildes ni espacios: `mi-cliente-sa`. **El mismo slug canónico que usan todos los agentes.**

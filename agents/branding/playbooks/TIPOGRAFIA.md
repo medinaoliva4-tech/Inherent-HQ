@@ -3,6 +3,10 @@
 La tipografía **habla como la marca**. No se elige porque se vea cool: se elige porque su
 personalidad coincide con la de B2.4 y porque contrasta con lo que hace la categoría.
 
+> 🛑 **Alcance de este playbook: elegir la familia.**
+> La **escala** —tamaños, interlineado, tracking, ratios, cortes de línea— es de **⑥A Diseño**:
+> `agents/design/systems/TIPOGRAFIA.md`. Acá no se fijan números de tamaño.
+
 ---
 
 ## Vocabulario mínimo
@@ -58,28 +62,23 @@ sistema.
 
 ---
 
-## La escala — el entregable real
+## Lo que sí entrega Branding
 
-Definí pocas variables y repetilas. **Todos los bloques de texto del mismo nivel tienen el mismo
-tamaño.** Eso es lo que genera jerarquía, estabilidad y sensación de profesionalismo.
+| Campo | Se declara |
+|---|---|
+| **Rol** | Titulares · cuerpo · acento/dato |
+| **Familia** | Nombre exacto |
+| **Por qué esta** | Contra un rasgo de personalidad de B2.4 |
+| **Pesos en uso** | Los que la marca usa de verdad, ej. `400 / 700` |
+| **Contraste entre las dos** | serif+sans · una familia con salto grande · — |
+| **Salto de peso** | `Light → Bold`, nunca `Light → Regular` |
 
-| Rol | Familia | Peso | Tamaño | Interlineado | Tracking | Caso |
-|---|---|---|---|---|---|---|
-| Display | | | | | | Portadas, hero |
-| Título | | | | | | H1 de pieza |
-| Subtítulo | | | | | | H2, bajadas |
-| Cuerpo | | | | | | Párrafos, captions |
-| CTA / botón | | | | | | Acciones |
-| Dato / legal | | | | | | Cifras, letra chica |
+**Contraste de pesos.** Si usás `Light`, saltá a `Medium` o `Bold`. `Light + Regular` no es
+contraste — es un error que parece descuido. Esto **sí** es de Branding: define el carácter.
 
-Si el sistema vive en varios formatos (feed, web, print), la escala se declara **por formato**.
-
-**Tracking.** En títulos grandes suele quedar mejor cerrarlo un poco (`-2%` a `-5%`), cuidando que
-las letras no se peguen. En texto chico y en mayúsculas, abrirlo.
-
-**Diseñá con el zoom al 100%.** Si no, elegís tamaños que en la realidad son ilegibles.
-
----
+🛑 **Lo que NO entrega Branding:** tamaños en px, interlineado, tracking, ratios de escala,
+cómo se corta un titular de 12 palabras en 4:5. Eso lo resuelve Diseño con la realidad de cada
+formato, y si Branding lo fija, Diseño tiene que romperlo en la primera story.
 
 ## Cómo se elige una tipografía
 
@@ -120,11 +119,12 @@ sale de ahí, se verifica licencia y set de caracteres antes de ponerla en el ma
 ## Verificaciones antes de cerrar
 
 - [ ] 1-2 familias (3 solo con justificación escrita)
-- [ ] Cada rol tiene familia, peso, tamaño, interlineado y tracking
+- [ ] Cada rol tiene familia, por qué esa, y pesos en uso
 - [ ] Hay contraste real entre los pesos usados
+- [ ] No se fijó ninguna escala numérica — eso es de ⑥A Diseño
 - [ ] `ñ`, tildes y signos de apertura verificados **carácter por carácter**
 - [ ] Licencia declarada, con tipo y poseedor
 - [ ] Fallback web-safe definido
-- [ ] Legibilidad probada en el tamaño más chico del sistema (thumbnail y móvil)
+- [ ] Legibilidad verificada a tamaño chico y comprimida
 - [ ] La elección se justifica contra la personalidad **y** contra la saturación de categoría
 - [ ] El logo, si es wordmark, tiene su tipografía declarada aparte y **vectorizada**
