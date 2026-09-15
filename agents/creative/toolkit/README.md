@@ -1,4 +1,4 @@
-# Toolkit Creativo — 8 taxonomías
+# Toolkit Creativo — 9 taxonomías
 
 **Por qué existe esto.** Un hook no se improvisa, un CTA no se elige por costumbre y un layout no se
 describe con adjetivos. Cada decisión creativa sale de una **taxonomía cerrada**, para que sea
@@ -17,6 +17,7 @@ del bloque decide cuál.
 | `06-shot-list.md` | 5 | Cómo se filma | `escenas` `encuadres` `duraciones` `audio_musica` |
 | `07-plataformas.md` | 6 | Cómo vive en cada canal | `audio_musica` + specs del `formato` |
 | `08-elementos-graficos.md` | 5 | Qué capas gráficas lleva encima, de 4 familias cerradas | `elementos_graficos` |
+| `09-lectura-de-video.md` | 1 | **Cómo se lee de verdad un video de referencia** | `referencia_visual` `hook` `escenas` `encuadres` `duraciones` `estetica_mood` |
 
 ---
 
@@ -68,3 +69,19 @@ Las fichas se revisan **cada 3 meses** con los patrones acumulados en `aprendiza
 
 **Nunca se agrega una opción nueva a una taxonomía sin evidencia de 3+ piezas.** Una taxonomía que
 crece sin criterio deja de ser una taxonomía y se vuelve una lista.
+
+---
+
+## Una de las fichas trae código
+
+`09-lectura-de-video.md` viene con **`leer-video.py`** al lado: el pipeline que convierte un video en
+una hoja de contacto, un ritmo, un OCR por plano y una paleta. Es la única ficha ejecutable del
+toolkit, porque es la única que resuelve un problema **mecánico** —cuántos frames extraer y de
+dónde— y no una decisión creativa.
+
+```bash
+python3 agents/creative/toolkit/leer-video.py <video> --hook 3 --scene 0.12
+```
+
+Requiere `ffmpeg`, `ffprobe`, `montage` (ImageMagick), `tesseract` y Pillow. Si falta alguno, el
+script lo dice y no corre a medias.
