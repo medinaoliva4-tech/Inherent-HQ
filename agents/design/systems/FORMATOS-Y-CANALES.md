@@ -16,6 +16,7 @@ Specs, grillas y safe areas por formato y canal.
 | **Feed vertical** | 4:5 | 1080 × 1350 | IG · FB | El que más pantalla ocupa en feed. **Default** |
 | **Feed cuadrado** | 1:1 | 1080 × 1080 | IG · FB | Cuando el arte lo pide o hay reuso en grilla de perfil |
 | **Feed horizontal** | 1.91:1 | 1080 × 566 | FB | Poco recomendable en móvil — solo si el canal lo exige |
+| **Post FB clásico** | 1.91:1 | 1200 × 630 | FB | El lienzo tradicional de post/link de Facebook 🟡 |
 | **Story** | 9:16 | 1080 × 1920 | IG · FB | Efímero, alta frecuencia, bajo texto |
 | **Carrusel** | 4:5 o 1:1 | Igual en todas las slides | IG · FB | Desarrollo, educación, prueba |
 
@@ -25,6 +26,39 @@ carrusel produce recortes al deslizar.
 🟡 **Cantidad de slides:** el máximo por carrusel ha ido cambiando en Instagram. **Verificar antes
 de armar un carrusel de más de 10 slides.** Recomendación de diseño independiente de la plataforma:
 **5-8 slides**. Más de 10 y la tasa de llegada al cierre cae.
+
+---
+
+## Carrusel seamless — la matemática
+
+Un carrusel continuo es **una sola composición larga** partida en slides, no N piezas separadas.
+
+```
+Ancho total = ancho_slide × N       Alto total = alto_slide
+
+6 slides 1:1   → 6480 × 1080     guías en 0 · 1080 · 2160 · 3240 · 4320 · 5400
+5 slides 4:5   → 5400 × 1350     guías en 0 · 1080 · 2160 · 3240 · 4320
+```
+
+**La regla que hace que funcione:** las formas y las imágenes **cruzan** las guías. Si todo termina
+justo en el corte, se pierde el seamless y se lee como piezas sueltas.
+
+Construcción paso a paso en `playbooks/FIGWRIGHT-PLAYBOOK.md` §4.
+
+---
+
+## Escala de espaciado en social
+
+En un lienzo de 1080px, una escala de tres pasos alcanza para el 90% de las piezas:
+
+| Paso | Valor sugerido | Para qué |
+|---|---|---|
+| **Grande** | ~96 px | Entre bloques de jerarquía distinta |
+| **Medio** | ~80 px | Entre elementos del mismo bloque |
+| **Chico** | ~24 px | Entre líneas de un mismo elemento |
+
+🛑 **No mezcles medidas al azar.** Un espaciado de 22px "porque quedaba bien" rompe el ritmo del
+lote entero. Se redondea al token más cercano de la escala de D0.1.
 
 ---
 
@@ -131,5 +165,8 @@ Por cada formato activo del cliente:
 | CTA en el pie de una Story | Lo tapa la barra de respuesta | Arriba del safe inferior, o sticker nativo |
 | Carrusel con ratios mezclados | Recortes al deslizar | Un solo ratio por carrusel |
 | Subir la pieza de IG a FB sin revisar | Distinta audiencia, distinta tolerancia a texto | Revisar densidad y encuadre; marcar en el lote |
+| Diseñar 6 slides sueltas para un carrusel continuo | No hay continuidad y editar es imposible | Lienzo largo → componente → recortes |
+| Cortar todos los elementos justo sobre la guía del seamless | Se pierde el efecto | Que crucen la guía |
+| Espaciados ad-hoc por pieza | Destruye el ritmo del lote | La escala de 3 pasos |
 | Botón de "play" dibujado en una pieza de pauta | Imita UI nativa → rechazo | CTA tipográfico o botón claramente no-nativo |
 | Diseñar al borde exacto del safe area | La UI varía por versión y dispositivo | Margen conservador |

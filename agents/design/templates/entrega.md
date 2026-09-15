@@ -9,6 +9,7 @@
 | **Período** | |
 | **Piezas entregadas** | |
 | **Piezas bloqueadas** | |
+| **Devueltas a Creative** | |
 | **Archivo Figma** | |
 | **Ruta de exports** | |
 
@@ -29,7 +30,8 @@
 ### Pasada 2 · Pieza
 | Ítem | ✅/🛑 | Nota |
 |---|---|---|
-| Jerarquía 1-2-3 identificable en cada pieza | | |
+| La jerarquía del brief de Creative está respetada, no reordenada | | |
+| Jerarquía visual identificable — lo primero que se ve es el nivel 1 | | |
 | Contraste **medido** en cada par texto/fondo | | |
 | Safe areas respetadas por canal y formato | | |
 | Copy sin erratas, verificado contra el contenido original | | |
@@ -47,13 +49,24 @@
 | Sobrevive la compresión (texto chico, textura, recortes) | | |
 | Recorte de grilla de perfil revisado (IG) | | |
 
+### Pasada 4 · Secuencia
+> `brain/FEED-Y-GRILLA.md` — el lote en orden de publicación.
+
+| Ítem | ✅/🛑 | Nota |
+|---|---|---|
+| No hay dos piezas consecutivas con mismo encuadre + color dominante + densidad de texto | | |
+| Alterna mezcla **visual**, no solo mezcla de contenido | | |
+| Las portadas con texto se leen a tamaño de miniatura de grilla | | |
+| La consistencia viene del tratamiento, no de teñir todo de color de marca | | |
+| Test anti-slop corrido sobre el lote | | |
+
 ---
 
 ## Índice de exports
 
-| Archivo | Pieza | Canal | Formato | Publicación prevista | Pauta |
-|---|---|---|---|---|---|
-| | | | | | sí / no |
+| Archivo | Pieza | Canal | Formato | Publicación prevista | Pauta | Animado |
+|---|---|---|---|---|---|---|
+| | | | | | sí / no | sí / no |
 
 **Nomenclatura:** `<cliente>_<AAAAMMDD>_<id_pieza>_<canal>_<formato>.<ext>`
 **Carrusel:** sufijo `_s01`, `_s02`… en orden de publicación.
@@ -65,6 +78,33 @@
 | Pieza | Densidad de texto verificada | CTA | Nota |
 |---|---|---|---|
 | | | | |
+
+---
+
+## Piezas con elemento animado
+
+> Cambian el formato de entrega (MP4 en vez de PNG) y el canal las trata distinto.
+> ⚠️ Ver la alerta de plataforma de VisuHaus en `playbooks/ASSETS-Y-MCP.md`.
+
+| Pieza | Elemento | Formato de entrega | Origen |
+|---|---|---|---|
+| | | | |
+
+---
+
+## Piezas candidatas a motion (Production / VisuHaus)
+
+| Pieza | Por qué | Capas separadas y nombradas |
+|---|---|---|
+| | | ⬜ |
+
+---
+
+## Devoluciones a Creative
+
+| Pieza | Qué faltaba o qué se observó | Estado |
+|---|---|---|
+| | | esperando / resuelto |
 
 ---
 
@@ -102,9 +142,12 @@
 - Ruta de exports:
 - Archivo Figma:
 - Piezas marcadas para pauta: [ids]
+- Piezas con elemento animado: [ids]
+- Piezas candidatas a motion: [ids]
 - Piezas con asset generado: [ids]
+- Devoluciones a Creative abiertas: [ids]
 - Deuda visual abierta:
-- Siguiente: Content (publicación) · Media Buy (pauta)
+- Siguiente: Content (publicación) · Media Buy (pauta) · Production (motion)
 ```
 
 🛑 **Diseño no publica, no programa y no pauta.**

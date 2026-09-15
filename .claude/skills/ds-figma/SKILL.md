@@ -1,105 +1,126 @@
 ---
 name: ds-figma
 description: >
-  Capa D5 del método de Diseño — construye el lote en Figma sobre el design system del cliente vía
-  el MCP de Figma: descubre componentes, variables y estilos publicados, arma los layouts como
-  COMPONENT SET con VARIANTS por formato, instancia las piezas con overrides, enlaza tokens en vez
-  de hardcodear, y valida con screenshot bloque por bloque. Úsala cuando pidan "construilo en
-  Figma", "pasá esto a Figma", "armá el archivo", "creá los componentes", "actualizá la pieza en
-  Figma", o al bajar una ruta visual aprobada a archivo. Requiere ruta visual aprobada (GATE 2).
-  Sin MCP de Figma entrega especificación construible, nunca declara la pieza hecha.
+  Capa D5 del método de Diseño — construye el lote de piezas de social en Figma usando **Figwright**,
+  el MCP no oficial de Figma que usa Inherent (no el MCP oficial ni Dev Mode). Corre `ping`, reclama
+  el archivo conectado, descubre variables, componentes, estilos y fuentes del archivo real, arma los
+  componentes de pieza con VARIANTS por formato, instancia con overrides, bindea tokens en vez de
+  hardcodear, y valida con screenshot bloque por bloque. Incluye la técnica del carrusel seamless por
+  lienzo largo. Úsala cuando pidan "construilo en Figma", "pasá esto a Figma", "armá el archivo",
+  "creá los componentes", "actualizá la pieza en Figma". Requiere ruta visual aprobada (GATE 2).
+  Sin Figwright conectado entrega especificación construible, nunca declara la pieza hecha.
 ---
 
-# D5 · Construcción en Figma
+# D5 · Construcción con Figwright
 
-Leé `agents/design/playbooks/FIGMA-PLAYBOOK.md` **completo** antes de la primera llamada.
+Leé `agents/design/playbooks/FIGWRIGHT-PLAYBOOK.md` **completo** antes de la primera llamada.
 Requiere `ruta-visual.md` aprobada (🚦 GATE 2).
 
-## Pre-check
+## Qué es Figwright — y por qué cambia el flujo
+
+`@figwright/mcp` conecta un servidor MCP local a un **plugin de Figma** por WebSocket. Corre entero
+en la máquina, no necesita Dev Mode ni plan pago, y es **bidireccional** (~113 tools).
+
+🛑 **No hay fetch por URL.** Figwright trabaja sobre el archivo que el usuario tiene **abierto** con
+el plugin corriendo. Esa es la diferencia operativa más importante con el MCP oficial.
+
+## Pre-check — siempre
 
 ```
-CHECK FIGMA — MCP: [✅/⬜] · Archivo destino: [url/key] · Sistema en archivo: [✅/⬜]
-Ruta visual aprobada: [✅/⬜] · Piezas a construir: [n]
+CHECK FIGWRIGHT — ping: [✅/⬜] · Archivo conectado: [nombre] · Archivos abiertos: [n]
+Sistema en el archivo: [✅/⬜] · Ruta visual aprobada: [✅/⬜] · Piezas: [n]
 → PASS | BLOQUEADO: [qué falta]
 ```
 
-⚠️ **Sin MCP de Figma:** entregá **especificación construible** (brief + tokens + layout + medidas
-exactas + orden de capas) marcada `BLOQUEADO — construcción manual pendiente`.
-🛑 **Nunca declares una pieza "hecha" sin archivo.**
+1. **`ping`** — confirmar el plugin conectado.
+2. Si hay más de un archivo abierto, los resultados traen `MORE THAN ONE FIGMA FILE IS OPEN`.
+   **Reclamá antes de tocar nada:** `list_files` → `use_file({ fileName })`.
+   🛑 Si el usuario no dijo cuál, **preguntá**. Sin reclamar podés leer uno y escribir en otro.
 
-🛑 **Sin GATE 2 aprobado no se construye el lote.** Construir 40 piezas antes del gate es la forma
-más cara de equivocarse.
+⚠️ Sin Figwright: **especificación construible** marcada `BLOQUEADO — construcción manual pendiente`.
+🛑 **Nunca declares una pieza hecha sin archivo.**
+🛑 **Sin GATE 2 no se construye el lote.**
 
-## Cargar herramientas — una sola llamada
+## Entender el entorno, después construir
 
-```
-ToolSearch query="select:use_figma,get_screenshot,get_metadata,get_libraries,search_design_system,create_new_file"
-```
+**La causa número uno de una pieza que se ve rara son valores inventados.**
 
-## Descubrir antes de construir — en orden
-
-1. **Inspeccionar una pieza existente** del cliente en el archivo → mapa exacto de componentes,
-   variables y estilos ya en uso
-2. **`get_libraries`** sobre el archivo
-3. **`search_design_system`** con `includeComponents` / `includeVariables` / `includeStyles` — solo
-   si quedó algo sin resolver
-
-🛑 **Trampa crítica:** `getLocalVariableCollectionsAsync()` devuelve **solo variables locales**.
-Si vuelve vacío **no significa que no haya variables** — las de librería publicada son invisibles
-para esa API. **Nunca concluyas "no hay variables" sin correr `search_design_system` con
-`includeVariables: true`.**
-
-Buscá con consultas **cortas y múltiples en paralelo** (`gray`, `background`, `space`, `radius`),
-no una compuesta. Las librerías varían en nomenclatura.
-
-## Las reglas que rompen el script
-
-| # | Regla |
+| Tool | Para qué |
 |---|---|
-| 1 | Colores en **0–1**, no 0–255 |
-| 2 | **Cargar la fuente antes de tocar texto** (`loadFontAsync`) → mutar → devolver IDs |
-| 3 | Al mutar texto existente, cargar **sus** fuentes vía `getStyledTextSegments(['fontName'])` |
-| 4 | `return` es el canal de salida. `console.log` no vuelve. `figma.notify()` tira error |
-| 5 | Fills/strokes son **read-only**: clonar → modificar → reasignar |
-| 6 | `setBoundVariableForPaint` **devuelve un paint nuevo** — capturarlo y reasignarlo |
-| 7 | **Appendear primero**, después setear `HUG`/`FILL` |
-| 8 | **`await` a toda promesa** |
-| 9 | Posicionar nodos nuevos lejos de (0,0) |
-| 10 | **Devolver todos los IDs** creados y mutados |
-| 11 | `currentPage` se resetea por llamada → `await setCurrentPageAsync(page)` |
-| 12 | Una sola llamada a `setCurrentPageAsync` por script; multi-página → N llamadas en paralelo |
-| 13 | **En error: PARAR.** Los scripts fallados son atómicos. Leer, corregir, reintentar |
-| 14 | Al crear variables, setear `scopes` explícitamente |
+| `get_variable_defs` | Los tokens a los que vas a bindear |
+| `scan_components` / `get_local_components` | Componentes a instanciar en vez de redibujar |
+| `get_styles` | Paint / text / effect styles compartidos |
+| `get_fonts` | Verificar que la familia de la guía existe |
+| `get_design_context` | Leer una pieza existente del cliente |
 
-## Construcción
+**Prioridad de todo valor:** sistema del archivo → sistema visual D0 → escala de 8pt. Nunca un
+número suelto.
 
-| Regla | Por qué |
+## Construir
+
+```
+create_frame + set_position + set_layout_grids       → el lienzo de la pieza
+create_frame + set_auto_layout                        → los bloques internos
+set_layout_props (HUG / FILL / FIXED)                 → tamaños
+create_text + set_text_properties + set_text_range    → texto
+scan_components → get_component_api → create_instance → set_instance_properties
+set_fills → bind_variable_to_paint                    → color (el binding vive en el PAINT)
+bind_variable_to_node                                 → escalares: padding, gap, radios
+apply_style_to_node                                   → estilos compartidos
+import_image / import_svg                             → fotos y vectores
+batch                                                 → muchas ediciones de una (ej: 8 slides)
+get_screenshot                                        → después de CADA bloque
+```
+
+## Los 10 errores que rompen la pieza
+
+| # | Error | Cómo se evita |
+|---|---|---|
+| 1 | Texto queda en **Inter** | `set_text_properties` **siempre** tras crear texto |
+| 2 | Frame de **100×100** | `set_layout_props` con `HUG` |
+| 3 | `FILL` antes de appendear | Appendear primero, después `FILL` |
+| 4 | Bindear color al nodo | `set_fills` primero, después `bind_variable_to_paint` |
+| 5 | Partir un énfasis en otro nodo | Un solo `TEXT` + `set_text_range` |
+| 6 | Un nodo por párrafo | Un `TEXT` con `\n` + `paragraphSpacing` |
+| 7 | Confundir `set_layout_grids` con `set_auto_layout` | Son ortogonales; los dos se usan |
+| 8 | `resize_nodes` para tamaño de contenido | `set_layout_props` con HUG/FILL |
+| 9 | Hijos con `x`/`y` a mano | Auto layout |
+| 10 | Escribir sin reclamar el archivo | `list_files` + `use_file` |
+
+## Carrusel seamless — lienzo largo
+
+```
+1. create_frame de (1080 × N) × alto        ej. 6 slides 1:1 → 6480 × 1080
+2. Diseñar la composición completa, dejando que formas e imágenes CRUCEN las guías
+3. create_component del frame largo
+4. N frames de 1080 × 1080
+5. create_instance + set_position en X: 0, -1080, -2160, -3240, -4320, -5400
+6. Exportar los N frames — NUNCA el componente largo
+```
+⚠️ Verificá el signo del offset con un `get_screenshot` antes de replicar a todas las slides.
+🛑 No cortes elementos justo sobre la guía: se pierde el seamless.
+
+## Verificar
+
+`get_screenshot` **por bloque**. Buscá: texto cortado · superposiciones · placeholders · variante
+equivocada · bordes desalineados · espaciado inconsistente · jerarquía de tipo plana.
+⚠️ **`empty: true` = el nodo no renderizó nada** (oculto, fuera del canvas, o vacío).
+
+## Errores
+
+**PARAR → leer el error → `get_node`/`get_screenshot` si no está claro → corregir → reintentar.**
+Nunca reintentar igual.
+
+## Motion — dónde está el límite
+
+| Qué | De quién |
 |---|---|
-| **Contenedor primero, en su propia llamada** | Reparentar entre llamadas falla en silencio |
-| **Layouts como `COMPONENT SET` con `VARIANTS` por formato** | Un cambio de sistema actualiza 40 piezas, no 0 |
-| **Piezas como `INSTANCE` con overrides** | Copiar y pegar mata el sistema |
-| **Auto layout en todo lo estructural** | x/y absolutos se rompen con cualquier cambio de texto |
-| **Tokens, nunca literales** | Color por variable, spacing/radio por variable, tipo por `TEXT STYLE`, sombra por `EFFECT STYLE` |
-| **Un bloque por llamada + `get_screenshot`** | El error queda acotado; lo construido sigue intacto |
-| **`setProperties()` para overrides de texto** | Más confiable que `node.characters` directo |
+| Elemento animado de relleno dentro de la pieza | **Diseño** — con VisuHaus, como asset |
+| Animar el estático completo | **Production / Post** |
 
-**Nomenclatura:** `<id_pieza>__<canal>__<formato>` · carrusel: `__s01`, `__s02`…
-
-**Qué buscar en cada screenshot:** texto cortado por line-height · elementos superpuestos ·
-placeholders sin reemplazar · variante equivocada del componente.
-
-## Imágenes — la limitación
-
-El Plugin API **no puede bajar imágenes de una URL externa**. Solo copia `imageHash` de nodos ya
-presentes en el archivo. Si la pieza lleva imagen y no está en el archivo, **resolvelo primero** —
-si no, los frames quedan en blanco.
-
-## Estructura del archivo
-
-```
-00 · Sistema · 01 · Layouts · 02 · Lote [mes] · 03 · Assets · 99 · Exports
-```
+🛑 **No uses Figma Motion** (`apply_animation_style`, `export_video`) para animar la pieza.
 
 ## Cierre
 
-Corré el bloque D5 de `qa/QA-GATES.md`. Siguiente: `ds-adaptacion` (D6).
+Corré el bloque D5 de `qa/QA-GATES.md`. Nomenclatura: `<id_pieza>__<canal>__<formato>`.
+Siguiente: `ds-adaptacion` (D6).

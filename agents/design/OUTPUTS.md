@@ -23,7 +23,7 @@ Todo lo que el agente produce, dónde vive y quién lo consume.
 | 2 | `lote-de-piezas.csv` | D1 | `ds-brief-de-pieza` | — | D2-D7 · Content |
 | 3 | `briefs/<id_pieza>.md` | D2 | `ds-brief-de-pieza` | — | D3-D6 |
 | 4 | `ruta-visual.md` | D3-D4 | `ds-composicion` + `ds-elementos-graficos` | 🚦 GATE 2 | D5-D7 · Creative |
-| 5 | Archivo Figma | D5-D6 | `ds-figma` + `ds-adaptacion` | — | D7 · Production · Content |
+| 5 | Archivo Figma (Figwright) | D5-D6 | `ds-figma` + `ds-adaptacion` | — | D7 · Production · Content |
 | 6 | `entrega.md` + `/exports` | D7 | `ds-qa-visual` | 🚦 GATE 3 | Content · Media Buy |
 
 ---
@@ -40,7 +40,7 @@ Todo lo que el agente produce, dónde vive y quién lo consume.
 | **Grillas por formato** | Márgenes, columnas, gutter y safe areas de cada formato activo |
 | **Inventario de elementos gráficos** | Las 5 familias: qué existe, qué falta, qué se propone |
 | **Activos distintivos** | Qué hace reconocible la marca al 10%, sin logo |
-| **Biblioteca de layouts** | 3-6 layouts base con nombre, función y formatos disponibles |
+| **Componentes de pieza** | 3-8 componentes de social, cada uno con su **ficha**: cuándo usarlo · variantes · qué acepta · reglas · 🛑 cuándo NO |
 | **Huecos** | Lista de `⚠️ FUERA DE GUÍA` con qué falta y a quién pedírselo |
 
 **Restricción:** traduce, no inventa. Todo lo que no está en la guía sale como **propuesta**.
@@ -51,21 +51,26 @@ Todo lo que el agente produce, dónde vive y quién lo consume.
 
 | Sub-output | Qué es |
 |---|---|
-| **Mapeo de columnas** | Cómo se leyó el Excel del cliente (declarado, no asumido) |
-| **Matriz de piezas** | Una fila por pieza entregable, 18 columnas |
-| **Cabecera del lote** | Piezas / listas / bloqueadas / assets faltantes |
+| **Mapeo de columnas** | Cómo se leyó el Excel de Creative (declarado, no asumido) |
+| **Matriz de piezas** | Una fila por pieza entregable, 21 columnas |
+| **Cabecera del lote** | Piezas / ejecutables / bloqueadas / devoluciones a Creative |
 | **Lista de bloqueos** | Por fila, con el motivo exacto y qué lo desbloquea |
+| **Devoluciones a Creative** | Qué campo del contrato falta, por pieza |
 
 **Restricción:** una fila incompleta **se conserva bloqueada**, nunca se borra.
+🛑 **Ningún campo bloqueante se completa por inferencia.**
 
 ---
 
 ## 3 · `briefs/<id_pieza>.md` — D2
 
-Los 7 campos: `mensaje único · jerarquía 1-2-3 · layout base · par de color · escala tipográfica ·
-presupuesto gráfico · restricciones del canal`.
+Los 8 campos:
+`goal · mensaje único · jerarquía del mensaje` **(de Creative)** ·
+`componente base · cómo se logra la jerarquía visual · par de color · presupuesto gráfico ·
+restricciones del canal` **(de Diseño)**.
 
 **Restricción:** media carilla. Si crece, la pieza está mal definida.
+🛑 Diseño no reordena los niveles del brief: propone y pregunta (`⚠️ OBSERVADO`).
 
 ---
 
@@ -74,7 +79,8 @@ presupuesto gráfico · restricciones del canal`.
 | Sub-output | Qué es |
 |---|---|
 | **Pieza modelo por formato** | 1 por cada formato activo del lote |
-| **Resultado de los 3 tests** | Miniatura · gris · sustracción, con SÍ/NO por pieza |
+| **Secuencia del feed** | El lote en orden de publicación, con las 5 variables de ritmo |
+| **Resultado de los tests** | Miniatura · gris · atención · sustracción · anti-slop · secuencia |
 | **Reglas del lote** | Qué se repite en todas las piezas para que se lean como familia |
 | **Presupuesto gráfico del lote** | Qué familias de overlay se usan y con qué rol |
 | **Decisiones y descartes** | Qué layout se eligió y por qué se descartaron los otros |
@@ -94,9 +100,12 @@ Nomenclatura de frames: `<id_pieza>__<canal>__<formato>`.
 
 | Sub-output | Qué es |
 |---|---|
-| **Resultado del QA** | Las 3 pasadas, ítem por ítem |
+| **Resultado del QA** | Las 4 pasadas, ítem por ítem |
 | **Índice de exports** | Archivo · pieza · canal · formato · fecha de publicación prevista |
 | **Piezas marcadas para pauta** | Con la nota de densidad de texto verificada |
+| **Piezas con elemento animado** | Con su formato de entrega (MP4 en vez de PNG) |
+| **Piezas candidatas a motion** | Con capas separadas y nombradas, para Production |
+| **Devoluciones a Creative** | Qué faltaba o qué se observó, y su estado |
 | **Assets generados** | Los que llevan `[asset generado]`, listados aparte |
 | **Deuda visual** | Qué quedó sin resolver y por qué |
 | **Bloque de HANDOFF** | El bloque completo de `METHOD.md` D7 |
@@ -109,7 +118,7 @@ Nomenclatura de frames: `<id_pieza>__<canal>__<formato>`.
 |---|---|
 | **Pre-flight** | Siempre, primero |
 | **Cabecera del lote** | Al cerrar D1 |
-| **Tabla de bloqueos** | Cuando hay filas bloqueadas |
+| **Tabla de bloqueos y devoluciones** | Cuando hay filas bloqueadas o brief no ejecutable |
 | **Propuesta de gate** | Antes de cada 🚦 |
 | **Resumen de QA** | Al cerrar D7 |
 
@@ -119,7 +128,7 @@ Nomenclatura de frames: `<id_pieza>__<canal>__<formato>`.
 
 | Destino | Qué | Gate |
 |---|---|---|
-| **Figma** | Archivo del cliente, páginas y frames | Escritura sobre archivo existente: ✅ confirmación previa |
+| **Figma (Figwright)** | Archivo del cliente, páginas y frames | Escritura sobre el archivo real: ✅ confirmación previa + `use_file` reclamado |
 | **Drive** | Exports subidos a la carpeta del cliente | ✅ confirmación previa |
 | **Notion / Inherent OS** | Registro del lote entregado | ✅ confirmación previa |
 

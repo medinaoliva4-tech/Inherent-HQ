@@ -5,6 +5,53 @@ herramienta principal de jerarquía.
 
 ---
 
+## Los 4 tipos — y para qué sirve cada uno
+
+| Tipo | Qué es | En social |
+|---|---|---|
+| **Serif** | Con remates en el final de los trazos | Editorial, tradición, autoridad, lujo clásico |
+| **Sans serif** | Palo seco, sin remates | Moderno, limpio, neutro. El default de social |
+| **Monoespaciada** | Todos los caracteres ocupan el mismo ancho | Técnico, código, dato, precisión |
+| **Display** | Pensadas para verse grandes | Titulares y portadas. 🛑 Nunca en bloques de texto |
+
+## Cuántas usar
+
+**Una o dos. Tres solo si sabés muy bien lo que estás haciendo** — y en ese caso la tercera lleva un
+rol fijo declarado en D0.3, no aparece "porque quedaba bien".
+
+## Cómo combinar — el contraste es todo
+
+| Forma de combinar | Regla |
+|---|---|
+| **Serif + sans serif** | La más segura |
+| **Una sola familia, distintos pesos** | El contraste tiene que ser **grande**: `Light` con `Medium`/`Bold`, `Regular` con `Bold` |
+| 🛑 `Light` + `Regular` | Casi no se distinguen — no es contraste, es ruido |
+
+## Antes de adoptar una familia — el checklist
+
+```
+□ ¿Qué tan legible es a tamaño chico y comprimida?
+□ ¿Tiene ñ, tildes y signos de apertura (¿ ¡) del idioma del cliente?   ← si no, NO se adopta
+□ ¿Tiene los pesos que necesita la escala?
+□ ¿Qué personalidad transmite? ¿Coincide con el goal y la voz de la marca?
+□ ¿La licencia permite el uso comercial del cliente?
+```
+
+🛑 **Una familia sin `ñ` o sin tildes no entra al sistema.** No importa lo linda que sea.
+
+## Personalidad
+
+La tipografía comunica antes que el texto. "Interrogá" la familia: ¿es seria, divertida, audaz,
+elegante, formal, cercana, rebelde? Si el goal de la pieza es confianza y la familia se siente
+agresiva, la pieza está peleando con su propio goal.
+
+## Trabajá al 100%
+
+**Diseñá con el zoom al 100%** para ver los tamaños reales. Una escala que se ve bien al 40% de zoom
+es una escala que no probaste.
+
+---
+
 ## Escala — máximo 4 tamaños por formato
 
 | Rol | Para qué | Regla |

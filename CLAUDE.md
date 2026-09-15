@@ -30,7 +30,7 @@ es lo primero que se lee en cada sesión: define quién sos y cómo arrancás.
    | Si el pedido es de… | Skill de entrada |
    |---|---|
    | Estrategia, research, posicionamiento, calendario macro, onboarding de cliente nuevo | `estrategia` |
-   | Diseñar piezas, sistema visual, composición, tipografía, contraste, Figma, adaptar formatos | `diseno` |
+   | Diseñar piezas, sistema visual, composición, tipografía, contraste, Figma/Figwright, adaptar formatos, feed | `diseno` |
 
 2. **Identificá el cliente.** Un cliente = una carpeta en `agents/<depto>/clients/<cliente>/`.
    Nunca mezcles archivos de dos clientes ni de dos departamentos.
@@ -49,7 +49,7 @@ PRE-FLIGHT — Cliente: [x] · Arquetipo: [x o SIN CLASIFICAR] · Capa: [0-8] ·
 **Design:**
 ```
 PRE-FLIGHT — Cliente: [x] · Sistema visual: [✅ aprobado / ⬜ no existe] · Capa: [D0-D7]
-Lote: [período · n piezas] · Skills: [x] · MCPs: [Figma ✅/⬜] · Gate humano: [sí/no]
+Lote: [período · n piezas] · Skills: [x] · MCPs: [Figwright ✅/⬜] · Gate humano: [sí/no]
 → PASS | BLOQUEADO: [qué falta]
 ```
 
@@ -74,16 +74,21 @@ Nunca rellenes con inferencia sin marcarla.
 6. **Gate humano.** Núcleo, posicionamiento, movimiento elegido y calendario los aprueba un humano
    antes del handoff. El agente propone; no cierra.
 7. **No duplicar otros departamentos.** Strategy llega hasta plataforma + calendario macro.
-   Design llega hasta export aprobado y nombrado. Monetización es de Growth. Conceptos y copies son
-   de Creative. Lenguaje visual es de Branding. Fotos y video son de Production. Publicar y pautar
-   es de Content / Media Buy.
-8. **En Design: el contraste se mide, no se estima.** Piso 4.5:1 para todo texto legible en
+   Design llega hasta export aprobado y nombrado. Monetización es de Growth. Conceptos, copies,
+   **goal de la pieza y jerarquía del mensaje** son de Creative. Lenguaje visual es de Branding.
+   Fotos, video y motion del estático son de Production. Publicar y pautar es de Content / Media Buy.
+8. **Creative define la jerarquía del MENSAJE; Design resuelve la jerarquía VISUAL.**
+   Si al brief creativo le falta el goal o el texto en jerarquía, Design **bloquea y devuelve** —
+   nunca lo inventa. Si no es ejecutable en el formato, lo marca `⚠️ OBSERVADO` y propone; no lo
+   cambia en silencio.
+9. **En Design: el contraste se mide, no se estima.** Piso 4.5:1 para todo texto legible en
    miniatura; 7:1 o scrim sobre foto. "Se ve bien" no es una medición.
-9. **En Design: nunca se genera fotografía del cliente.** Si falta material real se marca
-   `⚠️ ASSET FALTANTE` y se pide a Production. Todo asset generado va marcado `[asset generado]`
-   y con gate humano.
-10. **Nada destructivo sin autorización.** No publicar, no pautar, no enviar al cliente, no borrar,
-    no sobrescribir aprobados (incluye archivos de Figma y assets del cliente).
+10. **En Design: nunca se genera fotografía del cliente.** Si falta material real se marca
+    `⚠️ ASSET FALTANTE` y se pide a Production. Todo asset generado va marcado `[asset generado]`
+    y con gate humano.
+11. **Nada destructivo sin autorización.** No publicar, no pautar, no enviar al cliente, no borrar,
+    no sobrescribir aprobados. Figwright escribe sobre el archivo real del cliente: se reclama con
+    `use_file` y se confirma antes de escribir.
 
 ---
 

@@ -138,15 +138,45 @@ familia.
 
 ---
 
-## D0.7 · Biblioteca de layouts
+## D0.7 · Biblioteca de componentes de pieza
 
-| Layout | Estructura | Para qué función | Formatos |
+> **No son componentes de UI.** Son piezas gráficas reutilizables de social.
+> 3-8 que cubran el 80% del trabajo. Cada uno lleva su **ficha completa** —
+> ver `brain/COMPONENTES-SOCIAL.md`.
+
+| Componente | Para qué goal | Formatos | Ficha completa |
 |---|---|---|---|
-| | | | |
-| | | | |
-| | | | |
+| | | | ⬜ |
+| | | | ⬜ |
+| | | | ⬜ |
 
-*(3-6 layouts que cubran el 80% de las piezas)*
+### Ficha — repetir por componente
+
+```
+Componente: <nombre>
+
+Cuándo usarlo:
+-
+
+Variantes:
+- formato: feed-4x5 / feed-1x1 / story / carrusel
+-
+
+Qué contenido acepta:
+- nivel 1: <tipo, límite de palabras>
+- nivel 2:
+- nivel 3:
+- asset base: sí / no
+
+Reglas:
+-
+
+🛑 Cuándo NO usarlo:
+- <escenario> → usar <componente alternativo>
+```
+
+🛑 **Un componente sin bloque de anti-uso no está terminado.** Es lo que evita que el sistema se
+degrade en tres lotes.
 
 ---
 

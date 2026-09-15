@@ -2,18 +2,41 @@
 
 La capa D3. Se compone **en gris**: si la pieza no funciona sin color, el color la está salvando.
 
+> **La composición lo sostiene todo.** Podés tener buena tipografía, buenos colores, buenas imágenes
+> y buenos recursos. Si la composición está mal, el diseño completo se cae.
+
+---
+
+## De dónde viene la jerarquía
+
+```
+Creative define la jerarquía del MENSAJE  →  qué se dice, qué se lee primero, cuál es el goal
+Diseño resuelve la jerarquía VISUAL       →  cómo se logra que efectivamente se lea primero
+```
+
+🛑 **Diseño no reordena los niveles del brief.** Si el nivel 1 de Creative no entra en el formato o
+no funciona, se **propone la alternativa y se pregunta** — no se cambia en silencio.
+
 ---
 
 ## Jerarquía — la regla de 3 niveles
 
 | Nivel | Qué es | Cuánto pesa |
 |---|---|---|
-| **1** | El mensaje único. Lo que se lee en 1,5 segundos | Dominante — ≥2x el nivel 2 |
+| **1** | El mensaje único de Creative. Lo que se lee en 1,5 segundos | Dominante — ≥2x el nivel 2 |
 | **2** | El contexto que hace entendible al 1 | Secundario y claramente menor |
 | **3** | La firma, el CTA, el dato chico, el logo | Presente pero nunca compitiendo |
 
-**Si no podés nombrar los tres, la pieza está mal briefeada.** Volvé a D2.
+**Si el brief no trae los tres, la pieza está mal briefeada.** Se devuelve a Creative.
 **Si hay cuatro elementos peleando por el nivel 1, no hay jerarquía** — hay ruido.
+
+### Componer es decidir con intención
+No se trata de poner elementos "donde se vean lindos". Antes de mover nada:
+```
+¿Qué elemento debe verse primero?   ¿Cuál acompaña?   ¿Cuál es secundario?
+¿Dónde necesita descansar el ojo?   ¿Qué estoy intentando comunicar?
+```
+A veces algo queda bien por casualidad. **No dependas de eso.**
 
 ### Cómo se construye peso visual
 Un elemento pesa por **tamaño × contraste × área × posición**. Para que el nivel 1 domine,
@@ -50,9 +73,10 @@ Nada toca el borde salvo que sea una decisión del sistema, consistente en todo 
 
 ---
 
-## Layouts base — la biblioteca de D0.7
+## Componentes de pieza — la biblioteca de D0.7
 
-3-6 layouts cubren el 80% de las piezas. Patrones que funcionan en social:
+3-8 componentes cubren el 80% de las piezas. **No son componentes de UI** — ver
+`brain/COMPONENTES-SOCIAL.md`. Patrones que funcionan en social:
 
 | Layout | Estructura | Para qué función |
 |---|---|---|
@@ -63,7 +87,9 @@ Nada toca el borde salvo que sea una decisión del sistema, consistente en todo 
 | **Lista** | Bloque con 3-5 ítems, numerados o con viñeta gráfica | Utility · Educativo |
 | **Sticker central** | Asset PNG recortado dominante sobre fondo simple | Producto · Conversion |
 
-Cada layout se construye **una vez** como `COMPONENT SET` con `VARIANTS` por formato (D5).
+Cada componente se construye **una vez** en Figwright, con `VARIANTS` por formato, y cada pieza es
+una instancia con overrides (D5). Cada uno lleva su ficha: cuándo usarlo · variantes · qué acepta ·
+reglas · 🛑 cuándo NO usarlo.
 
 ---
 

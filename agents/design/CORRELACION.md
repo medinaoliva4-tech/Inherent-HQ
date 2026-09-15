@@ -8,15 +8,25 @@ Qué alimenta a qué. **Si un campo no tiene origen, no se completa por inferenc
 
 | Campo del sistema de Diseño | Viene de | Departamento |
 |---|---|---|
-| Paleta, tipografía, logo, uso, tono visual | Guía de marca | **Branding** |
+| Paleta, tipografía, logo, uso, tratamiento gráfico | Guía de marca | **Branding** |
 | Activos distintivos | `posicionamiento.md` → Activos distintivos (Capa 4) | **Strategy** |
-| Función y pilar de cada slot | `calendario-estrategico.csv` → `funcion`, `pilar` | **Strategy** |
-| Temperatura del slot | `calendario-estrategico.csv` → `temperatura` | **Strategy** |
+| Pilar y temperatura del slot | `calendario-estrategico.csv` | **Strategy** |
 | Rol de cada canal | `contenido-por-canal.md` | **Strategy** |
-| Fecha, canal, formato, idea, copy, CTA | Calendario creativo (Excel) | **Creative** |
-| Titular y copy en pieza | Contenido producido | **Creative / Content** |
-| Fotos, video stills, producto | Producción | **Production** |
+| **Goal del arte final** | Calendario creativo / plan de ejecución | **Creative** |
+| **Texto en jerarquía (niveles 1-2-3)** | Calendario creativo | **Creative** |
+| Fecha, canal, formato, tamaño, slides | Calendario creativo | **Creative** |
+| Foto sugerida | Calendario creativo | **Creative → Production** |
+| Copies finales y CTAs | Contenido producido | **Creative / Content** |
+| Fotos, video stills, producto | Producción · Jockey | **Production** |
 | Ilustraciones, texturas, brochas, stickers | Librería de marca | **Branding / Production** |
+| Fuentes | Carpetas de assets · Zapier | **Branding** |
+
+### El contrato con Creative — qué bloquea
+```
+BLOQUEANTE     canal · formato · goal · nivel_1 (mínimo)
+NO BLOQUEANTE  foto sugerida · niveles 2 y 3 · pilar · temperatura
+```
+🛑 **Un campo bloqueante que falta se devuelve. No se infiere.**
 
 ---
 
@@ -24,26 +34,27 @@ Qué alimenta a qué. **Si un campo no tiene origen, no se completa por inferenc
 
 ```
 D0 sistema-visual.md
-    ├── tokens de color ────────────► D2 par de color ──► D4 capas ──► D7 QA pasada 1
-    ├── matriz de contraste ────────► D2 par de color ──► D7 QA pasada 2
+    ├── tokens de color ────────────► D2 par de color ──► D4 capas ──► D7 pasada 1
+    ├── matriz de contraste ────────► D2 par de color ──► D7 pasada 2
     ├── escala tipográfica ─────────► D2 escala ────────► D3 peso visual
     ├── grillas por formato ────────► D3 composición ───► D6 adaptación
     ├── inventario gráfico ─────────► D4 presupuesto
     ├── activos distintivos ────────► D4 ────────────────► D7 test de familia
-    └── biblioteca de layouts ──────► D2 layout base ───► D5 COMPONENT SET
+    └── componentes de pieza ───────► D2 elección ──────► D5 create_instance
 
 D1 lote-de-piezas.csv
     ├── canal + formato ────────────► D2 restricciones ─► D6 safe areas
-    ├── funcion + pilar ────────────► D2 mensaje único
-    ├── titular + copy + cta ───────► D2 jerarquía 1-2-3
+    ├── goal ───────────────────────► D2 mensaje único ─► D4 emoción de la pieza
+    ├── nivel_1 / 2 / 3 ────────────► D3 jerarquía VISUAL ──► D7 test de atención
     ├── asset_base ─────────────────► D3 punto focal
-    ├── slides ─────────────────────► D6 ritmo del carrusel
+    ├── slides + seamless ──────────► D6 ritmo del carrusel · lienzo largo
+    ├── animado ────────────────────► D4 presupuesto gráfico ──► D7 formato de entrega
     └── traza_calendario ───────────► D7 handoff
 
 D2 briefs/ ──► D3 composición en gris ──► D4 color y overlays ──► ruta-visual.md
                                                                         │
                                                                         ▼
-                                          D5 Figma ──► D6 adaptación ──► D7 exports
+                                      D5 Figwright ──► D6 adaptación ──► D7 exports
 ```
 
 ---
@@ -54,12 +65,14 @@ D2 briefs/ ──► D3 composición en gris ──► D4 color y overlays ─�
 |---|---|
 | Paleta o tipografía de la guía | **Todo D0** → y con él todo el resto |
 | Matriz de contraste | D2 (no hay par de color legítimo) |
+| Ficha de un componente | D2 para las piezas que lo usarían |
 | Grilla del formato | D3 y D6 |
-| Titular y copy | Esa pieza en D2 |
-| CTA en pieza de función Conversion | Esa pieza en D2 |
+| **Goal** o **nivel_1** | Esa pieza en D1 → devolución a Creative |
+| CTA en pieza de goal `vender` | Esa pieza en D1 |
 | Asset base | D3 solo si la pieza es fotográfica; si es tipográfica, se avanza |
-| Ruta visual aprobada | **Todo D5** — no se construyen 40 piezas sin ruta aprobada |
-| MCP de Figma | D5-D6 → salen como especificación construible |
+| Ruta visual aprobada | **Todo D5** — no se construyen 40 piezas sin gate |
+| Figwright conectado | D5-D6 → salen como especificación construible |
+| Plan Pro/Max de VisuHaus | Las piezas con `animado = sí` → van estáticas |
 
 ---
 
@@ -69,6 +82,8 @@ D2 briefs/ ──► D3 composición en gris ──► D4 color y overlays ─�
 |---|---|---|
 | `/exports` + `entrega.md` | **Content** | Publicación y programación |
 | Piezas marcadas para pauta | **Media Buy** | Carga en Ads Manager |
+| Piezas candidatas a motion + capas nombradas | **Production** | Motion graphic del estático |
 | `⚠️ ASSET FALTANTE` / `⚠️ ASSET INSUFICIENTE` | **Production** | Reproducción o reemplazo |
+| `🛑 BLOQUEADO — sin goal / sin jerarquía` · `⚠️ OBSERVADO` | **Creative** | Completar el plan de ejecución |
 | `⚠️ FUERA DE GUÍA` | **Branding** | Actualización de la guía |
-| Piezas que rindieron / no rindieron | **Analytics** → vuelve a D0.7 | Afinar la biblioteca de layouts |
+| Qué piezas rindieron | **Analytics** → vuelve a D0.7 | Afinar la biblioteca de componentes |

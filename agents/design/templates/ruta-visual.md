@@ -60,9 +60,45 @@
 |---|---|---|
 | Miniatura (10%) | SÍ / NO | |
 | Gris | SÍ / NO | |
+| **Atención** — ¿lo primero es el nivel 1 del brief? | SÍ / NO | |
 | Sustracción | | qué sobró y se sacó |
 
 *(repetir por cada formato activo del lote)*
+
+---
+
+## Secuencia del feed
+
+> El lote es una secuencia, no 40 piezas sueltas. Ver `brain/FEED-Y-GRILLA.md`.
+> **Se planifica en orden de publicación.** La grilla es un chequeo secundario.
+
+| # | Pieza | Encuadre | Sujeto | Color dominante | Densidad de texto | Espacio negativo |
+|---|---|---|---|---|---|---|
+| 1 | | amplio / medio / detalle | persona / producto / lugar / gráfico | | mucha / poca / nula | mucho / poco |
+| 2 | | | | | | |
+| 3 | | | | | | |
+
+🛑 **Dos piezas consecutivas no pueden compartir encuadre + color dominante + densidad de texto.**
+Si comparten las tres → recomponer una o reordenar la secuencia.
+
+**Resultado del chequeo:** ⬜ pasa · 🛑 conflictos en las piezas: ____
+
+---
+
+## Test anti-slop del lote
+
+> `brain/CRITERIO-VISUAL.md` §6 — corrido sobre cada pieza modelo.
+
+| Pregunta | Modelo A | Modelo B | Modelo C |
+|---|---|---|---|
+| ¿Qué problema de comunicación resuelve? | | | |
+| ¿Qué emoción específica busca? | | | |
+| ¿Qué decisión sería difícil de inventar sin conocer al cliente? | | | |
+| ¿Hay metáfora, tensión o capa conceptual? | | | |
+| ¿Qué se descartó y por qué? | | | |
+| El texto, ¿podría estar en cualquier marca? | | | |
+
+🛑 **Dos o más NO = la pieza es slop.** Volver a D2.
 
 ---
 

@@ -8,9 +8,12 @@ de Claude Code.
 **Agente de Estrategia** — construye una estrategia de posicionamiento y crecimiento completa por
 ingeniería inversa conectada con media, adaptada al tipo de empresa del cliente.
 
-**Agente de Diseño** — toma la guía de marca, el contenido producido y el calendario creativo, y
-entrega piezas visuales estáticas listas para publicar o pautar, por formato (feed / story /
-carrusel) y canal (Instagram / Facebook).
+**Agente de Diseño Gráfico** — recibe la guía de marca, la **dirección creativa** (goal + texto en
+jerarquía) y el contenido producido, y entrega piezas visuales estáticas listas para publicar o
+pautar, por formato (feed / story / carrusel) y canal (Instagram / Facebook). Construye en Figma con
+**Figwright**.
+
+> **La línea:** Creative define la jerarquía del **mensaje** · Diseño resuelve la jerarquía **visual**.
 
 ```
 agents/strategy/
@@ -31,8 +34,9 @@ agents/design/
 ├── AGENT.md                  # quién es el agente, qué entrega, qué no hace
 ├── METHOD.md                 # el método completo — 8 capas (D0-D7)
 ├── PROCESS.md                # el proceso operativo paso a paso, con 3 gates
+├── brain/                    # criterio visual · feed y grilla · componentes de social
 ├── systems/                  # tokens · composición · tipografía · color · elementos · formatos
-├── playbooks/                # Figma · assets y MCPs
+├── playbooks/                # Figwright · assets y MCPs
 ├── templates/                # los entregables
 ├── OUTPUTS.md                # mapa completo de outputs
 ├── CORRELACION.md            # de dónde viene cada campo
@@ -79,7 +83,7 @@ Plus `medicion.md` (Capa 8) cuando hay datos disponibles.
 | 2 | `lote-de-piezas.csv` | D1 · Lectura del calendario creativo | — |
 | 3 | `briefs/<id_pieza>.md` | D2 · Decisión por pieza | — |
 | 4 | `ruta-visual.md` | D3-D4 · Composición y capas gráficas | 🚦 |
-| 5 | Archivo Figma | D5-D6 · Construcción y adaptación | — |
+| 5 | Archivo Figma (Figwright) | D5-D6 · Construcción y adaptación | — |
 | 6 | `entrega.md` + `/exports` | D7 · QA y handoff | 🚦 |
 
 ## Estado
@@ -93,8 +97,19 @@ Plus `medicion.md` (Capa 8) cuando hay datos disponibles.
 ## Handoffs entre agentes
 
 ```
-Strategy  ──► calendario macro, posicionamiento, activos distintivos ──► Creative ──► Design
-Branding  ──► guía de marca ────────────────────────────────────────────────────► Design
-Production ──► fotos y assets ──────────────────────────────────────────────────► Design
-Design    ──► exports aprobados ──► Content (publica) · Media Buy (pauta)
+Strategy   ──► calendario macro, posicionamiento, activos distintivos ──► Creative
+Creative   ──► plan de ejecución: formato · goal · texto en jerarquía ──► Design
+Branding   ──► guía de marca ───────────────────────────────────────────► Design
+Production ──► fotos y assets ──────────────────────────────────────────► Design
+Design     ──► exports aprobados ──► Content (publica) · Media Buy (pauta) · Production (motion)
 ```
+
+## Stack del agente de Diseño
+
+| Para | Herramienta |
+|---|---|
+| Construir en Figma | **Figwright** — MCP no oficial, corre local con plugin (no es el MCP oficial) |
+| Fotos | Jockey MCP · Drive |
+| Fuentes | Zapier MCP |
+| Texturas, gradientes, PNGs | Generación de imagen, marcada `[asset generado]` + gate |
+| Elementos animados de relleno | VisuHaus ⚠️ **acceso limitado desde el 10/10/2026 — verificar** |

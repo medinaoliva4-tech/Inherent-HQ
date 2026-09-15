@@ -4,10 +4,12 @@ description: >
   Capa D0 del método de Diseño — traduce la guía de marca de Branding a un sistema visual operable:
   design tokens (color, tipografía, espaciado, radios, sombras), matriz de contraste medida, escala
   tipográfica, grillas y safe areas por formato, inventario de elementos gráficos, activos
-  distintivos y biblioteca de layouts base. Úsala al arrancar con un cliente nuevo en Diseño, cuando
-  pidan "armá el sistema visual de X", "pasá la guía de marca a tokens", "qué tipografías y tamaños
-  usamos", "qué colores puedo combinar", "armá las grillas", o cuando cualquier otra capa de Diseño
-  detecte que no existe un sistema previo. Traduce — no inventa lenguaje visual: eso es de Branding.
+  distintivos y la biblioteca de **componentes de pieza** de social (portada de carrusel, bloque de
+  cita, etiqueta, CTA de cierre…), cada uno con su ficha legible para IA. Úsala al arrancar con un
+  cliente nuevo en Diseño, cuando pidan "armá el sistema visual de X", "pasá la guía de marca a
+  tokens", "qué tipografías y tamaños usamos", "qué colores puedo combinar", "armá las grillas",
+  "armá los componentes", o cuando cualquier otra capa de Diseño detecte que no existe un sistema
+  previo. Traduce — no inventa lenguaje visual: eso es de Branding.
 ---
 
 # D0 · Sistema Visual
@@ -30,13 +32,36 @@ Plantilla: `agents/design/templates/sistema-visual.md` → copiar a `clients/<cl
 | D0.4 | **Grillas por formato** — márgenes, columnas, safe areas | `systems/FORMATOS-Y-CANALES.md` |
 | D0.5 | **Inventario de elementos gráficos** — las 5 familias | `systems/ELEMENTOS-GRAFICOS.md` |
 | D0.6 | **Activos distintivos** — qué se reconoce al 10% sin logo | `posicionamiento.md` de Strategy |
-| D0.7 | **Biblioteca de layouts** — 3-6 que cubran el 80% | `systems/COMPOSICION-Y-JERARQUIA.md` |
+| D0.7 | **Componentes de pieza** — 3-8 que cubran el 80%, con ficha | `brain/COMPONENTES-SOCIAL.md` |
 
 ## Cada token lleva 5 campos
 
 `nombre · valor · origen · uso · 🛑 anti-uso`
 
 **Sin el anti-uso, el token se usa mal.** Es lo que evita que el sistema se degrade en tres lotes.
+
+## Tipografía — el filtro que se olvida
+
+🛑 **Una familia sin `ñ`, tildes o signos de apertura (`¿` `¡`) no entra al sistema.** No importa lo
+linda que sea. Verificalo con `get_fonts` de Figwright y con el archivo real.
+
+Máx. **2 familias** · máx. **4 tamaños** por formato · contraste de peso **grande**
+(`Light`+`Bold`, nunca `Light`+`Regular`) · diseñá al **100% de zoom**.
+
+## D0.7 — los componentes son de social, no de UI
+
+**No hay botones ni navbars.** Un componente acá es una **pieza gráfica reutilizable**: portada de
+carrusel, slide interna, slide de cierre, bloque de cita, etiqueta "Nuevo"/"Tip", marco de
+testimonio, bloque de precio, sticker central.
+
+**Cada uno lleva su ficha** — sin ficha el agente adivina el diseño:
+```
+Cuándo usarlo · Variantes · Qué contenido acepta · Reglas · 🛑 Cuándo NO usarlo
+```
+🛑 **Un componente sin bloque de anti-uso no está terminado.** Es lo que evita que el sistema se
+degrade en tres lotes. Ver `brain/COMPONENTES-SOCIAL.md`.
+
+⚠️ **El catálogo sale de los goals que Creative usa con ESE cliente**, no de una lista genérica.
 
 ## La matriz de contraste — lo más importante de D0
 

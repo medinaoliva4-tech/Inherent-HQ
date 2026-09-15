@@ -1,6 +1,54 @@
 # Color y Contraste
 
-**El contraste se mide. No se estima.** Esta es la regla dura #4 del agente.
+**El contraste se mide. No se estima.** Esta es la regla dura #5 del agente.
+
+---
+
+## Lo básico — los 3 parámetros de todo color
+
+| Parámetro | Qué es |
+|---|---|
+| **Tono** | El color en sí: rojo, verde, azul |
+| **Saturación** | Qué tan intenso o puro |
+| **Luminosidad** | Qué tan claro u oscuro |
+
+Con esos tres se describe cualquier color con precisión — y se ajusta un color de marca que no
+funciona **sin salirse de la paleta**: bajás saturación o subís luminosidad, no cambiás de color.
+
+## sRGB, siempre
+
+| | Método | Para qué |
+|---|---|---|
+| **RGB** | Aditivo — más color = más luz | **Pantallas.** Todo lo de social |
+| **CMYK** | Sustractivo — más tinta = menos luz | Impresión |
+
+🛑 **Diseño de social se trabaja y se exporta en sRGB.** Un archivo en CMYK que llega a un feed sale
+con los colores desplazados. Si algún día hay impresión, es otro entregable y otro perfil.
+
+## Armonías — cómo combinar cuando hay que decidir
+
+| Armonía | Qué es | Cuándo |
+|---|---|---|
+| **Monocromática** | Un tono con variaciones de saturación y luminosidad | La más segura. Default cuando la paleta de marca es chica |
+| **Análoga** | Colores vecinos en la rueda | Armónico, suave, poco agresivo |
+| **Complementaria** | Colores opuestos | Máximo contraste. Para destacar. ⚠️ Puede "vibrar" |
+| **Tríada** | Tres equidistantes | Cuando hace falta variedad real |
+
+⚠️ **La rueda cromática es una guía, no una fórmula.** Si el complementario exacto no funciona,
+movelo un poco, bajale saturación o ajustá luminosidad.
+
+🛑 **Nada de esto reemplaza medir el contraste.** Una armonía correcta puede ser ilegible.
+
+## Psicología del color — el matiz que importa
+
+Sí existen asociaciones comunes (rojo/pasión, azul/confianza, verde/naturaleza). **Pero usar azul no
+hace que una marca comunique confianza.**
+
+El problema real es otro: **la psicología del color estandariza industrias.** Si todos los bancos son
+azules, ser azul no te hace confiable — te hace **igual**. A veces ignorarla es lo correcto.
+
+**La decisión de paleta es de Branding.** Lo que Diseño hace con esto: si la paleta recibida hace que
+el cliente se vea idéntico a su categoría, se marca como observación a Branding — no se cambia.
 
 ---
 
