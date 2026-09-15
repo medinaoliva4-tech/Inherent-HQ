@@ -94,8 +94,25 @@ Instagram, TikTok, YouTube y LinkedIn.
 lectura de video sin depender de transcripción local — que en este entorno **no está disponible**
 (el modelo no se puede descargar). Con Foreplay, el guion de una referencia de pauta llega ya leído.
 
-**Qué falta confirmar antes de pedirlo:** en qué plan está incluido el MCP, y si el volumen de
-consultas del refresco semanal entra en ese plan.
+**Plan y costo** *(verificado en sept 2026):* el **MCP viene en todos los planes**, no está detrás de
+un tier.
+
+| Plan | Anual | Usuarios | Spyder | API |
+|---|---|---|---|---|
+| Basic | $49/mes | 1 | incluido | 20.000 créditos |
+| **Workflow** ← recomendado | **$149/mes** | **5** | **ilimitado** | 20.000 créditos |
+| Agency | $389/mes | 10 | ilimitado | 20.000 créditos |
+
+**Por qué Workflow y no Basic.** Dos razones del método, no de precio:
+- **Spyder ilimitado.** Spyder vigila marcas automáticamente: es el **anillo 1 (directos)** de la
+  ingeniería inversa, mantenido al día sin correrlo a mano. Con varios clientes, 15 marcas se llenan
+  rápido. Y convierte el **refresco semanal** en algo que ya está hecho cuando alguien se sienta.
+- **5 usuarios**, sin pagar asientos sueltos.
+
+🔍 **Lo único sin verificar: el costo en créditos por llamada.** Los 20.000 créditos son el techo
+real del refresco semanal, y no está documentado cuánto consume cada búsqueda. **Se mide en la prueba
+de 7 días:** correr un ciclo real de un cliente y ver cuántos créditos se fueron. Con ese número se
+decide si Workflow alcanza o hay que ir a Agency.
 
 ### Otras opciones, por si Foreplay no entra
 
