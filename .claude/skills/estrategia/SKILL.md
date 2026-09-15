@@ -45,7 +45,8 @@ que falta; no rellenes con inferencia.**
 ## 3. Verificá alcance
 
 Si el pedido es de **Growth** (precio, oferta, money model, funnel), **Creative** (ideas concretas,
-copies, guiones), **Branding** (paleta, tipografía), **Production** (piezas, edición) o
+copies, guiones), **Branding** (concepto, personalidad, tono de voz, paleta, tipografía, manual de
+marca → skill `branding`), **Production** (piezas, edición) o
 **publicación/pauta** → decílo en una línea y ofrecé lo que sí podés hacer desde Strategy.
 
 ## 4. Archivos que leés

@@ -8,12 +8,13 @@ Si el método de un agente y esa especificación no coinciden, manda la especifi
 
 ## Qué hay hoy
 
-**6 departamentos operativos.** Cada uno vive en `agents/<nombre>/` y se activa con las skills de
+**7 departamentos operativos.** Cada uno vive en `agents/<nombre>/` y se activa con las skills de
 `.claude/skills/`.
 
 | Departamento | Carpeta | Skills | Qué entrega |
 |---|---|---|---|
 | ①② **Estrategia** | `agents/strategy/` | `estrategia` + 8 `st-*` | Núcleo, evidencia, posicionamiento, sistema de contenido, calendario macro |
+| ②B **Branding** | `agents/branding/` | `branding` + 6 `br-*` | Auditoría visual, plataforma de marca, tono de voz, dirección visual, **la guía de marca aplicable** |
 | ③ **Marketing** | `agents/marketing/` | `marketing` + 7 `mk-*` | Research comercial, plan, campañas, calendario comercial, volumen y presupuesto |
 | ④ **Creatividad** | `agents/creative/` | `creatividad` + 8 `cr-*` | Swipe file, big idea, storytelling, hook, copy, dirección de arte, el Excel de ideas |
 | ⑤ **Producción** | `agents/production/` | `produccion` + 8 `pr-*` | Desglose, jornadas, recursos, presupuesto, call sheets, entrega del material |
@@ -39,6 +40,46 @@ agents/strategy/
 └── clients/                  # un cliente = una carpeta
 ```
 
+### Agente de Branding
+
+**Define cómo debe sentirse, verse y comunicarse la marca.** Recibe el posicionamiento aprobado y
+entrega `guia-aplicable.md` — el documento que consumen ⑥A Diseño, ⑤ Producción, ④ Creatividad y
+⑦ Posting. *Branding entrega dirección; ⑥A Diseño entrega realidad.*
+
+```
+agents/branding/
+├── AGENT.md                  # quién es el agente, qué entrega, el límite con ⑥A Diseño
+├── METHOD.md                 # el método completo — 7 capas B0-B6
+├── PROCESS.md                # el proceso operativo, con 3 gates y modo degradado
+├── playbooks/                # modos de marca · color · tipografía · estética · auditoría · MCPs
+├── templates/                # los 7 entregables canónicos
+├── OUTPUTS.md                # mapa completo de outputs
+├── CORRELACION.md            # cómo se encadenan los entregables
+├── qa/                       # gates de calidad
+└── clients/                  # un cliente = una carpeta
+```
+
+| # | Entregable | Capa |
+|---|---|---|
+| 1 | `auditoria-de-marca.md` | B1 · Auditoría y saturación visual |
+| 2 | `plataforma-de-marca.md` | B2 · Concepto y personalidad 🚦 |
+| 3 | `tono-de-voz.md` | B3 · Sistema verbal |
+| 4 | `direccion-visual.md` | B4 · Dirección visual 🚦 |
+| 5 | `lenguaje-visual.md` | B5 · Lenguaje visual |
+| 6 | `reglas-de-marca.md` | B6 · Reglas y gobernanza |
+| 7 | **`guia-aplicable.md`** | Consolidado 🚦 — **⑥A Diseño corre D0 Modo A con esto** |
+
+**Las dos reglas del departamento:**
+1. **El concepto va antes que la forma.** Sin plataforma de marca no hay paleta.
+2. **Prueba del logo tapado.** La pregunta nunca es *¿es bonito?* sino *¿se reconoce sin el logo?*
+
+**El límite con ⑥A Diseño:** Branding fija la paleta base, las familias tipográficas, el logo, la
+estética y el tratamiento fotográfico. Diseño resuelve escalas, grillas, márgenes, safe areas,
+scrims, tokens y layout. *¿La decisión vale igual en una story, un cartel y un packaging? Es de
+Branding. ¿Cambia según el formato? Es de Diseño.*
+
+---
+
 ## Cómo se usa
 
 Desde Buzz, hablale al agente en lenguaje natural:
@@ -47,6 +88,9 @@ Desde Buzz, hablale al agente en lenguaje natural:
 - *"Investigá qué está haciendo la competencia de [cliente]"* → Capa 1, ingeniería inversa
 - *"¿Cuál es el posicionamiento de [cliente]?"* → Capa 4
 - *"Armá el calendario estratégico de [cliente]"* → Capa 7
+- *"Armá el branding / la guía de marca de [cliente]"* → Branding, B0 a B6
+- *"Auditá cómo se ve la competencia de [cliente]"* → Branding, B1
+- *"Definí el tono de voz de [cliente]"* → Branding, B3
 - *"Armá el plan de marketing de [cliente]"* → Marketing, fase M0
 - *"Dame conceptos para [cliente]"* → Creatividad, Capa 2
 - *"Cuánto cuesta producir este calendario"* → Producción, Capa 4
@@ -191,10 +235,12 @@ El flujo completo de Inherent tiene **8 departamentos**:
                  ②B Branding ──────────┘
 ```
 
-Los tres que ya están construidos:
+Los que ya están construidos:
 
 ```
-①②③  (hoy agents/strategy/)  →  posicionamiento · evidencia · plan de campañas · calendario
+①②   (hoy agents/strategy/)   →  posicionamiento · evidencia · plan de campañas · calendario
+            ↓  territorio · enemigo · promesa · activos distintivos
+②B Branding                   →  guia-aplicable.md  (dirección, color, tipografía, foto, activos)
             ↓  slots · pilares y mix · frecuencia · función y temperatura por canal
 ④ Creatividad                 →  brief completo por pieza
             ↓  ideas-de-contenido.csv — concepto · emoción · hook · copy · guion · escenas ·
@@ -222,7 +268,7 @@ Cada agente declara **su punto de corte** y **qué no hace, y de quién es**. Tr
 |---|---|---|---|
 | ① | Comprensión | `agents/strategy/` Capa 0 | 🟡 Dentro de Strategy |
 | ② | Estrategia | `agents/strategy/` Capas 1-4 | 🟡 Dentro de Strategy |
-| ②B | Branding | *(en `claude/nifty-faraday-g64a0d`)* | 🔵 Sin integrar |
+| ②B | **Branding** | `agents/branding/` | ✅ Operativo |
 | ③ | **Marketing** | `agents/marketing/` | ✅ Operativo |
 | ④ | **Creatividad** | `agents/creative/` | ✅ Operativo |
 | ⑤ | **Producción** | `agents/production/` | ✅ Operativo |
@@ -235,7 +281,7 @@ Cada agente declara **su punto de corte** y **qué no hace, y de quién es**. Tr
 
 ### Fronteras resueltas
 
-`DEPARTAMENTOS.md` cierra tres que estaban abiertas:
+`DEPARTAMENTOS.md` cierra tres, y la integración de Branding cierra la cuarta:
 
 - **El layout es de ⑥A Diseño.** Creative especifica *qué* elementos gráficos pedir y el concepto;
   Diseño resuelve composición, jerarquía visual, layout, tipografía, color y contraste.
@@ -243,19 +289,20 @@ Cada agente declara **su punto de corte** y **qué no hace, y de quién es**. Tr
   por campaña.
 - **No existe ⑧A Orgánico.** Lo orgánico vive dentro de ③ Marketing; la conversación es
   **⑨ Community management**.
+- **②B Branding entrega dirección; ⑥A Diseño entrega realidad.** Branding fija paleta base,
+  familias tipográficas, logo, estética y tratamiento fotográfico. Diseño resuelve escalas, grillas,
+  márgenes, safe areas, scrims, tokens y layout. Con Branding integrado, **Diseño corre en D0 Modo A**
+  (traducción) en vez de Modo B (construcción).
 
 ### Lo que queda abierto
 
 1. **Strategy todavía carga las Capas 5-8** (sistema de contenido, calendario macro, medición), que
    según la especificación son de ③ Marketing y ④ Creatividad.
-2. **②B Branding está en `claude/nifty-faraday-g64a0d`, sin integrar.** Su entregable es la *guía de
-   marca aplicable* — el mismo artefacto que ⑥A Diseño construye en D0 **Modo B** cuando Branding no
-   entregó manual. Modo B es el respaldo; con Branding integrado, Diseño corre en Modo A.
-3. **Medición / aprendizaje de negocio**: ningún departamento cierra el círculo hacia ① y ②.
+2. **Medición / aprendizaje de negocio**: ningún departamento cierra el círculo hacia ① y ②.
+3. **⑦ Posting, ⑧B Ads y ⑨ Community** todavía no tienen agente.
 
 ### Ramas sin integrar
 
 | Rama | Trae | Estado |
 |---|---|---|
-| `claude/nifty-faraday-g64a0d` | **②B Branding** — método de 7 capas, 6 modos de marca, 7 entregables | Recomendado integrar: cierra el input principal de ⑥A Diseño |
 | `claude/sharp-ride-4lo8a0` (`PR #2`) | Skill `presentacion` **+ recorte de Strategy de 9 capas a 5**, quitando `st-calendario-macro`, `st-medicion` y `st-sistema-contenido` | **Ahora alineado con la especificación**: esas capas son de ③ Marketing y ④ Creatividad. Requiere verificar que Marketing y Creatividad las absorban por completo antes de mergear |

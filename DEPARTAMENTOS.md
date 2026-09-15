@@ -39,8 +39,10 @@ agente y esta especificación no coincidan, **manda esta especificación** — y
 | **Recibe** | La estrategia y la historia de marca, referencias (páginas de Instagram), insights (consumidor, competencia, diferenciación) |
 | **Hace** | Define cómo debe **sentirse, verse y comunicarse** la marca |
 | **Incluye** | Brand guidelines, tono de voz, estética visual (minimalista, colorido, etc.), referencias, colores, tipografías, dirección visual, personalidad y reglas de marca |
-| **Entrega** | **Guía de marca aplicable para diseño, producción y contenido** |
+| **Entrega** | **Guía de marca aplicable para diseño, producción y contenido** — `guia-aplicable.md` |
 | **Habilidades** | Dirección de arte, identidad visual, sensibilidad estética, branding, comunicación |
+| **Agente** | `agents/branding/` — método B0-B6, skill `branding` + 6 `br-*` · ✅ Operativo |
+| **🛑 Límite con ⑥A** | Branding fija dirección, paleta base, familias tipográficas, logo y tratamiento fotográfico. **Escalas, grillas, márgenes, safe areas, scrims, tokens y layout son de ⑥A Diseño.** ¿La decisión vale igual en una story, un cartel y un packaging? Es de Branding. ¿Cambia según el formato? Es de Diseño |
 
 ## ③ Marketing
 
@@ -125,7 +127,7 @@ Conversación, comunidad y respuesta. *(Alcance todavía sin detallar.)*
 | **Frecuencia de contenido** | Es de **③ Marketing** — cuántos reels, historias y carruseles diarios por campaña |
 | **Distribución** | ② Estrategia distribuye por **canales de ingreso**. ③ Marketing distribuye **el objetivo y el contenido** |
 | **⑧A Orgánico** | No existe como departamento. Lo orgánico vive dentro de ③ Marketing (campañas orgánicas y pautadas). La conversación es **⑨ Community management** |
-| **La guía aplicable** | La produce **②B Branding**. ⑥A Diseño la construye solo en **D0 Modo B**, como respaldo, cuando Branding no entregó manual |
+| **La guía aplicable** | La produce **②B Branding** (`agents/branding/`), y ⑥A Diseño la traduce a tokens en **D0 Modo A**. Modo B queda como respaldo, para clientes donde Branding no corrió |
 
 ## Lo que queda abierto
 

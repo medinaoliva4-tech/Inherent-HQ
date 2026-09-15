@@ -78,7 +78,9 @@
       "mcp__figwright__token_map",
       "mcp__figwright__icon_map",
       "mcp__figwright__get_motion_styles",
-      "mcp__figwright__get_node_motion"
+      "mcp__figwright__get_node_motion",
+      "mcp__Eden__eden_read_card",
+      "mcp__Eden__eden_search_highlights"
     ],
     "ask": [
       "mcp__Eden__eden_create_board",
@@ -105,7 +107,9 @@
       "mcp__Higgsfield__upscale_video",
       "mcp__Higgsfield__personal_clipper_create",
       "mcp__Higgsfield__shorts_studio_create",
-      "mcp__Higgsfield__virality_predictor"
+      "mcp__Higgsfield__virality_predictor",
+      "mcp__Eden__eden_save_links_to_board",
+      "mcp__Eden__eden_save_items_to_board"
     ],
     "deny": [
       "mcp__AdWhispr_Ads__launch_campaign",

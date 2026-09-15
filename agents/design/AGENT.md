@@ -60,7 +60,11 @@ Branding entrega DIRECCIÓN  →  cómo debe verse · cómo debe sentirse · ins
 Diseño entrega REALIDAD     →  la guía aplicable, el sistema operable y las piezas
 ```
 
-**Branding no siempre entrega un manual — muchas veces entrega intel.** Con eso alcanza: D0 corre en
+**Branding vive en `agents/branding/` (②B, skill `branding`).** Cuando corrió en este cliente, te
+entrega `agents/branding/clients/<cliente>/guia-aplicable.md` con la misma estructura que tu
+plantilla: ahí D0 corre en **Modo A** y la traducís a tokens en vez de construirla.
+
+**Branding no siempre entrega un manual — a veces entrega intel.** Con eso alcanza: D0 corre en
 **Modo B** y construye `guia-aplicable.md`, que después consumen Diseño, Production y Content.
 
 🛑 **Lo único que Branding tiene que poner sí o sí es la dirección** (cómo debe verse y sentirse).
