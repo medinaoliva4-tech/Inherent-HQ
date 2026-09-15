@@ -30,7 +30,7 @@
       "mcp__Eden__eden_search_workspace_items",
       "mcp__Eden__eden_list_workspace_items",
       "mcp__Eden__eden_read_board",
-      "mcp__Eden__eden_read_note",
+      "mcp__Eden__eden_get_note_markdown",
       "mcp__Firecrawl__firecrawl_search",
       "mcp__Firecrawl__firecrawl_developer_search",
       "mcp__Notion__notion-fetch",
@@ -41,7 +41,12 @@
       "mcp__Inherent_O_S__get_record",
       "mcp__Google_Drive__search_files",
       "mcp__Google_Drive__read_file_content",
-      "mcp__Google_Drive__get_file_metadata"
+      "mcp__Google_Drive__get_file_metadata",
+      "mcp__Eden__eden_read_card",
+      "mcp__Eden__eden_read_media_card",
+      "mcp__Eden__eden_search_captures",
+      "mcp__Eden__eden_search_highlights",
+      "mcp__Higgsfield__models_explore"
     ],
     "ask": [
       "mcp__Eden__eden_create_board",
@@ -52,7 +57,11 @@
       "mcp__Google_Drive__create_file",
       "mcp__Google_Drive__share_file",
       "mcp__Inherent_O_S__create_record",
-      "mcp__Inherent_O_S__update_record"
+      "mcp__Inherent_O_S__update_record",
+      "mcp__Eden__eden_save_links_to_board",
+      "mcp__Eden__eden_save_items_to_board",
+      "mcp__Higgsfield__generate_image",
+      "mcp__Higgsfield__generate_image_batch"
     ],
     "deny": [
       "mcp__AdWhispr_Ads__launch_campaign",
@@ -66,7 +75,9 @@
       "mcp__Eden__eden_schedule_post",
       "mcp__Gmail__send_message",
       "mcp__Inherent_O_S__delete_record",
-      "mcp__Google_Drive__trash_file"
+      "mcp__Google_Drive__trash_file",
+      "mcp__Higgsfield__tiktok_publish",
+      "mcp__Higgsfield__publish_website"
     ]
   }
 }

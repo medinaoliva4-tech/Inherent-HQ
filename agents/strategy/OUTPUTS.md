@@ -211,7 +211,7 @@ No son archivos. El agente los emite en la conversación de Buzz.
 |---|---|
 | Precios, money model, oferta, funnel, LTV/CAC | **Growth** |
 | Ideas día por día, copies, guiones, conceptos | **Creative** |
-| Paleta, tipografía, guidelines, moodboard | **Branding** |
+| Paleta, tipografía, guidelines, moodboard, idea madre, tono de voz | **Branding** (`agents/branding/`) |
 | Shot lists, piezas, edición, assets finales | **Production** |
 | Publicaciones, programación, pauta | **Social Media / Media Buy** |
 | Dashboards y reportes de performance | **Analytics** |
