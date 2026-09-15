@@ -9,13 +9,14 @@ Cómo se ejecuta un lote de punta a punta. Secuencial y con gates.
 
 ```
 PRE-FLIGHT — Cliente: [x] · Sistema visual: [✅ aprobado / ⬜ no existe] · Capa: [D0-D7]
-Lote: [período · n piezas] · Sesión: [☁️ remota / 💻 local] · Figwright: [✅ conectado / ⬜ sin plugin]
+Lote: [período · n piezas] · Figwright: [✅ plugin conectado / ⬜ sin plugin — según `ping`]
 Skills: [x] · MCPs: [Drive ✅/⬜ · Jockey ✅/⬜] · Gate humano: [sí/no] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
-🛑 **Si la capa es D5-D7 y la sesión es remota: BLOQUEADO.** Decílo en una línea y ofrecé entregar
-la especificación construible para que una sesión local la ejecute. Ver abajo.
+🛑 **El campo `Figwright` se llena con `ping`, no por deducción.** Si la capa es D5-D7 y `ping`
+devuelve `plugin: null`: BLOQUEADO. Decílo en una línea y ofrecé entregar la especificación
+construible para que una sesión con el plugin conectado la ejecute. Ver abajo.
 
 **Se bloquea si:** no hay cliente identificado · no existe la carpeta del cliente · no hay guía de
 marca · no hay calendario creativo · falta el input mínimo de la capa · el pedido pisa otro
@@ -24,7 +25,7 @@ departamento.
 
 ---
 
-## Dónde corre cada capa — remoto vs local
+## Dónde ejecuta la sesión
 
 **Figwright es local por diseño.** El plugin API de Figma solo existe dentro de Figma, y la cadena
 entera vive en **una sola máquina**:
@@ -34,27 +35,41 @@ Claude Code  →  @figwright/mcp  →  WebSocket 127.0.0.1:3055  →  plugin  �
 └──────────────────────── todo en la MISMA máquina ────────────────────────┘
 ```
 
-Una sesión en la nube (Buzz / Claude Code web) corre el servidor **en su contenedor**, mientras el
-plugin busca `127.0.0.1:3055` **en la laptop**. Nunca conectan. El panel del plugin queda en
-`Reconnecting` y `ping` devuelve `hop: "server-only"` con `plugin: null`.
+### La interfaz no es el lugar de ejecución
+
+🛑 **No confundas desde dónde hablás con dónde corre la sesión.** Buzz es la interfaz: puede manejar
+una sesión que ejecuta en la nube **o** una que ejecuta en el CLI de la máquina del diseñador.
+
+| Dónde ejecuta la sesión | Figwright | Capas que puede correr |
+|---|---|---|
+| 💻 **En la máquina que tiene Figma abierto** (CLI local, manejado desde donde sea) | ✅ conecta | **D0-D7 completo** |
+| ☁️ **En un contenedor remoto** | 🛑 nunca conecta | D0-D4 · y D5-D7 solo como especificación |
+
+Cuando la sesión ejecuta en la nube, el servidor arranca **en su contenedor** mientras el plugin
+busca `127.0.0.1:3055` **en la laptop**. El panel queda en `Reconnecting` y `ping` devuelve
+`hop: "server-only"` con `plugin: null`.
 
 🛑 **No se arregla con configuración ni con un túnel** — el relay rechaza a propósito todo lo que no
 sea loopback.
 
-| Capas | Sesión | Por qué |
-|---|---|---|
-| **D0-D4** · sistema visual, lote, briefs, composición, ruta visual | ☁️ **cualquiera**, incluida Buzz | Es trabajo de criterio y archivos del repo |
-| **D5-D6** · construir y adaptar en Figma | 💻 **local**, con Figma abierto | Necesita Figwright conectado |
-| **D7** · QA y export | 💻 **local** | Los exports se escriben en el disco de esa máquina |
+### La regla: no lo asumas, corré `ping`
 
-### El repo es el puente
+**Nunca deduzcas dónde ejecutás por la interfaz.** El único dato válido es la respuesta de `ping`:
+
 ```
-☁️  Buzz    →  D0-D4  →  commit de sistema-visual.md · lote-de-piezas.csv · briefs/ · ruta-visual.md
+plugin: {...}  → sesión local con plugin conectado  → D5-D7 corren normal
+plugin: null   → sin plugin                          → D5-D7 salen como especificación
+```
+
+### Si tocó una sesión remota, el repo es el puente
+```
+☁️  Remota  →  D0-D4  →  commit de sistema-visual.md · lote-de-piezas.csv · briefs/ · ruta-visual.md
 💻  Local   →  git pull  →  D5-D7  →  export  →  Drive
 ```
 
 Sin Figwright conectado, D5 **no falla**: entrega la especificación construible y la marca
-`BLOQUEADO — construcción manual pendiente`. Eso es lo que hace que el split funcione.
+`BLOQUEADO — construcción manual pendiente`. Eso es lo que hace que el lote se pueda partir cuando
+hace falta — **no que haya que partirlo siempre**.
 
 ---
 

@@ -168,6 +168,7 @@ Después del 🚦 GATE 3, nunca antes:
 ## Gate de sesión
 
 - [ ] Se corrió `ping` antes de tocar Figma
+- [ ] 🛑 **El estado de Figwright salió de `ping`, no de suponer dónde ejecuta la sesión**
 - [ ] Si `plugin: null` y la capa es D5-D7 → se marcó `BLOQUEADO` y se entregó la especificación
 - [ ] 🛑 Ninguna pieza fue declarada "hecha" sin archivo
 

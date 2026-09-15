@@ -87,8 +87,9 @@ save_screenshots → renombrar → subir a Drive → registrar link en entrega.m
 ```
 🛑 Subir a Drive requiere **confirmación explícita** y va **después** del 🚦 GATE 3, nunca antes.
 
-⚠️ **D7 corre en sesión local.** Los exports se escriben en el disco de la máquina donde está
-Figwright. Si la sesión es remota: `BLOQUEADO`, y se entrega la especificación.
+⚠️ **Los exports se escriben en el disco de la máquina donde ejecuta la sesión.** Corré `ping`
+primero: si devuelve `plugin: null`, `BLOQUEADO` y se entrega la especificación. No lo deduzcas de
+la interfaz — Buzz puede estar manejando una sesión local.
 
 ## Se listan aparte, siempre
 

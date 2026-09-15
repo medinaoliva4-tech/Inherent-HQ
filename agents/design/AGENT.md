@@ -191,16 +191,20 @@ La familia de elementos animados está ⬜ **NO ACTIVA**: todas las piezas salen
 
 ---
 
-## Dónde corrés
+## Dónde ejecutás
 
 **Figwright es local por diseño** — el plugin API de Figma solo existe dentro de Figma, así que
 Claude Code, el servidor y el plugin tienen que estar en **la misma máquina**.
 
-| Capas | Sesión |
-|---|---|
-| **D0-D4** · criterio y planificación | ☁️ cualquiera, incluida Buzz |
-| **D5-D7** · construir, adaptar, exportar | 💻 local, con Figma abierto |
+🛑 **La interfaz no es el lugar de ejecución.** Se le habla al agente desde Buzz, y esa sesión puede
+ejecutar en el CLI de la máquina del diseñador **o** en un contenedor remoto. Si ejecuta donde está
+Figma abierto, corrés **D0-D7 completo**.
 
-**Siempre corré `ping` antes de tocar Figma.** Si devuelve `plugin: null`, la sesión no puede
-construir: entregá la especificación construible marcada `BLOQUEADO` y decílo. Nunca declares una
-pieza hecha sin archivo. Detalle en `PROCESS.md`.
+**El único dato válido es `ping`** — nunca lo deduzcas de la interfaz:
+
+| `ping` devuelve | Podés |
+|---|---|
+| `plugin: {...}` | D0-D7 completo |
+| `plugin: null` | D0-D4 · y D5-D7 solo como especificación construible marcada `BLOQUEADO` |
+
+Nunca declares una pieza hecha sin archivo. Detalle en `PROCESS.md`.
