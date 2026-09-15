@@ -5,6 +5,18 @@ de Claude Code.
 
 ## Qué hay hoy
 
+**6 departamentos operativos.** Cada uno vive en `agents/<nombre>/` y se activa con las skills de
+`.claude/skills/`.
+
+| Departamento | Carpeta | Skills | Qué entrega |
+|---|---|---|---|
+| ①② **Estrategia** | `agents/strategy/` | `estrategia` + 8 `st-*` | Núcleo, evidencia, posicionamiento, sistema de contenido, calendario macro |
+| ③ **Marketing** | `agents/marketing/` | `marketing` + 7 `mk-*` | Research comercial, plan, campañas, calendario comercial, volumen y presupuesto |
+| ④ **Creatividad** | `agents/creative/` | `creatividad` + 8 `cr-*` | Swipe file, big idea, storytelling, hook, copy, dirección de arte, el Excel de ideas |
+| ⑤ **Producción** | `agents/production/` | `produccion` + 8 `pr-*` | Desglose, jornadas, recursos, presupuesto, call sheets, entrega del material |
+| ⑥A **Diseño gráfico** | `agents/design/` | `diseno` + 7 `ds-*` | Sistema visual, briefs, composición, piezas en Figma, exports listos para publicar |
+| ⑥B **Video Editing** | `agents/video/` | `video` + 13 `vd-*` | Del material crudo al master por plataforma |
+
 ### Agente de Estrategia
 
 Construye una estrategia de posicionamiento y crecimiento completa por ingeniería inversa conectada
@@ -32,6 +44,11 @@ Desde Buzz, hablale al agente en lenguaje natural:
 - *"Investigá qué está haciendo la competencia de [cliente]"* → Capa 1, ingeniería inversa
 - *"¿Cuál es el posicionamiento de [cliente]?"* → Capa 4
 - *"Armá el calendario estratégico de [cliente]"* → Capa 7
+- *"Armá el plan de marketing de [cliente]"* → Marketing, fase M0
+- *"Dame conceptos para [cliente]"* → Creatividad, Capa 2
+- *"Cuánto cuesta producir este calendario"* → Producción, Capa 4
+- *"Diseñá las piezas de [cliente] de [mes]"* → Diseño, D0 a D7
+- *"Editá este reel"* → Video, fase 0
 
 Las skills de `.claude/skills/` se activan solas según el pedido.
 
@@ -203,18 +220,31 @@ Cada agente declara **su punto de corte** y **qué no hace, y de quién es**. Tr
 | ① | Comprensión | `agents/strategy/` Capa 0 | 🟡 Dentro de Strategy |
 | ② | Estrategia | `agents/strategy/` Capas 1-4 | 🟡 Dentro de Strategy |
 | ②B | Branding | — | ⬜ Pendiente |
-| ③ | Marketing | `agents/strategy/` Capas 5-7 | 🟡 Dentro de Strategy |
+| ③ | **Marketing** | `agents/marketing/` | ✅ Operativo |
 | ④ | **Creatividad** | `agents/creative/` | ✅ Operativo |
 | ⑤ | **Producción** | `agents/production/` | ✅ Operativo |
-| ⑥A | Diseño gráfico | — | ⬜ Pendiente |
-| ⑥B | Video Editing | `agents/video/` | 🔵 En el PR #4 |
+| ⑥A | **Diseño gráfico** | `agents/design/` | 🟡 Listo, sin estrenar |
+| ⑥B | **Video Editing** | `agents/video/` | ✅ Operativo |
 | ⑦ | Posting | — | ⬜ Pendiente |
 | ⑧B | Ads | — | ⬜ Pendiente |
 
-**Huecos conocidos del flujo**, anotados y sin decidir: **⑧A Orgánico** (implícito en el "8B" de Ads)
-y **medición / aprendizaje de negocio** (ningún departamento cierra el círculo hacia ① y ②).
+### Fronteras sin resolver
 
-El tercer hueco, **⑥B Edición de video**, lo cubre el PR #4. ⑤ Producción ya está escrito contra él:
-entrega RAW ordenado y selects marcados, y el montaje, el color de entrega y las versiones por
-plataforma son de ⑥B. El corte coincide con lo que ese agente declara por su cuenta —
-*"Production: pre y rodaje; la post es de Video"*.
+Anotadas, **no decididas**. Requieren una decisión humana antes de correr un ciclo completo:
+
+1. **③ Marketing ↔ Strategy Capas 5-7.** Marketing existe como agente propio, pero sus skills
+   declaran que *se apoyan* en el calendario estratégico de Strategy, no lo reemplazan. Falta
+   decidir si las Capas 5-7 se retiran de Strategy o quedan como capa macro debajo de Marketing.
+2. **④ Creatividad ↔ ⑥A Diseño: el layout.** La regla 7 de `CLAUDE.md` dice que Creative llega
+   hasta el *layout*; el método de Diseño ubica composición y layout en D3. Diseño propone la línea
+   **Creative define la jerarquía del MENSAJE, Diseño resuelve la jerarquía VISUAL** — falta
+   confirmarla contra `cr-arte-video`, que además dice que ⑤ Producción ejecuta en Figma.
+3. **⑧A Orgánico** (implícito en el "⑧B" de Ads) y **medición / aprendizaje de negocio**: ningún
+   departamento cierra el círculo hacia ① y ②.
+
+### Ramas sin integrar
+
+`claude/sharp-ride-4lo8a0` trae una skill de `presentacion` **y un rediseño de Strategy de 9 capas
+a 5**, que borra `st-calendario-macro`, `st-medicion` y `st-sistema-contenido`. Es incompatible con
+el mapeo `③ Marketing = Capas 5-7` sobre el que están escritos Creatividad y Producción, así que
+quedó fuera de esta integración. **Necesita una decisión: qué versión de Strategy es la buena.**
