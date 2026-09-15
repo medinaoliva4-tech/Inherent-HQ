@@ -7,6 +7,19 @@
       "WebSearch",
       "WebFetch",
       "Skill",
+      "Bash(ffmpeg:*)",
+      "Bash(ffprobe:*)",
+      "mcp__Higgsfield__show_generations",
+      "mcp__Higgsfield__show_generation_by_ids",
+      "mcp__Higgsfield__show_medias",
+      "mcp__Higgsfield__models_explore",
+      "mcp__Higgsfield__presets_show",
+      "mcp__Higgsfield__list_voices",
+      "mcp__Higgsfield__tiktok_music_trending",
+      "mcp__Higgsfield__video_analysis_status",
+      "mcp__Higgsfield__personal_clipper_status",
+      "mcp__Higgsfield__shorts_studio_status",
+      "mcp__Higgsfield__jobs_wait",
       "mcp__AdWhispr_Ads__get_my_brand",
       "mcp__AdWhispr_Ads__find_competitors",
       "mcp__AdWhispr_Ads__search_brands",
@@ -41,7 +54,31 @@
       "mcp__Inherent_O_S__get_record",
       "mcp__Google_Drive__search_files",
       "mcp__Google_Drive__read_file_content",
-      "mcp__Google_Drive__get_file_metadata"
+      "mcp__Google_Drive__get_file_metadata",
+      "mcp__Google_Drive__download_file_content",
+      "mcp__Eden__eden_read_media_card",
+      "mcp__Eden__eden_search_captures",
+      "Bash(apt-get:*)",
+      "Bash(python3:*)",
+      "Bash(whisper:*)",
+      "mcp__figwright__ping",
+      "mcp__figwright__list_files",
+      "mcp__figwright__get_node",
+      "mcp__figwright__get_variable_defs",
+      "mcp__figwright__get_styles",
+      "mcp__figwright__get_fonts",
+      "mcp__figwright__scan_components",
+      "mcp__figwright__get_local_components",
+      "mcp__figwright__get_component_api",
+      "mcp__figwright__get_screenshot",
+      "mcp__figwright__get_design_context",
+      "mcp__figwright__search_nodes",
+      "mcp__figwright__design_diff",
+      "mcp__figwright__component_map",
+      "mcp__figwright__token_map",
+      "mcp__figwright__icon_map",
+      "mcp__figwright__get_motion_styles",
+      "mcp__figwright__get_node_motion"
     ],
     "ask": [
       "mcp__Eden__eden_create_board",
@@ -52,7 +89,23 @@
       "mcp__Google_Drive__create_file",
       "mcp__Google_Drive__share_file",
       "mcp__Inherent_O_S__create_record",
-      "mcp__Inherent_O_S__update_record"
+      "mcp__Inherent_O_S__update_record",
+      "mcp__Higgsfield__media_upload",
+      "mcp__Higgsfield__media_import_url",
+      "mcp__Higgsfield__generate_image",
+      "mcp__Higgsfield__generate_image_batch",
+      "mcp__Higgsfield__outpaint_image",
+      "mcp__Higgsfield__reframe",
+      "mcp__Higgsfield__remove_background",
+      "mcp__Higgsfield__upscale_image",
+      "mcp__Higgsfield__video_analysis_create",
+      "mcp__Higgsfield__generate_video",
+      "mcp__Higgsfield__generate_audio",
+      "mcp__Higgsfield__dubbing",
+      "mcp__Higgsfield__upscale_video",
+      "mcp__Higgsfield__personal_clipper_create",
+      "mcp__Higgsfield__shorts_studio_create",
+      "mcp__Higgsfield__virality_predictor"
     ],
     "deny": [
       "mcp__AdWhispr_Ads__launch_campaign",
@@ -66,7 +119,30 @@
       "mcp__Eden__eden_schedule_post",
       "mcp__Gmail__send_message",
       "mcp__Inherent_O_S__delete_record",
-      "mcp__Google_Drive__trash_file"
+      "mcp__Google_Drive__trash_file",
+      "mcp__Higgsfield__tiktok_publish",
+      "mcp__Higgsfield__tiktok_prepare_publish",
+      "mcp__Higgsfield__tiktok_connect",
+      "mcp__Higgsfield__publish_website",
+      "mcp__Higgsfield__deploy_website",
+      "mcp__Eden__eden_create_scheduling_draft",
+      "mcp__Eden__eden_upload_scheduling_media",
+      "mcp__figwright__apply_animation_style",
+      "mcp__figwright__apply_manual_keyframe_track",
+      "mcp__figwright__set_timeline_duration",
+      "mcp__figwright__export_video"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
     ]
   }
 }

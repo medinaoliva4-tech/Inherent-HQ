@@ -1,0 +1,6 @@
+id_pieza,fecha,canal,formato,dimensiones,goal,pilar,temperatura,nivel_1,nivel_2,nivel_3,cta,asset_base,slides,seamless,animado,componente,estado_diseno,traza_calendario,link_figma,export
+P001,2026-10-06,Instagram,feed-4x5,1080x1350,autoridad,Entretenimiento,Frío,Titular de máximo 8 palabras,Línea de contexto,Firma,,fotos/originales/IMG_0412.jpg,1,no,no,Foto + scrim,En brief,CAL-W1-IG-01,,
+P002,2026-10-07,Instagram,carrusel,1080x1350,educar,Educativo,Tibio,Portada — el hook,Un punto por slide,1/6 + firma,Guardá este post,fotos/originales/IMG_0455.jpg,6,si,no,Portada de carrusel,En brief,CAL-W1-IG-02,,
+P003,2026-10-08,Instagram,story,1080x1920,comunidad,Educativo,Tibio,Titular corto,,Deslizá para ver,Deslizá,ASSET FALTANTE,1,no,si,Titular pleno,PENDIENTE — resuelve tipográfica,CAL-W1-IG-03,,
+P004,2026-10-09,Facebook,feed-1x1,1080x1080,vender,Promocional,Caliente,Titular de oferta,Condición,Vigencia,,fotos/recortes/producto-01.png,1,no,no,Sticker central,BLOQUEADO — conversión sin CTA,CAL-W1-FB-01,,
+P005,2026-10-10,Instagram,feed-4x5,1080x1350,prueba,Educativo,Tibio,SIN JERARQUIA,,,,fotos/originales/IMG_0501.jpg,1,no,no,,BLOQUEADO — sin jerarquía de mensaje → devuelto a Creative,CAL-W2-IG-01,,

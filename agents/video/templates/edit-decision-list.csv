@@ -1,0 +1,4 @@
+beat,orden,tc_in,tc_out,duracion,fuente,tc_fuente_in,tc_fuente_out,capa,tipo_de_corte,disciplina,audio,grafica,nota,estado
+HOOK,1,00:00,00:03,3.0,A001.mp4,00:12:04,00:12:07,A-roll,corte directo,narrativa,voz + sonotipo,caption hook,frame elegido como miniatura,⬜
+,2,,,,,,,B-roll,J-cut,b-roll,,,,⬜
+CTA,n,,,,,,,A-roll,corte directo,comercial,voz + musica baja,CTA en pantalla + logo,ultimo frame 1.5s no negro,⬜
