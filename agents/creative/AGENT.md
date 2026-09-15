@@ -52,6 +52,7 @@ produce piezas bonitas sin idea — exactamente lo que este departamento existe 
 |---|---|---|---|
 | 1 | `brief-creativo.md` | 0 | ✅ Sí |
 | 2 | `swipe-file.md` | 1 | — |
+| 2b | `ficha-de-referencia.md` *(una por referencia leída)* | 1 | — |
 | 3 | `conceptos.md` | 2-3 | ✅ Sí |
 | 4 | `direccion-creativa.md` | 4-5 | — |
 | 5 | `adaptacion-por-canal.md` | 6 | — |
@@ -203,7 +204,7 @@ agents/creative/
 ├── OUTPUTS.md        ← qué produce exactamente, y qué no
 ├── CORRELACION.md    ← qué columna del Excel viene de dónde
 ├── PROCESS.md        ← el proceso operativo con gates
-├── toolkit/          ← las 8 taxonomías creativas (técnicas, hooks, arco, CTAs, arte, tomas, canales, gráficos)
+├── toolkit/          ← las 9 taxonomías creativas + leer-video.py (el pipeline de lectura)
 ├── playbooks/        ← swipe file · traducción del plan a idea · 70/20/10 · MCPs
 ├── templates/        ← los entregables
 ├── qa/               ← gates de calidad

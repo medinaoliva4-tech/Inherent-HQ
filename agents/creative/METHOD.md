@@ -163,6 +163,43 @@ handoff — no se corrige a último momento agregando filas de relleno.
 > ⚠️ El `10` **solo existe a partir del segundo ciclo.** En el primero no hay aprendizaje propio,
 > así que el reparto arranca en **80 / 20** y se declara como tal.
 
+### 1.3b — Leer el video de verdad
+
+Una referencia no se "mira": se **lee**. Y un modelo no ve videos, ve imágenes — así que toda
+lectura de video es una **extracción**. La pregunta operativa no es *si* se puede, es **cuántos
+frames hacen falta**.
+
+**Dos vías, según qué se necesite leer:**
+
+| Qué se busca | Vía | Costo |
+|---|---|---|
+| El **mensaje**: gancho, promesa, oferta, estructura de guion | **MCP** — la metadata del ad, con transcripción si la trae | Barato. Cubre la mayor parte del `70·probado` |
+| La **imagen**: ambientación, luz, encuadre, paleta, ritmo de corte | **Pipeline local** sobre el archivo de video | Un poco más caro, y requiere el archivo |
+
+**El pipeline** (`toolkit/leer-video.py`) muestrea **por estructura, no por tiempo**: denso en la
+zona de hook, uno por plano detectado, y descarta los cuadros repetidos. Devuelve una **hoja de
+contacto** —el arco completo en una sola imagen, con el timestamp quemado—, la duración media de
+plano, el texto en pantalla por plano y la paleta dominante.
+
+> **El orden de magnitud importa.** Un video de 18 s muestreado a 1 frame por segundo son 18
+> imágenes, la mitad del mismo plano. El mismo video leído por estructura son **5 tiles en una sola
+> hoja**. Es la diferencia entre poder leer treinta referencias en un ciclo y poder leer tres.
+
+**Lo que se lee en cada zona:**
+- **Hook (0-3 s):** qué se ve en el cuadro 1 · si hay texto desde el arranque · si hay corte dentro
+  del hook · **si se entiende sin audio**
+- **Cuerpo:** ambientación, luz, encuadre, paleta, dónde vive el texto
+- **Ritmo:** duración media de plano, si acelera o desacelera, cuántos setups distintos hay
+  *(este último dato viaja a ⑤ Producción)*
+
+🛑 **Leer no es validar.** Una referencia bien leída sin señal de rendimiento sigue siendo
+`⚪ ruido`. El filtro del 1.4 manda sobre la calidad de la lectura.
+
+🛑 **Lo que no se pudo leer se declara.** `⚠️ SIN ARCHIVO`, `⚠️ SIN TRANSCRIPCIÓN`. Nunca se describe
+un plano que no se vio ni un audio que no se escuchó.
+
+→ Protocolo completo en `toolkit/09-lectura-de-video.md` · salida en `templates/ficha-de-referencia.md`
+
 ### 1.4 — Detectar ganadores: longevidad, no gusto
 
 La señal, en orden de fuerza:
