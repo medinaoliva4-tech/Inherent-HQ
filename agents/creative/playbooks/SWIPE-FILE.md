@@ -83,6 +83,29 @@ de rendimiento.
 
 ---
 
+## Paso 2b — Leer la referencia
+
+Antes de diseccionar hay que **leer**. Y leer un video no es mirarlo: es extraer los frames que
+hacen falta, el texto en pantalla, el ritmo de corte y la paleta.
+
+| Qué se busca | Vía | Qué alcanza |
+|---|---|---|
+| El **mensaje** — gancho, promesa, oferta, guion | El MCP de ads, con su transcripción si la trae | Suficiente para la disección de mensaje |
+| La **imagen** — ambientación, luz, encuadre, paleta, ritmo | El pipeline de `toolkit/09-lectura-de-video.md` | Requiere el archivo de video |
+
+🛑 **Vía MCP primero.** Pedir el archivo cuando el MCP ya te dio el mensaje es trabajo de más.
+
+⚠️ **El agente no puede bajar el video de TikTok, Instagram ni Meta.** Si hace falta leer la imagen y
+la referencia vive ahí, se pide el archivo en una línea y se sigue con el resto.
+
+Cada referencia leída a fondo deja su **`ficha-de-referencia.md`** en el swipe file del cliente. Esa
+ficha es la caché: una referencia leída **no se vuelve a leer**.
+
+> 🛑 **Leer no es validar.** La calidad de la lectura no reemplaza el Paso 2: una referencia
+> impecablemente leída sin señal `⏱️` sigue siendo `⚪ ruido`.
+
+---
+
 ## Paso 3 — Diseccionar: extraer el patrón
 
 De cada ganadora se extrae, en este orden:

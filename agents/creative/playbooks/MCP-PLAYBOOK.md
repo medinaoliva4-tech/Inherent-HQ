@@ -1,157 +1,248 @@
 # Playbook — MCPs del Agente de Creatividad
 
-Qué herramienta usar, para qué, y en qué orden. **Verificar disponibilidad antes de usar** — si un
-MCP no está conectado en la sesión, se declara la limitación y se busca alternativa; nunca se
-inventa el dato que ese MCP hubiera dado.
+Qué herramienta usar, para qué, y en qué orden.
 
 > **Las reglas transversales de uso de MCPs no se repiten acá.** Viven en
 > `agents/strategy/playbooks/BUENAS-PRACTICAS-MCP.md` y aplican igual a Creative: verificar antes de
 > llamar, presupuesto de 3 intentos, distinguir error de cero, patrón ≠ señal, citar la fuente,
 > leer es libre y escribir requiere intención declarada.
->
-> *(Nota de arquitectura: ese archivo es transversal al repo, no propio de ③ Marketing. Cuando exista un
-> tercer agente conviene moverlo a `playbooks/` en la raíz. No se duplica mientras tanto.)*
 
 ---
 
-## Mapa rápido: pregunta → herramienta
+## ⓪ Lo primero: qué necesita el departamento, y qué hay hoy
+
+Este playbook está partido en dos a propósito. **Arriba, lo que el departamento necesita** según su
+método. **Abajo, con qué se cubre hoy.** No es lo mismo, y confundirlo es cómo se termina con un
+workflow diseñado alrededor de las herramientas que ya estaban conectadas en vez de alrededor del
+trabajo.
+
+### Las 4 necesidades reales de Creative
+
+| # | Necesidad | Por qué el método la exige | Sin esto… |
+|---|---|---|---|
+| **1** | **Longevidad de creativos de pauta** | Regla dura 5: *longevidad, no gusto*. Un ad con 90 días corriendo es un creativo validado con dinero | El swipe file entra por gusto estético y el `70·probado` es una mentira |
+| **2** | **Outliers orgánicos con su base** | Un post con muchas vistas de una cuenta grande puede ser **el peor** de esa cuenta | No se puede distinguir un outlier de un número absoluto |
+| **3** | **El creativo en sí, no solo su texto** | Capa 5 pide ambientación, luz, encuadre, paleta. Y la lectura de video necesita el archivo o la transcripción | Se lee el mensaje y se queda ciego sobre la imagen |
+| **4** | **Lenguaje literal del comprador** | El copy se escribe con sus palabras, no con las nuestras | El copy suena a marca hablándole a nadie |
+
+Todo lo demás —Notion, Drive, Calendar— es **logística**, no research. Útil, pero no define si el
+departamento funciona.
+
+---
+
+## ① Meta y TikTok: qué se puede y qué no, con la evidencia
+
+Esto hay que tenerlo claro antes de pedir integraciones, porque **las fuentes obvias no sirven** para
+lo que Creative necesita.
+
+### 🔴 La API oficial de Meta Ad Library no le sirve a Creative
+
+| Límite | Consecuencia para Creative |
+|---|---|
+| **Solo ads políticos y de temas sociales** — con una excepción: los ads comerciales sí aparecen, pero **únicamente para audiencias de la UE y el Reino Unido**, por obligación del DSA | Para un cliente que pautea fuera de Europa, los ads comerciales **no están** en la API |
+| **Devuelve solo texto** (`ad_creative_bodies`, `ad_creative_link_titles`) — **no entrega la imagen ni el video** | Es exactamente lo contrario de lo que pide la Capa 5. Sin el asset no hay ambientación, ni encuadre, ni paleta |
+| Requiere verificación de identidad con documento, y el token expira a ~60 días | Fricción alta para un beneficio que no cubre la necesidad |
+| ~200 llamadas por hora | Paginar un relevamiento serio consume la cuota del día |
+
+**Conclusión:** la API oficial **no es una opción** para este departamento. No es una limitación de
+la integración: es que la API está diseñada para transparencia electoral, no para research creativo.
+
+### 🔴 «Meta Spark» no es una herramienta de research
+
+Meta Spark era **Spark AR Studio**, la plataforma de efectos de realidad aumentada — Meta la
+**discontinuó en enero de 2025**. Nunca fue una biblioteca de anuncios ni de creativos.
+
+Si alguien pide «Meta Spark» para el swipe file, lo que está buscando es casi siempre **la Ad
+Library** (ver arriba) o una herramienta de ad intelligence de terceros (ver ②).
+
+### 🟡 TikTok Creative Center no tiene API oficial
+
+El **Top Ads** de TikTok Creative Center es público y navegable, y es una fuente legítima de
+patrones — pero **no expone una API oficial**. Todo acceso programático hoy pasa por scrapers de
+terceros o por herramientas de ad intelligence que ya lo indexan.
+
+**Qué significa en la práctica:** TikTok se cubre por la vía del MCP de ad intelligence, o
+manualmente pegando links. No por integración directa.
+
+### ⚠️ Y el agente no puede bajar el video
+
+Los dominios de TikTok, Instagram y Meta están **fuera de alcance de red** del entorno. El agente no
+puede descargar el archivo por su cuenta. Cuando hace falta leer la **imagen** —y no solo el
+mensaje— el archivo lo aporta un humano o sale de Drive.
+
+→ El detalle de cómo se lee un video está en `toolkit/09-lectura-de-video.md`.
+
+---
+
+## ② El MCP que falta, y por qué es el correcto
+
+### 🟢 Foreplay — el candidato número uno
+
+**Qué es:** una plataforma de research creativo con MCP oficial. Indexa **200M+ ads** de Meta,
+Instagram, TikTok, YouTube y LinkedIn.
+
+**Por qué encaja con las 4 necesidades:**
+
+| Necesidad | Qué aporta Foreplay |
+|---|---|
+| **1 · Longevidad** | Devuelve **cuánto tiempo lleva corriendo** cada ad y si está activo. Es la señal `⏱️` directa |
+| **3 · El creativo** | Devuelve **el creativo**, el copy, el CTA, la landing — y **transcripciones con timestamps** |
+| **3 · Filtros del método** | Filtra por formato (video, imagen, carrusel), duración, mercado, idioma y fecha — que es exactamente cómo Creative calcula *el hueco* |
+| **Bóveda** | Swipe files y boards propios, consultables desde el MCP: la bóveda deja de vivir en dos lados |
+
+**La transcripción con timestamps es el hallazgo importante.** Resuelve la parte más frágil de la
+lectura de video sin depender de transcripción local — que en este entorno **no está disponible**
+(el modelo no se puede descargar). Con Foreplay, el guion de una referencia de pauta llega ya leído.
+
+**Qué falta confirmar antes de pedirlo:** en qué plan está incluido el MCP, y si el volumen de
+consultas del refresco semanal entra en ese plan.
+
+### Otras opciones, por si Foreplay no entra
+
+| Herramienta | Qué cubre | Contra |
+|---|---|---|
+| **Atria / Motion** | Ad intelligence con analítica de creativos | Orientadas a performance de cuenta propia más que a research de categoría |
+| **Apify** (actores de TikTok Creative Center) | Top Ads de TikTok vía scraper | Se paga por corrida, se rompe cuando TikTok cambia el DOM, y no hay MCP oficial |
+| **AdLibrary.com Business** | Agrega ads comerciales de varias plataformas | Costo mensual alto, y hay que evaluar si cubre la señal de longevidad |
+
+---
+
+## ③ Con qué se cubre hoy
+
+Estado real de los MCPs de la organización. **Verificar disponibilidad antes de usar**: instalado no
+es lo mismo que habilitado en la sesión.
+
+| MCP | Cubre | Estado | Nota |
+|---|---|---|---|
+| **AdWhispr** | Necesidades 1 y 2, parcialmente la 3 | Instalado · **no habilitado en la sesión** | Es el sustituto operativo de la Ad Library. Hay que habilitarlo por chat |
+| **Eden** | Necesidad 2 | Instalado · **no habilitado en la sesión** | Outliers orgánicos con base del creador |
+| **Firecrawl** | Necesidad 4 | ✅ Conectado y habilitado | Landings, reviews, lenguaje literal |
+| **Zapier** | Comodín | ✅ Conectado y habilitado | Para apps sin MCP propio |
+| **Notion · Drive · Gmail · Calendar** | Logística | Instalados · no habilitados | No son research |
+| **Inherent O.S** | Histórico del cliente | Instalado · no habilitado | |
+| **Higgsfield** | Generación de media | Instalado | 🛑 **Fuera del alcance de Creative** — genera ⑤ Producción |
+| **Foreplay** | Necesidades 1 y 3, con transcripción | ⬜ **No instalado** | El pedido de esta revisión |
+
+> 🛑 **Un MCP instalado pero no habilitado en el chat no tiene sus tools cargadas.** No es un error
+> del agente: hay que prenderlo en la configuración de conectores de esa conversación. Si el
+> departamento va a correr en sesiones nuevas, conviene dejarlos habilitados por defecto.
+
+---
+
+## ④ Mapa rápido: pregunta → herramienta
 
 | Necesito… | Herramienta | Tool principal |
 |---|---|---|
-| Los ads que llevan más tiempo corriendo (la señal de longevidad) | **AdWhispr** | `get_brand_ads` (`sortBy: longevity`) |
-| Saber quién anuncia de verdad en la categoría del cliente | **AdWhispr** | `find_competitors` |
-| Ver creativos de TikTok que están corriendo | **AdWhispr** | `research_tiktok_ads` |
-| Buscar un creativo por mensaje o ángulo | **AdWhispr** | `search_ads` |
-| Posts outliers de una categoría, tema o creador | **Eden** | `eden_search_social_content` · `eden_analyze_creator` |
-| Qué títulos y miniaturas ganan (formato largo) | **Eden** | `eden_study_top_titles` |
-| Qué carruseles y estáticos ganan | **Eden** | `eden_study_top_carousels` |
-| Leer un post específico en detalle | **Eden** | `eden_read_social_post` |
-| Guardar la bóveda de referencias | **Eden** | `eden_create_board` · `eden_save_posts_to_board` |
-| Landings, páginas de venta, reviews, prensa | **Firecrawl** / **WebFetch** | `firecrawl_search` · `WebFetch` |
-| Leer la Knowledge Base del departamento | **Notion** | `notion-fetch` · `notion-search` |
-| Publicar brief o conceptos para el equipo | **Notion** | `notion-create-pages` |
-| Entregar el Excel aprobado a ⑤ Producción | **Google Drive** | `create_file` · `share_file` |
-| Datos internos del sistema Inherent | **Inherent OS** | `list_models` · `list_records` |
-| Cualquier app sin MCP propio | **Zapier** | `discover_zapier_actions` |
+| Ads ordenados por **antigüedad** (la señal que importa) | **AdWhispr** *(o Foreplay)* | `get_brand_ads` con `sortBy: longevity` |
+| Quién anuncia de verdad en la categoría | **AdWhispr** | `find_competitors` |
+| Creativos de TikTok que están corriendo | **AdWhispr** *(o Foreplay)* | `research_tiktok_ads` |
+| Buscar un creativo por mensaje o ángulo | **AdWhispr** *(o Foreplay)* | `search_ads` |
+| **La transcripción de un ad de video** | **Foreplay** ⬜ | — *(hoy: OCR del texto en pantalla)* |
+| Posts outliers, con la base del creador | **Eden** | `eden_search_social_content` → `eden_resolve_creator` → `eden_analyze_creator` |
+| Qué títulos, miniaturas y carruseles ganan | **Eden** | `eden_study_top_titles` · `eden_study_top_carousels` |
+| **Leer un video a fondo** (ritmo, ambientación, paleta) | **Pipeline local** | `toolkit/leer-video.py` |
+| Landings, reviews, objeciones, lenguaje literal | **Firecrawl** | `firecrawl_search` · `WebFetch` |
+| Guardar la bóveda | **Eden** *(o Foreplay boards)* | `eden_create_board` ⚠️ requiere gate |
+| Leer la Knowledge Base | **Notion** | `notion-search` · `notion-fetch` |
+| Entregar el Excel a ⑤ Producción | **Google Drive** | `create_file` — **solo post-GATE 3** |
 
 ---
 
-## Los 3 MCPs centrales de Creative
+## ⑤ Los MCPs centrales, en detalle
 
 ### 🔴 AdWhispr — la señal de longevidad
-**Para qué sirve en Creative:** es el sustituto operativo de la Meta Ad Library. Su valor no es
-*"ver anuncios lindos"*: es **ordenar por antigüedad**. Un anuncio que lleva 90 días corriendo es un
-creativo validado con dinero real.
 
-**Secuencia correcta:**
+**Para qué sirve:** su valor no es *ver anuncios lindos* — es **ordenar por antigüedad**.
+
 ```
-1. get_my_brand / save_my_brand   → dar contexto del cliente al MCP
-2. find_competitors               → anunciantes VERIFICADOS (activos ahora)
-3. get_brand_ads (brandId, sortBy: longevity) → los ganadores probados ← el paso que importa
+1. get_my_brand / save_my_brand   → contexto del cliente
+2. find_competitors               → anunciantes verificados, activos ahora
+3. get_brand_ads(brandId, sortBy: longevity)  ← el paso que importa
 4. research_tiktok_ads            → si el bloque tiene slots de TikTok
-5. search_ads                     → si se busca un ángulo o mensaje puntual
+5. search_ads                     → si se busca un ángulo puntual
 ```
 
-**Trampa crítica — dos tipos de ID que no se mezclan:**
+**Trampa crítica — dos IDs que no se mezclan:**
 - `brandId` = UUID → lo usan `get_brand_ads`, `get_brand_stats`, `search_ads`
 - `pageId` = numérico → **solo** `add_brand`
 
-**Regla propia de Creative:** el resultado se lee por `sortBy: longevity`, **nunca por
-engagement**. Un ad con mucho engagement y poca antigüedad es un test, no un ganador.
+**Regla propia de Creative:** se lee por `sortBy: longevity`, **nunca por engagement**. Un ad con
+mucho engagement y poca antigüedad es un test, no un ganador.
 
-**Frontera:** 🛑 Creative **no lanza ni edita campañas**. `launch_*` y `update_budget` están en
-`deny` para todo el repo. La compra y optimización de pauta es de ⑧B Ads.
+**Frontera:** 🛑 `launch_*` y `update_budget` están en `deny` para todo el repo. La compra y
+optimización de pauta es de ⑧B Ads.
 
----
+### 🟣 Eden — outliers y bóveda
 
-### 🟣 Eden — outliers, formatos y la bóveda
-**Para qué sirve en Creative:** es el sustituto operativo de Meta Spark. Encuentra outliers orgánicos,
-descompone qué títulos y formatos ganan, y **guarda la bóveda** en el workspace.
-
-**Secuencia correcta:**
 ```
-1. eden_search_social_content     → búsqueda por tema, pilar o formato
+1. eden_search_social_content     → por tema, pilar o formato
 2. eden_resolve_creator           → resolver handles antes de analizar
-3. eden_analyze_creator           → base de rendimiento del creador ← para detectar el OUTLIER
-4. eden_study_top_titles / eden_study_top_carousels → patrones de formato
-5. eden_read_social_post          → diseccionar la pieza en los 6 elementos
-6. eden_create_board + eden_save_posts_to_board → archivar la bóveda  ⚠️ requiere gate
+3. eden_analyze_creator           → LA BASE del creador  ← el paso que más se saltea
+4. eden_study_top_titles / eden_study_top_carousels
+5. eden_read_social_post          → diseccionar
+6. eden_create_board              → archivar  ⚠️ requiere gate
 ```
 
-**El paso 3 es obligatorio y es el que más se saltea.** Sin la base del creador no se puede saber si
-una pieza es outlier — y sin eso la referencia entró por gusto, no por señal.
+**El paso 3 es obligatorio.** Sin la base del creador no se puede saber si una pieza es outlier — y
+sin eso, la referencia entró por gusto.
 
-**Reglas propias del MCP (respetarlas):**
-- **Presupuesto de descubrimiento: máximo 3 búsquedas infructuosas.** Después se para y se pide al
-  usuario 1-2 nombres, handles o posts de referencia.
-- Si `eden_resolve_creator` devuelve ambiguo, **se pregunta cuál**. No se adivina por handle plausible.
-- Cero resultados describe **solo esos términos y filtros** — nunca *"no hay contenido de esto"*.
-- Un error o timeout **no es** un cero.
+**Reglas propias:** si `eden_resolve_creator` devuelve ambiguo, **se pregunta cuál**. Cero
+resultados describe **solo esos términos y filtros**, nunca *"no hay contenido de esto"*. Un error o
+timeout **no es** un cero.
 
-**Frontera:** 🛑 `eden_publish_post_now` y `eden_schedule_post` están en `deny`. Creative no publica
-ni programa.
+**Frontera:** 🛑 `eden_publish_post_now` y `eden_schedule_post` en `deny`. Creative no publica.
 
----
+### 🟡 Firecrawl — lenguaje literal y objeciones
 
-### 🟡 Firecrawl — landings, reviews y objeciones
-**Para qué sirve en Creative:** el lenguaje literal y las objeciones. Las páginas de venta de los
-competidores son la ingeniería inversa de sus objeciones — **el orden de los argumentos revela qué
-objeción consideran más grave**.
+Las páginas de venta de los competidores son la ingeniería inversa de sus objeciones: **el orden de
+los argumentos revela qué objeción consideran más grave**. Y las reviews negativas dan el **problema
+interno** del arco, escrito con las palabras del comprador.
 
-Y las reviews negativas dan el **problema interno** del arco narrativo, escrito con las palabras del
-comprador.
+- `firecrawl_search` → reviews, comentarios, prensa
+- `WebFetch` → cuando ya se tiene la URL exacta
 
-**Cuándo cada tool:**
-- `firecrawl_search` → reviews, comentarios, prensa, referencias de categoría
-- `WebFetch` → cuando ya se tiene la URL exacta de una landing y se quiere una lectura dirigida
+**Nota:** ② Estrategia ya construyó el mapa de objeciones. Firecrawl se usa para **el hueco**: la
+objeción específica del formato o del ángulo de este bloque.
 
-**Nota:** ③ Marketing ya construyó el **mapa de objeciones** en ② ingeniería inversa. Creative arranca
-de ahí. Firecrawl se usa para el **hueco**: la objeción específica del formato o del ángulo de este
-bloque.
+### 🟢 El pipeline local — no es un MCP, y es el que lee la imagen
+
+`toolkit/leer-video.py` no consulta nada: convierte un archivo de video en una hoja de contacto, un
+ritmo, un OCR por plano y una paleta. Es lo que hace que Creative pueda leer **ambientación, luz,
+encuadre y ritmo** — nada de eso viene de un MCP.
+
+→ Protocolo en `toolkit/09-lectura-de-video.md` · skill `cr-lectura-de-video`.
 
 ---
 
-## MCPs de apoyo
-
-| MCP | Rol en Creative | Precaución |
-|---|---|---|
-| **Notion** | Leer la Knowledge Base del departamento; publicar brief y conceptos | `ask` antes de escribir. El repo es la fuente de verdad del método |
-| **Google Drive / Sheets** | Entregar el Excel aprobado a ⑤ Producción | **Solo post-GATE 3.** Nunca un Excel con filas `PENDIENTE` |
-| **Inherent OS** | Histórico del cliente, piezas anteriores | Leer libremente; escribir solo con intención declarada |
-| **Higgsfield** y generadores de media | **Fuera del alcance de Creative** | Creative **dirige**; la generación de media es de ⑤ Producción |
-| **Figma y herramientas de diseño** | **Fuera del alcance de Creative** | Creative especifica el layout; el archivo lo arma ⑤ Producción |
-| **Zapier** | Comodín para apps sin MCP propio | `discover` → `inspect` → `execute`. Nunca escritura sin gate |
-| **Gmail / Calendar** | Coordinación, no creatividad | Nunca enviar sin autorización explícita |
-
----
-
-## Secuencia estándar de la Capa 1 (swipe file completo)
+## ⑥ Secuencia estándar de la Capa 1
 
 ```
-0.  Leer ingenieria-inversa.md 1.3b (la tabla 15×7)   → qué ya está resuelto
-0b. Leer el banco de hooks de aprendizaje-creativo.md → los ganadores propios van primero
-1.  Calcular el HUECO                                 → qué formato/canal/hook falta cosechar
-2.  AdWhispr  find_competitors + get_brand_ads(longevity) → ads que pagan
-3.  AdWhispr  research_tiktok_ads                     → si hay slots de TikTok
-4.  Eden      search_social_content → resolve_creator → analyze_creator  → OUTLIERS reales
-5.  Eden      study_top_titles / study_top_carousels  → patrones de formato del canal
-6.  Firecrawl landings + reviews                      → objeciones y lenguaje literal del hueco
-7.  Diseccionar en los 6 elementos → marcar 🟢/🟡/⚪ → tabla de hipótesis
-8.  Cruzar cada patrón contra el MAPA DE SATURACIÓN de ③ Marketing → descartar defaults
-9.  (con gate) Eden create_board → archivar la bóveda
+0.  Leer la tabla 15×7 de ② Estrategia        → qué ya está resuelto
+0b. Leer el banco de hooks propio del ciclo anterior → los ganadores propios primero
+0c. Buscar fichas-de-referencia ya existentes  → lo leído no se relee
+1.  Calcular el HUECO                          → qué formato/canal/hook falta
+2.  AdWhispr  find_competitors + get_brand_ads(longevity)
+3.  AdWhispr  research_tiktok_ads              → si hay slots de TikTok
+4.  Eden      search → resolve_creator → analyze_creator   → OUTLIERS reales
+5.  Eden      study_top_titles / study_top_carousels
+6.  LEER las que pasaron el filtro             → pipeline local si hay que leer la imagen
+7.  Firecrawl landings + reviews               → objeciones y lenguaje literal
+8.  Diseccionar en los 7 elementos → marcar 🟢/🟡/⚪ y ⏱️ → clasificar en 70/20/10
+9.  Cruzar contra el MAPA DE SATURACIÓN        → descartar defaults
+10. (con gate) archivar la bóveda
 ```
 
 **Si un MCP no está disponible:** se declara en el output —
 `⚠️ SIN [MCP] — [qué evidencia falta y qué confianza pierde el concepto]` — y se sigue con el resto.
-Nunca se rellena el hueco con inferencia presentada como dato.
+**Nunca se rellena el hueco con inferencia presentada como dato.**
 
 ---
 
-## Regla de escritura y acciones con efecto
+## ⑦ Regla de escritura y acciones con efecto
 
 | Acción | Requisito |
 |---|---|
-| Buscar, leer, analizar, diseccionar | Libre |
+| Buscar, leer, analizar, diseccionar, correr el pipeline de video | Libre |
 | Guardar en board, crear página de Notion, crear registro | Decir qué y dónde antes de hacerlo |
 | Exportar el Excel a Drive / Sheets | **Post-GATE 3** y sin filas `PENDIENTE` |
 | Publicar, programar, pautar, gastar | 🛑 **No lo hace Creative. Nunca** |
@@ -159,7 +250,7 @@ Nunca se rellena el hueco con inferencia presentada como dato.
 
 ---
 
-## Registro
+## ⑧ Registro
 
 Todo entregable que use MCPs cierra con:
 
@@ -167,9 +258,11 @@ Todo entregable que use MCPs cierra con:
 ---
 **Fuentes y herramientas**
 - MCPs usados: [lista]
-- Fecha del relevamiento: [fecha]
 - MCPs no disponibles: [lista] → evidencia faltante: [qué]
+- Videos leídos: [n] → por MCP: [n] · por pipeline: [n] · sin archivo: [n]
+- Fecha del relevamiento: [fecha]
 - Referencias con señal 🟢: [n] · 🟡: [n] · descartadas ⚪: [n]
+- Reparto 70/20/10 del ciclo: [n / n / n]
 - Confianza general: 🟢 alta / 🟡 parcial / 🔴 insuficiente para dirigir
 ```
 
