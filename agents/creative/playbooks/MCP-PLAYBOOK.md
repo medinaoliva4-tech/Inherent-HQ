@@ -94,25 +94,77 @@ Instagram, TikTok, YouTube y LinkedIn.
 lectura de video sin depender de transcripción local — que en este entorno **no está disponible**
 (el modelo no se puede descargar). Con Foreplay, el guion de una referencia de pauta llega ya leído.
 
-**Plan y costo** *(verificado en sept 2026):* el **MCP viene en todos los planes**, no está detrás de
-un tier.
+**Plan y costo** *(verificado en sept 2026, contra la página de precios)*: el **MCP viene en los
+tres planes**, no está detrás de un tier.
 
-| Plan | Anual | Usuarios | Spyder | API |
-|---|---|---|---|---|
-| Basic | $49/mes | 1 | incluido | 20.000 créditos |
-| **Workflow** ← recomendado | **$149/mes** | **5** | **ilimitado** | 20.000 créditos |
-| Agency | $389/mes | 10 | ilimitado | 20.000 créditos |
+| Plan | Anual | Usuarios | Swipe File · Discovery · Briefs | Spyder | Lens | API |
+|---|---|---|---|---|---|---|
+| **Basic** ← alcanza | **$49/mes** | 1 *(+$20 c/u)* | ✅ | ❌ | ❌ | 20.000 créditos |
+| Workflow | $149/mes | 5 | ✅ | ilimitado | 1 marca | 20.000 créditos |
+| Agency | $389/mes | 10 | ✅ | ilimitado | 10 marcas | 20.000 créditos |
 
-**Por qué Workflow y no Basic.** Dos razones del método, no de precio:
-- **Spyder ilimitado.** Spyder vigila marcas automáticamente: es el **anillo 1 (directos)** de la
-  ingeniería inversa, mantenido al día sin correrlo a mano. Con varios clientes, 15 marcas se llenan
-  rápido. Y convierte el **refresco semanal** en algo que ya está hecho cuando alguien se sienta.
-- **5 usuarios**, sin pagar asientos sueltos.
+### Por qué Basic alcanza para Creative
 
-🔍 **Lo único sin verificar: el costo en créditos por llamada.** Los 20.000 créditos son el techo
-real del refresco semanal, y no está documentado cuánto consume cada búsqueda. **Se mide en la prueba
-de 7 días:** correr un ciclo real de un cliente y ver cuántos créditos se fueron. Con ese número se
-decide si Workflow alcanza o hay que ir a Agency.
+**Spyder es vigilancia continua; Discovery es búsqueda a demanda.** Spyder carga marcas y junta sus
+ads a medida que salen, armando un historial. Discovery busca sobre los 200M+ cuando se le pide.
+
+La regla dura 5 del departamento es **longevidad**: se buscan ads de **60-90+ días corriendo**. Un ad
+que lleva 90 días corriendo **está vivo ahora**, así que Discovery lo encuentra. Lo que Spyder aporta
+de forma exclusiva son los ads que **arrancaron y murieron** entre dos consultas — y esos son
+`⏱️<30d`, que el método ya clasifica como **tests, no ganadores**.
+
+| Lo que se pierde sin Spyder | ¿Afecta a Creative? |
+|---|---|
+| El refresco semanal pasa de leer un feed armado a salir a buscar | **No.** Más llamadas, y entran sobradas en el presupuesto de créditos |
+| Alerta temprana de un competidor lanzando algo nuevo | **No es de Creative.** Es de ② Estrategia (mapa de saturación) y ⑧B Ads (reacción en pauta) |
+| Historial de ads de vida corta | **No.** El método los descarta por señal insuficiente |
+
+**Lens tampoco hace falta:** es analítica de rendimiento sobre la cuenta publicitaria propia —
+territorio de **⑧B Ads**, no de Creative.
+
+**El único límite real de Basic es 1 usuario** ($20 por adicional). El **agente usa la API key de la
+cuenta, no un asiento**; los asientos son para humanos entrando a la web.
+
+> **Cuándo sí conviene subir a Workflow:** cuando existan ② Estrategia y ⑧B Ads como agentes y
+> necesiten vigilancia continua de competidores — no por Creative.
+
+### 💳 Presupuesto de créditos — la regla que importa
+
+**1 ad = 1 crédito, incluyendo TODA la metadata de ese ad.** Verificado en la documentación: 100
+transcripciones solas cuestan 100 créditos; 100 transcripciones **+ video + copy + landing** cuestan
+también 100.
+
+🛑 **Consecuencia operativa: se pide la metadata completa en UNA sola llamada.** Pedir el copy
+primero y las transcripciones después, sobre los mismos ads, **paga dos veces por lo mismo**.
+
+**Consumo estimado del método:**
+
+| Concepto | Ads |
+|---|---|
+| Barrido de 5-8 competidores, ~20-25 ads cada uno | 150-200 |
+| 2-3 búsquedas del hueco, ~25-50 resultados | 50-150 |
+| Transcripciones de las que pasan el filtro | **0 extra** |
+| **Por cliente, por semana** | **~200-350** |
+| **Por cliente, por mes** | **~800-1.400** |
+
+Con 20.000 créditos/mes eso son **14-25 clientes**. Con 5 clientes se usa la cuarta parte.
+
+Los créditos del plan anual son **20.000 por mes entregados por adelantado para el año** (240.000
+totales), así que un mes pesado se compensa con uno liviano. Hay paquetes extra de 100k/250k/500k.
+
+**🛑 Techos duros por corrida** — el riesgo no es el volumen, es la indisciplina. Ocho marcas × tres
+búsquedas × 500 resultados son 12.000 créditos en un solo barrido:
+
+| Regla | Límite |
+|---|---|
+| Resultados por búsqueda | **máximo 50.** Se ordena por longevidad y se lee la primera página |
+| Ads por marca en el barrido de competidores | **máximo 25** |
+| Techo por cliente por semana | **400 ads.** Si se pasa, se declara y se para |
+| Paginar más allá de la primera página | Solo si la primera trajo señal y falta cubrir el hueco |
+| Volver a pedir un ad ya leído | 🛑 **Nunca.** Está en su `ficha-de-referencia` — la ficha es la caché |
+| Metadata | **Completa, en una llamada.** Nunca en dos pasadas |
+
+Todo entregable declara el consumo: `créditos usados: [n] · techo del cliente: 400/semana`.
 
 ### Otras opciones, por si Foreplay no entra
 
@@ -138,7 +190,7 @@ es lo mismo que habilitado en la sesión.
 | **Notion · Drive · Gmail · Calendar** | Logística | Instalados · no habilitados | No son research |
 | **Inherent O.S** | Histórico del cliente | Instalado · no habilitado | |
 | **Higgsfield** | Generación de media | Instalado | 🛑 **Fuera del alcance de Creative** — genera ⑤ Producción |
-| **Foreplay** | Necesidades 1 y 3, con transcripción | ⬜ **No instalado** | El pedido de esta revisión |
+| **Foreplay** | Necesidades 1 y 3, con transcripción | ⬜ **No instalado** | El pedido de esta revisión. **Plan Basic anual, $49/mes** — alcanza |
 
 > 🛑 **Un MCP instalado pero no habilitado en el chat no tiene sus tools cargadas.** No es un error
 > del agente: hay que prenderlo en la configuración de conectores de esa conversación. Si el
