@@ -46,6 +46,7 @@ plan leyendo los otros documentos.**
 | "Armá las ideas de contenido de X" / "llená el calendario" | 0 → 6 completo | `cr-brief` → todas |
 | "Traducí la estrategia a brief creativo" | 0 | `cr-brief` |
 | "Buscá referencias" / "qué está funcionando en este formato" | 1 | `cr-swipe-file` |
+| **"Mirá este video" / "analizá esta referencia" / "qué ritmo tiene" / "leé la ambientación"** | 1 | `cr-lectura-de-video` |
 | "Dame conceptos" / "cuál es la big idea" | 2 | `cr-big-idea` |
 | "Cómo lo contamos" / "el arco de la pieza" | 3 | `cr-storytelling` |
 | "Escribí el hook y el copy" | 4 | `cr-hook-copy` |
@@ -73,6 +74,7 @@ hacer desde Creative.
 | `agents/creative/AGENT.md` | `agents/creative/METHOD.md` — la capa que corresponde |
 | `agents/creative/PROCESS.md` | `agents/creative/toolkit/0N-*.md` — la ficha de la capa |
 | `agents/creative/playbooks/TRADUCCION-DE-SLOT.md` | `agents/creative/playbooks/SWIPE-FILE.md` — Capa 1 |
+| | `agents/creative/toolkit/09-lectura-de-video.md` — cuando llega un video |
 | | `agents/creative/qa/QA-GATES.md` — antes de entregar |
 
 **Y los entregables de ①②③ (se citan, no se reescriben):** ① núcleo · ② ingeniería inversa ·
