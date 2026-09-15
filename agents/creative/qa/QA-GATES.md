@@ -35,6 +35,11 @@ Checklist por capa. **Ninguna capa se entrega sin pasar su bloque completo.**
 - [ ] Cada referencia con su señal de rendimiento en escala `⏱️` (`⏱️60-90+d` / `⏱️30-60d` / `⏱️outlier` / `⏱️estable`) — **sin mezclar con 🟢/🟡/⚪**, que marcan patrón por conteo de fuentes
 - [ ] **Ninguna referencia entró por gusto estético**
 - [ ] Para orgánico: se corrió `analyze_creator` antes de declarar un outlier
+- [ ] **Toda referencia de video leída a fondo tiene su `ficha-de-referencia.md`** con fecha de lectura
+- [ ] Ninguna referencia se leyó dos veces — se buscó la ficha antes de correr el pipeline
+- [ ] Lo que no se pudo leer está declarado: `⚠️ SIN ARCHIVO` / `⚠️ SIN TRANSCRIPCIÓN`
+- [ ] 🛑 **Ningún plano descrito que no se vio, ningún audio descrito sin transcripción**
+- [ ] Las fichas con lectura de imagen traen **ritmo** (duración media de plano) y **setups distintos** — el segundo viaja a ⑤ Producción
 - [ ] Cada patrón descompuesto en los 6 elementos (hook, ángulo, formato, estructura, prueba, CTA)
 - [ ] La bóveda está organizada **por pilar y por tipo de hook**
 - [ ] Cada hipótesis está atada a **un slot de este bloque**
