@@ -156,7 +156,7 @@ Al cerrar, entregá el bloque:
 - Renuncias explícitas de este ciclo:
 - Huecos de evidencia abiertos: [⚠️ SIN DATOS pendientes]
 - Confianza general: 🟢 / 🟡 / 🔴
-- Siguiente: Growth (monetización) · Creative (piezas concretas)
+- Siguiente: Growth (monetización) · Creative (el brief de cada pieza)
 ```
 
 ---
