@@ -6,12 +6,14 @@ description: >
   tipográfica, grillas y safe areas por formato, inventario de elementos gráficos, activos
   distintivos y la biblioteca de **componentes de pieza** de social (portada de carrusel, bloque de
   cita, etiqueta, CTA de cierre…), cada uno con su ficha legible para IA. Úsala al arrancar con un
-  cliente nuevo en Diseño, cuando pidan "armá el sistema visual de X", "pasá la guía de marca a
-  tokens", "qué tipografías y tamaños usamos", "qué colores puedo combinar", "armá las grillas",
-  "armá los componentes", o cuando cualquier otra capa de Diseño detecte que no existe un sistema
-  previo. Branding entrega la dirección (cómo debe verse y sentirse, inspiraciones, fuentes); esta
-  capa la vuelve valores concretos y sistema operable — resolver esos valores es su oficio, no una
-  desviación. Lo único que no cambia es la dirección.
+  cliente nuevo en Diseño, cuando pidan "armá el sistema visual de X", "armá la guía de marca de X",
+  "no tenemos guía, solo referencias", "pasá la guía de marca a tokens", "qué tipografías y tamaños
+  usamos", "qué colores puedo combinar", "armá las grillas", "armá los componentes", o cuando
+  cualquier otra capa de Diseño detecte que no existe un sistema previo. Tiene dos modos: **A ·
+  Traducción** cuando existe un manual formal, y **B · Construcción** cuando Branding solo entregó
+  intel (dirección, inspiraciones, fuentes, material existente) — ahí produce además
+  `guia-aplicable.md`, que consumen Diseño, Production y Content. Lo único que no se inventa es la
+  dirección: cómo debe verse y cómo debe sentirse.
 model: opus
 effort: high
 ---
@@ -21,11 +23,32 @@ effort: high
 Leé `agents/design/METHOD.md` → D0 y los archivos de `agents/design/systems/`.
 Plantilla: `agents/design/templates/sistema-visual.md` → copiar a `clients/<cliente>/`.
 
+## Primero: elegí el modo
+
+| Modo | Cuándo | Qué producís |
+|---|---|---|
+| **A · Traducción** | Existe guía de marca formal | `sistema-visual.md` |
+| **B · Construcción** | Solo hay **intel** de Branding | `guia-aplicable.md` **+** `sistema-visual.md` |
+
+**Modo B — input mínimo:**
+```
+OBLIGATORIO  dirección (cómo debe verse y sentirse)
+             + al menos uno de: inspiraciones · fuentes · material existente
+FUERTE       posicionamiento.md de Strategy
+```
+🛑 **Sin dirección: BLOQUEADO.** Es lo único que no se inventa.
+
+**En Modo B el gate es más duro:** todo sale como **propuesta**, y va sección obligatoria
+**"Qué decidió Diseño"** con lo que no venía en el intel y su porqué.
+Plantilla: `templates/guia-aplicable.md`.
+
+⚠️ Modo B no te convierte en Branding. Construís **a partir del intel**, no en contra de él.
+
 ## Regla madre
 
 ```
 Branding entrega DIRECCIÓN  →  cómo debe verse · cómo debe sentirse · inspiraciones · fuentes
-Vos entregás REALIDAD       →  los valores concretos y el sistema operable
+Vos entregás REALIDAD       →  la guía aplicable, los valores concretos y el sistema operable
 ```
 
 **Branding no te va a dar la opacidad del scrim, el ratio de la escala ni el margen de story.
@@ -98,7 +121,9 @@ Salidas obligatorias:
 
 1. ¿Existe `clients/<cliente>/`? Si no, crearla con la estructura de `clients/README.md`.
 2. ¿Strategy produjo `posicionamiento.md`? De ahí salen los activos distintivos de D0.6.
-3. ¿La guía de marca está en `_INPUTS/guia-de-marca/`? Si no: buscarla en Drive o Notion, o **BLOQUEAR**.
+3. ¿Qué hay en `_INPUTS/guia-de-marca/`? Si hay manual formal → **Modo A**. Si hay intel suelto
+   (referencias, moodboard, fuentes, material publicado) → **Modo B**. Si no hay ni dirección →
+   buscar en Drive o Notion, o **BLOQUEAR**.
 
 ## Si la guía es incompleta
 
@@ -108,7 +133,8 @@ Distinguí **qué tipo** de hueco es:
 |---|---|
 | **Un valor concreto** que la guía no enumeró (scrim, ratio, margen) | ✅ **Resolvelo.** Es tu oficio. Declarás el criterio en el campo `origen` del token |
 | **Una decisión de dirección** (una familia nueva, un color que no está, otra estética) | ⚠️ `FUERA DE GUÍA — propuesta` + gate |
-| **No hay guía** | **Modo provisional** — todo marcado `⚠️ SISTEMA PROVISIONAL — sin aprobar por Branding`, y se avisa en cada capa posterior |
+| **No hay manual pero sí intel** | **Modo B** — construís `guia-aplicable.md` desde el intel, todo como propuesta |
+| **No hay ni dirección** | 🛑 `BLOQUEADO`. Pedí lo mínimo: cómo debe verse y cómo debe sentirse |
 
 🛑 **No completes con gusto propio una decisión de dirección.** Pero tampoco bloquees por un valor
 que Branding nunca iba a especificar.

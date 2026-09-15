@@ -5,6 +5,19 @@ Un ítem fallado **se corrige**. No se entrega marcado como "menor".
 
 ---
 
+## D0 — Modo B · Guía aplicable
+*(solo si Branding entregó intel y no un manual formal)*
+- [ ] La **dirección** (cómo debe verse y cómo debe sentirse) vino de Branding — no se inventó
+- [ ] La sección **0 · El intel que recibimos** está completa y es trazable
+- [ ] Cada decisión de las secciones 1-9 se rastrea al intel **o** está listada en la sección 10
+- [ ] La sección **10 · Qué decidió Diseño** nombra qué invalidaría cada decisión
+- [ ] Las referencias declaran **qué NO se toma** de cada una
+- [ ] Hay chequeo de categoría en color: ¿la paleta nos hace ver igual que la competencia?
+- [ ] Las familias tipográficas pasan el filtro de `ñ`, pesos y licencia
+- [ ] Está la sección de **tratamiento fotográfico** (Production) y **voz visual** (Content)
+- [ ] Todo el documento está marcado `⬜ PROPUESTA — sin aprobar` hasta el gate
+- [ ] 🚦 **GATE 1 reforzado**: lo aprueba quien tenga la voz de la marca — cliente o Branding
+
 ## D0 — Sistema visual
 - [ ] Cada token tiene **nombre, valor, origen, uso y anti-uso** — los cinco
 - [ ] Todo token sin respaldo en la guía está marcado `⚠️ FUERA DE GUÍA — propuesta`

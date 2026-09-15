@@ -5,6 +5,7 @@ Se copian a `clients/<cliente>/` al iniciar. **No se editan acá.**
 | Plantilla | Capa | Gate humano |
 |---|---|---|
 | `calendario-creativo-minimo.csv` | **input** — lo llena Creative (o una persona) | — |
+| `guia-aplicable.md` | D0 · **solo Modo B** | ✅ reforzado |
 | `sistema-visual.md` | D0 | ✅ |
 | `lote-de-piezas.csv` | D1 | — |
 | `brief-de-pieza.md` | D2 | — |

@@ -16,6 +16,7 @@ clients/<cliente>/
 │   │   ├── pinceladas/
 │   │   └── generados/     todo lo marcado [asset generado]
 │   └── calendario/        el Excel/CSV de Creative
+├── guia-aplicable.md      D0 · 🚦 GATE 1 reforzado (solo Modo B)
 ├── sistema-visual.md      D0 · 🚦 GATE 1
 ├── lote-de-piezas.csv     D1
 ├── briefs/
@@ -28,7 +29,9 @@ clients/<cliente>/
 ## Reglas
 
 1. **Las plantillas se copian de `templates/`.** No se editan las plantillas.
-2. **`sistema-visual.md` se hace una vez por cliente**, se revisa cada 3 lotes.
+2. **`guia-aplicable.md` y `sistema-visual.md` se hacen una vez por cliente**, se revisan cada 3
+   lotes. `guia-aplicable.md` solo existe si D0 corrió en **Modo B** (Branding entregó intel, no
+   manual).
 3. **`lote-de-piezas.csv`, `ruta-visual.md` y `entrega.md` son por lote.** Si hay varios lotes,
    se versiona por período: `lote-2026-10.csv`, `ruta-visual-2026-10.md`, `entrega-2026-10.md`.
 4. **`generados/` es una carpeta aparte a propósito.** Hace visible cuánto del lote no es material real.

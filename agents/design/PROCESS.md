@@ -118,18 +118,28 @@ distintivos de D0.6).
 
 ---
 
-### ▸ Paso 2 — D0 · Sistema visual
-**Input:** guía de marca + assets · **Skill:** `ds-sistema-visual`
-**Output:** `sistema-visual.md` + página Figma `00 · Sistema`
+### ▸ Paso 2 — D0 · Guía aplicable y sistema visual
+**Input:** intel de marca + assets + `posicionamiento.md` si existe · **Skill:** `ds-sistema-visual`
+**Output:** `guia-aplicable.md` *(Modo B)* + `sistema-visual.md` + página Figma `00 · Sistema`
 
 > **Primero alimentás el contexto, después diseñás.** El sistema se construye y se lee antes de abrir
 > una pieza.
 
-Si la guía es incompleta: **documentá menos, no completes con gusto propio.** Marcá los huecos como
-`⚠️ FUERA DE GUÍA` y proponé el faltante como **propuesta explícita**.
+**Elegí el modo primero:**
 
-🚦 **GATE 1 — Aprobación del sistema visual.** Tokens, pares de contraste, escala tipográfica,
-grillas y **componentes de pieza con su ficha** — antes de que se diseñe una sola pieza.
+| Modo | Cuándo | Qué producís |
+|---|---|---|
+| **A · Traducción** | Existe manual de marca formal | `sistema-visual.md` |
+| **B · Construcción** | Solo hay **intel** de Branding | `guia-aplicable.md` + `sistema-visual.md` |
+
+🛑 **Lo único que no se inventa es la dirección** (cómo debe verse y cómo debe sentirse). Sin eso:
+`BLOQUEADO`. Con intel — referencias, fuentes, material existente — **alcanza para construir**.
+
+En Modo B todo sale como **propuesta**, con la sección obligatoria **"Qué decidió Diseño"**.
+
+🚦 **GATE 1 — Aprobación.** En Modo A: tokens, contraste, escala, grillas y componentes.
+En **Modo B es reforzado**: lo aprueba quien tenga la voz de la marca — el cliente, o Branding
+cuando exista.
 
 ---
 
@@ -229,7 +239,8 @@ QA en **4 pasadas** (sistema · pieza · miniatura · **secuencia**). Un ítem f
 |---|---|
 | **Goal** o **texto en jerarquía** en el calendario | 🛑 `BLOQUEADO` → **devolución a Creative** con la pregunta exacta. Nunca lo inventes |
 | La dirección de Creative no entra en el formato | `⚠️ OBSERVADO` + tu propuesta. **No la cambies en silencio** |
-| Guía de marca | 🛑 BLOQUEADO. Alternativa: D0 en **modo provisional**, todo marcado `⚠️ SISTEMA PROVISIONAL` |
+| Manual de marca formal | No bloquea: si hay **intel**, corré D0 en **Modo B** y construí `guia-aplicable.md` |
+| La **dirección** (cómo debe verse y sentirse) | 🛑 BLOQUEADO. Es lo único que Branding tiene que poner sí o sí |
 | Una foto | 🟡 Resolvé tipográfica y marcá `⚠️ ASSET FALTANTE` |
 | El calendario creativo | 🛑 BLOQUEADO. Sin plan de ejecución no hay diseño |
 | Figwright | Especificación construible. Nunca declares la pieza hecha |

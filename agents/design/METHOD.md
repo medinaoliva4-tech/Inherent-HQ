@@ -16,17 +16,46 @@ CONSTRUIR    D5  Construcción en Figma con Figwright
 
 ---
 
-# D0 · Sistema visual aplicado
+# D0 · Guía aplicable y sistema visual
 
-**Input:** guía de marca de Branding + librería de assets del cliente
-**Output:** `sistema-visual.md` + página Figma `00 · Sistema`
-**Gate:** 🚦 GATE 1 — humano aprueba el sistema antes de diseñar una sola pieza
-
-Traducís la guía de marca (documento de lectura) a un **sistema operable**: valores concretos,
-nombrados, que se usan como tokens en Figma y como reglas en cada decisión posterior.
+**Input:** intel de marca de Branding + librería de assets + `posicionamiento.md` si existe
+**Output:** `guia-aplicable.md` *(si corre Modo B)* + `sistema-visual.md` + página Figma `00 · Sistema`
+**Gate:** 🚦 GATE 1 — humano aprueba antes de diseñar una sola pieza
 
 > **Primero alimentás el contexto, después diseñás.** El sistema se construye y se lee **antes** de
 > abrir una pieza. Nunca se arranca por "hagamos algo lindo".
+
+## D0.0 — Elegí el modo
+
+**Branding no siempre entrega un manual.** Muchas veces entrega **intel**: cómo debe verse, cómo
+debe sentirse, referencias, fuentes, material que ya existe. Con eso alcanza.
+
+| Modo | Cuándo | Qué producís |
+|---|---|---|
+| **A · Traducción** | Existe una guía de marca formal | `sistema-visual.md` — traducís lo que ya está decidido |
+| **B · Construcción** | Solo hay **intel** de Branding | `guia-aplicable.md` **+** `sistema-visual.md` — construís la guía y después el sistema |
+
+### Input mínimo del Modo B
+```
+OBLIGATORIO   Dirección — cómo debe verse y cómo debe sentirse
+              + al menos UNO de:  inspiraciones · fuentes · material existente del cliente
+FUERTE        posicionamiento.md de Strategy — territorio, activos distintivos, filtro D/N/R
+```
+🛑 **Sin dirección no hay Modo B.** Ahí sí es `BLOQUEADO`: "cómo debe verse y sentirse" no se
+inventa. Es lo único que Branding tiene que poner sí o sí.
+
+### Qué produce el Modo B
+`guia-aplicable.md` es **para tres departamentos**, no solo para vos:
+`Diseño` (cómo se compone) · `Production` (cómo se fotografía) · `Content` (cómo se escribe y arma).
+
+### El gate del Modo B es más duro
+En Modo B estás **proponiendo dirección**, no traduciéndola. Por eso:
+- Todo sale marcado como **propuesta**, nunca como hecho
+- Sección obligatoria **"Qué decidió Diseño"** — lo que no venía en el intel, con su porqué
+- El gate lo aprueba quien tenga la voz de la marca: el cliente, o Branding cuando exista
+
+⚠️ **Modo B no te convierte en Branding.** Construís la guía **a partir del intel que te dieron**;
+no inventás la dirección. Si el intel dice "cercano y cálido" y proponés algo frío, te saliste.
 
 ### D0.1 — Tokens
 Color, tipografía, espaciado, radios, sombras, bordes. Ver `systems/DESIGN-TOKENS.md`.

@@ -8,7 +8,9 @@ Qué alimenta a qué. **Si un campo no tiene origen, no se completa por inferenc
 
 | Campo del sistema de Diseño | Viene de | Departamento |
 |---|---|---|
-| Paleta, tipografía, logo, uso, tratamiento gráfico | Guía de marca | **Branding** |
+| Dirección: cómo debe verse y sentirse | Intel de marca | **Branding** — 🛑 obligatorio |
+| Inspiraciones, fuentes, material existente | Intel de marca | **Branding** |
+| Paleta, tipografía, logo, uso, tratamiento gráfico | Guía formal *(Modo A)* · o `guia-aplicable.md` *(Modo B)* | **Branding** · o **Diseño** |
 | Activos distintivos | `posicionamiento.md` → Activos distintivos (Capa 4) | **Strategy** |
 | Pilar y temperatura del slot | `calendario-estrategico.csv` | **Strategy** |
 | Rol de cada canal | `contenido-por-canal.md` | **Strategy** |
@@ -63,7 +65,8 @@ D2 briefs/ ──► D3 composición en gris ──► D4 color y overlays ─�
 
 | Si falta | Se bloquea |
 |---|---|
-| Paleta o tipografía de la guía | **Todo D0** → y con él todo el resto |
+| **Dirección** (cómo debe verse y sentirse) | **Todo D0** → y con él todo el resto |
+| Paleta o tipografía, con intel disponible | Nada — corre **Modo B** y se construyen |
 | Matriz de contraste | D2 (no hay par de color legítimo) |
 | Ficha de un componente | D2 para las piezas que lo usarían |
 | Grilla del formato | D3 y D6 |
@@ -86,4 +89,5 @@ D2 briefs/ ──► D3 composición en gris ──► D4 color y overlays ─�
 | `⚠️ ASSET FALTANTE` / `⚠️ ASSET INSUFICIENTE` | **Production** | Reproducción o reemplazo |
 | `🛑 BLOQUEADO — sin goal / sin jerarquía` · `⚠️ OBSERVADO` | **Creative** | Completar el plan de ejecución |
 | `⚠️ FUERA DE GUÍA` | **Branding** | Actualización de la guía |
+| `guia-aplicable.md` *(Modo B)* | **Branding · Production · Content** | Dirección de arte, tratamiento de foto y voz visual |
 | Qué piezas rindieron | **Analytics** → vuelve a D0.7 | Afinar la biblioteca de componentes |

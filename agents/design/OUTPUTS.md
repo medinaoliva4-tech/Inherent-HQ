@@ -19,6 +19,7 @@ Todo lo que el agente produce, dónde vive y quién lo consume.
 
 | # | Archivo | Capa | Skill | Gate | Lo consume |
 |---|---|---|---|---|---|
+| 0 | `guia-aplicable.md` *(Modo B)* | D0 | `ds-sistema-visual` | 🚦 GATE 1 reforzado | **Diseño · Production · Content** |
 | 1 | `sistema-visual.md` | D0 | `ds-sistema-visual` | 🚦 GATE 1 | D1-D7 · Branding · Production |
 | 2 | `lote-de-piezas.csv` | D1 | `ds-brief-de-pieza` | — | D2-D7 · Content |
 | 3 | `briefs/<id_pieza>.md` | D2 | `ds-brief-de-pieza` | — | D3-D6 |
@@ -27,6 +28,28 @@ Todo lo que el agente produce, dónde vive y quién lo consume.
 | 6 | `entrega.md` + `/exports` | D7 | `ds-qa-visual` | 🚦 GATE 3 | Content · Media Buy |
 
 ---
+
+## 0 · `guia-aplicable.md` — D0, solo Modo B
+
+> Se produce cuando Branding entregó **intel** y no un manual formal.
+
+| Sub-output | Qué es |
+|---|---|
+| **El intel recibido** | Trazabilidad: qué dijo Branding, palabra por palabra |
+| **Dirección** | Cómo debe verse · cómo debe sentirse · **qué NO es** |
+| **Referencias** | Qué se toma de cada una y qué **no** |
+| **Color** | Roles con su porqué + chequeo de "¿nos vemos igual que la categoría?" |
+| **Tipografía** | Familias con rol + verificación de `ñ`, pesos y licencia |
+| **Tratamiento fotográfico** | → **Production**: luz, encuadre, paleta, post |
+| **Lenguaje gráfico** | → **Diseño**: qué familias aplican y con qué carácter |
+| **Voz visual** | → **Content**: densidad, tono del CTA, palabras que sí y que no |
+| **Activos distintivos** | Qué reconoce la marca al 10% sin logo |
+| **Uso del logo** | Versiones, mínimo, resguardo, y dónde **no** va |
+| **Qué decidió Diseño** | 🚦 Lo que no venía en el intel, con su porqué y qué lo invalidaría |
+| **Aplicación por departamento** | Qué sección toma cada uno |
+
+**Restricción:** todo sale como **propuesta** hasta el gate. Nada que no se rastree al intel puede
+faltar en "Qué decidió Diseño".
 
 ## 1 · `sistema-visual.md` — D0
 

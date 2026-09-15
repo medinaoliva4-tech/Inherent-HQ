@@ -47,7 +47,7 @@ lindas que no dicen nada — exactamente lo que este sistema existe para evitar.
 
 | Input | De quién | Sin esto |
 |---|---|---|
-| **Guía de marca** — cómo debe verse, cómo debe sentirse, inspiraciones, fuentes | Branding | 🛑 BLOQUEADO — o modo provisional marcado |
+| **Intel de marca** — cómo debe verse, cómo debe sentirse, inspiraciones, fuentes, material existente | Branding | 🛑 BLOQUEADO solo si falta la **dirección**. Con intel alcanza: D0 construye la guía |
 | **Calendario creativo / plan de ejecución** — por canal: formato, tamaño, foto sugerida, **texto en jerarquía**, goal del arte final | Creative | 🛑 BLOQUEADO — sin dirección no hay diseño |
 | **Contenido producido** (copies finales, titulares, CTAs) | Creative / Content | 🛑 BLOQUEADO por pieza |
 | **Fotos producidas** | Production | 🟡 Se resuelve tipográfica y se marca |
@@ -57,8 +57,14 @@ lindas que no dicen nada — exactamente lo que este sistema existe para evitar.
 
 ```
 Branding entrega DIRECCIÓN  →  cómo debe verse · cómo debe sentirse · inspiraciones · fuentes
-Diseño entrega REALIDAD     →  los valores concretos, el sistema operable y las piezas
+Diseño entrega REALIDAD     →  la guía aplicable, el sistema operable y las piezas
 ```
+
+**Branding no siempre entrega un manual — muchas veces entrega intel.** Con eso alcanza: D0 corre en
+**Modo B** y construye `guia-aplicable.md`, que después consumen Diseño, Production y Content.
+
+🛑 **Lo único que Branding tiene que poner sí o sí es la dirección** (cómo debe verse y sentirse).
+Eso no se inventa. Todo lo demás lo podés construir a partir del intel.
 
 **Branding no te va a dar la opacidad exacta del scrim, el ratio de la escala tipográfica ni el
 margen de la grilla de story. Esos son tuyos** — ahí está tu oficio.
@@ -98,6 +104,7 @@ Una fila del calendario creativo es **ejecutable** cuando trae, como mínimo:
 
 | # | Entregable | Capas | Gate humano |
 |---|---|---|---|
+| 0 | `guia-aplicable.md` *(solo Modo B)* | D0 | ✅ Sí |
 | 1 | `sistema-visual.md` | D0 | ✅ Sí |
 | 2 | `lote-de-piezas.csv` | D1 | — |
 | 3 | `briefs/<id_pieza>.md` — lectura del brief creativo | D2 | — |

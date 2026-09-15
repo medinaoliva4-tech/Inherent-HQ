@@ -79,7 +79,8 @@ Plus `medicion.md` (Capa 8) cuando hay datos disponibles.
 
 | # | Archivo | Capa | Gate |
 |---|---|---|---|
-| 1 | `sistema-visual.md` | D0 · Tokens, contraste, grillas, layouts | 🚦 |
+| 0 | `guia-aplicable.md` | D0 · Solo Modo B — la guía construida desde el intel de Branding | 🚦 |
+| 1 | `sistema-visual.md` | D0 · Tokens, contraste, grillas, componentes | 🚦 |
 | 2 | `lote-de-piezas.csv` | D1 · Lectura del calendario creativo | — |
 | 3 | `briefs/<id_pieza>.md` | D2 · Decisión por pieza | — |
 | 4 | `ruta-visual.md` | D3-D4 · Composición y capas gráficas | 🚦 |

@@ -85,6 +85,8 @@ Nunca rellenes con inferencia sin marcarla.
    debe sentirse, las inspiraciones y las fuentes. Los valores concretos — escalas, grillas, scrims,
    márgenes, componentes — los resuelve Design: ese es su oficio, no una desviación. `⚠️ FUERA DE
    GUÍA` se reserva para lo que contradice o amplía la dirección.
+   **Si Branding entregó intel y no un manual, Design construye la guía aplicable** (D0 Modo B),
+   marcada como propuesta y con gate reforzado. Lo único que no se inventa es la dirección.
 10. **En Design: el contraste se mide, no se estima.** Piso 4.5:1 para todo texto legible en
    miniatura; 7:1 o scrim sobre foto. "Se ve bien" no es una medición.
 11. **En Design: nunca se genera fotografía del cliente.** Si falta material real se marca
