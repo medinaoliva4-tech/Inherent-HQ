@@ -3,6 +3,9 @@
 Repositorio de los agentes operativos de **Inherent Global**. Se opera desde Buzz mediante sesiones
 de Claude Code.
 
+📄 **[`DEPARTAMENTOS.md`](DEPARTAMENTOS.md) es la fuente de verdad del alcance de cada departamento.**
+Si el método de un agente y esa especificación no coinciden, manda la especificación.
+
 ## Qué hay hoy
 
 **6 departamentos operativos.** Cada uno vive en `agents/<nombre>/` y se activa con las skills de
@@ -219,32 +222,40 @@ Cada agente declara **su punto de corte** y **qué no hace, y de quién es**. Tr
 |---|---|---|---|
 | ① | Comprensión | `agents/strategy/` Capa 0 | 🟡 Dentro de Strategy |
 | ② | Estrategia | `agents/strategy/` Capas 1-4 | 🟡 Dentro de Strategy |
-| ②B | Branding | — | ⬜ Pendiente |
+| ②B | Branding | *(en `claude/nifty-faraday-g64a0d`)* | 🔵 Sin integrar |
 | ③ | **Marketing** | `agents/marketing/` | ✅ Operativo |
 | ④ | **Creatividad** | `agents/creative/` | ✅ Operativo |
 | ⑤ | **Producción** | `agents/production/` | ✅ Operativo |
 | ⑥A | **Diseño gráfico** | `agents/design/` | 🟡 Listo, sin estrenar |
 | ⑥B | **Video Editing** | `agents/video/` | ✅ Operativo |
+| 🧍 | *Organizar contenido en Drive* | — | **paso humano, no se automatiza** |
 | ⑦ | Posting | — | ⬜ Pendiente |
 | ⑧B | Ads | — | ⬜ Pendiente |
+| ⑨ | Community management | — | ⬜ Pendiente |
 
-### Fronteras sin resolver
+### Fronteras resueltas
 
-Anotadas, **no decididas**. Requieren una decisión humana antes de correr un ciclo completo:
+`DEPARTAMENTOS.md` cierra tres que estaban abiertas:
 
-1. **③ Marketing ↔ Strategy Capas 5-7.** Marketing existe como agente propio, pero sus skills
-   declaran que *se apoyan* en el calendario estratégico de Strategy, no lo reemplazan. Falta
-   decidir si las Capas 5-7 se retiran de Strategy o quedan como capa macro debajo de Marketing.
-2. **④ Creatividad ↔ ⑥A Diseño: el layout.** La regla 7 de `CLAUDE.md` dice que Creative llega
-   hasta el *layout*; el método de Diseño ubica composición y layout en D3. Diseño propone la línea
-   **Creative define la jerarquía del MENSAJE, Diseño resuelve la jerarquía VISUAL** — falta
-   confirmarla contra `cr-arte-video`, que además dice que ⑤ Producción ejecuta en Figma.
-3. **⑧A Orgánico** (implícito en el "⑧B" de Ads) y **medición / aprendizaje de negocio**: ningún
-   departamento cierra el círculo hacia ① y ②.
+- **El layout es de ⑥A Diseño.** Creative especifica *qué* elementos gráficos pedir y el concepto;
+  Diseño resuelve composición, jerarquía visual, layout, tipografía, color y contraste.
+- **La frecuencia de contenido es de ③ Marketing** — cuántos reels, historias y carruseles diarios
+  por campaña.
+- **No existe ⑧A Orgánico.** Lo orgánico vive dentro de ③ Marketing; la conversación es
+  **⑨ Community management**.
+
+### Lo que queda abierto
+
+1. **Strategy todavía carga las Capas 5-8** (sistema de contenido, calendario macro, medición), que
+   según la especificación son de ③ Marketing y ④ Creatividad.
+2. **②B Branding está en `claude/nifty-faraday-g64a0d`, sin integrar.** Su entregable es la *guía de
+   marca aplicable* — el mismo artefacto que ⑥A Diseño construye en D0 **Modo B** cuando Branding no
+   entregó manual. Modo B es el respaldo; con Branding integrado, Diseño corre en Modo A.
+3. **Medición / aprendizaje de negocio**: ningún departamento cierra el círculo hacia ① y ②.
 
 ### Ramas sin integrar
 
-`claude/sharp-ride-4lo8a0` trae una skill de `presentacion` **y un rediseño de Strategy de 9 capas
-a 5**, que borra `st-calendario-macro`, `st-medicion` y `st-sistema-contenido`. Es incompatible con
-el mapeo `③ Marketing = Capas 5-7` sobre el que están escritos Creatividad y Producción, así que
-quedó fuera de esta integración. **Necesita una decisión: qué versión de Strategy es la buena.**
+| Rama | Trae | Estado |
+|---|---|---|
+| `claude/nifty-faraday-g64a0d` | **②B Branding** — método de 7 capas, 6 modos de marca, 7 entregables | Recomendado integrar: cierra el input principal de ⑥A Diseño |
+| `claude/sharp-ride-4lo8a0` (`PR #2`) | Skill `presentacion` **+ recorte de Strategy de 9 capas a 5**, quitando `st-calendario-macro`, `st-medicion` y `st-sistema-contenido` | **Ahora alineado con la especificación**: esas capas son de ③ Marketing y ④ Creatividad. Requiere verificar que Marketing y Creatividad las absorban por completo antes de mergear |

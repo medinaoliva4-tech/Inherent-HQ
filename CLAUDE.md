@@ -10,41 +10,54 @@ es lo primero que se lee en cada sesión: define quién sos y cómo arrancás.
 
 ## Agentes disponibles
 
-El flujo de Inherent tiene **8 departamentos**, en este orden:
+El flujo de Inherent, en este orden:
 
 ```
-① Comprensión → ② Estrategia → ③ Marketing → ④ Creatividad → ⑤ Producción →  ⑥A Diseño  → ⑦ Posting → ⑧B Ads
-                      ↓                ↑                                    ⑥B Video ↗
-                 ②B Branding ──────────┘
+① Comprensión → ② Estrategia → ③ Marketing → ④ Creatividad → ⑤ Producción →  ⑥A Diseño  →  [Drive]  → ⑦ Posting → ⑧B Ads
+                      ↓                ↑                                      ⑥B Video  ↗   HUMANO
+                 ②B Branding ──────────┘                                                                   ⑨ Community ↻
 ```
+
+> 🧍 **`[Drive]` es un paso humano, no un agente.** Alguien organiza el contenido en Drive según el
+> calendario antes de que ⑦ Posting lo tome. Está en el flujo a propósito: no lo automatices.
 
 | # | Departamento | Carpeta | Qué hace | Estado |
 |---|---|---|---|---|
-| **①** | Comprensión | — *(hoy dentro de `agents/strategy/` Capa 0)* | Ordena la realidad del negocio y del cliente antes de estrategia | 🟡 Parcial |
-| **②** | Estrategia | — *(hoy dentro de `agents/strategy/` Capas 1-4)* | 3 verdades, ICP, posicionamiento, ingeniería inversa | 🟡 Parcial |
-| **②B** | Branding | — | Guidelines, tono de voz, dirección visual | ⬜ Pendiente |
-| **③** | **Marketing** | `agents/marketing/` | Research comercial, plan, campañas, calendario comercial, volumen y presupuesto | ✅ Operativo |
-| **④** | **Creatividad** | `agents/creative/` | Ideas, conceptos, hooks, copy, guion y dirección — el brief por pieza | ✅ Operativo |
+| **①** | Comprensión | — *(hoy dentro de `agents/strategy/` Capa 0)* | Ordena la realidad del negocio y del cliente antes de estrategia. Datos del cliente, edad, comportamiento, competencia, mercado, producto, precios, canales de venta, problemas y oportunidades | 🟡 Parcial |
+| **②** | Estrategia | — *(hoy dentro de `agents/strategy/` Capas 1-4)* | 3 verdades, ICP, villano, solución, historia de marca, objetivo financiero, posicionamiento, ingeniería inversa y **distribución por canales de ingreso** (reservas, delivery, eventos, productos, membresías) | 🟡 Parcial |
+| **②B** | Branding | — *(en `claude/nifty-faraday-g64a0d`, sin integrar)* | Brand guidelines, tono de voz, estética, referencias, colores, tipografías, dirección visual y personalidad → **la guía de marca aplicable** | 🔵 En otra rama |
+| **③** | **Marketing** | `agents/marketing/` | Market research, campañas (orgánicas y pautadas), tipos de marketing, canales, fechas y lanzamientos, **distribución del objetivo y frecuencia de contenido** — cuántos reels, historias y carruseles diarios por campaña | ✅ Operativo |
+| **④** | **Creatividad** | `agents/creative/` | Ideas, feeling, emoción a evocar, formatos, conceptos, hooks, referencias, **pilares de contenido**, propuestas visuales y la estrategia 70/20/10 → el Excel de calendario creativo | ✅ Operativo |
 | **⑤** | **Producción** | `agents/production/` | Desglose, jornadas, recursos, presupuesto, rodaje y entrega del material | ✅ Operativo |
 | **⑥A** | **Diseño gráfico** | `agents/design/` | Composición, layout, elementos gráficos, export de lo estático | 🟡 Listo, sin estrenar |
 | **⑥B** | **Video Editing** | `agents/video/` | Del material crudo al master por plataforma | ✅ Operativo |
-| **⑦** | Posting | — | Captions finales, programación y publicación | ⬜ Pendiente |
-| **⑧B** | Ads | — | Segmentación, presupuesto de pauta, optimización | ⬜ Pendiente |
+| **⑦** | Posting | — | Copy final, captions, hashtags, fecha, hora, formato, canal y revisión final | ⬜ Pendiente |
+| **⑧B** | Ads | — | Meta Ads, Google Ads, segmentación, presupuesto, copies, creativos, pruebas y optimización | ⬜ Pendiente |
+| **⑨** | Community management | — | Conversación, comunidad y respuesta | ⬜ Pendiente |
 
 > 🔄 **Transición.** `agents/strategy/` todavía cubre ① y ② juntos. Los agentes de aguas abajo
 > están escritos contra los departamentos separados, con el mapeo capa→departamento centralizado en
 > `agents/creative/CORRELACION.md ⓪.1`. Cuando ①② se separen, cambian **las rutas**, no los métodos.
 
-> ⚠️ **Fronteras sin resolver.** Anotadas, no decididas — **no las resuelvas por tu cuenta**:
-> 1. **③ Marketing ↔ Strategy Capas 5-7.** Marketing existe como agente propio, pero sus skills
->    declaran que *se apoyan* en el calendario estratégico de Strategy, no lo reemplazan. Falta
->    decidir si las Capas 5-7 se retiran de Strategy o quedan como la capa macro debajo de Marketing.
-> 2. **④ Creatividad ↔ ⑥A Diseño: el layout.** La regla 7 dice que Creative llega hasta el *layout*
->    en el brief; el método de Diseño ubica composición y layout en D3. Están en conflicto. La línea
->    que propone Diseño es: **Creative define la jerarquía del MENSAJE, Diseño resuelve la jerarquía
->    VISUAL** — pero hay que confirmarla contra `cr-arte-video`, que además dice que ⑤ Producción
->    ejecuta en Figma.
-> 3. **⑧A Orgánico** (implícito en el "⑧B" de Ads) y **medición / aprendizaje de negocio**: ningún
+> ✅ **Fronteras resueltas** por la especificación de departamentos (2026-09-15):
+> - **④ Creatividad ↔ ⑥A Diseño: el layout es de Diseño.** Creative especifica *qué* elementos
+>   gráficos pedir (ilustraciones, PNGs, texturas, pinceladas, formas) y el concepto; **⑥A Diseño
+>   resuelve composición, jerarquía visual, layout, tipografía, color y contraste**. La línea es:
+>   Creative define la jerarquía del MENSAJE, Diseño resuelve la jerarquía VISUAL.
+> - **La frecuencia de contenido es de ③ Marketing.** Cuántos reels, historias y carruseles diarios
+>   por campaña lo decide Marketing, no Strategy.
+> - **No existe ⑧A Orgánico.** Lo orgánico vive dentro de ③ Marketing (campañas orgánicas y
+>   pautadas). El cierre de conversación es **⑨ Community management**.
+
+> ⚠️ **Lo que sigue abierto:**
+> 1. **Strategy todavía carga las Capas 5-8** (sistema de contenido, calendario macro, medición),
+>    que según la especificación pertenecen a ③ Marketing y ④ Creatividad. `PR #2` propone
+>    exactamente ese recorte — quedó pendiente de decisión y ahora **está alineado con el spec**.
+> 2. **②B Branding vive en `claude/nifty-faraday-g64a0d`, sin integrar.** Su entregable es la
+>    *guía de marca aplicable*, el mismo artefacto que ⑥A Diseño construye en D0 **Modo B** cuando
+>    Branding no entregó manual. Modo B es el respaldo, no el camino principal: si Branding se
+>    integra, Diseño corre en Modo A.
+> 3. **Medición / aprendizaje de negocio**: `mk-lectura` cierra el ciclo de campañas, pero ningún
 >    departamento cierra el círculo hacia ① y ②.
 
 ---
@@ -61,6 +74,9 @@ El flujo de Inherent tiene **8 departamentos**, en este orden:
    | Desglose, jornadas, recursos, presupuesto de rodaje, call sheets, entrega de material | `produccion` |
    | Piezas estáticas, sistema visual, composición, tipografía, contraste, Figwright, formatos, feed | `diseno` |
    | Editar video, captions, color, audio, ritmo, vertical, QC y masters | `video` |
+
+   ⬜ Sin agente todavía: **① Comprensión** y **② Estrategia** viven dentro de `estrategia`;
+   **②B Branding**, **⑦ Posting**, **⑧B Ads** y **⑨ Community management** están pendientes.
 
    **Cada departamento requiere el de aguas arriba.** Creative bloquea sin `posicionamiento.md`
    aprobado + calendario. Producción bloquea sin el Excel creativo aprobado. Diseño bloquea sin
@@ -113,12 +129,14 @@ Nunca rellenes con inferencia sin marcarla.
 7. **No duplicar otros departamentos.** Cada agente tiene un punto de corte declarado:
    - **①②③** (hoy `agents/strategy/`) llega hasta el plan de campañas + calendario.
    - **④ Creatividad** llega hasta el brief completo por pieza: concepto, emoción, hook, copy,
-     guion, layout, escenas, encuadres, duraciones y qué elementos gráficos pedir.
+     guion, pilares, escenas, encuadres, duraciones y **qué elementos gráficos pedir**.
+     🛑 **El layout no es de Creative.** Composición, jerarquía visual y layout son de ⑥A Diseño.
    - **⑤ Producción** llega hasta el material base entregado y nombrado: RAW ordenado + selects.
      La post —montaje, color de entrega, versiones— es de **⑥B Video Editing**.
-   Guidelines son de ②B Branding. Composición, elementos gráficos y export de lo estático son de
-   ⑥A Diseño; el montaje y los masters son de ⑥B Video Editing.
-   Publicar es de ⑦ Posting. La pauta es de ⑧B Ads.
+   Guidelines son de ②B Branding. **Composición, jerarquía visual, layout, tipografía, color,
+   contraste y export de lo estático son de ⑥A Diseño**; el montaje y los masters son de ⑥B Video.
+   Organizar el contenido en Drive según el calendario es un **paso humano**.
+   Publicar es de ⑦ Posting. La pauta es de ⑧B Ads. La conversación es de ⑨ Community.
 8. **Lo que produce otro departamento se cita, no se reescribe — y nunca se edita.** Un campo que se
    copia con otras palabras crea una segunda versión de la verdad, y en dos ciclos las dos no
    coinciden. Se cita con su ruta:
