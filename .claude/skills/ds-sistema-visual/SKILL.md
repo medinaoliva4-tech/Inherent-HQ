@@ -9,7 +9,11 @@ description: >
   cliente nuevo en Diseño, cuando pidan "armá el sistema visual de X", "pasá la guía de marca a
   tokens", "qué tipografías y tamaños usamos", "qué colores puedo combinar", "armá las grillas",
   "armá los componentes", o cuando cualquier otra capa de Diseño detecte que no existe un sistema
-  previo. Traduce — no inventa lenguaje visual: eso es de Branding.
+  previo. Branding entrega la dirección (cómo debe verse y sentirse, inspiraciones, fuentes); esta
+  capa la vuelve valores concretos y sistema operable — resolver esos valores es su oficio, no una
+  desviación. Lo único que no cambia es la dirección.
+model: opus
+effort: high
 ---
 
 # D0 · Sistema Visual
@@ -19,8 +23,23 @@ Plantilla: `agents/design/templates/sistema-visual.md` → copiar a `clients/<cl
 
 ## Regla madre
 
-**Traducís, no inventás.** Todo lo que no está en la guía de marca sale marcado
-`⚠️ FUERA DE GUÍA — propuesta` y necesita gate. Definir el lenguaje visual es de **Branding**.
+```
+Branding entrega DIRECCIÓN  →  cómo debe verse · cómo debe sentirse · inspiraciones · fuentes
+Vos entregás REALIDAD       →  los valores concretos y el sistema operable
+```
+
+**Branding no te va a dar la opacidad del scrim, el ratio de la escala ni el margen de story.
+Resolver eso es el trabajo, no una desviación.**
+
+| ✅ Vos decidís | 🛑 No cambiás |
+|---|---|
+| Valores de scrim, espaciado, radios, sombras | La paleta base |
+| Escala tipográfica, ratios, interlineado, tracking | Las familias tipográficas |
+| Grillas, márgenes, safe areas | El logo y su uso |
+| Qué componentes existen y cómo se comportan | La estética, el tono y la dirección |
+
+`⚠️ FUERA DE GUÍA` se reserva para lo que **contradice o amplía la dirección** — no para cada valor
+concreto que la guía no enumeró.
 
 ## Los 7 bloques
 
@@ -83,10 +102,16 @@ Salidas obligatorias:
 
 ## Si la guía es incompleta
 
-**Documentá menos, no completes con gusto propio.** Dos modos:
-- **Modo normal** — se marcan los huecos `⚠️ FUERA DE GUÍA` y se propone el faltante como propuesta
-- **Modo provisional** — no hay guía. Todo el sistema sale marcado
-  `⚠️ SISTEMA PROVISIONAL — sin aprobar por Branding`, y se avisa en cada capa posterior
+Distinguí **qué tipo** de hueco es:
+
+| Hueco | Qué hacés |
+|---|---|
+| **Un valor concreto** que la guía no enumeró (scrim, ratio, margen) | ✅ **Resolvelo.** Es tu oficio. Declarás el criterio en el campo `origen` del token |
+| **Una decisión de dirección** (una familia nueva, un color que no está, otra estética) | ⚠️ `FUERA DE GUÍA — propuesta` + gate |
+| **No hay guía** | **Modo provisional** — todo marcado `⚠️ SISTEMA PROVISIONAL — sin aprobar por Branding`, y se avisa en cada capa posterior |
+
+🛑 **No completes con gusto propio una decisión de dirección.** Pero tampoco bloquees por un valor
+que Branding nunca iba a especificar.
 
 ## Cierre
 

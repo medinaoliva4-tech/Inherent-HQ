@@ -182,9 +182,13 @@ degrade en tres lotes.
 
 ## Huecos
 
+> **Solo va acá lo que contradice o amplía la DIRECCIÓN de Branding.**
+> Un valor concreto que la guía no enumeró (scrim, ratio, margen) **no es un hueco**: es trabajo de
+> Diseño. Se resuelve, y el criterio se declara en el campo `origen` del token.
+
 | Hueco | Qué falta | A quién se le pide | Estado |
 |---|---|---|---|
-| `⚠️ FUERA DE GUÍA` | | Branding | |
+| `⚠️ FUERA DE GUÍA` | *(decisión de dirección, no un valor)* | Branding | |
 | `⚠️ ASSET FALTANTE` | | Production | |
 
 ---

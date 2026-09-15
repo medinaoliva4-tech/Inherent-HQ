@@ -10,6 +10,7 @@ description: >
   de X", "revisá estas piezas", "tomá el calendario creativo y diseñá", "necesito los diseños del
   mes". Clasifica el pedido, identifica en qué capa del método estamos, y dirige a la skill correcta.
   Es la puerta de entrada — nunca produzcas un entregable de diseño sin pasar por acá.
+model: inherit
 ---
 
 # Diseño — Orquestador

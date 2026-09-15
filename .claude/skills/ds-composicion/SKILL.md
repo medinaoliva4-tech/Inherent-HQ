@@ -9,6 +9,8 @@ description: >
   "el carrusel no tiene ritmo", o al bajar cualquier brief a diseño. Termina con tres tests
   obligatorios: miniatura, gris y atención. Si fallan, se cambia el componente — no se arregla con
   elementos gráficos.
+model: opus
+effort: high
 ---
 
 # D3 · Composición y craft

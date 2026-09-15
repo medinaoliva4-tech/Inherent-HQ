@@ -7,6 +7,8 @@ description: >
   publicar", "exportá el lote", "hacé el QA", "esto se puede pautar", "cómo se ve el feed", "armá la
   entrega", o antes de cerrar cualquier lote. Es el último filtro antes de que algo salga del
   departamento. Diseño no publica, no programa y no pauta.
+model: opus
+effort: high
 ---
 
 # D7 · QA Visual y Entrega

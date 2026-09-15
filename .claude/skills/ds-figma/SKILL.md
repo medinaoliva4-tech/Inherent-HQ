@@ -9,6 +9,8 @@ description: >
   lienzo largo. Úsala cuando pidan "construilo en Figma", "pasá esto a Figma", "armá el archivo",
   "creá los componentes", "actualizá la pieza en Figma". Requiere ruta visual aprobada (GATE 2).
   Sin Figwright conectado entrega especificación construible, nunca declara la pieza hecha.
+model: sonnet
+effort: medium
 ---
 
 # D5 · Construcción con Figwright

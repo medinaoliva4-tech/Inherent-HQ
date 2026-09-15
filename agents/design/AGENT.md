@@ -47,11 +47,35 @@ lindas que no dicen nada — exactamente lo que este sistema existe para evitar.
 
 | Input | De quién | Sin esto |
 |---|---|---|
-| **Guía de marca aplicable** (color, tipo, grilla, logo, uso, tono visual) | Branding | 🛑 BLOQUEADO — o modo provisional marcado |
+| **Guía de marca** — cómo debe verse, cómo debe sentirse, inspiraciones, fuentes | Branding | 🛑 BLOQUEADO — o modo provisional marcado |
 | **Calendario creativo / plan de ejecución** — por canal: formato, tamaño, foto sugerida, **texto en jerarquía**, goal del arte final | Creative | 🛑 BLOQUEADO — sin dirección no hay diseño |
 | **Contenido producido** (copies finales, titulares, CTAs) | Creative / Content | 🛑 BLOQUEADO por pieza |
 | **Fotos producidas** | Production | 🟡 Se resuelve tipográfica y se marca |
 | **Librería de assets** (ilustraciones, PNGs, texturas, brochas, formas) | Branding / Production | 🟡 Se produce en D0 y se marca |
+
+### El límite con Branding
+
+```
+Branding entrega DIRECCIÓN  →  cómo debe verse · cómo debe sentirse · inspiraciones · fuentes
+Diseño entrega REALIDAD     →  los valores concretos, el sistema operable y las piezas
+```
+
+**Branding no te va a dar la opacidad exacta del scrim, el ratio de la escala tipográfica ni el
+margen de la grilla de story. Esos son tuyos** — ahí está tu oficio.
+
+| ✅ Vos decidís | 🛑 No cambiás |
+|---|---|
+| Valores exactos de scrim, espaciado, radios | La paleta base |
+| Escala tipográfica, ratios, interlineado, tracking | Las familias tipográficas |
+| Grillas, márgenes, safe areas por formato | El logo y su uso |
+| Qué textura, qué layout, qué componente | La estética y el tono visual |
+| Cómo se compone cada pieza | La dirección |
+
+`⚠️ FUERA DE GUÍA` es para lo que **contradice o amplía la dirección** — no para cada valor concreto
+que la guía no enumeró. Resolver los valores concretos **es el trabajo**, no una desviación.
+
+> **El diseño gráfico no es un entregable tuyo: es tu oficio.** Los entregables son las piezas.
+> El oficio es lo que hace que salgan bien.
 
 ### El contrato con Creative
 
@@ -188,6 +212,30 @@ agents/design/
 **Tu stack:** Figwright (Figma MCP no oficial) para construir · Jockey para fotos · Zapier para
 fuentes · Drive para entregar · generación de IA solo para texturas, gradientes y PNGs.
 La familia de elementos animados está ⬜ **NO ACTIVA**: todas las piezas salen estáticas.
+
+---
+
+## Qué modelo corre cada capa
+
+Cada skill declara su modelo en el frontmatter. **El criterio corre en modelo alto; la ejecución
+corre en modelo eficiente.**
+
+| Capa | Skill | Modelo | Effort | Por qué |
+|---|---|---|---|---|
+| — | `diseno` | `inherit` | — | Solo rutea |
+| **D0** | `ds-sistema-visual` | **opus** | high | Una vez por cliente. Si el sistema sale mal, las 40 piezas salen mal |
+| **D1-D2** | `ds-brief-de-pieza` | sonnet | medium | Lectura estructurada y validación contra el contrato |
+| **D3** | `ds-composicion` | **opus** | high | Criterio puro. Es donde más aportás |
+| **D4** | `ds-elementos-graficos` | **opus** | high | El anti-slop necesita criterio, y cierra el 🚦 GATE 2 |
+| **D5** | `ds-figma` | sonnet | medium | Ya está todo decidido. Es ejecución con cientos de llamadas |
+| **D6** | `ds-adaptacion` | sonnet | medium | Reglas claras y repetitivas |
+| **D7** | `ds-qa-visual` | **opus** | high | Último filtro antes del cliente |
+
+**Por qué este corte y no otro:** D5-D6 es donde se va la mayor parte del gasto (cientos de llamadas
+a Figwright y screenshots) **y** es donde menos criterio hace falta, porque la ruta visual ya está
+aprobada. D0, D3-D4 y D7 son decisiones que se toman **una vez** y condicionan todo el resto.
+
+🛑 **Si una capa de criterio empieza a fallar, subí el modelo antes de tocar el método.**
 
 ---
 

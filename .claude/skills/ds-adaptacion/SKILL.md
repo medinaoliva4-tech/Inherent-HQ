@@ -8,6 +8,8 @@ description: >
   Úsala cuando pidan "adaptá esto a story", "pasalo a cuadrado", "hacelo también para Facebook",
   "esto no entra en 9:16", "el CTA queda tapado", "armá el carrusel seamless". Adaptar es recomponer,
   nunca escalar.
+model: sonnet
+effort: medium
 ---
 
 # D6 · Adaptación por Formato y Canal

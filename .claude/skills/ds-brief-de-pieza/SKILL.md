@@ -8,6 +8,8 @@ description: >
   inventan; lo que falta se devuelve. Úsala cuando pidan "leé el calendario de X", "qué piezas hay
   que diseñar", "armá el lote de este mes", "brief de esta pieza", "esto es diseñable?", o antes de
   abrir Figma para cualquier pieza. Requiere el sistema visual (D0) hecho.
+model: sonnet
+effort: medium
 ---
 
 # D1-D2 · Lote y Briefs

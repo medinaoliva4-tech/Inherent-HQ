@@ -81,12 +81,16 @@ Nunca rellenes con inferencia sin marcarla.
    Si al brief creativo le falta el goal o el texto en jerarquía, Design **bloquea y devuelve** —
    nunca lo inventa. Si no es ejecutable en el formato, lo marca `⚠️ OBSERVADO` y propone; no lo
    cambia en silencio.
-9. **En Design: el contraste se mide, no se estima.** Piso 4.5:1 para todo texto legible en
+9. **Branding entrega dirección; Design entrega realidad.** Branding manda cómo debe verse, cómo
+   debe sentirse, las inspiraciones y las fuentes. Los valores concretos — escalas, grillas, scrims,
+   márgenes, componentes — los resuelve Design: ese es su oficio, no una desviación. `⚠️ FUERA DE
+   GUÍA` se reserva para lo que contradice o amplía la dirección.
+10. **En Design: el contraste se mide, no se estima.** Piso 4.5:1 para todo texto legible en
    miniatura; 7:1 o scrim sobre foto. "Se ve bien" no es una medición.
-10. **En Design: nunca se genera fotografía del cliente.** Si falta material real se marca
+11. **En Design: nunca se genera fotografía del cliente.** Si falta material real se marca
     `⚠️ ASSET FALTANTE` y se pide a Production. Todo asset generado va marcado `[asset generado]`
     y con gate humano.
-11. **Nada destructivo sin autorización.** No publicar, no pautar, no enviar al cliente, no borrar,
+12. **Nada destructivo sin autorización.** No publicar, no pautar, no enviar al cliente, no borrar,
     no sobrescribir aprobados. Figwright escribe sobre el archivo real del cliente: se reclama con
     `use_file` y se confirma antes de escribir.
 

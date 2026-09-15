@@ -10,6 +10,8 @@ description: >
   stickers/textura/una flecha", "de dónde saco este asset", o al cerrar la ruta visual de un lote.
   Los overlays refuerzan la jerarquía, nunca la crean. La familia de elementos animados está NO
   ACTIVA: todas las piezas salen estáticas.
+model: opus
+effort: high
 ---
 
 # D4 · Capas Gráficas
