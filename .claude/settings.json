@@ -48,7 +48,25 @@
       "mcp__Higgsfield__remove_background",
       "mcp__Higgsfield__upscale_image",
       "mcp__Higgsfield__show_medias",
-      "mcp__Higgsfield__show_generation_by_ids"
+      "mcp__Higgsfield__show_generation_by_ids",
+      "mcp__figwright__ping",
+      "mcp__figwright__list_files",
+      "mcp__figwright__get_node",
+      "mcp__figwright__get_variable_defs",
+      "mcp__figwright__get_styles",
+      "mcp__figwright__get_fonts",
+      "mcp__figwright__scan_components",
+      "mcp__figwright__get_local_components",
+      "mcp__figwright__get_component_api",
+      "mcp__figwright__get_screenshot",
+      "mcp__figwright__get_design_context",
+      "mcp__figwright__search_nodes",
+      "mcp__figwright__design_diff",
+      "mcp__figwright__component_map",
+      "mcp__figwright__token_map",
+      "mcp__figwright__icon_map",
+      "mcp__figwright__get_motion_styles",
+      "mcp__figwright__get_node_motion"
     ],
     "ask": [
       "mcp__Eden__eden_create_board",
@@ -83,7 +101,11 @@
       "mcp__Higgsfield__tiktok_publish",
       "mcp__Higgsfield__tiktok_prepare_publish",
       "mcp__Eden__eden_create_scheduling_draft",
-      "mcp__Eden__eden_upload_scheduling_media"
+      "mcp__Eden__eden_upload_scheduling_media",
+      "mcp__figwright__apply_animation_style",
+      "mcp__figwright__apply_manual_keyframe_track",
+      "mcp__figwright__set_timeline_duration",
+      "mcp__figwright__export_video"
     ]
   }
 }

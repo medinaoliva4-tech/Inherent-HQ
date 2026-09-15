@@ -33,7 +33,7 @@ Si falta una foto real: `⚠️ ASSET FALTANTE` → **Production**. No se rellen
 | **Jerarquía** | Guía de marca + brief de Creative | **Figwright** | Jerarquía aplicada en tipografía |
 | **Texturas, gradientes** | Generación | Agente de generación de imagen | Textura/gradiente según guía de marca |
 | **Elemento PNG** | Generación o recorte de producción | Agente de generación · `remove_background` | Elemento gráfico en PNG según guía |
-| **Elemento animado de relleno** | Generativo / paramétrico | **VisuHaus** ⚠️ | Loop, fondo o forma animada (MP4 / SVG) |
+| ~~Elemento animado~~ | — | ⬜ **NO ACTIVA** | Todo sale estático |
 | **Armado** | Todo lo anterior | **Figwright** | La pieza compuesta en Figma |
 
 ### El orden — no se altera
@@ -42,7 +42,7 @@ Si falta una foto real: `⚠️ ASSET FALTANTE` → **Production**. No se rellen
 2. Texturas y gradientes     ← generados y aprobados
 3. Elementos gráficos PNG    ← generados o recortados
 4. Todo junto en Figma con buena composición  → post o story
-5. (opcional) Elemento animado de relleno     → solo si la pieza ya funciona estática
+   (el paso 5 de animados está ⬜ NO ACTIVO — ver abajo)
 ```
 
 🛑 **Nunca arranques a componer en Figma con assets a medio resolver.** Cada paso que falta se
@@ -50,7 +50,21 @@ termina resolviendo con un overlay que tapa, y eso es exactamente lo que este or
 
 ---
 
-## VisuHaus — elementos animados de relleno
+## Elementos animados — ⬜ NO ACTIVA
+
+> 🛑 **Decisión de Inherent (2026-09-15): sin 3D ni animaciones por el momento.**
+> Todas las piezas salen estáticas. No se propone ni se planifica un lote con animados.
+>
+> **Para reactivar** hacen falta las tres: proveedor definido · pieza modelo que pase el checklist
+> anti-slop · gate humano.
+>
+> **Estado de los candidatos evaluados:**
+> - **VisuHaus** — ver alerta abajo. Cierra.
+> - **Spline** — pospuesto. No hay plugin oficial de Figma; y Figma corre **un plugin por vez**, así
+>   que cualquier plugin de embed cerraría la sesión de Figwright. La vía viable sería exportar
+>   PNG/MP4 a mano e importarlos — se descartó por ahora por fricción y riesgo de AI slop.
+
+### VisuHaus (histórico)
 
 > 🚨 **ALERTA DE PLATAFORMA — verificado 2026-09-15.**
 > Visu.Haus anuncia que **desde el 10 de octubre de 2026 el acceso a la plataforma actual queda
@@ -99,7 +113,7 @@ lote con animados.**
 | **Texturas / gradientes** | Librería de marca | Banco licenciado | Generado, marcado + gate |
 | **Pinceladas** | Librería de marca | Banco licenciado | Generado, marcado + gate |
 | **Formas gráficas** | **Construidas en Figma con tokens** | — | — |
-| **Elementos animados** | VisuHaus ⚠️ (ver alerta arriba) | Librería propia exportada | 🛑 Sin fuente → la pieza va estática |
+| ~~Elementos animados~~ | ⬜ **NO ACTIVA** | — | Todas las piezas van estáticas |
 
 **Las formas gráficas se construyen, no se buscan.** Círculos, líneas, flechas y marcos salen de
 Figwright con `stroke/`, `radius/` y `color/`. Nunca de un PNG de internet: un PNG viene de otro

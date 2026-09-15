@@ -91,7 +91,7 @@ Plus `medicion.md` (Capa 8) cuando hay datos disponibles.
 | Agente | Estado |
 |---|---|
 | Strategy | ✅ Operativo |
-| Design | ✅ Operativo |
+| Design | 🟡 Listo, sin estrenar — falta correr el primer lote real |
 | Growth / Creative / Branding / Production / Content / Analytics | ⬜ Pendiente |
 
 ## Handoffs entre agentes
@@ -112,4 +112,4 @@ Design     ──► exports aprobados ──► Content (publica) · Media Buy 
 | Fotos | Jockey MCP · Drive |
 | Fuentes | Zapier MCP |
 | Texturas, gradientes, PNGs | Generación de imagen, marcada `[asset generado]` + gate |
-| Elementos animados de relleno | VisuHaus ⚠️ **acceso limitado desde el 10/10/2026 — verificar** |
+| ~~Elementos animados~~ | ⬜ **NO ACTIVA** — sin proveedor vigente. Todas las piezas salen estáticas |

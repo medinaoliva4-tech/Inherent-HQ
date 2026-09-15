@@ -4,11 +4,36 @@ Se copian a `clients/<cliente>/` al iniciar. **No se editan acá.**
 
 | Plantilla | Capa | Gate humano |
 |---|---|---|
+| `calendario-creativo-minimo.csv` | **input** — lo llena Creative (o una persona) | — |
 | `sistema-visual.md` | D0 | ✅ |
 | `lote-de-piezas.csv` | D1 | — |
 | `brief-de-pieza.md` | D2 | — |
 | `ruta-visual.md` | D3-D4 | ✅ |
 | `entrega.md` | D7 | ✅ |
+
+## `calendario-creativo-minimo.csv` — el input mínimo
+
+Mientras el departamento **Creative** no exista como agente, alguien llena este CSV a mano.
+Son las **4 columnas del contrato** más lo que ayuda:
+
+```
+BLOQUEANTES     canal · formato · goal · nivel_1
+NO BLOQUEANTES  nivel_2 · nivel_3 · cta · foto_sugerida · slides · notas
+```
+
+Con esto el agente de Diseño corre **D1 a D7 completo**. Sin esto, `BLOQUEADO`.
+
+| Columna | Valores |
+|---|---|
+| **canal** | Instagram / Facebook |
+| **formato** | feed-4x5 / feed-1x1 / story / carrusel |
+| **goal** | vender · educar · anunciar · autoridad · retargeting · lanzamiento · comunidad |
+| **nivel_1** | Lo que se lee primero. Máx. 8 palabras |
+| **nivel_2 / nivel_3** | Contexto y firma. Opcionales |
+
+🛑 Una fila sin `goal` o sin `nivel_1` sale `BLOQUEADA` y se devuelve a quien la escribió.
+
+---
 
 ## Convenciones de marcado
 

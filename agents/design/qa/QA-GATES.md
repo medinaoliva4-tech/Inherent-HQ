@@ -162,9 +162,13 @@ Antes de que Figwright escriba sobre un archivo del cliente, subir a Drive o reg
 - [ ] No se sobrescribe ningún archivo ya aprobado
 - [ ] No se borra ningún asset del cliente
 
-## Gate de plataforma — VisuHaus
+## Gate de familia — Animados ⬜ NO ACTIVA
 
-⚠️ Antes de comprometer un lote con elementos animados:
-- [ ] Verificado el estado de la plataforma (**acceso limitado desde el 10/10/2026**)
-- [ ] Verificado que la cuenta está en plan **Pro o Max** (el MCP no está en Free ni Starter)
-- [ ] Los `.visu`, MP4 y SVG del cliente están respaldados en `_INPUTS/assets/animados/`
+🛑 **Decisión de Inherent (2026-09-15): sin 3D ni animaciones.** Todas las piezas salen estáticas.
+- [ ] Ninguna pieza del lote tiene `animado = sí`
+- [ ] El agente no propuso elementos animados en D4
+
+**Para reactivar la familia** hacen falta las tres:
+- [ ] Proveedor definido y verificado
+- [ ] Una pieza modelo que pase el checklist anti-slop
+- [ ] Gate humano explícito

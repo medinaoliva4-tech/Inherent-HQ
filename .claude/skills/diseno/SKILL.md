@@ -81,7 +81,7 @@ desde Diseño.
 | Fotos | **Jockey MCP** · Drive · `_INPUTS/fotos/` |
 | Fuentes | **Zapier MCP** · `_INPUTS/assets/fuentes/` |
 | Texturas, gradientes, PNGs | Generación de imagen — marcado `[asset generado]` + gate |
-| Elementos animados de relleno | **VisuHaus** ⚠️ acceso limitado desde el 10/10/2026 — verificar |
+| ~~Elementos animados~~ | ⬜ **NO ACTIVA** — sin proveedor vigente. Todo sale estático |
 | Recortes sin fondo | `remove_background` sobre material real |
 
 ## 6. Los 3 gates

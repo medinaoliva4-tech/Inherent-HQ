@@ -4,12 +4,12 @@ description: >
   Capa D4 del método de Diseño — aplica color y elementos gráficos superpuestos sobre la composición
   ya resuelta: ilustraciones (dibujos, trazos, iconos ilustrados, doodles), assets PNG recortados sin
   fondo (stickers, sellos, productos), texturas (papel, grano, polvo, tela), pinceladas y brochas,
-  formas gráficas (círculos, líneas, flechas, marcos) y elementos animados de relleno de VisuHaus.
-  Impone el presupuesto de máximo 3 familias por pieza con rol declarado, el orden de capas, el test
-  de sustracción y el checklist anti-AI-slop. Úsala cuando pidan "qué le pongo a esta pieza", "le
-  falta algo", "está muy plana", "poné stickers/textura/una flecha", "agregale algo animado", "de
-  dónde saco este asset", o al cerrar la ruta visual de un lote. Los overlays refuerzan la jerarquía,
-  nunca la crean.
+  y formas gráficas (círculos, líneas, flechas, marcos). Impone el presupuesto de máximo 3 familias
+  por pieza con rol declarado, el orden de capas, el test de sustracción y el checklist anti-AI-slop.
+  Úsala cuando pidan "qué le pongo a esta pieza", "le falta algo", "está muy plana", "poné
+  stickers/textura/una flecha", "de dónde saco este asset", o al cerrar la ruta visual de un lote.
+  Los overlays refuerzan la jerarquía, nunca la crean. La familia de elementos animados está NO
+  ACTIVA: todas las piezas salen estáticas.
 ---
 
 # D4 · Capas Gráficas
@@ -31,7 +31,7 @@ elemento gráfico la va a salvar. Volvé a D3.
 | **Texturas** | Dar materia, unificar el lote | opacidad **5-20%** · una sola textura por lote |
 | **Pinceladas** | Destacar **una** palabra, marcar zona, dar gesto | máx. 2 trazos · color del sistema |
 | **Formas gráficas** | Dirigir, contener, agrupar, separar | tokens de `stroke/`, `radius/`, `color/` |
-| **Animados** (VisuHaus) | Movimiento de relleno: loop de fondo, forma en movimiento | **1 por pieza** · ver alerta abajo |
+| ~~**Animados**~~ | ⬜ **NO ACTIVA — sin proveedor vigente.** Ver abajo | 🛑 no se propone |
 
 **Las formas gráficas se construyen en Figwright, no se buscan.** Son la familia más segura y la más
 subutilizada: una barra sólida detrás de un titular resuelve más contraste que cualquier efecto.
@@ -42,7 +42,7 @@ subutilizada: una barra sólida detrás de un titular resuelve más contraste qu
 
 ```
 ✅ textura (unificar) + forma (contener titular) + sticker (romper plano)
-✅ forma (dirigir) + animado (fondo en loop)
+✅ forma (dirigir) + pincelada (destacar 1 palabra)
 🛑 ilustración + textura + pincelada + sticker + forma
 ```
 
@@ -50,15 +50,29 @@ subutilizada: una barra sólida detrás de un titular resuelve más contraste qu
 El presupuesto es **del lote**, no de la pieza: si cada pieza usa familias distintas, el lote no se
 lee como familia.
 
-## Elementos animados — las 4 reglas
+## Elementos animados — ⬜ NO ACTIVA
+
+🛑 **No propongas elementos animados. La familia está desactivada por decisión de Inherent
+(2026-09-15) y no tiene proveedor vigente.**
+
+| Por qué | |
+|---|---|
+| **VisuHaus** | Acceso limitado desde el **10/10/2026** y borrado de proyectos. MCP solo en planes Pro/Max |
+| **Spline** | Evaluado y pospuesto: no hay plugin oficial de Figma, y Figma corre un plugin por vez (chocaría con Figwright) |
+
+Todas las piezas salen **estáticas**. La columna `animado` del lote queda en `no`.
+
+**Para reactivarla** hacen falta las tres: proveedor definido · prueba de una pieza modelo que pase
+el checklist anti-slop · gate humano. Las reglas quedan escritas abajo para ese momento.
+
+<details><summary>Reglas guardadas para cuando se reactive</summary>
 
 1. **El estático tiene que funcionar primero.** Si no pasó los tests de D3, la animación lo disimula.
 2. **Cuenta en el presupuesto** de 3 familias.
 3. **Uno solo por pieza.** Dos movimientos simultáneos compiten y nadie lee nada.
 4. **Se marca en el lote** (`animado = sí`) y aparte en `entrega.md` — cambia el formato de entrega.
 
-> 🚨 **VisuHaus: acceso limitado desde el 10/10/2026** y borrado de proyectos. El MCP solo está en
-> planes **Pro / Max**. Verificá antes de comprometer un lote. Ver `playbooks/ASSETS-Y-MCP.md`.
+</details>
 
 ## Orden de capas
 

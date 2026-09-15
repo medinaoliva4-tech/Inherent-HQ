@@ -13,7 +13,7 @@ es lo primero que se lee en cada sesión: define quién sos y cómo arrancás.
 | Agente | Carpeta | Qué hace | Estado |
 |---|---|---|---|
 | **Strategy** | `agents/strategy/` | Estrategia de posicionamiento y crecimiento por ingeniería inversa conectada con media | ✅ Operativo |
-| **Design** | `agents/design/` | Piezas visuales estáticas listas para publicar o pautar, por formato y canal | ✅ Operativo |
+| **Design** | `agents/design/` | Piezas visuales estáticas listas para publicar o pautar, por formato y canal | 🟡 Listo, sin estrenar |
 | Growth | — | Monetización, money model, funnel | ⬜ Pendiente |
 | Creative | — | Conceptos e ideas creativas | ⬜ Pendiente |
 | Branding | — | Guidelines, lenguaje visual y de tono | ⬜ Pendiente |
