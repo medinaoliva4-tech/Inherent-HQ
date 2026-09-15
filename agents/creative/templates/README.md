@@ -6,6 +6,7 @@ Se copian a `clients/<cliente>/` al iniciar. **No se editan acá.**
 |---|---|---|
 | `brief-creativo.md` | 0 | ✅ |
 | `swipe-file.md` | 1 | — |
+| `ficha-de-referencia.md` *(una por referencia leída)* | 1 | — |
 | `conceptos.md` | 2-3 | ✅ |
 | `direccion-creativa.md` | 4-5 | — |
 | `adaptacion-por-canal.md` | 6 | — |
