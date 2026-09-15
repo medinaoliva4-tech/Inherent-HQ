@@ -12,6 +12,8 @@
 | **Devueltas a Creative** | |
 | **Archivo Figma** | |
 | **Ruta de exports** | |
+| **Carpeta de Drive** | *(se completa después del gate)* |
+| **Sesión de armado** | 💻 local · máquina: |
 
 ---
 
@@ -70,6 +72,13 @@
 
 **Nomenclatura:** `<cliente>_<AAAAMMDD>_<id_pieza>_<canal>_<formato>.<ext>`
 **Carrusel:** sufijo `_s01`, `_s02`… en orden de publicación.
+
+🛑 `save_screenshots` nombra por node id — **el renombrado es obligatorio**.
+
+| Flag de export | Piezas | Verificado |
+|---|---|---|
+| `recovered: true` *(normal en seamless)* | | ⬜ |
+| `empty: true` *(🛑 nodo roto)* | | ⬜ |
 
 ---
 
@@ -140,6 +149,7 @@
 - Piezas entregadas: [n] · Bloqueadas: [n] · Assets faltantes: [n]
 - Gates aprobados: sistema [✅/⬜] · ruta visual [✅/⬜] · entrega [✅/⬜]
 - Ruta de exports:
+- Carpeta de Drive:
 - Archivo Figma:
 - Piezas marcadas para pauta: [ids]
 - Piezas con elemento animado: [ids]

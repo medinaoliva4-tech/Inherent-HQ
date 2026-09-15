@@ -138,7 +138,10 @@ Un ítem fallado **se corrige**. No se entrega marcado como "menor".
 - [ ] Contraste medido en cada par, no estimado
 - [ ] Revisado sobre fondo oscuro
 - [ ] Revisado comprimido (no solo el PNG original)
-- [ ] Exports a **1x sobre el frame en px reales**, **sRGB** (nunca CMYK), fondo opaco
+- [ ] Exports con `save_screenshots`, `scale: 1` sobre el frame en px reales, **sRGB**, fondo opaco
+- [ ] **Archivos renombrados** al esquema de Inherent — no quedaron con el node id
+- [ ] Ningún export volvió con `empty: true`
+- [ ] Los `recovered: true` (recortes de seamless) fueron verificados visualmente
 - [ ] Nomenclatura de export correcta y completa
 - [ ] Carruseles con sufijo `_sNN` en orden de publicación
 - [ ] Piezas de pauta listadas aparte, con densidad de texto verificada
@@ -153,6 +156,20 @@ Un ítem fallado **se corrige**. No se entrega marcado como "menor".
 - [ ] 🛑 **No se publicó, no se programó y no se pautó nada**
 
 ---
+
+## Gate de entrega a Drive
+
+Después del 🚦 GATE 3, nunca antes:
+- [ ] El gate está aprobado por un humano
+- [ ] Los archivos están renombrados
+- [ ] La subida fue **confirmada explícitamente** por el usuario
+- [ ] La ruta y el link de Drive quedaron registrados en `entrega.md`
+
+## Gate de sesión
+
+- [ ] Se corrió `ping` antes de tocar Figma
+- [ ] Si `plugin: null` y la capa es D5-D7 → se marcó `BLOQUEADO` y se entregó la especificación
+- [ ] 🛑 Ninguna pieza fue declarada "hecha" sin archivo
 
 ## Gate de escritura externa
 

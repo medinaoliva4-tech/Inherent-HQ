@@ -9,14 +9,52 @@ Cómo se ejecuta un lote de punta a punta. Secuencial y con gates.
 
 ```
 PRE-FLIGHT — Cliente: [x] · Sistema visual: [✅ aprobado / ⬜ no existe] · Capa: [D0-D7]
-Lote: [período · n piezas] · Skills: [x] · MCPs: [Figwright ✅/⬜ · Drive ✅/⬜ · Jockey ✅/⬜]
-Gate humano: [sí/no] · Output: [ruta]
+Lote: [período · n piezas] · Sesión: [☁️ remota / 💻 local] · Figwright: [✅ conectado / ⬜ sin plugin]
+Skills: [x] · MCPs: [Drive ✅/⬜ · Jockey ✅/⬜] · Gate humano: [sí/no] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
+
+🛑 **Si la capa es D5-D7 y la sesión es remota: BLOQUEADO.** Decílo en una línea y ofrecé entregar
+la especificación construible para que una sesión local la ejecute. Ver abajo.
 
 **Se bloquea si:** no hay cliente identificado · no existe la carpeta del cliente · no hay guía de
 marca · no hay calendario creativo · falta el input mínimo de la capa · el pedido pisa otro
 departamento.
+
+
+---
+
+## Dónde corre cada capa — remoto vs local
+
+**Figwright es local por diseño.** El plugin API de Figma solo existe dentro de Figma, y la cadena
+entera vive en **una sola máquina**:
+
+```
+Claude Code  →  @figwright/mcp  →  WebSocket 127.0.0.1:3055  →  plugin  →  canvas
+└──────────────────────── todo en la MISMA máquina ────────────────────────┘
+```
+
+Una sesión en la nube (Buzz / Claude Code web) corre el servidor **en su contenedor**, mientras el
+plugin busca `127.0.0.1:3055` **en la laptop**. Nunca conectan. El panel del plugin queda en
+`Reconnecting` y `ping` devuelve `hop: "server-only"` con `plugin: null`.
+
+🛑 **No se arregla con configuración ni con un túnel** — el relay rechaza a propósito todo lo que no
+sea loopback.
+
+| Capas | Sesión | Por qué |
+|---|---|---|
+| **D0-D4** · sistema visual, lote, briefs, composición, ruta visual | ☁️ **cualquiera**, incluida Buzz | Es trabajo de criterio y archivos del repo |
+| **D5-D6** · construir y adaptar en Figma | 💻 **local**, con Figma abierto | Necesita Figwright conectado |
+| **D7** · QA y export | 💻 **local** | Los exports se escriben en el disco de esa máquina |
+
+### El repo es el puente
+```
+☁️  Buzz    →  D0-D4  →  commit de sistema-visual.md · lote-de-piezas.csv · briefs/ · ruta-visual.md
+💻  Local   →  git pull  →  D5-D7  →  export  →  Drive
+```
+
+Sin Figwright conectado, D5 **no falla**: entrega la especificación construible y la marca
+`BLOQUEADO — construcción manual pendiente`. Eso es lo que hace que el split funcione.
 
 ---
 

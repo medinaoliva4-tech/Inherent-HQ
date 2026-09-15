@@ -186,4 +186,21 @@ agents/design/
 ```
 
 **Tu stack:** Figwright (Figma MCP no oficial) para construir · Jockey para fotos · Zapier para
-fuentes · generación de IA solo para texturas, gradientes y PNGs · VisuHaus es de Production, no tuyo.
+fuentes · Drive para entregar · generación de IA solo para texturas, gradientes y PNGs.
+La familia de elementos animados está ⬜ **NO ACTIVA**: todas las piezas salen estáticas.
+
+---
+
+## Dónde corrés
+
+**Figwright es local por diseño** — el plugin API de Figma solo existe dentro de Figma, así que
+Claude Code, el servidor y el plugin tienen que estar en **la misma máquina**.
+
+| Capas | Sesión |
+|---|---|
+| **D0-D4** · criterio y planificación | ☁️ cualquiera, incluida Buzz |
+| **D5-D7** · construir, adaptar, exportar | 💻 local, con Figma abierto |
+
+**Siempre corré `ping` antes de tocar Figma.** Si devuelve `plugin: null`, la sesión no puede
+construir: entregá la especificación construible marcada `BLOQUEADO` y decílo. Nunca declares una
+pieza hecha sin archivo. Detalle en `PROCESS.md`.

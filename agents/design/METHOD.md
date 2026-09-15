@@ -322,15 +322,48 @@ PASADA 4 — Secuencia  ¿cómo se ve el lote en orden de publicación? ¿hay ri
 ```
 Checklist completo: `qa/QA-GATES.md`.
 
-### Export
+### Export — con Figwright
+
+```
+save_screenshots({ nodeIds: [...], outDir: "clients/<cliente>/exports", format: "PNG", scale: 1 })
+```
+
 | Regla | Valor |
 |---|---|
-| Formato | PNG para piezas con texto y planos sólidos; JPG alta calidad con fotografía dominante |
-| Escala | 1x sobre el frame en px reales del formato (no 2x sobre un frame a la mitad) |
+| Formato | **PNG** para piezas con texto y planos sólidos · **JPG** con fotografía dominante |
+| Escala | `scale: 1` sobre el frame en px reales del formato (no 2x sobre un frame a la mitad) |
 | Perfil de color | **sRGB** — el diseño de social es digital, nunca CMYK |
 | Fondo | Siempre opaco. 🛑 Nunca transparente |
 | Nombre | `<cliente>_<AAAAMMDD>_<id_pieza>_<canal>_<formato>.<ext>` |
 | Carrusel | Un archivo por slide, sufijo `_s01`, `_s02`… en orden de publicación |
+
+🛑 **`save_screenshots` nombra los archivos por node id.** El renombrado al esquema de Inherent es un
+**paso obligatorio** después de exportar — si no, Content recibe `1234-5678.png`.
+
+### Los dos flags que hay que leer en la respuesta
+
+| Flag | Qué significa | Qué hacés |
+|---|---|---|
+| `recovered: true` | El nodo estaba clipeado o fuera del canvas y se recuperó en sus bounds reales | ✅ Normal en los recortes de un **carrusel seamless**. Verificá el PNG igual |
+| `empty: true` | El nodo **no renderiza nada** — oculto, sin contenido, o fuera de lugar | 🛑 No es un export válido. Volvé a D5 y arreglá el nodo |
+
+### Otras tools de salida
+| Tool | Para qué | 🛑 |
+|---|---|---|
+| `save_image_fills` | Sacar la **foto original** de una pieza, sin máscara ni recorte | No sirve para exportar la pieza |
+| `export_pdf` | Vector, una página por nodo | **No se usa en social** |
+
+### Entrega a Drive
+
+Una vez aprobado el 🚦 GATE 3:
+```
+1. save_screenshots → exports en disco de la máquina local
+2. Renombrar al esquema de Inherent
+3. Subir a la carpeta del cliente en Drive  (mcp__Google_Drive__create_file)
+4. Registrar la ruta y el link en entrega.md
+```
+🛑 **Subir a Drive requiere confirmación explícita** — está en `ask` a propósito. Y se sube
+**después** del gate, nunca antes.
 
 ### Bloque de handoff
 ```markdown
@@ -338,7 +371,7 @@ Checklist completo: `qa/QA-GATES.md`.
 - Cliente: · Período: · Fecha:
 - Piezas entregadas: [n] · Bloqueadas: [n] · Devueltas a Creative: [n] · Assets faltantes: [n]
 - Gates aprobados: sistema [✅/⬜] · ruta visual [✅/⬜] · entrega [✅/⬜]
-- Ruta de exports: · Archivo Figma:
+- Ruta de exports: · Carpeta de Drive: · Archivo Figma:
 - Piezas marcadas para pauta: [ids]
 - Piezas candidatas a motion (VisuHaus): [ids]
 - Piezas con asset generado `[asset generado]`: [ids]

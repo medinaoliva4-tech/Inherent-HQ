@@ -57,16 +57,38 @@ que algo llegue al cliente o a la pauta.
 - La consistencia viene del **tratamiento**, no de teñir todo de color de marca
 - Test anti-slop corrido sobre el lote
 
-## Export
+## Export — con Figwright
+
+```
+save_screenshots({ nodeIds: [...], outDir: "clients/<cliente>/exports", format: "PNG", scale: 1 })
+```
 
 | Regla | Valor |
 |---|---|
-| Escala | **1x sobre el frame en px reales** — no 2x sobre un frame a la mitad |
-| Formato | PNG con texto y planos sólidos · JPG alta calidad con fotografía dominante · MP4 si lleva animado |
+| Escala | `scale: 1` sobre el frame en px reales — no 2x sobre un frame a la mitad |
+| Formato | PNG con texto y planos sólidos · JPG con fotografía dominante |
 | Perfil | **sRGB** — nunca CMYK |
 | Fondo | Siempre **opaco**. 🛑 Nunca transparente |
 | Nombre | `<cliente>_<AAAAMMDD>_<id_pieza>_<canal>_<formato>.<ext>` |
 | Carrusel | Un archivo por slide, sufijo `_s01`, `_s02`… en orden de publicación |
+
+🛑 **Los archivos salen nombrados por node id.** Renombrarlos al esquema de Inherent es un paso
+obligatorio, no opcional.
+
+### Leé los dos flags de la respuesta
+| Flag | Qué hacés |
+|---|---|
+| `recovered: true` | ✅ Normal en recortes de carrusel seamless. Verificá el PNG igual |
+| `empty: true` | 🛑 El nodo no renderizó nada. Volvé a D5 |
+
+### Entrega a Drive — después del gate
+```
+save_screenshots → renombrar → subir a Drive → registrar link en entrega.md
+```
+🛑 Subir a Drive requiere **confirmación explícita** y va **después** del 🚦 GATE 3, nunca antes.
+
+⚠️ **D7 corre en sesión local.** Los exports se escriben en el disco de la máquina donde está
+Figwright. Si la sesión es remota: `BLOQUEADO`, y se entrega la especificación.
 
 ## Se listan aparte, siempre
 
@@ -95,7 +117,7 @@ reconocible y craft**.
 - Cliente: · Período: · Fecha:
 - Piezas entregadas: [n] · Bloqueadas: [n] · Devueltas a Creative: [n] · Assets faltantes: [n]
 - Gates aprobados: sistema [✅/⬜] · ruta visual [✅/⬜] · entrega [✅/⬜]
-- Ruta de exports: · Archivo Figma:
+- Ruta de exports: · Carpeta de Drive: · Archivo Figma:
 - Piezas para pauta: [ids] · Con animado: [ids] · Candidatas a motion: [ids]
 - Piezas con asset generado: [ids]
 - Devoluciones a Creative abiertas: [ids]
