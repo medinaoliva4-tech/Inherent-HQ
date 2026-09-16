@@ -47,13 +47,31 @@ lo que Creative necesita.
 **Conclusión:** la API oficial **no es una opción** para este departamento. No es una limitación de
 la integración: es que la API está diseñada para transparencia electoral, no para research creativo.
 
-### 🔴 «Meta Spark» no es una herramienta de research
+### 🔴 Muse Spark es real, pero es un modelo — no una fuente de datos de pauta
 
-Meta Spark era **Spark AR Studio**, la plataforma de efectos de realidad aumentada — Meta la
-**discontinuó en enero de 2025**. Nunca fue una biblioteca de anuncios ni de creativos.
+**Existe y es oficial de Meta.** Muse Spark es el primer modelo de la familia **Muse**, lanzado por
+Meta Superintelligence Labs el **8 de abril de 2026** (Muse Spark 1.3, el 2 de septiembre de 2026).
+Acepta video, imagen y texto de entrada, y devuelve texto. **Meta Muse** es el agente para
+consumidor construido encima, a $20 / $100 al mes.
 
-Si alguien pide «Meta Spark» para el swipe file, lo que está buscando es casi siempre **la Ad
-Library** (ver arriba) o una herramienta de ad intelligence de terceros (ver ②).
+**Y no le sirve a Creative, por un motivo estructural:**
+
+| Lo que es | Lo que Creative necesita |
+|---|---|
+| Un **modelo generalista** dentro de las apps de Meta | Un **índice de anuncios** con días corriendo |
+| Modo compras y recomendaciones para el usuario final | Los creativos de los competidores del cliente |
+| Sin acceso a datos de publicidad, Ad Library ni research de competidores | Exactamente eso |
+| **Sin API pública ni acceso al modelo** — vive en el ecosistema de Meta | Algo cableable como MCP |
+
+> 🛑 **Un modelo no es una base de datos.** Muse Spark puede *razonar* sobre un video que se le
+> muestre. Lo que no puede es decir qué anuncios está corriendo un competidor y desde cuántos días.
+> Eso no es una capacidad de modelo: es un índice, y los índices los tiene quien los construyó.
+
+**No confundir con Spark AR Studio**, que era la plataforma de efectos de realidad aumentada y que
+Meta **sí** discontinuó en enero de 2025. Son productos distintos con nombres parecidos.
+
+*(Corrección registrada: una versión anterior de este playbook afirmaba que «Meta Spark» solo se
+refería a Spark AR y que no existía nada más con ese nombre. Era incorrecto.)*
 
 ### 🟡 TikTok Creative Center no tiene API oficial
 
@@ -63,6 +81,34 @@ terceros o por herramientas de ad intelligence que ya lo indexan.
 
 **Qué significa en la práctica:** TikTok se cubre por la vía del MCP de ad intelligence, o
 manualmente pegando links. No por integración directa.
+
+Y hay un límite de fondo: el Top Ads es **la selección curada de TikTok**, no los competidores
+específicos del cliente. Sirve para detectar tendencias de formato; no sirve para *"qué está
+haciendo esta marca"*.
+
+### 💡 Por qué se paga por algo que es público
+
+Las fuentes gratis **sirven, para un humano mirando un anuncio a la vez**. El problema no es la
+calidad del dato: es que no es **consultable**.
+
+| Fuente gratis | Qué se puede | Qué falta para el método |
+|---|---|---|
+| **Ad Library** (web) | Ver los ads activos de cualquier página | Muestra la **fecha de lanzamiento**, no una columna de días corriendo **ordenable**. Habría que abrir cada ad y hacer la resta. Sin exportación. Y el sitio está fuera de alcance de red del agente |
+| **TikTok Creative Center** | Ver el Top Ads con algunas métricas | Es la curaduría de TikTok, no los competidores del cliente. Sin API oficial |
+| **API de Ad Library** | Consultar programáticamente | Solo texto, y solo ads políticos fuera de UE/UK (ver arriba) |
+
+> **No se paga por los datos: los datos son públicos. Se paga por el índice** — tenerlos ordenados
+> por longevidad, filtrables por formato y duración, con transcripción, y alcanzables por el agente
+> en una sola llamada.
+
+**🟡 El modo manual es legítimo y está soportado.** Un humano navega la Ad Library o el Creative
+Center, pega los links o suelta el archivo de video, y el agente lo lee con
+`toolkit/09-lectura-de-video.md`. El departamento funciona. **Lo que se pierde** es el barrido
+semanal a escala, el orden por longevidad y las transcripciones — o sea, el trabajo pasa de la
+herramienta a una persona.
+
+La decisión real no es *«Foreplay o nada»*: es **$49/mes contra una persona haciendo a mano, cada
+semana, lo que el ordenamiento haría solo.**
 
 ### ⚠️ Y el agente no puede bajar el video
 
@@ -165,6 +211,10 @@ búsquedas × 500 resultados son 12.000 créditos en un solo barrido:
 | Metadata | **Completa, en una llamada.** Nunca en dos pasadas |
 
 Todo entregable declara el consumo: `créditos usados: [n] · techo del cliente: 400/semana`.
+
+> ⚖️ **Salvedad.** Foreplay es la mejor de las opciones **encontradas** con MCP oficial que cubren
+> las tres necesidades juntas: longevidad, el creativo en sí, y transcripción. No se probó todo el
+> mercado. Cualquier alternativa se compara **contra esas tres necesidades**, no contra el precio.
 
 ### Otras opciones, por si Foreplay no entra
 
