@@ -7,12 +7,14 @@ Cada agente vive en `agents/<nombre>/`. Se le habla desde **Buzz** por una sesi�
 ```
 agents/<agente>/
 └── brain/
-    ├── WORKFLOW.md        ← cómo trabaja el agente, de 0 a 100
+    ├── WORKFLOW.md          ← cómo trabaja el agente, de 0 a 100
     └── skills/
-        ├── README.md      ← cuándo y cómo usa cada skill
-        └── <skill>/       ← las skills de ESTE agente
+        ├── README.md        ← cuándo y cómo usa cada skill
+        └── <skill>/         ← las skills de ESTE agente
 
-clients/<cliente>/         ← todo lo del cliente, afuera de los agentes
+clients/
+├── client-delivery/         ← skill compartida: cómo se entrega. La usan todos
+└── <cliente>/               ← todo lo del cliente, afuera de los agentes
 ```
 
 ## Agentes

@@ -1,15 +1,21 @@
 ---
 name: client-delivery
 description: >
-  Arma los dos entregables con los que cierra Strategy: el documento de estrategia listo para mandarle
-  al cliente, y el folder del cliente con toda la data expandida para que los demás agentes trabajen.
-  Es el paso 10 del workflow de Strategy. Úsala al cerrar una estrategia, o cuando pidan el documento
-  de entrega o el handoff a otro departamento.
+  Skill COMPARTIDA de entrega — la usan todos los agentes, con el mismo formato. Arma los dos
+  entregables con los que cierra cualquier agente: el documento listo para mandarle al cliente, y el
+  folder del cliente con toda la data expandida para que los demás agentes trabajen. Úsala al cerrar
+  el trabajo de un cliente, o cuando pidan el documento de entrega o el handoff a otro departamento.
+  En Strategy es el paso 10 del workflow.
 ---
 
-# Entrega
+# Entrega — skill compartida
 
-Dos cosas. Una es para el cliente, la otra para adentro. **No son el mismo documento.**
+La usan **todos los agentes**, con el mismo formato. Dos cosas: una para el cliente, otra para
+adentro. **No son el mismo documento.**
+
+> Las secciones de abajo son las de **Strategy**. Cada agente ajusta el contenido de
+> `ESTRATEGIA.md` a lo suyo (`CREATIVE.md`, `BRANDING.md`, …) — la estructura de las dos entregas
+> y las reglas no cambian.
 
 ---
 

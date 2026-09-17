@@ -3,10 +3,17 @@
 Solo es skill lo que tiene **procedimiento propio y se reusa**. Todo lo demás es un paso dentro de
 `../WORKFLOW.md`.
 
+## Propias de Strategy
+
 | Skill | En qué paso entra | Qué hace |
 |---|---|---|
 | `reverse-engineering` | **01 · Evidencia** | Saca de la media que ya funciona los patrones que explican por qué funciona |
-| `client-delivery` | **10 · Entrega** | Arma los 2 entregables: el documento del cliente y su folder |
+
+## Compartidas
+
+| Skill | Dónde vive | En qué paso entra |
+|---|---|---|
+| `client-delivery` | `clients/client-delivery/` | **10 · Entrega**. La usan todos los agentes, con el mismo formato |
 
 ## Cómo se usan
 
@@ -17,4 +24,4 @@ Solo es skill lo que tiene **procedimiento propio y se reusa**. Todo lo demás e
 **No se inventan skills nuevas sobre la marcha.** Si un procedimiento se repite lo suficiente como
 para merecer una, se propone a Allan primero.
 
-`❓ PENDIENTE — ¿falta alguna skill? ¿sobra alguna de estas dos?`
+`❓ PENDIENTE — ¿falta alguna skill propia de Strategy? ¿sobra reverse-engineering?`

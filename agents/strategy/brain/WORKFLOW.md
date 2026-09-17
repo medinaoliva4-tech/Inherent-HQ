@@ -124,7 +124,8 @@ RESULTADOS → APRENDIZAJE → ACTUALIZAR LAS 3 VERDADES ↺
 ```
 
 ### 10 · ENTREGA
-→ **skill `client-delivery`**
+→ **skill `client-delivery`** — vive en `clients/client-delivery/`, es **compartida**: todos los
+agentes entregan con el mismo formato.
 
 ---
 
@@ -193,6 +194,8 @@ importan, qué métricas mienten y cuál es el motor de demanda.
 |---|---|---|---|
 | 1 | **Documento de estrategia** — resume todo, listo para mandar | `clients/<cliente>/ESTRATEGIA.md` | El cliente |
 | 2 | **Folder del cliente** — toda la data, expandida, más los links a lo externo | `clients/<cliente>/` | Los demás agentes |
+
+El formato de los dos lo define `clients/client-delivery/SKILL.md`, igual para todos los agentes.
 
 Gate de Allan antes de entregar cualquiera de los dos.
 
