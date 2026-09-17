@@ -46,8 +46,20 @@ Muse Spark (Meta) tiene **búsqueda semántica directa sobre Instagram, Facebook
 por autor, menciones, comentarios y engagement. Es la única herramienta con acceso nativo a esa data.
 
 ⚠️ **Solo funciona en [meta.ai](https://meta.ai) o la app de Meta AI, con login de Facebook o
-Instagram.** La Meta Model API y OpenRouter dan el **modelo**, no esta herramienta. No se puede
-automatizar desde acá.
+Instagram.** La Meta Model API y OpenRouter dan el **modelo**, no esta herramienta.
+
+**Y no se puede automatizar.** No es una limitación técnica, es política de Meta: *"scripting a
+través de tu sesión logueada"* está prohibido, y el update de 2025 dejó explícito que **estar
+logueado no es excusa y que un agente manejando el navegador tampoco lo cambia**. El riesgo real
+es que deshabiliten la cuenta.
+
+> **Probado el 2026-09-17.** Un agente con Muse Spark por OpenRouter devolvió **0 links** — intentó
+> búsqueda web, yt-dlp y viewers públicos, todo bloqueado. La misma consulta en meta.ai logueado
+> devolvió **12 creadores** con handle, seguidores, link y descripción. La diferencia es la sesión,
+> no el modelo.
+
+**El manual no es un parche: es el proceso.** Dos minutos por consulta, y encaja con la regla de
+fuentes: la info la entrega Allan.
 
 **Límite:** solo contenido público, desde el **1 de enero de 2025** en adelante.
 
@@ -72,6 +84,21 @@ mencione [marca]. Incluí también los videos donde [marca] aparezca en los come
 
 **Qué se saca de ahí:** el anillo 1 (directos) y el anillo 5 (creadores) del universo, con nombres
 verificados en vez de recordados. Y la voz literal del comprador, en los comentarios.
+
+**Después de traer los candidatos, filtrar por tipo.** La consulta devuelve todo mezclado. Separar:
+`hauls y reviews` · `embajadores de marca` · `análisis financiero o de negocio` · `la marca oficial` ·
+`menciones incidentales`. Para ingeniería inversa sirven los primeros dos; el resto es ruido.
+
+**Complemento — Eden.** `eden_search_social_content` trae posts con métricas reales, outlier score
+sobre la base del propio creador y descripción del contenido por AI. Menos volumen de descubrimiento,
+pero **mejor data por pieza**. El flujo que funciona: **descubrir en meta.ai, medir en Eden.**
+⚠️ `eden_search_creators` requiere plan Starter · el filtro `minFollowerCount` se ignora en
+content search, hay que filtrar a mano.
+
+**Camino autorizado a futuro.** Si hace falta automatizar de verdad, el único legítimo es la
+**Instagram Creator Marketplace API**: filtra creadores por seguidores, engagement, demografía,
+nicho y menciones previas de marca. Requiere cuenta de Meta Business y cuenta profesional de
+Instagram, y está en 18+ países — **verificar disponibilidad en Guatemala antes de contar con ella**.
 
 **Qué cuenta como "ganadora":**
 - **Anuncio:** lleva mucho tiempo corriendo → está pagando
