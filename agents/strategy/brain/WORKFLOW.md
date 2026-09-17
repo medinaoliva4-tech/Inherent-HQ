@@ -83,13 +83,46 @@ Acá empieza la estrategia. Es el **diagnóstico**.
 
 > Si falla el filtro, se vuelve atrás y se elige otro camino. **No se fuerza.**
 
-### 05 · MONETIZACIÓN — ¿cómo se convierte en dinero?
-- Oferta y qué incluye · precio y por qué ese precio
-- Modelo de ingreso: único, retainer, escalonado
-- Recorrido de compra: de dónde sale el cliente hasta que paga
-- Qué pasa después de la primera venta: recurrencia, referidos
+### 05 · MONETIZACIÓN — de top a bottom of funnel
+No es una metodología de precios aparte. Es **cómo se dirige la estrategia para llevar a la gente
+del top al bottom of funnel**, activando los canales correctos en cada tramo.
 
-`❓ PENDIENTE — cómo trabajás vos hoy la monetización. Sin tu método, esta etapa queda en blanco.`
+> Va **pegado a la evidencia (01)**: la ingeniería inversa es la que dice qué canal funciona en cada
+> tramo y con qué formato. Sin ella, esta etapa es adivinanza.
+
+```
+   TOP        alcance · descubrimiento      ¿quién todavía no nos conoce?
+    │
+    ▼
+   MIDDLE     consideración · confianza     ¿quién nos conoce y no confía?
+    │
+    ▼
+   BOTTOM     conversión · venta            ¿quién confía y no compró?
+    │
+    ▼
+   POST       recurrencia · referidos       ¿quién ya compró?
+```
+
+**Qué se define acá:**
+1. **Dónde está hoy la gente** — en qué tramo está concentrada, y dónde se cae
+2. **Qué canal activa cada tramo** — cada canal ocupa una posición, no todas
+3. **Qué la mueve al tramo siguiente** — qué tiene que ver, escuchar o recibir para avanzar
+4. **Dónde está la fuga** — el tramo donde se pierde la gente es donde va el esfuerzo
+
+**Los métodos que existen** — se elige el que encaja con el arquetipo y la oferta, no se inventa uno:
+
+| Método | Cuándo encaja |
+|---|---|
+| Venta directa en checkout | Ticket bajo, decisión rápida |
+| Llamada o consulta | Ticket alto, decisión larga |
+| DM o WhatsApp | Decisión media, confianza por conversación |
+| Retainer / suscripción | Servicio continuo, ingreso recurrente |
+| Paquetes o escalera de valor | Hay varios niveles de compromiso |
+| Lead magnet → nutrición → venta | La demanda es latente, hay que construirla |
+| Visita a punto físico | Local, la conversión pasa afuera |
+| Comisión o revenue share | Se cobra sobre el resultado |
+
+**Regla:** un canal activado sin saber a qué tramo sirve es gasto, no estrategia.
 
 ### 06 · MOVIMIENTO — ¿qué provocamos?
 - Elegir **1-2** movimientos de los candidatos de GO GET. Documentar por qué se descartan los demás
@@ -110,9 +143,15 @@ Acá empieza la estrategia. Es el **diagnóstico**.
 ### 08 · DISTRIBUCIÓN Y CALENDARIO — ¿cómo llega?
 - `Owned` lo que controlamos · `Paid` lo que compramos · `Earned` lo que nos ganamos · `Borrowed` audiencia de otro
 - **Calendario macro:** frecuencia por canal, función y pilar por slot, balance marca/activación, estacionalidad
-- **La cadencia tiene que caber en la capacidad real de producción.** Es techo duro
+**Cadencia de publicación** — cada cuánto sale contenido:
 
-`❓ PENDIENTE — tu regla de cadencia. En Notion escribiste "la mayor posible pero sostenible" y "3 a 6 por semana". ¿Esa es la regla?`
+> **La mayor posible que se pueda sostener.** Nunca una frecuencia que no se aguanta.
+> Es una **variable, se define con el cliente** según su capacidad real de producción.
+> Referencia de partida: **3 a 6 veces por semana** en Instagram, TikTok y Reels.
+>
+> *(Tu regla, de la Knowledge Base de Notion. Corregila si cambió.)*
+
+**Techo duro:** la cadencia no puede superar lo que el cliente puede producir. Si no da, se baja.
 
 ### 09 · MEDICIÓN — ¿cambió algo? ¿acumula?
 - Se mide contra el **objetivo**, no contra si el contenido funcionó
@@ -129,37 +168,49 @@ agentes entregan con el mismo formato.
 
 ---
 
-## 3 · ARQUETIPOS — buscar qué tipo de empresa es
+## 3 · ARQUETIPO — con quién estamos trabajando
 
-Un restaurante no es una marca personal. El arquetipo cambia qué evidencia buscar, qué canales
-importan, qué métricas mienten y cuál es el motor de demanda.
+Identificar el arquetipo es **un paso**, no un framework aparte.
 
-**Se clasifica por 8 ejes:**
-`quién compra` · `qué se vende` · `ticket y ciclo` · `frecuencia` · `geografía` · `dónde vive la confianza` · `motor de demanda (capturar la que existe / crear la que no)` · `límite de escala (capacidad, inventario, infinita)`
+> **No cambia los principios.** El fundamento del marketing es el mismo para todos. Lo que cambia
+> es el contexto: qué canales importan, qué métricas mienten, dónde vive la confianza, qué evidencia
+> buscar. Los pasos 00 a 10 son iguales para cualquier cliente.
 
-| # | Arquetipo | Ejemplos |
-|---|---|---|
-| 01 | Local de alta frecuencia | Restaurante, café, barbería, gym |
-| 02 | Local de alto ticket | Clínica, inmobiliaria, concesionaria |
-| 03 | Marca personal / experto | Coach, consultor, profesional con cara |
-| 04 | E-commerce / producto | Skincare, indumentaria, suplementos |
-| 05 | Servicio profesional B2B | Agencia, consultora, estudio |
-| 06 | SaaS / suscripción | Software, app, membresía |
-| 07 | Infoproducto / educación | Curso, cohorte, comunidad paga |
-| 08 | Marketplace / dos lados | Plataforma, directorio |
-| 09 | Hospitalidad / experiencia | Hotel, venue, evento |
-| 10 | Institución | Banco, seguro, ONG, universidad |
-| 11 | Media / IP | Medio, podcast, artista, creador |
+**No es una lista cerrada.** Aparecen arquetipos nuevos todo el tiempo. Si el cliente no encaja en
+ninguno de los ejemplos, se describe con sus propias palabras y listo. **Nunca forzar el encaje ni
+cerrarse a un nicho.**
 
-**Híbridos:** se declara un dominante y un modificador. Nunca se promedian.
+**Para describirlo alcanza con responder:**
+- ¿Quién compra?
+- ¿Qué se vende?
+- ¿Cuánto cuesta y cuánto tarda la decisión?
+- ¿Cada cuánto compra?
+- ¿Dónde vive la confianza: en una persona, en el producto, en la prueba social, en la institución?
+- ¿La demanda ya existe y se captura, o hay que crearla?
+- ¿Qué limita el crecimiento: capacidad, inventario, o nada?
 
-`❓ PENDIENTE — estos 11 los propuse yo. ¿Cuáles matás, cuáles unís, cuáles faltan?`
+**Ejemplos frecuentes** — referencia, no taxonomía:
+`local de alta frecuencia` · `local de alto ticket` · `marca personal` · `e-commerce` ·
+`servicio B2B` · `suscripción` · `infoproducto` · `marketplace` · `hospitalidad` · `institución` ·
+`media / IP`
+
+Un cliente puede ser mezcla de dos. Se dice cuál manda y listo.
 
 ---
 
 ## 4 · CADENCIA
 
-`❓ PENDIENTE — cada cuánto corre cada cosa: cuándo se re-hace la evidencia, cuándo se revisan las Verdades, cada cuánto se revisa un cliente activo.`
+| Cuándo | Qué se hace |
+|---|---|
+| **Inicio de temporada** | Se corre la estrategia completa: pasos 00 a 10 |
+| **El 20 de cada mes** | **Revisión mensual.** Simple: qué funcionó y qué no |
+
+**La revisión del 20** — se mira y se aplica a la estrategia:
+- La página: qué pasó con el tráfico y la conversión
+- El contenido que se hizo: qué rindió y qué no
+- Qué se repite, qué se mejora, qué se deja de hacer
+
+No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 ---
 
