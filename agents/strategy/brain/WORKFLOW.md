@@ -17,154 +17,74 @@
 **Una estrategia tiene 4 partes. Sin las 4 no es estrategia:**
 `Objetivo` la meta clara · `Diagnóstico` el análisis realista · `Decisiones y renuncias` qué sí y qué no · `Recursos` herramientas, tiempo y personal
 
-**Alcance:** la **monetización entra acá** (oferta, precio, modelo de ingreso).
-Lo que **no** entra: pauta y adquisición (→ Growth), ideas y piezas concretas (→ Creative),
-guidelines visuales (→ Branding), producción (→ Production).
+**Alcance:** entra la **monetización** (cómo se lleva a la gente del top al bottom of funnel) y el
+**análisis de branding** (qué marca hay que construir para hablarle a esta gente).
+**No entra:** pauta y adquisición (→ Growth), piezas concretas (→ Creative), producción (→ Production).
 
 ---
 
-## 2 · PASOS — el workflow de 0 a 100
+## 2 · EL FLUJO — 4 bloques
 
-Tres alturas. Cada una reduce el espacio de decisión de la siguiente.
+Cada bloque es **un paso del workflow y además una skill**. Se corren en este orden. Ninguno
+arranca sin el anterior.
 
 ```
-COMPRENDER   →   DECIDIR   →   CONVERTIR
+   01 CONTEXTO              ¿quién es y cómo funciona su negocio?
+        │  toda la data cruda
+        ▼
+   02 ANÁLISIS              ¿qué nos dice esa data?
+        │  las 3 preguntas
+        ▼
+   03 INGENIERÍA INVERSA    ¿qué está funcionando allá afuera?
+        │  patrones de media real
+        ▼
+   04 METODOLOGÍA           la estrategia armada
+        │
+        ▼
+   05 ENTREGA               → skill compartida `client-delivery`
 ```
 
-### 00 · FOUNDATION — ¿para quién trabajamos?
-No decide nada. Entiende qué empresa estamos intentando hacer ganar.
+### 01 · CONTEXTO → skill `context`
+Junta toda la data necesaria para que la estrategia tenga un piso fuerte.
 
-- Visión, ambición, qué significa éxito para ellos · propósito, valores, identidad
-- Producto, oferta, precio actual · tono, voz, elementos visuales
-- Audiencia actual (la que tienen, no la que quieren)
-- Diferenciación **percibida por ellos** → se marca `[dice el cliente, sin verificar]`
-- Restricciones: presupuesto, equipo, capacidad de producción, tiempo, legales
-- Economía: ticket, margen, capacidad de entrega, punto de equilibrio
+**Comprensión:** visión · propósito · tono · audiencia actual · diferenciación que ellos creen tener
+**Negocio:** unit economics · cómo se compra · cómo se descubre · demanda que existe vs. demanda por crear · audience behavior
+**Cierre:** identificar el arquetipo (§3)
 
-> **Regla:** la visión del cliente se respeta, pero **no se toma como verdad de mercado.**
-> Si dice "nuestra ventaja es el servicio", se registra. La evidencia comprueba si es cierto.
+> No decide nada. La visión del cliente se registra, **no se toma como verdad de mercado.**
 
-**Cierre: buscar qué arquetipo es.** Ver §3.
+### 02 · ANÁLISIS → skill `analysis`
+Con toda la data del contexto: **¿qué nos dice esto que es relevante para nosotros?**
 
-### 01 · EVIDENCIA — ¿qué es verdad afuera?
-→ **skill `reverse-engineering`**
+**Tres preguntas. Siempre estas tres, siempre en este orden:**
 
-Produce: cómo se compra y se descubre en la categoría · qué está funcionando y por qué ·
-qué está saturado · qué nadie está haciendo · el lenguaje literal del comprador · sus objeciones.
-
-> 🛑 Esta etapa **no recomienda**. Termina en patrón observado.
-
-### 02 · LAS 3 VERDADES — ¿cómo puede ganar?
-Acá empieza la estrategia. Es el **diagnóstico**.
-
-| | Pregunta |
+| | |
 |---|---|
-| **WHAT MUST BE TRUE** | ¿Qué tendría que ser cierto para que gane? Operacionalizar el WIN: **¿#1 en qué?** Y para cada condición: ¿dónde está la marca **hoy**? |
-| **WHAT IS UNFAIR** | ¿Qué ya tenemos que hace que la comparación deje de ser equivalente? Filtro doble: **difícil de replicar Y relevante para ganar** |
-| **WHAT CAN WE GO GET** | ¿Qué podemos provocar deliberadamente? Son **candidatos, no decisiones** |
+| **1 · ¿Qué tiene que ser verdad?** | Para que la gente los vea y diga *"ellos son los número uno en esto"*. Qué condiciones tienen que cumplirse |
+| **2 · ¿Qué tienen a su ventaja?** | Todo lo que ya poseen y pueden usar a favor |
+| **3 · ¿Qué hay que ir a buscar?** | Lo que falta, lo que hay que mejorar, lo que hay que conseguir |
 
-### 03 · OBJETIVO Y RENUNCIAS — ¿qué movemos ahora?
-- **Objetivo:** cuál MUST BE TRUE se mueve este ciclo. **1-2, no todas.** Con plazo y métrica
-- **Comportamiento:** qué persona concreta hace, piensa o siente distinto. `actual → deseado`
-- **Problema:** qué lo está impidiendo. Uno, nombrado
-- **Renuncias:** qué audiencias, canales, mensajes y oportunidades quedan **afuera**
-- **Recursos:** ¿el alcance cabe en lo que hay? Si no, se recorta acá
+De acá salen los **pasos concretos** para llegar a la meta: *esta gente tiene que comprar
+recurrentemente* · *tenemos que colaborar con esta marca porque nuestra audiencia ya la consume* ·
+*tenemos que trabajar con estos creadores*.
 
-> **Sin renuncias no hay estrategia, hay lista de deseos.**
+### 03 · INGENIERÍA INVERSA → skill `reverse-engineering`
+Va **después** del análisis: ya sabemos qué buscar, ahora vamos a ver qué está funcionando de verdad.
 
-### 04 · POSICIONAMIENTO — ¿qué lugar ocupamos?
-- **Categoría:** ¿competimos en una existente, la redefinimos, o creamos una?
-- **Enemigo:** ¿contra qué estamos? Puede ser un competidor, el statu quo, una creencia, o no hacer nada
-- **Mecanismo único:** por qué lo nuestro funciona. El *cómo*, no el *qué*
-- **Territorio:** qué **es** y qué **no es**
-- **Promesa, pruebas y objeciones:** en el lenguaje del comprador. Las pruebas salen de las UNFAIR
-- **Filtro:** `Distinctiveness` ¿se siente inequívocamente como nosotros? · `Novelty` ¿algo que no ven todos los días? · `Relevance` ¿le importa a la audiencia y al objetivo?
-- **Activos distintivos:** lo que se repite sin cambiar y hace reconocible a la marca
+Saca de la media real los patrones que explican **por qué** funciona. Termina en patrón observado,
+no en recomendación.
 
-> Si falla el filtro, se vuelve atrás y se elige otro camino. **No se fuerza.**
+### 04 · METODOLOGÍA → skill `methodology`
+Arma la estrategia. Produce los bloques del entregable:
 
-### 05 · MONETIZACIÓN — de top a bottom of funnel
-No es una metodología de precios aparte. Es **cómo se dirige la estrategia para llevar a la gente
-del top al bottom of funnel**, activando los canales correctos en cada tramo.
+`datos` · `posicionamiento y promesa` · `ICP` · `identidad y branding` · `historia` ·
+`comunicación` · `canales` · `monetización` · `medición`
 
-> Va **pegado a la evidencia (01)**: la ingeniería inversa es la que dice qué canal funciona en cada
-> tramo y con qué formato. Sin ella, esta etapa es adivinanza.
+> Este entregable lo usan **Marketing** (para bajarlo a campañas) y **Branding** (para alinear lo
+> visual). Tiene que servirles sin que tengan que preguntar nada.
 
-```
-   TOP        alcance · descubrimiento      ¿quién todavía no nos conoce?
-    │
-    ▼
-   MIDDLE     consideración · confianza     ¿quién nos conoce y no confía?
-    │
-    ▼
-   BOTTOM     conversión · venta            ¿quién confía y no compró?
-    │
-    ▼
-   POST       recurrencia · referidos       ¿quién ya compró?
-```
-
-**Qué se define acá:**
-1. **Dónde está hoy la gente** — en qué tramo está concentrada, y dónde se cae
-2. **Qué canal activa cada tramo** — cada canal ocupa una posición, no todas
-3. **Qué la mueve al tramo siguiente** — qué tiene que ver, escuchar o recibir para avanzar
-4. **Dónde está la fuga** — el tramo donde se pierde la gente es donde va el esfuerzo
-
-**Los métodos que existen** — se elige el que encaja con el arquetipo y la oferta, no se inventa uno:
-
-| Método | Cuándo encaja |
-|---|---|
-| Venta directa en checkout | Ticket bajo, decisión rápida |
-| Llamada o consulta | Ticket alto, decisión larga |
-| DM o WhatsApp | Decisión media, confianza por conversación |
-| Retainer / suscripción | Servicio continuo, ingreso recurrente |
-| Paquetes o escalera de valor | Hay varios niveles de compromiso |
-| Lead magnet → nutrición → venta | La demanda es latente, hay que construirla |
-| Visita a punto físico | Local, la conversión pasa afuera |
-| Comisión o revenue share | Se cobra sobre el resultado |
-
-**Regla:** un canal activado sin saber a qué tramo sirve es gasto, no estrategia.
-
-### 06 · MOVIMIENTO — ¿qué provocamos?
-- Elegir **1-2** movimientos de los candidatos de GO GET. Documentar por qué se descartan los demás
-- **El trabajo de la comunicación**, en una frase:
-  `La comunicación tiene que ______ para que ______.`
-- **Mecanismo:** prueba · asociación · experiencia · historia · utilidad · identidad · espectáculo
-- **Idea de campaña:** la que organiza el movimiento y le permite vivir en el tiempo
-
-### 07 · SISTEMA — ¿cómo vive repetidamente?
-- **Funciones:** `Hero` atención · `Series` repetición · `Proof` confianza · `Utility` valor · `Conversion` acción · `Community` pertenencia
-- **Pilares y mezcla:** el mix lo dicta el arquetipo, no una fórmula universal
-- **Rol por canal:** cada canal una función distinta. **Si dos hacen lo mismo, uno sobra**
-- **Especificación:** qué **tipo** de pieza necesita el sistema. Las piezas concretas son de Creative
-
-> El contenido es **consecuencia** de la cascada, nunca el punto de partida.
-> Toda pieza tiene que poder trazarse hacia atrás hasta una MUST BE TRUE. Si no, ¿por qué la hacemos?
-
-### 08 · DISTRIBUCIÓN Y CALENDARIO — ¿cómo llega?
-- `Owned` lo que controlamos · `Paid` lo que compramos · `Earned` lo que nos ganamos · `Borrowed` audiencia de otro
-- **Calendario macro:** frecuencia por canal, función y pilar por slot, balance marca/activación, estacionalidad
-**Cadencia de publicación** — cada cuánto sale contenido:
-
-> **La mayor posible que se pueda sostener.** Nunca una frecuencia que no se aguanta.
-> Es una **variable, se define con el cliente** según su capacidad real de producción.
-> Referencia de partida: **3 a 6 veces por semana** en Instagram, TikTok y Reels.
->
-> *(Tu regla, de la Knowledge Base de Notion. Corregila si cambió.)*
-
-**Techo duro:** la cadencia no puede superar lo que el cliente puede producir. Si no da, se baja.
-
-### 09 · MEDICIÓN — ¿cambió algo? ¿acumula?
-- Se mide contra el **objetivo**, no contra si el contenido funcionó
-- Separar **negocio** (ventas, clientes, ticket) de **marca** (recuerdo, preferencia)
-- **¿Compounde?** ¿Esto solo funciona hoy, o hace que mañana sea más fácil ganar?
-
-```
-RESULTADOS → APRENDIZAJE → ACTUALIZAR LAS 3 VERDADES ↺
-```
-
-### 10 · ENTREGA
-→ **skill `client-delivery`** — vive en `clients/client-delivery/`, es **compartida**: todos los
-agentes entregan con el mismo formato.
+### 05 · ENTREGA → skill `client-delivery`
+Compartida. Arma el documento del cliente y su folder.
 
 ---
 
@@ -174,17 +94,15 @@ Identificar el arquetipo es **un paso**, no un framework aparte.
 
 > **No cambia los principios.** El fundamento del marketing es el mismo para todos. Lo que cambia
 > es el contexto: qué canales importan, qué métricas mienten, dónde vive la confianza, qué evidencia
-> buscar. Los pasos 00 a 10 son iguales para cualquier cliente.
+> buscar. Los 4 bloques son iguales para cualquier cliente.
 
 **No es una lista cerrada.** Aparecen arquetipos nuevos todo el tiempo. Si el cliente no encaja en
 ninguno de los ejemplos, se describe con sus propias palabras y listo. **Nunca forzar el encaje ni
 cerrarse a un nicho.**
 
 **Para describirlo alcanza con responder:**
-- ¿Quién compra?
-- ¿Qué se vende?
-- ¿Cuánto cuesta y cuánto tarda la decisión?
-- ¿Cada cuánto compra?
+- ¿Quién compra? · ¿Qué se vende?
+- ¿Cuánto cuesta y cuánto tarda la decisión? · ¿Cada cuánto compra?
 - ¿Dónde vive la confianza: en una persona, en el producto, en la prueba social, en la institución?
 - ¿La demanda ya existe y se captura, o hay que crearla?
 - ¿Qué limita el crecimiento: capacidad, inventario, o nada?
@@ -202,7 +120,7 @@ Un cliente puede ser mezcla de dos. Se dice cuál manda y listo.
 
 | Cuándo | Qué se hace |
 |---|---|
-| **Inicio de temporada** | Se corre la estrategia completa: pasos 00 a 10 |
+| **Inicio de temporada** | Se corre la estrategia completa: los 4 bloques |
 | **El 20 de cada mes** | **Revisión mensual.** Simple: qué funcionó y qué no |
 
 **La revisión del 20** — se mira y se aplica a la estrategia:
@@ -247,19 +165,18 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 | 2 | **Folder del cliente** — toda la data, expandida, más los links a lo externo | `clients/<cliente>/` | Los demás agentes |
 
 El formato de los dos lo define `clients/client-delivery/SKILL.md`, igual para todos los agentes.
-
-Gate de Allan antes de entregar cualquiera de los dos.
+Gate de Allan antes de entregar cualquiera.
 
 ---
 
 ## 8 · CORRELACIÓN
 
 ```
-Strategy → Creative    posicionamiento, campaña y qué tipo de pieza hace falta
-Strategy → Growth      oferta, precio y objetivo, para que compre medios
-Strategy → Branding    territorio, tono y activos distintivos
-Strategy → Content     calendario macro
-Analytics → Strategy   resultados que actualizan las 3 Verdades  ↺
+Strategy → MARKETING   el entregable completo, para bajarlo a campañas
+Strategy → BRANDING    el bloque de identidad: tipo de marca, enemigo, idea madre, estética y tono
+Strategy → Growth      monetización y funnel, para comprar medios
+Strategy → Creative    posicionamiento, comunicación y qué tipo de pieza hace falta
+Analytics → Strategy   la revisión del 20 vuelve al análisis  ↺
 ```
 
 `❓ PENDIENTE — el workflow entre departamentos de 0 a 100 es tu paso 3 en Notion. Lo armamos cuando existan los otros agentes.`

@@ -1,45 +1,34 @@
 # Skills de Strategy
 
-Solo es skill lo que tiene **procedimiento propio y se reusa**. Todo lo demás es un paso dentro de
-`../WORKFLOW.md`.
+Los 4 bloques del workflow son **pasos y además skills**. Se corren en orden; cada uno se puede
+invocar suelto si ya existe el anterior.
 
-## Hoy existen 2
+```
+context → analysis → reverse-engineering → methodology → client-delivery
+```
 
-### 🔍 `reverse-engineering` — propia de Strategy
-**Vive en:** `agents/strategy/brain/skills/reverse-engineering/`
-**Entra en:** paso **01 · Evidencia**
+## Propias de Strategy
 
-Saca de la media que ya existe y ya funciona los patrones que explican **por qué** funciona.
+| # | Skill | Qué hace | Input que necesita |
+|---|---|---|---|
+| **01** | `context` | Junta la data cruda: comprensión, negocio, demanda, restricciones, arquetipo. **Describe, no decide** | Lo que entregue el cliente y Allan |
+| **02** | `analysis` | Las 3 preguntas fijas: qué tiene que ser verdad · qué tienen a su ventaja · qué hay que ir a buscar. De ahí salen los pasos | `context` |
+| **03** | `reverse-engineering` | Saca de la media real los patrones que explican por qué funciona. **Termina en patrón, no en recomendación** | `analysis` |
+| **04** | `methodology` | Arma la estrategia: posicionamiento, ICP, identidad y branding, historia, comunicación, canales, monetización y medición | los tres anteriores |
 
-| Qué hace | |
-|---|---|
-| **A quién estudia** | 5 anillos: directos · de categoría · no hacer nada · fuera de categoría · creadores |
-| **Qué cosecha** | Anuncios que llevan tiempo corriendo, posts que rinden sobre su propia media, títulos y portadas que ganan, landings, reviews |
-| **Cómo lo abre** | Gancho · Promesa · Mecanismo · Prueba · Formato · Distribución · Oferta |
-| **Qué entrega** | Qué hace todo el mundo · qué nadie hace · las objeciones en lenguaje literal · hipótesis propias |
+## Compartidas
 
-🛑 **No recomienda.** Termina en patrón observado. Decidir es del paso 02 en adelante.
-También alimenta el paso **05 · Monetización**: dice qué canal funciona en cada tramo del funnel.
-
-### 📦 `client-delivery` — compartida
-**Vive en:** `clients/client-delivery/`
-**Entra en:** paso **10 · Entrega**
-
-Arma los dos entregables. **La usan todos los agentes**, con el mismo formato.
-
-| Qué hace | |
-|---|---|
-| **1 · El documento del cliente** | Resume todo, listo para mandar, sin ruido interno |
-| **2 · El folder del cliente** | Toda la data expandida + `LINKS.md` con lo que vive afuera |
-| **3 · El handoff** | Qué le toca a Creative, Growth, Branding y Content |
+| Skill | Dónde vive | Qué hace |
+|---|---|---|
+| `client-delivery` | `clients/client-delivery/` | Arma el documento del cliente y su folder. **La usan todos los agentes**, con el mismo formato |
 
 ---
 
 ## Cómo se usan
 
-1. El agente lee `WORKFLOW.md` completo al arrancar.
-2. Cuando el workflow llega al paso que nombra una skill, **abre su `SKILL.md` y lo sigue entero**.
-3. La skill devuelve su output al paso del workflow y el flujo continúa.
+1. El agente lee `../WORKFLOW.md` completo al arrancar.
+2. Corre los bloques **en orden**. Cada skill abre su `SKILL.md` y lo sigue entero.
+3. Si falta el input de un bloque, **se corre el anterior**. Nunca se improvisa el faltante.
 
 **No se inventan skills nuevas sobre la marcha.** Si un procedimiento se repite lo suficiente como
 para merecer una, se propone a Allan primero.
