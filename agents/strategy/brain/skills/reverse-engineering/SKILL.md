@@ -38,6 +38,40 @@ Las piezas, no las opiniones sobre la marca.
 | Títulos, portadas y carruseles que ganan | Eden |
 | Landings, páginas de venta | Firecrawl |
 | Reviews, comentarios, quejas | Firecrawl |
+| **Descubrir competidores, referentes y UGC creators en Instagram** | **Muse Spark, manual** ↓ |
+
+### Muse Spark — paso manual, no automático
+
+Muse Spark (Meta) tiene **búsqueda semántica directa sobre Instagram, Facebook y Threads**: filtra
+por autor, menciones, comentarios y engagement. Es la única herramienta con acceso nativo a esa data.
+
+⚠️ **Solo funciona en [meta.ai](https://meta.ai) o la app de Meta AI, con login de Facebook o
+Instagram.** La Meta Model API y OpenRouter dan el **modelo**, no esta herramienta. No se puede
+automatizar desde acá.
+
+**Límite:** solo contenido público, desde el **1 de enero de 2025** en adelante.
+
+**Cómo entra al proceso:** Allan corre la consulta en meta.ai y pega los resultados. El agente los
+procesa como cualquier otra evidencia entregada.
+
+**Consultas listas para copiar:**
+
+```
+DESCUBRIR COMPETIDORES Y REFERENTES
+Encontrá videos de Instagram publicados en las últimas [X] semanas donde el creador
+hable de [categoría / producto], con al menos [N] seguidores. Dame el link a cada video.
+
+DESCUBRIR UGC CREATORS
+Encontrá videos de Instagram de las últimas [X] semanas que cumplan: el creador tiene
+al menos [N] seguidores y menciona [marca / categoría] en el video. Links directos.
+
+MENCIONES DE UNA MARCA
+Encontrá todos los videos de Instagram de los últimos [30] días donde el creador
+mencione [marca]. Incluí también los videos donde [marca] aparezca en los comentarios.
+```
+
+**Qué se saca de ahí:** el anillo 1 (directos) y el anillo 5 (creadores) del universo, con nombres
+verificados en vez de recordados. Y la voz literal del comprador, en los comentarios.
 
 **Qué cuenta como "ganadora":**
 - **Anuncio:** lleva mucho tiempo corriendo → está pagando

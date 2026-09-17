@@ -139,6 +139,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 | Anuncios de competidores, quién pauta de verdad | AdWhispr |
 | Contenido social, creadores, qué formato gana | Eden |
 | Sitios, reviews, prensa | Firecrawl |
+| Descubrir competidores, referentes y UGC creators en Instagram | **Muse Spark** — manual, en meta.ai. Ver skill `reverse-engineering` |
 | Base de conocimiento y escritura en crudo | Notion |
 | Entregables al cliente | Drive |
 
