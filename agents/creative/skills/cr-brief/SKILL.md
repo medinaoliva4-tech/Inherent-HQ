@@ -54,9 +54,18 @@ crea una segunda versión de la verdad, y en dos ciclos no coinciden.
 > Confundirlos produce piezas que le explican el problema a quien ya lo tiene resuelto.
 
 `funcion`, `temperatura`, `pilar`, `formato`, `canal`, `objetivo_del_slot`, `traza` y `semana` salen
-del **calendario**; el `awareness`, de la **especificación de tipos de pieza de ③ Marketing**.
+del **calendario** (`calendario-estrategico.csv`); el `awareness`, de la **Sección 3 · Especificación
+de piezas** de `estrategia-de-contenido.md`.
 🛑 Creative **hereda los cuatro tal cual y no reasigna ninguno**. Si un slot parece mal clasificado,
 **se devuelve a ③ Marketing** — no se corrige acá.
+
+> 🛑 **La `campana` no viene en el calendario.** El `calendario-estrategico.csv` trae `semana` y
+> `fase_del_movimiento`, **no una columna de campaña**. El nombre sale de
+> `estrategia-de-contenido.md` § *Idea de campaña*: es **una por ciclo** —dos si ③ eligió dos
+> movimientos— y su § *Cómo vive en el tiempo* dice a qué fase corresponde cada semana.
+> Creative **copia ese nombre; no lo inventa ni lo abrevia**. Si no hay idea de campaña escrita:
+> **BLOQUEADO**, y se pide a ③ Marketing. Una campaña inventada acá rompe la aprobación por campaña
+> del ciclo y el `TOTAL` por campaña del presupuesto de ⑤.
 
 ## 3 · La tabla de traducción (obligatoria)
 
@@ -159,7 +168,7 @@ Una sola sección, `## El brief del ciclo`, con estos bloques:
 | **B · Extracto de estrategia** | Promesa, mecanismo único, enemigo, territorio, activos, CEPs, objeciones + RTB, idea de campaña — **citados con ruta y sección, nunca reescritos** |
 | **C · Jerarquía de mensaje** | Copiada tal cual de ③ Marketing. Es la ley del ciclo |
 | **D · Avatar** | Dolores, deseo y **lenguaje literal**, declarado **como filtro de ideas**, no re-analizado |
-| **E · Slots por campaña** | Las filas del calendario, agrupadas por `campana`, **sin editar** |
+| **E · Slots por campaña** | Las filas del calendario **sin editar**, agrupadas bajo la campaña de `estrategia-de-contenido.md` |
 | **F · Traducción** | Por slot: `goal_del_arte` · etapa · caja de hook candidata · familia de CTA · ángulo · `fecha` |
 | **G · Función y vetos por canal** | La función única y el **"qué NO se hace acá"** de cada canal, copiados |
 | **H · Restricciones** | Capacidad → **cuántas filas caben** · do's & don'ts · claims aprobados · **reparto 70/20/10 previsto** |
@@ -172,6 +181,7 @@ puede producir, **se declara y se devuelve a ③ Marketing** — no se recorta e
 | Situación | Qué hace Creative |
 |---|---|
 | Falta `funcion` | **BLOQUEADO.** Es la que genera el `goal_del_arte` |
+| No hay **idea de campaña** en `estrategia-de-contenido.md` | **BLOQUEADO.** Sin campaña el ciclo no se puede aprobar ni presupuestar. Se pide a ③ Marketing |
 | Falta `traza` a MUST BE TRUE | **No produce la fila.** Devuelve el slot |
 | Falta `awareness` | Lo busca en la especificación de tipos de pieza; si no está, `⚠️ SIN DATOS` y ángulo con confianza reducida |
 | Falta `temperatura` | Se usa la típica de la función + `🟡 temperatura asumida` |
@@ -188,7 +198,7 @@ puede producir, **se declara y se devuelve a ③ Marketing** — no se recorta e
 - [ ] La **jerarquía de mensaje** de ③ Marketing está copiada tal cual
 - [ ] El avatar está declarado **como filtro de ideas**, no re-analizado
 - [ ] Los slots del ciclo están copiados del calendario **sin editar** y **agrupados por campaña**
-- [ ] **Cada slot trae su `campana`** — ninguna fila cuelga de la nada
+- [ ] **Cada slot quedó bajo una `campana`** copiada de `estrategia-de-contenido.md` § *Idea de campaña* — ninguna fila cuelga de la nada, y ninguna campaña fue inventada acá
 - [ ] El **reparto 70/20/10 previsto** está declarado
 - [ ] Cada slot tiene su `goal_del_arte` **derivado de la función**, del vocabulario cerrado de 6
 - [ ] El `goal_del_arte` **no contradice** el `objetivo_del_slot` heredado
