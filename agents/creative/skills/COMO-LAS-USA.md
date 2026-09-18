@@ -6,9 +6,22 @@ detalle de cada herramienta.
 **Dónde viven:** acá mismo, una carpeta por skill, al lado de este documento. Todo el departamento
 en un solo lugar.
 
-Esto funciona sin trucos porque el brain es un **plugin**: el `plugin.json` de
-`agents/creative/.claude-plugin/` hace que Claude descubra solo todo lo que esté en `skills/`.
-Un archivo, un solo lugar, cero copias.
+El brain es un **plugin**, y por eso no hace falta copiar nada a otra carpeta: un archivo, un solo
+lugar, cero copias.
+
+> 🛑 **Un plugin no se carga solo.** El `plugin.json` de `agents/creative/.claude-plugin/` describe
+> el plugin, pero **no hace que Claude lo encuentre**. Quien lo hace encontrable es
+> `.claude-plugin/marketplace.json`, en la raíz del repo, que lista los departamentos; y
+> `.claude/settings.json`, que los deja habilitados. Los dos ya están en el repo: al abrir el
+> proyecto y confiar en la carpeta, las skills cargan solas.
+>
+> **Cómo se invocan:** las skills de un plugin llevan el nombre del plugin adelante —
+> `creatividad:creatividad` es el orquestador, `creatividad:cr-brief` la Capa 0, y así. Las de
+> ①②③ viven en `.claude/skills/` y van sin prefijo (`estrategia`).
+>
+> **Si estás trabajando en una rama** que todavía no se mergeó a `main`, el marketplace se lee del
+> repo publicado, así que hasta el merge hay que registrarlo a mano una vez:
+> `/plugin marketplace add .` desde la raíz del repo.
 
 ---
 
@@ -45,7 +58,7 @@ cr-brief ──→ cr-swipe-file ──→ cr-big-idea ──→ cr-storytelling
    │                                                                                                          │
   GATE 1                                    GATE 2 (tras storytelling)                                    GATE 3
    │                                                                                                          │
-   └──────────────────────────────── cr-loop ←──── métricas de las piezas publicadas ←──────────────────────┘
+   └──────────────────────────────── cr-loop ←──── métricas de las piezas publicadas ←─────────────────┘
 ```
 
 **Las tres reglas de encadenado:**
