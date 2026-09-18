@@ -80,12 +80,12 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | Columna | Qué lleva | De dónde sale |
 |---|---|---|
 | `id` | `CR-001`, correlativo del ciclo | Creative |
-| `campana` | Nombre de la campaña | ③ Marketing |
+| `campana` | Nombre de la campaña — de `estrategia-de-contenido.md` § *Idea de campaña* | ③ Marketing |
 | `fecha` | Día concreto | Creative (dentro de la semana del slot) |
 | `canal` | El canal del slot | ③ Marketing — heredado sin cambio |
 | `formato` | Reel · carrusel · estático · story… | ③ Marketing — heredado sin cambio |
 | `pilar` | El pilar de contenido | ③ Marketing — heredado sin cambio |
-| `funcion` | Alcance · Confianza · Conversión… | ③ Marketing — heredado sin cambio |
+| `funcion` | `Hero` · `Series` · `Proof` · `Utility` · `Conversion` · `Community` | ③ Marketing — heredado sin cambio |
 | `concepto` | **Una línea.** Qué es la pieza | Creative |
 | `mezcla` | `70·probado` / `20·apuesta` / `10·propio` | Creative |
 | `traza` | La letra de la MUST BE TRUE que mueve | ② Estrategia |
@@ -94,6 +94,12 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 
 🛑 **Lo heredado se copia, no se reescribe.** Si un `canal` o una `funcion` te incomodan, se devuelve
 el slot a ③ Marketing; no se corrige en la celda.
+
+🛑 **En `funcion` va la función del calendario, nunca el `goal_del_arte`.** Son dos vocabularios
+distintos y confundirlos rompe la trazabilidad: con `Alcance` en la celda ya no se puede cruzar la
+fila contra el slot `Hero` del que salió. El `goal_del_arte` (`alcance` · `memoria` · `valor-de-uso`
+· `confianza` · `accion` · `pertenencia`) lo deriva `cr-brief` y **vive en el brief de `ideas.md`,
+no en el Excel**.
 
 🛑 **Ninguna celda vacía.** Si falta un dato, la fila es `pendiente` y se declara qué falta.
 
