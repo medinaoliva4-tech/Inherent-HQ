@@ -29,9 +29,9 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | Columna | Qué lleva | De dónde sale |
 |---|---|---|
 | `id` | `CR-001`, correlativo del ciclo | Creative |
-| `campana` | Nombre de la campaña | ③ Marketing |
+| `campana` | Nombre de la campaña — sale de `estrategia-de-contenido.md`, no del calendario | ③ Marketing |
 | `fecha` | Día concreto | Creative (dentro de la semana del slot) |
-| `canal` · `formato` · `pilar` · `funcion` | Heredados sin cambio | ③ Marketing |
+| `canal` · `formato` · `pilar` · `funcion` | Heredados sin cambio. `funcion` es `Hero`/`Series`/`Proof`/`Utility`/`Conversion`/`Community` | ③ Marketing |
 | `concepto` | **Una línea.** Qué es la pieza | Creative |
 | `mezcla` | `70·probado` / `20·apuesta` / `10·propio` | Creative |
 | `traza` | La letra de la MUST BE TRUE que mueve | ② Estrategia |
