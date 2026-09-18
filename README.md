@@ -33,7 +33,7 @@ Desde Buzz, hablale al agente en lenguaje natural:
 - *"¿Cuál es el posicionamiento de [cliente]?"* → Capa 4
 - *"Armá el calendario estratégico de [cliente]"* → Capa 7
 
-Las skills de `.claude/skills/` se activan solas según el pedido.
+Las skills se activan solas según el pedido. Cada departamento lleva las suyas adentro.
 
 ## Entregables del agente de Estrategia
 
@@ -58,16 +58,15 @@ ejecutan.*
 
 ```
 agents/creative/
-├── AGENT.md                  # quién es el agente, qué recibe, qué no hace
-├── METHOD.md                 # el método completo — 8 capas
-├── PROCESS.md                # el proceso operativo paso a paso, con gates
-├── toolkit/                  # 8 taxonomías: técnicas, hooks, arco, CTAs, arte, tomas, canales, gráficos
-├── playbooks/                # swipe file · traducción del slot a idea · 70/20/10 · MCPs
-├── templates/                # los 7 entregables canónicos
-├── OUTPUTS.md                # mapa completo de outputs
-├── CORRELACION.md            # qué columna del Excel viene de dónde
-├── qa/                       # gates de calidad
-└── clients/                  # un cliente = una carpeta
+├── .claude-plugin/plugin.json  # lo vuelve un plugin cargable
+├── WORKFLOW.md                 # cómo trabaja — lo único que hay que leer (377 líneas)
+├── skills/                     # 11 skills, una carpeta cada una
+│   ├── COMO-LAS-USA.md         # el índice: cuál, cuándo y en qué orden
+│   ├── creatividad/            # el orquestador
+│   └── cr-*/                   # brief · swipe file · lectura de video · fuentes · big idea ·
+│                               # storytelling · hook y copy · arte y video · adaptación · loop
+├── entregables/                # plan-de-contenido.csv + ideas.md
+└── clients/                    # un cliente = una carpeta
 ```
 
 **Cómo se usa** — desde Buzz, en lenguaje natural:
@@ -81,15 +80,17 @@ agents/creative/
 
 **Entregables:**
 
-| # | Archivo | Capa |
+| Archivo | Qué es | Para qué se usa |
 |---|---|---|
-| 1 | `brief-creativo.md` | 0 · Brief |
-| 2 | `swipe-file.md` | 1 · Referencia |
-| 3 | `conceptos.md` | 2-3 · BIG IDEA e historia |
-| 4 | `direccion-creativa.md` | 4-5 · Gancho, palabra y forma |
-| 5 | `adaptacion-por-canal.md` | 6 · Specs por canal |
-| 6 | **`ideas-de-contenido.csv`** | 6 · **el entregable definitivo** — 31 columnas |
-| 7 | `aprendizaje-creativo.md` | 7 · Loop |
+| **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, **12 columnas** | Se lee de arriba abajo para **aprobar** el ciclo |
+| **`ideas.md`** | El desarrollo. Una sección por pieza | Se lee de a una pieza para **ejecutarla** |
+| `swipe-file.md` | La bóveda de referencias | Trabajo interno |
+| `aprendizaje-creativo.md` | El cierre del ciclo | Trabajo interno |
+
+**El puente entre los dos entregables es el `id`.** Ves `CR-007` en el Excel, buscás `CR-007` en el
+doc. Funciona en Excel, en Sheets y en Drive, sin fórmulas que se rompan. El Excel solo lleva lo que
+sirve para decidir —campaña, fecha, canal, formato, pilar, función, concepto en una línea, mezcla
+70/20/10, traza y si necesita rodaje—; todo el detalle de ejecución vive en el doc, que se lee.
 
 **Requiere plan aprobado.** Sin el posicionamiento de ② Estrategia y el plan de campañas y calendario
 de ③ Marketing, Creative bloquea: idear sin brief es inventar audiencia y pilares.
@@ -109,17 +110,15 @@ intención; Producción resuelve la logística; ⑥A y ⑥B arman la pieza.*
 
 ```
 agents/production/
-├── AGENT.md                  # quién es el agente, qué recibe, qué no hace
-├── METHOD.md                 # el método completo — 8 capas
-├── PROCESS.md                # el proceso operativo paso a paso, con 3 gates
-├── toolkit/                  # 7 taxonomías: desglose, locaciones, talento, equipo,
-│                             #   cobertura, presupuesto, entrega
-├── playbooks/                # consolidación · devoluciones a Creative · MCPs
-├── templates/                # los 8 entregables canónicos
-├── OUTPUTS.md                # mapa completo de outputs
-├── CORRELACION.md            # qué columna del Excel viene de dónde
-├── qa/                       # gates de calidad
-└── clients/                  # un cliente = una carpeta
+├── .claude-plugin/plugin.json  # lo vuelve un plugin cargable
+├── WORKFLOW.md                 # cómo trabaja — lo único que hay que leer (462 líneas)
+├── skills/                     # 9 skills, una carpeta cada una
+│   ├── COMO-LAS-USA.md         # el índice: cuál, cuándo y en qué orden
+│   ├── produccion/             # el orquestador
+│   └── pr-*/                   # brief · desglose · jornadas · recursos · presupuesto ·
+│                               # rodaje · entrega · loop
+├── entregables/                # plan-de-produccion.csv + presupuesto.csv + plan.md
+└── clients/                    # un cliente = una carpeta
 ```
 
 **Cómo se usa** — desde Buzz, en lenguaje natural:
@@ -134,16 +133,16 @@ agents/production/
 
 **Entregables:**
 
-| # | Archivo | Capa |
+| Archivo | Qué es | Para qué se usa |
 |---|---|---|
-| 1 | `brief-de-produccion.md` | 0 · Qué se aprobó producir |
-| 2 | `desglose.md` | 1 · Las 8 categorías por escena |
-| 3 | `plan-de-jornadas.md` | 2 · Agrupación y factor |
-| 4 | `recursos.md` | 3 · Origen, responsable, riesgo y plan B |
-| 5 | **`plan-de-produccion.csv`** | 1-4 · **el entregable definitivo** — 29 columnas |
-| 6 | `call-sheets/jornada-N.md` | 5 · Uno por jornada |
-| 7 | `entrega.md` | 6 · El manifiesto cruzado |
-| 8 | `aprendizaje-de-produccion.md` | 7 · Desvíos reales |
+| **`plan-de-produccion.csv`** | El plan. Una fila por **escena**, **16 columnas** | Es lo que **se ejecuta** |
+| **`presupuesto.csv`** | El dinero. Por campaña y categoría, estimado vs real | Es lo que **se aprueba**, con total por campaña y total del ciclo |
+| **`plan.md`** | Jornadas, recursos, riesgos, call sheets, entrega | Es lo que **se lee** para entender y para rodar |
+| `aprendizaje-de-produccion.md` | Los desvíos reales del ciclo | Trabajo interno |
+
+**El puente con ④ Creatividad es el `id_creativo`.** Una pieza (`CR-007`) se vuelve N escenas
+(`PR-014`, `PR-015`, `PR-016`), todas con el mismo `id_creativo`. Acá el Excel manda y el doc
+acompaña — al revés de Creatividad — porque el valor de Producción son los números.
 
 **Dos cosas que definen el método:**
 
@@ -177,10 +176,10 @@ Los tres que ya están construidos:
 ①②③  (hoy agents/strategy/)  →  posicionamiento · evidencia · plan de campañas · calendario
             ↓  slots · pilares y mix · frecuencia · función y temperatura por canal
 ④ Creatividad                 →  brief completo por pieza
-            ↓  ideas-de-contenido.csv — concepto · emoción · hook · copy · guion · escenas ·
-            ↓  encuadres · duraciones · elementos gráficos a pedir
+            ↓  plan-de-contenido.csv (estructura) + ideas.md (concepto · emoción · hook · copy ·
+            ↓  guion · escenas · encuadres · duraciones · elementos gráficos a pedir)
 ⑤ Producción                  →  material base entregado y nombrado
-            ↓  plan-de-produccion.csv + RAW ordenado + selects marcados
+            ↓  plan-de-produccion.csv + presupuesto.csv + plan.md + RAW y selects en Drive
 ⑥A Diseño (estático) · ⑥B Video (montaje y masters)  →  arman la pieza
             ↓
 ⑦ Posting / ⑧B Ads            →  publican y pautan
@@ -193,8 +192,8 @@ Cada agente declara **su punto de corte** y **qué no hace, y de quién es**. Tr
 3. Nada se compromete afuera —publicar, reservar, convocar, comprar— **antes de su gate humano**.
 
 > 🔄 **Transición.** Hoy `agents/strategy/` cubre ①, ② y ③ juntos. Creatividad y Producción ya están
-> escritos contra los departamentos separados, con el mapeo capa→departamento centralizado en
-> `agents/creative/CORRELACION.md ⓪.1`. Cuando se separen, cambian **las rutas**, no los métodos.
+> escritos contra los departamentos separados, con el mapeo capa→departamento declarado en
+> `agents/creative/WORKFLOW.md` §2. Cuando se separen, cambian **las rutas**, no los métodos.
 
 ## Estado
 

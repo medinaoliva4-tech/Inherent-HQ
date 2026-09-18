@@ -1,7 +1,19 @@
 # Inherent HQ — Repo de Agentes
 
 Este repositorio contiene los **agentes operativos de Inherent Global**. Cada agente vive en
-`agents/<nombre>/` y se activa mediante las skills de `.claude/skills/`.
+`agents/<nombre>/` — su **brain** — con esta forma:
+
+```
+agents/<departamento>/
+├── .claude-plugin/plugin.json   # lo vuelve un plugin cargable
+├── WORKFLOW.md                  # cómo trabaja el departamento. Lo único que hay que leer
+├── skills/                      # una carpeta por skill + COMO-LAS-USA.md, el índice
+├── entregables/                 # las plantillas de lo que entrega
+└── clients/                     # un cliente = una carpeta
+```
+
+🛑 **Todo el departamento se entiende abriendo una sola carpeta.** Si hace falta abrir cinco archivos
+para entender una cosa, está mal organizado.
 
 Se le habla al agente desde **Buzz** a través de una sesión de Claude Code. Por eso este archivo
 es lo primero que se lee en cada sesión: define quién sos y cómo arrancás.
@@ -33,7 +45,7 @@ El flujo de Inherent tiene **8 departamentos**, en este orden:
 
 > 🔄 **Transición.** Hoy el repo tiene **un solo agente** (`agents/strategy/`) que cubre ①, ② y ③
 > juntos. Los agentes de aguas abajo ya están escritos contra los departamentos separados, con el
-> mapeo capa→departamento centralizado en `agents/creative/CORRELACION.md ⓪.1`. Cuando ①②③ se
+> mapeo capa→departamento declarado en `agents/creative/WORKFLOW.md` §2. Cuando ①②③ se
 > separen, cambian **las rutas**, no los métodos.
 
 > ⚠️ **Huecos conocidos del flujo**, anotados y todavía sin decidir: **⑧A Orgánico** (implícito en el
@@ -79,7 +91,7 @@ Nunca rellenes con inferencia sin marcarla.
    métricas ni tendencias.
 2. **Patrón ≠ señal.** 3+ fuentes independientes = `🟢 patrón`. 1-2 = `🟡 señal a confirmar`.
 3. **Nunca saltes capas.** Los tres métodos son secuenciales y tienen 8 capas cada uno:
-   `agents/strategy/METHOD.md`, `agents/creative/METHOD.md` y `agents/production/METHOD.md`.
+   `agents/strategy/METHOD.md`, `agents/creative/WORKFLOW.md` y `agents/production/WORKFLOW.md`.
    Si falta el input de una capa, se bloquea; no se improvisa el faltante. En ⑤ Producción esto es
    especialmente caro: **presupuestar sin consolidar infla el costo entre 3 y 5 veces**.
 4. **Ingeniería inversa produce patrones, no recomendaciones.** Si un output de la Capa 1 empieza
@@ -87,7 +99,7 @@ Nunca rellenes con inferencia sin marcarla.
 5. **No copiar.** La ingeniería inversa se traduce a hipótesis propias filtradas por distintividad,
    nunca a réplica del competidor.
 6. **Gate humano.** En Strategy: núcleo, posicionamiento y calendario. En Creative: brief,
-   conceptos y el Excel de ideas. En Producción: **presupuesto, plan de rodaje y entrega**. Los
+   conceptos y el ciclo completo. En Producción: **presupuesto, plan de rodaje y entrega**. Los
    aprueba un humano antes del handoff. El agente propone; no cierra. Y nada se compromete afuera
    —una reserva, una convocatoria, una compra— antes de su gate.
 7. **No duplicar otros departamentos.** Cada agente tiene un punto de corte declarado:
