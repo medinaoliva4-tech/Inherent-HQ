@@ -155,7 +155,7 @@ misma idea, la idea no está organizando la pieza.
 
 ## Ejemplo trabajado
 
-**Slot:** semana 2 · Instagram · `funcion=Confianza` · `formato=reel` · `traza=A` · MOFU
+**Slot:** semana 2 · Instagram · `funcion=Proof` · `formato=reel` · `traza=A` · MOFU
 **Referencia del swipe file:** testimonio genérico a cámara, `⏱️60-90+d` 🟢
 
 | Paso | Qué se hizo |
