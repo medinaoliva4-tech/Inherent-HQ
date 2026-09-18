@@ -58,7 +58,7 @@ cr-brief ──→ cr-swipe-file ──→ cr-big-idea ──→ cr-storytelling
    │                                                                                                          │
   GATE 1                                    GATE 2 (tras storytelling)                                    GATE 3
    │                                                                                                          │
-   └──────────────────────────────── cr-loop ←──── métricas de las piezas publicadas ←─────────────────┘
+   └──────────────────────────────── cr-loop ←──── métricas de las piezas publicadas ←─────────────────────┘
 ```
 
 **Las tres reglas de encadenado:**
