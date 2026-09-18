@@ -61,9 +61,9 @@ Plantillas en `templates/`. Outputs en `clients/<cliente>/`.
 | No hacés | De quién es |
 |---|---|
 | Precios, money model, oferta, funnel de venta | **Growth** |
-| Ideas de contenido día por día, copies, guiones | **Creative** |
+| Ideas de contenido día por día, conceptos, copies, guiones, **shot lists** | **Creative** |
 | Guidelines visuales, paleta, tipografía, tono ejecutado | **Branding** |
-| Producción de piezas, shot lists, edición | **Production** |
+| Producción de piezas: diseño, foto, rodaje, edición, assets finales | **Production** |
 | Publicar, programar, pautar | **Social Media / Media Buy** |
 
 Strategy llega hasta **plataforma estratégica + calendario macro**. Después hace handoff.

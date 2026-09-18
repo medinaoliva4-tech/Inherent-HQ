@@ -1,4 +1,16 @@
 {
+  "extraKnownMarketplaces": {
+    "inherent-hq": {
+      "source": {
+        "source": "github",
+        "repo": "medinaoliva4-tech/Inherent-HQ"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "creatividad@inherent-hq": true,
+    "produccion@inherent-hq": true
+  },
   "permissions": {
     "allow": [
       "Read",

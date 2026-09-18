@@ -1,0 +1,9 @@
+{
+  "name": "produccion",
+  "displayName": "⑤ Producción — Inherent Global",
+  "version": "2.0.0",
+  "description": "Convierte las ideas aprobadas de Creatividad en material real, dentro de un presupuesto y una agenda que construye él mismo. Entrega el plan por escena, el presupuesto por campaña y el plan de rodaje.",
+  "author": { "name": "Inherent Global" },
+  "repository": "https://github.com/medinaoliva4-tech/Inherent-HQ",
+  "keywords": ["produccion", "rodaje", "presupuesto", "consolidacion", "call-sheet"]
+}
