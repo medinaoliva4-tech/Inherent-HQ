@@ -17,6 +17,34 @@ clients/
 └── <cliente>/               ← todo lo del cliente, afuera de los agentes
 ```
 
+## Cómo se compone un agente
+
+Todo agente de Inherent tiene tres capas. **Esta es la definición base — vale para todos.**
+
+```
+PROPÓSITO   el panorama y la meta del agente. Su área.
+    │       Strategy: la estrategia. Creative: las ideas. Etc.
+    ▼
+ACCIONES    lo que el agente PUEDE HACER. Las determinan los MCPs.
+    │       Según lo que puede el MCP o el tool conectado, es la acción que
+    │       el agente puede tomar. Y la CALIDAD del MCP es la CALIDAD de la acción.
+    ▼
+LÓGICA      CÓMO hace esas cosas. Son las skills.
+            El razonamiento y el método detrás de cada acción.
+```
+
+**Las tres consecuencias de esto:**
+
+1. **Un agente no puede hacer nada que su MCP no permita.** Si falta la acción, falta un MCP —
+   no se arregla con mejor prompt.
+2. **Un MCP flojo produce acciones flojas**, por más buena que sea la lógica.
+3. **Una skill no es una acción, es una lógica.** Define cómo se usa lo que el MCP entrega.
+
+Antes de agregar una skill, preguntar: **¿el agente tiene la acción para ejecutarla?**
+Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito de este agente?**
+
+---
+
 ## Agentes
 
 | Agente | Carpeta | Qué hace | Estado |
