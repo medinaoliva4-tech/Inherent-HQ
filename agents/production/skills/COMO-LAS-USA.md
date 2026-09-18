@@ -4,9 +4,21 @@ Una skill es **cómo se hace un paso**. `agents/production/WORKFLOW.md` dice qu�
 con qué reglas; acá está el detalle de cada herramienta.
 
 **Dónde viven:** acá mismo, una carpeta por skill, al lado de este documento. Todo el departamento en
-un solo lugar. Funciona sin trucos porque el brain es un **plugin**: el `plugin.json` de
-`agents/production/.claude-plugin/` hace que Claude descubra solo todo lo que esté en `skills/`.
-Un archivo, un solo lugar, cero copias.
+un solo lugar. El brain es un **plugin**, y por eso no hace falta copiar nada a otra carpeta: un
+archivo, un solo lugar, cero copias.
+
+> 🛑 **Un plugin no se carga solo.** El `plugin.json` de `agents/production/.claude-plugin/` describe
+> el plugin, pero **no hace que Claude lo encuentre**. Quien lo hace encontrable es
+> `.claude-plugin/marketplace.json`, en la raíz del repo, que lista los departamentos; y
+> `.claude/settings.json`, que los deja habilitados. Los dos ya están en el repo: al abrir el
+> proyecto y confiar en la carpeta, las skills cargan solas.
+>
+> **Cómo se invocan:** las skills de un plugin llevan el nombre del plugin adelante —
+> `produccion:produccion` es el orquestador, `produccion:pr-jornadas` la Capa 2, y así.
+>
+> **Si estás trabajando en una rama** que todavía no se mergeó a `main`, el marketplace se lee del
+> repo publicado, así que hasta el merge hay que registrarlo a mano una vez:
+> `/plugin marketplace add .` desde la raíz del repo.
 
 ---
 
