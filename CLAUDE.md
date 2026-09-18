@@ -5,12 +5,23 @@ Este repositorio contiene los **agentes operativos de Inherent Global**. Cada ag
 
 ```
 agents/<departamento>/
-├── .claude-plugin/plugin.json   # lo vuelve un plugin cargable
+├── .claude-plugin/plugin.json   # la identidad del plugin: nombre, versión, descripción
 ├── WORKFLOW.md                  # cómo trabaja el departamento. Lo único que hay que leer
 ├── skills/                      # una carpeta por skill + COMO-LAS-USA.md, el índice
 ├── entregables/                 # las plantillas de lo que entrega
 └── clients/                     # un cliente = una carpeta
 ```
+
+Y en la raíz, los dos registros que hacen que esos departamentos **carguen**:
+
+```
+.claude-plugin/marketplace.json  # lista qué departamentos hay y en qué carpeta vive cada uno
+.claude/settings.json            # los deja habilitados para todo el que clone el repo
+```
+
+🛑 **Un `plugin.json` suelto no carga nada.** Un departamento nuevo no existe para Claude hasta que
+está listado en `marketplace.json` y habilitado en `settings.json`. Son dos líneas, pero sin ellas
+el departamento es una carpeta de markdown que nadie lee.
 
 🛑 **Todo el departamento se entiende abriendo una sola carpeta.** Si hace falta abrir cinco archivos
 para entender una cosa, está mal organizado.
@@ -62,9 +73,17 @@ El flujo de Inherent tiene **8 departamentos**, en este orden:
    - Estrategia, research, posicionamiento, calendario macro, onboarding de cliente nuevo →
      invocá la skill `estrategia`.
    - Ideas de contenido, conceptos, big ideas, hooks, copy de piezas, dirección de arte, shot lists,
-     adaptación por plataforma, swipe file → invocá la skill `creatividad`.
+     adaptación por plataforma, swipe file → invocá la skill `creatividad:creatividad`.
+   - Desglose de escenas, jornadas, recursos, presupuesto de rodaje, call sheets, entrega de
+     material → invocá la skill `produccion:produccion`.
    - **Creative requiere estrategia aprobada.** Si el pedido es de Creative y no existe
      `posicionamiento.md` aprobado + `calendario-estrategico.csv`, se **BLOQUEA**.
+
+   > Los departamentos ④ y ⑤ son **plugins**, y sus skills llevan el prefijo del plugin adelante
+   > (`creatividad:cr-brief`, `produccion:pr-jornadas`). Las de ①②③ viven en `.claude/skills/` y van
+   > sin prefijo. Si las skills de ④ o ⑤ **no aparecen**, es que el marketplace no está registrado:
+   > corré `/plugin marketplace add .` desde la raíz del repo, una sola vez.
+
 2. **Identificá el cliente.** Un cliente = una carpeta en `agents/<agente>/clients/<cliente>/`, y el
    **nombre canónico es el mismo en todos los agentes**. Nunca mezcles archivos de dos clientes.
 3. **Declará el pre-flight** (ver abajo) antes de producir nada.
