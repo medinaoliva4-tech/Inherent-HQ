@@ -80,6 +80,11 @@ Arma la estrategia. Produce los bloques del entregable:
 `datos` · `posicionamiento y promesa` · `ICP` · `identidad y branding` · `historia` ·
 `comunicación` · `canales` · `monetización` · `medición`
 
+Dentro de **identidad y branding** sale el **brief de branding**: el mapa visual de la categoría,
+el código saturado que no vamos a usar, la dirección opuesta, las referencias de otras industrias
+y la voz de marca. **El diseño gráfico es la lógica de posicionar hecha visible** — por eso se
+decide acá y Branding ejecuta sobre eso.
+
 > Este entregable lo usan **Marketing** (para bajarlo a campañas) y **Branding** (para alinear lo
 > visual). Tiene que servirles sin que tengan que preguntar nada.
 

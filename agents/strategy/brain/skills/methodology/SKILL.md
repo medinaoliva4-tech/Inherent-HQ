@@ -55,17 +55,78 @@ de cierta forma. Si querés rebeldía, tiene que verse y sentirse así.**
 `formal pero humano` · `premium pero simple` · `local pero sofisticado` · `técnico pero fácil` ·
 `serio pero no aburrido` · `elegante pero accesible`
 
-**Lo que se define acá y recibe Branding:**
-- Tipo de marca y por qué ese
-- El contraste que la tensiona
-- Estética: `minimal · premium · rebelde · clínica · editorial · urbana`
-- Tono de voz: `serio · directo · elegante · divertido · humano · experto`
-- **La identidad visual tiene que elevar la categoría.** Si todos se ven médicos, nosotros
-  lifestyle. Si todos se ven baratos, nosotros premium. Si todos corporativos, nosotros humanos
-- **Ser diferente sin dejar de ser entendible.** Si nadie entiende qué vendés, falló
+**El diseño gráfico no es decoración: es la lógica de posicionar, hecha visible.** Si la marca es
+rebelde y quiere ir contra un mercado saturado, no puede verse como cualquiera — tiene que verse
+súper distinta. Por eso el análisis visual es parte de la estrategia, no de la ejecución.
+
+#### a · Mapa visual de la categoría
+
+**Mirar de verdad** cómo se ven las marcas del mercado y contar qué se repite:
+
+`minimalista` · `blanco y negro` · `moderno` · `contemporáneo` · `formal` · `clínico` ·
+`editorial` · `urbano` · `artesanal` · `retro` · `cyberpunk` · `maximalista` · `brutalista`
+
+| Estilo | Cuántas marcas lo usan | Saturación |
+|---|---|---|
+
+**El estilo que más se repite es el código visual saturado.** Ese es el que hay que evitar.
+
+#### b · La regla de oposición
+
+> **Si 10 marcas usan minimalista y queremos ser rebeldes, no usamos minimalista. Usamos lo opuesto.**
+
+La dirección de la oposición la marca el **tipo de marca** elegido arriba. No se opone por oponerse:
+se opone hacia donde está el territorio.
+
+| Lo que hace la categoría | Si queremos… | Vamos hacia |
+|---|---|---|
+| Todos minimalistas y limpios | Rebeldía | Saturado, crudo, ruidoso |
+| Todos clínicos y médicos | Cercanía | Lifestyle, humano, cálido |
+| Todos baratos y recargados | Valor percibido | Silencio visual, material, espacio |
+| Todos corporativos | Confianza humana | Cara visible, imperfección, directo |
+
+#### c · Robo de adyacencia — de otra industria
+
+El estilo que necesitás **casi nunca está en tu rubro**. Está en la industria que ya le habla a la
+gente que querés.
+
+> Somos comida, pero queremos plateado y cyberpunk para destacar. Vemos una marca de running que
+> tiene exactamente ese estilo. **Tomamos su estilo**, no su categoría.
+
+**El criterio no es "se parece a nuestro rubro". Es "le habla a la gente que queremos".**
+Esto conecta directo con el **anillo 4** de `reverse-engineering`: referentes fuera de categoría.
+
+#### d · Ojos — el estilo aplicado, no en abstracto
+
+**Un estilo funciona distinto en cada formato.** Lo que se ve bien en un empaque puede morir en un
+feed. Nunca se elige una estética en abstracto: se mira **aplicada al formato donde va a vivir**.
+
+Hay que ver el estilo funcionando en: `feed` · `reel` · `historia` · `empaque` · `local` · `web`.
+
+**Cómo mira el agente:** Eden devuelve por cada pieza `aiDescription` y `aiTags` —qué pasa
+visualmente— más `mediaMirror` con las imágenes reales. Esas imágenes se abren y se miran. El
+análisis visual se hace sobre piezas concretas, **nunca de memoria**.
+
+#### e · Lo que se entrega: el BRIEF DE BRANDING
+
+Branding no recibe una opinión estética. Recibe una decisión con su razón:
+
+```
+TIPO DE MARCA        rebelde / formal / premium / local     + por qué ese
+AUDIENCIA OBJETIVO   a quién le habla y cómo se comporta
+POSICIONAMIENTO      territorio · enemigo · idea madre
+CÓDIGO SATURADO      lo que hace toda la categoría → lo que NO vamos a usar
+DIRECCIÓN VISUAL     hacia dónde vamos, y contra qué
+REFERENCIAS          marcas concretas de OTRAS industrias + por qué esas
+                     (con links a las piezas, no descripciones)
+VOZ DE MARCA         tono + qué sí dice y qué nunca diría
+DÓNDE VIVE           los formatos donde el estilo tiene que funcionar
+```
 
 > **Categoría dormida:** si el líder está cómodo, todos comunican igual y nadie ama el producto,
 > ahí hay oportunidad. No hace falta cambiar el producto — hay que **cambiar cómo se percibe**.
+
+> **Ser diferente sin dejar de ser entendible.** Si nadie entiende qué vendés, falló.
 
 ### 5 · Historia
 La narrativa de la marca. De dónde viene, por qué existe, qué defiende. Es lo que hace que la
@@ -141,7 +202,10 @@ clientes, ticket) de **marca** (recuerdo, preferencia). Y la pregunta de cierre:
 - [ ] Están los 9 bloques
 - [ ] Hay enemigo declarado e idea madre
 - [ ] El tipo de marca está elegido **y justificado por a quién le habla**
-- [ ] Branding puede tomar el bloque 4 y trabajar sin preguntar nada
+- [ ] El mapa visual está hecho **sobre piezas reales que se miraron**, no de memoria
+- [ ] Está identificado el código visual saturado, y la dirección opuesta tiene razón
+- [ ] Las referencias son marcas concretas con links, y al menos una es de **otra industria**
+- [ ] El brief de branding está completo y Branding puede trabajar sin preguntar nada
 - [ ] Marketing puede tomar el entregable y armar campañas sin preguntar nada
 - [ ] Las renuncias están escritas
 
