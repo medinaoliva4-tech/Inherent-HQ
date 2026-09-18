@@ -168,7 +168,7 @@ todas las piezas es la falla más común, la más barata de arreglar y la que m�
 
 ## Ejemplo trabajado
 
-**Slot:** TikTok · Alcance · Frío · TOFU · video corto.
+**Slot:** TikTok · `funcion=Hero` · Frío · TOFU · video corto.
 **Concepto (columna del CSV):** *El primer segundo es donde se muere tu contenido.*
 
 | Elemento | Valor |
