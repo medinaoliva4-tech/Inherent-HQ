@@ -92,7 +92,7 @@ Producción **no arranca nunca sin el Excel creativo aprobado**.
 
 | De | Qué recibe | ¿Bloqueante? |
 |---|---|---|
-| **④ Creatividad** | `plan-de-contenido.csv` **con Gate 3 aprobado**, filtrado a las filas con `rodaje = si`. De `ideas.md`: escenas, encuadres, duraciones, estética/mood, concepto, emoción | 🛑 Sí |
+| **④ Creatividad** | `plan-de-contenido.csv` **con Gate 3 aprobado**, filtrado a las filas con `rodaje = si`. Del `ideas-<formato>.md` de cada pieza: escenas, encuadres, duraciones, estética/mood, concepto, emoción | 🛑 Sí |
 | **②B Branding** | Guidelines, dirección visual, paleta, do's & don'ts, **banco de assets existente** | 🛑 Sí |
 | **③ Marketing** | Fechas de la campaña y **fechas de preparación** — cuánto margen real hay | 🛑 Sí |
 | **① Comprensión** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 Sí |

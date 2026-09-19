@@ -119,7 +119,7 @@ De cada ganadora, en este orden:
 | # | Link | Fuente | Señal ⏱️ | Patrón 🟢/🟡/⚪ | Hook | Ángulo | Formato | Estructura | Prueba | CTA |
 ```
 
-🛑 **Patrón, no pieza.** El link va a la referencia visual de `ideas.md` para que el ejecutor **vea**
+🛑 **Patrón, no pieza.** El link va a la referencia visual del `ideas-<formato>.md` de la pieza para que el ejecutor **vea**
 la referencia, pero lo que se dirige es el patrón. Si lo que se lleva al brief es la imagen, la
 estructura del copy o el creativo, es clonar — y falla el filtro de distintividad.
 

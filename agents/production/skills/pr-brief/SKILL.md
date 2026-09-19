@@ -15,7 +15,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` **con Gate 3 aprobado** y `ideas.md` de ④ Creatividad (`agents/creative/clients/<cliente>/`) · guidelines y **banco de assets** de ②B Branding · fechas de campaña y **de preparación** de ③ Marketing · capacidad declarada, presupuesto disponible y restricciones de ① Comprensión |
+| **Consume** | `plan-de-contenido.csv` **con Gate 3 aprobado** y el `ideas-<formato>.md` de cada pieza, de ④ Creatividad (`agents/creative/clients/<cliente>/`) · guidelines y **banco de assets** de ②B Branding · fechas de campaña y **de preparación** de ③ Marketing · capacidad declarada, presupuesto disponible y restricciones de ① Comprensión |
 | **Produce** | La sección **`# 1 · El brief`** de `plan.md` — piezas y escenas recibidas, techo de realidad, tabla de producibilidad, material reutilizable y escenas devueltas a ④ |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:
@@ -28,7 +28,7 @@ decisión de producción. Es la verificación de que lo que llegó **se puede pr
 
 | De | Qué se carga | Si falta |
 |---|---|---|
-| **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `rodaje = si`. De `ideas.md`: escenas, encuadres, duraciones, tipo de lugar, estética/mood, concepto, emoción | 🛑 **BLOQUEADO** |
+| **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `rodaje = si`. Del `ideas-<formato>.md` de cada pieza: escenas, encuadres, duraciones, tipo de lugar, estética/mood, concepto, emoción | 🛑 **BLOQUEADO** |
 | **②B Branding** | Guidelines, dirección visual, paleta, do's & don'ts y el **banco de assets existente** | 🛑 **BLOQUEADO** |
 | **③ Marketing** | Fechas de la campaña y **fechas de preparación** — cuánto margen real hay | 🛑 **BLOQUEADO** |
 | **① Comprensión** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 **BLOQUEADO** |
@@ -65,7 +65,7 @@ que se va a caer en la Capa 1.
 |---|---|---|
 | **Shot list íntegro** | Escenas, encuadres y duraciones con el **mismo número de ítems y el mismo orden** | ↩️ **DEVUELTO** a ④ — motivo 1, *shot list roto*. No se puede desglosar una escena sin su encuadre |
 | **Acción y lugar por escena** | Cada escena dice **qué acción ocurre y en qué tipo de lugar** | ↩️ **DEVUELTO** a ④ — motivo 2. Sin acción ni lugar no hay nada que conseguir |
-| **Estética/mood y emoción** | La pieza las declara en `ideas.md` | ↩️ **DEVUELTO** a ④ — el equipo dirigiría a ciegas: sin mood no hay luz, sin emoción no hay dirección de actor |
+| **Estética/mood y emoción** | La pieza las declara en su `ideas-<formato>.md` | ↩️ **DEVUELTO** a ④ — el equipo dirigiría a ciegas: sin mood no hay luz, sin emoción no hay dirección de actor |
 | **Coherencia con ②B** | Lo pedido no contradice guidelines, paleta ni do's & don'ts | **Se declara y se escala a ④ y ②B.** 🛑 **No se resuelve en set** — es un conflicto entre dos departamentos, no una devolución |
 | **¿Ya existe material que sirve?** | Cruce contra el banco de assets de ②B | Se marca `reutiliza` y **no se vuelve a grabar**: la escena no entra al desglose |
 

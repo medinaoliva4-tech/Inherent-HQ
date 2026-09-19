@@ -17,7 +17,7 @@ description: >
 su **frame 1 visual** · de **②B Branding**: guidelines, lente de marca, paleta, tipografía y **banco de
 assets** · de **③ Marketing**: activos distintivos y formato del slot · de **① Comprensión**: la **capacidad real de producción**.
 
-**Produce**, dentro de `ideas.md`, en la sección de la pieza:
+**Produce**, dentro del `ideas-<formato>.md` de la pieza, en su sección:
 
 | Sección | Qué lleva |
 |---|---|

@@ -79,15 +79,15 @@ de la siguiente**: saltar de Interpretar a Dirigir produce piezas bonitas sin id
 
 | Capa | Skill | Se llama cuando… | Produce |
 |---|---|---|---|
-| **0** | `cr-brief` | Arranca el ciclo, o *"traducí la estrategia a brief"* | La sección de brief en `ideas.md`: slots por campaña, etapa y `fecha` |
+| **0** | `cr-brief` | Arranca el ciclo, o *"traducí la estrategia a brief"* | La sección de brief en `brief-del-ciclo.md`: slots por campaña, etapa y `fecha` |
 | **1** | `cr-swipe-file` | *"qué está funcionando"* — **decide** qué entra a la bóveda | `swipe-file.md` filtrado por longevidad, con cubeta 70/20/10 |
 | **1** | `cr-lectura-de-video` | Llega un video o link — **lo lee de verdad** | La ficha de referencia: ritmo, hook, plano por plano, paleta, texto |
 | **1** | `cr-fuentes` | Hay que **salir a buscar** anuncios de competencia | Las referencias crudas, con su **antigüedad verificada** |
-| **2** | `cr-big-idea` | *"dame conceptos"*, *"cuál es la big idea"* | 3 BIG IDEAS de una frase, 1 elegida, filtro D/N/R |
-| **3** | `cr-storytelling` | Después de elegir la BIG IDEA | El arco de 7 piezas bajado a esta pieza |
+| **2** | `cr-big-idea` | *"dame conceptos"*, *"cuál es la big idea"* | 3 BIG IDEAS de una frase, 1 elegida, filtro D/N/R, en `brief-del-ciclo.md` |
+| **3** | `cr-storytelling` | Después de elegir la BIG IDEA | El arco de 7 piezas bajado a esta pieza, en su `ideas-<formato>.md` |
 | **4** | `cr-hook-copy` | *"escribí el hook y el copy"* | Hook, guion y copy **literales**, con CTA por etapa |
 | **5** | `cr-arte-video` | Después del copy | Escenas, encuadres, duraciones, layout, mood, gráficos |
-| **6** | `cr-adaptacion` | Cierre del ciclo | `plan-de-contenido.csv` + `ideas.md` completos |
+| **6** | `cr-adaptacion` | Cierre del ciclo | `plan-de-contenido.csv` + un `ideas-<formato>.md` por formato, completos |
 | **7** | `cr-loop` | *"qué funcionó el mes pasado"* | `aprendizaje-creativo.md` — 3 patrones ganadores + 3 hipótesis |
 
 **Las tres de Capa 1 que se confunden:** `cr-fuentes` **consigue** · `cr-lectura-de-video` **lee** ·
@@ -101,28 +101,31 @@ de la siguiente**: saltar de Interpretar a Dirigir produce piezas bonitas sin id
 |---|---|---|
 | 🚦 **GATE 1 — brief** | Al cerrar `cr-brief` (Capa 0) | Antes de gastar tiempo ideando sobre una lectura equivocada |
 | 🚦 **GATE 2 — conceptos** | Al cerrar `cr-storytelling` (Capa 3) | El más importante: hook, copy, layout, tomas y estética derivan de acá. Un concepto equivocado se multiplica por 20 filas |
-| 🚦 **GATE 3 — ciclo** | Al cerrar `cr-adaptacion` (Capa 6), antes del handoff | El lead revisa el Excel y el doc. **Nada se libera a producción sin esta revisión** |
+| 🚦 **GATE 3 — ciclo** | Al cerrar `cr-adaptacion` (Capa 6), antes del handoff | El lead revisa el Excel y los docs. **Nada se libera a producción sin esta revisión** |
 
 🛑 **Los gates son humanos y nadie los salta.** El orquestador **para**, declara el estado y espera
 confirmación explícita. No los aprueba solo ni los asume aprobados por silencio.
 
 ---
 
-## 5 · Los entregables — dos, y nada más
+## 5 · Los entregables — un Excel, un doc de dirección y un doc por formato
 
 | Archivo | Qué es | Cómo se lee |
 |---|---|---|
 | **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, **12 columnas** | **De arriba abajo**, para aprobar el ciclo completo |
-| **`ideas.md`** | El desarrollo. Una sección por pieza, `## CR-007 · <concepto>` | **De a una pieza**, para ejecutarla |
+| **`brief-del-ciclo.md`** | El brief (Capa 0) y las BIG IDEAS (Capas 2-3) | **Una vez, entero** — ahí viven Gate 1 y Gate 2 |
+| **`ideas-<formato>.md`** | El desarrollo. Una sección por pieza, `## CR-007 · <concepto>`, agrupadas por `formato` | **De a un formato**, para ejecutar todas sus piezas juntas |
 
 ```
 id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · rodaje · estado
 ```
 
-**El puente entre los dos es el `id`.** Ves `CR-007` en el Excel, buscás `CR-007` en el doc.
+**El puente es el `id` + la columna `formato`.** Ves `CR-007` en el Excel con `formato = Carrusel`,
+abrís `ideas-carrusel.md` y buscás `CR-007` ahí. **La lista de formatos no es fija**: sale de lo que
+③ Marketing haya puesto en el calendario de ese ciclo — un formato nuevo simplemente suma un doc.
 
 **Más dos archivos de trabajo interno** — no se entregan al cliente pero **sí se guardan**:
-`swipe-file.md` (la bóveda) y `aprendizaje-creativo.md` (el cierre del ciclo). Los cuatro viven en
+`swipe-file.md` (la bóveda) y `aprendizaje-creativo.md` (el cierre del ciclo). Todos viven en
 `clients/<cliente>/`, con los insumos en `_INPUTS/`; la carpeta usa **el nombre canónico** de aguas
 arriba. 🛑 **Nunca se duplica un archivo de otro departamento adentro de Creative: se cita su ruta.**
 
@@ -150,7 +153,7 @@ Tabla completa en `WORKFLOW.md §8`.
 ```markdown
 ## HANDOFF — Creative → ⑤ Producción / ⑥A Diseño
 - Cliente: · Bloque: · Fecha:
-- Entregables: plan-de-contenido.csv · ideas.md
+- Entregables: plan-de-contenido.csv · brief-del-ciclo.md · ideas-<formato>.md (uno por formato: [lista])
 - Gates: brief [✅/⬜] · conceptos [✅/⬜] · ciclo [✅/⬜]
 - Filas totales: [n] · por campaña: [desglose]
 - Reparto 70/20/10: [n / n / n] → [✅ cumple / ⚠️ desviado + por qué]
@@ -185,7 +188,7 @@ mezcla** con 🟢/🟡/⚪) · ⚠️ SIN DATOS · ⏸️ PENDIENTE APROBACIÓN 
 
 - [ ] El **PRE-FLIGHT** está emitido con **PASS o BLOQUEADO**, y cada skill corrió **con el output de la anterior**, sin faltantes improvisados
 - [ ] Los **3 gates humanos** registrados con estado — ninguno asumido por silencio
-- [ ] Existen **exactamente dos entregables** —`plan-de-contenido.csv` e `ideas.md`— y **todo `id` del CSV tiene su sección `## CR-00N · <concepto>` en el doc, y al revés**: el puente no se rompe
+- [ ] Existen **exactamente los entregables esperados** —`plan-de-contenido.csv`, `brief-del-ciclo.md` y un `ideas-<formato>.md` por cada formato del ciclo— y **todo `id` del CSV tiene su sección `## CR-00N · <concepto>` en el doc de su formato, y al revés**: el puente no se rompe
 - [ ] Las **12 columnas** están completas en cada fila, y **toda fila cuelga de una `campana`**: el ciclo se puede aprobar campaña por campaña
 - [ ] 🛑 **Toda fila tiene `traza`** a una MUST BE TRUE —las que no, **eliminadas**— y **toda pieza su hipótesis escrita**, con qué la confirmaría
 - [ ] El reparto **70/20/10 cierra ±10 puntos** sobre el total del ciclo — o la desviación está declarada con su motivo (y el **primer ciclo** se declaró como **80/20**)

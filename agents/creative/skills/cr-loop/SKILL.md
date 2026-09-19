@@ -20,7 +20,7 @@ nombre, evidencia y una hipótesis nueva colgada de él.**
 
 | | |
 |---|---|
-| **Consume** | Las filas ya publicadas de `plan-de-contenido.csv` (con su `funcion`, `mezcla`, `traza` y `concepto`) · la **hipótesis** y el **Objetivo del slot** de cada sección `## CR-007 · <concepto>` de `ideas.md` · las **métricas por pieza**, exportadas a `clients/<cliente>/_INPUTS/` · el `swipe-file.md` vigente |
+| **Consume** | Las filas ya publicadas de `plan-de-contenido.csv` (con su `funcion`, `mezcla`, `traza` y `concepto`) · la **hipótesis** y el **Objetivo del slot** de cada sección `## CR-007 · <concepto>`, en el `ideas-<formato>.md` que corresponda · las **métricas por pieza**, exportadas a `clients/<cliente>/_INPUTS/` · el `swipe-file.md` vigente |
 | **Produce** | **`aprendizaje-creativo.md`** — trabajo interno, no se entrega al cliente pero **sí se guarda** · y el **`swipe-file.md` actualizado** con los ganadores propios arriba |
 | **No produce** | Dashboards ni reporte de performance (③ Marketing) · piezas nuevas (eso es el ciclo siguiente, desde Capa 0) · ninguna conclusión estratégica |
 

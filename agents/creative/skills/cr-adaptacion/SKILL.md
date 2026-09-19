@@ -2,8 +2,8 @@
 name: cr-adaptacion
 description: >
   Capa 6 del método de Creatividad — multiplica un concepto en una fila por canal y ensambla el
-  entregable final del ciclo: `plan-de-contenido.csv` (12 columnas) + `ideas.md` (una sección por
-  pieza). Adapta a lo que premia cada plataforma —TikTok, Reels, Shorts, carrusel, story, estático—
+  entregable final del ciclo: `plan-de-contenido.csv` (12 columnas) + un `ideas-<formato>.md` por
+  cada formato del ciclo (una sección por pieza). Adapta a lo que premia cada plataforma —TikTok, Reels, Shorts, carrusel, story, estático—
   con sus specs, verifica que toda fila trace a una MUST BE TRUE y que el reparto 70/20/10 cierre
   sobre el total del ciclo. Úsala cuando pidan "adaptalo a los otros canales", "armá el Excel",
   "llená el plan de contenido", "el calendario de contenido completo", "repurposing", "pasá esto a
@@ -14,17 +14,21 @@ description: >
 # Capa 6 — Multiplicación y ensamblado
 
 **Qué consume**
-- Los conceptos, hooks, guiones, copys, escenas y estética ya producidos en las Capas 2-5 (viven en `ideas.md`).
+- El brief y las BIG IDEAS del ciclo, en `brief-del-ciclo.md` (Capas 0-3, 🚦 Gate 1 y Gate 2 aprobados).
+- Los conceptos, hooks, guiones, copys, escenas y estética ya producidos en las Capas 4-5, en el `ideas-<formato>.md` de cada pieza.
 - Los slots del ciclo: canal, formato, pilar, función, campaña y objetivo — heredados de ③ Marketing.
 - La traza a MUST BE TRUE de cada slot — heredada de ② Estrategia.
 - La capacidad real de producción del cliente.
 - El método completo del departamento: `agents/creative/WORKFLOW.md`.
 
-**Qué produce** — los dos únicos entregables del ciclo, completos:
+**Qué produce** — los entregables del ciclo, completos:
 - **`plan-de-contenido.csv`** — una fila por pieza, 12 columnas, sin celdas vacías.
-- **`ideas.md`** — una sección por pieza, titulada `## CR-007 · <concepto>`.
+- **Un `ideas-<formato>.md` por cada valor de `formato`** que tenga slot este ciclo — una sección por
+  pieza, titulada `## CR-007 · <concepto>`, agrupadas por formato: todos los carruseles juntos, todos
+  los TikToks juntos, y así. Si el ciclo trae un formato sin doc todavía, esta capa lo crea.
 
-> El puente entre los dos es el **`id`**. Se ve `CR-007` en el Excel, se busca `CR-007` en el doc.
+> El puente entre el Excel y los docs es el **`id`** + la columna **`formato`**. Se ve `CR-007` en el
+> Excel con `formato = Carrusel`, se abre `ideas-carrusel.md` y se busca `CR-007` ahí.
 
 ---
 
@@ -98,17 +102,23 @@ el slot a ③ Marketing; no se corrige en la celda.
 🛑 **En `funcion` va la función del calendario, nunca el `goal_del_arte`.** Son dos vocabularios
 distintos y confundirlos rompe la trazabilidad: con `Alcance` en la celda ya no se puede cruzar la
 fila contra el slot `Hero` del que salió. El `goal_del_arte` (`alcance` · `memoria` · `valor-de-uso`
-· `confianza` · `accion` · `pertenencia`) lo deriva `cr-brief` y **vive en el brief de `ideas.md`,
+· `confianza` · `accion` · `pertenencia`) lo deriva `cr-brief` y **vive en `brief-del-ciclo.md`,
 no en el Excel**.
 
 🛑 **Ninguna celda vacía.** Si falta un dato, la fila es `pendiente` y se declara qué falta.
 
 ---
 
-## 4 · Llenar `ideas.md` — una sección por pieza
+## 4 · Llenar `ideas-<formato>.md` — una sección por pieza, agrupadas por formato
 
-Título exacto: `## CR-007 · <concepto>`. **Un `id` del CSV = una sección del doc.** Ni filas sin
-sección ni secciones huérfanas.
+**Un doc por cada valor de `formato`** que tenga slot este ciclo — la lista la define ③ Marketing en
+el calendario, no es fija acá. Cada fila del CSV se escribe en el doc de **su** `formato`:
+`formato = Carrusel` → `ideas-carrusel.md` · `formato = TikTok` / `Video corto` → `ideas-tiktok.md`
+· y así con cada uno. Si el ciclo trae un formato que todavía no tiene doc, esta capa lo crea a partir
+de `agents/creative/entregables/ideas-formato.md`.
+
+Título exacto de cada sección: `## CR-007 · <concepto>`. **Un `id` del CSV = una sección, en el doc
+de su formato.** Ni filas sin sección ni secciones huérfanas — y ninguna sección repetida en dos docs.
 
 Cada sección lleva: **Objetivo del slot** · **Emoción** · **Hook** · **Guion** · **Copy** ·
 **Layout de texto** · **Escenas** · **Encuadres** · **Duraciones** · **Referencia visual** ·
@@ -204,7 +214,7 @@ Ninguna capa se entrega sin pasar su bloque completo.
 - [ ] El total de filas **cabe en la capacidad de producción real**
 - [ ] Las **12 columnas** están completas en cada fila del `plan-de-contenido.csv`
 - [ ] **Toda fila tiene `campana`**, y el ciclo se puede leer y aprobar campaña por campaña
-- [ ] **Cada `id` del CSV tiene su sección `## CR-00X · <concepto>` en `ideas.md`** — y ninguna sección queda huérfana
+- [ ] **Cada `id` del CSV tiene su sección `## CR-00X · <concepto>` en el `ideas-<formato>.md` que corresponde a su columna `formato`** — y ninguna sección queda huérfana ni duplicada en dos docs
 - [ ] **Toda fila tiene `mezcla`**, y el reparto del ciclo cierra en **70/20/10 ±10 puntos** (u 80/20 si es el primer ciclo), o la desviación está declarada con su motivo
 - [ ] Cada sección declara su **emoción** — una sola, en lenguaje del comprador
 - [ ] **Hook, guion y copy literales, entre comillas.** En estáticos, `guion: N/A — formato estático`, nunca vacío

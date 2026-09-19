@@ -13,8 +13,8 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El bloque `## BIG IDEA · <nombre>` de `ideas.md` (Capa 2) · el avatar y el lenguaje literal del comprador del brief del ciclo · el **mapa de objeciones** y el **enemigo** de ③ Marketing · el **mecanismo único** y los RTB de ② Estrategia |
-| **Produce** | Dentro de `ideas.md`: la línea **Arco** del bloque de BIG IDEA y, en cada sección `## CR-007 · <concepto>`, el arco bajado a esa pieza — héroe, nivel de problema atacado, cómo entra la guía, plan, llamado, éxito, fracaso evitado y su distribución por tramo o slide |
+| **Consume** | El bloque `## BIG IDEA · <nombre>` de `brief-del-ciclo.md` (Capa 2) · el avatar y el lenguaje literal del comprador del brief del ciclo · el **mapa de objeciones** y el **enemigo** de ③ Marketing · el **mecanismo único** y los RTB de ② Estrategia |
+| **Produce** | En `brief-del-ciclo.md`: la línea **Arco** del bloque de BIG IDEA. Y, en el `ideas-<formato>.md` de cada pieza, dentro de su sección `## CR-007 · <concepto>`, el arco bajado a esa pieza — héroe, nivel de problema atacado, cómo entra la guía, plan, llamado, éxito, fracaso evitado y su distribución por tramo o slide |
 | **Llena del Excel** | Afina `concepto` de `plan-de-contenido.csv` — no crea filas nuevas |
 | **Alimenta** | Hook, guion y copy de la Capa 4 · la emoción y las escenas de la Capa 5 |
 

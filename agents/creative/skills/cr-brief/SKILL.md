@@ -5,7 +5,7 @@ description: >
   Carga el contexto de ①②③ y ②B Branding, agrupa los slots del ciclo por campaña, traduce
   funcion + temperatura + awareness a goal del arte y etapa del funnel, fija la fecha de cada slot
   y declara el reparto 70/20/10 previsto. Escribe la sección "El brief del ciclo" dentro de
-  ideas.md. Úsala cuando pidan "traducí la estrategia de X a brief", "armá el brief del ciclo",
+  brief-del-ciclo.md. Úsala cuando pidan "traducí la estrategia de X a brief", "armá el brief del ciclo",
   "qué pide este slot", "en qué etapa juega esta pieza", "qué goal del arte le toca acá",
   "arrancá el ciclo de contenido de X". Bloquea si falta el posicionamiento aprobado de
   ② Estrategia o el plan de campañas de ③ Marketing.
@@ -16,7 +16,7 @@ description: >
 | | |
 |---|---|
 | **Consume** | Entregables de ① Comprensión · ② Estrategia · ③ Marketing · ②B Branding · el calendario con los slots del ciclo · claims ya aprobados de ⑧B Ads *(no bloqueante)* |
-| **Produce** | La sección **"El brief del ciclo"** dentro de `ideas.md` · la columna `fecha` de cada fila futura de `plan-de-contenido.csv` |
+| **Produce** | La sección **"El brief del ciclo"** dentro de `brief-del-ciclo.md` · la columna `fecha` de cada fila futura de `plan-de-contenido.csv` |
 
 Contexto del departamento: `agents/creative/WORKFLOW.md`.
 
@@ -158,7 +158,7 @@ La temperatura de ③ Marketing tiene **cuatro** estados, `Cliente` incluido. Lo
 distintivo, CTA suave · `Activación` → pesa la oferta y la prueba, CTA directo. 🛑 Balance `Marca`
 con CTA de conversión rompe el slot: se devuelve a ③ Marketing.
 
-## 8 · Qué escribe en `ideas.md`
+## 8 · Qué escribe en `brief-del-ciclo.md`
 
 Una sola sección, `## El brief del ciclo`, con estos bloques:
 

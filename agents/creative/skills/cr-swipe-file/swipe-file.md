@@ -1,6 +1,6 @@
 # Swipe File — [Cliente]
 **Bloque:** [x] · **Fecha del relevamiento:** [fecha] · **Capa 1**
-**Brief de referencia:** la sección «El brief del ciclo» de `ideas.md`
+**Brief de referencia:** la sección «El brief del ciclo» de `brief-del-ciclo.md`
 
 > No se guarda nada por gusto estético. **Entra por longevidad u outlier, o no entra.**
 

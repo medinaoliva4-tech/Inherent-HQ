@@ -43,7 +43,7 @@ lugar, cero copias.
 | 6 | **`cr-storytelling`** | 3 | Después de elegir la BIG IDEA | El arco de 7 piezas bajado a esta pieza |
 | 7 | **`cr-hook-copy`** | 4 | *"escribí el hook y el copy"* | Hook, guion y copy **literales**, con CTA por etapa |
 | 8 | **`cr-arte-video`** | 5 | Después del copy | Escenas, encuadres, duraciones, layout, mood, elementos gráficos |
-| 9 | **`cr-adaptacion`** | 6 | Cierre del ciclo | `plan-de-contenido.csv` + `ideas.md` completos |
+| 9 | **`cr-adaptacion`** | 6 | Cierre del ciclo | `plan-de-contenido.csv` + un `ideas-<formato>.md` por formato, completos |
 | 10 | **`cr-loop`** | 7 | *"qué funcionó el mes pasado"* | `aprendizaje-creativo.md` — 3 patrones ganadores + 3 hipótesis |
 
 ---

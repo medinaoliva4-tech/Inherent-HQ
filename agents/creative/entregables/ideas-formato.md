@@ -1,45 +1,12 @@
-# Ideas de contenido — [Cliente]
-**Ciclo:** [semana / quincena / mes] · **Fecha de entrega:** [aaaa-mm-dd] · **Gates:** brief [✅/⬜] · conceptos [✅/⬜] · ciclo [✅/⬜]
+# Ideas — [Formato] — [Cliente]
+**Ciclo:** [semana / quincena / mes] · **Fecha de entrega:** [aaaa-mm-dd] · **Gate:** ciclo [✅/⬜]
 
-> Este documento acompaña a `plan-de-contenido.csv`. El Excel dice **qué piezas hay**; este doc dice
-> **cómo es cada una**. Se busca por el `id`.
-
----
-
-# El brief del ciclo
-
-**Campañas:** [nombres] · **Piezas:** [n] · **Reparto 70/20/10:** [n / n / n] → [✅ cumple / ⚠️ desviado + por qué]
-
-**A quién le hablamos.** [El avatar, en una línea, con el lenguaje literal del comprador.]
-
-**Qué tiene que pasar.** [Las MUST BE TRUE que este ciclo mueve, y cómo.]
-
-**Qué NO hacemos este ciclo.** [Lo que se dejó afuera a propósito, para que no se pregunte después.]
+> Este documento acompaña a `plan-de-contenido.csv` y a `brief-del-ciclo.md`. El Excel dice **qué
+> piezas hay**; `brief-del-ciclo.md` dice **con qué idea**; este doc dice **cómo es cada pieza de
+> [formato]**. Se busca por el `id`. Nombralo `ideas-<formato>.md` (ej. `ideas-tiktok.md`,
+> `ideas-carrusel.md`) — uno por cada valor de `formato` que tenga slot este ciclo.
 
 ---
-
-# Los conceptos
-
-## BIG IDEA · [nombre corto]
-**Una frase:** *"..."*
-**Insight:** *"..."* — [el dolor específico, en palabras del comprador]
-**Técnicas aplicadas:** [1-2 del toolkit: escala · estética/lente · belleza · transportación · choque · tensión]
-**Arco:** héroe [quién] · problema interno [cuál] · guía [cómo entra la marca] · éxito [el después]
-
-| Filtro | ✅/⬜ | Por qué |
-|---|---|---|
-| Distintiva | | |
-| Nueva *(contra el mapa de saturación)* | | |
-| Relevante *(para este avatar y este objetivo)* | | |
-| **Prueba del logo** | | *si le ponés el logo de un competidor y nadie nota la diferencia, falló* |
-
-**Piezas que salen de esta BIG IDEA:** `CR-001` · `CR-002` · …
-
-*(Una sección así por cada BIG IDEA del ciclo.)*
-
----
-
-# Las piezas
 
 ## CR-001 · [concepto en una línea]
 
@@ -49,6 +16,7 @@
 | **Fecha · canal · formato** | |
 | **Objetivo del slot** | *(el específico, el que escribió ③ Marketing)* |
 | **Emoción** | *(qué tiene que sentir quien la ve — distinto de cómo se ve)* |
+| **BIG IDEA** | [nombre corto — ver `brief-del-ciclo.md`] |
 | **Cubeta** | `70·probado` / `20·apuesta` / `10·propio` |
 | **Referencia** | [de dónde sale el patrón, con su señal ⏱️] |
 
@@ -105,4 +73,4 @@ CTA:       "..."
 
 ---
 
-*(Una sección así por cada fila del Excel.)*
+*(Una sección así por cada fila del Excel cuyo `formato` sea este.)*

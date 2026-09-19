@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | La sección `# 1 · El brief` de `plan.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar de `ideas.md` de ④ Creatividad (`agents/creative/clients/<cliente>/`) · las guidelines de ②B Branding |
+| **Consume** | La sección `# 1 · El brief` de `plan.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en ④ Creatividad (`agents/creative/clients/<cliente>/`) · las guidelines de ②B Branding |
 | **Produce** | Las **filas base de `plan-de-produccion.csv`**: `id`, `id_creativo`, `campana`, `escena`, `accion`, `encuadre`, `duracion_s`, `destino`, `estado` + el desglose de las 8 categorías que alimenta las columnas `locacion`, `talento`, `recursos`, `equipo` |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:

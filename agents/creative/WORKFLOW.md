@@ -10,15 +10,22 @@ paso vive en las skills: `skills/COMO-LAS-USA.md`.
 
 ## 1 · Qué entrega
 
-Dos archivos por ciclo. Nada más.
+El Excel, más un doc de dirección y un doc por formato. Nada más.
 
 | Archivo | Qué es | Para qué se usa |
 |---|---|---|
 | **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, 12 columnas | Se lee **de arriba abajo** para aprobar el ciclo completo |
-| **`ideas.md`** | El desarrollo. Una sección por pieza | Se lee **de a una pieza** para ejecutarla |
+| **`brief-del-ciclo.md`** | La dirección: el brief y las BIG IDEAS del ciclo | Se lee **una vez**, al aprobar Gate 1 y Gate 2 — antes de mirar una sola pieza |
+| **`ideas-<formato>.md`** | El desarrollo de las piezas de un formato — una sección por pieza | Se lee **de a un formato**, para ejecutar todas las piezas de ese tipo juntas |
 
-**El puente entre los dos es el `id`.** Ves `CR-007` en el Excel, buscás `CR-007` en el doc.
-Funciona en Excel, en Sheets y en Drive, sin fórmulas que se rompan.
+**Un doc por cada valor de `formato`** que exista ese ciclo en el Excel — `formato` lo define
+③ Marketing, así que la lista no es fija: si el calendario trae Carrusel, Reel, Story y Newsletter,
+salen `ideas-carrusel.md`, `ideas-reel.md`, `ideas-story.md` e `ideas-newsletter.md`. Un ciclo con un
+formato nuevo simplemente suma un doc; no hace falta tocar el método.
+
+**El puente entre el Excel y los docs es el `id`.** Ves `CR-007` en el Excel, columna `formato` te
+dice en cuál doc buscarlo, y ahí buscás `CR-007`. Funciona en Excel, en Sheets y en Drive, sin
+fórmulas que se rompan.
 
 ### Las 12 columnas del Excel
 
@@ -38,9 +45,19 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | `rodaje` | `si` / `no` — decide si va a ⑤ Producción o directo a ⑥A Diseño | Creative |
 | `estado` | `listo` / `pendiente` / `⏸️ aprobación` | Creative |
 
-### Qué lleva cada sección del doc
+### Qué lleva `brief-del-ciclo.md`
 
-Una por pieza, titulada `## CR-007 · <concepto>`:
+**El brief** (Capa 0): campañas, piezas, reparto 70/20/10 previsto, avatar, MUST BE TRUE que se
+mueven, qué queda afuera. **Los conceptos** (Capas 2-3): un bloque `## BIG IDEA · <nombre>` por idea
+del ciclo, con su frase, insight, técnicas aplicadas, arco y filtro D/N/R, y la lista de piezas que
+cuelgan de cada una.
+
+Es el documento que aprueba el lead **antes** de mirar una sola pieza terminada: Gate 1 y Gate 2
+viven acá.
+
+### Qué lleva cada sección de `ideas-<formato>.md`
+
+Una por pieza, titulada `## CR-007 · <concepto>`, agrupadas en el doc del **formato** de esa pieza:
 
 **Objetivo del slot** · **Emoción** · **Hook** (literal, entre comillas) · **Guion** (literal, por
 tramo) · **Copy** (literal) · **Layout de texto** · **Escenas** · **Encuadres** · **Duraciones** ·
@@ -141,7 +158,7 @@ LOOP          Capa 7       ¿Qué patrón ganó?  → vuelve a Capa 1 y Capa 2
 ```
 
 ### Capa 0 · BRIEF — ¿qué pide exactamente?
-**Skill:** `cr-brief` · **Output:** sección de brief en `ideas.md`
+**Skill:** `cr-brief` · **Output:** sección de brief en `brief-del-ciclo.md`
 
 Cargar los entregables de ①②③ y Branding → agrupar los slots del ciclo **por campaña** → traducir
 cada slot a etapa del funnel → fijar la `fecha` de cada uno → declarar el filtro de audiencia →
@@ -170,7 +187,7 @@ su propia base (`⏱️outlier`) · landing vieja que sigue igual (`⏱️establ
 **Cadencia:** refresco semanal.
 
 ### Capa 2 · BIG IDEA — ¿cuál es la idea?
-**Skill:** `cr-big-idea` · **Output:** sección de conceptos en `ideas.md`
+**Skill:** `cr-big-idea` · **Output:** bloque `BIG IDEA` en `brief-del-ciclo.md`
 
 **Insight** (el dolor específico, en el lenguaje literal del comprador) → **toolkit de dirección**
 (1-2 técnicas, nunca las seis: escala · estética/lente · belleza · transportación · choque ·
@@ -182,7 +199,7 @@ tensión) → **3 BIG IDEAS de una frase** → elegir 1 → derivar hook, tono y
 > Una idea que no cabe en una frase no es una idea, son dos.
 
 ### Capa 3 · HISTORIA — ¿quién es el héroe?
-**Skill:** `cr-storytelling` · **Output:** sección de conceptos en `ideas.md`
+**Skill:** `cr-storytelling` · **Output:** afina el `Arco` del bloque `BIG IDEA` en `brief-del-ciclo.md`, y lo baja a cada pieza en su `ideas-<formato>.md`
 
 El arco en 7 piezas: **héroe** (es el cliente, no la marca) · **problema** (externo, interno,
 filosófico) · **guía** (la marca: Yoda, no Luke) · **plan** (3 pasos) · **llamado** · **éxito** ·
@@ -197,7 +214,7 @@ filosófico) · **guía** (la marca: Yoda, no Luke) · **plan** (3 pasos) · **l
 derivan de acá. Un concepto equivocado se multiplica por 20 filas.
 
 ### Capa 4 · GANCHO Y PALABRA — ¿con qué entra y qué dice?
-**Skill:** `cr-hook-copy` · **Output:** hook, guion y copy en `ideas.md`
+**Skill:** `cr-hook-copy` · **Output:** hook, guion y copy en `ideas-<formato>.md`
 
 **HOOK** de las 7 cajas (pattern interrupt · list/number · curiosity gap · question · pain ·
 bold claim · story/tease) → **frame 1 visual** → estructura con timing → **COPY literal**
@@ -218,7 +235,7 @@ distintas y las dos se entregan literales. Si el formato no lleva voz: `N/A — 
 > 🛑 El CTA se escoge según el objetivo, no se pone "comprá" por default.
 
 ### Capa 5 · FORMA — ¿cómo se ve y cómo se filma?
-**Skill:** `cr-arte-video` · **Output:** escenas, encuadres, duraciones y estética en `ideas.md`
+**Skill:** `cr-arte-video` · **Output:** escenas, encuadres, duraciones y estética en `ideas-<formato>.md`
 
 **Arte:** grid · jerarquía visual explícita (1°/2°/3°) · **un solo foco** · layout de texto ·
 safe zones · mood y paleta · elementos gráficos del vocabulario cerrado de 4 familias.
@@ -230,10 +247,12 @@ duración · audio · equipo`. Siempre **2-3 tomas de cobertura**: una reaction,
 > medio, cámara fija, 3 s, audio directo"*. Lo vago mata el rodaje.
 
 ### Capa 6 · MULTIPLICACIÓN — ¿cómo vive en cada canal?
-**Skill:** `cr-adaptacion` · **Output:** `plan-de-contenido.csv` + `ideas.md` completos
+**Skill:** `cr-adaptacion` · **Output:** `plan-de-contenido.csv` + todos los `ideas-<formato>.md` completos
 
-Un concepto → N filas, **una por canal**, cada una con sus specs. Adaptar, no copiar-pegar: publicar
-lo mismo idéntico en todos lados el algoritmo lo penaliza.
+Un concepto → N filas, **una por canal**, cada una con sus specs. Cada fila recién nacida se escribe
+en el `ideas-<formato>.md` que le corresponde según su columna `formato` — si es el primero de ese
+formato en el ciclo, el doc se crea acá. Adaptar, no copiar-pegar: publicar lo mismo idéntico en
+todos lados el algoritmo lo penaliza.
 
 > 🛑 **Solo se multiplica hacia canales que tienen slot** en el calendario. Un canal sin slot no
 > existe para Creative.
@@ -296,7 +315,10 @@ posicionamiento no está aprobado · el plan de campañas no está aprobado · e
 clients/<cliente>/
 ├── _INPUTS/                 # brand kit, assets, exports de métricas
 ├── plan-de-contenido.csv    # ← entregable
-├── ideas.md                 # ← entregable
+├── brief-del-ciclo.md       # ← entregable · brief + BIG IDEAS
+├── ideas-tiktok.md          # ← entregable · uno por formato con slot este ciclo
+├── ideas-carrusel.md        # ← entregable
+├── ideas-....md             # ← tantos como formatos traiga el calendario
 ├── swipe-file.md            # trabajo interno
 └── aprendizaje-creativo.md  # trabajo interno
 ```
@@ -311,7 +333,7 @@ El nombre de la carpeta es **el mismo nombre canónico** que usan los departamen
 ```markdown
 ## HANDOFF — Creative → ⑤ Producción / ⑥A Diseño
 - Cliente: · Bloque: · Fecha:
-- Entregables: plan-de-contenido.csv · ideas.md
+- Entregables: plan-de-contenido.csv · brief-del-ciclo.md · ideas-<formato>.md (uno por formato: [lista])
 - Gates: brief [✅/⬜] · conceptos [✅/⬜] · ciclo [✅/⬜]
 - Filas totales: [n] · por campaña: [desglose]
 - Reparto 70/20/10: [n / n / n] → [✅ cumple / ⚠️ desviado + por qué]
@@ -324,7 +346,7 @@ El nombre de la carpeta es **el mismo nombre canónico** que usan los departamen
 ```
 
 - Una fila `pendiente` **no se libera**. O se completa, o sale del bloque y se declara.
-- **El Excel y el doc son la interfaz.** Si Producción, Diseño o Posting tienen que preguntar algo,
+- **El Excel y los docs son la interfaz.** Si Producción, Diseño o Posting tienen que preguntar algo,
   el brief estaba incompleto — y eso se corrige en el brief, no por chat.
 
 ---

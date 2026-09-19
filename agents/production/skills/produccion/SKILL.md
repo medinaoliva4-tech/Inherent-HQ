@@ -21,7 +21,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · **④ Creatividad**: `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `rodaje = si`, + `ideas.md` · **②B Branding**: guidelines, dirección visual y **banco de assets** · **③ Marketing**: fechas de campaña y **de preparación** · **① Comprensión**: capacidad declarada, presupuesto disponible y restricciones |
+| **Consume** | El pedido del usuario · **④ Creatividad**: `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `rodaje = si`, + el `ideas-<formato>.md` de cada pieza · **②B Branding**: guidelines, dirección visual y **banco de assets** · **③ Marketing**: fechas de campaña y **de preparación** · **① Comprensión**: capacidad declarada, presupuesto disponible y restricciones |
 | **Produce** | El **PRE-FLIGHT**, el **plan de capas**, el registro de los **3 gates humanos**, las **devoluciones a ④** y el bloque **HANDOFF**. 🛑 **Ningún entregable por su cuenta:** no desglosa, no agrupa, no costea, no entrega. **Deriva** |
 
 El departamento completo: `agents/production/WORKFLOW.md`. Qué hace cada skill y cómo se encadenan:

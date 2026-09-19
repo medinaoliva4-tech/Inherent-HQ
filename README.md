@@ -65,7 +65,7 @@ agents/creative/
 │   ├── creatividad/            # el orquestador
 │   └── cr-*/                   # brief · swipe file · lectura de video · fuentes · big idea ·
 │                               # storytelling · hook y copy · arte y video · adaptación · loop
-├── entregables/                # plan-de-contenido.csv + ideas.md
+├── entregables/                # plan-de-contenido.csv + brief-del-ciclo.md + ideas-formato.md
 └── clients/                    # un cliente = una carpeta
 ```
 
@@ -83,14 +83,16 @@ agents/creative/
 | Archivo | Qué es | Para qué se usa |
 |---|---|---|
 | **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, **12 columnas** | Se lee de arriba abajo para **aprobar** el ciclo |
-| **`ideas.md`** | El desarrollo. Una sección por pieza | Se lee de a una pieza para **ejecutarla** |
+| **`brief-del-ciclo.md`** | El brief y las BIG IDEAS del ciclo | Se lee **una vez**, para Gate 1 y Gate 2 |
+| **`ideas-<formato>.md`** | El desarrollo, una sección por pieza — un doc por cada formato del ciclo | Se lee de a un formato para **ejecutar** sus piezas |
 | `swipe-file.md` | La bóveda de referencias | Trabajo interno |
 | `aprendizaje-creativo.md` | El cierre del ciclo | Trabajo interno |
 
-**El puente entre los dos entregables es el `id`.** Ves `CR-007` en el Excel, buscás `CR-007` en el
-doc. Funciona en Excel, en Sheets y en Drive, sin fórmulas que se rompan. El Excel solo lleva lo que
-sirve para decidir —campaña, fecha, canal, formato, pilar, función, concepto en una línea, mezcla
-70/20/10, traza y si necesita rodaje—; todo el detalle de ejecución vive en el doc, que se lee.
+**El puente es el `id` + la columna `formato`.** Ves `CR-007` en el Excel con `formato = Carrusel`,
+abrís `ideas-carrusel.md` y buscás `CR-007` ahí. Funciona en Excel, en Sheets y en Drive, sin
+fórmulas que se rompan. El Excel solo lleva lo que sirve para decidir —campaña, fecha, canal,
+formato, pilar, función, concepto en una línea, mezcla 70/20/10, traza y si necesita rodaje—; todo el
+detalle de ejecución vive en los docs, que se leen por formato.
 
 **Requiere plan aprobado.** Sin el posicionamiento de ② Estrategia y el plan de campañas y calendario
 de ③ Marketing, Creative bloquea: idear sin brief es inventar audiencia y pilares.
@@ -176,8 +178,9 @@ Los tres que ya están construidos:
 ①②③  (hoy agents/strategy/)  →  posicionamiento · evidencia · plan de campañas · calendario
             ↓  slots · pilares y mix · frecuencia · función y temperatura por canal
 ④ Creatividad                 →  brief completo por pieza
-            ↓  plan-de-contenido.csv (estructura) + ideas.md (concepto · emoción · hook · copy ·
-            ↓  guion · escenas · encuadres · duraciones · elementos gráficos a pedir)
+            ↓  plan-de-contenido.csv (estructura) + brief-del-ciclo.md (brief y BIG IDEAS) +
+            ↓  ideas-<formato>.md (concepto · emoción · hook · copy · guion · escenas · encuadres ·
+            ↓  duraciones · elementos gráficos a pedir, uno por formato)
 ⑤ Producción                  →  material base entregado y nombrado
             ↓  plan-de-produccion.csv + presupuesto.csv + plan.md + RAW y selects en Drive
 ⑥A Diseño (estático) · ⑥B Video (montaje y masters)  →  arman la pieza

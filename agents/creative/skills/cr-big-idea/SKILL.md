@@ -15,8 +15,8 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | La sección **brief del ciclo** de `ideas.md` (🚦 Gate 1) · `swipe-file.md` con sus patrones y cubetas · el **lente de marca** y las guidelines de ②B Branding · la **idea de campaña** y el **mapa de saturación** de ③ Marketing · el avatar y el lenguaje literal del comprador |
-| **Produce** | En `ideas.md`: un bloque **`## BIG IDEA · <nombre corto>`** por idea del ciclo — frase, insight, técnicas aplicadas, filtro D/N/R, prueba del logo, piezas que cuelgan. Y la línea **concepto** de cada sección `## CR-007 · <concepto>` |
+| **Consume** | La sección **brief del ciclo** de `brief-del-ciclo.md` (🚦 Gate 1) · `swipe-file.md` con sus patrones y cubetas · el **lente de marca** y las guidelines de ②B Branding · la **idea de campaña** y el **mapa de saturación** de ③ Marketing · el avatar y el lenguaje literal del comprador |
+| **Produce** | En `brief-del-ciclo.md`: un bloque **`## BIG IDEA · <nombre corto>`** por idea del ciclo — frase, insight, técnicas aplicadas, filtro D/N/R, prueba del logo, piezas que cuelgan. Y, en el `ideas-<formato>.md` de cada pieza, la línea **concepto** de su sección `## CR-007 · <concepto>` |
 | **Llena del Excel** | `concepto` de `plan-de-contenido.csv` |
 | **Alimenta** | Hook, tono, emoción y estética de las capas 3, 4 y 5 |
 

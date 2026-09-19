@@ -35,7 +35,7 @@ Drive y Buzz. Si los dos nombres no coinciden, la traza entre departamentos se r
 🛑 **Nunca se copia un archivo de otro departamento dentro de la carpeta de Producción.** Se cita su ruta:
 
 ```markdown
-Escenas de CR-001: ver `agents/creative/clients/<cliente>/ideas.md` §CR-001
+Escenas de CR-001: ver `agents/creative/clients/<cliente>/ideas-<formato>.md` §CR-001
 ```
 
 Y si lo que pide ④ no se puede producir: **se devuelve la fila con ↩️** y se espera su corrección.
