@@ -109,18 +109,102 @@ análisis visual se hace sobre piezas concretas, **nunca de memoria**.
 
 #### e · Lo que se entrega: el BRIEF DE BRANDING
 
-Branding no recibe una opinión estética. Recibe una decisión con su razón:
+> 🛑 **Strategy NO arma la marca.** No hace brand strategy ni guideline. No define paleta,
+> tipografía, logo, ni sistema visual. Eso es de **Branding**, con sus propias skills.
+>
+> Strategy entrega un **brief**: la decisión con su razón, más **los puntos que Branding tiene
+> que resolver**. Dirección y restricciones, no ejecución.
+
+Cada bloque tiene dos partes: **lo que Strategy decidió** y **lo que Branding tiene que desarrollar**.
+
+---
+
+**1 · TIPO DE MARCA** — `rebelde / formal / premium / local` + por qué ese
+
+*Puntos a tomar en cuenta:*
+- **Hasta dónde puede estirarse el tipo sin perder credibilidad en esta categoría.** Un abogado
+  rebelde tiene un techo distinto al de una barbería rebelde
+- **El nombre y el tono tienen que coincidir con el riesgo que el comprador acepta.** No es lo
+  mismo vender café que vender cirugía
+- Si hay un tipo secundario que matiza al dominante, y cuál manda cuando chocan
+- Qué pasa si el tipo elegido choca de frente con la convención de la categoría
+
+**2 · AUDIENCIA OBJETIVO** — a quién le habla y cómo se comporta
+
+*Puntos a tomar en cuenta:*
+- **Qué códigos visuales esta gente ya reconoce y respeta.** No se le puede hablar en un lenguaje
+  que no lee
+- **Qué la haría sentir "esto no es para mí"** — el filtro de rechazo es tan importante como el de atracción
+- En qué contexto y formato la ve: en el celular, caminando, en la calle, en la noche
+- Si hay más de un segmento: **cuál manda visualmente** y cuál se acomoda
+
+**3 · POSICIONAMIENTO** — territorio · enemigo · idea madre
+
+*Puntos a tomar en cuenta:*
+- **Cómo se ve el enemigo.** Para poder verse lo contrario hay que saber exactamente cómo luce
+  aquello contra lo que estamos
+- **La idea madre tiene que poder mostrarse, no solo decirse.** Si no se puede volver imagen,
+  el problema es la idea
+- Qué parte del territorio se resuelve con lo visual y qué parte con lo verbal
+
+**4 · CÓDIGO SATURADO** — lo que hace toda la categoría → lo que NO vamos a usar
+
+*Puntos a tomar en cuenta:*
+- **Separar convención de pereza.** Hay códigos que son convención de categoría y romperlos
+  te vuelve incomprensible. Otros son solo pereza colectiva y romperlos es la oportunidad.
+  **Esa distinción la tiene que resolver Branding** — Strategy entrega el mapa, no el veredicto
+- Qué elementos del código saturado hay que **conservar** para que se entienda qué vendemos
+- Cuántos competidores usan cada código, con las piezas reales a la vista
+
+**5 · DIRECCIÓN VISUAL** — hacia dónde vamos, y contra qué
+
+*Puntos a tomar en cuenta:*
+- **Los ejes concretos a explorar:** color · tipografía · densidad · fotografía · composición ·
+  movimiento · textura
+- **Cuánta distancia tomar del código saturado.** ¿Se rompe todo, o se rompe un solo elemento y
+  el resto se mantiene legible? Un solo elemento bien roto suele pesar más que romper todo
+- Qué tiene que seguir siendo reconocible como la categoría
+- Qué es innegociable y qué queda abierto a exploración
+
+**6 · REFERENCIAS** — marcas de OTRAS industrias, con links a las piezas
+
+*Puntos a tomar en cuenta:*
+- **Qué específicamente se toma de cada referencia.** No "nos gusta esta marca", sino *"la densidad
+  tipográfica"*, *"el tratamiento de la luz"*, *"el ritmo de edición"*, *"el uso del vacío"*
+- **Qué NO se toma de ella** — igual de importante, evita la copia
+- Por qué esa marca le habla a la gente que queremos, aunque sea de otro rubro
+- Al menos una referencia tiene que ser de **fuera de la categoría**
+
+**7 · VOZ DE MARCA** — tono + qué sí dice y qué nunca diría
+
+*Puntos a tomar en cuenta:*
+- **Cómo suena en cada formato:** un caption no suena igual que un cartel, ni que un DM, ni que
+  la web
+- **Vocabulario propio y vocabulario prohibido** — palabras que sí usaría y palabras que la
+  delatarían como cualquier otra
+- Si hay una persona detrás de la marca, **cuánto de su voz personal entra** y dónde se corta
+- Cómo habla cuando algo sale mal. El tono en la crisis define la marca más que el tono en la venta
+
+**8 · DÓNDE VIVE** — los formatos donde tiene que funcionar
+
+*Puntos a tomar en cuenta:*
+- **Cuál es el formato principal donde la marca tiene que ganar.** Ahí se diseña primero, el
+  resto se adapta
+- Qué limitaciones técnicas impone ese formato: legibilidad en pantalla chica, contraste, tamaño
+  mínimo, primer frame
+- **Qué se necesita primero** — el orden de entrega, no la lista completa
+- Dónde vive lo físico, si existe: local, empaque, uniforme, señalética
+
+---
+
+**Y al final del brief, siempre:**
 
 ```
-TIPO DE MARCA        rebelde / formal / premium / local     + por qué ese
-AUDIENCIA OBJETIVO   a quién le habla y cómo se comporta
-POSICIONAMIENTO      territorio · enemigo · idea madre
-CÓDIGO SATURADO      lo que hace toda la categoría → lo que NO vamos a usar
-DIRECCIÓN VISUAL     hacia dónde vamos, y contra qué
-REFERENCIAS          marcas concretas de OTRAS industrias + por qué esas
-                     (con links a las piezas, no descripciones)
-VOZ DE MARCA         tono + qué sí dice y qué nunca diría
-DÓNDE VIVE           los formatos donde el estilo tiene que funcionar
+PREGUNTAS ABIERTAS
+Lo que Strategy no resuelve y Branding tiene que decidir.
+
+RESTRICCIONES
+Presupuesto, tiempo, lo que el cliente ya dijo que no, activos que no se pueden tocar.
 ```
 
 > **Categoría dormida:** si el líder está cómodo, todos comunican igual y nadie ama el producto,
@@ -205,7 +289,10 @@ clientes, ticket) de **marca** (recuerdo, preferencia). Y la pregunta de cierre:
 - [ ] El mapa visual está hecho **sobre piezas reales que se miraron**, no de memoria
 - [ ] Está identificado el código visual saturado, y la dirección opuesta tiene razón
 - [ ] Las referencias son marcas concretas con links, y al menos una es de **otra industria**
-- [ ] El brief de branding está completo y Branding puede trabajar sin preguntar nada
+- [ ] El brief tiene los 8 bloques, cada uno con **decisión + puntos a tomar en cuenta**
+- [ ] **No hay paleta, tipografía, logo ni sistema visual.** Si aparecen, Strategy se pasó de su rol
+- [ ] Están las preguntas abiertas y las restricciones
+- [ ] Branding puede empezar a desarrollar sin preguntar nada
 - [ ] Marketing puede tomar el entregable y armar campañas sin preguntar nada
 - [ ] Las renuncias están escritas
 
