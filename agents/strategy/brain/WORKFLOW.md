@@ -140,61 +140,148 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 ---
 
-## 5 · HERRAMIENTAS — las acciones del agente
+## 5 · ACCIONES — qué puede hacer el agente, y con qué
 
-> Las acciones las determinan los MCPs. La calidad del MCP es la calidad de la acción.
-> Si falta una acción, falta un MCP — no se arregla con mejor prompt.
+> Las acciones las determinan los MCPs. **Si falta una acción, falta un MCP** — no se arregla con
+> mejor prompt. Acá está cada acción del workflow atada a su tool exacta.
 
-Strategy hace **dos tipos de research**. Cada uno necesita acciones distintas.
+**Leyenda:** ✅ probado en esta sesión · ⬜ sin probar todavía · 🔒 requiere gate de Allan · 👤 manual
 
-### Research INTERNO — ¿quiénes somos y quién nos sigue?
+---
 
-| Acción que necesita | Herramienta | Estado |
+### Bloque 01 · CONTEXTO — juntar la data
+
+| Acción | Tool | Devuelve |
 |---|---|---|
-| Ver qué publicó el cliente y cómo rindió | `eden_analyze_creator` sobre su propia cuenta | ✅ |
-| Ver qué consume y qué comenta su audiencia | `eden_search_social_content` scope creator | ✅ |
-| Leer su sitio, su oferta, sus precios | Firecrawl | ✅ |
-| **Analytics reales del cliente** (alcance, guardados, conversión, tráfico) | — | ⛔ **HUECO.** Ningún MCP lo da. Lo entrega el cliente por export o acceso |
-| Material previo, brief, decisiones del equipo | Notion · Drive | ✅ |
+| Buscar material previo del cliente | `notion-search` → `notion-fetch` ✅ | Páginas, briefs, decisiones del equipo |
+| Leer archivos del cliente | `search_files` → `read_file_content` (Drive) | Documentos, presentaciones |
+| Leer el sitio, la oferta, los precios | `firecrawl_search` ✅ | Títulos y extractos indexados |
+| Ver qué publica el cliente y cómo rinde | `eden_analyze_creator` | Perfil, totales, mezcla de temas, sus mejores posts |
+| Ver su contenido pieza por pieza | `eden_search_social_content` scope `creator` ✅ | Posts con métricas y fecha |
+| Dimensionar si se busca su categoría | `research_keywords` (AdWhispr) | Volumen de búsqueda |
+| Escribir el núcleo | `Write` a `clients/<cliente>/` | — |
 
-### Research EXTERNO — ¿qué pasa allá afuera?
+⚠️ **`WebFetch` puede estar bloqueado por el proxy** según el dominio. Si falla, usar `firecrawl_search`.
 
-| Acción que necesita | Herramienta | Estado |
+---
+
+### Bloque 02 · ANÁLISIS — las 3 preguntas
+
+| Acción | Tool |
+|---|---|
+| Responder las 3 preguntas | **Ninguna.** Es razonamiento sobre lo que trajo el bloque 01 |
+| Verificar un dato puntual que falte | `firecrawl_search` · `WebSearch` ✅ |
+| Escribir el análisis | `Write` |
+
+> **Este bloque casi no tiene acciones, y está bien.** Es lógica pura. Si necesita salir a buscar,
+> es que el bloque 01 quedó incompleto — se vuelve, no se improvisa.
+
+---
+
+### Bloque 03 · INGENIERÍA INVERSA — el que más acciones tiene
+
+**Competencia y pauta — AdWhispr**
+
+| Acción | Tool | Ojo |
 |---|---|---|
-| Qué contenido está funcionando en la categoría, y **por qué** | `eden_search_social_content` con outlier score | ✅ El más importante |
-| Qué títulos, portadas y formatos ganan | `eden_study_top_titles` · `eden_study_top_carousels` | ✅ |
-| Estudiar a un referente o competidor a fondo | `eden_analyze_creator` | ✅ |
-| Quién pauta de verdad y qué anuncio lleva más tiempo corriendo | AdWhispr `find_competitors` · `get_brand_ads` | ✅ |
-| Qué promete la competencia y qué dicen sus reviews | Firecrawl | ✅ |
-| Contexto de categoría, prensa, regulación | Firecrawl · WebSearch | ✅ |
-| Descubrir cuentas nuevas por mención de marca en Instagram | meta.ai, **manual** | 🟡 No automatizable |
-| Guardar la evidencia encontrada | `eden_create_board` · `eden_save_posts_to_board` | ✅ Con aviso previo |
+| Guardar la marca del cliente | `save_my_brand` | Acepta URL o descripción |
+| **Competidores verificados que pautan hoy** | `find_competitors` | Devuelve anunciantes reales, no adivinados |
+| Trackear una marca nueva | `add_brand` | ⚠️ Toma `pageId` numérico, **no** `brandId` |
+| **Anuncios que llevan más tiempo corriendo** | `get_brand_ads` `sortBy: longevity` | ⚠️ Toma `brandId` UUID |
+| Comparar marcas | `compare_brands` · `get_brand_stats` | |
+| Demanda de búsqueda | `research_keywords` · `research_competitor_keywords` | |
+| Anuncios de TikTok | `research_tiktok_ads` | |
 
-### Por qué Eden es la herramienta central de Strategy
+**Contenido orgánico — Eden**
+
+| Acción | Tool | Ojo |
+|---|---|---|
+| **Outliers de la categoría** | `eden_search_social_content` global + `minOutlierScore` ✅ | ⚠️ `minFollowerCount` se ignora, filtrar a mano |
+| Resolver un handle antes de analizar | `eden_resolve_creator` | Si devuelve ambiguo, **preguntar**, no adivinar |
+| Estudiar un referente a fondo | `eden_analyze_creator` | Base de rendimiento para detectar outliers |
+| Títulos y portadas que ganan | `eden_study_top_titles` | |
+| Carruseles y estáticos que ganan | `eden_study_top_carousels` | |
+| Leer una pieza completa | `eden_read_social_post` | Cuerpo y transcripción |
+| **Ver las imágenes reales** | Las URLs de `mediaMirror` que vienen en cada resultado | Así el agente mira, no adivina |
+| Buscar personas por tema | `eden_search_creators` | ⛔ **Requiere plan Starter** |
+
+**Web y contexto**
+
+| Acción | Tool |
+|---|---|
+| Landings, páginas de venta, reviews | `firecrawl_search` ✅ |
+| Prensa, contexto de categoría, regulación | `WebSearch` ✅ |
+| Leer una URL puntual | `WebFetch` ⚠️ puede estar bloqueado |
+
+**Descubrimiento en Instagram**
+
+| Acción | Cómo |
+|---|---|
+| Encontrar cuentas por mención de marca, con seguidores y fecha | 👤 **meta.ai logueado, manual.** No automatizable — ver la sección de este skill |
+
+**Archivar**
+
+| Acción | Tool |
+|---|---|
+| Guardar la evidencia en un board | 🔒 `eden_create_board` → `eden_save_posts_to_board` |
+
+---
+
+### Bloque 04 · METODOLOGÍA — armar la estrategia
+
+| Acción | Tool |
+|---|---|
+| **Mirar las imágenes para el mapa visual** | Las URLs de `mediaMirror` del bloque 03 |
+| Verificar cómo se ve un estilo aplicado a un formato | `eden_search_social_content` |
+| Buscar referencias fuera de la categoría | `eden_search_social_content` con otro tema |
+| Escribir los 9 bloques | `Write` |
+
+> El resto es razonamiento. **Methodology decide, no sale a buscar** — si le falta evidencia,
+> vuelve al bloque 03.
+
+---
+
+### Bloque 05 · ENTREGA
+
+| Acción | Tool |
+|---|---|
+| Escribir el documento y el folder del cliente | `Write` a `clients/<cliente>/` |
+| Publicar en Notion | 🔒 `notion-create-pages` |
+| Exportar al Drive del cliente | 🔒 `create_file` → `share_file` |
+
+---
+
+### Por qué Eden es la herramienta central
 
 Cubre **YouTube, Instagram, TikTok, LinkedIn, X, Threads y Substack** en una sola acción, y trae
-lo que ninguna otra da:
+tres cosas que ninguna otra:
 
-- **Outlier score** — cuánto rindió una pieza **contra la base del propio creador**. Es la única
-  forma honesta de saber si algo funcionó, en vez de mirar números absolutos
-- **Enrichment por AI** — taxonomía, tipo de contenido, formato, mood, tags y descripción de lo
-  que pasa en el video. Eso alimenta directo la descomposición en 7 partes
-- **Métricas reales** por pieza, con fecha y link verificable
+- **Outlier score** — cuánto rindió una pieza **contra la base del propio creador**. La única forma
+  honesta de saber si algo funcionó, en vez de mirar números absolutos
+- **Enrichment por AI** — taxonomía, formato, mood, tags y descripción de lo que pasa en el video.
+  Alimenta directo la descomposición en 7 partes
+- **`mediaMirror`** — las imágenes reales, para que el agente **mire** en vez de adivinar
 
-⚠️ **Límites conocidos:** `eden_search_creators` requiere plan Starter · el filtro
-`minFollowerCount` se ignora en content search, hay que filtrar a mano · una query genérica trae
-ruido, hay que ser específico.
+---
+
+### ⛔ El hueco real
+
+**Los analytics del cliente.** Ningún MCP conectado da el alcance, guardados, conversión ni tráfico
+de un cliente. **Lo entrega el cliente**, por export o acceso. Sin eso, el research interno queda
+incompleto y la medición arranca sin baseline.
+
+---
 
 ### Lo que NO es acción de Strategy
 
 | Acción | De quién es |
 |---|---|
 | Descubrir influencers para contratar | **Marketing** |
-| Analizar el físico y las características de una persona para un casting | **Allan lo provee.** No se outsourcea a un MCP |
-| Producir o editar media | **Production** |
+| Analizar físico y características para casting | **Allan lo provee.** No se outsourcea |
+| Generar o editar media | **Production** |
 | Publicar, programar, pautar | **Social Media / Media Buy** |
 
-**Reglas:** leer es libre · escribir requiere decirlo antes · publicar, pautar, enviar o borrar
+**Reglas:** leer es libre · escribir requiere decirlo antes · 🔒 publicar, pautar, enviar o borrar
 **siempre** pasa por Allan.
 
 ---
