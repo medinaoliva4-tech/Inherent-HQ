@@ -6,7 +6,7 @@
 > ④ Creatividad en su propia Capa 7.
 
 **Fuentes:** `presupuesto.csv` (con `costo_real` cargado) · `plan-de-produccion.csv` ·
-`plan.md §2` (jornadas y tiempos) · `plan.md §6` (manifiesto de entrega).
+`plan-de-rodaje.md`, la sección de su jornada (jornadas y tiempos) · `plan-de-rodaje.md` § La entrega (manifiesto de entrega).
 Archivo **interno**: no se entrega al cliente, pero se guarda en la carpeta del cliente.
 
 ---

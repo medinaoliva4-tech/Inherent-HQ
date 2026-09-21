@@ -5,15 +5,17 @@ Un cliente = una carpeta. **Nunca mezclar archivos de dos clientes.**
 ```
 clients/<cliente>/
 ├── _INPUTS/                      # guidelines, banco de assets, cotizaciones
-├── plan-de-produccion.csv        # ← ENTREGABLE · una fila por escena, 16 columnas
-├── presupuesto.csv               # ← ENTREGABLE · por campaña y categoría, con totales
-├── plan.md                       # ← ENTREGABLE · jornadas, recursos, riesgos, call sheets, entrega
+├── presupuesto.md                # ← ENTREGABLE · para el cliente, en lenguaje natural
+├── plan-de-rodaje.md             # ← ENTREGABLE · para el equipo, con lo que se rueda
+├── plan-de-produccion.csv        # trabajo interno · una fila por escena, 16 columnas
+├── presupuesto.csv               # trabajo interno · categorías cerradas, estimado vs real
 └── aprendizaje-de-produccion.md  # trabajo interno · el cierre del ciclo
 ```
 
-**Tres entregables y un archivo interno.** Nada más. El Excel de escenas dice **qué se graba**; el de
-presupuesto dice **cuánto cuesta cada campaña y el ciclo entero**; el `plan.md` dice **cómo se va a
-hacer**. El puente con ④ Creatividad es el `id_creativo`.
+**Dos entregables y tres archivos internos.** `presupuesto.md` lo lee **el cliente**: qué se produce,
+cuándo, qué necesitamos de él y cuánto cuesta, sin jerga. `plan-de-rodaje.md` lo lee **el equipo** el
+día del rodaje, y trae compilado lo que hace falta de ④ Creatividad para no tener que abrir dos
+archivos en el set. El puente con ④ es el `id_creativo`.
 
 ## Al iniciar un cliente
 
@@ -45,10 +47,10 @@ Y si lo que pide ④ no se puede producir: **se devuelve la fila con ↩️** y 
 
 | Qué | Dónde vive |
 |---|---|
-| Los tres entregables | **Acá**, en la carpeta del cliente |
+| Los dos entregables y los tres archivos internos | **Acá**, en la carpeta del cliente |
 | El material grabado (RAW, selects, fotos) | **Drive**, con la estructura y nomenclatura de `pr-entrega`. **Nunca en el repo** |
 
-El repo lleva el **plan y el registro**; Drive lleva los archivos pesados. `plan.md` §5 guarda la
+El repo lleva el **plan y el registro**; Drive lleva los archivos pesados. `plan-de-rodaje.md` § Cómo se nombran los archivos guarda la
 ruta de Drive y el patrón de nombres, que es lo que permite cruzar un archivo entregado contra su
 fila del Excel.
 
@@ -57,10 +59,13 @@ fila del Excel.
 Los entregables se **versionan por ciclo**, no se sobrescriben:
 
 ```
-plan-de-produccion.csv                    # el vigente
-presupuesto.csv                           # el vigente
-plan.md                                   # el vigente
-_historico/2026-09-plan-de-produccion.csv # ciclos cerrados
+presupuesto.md                            # el vigente
+plan-de-rodaje.md                         # el vigente
+plan-de-produccion.csv                    # el vigente (interno)
+presupuesto.csv                           # el vigente (interno)
+_historico/2026-09-presupuesto.md         # ciclos cerrados
+_historico/2026-09-plan-de-rodaje.md
+_historico/2026-09-plan-de-produccion.csv
 _historico/2026-09-presupuesto.csv
 _historico/2026-09-aprendizaje.md
 ```

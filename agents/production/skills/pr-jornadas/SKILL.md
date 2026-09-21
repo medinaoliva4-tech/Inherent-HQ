@@ -17,11 +17,11 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las filas base de `plan-de-produccion.csv` que dejó `pr-desglose` (Capa 1), con `locacion`, `talento`, `recursos` y `equipo` ya identificados · la sección **1 El brief** de `plan.md` con el techo de días posibles · las fechas de preparación de ③ Marketing |
-| **Produce** | La columna **`jornada`** de `plan-de-produccion.csv` (`J0`, `J1`, `J2`…) · la sección **2 Las jornadas** de `plan.md`: factor de consolidación, ficha y orden de tiro de cada jornada, y la cobertura obligatoria de cada locación |
+| **Consume** | Las filas base de `plan-de-produccion.csv` que dejó `pr-desglose` (Capa 1), con `locacion`, `talento`, `recursos` y `equipo` ya identificados · la sección **1 El brief** de `plan-de-rodaje.md` con el techo de días posibles · las fechas de preparación de ③ Marketing |
+| **Produce** | La columna **`jornada`** de `plan-de-produccion.csv` (`J0`, `J1`, `J2`…) · la sección de cada jornada de `plan-de-rodaje.md`: factor de consolidación, ficha y orden de tiro de cada jornada, y la cobertura obligatoria de cada locación |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:
-`agents/production/entregables/plan.md`.
+`agents/production/entregables/plan-de-rodaje.md`.
 
 **Qué es:** decidir **qué se graba junto y en qué orden**, para que el ciclo cueste X y no 4X.
 **Qué no es:** no es el call sheet (eso es Capa 5: horarios, contactos, convocatoria), no es
@@ -207,7 +207,7 @@ por su cuenta.
 - [ ] La **matriz completa** del ciclo está armada **antes** de agrupar — ninguna escena afuera
 - [ ] Agrupado por los **4 ejes en orden**: locación → talento → setup de luz → producto
 - [ ] Las escenas sin rodaje (capturas, placas, composiciones de post) están en **`J0`** y **no cuentan para el factor**
-- [ ] El **orden de tiro** de cada jornada está escrito en la sección **2 Las jornadas** de `plan.md`, **por costo de cambio, no narrativo**
+- [ ] El **orden de tiro** de cada jornada está escrito en la sección de cada jornada de `plan-de-rodaje.md`, **por costo de cambio, no narrativo**
 - [ ] Los cambios de vestuario están **agrupados, no alternados**
 - [ ] El producto destructivo está **al final de su bloque**, con toma completa antes de destruirlo
 - [ ] La **cobertura** está ubicada **antes de desarmar cada setup**, 🛑 **nunca al final del día**, y listada por jornada

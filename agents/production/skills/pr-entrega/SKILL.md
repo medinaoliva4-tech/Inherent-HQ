@@ -5,7 +5,7 @@ description: >
   ⑥B Video Editing puedan trabajar sin renombrar ni preguntar. Corre el checklist de cierre de
   locación antes de desarmar, verifica cobertura, audio y backup doble, marca los selects, aplica la
   nomenclatura y la estructura de carpetas, y arma el manifiesto que cruza el Excel fila por fila
-  contra lo entregado. Escribe la sección "6 La entrega" de `plan.md` y completa la columna `estado`
+  contra lo entregado. Escribe la sección § La entrega de `plan-de-rodaje.md` y completa la columna `estado`
   de `plan-de-produccion.csv`. Úsala cuando pidan "cerrá la entrega", "qué quedó grabado", "subí el
   material", "está completo esto", "cruzá lo grabado contra el Excel", "qué le falta a esta pieza",
   "dejá el material listo para edición", "marcá los selects". Requiere el plan de rodaje aprobado
@@ -16,11 +16,11 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El plan de rodaje aprobado (🚦 Gate 2): las secciones **`2 Las jornadas`** y **`5 Nomenclatura`** de `plan.md` · las filas de `plan-de-produccion.csv` en `estado = planificada`, con su `id`, `id_creativo`, `escena`, `destino` y su cobertura marcada · lo que efectivamente se grabó en cada jornada |
-| **Produce** | La sección **`# 6 · La entrega`** de `plan.md` —checklist de cierre por locación, manifiesto cruzado, escenas no entregadas con motivo y la tabla de qué se entrega / qué no— y la columna **`estado`** de `plan-de-produccion.csv` completa: `grabada` / `entregada` / `↩️ devuelta` |
+| **Consume** | El plan de rodaje aprobado (🚦 Gate 2): las secciones **la sección de cada jornada** y **§ Cómo se nombran los archivos** de `plan-de-rodaje.md` · las filas de `plan-de-produccion.csv` en `estado = planificada`, con su `id`, `id_creativo`, `escena`, `destino` y su cobertura marcada · lo que efectivamente se grabó en cada jornada |
+| **Produce** | La sección **§ La entrega** de `plan-de-rodaje.md` —checklist de cierre por locación, manifiesto cruzado, escenas no entregadas con motivo y la tabla de qué se entrega / qué no— y la columna **`estado`** de `plan-de-produccion.csv` completa: `grabada` / `entregada` / `↩️ devuelta` |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:
-`agents/production/entregables/plan.md`. Cómo encadena: `agents/production/skills/COMO-LAS-USA.md`.
+`agents/production/entregables/plan-de-rodaje.md`. Cómo encadena: `agents/production/skills/COMO-LAS-USA.md`.
 
 > **La prueba de una buena entrega:** ⑥A o ⑥B abren la carpeta, la cruzan contra el Excel creativo y
 > **encuentran cada escena sin escribirle a nadie.**
@@ -102,7 +102,7 @@ acme_menuejecutivo_LOC-salon_ambiente.wav
 | El número de toma con **dos dígitos** (`t01`, no `t1`) | Para que ordene bien al listar la carpeta |
 | Los ambientes van por **locación**, no por escena | No pertenecen a una escena: se usan para rellenar cortes |
 
-🛑 **Los nombres se definen en la Capa 5, dentro de `plan.md §5`, antes de grabar.** Renombrar 400
+🛑 **Los nombres se definen en la Capa 5, dentro de `plan-de-rodaje.md` § Cómo se nombran los archivos, antes de grabar.** Renombrar 400
 archivos al final es cuando se pierde material y cuando el cruce contra el Excel deja de ser posible.
 Esta capa **aplica** la nomenclatura; no la inventa.
 
@@ -123,7 +123,7 @@ Esta capa **aplica** la nomenclatura; no la inventa.
     │   ├── CR-001/
     │   └── CR-007/
     ├── 02_AMBIENTES/
-    └── _ENTREGA/            ← el manifiesto vive en plan.md §6; acá va su copia y las rutas
+    └── _ENTREGA/            ← el manifiesto vive en plan-de-rodaje.md § La entrega; acá va su copia y las rutas
 ```
 
 | Carpeta | Qué va | Quién la usa |
@@ -144,7 +144,7 @@ siempre hacía falta.
 
 ## 6 · El manifiesto — el Excel cruzado, fila por fila
 
-Se cruza **cada fila** de `plan-de-produccion.csv`, sin muestreo, y se escribe en `plan.md §6`:
+Se cruza **cada fila** de `plan-de-produccion.csv`, sin muestreo, y se escribe en `plan-de-rodaje.md` § La entrega:
 
 ```
 | id | id_creativo | escena | ¿grabada? | archivo | ¿cobertura? | estado |
@@ -194,7 +194,7 @@ creativas completas y las **incompletas nombradas una por una**.
 - [ ] 🛑 **Backup en dos lugares antes de salir de la locación**
 - [ ] Los **selects están marcados** — las tomas buenas, y solo esas
 - [ ] 🛑 **No se entregó ninguna pieza terminada** — eso es de ⑥A Diseño y ⑥B Video Editing
-- [ ] La nomenclatura de `plan.md §5` está **aplicada**, con `id_creativo` y `escena` **exactos**
+- [ ] La nomenclatura de `plan-de-rodaje.md` § Cómo se nombran los archivos está **aplicada**, con `id_creativo` y `escena` **exactos**
 - [ ] La estructura de carpetas está armada, con `01_SELECTS` organizado **por `id_creativo`**
 - [ ] El **manifiesto cruza el Excel fila por fila**, sin muestreo
 - [ ] Toda escena `planificada` que no llegó a `entregada` tiene **motivo escrito**

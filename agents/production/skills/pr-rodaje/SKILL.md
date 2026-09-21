@@ -5,7 +5,7 @@ description: >
   jornada, con encabezado y dirección, horarios, contactos con teléfono, orden de tiro por costo de
   cambio, requerimientos por escena, la cobertura obligatoria marcada aparte, los riesgos del día
   con su plan B y la nomenclatura definida antes de grabar. Escribe los call sheets dentro de la
-  sección 2 Las jornadas y la sección 5 Nomenclatura de `plan.md`. Úsala cuando pidan "armá el call
+  sección de cada jornada y la sección de nomenclatura de `plan-de-rodaje.md`. Úsala cuando pidan "armá el call
   sheet", "el plan del jueves", "a qué hora convocamos", "en qué orden grabamos", "cómo nombramos
   los archivos", "qué tomas de seguridad hay que hacer". Requiere el presupuesto aprobado (GATE 1).
 ---
@@ -15,10 +15,10 @@ description: >
 | | |
 |---|---|
 | **Consume** | Las jornadas de la Capa 2 (columna `jornada` + el orden por costo de cambio) · los recursos confirmados de la Capa 3 con responsable, fecha y semáforo 🟢/🟡/🔴 · el presupuesto **aprobado en GATE 1** · las escenas de `plan-de-produccion.csv` con `accion`, `encuadre`, `duracion_s`, `locacion`, `talento`, `recursos`, `equipo` |
-| **Produce** | Un **call sheet por jornada** como subsección dentro de **`plan.md` §2 Las jornadas** · la sección **`plan.md` §5 Nomenclatura** · los riesgos del día enlazados a **§4 Riesgos y planes B** |
+| **Produce** | Un **call sheet por jornada** como subsección dentro de **`plan-de-rodaje.md`, la sección de cada jornada** · la sección **`plan-de-rodaje.md` § Cómo se nombran los archivos Nomenclatura** · los riesgos del día enlazados a **§4 Riesgos y planes B** |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:
-`agents/production/entregables/plan.md`.
+`agents/production/entregables/plan-de-rodaje.md`.
 
 **Qué es:** volver el plan un **día que sucede** — con horas, nombres, teléfonos y orden.
 **Qué no es:** no es agrupar (eso ya lo hizo la Capa 2), no es conseguir recursos (Capa 3) y no es
@@ -52,32 +52,50 @@ de su bloque → **cobertura antes de desarmar**.
 🛑 **El llamado del talento es ≥ 30 min antes de su primer tiro, escalonado por bloque.** Nadie
 espera tres horas: llega cansado justo a su escena.
 
-## Paso 2 · Dónde se escribe — `plan.md` §2, una subsección por jornada
+## Paso 2 · Dónde se escribe — una sección por jornada en `plan-de-rodaje.md`
 
-El call sheet **no es un archivo aparte**. Es una subsección de **§2 Las jornadas**, con este molde
-—uno por jornada— respetando la plantilla:
+El call sheet **no es un archivo aparte**: es la sección de su jornada, con este molde —uno por
+jornada— respetando la plantilla `agents/production/entregables/plan-de-rodaje.md`:
 
 ```markdown
-## Jornada 1 — [fecha]
-| | |
-|---|---|
-| **Locación** | [nombre + dirección] |
-| **Horario** | llamado [hh:mm] · inicio [hh:mm] · comida [hh:mm] · wrap [hh:mm] |
-| **Clima previsto** | [si hay exterior] |
-| **Escenas** | [n] — `PR-001` … |
-| **Horas efectivas** | [n] de máximo 10 |
-
-**Contactos del día**        → nombre · rol · teléfono
-**Orden de tiro**            → # · id · escena · setup · tiempo est. · notas
-**Márgenes incluidos**       → los del Paso 3
-**Cobertura obligatoria de esta locación** — 🛑 antes de desarmar
+# Jornada 1 — [día y fecha] · [locación]
+### Datos del día          → dirección completa · horarios · clima · escenas
+**Quiénes están**          → nombre · rol · teléfono
+### Las piezas de esta jornada   → compilado de ④ (ver Paso 2b)
+### Orden de tiro          → por bloque de setup: # · id · qué se graba · encuadre · dur. · tiempo · qué necesitás a mano
+### Lo que se dice en cámara     → solo lo hablado a cámara (ver Paso 2b)
+### Cobertura obligatoria  → 🛑 antes de desarmar
+### Riesgos del día        → cada uno con su plan B
 ```
 
-- Los **tiempos y el orden de tiro viven acá**, en `plan.md` §2 — el CSV de escenas **ya no tiene**
+- Los **tiempos y el orden de tiro viven acá** — el CSV de escenas **ya no tiene**
   `tiempo_estimado_min` ni `orden_en_jornada`.
-- Los **planes B viven en §4**; en el call sheet se citan los del día, no se duplican enteros.
 - 🛑 **El tiempo de set no es la duración de la pieza.** Un CU de 3 s se rueda en 45 min. Si el call
   sheet suma `duracion_s`, el día se cae antes de la comida.
+
+## Paso 2b · Compilar lo de ④ Creatividad — no copiarlo
+
+El equipo rueda con **un solo documento**: tener que abrir el de Producción y el de Creative a la vez,
+en el set, es como se pierden tomas. Por eso la información creativa que hace falta para ejecutar
+**se trae acá**.
+
+> 🛑 **Se compila, no se reescribe.** El original sigue siendo
+> `agents/creative/clients/<cliente>/ideas-<formato>.md`, y esta sección **lo cita como fuente**. Si
+> ④ cambia algo, se vuelve a compilar — nunca se edita acá. Un campo reescrito con otras palabras
+> crea una segunda versión de la verdad, y en dos ciclos las dos no coinciden.
+
+**El filtro es una sola pregunta: ¿lo necesita alguien parado en el set, con la cámara en la mano?**
+
+| Sí entra | No entra |
+|---|---|
+| La **acción** y el **encuadre** de cada escena, literales | La BIG IDEA, el insight y el filtro D/N/R |
+| La **duración** y el **tipo de lugar** | La hipótesis y la cubeta 70/20/10 |
+| La **emoción** y la **estética/mood** de cada pieza | El **copy** — el texto en pantalla lo pone ⑥B en edición |
+| El **guion, solo si se dice frente a cámara** | La **voz en off** — se graba otro día, en un lugar silencioso |
+
+- La emoción y el mood van **una vez por pieza**, en *Las piezas de esta jornada* — no se repiten escena por escena.
+- El **copy** puede aparecer como *nota de encuadre* (*"dejar aire arriba, ahí va el título"*), nunca como texto a producir en el set.
+- Con **talento no profesional** —un cliente real, alguien del equipo— no se entrega un guion para leer: se entregan **los puntos a tocar** y una indicación de dirección **por situación**. ❌ *"hacelo más natural"* ✅ *"contámelo como si se lo contaras a una amiga"*.
 
 ## Paso 3 · Los márgenes reales
 
@@ -137,13 +155,13 @@ armados.
 
 - 🛑 **Nunca se sale con una sola toma buena** de una escena.
 - **La cobertura no es una escena nueva:** no entra como fila de `plan-de-produccion.csv`. Su tiempo
-  está **incluido en el "tiempo est." de su escena** en el orden de tiro de `plan.md` §2.
-- Si no se pudo hacer, **se declara** en `plan.md` §6 con motivo. **No se omite.**
+  está **incluido en el "tiempo est." de su escena** en el orden de tiro de `plan-de-rodaje.md`, la sección de su jornada.
+- Si no se pudo hacer, **se declara** en `plan-de-rodaje.md` § La entrega con motivo. **No se omite.**
 
 ❌ *"Cobertura general: al final del día, si da el tiempo"*
 ✅ *"PR-002 · cobertura antes de desarmar: 2ª toma + wide + inserto + reacción — 12 min"*
 
-## Paso 5 · Nomenclatura — `plan.md` §5
+## Paso 5 · Nomenclatura — `plan-de-rodaje.md` § Cómo se nombran los archivos
 
 ```
 <cliente>_<campana>_<id_creativo>_<escena>_<tipo>_<take>.<ext>
@@ -166,8 +184,11 @@ aprobó. Después del GATE 2 se emiten los llamados; no antes.
 
 ## QA — Capa 5
 
-- [ ] Un call sheet **por jornada**, como subsección de **`plan.md` §2 Las jornadas**
+- [ ] Un call sheet **por jornada**, como sección propia de **`plan-de-rodaje.md`**, y el **índice de jornadas** al principio del doc
 - [ ] Encabezado completo: cliente · campaña · jornada · fecha · **dirección** · clima previsto
+- [ ] **Lo de ④ está compilado, no reescrito:** cada jornada trae *Las piezas de esta jornada* (concepto, emoción, mood) y la fuente citada
+- [ ] 🛑 **Pasó el filtro:** no entró la BIG IDEA, ni el insight, ni la hipótesis, ni el copy de pantalla, ni la voz en off
+- [ ] El **guion aparece solo donde alguien habla a cámara**, y la voz en off está declarada como *"se graba aparte"*
 - [ ] Horarios: llamado · primer tiro · comida · wrap previsto, con **horas efectivas ≤ 10**
 - [ ] **Contactos con teléfono** de cada convocado
 - [ ] Orden de tiro escena por escena, con `id`, acción, encuadre, duración y **tiempo de set**
@@ -176,8 +197,8 @@ aprobó. Después del GATE 2 se emiten los llamados; no antes.
 - [ ] La **cobertura obligatoria está marcada aparte** del orden de tiro, y **antes de desarmar**
 - [ ] Las **5 tomas de seguridad** están previstas por escena con talento o producto, más la extra por situación que aplique
 - [ ] El **ambiente de la locación (30 s)** está previsto una vez por locación
-- [ ] Los riesgos 🟡/🔴 del día están listados **con su plan B**, citados de `plan.md` §4
-- [ ] 🛑 **La nomenclatura está definida acá**, en `plan.md` §5 — no al entregar
+- [ ] Los riesgos 🟡/🔴 del día están listados **con su plan B**, citados de `plan-de-rodaje.md` § Riesgos del día
+- [ ] 🛑 **La nomenclatura está definida acá**, en `plan-de-rodaje.md` § Cómo se nombran los archivos — no al entregar
 - [ ] Los **márgenes están incluidos**: montaje 60-90 min · setup de luz 30-45 min · locación 60 min + traslado · desmontaje 45 min
 - [ ] El llamado del talento es **≥ 30 min antes** de su primer tiro, escalonado por bloque
 - [ ] Ninguna escena del call sheet falta en `plan-de-produccion.csv` — **si no está en el Excel, no se graba**

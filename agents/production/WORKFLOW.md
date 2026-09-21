@@ -28,13 +28,34 @@ Creatividad entrega una **intención**. Producción entrega **logística**.
 
 ## 2 · Qué entrega
 
-Tres archivos por ciclo. Nada más.
+**Dos entregables, con dos lectores distintos.** Esa es la única división que importa: si algo no se
+puede explicar sin jerga, no va en el del cliente; si no se necesita con la cámara en la mano, no va
+en el del equipo.
 
-| Archivo | Qué es | Para qué se usa |
+| Archivo | Para quién | Qué es |
 |---|---|---|
-| **`plan-de-produccion.csv`** | El plan. Una fila por **escena**, 16 columnas | Es lo que **se aprueba y se ejecuta** |
-| **`presupuesto.csv`** | El dinero. Por campaña y por categoría, estimado vs real | Es lo que **se aprueba primero** — y da el total del ciclo |
-| **`plan.md`** | El plan legible: jornadas, locaciones, recursos, riesgos, call sheets | Es lo que **se lee** para entender y para rodar |
+| **`presupuesto.md`** | **El cliente** | Qué vamos a producir, cuándo, qué necesitamos de ellos, cuánto cuesta y qué no incluye — en lenguaje natural, sin jerga del método |
+| **`plan-de-rodaje.md`** | **El equipo** | Con lo que se rueda: un índice de jornadas, una sección por jornada con su orden de tiro, y al final lo transversal (recursos, permisos, nomenclatura, entrega) |
+
+**Más dos archivos de trabajo interno** que no se entregan pero **sí se guardan**:
+`plan-de-produccion.csv` (una fila por escena, 16 columnas — es lo que permite cruzar el manifiesto
+al cierre) y `presupuesto.csv` (las 9 categorías cerradas, estimado vs. real — es lo que lee la Capa
+7). Más `aprendizaje-de-produccion.md`, el cierre del ciclo.
+
+### 🛑 El plan de rodaje **compila** lo de ④ Creatividad, no lo copia
+
+El equipo rueda con **un solo documento**: abrir el de Producción y el de Creative a la vez, en el
+set, es como se pierden tomas. Por eso la información creativa necesaria para ejecutar se trae al
+plan de rodaje — **citando su fuente, y sin editarla nunca acá**. Si ④ cambia algo, se vuelve a
+compilar.
+
+**El filtro: ¿lo necesita alguien parado en el set, con la cámara en la mano?**
+
+| Sí entra | No entra |
+|---|---|
+| Acción, encuadre, duración y tipo de lugar de cada escena | BIG IDEA, insight, filtro D/N/R, hipótesis, cubeta 70/20/10 |
+| Emoción y estética/mood, **una vez por pieza** | El **copy** de pantalla — lo pone ⑥B en edición |
+| El **guion, solo si se dice frente a cámara** | La **voz en off** — se graba otro día, no ocupa jornada |
 
 **El puente con Creatividad es el `id_creativo`.** Una pieza de Creative (`CR-007`) se vuelve N
 escenas de Producción (`PR-014`, `PR-015`, `PR-016`), todas con `id_creativo = CR-007`.
@@ -62,11 +83,11 @@ recursos · equipo · jornada · costo_estimado · riesgo · destino · estado
 | `equipo` | Cámara, óptica, soporte, luz, audio | Producción |
 | `jornada` | `J1`, `J2`… — la salida de la consolidación | Producción |
 | `costo_estimado` | Con moneda | Producción |
-| `riesgo` | `🟢` / `🟡` / `🔴` — el plan B va en `plan.md` | Producción |
+| `riesgo` | `🟢` / `🟡` / `🔴` — el plan B va en `plan-de-rodaje.md` | Producción |
 | `destino` | `video-editing` / `diseno-grafico` / `posting-directo` | Se deriva del formato |
 | `estado` | `planificada` / `grabada` / `entregada` / `↩️ devuelta` | Producción |
 
-### Las 6 columnas de `presupuesto.csv`
+### Las 6 columnas de `presupuesto.csv` *(interno)*
 
 ```
 campana · categoria · detalle · costo_estimado · costo_real · nota
@@ -75,14 +96,14 @@ campana · categoria · detalle · costo_estimado · costo_real · nota
 **Categorías cerradas:** `locacion` · `talento` · `equipo` · `arte-props` · `vestuario` ·
 `transporte` · `alimentacion` · `post-base` · `contingencia`.
 
-Se cierra con una fila `TOTAL` por campaña y una `TOTAL CICLO`. Así el cliente ve **cuánto cuesta
-cada campaña y cuánto el ciclo entero**, que es la pregunta que siempre hace.
+Se cierra con una fila `TOTAL` por campaña y una `TOTAL CICLO`.
 
 > 🛑 **El `costo_real` se completa siempre**, aunque sea igual al estimado. Sin eso la Capa 7 no
 > existe y el presupuesto del próximo ciclo se estima a ojo otra vez.
 
-**Además, un archivo de trabajo interno** que no se entrega al cliente pero sí se guarda:
-`aprendizaje-de-produccion.md`.
+**De este CSV sale `presupuesto.md`, que es lo que ve el cliente** — mismos números, traducidos a
+lenguaje natural, con las categorías cerradas convertidas a palabras. 🛑 **Con una sola campaña el
+doc no muestra desglose por campaña: muestra el total.** El desglose aparece solo si hay dos o más.
 
 ---
 
@@ -174,7 +195,7 @@ LOOP         Capa 7       ¿Qué costó más de lo previsto?  → vuelve a Capa 
 > **Agruparlas bien es lo que hace que 30 escenas se graben en 2 jornadas y no en 11.**
 
 ### Capa 0 · BRIEF — ¿qué se aprobó producir, exactamente?
-**Skill:** `pr-brief` · **Output:** la sección de brief de `plan.md`
+**Skill:** `pr-brief` · **Output:** la sección de brief de `plan-de-rodaje.md`
 
 No decide nada: **lee y verifica**. Filtra las filas con `rodaje = si` y verifica **fila por fila**
 que sea producible:
@@ -214,7 +235,7 @@ Toda escena se desglosa en las mismas **8 categorías**. Ninguna se omite: si no
 · `PR-003`. La escena es la unidad porque es lo que se graba, se agrupa y se cuesta.
 
 ### Capa 2 · CONSOLIDACIÓN — ¿qué se graba junto?
-**Skill:** `pr-jornadas` · **Output:** columna `jornada` + la sección de jornadas de `plan.md`
+**Skill:** `pr-jornadas` · **Output:** columna `jornada` + la sección de jornadas de `plan-de-rodaje.md`
 
 > **Lo caro de una producción no son las tomas: son los montajes.** Cada cambio de locación, cada
 > convocatoria de talento y cada luz nueva se paga en tiempo muerto. Treinta escenas dispersas
@@ -262,7 +283,7 @@ automáticamente a 🔴 y activa su plan B.**
 | **Producto** | Unidad de respaldo, o la escena se mueve a la jornada siguiente |
 
 ### Capa 4 · PRESUPUESTO — ¿cuánto cuesta y entra en lo disponible?
-**Skill:** `pr-presupuesto` · **Output:** `presupuesto.csv` + columna `costo_estimado`
+**Skill:** `pr-presupuesto` · **Output:** `presupuesto.md` (cliente) + `presupuesto.csv` interno + columna `costo_estimado`
 
 **Se cuesta por jornada, no por pieza.** Costear por pieza duplica los fijos.
 
@@ -288,7 +309,7 @@ con datos y no con intuición.
 🚦 **GATE 1 — el presupuesto lo aprueba un humano antes de comprometer un solo recurso.**
 
 ### Capa 5 · PLAN DE RODAJE — ¿qué día, a qué hora, en qué orden?
-**Skill:** `pr-rodaje` · **Output:** los call sheets dentro de `plan.md`
+**Skill:** `pr-rodaje` · **Output:** los call sheets dentro de `plan-de-rodaje.md`
 
 **Un call sheet por jornada**, con: encabezado (cliente, campaña, jornada, fecha, locación con
 dirección, clima previsto) · horarios (llamado, inicio, comida, wrap) · contactos con teléfono ·
@@ -308,7 +329,7 @@ desmontaje **45 min**.
 🚦 **GATE 2 — el plan de rodaje se aprueba antes de convocar a nadie.**
 
 ### Capa 6 · RODAJE Y ENTREGA — ¿se grabó todo y se entregó usable?
-**Skill:** `pr-entrega` · **Output:** la sección de entrega de `plan.md` + material en Drive
+**Skill:** `pr-entrega` · **Output:** la sección de entrega de `plan-de-rodaje.md` + material en Drive
 
 🛑 **Checklist de cierre de locación, antes de desarmar:**
 
@@ -376,10 +397,11 @@ Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
 ```
 clients/<cliente>/
 ├── _INPUTS/                    # guidelines, banco de assets, cotizaciones
-├── plan-de-produccion.csv      # ← ENTREGABLE · una fila por escena
-├── presupuesto.csv             # ← ENTREGABLE · por campaña y categoría
-├── plan.md                     # ← ENTREGABLE · jornadas, recursos, call sheets, entrega
-└── aprendizaje-de-produccion.md  # trabajo interno
+├── presupuesto.md              # ← ENTREGABLE · para el cliente
+├── plan-de-rodaje.md           # ← ENTREGABLE · para el equipo, con lo que se rueda
+├── plan-de-produccion.csv      # trabajo interno · una fila por escena, 16 columnas
+├── presupuesto.csv             # trabajo interno · categorías cerradas, estimado vs real
+└── aprendizaje-de-produccion.md  # trabajo interno · el cierre del ciclo
 ```
 
 El nombre de la carpeta es **el mismo nombre canónico** que en `agents/creative/clients/`.
@@ -392,7 +414,7 @@ El nombre de la carpeta es **el mismo nombre canónico** que en `agents/creative
 ```markdown
 ## HANDOFF — Producción → ⑥B Video Editing / ⑥A Diseño gráfico
 - Cliente: · Campaña(s): · Ciclo: · Fecha:
-- Entregables: plan-de-produccion.csv · presupuesto.csv · plan.md
+- Entregables: presupuesto.md (cliente) · plan-de-rodaje.md (equipo) · internos: plan-de-produccion.csv · presupuesto.csv
 - Gates: presupuesto [✅/⬜] · plan de rodaje [✅/⬜] · entrega [✅/⬜]
 - Escenas: planificadas [n] · grabadas [n] · entregadas [n]
 - Filas creativas completas: [lista de id_creativo]

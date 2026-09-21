@@ -16,11 +16,11 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección **2 Las jornadas** de `plan.md` (fechas y orden de tiro) · las guidelines y el banco de assets de ②B Branding · las cotizaciones del `_INPUTS/` del cliente |
-| **Produce** | Las columnas **`locacion`**, **`talento`**, **`recursos`**, **`equipo`** y **`riesgo`** de `plan-de-produccion.csv` · las secciones **3 Los recursos** (con permisos y legales) y **4 Riesgos y planes B** de `plan.md` |
+| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · las guidelines y el banco de assets de ②B Branding · las cotizaciones del `_INPUTS/` del cliente |
+| **Produce** | Las columnas **`locacion`**, **`talento`**, **`recursos`**, **`equipo`** y **`riesgo`** de `plan-de-produccion.csv` · las secciones **§ Lo que hay que conseguir** y **§ Permisos y autorizaciones** de `plan-de-rodaje.md`, y los **Riesgos del día** de cada jornada |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:
-`agents/production/entregables/plan.md`.
+`agents/production/entregables/plan-de-rodaje.md`.
 
 **Qué es:** convertir una lista de cosas en **compromisos con nombre y fecha**.
 **Qué no es:** no es cotizar el ciclo (eso es Capa 4) y **no es comprometer nada**: 🛑 ninguna
@@ -35,12 +35,12 @@ compromiso.
 | `talento` | **Quién específicamente**, no *"una persona joven"* |
 | `recursos` | **Producto + props + vestuario + arte/ambientación en una sola celda**, separados por `;` |
 | `equipo` | Cámara, óptica, soporte, luz, audio — **derivado del `encuadre`** |
-| `riesgo` | Solo el semáforo `🟢`/`🟡`/`🔴`. **El plan B va en `plan.md` §4** |
+| `riesgo` | Solo el semáforo `🟢`/`🟡`/`🔴`. **El plan B va en `plan-de-rodaje.md` § Riesgos del día** |
 
 ❌ `recursos: ambientación de oficina` ✅ `recursos: producto x3; taza; libreta; camisa lisa celeste; planta chica`
 
 🛑 **Origen, responsable, fecha de confirmación, permisos y plan B no son columnas del CSV: viven en
-`plan.md`.** El CSV dice **qué hay y cómo está**; `plan.md` dice **quién lo consigue y qué pasa si
+`plan-de-rodaje.md`.** El CSV dice **qué hay y cómo está**; `plan-de-rodaje.md` dice **quién lo consigue y qué pasa si
 falla**.
 
 ## 🛑 El vocabulario cerrado de origen — 5 valores, ninguno más
@@ -55,7 +55,7 @@ falla**.
 
 ## 🛑 La regla del responsable
 
-**Ningún recurso queda "por conseguir".** Cada ítem de la sección **3 Los recursos** lleva las cinco
+**Ningún recurso queda "por conseguir".** Cada ítem de la sección **§ Lo que hay que conseguir** lleva las cinco
 cosas, sin excepción:
 
 ```
@@ -162,7 +162,7 @@ en set**, nunca porque el medidor se mueve: un audio roto no se arregla en post,
 talento —sin él el foco se descubre en la edición— · y **se prueba la primera escena completa antes
 de convocar al talento**: 15 min que salvan la jornada.
 
-## Riesgos y planes B — sección 4 de `plan.md`
+## Riesgos y planes B — sección 4 de `plan-de-rodaje.md`
 
 Toda escena con dependencia externa lleva su plan B **escrito antes de la jornada**. 🛑 **Un riesgo
 sin plan B es un 🔴.**
@@ -202,12 +202,12 @@ de talento y proveedores **no se pegan en herramientas externas** sin necesidad 
 - [ ] Cada ítem tiene **fecha de confirmación**, con más margen para `comprado` (10 d) y `a-producir` (15 d)
 - [ ] Semáforo 🟢/🟡/🔴 aplicado a **todo** ítem, y la columna `riesgo` del CSV cargada en toda fila
 - [ ] 🛑 Todo 🟡 a menos de **48 h** de su jornada está marcado **🔴 y con su plan B activado**
-- [ ] Toda escena con dependencia externa (**clima · talento · permiso · producto**) tiene su **plan B escrito** en `plan.md` §4
+- [ ] Toda escena con dependencia externa (**clima · talento · permiso · producto**) tiene su **plan B escrito** en `plan-de-rodaje.md` § Riesgos del día
 - [ ] Las locaciones pasaron el **chequeo de viabilidad**: visita o fotos actuales, franja por escrito con nombre, luz verificada **a la hora del rodaje**, ruido, acceso, electricidad
 - [ ] Toda locación **exterior** tiene plan B con **interior alternativo o fecha reservada**
 - [ ] Toda persona identificable tiene **cesión de imagen gestionada**, con **canales, territorio y vigencia**
 - [ ] Si hay **uso en pauta**, está **declarado aparte** en la cesión
-- [ ] Los **permisos están gestionados primero**, no dejados para el final, y listados en `plan.md` §3
+- [ ] Los **permisos están gestionados primero**, no dejados para el final, y listados en `plan-de-rodaje.md` § Lo que hay que conseguir
 - [ ] `locacion` es un **lugar concreto** y `talento` es **quién específicamente**
 - [ ] La celda `recursos` fusiona **producto; props; vestuario; arte** separados por `;`, ítem por ítem — *"ambientación de oficina"* no es un ítem
 - [ ] El `equipo` se **derivó del `encuadre`**, no se eligió por gusto

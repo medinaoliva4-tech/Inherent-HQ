@@ -5,7 +5,7 @@ description: >
   Carga los 4 inputs bloqueantes, exige el Gate 3 de ④ Creatividad, filtra las filas con
   `rodaje = si`, verifica fila por fila que la pieza sea producible, cruza contra el banco de assets
   para no volver a grabar lo que ya existe y declara el techo de realidad: presupuesto disponible,
-  días de rodaje posibles y capacidad declarada. Escribe la sección "1 El brief" de `plan.md`.
+  días de rodaje posibles y capacidad declarada. Escribe la sección § Verificación y devoluciones de `plan-de-rodaje.md`.
   Úsala cuando pidan "arrancá el plan de producción de X", "qué vamos a producir este ciclo",
   "esto se puede grabar", "verificá si estas piezas son producibles", "qué ya tenemos grabado",
   "cuánto margen real hay". Bloquea si el Excel creativo no está aprobado.
@@ -16,10 +16,10 @@ description: >
 | | |
 |---|---|
 | **Consume** | `plan-de-contenido.csv` **con Gate 3 aprobado** y el `ideas-<formato>.md` de cada pieza, de ④ Creatividad (`agents/creative/clients/<cliente>/`) · guidelines y **banco de assets** de ②B Branding · fechas de campaña y **de preparación** de ③ Marketing · capacidad declarada, presupuesto disponible y restricciones de ① Comprensión |
-| **Produce** | La sección **`# 1 · El brief`** de `plan.md` — piezas y escenas recibidas, techo de realidad, tabla de producibilidad, material reutilizable y escenas devueltas a ④ |
+| **Produce** | La sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` — piezas y escenas recibidas, techo de realidad, tabla de producibilidad, material reutilizable y escenas devueltas a ④ |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:
-`agents/production/entregables/plan.md`.
+`agents/production/entregables/plan-de-rodaje.md`.
 
 **No decidís nada: leés y verificás.** Nada de lo que escribís acá es una decisión creativa ni una
 decisión de producción. Es la verificación de que lo que llegó **se puede producir**.
@@ -69,7 +69,7 @@ que se va a caer en la Capa 1.
 | **Coherencia con ②B** | Lo pedido no contradice guidelines, paleta ni do's & don'ts | **Se declara y se escala a ④ y ②B.** 🛑 **No se resuelve en set** — es un conflicto entre dos departamentos, no una devolución |
 | **¿Ya existe material que sirve?** | Cruce contra el banco de assets de ②B | Se marca `reutiliza` y **no se vuelve a grabar**: la escena no entra al desglose |
 
-La tabla se escribe tal cual en `plan.md`, una fila por pieza, con veredicto:
+La tabla se escribe tal cual en `plan-de-rodaje.md`, una fila por pieza, con veredicto:
 
 ```
 | Pieza  | Shot list | Acción y lugar | Mood y emoción | ¿Reutiliza? | Veredicto |
@@ -143,9 +143,9 @@ Los motivos válidos en esta capa son **1** (shot list roto), **2** (escena sin 
 - Una devolución sin dos alternativas concretas **es un bloqueo, no una devolución**.
 - La respuesta de ④ a cada devolución se registra **con fecha**.
 
-## 7 · Qué escribe en `plan.md`
+## 7 · Qué escribe en `plan-de-rodaje.md`
 
-Una sola sección, `# 1 · El brief`, con estos bloques:
+Una sola sección, § Verificación y devoluciones, con estos bloques:
 
 | Bloque | Qué lleva |
 |---|---|

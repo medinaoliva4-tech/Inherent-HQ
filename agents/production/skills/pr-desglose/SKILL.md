@@ -14,11 +14,11 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | La sección `# 1 · El brief` de `plan.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en ④ Creatividad (`agents/creative/clients/<cliente>/`) · las guidelines de ②B Branding |
+| **Consume** | La sección § Verificación y devoluciones de `plan-de-rodaje.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en ④ Creatividad (`agents/creative/clients/<cliente>/`) · las guidelines de ②B Branding |
 | **Produce** | Las **filas base de `plan-de-produccion.csv`**: `id`, `id_creativo`, `campana`, `escena`, `accion`, `encuadre`, `duracion_s`, `destino`, `estado` + el desglose de las 8 categorías que alimenta las columnas `locacion`, `talento`, `recursos`, `equipo` |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:
-`agents/production/entregables/plan.md`.
+`agents/production/entregables/plan-de-rodaje.md`.
 
 **Traducís.** Una escena escrita se vuelve una lista de cosas físicas que alguien tiene que
 conseguir. Es la traducción central del departamento: todo lo que viene después —jornadas,
@@ -134,7 +134,7 @@ producto + props + vestuario + arte y ambientación. **Ya no hay columnas separa
 | ② Talento | `talento` |
 | ③ Producto · ④ Props · ⑤ Vestuario · ⑥ Arte y ambientación | **`recursos`** — las cuatro, separadas por `;` |
 | ⑦ Equipo técnico | `equipo` |
-| ⑧ Permisos y legales | La sección **`# 3 · Los recursos`** de `plan.md` → *Permisos y legales* |
+| ⑧ Permisos y legales | La sección **§ Lo que hay que conseguir** de `plan-de-rodaje.md` → *Permisos y legales* |
 
 ```
 recursos: plato del menu x3; mantel blanco; cubiertos; N/A vestuario propio; mesa vestida con flor

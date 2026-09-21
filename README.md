@@ -119,7 +119,7 @@ agents/production/
 │   ├── produccion/             # el orquestador
 │   └── pr-*/                   # brief · desglose · jornadas · recursos · presupuesto ·
 │                               # rodaje · entrega · loop
-├── entregables/                # plan-de-produccion.csv + presupuesto.csv + plan.md
+├── entregables/                # presupuesto.md + plan-de-rodaje.md + los dos CSV internos
 └── clients/                    # un cliente = una carpeta
 ```
 
@@ -137,14 +137,16 @@ agents/production/
 
 | Archivo | Qué es | Para qué se usa |
 |---|---|---|
-| **`plan-de-produccion.csv`** | El plan. Una fila por **escena**, **16 columnas** | Es lo que **se ejecuta** |
-| **`presupuesto.csv`** | El dinero. Por campaña y categoría, estimado vs real | Es lo que **se aprueba**, con total por campaña y total del ciclo |
-| **`plan.md`** | Jornadas, recursos, riesgos, call sheets, entrega | Es lo que **se lee** para entender y para rodar |
+| **`presupuesto.md`** | Para **el cliente**: qué se produce, cuándo, qué necesitamos de él, cuánto cuesta y qué no incluye | Es lo que **se aprueba**, en lenguaje natural y sin jerga |
+| **`plan-de-rodaje.md`** | Para **el equipo**: índice de jornadas, una sección por día con su orden de tiro, y lo transversal al final | Es **con lo que se rueda** |
+| `plan-de-produccion.csv` | Una fila por **escena**, 16 columnas | Trabajo interno — cruza el manifiesto al cierre |
+| `presupuesto.csv` | Categorías cerradas, estimado vs real | Trabajo interno — lo lee la Capa 7 |
 | `aprendizaje-de-produccion.md` | Los desvíos reales del ciclo | Trabajo interno |
 
 **El puente con ④ Creatividad es el `id_creativo`.** Una pieza (`CR-007`) se vuelve N escenas
-(`PR-014`, `PR-015`, `PR-016`), todas con el mismo `id_creativo`. Acá el Excel manda y el doc
-acompaña — al revés de Creatividad — porque el valor de Producción son los números.
+(`PR-014`, `PR-015`, `PR-016`), todas con el mismo `id_creativo`. 🛑 **El plan de rodaje compila lo
+que hace falta de ④ para no abrir dos archivos en el set** —acción, encuadre, duración, emoción y el
+guion solo si se dice a cámara— **citando la fuente y sin editarla nunca acá**.
 
 **Dos cosas que definen el método:**
 
@@ -182,7 +184,7 @@ Los tres que ya están construidos:
             ↓  ideas-<formato>.md (concepto · emoción · hook · copy · guion · escenas · encuadres ·
             ↓  duraciones · elementos gráficos a pedir, uno por formato)
 ⑤ Producción                  →  material base entregado y nombrado
-            ↓  plan-de-produccion.csv + presupuesto.csv + plan.md + RAW y selects en Drive
+            ↓  presupuesto.md (cliente) + plan-de-rodaje.md (equipo) + RAW y selects en Drive
 ⑥A Diseño (estático) · ⑥B Video (montaje y masters)  →  arman la pieza
             ↓
 ⑦ Posting / ⑧B Ads            →  publican y pautan

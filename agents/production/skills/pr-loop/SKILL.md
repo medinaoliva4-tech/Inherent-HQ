@@ -16,7 +16,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `presupuesto.csv` con **`costo_real` cargado en todas las filas** · `plan-de-produccion.csv` completo, con `costo_estimado`, `jornada` y `estado` · de `plan.md`: los tiempos estimados del orden de tiro (`§2`), el factor de consolidación previsto (`§2`) y el manifiesto de entrega (`§6`) · **qué usó ⑥A y ⑥B en la pieza final** · la capacidad declarada por ① Comprensión |
+| **Consume** | `presupuesto.csv` con **`costo_real` cargado en todas las filas** · `plan-de-produccion.csv` completo, con `costo_estimado`, `jornada` y `estado` · de `plan-de-rodaje.md`: los tiempos estimados del orden de tiro (`§2`), el factor de consolidación previsto (`§2`) y el manifiesto de entrega (`§6`) · **qué usó ⑥A y ⑥B en la pieza final** · la capacidad declarada por ① Comprensión |
 | **Produce** | **`aprendizaje-de-produccion.md`** — archivo de trabajo interno: no se entrega al cliente pero **sí se guarda** en la carpeta del cliente. Plantilla: `aprendizaje-de-produccion.md`, al lado de esta skill |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Cómo encadena con el resto:
@@ -52,9 +52,9 @@ columna.
 | # | Lectura | La pregunta | De dónde sale |
 |---|---|---|---|
 | **1** | **Desvío de costo** | ¿Qué ítems se pasaron, y cuánto? | `costo_estimado` vs **`costo_real`** de `presupuesto.csv`, por categoría y por jornada |
-| **2** | **Desvío de tiempo** | ¿Qué escenas llevaron más de lo estimado? | Los tiempos del orden de tiro (`plan.md §2`) vs. el real de la jornada |
-| **3** | **Material no usado** | ¿Qué se grabó y ⑥A o ⑥B nunca usaron? | El manifiesto (`plan.md §6`) cruzado contra la pieza final |
-| **4** | **Consolidación** | ¿El factor fue el previsto? ¿Dónde se perdió? | Factor previsto (`plan.md §2`) vs. jornadas realmente usadas |
+| **2** | **Desvío de tiempo** | ¿Qué escenas llevaron más de lo estimado? | Los tiempos del orden de tiro (`plan-de-rodaje.md`, la sección de su jornada) vs. el real de la jornada |
+| **3** | **Material no usado** | ¿Qué se grabó y ⑥A o ⑥B nunca usaron? | El manifiesto (`plan-de-rodaje.md` § La entrega) cruzado contra la pieza final |
+| **4** | **Consolidación** | ¿El factor fue el previsto? ¿Dónde se perdió? | Factor previsto (`plan-de-rodaje.md`, la sección de su jornada) vs. jornadas realmente usadas |
 
 Las cuatro se escriben **con número**, no con adjetivo. *"Nos pasamos un poco"* no es una lectura:
 `talento · Q750 → Q1.100 · +47 % · el comensal externo cobró media jornada extra` sí lo es.

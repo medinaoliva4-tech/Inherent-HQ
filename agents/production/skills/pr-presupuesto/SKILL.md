@@ -4,7 +4,8 @@ description: >
   Capa 4 de ⑤ Producción — cuesta el ciclo por jornada (nunca por pieza), separa los cinco bloques
   de costo, declara la contingencia como línea propia según el perfil del rodaje, calcula el costo
   por pieza y verifica si entra en el presupuesto disponible. Si no entra, presenta tres opciones
-  con su impacto y decide un humano. Produce `presupuesto.csv` completo y la columna
+  con su impacto y decide un humano. Produce `presupuesto.md` —el entregable que lee el cliente, en
+  lenguaje natural—, el `presupuesto.csv` interno que lo respalda y la columna
   `costo_estimado` del plan. Úsala cuando pidan "cuánto cuesta producir esto", "presupuestá el
   ciclo", "armá el presupuesto", "cuánto sale cada pieza", "no nos alcanza, qué recortamos",
   "cuánta contingencia le ponemos". Requiere la Capa 2 hecha: presupuestar sin consolidar se
@@ -16,10 +17,10 @@ description: >
 | | |
 |---|---|
 | **Consume** | Las jornadas cerradas de la Capa 2 (columna `jornada` + el factor de consolidación) · los recursos de la Capa 3 con su origen (`propio`/`prestado`/`alquilado`/`comprado`/`a-producir`) · el techo de presupuesto declarado en la Capa 0 · las cotizaciones de `_INPUTS/` |
-| **Produce** | `presupuesto.csv` completo — 6 columnas, categorías cerradas, `TOTAL` por campaña y `TOTAL CICLO` · la columna `costo_estimado` de `plan-de-produccion.csv` · el costo por pieza · y, si no entra, las 3 opciones con su impacto |
+| **Produce** | **`presupuesto.md`** — el entregable que lee el cliente · `presupuesto.csv` interno, 6 columnas, categorías cerradas, `TOTAL` por campaña y `TOTAL CICLO` · la columna `costo_estimado` de `plan-de-produccion.csv` · el costo por pieza · y, si no entra, las 3 opciones con su impacto |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:
-`agents/production/entregables/plan.md`.
+`agents/production/entregables/presupuesto.md`.
 
 **Qué es:** poner número al plan que ya está agrupado, y decir con datos si entra o no.
 **Qué no es:** no es decidir qué se produce (③ Marketing) ni cambiar el contenido de una escena
@@ -100,7 +101,10 @@ Ese número es el que **vuelve en la Capa 7** —contra el costo real— y el qu
 ③ Marketing **decidir el ciclo siguiente con datos y no con intuición**: cuántas piezas pide, en qué
 formato y con qué presupuesto.
 
-## Paso 4 · Escribir `presupuesto.csv`
+## Paso 4 · Escribir `presupuesto.csv` — el respaldo interno
+
+> 🛑 **El CSV es interno, no es el entregable.** Es donde vive el número con su categoría cerrada y,
+> al cierre, el `costo_real`. Lo que ve el cliente es `presupuesto.md` (Paso 4b).
 
 ```
 campana · categoria · detalle · costo_estimado · costo_real · nota
@@ -123,6 +127,36 @@ campana · categoria · detalle · costo_estimado · costo_real · nota
 **En `plan-de-produccion.csv` esta capa escribe una sola columna: `costo_estimado`**, con moneda, por
 escena (fijos prorrateados de su jornada + sus variables). El `costo_real` **no vive en ese CSV**:
 vive en `presupuesto.csv`.
+
+## Paso 4b · Escribir `presupuesto.md` — el entregable del cliente
+
+Es el mismo número, traducido. **Lo lee alguien que no conoce el método**, así que se escribe en
+lenguaje natural: sin `jornadas`, sin `factor de consolidación`, sin ids de pieza, sin las categorías
+cerradas. Plantilla: `agents/production/entregables/presupuesto.md`.
+
+**Las 9 categorías internas se traducen así:**
+
+| Interna | En el doc del cliente |
+|---|---|
+| `locacion` | Locaciones y permisos |
+| `talento` | Personas frente a cámara |
+| `equipo` | Equipo de filmación |
+| `arte-props` + `vestuario` | Producto y utilería |
+| `transporte` | Traslados |
+| `alimentacion` | Comida del equipo |
+| `post-base` | Ordenado y respaldo del material |
+| `contingencia` | Imprevistos |
+
+**Las cuatro cosas que el doc tiene que decir sí o sí:**
+
+1. **Qué vamos a producir y cuándo se graba** — en piezas, no en escenas ni en ids.
+2. **Qué necesitamos del cliente** — acceso, producto, personas, con fecha y responsable. No cuesta plata y es lo que más atrasa un rodaje.
+3. **Qué NO incluye** — la edición, el diseño y la pauta se cotizan aparte. 🛑 Si no está escrito, el cliente lo asume incluido.
+4. **Por qué cuesta lo que cuesta** — una línea sobre los días que se ahorran por consolidar. Convierte el número en un argumento en vez de un dato suelto.
+
+> 🛑 **Con una sola campaña no se muestra desglose por campaña: va el total y listo.** El desglose
+> por campaña aparece **solo si el ciclo tiene dos o más**, y ahí se cierra con el total del ciclo.
+> La estructura del CSV soporta N campañas siempre; lo que se ajusta es qué se muestra.
 
 ## Paso 5 · Si no entra — las 3 opciones, siempre las tres
 
@@ -169,6 +203,10 @@ convocatoria, ni una compra, ni una seña de locación. Se registra con fecha y 
 - [ ] `presupuesto.csv` cierra con una fila **`TOTAL` por campaña** y una **`TOTAL CICLO`**
 - [ ] La columna `costo_estimado` está completa en **todas** las filas de `plan-de-produccion.csv`
 - [ ] El `costo_real` quedó en `presupuesto.csv` para la Capa 6/7 — **no** en el CSV de escenas
+- [ ] 🛑 **`presupuesto.md` está escrito y sus números cuadran con el CSV** — el cliente y el interno no pueden decir cosas distintas
+- [ ] `presupuesto.md` **no usa jerga del método**: ni `jornada`, ni `factor de consolidación`, ni ids de pieza, ni las categorías cerradas
+- [ ] `presupuesto.md` trae **qué necesitamos del cliente** (con fecha y responsable) y **qué NO incluye**
+- [ ] Con una sola campaña, `presupuesto.md` **no muestra desglose por campaña**
 - [ ] Si no entra: están **las 3 opciones** con su impacto y con quién decide cada una
 - [ ] 🛑 **Producción no eligió sola qué pieza se cae**
 - [ ] Todo gasto que excede lo aprobado está marcado **⏸️ PENDIENTE APROBACIÓN**, no ejecutado

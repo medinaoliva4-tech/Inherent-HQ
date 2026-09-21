@@ -26,7 +26,7 @@ description: >
 
 El departamento completo: `agents/production/WORKFLOW.md`. Qué hace cada skill y cómo se encadenan:
 `agents/production/skills/COMO-LAS-USA.md`. Plantilla del entregable legible:
-`agents/production/entregables/plan.md`.
+`agents/production/entregables/plan-de-rodaje.md`.
 
 🛑 **No reconstruyas el Excel creativo leyendo otros documentos:** si falta un bloqueante se pide **el
 archivo exacto**. 🛑 **Nunca se duplica un archivo de otro departamento: se cita su ruta.**
@@ -77,13 +77,13 @@ a la Capa 2 y a ① Comprensión.
 
 | Capa | Skill | Se llama cuando… | Produce |
 |---|---|---|---|
-| **0** | `pr-brief` | Arranca el ciclo, o *"esto se puede grabar"* | La sección **`1 El brief`** de `plan.md` + el techo de realidad |
+| **0** | `pr-brief` | Arranca el ciclo, o *"esto se puede grabar"* | La sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` + el techo de realidad |
 | **1** | `pr-desglose` | *"qué hace falta conseguir"* | Las **filas base** de `plan-de-produccion.csv`, una por escena |
-| **2** | `pr-jornadas` | *"en cuántos días se graba"*, *"agrupá esto"* | Columna `jornada` + la sección **`2 Las jornadas`** |
-| **3** | `pr-recursos` | *"quién consigue qué"*, *"está confirmada la locación"* | Columnas `locacion`, `talento`, `recursos`, `equipo`, `riesgo` + **`3`** y **`4`** |
-| **4** | `pr-presupuesto` | *"cuánto cuesta"* | **`presupuesto.csv`** + columna `costo_estimado` |
-| **5** | `pr-rodaje` | *"armá el call sheet"* | Los call sheets dentro de **`2 Las jornadas`** + **`5 Nomenclatura`** |
-| **6** | `pr-entrega` | *"cerrá la entrega"*, *"qué quedó grabado"* | La sección **`6 La entrega`** + la columna `estado` |
+| **2** | `pr-jornadas` | *"en cuántos días se graba"*, *"agrupá esto"* | Columna `jornada` + el **índice de jornadas** y la sección de cada una |
+| **3** | `pr-recursos` | *"quién consigue qué"*, *"está confirmada la locación"* | Columnas `locacion`, `talento`, `recursos`, `equipo`, `riesgo` + **§ Lo que hay que conseguir**, **§ Permisos** y los riesgos de cada jornada |
+| **4** | `pr-presupuesto` | *"cuánto cuesta"* | **`presupuesto.md`** (cliente) + `presupuesto.csv` interno + columna `costo_estimado` |
+| **5** | `pr-rodaje` | *"armá el call sheet"* | Los call sheets dentro de **la sección de cada jornada** + **§ Cómo se nombran los archivos** |
+| **6** | `pr-entrega` | *"cerrá la entrega"*, *"qué quedó grabado"* | La sección **§ La entrega** + la columna `estado` |
 | **7** | `pr-loop` | *"cómo nos fue"*, *"qué se pasó"* | **`aprendizaje-de-produccion.md`** |
 
 > **El valor del departamento está en la Capa 2.** Traducir una idea a una lista es mecánico;
@@ -100,20 +100,26 @@ a la Capa 2 y a ① Comprensión.
 
 🛑 **Los gates son humanos y nadie los salta.** El orquestador **para**, declara el estado y espera confirmación explícita. No los aprueba solo ni los asume aprobados por silencio.
 
-## 5 · Los entregables — tres, y nada más
+## 5 · Los entregables — dos, con dos lectores distintos
 
-| Archivo | Qué es | Cómo se lee |
+| Archivo | Para quién | Cómo se lee |
 |---|---|---|
-| **`plan-de-produccion.csv`** | El plan. Una fila por **escena**, **16 columnas** | **Fila por fila**, para ejecutar y para cruzar contra ④ |
-| **`presupuesto.csv`** | El dinero. Por campaña y categoría, **6 columnas**, estimado vs real | **Se aprueba primero** — da el total por campaña y del ciclo |
-| **`plan.md`** | El plan legible: `1 El brief` · `2 Las jornadas` · `3 Los recursos` · `4 Riesgos y planes B` · `5 Nomenclatura` · `6 La entrega` | **De a una jornada**, para rodar |
+| **`presupuesto.md`** | **El cliente** | De una sentada: qué se produce, cuándo, qué necesitamos de ellos, cuánto cuesta y qué no incluye. **Lenguaje natural, sin jerga del método** |
+| **`plan-de-rodaje.md`** | **El equipo** | Índice de jornadas → la sección de tu día → lo transversal al final. **De a una jornada**, para rodar |
+
+🛑 **El plan de rodaje compila lo de ④ Creatividad, no lo copia** — acción, encuadre, duración,
+emoción, mood y el guion **solo si se dice a cámara**. La BIG IDEA, la hipótesis, el copy de pantalla
+y la voz en off **no entran**. El original sigue siendo `ideas-<formato>.md` y se cita como fuente:
+si ④ cambia algo, se vuelve a compilar. Detalle del filtro en `WORKFLOW.md` §2.
 
 **El puente con ④ es el `id_creativo`.** `CR-007` se vuelve N escenas (`PR-014`, `PR-015`, `PR-016`),
 todas con `id_creativo = CR-007`. 🛑 **Una escena que no está en el Excel no se graba:** si aparece el
-día del rodaje, es presupuesto que nadie aprobó. **Más un archivo interno** que no se entrega al
-cliente pero **sí se guarda**: `aprendizaje-de-produccion.md`. Los cuatro viven en
-`clients/<cliente>/` —insumos en `_INPUTS/`— con **el mismo nombre canónico** que en
-`agents/creative/clients/`.
+día del rodaje, es presupuesto que nadie aprobó.
+
+**Más tres archivos de trabajo interno** que no se entregan pero **sí se guardan**:
+`plan-de-produccion.csv` (una fila por escena, 16 columnas), `presupuesto.csv` (categorías cerradas,
+estimado vs. real) y `aprendizaje-de-produccion.md`. Todos viven en `clients/<cliente>/` —insumos en
+`_INPUTS/`— con **el mismo nombre canónico** que en `agents/creative/clients/`.
 
 ## 6 · Verificá alcance antes de producir
 
@@ -168,7 +174,7 @@ registra **con fecha**.
 ```markdown
 ## HANDOFF — Producción → ⑥B Video Editing / ⑥A Diseño gráfico
 - Cliente: · Campaña(s): · Ciclo: · Fecha:
-- Entregables: plan-de-produccion.csv · presupuesto.csv · plan.md
+- Entregables: presupuesto.md (cliente) · plan-de-rodaje.md (equipo) · internos: plan-de-produccion.csv · presupuesto.csv
 - Gates: presupuesto [✅/⬜] · plan de rodaje [✅/⬜] · entrega [✅/⬜]
 - Escenas: planificadas [n] · grabadas [n] · entregadas [n]
 - Filas creativas completas: [lista de id_creativo]
@@ -196,9 +202,11 @@ caduca. **Convenciones:** 🟢 confirmado · 🟡 gestionando · 🔴 en riesgo 
 
 - [ ] El **PRE-FLIGHT** está emitido con **PASS o BLOQUEADO**, y cada skill corrió **con el output de la anterior**, sin faltantes improvisados
 - [ ] 🛑 El Excel de ④ tiene **Gate 3 aprobado**, y solo se tomaron las filas con **`rodaje = si`**
-- [ ] Existen **exactamente tres entregables** —`plan-de-produccion.csv`, `presupuesto.csv` y `plan.md`— con sus **16** y **6 columnas** completas, y 🛑 **toda fila traza a un `id_creativo`**, y de ahí a un slot de ③ y a una MUST BE TRUE
+- [ ] Existen **los dos entregables** —`presupuesto.md` y `plan-de-rodaje.md`— más los internos `plan-de-produccion.csv` (16 columnas) y `presupuesto.csv` (6 columnas) completos, y 🛑 **toda fila traza a un `id_creativo`**, y de ahí a un slot de ③ y a una MUST BE TRUE
+- [ ] `presupuesto.md` está en **lenguaje natural**, con *qué necesitamos del cliente* y *qué NO incluye*, y sus números **cuadran con el CSV interno**
+- [ ] `plan-de-rodaje.md` **compiló** lo de ④ con el filtro aplicado, citando la fuente — 🛑 **nada de ④ fue reescrito ni editado acá**
 - [ ] 🛑 **Ninguna escena existe que ④ Creatividad no haya pedido**, y ninguna que sí pidió falta sin motivo escrito
-- [ ] Brief, jornadas, recursos, presupuesto y `plan.md` **no se contradicen** entre sí
+- [ ] Brief, jornadas, recursos, presupuesto y `plan-de-rodaje.md` **no se contradicen** entre sí
 - [ ] 🛑 **Ninguna decisión creativa fue cambiada** — lo que no se podía **se devolvió** con los 3 elementos, y la respuesta de ④ está registrada **con fecha**
 - [ ] 🛑 **La Capa 2 corrió antes de la Capa 4**, y el **factor de consolidación** está declarado con su lectura
 - [ ] Los **3 gates humanos** están registrados con estado — ninguno asumido por silencio
