@@ -103,5 +103,5 @@ pr-brief ──→ pr-desglose ──→ pr-jornadas ──→ pr-recursos ─�
 3. **Toda skill declara arriba qué consume, qué produce y en qué sección de qué entregable escribe.**
    Esa es la trazabilidad del departamento: no hay un archivo aparte que la lleve.
 4. **Toda skill cierra con su bloque de QA**, con los checks de su capa.
-5. **Ninguna skill nueva agrega un entregable.** Los tres archivos están cerrados: una skill nueva escribe dentro de ellos o no va.
+5. **Ninguna skill nueva agrega un entregable.** Los cinco archivos están cerrados: una skill nueva escribe dentro de ellos o no va.
 6. **Agregala a la tabla de arriba**, o en tres meses nadie sabe que existe.
