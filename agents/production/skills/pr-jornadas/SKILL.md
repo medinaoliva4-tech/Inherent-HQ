@@ -17,7 +17,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las filas base de `plan-de-produccion.csv` que dejó `pr-desglose` (Capa 1), con `locacion`, `talento`, `recursos` y `equipo` ya identificados · la sección **1 El brief** de `plan-de-rodaje.md` con el techo de días posibles · las fechas de preparación de ③ Marketing |
+| **Consume** | Las filas base de `plan-de-produccion.csv` que dejó `pr-desglose` (Capa 1), con `locacion`, `talento`, `recursos` y `equipo` ya identificados · la sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` con el techo de días posibles · las fechas de preparación de ③ Marketing |
 | **Produce** | La columna **`jornada`** de `plan-de-produccion.csv` (`J0`, `J1`, `J2`…) · la sección de cada jornada de `plan-de-rodaje.md`: factor de consolidación, ficha y orden de tiro de cada jornada, y la cobertura obligatoria de cada locación |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:

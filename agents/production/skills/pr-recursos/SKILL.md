@@ -162,7 +162,7 @@ en set**, nunca porque el medidor se mueve: un audio roto no se arregla en post,
 talento —sin él el foco se descubre en la edición— · y **se prueba la primera escena completa antes
 de convocar al talento**: 15 min que salvan la jornada.
 
-## Riesgos y planes B — sección 4 de `plan-de-rodaje.md`
+## Riesgos y planes B — § Riesgos del día de `plan-de-rodaje.md`
 
 Toda escena con dependencia externa lleva su plan B **escrito antes de la jornada**. 🛑 **Un riesgo
 sin plan B es un 🔴.**

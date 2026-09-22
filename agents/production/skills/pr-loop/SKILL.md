@@ -16,7 +16,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `presupuesto.csv` con **`costo_real` cargado en todas las filas** · `plan-de-produccion.csv` completo, con `costo_estimado`, `jornada` y `estado` · de `plan-de-rodaje.md`: los tiempos estimados del orden de tiro (`§2`), el factor de consolidación previsto (`§2`) y el manifiesto de entrega (`§6`) · **qué usó ⑥A y ⑥B en la pieza final** · la capacidad declarada por ① Comprensión |
+| **Consume** | `presupuesto.csv` con **`costo_real` cargado en todas las filas** · `plan-de-produccion.csv` completo, con `costo_estimado`, `jornada` y `estado` · de `plan-de-rodaje.md`: los tiempos estimados del orden de tiro y el factor de consolidación previsto (la sección de cada jornada) y el manifiesto de entrega (§ La entrega) · **qué usó ⑥A y ⑥B en la pieza final** · la capacidad declarada por ① Comprensión |
 | **Produce** | **`aprendizaje-de-produccion.md`** — archivo de trabajo interno: no se entrega al cliente pero **sí se guarda** en la carpeta del cliente. Plantilla: `aprendizaje-de-produccion.md`, al lado de esta skill |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Cómo encadena con el resto:

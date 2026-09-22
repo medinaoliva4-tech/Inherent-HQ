@@ -37,10 +37,10 @@ en el del equipo.
 | **`presupuesto.md`** | **El cliente** | Qué vamos a producir, cuándo, qué necesitamos de ellos, cuánto cuesta y qué no incluye — en lenguaje natural, sin jerga del método |
 | **`plan-de-rodaje.md`** | **El equipo** | Con lo que se rueda: un índice de jornadas, una sección por jornada con su orden de tiro, y al final lo transversal (recursos, permisos, nomenclatura, entrega) |
 
-**Más dos archivos de trabajo interno** que no se entregan pero **sí se guardan**:
+**Más tres archivos de trabajo interno** que no se entregan pero **sí se guardan**:
 `plan-de-produccion.csv` (una fila por escena, 16 columnas — es lo que permite cruzar el manifiesto
-al cierre) y `presupuesto.csv` (las 9 categorías cerradas, estimado vs. real — es lo que lee la Capa
-7). Más `aprendizaje-de-produccion.md`, el cierre del ciclo.
+al cierre), `presupuesto.csv` (las 9 categorías cerradas, estimado vs. real — es lo que lee la Capa
+7) y `aprendizaje-de-produccion.md`, el cierre del ciclo.
 
 ### 🛑 El plan de rodaje **compila** lo de ④ Creatividad, no lo copia
 
@@ -195,7 +195,7 @@ LOOP         Capa 7       ¿Qué costó más de lo previsto?  → vuelve a Capa 
 > **Agruparlas bien es lo que hace que 30 escenas se graben en 2 jornadas y no en 11.**
 
 ### Capa 0 · BRIEF — ¿qué se aprobó producir, exactamente?
-**Skill:** `pr-brief` · **Output:** la sección de brief de `plan-de-rodaje.md`
+**Skill:** `pr-brief` · **Output:** la sección § Verificación y devoluciones de `plan-de-rodaje.md`
 
 No decide nada: **lee y verifica**. Filtra las filas con `rodaje = si` y verifica **fila por fila**
 que sea producible:

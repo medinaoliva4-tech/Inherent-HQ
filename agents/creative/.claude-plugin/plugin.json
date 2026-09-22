@@ -2,7 +2,7 @@
   "name": "creatividad",
   "displayName": "④ Creatividad — Inherent Global",
   "version": "2.0.0",
-  "description": "Convierte la estrategia aprobada en ideas dirigidas, listas para que otro las ejecute sin adivinar nada. Entrega un Excel de estructura y un doc con cada idea desarrollada.",
+  "description": "Convierte la estrategia aprobada en ideas dirigidas, listas para que otro las ejecute sin adivinar nada. Entrega un Excel de estructura, un doc de dirección con el brief y las BIG IDEAS, y un doc por formato con cada pieza desarrollada.",
   "author": { "name": "Inherent Global" },
   "repository": "https://github.com/medinaoliva4-tech/Inherent-HQ",
   "keywords": ["creatividad", "contenido", "swipe-file", "hooks", "direccion-creativa"]

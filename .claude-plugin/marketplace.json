@@ -7,12 +7,12 @@
     {
       "name": "creatividad",
       "source": "./agents/creative",
-      "description": "④ Creatividad — convierte la estrategia aprobada en ideas dirigidas. Entrega plan-de-contenido.csv + ideas.md."
+      "description": "④ Creatividad — convierte la estrategia aprobada en ideas dirigidas. Entrega plan-de-contenido.csv + brief-del-ciclo.md + un ideas-<formato>.md por formato del ciclo."
     },
     {
       "name": "produccion",
       "source": "./agents/production",
-      "description": "⑤ Producción — convierte las ideas aprobadas en material real. Entrega plan-de-produccion.csv, presupuesto.csv y plan.md."
+      "description": "⑤ Producción — convierte las ideas aprobadas en material real. Entrega presupuesto.md (para el cliente) y plan-de-rodaje.md (para el equipo)."
     }
   ]
 }

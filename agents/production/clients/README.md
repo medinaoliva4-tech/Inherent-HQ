@@ -23,7 +23,7 @@ archivos en el set. El puente con ④ es el `id_creativo`.
    **Si no está aprobado, Producción no arranca** — producir sobre ideas que pueden cambiar es gastar
    presupuesto en algo que se va a rehacer.
 2. Crear la carpeta con **el mismo nombre canónico** que usa ④ Creatividad.
-3. Copiar las tres plantillas de `../entregables/`.
+3. Copiar las cuatro plantillas de `../entregables/`.
 4. Guardar en `_INPUTS/` las guidelines de ②B y el banco de assets existente.
 5. Correr el pre-flight de `../WORKFLOW.md` §7.
 

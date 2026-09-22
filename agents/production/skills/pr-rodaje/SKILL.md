@@ -15,7 +15,7 @@ description: >
 | | |
 |---|---|
 | **Consume** | Las jornadas de la Capa 2 (columna `jornada` + el orden por costo de cambio) · los recursos confirmados de la Capa 3 con responsable, fecha y semáforo 🟢/🟡/🔴 · el presupuesto **aprobado en GATE 1** · las escenas de `plan-de-produccion.csv` con `accion`, `encuadre`, `duracion_s`, `locacion`, `talento`, `recursos`, `equipo` |
-| **Produce** | Un **call sheet por jornada** como subsección dentro de **`plan-de-rodaje.md`, la sección de cada jornada** · la sección **`plan-de-rodaje.md` § Cómo se nombran los archivos Nomenclatura** · los riesgos del día enlazados a **§4 Riesgos y planes B** |
+| **Produce** | Un **call sheet por jornada** como subsección dentro de **`plan-de-rodaje.md`, la sección de cada jornada** · la sección **`plan-de-rodaje.md` § Cómo se nombran los archivos** · los riesgos del día enlazados a **§ Riesgos del día** de cada jornada |
 
 Contexto del departamento: `agents/production/WORKFLOW.md`. Plantilla del entregable:
 `agents/production/entregables/plan-de-rodaje.md`.
