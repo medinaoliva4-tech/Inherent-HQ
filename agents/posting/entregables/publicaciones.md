@@ -83,6 +83,71 @@ Reels antes del *"… más"*.
 
 ---
 
+# Los envíos de email
+
+*(Ruta email. 🛑 **No van en `publer-import.csv`**: Publer no manda email, y una fila de `Email` ahí
+hace fallar la importación entera.)*
+
+| | |
+|---|---|
+| **Herramienta** | [la que usa el cliente, de `comprension.md` § La capacidad · o ⚠️ SIN DATOS] |
+| **Quién carga y envía** | [nombre] |
+
+## PO-00X · [asunto en una línea]
+
+| | |
+|---|---|
+| **Pieza de ④** | `CR-00X` — ver `agents/creative/clients/<cliente>/ideas-newsletter.md` §CR-00X |
+| **Campaña** | |
+| **Lista / segmento** | [a quién se le manda, concreto] |
+| **Fecha y hora** | [aaaa-mm-dd hh:mm] · [zona horaria] |
+| **Imágenes** | [de ⑥A, con su ruta · o `N/A — solo texto`] |
+
+### Asunto y preheader
+
+🛑 **El asunto es el hook del email.** Se decide igual que un hook: es lo único que se ve en la
+bandeja, junto al preheader.
+
+```
+Asunto:    "[literal, corto — lo que se ve en el celular]"
+Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite]"
+```
+
+| | |
+|---|---|
+| **Caracteres del asunto** | [n] — [se corta cerca de 40 en móvil] |
+| **¿El preheader repite el asunto?** | ⬜ no / ⚠️ sí → reescribir |
+
+### Cuerpo
+
+*(El mensaje de ④, acomodado al formato de email. 🛑 **No se reescribe.**)*
+
+```
+[el cuerpo literal, con sus saltos de línea]
+```
+
+| | |
+|---|---|
+| **CTA** | [el de ④] → [link] |
+| **Qué se cambió respecto de ④, y por qué** | [solo largo y forma] |
+
+### QA del envío
+
+| Chequeo | ✅/⬜ |
+|---|---|
+| El asunto no promete algo que el cuerpo no cumple | |
+| Los links funcionan y llevan a donde dicen | |
+| Hay forma de desuscribirse | 🛑 no es opcional |
+| El remitente es el que el cliente usa siempre | |
+| Se mandó una prueba a una casilla propia y se leyó **en el celular** | |
+| Claims aprobados | ✅ / ⏸️ **no se envía** |
+
+**Estado:** 🟢 listo / 🟡 [qué falta] / 🔴 no sale este ciclo / ↩️ DEVUELTO
+
+*(Una sección así por cada envío del ciclo.)*
+
+---
+
 # Lo que no sale este ciclo
 
 | id_creativo | Qué falta | De quién se espera | Desde cuándo | Motivo |

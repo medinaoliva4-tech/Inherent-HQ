@@ -26,12 +26,30 @@ paso vive en las skills: `skills/COMO-LAS-USA.md`.
 ### Dónde para: el humano sube
 
 Este departamento **no publica.** Deja el paquete completo y el archivo de carga; **un humano lo sube
-a Publer y aprieta programar.**
+y aprieta programar.**
 
 Es una decisión declarada del repo, no una limitación: la regla 10 del `CLAUDE.md` dice que nada se
 publica sin autorización, y `.claude/settings.json` ya tiene las herramientas de publicación
 automática en `deny`. Un error de copy o de fecha que sale publicado no se puede despublicar del
 timeline de nadie.
+
+### Las dos rutas de salida
+
+No todo lo que ③ Marketing programa es una red social. El calendario trae **`Email / Newsletter`**
+como canal de primera clase, y **Publer no manda email**. Por eso hay dos rutas, y toda fila cae en
+una de las dos:
+
+| Ruta | Canales | Sale por | Quién carga |
+|---|---|---|---|
+| **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | **`publer-import.csv`** | Un humano, en Publer |
+| **Email** | Email / Newsletter | La sección **§ Los envíos de email** de `publicaciones.md` | Un humano, en la herramienta de email del cliente |
+
+🛑 **La herramienta de email no se supone.** Cuál usa el cliente está en
+`agents/comprension/clients/<cliente>/comprension.md` § La capacidad. Si no está: `⚠️ SIN DATOS`, y
+el paquete se entrega igual — es agnóstico de herramienta.
+
+> 🛑 **Una fila de `Email` que se mete en `publer-import.csv` falla la importación entera.** Se
+> separan en la Capa 0, no al cargar.
 
 ---
 
@@ -42,7 +60,7 @@ timeline de nadie.
 | Archivo | Para quién | Qué es |
 |---|---|---|
 | **`publicaciones.md`** | **Quien aprueba** — el lead, y el cliente si corresponde | Una sección por publicación: caption final, hashtags, alt text, link, qué archivo va, fecha y hora, y el QA de plataforma. Se lee para dar el OK |
-| **`publer-import.csv`** | **Quien carga** | El archivo con las **12 columnas exactas de Publer**, listo para subir. No se lee: se sube |
+| **`publer-import.csv`** | **Quien carga** | El archivo con las **12 columnas exactas de Publer**, listo para subir. No se lee: se sube. **Solo lleva las filas de la ruta social** |
 
 **Más dos archivos de trabajo interno** que no se entregan pero **sí se guardan**:
 `calendario-de-publicacion.csv` (una fila por publicación, 12 columnas — es el control de estado) y
@@ -175,16 +193,22 @@ LOOP         Capa 6      ¿Qué se cayó, qué llegó tarde?
 ### Capa 0 · RECEPCIÓN — ¿qué llegó y está publicable?
 **Skill:** `po-recepcion` · **Output:** las filas base de `calendario-de-publicacion.csv`
 
-Cruzar `plan-de-contenido.csv` de ④ **fila por fila** contra lo que entregaron ⑥A y ⑥B. Cada fila con
-archivo se convierte en una fila de publicación; cada fila sin archivo **se declara**.
+Cruzar `plan-de-contenido.csv` de ④ **fila por fila** contra lo que entregaron ⑥A y ⑥B. Lo primero
+es **separar las dos rutas por el `canal`**: lo que va a Publer y lo que va por email. Después, cada
+fila con lo que necesita se convierte en fila de publicación; lo que falta **se declara**.
 
-| Chequeo | Si falla |
-|---|---|
-| La pieza tiene su **archivo final**, con ruta | `⚠️ SIN ARCHIVO` — se nombra a quién pedírselo |
-| El archivo corresponde al `id_creativo` correcto | ↩️ **DEVUELTO** a ⑥A / ⑥B |
-| La pieza tiene **copy y caption** en su `ideas-<formato>.md` | ↩️ **DEVUELTO** a ④ |
-| La pieza **no tiene claims pendientes** | 🛑 No entra al ciclo hasta que ②B o ⑧B la validen |
-| Existe la **cuenta** donde va y sabemos quién tiene las claves | 🛑 **BLOQUEADO** — ① § La capacidad |
+| Chequeo | Ruta | Si falla |
+|---|---|---|
+| La pieza tiene su **archivo final**, con ruta | social | `⚠️ SIN ARCHIVO` — se nombra a quién pedírselo |
+| El archivo corresponde al `id_creativo` correcto | social | ↩️ **DEVUELTO** a ⑥A / ⑥B |
+| La pieza tiene **copy y caption** en su `ideas-<formato>.md` | ambas | ↩️ **DEVUELTO** a ④ |
+| La pieza **no tiene claims pendientes** | ambas | 🛑 No entra al ciclo hasta que ②B o ⑧B la validen |
+| Existe la **cuenta** donde va y sabemos quién tiene las claves | social | 🛑 **BLOQUEADO** — ① § La capacidad |
+| Existe la **lista o segmento** y la herramienta de email | email | 🛑 **BLOQUEADO** — ① § La capacidad |
+
+> 🛑 **Una pieza de email está completa sin export de ⑥.** Su cuerpo lo escribió ④; ⑥A solo entra si
+> la pieza lleva imágenes. Marcarla `⚠️ SIN ARCHIVO` porque no hay video es un falso bloqueo, y
+> retrasa un envío que se podía mandar.
 
 ### Capa 1 · CAPTION — ¿qué texto sale?
 **Skill:** `po-caption` · **Output:** el caption de cada sección de `publicaciones.md`
@@ -219,10 +243,14 @@ no se pisen el mismo día.
 🚦 **GATE 1 — los captions.** Antes de armar el archivo de carga. Es lo que aprueba el cliente.
 
 ### Capa 4 · CARGA — ¿qué se sube y cómo?
-**Skill:** `po-carga` · **Output:** `publer-import.csv` + el checklist de subida
+**Skill:** `po-carga` · **Output:** `publer-import.csv` + § Los envíos de email + los checklists
 
-Se genera el archivo con las 12 columnas de Publer, se resuelven las **URLs públicas** de cada media
-y se deja el checklist de qué verificar **dentro de Publer** antes de apretar programar.
+**Ruta social:** se genera el archivo con las 12 columnas de Publer, se resuelven las **URLs
+públicas** de cada media y se deja el checklist de qué verificar **dentro de Publer** antes de
+apretar programar.
+
+**Ruta email:** se arma el paquete de envío —asunto, preheader, cuerpo, lista o segmento, fecha y
+hora— en `publicaciones.md`, agnóstico de herramienta, con su propio checklist.
 
 🚦 **GATE 2 — el paquete de carga.** 🛑 **Acá para el departamento.** Un humano revisa, sube y
 programa. Nada se publica desde el repo.
@@ -277,7 +305,7 @@ sabemos quién tiene las claves de las cuentas · hay claims sin validar en las 
 clients/<cliente>/
 ├── _INPUTS/                        # accesos, métricas de la cuenta, plantilla vigente de Publer
 ├── publicaciones.md                # ← ENTREGABLE · para quien aprueba
-├── publer-import.csv               # ← ENTREGABLE · para quien carga
+├── publer-import.csv               # ← ENTREGABLE · para quien carga · solo la ruta social
 ├── calendario-de-publicacion.csv   # trabajo interno · una fila por publicación, 12 columnas
 └── aprendizaje-de-posting.md       # trabajo interno · el cierre del ciclo
 ```
@@ -295,7 +323,8 @@ El nombre de la carpeta es **el mismo nombre canónico** que en `agents/comprens
 - Cliente: · Campaña(s): · Ciclo: · Fecha:
 - Entregables: publicaciones.md (aprobación) · publer-import.csv (carga)
 - Gates: captions [✅/⬜] · paquete de carga [✅/⬜]
-- Publicaciones: en el archivo [n] · cargadas en Publer [n] · publicadas [n] · verificadas [n]
+- Ruta social: en el archivo [n] · cargadas en Publer [n] · publicadas [n] · verificadas [n]
+- Ruta email: envíos preparados [n] · enviados [n] · herramienta: [x o ⚠️ SIN DATOS]
 - Filas SIN ARCHIVO: [n + de quién se esperaba]
 - Devueltas a ④ / ⑥A / ⑥B: [n + motivos]
 - Claims que quedaron ⏸️ sin publicar: [lista]
@@ -316,7 +345,7 @@ Los **5 motivos válidos**, y solo esos:
 
 | # | Motivo | Vuelve a | Cómo se detecta |
 |---|---|---|---|
-| 1 | **Falta el archivo final** | ⑥A / ⑥B | La fila de ④ no tiene export correspondiente |
+| 1 | **Falta el archivo final** *(solo ruta social)* | ⑥A / ⑥B | La fila de ④ no tiene export correspondiente |
 | 2 | **El archivo no cumple la spec** | ⑥A / ⑥B | Aspecto, duración o peso fuera de lo que acepta la plataforma |
 | 3 | **El archivo no corresponde** | ⑥A / ⑥B | El `id_creativo` del nombre no coincide con la fila |
 | 4 | **No hay copy o caption** | ④ | La pieza llegó descrita, no escrita |
@@ -343,7 +372,7 @@ rompería si lo adaptáramos por cuenta propia · **al menos dos alternativas** 
 | 🟢 | Listo — archivo, caption y specs verificados |
 | 🟡 | Falta algo menor, identificado y con responsable |
 | 🔴 | No sale este ciclo |
-| ⚠️ SIN ARCHIVO | La pieza no tiene export. Se nombra de quién se espera |
+| ⚠️ SIN ARCHIVO | La pieza no tiene export. Se nombra de quién se espera. 🛑 No aplica a la ruta email |
 | ⚠️ SIN DATOS | Falta el dato — típicamente la hora óptima de la cuenta |
 | ⏸️ PENDIENTE APROBACIÓN | Claim, precio o promesa sin validar. **No se carga** |
 | ↩️ DEVUELTO | Vuelve a ④, ⑥A o ⑥B, con motivo y alternativas |

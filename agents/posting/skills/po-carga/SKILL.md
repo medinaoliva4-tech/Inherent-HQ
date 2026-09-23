@@ -19,6 +19,32 @@ description: >
 Contexto del departamento: `agents/posting/WORKFLOW.md`. Plantilla:
 `agents/posting/entregables/publer-import.csv`.
 
+## 0 · Dos rutas, dos paquetes
+
+| Ruta | Qué se produce | Quién lo carga |
+|---|---|---|
+| **Social** | `publer-import.csv` + checklist de subida | Un humano, en Publer |
+| **Email** | La sección **§ Los envíos de email** de `publicaciones.md` + su checklist | Un humano, en la herramienta de email del cliente |
+
+🛑 **`publer-import.csv` lleva solo las filas de la ruta social.** Publer no manda email: una fila de
+`Email` ahí hace fallar la importación entera, con todo el ciclo adentro.
+
+🛑 **La herramienta de email no se supone** — está en `comprension.md` § La capacidad. Si no está,
+`⚠️ SIN DATOS` y el paquete se entrega igual: es agnóstico de herramienta.
+
+### El checklist del envío de email
+
+```markdown
+- [ ] Estoy en la cuenta y el remitente correctos
+- [ ] La lista o segmento es el que dice el paquete, y sé a cuántas personas le llega
+- [ ] Mandé una prueba a una casilla propia y la leí **en el celular**
+- [ ] El asunto no se corta en un lugar que cambia lo que dice
+- [ ] Todos los links funcionan y llevan a donde dicen
+- [ ] Hay forma de desuscribirse
+- [ ] 🛑 Ninguna pieza con claim pendiente está en la cola
+- [ ] 🚦 Tengo la aprobación del GATE 2
+```
+
 ## 1 · 🛑 Acá para el departamento
 
 **Se genera el archivo. No se sube, no se publica, no se programa.**
@@ -141,5 +167,7 @@ publicado.
 - [ ] El `Text` conserva saltos de línea, acentos y emojis — se verificó abriendo el archivo
 - [ ] 🛑 **Ninguna fila con claim ⏸️ entró al archivo**
 - [ ] Toda fila del archivo tiene su `id_creativo` trazable en el calendario interno
+- [ ] 🛑 **Ninguna fila de `Email` entró a `publer-import.csv`**
+- [ ] Los envíos de email tienen su paquete completo —asunto, preheader, cuerpo, lista, fecha— y su checklist
 - [ ] El **checklist de subida** está entregado junto al archivo
 - [ ] 🚦 **GATE 2** presentado a un humano

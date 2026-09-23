@@ -120,11 +120,26 @@ po-recepcion ──→ po-caption ──→ po-specs ──→ po-programacion �
 
 ---
 
+## Las dos rutas de salida
+
+No todo lo que ③ programa es una red social: el calendario trae **`Email / Newsletter`** como canal de
+primera clase, y **Publer no manda email**.
+
+| Ruta | Canales | Sale por |
+|---|---|---|
+| **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | `publer-import.csv` |
+| **Email** | Email / Newsletter | § Los envíos de email de `publicaciones.md` |
+
+🛑 **Se separan en `po-recepcion`, no al cargar.** Una fila de `Email` que se cuela en
+`publer-import.csv` hace fallar la importación entera, con todo el ciclo adentro.
+🛑 **Una pieza de email no se marca `⚠️ SIN ARCHIVO` por no tener video:** su archivo es el cuerpo, y
+lo escribió ④.
+
 ## Sobre Publer
 
 | | |
 |---|---|
-| **Qué usamos** | El **archivo de carga masiva** (CSV, hasta 500 posts). `po-carga` lo genera con las 12 columnas exactas |
+| **Qué usamos** | El **archivo de carga masiva** (CSV, hasta 500 posts). `po-carga` lo genera con las 12 columnas exactas, **solo con las filas de la ruta social** |
 | **Qué NO usamos** | La API de publicación. El repo no publica: **sube un humano** |
 | **Credenciales** | 🛑 **Ninguna en el repo.** El archivo se sube desde la sesión del cliente en Publer |
 | **Formato** | ⏱️ Verificado en **2026-09**. Es de un proveedor externo: antes de la primera carga de cada ciclo se descarga la plantilla vigente y se comparan los encabezados |

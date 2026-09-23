@@ -23,6 +23,21 @@ Contexto del departamento: `agents/posting/WORKFLOW.md`. Plantillas:
 **No escribís nada todavía: cruzás y verificás.** Escribir el caption de una pieza que no tiene
 archivo es trabajo tirado, y se descubre recién al cargar.
 
+## 0 · Lo primero: separar las dos rutas
+
+Antes de verificar nada, se parte el ciclo por la columna `canal`:
+
+| Ruta | Canales | Qué necesita para estar completa |
+|---|---|---|
+| **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | El **export** de ⑥A o ⑥B, más copy y cuenta |
+| **Email** | Email / Newsletter | El **cuerpo escrito por ④**, la lista y la herramienta. El export de ⑥A solo si lleva imágenes |
+
+🛑 **Publer no manda email.** Una fila de `Email` que se cuela en `publer-import.csv` hace fallar la
+importación entera, con todo el ciclo adentro.
+
+🛑 **Una pieza de email no se marca `⚠️ SIN ARCHIVO` por no tener video.** Es un falso bloqueo que
+retrasa un envío que se podía mandar. Su archivo es el cuerpo, y lo escribió ④.
+
 ## 1 · Los inputs bloqueantes
 
 | De | Qué se carga | Si falta |
@@ -42,11 +57,12 @@ que no se verificó es una fila que se cae al cargar.
 
 | Chequeo | Qué se mira | Si falla |
 |---|---|---|
-| **Tiene archivo final** | Existe el export de ⑥A o ⑥B, con ruta | `⚠️ SIN ARCHIVO` — se nombra **de quién se espera y desde cuándo** |
+| **Tiene archivo final** *(solo ruta social)* | Existe el export de ⑥A o ⑥B, con ruta | `⚠️ SIN ARCHIVO` — se nombra **de quién se espera y desde cuándo** |
 | **El archivo es el correcto** | El `id_creativo` del nombre coincide con la fila | ↩️ **DEVUELTO** a ⑥A / ⑥B — motivo 3 |
 | **Tiene copy y caption** | Están escritos y **literales** en su `ideas-<formato>.md` | ↩️ **DEVUELTO** a ④ — motivo 4. *"Un caption de curiosidad"* no es un caption |
 | **No arrastra claims ⏸️** | La pieza no tiene `⏸️ PENDIENTE APROBACIÓN` de ④ | 🛑 **No entra al ciclo** hasta que ②B o ⑧B validen |
-| **Existe la cuenta** | La `cuenta` concreta está identificada y alguien tiene las claves | 🛑 **BLOQUEADO** — ① § La capacidad |
+| **Existe la cuenta** *(social)* | La `cuenta` concreta está identificada y alguien tiene las claves | 🛑 **BLOQUEADO** — ① § La capacidad |
+| **Existe la lista** *(email)* | La lista o segmento y la herramienta de email están identificadas | 🛑 **BLOQUEADO** — ① § La capacidad |
 
 **Una fila de ④ puede ser más de una publicación.** Si la misma pieza va a dos cuentas, son **dos
 filas de Posting**, cada una con su `id` y su archivo.
@@ -111,4 +127,6 @@ Con archivo y publicables:   [n]
 - [ ] La **cuenta** de cada fila está identificada, y sabemos quién tiene las claves
 - [ ] Las piezas que van a dos cuentas son **dos filas**, no una
 - [ ] La tabla **§ Lo que no sale este ciclo** está escrita — ninguna pieza desapareció en silencio
+- [ ] 🛑 **Las dos rutas están separadas por `canal`** — ninguna fila de `Email` quedó del lado de Publer
+- [ ] 🛑 **Ninguna pieza de email se marcó `⚠️ SIN ARCHIVO`** por no tener export de ⑥
 - [ ] 🛑 **No se escribió ningún caption todavía** — eso es la Capa 1

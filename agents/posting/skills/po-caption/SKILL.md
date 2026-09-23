@@ -72,6 +72,27 @@ publicado y no se puede editar en todas las plataformas.
 > **El límite de Reels (~55) es el más cruel del repo.** Un hook de ④ de 80 caracteres entra en el
 > caption pero **no se ve**. Ahí es donde el hook se reordena, nunca se reescribe.
 
+## 3B · El email: asunto y preheader
+
+En la ruta email no hay caption: hay **asunto y preheader**, y funcionan igual que un hook. Es lo
+único que se ve en la bandeja de entrada.
+
+```
+Asunto:    "[corto — en móvil se corta cerca de los 40 caracteres]"
+Preheader: "[la segunda línea: completa el asunto, no lo repite]"
+```
+
+| Regla | Por qué |
+|---|---|
+| **El asunto es el hook de ④**, acortado — no uno nuevo | Cambiarlo es cambiar el mensaje |
+| **El preheader no repite el asunto** | Repetirlo desperdicia el único renglón extra que hay |
+| 🛑 **El asunto no promete algo que el cuerpo no cumple** | Es la forma más rápida de que marquen spam |
+| 🛑 **Nada de mayúsculas gritadas ni de `RE:` falsos** | Además de engañoso, dispara los filtros |
+| **Sin hashtags y sin emojis decorativos** | No es una red social |
+
+El **cuerpo** es el copy de ④ acomodado al formato: mismos cortes, mismo CTA. Si no entra sin
+romperse, es una devolución a ④, igual que en social.
+
 ## 4 · Hashtags — los que corresponden, no los que caben
 
 | Regla | Por qué |
@@ -114,6 +135,8 @@ escribe: es la mejor noticia posible y deja constancia de que no se tocó.
 
 - [ ] 🛑 **El mensaje no cambió** — ni la idea, ni el hook, ni el CTA
 - [ ] El **hook entra completo antes del corte** de su plataforma, y se verificó leyéndolo solo
+- [ ] En la ruta email: **asunto y preheader escritos**, el preheader no repite el asunto, y el
+      asunto no promete nada que el cuerpo no cumpla
 - [ ] El conteo de caracteres está anotado contra el límite **con su fecha de verificación**
 - [ ] 🛑 **Ningún límite fue inventado** — los no verificados están marcados `⚠️ SIN VERIFICAR`
 - [ ] Los hashtags son **3-5 en Instagram** y están relacionados con la pieza

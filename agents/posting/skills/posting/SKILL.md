@@ -38,11 +38,14 @@ ofrece dejarlo listo para subir.**
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-6] · Ciclo: [x]
-④ Creatividad: Excel con Gate 3 [✅/⬜] · filas del ciclo: [n]
+④ Creatividad: Excel con Gate 3 [✅/⬜] · filas del ciclo: [n] → social [n] · email [n]
 ⑥A entregó: [n/n] · ⑥B entregó: [n/n] · ⚠️ SIN ARCHIVO: [n]
-②B Branding [✅/⬜] · ① cuentas y accesos [✅/⬜] · claims pendientes: [n]
+②B Branding [✅/⬜] · ① cuentas y accesos [✅/⬜] · ① herramienta de email [✅/⬜] · claims pendientes: [n]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
+
+🛑 **El reparto social / email se declara desde el pre-flight.** Publer no manda email, y descubrirlo
+al cargar cuesta la ventana de publicación del ciclo entero.
 
 **Se bloquea si:**
 
@@ -149,6 +152,7 @@ cargadas, las que no salen y las marcadas para pauta, que van a ⑧B.
 - [ ] 🛑 **`po-specs` corrió antes que `po-carga`**
 - [ ] 🛑 **Nada se publicó ni se programó desde acá** — el paquete quedó listo para que suba un humano
 - [ ] 🛑 **Ninguna pieza con claim ⏸️ entró al archivo de carga**
+- [ ] 🛑 **Las filas de `Email` salieron por su ruta**, no por `publer-import.csv`
 - [ ] 🛑 **Ningún archivo se "arregló" en Posting** — los que no cumplían se devolvieron a ⑥A o ⑥B
 - [ ] 🛑 **Ningún mensaje se reescribió** — lo que no entraba se devolvió a ④ con dos alternativas
 - [ ] Toda fila traza a un **`id_creativo`**; ninguna fila suelta
