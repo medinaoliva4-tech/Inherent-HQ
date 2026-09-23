@@ -56,6 +56,14 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 | Growth | `agents/growth/` | Ads y adquisición | ⬜ |
 | Content | `agents/content/` | Armado y QA de piezas | ⬜ |
 
+## El techo comercial
+
+**`PAQUETES.md`** define qué se puede entregar según el paquete que contrató el cliente: cuántas
+piezas al mes, si hay estrategia, si hay pauta, cuántas revisiones. **Es restricción dura para
+todos los agentes.** Se lee antes de prometer nada.
+
+⚠️ **Basic no incluye estrategia.** Un cliente Basic no recibe el workflow de Strategy.
+
 ## Cómo arrancás una sesión
 
 1. **Identificá el agente** que corresponde al pedido.

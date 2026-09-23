@@ -40,10 +40,16 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 | **Margen** | Un margen de 15% no soporta la misma estrategia que uno de 70% |
 | **Capacidad de entrega** | Cuántos clientes más aguanta hoy |
 | **Punto de equilibrio** | El piso del objetivo |
-| **Capacidad de producción de contenido** | Techo duro de la cadencia |
+| **Paquete contratado** | `Basic` / `Growth` / `Premium` / `Custom`. **Define todo el techo** → ver `PAQUETES.md` |
+| **Ad spend del cliente** | Nunca está incluido en el paquete. Sin esto, no hay paid |
+| **Capacidad de producción de contenido** | Sale del paquete. Techo duro de la cadencia |
 
 > Si la capacidad de entrega ya está al tope, la estrategia **no es generar más demanda**: es
 > filtrar mejor o subir el precio. Sin este dato el agente se equivoca de problema.
+
+> ⚠️ **Si el cliente es Basic, se detiene acá.** Basic no incluye estrategia profunda ni horas de
+> estrategia mensual — su objetivo es presencia, no crecimiento. Se avisa a Allan y se ofrece
+> cotizarlo aparte (`auditoría Q750` o subir a Growth).
 
 ## C · Demanda — cómo llega la gente
 

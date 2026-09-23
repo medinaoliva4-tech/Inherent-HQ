@@ -91,6 +91,20 @@ Se mide con dos datos, y salen del bloque `context`:
 |---|---|
 | **Cuántas personas hay** — en la empresa y en la agencia | La capacidad de ejecución |
 | **Cuánto dinero tienen para invertir** | La capacidad de compra de alcance y producción |
+| **Qué paquete contrataron** | El techo duro de piezas, pauta y revisiones → `PAQUETES.md` |
+| **Cuánto ad spend ponen** | Nunca viene en el paquete. Sin esto, la estrategia no puede apoyarse en paid |
+
+**El paquete es el límite que ya está firmado:**
+
+| | Basic Q2,500 | Growth Q5,000 | Premium Q8,000 |
+|---|---|---|---|
+| Piezas/mes | 16 | 27 | 42 |
+| Horas de estrategia | **0** | 1 | 2 |
+| Ads management | **0** | 1 | 2 |
+| Objetivo del plan | Presencia | Demanda y crecimiento medible | Crecimiento medible |
+
+> **Un objetivo de crecimiento agresivo sobre un paquete Basic es un objetivo imposible por
+> contrato, no por ambición.** Se baja, o se propone subir de paquete.
 
 ```markdown
 | Objetivo | ¿Qué exige? | ¿Hay gente? | ¿Hay dinero? | Veredicto |
