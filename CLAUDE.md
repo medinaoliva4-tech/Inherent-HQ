@@ -76,9 +76,13 @@ sí.**
 mismo suelto, porque todo lo que corre sobre agentes suma Q0 al costo variable.
 **El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
 
-⚠️ **El precio bajo es penetración deliberada y temporal, no un destino.** El gatillo para subir
-está escrito en `PAQUETES.md`. Si se vuelve permanente, es un negocio de bajo margen disfrazado
-de estrategia.
+**La ecuación completa: costos bajos · valor enorme · precio justo · márgenes muy buenos.**
+Los cuatro cierran a la vez — **no bajando el precio, bajando el costo.** `PAQUETES.md` tiene el
+modelo en dos estados: HOY (márgenes 30-42%) y OBJETIVO (53-60% al mismo precio), y los tres
+agentes que separan uno del otro: **QA · operación automatizada · pipeline de herramientas.**
+
+⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
+operación.** Ahí está el 70% del costo matable.
 
 ⚠️ **No se vende una capa suelta.** La metodología dice que crecer exige algo íntegro; vender solo
 contenido o solo pauta contradice lo que predicamos.

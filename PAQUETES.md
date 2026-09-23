@@ -95,6 +95,116 @@ han corrido en un cliente real. **No se prometen como probadas hasta que lo est�
 
 ---
 
+## 🧮 La ecuación — los cuatro objetivos a la vez
+
+> **Costos bajos · Valor enorme · Precio justo · Márgenes muy buenos.**
+> Los cuatro son compatibles. **Pero no bajando el precio — bajando el costo.**
+
+### Por qué hoy no cierran
+
+El precio ya es justo (Q64/pieza contra Q188 del mercado) y el valor ya es enorme (86 piezas
+contra 16). **Lo que falla es el costo.** Y el costo falla por una razón concreta:
+
+> **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente:
+> el QA y la operación.**
+
+| Concepto | ¿Es matable? | Cómo |
+|---|---|---|
+| **Tiempo de Allan** *(52% del costo)* | ✅ **Sí, −45%** | Agente de QA + aprobación por excepción |
+| **Operador de agentes** | ✅ **Sí, −55%** | Que un humano supervise 5 cuentas, no que opere 1 |
+| **Build de tecnología** | ✅ **Sí, −47%** | Pipeline de construcción, no proyecto a mano |
+| **Producción (grabar)** | 🟡 Parcial | Sistema de contenido crudo del cliente |
+| **Cloud** | ❌ No, y sube | Más agentes corriendo. Q192 → Q300. **Barato** |
+
+---
+
+## 📐 El modelo en dos estados
+
+### Estado HOY — lo que se puede prometer ya
+
+| | Basic | Accelerated | Compound |
+|---|---|---|---|
+| Precio | Q5,500 | Q8,900 | Q13,900 |
+| Costo *(@Q250/h)* | Q3,217 | Q6,192 | Q9,167 |
+| Utilidad | Q2,283 | Q2,708 | Q4,733 |
+| **Margen** | **42%** | **30%** 🔴 | **34%** |
+| Horas de Allan | 7h | 11h | 15h |
+
+### Estado OBJETIVO — con los tres agentes construidos
+
+| | Basic | Accelerated | Compound |
+|---|---|---|---|
+| Precio | **Q5,500** *(igual)* | **Q8,900** *(igual)* | **Q13,900** *(igual)* |
+| Costo *(@Q250/h)* | Q2,225 | Q4,200 | Q6,175 |
+| Utilidad | **Q3,275** | **Q4,700** | **Q7,725** |
+| **Margen** | **60%** ✅ | **53%** ✅ | **56%** ✅ |
+| Horas de Allan | **4h** | **6h** | **8h** |
+
+🔥 **Mismo precio. Mismo valor para el cliente. Margen de 53-60% y casi la mitad de horas.**
+**Los cuatro objetivos, juntos.**
+
+### De dónde sale cada quetzal ahorrado
+
+| | Basic | Accelerated | Compound |
+|---|---|---|---|
+| Agente de QA *(horas de Allan)* | −Q750 | −Q1,250 | −Q1,750 |
+| Operador automatizado | −Q350 | −Q500 | −Q650 |
+| Pipeline de tecnología | — | −Q350 | −Q700 |
+| Más cloud *(el costo de automatizar)* | +Q108 | +Q108 | +Q108 |
+| **AHORRO NETO** | **−Q992** | **−Q1,992** | **−Q2,992** |
+
+> **Se cambia trabajo humano por cloud, a razón de Q9 ahorrados por cada Q1 de cloud extra.**
+> Esa es la ventaja de agentes, medida.
+
+---
+
+## 🚀 Lo que el estado objetivo desbloquea de verdad
+
+**No es el margen. Es la capacidad.** Con 4-8 horas por cliente, el techo deja de ser Allan.
+
+| Escenario | Utilidad/mes | Horas de Allan |
+|---|---|---|
+| 5 × Compound — **hoy** | Q23,665 | 75 h |
+| 5 × Compound — **objetivo** | **Q38,625** | **40 h** |
+| **8 × Compound — objetivo** | **Q61,800** | **64 h** |
+
+🔥 **8 clientes en estado objetivo dan Q61,800/mes con menos horas de las que hoy consumen 5.**
+
+---
+
+## 🛠️ La hoja de ruta — tres agentes, en este orden
+
+| # | Qué construir | Qué mata | Impacto |
+|---|---|---|---|
+| **1** | **Agente de QA** — revisa cada pieza contra el brief, la marca y el paquete. Allan aprueba solo las excepciones | 45% de las horas de Allan | **El más grande.** Sin esto el volumen no es entregable |
+| **2** | **Operación automatizada** — programación, publicación y reporte sin humano en el loop. El operador supervisa 5 cuentas | 55% del costo de operador | Rompe el costo por cuenta |
+| **3** | **Pipeline de herramientas** — plantillas y despliegue automatizado en vez de proyecto a mano | 47% del build de tecnología | Hace rentable Accelerated y Compound |
+
+### 🟡 Un cuarto lever, sobre producción
+
+**Sistema de contenido crudo del cliente:** el cliente graba con su teléfono siguiendo un brief
+estructurado, y los agentes lo convierten en piezas terminadas.
+
+**Costo: Q0. Efecto: más video sin más horas de producción.**
+No reemplaza la grabación profesional — **la multiplica.**
+
+---
+
+## ⚖️ La decisión que esto obliga
+
+**El precio ya está definido. Lo que falta decidir es cuándo se cobra.**
+
+| Opción | Qué implica |
+|---|---|
+| **A · Vender ya al precio nuevo** | Márgenes de 30-42% durante los meses que tome construir los agentes. **Se gana mercado y casos mientras se construye** |
+| **B · Construir primero, vender después** | Márgenes de 53-60% desde el primer cliente. **Se pierden meses de mercado** |
+| **C · Vender ya, y correrse a Q150/h** | Márgenes de 43-54% hoy. **Allan financia la transición con su propia tarifa** |
+
+> **Recomendación: A.** El costo de esperar es mayor que el de un margen bajo temporal — y los
+> tres agentes se construyen mejor con clientes reales corriendo encima.
+
+---
+
 ## Los paquetes
 
 | | **Growth Basic** | **Growth Accelerated** | **Growth Compound** |

@@ -151,6 +151,35 @@ Su trabajo es ganar la cuenta. El margen viene del upsell.
 | **Utilidad @Q250/h** | **Q2,283** | **Q2,708** | **Q4,733** |
 | **Utilidad @Q150/h** | **Q2,983** | **Q3,808** | **Q6,233** |
 
+## 6 · La hoja de ruta de automatización
+
+> **El modelo tiene dos estados.** Hoy los márgenes son 42% / 30% / 34%.
+> Con los tres agentes construidos son **60% / 53% / 56%, al mismo precio.**
+> Ver `PAQUETES.md` → «La ecuación» y «El modelo en dos estados».
+
+| # | Agente a construir | Qué mata | Ahorro por cliente |
+|---|---|---|---|
+| **1** | **Agente de QA** — revisa cada pieza contra brief, marca y paquete. Allan aprueba solo excepciones | 45% de las horas de Allan | Q750 – Q1,750 |
+| **2** | **Operación automatizada** — programar, publicar y reportar sin humano. El operador supervisa 5 cuentas en vez de operar 1 | 55% del costo de operador | Q350 – Q650 |
+| **3** | **Pipeline de herramientas** — plantillas y despliegue automatizado | 47% del build de tecnología | Q350 – Q700 |
+| 🟡 | **Contenido crudo del cliente** — graba con su teléfono, los agentes lo terminan | Horas de producción | Más video a Q0 |
+
+**Costo de automatizar:** el cloud sube de Q192 a ~Q300 por cliente.
+👉 **Se ahorran Q9 de trabajo humano por cada Q1 de cloud extra.**
+
+### Las horas de Allan, hoy y objetivo
+
+| | Basic | Accelerated | Compound |
+|---|---|---|---|
+| **Hoy** | 7 h | 11 h | 15 h |
+| **Objetivo** | **4 h** | **6 h** | **8 h** |
+
+**Lo que esto desbloquea no es el margen, es la capacidad:**
+**8 clientes Compound en estado objetivo = Q61,800/mes con 64h** — menos horas de las que hoy
+consumen 5 clientes.
+
+---
+
 ## ⚠️ Lo que todavía no es dato
 
 | Pendiente | Por qué importa |
