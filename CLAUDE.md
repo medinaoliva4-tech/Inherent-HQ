@@ -43,7 +43,7 @@ El flujo de Inherent tiene **8 departamentos**, en este orden:
 
 | # | Departamento | Carpeta | Qué hace | Estado |
 |---|---|---|---|---|
-| **①** | Comprensión | — *(hoy dentro de `agents/strategy/` Capa 0)* | Ordena la realidad del negocio y del cliente antes de estrategia | 🟡 Parcial |
+| **①** | **Comprensión** | `agents/comprension/` | Ordena la realidad del negocio y del cliente antes de estrategia | ✅ Operativo |
 | **②** | Estrategia | — *(hoy dentro de `agents/strategy/` Capas 1-4)* | 3 verdades, ICP, posicionamiento, ingeniería inversa | 🟡 Parcial |
 | **②B** | Branding | — | Guidelines, tono de voz, dirección visual | ⬜ Pendiente |
 | **③** | Marketing | — *(hoy dentro de `agents/strategy/` Capas 5-7)* | Campañas, canales, fechas, pilares, frecuencia, calendario | 🟡 Parcial |
@@ -51,38 +51,47 @@ El flujo de Inherent tiene **8 departamentos**, en este orden:
 | **⑤** | **Producción** | `agents/production/` | Desglose, jornadas, recursos, presupuesto, rodaje y entrega del material | ✅ Operativo |
 | **⑥A** | Diseño gráfico | — | Composición, layout, elementos gráficos, export de lo estático | ⬜ Pendiente |
 | **⑥B** | Video Editing | `agents/video/` | Del material crudo al master por plataforma | 🔵 En el PR #4 |
-| **⑦** | Posting | — | Captions finales, programación y publicación | ⬜ Pendiente |
+| **⑦** | **Posting** | `agents/posting/` | Captions finales, QA de plataforma, programación y el archivo de carga de Publer | ✅ Operativo |
 | **⑧B** | Ads | — | Segmentación, presupuesto de pauta, optimización | ⬜ Pendiente |
 
-> 🔄 **Transición.** Hoy el repo tiene **un solo agente** (`agents/strategy/`) que cubre ①, ② y ③
-> juntos. Los agentes de aguas abajo ya están escritos contra los departamentos separados, con el
-> mapeo capa→departamento declarado en `agents/creative/WORKFLOW.md` §2. Cuando ①②③ se
+> 🔄 **Transición.** `agents/strategy/` todavía cubre **② y ③** juntos, y conserva su propia Capa 0
+> (`nucleo.md`). **① Comprensión ya es un departamento propio** y no la reemplaza: el corte está
+> declarado en `agents/comprension/WORKFLOW.md` §11 — los **hechos** viven en `comprension.md`, la
+> **dirección** (el WIN y el arquetipo) sigue en `nucleo.md`, que los **cita en vez de recopiarlos**.
+> El mapeo capa→departamento de aguas abajo está en `agents/creative/WORKFLOW.md` §2. Cuando ②③ se
 > separen, cambian **las rutas**, no los métodos.
 
-> ⚠️ **Huecos conocidos del flujo**, anotados y todavía sin decidir: **⑧A Orgánico** (implícito en el
-> "8B" de Ads) y **medición / aprendizaje de negocio** (ningún departamento cierra el círculo hacia ①
-> y ②). El tercer hueco, **⑥B Edición de video**, lo cubre el PR #4 — ⑤ Producción ya está escrito
-> contra él: entrega RAW y selects, y el montaje, el color de entrega y las versiones por plataforma
-> son de ⑥B.
+> ⚠️ **Huecos conocidos del flujo**, anotados y todavía sin decidir: **⑧A Orgánico** (comunidad,
+> comentarios y DMs — ⑦ Posting ya está escrito contra él y le pasa qué salió y cuándo). El
+> **aprendizaje de negocio** ya tiene su vuelta: ⑦ y ⑤ devuelven a ① los tiempos de aprobación y la
+> capacidad reales. **⑥B Edición de video** lo cubre el PR #4 — ⑤ Producción entrega RAW y selects, y
+> el montaje, el color de entrega y las versiones por plataforma son de ⑥B.
 
 ---
 
 ## Cómo arrancás cada sesión
 
 1. **Identificá el pedido y el departamento.**
-   - Estrategia, research, posicionamiento, calendario macro, onboarding de cliente nuevo →
-     invocá la skill `estrategia`.
+   - Entender un negocio antes de que exista estrategia: onboarding de cliente nuevo, productos y
+     precios, de dónde entra el ingreso, quién compra y cómo habla, capacidad real, restricciones,
+     problemas y oportunidades → invocá la skill `comprension:comprension`.
+   - Estrategia, research, posicionamiento, calendario macro → invocá la skill `estrategia`.
    - Ideas de contenido, conceptos, big ideas, hooks, copy de piezas, dirección de arte, shot lists,
      adaptación por plataforma, swipe file → invocá la skill `creatividad:creatividad`.
    - Desglose de escenas, jornadas, recursos, presupuesto de rodaje, call sheets, entrega de
      material → invocá la skill `produccion:produccion`.
+   - Captions finales, hashtags, alt text, QA de plataforma, fecha y hora, calendario de publicación,
+     el archivo de carga de Publer → invocá la skill `posting:posting`.
+   - **Posting requiere los archivos finales.** Sin el Gate 3 de ④ y sin los exports de ⑥A/⑥B, se
+     **BLOQUEA**. Y 🛑 **no publica: deja el paquete listo y sube un humano.**
    - **Creative requiere estrategia aprobada.** Si el pedido es de Creative y no existe
      `posicionamiento.md` aprobado + `calendario-estrategico.csv`, se **BLOQUEA**.
 
-   > Los departamentos ④ y ⑤ son **plugins**, y sus skills llevan el prefijo del plugin adelante
-   > (`creatividad:cr-brief`, `produccion:pr-jornadas`). Las de ①②③ viven en `.claude/skills/` y van
-   > sin prefijo. Si las skills de ④ o ⑤ **no aparecen**, es que el marketplace no está registrado:
-   > corré `/plugin marketplace add .` desde la raíz del repo, una sola vez.
+   > Los departamentos ①, ④, ⑤ y ⑦ son **plugins**, y sus skills llevan el prefijo del plugin
+   > adelante (`comprension:co-capacidad`, `creatividad:cr-brief`, `produccion:pr-jornadas`,
+   > `posting:po-carga`). Las de ②③ viven en `.claude/skills/` y van sin prefijo. Si las skills de un
+   > plugin **no aparecen**, es que el marketplace no está registrado: corré
+   > `/plugin marketplace add .` desde la raíz del repo, una sola vez.
 
 2. **Identificá el cliente.** Un cliente = una carpeta en `agents/<agente>/clients/<cliente>/`, y el
    **nombre canónico es el mismo en todos los agentes**. Nunca mezcles archivos de dos clientes.
@@ -93,7 +102,7 @@ El flujo de Inherent tiene **8 departamentos**, en este orden:
 Antes de ejecutar, respondé en una línea:
 
 ```
-PRE-FLIGHT — Agente: [strategy/creative/production] · Cliente: [x] · Arquetipo: [x o SIN CLASIFICAR]
+PRE-FLIGHT — Agente: [comprension/strategy/creative/production/posting] · Cliente: [x] · Arquetipo: [x o SIN CLASIFICAR]
 Capa: [0-8] · Skills: [x] · MCPs: [x] · Inputs de departamentos previos: [x] · Gate humano: [sí/no]
 → PASS | BLOQUEADO: [qué falta]
 ```
@@ -109,27 +118,36 @@ Nunca rellenes con inferencia sin marcarla.
    `[percepción del cliente, no verificado]` o `⚠️ SIN DATOS`. Nunca inventes datos, competidores,
    métricas ni tendencias.
 2. **Patrón ≠ señal.** 3+ fuentes independientes = `🟢 patrón`. 1-2 = `🟡 señal a confirmar`.
-3. **Nunca saltes capas.** Los tres métodos son secuenciales y tienen 8 capas cada uno:
-   `agents/strategy/METHOD.md`, `agents/creative/WORKFLOW.md` y `agents/production/WORKFLOW.md`.
+3. **Nunca saltes capas.** Los métodos son secuenciales: `agents/comprension/WORKFLOW.md` (7 capas),
+   `agents/strategy/METHOD.md` (8), `agents/creative/WORKFLOW.md` (8),
+   `agents/production/WORKFLOW.md` (8) y `agents/posting/WORKFLOW.md` (7).
    Si falta el input de una capa, se bloquea; no se improvisa el faltante. En ⑤ Producción esto es
-   especialmente caro: **presupuestar sin consolidar infla el costo entre 3 y 5 veces**.
+   especialmente caro: **presupuestar sin consolidar infla el costo entre 3 y 5 veces**; en ⑦ Posting,
+   **cargar sin QA de specs publica un archivo que ya no se puede arreglar**.
 4. **Ingeniería inversa produce patrones, no recomendaciones.** Si un output de la Capa 1 empieza
    con "por lo tanto deberíamos…", se salió de su rol.
 5. **No copiar.** La ingeniería inversa se traduce a hipótesis propias filtradas por distintividad,
    nunca a réplica del competidor.
-6. **Gate humano.** En Strategy: núcleo, posicionamiento y calendario. En Creative: brief,
-   conceptos y el ciclo completo. En Producción: **presupuesto, plan de rodaje y entrega**. Los
+6. **Gate humano.** En Comprensión: la captura y el documento. En Strategy: núcleo,
+   posicionamiento y calendario. En Creative: brief, conceptos y el ciclo completo. En Producción:
+   **presupuesto, plan de rodaje y entrega**. En Posting: **los captions y el paquete de carga**. Los
    aprueba un humano antes del handoff. El agente propone; no cierra. Y nada se compromete afuera
-   —una reserva, una convocatoria, una compra— antes de su gate.
+   —una reserva, una convocatoria, una compra, **una publicación**— antes de su gate.
 7. **No duplicar otros departamentos.** Cada agente tiene un punto de corte declarado:
-   - **①②③** (hoy `agents/strategy/`) llega hasta el plan de campañas + calendario.
+   - **① Comprensión** llega hasta **los hechos**: negocio, oferta, cliente y su lenguaje literal,
+     entorno a nivel de mapa, capacidad y problemas con evidencia. 🛑 **Nunca dice "deberíamos"** —
+     y la ingeniería inversa de la competencia es de ②, no suya.
+   - **②③** (hoy `agents/strategy/`) llega hasta el plan de campañas + calendario.
    - **④ Creatividad** llega hasta el brief completo por pieza: concepto, emoción, hook, copy,
      guion, layout, escenas, encuadres, duraciones y qué elementos gráficos pedir.
    - **⑤ Producción** llega hasta el material base entregado y nombrado: RAW ordenado + selects.
      La post —montaje, color de entrega, versiones— es de **⑥B Video Editing**.
+   - **⑦ Posting** llega hasta el **paquete listo para subir**: caption adaptado, QA de plataforma,
+     fecha, hora y el archivo de carga. 🛑 **No publica** —sube un humano— **y no arregla el export**:
+     lo que no cumple vuelve a ⑥A o ⑥B.
    Guidelines son de ②B Branding. Composición, elementos gráficos y export de lo estático son de
    ⑥A Diseño; el montaje y los masters son de ⑥B Video Editing.
-   Publicar es de ⑦ Posting. La pauta es de ⑧B Ads.
+   Comunidad, comentarios y DMs son de ⑧A Orgánico. La pauta es de ⑧B Ads.
 8. **Lo que produce otro departamento se cita, no se reescribe — y nunca se edita.** Un campo que se
    copia con otras palabras crea una segunda versión de la verdad, y en dos ciclos las dos no
    coinciden. Se cita con su ruta:
@@ -140,7 +158,9 @@ Nunca rellenes con inferencia sin marcarla.
    lo haya decidido — y se descubre tarde, cuando ya no hay presupuesto para volver.
 10. **Nada destructivo sin autorización.** No publicar, no pautar, no enviar al cliente, no borrar,
     no sobrescribir aprobados. En ⑤ Producción incluye **no borrar material crudo**, ni el descarte:
-    se marca, no se elimina.
+    se marca, no se elimina. En ⑦ Posting es el límite del departamento: **arma el archivo de carga,
+    pero sube y programa un humano** — y bajar o republicar algo ya publicado también lo decide un
+    humano. 🛑 **Ninguna credencial de publicación vive en el repo.**
 
 ---
 

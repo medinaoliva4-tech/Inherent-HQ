@@ -120,8 +120,11 @@ Producción **no arranca nunca sin el Excel creativo aprobado**.
 
 Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
 
-> 🔄 **Regla de transición.** Mientras el repo no separe ①②③, esos tres se leen de
-> `agents/strategy/` con el mapeo de `agents/creative/WORKFLOW.md` §2. Los archivos de Creatividad se
+> 🔄 **Regla de transición.** **①** ya es un departamento propio: la capacidad declarada, el
+> presupuesto disponible y las restricciones se leen de
+> `agents/comprension/clients/<cliente>/comprension.md` § La capacidad. 🛑 **Ahí vuelve también la
+> corrección de `pr-loop`** — como propuesta, nunca editando su archivo. **②③** todavía se leen de
+> `agents/strategy/`, con el mapeo de `agents/creative/WORKFLOW.md` §2. Los archivos de Creatividad se
 > leen siempre de `agents/creative/clients/<cliente>/`.
 
 ---

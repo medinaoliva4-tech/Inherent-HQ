@@ -1,0 +1,9 @@
+{
+  "name": "comprension",
+  "displayName": "① Comprensión — Inherent Global",
+  "version": "1.0.0",
+  "description": "Ordena la realidad del negocio y del cliente antes de que exista cualquier estrategia. Entrega un documento con fuente por dato y con los huecos declarados, más el detalle de la oferta y de dónde entra el ingreso.",
+  "author": { "name": "Inherent Global" },
+  "repository": "https://github.com/medinaoliva4-tech/Inherent-HQ",
+  "keywords": ["comprension", "onboarding", "negocio", "cliente", "capacidad"]
+}

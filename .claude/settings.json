@@ -8,8 +8,10 @@
     }
   },
   "enabledPlugins": {
+    "comprension@inherent-hq": true,
     "creatividad@inherent-hq": true,
-    "produccion@inherent-hq": true
+    "produccion@inherent-hq": true,
+    "posting@inherent-hq": true
   },
   "permissions": {
     "allow": [

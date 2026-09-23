@@ -86,10 +86,12 @@ Creative **no arranca de cero nunca**.
 
 Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto. No se deduce de los otros.
 
-> 🔄 **Regla de transición.** Hoy el repo tiene un solo agente aguas arriba (`agents/strategy/`) que
-> cubre ①②③ juntos. Se lee de ahí: **①** → `nucleo.md` · **②** → `ingenieria-inversa.md` +
-> `posicionamiento.md` · **③** → `estrategia-de-contenido.md` + `contenido-por-canal.md` +
-> `calendario-estrategico.csv`. Cuando se separen cambian **las rutas, no el método**.
+> 🔄 **Regla de transición.** **①** ya es un departamento propio: se lee de
+> `agents/comprension/clients/<cliente>/comprension.md` — el avatar y el **lenguaje literal del
+> comprador** de § El cliente, y la capacidad de § La capacidad. **②③** todavía comparten
+> `agents/strategy/`: **②** → `ingenieria-inversa.md` + `posicionamiento.md` · **③** →
+> `estrategia-de-contenido.md` + `contenido-por-canal.md` + `calendario-estrategico.csv`. El WIN y el
+> arquetipo siguen en `nucleo.md`. Cuando ②③ se separen cambian **las rutas, no el método**.
 
 ---
 

@@ -5,6 +5,11 @@
   },
   "plugins": [
     {
+      "name": "comprension",
+      "source": "./agents/comprension",
+      "description": "① Comprensión — ordena la realidad del negocio y del cliente antes de que exista cualquier estrategia. Entrega comprension.md con fuente por dato y los huecos declarados, más oferta.csv."
+    },
+    {
       "name": "creatividad",
       "source": "./agents/creative",
       "description": "④ Creatividad — convierte la estrategia aprobada en ideas dirigidas. Entrega plan-de-contenido.csv + brief-del-ciclo.md + un ideas-<formato>.md por formato del ciclo."
@@ -13,6 +18,11 @@
       "name": "produccion",
       "source": "./agents/production",
       "description": "⑤ Producción — convierte las ideas aprobadas en material real. Entrega presupuesto.md (para el cliente) y plan-de-rodaje.md (para el equipo)."
+    },
+    {
+      "name": "posting",
+      "source": "./agents/posting",
+      "description": "⑦ Posting — deja el contenido listo para salir: caption final por plataforma, QA técnico, fecha y hora. Entrega publicaciones.md y publer-import.csv. No publica: sube un humano."
     }
   ]
 }
