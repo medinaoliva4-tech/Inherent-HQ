@@ -62,8 +62,11 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 piezas al mes, qué canales, qué capas de la escalera entran y cuántas revisiones. **Es restricción
 dura para todos los agentes.** Se lee antes de prometer nada.
 
-**Todo paquete es un paquete de growth.** Son dos —`Growth Basic` y `Growth Accelerator`— más
-`Tailor Made`. Lo que cambia no es el tipo de servicio, es la profundidad.
+**Todo paquete es un paquete de growth.** Son tres —`Growth Basic`, `Growth Accelerated` y
+`Growth Compound`— más `Tailor Made`. Lo que cambia no es el tipo de servicio, es la profundidad.
+
+**El volumen es lo que nos separa del mercado. La profundidad es lo que separa los paquetes entre
+sí.** Hasta el de entrada da 4x el volumen de una agencia guatemalteca.
 
 ⚠️ **Los dos incluyen estrategia.** Cambia la profundidad, no la existencia.
 

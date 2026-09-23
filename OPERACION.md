@@ -1,85 +1,98 @@
 # Operación — qué se hace, quién lo hace, cuánto cuesta
 
 > Desglose por **marca, al mes**. De acá salen los costos de `PAQUETES.md`.
-> Paquetes: **`Growth Basic` Q7,500** · **`Growth Accelerator` Q14,000**
+> **`Growth Basic` Q7,500** · **`Growth Accelerated` Q14,000** · **`Growth Compound` Q22,000**
 
 ---
 
 ## 1 · Todo lo que hay que hacer
 
-| # | Trabajo | Quién | Costo | Basic | Accelerator |
-|---|---|---|---|---|---|
+| # | Trabajo | Quién | Costo | Basic | Accel | Compound |
+|---|---|---|---|---|---|---|
 | **ESTRATEGIA** |
-| 1 | Estrategia inicial — los 4 bloques | Agentes + Allan | cloud | ✅ | ✅ profunda |
-| 2 | Revisión del 20 | Agentes | cloud | ligera | completa |
-| 3 | Ajuste de la estrategia | Allan | su tiempo | ✅ | ✅ |
-| 4 | Sesión de dirección mensual | **Allan** | su tiempo | ❌ | ✅ |
+| 1 | Estrategia inicial — los 4 bloques | Agentes + Allan | cloud | ✅ | ✅ | ✅ |
+| 2 | Revisión del 20 | Agentes | cloud | ligera | completa | completa |
+| 3 | Ajuste de la estrategia | Allan | su tiempo | ✅ | ✅ | ✅ |
+| 4 | Sesión de dirección | **Allan** | su tiempo | ❌ | mensual | quincenal |
+| 5 | Replanteo trimestral | **Allan** | su tiempo | ❌ | ❌ | ✅ |
 | **INTELIGENCIA** |
-| 5 | Radar de competencia | Agentes (AdWhispr) | cloud | mensual | **semanal** |
-| 6 | Mapa de intereses y tendencias | Agentes (Eden) | cloud | al inicio | mensual |
-| 7 | Ingeniería inversa de contenido | Agentes | cloud | ✅ | ✅ |
+| 6 | Radar de competencia | Agentes (AdWhispr) | cloud | mensual | semanal | semanal |
+| 7 | Mapa de intereses y tendencias | Agentes (Eden) | cloud | al inicio | mensual | mensual |
+| 8 | Ingeniería inversa de contenido | Agentes | cloud | ✅ | ✅ | ✅ |
+| 9 | Clonar anuncio longevo del competidor | Agentes (AdWhispr) | cloud | ❌ | ✅ | ✅ |
 | **PLANIFICACIÓN** |
-| 8 | Calendario del mes | Agentes | cloud | ✅ | ✅ |
-| 9 | Brief de contenido | Agentes | cloud | ✅ | ✅ |
-| 10 | Aprobación de ideas y calendario | **Allan** | su tiempo | ✅ | ✅ |
+| 10 | Calendario del mes | Agentes | cloud | ✅ | ✅ | ✅ |
+| 11 | Brief de contenido | Agentes | cloud | ✅ | ✅ | ✅ |
+| 12 | Aprobación de ideas y calendario | **Allan** | su tiempo | ✅ | ✅ | ✅ |
 | **PRODUCCIÓN** |
-| 11 | Sesión de grabación | Producción | Q175/sesión | 2 cortas o 1 larga | 2 |
-| 12 | Horas de producción | Producción | Q250/h | **4h** | **6h** |
-| 13 | Edición de reels | Agentes | cloud | 8/mes | 14/mes |
-| 14 | Diseño de artes y carruseles | Agentes | cloud | 4/mes | 8/mes |
-| 15 | Stories y recortes | Agentes | cloud | 12/mes | 20/mes |
+| 13 | Sesión de grabación | Producción | Q175/sesión | 2 | 2 | 3 |
+| 14 | Horas de producción | Producción | Q250/h | **4h** | **6h** | **8h** |
+| 15 | Edición de reels de grabación | Agentes | cloud | 8 | 12 | 16 |
+| 16 | **Multiplicar grabación en derivadas** | Agentes (Higgsfield) | cloud | 8 | 15 | 25 |
+| 17 | Estáticos y carruseles | Agentes (Higgsfield) | cloud | 20 | 40 | 60 |
+| 18 | Stories y recortes | Agentes | cloud | 30 | 45 | 60 |
+| 19 | **Predicción de viralidad** antes de publicar | Agentes (Higgsfield) | cloud | ✅ | ✅ | ✅ |
+| 20 | Fotos de producto generadas | Agentes (Higgsfield) | cloud | ❌ | ✅ | ✅ |
+| 21 | Doblaje a segundo idioma | Agentes (Higgsfield) | cloud | ❌ | ❌ | ✅ |
 | **PUBLICACIÓN** |
-| 16 | Programar y publicar | Agentes (Eden) | cloud | ✅ | ✅ |
-| 17 | Operar los agentes | Operador | **Q500/marca** | ✅ | ✅ |
+| 22 | Programar y publicar | Agentes (Eden) | cloud | ✅ | ✅ | ✅ |
+| 23 | Operar los agentes | Operador | **Q500-1,000** | Q500 | Q750 | Q1,000 |
 | **ADQUISICIÓN** |
-| 18 | Pauta Meta + TikTok | Agentes (AdWhispr) | cloud | ✅ | ✅ |
-| 19 | Pauta Google Search + PMax | Agentes (AdWhispr) | cloud | ❌ | ✅ |
-| 20 | Variantes de creativo para pauta | Agentes (Higgsfield) | cloud | hasta 10 | hasta 25 |
+| 24 | Pauta Meta + TikTok | Agentes (AdWhispr) | cloud | ✅ | ✅ | ✅ |
+| 25 | Pauta Google Search + PMax | Agentes (AdWhispr) | cloud | ❌ | ✅ | ✅ |
+| 26 | Variantes de creativo | Agentes | cloud | 15 | 30 | 50 |
 | **CONVERSIÓN** |
-| 21 | Embudos de WhatsApp | Agentes (Zapier) | cloud | ❌ | ✅ |
-| 22 | Auto-DM en redes | Agentes (Eden) | cloud | ❌ | ✅ |
-| 23 | Atribución (CAPI + GA4) | Agentes | cloud | ❌ | ✅ |
-| 24 | Pruebas A/B y CRO | Agentes | cloud | ❌ | ✅ |
+| 27 | Embudos de WhatsApp | Agentes (Zapier) | cloud | ❌ | ✅ | ✅ |
+| 28 | Auto-DM en redes | Agentes (Eden) | cloud | ❌ | ✅ | ✅ |
+| 29 | Atribución (CAPI + GA4) | Agentes | cloud | ❌ | ✅ | ✅ |
+| 30 | Pruebas A/B y CRO | Agentes | cloud | ❌ | ✅ | continua |
 | **TECNOLOGÍA** |
-| 25 | Herramienta a medida (1/trimestre) | Agentes + **Allan** | Q750 amortizado | ❌ | ✅ |
-| 26 | Landings y microsites | Agentes (Higgsfield + Vercel) | cloud | ❌ | ✅ |
-| 27 | Automatización de procesos | Agentes (Zapier) | cloud | ❌ | ✅ |
+| 31 | Herramienta a medida | Agentes + **Allan** | Q750-1,500 | ❌ | 1/trim. | **1/mes** |
+| 32 | Landings y microsites | Agentes (Higgsfield + Vercel) | cloud | ❌ | ✅ | ✅ |
+| 33 | Automatización de procesos | Agentes (Zapier) | cloud | ❌ | ✅ | ✅ |
 | **EXPERIENCIA** |
-| 28 | Secuencias de recompra | Agentes | cloud | ❌ | ✅ |
-| 29 | Sistema de reseñas | Agentes | cloud | ❌ | ✅ |
+| 34 | Secuencias de recompra | Agentes | cloud | ❌ | parcial | ✅ |
+| 35 | Sistema de reseñas | Agentes | cloud | ❌ | ✅ | ✅ |
+| 36 | Mapa de experiencia y LTV | Agentes + Allan | cloud | ❌ | ❌ | ✅ |
 | **MEDICIÓN** |
-| 30 | Reporte mensual | Agentes | cloud | ✅ | ✅ |
-| 31 | Dashboard en vivo | Agentes | cloud | ❌ | ✅ |
+| 37 | Reporte mensual | Agentes | cloud | ✅ | ✅ | ✅ |
+| 38 | Dashboard en vivo | Agentes | cloud | ❌ | ✅ | ✅ |
+| **AUTONOMÍA** |
+| 39 | IA propia del cliente | Agentes (Eden) | cloud | ❌ | ❌ | ✅ |
+| 40 | Documentación y entrenamiento | Agentes + **Allan** | su tiempo | ❌ | ❌ | ✅ |
 | **CLIENTE** |
-| 32 | Reunión mensual | **Allan** | su tiempo | ✅ | ✅ |
-| 33 | Comunicación continua | **Allan** | su tiempo | ✅ | ✅ |
-| 34 | QA final de entregables | **Allan** | su tiempo | ✅ | ✅ |
-| 35 | Coordinar producción | **Allan** | su tiempo | ✅ | ✅ |
+| 41 | Reunión mensual | **Allan** | su tiempo | ✅ | ✅ | ✅ |
+| 42 | Comunicación continua | **Allan** | su tiempo | ✅ | ✅ | ✅ |
+| 43 | QA final de entregables | **Allan** | su tiempo | ✅ | ✅ | ✅ |
+| 44 | Coordinar producción | **Allan** | su tiempo | ✅ | ✅ | ✅ |
 
-> **Casi toda la ejecución está automatizada con agentes.** Lo humano que queda: **grabar**
-> (producción), **operar los agentes** (operador) y **dirigir y responder por la cuenta** (Allan).
+> **De las 44 tareas, 32 las hacen agentes.** Lo humano que queda: **grabar** (producción),
+> **operar los agentes** (operador) y **dirigir y responder por la cuenta** (Allan).
 >
-> 👉 **De las 35 tareas, 24 las hacen agentes.** Ahí está la ventaja de costo — y es la misma que
-> permite ofrecerle al cliente cosas que una agencia no puede.
+> 👉 **Esa es la ventaja de costo — y es la misma que permite ofrecerle al cliente cosas que una
+> agencia no puede.** No es solo que nos cuesta menos: es que ellos no pueden hacerlo a ningún precio.
 
 ---
 
 ## 2 · Las responsabilidades de Allan, con sus horas
 
-| Responsabilidad | Qué implica | Basic | Accelerator |
+| Responsabilidad | Basic | Accel | Compound |
 |---|---|---|---|
-| **Reunión mensual con el cliente** | La reunión en sí | 1.0 h | 1.0 h |
-| **Preparar la reunión** | Leer el reporte, armar qué decir | 0.5 h | 1.0 h |
-| **Sesión de dirección** | Solo Accelerator | — | 1.5 h |
-| **Comunicación continua** | WhatsApp, dudas, pedidos sueltos | 1.5 h | 2.0 h |
-| **Aprobar calendario e ideas** | Revisar lo que propuso el agente y decidir | 1.0 h | 1.5 h |
-| **QA final de entregables** | Que nada salga mal a nombre de Inherent | 2.0 h | 2.5 h |
-| **Revisión del 20** | Leer el análisis y decidir qué cambia | 1.5 h | 2.0 h |
-| **Coordinar producción** | Agendar sesión, brief, logística | 1.0 h | 1.0 h |
-| **Dirección estratégica** | Pensar la cuenta, no solo operarla | 0.5 h | 1.0 h |
-| **Alcance de la herramienta a medida** | Definir qué se construye y revisarlo | — | 0.5 h |
+| **Reunión mensual con el cliente** | 1.0 h | 1.0 h | 1.0 h |
+| **Preparar la reunión** | 0.5 h | 1.0 h | 1.0 h |
+| **Sesión de dirección** | — | 1.5 h | 3.0 h |
+| **Comunicación continua** | 1.5 h | 2.0 h | 2.5 h |
+| **Aprobar calendario e ideas** | 1.0 h | 1.5 h | 2.0 h |
+| **QA final de entregables** | 2.0 h | 2.5 h | 3.0 h |
+| **Revisión del 20** | 1.5 h | 2.0 h | 2.0 h |
+| **Coordinar producción** | 1.0 h | 1.0 h | 1.5 h |
+| **Dirección estratégica** | 0.5 h | 1.0 h | 1.0 h |
+| **Alcance de la tecnología** | — | 0.5 h | 1.0 h |
 | | | | |
-| **TOTAL** | | **9 h** | **14 h** |
+| **TOTAL** | **9 h** | **14 h** | **18 h** |
+
+> ⚠️ **El QA no escala solo.** Es la única responsabilidad que crece con el volumen de piezas.
+> Si el volumen sube más, **el QA hay que automatizarlo o delegarlo** — es el próximo cuello.
 
 ---
 
@@ -93,30 +106,33 @@
 
 ### El margen con cada tarifa
 
-| Tarifa | **Growth Basic** (9h) | **Growth Accelerator** (14h) |
-|---|---|---|
-| **Q60/h** | 66% | 70% |
-| **Q150/h** | **55%** | **61%** |
-| **Q250/h** | **43%** | **51%** |
+| Tarifa | **Basic** (9h) | **Accelerated** (14h) | **Compound** (18h) |
+|---|---|---|---|
+| **Q60/h** | 66% | 69% | 71% |
+| **Q150/h** | **55%** | **60%** | **64%** |
+| **Q250/h** | **43%** | **50%** | **56%** |
 
 ---
 
 ## 4 · Lo que esto revela
 
 🟢 **Con los precios nuevos, el modelo aguanta la tarifa ambiciosa.**
-Incluso pagándose Q250/h —lo mismo que producción— los dos paquetes quedan en 43% y 51%.
-Con la estructura anterior, Media caía a 19%.
+Incluso pagándose Q250/h —lo mismo que producción— los tres quedan en 43%, 50% y 56%.
+Con la estructura vieja, el paquete de entrada caía a 19%.
 
-🟢 **Accelerator tiene mejor margen que Basic, y así debe ser.**
-Lo que agrega —tecnología, conversión, retención— **corre sobre agentes, no sobre horas humanas.**
-Es el único paquete donde vender más no significa trabajar proporcionalmente más.
+🟢 **El margen sube con cada nivel.**
+Lo que agrega cada escalón —tecnología, retención, IA propia— **corre sobre agentes, no sobre
+horas humanas.** Compound es el único donde vender más no significa trabajar proporcionalmente más.
 
 🟢 **Las horas de Allan no son el cuello de botella.**
-6 clientes Accelerator = 84 h/mes. **Le sobra tiempo.** El límite real es la capacidad de
-producción y su atención, no sus horas.
+5 clientes Compound = 90 h/mes. **Le sobra tiempo.** El límite real es el QA y su atención.
 
-🟡 **Basic es el producto de entrada.** Menor margen a propósito: trae al cliente.
-**El movimiento comercial es subirlo a Accelerator**, donde la utilidad absoluta es más del doble.
+🟡 **Basic es el producto de entrada.** Menor margen a propósito: trae al cliente con 4x el
+volumen del mercado. **El movimiento comercial es subirlo**, donde la utilidad absoluta es 2x y 4x.
+
+🔴 **El QA es el próximo cuello de botella, no las horas.**
+A 161 piezas al mes en Compound, 3 horas de QA son ~1 minuto por pieza. **No alcanza.**
+**Acción: construir un agente de QA antes de vender Compound.**
 
 ---
 
@@ -124,18 +140,20 @@ producción y su atención, no sus horas.
 
 A **Q250/h** (la tarifa ambiciosa), por marca al mes:
 
-| | **Growth Basic** | **Growth Accelerator** |
-|---|---|---|
-| Precio | Q7,500 | Q14,000 |
-| Costo total | Q4,292 | Q6,792 |
-| **Utilidad** | **Q3,208** | **Q7,208** |
-
-**Accelerator deja 2.2x lo que deja Basic.** Ese es el argumento de venta interno.
+| | **Basic** | **Accelerated** | **Compound** |
+|---|---|---|---|
+| Precio | Q7,500 | Q14,000 | Q22,000 |
+| Costo total | Q4,292 | Q7,042 | Q9,717 |
+| **Utilidad** | **Q3,208** | **Q6,958** | **Q12,283** |
+| **vs. Basic** | — | **2.2x** | **3.8x** |
 
 ---
 
-## ⚠️ Estas horas son una estimación
+## ⚠️ Lo que todavía no es dato
 
-Salen del desglose de responsabilidades, no de medición real.
-**Acción pendiente: medirlas durante un mes** y volver a correr esta tabla. Es el único número del
-modelo que todavía no es dato.
+| Pendiente | Por qué importa |
+|---|---|
+| **Medir las horas de Allan** un mes real | Son estimación desde el desglose, no medición |
+| **Correr un mes al volumen prometido** | 66 / 112 / 161 piezas es propuesta, no capacidad probada |
+| **Construir el agente de QA** | Sin eso, Compound no se puede entregar bien |
+| **Probar en cliente las capacidades `⬜`** | Ver `PAQUETES.md` — muchas tools no se han corrido en producción |

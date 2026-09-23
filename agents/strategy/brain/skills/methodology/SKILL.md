@@ -96,18 +96,22 @@ Se mide con dos datos, y salen del bloque `context`:
 
 **El paquete es el límite que ya está firmado:**
 
-| | **Growth Basic** Q7,500 | **Growth Accelerator** Q14,000 |
-|---|---|---|
-| Piezas/mes | 24 *(8 reels · 4 artes · 12 stories)* | 42 *(14 reels · 8 artes · 20 stories)* |
-| Canales de pauta | Meta · TikTok | Meta · TikTok · Google Search · PMax |
-| Variantes de creativo | hasta 10 | hasta 25 |
-| Capas de la escalera | 1-4 + medición | **las 8** |
-| Conversión, operación, tecnología, retención | ❌ | ✅ |
-| Objetivo del plan | Acelerar la máquina que ya existe | Rediseñar la máquina |
+| | **Basic** Q7,500 | **Accelerated** Q14,000 | **Compound** Q22,000 |
+|---|---|---|---|
+| Piezas/mes | **66** | **112** | **161** |
+| Horas de producción | 4h | 6h | 8h |
+| Canales de pauta | Meta · TikTok | + Google Search · PMax | + los que apliquen |
+| Variantes de creativo | hasta 15 | hasta 30 | hasta 50 |
+| Capas de la escalera | 1-4 + medición | 1-8 | **las 9** |
+| Conversión y tecnología | ❌ | ✅ | ✅ |
+| Retención y autonomía del cliente | ❌ | Parcial | ✅ |
+| Objetivo del plan | Acelerar la máquina que hay | Rediseñar la máquina | Que la máquina se sostenga sola |
 
 > **Un objetivo que exige rediseñar el embudo, la operación o la tecnología es imposible sobre
-> `Growth Basic` — por contrato, no por ambición.** Se baja el objetivo, o se propone subir a
-> `Growth Accelerator`.
+> `Growth Basic` — por contrato, no por ambición.** Se baja el objetivo, o se propone subir.
+
+> ⚠️ **El video de grabación es el único techo que no escala.** Depende de las horas de producción
+> y de cuánto pueda grabar el cliente. Todo lo demás escala con agentes.
 >
 > ⚠️ **Nunca se promete lo que no está en «Capacidades reales» de `PAQUETES.md`.**
 > Sin MCP no hay acción, y sin acción no hay objetivo.
