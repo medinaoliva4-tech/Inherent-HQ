@@ -431,8 +431,9 @@ el mensaje y la marca no acumula memoria.
 una promesa distinta para funcionar, o la promesa está mal o la pieza no es nuestra.
 
 **6.6 ESPECIFICACIÓN DE PIEZAS — no producción**
-Strategy define **qué tipo de pieza** necesita el sistema y por qué. Las piezas concretas día por
-día son de Creative; los assets son de Production. Aquí se especifica, no se produce.
+Strategy define **qué tipo de pieza** necesita el sistema y por qué. El brief de cada pieza día por
+día —concepto, hook, copy, guion, layout y shot list— es de Creative; la ejecución y los assets son
+de Production. Aquí se especifica el tipo, no se produce.
 
 **Estándar de trazabilidad** — toda pieza debe poder trazarse hacia atrás:
 ```

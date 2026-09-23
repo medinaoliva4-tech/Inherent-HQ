@@ -1,0 +1,4 @@
+id,id_creativo,campana,canal,cuenta,formato,fecha,hora,archivo,caption_ok,specs_ok,estado
+PO-001,CR-001,Lanzamiento Menu Ejecutivo,instagram-reels,@cafederiva,reel,2026-10-06,12:45,cafederiva_menuejecutivo_CR-001_v01.mp4,✅,✅,listo
+PO-002,CR-002,Lanzamiento Menu Ejecutivo,tiktok,@cafederiva,reel,2026-10-08,19:30,cafederiva_menuejecutivo_CR-002_v01.mp4,✅,⬜,pendiente
+PO-003,CR-003,Lanzamiento Menu Ejecutivo,instagram-feed,@cafederiva,carrusel,2026-10-09,13:00,⚠️ SIN ARCHIVO,✅,⬜,pendiente

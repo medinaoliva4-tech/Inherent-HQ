@@ -1,0 +1,5 @@
+item,tipo,precio,costo,canal_de_venta,peso_ingreso,estacionalidad,fuente
+Menu ejecutivo,producto,Q85,Q32,local;delivery,45%,sube lun-vie mediodia,sistema de punto de venta oct-2026
+Cafe de especialidad,producto,Q28,Q9,local,20%,estable,sistema de punto de venta oct-2026
+Catering de oficina,servicio,Q1800,⚠️ SIN DATOS,DM;WhatsApp,25%,sube nov-dic,dicho por Ana (duena)
+Taller de barismo,evento,Q350,Q120,web,10%,1 por mes,estimado por el equipo
