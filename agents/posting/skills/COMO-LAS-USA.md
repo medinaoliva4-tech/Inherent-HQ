@@ -8,13 +8,34 @@ un solo lugar. El brain es un **plugin**, y por eso no hace falta copiar nada a 
 
 > 🛑 **Un plugin no se carga solo.** El `plugin.json` de `agents/posting/.claude-plugin/` describe el
 > plugin, pero **no hace que Claude lo encuentre**. Quien lo hace encontrable es
-> `.claude-plugin/marketplace.json`, en la raíz del repo; y `.claude/settings.json`, que lo deja
-> habilitado.
+> `.claude-plugin/marketplace.json`, en la raíz del repo, que lista los departamentos; y
+> `.claude/settings.json`, que los deja habilitados.
 >
-> **Cómo se invocan:** `posting:posting` es el orquestador, `posting:po-carga` la Capa 4, y así.
+> 🛑 **Habilitar no es instalar.** `enabledPlugins` enciende un plugin **que ya está instalado**; por
+> sí solo no lo instala. La primera vez, en cada máquina, hay que instalarlo a mano una vez.
 >
-> **Si estás trabajando en una rama** que todavía no se mergeó a `main`:
-> `/plugin marketplace add .` desde la raíz del repo, una sola vez.
+> **Cómo se invocan:** las skills de un plugin llevan el nombre del plugin adelante —
+> `posting:posting` es el orquestador, `posting:po-carga` la Capa 4, y así.
+>
+> **La instalación, paso a paso** *(verificado 2026-09, Claude Code v2.1.280)*:
+>
+> 1. `/plugin marketplace add /ruta/absoluta/al/repo`
+>    🛑 El `.` pelado **no** lo acepta —*"Invalid marketplace source format"*—: pide una ruta
+>    absoluta o `./path`. Y cuidado con el punto viejo si reescribís el campo: una ruta terminada en
+>    `.` da *"Path does not exist"*.
+> 2. `/plugin` → pestaña **Marketplaces** → `inherent-hq` → **Browse plugins**.
+> 3. Entrar a cada departamento e instalarlo con **Install for all collaborators on this repository
+>    (project scope)** — *user scope* lo instala solo para vos.
+> 4. `/exit` y volver a entrar. `enabledPlugins` se lee **al arrancar**, no en caliente: hasta que no
+>    reinicies, `/reload-plugins` va a seguir diciendo `0 plugins · 0 skills`.
+>
+> ⚠️ **Instalar con *project scope* reescribe `.claude/settings.json`.** Si al hacerlo te vacía
+> `extraKnownMarketplaces`, restauralo **antes de commitear**: si no, el repo queda nombrando
+> `@inherent-hq` en `enabledPlugins` sin ningún marketplace que lo defina, y no carga para nadie.
+>
+> **Mientras la rama no esté en `main`**, el marketplace de GitHub apunta a un `main` que todavía no
+> tiene `marketplace.json`, y falla con *"Marketplace file not found"*. Por eso hasta el merge se
+> registra el local con el paso 1.
 
 ---
 

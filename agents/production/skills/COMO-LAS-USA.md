@@ -7,18 +7,36 @@ con qué reglas; acá está el detalle de cada herramienta.
 un solo lugar. El brain es un **plugin**, y por eso no hace falta copiar nada a otra carpeta: un
 archivo, un solo lugar, cero copias.
 
-> 🛑 **Un plugin no se carga solo.** El `plugin.json` de `agents/production/.claude-plugin/` describe
-> el plugin, pero **no hace que Claude lo encuentre**. Quien lo hace encontrable es
+> 🛑 **Un plugin no se carga solo.** El `plugin.json` de `agents/production/.claude-plugin/` describe el
+> plugin, pero **no hace que Claude lo encuentre**. Quien lo hace encontrable es
 > `.claude-plugin/marketplace.json`, en la raíz del repo, que lista los departamentos; y
-> `.claude/settings.json`, que los deja habilitados. Los dos ya están en el repo: al abrir el
-> proyecto y confiar en la carpeta, las skills cargan solas.
+> `.claude/settings.json`, que los deja habilitados.
+>
+> 🛑 **Habilitar no es instalar.** `enabledPlugins` enciende un plugin **que ya está instalado**; por
+> sí solo no lo instala. La primera vez, en cada máquina, hay que instalarlo a mano una vez.
 >
 > **Cómo se invocan:** las skills de un plugin llevan el nombre del plugin adelante —
 > `produccion:produccion` es el orquestador, `produccion:pr-jornadas` la Capa 2, y así.
 >
-> **Si estás trabajando en una rama** que todavía no se mergeó a `main`, el marketplace se lee del
-> repo publicado, así que hasta el merge hay que registrarlo a mano una vez:
-> `/plugin marketplace add .` desde la raíz del repo.
+> **La instalación, paso a paso** *(verificado 2026-09, Claude Code v2.1.280)*:
+>
+> 1. `/plugin marketplace add /ruta/absoluta/al/repo`
+>    🛑 El `.` pelado **no** lo acepta —*"Invalid marketplace source format"*—: pide una ruta
+>    absoluta o `./path`. Y cuidado con el punto viejo si reescribís el campo: una ruta terminada en
+>    `.` da *"Path does not exist"*.
+> 2. `/plugin` → pestaña **Marketplaces** → `inherent-hq` → **Browse plugins**.
+> 3. Entrar a cada departamento e instalarlo con **Install for all collaborators on this repository
+>    (project scope)** — *user scope* lo instala solo para vos.
+> 4. `/exit` y volver a entrar. `enabledPlugins` se lee **al arrancar**, no en caliente: hasta que no
+>    reinicies, `/reload-plugins` va a seguir diciendo `0 plugins · 0 skills`.
+>
+> ⚠️ **Instalar con *project scope* reescribe `.claude/settings.json`.** Si al hacerlo te vacía
+> `extraKnownMarketplaces`, restauralo **antes de commitear**: si no, el repo queda nombrando
+> `@inherent-hq` en `enabledPlugins` sin ningún marketplace que lo defina, y no carga para nadie.
+>
+> **Mientras la rama no esté en `main`**, el marketplace de GitHub apunta a un `main` que todavía no
+> tiene `marketplace.json`, y falla con *"Marketplace file not found"*. Por eso hasta el merge se
+> registra el local con el paso 1.
 
 ---
 
