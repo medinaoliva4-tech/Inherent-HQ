@@ -68,6 +68,13 @@ dura para todos los agentes.** Se lee antes de prometer nada.
 **El volumen es lo que nos separa del mercado. La profundidad es lo que separa los paquetes entre
 sí.** Hasta el de entrada da 4x el volumen de una agencia guatemalteca.
 
+**El bundle no es descuento, es eficiencia.** Subir de escalón cuesta ~40% menos que comprar lo
+mismo suelto, porque todo lo que corre sobre agentes suma Q0 al costo variable.
+**El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
+
+⚠️ **No se vende una capa suelta.** La metodología dice que crecer exige algo íntegro; vender solo
+contenido o solo pauta contradice lo que predicamos.
+
 ⚠️ **Los dos incluyen estrategia.** Cambia la profundidad, no la existencia.
 
 ⚠️ **No se promete lo que no está en «Capacidades reales» de `PAQUETES.md`.** Esa tabla ata cada

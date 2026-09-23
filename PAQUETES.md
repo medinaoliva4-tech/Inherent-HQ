@@ -308,6 +308,150 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ---
 
+## 🎯 La estrategia de bundle
+
+> **El bundle no es un descuento. Es una eficiencia estructural.**
+> Subir de escalón cuesta ~40% menos que comprar lo mismo pieza por pieza — y eso está respaldado
+> por el costo real, no por generosidad.
+
+---
+
+### A · Por qué cada escalón cuesta menos de lo que vale
+
+#### Basic → Accelerated · el salto cuesta **Q6,500**
+
+| Si lo comprara pieza por pieza | Precio de lista |
+|---|---|
+| 46 piezas extra al mes *(× Q60)* | Q2,760 |
+| Herramienta a medida *(Q6,000 / trimestre)* | Q2,000 |
+| Gestión de Google Ads | Q2,500 |
+| Setup de embudo de WhatsApp *(Q8,000 / 12)* | Q667 |
+| Dashboard en vivo *(Q6,000 / 12)* | Q500 |
+| Radar de competencia semanal | Q750 |
+| Catálogo de producto generado *(Q4,500 / 6)* | Q750 |
+| Sesión de dirección mensual | Q1,000 |
+| **TOTAL à la carte** | **Q10,927** |
+| **Lo que cuesta el salto** | **Q6,500** |
+| **AHORRO** | **Q4,427 · 41%** |
+
+#### Accelerated → Compound · el salto cuesta **Q8,000**
+
+| Si lo comprara pieza por pieza | Precio de lista |
+|---|---|
+| 49 piezas extra al mes *(× Q60)* | Q2,940 |
+| 2 herramientas a medida extra por trimestre | Q4,000 |
+| IA propia del cliente *(Q12,000 / 12)* | Q1,000 |
+| Contenido en segundo idioma | Q2,500 |
+| Sesión de dirección quincenal *(+1)* | Q1,000 |
+| Experiencia completa y estrategia de LTV | Q1,500 |
+| Atribución completa | Q500 |
+| **TOTAL à la carte** | **Q13,440** |
+| **Lo que cuesta el salto** | **Q8,000** |
+| **AHORRO** | **Q5,440 · 40%** |
+
+> 🔥 **Comprar todo lo de Compound pieza por pieza costaría Q31,867/mes. Se paga Q22,000.**
+> **Ahorro: Q9,867 — 31%.**
+
+---
+
+### B · Por qué el descuento es real y no nos come el margen
+
+| Salto | Sube el **precio** | Sube el **costo** |
+|---|---|---|
+| Basic → Accelerated | **+87%** | +64% |
+| Accelerated → Compound | **+57%** | +38% |
+
+**El precio sube más rápido que el costo en los dos saltos. Por eso el margen mejora al subir
+(43% → 50% → 56%) mientras el cliente ahorra 40%.**
+
+#### La razón, en una línea
+
+De los Q6,500 que sube Basic → Accelerated, **el costo real solo sube Q2,750**. Y el desglose
+explica todo:
+
+| Lo que se agrega | Costo marginal |
+|---|---|
+| Horas de Allan (+5h) | Q1,250 |
+| Build de tecnología | Q750 |
+| Producción (+2h) | Q500 |
+| Operador de agentes | Q250 |
+| **+46 piezas al mes** | **Q0** |
+| **Google Search + Performance Max** | **Q0** |
+| **Embudos de WhatsApp y auto-DM** | **Q0** |
+| **Dashboard en vivo** | **Q0** |
+| **Radar semanal en vez de mensual** | **Q0** |
+| **Atribución CAPI + GA4** | **Q0** |
+
+👉 **Todo lo que corre sobre agentes suma Q0 al costo variable.** El cloud es Q192 prorrateado —
+**y no cambia entre paquetes**. Ya está pagado.
+
+> **Esta es la ventaja completa: no es que nos cueste menos. Es que a una agencia le costaría
+> contratar a alguien para cada una de esas líneas, y a nosotros no nos cuesta nada.**
+
+---
+
+### C · El hueco — el motor del upsell
+
+**Cada paquete deja un vacío evidente. El cliente lo siente solo; no hay que venderlo.**
+
+| | Lo que resuelve | El hueco que deja | Lo que el cliente dice |
+|---|---|---|---|
+| **Basic** | Atención y demanda | **Conversión** | *"Me llegan mensajes pero se pierden"* |
+| **Accelerated** | Atención, demanda y conversión | **Autonomía** | *"Funciona, pero solo mientras ustedes estén"* |
+| **Compound** | El sistema que se sostiene solo | — | — |
+
+---
+
+### D · Cuándo se vende cada uno — la regla de diagnóstico
+
+> **No se adivina. Se diagnostica.** Estas preguntas deciden el paquete.
+
+| Si el cliente… | Va a |
+|---|---|
+| No tiene demanda suficiente, o nadie lo conoce | **Basic** |
+| Tiene demanda pero se le escapa (no da abasto, no da seguimiento, pierde leads) | **Accelerated** |
+| Tiene demanda y la convierte, pero **todo depende de él o de nosotros** | **Compound** |
+| No encaja en ningún molde (multi-locación, regulatorio, integraciones pesadas) | **Tailor Made** |
+
+⚠️ **No se vende hacia arriba de lo que el cliente necesita.** Vender Compound a quien todavía no
+tiene demanda es venderle autonomía sobre una máquina que no funciona. **Se cae en 3 meses y nos
+cuesta el caso.**
+
+---
+
+### E · La estrategia interna: **subir, no sumar**
+
+> Principio #02: *"Crecer no es hacer más. Es hacer que menos pese menos."*
+
+| Escenario | Utilidad/mes | Horas de Allan |
+|---|---|---|
+| 5 × Basic | Q16,040 | 45 h |
+| 5 × Accelerated | Q34,790 | 70 h |
+| **3 × Compound** | **Q36,849** | **54 h** ✅ |
+| 4 × Compound | Q49,132 | 72 h |
+| 5 × Compound | Q61,415 | 90 h |
+
+🔥 **3 clientes Compound dan más plata que 5 Accelerated — con 16 horas menos y 2 clientes menos.**
+
+**El movimiento comercial no es conseguir más clientes. Es subir a los que ya están.**
+Menos cuentas, más profundidad, más margen, menos horas.
+
+---
+
+### F · Lo que NO se desagrega
+
+| Regla | Por qué |
+|---|---|
+| **No se vende una sola capa suelta** | La metodología dice que crecer exige algo íntegro. Vender solo contenido, o solo pauta, contradice lo que predicamos |
+| **No se vende Compound a quien no tiene demanda** | Es autonomía sobre una máquina rota |
+| **Los extras son complementos, no sustitutos** | Nadie arma un paquete juntando extras. El à la carte existe para **mostrar el ahorro**, no para comprarse |
+| **No se baja de paquete a mitad de trimestre** | El trabajo de las capas profundas se hace al inicio. Bajar después es quedarse con el costo sin el ingreso |
+
+> ⚠️ **La tabla à la carte es para la venta, no para el catálogo.** Sirve para que el cliente vea
+> el ahorro. **Si se vuelve un menú, perdemos el bundle y volvemos a ser agencia.**
+
+---
+
 ## ⚙️ Capacidades reales — qué podemos y qué no
 
 > **Regla del repo: un agente no puede hacer nada que su MCP no permita.**
@@ -585,6 +729,15 @@ y familia. **Ese no es precio oficial y no se usa como referencia para cotizar.*
 | Herramienta a medida adicional | Desde Q6,000 |
 | Catálogo de producto generado (hasta 40 SKU) | Q4,500 |
 | Contenido en segundo idioma (doblaje del mes) | Q2,500 |
+| Setup de embudo de WhatsApp | Q8,000 |
+| Dashboard en vivo (build) | Q6,000 |
+| IA propia del cliente (build) | Q12,000 |
+| Gestión de Google Ads | Q2,500 / mes |
+| Radar de competencia semanal | Q750 / mes |
+| Sesión de dirección extra | Q1,000 |
+
+> ⚠️ **Estos precios de lista sostienen la tabla à la carte de «La estrategia de bundle».**
+> Si cambia uno, hay que recalcular el ahorro de los saltos.
 
 ---
 
