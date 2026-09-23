@@ -96,15 +96,21 @@ Se mide con dos datos, y salen del bloque `context`:
 
 **El paquete es el límite que ya está firmado:**
 
-| | Basic Q2,500 | Growth Q5,000 | Premium Q8,000 |
-|---|---|---|---|
-| Piezas/mes | 16 | 27 | 42 |
-| Horas de estrategia | **0** | 1 | 2 |
-| Ads management | **0** | 1 | 2 |
-| Objetivo del plan | Presencia | Demanda y crecimiento medible | Crecimiento medible |
+| | **Growth Basic** Q7,500 | **Growth Accelerator** Q14,000 |
+|---|---|---|
+| Piezas/mes | 24 *(8 reels · 4 artes · 12 stories)* | 42 *(14 reels · 8 artes · 20 stories)* |
+| Canales de pauta | Meta · TikTok | Meta · TikTok · Google Search · PMax |
+| Variantes de creativo | hasta 10 | hasta 25 |
+| Capas de la escalera | 1-4 + medición | **las 8** |
+| Conversión, operación, tecnología, retención | ❌ | ✅ |
+| Objetivo del plan | Acelerar la máquina que ya existe | Rediseñar la máquina |
 
-> **Un objetivo de crecimiento agresivo sobre un paquete Basic es un objetivo imposible por
-> contrato, no por ambición.** Se baja, o se propone subir de paquete.
+> **Un objetivo que exige rediseñar el embudo, la operación o la tecnología es imposible sobre
+> `Growth Basic` — por contrato, no por ambición.** Se baja el objetivo, o se propone subir a
+> `Growth Accelerator`.
+>
+> ⚠️ **Nunca se promete lo que no está en «Capacidades reales» de `PAQUETES.md`.**
+> Sin MCP no hay acción, y sin acción no hay objetivo.
 
 ```markdown
 | Objetivo | ¿Qué exige? | ¿Hay gente? | ¿Hay dinero? | Veredicto |

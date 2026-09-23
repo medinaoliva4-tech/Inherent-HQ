@@ -59,10 +59,16 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 ## El techo comercial
 
 **`PAQUETES.md`** define qué se puede entregar según el paquete que contrató el cliente: cuántas
-piezas al mes, si hay estrategia, si hay pauta, cuántas revisiones. **Es restricción dura para
-todos los agentes.** Se lee antes de prometer nada.
+piezas al mes, qué canales, qué capas de la escalera entran y cuántas revisiones. **Es restricción
+dura para todos los agentes.** Se lee antes de prometer nada.
 
-⚠️ **Basic no incluye estrategia.** Un cliente Basic no recibe el workflow de Strategy.
+**Todo paquete es un paquete de growth.** Son dos —`Growth Basic` y `Growth Accelerator`— más
+`Tailor Made`. Lo que cambia no es el tipo de servicio, es la profundidad.
+
+⚠️ **Los dos incluyen estrategia.** Cambia la profundidad, no la existencia.
+
+⚠️ **No se promete lo que no está en «Capacidades reales» de `PAQUETES.md`.** Esa tabla ata cada
+capacidad a su MCP. Sin MCP no hay acción, y sin acción no hay promesa.
 
 ## Cómo arrancás una sesión
 
