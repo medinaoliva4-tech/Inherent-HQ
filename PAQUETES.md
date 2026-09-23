@@ -168,11 +168,13 @@ Por eso se siente justo. **No es que el modelo no funcione: es que está corrien
 
 ---
 
-## ⚠️ Lo que falta medir
+## El desglose operativo
 
-**Las horas de account management de Allan.** Es el costo más grande y el único sin medir.
-Es el número que decide si Media & Creativity funciona o si se está pagando con la utilidad de
-la empresa.
+**`OPERACION.md`** tiene el detalle completo: las 20 tareas que hay que hacer por cuenta, quién
+hace cada una, y las responsabilidades de Allan con sus horas.
 
-**Acción:** medir durante un mes cuántas horas consume una cuenta — reuniones, revisiones,
-coordinación y reportes — y volver a correr esta tabla.
+**Horas de account management por paquete:** Media 8h · Growth 7h · Full Stack 12h
+
+**Margen a valor de reemplazo (Q150/h):** Media 35% · Growth 52% · Full Stack 44%
+
+⚠️ Esas horas son **estimación desde el desglose**, no medición. Medirlas un mes y recalcular.
