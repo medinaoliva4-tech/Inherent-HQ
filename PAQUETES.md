@@ -108,106 +108,203 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ---
 
-## Entregables, uno por uno
+## 📋 Los tres paquetes, completos
 
-### 1 · Diagnóstico y estrategia
+> Cada paquete listado por sus **nueve pilares**, no solo contenido.
 
-| Entregable | Basic | Accel | Compound |
-|---|---|---|---|
-| Estrategia completa (los 4 bloques de Strategy) | ✅ | ✅ | ✅ |
-| Objetivos macro por trimestre con prueba de realismo | ✅ | ✅ | ✅ |
-| Brief por área (Branding · Marketing · Growth · Creative) | ✅ | ✅ | ✅ |
-| Revisión del 20 de cada mes | Ligera | Completa | Completa |
-| Sesión de dirección con Allan | ⬜ | ✅ mensual | ✅ quincenal |
-| Revisión de oferta y estructura de precio | ⬜ | ✅ | ✅ |
-| Replanteo estratégico trimestral | ⬜ | ⬜ | ✅ |
+---
 
-### 2 · Inteligencia continua
+# 🟦 GROWTH BASIC — Q7,500/mes
 
-| Entregable | Basic | Accel | Compound |
-|---|---|---|---|
-| **Radar de competencia** — qué anuncios corren y cuáles sostienen | Mensual | **Semanal** | **Semanal + alertas** |
-| **Mapa de intereses y tendencias locales** | Al inicio | Mensual | Mensual |
-| Ingeniería inversa de contenido ganador | ✅ | ✅ | ✅ |
-| Estudio de títulos y portadas que ganan en la categoría | ✅ | ✅ | ✅ |
-| Benchmark contra competidores directos | Trimestral | Mensual | Mensual |
-| **Clonado del anuncio más longevo del competidor** | ⬜ | ✅ | ✅ |
+**Crecimiento básico.** La máquina que ya existe, vendiendo más.
+*Para quien ya vende pero depende del fundador, los referidos o esfuerzos aislados.*
 
-### 3 · Marca y contenido
+### 1 · Estrategia
+- Estrategia completa al inicio — los 4 bloques (contexto, análisis, ingeniería inversa, metodología)
+- Objetivos macro por trimestre, con prueba de realismo contra gente y dinero
+- Brief por área: Branding · Marketing · Growth · Creative
+- Plataforma de marca: posicionamiento, promesa, historia, personalidad
+- **Revisión del 20 de cada mes** — ligera
 
-| Entregable | Basic | Accel | Compound |
-|---|---|---|---|
-| Plataforma de marca y brief de branding | ✅ | ✅ | ✅ |
-| Dirección creativa y calendario mensual | ✅ | ✅ | ✅ |
-| Producción en sitio | 4h · 2 ses. | 6h · 2 ses. | 8h · 3 ses. |
-| **Volumen de piezas** | **66/mes** | **112/mes** | **161/mes** |
-| Copy y community management | ✅ | ✅ | ✅ |
-| **Predicción de viralidad antes de publicar** | ✅ | ✅ | ✅ |
-| **Multiplicación de grabación** (1 sesión → 15 piezas) | ✅ | ✅ | ✅ |
-| **Fotos de producto generadas** (sin sesión) | ⬜ | ✅ | ✅ |
-| Plantillas dinámicas para el equipo del cliente | ⬜ | ✅ | ✅ |
-| **Contenido en segundo idioma** (doblaje + voz) | ⬜ | ⬜ | ✅ |
+### 2 · Inteligencia
+- **Radar de competencia mensual** — qué anuncios corren y cuáles sostienen
+- **Mapa de intereses y tendencias locales** al inicio
+- Ingeniería inversa del contenido ganador de la categoría
+- Estudio de títulos y portadas que ganan
+- Benchmark contra competidores directos — trimestral
+
+### 3 · Contenido — **66 piezas/mes**
+| | Cantidad |
+|---|---|
+| Reels de grabación | **8** |
+| Piezas derivadas *(cortes, reencuadres)* | **8** |
+| Estáticos y carruseles | **20** |
+| Stories | **30** *(diario)* |
+| Producción en sitio | 4h · 2 sesiones |
+| Revisiones por pieza | 2 |
+
+- **Predicción de viralidad antes de publicar**
+- **Multiplicación de grabación** — 1 sesión rinde 15 piezas
+- Copy y community management
+- Dirección creativa y calendario mensual
 
 ### 4 · Adquisición
+- **Meta Ads** (Facebook + Instagram)
+- **TikTok Ads**
+- Hasta **15 variantes de creativo** por campaña
+- Investigación de keywords propias y del competidor
+- Optimización de presupuesto y pausas
+- ⛔ Google Ads · ⛔ Inversión publicitaria (la pone el cliente)
 
-| Entregable | Basic | Accel | Compound |
-|---|---|---|---|
-| Meta Ads (Facebook + Instagram) | ✅ | ✅ | ✅ |
-| TikTok Ads | ✅ | ✅ | ✅ |
-| Google Search + Performance Max | ⬜ | ✅ | ✅ |
-| **Variantes de creativo por campaña** | hasta 15 | hasta 30 | **hasta 50** |
-| Keywords propias y del competidor | ✅ | ✅ | ✅ |
-| Optimización de presupuesto y pausas | ✅ | ✅ | ✅ |
-| **Inversión publicitaria** | ⛔ Nunca incluida — la pone el cliente | ⛔ | ⛔ |
+### 5 · Conversión
+⬜ **No incluida.** Se cotiza aparte o se sube de paquete.
 
-### 5 · Conversión — desde Accelerated
-
-| Entregable | Accel | Compound |
-|---|---|---|
-| Auditoría y diseño del embudo completo | ✅ | ✅ |
-| **Embudos de WhatsApp** — flujos, respuestas, entrenamiento al equipo | ✅ | ✅ |
-| Auto-DM en redes | ✅ | ✅ |
-| Atribución limpia (Meta CAPI + GA4) | ✅ | ✅ |
-| Pruebas A/B sobre páginas y mensajería (CRO) | ✅ | ✅ continua |
-
-### 6 · Operación y tecnología — el foso
-
-| Entregable | Accel | Compound |
-|---|---|---|
-| **Herramienta a medida** — CRM ligero, panel, portal, calculadora | 1 / trimestre | **1 / mes** |
-| Landings y microsites construidos y desplegados | ✅ | ✅ |
-| Automatización de procesos internos | ✅ | ✅ |
-| Integración con las herramientas que ya usa | ✅ | ✅ |
+### 6 · Tecnología
+⬜ **No incluida.**
 
 ### 7 · Experiencia y retención
-
-| Entregable | Accel | Compound |
-|---|---|---|
-| Mapa de experiencia del cliente, punto por punto | ⬜ | ✅ |
-| Secuencias de recompra y reactivación | Parcial | ✅ |
-| Sistema de reseñas y prueba social | ✅ | ✅ |
-| Estrategia de LTV y ticket promedio | ⬜ | ✅ |
+⬜ **No incluida.**
 
 ### 8 · Medición
+- Reporte mensual de marca y performance
+- Los 3-4 números que dicen si el negocio está vivo
+- ⬜ Dashboard en vivo · ⬜ Atribución de ventas
 
-| Entregable | Basic | Accel | Compound |
-|---|---|---|---|
-| Reporte mensual de marca y performance | ✅ | ✅ | ✅ |
-| **Dashboard en vivo** (marca + ventas, 24/7) | ⬜ | ✅ | ✅ |
-| Los 3-4 números que dicen si el negocio está vivo | ✅ | ✅ | ✅ |
-| Reporte de ventas atribuidas | ⬜ | ✅ | ✅ |
+### 9 · Autonomía del cliente
+⬜ **No incluida.**
 
-### 9 · Autonomía del cliente — solo Compound
+**Performance fee:** opcional.
 
-> **La prueba final de la filosofía: "una empresa debe depender cada vez menos de su fundador".**
-> Compound es el único paquete que además hace que dependa menos de nosotros.
+---
 
-| Entregable |
-|---|
-| **IA propia del cliente** — entrenada con su marca, su oferta y sus datos |
-| **Agentes operando dentro de su negocio**, no del nuestro |
-| Documentación para que su equipo lo opere sin nosotros |
-| Entrenamiento al equipo interno |
+# 🟪 GROWTH ACCELERATED — Q14,000/mes
+
+**Crecimiento acelerado.** Rediseñamos la máquina.
+*Para quien ya tiene volumen y quiere que el sistema completo empuje, no solo el marketing.*
+
+### 1 · Estrategia
+✅ Todo lo de Basic, **más**:
+- **Revisión del 20 completa**, no ligera
+- **Sesión de dirección mensual con Allan**
+- Revisión de la oferta y de la estructura de precio
+
+### 2 · Inteligencia
+✅ Todo lo de Basic, **más**:
+- **Radar de competencia SEMANAL**, no mensual
+- **Mapa de intereses mensual**, no solo al inicio
+- Benchmark mensual
+- **Clonado del anuncio más longevo del competidor**
+
+### 3 · Contenido — **112 piezas/mes**
+| | Cantidad |
+|---|---|
+| Reels de grabación | **12** |
+| Piezas derivadas | **15** |
+| Estáticos y carruseles | **40** |
+| Stories | **45** |
+| Producción en sitio | 6h · 2 sesiones |
+| Revisiones por pieza | 2 |
+
+✅ Todo lo de Basic, **más**:
+- **Fotos de producto generadas** — catálogo sin sesión de fotos
+- **Plantillas dinámicas** (Figma/Canva) para el equipo del cliente
+
+### 4 · Adquisición
+✅ Meta + TikTok, **más**:
+- **Google Search**
+- **Performance Max**
+- Hasta **30 variantes de creativo** por campaña
+
+### 5 · Conversión ✅ **NUEVO**
+- Auditoría y diseño del **embudo completo**
+- **Embudos de WhatsApp** — flujos, respuestas automáticas, entrenamiento al equipo de ventas
+- **Auto-DM** en redes
+- **Atribución limpia** — Meta CAPI + Google Analytics 4
+- Pruebas A/B sobre páginas y mensajería (CRO)
+
+### 6 · Tecnología ✅ **NUEVO — el foso**
+- **Una herramienta a medida por trimestre** — CRM ligero, panel de operación, portal, calculadora
+- **Landings y microsites** construidos y desplegados
+- **Automatización de procesos internos**
+- Integración con las herramientas que ya usa
+
+### 7 · Experiencia y retención — parcial
+- Secuencias de recompra y reactivación *(parcial)*
+- Sistema de reseñas y prueba social
+- ⬜ Mapa de experiencia completo · ⬜ Estrategia de LTV
+
+### 8 · Medición
+✅ Todo lo de Basic, **más**:
+- **Dashboard en vivo** — marca + ventas, 24/7
+- **Reporte de ventas atribuidas**
+
+### 9 · Autonomía del cliente
+⬜ **No incluida.**
+
+**Performance fee:** ✅ incluido.
+
+---
+
+# 🟨 GROWTH COMPOUND — Q22,000/mes
+
+**El crecimiento se compone.** La máquina se sostiene sola.
+*Para quien quiere que el crecimiento deje de depender de nosotros y del fundador.*
+
+### 1 · Estrategia
+✅ Todo lo de Accelerated, **más**:
+- **Sesión de dirección QUINCENAL**, no mensual
+- **Replanteo estratégico trimestral completo**
+
+### 2 · Inteligencia
+✅ Todo lo de Accelerated, **más**:
+- **Alertas de movimiento de mercado** — no se espera al radar semanal
+
+### 3 · Contenido — **161 piezas/mes**
+| | Cantidad |
+|---|---|
+| Reels de grabación | **16** |
+| Piezas derivadas | **25** |
+| Estáticos y carruseles | **60** |
+| Stories | **60** |
+| Producción en sitio | 8h · 3 sesiones |
+| Revisiones por pieza | **3** |
+
+✅ Todo lo de Accelerated, **más**:
+- **Contenido en segundo idioma** — doblaje y voz sintética sobre el material existente
+
+### 4 · Adquisición
+✅ Todo lo de Accelerated, **más**:
+- **Todos los canales que apliquen** al negocio
+- Hasta **50 variantes de creativo** por campaña
+
+### 5 · Conversión
+✅ Todo lo de Accelerated, **más**:
+- **CRO continuo**, no por campaña
+
+### 6 · Tecnología
+✅ Todo lo de Accelerated, **pero**:
+- **Una herramienta a medida POR MES**, no por trimestre
+
+### 7 · Experiencia y retención ✅ **COMPLETO**
+- **Mapa de experiencia del cliente**, punto por punto
+- Secuencias de recompra y reactivación completas
+- Sistema de reseñas y prueba social
+- **Estrategia de LTV y ticket promedio**
+
+### 8 · Medición
+✅ Todo lo de Accelerated, **más**:
+- **Atribución completa** de punta a punta
+
+### 9 · Autonomía del cliente ✅ **EXCLUSIVO**
+> La prueba final de la filosofía: *"una empresa debe depender cada vez menos de su fundador"*.
+> Compound hace que además dependa menos de nosotros.
+
+- **IA propia del cliente** — entrenada con su marca, su oferta y sus datos
+- **Agentes operando dentro de su negocio**, no del nuestro
+- **Documentación** para que su equipo lo opere sin nosotros
+- **Entrenamiento al equipo interno**
+
+**Performance fee:** ✅ incluido.
 
 ---
 
@@ -278,46 +375,119 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ---
 
-## Costos y márgenes
+## 💰 Costos y márgenes — desglose completo
 
-### Estructura de costos
+### Los costos unitarios
 
-| Concepto | Costo | Unidad |
+| Concepto | Costo unitario | Cómo se calcula |
 |---|---|---|
-| Producción | Q250 | por hora |
-| Fee por sesión de grabación | Q175 | por sesión |
-| Operador de agentes | Q500 – Q1,000 | por marca, **según volumen** |
-| Cloud (Claude + herramientas) | ~Q960 | al mes, **total** — no por cliente |
-| Build de tecnología (amortizado) | Q750 – Q1,500 | por mes, según paquete |
-| Account management (Allan) | Q150 o Q250 | por hora — ver `OPERACION.md` |
+| **Producción** | **Q250** / hora | Lo que cobra quien graba |
+| **Fee por sesión** | **Q175** / sesión | Fee fijo por salida a grabar |
+| **Operador de agentes** | **Q500 – Q1,000** / marca | Sube con el volumen de piezas |
+| **Cloud** | **Q960** / mes **TOTAL** | Claude + herramientas. **No es por cliente.** Se prorratea entre 5 |
+| **Build de tecnología** | **Q750 – Q1,500** / mes | Horas amortizadas de construir la herramienta |
+| **Allan** | **Q60 · Q150 · Q250** / hora | Tres criterios — ver `OPERACION.md` |
 
-### El desglose, con la hora de Allan a Q250
+> 🟢 **Casi todo el costo es variable.** El único fijo es el cloud (Q960). No se pierde plata si
+> no hay clientes, y cada marca nueva es casi toda margen.
+>
+> 🟢 **Diseño, edición, publicación, pauta y análisis están automatizados con agentes** — por eso
+> caen en cloud, no en horas humanas.
 
-| Concepto | **Basic** | **Accelerated** | **Compound** |
+---
+
+### 🟦 GROWTH BASIC — Q7,500
+
+| Concepto | Cálculo | Costo |
+|---|---|---|
+| Producción | 4h × Q250 | Q1,000 |
+| Sesiones de grabación | 2 × Q175 | Q350 |
+| Operador de agentes | fijo | Q500 |
+| Cloud | Q960 ÷ 5 | Q192 |
+| Build de tecnología | no incluye | Q0 |
+| **Subtotal sin Allan** | | **Q2,042** |
+
+| Con la hora de Allan a… | Allan (9h) | **Costo total** | **Utilidad** | **Margen** |
+|---|---|---|---|---|
+| Q60/h *(lo básico)* | Q540 | Q2,582 | Q4,918 | **66%** |
+| **Q150/h** *(reemplazo)* | Q1,350 | **Q3,392** | **Q4,108** | **55%** |
+| **Q250/h** *(ambicioso)* | Q2,250 | **Q4,292** | **Q3,208** | **43%** |
+
+---
+
+### 🟪 GROWTH ACCELERATED — Q14,000
+
+| Concepto | Cálculo | Costo |
+|---|---|---|
+| Producción | 6h × Q250 | Q1,500 |
+| Sesiones de grabación | 2 × Q175 | Q350 |
+| Operador de agentes | +volumen | Q750 |
+| Cloud | Q960 ÷ 5 | Q192 |
+| Build de tecnología | 1 herramienta / trimestre | Q750 |
+| **Subtotal sin Allan** | | **Q3,542** |
+
+| Con la hora de Allan a… | Allan (14h) | **Costo total** | **Utilidad** | **Margen** |
+|---|---|---|---|---|
+| Q60/h | Q840 | Q4,382 | Q9,618 | **69%** |
+| **Q150/h** | Q2,100 | **Q5,642** | **Q8,358** | **60%** |
+| **Q250/h** | Q3,500 | **Q7,042** | **Q6,958** | **50%** |
+
+---
+
+### 🟨 GROWTH COMPOUND — Q22,000
+
+| Concepto | Cálculo | Costo |
+|---|---|---|
+| Producción | 8h × Q250 | Q2,000 |
+| Sesiones de grabación | 3 × Q175 | Q525 |
+| Operador de agentes | volumen máximo | Q1,000 |
+| Cloud | Q960 ÷ 5 | Q192 |
+| Build de tecnología | 1 herramienta / **mes** | Q1,500 |
+| **Subtotal sin Allan** | | **Q5,217** |
+
+| Con la hora de Allan a… | Allan (18h) | **Costo total** | **Utilidad** | **Margen** |
+|---|---|---|---|---|
+| Q60/h | Q1,080 | Q6,297 | Q15,703 | **71%** |
+| **Q150/h** | Q2,700 | **Q7,917** | **Q14,083** | **64%** |
+| **Q250/h** | Q4,500 | **Q9,717** | **Q12,283** | **56%** |
+
+---
+
+### Resumen — los tres, lado a lado
+
+| | **Basic** | **Accelerated** | **Compound** |
 |---|---|---|---|
-| Producción | 4h → Q1,000 | 6h → Q1,500 | 8h → Q2,000 |
-| Sesiones de grabación | 2 → Q350 | 2 → Q350 | 3 → Q525 |
-| Operador de agentes | Q500 | Q750 | Q1,000 |
-| Cloud *(prorrateado entre 5)* | Q192 | Q192 | Q192 |
-| Build de tecnología | — | Q750 | Q1,500 |
-| Allan | 9h → Q2,250 | 14h → Q3,500 | 18h → Q4,500 |
-| **Costo total** | **Q4,292** | **Q7,042** | **Q9,717** |
 | **Precio** | **Q7,500** | **Q14,000** | **Q22,000** |
-| **Utilidad** | **Q3,208** | **Q6,958** | **Q12,283** |
-| **Margen** | **43%** | **50%** | **56%** |
-
-### Con la hora de Allan a Q150 *(valor de reemplazo)*
-
-| | Basic | Accelerated | Compound |
-|---|---|---|---|
-| Costo total | Q3,392 | Q5,642 | Q7,917 |
-| **Margen** | **55%** | **60%** | **64%** |
+| Producción | Q1,000 | Q1,500 | Q2,000 |
+| Sesiones | Q350 | Q350 | Q525 |
+| Operador | Q500 | Q750 | Q1,000 |
+| Cloud | Q192 | Q192 | Q192 |
+| Tecnología | Q0 | Q750 | Q1,500 |
+| Allan *(@Q250/h)* | Q2,250 | Q3,500 | Q4,500 |
+| **COSTO TOTAL** | **Q4,292** | **Q7,042** | **Q9,717** |
+| **UTILIDAD** | **Q3,208** | **Q6,958** | **Q12,283** |
+| **MARGEN** | **43%** | **50%** | **56%** |
+| *vs. utilidad de Basic* | — | **2.2x** | **3.8x** |
 
 ✅ **El margen sube con cada nivel, y así debe ser.** Lo que agrega cada escalón corre sobre
 agentes, no sobre horas humanas. **Compound es el único donde vender más no significa trabajar
 proporcionalmente más.**
 
 ---
+
+### El costo por pieza — el número que gana la discusión de precio
+
+| | **Basic** | **Accelerated** | **Compound** | *Mercado GT (Q3,000)* |
+|---|---|---|---|---|
+| Piezas/mes | 66 | 112 | 161 | *16* |
+| **Lo que nos cuesta cada pieza** | Q65 | Q63 | Q60 | — |
+| **Lo que paga el cliente por pieza** | **Q114** | **Q125** | **Q137** | ***Q188*** |
+
+👉 **Growth Basic cuesta 39% menos por pieza que un paquete guatemalteco de Q3,000 — y además
+incluye estrategia, inteligencia y pauta.**
+
+⚠️ **Este número es para la discusión interna y para defender el precio. Nunca se vende por
+pieza** — eso convierte la oferta en commodity y contradice el posicionamiento.
 
 ## Contra el benchmark de Guatemala
 
