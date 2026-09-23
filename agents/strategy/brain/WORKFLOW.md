@@ -75,21 +75,21 @@ Saca de la media real los patrones que explican **por qué** funciona. Termina e
 no en recomendación.
 
 ### 04 · METODOLOGÍA → skill `methodology`
-Arma la estrategia. Produce los bloques del entregable:
+Arma **la estrategia**. Tres partes:
 
-`datos` · `posicionamiento y promesa` · `ICP` · `identidad y branding` · `historia` ·
-`comunicación` · `canales` · `monetización` · `medición`
+**A · LOS OBJETIVOS** — qué significa ganar para esta empresa · objetivos **macro por trimestre** ·
+y la **prueba de realismo**: ¿no sobrecarga al equipo de la agencia ni al de la empresa? Se mide con
+cuánta gente hay y cuánto dinero hay para invertir. **Un objetivo que no pasa, se baja o se mueve.**
 
-Dentro de **identidad y branding** sale el **brief de branding**: 8 bloques, cada uno con la
-decisión tomada **y los puntos que Branding tiene que resolver**.
+**B · LA PLATAFORMA** — audiencia profunda · tensión cultural · posicionamiento · promesa ·
+historia (el cliente es el héroe) · personalidad · el fundador · comunidad inicial
 
-🛑 **Strategy no arma la marca.** No hace brand strategy ni guideline, no define paleta,
-tipografía, logo ni sistema visual. Entrega **dirección y restricciones** para que Branding lo
-desarrolle a fondo con sus propias skills. **El diseño gráfico es la lógica de posicionar hecha
-visible** — por eso la dirección se decide acá, y la ejecución es de Branding.
+**C · LOS BRIEFS POR ÁREA** — Branding · Marketing · Growth · Creative. Cada uno recibe **qué tiene
+que lograr y qué tomar en cuenta**, no cómo hacerlo.
 
-> Este entregable lo usan **Marketing** (para bajarlo a campañas) y **Branding** (para alinear lo
-> visual). Tiene que servirles sin que tengan que preguntar nada.
+> 🛑 **El nivel es MACRO.** Si la ingeniería inversa muestra que cierto contenido convierte, la
+> conclusión no es el formato: es **a quién hay que hablarle y cómo hay que sentirse** para que esa
+> audiencia nos desee. Se entregan **las acciones que hay que hacer**, no piezas.
 
 ### 05 · ENTREGA → skill `client-delivery`
 Compartida. Arma el documento del cliente y su folder.

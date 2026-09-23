@@ -1,300 +1,265 @@
 ---
 name: methodology
 description: >
-  Bloque 04 de Strategy. Arma la estrategia con todo lo que trajeron el contexto, el análisis y la
-  ingeniería inversa, y produce los bloques del entregable: posicionamiento y promesa, ICP,
-  identidad y branding, historia, comunicación, canales, monetización y medición. Incluye el análisis
-  de branding — qué marca hay que construir para hablarle a esta gente. Úsala cuando los tres bloques
-  anteriores estén hechos y haya que escribir la estrategia.
+  Bloque 04 de Strategy. Convierte el contexto, el análisis y la ingeniería inversa en LA ESTRATEGIA:
+  los objetivos macro por trimestre validados contra la capacidad real, la plataforma de marca
+  (audiencia profunda, posicionamiento, promesa, historia, personalidad, fundador y comunidad), y un
+  brief por área — Branding, Marketing y Growth. Nivel macro: cómo se va a lograr, no qué pieza se
+  publica. Úsala cuando los tres bloques anteriores estén hechos.
 ---
 
-# 04 · Metodología
+# 04 · Metodología — la estrategia
 
-Acá se arma la estrategia. **Input obligatorio:** `context` + `analysis` + `reverse-engineering`.
-Si falta alguno, se corre primero. No se inventa el faltante.
-
-> Este entregable lo usan **Marketing** (lo baja a campañas) y **Branding** (alinea lo visual).
-> Tiene que servirles sin que tengan que preguntar nada.
+**Input obligatorio:** `context` + `analysis` + `reverse-engineering`. Si falta uno, se corre primero.
 
 ---
 
-## Los bloques del entregable
+## La lógica que ordena todo
 
-### 1 · Datos
-Lo que sostiene todo lo demás: el contexto resumido, los números del negocio, la audiencia real y
-la evidencia de la ingeniería inversa con sus marcas de confianza.
+```
+percepción intencional → deseo → comunidad → ventas → contenido con señales correctas
+→ alcance cualificado → más ventas
+```
 
-### 2 · Posicionamiento y promesa
-- **Categoría:** ¿competimos en una existente, la redefinimos, o creamos una?
-- **Enemigo:** ¿contra qué estamos? Puede ser un competidor, el statu quo, una creencia, un hábito,
-  o una mala experiencia instalada. **Una marca sin enemigo no tiene dirección**
-- **Idea madre:** la frase que guía toda la marca. Corta, propia, memorable
-- **Diferencia:** qué hacemos distinto de verdad, o en percepción
-- **Promesa:** `Ayudamos a ______ a lograr ______ sin ______`
-- **Pruebas:** qué la hace creíble. Salen de las ventajas del análisis, no de adjetivos
-- **Objeciones:** las 3-5 razones por las que hoy no compran, y qué las responde
+> **Si un paso no fortalece el siguiente, la estrategia está incompleta.**
 
-### 3 · ICP
-A quién le hablamos. No demografía suelta: **qué desea, qué teme, qué le da pena admitir**, qué
-consume, a quién le cree, dónde está.
+**La inversión del embudo.** El embudo tradicional va
+`alcance → seguidores → engagement → venta → comunidad`. Acá se invierte:
 
-### 4 · Identidad y branding
-El análisis de marca que la estrategia tiene que resolver. **Si le hablás a señores, la marca se ve
-de cierta forma. Si querés rebeldía, tiene que verse y sentirse así.**
+```
+comunidad → primeras ventas → contenido con engagement → alcance parecido → más ventas
+```
 
-**Tipo de marca** — define todo lo demás:
-
-| Tipo | Para | Objetivo | Cómo se construye |
-|---|---|---|---|
-| **Rebelde** | Bebidas, ropa, barberías, suplementos, DTC, nightlife | Atención + comunidad + deseo | Humor, provocación, campañas raras, stunts, merch, lenguaje de calle |
-| **Formal** | Legal, salud, seguros, banca, B2B, consultoría | Confianza + autoridad | Claridad, transparencia, procesos simples, contenido educativo, casos |
-| **Premium** | Hoteles, gastronomía fina, joyería, estética, wellness | Valor percibido + aspiración | Ritual, silencio visual, fotografía, materiales, escasez, precio como señal |
-| **Local** | Café, gym, clínica, salón, taller, inmobiliaria local | Confianza rápida + recordación | Verse y operar 10 veces mejor que el de al lado. Reviews, fotos reales, WhatsApp |
-
-**Contraste** — una marca sin tensión se olvida:
-`formal pero humano` · `premium pero simple` · `local pero sofisticado` · `técnico pero fácil` ·
-`serio pero no aburrido` · `elegante pero accesible`
-
-**El diseño gráfico no es decoración: es la lógica de posicionar, hecha visible.** Si la marca es
-rebelde y quiere ir contra un mercado saturado, no puede verse como cualquiera — tiene que verse
-súper distinta. Por eso el análisis visual es parte de la estrategia, no de la ejecución.
-
-#### a · Mapa visual de la categoría
-
-**Mirar de verdad** cómo se ven las marcas del mercado y contar qué se repite:
-
-`minimalista` · `blanco y negro` · `moderno` · `contemporáneo` · `formal` · `clínico` ·
-`editorial` · `urbano` · `artesanal` · `retro` · `cyberpunk` · `maximalista` · `brutalista`
-
-| Estilo | Cuántas marcas lo usan | Saturación |
-|---|---|---|
-
-**El estilo que más se repite es el código visual saturado.** Ese es el que hay que evitar.
-
-#### b · La regla de oposición
-
-> **Si 10 marcas usan minimalista y queremos ser rebeldes, no usamos minimalista. Usamos lo opuesto.**
-
-La dirección de la oposición la marca el **tipo de marca** elegido arriba. No se opone por oponerse:
-se opone hacia donde está el territorio.
-
-| Lo que hace la categoría | Si queremos… | Vamos hacia |
-|---|---|---|
-| Todos minimalistas y limpios | Rebeldía | Saturado, crudo, ruidoso |
-| Todos clínicos y médicos | Cercanía | Lifestyle, humano, cálido |
-| Todos baratos y recargados | Valor percibido | Silencio visual, material, espacio |
-| Todos corporativos | Confianza humana | Cara visible, imperfección, directo |
-
-#### c · Robo de adyacencia — de otra industria
-
-El estilo que necesitás **casi nunca está en tu rubro**. Está en la industria que ya le habla a la
-gente que querés.
-
-> Somos comida, pero queremos plateado y cyberpunk para destacar. Vemos una marca de running que
-> tiene exactamente ese estilo. **Tomamos su estilo**, no su categoría.
-
-**El criterio no es "se parece a nuestro rubro". Es "le habla a la gente que queremos".**
-Esto conecta directo con el **anillo 4** de `reverse-engineering`: referentes fuera de categoría.
-
-#### d · Ojos — el estilo aplicado, no en abstracto
-
-**Un estilo funciona distinto en cada formato.** Lo que se ve bien en un empaque puede morir en un
-feed. Nunca se elige una estética en abstracto: se mira **aplicada al formato donde va a vivir**.
-
-Hay que ver el estilo funcionando en: `feed` · `reel` · `historia` · `empaque` · `local` · `web`.
-
-**Cómo mira el agente:** Eden devuelve por cada pieza `aiDescription` y `aiTags` —qué pasa
-visualmente— más `mediaMirror` con las imágenes reales. Esas imágenes se abren y se miran. El
-análisis visual se hace sobre piezas concretas, **nunca de memoria**.
-
-#### e · Lo que se entrega: el BRIEF DE BRANDING
-
-> 🛑 **Strategy NO arma la marca.** No hace brand strategy ni guideline. No define paleta,
-> tipografía, logo, ni sistema visual. Eso es de **Branding**, con sus propias skills.
->
-> Strategy entrega un **brief**: la decisión con su razón, más **los puntos que Branding tiene
-> que resolver**. Dirección y restricciones, no ejecución.
-
-Cada bloque tiene dos partes: **lo que Strategy decidió** y **lo que Branding tiene que desarrollar**.
+Una comunidad chica ya tiene afinidad. Cuando compra y participa, la plataforma aprende a quién se
+parece y el alcance se expande hacia gente con más probabilidad de comprar. **Alcanzar millones de
+personas desconectadas del producto crea una base grande e inútil y encarece las ventas.**
 
 ---
 
-**1 · TIPO DE MARCA** — `rebelde / formal / premium / local` + por qué ese
+## 🛑 El nivel es MACRO
 
-*Puntos a tomar en cuenta:*
-- **Hasta dónde puede estirarse el tipo sin perder credibilidad en esta categoría.** Un abogado
-  rebelde tiene un techo distinto al de una barbería rebelde
-- **El nombre y el tono tienen que coincidir con el riesgo que el comprador acepta.** No es lo
-  mismo vender café que vender cirugía
-- Si hay un tipo secundario que matiza al dominante, y cuál manda cuando chocan
-- Qué pasa si el tipo elegido choca de frente con la convención de la categoría
+Esta estrategia dice **cómo se va a lograr**, no qué pieza se publica.
 
-**2 · AUDIENCIA OBJETIVO** — a quién le habla y cómo se comporta
-
-*Puntos a tomar en cuenta:*
-- **Qué códigos visuales esta gente ya reconoce y respeta.** No se le puede hablar en un lenguaje
-  que no lee
-- **Qué la haría sentir "esto no es para mí"** — el filtro de rechazo es tan importante como el de atracción
-- En qué contexto y formato la ve: en el celular, caminando, en la calle, en la noche
-- Si hay más de un segmento: **cuál manda visualmente** y cuál se acomoda
-
-**3 · POSICIONAMIENTO** — territorio · enemigo · idea madre
-
-*Puntos a tomar en cuenta:*
-- **Cómo se ve el enemigo.** Para poder verse lo contrario hay que saber exactamente cómo luce
-  aquello contra lo que estamos
-- **La idea madre tiene que poder mostrarse, no solo decirse.** Si no se puede volver imagen,
-  el problema es la idea
-- Qué parte del territorio se resuelve con lo visual y qué parte con lo verbal
-
-**4 · CÓDIGO SATURADO** — lo que hace toda la categoría → lo que NO vamos a usar
-
-*Puntos a tomar en cuenta:*
-- **Separar convención de pereza.** Hay códigos que son convención de categoría y romperlos
-  te vuelve incomprensible. Otros son solo pereza colectiva y romperlos es la oportunidad.
-  **Esa distinción la tiene que resolver Branding** — Strategy entrega el mapa, no el veredicto
-- Qué elementos del código saturado hay que **conservar** para que se entienda qué vendemos
-- Cuántos competidores usan cada código, con las piezas reales a la vista
-
-**5 · DIRECCIÓN VISUAL** — hacia dónde vamos, y contra qué
-
-*Puntos a tomar en cuenta:*
-- **Los ejes concretos a explorar:** color · tipografía · densidad · fotografía · composición ·
-  movimiento · textura
-- **Cuánta distancia tomar del código saturado.** ¿Se rompe todo, o se rompe un solo elemento y
-  el resto se mantiene legible? Un solo elemento bien roto suele pesar más que romper todo
-- Qué tiene que seguir siendo reconocible como la categoría
-- Qué es innegociable y qué queda abierto a exploración
-
-**6 · REFERENCIAS** — marcas de OTRAS industrias, con links a las piezas
-
-*Puntos a tomar en cuenta:*
-- **Qué específicamente se toma de cada referencia.** No "nos gusta esta marca", sino *"la densidad
-  tipográfica"*, *"el tratamiento de la luz"*, *"el ritmo de edición"*, *"el uso del vacío"*
-- **Qué NO se toma de ella** — igual de importante, evita la copia
-- Por qué esa marca le habla a la gente que queremos, aunque sea de otro rubro
-- Al menos una referencia tiene que ser de **fuera de la categoría**
-
-**7 · VOZ DE MARCA** — tono + qué sí dice y qué nunca diría
-
-*Puntos a tomar en cuenta:*
-- **Cómo suena en cada formato:** un caption no suena igual que un cartel, ni que un DM, ni que
-  la web
-- **Vocabulario propio y vocabulario prohibido** — palabras que sí usaría y palabras que la
-  delatarían como cualquier otra
-- Si hay una persona detrás de la marca, **cuánto de su voz personal entra** y dónde se corta
-- Cómo habla cuando algo sale mal. El tono en la crisis define la marca más que el tono en la venta
-
-**8 · DÓNDE VIVE** — los formatos donde tiene que funcionar
-
-*Puntos a tomar en cuenta:*
-- **Cuál es el formato principal donde la marca tiene que ganar.** Ahí se diseña primero, el
-  resto se adapta
-- Qué limitaciones técnicas impone ese formato: legibilidad en pantalla chica, contraste, tamaño
-  mínimo, primer frame
-- **Qué se necesita primero** — el orden de entrega, no la lista completa
-- Dónde vive lo físico, si existe: local, empaque, uniforme, señalética
-
----
-
-**Y al final del brief, siempre:**
-
-```
-PREGUNTAS ABIERTAS
-Lo que Strategy no resuelve y Branding tiene que decidir.
-
-RESTRICCIONES
-Presupuesto, tiempo, lo que el cliente ya dijo que no, activos que no se pueden tocar.
-```
-
-> **Categoría dormida:** si el líder está cómodo, todos comunican igual y nadie ama el producto,
-> ahí hay oportunidad. No hace falta cambiar el producto — hay que **cambiar cómo se percibe**.
-
-> **Ser diferente sin dejar de ser entendible.** Si nadie entiende qué vendés, falló.
-
-### 5 · Historia
-La narrativa de la marca. De dónde viene, por qué existe, qué defiende. Es lo que hace que la
-promesa suene verdadera y no a eslogan.
-
-### 6 · Comunicación
-**Qué tiene que comunicar la marca**, en concreto:
-- El mensaje que no cambia nunca (idea madre, promesa, enemigo)
-- Lo que cambia por campaña (el ángulo del momento)
-- Lo que cambia por pieza (el CEP o la objeción que ataca)
-- **El contenido no repite el producto: expande la idea madre**
-
-### 7 · Canales
-Dónde es relevante estar y por qué. **Cada canal con una función distinta** — si dos hacen lo
-mismo, uno sobra. Salen de la ingeniería inversa: ahí se vio dónde está la gente y qué funciona.
-
-### 8 · Monetización — de top a bottom of funnel
-No es una metodología de precios aparte. Es **cómo se dirige la estrategia para llevar a la gente
-del top al bottom del funnel**, activando los canales correctos en cada tramo.
-
-```
-   TOP        alcance · descubrimiento      ¿quién todavía no nos conoce?
-    │
-    ▼
-   MIDDLE     consideración · confianza     ¿quién nos conoce y no confía?
-    │
-    ▼
-   BOTTOM     conversión · venta            ¿quién confía y no compró?
-    │
-    ▼
-   POST       recurrencia · referidos       ¿quién ya compró?
-```
-
-**Se define:** dónde está hoy la gente · qué canal activa cada tramo · qué la mueve al siguiente ·
-**dónde está la fuga**, porque ahí va el esfuerzo.
-
-**Métodos que existen** — se elige el que encaja, no se inventa uno:
-
-| Método | Cuándo encaja |
+| ❌ Micro — no es de acá | ✅ Macro — sí es de acá |
 |---|---|
-| Checkout directo | Ticket bajo, decisión rápida |
-| Llamada o consulta | Ticket alto, decisión larga |
-| DM o WhatsApp | Decisión media, confianza por conversación |
-| Retainer / suscripción | Servicio continuo, ingreso recurrente |
-| Escalera de valor | Hay varios niveles de compromiso |
-| Lead magnet → nutrición → venta | La demanda es latente |
-| Visita a punto físico | Local, la conversión pasa afuera |
-| Comisión / revenue share | Se cobra sobre el resultado |
+| "Hacer carruseles los martes" | "Hay que hablarle a esta audiencia y sentirnos de esta manera para que nos perciban como deseables" |
+| "3 reels por semana" | "Construir una comunidad de X antes de escalar alcance" |
+| "Usar este hook" | "Ser el que más atención tiene en la categoría este trimestre" |
 
-**Precio como señal:** el precio comunica percepción antes que valor. Premium dice *soy distinto*;
-bajo dice *comparame con todos*. Pero un precio premium tiene que estar respaldado por diseño,
-experiencia, web, copy y prueba — si cobrás premium y te ves barato, hay fricción.
-
-**Loops** — una marca no crece solo por verse bien, crece porque tiene mecanismos que se
-retroalimentan: `compra → referido → nuevo cliente` · `compra → suscripción → retención` ·
-`contenido → audiencia → data → mejor contenido` · `evento → contenido → alcance`
-
-### 9 · Medición
-Se mide contra el objetivo, no contra si el contenido funcionó. Separar **negocio** (ventas,
-clientes, ticket) de **marca** (recuerdo, preferencia). Y la pregunta de cierre:
-**¿esto solo funciona hoy, o hace que mañana sea más fácil ganar?**
+Si la ingeniería inversa muestra que cierto contenido convierte, **la conclusión macro no es el
+formato**: es a quién hay que hablarle y cómo hay que sentirse para que esa audiencia nos desee.
+**Lo que se entrega son las acciones que hay que hacer.**
 
 ---
 
-## Reglas
-- **Producto héroe:** 1 oferta principal, 1 promesa fuerte, 1 mensaje dominante. Lanzar muchas
-  versiones diluye la marca
-- **Si competís por precio, sos commodity. Si competís por percepción, sos marca**
-- Todo bloque se traza hacia atrás hasta una condición del análisis. Si no se puede, sobra
-- Sin renuncias explícitas no hay estrategia: qué audiencias, canales y mensajes quedan **afuera**
+# A · LOS OBJETIVOS
+
+Lo primero. Todo lo demás existe para cumplirlos.
+
+### A.1 · ¿Qué significa ganar para ESTA empresa?
+
+Con todo lo que se entendió del negocio, el mercado y la industria: **para ellos, ser número uno
+significa esto.** Concreto y reconocible, no "ser los mejores".
+
+### A.2 · Objetivos macro, por trimestre
+
+Se divide el año en cuartos. Cada objetivo es **macro** — de ahí para abajo se reduce con la
+ingeniería inversa, pero acá se define grande:
+
+| Tipo | Ejemplo |
+|---|---|
+| **Venta** | Vender esta cantidad al mes |
+| **Categoría** | Ser el número uno de suplementos |
+| **Atención** | Ser el que más atención tiene — más seguidores, más conversación |
+| **Presencia** | Ser el que más eventos tiene. O **un solo evento, pero grande** |
+
+```
+Q1 · objetivo · cómo se mide
+Q2 · objetivo · cómo se mide
+Q3 · objetivo · cómo se mide
+Q4 · objetivo · cómo se mide
+```
+
+### A.3 · La prueba de realismo ← **obligatoria**
+
+> **¿Es realista llegar a esto?** Realista significa que **no sobrecarga ni al equipo de la agencia
+> ni al equipo de la empresa.**
+
+Se mide con dos datos, y salen del bloque `context`:
+
+| Dato | Qué revela |
+|---|---|
+| **Cuántas personas hay** — en la empresa y en la agencia | La capacidad de ejecución |
+| **Cuánto dinero tienen para invertir** | La capacidad de compra de alcance y producción |
+
+```markdown
+| Objetivo | ¿Qué exige? | ¿Hay gente? | ¿Hay dinero? | Veredicto |
+|---|---|---|---|---|
+|  |  |  |  | ✅ realista / ⚠️ ajustar / ❌ no |
+```
+
+**Un objetivo que no pasa la prueba se baja o se mueve de trimestre.** No se entrega un objetivo
+que se sabe imposible — eso quema a los dos equipos.
+
+---
+
+# B · LA PLATAFORMA
+
+Lo que hace que los objetivos sean alcanzables. **Una marca es la suma de todas las expresiones por
+las que una entidad es percibida** — y ya se está construyendo, la empresa lo decida o no. El
+trabajo es **convertir una percepción accidental en una percepción diseñada**.
+
+### B.1 · Audiencia profunda
+No demografía. **El punto emocional que une a personas distintas.**
+- ¿Qué ambición comparten? · ¿Qué quieren demostrar o llegar a ser?
+- ¿Qué les frustra de la cultura o del mercado actual?
+- ¿Qué cambio desean aunque no sepan expresarlo? · ¿Cómo quieren ser vistos?
+
+### B.2 · La tensión cultural
+> **¿Qué desea mi audiencia, pero la cultura actual le dificulta admitir, conseguir o disfrutar?**
+
+Las marcas que crecen rápido encuentran esa fisura. Se separa el **deseo funcional** (crecer, ganar)
+del **deseo emocional y cultural** (ser admirado, pertenecer, verse de cierta forma).
+
+### B.3 · Posicionamiento
+**No se decide mirando lo que la empresa hace. Se descubre viendo cómo la audiencia percibe las
+alternativas.**
+
+1. Los competidores salen **de la audiencia**, no de adentro
+2. Qué atributos asocia con cada uno
+3. Mapa de percepción con dos ejes relevantes
+4. Espacios atractivos y poco competidos
+
+> **La posición elegida tiene que estar en la intersección de:**
+> `atractivo para la audiencia` **+** `baja competencia` **+** `capacidad real de la empresa`
+>
+> Nunca se elige una posición solo porque parece libre.
+
+**Marca de referencia:** una marca de **otro sector** que ya ocupa ese lugar — *"el Tesla de los
+negocios"*, *"la Zara de la belleza"*. No se copia: sirve para volver tangible el lugar estratégico.
+
+### B.4 · Promesa
+No es un eslogan. Es **el final feliz que el cliente espera y el contrato que la empresa firma.**
+Se cumple en cada contacto: anuncio, contenido, venta, producto, servicio, comunidad, postventa.
+
+- ¿Qué experiencia promete? · ¿Qué final feliz?
+- ¿Qué debe sentir el cliente en cada contacto?
+- **¿Qué no podemos hacer sin traicionar la marca?**
+
+### B.5 · Historia — **el cliente es el héroe**
+Héroe en su mundo normal · deseos, fortalezas y debilidades · entrada al mundo extraordinario ·
+obstáculos y enemigos · transformación · final feliz.
+
+🛑 **La empresa es la guía, no el protagonista.** Contar a la empresa como héroe y a los competidores
+como villanos, sin conectarlo con la vida del cliente, es narrativa centrada en la empresa y aburre.
+
+### B.6 · Personalidad
+**Qué atributo quiere el cliente que otros reconozcan en él** al comprarnos: elegancia · éxito ·
+inteligencia · libertad · innovación · competencia · pertenencia · valentía.
+
+Cambiar de producto es fácil. Renunciar a la identidad que ese producto ayuda a expresar, no.
+
+### B.7 · El fundador
+**Qué experiencia, prueba o rasgo del fundador vuelve creíble la promesa.** No es adorno: es lo que
+hace posible el posicionamiento. Sin esa prueba, la posición no es creíble.
+
+### B.8 · Comunidad inicial
+Un grupo **chico y específico**. Qué experiencia, ritual, evento o producto le da pertenencia
+**antes de escalar**.
+
+```
+Quiénes son · Qué reciben · Qué se les vende primero
+```
+
+> Cuando el alcance ya existe pero la conversión se estanca, **no siempre hacen falta más leads**:
+> puede faltar pertenencia, interacción y confianza.
+
+---
+
+# C · LOS BRIEFS POR ÁREA
+
+Acá la estrategia se vuelve accionable. **Cada área recibe qué tiene que lograr y qué tomar en
+cuenta.** No cómo hacerlo — eso lo resuelve cada agente con sus propias skills.
+
+### C.1 · Brief de BRANDING
+`tipo de marca` + por qué · `audiencia objetivo` y cómo se comporta · `posicionamiento`
+(territorio, enemigo, idea madre) · `código saturado` — lo que NO vamos a usar · `dirección visual`
+— hacia dónde y contra qué · `referencias` de otras industrias, con links ·
+`voz de marca` — qué sí dice y qué nunca diría · `dónde vive` — los formatos donde tiene que funcionar
+
+Cada bloque con **decisión + puntos a resolver**. Ver `brand-brief.md` en esta carpeta.
+
+🛑 **Strategy no arma la marca.** No define paleta, tipografía, logo ni sistema visual.
+
+### C.2 · Brief de MARKETING
+- **Qué campañas** hay que crear, y **para quiénes**
+- Qué mensaje tiene que llevar cada una, atado a la promesa
+- **Qué nivel de conversión** tiene que alcanzar
+- Qué canales y por qué esos
+- Qué señales indican que va bien antes de que lleguen las ventas
+
+### C.3 · Brief de GROWTH / ADQUISICIÓN
+- **Cómo tienen que convertir las landings** — y a qué tasa
+- **Ads:** qué ángulos probar, sobre qué audiencia
+- **Cuánto está dispuesto a invertir el cliente**, y en qué se reparte:
+  `modelos / talento` · `producción` · `pauta`
+- Qué se prueba primero con la comunidad chica antes de escalar
+
+### C.4 · Brief de CREATIVE
+- Qué tiene que lograr el contenido, no qué pieza hacer
+- La intersección obligatoria: `lo que la audiencia quiere consumir` + `el posicionamiento` + `la promesa`
+- Qué territorios narrativos se abren desde la historia
+
+**Cada brief cierra igual:**
+```
+PREGUNTAS ABIERTAS   lo que Strategy no resuelve
+RESTRICCIONES        presupuesto, tiempo, lo que el cliente ya dijo que no
+```
+
+---
+
+# D · MÉTRICAS — en este orden
+
+**De resultado** (primero): `ingresos por canal` → `leads` → `leads calificados` → `conversión a venta`
+**De salud del canal** (después): `alcance dentro de la audiencia correcta` → `engagement significativo`
+→ `señales de deseo y conversación`
+
+> **Los seguidores son una señal secundaria.** La pregunta correcta no es *"¿cuántos seguidores
+> ganamos?"* sino **"¿cuánto negocio cualificado produjo este canal y qué señales lo explican?"**
+
+**Experimento de cierre:** una acción, una hipótesis, una métrica de éxito. Se prueba con la
+comunidad chica y **solo se escala lo que muestre señales de negocio**.
+
+---
+
+## Reglas duras
+
+- **No empezar por contenido si no hay promesa clara**
+- **No definir competidores desde adentro** — salen de la audiencia
+- **No elegir un posicionamiento que la empresa no pueda demostrar**
+- **La empresa no es el héroe** de la historia del cliente
+- **No reducir el deseo a una característica funcional**
+- **No confundir viralidad con adquisición cualificada**
+- **No usar seguidores como sinónimo de negocio**
+- **No escalar antes de comprobar conversión con la comunidad chica**
+- **No entregar un objetivo que no pasó la prueba de realismo**
+- **Si faltan datos, preguntar.** No inventar cultura, percepción ni capacidades
+
+---
 
 ## Antes de cerrar
-- [ ] Están los 9 bloques
-- [ ] Hay enemigo declarado e idea madre
-- [ ] El tipo de marca está elegido **y justificado por a quién le habla**
-- [ ] El mapa visual está hecho **sobre piezas reales que se miraron**, no de memoria
-- [ ] Está identificado el código visual saturado, y la dirección opuesta tiene razón
-- [ ] Las referencias son marcas concretas con links, y al menos una es de **otra industria**
-- [ ] El brief tiene los 8 bloques, cada uno con **decisión + puntos a tomar en cuenta**
-- [ ] **No hay paleta, tipografía, logo ni sistema visual.** Si aparecen, Strategy se pasó de su rol
-- [ ] Están las preguntas abiertas y las restricciones
-- [ ] Branding puede empezar a desarrollar sin preguntar nada
-- [ ] Marketing puede tomar el entregable y armar campañas sin preguntar nada
-- [ ] Las renuncias están escritas
+
+- [ ] Los objetivos son **macro** y están por trimestre
+- [ ] **Cada objetivo pasó la prueba de realismo** contra gente y dinero reales
+- [ ] La posición elegida está en la intersección de las tres condiciones
+- [ ] Hay marca de referencia de **otro sector**
+- [ ] En la historia **el héroe es el cliente**
+- [ ] El rol del fundador es una prueba, no un adorno
+- [ ] La comunidad inicial es chica, específica, y dice qué se le vende primero
+- [ ] Están los briefs de Branding, Marketing, Growth y Creative
+- [ ] **Ningún brief baja a formato o pieza concreta** — si baja, se pasó de nivel
+- [ ] Las métricas están en orden: resultado antes que salud de canal
+- [ ] Cada paso de la lógica fortalece al siguiente
 
 ## Handoff
 → `client-delivery`
