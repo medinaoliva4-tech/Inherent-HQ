@@ -96,12 +96,12 @@ Se mide con dos datos, y salen del bloque `context`:
 
 **El paquete es el límite que ya está firmado:**
 
-| | **Basic** Q7,500 | **Accelerated** Q14,000 | **Compound** Q22,000 |
+| | **Basic** Q5,500 | **Accelerated** Q8,900 | **Compound** Q13,900 |
 |---|---|---|---|
-| Piezas/mes | **66** | **112** | **161** |
-| Horas de producción | 4h | 6h | 8h |
+| Piezas/mes | **86** | **145** | **204** |
+| Horas de producción | 2h · 1 sesión | 5h · 2 sesiones | 8h · 3 sesiones |
 | Canales de pauta | Meta · TikTok | + Google Search · PMax | + los que apliquen |
-| Variantes de creativo | hasta 15 | hasta 30 | hasta 50 |
+| Variantes de creativo | hasta 20 | hasta 35 | hasta 50 |
 | Capas de la escalera | 1-4 + medición | 1-8 | **las 9** |
 | Conversión y tecnología | ❌ | ✅ | ✅ |
 | Retención y autonomía del cliente | ❌ | Parcial | ✅ |

@@ -1,7 +1,7 @@
 # Operación — qué se hace, quién lo hace, cuánto cuesta
 
 > Desglose por **marca, al mes**. De acá salen los costos de `PAQUETES.md`.
-> **`Growth Basic` Q7,500** · **`Growth Accelerated` Q14,000** · **`Growth Compound` Q22,000**
+> **`Growth Basic` Q5,500** · **`Growth Accelerated` Q8,900** · **`Growth Compound` Q13,900**
 
 ---
 
@@ -25,22 +25,22 @@
 | 11 | Brief de contenido | Agentes | cloud | ✅ | ✅ | ✅ |
 | 12 | Aprobación de ideas y calendario | **Allan** | su tiempo | ✅ | ✅ | ✅ |
 | **PRODUCCIÓN** |
-| 13 | Sesión de grabación | Producción | Q175/sesión | 2 | 2 | 3 |
-| 14 | Horas de producción | Producción | Q250/h | **4h** | **6h** | **8h** |
-| 15 | Edición de reels de grabación | Agentes | cloud | 8 | 12 | 16 |
-| 16 | **Multiplicar grabación en derivadas** | Agentes (Higgsfield) | cloud | 8 | 15 | 25 |
-| 17 | Estáticos y carruseles | Agentes (Higgsfield) | cloud | 20 | 40 | 60 |
+| 13 | Sesión de grabación | Producción | Q175/sesión | **1** | 2 | 3 |
+| 14 | Horas de producción | Producción | Q250/h | **2h** | **5h** | **8h** |
+| 15 | Edición de reels de grabación | Agentes | cloud | 6 | 10 | 14 |
+| 16 | **Multiplicar grabación en derivadas** | Agentes (Higgsfield) | cloud | 10 | 20 | 30 |
+| 17 | Estáticos y carruseles | Agentes (Higgsfield) | cloud | **40** | **70** | **100** |
 | 18 | Stories y recortes | Agentes | cloud | 30 | 45 | 60 |
 | 19 | **Predicción de viralidad** antes de publicar | Agentes (Higgsfield) | cloud | ✅ | ✅ | ✅ |
 | 20 | Fotos de producto generadas | Agentes (Higgsfield) | cloud | ❌ | ✅ | ✅ |
 | 21 | Doblaje a segundo idioma | Agentes (Higgsfield) | cloud | ❌ | ❌ | ✅ |
 | **PUBLICACIÓN** |
 | 22 | Programar y publicar | Agentes (Eden) | cloud | ✅ | ✅ | ✅ |
-| 23 | Operar los agentes | Operador | **Q500-1,000** | Q500 | Q750 | Q1,000 |
+| 23 | Operar los agentes | Operador | **Q600-1,200** | Q600 | Q900 | Q1,200 |
 | **ADQUISICIÓN** |
 | 24 | Pauta Meta + TikTok | Agentes (AdWhispr) | cloud | ✅ | ✅ | ✅ |
 | 25 | Pauta Google Search + PMax | Agentes (AdWhispr) | cloud | ❌ | ✅ | ✅ |
-| 26 | Variantes de creativo | Agentes | cloud | 15 | 30 | 50 |
+| 26 | Variantes de creativo | Agentes | cloud | 20 | 35 | 50 |
 | **CONVERSIÓN** |
 | 27 | Embudos de WhatsApp | Agentes (Zapier) | cloud | ❌ | ✅ | ✅ |
 | 28 | Auto-DM en redes | Agentes (Eden) | cloud | ❌ | ✅ | ✅ |
@@ -79,20 +79,23 @@
 | Responsabilidad | Basic | Accel | Compound |
 |---|---|---|---|
 | **Reunión mensual con el cliente** | 1.0 h | 1.0 h | 1.0 h |
-| **Preparar la reunión** | 0.5 h | 1.0 h | 1.0 h |
+| **Preparar la reunión** | 0.5 h | 0.5 h | 1.0 h |
 | **Sesión de dirección** | — | 1.5 h | 3.0 h |
 | **Comunicación continua** | 1.5 h | 2.0 h | 2.5 h |
-| **Aprobar calendario e ideas** | 1.0 h | 1.5 h | 2.0 h |
-| **QA final de entregables** | 2.0 h | 2.5 h | 3.0 h |
-| **Revisión del 20** | 1.5 h | 2.0 h | 2.0 h |
-| **Coordinar producción** | 1.0 h | 1.0 h | 1.5 h |
+| **Aprobar calendario e ideas** | 1.0 h | 1.5 h | 1.5 h |
+| **QA final de entregables** | 1.0 h | 1.5 h | 2.0 h |
+| **Revisión del 20** | 1.0 h | 1.5 h | 2.0 h |
+| **Coordinar producción** | 0.5 h | 1.0 h | 1.0 h |
 | **Dirección estratégica** | 0.5 h | 1.0 h | 1.0 h |
 | **Alcance de la tecnología** | — | 0.5 h | 1.0 h |
 | | | | |
-| **TOTAL** | **9 h** | **14 h** | **18 h** |
+| **TOTAL** | **7 h** | **11 h** | **15 h** |
 
-> ⚠️ **El QA no escala solo.** Es la única responsabilidad que crece con el volumen de piezas.
-> Si el volumen sube más, **el QA hay que automatizarlo o delegarlo** — es el próximo cuello.
+> 🔴 **Estas horas ASUMEN que el QA está automatizado.** A 86, 145 y 204 piezas al mes, 1-2 horas
+> de QA humano es imposible sin un agente que filtre primero.
+>
+> **El agente de QA no es una mejora: es un requisito del modelo.** Sin él, las horas reales
+> serían el doble y los márgenes caen ~15 puntos.
 
 ---
 
@@ -106,54 +109,53 @@
 
 ### El margen con cada tarifa
 
-| Tarifa | **Basic** (9h) | **Accelerated** (14h) | **Compound** (18h) |
+| Tarifa | **Basic** (7h) | **Accelerated** (11h) | **Compound** (15h) |
 |---|---|---|---|
-| **Q60/h** | 66% | 69% | 71% |
-| **Q150/h** | **55%** | **60%** | **64%** |
-| **Q250/h** | **43%** | **50%** | **56%** |
+| **Q60/h** | 66% | 54% | 55% |
+| **Q150/h** | **54%** | **43%** | **45%** |
+| **Q250/h** | **42%** | **30%** ⚠️ | **34%** |
+
+⚠️ **Con precio de penetración, Q250/h no cierra en Accelerated.**
+Durante la fase de entrada, **la tarifa realista es Q150/h.** Sube junto con el precio.
 
 ---
 
 ## 4 · Lo que esto revela
 
-🟢 **Con los precios nuevos, el modelo aguanta la tarifa ambiciosa.**
-Incluso pagándose Q250/h —lo mismo que producción— los tres quedan en 43%, 50% y 56%.
-Con la estructura vieja, el paquete de entrada caía a 19%.
+🟢 **Bajamos el costo cambiando la mezcla, no recortando valor.**
+Basic pasó de 4h a 2h de producción y de 66 a **86 piezas**. Menos grabación (cara, humana),
+mucho más contenido generado (gratis). **El volumen subió 30% mientras el costo bajó.**
 
-🟢 **El margen sube con cada nivel.**
-Lo que agrega cada escalón —tecnología, retención, IA propia— **corre sobre agentes, no sobre
-horas humanas.** Compound es el único donde vender más no significa trabajar proporcionalmente más.
+🔴 **El AI es solo el 4.5% del costo.** El 96% es humano. **La ventaja de AI ya está capturada**
+— bajar más el precio sale del bolsillo de Allan, no del ahorro de cloud.
+
+🔴 **Accelerated a Q250/h queda en 30%. Es el punto más débil.**
+Durante la penetración se corre a Q150/h (43%). **Se revisa cuando haya casos.**
 
 🟢 **Las horas de Allan no son el cuello de botella.**
-5 clientes Compound = 90 h/mes. **Le sobra tiempo.** El límite real es el QA y su atención.
+5 clientes Compound = 75 h/mes. Le sobra tiempo. **El cuello es el QA.**
 
-🟡 **Basic es el producto de entrada.** Menor margen a propósito: trae al cliente con 4x el
-volumen del mercado. **El movimiento comercial es subirlo**, donde la utilidad absoluta es 2x y 4x.
-
-🔴 **El QA es el próximo cuello de botella, no las horas.**
-A 161 piezas al mes en Compound, 3 horas de QA son ~1 minuto por pieza. **No alcanza.**
-**Acción: construir un agente de QA antes de vender Compound.**
+🟡 **Basic es el arma comercial, no el producto de margen.**
+86 piezas a Q5,500 es una oferta que **ninguna agencia guatemalteca puede igualar.**
+Su trabajo es ganar la cuenta. El margen viene del upsell.
 
 ---
 
 ## 5 · Utilidad absoluta — lo que entra al bolsillo
 
-A **Q250/h** (la tarifa ambiciosa), por marca al mes:
-
 | | **Basic** | **Accelerated** | **Compound** |
 |---|---|---|---|
-| Precio | Q7,500 | Q14,000 | Q22,000 |
-| Costo total | Q4,292 | Q7,042 | Q9,717 |
-| **Utilidad** | **Q3,208** | **Q6,958** | **Q12,283** |
-| **vs. Basic** | — | **2.2x** | **3.8x** |
-
----
+| Precio | Q5,500 | Q8,900 | Q13,900 |
+| Piezas/mes | 86 | 145 | 204 |
+| Costo *(@Q250/h)* | Q3,217 | Q6,192 | Q9,167 |
+| **Utilidad @Q250/h** | **Q2,283** | **Q2,708** | **Q4,733** |
+| **Utilidad @Q150/h** | **Q2,983** | **Q3,808** | **Q6,233** |
 
 ## ⚠️ Lo que todavía no es dato
 
 | Pendiente | Por qué importa |
 |---|---|
 | **Medir las horas de Allan** un mes real | Son estimación desde el desglose, no medición |
-| **Correr un mes al volumen prometido** | 66 / 112 / 161 piezas es propuesta, no capacidad probada |
-| **Construir el agente de QA** | Sin eso, Compound no se puede entregar bien |
+| **Correr un mes al volumen prometido** | 86 / 145 / 204 piezas es propuesta, no capacidad probada |
+| **Construir el agente de QA** | 🔴 **Requisito del modelo, no mejora.** Sin él las horas se duplican |
 | **Probar en cliente las capacidades `⬜`** | Ver `PAQUETES.md` — muchas tools no se han corrido en producción |

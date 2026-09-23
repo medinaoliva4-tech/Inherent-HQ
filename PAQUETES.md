@@ -25,8 +25,50 @@ GROWTH COMPOUND       El crecimiento se compone.
 ```
 
 > **El volumen es lo que nos separa del mercado. La profundidad es lo que separa nuestros
-> paquetes entre sí.** Hasta el paquete de entrada entrega un volumen que ninguna agencia de
-> Guatemala puede igualar — porque el volumen nos cuesta cloud, no personas.
+> paquetes entre sí.**
+
+---
+
+## 💀 La estrategia de precio: matarlos con valor, no cobrar más
+
+**No competimos por precio alto. Competimos entregando una cantidad absurda de valor al precio
+que el mercado ya acepta.**
+
+| | Mercado GT | **Inherent Basic** |
+|---|---|---|
+| Precio | Q3,000 | **Q5,500** |
+| Piezas al mes | 16 | **86** |
+| **Costo por pieza** | Q188 | **Q64** |
+| Estrategia | ❌ | ✅ |
+| Inteligencia de competencia | ❌ | ✅ |
+| Pauta | a veces | ✅ |
+
+👉 **5.4x el volumen. 66% más barato por pieza. Y trae estrategia, inteligencia y pauta.**
+**A ese precio, competir con nosotros no es difícil: es imposible.**
+
+### ⚠️ Pero la ventaja de costo NO está donde parece
+
+**El AI es solo el 4.5% de nuestro costo.** El desglose real de Growth Basic:
+
+| Concepto | % del costo |
+|---|---|
+| Tiempo de Allan | **52%** |
+| Producción (grabar) | 23% |
+| Operador de agentes | 12% |
+| Sesiones | 8% |
+| **Cloud / AI** | **4.5%** |
+
+**96% del costo es humano.** Bajar el precio no sale del ahorro de AI — **sale del bolsillo de
+Allan.** Los pennies del AI ya están capturados.
+
+### 🔑 Dónde SÍ está el espacio: la mezcla
+
+**Menos grabación (cara, humana) → mucho más contenido generado (gratis).**
+
+Por eso Basic bajó de 4h a **2h de producción** y subió de 66 a **86 piezas**. Menos costo, más
+volumen, mismo margen. **Esa es la palanca real, y es la única honesta.**
+
+---
 
 ---
 
@@ -57,7 +99,7 @@ han corrido en un cliente real. **No se prometen como probadas hasta que lo est�
 
 | | **Growth Basic** | **Growth Accelerated** | **Growth Compound** |
 |---|---|---|---|
-| **Precio / mes** | **Q7,500** *(~$975)* | **Q14,000** *(~$1,800)* | **Q22,000** *(~$2,850)* |
+| **Precio / mes** | **Q5,500** *(~$715)* | **Q8,900** *(~$1,155)* | **Q13,900** *(~$1,805)* |
 | **Unidad** | 1 marca | 1 marca | 1 marca |
 | **Para quién** | Ya vende, pero el crecimiento depende del fundador, los referidos o esfuerzos aislados | Tiene volumen y quiere que el sistema completo empuje, no solo el marketing | Quiere que el crecimiento deje de depender de nosotros y del fundador |
 | **Qué hacemos** | Aceleramos la máquina que hay | Rediseñamos la máquina | Construimos la máquina que se sostiene sola |
@@ -72,20 +114,23 @@ han corrido en un cliente real. **No se prometen como probadas hasta que lo est�
 
 ## 📦 El volumen — la tabla que gana la venta
 
-| | **Basic** | **Accelerated** | **Compound** |
-|---|---|---|---|
-| **Reels de grabación** | 8 | 12 | 16 |
-| **Piezas derivadas** *(cortes, reencuadres, variantes)* | 8 | 15 | 25 |
-| **Estáticos y carruseles** | 20 | 40 | 60 |
-| **Stories** | 30 *(diario)* | 45 | 60 |
-| **TOTAL piezas/mes** | **66** | **112** | **161** |
-| | | | |
-| Variantes de creativo por campaña | hasta 15 | hasta 30 | hasta 50 |
-| Predicción de viralidad antes de publicar | ✅ | ✅ | ✅ |
-| Revisiones por pieza | 2 | 2 | 3 |
+| | **Basic** | **Accelerated** | **Compound** | *Mercado GT Q3,000* |
+|---|---|---|---|---|
+| **Reels de grabación** | 6 | 10 | 14 | *~4* |
+| **Piezas derivadas** *(cortes, reencuadres, variantes)* | 10 | 20 | 30 | *0* |
+| **Estáticos y carruseles** | 40 | 70 | 100 | *~8* |
+| **Stories** | 30 *(diario)* | 45 | 60 | *~8* |
+| **TOTAL piezas/mes** | **86** | **145** | **204** | ***16*** |
+| | | | | |
+| Horas de producción en sitio | 2h · 1 sesión | 5h · 2 sesiones | 8h · 3 sesiones | — |
+| Variantes de creativo por campaña | hasta 20 | hasta 35 | hasta 50 | *0* |
+| Predicción de viralidad antes de publicar | ✅ | ✅ | ✅ | *❌* |
+| Revisiones por pieza | 2 | 2 | 3 | *1* |
 
-> **Referencia de mercado:** un paquete guatemalteco de Q3,000 entrega ~16 piezas al mes.
-> **Growth Basic entrega 4x eso, al doble de precio.**
+> 🔥 **Growth Basic entrega 5.4x el volumen del mercado, a Q64 por pieza contra Q188.**
+>
+> **El video de grabación es el único techo real** — depende de las horas de producción.
+> **Todo lo demás escala con agentes y cuesta Q0 marginal.**
 
 ⚠️ **El video de grabación es el único techo real** — depende de las horas de producción y de
 cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
@@ -114,7 +159,7 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ---
 
-# 🟦 GROWTH BASIC — Q7,500/mes
+# 🟦 GROWTH BASIC — Q5,500/mes
 
 **Crecimiento básico.** La máquina que ya existe, vendiendo más.
 *Para quien ya vende pero depende del fundador, los referidos o esfuerzos aislados.*
@@ -133,14 +178,14 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 - Estudio de títulos y portadas que ganan
 - Benchmark contra competidores directos — trimestral
 
-### 3 · Contenido — **66 piezas/mes**
+### 3 · Contenido — **86 piezas/mes**
 | | Cantidad |
 |---|---|
-| Reels de grabación | **8** |
-| Piezas derivadas *(cortes, reencuadres)* | **8** |
-| Estáticos y carruseles | **20** |
+| Reels de grabación | **6** |
+| Piezas derivadas *(cortes, reencuadres)* | **10** |
+| Estáticos y carruseles | **40** |
 | Stories | **30** *(diario)* |
-| Producción en sitio | 4h · 2 sesiones |
+| Producción en sitio | 2h · 1 sesión |
 | Revisiones por pieza | 2 |
 
 - **Predicción de viralidad antes de publicar**
@@ -151,7 +196,7 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 ### 4 · Adquisición
 - **Meta Ads** (Facebook + Instagram)
 - **TikTok Ads**
-- Hasta **15 variantes de creativo** por campaña
+- Hasta **20 variantes de creativo** por campaña
 - Investigación de keywords propias y del competidor
 - Optimización de presupuesto y pausas
 - ⛔ Google Ads · ⛔ Inversión publicitaria (la pone el cliente)
@@ -177,7 +222,7 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ---
 
-# 🟪 GROWTH ACCELERATED — Q14,000/mes
+# 🟪 GROWTH ACCELERATED — Q8,900/mes
 
 **Crecimiento acelerado.** Rediseñamos la máquina.
 *Para quien ya tiene volumen y quiere que el sistema completo empuje, no solo el marketing.*
@@ -195,14 +240,14 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 - Benchmark mensual
 - **Clonado del anuncio más longevo del competidor**
 
-### 3 · Contenido — **112 piezas/mes**
+### 3 · Contenido — **145 piezas/mes**
 | | Cantidad |
 |---|---|
-| Reels de grabación | **12** |
-| Piezas derivadas | **15** |
-| Estáticos y carruseles | **40** |
+| Reels de grabación | **10** |
+| Piezas derivadas | **20** |
+| Estáticos y carruseles | **70** |
 | Stories | **45** |
-| Producción en sitio | 6h · 2 sesiones |
+| Producción en sitio | 5h · 2 sesiones |
 | Revisiones por pieza | 2 |
 
 ✅ Todo lo de Basic, **más**:
@@ -213,7 +258,7 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 ✅ Meta + TikTok, **más**:
 - **Google Search**
 - **Performance Max**
-- Hasta **30 variantes de creativo** por campaña
+- Hasta **35 variantes de creativo** por campaña
 
 ### 5 · Conversión ✅ **NUEVO**
 - Auditoría y diseño del **embudo completo**
@@ -245,7 +290,7 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ---
 
-# 🟨 GROWTH COMPOUND — Q22,000/mes
+# 🟨 GROWTH COMPOUND — Q13,900/mes
 
 **El crecimiento se compone.** La máquina se sostiene sola.
 *Para quien quiere que el crecimiento deje de depender de nosotros y del fundador.*
@@ -259,12 +304,12 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 ✅ Todo lo de Accelerated, **más**:
 - **Alertas de movimiento de mercado** — no se espera al radar semanal
 
-### 3 · Contenido — **161 piezas/mes**
+### 3 · Contenido — **204 piezas/mes**
 | | Cantidad |
 |---|---|
-| Reels de grabación | **16** |
-| Piezas derivadas | **25** |
-| Estáticos y carruseles | **60** |
+| Reels de grabación | **14** |
+| Piezas derivadas | **30** |
+| Estáticos y carruseles | **100** |
 | Stories | **60** |
 | Producción en sitio | 8h · 3 sesiones |
 | Revisiones por pieza | **3** |
@@ -311,18 +356,20 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 ## 🎯 La estrategia de bundle
 
 > **El bundle no es un descuento. Es una eficiencia estructural.**
-> Subir de escalón cuesta ~40% menos que comprar lo mismo pieza por pieza — y eso está respaldado
-> por el costo real, no por generosidad.
+> Subir de escalón cuesta **60-70% menos** que comprar lo mismo pieza por pieza.
+>
+> ⚠️ **Pero no todo el ahorro es gratis para nosotros.** Ver la sección C: el salto
+> Basic → Accelerated se come casi todo su propio margen.
 
 ---
 
 ### A · Por qué cada escalón cuesta menos de lo que vale
 
-#### Basic → Accelerated · el salto cuesta **Q6,500**
+#### Basic → Accelerated · el salto cuesta **Q3,400**
 
 | Si lo comprara pieza por pieza | Precio de lista |
 |---|---|
-| 46 piezas extra al mes *(× Q60)* | Q2,760 |
+| 59 piezas extra al mes *(× Q60)* | Q3,540 |
 | Herramienta a medida *(Q6,000 / trimestre)* | Q2,000 |
 | Gestión de Google Ads | Q2,500 |
 | Setup de embudo de WhatsApp *(Q8,000 / 12)* | Q667 |
@@ -330,67 +377,99 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 | Radar de competencia semanal | Q750 |
 | Catálogo de producto generado *(Q4,500 / 6)* | Q750 |
 | Sesión de dirección mensual | Q1,000 |
-| **TOTAL à la carte** | **Q10,927** |
-| **Lo que cuesta el salto** | **Q6,500** |
-| **AHORRO** | **Q4,427 · 41%** |
+| **TOTAL à la carte** | **Q11,707** |
+| **Lo que cuesta el salto** | **Q3,400** |
+| **AHORRO** | **Q8,307 · 71%** |
 
-#### Accelerated → Compound · el salto cuesta **Q8,000**
+> 🔥 **Solo las 59 piezas extra ya valen más que el salto entero.** Todo lo demás —Google Ads,
+> WhatsApp, dashboard, herramienta a medida— va prácticamente de regalo.
+
+#### Accelerated → Compound · el salto cuesta **Q5,000**
 
 | Si lo comprara pieza por pieza | Precio de lista |
 |---|---|
-| 49 piezas extra al mes *(× Q60)* | Q2,940 |
+| 59 piezas extra al mes *(× Q60)* | Q3,540 |
 | 2 herramientas a medida extra por trimestre | Q4,000 |
 | IA propia del cliente *(Q12,000 / 12)* | Q1,000 |
 | Contenido en segundo idioma | Q2,500 |
 | Sesión de dirección quincenal *(+1)* | Q1,000 |
 | Experiencia completa y estrategia de LTV | Q1,500 |
 | Atribución completa | Q500 |
-| **TOTAL à la carte** | **Q13,440** |
-| **Lo que cuesta el salto** | **Q8,000** |
-| **AHORRO** | **Q5,440 · 40%** |
+| **TOTAL à la carte** | **Q14,040** |
+| **Lo que cuesta el salto** | **Q5,000** |
+| **AHORRO** | **Q9,040 · 64%** |
 
-> 🔥 **Comprar todo lo de Compound pieza por pieza costaría Q31,867/mes. Se paga Q22,000.**
-> **Ahorro: Q9,867 — 31%.**
+> 🔥 **Comprar todo lo de Compound pieza por pieza costaría Q31,247/mes. Se paga Q13,900.**
+> **Ahorro: Q17,347 — 56%.**
 
 ---
 
-### B · Por qué el descuento es real y no nos come el margen
+### B · Por qué los saltos son chicos a propósito
 
-| Salto | Sube el **precio** | Sube el **costo** |
+**Los saltos son de +62% y +56% sobre un precio base bajo.** En quetzales:
+
+| Salto | Cuánto sube | Qué desbloquea |
 |---|---|---|
-| Basic → Accelerated | **+87%** | +64% |
-| Accelerated → Compound | **+57%** | +38% |
+| Basic → Accelerated | **+Q3,400** | Conversión, tecnología, Google Ads, +59 piezas |
+| Accelerated → Compound | **+Q5,000** | Autonomía, IA propia, +59 piezas, herramienta mensual |
 
-**El precio sube más rápido que el costo en los dos saltos. Por eso el margen mejora al subir
-(43% → 50% → 56%) mientras el cliente ahorra 40%.**
+👉 **Q3,400 al mes para que dejen de perder leads no es una decisión difícil.** Ese es el punto
+de arrancar barato: **el siguiente escalón siempre se ve chico.**
 
-#### La razón, en una línea
+### ⚠️ Y si el cliente "se conforma" con Basic, ganamos igual
 
-De los Q6,500 que sube Basic → Accelerated, **el costo real solo sube Q2,750**. Y el desglose
-explica todo:
+**Un cliente que se queda en Basic es un cliente que no está con la competencia.**
+A Q5,500 con 86 piezas, **ninguna agencia guatemalteca puede pelear esa cuenta.**
+El upsell puede esperar. **La cuenta ya es nuestra, y el costo de mantenerla es bajo.**
+
+---
+
+### C · ⚠️ Dónde el bundle SÍ nos cuesta margen
+
+**Acá hay que ser honestos: el salto Basic → Accelerated es el punto débil del modelo.**
+
+| Salto | Sube el **precio** | Sube el **costo** | Efecto en el margen |
+|---|---|---|---|
+| Basic → Accelerated | +62% *(+Q3,400)* | **+92%** *(+Q2,975)* | **42% → 30%** 🔴 |
+| Accelerated → Compound | +56% *(+Q5,000)* | +48% *(+Q2,975)* | 30% → 34% ✅ |
+
+#### El desglose del primer salto
 
 | Lo que se agrega | Costo marginal |
 |---|---|
-| Horas de Allan (+5h) | Q1,250 |
+| Horas de Allan (+4h @ Q250) | Q1,000 |
+| Producción (+3h) y sesión extra | Q925 |
 | Build de tecnología | Q750 |
-| Producción (+2h) | Q500 |
-| Operador de agentes | Q250 |
-| **+46 piezas al mes** | **Q0** |
+| Operador de agentes | Q300 |
+| **Subtotal de costo real** | **Q2,975** |
+| **Lo que cobramos por el salto** | **Q3,400** |
+| **Margen del salto** | **Q425 — apenas 12%** 🔴 |
+| | |
+| **+59 piezas al mes** | **Q0** |
 | **Google Search + Performance Max** | **Q0** |
 | **Embudos de WhatsApp y auto-DM** | **Q0** |
 | **Dashboard en vivo** | **Q0** |
 | **Radar semanal en vez de mensual** | **Q0** |
 | **Atribución CAPI + GA4** | **Q0** |
 
-👉 **Todo lo que corre sobre agentes suma Q0 al costo variable.** El cloud es Q192 prorrateado —
-**y no cambia entre paquetes**. Ya está pagado.
+> 🟢 **Lo bueno:** todo lo que corre sobre agentes suma **Q0**. El cloud es Q192 y **no cambia
+> entre paquetes**. A una agencia cada una de esas líneas le costaría contratar a alguien.
+>
+> 🔴 **Lo malo:** lo que sí cuesta —producción, tecnología y el tiempo de Allan— **se come casi
+> todo el salto.** Accelerated regala el valor de agentes sin cobrar la mano de obra que agrega.
 
-> **Esta es la ventaja completa: no es que nos cueste menos. Es que a una agencia le costaría
-> contratar a alguien para cada una de esas líneas, y a nosotros no nos cuesta nada.**
+#### Las tres salidas
 
----
+| Opción | Efecto |
+|---|---|
+| **1 · Subir Accelerated a Q9,900** ← recomendado | Margen pasa a **37%**. Sigue dentro del rango del mercado |
+| **2 · Correr a Q150/h durante la penetración** | Margen **43%**. Honesto mientras no haya casos |
+| **3 · Bajar producción de Accelerated a 4h** | Ahorra Q250. Insuficiente por sí solo |
 
-### C · El hueco — el motor del upsell
+⚠️ **Compound sí funciona:** su salto agrega el mismo costo (Q2,975) pero cobra Q5,000.
+**Por eso el margen se recupera. El modelo premia subir hasta arriba, no quedarse a medias.**
+
+### D · El hueco — el motor del upsell
 
 **Cada paquete deja un vacío evidente. El cliente lo siente solo; no hay que venderlo.**
 
@@ -402,16 +481,14 @@ explica todo:
 
 ---
 
-### D · Cuándo se vende cada uno — la regla de diagnóstico
-
-> **No se adivina. Se diagnostica.** Estas preguntas deciden el paquete.
+### E · Cuándo se vende cada uno — la regla de diagnóstico
 
 | Si el cliente… | Va a |
 |---|---|
 | No tiene demanda suficiente, o nadie lo conoce | **Basic** |
-| Tiene demanda pero se le escapa (no da abasto, no da seguimiento, pierde leads) | **Accelerated** |
-| Tiene demanda y la convierte, pero **todo depende de él o de nosotros** | **Compound** |
-| No encaja en ningún molde (multi-locación, regulatorio, integraciones pesadas) | **Tailor Made** |
+| Tiene demanda pero se le escapa (no da abasto, pierde leads) | **Accelerated** |
+| Convierte bien, pero **todo depende de él o de nosotros** | **Compound** |
+| No encaja en ningún molde (multi-locación, regulatorio) | **Tailor Made** |
 
 ⚠️ **No se vende hacia arriba de lo que el cliente necesita.** Vender Compound a quien todavía no
 tiene demanda es venderle autonomía sobre una máquina que no funciona. **Se cae en 3 meses y nos
@@ -419,33 +496,32 @@ cuesta el caso.**
 
 ---
 
-### E · La estrategia interna: **subir, no sumar**
+### F · La estrategia interna: **subir, no sumar**
 
 > Principio #02: *"Crecer no es hacer más. Es hacer que menos pese menos."*
 
-| Escenario | Utilidad/mes | Horas de Allan |
+| Escenario | Utilidad/mes *(@Q250/h)* | Horas de Allan |
 |---|---|---|
-| 5 × Basic | Q16,040 | 45 h |
-| 5 × Accelerated | Q34,790 | 70 h |
-| **3 × Compound** | **Q36,849** | **54 h** ✅ |
-| 4 × Compound | Q49,132 | 72 h |
-| 5 × Compound | Q61,415 | 90 h |
+| 5 × Basic | Q11,415 | 35 h |
+| 5 × Accelerated | Q13,540 | 55 h |
+| **3 × Compound** | **Q14,199** | **45 h** ✅ |
+| 4 × Compound | Q18,932 | 60 h |
+| 5 × Compound | Q23,665 | 75 h |
 
-🔥 **3 clientes Compound dan más plata que 5 Accelerated — con 16 horas menos y 2 clientes menos.**
+🔥 **3 clientes Compound dan más plata que 5 Accelerated — con 10 horas menos y 2 clientes menos.**
 
 **El movimiento comercial no es conseguir más clientes. Es subir a los que ya están.**
-Menos cuentas, más profundidad, más margen, menos horas.
 
 ---
 
-### F · Lo que NO se desagrega
+### G · Lo que NO se desagrega
 
 | Regla | Por qué |
 |---|---|
 | **No se vende una sola capa suelta** | La metodología dice que crecer exige algo íntegro. Vender solo contenido, o solo pauta, contradice lo que predicamos |
 | **No se vende Compound a quien no tiene demanda** | Es autonomía sobre una máquina rota |
 | **Los extras son complementos, no sustitutos** | Nadie arma un paquete juntando extras. El à la carte existe para **mostrar el ahorro**, no para comprarse |
-| **No se baja de paquete a mitad de trimestre** | El trabajo de las capas profundas se hace al inicio. Bajar después es quedarse con el costo sin el ingreso |
+| **No se baja de paquete a mitad de trimestre** | El trabajo de las capas profundas se hace al inicio |
 
 > ⚠️ **La tabla à la carte es para la venta, no para el catálogo.** Sirve para que el cliente vea
 > el ahorro. **Si se vuelve un menú, perdemos el bundle y volvemos a ser agencia.**
@@ -527,7 +603,7 @@ Menos cuentas, más profundidad, más margen, menos horas.
 |---|---|---|
 | **Producción** | **Q250** / hora | Lo que cobra quien graba |
 | **Fee por sesión** | **Q175** / sesión | Fee fijo por salida a grabar |
-| **Operador de agentes** | **Q500 – Q1,000** / marca | Sube con el volumen de piezas |
+| **Operador de agentes** | **Q600 – Q1,200** / marca | Sube con el volumen de piezas |
 | **Cloud** | **Q960** / mes **TOTAL** | Claude + herramientas. **No es por cliente.** Se prorratea entre 5 |
 | **Build de tecnología** | **Q750 – Q1,500** / mes | Horas amortizadas de construir la herramienta |
 | **Allan** | **Q60 · Q150 · Q250** / hora | Tres criterios — ver `OPERACION.md` |
@@ -535,65 +611,65 @@ Menos cuentas, más profundidad, más margen, menos horas.
 > 🟢 **Casi todo el costo es variable.** El único fijo es el cloud (Q960). No se pierde plata si
 > no hay clientes, y cada marca nueva es casi toda margen.
 >
-> 🟢 **Diseño, edición, publicación, pauta y análisis están automatizados con agentes** — por eso
-> caen en cloud, no en horas humanas.
+> 🔴 **Pero ojo: el cloud es solo el 4.5% del costo.** El 96% es humano —
+> producción, operador y el tiempo de Allan. **La ventaja de AI ya está capturada.**
 
 ---
 
-### 🟦 GROWTH BASIC — Q7,500
+### 🟦 GROWTH BASIC — Q5,500 · 86 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
-| Producción | 4h × Q250 | Q1,000 |
-| Sesiones de grabación | 2 × Q175 | Q350 |
-| Operador de agentes | fijo | Q500 |
+| Producción | 2h × Q250 | Q500 |
+| Sesiones de grabación | 1 × Q175 | Q175 |
+| Operador de agentes | volumen alto | Q600 |
 | Cloud | Q960 ÷ 5 | Q192 |
 | Build de tecnología | no incluye | Q0 |
-| **Subtotal sin Allan** | | **Q2,042** |
+| **Subtotal sin Allan** | | **Q1,467** |
 
-| Con la hora de Allan a… | Allan (9h) | **Costo total** | **Utilidad** | **Margen** |
+| Con la hora de Allan a… | Allan (7h) | **Costo total** | **Utilidad** | **Margen** |
 |---|---|---|---|---|
-| Q60/h *(lo básico)* | Q540 | Q2,582 | Q4,918 | **66%** |
-| **Q150/h** *(reemplazo)* | Q1,350 | **Q3,392** | **Q4,108** | **55%** |
-| **Q250/h** *(ambicioso)* | Q2,250 | **Q4,292** | **Q3,208** | **43%** |
+| Q60/h *(lo básico)* | Q420 | Q1,887 | Q3,613 | **66%** |
+| **Q150/h** *(reemplazo)* | Q1,050 | **Q2,517** | **Q2,983** | **54%** |
+| **Q250/h** *(ambicioso)* | Q1,750 | **Q3,217** | **Q2,283** | **42%** |
 
 ---
 
-### 🟪 GROWTH ACCELERATED — Q14,000
+### 🟪 GROWTH ACCELERATED — Q8,900 · 145 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
-| Producción | 6h × Q250 | Q1,500 |
+| Producción | 5h × Q250 | Q1,250 |
 | Sesiones de grabación | 2 × Q175 | Q350 |
-| Operador de agentes | +volumen | Q750 |
+| Operador de agentes | +volumen | Q900 |
 | Cloud | Q960 ÷ 5 | Q192 |
 | Build de tecnología | 1 herramienta / trimestre | Q750 |
-| **Subtotal sin Allan** | | **Q3,542** |
+| **Subtotal sin Allan** | | **Q3,442** |
 
-| Con la hora de Allan a… | Allan (14h) | **Costo total** | **Utilidad** | **Margen** |
+| Con la hora de Allan a… | Allan (11h) | **Costo total** | **Utilidad** | **Margen** |
 |---|---|---|---|---|
-| Q60/h | Q840 | Q4,382 | Q9,618 | **69%** |
-| **Q150/h** | Q2,100 | **Q5,642** | **Q8,358** | **60%** |
-| **Q250/h** | Q3,500 | **Q7,042** | **Q6,958** | **50%** |
+| Q60/h | Q660 | Q4,102 | Q4,798 | **54%** |
+| **Q150/h** | Q1,650 | **Q5,092** | **Q3,808** | **43%** |
+| **Q250/h** | Q2,750 | **Q6,192** | **Q2,708** | **30%** ⚠️ |
 
 ---
 
-### 🟨 GROWTH COMPOUND — Q22,000
+### 🟨 GROWTH COMPOUND — Q13,900 · 204 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
 | Producción | 8h × Q250 | Q2,000 |
 | Sesiones de grabación | 3 × Q175 | Q525 |
-| Operador de agentes | volumen máximo | Q1,000 |
+| Operador de agentes | volumen máximo | Q1,200 |
 | Cloud | Q960 ÷ 5 | Q192 |
 | Build de tecnología | 1 herramienta / **mes** | Q1,500 |
-| **Subtotal sin Allan** | | **Q5,217** |
+| **Subtotal sin Allan** | | **Q5,417** |
 
-| Con la hora de Allan a… | Allan (18h) | **Costo total** | **Utilidad** | **Margen** |
+| Con la hora de Allan a… | Allan (15h) | **Costo total** | **Utilidad** | **Margen** |
 |---|---|---|---|---|
-| Q60/h | Q1,080 | Q6,297 | Q15,703 | **71%** |
-| **Q150/h** | Q2,700 | **Q7,917** | **Q14,083** | **64%** |
-| **Q250/h** | Q4,500 | **Q9,717** | **Q12,283** | **56%** |
+| Q60/h | Q900 | Q6,317 | Q7,583 | **55%** |
+| **Q150/h** | Q2,250 | **Q7,667** | **Q6,233** | **45%** |
+| **Q250/h** | Q3,750 | **Q9,167** | **Q4,733** | **34%** |
 
 ---
 
@@ -601,33 +677,53 @@ Menos cuentas, más profundidad, más margen, menos horas.
 
 | | **Basic** | **Accelerated** | **Compound** |
 |---|---|---|---|
-| **Precio** | **Q7,500** | **Q14,000** | **Q22,000** |
-| Producción | Q1,000 | Q1,500 | Q2,000 |
-| Sesiones | Q350 | Q350 | Q525 |
-| Operador | Q500 | Q750 | Q1,000 |
+| **Precio** | **Q5,500** | **Q8,900** | **Q13,900** |
+| **Piezas/mes** | **86** | **145** | **204** |
+| Producción | Q500 | Q1,250 | Q2,000 |
+| Sesiones | Q175 | Q350 | Q525 |
+| Operador | Q600 | Q900 | Q1,200 |
 | Cloud | Q192 | Q192 | Q192 |
 | Tecnología | Q0 | Q750 | Q1,500 |
-| Allan *(@Q250/h)* | Q2,250 | Q3,500 | Q4,500 |
-| **COSTO TOTAL** | **Q4,292** | **Q7,042** | **Q9,717** |
-| **UTILIDAD** | **Q3,208** | **Q6,958** | **Q12,283** |
-| **MARGEN** | **43%** | **50%** | **56%** |
-| *vs. utilidad de Basic* | — | **2.2x** | **3.8x** |
-
-✅ **El margen sube con cada nivel, y así debe ser.** Lo que agrega cada escalón corre sobre
-agentes, no sobre horas humanas. **Compound es el único donde vender más no significa trabajar
-proporcionalmente más.**
+| Allan *(@Q250/h)* | Q1,750 | Q2,750 | Q3,750 |
+| **COSTO TOTAL** | **Q3,217** | **Q6,192** | **Q9,167** |
+| **UTILIDAD** | **Q2,283** | **Q2,708** | **Q4,733** |
+| **MARGEN @Q250/h** | **42%** | **30%** ⚠️ | **34%** |
+| **MARGEN @Q150/h** | **54%** | **43%** | **45%** |
 
 ---
 
-### El costo por pieza — el número que gana la discusión de precio
+### ⚠️ El costo real de la estrategia de penetración
+
+**Este es el precio de matarlos con valor. Hay que saberlo, no descubrirlo después.**
+
+| | Precio alto *(anterior)* | **Precio competitivo** *(este)* | Diferencia |
+|---|---|---|---|
+| Basic — utilidad @Q250/h | Q3,208 | **Q2,283** | **−Q925** |
+| Accelerated — utilidad | Q6,958 | **Q2,708** | **−Q4,250** |
+| Compound — utilidad | Q12,283 | **Q4,733** | **−Q7,550** |
+
+🔴 **Accelerated a Q250/h queda en 30%. Es el punto más débil del modelo.**
+
+**Tres salidas, y hay que elegir una conscientemente:**
+1. **Aceptarlo como inversión.** Precio bajo compra cuota de mercado y casos. **Se sube cuando
+   haya 3 casos con números.** ← recomendado
+2. **Cobrarse Q150/h mientras dura la penetración**, y subir la tarifa con el precio
+3. **Subir Accelerated a Q9,900** — sigue siendo competitivo y el margen pasa a 37%
+
+> **La estrategia solo funciona si el precio bajo es temporal y deliberado.**
+> Si se vuelve permanente, es un negocio de bajo margen disfrazado de estrategia.
+
+---
+
+### El costo por pieza — el número que gana la discusión
 
 | | **Basic** | **Accelerated** | **Compound** | *Mercado GT (Q3,000)* |
 |---|---|---|---|---|
-| Piezas/mes | 66 | 112 | 161 | *16* |
-| **Lo que nos cuesta cada pieza** | Q65 | Q63 | Q60 | — |
-| **Lo que paga el cliente por pieza** | **Q114** | **Q125** | **Q137** | ***Q188*** |
+| Piezas/mes | 86 | 145 | 204 | *16* |
+| **Lo que nos cuesta cada pieza** | Q37 | Q43 | Q45 | — |
+| **Lo que paga el cliente por pieza** | **Q64** | **Q61** | **Q68** | ***Q188*** |
 
-👉 **Growth Basic cuesta 39% menos por pieza que un paquete guatemalteco de Q3,000 — y además
+🔥 **Growth Basic cuesta 66% menos por pieza que un paquete guatemalteco de Q3,000 — y además
 incluye estrategia, inteligencia y pauta.**
 
 ⚠️ **Este número es para la discusión interna y para defender el precio. Nunca se vende por
@@ -637,36 +733,59 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 
 `[benchmark aportado por Allan, sin verificar de forma independiente]`
 
-| Rango del mercado GT | Dónde caemos |
-|---|---|
-| Básico Q1,000 - 3,000 *(~16 piezas/mes)* | — |
-| Intermedio Q3,000 - 6,000 | — |
-| Avanzado / 360° Q6,000 - 8,000+ | **Growth Basic Q7,500** *(66 piezas/mes)* |
-| *(fuera del rango del mercado)* | **Accelerated Q14,000** · **Compound Q22,000** |
+| Rango del mercado GT | Piezas típicas | Dónde caemos |
+|---|---|---|
+| Básico Q1,000 - 3,000 | ~16 | — |
+| **Intermedio Q3,000 - 6,000** | ~25 | **🟦 Basic Q5,500 · 86 piezas** |
+| **Avanzado / 360° Q6,000 - 8,000+** | ~40 | **🟪 Accelerated Q8,900 · 145 piezas** |
+| *(fuera del rango del mercado)* | — | **🟨 Compound Q13,900 · 204 piezas** |
 
-**Basic compite de frente en el tramo alto — con 4x el volumen del mercado.**
-**Accelerated y Compound están afuera a propósito:** incluyen tecnología y autonomía, y eso no
-existe en la oferta guatemalteca. **No son comparables, y esa es la idea.**
+### 💀 La posición
 
----
+**Los tres paquetes están dentro o apenas por encima del rango que el mercado ya acepta — y los
+tres entregan entre 3x y 5x el volumen de su tramo.**
+
+| | Ellos | Nosotros |
+|---|---|---|
+| Mismo precio | 16-25 piezas | **86 piezas** |
+| Mismo precio | Sin estrategia | **Estrategia completa** |
+| Mismo precio | Sin inteligencia de competencia | **Radar mensual** |
+| Mismo precio | Pauta a veces | **Meta + TikTok** |
+
+👉 **No hay contraataque posible.** Para igualarnos tendrían que contratar 4 personas más y
+cobrar lo mismo. **Nadie puede.**
 
 ## La escalera de precio
 
-Los precios de la web son la **meta**. Lo que falta para llegar no es ambición: **es prueba con
-números.**
+**El precio bajo es una decisión de entrada, no un destino.** Los precios de la web son la meta.
 
-| | Hoy | Meta | Qué lo habilita |
+| | **Hoy** *(penetración)* | Meta | Qué habilita el salto |
 |---|---|---|---|
-| **Growth Basic** | Q7,500 | $1,400 *(Q10,780)* | 3 casos con resultados medidos |
-| **Growth Accelerated** | Q14,000 | $2,800 *(Q21,560)* | 2 casos con tecnología entregada y ROI |
-| **Growth Compound** | Q22,000 | $4,500 *(Q34,650)* | 1 caso donde el cliente opera solo y sigue creciendo |
+| **Growth Basic** | Q5,500 | $1,400 *(Q10,780)* | 3 casos con resultados medidos |
+| **Growth Accelerated** | Q8,900 | $2,800 *(Q21,560)* | 2 casos con tecnología entregada y ROI |
+| **Growth Compound** | Q13,900 | $4,500 *(Q34,650)* | 1 caso donde el cliente opera solo y sigue creciendo |
+
+### 🚦 El gatillo para subir — se define ahora, no después
+
+**Se sube de precio cuando se cumplan las tres:**
+
+| # | Condición |
+|---|---|
+| 1 | **3 casos con números medidos** publicables |
+| 2 | **Capacidad al 80%** — 4 de 5 cuentas ocupadas |
+| 3 | **Un mes real corrido** al volumen prometido, sin quemarse |
+
+> ⚠️ **Los clientes que entran a precio de penetración mantienen su precio 12 meses.**
+> Se les avisa desde el inicio. **Eso vuelve el precio bajo un argumento de urgencia real,
+> no una promesa que se rompe después.**
 
 ### El puente: performance fee
 
 > **Fee base + % sobre ventas atribuidas directamente a nuestro trabajo.**
 > No cuenta el tráfico orgánico ni el preexistente.
 
----
+**Con precio de penetración, el performance fee deja de ser opcional: es cómo se recupera el
+margen que se está resignando.**
 
 ## Punto de equilibrio
 
@@ -679,14 +798,16 @@ Piso mensual                 Q3,360
 
 | Clientes | Utilidad *(@Q250/h)* | ¿Alcanza? |
 |---|---|---|
-| 1 Basic | Q3,208 | ⚠️ Justo |
-| **1 Accelerated** | Q6,958 | ✅ Sí |
-| **1 Compound** | Q12,283 | ✅ Con espacio para reinversión |
-| 4 mixtos | ~Q25,000 | ✅ Negocio sano |
+| 1 Basic | Q2,283 | ❌ No |
+| **2 Basic** | **Q4,566** | ✅ Sí |
+| **1 Compound** | **Q4,733** | ✅ Sí |
+| 4 mixtos | ~Q12,000 | ✅ Negocio sano |
+| 5 Compound | Q23,665 | ✅ Con espacio para reinversión |
+
+⚠️ **Con precio de penetración el punto de equilibrio sube a 2 clientes.** Con el precio anterior
+bastaba casi con uno. **Es parte del costo de la estrategia.**
 
 **Capacidad actual: 4-6 clientes.**
-
----
 
 ## ⚠️ El precio de amigos distorsiona la lectura
 

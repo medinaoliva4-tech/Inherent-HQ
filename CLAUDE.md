@@ -65,12 +65,20 @@ dura para todos los agentes.** Se lee antes de prometer nada.
 **Todo paquete es un paquete de growth.** Son tres —`Growth Basic`, `Growth Accelerated` y
 `Growth Compound`— más `Tailor Made`. Lo que cambia no es el tipo de servicio, es la profundidad.
 
-**El volumen es lo que nos separa del mercado. La profundidad es lo que separa los paquetes entre
-sí.** Hasta el de entrada da 4x el volumen de una agencia guatemalteca.
+**La estrategia de precio es matarlos con valor, no cobrar más.** Los precios están **dentro del
+rango que el mercado guatemalteco ya acepta**, con 3x a 5x el volumen de su tramo. El de entrada
+da **86 piezas a Q5,500** contra las ~16 de un paquete de Q3,000.
 
-**El bundle no es descuento, es eficiencia.** Subir de escalón cuesta ~40% menos que comprar lo
+**El volumen es lo que nos separa del mercado. La profundidad es lo que separa los paquetes entre
+sí.**
+
+**El bundle no es descuento, es eficiencia.** Subir de escalón cuesta 60-70% menos que comprar lo
 mismo suelto, porque todo lo que corre sobre agentes suma Q0 al costo variable.
 **El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
+
+⚠️ **El precio bajo es penetración deliberada y temporal, no un destino.** El gatillo para subir
+está escrito en `PAQUETES.md`. Si se vuelve permanente, es un negocio de bajo margen disfrazado
+de estrategia.
 
 ⚠️ **No se vende una capa suelta.** La metodología dice que crecer exige algo íntegro; vender solo
 contenido o solo pauta contradice lo que predicamos.
