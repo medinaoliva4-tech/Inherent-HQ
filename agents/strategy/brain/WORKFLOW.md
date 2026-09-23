@@ -153,9 +153,9 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 | Acción | Tool | Devuelve |
 |---|---|---|
-| Buscar material previo del cliente | `notion-search` → `notion-fetch` ✅ | Páginas, briefs, decisiones del equipo |
-| Leer archivos del cliente | `search_files` → `read_file_content` (Drive) | Documentos, presentaciones |
-| Leer el sitio, la oferta, los precios | `firecrawl_search` ✅ | Títulos y extractos indexados |
+| Leer el contexto que entrega Allan | **`read_file_content` (Drive)** ✅ · un Google Doc alcanza · o pegado en el chat | El brief del cliente |
+| Buscar material previo | `notion-search` → `notion-fetch` ✅ | Páginas, decisiones del equipo |
+| **Leer el sitio completo, la oferta, los precios** | **`firecrawl_scrape`** ✅ | El cuerpo real de la página en markdown |
 | Ver qué publica el cliente y cómo rinde | `eden_analyze_creator` | Perfil, totales, mezcla de temas, sus mejores posts |
 | Ver su contenido pieza por pieza | `eden_search_social_content` scope `creator` ✅ | Posts con métricas y fecha |
 | Dimensionar si se busca su categoría | `research_keywords` (AdWhispr) | Volumen de búsqueda |
@@ -170,7 +170,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 | Acción | Tool |
 |---|---|
 | Responder las 3 preguntas | **Ninguna.** Es razonamiento sobre lo que trajo el bloque 01 |
-| Verificar un dato puntual que falte | `firecrawl_search` · `WebSearch` ✅ |
+| Verificar un dato puntual que falte | `WebSearch` ✅ · `firecrawl_scrape` ✅ |
 | Escribir el análisis | `Write` |
 
 > **Este bloque casi no tiene acciones, y está bien.** Es lógica pura. Si necesita salir a buscar,
@@ -205,13 +205,27 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 | **Ver las imágenes reales** | Las URLs de `mediaMirror` que vienen en cada resultado | Así el agente mira, no adivina |
 | Buscar personas por tema | `eden_search_creators` | ⛔ **Requiere plan Starter** |
 
-**Web y contexto**
+**Eden cubre:** `tiktok` · `instagram` · `youtube` · `twitter` · `linkedin` · `threads` · `substack`
+— se filtra con `platform` o `platforms`. **TikTok incluido.**
 
-| Acción | Tool |
-|---|---|
-| Landings, páginas de venta, reviews | `firecrawl_search` ✅ |
-| Prensa, contexto de categoría, regulación | `WebSearch` ✅ |
-| Leer una URL puntual | `WebFetch` ⚠️ puede estar bloqueado |
+**Web y contexto — no depender de una sola herramienta**
+
+| Acción | Tool | Cuándo |
+|---|---|---|
+| **Leer una página entera** — landing, página de venta, "nosotros" | **`firecrawl_scrape`** ✅ | El principal. Devuelve el cuerpo real en markdown |
+| **Screenshot de una página** | `firecrawl_scrape` `formats: ["screenshot"]` | **Para el mapa visual del bloque 04** |
+| Colores, logo y fuentes de un sitio | `firecrawl_scrape` `formats: ["branding"]` | Análisis visual de competidores |
+| Sacar campos estructurados de una página | `firecrawl_scrape` `formats: ["json"]` con schema | Precios, planes, features |
+| **Reviews de Google, prensa, "qué dicen de X"** | **`WebSearch`** ✅ | Es una búsqueda de Google. No hace falta más |
+| Encontrar páginas por tema | `firecrawl_search` ✅ | Devuelve solo título y extracto indexado |
+| Leer una URL puntual | `WebFetch` ⚠️ | Puede estar bloqueado por el proxy |
+
+> **`firecrawl_search` es limitado a propósito** — es un índice, devuelve títulos y descripciones,
+> no páginas. Para el contenido real es **`firecrawl_scrape`**. Y para lo que es simplemente
+> "buscarlo en Google" —reviews, menciones, prensa— **`WebSearch` alcanza y sobra**.
+>
+> 💡 **`firecrawl_scrape` pasa los bloqueos del proxy de egress**, porque Firecrawl trae la página
+> del lado servidor. Probado con `inherentglobal.com`, que `WebFetch` y `curl` no podían abrir.
 
 **Descubrimiento en Instagram**
 
@@ -232,6 +246,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 | Acción | Tool |
 |---|---|
 | **Mirar las imágenes para el mapa visual** | Las URLs de `mediaMirror` del bloque 03 |
+| **Ver cómo se ve el sitio de un competidor** | `firecrawl_scrape` `formats: ["screenshot","branding"]` |
 | Verificar cómo se ve un estilo aplicado a un formato | `eden_search_social_content` |
 | Buscar referencias fuera de la categoría | `eden_search_social_content` con otro tema |
 | Escribir los 9 bloques | `Write` |
