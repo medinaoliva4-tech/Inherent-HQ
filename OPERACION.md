@@ -1,7 +1,7 @@
 # Operación — qué se hace, quién lo hace, cuánto cuesta
 
 > Desglose por **marca, al mes**. De acá salen los costos de `PAQUETES.md`.
-> **`Growth Basic` Q5,500** · **`Growth Accelerated` Q9,900** · **`Growth Compound` Q15,900**
+> **`Growth Basic` Q6,160** · **`Growth Accelerated` Q8,470** · **`Growth Compound` Q15,400**
 
 ---
 
@@ -111,9 +111,9 @@
 
 | Tarifa | **Basic** (7h) | **Accelerated** (11h) | **Compound** (15h) |
 |---|---|---|---|
-| **Q60/h** | 66% | 59% | 60% |
-| **Q150/h** | **54%** | **49%** | **52%** |
-| **Q250/h** | **42%** | **37%** | **42%** |
+| **Q60/h** | 69% | 52% | 59% |
+| **Q150/h** | **59%** | **40%** | **50%** |
+| **Q250/h** | **48%** | **27%** ⚠️ | **40%** |
 
 ✅ **Con los precios cerrados, Q250/h cierra en los tres.**
 Acelerado es el más ajustado (37%) porque agrega producción real, no solo capas de agente.
@@ -137,7 +137,7 @@ capas que corren sobre agentes. **Se revisa cuando haya casos.**
 5 clientes Compound = 75 h/mes. Le sobra tiempo. **El cuello es el QA.**
 
 🟡 **Basic es el arma comercial, no el producto de margen.**
-86 piezas a Q5,500 es una oferta que **ninguna agencia guatemalteca puede igualar.**
+86 piezas a Q6,160 es una oferta que **ninguna agencia guatemalteca puede igualar.**
 Su trabajo es ganar la cuenta. El margen viene del upsell.
 
 ---
@@ -146,11 +146,11 @@ Su trabajo es ganar la cuenta. El margen viene del upsell.
 
 | | **Basic** | **Accelerated** | **Compound** |
 |---|---|---|---|
-| Precio | Q5,500 | Q9,900 | Q15,900 |
+| Precio | Q6,160 | Q8,470 | Q15,400 |
 | Piezas/mes | 86 | 145 | 204 |
 | Costo *(@Q250/h)* | Q3,217 | Q6,192 | Q9,167 |
-| **Utilidad @Q250/h** | **Q2,283** | **Q3,708** | **Q6,733** |
-| **Utilidad @Q150/h** | **Q2,983** | **Q4,808** | **Q8,233** |
+| **Utilidad @Q250/h** | **Q2,943** | **Q2,278** | **Q6,233** |
+| **Utilidad @Q150/h** | **Q3,643** | **Q3,378** | **Q7,733** |
 
 ## 6 · La hoja de ruta de automatización
 

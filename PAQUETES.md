@@ -36,7 +36,7 @@ que el mercado ya acepta.**
 
 | | Mercado GT | **Inherent Basic** |
 |---|---|---|
-| Precio | Q3,000 | **Q5,500** |
+| Precio | Q3,000 | **Q6,160** |
 | Piezas al mes | 16 | **86** |
 | **Costo por pieza** | Q188 | **Q64** |
 | Estrategia | ❌ | ✅ |
@@ -124,24 +124,24 @@ contra 16). **Lo que falla es el costo.** Y el costo falla por una razón concre
 
 | | Básico | Acelerado | Compuesto |
 |---|---|---|---|
-| Precio | Q5,500 | Q9,900 | Q15,900 |
+| Precio | Q6,160 *($800)* | Q8,470 *($1,100)* | Q15,400 *($2,000)* |
 | Costo *(@Q250/h)* | Q3,217 | Q6,192 | Q9,167 |
-| Utilidad | Q2,283 | Q3,708 | Q6,733 |
-| **Margen** | **42%** | **37%** | **42%** |
-| Horas de Allan | 7h | 11h | 15h |
+| Utilidad | Q2,943 | Q2,278 | Q6,233 |
+| **Margen** | **48%** | **27%** 🔴 | **40%** |
 
 ### Estado OBJETIVO — con los tres agentes construidos
 
 | | Básico | Acelerado | Compuesto |
 |---|---|---|---|
-| Precio | **Q5,500** *(igual)* | **Q9,900** *(igual)* | **Q15,900** *(igual)* |
+| Precio | **igual** | **igual** | **igual** |
 | Costo *(@Q250/h)* | Q2,225 | Q4,200 | Q6,175 |
-| Utilidad | **Q3,275** | **Q5,700** | **Q9,725** |
-| **Margen** | **60%** ✅ | **58%** ✅ | **61%** ✅ |
+| Utilidad | **Q3,935** | **Q4,270** | **Q9,225** |
+| **Margen** | **64%** ✅ | **50%** ✅ | **60%** ✅ |
 | Horas de Allan | **4h** | **6h** | **8h** |
 
-🔥 **Mismo precio. Mismo valor para el cliente. Margen de 58-61% y casi la mitad de horas.**
-**Los cuatro objetivos, juntos.**
+🔴 **Acelerado a $1,100 queda hoy en 27%.** El salto Básico→Acelerado es de solo **+$300** pero
+el costo sube **+92%** (suma 3h de producción y una sesión). **Dos salidas:**
+**subirlo a $1,300** *(38% hoy)*, o **aceptar 27% hasta que el agente de QA lo lleve a 50%.**
 
 ### De dónde sale cada quetzal ahorrado
 
@@ -209,7 +209,7 @@ No reemplaza la grabación profesional — **la multiplica.**
 
 | | **Growth Basic** | **Growth Accelerated** | **Growth Compound** |
 |---|---|---|---|
-| **Precio / mes** | **Q5,500** *(~$715)* | **Q9,900** *(~$1,155)* | **Q15,900** *(~$1,805)* |
+| **Precio / mes** | **Q6,160** *($800)* | **Q8,470** *(~$1,155)* | **Q15,400** *(~$1,805)* |
 | **Unidad** | 1 marca | 1 marca | 1 marca |
 | **Para quién** | Ya vende, pero el crecimiento depende del fundador, los referidos o esfuerzos aislados | Tiene volumen y quiere que el sistema completo empuje, no solo el marketing | Quiere que el crecimiento deje de depender de nosotros y del fundador |
 | **Qué hacemos** | Aceleramos la máquina que hay | Rediseñamos la máquina | Construimos la máquina que se sostiene sola |
@@ -281,7 +281,7 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ---
 
-# 🟦 GROWTH BÁSICO — Q5,500/mes
+# 🟦 GROWTH BÁSICO — Q6,160/mes
 
 ## ⚡ ENCENDER
 **Empezar el motor. Atraer, crear nombre, mejorar lo que ya existe y hacer las asociaciones
@@ -381,7 +381,7 @@ correctas.**
 
 ---
 
-# 🟪 GROWTH ACELERADO — Q9,900/mes
+# 🟪 GROWTH ACELERADO — Q8,470/mes
 
 ## 🚀 ACELERAR
 **Crecer mucho más. Lead magnets, embudos, influencers, canales nuevos y tecnología que quita
@@ -501,7 +501,7 @@ fricción.**
 
 ---
 
-# 🟨 GROWTH COMPUESTO — Q15,900/mes
+# 🟨 GROWTH COMPUESTO — Q15,400/mes
 
 ## 🔁 COMPONER
 **Que cada mes construya sobre el anterior. Retención, LTV, sistemas propios y autonomía real.**
@@ -670,7 +670,7 @@ fricción.**
 | **Lo que cuesta el salto** | **Q6,000** |
 | **AHORRO** | **Q19,540 · 77%** |
 
-> 🔥 **Comprar todo lo de Compound pieza por pieza costaría Q31,247/mes. Se paga Q15,900.**
+> 🔥 **Comprar todo lo de Compound pieza por pieza costaría Q31,247/mes. Se paga Q15,400.**
 > **Ahorro: Q17,347 — 56%.**
 
 ---
@@ -690,7 +690,7 @@ de arrancar barato: **el siguiente escalón siempre se ve chico.**
 ### ⚠️ Y si el cliente "se conforma" con Basic, ganamos igual
 
 **Un cliente que se queda en Basic es un cliente que no está con la competencia.**
-A Q5,500 con 86 piezas, **ninguna agencia guatemalteca puede pelear esa cuenta.**
+A Q6,160 con 86 piezas, **ninguna agencia guatemalteca puede pelear esa cuenta.**
 El upsell puede esperar. **La cuenta ya es nuestra, y el costo de mantenerla es bajo.**
 
 ---
@@ -877,7 +877,7 @@ cuesta el caso.**
 
 ---
 
-### 🟦 GROWTH BÁSICO — Q5,500 · 86 piezas
+### 🟦 GROWTH BÁSICO — Q6,160 · 86 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
@@ -896,7 +896,7 @@ cuesta el caso.**
 
 ---
 
-### 🟪 GROWTH ACELERADO — Q9,900 · 145 piezas
+### 🟪 GROWTH ACELERADO — Q8,470 · 145 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
@@ -915,7 +915,7 @@ cuesta el caso.**
 
 ---
 
-### 🟨 GROWTH COMPUESTO — Q15,900 · 204 piezas
+### 🟨 GROWTH COMPUESTO — Q15,400 · 204 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
@@ -938,7 +938,7 @@ cuesta el caso.**
 
 | | **Basic** | **Accelerated** | **Compound** |
 |---|---|---|---|
-| **Precio** | **Q5,500** | **Q9,900** | **Q15,900** |
+| **Precio** | **Q6,160** | **Q8,470** | **Q15,400** |
 | **Piezas/mes** | **86** | **145** | **204** |
 | Producción | Q500 | Q1,250 | Q2,000 |
 | Sesiones | Q175 | Q350 | Q525 |
@@ -947,9 +947,9 @@ cuesta el caso.**
 | Tecnología | Q0 | Q750 | Q1,500 |
 | Allan *(@Q250/h)* | Q1,750 | Q2,750 | Q3,750 |
 | **COSTO TOTAL** | **Q3,217** | **Q6,192** | **Q9,167** |
-| **UTILIDAD** | **Q2,283** | **Q3,708** | **Q6,733** |
-| **MARGEN @Q250/h** | **42%** | **37%** | **42%** |
-| **MARGEN @Q150/h** | **54%** | **49%** | **52%** |
+| **UTILIDAD** | **Q2,943** | **Q2,278** | **Q6,233** |
+| **MARGEN @Q250/h** | **48%** | **27%** ⚠️ | **40%** |
+| **MARGEN @Q150/h** | **59%** | **40%** | **50%** |
 
 ---
 
@@ -969,7 +969,7 @@ cuesta el caso.**
 1. **Aceptarlo como inversión.** Precio bajo compra cuota de mercado y casos. **Se sube cuando
    haya 3 casos con números.** ← recomendado
 2. **Cobrarse Q150/h mientras dura la penetración**, y subir la tarifa con el precio
-3. **Subir Accelerated a Q9,900** — sigue siendo competitivo y el margen pasa a 37%
+3. **Subir Accelerated a Q8,470** — sigue siendo competitivo y el margen pasa a 37%
 
 > **La estrategia solo funciona si el precio bajo es temporal y deliberado.**
 > Si se vuelve permanente, es un negocio de bajo margen disfrazado de estrategia.
@@ -982,7 +982,7 @@ cuesta el caso.**
 |---|---|---|---|---|
 | Piezas/mes | 86 | 145 | 204 | *16* |
 | **Lo que nos cuesta cada pieza** | Q37 | Q43 | Q45 | — |
-| **Lo que paga el cliente por pieza** | **Q64** | **Q68** | **Q78** | ***Q188*** |
+| **Lo que paga el cliente por pieza** | **Q72** | **Q58** | **Q75** | ***Q188*** |
 
 🔥 **Growth Basic cuesta 66% menos por pieza que un paquete guatemalteco de Q3,000 — y además
 incluye estrategia, inteligencia y pauta.**
@@ -997,9 +997,9 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 | Rango del mercado GT | Piezas típicas | Dónde caemos |
 |---|---|---|
 | Básico Q1,000 - 3,000 | ~16 | — |
-| **Intermedio Q3,000 - 6,000** | ~25 | **🟦 Básico Q5,500 · 86 piezas** |
-| **Avanzado / 360° Q6,000 - 8,000+** | ~40 | **🟪 Acelerado Q9,900 · 145 piezas** |
-| *(fuera del rango del mercado)* | — | **🟨 Compuesto Q15,900 · 204 piezas** |
+| **Intermedio Q3,000 - 6,000** | ~25 | **🟦 Básico Q6,160 · 86 piezas** |
+| **Avanzado / 360° Q6,000 - 8,000+** | ~40 | **🟪 Acelerado Q8,470 · 145 piezas** |
+| *(fuera del rango del mercado)* | — | **🟨 Compuesto Q15,400 · 204 piezas** |
 
 ### 💀 La posición
 
@@ -1022,9 +1022,9 @@ cobrar lo mismo. **Nadie puede.**
 
 | | **Hoy** *(penetración)* | Meta | Qué habilita el salto |
 |---|---|---|---|
-| **🟦 Básico** | Q5,500 | $1,400 *(Q10,780)* | 3 casos con resultados medidos |
-| **🟪 Acelerado** | Q9,900 | $2,800 *(Q21,560)* | 2 casos con tecnología entregada y ROI |
-| **🟨 Compuesto** | Q15,900 | $4,500 *(Q34,650)* | 1 caso donde el cliente opera solo y sigue creciendo |
+| **🟦 Básico** | Q6,160 | $1,400 *(Q10,780)* | 3 casos con resultados medidos |
+| **🟪 Acelerado** | Q8,470 | $2,800 *(Q21,560)* | 2 casos con tecnología entregada y ROI |
+| **🟨 Compuesto** | Q15,400 | $4,500 *(Q34,650)* | 1 caso donde el cliente opera solo y sigue creciendo |
 
 ### 🚦 El gatillo para subir — se define ahora, no después
 

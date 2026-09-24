@@ -104,7 +104,7 @@ oferta, y la pauta no salva una experiencia rota.
 
 ---
 
-## 🟦 BÁSICO — Q5,500/mes
+## 🟦 BÁSICO — Q6,160/mes
 
 ### Lo básico *(lo que da cualquier agencia)*
 - Manejo de redes sociales
@@ -128,7 +128,7 @@ oferta, y la pauta no salva una experiencia rota.
 
 ---
 
-## 🟪 ACELERADO — Q9,900/mes
+## 🟪 ACELERADO — Q8,470/mes
 
 ### Lo básico *(lo que da cualquier agencia "con pauta")*
 - Campañas en Meta
@@ -153,7 +153,7 @@ oferta, y la pauta no salva una experiencia rota.
 
 ---
 
-## 🟨 COMPUESTO — Q15,900/mes
+## 🟨 COMPUESTO — Q15,400/mes
 
 ### Lo básico
 **No existe.** Ninguna agencia guatemalteca ofrece este nivel.
@@ -198,9 +198,9 @@ Sin MCP no hay acción, y sin acción no hay promesa.
 
 | | **🟦 Básico** | **🟪 Acelerado** | **🟨 Compuesto** |
 |---|---|---|---|
-| **Precio / mes** | **Q5,500** *(~$715)* | **Q9,900** *(~$1,285)* | **Q15,900** *(~$2,065)* |
+| **Precio / mes** | **Q6,160** *($800)* | **Q8,470** *($1,100)* | **Q15,400** *($2,000)* |
 | Piezas / mes | 86 | 145 | 204 |
-| **Q por pieza** | **Q64** | Q68 | Q78 |
+| **Q por pieza** | **Q72** | **Q58** | Q75 |
 | *Mercado GT* | *Q188 por pieza* | | |
 | Performance fee | Opcional | ✅ Incluido | ✅ Incluido |
 

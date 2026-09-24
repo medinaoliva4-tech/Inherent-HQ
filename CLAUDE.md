@@ -95,9 +95,9 @@ los agentes.** Se lee antes de prometer nada.
 ### Los tres niveles de crecimiento
 
 ```
-🟦 BÁSICO     Q5,500   ENCENDER   Estrategia · Demanda · Contenido
-🟪 ACELERADO  Q9,900   ACELERAR   + Tecnología · Contenido para ADS · SEO · Closing
-🟨 COMPUESTO  Q15,900  COMPONER   + Sistemas de demanda · Fulfillment · Talento
+🟦 BÁSICO     Q6,160   ENCENDER   Estrategia · Demanda · Contenido
+🟪 ACELERADO  Q8,470   ACELERAR   + Tecnología · Contenido para ADS · SEO · Closing
+🟨 COMPUESTO  Q15,400  COMPONER   + Sistemas de demanda · Fulfillment · Talento
 ```
 
 **Más `Tailor Made`** — multi-locación, regulatorio, integraciones, proyectos por hito.
@@ -112,7 +112,7 @@ No me conocen → Básico · Me conocen y no convierto → Acelerado · Conviert
 
 **La estrategia de precio es matarlos con valor, no cobrar más.** Los precios están **dentro del
 rango que el mercado guatemalteco ya acepta**, con 3x a 5x el volumen de su tramo. El de entrada
-da **86 piezas a Q5,500 (Q64/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
+da **86 piezas a Q6,160 (Q72/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
 
 **El volumen nos separa del mercado. La profundidad separa los niveles entre sí.**
 
@@ -122,7 +122,7 @@ mismo suelto, porque todo lo que corre sobre agentes suma Q0 al costo variable.
 
 **Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes muy
 buenos.** Cierran **no bajando el precio, bajando el costo.** Modelo en dos estados:
-**HOY 42% · 37% · 42%** — **OBJETIVO 60% · 58% · 61%** al mismo precio.
+**HOY 48% · 27% · 40%** — **OBJETIVO 64% · 50% · 60%** al mismo precio.
 Lo que los separa son tres agentes: **QA · operación automatizada · pipeline de herramientas.**
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
