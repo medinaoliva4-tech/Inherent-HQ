@@ -990,6 +990,62 @@ incluye estrategia, inteligencia y pauta.**
 ⚠️ **Este número es para la discusión interna y para defender el precio. Nunca se vende por
 pieza** — eso convierte la oferta en commodity y contradice el posicionamiento.
 
+## 💸 El performance fee — de dónde salen los márgenes altísimos
+
+> **Ganamos de hacerles dinero.** El fee base cubre la operación.
+> **La utilidad de verdad sale del crecimiento que producimos.**
+
+### Por qué es puro margen
+
+**El fee de performance tiene costo marginal Q0.** No agrega producción, ni horas, ni cloud.
+**Cada quetzal de fee es un quetzal de utilidad.**
+
+| Si el fee mensual es… | Ingreso total | **Margen HOY** | **Margen OBJETIVO** |
+|---|---|---|---|
+| Q0 *(solo base)* | Q8,470 | 27% 🔴 | 50% |
+| Q1,500 | Q9,970 | **38%** | 58% |
+| **Q3,000** | **Q11,470** | **46%** | **63%** |
+| Q5,000 | Q13,470 | **54%** | **69%** |
+| Q8,000 | Q16,470 | **62%** | **74%** |
+
+*Ejemplo sobre Acelerado ($1,100 base). Mismo efecto en los tres niveles.*
+
+### Cuánto tiene que vender el cliente para que pase
+
+**Fee: 10% de las ventas atribuidas directamente a nuestro trabajo.**
+*No cuenta el tráfico orgánico ni el preexistente.*
+
+| Fee que cobramos | Ventas atribuidas que produjimos |
+|---|---|
+| Q1,500 | Q15,000 / mes |
+| **Q3,000** | **Q30,000 / mes** |
+| Q5,000 | Q50,000 / mes |
+| Q8,000 | Q80,000 / mes |
+
+> **Q30,000 al mes de ventas atribuidas es un objetivo modesto** para un negocio que factura
+> Q100,000+. **Y nos lleva de 27% a 46% sin tocar el precio base.**
+
+### Por qué esto resuelve las cuatro metas a la vez
+
+| Meta | Cómo la resuelve el fee |
+|---|---|
+| **Costo bajo** | El fee no agrega costo. Ninguno |
+| **Valor enorme** | El cliente paga más **solo si le fue mejor** |
+| **Precio justo** | La base queda baja y competitiva. **Nadie paga de más por adelantado** |
+| **Márgenes altísimos** | Cada quetzal de fee es utilidad pura |
+
+### Las reglas del fee
+
+| | |
+|---|---|
+| **Qué cuenta** | Ventas que produjimos directamente — pauta, embudo, campaña, contenido rastreable |
+| **Qué NO cuenta** | Tráfico orgánico preexistente, referidos del cliente, ventas de su fuerza comercial |
+| **Cómo se mide** | Atribución con Meta CAPI + GA4 + enlaces y códigos rastreables |
+| **Requisito** | ⚠️ **Sin atribución limpia no hay fee.** Por eso Básico lo tiene opcional: no incluye CAPI+GA4 |
+| **Se cobra** | El mes siguiente, sobre lo efectivamente vendido |
+
+---
+
 ## Contra el benchmark de Guatemala
 
 `[benchmark aportado por Allan, sin verificar de forma independiente]`

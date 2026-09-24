@@ -120,6 +120,11 @@ da **86 piezas a Q6,160 (Q72/pieza)** contra las ~16 de un paquete de Q3,000 **(
 mismo suelto, porque todo lo que corre sobre agentes suma Q0 al costo variable.
 **El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
 
+**Ganamos de hacerles dinero.** El fee base cubre la operación; **la utilidad de verdad sale del
+performance fee — 10% de las ventas atribuidas, con costo marginal Q0.** Cada quetzal de fee es
+utilidad pura: lleva Acelerado de 27% a 46% sin tocar el precio base.
+⚠️ **Sin atribución limpia no hay fee.**
+
 **Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes muy
 buenos.** Cierran **no bajando el precio, bajando el costo.** Modelo en dos estados:
 **HOY 48% · 27% · 40%** — **OBJETIVO 64% · 50% · 60%** al mismo precio.
