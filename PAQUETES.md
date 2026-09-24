@@ -249,19 +249,25 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ## La escalera de capas
 
-| # | Capa | Basic | Accelerated | Compound |
-|---|---|---|---|---|
-| 1 | **Diagnóstico y estrategia** | ✅ | ✅ Profunda | ✅ Profunda + trimestral |
-| 2 | **Inteligencia continua** | Mensual | Semanal | Semanal + alertas |
-| 3 | **Marca y contenido** | ✅ Alto volumen | ✅ Mayor volumen | ✅ Volumen máximo |
-| 4 | **Adquisición** | Meta · TikTok | + Google Search · PMax | + todos los que apliquen |
-| 5 | **Conversión** | ⬜ | ✅ | ✅ |
-| 6 | **Operación y tecnología** | ⬜ | ✅ 1 herramienta/trimestre | ✅ 1 herramienta/mes |
-| 7 | **Experiencia y retención** | ⬜ | Parcial | ✅ |
-| 8 | **Medición** | Reporte | Dashboard en vivo | Dashboard + atribución completa |
-| 9 | **Autonomía del cliente** | ⬜ | ⬜ | ✅ IA propia + documentación |
+**Once capas. Los tres paquetes las recorren; cambia hasta dónde llegan.**
 
----
+| # | Capa | 🟦 Basic | 🟪 Accelerated | 🟨 Compound |
+|---|---|---|---|---|
+| 1 | **Diagnóstico y estrategia** | ✅ | ✅ Profunda | ✅ + trimestral |
+| 2 | **Inteligencia continua** | Mensual | Semanal | Semanal + alertas |
+| 3 | **Marca y contenido** | 86 piezas | 145 piezas | 204 piezas |
+| 4 | **Adquisición** | Meta · TikTok | + Google · PMax | + los que apliquen |
+| 5 | **Asociaciones y creadores** | ✅ Alianzas | + **Influencers** | + Embajadores |
+| 6 | **Captura de demanda** | ⬜ | ✅ **Lead magnets** | + segundo idioma |
+| 7 | **Conversión** | ⬜ | ✅ WhatsApp · CRO | ✅ CRO continuo |
+| 8 | **Operación y tecnología** | ⬜ | ✅ 1 herramienta/trim | ✅ 1 herramienta/**mes** |
+| 9 | **Experiencia y retención** | ⬜ | Parcial | ✅ + **LTV y referidos** |
+| 10 | **Medición** | Reporte | Dashboard en vivo | + atribución completa |
+| 11 | **Autonomía del cliente** | ⬜ | ⬜ | ✅ **IA propia** |
+
+> 🟦 **ENCENDER** *(capas 1-5 + 10)* — **atraer, crear nombre y asociarse bien**
+> 🟪 **ACELERAR** *(1-10)* — **capturar, convertir y quitar fricción**
+> 🟨 **COMPONER** *(las 11)* — **retener, componer y soltar**
 
 ## 📋 Los tres paquetes, completos
 
@@ -271,8 +277,19 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 # 🟦 GROWTH BASIC — Q5,500/mes
 
-**Crecimiento básico.** La máquina que ya existe, vendiendo más.
-*Para quien ya vende pero depende del fundador, los referidos o esfuerzos aislados.*
+## ⚡ ENCENDER
+**Empezar el motor. Atraer, crear nombre, mejorar lo que ya existe y hacer las asociaciones
+correctas.**
+
+| | |
+|---|---|
+| **Para quién** | Ya vende, pero **nadie lo conoce** fuera de su círculo. El crecimiento depende del fundador, los referidos o esfuerzos aislados |
+| **El cuello** | *"Tengo buen producto y no me conocen"* |
+| **Momento del negocio** | Construyendo *($2k-10k)* · Creciendo *($10k-50k)* |
+| **Dónde más pega** | Arquitectura · Software · B2B · Retail |
+| **Qué cambia en 90 días** | La marca existe, se ve todos los días y empieza a llegar gente que no venía de referido |
+
+> Ver `INDUSTRIAS.md` para qué significa esto en cada industria.
 
 ### 1 · Estrategia
 - Estrategia completa al inicio — los 4 bloques (contexto, análisis, ingeniería inversa, metodología)
@@ -311,21 +328,32 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 - Optimización de presupuesto y pausas
 - ⛔ Google Ads · ⛔ Inversión publicitaria (la pone el cliente)
 
-### 5 · Conversión
+### 5 · Asociaciones ✅ **el multiplicador barato**
+> **Crecer no es solo pautar. Es pararse al lado de quien ya tiene la audiencia.**
+
+- **Mapa de aliados** — quién tiene ya la audiencia que queremos, sin ser competencia
+- Propuestas de colaboración y canje con marcas y creadores locales
+- Contenido en conjunto y cruces de audiencia
+- Presencia en comunidades donde ya está el cliente
+
+### 6 · Captura de demanda
+⬜ **No incluida.** El cliente sigue dependiendo del alcance de la plataforma.
+
+### 7 · Conversión
 ⬜ **No incluida.** Se cotiza aparte o se sube de paquete.
 
-### 6 · Tecnología
+### 8 · Tecnología
 ⬜ **No incluida.**
 
-### 7 · Experiencia y retención
+### 9 · Experiencia y retención
 ⬜ **No incluida.**
 
-### 8 · Medición
+### 10 · Medición
 - Reporte mensual de marca y performance
 - Los 3-4 números que dicen si el negocio está vivo
 - ⬜ Dashboard en vivo · ⬜ Atribución de ventas
 
-### 9 · Autonomía del cliente
+### 11 · Autonomía del cliente
 ⬜ **No incluida.**
 
 **Performance fee:** opcional.
@@ -334,8 +362,19 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 # 🟪 GROWTH ACCELERATED — Q8,900/mes
 
-**Crecimiento acelerado.** Rediseñamos la máquina.
-*Para quien ya tiene volumen y quiere que el sistema completo empuje, no solo el marketing.*
+## 🚀 ACELERAR
+**Crecer mucho más. Lead magnets, embudos, influencers, canales nuevos y tecnología que quita
+fricción.**
+
+| | |
+|---|---|
+| **Para quién** | Ya lo conocen y **llega gente — pero se pierde**. Hay demanda, no hay conversión |
+| **El cuello** | *"Me llegan mensajes pero se pierden"* |
+| **Momento del negocio** | Creciendo *($10k-50k)* · Escalando *($50k-100k)* |
+| **Dónde más pega** | Restaurantes · Salud especializada · Hotelería · Wellness |
+| **Qué cambia en 90 días** | Deja de depender de una sola fuente de demanda y **cada lead tiene a dónde caer** |
+
+> Ver `INDUSTRIAS.md` para qué significa esto en cada industria.
 
 ### 1 · Estrategia
 ✅ Todo lo de Basic, **más**:
@@ -370,30 +409,46 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 - **Performance Max**
 - Hasta **35 variantes de creativo** por campaña
 
-### 5 · Conversión ✅ **NUEVO**
+### 5 · Asociaciones y creadores ✅ **se profundiza**
+✅ Todo lo de Basic, **más**:
+- **Selección de influencers con criterio, no con alcance** — se eligen por afinidad real con el
+  ICP, usando la inteligencia de Eden sobre su audiencia y su rendimiento
+- Briefing, negociación y medición de cada colaboración
+- Códigos y enlaces rastreables para saber **cuál creador sí vendió**
+- Contenido de creadores reutilizado como creativo de pauta
+
+### 6 · Captura de demanda ✅ **NUEVO**
+> **Dejar de alquilar la audiencia.** Lo que se captura es propio.
+
+- **Lead magnets** — diagnósticos, calculadoras, guías, plantillas, reportes de industria
+- Landing de captura construida y desplegada
+- Lista propia del cliente *(no rentada a una plataforma)*
+- Secuencia de seguimiento automática
+
+### 7 · Conversión ✅ **NUEVO**
 - Auditoría y diseño del **embudo completo**
 - **Embudos de WhatsApp** — flujos, respuestas automáticas, entrenamiento al equipo de ventas
 - **Auto-DM** en redes
 - **Atribución limpia** — Meta CAPI + Google Analytics 4
 - Pruebas A/B sobre páginas y mensajería (CRO)
 
-### 6 · Tecnología ✅ **NUEVO — el foso**
+### 8 · Tecnología ✅ **NUEVO — el foso**
 - **Una herramienta a medida por trimestre** — CRM ligero, panel de operación, portal, calculadora
 - **Landings y microsites** construidos y desplegados
 - **Automatización de procesos internos**
 - Integración con las herramientas que ya usa
 
-### 7 · Experiencia y retención — parcial
+### 9 · Experiencia y retención — parcial
 - Secuencias de recompra y reactivación *(parcial)*
 - Sistema de reseñas y prueba social
 - ⬜ Mapa de experiencia completo · ⬜ Estrategia de LTV
 
-### 8 · Medición
+### 10 · Medición
 ✅ Todo lo de Basic, **más**:
 - **Dashboard en vivo** — marca + ventas, 24/7
 - **Reporte de ventas atribuidas**
 
-### 9 · Autonomía del cliente
+### 11 · Autonomía del cliente
 ⬜ **No incluida.**
 
 **Performance fee:** ✅ incluido.
@@ -402,8 +457,19 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 # 🟨 GROWTH COMPOUND — Q13,900/mes
 
-**El crecimiento se compone.** La máquina se sostiene sola.
-*Para quien quiere que el crecimiento deje de depender de nosotros y del fundador.*
+## 🔁 COMPONER
+**Que cada mes construya sobre el anterior. Retención, LTV, sistemas propios y autonomía real.**
+
+| | |
+|---|---|
+| **Para quién** | Ya convierte — pero **todo depende de alguien**. Del fundador, de un canal, o de nosotros |
+| **El cuello** | *"Funciona, pero solo mientras ustedes estén"* |
+| **Momento del negocio** | Escalando *($50k-100k)* · Consolidada *($100k+)* |
+| **Dónde más pega** | Wellness · Retail · Marca personal · Software |
+| **Qué cambia en 90 días** | El crecimiento deja de comprarse cada mes. **Lo del mes pasado sigue trabajando este mes** |
+
+> **Es el único paquete donde el objetivo declarado es que nos necesiten menos.**
+> Ver `INDUSTRIAS.md` para qué significa esto en cada industria.
 
 ### 1 · Estrategia
 ✅ Todo lo de Accelerated, **más**:
@@ -432,25 +498,37 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 - **Todos los canales que apliquen** al negocio
 - Hasta **50 variantes de creativo** por campaña
 
-### 5 · Conversión
+### 5 · Asociaciones y creadores
+✅ Todo lo de Accelerated, **más**:
+- **Relaciones de largo plazo con creadores**, no colaboraciones sueltas
+- Programa de embajadores con métricas propias
+
+### 6 · Captura de demanda
+✅ Todo lo de Accelerated, **más**:
+- **Lead magnets en segundo idioma**
+- Segmentación de la lista por etapa y comportamiento
+
+### 7 · Conversión
 ✅ Todo lo de Accelerated, **más**:
 - **CRO continuo**, no por campaña
 
-### 6 · Tecnología
+### 8 · Tecnología
 ✅ Todo lo de Accelerated, **pero**:
 - **Una herramienta a medida POR MES**, no por trimestre
 
-### 7 · Experiencia y retención ✅ **COMPLETO**
+### 9 · Experiencia y retención ✅ **COMPLETO**
 - **Mapa de experiencia del cliente**, punto por punto
 - Secuencias de recompra y reactivación completas
 - Sistema de reseñas y prueba social
 - **Estrategia de LTV y ticket promedio**
+- **Sistema de referidos** — que el cliente traiga cliente
+- **Comunidad propia** — el activo que no se alquila a ninguna plataforma
 
-### 8 · Medición
+### 10 · Medición
 ✅ Todo lo de Accelerated, **más**:
 - **Atribución completa** de punta a punta
 
-### 9 · Autonomía del cliente ✅ **EXCLUSIVO**
+### 11 · Autonomía del cliente ✅ **EXCLUSIVO**
 > La prueba final de la filosofía: *"una empresa debe depender cada vez menos de su fundador"*.
 > Compound hace que además dependa menos de nosotros.
 

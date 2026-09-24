@@ -45,16 +45,28 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 
 ---
 
-## Agentes
+## Agentes — el pipeline de entrega
 
-| Agente | Carpeta | Qué hace | Estado |
-|---|---|---|---|
-| **Strategy** | `agents/strategy/` | Posicionamiento, crecimiento y monetización | 🟡 En construcción |
-| Creative | `agents/creative/` | Ideas y conceptos | ⬜ |
-| Production | `agents/production/` | Pre / producción / post | ⬜ |
-| Branding | `agents/branding/` | Guidelines y lenguaje de marca | ⬜ |
-| Growth | `agents/growth/` | Ads y adquisición | ⬜ |
-| Content | `agents/content/` | Armado y QA de piezas | ⬜ |
+**`PIPELINE.md` tiene la cadena completa:** doce etapas, de la información cruda a la pieza
+publicada. Cada agente es una etapa.
+
+| # | Etapa | Agente | Carpeta | Estado |
+|---|---|---|---|---|
+| 01 | Comprensión | **Strategy** | `agents/strategy/` | ✅ |
+| 02 | Estrategia | **Strategy** | `agents/strategy/` | ✅ |
+| 02B | Branding | Branding | `agents/branding/` | 🟡 brief listo |
+| 03 | Marketing | Marketing | `agents/marketing/` | ⬜ |
+| 04 | Creatividad | Creative | `agents/creative/` | ⬜ |
+| 05 | Producción | Production | `agents/production/` | ⬜ |
+| 06 | Diseño gráfico | Design | `agents/design/` | ⬜ |
+| **07** | **QA** | **QA** | `agents/qa/` | 🔴 **bloqueador** |
+| 08 | Posting | Content | `agents/content/` | 🟡 tools sí |
+| 09 | Ads | Growth | `agents/growth/` | 🟡 tools sí |
+| 10 | Community | Community | `agents/community/` | ⬜ |
+| ↻ | Revisión del 20 | **Strategy** | `agents/strategy/` | ✅ |
+
+🔴 **El agente de QA es el primero a construir.** Sin él el volumen no es entregable y el margen
+no cierra — ver `OPERACION.md` → hoja de ruta.
 
 ## El techo comercial
 
@@ -91,6 +103,26 @@ contenido o solo pauta contradice lo que predicamos.
 
 ⚠️ **No se promete lo que no está en «Capacidades reales» de `PAQUETES.md`.** Esa tabla ata cada
 capacidad a su MCP. Sin MCP no hay acción, y sin acción no hay promesa.
+
+## Los archivos de referencia
+
+| Archivo | Qué define |
+|---|---|
+| **`PAQUETES.md`** | **QUÉ se promete.** Paquetes, precios, costos, bundle y capacidades reales |
+| **`PIPELINE.md`** | **CÓMO se entrega.** Las 12 etapas, qué agente hace cada una, qué se activa |
+| **`INDUSTRIAS.md`** | **A QUIÉN.** Las 10 industrias, dónde se traba cada una, qué paquete le toca |
+| **`OPERACION.md`** | **CUÁNTO cuesta.** Tareas, horas de Allan y hoja de ruta de automatización |
+
+**Los tres paquetes, por su verbo:**
+
+```
+🟦 BASIC — ENCENDER       atraer, crear nombre, asociarse bien
+🟪 ACCELERATED — ACELERAR lead magnets, embudos, influencers, tecnología
+🟨 COMPOUND — COMPONER    retención, LTV, sistemas propios, autonomía
+```
+
+⚠️ **El paquete se elige por el CUELLO, no por la industria ni por la facturación.**
+No me conocen → Basic · Me conocen y no convierto → Accelerated · Convierto y no retengo → Compound
 
 ## Cómo arrancás una sesión
 
