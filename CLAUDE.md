@@ -134,10 +134,17 @@ Lo que los separa son tres agentes: **QA · operación automatizada · pipeline 
 operación.** Ahí está el 70% del costo matable.
 
 **El equipo son dos personas y los agentes.** Allan dirige y es el gate; un operador corre los
-agentes para **todos** los clientes; producción solo graba; **los agentes hacen el resto.**
-🔑 **El operador y el cloud son costos FIJOS (Q6,500/mes), no por cliente** — se diluyen con cada
-cliente nuevo. Con ese modelo los márgenes van de **51-61% con 5 clientes a 59-66% con 10**, y
-**la utilidad vuelve a subir con el precio.** Ver `EQUIPO.md`.
+agentes; producción solo graba; **los agentes hacen el resto.**
+
+🔑 **Nadie cobra por cuenta. Todos cobran por hora, y cada cuenta paga su porción.**
+Un sueldo por cuenta significa diez sueldos con diez cuentas — ese costo nunca baja.
+**La tarifa baja según el volumen que le garantizamos** (100% / 80% / 65% / 50%), y **pasa a
+sueldo fijo a partir de 60 h/mes.** Con ese modelo los márgenes van de **52-64% con 2 clientes a
+66-74% con 10**, y **la utilidad vuelve a subir con el precio.** Ver `EQUIPO.md`.
+
+⚠️ **La producción no se baja recortando horas** — eso es bajarle el precio a la persona por el
+mismo trabajo. Se baja **garantizándole volumen** a cambio de tarifa, o con el sistema de
+contenido crudo del cliente.
 
 ⚠️ **Esto exige agentes que trabajen entre autónomos y dirigidos:** que levanten excepciones, no
 preguntas. **Si el agente pregunta todo, no ahorra nada.**

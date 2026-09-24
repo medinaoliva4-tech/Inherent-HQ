@@ -1,159 +1,174 @@
-# Equipo — responsabilidades, puestos y costo
+# Equipo — responsabilidades, tarifas y sueldos
 
-> **Primero las responsabilidades. Después quién las cubre. Recién ahí, las horas.**
-> Cortar horas sin saber qué responsabilidad las genera es cortar a ciegas.
+> **Nadie cobra por cuenta. Todos cobran por hora.**
+> Cada cuenta paga **su porción de horas**, no un sueldo entero.
 
 ---
 
-## 🔴 El problema que esto resuelve
+## 🔴 Los dos errores que esto corrige
 
-**Cobrando más, ganábamos menos:**
+### Error 1 · Pagar un sueldo por cuenta
 
-| | Precio | Costo | **Utilidad** |
-|---|---|---|---|
-| 🟦 Básico | Q6,160 | Q3,217 | **Q2,943** |
-| 🟪 Acelerado | Q8,470 | Q6,192 | **Q2,278** 🔴 |
+**Si a alguien se le paga Q500 por cuenta, con 10 cuentas cobra 10 sueldos.**
+Ese costo nunca baja — sube en línea recta con cada cliente nuevo.
 
-**Acelerado cobra Q2,310 más y deja Q665 menos.** Porque el precio sube Q2,310 y el costo sube
-Q2,975.
+✅ **Correcto:** se mide **cuántas horas toma esa cuenta**, y se paga esa porción.
+El sueldo sale de sumar las porciones de todas las cuentas.
 
-**No es un problema de precio. Es un problema de estructura:**
-cada cliente nuevo cargaba con un operador propio y con horas de producción que no hacían falta.
+### Error 2 · Bajar la producción recortando horas
+
+**El trabajo de grabar no desaparece porque le quitemos horas al papel.**
+Recortar horas es bajarle el precio a la persona por el mismo trabajo.
+
+✅ **Correcto:** se le **garantiza volumen** y a cambio baja la tarifa —
+y cuando el volumen alcanza, **se le asigna un sueldo fijo.**
 
 ---
 
 ## 1 · Todas las responsabilidades
 
-**Todo lo que hay que hacer para entregar un cliente. Sin excepción.**
-
-### A · DIRECCIÓN Y CRITERIO
+### A · DIRECCIÓN Y CRITERIO — *Allan*
 1. Relación y reunión con el cliente
 2. Aprobar la estrategia y los objetivos
 3. Aprobar el calendario y las ideas
 4. **Gate de publicar y pautar**
 5. Resolver las excepciones que levanta el QA
-6. Decidir el alcance de la tecnología a construir
+6. Decidir el alcance de la tecnología
 7. Dirección estratégica de la cuenta
 
-### B · OPERACIÓN
+### B · OPERACIÓN — *Operador de agentes*
 8. Correr cada agente del pipeline, en orden
-9. Cargar inputs: material, accesos, data del cliente
+9. Cargar inputs: material, accesos, data
 10. Mover outputs de una etapa a la siguiente
 11. Organizar el Drive del cliente
-12. Supervisar que las colas corran y atender errores
-13. Primera línea de revisión antes del agente de QA
+12. Supervisar colas y atender errores
+13. Primera línea de revisión antes del QA
 14. Programar lo que ya fue aprobado
 
-### C · PRODUCCIÓN
+### C · PRODUCCIÓN — *Productor*
 15. **Grabar.** Nada más.
 
-### D · EJECUCIÓN
+### D · EJECUCIÓN — *Los agentes*
 16. Comprensión · Estrategia · Branding · Marketing · Creatividad
 17. Diseño · QA · Copy · Programación · Pauta · Community
 18. Reportes · Dashboards · Construcción de herramientas
 
 ---
 
-## 2 · Los cuatro puestos
+## 2 · Las horas que toma cada cuenta, al mes
 
-| Puesto | Quién | Cubre | Costo | Tipo |
-|---|---|---|---|---|
-| **Dirección** | **Allan** | A *(1-7)* | Su tiempo | Por cliente |
-| **Operación** | **1 persona** | B *(8-14)* | **Q5,000/mes** | 🔒 **FIJO** |
-| **Producción** | Freelance | C *(15)* | Q250/hora | Por cliente |
-| **Ejecución** | **Los agentes** | D *(16-18)* | **Q1,500/mes cloud** | 🔒 **FIJO** |
+| Rol | 🟦 Básico | 🟪 Acelerado | 🟨 Compuesto |
+|---|---|---|---|
+| **Producción** | 3 h | 5 h | 8 h |
+| **Operación** | 4 h | 6 h | 8 h |
+| **Allan** | 4 h | 6 h | 8 h |
 
-> **Dos personas y los agentes. Nada más.**
-> Las responsabilidades grandes las cargan los agentes — por eso hay que desarrollarlos para que
-> trabajen **entre autónomos y dirigidos.**
+⚠️ **Estas horas son estimación.** Es lo primero que hay que medir: sin ellas, todo el modelo
+es una hipótesis.
 
-### 🔑 El cambio estructural
+---
 
-**El operador y el cloud son costos FIJOS, no costos por cliente.**
+## 3 · 🔑 La escalera de tarifa
 
-| | Antes | Ahora |
+> **La tarifa baja porque le garantizamos volumen.**
+> No es apretar a la persona: es que **20 horas seguras valen más que 4 sueltas.**
+
+| Horas/mes que le garantizamos | Modalidad | Tarifa |
 |---|---|---|
-| Operador | Q600-1,200 **por cliente** | **Q5,000/mes, todos los clientes** |
-| Cloud | Q192 por cliente | **Q1,500/mes, todos los clientes** |
-| **Total fijo** | — | **Q6,500/mes** |
+| Menos de 20 h | Freelance puro | **100%** |
+| 20 – 60 h | Freelance con volumen | **80%** |
+| 60 – 120 h | **Medio tiempo con sueldo** | **65%** |
+| Más de 120 h | **Tiempo completo con sueldo** | **50%** |
 
-**Cada cliente nuevo casi no los mueve. Se diluyen.**
+### Las tarifas base
 
-| Clientes | Fijo por cliente |
-|---|---|
-| 5 | Q1,300 |
-| 8 | Q812 |
-| **10** | **Q650** |
+| Rol | Tarifa base | A tiempo completo |
+|---|---|---|
+| **Producción** | Q250 / h | Q125 / h |
+| **Operación** | Q100 / h | Q50 / h |
 
-⚠️ **Q5,000 de sueldo del operador es supuesto, no dato.** Hay que cotizarlo.
-
----
-
-## 3 · Cómo bajamos la producción
-
-**Es el segundo costo más grande y el único que no escala con agentes.**
-
-| Palanca | Efecto |
-|---|---|
-| **Contenido crudo del cliente** — graba con su teléfono siguiendo brief, los agentes lo terminan | El video deja de depender de nuestras horas |
-| **Batching** — una sesión larga cubre dos meses | Mitad de salidas, mismo material |
-| **Multiplicación** — una toma rinde 15 piezas | El costo por pieza se divide |
-| **Generado reemplaza filmado** donde tiene sentido *(producto, b-roll, fondos)* | Q0 marginal |
-| **Biblioteca acumulada** — el material del mes 3 sirve en el mes 8 | El costo baja con el tiempo |
-
-### Las horas nuevas
-
-| | Antes | **Ahora** | Sesiones |
-|---|---|---|---|
-| 🟦 Básico | 4h | **1h** | 1 |
-| 🟪 Acelerado | 6h | **3h** | 1 |
-| 🟨 Compuesto | 8h | **6h** | 2 |
+> **Cuando el volumen pasa de 60 h/mes, deja de ser tarifa y pasa a ser sueldo.**
+> El sueldo se calcula: `horas totales × tarifa del tramo`.
 
 ---
 
-## 4 · Los números con el modelo nuevo
+## 4 · Lo que cuesta cada cuenta, según cuántos clientes haya
 
-### Costo variable por cliente
+### 🟦 Básico — Q6,160
 
-| Concepto | 🟦 Básico | 🟪 Acelerado | 🟨 Compuesto |
-|---|---|---|---|
-| Producción | 1h → Q250 | 3h → Q750 | 6h → Q1,500 |
-| Sesiones | 1 → Q175 | 1 → Q175 | 2 → Q350 |
-| Build de tecnología | — | Q400 | Q800 |
-| **Allan** | 4h → Q1,000 | 6h → Q1,500 | 8h → Q2,000 |
-| **Variable** | **Q1,425** | **Q2,825** | **Q4,650** |
+| Clientes | Tarifa prod. | Tarifa oper. | **Costo/cuenta** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|
+| 2 | Q250 | Q100 | Q2,900 | Q3,260 | **53%** |
+| **5** | Q250 | Q80 | Q2,370 | Q3,790 | **62%** |
+| **10** | Q200 | Q80 | Q2,070 | Q4,090 | **66%** |
+| 20 | Q162 | Q65 | Q1,822 | Q4,338 | **70%** |
 
-### Margen según cuántos clientes haya
+### 🟪 Acelerado — Q8,470
 
-| | Precio | **5 clientes** | **8 clientes** | **10 clientes** |
+| Clientes | Tarifa prod. | Tarifa oper. | **Costo/cuenta** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|
+| 2 | Q250 | Q100 | Q4,100 | Q4,370 | **52%** |
+| **5** | Q200 | Q80 | Q3,280 | Q5,190 | **61%** |
+| **10** | Q200 | Q65 | Q3,040 | Q5,430 | **64%** |
+| 20 | Q162 | Q50 | Q2,688 | Q5,782 | **68%** |
+
+### 🟨 Compuesto — Q15,400
+
+| Clientes | Tarifa prod. | Tarifa oper. | **Costo/cuenta** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|
+| 2 | Q250 | Q100 | Q5,550 | Q9,850 | **64%** |
+| **5** | Q200 | Q80 | Q4,540 | Q10,860 | **71%** |
+| **10** | Q162 | Q65 | Q3,970 | Q11,430 | **74%** |
+| 20 | Q125 | Q50 | Q3,475 | Q11,925 | **77%** |
+
+✅ **La paradoja desapareció en todos los escenarios.** La utilidad sube con el precio.
+✅ **Márgenes de 52-64% desde 2 clientes**, sin performance fee.
+✅ **El margen crece solo con cada cliente nuevo**, porque la tarifa baja y el cloud se diluye.
+
+---
+
+## 5 · Lo que gana cada persona
+
+> **El modelo tiene que ser bueno para ellos también, o no lo aceptan.**
+
+### Operador de agentes
+
+| Clientes | Horas/mes | Tarifa | **Ingreso mensual** | Modalidad |
 |---|---|---|---|---|
-| 🟦 Básico | Q6,160 | Q3,435 · **56%** | Q3,922 · **64%** | Q4,085 · **66%** |
-| 🟪 Acelerado | Q8,470 | Q4,345 · **51%** | Q4,832 · **57%** | Q4,995 · **59%** |
-| 🟨 Compuesto | Q15,400 | Q9,450 · **61%** | Q9,938 · **65%** | Q10,100 · **66%** |
+| 2 Básico | 8 h | Q100 | Q800 | Freelance |
+| 5 Básico | 20 h | Q80 | Q1,600 | Freelance |
+| 10 Acelerado | 60 h | Q65 | **Q3,900** | **Medio tiempo · sueldo** |
+| 20 Compuesto | 160 h | Q50 | **Q8,000** | **Tiempo completo · sueldo** |
 
-✅ **La paradoja desaparece.** La utilidad ahora sube con el precio:
-**Q3,435 → Q4,345 → Q9,450.**
+### Producción
 
-✅ **Márgenes de 51-66% desde 5 clientes**, sin tocar el precio y sin el performance fee.
+| Clientes | Horas/mes | Tarifa | **Ingreso mensual** | Modalidad |
+|---|---|---|---|---|
+| 2 Básico | 6 h | Q250 | Q1,500 | Freelance |
+| 5 Acelerado | 25 h | Q200 | Q5,000 | Freelance |
+| 10 Compuesto | 80 h | Q162 | **Q12,960** | **Medio tiempo · sueldo** |
+| 20 Compuesto | 160 h | Q125 | **Q20,000** | **Tiempo completo · sueldo** |
 
----
-
-## 5 · Las horas de Allan
-
-| Clientes | 🟦 Básico | 🟪 Acelerado | 🟨 Compuesto |
-|---|---|---|---|
-| 5 | 20 h | 30 h | 40 h |
-| 8 | 32 h | 48 h | 64 h |
-| **10** | **40 h** | **60 h** | **80 h** |
-
-**10 clientes Compuesto = 80h al mes.** Sigue siendo medio tiempo.
-**El límite no es Allan: es la calidad de los agentes.**
+👉 **La tarifa les baja, pero el ingreso les sube mucho.** Eso es lo que hace el trato justo:
+cambian tarifa alta e incierta por **tarifa menor y trabajo garantizado.**
 
 ---
 
-## 6 · Lo que esto exige de los agentes
+## 6 · Las reglas del modelo
 
-> **Este modelo solo funciona si los agentes cargan de verdad las responsabilidades del bloque D.**
+| | |
+|---|---|
+| **Nadie cobra por cuenta** | Se cobra por hora. La cuenta paga su porción |
+| **La tarifa se revisa al cambiar de tramo** | Se acuerda desde el inicio, no se negocia después |
+| **El sueldo arranca a las 60 h/mes** | Antes de eso es freelance |
+| **Las horas se miden, no se asumen** | Si una cuenta toma más horas, **se cotiza o se ajusta el paquete** |
+| **El cloud es fijo (Q1,500/mes)** | Se prorratea entre todas las cuentas activas |
+
+---
+
+## 7 · Lo que esto exige de los agentes
+
+> **Este modelo solo funciona si los agentes cargan el bloque D.**
 > Si fallan, el trabajo vuelve a Allan y la estructura colapsa.
 
 | Requisito | Por qué |
@@ -161,17 +176,17 @@ cada cliente nuevo cargaba con un operador propio y con horas de producción que
 | **Autónomos donde se puede** | Diseño, copy, programación, reportes: sin humano en el medio |
 | **Dirigidos donde importa** | Estrategia, creatividad y pauta proponen; **Allan decide** |
 | **Que levanten excepciones, no preguntas** | Si el agente pregunta todo, no ahorra nada |
-| **Que se auto-revisen** | El agente de QA es lo que permite que Allan baje a 4-8h |
+| **Que se auto-revisen** | El agente de QA es lo que mantiene bajas las horas de operación |
 
 🔴 **Por eso el agente de QA es el primero.** No es una mejora: **es lo que sostiene el modelo.**
 
 ---
 
-## 7 · Lo que falta confirmar
+## 8 · Lo que falta confirmar
 
 | Pendiente | Por qué importa |
 |---|---|
-| **Cotizar el sueldo del operador** | Q5,000 es supuesto. Mueve todos los márgenes |
-| **Probar el contenido crudo del cliente** | De ahí sale la baja de producción de 4h a 1h |
-| **Medir las horas reales de Allan** | 4/6/8h asume el QA automatizado |
-| **Construir el agente de QA** | Sin él, nada de esto se sostiene |
+| **Medir las horas reales** de producción, operación y Allan | Es la base de todo. Hoy son estimación |
+| **Acordar la escalera de tarifa** con cada persona, por escrito | Evita renegociar en cada tramo |
+| **Probar el contenido crudo del cliente** | Único camino para bajar horas de producción sin bajarle el precio a nadie |
+| **Construir el agente de QA** | Sin él las horas de operación se duplican |
