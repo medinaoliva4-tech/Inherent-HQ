@@ -1,7 +1,7 @@
 # Operación — qué se hace, quién lo hace, cuánto cuesta
 
 > Desglose por **marca, al mes**. De acá salen los costos de `PAQUETES.md`.
-> **`Growth Basic` Q5,500** · **`Growth Accelerated` Q8,900** · **`Growth Compound` Q13,900**
+> **`Growth Basic` Q5,500** · **`Growth Accelerated` Q9,900** · **`Growth Compound` Q15,900**
 
 ---
 
@@ -111,12 +111,12 @@
 
 | Tarifa | **Basic** (7h) | **Accelerated** (11h) | **Compound** (15h) |
 |---|---|---|---|
-| **Q60/h** | 66% | 54% | 55% |
-| **Q150/h** | **54%** | **43%** | **45%** |
-| **Q250/h** | **42%** | **30%** ⚠️ | **34%** |
+| **Q60/h** | 66% | 59% | 60% |
+| **Q150/h** | **54%** | **49%** | **52%** |
+| **Q250/h** | **42%** | **37%** | **42%** |
 
-⚠️ **Con precio de penetración, Q250/h no cierra en Accelerated.**
-Durante la fase de entrada, **la tarifa realista es Q150/h.** Sube junto con el precio.
+✅ **Con los precios cerrados, Q250/h cierra en los tres.**
+Acelerado es el más ajustado (37%) porque agrega producción real, no solo capas de agente.
 
 ---
 
@@ -129,8 +129,9 @@ mucho más contenido generado (gratis). **El volumen subió 30% mientras el cost
 🔴 **El AI es solo el 4.5% del costo.** El 96% es humano. **La ventaja de AI ya está capturada**
 — bajar más el precio sale del bolsillo de Allan, no del ahorro de cloud.
 
-🔴 **Accelerated a Q250/h queda en 30%. Es el punto más débil.**
-Durante la penetración se corre a Q150/h (43%). **Se revisa cuando haya casos.**
+🟡 **Acelerado a Q250/h queda en 37%. Es el escalón más ajustado.**
+No es un problema del precio: es que agrega **producción real** (+3h y una sesión), no solo
+capas que corren sobre agentes. **Se revisa cuando haya casos.**
 
 🟢 **Las horas de Allan no son el cuello de botella.**
 5 clientes Compound = 75 h/mes. Le sobra tiempo. **El cuello es el QA.**
@@ -145,11 +146,11 @@ Su trabajo es ganar la cuenta. El margen viene del upsell.
 
 | | **Basic** | **Accelerated** | **Compound** |
 |---|---|---|---|
-| Precio | Q5,500 | Q8,900 | Q13,900 |
+| Precio | Q5,500 | Q9,900 | Q15,900 |
 | Piezas/mes | 86 | 145 | 204 |
 | Costo *(@Q250/h)* | Q3,217 | Q6,192 | Q9,167 |
-| **Utilidad @Q250/h** | **Q2,283** | **Q2,708** | **Q4,733** |
-| **Utilidad @Q150/h** | **Q2,983** | **Q3,808** | **Q6,233** |
+| **Utilidad @Q250/h** | **Q2,283** | **Q3,708** | **Q6,733** |
+| **Utilidad @Q150/h** | **Q2,983** | **Q4,808** | **Q8,233** |
 
 ## 6 · La hoja de ruta de automatización
 

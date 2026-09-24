@@ -96,7 +96,7 @@ Se mide con dos datos, y salen del bloque `context`:
 
 **El paquete es el límite que ya está firmado:**
 
-| | **Basic** Q5,500 | **Accelerated** Q8,900 | **Compound** Q13,900 |
+| | **Basic** Q5,500 | **Accelerated** Q9,900 | **Compound** Q15,900 |
 |---|---|---|---|
 | Piezas/mes | **86** | **145** | **204** |
 | Horas de producción | 2h · 1 sesión | 5h · 2 sesiones | 8h · 3 sesiones |

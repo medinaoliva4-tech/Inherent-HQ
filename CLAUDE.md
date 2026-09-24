@@ -68,61 +68,74 @@ publicada. Cada agente es una etapa.
 🔴 **El agente de QA es el primero a construir.** Sin él el volumen no es entregable y el margen
 no cierra — ver `OPERACION.md` → hoja de ruta.
 
+## La identidad
+
+# GROWTH OPERATOR
+
+**No somos agencia ni consultoría. Operamos el crecimiento.**
+La agencia hace piezas. La consultoría hace diagnósticos. **Nosotros hacemos que el negocio
+crezca, y nos quedamos adentro hasta que pasa.**
+
+**Prometemos crecimiento, según la necesidad** — y el tipo lo define dónde está trabado el
+negocio, no lo que queramos vender.
+
+**Cómo:** con **Estrategia** como columna — ingeniería inversa de la meta financiera hasta la
+pieza, incluyendo mejorar la oferta y el posicionamiento. Y cinco equipos que desarrollan la
+visión: **Marketing · Branding · Creatividad · Tecnología · ADS.**
+
+> **`IDENTIDAD.md`** tiene la identidad completa y —lo más importante para vender—
+> **lo básico vs. el valor único** de cada nivel.
+
 ## El techo comercial
 
-**`PAQUETES.md`** define qué se puede entregar según el paquete que contrató el cliente: cuántas
-piezas al mes, qué canales, qué capas de la escalera entran y cuántas revisiones. **Es restricción
-dura para todos los agentes.** Se lee antes de prometer nada.
+**`PAQUETES.md`** define qué se puede entregar según el nivel contratado: cuántas piezas, qué
+canales, qué capas de la escalera entran y cuántas revisiones. **Es restricción dura para todos
+los agentes.** Se lee antes de prometer nada.
 
-**Todo paquete es un paquete de growth.** Son tres —`Growth Basic`, `Growth Accelerated` y
-`Growth Compound`— más `Tailor Made`. Lo que cambia no es el tipo de servicio, es la profundidad.
+### Los tres niveles de crecimiento
+
+```
+🟦 BÁSICO     Q5,500   ENCENDER   Estrategia · Demanda · Contenido
+🟪 ACELERADO  Q9,900   ACELERAR   + Tecnología · Contenido para ADS · SEO · Closing
+🟨 COMPUESTO  Q15,900  COMPONER   + Sistemas de demanda · Fulfillment · Talento
+```
+
+**Más `Tailor Made`** — multi-locación, regulatorio, integraciones, proyectos por hito.
+
+**Dieciséis capas.** Todo nivel es un nivel de growth: **lo que cambia no es el tipo de servicio,
+es la profundidad.**
+
+⚠️ **El nivel se elige por el CUELLO, no por la industria ni por la facturación.**
+No me conocen → Básico · Me conocen y no convierto → Acelerado · Convierto y no retengo → Compuesto
+
+### La economía
 
 **La estrategia de precio es matarlos con valor, no cobrar más.** Los precios están **dentro del
 rango que el mercado guatemalteco ya acepta**, con 3x a 5x el volumen de su tramo. El de entrada
-da **86 piezas a Q5,500** contra las ~16 de un paquete de Q3,000.
+da **86 piezas a Q5,500 (Q64/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
 
-**El volumen es lo que nos separa del mercado. La profundidad es lo que separa los paquetes entre
-sí.**
+**El volumen nos separa del mercado. La profundidad separa los niveles entre sí.**
 
-**El bundle no es descuento, es eficiencia.** Subir de escalón cuesta 60-70% menos que comprar lo
+**El bundle no es descuento, es eficiencia.** Subir de escalón cuesta 75% menos que comprar lo
 mismo suelto, porque todo lo que corre sobre agentes suma Q0 al costo variable.
 **El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
 
-**La ecuación completa: costos bajos · valor enorme · precio justo · márgenes muy buenos.**
-Los cuatro cierran a la vez — **no bajando el precio, bajando el costo.** `PAQUETES.md` tiene el
-modelo en dos estados: HOY (márgenes 30-42%) y OBJETIVO (53-60% al mismo precio), y los tres
-agentes que separan uno del otro: **QA · operación automatizada · pipeline de herramientas.**
+**Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes muy
+buenos.** Cierran **no bajando el precio, bajando el costo.** Modelo en dos estados:
+**HOY 42% · 37% · 42%** — **OBJETIVO 60% · 58% · 61%** al mismo precio.
+Lo que los separa son tres agentes: **QA · operación automatizada · pipeline de herramientas.**
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
 operación.** Ahí está el 70% del costo matable.
 
-⚠️ **No se vende una capa suelta.** La metodología dice que crecer exige algo íntegro; vender solo
-contenido o solo pauta contradice lo que predicamos.
+⚠️ **No se vende una capa suelta.** Crecer exige algo íntegro; vender solo contenido o solo pauta
+contradice lo que predicamos.
 
-⚠️ **Los dos incluyen estrategia.** Cambia la profundidad, no la existencia.
+⚠️ **Los tres niveles incluyen estrategia.** Cambia la profundidad, no la existencia.
 
-⚠️ **No se promete lo que no está en «Capacidades reales» de `PAQUETES.md`.** Esa tabla ata cada
-capacidad a su MCP. Sin MCP no hay acción, y sin acción no hay promesa.
-
-## Los archivos de referencia
-
-| Archivo | Qué define |
-|---|---|
-| **`PAQUETES.md`** | **QUÉ se promete.** Paquetes, precios, costos, bundle y capacidades reales |
-| **`PIPELINE.md`** | **CÓMO se entrega.** Las 12 etapas, qué agente hace cada una, qué se activa |
-| **`INDUSTRIAS.md`** | **A QUIÉN.** Las 10 industrias, dónde se traba cada una, qué paquete le toca |
-| **`OPERACION.md`** | **CUÁNTO cuesta.** Tareas, horas de Allan y hoja de ruta de automatización |
-
-**Los tres paquetes, por su verbo:**
-
-```
-🟦 BASIC — ENCENDER       atraer, crear nombre, asociarse bien
-🟪 ACCELERATED — ACELERAR lead magnets, embudos, influencers, tecnología
-🟨 COMPOUND — COMPONER    retención, LTV, sistemas propios, autonomía
-```
-
-⚠️ **El paquete se elige por el CUELLO, no por la industria ni por la facturación.**
-No me conocen → Basic · Me conocen y no convierto → Accelerated · Convierto y no retengo → Compound
+⚠️ **No se promete lo que no está en «Capacidades reales» de `PAQUETES.md`.** Sin MCP no hay
+acción, y sin acción no hay promesa. **Los límites declarados están en `IDENTIDAD.md`:**
+no hacemos LinkedIn Ads, SEO técnico profundo, ni reclutamos personal.
 
 ## Cómo arrancás una sesión
 

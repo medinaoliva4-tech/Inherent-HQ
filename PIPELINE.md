@@ -44,7 +44,7 @@
 | **Incluye** | Cliente, edad, comportamiento, competencia, mercado, producto, precios, canales de venta, problemas y oportunidades |
 | **Entrega** | 📄 **Documento de comprensión del negocio y del cliente** |
 | **Habilidades** | Investigación, análisis, escucha, síntesis, lectura de mercado |
-| **Corre en** | 🟦 Basic · 🟪 Accelerated · 🟨 Compound |
+| **Corre en** | 🟦 Básico · 🟪 Acelerado · 🟨 Compuesto |
 | **Estado** | ✅ Construido |
 
 > **Describe, no decide.** Si este documento sale flojo, todo lo demás sale flojo.
@@ -61,7 +61,7 @@
 | **Incluye** | Las 3 verdades · ICP · villano · solución · historia de marca · objetivo financiero · posicionamiento · ingeniería inversa · **distribución por canal de ingreso** *(reservas, delivery, eventos, productos, membresías)* |
 | **Entrega** | 📄 **Estrategia de temporada o trimestre** + brief por área |
 | **Habilidades** | Pensamiento estratégico, finanzas básicas, posicionamiento, storytelling, ingeniería inversa |
-| **Corre en** | 🟦 Basic *(ligera)* · 🟪 Accelerated *(completa)* · 🟨 Compound *(completa + trimestral)* |
+| **Corre en** | 🟦 Básico *(ligera)* · 🟪 Acelerado *(completa)* · 🟨 Compuesto *(completa + trimestral)* |
 | **Estado** | ✅ Construido |
 
 ---
