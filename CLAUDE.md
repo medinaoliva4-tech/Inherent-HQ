@@ -133,6 +133,15 @@ Lo que los separa son tres agentes: **QA · operación automatizada · pipeline 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
 operación.** Ahí está el 70% del costo matable.
 
+**El equipo son dos personas y los agentes.** Allan dirige y es el gate; un operador corre los
+agentes para **todos** los clientes; producción solo graba; **los agentes hacen el resto.**
+🔑 **El operador y el cloud son costos FIJOS (Q6,500/mes), no por cliente** — se diluyen con cada
+cliente nuevo. Con ese modelo los márgenes van de **51-61% con 5 clientes a 59-66% con 10**, y
+**la utilidad vuelve a subir con el precio.** Ver `EQUIPO.md`.
+
+⚠️ **Esto exige agentes que trabajen entre autónomos y dirigidos:** que levanten excepciones, no
+preguntas. **Si el agente pregunta todo, no ahorra nada.**
+
 ⚠️ **No se vende una capa suelta.** Crecer exige algo íntegro; vender solo contenido o solo pauta
 contradice lo que predicamos.
 
