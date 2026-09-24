@@ -17,6 +17,38 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 
 ---
 
+## A.0 · EL PLAN CONTRATADO ← **el primer dato de todos**
+
+> **Antes de mirar el negocio hay que saber hasta dónde podemos llegar con él.**
+> El plan define **qué se le va a trabajar y hasta qué punto.** Sin este dato, la estrategia
+> promete lo que no se puede entregar.
+
+| Plan | Qué se le trabaja | Briefs que se arman |
+|---|---|---|
+| 🟦 **Growth Básico** | Estrategia · Demanda · Contenido *(capas 1-5 + 15)* | Branding · Marketing · Creative |
+| 🟪 **Growth Acelerado** | + Tecnología · Contenido para ADS · SEO · Closing *(1-10, 14-15)* | + Growth · **Tecnología** |
+| 🟨 **Growth Compuesto** | + Sistemas de demanda · Fulfillment · Talento *(las 16)* | + **Sistemas** |
+| ⬜ **Tailor Made** | Se define con Allan | Según alcance |
+
+**Los tres incluyen estrategia. Cambia la profundidad, no la existencia.**
+
+### Lo que hay que registrar
+
+| | |
+|---|---|
+| **Plan contratado** | Cuál de los cuatro |
+| **Desde cuándo** | Para saber en qué trimestre va |
+| **Performance fee** | ¿Opcional o incluido? Cambia dónde se pone el foco |
+| **Marcas o cuentas** | 1 paquete = 1 marca. Si hay más, son add-on |
+
+⚠️ **Si el objetivo del cliente vive en una capa que su plan no cubre** —por ejemplo quiere
+arreglar su embudo de WhatsApp y está en Básico— **no se entrega igual.**
+**Se avisa a Allan** y se ofrece subir de plan o cotizarlo como extra.
+
+🛑 **El plan es techo duro.** El agente propone dentro de él, nunca por encima.
+
+---
+
 ## A · Comprensión — quién es la marca
 
 | | |
@@ -40,7 +72,6 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 | **Margen** | Un margen de 15% no soporta la misma estrategia que uno de 70% |
 | **Capacidad de entrega** | Cuántos clientes más aguanta hoy |
 | **Punto de equilibrio** | El piso del objetivo |
-| **Paquete contratado** | `Growth Basic` / `Growth Accelerated` / `Growth Compound` / `Tailor Made`. **Define todo el techo** → ver `PAQUETES.md` |
 | **Ad spend del cliente** | Nunca está incluido en el paquete. Sin esto, no hay paid |
 | **Mercado donde vende** | 🇬🇹 Guatemala · 🇲🇽 México · 🇺🇸 EE.UU. · otro. **Cambia canales, competencia y expectativa de precio** → ver `MERCADOS.md` |
 | **Dónde está trabado** | No lo conocen · llega gente y se pierde · funciona pero depende de alguien. **De acá sale el nivel** |
@@ -48,13 +79,6 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 
 > Si la capacidad de entrega ya está al tope, la estrategia **no es generar más demanda**: es
 > filtrar mejor o subir el precio. Sin este dato el agente se equivoca de problema.
-
-> ⚠️ **Los tres paquetes incluyen estrategia — cambia la profundidad, no la existencia.**
-> `Basic` cubre las capas 1-4 y medición · `Accelerated` cubre 1-8 · `Compound` las nueve.
->
-> **Si el objetivo del cliente vive en una capa que su paquete no cubre** (por ejemplo, quiere
-> arreglar su embudo de WhatsApp y está en Basic), **no se entrega igual.** Se avisa a Allan y se
-> ofrece subir de paquete o cotizarlo como extra.
 
 ## C · Demanda — cómo llega la gente
 

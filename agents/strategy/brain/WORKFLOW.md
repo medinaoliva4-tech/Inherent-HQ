@@ -47,6 +47,10 @@ arranca sin el anterior.
 ### 01 · CONTEXTO → skill `context`
 Junta toda la data necesaria para que la estrategia tenga un piso fuerte.
 
+**Lo primero: el plan contratado.** 🟦 Básico · 🟪 Acelerado · 🟨 Compuesto · ⬜ Tailor Made.
+**Define qué se le va a trabajar y hasta qué punto** — y por lo tanto qué briefs se arman al final.
+**Sin este dato la estrategia promete lo que no se puede entregar.**
+
 **Comprensión:** visión · propósito · tono · audiencia actual · diferenciación que ellos creen tener
 **Negocio:** unit economics · cómo se compra · cómo se descubre · demanda que existe vs. demanda por crear · audience behavior
 **Cierre:** identificar el arquetipo (§3)
