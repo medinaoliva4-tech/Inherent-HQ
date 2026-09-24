@@ -92,65 +92,126 @@ es una hipótesis.
 
 ---
 
-## 4 · Lo que cuesta cada cuenta, según cuántos clientes haya
+## 4 · 🔧 Cómo se calcula — la mecánica
 
-### 🟦 Básico — Q6,160
+### La fórmula
 
-| Clientes | Tarifa prod. | Tarifa oper. | **Costo/cuenta** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|
-| 2 | Q250 | Q100 | Q2,900 | Q3,260 | **53%** |
-| **5** | Q250 | Q80 | Q2,370 | Q3,790 | **62%** |
-| **10** | Q200 | Q80 | Q2,070 | Q4,090 | **66%** |
-| 20 | Q162 | Q65 | Q1,822 | Q4,338 | **70%** |
+```
+1.  HORAS TOTALES  =  suma de las horas de todas las cuentas activas
+2.  TARIFA         =  tarifa base × el factor del tramo que dan esas horas
+3.  SUELDO         =  horas totales × tarifa
+4.  PORCIÓN DE     =  horas de esa cuenta × tarifa
+    CADA CUENTA
+```
 
-### 🟪 Acelerado — Q8,470
-
-| Clientes | Tarifa prod. | Tarifa oper. | **Costo/cuenta** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|
-| 2 | Q250 | Q100 | Q4,100 | Q4,370 | **52%** |
-| **5** | Q200 | Q80 | Q3,280 | Q5,190 | **61%** |
-| **10** | Q200 | Q65 | Q3,040 | Q5,430 | **64%** |
-| 20 | Q162 | Q50 | Q2,688 | Q5,782 | **68%** |
-
-### 🟨 Compuesto — Q15,400
-
-| Clientes | Tarifa prod. | Tarifa oper. | **Costo/cuenta** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|
-| 2 | Q250 | Q100 | Q5,550 | Q9,850 | **64%** |
-| **5** | Q200 | Q80 | Q4,540 | Q10,860 | **71%** |
-| **10** | Q162 | Q65 | Q3,970 | Q11,430 | **74%** |
-| 20 | Q125 | Q50 | Q3,475 | Q11,925 | **77%** |
-
-✅ **La paradoja desapareció en todos los escenarios.** La utilidad sube con el precio.
-✅ **Márgenes de 52-64% desde 2 clientes**, sin performance fee.
-✅ **El margen crece solo con cada cliente nuevo**, porque la tarifa baja y el cloud se diluye.
+> **Cada cuenta paga las horas que consume, a la tarifa que el volumen total permite.**
+> Nadie paga un sueldo entero. La suma de las porciones **es** el sueldo.
 
 ---
 
-## 5 · Lo que gana cada persona
+## 5 · Los cuatro escenarios, con números
 
-> **El modelo tiene que ser bueno para ellos también, o no lo aceptan.**
+### 🔵 HOY — 2 clientes Básico
 
-### Operador de agentes
-
-| Clientes | Horas/mes | Tarifa | **Ingreso mensual** | Modalidad |
+| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
-| 2 Básico | 8 h | Q100 | Q800 | Freelance |
-| 5 Básico | 20 h | Q80 | Q1,600 | Freelance |
-| 10 Acelerado | 60 h | Q65 | **Q3,900** | **Medio tiempo · sueldo** |
-| 20 Compuesto | 160 h | Q50 | **Q8,000** | **Tiempo completo · sueldo** |
+| Producción | 6 h | Freelance | Q250 | **Q1,500** |
+| Operación | 8 h | Freelance | Q100 | **Q800** |
+| Cloud | — | fijo | — | Q1,500 ÷ 2 = **Q750/cuenta** |
 
-### Producción
+| Cuenta | Prod. | Oper. | Cloud | Allan | **Costo** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|---|---|
+| Básico | Q750 | Q400 | Q750 | Q1,000 | **Q2,900** | **Q3,260** | **53%** |
 
-| Clientes | Horas/mes | Tarifa | **Ingreso mensual** | Modalidad |
+**Utilidad total del mes: Q6,520**
+
+---
+
+### 🟢 META CORTA — 5 clientes *(2 Básico · 2 Acelerado · 1 Compuesto)*
+
+| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
-| 2 Básico | 6 h | Q250 | Q1,500 | Freelance |
-| 5 Acelerado | 25 h | Q200 | Q5,000 | Freelance |
-| 10 Compuesto | 80 h | Q162 | **Q12,960** | **Medio tiempo · sueldo** |
-| 20 Compuesto | 160 h | Q125 | **Q20,000** | **Tiempo completo · sueldo** |
+| Producción | 24 h | Freelance con volumen | **Q200** | **Q4,800** |
+| Operación | 28 h | Freelance con volumen | **Q80** | **Q2,240** |
+| Cloud | — | fijo | — | Q1,500 ÷ 5 = **Q300/cuenta** |
 
-👉 **La tarifa les baja, pero el ingreso les sube mucho.** Eso es lo que hace el trato justo:
-cambian tarifa alta e incierta por **tarifa menor y trabajo garantizado.**
+| Cuenta | Prod. | Oper. | Cloud | Allan | **Costo** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|---|---|
+| 🟦 Básico | Q600 | Q320 | Q300 | Q1,000 | Q2,220 | Q3,940 | **64%** |
+| 🟪 Acelerado | Q1,000 | Q480 | Q300 | Q1,500 | Q3,280 | Q5,190 | **61%** |
+| 🟨 Compuesto | Q1,600 | Q640 | Q300 | Q2,000 | Q4,540 | Q10,860 | **71%** |
+
+**Utilidad total del mes: Q29,120**
+
+---
+
+### 🟡 META MEDIA — 10 clientes *(3 Básico · 4 Acelerado · 3 Compuesto)*
+
+| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
+|---|---|---|---|---|
+| Producción | 53 h | Freelance con volumen | Q200 | **Q10,600** |
+| Operación | 60 h | **Medio tiempo · sueldo** | **Q65** | **Q3,900** |
+| Cloud | — | fijo | — | Q1,500 ÷ 10 = **Q150/cuenta** |
+
+| Cuenta | Prod. | Oper. | Cloud | Allan | **Costo** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|---|---|
+| 🟦 Básico | Q600 | Q260 | Q150 | Q1,000 | Q2,010 | Q4,150 | **67%** |
+| 🟪 Acelerado | Q1,000 | Q390 | Q150 | Q1,500 | Q3,040 | Q5,430 | **64%** |
+| 🟨 Compuesto | Q1,600 | Q520 | Q150 | Q2,000 | Q4,270 | Q11,130 | **72%** |
+
+**Utilidad total del mes: Q67,560**
+
+---
+
+### 🔴 META LARGA — 20 clientes *(4 Básico · 8 Acelerado · 8 Compuesto)*
+
+| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
+|---|---|---|---|---|
+| Producción | 116 h | **Medio tiempo · sueldo** | **Q162** | **Q18,850** |
+| Operación | 128 h | **Tiempo completo · sueldo** | **Q50** | **Q6,400** |
+| Cloud | — | fijo | — | Q1,500 ÷ 20 = **Q75/cuenta** |
+
+| Cuenta | Prod. | Oper. | Cloud | Allan | **Costo** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|---|---|
+| 🟦 Básico | Q488 | Q200 | Q75 | Q1,000 | Q1,762 | Q4,398 | **71%** |
+| 🟪 Acelerado | Q812 | Q300 | Q75 | Q1,500 | Q2,688 | Q5,782 | **68%** |
+| 🟨 Compuesto | Q1,300 | Q400 | Q75 | Q2,000 | Q3,775 | Q11,625 | **75%** |
+
+**Utilidad total del mes: Q156,850**
+
+⚠️ **A 20 clientes Allan está en 188 h/mes.** Ahí ya no alcanza: **o entra un segundo director,
+o el agente de QA baja sus horas a la mitad.** Es el techo real del modelo.
+
+---
+
+## 6 · 📄 El contrato con cada persona
+
+> **Se firma una vez, con los tramos escritos. No se renegocia en cada cliente nuevo.**
+
+| Cláusula | Qué dice |
+|---|---|
+| **Sueldo garantizado** | `horas garantizadas × tarifa del tramo`. **Es el piso** — se paga aunque el mes venga flojo |
+| **Horas extra** | Si una cuenta consume más, se pagan **a la misma tarifa del tramo** |
+| **Escalera de tarifa** | Los cuatro tramos, con sus factores, escritos desde el día uno |
+| **Revisión** | Al cruzar un tramo. **Automática, no negociada** |
+| **Qué gana con esto** | Tarifa menor **a cambio de ingreso garantizado y creciente** |
+
+### Ejemplo de cómo se le plantea
+
+> *"Hoy son 24 horas al mes a Q200 la hora: **Q4,800 garantizados**, te llegue o no el trabajo.*
+> *Cuando pasemos de 60 horas, entrás a sueldo de medio tiempo: la tarifa baja a Q162,*
+> *pero tu ingreso sube a **Q18,850**. Está escrito desde hoy."*
+
+---
+
+## 7 · Qué pasa cuando entra o sale un cliente
+
+| Situación | Qué se hace |
+|---|---|
+| **Entra un cliente** | Se suman sus horas al total. Si cruza un tramo, **la tarifa baja para todos** y el margen sube solo |
+| **Sale un cliente** | Se restan sus horas. **El sueldo garantizado no baja ese mes** — es el piso |
+| **Si el total cae de tramo** | La tarifa se revisa **el mes siguiente**, con aviso |
+| **Una cuenta consume más horas** | Se cotiza como extra o se sube de paquete. **Nunca se absorbe** |
 
 ---
 
