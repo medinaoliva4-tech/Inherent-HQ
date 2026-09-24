@@ -117,9 +117,9 @@ es una hipótesis.
 |---|---|---|---|---|
 | Producción | 6 h | Freelance | Q250 | **Q1,500** |
 | Operación | 8 h | Freelance | Q100 | **Q800** |
-| Cloud | — | fijo | — | Q1,500 ÷ 2 = **Q750/cuenta** |
+| Claude | — | fijo | — | Q1,500 ÷ 2 = **Q750/cuenta** |
 
-| Cuenta | Prod. | Oper. | Cloud | Allan | **Costo** | **Utilidad** | **Margen** |
+| Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
 | Básico | Q750 | Q400 | Q750 | Q1,000 | **Q2,900** | **Q3,260** | **53%** |
 
@@ -133,9 +133,9 @@ es una hipótesis.
 |---|---|---|---|---|
 | Producción | 24 h | Freelance con volumen | **Q200** | **Q4,800** |
 | Operación | 28 h | Freelance con volumen | **Q80** | **Q2,240** |
-| Cloud | — | fijo | — | Q1,500 ÷ 5 = **Q300/cuenta** |
+| Claude | — | fijo | — | Q1,500 ÷ 5 = **Q300/cuenta** |
 
-| Cuenta | Prod. | Oper. | Cloud | Allan | **Costo** | **Utilidad** | **Margen** |
+| Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
 | 🟦 Básico | Q600 | Q320 | Q300 | Q1,000 | Q2,220 | Q3,940 | **64%** |
 | 🟪 Acelerado | Q1,000 | Q480 | Q300 | Q1,500 | Q3,280 | Q5,190 | **61%** |
@@ -151,9 +151,9 @@ es una hipótesis.
 |---|---|---|---|---|
 | Producción | 53 h | Freelance con volumen | Q200 | **Q10,600** |
 | Operación | 60 h | **Medio tiempo · sueldo** | **Q65** | **Q3,900** |
-| Cloud | — | fijo | — | Q1,500 ÷ 10 = **Q150/cuenta** |
+| Claude | — | fijo | — | Q1,500 ÷ 10 = **Q150/cuenta** |
 
-| Cuenta | Prod. | Oper. | Cloud | Allan | **Costo** | **Utilidad** | **Margen** |
+| Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
 | 🟦 Básico | Q600 | Q260 | Q150 | Q1,000 | Q2,010 | Q4,150 | **67%** |
 | 🟪 Acelerado | Q1,000 | Q390 | Q150 | Q1,500 | Q3,040 | Q5,430 | **64%** |
@@ -169,9 +169,9 @@ es una hipótesis.
 |---|---|---|---|---|
 | Producción | 116 h | **Medio tiempo · sueldo** | **Q162** | **Q18,850** |
 | Operación | 128 h | **Tiempo completo · sueldo** | **Q50** | **Q6,400** |
-| Cloud | — | fijo | — | Q1,500 ÷ 20 = **Q75/cuenta** |
+| Claude | — | fijo | — | Q1,500 ÷ 20 = **Q75/cuenta** |
 
-| Cuenta | Prod. | Oper. | Cloud | Allan | **Costo** | **Utilidad** | **Margen** |
+| Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
 | 🟦 Básico | Q488 | Q200 | Q75 | Q1,000 | Q1,762 | Q4,398 | **71%** |
 | 🟪 Acelerado | Q812 | Q300 | Q75 | Q1,500 | Q2,688 | Q5,782 | **68%** |
@@ -223,7 +223,7 @@ o el agente de QA baja sus horas a la mitad.** Es el techo real del modelo.
 | **La tarifa se revisa al cambiar de tramo** | Se acuerda desde el inicio, no se negocia después |
 | **El sueldo arranca a las 60 h/mes** | Antes de eso es freelance |
 | **Las horas se miden, no se asumen** | Si una cuenta toma más horas, **se cotiza o se ajusta el paquete** |
-| **El cloud es fijo (Q1,500/mes)** | Se prorratea entre todas las cuentas activas |
+| **El Claude es fijo (Q1,500/mes)** | Se prorratea entre todas las cuentas activas |
 
 ---
 

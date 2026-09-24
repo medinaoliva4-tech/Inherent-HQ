@@ -111,7 +111,12 @@ No me conocen → Básico · Me conocen y no convierto → Acelerado · Conviert
 ### La economía
 
 **La estrategia de precio es matarlos con valor, no cobrar más.** Los precios están **dentro del
-rango que el mercado guatemalteco ya acepta**, con 3x a 5x el volumen de su tramo. El de entrada
+rango que el mercado ya acepta**, con 3x a 5x el volumen de su tramo.
+
+🌐 **Guatemala es dónde arrancamos, no el techo.** Los costos se pagan en quetzales y no cambian
+al cambiar de mercado; **lo único que cambia es el precio.** A precio de México los mismos costos
+dan **76-82%**; a precio de Miami, **86-89%**. Ver `MERCADOS.md`.
+⚠️ **La web se escribe para los tres mercados: precios en USD y sin «Guatemala» como alcance.** El de entrada
 da **86 piezas a Q6,160 (Q72/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
 
 **El volumen nos separa del mercado. La profundidad separa los niveles entre sí.**

@@ -56,7 +56,7 @@ que el mercado ya acepta.**
 | Producción (grabar) | 23% |
 | Operador de agentes | 12% |
 | Sesiones | 8% |
-| **Cloud / AI** | **4.5%** |
+| **Claude / AI** | **4.5%** |
 
 **96% del costo es humano.** Bajar el precio no sale del ahorro de AI — **sale del bolsillo de
 Allan.** Los pennies del AI ya están capturados.
@@ -114,7 +114,7 @@ contra 16). **Lo que falla es el costo.** Y el costo falla por una razón concre
 | **Operador de agentes** | ✅ **Sí, −55%** | Que un humano supervise 5 cuentas, no que opere 1 |
 | **Build de tecnología** | ✅ **Sí, −47%** | Pipeline de construcción, no proyecto a mano |
 | **Producción (grabar)** | 🟡 Parcial | Sistema de contenido crudo del cliente |
-| **Cloud** | ❌ No, y sube | Más agentes corriendo. Q192 → Q300. **Barato** |
+| **Claude** | ❌ No, y sube | Más agentes corriendo. Q192 → Q300. **Barato** |
 
 ---
 
@@ -150,10 +150,10 @@ el costo sube **+92%** (suma 3h de producción y una sesión). **Dos salidas:**
 | Agente de QA *(horas de Allan)* | −Q750 | −Q1,250 | −Q1,750 |
 | Operador automatizado | −Q350 | −Q500 | −Q650 |
 | Pipeline de tecnología | — | −Q350 | −Q700 |
-| Más cloud *(el costo de automatizar)* | +Q108 | +Q108 | +Q108 |
+| Más Claude *(el costo de automatizar)* | +Q108 | +Q108 | +Q108 |
 | **AHORRO NETO** | **−Q992** | **−Q1,992** | **−Q2,992** |
 
-> **Se cambia trabajo humano por cloud, a razón de Q9 ahorrados por cada Q1 de cloud extra.**
+> **Se cambia trabajo humano por Claude, a razón de Q9 ahorrados por cada Q1 de Claude extra.**
 > Esa es la ventaja de agentes, medida.
 
 ---
@@ -723,7 +723,7 @@ El upsell puede esperar. **La cuenta ya es nuestra, y el costo de mantenerla es 
 | **Radar semanal en vez de mensual** | **Q0** |
 | **Atribución CAPI + GA4** | **Q0** |
 
-👉 **Todo lo que corre sobre agentes suma Q0 al costo variable.** El cloud es Q192 prorrateado —
+👉 **Todo lo que corre sobre agentes suma Q0 al costo variable.** El Claude es Q192 prorrateado —
 **y no cambia entre paquetes**. Ya está pagado.
 
 > **Esa es la ventaja completa: no es que nos cueste menos. Es que a una agencia le costaría
@@ -865,14 +865,14 @@ cuesta el caso.**
 | **Producción** | **Q250** / hora | Lo que cobra quien graba |
 | **Fee por sesión** | **Q175** / sesión | Fee fijo por salida a grabar |
 | **Operador de agentes** | **Q600 – Q1,200** / marca | Sube con el volumen de piezas |
-| **Cloud** | **Q960** / mes **TOTAL** | Claude + herramientas. **No es por cliente.** Se prorratea entre 5 |
+| **Claude** | **Q960** / mes **TOTAL** | Claude + herramientas. **No es por cliente.** Se prorratea entre 5 |
 | **Build de tecnología** | **Q750 – Q1,500** / mes | Horas amortizadas de construir la herramienta |
 | **Allan** | **Q60 · Q150 · Q250** / hora | Tres criterios — ver `OPERACION.md` |
 
-> 🟢 **Casi todo el costo es variable.** El único fijo es el cloud (Q960). No se pierde plata si
+> 🟢 **Casi todo el costo es variable.** El único fijo es Claude (Q960). No se pierde plata si
 > no hay clientes, y cada marca nueva es casi toda margen.
 >
-> 🔴 **Pero ojo: el cloud es solo el 4.5% del costo.** El 96% es humano —
+> 🔴 **Pero ojo: Claude es solo el 4.5% del costo.** El 96% es humano —
 > producción, operador y el tiempo de Allan. **La ventaja de AI ya está capturada.**
 
 ---
@@ -884,7 +884,7 @@ cuesta el caso.**
 | Producción | 2h × Q250 | Q500 |
 | Sesiones de grabación | 1 × Q175 | Q175 |
 | Operador de agentes | volumen alto | Q600 |
-| Cloud | Q960 ÷ 5 | Q192 |
+| Claude | Q960 ÷ 5 | Q192 |
 | Build de tecnología | no incluye | Q0 |
 | **Subtotal sin Allan** | | **Q1,467** |
 
@@ -903,7 +903,7 @@ cuesta el caso.**
 | Producción | 5h × Q250 | Q1,250 |
 | Sesiones de grabación | 2 × Q175 | Q350 |
 | Operador de agentes | +volumen | Q900 |
-| Cloud | Q960 ÷ 5 | Q192 |
+| Claude | Q960 ÷ 5 | Q192 |
 | Build de tecnología | 1 herramienta / trimestre | Q750 |
 | **Subtotal sin Allan** | | **Q3,442** |
 
@@ -922,7 +922,7 @@ cuesta el caso.**
 | Producción | 8h × Q250 | Q2,000 |
 | Sesiones de grabación | 3 × Q175 | Q525 |
 | Operador de agentes | volumen máximo | Q1,200 |
-| Cloud | Q960 ÷ 5 | Q192 |
+| Claude | Q960 ÷ 5 | Q192 |
 | Build de tecnología | 1 herramienta / **mes** | Q1,500 |
 | **Subtotal sin Allan** | | **Q5,417** |
 
@@ -943,7 +943,7 @@ cuesta el caso.**
 | Producción | Q500 | Q1,250 | Q2,000 |
 | Sesiones | Q175 | Q350 | Q525 |
 | Operador | Q600 | Q900 | Q1,200 |
-| Cloud | Q192 | Q192 | Q192 |
+| Claude | Q192 | Q192 | Q192 |
 | Tecnología | Q0 | Q750 | Q1,500 |
 | Allan *(@Q250/h)* | Q1,750 | Q2,750 | Q3,750 |
 | **COSTO TOTAL** | **Q3,217** | **Q6,192** | **Q9,167** |
@@ -1062,7 +1062,7 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 
 ### Por qué es puro margen
 
-**El fee de performance tiene costo marginal Q0.** No agrega producción, ni horas, ni cloud.
+**El fee de performance tiene costo marginal Q0.** No agrega producción, ni horas, ni Claude.
 **Cada quetzal de fee es un quetzal de utilidad.**
 
 | Si el fee mensual es… | Ingreso total | **Margen HOY** | **Margen OBJETIVO** |
@@ -1112,6 +1112,10 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 ---
 
 ## Contra el benchmark de Guatemala
+
+> ⚠️ **Esto es dónde estamos hoy, no nuestro techo.** El costo de entregar una cuenta es el
+> mismo desde Guatemala, México o Miami — **lo único que cambia es el precio.**
+> Ver **`MERCADOS.md`**: a precio de Miami, los mismos costos dan **86-89% de margen.**
 
 `[benchmark aportado por Allan, sin verificar de forma independiente]`
 
@@ -1173,7 +1177,7 @@ margen que se está resignando.**
 
 ```
 Gastos personales de Allan   Q2,400
-Cloud                        Q  960
+Claude                        Q  960
 ─────────────────────────────────────
 Piso mensual                 Q3,360
 ```
