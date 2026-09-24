@@ -125,10 +125,11 @@ performance fee — 10% de las ventas atribuidas, con costo marginal Q0.** Cada 
 utilidad pura: lleva Acelerado de 27% a 46% sin tocar el precio base.
 ⚠️ **Sin atribución limpia no hay fee.**
 
-**Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes muy
-buenos.** Cierran **no bajando el precio, bajando el costo.** Modelo en dos estados:
-**HOY 48% · 27% · 40%** — **OBJETIVO 64% · 50% · 60%** al mismo precio.
-Lo que los separa son tres agentes: **QA · operación automatizada · pipeline de herramientas.**
+**Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes
+altísimos.** Cierran **no bajando el precio, bajando el costo.** Con 5 clientes y el modelo de
+hora con escalera: **62% · 61% · 71%.** Con el agente de QA y el contenido crudo del cliente:
+**72% · 72% · 80%.** Con performance fee encima: **80-88%.**
+Ver `PAQUETES.md` → «Los números finales».
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
 operación.** Ahí está el 70% del costo matable.

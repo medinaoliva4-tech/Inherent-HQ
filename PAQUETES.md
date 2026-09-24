@@ -990,6 +990,71 @@ incluye estrategia, inteligencia y pauta.**
 ⚠️ **Este número es para la discusión interna y para defender el precio. Nunca se vende por
 pieza** — eso convierte la oferta en commodity y contradice el posicionamiento.
 
+## 🏁 Los números finales
+
+> **Los precios quedan como están. Lo que cambió fue el costo.**
+
+### Qué pasó al pasar de sueldo-por-cuenta a hora-con-escalera
+
+| | Precio | Margen **antes** | Margen **ahora** *(5 clientes)* | |
+|---|---|---|---|---|
+| 🟦 **Básico** | Q6,160 *($800)* | 48% | **62%** | **+14 pts** |
+| 🟪 **Acelerado** | Q8,470 *($1,100)* | 27% 🔴 | **61%** | **+34 pts** 🔥 |
+| 🟨 **Compuesto** | Q15,400 *($2,000)* | 40% | **71%** | **+30 pts** |
+
+**Utilidad por cuenta:** Q3,790 · Q5,190 · Q10,860
+
+✅ **Acelerado dejó de ser el agujero.** Pasó de 27% a 61% **sin tocar el precio.**
+
+---
+
+### Los tres escalones de margen
+
+| | **Hoy** *(5 clientes)* | **Con los agentes** | **+ performance fee** |
+|---|---|---|---|
+| 🟦 Básico | **62%** | **72%** | **81 – 88%** |
+| 🟪 Acelerado | **61%** | **72%** | **80 – 86%** |
+| 🟨 Compuesto | **71%** | **80%** | **83 – 87%** |
+
+**Qué desbloquea cada escalón:**
+
+| Escalón | Qué hay que hacer |
+|---|---|
+| **Hoy → Con los agentes** | Construir el **agente de QA** *(operación baja de 4-8h a 2-4h)* y probar el **contenido crudo del cliente** *(producción baja de 3-8h a 2-5h)* |
+| **Con los agentes → + fee** | **Atribución limpia** (CAPI + GA4). Sin ella no hay fee |
+
+---
+
+### El margen con más clientes
+
+| Clientes | 🟦 Básico | 🟪 Acelerado | 🟨 Compuesto |
+|---|---|---|---|
+| 2 | 53% | 52% | 64% |
+| **5** | **62%** | **61%** | **71%** |
+| 10 | 66% | 64% | 74% |
+| 20 | 70% | 68% | 77% |
+
+**Con los agentes construidos, a 10 clientes: 76% · 77% · 81%.**
+
+---
+
+### ✅ El veredicto
+
+**Los cuatro objetivos, cumplidos al precio que se quería cobrar:**
+
+| Meta | Dónde está |
+|---|---|
+| **Costos bajos** | Costo por cuenta de Q2,370 a Q4,540 con 5 clientes. **Baja solo con cada cliente nuevo** |
+| **Valor enorme** | 86-204 piezas contra 16 del mercado. Tecnología, SEO, closing, IA propia |
+| **Precio justo** | $800 / $1,100 / $2,000 — **dentro del rango que el mercado ya acepta** |
+| **Márgenes altísimos** | **61-71% hoy · 72-80% con los agentes · 80-88% con fee** |
+| **Ganamos de hacerles dinero** | El performance fee es lo que lleva el margen arriba de 80% |
+
+⚠️ **Todo esto descansa en las horas estimadas** *(producción 3/5/8 · operación 4/6/8 · Allan
+4/6/8)*. **Medirlas es lo primero.** Si están mal, estos márgenes están mal.
+
+---
+
 ## 💸 El performance fee — de dónde salen los márgenes altísimos
 
 > **Ganamos de hacerles dinero.** El fee base cubre la operación.
