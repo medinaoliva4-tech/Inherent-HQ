@@ -42,6 +42,8 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 | **Punto de equilibrio** | El piso del objetivo |
 | **Paquete contratado** | `Growth Basic` / `Growth Accelerated` / `Growth Compound` / `Tailor Made`. **Define todo el techo** → ver `PAQUETES.md` |
 | **Ad spend del cliente** | Nunca está incluido en el paquete. Sin esto, no hay paid |
+| **Mercado donde vende** | 🇬🇹 Guatemala · 🇲🇽 México · 🇺🇸 EE.UU. · otro. **Cambia canales, competencia y expectativa de precio** → ver `MERCADOS.md` |
+| **Dónde está trabado** | No lo conocen · llega gente y se pierde · funciona pero depende de alguien. **De acá sale el nivel** |
 | **Capacidad de producción de contenido** | Sale del paquete. Techo duro de la cadencia |
 
 > Si la capacidad de entrega ya está al tope, la estrategia **no es generar más demanda**: es

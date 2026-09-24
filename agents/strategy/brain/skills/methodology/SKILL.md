@@ -56,6 +56,25 @@ formato**: es a quién hay que hablarle y cómo hay que sentirse para que esa au
 
 Lo primero. Todo lo demás existe para cumplirlos.
 
+### A.0 · El diagnóstico de nivel ← **primero que nada**
+
+> **El nivel no lo decide la venta. Lo decide dónde está trabado el negocio.**
+
+| Si el cuello es… | Nivel | Verbo |
+|---|---|---|
+| **No lo conocen** — hay producto, no hay demanda | 🟦 **Básico** | ENCENDER |
+| **Llega gente y se pierde** — hay demanda, no hay conversión | 🟪 **Acelerado** | ACELERAR |
+| **Funciona pero todo depende de alguien** — hay conversión, no hay sistema | 🟨 **Compuesto** | COMPONER |
+
+**Esto define tres cosas de una vez:**
+1. Qué capas de las 16 entran *(ver `PAQUETES.md`)*
+2. Qué briefs se arman *(ver C)*
+3. **Cuál es el techo de los objetivos** — no se puede prometer lo que el nivel no cubre
+
+⚠️ **Si el cliente contrató un nivel que no ataca su cuello, se dice.**
+Vender Compuesto a quien no tiene demanda es autonomía sobre una máquina rota.
+**El agente propone; Allan decide si se ajusta el paquete o el objetivo.**
+
 ### A.1 · ¿Qué significa ganar para ESTA empresa?
 
 Con todo lo que se entendió del negocio, el mercado y la industria: **para ellos, ser número uno
@@ -234,11 +253,49 @@ Cada bloque con **decisión + puntos a resolver**. Ver `brand-brief.md` en esta 
 - La intersección obligatoria: `lo que la audiencia quiere consumir` + `el posicionamiento` + `la promesa`
 - Qué territorios narrativos se abren desde la historia
 
+### C.5 · Brief de TECNOLOGÍA 🔧 *(Acelerado y Compuesto)*
+
+> **El paquete promete una herramienta a medida. Alguien tiene que decidir CUÁL — y esa es una
+> decisión de estrategia, no de programación.**
+
+- **Qué fricción hay que matar** — el punto donde el negocio pierde plata o tiempo hoy
+- **Qué herramienta la mata** — CRM ligero · panel de operación · portal de cliente ·
+  calculadora · landing de captura · automatización interna
+- **Quién la va a usar** — el dueño, el equipo de ventas, el cliente final
+- **Qué tiene que pasar para que valga la pena** — el número que debería moverse
+- **Qué NO hace** — el alcance cerrado, para que no crezca sola
+
+🛑 **Strategy no la construye ni define stack.** Define **qué problema resuelve y para quién.**
+
+⚠️ **Si no se identifica una fricción real, no se construye nada.** Una herramienta que nadie usa
+es peor que ninguna: consume el presupuesto del trimestre y no mueve un número.
+
+### C.6 · Brief de SISTEMAS 🔁 *(solo Compuesto)*
+
+> **Compuesto promete que el crecimiento deje de comprarse cada mes.** Estas tres decisiones son
+> las que lo hacen posible.
+
+| | Qué decide Strategy |
+|---|---|
+| **Sistemas de demanda** | Qué motor hace que la demanda se sostenga sola: referidos · comunidad · recompra · contenido evergreen. **Cuál de los cuatro aplica a este negocio, y por qué** |
+| **Fulfillment** | Dónde se rompe la entrega hoy. **Crecer con la entrega rota destruye la marca** — si acá hay un problema grave, **se arregla antes de generar más demanda** |
+| **Talento** | Qué puestos va a exigir el crecimiento que planteamos, y en qué orden |
+
+⚠️ **Fulfillment se revisa ANTES de aceptar los objetivos de crecimiento.**
+Si la entrega no aguanta el volumen que proponemos, el objetivo está mal, no la entrega.
+
+---
+
 **Cada brief cierra igual:**
 ```
 PREGUNTAS ABIERTAS   lo que Strategy no resuelve
 RESTRICCIONES        presupuesto, tiempo, lo que el cliente ya dijo que no
 ```
+
+> **Los briefs que se arman dependen del nivel contratado** — ver A.0.
+> 🟦 Básico: Branding · Marketing · Creative
+> 🟪 Acelerado: + Growth · Tecnología
+> 🟨 Compuesto: + Sistemas
 
 ---
 

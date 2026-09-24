@@ -77,15 +77,17 @@ no en recomendación.
 ### 04 · METODOLOGÍA → skill `methodology`
 Arma **la estrategia**. Tres partes:
 
-**A · LOS OBJETIVOS** — qué significa ganar para esta empresa · objetivos **macro por trimestre** ·
+**A · LOS OBJETIVOS** — **el diagnóstico de nivel** *(¿dónde está trabado el negocio?)* ·
+qué significa ganar para esta empresa · objetivos **macro por trimestre** ·
 y la **prueba de realismo**: ¿no sobrecarga al equipo de la agencia ni al de la empresa? Se mide con
 cuánta gente hay y cuánto dinero hay para invertir. **Un objetivo que no pasa, se baja o se mueve.**
 
 **B · LA PLATAFORMA** — audiencia profunda · tensión cultural · posicionamiento · promesa ·
 historia (el cliente es el héroe) · personalidad · el fundador · comunidad inicial
 
-**C · LOS BRIEFS POR ÁREA** — Branding · Marketing · Growth · Creative. Cada uno recibe **qué tiene
-que lograr y qué tomar en cuenta**, no cómo hacerlo.
+**C · LOS BRIEFS POR ÁREA** — Branding · Marketing · Creative · Growth · **Tecnología** ·
+**Sistemas**. Cada uno recibe **qué tiene que lograr y qué tomar en cuenta**, no cómo hacerlo.
+**Cuáles se arman depende del nivel contratado.**
 
 > 🛑 **El nivel es MACRO.** Si la ingeniería inversa muestra que cierto contenido convierte, la
 > conclusión no es el formato: es **a quién hay que hablarle y cómo hay que sentirse** para que esa
@@ -323,14 +325,54 @@ Gate de Allan antes de entregar cualquiera.
 
 ---
 
-## 8 · CORRELACIÓN
+## 8 · CORRELACIÓN — dónde entra Strategy en el pipeline
+
+**`PIPELINE.md` tiene la cadena completa de 12 etapas.** Strategy ocupa tres de ellas:
 
 ```
-Strategy → MARKETING   el entregable completo, para bajarlo a campañas
-Strategy → BRANDING    el bloque de identidad: tipo de marca, enemigo, idea madre, estética y tono
-Strategy → Growth      monetización y funnel, para comprar medios
-Strategy → Creative    posicionamiento, comunicación y qué tipo de pieza hace falta
-Analytics → Strategy   la revisión del 20 vuelve al análisis  ↺
+01 COMPRENSIÓN  ←  Strategy · skill context
+02 ESTRATEGIA   ←  Strategy · skills analysis + reverse-engineering + methodology
+     │
+     ├──→ 02B BRANDING     brief de branding        → agente Branding
+     ├──→ 03  MARKETING    brief de marketing       → agente Marketing
+     ├──→ 04  CREATIVIDAD  brief de creative        → agente Creative
+     ├──→ 09  ADS          brief de growth          → agente Growth
+     ├──→ 🔧  TECNOLOGÍA   brief de tecnología      → agente Builder
+     └──→ 🔁  SISTEMAS     brief de sistemas        → Allan + agentes  (solo Compuesto)
+     │
+     ▼
+   …el ciclo mensual corre…
+     │
+↻ REVISIÓN DEL 20  ←  Strategy · skill analysis        vuelve al inicio
 ```
 
-`❓ PENDIENTE — el workflow entre departamentos de 0 a 100 es tu paso 3 en Notion. Lo armamos cuando existan los otros agentes.`
+**Qué recibe cada uno:**
+
+| Destino | Qué le entrega Strategy |
+|---|---|
+| **Branding** | Tipo de marca, enemigo, idea madre, territorio, estética y tono |
+| **Marketing** | Campañas, mensajes, canales y nivel de conversión a alcanzar |
+| **Creative** | Posicionamiento, promesa y qué tiene que lograr el contenido |
+| **Growth** | Monetización, funnel, ángulos de pauta y reparto de inversión |
+| **Tecnología** | Qué fricción matar y con qué herramienta *(Acelerado y Compuesto)* |
+| **Sistemas** | Motor de demanda, estado del fulfillment y puestos a cubrir *(Compuesto)* |
+
+### El regreso
+
+**La revisión del 20 cierra el círculo.** La analítica del mes vuelve a `analysis` y ajusta la
+estrategia. **No es un reporte: es el input del mes siguiente.**
+
+---
+
+## 9 · LO QUE STRATEGY NO HACE
+
+| No hace | Quién lo hace |
+|---|---|
+| Piezas, formatos, calendario de publicación | Creative · Design |
+| Paleta, tipografía, logo, sistema visual | Branding |
+| Segmentación, presupuesto, optimización de campañas | Growth |
+| Construir la herramienta ni definir stack | Builder |
+| Grabar | Production |
+| Publicar o pautar | **Nadie sin el gate de Allan** |
+
+**Strategy decide el QUÉ y el POR QUÉ. Nunca el CÓMO.**
