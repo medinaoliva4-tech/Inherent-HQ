@@ -39,58 +39,135 @@ descubran.** Aun así, cuando el problema está adentro, la demanda no lo arregl
 
 # 1 · DEMAND OS
 
-## 🔵 Low Ticket — *el juego es volumen*
-
-| # | Pilar | 🎯 El resultado | Capacidad |
-|---|---|---|---|
-| **1** | **Mejorá tu oferta** | La gente **quiere** lo que vendés antes de ver el precio | 📣 🏷️ 🎨 |
-| **2** | **Ventas en grande** | Entran **ingresos grandes que no dependen del día a día** | 📣 📊 |
-| **3** | **Upsells y ticket** | **Cada cliente deja más** sin que entre más gente | 📣 📊 |
-
-### El detalle
-
-**1 · Mejorá tu oferta** — Entendemos tu ICP, sus *pain points* y sus deseos. Desde ahí armamos
-la oferta: producto, lugar y experiencia. Después la comunicamos en distintos ángulos —
-orgánico, terceros y ads.
-**→ Reservas y maneras aseguradas de conversión.**
-
-**2 · Ventas en grande** — Eventos *(celebraciones, corporativos, instituciones educativas,
-organizaciones e iglesias, eventos masivos, catering y convenios)* · pedidos al por mayor
-*(mayoristas, revendedores)* · preventas · alianzas corporativas.
-**→ Un mes malo de tráfico deja de ser un mes malo de ventas.**
-
-**3 · Upsells y ticket** — Combos, complementos, tamaños, membresías, suscripción, producto
-propio empacado.
-**→ Más facturación con la misma cantidad de clientes.**
+> **La lógica es la misma en las dos divisiones:**
+> **1** hacer deseable lo que vendés · **2** encontrar dónde se vende en grande ·
+> **3** hacer que cada cliente deje más.
+> **Lo que cambia es qué significa «en grande» en cada mundo.**
 
 ---
 
-## 🟣 High Ticket — *el juego es precisión*
+## 🔵 LOW TICKET GROWTH
 
-| # | Pilar | 🎯 El resultado | Capacidad |
-|---|---|---|---|
-| **1** | **Oferta sin riesgo** | El cliente **puede decidir** — deja de tener miedo de equivocarse | 📣 📊 🏷️ |
-| **2** | **Autoridad** | **Llegan ya convencidos.** El precio deja de ser la primera conversación | 🎬 🎨 📣 |
-| **3** | **Proceso de venta** | **Dejás de perder los que ya te buscaron** | 🔧 📣 📊 |
-| **4** | **Expansión** | **Crecés sin conseguir clientes nuevos todo el tiempo** | 📊 📣 |
+### 1er Pilar · **Better your Offer**
 
-### El detalle
+Comprendemos tu **ICP** —para hablarle a sus *pain points* y sus deseos— y a través de eso nos
+ponemos en sus zapatos para poder armar tu **oferta** *(producto, lugar y experiencia)* de modo
+que sea **deseable** para tu ICP.
 
-**1 · Oferta sin riesgo** — En low ticket la oferta tiene que ser **deseable**. Acá tiene que
-**quitar el miedo**: alcance clarísimo, garantía o prueba, estructura de pago, riesgo que le
-sacás de encima. **El cliente no teme gastar de más: teme equivocarse.**
+Y luego **comunicarlo en distintos ángulos de comunicación**: orgánico, terceros y ads.
 
-**2 · Autoridad** — Un reel más no mueve una decisión de $50,000. Contenido que demuestra
-criterio · casos con números · **el fundador como cara** · presencia donde su industria ya mira.
-**En high ticket la gente le compra a alguien, no a un logo.**
+> **Causando reservas y maneras aseguradas de conversión.**
 
-**3 · Proceso de venta** — Captura con peso *(diagnósticos, calculadoras, reportes)* ·
-calificación para no quemar horas caras · guion, objeciones, propuesta y **seguimiento que no se
-enfría** · atribución para saber qué origen sí cierra.
-**Acá se pierde la mayoría del dinero en high ticket, y casi nadie lo mira.**
+`📣 Marketing` `🏷️ Branding` `🎨 Creative` `🎬 Production`
 
-**4 · Expansión** — Subir de nivel de cliente · más servicios a la misma cuenta · **referidos
-sistematizados, no esperados** · retención y renovación.
+---
+
+### 2º Pilar · **Big sales**
+
+Al comprender tus productos vemos **qué podemos vender «en grande»**.
+
+**Como:**
+1. **Eventos** — celebraciones personales · eventos corporativos · instituciones educativas ·
+   organizaciones e iglesias · eventos públicos y masivos · catering y convenios
+2. **Pedidos al por mayor** — mayoristas · revendedores
+3. **Preventas** — lanzamientos · temporada · producción bajo pedido
+4. **Alianzas con corporaciones** — venderle a empresas
+
+> **Causando que un mes flojo de tráfico deje de ser un mes flojo de ventas.**
+
+`📣 Marketing` `📊 Consulting` `🎨 Creative`
+
+---
+
+### 3er Pilar · **Upsells y aumento del ticket**
+
+Al ver **cómo compra** tu cliente, encontramos qué más puede llevarse **sin que le cueste
+decidir**.
+
+**Como:**
+1. **Combos y complementos** — lo que casi siempre se lleva junto
+2. **Tamaños y versiones premium** — que elegir «el grande» sea obvio
+3. **Membresías y suscripción** — que la próxima compra ya esté decidida
+4. **Producto propio empacado** — que se lleven la marca a casa
+5. **Segunda visita programada** — que la recompra no dependa de acordarse
+
+> **Causando que la misma cantidad de gente deje más plata.**
+
+`📣 Marketing` `📊 Consulting` `🏷️ Branding`
+
+---
+
+## 🟣 HIGH TICKET GROWTH
+
+> **Misma lógica, distinto significado de «grande».**
+> En low ticket «grande» es **más gente a la vez**. En high ticket es **más dinero y más tiempo
+> por cada cierre.**
+
+### 1er Pilar · **Better your Offer**
+
+Comprendemos tu **ICP** —quién decide, quién influye, y **qué le pasa si se equivoca**— y a
+través de eso empaquetamos lo que hoy vendés «a medida» en algo que se pueda **entender,
+comparar y decidir**: alcance, entregables, tiempos, precio y garantía.
+
+Y luego lo comunicamos **construyendo autoridad**: casos con números, criterio demostrado y el
+fundador como cara, en los lugares donde tu comprador ya mira.
+
+> **Causando que lleguen ya convencidos, y que el precio no sea la primera conversación.**
+
+⚠️ **Acá la oferta no tiene que ser deseable: tiene que quitar el miedo.**
+El cliente de high ticket **no teme gastar de más. Teme equivocarse.**
+
+`📣 Marketing` `🎬 Production` `📊 Consulting` `🏷️ Branding`
+
+---
+
+### 2º Pilar · **Cuentas grandes**
+
+Al comprender tus servicios vemos **qué podemos vender «en grande»** — más grande, y por más
+tiempo.
+
+**Como:**
+1. **Retainers y contratos anuales** — en vez de proyectos sueltos
+2. **Proyectos por fases** — diagnóstico → implementación → operación
+3. **Acuerdos marco con corporaciones** — quedar dentro de su lista de proveedores
+4. **Alianzas y white label** — vender a través de quien ya tiene la cuenta
+5. **Licitaciones y procesos formales** — jugar donde los contratos son grandes
+
+> **Causando que un solo cierre valga meses, no semanas.**
+
+`📊 Consulting` `📣 Marketing` `🔧 Tech`
+
+---
+
+### 3er Pilar · **Expansión de cuenta**
+
+**El cliente que ya está adentro es la venta más barata que existe.**
+Ya te conoce, ya te pagó y ya sabe cómo trabajás.
+
+**Como:**
+1. **Más servicios a la misma cuenta** — lo que hoy le compra a otro
+2. **Más áreas, sedes o unidades** del mismo cliente
+3. **Renovación antes del vencimiento** — que nunca llegue la conversación de «¿seguimos?»
+4. **Referidos sistematizados** — pedidos en el momento correcto, no esperados
+
+> **Causando crecimiento sin tener que conseguir clientes nuevos todo el tiempo.**
+
+`📊 Consulting` `📣 Marketing`
+
+---
+
+## Las dos divisiones, lado a lado
+
+| | 🔵 **Low Ticket** | 🟣 **High Ticket** |
+|---|---|---|
+| **Pilar 1** | Oferta **deseable** | Oferta **sin riesgo** |
+| **Pilar 2** | Big sales — *más gente a la vez* | Cuentas grandes — *más dinero y tiempo por cierre* |
+| **Pilar 3** | Upsells — *más por visita* | Expansión — *más por cuenta* |
+| **El juego** | Volumen | **Precisión** |
+| **Dónde se pierde la plata** | En no ser deseado | **En el seguimiento** |
+
+> 💡 **La autoridad y el proceso de venta no son pilares. Son CÓMO se ejecutan los pilares 1 y 2
+> en high ticket.** Un pilar es una forma de que entre más dinero — no una cosa que arreglar.
 
 ---
 
