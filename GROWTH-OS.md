@@ -22,22 +22,58 @@
 
 ---
 
-# Los cuatro sistemas operativos
+# La arquitectura — dos capas
 
-**La demanda es el cuello principal — pero no el único.**
-Casi todas las empresas se enfocaron en producto y operación. **Nadie se enfocó en que las
-descubran.** Aun así, cuando el problema está adentro, la demanda no lo arregla.
+> **`Growth` no es uno de los cuatro. Es el nombre del sistema completo.**
+> Arreglar márgenes **es** crecer. Mejorar conversión **es** crecer.
+> Ponerlo al lado sería como decir «tengo motor, ruedas, frenos… y auto».
 
 ```
-1 · DEMAND OS       que entre gente que quiera comprar
-2 · CONVERSION OS   que esa gente termine comprando
-3 · OPERATIONS OS   que la empresa aguante sin romperse ni depender del fundador
-4 · MONEY OS        que cada venta deje lo que tiene que dejar
+╔══════════════════ INHERENT GROWTH OS ══════════════════╗
+║                                                          ║
+║   ⚙️  EL MOTOR — de dónde sale el dinero                 ║
+║   ┌────────────────────┬────────────────────┐           ║
+║   │  🔵 LOW TICKET     │  🟣 HIGH TICKET    │           ║
+║   │  1 Oferta          │  1 Oferta          │           ║
+║   │  2 Big sales       │  2 Cuentas grandes │           ║
+║   │  3 Upsells         │  3 Expansión       │           ║
+║   └────────────────────┴────────────────────┘           ║
+║                         │                                ║
+║   🔩 EL CHASIS — lo que lo sostiene                      ║
+║   ┌──────────────┬──────────────┬──────────────┐        ║
+║   │ ⚡ CONVERSION │ 🔧 OPERATIONS │ 💰 MONEY     │        ║
+║   │ que compren  │ que aguantes │ que te quede │        ║
+║   └──────────────┴──────────────┴──────────────┘        ║
+║                                                          ║
+╚══════════════════════════════════════════════════════════╝
 ```
+
+### Por qué dos capas y no cuatro sistemas planos
+
+| | |
+|---|---|
+| **El motor es lo que vendemos** | Es la promesa: que entre más dinero |
+| **El chasis es lo que nos separa de una agencia** | **Una agencia solo tiene motor.** Por eso su cliente crece y se rompe |
+| **Mapea exacto al precio** | 🟦 solo motor · 🟪 motor + parte del chasis · 🟨 motor y chasis completos |
+| **Da la narrativa de venta** | *"Te vendemos el motor. Pero si el chasis no aguanta, el motor no sirve."* |
+
+### El recorrido del dinero
+
+```
+1 · Que te QUIERAN      → EL MOTOR, pilar 1
+2 · Que te COMPREN      → CONVERSION
+3 · Que puedas ENTREGAR → OPERATIONS
+4 · Que te QUEDE        → MONEY
+5 · Que VUELVAN Y CREZCAN → EL MOTOR, pilares 2 y 3
+```
+
+⚠️ **Corrección de nombre:** los pilares de las divisiones **no son «Demand OS».**
+Cubren demanda *(pilar 1 y 2)* **y valor por cliente** *(pilar 3)*. Por eso son **el motor**,
+no un sistema de demanda.
 
 ---
 
-# 1 · DEMAND OS
+# ⚙️ EL MOTOR — de dónde sale el dinero
 
 > **La lógica es la misma en las dos divisiones:**
 > **1** hacer deseable lo que vendés · **2** encontrar dónde se vende en grande ·
@@ -171,7 +207,7 @@ Ya te conoce, ya te pagó y ya sabe cómo trabajás.
 
 ---
 
-# 2 · CONVERSION OS
+# 🔩 EL CHASIS · 1 — ⚡ CONVERSION OS
 
 **Aplica a las dos divisiones. Es el puente entre que te encuentren y que te paguen.**
 
@@ -184,7 +220,7 @@ Ya te conoce, ya te pagó y ya sabe cómo trabajás.
 
 ---
 
-# 3 · OPERATIONS OS
+# 🔩 EL CHASIS · 2 — 🔧 OPERATIONS OS
 
 > **Acá está el caso que nadie atiende:** empresas facturando millones donde **el fundador sigue
 > adentro de todo.** Eso no es un problema de marketing. Y más demanda lo empeora.
@@ -212,7 +248,7 @@ y documentación. ⚠️ **No reclutamos. Damos el sistema, no las personas.**
 
 ---
 
-# 4 · MONEY OS
+# 🔩 EL CHASIS · 3 — 💰 MONEY OS
 
 | Pilar | 🎯 El resultado | Capacidad |
 |---|---|---|
@@ -260,7 +296,7 @@ y documentación. ⚠️ **No reclutamos. Damos el sistema, no las personas.**
 
 | | 🟦 **IGNITE** $800 | 🟪 **ACCELERATE** $1,100 | 🟨 **COMPOUND** $2,000 |
 |---|---|---|---|
-| **Demand OS** | ✅ | ✅ | ✅ |
+| **⚙️ EL MOTOR** | ✅ | ✅ | ✅ |
 | **Conversion OS** | ⬜ | ✅ | ✅ |
 | **Operations OS** | ⬜ | Parcial *(tecnología)* | ✅ |
 | **Money OS** | ⬜ | ⬜ | ✅ |

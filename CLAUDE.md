@@ -125,9 +125,16 @@ agencia: no vendemos entregables, **operamos las cuatro palancas de valor de la 
 🟣 HIGH TICKET   el juego es PRECISIÓN   oferta · autoridad · proceso de venta · expansión
 ```
 
-**Cuatro sistemas operativos, no uno:** `DEMAND OS` *(que entre gente)* · `CONVERSION OS` *(que
-compren)* · `OPERATIONS OS` *(que la empresa aguante)* · `MONEY OS` *(que cada venta deje)*.
-Ver `GROWTH-OS.md`.
+**`INHERENT GROWTH OS` es el paraguas, con dos capas** — `Growth` **no** es uno de los sistemas:
+arreglar márgenes **es** crecer.
+
+```
+⚙️ EL MOTOR    de dónde sale el dinero   →  los 3 pilares de cada división
+🔩 EL CHASIS   lo que lo sostiene        →  ⚡ Conversion · 🔧 Operations · 💰 Money
+```
+
+**El motor es lo que vendemos. El chasis es lo que nos separa de una agencia** — una agencia
+solo tiene motor, por eso su cliente crece y se rompe. Ver `GROWTH-OS.md`.
 
 🚫 **No vendemos servicios. Vendemos resultado.** *"Te damos SOPs"* ❌ ·
 *"Te podés ir una semana y la empresa factura igual"* ✅
