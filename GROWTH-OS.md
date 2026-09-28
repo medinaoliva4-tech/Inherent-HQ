@@ -1,9 +1,48 @@
-# Inherent Growth OS
+# INHERENT GROWTH OS
 
-> **La regla que gobierna este documento:**
+> **La regla que gobierna todo:**
 > **Cada fila termina en un RESULTADO, no en un servicio.**
 > Un servicio es fricción. Un resultado es solución.
-> *"Te damos SOPs"* ❌ · *"Tu operación deja de depender de vos"* ✅
+> *"Te damos SOPs"* ❌ · *"Te podés ir una semana y la empresa factura igual"* ✅
+
+---
+
+## La arquitectura
+
+```
+╔═══════════════════ INHERENT GROWTH OS ═══════════════════╗
+║                                                            ║
+║   0️⃣  EL DIAGNÓSTICO — dónde está roto tu crecimiento      ║
+║                            │                               ║
+║   ⚙️  EL MOTOR — de dónde sale el dinero                   ║
+║   ┌─────────────────────┬─────────────────────┐           ║
+║   │  🔵 LOW TICKET      │  🟣 HIGH TICKET     │           ║
+║   │  1 Oferta           │  1 Oferta           │           ║
+║   │  2 Big sales        │  2 Cuentas grandes  │           ║
+║   │  3 Upsells          │  3 Expansión        │           ║
+║   └─────────────────────┴─────────────────────┘           ║
+║                            │                               ║
+║   🔩 EL CHASIS — lo que lo sostiene                        ║
+║   ┌───────────────┬───────────────┬───────────────┐       ║
+║   │ ⚡ CONVERSION  │ 🔧 OPERATIONS │ 💰 MONEY      │       ║
+║   │ que compren   │ que aguantes  │ que te quede  │       ║
+║   └───────────────┴───────────────┴───────────────┘       ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+```
+
+> **El motor es lo que vendemos. El chasis es lo que nos separa de una agencia.**
+> Una agencia solo tiene motor — por eso su cliente crece y se rompe.
+
+### El recorrido del dinero
+
+```
+1 · Que te QUIERAN           → ⚙️ MOTOR · pilar 1
+2 · Que te COMPREN           → ⚡ CONVERSION
+3 · Que puedas ENTREGAR      → 🔧 OPERATIONS
+4 · Que te QUEDE             → 💰 MONEY
+5 · Que VUELVAN Y CREZCAN    → ⚙️ MOTOR · pilares 2 y 3
+```
 
 ---
 
@@ -22,79 +61,68 @@
 
 ---
 
-# La arquitectura — dos capas
+# 0️⃣ EL INICIO DEL CICLO — El Diagnóstico
 
-> **`Growth` no es uno de los cuatro. Es el nombre del sistema completo.**
-> Arreglar márgenes **es** crecer. Mejorar conversión **es** crecer.
-> Ponerlo al lado sería como decir «tengo motor, ruedas, frenos… y auto».
+**Nada arranca sin esto. Cuatro preguntas, en este orden.**
 
-```
-╔══════════════════ INHERENT GROWTH OS ══════════════════╗
-║                                                          ║
-║   ⚙️  EL MOTOR — de dónde sale el dinero                 ║
-║   ┌────────────────────┬────────────────────┐           ║
-║   │  🔵 LOW TICKET     │  🟣 HIGH TICKET    │           ║
-║   │  1 Oferta          │  1 Oferta          │           ║
-║   │  2 Big sales       │  2 Cuentas grandes │           ║
-║   │  3 Upsells         │  3 Expansión       │           ║
-║   └────────────────────┴────────────────────┘           ║
-║                         │                                ║
-║   🔩 EL CHASIS — lo que lo sostiene                      ║
-║   ┌──────────────┬──────────────┬──────────────┐        ║
-║   │ ⚡ CONVERSION │ 🔧 OPERATIONS │ 💰 MONEY     │        ║
-║   │ que compren  │ que aguantes │ que te quede │        ║
-║   └──────────────┴──────────────┴──────────────┘        ║
-║                                                          ║
-╚══════════════════════════════════════════════════════════╝
-```
+| # | Pregunta | Qué define |
+|---|---|---|
+| **1** | ¿**Low** o **High ticket**? | Qué motor aplica |
+| **2** | ¿Qué **pilar del motor** está roto? | Dónde se está perdiendo el crecimiento |
+| **3** | ¿El **chasis** aguanta? | Si hay que arreglar antes de acelerar |
+| **4** | ¿Qué **nivel** le corresponde? | Hasta dónde nos involucramos |
 
-### Por qué dos capas y no cuatro sistemas planos
+### 🚨 La regla de oro del diagnóstico
 
-| | |
-|---|---|
-| **El motor es lo que vendemos** | Es la promesa: que entre más dinero |
-| **El chasis es lo que nos separa de una agencia** | **Una agencia solo tiene motor.** Por eso su cliente crece y se rompe |
-| **Mapea exacto al precio** | 🟦 solo motor · 🟪 motor + parte del chasis · 🟨 motor y chasis completos |
-| **Da la narrativa de venta** | *"Te vendemos el motor. Pero si el chasis no aguanta, el motor no sirve."* |
+> **Si el chasis está roto, no se toca el motor todavía.**
+> Más demanda sobre una operación rota **destruye la marca.**
 
-### El recorrido del dinero
+| Lo que encontramos | Lo que haría una agencia | **Lo que hacemos** |
+|---|---|---|
+| Llegan leads y nadie contesta | Más pauta | **Arreglamos el seguimiento primero** |
+| El equipo no da abasto | Más contenido | **Procesos y perfiles antes de subir volumen** |
+| Vende mucho y gana poco | Más campañas | **Revisamos precio y márgenes** |
+| La entrega es mala | Más alcance | **Frenamos** |
 
-```
-1 · Que te QUIERAN      → EL MOTOR, pilar 1
-2 · Que te COMPREN      → CONVERSION
-3 · Que puedas ENTREGAR → OPERATIONS
-4 · Que te QUEDE        → MONEY
-5 · Que VUELVAN Y CREZCAN → EL MOTOR, pilares 2 y 3
-```
+**Entregable del diagnóstico:** el mapa de crecimiento del cliente — qué está roto, en qué orden
+se arregla, y qué resultado esperar de cada arreglo.
 
-⚠️ **Corrección de nombre:** los pilares de las divisiones **no son «Demand OS».**
-Cubren demanda *(pilar 1 y 2)* **y valor por cliente** *(pilar 3)*. Por eso son **el motor**,
-no un sistema de demanda.
+`📊 Consulting` `📣 Marketing`
 
 ---
 
-# ⚙️ EL MOTOR — de dónde sale el dinero
+# ⚙️ EL MOTOR
 
 > **La lógica es la misma en las dos divisiones:**
 > **1** hacer deseable lo que vendés · **2** encontrar dónde se vende en grande ·
 > **3** hacer que cada cliente deje más.
-> **Lo que cambia es qué significa «en grande» en cada mundo.**
+> **Lo que cambia es qué significa «en grande».**
 
 ---
 
-## 🔵 LOW TICKET GROWTH
+## 🔵 LOW TICKET GROWTH — *el juego es volumen*
+
+*Restaurantes · retail · consumo · wellness · productos*
 
 ### 1er Pilar · **Better your Offer**
 
 Comprendemos tu **ICP** —para hablarle a sus *pain points* y sus deseos— y a través de eso nos
-ponemos en sus zapatos para poder armar tu **oferta** *(producto, lugar y experiencia)* de modo
-que sea **deseable** para tu ICP.
+ponemos en sus zapatos para armar tu **oferta** *(producto, lugar y experiencia)* de modo que sea
+**deseable** para tu ICP. Y luego **comunicarlo en distintos ángulos**: orgánico, terceros y ads.
 
-Y luego **comunicarlo en distintos ángulos de comunicación**: orgánico, terceros y ads.
+| Qué hacemos | Capacidades |
+|---|---|
+| Investigación de ICP — *pain points*, deseos, comportamiento | 📣 📊 |
+| Construcción de la oferta — producto, lugar y experiencia | 📊 🏷️ |
+| Plataforma de marca y posicionamiento | 🏷️ |
+| Identidad, guidelines y packaging | 🏷️ |
+| Ángulos de comunicación y campañas | 🎨 📣 |
+| Producción de foto y video | 🎬 |
+| Contenido orgánico a volumen | 🎬 🎨 |
+| Pauta en Meta y TikTok | 📣 |
+| Influencers y UGC | 📣 🎨 |
 
-> **Causando reservas y maneras aseguradas de conversión.**
-
-`📣 Marketing` `🏷️ Branding` `🎨 Creative` `🎬 Production`
+> 🎯 **Causando reservas y maneras aseguradas de conversión.**
 
 ---
 
@@ -102,38 +130,52 @@ Y luego **comunicarlo en distintos ángulos de comunicación**: orgánico, terce
 
 Al comprender tus productos vemos **qué podemos vender «en grande»**.
 
-**Como:**
-1. **Eventos** — celebraciones personales · eventos corporativos · instituciones educativas ·
+**Los canales:**
+1. **Eventos** — celebraciones personales · corporativos · instituciones educativas ·
    organizaciones e iglesias · eventos públicos y masivos · catering y convenios
 2. **Pedidos al por mayor** — mayoristas · revendedores
 3. **Preventas** — lanzamientos · temporada · producción bajo pedido
 4. **Alianzas con corporaciones** — venderle a empresas
 
-> **Causando que un mes flojo de tráfico deje de ser un mes flojo de ventas.**
+| Qué hacemos | Capacidades |
+|---|---|
+| Mapeo de los canales grandes que aplican a tu producto | 📊 |
+| Material y propuesta de ventas para eventos y corporativos | 🏷️ 🎨 |
+| Outreach a mayoristas, revendedores y empresas | 📣 📊 |
+| Estructura de preventas y lanzamientos | 📣 🎨 |
+| Packaging para mayoreo y retail | 🏷️ |
+| Activaciones y eventos culturales propios | 🎨 🎬 |
 
-`📣 Marketing` `📊 Consulting` `🎨 Creative`
+> 🎯 **Causando que un mes flojo de tráfico deje de ser un mes flojo de ventas.**
 
 ---
 
 ### 3er Pilar · **Upsells y aumento del ticket**
 
-Al ver **cómo compra** tu cliente, encontramos qué más puede llevarse **sin que le cueste
-decidir**.
+Al ver **cómo compra** tu cliente, encontramos qué más puede llevarse **sin que le cueste decidir**.
 
-**Como:**
+**Las formas:**
 1. **Combos y complementos** — lo que casi siempre se lleva junto
 2. **Tamaños y versiones premium** — que elegir «el grande» sea obvio
 3. **Membresías y suscripción** — que la próxima compra ya esté decidida
 4. **Producto propio empacado** — que se lleven la marca a casa
 5. **Segunda visita programada** — que la recompra no dependa de acordarse
 
-> **Causando que la misma cantidad de gente deje más plata.**
+| Qué hacemos | Capacidades |
+|---|---|
+| Diseño de combos, tamaños y versiones | 📊 🏷️ |
+| Arquitectura de precios | 📊 |
+| Estructura de membresía o suscripción | 📊 🔧 |
+| Desarrollo de producto propio empacado | 🏷️ 🎬 |
+| Secuencias de recompra y reactivación | 🔧 📣 |
 
-`📣 Marketing` `📊 Consulting` `🏷️ Branding`
+> 🎯 **Causando que la misma cantidad de gente deje más plata.**
 
 ---
 
-## 🟣 HIGH TICKET GROWTH
+## 🟣 HIGH TICKET GROWTH — *el juego es precisión*
+
+*Servicios profesionales · B2B · salud especializada · arquitectura · software · inmobiliaria*
 
 > **Misma lógica, distinto significado de «grande».**
 > En low ticket «grande» es **más gente a la vez**. En high ticket es **más dinero y más tiempo
@@ -148,12 +190,21 @@ comparar y decidir**: alcance, entregables, tiempos, precio y garantía.
 Y luego lo comunicamos **construyendo autoridad**: casos con números, criterio demostrado y el
 fundador como cara, en los lugares donde tu comprador ya mira.
 
-> **Causando que lleguen ya convencidos, y que el precio no sea la primera conversación.**
-
 ⚠️ **Acá la oferta no tiene que ser deseable: tiene que quitar el miedo.**
 El cliente de high ticket **no teme gastar de más. Teme equivocarse.**
 
-`📣 Marketing` `🎬 Production` `📊 Consulting` `🏷️ Branding`
+| Qué hacemos | Capacidades |
+|---|---|
+| Investigación de ICP y del comité de compra | 📊 📣 |
+| **Empaquetado de la oferta** — alcance, entregables, tiempos, precio, garantía | 📊 🏷️ |
+| Plataforma de marca y posicionamiento | 🏷️ |
+| **Casos con números**, publicables | 📊 🎬 |
+| Contenido de autoridad — criterio, no venta | 🎬 🎨 |
+| **Marca personal del fundador** | 🎬 🏷️ |
+| Presencia en prensa, podcasts y comunidades de su industria | 📣 |
+| Pauta de intención — Meta, Google Search, PMax | 📣 |
+
+> 🎯 **Causando que lleguen ya convencidos, y que el precio no sea la primera conversación.**
 
 ---
 
@@ -162,16 +213,23 @@ El cliente de high ticket **no teme gastar de más. Teme equivocarse.**
 Al comprender tus servicios vemos **qué podemos vender «en grande»** — más grande, y por más
 tiempo.
 
-**Como:**
+**Las formas:**
 1. **Retainers y contratos anuales** — en vez de proyectos sueltos
 2. **Proyectos por fases** — diagnóstico → implementación → operación
 3. **Acuerdos marco con corporaciones** — quedar dentro de su lista de proveedores
 4. **Alianzas y white label** — vender a través de quien ya tiene la cuenta
 5. **Licitaciones y procesos formales** — jugar donde los contratos son grandes
 
-> **Causando que un solo cierre valga meses, no semanas.**
+| Qué hacemos | Capacidades |
+|---|---|
+| Diseño de retainers y contratos anuales | 📊 |
+| Estructura de proyectos por fases | 📊 |
+| Material y propuesta para acuerdos marco | 🏷️ 📊 |
+| Programa de alianzas y white label | 📊 📣 |
+| Preparación para licitaciones y procesos formales | 📊 |
+| Portal o panel de cliente que sostenga contratos largos | 🔧 |
 
-`📊 Consulting` `📣 Marketing` `🔧 Tech`
+> 🎯 **Causando que un solo cierre valga meses, no semanas.**
 
 ---
 
@@ -180,15 +238,21 @@ tiempo.
 **El cliente que ya está adentro es la venta más barata que existe.**
 Ya te conoce, ya te pagó y ya sabe cómo trabajás.
 
-**Como:**
+**Las formas:**
 1. **Más servicios a la misma cuenta** — lo que hoy le compra a otro
 2. **Más áreas, sedes o unidades** del mismo cliente
-3. **Renovación antes del vencimiento** — que nunca llegue la conversación de «¿seguimos?»
+3. **Renovación antes del vencimiento** — que nunca llegue la conversación de *«¿seguimos?»*
 4. **Referidos sistematizados** — pedidos en el momento correcto, no esperados
 
-> **Causando crecimiento sin tener que conseguir clientes nuevos todo el tiempo.**
+| Qué hacemos | Capacidades |
+|---|---|
+| Mapa de servicios cruzados por cuenta | 📊 |
+| Plan de expansión a otras áreas o sedes | 📊 |
+| Calendario y guion de renovación | 📊 🔧 |
+| Programa de referidos sistematizado | 📣 📊 |
+| Reporte de valor para el cliente — *que vea lo que le diste* | 🔧 📊 |
 
-`📊 Consulting` `📣 Marketing`
+> 🎯 **Causando crecimiento sin tener que conseguir clientes nuevos todo el tiempo.**
 
 ---
 
@@ -207,78 +271,92 @@ Ya te conoce, ya te pagó y ya sabe cómo trabajás.
 
 ---
 
-# 🔩 EL CHASIS · 1 — ⚡ CONVERSION OS
+# 🔩 EL CHASIS
 
-**Aplica a las dos divisiones. Es el puente entre que te encuentren y que te paguen.**
-
-| Pilar | 🎯 El resultado | Capacidad |
-|---|---|---|
-| **Respuesta** | **Nadie que escribe se queda sin respuesta**, ni de noche ni el domingo | 🔧 📣 |
-| **Seguimiento** | **Ningún interesado se enfría** por olvido | 🔧 📊 |
-| **Camino de compra** | **Comprar deja de ser un trámite** | 🔧 🏷️ |
-| **Medición** | Sabés **qué te trae plata y qué te la quema** | 🔧 📊 |
+**Tres sistemas. Sin ellos el motor gira en falso.**
 
 ---
 
-# 🔩 EL CHASIS · 2 — 🔧 OPERATIONS OS
+## ⚡ CONVERSION OS — *que compren*
 
-> **Acá está el caso que nadie atiende:** empresas facturando millones donde **el fundador sigue
-> adentro de todo.** Eso no es un problema de marketing. Y más demanda lo empeora.
+**El puente entre que te encuentren y que te paguen. Aplica a las dos divisiones.**
 
-| Pilar | 🎯 El resultado | Capacidad |
-|---|---|---|
-| **Sacar al fundador del centro** | **Podés irte una semana y la empresa factura igual** | 📊 🔧 |
-| **Entrega que no se rompe** | **Crecer deja de dar miedo** | 📊 🔧 |
-| **Herramientas propias** | **Tu equipo deja de trabajar en hojas sueltas y WhatsApp** | 🔧 |
-| **Equipo que sostiene** | **Contratar deja de ser una apuesta** | 📊 |
-
-### El detalle
-
-**Sacar al fundador del centro** — Qué decisiones solo puede tomar él y cuáles no deberían
-llegarle. Criterios escritos, no instinto. SOPs de lo que hoy vive en su cabeza.
-
-**Entrega que no se rompe** — Mapeamos cómo entregás hoy, dónde se rompe y qué se automatiza.
-**Crecer con la entrega rota destruye la marca** — si acá hay un problema grave, **se arregla
-antes de generar más demanda.**
-
-**Herramientas propias** — CRM ligero, panel de operación, portal de cliente, automatizaciones.
-
-**Equipo que sostiene** — Perfiles de puesto según lo que el crecimiento va a exigir, onboarding
-y documentación. ⚠️ **No reclutamos. Damos el sistema, no las personas.**
+| Pilar | Qué hacemos | Capacidades | 🎯 Resultado |
+|---|---|---|---|
+| **Respuesta** | Embudos de WhatsApp · auto-DM · respuestas automáticas · entrenamiento al equipo | 🔧 📣 | **Nadie que escribe se queda sin respuesta**, ni de noche ni el domingo |
+| **Seguimiento** | CRM ligero · secuencias automáticas · recordatorios · guion de objeciones | 🔧 📊 | **Ningún interesado se enfría** por olvido |
+| **Camino de compra** | Landings · checkout · pruebas A/B · CRO continuo | 🔧 🏷️ | **Comprar deja de ser un trámite** |
+| **Medición** | Atribución CAPI + GA4 · enlaces y códigos rastreables · dashboard en vivo | 🔧 📊 | Sabés **qué te trae plata y qué te la quema** |
 
 ---
 
-# 🔩 EL CHASIS · 3 — 💰 MONEY OS
+## 🔧 OPERATIONS OS — *que aguantes*
 
-| Pilar | 🎯 El resultado | Capacidad |
-|---|---|---|
-| **Precio y oferta** | **Cobrás lo que vale, y el cliente lo entiende** | 📊 🏷️ |
-| **Margen por producto** | **Sabés cuál te da y cuál te quita** | 📊 |
-| **Costo de traer un cliente** | **Cada quetzal en pauta tiene un número al lado** | 📊 🔧 |
-| **Valor de vida del cliente** | **Podés invertir más en traerlos porque sabés qué dejan** | 📊 |
+> **El caso que nadie atiende:** empresas facturando millones donde **el fundador sigue adentro
+> de todo.** Eso no es un problema de marketing — y más demanda lo empeora.
 
-> **Este es el sistema que convierte marketing en negocio.**
+| Pilar | Qué hacemos | Capacidades | 🎯 Resultado |
+|---|---|---|---|
+| **Sacar al fundador del centro** | Mapa de decisiones · criterios escritos · SOPs de lo que vive en su cabeza · delegación por etapas | 📊 | **Podés irte una semana y la empresa factura igual** |
+| **Entrega que no se rompe** | Mapeo del proceso de entrega · dónde se rompe · automatización de pasos manuales · estándar de calidad medible | 📊 🔧 | **Crecer deja de dar miedo** |
+| **Herramientas propias** | CRM · panel de operación · portal de cliente · automatizaciones · **IA propia entrenada con tu marca** | 🔧 | **Tu equipo deja de trabajar en hojas sueltas y WhatsApp** |
+| **Equipo que sostiene** | Perfiles de puesto según lo que el crecimiento va a exigir · onboarding · documentación de criterios | 📊 | **Contratar deja de ser una apuesta** |
+
+⚠️ **No reclutamos. Damos el sistema, no las personas.**
+
+---
+
+## 💰 MONEY OS — *que te quede*
+
+> **El sistema que convierte marketing en negocio.**
 > Sin él, vender más puede significar ganar menos — y nadie se entera hasta que es tarde.
 
+| Pilar | Qué hacemos | Capacidades | 🎯 Resultado |
+|---|---|---|---|
+| **Precio y oferta** | Revisión de precio · estructura de la oferta · cómo se comunica el valor | 📊 🏷️ | **Cobrás lo que vale, y el cliente lo entiende** |
+| **Margen por línea** | Análisis de margen producto por producto · qué empujar y qué retirar | 📊 | **Sabés cuál te da y cuál te quita** |
+| **Costo de adquisición** | Modelo de CAC por canal · cuánto podés pagar por un cliente | 📊 🔧 | **Cada quetzal en pauta tiene un número al lado** |
+| **Valor de vida** | LTV por segmento · frecuencia · retención | 📊 | **Podés invertir más en traerlos porque sabés qué dejan** |
+
 ---
 
-# Los seis casos — paquetes listos por situación
+# 🎚️ Qué entra en cada nivel
 
-> **La gente no compra "growth". Compra salir de donde está.**
-> Estos son los seis escenarios reales. **El cliente se reconoce en uno.**
-
-| Caso | Se ve así | OS que se activa | Nivel |
+| | 🟦 **IGNITE** $800 | 🟪 **ACCELERATE** $1,100 | 🟨 **COMPOUND** $2,000 |
 |---|---|---|---|
-| **🕳️ Nadie nos conoce** | Buen producto, cero demanda. Todo viene de referidos | Demand | 🟦 IGNITE |
-| **💧 Los leads se pierden** | Llega gente, nadie contesta a tiempo, se enfrían | Demand + Conversion | 🟪 ACCELERATE |
-| **🔗 Dependemos de un solo canal** | Si Meta sube el CPM, el mes se cae | Demand | 🟪 ACCELERATE |
+| 0️⃣ **Diagnóstico** | ✅ | ✅ Profundo | ✅ + trimestral |
+| ⚙️ **EL MOTOR** | ✅ Pilares 1 y 2 | ✅ **Los 3 pilares** | ✅ **Los 3, a fondo** |
+| ⚡ **Conversion** | ⬜ | ✅ | ✅ |
+| 🔧 **Operations** | ⬜ | Parcial *(herramientas)* | ✅ **Completo** |
+| 💰 **Money** | ⬜ | ⬜ | ✅ |
+| | | | |
+| **Capacidades** | 📣 🎨 🎬 🏷️ | + 🔧 | **las seis** |
+| **Somos** | Tu equipo de demanda | Tu **operating partner** | **Tu socio operador** |
+
+### Por qué Ignite no lleva chasis — y está bien
+> **Un negocio que arranca no tiene un problema de capacidad. Tiene un problema de existencia.**
+> Meterse en sus finanzas hoy sería cobrarle por algo que todavía no necesita.
+
+### Por qué Compound es el más caro
+> **Tocamos tu equipo y tus números.** Es el involucramiento de un socio operador, no de un
+> proveedor. **Y esas dos palancas no las puede cargar un agente — solo una cabeza.**
+
+---
+
+# 🎯 Los seis casos — el cliente se reconoce en uno
+
+| Caso | Se ve así | Qué se activa | Nivel |
+|---|---|---|---|
+| **🕳️ Nadie nos conoce** | Buen producto, cero demanda. Todo viene de referidos | Motor · pilar 1 | 🟦 IGNITE |
+| **💧 Los leads se pierden** | Llega gente, nadie contesta a tiempo, se enfrían | Conversion | 🟪 ACCELERATE |
+| **🔗 Un solo canal** | Si Meta sube el CPM, el mes se cae | Motor · pilar 2 | 🟪 ACCELERATE |
 | **🧨 Crecimos y se rompió** | Subieron las ventas y la operación colapsó | Operations + Conversion | 🟨 COMPOUND |
 | **👤 El fundador es el cuello** | Factura millones, pero todo pasa por él | Operations | 🟨 COMPOUND |
 | **🩸 Lleno pero sin plata** | Mucho volumen, márgenes destruidos | Money + Operations | 🟨 COMPOUND |
 
-### Cómo se vende cada caso
+### La frase que vende cada uno
 
-| Caso | La frase que lo vende |
+| Caso | |
 |---|---|
 | Nadie nos conoce | *"En 90 días la gente que te importa sabe que existís."* |
 | Los leads se pierden | *"Dejás de perder los que ya te buscaron."* |
@@ -288,31 +366,20 @@ y documentación. ⚠️ **No reclutamos. Damos el sistema, no las personas.**
 | Lleno pero sin plata | *"Trabajar menos y ganar más, en ese orden."* |
 
 ⚠️ **Los seis casos son hipótesis derivadas del modelo, no research de campo.**
-`[sin validar con entrevistas reales]` **Hay que confirmarlos con clientes antes de publicarlos.**
-
----
-
-# Qué OS entra en cada nivel
-
-| | 🟦 **IGNITE** $800 | 🟪 **ACCELERATE** $1,100 | 🟨 **COMPOUND** $2,000 |
-|---|---|---|---|
-| **⚙️ EL MOTOR** | ✅ | ✅ | ✅ |
-| **Conversion OS** | ⬜ | ✅ | ✅ |
-| **Operations OS** | ⬜ | Parcial *(tecnología)* | ✅ |
-| **Money OS** | ⬜ | ⬜ | ✅ |
-| **Capacidades** | 📣 🎨 🎬 🏷️ | + 🔧 | **las seis** |
+`[sin validar con entrevistas reales]` **Confirmarlos antes de publicarlos.**
 
 ---
 
 # ⚠️ La disciplina al escribir esto para la web
 
-| Nunca escribir | Escribir |
+| ❌ Nunca escribir | ✅ Escribir |
 |---|---|
 | "Incluye SOPs y documentación" | **"Te podés ir una semana y la empresa factura igual"** |
 | "Análisis de unit economics" | **"Sabés cuál producto te da y cuál te quita"** |
 | "Implementación de CRM" | **"Ningún interesado se enfría por olvido"** |
 | "86 piezas de contenido al mes" | **"La gente que te importa sabe que existís"** |
 | "Auditoría de fulfillment" | **"Crecer deja de dar miedo"** |
+| "Estrategia de expansión de cuenta" | **"Crecés sin buscar clientes nuevos todo el tiempo"** |
 
 > **El volumen, los servicios y las herramientas son la EVIDENCIA de que podemos.**
 > **Nunca son la oferta.**
@@ -323,7 +390,7 @@ y documentación. ⚠️ **No reclutamos. Damos el sistema, no las personas.**
 
 | | |
 |---|---|
-| **La sexta capacidad** | Sumé 🔧 **Tech** a las cinco que nombraste. ¿Va aparte o dentro de Consulting? |
+| **La sexta capacidad** | 🔧 **Tech** — ¿va aparte o dentro de Consulting? |
 | **Los seis casos** | ¿Falta alguno? ¿Sobra alguno? |
-| **Validar los pain points** | Hay que entrevistar clientes reales. Hoy son deducción, no dato |
-| **High Ticket** | ¿Los cuatro pilares sirven? |
+| **Validar los pain points** | Hay que entrevistar clientes reales. Hoy son deducción |
+| **Motor en Ignite** | Lo puse con pilares 1 y 2. ¿O solo el 1? |
