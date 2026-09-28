@@ -125,7 +125,15 @@ agencia: no vendemos entregables, **operamos las cuatro palancas de valor de la 
 🟣 HIGH TICKET   el juego es PRECISIÓN   oferta · autoridad · proceso de venta · expansión
 ```
 
-**Los sistemas atacan la DEMANDA** — es el cuello, porque casi todos ya se enfocaron en producto
+**Cuatro sistemas operativos, no uno:** `DEMAND OS` *(que entre gente)* · `CONVERSION OS` *(que
+compren)* · `OPERATIONS OS` *(que la empresa aguante)* · `MONEY OS` *(que cada venta deje)*.
+Ver `GROWTH-OS.md`.
+
+🚫 **No vendemos servicios. Vendemos resultado.** *"Te damos SOPs"* ❌ ·
+*"Te podés ir una semana y la empresa factura igual"* ✅
+**El volumen, los servicios y las herramientas son la EVIDENCIA de que podemos — nunca la oferta.**
+
+**Los sistemas atacan primero la DEMANDA** — es el cuello, porque casi todos ya se enfocaron en producto
 y operación. ⚠️ **Pero si la empresa es el estorbo, más demanda empeora el problema:** se arregla
 la capacidad primero, aunque la venta fácil sea más pauta. Ver `SISTEMA.md`.
 
