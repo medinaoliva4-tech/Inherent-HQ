@@ -105,6 +105,28 @@ los agentes.** Se lee antes de prometer nada.
 **Dieciséis capas.** Todo nivel es un nivel de growth: **lo que cambia no es el tipo de servicio,
 es la profundidad.**
 
+🏛️ **El eje real es el INVOLUCRAMIENTO, no el volumen.** Pensamos como private equity, no como
+agencia: no vendemos entregables, **operamos las cuatro palancas de valor de la empresa** —
+📣 Marketing · 🔧 Tecnología · 👥 Personas · 💰 Finanzas.
+
+```
+🟦 IGNITE      Marketing                              → tu equipo de demanda
+🟪 ACCELERATE  + Tecnología                           → tu operating partner
+🟨 COMPOUND    + Personas + Finanzas                  → tu socio operador
+```
+
+**Dos divisiones, cada una con su ecuación:**
+`B2B = Leads × Calificación × Cierre × Ticket × Retención`
+`B2C = Tráfico × Conversión × Ticket × Frecuencia`
+
+**Dos frentes:** **DEMANDA** *(que entre gente)* y **CAPACIDAD** *(que la empresa la aguante)*.
+⚠️ **Si la empresa es el estorbo, más demanda empeora el problema.** Se arregla la capacidad
+primero — aunque la venta fácil sea más pauta. Ver `SISTEMA.md`.
+
+⚠️ **El precio se justifica por cuántas palancas tocamos y qué tan caro es involucrarse en
+ellas** — Marketing lo cargan los agentes; **Personas y Finanzas solo una cabeza.**
+**Nunca por volumen de entregables.**
+
 ⚠️ **El nivel se elige por el CUELLO, no por la industria ni por la facturación.**
 No me conocen → Básico · Me conocen y no convierto → Acelerado · Convierto y no retengo → Compuesto
 
