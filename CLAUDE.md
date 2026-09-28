@@ -125,16 +125,25 @@ agencia: no vendemos entregables, **operamos las cuatro palancas de valor de la 
 🟣 HIGH TICKET   el juego es PRECISIÓN   oferta · autoridad · proceso de venta · expansión
 ```
 
-**`INHERENT GROWTH OS` es el paraguas, con dos capas** — `Growth` **no** es uno de los sistemas:
-arreglar márgenes **es** crecer.
+**`INHERENT GROWTH OS` son cuatro sistemas.** El primero define de dónde sale el crecimiento;
+los otros tres hacen que ese crecimiento se sostenga.
 
 ```
-⚙️ EL MOTOR    de dónde sale el dinero   →  los 3 pilares de cada división
-🔩 EL CHASIS   lo que lo sostiene        →  ⚡ Conversion · 🔧 Operations · 💰 Money
+GROWTH OS       de dónde sale el crecimiento  →  los 3 pilares de cada división
+CONVERSION OS   que ese crecimiento se cobre
+OPERATIONS OS   que la empresa lo aguante
+MONEY OS        que quede utilidad
 ```
 
-**El motor es lo que vendemos. El chasis es lo que nos separa de una agencia** — una agencia
-solo tiene motor, por eso su cliente crece y se rompe. Ver `GROWTH-OS.md`.
+**Una agencia solo trabaja el primero.** Por eso sus clientes crecen y se rompen.
+Ver `GROWTH-OS.md`.
+
+🎓 **La red de especialistas es el diferenciador que más pesa.** Dos tipos:
+**por industria** —gente que ya hizo crecer su propia marca ahí, y responde *«¿qué harías si
+esta fuera tu empresa?»*— y **por área** —corporate structure, eventos, networking y PR, talent
+production, talent marketing.
+**Red, no nómina:** parte del equipo es fijo, el resto se activa cuando el proyecto lo pide.
+**El cliente accede a gente que no podría contratar, por lo que cuesta un proveedor.**
 
 🚫 **No vendemos servicios. Vendemos resultado.** *"Te damos SOPs"* ❌ ·
 *"Te podés ir una semana y la empresa factura igual"* ✅
