@@ -75,6 +75,8 @@ arreglar su embudo de WhatsApp y está en Básico— **no se entrega igual.**
 | **Ad spend del cliente** | Nunca está incluido en el paquete. Sin esto, no hay paid |
 | **Mercado donde vende** | 🇬🇹 Guatemala · 🇲🇽 México · 🇺🇸 EE.UU. · otro. **Cambia canales, competencia y expectativa de precio** → ver `MERCADOS.md` |
 | **Dónde está trabado** | No lo conocen · llega gente y se pierde · funciona pero depende de alguien. **De acá sale el nivel** |
+| **División** | 🔵 **Low ticket** *(el juego es volumen)* · 🟣 **High ticket** *(el juego es precisión)*. **Lo define cómo se decide la compra, no quién compra** → `SISTEMA.md` |
+| **Qué pilar está roto** | 🔵 oferta · ventas en grande · ticket — 🟣 oferta · autoridad · proceso de venta · expansión |
 | **Capacidad de producción de contenido** | Sale del paquete. Techo duro de la cadencia |
 
 > Si la capacidad de entrega ya está al tope, la estrategia **no es generar más demanda**: es

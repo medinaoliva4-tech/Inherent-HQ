@@ -221,6 +221,26 @@ Quiénes son · Qué reciben · Qué se les vende primero
 
 # C · LOS BRIEFS POR ÁREA
 
+## 🏠 Antes de escribir un brief: qué puede activar Inherent
+
+> **Strategy no puede proponer solo lo que sabe hacer. Tiene que conocer todo el arsenal.**
+
+| | Capacidad | Qué cubre |
+|---|---|---|
+| 📣 | **Marketing** | Publicidad · comunicación · affiliate · influencer · UGC · email · SEO · referidos · CRM y embudos |
+| 🎨 | **Creative** | Campañas creativas · conceptos · **eventos culturales** · activaciones |
+| 🎬 | **Production** | Films · video · fotografía · contenido · dirección |
+| 🏷️ | **Branding** | Identidad · guidelines · **packaging** · sistema visual · tono |
+| 📊 | **Consulting** | **SOPs · estructura corporativa · finanzas** · procesos · talento |
+
+**Al armar cada brief se pregunta: ¿qué capacidad resuelve este pilar roto?**
+Si la respuesta es una que el nivel contratado no cubre, **se dice** — no se sustituye por lo
+que sí está disponible.
+
+⚠️ **Nada que no esté en «Capacidades reales» de `PAQUETES.md` se promete.**
+
+
+
 Acá la estrategia se vuelve accionable. **Cada área recibe qué tiene que lograr y qué tomar en
 cuenta.** No cómo hacerlo — eso lo resuelve cada agente con sus propias skills.
 

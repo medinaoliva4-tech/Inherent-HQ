@@ -115,13 +115,19 @@ agencia: no vendemos entregables, **operamos las cuatro palancas de valor de la 
 🟨 COMPOUND    + Personas + Finanzas                  → tu socio operador
 ```
 
-**Dos divisiones, cada una con su ecuación:**
-`B2B = Leads × Calificación × Cierre × Ticket × Retención`
-`B2C = Tráfico × Conversión × Ticket × Frecuencia`
+**Somos cinco casas bajo un techo:** 📣 Marketing · 🎨 Creative · 🎬 Production · 🏷️ Branding ·
+📊 Consulting. **Strategy debe conocer las cinco** para decidir qué activar ante cada pilar roto.
 
-**Dos frentes:** **DEMANDA** *(que entre gente)* y **CAPACIDAD** *(que la empresa la aguante)*.
-⚠️ **Si la empresa es el estorbo, más demanda empeora el problema.** Se arregla la capacidad
-primero — aunque la venta fácil sea más pauta. Ver `SISTEMA.md`.
+**Dos divisiones — el eje es cómo se decide la compra, no quién compra:**
+
+```
+🔵 LOW TICKET    el juego es VOLUMEN     oferta · ventas en grande · upsells
+🟣 HIGH TICKET   el juego es PRECISIÓN   oferta · autoridad · proceso de venta · expansión
+```
+
+**Los sistemas atacan la DEMANDA** — es el cuello, porque casi todos ya se enfocaron en producto
+y operación. ⚠️ **Pero si la empresa es el estorbo, más demanda empeora el problema:** se arregla
+la capacidad primero, aunque la venta fácil sea más pauta. Ver `SISTEMA.md`.
 
 ⚠️ **El precio se justifica por cuántas palancas tocamos y qué tan caro es involucrarse en
 ellas** — Marketing lo cargan los agentes; **Personas y Finanzas solo una cabeza.**
