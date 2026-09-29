@@ -60,14 +60,17 @@ Lo primero. Todo lo demás existe para cumplirlos.
 
 > **El nivel no lo decide la venta. Lo decide dónde está trabado el negocio.**
 
-| Si el cuello es… | Nivel | Verbo |
+| Si el cuello es… | Plan | El boost |
 |---|---|---|
-| **No lo conocen** — hay producto, no hay demanda | 🟦 **Básico** | ENCENDER |
-| **Llega gente y se pierde** — hay demanda, no hay conversión | 🟪 **Acelerado** | ACELERAR |
-| **Funciona pero todo depende de alguien** — hay conversión, no hay sistema | 🟨 **Compuesto** | COMPONER |
+| **No lo conocen** — hay producto, no hay demanda | 🟦 **IGNITE** | Aprender a comunicarse y existir |
+| **Está estancado** — ya vende y no sabe cómo crecer sin romperlo | 🟪 **ACCELERATE** | Escalar lo que ya funciona |
+| **Todo depende del fundador** — crece pero no se sostiene solo | 🟨 **COMPOUND** | Que crezca sin él |
+
+**Y antes: ¿es low o high ticket?** Lo define cómo se decide la compra, no quién compra.
+Eso determina **cuáles son sus 3 pilares** → ver `GROWTH-OS.md`.
 
 **Esto define tres cosas de una vez:**
-1. Qué capas de las 16 entran *(ver `PAQUETES.md`)*
+1. **A qué profundidad se activan los 3 pilares** — mapea · ejecuta · sistematiza *(`ACTIVACION.md`)*
 2. Qué briefs se arman *(ver C)*
 3. **Cuál es el techo de los objetivos** — no se puede prometer lo que el nivel no cubre
 
@@ -121,13 +124,13 @@ Se mide con dos datos, y salen del bloque `context`:
 | Horas de producción | 2h · 1 sesión | 5h · 2 sesiones | 8h · 3 sesiones |
 | Canales de pauta | Meta · TikTok | + Google Search · PMax | + los que apliquen |
 | Variantes de creativo | hasta 20 | hasta 35 | hasta 50 |
-| Capas de la escalera | 1-4 + medición | 1-8 | **las 9** |
+| Sistemas activos | Growth | + Conversion · Operations *(parcial)* | **Los cuatro** |
 | Conversión y tecnología | ❌ | ✅ | ✅ |
 | Retención y autonomía del cliente | ❌ | Parcial | ✅ |
 | Objetivo del plan | Acelerar la máquina que hay | Rediseñar la máquina | Que la máquina se sostenga sola |
 
 > **Un objetivo que exige rediseñar el embudo, la operación o la tecnología es imposible sobre
-> `Growth Basic` — por contrato, no por ambición.** Se baja el objetivo, o se propone subir.
+> `Ignite` — por contrato, no por ambición.** Se baja el objetivo, o se propone subir.
 
 > ⚠️ **El video de grabación es el único techo que no escala.** Depende de las horas de producción
 > y de cuánto pueda grabar el cliente. Todo lo demás escala con agentes.
@@ -313,9 +316,9 @@ RESTRICCIONES        presupuesto, tiempo, lo que el cliente ya dijo que no
 ```
 
 > **Los briefs que se arman dependen del nivel contratado** — ver A.0.
-> 🟦 Básico: Branding · Marketing · Creative
-> 🟪 Acelerado: + Growth · Tecnología
-> 🟨 Compuesto: + Sistemas
+> 🟦 Ignite: Branding · Marketing · Creative
+> 🟪 Accelerate: + Growth · Tecnología
+> 🟨 Compound: + Sistemas
 
 ---
 

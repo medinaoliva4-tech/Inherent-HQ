@@ -57,7 +57,7 @@ y cuando el volumen alcanza, **se le asigna un sueldo fijo.**
 
 ## 2 · Las horas que toma cada cuenta, al mes
 
-| Rol | 🟦 Básico | 🟪 Acelerado | 🟨 Compuesto |
+| Rol | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
 |---|---|---|---|
 | **Producción** | 3 h | 5 h | 8 h |
 | **Operación** | 4 h | 6 h | 8 h |
@@ -137,9 +137,9 @@ es una hipótesis.
 
 | Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
-| 🟦 Básico | Q600 | Q320 | Q300 | Q1,000 | Q2,220 | Q3,940 | **64%** |
-| 🟪 Acelerado | Q1,000 | Q480 | Q300 | Q1,500 | Q3,280 | Q5,190 | **61%** |
-| 🟨 Compuesto | Q1,600 | Q640 | Q300 | Q2,000 | Q4,540 | Q10,860 | **71%** |
+| 🟦 Ignite | Q600 | Q320 | Q300 | Q1,000 | Q2,220 | Q3,940 | **64%** |
+| 🟪 Accelerate | Q1,000 | Q480 | Q300 | Q1,500 | Q3,280 | Q5,190 | **61%** |
+| 🟨 Compound | Q1,600 | Q640 | Q300 | Q2,000 | Q4,540 | Q10,860 | **71%** |
 
 **Utilidad total del mes: Q29,120**
 
@@ -155,9 +155,9 @@ es una hipótesis.
 
 | Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
-| 🟦 Básico | Q600 | Q260 | Q150 | Q1,000 | Q2,010 | Q4,150 | **67%** |
-| 🟪 Acelerado | Q1,000 | Q390 | Q150 | Q1,500 | Q3,040 | Q5,430 | **64%** |
-| 🟨 Compuesto | Q1,600 | Q520 | Q150 | Q2,000 | Q4,270 | Q11,130 | **72%** |
+| 🟦 Ignite | Q600 | Q260 | Q150 | Q1,000 | Q2,010 | Q4,150 | **67%** |
+| 🟪 Accelerate | Q1,000 | Q390 | Q150 | Q1,500 | Q3,040 | Q5,430 | **64%** |
+| 🟨 Compound | Q1,600 | Q520 | Q150 | Q2,000 | Q4,270 | Q11,130 | **72%** |
 
 **Utilidad total del mes: Q67,560**
 
@@ -173,9 +173,9 @@ es una hipótesis.
 
 | Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
-| 🟦 Básico | Q488 | Q200 | Q75 | Q1,000 | Q1,762 | Q4,398 | **71%** |
-| 🟪 Acelerado | Q812 | Q300 | Q75 | Q1,500 | Q2,688 | Q5,782 | **68%** |
-| 🟨 Compuesto | Q1,300 | Q400 | Q75 | Q2,000 | Q3,775 | Q11,625 | **75%** |
+| 🟦 Ignite | Q488 | Q200 | Q75 | Q1,000 | Q1,762 | Q4,398 | **71%** |
+| 🟪 Accelerate | Q812 | Q300 | Q75 | Q1,500 | Q2,688 | Q5,782 | **68%** |
+| 🟨 Compound | Q1,300 | Q400 | Q75 | Q2,000 | Q3,775 | Q11,625 | **75%** |
 
 **Utilidad total del mes: Q156,850**
 

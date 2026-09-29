@@ -20,8 +20,8 @@
 |---|---|---|
 | Aún no vendo | — | ⚠️ **Todavía no.** Primero producto y oferta |
 | **Construyendo** | $2k – $10k | 🟦 **Basic** |
-| **Creciendo** | $10k – $50k | 🟦 Básico → 🟪 **Accelerated** |
-| **Escalando** | $50k – $100k | 🟪 **Accelerated** → 🟨 Compuesto |
+| **Creciendo** | $10k – $50k | 🟦 Ignite → 🟪 **Accelerated** |
+| **Escalando** | $50k – $100k | 🟪 **Accelerated** → 🟨 Compound |
 | **Consolidada** | $100k+ | 🟨 **Compound** |
 
 ### Eje 2 · Dónde se traba el crecimiento
@@ -213,9 +213,9 @@
 
 | El patrón | Industrias donde más aparece | Paquete |
 |---|---|---|
-| **No me conocen** | Arquitectura · Software · B2B | 🟦 Básico |
-| **Me conocen y no convierto** | Restaurantes · Salud · Hotelería | 🟪 Acelerado |
-| **Convierto y no retengo** | Wellness · Retail · Marca personal | 🟨 Compuesto |
+| **No me conocen** | Arquitectura · Software · B2B | 🟦 Ignite |
+| **Me conocen y no convierto** | Restaurantes · Salud · Hotelería | 🟪 Accelerate |
+| **Convierto y no retengo** | Wellness · Retail · Marca personal | 🟨 Compound |
 
 > **Por eso los paquetes no son por industria: son por cuello.**
 > La industria define **cómo se ve** la solución. El cuello define **cuál es**.

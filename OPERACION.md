@@ -1,7 +1,7 @@
 # Operación — qué se hace, quién lo hace, cuánto cuesta
 
 > Desglose por **marca, al mes**. De acá salen los costos de `PAQUETES.md`.
-> **`Growth Basic` Q6,160** · **`Growth Accelerated` Q8,470** · **`Growth Compound` Q15,400**
+> **`Ignite` $800** · **`Accelerate` $1,100** · **`Compound` $2,000**
 
 ---
 
@@ -112,8 +112,10 @@
 | Tarifa | **Basic** (7h) | **Accelerated** (11h) | **Compound** (15h) |
 |---|---|---|---|
 | **Q60/h** | 69% | 52% | 59% |
-| **Q150/h** | **59%** | **40%** | **50%** |
-| **Q250/h** | **48%** | **27%** ⚠️ | **40%** |
+| **Q150/h** | 72% | 69% | 77% |
+| **Q250/h** | **64%** | **61%** | **71%** |
+
+> **Modelo canónico: hora con escalera** — ver `EQUIPO.md`. Con 5 clientes y mix realista.
 
 ✅ **Con los precios cerrados, Q250/h cierra en los tres.**
 Acelerado es el más ajustado (37%) porque agrega producción real, no solo capas de agente.
@@ -154,9 +156,9 @@ Su trabajo es ganar la cuenta. El margen viene del upsell.
 
 ## 6 · La hoja de ruta de automatización
 
-> **El modelo tiene dos estados.** Hoy los márgenes son 42% / 30% / 34%.
-> Con los tres agentes construidos son **60% / 53% / 56%, al mismo precio.**
-> Ver `PAQUETES.md` → «La ecuación» y «El modelo en dos estados».
+> **Los márgenes del modelo canónico (hora con escalera, 5 clientes) son 64% / 61% / 71%** —
+> **y asumen que estos agentes existen.** Sin ellos, las horas se duplican y caen ~15 puntos.
+> Ver `EQUIPO.md`.
 
 | # | Agente a construir | Qué mata | Ahorro por cliente |
 |---|---|---|---|
@@ -168,16 +170,15 @@ Su trabajo es ganar la cuenta. El margen viene del upsell.
 **Costo de automatizar:** Claude sube de Q192 a ~Q300 por cliente.
 👉 **Se ahorran Q9 de trabajo humano por cada Q1 de Claude extra.**
 
-### Las horas de Allan, hoy y objetivo
+### Las horas de Allan
 
-| | Basic | Accelerated | Compound |
+| | Ignite | Accelerate | Compound |
 |---|---|---|---|
-| **Hoy** | 7 h | 11 h | 15 h |
-| **Objetivo** | **4 h** | **6 h** | **8 h** |
+| **Con los agentes** | **4 h** | **6 h** | **8 h** |
+| Sin el agente de QA | ~7 h | ~11 h | ~15 h |
 
 **Lo que esto desbloquea no es el margen, es la capacidad:**
-**8 clientes Compound en estado objetivo = Q61,800/mes con 64h** — menos horas de las que hoy
-consumen 5 clientes.
+**8 clientes Compound = Q91,140/mes con 64 horas de Allan** — menos de medio tiempo.
 
 ---
 

@@ -13,9 +13,9 @@
 **Todo cliente contrata crecimiento. Lo que cambia es qué tipo de crecimiento necesita.**
 
 ```
-🟦 CRECIMIENTO BÁSICO        Encender el motor
-🟪 CRECIMIENTO ACELERADO     Pisar el acelerador
-🟨 CRECIMIENTO COMPUESTO     Que cada mes construya sobre el anterior
+🟦 IGNITE       Encender: comunicarte y existir
+🟪 ACCELERATE   Acelerar: escalar lo que ya funciona
+🟨 COMPOUND     Componer: que crezca sin vos
 ```
 
 ### 💡 Propuesta de nombre branded
@@ -24,9 +24,9 @@
 
 | Hoy | **Propuesta** | Por qué |
 |---|---|---|
-| Crecimiento Básico | **GROWTH · IGNITE** | Encender |
-| Crecimiento Acelerado | **GROWTH · ACCELERATE** | Acelerar |
-| Crecimiento Compuesto | **GROWTH · COMPOUND** | **`COMPOUND` ya está en el glosario del método** |
+| Ignite | **GROWTH · IGNITE** | Encender |
+| Accelerate | **GROWTH · ACCELERATE** | Acelerar |
+| Compound | **GROWTH · COMPOUND** | **`COMPOUND` ya está en el glosario del método** |
 
 > Los tres verbos ya son los que definimos. **`COMPOUND` es vocabulario propio de Inherent.**
 > En español se leen igual: Igniciónar no — **se mantienen en inglés, como `Growth Operator`.**

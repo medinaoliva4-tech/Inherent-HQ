@@ -196,7 +196,7 @@ Sin MCP no hay acción, y sin acción no hay promesa.
 
 ## Los precios
 
-| | **🟦 Básico** | **🟪 Acelerado** | **🟨 Compuesto** |
+| | **🟦 Ignite** | **🟪 Accelerate** | **🟨 Compound** |
 |---|---|---|---|
 | **Precio / mes** | **Q6,160** *($800)* | **Q8,470** *($1,100)* | **Q15,400** *($2,000)* |
 | Piezas / mes | 86 | 145 | 204 |

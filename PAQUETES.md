@@ -9,23 +9,21 @@
 
 ## El principio
 
-**Todo paquete es un paquete de growth.** No vendemos creatividad por un lado y crecimiento por
-otro, porque nuestra propia metodología dice que para crecer hace falta algo íntegro. **No podemos
-vender algo distinto a lo que predicamos.**
+**Todo plan es un plan de growth.** No vendemos creatividad por un lado y crecimiento por otro,
+porque nuestra propia metodología dice que para crecer hace falta algo íntegro.
+
+**Los tres planes recorren los mismos 3 pilares de su división** *(low o high ticket)*.
+**Lo que cambia es el verbo:** Ignite **mapea** · Accelerate **ejecuta** · Compound **sistematiza**.
+Ver `ACTIVACION.md`.
 
 ```
-GROWTH BÁSICO          Crecimiento básico.
-    │                 Volumen y adquisición. La máquina que ya existe, vendiendo más.
-    ▼
-GROWTH ACELERADO    Crecimiento acelerado.
-    │                 + conversión, operación y tecnología. Rediseñamos la máquina.
-    ▼
-GROWTH COMPUESTO       El crecimiento se compone.
-                      + retención, omnicanal e IA propia. La máquina se sostiene sola.
+IGNITE      $800     invisible → deseado      aprender a comunicarse y existir
+ACCELERATE  $1,100   estancado → escalando    escalar lo que ya funciona, sin perderlo
+COMPOUND    $2,000   escalando → autónomo     que crezca sin vos
 ```
 
-> **El volumen es lo que nos separa del mercado. La profundidad es lo que separa nuestros
-> paquetes entre sí.**
+> **El volumen es lo que nos separa del mercado. La profundidad de involucramiento es lo que
+> separa los planes entre sí.**
 
 ---
 
@@ -48,7 +46,7 @@ que el mercado ya acepta.**
 
 ### ⚠️ Pero la ventaja de costo NO está donde parece
 
-**El AI es solo el 4.5% de nuestro costo.** El desglose real de Growth Basic:
+**El AI es solo el 4.5% de nuestro costo.** El desglose real de Ignite:
 
 | Concepto | % del costo |
 |---|---|
@@ -118,57 +116,55 @@ contra 16). **Lo que falla es el costo.** Y el costo falla por una razón concre
 
 ---
 
-## 📐 El modelo en dos estados
+## 📐 Los márgenes reales
 
-### Estado HOY — lo que se puede prometer ya
+> **Modelo canónico: hora con escalera.** Nadie cobra por cuenta; la tarifa baja con el volumen
+> garantizado y el costo de Claude se prorratea. Ver `EQUIPO.md`.
 
-| | Básico | Acelerado | Compuesto |
+**Con 5 clientes** *(mix realista: 2 Ignite · 2 Accelerate · 1 Compound)*
+
+| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| Precio | Q6,160 *($800)* | Q8,470 *($1,100)* | Q15,400 *($2,000)* |
-| Costo *(@Q250/h)* | Q3,217 | Q6,192 | Q9,167 |
-| Utilidad | Q2,943 | Q2,278 | Q6,233 |
-| **Margen** | **48%** | **27%** 🔴 | **40%** |
+| **Precio** | Q6,160 *($800)* | Q8,470 *($1,100)* | Q15,400 *($2,000)* |
+| Producción | 3h → Q600 | 5h → Q1,000 | 8h → Q1,600 |
+| Operación | 4h → Q320 | 6h → Q480 | 8h → Q640 |
+| Claude *(Q1,500 ÷ 5)* | Q300 | Q300 | Q300 |
+| Allan *(@Q250/h)* | 4h → Q1,000 | 6h → Q1,500 | 8h → Q2,000 |
+| **COSTO** | **Q2,220** | **Q3,280** | **Q4,540** |
+| **UTILIDAD** | **Q3,940** | **Q5,190** | **Q10,860** |
+| **MARGEN** | **64%** | **61%** | **71%** |
 
-### Estado OBJETIVO — con los tres agentes construidos
+### El margen crece solo con cada cliente
 
-| | Básico | Acelerado | Compuesto |
+| Clientes | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| Precio | **igual** | **igual** | **igual** |
-| Costo *(@Q250/h)* | Q2,225 | Q4,200 | Q6,175 |
-| Utilidad | **Q3,935** | **Q4,270** | **Q9,225** |
-| **Margen** | **64%** ✅ | **50%** ✅ | **60%** ✅ |
-| Horas de Allan | **4h** | **6h** | **8h** |
+| 2 | 53% | 52% | 64% |
+| **5** | **64%** | **61%** | **71%** |
+| 10 | 67% | 64% | 72% |
+| 20 | 71% | 68% | 75% |
 
-🔴 **Acelerado a $1,100 queda hoy en 27%.** El salto Básico→Acelerado es de solo **+$300** pero
-el costo sube **+92%** (suma 3h de producción y una sesión). **Dos salidas:**
-**subirlo a $1,300** *(38% hoy)*, o **aceptar 27% hasta que el agente de QA lo lleve a 50%.**
+**Porque la tarifa de producción y operación baja con el volumen garantizado, y Claude se diluye.**
 
-### De dónde sale cada quetzal ahorrado
-
-| | Basic | Accelerated | Compound |
-|---|---|---|---|
-| Agente de QA *(horas de Allan)* | −Q750 | −Q1,250 | −Q1,750 |
-| Operador automatizado | −Q350 | −Q500 | −Q650 |
-| Pipeline de tecnología | — | −Q350 | −Q700 |
-| Más Claude *(el costo de automatizar)* | +Q108 | +Q108 | +Q108 |
-| **AHORRO NETO** | **−Q992** | **−Q1,992** | **−Q2,992** |
-
-> **Se cambia trabajo humano por Claude, a razón de Q9 ahorrados por cada Q1 de Claude extra.**
-> Esa es la ventaja de agentes, medida.
+⚠️ **Estas horas asumen el agente de QA construido.** Sin él, las horas de operación y las de
+Allan se duplican y el margen cae ~15 puntos.
 
 ---
 
-## 🚀 Lo que el estado objetivo desbloquea de verdad
+## 🚀 Lo que desbloquea el modelo de hora
 
-**No es el margen. Es la capacidad.** Con 4-8 horas por cliente, el techo deja de ser Allan.
+**No es el margen. Es la capacidad.** Con 4 a 8 horas de Allan por cliente, **el techo deja de
+ser él.**
 
 | Escenario | Utilidad/mes | Horas de Allan |
 |---|---|---|
-| 5 × Compound — **hoy** | Q23,665 | 75 h |
-| 5 × Compound — **objetivo** | **Q38,625** | **40 h** |
-| **8 × Compound — objetivo** | **Q61,800** | **64 h** |
+| 5 × Compound | Q54,300 | 40 h |
+| **8 × Compound** | **Q91,140** | **64 h** |
+| 10 × Compound | Q114,300 | 80 h |
 
-🔥 **8 clientes en estado objetivo dan Q61,800/mes con menos horas de las que hoy consumen 5.**
+🔥 **8 clientes Compound dan Q91,140 al mes con 64 horas — menos de medio tiempo.**
+
+⚠️ **Todo esto asume el agente de QA construido.** Sin él, las horas de Allan se duplican y el
+techo vuelve a ser él.
 
 ---
 
@@ -207,7 +203,7 @@ No reemplaza la grabación profesional — **la multiplica.**
 
 ## Los paquetes
 
-| | **Growth Basic** | **Growth Accelerated** | **Growth Compound** |
+| | **Ignite** | **Accelerate** | **Compound** |
 |---|---|---|---|
 | **Precio / mes** | **Q6,160** *($800)* | **Q8,470** *(~$1,155)* | **Q15,400** *(~$1,805)* |
 | **Unidad** | 1 marca | 1 marca | 1 marca |
@@ -238,7 +234,7 @@ No reemplaza la grabación profesional — **la multiplica.**
 | Predicción de viralidad antes de publicar | ✅ | ✅ | ✅ | *❌* |
 | Revisiones por pieza | 2 | 2 | 3 | *1* |
 
-> 🔥 **Growth Basic entrega 5.4x el volumen del mercado, a Q64 por pieza contra Q188.**
+> 🔥 **Ignite entrega 5.4x el volumen del mercado, a Q64 por pieza contra Q188.**
 >
 > **El video de grabación es el único techo real** — depende de las horas de producción.
 > **Todo lo demás escala con agentes y cuesta Q0 marginal.**
@@ -248,374 +244,16 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ---
 
-## La escalera de capas
-
-**Dieciséis capas. Los tres niveles las recorren; cambia hasta dónde llegan.**
-
-| # | Capa | 🟦 Básico | 🟪 Acelerado | 🟨 Compuesto |
-|---|---|---|---|---|
-| 1 | **Estrategia** | ✅ | ✅ Profunda | ✅ + trimestral |
-| 2 | **Inteligencia continua** | Mensual | Semanal | Semanal + alertas |
-| 3 | **Marca y contenido** | 86 piezas | 145 piezas | 204 piezas |
-| 4 | **Adquisición (ADS)** | Meta · TikTok | + Google · PMax | + los que apliquen |
-| 5 | **Asociaciones y creadores** | ✅ Alianzas | + **Influencers** | + Embajadores |
-| 6 | **Captura de demanda** | ⬜ | ✅ **Lead magnets** | + segundo idioma |
-| 7 | **Conversión** | ⬜ | ✅ WhatsApp · CRO | ✅ CRO continuo |
-| 8 | **SEO de intención** | ⬜ | ✅ | + segundo idioma |
-| 9 | **Closing** | ⬜ | ✅ | + SOPs de venta |
-| 10 | **Tecnología** | ⬜ | ✅ 1 herramienta/trim | ✅ 1 herramienta/**mes** |
-| 11 | **Sistemas de demanda** | ⬜ | ⬜ | ✅ **Referidos · comunidad** |
-| 12 | **Fulfillment** | ⬜ | ⬜ | ✅ **Proceso de entrega** |
-| 13 | **Talento** | ⬜ | ⬜ | ✅ **SOPs · onboarding** |
-| 14 | **Experiencia y retención** | ⬜ | Parcial | ✅ **LTV** |
-| 15 | **Medición** | Reporte | Dashboard en vivo | + atribución completa |
-| 16 | **Autonomía del cliente** | ⬜ | ⬜ | ✅ **IA propia** |
-
-> 🟦 **ENCENDER** *(1-5 + 15)* — **Estrategia · Demanda · Contenido**
-> 🟪 **ACELERAR** *(1-10 + 14-15)* — **+ Tecnología · Contenido para ADS · SEO · Closing**
-> 🟨 **COMPONER** *(las 16)* — **+ Sistemas de demanda · Fulfillment · Talento**
-
-## 📋 Los tres paquetes, completos
-
-> Cada paquete listado por sus **nueve pilares**, no solo contenido.
-
----
-
-# 🟦 GROWTH BÁSICO — Q6,160/mes
-
-## ⚡ ENCENDER
-**Empezar el motor. Atraer, crear nombre, mejorar lo que ya existe y hacer las asociaciones
-correctas.**
-
-| | |
-|---|---|
-| **Para quién** | Ya vende, pero **nadie lo conoce** fuera de su círculo. El crecimiento depende del fundador, los referidos o esfuerzos aislados |
-| **El cuello** | *"Tengo buen producto y no me conocen"* |
-| **Momento del negocio** | Construyendo *($2k-10k)* · Creciendo *($10k-50k)* |
-| **Dónde más pega** | Arquitectura · Software · B2B · Retail |
-| **Qué cambia en 90 días** | La marca existe, se ve todos los días y empieza a llegar gente que no venía de referido |
-
-> Ver `INDUSTRIAS.md` para qué significa esto en cada industria.
-
-### 1 · Estrategia
-- Estrategia completa al inicio — los 4 bloques (contexto, análisis, ingeniería inversa, metodología)
-- Objetivos macro por trimestre, con prueba de realismo contra gente y dinero
-- Brief por área: Branding · Marketing · Growth · Creative
-- Plataforma de marca: posicionamiento, promesa, historia, personalidad
-- **Revisión del 20 de cada mes** — ligera
-
-### 2 · Inteligencia
-- **Radar de competencia mensual** — qué anuncios corren y cuáles sostienen
-- **Mapa de intereses y tendencias locales** al inicio
-- Ingeniería inversa del contenido ganador de la categoría
-- Estudio de títulos y portadas que ganan
-- Benchmark contra competidores directos — trimestral
-
-### 3 · Contenido — **86 piezas/mes**
-| | Cantidad |
-|---|---|
-| Reels de grabación | **6** |
-| Piezas derivadas *(cortes, reencuadres)* | **10** |
-| Estáticos y carruseles | **40** |
-| Stories | **30** *(diario)* |
-| Producción en sitio | 2h · 1 sesión |
-| Revisiones por pieza | 2 |
-
-- **Predicción de viralidad antes de publicar**
-- **Multiplicación de grabación** — 1 sesión rinde 15 piezas
-- Copy y community management
-- Dirección creativa y calendario mensual
-
-### 4 · Adquisición
-- **Meta Ads** (Facebook + Instagram)
-- **TikTok Ads**
-- Hasta **20 variantes de creativo** por campaña
-- Investigación de keywords propias y del competidor
-- Optimización de presupuesto y pausas
-- ⛔ Google Ads · ⛔ Inversión publicitaria (la pone el cliente)
-
-### 5 · Asociaciones ✅ **el multiplicador barato**
-> **Crecer no es solo pautar. Es pararse al lado de quien ya tiene la audiencia.**
-
-- **Mapa de aliados** — quién tiene ya la audiencia que queremos, sin ser competencia
-- Propuestas de colaboración y canje con marcas y creadores locales
-- Contenido en conjunto y cruces de audiencia
-- Presencia en comunidades donde ya está el cliente
-
-### 6 · Captura de demanda
-⬜ **No incluida.** El cliente sigue dependiendo del alcance de la plataforma.
-
-### 7 · Conversión
-⬜ **No incluida.** Se cotiza aparte o se sube de paquete.
-
-### 8 · SEO de intención
-⬜ **No incluido.**
-
-### 9 · Closing
-⬜ **No incluido.** Entregamos la demanda; el cierre es del cliente.
-
-### 10 · Tecnología
-⬜ **No incluida.**
-
-### 11 · Sistemas de demanda
-⬜ **No incluidos.**
-
-### 12 · Fulfillment
-⬜ **No incluido.**
-
-### 13 · Talento
-⬜ **No incluido.**
-
-### 14 · Experiencia y retención
-⬜ **No incluida.**
-
-### 15 · Medición
-- Reporte mensual de marca y performance
-- Los 3-4 números que dicen si el negocio está vivo
-- ⬜ Dashboard en vivo · ⬜ Atribución de ventas
-
-### 16 · Autonomía del cliente
-⬜ **No incluida.**
-
-**Performance fee:** opcional.
-
----
-
-# 🟪 GROWTH ACELERADO — Q8,470/mes
-
-## 🚀 ACELERAR
-**Crecer mucho más. Lead magnets, embudos, influencers, canales nuevos y tecnología que quita
-fricción.**
-
-| | |
-|---|---|
-| **Para quién** | Ya lo conocen y **llega gente — pero se pierde**. Hay demanda, no hay conversión |
-| **El cuello** | *"Me llegan mensajes pero se pierden"* |
-| **Momento del negocio** | Creciendo *($10k-50k)* · Escalando *($50k-100k)* |
-| **Dónde más pega** | Restaurantes · Salud especializada · Hotelería · Wellness |
-| **Qué cambia en 90 días** | Deja de depender de una sola fuente de demanda y **cada lead tiene a dónde caer** |
-
-> Ver `INDUSTRIAS.md` para qué significa esto en cada industria.
-
-### 1 · Estrategia
-✅ Todo lo de Basic, **más**:
-- **Revisión del 20 completa**, no ligera
-- **Sesión de dirección mensual con Allan**
-- Revisión de la oferta y de la estructura de precio
-
-### 2 · Inteligencia
-✅ Todo lo de Basic, **más**:
-- **Radar de competencia SEMANAL**, no mensual
-- **Mapa de intereses mensual**, no solo al inicio
-- Benchmark mensual
-- **Clonado del anuncio más longevo del competidor**
-
-### 3 · Contenido — **145 piezas/mes**
-| | Cantidad |
-|---|---|
-| Reels de grabación | **10** |
-| Piezas derivadas | **20** |
-| Estáticos y carruseles | **70** |
-| Stories | **45** |
-| Producción en sitio | 5h · 2 sesiones |
-| Revisiones por pieza | 2 |
-
-✅ Todo lo de Basic, **más**:
-- **Fotos de producto generadas** — catálogo sin sesión de fotos
-- **Plantillas dinámicas** (Figma/Canva) para el equipo del cliente
-
-### 4 · Adquisición
-✅ Meta + TikTok, **más**:
-- **Google Search**
-- **Performance Max**
-- Hasta **35 variantes de creativo** por campaña
-
-### 5 · Asociaciones y creadores ✅ **se profundiza**
-✅ Todo lo de Basic, **más**:
-- **Selección de influencers con criterio, no con alcance** — se eligen por afinidad real con el
-  ICP, usando la inteligencia de Eden sobre su audiencia y su rendimiento
-- Briefing, negociación y medición de cada colaboración
-- Códigos y enlaces rastreables para saber **cuál creador sí vendió**
-- Contenido de creadores reutilizado como creativo de pauta
-
-### 6 · Captura de demanda ✅ **NUEVO**
-> **Dejar de alquilar la audiencia.** Lo que se captura es propio.
-
-- **Lead magnets** — diagnósticos, calculadoras, guías, plantillas, reportes de industria
-- Landing de captura construida y desplegada
-- Lista propia del cliente *(no rentada a una plataforma)*
-- Secuencia de seguimiento automática
-
-### 7 · Conversión ✅ **NUEVO**
-- Auditoría y diseño del **embudo completo**
-- **Embudos de WhatsApp** — flujos, respuestas automáticas, entrenamiento al equipo de ventas
-- **Auto-DM** en redes
-- **Atribución limpia** — Meta CAPI + Google Analytics 4
-- Pruebas A/B sobre páginas y mensajería (CRO)
-
-### 8 · SEO de intención ✅ **NUEVO**
-> ⚠️ **SEO de contenido e intención, no SEO técnico.** Ver los límites en `IDENTIDAD.md`.
-
-- Investigación de keywords propias y del competidor
-- **Contenido que captura búsqueda** — el volumen lo hace posible sin equipo de SEO
-- Landings optimizadas por intención, construidas y desplegadas
-- Google Business optimizado para búsqueda local
-
-### 9 · Closing ✅ **NUEVO**
-> **La agencia entrega leads y se lava las manos. Nosotros llegamos hasta la venta.**
-
-- Estructura de cierre y guion de venta
-- Mapa de objeciones con respuestas
-- Sistema de seguimiento — que ningún lead se enfríe
-- **Entrenamiento al equipo de ventas del cliente**
-
-### 10 · Tecnología ✅ **NUEVO — el foso**
-- **Una herramienta a medida por trimestre** — CRM ligero, panel de operación, portal, calculadora
-- **Landings y microsites** construidos y desplegados
-- **Automatización de procesos internos**
-- Integración con las herramientas que ya usa
-
-### 11 · Sistemas de demanda
-⬜ **No incluidos.** La demanda se sigue comprando cada mes.
-
-### 12 · Fulfillment
-⬜ **No incluido.**
-
-### 13 · Talento
-⬜ **No incluido.**
-
-### 14 · Experiencia y retención — parcial
-- Secuencias de recompra y reactivación *(parcial)*
-- Sistema de reseñas y prueba social
-- ⬜ Mapa de experiencia completo · ⬜ Estrategia de LTV
-
-### 15 · Medición
-✅ Todo lo de Basic, **más**:
-- **Dashboard en vivo** — marca + ventas, 24/7
-- **Reporte de ventas atribuidas**
-
-### 16 · Autonomía del cliente
-⬜ **No incluida.**
-
-**Performance fee:** ✅ incluido.
-
----
-
-# 🟨 GROWTH COMPUESTO — Q15,400/mes
-
-## 🔁 COMPONER
-**Que cada mes construya sobre el anterior. Retención, LTV, sistemas propios y autonomía real.**
-
-| | |
-|---|---|
-| **Para quién** | Ya convierte — pero **todo depende de alguien**. Del fundador, de un canal, o de nosotros |
-| **El cuello** | *"Funciona, pero solo mientras ustedes estén"* |
-| **Momento del negocio** | Escalando *($50k-100k)* · Consolidada *($100k+)* |
-| **Dónde más pega** | Wellness · Retail · Marca personal · Software |
-| **Qué cambia en 90 días** | El crecimiento deja de comprarse cada mes. **Lo del mes pasado sigue trabajando este mes** |
-
-> **Es el único paquete donde el objetivo declarado es que nos necesiten menos.**
-> Ver `INDUSTRIAS.md` para qué significa esto en cada industria.
-
-### 1 · Estrategia
-✅ Todo lo de Accelerated, **más**:
-- **Sesión de dirección QUINCENAL**, no mensual
-- **Replanteo estratégico trimestral completo**
-
-### 2 · Inteligencia
-✅ Todo lo de Accelerated, **más**:
-- **Alertas de movimiento de mercado** — no se espera al radar semanal
-
-### 3 · Contenido — **204 piezas/mes**
-| | Cantidad |
-|---|---|
-| Reels de grabación | **14** |
-| Piezas derivadas | **30** |
-| Estáticos y carruseles | **100** |
-| Stories | **60** |
-| Producción en sitio | 8h · 3 sesiones |
-| Revisiones por pieza | **3** |
-
-✅ Todo lo de Accelerated, **más**:
-- **Contenido en segundo idioma** — doblaje y voz sintética sobre el material existente
-
-### 4 · Adquisición
-✅ Todo lo de Accelerated, **más**:
-- **Todos los canales que apliquen** al negocio
-- Hasta **50 variantes de creativo** por campaña
-
-### 5 · Asociaciones y creadores
-✅ Todo lo de Accelerated, **más**:
-- **Relaciones de largo plazo con creadores**, no colaboraciones sueltas
-- Programa de embajadores con métricas propias
-
-### 6 · Captura de demanda
-✅ Todo lo de Accelerated, **más**:
-- **Lead magnets en segundo idioma**
-- Segmentación de la lista por etapa y comportamiento
-
-### 7 · Conversión
-✅ Todo lo de Accelerated, **más**:
-- **CRO continuo**, no por campaña
-
-### 8 · SEO de intención
-✅ Todo lo de Accelerated, **más**:
-- **Contenido de búsqueda en segundo idioma**
-
-### 9 · Closing
-✅ Todo lo de Accelerated, **más**:
-- SOPs de venta documentados para que el equipo los opere solo
-
-### 10 · Tecnología
-✅ Todo lo de Accelerated, **pero**:
-- **Una herramienta a medida POR MES**, no por trimestre
-
-### 11 · Sistemas de demanda ✅ **EXCLUSIVO**
-> **Que la demanda deje de comprarse cada mes.**
-
-- Motor de referidos — que el cliente traiga cliente
-- Comunidad propia: el activo que no se alquila a ninguna plataforma
-- Contenido evergreen que sigue trayendo gente meses después
-- Recompra y reactivación automatizadas
-
-### 12 · Fulfillment ✅ **EXCLUSIVO**
-> **Crecer con una entrega rota destruye la marca. Primero se arregla la entrega.**
-
-- Mapeo del proceso de entrega, punto por punto
-- Identificación de dónde se rompe y dónde se pierde tiempo
-- Automatización de los pasos manuales
-- SOPs de entrega documentados
-- Estándar de calidad medible
-
-### 13 · Talento ✅ **EXCLUSIVO**
-> **Para que el equipo del cliente sostenga lo que construimos.**
-
-- Perfiles de puesto según lo que el crecimiento va a exigir
-- SOPs y manuales de operación
-- Sistema de onboarding para gente nueva
-- Documentación de criterios de decisión
-- ⚠️ **No reclutamos.** Damos el sistema, no las personas
-
-### 14 · Experiencia y retención ✅ **COMPLETO**
-- **Mapa de experiencia del cliente**, punto por punto
-- Secuencias de recompra y reactivación completas
-- Sistema de reseñas y prueba social
-- **Estrategia de LTV y ticket promedio**
-
-### 15 · Medición
-✅ Todo lo de Accelerated, **más**:
-- **Atribución completa** de punta a punta
-
-### 16 · Autonomía del cliente ✅ **EXCLUSIVO**
-> La prueba final de la filosofía: *"una empresa debe depender cada vez menos de su fundador"*.
-> Compound hace que además dependa menos de nosotros.
-
-- **IA propia del cliente** — entrenada con su marca, su oferta y sus datos
-- **Agentes operando dentro de su negocio**, no del nuestro
-- **Documentación** para que su equipo lo opere sin nosotros
-- **Entrenamiento al equipo interno**
-
-**Performance fee:** ✅ incluido.
+## Qué incluye cada plan
+
+> **Está en otros dos archivos, para no duplicarlo:**
+>
+> | Archivo | Qué tiene |
+> |---|---|
+> | **`PLANES.md`** | Lo que se le dice al cliente — el deseo, el boost y el resultado |
+> | **`ACTIVACION.md`** | Los 3 pilares × 2 divisiones × 3 planes, y qué OS entra en cada uno |
+>
+> **Acá viven solo el techo duro de volumen, las capacidades reales y la economía.**
 
 ---
 
@@ -631,7 +269,7 @@ fricción.**
 
 ### A · Por qué cada escalón cuesta menos de lo que vale
 
-#### Básico → Acelerado · el salto cuesta **Q4,400**
+#### Ignite → Accelerate · el salto cuesta **Q4,400**
 
 | Si lo comprara pieza por pieza | Precio de lista |
 |---|---|
@@ -652,7 +290,7 @@ fricción.**
 > 🔥 **Solo las 59 piezas extra ya valen más que el salto entero.** Todo lo demás —Google Ads,
 > WhatsApp, dashboard, herramienta a medida— va prácticamente de regalo.
 
-#### Acelerado → Compuesto · el salto cuesta **Q6,000**
+#### Accelerate → Compound · el salto cuesta **Q6,000**
 
 | Si lo comprara pieza por pieza | Precio de lista |
 |---|---|
@@ -695,44 +333,36 @@ El upsell puede esperar. **La cuenta ya es nuestra, y el costo de mantenerla es 
 
 ---
 
-### C · Por qué el descuento no nos come el margen
+### C · Qué pasa con el margen en cada salto
 
 | Salto | Sube el **precio** | Sube el **costo** | Margen |
 |---|---|---|---|
-| Básico → Acelerado | +80% *(+Q4,400)* | +92% *(+Q2,975)* | 42% → **37%** |
-| Acelerado → Compuesto | +61% *(+Q6,000)* | +48% *(+Q2,975)* | 37% → **42%** ✅ |
+| Ignite → Accelerate | +38% *(+Q2,310)* | +48% *(+Q1,060)* | 64% → **61%** |
+| Accelerate → Compound | **+82%** *(+Q6,930)* | +38% *(+Q1,260)* | 61% → **71%** ✅ |
 
-#### El desglose del primer salto
+**El primer salto cuesta 3 puntos de margen.** Accelerate agrega **producción real** — 2 horas
+más de grabación y 2 de operación — y eso es costo humano.
 
-| Lo que se agrega | Costo marginal |
+**El segundo salto recupera 10 puntos**, porque lo que agrega Compound —SOPs, números,
+herramientas— **corre sobre agentes y criterio, no sobre horas de producción.**
+
+| Lo que se agrega en el primer salto | Costo marginal |
 |---|---|
-| Horas de Allan (+4h @ Q250) | Q1,000 |
-| Producción (+3h) y sesión extra | Q925 |
-| Build de tecnología | Q750 |
-| Operador de agentes | Q300 |
-| **Subtotal de costo real** | **Q2,975** |
-| **Lo que cobramos por el salto** | **Q4,400** |
-| **Margen del salto** | **Q1,425 — 32%** |
-| | |
+| Producción (+2h) | Q400 |
+| Operación (+2h) | Q160 |
+| Allan (+2h) | Q500 |
 | **+59 piezas al mes** | **Q0** |
-| **Google Search + Performance Max** | **Q0** |
-| **Embudos de WhatsApp y auto-DM** | **Q0** |
-| **Dashboard en vivo** | **Q0** |
-| **SEO de intención** | **Q0** |
-| **Closing — guiones, objeciones, seguimiento** | **Q0** |
-| **Radar semanal en vez de mensual** | **Q0** |
-| **Atribución CAPI + GA4** | **Q0** |
+| **Google Search + PMax** | **Q0** |
+| **Embudos de WhatsApp y atribución** | **Q0** |
+| **SEO de intención y closing** | **Q0** |
+| **Radar semanal** | **Q0** |
 
-👉 **Todo lo que corre sobre agentes suma Q0 al costo variable.** El Claude es Q192 prorrateado —
-**y no cambia entre paquetes**. Ya está pagado.
+👉 **Todo lo que corre sobre agentes suma Q0.** Lo que cuesta es la hora humana.
 
-> **Esa es la ventaja completa: no es que nos cueste menos. Es que a una agencia le costaría
-> contratar a alguien para cada una de esas líneas, y a nosotros no nos cuesta nada.**
+> **Esa es la ventaja completa: a una agencia le costaría contratar a alguien para cada línea de
+> Q0. A nosotros no nos cuesta nada.**
 
-⚠️ **Acelerado sigue siendo el escalón más ajustado (37%).** Es el precio de que agregue
-producción real, no solo capas de agente. **Se revisa cuando haya casos.**
-
-### D · El hueco — el motor del upsell
+### D · El hueco — lo que dispara el upsell
 
 **Cada paquete deja un vacío evidente. El cliente lo siente solo; no hay que venderlo.**
 
@@ -771,7 +401,7 @@ cuesta el caso.**
 | 4 × Compuesto | Q26,932 | 60 h |
 | 5 × Compuesto | Q33,665 | 75 h |
 
-🔥 **3 clientes Compuesto dan más plata que 5 Acelerado — con 10 horas menos y 2 clientes menos.**
+🔥 **3 clientes Compuesto dan más plata que 5 Accelerate — con 10 horas menos y 2 clientes menos.**
 
 **El movimiento comercial no es conseguir más clientes. Es subir a los que ya están.**
 
@@ -877,7 +507,7 @@ cuesta el caso.**
 
 ---
 
-### 🟦 GROWTH BÁSICO — Q6,160 · 86 piezas
+### 🟦 IGNITE — Q6,160 · 86 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
@@ -896,7 +526,7 @@ cuesta el caso.**
 
 ---
 
-### 🟪 GROWTH ACELERADO — Q8,470 · 145 piezas
+### 🟪 ACCELERATE — Q8,470 · 145 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
@@ -915,7 +545,7 @@ cuesta el caso.**
 
 ---
 
-### 🟨 GROWTH COMPUESTO — Q15,400 · 204 piezas
+### 🟨 COMPOUND — Q15,400 · 204 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
@@ -948,8 +578,7 @@ cuesta el caso.**
 | Allan *(@Q250/h)* | Q1,750 | Q2,750 | Q3,750 |
 | **COSTO TOTAL** | **Q3,217** | **Q6,192** | **Q9,167** |
 | **UTILIDAD** | **Q2,943** | **Q2,278** | **Q6,233** |
-| **MARGEN @Q250/h** | **48%** | **27%** ⚠️ | **40%** |
-| **MARGEN @Q150/h** | **59%** | **40%** | **50%** |
+| **MARGEN** *(modelo de hora, 5 clientes)* | **64%** | **61%** | **71%** |
 
 ---
 
@@ -984,76 +613,11 @@ cuesta el caso.**
 | **Lo que nos cuesta cada pieza** | Q37 | Q43 | Q45 | — |
 | **Lo que paga el cliente por pieza** | **Q72** | **Q58** | **Q75** | ***Q188*** |
 
-🔥 **Growth Basic cuesta 66% menos por pieza que un paquete guatemalteco de Q3,000 — y además
+🔥 **Ignite cuesta 66% menos por pieza que un paquete guatemalteco de Q3,000 — y además
 incluye estrategia, inteligencia y pauta.**
 
 ⚠️ **Este número es para la discusión interna y para defender el precio. Nunca se vende por
 pieza** — eso convierte la oferta en commodity y contradice el posicionamiento.
-
-## 🏁 Los números finales
-
-> **Los precios quedan como están. Lo que cambió fue el costo.**
-
-### Qué pasó al pasar de sueldo-por-cuenta a hora-con-escalera
-
-| | Precio | Margen **antes** | Margen **ahora** *(5 clientes)* | |
-|---|---|---|---|---|
-| 🟦 **Básico** | Q6,160 *($800)* | 48% | **62%** | **+14 pts** |
-| 🟪 **Acelerado** | Q8,470 *($1,100)* | 27% 🔴 | **61%** | **+34 pts** 🔥 |
-| 🟨 **Compuesto** | Q15,400 *($2,000)* | 40% | **71%** | **+30 pts** |
-
-**Utilidad por cuenta:** Q3,790 · Q5,190 · Q10,860
-
-✅ **Acelerado dejó de ser el agujero.** Pasó de 27% a 61% **sin tocar el precio.**
-
----
-
-### Los tres escalones de margen
-
-| | **Hoy** *(5 clientes)* | **Con los agentes** | **+ performance fee** |
-|---|---|---|---|
-| 🟦 Básico | **62%** | **72%** | **81 – 88%** |
-| 🟪 Acelerado | **61%** | **72%** | **80 – 86%** |
-| 🟨 Compuesto | **71%** | **80%** | **83 – 87%** |
-
-**Qué desbloquea cada escalón:**
-
-| Escalón | Qué hay que hacer |
-|---|---|
-| **Hoy → Con los agentes** | Construir el **agente de QA** *(operación baja de 4-8h a 2-4h)* y probar el **contenido crudo del cliente** *(producción baja de 3-8h a 2-5h)* |
-| **Con los agentes → + fee** | **Atribución limpia** (CAPI + GA4). Sin ella no hay fee |
-
----
-
-### El margen con más clientes
-
-| Clientes | 🟦 Básico | 🟪 Acelerado | 🟨 Compuesto |
-|---|---|---|---|
-| 2 | 53% | 52% | 64% |
-| **5** | **62%** | **61%** | **71%** |
-| 10 | 66% | 64% | 74% |
-| 20 | 70% | 68% | 77% |
-
-**Con los agentes construidos, a 10 clientes: 76% · 77% · 81%.**
-
----
-
-### ✅ El veredicto
-
-**Los cuatro objetivos, cumplidos al precio que se quería cobrar:**
-
-| Meta | Dónde está |
-|---|---|
-| **Costos bajos** | Costo por cuenta de Q2,370 a Q4,540 con 5 clientes. **Baja solo con cada cliente nuevo** |
-| **Valor enorme** | 86-204 piezas contra 16 del mercado. Tecnología, SEO, closing, IA propia |
-| **Precio justo** | $800 / $1,100 / $2,000 — **dentro del rango que el mercado ya acepta** |
-| **Márgenes altísimos** | **61-71% hoy · 72-80% con los agentes · 80-88% con fee** |
-| **Ganamos de hacerles dinero** | El performance fee es lo que lleva el margen arriba de 80% |
-
-⚠️ **Todo esto descansa en las horas estimadas** *(producción 3/5/8 · operación 4/6/8 · Allan
-4/6/8)*. **Medirlas es lo primero.** Si están mal, estos márgenes están mal.
-
----
 
 ## 💸 El performance fee — de dónde salen los márgenes altísimos
 
@@ -1065,13 +629,13 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 **El fee de performance tiene costo marginal Q0.** No agrega producción, ni horas, ni Claude.
 **Cada quetzal de fee es un quetzal de utilidad.**
 
-| Si el fee mensual es… | Ingreso total | **Margen HOY** | **Margen OBJETIVO** |
-|---|---|---|---|
-| Q0 *(solo base)* | Q8,470 | 27% 🔴 | 50% |
-| Q1,500 | Q9,970 | **38%** | 58% |
-| **Q3,000** | **Q11,470** | **46%** | **63%** |
-| Q5,000 | Q13,470 | **54%** | **69%** |
-| Q8,000 | Q16,470 | **62%** | **74%** |
+| Si el fee mensual es… | Ingreso total | **Margen** |
+|---|---|---|
+| Q0 *(solo base)* | Q8,470 | **61%** |
+| Q1,500 | Q9,970 | **67%** |
+| **Q3,000** | **Q11,470** | **71%** |
+| Q5,000 | Q13,470 | **76%** |
+| Q8,000 | Q16,470 | **80%** |
 
 *Ejemplo sobre Acelerado ($1,100 base). Mismo efecto en los tres niveles.*
 
@@ -1088,7 +652,7 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 | Q8,000 | Q80,000 / mes |
 
 > **Q30,000 al mes de ventas atribuidas es un objetivo modesto** para un negocio que factura
-> Q100,000+. **Y nos lleva de 27% a 46% sin tocar el precio base.**
+> Q100,000+. **Y lleva Accelerate de 61% a 71% sin tocar el precio base.**
 
 ### Por qué esto resuelve las cuatro metas a la vez
 
@@ -1122,9 +686,9 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 | Rango del mercado GT | Piezas típicas | Dónde caemos |
 |---|---|---|
 | Básico Q1,000 - 3,000 | ~16 | — |
-| **Intermedio Q3,000 - 6,000** | ~25 | **🟦 Básico Q6,160 · 86 piezas** |
-| **Avanzado / 360° Q6,000 - 8,000+** | ~40 | **🟪 Acelerado Q8,470 · 145 piezas** |
-| *(fuera del rango del mercado)* | — | **🟨 Compuesto Q15,400 · 204 piezas** |
+| **Intermedio Q3,000 - 6,000** | ~25 | **🟦 Ignite Q6,160 · 86 piezas** |
+| **Avanzado / 360° Q6,000 - 8,000+** | ~40 | **🟪 Accelerate Q8,470 · 145 piezas** |
+| *(fuera del rango del mercado)* | — | **🟨 Compound Q15,400 · 204 piezas** |
 
 ### 💀 La posición
 
@@ -1147,9 +711,9 @@ cobrar lo mismo. **Nadie puede.**
 
 | | **Hoy** *(penetración)* | Meta | Qué habilita el salto |
 |---|---|---|---|
-| **🟦 Básico** | Q6,160 | $1,400 *(Q10,780)* | 3 casos con resultados medidos |
-| **🟪 Acelerado** | Q8,470 | $2,800 *(Q21,560)* | 2 casos con tecnología entregada y ROI |
-| **🟨 Compuesto** | Q15,400 | $4,500 *(Q34,650)* | 1 caso donde el cliente opera solo y sigue creciendo |
+| **🟦 Ignite** | Q6,160 | $1,400 *(Q10,780)* | 3 casos con resultados medidos |
+| **🟪 Accelerate** | Q8,470 | $2,800 *(Q21,560)* | 2 casos con tecnología entregada y ROI |
+| **🟨 Compound** | Q15,400 | $4,500 *(Q34,650)* | 1 caso donde el cliente opera solo y sigue creciendo |
 
 ### 🚦 El gatillo para subir — se define ahora, no después
 
@@ -1177,21 +741,20 @@ margen que se está resignando.**
 
 ```
 Gastos personales de Allan   Q2,400
-Claude                        Q  960
+Claude                       Q1,500
 ─────────────────────────────────────
-Piso mensual                 Q3,360
+Piso mensual                 Q3,900
 ```
 
-| Clientes | Utilidad *(@Q250/h)* | ¿Alcanza? |
+| Clientes | Utilidad/mes | ¿Alcanza? |
 |---|---|---|
-| 1 Básico | Q2,283 | ❌ No |
-| **1 Acelerado** | **Q3,708** | ✅ Sí |
-| **1 Compuesto** | **Q6,733** | ✅ Con espacio |
-| 2 Básico | Q4,566 | ✅ Sí |
-| 4 mixtos | ~Q16,000 | ✅ Negocio sano |
-| 5 Compuesto | Q33,665 | ✅ Reinversión real |
+| 1 Ignite | Q3,260 *(a 2 clientes de tarifa)* | ⚠️ Justo |
+| **2 Ignite** | **Q6,520** | ✅ Sí |
+| **1 Compound** | **Q9,850** | ✅ Con espacio |
+| 5 mixtos *(2·2·1)* | **Q29,120** | ✅ Negocio sano |
+| 8 Compound | **Q91,140** | ✅ Reinversión real |
 
-**Capacidad actual: 4-6 clientes.** En estado objetivo, 8-10.
+**Capacidad: 8-10 clientes con el agente de QA construido.**
 
 ## ⚠️ El precio de amigos distorsiona la lectura
 

@@ -24,7 +24,7 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 *Costo por cuenta con 5 clientes: Básico Q2,220 · Acelerado Q3,280 · Compuesto Q4,540*
 
-| Mercado | 🟦 Básico | 🟪 Acelerado | 🟨 Compuesto |
+| Mercado | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
 |---|---|---|---|
 | **🇬🇹 Guatemala** *(hoy)* | $800 → **64%** | $1,100 → **61%** | $2,000 → **71%** |
 | **🇲🇽 México** | $1,200 → **76%** | $1,800 → **76%** | $3,200 → **82%** |

@@ -92,41 +92,31 @@ visión: **Marketing · Branding · Creatividad · Tecnología · ADS.**
 canales, qué capas de la escalera entran y cuántas revisiones. **Es restricción dura para todos
 los agentes.** Se lee antes de prometer nada.
 
-### Los tres niveles de crecimiento
+### Los tres planes
 
 ```
-🟦 BÁSICO     Q6,160   ENCENDER   Estrategia · Demanda · Contenido
-🟪 ACELERADO  Q8,470   ACELERAR   + Tecnología · Contenido para ADS · SEO · Closing
-🟨 COMPUESTO  Q15,400  COMPONER   + Sistemas de demanda · Fulfillment · Talento
+🟦 IGNITE      $800     invisible → deseado      aprender a comunicarse y existir
+🟪 ACCELERATE  $1,100   estancado → escalando    escalar lo que ya funciona, sin perderlo
+🟨 COMPOUND    $2,000   escalando → autónomo     que crezca sin vos
 ```
 
 **Más `Tailor Made`** — multi-locación, regulatorio, integraciones, proyectos por hito.
 
-**Dieciséis capas.** Todo nivel es un nivel de growth: **lo que cambia no es el tipo de servicio,
-es la profundidad.**
-
-🏛️ **El eje real es el INVOLUCRAMIENTO, no el volumen.** Pensamos como private equity, no como
-agencia: no vendemos entregables, **operamos las cuatro palancas de valor de la empresa** —
-📣 Marketing · 🔧 Tecnología · 👥 Personas · 💰 Finanzas.
-
-```
-🟦 IGNITE      Marketing                              → tu equipo de demanda
-🟪 ACCELERATE  + Tecnología                           → tu operating partner
-🟨 COMPOUND    + Personas + Finanzas                  → tu socio operador
-```
-
-**Somos cinco casas bajo un techo:** 📣 Marketing · 🎨 Creative · 🎬 Production · 🏷️ Branding ·
-📊 Consulting. **Strategy debe conocer las cinco** para decidir qué activar ante cada pilar roto.
+🚀 **Somos un acelerador de marcas. Cada plan es un BOOST distinto, no más volumen del anterior.**
+⚠️ **Accelerate NO es «que te conozcan más».** Ese comprador ya se siente estancado y **teme
+romper lo que le funciona.**
 
 **Dos divisiones — el eje es cómo se decide la compra, no quién compra:**
 
 ```
-🔵 LOW TICKET    el juego es VOLUMEN     oferta · ventas en grande · upsells
-🟣 HIGH TICKET   el juego es PRECISIÓN   oferta · autoridad · proceso de venta · expansión
+🔵 LOW TICKET    volumen      oferta · big sales · upsells
+🟣 HIGH TICKET   precisión    oferta · cuentas grandes · expansión
 ```
 
-**`INHERENT GROWTH OS` son cuatro sistemas.** El primero define de dónde sale el crecimiento;
-los otros tres hacen que ese crecimiento se sostenga.
+**Los pilares no cambian — son la metodología. Cambia el verbo:**
+Ignite **mapea** · Accelerate **ejecuta** · Compound **sistematiza**. Ver `ACTIVACION.md`.
+
+### Los cuatro sistemas
 
 ```
 GROWTH OS       de dónde sale el crecimiento  →  los 3 pilares de cada división
@@ -136,62 +126,44 @@ MONEY OS        que quede utilidad
 ```
 
 **Una agencia solo trabaja el primero.** Por eso sus clientes crecen y se rompen.
-Ver `GROWTH-OS.md`.
 
-🎓 **La red de especialistas es el diferenciador que más pesa.** Dos tipos:
-**por industria** —gente que ya hizo crecer su propia marca ahí, y responde *«¿qué harías si
-esta fuera tu empresa?»*— y **por área** —corporate structure, eventos, networking y PR, talent
-production, talent marketing.
-**Red, no nómina:** parte del equipo es fijo, el resto se activa cuando el proyecto lo pide.
-**El cliente accede a gente que no podría contratar, por lo que cuesta un proveedor.**
+| | IGNITE | ACCELERATE | COMPOUND |
+|---|---|---|---|
+| **Growth OS** | Pilar 1 ejecuta · Pilar 2 mapea | Los 3 ejecutando | Los 3 sistematizados |
+| **Conversion OS** | ⬜ | ✅ | ✅ |
+| **Operations OS** | ⬜ | 🟡 SOPs **de crecimiento** | ✅ SOPs **de empresa** |
+| **Money OS** | ⬜ | ⬜ | ✅ |
+
+🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra en Ignite
+porque **antes no hay nada que perder**; Operations porque **no se puede documentar un proceso que
+todavía no funcionó**; Money porque **sin transacciones el margen por línea es teoría.**
+**Meterlo antes es cobrar por algo que no se puede usar.** Ver `GROWTH-OS.md`.
+
+**Seis capacidades bajo un techo:** 📣 Marketing · 🎨 Creative · 🎬 Production · 🏷️ Branding ·
+🔧 Tech · 📊 Consulting. **Strategy debe conocer las seis** para decidir qué activar.
+
+🎓 **La red de especialistas es el diferenciador que más pesa.**
+**Por industria** *(externos — MentorCruise · GrowthMentor · MentorPass)*: gente que ya creció su
+marca ahí y responde *«¿qué harías si esta fuera tu empresa?»*.
+**Por área** *(nuestros)*: corporate structure, eventos, networking y PR, talent production,
+talent marketing. **Red, no nómina.** ⚠️ **El precio del mentor define en qué plan cabe.**
 
 💚 **Un emprendedor no contrata sistemas. Contrata a alguien que cuide lo que construyó.**
-Nadie quiere «integrar sus sistemas operativos» — eso suena a gasto. Quiere que su marca se vea
-como la soñó, que la toque gente talentosa, que provoque ventas, que se entienda su oferta, que
-se construya comunidad — **y no estar solo en eso.**
 **No industrializamos empresas: les damos alma, propósito y facturación.**
 **Se le habla de lo que DESEA, no de lo que la industria dice que necesita.** Ver `PLANES.md`.
 
-🚀 **Somos un acelerador de marcas. Cada plan es un BOOST distinto, no más volumen del anterior.**
-
-```
-IGNITE      invisible → deseado      aprender a comunicarse y existir
-ACCELERATE  estancado → escalando    escalar lo que ya funciona, sin perderlo
-COMPOUND    escalando → autónomo     que crezca sin vos
-```
-
-⚠️ **Accelerate NO es «que te conozcan más».** Ese comprador ya se siente estancado y **teme
-romper lo que le funciona.** Su boost es **volverlo repetible y abrir los canales grandes.**
-
-**Los pilares no cambian — son la metodología. Lo que cambia es a qué profundidad se activan:**
-Ignite **mapea** · Accelerate **ejecuta** · Compound **sistematiza**.
-
-🔑 **Dos tipos de SOPs, no uno:** en Accelerate son **de crecimiento** *(cómo repetir lo que ya
-funciona)*; en Compound son **de empresa** *(cómo funciona sin el fundador)*. **No es el mismo
-trabajo.**
-
-**La etapa no es mérito, es realidad:** lo que el cliente puede pagar dice en qué etapa está, y
-la etapa dice qué necesita. **Darle Money OS a quien arranca sería cobrarle por algo que no va a
-usar.** Ver `PLANES.md`.
-
-🤝 **El hilo de los tres planes es el acompañamiento:** siempre hay alguien que ya creció una
-marca como la suya sentado en su estrategia. Trimestral en Ignite, mensual en Accelerate,
-quincenal en Compound. ⚠️ **El precio del mentor define en qué plan cabe.**
-
 🚫 **No vendemos servicios. Vendemos resultado.** *"Te damos SOPs"* ❌ ·
 *"Te podés ir una semana y la empresa factura igual"* ✅
-**El volumen, los servicios y las herramientas son la EVIDENCIA de que podemos — nunca la oferta.**
+**El volumen y las herramientas son la EVIDENCIA de que podemos — nunca la oferta.**
 
-**Los sistemas atacan primero la DEMANDA** — es el cuello, porque casi todos ya se enfocaron en producto
-y operación. ⚠️ **Pero si la empresa es el estorbo, más demanda empeora el problema:** se arregla
-la capacidad primero, aunque la venta fácil sea más pauta. Ver `SISTEMA.md`.
-
-⚠️ **El precio se justifica por cuántas palancas tocamos y qué tan caro es involucrarse en
-ellas** — Marketing lo cargan los agentes; **Personas y Finanzas solo una cabeza.**
+⚠️ **El precio se justifica por cuántos sistemas activamos y qué tan adentro entramos.**
 **Nunca por volumen de entregables.**
 
-⚠️ **El nivel se elige por el CUELLO, no por la industria ni por la facturación.**
-No me conocen → Básico · Me conocen y no convierto → Acelerado · Convierto y no retengo → Compuesto
+⚠️ **La etapa no es mérito, es realidad:** lo que el cliente puede pagar dice en qué etapa está,
+y la etapa dice qué necesita.
+
+⚠️ **Si la empresa es el estorbo, más demanda empeora el problema:** se arregla la capacidad
+primero, aunque la venta fácil sea más pauta.
 
 ### La economía
 
@@ -212,14 +184,14 @@ mismo suelto, porque todo lo que corre sobre agentes suma Q0 al costo variable.
 
 **Ganamos de hacerles dinero.** El fee base cubre la operación; **la utilidad de verdad sale del
 performance fee — 10% de las ventas atribuidas, con costo marginal Q0.** Cada quetzal de fee es
-utilidad pura: lleva Acelerado de 27% a 46% sin tocar el precio base.
+utilidad pura: lleva Accelerate de 61% a 71% sin tocar el precio base.
 ⚠️ **Sin atribución limpia no hay fee.**
 
 **Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes
-altísimos.** Cierran **no bajando el precio, bajando el costo.** Con 5 clientes y el modelo de
-hora con escalera: **62% · 61% · 71%.** Con el agente de QA y el contenido crudo del cliente:
-**72% · 72% · 80%.** Con performance fee encima: **80-88%.**
-Ver `PAQUETES.md` → «Los números finales».
+altísimos.** Cierran **no bajando el precio, bajando el costo.**
+**Con 5 clientes: 64% · 61% · 71%.** Con 10: 67% · 64% · 72%.
+**Con performance fee encima, Accelerate pasa de 61% a 71-80%.**
+Ver `PAQUETES.md` → «Los márgenes reales» y `EQUIPO.md`.
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
 operación.** Ahí está el 70% del costo matable.

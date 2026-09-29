@@ -23,20 +23,27 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 > El plan define **qué se le va a trabajar y hasta qué punto.** Sin este dato, la estrategia
 > promete lo que no se puede entregar.
 
-| Plan | Qué se le trabaja | Briefs que se arman |
-|---|---|---|
-| 🟦 **Growth Básico** | Estrategia · Demanda · Contenido *(capas 1-5 + 15)* | Branding · Marketing · Creative |
-| 🟪 **Growth Acelerado** | + Tecnología · Contenido para ADS · SEO · Closing *(1-10, 14-15)* | + Growth · **Tecnología** |
-| 🟨 **Growth Compuesto** | + Sistemas de demanda · Fulfillment · Talento *(las 16)* | + **Sistemas** |
-| ⬜ **Tailor Made** | Se define con Allan | Según alcance |
+| Plan | El boost | Verbo de los pilares | Sistemas que se activan |
+|---|---|---|---|
+| 🟦 **IGNITE** $800 | Aprender a comunicarse y existir | **Mapea** | Growth |
+| 🟪 **ACCELERATE** $1,100 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | + Conversion · Operations *(parcial)* |
+| 🟨 **COMPOUND** $2,000 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
+| ⬜ **Tailor Made** | Se define con Allan | Según alcance | Según alcance |
+
+| Plan | Briefs que se arman |
+|---|---|
+| 🟦 **IGNITE** | Branding · Marketing · Creative |
+| 🟪 **ACCELERATE** | + Growth · **Tecnología** |
+| 🟨 **COMPOUND** | + **Sistemas** |
 
 **Los tres incluyen estrategia. Cambia la profundidad, no la existencia.**
+**Los pilares son los mismos — cambia a qué profundidad se activan.** Ver `ACTIVACION.md`.
 
 ### Lo que hay que registrar
 
 | | |
 |---|---|
-| **Plan contratado** | Cuál de los cuatro |
+| **Plan contratado** | Ignite · Accelerate · Compound · Tailor Made |
 | **Desde cuándo** | Para saber en qué trimestre va |
 | **Performance fee** | ¿Opcional o incluido? Cambia dónde se pone el foco |
 | **Marcas o cuentas** | 1 paquete = 1 marca. Si hay más, son add-on |
@@ -75,7 +82,7 @@ arreglar su embudo de WhatsApp y está en Básico— **no se entrega igual.**
 | **Ad spend del cliente** | Nunca está incluido en el paquete. Sin esto, no hay paid |
 | **Mercado donde vende** | 🇬🇹 Guatemala · 🇲🇽 México · 🇺🇸 EE.UU. · otro. **Cambia canales, competencia y expectativa de precio** → ver `MERCADOS.md` |
 | **Dónde está trabado** | No lo conocen · llega gente y se pierde · funciona pero depende de alguien. **De acá sale el nivel** |
-| **División** | 🔵 **Low ticket** *(el juego es volumen)* · 🟣 **High ticket** *(el juego es precisión)*. **Lo define cómo se decide la compra, no quién compra** → `SISTEMA.md` |
+| **División** | 🔵 **Low ticket** *(el juego es volumen)* · 🟣 **High ticket** *(el juego es precisión)*. **Lo define cómo se decide la compra, no quién compra** → `GROWTH-OS.md` |
 | **Qué pilar está roto** | 🔵 oferta · ventas en grande · ticket — 🟣 oferta · autoridad · proceso de venta · expansión |
 | **Capacidad de producción de contenido** | Sale del paquete. Techo duro de la cadencia |
 
