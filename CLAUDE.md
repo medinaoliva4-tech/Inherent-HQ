@@ -5,17 +5,32 @@ Cada agente vive en `agents/<nombre>/`. Se le habla desde **Buzz** por una sesi�
 ## Estructura
 
 ```
-agents/<agente>/
-└── brain/
-    ├── WORKFLOW.md          ← cómo trabaja el agente, de 0 a 100
-    └── skills/
-        ├── README.md        ← cuándo y cómo usa cada skill
-        └── <skill>/         ← las skills de ESTE agente
+CLAUDE.md                  ← este archivo. La entrada de toda sesión
 
-clients/
-├── client-delivery/         ← skill compartida: cómo se entrega. La usan todos
-└── <cliente>/               ← todo lo del cliente, afuera de los agentes
+inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
+├── README.md              ← el índice. Empezá acá
+├── 01-IDENTIDAD.md        quiénes somos
+├── 02-METODO.md           cómo pensamos — los 4 sistemas
+├── 03-OFERTA.md           qué vendemos — los 3 planes y su activación
+├── 04-MERCADO.md          a quién y dónde — industrias, mercados, mentores
+├── 05-OPERACION.md        cómo lo entregamos — pipeline, equipos, ciclos
+├── 06-ECONOMIA.md         🔒 cuánto cuesta y cuánto queda
+└── 07-COMUNICACION.md     cómo lo decimos — brief de web
+
+agents/<agente>/           ← LOS AGENTES — uno por etapa del pipeline
+└── brain/
+    ├── WORKFLOW.md        cómo trabaja el agente, de 0 a 100
+    └── skills/
+        ├── README.md      cuándo y cómo usa cada skill
+        └── <skill>/       las skills de ESTE agente
+
+clients/                   ← LOS CLIENTES
+├── client-delivery/       skill compartida de entrega. La usan todos
+└── <cliente>/             todo lo del cliente
 ```
+
+**Tres carpetas, tres preguntas:**
+`inherent/` **qué somos** · `agents/` **quién lo hace** · `clients/` **para quién**
 
 ## Cómo se compone un agente
 
@@ -221,6 +236,20 @@ contradice lo que predicamos.
 ⚠️ **No se promete lo que no está en «Capacidades reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay
 acción, y sin acción no hay promesa. **Los límites declarados están en `inherent/01-IDENTIDAD.md`:**
 no hacemos LinkedIn Ads, SEO técnico profundo, ni reclutamos personal.
+
+## Dónde está cada cosa
+
+**Todo lo de la empresa vive en `inherent/`.** Su `README.md` es el mapa.
+
+| Si necesitás… | Andá a |
+|---|---|
+| Quiénes somos y qué nos diferencia | `inherent/01-IDENTIDAD.md` |
+| El método — los 4 sistemas y las 2 divisiones | `inherent/02-METODO.md` |
+| Los planes, precios y cómo se activa cada uno | `inherent/03-OFERTA.md` |
+| Industrias, mercados o la red de mentores | `inherent/04-MERCADO.md` |
+| El pipeline, los equipos o los ciclos | `inherent/05-OPERACION.md` |
+| 🔒 Costos, márgenes, capacidades MCP | `inherent/06-ECONOMIA.md` |
+| Copy, tono o el brief de la web | `inherent/07-COMUNICACION.md` |
 
 ## Cómo arrancás una sesión
 
