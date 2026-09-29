@@ -243,7 +243,137 @@ o el agente de QA baja sus horas a la mitad.** Es el techo real del modelo.
 
 ---
 
-## 8 · Lo que falta confirmar
+## 8 · Los equipos por sistema operativo
+
+> **Cada sistema tiene un DIRECTOR. El director no ejecuta: dirige agentes y aprueba.**
+> Es el criterio, no las manos.
+
+### 🔑 Las dos habilidades que no son la misma
+
+**Poner a un operador genérico a correr agentes de marketing no es lo mismo que poner a un
+experto en marketing a correr esos mismos agentes.**
+
+| Habilidad | Qué aporta | Si falta |
+|---|---|---|
+| **Dominio** | Sabe qué pedirle al agente y **reconoce cuándo la salida está mal** | El agente produce cosas que suenan bien y no sirven |
+| **Operación de agentes** | Sabe cómo pedírselo, encadenarlo y corregirlo | El experto se frustra y vuelve a hacerlo a mano |
+
+### Las dos configuraciones
+
+| | Configuración | Cuándo usarla |
+|---|---|---|
+| **A** | **Director-operador** — una sola persona con las dos habilidades | Ideal. Rara de encontrar |
+| **B** | **Director + operador** — el experto dice qué hacer, el operador lo ejecuta con agentes | **Lo realista hoy.** Un operador sirve a varios directores |
+
+> **En la configuración B el operador es transversal.** No pertenece a un sistema: los atiende a
+> todos. Por eso su costo se prorratea, no se duplica.
+
+---
+
+### GROWTH OS — Director de Growth
+
+| | |
+|---|---|
+| **Responsabilidad** | Que entre dinero. Oferta, canales, ventas grandes y ticket |
+| **Perfil** | Marketing **+ ventas**. Alguien que ya vendió, no solo que hizo marketing |
+| **Agentes que dirige** | Strategy · Marketing · Creative · Content · Ads |
+| **Hoy lo cubre** | **Allan** |
+| **Cuándo se contrata** | Cuando Allan deje de tener tiempo para dirigirlo — **~6 clientes** |
+
+### CONVERSION OS — Director de Conversión
+
+| | |
+|---|---|
+| **Responsabilidad** | Que lo que entra se cierre. Respuesta, seguimiento, camino de compra, atribución |
+| **Perfil** | **Ventas + automatización.** Alguien que cerró, no solo que generó leads |
+| **Agentes que dirige** | Builder *(embudos y CRM)* · Community · atribución |
+| **Hoy lo cubre** | Allan + el operador |
+| **Cuándo se contrata** | **~4 clientes Accelerate**, porque acá se pierde la plata del cliente |
+
+### OPERATIONS OS — Director de Operaciones
+
+| | |
+|---|---|
+| **Responsabilidad** | Que la empresa aguante. Procesos, SOPs, herramientas, talento |
+| **Perfil** | **Consultoría de procesos.** Alguien que ya documentó y delegó una operación real |
+| **Agentes que dirige** | Builder *(herramientas)* · documentación · QA |
+| **Hoy lo cubre** | **Nadie** 🔴 |
+| **Cuándo se contrata** | **Con el primer cliente Compound.** Es el hueco más grande del equipo |
+
+### MONEY OS — CFO fraccional
+
+| | |
+|---|---|
+| **Responsabilidad** | Que quede utilidad. Precio, margen, CAC, LTV |
+| **Perfil** | **Finanzas de negocio, no contabilidad.** Que sepa leer un P&L y decidir con él |
+| **Agentes que dirige** | Análisis · dashboards |
+| **Hoy lo cubre** | **Nadie** 🔴 |
+| **Cuándo se contrata** | **Fraccional desde el primer Compound** — pocas horas al mes, alto criterio |
+
+---
+
+### El equipo completo, por etapa
+
+| | 2-3 clientes | 4-6 clientes | 8-10 clientes |
+|---|---|---|---|
+| **Allan** | Growth + Conversion + gate | Growth + gate | Solo dirección y gate |
+| **Operador de agentes** | ✅ transversal | ✅ transversal | ✅ + un segundo |
+| **Producción** | Freelance | Freelance | Medio tiempo |
+| **Dir. Operaciones** | ⬜ | Con el 1er Compound | ✅ |
+| **CFO fraccional** | ⬜ | Con el 1er Compound | ✅ |
+| **Dir. Conversión** | ⬜ | ⬜ | ✅ |
+| **Dir. Growth** | ⬜ | ⬜ | ✅ |
+| **Mentores de industria** | Por sesión | Por sesión | Por sesión |
+
+⚠️ **Las dos contrataciones que habilitan vender Compound son Operaciones y el CFO fraccional.**
+**Sin ellas, Compound se promete y no se entrega.**
+
+---
+
+## 9 · Los ciclos — cuándo se activa cada sistema
+
+### El ritmo del mes
+
+| Cuándo | Qué corre | Quién |
+|---|---|---|
+| **Diario** | Conversion — responder, dar seguimiento, atender comentarios | Agentes + operador |
+| **Semanal** | Radar de competencia · revisión de pauta · cola de piezas | Operador + Dir. Growth |
+| **Del 1 al 18** | Producción y publicación del plan del mes | Agentes + producción |
+| **Día 20** | **Revisión mensual** — qué funcionó y qué cambia | Todos los directores |
+| **Día 22-25** | Planificación del mes siguiente | Dir. Growth + agentes |
+| **Día 25-30** | Grabación del mes siguiente | Producción |
+| **Mensual** | Operations — un proceso documentado o automatizado | Dir. Operaciones |
+| **Mensual** | Money — números del mes | CFO fraccional |
+| **Trimestral** | Replanteo de estrategia · revisión de precio · mentor de industria | Allan + todos |
+
+### Las reuniones
+
+| Reunión | Cada cuánto | Duración | Quién | Para qué |
+|---|---|---|---|---|
+| **Standup de operación** | Diario | 15 min | Operador + Allan | Qué está trabado |
+| **Revisión de números** | Semanal | 30 min | Allan + directores activos | Ajustar la semana |
+| **Revisión del 20** | Mensual | 1-2 h | Todos los directores | **Qué funcionó, qué cambia** |
+| **Sesión de dirección** | Mensual *(Accelerate)* · quincenal *(Compound)* | 1 h | Allan + cliente | Decisiones del cliente |
+| **Replanteo** | Trimestral | 3 h | Allan + directores + mentor | Redefinir el trimestre |
+
+### Cómo se correlacionan los sistemas
+
+```
+La revisión del 20 es el punto donde los cuatro se cruzan:
+
+   CONVERSION dice   → cuántos entraron y cuántos se cerraron
+   MONEY dice        → cuánto dejó cada uno
+   OPERATIONS dice   → qué se rompió o qué aguantó
+        ↓
+   GROWTH decide     → qué se cambia el mes que viene
+```
+
+> **Growth decide, pero decide con lo que los otros tres le reportan.**
+> Sin ese cruce, cada sistema optimiza lo suyo y el negocio no avanza.
+
+---
+
+## 10 · Lo que falta confirmar
 
 | Pendiente | Por qué importa |
 |---|---|

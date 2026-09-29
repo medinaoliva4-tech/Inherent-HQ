@@ -234,9 +234,12 @@ seis contratos y alguien coordinándolos.**
 La mayoría de las agencias aplica la misma receta a un restaurante, a una clínica y a una
 constructora. **Nosotros no, porque no adivinamos: preguntamos a alguien que ya lo hizo.**
 
-## Especialistas por industria
+## Especialistas por industria — *externos*
 
 **Gente que ya hizo crecer su propia marca en esa industria.**
+
+Los conseguimos en **MentorCruise** y **GrowthMentor** — plataformas donde operadores reales
+venden sesiones. **Se paga por sesión, no por mes.**
 
 No los contratamos para que ejecuten. Los traemos a la estrategia para responder una sola
 pregunta: **¿qué harías vos si esta fuera tu empresa?**
@@ -248,9 +251,9 @@ todo eso lo sabe quien ya lo vivió, no quien lo leyó.
 **Causando que la estrategia sea realista desde el día uno, y no una teoría bonita que se cae
 al mes.**
 
-## Especialistas por área
+## Especialistas por área — *de nuestro equipo*
 
-**Para lo que necesita profundidad, no generalidad.**
+**Para lo que necesita profundidad, no generalidad. Estos son nuestros, no rentados.**
 
 | Área | Cuándo entra |
 |---|---|
@@ -260,16 +263,45 @@ al mes.**
 | **Talent production** | Cuando la producción necesita un nivel que no se improvisa |
 | **Talent marketing** | Cuando hay que trabajar con creadores, vocerías o figuras |
 
-## Cómo funciona — red, no nómina
+## Cómo funciona
 
-**No todos están en planilla, y eso es a propósito.**
-
-Parte del equipo es fijo. El resto **se activa cuando el proyecto lo pide** y se retira cuando
-terminó. Así el cliente accede a un especialista de primer nivel **sin pagar su sueldo todo el
-año** — y nosotros mantenemos el costo bajo sin bajar el nivel.
+| | Industria | Área |
+|---|---|---|
+| **Quién es** | Alguien que ya creció su marca en esa industria | Nuestro director de esa área |
+| **De dónde sale** | MentorCruise · GrowthMentor | Nuestro equipo |
+| **Cómo se paga** | Por sesión | Fijo o por horas |
+| **Qué aporta** | *«Qué haría yo si esta fuera mi empresa»* | Dirige la ejecución |
+| **Cuándo entra** | En la estrategia y en los replanteos | Todo el ciclo |
 
 **Causando que el cliente tenga acceso a gente que no podría contratar, por lo que cuesta un
 proveedor.**
+
+---
+
+# Por qué cuatro sistemas y no más
+
+**Un sistema operativo existe solo si tiene su propia pregunta de negocio y su propio dueño.**
+Si no la tiene, no es un sistema: es un tema dentro de otro.
+
+| Sistema | Su pregunta |
+|---|---|
+| **Growth** | ¿De dónde sale el dinero? |
+| **Conversion** | ¿Por qué no se cierra? |
+| **Operations** | ¿Aguanta la empresa? |
+| **Money** | ¿Queda utilidad? |
+
+## Lo que NO es un sistema aparte — y dónde vive
+
+| | Por qué no | Dónde vive |
+|---|---|---|
+| **Marca** | No tiene pregunta propia: **es cómo se expresa la oferta.** Atraviesa los cuatro | Growth pilar 1 · Conversion *(el camino)* · Money *(sostiene el precio)* |
+| **Experiencia** | No es un sistema: **es el resultado de que tres funcionen juntos** | Growth *(la oferta)* + Conversion *(el camino)* + Operations *(la entrega)* |
+| **Producto** | Está dentro de la oferta — *producto, lugar y experiencia* | Growth pilar 1 |
+| **Talento** | Es una condición para que la empresa aguante | Operations |
+| **Contenido y pauta** | Son **el cómo**, no el qué | Growth · Conversion |
+
+⚠️ **Si algo de esto empieza a pedir su propio equipo y sus propias reuniones, ahí sí se
+convierte en sistema. Hoy no lo pide.**
 
 ---
 
