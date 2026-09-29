@@ -1,3 +1,10 @@
+# Metodo — Cómo pensamos
+
+> Los cuatro sistemas, las dos divisiones, las capacidades y la red de especialistas.
+
+
+---
+
 # Inherent Growth OS
 
 **Cuatro sistemas. El primero define de dónde sale el crecimiento. Los otros tres hacen que ese

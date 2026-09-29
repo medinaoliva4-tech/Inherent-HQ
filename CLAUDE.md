@@ -47,7 +47,7 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 
 ## Agentes — el pipeline de entrega
 
-**`PIPELINE.md` tiene la cadena completa:** doce etapas, de la información cruda a la pieza
+**`inherent/05-OPERACION.md` tiene la cadena completa:** doce etapas, de la información cruda a la pieza
 publicada. Cada agente es una etapa.
 
 | # | Etapa | Agente | Carpeta | Estado |
@@ -66,7 +66,7 @@ publicada. Cada agente es una etapa.
 | ↻ | Revisión del 20 | **Strategy** | `agents/strategy/` | ✅ |
 
 🔴 **El agente de QA es el primero a construir.** Sin él el volumen no es entregable y el margen
-no cierra — ver `OPERACION.md` → hoja de ruta.
+no cierra — ver `inherent/05-OPERACION.md` → hoja de ruta.
 
 ## La identidad
 
@@ -83,12 +83,12 @@ negocio, no lo que queramos vender.
 pieza, incluyendo mejorar la oferta y el posicionamiento. Y cinco equipos que desarrollan la
 visión: **Marketing · Branding · Creatividad · Tecnología · ADS.**
 
-> **`IDENTIDAD.md`** tiene la identidad completa y —lo más importante para vender—
+> **`inherent/01-IDENTIDAD.md`** tiene la identidad completa y —lo más importante para vender—
 > **lo básico vs. el valor único** de cada nivel.
 
 ## El techo comercial
 
-**`PAQUETES.md`** define qué se puede entregar según el nivel contratado: cuántas piezas, qué
+**`inherent/06-ECONOMIA.md`** define qué se puede entregar según el nivel contratado: cuántas piezas, qué
 canales, qué capas de la escalera entran y cuántas revisiones. **Es restricción dura para todos
 los agentes.** Se lee antes de prometer nada.
 
@@ -114,7 +114,7 @@ romper lo que le funciona.**
 ```
 
 **Los pilares no cambian — son la metodología. Cambia el verbo:**
-Ignite **mapea** · Accelerate **ejecuta** · Compound **sistematiza**. Ver `ACTIVACION.md`.
+Ignite **mapea** · Accelerate **ejecuta** · Compound **sistematiza**. Ver `inherent/03-OFERTA.md`.
 
 ### Los cuatro sistemas
 
@@ -137,7 +137,7 @@ MONEY OS        que quede utilidad
 🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra en Ignite
 porque **antes no hay nada que perder**; Operations porque **no se puede documentar un proceso que
 todavía no funcionó**; Money porque **sin transacciones el margen por línea es teoría.**
-**Meterlo antes es cobrar por algo que no se puede usar.** Ver `GROWTH-OS.md`.
+**Meterlo antes es cobrar por algo que no se puede usar.** Ver `inherent/02-METODO.md`.
 
 **Seis capacidades bajo un techo:** 📣 Marketing · 🎨 Creative · 🎬 Production · 🏷️ Branding ·
 🔧 Tech · 📊 Consulting. **Strategy debe conocer las seis** para decidir qué activar.
@@ -147,11 +147,11 @@ todavía no funcionó**; Money porque **sin transacciones el margen por línea e
 marca ahí y responde *«¿qué harías si esta fuera tu empresa?»*.
 **Por área** *(nuestros)*: corporate structure, eventos, networking y PR, talent production,
 talent marketing. **Red, no nómina.** ⚠️ **El mentor cuesta y baja el margen:** Ignite −3 pts · Accelerate −13 · Compound −18.
-**Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `MENTORES.md`.
+**Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `inherent/04-MERCADO.md`.
 
 💚 **Un emprendedor no contrata sistemas. Contrata a alguien que cuide lo que construyó.**
 **No industrializamos empresas: les damos alma, propósito y facturación.**
-**Se le habla de lo que DESEA, no de lo que la industria dice que necesita.** Ver `PLANES.md`.
+**Se le habla de lo que DESEA, no de lo que la industria dice que necesita.** Ver `inherent/03-OFERTA.md`.
 
 🚫 **No vendemos servicios. Vendemos resultado.** *"Te damos SOPs"* ❌ ·
 *"Te podés ir una semana y la empresa factura igual"* ✅
@@ -173,7 +173,7 @@ rango que el mercado ya acepta**, con 3x a 5x el volumen de su tramo.
 
 🌐 **Guatemala es dónde arrancamos, no el techo.** Los costos se pagan en quetzales y no cambian
 al cambiar de mercado; **lo único que cambia es el precio.** A precio de México los mismos costos
-dan **76-82%**; a precio de Miami, **86-89%**. Ver `MERCADOS.md`.
+dan **76-82%**; a precio de Miami, **86-89%**. Ver `inherent/04-MERCADO.md`.
 ⚠️ **La web se escribe para los tres mercados: precios en USD y sin «Guatemala» como alcance.** El de entrada
 da **86 piezas a Q6,160 (Q72/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
 
@@ -192,7 +192,7 @@ utilidad pura: lleva Accelerate de 61% a 71% sin tocar el precio base.
 altísimos.** Cierran **no bajando el precio, bajando el costo.**
 **Con 5 clientes: 64% · 61% · 71%.** Con 10: 67% · 64% · 72%.
 **Con performance fee encima, Accelerate pasa de 61% a 71-80%.**
-Ver `PAQUETES.md` → «Los márgenes reales» y `EQUIPO.md`.
+Ver `inherent/06-ECONOMIA.md` → «Los márgenes reales» y `inherent/05-OPERACION.md`.
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
 operación.** Ahí está el 70% del costo matable.
@@ -204,7 +204,7 @@ agentes; producción solo graba; **los agentes hacen el resto.**
 Un sueldo por cuenta significa diez sueldos con diez cuentas — ese costo nunca baja.
 **La tarifa baja según el volumen que le garantizamos** (100% / 80% / 65% / 50%), y **pasa a
 sueldo fijo a partir de 60 h/mes.** Con ese modelo los márgenes van de **52-64% con 2 clientes a
-66-74% con 10**, y **la utilidad vuelve a subir con el precio.** Ver `EQUIPO.md`.
+66-74% con 10**, y **la utilidad vuelve a subir con el precio.** Ver `inherent/05-OPERACION.md`.
 
 ⚠️ **La producción no se baja recortando horas** — eso es bajarle el precio a la persona por el
 mismo trabajo. Se baja **garantizándole volumen** a cambio de tarifa, o con el sistema de
@@ -218,8 +218,8 @@ contradice lo que predicamos.
 
 ⚠️ **Los tres niveles incluyen estrategia.** Cambia la profundidad, no la existencia.
 
-⚠️ **No se promete lo que no está en «Capacidades reales» de `PAQUETES.md`.** Sin MCP no hay
-acción, y sin acción no hay promesa. **Los límites declarados están en `IDENTIDAD.md`:**
+⚠️ **No se promete lo que no está en «Capacidades reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay
+acción, y sin acción no hay promesa. **Los límites declarados están en `inherent/01-IDENTIDAD.md`:**
 no hacemos LinkedIn Ads, SEO técnico profundo, ni reclutamos personal.
 
 ## Cómo arrancás una sesión

@@ -1,3 +1,10 @@
+# Comunicacion — Cómo lo decimos
+
+> El brief de la web: qué sentir, qué decir y la tabla de traducción.
+
+
+---
+
 # Brief de la web — Inherent
 
 > **Para quien construya el sitio.** Acá está qué decir, cómo decirlo y —sobre todo— **qué tiene

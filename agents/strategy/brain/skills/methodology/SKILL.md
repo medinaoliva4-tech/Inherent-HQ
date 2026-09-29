@@ -67,10 +67,10 @@ Lo primero. Todo lo demás existe para cumplirlos.
 | **Todo depende del fundador** — crece pero no se sostiene solo | 🟨 **COMPOUND** | Que crezca sin él |
 
 **Y antes: ¿es low o high ticket?** Lo define cómo se decide la compra, no quién compra.
-Eso determina **cuáles son sus 3 pilares** → ver `GROWTH-OS.md`.
+Eso determina **cuáles son sus 3 pilares** → ver `inherent/02-METODO.md`.
 
 **Esto define tres cosas de una vez:**
-1. **A qué profundidad se activan los 3 pilares** — mapea · ejecuta · sistematiza *(`ACTIVACION.md`)*
+1. **A qué profundidad se activan los 3 pilares** — mapea · ejecuta · sistematiza *(`inherent/03-OFERTA.md`)*
 2. Qué briefs se arman *(ver C)*
 3. **Cuál es el techo de los objetivos** — no se puede prometer lo que el nivel no cubre
 
@@ -113,7 +113,7 @@ Se mide con dos datos, y salen del bloque `context`:
 |---|---|
 | **Cuántas personas hay** — en la empresa y en la agencia | La capacidad de ejecución |
 | **Cuánto dinero tienen para invertir** | La capacidad de compra de alcance y producción |
-| **Qué paquete contrataron** | El techo duro de piezas, pauta y revisiones → `PAQUETES.md` |
+| **Qué paquete contrataron** | El techo duro de piezas, pauta y revisiones → `inherent/06-ECONOMIA.md` |
 | **Cuánto ad spend ponen** | Nunca viene en el paquete. Sin esto, la estrategia no puede apoyarse en paid |
 
 **El paquete es el límite que ya está firmado:**
@@ -135,7 +135,7 @@ Se mide con dos datos, y salen del bloque `context`:
 > ⚠️ **El video de grabación es el único techo que no escala.** Depende de las horas de producción
 > y de cuánto pueda grabar el cliente. Todo lo demás escala con agentes.
 >
-> ⚠️ **Nunca se promete lo que no está en «Capacidades reales» de `PAQUETES.md`.**
+> ⚠️ **Nunca se promete lo que no está en «Capacidades reales» de `inherent/06-ECONOMIA.md`.**
 > Sin MCP no hay acción, y sin acción no hay objetivo.
 
 ```markdown
@@ -240,7 +240,7 @@ Quiénes son · Qué reciben · Qué se les vende primero
 Si la respuesta es una que el nivel contratado no cubre, **se dice** — no se sustituye por lo
 que sí está disponible.
 
-⚠️ **Nada que no esté en «Capacidades reales» de `PAQUETES.md` se promete.**
+⚠️ **Nada que no esté en «Capacidades reales» de `inherent/06-ECONOMIA.md` se promete.**
 
 
 

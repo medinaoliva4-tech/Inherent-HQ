@@ -37,7 +37,7 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 | 🟨 **COMPOUND** | + **Sistemas** |
 
 **Los tres incluyen estrategia. Cambia la profundidad, no la existencia.**
-**Los pilares son los mismos — cambia a qué profundidad se activan.** Ver `ACTIVACION.md`.
+**Los pilares son los mismos — cambia a qué profundidad se activan.** Ver `inherent/03-OFERTA.md`.
 
 ### Lo que hay que registrar
 
@@ -80,9 +80,9 @@ arreglar su embudo de WhatsApp y está en Básico— **no se entrega igual.**
 | **Capacidad de entrega** | Cuántos clientes más aguanta hoy |
 | **Punto de equilibrio** | El piso del objetivo |
 | **Ad spend del cliente** | Nunca está incluido en el paquete. Sin esto, no hay paid |
-| **Mercado donde vende** | 🇬🇹 Guatemala · 🇲🇽 México · 🇺🇸 EE.UU. · otro. **Cambia canales, competencia y expectativa de precio** → ver `MERCADOS.md` |
+| **Mercado donde vende** | 🇬🇹 Guatemala · 🇲🇽 México · 🇺🇸 EE.UU. · otro. **Cambia canales, competencia y expectativa de precio** → ver `inherent/04-MERCADO.md` |
 | **Dónde está trabado** | No lo conocen · llega gente y se pierde · funciona pero depende de alguien. **De acá sale el nivel** |
-| **División** | 🔵 **Low ticket** *(el juego es volumen)* · 🟣 **High ticket** *(el juego es precisión)*. **Lo define cómo se decide la compra, no quién compra** → `GROWTH-OS.md` |
+| **División** | 🔵 **Low ticket** *(el juego es volumen)* · 🟣 **High ticket** *(el juego es precisión)*. **Lo define cómo se decide la compra, no quién compra** → `inherent/02-METODO.md` |
 | **Qué pilar está roto** | 🔵 oferta · ventas en grande · ticket — 🟣 oferta · autoridad · proceso de venta · expansión |
 | **Capacidad de producción de contenido** | Sale del paquete. Techo duro de la cadencia |
 

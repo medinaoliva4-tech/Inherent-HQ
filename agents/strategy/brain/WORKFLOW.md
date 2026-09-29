@@ -331,7 +331,7 @@ Gate de Allan antes de entregar cualquiera.
 
 ## 8 · CORRELACIÓN — dónde entra Strategy en el pipeline
 
-**`PIPELINE.md` tiene la cadena completa de 12 etapas.** Strategy ocupa tres de ellas:
+**`inherent/05-OPERACION.md` tiene la cadena completa de 12 etapas.** Strategy ocupa tres de ellas:
 
 ```
 01 COMPRENSIÓN  ←  Strategy · skill context

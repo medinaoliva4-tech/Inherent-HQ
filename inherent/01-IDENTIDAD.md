@@ -1,3 +1,10 @@
+# Identidad — Quiénes somos
+
+> La categoría, la promesa, los diferenciadores y los límites.
+
+
+---
+
 # Identidad Inherent
 
 ## Qué somos
@@ -189,7 +196,7 @@ Lo más cercano es una consultoría que **entrega un documento y se va.**
 | **Modelos, props y locaciones** | Costo del cliente |
 | **Contratar personal por el cliente** | En Talento damos perfiles, SOPs y onboarding. **No reclutamos** |
 
-⚠️ **Nada se promete si no está en «Capacidades reales» de `PAQUETES.md`.**
+⚠️ **Nada se promete si no está en «Capacidades reales» de `06-ECONOMIA.md`.**
 Sin MCP no hay acción, y sin acción no hay promesa.
 
 ---
