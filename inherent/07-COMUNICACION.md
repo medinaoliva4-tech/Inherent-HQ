@@ -283,7 +283,7 @@ una marca como la tuya. Y responde una sola pregunta:
 - **Herramientas hechas para vos** — una nueva cada trimestre
 - Que te encuentren cuando te buscan
 - Que tu equipo sepa cerrar
-- **Un mentor de tu industria, cada mes**
+- **Un mentor de tu industria, cada trimestre** — de gama más alta que en Ignite
 
 **→ Lo que te funcionaba una vez ahora se repite — y ya no depende de que estés vos.**
 
@@ -296,7 +296,7 @@ una marca como la tuya. Y responde una sola pregunta:
 - **Que quede más** — precios, márgenes y estructura
 - Que el crecimiento se sostenga solo: referidos, comunidad, recompra
 - **Tu propia IA**, entrenada con tu marca
-- **Mentor cada quince días y un CFO a tu lado**
+- **Un mentor de tu industria cada mes y un CFO a tu lado**
 
 **→ Te podés ir una semana y la empresa factura igual — y cierra el mes mejor.**
 

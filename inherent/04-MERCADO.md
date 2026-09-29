@@ -370,36 +370,68 @@ y el costo de servirlo es el mismo desde acá.
 
 ---
 
-# 🔴 El impacto en el margen — esto cambia el modelo
+# 🔴 El impacto en el margen — y cómo se resuelve
 
-**El mentor tiene costo real y no estaba en la economía. Acá está.**
+**El mentor tiene costo real. La política lo mete dentro del margen en vez de romperlo.**
 
-| Plan | Margen sin mentor | Escenario | **Margen con mentor** |
+## Las tres reglas que lo resuelven
+
+| | Regla | Por qué |
+|---|---|---|
+| **1** | **Solo se selecciona el mentor que cabe en el plan.** El presupuesto filtra antes que la afinidad | Un mentor que no cabe no se propone. No se descubre el costo después |
+| **2** | **La frecuencia es trimestral en los planes chicos.** No mensual | El valor del mentor está en el criterio, no en la cadencia. Un fundador no necesita 12 sesiones al año — necesita la correcta en el momento correcto |
+| **3** | **La membresía se compra anual y es de Inherent, no del cliente** | Se paga una vez y sirve a todos los clientes de esa industria durante el año. Costo fijo prorrateado, como Claude |
+
+### 💡 La regla 3 es la que más plata ahorra
+
+| Membresía | Mensual | **Anual** | Ahorro |
 |---|---|---|---|
-| 🟦 **Ignite** | 64% | Comunidad gratis + 1 sesión/trim @ $72 | **61%** ✅ |
-| 🟪 **Accelerate** | 61% | 1 sesión/mes @ $144 | **48%** ⚠️ |
-| 🟪 **Accelerate** | 61% | 1 sesión/mes @ $180 | **45%** ⚠️ |
-| 🟨 **Compound** | 71% | 2 sesiones/mes @ $180 | **53%** ✅ |
-| 🟨 **Compound** | 71% | 2 sesiones/mes @ $360 | **35%** 🔴 |
-| 🟨 **Compound** | 71% | 2 sesiones/mes @ $540 | **17%** 🔴 |
+| **GrowthMentor** | $85/mes trimestral | **$50/mes** *($600/año)* | **−41%** |
+| **EntreArchitect Pro** | $49/mes *($588/año)* | **$499/año** | **−15%** |
+| **The Apparel Mentor** | $39/mes | — | — |
+| **Wingman · MicroMentor · EntreArchitect Network** | **gratis** | **gratis** | — |
+
+> **Una membresía anual de Inherent = Q385/mes.** Con 5 clientes son **Q77 por cliente**.
+> Con 10, **Q39**. **Es el único costo de mentoría que baja solo al crecer.**
+
+---
 
 ## La política — qué se absorbe y qué no
 
-| Plan | Qué incluye | Costo real | Efecto |
-|---|---|---|---|
-| 🟦 **Ignite** | **Acceso a comunidad gratis** *(Wingman, EntreArchitect, MicroMentor)* + **1 sesión trimestral de tier bajo** *(~$72)* | ~Q185/mes | −3 pts |
-| 🟪 **Accelerate** | **1 sesión al mes, tier bajo-medio** *(hasta $144)* | ~Q1,109/mes | −13 pts |
-| 🟨 **Compound** | **2 sesiones al mes, tier medio** *(hasta $180 c/u)* | ~Q2,772/mes | −18 pts |
+| Plan | Qué incluye | Techo por sesión | Costo real/mes | Efecto |
+|---|---|---|---|---|
+| 🟦 **Ignite** | Comunidad + **1 sesión por trimestre** | **$72** | ~Q262 | **−4 pts** |
+| 🟪 **Accelerate** | Comunidad + **1 sesión por trimestre** | **$144** | ~Q447 | **−5 pts** |
+| 🟨 **Compound** | Comunidad + **1 sesión al mes** | **$180** | ~Q1,463 | **−10 pts** |
 
-### ⛔ El mentor premium NO se absorbe
+*(Costo = membresía prorrateada Q77 + sesiones. Sesiones no usadas se acumulan dentro del trimestre.)*
+
+### El margen final, con mentoría adentro
+
+| Plan | Precio | Margen sin mentor | **Margen con mentor** |
+|---|---|---|---|
+| 🟦 **Ignite** | Q6,160 | 64% | **60%** ✅ |
+| 🟪 **Accelerate** | Q8,470 | 61% | **56%** ⚠️ |
+| 🟨 **Compound** | Q15,400 | 71% | **61%** ✅ |
+
+> ⚠️ **Accelerate sigue siendo el punto débil.** A $1,200 en vez de $1,100 vuelve a **60%** y
+> los tres planes quedan parejos. Ver `06-ECONOMIA.md`.
+
+---
+
+### ⛔ El mentor premium NO se absorbe. Nunca.
 
 **Arriba de $180 por sesión, el mentor va como add-on facturado al cliente, con margen.**
 
-**Por qué:** dos sesiones premium al mes se comen entre 36 y 54 puntos de margen.
-**Un mentor de $950 no cabe dentro de ningún plan.**
+**Por qué:** en MentorPass hay mentores de $360, $540, $720 y arriba de $1,000 la sesión.
+**Dos sesiones premium al mes se comen entre 36 y 54 puntos.**
+**Un mentor de $950 no cabe dentro de ningún plan — ni del de $2,000.**
 
 **Cómo se vende:** *«Hay un mentor que es exactamente lo que necesitás. Cuesta $X la sesión.
 ¿Lo traemos?»* — **es decisión del cliente, no un costo nuestro escondido.**
+
+> 🔑 **Esto es una ventaja comercial, no una limitación.** Le damos acceso a una red que solo
+> con nosotros alcanza, y él decide hasta dónde quiere llegar.
 
 ---
 
@@ -408,7 +440,10 @@ y el costo de servirlo es el mismo desde acá.
 | | |
 |---|---|
 | **Primero lo gratis** | Wingman, EntreArchitect y MicroMentor cuestan Q0. **Si la industria tiene comunidad, se usa** |
-| **El match filtra por presupuesto** | No solo por afinidad. Un mentor que no cabe en el plan no se propone |
+| **El match filtra por presupuesto** | No solo por afinidad. **Un mentor que no cabe en el plan no se propone** |
+| **La membresía siempre se paga anual** | Baja hasta 41% y sirve a todos los clientes de esa industria. **Es de Inherent, no del cliente** |
+| **Trimestral en Ignite y Accelerate** | El valor está en el criterio, no en la frecuencia |
+| **Arriba de $180 la sesión: add-on facturado** | Nunca se absorbe. Es decisión del cliente |
 | **Se verifica la experiencia real** | Un mentor de suplementos para mascotas no sirve para suplementos deportivos |
 | **Grupal ≠ 1:1** | EntreArchitect Mastermind es grupal. **No se vende como sesión privada** |
 | **Los precios se re-verifican antes de cotizar** | Cambian, y algunos son «pide cotización» |

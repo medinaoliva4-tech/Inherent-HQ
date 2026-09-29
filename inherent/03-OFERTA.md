@@ -121,7 +121,7 @@ operación, una landing que convierte. **Una nueva cada trimestre.**
 
 **Creadores que sí venden**, elegidos por audiencia real y no por seguidores.
 
-**Un mentor de tu industria cada mes.**
+**Un mentor de tu industria cada trimestre** — el que te toque según dónde estés trabado.
 
 ## El resultado
 **Lo que te funcionaba una vez ahora se repite — y ya no depende de que estés vos.**
@@ -159,7 +159,7 @@ pasado siga trabajando este mes.
 
 **Tu propia IA**, entrenada con tu marca y tus datos.
 
-**Mentor cada quince días**, dirección quincenal y un CFO a tu lado.
+**Un mentor de tu industria cada mes**, dirección quincenal y un CFO a tu lado.
 
 ## El resultado
 **Te podés ir una semana y la empresa factura igual — y cierra el mes mejor.**
@@ -210,10 +210,14 @@ pasado siga trabajando este mes.
 | | IGNITE | ACCELERATE | COMPOUND |
 |---|---|---|---|
 | **Capacidades** | Marketing · Creative · Production · Branding | + Tech | Las seis |
-| **Mentor** | 1/trimestre *(gama accesible)* | 1/mes | 2/mes *(gama alta)* |
+| **Mentor** | 1/trimestre · techo **$72** | 1/trimestre · techo **$144** | **1/mes** · techo **$180** |
 
 ⚠️ **El mentor tiene costo real y sube con su nivel.** Un mentor premium no cabe en Ignite —
 prometerlo ahí rompe el margen.
+
+🔑 **Arriba del techo, el mentor va como add-on facturado al cliente, con margen.** No se absorbe
+nunca. **Y la membresía de comunidad se paga anual y es de Inherent** — sirve a todos los clientes
+de esa industria. Ver `04-MERCADO.md`.
 
 ---
 
@@ -583,7 +587,7 @@ exigir, y cómo se entrega sin que él revise.
 valor de vida **solo tiene sentido cuando hay suficientes transacciones para que el dato sea
 real.** Antes, es teoría.
 
-**Mentor:** 2 sesiones al mes · **Capacidades:** las seis
+**Mentor:** 1 sesión al mes *(techo $180)* · **Capacidades:** las seis
 
 ---
 ---
@@ -615,7 +619,7 @@ real.** Antes, es teoría.
 | **Operations OS** | ⬜ | 🟡 **SOPs de crecimiento** · 1 herramienta/trim | ✅ **SOPs de empresa** · 1/mes |
 | **Money OS** | ⬜ | ⬜ | ✅ Completo |
 | | | | |
-| **Mentor** | 1/trimestre | 1/mes | 2/mes |
+| **Mentor** | 1/trimestre *($72)* | 1/trimestre *($144)* | 1/mes *($180)* |
 | **Capacidades** | Marketing · Creative · Production · Branding | + Tech | Las seis |
 
 ---

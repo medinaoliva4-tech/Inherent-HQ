@@ -509,6 +509,8 @@ cuesta el caso.**
 | **Claude** | **Q960** / mes **TOTAL** | Claude + herramientas. **No es por cliente.** Se prorratea entre 5 |
 | **Build de tecnología** | **Q750 – Q1,500** / mes | Horas amortizadas de construir la herramienta |
 | **Allan** | **Q60 · Q150 · Q250** / hora | Tres criterios — ver `05-OPERACION.md` |
+| **Membresía de mentoría** | **Q385** / mes **TOTAL** | Anual, de Inherent. **No es por cliente.** Se prorratea |
+| **Sesión de mentor 1:1** | **Q185 · Q370 · Q1,386** / mes | Techo $72 · $144 · $180 por sesión — ver `04-MERCADO.md` |
 
 > 🟢 **Casi todo el costo es variable.** El único fijo es Claude (Q960). No se pierde plata si
 > no hay clientes, y cada marca nueva es casi toda margen.
@@ -590,6 +592,35 @@ cuesta el caso.**
 | **COSTO TOTAL** | **Q3,217** | **Q6,192** | **Q9,167** |
 | **UTILIDAD** | **Q2,943** | **Q2,278** | **Q6,233** |
 | **MARGEN** *(modelo de hora, 5 clientes)* | **64%** | **61%** | **71%** |
+
+---
+
+### 🎓 El margen final — con mentoría adentro
+
+> **Este es el número real que se lleva a la mesa.** El anterior no incluía al mentor.
+
+| | **Ignite** | **Accelerate** | **Compound** |
+|---|---|---|---|
+| **Precio** | **Q6,160** *($800)* | **Q8,470** *($1,100)* | **Q15,400** *($2,000)* |
+| Costo base *(modelo de hora, 5 clientes)* | Q2,220 | Q3,280 | Q4,540 |
+| Membresía prorrateada | Q77 | Q77 | Q77 |
+| Sesiones 1:1 | Q185 *(1/trim @ $72)* | Q370 *(1/trim @ $144)* | Q1,386 *(1/mes @ $180)* |
+| **COSTO TOTAL** | **Q2,482** | **Q3,727** | **Q6,003** |
+| **UTILIDAD** | **Q3,678** | **Q4,743** | **Q9,397** |
+| **MARGEN** | **60%** ✅ | **56%** ⚠️ | **61%** ✅ |
+
+**Utilidad del mes con 5 clientes (2·2·1): Q26,239.**
+
+#### ⚠️ Accelerate es el único que no llega a 60
+
+| Salida | Precio | Margen | Comentario |
+|---|---|---|---|
+| **Dejarlo** | $1,100 | 56% | Es el plan de penetración. Se acepta como inversión |
+| **Subirlo** ← recomendado | **$1,200** | **60%** | Sigue dentro del rango del mercado. Los tres planes quedan parejos |
+| **Bajar el techo del mentor a $72** | $1,100 | 58% | Debilita el diferenciador que más pesa. **No recomendado** |
+
+> 🔑 **Con performance fee encima (Q3,000/mes), Accelerate pasa de 56% a 68%** sin tocar el
+> precio base. **El fee sigue siendo la palanca más grande.**
 
 ---
 
