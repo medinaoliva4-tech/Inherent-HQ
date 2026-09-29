@@ -152,6 +152,28 @@ se construya comunidad — **y no estar solo en eso.**
 **No industrializamos empresas: les damos alma, propósito y facturación.**
 **Se le habla de lo que DESEA, no de lo que la industria dice que necesita.** Ver `PLANES.md`.
 
+🚀 **Somos un acelerador de marcas. Cada plan es un BOOST distinto, no más volumen del anterior.**
+
+```
+IGNITE      invisible → deseado      aprender a comunicarse y existir
+ACCELERATE  estancado → escalando    escalar lo que ya funciona, sin perderlo
+COMPOUND    escalando → autónomo     que crezca sin vos
+```
+
+⚠️ **Accelerate NO es «que te conozcan más».** Ese comprador ya se siente estancado y **teme
+romper lo que le funciona.** Su boost es **volverlo repetible y abrir los canales grandes.**
+
+**Los pilares no cambian — son la metodología. Lo que cambia es a qué profundidad se activan:**
+Ignite **mapea** · Accelerate **ejecuta** · Compound **sistematiza**.
+
+🔑 **Dos tipos de SOPs, no uno:** en Accelerate son **de crecimiento** *(cómo repetir lo que ya
+funciona)*; en Compound son **de empresa** *(cómo funciona sin el fundador)*. **No es el mismo
+trabajo.**
+
+**La etapa no es mérito, es realidad:** lo que el cliente puede pagar dice en qué etapa está, y
+la etapa dice qué necesita. **Darle Money OS a quien arranca sería cobrarle por algo que no va a
+usar.** Ver `PLANES.md`.
+
 🤝 **El hilo de los tres planes es el acompañamiento:** siempre hay alguien que ya creció una
 marca como la suya sentado en su estrategia. Trimestral en Ignite, mensual en Accelerate,
 quincenal en Compound. ⚠️ **El precio del mentor define en qué plan cabe.**
