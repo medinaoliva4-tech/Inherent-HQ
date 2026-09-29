@@ -146,7 +146,8 @@ todavía no funcionó**; Money porque **sin transacciones el margen por línea e
 **Por industria** *(externos — MentorCruise · GrowthMentor · MentorPass)*: gente que ya creció su
 marca ahí y responde *«¿qué harías si esta fuera tu empresa?»*.
 **Por área** *(nuestros)*: corporate structure, eventos, networking y PR, talent production,
-talent marketing. **Red, no nómina.** ⚠️ **El precio del mentor define en qué plan cabe.**
+talent marketing. **Red, no nómina.** ⚠️ **El mentor cuesta y baja el margen:** Ignite −3 pts · Accelerate −13 · Compound −18.
+**Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `MENTORES.md`.
 
 💚 **Un emprendedor no contrata sistemas. Contrata a alguien que cuide lo que construyó.**
 **No industrializamos empresas: les damos alma, propósito y facturación.**
