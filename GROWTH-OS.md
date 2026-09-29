@@ -238,8 +238,10 @@ constructora. **Nosotros no, porque no adivinamos: preguntamos a alguien que ya 
 
 **Gente que ya hizo crecer su propia marca en esa industria.**
 
-Los conseguimos en **MentorCruise** y **GrowthMentor** — plataformas donde operadores reales
-venden sesiones. **Se paga por sesión, no por mes.**
+Los conseguimos en **MentorCruise**, **GrowthMentor** y **MentorPass** *(e-commerce)* —
+plataformas donde operadores reales venden sesiones. **Se paga por sesión, no por mes.**
+
+⚠️ **El precio del mentor define en qué plan cabe.** Uno premium no entra en Ignite.
 
 No los contratamos para que ejecuten. Los traemos a la estrategia para responder una sola
 pregunta: **¿qué harías vos si esta fuera tu empresa?**
@@ -268,7 +270,7 @@ al mes.**
 | | Industria | Área |
 |---|---|---|
 | **Quién es** | Alguien que ya creció su marca en esa industria | Nuestro director de esa área |
-| **De dónde sale** | MentorCruise · GrowthMentor | Nuestro equipo |
+| **De dónde sale** | MentorCruise · GrowthMentor · MentorPass | Nuestro equipo |
 | **Cómo se paga** | Por sesión | Fijo o por horas |
 | **Qué aporta** | *«Qué haría yo si esta fuera mi empresa»* | Dirige la ejecución |
 | **Cuándo entra** | En la estrategia y en los replanteos | Todo el ciclo |

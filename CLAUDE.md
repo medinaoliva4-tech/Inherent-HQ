@@ -145,6 +145,17 @@ production, talent marketing.
 **Red, no nómina:** parte del equipo es fijo, el resto se activa cuando el proyecto lo pide.
 **El cliente accede a gente que no podría contratar, por lo que cuesta un proveedor.**
 
+💚 **Un emprendedor no contrata sistemas. Contrata a alguien que cuide lo que construyó.**
+Nadie quiere «integrar sus sistemas operativos» — eso suena a gasto. Quiere que su marca se vea
+como la soñó, que la toque gente talentosa, que provoque ventas, que se entienda su oferta, que
+se construya comunidad — **y no estar solo en eso.**
+**No industrializamos empresas: les damos alma, propósito y facturación.**
+**Se le habla de lo que DESEA, no de lo que la industria dice que necesita.** Ver `PLANES.md`.
+
+🤝 **El hilo de los tres planes es el acompañamiento:** siempre hay alguien que ya creció una
+marca como la suya sentado en su estrategia. Trimestral en Ignite, mensual en Accelerate,
+quincenal en Compound. ⚠️ **El precio del mentor define en qué plan cabe.**
+
 🚫 **No vendemos servicios. Vendemos resultado.** *"Te damos SOPs"* ❌ ·
 *"Te podés ir una semana y la empresa factura igual"* ✅
 **El volumen, los servicios y las herramientas son la EVIDENCIA de que podemos — nunca la oferta.**
