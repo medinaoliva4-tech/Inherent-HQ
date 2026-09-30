@@ -41,7 +41,7 @@ arranca sin el anterior.
    04 METODOLOGÍA           la estrategia armada
         │
         ▼
-   05 ENTREGA               → skill compartida `client-delivery`
+   05 ENTREGA               el documento y el folder del cliente
 ```
 
 ### 01 · CONTEXTO → skill `context`
@@ -97,8 +97,8 @@ historia (el cliente es el héroe) · personalidad · el fundador · comunidad i
 > conclusión no es el formato: es **a quién hay que hablarle y cómo hay que sentirse** para que esa
 > audiencia nos desee. Se entregan **las acciones que hay que hacer**, no piezas.
 
-### 05 · ENTREGA → skill `client-delivery`
-Compartida. Arma el documento del cliente y su folder.
+### 05 · ENTREGA
+Arma los dos entregables. **El formato está en §7.**
 
 ---
 
@@ -319,13 +319,81 @@ incompleto y la medición arranca sin baseline.
 
 ## 7 · ENTREGABLES
 
+**Dos cosas: una para el cliente, otra para adentro. No son el mismo documento.**
+
 | # | Qué | Dónde | Para quién |
 |---|---|---|---|
 | 1 | **Documento de estrategia** — resume todo, listo para mandar | `clients/<cliente>/ESTRATEGIA.md` | El cliente |
 | 2 | **Folder del cliente** — toda la data, expandida, más los links a lo externo | `clients/<cliente>/` | Los demás agentes |
 
-El formato de los dos lo define `agents/_compartido/client-delivery/SKILL.md`, igual para todos los agentes.
-Gate de Allan antes de entregar cualquiera.
+---
+
+### 1 · `ESTRATEGIA.md` — para el cliente
+
+Lo que se manda. Resume todo **sin ruido interno**: sin marcas de confianza, sin pendientes,
+sin notas de método.
+
+| Sección | Qué lleva |
+|---|---|
+| **Dónde está la marca hoy** | El diagnóstico, en una página |
+| **A dónde vamos** | El objetivo del ciclo, con plazo y métrica |
+| **Dónde competimos y contra qué** | Categoría, enemigo, territorio |
+| **Qué nos hace distintos** | Mecanismo único, promesa y las pruebas que la sostienen |
+| **Qué NO vamos a hacer** | Las renuncias, explícitas |
+| **Cómo se monetiza** | Oferta, precio, recorrido de compra |
+| **Qué vamos a hacer** | El movimiento, la campaña, el sistema de contenido |
+| **Dónde y cada cuánto** | Canales y calendario macro |
+| **Cómo sabremos si funcionó** | Las métricas |
+
+**Reglas:** en el lenguaje del cliente, no en jerga de método · toda afirmación con su razón ·
+lo que falta se dice, no se disimula.
+
+---
+
+### 2 · El folder — para los demás agentes
+
+```
+clients/<cliente>/
+├── ESTRATEGIA.md   ← el de arriba
+├── LINKS.md        ← todo lo que vive afuera
+└── data/           ← lo que se investigó, expandido
+```
+
+**`LINKS.md`** — lo externo **no se copia, se linkea**: Drive de fotos, de videos, de
+entregables, Figma, Notion, redes del cliente, analytics. Con una línea de qué hay en cada uno.
+
+**`data/`** — todo lo crudo y expandido, que en `ESTRATEGIA.md` está resumido:
+- Lo que entregó el cliente
+- La evidencia de la ingeniería inversa, con sus marcas 🟢/🟡/⚪ y su fecha
+- Las 3 Verdades completas, incluido lo que se descartó y por qué
+- Los movimientos candidatos que **no** se eligieron
+- Los huecos abiertos `⚠️ SIN DATOS`
+
+> Acá **sí** va todo el aparato de método. Es el material de trabajo de los otros agentes.
+
+---
+
+### 3 · El handoff
+
+Al cerrar, una línea por destino con qué le toca a cada uno:
+
+```
+Branding   → territorio, tono y activos distintivos
+Marketing  → canales, calendario macro y el plan del ciclo
+Creative   → posicionamiento, campaña y qué tipo de pieza hace falta
+Growth     → oferta, precio y objetivo
+```
+
+---
+
+### 4 · Antes de entregar
+
+- [ ] `ESTRATEGIA.md` se entiende **sin haber leído el método**
+- [ ] Las renuncias están escritas, no implícitas
+- [ ] Lo externo está en `LINKS.md`, no copiado
+- [ ] Los huecos abiertos están nombrados, no disimulados
+- [ ] Nada promete lo que el **plan contratado** no cubre — ver `inherent/06-ECONOMIA.md`
+- [ ] **Allan aprobó.** El agente propone, no cierra
 
 ---
 

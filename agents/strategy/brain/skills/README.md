@@ -4,10 +4,8 @@ Los 4 bloques del workflow son **pasos y además skills**. Se corren en orden; c
 invocar suelto si ya existe el anterior.
 
 ```
-context → analysis → reverse-engineering → methodology → client-delivery
+context → analysis → reverse-engineering → methodology → entrega
 ```
-
-## Propias de Strategy
 
 | # | Skill | Qué hace | Input que necesita |
 |---|---|---|---|
@@ -16,11 +14,8 @@ context → analysis → reverse-engineering → methodology → client-delivery
 | **03** | `reverse-engineering` | Saca de la media real los patrones que explican por qué funciona. **Termina en patrón, no en recomendación** | `analysis` |
 | **04** | `methodology` | Arma la estrategia: posicionamiento, ICP, identidad y branding, historia, comunicación, canales, monetización y medición | los tres anteriores |
 
-## Compartidas
-
-| Skill | Dónde vive | Qué hace |
-|---|---|---|
-| `client-delivery` | `agents/_compartido/client-delivery/` | Arma el documento del cliente y su folder. **La usan todos los agentes**, con el mismo formato |
+> **La entrega no es una skill.** Cada agente entrega distinto, así que su formato vive en el
+> workflow del agente — acá, en `../WORKFLOW.md` §7.
 
 ---
 

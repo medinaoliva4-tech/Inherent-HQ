@@ -6,12 +6,10 @@
 agents/<área>/
 ├── README.md              qué hace, qué acciones tiene y qué le falta
 └── brain/
-    ├── WORKFLOW.md        cómo trabaja el agente, de 0 a 100
+    ├── WORKFLOW.md        cómo trabaja el agente, de 0 a 100 — incluye cómo entrega
     └── skills/
         ├── README.md      cuándo y cómo usa cada skill
         └── <skill>/SKILL.md
-
-agents/_compartido/        lo que usan todos — client-delivery
 ```
 
 > **`brain/` es el agente.** Todo lo que define cómo piensa y trabaja vive ahí dentro.
@@ -62,4 +60,9 @@ A 204 piezas al mes el QA humano no escala.
 3. **`brain/skills/README.md`** — cuándo se invoca cada skill dentro del workflow.
 4. **Una carpeta por skill**, con su `SKILL.md`.
 5. **Enlazarla** en `.claude/skills/` para que se pueda invocar por nombre.
-6. **Cerrar con `client-delivery`** — todos entregan con el mismo formato.
+6. **Cerrar con la entrega**, escrita en el propio `WORKFLOW.md`.
+
+> ⚠️ **La entrega no es una skill compartida.** Cada agente entrega algo distinto —Strategy un
+> documento de estrategia, Design un lote de piezas, Growth una campaña corriendo— así que
+> **cada workflow define su propia entrega.** Lo único igual para todos es el gate: **Allan
+> aprueba antes de que algo salga.**
