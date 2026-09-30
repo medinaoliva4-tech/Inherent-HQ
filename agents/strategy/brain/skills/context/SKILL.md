@@ -1,0 +1,122 @@
+---
+name: context
+description: >
+  Bloque 01 de Strategy. Junta toda la data cruda necesaria para que la estrategia tenga un piso
+  fuerte: visión, propósito, tono y audiencia actual, más unit economics, cómo se compra, cómo se
+  descubre, qué demanda existe y cuál hay que crear, y el comportamiento de la audiencia. Cierra
+  identificando el arquetipo. Úsala al arrancar con un cliente nuevo o cuando falte el contexto para
+  analizar. Describe, no decide.
+---
+
+# 01 · Contexto
+
+Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del bloque 02.
+
+> Si el input es escaso: **documentá menos**. Nunca completes con inferencia.
+> Lo que falta va como `⚠️ SIN DATOS — [qué falta y cómo conseguirlo]`.
+
+---
+
+## A.0 · EL PLAN CONTRATADO ← **el primer dato de todos**
+
+> **Antes de mirar el negocio hay que saber hasta dónde podemos llegar con él.**
+> El plan define **qué se le va a trabajar y hasta qué punto.** Sin este dato, la estrategia
+> promete lo que no se puede entregar.
+
+| Plan | El boost | Verbo de los pilares | Sistemas que se activan |
+|---|---|---|---|
+| 🟦 **IGNITE** $800 | Aprender a comunicarse y existir | **Mapea** | Growth |
+| 🟪 **ACCELERATE** $1,200 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | + Conversion · Operations *(parcial)* |
+| 🟨 **COMPOUND** $2,000 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
+| ⬜ **Tailor Made** | Se define con Allan | Según alcance | Según alcance |
+
+| Plan | Briefs que se arman |
+|---|---|
+| 🟦 **IGNITE** | Branding · Marketing · Creative |
+| 🟪 **ACCELERATE** | + Growth · **Tecnología** |
+| 🟨 **COMPOUND** | + **Sistemas** |
+
+**Los tres incluyen estrategia. Cambia la profundidad, no la existencia.**
+**Los pilares son los mismos — cambia a qué profundidad se activan.** Ver `inherent/03-OFERTA.md`.
+
+### Lo que hay que registrar
+
+| | |
+|---|---|
+| **Plan contratado** | Ignite · Accelerate · Compound · Tailor Made |
+| **Desde cuándo** | Para saber en qué trimestre va |
+| **Performance fee** | ¿Opcional o incluido? Cambia dónde se pone el foco |
+| **Marcas o cuentas** | 1 paquete = 1 marca. Si hay más, son add-on |
+
+⚠️ **Si el objetivo del cliente vive en una capa que su plan no cubre** —por ejemplo quiere
+arreglar su embudo de WhatsApp y está en Ignite— **no se entrega igual.**
+**Se avisa a Allan** y se ofrece subir de plan o cotizarlo como extra.
+
+🛑 **El plan es techo duro.** El agente propone dentro de él, nunca por encima.
+
+---
+
+## A · Comprensión — quién es la marca
+
+| | |
+|---|---|
+| **Visión y ambición** | A dónde quieren llegar. Qué significa éxito para ellos |
+| **Propósito y valores** | Por qué existen |
+| **Identidad actual** | Cómo se ven y se sienten hoy |
+| **Tono y voz** | Cómo hablan |
+| **Producto y oferta** | Qué venden exactamente, qué incluye |
+| **Audiencia actual** | La que **tienen**, no la que quieren |
+| **Diferenciación que creen tener** | Va siempre como `[dice el cliente, sin verificar]` |
+
+> **Regla dura:** la visión del cliente se respeta, pero **no se toma como verdad de mercado.**
+> Si dice *"nuestra ventaja es el servicio"*, se registra. La ingeniería inversa comprueba si es cierto.
+
+## B · Negocio — cómo funciona la máquina
+
+| | Por qué importa |
+|---|---|
+| **Ticket promedio** | Cuánto se puede gastar en traer un cliente |
+| **Margen** | Un margen de 15% no soporta la misma estrategia que uno de 70% |
+| **Capacidad de entrega** | Cuántos clientes más aguanta hoy |
+| **Punto de equilibrio** | El piso del objetivo |
+| **Ad spend del cliente** | Nunca está incluido en el paquete. Sin esto, no hay paid |
+| **Mercado donde vende** | 🇬🇹 Guatemala · 🇲🇽 México · 🇺🇸 EE.UU. · otro. **Cambia canales, competencia y expectativa de precio** → ver `inherent/04-MERCADO.md` |
+| **Dónde está trabado** | No lo conocen · llega gente y se pierde · funciona pero depende de alguien. **De acá sale el nivel** |
+| **División** | 🔵 **Low ticket** *(el juego es volumen)* · 🟣 **High ticket** *(el juego es precisión)*. **Lo define cómo se decide la compra, no quién compra** → `inherent/02-METODO.md` |
+| **Qué pilar está roto** | 🔵 oferta · ventas en grande · ticket — 🟣 oferta · autoridad · proceso de venta · expansión |
+| **Capacidad de producción de contenido** | Sale del paquete. Techo duro de la cadencia |
+
+> Si la capacidad de entrega ya está al tope, la estrategia **no es generar más demanda**: es
+> filtrar mejor o subir el precio. Sin este dato el agente se equivoca de problema.
+
+## C · Demanda — cómo llega la gente
+
+| | |
+|---|---|
+| **Cómo se compra** | El recorrido real hasta que paga. Dónde se decide |
+| **Cómo se descubre** | Por dónde aparece la marca en la vida de alguien |
+| **Demanda que existe** | La que ya se busca. Se **captura** |
+| **Demanda por crear** | La latente. Se **despierta** |
+| **Cuál manda** | Define dónde va el grueso del esfuerzo |
+| **Audience behavior** | Qué hace hoy la gente: qué consume, dónde está, a quién le cree, qué la frena |
+
+## D · Restricciones
+
+Presupuesto · equipo · tiempo · velocidad de aprobación del cliente · legales · lo que el cliente
+ya dijo que no quiere hacer.
+
+## E · Arquetipo
+
+Cierre obligatorio. Ver `../../WORKFLOW.md` §3. Se describe con las 7 preguntas, no se fuerza a
+una lista cerrada.
+
+---
+
+## Antes de cerrar
+- [ ] Todo lo que dice el cliente está etiquetado como tal, no como hecho
+- [ ] Los huecos están nombrados con `⚠️ SIN DATOS`, no disimulados
+- [ ] Hay arquetipo descrito
+- [ ] **Ninguna frase interpreta ni recomienda** — eso es del bloque 02
+
+## Handoff
+→ `analysis`
