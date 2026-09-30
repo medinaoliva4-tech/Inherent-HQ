@@ -48,10 +48,12 @@ Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]
 **posicionamiento de ②** o el **plan de campañas de ③** no están aprobados · el pedido pisa otro
 departamento.
 
-> 🔄 **Transición.** Mientras haya un solo agente aguas arriba, ①②③ se leen de `agents/strategy/`:
-> **①** `nucleo.md` · **②** `ingenieria-inversa.md` + `posicionamiento.md` · **③**
-> `estrategia-de-contenido.md` + `contenido-por-canal.md` + `calendario-estrategico.csv`.
-> Cuando se separen cambian **las rutas, no el método**.
+> 🔄 **Transición.** **①** ya es un departamento propio: se lee de
+> `agents/comprension/clients/<cliente>/comprension.md` (el lenguaje literal del comprador y la
+> capacidad). **②③** todavía comparten `agents/strategy/`: **②** `ingenieria-inversa.md` +
+> `posicionamiento.md` · **③** `estrategia-de-contenido.md` + `contenido-por-canal.md` +
+> `calendario-estrategico.csv`. El WIN y el arquetipo siguen en `nucleo.md`. Cuando ②③ se separen
+> cambian **las rutas, no el método**.
 
 ---
 
