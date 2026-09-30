@@ -597,7 +597,8 @@ cuesta el caso.**
 
 ### 🎓 El margen final — con mentoría adentro
 
-> **Este es el número real que se lleva a la mesa.** El anterior no incluía al mentor.
+> **Este es el número que se lleva a la mesa.** Cualquier otro margen de este archivo está
+> antes del mentor, y el mentor siempre se entrega.
 
 | | **Ignite** | **Accelerate** | **Compound** |
 |---|---|---|---|
@@ -611,35 +612,39 @@ cuesta el caso.**
 
 **Utilidad del mes con 5 clientes (2·2·1): Q27,779.**
 
-> ✅ **Los tres planes quedan parejos en 60-61%, con el mentor adentro.**
-> Se logró **subiendo Accelerate de $1,100 a $1,200** *(decisión de Allan, 30-sep-2026)*.
-> A $1,100 quedaba en 56% y era el único bajo 60.
+> ✅ **Los tres planes están parejos en 60-61%.** Ese es el piso: **un plan que baje de 60% con
+> el mentor adentro está mal preciado**, y se corrige subiendo el precio, no recortando la
+> mentoría.
 
 > 🔑 **Con performance fee encima (Q3,000/mes), Accelerate pasa de 60% a 70%** sin tocar el
 > precio base. **El fee sigue siendo la palanca más grande.**
 
 ---
 
-### ⚠️ El costo real de la estrategia de penetración
+### ⚠️ El precio es de penetración, y eso tiene un costo
 
-**Este es el precio de matarlos con valor. Hay que saberlo, no descubrirlo después.**
+**Estamos cobrando dentro del rango que el mercado ya acepta, con 3x a 5x su volumen.**
+**Es una decisión, no un accidente — y cuesta utilidad por cuenta.**
 
-| | Precio alto *(anterior)* | **Precio competitivo** *(este)* | Diferencia |
+| | Si cobráramos precio de valor | **Precio de penetración** *(el de hoy)* | Diferencia |
 |---|---|---|---|
 | Ignite — utilidad @Q250/h | Q3,208 | **Q2,283** | **−Q925** |
-| Accelerate — utilidad | Q6,958 | **Q2,708** | **−Q4,250** |
+| Accelerate — utilidad | Q6,958 | **Q3,048** | **−Q3,910** |
 | Compound — utilidad | Q12,283 | **Q4,733** | **−Q7,550** |
 
-🔴 **Accelerate a Q250/h queda en 30%. Es el punto más débil del modelo.**
+**Qué compra ese descuento:** cuota de mercado y casos con números. **Nada más.**
 
-**Tres salidas, y hay que elegir una conscientemente:**
-1. **Aceptarlo como inversión.** Precio bajo compra cuota de mercado y casos. **Se sube cuando
-   haya 3 casos con números.** ← recomendado
-2. **Cobrarse Q150/h mientras dura la penetración**, y subir la tarifa con el precio
-3. ✅ **HECHO — Accelerate se subió a Q9,240 ($1,200)** el 30-sep-2026, y con eso el margen
-   con mentor pasó de 56% a **60%**
+### 🚦 El gatillo para salir de penetración
 
-> **La estrategia solo funciona si el precio bajo es temporal y deliberado.**
+**Con 3 casos con números publicables, el precio sube.** No antes, y no «cuando se sienta».
+**Mientras tanto se protege el margen con dos cosas:**
+
+| | |
+|---|---|
+| **1** | **La tarifa por hora baja con el volumen garantizado** — es lo que sostiene el 60% |
+| **2** | **El performance fee** — costo marginal Q0, lleva Accelerate de 60% a 70-78% |
+
+> ⚠️ **El precio bajo solo funciona si es temporal y deliberado.**
 > Si se vuelve permanente, es un negocio de bajo margen disfrazado de estrategia.
 
 ---

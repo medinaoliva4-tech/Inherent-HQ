@@ -414,8 +414,8 @@ y el costo de servirlo es el mismo desde acá.
 | 🟪 **Accelerate** | Q9,240 | 65% | **60%** ✅ |
 | 🟨 **Compound** | Q15,400 | 71% | **61%** ✅ |
 
-> ✅ **Los tres quedan parejos en 60-61%** — se logró subiendo Accelerate a **$1,200**
-> *(decisión de Allan, 30-sep-2026)*. A $1,100 quedaba en 56%. Ver `06-ECONOMIA.md`.
+> ✅ **Los tres quedan parejos en 60-61%.** Ese es el piso del modelo: un plan que baje de ahí
+> con el mentor adentro está mal preciado. Ver `06-ECONOMIA.md`.
 
 ---
 

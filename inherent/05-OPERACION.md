@@ -661,9 +661,9 @@ experto en marketing a correr esos mismos agentes.**
 | **Dir. Growth** | ⬜ | ⬜ | ✅ |
 | **Mentores de industria** | Por sesión | Por sesión | Por sesión |
 
-⚠️ **Compound ya se puede vender sin CFO.** Se quitó de la web el 30-sep-2026, así que
-**Money OS lo entrega Allan con Strategy.** El CFO fraccional pasa a ser una mejora futura,
-no un requisito. **La contratación que sí sigue habilitando volumen es la de Operaciones.**
+⚠️ **Money OS lo entrega Allan con Strategy. El CFO fraccional es una mejora, no un requisito**
+—no se promete al cliente, así que no bloquea vender Compound.
+**La contratación que sí habilita volumen es la de Operaciones.**
 **Sin ellas, Compound se promete y no se entrega.**
 
 ---
