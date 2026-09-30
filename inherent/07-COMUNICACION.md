@@ -126,9 +126,9 @@ constructora. Nosotros no, porque no adivinamos: preguntamos a alguien que ya lo
 > *Un restaurante no crece igual que una clínica. Los canales que importan, las métricas que
 > mienten y dónde vive la confianza — eso lo sabe quien ya lo vivió, no quien lo leyó.*
 
-**Cómo se comunica:** *«Vas a tener a alguien que ya construyó lo que vos querés construir.»*
+**Cómo se comunica:** *«Vas a tener a alguien que ya construyó lo que tú quieres construir.»*
 
-### 2 · 🔧 Construimos tecnología para vos
+### 2 · 🔧 Construimos tecnología para ti
 
 **Nadie más le construye software a sus clientes de marketing.**
 
@@ -142,7 +142,7 @@ clientes. Una landing que convierte. **A tu medida, no una plantilla.**
 **Tu operación, tu equipo y tus números.** SOPs, procesos, perfiles de puesto, márgenes, precios,
 estructura.
 
-**Cómo se comunica:** *«Te podés ir una semana y la empresa factura igual.»*
+**Cómo se comunica:** *«Te puedes ir una semana y la empresa factura igual.»*
 
 ### 4 · ⚡ Volumen que no se sostiene a mano
 
@@ -159,7 +159,7 @@ estructura.
 - **Fotos de producto sin sesión de fotos**
 - **Tu propia IA**, entrenada con tu marca y tus datos
 
-### 6 · 💰 Ganamos cuando vos ganás
+### 6 · 💰 Ganamos cuando tú ganas
 
 **Fee base + porcentaje sobre las ventas que producimos.**
 *No sobre tu tráfico de siempre. Sobre lo que traemos nosotros.*
@@ -171,7 +171,7 @@ estructura.
 # 5 · La estructura del sitio
 
 ```
-1  HERO                 la promesa + quién sos vos
+1  HERO                 la promesa + quién eres tú
 2  ¿EN CUÁL ESTÁS?      los tres momentos — el visitante se auto-selecciona
 3  CÓMO LO HACEMOS      los cuatro sistemas, en lenguaje humano
 4  LOS ESPECIALISTAS    el diferenciador más fuerte
@@ -227,7 +227,7 @@ tu tecnología y tus números.
 
 | | Lo que hacemos | Lo que ganás |
 |---|---|---|
-| **Que te quieran** | Tu marca, tu oferta y tu presencia | **La gente que te importa sabe que existís** |
+| **Que te quieran** | Tu marca, tu oferta y tu presencia | **La gente que te importa sabe que existes** |
 | **Que te compren** | El camino desde que te escriben hasta que te pagan | **Nadie que te busca se pierde** |
 | **Que aguantes** | Tus procesos, tus herramientas, tu equipo | **Crecer deja de dar miedo** |
 | **Que te quede** | Precios, márgenes y en qué vale la pena invertir | **Vender más significa ganar más** |
@@ -255,56 +255,82 @@ una marca como la tuya. Y responde una sola pregunta:
 
 ---
 
-## Sección 5 · LOS PLANES
+## Sección 5 · LOS PLANES — ✅ **YA PUBLICADO**
+
+> 🔒 **Esto ya está vivo en la web. Es texto final, no borrador.**
+> **No se reescribe sin decisión de Allan.** Cualquier cambio acá cambia la promesa comercial.
+> ✍️ **Está escrito de TÚ.** Toda la copia al cliente va de tú.
 
 **Objetivo emocional:** *«puedo con esto, y sé cuál es el mío».*
-
 **Tres tarjetas. Cada una arranca con el deseo en primera persona, no con el nombre.**
 
-### 🟦 IGNITE · $800/mes
-> *«Quiero que mi marca se vea como la imagino, y que la gente que me importa sepa que existo.»*
+---
 
-- Tu marca construida en serio — identidad, voz y una forma de verse que te dé orgullo mostrar
-- Tu oferta clara: que la lean, la entiendan y la quieran
+### 🟦 IGNITE · $800/mes — *De invisible a deseado*
+> *«Quiero que mi marca se vea como la imagino y que la gente sepa que existo.»*
+
+- Tu marca construida en serio: identidad, voz y una forma de verse que te dé orgullo
+- Tu oferta clara, para que quien la lea la entienda y la quiera
 - Presencia todos los días, hecha por gente talentosa
-- Campañas donde está tu gente
-- Alianzas con quien ya tiene tu audiencia
-- **Un mentor de tu industria, cada trimestre**
+- Campañas donde está tu gente y alianzas con quien ya tiene tu audiencia
+- Un mapa de las ventas grandes que podrías estar haciendo
+- **Un especialista de tu industria cada trimestre**
 
-**→ En 90 días la gente que te importa sabe que existís — y le gusta lo que ve.**
+**→ En 90 días, la gente que te importa sabe que existes y le gusta lo que ve.**
 
-### 🟪 ACCELERATE · $1,100/mes
-> *«Ya funciona. Pero llegué a un techo y no sé cómo pasarlo sin romper lo que me sirve.»*
+---
 
-- **Encontramos qué te está funcionando de verdad — y lo volvemos repetible**
-- Abrimos los canales grandes: eventos, mayoreo, corporativos, contratos anuales
-- Subimos el ticket
-- Que nadie se te pierda: alguien escribe a las 11 de la noche y recibe respuesta
-- **Herramientas hechas para vos** — una nueva cada trimestre
-- Que te encuentren cuando te buscan
-- Que tu equipo sepa cerrar
-- **Un mentor de tu industria, cada trimestre** — de gama más alta que en Ignite
+### 🟪 ACCELERATE · $1,100/mes — *De estancado a escalando*
+> *«Ya funciona, pero llegué a un techo y no quiero romper lo que me sirve.»*
 
-**→ Lo que te funcionaba una vez ahora se repite — y ya no depende de que estés vos.**
+- **Encontramos qué te funciona de verdad y lo volvemos repetible**
+- Abrimos los canales grandes: eventos, mayoreo y corporativos
+- Subimos tu ticket: combos, versiones, membresías y recompra
+- Nadie que te escribe se queda sin respuesta
+- **Herramientas hechas para ti, una nueva cada trimestre**
+- Que te encuentren en Google y que tu equipo sepa cerrar
+- **Un especialista de tu industria cada trimestre**
 
-### 🟨 COMPOUND · $2,000/mes
-> *«Quiero que esto crezca sin que yo esté en todo. Y que al final del mes quede plata.»*
+**→ Lo que te funcionaba una vez ahora se repite, y ya no depende de que estés tú.**
 
-- Tu operación más liviana — **una herramienta nueva cada mes**
-- Un mejor equipo: qué puestos, qué tiene que saber cada uno, cómo entra alguien nuevo
+---
+
+### 🟨 COMPOUND · $2,000/mes — *De escalando a autónomo*
+> *«Quiero que esto crezca sin que yo esté en todo, y que al final del mes quede dinero.»*
+
+- Todo lo de Accelerate, al máximo
+- **Tu operación más liviana: una herramienta nueva cada mes**
+- Estructura corporativa: organigrama, qué puestos necesitas y quién decide qué
+- SOPs de toda la empresa: cómo funciona cada área y cómo entra alguien nuevo, sin depender de ti
 - Tus números claros: qué producto te deja y cuál te quita
-- **Que quede más** — precios, márgenes y estructura
-- Que el crecimiento se sostenga solo: referidos, comunidad, recompra
-- **Tu propia IA**, entrenada con tu marca
-- **Un mentor de tu industria cada mes y un CFO a tu lado**
+- Que el crecimiento se sostenga solo: referidos, comunidad y recompra
+- **Tu propia IA, entrenada con tu marca y tus datos**
+- **Un especialista de tu industria cada mes y un CFO a tu lado**
 
-**→ Te podés ir una semana y la empresa factura igual — y cierra el mes mejor.**
+**→ Te puedes ir una semana y la empresa factura igual, y cierra el mes mejor.**
+
+---
+
+**CTA de cada tarjeta:** `Hablemos de este plan →`
 
 ### Y una cuarta, más discreta
 **TAILOR MADE** — *Para lo que no cabe en un molde.* Multi-locación, regulatorio, integraciones
 o proyectos por hito. **Precio según alcance.**
 
 > ⚠️ **Precios siempre en USD.** ⚠️ **Nunca decir «Guatemala» como alcance.**
+> ⚠️ **Nunca mostrar costos, márgenes ni cantidad de piezas en la web.**
+
+---
+
+### 🔒 Qué NO puede cambiar sin recalcular la economía
+
+| Línea publicada | Qué toca |
+|---|---|
+| *«un especialista cada trimestre / cada mes»* | **La cadencia de mentores.** Subirla baja el margen — ver `04-MERCADO.md` |
+| *«una herramienta nueva cada trimestre / cada mes»* | **El build de tecnología.** Q750 y Q1,500/mes |
+| *«un CFO a tu lado»* | 🔴 **No está contratado.** Bloquea la venta de Compound |
+| *«que te encuentren en Google»* | **Es pauta de búsqueda, no SEO técnico.** Ver `06-ECONOMIA.md` |
+| *«presencia todos los días»* | **86 · 145 · 204 piezas.** El techo real es la grabación |
 
 ---
 
@@ -330,7 +356,7 @@ Hotelería · Software · Financiero · Salud especializada · Arquitectura y di
 No hacemos LinkedIn Ads.
 No hacemos SEO técnico — hacemos SEO de contenido, y es distinto.
 No reclutamos personal: damos el sistema, no las personas.
-La inversión publicitaria la ponés vos, siempre, aparte.
+La inversión publicitaria la pones tú, siempre, aparte.
 ```
 
 ---
@@ -377,10 +403,10 @@ quiere empezar.
 | 86 piezas de contenido al mes | **Presencia todos los días, hecha por gente talentosa** |
 | Optimización de estructura corporativa | **Ahorrás donde se puede ahorrar** |
 | Estrategia de comunidad | **Gente que te sigue porque le importás** |
-| Escalamiento de canales | **Crecés sin romper lo que ya te funciona** |
+| Escalamiento de canales | **Creces sin romper lo que ya te funciona** |
 | Auditoría de fulfillment | **Crecer deja de dar miedo** |
 | Atribución multi-touch | **Sabés de dónde vino cada venta** |
-| Expansión de cuenta | **Crecés sin buscar clientes nuevos todo el tiempo** |
+| Expansión de cuenta | **Creces sin buscar clientes nuevos todo el tiempo** |
 
 ---
 

@@ -168,6 +168,26 @@ Inherent** *(sirve a todos los clientes de esa industria, −41% de costo)*.
 Con eso el mentor cuesta **−4 · −5 · −10 pts** y los márgenes quedan en **60% · 56% · 61%**.
 ⚠️ **Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `inherent/04-MERCADO.md`.
 
+## 🌐 La web ya está publicada — es la promesa
+
+**Las tres tarjetas de precio están vivas en inherentglobal.com. Ya se comunicó. Ya se vio.**
+
+🔒 **El repo no puede prometer menos, más ni distinto que la web.** Si algo interno contradice una
+línea publicada, **gana la web** y se corrige el repo. Si una línea publicada no tiene capacidad
+detrás, **se arregla la capacidad — no se borra la línea.**
+**El texto publicado y qué respalda cada línea están en `inherent/03-OFERTA.md`.**
+
+✍️ **Toda la copia al cliente va de TÚ, no de vos.** Así está publicado.
+
+🔴 **Dos cosas que la web ya prometió y todavía no existen:**
+**el CFO fraccional** *(bloquea la venta de Compound)* y **el especialista de corporate
+structure** *(Allan lo cubre mientras tanto)*.
+
+⚠️ **«Que te encuentren en Google» = pauta de búsqueda y contenido guiado por keywords.**
+**Nunca posicionamiento orgánico, auditoría técnica ni link building.**
+
+---
+
 💚 **Un emprendedor no contrata sistemas. Contrata a alguien que cuide lo que construyó.**
 **No industrializamos empresas: les damos alma, propósito y facturación.**
 **Se le habla de lo que DESEA, no de lo que la industria dice que necesita.** Ver `inherent/03-OFERTA.md`.

@@ -27,11 +27,11 @@ Nadie se levanta queriendo «integrar sus sistemas operativos» — eso suena a 
 |---|---|---|
 | **IGNITE** | Invisible → deseado | **Aprender a comunicarse y existir** |
 | **ACCELERATE** | Estancado → escalando | **Escalar lo que ya funciona, sin perderlo** |
-| **COMPOUND** | Escalando → autónomo | **Que crezca sin vos** |
+| **COMPOUND** | Escalando → autónomo | **Que crezca sin ti** |
 
 ### La etapa no es mérito, es realidad
 
-**Lo que podés pagar dice en qué etapa estás.** Y la etapa dice qué necesitás.
+**Lo que puedes pagar dice en qué etapa estás.** Y la etapa dice qué necesitas.
 
 Un negocio que arranca **no necesita SOPs para un equipo de cincuenta personas** ni un análisis
 de márgenes por línea. Necesita que lo conozcan. **Darle eso hoy sería cobrarle por algo que no
@@ -48,121 +48,230 @@ una marca como la tuya** sentado en tu estrategia. Cambia cuánto — nunca si l
 
 ---
 
-# IGNITE · $800 / mes
+> # 🌐 ESTO ES LO QUE YA ESTÁ PUBLICADO
+>
+> **Las tres tarjetas de abajo son, palabra por palabra, la oferta que está viva en la web.**
+> **Ya se comunicó. Ya se vio. Es la promesa.**
+>
+> 🔒 **Regla dura:** el repo no puede prometer **menos**, **más** ni **distinto** que esto.
+> Si algo interno contradice una línea de acá, **gana la web** y se corrige el repo.
+> Si una línea de acá no tiene capacidad detrás, **se arregla la capacidad — no se borra la línea.**
+>
+> ✍️ **Y se habla de TÚ, no de vos.** Así está publicado.
+
+---
+
+# 🟦 IGNITE · $800 / mes
+### *De invisible a deseado*
 
 ## Dónde estás
-*«Tengo algo bueno y casi nadie lo sabe. No sé cómo contarlo para que se entienda y se quiera.»*
+> *«Quiero que mi marca se vea como la imagino y que la gente sepa que existo.»*
 
 ## El boost: **aprender a comunicarse y existir**
 
 El freno no es tu producto — **es que nadie sabe cómo contarlo.** Entramos a resolver eso.
 
-## Qué se activa
+## Qué se activa · **texto publicado**
 
-**Tu marca, construida en serio.** Una identidad, una voz, una forma de verse que te haga sentir
-orgulloso de mostrarla.
+| # | Lo que dice la web |
+|---|---|
+| 1 | **Tu marca construida en serio: identidad, voz y una forma de verse que te dé orgullo** |
+| 2 | **Tu oferta clara, para que quien la lea la entienda y la quiera** |
+| 3 | **Presencia todos los días, hecha por gente talentosa** |
+| 4 | **Campañas donde está tu gente y alianzas con quien ya tiene tu audiencia** |
+| 5 | **Un mapa de las ventas grandes que podrías estar haciendo** |
+| 6 | **Un especialista de tu industria cada trimestre** |
 
-**Tu oferta, clara.** Trabajamos qué vendés, cómo se ve y cómo se cuenta, hasta que quien la lea
-la entienda y la quiera.
+### Qué significa cada una, adentro
 
-**Presencia todos los días.** Gente talentosa produciendo contenido que dice algo — no relleno
-para llenar un calendario.
+**1 · Tu marca construida en serio.** Identidad, voz y sistema visual. No un logo: una forma de
+verse que te haga sentir orgulloso de mostrarla.
 
-**Que te encuentren.** Campañas donde está tu gente, con contenido hecho para eso.
+**2 · Tu oferta clara.** Trabajamos qué vendes, cómo se ve y cómo se cuenta, hasta que quien la
+lea la entienda y la quiera. **Es el Pilar 1 construyéndose.**
 
-**Alianzas con quien ya tiene tu audiencia.** Marcas y creadores que te ponen enfrente de la
-gente correcta.
+**3 · Presencia todos los días.** 86 piezas al mes. Contenido que dice algo — no relleno para
+llenar un calendario.
 
-**Un mapa de las ventas grandes que podrías estar haciendo** — eventos, mayoreo, corporativos.
-Todavía no las abrimos: te mostramos cuáles existen.
+**4 · Campañas y alianzas.** Pauta donde está tu gente, más marcas y creadores que ya tienen a tu
+audiencia enfrente.
 
-**Un mentor de tu industria**, una vez por trimestre.
+**5 · El mapa de las ventas grandes.** Eventos, mayoreo, corporativos. **Todavía no las abrimos:
+te mostramos cuáles existen.** *(Eso es Pilar 2 en modo MAPEAR — abrirlas es Accelerate.)*
 
-## El resultado
-**En 90 días la gente que te importa sabe que existís — y le gusta lo que ve.**
+**6 · El especialista de tu industria.** Una sesión por trimestre, más acceso a la comunidad de
+tu rubro.
+
+## El resultado · **texto publicado**
+> **En 90 días, la gente que te importa sabe que existes y le gusta lo que ve.**
 
 ---
 
-# ACCELERATE · $1,100 / mes
+# 🟪 ACCELERATE · $1,100 / mes
+### *De estancado a escalando*
 
 ## Dónde estás
-*«Ya funciona. Tengo clientes, me conocen, vendo. Pero estoy estancado — siento que llegué a un
-techo y no sé cómo pasarlo sin romper lo que ya me funciona.»*
+> *«Ya funciona, pero llegué a un techo y no quiero romper lo que me sirve.»*
 
 ## El boost: **escalar lo que ya funciona, sin perderlo**
 
 **Acá no venimos a que te conozcan más. Venimos a que crezcas más.**
 
 El freno cambió: ya no es visibilidad, es que **lo que te funciona no está documentado, no se
-puede repetir y depende de que alguien se acuerde.** Y crecer así rompe lo que ya tenés.
+puede repetir y depende de que alguien se acuerde.** Y crecer así rompe lo que ya tienes.
 
-## Qué se activa
+## Qué se activa · **texto publicado**
 
-**Encontramos qué te está funcionando de verdad** — no lo que parece. Y lo escribimos.
+| # | Lo que dice la web |
+|---|---|
+| 1 | **Encontramos qué te funciona de verdad y lo volvemos repetible** |
+| 2 | **Abrimos los canales grandes: eventos, mayoreo y corporativos** |
+| 3 | **Subimos tu ticket: combos, versiones, membresías y recompra** |
+| 4 | **Nadie que te escribe se queda sin respuesta** |
+| 5 | **Herramientas hechas para ti, una nueva cada trimestre** |
+| 6 | **Que te encuentren en Google y que tu equipo sepa cerrar** |
+| 7 | **Un especialista de tu industria cada trimestre** |
 
-**Lo volvemos repetible.** Los SOPs de tu crecimiento: cómo se hace lo que te funciona, para que
-se pueda hacer diez veces sin vos encima y sin que pierda calidad.
+### Qué significa cada una, adentro
 
-**Abrimos los canales grandes.** Las ventas que mapeamos en Ignite, acá se ejecutan: eventos,
+**1 · Lo volvemos repetible.** Encontramos qué te está funcionando **de verdad** —no lo que
+parece— y escribimos los SOPs **de tu crecimiento**: cómo se hace, para que se haga diez veces
+sin ti encima y sin perder calidad.
+
+**2 · Abrimos los canales grandes.** Las ventas que Ignite mapeó, acá se ejecutan: eventos,
 mayoreo, corporativos, preventas. *(En high ticket: retainers, contratos anuales, proyectos por
 fases.)*
 
-**Subimos el ticket.** Combos, versiones, membresías, recompra. Que la misma gente deje más.
+**3 · Subimos tu ticket.** Combos, versiones, membresías, recompra. Que la misma gente deje más.
+**Es el Pilar 3 encendiéndose por primera vez.**
 
-**Que nadie se te pierda.** Alguien escribe a las 11 de la noche y recibe respuesta. Un
-interesado de hace dos semanas recibe seguimiento sin que nadie se acuerde de él.
+**4 · Nadie se queda sin respuesta.** Alguien escribe a las 11 de la noche y recibe respuesta. Un
+interesado de hace dos semanas recibe seguimiento sin que nadie se acuerde de él. **Esto es
+Conversion OS entrando.**
 
-**Herramientas hechas para vos.** Un CRM que no se siente como software, un panel donde ves tu
+**5 · Herramientas hechas para ti.** Un CRM que no se siente como software, un panel donde ves tu
 operación, una landing que convierte. **Una nueva cada trimestre.**
 
-**Que te encuentren cuando te buscan.** Google, no solo redes.
+**6 · Google y closing.** Campañas de **Google Search y Performance Max**, keywords tuyas y de tu
+competencia, y el contenido que responde a lo que la gente busca. Más guiones, objeciones y
+entrenamiento para que tu equipo cierre.
 
-**Que tu equipo sepa cerrar.** Guiones, objeciones y entrenamiento.
+> ⚠️ **Interno:** *«que te encuentren en Google»* se entrega con **pauta de búsqueda + contenido
+> guiado por keywords**, no con SEO técnico. **Nunca se promete posicionamiento orgánico,
+> auditoría técnica ni link building** — ver `06-ECONOMIA.md` → «NO tenemos la acción».
 
-**Creadores que sí venden**, elegidos por audiencia real y no por seguidores.
+**7 · El especialista de tu industria.** Una sesión por trimestre, de gama más alta que en Ignite.
 
-**Un mentor de tu industria cada trimestre** — el que te toque según dónde estés trabado.
+> **También entra:** creadores elegidos por audiencia real, no por seguidores.
 
-## El resultado
-**Lo que te funcionaba una vez ahora se repite — y ya no depende de que estés vos.**
+## El resultado · **texto publicado**
+> **Lo que te funcionaba una vez ahora se repite, y ya no depende de que estés tú.**
 
 ---
 
-# COMPOUND · $2,000 / mes
+# 🟨 COMPOUND · $2,000 / mes
+### *De escalando a autónomo*
 
 ## Dónde estás
-*«Estamos creciendo, pero todo pasa por mí. Y no tengo claro si estamos ganando lo que
-deberíamos.»*
+> *«Quiero que esto crezca sin que yo esté en todo, y que al final del mes quede dinero.»*
 
-## El boost: **que crezca sin vos**
+## El boost: **que crezca sin ti**
 
-El freno ya no es el mercado: **sos vos, tu equipo y tus números.**
+El freno ya no es el mercado: **eres tú, tu equipo y tus números.**
 
-## Qué se activa
+## Qué se activa · **texto publicado**
 
-**Todo lo de Accelerate, al máximo.**
+| # | Lo que dice la web |
+|---|---|
+| 1 | **Todo lo de Accelerate, al máximo** |
+| 2 | **Tu operación más liviana: una herramienta nueva cada mes** |
+| 3 | **Estructura corporativa: organigrama, qué puestos necesitas y quién decide qué** |
+| 4 | **SOPs de toda la empresa: cómo funciona cada área y cómo entra alguien nuevo, sin depender de ti** |
+| 5 | **Tus números claros: qué producto te deja y cuál te quita** |
+| 6 | **Que el crecimiento se sostenga solo: referidos, comunidad y recompra** |
+| 7 | **Tu propia IA, entrenada con tu marca y tus datos** |
+| 8 | **Un especialista de tu industria cada mes y un CFO a tu lado** |
 
-**Tu operación más liviana.** Escribimos lo que hoy solo vive en tu cabeza, encontramos dónde se
-traba el trabajo y lo automatizamos. **Una herramienta nueva cada mes.**
+### Qué significa cada una, adentro
 
-**Un mejor equipo.** Qué puestos vas a necesitar, qué tiene que saber cada uno, y cómo se
-incorpora alguien nuevo sin que vos le enseñes todo.
+**1 · Todo lo de Accelerate, al máximo.** 204 piezas, 3 sesiones de grabación, 50 variantes por
+campaña, 3 revisiones por pieza.
 
-**Tus números claros.** Qué producto te deja y cuál te quita. Cuánto podés pagar por un cliente.
-Cuánto te deja cada uno con el tiempo.
+**2 · Tu operación más liviana.** Escribimos lo que hoy solo vive en tu cabeza, encontramos dónde
+se traba el trabajo y lo automatizamos. **Una herramienta nueva cada mes.**
 
-**Que quede más.** Revisamos precios, márgenes, presupuestos y estructura para que nada se salga
-de rango y para que ahorres donde se puede.
+**3 · Estructura corporativa.** Organigrama, qué puestos vas a necesitar, qué tiene que saber
+cada uno y **quién decide qué**. *(Lo lleva Allan con el especialista de corporate structure.)*
 
-**Que el crecimiento se sostenga solo.** Referidos, comunidad propia, recompra. Que lo del mes
-pasado siga trabajando este mes.
+**4 · SOPs de toda la empresa.** Cómo funciona cada área y cómo entra alguien nuevo sin que se lo
+enseñes tú. **Estos son SOPs de EMPRESA, no de crecimiento** — la diferencia con Accelerate.
 
-**Tu propia IA**, entrenada con tu marca y tus datos.
+**5 · Tus números claros.** Qué producto te deja y cuál te quita. Cuánto puedes pagar por un
+cliente. Cuánto te deja cada uno con el tiempo. Revisamos precios, márgenes y presupuestos para
+que **quede más**. **Esto es Money OS.**
 
-**Un mentor de tu industria cada mes**, dirección quincenal y un CFO a tu lado.
+**6 · Que el crecimiento se sostenga solo.** Referidos, comunidad propia, recompra. Que lo del
+mes pasado siga trabajando este mes.
 
-## El resultado
-**Te podés ir una semana y la empresa factura igual — y cierra el mes mejor.**
+**7 · Tu propia IA**, entrenada con tu marca y tus datos.
+
+**8 · Especialista mensual y CFO.** Una sesión de mentor al mes, más un CFO fraccional a tu lado.
+
+## El resultado · **texto publicado**
+> **Te puedes ir una semana y la empresa factura igual, y cierra el mes mejor.**
+
+---
+
+# ✅ Qué respalda cada línea publicada
+
+> **Regla: si está en la web, tiene que tener acción detrás.** Esta tabla es el control.
+> **`✅` corrido · `⬜` la tool existe, sin probar en cliente real · `👤` horas humanas.**
+
+## 🟦 Ignite
+
+| Línea publicada | Con qué se entrega | |
+|---|---|---|
+| Tu marca construida en serio | Branding *(brief de Strategy)* + Higgsfield `generate_image_batch` | 👤⬜ |
+| Tu oferta clara | Strategy · Pilar 1 · skill `methodology` | 👤 |
+| Presencia todos los días | Higgsfield + Eden `schedule_post` — **86 piezas** | ⬜ |
+| Campañas y alianzas | AdWhispr `launch_meta_ad` · `launch_tiktok_campaign` + Eden `search_creators` | ⬜ |
+| El mapa de ventas grandes | Strategy · Pilar 2 en modo MAPEAR | 👤 |
+| Especialista cada trimestre | Red de mentores — techo **$72** | 👤 |
+
+## 🟪 Accelerate — *todo lo de Ignite, más:*
+
+| Línea publicada | Con qué se entrega | |
+|---|---|---|
+| Lo volvemos repetible | Strategy + Notion · **SOPs de crecimiento** | 👤✅ |
+| Abrimos los canales grandes | Strategy · Pilar 2 **ejecutando** | 👤 |
+| Subimos tu ticket | Strategy · Pilar 3 · rediseño de oferta | 👤 |
+| Nadie se queda sin respuesta | Eden `create_auto_dm_automation` + Zapier | ⬜ |
+| Una herramienta cada trimestre | Higgsfield `create_website` + Vercel + Inherent OS | ⬜ |
+| Que te encuentren en Google | AdWhispr `launch_search_campaign` · `launch_pmax_campaign` · `research_keywords` | ⬜ |
+| Que tu equipo sepa cerrar | Guiones y entrenamiento — **Conversion OS** | 👤 |
+| Especialista cada trimestre | Red de mentores — techo **$144** | 👤 |
+
+## 🟨 Compound — *todo lo de Accelerate, más:*
+
+| Línea publicada | Con qué se entrega | |
+|---|---|---|
+| Una herramienta cada **mes** | Higgsfield + Vercel + Zapier *(9,000+ apps)* + Inherent OS | ⬜ |
+| Estructura corporativa | Allan + especialista de **corporate structure** | 👤 |
+| SOPs de toda la empresa | Strategy + Notion · **Operations OS completo** | 👤✅ |
+| Tus números claros | **Money OS** + CFO fraccional | 👤 |
+| Crecimiento que se sostiene solo | Community + Eden `create_auto_dm_automation` | ⬜ |
+| Tu propia IA | Eden `create_custom_ai` + `manage_custom_ai_sources` | ⬜ |
+| Especialista mensual + CFO | Red de mentores — techo **$180** + CFO fraccional | 👤 |
+
+### 🔴 Los dos huecos que la web ya prometió
+
+| Hueco | Qué falta | Impacto |
+|---|---|---|
+| **CFO fraccional** | No está contratado. Compound no se puede vender completo sin él | 🔴 **Bloquea la venta de Compound** |
+| **Especialista de corporate structure** | Está en la red declarada, sin persona confirmada | 🟡 Allan lo cubre mientras tanto |
+
+⚠️ **Todo lo demás tiene acción detrás.** Lo que está en `⬜` existe como tool pero **no se ha
+corrido en cliente real** — ver `06-ECONOMIA.md` → «Capacidades reales».
 
 ---
 
@@ -227,7 +336,7 @@ de esa industria. Ver `04-MERCADO.md`.
 |---|---|---|---|
 | **Precio / mes** | **$800** | **$1,100** | **$2,000** |
 | **Dónde estás** | Nadie me conoce | **Estancado en un techo** | Todo pasa por mí |
-| **El boost** | Comunicarte y existir | **Escalar lo que funciona** | Que crezca sin vos |
+| **El boost** | Comunicarte y existir | **Escalar lo que funciona** | Que crezca sin ti |
 | | | | |
 | Marca e identidad | ✅ | ✅ | ✅ |
 | Contenido y presencia | ✅ | ✅ Mayor volumen | ✅ Máximo |
@@ -258,7 +367,7 @@ de esa industria. Ver `04-MERCADO.md`.
 | "86 piezas de contenido al mes" | **"Presencia todos los días, hecha por gente talentosa"** |
 | "Optimización de estructura corporativa" | **"Ahorrás donde se puede ahorrar"** |
 | "Estrategia de comunidad" | **"Gente que te sigue porque le importás"** |
-| "Escalamiento de canales" | **"Crecés sin romper lo que ya te funciona"** |
+| "Escalamiento de canales" | **"Creces sin romper lo que ya te funciona"** |
 
 **Se le habla al emprendedor de lo que desea, no de lo que la industria dice que necesita.**
 **Los sistemas son cómo lo cumplimos. No qué le vendemos.**
@@ -379,7 +488,7 @@ corriendo
 
 **De estancado a escalando. El boost: escalar lo que ya funciona, sin perderlo.**
 
-*Ya te conocen y ya vendés. El freno es que lo que te funciona no está documentado, no se puede
+*Ya te conocen y ya vendes. El freno es que lo que te funciona no está documentado, no se puede
 repetir y depende de que alguien se acuerde.*
 
 ---
@@ -449,7 +558,7 @@ corriendo
 
 ### Pilar 3 · Expansión → **CROSS-SELL Y RENOVACIÓN**
 
-- Mapa de qué más le podés vender a cada cliente actual
+- Mapa de qué más le puedes vender a cada cliente actual
 - **Calendario de renovación** — que nunca llegue la conversación de *«¿seguimos?»*
 - Reporte de valor: que el cliente vea lo que le diste
 
@@ -492,9 +601,9 @@ crezca es optimizar algo que está por cambiar de todos modos.
 
 # 🟨 COMPOUND · $2,000
 
-**De escalando a autónomo. El boost: que crezca sin vos.**
+**De escalando a autónomo. El boost: que crezca sin ti.**
 
-*El freno ya no es el mercado: sos vos, tu equipo y tus números.*
+*El freno ya no es el mercado: eres tú, tu equipo y tus números.*
 
 ---
 
