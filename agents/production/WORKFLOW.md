@@ -467,6 +467,18 @@ El nombre de la carpeta es **el mismo nombre canónico** que en `agents/creative
 | Cobertura que nunca se usó el ciclo pasado | Aprendizaje, no problema | **Capa 7**, como dato |
 | No tenemos el equipo | Restricción de recursos, no de idea | Se alquila, o se devuelve como motivo 5 |
 
+### Qué pasa después de devolver
+
+| | La regla |
+|---|---|
+| **Las respuestas de ④** | Solo 4: **alternativa 1** · **alternativa 2** · **alternativa nueva** (Producción la verifica de nuevo y cuenta como una vuelta más) · **se retira**. Se registran con fecha en § Escenas devueltas a ④ de `plan-de-rodaje.md` |
+| ⏱️ **Plazo** | **2 días hábiles** desde que se registra la devolución, o la fecha que exija la jornada si es anterior. La fecha límite **la pone Producción** al devolver |
+| **Si vence sin respuesta** | 🛑 **No se inventa.** La escena queda `↩️ devuelta`, **fuera de la jornada**, y **③ Marketing** decide si la pieza se mueve o se cae |
+| 🔁 **Máximo 2 vueltas** | Por escena. Si después de la segunda no hay acuerdo, deja de ser de los agentes: deciden **el lead de ④ y el de ⑤** |
+| **Cuando vuelve la respuesta** | La escena pasa a `planificada` y **se re-desglosa** (Capa 1 en adelante) solo en lo que cambió. La corrección vive en el `ideas-<formato>.md` de ④ — Producción la **cita**, no la copia |
+
+Cómo responde ④ del otro lado —quién corrige y qué gate vuelve a pasar—: `agents/creative/WORKFLOW.md` §8.
+
 ---
 
 ## 10 · Convenciones
