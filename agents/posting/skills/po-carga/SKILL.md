@@ -19,18 +19,24 @@ description: >
 Contexto del departamento: `agents/posting/WORKFLOW.md`. Plantilla:
 `agents/posting/entregables/publer-import.csv`.
 
-## 0 · Dos rutas, dos paquetes
+## 0 · Tres rutas, tres paquetes
 
-| Ruta | Qué se produce | Quién lo carga |
+| Ruta | Qué se produce | Quién lo hace |
 |---|---|---|
 | **Social** | `publer-import.csv` + checklist de subida | Un humano, en Publer |
 | **Email** | La sección **§ Los envíos de email** de `publicaciones.md` + su checklist | Un humano, en la herramienta de email del cliente |
+| **Manual** | La sección **§ Los envíos manuales** de `publicaciones.md` + su checklist | Un humano, **a mano**: lo manda desde el teléfono, o lo imprime y lo pega |
 
-🛑 **`publer-import.csv` lleva solo las filas de la ruta social.** Publer no manda email: una fila de
-`Email` ahí hace fallar la importación entera, con todo el ciclo adentro.
+🛑 **`publer-import.csv` lleva solo las filas de la ruta social.** Publer no manda email, ni WhatsApp,
+ni imprime: una fila de `Email` o de la ruta manual ahí hace fallar la importación entera, con todo
+el ciclo adentro.
 
-🛑 **La herramienta de email no se supone** — está en `comprension.md` § La capacidad. Si no está,
-`⚠️ SIN DATOS` y el paquete se entrega igual: es agnóstico de herramienta.
+🛑 **Ni la herramienta de email ni la lista de WhatsApp se suponen** — están en `comprension.md`
+§ La capacidad. Si no están, `⚠️ SIN DATOS` y el paquete se entrega igual: es agnóstico de herramienta.
+
+🛑 **La ruta manual se entrega igual de completa que las otras dos.** El texto va **listo para
+copiar**, con su fecha, su hora y su destinatario; el impreso va con **la ruta de su archivo final**
+y dónde se pega. *"Es por WhatsApp, lo resuelve el cliente"* no es un paquete.
 
 ### El checklist del envío de email
 
@@ -44,6 +50,35 @@ Contexto del departamento: `agents/posting/WORKFLOW.md`. Plantilla:
 - [ ] 🛑 Ninguna pieza con claim pendiente está en la cola
 - [ ] 🚦 Tengo la aprobación del GATE 2
 ```
+
+### El checklist del envío manual — WhatsApp o SMS
+
+```markdown
+- [ ] Estoy en el número y la cuenta correctos
+- [ ] La lista o difusión es la que dice el paquete, y sé a cuántas personas le llega
+- [ ] Me mandé el mensaje a mí primero y lo leí **en el celular**
+- [ ] El texto entra sin cortarse, y los links funcionan
+- [ ] 🛑 **Sé quién contesta lo que entre, y en qué horario** — un aviso que abre una conversación
+      que nadie atiende es peor que no mandarlo
+- [ ] 🛑 Ninguna pieza con claim pendiente está en la cola
+- [ ] 🚦 Tengo la aprobación del GATE 2
+```
+
+### El checklist del impreso
+
+```markdown
+- [ ] El archivo es el **export final de ⑥A**, no un borrador ni una captura
+- [ ] Se lee **a la distancia real** a la que va a estar, y con la luz que hay ahí
+- [ ] 🛑 Tengo el permiso para intervenir el lugar: contrato de alquiler, municipal o el dueño del espacio
+- [ ] Está puesto donde dice el paquete, no donde quedaba cómodo
+- [ ] Saqué una foto del lugar, puesta — es la única verificación posible
+- [ ] 🛑 Ninguna pieza con claim pendiente está en la cola
+- [ ] 🚦 Tengo la aprobación del GATE 2
+```
+
+🛑 **Un impreso no se verifica en la Capa 5 como una publicación.** No hay URL que mirar ni métrica
+que leer: se verifica con **la foto del lugar**, y su rendimiento **no es medible** con lo que hay.
+Eso se declara; no se inventa un proxy.
 
 ## 1 · 🛑 Acá para el departamento
 
@@ -167,7 +202,10 @@ publicado.
 - [ ] El `Text` conserva saltos de línea, acentos y emojis — se verificó abriendo el archivo
 - [ ] 🛑 **Ninguna fila con claim ⏸️ entró al archivo**
 - [ ] Toda fila del archivo tiene su `id_creativo` trazable en el calendario interno
-- [ ] 🛑 **Ninguna fila de `Email` entró a `publer-import.csv`**
+- [ ] 🛑 **Ninguna fila de `Email` ni de la ruta manual entró a `publer-import.csv`**
 - [ ] Los envíos de email tienen su paquete completo —asunto, preheader, cuerpo, lista, fecha— y su checklist
+- [ ] Los envíos manuales tienen su paquete completo —texto listo para copiar, destinatario, fecha y hora— y su checklist
+- [ ] Los impresos tienen **la ruta de su archivo final**, dónde van y el permiso resuelto o declarado
+- [ ] 🛑 **Nada se mandó ni se imprimió desde acá** — el paquete queda listo y lo hace un humano
 - [ ] El **checklist de subida** está entregado junto al archivo
 - [ ] 🚦 **GATE 2** presentado a un humano

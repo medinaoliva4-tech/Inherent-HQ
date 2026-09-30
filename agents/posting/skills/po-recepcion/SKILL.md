@@ -23,20 +23,27 @@ Contexto del departamento: `agents/posting/WORKFLOW.md`. Plantillas:
 **No escribís nada todavía: cruzás y verificás.** Escribir el caption de una pieza que no tiene
 archivo es trabajo tirado, y se descubre recién al cargar.
 
-## 0 · Lo primero: separar las dos rutas
+## 0 · Lo primero: separar las tres rutas
 
-Antes de verificar nada, se parte el ciclo por la columna `canal`:
+Antes de verificar nada, se parte el ciclo por la columna `canal`. **Toda fila cae en una y solo
+una**:
 
 | Ruta | Canales | Qué necesita para estar completa |
 |---|---|---|
 | **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | El **export** de ⑥A o ⑥B, más copy y cuenta |
 | **Email** | Email / Newsletter | El **cuerpo escrito por ④**, la lista y la herramienta. El export de ⑥A solo si lleva imágenes |
+| **Manual** | **WhatsApp** (lista o difusión) · **SMS** · **impresos**: cartel, vidriera, packaging | **WhatsApp y SMS:** el texto de ④, la lista y **quién la opera**. **Impresos:** el export de ⑥A, más dónde va y el permiso para ponerlo |
 
-🛑 **Publer no manda email.** Una fila de `Email` que se cuela en `publer-import.csv` hace fallar la
-importación entera, con todo el ciclo adentro.
+🛑 **Publer no manda email, ni WhatsApp, ni imprime.** Una fila de `Email` o de la ruta manual que se
+cuela en `publer-import.csv` hace fallar la importación entera, con todo el ciclo adentro.
 
-🛑 **Una pieza de email no se marca `⚠️ SIN ARCHIVO` por no tener video.** Es un falso bloqueo que
-retrasa un envío que se podía mandar. Su archivo es el cuerpo, y lo escribió ④.
+🛑 **Una pieza de email o de WhatsApp no se marca `⚠️ SIN ARCHIVO` por no tener video.** Es un falso
+bloqueo que retrasa un envío que se podía mandar. Su archivo es el texto, y lo escribió ④.
+**Los impresos sí llevan archivo**: sin el export de ⑥A no hay nada que imprimir.
+
+🛑 **Si un `canal` del plan no cae en ninguna de las tres, no se fuerza.** Se declara la fila como
+`🛑 SIN RUTA DE SALIDA` y **se devuelve a ③ Marketing**. Inventar la ruta en el momento es cómo un
+canal termina cargado donde no va.
 
 ## 1 · Los inputs bloqueantes
 
@@ -57,12 +64,14 @@ que no se verificó es una fila que se cae al cargar.
 
 | Chequeo | Qué se mira | Si falla |
 |---|---|---|
-| **Tiene archivo final** *(solo ruta social)* | Existe el export de ⑥A o ⑥B, con ruta | `⚠️ SIN ARCHIVO` — se nombra **de quién se espera y desde cuándo** |
+| **Tiene archivo final** *(ruta social e impresos)* | Existe el export de ⑥A o ⑥B, con ruta | `⚠️ SIN ARCHIVO` — se nombra **de quién se espera y desde cuándo** |
 | **El archivo es el correcto** | El `id_creativo` del nombre coincide con la fila | ↩️ **DEVUELTO** a ⑥A / ⑥B — motivo 3 |
 | **Tiene copy y caption** | Están escritos y **literales** en su `ideas-<formato>.md` | ↩️ **DEVUELTO** a ④ — motivo 4. *"Un caption de curiosidad"* no es un caption |
 | **No arrastra claims ⏸️** | La pieza no tiene `⏸️ PENDIENTE APROBACIÓN` de ④ | 🛑 **No entra al ciclo** hasta que ②B o ⑧B validen |
 | **Existe la cuenta** *(social)* | La `cuenta` concreta está identificada y alguien tiene las claves | 🛑 **BLOQUEADO** — ① § La capacidad |
 | **Existe la lista** *(email)* | La lista o segmento y la herramienta de email están identificadas | 🛑 **BLOQUEADO** — ① § La capacidad |
+| **Existe la lista y quién la opera** *(manual · WhatsApp y SMS)* | La lista o difusión existe, y hay alguien que la manda **y que contesta lo que entre** | 🛑 **BLOQUEADO** — ① § La capacidad. 🛑 **Sostener la conversación es de ⑧A Orgánico**, no de ⑦ |
+| **Existe el permiso** *(manual · impresos)* | Se puede intervenir el lugar donde va: contrato de alquiler, permiso municipal, dueño del espacio | 🛑 **BLOQUEADO** — ① § La capacidad |
 
 **Una fila de ④ puede ser más de una publicación.** Si la misma pieza va a dos cuentas, son **dos
 filas de Posting**, cada una con su `id` y su archivo.
@@ -127,6 +136,8 @@ Con archivo y publicables:   [n]
 - [ ] La **cuenta** de cada fila está identificada, y sabemos quién tiene las claves
 - [ ] Las piezas que van a dos cuentas son **dos filas**, no una
 - [ ] La tabla **§ Lo que no sale este ciclo** está escrita — ninguna pieza desapareció en silencio
-- [ ] 🛑 **Las dos rutas están separadas por `canal`** — ninguna fila de `Email` quedó del lado de Publer
-- [ ] 🛑 **Ninguna pieza de email se marcó `⚠️ SIN ARCHIVO`** por no tener export de ⑥
+- [ ] 🛑 **Las tres rutas están separadas por `canal`** — ninguna fila de `Email` ni de la ruta manual quedó del lado de Publer
+- [ ] 🛑 **Ninguna pieza de email ni de WhatsApp se marcó `⚠️ SIN ARCHIVO`** por no tener export de ⑥ — su archivo es el texto
+- [ ] 🛑 **Todo impreso de la ruta manual sí lleva su export de ⑥A**, o quedó `⚠️ SIN ARCHIVO`
+- [ ] 🛑 **Ningún `canal` quedó sin ruta en silencio** — el que no cae en las tres va `🛑 SIN RUTA DE SALIDA` y se devuelve a ③
 - [ ] 🛑 **No se escribió ningún caption todavía** — eso es la Capa 1

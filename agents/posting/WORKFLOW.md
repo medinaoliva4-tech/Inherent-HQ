@@ -33,23 +33,33 @@ publica sin autorización, y `.claude/settings.json` ya tiene las herramientas d
 automática en `deny`. Un error de copy o de fecha que sale publicado no se puede despublicar del
 timeline de nadie.
 
-### Las dos rutas de salida
+### Las tres rutas de salida
 
-No todo lo que ③ Marketing programa es una red social. El calendario trae **`Email / Newsletter`**
-como canal de primera clase, y **Publer no manda email**. Por eso hay dos rutas, y toda fila cae en
-una de las dos:
+No todo lo que ③ Marketing programa es una red social, y **no todo lo que programa pasa por una
+herramienta.** Publer no manda email, y tampoco manda WhatsApp ni imprime un cartel. Hay tres rutas,
+y **toda fila cae en una y solo una**:
 
-| Ruta | Canales | Sale por | Quién carga |
+| Ruta | Canales | Sale por | Quién lo hace |
 |---|---|---|---|
 | **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | **`publer-import.csv`** | Un humano, en Publer |
 | **Email** | Email / Newsletter | La sección **§ Los envíos de email** de `publicaciones.md` | Un humano, en la herramienta de email del cliente |
+| **Manual** | **WhatsApp** (lista o difusión) · **SMS** · **impresos y material físico**: cartel, vidriera, packaging, mesa | La sección **§ Los envíos manuales** de `publicaciones.md` | Un humano, **a mano**: lo manda desde el teléfono, o lo imprime y lo pega |
 
-🛑 **La herramienta de email no se supone.** Cuál usa el cliente está en
-`agents/comprension/clients/<cliente>/comprension.md` § La capacidad. Si no está: `⚠️ SIN DATOS`, y
-el paquete se entrega igual — es agnóstico de herramienta.
+🛑 **La ruta manual no es un cajón de descartes: es una ruta de primera clase.** El canal de mayor
+ROI del arquetipo `01 — Local de Alta Frecuencia` es **WhatsApp**, y la cartelería del local es
+*media propia gratuita*. Un plan de ③ puede apoyar su objetivo central en un canal que ninguna
+herramienta programa.
 
-> 🛑 **Una fila de `Email` que se mete en `publer-import.csv` falla la importación entera.** Se
-> separan en la Capa 0, no al cargar.
+🛑 **Ni la herramienta de email ni la lista de WhatsApp se suponen.** Cuál usa el cliente y quién la
+opera está en `agents/comprension/clients/<cliente>/comprension.md` § La capacidad. Si no está:
+`⚠️ SIN DATOS`, y el paquete se entrega igual — es agnóstico de herramienta.
+
+> 🛑 **Una fila de `Email` o de la ruta manual que se mete en `publer-import.csv` falla la
+> importación entera.** Se separan en la Capa 0, no al cargar.
+
+> 🛑 **La ruta manual no se fuerza dentro de Publer, y el plan de ③ no se reescribe para que entre.**
+> Si un canal no cae en ninguna de las tres, se **declara** y se devuelve a ③ — no se inventa una
+> cuarta ruta en el momento.
 
 ---
 
@@ -59,7 +69,7 @@ el paquete se entrega igual — es agnóstico de herramienta.
 
 | Archivo | Para quién | Qué es |
 |---|---|---|
-| **`publicaciones.md`** | **Quien aprueba** — el lead, y el cliente si corresponde | Una sección por publicación: caption final, hashtags, alt text, link, qué archivo va, fecha y hora, y el QA de plataforma. Se lee para dar el OK |
+| **`publicaciones.md`** | **Quien aprueba** — el lead, y el cliente si corresponde | Una sección por publicación: caption final, hashtags, alt text, link, qué archivo va, fecha y hora, y el QA de plataforma. Se lee para dar el OK. **Lleva las tres rutas**: las de social, § Los envíos de email y § Los envíos manuales |
 | **`publer-import.csv`** | **Quien carga** | El archivo con las **12 columnas exactas de Publer**, listo para subir. No se lee: se sube. **Solo lleva las filas de la ruta social** |
 
 **Más dos archivos de trabajo interno** que no se entregan pero **sí se guardan**:
@@ -194,17 +204,21 @@ LOOP         Capa 6      ¿Qué se cayó, qué llegó tarde?
 **Skill:** `po-recepcion` · **Output:** las filas base de `calendario-de-publicacion.csv`
 
 Cruzar `plan-de-contenido.csv` de ④ **fila por fila** contra lo que entregaron ⑥A y ⑥B. Lo primero
-es **separar las dos rutas por el `canal`**: lo que va a Publer y lo que va por email. Después, cada
-fila con lo que necesita se convierte en fila de publicación; lo que falta **se declara**.
+es **separar las tres rutas por el `canal`**: lo que va a Publer, lo que va por email y lo que sale
+**a mano**. Después, cada fila con lo que necesita se convierte en fila de publicación; lo que falta
+**se declara**.
 
 | Chequeo | Ruta | Si falla |
 |---|---|---|
-| La pieza tiene su **archivo final**, con ruta | social | `⚠️ SIN ARCHIVO` — se nombra a quién pedírselo |
+| La pieza tiene su **archivo final**, con ruta | social · impresos | `⚠️ SIN ARCHIVO` — se nombra a quién pedírselo |
 | El archivo corresponde al `id_creativo` correcto | social | ↩️ **DEVUELTO** a ⑥A / ⑥B |
 | La pieza tiene **copy y caption** en su `ideas-<formato>.md` | ambas | ↩️ **DEVUELTO** a ④ |
 | La pieza **no tiene claims pendientes** | ambas | 🛑 No entra al ciclo hasta que ②B o ⑧B la validen |
 | Existe la **cuenta** donde va y sabemos quién tiene las claves | social | 🛑 **BLOQUEADO** — ① § La capacidad |
 | Existe la **lista o segmento** y la herramienta de email | email | 🛑 **BLOQUEADO** — ① § La capacidad |
+| Existe la lista, **quién la manda y quién contesta** | manual | 🛑 **BLOQUEADO** — ① § La capacidad. Sostener la conversación es de ⑧A |
+| Existe el **permiso** para intervenir el lugar | manual · impresos | 🛑 **BLOQUEADO** — ① § La capacidad |
+| El `canal` **cae en alguna de las tres rutas** | todas | 🛑 `SIN RUTA DE SALIDA` — se **devuelve a ③**, no se fuerza |
 
 > 🛑 **Una pieza de email está completa sin export de ⑥.** Su cuerpo lo escribió ④; ⑥A solo entra si
 > la pieza lleva imágenes. Marcarla `⚠️ SIN ARCHIVO` porque no hay video es un falso bloqueo, y
@@ -345,7 +359,7 @@ Los **5 motivos válidos**, y solo esos:
 
 | # | Motivo | Vuelve a | Cómo se detecta |
 |---|---|---|---|
-| 1 | **Falta el archivo final** *(solo ruta social)* | ⑥A / ⑥B | La fila de ④ no tiene export correspondiente |
+| 1 | **Falta el archivo final** *(ruta social, y los impresos de la ruta manual)* | ⑥A / ⑥B | La fila de ④ no tiene export correspondiente. 🛑 **No aplica a email ni a WhatsApp**: su archivo es el texto, y lo escribió ④ |
 | 2 | **El archivo no cumple la spec** | ⑥A / ⑥B | Aspecto, duración o peso fuera de lo que acepta la plataforma |
 | 3 | **El archivo no corresponde** | ⑥A / ⑥B | El `id_creativo` del nombre no coincide con la fila |
 | 4 | **No hay copy o caption** | ④ | La pieza llegó descrita, no escrita |
@@ -361,6 +375,8 @@ rompería si lo adaptáramos por cuenta propia · **al menos dos alternativas** 
 | Las piezas llegan sistemáticamente tarde | Problema de calendario | **③ Marketing**, vía Capa 6 |
 | Un claim no está aprobado | Falta una validación | **②B Branding** o **⑧B Ads** |
 | No tenemos acceso a la cuenta | Restricción de acceso | **① Comprensión** § La capacidad |
+| La lista de WhatsApp no existe, o nadie contesta lo que entra | Restricción de capacidad | **① Comprensión** § La capacidad · y **⑧A Orgánico** si hay que sostener la conversación |
+| Un canal del plan no cae en ninguna de las tres rutas | El plan pide algo que ⑦ no puede sacar | **③ Marketing** — se declara, **no se fuerza dentro de Publer** |
 | El cliente quiere cambiar el copy | Cambio de mensaje | **④ Creatividad** decide, no Posting |
 
 ---

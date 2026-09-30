@@ -160,20 +160,26 @@ po-recepcion ──→ po-caption ──→ po-specs ──→ po-programacion �
 
 ---
 
-## Las dos rutas de salida
+## Las tres rutas de salida
 
-No todo lo que ③ programa es una red social: el calendario trae **`Email / Newsletter`** como canal de
-primera clase, y **Publer no manda email**.
+No todo lo que ③ programa es una red social, y **no todo pasa por una herramienta**. El calendario
+trae `Email / Newsletter` como canal de primera clase —y **Publer no manda email**—, y trae canales
+que no programa nadie: **WhatsApp** y los **impresos**.
 
 | Ruta | Canales | Sale por |
 |---|---|---|
 | **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | `publer-import.csv` |
 | **Email** | Email / Newsletter | § Los envíos de email de `publicaciones.md` |
+| **Manual** | WhatsApp · SMS · impresos: cartel, vidriera, packaging | § Los envíos manuales de `publicaciones.md` |
 
-🛑 **Se separan en `po-recepcion`, no al cargar.** Una fila de `Email` que se cuela en
-`publer-import.csv` hace fallar la importación entera, con todo el ciclo adentro.
-🛑 **Una pieza de email no se marca `⚠️ SIN ARCHIVO` por no tener video:** su archivo es el cuerpo, y
-lo escribió ④.
+🛑 **Se separan en `po-recepcion`, no al cargar.** Una fila de `Email` o de la ruta manual que se
+cuela en `publer-import.csv` hace fallar la importación entera, con todo el ciclo adentro.
+🛑 **Una pieza de email o de WhatsApp no se marca `⚠️ SIN ARCHIVO` por no tener video:** su archivo
+es el texto, y lo escribió ④. **Los impresos sí llevan archivo** — sin el export de ⑥A no hay qué imprimir.
+🛑 **La ruta manual no es un cajón de descartes.** El canal de mayor ROI del arquetipo `01` es
+WhatsApp: un plan puede apoyar su objetivo central en algo que ninguna herramienta programa.
+🛑 **Un `canal` que no cae en ninguna de las tres se declara y se devuelve a ③** — no se fuerza
+dentro de Publer ni se reescribe el plan.
 
 ## Sobre Publer
 

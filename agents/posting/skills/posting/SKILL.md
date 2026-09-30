@@ -16,7 +16,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · `plan-de-contenido.csv` con Gate 3 de ④ · los exports de ⑥A y ⑥B · § La capacidad de ① (cuentas y accesos) · guidelines de ②B |
+| **Consume** | El pedido del usuario · `plan-de-contenido.csv` con Gate 3 de ④ · los exports de ⑥A y ⑥B · § La capacidad de ① (cuentas, accesos, listas y quién las opera) · guidelines de ②B |
 | **Produce** | Nada por sí mismo. **Decide qué capa corre y con qué skill**, y arma el pre-flight y el handoff |
 
 Contexto del departamento: `agents/posting/WORKFLOW.md`. Índice de skills:
@@ -38,14 +38,16 @@ ofrece dejarlo listo para subir.**
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-6] · Ciclo: [x]
-④ Creatividad: Excel con Gate 3 [✅/⬜] · filas del ciclo: [n] → social [n] · email [n]
+④ Creatividad: Excel con Gate 3 [✅/⬜] · filas del ciclo: [n] → social [n] · email [n] · manual [n] · SIN RUTA [n]
 ⑥A entregó: [n/n] · ⑥B entregó: [n/n] · ⚠️ SIN ARCHIVO: [n]
 ②B Branding [✅/⬜] · ① cuentas y accesos [✅/⬜] · ① herramienta de email [✅/⬜] · claims pendientes: [n]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
-🛑 **El reparto social / email se declara desde el pre-flight.** Publer no manda email, y descubrirlo
-al cargar cuesta la ventana de publicación del ciclo entero.
+🛑 **El reparto social / email / manual se declara desde el pre-flight.** Publer no manda email, ni
+WhatsApp, ni imprime, y descubrirlo al cargar cuesta la ventana de publicación del ciclo entero.
+**`SIN RUTA` son las filas cuyo `canal` no cae en ninguna de las tres**: no se fuerzan dentro de
+Publer, se devuelven a ③ Marketing.
 
 **Se bloquea si:**
 
@@ -55,6 +57,8 @@ al cargar cuesta la ventana de publicación del ciclo entero.
 | Falta el Excel de ④ con **Gate 3** | `BLOQUEADO` — se pide la ruta exacta |
 | **No sabemos quién tiene las claves** de las cuentas | `BLOQUEADO` — está en `comprension.md` § La capacidad |
 | Hay **claims ⏸️ sin validar** en piezas del ciclo | Esas filas no entran. Se nombra quién las valida |
+| Hay filas de **ruta manual** y no sabemos **quién manda ni quién contesta** | `BLOQUEADO` — está en `comprension.md` § La capacidad. Sostener la conversación es de **⑧A Orgánico** |
+| Un `canal` del plan **no cae en ninguna de las tres rutas** | La fila va `🛑 SIN RUTA DE SALIDA` y se **devuelve a ③**. 🛑 No se fuerza dentro de Publer ni se reescribe el plan |
 | Piden la Capa 4 sin Gate 1 | Se dice qué falta y se ofrece correr las capas previas |
 | Piden publicar directo | 🛑 Se explica la regla 10 y se ofrece dejarlo listo |
 
@@ -152,7 +156,8 @@ cargadas, las que no salen y las marcadas para pauta, que van a ⑧B.
 - [ ] 🛑 **`po-specs` corrió antes que `po-carga`**
 - [ ] 🛑 **Nada se publicó ni se programó desde acá** — el paquete quedó listo para que suba un humano
 - [ ] 🛑 **Ninguna pieza con claim ⏸️ entró al archivo de carga**
-- [ ] 🛑 **Las filas de `Email` salieron por su ruta**, no por `publer-import.csv`
+- [ ] 🛑 **Las filas de `Email` y las de la ruta manual salieron por su ruta**, no por `publer-import.csv`
+- [ ] 🛑 **Ningún `canal` quedó sin ruta en silencio** — el que no cae en las tres se declaró y se devolvió a ③
 - [ ] 🛑 **Ningún archivo se "arregló" en Posting** — los que no cumplían se devolvieron a ⑥A o ⑥B
 - [ ] 🛑 **Ningún mensaje se reescribió** — lo que no entraba se devolvió a ④ con dos alternativas
 - [ ] Toda fila traza a un **`id_creativo`**; ninguna fila suelta
