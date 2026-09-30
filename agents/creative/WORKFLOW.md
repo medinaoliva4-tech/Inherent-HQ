@@ -307,6 +307,7 @@ posicionamiento no está aprobado · el plan de campañas no está aprobado · e
 | *"Qué está funcionando en este formato"* | Solo Capa 1 |
 | *"Dame conceptos para X"* | Capas 2-3 — requiere Capa 0 hecha |
 | *"Escribí el hook y el copy de esta pieza"* | Capas 4-5 — requiere Gate 2 |
+| *"Producción devolvió escenas"* | Solo Capa 5 + Gate 3 — o Capas 3-6 con Gate 2 si el cambio rompe la intención (§8) |
 | *"¿Qué funcionó el mes pasado?"* | Solo Capa 7 — requiere métricas |
 
 **Si falta una capa previa:** se dice qué falta y se ofrece correrla. **No se improvisa el faltante.**
@@ -370,6 +371,53 @@ escala; nunca se resuelve por cuenta propia.
 | La promesa no es escribible en el lenguaje del comprador | ② Estrategia | Devuelve con las 3 objeciones que la contradicen |
 | El lenguaje literal del comprador está vacío o inventado | ① Comprensión | Sin citas textuales el copy se escribe a ciegas |
 | Las guidelines contradicen lo que el concepto necesita | ②B Branding | Declara la contradicción. No la resuelve sola |
+
+### Las devoluciones que llegan de ⑤ Producción
+
+La otra dirección: cuando **⑤ Producción** devuelve una escena —con uno de sus 6 motivos, qué
+intención se rompería y dos alternativas (`agents/production/WORKFLOW.md` §9)— Creative **responde**.
+No discute el motivo: si el motivo es uno de los 6 y viene con sus dos alternativas, la devolución es
+válida.
+
+**Solo hay 4 respuestas posibles.** *"Lo vemos después"* no es una respuesta.
+
+| Respuesta | Qué significa |
+|---|---|
+| **Alternativa 1** | Se acepta la primera alternativa de ⑤, tal como vino |
+| **Alternativa 2** | Se acepta la segunda |
+| **Alternativa nueva** | Creative propone otra. ⑤ la verifica de nuevo, y eso cuenta como **una vuelta más** |
+| **Se retira** | La escena sale del ciclo. Si con ella se cae la pieza entera, decide **③ Marketing**, no Creative |
+
+**Quién la resuelve, según el motivo:**
+
+| Motivo de ⑤ | De quién es | Dónde se corrige |
+|---|---|---|
+| **1** Shot list roto · **2** Escena sin acción o sin lugar | Error de Creative | `cr-arte-video` (Capa 5). Se corrige sin tocar la idea |
+| **3** Imposibilidad física · **4** De calendario · **5** Desproporción de costo | Restricción real | `cr-arte-video` (Capa 5): se elige alternativa o se propone otra |
+| **6** Contradicción con ②B Branding | Conflicto entre dos departamentos | **No se resuelve acá**: se declara a ②B, igual que la última fila de la tabla de arriba |
+
+**Qué gate vuelve a pasar:**
+
+- **Si el cambio no toca la intención** —cambia el lugar, el encuadre o la duración, pero la emoción,
+  el concepto y el objetivo son los mismos—: la fila corregida pasa de nuevo por 🚦 **Gate 3** antes
+  de volver a ⑤.
+- **Si el cambio rompe la intención**, ya es otra pieza: vuelve a **Capa 3** y pasa por 🚦 **Gate 2**,
+  y después por 4 → 5 → 6 y 🚦 **Gate 3**, como cualquier concepto nuevo.
+
+**Los límites:**
+
+- ⏱️ **Plazo: 2 días hábiles** desde que ⑤ registra la devolución, o la fecha que exija la jornada si
+  es anterior — la fecha límite la pone ⑤ en la devolución. Si vence sin respuesta, ⑤ **no inventa**:
+  la escena queda `↩️ devuelta`, fuera de la jornada, y **③ Marketing** decide si la pieza se mueve o
+  se cae.
+- 🔁 **Máximo 2 vueltas por escena.** Si después de la segunda no hay acuerdo, deja de ser de los
+  agentes: lo deciden **el lead de ④ y el de ⑤**.
+
+**Dónde queda escrito:** el cambio va en la sección `## CR-00N` de su `ideas-<formato>.md` y en su
+fila de `plan-de-contenido.csv` — son archivos de Creative, y solo Creative los edita. La respuesta
+—una de las 4, con fecha— se registra en la tabla **§ Escenas devueltas a ④** de `plan-de-rodaje.md`,
+que es de ⑤. Al cierre, `cr-loop` cuenta las devoluciones por motivo: el mismo motivo **dos ciclos
+seguidos** es un patrón de cómo escribe Creative, no un accidente de la escena.
 
 ---
 
