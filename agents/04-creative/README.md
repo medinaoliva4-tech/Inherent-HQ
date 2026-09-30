@@ -1,19 +1,21 @@
 # 04 · Creative · ⬜ sin construir
 
 ## Propósito
-**Las ideas y los ángulos.** Qué se dice y cómo se dice, antes de que exista la pieza.
+**Las ideas y los ángulos.** Qué se dice y cómo se dice, **antes de que exista la pieza.**
 
-## Acciones que tendría
+## De dónde recibe
+**La investigación ya viene hecha.** Strategy entrega el brief de creative con el
+posicionamiento, los patrones de la categoría y la ingeniería inversa.
+⛔ **Creative no vuelve a investigar la competencia** — eso ya pasó en la etapa 01.
+
+## Acciones — lo que puede hacer
 
 | Acción | MCP | |
 |---|---|---|
-| Estudiar los títulos que ganan en la categoría | Eden `eden_study_top_titles` | ⬜ |
-| Estudiar los carruseles que ganan | Eden `eden_study_top_carousels` | ⬜ |
-| Buscar outliers de contenido | Eden `eden_search_social_content` | ✅ |
+| Qué titulares ganan en la categoría | Eden `eden_study_top_titles` | ⬜ |
+| Qué carruseles ganan | Eden `eden_study_top_carousels` | ⬜ |
 | Predecir viralidad antes de producir | Higgsfield `virality_predictor` | ⬜ |
-| **Bajar los posts de cualquier cuenta o hashtag** | Apify `instagram-scraper` · `tiktok-scraper` | 🟡 |
-| **Los anuncios que ya corren en la categoría** | Apify `facebook-ads-library-scraper` | 🟡 |
-| Guardar referencias en tableros | Eden `eden_save_posts_to_board` | ⬜ |
+| Guardar y organizar los ángulos | Eden `eden_create_board` · `save_posts_to_board` | ⬜ |
 
 ## Qué entrega según el plan
 
@@ -26,5 +28,11 @@
 | **Ángulos por ciclo** | Los del posicionamiento | + ángulos de conversión | + ángulos de recompra y referido |
 | **Predicción de viralidad** | ✅ | ✅ | ✅ |
 
+## A quién entrega
+**05 Production** *(qué grabar)* · **06 Graphic Design** y **07 Video Editing** *(qué hacer)* ·
+**10 Ads Management** *(qué ángulo pautar)*.
+
 ## Lo que falta
 **`brain/WORKFLOW.md` y sus skills.**
+🔴 **La predicción de viralidad está prometida en los tres planes y la tool nunca se corrió.**
+Hay que probar `virality_predictor` antes de la primera entrega.

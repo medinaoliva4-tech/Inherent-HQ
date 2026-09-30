@@ -8,10 +8,10 @@ referidos, comunidad y recompra.
 
 | Acción | MCP | |
 |---|---|---|
-| Auto-DM y automatización de mensajes | Eden `eden_create_auto_dm_automation` | ⬜ |
-| Leer y responder conversaciones | Eden `eden_list_chats` | ⬜ |
+| Leer las conversaciones abiertas | Eden `eden_list_chats` | ⬜ |
+| Auto-DM y seguimiento automático | Eden `eden_create_auto_dm_automation` | ⬜ |
 | IA propia del cliente, con su conocimiento | Eden `eden_create_custom_ai` | ⬜ |
-| Integrar con CRM, WhatsApp y facturación | Zapier *(9,000+ apps)* | ⬜ |
+| Conectar con CRM, WhatsApp y facturación | Zapier *(9,000+ apps)* | ⬜ |
 
 ## Qué entrega según el plan
 
@@ -25,10 +25,13 @@ referidos, comunidad y recompra.
 | **IA propia del cliente** | ⬜ | ⬜ | ✅ |
 | **Referidos, comunidad y recompra** | ⬜ | ⬜ | ✅ **Sistema completo** |
 
-> ⚠️ **Sostiene dos promesas que ya están publicadas en la web:**
-> *«nadie que te escribe se queda sin respuesta»* y *«que el crecimiento se sostenga solo»*.
-> **Y todavía no existe.**
+⚠️ **Responder al cliente final es acción hacia afuera. Requiere gate de Allan** hasta que las
+respuestas automáticas estén aprobadas.
+
+## 🔴 Sostiene dos promesas que ya están publicadas
+
+*«Nadie que te escribe se queda sin respuesta»* y *«que el crecimiento se sostenga solo:
+referidos, comunidad y recompra»*. **Están vivas en la web y este agente no existe.**
 
 ## Lo que falta
 **`brain/WORKFLOW.md` y sus skills.**
-❓ **Pendiente de Allan:** confirmar la herramienta extra que mencionaste para esta etapa.
