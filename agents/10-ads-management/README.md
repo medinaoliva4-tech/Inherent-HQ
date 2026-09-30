@@ -14,6 +14,8 @@ optimización.
 | Clonar el anuncio de TikTok de un competidor | AdWhispr `clone_tiktok_ad` | ⬜ |
 | Optimizar presupuesto, pausar, reanudar | AdWhispr `update_budget` · `pause/resume_campaign` | ⬜ |
 | Keywords propias y del competidor | AdWhispr `research_keywords` | ⬜ |
+| **Toda la biblioteca de anuncios de Meta, con histórico** | Apify `facebook-ads-library-scraper` — **$0.75/1,000** | 🟡 |
+| **Qué aparece en Google para una keyword** | Apify `google-search-scraper` | 🟡 |
 
 ## 🔌 Plugin a evaluar — `claude-ads`
 

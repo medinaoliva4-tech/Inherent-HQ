@@ -17,6 +17,10 @@ plan contratado.
 | Encontrar outliers de contenido de la categoría | Eden `eden_search_social_content` | ✅ |
 | Analizar un referente a fondo | Eden `eden_analyze_creator` | ✅ |
 | Títulos y carruseles que ganan | Eden `eden_study_top_titles` · `study_top_carousels` | ⬜ |
+| **Scrapear IG, TikTok, YouTube y LinkedIn** | Apify `instagram-scraper` · `tiktok-scraper` · `youtube-scraper` · `linkedin-post-search` | 🟡 |
+| **Biblioteca de anuncios de Facebook** | Apify `facebook-ads-library-scraper` | 🟡 |
+| **Competencia local y reseñas** | Apify `crawler-google-places` | 🟡 |
+| **Qué busca la gente en Google** | Apify `google-search-scraper` | 🟡 |
 | Documentar y entregar | Notion · Google Drive | ✅ |
 
 ## Lógica — sus skills

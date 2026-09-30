@@ -472,8 +472,136 @@ cuesta el caso.**
 | Analizar un referente a fondo | Eden `eden_analyze_creator` | ✅ |
 | Títulos y carruseles que ganan | Eden `eden_study_top_titles` · `study_top_carousels` | ⬜ |
 | Leer cualquier web, oferta o precio | Firecrawl `firecrawl_scrape` | ✅ |
+| **Scrapear datos estructurados de cualquier plataforma** | **Apify** — ver abajo | 🟡 |
 
 > **Eden cubre** IG · TikTok · YouTube · LinkedIn · X · Threads · Substack.
+
+---
+
+## 🕷️ Apify — la capa de scraping
+
+> **Todo lo que haya que scrapear se hace con Apify.** Es la acción que le da datos estructurados
+> a Strategy, Growth, Marketing, Creative y Ads.
+> `[fuente: precios públicos de apify.com al 30-sep-2026 · verificar antes de presupuestar]`
+
+### Los nueve actores
+
+| Qué scrapea | Actor | **$/1,000** *(Starter)* | Free plan |
+|---|---|---|---|
+| **Instagram** — perfiles, posts, hashtags, comentarios | `apify/instagram-scraper` | **$1.50** | $2.70 |
+| Instagram — detalle de posts | `apify/instagram-post-scraper` | **$2.30** | $2.70 |
+| Instagram — perfiles | `apify/instagram-profile-scraper` | **$1.60** | $2.60 |
+| **TikTok** — perfiles, hashtags, posts | `clockworks/tiktok-scraper` | **$1.70** | — |
+| **Google Maps** — negocios, reseñas, contactos | `compass/crawler-google-places` | **$1.50** | — |
+| **Google Search** — orgánico, ads, People Also Ask | `apify/google-search-scraper` | **$1.80** | — |
+| **Facebook Ads Library** | `curious_coder/facebook-ads-library-scraper` | **$0.75** 🔥 | — |
+| **YouTube** — canales, videos, subtítulos | `streamers/youtube-scraper` | **$5.00** ⚠️ | — |
+| **LinkedIn** — búsqueda de posts, sin cookies | `harvestapi/linkedin-post-search` | **$1.50** | — |
+
+> 🔥 **Facebook Ads Library a $0.75 es lo más barato del set** — y es inteligencia de pauta pura.
+> ⚠️ **YouTube cuesta 3x el promedio.** Se usa con criterio, no a volumen.
+
+### El plan de la plataforma
+
+| Plan | Precio/mes | Créditos incluidos | Descuento en el store |
+|---|---|---|---|
+| Free | $0 | $5 | — |
+| **Starter** ← el nuestro | **$19** | **$19** | Bronze |
+| Scale | $199 | $199 | Silver |
+| Business | $999 | $999 | Gold |
+
+🔑 **El precio del plan ES el crédito.** No es un fee encima del consumo: $19 al mes compran $19
+de scraping. **Lo que se pasa se cobra aparte, y lo que no se usa se pierde** — no se acumula.
+
+---
+
+### 💰 Cuánto nos cuesta de verdad
+
+**Onboarding de un cliente nuevo — una vez**
+
+| Qué | Resultados | Costo |
+|---|---|---|
+| Perfiles de 20 competidores | 20 | $0.03 |
+| Sus posts de Instagram | 2,000 | $4.60 |
+| TikTok de la categoría | 1,000 | $1.70 |
+| Anuncios de Facebook Ads Library | 1,000 | $0.75 |
+| Negocios y reseñas en Maps | 200 | $0.30 |
+| Búsquedas de Google | 100 | $0.18 |
+| YouTube | 300 | $1.50 |
+| LinkedIn *(high ticket)* | 300 | $0.45 |
+| **TOTAL** | **4,920** | **$9.51** · **Q73** |
+
+**Mensual por cliente — la revisión del 20 y el monitoreo**
+
+| Qué | Resultados | Costo |
+|---|---|---|
+| Posts nuevos de competidores | 700 | $1.61 |
+| TikTok | 350 | $0.60 |
+| Anuncios activos | 500 | $0.38 |
+| YouTube | 100 | $0.50 |
+| Búsquedas | 50 | $0.09 |
+| LinkedIn | 100 | $0.15 |
+| Maps | 50 | $0.08 |
+| **TOTAL** | **1,850** | **$3.41** · **Q26** |
+
+**Con 5 clientes y un onboarding al mes**
+
+| | |
+|---|---|
+| 5 clientes × $3.41 | $17.05 |
+| 1 onboarding | $9.51 |
+| **TOTAL mensual** | **~$27** · **~Q205** |
+| **Prorrateado por cliente** | **Q41** |
+
+### ✅ El veredicto
+
+| Plan | Precio | Costo de Apify | **Puntos de margen** |
+|---|---|---|---|
+| 🟦 Ignite | Q6,160 | Q41 | **−0.7** |
+| 🟪 Accelerate | Q9,240 | Q41 | **−0.4** |
+| 🟨 Compound | Q15,400 | Q41 | **−0.3** |
+
+🟢 **Es factible y rentable.** Cuesta **menos de un punto de margen** —
+**Q0.70 de cada Q100 que factura Ignite.**
+**Y el costo por cliente no sube al crecer:** con 10 clientes sigue en Q41.
+
+### 🔴 El techo que hay que vigilar
+
+**A 10x de volumen (18,500 resultados por cliente al mes) el costo pasa a ~Q408 por cliente:
+Ignite perdería 6.6 puntos.**
+
+| | Regla |
+|---|---|
+| **1** | **Tope de $5 por cliente al mes** en operación normal. Arriba de eso, se revisa qué se está pidiendo |
+| **2** | **YouTube solo con pregunta concreta.** A $5/1,000 es el que más rápido se come el presupuesto |
+| **3** | **No se scrapea «por si acaso».** Cada corrida responde una pregunta del workflow |
+
+---
+
+### 🔧 El setup — qué hay que hacer
+
+| # | Paso | Detalle |
+|---|---|---|
+| **1** | Crear cuenta en apify.com | Gratis |
+| **2** | **Contratar Starter — $19/mes** | El Free ($5) no alcanza ni para un onboarding |
+| **3** | Sacar el **API token** | Settings → Integrations |
+| **4** | Instalar el MCP | `apify mcp install claude-code`, o agregar `https://mcp.apify.com` con `Authorization: Bearer <APIFY_TOKEN>` |
+| **5** | **Probar los nueve actores** y confirmar cuáles corren por MCP | ⚠️ El MCP **excluye los actores de renta y los de permiso total** |
+| **6** | Fijar el tope de gasto y la alerta | En la consola de Apify |
+
+> ⚠️ **El paso 5 es el que decide.** Los nueve que elegiste son *pay-per-result*, no de renta,
+> así que **deberían** correr por MCP — pero **sin probarlo no se promete nada.**
+> Regla del repo: *un agente no puede hacer nada que su MCP no permita.*
+
+### ⚠️ Los riesgos
+
+| | |
+|---|---|
+| **Los créditos no se acumulan** | Lo que no se usa en el mes se pierde. El plan se elige por consumo real, no por si acaso |
+| **Cinco de los nueve son de terceros** | `clockworks` · `curious_coder` · `harvestapi` · `compass` · `streamers`. **Pueden romperse o subir de precio.** Los de `apify/` son oficiales |
+| **Instagram ve la versión sin sesión** | Lo que requiere login no se obtiene. No se trabaja con cuentas del cliente |
+| **Solo datos públicos** | No se scrapean datos privados ni se guardan datos personales que no hagan falta |
+
 
 ### Conversión, tecnología y autonomía
 
@@ -510,6 +638,7 @@ cuesta el caso.**
 | **Build de tecnología** | **Q750 – Q1,500** / mes | Horas amortizadas de construir la herramienta |
 | **Allan** | **Q60 · Q150 · Q250** / hora | Tres criterios — ver `05-OPERACION.md` |
 | **Membresía de mentoría** | **Q385** / mes **TOTAL** | Anual, de Inherent. **No es por cliente.** Se prorratea |
+| **Apify** *(scraping)* | **~Q205** / mes **TOTAL** | Plan Starter + consumo. **No es por cliente.** Se prorratea — ~Q41 con 5 |
 | **Sesión de mentor 1:1** | **Q185 · Q370 · Q1,386** / mes | Techo $72 · $144 · $180 por sesión — ver `04-MERCADO.md` |
 
 > 🟢 **Casi todo el costo es variable.** El único fijo es Claude (Q960). No se pierde plata si

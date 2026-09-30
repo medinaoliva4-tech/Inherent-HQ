@@ -11,6 +11,8 @@ Es el puente entre lo que Strategy decidió y lo que Creative va a producir.
 | Ver qué pauta la competencia hoy | AdWhispr `find_competitors` · `get_brand_ads` | ✅ |
 | Investigar keywords y demanda real | AdWhispr `research_keywords` | ⬜ |
 | Armar el calendario y el plan | Notion · Inherent OS | ⬜ |
+| **Qué anuncios corre la competencia hoy** | Apify `facebook-ads-library-scraper` | 🟡 |
+| **Volumen y lenguaje de búsqueda** | Apify `google-search-scraper` | 🟡 |
 | Leer el desempeño del mes | Eden `eden_get_analytics` | ⬜ |
 
 ## Qué entrega según el plan
