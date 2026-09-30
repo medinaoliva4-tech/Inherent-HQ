@@ -43,6 +43,40 @@ archivo, un solo lugar, cero copias.
 > **Mientras la rama no esté en `main`**, el marketplace de GitHub apunta a un `main` que todavía no
 > tiene `marketplace.json`, y falla con *"Marketplace file not found"*. Por eso hasta el merge se
 > registra el local con el paso 1.
+>
+> **Después de cada `git pull` hay que reinstalar el plugin** *(verificado 2026-09-29, Claude Code v2.1.280)*:
+>
+> ```bash
+> claude plugin marketplace update inherent-hq
+> for p in comprension creatividad produccion posting; do
+>   claude plugin uninstall "$p@inherent-hq" -s project
+>   claude plugin install   "$p@inherent-hq" -s project
+> done
+> ```
+>
+> Después, **reiniciar Claude Code**: el plugin se lee al arrancar.
+>
+> 🛑 **`claude plugin update` NO sirve para este repo.** Compara por el campo `version` de
+> `plugin.json`, no por commit. Como las versiones no se tocan en cada cambio, contesta
+> *"already at the latest version"* y **no copia nada**. Hay que desinstalar e instalar.
+>
+> 🛑 **Por qué importa:** lo instalado es una **copia congelada** en
+> `~/.claude/plugins/cache/inherent-hq/<departamento>/<version>/`, no un enlace al repo. Editar el
+> working tree no cambia lo que corre. Se detectó con el caché ocho commits atrás del working
+> tree — incluido todo el protocolo de devoluciones, que por lo tanto no existía para el agente.
+>
+> **Cómo verificar que quedó al día:**
+>
+> ```bash
+> diff -rq ~/.claude/plugins/cache/inherent-hq/creatividad/2.0.0/ agents/creative/ | grep -v .in_use
+> ```
+>
+> Sin salida (salvo las carpetas de `clients/`), está al día.
+>
+> ⚠️ **Instalar reescribe `.claude/settings.json`**, aunque sea solo reordenando las claves.
+> Revisá `git diff .claude/settings.json` antes de commitear: si `extraKnownMarketplaces` o
+> `enabledPlugins` quedaron vacíos, restauralos.
+
 
 ---
 

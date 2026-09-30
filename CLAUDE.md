@@ -100,6 +100,21 @@ El flujo de Inherent tiene **8 departamentos**, en este orden:
    > Si aun abriendo en la raíz las skills de un plugin **no aparecen**, la instalación está
    > incompleta: el paso a paso vive en cualquiera de los cuatro
    > `agents/<departamento>/skills/COMO-LAS-USA.md`.
+   >
+   > 🛑 **Después de cada `git pull`, reinstalá el plugin.** Lo que corre es una **copia congelada**
+   > en `~/.claude/plugins/cache/`, no un enlace al repo: editar el working tree no cambia lo que
+   > lee el agente. Y `claude plugin update` **no alcanza** —compara por el `version` de
+   > `plugin.json`, que no se toca en cada commit—, así que hay que desinstalar e instalar:
+   >
+   > ```bash
+   > claude plugin marketplace update inherent-hq
+   > for p in comprension creatividad produccion posting; do
+   >   claude plugin uninstall "$p@inherent-hq" -s project
+   >   claude plugin install   "$p@inherent-hq" -s project
+   > done
+   > ```
+   >
+   > Después, reiniciar Claude Code.
 
 2. **Identificá el cliente.** Un cliente = una carpeta en `agents/<agente>/clients/<cliente>/`, y el
    **nombre canónico es el mismo en todos los agentes**. Nunca mezcles archivos de dos clientes.
