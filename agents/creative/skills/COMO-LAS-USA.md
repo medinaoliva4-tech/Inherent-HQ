@@ -23,6 +23,12 @@ lugar, cero copias.
 >
 > **La instalación, paso a paso** *(verificado 2026-09, Claude Code v2.1.280)*:
 >
+> 🛑 **Paso 0 — abrí la sesión en la carpeta raíz del repo, no en una subcarpeta.** Todo lo que
+>    sigue instala con *project scope*, y ese scope queda atado a **la carpeta exacta** desde la que
+>    abriste Claude Code. Si la sesión arranca en `agents/<departamento>/`, el scope no coincide y
+>    **ninguno de los cuatro departamentos existe**: la skill devuelve `Unknown skill` y no hay
+>    ningún otro síntoma. Comprobalo con `pwd` antes de seguir.
+>
 > 1. `/plugin marketplace add /ruta/absoluta/al/repo`
 >    🛑 El `.` pelado **no** lo acepta —*"Invalid marketplace source format"*—: pide una ruta
 >    absoluta o `./path`. Y cuidado con el punto viejo si reescribís el campo: una ruta terminada en

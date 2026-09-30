@@ -89,9 +89,17 @@ El flujo de Inherent tiene **8 departamentos**, en este orden:
 
    > Los departamentos ①, ④, ⑤ y ⑦ son **plugins**, y sus skills llevan el prefijo del plugin
    > adelante (`comprension:co-capacidad`, `creatividad:cr-brief`, `produccion:pr-jornadas`,
-   > `posting:po-carga`). Las de ②③ viven en `.claude/skills/` y van sin prefijo. Si las skills de un
-   > plugin **no aparecen**, es que el marketplace no está registrado: corré
-   > `/plugin marketplace add .` desde la raíz del repo, una sola vez.
+   > `posting:po-carga`). Las de ②③ viven en `.claude/skills/` y van sin prefijo.
+   >
+   > 🛑 **La sesión de Claude Code se abre en la carpeta raíz del repo, nunca en una subcarpeta.**
+   > Los plugins se instalan con *project scope*, y ese scope queda atado a **la carpeta exacta**
+   > desde la que abriste la sesión. Si arrancás en `agents/creative/`, el scope no coincide y **los
+   > cuatro departamentos no existen**: `comprension:comprension` devuelve `Unknown skill` y no hay
+   > ningún otro síntoma. Comprobalo con `pwd`: tiene que terminar en el nombre del repo.
+   >
+   > Si aun abriendo en la raíz las skills de un plugin **no aparecen**, la instalación está
+   > incompleta: el paso a paso vive en cualquiera de los cuatro
+   > `agents/<departamento>/skills/COMO-LAS-USA.md`.
 
 2. **Identificá el cliente.** Un cliente = una carpeta en `agents/<agente>/clients/<cliente>/`, y el
    **nombre canónico es el mismo en todos los agentes**. Nunca mezcles archivos de dos clientes.
