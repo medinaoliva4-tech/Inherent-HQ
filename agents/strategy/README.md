@@ -21,9 +21,10 @@ plan contratado.
 
 ## Lógica — sus skills
 
-`context` → `analysis` → `reverse-engineering` → `methodology` → `client-delivery`
+`context` → `analysis` → `reverse-engineering` → `methodology`
 
-**El proceso completo está en `brain/WORKFLOW.md`. Es la única fuente de cómo trabaja.**
+**El proceso completo está en `brain/WORKFLOW.md`. Es la única fuente de cómo trabaja** —
+incluida la entrega, que no es una skill: está en su §7.
 
 ## Entrega
 La estrategia, la plataforma de marca y **un brief por área**: Branding, Marketing, Creative,

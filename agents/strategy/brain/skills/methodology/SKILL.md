@@ -366,4 +366,4 @@ comunidad chica y **solo se escala lo que muestre señales de negocio**.
 - [ ] Cada paso de la lógica fortalece al siguiente
 
 ## Handoff
-→ `client-delivery`
+→ la entrega — `../../WORKFLOW.md` §7

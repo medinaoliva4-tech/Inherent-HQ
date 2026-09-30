@@ -20,14 +20,13 @@ inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 
 agents/                    ← LOS AGENTES — uno por etapa del pipeline
 ├── README.md              ← el roster y el estado de cada uno
-├── <área>/                strategy · branding · marketing · creative · production
-│   ├── README.md          design · qa · content · growth · community
-│   └── brain/             ← el agente
-│       ├── WORKFLOW.md    cómo trabaja, de 0 a 100
-│       └── skills/
-│           ├── README.md  cuándo y cómo usa cada skill
-│           └── <skill>/   las skills de ESTE agente
-└── _compartido/           lo que usan todos — client-delivery
+└── <área>/                strategy · branding · marketing · creative · production
+    ├── README.md          design · qa · content · growth · community
+    └── brain/             ← el agente
+        ├── WORKFLOW.md    cómo trabaja, de 0 a 100 — incluye cómo entrega
+        └── skills/
+            ├── README.md  cuándo y cómo usa cada skill
+            └── <skill>/   las skills de ESTE agente
 
 clients/                   ← LOS CLIENTES
 ├── README.md              cómo se arma un folder de cliente

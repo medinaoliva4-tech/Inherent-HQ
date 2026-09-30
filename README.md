@@ -47,7 +47,7 @@ LÓGICA      CÓMO hace esas cosas. Son las skills.
 | **Skills que son método, no instrucciones** | Cada una responde una pregunta del trabajo real y produce un entregable nombrado |
 | **Límites declarados** | Lo que el agente **no** hace está escrito, para que no lo intente |
 | **Correlación con el resto** | De quién recibe y a quién entrega, en la cadena de doce etapas |
-| **Entrega estándar** | Todos cierran con la misma skill compartida: documento al cliente + folder expandido |
+| **Su propia entrega** | Cada agente entrega algo distinto, y su formato vive en su workflow. Lo único igual: **Allan aprueba antes de que algo salga** |
 
 > 🔑 **Un agente que pregunta todo no ahorra nada.** Tienen que trabajar entre autónomos y
 > dirigidos: **levantan excepciones, no preguntas.**
