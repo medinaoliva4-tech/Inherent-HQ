@@ -215,5 +215,10 @@ Capacidad declarada:     [n]   — de ① Comprensión
 🛑 Si esta tabla queda vacía, el cruce no se hizo. *"Sin material previo"* escrito es un resultado.
 
 ### Escenas devueltas a ④ Creatividad
-| Escena | Motivo (de los 6) | Qué intención se rompería | Alternativa 1 | Alternativa 2 | Respuesta de ④ + fecha |
-|---|---|---|---|---|---|
+| Escena | Vuelta | Motivo (de los 6) | Qué intención se rompería | Alternativa 1 | Alternativa 2 | Fecha límite | Respuesta de ④ + fecha |
+|---|---|---|---|---|---|---|---|
+
+*Respuesta de ④: una de 4 — `alternativa 1` · `alternativa 2` · `alternativa nueva` · `se retira`.
+Plazo: 2 días hábiles, o antes si la jornada lo exige. Vencido sin respuesta: la escena queda fuera de
+la jornada y decide ③ Marketing. Vuelta 3: ya no la resuelven los agentes — deciden el lead de ④ y el
+de ⑤.*
