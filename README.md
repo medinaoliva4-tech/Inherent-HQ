@@ -61,21 +61,26 @@ LÓGICA      CÓMO hace esas cosas. Son las skills.
 el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno puede hacer en
 `agents/README.md`.
 
-| # | Agente | Qué produce | Estado |
-|---|---|---|---|
-| **01** | [**Strategy**](agents/01-strategy/) | La estrategia y un brief por área | ✅ |
-| **01.2** | [Branding](agents/01.2-branding/) | Identidad, voz y sistema visual | 🟡 |
-| **02** | [Growth](agents/02-growth/) | La oferta, los canales grandes y los upsells | ⬜ |
-| **03** | [Marketing](agents/03-marketing/) | El plan de canales y el calendario | ⬜ |
-| **04** | [Creative](agents/04-creative/) | Los ángulos y las ideas | ⬜ |
-| **05** | [Production](agents/05-production/) | La grabación | ⬜ |
-| **06** | [Graphic Design](agents/06-graphic-design/) | Estáticos, carruseles y stories | ⬜ |
-| **07** | [Video Editing](agents/07-video-editing/) | Reels y sus derivadas | ⬜ |
-| **08** | [Community](agents/08-community-management/) | Respuesta, seguimiento y comunidad | ⬜ |
-| **09** | [Posting](agents/09-posting/) | Lo aprobado, publicado | 🟡 |
-| **10** | [Ads Management](agents/10-ads-management/) | La pauta corriendo | 🟡 |
-| ↻ | [Strategy](agents/01-strategy/) | La revisión del 20 | ✅ |
-| **—** | [**QA**](agents/qa/) | **El gate entre todas las etapas** | 🔴 |
+| # | Agente | Ficha | Brain operativo | Estado |
+|---|---|---|---|---|
+| **01** | Strategy | [`01-strategy/`](agents/01-strategy/) | [`strategy/`](agents/strategy/) ⚠️ dos métodos distintos | 🟡 |
+| **01.2** | Branding | [`01.2-branding/`](agents/01.2-branding/) | — | ⬜ |
+| **02** | Growth | [`02-growth/`](agents/02-growth/) | — | ⬜ |
+| **03** | Marketing | [`03-marketing/`](agents/03-marketing/) | — | ⬜ |
+| **04** | Creative | [`04-creative/`](agents/04-creative/) | [`creative/`](agents/creative/) | ✅ |
+| **05** | Production | [`05-production/`](agents/05-production/) | [`production/`](agents/production/) | ✅ |
+| **06** | Graphic Design | [`06-graphic-design/`](agents/06-graphic-design/) | — | ⬜ |
+| **07** | Video Editing | [`07-video-editing/`](agents/07-video-editing/) | — *(en el PR #4)* | 🔵 |
+| **08** | Community | [`08-community-management/`](agents/08-community-management/) | — | ⬜ |
+| **09** | Posting | [`09-posting/`](agents/09-posting/) | [`posting/`](agents/posting/) | ✅ |
+| **10** | Ads Management | [`10-ads-management/`](agents/10-ads-management/) | — | ⬜ |
+| **—** | Comprensión | *(sin ficha numerada)* | [`comprension/`](agents/comprension/) | ✅ |
+| **—** | **QA** | [`qa/`](agents/qa/) | — | 🔴 |
+
+⚠️ **La columna «Ficha» y la columna «Brain» son dos carpetas distintas para el mismo
+departamento.** Las fichas numeradas describen el alcance en una página; los brains tienen el
+workflow, las skills y los entregables, y son los únicos que cargan como plugin. **Unificarlas es
+trabajo pendiente y lo decide un humano** — ver `CLAUDE.md` § Estructura.
 
 🔴 **QA es el primero a construir.** A 204 piezas al mes son **~612 revisiones** en un solo
 cliente Compound. Sin él, el volumen prometido no es entregable.
@@ -84,10 +89,16 @@ cliente Compound. Sin él, el volumen prometido no es entregable.
 
 ## Cómo se arranca una sesión
 
-1. **Identificá el agente** que corresponde al pedido.
-2. **Leé su `brain/WORKFLOW.md` completo.** Es la única fuente de cómo trabaja.
-3. **Identificá el cliente.** Un cliente = un folder en `clients/`. Nunca mezclar dos.
-4. Seguí el workflow. Las skills se invocan donde el workflow lo indica.
+1. 🛑 **Abrí la sesión en la raíz del repo, nunca en una subcarpeta.** Los plugins se instalan con
+   *project scope* y ese scope queda atado a la carpeta exacta desde la que arrancaste. Comprobalo
+   con `pwd`.
+2. **Identificá el departamento** que corresponde al pedido e invocá su skill orquestadora
+   (`comprension:comprension`, `creatividad:creatividad`, `produccion:produccion`,
+   `posting:posting`, o `estrategia` para ②③).
+3. **Leé su `WORKFLOW.md` completo.** Es la única fuente de cómo trabaja.
+4. **Identificá el cliente.** Un cliente = una carpeta, con el mismo nombre canónico en todos los
+   departamentos. Nunca mezclar dos.
+5. **Declará el pre-flight** antes de producir nada.
 
 **`CLAUDE.md` es la entrada.** Se lee solo al empezar cualquier sesión.
 

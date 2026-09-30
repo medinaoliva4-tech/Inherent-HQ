@@ -1,0 +1,9 @@
+{
+  "name": "posting",
+  "displayName": "⑦ Posting — Inherent Global",
+  "version": "1.0.0",
+  "description": "Toma lo que terminaron Diseño y Video Editing y lo deja listo para salir: caption final adaptado a cada plataforma, QA técnico, fecha y hora, y el archivo de carga de Publer. No publica: deja el paquete y sube un humano.",
+  "author": { "name": "Inherent Global" },
+  "repository": "https://github.com/medinaoliva4-tech/Inherent-HQ",
+  "keywords": ["posting", "publer", "caption", "calendario", "publicacion"]
+}

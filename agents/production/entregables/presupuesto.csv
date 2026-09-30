@@ -1,0 +1,11 @@
+campana,categoria,detalle,costo_estimado,costo_real,nota
+Lanzamiento Menú Ejecutivo,locacion,"Salon + barra, cedido por el cliente",Q0,,prestado - confirmado 12-oct por Ana
+Lanzamiento Menú Ejecutivo,talento,"Comensal externo, 1 jornada + cesion de imagen",Q750,,cotizado 08-oct
+Lanzamiento Menú Ejecutivo,equipo,"Cam A, 2 opticas, gimbal, panel LED, 2 lav - 1 jornada",Q1200,,alquilado - reserva sin confirmar
+Lanzamiento Menú Ejecutivo,arte-props,"Menus impresos, mantel, utileria de mesa",Q220,,
+Lanzamiento Menú Ejecutivo,alimentacion,Platos consumidos en cuadro (6 unidades) + staff,Q480,,los provee el cliente
+Lanzamiento Menú Ejecutivo,transporte,"Traslado de equipo, ida y vuelta",Q300,,
+Lanzamiento Menú Ejecutivo,post-base,"Backup doble, selects, transcodificacion",Q250,,NO incluye edicion final - eso es 6B
+Lanzamiento Menú Ejecutivo,contingencia,15% - mezcla interior con talento externo,Q495,,"linea propia, no repartida"
+Lanzamiento Menú Ejecutivo,TOTAL,"1 jornada, 3 escenas, 2 piezas",Q3695,,
+,TOTAL CICLO,1 campana,Q3695,,
