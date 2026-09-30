@@ -1,7 +1,7 @@
 # Inherent HQ — Agentes
 
 Cada agente vive en `agents/<NN>-<área>/`, numerado en el orden en que corre el trabajo.
-Se le habla desde **Buzz** por una sesión de Claude Code.
+**Se opera directo desde Claude Code**, contra este repo — sin servidores ni hosting.
 
 ## Estructura
 

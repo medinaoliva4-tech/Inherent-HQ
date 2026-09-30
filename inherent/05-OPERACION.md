@@ -329,21 +329,24 @@ y Strategy es una etapa de doce.
 
 ---
 
-## 🔌 Cómo se opera desde Buzz
+## 🔌 Cómo se opera
 
-Cada agente se invoca en su propia sesión de Claude Code desde **Buzz**.
+**Cada agente se invoca en su propia sesión de Claude Code, contra este repo.**
+**Nada de servidores ni hosting** — la sesión lee `CLAUDE.md`, abre el `brain/` del agente que
+toca y trabaja sobre el folder del cliente.
 
 ```
-Buzz · canal por cliente
+Una sesión por cliente
    │
    ├── "corré el onboarding de <cliente>"      → 01 · 01.2 · 02 · 03
    ├── "armá el mes de <cliente>"              → 04 · 05 · 06 · 07
-   ├── "publicá lo aprobado de <cliente>"      → 08  🔒 gate de Allan
-   ├── "lanzá las campañas de <cliente>"       → 09  🔒 gate de Allan
+   ├── "respondé la comunidad de <cliente>"    → 08  🔒 gate de Allan
+   ├── "publicá lo aprobado de <cliente>"      → 09  🔒 gate de Allan
+   ├── "lanzá las campañas de <cliente>"       → 10  🔒 gate de Allan
    └── "corré la revisión del 20 de <cliente>" → ↻
 ```
 
-**Un canal por cliente. Nunca mezclar dos clientes en una sesión** — ver `CLAUDE.md`.
+**Una sesión por cliente. Nunca mezclar dos clientes en una sesión** — ver `CLAUDE.md`.
 
 ### Lo que dispara la activación de un cliente
 

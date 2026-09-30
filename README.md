@@ -1,7 +1,7 @@
 # Inherent HQ
 
 **El cerebro operativo de Inherent.** Acá vive lo que la empresa sabe, quién lo ejecuta y para
-quién. Se le habla desde **Buzz**, por una sesión de Claude Code.
+quién. **Se opera directo desde Claude Code**, contra este repo — sin servidores ni hosting.
 
 ```
 inherent/    qué somos       la empresa: identidad, método, oferta, mercado, operación, economía
