@@ -24,15 +24,17 @@
 ```
 ┌─ ONBOARDING ──────────── una vez, al activar la cuenta ──────────────┐
 │                                                                       │
-│   01 COMPRENSIÓN → 02 ESTRATEGIA → 02B BRANDING → 03 MARKETING        │
+│   01 STRATEGY → 01.2 BRANDING → 02 GROWTH → 03 MARKETING              │
 │                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
                                    │
                                    ▼
 ┌─ CICLO MENSUAL ───────── cada mes, para siempre ─────────────────────┐
 │                                                                       │
-│   04 CREATIVIDAD → 05 PRODUCCIÓN → 06 DISEÑO → 07 QA →                │
-│   08 POSTING → 09 ADS → 10 COMMUNITY                                  │
+│   04 CREATIVE → 05 PRODUCTION → 06 GRAPHIC DESIGN → 07 VIDEO EDITING  │
+│   → 08 COMMUNITY → 09 POSTING → 10 ADS                                │
+│                                                                       │
+│   ⚠️ QA no es una etapa: es el gate que corre ENTRE cada una           │
 │                                                                       │
 │   ↻ El 20 de cada mes: REVISIÓN — qué funcionó, qué cambia            │
 │                                                                       │
@@ -46,11 +48,11 @@
 
 ## ONBOARDING — se corre una vez
 
-### 01 · COMPRENSIÓN
+### 01 · STRATEGY · bloque de comprensión
 
 | | |
 |---|---|
-| **Agente** | `Strategy` → skill `context` |
+| **Agente** | `01-strategy` → skill `context` |
 | **Recibe** | Información cruda del negocio: producto, precios, metas, canales, problemas |
 | **Hace** | Ordena la realidad del negocio **antes** de crear cualquier estrategia |
 | **Incluye** | Cliente, edad, comportamiento, competencia, mercado, producto, precios, canales de venta, problemas y oportunidades |
@@ -63,11 +65,11 @@
 
 ---
 
-### 02 · ESTRATEGIA
+### 01 · STRATEGY · bloque de estrategia
 
 | | |
 |---|---|
-| **Agente** | `Strategy` → skills `analysis` · `reverse-engineering` · `methodology` |
+| **Agente** | `01-strategy` → skills `analysis` · `reverse-engineering` · `methodology` |
 | **Recibe** | La comprensión completa |
 | **Hace** | Define **hacia dónde se va y por qué** |
 | **Incluye** | Las 3 verdades · ICP · villano · solución · historia de marca · objetivo financiero · posicionamiento · ingeniería inversa · **distribución por canal de ingreso** *(reservas, delivery, eventos, productos, membresías)* |
@@ -78,11 +80,11 @@
 
 ---
 
-### 02B · BRANDING
+### 01.2 · BRANDING
 
 | | |
 |---|---|
-| **Agente** | `Branding` |
+| **Agente** | `01.2-branding` |
 | **Recibe** | La estrategia, la historia de marca, referencias visuales, insights de consumidor y competencia |
 | **Hace** | Define **cómo debe sentirse, verse y comunicarse** la marca |
 | **Incluye** | Brand guidelines · tono de voz · estética visual · referencias · colores · tipografías · dirección visual · personalidad · reglas de marca |
@@ -93,11 +95,26 @@
 
 ---
 
+### 02 · GROWTH
+
+| | |
+|---|---|
+| **Agente** | `02-growth` |
+| **Recibe** | La estrategia y el brief de growth |
+| **Hace** | El motor de crecimiento: **la oferta, los canales grandes y los upsells** — los tres pilares del Growth OS |
+| **Entrega** | 📄 Oferta trabajada · mapa o apertura de canales grandes · escalera de upsells · conversión |
+| **Corre en** | 🟦 solo pilar 1 y el mapa · 🟪 los tres ejecutando · 🟨 los tres sistematizados + Money OS |
+| **Estado** | ⬜ Sin construir — ficha en `agents/02-growth/README.md` |
+
+> ⚠️ **No es pauta.** La pauta es la etapa 10.
+
+---
+
 ### 03 · MARKETING
 
 | | |
 |---|---|
-| **Agente** | `Marketing` |
+| **Agente** | `03-marketing` |
 | **Recibe** | La estrategia final y el branding |
 | **Hace** | Convierte la estrategia en **decisiones de marketing** |
 | **Incluye** | Market research · campañas · tipos de marketing · canales · fechas importantes y de preparación · lanzamientos · expectativa · promociones · **distribución del objetivo y frecuencia de contenido** |
@@ -116,11 +133,11 @@
 
 ## CICLO MENSUAL — se corre cada mes
 
-### 04 · CREATIVIDAD
+### 04 · CREATIVE
 
 | | |
 |---|---|
-| **Agente** | `Creative` |
+| **Agente** | `04-creative` |
 | **Recibe** | Plan de marketing, campañas y branding |
 | **Hace** | Llena el gap entre la estrategia y la ejecución visual |
 | **Incluye** | Ideas · feeling · emoción a evocar · formatos · conceptos · hooks · referencias · pilares de contenido · propuestas visuales |
@@ -142,11 +159,11 @@
 
 ---
 
-### 05 · PRODUCCIÓN
+### 05 · PRODUCTION
 
 | | |
 |---|---|
-| **Agente** | `Production` |
+| **Agente** | `05-production` |
 | **Recibe** | Calendario creativo e ideas aprobadas |
 | **Hace** | Convierte las ideas en **material real** |
 | **Incluye** | Videos y fotos necesarias · tomas · locaciones · personas · productos · props · preparación · grabación |
@@ -160,11 +177,11 @@
 
 ---
 
-### 06 · DISEÑO GRÁFICO
+### 06 · GRAPHIC DESIGN
 
 | | |
 |---|---|
-| **Agente** | `Design` |
+| **Agente** | `06-graphic-design` |
 | **Recibe** | Guía de marca, calendario creativo y material producido |
 | **Hace** | Crea las **piezas visuales estáticas** por formato y canal |
 | **Incluye** | Composición · jerarquía · layout · tipografía · color · contraste · adaptación a formatos · elementos superpuestos *(ilustraciones, assets PNG, texturas, formas)* |
@@ -175,11 +192,27 @@
 
 ---
 
-### 07 · QA 🔴 **EL QUE FALTA Y TODO DEPENDE DE ÉL**
+### 07 · VIDEO EDITING
 
 | | |
 |---|---|
-| **Agente** | `QA` |
+| **Agente** | `07-video-editing` |
+| **Recibe** | El material que grabó Production |
+| **Hace** | Convierte cada grabación en el reel terminado **y todas sus derivadas** |
+| **Entrega** | 🎬 **6 · 10 · 14 reels** + **10 · 20 · 30 piezas derivadas** |
+| **Corre en** | 🟦 · 🟪 · 🟨 — segundo idioma solo en 🟨 |
+| **Estado** | ⬜ Sin construir — ficha en `agents/07-video-editing/README.md` |
+
+> 🔑 **Acá está la eficiencia del modelo.** Production cuesta horas humanas; esta etapa
+> multiplica ese material a **Q0 marginal**.
+
+---
+
+### QA 🔴 **EL GATE QUE FALTA Y DEL QUE TODO DEPENDE**
+
+| | |
+|---|---|
+| **Agente** | `qa` — **el gate, no una etapa** |
 | **Recibe** | Toda pieza terminada, antes de publicarse |
 | **Hace** | **Revisa cada pieza contra el brief, la marca y el paquete.** Allan aprueba solo las excepciones |
 | **Incluye** | ¿Cumple el brief? · ¿Respeta la guía de marca? · ¿Está dentro del paquete? · ¿El copy es correcto? · ¿Formato y canal correctos? · **predicción de viralidad** |
@@ -193,11 +226,25 @@
 
 ---
 
-### 08 · POSTING
+### 08 · COMMUNITY MANAGEMENT
 
 | | |
 |---|---|
-| **Agente** | `Content` |
+| **Agente** | `08-community-management` |
+| **Recibe** | Contenido publicado y conversaciones entrantes |
+| **Hace** | Responde, conversa y convierte la conversación en venta |
+| **Incluye** | Comentarios · DMs · auto-DM · derivación a WhatsApp · escalamiento a Allan |
+| **Entrega** | 💬 **Conversaciones atendidas** + leads derivados |
+| **Corre en** | 🟦 *(básico)* · 🟪🟨 *(+ embudos de WhatsApp y auto-DM)* |
+| **Estado** | ⬜ **No construido** · tools parciales *(Eden auto-DM · Zapier)* |
+
+---
+
+### 09 · POSTING
+
+| | |
+|---|---|
+| **Agente** | `09-posting` |
 | **Recibe** | Diseños, videos y calendario aprobado |
 | **Hace** | Publica o programa el contenido |
 | **Incluye** | Copy final · captions · hashtags · fecha · hora · formato · canal · revisión final |
@@ -209,11 +256,11 @@
 
 ---
 
-### 09 · ADS
+### 10 · ADS MANAGEMENT
 
 | | |
 |---|---|
-| **Agente** | `Growth` |
+| **Agente** | `10-ads-management` |
 | **Recibe** | Contenido listo para pauta y objetivo de campaña |
 | **Hace** | Lo convierte en **anuncios pagados** |
 | **Incluye** | Segmentación · presupuesto · copies · creativos · pruebas · optimización |
@@ -226,25 +273,11 @@
 
 ---
 
-### 10 · COMMUNITY MANAGEMENT
-
-| | |
-|---|---|
-| **Agente** | `Community` |
-| **Recibe** | Contenido publicado y conversaciones entrantes |
-| **Hace** | Responde, conversa y convierte la conversación en venta |
-| **Incluye** | Comentarios · DMs · auto-DM · derivación a WhatsApp · escalamiento a Allan |
-| **Entrega** | 💬 **Conversaciones atendidas** + leads derivados |
-| **Corre en** | 🟦 *(básico)* · 🟪🟨 *(+ embudos de WhatsApp y auto-DM)* |
-| **Estado** | ⬜ **No construido** · tools parciales *(Eden auto-DM · Zapier)* |
-
----
-
 ### ↻ EL 20 DE CADA MES · REVISIÓN
 
 | | |
 |---|---|
-| **Agente** | `Strategy` → skill `analysis` |
+| **Agente** | `01-strategy` → skill `analysis` |
 | **Recibe** | Toda la analítica del mes + el reporte de ads |
 | **Hace** | Qué funcionó, qué no, qué cambia el mes que viene |
 | **Entrega** | 📄 **Ajuste de estrategia** que reentra al ciclo |
@@ -255,23 +288,27 @@
 
 ## 📊 Estado real del pipeline
 
-| # | Etapa | Agente | Estado |
+| # | Agente | Qué produce | Estado |
 |---|---|---|---|
-| 01 | Comprensión | Strategy | ✅ |
-| 02 | Estrategia | Strategy | ✅ |
-| 02B | Branding | Branding | 🟡 brief listo, falta agente |
-| 03 | Marketing | Marketing | ⬜ |
-| 04 | Creatividad | Creative | ⬜ |
-| 05 | Producción | Production | ⬜ |
-| 06 | Diseño | Design | ⬜ |
-| **07** | **QA** | **QA** | 🔴 **bloqueador** |
-| 08 | Posting | Content | 🟡 tools sí, agente no |
-| 09 | Ads | Growth | 🟡 tools sí, agente no |
-| 10 | Community | Community | ⬜ |
-| ↻ | Revisión del 20 | Strategy | ✅ |
+| **01** | Strategy | Comprensión, estrategia y un brief por área | ✅ |
+| **01.2** | Branding | Identidad, voz y sistema visual | 🟡 brief listo, falta agente |
+| **02** | Growth | La oferta, los canales grandes y los upsells | ⬜ |
+| **03** | Marketing | El plan de canales y el calendario | ⬜ |
+| **04** | Creative | Los ángulos y las ideas | ⬜ |
+| **05** | Production | La grabación | ⬜ |
+| **06** | Graphic Design | Estáticos, carruseles y stories | ⬜ |
+| **07** | Video Editing | Reels y sus derivadas | ⬜ |
+| **08** | Community Management | Respuesta, seguimiento y comunidad | ⬜ |
+| **09** | Posting | Lo aprobado, publicado | 🟡 tools sí, agente no |
+| **10** | Ads Management | La pauta corriendo | 🟡 tools sí, agente no |
+| ↻ | Strategy | La revisión del 20 | ✅ |
+| **—** | **QA** | **El gate entre todas las etapas** | 🔴 **bloqueador** |
 
-**3 de 12 construidos. El pipeline está al ~25%, no al 70%** — lo que está al 70% es *Strategy*,
-que es 3 de las 12 etapas.
+**1 de 12 construido. El pipeline está al ~10%, no al 70%** — lo que está al 70% es *Strategy*,
+y Strategy es una etapa de doce.
+
+**El detalle de cada agente —sus acciones, su MCP y qué entrega en cada plan— está en
+`agents/README.md` y en la ficha de cada área.**
 
 ---
 
@@ -299,7 +336,7 @@ Cada agente se invoca en su propia sesión de Claude Code desde **Buzz**.
 ```
 Buzz · canal por cliente
    │
-   ├── "corré el onboarding de <cliente>"      → 01 · 02 · 02B · 03
+   ├── "corré el onboarding de <cliente>"      → 01 · 01.2 · 02 · 03
    ├── "armá el mes de <cliente>"              → 04 · 05 · 06 · 07
    ├── "publicá lo aprobado de <cliente>"      → 08  🔒 gate de Allan
    ├── "lanzá las campañas de <cliente>"       → 09  🔒 gate de Allan
@@ -312,7 +349,7 @@ Buzz · canal por cliente
 
 | Momento | Qué corre | Entregable al cliente |
 |---|---|---|
-| **Día 1-7** | 01 · 02 · 02B | Documento de estrategia + guía de marca |
+| **Día 1-7** | 01 · 01.2 | Documento de estrategia + guía de marca |
 | **Día 8-12** | 03 · 04 | Plan de marketing + calendario creativo |
 | **Día 13-18** | 05 | Sesión de grabación |
 | **Día 19-25** | 06 · 07 | Piezas terminadas y aprobadas |

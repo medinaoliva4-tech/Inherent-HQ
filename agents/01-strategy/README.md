@@ -30,5 +30,22 @@ incluida la entrega, que no es una skill: está en su §7.
 La estrategia, la plataforma de marca y **un brief por área**: Branding, Marketing, Creative,
 Growth, Tecnología y Sistemas.
 
+## Qué entrega según el plan
+
+> **El plan contratado es el techo.** Nunca se promete arriba de esta tabla —
+> ver `inherent/06-ECONOMIA.md`.
+
+| | 🟦 **Ignite** | 🟪 **Accelerate** | 🟨 **Compound** |
+|---|---|---|---|
+| **Verbo** | **Mapea** | **Ejecuta** | **Sistematiza** |
+| **Pilar 1 · Oferta** | Construirla / empaquetarla | Escalarla / autoridad | Sistematizarla |
+| **Pilar 2 · Canales grandes** | 🟡 **Solo el mapa** | Abrir y vender | Canal permanente |
+| **Pilar 3 · Upsells / Expansión** | ⬜ No se activa | Diseñar y lanzar | Sistema operando solo |
+| **Sistemas activados** | Growth OS | + Conversion · Operations *(SOPs de crecimiento)* | **Los cuatro** · SOPs de empresa · Money OS |
+| **Briefs que entrega** | Branding · Marketing · Creative | + Tecnología | + Sistemas · estructura corporativa |
+| **Revisión del 20** | ✅ | ✅ | ✅ |
+
+---
+
 ## Lo que falta
 Nunca se ha corrido de punta a punta con un cliente real.
