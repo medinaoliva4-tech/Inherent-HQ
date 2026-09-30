@@ -486,44 +486,36 @@ cuesta el caso.**
 
 ### Los nueve actores
 
-**Cuatro son oficiales de Apify. Cinco son de terceros — y eso importa para el riesgo.**
-
-#### ✅ Oficiales — cuenta `apify/`
+**Este es el set. Se elige por precio y por volumen de uso, no por quién los publica.**
 
 | Qué scrapea | Actor | **$/1,000** *(Starter)* | Free plan |
 |---|---|---|---|
+| **Facebook Ads Library** | `curious_coder/facebook-ads-library-scraper` | **$0.75** 🔥 | — |
 | **Instagram** — perfiles, posts, hashtags, comentarios | `apify/instagram-scraper` | **$1.50** | $2.70 |
-| Instagram — detalle de posts | `apify/instagram-post-scraper` | **$2.30** | $2.70 |
+| **Google Maps** — negocios, reseñas, contactos | `compass/crawler-google-places` | **$1.50** | — |
+| **LinkedIn** — búsqueda de posts, sin cookies | `harvestapi/linkedin-post-search` | **$1.50** | — |
 | Instagram — perfiles | `apify/instagram-profile-scraper` | **$1.60** | $2.60 |
+| **TikTok** — perfiles, hashtags, posts | `clockworks/tiktok-scraper` | **$1.70** | — |
 | **Google Search** — orgánico, ads, People Also Ask | `apify/google-search-scraper` | **$1.80** | — |
+| Instagram — detalle de posts | `apify/instagram-post-scraper` | **$2.30** | $2.70 |
+| **YouTube** — canales, videos, subtítulos | `streamers/youtube-scraper` | **$5.00** ⚠️ | — |
 
-#### 🟡 De terceros — no hay oficial que los reemplace
-
-| Qué scrapea | Actor | Autor | **$/1,000** |
-|---|---|---|---|
-| **TikTok** — perfiles, hashtags, posts | `clockworks/tiktok-scraper` | Clockworks | **$1.70** |
-| **Google Maps** — negocios, reseñas, contactos | `compass/crawler-google-places` | Compass | **$1.50** |
-| **YouTube** — canales, videos, subtítulos | `streamers/youtube-scraper` | Streamers | **$5.00** ⚠️ |
-| **LinkedIn** — búsqueda de posts, sin cookies | `harvestapi/linkedin-post-search` | HarvestAPI | **$1.50** |
-
-> ⚠️ **Apify no publica actor propio de TikTok, Maps, YouTube ni LinkedIn.**
-> En esas cuatro plataformas **no hay alternativa oficial** — el tercero es la única vía.
-
-#### ⚖️ Facebook Ads Library — el único con las dos opciones
-
-| Actor | Autor | **$/1,000** | Corridas | Rating |
-|---|---|---|---|---|
-| `curious_coder/facebook-ads-library-scraper` ← **el nuestro** | Tercero | **$0.75** 🔥 | 20M | — |
-| `apify/facebook-ads-scraper` ← **el plan B** | **Oficial** | $3.40 *(Free $5.80)* | 14M | 4.0 |
-
-**El oficial cuesta 4.5x más.** En nuestro volumen la diferencia son **~Q51 al mes con 5 clientes**
-—inmaterial—, así que **la decisión no es de precio, es de riesgo.**
-
-🔑 **Default: el de terceros.** Más barato y más corrido *(20M contra 14M)*.
-**Si se rompe o sube de precio, se cambia al oficial** — es una línea de configuración.
-**Por eso queda documentado acá y no se descubre el día que falle.**
-
+> 🔥 **Facebook Ads Library a $0.75 es lo más barato del set** — y es inteligencia de pauta pura.
 > ⚠️ **YouTube cuesta 3x el promedio.** Se usa con criterio, no a volumen.
+
+**Cinco son de terceros** *(`curious_coder` · `compass` · `harvestapi` · `clockworks` ·
+`streamers`)* **y cuatro son de la cuenta oficial `apify/`** *(los tres de Instagram y el de
+Google Search)*.
+
+🔑 **La distinción no cambia la decisión.** En TikTok, Maps, YouTube y LinkedIn **Apify no
+publica actor propio**, así que el tercero es la única vía. Y en Facebook Ads el oficial
+—`apify/facebook-ads-scraper`— **cuesta 4.5x más ($3.40) y tiene menos corridas**, así que
+tampoco gana.
+
+**Lo único que cambia es qué hacer si uno falla:** no hay reemplazo esperando.
+**Se sale a buscar otro en el store el mismo día** — no se bloquea la entrega.
+
+---
 
 ### El plan de la plataforma
 
@@ -622,9 +614,7 @@ Ignite perdería 6.6 puntos.**
 | | |
 |---|---|
 | **Los créditos no se acumulan** | Lo que no se usa en el mes se pierde. El plan se elige por consumo real, no por si acaso |
-| **Cinco de los nueve son de terceros** | `clockworks` · `curious_coder` · `harvestapi` · `compass` · `streamers`. **Pueden romperse o subir de precio** |
-| **Y en cuatro no hay alternativa oficial** | TikTok, Maps, YouTube y LinkedIn **solo existen de terceros**. Ahí el riesgo no se puede eliminar, solo vigilar |
-| **Solo Facebook Ads tiene plan B oficial** | `apify/facebook-ads-scraper`, 4.5x más caro. **Documentado arriba** |
+| **Cinco de los nueve son de terceros** | Pueden romperse o subir de precio, y **no hay reemplazo esperando**. Si uno falla, se busca otro en el store el mismo día |
 | **Instagram ve la versión sin sesión** | Lo que requiere login no se obtiene. No se trabaja con cuentas del cliente |
 | **Solo datos públicos** | No se scrapean datos privados ni se guardan datos personales que no hagan falta |
 
