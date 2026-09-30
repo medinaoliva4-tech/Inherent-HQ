@@ -66,6 +66,7 @@ departamento.
 | *"Qué está funcionando en este formato"* · *"buscá referencias"* · *"mirá este video"* | Solo **Capa 1** | Nada aguas abajo |
 | *"Dame conceptos para X"* | **Capas 2-3** | Capa 0 hecha + 🚦 Gate 1 |
 | *"Escribí el hook y el copy de esta pieza"* | **Capas 4-5** | 🚦 Gate 2 aprobado |
+| *"Producción devolvió escenas"* · *"respondé las devoluciones de ⑤"* | **Capa 5** (`cr-arte-video`) + 🚦 Gate 3 — o **Capas 3-6** con 🚦 Gate 2 si el cambio rompe la intención | La devolución de ⑤ con motivo y dos alternativas · `WORKFLOW.md` §8 |
 | *"¿Qué funcionó el mes pasado?"* · *"cerremos el ciclo"* | Solo **Capa 7** | Métricas por pieza |
 
 🛑 **Si falta una capa previa: decí qué falta y ofrecé correrla. No se improvisa el faltante.**
@@ -107,6 +108,12 @@ de la siguiente**: saltar de Interpretar a Dirigir produce piezas bonitas sin id
 
 🛑 **Los gates son humanos y nadie los salta.** El orquestador **para**, declara el estado y espera
 confirmación explícita. No los aprueba solo ni los asume aprobados por silencio.
+
+**Cuando ⑤ Producción devuelve una escena**, el orquestador responde con **una de las 4 respuestas**
+—alternativa 1 · alternativa 2 · alternativa nueva · se retira— y la corrige en `cr-arte-video`. Si
+el cambio **no toca la intención**, la fila vuelve a pasar por 🚦 Gate 3; si **la rompe**, vuelve a
+Capa 3 y a 🚦 Gate 2. Motivo 6 (Branding) no se resuelve: se declara a ②B. **Plazo 2 días hábiles,
+máximo 2 vueltas por escena**; después deciden el lead de ④ y el de ⑤. Detalle en `WORKFLOW.md` §8.
 
 ---
 
@@ -202,4 +209,5 @@ mezcla** con 🟢/🟡/⚪) · ⚠️ SIN DATOS · ⏸️ PENDIENTE APROBACIÓN 
 - [ ] **Ningún entregable pisa** a ①②③, ②B Branding, ⑤, ⑥A, ⑦ u ⑧B — se verifica contra la tabla «Qué NO hace» de `WORKFLOW.md §3` — y **ningún campo ajeno reescrito**: todos citados con su ruta
 - [ ] Claims, precios y promesas sin validar están `⏸️ PENDIENTE APROBACIÓN` **con quién valida**, y las filas `pendiente` **no se liberan**
 - [ ] Todo faltante marcado `BLOQUEADO` o `⚠️ SIN DATOS`, con **qué lo desbloquea y a quién pedírselo** — ninguno omitido en silencio
+- [ ] Toda devolución de ⑤ tiene **una de las 4 respuestas, con fecha**, dentro del plazo y sin pasar de 2 vueltas — la que rompió la intención volvió a 🚦 Gate 2
 - [ ] El bloque **HANDOFF está emitido completo**, con nivel de confianza
