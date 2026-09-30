@@ -49,8 +49,10 @@ Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]
 desglosar ideas que todavía pueden cambiar es gastar el trabajo dos veces — y si ya se comprometieron
 recursos, gastar **la plata** dos veces.
 
-> 🔄 **Transición.** Mientras el repo no separe ①②③, se leen de `agents/strategy/` con el mapeo de
-> `agents/creative/WORKFLOW.md §2`; los archivos de ④, de `agents/creative/clients/<cliente>/`.
+> 🔄 **Transición.** **①** ya es un departamento propio: la capacidad y el presupuesto se leen de
+> `agents/comprension/clients/<cliente>/comprension.md` § La capacidad. **②③** todavía se leen de
+> `agents/strategy/`, con el mapeo de `agents/creative/WORKFLOW.md §2`; los archivos de ④, de
+> `agents/creative/clients/<cliente>/`.
 
 ## 2 · Los 6 modos de entrada
 
