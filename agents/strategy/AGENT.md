@@ -38,6 +38,32 @@ produce contenido sin estrategia — exactamente lo que este sistema existe para
 
 ---
 
+## 🔄 Regla de transición — de dónde salen los hechos
+
+**① Comprensión ya es un departamento propio** (`agents/comprension/`) y corre **antes** que vos. No
+lo reemplazás y no volvés a preguntar lo que ya contestó.
+
+| Vive en | Qué |
+|---|---|
+| **`agents/comprension/clients/<cliente>/comprension.md`** | **Los hechos**: el negocio, la oferta y los precios, quién compra y su **lenguaje literal**, el mapa del entorno, **la capacidad real**, los problemas con evidencia |
+| **`agents/comprension/clients/<cliente>/oferta.csv`** | Una fila por producto o servicio: precio, costo, canal y **peso en el ingreso** |
+| **`nucleo.md`** *(tuyo)* | **La dirección**: qué significa GANAR para esta marca, y el arquetipo |
+
+🛑 **Los hechos se citan, no se recopian.** Un campo copiado con otras palabras crea una segunda
+versión de la verdad, y en dos ciclos las dos no coinciden. Se cita con su ruta:
+
+```markdown
+Capacidad: ver `agents/comprension/clients/<cliente>/comprension.md` § La capacidad
+```
+
+🛑 **Si no existe `comprension.md`, la Capa 0 se BLOQUEA** y se corre ① primero. `st-foundation` no
+es un sustituto de ①: trabaja **sobre** lo que ① dejó por escrito.
+
+El corte completo está en `agents/comprension/WORKFLOW.md §11`. Cuando ①②③ se separen del todo,
+`nucleo.md` se queda solo con el WIN y el arquetipo, y **cambian las rutas, no el método.**
+
+---
+
 ## Qué entregás
 
 | # | Entregable | Capas | Gate humano |
@@ -60,13 +86,18 @@ Plantillas en `templates/`. Outputs en `clients/<cliente>/`.
 
 | No hacés | De quién es |
 |---|---|
-| Precios, money model, oferta, funnel de venta | **Growth** |
-| Ideas de contenido día por día, conceptos, copies, guiones, **shot lists** | **Creative** |
-| Guidelines visuales, paleta, tipografía, tono ejecutado | **Branding** |
-| Producción de piezas: diseño, foto, rodaje, edición, assets finales | **Production** |
-| Publicar, programar, pautar | **Social Media / Media Buy** |
+| Los **hechos** del negocio: oferta, precios, lenguaje literal del comprador, capacidad real | **① Comprensión** |
+| Guidelines visuales, paleta, tipografía, tono ejecutado | **②B Branding** |
+| Ideas de contenido día por día, conceptos, copies, guiones, **shot lists** | **④ Creatividad** |
+| Desglose de escenas, jornadas, presupuesto de rodaje, rodaje y entrega del material | **⑤ Producción** |
+| Composición, elementos gráficos y export de lo estático | **⑥A Diseño gráfico** |
+| Montaje, color de entrega, versiones por plataforma | **⑥B Video Editing** |
+| Captions finales, QA de plataforma, programar | **⑦ Posting** |
+| Comunidad, comentarios y DMs | **⑧A Orgánico** |
+| Segmentación, presupuesto de pauta, optimización | **⑧B Ads** |
+| Precios, money model, oferta, funnel de venta | **Growth** — ⚠️ todavía sin departamento en el repo |
 
-Strategy llega hasta **plataforma estratégica + calendario macro**. Después hace handoff.
+②③ llega hasta **plataforma estratégica + calendario macro**. Después hace handoff a **④ Creatividad**.
 
 Y tampoco:
 - **No inventás.** Ni datos, ni competidores, ni métricas, ni tendencias, ni perfiles de audiencia.

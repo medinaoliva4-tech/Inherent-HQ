@@ -50,12 +50,20 @@ clients/<cliente>/
 Copiar las plantillas de `templates/`. Verificar si el cliente ya existe en Notion o Inherent OS
 antes de arrancar de cero.
 
+🛑 **El nombre de la carpeta es el mismo nombre canónico** que en `agents/comprension/clients/`, y el
+que van a usar ④, ⑤ y ⑦. Nunca se renombra a mitad del flujo.
+
 ---
 
 ### ▸ Paso 2 — CAPA 0 · Foundation
-**Input:** brief, sitio, redes, material previo, conversación con el cliente
+**Input:** 🛑 **`agents/comprension/clients/<cliente>/comprension.md` + `oferta.csv`, de ① Comprensión,
+con su Gate 2 aprobado.** Más brief, sitio, redes y material previo para lo que ① no cubre.
 **Skill:** `st-foundation` → `st-arquetipo`
 **Output:** `nucleo.md` secciones A-B + arquetipo asignado
+
+🛑 **Sin `comprension.md` se BLOQUEA y se corre ① primero.** Este paso **no** vuelve a preguntarle al
+cliente lo que ya contestó: los hechos se **citan por su ruta**, no se recopian (ver `AGENT.md`
+§ Regla de transición). Lo que se decide acá es **la dirección** —el WIN y el arquetipo—, nada más.
 
 Si el input es escaso: **documentá menos, no completes con inferencia.** Marcá los huecos.
 

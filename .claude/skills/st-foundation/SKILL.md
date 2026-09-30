@@ -16,9 +16,31 @@ Leé `agents/strategy/METHOD.md` sección **CAPA 0** completa. Plantilla: `templ
 Entendés **qué empresa estamos intentando hacer ganar**. Nada más. Es contexto y guardrails.
 
 ## Input
-Cualquier fuente sirve. **No exijas notas de reunión.** Trabajá con lo que exista: brief, chat,
-sitio, redes actuales, brand book viejo, pitch deck. Buscá material previo en Notion / Inherent OS /
-Drive antes de arrancar de cero.
+
+🔄 **Primero: ① Comprensión.** Este departamento corre **antes** que vos y ya dejó los hechos por
+escrito. Se leen de ahí, **no se vuelven a preguntar**:
+
+| Sección de `nucleo.md` | De dónde sale |
+|---|---|
+| **A · La empresa** — qué hace, oferta, precio, audiencia actual | `agents/comprension/clients/<cliente>/comprension.md` § El negocio · § El cliente · `oferta.csv` |
+| **C · Economía unitaria** — ticket, capacidad de entrega | ídem § La oferta · § La capacidad |
+| **D · Restricciones reales** — presupuesto, equipo, producción, aprobación | ídem § La capacidad |
+
+🛑 **Se citan con su ruta, no se recopian.** Un campo copiado con otras palabras crea una segunda
+versión de la verdad:
+
+```markdown
+| **Producto / oferta actual** | → `agents/comprension/clients/<cliente>/oferta.csv` |
+| **Capacidad de producción** | → `comprension.md` § La capacidad |
+```
+
+🛑 **Si no existe `comprension.md` con su Gate 2 aprobado: BLOQUEADO.** Se corre ① primero. Esta
+skill **no sustituye a ①** — lo único que decide acá es **la dirección**: el **WIN** (sección B) y el
+arquetipo (sección E). Detalle del corte en `agents/comprension/WORKFLOW.md §11`.
+
+**Lo que ① no cubre** —visión, ambición, propósito y valores, diferenciación percibida— sí se
+pregunta acá: brief, chat, sitio, redes actuales, brand book viejo, pitch deck. **No exijas notas de
+reunión.** Buscá material previo en Notion / Inherent OS / Drive antes de arrancar de cero.
 
 Si el input es escaso: **documentá menos**. Nunca completes con inferencia sin marcarla.
 
