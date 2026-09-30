@@ -280,7 +280,7 @@ una marca como la tuya. Y responde una sola pregunta:
 
 ---
 
-### 🟪 ACCELERATE · $1,100/mes — *De estancado a escalando*
+### 🟪 ACCELERATE · $1,200/mes — *De estancado a escalando*
 > *«Ya funciona, pero llegué a un techo y no quiero romper lo que me sirve.»*
 
 - **Encontramos qué te funciona de verdad y lo volvemos repetible**
@@ -305,7 +305,7 @@ una marca como la tuya. Y responde una sola pregunta:
 - Tus números claros: qué producto te deja y cuál te quita
 - Que el crecimiento se sostenga solo: referidos, comunidad y recompra
 - **Tu propia IA, entrenada con tu marca y tus datos**
-- **Un especialista de tu industria cada mes y un CFO a tu lado**
+- **Un especialista de tu industria cada mes**
 
 **→ Te puedes ir una semana y la empresa factura igual, y cierra el mes mejor.**
 
@@ -328,7 +328,7 @@ o proyectos por hito. **Precio según alcance.**
 |---|---|
 | *«un especialista cada trimestre / cada mes»* | **La cadencia de mentores.** Subirla baja el margen — ver `04-MERCADO.md` |
 | *«una herramienta nueva cada trimestre / cada mes»* | **El build de tecnología.** Q750 y Q1,500/mes |
-| *«un CFO a tu lado»* | 🔴 **No está contratado.** Bloquea la venta de Compound |
+| *«tus números claros»* | **Money OS.** Lo entrega Allan con Strategy, no un CFO contratado |
 | *«que te encuentren en Google»* | **Es pauta de búsqueda, no SEO técnico.** Ver `06-ECONOMIA.md` |
 | *«presencia todos los días»* | **86 · 145 · 204 piezas.** El techo real es la grabación |
 

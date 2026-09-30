@@ -31,20 +31,20 @@
 | Momento | Facturación / mes | Paquete |
 |---|---|---|
 | Aún no vendo | — | ⚠️ **Todavía no.** Primero producto y oferta |
-| **Construyendo** | $2k – $10k | 🟦 **Basic** |
-| **Creciendo** | $10k – $50k | 🟦 Ignite → 🟪 **Accelerated** |
-| **Escalando** | $50k – $100k | 🟪 **Accelerated** → 🟨 Compound |
+| **Construyendo** | $2k – $10k | 🟦 **Ignite** |
+| **Creciendo** | $10k – $50k | 🟦 Ignite → 🟪 **Accelerate** |
+| **Escalando** | $50k – $100k | 🟪 **Accelerate** → 🟨 Compound |
 | **Consolidada** | $100k+ | 🟨 **Compound** |
 
 ### Eje 2 · Dónde se traba el crecimiento
 
 | El cuello está en… | Paquete | Verbo |
 |---|---|---|
-| **Nadie lo conoce.** Hay producto, no hay demanda | 🟦 **Basic** | **ENCENDER** |
-| **Llega gente pero se pierde.** Hay demanda, no hay conversión | 🟪 **Accelerated** | **ACELERAR** |
+| **Nadie lo conoce.** Hay producto, no hay demanda | 🟦 **Ignite** | **ENCENDER** |
+| **Llega gente pero se pierde.** Hay demanda, no hay conversión | 🟪 **Accelerate** | **ACELERAR** |
 | **Funciona, pero todo depende de alguien.** Hay conversión, no hay sistema | 🟨 **Compound** | **COMPONER** |
 
-> ⚠️ **Manda el eje 2.** Un negocio de $100k que nadie conoce va a Basic, no a Compound.
+> ⚠️ **Manda el eje 2.** Un negocio de $100k que nadie conoce va a Ignite, no a Compound.
 > **El dinero dice cuánto puede pagar. El cuello dice qué necesita.**
 
 ---
@@ -78,8 +78,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | Construye autoridad del fundador y de la marca. Contenido que demuestra criterio, no que vende. Asociaciones con players complementarios |
-| 🟪 **Accelerated** | **Lead magnets** (diagnósticos, calculadoras, reportes de industria), embudo de WhatsApp y LinkedIn orgánico. Google Search para intención alta |
+| 🟦 **Ignite** | Construye autoridad del fundador y de la marca. Contenido que demuestra criterio, no que vende. Asociaciones con players complementarios |
+| 🟪 **Accelerate** | **Lead magnets** (diagnósticos, calculadoras, reportes de industria), embudo de WhatsApp y LinkedIn orgánico. Google Search para intención alta |
 | 🟨 **Compound** | CRM propio, scoring de leads, secuencias de nurturing. **El pipeline deja de vivir en la cabeza del fundador** |
 
 ---
@@ -93,8 +93,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | Define el territorio: de qué es dueña esta persona. Volumen alto para ganar superficie. Colaboraciones con pares |
-| 🟪 **Accelerated** | Lead magnet + lista propia. **Deja de alquilar la audiencia a Instagram.** Lanzamientos con campaña |
+| 🟦 **Ignite** | Define el territorio: de qué es dueña esta persona. Volumen alto para ganar superficie. Colaboraciones con pares |
+| 🟪 **Accelerate** | Lead magnet + lista propia. **Deja de alquilar la audiencia a Instagram.** Lanzamientos con campaña |
 | 🟨 **Compound** | Comunidad propia, membresía, contenido en segundo idioma. **IA entrenada con su voz** para escalar sin grabar más |
 
 ---
@@ -108,8 +108,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | Presencia diaria y prueba social real. Transformaciones, testimonios, comunidad. Alianzas con nutricionistas, gimnasios, marcas locales |
-| 🟪 **Accelerated** | Embudo de prueba gratis → membresía. **Influencers locales de nicho**, no de alcance |
+| 🟦 **Ignite** | Presencia diaria y prueba social real. Transformaciones, testimonios, comunidad. Alianzas con nutricionistas, gimnasios, marcas locales |
+| 🟪 **Accelerate** | Embudo de prueba gratis → membresía. **Influencers locales de nicho**, no de alcance |
 | 🟨 **Compound** | **Retención y LTV son el foco.** Secuencias de reactivación, sistema de referidos, app o portal de miembros |
 
 ---
@@ -123,8 +123,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | Antojo diario: producto que se ve irresistible, todos los días. Asociaciones con creadores de comida locales y apps de delivery |
-| 🟪 **Accelerated** | Campañas por **daypart** — llenar martes, no sábado. Google Maps e intención local. Pauta segmentada por radio |
+| 🟦 **Ignite** | Antojo diario: producto que se ve irresistible, todos los días. Asociaciones con creadores de comida locales y apps de delivery |
+| 🟪 **Accelerate** | Campañas por **daypart** — llenar martes, no sábado. Google Maps e intención local. Pauta segmentada por radio |
 | 🟨 **Compound** | Recompra y frecuencia: club de clientes, cumpleaños, ocasiones. **Canales nuevos** — catering, eventos, producto empacado |
 
 ---
@@ -138,8 +138,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | 🔥 **Acá el volumen es la ventaja decisiva.** **Fotos de producto generadas** — catálogo completo sin sesión de fotos. 40 estáticos al mes cubren una colección entera |
-| 🟪 **Accelerated** | Catálogo en Meta y **Performance Max**. Recuperación de carrito. Influencers con código |
+| 🟦 **Ignite** | 🔥 **Acá el volumen es la ventaja decisiva.** **Fotos de producto generadas** — catálogo completo sin sesión de fotos. 40 estáticos al mes cubren una colección entera |
+| 🟪 **Accelerate** | Catálogo en Meta y **Performance Max**. Recuperación de carrito. Influencers con código |
 | 🟨 **Compound** | Recompra, LTV, segundo idioma para exportar. Dashboard de rotación conectado a la pauta |
 
 ---
@@ -153,8 +153,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | Construye deseo de destino, no de habitación. Asociaciones con turismo, tours y creadores de viaje |
-| 🟪 **Accelerated** | **Reserva directa** como objetivo: landing propia, campañas de temporada, Google Search de intención. Reduce la dependencia de OTAs |
+| 🟦 **Ignite** | Construye deseo de destino, no de habitación. Asociaciones con turismo, tours y creadores de viaje |
+| 🟪 **Accelerate** | **Reserva directa** como objetivo: landing propia, campañas de temporada, Google Search de intención. Reduce la dependencia de OTAs |
 | 🟨 **Compound** | Motor de reserva propio, secuencias pre y post estadía, programa de huéspedes que vuelven |
 
 ---
@@ -168,8 +168,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | Traduce el producto a problema. Contenido que educa antes de vender. Alianzas con integradores y comunidades |
-| 🟪 **Accelerated** | **Lead magnets técnicos** — plantillas, benchmarks, demos. Google Search por intención de problema. Onboarding a prueba gratuita |
+| 🟦 **Ignite** | Traduce el producto a problema. Contenido que educa antes de vender. Alianzas con integradores y comunidades |
+| 🟪 **Accelerate** | **Lead magnets técnicos** — plantillas, benchmarks, demos. Google Search por intención de problema. Onboarding a prueba gratuita |
 | 🟨 **Compound** | Activación y retención dentro del producto. Contenido en segundo idioma. **IA propia entrenada con su documentación** |
 
 ---
@@ -183,8 +183,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | Autoridad y claridad. Educación financiera que construye confianza. ⚠️ Tono cuidado: **la categoría castiga la promesa exagerada** |
-| 🟪 **Accelerated** | Lead magnets de diagnóstico. Embudo con calificación previa. Google Search de intención alta |
+| 🟦 **Ignite** | Autoridad y claridad. Educación financiera que construye confianza. ⚠️ Tono cuidado: **la categoría castiga la promesa exagerada** |
+| 🟪 **Accelerate** | Lead magnets de diagnóstico. Embudo con calificación previa. Google Search de intención alta |
 | 🟨 **Compound** | CRM con seguimiento largo, portal de cliente, secuencias por etapa de vida |
 
 ---
@@ -198,8 +198,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | Credibilidad del especialista. Casos, proceso, educación. Alianzas con médicos referentes. ⚠️ **Restricciones de pauta en salud — se revisan antes de prometer** |
-| 🟪 **Accelerated** | Embudo de consulta con calificación. WhatsApp para agendar. Google Search por síntoma y procedimiento |
+| 🟦 **Ignite** | Credibilidad del especialista. Casos, proceso, educación. Alianzas con médicos referentes. ⚠️ **Restricciones de pauta en salud — se revisan antes de prometer** |
+| 🟪 **Accelerate** | Embudo de consulta con calificación. WhatsApp para agendar. Google Search por síntoma y procedimiento |
 | 🟨 **Compound** | Seguimiento post procedimiento, recordatorios, portal de paciente, sistema de referidos |
 
 ---
@@ -213,8 +213,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Basic** | Convierte el portafolio en contenido: proceso, antes y después, criterio. Alianzas con desarrolladoras y proveedores |
-| 🟪 **Accelerated** | Lead magnet de proyecto. **Renders y visualización generada.** Campañas segmentadas por zona y nivel socioeconómico |
+| 🟦 **Ignite** | Convierte el portafolio en contenido: proceso, antes y después, criterio. Alianzas con desarrolladoras y proveedores |
+| 🟪 **Accelerate** | Lead magnet de proyecto. **Renders y visualización generada.** Campañas segmentadas por zona y nivel socioeconómico |
 | 🟨 **Compound** | Portal de cliente para seguimiento de obra. Contenido en segundo idioma para proyectos internacionales |
 
 ---
@@ -272,15 +272,15 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 ## Qué pasa con el mismo costo y otro precio
 
-*Costo por cuenta con 5 clientes: Básico Q2,220 · Acelerado Q3,280 · Compuesto Q4,540*
+*Costo por cuenta con 5 clientes: Ignite Q2,220 · Accelerate Q3,280 · Compound Q4,540*
 
 | Mercado | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| **🇬🇹 Guatemala** *(hoy)* | $800 → **64%** | $1,100 → **61%** | $2,000 → **71%** |
+| **🇬🇹 Guatemala** *(hoy)* | $800 → **64%** | $1,200 → **65%** | $2,000 → **71%** |
 | **🇲🇽 México** | $1,200 → **76%** | $1,800 → **76%** | $3,200 → **82%** |
 | **🇺🇸 Miami** | $2,000 → **86%** | $3,000 → **86%** | $5,500 → **89%** |
 
-### Utilidad mensual con 5 clientes *(2 Básico · 2 Acelerado · 1 Compuesto)*
+### Utilidad mensual con 5 clientes *(2 Ignite · 2 Accelerate · 1 Compound)*
 
 | Mercado | Al mes |
 |---|---|
@@ -411,11 +411,11 @@ y el costo de servirlo es el mismo desde acá.
 | Plan | Precio | Margen sin mentor | **Margen con mentor** |
 |---|---|---|---|
 | 🟦 **Ignite** | Q6,160 | 64% | **60%** ✅ |
-| 🟪 **Accelerate** | Q8,470 | 61% | **56%** ⚠️ |
+| 🟪 **Accelerate** | Q9,240 | 65% | **60%** ✅ |
 | 🟨 **Compound** | Q15,400 | 71% | **61%** ✅ |
 
-> ⚠️ **Accelerate sigue siendo el punto débil.** A $1,200 en vez de $1,100 vuelve a **60%** y
-> los tres planes quedan parejos. Ver `06-ECONOMIA.md`.
+> ✅ **Los tres quedan parejos en 60-61%** — se logró subiendo Accelerate a **$1,200**
+> *(decisión de Allan, 30-sep-2026)*. A $1,100 quedaba en 56%. Ver `06-ECONOMIA.md`.
 
 ---
 

@@ -107,7 +107,7 @@ tu rubro.
 
 ---
 
-# 🟪 ACCELERATE · $1,100 / mes
+# 🟪 ACCELERATE · $1,200 / mes
 ### *De estancado a escalando*
 
 ## Dónde estás
@@ -190,7 +190,7 @@ El freno ya no es el mercado: **eres tú, tu equipo y tus números.**
 | 5 | **Tus números claros: qué producto te deja y cuál te quita** |
 | 6 | **Que el crecimiento se sostenga solo: referidos, comunidad y recompra** |
 | 7 | **Tu propia IA, entrenada con tu marca y tus datos** |
-| 8 | **Un especialista de tu industria cada mes y un CFO a tu lado** |
+| 8 | **Un especialista de tu industria cada mes** |
 
 ### Qué significa cada una, adentro
 
@@ -215,7 +215,8 @@ mes pasado siga trabajando este mes.
 
 **7 · Tu propia IA**, entrenada con tu marca y tus datos.
 
-**8 · Especialista mensual y CFO.** Una sesión de mentor al mes, más un CFO fraccional a tu lado.
+**8 · Especialista mensual.** Una sesión de mentor al mes, de la gama más alta que absorbemos
+*(techo $180)*, más acceso a la comunidad de tu rubro.
 
 ## El resultado · **texto publicado**
 > **Te puedes ir una semana y la empresa factura igual, y cierra el mes mejor.**
@@ -258,17 +259,20 @@ mes pasado siga trabajando este mes.
 | Una herramienta cada **mes** | Higgsfield + Vercel + Zapier *(9,000+ apps)* + Inherent OS | ⬜ |
 | Estructura corporativa | Allan + especialista de **corporate structure** | 👤 |
 | SOPs de toda la empresa | Strategy + Notion · **Operations OS completo** | 👤✅ |
-| Tus números claros | **Money OS** + CFO fraccional | 👤 |
+| Tus números claros | **Money OS** — Allan + Strategy | 👤 |
 | Crecimiento que se sostiene solo | Community + Eden `create_auto_dm_automation` | ⬜ |
 | Tu propia IA | Eden `create_custom_ai` + `manage_custom_ai_sources` | ⬜ |
-| Especialista mensual + CFO | Red de mentores — techo **$180** + CFO fraccional | 👤 |
+| Especialista mensual | Red de mentores — techo **$180** | 👤 |
 
-### 🔴 Los dos huecos que la web ya prometió
+### 🟡 El único hueco que la web prometió
 
 | Hueco | Qué falta | Impacto |
 |---|---|---|
-| **CFO fraccional** | No está contratado. Compound no se puede vender completo sin él | 🔴 **Bloquea la venta de Compound** |
 | **Especialista de corporate structure** | Está en la red declarada, sin persona confirmada | 🟡 Allan lo cubre mientras tanto |
+
+> ✅ **El CFO fraccional se quitó de la web el 30-sep-2026.** Ya no se promete, así que ya no
+> bloquea la venta de Compound. **«Tus números claros» sigue en pie** — lo entrega Money OS con
+> Allan y Strategy, no una persona contratada.
 
 ⚠️ **Todo lo demás tiene acción detrás.** Lo que está en `⬜` existe como tool pero **no se ha
 corrido en cliente real** — ver `06-ECONOMIA.md` → «Capacidades reales».
@@ -334,7 +338,7 @@ de esa industria. Ver `04-MERCADO.md`.
 
 | | **IGNITE** | **ACCELERATE** | **COMPOUND** |
 |---|---|---|---|
-| **Precio / mes** | **$800** | **$1,100** | **$2,000** |
+| **Precio / mes** | **$800** | **$1,200** | **$2,000** |
 | **Dónde estás** | Nadie me conoce | **Estancado en un techo** | Todo pasa por mí |
 | **El boost** | Comunicarte y existir | **Escalar lo que funciona** | Que crezca sin ti |
 | | | | |
@@ -484,7 +488,7 @@ corriendo
 ---
 ---
 
-# 🟪 ACCELERATE · $1,100
+# 🟪 ACCELERATE · $1,200
 
 **De estancado a escalando. El boost: escalar lo que ya funciona, sin perderlo.**
 

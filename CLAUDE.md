@@ -111,7 +111,7 @@ los agentes.** Se lee antes de prometer nada.
 
 ```
 🟦 IGNITE      $800     invisible → deseado      aprender a comunicarse y existir
-🟪 ACCELERATE  $1,100   estancado → escalando    escalar lo que ya funciona, sin perderlo
+🟪 ACCELERATE  $1,200   estancado → escalando    escalar lo que ya funciona, sin perderlo
 🟨 COMPOUND    $2,000   escalando → autónomo     que crezca sin vos
 ```
 
@@ -165,7 +165,7 @@ talent marketing. **Red, no nómina.**
 🔑 **Tres reglas lo hacen rentable:** solo se propone el mentor que cabe en el plan ·
 **trimestral en Ignite y Accelerate**, mensual en Compound · **la membresía se paga anual y es de
 Inherent** *(sirve a todos los clientes de esa industria, −41% de costo)*.
-Con eso el mentor cuesta **−4 · −5 · −10 pts** y los márgenes quedan en **60% · 56% · 61%**.
+Con eso el mentor cuesta **−4 · −5 · −10 pts** y los márgenes quedan parejos en **60% · 60% · 61%**.
 ⚠️ **Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `inherent/04-MERCADO.md`.
 
 ## 🌐 La web ya está publicada — es la promesa
@@ -179,9 +179,9 @@ detrás, **se arregla la capacidad — no se borra la línea.**
 
 ✍️ **Toda la copia al cliente va de TÚ, no de vos.** Así está publicado.
 
-🔴 **Dos cosas que la web ya prometió y todavía no existen:**
-**el CFO fraccional** *(bloquea la venta de Compound)* y **el especialista de corporate
-structure** *(Allan lo cubre mientras tanto)*.
+🟡 **Una cosa que la web prometió y todavía no existe:** el **especialista de corporate
+structure** — Allan lo cubre mientras tanto.
+✅ **El CFO fraccional se quitó de la web:** ya no se promete y ya no bloquea vender Compound.
 
 ⚠️ **«Que te encuentren en Google» = pauta de búsqueda y contenido guiado por keywords.**
 **Nunca posicionamiento orgánico, auditoría técnica ni link building.**
@@ -224,13 +224,14 @@ mismo suelto, porque todo lo que corre sobre agentes suma Q0 al costo variable.
 
 **Ganamos de hacerles dinero.** El fee base cubre la operación; **la utilidad de verdad sale del
 performance fee — 10% de las ventas atribuidas, con costo marginal Q0.** Cada quetzal de fee es
-utilidad pura: lleva Accelerate de 61% a 71% sin tocar el precio base.
+utilidad pura: lleva Accelerate de 60% a 70% sin tocar el precio base.
 ⚠️ **Sin atribución limpia no hay fee.**
 
 **Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes
 altísimos.** Cierran **no bajando el precio, bajando el costo.**
-**Con 5 clientes: 64% · 61% · 71%.** Con 10: 67% · 64% · 72%.
-**Con performance fee encima, Accelerate pasa de 61% a 71-80%.**
+**Con 5 clientes: 64% · 65% · 71%.** Con 10: 67% · 67% · 72%.
+**Con la mentoría adentro quedan parejos en 60% · 60% · 61%**, y con performance fee
+Accelerate pasa de 60% a 70-78%.
 Ver `inherent/06-ECONOMIA.md` → «Los márgenes reales» y `inherent/05-OPERACION.md`.
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la

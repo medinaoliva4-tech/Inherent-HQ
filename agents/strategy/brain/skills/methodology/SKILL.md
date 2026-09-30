@@ -75,7 +75,7 @@ Eso determina **cuáles son sus 3 pilares** → ver `inherent/02-METODO.md`.
 3. **Cuál es el techo de los objetivos** — no se puede prometer lo que el nivel no cubre
 
 ⚠️ **Si el cliente contrató un nivel que no ataca su cuello, se dice.**
-Vender Compuesto a quien no tiene demanda es autonomía sobre una máquina rota.
+Vender Compound a quien no tiene demanda es autonomía sobre una máquina rota.
 **El agente propone; Allan decide si se ajusta el paquete o el objetivo.**
 
 ### A.1 · ¿Qué significa ganar para ESTA empresa?
@@ -118,7 +118,7 @@ Se mide con dos datos, y salen del bloque `context`:
 
 **El paquete es el límite que ya está firmado:**
 
-| | **Basic** Q6,160 | **Accelerated** Q8,470 | **Compound** Q15,400 |
+| | **Ignite** Q6,160 | **Accelerate** Q9,240 | **Compound** Q15,400 |
 |---|---|---|---|
 | Piezas/mes | **86** | **145** | **204** |
 | Horas de producción | 2h · 1 sesión | 5h · 2 sesiones | 8h · 3 sesiones |
@@ -276,7 +276,7 @@ Cada bloque con **decisión + puntos a resolver**. Ver `brand-brief.md` en esta 
 - La intersección obligatoria: `lo que la audiencia quiere consumir` + `el posicionamiento` + `la promesa`
 - Qué territorios narrativos se abren desde la historia
 
-### C.5 · Brief de TECNOLOGÍA 🔧 *(Acelerado y Compuesto)*
+### C.5 · Brief de TECNOLOGÍA 🔧 *(Accelerate y Compound)*
 
 > **El paquete promete una herramienta a medida. Alguien tiene que decidir CUÁL — y esa es una
 > decisión de estrategia, no de programación.**
@@ -293,9 +293,9 @@ Cada bloque con **decisión + puntos a resolver**. Ver `brand-brief.md` en esta 
 ⚠️ **Si no se identifica una fricción real, no se construye nada.** Una herramienta que nadie usa
 es peor que ninguna: consume el presupuesto del trimestre y no mueve un número.
 
-### C.6 · Brief de SISTEMAS 🔁 *(solo Compuesto)*
+### C.6 · Brief de SISTEMAS 🔁 *(solo Compound)*
 
-> **Compuesto promete que el crecimiento deje de comprarse cada mes.** Estas tres decisiones son
+> **Compound promete que el crecimiento deje de comprarse cada mes.** Estas tres decisiones son
 > las que lo hacen posible.
 
 | | Qué decide Strategy |

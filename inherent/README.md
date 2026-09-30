@@ -26,7 +26,7 @@ MÉTODO        GROWTH OS       de dónde sale el crecimiento
               MONEY OS        que quede utilidad
                     │
 OFERTA        IGNITE      $800     mapea      invisible → deseado
-              ACCELERATE  $1,100   ejecuta    estancado → escalando
+              ACCELERATE  $1,200   ejecuta    estancado → escalando
               COMPOUND    $2,000   sistematiza  escalando → autónomo
                     │
 DIVISIONES    LOW TICKET    volumen      oferta · big sales · upsells

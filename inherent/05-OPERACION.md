@@ -286,7 +286,7 @@ que es 3 de las 12 etapas.
 | **3** | **Diseño** | Ejecuta lo que Creatividad decide. Van en par |
 | **4** | **Marketing** | Hoy el salto de Estrategia a Creatividad se hace a mano |
 | **5** | **Posting** | Tools listas, solo falta la lógica y el gate |
-| **6** | **Ads** | Tools listas. Es lo que cobra Accelerated y Compound |
+| **6** | **Ads** | Tools listas. Es lo que cobra Accelerate y Compound |
 | **7** | **Branding** | El brief ya existe; el agente lo formaliza |
 | **8** | **Community** | El último del ciclo, y el más fácil de sostener a mano mientras tanto |
 
@@ -447,7 +447,7 @@ es una hipótesis.
 
 ## 5 · Los cuatro escenarios, con números
 
-### 🔵 HOY — 2 clientes Básico
+### 🔵 HOY — 2 clientes Ignite
 
 | Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
@@ -457,13 +457,13 @@ es una hipótesis.
 
 | Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
-| Básico | Q750 | Q400 | Q750 | Q1,000 | **Q2,900** | **Q3,260** | **53%** |
+| Ignite | Q750 | Q400 | Q750 | Q1,000 | **Q2,900** | **Q3,260** | **53%** |
 
 **Utilidad total del mes: Q6,520**
 
 ---
 
-### 🟢 META CORTA — 5 clientes *(2 Básico · 2 Acelerado · 1 Compuesto)*
+### 🟢 META CORTA — 5 clientes *(2 Ignite · 2 Accelerate · 1 Compound)*
 
 | Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
@@ -474,14 +474,14 @@ es una hipótesis.
 | Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
 | 🟦 Ignite | Q600 | Q320 | Q300 | Q1,000 | Q2,220 | Q3,940 | **64%** |
-| 🟪 Accelerate | Q1,000 | Q480 | Q300 | Q1,500 | Q3,280 | Q5,190 | **61%** |
+| 🟪 Accelerate | Q1,000 | Q480 | Q300 | Q1,500 | Q3,280 | Q5,960 | **65%** |
 | 🟨 Compound | Q1,600 | Q640 | Q300 | Q2,000 | Q4,540 | Q10,860 | **71%** |
 
-**Utilidad total del mes: Q29,120**
+**Utilidad total del mes: Q30,660**
 
 ---
 
-### 🟡 META MEDIA — 10 clientes *(3 Básico · 4 Acelerado · 3 Compuesto)*
+### 🟡 META MEDIA — 10 clientes *(3 Ignite · 4 Accelerate · 3 Compound)*
 
 | Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
@@ -492,14 +492,14 @@ es una hipótesis.
 | Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
 | 🟦 Ignite | Q600 | Q260 | Q150 | Q1,000 | Q2,010 | Q4,150 | **67%** |
-| 🟪 Accelerate | Q1,000 | Q390 | Q150 | Q1,500 | Q3,040 | Q5,430 | **64%** |
+| 🟪 Accelerate | Q1,000 | Q390 | Q150 | Q1,500 | Q3,040 | Q6,200 | **67%** |
 | 🟨 Compound | Q1,600 | Q520 | Q150 | Q2,000 | Q4,270 | Q11,130 | **72%** |
 
-**Utilidad total del mes: Q67,560**
+**Utilidad total del mes: Q70,640**
 
 ---
 
-### 🔴 META LARGA — 20 clientes *(4 Básico · 8 Acelerado · 8 Compuesto)*
+### 🔴 META LARGA — 20 clientes *(4 Ignite · 8 Accelerate · 8 Compound)*
 
 | Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
@@ -510,10 +510,10 @@ es una hipótesis.
 | Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|
 | 🟦 Ignite | Q488 | Q200 | Q75 | Q1,000 | Q1,762 | Q4,398 | **71%** |
-| 🟪 Accelerate | Q812 | Q300 | Q75 | Q1,500 | Q2,688 | Q5,782 | **68%** |
+| 🟪 Accelerate | Q812 | Q300 | Q75 | Q1,500 | Q2,688 | Q6,552 | **71%** |
 | 🟨 Compound | Q1,300 | Q400 | Q75 | Q2,000 | Q3,775 | Q11,625 | **75%** |
 
-**Utilidad total del mes: Q156,850**
+**Utilidad total del mes: Q163,008**
 
 ⚠️ **A 20 clientes Allan está en 188 h/mes.** Ahí ya no alcanza: **o entra un segundo director,
 o el agente de QA baja sus horas a la mitad.** Es el techo real del modelo.
@@ -656,12 +656,14 @@ experto en marketing a correr esos mismos agentes.**
 | **Operador de agentes** | ✅ transversal | ✅ transversal | ✅ + un segundo |
 | **Producción** | Freelance | Freelance | Medio tiempo |
 | **Dir. Operaciones** | ⬜ | Con el 1er Compound | ✅ |
-| **CFO fraccional** | ⬜ | Con el 1er Compound | ✅ |
+| **CFO fraccional** | ⬜ | **Opcional** — ya no se promete | ✅ |
 | **Dir. Conversión** | ⬜ | ⬜ | ✅ |
 | **Dir. Growth** | ⬜ | ⬜ | ✅ |
 | **Mentores de industria** | Por sesión | Por sesión | Por sesión |
 
-⚠️ **Las dos contrataciones que habilitan vender Compound son Operaciones y el CFO fraccional.**
+⚠️ **Compound ya se puede vender sin CFO.** Se quitó de la web el 30-sep-2026, así que
+**Money OS lo entrega Allan con Strategy.** El CFO fraccional pasa a ser una mejora futura,
+no un requisito. **La contratación que sí sigue habilitando volumen es la de Operaciones.**
 **Sin ellas, Compound se promete y no se entrega.**
 
 ---
@@ -679,7 +681,7 @@ experto en marketing a correr esos mismos agentes.**
 | **Día 22-25** | Planificación del mes siguiente | Dir. Growth + agentes |
 | **Día 25-30** | Grabación del mes siguiente | Producción |
 | **Mensual** | Operations — un proceso documentado o automatizado | Dir. Operaciones |
-| **Mensual** | Money — números del mes | CFO fraccional |
+| **Mensual** | Money — números del mes | Allan + Strategy *(CFO si existe)* |
 | **Trimestral** | Replanteo de estrategia · revisión de precio · mentor de industria | Allan + todos |
 
 ### Las reuniones
@@ -724,13 +726,13 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 # Operación — qué se hace, quién lo hace, cuánto cuesta
 
 > Desglose por **marca, al mes**. De acá salen los costos de `06-ECONOMIA.md`.
-> **`Ignite` $800** · **`Accelerate` $1,100** · **`Compound` $2,000**
+> **`Ignite` $800** · **`Accelerate` $1,200** · **`Compound` $2,000**
 
 ---
 
 ## 1 · Todo lo que hay que hacer
 
-| # | Trabajo | Quién | Costo | Basic | Accel | Compound |
+| # | Trabajo | Quién | Costo | Ignite | Accel | Compound |
 |---|---|---|---|---|---|---|
 | **ESTRATEGIA** |
 | 1 | Estrategia inicial — los 4 bloques | Agentes + Allan | Claude | ✅ | ✅ | ✅ |
@@ -799,7 +801,7 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 
 ## 2 · Las responsabilidades de Allan, con sus horas
 
-| Responsabilidad | Basic | Accel | Compound |
+| Responsabilidad | Ignite | Accel | Compound |
 |---|---|---|---|
 | **Reunión mensual con el cliente** | 1.0 h | 1.0 h | 1.0 h |
 | **Preparar la reunión** | 0.5 h | 0.5 h | 1.0 h |
@@ -832,36 +834,36 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 
 ### El margen con cada tarifa
 
-| Tarifa | **Basic** (7h) | **Accelerated** (11h) | **Compound** (15h) |
+| Tarifa | **Ignite** (7h) | **Accelerate** (11h) | **Compound** (15h) |
 |---|---|---|---|
 | **Q60/h** | 69% | 52% | 59% |
 | **Q150/h** | 72% | 69% | 77% |
-| **Q250/h** | **64%** | **61%** | **71%** |
+| **Q250/h** | **64%** | **65%** | **71%** |
 
 > **Modelo canónico: hora con escalera** — ver **este documento**. Con 5 clientes y mix realista.
 
 ✅ **Con los precios cerrados, Q250/h cierra en los tres.**
-Acelerado es el más ajustado (37%) porque agrega producción real, no solo capas de agente.
+Accelerate es el más ajustado (37%) porque agrega producción real, no solo capas de agente.
 
 ---
 
 ## 4 · Lo que esto revela
 
 🟢 **Bajamos el costo cambiando la mezcla, no recortando valor.**
-Basic pasó de 4h a 2h de producción y de 66 a **86 piezas**. Menos grabación (cara, humana),
+Ignite pasó de 4h a 2h de producción y de 66 a **86 piezas**. Menos grabación (cara, humana),
 mucho más contenido generado (gratis). **El volumen subió 30% mientras el costo bajó.**
 
 🔴 **El AI es solo el 4.5% del costo.** El 96% es humano. **La ventaja de AI ya está capturada**
 — bajar más el precio sale del bolsillo de Allan, no del ahorro de Claude.
 
-🟡 **Acelerado a Q250/h queda en 37%. Es el escalón más ajustado.**
+🟡 **Accelerate a Q250/h queda en 37%. Es el escalón más ajustado.**
 No es un problema del precio: es que agrega **producción real** (+3h y una sesión), no solo
 capas que corren sobre agentes. **Se revisa cuando haya casos.**
 
 🟢 **Las horas de Allan no son el cuello de botella.**
 5 clientes Compound = 75 h/mes. Le sobra tiempo. **El cuello es el QA.**
 
-🟡 **Basic es el arma comercial, no el producto de margen.**
+🟡 **Ignite es el arma comercial, no el producto de margen.**
 86 piezas a Q6,160 es una oferta que **ninguna agencia guatemalteca puede igualar.**
 Su trabajo es ganar la cuenta. El margen viene del upsell.
 
@@ -869,9 +871,9 @@ Su trabajo es ganar la cuenta. El margen viene del upsell.
 
 ## 5 · Utilidad absoluta — lo que entra al bolsillo
 
-| | **Basic** | **Accelerated** | **Compound** |
+| | **Ignite** | **Accelerate** | **Compound** |
 |---|---|---|---|
-| Precio | Q6,160 | Q8,470 | Q15,400 |
+| Precio | Q6,160 | Q9,240 | Q15,400 |
 | Piezas/mes | 86 | 145 | 204 |
 | Costo *(@Q250/h)* | Q3,217 | Q6,192 | Q9,167 |
 | **Utilidad @Q250/h** | **Q2,943** | **Q2,278** | **Q6,233** |
@@ -879,7 +881,7 @@ Su trabajo es ganar la cuenta. El margen viene del upsell.
 
 ## 6 · La hoja de ruta de automatización
 
-> **Los márgenes del modelo canónico (hora con escalera, 5 clientes) son 64% / 61% / 71%** —
+> **Los márgenes del modelo canónico (hora con escalera, 5 clientes) son 64% / 65% / 71%** —
 > **y asumen que estos agentes existen.** Sin ellos, las horas se duplican y caen ~15 puntos.
 > Ver **este documento**.
 

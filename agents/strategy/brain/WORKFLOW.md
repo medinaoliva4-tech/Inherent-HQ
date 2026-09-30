@@ -47,7 +47,7 @@ arranca sin el anterior.
 ### 01 · CONTEXTO → skill `context`
 Junta toda la data necesaria para que la estrategia tenga un piso fuerte.
 
-**Lo primero: el plan contratado.** 🟦 Básico · 🟪 Acelerado · 🟨 Compuesto · ⬜ Tailor Made.
+**Lo primero: el plan contratado.** 🟦 Ignite · 🟪 Accelerate · 🟨 Compound · ⬜ Tailor Made.
 **Define qué se le va a trabajar y hasta qué punto** — y por lo tanto qué briefs se arman al final.
 **Sin este dato la estrategia promete lo que no se puede entregar.**
 
@@ -342,7 +342,7 @@ Gate de Allan antes de entregar cualquiera.
      ├──→ 04  CREATIVIDAD  brief de creative        → agente Creative
      ├──→ 09  ADS          brief de growth          → agente Growth
      ├──→ 🔧  TECNOLOGÍA   brief de tecnología      → agente Builder
-     └──→ 🔁  SISTEMAS     brief de sistemas        → Allan + agentes  (solo Compuesto)
+     └──→ 🔁  SISTEMAS     brief de sistemas        → Allan + agentes  (solo Compound)
      │
      ▼
    …el ciclo mensual corre…
@@ -358,8 +358,8 @@ Gate de Allan antes de entregar cualquiera.
 | **Marketing** | Campañas, mensajes, canales y nivel de conversión a alcanzar |
 | **Creative** | Posicionamiento, promesa y qué tiene que lograr el contenido |
 | **Growth** | Monetización, funnel, ángulos de pauta y reparto de inversión |
-| **Tecnología** | Qué fricción matar y con qué herramienta *(Acelerado y Compuesto)* |
-| **Sistemas** | Motor de demanda, estado del fulfillment y puestos a cubrir *(Compuesto)* |
+| **Tecnología** | Qué fricción matar y con qué herramienta *(Accelerate y Compound)* |
+| **Sistemas** | Motor de demanda, estado del fulfillment y puestos a cubrir *(Compound)* |
 
 ### El regreso
 

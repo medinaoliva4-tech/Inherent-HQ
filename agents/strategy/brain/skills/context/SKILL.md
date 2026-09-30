@@ -26,7 +26,7 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 | Plan | El boost | Verbo de los pilares | Sistemas que se activan |
 |---|---|---|---|
 | 🟦 **IGNITE** $800 | Aprender a comunicarse y existir | **Mapea** | Growth |
-| 🟪 **ACCELERATE** $1,100 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | + Conversion · Operations *(parcial)* |
+| 🟪 **ACCELERATE** $1,200 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | + Conversion · Operations *(parcial)* |
 | 🟨 **COMPOUND** $2,000 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
 | ⬜ **Tailor Made** | Se define con Allan | Según alcance | Según alcance |
 
@@ -49,7 +49,7 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 | **Marcas o cuentas** | 1 paquete = 1 marca. Si hay más, son add-on |
 
 ⚠️ **Si el objetivo del cliente vive en una capa que su plan no cubre** —por ejemplo quiere
-arreglar su embudo de WhatsApp y está en Básico— **no se entrega igual.**
+arreglar su embudo de WhatsApp y está en Ignite— **no se entrega igual.**
 **Se avisa a Allan** y se ofrece subir de plan o cotizarlo como extra.
 
 🛑 **El plan es techo duro.** El agente propone dentro de él, nunca por encima.

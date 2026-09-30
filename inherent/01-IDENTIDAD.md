@@ -84,23 +84,23 @@ oferta, y la pauta no salva una experiencia rota.
 ## Los tres niveles de crecimiento
 
 ```
-🟦 BÁSICO — ENCENDER
+🟦 IGNITE — ENCENDER
    Estrategia · Demanda · Contenido
 
-🟪 ACELERADO — ACELERAR
-   Básico + Tecnología · Contenido para ADS · SEO · Closing
+🟪 ACCELERATE — ACELERAR
+   Ignite + Tecnología · Contenido para ADS · SEO · Closing
 
-🟨 COMPUESTO — COMPONER
-   Básico + Acelerado + Sistemas de demanda · Fulfillment · Talento
+🟨 COMPOUND — COMPONER
+   Ignite + Accelerate + Sistemas de demanda · Fulfillment · Talento
 ```
 
 **El nivel se elige por dónde está trabado el negocio:**
 
 | El cuello | Nivel |
 |---|---|
-| **No me conocen** — hay producto, no hay demanda | 🟦 **Básico** |
-| **Llega gente y se pierde** — hay demanda, no hay conversión | 🟪 **Acelerado** |
-| **Funciona pero todo depende de alguien** — hay conversión, no hay sistema | 🟨 **Compuesto** |
+| **No me conocen** — hay producto, no hay demanda | 🟦 **Ignite** |
+| **Llega gente y se pierde** — hay demanda, no hay conversión | 🟪 **Accelerate** |
+| **Funciona pero todo depende de alguien** — hay conversión, no hay sistema | 🟨 **Compound** |
 
 ---
 
@@ -111,7 +111,7 @@ oferta, y la pauta no salva una experiencia rota.
 
 ---
 
-## 🟦 BÁSICO — Q6,160/mes
+## 🟦 IGNITE — Q6,160/mes
 
 ### Lo básico *(lo que da cualquier agencia)*
 - Manejo de redes sociales
@@ -135,7 +135,7 @@ oferta, y la pauta no salva una experiencia rota.
 
 ---
 
-## 🟪 ACELERADO — Q8,470/mes
+## 🟪 ACCELERATE — Q9,240/mes
 
 ### Lo básico *(lo que da cualquier agencia "con pauta")*
 - Campañas en Meta
@@ -160,7 +160,7 @@ oferta, y la pauta no salva una experiencia rota.
 
 ---
 
-## 🟨 COMPUESTO — Q15,400/mes
+## 🟨 COMPOUND — Q15,400/mes
 
 ### Lo básico
 **No existe.** Ninguna agencia guatemalteca ofrece este nivel.
@@ -178,9 +178,9 @@ Lo más cercano es una consultoría que **entrega un documento y se va.**
 | **🌎 Contenido en segundo idioma** | Doblaje y voz sobre el material existente. Abrir mercado sin producción nueva |
 | **📊 Atribución completa de punta a punta** | Del primer impacto a la venta |
 
-> **Compuesto es el único paquete cuyo objetivo declarado es que nos necesiten menos.**
+> **Compound es el único paquete cuyo objetivo declarado es que nos necesiten menos.**
 > Principio #08: *"una empresa debe depender cada vez menos de su fundador."*
-> Compuesto hace que además dependa menos de nosotros.
+> Compound hace que además dependa menos de nosotros.
 
 ---
 
@@ -205,7 +205,7 @@ Sin MCP no hay acción, y sin acción no hay promesa.
 
 | | **🟦 Ignite** | **🟪 Accelerate** | **🟨 Compound** |
 |---|---|---|---|
-| **Precio / mes** | **Q6,160** *($800)* | **Q8,470** *($1,100)* | **Q15,400** *($2,000)* |
+| **Precio / mes** | **Q6,160** *($800)* | **Q9,240** *($1,200)* | **Q15,400** *($2,000)* |
 | Piezas / mes | 86 | 145 | 204 |
 | **Q por pieza** | **Q72** | **Q58** | Q75 |
 | *Mercado GT* | *Q188 por pieza* | | |
@@ -214,7 +214,7 @@ Sin MCP no hay acción, y sin acción no hay promesa.
 **Y `Tailor Made`** — multi-locación, regulatorio, integraciones o proyectos por hito.
 Precio según alcance.
 
-> 💀 **Básico está dentro del rango que el mercado guatemalteco ya acepta, con 5.4x el volumen
+> 💀 **Ignite está dentro del rango que el mercado guatemalteco ya acepta, con 5.4x el volumen
 > de su tramo. Para igualarlo tendrían que contratar cuatro personas y cobrar lo mismo.**
 
 ---

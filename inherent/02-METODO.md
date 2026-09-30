@@ -316,7 +316,7 @@ convierte en sistema. Hoy no lo pide.**
 
 # Qué entra en cada nivel
 
-| | **IGNITE** $800 | **ACCELERATE** $1,100 | **COMPOUND** $2,000 |
+| | **IGNITE** $800 | **ACCELERATE** $1,200 | **COMPOUND** $2,000 |
 |---|---|---|---|
 | **Diagnóstico** | ✅ | ✅ Profundo | ✅ + trimestral |
 | **Growth OS** | Pilares 1 y 2 | **Los 3 pilares** | **Los 3, a fondo** |
