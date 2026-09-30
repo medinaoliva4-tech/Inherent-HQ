@@ -109,7 +109,9 @@ Todo lo que se marca para refrescar sale **con fecha límite**, no con un *"pron
 
 **Y además, en el mismo archivo:** el **veredicto de cada hipótesis** del ciclo
 (`confirmada` / `refutada` / `⚠️ SIN DATOS`) · qué **patrón sube al tope de su skill** en la revisión
-trimestral · las **devoluciones aguas arriba** (lo que Creative detectó y no le toca arreglar).
+trimestral · las **devoluciones aguas arriba** (lo que Creative detectó y no le toca arreglar) · las
+**devoluciones que llegaron de ⑤ Producción, contadas por motivo** — el mismo motivo dos ciclos
+seguidos es un patrón de cómo escribe Creative, y entra como hipótesis del ciclo siguiente.
 
 🛑 **Ninguna opción nueva se agrega a una taxonomía de skill sin evidencia de 3+ piezas.**
 
@@ -178,6 +180,7 @@ hallazgo válido aunque ③ todavía no vea el movimiento.
 - [ ] 🛑 Sin métricas: `⚠️ SIN DATOS` + **a quién pedírselas**. **Ningún ganador inventado**
 - [ ] **Ninguna conclusión estratégica emitida** — lo que le toca a ③ Marketing **está devuelto, no respondido**
 - [ ] Las **devoluciones aguas arriba** están listadas: lo que Creative detectó y no le toca arreglar
+- [ ] Las **devoluciones de ⑤ están contadas por motivo**, y todo motivo repetido dos ciclos seguidos está declarado como patrón
 - [ ] `aprendizaje-creativo.md` quedó **guardado en la carpeta del cliente** — es interno, no se entrega
 
 **Handoff** → `cr-swipe-file` (Capa 1, los ganadores propios y el banco de hooks) y `cr-big-idea`
