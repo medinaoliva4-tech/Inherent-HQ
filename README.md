@@ -62,17 +62,16 @@ el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno 
 
 | # | Etapa | Agente | Estado |
 |---|---|---|---|
-| 01 · 02 | Comprensión y estrategia | **Strategy** | ✅ |
-| 02B | Branding | Branding | 🟡 brief listo |
-| 03 | Marketing | Marketing | ⬜ |
-| 04 | Creatividad | Creative | ⬜ |
-| 05 | Producción | Production | ⬜ |
-| 06 | Diseño gráfico | Design | ⬜ |
-| **07** | **QA** | **QA** | 🔴 **bloqueador** |
-| 08 | Posting | Content | 🟡 tools sí |
-| 09 | Ads | Growth | 🟡 tools sí |
-| 10 | Community | Community | ⬜ |
-| ↻ | Revisión del 20 | **Strategy** | ✅ |
+| 01 · 02 · ↻ | Comprensión, estrategia y revisión del 20 | [**Strategy**](agents/strategy/) | ✅ |
+| 02B | Branding | [Branding](agents/branding/) | 🟡 brief listo |
+| 03 | Marketing | [Marketing](agents/marketing/) | ⬜ |
+| 04 | Creatividad | [Creative](agents/creative/) | ⬜ |
+| 05 | Producción | [Production](agents/production/) | ⬜ |
+| 06 | Diseño gráfico | [Design](agents/design/) | ⬜ |
+| **07** | **QA** | [**QA**](agents/qa/) | 🔴 **bloqueador** |
+| 08 | Posting | [Content](agents/content/) | 🟡 tools sí |
+| 09 | Ads | [Growth](agents/growth/) | 🟡 tools sí |
+| 10 | Community | [Community](agents/community/) | ⬜ |
 
 🔴 **QA es el primero a construir.** A 204 piezas al mes el QA humano no escala, y sin él el
 volumen prometido no es entregable.

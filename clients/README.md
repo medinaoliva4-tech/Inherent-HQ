@@ -18,5 +18,5 @@ clients/<cliente>/
 | **El plan contratado se anota primero** | Define el techo de lo que se puede prometer |
 | **Nada se envía al cliente sin gate** | Allan cierra, el agente propone |
 
-> **Cómo se entrega** lo define la skill compartida `agents/_compartido/skills/client-delivery/`.
+> **Cómo se entrega** lo define la skill compartida `agents/_compartido/client-delivery/`.
 > **Misma forma para todos los agentes.**
