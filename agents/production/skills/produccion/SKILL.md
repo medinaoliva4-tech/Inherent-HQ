@@ -157,7 +157,13 @@ campaña: se descubre en la edición, cuando ya no hay presupuesto para volver.
 | **Mínimo dos alternativas** | Con su viabilidad de fecha y costo. Una devolución sin alternativa obliga a ④ a empezar de cero |
 
 Una devolución sin dos alternativas **es un bloqueo, no una devolución**. La respuesta de ④ se
-registra **con fecha**.
+registra **con fecha**, y es una de 4: **alternativa 1** · **alternativa 2** · **alternativa nueva**
+(se verifica de nuevo y cuenta como otra vuelta) · **se retira**.
+
+⏱️ **Plazo: 2 días hábiles**, o la fecha que exija la jornada si es anterior — la fecha límite se
+escribe al devolver. **Si vence sin respuesta, no se inventa:** la escena queda `↩️ devuelta`, fuera
+de la jornada, y decide ③ Marketing. 🔁 **Máximo 2 vueltas por escena**; después deciden el lead de
+④ y el de ⑤. Detalle en `WORKFLOW.md` §9.
 
 **Lo que NO es una devolución a ④:**
 
