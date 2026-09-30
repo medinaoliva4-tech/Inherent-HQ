@@ -20,6 +20,8 @@ corresponda, y es quien hace que el crecimiento se **cobre**.
 | Ver qué vende y cómo lo vende la categoría | AdWhispr `find_competitors` · `get_brand_ads` | ✅ |
 | Automatizar seguimiento y recompra | Zapier · Eden `create_auto_dm_automation` | ⬜ |
 | Construir landing, panel o CRM a medida | Higgsfield `create_website` + Vercel | ⬜ |
+| **Negocios, reseñas y contactos de una zona** | Apify `crawler-google-places` | 🟡 |
+| **Qué busca la gente antes de comprar** | Apify `google-search-scraper` | 🟡 |
 | Llevar los registros del negocio | Inherent OS | ⬜ |
 
 ## Qué entrega según el plan

@@ -11,6 +11,8 @@
 | Estudiar los carruseles que ganan | Eden `eden_study_top_carousels` | ⬜ |
 | Buscar outliers de contenido | Eden `eden_search_social_content` | ✅ |
 | Predecir viralidad antes de producir | Higgsfield `virality_predictor` | ⬜ |
+| **Bajar los posts de cualquier cuenta o hashtag** | Apify `instagram-scraper` · `tiktok-scraper` | 🟡 |
+| **Los anuncios que ya corren en la categoría** | Apify `facebook-ads-library-scraper` | 🟡 |
 | Guardar referencias en tableros | Eden `eden_save_posts_to_board` | ⬜ |
 
 ## Qué entrega según el plan
