@@ -399,24 +399,27 @@ Growth     → oferta, precio y objetivo
 
 ## 8 · CORRELACIÓN — dónde entra Strategy en el pipeline
 
-**`inherent/05-OPERACION.md` tiene la cadena completa de 12 etapas.** Strategy ocupa tres de ellas:
+**`agents/README.md` tiene el pipeline completo.** Strategy abre la cadena y la cierra:
 
 ```
-01 COMPRENSIÓN  ←  Strategy · skill context
-02 ESTRATEGIA   ←  Strategy · skills analysis + reverse-engineering + methodology
+01 STRATEGY  ←  context + analysis + reverse-engineering + methodology
      │
-     ├──→ 02B BRANDING     brief de branding        → agente Branding
-     ├──→ 03  MARKETING    brief de marketing       → agente Marketing
-     ├──→ 04  CREATIVIDAD  brief de creative        → agente Creative
-     ├──→ 09  ADS          brief de growth          → agente Growth
-     ├──→ 🔧  TECNOLOGÍA   brief de tecnología      → agente Builder
-     └──→ 🔁  SISTEMAS     brief de sistemas        → Allan + agentes  (solo Compound)
+     ├──→ 01.2 BRANDING    brief de branding     → 01.2-branding
+     ├──→ 02   GROWTH      brief de growth       → 02-growth
+     ├──→ 03   MARKETING   brief de marketing    → 03-marketing
+     ├──→ 04   CREATIVE    brief de creative     → 04-creative
+     ├──→ 🔧   TECNOLOGÍA  brief de tecnología   → 02-growth  (Accelerate y Compound)
+     └──→ 🔁   SISTEMAS    brief de sistemas     → Allan      (solo Compound)
      │
      ▼
-   …el ciclo mensual corre…
+   …05 producción · 06 diseño · 07 edición · 08 community · 09 posting · 10 ads…
+   …con QA como gate entre cada etapa…
      │
 ↻ REVISIÓN DEL 20  ←  Strategy · skill analysis        vuelve al inicio
 ```
+
+> **Branding va inmediatamente después.** Con la data de Strategy ya se puede armar la marca —
+> no espera al resto del pipeline.
 
 **Qué recibe cada uno:**
 

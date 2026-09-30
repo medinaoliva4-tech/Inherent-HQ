@@ -1,44 +1,58 @@
 # Los agentes
 
-**Un agente por etapa del pipeline.** Cada uno tiene la misma anatomía.
+**Un agente por etapa, en el orden en que corre el trabajo.** La carpeta lleva el número,
+así que el pipeline se lee de arriba abajo.
 
 ```
-agents/<área>/
-├── README.md              qué hace, qué acciones tiene y qué le falta
+agents/<NN>-<área>/
+├── README.md              qué hace, qué acciones tiene y QUÉ ENTREGA SEGÚN EL PLAN
 └── brain/
-    ├── WORKFLOW.md        cómo trabaja el agente, de 0 a 100 — incluye cómo entrega
+    ├── WORKFLOW.md        cómo trabaja, de 0 a 100 — incluye cómo entrega
     └── skills/
         ├── README.md      cuándo y cómo usa cada skill
         └── <skill>/SKILL.md
 ```
 
-> **`brain/` es el agente.** Todo lo que define cómo piensa y trabaja vive ahí dentro.
-> El `README.md` de cada área es la ficha; el `brain/` es el cerebro.
+> **`brain/` es el agente.** El `README.md` es la ficha; el `brain/` es el cerebro.
 
 ---
 
-## El roster
+## El pipeline
 
-> **La acción la determina el MCP.** Un agente sin MCP es un documento, no un agente.
-> **Cada ficha dice qué puede hacer, con qué y qué le falta.**
+| # | Agente | Qué produce | Estado |
+|---|---|---|---|
+| **01** | [**Strategy**](01-strategy/) | La estrategia y un brief por área | ✅ **construido** |
+| **01.2** | [Branding](01.2-branding/) | Identidad, voz y sistema visual | 🟡 el brief existe |
+| **02** | [Growth](02-growth/) | La oferta, los canales grandes y los upsells | ⬜ |
+| **03** | [Marketing](03-marketing/) | El plan de canales y el calendario | ⬜ |
+| **04** | [Creative](04-creative/) | Los ángulos y las ideas | ⬜ |
+| **05** | [Production](05-production/) | La grabación | ⬜ |
+| **06** | [Graphic Design](06-graphic-design/) | Estáticos, carruseles y stories | ⬜ |
+| **07** | [Video Editing](07-video-editing/) | Reels y sus derivadas | ⬜ |
+| **08** | [Community Management](08-community-management/) | Respuesta, seguimiento y comunidad | ⬜ |
+| **09** | [Posting](09-posting/) | Lo aprobado, publicado | 🟡 tiene acciones |
+| **10** | [Ads Management](10-ads-management/) | La pauta corriendo | 🟡 tiene acciones |
+| ↻ | [Strategy](01-strategy/) | La revisión del 20 | ✅ |
+| **—** | [**QA**](qa/) | **El gate entre todas las etapas** | 🔴 **bloqueador** |
 
-| # | Etapa | Agente | Estado | Qué le falta |
-|---|---|---|---|---|
-| 01 · 02 · ↻ | Comprensión, estrategia y revisión del 20 | [**Strategy**](strategy/) | ✅ **construido** | Correrlo con un cliente real |
-| 02B | Branding | [Branding](branding/) | 🟡 el brief existe | El agente |
-| 03 | Marketing | [Marketing](marketing/) | ⬜ | Todo |
-| 04 | Creatividad | [Creative](creative/) | ⬜ | Todo |
-| 05 | Producción | [Production](production/) | ⬜ | Todo |
-| 06 | Diseño gráfico | [Design](design/) | ⬜ | Todo |
-| **07** | **QA** | [**QA**](qa/) | 🔴 **bloqueador** | **Su MCP — no está definido** |
-| 08 | Posting | [Content](content/) | 🟡 tiene acciones | El cerebro |
-| 09 | Ads | [Growth](growth/) | 🟡 tiene acciones | El cerebro |
-| 10 | Community | [Community](community/) | ⬜ | Todo |
+**Por qué Branding es 01.2:** con la data de Strategy **ya se puede armar la marca**.
+No espera al resto del pipeline.
 
-🔴 **QA es el primero a construir**, y **antes de escribirlo hay que decidir con qué revisa.**
-A 204 piezas al mes el QA humano no escala.
+**Por qué QA no lleva número:** no es una etapa, **corre entre todas.**
+
+🔴 **QA es el primero a construir, y antes de escribirlo hay que decidir con qué revisa.**
+A 204 piezas al mes son **~612 revisiones** en un solo cliente Compound.
 
 **La cadena de entrega completa está en `inherent/05-OPERACION.md`.**
+
+---
+
+## 🔑 Cada agente sabe qué entrega según el plan
+
+**Todas las fichas tienen la misma tabla: qué le toca en Ignite, en Accelerate y en Compound.**
+
+**El plan contratado es el techo, no una sugerencia.** Un agente que entrega de más rompe el
+margen; uno que entrega de menos rompe la promesa publicada.
 
 ---
 
@@ -54,7 +68,7 @@ A 204 piezas al mes el QA humano no escala.
 
 ## Cómo se construye uno
 
-1. **`README.md` del área** — propósito, las acciones con su MCP, y qué falta.
+1. **`README.md` del área** — propósito, las acciones con su MCP, **qué entrega según el plan**, y qué falta.
 2. **`brain/WORKFLOW.md`** — el proceso de 0 a 100, con los gates humanos marcados y una sección
    de **lo que este agente NO hace**.
 3. **`brain/skills/README.md`** — cuándo se invoca cada skill dentro del workflow.
@@ -63,6 +77,6 @@ A 204 piezas al mes el QA humano no escala.
 6. **Cerrar con la entrega**, escrita en el propio `WORKFLOW.md`.
 
 > ⚠️ **La entrega no es una skill compartida.** Cada agente entrega algo distinto —Strategy un
-> documento de estrategia, Design un lote de piezas, Growth una campaña corriendo— así que
+> documento de estrategia, Design un lote de piezas, Ads una campaña corriendo— así que
 > **cada workflow define su propia entrega.** Lo único igual para todos es el gate: **Allan
 > aprueba antes de que algo salga.**

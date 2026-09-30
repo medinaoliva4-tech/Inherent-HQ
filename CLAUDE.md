@@ -1,6 +1,7 @@
 # Inherent HQ — Agentes
 
-Cada agente vive en `agents/<nombre>/`. Se le habla desde **Buzz** por una sesión de Claude Code.
+Cada agente vive en `agents/<NN>-<área>/`, numerado en el orden en que corre el trabajo.
+Se le habla desde **Buzz** por una sesión de Claude Code.
 
 ## Estructura
 
@@ -20,13 +21,11 @@ inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 
 agents/                    ← LOS AGENTES — uno por etapa del pipeline
 ├── README.md              ← el roster y el estado de cada uno
-└── <área>/                strategy · branding · marketing · creative · production
-    ├── README.md          design · qa · content · growth · community
-    └── brain/             ← el agente
-        ├── WORKFLOW.md    cómo trabaja, de 0 a 100 — incluye cómo entrega
-        └── skills/
-            ├── README.md  cuándo y cómo usa cada skill
-            └── <skill>/   las skills de ESTE agente
+└── <NN>-<área>/           01-strategy · 01.2-branding · 02-growth · 03-marketing
+    ├── README.md          04-creative · 05-production · 06-graphic-design
+    └── brain/             07-video-editing · 08-community-management
+        ├── WORKFLOW.md    09-posting · 10-ads-management · qa
+        └── skills/<skill>/
 
 clients/                   ← LOS CLIENTES
 ├── README.md              cómo se arma un folder de cliente
@@ -63,11 +62,16 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 
 ## Los agentes
 
-**`agents/README.md` tiene el roster completo:** las doce etapas, qué MCP le da cada acción a
-cada agente y en qué estado está. **`inherent/05-OPERACION.md` tiene la cadena de entrega.**
+**`agents/README.md` tiene el roster completo:** las doce etapas en orden, qué MCP le da cada
+acción a cada agente, y **qué entrega cada uno según el plan contratado.**
+**`inherent/05-OPERACION.md` tiene la cadena de entrega.**
 
-🔴 **El agente de QA es el primero a construir.** Sin él el volumen no es entregable y el margen
-no cierra.
+🔑 **Cada ficha de agente dice qué le toca en Ignite, Accelerate y Compound.**
+**El plan es el techo, no una sugerencia:** entregar de más rompe el margen, entregar de menos
+rompe la promesa publicada.
+
+🔴 **QA es el primero a construir, y no es una etapa: es el gate que corre entre todas.**
+A 204 piezas al mes son **~612 revisiones** en un solo cliente Compound.
 
 ## La identidad
 

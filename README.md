@@ -48,6 +48,7 @@ LÓGICA      CÓMO hace esas cosas. Son las skills.
 | **Límites declarados** | Lo que el agente **no** hace está escrito, para que no lo intente |
 | **Correlación con el resto** | De quién recibe y a quién entrega, en la cadena de doce etapas |
 | **Su propia entrega** | Cada agente entrega algo distinto, y su formato vive en su workflow. Lo único igual: **Allan aprueba antes de que algo salga** |
+| **Qué entrega según el plan** | Cada ficha dice qué le toca en Ignite, Accelerate y Compound. **El plan es el techo, no una sugerencia** |
 
 > 🔑 **Un agente que pregunta todo no ahorra nada.** Tienen que trabajar entre autónomos y
 > dirigidos: **levantan excepciones, no preguntas.**
@@ -60,21 +61,24 @@ LÓGICA      CÓMO hace esas cosas. Son las skills.
 el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno puede hacer en
 `agents/README.md`.
 
-| # | Etapa | Agente | Estado |
+| # | Agente | Qué produce | Estado |
 |---|---|---|---|
-| 01 · 02 · ↻ | Comprensión, estrategia y revisión del 20 | [**Strategy**](agents/strategy/) | ✅ |
-| 02B | Branding | [Branding](agents/branding/) | 🟡 brief listo |
-| 03 | Marketing | [Marketing](agents/marketing/) | ⬜ |
-| 04 | Creatividad | [Creative](agents/creative/) | ⬜ |
-| 05 | Producción | [Production](agents/production/) | ⬜ |
-| 06 | Diseño gráfico | [Design](agents/design/) | ⬜ |
-| **07** | **QA** | [**QA**](agents/qa/) | 🔴 **bloqueador** |
-| 08 | Posting | [Content](agents/content/) | 🟡 tools sí |
-| 09 | Ads | [Growth](agents/growth/) | 🟡 tools sí |
-| 10 | Community | [Community](agents/community/) | ⬜ |
+| **01** | [**Strategy**](agents/01-strategy/) | La estrategia y un brief por área | ✅ |
+| **01.2** | [Branding](agents/01.2-branding/) | Identidad, voz y sistema visual | 🟡 |
+| **02** | [Growth](agents/02-growth/) | La oferta, los canales grandes y los upsells | ⬜ |
+| **03** | [Marketing](agents/03-marketing/) | El plan de canales y el calendario | ⬜ |
+| **04** | [Creative](agents/04-creative/) | Los ángulos y las ideas | ⬜ |
+| **05** | [Production](agents/05-production/) | La grabación | ⬜ |
+| **06** | [Graphic Design](agents/06-graphic-design/) | Estáticos, carruseles y stories | ⬜ |
+| **07** | [Video Editing](agents/07-video-editing/) | Reels y sus derivadas | ⬜ |
+| **08** | [Community](agents/08-community-management/) | Respuesta, seguimiento y comunidad | ⬜ |
+| **09** | [Posting](agents/09-posting/) | Lo aprobado, publicado | 🟡 |
+| **10** | [Ads Management](agents/10-ads-management/) | La pauta corriendo | 🟡 |
+| ↻ | [Strategy](agents/01-strategy/) | La revisión del 20 | ✅ |
+| **—** | [**QA**](agents/qa/) | **El gate entre todas las etapas** | 🔴 |
 
-🔴 **QA es el primero a construir.** A 204 piezas al mes el QA humano no escala, y sin él el
-volumen prometido no es entregable.
+🔴 **QA es el primero a construir.** A 204 piezas al mes son **~612 revisiones** en un solo
+cliente Compound. Sin él, el volumen prometido no es entregable.
 
 ---
 
