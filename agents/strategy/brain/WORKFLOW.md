@@ -324,7 +324,7 @@ incompleto y la medición arranca sin baseline.
 | 1 | **Documento de estrategia** — resume todo, listo para mandar | `clients/<cliente>/ESTRATEGIA.md` | El cliente |
 | 2 | **Folder del cliente** — toda la data, expandida, más los links a lo externo | `clients/<cliente>/` | Los demás agentes |
 
-El formato de los dos lo define `agents/_compartido/skills/client-delivery/SKILL.md`, igual para todos los agentes.
+El formato de los dos lo define `agents/_compartido/client-delivery/SKILL.md`, igual para todos los agentes.
 Gate de Allan antes de entregar cualquiera.
 
 ---
