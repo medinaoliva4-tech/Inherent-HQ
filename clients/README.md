@@ -1,21 +1,22 @@
-# Clientes
+# Los clientes
 
-Un cliente = un folder. Vive **afuera** de los agentes: todos los agentes leen y escriben acá.
-
-`client-delivery/` es la skill **compartida** que define cómo se entrega. Misma forma para todos
-los agentes.
+**Un cliente = un folder.** Vive **afuera** de los agentes: todos leen y escriben acá.
 
 ```
 clients/<cliente>/
 ├── ESTRATEGIA.md   ← el documento que se le entrega al cliente
 ├── LINKS.md        ← lo que vive afuera: Drive de fotos, de videos, de entregables, Figma
-└── data/           ← todo lo que se investigó y recibió, expandido, para los demás agentes
+└── data/           ← todo lo investigado y recibido, expandido, para los demás agentes
 ```
 
-**Regla:** lo externo no se copia acá, se **linkea** en `LINKS.md`.
+## Reglas
 
-```
-clients/
-├── client-delivery/   ← la skill de entrega, compartida
-└── <cliente>/         ← un folder por cliente
-```
+| | |
+|---|---|
+| **Nunca mezclar dos clientes** | Una sesión trabaja un folder |
+| **Lo externo no se copia, se linkea** | Va en `LINKS.md` |
+| **El plan contratado se anota primero** | Define el techo de lo que se puede prometer |
+| **Nada se envía al cliente sin gate** | Allan cierra, el agente propone |
+
+> **Cómo se entrega** lo define la skill compartida `agents/_compartido/skills/client-delivery/`.
+> **Misma forma para todos los agentes.**

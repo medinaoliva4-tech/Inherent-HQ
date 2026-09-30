@@ -270,9 +270,9 @@ mes pasado siga trabajando este mes.
 |---|---|---|
 | **Especialista de corporate structure** | Está en la red declarada, sin persona confirmada | 🟡 Allan lo cubre mientras tanto |
 
-> ✅ **El CFO fraccional se quitó de la web el 30-sep-2026.** Ya no se promete, así que ya no
-> bloquea la venta de Compound. **«Tus números claros» sigue en pie** — lo entrega Money OS con
-> Allan y Strategy, no una persona contratada.
+> 🔑 **«Tus números claros» no necesita un CFO contratado.** Lo entrega **Money OS** con Allan
+> y Strategy: precio, margen por línea, costo de adquisición y valor de vida.
+> **No se promete una persona — se promete el número.**
 
 ⚠️ **Todo lo demás tiene acción detrás.** Lo que está en `⬜` existe como tool pero **no se ha
 corrido en cliente real** — ver `06-ECONOMIA.md` → «Capacidades reales».

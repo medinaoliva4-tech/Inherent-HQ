@@ -5,6 +5,7 @@ Cada agente vive en `agents/<nombre>/`. Se le habla desde **Buzz** por una sesi�
 ## Estructura
 
 ```
+README.md                  ← qué es esto y qué tan profundo va un agente
 CLAUDE.md                  ← este archivo. La entrada de toda sesión
 
 inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
@@ -17,15 +18,17 @@ inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── 06-ECONOMIA.md         🔒 cuánto cuesta y cuánto queda
 └── 07-COMUNICACION.md     cómo lo decimos — brief de web
 
-agents/<agente>/           ← LOS AGENTES — uno por etapa del pipeline
-└── brain/
-    ├── WORKFLOW.md        cómo trabaja el agente, de 0 a 100
-    └── skills/
-        ├── README.md      cuándo y cómo usa cada skill
-        └── <skill>/       las skills de ESTE agente
+agents/                    ← LOS AGENTES — uno por etapa del pipeline
+├── README.md              ← el roster y qué puede hacer cada uno
+├── <área>/brain/
+│   ├── WORKFLOW.md        cómo trabaja el agente, de 0 a 100
+│   └── skills/
+│       ├── README.md      cuándo y cómo usa cada skill
+│       └── <skill>/       las skills de ESTE agente
+└── _compartido/skills/    lo que usan todos — client-delivery
 
 clients/                   ← LOS CLIENTES
-├── client-delivery/       skill compartida de entrega. La usan todos
+├── README.md              cómo se arma un folder de cliente
 └── <cliente>/             todo lo del cliente
 ```
 
@@ -41,14 +44,11 @@ PROPÓSITO   el panorama y la meta del agente. Su área.
     │       Strategy: la estrategia. Creative: las ideas. Etc.
     ▼
 ACCIONES    lo que el agente PUEDE HACER. Las determinan los MCPs.
-    │       Según lo que puede el MCP o el tool conectado, es la acción que
-    │       el agente puede tomar. Y la CALIDAD del MCP es la CALIDAD de la acción.
+    │       La CALIDAD del MCP es la CALIDAD de la acción.
     ▼
 LÓGICA      CÓMO hace esas cosas. Son las skills.
             El razonamiento y el método detrás de cada acción.
 ```
-
-**Las tres consecuencias de esto:**
 
 1. **Un agente no puede hacer nada que su MCP no permita.** Si falta la acción, falta un MCP —
    no se arregla con mejor prompt.
@@ -60,28 +60,13 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 
 ---
 
-## Agentes — el pipeline de entrega
+## Los agentes
 
-**`inherent/05-OPERACION.md` tiene la cadena completa:** doce etapas, de la información cruda a la pieza
-publicada. Cada agente es una etapa.
-
-| # | Etapa | Agente | Carpeta | Estado |
-|---|---|---|---|---|
-| 01 | Comprensión | **Strategy** | `agents/strategy/` | ✅ |
-| 02 | Estrategia | **Strategy** | `agents/strategy/` | ✅ |
-| 02B | Branding | Branding | `agents/branding/` | 🟡 brief listo |
-| 03 | Marketing | Marketing | `agents/marketing/` | ⬜ |
-| 04 | Creatividad | Creative | `agents/creative/` | ⬜ |
-| 05 | Producción | Production | `agents/production/` | ⬜ |
-| 06 | Diseño gráfico | Design | `agents/design/` | ⬜ |
-| **07** | **QA** | **QA** | `agents/qa/` | 🔴 **bloqueador** |
-| 08 | Posting | Content | `agents/content/` | 🟡 tools sí |
-| 09 | Ads | Growth | `agents/growth/` | 🟡 tools sí |
-| 10 | Community | Community | `agents/community/` | ⬜ |
-| ↻ | Revisión del 20 | **Strategy** | `agents/strategy/` | ✅ |
+**`agents/README.md` tiene el roster completo:** las doce etapas, qué MCP le da cada acción a
+cada agente y en qué estado está. **`inherent/05-OPERACION.md` tiene la cadena de entrega.**
 
 🔴 **El agente de QA es el primero a construir.** Sin él el volumen no es entregable y el margen
-no cierra — ver `inherent/05-OPERACION.md` → hoja de ruta.
+no cierra.
 
 ## La identidad
 
@@ -179,9 +164,9 @@ detrás, **se arregla la capacidad — no se borra la línea.**
 
 ✍️ **Toda la copia al cliente va de TÚ, no de vos.** Así está publicado.
 
-🟡 **Una cosa que la web prometió y todavía no existe:** el **especialista de corporate
+🟡 **Lo único prometido que todavía no tiene persona asignada:** el **especialista de corporate
 structure** — Allan lo cubre mientras tanto.
-✅ **El CFO fraccional se quitó de la web:** ya no se promete y ya no bloquea vender Compound.
+⚠️ **No se promete un CFO.** «Tus números claros» lo entrega **Money OS** con Allan y Strategy.
 
 ⚠️ **«Que te encuentren en Google» = pauta de búsqueda y contenido guiado por keywords.**
 **Nunca posicionamiento orgánico, auditoría técnica ni link building.**

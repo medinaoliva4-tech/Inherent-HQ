@@ -20,7 +20,7 @@ context → analysis → reverse-engineering → methodology → client-delivery
 
 | Skill | Dónde vive | Qué hace |
 |---|---|---|
-| `client-delivery` | `clients/client-delivery/` | Arma el documento del cliente y su folder. **La usan todos los agentes**, con el mismo formato |
+| `client-delivery` | `agents/_compartido/skills/client-delivery/` | Arma el documento del cliente y su folder. **La usan todos los agentes**, con el mismo formato |
 
 ---
 
