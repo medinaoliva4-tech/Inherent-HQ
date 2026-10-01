@@ -70,8 +70,10 @@ acción a cada agente, y **qué entrega cada uno según el plan contratado.**
 **El plan es el techo, no una sugerencia:** entregar de más rompe el margen, entregar de menos
 rompe la promesa publicada.
 
-🔴 **QA es el primero a construir, y no es una etapa: es el gate que corre entre todas.**
-A 204 piezas al mes son **~612 revisiones** en un solo cliente Compound.
+🗣️ **`agents/00-account/` es el único agente que le habla al cliente.** Vive en WhatsApp,
+siempre encendido, **habla con la voz de Allan** y abre la sesión del agente que toca.
+🔒 **Nunca dice costos, márgenes, ni nada de otro cliente, ni compromete precio, fecha o
+alcance.** `inherent/06-ECONOMIA.md` no sale del repo.
 
 ## La identidad
 

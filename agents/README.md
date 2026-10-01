@@ -21,6 +21,7 @@ agents/<NN>-<área>/
 
 | # | Agente | Qué produce | Estado |
 |---|---|---|---|
+| **00** | [**Account Manager**](00-account/) | La relación con el cliente. **El único que le habla** | ✅ **perfil listo** |
 | **01** | [**Strategy**](01-strategy/) | La estrategia y un brief por área | ✅ **construido** |
 | **01.2** | [Branding](01.2-branding/) | Identidad, voz y sistema visual | 🟡 el brief existe |
 | **02** | [Growth](02-growth/) | La oferta, los canales grandes y los upsells | ⬜ |
@@ -34,6 +35,9 @@ agents/<NN>-<área>/
 | **10** | [Ads Management](10-ads-management/) | La pauta corriendo | 🟡 tiene acciones |
 | ↻ | [Strategy](01-strategy/) | La revisión del 20 | ✅ |
 | **—** | [**QA**](qa/) | **El gate entre todas las etapas** | 🔴 **bloqueador** |
+
+**Por qué Account Manager es 00:** no produce nada del pipeline. **Vive antes y alrededor de
+todo** — recibe al cliente, lo mantiene al día y abre la sesión del agente que toca.
 
 **Por qué Branding es 01.2:** con la data de Strategy **ya se puede armar la marca**.
 No espera al resto del pipeline.
