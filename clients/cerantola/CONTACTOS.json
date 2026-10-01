@@ -1,13 +1,18 @@
 {
   "cuenta": "02",
   "cliente": "cerantola",
-  "marcas": ["Cerantola"],
+  "marcas": [
+    "Cerantola"
+  ],
   "contactos": [
     {
       "nombre": "Allan Omar Medina Villeda",
       "telefono": "+50242175038",
       "rol": "Representante",
-      "puede_hablar_de": ["Cerantola"]
+      "puede_hablar_de": [
+        "Cerantola"
+      ],
+      "nota": "Cliente. NO es Allan Rodrigo (Allan de Inherent, el gate interno). Mismo nombre, otra persona: se distingue solo por teléfono."
     }
   ]
 }
