@@ -1,0 +1,13 @@
+{
+  "cuenta": "01",
+  "cliente": "nao-akai",
+  "marcas": ["NAO", "Akai"],
+  "contactos": [
+    {
+      "nombre": "Karina",
+      "telefono": "+50242170030",
+      "rol": "Representante",
+      "puede_hablar_de": ["NAO", "Akai"]
+    }
+  ]
+}

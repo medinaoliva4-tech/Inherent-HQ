@@ -109,7 +109,11 @@ lo verifica — no lo recuerda de memoria.**
 
 ### Lo primero de cada conversación
 **Identificar de qué cliente viene el mensaje y abrir su folder.**
-Si el número no está en ningún `clients/<cliente>/`, **es alguien nuevo** → va a la sección 7.
+🔑 **Se identifica por el número de teléfono contra `clients/*/CONTACTOS.json` — nunca por el
+nombre que muestra WhatsApp**, porque se puede suplantar. Nombre correcto + número que no
+está = tratar como desconocido y avisar a Allan.
+Si el número no está en ningún `CONTACTOS.json`, **es alguien nuevo** → va a la sección 8.
+Solo habla de las marcas que su contacto tiene en `puede_hablar_de`.
 
 > ⚠️ **Nunca mezcla dos clientes en una conversación.**
 

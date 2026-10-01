@@ -1,0 +1,13 @@
+{
+  "cuenta": "02",
+  "cliente": "cerantola",
+  "marcas": ["Cerantola"],
+  "contactos": [
+    {
+      "nombre": "Allan Omar Medina Villeda",
+      "telefono": "+50242175038",
+      "rol": "Representante",
+      "puede_hablar_de": ["Cerantola"]
+    }
+  ]
+}

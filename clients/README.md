@@ -5,9 +5,24 @@
 ```
 clients/<cliente>/
 ├── ESTRATEGIA.md   ← el documento que se le entrega al cliente
+├── CONTACTOS.json  ← quién puede hablar de esta cuenta (lo lee el agente de WhatsApp)
 ├── LINKS.md        ← lo que vive afuera: Drive de fotos, de videos, de entregables, Figma
 └── data/           ← todo lo investigado y recibido, expandido, para los demás agentes
 ```
+
+## CONTACTOS.json
+
+Una **cuenta** = un folder. Lista a quién el agente de WhatsApp le habla de esa cuenta.
+
+```json
+{ "cuenta": "01", "cliente": "<folder>", "marcas": ["..."],
+  "contactos": [{ "nombre": "...", "telefono": "+502XXXXXXXX", "rol": "...", "puede_hablar_de": ["..."] }] }
+```
+
+- 🔑 **Se identifica por `telefono`, nunca por nombre.** El nombre de WhatsApp se puede suplantar.
+- Teléfono en formato internacional (`+502…`), sin espacios.
+- Número que no está en ningún `CONTACTOS.json` = alguien nuevo → `agents/00-account` sección 8.
+- Un número solo puede estar en una cuenta. Si aparece en dos, **para y escala a Allan**.
 
 ## Reglas
 
