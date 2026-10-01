@@ -23,18 +23,17 @@ agents/<NN>-<área>/
 |---|---|---|---|
 | **00** | [**Account Manager**](00-account/) | La relación con el cliente. **El único que le habla** | ✅ **perfil listo** |
 | **01** | [**Strategy**](01-strategy/) | La estrategia y un brief por área | ✅ **construido** |
-| **01.2** | [Branding](01.2-branding/) | Identidad, voz y sistema visual | 🟡 el brief existe |
-| **02** | [Growth](02-growth/) | La oferta, los canales grandes y los upsells | ⬜ |
-| **03** | [Marketing](03-marketing/) | El plan de canales y el calendario | ⬜ |
-| **04** | [Creative](04-creative/) | Los ángulos y las ideas | ⬜ |
-| **05** | [Production](05-production/) | La grabación | ⬜ |
-| **06** | [Graphic Design](06-graphic-design/) | Estáticos, carruseles y stories | ⬜ |
-| **07** | [Video Editing](07-video-editing/) | Reels y sus derivadas | ⬜ |
-| **08** | [Community Management](08-community-management/) | Respuesta, seguimiento y comunidad | ⬜ |
-| **09** | [Posting](09-posting/) | Lo aprobado, publicado | 🟡 tiene acciones |
-| **10** | [Ads Management](10-ads-management/) | La pauta corriendo | 🟡 tiene acciones |
+| **01.2** | [Branding](01.2-branding/) | Identidad, voz y sistema visual | ✅ **construido** |
+| **02** | [Growth](02-growth/) | La oferta, los canales grandes y los upsells | ✅ **construido** |
+| **03** | [Marketing](03-marketing/) | El plan del ciclo y el calendario de slots | ✅ **construido** |
+| **04** | [Creative](04-creative/) | Los ángulos y las ideas | ✅ **construido** |
+| **05** | [Production](05-production/) | La grabación | ✅ **construido** |
+| **06** | [Graphic Design](06-graphic-design/) | Estáticos, carruseles y stories | ✅ **construido** |
+| **07** | [Video Editing](07-video-editing/) | Reels y sus derivadas | ✅ **construido** |
+| **08** | [Community Management](08-community-management/) | Respuesta, seguimiento y comunidad | ⬜ **el único que falta** |
+| **09** | [Posting](09-posting/) | Lo aprobado, publicado | ✅ **construido** |
+| **10** | [Ads Management](10-ads-management/) | La pauta corriendo | ✅ **construido** |
 | ↻ | [Strategy](01-strategy/) | La revisión del 20 | ✅ |
-| **—** | [**QA**](qa/) | **El gate entre todas las etapas** | 🔴 **bloqueador** |
 
 **Por qué Account Manager es 00:** no produce nada del pipeline. **Vive antes y alrededor de
 todo** — recibe al cliente, lo mantiene al día y abre la sesión del agente que toca.
@@ -42,10 +41,8 @@ todo** — recibe al cliente, lo mantiene al día y abre la sesión del agente q
 **Por qué Branding es 01.2:** con la data de Strategy **ya se puede armar la marca**.
 No espera al resto del pipeline.
 
-**Por qué QA no lleva número:** no es una etapa, **corre entre todas.**
-
-🔴 **QA es el primero a construir, y antes de escribirlo hay que decidir con qué revisa.**
-A 204 piezas al mes son **~612 revisiones** en un solo cliente Compound.
+🔑 **El QA no es un agente aparte: cada departamento se auto-revisa antes de su gate**, y
+**②B Branding valida con `br-guardian`** antes de que nada se publique.
 
 **La cadena de entrega completa está en `inherent/05-OPERACION.md`.**
 

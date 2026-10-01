@@ -63,22 +63,25 @@ el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno 
 
 | # | Agente | Qué produce | Estado |
 |---|---|---|---|
+| **00** | [**Account Manager**](agents/00-account/) | La relación con el cliente. **El único que le habla** | ✅ |
 | **01** | [**Strategy**](agents/01-strategy/) | La estrategia y un brief por área | ✅ |
-| **01.2** | [Branding](agents/01.2-branding/) | Identidad, voz y sistema visual | 🟡 |
-| **02** | [Growth](agents/02-growth/) | La oferta, los canales grandes y los upsells | ⬜ |
-| **03** | [Marketing](agents/03-marketing/) | El plan de canales y el calendario | ⬜ |
-| **04** | [Creative](agents/04-creative/) | Los ángulos y las ideas | ⬜ |
-| **05** | [Production](agents/05-production/) | La grabación | ⬜ |
-| **06** | [Graphic Design](agents/06-graphic-design/) | Estáticos, carruseles y stories | ⬜ |
-| **07** | [Video Editing](agents/07-video-editing/) | Reels y sus derivadas | ⬜ |
+| **01.2** | [Branding](agents/01.2-branding/) | Identidad, voz y sistema visual | ✅ |
+| **02** | [Growth](agents/02-growth/) | La oferta, los canales grandes y los upsells | ✅ |
+| **03** | [Marketing](agents/03-marketing/) | El plan del ciclo y el calendario de slots | ✅ |
+| **04** | [Creative](agents/04-creative/) | Los ángulos y las ideas | ✅ |
+| **05** | [Production](agents/05-production/) | La grabación | ✅ |
+| **06** | [Graphic Design](agents/06-graphic-design/) | Estáticos, carruseles y stories | ✅ |
+| **07** | [Video Editing](agents/07-video-editing/) | Reels y sus derivadas | ✅ |
 | **08** | [Community](agents/08-community-management/) | Respuesta, seguimiento y comunidad | ⬜ |
-| **09** | [Posting](agents/09-posting/) | Lo aprobado, publicado | 🟡 |
-| **10** | [Ads Management](agents/10-ads-management/) | La pauta corriendo | 🟡 |
+| **09** | [Posting](agents/09-posting/) | Lo aprobado, publicado | ✅ |
+| **10** | [Ads Management](agents/10-ads-management/) | La pauta corriendo | ✅ |
 | ↻ | [Strategy](agents/01-strategy/) | La revisión del 20 | ✅ |
-| **—** | [**QA**](agents/qa/) | **El gate entre todas las etapas** | 🔴 |
 
-🔴 **QA es el primero a construir.** A 204 piezas al mes son **~612 revisiones** en un solo
-cliente Compound. Sin él, el volumen prometido no es entregable.
+⬜ **Community Management es el único que falta.** Sostiene dos promesas que ya están publicadas:
+*«nadie que te escribe se queda sin respuesta»* y *«que el crecimiento se sostenga solo»*.
+
+🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate, y
+**②B Branding valida con `br-guardian`** antes de que nada se publique.
 
 ---
 

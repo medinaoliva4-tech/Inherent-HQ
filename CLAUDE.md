@@ -66,9 +66,15 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 acción a cada agente, y **qué entrega cada uno según el plan contratado.**
 **`inherent/05-OPERACION.md` tiene la cadena de entrega.**
 
-🔑 **Cada ficha de agente dice qué le toca en Ignite, Accelerate y Compound.**
-**El plan es el techo, no una sugerencia:** entregar de más rompe el margen, entregar de menos
-rompe la promesa publicada.
+🔑 **Cada agente tiene su `brain/WORKFLOW.md` con sus capas, sus gates y sus entregables.**
+**El plan contratado es el techo de todos, no una sugerencia:** entregar de más rompe el margen,
+entregar de menos rompe la promesa publicada.
+
+✅ **Once de doce construidos.** ⬜ **Falta `08-community-management`** — y sostiene dos promesas
+que ya están publicadas en la web.
+
+🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate, y
+**②B Branding valida con `br-guardian`** antes de que nada se publique.
 
 🗣️ **`agents/00-account/` es el único agente que le habla al cliente.** Vive en WhatsApp,
 siempre encendido, **habla con la voz de Allan** y abre la sesión del agente que toca.
