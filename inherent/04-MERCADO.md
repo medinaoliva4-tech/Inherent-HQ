@@ -67,7 +67,7 @@
 
 ---
 
-# Las diez industrias
+# Las doce industrias
 
 ## 01 · B2B *(servicios de negocio a negocio)*
 
@@ -129,7 +129,29 @@
 
 ---
 
-## 05 · Retail
+## 05 · Cafeterías
+
+| | |
+|---|---|
+| **Cómo gana** | Ticket chico y **frecuencia alta**. Café en taza, grano para llevar, pastelería, suscripción |
+| **Dónde se traba** | **No es un problema de clientes nuevos: es de frecuencia.** El cliente viene una vez a la semana y podría venir tres |
+
+| | Qué hace acá |
+|---|---|
+| 🔷 **Marketing** | **El ritual diario.** Contenido que ocupa un momento del día —la mañana, la pausa de las 4— no que describe el producto. Foto real, luz de día, nada de estudio |
+| 🟨 **Accelerate** | **Grano para llevar y suscripción** — es donde está el ticket. Google Maps e intención local *(«café cerca de mí»)*. Horario y daypart en la pauta |
+| 🟨 **Compound** | **Club de recompra y comunidad de barrio.** Catas, cursos, mesa comunitaria. El canal nuevo es mayoreo a oficinas |
+
+> 🔑 **Se separa de Restaurantes porque el cuello es distinto.**
+> Un restaurante pelea **distribución de demanda** *(llenar martes)*. Una cafetería pelea
+> **frecuencia** *(que vuelva el jueves)*. **Misma industria aparente, otro problema.**
+
+⚠️ **El error típico es venderle pauta de alcance.** Una cafetería no necesita que la conozcan
+más gente: necesita que la misma gente venga más veces.
+
+---
+
+## 06 · Retail
 
 | | |
 |---|---|
@@ -144,7 +166,7 @@
 
 ---
 
-## 06 · Hotelería
+## 07 · Hotelería
 
 | | |
 |---|---|
@@ -159,7 +181,7 @@
 
 ---
 
-## 07 · Software
+## 08 · Software
 
 | | |
 |---|---|
@@ -174,7 +196,7 @@
 
 ---
 
-## 08 · Financiero
+## 09 · Financiero
 
 | | |
 |---|---|
@@ -189,7 +211,7 @@
 
 ---
 
-## 09 · Salud especializada
+## 10 · Salud especializada
 
 | | |
 |---|---|
@@ -204,7 +226,7 @@
 
 ---
 
-## 10 · Arquitectura y diseño de interiores
+## 11 · Arquitectura y diseño de interiores
 
 | | |
 |---|---|
@@ -219,15 +241,45 @@
 
 ---
 
+## 12 · Clubes sociales y comunidades
+
+| | |
+|---|---|
+| **Cómo gana** | **Membresía recurrente.** Cuota mensual o anual, eventos, invitados, espacios |
+| **Dónde se traba** | **Se vende pertenencia y se comunica como servicio.** Listan amenidades y precio cuando lo que compra el socio es con quién va a estar |
+
+| | Qué hace acá |
+|---|---|
+| 🔷 **Marketing** | **Mostrar a los socios, no las instalaciones.** Caras, momentos y conversaciones. El producto es la gente |
+| 🟨 **Accelerate** | **La lista de espera y el referido de socio** son el canal, no la pauta fría. Proceso de admisión que se siente selectivo. Corporativo como cuenta grande |
+| 🟨 **Compound** | **Que la comunidad se sostenga sola:** rituales, comités, embajadores. Medir **churn de membresía**, que es la métrica real del negocio |
+
+### ⚠️ Lo que lo hace distinto de todo lo demás
+
+| | |
+|---|---|
+| **El producto es la comunidad** | Si entra el socio equivocado, **el producto se daña para todos.** Es la única industria donde **vender de más destruye valor** |
+| **La métrica es churn, no adquisición** | Un club que capta 20 y pierde 25 está muriendo aunque la pauta rinda |
+| **La escasez es parte del producto** | Comunicar disponibilidad ilimitada **baja el valor percibido** |
+
+🛑 **Acá el embudo invertido no es una técnica: es el negocio.**
+Comunidad → ventas → contenido → alcance parecido. **Es la industria donde la metodología se
+ve más literal.** Ver `agents/01-strategy/brain/skills/methodology/SKILL.md`.
+
+⚠️ **Y es la única donde se le dice que no a un comprador.** Si el perfil no cabe, entra
+como excepción a Allan — no se cierra la venta por cerrarla.
+
+---
+
 ## 🔁 Los patrones que se repiten
 
-**Aunque las diez industrias son distintas, el cuello siempre es uno de tres.**
+**Aunque las doce industrias son distintas, el cuello siempre es uno de tres.**
 
 | El patrón | Industrias donde más aparece | Paquete |
 |---|---|---|
 | **No me conocen** | Arquitectura · Software · B2B | 🔷 Marketing |
 | **Me conocen y no convierto** | Restaurantes · Salud · Hotelería | 🟨 Accelerate |
-| **Convierto y no retengo** | Wellness · Retail · Marca personal | 🟨 Compound |
+| **Convierto y no retengo** | Wellness · Retail · Marca personal · **Cafeterías** · **Clubes** | 🟨 Compound |
 
 > **Por eso los paquetes no son por industria: son por cuello.**
 > La industria define **cómo se ve** la solución. El cuello define **cuál es**.
@@ -367,6 +419,12 @@ y el costo de servirlo es el mismo desde acá.
 | **Wellness y fitness** | **MentorPass** — fundador de marca fitness, $72 / 30 min | **MentorPass** — fundador wellness, $180 / 30 min | **The Maxwell Method** — $600 por 2 sesiones de 90 min · mentoría de 6 semanas $2,900 |
 | **Suplementos** | **MicroMentor** — gratis · **no garantiza experiencia en suplementos** | **MentorPass** — fundador de Obvi, $144 / 30 min | **MentorPass** — fundador de Zesty Paws, $720 / 30 min. ⚠️ Verificar que el producto corresponda |
 | **Servicios profesionales** | **MicroMentor** — gratis · orientación general | **GrowthMentor** — $50-85/mes *(algunos mentores cobran aparte)* | **GLG** · **Guidepoint** — cotización. Estimaciones independientes: **$700-1,500+/hora**. ⚠️ Demasiado caro para clientes pequeños |
+| **Cafeterías** | ⚠️ **SIN MAPEAR** | ⚠️ **SIN MAPEAR** | ⚠️ **SIN MAPEAR** |
+| **Clubes y comunidades** | ⚠️ **SIN MAPEAR** | ⚠️ **SIN MAPEAR** | ⚠️ **SIN MAPEAR** |
+
+🔴 **Las dos industrias nuevas no tienen mentor mapeado.** Si entra un cliente de cafetería o de
+club en 🟨 Accelerate o Compound, **la línea «un especialista de tu industria» no tiene con qué
+cumplirse.** Hay que buscarlos antes de venderlos.
 
 ---
 
