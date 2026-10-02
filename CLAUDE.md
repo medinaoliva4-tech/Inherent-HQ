@@ -108,10 +108,10 @@ los agentes.** Se lee antes de prometer nada.
 ### Dos líneas, cuatro planes
 
 ```
-🔷 MARKETING      $850     86 piezas    arrancando → visible
-🔷 MARKETING PRO  $1,300   145 piezas   visible → presencia sostenida
+🔷 MARKETING      $950     86 piezas    arrancando → visible
+🔷 MARKETING PRO  $1,450   145 piezas   visible → presencia sostenida
 🟨 ACCELERATE     $2,500   145 piezas   estancado → escalando
-🟨 COMPOUND       $4,000   204 piezas   escalando → autónomo
+🟨 COMPOUND       $4,200   204 piezas   escalando → autónomo
 ```
 
 **Más `Tailor Made`** — multi-locación, regulatorio, integraciones, proyectos por hito.
@@ -178,7 +178,7 @@ talent marketing. **Red, no nómina.**
 Marketing rompe el margen del plan barato · **trimestral en Accelerate**, mensual en Compound ·
 **la membresía se paga anual y es de Inherent** *(sirve a todos los clientes de esa industria,
 −41% de costo)*.
-Con eso los márgenes quedan en **60% · 60% · 68% · 70%**.
+Con eso los márgenes quedan en **64% · 64% · 68% · 72%**.
 ⚠️ **Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `inherent/04-MERCADO.md`.
 
 ## 🌐 La web es la promesa
@@ -227,15 +227,15 @@ rango que el mercado ya acepta**, con 3x a 5x el volumen de su tramo.
 
 🌐 **Guatemala es dónde arrancamos, no el techo.** Los costos se pagan en quetzales y no cambian
 al cambiar de mercado; **lo único que cambia es el precio.** A precio de México los mismos costos
-dan **77-81%**; a precio de Miami, **86-88%**. Ver `inherent/04-MERCADO.md`.
+dan **76-81%**; a precio de Miami, **86-89%**. Ver `inherent/04-MERCADO.md`.
 ⚠️ **La web se escribe para los tres mercados: precios en USD y sin «Guatemala» como alcance.** El de entrada
-da **86 piezas a Q6,545 (Q76/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
+da **86 piezas a Q7,315 (Q85/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
 
 **El volumen nos separa del mercado. La profundidad separa las líneas entre sí.**
 ⚠️ **El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica
 por cuántos sistemas activamos — **usar Q/pieza para vender Accelerate lo abarata.**
 
-**Dentro de Marketing el bundle sí es descuento** *(44% menos que comprar suelto)*, porque todo
+**Dentro de Marketing el bundle sí es descuento** *(38% menos que comprar suelto)*, porque todo
 lo que corre sobre agentes suma Q0 al costo variable.
 **El salto a Growth NO es descuento — es acceso:** nada de lo que agrega se vende à la carte.
 **El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
@@ -247,9 +247,16 @@ utilidad pura: lleva Accelerate de 68% a 73% sin tocar el precio base.
 
 **Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes
 altísimos.** Cierran **no bajando el precio, bajando el costo.**
-**Con 5 clientes: 60% · 60% · 68% · 70%.** Con 1-4 clientes la línea 🔷 corre a **57%**.
+**Con 5 clientes: 64% · 64% · 68% · 72%.** Con 1-4 clientes la línea 🔷 corre a **61%**.
 ⚠️ **Accelerate y Compound todavía no tienen desglose por tarea** — sus márgenes son estimación.
 Ver `inherent/06-ECONOMIA.md` → «Los márgenes reales» y `inherent/05-OPERACION.md`.
+
+🎯 **Hay dos costos por plan y no son lo mismo.** El **objetivo** *(Q1,665 · Q2,555 · Q5,300 ·
+Q8,200)* es el techo al que queremos llegar; el **real** *(Q2,632 · Q3,990 · Q6,074 · Q9,205)*
+es el que sale del desglose por tarea y **es el que opera.**
+⚠️ **Nunca se cotiza ni se proyecta contra el objetivo.** El gap está en producción, en las
+horas de Allan y en el operador — **y ninguno se cierra subiendo el precio.**
+Ver `inherent/06-ECONOMIA.md` → «El costo máximo objetivo».
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
 operación.** Ahí está el 70% del costo matable.

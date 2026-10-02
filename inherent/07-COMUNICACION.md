@@ -288,7 +288,7 @@ una marca como la tuya. Y responde una sola pregunta:
 |---|---|
 | **Nunca ve más de dos precios a la vez** | Comparar dos es decidir. Comparar cuatro es postergar |
 | **El toggle hace la pregunta de calificación** | *«¿querés marketing o querés crecer?»* — él se clasifica solo |
-| **Separa el salto de precio** | $1,300 y $2,500 nunca se ven juntos, así que el salto no asusta |
+| **Separa el salto de precio** | $1,450 y $2,500 nunca se ven juntos, así que el salto no asusta |
 | **Deja el upsell abierto** | El que entra por marketing ya sabe que existe el otro lado |
 
 **Por defecto se abre en `Quiero crecer en serio`.** Es la línea de más margen, y el que solo
@@ -299,7 +299,7 @@ quiere marketing igual va a buscar su opción.
 
 ---
 
-### 🔷 MARKETING · $850/mes — *Para el negocio que está arrancando*
+### 🔷 MARKETING · $950/mes — *Para el negocio que está arrancando*
 > *«Quiero que mi marca se vea como la imagino y que la gente sepa que existo.»*
 
 - Tu marca construida en serio: identidad, voz y una forma de verse que te dé orgullo
@@ -313,7 +313,7 @@ quiere marketing igual va a buscar su opción.
 
 ---
 
-### 🔷 MARKETING PRO · $1,300/mes — *Para el establecido que solo quiere marketing*
+### 🔷 MARKETING PRO · $1,450/mes — *Para el establecido que solo quiere marketing*
 > *«Ya me conocen. Quiero sostener presencia en serio y no quedarme sin qué publicar.»*
 
 - **Todo lo de Marketing**
@@ -346,7 +346,7 @@ quiere marketing igual va a buscar su opción.
 
 ---
 
-### 🟨 COMPOUND · $4,000/mes — *Para el que necesita que todo corra sin él*
+### 🟨 COMPOUND · $4,200/mes — *Para el que necesita que todo corra sin él*
 > *«Quiero que esto crezca sin que yo esté en todo, y que al final del mes quede dinero.»*
 
 - **Todo lo de Accelerate, al máximo**

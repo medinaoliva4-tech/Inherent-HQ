@@ -121,7 +121,7 @@ es que Accelerate toca **la oferta, el precio y la conversión.**
 
 ---
 
-## 🔷 MARKETING — Q6,545/mes *($850)*
+## 🔷 MARKETING — Q7,315/mes *($950)*
 
 ### Lo básico *(lo que da cualquier agencia)*
 - Manejo de redes sociales
@@ -173,7 +173,7 @@ precio **solo lo toca la línea Growth.** Confundirlos regala el trabajo caro de
 
 ---
 
-## 🟨 COMPOUND — Q30,800/mes *($4,000)*
+## 🟨 COMPOUND — Q32,340/mes *($4,200)*
 
 ### Lo básico
 **No existe.** Ninguna agencia guatemalteca ofrece este nivel.
@@ -218,10 +218,10 @@ Sin MCP no hay acción, y sin acción no hay promesa.
 
 | | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
-| **Precio / mes** | **$850** | **$1,300** | **$2,500** | **$4,000** |
-| | *Q6,545* | *Q10,010* | *Q19,250* | *Q30,800* |
+| **Precio / mes** | **$950** | **$1,450** | **$2,500** | **$4,200** |
+| | *Q7,315* | *Q11,165* | *Q19,250* | *Q32,340* |
 | Piezas / mes | 86 | 145 | 145 | 204 |
-| **Q por pieza** | **Q76** | **Q69** | *Q133* | *Q151* |
+| **Q por pieza** | **Q85** | **Q77** | *Q133* | *Q159* |
 | *Mercado GT* | *Q188 por pieza* | | | |
 | **Meta a 12 meses** | 1.3x | 1.45x | 1.7x | 2x |
 | Performance fee | ⬜ | ⬜ | ✅ Incluido | ✅ Incluido |

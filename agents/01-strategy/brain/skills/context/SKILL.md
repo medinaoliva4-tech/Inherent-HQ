@@ -25,10 +25,10 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 
 | Plan | El boost | Verbo de los pilares | Sistemas que se activan |
 |---|---|---|---|
-| 🔷 **MARKETING** $850 | Existir | ⛔ *no corren* | ⬜ Ninguno |
-| 🔷 **MARKETING PRO** $1,300 | Sostener presencia en serio | ⛔ *no corren* | ⬜ Ninguno |
+| 🔷 **MARKETING** $950 | Existir | ⛔ *no corren* | ⬜ Ninguno |
+| 🔷 **MARKETING PRO** $1,450 | Sostener presencia en serio | ⛔ *no corren* | ⬜ Ninguno |
 | 🟨 **ACCELERATE** $2,500 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | Growth · Conversion · Operations *(parcial)* |
-| 🟨 **COMPOUND** $4,000 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
+| 🟨 **COMPOUND** $4,200 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
 | ⬜ **Tailor Made** | Se define con Allan | Según alcance | Según alcance |
 
 | Plan | Briefs que se arman |

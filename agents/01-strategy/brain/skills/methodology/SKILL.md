@@ -122,7 +122,7 @@ Se mide con dos datos, y salen del bloque `context`:
 
 **El paquete es el límite que ya está firmado:**
 
-| | 🔷 **Marketing** Q6,545 | 🔷 **Pro** Q10,010 | 🟨 **Accelerate** Q19,250 | 🟨 **Compound** Q30,800 |
+| | 🔷 **Marketing** Q7,315 | 🔷 **Pro** Q11,165 | 🟨 **Accelerate** Q19,250 | 🟨 **Compound** Q32,340 |
 |---|---|---|---|---|
 | Piezas/mes | **86** | **145** | **145** | **204** |
 | Horas de producción | 3h · 1 sesión | 4h · 2 sesiones | 6h · 2 sesiones | 8h · 3 sesiones |

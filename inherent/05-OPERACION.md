@@ -497,9 +497,9 @@ es una hipótesis.
 
 | Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q975 | Q400 | Q853 | Q750 | Q0 | **Q2,978** | **Q3,567** | **54%** |
+| 🔷 Marketing | Q975 | Q400 | Q853 | Q750 | Q0 | **Q2,978** | **Q4,337** | **59%** |
 
-**Utilidad total del mes: Q7,134**
+**Utilidad total del mes: Q8,674**
 
 ⚠️ **Con 2 clientes el fijo de Claude pesa Q853 por cuenta — 13% del precio.** Es el único
 escenario donde la herramienta se nota. A partir de 5 clientes baja a Q341.
@@ -516,14 +516,14 @@ escenario donde la herramienta se nota. A partir de 5 clientes baja a Q341.
 
 | Cuenta | Prod. | Operador | Claude+Apify | **Allan + Pablo** | Onb./12 | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q1,075 | Q130 | Q341 | Q1,028 | Q58 | **Q2,632** | **Q3,912** | **60%** |
-| 🔷 Marketing Pro | Q1,450 | Q248 | Q341 | Q1,874 | Q77 | **Q3,990** | **Q6,019** | **60%** |
+| 🔷 Marketing | Q1,075 | Q130 | Q341 | Q1,028 | Q58 | **Q2,632** | **Q4,683** | **64%** |
+| 🔷 Marketing Pro | Q1,450 | Q248 | Q341 | Q1,874 | Q77 | **Q3,990** | **Q7,175** | **64%** |
 | 🟨 Accelerate | Q1,850 | Q620 | Q341 | Q1,950 | Q1,313 | **Q6,074** | **Q13,176** | **68%** |
-| 🟨 Compound | Q2,425 | Q960 | Q341 | Q2,400 | Q3,079 | **Q9,205** | **Q21,595** | **70%** |
+| 🟨 Compound | Q2,425 | Q960 | Q341 | Q2,400 | Q3,079 | **Q9,205** | **Q23,135** | **72%** |
 
 *Prod. = video + fotógrafo + fee de sesión · Otros = tecnología + mentor + membresía*
 
-**Utilidad total del mes: Q49,131** sobre Q73,150 de facturación.
+**Utilidad total del mes: Q52,852** sobre Q77,385 de facturación.
 
 ---
 
@@ -537,12 +537,12 @@ escenario donde la herramienta se nota. A partir de 5 clientes baja a Q341.
 
 | Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q1,075 | Q400 | Q171 | Q750 | Q0 | **Q2,396** | **Q4,149** | **63%** |
-| 🔷 Marketing Pro | Q1,450 | Q520 | Q171 | Q1,050 | Q0 | **Q3,191** | **Q6,819** | **68%** |
+| 🔷 Marketing | Q1,075 | Q400 | Q171 | Q750 | Q0 | **Q2,396** | **Q4,919** | **67%** |
+| 🔷 Marketing Pro | Q1,450 | Q520 | Q171 | Q1,050 | Q0 | **Q3,191** | **Q7,974** | **71%** |
 | 🟨 Accelerate | Q1,850 | Q620 | Q171 | Q1,950 | Q1,216 | **Q5,807** | **Q13,443** | **70%** |
-| 🟨 Compound | Q2,425 | Q960 | Q171 | Q2,400 | Q2,982 | **Q8,938** | **Q21,862** | **71%** |
+| 🟨 Compound | Q2,425 | Q960 | Q171 | Q2,400 | Q2,982 | **Q8,938** | **Q23,402** | **72%** |
 
-**Utilidad total del mes: Q100,784**
+**Utilidad total del mes: Q109,314**
 
 ⚠️ **La operación queda en 56 h — a 4 horas del tramo de Q65.** Un cliente Compound más cruza
 el escalón y **baja la tarifa para todas las cuentas a la vez.**
@@ -777,7 +777,7 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 # Operación — qué se hace, quién lo hace, cuánto cuesta
 
 > Desglose por **marca, al mes**. De acá salen los costos de `06-ECONOMIA.md`.
-> **`Marketing` $850** · **`Marketing Pro` $1,300** · **`Accelerate` $2,500** · **`Compound` $4,000**
+> **`Marketing` $950** · **`Marketing Pro` $1,450** · **`Accelerate` $2,500** · **`Compound` $4,200**
 
 ---
 
@@ -913,9 +913,9 @@ de Growth no se justifica por pieza.
 
 | Tarifa | 🔷 **Mkt** (5h) | 🔷 **Pro** (7h) | 🟨 **Accel** (13h) | 🟨 **Comp** (16h) |
 |---|---|---|---|---|
-| **Q60/h** | 68% | 70% | 74% | 76% |
-| **Q150/h** ✅ | **61%** | **66%** | **68%** | **70%** |
-| **Q250/h** | 53% | 60% | 61% | 65% |
+| **Q60/h** | 70% | 70% | 75% | 76% |
+| **Q150/h** ✅ | **64%** | **64%** | **68%** | **72%** |
+| **Q250/h** | 57% | 58% | 62% | 67% |
 
 > **Modelo canónico: Q150/h con la escalera de producción y operación** — con 5 clientes y mix
 > realista. Es el que usa `06-ECONOMIA.md`.
@@ -942,7 +942,7 @@ capas que corren sobre agentes. **Se revisa cuando haya casos.**
 5 clientes Compound = 75 h/mes. Le sobra tiempo. **El cuello es el QA.**
 
 🟢 **Marketing es el arma comercial Y deja 65%.**
-86 piezas a Q6,545 es una oferta que **ninguna agencia guatemalteca puede igualar.**
+86 piezas a Q7,315 es una oferta que **ninguna agencia guatemalteca puede igualar.**
 **No es un plan de pérdida:** gana la cuenta Y deja margen. El upsell solo lo mejora.
 
 ---
@@ -951,11 +951,11 @@ capas que corren sobre agentes. **Se revisa cuando haya casos.**
 
 | | 🔷 **Marketing** | 🔷 **Pro** | 🟨 **Accelerate** | 🟨 **Compound** |
 |---|---|---|---|---|
-| Precio | Q6,545 | Q10,010 | Q19,250 | Q30,800 |
+| Precio | Q7,315 | Q11,165 | Q19,250 | Q32,340 |
 | Piezas/mes | 86 | 145 | 145 | 204 |
 | Costo *(5 clientes)* | Q2,632 | Q3,990 | Q6,074 ⚠️ | Q9,205 ⚠️ |
-| **Utilidad** | **Q3,912** | **Q6,019** | **Q13,176** | **Q21,595** |
-| **Utilidad @Q250/h** | **Q3,479** | **Q5,949** | **Q11,876** | **Q19,995** |
+| **Utilidad** | **Q4,683** | **Q7,175** | **Q13,176** | **Q23,135** |
+| **Utilidad @Q250/h** | **Q4,250** | **Q7,105** | **Q11,876** | **Q21,535** |
 
 ## 7 · 🧾 El desglose por tarea — la línea 🔷 Marketing
 
@@ -980,7 +980,7 @@ para no romper el margen. **Pagarla a Q200 cuesta 3 puntos.**
 
 ---
 
-### 🔷 MARKETING — $850
+### 🔷 MARKETING — $950
 
 #### 🔵 Onboarding · una sola vez · 5 h · Q700
 
@@ -991,8 +991,8 @@ para no romper el margen. **Pagarla a Q200 cuesta 3 puntos.**
 | Branding brief *(Milanote — guidelines de presencia digital)* | **Allan** | 1.5 | 7 | 150 | Q225 |
 | Branding guidelines | **Pablo** | 1.5 | 7 | 150 | Q225 |
 
-🛑 **Esto NO se rehace cada mes.** Si se rehiciera, el margen cae de 60% a **48%** —
-doce puntos. **La marca se construye una vez y se mantiene.** Ver `br-brief`.
+🛑 **Esto NO se rehace cada mes.** Si se rehiciera, el margen cae de 64% a **53%** —
+once puntos. **La marca se construye una vez y se mantiene.** Ver `br-brief`.
 
 #### 🟢 Mensual · 11 h · Q1,355
 
@@ -1008,7 +1008,7 @@ doce puntos. **La marca se construye una vez y se mantiene.** Ver `br-brief`.
 
 ---
 
-### 🔷 MARKETING PRO — $1,300
+### 🔷 MARKETING PRO — $1,450
 
 **Las mismas tareas, más horas y más complejidad donde se promete más.**
 
@@ -1047,11 +1047,11 @@ baja de 80% a 65% de la base.
 
 | | 🔷 Marketing | 🔷 Marketing Pro |
 |---|---|---|
-| **① Hoy (1-4 clientes)** | Q2,829 · **57%** 🔴 | Q4,328 · **57%** 🔴 |
-| **② Con 5 clientes — Pablo a sueldo** | **Q2,632 · 60%** ✅ | **Q3,990 · 60%** ✅ |
+| **① Hoy (1-4 clientes)** | Q2,829 · **61%** 🟡 | Q4,328 · **61%** 🟡 |
+| **② Con 5 clientes — Pablo a sueldo** | **Q2,632 · 64%** ✅ | **Q3,990 · 64%** ✅ |
 
 > 🔑 **La escalera de horas ya resolvía este problema.** No hay que subir el precio:
-> **hay que llegar a 5 clientes.** Hasta entonces se opera a 57%, y es una decisión consciente.
+> **hay que llegar a 5 clientes.** Hasta entonces se opera a 61%, y es una decisión consciente.
 
 ⚠️ **Los primeros clientes son los que dan los casos medidos.** Vale el margen más fino al inicio.
 

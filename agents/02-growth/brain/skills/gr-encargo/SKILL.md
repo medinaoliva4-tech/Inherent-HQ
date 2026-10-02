@@ -68,10 +68,10 @@ description: >
 
 | Plan | Factura al menos |
 |---|---|
-| 🔷 Marketing | **Q87,000** / mes |
-| 🔷 Marketing Pro | **Q133,000** |
+| 🔷 Marketing | **Q98,000** / mes |
+| 🔷 Marketing Pro | **Q149,000** |
 | 🟨 Accelerate | **Q257,000** |
-| 🟨 Compound | **Q411,000** |
+| 🟨 Compound | **Q431,000** |
 
 *Supuesto: margen del cliente 30%, el plan se paga con 25% de crecimiento.
 Ver `inherent/03-OFERTA.md` → «Desde qué facturación tiene sentido cada plan».*

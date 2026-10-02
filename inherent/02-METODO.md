@@ -317,7 +317,7 @@ convierte en sistema. Hoy no lo pide.**
 
 # Qué entra en cada nivel
 
-| | 🔷 **MARKETING** $850 | 🔷 **MKT PRO** $1,300 | 🟨 **ACCELERATE** $2,500 | 🟨 **COMPOUND** $4,000 |
+| | 🔷 **MARKETING** $950 | 🔷 **MKT PRO** $1,450 | 🟨 **ACCELERATE** $2,500 | 🟨 **COMPOUND** $4,200 |
 |---|---|---|---|---|
 | **Qué promete** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
 | **Diagnóstico** | ✅ | ✅ | ✅ Profundo | ✅ + trimestral |

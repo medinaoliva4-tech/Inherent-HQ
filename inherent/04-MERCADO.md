@@ -328,17 +328,17 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 | Mercado | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| **🇬🇹 Guatemala** *(hoy)* | $850 → **60%** | $1,300 → **60%** | $2,500 → **68%** | $4,000 → **70%** |
-| **🇲🇽 México** | $1,275 → **77%** | $1,950 → **78%** | $3,750 → **79%** | $6,000 → **81%** |
-| **🇺🇸 Miami** | $2,125 → **86%** | $3,250 → **87%** | $6,250 → **88%** | $10,000 → **88%** |
+| **🇬🇹 Guatemala** *(hoy)* | $950 → **64%** | $1,450 → **64%** | $2,500 → **68%** | $4,200 → **72%** |
+| **🇲🇽 México** | $1,425 → **76%** | $2,175 → **76%** | $3,750 → **79%** | $6,300 → **81%** |
+| **🇺🇸 Miami** | $2,375 → **86%** | $3,625 → **86%** | $6,250 → **88%** | $10,500 → **89%** |
 
 ### Utilidad mensual con 5 clientes *(2 Marketing · 1 Pro · 1 Accelerate · 1 Compound)*
 
 | Mercado | Al mes |
 |---|---|
-| 🇬🇹 Guatemala | Q49,131 · **$6,381** |
-| 🇲🇽 México | Q85,954 · **$11,163** |
-| 🇺🇸 Miami | Q159,104 · **$20,663** |
+| 🇬🇹 Guatemala | Q52,852 · **$6,864** |
+| 🇲🇽 México | Q91,546 · **$11,889** |
+| 🇺🇸 Miami | Q168,931 · **$21,939** |
 
 ⚠️ **Los precios de México y Miami son hipótesis, no benchmark verificado.**
 `[sin fuente — hay que investigar cada mercado antes de publicarlos]`
@@ -473,12 +473,12 @@ cumplirse.** Hay que buscarlos antes de venderlos.
 
 | Plan | Precio | Margen sin mentor | **Margen con mentor** |
 |---|---|---|---|
-| 🔷 **Marketing** | Q6,545 | 60% | **60%** 🟡 |
-| 🔷 **Marketing Pro** | Q10,010 | 60% | **60%** 🟡 |
+| 🔷 **Marketing** | Q7,315 | 64% | **64%** ✅ |
+| 🔷 **Marketing Pro** | Q11,165 | 64% | **64%** ✅ |
 | 🟨 **Accelerate** | Q19,250 | 71% | **68%** ✅ |
-| 🟨 **Compound** | Q30,800 | 75% | **70%** ✅ |
+| 🟨 **Compound** | Q32,340 | 76% | **72%** ✅ |
 
-> ✅ **Los cuatro quedan entre 60% y 70%.** El piso del modelo es **60%**: un plan que baje de ahí
+> ✅ **Los cuatro quedan entre 64% y 72%.** El piso del modelo es **60%**: un plan que baje de ahí
 > con el mentor adentro está mal preciado. Ver `06-ECONOMIA.md`.
 >
 > 🔑 **Con los precios nuevos el mentor pesa la mitad que antes** — el costo no cambió, el
@@ -492,7 +492,7 @@ cumplirse.** Hay que buscarlos antes de venderlos.
 
 **Por qué:** en MentorPass hay mentores de $360, $540, $720 y arriba de $1,000 la sesión.
 **Dos sesiones premium al mes se comen entre 36 y 54 puntos.**
-**Un mentor de $950 no cabe dentro de ningún plan — ni del de $4,000.**
+**Un mentor de $950 la sesión no cabe dentro de ningún plan — ni del de $4,200.**
 
 **Cómo se vende:** *«Hay un mentor que es exactamente lo que necesitás. Cuesta $X la sesión.
 ¿Lo traemos?»* — **es decisión del cliente, no un costo nuestro escondido.**

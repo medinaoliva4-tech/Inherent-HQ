@@ -61,7 +61,7 @@ no es más esfuerzo, es que Growth toca la cadena completa.
 
 | | 🔷 **MARKETING** | 🔷 **MARKETING PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
-| **Precio / mes** | **$850** | **$1,300** | **$2,500** | **$4,000** |
+| **Precio / mes** | **$950** | **$1,450** | **$2,500** | **$4,200** |
 | **Para quién** | El que está arrancando | El establecido que solo quiere marketing | El que necesita más de lo que ya le funcionó | El que necesita que todo corra sin él |
 | **El boost** | Existir | Sostener presencia en serio | **Escalar sin romperlo** | **Que crezca sin ti** |
 | **Meta a 12 meses** | **1.3x** | **1.45x** | **1.7x** | **2x** |
@@ -105,7 +105,7 @@ Precio según alcance.
 
 ### 🔑 Marketing Pro y Accelerate entregan las mismas 145 piezas
 
-**A propósito.** El salto de $1,300 a $2,500 **no compra más contenido — compra sistemas**:
+**A propósito.** El salto de $1,450 a $2,500 **no compra más contenido — compra sistemas**:
 tu oferta rediseñada, los canales grandes abiertos, el seguimiento que no se pierde, los SOPs
 y el especialista de tu industria.
 
@@ -133,7 +133,7 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 
 ---
 
-## 🔷 MARKETING · $850 / mes
+## 🔷 MARKETING · $950 / mes
 ### *Para el negocio que está arrancando*
 
 > *«Quiero que mi marca se vea como la imagino y que la gente sepa que existo.»*
@@ -151,7 +151,7 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 
 ---
 
-## 🔷 MARKETING PRO · $1,300 / mes
+## 🔷 MARKETING PRO · $1,450 / mes
 ### *Para el negocio establecido que solo quiere marketing*
 
 > *«Ya me conocen. Quiero sostener presencia en serio y no quedarme sin qué publicar.»*
@@ -194,7 +194,7 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 
 ---
 
-## 🟨 COMPOUND · $4,000 / mes
+## 🟨 COMPOUND · $4,200 / mes
 ### *Para el negocio que necesita que todo corra sin él*
 
 > *«Quiero que esto crezca sin que yo esté en todo, y que al final del mes quede dinero.»*
@@ -236,10 +236,10 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 
 | | Cuesta / mes | **Se paga solo con** | Factura al menos |
 |---|---|---|---|
-| **MARKETING** | Q6,545 | Q21,817 de venta nueva | **Q87,000** |
-| **MARKETING PRO** | Q10,010 | Q33,367 | **Q133,000** |
+| **MARKETING** | Q7,315 | Q24,383 de venta nueva | **Q98,000** |
+| **MARKETING PRO** | Q11,165 | Q37,217 | **Q149,000** |
 | **ACCELERATE** | Q19,250 | Q64,167 | **Q257,000** |
-| **COMPOUND** | Q30,800 | Q102,667 | **Q411,000** |
+| **COMPOUND** | Q32,340 | Q107,800 | **Q431,000** |
 
 *Supuesto: margen del cliente 30%, el plan se paga con 25% de crecimiento.*
 
