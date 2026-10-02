@@ -18,9 +18,9 @@ description: >
 
 ## 1 · Cuántas, según el plan
 
-| 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|
-| ⬜ No incluye | **1 por trimestre** | **1 por mes** |
+| 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|
+| ⬜ No incluye | ⬜ No incluye | **1 por trimestre** | **1 por mes** |
 
 🛑 **Es promesa publicada.** *«Herramientas hechas para ti, una nueva cada trimestre»* ·
 *«Tu operación más liviana: una herramienta nueva cada mes»*.

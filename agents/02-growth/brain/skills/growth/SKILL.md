@@ -33,13 +33,17 @@ con el negocio de otro.
 
 ## 2 · Qué capas corren según el plan
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
+| | 🔷 Marketing / Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| `gr-oferta` | ✅ | ✅ | ✅ |
-| `gr-canales-grandes` | 🟡 **solo mapear** | ✅ | ✅ |
-| `gr-upsells` | ⬜ | ✅ | ✅ |
-| `gr-conversion` | ⬜ | ✅ | ✅ |
-| `gr-herramienta` | ⬜ | ✅ 1/trimestre | ✅ 1/mes |
+| `gr-oferta` | ⛔ | ✅ | ✅ |
+| `gr-canales-grandes` | ⛔ | ✅ | ✅ |
+| `gr-upsells` | ⛔ | ✅ | ✅ |
+| `gr-conversion` | ⛔ | ✅ | ✅ |
+| `gr-herramienta` | ⛔ | ✅ 1/trimestre | ✅ 1/mes |
+
+> 🛑 **② Growth no corre en la línea 🔷 Marketing.** Si el encargo llega sobre un plan de
+> Marketing o Marketing Pro, **se BLOQUEA y se levanta como excepción a Allan** — es upsell
+> a Accelerate, no trabajo a absorber.
 | `gr-numeros` | ⬜ | ⬜ | ✅ |
 
 🛑 **Correr una capa que el plan no paga es entregar de más y romper el margen.**

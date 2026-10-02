@@ -39,15 +39,19 @@ Growth, Tecnología y Sistemas.
 > **El plan contratado es el techo.** Nunca se promete arriba de esta tabla —
 > ver `inherent/06-ECONOMIA.md`.
 
-| | 🟦 **Ignite** | 🟪 **Accelerate** | 🟨 **Compound** |
-|---|---|---|---|
-| **Verbo** | **Mapea** | **Ejecuta** | **Sistematiza** |
-| **Pilar 1 · Oferta** | Construirla / empaquetarla | Escalarla / autoridad | Sistematizarla |
-| **Pilar 2 · Canales grandes** | 🟡 **Solo el mapa** | Abrir y vender | Canal permanente |
-| **Pilar 3 · Upsells / Expansión** | ⬜ No se activa | Diseñar y lanzar | Sistema operando solo |
-| **Sistemas activados** | Growth OS | + Conversion · Operations *(SOPs de crecimiento)* | **Los cuatro** · SOPs de empresa · Money OS |
-| **Briefs que entrega** | Branding · Marketing · Creative | + Tecnología | + Sistemas · estructura corporativa |
-| **Revisión del 20** | ✅ | ✅ | ✅ |
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Qué promete el plan** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
+| **Verbo** | ⛔ *Growth no corre* | ⛔ *Growth no corre* | **Ejecuta** | **Sistematiza** |
+| **Pilar 1 · Oferta** | ⬜ *solo el mensaje* | ⬜ *solo el mensaje* | Escalarla / autoridad | Sistematizarla |
+| **Pilar 2 · Canales grandes** | ⬜ | ⬜ | Abrir y vender | Canal permanente |
+| **Pilar 3 · Upsells / Expansión** | ⬜ | ⬜ | Diseñar y lanzar | Sistema operando solo |
+| **Sistemas activados** | ⬜ Ninguno | ⬜ Ninguno | Growth · Conversion · Operations *(SOPs de crecimiento)* | **Los cuatro** · SOPs de empresa · Money OS |
+| **Briefs que entrega** | Branding · Marketing · Creative | + Producción | + Growth · Tecnología | + Sistemas · estructura corporativa |
+| **Revisión del 20** | ✅ | ✅ | ✅ | ✅ |
+
+🔑 **En la línea Marketing, Strategy entrega posicionamiento y mensaje — no toca la oferta.**
+Qué vende, en qué paquetes y a qué precio **solo se trabaja desde Accelerate.**
 
 ---
 

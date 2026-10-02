@@ -51,7 +51,7 @@ convierta en el basurero del ciclo.**
 
 > ⚠️ **«Que te encuentren en Google» es pauta de búsqueda y contenido guiado por keywords** —
 > nunca posicionamiento orgánico, auditoría técnica ni link building.
-> Y **entra desde 🟪 Accelerate**, no en Ignite.
+> Y **entra desde 🔷 Marketing Pro** — no en 🔷 Marketing.
 
 ## 4 · Los canales que no son redes
 

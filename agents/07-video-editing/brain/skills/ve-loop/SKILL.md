@@ -29,9 +29,13 @@ piezas entregadas ÷ horas que grabó ⑤
 
 | Plan | Lo esperado |
 |---|---|
-| 🟦 Ignite | **16 piezas ÷ 2 h = 8 por hora** |
-| 🟪 Accelerate | **30 ÷ 5 h = 6 por hora** |
-| 🟨 Compound | **44 ÷ 8 h = 5.5 por hora** |
+| 🔷 Marketing | **10 videos ÷ 2 h = 5 por hora** |
+| 🔷 Marketing Pro | **16 ÷ 4 h = 4 por hora** |
+| 🟨 Accelerate | **20 ÷ 6 h = 3.3 por hora** |
+| 🟨 Compound | **24 ÷ 8 h = 3 por hora** |
+
+🔑 **El ratio BAJA al subir de plan, y está bien:** los planes grandes piden videos más
+largos y más trabajados, no más cortes del mismo material.
 
 🔴 **Si el número baja, o faltó cobertura (⑤) o se derivó de menos (acá).** Se distingue cuál.
 

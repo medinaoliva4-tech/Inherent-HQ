@@ -62,9 +62,13 @@ Lo primero. Todo lo demás existe para cumplirlos.
 
 | Si el cuello es… | Plan | El boost |
 |---|---|---|
-| **No lo conocen** — hay producto, no hay demanda | 🟦 **IGNITE** | Aprender a comunicarse y existir |
-| **Está estancado** — ya vende y no sabe cómo crecer sin romperlo | 🟪 **ACCELERATE** | Escalar lo que ya funciona |
+| **No lo conocen** — hay producto, no hay demanda | 🔷 **MARKETING** | Existir |
+| **Lo conocen y quiere sostenerlo** — hay demanda, falta constancia | 🔷 **MARKETING PRO** | Sostener presencia en serio |
+| **Está estancado** — ya vende y no sabe cómo crecer sin romperlo | 🟨 **ACCELERATE** | Escalar lo que ya funciona |
 | **Todo depende del fundador** — crece pero no se sostiene solo | 🟨 **COMPOUND** | Que crezca sin él |
+
+🔑 **Antes del plan, la LÍNEA.** 🔷 Marketing promete **atención** · 🟨 Growth promete
+**facturación**. **Los pilares solo corren en la línea Growth.**
 
 **Y antes: ¿es low o high ticket?** Lo define cómo se decide la compra, no quién compra.
 Eso determina **cuáles son sus 3 pilares** → ver `inherent/02-METODO.md`.
@@ -118,19 +122,22 @@ Se mide con dos datos, y salen del bloque `context`:
 
 **El paquete es el límite que ya está firmado:**
 
-| | **Ignite** Q6,160 | **Accelerate** Q9,240 | **Compound** Q15,400 |
-|---|---|---|---|
-| Piezas/mes | **86** | **145** | **204** |
-| Horas de producción | 2h · 1 sesión | 5h · 2 sesiones | 8h · 3 sesiones |
-| Canales de pauta | Meta · TikTok | + Google Search · PMax | + los que apliquen |
-| Variantes de creativo | hasta 20 | hasta 35 | hasta 50 |
-| Sistemas activos | Growth | + Conversion · Operations *(parcial)* | **Los cuatro** |
-| Conversión y tecnología | ❌ | ✅ | ✅ |
-| Retención y autonomía del cliente | ❌ | Parcial | ✅ |
+| | 🔷 **Marketing** Q6,545 | 🔷 **Pro** Q10,010 | 🟨 **Accelerate** Q19,250 | 🟨 **Compound** Q30,800 |
+|---|---|---|---|---|
+| Piezas/mes | **86** | **145** | **145** | **204** |
+| Horas de producción | 2h · 1 sesión | 4h · 2 sesiones | 6h · 2 sesiones | 8h · 3 sesiones |
+| Canales de pauta | Meta · TikTok | + Google Search · PMax | + los que apliquen | + los que apliquen |
+| Variantes de creativo | hasta 20 | hasta 30 | hasta 35 | hasta 50 |
+| **Oferta y precio** | ❌ *solo el mensaje* | ❌ *solo el mensaje* | ✅ | ✅ |
+| Sistemas activos | ⬜ Ninguno | ⬜ Ninguno | Growth · Conversion · Operations *(parcial)* | **Los cuatro** |
+| Conversión y tecnología | ❌ | ❌ | ✅ | ✅ |
+| Retención y autonomía del cliente | ❌ | ❌ | Parcial | ✅ |
+| **Meta de crecimiento a 12 m** | 1.3x | 1.45x | 1.7x | 2x |
 | Objetivo del plan | Acelerar la máquina que hay | Rediseñar la máquina | Que la máquina se sostenga sola |
 
-> **Un objetivo que exige rediseñar el embudo, la operación o la tecnología es imposible sobre
-> `Ignite` — por contrato, no por ambición.** Se baja el objetivo, o se propone subir.
+> **Un objetivo que exige rediseñar la oferta, el embudo, la operación o la tecnología es
+> imposible sobre la línea 🔷 Marketing — por contrato, no por ambición.**
+> Se baja el objetivo, o **se propone subir a Accelerate.**
 
 > ⚠️ **El video de grabación es el único techo que no escala.** Depende de las horas de producción
 > y de cuánto pueda grabar el cliente. Todo lo demás escala con agentes.
@@ -316,9 +323,13 @@ RESTRICCIONES        presupuesto, tiempo, lo que el cliente ya dijo que no
 ```
 
 > **Los briefs que se arman dependen del nivel contratado** — ver A.0.
-> 🟦 Ignite: Branding · Marketing · Creative
-> 🟪 Accelerate: + Growth · Tecnología
+> 🔷 Marketing: Branding · Marketing · Creative
+> 🔷 Marketing Pro: + Producción
+> 🟨 Accelerate: + **Growth** · Tecnología
 > 🟨 Compound: + Sistemas
+>
+> ⚠️ **El brief de Growth solo se arma desde Accelerate.** En la línea Marketing, Strategy
+> entrega posicionamiento y mensaje — **no toca qué se vende ni a qué precio.**
 
 ---
 

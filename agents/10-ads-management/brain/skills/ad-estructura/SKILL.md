@@ -49,7 +49,7 @@ description: >
 
 > 🔑 **Se empieza por los propios.** Son los que mejor convierten y los que menos cuestan.
 
-## 4 · Google — solo desde 🟪 Accelerate
+## 4 · Google — solo desde 🔷 Marketing Pro
 
 | Tipo | Con qué |
 |---|---|

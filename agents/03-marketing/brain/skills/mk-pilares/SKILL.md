@@ -32,8 +32,9 @@ description: >
 
 | Plan | Pilares |
 |---|---|
-| 🟦 **Ignite** | **3** |
-| 🟪 **Accelerate** | **3-4** |
+| 🔷 **Marketing** | **3** |
+| 🔷 **Marketing Pro** | **3-4** |
+| 🟨 **Accelerate** | **3-4** |
 | 🟨 **Compound** | **4-5** |
 
 🛑 **Más pilares que esos no es más variedad: es menos reconocimiento.** Cada pilar necesita
@@ -71,7 +72,7 @@ en 100%.**
 | **Ningún pilar arriba del 40%** | Si uno pesa más, los demás no existen |
 | **Ningún pilar abajo del 10%** | Menos de eso no alcanza para que se reconozca |
 | **`Conversion` entre 10% y 25%** | Menos no cobra, más quema |
-| **`Community` solo si hay clientes que atender** | En 🟦 Ignite normalmente es 0% |
+| **`Community` solo si hay clientes que atender** | En 🔷 Marketing normalmente es 0% |
 
 ## 6 · Qué escribe
 

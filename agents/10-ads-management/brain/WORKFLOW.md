@@ -49,17 +49,21 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 
 ## 3 · Qué se activa según el plan
 
-| | 🟦 **Ignite** | 🟪 **Accelerate** | 🟨 **Compound** |
-|---|---|---|---|
-| **Meta y TikTok** | ✅ | ✅ | ✅ |
-| **Google Search y Performance Max** | ⬜ | ✅ | ✅ |
-| **Variantes de creativo por campaña** | hasta **20** | hasta **35** | hasta **50** |
-| **Optimización** | Mensual | Por ángulo, continua | Continua + presupuesto sistematizado |
-| **Experimentos controlados** | ⬜ | 🟡 | ✅ |
-| **Atribución para el performance fee** | 🟡 Opcional | ✅ | ✅ |
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Meta y TikTok** | ✅ | ✅ | ✅ | ✅ |
+| **Google Search y Performance Max** | ⬜ | ✅ | ✅ | ✅ |
+| **Variantes de creativo por campaña** | hasta **20** | hasta **30** | hasta **35** | hasta **50** |
+| **Optimización** | Mensual | Mensual | Por ángulo, continua | Continua + presupuesto sistematizado |
+| **Experimentos controlados** | ⬜ | ⬜ | 🟡 | ✅ |
+| **Atribución para el performance fee** | ⛔ **No aplica** | ⛔ **No aplica** | ✅ | ✅ |
 
-> ⚠️ **«Que te encuentren en Google» entra desde Accelerate**, y es **pauta de búsqueda**, no
+> ⚠️ **«Que te encuentren en Google» entra desde Marketing Pro**, y es **pauta de búsqueda**, no
 > posicionamiento orgánico ni SEO técnico.
+
+> 🛑 **El performance fee NO existe en la línea Marketing.** Requiere atribución limpia
+> (CAPI + GA4), que es parte de Conversion OS y solo entra desde Accelerate.
+> **Si alguien pide fee sobre un plan de Marketing, se levanta como excepción.**
 
 ---
 

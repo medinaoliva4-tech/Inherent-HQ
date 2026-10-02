@@ -272,7 +272,7 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 ## Qué pasa con el mismo costo y otro precio
 
-*Costo por cuenta con 5 clientes: Ignite Q2,220 · Accelerate Q3,280 · Compound Q4,540*
+*Costo por cuenta con 5 clientes: Marketing Q2,286 · Pro Q3,321 · Accelerate Q5,934 · Compound Q8,885*
 
 | Mercado | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|

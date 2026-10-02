@@ -12,7 +12,7 @@
 |---|---|
 | **División** | 🔵 Low ticket / 🟣 High ticket — *de ② Estrategia* |
 | **El pilar roto** | |
-| **Plan contratado** | 🟦 / 🟪 / 🟨 |
+| **Plan contratado** | 🔷 Marketing / 🔷 Marketing Pro / 🟨 Accelerate / 🟨 Compound |
 
 ### Unit economics
 | Línea | Precio | Costo | Margen | Frecuencia |
@@ -62,19 +62,19 @@
 ---
 
 ## § Canales grandes
-*Capa 2 · `gr-canales-grandes`* — 🟦 **solo el mapa**
+*Capa 2 · `gr-canales-grandes`* — 🔷 **solo el mapa**
 
 | Canal | Tamaño | Requisito | Ciclo | Quién decide | ¿Capacidad OK? |
 |---|---|---|---|---|---|
 
-### Cuáles se abren *(🟪 🟨)*
+### Cuáles se abren *(🟨 🟨)*
 ### Qué necesita ④ Creatividad
 ### Dónde se registra
 
 ---
 
 ## § La escalera
-*Capa 3 · `gr-upsells`* — 🟪 🟨
+*Capa 3 · `gr-upsells`* — 🟨 🟨
 
 | Escalón | Qué | **Cuándo** | Cómo se entera | Margen |
 |---|---|---|---|---|
@@ -82,7 +82,7 @@
 ---
 
 ## § Conversión
-*Capa 4 · `gr-conversion`* — 🟪 🟨
+*Capa 4 · `gr-conversion`* — 🟨 🟨
 
 ### A · El recorrido real — dónde se cae la gente
 ### B · Respuesta · C · Seguimiento · D · Closing
@@ -92,7 +92,7 @@
 ---
 
 ## § Herramientas
-*Capa 5 · `gr-herramienta`* — 🟪 1/trim · 🟨 1/mes
+*Capa 5 · `gr-herramienta`* — 🟨 1/trim · 🟨 1/mes
 
 | | |
 |---|---|

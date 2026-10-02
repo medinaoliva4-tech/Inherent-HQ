@@ -12,14 +12,14 @@ paso vive en las skills: `skills/README.md`.
 
 **⑤ Producción cuesta horas humanas. ⑥B multiplica ese material a Q0 marginal.**
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| **Horas grabadas** *(⑤)* | 2 h | 5 h | 8 h |
-| **Reels terminados** | **6** | **10** | **14** |
-| **Piezas derivadas** | **10** | **20** | **30** |
-| **Total de esta etapa** | **16** | **30** | **44** |
-| **Segundo idioma** | ⬜ | ⬜ | ✅ |
-| **Revisiones por pieza** | 2 | 2 | **3** |
+| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| **Horas grabadas** *(⑤)* | 2 h | 4 h | 6 h | 8 h |
+| **Videos de grabación** | **8** | **12** | **18** | **20** |
+| **Videos con b-roll** | **2** | **4** | **2** | **4** |
+| **Total de videos** | **10** | **16** | **20** | **24** |
+| **Segundo idioma** | ⬜ | ⬜ | ⬜ | ✅ |
+| **Revisiones por pieza** | 1 | 2 | 2 | **3** |
 
 > 🔑 **De 2 horas de grabación salen 16 piezas.** Ese número es la razón por la que el margen
 > cierra. **Editar de menos no ahorra tiempo: tira producción pagada.**

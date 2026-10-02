@@ -48,7 +48,7 @@ LÓGICA      CÓMO hace esas cosas. Son las skills.
 | **Límites declarados** | Lo que el agente **no** hace está escrito, para que no lo intente |
 | **Correlación con el resto** | De quién recibe y a quién entrega, en la cadena de doce etapas |
 | **Su propia entrega** | Cada agente entrega algo distinto, y su formato vive en su workflow. Lo único igual: **Allan aprueba antes de que algo salga** |
-| **Qué entrega según el plan** | Cada ficha dice qué le toca en Ignite, Accelerate y Compound. **El plan es el techo, no una sugerencia** |
+| **Qué entrega según el plan** | Cada ficha dice qué le toca en Marketing, Marketing Pro, Accelerate y Compound. **El plan es el techo, no una sugerencia** |
 
 > 🔑 **Un agente que pregunta todo no ahorra nada.** Tienen que trabajar entre autónomos y
 > dirigidos: **levantan excepciones, no preguntas.**

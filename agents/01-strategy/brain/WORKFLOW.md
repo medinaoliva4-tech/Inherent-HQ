@@ -47,7 +47,8 @@ arranca sin el anterior.
 ### 01 · CONTEXTO → skill `context`
 Junta toda la data necesaria para que la estrategia tenga un piso fuerte.
 
-**Lo primero: el plan contratado.** 🟦 Ignite · 🟪 Accelerate · 🟨 Compound · ⬜ Tailor Made.
+**Lo primero: el plan contratado.** 🔷 Marketing · 🔷 Marketing Pro · 🟨 Accelerate · 🟨 Compound · ⬜ Tailor Made.
+**Y antes que eso: qué LÍNEA es.** 🔷 Marketing promete atención · 🟨 Growth promete facturación.
 **Define qué se le va a trabajar y hasta qué punto** — y por lo tanto qué briefs se arman al final.
 **Sin este dato la estrategia promete lo que no se puede entregar.**
 

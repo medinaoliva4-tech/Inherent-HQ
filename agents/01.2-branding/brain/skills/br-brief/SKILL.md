@@ -56,11 +56,14 @@ description: >
 
 ## 4 · La profundidad según el plan
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| **Qué se hace** | **Se construye la marca completa** | Se evoluciona | Se sistematiza |
-| Activos distintivos | 3 a 5 | + activos para pauta | + guía operable por terceros |
-| Entregables | `guia-de-marca.md` + `sistema-visual.md` | + variantes para ⑩ Ads | + manual para que lo use un tercero |
+| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| **Qué se hace** | **Se construye la marca completa** | Se extiende | Se evoluciona | Se sistematiza |
+| Activos distintivos | 3 a 5 | 3 a 5 | + activos para pauta | + guía operable por terceros |
+| Entregables | `guia-de-marca.md` + `sistema-visual.md` | + formatos nuevos | + variantes para ⑩ Ads | + manual para que lo use un tercero |
+
+⚠️ **El brief de ② Estrategia llega distinto según la línea.** En 🔷 Marketing trae
+posicionamiento y mensaje; **la oferta llega como está.** En 🟨 Growth trae la oferta rediseñada.
 
 ## 5 · Qué escribe
 

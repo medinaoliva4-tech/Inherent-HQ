@@ -339,8 +339,8 @@ Lo único que sube de verdad son las 2 horas de grabación.
 | Salto | Precio +  | Costo + | **Margen del salto** |
 |---|---|---|---|
 | Marketing → Pro | +Q3,465 | +Q1,035 | **70%** |
-| **Pro → Accelerate** | **+Q9,240** | **+Q2,612** | **72%** |
-| Accelerate → Compound | +Q11,550 | +Q3,001 | **74%** |
+| **Pro → Accelerate** | **+Q9,240** | **+Q2,613** | **72%** |
+| Accelerate → Compound | +Q11,550 | +Q2,951 | **74%** |
 
 👉 **Cada salto deja más margen que el plan de donde viene.** Por eso el movimiento comercial es
 **subir a los clientes que ya están, no sumar clientes nuevos.**

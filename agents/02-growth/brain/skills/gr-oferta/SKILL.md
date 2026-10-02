@@ -2,8 +2,8 @@
 name: gr-oferta
 description: >
   Capa 1 de ② Growth — el Pilar 1, Better your Offer. Trabaja qué se vende, cómo se empaqueta y
-  a qué precio, con la profundidad que el plan paga: construirla en Ignite, escalarla en
-  Accelerate, sistematizarla en Compound. Compara contra lo que la categoría ofrece y cobra, y
+  a qué precio, con la profundidad que el plan paga: no corre en la linea Marketing, se escala en
+  Accelerate y se sistematiza en Compound. Compara contra lo que la categoría ofrece y cobra, y
   nunca cambia un precio sin el cliente, porque es su negocio. Úsala cuando pidan "mejorá la
   oferta", "cómo lo empaquetamos", "cuánto deberíamos cobrar", "la gente dice que es caro",
   "qué vendemos exactamente". Cierra con el GATE 1, que aprueban Allan y el cliente.
@@ -18,10 +18,15 @@ description: >
 
 ## 1 · La profundidad la da el plan
 
-| 🟦 **Ignite — construirla** | 🟪 **Accelerate — escalarla** | 🟨 **Compound — sistematizarla** |
+| 🔷 **Marketing / Pro — NO CORRE** | 🟨 **Accelerate — escalarla** | 🟨 **Compound — sistematizarla** |
 |---|---|---|
-| Qué se vende, claro, para que quien lo lea lo entienda y lo quiera | Que la misma oferta soporte más volumen sin romperse | Que se pueda explicar, cotizar y entregar sin el fundador |
-| *High ticket:* empaquetarla | *High ticket:* construir autoridad | *High ticket:* autoridad del sistema |
+| ⛔ La oferta llega como está | Que la misma oferta soporte más volumen sin romperse | Que se pueda explicar, cotizar y entregar sin el fundador |
+| | *High ticket:* empaquetar y construir autoridad | *High ticket:* autoridad del sistema |
+
+> 🔑 **La diferencia entre MENSAJE y OFERTA — es la línea que separa los dos productos.**
+> **Mensaje** = cómo se cuenta lo que ya vende → lo hace ③ Marketing con ②B, en los cuatro planes.
+> **Oferta** = qué vende, en qué paquetes y a qué precio → **solo acá, desde Accelerate.**
+> **Confundirlos regala el trabajo caro dentro del plan barato.**
 
 ## 2 · Los cuatro ángulos de una oferta
 

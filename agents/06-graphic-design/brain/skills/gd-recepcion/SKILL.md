@@ -52,10 +52,11 @@ entre 160 piezas y 160 decisiones.
 
 ## 4 · El techo
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| Estáticos y carruseles | 40 | 70 | 100 |
-| Stories | 30 | 45 | 60 |
+| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| Estáticos y carruseles | 46 | 74 | 70 | 100 |
+| Stories | 30 | 55 | 55 | 80 |
+| Revisiones por pieza | 1 | 2 | 2 | 3 |
 
 🛑 **Si el Excel pide más, se declara y se devuelve a ③ Marketing.**
 

@@ -41,17 +41,24 @@ paso vive en las skills: `skills/README.md`.
 
 ## 3 · Qué se activa según el plan — es restricción dura
 
-| | 🟦 **Ignite** | 🟪 **Accelerate** | 🟨 **Compound** |
+| | 🔷 **MARKETING / PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|
-| **Verbo** | **Mapea** | **Ejecuta** | **Sistematiza** |
-| **Pilar 1 · Oferta** | ✅ Construirla / empaquetarla | ✅ Escalarla / autoridad | ✅ Sistematizarla |
-| **Pilar 2 · Canales grandes** | 🟡 **Solo el mapa** | ✅ Abrir y vender | ✅ Canal permanente |
-| **Pilar 3 · Upsells** | ⬜ **No se activa** | ✅ Diseñar y lanzar | ✅ Operando solo |
+| **Verbo** | ⛔ **No corre** | **Ejecuta** | **Sistematiza** |
+| **Pilar 1 · Oferta** | ⬜ | ✅ Escalarla / autoridad | ✅ Sistematizarla |
+| **Pilar 2 · Canales grandes** | ⬜ | ✅ Abrir y vender | ✅ Canal permanente |
+| **Pilar 3 · Upsells** | ⬜ | ✅ Diseñar y lanzar | ✅ Operando solo |
 | **Conversion OS** | ⬜ | ✅ Que nadie se pierda · closing | ✅ + referidos y comunidad |
 | **Herramienta a medida** | ⬜ | **1 por trimestre** | **1 por mes** |
 | **Money OS** | ⬜ | ⬜ | ✅ Margen por línea · CAC · LTV |
 
-### 🔑 Por qué no todo entra en Ignite
+> 🛑 **② Growth NO corre en la línea Marketing.** Si llega un encargo de growth sobre un plan
+> de Marketing o Marketing Pro, **se BLOQUEA y se levanta como excepción** — es upsell a
+> Accelerate, no trabajo a absorber.
+>
+> **Lo que sí corre en Marketing es el MENSAJE, y lo lleva ③ Marketing con ②B Branding.**
+> Mensaje = cómo se cuenta lo que ya vende. Oferta = qué vende, en qué paquetes y por cuánto.
+
+### 🔑 Por qué no todo entra en la línea Marketing
 
 | Sistema | Por qué espera |
 |---|---|
@@ -82,11 +89,11 @@ paso vive en las skills: `skills/README.md`.
         ▼           🚦 GATE 1 — Allan aprueba la oferta
    2  CANALES       Pilar 2 — mapear o abrir                 → gr-canales-grandes
         ▼
-   3  UPSELLS       Pilar 3 — 🟪 🟨 solamente                 → gr-upsells
+   3  UPSELLS       Pilar 3 — 🟨 A y C solamente                 → gr-upsells
         ▼
-   4  CONVERSIÓN    que nadie se pierda — 🟪 🟨               → gr-conversion
+   4  CONVERSIÓN    que nadie se pierda — 🟨 A y C               → gr-conversion
         ▼
-   5  HERRAMIENTA   la que el plan incluye — 🟪 🟨            → gr-herramienta
+   5  HERRAMIENTA   la que el plan incluye — 🟨 🟨            → gr-herramienta
         ▼
    6  NÚMEROS       Money OS — 🟨 solamente                   → gr-numeros
         ▼           🚦 GATE 2 — Allan aprueba el motor completo

@@ -3,7 +3,7 @@ name: gr-upsells
 description: >
   Capa 3 de ② Growth — el Pilar 3. En low ticket son upsells, combos, versiones, membresías y
   recompra; en high ticket es expansión de cuenta, cross-sell y renovación. No se activa en
-  Ignite porque no se le puede vender más a quien todavía no compró una vez. Diseña la escalera
+  la línea Marketing porque no se le puede vender más a quien todavía no compró una vez. Diseña la escalera
   con el momento exacto en que se ofrece cada escalón. Úsala cuando pidan "cómo subimos el
   ticket", "combos", "membresías", "que vuelvan a comprar", "qué más le vendemos", "renovación".
   Requiere Accelerate o Compound.
@@ -16,12 +16,12 @@ description: >
 | **Consume** | § La oferta · frecuencia de recompra y unit economics de ① |
 | **Produce** | La sección **§ La escalera** de `motor-de-crecimiento.md` |
 
-## 1 · ⬜ No se activa en Ignite
+## 1 · ⬜ No se activa en la línea Marketing
 
 🛑 **No se le puede vender más a quien todavía no compró una vez.**
 
 **Al cliente se le dice así:** *«Los upsells los trabajamos cuando ya haya gente comprando una
-vez.»* **Prometerlos en Ignite es cobrar por algo que no se puede usar.**
+vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede usar.**
 
 ## 2 · Qué es, según la división
 

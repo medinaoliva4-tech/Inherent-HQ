@@ -24,10 +24,10 @@ detalle de cada herramienta.
 |---|---|---|---|---|
 | 1 | **`gr-encargo`** | 0 | Todos | § El encargo — división, unit economics, qué activa el plan |
 | 2 | **`gr-oferta`** | 1 | Todos | § La oferta · **🚦 GATE 1** *(Allan **y el cliente**)* |
-| 3 | **`gr-canales-grandes`** | 2 | 🟦 mapear · 🟪🟨 abrir | § Canales grandes |
-| 4 | **`gr-upsells`** | 3 | 🟪 🟨 | § La escalera |
-| 5 | **`gr-conversion`** | 4 | 🟪 🟨 | § Conversión |
-| 6 | **`gr-herramienta`** | 5 | 🟪 1/trim · 🟨 1/mes | § Herramientas |
+| 3 | **`gr-canales-grandes`** | 2 | ⛔ Marketing · 🟨 A y C | § Canales grandes |
+| 4 | **`gr-upsells`** | 3 | 🟨 A y C | § La escalera |
+| 5 | **`gr-conversion`** | 4 | 🟨 A y C | § Conversión |
+| 6 | **`gr-herramienta`** | 5 | 🟨 A 1/trim · 🟨 C 1/mes | § Herramientas |
 | 7 | **`gr-numeros`** | 6 | 🟨 solamente | § Los números — Money OS |
 | 8 | **`gr-loop`** | 7 | Todos | `aprendizaje-de-growth.md` |
 

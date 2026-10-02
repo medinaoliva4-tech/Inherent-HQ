@@ -3,7 +3,7 @@ name: gr-canales-grandes
 description: >
   Capa 2 de ② Growth — el Pilar 2. En low ticket son las ventas grandes (eventos, mayoreo,
   corporativos, preventas); en high ticket son las cuentas grandes (retainers, contratos
-  anuales, proyectos por fases). En Ignite solo se mapean, en Accelerate se abren y venden, en
+  anuales, proyectos por fases). No corre en la linea Marketing; en Accelerate se abren y venden, en
   Compound se vuelven canal permanente. Antes de abrir uno verifica que la capacidad de entrega
   lo aguante. Úsala cuando pidan "qué ventas grandes podríamos hacer", "eventos", "mayoreo",
   "corporativos", "cuentas grandes", "contratos anuales". Requiere la oferta con GATE 1.
@@ -27,14 +27,14 @@ description: >
 
 ## 2 · El verbo lo da el plan
 
-| 🟦 **Ignite — MAPEAR** | 🟪 **Accelerate — ABRIR Y VENDER** | 🟨 **Compound — CANAL PERMANENTE** |
+| 🔷 **Marketing / Pro — NO CORRE** | 🟨 **Accelerate — ABRIR Y VENDER** | 🟨 **Compound — CANAL PERMANENTE** |
 |---|---|---|
-| Se muestran cuáles existen | Se ejecutan | Opera solo |
-| **No se abren** | Con proceso y seguimiento | Con acuerdos marco |
-| Es el mapa, con tamaño y requisito | | |
+| ⛔ No se mapea ni se abre | Se ejecutan | Opera solo |
+| | Con proceso y seguimiento | Con acuerdos marco |
 
-🛑 **En Ignite se entrega el mapa y se dice que es el mapa.**
-*«Te mostramos cuáles existen; abrirlos es el siguiente paso»* — está publicado así en la web.
+🛑 **En la línea Marketing esta capa no corre.** Abrir un canal grande necesita material de
+ventas, outreach y seguimiento — **eso es Conversion OS, que la línea Marketing no incluye.**
+**Si el cliente lo pide, es upsell a Accelerate.**
 
 ## 3 · El mapa — cada canal lleva cuatro datos
 
@@ -58,7 +58,7 @@ description: >
 🛑 **Abrir un canal grande que el cliente no puede entregar le rompe la reputación** — y es más
 caro que no haberlo abierto.
 
-## 5 · Abrir — solo 🟪 y 🟨
+## 5 · Abrir — solo 🟨 Accelerate y Compound
 
 | Paso | Qué se hace |
 |---|---|
@@ -81,14 +81,14 @@ white label, con su proceso documentado en los SOPs de empresa.
 |---|---|
 | **A · El mapa** | Tabla: canal · tamaño · requisito · ciclo · quién decide |
 | **B · La verificación de capacidad** | Por canal, con el veredicto |
-| **C · Cuáles se abren** | 🟪 🟨 — con lista, ángulo, secuencia y fechas |
+| **C · Cuáles se abren** | 🟨 A y C — con lista, ángulo, secuencia y fechas |
 | **D · Qué necesita ④** | El material a producir |
 | **E · Dónde se registra** | El seguimiento |
 
 ## 8 · Checklist
 
-- [ ] El verbo corresponde al **plan** — mapear, abrir o canal permanente
+- [ ] El plan es **Accelerate o Compound** — en la línea Marketing esta capa no corre
 - [ ] Cada canal del mapa tiene **los cuatro datos**
 - [ ] **Ningún canal se abre sin verificar la capacidad de entrega**
-- [ ] En Ignite se entregó **el mapa**, y se dijo que es el mapa
+- [ ] El verbo corresponde al plan — **abrir y vender** o **canal permanente**
 - [ ] Lo que se abre tiene **secuencia con fechas** y dónde se registra

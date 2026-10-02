@@ -50,7 +50,11 @@ No espera al resto del pipeline.
 
 ## 🔑 Cada agente sabe qué entrega según el plan
 
-**Todas las fichas tienen la misma tabla: qué le toca en Ignite, en Accelerate y en Compound.**
+**Todas las fichas tienen la misma tabla: qué le toca en 🔷 Marketing, 🔷 Marketing Pro,
+🟨 Accelerate y 🟨 Compound.**
+
+🔑 **Primero se lee la LÍNEA, después el plan.** 🔷 Marketing promete atención · 🟨 Growth
+promete facturación. **② Growth no corre en la línea Marketing.**
 
 **El plan contratado es el techo, no una sugerencia.** Un agente que entrega de más rompe el
 margen; uno que entrega de menos rompe la promesa publicada.

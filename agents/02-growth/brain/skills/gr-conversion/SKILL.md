@@ -3,7 +3,7 @@ name: gr-conversion
 description: >
   Capa 4 de ② Growth — el Conversion OS. Hace que lo que ya llega se cobre: que nadie que
   escribe se quede sin respuesta, que el interesado de hace dos semanas reciba seguimiento, y
-  que el equipo sepa cerrar. Entra desde Accelerate porque en Ignite todavía no hay nada que
+  que el equipo sepa cerrar. Entra desde Accelerate porque en la linea Marketing todavia no hay nada que
   perder. Mapea dónde se pierde la gente hoy antes de automatizar nada. Úsala cuando pidan "se
   nos pierden los leads", "nadie contesta los DMs", "que el equipo sepa cerrar", "por qué
   preguntan y no compran". Requiere Accelerate o Compound.
@@ -16,7 +16,7 @@ description: >
 | **Consume** | § La oferta · cómo se compra, de ① Comprensión |
 | **Produce** | La sección **§ Conversión** de `motor-de-crecimiento.md` |
 
-## 1 · ⬜ No entra en Ignite
+## 1 · ⛔ No entra en la línea Marketing
 
 🛑 **Antes no hay nada que perder.** Un sistema de conversión sobre 3 mensajes al mes es
 infraestructura sin uso.

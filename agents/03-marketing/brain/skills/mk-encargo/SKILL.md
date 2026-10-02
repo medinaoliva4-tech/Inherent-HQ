@@ -26,7 +26,7 @@ descubre cuando producción no da abasto.
 | **② Estrategia** | Objetivo del ciclo con plazo y métrica · posicionamiento aprobado · **las MUST BE TRUE con su letra** · el brief de marketing | 🛑 **BLOQUEADO** |
 | **① Comprensión** | Qué puede grabar el cliente y cada cuánto · qué cuentas existen y quién las opera · estacionalidad | 🛑 **BLOQUEADO** |
 | **②B Branding** | Tono, territorio, activos distintivos, do's & don'ts | 🛑 **BLOQUEADO** |
-| **El plan contratado** | 🟦 Ignite · 🟪 Accelerate · 🟨 Compound · ⬜ Tailor Made | 🛑 **BLOQUEADO** |
+| **La línea y el plan** | 🔷 Marketing · 🔷 Marketing Pro · 🟨 Accelerate · 🟨 Compound · ⬜ Tailor Made | 🛑 **BLOQUEADO** |
 
 🛑 **Ningún archivo se copia: se cita su ruta.**
 
@@ -34,13 +34,18 @@ descubre cuando producción no da abasto.
 
 **Se lee del plan contratado y no se discute.**
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| Total de slots | **86** | **145** | **204** |
-| Reels de grabación | 6 | 10 | 14 |
-| Estáticos y carruseles | 40 | 70 | 100 |
-| Stories | 30 | 45 | 60 |
-| Derivadas | 10 | 20 | 30 |
+| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| Total de slots | **86** | **145** | **145** | **204** |
+| Videos de grabación | 8 | 12 | 18 | 20 |
+| Videos con b-roll | 2 | 4 | 2 | 4 |
+| Estáticos y carruseles | 46 | 74 | 70 | 100 |
+| Stories | 30 | 55 | 55 | 80 |
+| Revisiones por pieza | 1 | 2 | 2 | 3 |
+
+⚠️ **Marketing Pro y Accelerate piden el mismo total.** Si el encargo trata el salto como
+«más piezas», está mal planteado: **lo que cambia en Accelerate es que la oferta viene
+rediseñada por ② Growth.**
 
 > 🛑 **El techo manda sobre la ambición.** Si la estrategia pide más de lo que el plan paga,
 > **se declara y se recorta acá**, con el recorte escrito. Nunca se manda de más.

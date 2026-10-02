@@ -77,15 +77,20 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 
 **Marketing no puede encargar más piezas de las que el plan paga.** Es restricción dura.
 
-| | 🟦 **Ignite** | 🟪 **Accelerate** | 🟨 **Compound** |
-|---|---|---|---|
-| **Slots por ciclo** | **86** | **145** | **204** |
-| **Reels de grabación** | 6 | 10 | 14 |
-| **Estáticos y carruseles** | 40 | 70 | 100 |
-| **Stories** | 30 | 45 | 60 |
-| **Piezas derivadas** | 10 | 20 | 30 |
-| **Canales** | Donde esté la audiencia + alianzas | **+ búsqueda en Google** | + canal permanente |
-| **Campañas por ciclo** | 1 | 1-2 por ángulo | Sistema de demanda completo |
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Slots por ciclo** | **86** | **145** | **145** | **204** |
+| **Videos de grabación** | 8 | 12 | 18 | 20 |
+| **Videos con b-roll** | 2 | 4 | 2 | 4 |
+| **Estáticos y carruseles** | 46 | 74 | 70 | 100 |
+| **Stories** | 30 | 55 | 55 | 80 |
+| **Canales** | Donde esté la audiencia | **+ Google y alianzas** | + los que apliquen | + canal permanente |
+| **Campañas por ciclo** | 1 | 1-2 | 1-2 por ángulo | Sistema de demanda completo |
+| **Revisiones por pieza** | 1 | 2 | 2 | 3 |
+
+⚠️ **Marketing Pro y Accelerate piden las mismas 145 piezas.** La diferencia no es volumen:
+**en Accelerate el calendario se arma contra una oferta rediseñada por ② Growth.**
+En la línea Marketing la oferta llega como está y **solo se trabaja el mensaje.**
 
 🛑 **Si el plan del ciclo no entra en el techo, se recorta acá y se declara** — nunca se manda
 de más esperando que alguien aguante. Ver `inherent/06-ECONOMIA.md`.

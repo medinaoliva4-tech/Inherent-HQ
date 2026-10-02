@@ -49,13 +49,16 @@ description: >
 
 **Se copia del WORKFLOW y se escribe cuál es el caso de este cliente.**
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
+| | 🔷 Marketing / Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| Pilar 1 | ✅ | ✅ | ✅ |
-| Pilar 2 | 🟡 solo el mapa | ✅ | ✅ |
-| Pilar 3 | ⬜ | ✅ | ✅ |
-| Conversion OS | ⬜ | ✅ | ✅ |
-| Herramienta | ⬜ | 1/trimestre | 1/mes |
+| Pilar 1 · Oferta | ⛔ | ✅ | ✅ |
+| Pilar 2 · Canales grandes | ⛔ | ✅ | ✅ |
+| Pilar 3 · Upsells | ⛔ | ✅ | ✅ |
+| Conversion OS | ⛔ | ✅ | ✅ |
+| Herramienta | ⛔ | 1/trimestre | 1/mes |
+| Money OS | ⛔ | ⬜ | ✅ |
+
+🛑 **Sobre un plan de la línea 🔷 Marketing, esta skill BLOQUEA.**
 | Money OS | ⬜ | ⬜ | ✅ |
 
 ## 4 · Qué queda afuera — y se dice
@@ -67,7 +70,8 @@ para responder sin prometer de más.
 
 | ❌ Interno | ✅ Al cliente |
 |---|---|
-| *«Pilar 3 no se activa en Ignite»* | *«Los upsells los trabajamos cuando ya haya gente comprando una vez»* |
+| *«Pilar 3 no se activa en la línea Marketing»* | *«Los upsells los trabajamos cuando ya haya gente comprando una vez»* |
+| *«Growth no corre en tu plan»* | *«Tu plan trabaja que te vean y te entiendan. Rediseñar qué vendes y a qué precio es el siguiente paso»* |
 | *«Money OS es Compound»* | *«El análisis de margen por producto entra cuando haya suficientes transacciones para que el dato sea real»* |
 
 ## 5 · Qué escribe

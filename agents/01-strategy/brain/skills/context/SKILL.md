@@ -25,31 +25,36 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 
 | Plan | El boost | Verbo de los pilares | Sistemas que se activan |
 |---|---|---|---|
-| 🟦 **IGNITE** $800 | Aprender a comunicarse y existir | **Mapea** | Growth |
-| 🟪 **ACCELERATE** $1,200 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | + Conversion · Operations *(parcial)* |
-| 🟨 **COMPOUND** $2,000 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
+| 🔷 **MARKETING** $850 | Existir | ⛔ *no corren* | ⬜ Ninguno |
+| 🔷 **MARKETING PRO** $1,300 | Sostener presencia en serio | ⛔ *no corren* | ⬜ Ninguno |
+| 🟨 **ACCELERATE** $2,500 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | Growth · Conversion · Operations *(parcial)* |
+| 🟨 **COMPOUND** $4,000 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
 | ⬜ **Tailor Made** | Se define con Allan | Según alcance | Según alcance |
 
 | Plan | Briefs que se arman |
 |---|---|
-| 🟦 **IGNITE** | Branding · Marketing · Creative |
-| 🟪 **ACCELERATE** | + Growth · **Tecnología** |
+| 🔷 **MARKETING** | Branding · Marketing · Creative |
+| 🔷 **MARKETING PRO** | + Producción |
+| 🟨 **ACCELERATE** | + **Growth** · **Tecnología** |
 | 🟨 **COMPOUND** | + **Sistemas** |
 
-**Los tres incluyen estrategia. Cambia la profundidad, no la existencia.**
+**Los cuatro incluyen estrategia. Cambia la profundidad, no la existencia.**
+⚠️ **Pero en la línea 🔷 Marketing la estrategia llega hasta el MENSAJE.**
+Qué vende, en qué paquetes y a qué precio **solo se toca desde 🟨 Accelerate.**
 **Los pilares son los mismos — cambia a qué profundidad se activan.** Ver `inherent/03-OFERTA.md`.
 
 ### Lo que hay que registrar
 
 | | |
 |---|---|
-| **Plan contratado** | Ignite · Accelerate · Compound · Tailor Made |
+| **Línea** | 🔷 Marketing *(atención)* · 🟨 Growth *(facturación)* |
+| **Plan contratado** | Marketing · Marketing Pro · Accelerate · Compound · Tailor Made |
 | **Desde cuándo** | Para saber en qué trimestre va |
 | **Performance fee** | ¿Opcional o incluido? Cambia dónde se pone el foco |
 | **Marcas o cuentas** | 1 paquete = 1 marca. Si hay más, son add-on |
 
 ⚠️ **Si el objetivo del cliente vive en una capa que su plan no cubre** —por ejemplo quiere
-arreglar su embudo de WhatsApp y está en Ignite— **no se entrega igual.**
+arreglar su embudo de WhatsApp y está en 🔷 Marketing— **no se entrega igual.**
 **Se avisa a Allan** y se ofrece subir de plan o cotizarlo como extra.
 
 🛑 **El plan es techo duro.** El agente propone dentro de él, nunca por encima.

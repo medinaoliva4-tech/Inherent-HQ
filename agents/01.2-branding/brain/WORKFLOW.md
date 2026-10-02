@@ -98,15 +98,18 @@ decorativo.
 
 ### ⚠️ Dónde pesa cada plan
 
-| | 🟦 **Ignite** | 🟪 **Accelerate** | 🟨 **Compound** |
-|---|---|---|---|
-| **El peso del departamento** | ✅ **Acá se construye la marca** | Se evoluciona | Se sistematiza |
-| Identidad, voz y sistema visual | ✅ Completo | Se mantiene y se extiende | Se documenta para que lo use cualquiera |
-| Activos distintivos | ✅ | + activos para pauta | + guía operable por terceros |
-| Autoridad *(high ticket)* | 🟡 Empaquetada | ✅ Construida | ✅ **Del sistema, no del fundador** |
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **El peso del departamento** | ✅ **Acá se construye la marca** | Se extiende | Se evoluciona | Se sistematiza |
+| Identidad, voz y sistema visual | ✅ Completo | + formatos nuevos | Se mantiene y se extiende | Se documenta para que lo use cualquiera |
+| Activos distintivos | ✅ | + activos para pauta | + activos para pauta | + guía operable por terceros |
+| Autoridad *(high ticket)* | ⬜ | 🟡 Empaquetada | ✅ Construida | ✅ **Del sistema, no del fundador** |
 
-> 🔑 **La marca se construye en Ignite.** Rehacerla en Accelerate contradice la promesa
-> publicada: *«escalar lo que ya funciona, sin perderlo»*.
+> 🔑 **La marca se construye en Marketing, el plan más barato.** Rehacerla en Accelerate
+> contradice la promesa publicada: *«escalar lo que ya funciona, sin perderlo»*.
+
+⚠️ **②B trabaja la VOZ y el sistema visual en los cuatro planes.**
+**Qué se vende y a qué precio es de ② Growth, y solo entra desde Accelerate.**
 
 ---
 

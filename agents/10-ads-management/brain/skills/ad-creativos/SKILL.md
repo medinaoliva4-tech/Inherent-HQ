@@ -31,9 +31,9 @@ sabe qué falló.
 
 ## 2 · El techo de variantes
 
-| 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|
-| hasta **20** | hasta **35** | hasta **50** |
+| 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|
+| hasta **20** | hasta **30** | hasta **35** | hasta **50** |
 
 🛑 **Si hacen falta más, se pide a ⑥B dentro del techo** — no se pauta con menos de 3 por
 campaña.

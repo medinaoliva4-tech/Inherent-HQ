@@ -68,7 +68,7 @@ dirigir.
 
 ## 5 · El segundo idioma — solo 🟨 Compound
 
-**Higgsfield `dubbing`.** No entra en Ignite ni Accelerate: **prometerlo ahí rompe el margen.**
+**Higgsfield `dubbing`.** Solo 🟨 Compound: **prometerlo en cualquier otro plan rompe el margen.**
 
 ## 6 · Cada derivada hereda
 

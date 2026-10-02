@@ -58,10 +58,11 @@ termina sin parecerse a lo que ④ dirigió.
 
 **Se verifica contra el plan contratado antes de empezar:**
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| Reels | 6 | 10 | 14 |
-| Derivadas | 10 | 20 | 30 |
+| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| Videos de grabación | 8 | 12 | 18 | 20 |
+| Videos con b-roll | 2 | 4 | 2 | 4 |
+| **Total** | **10** | **16** | **20** | **24** |
 
 🛑 **Si el Excel pide más, se declara y se devuelve a ③ Marketing.** No se edita de más.
 

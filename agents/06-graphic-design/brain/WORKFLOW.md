@@ -10,12 +10,12 @@ paso vive en las skills: `skills/README.md`.
 
 ## 1 · El problema de este departamento es el volumen
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| **Estáticos y carruseles** | **40** | **70** | **100** |
-| **Stories** | **30** | **45** | **60** |
-| **Total** | **70** | **115** | **160** |
-| **Revisiones por pieza** | 2 | 2 | **3** |
+| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| **Estáticos y carruseles** | **46** | **74** | **70** | **100** |
+| **Stories** | **30** | **55** | **55** | **80** |
+| **Total** | **76** | **129** | **125** | **180** |
+| **Revisiones por pieza** | 1 | 2 | 2 | **3** |
 
 > 🔑 **160 piezas al mes no se diseñan una por una. Se arma un sistema de plantillas y se
 > llenan.** Por eso la Capa 1 es la que decide si el ciclo entra o no.

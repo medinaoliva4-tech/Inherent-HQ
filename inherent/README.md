@@ -25,9 +25,10 @@ MÉTODO        GROWTH OS       de dónde sale el crecimiento
               OPERATIONS OS   que la empresa lo aguante
               MONEY OS        que quede utilidad
                     │
-OFERTA        IGNITE      $800     mapea      invisible → deseado
-              ACCELERATE  $1,200   ejecuta    estancado → escalando
-              COMPOUND    $2,000   sistematiza  escalando → autónomo
+OFERTA     🔷 MARKETING      $850    atención     arrancando → visible
+           🔷 MARKETING PRO  $1,300  atención     visible → sostenido
+           🟨 ACCELERATE     $2,500  facturación  estancado → escalando
+           🟨 COMPOUND       $4,000  facturación  escalando → autónomo
                     │
 DIVISIONES    LOW TICKET    volumen      oferta · big sales · upsells
               HIGH TICKET   precisión    oferta · cuentas grandes · expansión
