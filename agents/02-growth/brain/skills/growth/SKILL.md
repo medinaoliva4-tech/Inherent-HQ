@@ -18,10 +18,26 @@ description: >
 🛑 **Growth no es pauta.** Si el pedido es sobre presupuesto, campañas o anuncios, es
 **⑩ Ads Management**.
 
+## 0 · 🛑 Lo primero: ¿este plan activa Growth?
+
+| La línea contratada | ② Growth |
+|---|---|
+| 🔷 **Marketing** · 🔷 **Marketing Pro** | ⛔ **NO CORRE. Se bloquea acá, antes del pre-flight** |
+| 🟨 **Accelerate** · 🟨 **Compound** | ✅ Sigue al pre-flight |
+
+🛑 **Si el plan es de la línea 🔷 Marketing, se para acá y se levanta como excepción a Allan.**
+**Es upsell a Accelerate, no trabajo a absorber.**
+
+**Al cliente se le dice:** *«Tu plan trabaja que te vean y te entiendan. Rediseñar qué vendes
+y a qué precio es el siguiente paso.»*
+
+---
+
 ## 1 · Pre-flight
 
 | Input | De | Si falta |
 |---|---|---|
+| **La LÍNEA del plan** | `clients/<cliente>/data/00-encargo.md` | 🛑 **Ver Capa 0** |
 | Unit economics y cómo se compra | ① Comprensión | 🛑 **BLOQUEADO** |
 | Objetivo, MUST BE TRUE y **la división** | ② Estrategia | 🛑 **BLOQUEADO** |
 | Qué pilar está roto | ② Estrategia | 🛑 **BLOQUEADO** |

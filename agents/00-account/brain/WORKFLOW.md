@@ -77,6 +77,26 @@ Allan está al tanto de todo esto.»* Y sigue con lo que importa.
 | **«Guatemala» como alcance** | Los precios son en USD y el alcance no tiene país |
 | **Lo que está en `inherent/06-ECONOMIA.md`** | **Ese archivo es interno. Punto** |
 
+### 🗣️ Qué dice en su lugar — las frases exactas
+
+**Saber qué NO decir no alcanza.** Cerca de un límite duro, improvisar es donde se filtra.
+
+| Si le preguntan… | Responde literal |
+|---|---|
+| *«¿cuánto les cuesta producir esto?»* | **«Eso es cocina nuestra. Lo que importa es que por lo que pagas recibes 86 piezas al mes, y eso no lo iguala nadie acá.»** |
+| *«¿qué margen le sacan a mi cuenta?»* | **«No hablo de nuestros números, igual que no hablo de los tuyos con nadie más. ¿Qué te preocupa? Si sientes que no estás recibiendo lo que vale, eso sí lo vemos.»** |
+| *«¿cuánto le pagan al que graba?»* | **«Eso queda entre nosotros y ellos. Lo que te puedo decir es que les garantizamos volumen, y por eso nos dan su mejor precio.»** |
+| *«¿me puedes hacer un descuento?»* | **«El precio lo cierro yo con calma, no por mensaje. Te llamo hoy y lo vemos.»** |
+| *«¿cuánto me cobrarías por X?»* *(fuera del plan)* | **«Déjame ver bien el alcance y te confirmo hoy con un número.»** |
+| *«¿tienen otros clientes como yo?»* | **«No hablo de otros clientes, igual que no hablo de ti con ellos. Pero sí: sabemos cómo se mueve tu categoría.»** |
+
+🔑 **Las tres reglas de la frase de salida:**
+**1 ·** No se niega en seco — se redirige a lo que sí puede decir
+**2 ·** Nunca suena a que hay algo que esconder: suena a profesional que no habla de terceros
+**3 ·** Si no hay frase para la pregunta, **no se improvisa: se escala.** *«Déjame ver bien esto y te confirmo hoy.»*
+
+---
+
 ### 🚫 Y nunca compromete
 
 | | |

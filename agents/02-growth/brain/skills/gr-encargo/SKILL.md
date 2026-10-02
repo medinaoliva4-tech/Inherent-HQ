@@ -59,6 +59,36 @@ description: >
 | Money OS | ⛔ | ⬜ | ✅ |
 
 🛑 **Sobre un plan de la línea 🔷 Marketing, esta skill BLOQUEA.**
+
+---
+
+## 3b · 🔴 ¿El cliente califica para su plan?
+
+**Se cruza la facturación del cliente contra el piso desde el que su plan tiene sentido.**
+
+| Plan | Factura al menos |
+|---|---|
+| 🔷 Marketing | **Q87,000** / mes |
+| 🔷 Marketing Pro | **Q133,000** |
+| 🟨 Accelerate | **Q257,000** |
+| 🟨 Compound | **Q411,000** |
+
+*Supuesto: margen del cliente 30%, el plan se paga con 25% de crecimiento.
+Ver `inherent/03-OFERTA.md` → «Desde qué facturación tiene sentido cada plan».*
+
+### Si factura menos que el piso
+
+🔴 **Se declara en el encargo y se levanta como excepción a Allan.** No se calla.
+
+| Qué se escribe | Ejemplo |
+|---|---|
+| El número real contra el piso | *«Factura Q21,600/mes. El piso de Accelerate es Q257,000.»* |
+| Qué significa | *«El plan cuesta casi lo que factura. No se va a pagar solo.»* |
+| La recomendación | *«Bajar a Marketing Pro, o declarar que el cliente acepta el riesgo.»* |
+
+⚠️ **No se bloquea el trabajo** — el cliente ya firmó. **Se bloquea el silencio.**
+**Un cliente que no puede pagar el plan con el resultado del plan se va a ir**, y es mejor
+saberlo el mes 1 que el mes 6.
 | Money OS | ⬜ | ⬜ | ✅ |
 
 ## 4 · Qué queda afuera — y se dice

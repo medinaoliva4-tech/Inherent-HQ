@@ -28,6 +28,27 @@
 
 ---
 
+# 📋 RESULTADOS — corrida del 2-oct-2026
+
+| # | Agente | Resultado |
+|---|---|---|
+| **1** | ① Strategy | ✅ **PASA** — `⚠️ SIN DATOS` está en el pre-flight y en el checklist |
+| **2** | ②B `br-guardian` | ✅ **PASA** — consume los claims `⏸️`, devuelve con motivo escrito, el checklist exige veredicto |
+| **3** | ② Growth — calificación | 🔴 **FALLÓ → ARREGLADO** — no existía el cruce contra el piso de facturación. Agregado en `gr-encargo` §3b |
+| **4** | ② Growth — bloqueo por línea | 🟡 **PARCIAL → ARREGLADO** — el bloqueo estaba abajo, no en el pre-flight. Subido a Capa 0 del orquestador |
+| **5** | ③ Marketing | ✅ **PASA** — 11 columnas y las 5 combinaciones prohibidas están en el checklist |
+| **6** | ⑥A Diseño | ✅ **PASA** — bloquea sin el Gate 3 de ④ |
+| **7** | ⑥B Video Editing | ✅ **PASA** — declara 27 mínimo / 36 tope y explica el rango |
+| **8** | ⑩ Ads | ✅ **PASA** — pre-flight bloqueado: faltan 4 inputs **y la atribución** |
+| **9** | ⓪ Account | 🟡 **PARCIAL → ARREGLADO** — el límite duro existía, faltaba la frase de salida. Agregadas 6 |
+
+**7 de 9 pasaron limpio. Las 3 fallas estaban arregladas el mismo día.**
+
+🔑 **Las tres fallas tenían el mismo patrón: la regla existía en el repo pero no en el punto
+donde el agente la necesita.** Saber algo y chequearlo en el momento correcto no es lo mismo.
+
+---
+
 ## 🔴 Las dos que más importan
 
 **Prueba 8 y prueba 9.** Son las únicas donde fallar cuesta dinero o reputación:
