@@ -290,6 +290,11 @@ los trece actores.** Ver `inherent/06-ECONOMIA.md` → «Apify».
 🛡️ **Las tres garantías —contenido, alcance y ventas— están en `inherent/03-OFERTA.md`.**
 **Ninguna se publica hasta que sus cuatro pendientes estén cerrados.**
 
+🔌 **Un MCP declarado NO es un MCP conectado.** `inherent/06-ECONOMIA.md` → «El estado real de
+conexión» tiene la prueba en vivo. **De ~35 capacidades, 3 están probadas.**
+🔴 **Higgsfield está en plan free con 0 créditos** — y sostiene nueve capacidades, incluida la
+generación de las 86-204 piezas. **Es el primer desbloqueo, antes que cualquier otro.**
+
 ⚠️ **No se promete lo que no está en «Capacidades reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay
 acción, y sin acción no hay promesa. **Los límites declarados están en `inherent/01-IDENTIDAD.md`:**
 no hacemos LinkedIn Ads, SEO técnico profundo, ni reclutamos personal.

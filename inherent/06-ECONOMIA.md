@@ -445,6 +445,65 @@ La línea Marketing vende atención **y lo dice en la tarjeta.** El cliente sabe
 
 ---
 
+## 🔌 El estado real de conexión — probado en vivo
+
+> **Un MCP declarado no es un MCP conectado.** Esta tabla sale de **llamar a cada uno**,
+> no de leer documentación. `[probado el 2-oct-2026]`
+
+| MCP | Conectado | Cuenta | Estado real |
+|---|---|---|---|
+| **Firecrawl** | ✅ | activa | ✅ **Funciona** — se usó para scrapear precios y competencia |
+| **AdWhispr** | ✅ | activa | 🟡 **Conectado sin configurar** — no hay marca guardada |
+| **Higgsfield** | ✅ | **plan free · 0 créditos** | 🔴 **NO PUEDE GENERAR NADA** |
+| **Apify** | ❌ | sin cuenta | 🔴 Falta cuenta Starter *($19/mes)* e instalar el MCP |
+| **Postpone** | ❌ | sin cuenta | 🔴 Falta cuenta · **precio de agencia sin verificar** |
+| **Notion** | ✅ | activa | ⬜ **No se usa para clientes** — el repo es nuestro Notion |
+| **Zapier · Vercel · Google Workspace** | ✅ | activas | ⬜ Sin correr en cliente real |
+
+### 🔴 El hallazgo que para todo
+
+**Higgsfield está en plan free con 0 créditos.**
+
+**Sostiene nueve capacidades declaradas:** generar imagen en lote · generar video · predicción de
+viralidad · reencuadre por formato · multiplicar una grabación · fotos de producto sin sesión ·
+doblaje · quitar fondo · análisis de video.
+
+🛑 **Sin créditos, las 86 a 204 piezas del mes no se pueden producir.**
+**Es el corazón del modelo de volumen y hoy está apagado.**
+
+---
+
+## 📋 El orden de conexión — qué desbloquea cada uno
+
+| # | Qué | Costo | **Qué desbloquea** |
+|---|---|---|---|
+| **1** | 🔴 **Higgsfield — plan de pago** | ⚠️ sin verificar | **9 capacidades.** Sin esto no hay volumen, y sin volumen no hay oferta |
+| **2** | 🔴 **Apify Starter** | **$19/mes** | **Las 3 garantías** *(línea base, winners de 30+ días, CPM de categoría)* + la inteligencia de ①②③④ |
+| **3** | 🟡 **Postpone** | ⚠️ sin verificar | ⑨ Posting autónomo · ⑧ Community *(sin TikTok)* · las mejores horas de ③ |
+| **4** | 🟡 **AdWhispr — guardar la marca** | Q0 | Que `find_competitors` sirva sin preguntar cada vez |
+| **5** | 🟡 **Plugin `claude-ads`** | Q0 | Auditoría y monitoreo de cuentas — **y verificar si de verdad ejecuta LinkedIn Ads** |
+| **6** | ⬜ **Cuentas del cliente** *(Meta, Google, IG, TikTok)* | Q0 | ⑩ Ads. **Es por cliente, no nuestro** |
+| **7** | ⬜ **CAPI + GA4 por cliente** | Q0 | **La garantía de ventas y el performance fee** |
+
+🔑 **El 1 y el 2 son nuestros y son baratos. Los demás dependen del cliente o de probar.**
+
+⚠️ **Los pasos 1, 2 y 3 son los únicos que cuestan plata, y son los tres que más desbloquean.**
+
+---
+
+## ⚖️ La regla que esto obliga
+
+> 🛑 **Una capacidad marcada `⬜` o `🟡` NO se vende hasta que su MCP esté conectado
+> Y haya corrido una vez contra una cuenta real.**
+
+**De ~35 capacidades declaradas en este archivo, 3 están probadas.**
+*(AdWhispr `find_competitors` y `get_brand_ads`, Firecrawl `scrape`.)*
+
+**Eso no invalida el modelo** — invalida venderlo como si ya corriera.
+**Lo que se vende hoy es lo probado; lo demás se conecta primero.**
+
+---
+
 ## 🕷️ Apify — la capa de scraping
 
 > **Todo lo que haya que scrapear se hace con Apify.** Es la acción que le da datos estructurados
