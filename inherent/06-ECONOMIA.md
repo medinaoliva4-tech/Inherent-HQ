@@ -20,62 +20,77 @@
 
 ## El principio
 
-**Todo plan es un plan de growth.** No vendemos creatividad por un lado y crecimiento por otro,
-porque nuestra propia metodología dice que para crecer hace falta algo íntegro.
-
-**Los tres planes recorren los mismos 3 pilares de su división** *(low o high ticket)*.
-**Lo que cambia es el verbo:** Ignite **mapea** · Accelerate **ejecuta** · Compound **sistematiza**.
-Ver `03-OFERTA.md`.
+**Vendemos dos cosas distintas, y se dicen distinto.**
 
 ```
-IGNITE      $800     invisible → deseado      aprender a comunicarse y existir
-ACCELERATE  $1,200   estancado → escalando    escalar lo que ya funciona, sin perderlo
-COMPOUND    $2,000   escalando → autónomo     que crezca sin vos
+🔷 MARKETING   promete ATENCIÓN      compite con agencias
+🟨 GROWTH      promete FACTURACIÓN   compite con consultoría y CMO fraccional
+```
+
+**La línea Growth recorre los 3 pilares de su división** *(low o high ticket)*.
+**Lo que cambia es el verbo:** Accelerate **ejecuta** · Compound **sistematiza**.
+**La línea Marketing no activa pilares** — ejecuta atención. Ver `03-OFERTA.md`.
+
+```
+🔷 MARKETING      $850     Q6,545      arrancando → visible
+🔷 MARKETING PRO  $1,300   Q10,010     visible → presencia sostenida
+🟨 ACCELERATE     $2,500   Q19,250     estancado → escalando
+🟨 COMPOUND       $4,000   Q30,800     escalando → autónomo
 ```
 
 > **El volumen es lo que nos separa del mercado. La profundidad de involucramiento es lo que
 > separa los planes entre sí.**
 
----
+⚠️ **El salto de Marketing Pro a Accelerate no compra piezas — compra sistemas.**
+Las dos entregan 145. Lo que cambia es que Accelerate toca oferta, precio, conversión y canales.
 
+---
 ## 💀 La estrategia de precio: matarlos con valor, no cobrar más
 
 **No competimos por precio alto. Competimos entregando una cantidad absurda de valor al precio
 que el mercado ya acepta.**
 
-| | Mercado GT | **Inherent Ignite** |
+| | Mercado GT | **🔷 Inherent MARKETING** |
 |---|---|---|
-| Precio | Q3,000 | **Q6,160** |
+| Precio | Q3,000 | **Q6,545** |
 | Piezas al mes | 16 | **86** |
-| **Costo por pieza** | Q188 | **Q64** |
+| **Precio por pieza** | Q188 | **Q76** |
 | Estrategia | ❌ | ✅ |
 | Inteligencia de competencia | ❌ | ✅ |
 | Pauta | a veces | ✅ |
 
-👉 **5.4x el volumen. 66% más barato por pieza. Y trae estrategia, inteligencia y pauta.**
+👉 **5.4x el volumen. 60% más barato por pieza. Y trae estrategia, inteligencia y pauta.**
 **A ese precio, competir con nosotros no es difícil: es imposible.**
+
+⚠️ **Esto aplica a la línea Marketing y nada más.** La línea Growth no se vende por pieza —
+se vende por cuántos sistemas activamos. Ver «El precio por pieza».
 
 ### ⚠️ Pero la ventaja de costo NO está donde parece
 
-**El AI es solo el 4.5% de nuestro costo.** El desglose real de Ignite:
+**El AI es el 7.6% de nuestro costo.** El desglose real de 🔷 Marketing:
 
 | Concepto | % del costo |
 |---|---|
-| Tiempo de Allan | **52%** |
-| Producción (grabar) | 23% |
-| Operador de agentes | 12% |
+| Tiempo de Allan | **31%** |
+| Producción de video | 18% |
+| Operador de agentes | 14% |
+| Fotógrafo | 13% |
+| **Claude / AI** | **13%** |
 | Sesiones | 8% |
-| **Claude / AI** | **4.5%** |
+| Apify | 2% |
 
-**96% del costo es humano.** Bajar el precio no sale del ahorro de AI — **sale del bolsillo de
-Allan.** Los pennies del AI ya están capturados.
+**Más del 85% del costo es humano.** Bajar el precio no sale del ahorro de AI — **sale del
+bolsillo de Allan.** Los pennies del AI ya están capturados.
 
 ### 🔑 Dónde SÍ está el espacio: la mezcla
 
 **Menos grabación (cara, humana) → mucho más contenido generado (gratis).**
 
-Por eso Ignite bajó de 4h a **2h de producción** y subió de 66 a **86 piezas**. Menos costo, más
-volumen, mismo margen. **Esa es la palanca real, y es la única honesta.**
+Por eso 🔷 Marketing corre con **2h de producción** y entrega **86 piezas**: 10 videos y 76
+piezas que cuestan Q0 marginal. **Esa es la palanca real, y es la única honesta.**
+
+⚠️ **Y por eso no existe un plan debajo de Marketing: nunca graba el cliente.** Esas 2 horas más
+el fotógrafo son el piso de costo, y abajo de ahí no hay producto que entregar.
 
 ---
 
@@ -132,27 +147,28 @@ contra 16). **Lo que falla es el costo.** Y el costo falla por una razón concre
 > **Modelo canónico: hora con escalera.** Nadie cobra por cuenta; la tarifa baja con el volumen
 > garantizado y el costo de Claude se prorratea. Ver `05-OPERACION.md`.
 
-**Con 5 clientes** *(mix realista: 2 Ignite · 2 Accelerate · 1 Compound)*
+**Con 5 clientes** *(mix realista: 2 Marketing · 1 Pro · 1 Accelerate · 1 Compound)*
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| **Precio** | Q6,160 *($800)* | Q9,240 *($1,200)* | Q15,400 *($2,000)* |
-| Producción | 3h → Q600 | 5h → Q1,000 | 8h → Q1,600 |
-| Operación | 4h → Q320 | 6h → Q480 | 8h → Q640 |
-| Claude *(Q1,500 ÷ 5)* | Q300 | Q300 | Q300 |
-| Allan *(@Q250/h)* | 4h → Q1,000 | 6h → Q1,500 | 8h → Q2,000 |
-| **COSTO** | **Q2,220** | **Q3,280** | **Q4,540** |
-| **UTILIDAD** | **Q3,940** | **Q5,190** | **Q10,860** |
-| **MARGEN** | **64%** | **65%** | **71%** |
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Precio** | Q6,545 *($850)* | Q10,010 *($1,300)* | Q19,250 *($2,500)* | Q30,800 *($4,000)* |
+| Producción *(video + fotos + sesión)* | Q875 | Q1,450 | Q1,850 | Q2,425 |
+| Operación | 4h → Q320 | 6h → Q480 | 6h → Q480 | 8h → Q640 |
+| Claude + Apify | Q341 | Q341 | Q341 | Q341 |
+| Allan | Q700 | Q1,000 | Q1,900 | Q2,400 |
+| Tecnología · mentor · membresía | Q0 | Q0 | Q1,313 | Q3,079 |
+| **COSTO** | **Q2,236** | **Q3,271** | **Q5,883** | **Q8,884** |
+| **UTILIDAD** | **Q4,309** | **Q6,739** | **Q13,367** | **Q21,916** |
+| **MARGEN** | **66%** | **67%** | **69%** | **71%** |
 
 ### El margen crece solo con cada cliente
 
-| Clientes | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| 2 | 53% | 52% | 64% |
-| **5** | **64%** | **65%** | **71%** |
-| 10 | 67% | 64% | 72% |
-| 20 | 71% | 68% | 75% |
+| Clientes | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| 2 | 55% | — | — | — |
+| **5** | **66%** | **67%** | **69%** | **71%** |
+| 10 | 68% | 69% | 71% | 72% |
+| 20 | 72% | 72% | 73% | 74% |
 
 **Porque la tarifa de producción y operación baja con el volumen garantizado, y Claude se diluye.**
 
@@ -214,55 +230,68 @@ No reemplaza la grabación profesional — **la multiplica.**
 
 ## Los paquetes
 
-| | **Ignite** | **Accelerate** | **Compound** |
-|---|---|---|---|
-| **Precio / mes** | **Q6,160** *($800)* | **Q9,240** *($1,200)* | **Q15,400** *(~$1,805)* |
-| **Unidad** | 1 marca | 1 marca | 1 marca |
-| **Para quién** | Ya vende, pero el crecimiento depende del fundador, los referidos o esfuerzos aislados | Tiene volumen y quiere que el sistema completo empuje, no solo el marketing | Quiere que el crecimiento deje de depender de nosotros y del fundador |
-| **Qué hacemos** | Aceleramos la máquina que hay | Rediseñamos la máquina | Construimos la máquina que se sostiene sola |
-| **Qué incluye** | Estrategia · Demanda · Contenido | + Tecnología · Contenido para ADS · SEO · Closing | + Sistemas de demanda · Fulfillment · Talento |
-| **Performance fee** | Opcional | ✅ Incluido | ✅ Incluido |
+| | 🔷 **MARKETING** | 🔷 **MARKETING PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Precio / mes** | **Q6,545** *($850)* | **Q10,010** *($1,300)* | **Q19,250** *($2,500)* | **Q30,800** *($4,000)* |
+| **Unidad** | 1 marca | 1 marca | 1 marca | 1 marca |
+| **Qué promete** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
+| **Qué hacemos** | Que lo vean y lo entiendan | Que lo sostenga sin quedarse sin qué decir | **Rediseñamos la máquina** | **Construimos la máquina que se sostiene sola** |
+| **Qué incluye** | Marca · Mensaje · Contenido · Pauta | + Video · Google · Creadores · Community | + Oferta · Conversión · Canales · SOPs · Tech · Mentor | + Operación · Estructura · Money OS · IA propia |
+| **Performance fee** | ⬜ No aplica | ⬜ No aplica | ✅ Incluido | ✅ Incluido |
 
 **Y `Tailor Made`** — multi-locación, regulatorio, integraciones, proyectos por hito. Precio según alcance.
 
 > ⚠️ **La unidad es 1 marca, no 1 cuenta de Instagram.** Los paquetes corren en varios canales.
 > Marcas o locaciones adicionales son add-on (ver Extras).
 
+> 🔑 **El performance fee solo existe en la línea Growth.** Requiere atribución limpia, y la
+> atribución limpia requiere Conversion OS — que la línea Marketing no incluye.
+> **Cobrar fee sin atribución es inventar un número.**
+
 ---
 
 ## 📦 El volumen — la tabla que gana la venta
 
-| | **Ignite** | **Accelerate** | **Compound** | *Mercado GT Q3,000* |
-|---|---|---|---|---|
-| **Reels de grabación** | 6 | 10 | 14 | *~4* |
-| **Piezas derivadas** *(cortes, reencuadres, variantes)* | 10 | 20 | 30 | *0* |
-| **Estáticos y carruseles** | 40 | 70 | 100 | *~8* |
-| **Stories** | 30 *(diario)* | 45 | 60 | *~8* |
-| **TOTAL piezas/mes** | **86** | **145** | **204** | ***16*** |
-| | | | | |
-| Horas de producción en sitio | 2h · 1 sesión | 5h · 2 sesiones | 8h · 3 sesiones | — |
-| Variantes de creativo por campaña | hasta 20 | hasta 35 | hasta 50 | *0* |
-| Predicción de viralidad antes de publicar | ✅ | ✅ | ✅ | *❌* |
-| Revisiones por pieza | 2 | 2 | 3 | *1* |
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** | *Mercado GT Q3,000* |
+|---|---|---|---|---|---|
+| **Videos de grabación** | 8 | 12 | 18 | 20 | *~4* |
+| **Videos con b-roll** | 2 | 4 | 2 | 4 | *0* |
+| **Total videos** | **10** | **16** | **20** | **24** | *~4* |
+| **Estáticos y carruseles** | 46 | 74 | 70 | 100 | *~8* |
+| **Stories** | 30 | 55 | 55 | 80 | *~8* |
+| **TOTAL piezas/mes** | **86** | **145** | **145** | **204** | ***16*** |
+| | | | | | |
+| Horas de grabación | **2 h** · 1 sesión | **4 h** · 2 sesiones | **6 h** · 2 sesiones | **8 h** · 3 sesiones | — |
+| Variantes de creativo por campaña | hasta 20 | hasta 30 | hasta 35 | hasta 50 | *0* |
+| Predicción de viralidad antes de publicar | ✅ | ✅ | ✅ | ✅ | *❌* |
+| Revisiones por pieza | 1 | 2 | 2 | 3 | *1* |
 
-> 🔥 **Ignite entrega 5.4x el volumen del mercado, a Q64 por pieza contra Q188.**
->
-> **El video de grabación es el único techo real** — depende de las horas de producción.
-> **Todo lo demás escala con agentes y cuesta Q0 marginal.**
+> 🔥 **El video es solo el 11-14% de las piezas — y casi la mitad del costo de producción.**
+> **Es el único techo real.** Todo lo demás escala con agentes y cuesta Q0 marginal.
 
-⚠️ **El video de grabación es el único techo real** — depende de las horas de producción y de
-cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
+⚠️ **Nunca graba el cliente.** Las horas de grabación son el piso de costo de cada plan, y por
+eso no existe un plan por debajo de Marketing.
+
+### El precio por pieza — y por qué deja de aplicar en Growth
+
+| | Precio | Piezas | **Q/pieza** |
+|---|---|---|---|
+| *Mercado GT* | *Q3,000* | *16* | ***Q188*** |
+| 🔷 **MARKETING** | Q6,545 | 86 | **Q76** |
+| 🔷 **MARKETING PRO** | Q10,010 | 145 | **Q69** |
+| 🟨 ACCELERATE | Q19,250 | 145 | Q133 |
+| 🟨 COMPOUND | Q30,800 | 204 | Q151 |
+
+> 🔑 **El Q/pieza es el arma de la línea Marketing y nada más.**
+> **En Growth el precio NO se justifica por pieza** — se justifica por cuántos sistemas se
+> activan y qué tan adentro entramos. **Usar Q/pieza para vender Accelerate es venderlo mal.**
 
 ---
 
 ## Qué incluye cada plan
 
-> **Está en otros dos archivos, para no duplicarlo:**
->
-> | Archivo | Qué tiene |
-> |---|---|
-> | **`03-OFERTA.md`** | Lo que se le dice al cliente — el deseo, el boost y el resultado |
-> | **`03-OFERTA.md`** | Los 3 pilares × 2 divisiones × 3 planes, y qué OS entra en cada uno |
+> **Está en `03-OFERTA.md`:** lo que se le dice al cliente, las cuatro tarjetas publicadas, qué
+> respalda cada línea, y los 3 pilares × 2 divisiones × 4 planes.
 >
 > **Acá viven solo el techo duro de volumen, las capacidades reales y la economía.**
 
@@ -270,163 +299,90 @@ cuánto pueda grabar el cliente. **Todo lo demás escala con agentes.**
 
 ## 🎯 La estrategia de bundle
 
-> **El bundle no es un descuento. Es una eficiencia estructural.**
-> Subir de escalón cuesta **60-70% menos** que comprar lo mismo pieza por pieza.
->
-> ⚠️ **Pero no todo el ahorro es gratis para nosotros.** Ver la sección C: el salto
-> Ignite → Accelerate se come casi todo su propio margen.
+### A · Dentro de la línea Marketing, el bundle sí es descuento
 
----
+**Marketing → Marketing Pro cuesta Q3,465 más.** Comprar lo mismo suelto, a precio de Extras:
 
-### A · Por qué cada escalón cuesta menos de lo que vale
-
-#### Ignite → Accelerate · el salto cuesta **Q4,400**
-
-| Si lo comprara pieza por pieza | Precio de lista |
+| Lo que agrega | À la carte |
 |---|---|
-| 59 piezas extra al mes *(× Q60)* | Q3,540 |
-| Herramienta a medida *(Q6,000 / trimestre)* | Q2,000 |
+| +28 estáticos y carruseles | Q1,680 |
+| +6 videos para pauta | Q1,500 |
+| +2 h de producción | Q500 |
 | Gestión de Google Ads | Q2,500 |
-| Setup de embudo de WhatsApp *(Q8,000 / 12)* | Q667 |
-| Dashboard en vivo *(Q6,000 / 12)* | Q500 |
-| Radar de competencia semanal | Q750 |
-| Catálogo de producto generado *(Q4,500 / 6)* | Q750 |
-| Sesión de dirección mensual | Q1,000 |
-| Setup de closing y entrenamiento de ventas | Q4,000 |
-| SEO de intención | Q2,000 |
-| **TOTAL à la carte** | **Q17,707** |
-| **Lo que cuesta el salto** | **Q3,080** |
-| **AHORRO** | **Q14,627 · 83%** |
+| **TOTAL suelto** | **Q6,180** |
+| **En el bundle** | **Q3,465** |
 
-> 🔥 **Solo las 59 piezas extra ya valen más que el salto entero.** Todo lo demás —Google Ads,
-> WhatsApp, dashboard, herramienta a medida— va prácticamente de regalo.
+👉 **44% menos** — y eso sin contar stories, creadores ni community, que no se venden sueltos.
 
-#### Accelerate → Compound · el salto cuesta **Q6,160**
+**Por qué se puede:** todo lo que corre sobre agentes suma **Q0 al costo variable.**
+Lo único que sube de verdad son las 2 horas de grabación.
 
-| Si lo comprara pieza por pieza | Precio de lista |
+### B · El salto a Growth NO es un descuento — es acceso
+
+**Marketing Pro → Accelerate cuesta Q9,240 más, y entrega las mismas 145 piezas.**
+
+⚠️ **Nada de lo que agrega se vende à la carte**, y es a propósito:
+
+| Lo que agrega | Por qué no se vende suelto |
 |---|---|
-| 59 piezas extra al mes *(× Q60)* | Q3,540 |
-| 2 herramientas a medida extra por trimestre | Q4,000 |
-| IA propia del cliente *(Q12,000 / 12)* | Q1,000 |
-| Contenido en segundo idioma | Q2,500 |
-| Sesión de dirección quincenal *(+1)* | Q1,000 |
-| Experiencia completa y estrategia de LTV | Q1,500 |
-| Atribución completa | Q500 |
-| Sistemas de demanda *(referidos, comunidad)* | Q3,500 |
-| Fulfillment — mapeo, SOPs y automatización | Q4,500 |
-| Talento — perfiles, SOPs y onboarding | Q3,500 |
-| **TOTAL à la carte** | **Q25,540** |
-| **Lo que cuesta el salto** | **Q6,160** |
-| **AHORRO** | **Q19,380 · 76%** |
+| Tu oferta y tu precio rediseñados | **No es un entregable, es criterio.** Sin conocer el negocio adentro, no se puede |
+| Canales grandes abiertos | Necesita material de ventas, outreach y seguimiento — eso es Conversion OS |
+| Que nadie se pierda | Requiere la atribución y el embudo montados antes |
+| SOPs de crecimiento | Solo se documenta lo que ya se vio funcionar |
+| El especialista de tu industria | La membresía es de Inherent y se prorratea |
 
-> 🔥 **Comprar todo lo de Compound suelto costaría Q49,407/mes** *(Q6,160 de base + Q17,707 +
-> Q25,540 de extras)*. **Se paga Q15,400 — 69% menos.**
-
----
-
-### B · Por qué los saltos son chicos a propósito
-
-**Los saltos son de +50% y +67% sobre un precio base bajo.** En quetzales:
-
-| Salto | Cuánto sube | Qué desbloquea |
-|---|---|---|
-| Ignite → Accelerate | **+Q3,080** *(+$400)* | Conversión, tecnología, Google Ads, +59 piezas |
-| Accelerate → Compound | **+Q6,160** *(+$800)* | Autonomía, IA propia, +59 piezas, herramienta mensual |
-
-👉 **Q3,080 al mes para que dejen de perder leads no es una decisión difícil.** Ese es el punto
-de arrancar barato: **el siguiente escalón siempre se ve chico.**
-
-### ⚠️ Y si el cliente "se conforma" con Ignite, ganamos igual
-
-**Un cliente que se queda en Ignite es un cliente que no está con la competencia.**
-A Q6,160 con 86 piezas, **ninguna agencia guatemalteca puede pelear esa cuenta.**
-El upsell puede esperar. **La cuenta ya es nuestra, y el costo de mantenerla es bajo.**
-
----
+> 🔑 **Ese es el argumento de venta del salto más rentable que tenemos:**
+> *«no estás comprando más contenido — estás comprando que ese contenido se cobre.»*
 
 ### C · Qué pasa con el margen en cada salto
 
-| Salto | Sube el **precio** | Sube el **costo** | Margen |
+| Salto | Precio +  | Costo + | **Margen del salto** |
 |---|---|---|---|
-| Ignite → Accelerate | +50% *(+Q3,080)* | +48% *(+Q1,060)* | 64% → **65%** ✅ |
-| Accelerate → Compound | **+67%** *(+Q6,160)* | +38% *(+Q1,260)* | 65% → **71%** ✅ |
+| Marketing → Pro | +Q3,465 | +Q1,035 | **70%** |
+| **Pro → Accelerate** | **+Q9,240** | **+Q2,612** | **72%** |
+| Accelerate → Compound | +Q11,550 | +Q3,001 | **74%** |
 
-**Los dos saltos suben el margen.** Accelerate agrega **producción real** —2 horas más de
-grabación y 2 de operación— pero a $1,200 el precio sube más rápido que ese costo humano.
+👉 **Cada salto deja más margen que el plan de donde viene.** Por eso el movimiento comercial es
+**subir a los clientes que ya están, no sumar clientes nuevos.**
 
-**El segundo salto recupera 10 puntos**, porque lo que agrega Compound —SOPs, números,
-herramientas— **corre sobre agentes y criterio, no sobre horas de producción.**
+### D · El hueco que dispara el upsell
 
-| Lo que se agrega en el primer salto | Costo marginal |
+| Plan | El dolor que aparece a los 3-6 meses |
 |---|---|
-| Producción (+2h) | Q400 |
-| Operación (+2h) | Q160 |
-| Allan (+2h) | Q500 |
-| **+59 piezas al mes** | **Q0** |
-| **Google Search + PMax** | **Q0** |
-| **Embudos de WhatsApp y atribución** | **Q0** |
-| **SEO de intención y closing** | **Q0** |
-| **Radar semanal** | **Q0** |
+| 🔷 **MARKETING** | *«Ya me ven, pero no doy abasto con el contenido / quiero video en serio»* → **Pro** |
+| 🔷 **MARKETING PRO** | *«Llegan mensajes y no se cierran»* → **Accelerate** |
+| 🟨 **ACCELERATE** | *«Funciona, pero todo pasa por mí»* → **Compound** |
 
-👉 **Todo lo que corre sobre agentes suma Q0.** Lo que cuesta es la hora humana.
-
-> **Esa es la ventaja completa: a una agencia le costaría contratar a alguien para cada línea de
-> Q0. A nosotros no nos cuesta nada.**
-
-### D · El hueco — lo que dispara el upsell
-
-**Cada paquete deja un vacío evidente. El cliente lo siente solo; no hay que venderlo.**
-
-| | Lo que resuelve | El hueco que deja | Lo que el cliente dice |
-|---|---|---|---|
-| **Ignite** | Atención y demanda | **Conversión** | *"Me llegan mensajes pero se pierden"* |
-| **Accelerate** | Atención, demanda y conversión | **Autonomía** | *"Funciona, pero solo mientras ustedes estén"* |
-| **Compound** | El sistema que se sostiene solo | — | — |
-
----
+⚠️ **El upsell se vende con el diagnóstico, no con el catálogo.**
 
 ### E · Cuándo se vende cada uno — la regla de diagnóstico
 
-| Si el cliente… | Va a |
+| Si el negocio… | Va a |
 |---|---|
-| No tiene demanda suficiente, o nadie lo conoce | **Ignite** |
-| Tiene demanda pero se le escapa (no da abasto, pierde leads) | **Accelerate** |
-| Convierte bien, pero **todo depende de él o de nosotros** | **Compound** |
-| No encaja en ningún molde (multi-locación, regulatorio) | **Tailor Made** |
+| No lo conocen, y convierte bien lo poco que llega | 🔷 **MARKETING** |
+| Ya lo conocen, y solo quiere sostener presencia | 🔷 **MARKETING PRO** |
+| **Tiene tráfico y no lo cobra** | 🟨 **ACCELERATE** |
+| Funciona y depende del dueño | 🟨 **COMPOUND** |
 
-⚠️ **No se vende hacia arriba de lo que el cliente necesita.** Vender Compound a quien todavía no
-tiene demanda es venderle autonomía sobre una máquina que no funciona. **Se cae en 3 meses y nos
-cuesta el caso.**
+⚠️ **Si la empresa es el estorbo, más demanda empeora el problema.** Se arregla la capacidad
+primero, aunque la venta fácil sea más pauta.
 
----
+### F · Si el cliente «se conforma» con Marketing, ganamos igual
 
-### F · La estrategia interna: **subir, no sumar**
-
-> Principio #02: *"Crecer no es hacer más. Es hacer que menos pese menos."*
-
-| Escenario | Utilidad/mes *(@Q250/h)* | Horas de Allan |
-|---|---|---|
-| 5 × Ignite | Q11,415 | 35 h |
-| 5 × Accelerate | Q18,540 | 55 h |
-| **3 × Compound** | **Q20,199** | **45 h** ✅ |
-| 4 × Compound | Q26,932 | 60 h |
-| 5 × Compound | Q33,665 | 75 h |
-
-🔥 **3 clientes Compound dan más plata que 5 Accelerate — con 10 horas menos y 2 clientes menos.**
-
-**El movimiento comercial no es conseguir más clientes. Es subir a los que ya están.**
+**Marketing deja 66% de margen.** No es un plan de pérdida que se compensa después.
+**Es el plan que gana la cuenta** — y la cuenta se sube cuando aparece el dolor, no antes.
 
 ### G · Lo que NO se desagrega
 
-| Regla | Por qué |
+| | |
 |---|---|
-| **No se vende una sola capa suelta** | La metodología dice que crecer exige algo íntegro. Vender solo contenido, o solo pauta, contradice lo que predicamos |
-| **No se vende Compound a quien no tiene demanda** | Es autonomía sobre una máquina rota |
-| **Los extras son complementos, no sustitutos** | Nadie arma un paquete juntando extras. El à la carte existe para **mostrar el ahorro**, no para comprarse |
-| **No se baja de paquete a mitad de trimestre** | El trabajo de las capas profundas se hace al inicio |
+| **La estrategia** | Los cuatro planes la incluyen. Cambia la profundidad, no la existencia |
+| **La marca** | No se vende un logo suelto |
+| **Los pilares de Growth** | No se vende «solo el Pilar 2». Crecer exige algo íntegro |
+| **La atribución** | No es un extra: es el requisito del performance fee |
 
-> ⚠️ **La tabla à la carte es para la venta, no para el catálogo.** Sirve para que el cliente vea
-> el ahorro. **Si se vuelve un menú, perdemos el bundle y volvemos a ser agencia.**
+⚠️ **Lo que no se vende suelto es una capa disfrazada de crecimiento.**
+La línea Marketing vende atención **y lo dice en la tarjeta.** El cliente sabe qué compró.
 
 ---
 
@@ -573,18 +529,19 @@ de scraping. **Lo que se pasa se cobra aparte, y lo que no se usa se pierde** �
 
 | Plan | Precio | Costo de Apify | **Puntos de margen** |
 |---|---|---|---|
-| 🟦 Ignite | Q6,160 | Q41 | **−0.7** |
-| 🟪 Accelerate | Q9,240 | Q41 | **−0.4** |
-| 🟨 Compound | Q15,400 | Q41 | **−0.3** |
+| 🔷 Marketing | Q6,545 | Q41 | **−0.6** |
+| 🔷 Marketing Pro | Q10,010 | Q41 | **−0.4** |
+| 🟨 Accelerate | Q19,250 | Q41 | **−0.2** |
+| 🟨 Compound | Q30,800 | Q41 | **−0.1** |
 
 🟢 **Es factible y rentable.** Cuesta **menos de un punto de margen** —
-**Q0.70 de cada Q100 que factura Ignite.**
+**Q0.60 de cada Q100 que factura Marketing.**
 **Y el costo por cliente no sube al crecer:** con 10 clientes sigue en Q41.
 
 ### 🔴 El techo que hay que vigilar
 
 **A 10x de volumen (18,500 resultados por cliente al mes) el costo pasa a ~Q408 por cliente:
-Ignite perdería 6.6 puntos.**
+Marketing perdería 6.2 puntos.**
 
 | | Regla |
 |---|---|
@@ -647,166 +604,177 @@ Ignite perdería 6.6 puntos.**
 
 | Concepto | Costo unitario | Cómo se calcula |
 |---|---|---|
-| **Producción** | **Q250** / hora | Lo que cobra quien graba |
+| **Producción de video** | **Q200** / hora | Tarifa con volumen garantizado. Ver `05-OPERACION.md` → la escalera |
+| **Fotógrafo** | **Q300** / sesión | 1 hora, una vez al mes, en todos los planes |
 | **Fee por sesión** | **Q175** / sesión | Fee fijo por salida a grabar |
-| **Operador de agentes** | **Q600 – Q1,200** / marca | Sube con el volumen de piezas |
-| **Claude** | **Q960** / mes **TOTAL** | Claude + herramientas. **No es por cliente.** Se prorratea entre 5 |
-| **Build de tecnología** | **Q750 – Q1,500** / mes | Horas amortizadas de construir la herramienta |
-| **Allan** | **Q60 · Q150 · Q250** / hora | Tres criterios — ver `05-OPERACION.md` |
-| **Membresía de mentoría** | **Q385** / mes **TOTAL** | Anual, de Inherent. **No es por cliente.** Se prorratea |
-| **Apify** *(scraping)* | **~Q205** / mes **TOTAL** | Plan Starter + consumo. **No es por cliente.** Se prorratea — ~Q41 con 5 |
-| **Sesión de mentor 1:1** | **Q185 · Q370 · Q1,386** / mes | Techo $72 · $144 · $180 por sesión — ver `04-MERCADO.md` |
+| **Operador de agentes** | **Q80** / hora | Tarifa con volumen. 4-8 h por marca según piezas |
+| **Allan** | **Q700 – Q2,400** / marca | Según plan. Ver `05-OPERACION.md` → sus horas |
+| **Claude** | **Q1,500** / mes **TOTAL** | Claude + herramientas. **No es por cliente.** Se prorratea |
+| **Apify** *(scraping)* | **~Q205** / mes **TOTAL** | Plan Starter + consumo. **No es por cliente.** Se prorratea |
+| **Build de tecnología** | **Q750 – Q1,500** / mes | Solo línea Growth. Horas amortizadas de construir la herramienta |
+| **Membresía de mentoría** | **Q385** / mes **TOTAL** | Anual, de Inherent. **Solo se prorratea entre clientes Growth** |
+| **Sesión de mentor 1:1** | **Q370 · Q1,386** / mes | Techo $144 · $180 por sesión — ver `04-MERCADO.md` |
 
-> 🟢 **Casi todo el costo es variable.** El único fijo es Claude (Q960). No se pierde plata si
-> no hay clientes, y cada marca nueva es casi toda margen.
+> 🟢 **Casi todo el costo es variable.** Los únicos fijos son Claude (Q1,500) y Apify (Q205).
+> No se pierde plata si no hay clientes, y cada marca nueva es casi toda margen.
 >
-> 🔴 **Pero ojo: Claude es solo el 4.5% del costo.** El 96% es humano —
+> 🔴 **Pero ojo: Claude + Apify son el 8% del costo.** El resto es humano —
 > producción, operador y el tiempo de Allan. **La ventaja de AI ya está capturada.**
 
+> **Modelo canónico: 5 clientes con mix 2 Marketing · 1 Pro · 1 Accelerate · 1 Compound.**
+> Eso da **22 h de producción** *(tarifa Q200)* y **28 h de operación** *(tarifa Q80)*.
+> Claude ÷ 5 = Q300 · Apify ÷ 5 = Q41 · Membresía ÷ 2 clientes Growth = Q193.
+
 ---
 
-### 🟦 IGNITE — Q6,160 · 86 piezas
+### 🔷 MARKETING — Q6,545 · 86 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
-| Producción | 2h × Q250 | Q500 |
+| Producción de video | 2 h × Q200 | Q400 |
+| Fotógrafo | 1 sesión | Q300 |
 | Sesiones de grabación | 1 × Q175 | Q175 |
-| Operador de agentes | volumen alto | Q600 |
-| Claude | Q960 ÷ 5 | Q192 |
-| Build de tecnología | no incluye | Q0 |
-| **Subtotal sin Allan** | | **Q1,467** |
-
-| Con la hora de Allan a… | Allan (7h) | **Costo total** | **Utilidad** | **Margen** |
-|---|---|---|---|---|
-| Q60/h *(lo básico)* | Q420 | Q1,887 | Q3,613 | **66%** |
-| **Q150/h** *(reemplazo)* | Q1,050 | **Q2,517** | **Q2,983** | **54%** |
-| **Q250/h** *(ambicioso)* | Q1,750 | **Q3,217** | **Q2,283** | **42%** |
+| Operador de agentes | 4 h × Q80 | Q320 |
+| Allan | dirección y QA | Q700 |
+| Claude | Q1,500 ÷ 5 | Q300 |
+| Apify | Q205 ÷ 5 | Q41 |
+| Tecnología · mentor · membresía | no incluye | Q0 |
+| **COSTO TOTAL** | | **Q2,236** |
+| **UTILIDAD** | | **Q4,309** |
+| **MARGEN** | | **66%** |
 
 ---
 
-### 🟪 ACCELERATE — Q9,240 · 145 piezas
+### 🔷 MARKETING PRO — Q10,010 · 145 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
-| Producción | 5h × Q250 | Q1,250 |
+| Producción de video | 4 h × Q200 | Q800 |
+| Fotógrafo | 1 sesión | Q300 |
 | Sesiones de grabación | 2 × Q175 | Q350 |
-| Operador de agentes | +volumen | Q900 |
-| Claude | Q960 ÷ 5 | Q192 |
-| Build de tecnología | 1 herramienta / trimestre | Q750 |
-| **Subtotal sin Allan** | | **Q3,442** |
-
-| Con la hora de Allan a… | Allan (11h) | **Costo total** | **Utilidad** | **Margen** |
-|---|---|---|---|---|
-| Q60/h | Q660 | Q4,102 | Q5,798 | **59%** |
-| **Q150/h** | Q1,650 | **Q5,092** | **Q4,808** | **49%** |
-| **Q250/h** | Q2,750 | **Q6,192** | **Q3,708** | **37%** |
+| Operador de agentes | 6 h × Q80 | Q480 |
+| Allan | dirección y QA | Q1,000 |
+| Claude | Q1,500 ÷ 5 | Q300 |
+| Apify | Q205 ÷ 5 | Q41 |
+| Tecnología · mentor · membresía | no incluye | Q0 |
+| **COSTO TOTAL** | | **Q3,271** |
+| **UTILIDAD** | | **Q6,739** |
+| **MARGEN** | | **67%** |
 
 ---
 
-### 🟨 COMPOUND — Q15,400 · 204 piezas
+### 🟨 ACCELERATE — Q19,250 · 145 piezas
 
 | Concepto | Cálculo | Costo |
 |---|---|---|
-| Producción | 8h × Q250 | Q2,000 |
+| Producción de video | 6 h × Q200 | Q1,200 |
+| Fotógrafo | 1 sesión | Q300 |
+| Sesiones de grabación | 2 × Q175 | Q350 |
+| Operador de agentes | 6 h × Q80 | Q480 |
+| **Allan** | **estrategia, oferta y dirección** | **Q1,900** |
+| Claude | Q1,500 ÷ 5 | Q300 |
+| Apify | Q205 ÷ 5 | Q41 |
+| Build de tecnología | 1 herramienta / trimestre | Q750 |
+| Membresía de mentoría | Q385 ÷ 2 | Q193 |
+| Sesión de mentor 1:1 | 1/trimestre @ $144 | Q370 |
+| **COSTO TOTAL** | | **Q5,883** |
+| **UTILIDAD** | | **Q13,367** |
+| **MARGEN** | | **69%** |
+
+---
+
+### 🟨 COMPOUND — Q30,800 · 204 piezas
+
+| Concepto | Cálculo | Costo |
+|---|---|---|
+| Producción de video | 8 h × Q200 | Q1,600 |
+| Fotógrafo | 1 sesión | Q300 |
 | Sesiones de grabación | 3 × Q175 | Q525 |
-| Operador de agentes | volumen máximo | Q1,200 |
-| Claude | Q960 ÷ 5 | Q192 |
+| Operador de agentes | 8 h × Q80 | Q640 |
+| **Allan** | **dirección, estructura y Money OS** | **Q2,400** |
+| Claude | Q1,500 ÷ 5 | Q300 |
+| Apify | Q205 ÷ 5 | Q41 |
 | Build de tecnología | 1 herramienta / **mes** | Q1,500 |
-| **Subtotal sin Allan** | | **Q5,417** |
+| Membresía de mentoría | Q385 ÷ 2 | Q193 |
+| Sesión de mentor 1:1 | 1/mes @ $180 | Q1,386 |
+| **COSTO TOTAL** | | **Q8,884** |
+| **UTILIDAD** | | **Q21,916** |
+| **MARGEN** | | **71%** |
 
-| Con la hora de Allan a… | Allan (15h) | **Costo total** | **Utilidad** | **Margen** |
+---
+
+### Resumen — los cuatro, lado a lado
+
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
-| Q60/h | Q900 | Q6,317 | Q9,583 | **60%** |
-| **Q150/h** | Q2,250 | **Q7,667** | **Q8,233** | **52%** |
-| **Q250/h** | Q3,750 | **Q9,167** | **Q6,733** | **42%** |
+| **Precio** | **Q6,545** *($850)* | **Q10,010** *($1,300)* | **Q19,250** *($2,500)* | **Q30,800** *($4,000)* |
+| **Piezas/mes** | **86** | **145** | **145** | **204** |
+| Producción de video | Q400 | Q800 | Q1,200 | Q1,600 |
+| Fotógrafo | Q300 | Q300 | Q300 | Q300 |
+| Sesiones | Q175 | Q350 | Q350 | Q525 |
+| Operador | Q320 | Q480 | Q480 | Q640 |
+| **Allan** | **Q700** | **Q1,000** | **Q1,900** | **Q2,400** |
+| Claude | Q300 | Q300 | Q300 | Q300 |
+| Apify | Q41 | Q41 | Q41 | Q41 |
+| Tecnología | Q0 | Q0 | Q750 | Q1,500 |
+| Membresía | Q0 | Q0 | Q193 | Q193 |
+| Mentor 1:1 | Q0 | Q0 | Q370 | Q1,386 |
+| **COSTO TOTAL** | **Q2,236** | **Q3,271** | **Q5,883** | **Q8,884** |
+| **UTILIDAD** | **Q4,309** | **Q6,739** | **Q13,367** | **Q21,916** |
+| **MARGEN** | **66%** ✅ | **67%** ✅ | **69%** ✅ | **71%** ✅ |
+| Costo por pieza | Q26 | Q23 | Q41 | Q44 |
+
+> **Utilidad del mes con 5 clientes (2 Marketing · 1 Pro · 1 Accelerate · 1 Compound):
+> Q50,640** sobre Q73,150 de facturación.
+
+> ✅ **Este es el número que se lleva a la mesa.** Incluye la mentoría, que siempre se entrega en
+> la línea Growth. **El piso es 60%: un plan que baje de ahí con un cliente real se revisa.**
+
+### 🔑 Por qué el margen sube con el plan
+
+**El costo sube en línea recta; el precio sube en escalón.**
+De Marketing a Compound el costo se multiplica por **4.0** y el precio por **4.7**.
+
+**La razón es que lo caro de Growth es criterio, no manos:** Allan pasa de Q700 a Q2,400, pero
+no hay 4x de producción detrás. **Lo que se cobra es la decisión, y la decisión no escala en costo.**
 
 ---
 
-### Resumen — los tres, lado a lado
+### 📈 El múltiplo — qué se puede prometer y qué no
 
-| | **Ignite** | **Accelerate** | **Compound** |
-|---|---|---|---|
-| **Precio** | **Q6,160** | **Q9,240** | **Q15,400** |
-| **Piezas/mes** | **86** | **145** | **204** |
-| Producción | Q500 | Q1,250 | Q2,000 |
-| Sesiones | Q175 | Q350 | Q525 |
-| Operador | Q600 | Q900 | Q1,200 |
-| Claude | Q192 | Q192 | Q192 |
-| Tecnología | Q0 | Q750 | Q1,500 |
-| Allan *(@Q250/h)* | Q1,750 | Q2,750 | Q3,750 |
-| **COSTO TOTAL** | **Q3,217** | **Q6,192** | **Q9,167** |
-| **UTILIDAD** | **Q2,943** | **Q2,278** | **Q6,233** |
-| **MARGEN** *(modelo de hora, 5 clientes)* | **64%** | **65%** | **71%** |
+> ⚠️ **Hoy no hay un solo caso medido.** Todo lo de abajo es modelo, no evidencia.
+> **Por eso en la web va «apuntamos a», nunca «garantizamos».**
 
----
+**Supuestos del modelo:** 2 meses de arranque sin lift · el lift sube lineal hasta su techo en el
+mes 12 · margen del cliente 30%.
 
-### 🎓 El margen final — con mentoría adentro
-
-> **Este es el número que se lleva a la mesa.** Cualquier otro margen de este archivo está
-> antes del mentor, y el mentor siempre se entrega.
-
-| | **Ignite** | **Accelerate** | **Compound** |
-|---|---|---|---|
-| **Precio** | **Q6,160** *($800)* | **Q9,240** *($1,200)* | **Q15,400** *($2,000)* |
-| Costo base *(modelo de hora, 5 clientes)* | Q2,220 | Q3,280 | Q4,540 |
-| Membresía prorrateada | Q77 | Q77 | Q77 |
-| Sesiones 1:1 | Q185 *(1/trim @ $72)* | Q370 *(1/trim @ $144)* | Q1,386 *(1/mes @ $180)* |
-| **COSTO TOTAL** | **Q2,482** | **Q3,727** | **Q6,003** |
-| **UTILIDAD** | **Q3,678** | **Q5,513** | **Q9,397** |
-| **MARGEN** | **60%** ✅ | **60%** ✅ | **61%** ✅ |
-
-**Utilidad del mes con 5 clientes (2·2·1): Q27,779.**
-
-> ✅ **Los tres planes están parejos en 60-61%.** Ese es el piso: **un plan que baje de 60% con
-> el mentor adentro está mal preciado**, y se corrige subiendo el precio, no recortando la
-> mentoría.
-
-> 🔑 **Con performance fee encima (Q3,000/mes), Accelerate pasa de 60% a 70%** sin tocar el
-> precio base. **El fee sigue siendo la palanca más grande.**
-
----
-
-### ⚠️ El precio es de penetración, y eso tiene un costo
-
-**Estamos cobrando dentro del rango que el mercado ya acepta, con 3x a 5x su volumen.**
-**Es una decisión, no un accidente — y cuesta utilidad por cuenta.**
-
-| | Si cobráramos precio de valor | **Precio de penetración** *(el de hoy)* | Diferencia |
-|---|---|---|---|
-| Ignite — utilidad @Q250/h | Q3,208 | **Q2,283** | **−Q925** |
-| Accelerate — utilidad | Q6,958 | **Q3,048** | **−Q3,910** |
-| Compound — utilidad | Q12,283 | **Q4,733** | **−Q7,550** |
-
-**Qué compra ese descuento:** cuota de mercado y casos con números. **Nada más.**
-
-### 🚦 El gatillo para salir de penetración
-
-**Con 3 casos con números publicables, el precio sube.** No antes, y no «cuando se sienta».
-**Mientras tanto se protege el margen con dos cosas:**
-
-| | |
-|---|---|
-| **1** | **La tarifa por hora baja con el volumen garantizado** — es lo que sostiene el 60% |
-| **2** | **El performance fee** — costo marginal Q0, lleva Accelerate de 60% a 70-78% |
-
-> ⚠️ **El precio bajo solo funciona si es temporal y deliberado.**
-> Si se vuelve permanente, es un negocio de bajo margen disfrazado de estrategia.
-
----
-
-### El costo por pieza — el número que gana la discusión
-
-| | **Ignite** | **Accelerate** | **Compound** | *Mercado GT (Q3,000)* |
+| | Toca | Techo a 12 m | En «x» | **+25% llega en** |
 |---|---|---|---|---|
-| Piezas/mes | 86 | 145 | 204 | *16* |
-| **Lo que nos cuesta cada pieza** *(con mentoría)* | Q29 | Q26 | Q29 | — |
-| **Lo que paga el cliente por pieza** | **Q72** | **Q64** | **Q75** | ***Q188*** |
+| 🔷 **MARKETING** | atención | +30% | **1.3x** | mes 11 |
+| 🔷 **MARKETING PRO** | atención + volumen | +45% | **1.45x** | mes 8 |
+| 🟨 **ACCELERATE** | oferta + conversión + canales | +70% | **1.7x** | mes 6 |
+| 🟨 **COMPOUND** | todo + que corra sin el dueño | +100% | **2x** | mes 5 |
 
-🔥 **Ignite cuesta 66% menos por pieza que un paquete guatemalteco de Q3,000 — y además
-incluye estrategia, inteligencia y pauta.**
+🔑 **El % de crecimiento no sale del contenido, sale de la oferta y la conversión.**
+Por eso el mismo +25% tarda **el doble** en la línea Marketing: ahí solo se amplifica lo que ya hay.
 
-⚠️ **Este número es para la discusión interna y para defender el precio. Nunca se vende por
-pieza** — eso convierte la oferta en commodity y contradice el posicionamiento.
+### Desde qué facturación tiene sentido cada plan
+
+| | Cuesta / mes | Se paga solo con | **Factura al menos** |
+|---|---|---|---|
+| **MARKETING** | Q6,545 | Q21,817 de venta nueva | **Q87,000** |
+| **MARKETING PRO** | Q10,010 | Q33,367 | **Q133,000** |
+| **ACCELERATE** | Q19,250 | Q64,167 | **Q257,000** |
+| **COMPOUND** | Q30,800 | Q102,667 | **Q411,000** |
+
+> 🔑 **Es filtro de calificación, no solo argumento de precio.**
+> Decirle a un cliente *«este plan todavía no es para ti»* vende el siguiente mejor que
+> cualquier otra cosa.
+
+🔴 **Lo que vuelve esto evidencia:** instrumentar a los clientes actuales —ventas antes y después,
+atribución limpia— para tener el primer caso medido. **Sin eso tampoco hay performance fee.**
+
+---
 
 ## 💸 El performance fee — de dónde salen los márgenes altísimos
 
@@ -820,15 +788,18 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 
 | Si el fee mensual es… | Ingreso total | **Margen** |
 |---|---|---|
-| Q0 *(solo base)* | Q9,240 | **60%** |
-| Q1,500 | Q10,740 | **65%** |
-| **Q3,000** | **Q12,240** | **70%** |
-| Q5,000 | Q14,240 | **74%** |
-| Q8,000 | Q17,240 | **78%** |
+| Q0 *(solo base)* | Q19,250 | **69%** |
+| Q1,500 | Q20,750 | **72%** |
+| **Q3,000** | **Q22,250** | **74%** |
+| Q5,000 | Q24,250 | **76%** |
+| Q8,000 | Q27,250 | **78%** |
 
-*Costo constante de Q3,727 — el fee no agrega ni una hora.*
+*Costo constante de Q5,883 — el fee no agrega ni una hora.*
 
-*Ejemplo sobre Accelerate ($1,200 base). Mismo efecto en los tres niveles.*
+*Ejemplo sobre Accelerate ($2,500 base). Mismo efecto en Compound.*
+
+⚠️ **El fee NO existe en la línea Marketing.** Requiere atribución limpia, y la atribución
+limpia requiere Conversion OS — que la línea Marketing no incluye.
 
 ### Cuánto tiene que vender el cliente para que pase
 
@@ -843,7 +814,8 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 | Q8,000 | Q80,000 / mes |
 
 > **Q30,000 al mes de ventas atribuidas es un objetivo modesto** para un negocio que factura
-> Q100,000+. **Y lleva Accelerate de 60% a 70% —con la mentoría adentro— sin tocar el precio base.**
+> Q257,000+, que es el piso desde el que Accelerate tiene sentido.
+> **Y lleva Accelerate de 69% a 74% sin tocar el precio base.**
 
 ### Por qué esto resuelve las cuatro metas a la vez
 
@@ -861,12 +833,12 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 | **Qué cuenta** | Ventas que produjimos directamente — pauta, embudo, campaña, contenido rastreable |
 | **Qué NO cuenta** | Tráfico orgánico preexistente, referidos del cliente, ventas de su fuerza comercial |
 | **Cómo se mide** | Atribución con Meta CAPI + GA4 + enlaces y códigos rastreables |
-| **Requisito** | ⚠️ **Sin atribución limpia no hay fee.** Por eso Ignite lo tiene opcional: no incluye CAPI+GA4 |
+| **Requisito** | ⚠️ **Sin atribución limpia no hay fee.** Por eso no existe en la línea Marketing: no incluye CAPI+GA4 |
 | **Se cobra** | El mes siguiente, sobre lo efectivamente vendido |
 
 ---
 
-## Contra el benchmark de Guatemala
+## Contra el benchmark
 
 > ⚠️ **Esto es dónde estamos hoy, no nuestro techo.** El costo de entregar una cuenta es el
 > mismo desde Guatemala, México o Miami — **lo único que cambia es el precio.**
@@ -874,41 +846,64 @@ pieza** — eso convierte la oferta en commodity y contradice el posicionamiento
 
 `[benchmark aportado por Allan, sin verificar de forma independiente]`
 
+### 🔷 La línea Marketing — contra agencias
+
 | Rango del mercado GT | Piezas típicas | Dónde caemos |
 |---|---|---|
-| Ignite Q1,000 - 3,000 | ~16 | — |
-| **Intermedio Q3,000 - 6,000** | ~25 | **🟦 Ignite Q6,160 · 86 piezas** |
-| **Avanzado / 360° Q6,000 - 8,000+** | ~40 | **🟪 Accelerate Q9,240 · 145 piezas** |
-| *(fuera del rango del mercado)* | — | **🟨 Compound Q15,400 · 204 piezas** |
+| Básico Q1,000 - 3,000 | ~16 | — |
+| Intermedio Q3,000 - 6,000 | ~25 | — |
+| **Avanzado / 360° Q6,000 - 8,000+** | ~40 | **🔷 MARKETING Q6,545 · 86 piezas** |
+| *(arriba del techo del mercado)* | — | **🔷 MARKETING PRO Q10,010 · 145 piezas** |
 
-### 💀 La posición
-
-**Los tres paquetes están dentro o apenas por encima del rango que el mercado ya acepta — y los
-tres entregan entre 3x y 5x el volumen de su tramo.**
+**El techo que una agencia guatemalteca puede cobrar es ~Q6,250 (~$812).**
+**Marketing entra justo ahí con 2 a 5 veces su volumen.**
 
 | | Ellos | Nosotros |
 |---|---|---|
-| Mismo precio | 16-25 piezas | **86 piezas** |
+| Mismo precio | 16-40 piezas | **86 piezas** |
 | Mismo precio | Sin estrategia | **Estrategia completa** |
 | Mismo precio | Sin inteligencia de competencia | **Radar mensual** |
 | Mismo precio | Pauta a veces | **Meta + TikTok** |
 
-👉 **No hay contraataque posible.** Para igualarnos tendrían que contratar 4 personas más y
-cobrar lo mismo. **Nadie puede.**
+👉 **Para igualar Marketing tendrían que contratar 4 personas más y cobrar lo mismo. Nadie puede.**
+
+### 🟨 La línea Growth — contra consultoría
+
+`[benchmark de CMO fraccional, mercado US, sin verificar de forma independiente]`
+
+| | Rango de mercado |
+|---|---|
+| CMO fraccional · etapa temprana | **$3,000 – $5,000 / mes** |
+| CMO fraccional · sweet spot | **$8,000 – $12,000 / mes** |
+| Por hora | $200 – $500 |
+
+| | Precio | Contra el mercado |
+|---|---|---|
+| 🟨 **ACCELERATE** | **$2,500** | **Debajo del piso de consultoría** |
+| 🟨 **COMPOUND** | **$4,000** | En el piso, **con la ejecución incluida** |
+
+⚠️ **Un CMO fraccional a $3,000 entrega criterio y nada más. Nosotros entregamos criterio
++ 145 piezas + pauta + tecnología al mismo precio.**
+
+🔴 **Pero un precio debajo del piso también señala junior.** Por eso el discurso de Growth
+**nunca** es *«somos más baratos»* — es *«hacemos las dos cosas: decidimos y ejecutamos.»*
+
+---
 
 ## La escalera de precio
 
-**El precio bajo es una decisión de entrada, no un destino.** Los precios de la web son la meta.
+**Estos precios son la meta, ya alcanzada. Lo que queda es migrar lo que está abajo.**
 
-| | **Hoy** *(penetración)* | Meta | Qué habilita el salto |
-|---|---|---|---|
-| **🟦 Ignite** | Q6,160 | $1,400 *(Q10,780)* | 3 casos con resultados medidos |
-| **🟪 Accelerate** | Q9,240 | $2,800 *(Q21,560)* | 2 casos con tecnología entregada y ROI |
-| **🟨 Compound** | Q15,400 | $4,500 *(Q34,650)* | 1 caso donde el cliente opera solo y sigue creciendo |
+| Situación | Precio | Qué hacer |
+|---|---|---|
+| **Clientes de precio de amigos** *(Q2,500/cuenta)* | muy debajo de Marketing | 🔴 **Migrar o reclasificar.** No es precio oficial |
+| **Clientes nuevos** | Precio de lista | Sin excepción |
 
-### 🚦 El gatillo para subir — se define ahora, no después
+⚠️ **Los clientes de precio de amigos son la fuente del primer caso medido.**
+Antes de migrarlos hay que instrumentarlos: **ventas antes y después, atribución limpia.**
+Ese dato vale más que la diferencia de precio.
 
-**Se sube de precio cuando se cumplan las tres:**
+### 🚦 El gatillo para subir otra vez
 
 | # | Condición |
 |---|---|
@@ -916,36 +911,44 @@ cobrar lo mismo. **Nadie puede.**
 | 2 | **Capacidad al 80%** — 4 de 5 cuentas ocupadas |
 | 3 | **Un mes real corrido** al volumen prometido, sin quemarse |
 
-> ⚠️ **Los clientes que entran a precio de penetración mantienen su precio 12 meses.**
-> Se les avisa desde el inicio. **Eso vuelve el precio bajo un argumento de urgencia real,
-> no una promesa que se rompe después.**
-
 ### El puente: performance fee
 
-> **Fee base + % sobre ventas atribuidas directamente a nuestro trabajo.**
-> No cuenta el tráfico orgánico ni el preexistente.
+> **Fee base + 10% sobre ventas atribuidas directamente a nuestro trabajo.**
+> Solo en la línea Growth. No cuenta el tráfico orgánico ni el preexistente.
 
-**Con precio de penetración, el performance fee deja de ser opcional: es cómo se recupera el
-margen que se está resignando.**
+---
 
 ## Punto de equilibrio
 
 ```
 Gastos personales de Allan   Q2,400
 Claude                       Q1,500
+Apify                        Q  205
 ─────────────────────────────────────
-Piso mensual                 Q3,900
+Piso mensual                 Q4,105
 ```
 
 | Clientes | Utilidad/mes | ¿Alcanza? |
 |---|---|---|
-| 1 Ignite | Q3,260 *(a 2 clientes de tarifa)* | ⚠️ Justo |
-| **2 Ignite** | **Q6,520** | ✅ Sí |
-| **1 Compound** | **Q9,850** | ✅ Con espacio |
-| 5 mixtos *(2·2·1)* | **Q29,120** | ✅ Negocio sano |
-| 8 Compound | **Q91,140** | ✅ Reinversión real |
+| 1 Marketing | Q3,617 *(a tarifa de 2 clientes)* | ⚠️ Justo |
+| **2 Marketing** | **Q7,234** | ✅ Sí |
+| **1 Compound** | **Q21,916** | ✅ Con espacio |
+| **5 mixtos** *(2·1·1·1)* | **Q50,640** | ✅ Negocio sano |
+| 10 mixtos *(4·2·2·2)* | **Q94,406** | ✅ Reinversión real |
 
 **Capacidad: 8-10 clientes con el agente de QA construido.**
+
+### El margen sube solo con cada cliente
+
+| Clientes | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| 2 | 55% | — | — | — |
+| **5** | **66%** | **67%** | **69%** | **71%** |
+| 10 | 68% | 69% | 71% | 72% |
+| 20 | 72% | 72% | 73% | 74% |
+
+**Porque la tarifa de producción y operación baja con el volumen garantizado, y Claude se diluye.**
+Ver `05-OPERACION.md`.
 
 ## ⚠️ El precio de amigos distorsiona la lectura
 
@@ -1004,12 +1007,10 @@ y familia. **Ese no es precio oficial y no se usa como referencia para cotizar.*
 
 **`05-OPERACION.md`** tiene las tareas por cliente, quién hace cada una y las horas de Allan.
 
-⚠️ Las horas de Allan (Ignite 9h · Accelerate 14h · Compound 18h) son **estimación**, no medición.
-**Pendiente: medirlas un mes y recalcular.**
+⚠️ Las horas de Allan son **estimación**, no medición. **Pendiente: medirlas un mes y recalcular.**
 
 ⚠️ **El volumen de piezas también es propuesta, no medición.** Hay que correr un mes real antes de
 comprometerlo en un contrato.
-
 
 ---
 
@@ -1021,94 +1022,30 @@ comprometerlo en un contrato.
 
 ---
 
-# 🌐 PARTE PÚBLICA — lo que va a la web
+# 🌐 PARTE PÚBLICA
 
-## Los tres tipos de crecimiento
-
-**Todo cliente contrata crecimiento. Lo que cambia es qué tipo de crecimiento necesita.**
+## Las dos líneas, cuatro planes
 
 ```
-🟦 IGNITE       Encender: comunicarte y existir
-🟪 ACCELERATE   Acelerar: escalar lo que ya funciona
-🟨 COMPOUND     Componer: que crezca sin vos
+🔷 MARKETING      $850     Para el negocio que está arrancando
+🔷 MARKETING PRO  $1,300   Para el establecido que solo quiere marketing
+🟨 ACCELERATE     $2,500   Para el que necesita más de lo que ya le funcionó
+🟨 COMPOUND       $4,000   Para el que necesita que todo corra sin él
 ```
 
-### 💡 Propuesta de nombre branded
+**El texto exacto de las cuatro tarjetas está en `03-OFERTA.md`.** Esa es la fuente.
 
-**El sitio es bilingüe y la meta incluye México y Miami — los nombres deberían viajar.**
-
-| Hoy | **Propuesta** | Por qué |
-|---|---|---|
-| Ignite | **GROWTH · IGNITE** | Encender |
-| Accelerate | **GROWTH · ACCELERATE** | Acelerar |
-| Compound | **GROWTH · COMPOUND** | **`COMPOUND` ya está en el glosario del método** |
-
-> Los tres verbos ya son los que definimos. **`COMPOUND` es vocabulario propio de Inherent.**
-> En español se leen igual: Igniciónar no — **se mantienen en inglés, como `Growth Operator`.**
-
----
-
-## La tabla de la web
-
-| | 🟦 **IGNITE** | 🟪 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|
-| **Precio / mes** | **$800** | **$1,200** | **$2,000** |
-| **Para quién** | Ya vendés, pero no te conocen | Llega gente y se pierde | Funciona, pero todo depende de alguien |
-| **Qué resolvemos** | Atraer, crear nombre y asociarte bien | Capturar, convertir y quitar fricción | Retener, componer y soltar |
-| **Piezas / mes** | **86** | **145** | **204** |
-| **Performance fee** | Opcional | ✅ Incluido | ✅ Incluido |
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Precio / mes** | **$850** | **$1,300** | **$2,500** | **$4,000** |
+| **Qué promete** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
+| **Para quién** | No te conocen | Te conocen y querés sostenerlo | **Llega gente y se pierde** | Funciona, pero todo pasa por vos |
+| **Piezas / mes** | **86** | **145** | **145** | **204** |
+| **Meta a 12 meses** | 1.3x | 1.45x | 1.7x | 2x |
+| **Performance fee** | ⬜ | ⬜ | ✅ Incluido | ✅ Incluido |
 
 **Y `TAILOR MADE`** — multi-locación, regulatorio, integraciones o proyectos por hito.
 *Precio según alcance.*
-
----
-
-## Qué incluye cada uno
-
-### 🟦 IGNITE — $800
-**Estrategia · Demanda · Contenido**
-
-- Estrategia completa con ingeniería inversa desde tu meta financiera
-- Plataforma de marca: posicionamiento, promesa, historia y personalidad
-- **86 piezas al mes** — 6 reels, 10 derivadas, 40 estáticos, 30 stories
-- Predicción de viralidad **antes** de publicar
-- Radar de competencia mensual
-- Meta Ads + TikTok Ads · hasta 20 variantes por campaña
-- Mapa de aliados y gestión de asociaciones
-- Community management
-- Reporte mensual
-
-### 🟪 ACCELERATE — $1,200
-**Todo lo de Ignite, más:**
-
-- **Una herramienta a medida por trimestre** — CRM ligero, panel, portal
-- **145 piezas al mes** · hasta 35 variantes por campaña
-- Google Search + Performance Max
-- **Embudos de WhatsApp** con entrenamiento a tu equipo
-- **Lead magnets** y lista propia
-- **SEO de intención** — keywords, contenido y landings
-- **Closing** — guiones, objeciones y seguimiento
-- Influencers elegidos por afinidad real, no por alcance
-- Radar de competencia **semanal** + clonado del anuncio del competidor
-- Fotos de producto generadas — catálogo sin sesión
-- **Dashboard en vivo** + atribución limpia
-- Sesión de dirección mensual
-
-### 🟨 COMPOUND — $2,000
-**Todo lo de Accelerate, más:**
-
-- **Una herramienta a medida por MES**
-- **204 piezas al mes** · hasta 50 variantes por campaña
-- **Sistemas de demanda** — referidos, comunidad, recompra, evergreen
-- **Fulfillment** — mapeo de tu entrega, SOPs y automatización
-- **Talento** — perfiles, SOPs y onboarding
-- **IA propia** entrenada con tu marca, tu oferta y tus datos
-- Contenido en segundo idioma
-- Estrategia de LTV y ticket promedio
-- Atribución completa de punta a punta
-- Sesión de dirección quincenal
-
----
 
 ## ⛔ Lo que nunca está incluido
 
@@ -1122,76 +1059,52 @@ comprometerlo en un contrato.
 
 > ⚠️ **Esto NO va a la web. Ni en el pitch, ni en la propuesta, ni en la conversación con el cliente.**
 
-## El desglose, con 5 clientes activos
+**El desglose completo está arriba, en «Costos y márgenes».** Acá va solo el resumen.
 
-| | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| **Precio** | Q6,160 *($800)* | Q9,240 *($1,200)* | Q15,400 *($2,000)* |
-| Producción | 3h × Q200 = Q600 | 5h × Q200 = Q1,000 | 8h × Q200 = Q1,600 |
-| Operación | 4h × Q80 = Q320 | 6h × Q80 = Q480 | 8h × Q80 = Q640 |
-| Claude | Q300 | Q300 | Q300 |
-| Allan | 4h × Q250 = Q1,000 | 6h × Q250 = Q1,500 | 8h × Q250 = Q2,000 |
-| **COSTO** | **Q2,220** | **Q3,280** | **Q4,540** |
-| **UTILIDAD** | **Q3,940** | **Q5,190** | **Q10,860** |
-| **MARGEN** | **64%** | **65%** | **71%** |
-| *Costo por pieza* | *Q26* | *Q23* | *Q22* |
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Precio** | Q6,545 | Q10,010 | Q19,250 | Q30,800 |
+| **COSTO** | Q2,236 | Q3,271 | Q5,883 | Q8,884 |
+| **UTILIDAD** | Q4,309 | Q6,739 | Q13,367 | Q21,916 |
+| **MARGEN** | **66%** | **67%** | **69%** | **71%** |
+| *Costo por pieza* | *Q26* | *Q23* | *Q41* | *Q44* |
 
-**Con 5 clientes (2 Ignite · 2 Accelerate · 1 Compound): Q29,120 / mes = $3,782**
-
----
+**Con 5 clientes (2·1·1·1): Q50,640 / mes de utilidad sobre Q73,150 de facturación.**
 
 ## Los tres escalones de margen
 
 | | **Hoy** | **Con los agentes** | **+ performance fee** |
 |---|---|---|---|
-| 🟦 Ignite | **64%** | **72%** | **81 – 88%** |
-| 🟪 Accelerate | **65%** | **74%** | **82 – 87%** |
-| 🟨 Compound | **71%** | **80%** | **83 – 87%** |
+| 🔷 Marketing | **66%** | **73%** | *no aplica* |
+| 🔷 Marketing Pro | **67%** | **74%** | *no aplica* |
+| 🟨 Accelerate | **69%** | **77%** | **78 – 84%** |
+| 🟨 Compound | **71%** | **79%** | **79 – 85%** |
 
 | Escalón | Qué hay que hacer |
 |---|---|
 | Hoy → Agentes | Construir el **agente de QA** y probar el **contenido crudo del cliente** |
-| Agentes → Fee | **Atribución limpia** (CAPI + GA4) |
-
----
-
-## El margen sube solo con cada cliente
-
-| Clientes | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| 2 | 53% | 52% | 64% |
-| **5** | **64%** | **65%** | **71%** |
-| 10 | 67% | 64% | 72% |
-| 20 | 71% | 68% | 75% |
-
-**Porque la tarifa de producción y operación baja con el volumen garantizado, y Claude se diluye.**
-Ver `05-OPERACION.md`.
-
----
+| Agentes → Fee | **Atribución limpia** (CAPI + GA4) — solo línea Growth |
 
 ## Y con otro mercado, el mismo costo
 
-| Mercado | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| 🇬🇹 Guatemala *(hoy)* | 64% | 65% | 71% |
-| 🇲🇽 México | 76% | 76% | 82% |
-| 🇺🇸 Miami | 86% | 86% | 89% |
+| Mercado | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| 🇬🇹 Guatemala *(hoy)* | 66% | 67% | 69% | 71% |
+| 🇲🇽 México | 77% | 78% | 79% | 81% |
+| 🇺🇸 Miami | 86% | 87% | 87% | 88% |
 
-**Utilidad mensual con 5 clientes:** $3,782 → $7,182 → **$13,482**
 Ver `04-MERCADO.md`.
-
----
 
 ## ⚠️ Lo único que falta confirmar
 
 | Pendiente | Riesgo |
 |---|---|
-| **Medir las horas reales** *(prod 3/5/8 · oper 4/6/8 · Allan 4/6/8)* | Es la base de todos los márgenes |
-| **Correr un mes al volumen prometido** | 86/145/204 es propuesta, no capacidad probada |
-| **Construir el agente de QA** | Sin él las horas no bajan y el margen se queda en 61-71% |
+| 🔴 **Construir ⑧ Community Management** | Sostiene dos líneas publicadas en Pro y Compound |
+| 🔴 **Instrumentar a los clientes actuales** | Sin caso medido, el múltiplo de la web es solo modelo |
+| **Medir las horas reales** *(prod 2/4/6/8 · oper 4/6/6/8 · Allan)* | Es la base de todos los márgenes |
+| **Correr un mes al volumen prometido** | 86/145/145/204 es propuesta, no capacidad probada |
+| **Construir el agente de QA** | Sin él las horas no bajan y el margen se queda donde está |
 | **Verificar precios de México y Miami** | Hoy son hipótesis sin fuente |
-
----
 
 ## Reglas de comunicación
 
@@ -1199,5 +1112,5 @@ Ver `04-MERCADO.md`.
 |---|---|
 | **Precios siempre en USD** | El quetzal es referencia interna |
 | **Nunca decir «Guatemala» como alcance** | Cierra el mercado de Miami antes de que lean la oferta |
-| **Nunca vender por pieza** | El conteo defiende el precio; **no es la oferta** |
-| **Nunca mostrar costos ni márgenes** | Ni a clientes, ni a proveedores, ni en propuestas |
+| **Nunca vender Growth por pieza** | El conteo defiende el precio de Marketing; **en Growth lo abarata** |
+| **Nunca decir «garantizamos» un múltiplo** | Se dice **«apuntamos a»**. No hay caso medido todavía |
