@@ -20,6 +20,16 @@ paso vive en las skills: `skills/README.md`.
 🛑 **Marketing no escribe piezas, no inventa hooks y no decide estética.** Si un slot del
 calendario trae un copy adentro, se salió del departamento.
 
+### El flujo del departamento, en una línea
+
+```
+objetivo del ciclo  →  ¿es CAMPAÑA o es PILAR?  →  mensaje  →  canales
+                    →  slots con fecha y anticipación  →  ④ Creatividad
+```
+
+**Lo tangible que decide ③:** qué se dice, **en qué canal**, **en qué semana**,
+**cuánto antes se anuncia** y **qué trabajo de negocio hace cada slot.**
+
 🛑 **Y no decide el rumbo.** Si al armar el plan aparece que la estrategia está mal, **se
 devuelve a ② Estrategia** — no se corrige acá.
 
@@ -115,7 +125,7 @@ de más esperando que alguien aguante. Ver `inherent/06-ECONOMIA.md`.
 ```
    0  ENCARGO       qué aprobó ② y qué se puede de verdad     → mk-encargo
         ▼
-   1  CAMPAÑA       la idea que une el ciclo                   → mk-campana
+   1  CAMPAÑA       ¿campaña o pilar? · la idea · la anticipación → mk-campana
         ▼
    2  MENSAJE       la jerarquía: qué se dice primero          → mk-mensaje
         ▼           🚦 GATE 1 — Allan aprueba campaña y mensaje
@@ -123,10 +133,10 @@ de más esperando que alguien aguante. Ver `inherent/06-ECONOMIA.md`.
         ▼
    4  CANALES       función única por canal y qué NO va ahí    → mk-canales
         ▼
-   5  CALENDARIO    los slots del ciclo, por semana            → mk-calendario
+   5  CALENDARIO    los slots + la PRUEBA DE ALINEACIÓN         → mk-calendario
         ▼           🚦 GATE 2 — Allan aprueba el calendario
         ▼           →→→ pasa a ④ Creatividad
-   ↻  LOOP          qué rindió, qué cambia                     → mk-loop
+   ↻  LOOP          qué rindió, qué cambia · 🟡 opcional        → mk-loop
 ```
 
 ### 🚦 Los dos gates

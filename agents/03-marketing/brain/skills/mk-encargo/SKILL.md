@@ -23,12 +23,31 @@ descubre cuando producción no da abasto.
 
 | De | Qué se carga | Si falta |
 |---|---|---|
-| **② Estrategia** | Objetivo del ciclo con plazo y métrica · posicionamiento aprobado · **las MUST BE TRUE con su letra** · el brief de marketing | 🛑 **BLOQUEADO** |
+| **② Estrategia** | Objetivo del ciclo con plazo y métrica · posicionamiento aprobado · **la PROMESA** · **la HISTORIA** *(héroe, enemigo, transformación)* · **las MUST BE TRUE con su letra** · el brief de marketing | 🛑 **BLOQUEADO** |
+| **② Estrategia** | **El diagnóstico: qué síntoma tiene el cliente y qué causa se declaró** | 🛑 **BLOQUEADO** |
 | **① Comprensión** | Qué puede grabar el cliente y cada cuánto · qué cuentas existen y quién las opera · estacionalidad | 🛑 **BLOQUEADO** |
 | **②B Branding** | Tono, territorio, activos distintivos, do's & don'ts | 🛑 **BLOQUEADO** |
 | **La línea y el plan** | 🔷 Marketing · 🔷 Marketing Pro · 🟨 Accelerate · 🟨 Compound · ⬜ Tailor Made | 🛑 **BLOQUEADO** |
 
 🛑 **Ningún archivo se copia: se cita su ruta.**
+
+> 🔑 **Por qué la PROMESA es bloqueante.** El contenido es la intersección de
+> `deseo de la audiencia` **+** `posicionamiento` **+** `promesa`.
+> **Sin la promesa, ③ hace dos tercios del trabajo** y ningún slot puede pasar la pregunta 3
+> de la prueba de alineación — ver `mk-calendario`.
+
+### 🛑 Si el diagnóstico de ② apunta fuera de Marketing
+
+**Cuatro de los cinco cuellos típicos no se arreglan con contenido.**
+
+| Si la causa declarada es… | ③ Marketing |
+|---|---|
+| Distribución · contenido · mensaje | ✅ **Es nuestra.** Se trabaja |
+| **Oferta · conversión · valor percibido · retención** | 🔴 **NO es nuestra.** Se levanta como **excepción a Allan** |
+
+⚠️ **Se levanta la excepción y se sigue trabajando el ciclo** — no se bloquea el calendario.
+Lo que no se hace es **fingir que más contenido arregla una oferta rota.**
+Ver `agents/01-strategy/brain/skills/analysis/SKILL.md` → «El diagnóstico por síntoma».
 
 ## 2 · El techo del ciclo
 

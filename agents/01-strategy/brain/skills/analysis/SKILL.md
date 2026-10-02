@@ -77,12 +77,48 @@ Los pasos
 
 ---
 
+## 🩺 El diagnóstico por síntoma — qué está roto de verdad
+
+> **Antes de decidir los pasos, se nombra el cuello.** El cliente describe un síntoma;
+> acá se traduce a causa, y la causa dice **qué área se activa y en qué orden.**
+
+| El síntoma que describe el cliente | La causa probable | Qué área lo arregla |
+|---|---|---|
+| **Mucha gente ve y nadie compra** | Oferta o conversión | ② Growth — `gr-oferta` · `gr-conversion` |
+| **Nadie ve** | Distribución o contenido | ③ Marketing — `mk-canales` · `mk-pilares` |
+| **Preguntan precio y desaparecen** | Valor percibido — **mecanismo o prueba**, casi nunca el precio | ② Growth — `gr-oferta` |
+| **Compran una vez y no vuelven** | Experiencia o retención | ② Growth — `gr-upsells` · ⑧ Community |
+| **Buen producto y nadie entiende** | Mensaje | ③ Marketing — `mk-mensaje` + ②B `br-voz` |
+
+### 🔑 Por qué esto vive acá y no en ③ Marketing
+
+**Cuatro de las cinco causas apuntan fuera de Marketing.** Tres caen en ② Growth y una en
+retención. **Un diagnóstico que solo mira contenido va a responder «más contenido» a todo** —
+que es justo el error que la metodología prohíbe.
+
+⚠️ **Y por eso el diagnóstico decide el ORDEN de los briefs**, no solo su contenido:
+el área que arregla el cuello va primero y con más profundidad.
+
+### 🛑 El cruce con el plan contratado
+
+| Si el cuello está en… | Y el plan es… | Entonces |
+|---|---|---|
+| Oferta · conversión · retención | 🔷 **Marketing / Pro** | 🔴 **Se declara que el plan NO cubre el cuello.** Se avisa a Allan y se propone subir a Accelerate |
+| Distribución · contenido · mensaje | cualquiera | ✅ Se trabaja dentro del plan |
+
+**Entregar contenido sobre un cuello de oferta es cobrar por amplificar una fuga.**
+Se dice, no se calla.
+
+---
+
 ## Antes de cerrar
 - [ ] "Número uno en qué" está respondido con algo concreto y reconocible
 - [ ] Cada condición dice **dónde está la marca hoy**, no dónde debería estar
 - [ ] Cada ventaja pasó el doble filtro, y las descartadas están listadas
 - [ ] Cada cosa por buscar mueve una condición — ninguna suelta
 - [ ] Los pasos se pueden trazar hasta una condición de la pregunta 1
+- [ ] **El síntoma del cliente está traducido a causa**, y la causa dice qué área va primero
+- [ ] **Si el cuello cae fuera del plan contratado, está declarado** — no se entrega igual
 
 ## Handoff
 → `reverse-engineering`. Ya sabemos qué buscar; ahora vamos a ver qué está funcionando de verdad.

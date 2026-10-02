@@ -38,6 +38,45 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 | `objetivo_del_slot` | **Específico.** *«Responder la objeción del precio»*, no *«generar awareness»* |
 | `traza` | **La letra de una MUST BE TRUE.** Sin esto el slot no existe |
 
+---
+
+## ✅ La prueba de alineación — el gate de cada slot
+
+> **Cinco preguntas. Un slot que no las responde no entra al calendario.**
+
+| # | La pregunta | Si no hay respuesta |
+|---|---|---|
+| **1** | **¿Por qué esta audiencia querría verlo?** | Es contenido para el algoritmo, no para alguien |
+| **2** | **¿Qué parte del posicionamiento refuerza?** | No construye. Suma ruido |
+| **3** | **¿Qué parte de la promesa demuestra?** | Promete en la pauta y no lo prueba en el contenido |
+| **4** | **¿Qué deseo o conversación activa?** | No va a generar señal, y sin señal no hay alcance |
+| **5** | **¿Qué siguiente acción acerca a la compra?** | 🛑 Es la que más se salta |
+
+🔑 **Se corre acá y no antes de publicar.**
+**Rechazar un slot cuesta Q0. Rechazar una pieza ya producida cuesta una pieza.**
+El gate barato va arriba.
+
+### Cómo se responde — las tres primeras ya están en el encargo
+
+| Pregunta | De dónde sale la respuesta |
+|---|---|
+| 1 · Por qué querría verlo | `audiencia profunda` de ① · el deseo, no la demografía |
+| 2 · Qué posicionamiento refuerza | `posicionamiento aprobado` de ② |
+| 3 · Qué promesa demuestra | **`promesa` de ② — es input bloqueante de `mk-encargo`** |
+| 4 · Qué deseo activa | Se escribe acá, y es lo que alimenta `objetivo_del_slot` |
+| 5 · Qué siguiente acción | Lo da `funcion` + `temperatura` del slot |
+
+⚠️ **La 3 es la que descubre los slots vacíos.** Un slot que no demuestra nada de la promesa
+es contenido de relleno aunque se vea bien.
+
+### 🛑 Lo que NO es esta prueba
+
+**No evalúa si la idea es buena** — eso es ④ Creatividad con su filtro
+*Distinctiveness / Novelty / Relevance*. **Acá solo se verifica que el slot tenga trabajo
+de negocio asignado.**
+
+---
+
 ## 2 · `objetivo_del_slot` — el campo que más se escribe mal
 
 **Es lo que ④ usa para decidir el contenido concreto. Genérico, no sirve.**
@@ -109,3 +148,5 @@ aprueba entero, acá.
 - [ ] El total **entra en el techo** del plan contratado
 - [ ] Lo que se recortó está **escrito**
 - [ ] **Allan aprobó el GATE 2**
+- [ ] **Cada slot pasó las 5 preguntas de la prueba de alineación**
+- [ ] **Ningún slot quedó sin responder la 3** *(qué parte de la promesa demuestra)*
