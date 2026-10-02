@@ -324,7 +324,7 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 ## Qué pasa con el mismo costo y otro precio
 
-*Costo por cuenta con 5 clientes: Marketing Q2,566 · Pro Q3,361 · Accelerate Q6,074 · Compound Q9,205*
+*Costo por cuenta con 5 clientes: Marketing Q2,632 · Pro Q3,990 · Accelerate Q6,074 ⚠️ · Compound Q9,205 ⚠️*
 
 | Mercado | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|

@@ -514,10 +514,10 @@ escenario donde la herramienta se nota. A partir de 5 clientes baja a Q341.
 | Operación | 36 h | Freelance con volumen | **Q80** | **Q2,880** |
 | Claude | — | fijo | — | Q1,500 ÷ 5 = **Q300/cuenta** |
 
-| Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
+| Cuenta | Prod. | Operador | Claude+Apify | **Allan + Pablo** | Onb./12 | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q1,075 | Q400 | Q341 | Q750 | Q0 | **Q2,566** | **Q3,979** | **61%** |
-| 🔷 Marketing Pro | Q1,450 | Q520 | Q341 | Q1,050 | Q0 | **Q3,361** | **Q6,649** | **66%** |
+| 🔷 Marketing | Q1,075 | Q130 | Q341 | Q1,028 | Q58 | **Q2,632** | **Q3,912** | **60%** |
+| 🔷 Marketing Pro | Q1,450 | Q248 | Q341 | Q1,874 | Q77 | **Q3,990** | **Q6,019** | **60%** |
 | 🟨 Accelerate | Q1,850 | Q620 | Q341 | Q1,950 | Q1,313 | **Q6,074** | **Q13,176** | **68%** |
 | 🟨 Compound | Q2,425 | Q960 | Q341 | Q2,400 | Q3,079 | **Q9,205** | **Q21,595** | **70%** |
 
@@ -953,8 +953,8 @@ capas que corren sobre agentes. **Se revisa cuando haya casos.**
 |---|---|---|---|---|
 | Precio | Q6,545 | Q10,010 | Q19,250 | Q30,800 |
 | Piezas/mes | 86 | 145 | 145 | 204 |
-| Costo *(@Q150/h, 5 clientes)* | Q2,566 | Q3,361 | Q6,074 | Q9,205 |
-| **Utilidad @Q150/h** | **Q3,979** | **Q6,649** | **Q13,176** | **Q21,595** |
+| Costo *(5 clientes)* | Q2,632 | Q3,990 | Q6,074 ⚠️ | Q9,205 ⚠️ |
+| **Utilidad** | **Q3,912** | **Q6,019** | **Q13,176** | **Q21,595** |
 | **Utilidad @Q250/h** | **Q3,479** | **Q5,949** | **Q11,876** | **Q19,995** |
 
 ## 7 · 🧾 El desglose por tarea — la línea 🔷 Marketing
