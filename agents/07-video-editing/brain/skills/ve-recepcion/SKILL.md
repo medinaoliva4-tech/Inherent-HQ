@@ -60,8 +60,11 @@ termina sin parecerse a lo que ④ dirigió.
 
 | | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|---|
-| Videos de grabación | 8 | 12 | 18 | 20 |
-| Videos con b-roll | 2 | 4 | 2 | 4 |
+| Horas de grabación | 3h | 4h | 6h | 8h |
+| Videos planificados *(20 min c/u)* | 9 | 12 | 18 | 24 |
+| Derivados — **mínimo** *(1:2)* | 4 | 6 | 9 | 12 |
+| **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
+| *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
 | **Total** | **10** | **16** | **20** | **24** |
 
 🛑 **Si el Excel pide más, se declara y se devuelve a ③ Marketing.** No se edita de más.

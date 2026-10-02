@@ -14,12 +14,36 @@ paso vive en las skills: `skills/README.md`.
 
 | | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|---|
-| **Horas grabadas** *(⑤)* | 2 h | 4 h | 6 h | 8 h |
-| **Videos de grabación** | **8** | **12** | **18** | **20** |
-| **Videos con b-roll** | **2** | **4** | **2** | **4** |
-| **Total de videos** | **10** | **16** | **20** | **24** |
+| **Horas grabadas** *(⑤)* | **3 h** | 4 h | 6 h | 8 h |
+| **Horas de grabación** | **3h** | **4h** | **6h** | **8h** |
+| **Videos planificados** *(20 min c/u)* | **9** | **12** | **18** | **24** |
+| **Derivados — mínimo** *(1:2)* | **4** | **6** | **9** | **12** |
+| **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
+| *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
+| *TOTAL videos — tope* | *18* | *24* | *36* | *48* |
 | **Segundo idioma** | ⬜ | ⬜ | ⬜ | ✅ |
 | **Revisiones por pieza** | 1 | 2 | 2 | **3** |
+
+> 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba
+> por SETUP y no por pieza.** Cada uno deja 5-7 escenas; las de apoyo se recombinan en derivados.
+>
+> **El rango no es flojera, es honestidad:** si el material salió muy scripted las escenas no se
+> reusan y cae al **mínimo (1 derivado por cada 2 planificados)**. Si salió suelto llega al
+> **tope (1:1)**.
+>
+> ⚠️ **Se promete el MÍNIMO. El tope es techo, no promesa** — y solo se entrega si el material
+> lo permite **y** el operador tiene las horas.
+
+### 🔴 Lo que ⑥B necesita de ④ Creatividad para que el número cierre
+
+| Requisito | Por qué |
+|---|---|
+| **Shot list agrupado por SETUP, no por pieza** | 20 min por video solo se logra si se arma el lugar una vez y se graban todas sus escenas. Grabando pieza por pieza son 45+ min |
+| **Escenas marcadas `hablada` o `apoyo`** | Solo las de apoyo se recombinan. Sin la marca, ⑥B no sabe qué puede reusar |
+| **Mínimo 60% de escenas de apoyo** | Debajo de eso el material queda muy scripted y los derivados caen al mínimo |
+
+⚠️ **Esto es un pedido abierto a ④ Creatividad** *(skill `cr-arte-video`)*. Hasta que esté,
+⑥B marca las escenas a mano y lo declara en el loop.
 
 > 🔑 **De 2 horas de grabación salen 16 piezas.** Ese número es la razón por la que el margen
 > cierra. **Editar de menos no ahorra tiempo: tira producción pagada.**

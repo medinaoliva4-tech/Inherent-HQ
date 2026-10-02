@@ -29,13 +29,23 @@ piezas entregadas ÷ horas que grabó ⑤
 
 | Plan | Lo esperado |
 |---|---|
-| 🔷 Marketing | **10 videos ÷ 2 h = 5 por hora** |
-| 🔷 Marketing Pro | **16 ÷ 4 h = 4 por hora** |
-| 🟨 Accelerate | **20 ÷ 6 h = 3.3 por hora** |
-| 🟨 Compound | **24 ÷ 8 h = 3 por hora** |
+| 🔷 Marketing | **13 mínimo ÷ 3 h — tope 18** |
+| 🔷 Marketing Pro | **18 mínimo ÷ 4 h — tope 24** |
+| 🟨 Accelerate | **27 mínimo ÷ 6 h — tope 36** |
+| 🟨 Compound | **36 mínimo ÷ 8 h — tope 48** |
 
-🔑 **El ratio BAJA al subir de plan, y está bien:** los planes grandes piden videos más
-largos y más trabajados, no más cortes del mismo material.
+**La métrica del departamento son 3 videos planificados por hora grabada** *(20 min c/u)*,
+**más los derivados.**
+
+🔴 **Si quedó debajo del mínimo, el loop declara cuál de las dos causas fue:**
+
+| Causa | Qué significa | A quién se devuelve |
+|---|---|---|
+| **Material muy scripted** | Las escenas tienen guion encima y no se recombinan | ④ Creatividad — pedir más escenas de apoyo limpias |
+| **Faltó cobertura** | No hubo suficientes escenas de apoyo que grabar | ⑤ Producción — el shot list no cubrió |
+
+🔑 **Llegar al tope no es mérito si el ciclo no lo pedía.** Se entrega el mínimo prometido;
+el tope solo cuando el material lo permite **y** hay horas de operador.
 
 🔴 **Si el número baja, o faltó cobertura (⑤) o se derivó de menos (acá).** Se distingue cuál.
 

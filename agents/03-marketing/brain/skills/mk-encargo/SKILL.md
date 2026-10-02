@@ -37,9 +37,12 @@ descubre cuando producción no da abasto.
 | | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|---|
 | Total de slots | **86** | **145** | **145** | **204** |
-| Videos de grabación | 8 | 12 | 18 | 20 |
-| Videos con b-roll | 2 | 4 | 2 | 4 |
-| Estáticos y carruseles | 46 | 74 | 70 | 100 |
+| Horas de grabación | 3h | 4h | 6h | 8h |
+| Videos planificados *(20 min c/u)* | 9 | 12 | 18 | 24 |
+| Derivados — **mínimo** *(1:2)* | 4 | 6 | 9 | 12 |
+| **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
+| *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
+| Estáticos y carruseles | 43 | 72 | 63 | 88 |
 | Stories | 30 | 55 | 55 | 80 |
 | Revisiones por pieza | 1 | 2 | 2 | 3 |
 

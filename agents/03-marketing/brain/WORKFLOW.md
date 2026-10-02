@@ -80,13 +80,26 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 | | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Slots por ciclo** | **86** | **145** | **145** | **204** |
-| **Videos de grabación** | 8 | 12 | 18 | 20 |
-| **Videos con b-roll** | 2 | 4 | 2 | 4 |
-| **Estáticos y carruseles** | 46 | 74 | 70 | 100 |
+| **Horas de grabación** | 3h | 4h | 6h | 8h |
+| **Videos planificados** *(20 min c/u)* | 9 | 12 | 18 | 24 |
+| **Derivados — mínimo** *(1:2)* | 4 | 6 | 9 | 12 |
+| **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
+| *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
+| **Estáticos y carruseles** | 43 | 72 | 63 | 88 |
 | **Stories** | 30 | 55 | 55 | 80 |
 | **Canales** | Donde esté la audiencia | **+ Google y alianzas** | + los que apliquen | + canal permanente |
 | **Campañas por ciclo** | 1 | 1-2 | 1-2 por ángulo | Sistema de demanda completo |
 | **Revisiones por pieza** | 1 | 2 | 2 | 3 |
+
+> 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba
+> por SETUP y no por pieza.** Cada uno deja 5-7 escenas; las de apoyo se recombinan en derivados.
+>
+> **El rango no es flojera, es honestidad:** si el material salió muy scripted las escenas no se
+> reusan y cae al **mínimo (1 derivado por cada 2 planificados)**. Si salió suelto llega al
+> **tope (1:1)**.
+>
+> ⚠️ **Se promete el MÍNIMO. El tope es techo, no promesa** — y solo se entrega si el material
+> lo permite **y** el operador tiene las horas.
 
 ⚠️ **Marketing Pro y Accelerate piden las mismas 145 piezas.** La diferencia no es volumen:
 **en Accelerate el calendario se arma contra una oferta rediseñada por ② Growth.**

@@ -54,8 +54,9 @@ entre 160 piezas y 160 decisiones.
 
 | | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|---|
-| Estáticos y carruseles | 46 | 74 | 70 | 100 |
+| Estáticos y carruseles | 43 | 72 | 63 | 88 |
 | Stories | 30 | 55 | 55 | 80 |
+| **Total de ⑥A** | **73** | **127** | **118** | **168** |
 | Revisiones por pieza | 1 | 2 | 2 | 3 |
 
 🛑 **Si el Excel pide más, se declara y se devuelve a ③ Marketing.**

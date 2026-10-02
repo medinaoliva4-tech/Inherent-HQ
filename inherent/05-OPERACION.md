@@ -169,7 +169,7 @@
 | **Incluye** | Videos y fotos necesarias · tomas · locaciones · personas · productos · props · preparación · grabación |
 | **Entrega** | 📊 **Excel con presupuesto y escenas** + 🎬 **material producido** |
 | **Habilidades** | Producción audiovisual, fotografía, dirección, manejo de recursos |
-| **Corre en** | 🔷 M *(2h · 1 sesión)* · 🔷 MP *(4h · 2)* · 🟨 A *(6h · 2)* · 🟨 C *(8h · 3)* |
+| **Corre en** | 🔷 M *(3h · 1 sesión)* · 🔷 MP *(4h · 2)* · 🟨 A *(6h · 2)* · 🟨 C *(8h · 3)* |
 | **Estado** | ⬜ **No construido** · 👤 la grabación es humana, siempre |
 
 > 🟡 **Lever de costo:** el sistema de **contenido crudo del cliente** — graba con su teléfono
@@ -187,7 +187,7 @@
 | **Incluye** | Composición · jerarquía · layout · tipografía · color · contraste · adaptación a formatos · elementos superpuestos *(ilustraciones, assets PNG, texturas, formas)* |
 | **Entrega** | 🎨 **Diseños listos para publicar o pautar** |
 | **Habilidades** | Diseño gráfico, composición, Figma, atención al detalle |
-| **Corre en** | 🔷 M *(46 estáticos)* · 🔷 MP *(74)* · 🟨 A *(70)* · 🟨 C *(100)* |
+| **Corre en** | 🔷 M *(43 estáticos)* · 🔷 MP *(72)* · 🟨 A *(63)* · 🟨 C *(88)* |
 | **Estado** | ⬜ **No construido** |
 
 ---
@@ -510,20 +510,20 @@ escenario donde la herramienta se nota. A partir de 5 clientes baja a Q341.
 
 | Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
-| Producción | 24 h | Freelance con volumen | **Q200** | **Q4,800** |
-| Operación | 28 h | Freelance con volumen | **Q80** | **Q2,240** |
+| Producción de video | 24 h | Freelance con volumen | **Q200** | **Q4,800** |
+| Operación | 36 h | Freelance con volumen | **Q80** | **Q2,880** |
 | Claude | — | fijo | — | Q1,500 ÷ 5 = **Q300/cuenta** |
 
 | Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q875 | Q320 | Q341 | Q750 | Q0 | **Q2,286** | **Q4,259** | **65%** |
-| 🔷 Marketing Pro | Q1,450 | Q480 | Q341 | Q1,050 | Q0 | **Q3,321** | **Q6,689** | **67%** |
-| 🟨 Accelerate | Q1,850 | Q480 | Q341 | Q1,950 | Q1,313 | **Q5,934** | **Q13,316** | **69%** |
-| 🟨 Compound | Q2,425 | Q640 | Q341 | Q2,400 | Q3,079 | **Q8,885** | **Q21,915** | **71%** |
+| 🔷 Marketing | Q1,075 | Q400 | Q341 | Q750 | Q0 | **Q2,566** | **Q3,979** | **61%** |
+| 🔷 Marketing Pro | Q1,450 | Q520 | Q341 | Q1,050 | Q0 | **Q3,361** | **Q6,649** | **66%** |
+| 🟨 Accelerate | Q1,850 | Q620 | Q341 | Q1,950 | Q1,313 | **Q6,074** | **Q13,176** | **68%** |
+| 🟨 Compound | Q2,425 | Q960 | Q341 | Q2,400 | Q3,079 | **Q9,205** | **Q21,595** | **70%** |
 
 *Prod. = video + fotógrafo + fee de sesión · Otros = tecnología + mentor + membresía*
 
-**Utilidad total del mes: Q50,438** sobre Q73,150 de facturación.
+**Utilidad total del mes: Q49,378** sobre Q73,150 de facturación.
 
 ---
 
@@ -537,12 +537,12 @@ escenario donde la herramienta se nota. A partir de 5 clientes baja a Q341.
 
 | Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q875 | Q320 | Q171 | Q750 | Q0 | **Q2,116** | **Q4,429** | **68%** |
-| 🔷 Marketing Pro | Q1,450 | Q480 | Q171 | Q1,050 | Q0 | **Q3,151** | **Q6,859** | **69%** |
-| 🟨 Accelerate | Q1,850 | Q480 | Q171 | Q1,950 | Q1,216 | **Q5,667** | **Q13,583** | **71%** |
-| 🟨 Compound | Q2,425 | Q640 | Q171 | Q2,400 | Q2,982 | **Q8,618** | **Q22,182** | **72%** |
+| 🔷 Marketing | Q1,075 | Q400 | Q171 | Q750 | Q0 | **Q2,396** | **Q4,149** | **63%** |
+| 🔷 Marketing Pro | Q1,450 | Q520 | Q171 | Q1,050 | Q0 | **Q3,191** | **Q6,819** | **68%** |
+| 🟨 Accelerate | Q1,850 | Q620 | Q171 | Q1,950 | Q1,216 | **Q5,807** | **Q13,443** | **70%** |
+| 🟨 Compound | Q2,425 | Q960 | Q171 | Q2,400 | Q2,982 | **Q8,938** | **Q21,862** | **71%** |
 
-**Utilidad total del mes: Q102,964**
+**Utilidad total del mes: Q100,784**
 
 ⚠️ **La operación queda en 56 h — a 4 horas del tramo de Q65.** Un cliente Compound más cruza
 el escalón y **baja la tarifa para todas las cuentas a la vez.**
@@ -559,10 +559,10 @@ el escalón y **baja la tarifa para todas las cuentas a la vez.**
 
 | Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
 |---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q799 | Q260 | Q85 | Q750 | Q0 | **Q1,894** | **Q4,651** | **71%** |
-| 🔷 Marketing Pro | Q1,298 | Q390 | Q85 | Q1,050 | Q0 | **Q2,823** | **Q7,187** | **72%** |
-| 🟨 Accelerate | Q1,622 | Q390 | Q85 | Q1,950 | Q1,159 | **Q5,206** | **Q14,044** | **73%** |
-| 🟨 Compound | Q2,121 | Q520 | Q85 | Q2,400 | Q2,925 | **Q8,051** | **Q22,749** | **74%** |
+| 🔷 Marketing | Q961 | Q325 | Q85 | Q750 | Q0 | **Q2,121** | **Q4,424** | **68%** |
+| 🔷 Marketing Pro | Q1,298 | Q423 | Q85 | Q1,050 | Q0 | **Q2,856** | **Q7,154** | **71%** |
+| 🟨 Accelerate | Q1,622 | Q504 | Q85 | Q1,950 | Q1,159 | **Q5,320** | **Q13,930** | **72%** |
+| 🟨 Compound | Q2,121 | Q780 | Q85 | Q2,400 | Q2,925 | **Q8,311** | **Q22,489** | **73%** |
 
 **Utilidad total del mes: Q240,619**
 
@@ -798,11 +798,11 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 | 9 | Clonar anuncio longevo del competidor | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ | ✅ |
 | **PRODUCCIÓN** |
 | 10 | Sesión de grabación | Producción | Q175/sesión | **1** | **2** | **2** | **3** |
-| 11 | Horas de producción de video | Producción | **Q200/h** | **2h** | **4h** | **6h** | **8h** |
+| 11 | Horas de producción de video | Producción | **Q200/h** | **3h** | **4h** | **6h** | **8h** |
 | 12 | Sesión de fotógrafo | Producción | **Q300** | 1h | 1h | 1h | 1h |
-| 13 | Edición de videos de grabación | Agentes | Claude | 8 | 12 | 18 | 20 |
-| 14 | **Videos mezclando b-roll** | Agentes (Higgsfield) | Claude | 2 | 4 | 2 | 4 |
-| 15 | Estáticos y carruseles | Agentes (Higgsfield) | Claude | **46** | **74** | **70** | **100** |
+| 13 | Edición de videos **planificados** *(20 min de grabación c/u)* | Agentes | Claude | 9 | 12 | 18 | 24 |
+| 14 | **Videos derivados** *(escenas de apoyo + VO)* · mínimo 1:2 | Agentes (Higgsfield) | Claude | 4 | 6 | 9 | 12 |
+| 15 | Estáticos y carruseles | Agentes (Higgsfield) | Claude | **43** | **72** | **63** | **88** |
 | 16 | Stories y recortes | Agentes | Claude | 30 | 55 | 55 | 80 |
 | 17 | **Predicción de viralidad** antes de publicar | Agentes (Higgsfield) | Claude | ✅ | ✅ | ✅ | ✅ |
 | 18 | Fotos de producto generadas | Agentes (Higgsfield) | Claude | ❌ | ✅ | ✅ | ✅ |
@@ -815,7 +815,7 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 | **PUBLICACIÓN** |
 | 24 | Programar y publicar | Agentes (Eden) | Claude | ✅ | ✅ | ✅ | ✅ |
 | 25 | **Comentarios y mensajes** | Agentes (⑧ CM) | Claude | ❌ | 🔴 ✅ | 🔴 ✅ | 🔴 ✅ |
-| 26 | Operar los agentes | Operador | **Q80/h** | Q320 | Q480 | Q480 | Q640 |
+| 26 | Operar los agentes | Operador | **Q80/h** | Q400 | Q520 | Q620 | Q960 |
 | **ADQUISICIÓN** |
 | 27 | Pauta Meta + TikTok | Agentes (AdWhispr) | Claude | ✅ | ✅ | ✅ | ✅ |
 | 28 | Pauta Google Search + PMax | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ | ✅ |
@@ -913,9 +913,9 @@ de Growth no se justifica por pieza.
 
 | Tarifa | 🔷 **Mkt** (5h) | 🔷 **Pro** (7h) | 🟨 **Accel** (13h) | 🟨 **Comp** (16h) |
 |---|---|---|---|---|
-| **Q60/h** | 72% | 71% | 75% | 76% |
-| **Q150/h** ✅ | **65%** | **67%** | **69%** | **71%** |
-| **Q250/h** | 57% | 60% | 62% | 66% |
+| **Q60/h** | 68% | 70% | 74% | 76% |
+| **Q150/h** ✅ | **61%** | **66%** | **68%** | **70%** |
+| **Q250/h** | 53% | 60% | 61% | 65% |
 
 > **Modelo canónico: Q150/h con la escalera de producción y operación** — con 5 clientes y mix
 > realista. Es el que usa `06-ECONOMIA.md`.
@@ -953,13 +953,13 @@ capas que corren sobre agentes. **Se revisa cuando haya casos.**
 |---|---|---|---|---|
 | Precio | Q6,545 | Q10,010 | Q19,250 | Q30,800 |
 | Piezas/mes | 86 | 145 | 145 | 204 |
-| Costo *(@Q150/h, 5 clientes)* | Q2,286 | Q3,321 | Q5,934 | Q8,885 |
-| **Utilidad @Q150/h** | **Q4,259** | **Q6,689** | **Q13,316** | **Q21,915** |
-| **Utilidad @Q250/h** | **Q3,759** | **Q5,989** | **Q12,016** | **Q20,315** |
+| Costo *(@Q150/h, 5 clientes)* | Q2,566 | Q3,361 | Q6,074 | Q9,205 |
+| **Utilidad @Q150/h** | **Q3,979** | **Q6,649** | **Q13,176** | **Q21,595** |
+| **Utilidad @Q250/h** | **Q3,479** | **Q5,949** | **Q11,876** | **Q19,995** |
 
 ## 6 · La hoja de ruta de automatización
 
-> **Los márgenes del modelo canónico (hora con escalera, 5 clientes) son 65% / 67% / 69% / 71%** —
+> **Los márgenes del modelo canónico (hora con escalera, 5 clientes) son 61% / 66% / 68% / 70%** —
 > **y asumen que estos agentes existen.** Sin ellos, las horas se duplican y caen ~15 puntos.
 > Ver **este documento**.
 

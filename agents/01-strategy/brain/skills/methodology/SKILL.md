@@ -125,7 +125,7 @@ Se mide con dos datos, y salen del bloque `context`:
 | | 🔷 **Marketing** Q6,545 | 🔷 **Pro** Q10,010 | 🟨 **Accelerate** Q19,250 | 🟨 **Compound** Q30,800 |
 |---|---|---|---|---|
 | Piezas/mes | **86** | **145** | **145** | **204** |
-| Horas de producción | 2h · 1 sesión | 4h · 2 sesiones | 6h · 2 sesiones | 8h · 3 sesiones |
+| Horas de producción | 3h · 1 sesión | 4h · 2 sesiones | 6h · 2 sesiones | 8h · 3 sesiones |
 | Canales de pauta | Meta · TikTok | + Google Search · PMax | + los que apliquen | + los que apliquen |
 | Variantes de creativo | hasta 20 | hasta 30 | hasta 35 | hasta 50 |
 | **Oferta y precio** | ❌ *solo el mensaje* | ❌ *solo el mensaje* | ✅ | ✅ |

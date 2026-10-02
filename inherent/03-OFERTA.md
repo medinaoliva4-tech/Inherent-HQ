@@ -65,12 +65,20 @@ no es más esfuerzo, es que Growth toca la cadena completa.
 | **El boost** | Existir | Sostener presencia en serio | **Escalar sin romperlo** | **Que crezca sin ti** |
 | **Meta a 12 meses** | **1.3x** | **1.45x** | **1.7x** | **2x** |
 | | | | | |
-| **Piezas / mes** | **86** | **145** | **145** | **204** |
-| Videos | 10 | 16 | 20 | 24 |
-| Estáticos y carruseles | 46 | 74 | 70 | 100 |
+| **Piezas / mes** *(mínimo)* | **86** | **145** | **145** | **204** |
+| **Videos** *(mínimo — tope)* | **13 — 18** | **18 — 24** | **27 — 36** | **36 — 48** |
+| Estáticos y carruseles | 43 | 72 | 63 | 88 |
 | Stories | 30 | 55 | 55 | 80 |
-| Horas de grabación | 2 h | 4 h | 6 h | 8 h |
+| Horas de grabación | **3 h** | 4 h | 6 h | 8 h |
 | Revisiones por pieza | 1 | 2 | 2 | 3 |
+
+> 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba
+> por SETUP y no por pieza.** Cada uno deja 5-7 escenas; las de apoyo se recombinan en derivados.
+>
+> **El rango es honestidad, no flojera:** material muy scripted no se recombina y cae al
+> **mínimo (1 derivado por cada 2 planificados)**; material suelto llega al **tope (1:1)**.
+>
+> ⚠️ **Se promete el MÍNIMO.** El tope es techo interno — **nunca se le dice al cliente.**
 | | | | | |
 | Marca e identidad | ✅ | ✅ | ✅ | ✅ |
 | Mensaje y ángulos | ✅ | ✅ | ✅ | ✅ |

@@ -272,11 +272,11 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 ## Qué pasa con el mismo costo y otro precio
 
-*Costo por cuenta con 5 clientes: Marketing Q2,286 · Pro Q3,321 · Accelerate Q5,934 · Compound Q8,885*
+*Costo por cuenta con 5 clientes: Marketing Q2,566 · Pro Q3,361 · Accelerate Q6,074 · Compound Q9,205*
 
 | Mercado | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| **🇬🇹 Guatemala** *(hoy)* | $850 → **65%** | $1,300 → **67%** | $2,500 → **69%** | $4,000 → **71%** |
+| **🇬🇹 Guatemala** *(hoy)* | $850 → **61%** | $1,300 → **66%** | $2,500 → **68%** | $4,000 → **70%** |
 | **🇲🇽 México** | $1,275 → **77%** | $1,950 → **78%** | $3,750 → **79%** | $6,000 → **81%** |
 | **🇺🇸 Miami** | $2,125 → **86%** | $3,250 → **87%** | $6,250 → **88%** | $10,000 → **88%** |
 
@@ -284,9 +284,9 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 | Mercado | Al mes |
 |---|---|
-| 🇬🇹 Guatemala | Q50,438 · **$6,550** |
-| 🇲🇽 México | Q87,014 · **$11,300** |
-| 🇺🇸 Miami | Q160,164 · **$20,801** |
+| 🇬🇹 Guatemala | Q49,378 · **$6,413** |
+| 🇲🇽 México | Q85,954 · **$11,163** |
+| 🇺🇸 Miami | Q159,104 · **$20,663** |
 
 ⚠️ **Los precios de México y Miami son hipótesis, no benchmark verificado.**
 `[sin fuente — hay que investigar cada mercado antes de publicarlos]`
@@ -415,12 +415,12 @@ y el costo de servirlo es el mismo desde acá.
 
 | Plan | Precio | Margen sin mentor | **Margen con mentor** |
 |---|---|---|---|
-| 🔷 **Marketing** | Q6,545 | 65% | **65%** ✅ |
-| 🔷 **Marketing Pro** | Q10,010 | 67% | **67%** ✅ |
-| 🟨 **Accelerate** | Q19,250 | 72% | **69%** ✅ |
-| 🟨 **Compound** | Q30,800 | 76% | **71%** ✅ |
+| 🔷 **Marketing** | Q6,545 | 61% | **61%** 🟡 |
+| 🔷 **Marketing Pro** | Q10,010 | 66% | **66%** ✅ |
+| 🟨 **Accelerate** | Q19,250 | 71% | **68%** ✅ |
+| 🟨 **Compound** | Q30,800 | 75% | **70%** ✅ |
 
-> ✅ **Los cuatro quedan entre 65% y 71%.** El piso del modelo es **60%**: un plan que baje de ahí
+> ✅ **Los cuatro quedan entre 61% y 70%.** El piso del modelo es **60%**: un plan que baje de ahí
 > con el mentor adentro está mal preciado. Ver `06-ECONOMIA.md`.
 >
 > 🔑 **Con los precios nuevos el mentor pesa la mitad que antes** — el costo no cambió, el
