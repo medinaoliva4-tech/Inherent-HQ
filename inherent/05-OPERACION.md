@@ -250,7 +250,7 @@
 | **Incluye** | Copy final · captions · hashtags · fecha · hora · formato · canal · revisión final |
 | **Entrega** | 📅 **Contenido calendarizado o publicado** |
 | **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
-| **Estado** | 🔴 **Sin MCP de publicación.** Hoy lo hace el operador a mano. Ver «El hueco de publicación» |
+| **Estado** | 🟡 **Postpone** da el MCP de publicación en 12 plataformas. **Falta probarlo y ver su precio** |
 
 ⚠️ **Publicar es acción destructiva. Requiere gate de Allan** — ver Reglas en `CLAUDE.md`.
 
@@ -813,8 +813,8 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 | 22 | Brief de contenido | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
 | 23 | Aprobación de ideas y calendario | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
 | **PUBLICACIÓN** |
-| 24 | Programar y publicar | 🔴 **Operador a mano** *(sin MCP)* | su tiempo | ✅ | ✅ | ✅ | ✅ |
-| 25 | **Comentarios y mensajes** | Agentes (⑧ CM) | Claude | ❌ | 🔴 ✅ | 🔴 ✅ | 🔴 ✅ |
+| 24 | Programar y publicar | Agentes (**Postpone**) | ⚠️ sin dato | ✅ | ✅ | ✅ | ✅ |
+| 25 | **Comentarios y mensajes** | ⑧ CM + **Postpone Inbox** 🔴 *sin TikTok* | ⚠️ sin dato | ❌ | ✅ | ✅ | ✅ |
 | 26 | Operar los agentes | Operador | **Q80/h** | Q400 | Q520 | Q620 | Q960 |
 | **ADQUISICIÓN** |
 | 27 | Pauta Meta + TikTok | Agentes (AdWhispr) | Claude | ✅ | ✅ | ✅ | ✅ |

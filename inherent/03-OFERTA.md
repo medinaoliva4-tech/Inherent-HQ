@@ -259,7 +259,7 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 |---|---|---|
 | Tu marca construida en serio | ②B Branding + Higgsfield `generate_image_batch` | 👤⬜ |
 | Tu mensaje claro | ③ Marketing · `mk-mensaje` + ②B `br-voz` | 👤 |
-| Presencia todos los días | ④⑥A⑥B + ⑨ Posting — **86 piezas** | 🔴 **publicación sin MCP** |
+| Presencia todos los días | ④⑥A⑥B + ⑨ Posting + **Postpone** — **86 piezas** | 🟡 |
 | Campañas en Meta y TikTok | AdWhispr `launch_meta_ad` · `launch_tiktok_campaign` | ⬜ |
 | Reporte al mes | ③ `mk-loop` + ⑩ `ad-loop` | ✅ |
 
@@ -270,7 +270,7 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 | 145 piezas, doble de video | ⑤ Producción 4 h + ⑥B Video Editing | 👤⬜ |
 | Campañas de Google | AdWhispr `launch_search_campaign` · `launch_pmax_campaign` | ⬜ |
 | Alianzas con creadores | Apify `apify/instagram-scraper` *(vetting por engagement real)* | 🟡 |
-| Comentarios y mensajes | ⑧ Community Management | 🔴 **agente sin construir** |
+| Comentarios y mensajes | ⑧ Community Management + **Postpone Inbox** | 🔴 **agente sin construir** · 🔴 **sin TikTok** |
 | Dos revisiones por pieza | ⑥A `gd-composicion` + ②B `br-guardian` | ✅ |
 
 ## 🟨 Accelerate — *todo lo de Marketing Pro, más:*

@@ -416,7 +416,7 @@ La línea Marketing vende atención **y lo dice en la tarjeta.** El cliente sabe
 | Doblaje y voz sintética | Higgsfield `dubbing` · `create_voice` | ⬜ |
 | Quitar fondo · escalar calidad | Higgsfield `remove_background` · `upscale_*` | ⬜ |
 | Análisis de video | Higgsfield `video_analysis_create` | ⬜ |
-| Programar y publicar | 🔴 **SIN MCP** — Zapier → Buffer/Metricool *(sin probar)* · Higgsfield solo TikTok | 🔴 |
+| Programar y publicar | **Postpone** — MCP oficial, 12 plataformas, bulk import de CSV | 🟡 |
 
 ### Adquisición
 
@@ -495,7 +495,52 @@ ninguna garantía publicada.**
 **Nueve son de terceros** y **cuatro son de la cuenta oficial `apify/`** *(los tres de
 Instagram y el de Google Search)*.
 
-### 🔴 El hueco que dejó sacar Eden: PUBLICAR
+### 🟢 El hueco de publicación: resuelto con Postpone
+
+**`postpone.app` tiene MCP oficial para Claude y Claude Code, en todos los planes pagos.**
+`[fuente: postpone.app al 2-oct-2026 · el pricing está detrás del login y NO está verificado]`
+
+| Lo que resuelve | Detalle |
+|---|---|
+| 🟢 **Publicar en 12 plataformas** | Instagram · TikTok · Facebook · YouTube · LinkedIn · X · Threads · Pinterest · Reddit · Bluesky · Tumblr · Mastodon |
+| 🟢 **Reels y Stories** | Soporte nativo — no solo feed |
+| 🔑 **Bulk import desde spreadsheet** | **`calendario.csv` se carga directo.** 204 piezas en una subida |
+| 🔑 **«Find the Best Times»** | Recomendación de horario **según la data de engagement de esa cuenta** |
+| 🔑 **Reviews & Approvals** | **El GATE de Allan puede vivir ahí**, antes de que salga nada |
+| 🔑 **Analytics por cuenta** | **La línea base de la garantía de contenido** |
+| **Client Manager** | El cliente conecta su cuenta **por link, nunca con contraseña** |
+| **Sin costo por asiento** | El equipo entero entra sin pagar por persona |
+| **Saved Replies** | Respuestas guardadas para community management |
+
+### 🔴 Lo que Postpone NO cubre — y es importante
+
+| Inbox | Plataformas | ⚠️ |
+|---|---|---|
+| **Comentarios** | Instagram · Facebook · Threads · YouTube · LinkedIn · Bluesky · Mastodon | 🔴 **TikTok NO** |
+| **Mensajes directos** | Instagram · Bluesky · Mastodon | 🔴 **TikTok NO · Facebook NO** |
+
+🔴 **TikTok es canal principal en los cuatro planes, y su inbox queda afuera.**
+**⑧ Community Management cubre ~70% con Postpone.** El TikTok se atiende a mano o con otra
+herramienta — **y se declara, no se asume.**
+
+### ⚠️ El volumen rompe el plan barato
+
+| | |
+|---|---|
+| **Plan Starter** | ~$16/mes anual — **3 cuentas · 200 posts/mes** |
+| **Lo que necesitamos con 5 clientes** | **15-20 cuentas · ~666 piezas/mes** |
+
+🔴 **Hace falta el tramo de agencia, y su precio no está publicado.**
+**Pendiente: crear cuenta, ver el pricing real y recalcular.** Hasta entonces, el costo de
+publicación en el modelo es **⚠️ SIN DATO**.
+
+> 🔑 **Alternativa evaluada: `blotato.com/mcp`** — $29/mes plano, 9 plataformas, comentarios y
+> DMs en Instagram y Facebook. **Más barato y predecible, pero sin bulk import de CSV, sin
+> approvals y sin client manager.** Postpone gana por el flujo, no por el precio.
+
+---
+
+### 🟡 El recuento de lo que dejó Eden
 
 | Función | Antes | Ahora |
 |---|---|---|
@@ -503,19 +548,10 @@ Instagram y el de Google Search)*.
 | Alianzas con creadores | Eden | ✅ **Apify** *(vetting por engagement real)* |
 | Auto-DM | Eden | ✅ **Zapier → ManyChat / WhatsApp Business** |
 | IA propia del cliente | Eden | ✅ **Build propio** — Vercel + Claude API |
-| 🔴 **Programar y publicar** | Eden `schedule_post` | 🔴 **SIN MCP** |
+| 🟢 **Programar y publicar** | Eden `schedule_post` | 🟢 **Postpone** — MCP oficial, 12 plataformas |
+| 🟡 **Comentarios y DMs** | *(no lo hacía)* | 🟡 **Postpone** — Instagram sí, **TikTok no** |
 
-**Hoy lo hace el operador a mano**, y eso está dentro de sus horas. **Pero a 204 piezas al mes
-es el próximo cuello.**
-
-| Candidato | Qué falta |
-|---|---|
-| **Zapier → Buffer / Metricool / Later** | Probar si el MCP de Zapier lo ejecuta de verdad |
-| **Higgsfield `tiktok_prepare_publish`** | Solo TikTok. No cubre Instagram |
-| **API de Meta directa** | Build propio. Es lo único que da control total |
-
-⚠️ **Mientras no haya MCP de publicación, `⑨ Posting` no es un agente autónomo: es un agente
-asistido.** Está declarado así en `05-OPERACION.md`.
+✅ **Con Postpone, `⑨ Posting` vuelve a ser un agente autónomo** — menos el inbox de TikTok.
 
 🔑 **La distinción no cambia la decisión.** En TikTok, Maps, YouTube y LinkedIn **Apify no
 publica actor propio**, así que el tercero es la única vía. Y en Facebook Ads el oficial

@@ -278,6 +278,10 @@ Lo prohibido es cobrar contenido o pauta prometiendo facturación.
 vende—; Growth trabaja **qué vende, en qué paquetes y a qué precio.**
 **Confundirlos es regalar el trabajo caro dentro del plan barato.**
 
+🚀 **Publicar y atender comentarios se hace con Postpone** — MCP oficial, 12 plataformas,
+carga `calendario.csv` directo y trae las mejores horas según la data de la cuenta.
+🔴 **Su inbox NO cubre TikTok, que es canal principal.** 🟡 **Falta probarlo y ver su precio real.**
+
 🕷️ **Todo lo que haya que scrapear se hace con Apify** — IG, TikTok, YouTube, LinkedIn, Google
 Maps, Google Search y la biblioteca de anuncios de Facebook. **Plan Starter $19/mes, ~Q205
 totales al mes con 5 clientes: menos de 1 punto de margen.** 🟡 **Falta instalar el MCP y probar
