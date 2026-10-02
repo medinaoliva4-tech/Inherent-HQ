@@ -81,26 +81,36 @@ oferta, y la pauta no salva una experiencia rota.
 
 ---
 
-## Los tres niveles de crecimiento
+## Dos líneas, cuatro niveles
 
 ```
-🟦 IGNITE — ENCENDER
-   Estrategia · Demanda · Contenido
+🔷 MARKETING — ENCENDER
+   Marca · Mensaje · Contenido · Pauta
 
-🟪 ACCELERATE — ACELERAR
-   Ignite + Tecnología · Contenido para ADS · SEO · Closing
+🔷 MARKETING PRO — SOSTENER
+   Marketing + Video · Google · Creadores · Community
+
+🟨 ACCELERATE — ACELERAR
+   Marketing Pro + Oferta · Conversión · Canales grandes · SOPs · Tecnología
 
 🟨 COMPOUND — COMPONER
-   Ignite + Accelerate + Sistemas de demanda · Fulfillment · Talento
+   Accelerate + Operación · Estructura · Money OS · IA propia
 ```
+
+🔑 **El eje es qué promete cada línea:**
+**🔷 Marketing promete ATENCIÓN. 🟨 Growth promete FACTURACIÓN.**
 
 **El nivel se elige por dónde está trabado el negocio:**
 
 | El cuello | Nivel |
 |---|---|
-| **No me conocen** — hay producto, no hay demanda | 🟦 **Ignite** |
-| **Llega gente y se pierde** — hay demanda, no hay conversión | 🟪 **Accelerate** |
+| **No me conocen** — hay producto, no hay demanda | 🔷 **Marketing** |
+| **Me conocen y quiero sostenerlo** — hay demanda, falta constancia | 🔷 **Marketing Pro** |
+| **Llega gente y se pierde** — hay demanda, no hay conversión | 🟨 **Accelerate** |
 | **Funciona pero todo depende de alguien** — hay conversión, no hay sistema | 🟨 **Compound** |
+
+⚠️ **Marketing Pro y Accelerate entregan las mismas 145 piezas.** El salto no es volumen:
+es que Accelerate toca **la oferta, el precio y la conversión.**
 
 ---
 
@@ -111,7 +121,7 @@ oferta, y la pauta no salva una experiencia rota.
 
 ---
 
-## 🟦 IGNITE — Q6,160/mes
+## 🔷 MARKETING — Q6,545/mes *($850)*
 
 ### Lo básico *(lo que da cualquier agencia)*
 - Manejo de redes sociales
@@ -131,11 +141,14 @@ oferta, y la pauta no salva una experiencia rota.
 | **Radar de competencia** — qué anuncios lanzaron y cuáles sostienen | Porque su reporte es del día 30. El nuestro es del martes |
 | **1 grabación → 15 piezas** | Porque multiplicamos el material con agentes, no con horas |
 | **Mapa de aliados** y gestión de asociaciones | Porque crecer no es solo pautar: es pararse al lado de quien ya tiene la audiencia |
-| **Mejora de oferta y posicionamiento** | Porque una agencia no toca el negocio. Nosotros sí |
+| **Mensaje y posicionamiento trabajados de verdad** | Porque una agencia recibe el brief y ejecuta. Nosotros decidimos qué decir |
+
+⚠️ **En Marketing se trabaja el MENSAJE, no la oferta.** Qué vende, en qué paquetes y a qué
+precio **solo lo toca la línea Growth.** Confundirlos regala el trabajo caro dentro del plan barato.
 
 ---
 
-## 🟪 ACCELERATE — Q9,240/mes
+## 🟨 ACCELERATE — Q19,250/mes *($2,500)*
 
 ### Lo básico *(lo que da cualquier agencia "con pauta")*
 - Campañas en Meta
@@ -160,7 +173,7 @@ oferta, y la pauta no salva una experiencia rota.
 
 ---
 
-## 🟨 COMPOUND — Q15,400/mes
+## 🟨 COMPOUND — Q30,800/mes *($4,000)*
 
 ### Lo básico
 **No existe.** Ninguna agencia guatemalteca ofrece este nivel.
@@ -203,19 +216,24 @@ Sin MCP no hay acción, y sin acción no hay promesa.
 
 ## Los precios
 
-| | **🟦 Ignite** | **🟪 Accelerate** | **🟨 Compound** |
-|---|---|---|---|
-| **Precio / mes** | **Q6,160** *($800)* | **Q9,240** *($1,200)* | **Q15,400** *($2,000)* |
-| Piezas / mes | 86 | 145 | 204 |
-| **Q por pieza** | **Q72** | **Q58** | Q75 |
-| *Mercado GT* | *Q188 por pieza* | | |
-| Performance fee | Opcional | ✅ Incluido | ✅ Incluido |
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Precio / mes** | **$850** | **$1,300** | **$2,500** | **$4,000** |
+| | *Q6,545* | *Q10,010* | *Q19,250* | *Q30,800* |
+| Piezas / mes | 86 | 145 | 145 | 204 |
+| **Q por pieza** | **Q76** | **Q69** | *Q133* | *Q151* |
+| *Mercado GT* | *Q188 por pieza* | | | |
+| **Meta a 12 meses** | 1.3x | 1.45x | 1.7x | 2x |
+| Performance fee | ⬜ | ⬜ | ✅ Incluido | ✅ Incluido |
 
 **Y `Tailor Made`** — multi-locación, regulatorio, integraciones o proyectos por hito.
 Precio según alcance.
 
-> 💀 **Ignite está dentro del rango que el mercado guatemalteco ya acepta, con 5.4x el volumen
-> de su tramo. Para igualarlo tendrían que contratar cuatro personas y cobrar lo mismo.**
+> 💀 **Marketing está dentro del rango que el mercado ya acepta, con 5.4x el volumen de su tramo.
+> Para igualarlo tendrían que contratar cuatro personas y cobrar lo mismo.**
+
+⚠️ **El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica
+por **cuántos sistemas activamos y qué tan adentro entramos** — nunca por volumen de entregables.
 
 ---
 

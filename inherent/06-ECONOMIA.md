@@ -155,20 +155,20 @@ contra 16). **Lo que falla es el costo.** Y el costo falla por una razón concre
 | Producción *(video + fotos + sesión)* | Q875 | Q1,450 | Q1,850 | Q2,425 |
 | Operación | 4h → Q320 | 6h → Q480 | 6h → Q480 | 8h → Q640 |
 | Claude + Apify | Q341 | Q341 | Q341 | Q341 |
-| Allan | Q700 | Q1,000 | Q1,900 | Q2,400 |
+| Allan | Q750 | Q1,050 | Q1,950 | Q2,400 |
 | Tecnología · mentor · membresía | Q0 | Q0 | Q1,313 | Q3,079 |
-| **COSTO** | **Q2,236** | **Q3,271** | **Q5,883** | **Q8,884** |
-| **UTILIDAD** | **Q4,309** | **Q6,739** | **Q13,367** | **Q21,916** |
-| **MARGEN** | **66%** | **67%** | **69%** | **71%** |
+| **COSTO** | **Q2,286** | **Q3,321** | **Q5,934** | **Q8,885** |
+| **UTILIDAD** | **Q4,259** | **Q6,689** | **Q13,316** | **Q21,915** |
+| **MARGEN** | **65%** | **67%** | **69%** | **71%** |
 
 ### El margen crece solo con cada cliente
 
 | Clientes | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|---|
-| 2 | 55% | — | — | — |
-| **5** | **66%** | **67%** | **69%** | **71%** |
+| 2 | 54% | — | — | — |
+| **5** | **65%** | **67%** | **69%** | **71%** |
 | 10 | 68% | 69% | 71% | 72% |
-| 20 | 72% | 72% | 73% | 74% |
+| 20 | 71% | 72% | 73% | 74% |
 
 **Porque la tarifa de producción y operación baja con el volumen garantizado, y Claude se diluye.**
 
@@ -369,7 +369,7 @@ primero, aunque la venta fácil sea más pauta.
 
 ### F · Si el cliente «se conforma» con Marketing, ganamos igual
 
-**Marketing deja 66% de margen.** No es un plan de pérdida que se compensa después.
+**Marketing deja 65% de margen.** No es un plan de pérdida que se compensa después.
 **Es el plan que gana la cuenta** — y la cuenta se sube cuando aparece el dolor, no antes.
 
 ### G · Lo que NO se desagrega
@@ -608,7 +608,7 @@ Marketing perdería 6.2 puntos.**
 | **Fotógrafo** | **Q300** / sesión | 1 hora, una vez al mes, en todos los planes |
 | **Fee por sesión** | **Q175** / sesión | Fee fijo por salida a grabar |
 | **Operador de agentes** | **Q80** / hora | Tarifa con volumen. 4-8 h por marca según piezas |
-| **Allan** | **Q700 – Q2,400** / marca | Según plan. Ver `05-OPERACION.md` → sus horas |
+| **Allan** | **Q750 – Q2,400** / marca · Q150/h | Según plan. Ver `05-OPERACION.md` → sus horas |
 | **Claude** | **Q1,500** / mes **TOTAL** | Claude + herramientas. **No es por cliente.** Se prorratea |
 | **Apify** *(scraping)* | **~Q205** / mes **TOTAL** | Plan Starter + consumo. **No es por cliente.** Se prorratea |
 | **Build de tecnología** | **Q750 – Q1,500** / mes | Solo línea Growth. Horas amortizadas de construir la herramienta |
@@ -635,13 +635,13 @@ Marketing perdería 6.2 puntos.**
 | Fotógrafo | 1 sesión | Q300 |
 | Sesiones de grabación | 1 × Q175 | Q175 |
 | Operador de agentes | 4 h × Q80 | Q320 |
-| Allan | dirección y QA | Q700 |
+| Allan | 5 h × Q150 | Q750 |
 | Claude | Q1,500 ÷ 5 | Q300 |
 | Apify | Q205 ÷ 5 | Q41 |
 | Tecnología · mentor · membresía | no incluye | Q0 |
-| **COSTO TOTAL** | | **Q2,236** |
-| **UTILIDAD** | | **Q4,309** |
-| **MARGEN** | | **66%** |
+| **COSTO TOTAL** | | **Q2,286** |
+| **UTILIDAD** | | **Q4,259** |
+| **MARGEN** | | **65%** |
 
 ---
 
@@ -653,12 +653,12 @@ Marketing perdería 6.2 puntos.**
 | Fotógrafo | 1 sesión | Q300 |
 | Sesiones de grabación | 2 × Q175 | Q350 |
 | Operador de agentes | 6 h × Q80 | Q480 |
-| Allan | dirección y QA | Q1,000 |
+| Allan | 7 h × Q150 | Q1,050 |
 | Claude | Q1,500 ÷ 5 | Q300 |
 | Apify | Q205 ÷ 5 | Q41 |
 | Tecnología · mentor · membresía | no incluye | Q0 |
-| **COSTO TOTAL** | | **Q3,271** |
-| **UTILIDAD** | | **Q6,739** |
+| **COSTO TOTAL** | | **Q3,321** |
+| **UTILIDAD** | | **Q6,689** |
 | **MARGEN** | | **67%** |
 
 ---
@@ -671,14 +671,14 @@ Marketing perdería 6.2 puntos.**
 | Fotógrafo | 1 sesión | Q300 |
 | Sesiones de grabación | 2 × Q175 | Q350 |
 | Operador de agentes | 6 h × Q80 | Q480 |
-| **Allan** | **estrategia, oferta y dirección** | **Q1,900** |
+| **Allan** | **13 h × Q150** | **Q1,950** |
 | Claude | Q1,500 ÷ 5 | Q300 |
 | Apify | Q205 ÷ 5 | Q41 |
 | Build de tecnología | 1 herramienta / trimestre | Q750 |
 | Membresía de mentoría | Q385 ÷ 2 | Q193 |
 | Sesión de mentor 1:1 | 1/trimestre @ $144 | Q370 |
-| **COSTO TOTAL** | | **Q5,883** |
-| **UTILIDAD** | | **Q13,367** |
+| **COSTO TOTAL** | | **Q5,934** |
+| **UTILIDAD** | | **Q13,316** |
 | **MARGEN** | | **69%** |
 
 ---
@@ -691,14 +691,14 @@ Marketing perdería 6.2 puntos.**
 | Fotógrafo | 1 sesión | Q300 |
 | Sesiones de grabación | 3 × Q175 | Q525 |
 | Operador de agentes | 8 h × Q80 | Q640 |
-| **Allan** | **dirección, estructura y Money OS** | **Q2,400** |
+| **Allan** | **16 h × Q150** | **Q2,400** |
 | Claude | Q1,500 ÷ 5 | Q300 |
 | Apify | Q205 ÷ 5 | Q41 |
 | Build de tecnología | 1 herramienta / **mes** | Q1,500 |
 | Membresía de mentoría | Q385 ÷ 2 | Q193 |
 | Sesión de mentor 1:1 | 1/mes @ $180 | Q1,386 |
-| **COSTO TOTAL** | | **Q8,884** |
-| **UTILIDAD** | | **Q21,916** |
+| **COSTO TOTAL** | | **Q8,885** |
+| **UTILIDAD** | | **Q21,915** |
 | **MARGEN** | | **71%** |
 
 ---
@@ -713,19 +713,19 @@ Marketing perdería 6.2 puntos.**
 | Fotógrafo | Q300 | Q300 | Q300 | Q300 |
 | Sesiones | Q175 | Q350 | Q350 | Q525 |
 | Operador | Q320 | Q480 | Q480 | Q640 |
-| **Allan** | **Q700** | **Q1,000** | **Q1,900** | **Q2,400** |
+| **Allan** *(5·7·13·16 h @ Q150)* | **Q750** | **Q1,050** | **Q1,950** | **Q2,400** |
 | Claude | Q300 | Q300 | Q300 | Q300 |
 | Apify | Q41 | Q41 | Q41 | Q41 |
 | Tecnología | Q0 | Q0 | Q750 | Q1,500 |
 | Membresía | Q0 | Q0 | Q193 | Q193 |
 | Mentor 1:1 | Q0 | Q0 | Q370 | Q1,386 |
-| **COSTO TOTAL** | **Q2,236** | **Q3,271** | **Q5,883** | **Q8,884** |
-| **UTILIDAD** | **Q4,309** | **Q6,739** | **Q13,367** | **Q21,916** |
-| **MARGEN** | **66%** ✅ | **67%** ✅ | **69%** ✅ | **71%** ✅ |
-| Costo por pieza | Q26 | Q23 | Q41 | Q44 |
+| **COSTO TOTAL** | **Q2,286** | **Q3,321** | **Q5,934** | **Q8,885** |
+| **UTILIDAD** | **Q4,259** | **Q6,689** | **Q13,316** | **Q21,915** |
+| **MARGEN** | **65%** ✅ | **67%** ✅ | **69%** ✅ | **71%** ✅ |
+| Costo por pieza | Q27 | Q23 | Q41 | Q44 |
 
 > **Utilidad del mes con 5 clientes (2 Marketing · 1 Pro · 1 Accelerate · 1 Compound):
-> Q50,640** sobre Q73,150 de facturación.
+> Q50,438** sobre Q73,150 de facturación.
 
 > ✅ **Este es el número que se lleva a la mesa.** Incluye la mentoría, que siempre se entrega en
 > la línea Growth. **El piso es 60%: un plan que baje de ahí con un cliente real se revisa.**
@@ -735,7 +735,7 @@ Marketing perdería 6.2 puntos.**
 **El costo sube en línea recta; el precio sube en escalón.**
 De Marketing a Compound el costo se multiplica por **4.0** y el precio por **4.7**.
 
-**La razón es que lo caro de Growth es criterio, no manos:** Allan pasa de Q700 a Q2,400, pero
+**La razón es que lo caro de Growth es criterio, no manos:** Allan pasa de Q750 a Q2,400, pero
 no hay 4x de producción detrás. **Lo que se cobra es la decisión, y la decisión no escala en costo.**
 
 ---
@@ -794,7 +794,7 @@ atribución limpia— para tener el primer caso medido. **Sin eso tampoco hay pe
 | Q5,000 | Q24,250 | **76%** |
 | Q8,000 | Q27,250 | **78%** |
 
-*Costo constante de Q5,883 — el fee no agrega ni una hora.*
+*Costo constante de Q5,934 — el fee no agrega ni una hora.*
 
 *Ejemplo sobre Accelerate ($2,500 base). Mismo efecto en Compound.*
 
@@ -930,11 +930,11 @@ Piso mensual                 Q4,105
 
 | Clientes | Utilidad/mes | ¿Alcanza? |
 |---|---|---|
-| 1 Marketing | Q3,617 *(a tarifa de 2 clientes)* | ⚠️ Justo |
-| **2 Marketing** | **Q7,234** | ✅ Sí |
-| **1 Compound** | **Q21,916** | ✅ Con espacio |
-| **5 mixtos** *(2·1·1·1)* | **Q50,640** | ✅ Negocio sano |
-| 10 mixtos *(4·2·2·2)* | **Q94,406** | ✅ Reinversión real |
+| 1 Marketing | Q3,567 *(a tarifa de 2 clientes)* | ⚠️ Justo |
+| **2 Marketing** | **Q7,134** | ✅ Sí |
+| **1 Compound** | **Q21,915** | ✅ Con espacio |
+| **5 mixtos** *(2·1·1·1)* | **Q50,438** | ✅ Negocio sano |
+| 10 mixtos *(4·2·2·2)* | **Q102,964** | ✅ Reinversión real |
 
 **Capacidad: 8-10 clientes con el agente de QA construido.**
 
@@ -942,10 +942,10 @@ Piso mensual                 Q4,105
 
 | Clientes | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|---|
-| 2 | 55% | — | — | — |
-| **5** | **66%** | **67%** | **69%** | **71%** |
+| 2 | 54% | — | — | — |
+| **5** | **65%** | **67%** | **69%** | **71%** |
 | 10 | 68% | 69% | 71% | 72% |
-| 20 | 72% | 72% | 73% | 74% |
+| 20 | 71% | 72% | 73% | 74% |
 
 **Porque la tarifa de producción y operación baja con el volumen garantizado, y Claude se diluye.**
 Ver `05-OPERACION.md`.
@@ -1064,18 +1064,18 @@ comprometerlo en un contrato.
 | | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Precio** | Q6,545 | Q10,010 | Q19,250 | Q30,800 |
-| **COSTO** | Q2,236 | Q3,271 | Q5,883 | Q8,884 |
-| **UTILIDAD** | Q4,309 | Q6,739 | Q13,367 | Q21,916 |
-| **MARGEN** | **66%** | **67%** | **69%** | **71%** |
-| *Costo por pieza* | *Q26* | *Q23* | *Q41* | *Q44* |
+| **COSTO** | Q2,286 | Q3,321 | Q5,934 | Q8,885 |
+| **UTILIDAD** | Q4,259 | Q6,689 | Q13,316 | Q21,915 |
+| **MARGEN** | **65%** | **67%** | **69%** | **71%** |
+| *Costo por pieza* | *Q27* | *Q23* | *Q41* | *Q44* |
 
-**Con 5 clientes (2·1·1·1): Q50,640 / mes de utilidad sobre Q73,150 de facturación.**
+**Con 5 clientes (2·1·1·1): Q50,438 / mes de utilidad sobre Q73,150 de facturación.**
 
 ## Los tres escalones de margen
 
 | | **Hoy** | **Con los agentes** | **+ performance fee** |
 |---|---|---|---|
-| 🔷 Marketing | **66%** | **73%** | *no aplica* |
+| 🔷 Marketing | **65%** | **73%** | *no aplica* |
 | 🔷 Marketing Pro | **67%** | **74%** | *no aplica* |
 | 🟨 Accelerate | **69%** | **77%** | **78 – 84%** |
 | 🟨 Compound | **71%** | **79%** | **79 – 85%** |
@@ -1089,7 +1089,7 @@ comprometerlo en un contrato.
 
 | Mercado | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|---|
-| 🇬🇹 Guatemala *(hoy)* | 66% | 67% | 69% | 71% |
+| 🇬🇹 Guatemala *(hoy)* | 65% | 67% | 69% | 71% |
 | 🇲🇽 México | 77% | 78% | 79% | 81% |
 | 🇺🇸 Miami | 86% | 87% | 87% | 88% |
 

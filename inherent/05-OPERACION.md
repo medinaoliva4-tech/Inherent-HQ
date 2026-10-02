@@ -58,7 +58,7 @@
 | **Incluye** | Cliente, edad, comportamiento, competencia, mercado, producto, precios, canales de venta, problemas y oportunidades |
 | **Entrega** | 📄 **Documento de comprensión del negocio y del cliente** |
 | **Habilidades** | Investigación, análisis, escucha, síntesis, lectura de mercado |
-| **Corre en** | 🟦 Ignite · 🟪 Accelerate · 🟨 Compound |
+| **Corre en** | 🔷 Marketing · 🔷 Pro · 🟨 Accelerate · 🟨 Compound |
 | **Estado** | ✅ Construido |
 
 > **Describe, no decide.** Si este documento sale flojo, todo lo demás sale flojo.
@@ -75,7 +75,7 @@
 | **Incluye** | Las 3 verdades · ICP · villano · solución · historia de marca · objetivo financiero · posicionamiento · ingeniería inversa · **distribución por canal de ingreso** *(reservas, delivery, eventos, productos, membresías)* |
 | **Entrega** | 📄 **Estrategia de temporada o trimestre** + brief por área |
 | **Habilidades** | Pensamiento estratégico, finanzas básicas, posicionamiento, storytelling, ingeniería inversa |
-| **Corre en** | 🟦 Ignite *(ligera)* · 🟪 Accelerate *(completa)* · 🟨 Compound *(completa + trimestral)* |
+| **Corre en** | 🔷 Marketing y Pro *(ligera)* · 🟨 Accelerate *(completa)* · 🟨 Compound *(completa + trimestral)* |
 | **Estado** | ✅ Construido |
 
 ---
@@ -90,7 +90,7 @@
 | **Incluye** | Brand guidelines · tono de voz · estética visual · referencias · colores · tipografías · dirección visual · personalidad · reglas de marca |
 | **Entrega** | 📄 **Guía de marca aplicable** para diseño, producción y contenido |
 | **Habilidades** | Dirección de arte, identidad visual, sensibilidad estética, branding |
-| **Corre en** | 🟦 · 🟪 · 🟨 |
+| **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
 | **Estado** | 🟡 Brief construido en `methodology/brand-brief.md` · **falta el agente** |
 
 ---
@@ -103,7 +103,7 @@
 | **Recibe** | La estrategia y el brief de growth |
 | **Hace** | El motor de crecimiento: **la oferta, los canales grandes y los upsells** — los tres pilares del Growth OS |
 | **Entrega** | 📄 Oferta trabajada · mapa o apertura de canales grandes · escalera de upsells · conversión |
-| **Corre en** | 🟦 solo pilar 1 y el mapa · 🟪 los tres ejecutando · 🟨 los tres sistematizados + Money OS |
+| **Corre en** | ⬜ **No corre en la línea Marketing** · 🟨 A los tres pilares ejecutando · 🟨 C los tres sistematizados + Money OS |
 | **Estado** | ⬜ Sin construir — ficha en `agents/02-growth/README.md` |
 
 > ⚠️ **No es pauta.** La pauta es la etapa 10.
@@ -120,7 +120,7 @@
 | **Incluye** | Market research · campañas · tipos de marketing · canales · fechas importantes y de preparación · lanzamientos · expectativa · promociones · **distribución del objetivo y frecuencia de contenido** |
 | **Entrega** | 📄 **Plan de marketing** — campañas orgánicas y pautadas, con frecuencia por formato |
 | **Habilidades** | Planeación, marketing digital, estrategia de campañas, calendario comercial |
-| **Corre en** | 🟦 · 🟪 · 🟨 |
+| **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
 | **Estado** | ⬜ **No construido** |
 
 **Su orden interno:**
@@ -143,7 +143,7 @@
 | **Incluye** | Ideas · feeling · emoción a evocar · formatos · conceptos · hooks · referencias · pilares de contenido · propuestas visuales |
 | **Entrega** | 📊 **Calendario creativo** con ideas listas para producir *(acciones, lugares, duración de escenas)*, elementos gráficos a diseñar y qué editar — **organizado por campaña** |
 | **Habilidades** | Creatividad, criterio visual, storytelling, cultura digital, lectura de tendencias |
-| **Corre en** | 🟦 · 🟪 · 🟨 |
+| **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
 | **Estado** | ⬜ **No construido** |
 
 #### La regla 70 / 20 / 10
@@ -169,7 +169,7 @@
 | **Incluye** | Videos y fotos necesarias · tomas · locaciones · personas · productos · props · preparación · grabación |
 | **Entrega** | 📊 **Excel con presupuesto y escenas** + 🎬 **material producido** |
 | **Habilidades** | Producción audiovisual, fotografía, dirección, manejo de recursos |
-| **Corre en** | 🟦 *(2h · 1 sesión)* · 🟪 *(5h · 2 sesiones)* · 🟨 *(8h · 3 sesiones)* |
+| **Corre en** | 🔷 M *(2h · 1 sesión)* · 🔷 MP *(4h · 2)* · 🟨 A *(6h · 2)* · 🟨 C *(8h · 3)* |
 | **Estado** | ⬜ **No construido** · 👤 la grabación es humana, siempre |
 
 > 🟡 **Lever de costo:** el sistema de **contenido crudo del cliente** — graba con su teléfono
@@ -187,7 +187,7 @@
 | **Incluye** | Composición · jerarquía · layout · tipografía · color · contraste · adaptación a formatos · elementos superpuestos *(ilustraciones, assets PNG, texturas, formas)* |
 | **Entrega** | 🎨 **Diseños listos para publicar o pautar** |
 | **Habilidades** | Diseño gráfico, composición, Figma, atención al detalle |
-| **Corre en** | 🟦 *(40 estáticos)* · 🟪 *(70)* · 🟨 *(100)* |
+| **Corre en** | 🔷 M *(46 estáticos)* · 🔷 MP *(74)* · 🟨 A *(70)* · 🟨 C *(100)* |
 | **Estado** | ⬜ **No construido** |
 
 ---
@@ -200,7 +200,7 @@
 | **Recibe** | El material que grabó Production |
 | **Hace** | Convierte cada grabación en el reel terminado **y todas sus derivadas** |
 | **Entrega** | 🎬 **6 · 10 · 14 reels** + **10 · 20 · 30 piezas derivadas** |
-| **Corre en** | 🟦 · 🟪 · 🟨 — segundo idioma solo en 🟨 |
+| **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C — segundo idioma solo en 🟨 C |
 | **Estado** | ⬜ Sin construir — ficha en `agents/07-video-editing/README.md` |
 
 > 🔑 **Acá está la eficiencia del modelo.** Production cuesta horas humanas; esta etapa
@@ -217,7 +217,7 @@
 | **Hace** | **Revisa cada pieza contra el brief, la marca y el paquete.** Allan aprueba solo las excepciones |
 | **Incluye** | ¿Cumple el brief? · ¿Respeta la guía de marca? · ¿Está dentro del paquete? · ¿El copy es correcto? · ¿Formato y canal correctos? · **predicción de viralidad** |
 | **Entrega** | ✅ **Piezas aprobadas** + ⚠️ **lista de excepciones para Allan** |
-| **Corre en** | 🟦 · 🟪 · 🟨 |
+| **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
 | **Estado** | 🔴 **NO CONSTRUIDO — es el bloqueador del modelo** |
 
 > **A 204 piezas al mes, el QA humano son ~1 minuto por pieza. No alcanza.**
@@ -235,7 +235,7 @@
 | **Hace** | Responde, conversa y convierte la conversación en venta |
 | **Incluye** | Comentarios · DMs · auto-DM · derivación a WhatsApp · escalamiento a Allan |
 | **Entrega** | 💬 **Conversaciones atendidas** + leads derivados |
-| **Corre en** | 🟦 *(básico)* · 🟪🟨 *(+ embudos de WhatsApp y auto-DM)* |
+| **Corre en** | ⬜ **No corre en la línea Marketing** · 🟨 A y C *(embudos de WhatsApp y auto-DM)* |
 | **Estado** | ⬜ **No construido** · tools parciales *(Eden auto-DM · Zapier)* |
 
 ---
@@ -249,7 +249,7 @@
 | **Hace** | Publica o programa el contenido |
 | **Incluye** | Copy final · captions · hashtags · fecha · hora · formato · canal · revisión final |
 | **Entrega** | 📅 **Contenido calendarizado o publicado** |
-| **Corre en** | 🟦 · 🟪 · 🟨 |
+| **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
 | **Estado** | 🟡 Tools disponibles *(Eden `schedule_post` · `publish_post_now`)* · **falta el agente** |
 
 ⚠️ **Publicar es acción destructiva. Requiere gate de Allan** — ver Reglas en `CLAUDE.md`.
@@ -264,9 +264,9 @@
 | **Recibe** | Contenido listo para pauta y objetivo de campaña |
 | **Hace** | Lo convierte en **anuncios pagados** |
 | **Incluye** | Segmentación · presupuesto · copies · creativos · pruebas · optimización |
-| **Canales** | 🟦 Meta · TikTok — 🟪🟨 + Google Search · Performance Max |
+| **Canales** | 🔷 M Meta · TikTok — 🔷 MP y 🟨 A/C + Google Search · Performance Max |
 | **Entrega** | 📈 **Campañas activas** + reporte de performance |
-| **Corre en** | 🟦 *(20 variantes)* · 🟪 *(35)* · 🟨 *(50)* |
+| **Corre en** | 🔷 M *(20 variantes)* · 🔷 MP *(30)* · 🟨 A *(35)* · 🟨 C *(50)* |
 | **Estado** | 🟡 Tools disponibles *(AdWhispr `launch_*`)* · **falta el agente** |
 
 ⚠️ **Pautar es acción destructiva. Requiere gate de Allan.**
@@ -281,7 +281,7 @@
 | **Recibe** | Toda la analítica del mes + el reporte de ads |
 | **Hace** | Qué funcionó, qué no, qué cambia el mes que viene |
 | **Entrega** | 📄 **Ajuste de estrategia** que reentra al ciclo |
-| **Corre en** | 🟦 *(ligera)* · 🟪🟨 *(completa)* |
+| **Corre en** | 🔷 M y MP *(ligera)* · 🟨 A y C *(completa)* |
 | **Estado** | ✅ Construido |
 
 ---
@@ -433,7 +433,7 @@ y cuando el volumen alcanza, **se le asigna un sueldo fijo.**
 
 ## 2 · Las horas que toma cada cuenta, al mes
 
-| Rol | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
+| Rol | 🔷 Mkt | 🔷 Pro | 🟨 Accel | 🟨 Comp |
 |---|---|---|---|
 | **Producción** | 3 h | 5 h | 8 h |
 | **Operación** | 4 h | 6 h | 8 h |
@@ -487,23 +487,26 @@ es una hipótesis.
 
 ## 5 · Los cuatro escenarios, con números
 
-### 🔵 HOY — 2 clientes Ignite
+### 🔵 HOY — 2 clientes Marketing
 
 | Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
-| Producción | 6 h | Freelance | Q250 | **Q1,500** |
+| Producción de video | 4 h | Freelance | Q250 | **Q1,000** |
 | Operación | 8 h | Freelance | Q100 | **Q800** |
-| Claude | — | fijo | — | Q1,500 ÷ 2 = **Q750/cuenta** |
+| Claude + Apify | — | fijo | — | Q1,705 ÷ 2 = **Q853/cuenta** |
 
-| Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|---|---|
-| Ignite | Q750 | Q400 | Q750 | Q1,000 | **Q2,900** | **Q3,260** | **53%** |
+| Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|---|---|---|
+| 🔷 Marketing | Q975 | Q400 | Q853 | Q750 | Q0 | **Q2,978** | **Q3,567** | **54%** |
 
-**Utilidad total del mes: Q6,520**
+**Utilidad total del mes: Q7,134**
+
+⚠️ **Con 2 clientes el fijo de Claude pesa Q853 por cuenta — 13% del precio.** Es el único
+escenario donde la herramienta se nota. A partir de 5 clientes baja a Q341.
 
 ---
 
-### 🟢 META CORTA — 5 clientes *(2 Ignite · 2 Accelerate · 1 Compound)*
+### 🟢 META CORTA — 5 clientes *(2 Marketing · 1 Pro · 1 Accelerate · 1 Compound)*
 
 | Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
@@ -511,51 +514,59 @@ es una hipótesis.
 | Operación | 28 h | Freelance con volumen | **Q80** | **Q2,240** |
 | Claude | — | fijo | — | Q1,500 ÷ 5 = **Q300/cuenta** |
 
-| Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|---|---|
-| 🟦 Ignite | Q600 | Q320 | Q300 | Q1,000 | Q2,220 | Q3,940 | **64%** |
-| 🟪 Accelerate | Q1,000 | Q480 | Q300 | Q1,500 | Q3,280 | Q5,960 | **65%** |
-| 🟨 Compound | Q1,600 | Q640 | Q300 | Q2,000 | Q4,540 | Q10,860 | **71%** |
+| Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|---|---|---|
+| 🔷 Marketing | Q875 | Q320 | Q341 | Q750 | Q0 | **Q2,286** | **Q4,259** | **65%** |
+| 🔷 Marketing Pro | Q1,450 | Q480 | Q341 | Q1,050 | Q0 | **Q3,321** | **Q6,689** | **67%** |
+| 🟨 Accelerate | Q1,850 | Q480 | Q341 | Q1,950 | Q1,313 | **Q5,934** | **Q13,316** | **69%** |
+| 🟨 Compound | Q2,425 | Q640 | Q341 | Q2,400 | Q3,079 | **Q8,885** | **Q21,915** | **71%** |
 
-**Utilidad total del mes: Q30,660**
+*Prod. = video + fotógrafo + fee de sesión · Otros = tecnología + mentor + membresía*
 
----
-
-### 🟡 META MEDIA — 10 clientes *(3 Ignite · 4 Accelerate · 3 Compound)*
-
-| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
-|---|---|---|---|---|
-| Producción | 53 h | Freelance con volumen | Q200 | **Q10,600** |
-| Operación | 60 h | **Medio tiempo · sueldo** | **Q65** | **Q3,900** |
-| Claude | — | fijo | — | Q1,500 ÷ 10 = **Q150/cuenta** |
-
-| Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|---|---|
-| 🟦 Ignite | Q600 | Q260 | Q150 | Q1,000 | Q2,010 | Q4,150 | **67%** |
-| 🟪 Accelerate | Q1,000 | Q390 | Q150 | Q1,500 | Q3,040 | Q6,200 | **67%** |
-| 🟨 Compound | Q1,600 | Q520 | Q150 | Q2,000 | Q4,270 | Q11,130 | **72%** |
-
-**Utilidad total del mes: Q70,640**
+**Utilidad total del mes: Q50,438** sobre Q73,150 de facturación.
 
 ---
 
-### 🔴 META LARGA — 20 clientes *(4 Ignite · 8 Accelerate · 8 Compound)*
+### 🟡 META MEDIA — 10 clientes *(4 Marketing · 2 Pro · 2 Accelerate · 2 Compound)*
 
 | Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
 |---|---|---|---|---|
-| Producción | 116 h | **Medio tiempo · sueldo** | **Q162** | **Q18,850** |
-| Operación | 128 h | **Tiempo completo · sueldo** | **Q50** | **Q6,400** |
-| Claude | — | fijo | — | Q1,500 ÷ 20 = **Q75/cuenta** |
+| Producción de video | 44 h | Freelance con volumen | Q200 | **Q8,800** |
+| Operación | 56 h | Freelance con volumen | **Q80** | **Q4,480** |
+| Claude + Apify | — | fijo | — | Q1,705 ÷ 10 = **Q171/cuenta** |
 
-| Cuenta | Prod. | Oper. | Claude | Allan | **Costo** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|---|---|
-| 🟦 Ignite | Q488 | Q200 | Q75 | Q1,000 | Q1,762 | Q4,398 | **71%** |
-| 🟪 Accelerate | Q812 | Q300 | Q75 | Q1,500 | Q2,688 | Q6,552 | **71%** |
-| 🟨 Compound | Q1,300 | Q400 | Q75 | Q2,000 | Q3,775 | Q11,625 | **75%** |
+| Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|---|---|---|
+| 🔷 Marketing | Q875 | Q320 | Q171 | Q750 | Q0 | **Q2,116** | **Q4,429** | **68%** |
+| 🔷 Marketing Pro | Q1,450 | Q480 | Q171 | Q1,050 | Q0 | **Q3,151** | **Q6,859** | **69%** |
+| 🟨 Accelerate | Q1,850 | Q480 | Q171 | Q1,950 | Q1,216 | **Q5,667** | **Q13,583** | **71%** |
+| 🟨 Compound | Q2,425 | Q640 | Q171 | Q2,400 | Q2,982 | **Q8,618** | **Q22,182** | **72%** |
 
-**Utilidad total del mes: Q163,008**
+**Utilidad total del mes: Q102,964**
 
-⚠️ **A 20 clientes Allan está en 188 h/mes.** Ahí ya no alcanza: **o entra un segundo director,
+⚠️ **La operación queda en 56 h — a 4 horas del tramo de Q65.** Un cliente Compound más cruza
+el escalón y **baja la tarifa para todas las cuentas a la vez.**
+
+---
+
+### 🔴 META LARGA — 20 clientes *(6 Marketing · 4 Pro · 5 Accelerate · 5 Compound)*
+
+| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
+|---|---|---|---|---|
+| Producción de video | 98 h | **Medio tiempo · sueldo** | **Q162** | **Q15,876** |
+| Operación | 118 h | **Medio tiempo · sueldo** | **Q65** | **Q7,670** |
+| Claude + Apify | — | fijo | — | Q1,705 ÷ 20 = **Q85/cuenta** |
+
+| Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
+|---|---|---|---|---|---|---|---|---|
+| 🔷 Marketing | Q799 | Q260 | Q85 | Q750 | Q0 | **Q1,894** | **Q4,651** | **71%** |
+| 🔷 Marketing Pro | Q1,298 | Q390 | Q85 | Q1,050 | Q0 | **Q2,823** | **Q7,187** | **72%** |
+| 🟨 Accelerate | Q1,622 | Q390 | Q85 | Q1,950 | Q1,159 | **Q5,206** | **Q14,044** | **73%** |
+| 🟨 Compound | Q2,121 | Q520 | Q85 | Q2,400 | Q2,925 | **Q8,051** | **Q22,749** | **74%** |
+
+**Utilidad total del mes: Q240,619**
+
+🔴 **A 20 clientes Allan está en 203 h/mes.** Ahí ya no alcanza: **o entra un segundo director,
 o el agente de QA baja sus horas a la mitad.** Es el techo real del modelo.
 
 ---
@@ -766,95 +777,121 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 # Operación — qué se hace, quién lo hace, cuánto cuesta
 
 > Desglose por **marca, al mes**. De acá salen los costos de `06-ECONOMIA.md`.
-> **`Ignite` $800** · **`Accelerate` $1,200** · **`Compound` $2,000**
+> **`Marketing` $850** · **`Marketing Pro` $1,300** · **`Accelerate` $2,500** · **`Compound` $4,000**
 
 ---
 
 ## 1 · Todo lo que hay que hacer
 
-| # | Trabajo | Quién | Costo | Ignite | Accel | Compound |
-|---|---|---|---|---|---|---|
+| # | Trabajo | Quién | Costo | 🔷 Mkt | 🔷 Pro | 🟨 Accel | 🟨 Comp |
+|---|---|---|---|---|---|---|---|
 | **ESTRATEGIA** |
-| 1 | Estrategia inicial — los 4 bloques | Agentes + Allan | Claude | ✅ | ✅ | ✅ |
-| 2 | Revisión del 20 | Agentes | Claude | ligera | completa | completa |
-| 3 | Ajuste de la estrategia | Allan | su tiempo | ✅ | ✅ | ✅ |
-| 4 | Sesión de dirección | **Allan** | su tiempo | ❌ | mensual | quincenal |
-| 5 | Replanteo trimestral | **Allan** | su tiempo | ❌ | ❌ | ✅ |
+| 1 | Estrategia inicial — los 4 bloques | Agentes + Allan | Claude | ✅ | ✅ | ✅ | ✅ |
+| 2 | Revisión del 20 | Agentes | Claude | ligera | ligera | completa | completa |
+| 3 | Ajuste de la estrategia | Allan | su tiempo | ✅ | ✅ | ✅ | ✅ |
+| 4 | Sesión de dirección | **Allan** | su tiempo | ❌ | ❌ | mensual | quincenal |
+| 5 | Replanteo trimestral | **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
 | **INTELIGENCIA** |
-| 6 | Radar de competencia | Agentes (AdWhispr) | Claude | mensual | semanal | semanal |
-| 7 | Mapa de intereses y tendencias | Agentes (Eden) | Claude | al inicio | mensual | mensual |
-| 8 | Ingeniería inversa de contenido | Agentes | Claude | ✅ | ✅ | ✅ |
-| 9 | Clonar anuncio longevo del competidor | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ |
-| **PLANIFICACIÓN** |
-| 10 | Calendario del mes | Agentes | Claude | ✅ | ✅ | ✅ |
-| 11 | Brief de contenido | Agentes | Claude | ✅ | ✅ | ✅ |
-| 12 | Aprobación de ideas y calendario | **Allan** | su tiempo | ✅ | ✅ | ✅ |
+| 6 | Radar de competencia | Agentes (AdWhispr) | Claude | mensual | mensual | semanal | semanal |
+| 7 | Mapa de intereses y tendencias | Agentes (Eden) | Claude | al inicio | mensual | mensual | mensual |
+| 8 | Ingeniería inversa de contenido | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
+| 9 | Clonar anuncio longevo del competidor | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ | ✅ |
 | **PRODUCCIÓN** |
-| 13 | Sesión de grabación | Producción | Q175/sesión | **1** | 2 | 3 |
-| 14 | Horas de producción | Producción | Q250/h | **2h** | **5h** | **8h** |
-| 15 | Edición de reels de grabación | Agentes | Claude | 6 | 10 | 14 |
-| 16 | **Multiplicar grabación en derivadas** | Agentes (Higgsfield) | Claude | 10 | 20 | 30 |
-| 17 | Estáticos y carruseles | Agentes (Higgsfield) | Claude | **40** | **70** | **100** |
-| 18 | Stories y recortes | Agentes | Claude | 30 | 45 | 60 |
-| 19 | **Predicción de viralidad** antes de publicar | Agentes (Higgsfield) | Claude | ✅ | ✅ | ✅ |
-| 20 | Fotos de producto generadas | Agentes (Higgsfield) | Claude | ❌ | ✅ | ✅ |
-| 21 | Doblaje a segundo idioma | Agentes (Higgsfield) | Claude | ❌ | ❌ | ✅ |
+| 10 | Sesión de grabación | Producción | Q175/sesión | **1** | **2** | **2** | **3** |
+| 11 | Horas de producción de video | Producción | **Q200/h** | **2h** | **4h** | **6h** | **8h** |
+| 12 | Sesión de fotógrafo | Producción | **Q300** | 1h | 1h | 1h | 1h |
+| 13 | Edición de videos de grabación | Agentes | Claude | 8 | 12 | 18 | 20 |
+| 14 | **Videos mezclando b-roll** | Agentes (Higgsfield) | Claude | 2 | 4 | 2 | 4 |
+| 15 | Estáticos y carruseles | Agentes (Higgsfield) | Claude | **46** | **74** | **70** | **100** |
+| 16 | Stories y recortes | Agentes | Claude | 30 | 55 | 55 | 80 |
+| 17 | **Predicción de viralidad** antes de publicar | Agentes (Higgsfield) | Claude | ✅ | ✅ | ✅ | ✅ |
+| 18 | Fotos de producto generadas | Agentes (Higgsfield) | Claude | ❌ | ✅ | ✅ | ✅ |
+| 19 | Revisiones por pieza | Agentes + Allan | Claude | 1 | 2 | 2 | 3 |
+| 20 | Doblaje a segundo idioma | Agentes (Higgsfield) | Claude | ❌ | ❌ | ❌ | ✅ |
+| **PLANIFICACIÓN** |
+| 21 | Calendario del mes | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
+| 22 | Brief de contenido | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
+| 23 | Aprobación de ideas y calendario | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
 | **PUBLICACIÓN** |
-| 22 | Programar y publicar | Agentes (Eden) | Claude | ✅ | ✅ | ✅ |
-| 23 | Operar los agentes | Operador | **Q600-1,200** | Q600 | Q900 | Q1,200 |
+| 24 | Programar y publicar | Agentes (Eden) | Claude | ✅ | ✅ | ✅ | ✅ |
+| 25 | **Comentarios y mensajes** | Agentes (⑧ CM) | Claude | ❌ | 🔴 ✅ | 🔴 ✅ | 🔴 ✅ |
+| 26 | Operar los agentes | Operador | **Q80/h** | Q320 | Q480 | Q480 | Q640 |
 | **ADQUISICIÓN** |
-| 24 | Pauta Meta + TikTok | Agentes (AdWhispr) | Claude | ✅ | ✅ | ✅ |
-| 25 | Pauta Google Search + PMax | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ |
-| 26 | Variantes de creativo | Agentes | Claude | 20 | 35 | 50 |
-| **CONVERSIÓN** |
-| 27 | Embudos de WhatsApp | Agentes (Zapier) | Claude | ❌ | ✅ | ✅ |
-| 28 | Auto-DM en redes | Agentes (Eden) | Claude | ❌ | ✅ | ✅ |
-| 29 | Atribución (CAPI + GA4) | Agentes | Claude | ❌ | ✅ | ✅ |
-| 30 | Pruebas A/B y CRO | Agentes | Claude | ❌ | ✅ | continua |
-| **TECNOLOGÍA** |
-| 31 | Herramienta a medida | Agentes + **Allan** | Q750-1,500 | ❌ | 1/trim. | **1/mes** |
-| 32 | Landings y microsites | Agentes (Higgsfield + Vercel) | Claude | ❌ | ✅ | ✅ |
-| 33 | Automatización de procesos | Agentes (Zapier) | Claude | ❌ | ✅ | ✅ |
+| 27 | Pauta Meta + TikTok | Agentes (AdWhispr) | Claude | ✅ | ✅ | ✅ | ✅ |
+| 28 | Pauta Google Search + PMax | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ | ✅ |
+| 29 | Variantes de creativo | Agentes | Claude | 20 | 30 | 35 | 50 |
+| 30 | Alianzas con creadores | Agentes (Eden) | Claude | ❌ | ✅ | ✅ | ✅ |
+| **OFERTA — solo línea Growth** |
+| 31 | **Rediseño de oferta, paquetes y precio** | ② Growth + **Allan** | su tiempo | ❌ | ❌ | ✅ | ✅ |
+| 32 | **Abrir canales grandes** | ② Growth + **Allan** | su tiempo | ❌ | ❌ | ✅ | ✅ |
+| 33 | **Upsells y escalera de ticket** | ② Growth | Claude | ❌ | ❌ | ✅ | ✅ |
+| **CONVERSIÓN — solo línea Growth** |
+| 34 | Embudos de WhatsApp | Agentes (Zapier) | Claude | ❌ | ❌ | ✅ | ✅ |
+| 35 | Auto-DM en redes | Agentes (Eden) | Claude | ❌ | ❌ | ✅ | ✅ |
+| 36 | Atribución (CAPI + GA4) | Agentes | Claude | ❌ | ❌ | ✅ | ✅ |
+| 37 | Pruebas A/B y CRO | Agentes | Claude | ❌ | ❌ | ✅ | continua |
+| 38 | Entrenamiento de closing | **Allan** | su tiempo | ❌ | ❌ | ✅ | ✅ |
+| **TECNOLOGÍA — solo línea Growth** |
+| 39 | Herramienta a medida | Agentes + **Allan** | Q750-1,500 | ❌ | ❌ | 1/trim. | **1/mes** |
+| 40 | Landings y microsites | Agentes (Higgsfield + Vercel) | Claude | ❌ | ❌ | ✅ | ✅ |
+| 41 | Automatización de procesos | Agentes (Zapier) | Claude | ❌ | ❌ | ✅ | ✅ |
+| **OPERACIÓN — solo línea Growth** |
+| 42 | SOPs de crecimiento | Agentes + Allan | Claude | ❌ | ❌ | ✅ | ✅ |
+| 43 | SOPs de empresa y estructura | Agentes + **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
+| 44 | Money OS — márgenes y precios | Agentes + **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
 | **EXPERIENCIA** |
-| 34 | Secuencias de recompra | Agentes | Claude | ❌ | parcial | ✅ |
-| 35 | Sistema de reseñas | Agentes | Claude | ❌ | ✅ | ✅ |
-| 36 | Mapa de experiencia y LTV | Agentes + Allan | Claude | ❌ | ❌ | ✅ |
+| 45 | Secuencias de recompra | Agentes | Claude | ❌ | ❌ | parcial | ✅ |
+| 46 | Sistema de reseñas | Agentes | Claude | ❌ | ❌ | ✅ | ✅ |
+| 47 | Mapa de experiencia y LTV | Agentes + Allan | Claude | ❌ | ❌ | ❌ | ✅ |
+| **MENTORÍA — solo línea Growth** |
+| 48 | Sesión 1:1 con especialista | Red de mentores | **Q370 · Q1,386** | ❌ | ❌ | 1/trim. | **1/mes** |
 | **MEDICIÓN** |
-| 37 | Reporte mensual | Agentes | Claude | ✅ | ✅ | ✅ |
-| 38 | Dashboard en vivo | Agentes | Claude | ❌ | ✅ | ✅ |
+| 49 | Reporte mensual | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
+| 50 | Dashboard en vivo | Agentes | Claude | ❌ | ❌ | ✅ | ✅ |
 | **AUTONOMÍA** |
-| 39 | IA propia del cliente | Agentes (Eden) | Claude | ❌ | ❌ | ✅ |
-| 40 | Documentación y entrenamiento | Agentes + **Allan** | su tiempo | ❌ | ❌ | ✅ |
+| 51 | IA propia del cliente | Agentes (Eden) | Claude | ❌ | ❌ | ❌ | ✅ |
+| 52 | Documentación y entrenamiento | Agentes + **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
 | **CLIENTE** |
-| 41 | Reunión mensual | **Allan** | su tiempo | ✅ | ✅ | ✅ |
-| 42 | Comunicación continua | **Allan** | su tiempo | ✅ | ✅ | ✅ |
-| 43 | QA final de entregables | **Allan** | su tiempo | ✅ | ✅ | ✅ |
-| 44 | Coordinar producción | **Allan** | su tiempo | ✅ | ✅ | ✅ |
+| 53 | Reunión mensual | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
+| 54 | Comunicación continua | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
+| 55 | QA final de entregables | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
+| 56 | Coordinar producción | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
 
-> **De las 44 tareas, 32 las hacen agentes.** Lo humano que queda: **grabar** (producción),
+🔴 **La fila 25 depende de `agents/08-community-management`, que no está construido.**
+
+> **De las 56 tareas, 38 las hacen agentes.** Lo humano que queda: **grabar** (producción),
 > **operar los agentes** (operador) y **dirigir y responder por la cuenta** (Allan).
 >
 > 👉 **Esa es la ventaja de costo — y es la misma que permite ofrecerle al cliente cosas que una
 > agencia no puede.** No es solo que nos cuesta menos: es que ellos no pueden hacerlo a ningún precio.
 
+🔑 **El bloque de OFERTA, CONVERSIÓN, TECNOLOGÍA y OPERACIÓN es lo que separa las dos líneas.**
+Son 14 de las 56 tareas, **y son las que no se pueden hacer con volumen** — por eso el precio
+de Growth no se justifica por pieza.
+
 ---
 
 ## 2 · Las responsabilidades de Allan, con sus horas
 
-| Responsabilidad | Ignite | Accel | Compound |
-|---|---|---|---|
-| **Reunión mensual con el cliente** | 1.0 h | 1.0 h | 1.0 h |
-| **Preparar la reunión** | 0.5 h | 0.5 h | 1.0 h |
-| **Sesión de dirección** | — | 1.5 h | 3.0 h |
-| **Comunicación continua** | 1.5 h | 2.0 h | 2.5 h |
-| **Aprobar calendario e ideas** | 1.0 h | 1.5 h | 1.5 h |
-| **QA final de entregables** | 1.0 h | 1.5 h | 2.0 h |
-| **Revisión del 20** | 1.0 h | 1.5 h | 2.0 h |
-| **Coordinar producción** | 0.5 h | 1.0 h | 1.0 h |
-| **Dirección estratégica** | 0.5 h | 1.0 h | 1.0 h |
-| **Alcance de la tecnología** | — | 0.5 h | 1.0 h |
-| | | | |
-| **TOTAL** | **7 h** | **11 h** | **15 h** |
+| Responsabilidad | 🔷 Mkt | 🔷 Pro | 🟨 Accel | 🟨 Comp |
+|---|---|---|---|---|
+| **Reunión mensual con el cliente** | 1.0 h | 1.0 h | 1.0 h | 1.0 h |
+| **Preparar la reunión** | 0.5 h | 0.5 h | 0.5 h | 1.0 h |
+| **Sesión de dirección** | — | — | 1.5 h | 3.0 h |
+| **Comunicación continua** | 1.0 h | 1.5 h | 2.0 h | 2.5 h |
+| **Aprobar calendario e ideas** | 0.5 h | 1.0 h | 1.5 h | 1.5 h |
+| **QA final de entregables** | 0.5 h | 1.0 h | 1.5 h | 2.0 h |
+| **Revisión del 20** | 1.0 h | 1.0 h | 1.5 h | 2.0 h |
+| **Coordinar producción** | 0.5 h | 0.5 h | 1.0 h | 1.0 h |
+| **Dirección estratégica** | — | 0.5 h | 1.0 h | 1.0 h |
+| **Rediseño de oferta y canales** | — | — | 2.0 h | 2.0 h |
+| **Alcance de la tecnología** | — | — | 0.5 h | 1.0 h |
+| | | | | |
+| **TOTAL** | **5 h** | **7 h** | **13 h** | **16 h** |
+| **COSTO @ Q150/h** | **Q750** | **Q1,050** | **Q1,950** | **Q2,400** |
+
+🔑 **La línea Marketing casi no consume a Allan — ejecuta.** Lo que sube de 7 h a 13 h es
+**decidir la oferta, el precio y los canales.** Eso es lo que Growth cobra, y no escala en costo.
 
 > 🔴 **Estas horas ASUMEN que el QA está automatizado.** A 86, 145 y 204 piezas al mes, 1-2 horas
 > de QA humano es imposible sin un agente que filtre primero.
@@ -869,28 +906,29 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 | Criterio | Tarifa | Qué significa |
 |---|---|---|
 | **Lo básico** | Q60/h | Cubrir gasolina y mensualidades. Infla el margen aparente |
-| **Reemplazo** | **Q150/h** | Lo que costaría contratar a alguien que haga su trabajo. **El número honesto** |
+| **Reemplazo** | **Q150/h** | Lo que costaría contratar a alguien que haga su trabajo. **El número honesto y el canónico** |
 | **Igual que producción** | **Q250/h** | Su hora vale lo mismo que la de quien graba. **El número ambicioso** |
 
 ### El margen con cada tarifa
 
-| Tarifa | **Ignite** (7h) | **Accelerate** (11h) | **Compound** (15h) |
-|---|---|---|---|
-| **Q60/h** | 69% | 52% | 59% |
-| **Q150/h** | 72% | 69% | 77% |
-| **Q250/h** | **64%** | **65%** | **71%** |
+| Tarifa | 🔷 **Mkt** (5h) | 🔷 **Pro** (7h) | 🟨 **Accel** (13h) | 🟨 **Comp** (16h) |
+|---|---|---|---|---|
+| **Q60/h** | 72% | 71% | 75% | 76% |
+| **Q150/h** ✅ | **65%** | **67%** | **69%** | **71%** |
+| **Q250/h** | 57% | 60% | 62% | 66% |
 
-> **Modelo canónico: hora con escalera** — ver **este documento**. Con 5 clientes y mix realista.
+> **Modelo canónico: Q150/h con la escalera de producción y operación** — con 5 clientes y mix
+> realista. Es el que usa `06-ECONOMIA.md`.
 
-✅ **Con los precios cerrados, Q250/h cierra en los tres.**
-Accelerate es el más ajustado (37%) porque agrega producción real, no solo capas de agente.
+✅ **Con los precios nuevos, hasta Q250/h cierra arriba de 57% en los cuatro.**
+**El modelo ya no es frágil a la tarifa de Allan** — eso sí lo era con los precios viejos.
 
 ---
 
 ## 4 · Lo que esto revela
 
 🟢 **Bajamos el costo cambiando la mezcla, no recortando valor.**
-Ignite pasó de 4h a 2h de producción y de 66 a **86 piezas**. Menos grabación (cara, humana),
+🔷 Marketing corre con 2h de producción y entrega **86 piezas**. Menos grabación (cara, humana),
 mucho más contenido generado (gratis). **El volumen subió 30% mientras el costo bajó.**
 
 🔴 **El AI es solo el 4.5% del costo.** El 96% es humano. **La ventaja de AI ya está capturada**
@@ -903,25 +941,25 @@ capas que corren sobre agentes. **Se revisa cuando haya casos.**
 🟢 **Las horas de Allan no son el cuello de botella.**
 5 clientes Compound = 75 h/mes. Le sobra tiempo. **El cuello es el QA.**
 
-🟡 **Ignite es el arma comercial, no el producto de margen.**
-86 piezas a Q6,160 es una oferta que **ninguna agencia guatemalteca puede igualar.**
-Su trabajo es ganar la cuenta. El margen viene del upsell.
+🟢 **Marketing es el arma comercial Y deja 65%.**
+86 piezas a Q6,545 es una oferta que **ninguna agencia guatemalteca puede igualar.**
+**No es un plan de pérdida:** gana la cuenta Y deja margen. El upsell solo lo mejora.
 
 ---
 
 ## 5 · Utilidad absoluta — lo que entra al bolsillo
 
-| | **Ignite** | **Accelerate** | **Compound** |
-|---|---|---|---|
-| Precio | Q6,160 | Q9,240 | Q15,400 |
-| Piezas/mes | 86 | 145 | 204 |
-| Costo *(@Q250/h)* | Q3,217 | Q6,192 | Q9,167 |
-| **Utilidad @Q250/h** | **Q2,943** | **Q2,278** | **Q6,233** |
-| **Utilidad @Q150/h** | **Q3,643** | **Q3,378** | **Q7,733** |
+| | 🔷 **Marketing** | 🔷 **Pro** | 🟨 **Accelerate** | 🟨 **Compound** |
+|---|---|---|---|---|
+| Precio | Q6,545 | Q10,010 | Q19,250 | Q30,800 |
+| Piezas/mes | 86 | 145 | 145 | 204 |
+| Costo *(@Q150/h, 5 clientes)* | Q2,286 | Q3,321 | Q5,934 | Q8,885 |
+| **Utilidad @Q150/h** | **Q4,259** | **Q6,689** | **Q13,316** | **Q21,915** |
+| **Utilidad @Q250/h** | **Q3,759** | **Q5,989** | **Q12,016** | **Q20,315** |
 
 ## 6 · La hoja de ruta de automatización
 
-> **Los márgenes del modelo canónico (hora con escalera, 5 clientes) son 64% / 65% / 71%** —
+> **Los márgenes del modelo canónico (hora con escalera, 5 clientes) son 65% / 67% / 69% / 71%** —
 > **y asumen que estos agentes existen.** Sin ellos, las horas se duplican y caen ~15 puntos.
 > Ver **este documento**.
 
@@ -932,18 +970,18 @@ Su trabajo es ganar la cuenta. El margen viene del upsell.
 | **3** | **Pipeline de herramientas** — plantillas y despliegue automatizado | 47% del build de tecnología | Q350 – Q700 |
 | 🟡 | **Contenido crudo del cliente** — graba con su teléfono, los agentes lo terminan | Horas de producción | Más video a Q0 |
 
-**Costo de automatizar:** Claude sube de Q192 a ~Q300 por cliente.
+**Costo de automatizar:** Claude sube de ~Q200 a ~Q300 por cliente.
 👉 **Se ahorran Q9 de trabajo humano por cada Q1 de Claude extra.**
 
 ### Las horas de Allan
 
-| | Ignite | Accelerate | Compound |
-|---|---|---|---|
-| **Con los agentes** | **4 h** | **6 h** | **8 h** |
-| Sin el agente de QA | ~7 h | ~11 h | ~15 h |
+| | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| **Con los agentes** | **3 h** | **4 h** | **7 h** | **9 h** |
+| Sin el agente de QA | ~5 h | ~7 h | ~13 h | ~16 h |
 
 **Lo que esto desbloquea no es el margen, es la capacidad:**
-**8 clientes Compound = Q91,140/mes con 64 horas de Allan** — menos de medio tiempo.
+**8 clientes Compound = Q175,320/mes con 72 horas de Allan** — menos de medio tiempo.
 
 ---
 
@@ -952,6 +990,6 @@ Su trabajo es ganar la cuenta. El margen viene del upsell.
 | Pendiente | Por qué importa |
 |---|---|
 | **Medir las horas de Allan** un mes real | Son estimación desde el desglose, no medición |
-| **Correr un mes al volumen prometido** | 86 / 145 / 204 piezas es propuesta, no capacidad probada |
+| **Correr un mes al volumen prometido** | 86 / 145 / 145 / 204 piezas es propuesta, no capacidad probada |
 | **Construir el agente de QA** | 🔴 **Requisito del modelo, no mejora.** Sin él las horas se duplican |
 | **Probar en cliente las capacidades `⬜`** | Ver `06-ECONOMIA.md` — muchas tools no se han corrido en producción |

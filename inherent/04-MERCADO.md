@@ -31,20 +31,20 @@
 | Momento | Facturación / mes | Paquete |
 |---|---|---|
 | Aún no vendo | — | ⚠️ **Todavía no.** Primero producto y oferta |
-| **Construyendo** | $2k – $10k | 🟦 **Ignite** |
-| **Creciendo** | $10k – $50k | 🟦 Ignite → 🟪 **Accelerate** |
-| **Escalando** | $50k – $100k | 🟪 **Accelerate** → 🟨 Compound |
+| **Construyendo** | $2k – $10k | 🔷 **Marketing** |
+| **Creciendo** | $10k – $50k | 🔷 Marketing Pro → 🟨 **Accelerate** |
+| **Escalando** | $50k – $100k | 🟨 **Accelerate** → 🟨 Compound |
 | **Consolidada** | $100k+ | 🟨 **Compound** |
 
 ### Eje 2 · Dónde se traba el crecimiento
 
 | El cuello está en… | Paquete | Verbo |
 |---|---|---|
-| **Nadie lo conoce.** Hay producto, no hay demanda | 🟦 **Ignite** | **ENCENDER** |
-| **Llega gente pero se pierde.** Hay demanda, no hay conversión | 🟪 **Accelerate** | **ACELERAR** |
+| **Nadie lo conoce.** Hay producto, no hay demanda | 🔷 **Marketing** | **ENCENDER** |
+| **Llega gente pero se pierde.** Hay demanda, no hay conversión | 🟨 **Accelerate** | **ACELERAR** |
 | **Funciona, pero todo depende de alguien.** Hay conversión, no hay sistema | 🟨 **Compound** | **COMPONER** |
 
-> ⚠️ **Manda el eje 2.** Un negocio de $100k que nadie conoce va a Ignite, no a Compound.
+> ⚠️ **Manda el eje 2.** Un negocio de $100k que nadie conoce va a Marketing, no a Compound.
 > **El dinero dice cuánto puede pagar. El cuello dice qué necesita.**
 
 ---
@@ -52,11 +52,11 @@
 ## El propósito de cada paquete
 
 ```
-🟦 BASIC — ENCENDER
-   Empezar el motor. Atraer, crear nombre, mejorar lo que ya existe
-   y hacer las asociaciones correctas.
+🔷 MARKETING — ENCENDER
+   Empezar el motor. Atraer, crear nombre y hacer las asociaciones correctas.
+   ⚠️ Mejora el MENSAJE, no la oferta.
 
-🟪 ACCELERATED — ACELERAR
+🟨 ACCELERATE — ACELERAR
    Crecer mucho más. Lead magnets, embudos, influencers, canales nuevos
    y tecnología que quita fricción.
 
@@ -78,8 +78,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | Construye autoridad del fundador y de la marca. Contenido que demuestra criterio, no que vende. Asociaciones con players complementarios |
-| 🟪 **Accelerate** | **Lead magnets** (diagnósticos, calculadoras, reportes de industria), embudo de WhatsApp y LinkedIn orgánico. Google Search para intención alta |
+| 🔷 **Marketing** | Construye autoridad del fundador y de la marca. Contenido que demuestra criterio, no que vende. Asociaciones con players complementarios |
+| 🟨 **Accelerate** | **Lead magnets** (diagnósticos, calculadoras, reportes de industria), embudo de WhatsApp y LinkedIn orgánico. Google Search para intención alta |
 | 🟨 **Compound** | CRM propio, scoring de leads, secuencias de nurturing. **El pipeline deja de vivir en la cabeza del fundador** |
 
 ---
@@ -93,8 +93,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | Define el territorio: de qué es dueña esta persona. Volumen alto para ganar superficie. Colaboraciones con pares |
-| 🟪 **Accelerate** | Lead magnet + lista propia. **Deja de alquilar la audiencia a Instagram.** Lanzamientos con campaña |
+| 🔷 **Marketing** | Define el territorio: de qué es dueña esta persona. Volumen alto para ganar superficie. Colaboraciones con pares |
+| 🟨 **Accelerate** | Lead magnet + lista propia. **Deja de alquilar la audiencia a Instagram.** Lanzamientos con campaña |
 | 🟨 **Compound** | Comunidad propia, membresía, contenido en segundo idioma. **IA entrenada con su voz** para escalar sin grabar más |
 
 ---
@@ -108,8 +108,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | Presencia diaria y prueba social real. Transformaciones, testimonios, comunidad. Alianzas con nutricionistas, gimnasios, marcas locales |
-| 🟪 **Accelerate** | Embudo de prueba gratis → membresía. **Influencers locales de nicho**, no de alcance |
+| 🔷 **Marketing** | Presencia diaria y prueba social real. Transformaciones, testimonios, comunidad. Alianzas con nutricionistas, gimnasios, marcas locales |
+| 🟨 **Accelerate** | Embudo de prueba gratis → membresía. **Influencers locales de nicho**, no de alcance |
 | 🟨 **Compound** | **Retención y LTV son el foco.** Secuencias de reactivación, sistema de referidos, app o portal de miembros |
 
 ---
@@ -123,8 +123,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | Antojo diario: producto que se ve irresistible, todos los días. Asociaciones con creadores de comida locales y apps de delivery |
-| 🟪 **Accelerate** | Campañas por **daypart** — llenar martes, no sábado. Google Maps e intención local. Pauta segmentada por radio |
+| 🔷 **Marketing** | Antojo diario: producto que se ve irresistible, todos los días. Asociaciones con creadores de comida locales y apps de delivery |
+| 🟨 **Accelerate** | Campañas por **daypart** — llenar martes, no sábado. Google Maps e intención local. Pauta segmentada por radio |
 | 🟨 **Compound** | Recompra y frecuencia: club de clientes, cumpleaños, ocasiones. **Canales nuevos** — catering, eventos, producto empacado |
 
 ---
@@ -138,8 +138,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | 🔥 **Acá el volumen es la ventaja decisiva.** **Fotos de producto generadas** — catálogo completo sin sesión de fotos. 40 estáticos al mes cubren una colección entera |
-| 🟪 **Accelerate** | Catálogo en Meta y **Performance Max**. Recuperación de carrito. Influencers con código |
+| 🔷 **Marketing** | 🔥 **Acá el volumen es la ventaja decisiva.** **Fotos de producto generadas** — catálogo completo sin sesión de fotos. 40 estáticos al mes cubren una colección entera |
+| 🟨 **Accelerate** | Catálogo en Meta y **Performance Max**. Recuperación de carrito. Influencers con código |
 | 🟨 **Compound** | Recompra, LTV, segundo idioma para exportar. Dashboard de rotación conectado a la pauta |
 
 ---
@@ -153,8 +153,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | Construye deseo de destino, no de habitación. Asociaciones con turismo, tours y creadores de viaje |
-| 🟪 **Accelerate** | **Reserva directa** como objetivo: landing propia, campañas de temporada, Google Search de intención. Reduce la dependencia de OTAs |
+| 🔷 **Marketing** | Construye deseo de destino, no de habitación. Asociaciones con turismo, tours y creadores de viaje |
+| 🟨 **Accelerate** | **Reserva directa** como objetivo: landing propia, campañas de temporada, Google Search de intención. Reduce la dependencia de OTAs |
 | 🟨 **Compound** | Motor de reserva propio, secuencias pre y post estadía, programa de huéspedes que vuelven |
 
 ---
@@ -168,8 +168,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | Traduce el producto a problema. Contenido que educa antes de vender. Alianzas con integradores y comunidades |
-| 🟪 **Accelerate** | **Lead magnets técnicos** — plantillas, benchmarks, demos. Google Search por intención de problema. Onboarding a prueba gratuita |
+| 🔷 **Marketing** | Traduce el producto a problema. Contenido que educa antes de vender. Alianzas con integradores y comunidades |
+| 🟨 **Accelerate** | **Lead magnets técnicos** — plantillas, benchmarks, demos. Google Search por intención de problema. Onboarding a prueba gratuita |
 | 🟨 **Compound** | Activación y retención dentro del producto. Contenido en segundo idioma. **IA propia entrenada con su documentación** |
 
 ---
@@ -183,8 +183,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | Autoridad y claridad. Educación financiera que construye confianza. ⚠️ Tono cuidado: **la categoría castiga la promesa exagerada** |
-| 🟪 **Accelerate** | Lead magnets de diagnóstico. Embudo con calificación previa. Google Search de intención alta |
+| 🔷 **Marketing** | Autoridad y claridad. Educación financiera que construye confianza. ⚠️ Tono cuidado: **la categoría castiga la promesa exagerada** |
+| 🟨 **Accelerate** | Lead magnets de diagnóstico. Embudo con calificación previa. Google Search de intención alta |
 | 🟨 **Compound** | CRM con seguimiento largo, portal de cliente, secuencias por etapa de vida |
 
 ---
@@ -198,8 +198,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | Credibilidad del especialista. Casos, proceso, educación. Alianzas con médicos referentes. ⚠️ **Restricciones de pauta en salud — se revisan antes de prometer** |
-| 🟪 **Accelerate** | Embudo de consulta con calificación. WhatsApp para agendar. Google Search por síntoma y procedimiento |
+| 🔷 **Marketing** | Credibilidad del especialista. Casos, proceso, educación. Alianzas con médicos referentes. ⚠️ **Restricciones de pauta en salud — se revisan antes de prometer** |
+| 🟨 **Accelerate** | Embudo de consulta con calificación. WhatsApp para agendar. Google Search por síntoma y procedimiento |
 | 🟨 **Compound** | Seguimiento post procedimiento, recordatorios, portal de paciente, sistema de referidos |
 
 ---
@@ -213,8 +213,8 @@
 
 | | Qué hace acá |
 |---|---|
-| 🟦 **Ignite** | Convierte el portafolio en contenido: proceso, antes y después, criterio. Alianzas con desarrolladoras y proveedores |
-| 🟪 **Accelerate** | Lead magnet de proyecto. **Renders y visualización generada.** Campañas segmentadas por zona y nivel socioeconómico |
+| 🔷 **Marketing** | Convierte el portafolio en contenido: proceso, antes y después, criterio. Alianzas con desarrolladoras y proveedores |
+| 🟨 **Accelerate** | Lead magnet de proyecto. **Renders y visualización generada.** Campañas segmentadas por zona y nivel socioeconómico |
 | 🟨 **Compound** | Portal de cliente para seguimiento de obra. Contenido en segundo idioma para proyectos internacionales |
 
 ---
@@ -225,8 +225,8 @@
 
 | El patrón | Industrias donde más aparece | Paquete |
 |---|---|---|
-| **No me conocen** | Arquitectura · Software · B2B | 🟦 Ignite |
-| **Me conocen y no convierto** | Restaurantes · Salud · Hotelería | 🟪 Accelerate |
+| **No me conocen** | Arquitectura · Software · B2B | 🔷 Marketing |
+| **Me conocen y no convierto** | Restaurantes · Salud · Hotelería | 🟨 Accelerate |
 | **Convierto y no retengo** | Wellness · Retail · Marca personal | 🟨 Compound |
 
 > **Por eso los paquetes no son por industria: son por cuello.**
@@ -274,19 +274,19 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 *Costo por cuenta con 5 clientes: Ignite Q2,220 · Accelerate Q3,280 · Compound Q4,540*
 
-| Mercado | 🟦 Ignite | 🟪 Accelerate | 🟨 Compound |
+| Mercado | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| **🇬🇹 Guatemala** *(hoy)* | $800 → **64%** | $1,200 → **65%** | $2,000 → **71%** |
-| **🇲🇽 México** | $1,200 → **76%** | $1,800 → **76%** | $3,200 → **82%** |
-| **🇺🇸 Miami** | $2,000 → **86%** | $3,000 → **86%** | $5,500 → **89%** |
+| **🇬🇹 Guatemala** *(hoy)* | $850 → **65%** | $1,300 → **67%** | $2,500 → **69%** | $4,000 → **71%** |
+| **🇲🇽 México** | $1,275 → **77%** | $1,950 → **78%** | $3,750 → **79%** | $6,000 → **81%** |
+| **🇺🇸 Miami** | $2,125 → **86%** | $3,250 → **87%** | $6,250 → **88%** | $10,000 → **88%** |
 
-### Utilidad mensual con 5 clientes *(2 Ignite · 2 Accelerate · 1 Compound)*
+### Utilidad mensual con 5 clientes *(2 Marketing · 1 Pro · 1 Accelerate · 1 Compound)*
 
 | Mercado | Al mes |
 |---|---|
-| 🇬🇹 Guatemala | Q29,120 · **$3,782** |
-| 🇲🇽 México | Q55,300 · **$7,182** |
-| 🇺🇸 Miami | Q103,810 · **$13,482** |
+| 🇬🇹 Guatemala | Q50,438 · **$6,550** |
+| 🇲🇽 México | Q87,014 · **$11,300** |
+| 🇺🇸 Miami | Q160,164 · **$20,801** |
 
 ⚠️ **Los precios de México y Miami son hipótesis, no benchmark verificado.**
 `[sin fuente — hay que investigar cada mercado antes de publicarlos]`
@@ -349,7 +349,7 @@ y el costo de servirlo es el mismo desde acá.
 
 # Red de mentores — mapa y costos
 
-> **El acompañamiento es el hilo de los tres planes.** Este archivo dice **de dónde sale cada
+> **El acompañamiento es el hilo de la línea Growth.** Este archivo dice **de dónde sale cada
 > mentor y cuánto cuesta** — porque el precio define en qué plan cabe.
 
 `[investigación de Allan · precios públicos al momento de relevarlos · verificar antes de cotizar]`
@@ -400,22 +400,31 @@ y el costo de servirlo es el mismo desde acá.
 
 | Plan | Qué incluye | Techo por sesión | Costo real/mes | Efecto |
 |---|---|---|---|---|
-| 🟦 **Ignite** | Comunidad + **1 sesión por trimestre** | **$72** | ~Q262 | **−4 pts** |
-| 🟪 **Accelerate** | Comunidad + **1 sesión por trimestre** | **$144** | ~Q447 | **−5 pts** |
-| 🟨 **Compound** | Comunidad + **1 sesión al mes** | **$180** | ~Q1,463 | **−10 pts** |
+| 🔷 **Marketing** | ⬜ **No lleva mentor** | — | Q0 | — |
+| 🔷 **Marketing Pro** | ⬜ **No lleva mentor** | — | Q0 | — |
+| 🟨 **Accelerate** | Comunidad + **1 sesión por trimestre** | **$144** | ~Q563 | **−3 pts** |
+| 🟨 **Compound** | Comunidad + **1 sesión al mes** | **$180** | ~Q1,579 | **−5 pts** |
 
-*(Costo = membresía prorrateada Q77 + sesiones. Sesiones no usadas se acumulan dentro del trimestre.)*
+*(Costo = membresía prorrateada Q193 + sesiones. Sesiones no usadas se acumulan dentro del trimestre.)*
+
+> 🔑 **El mentor es exclusivo de la línea Growth.** Es el diferenciador que la justifica, y
+> meterlo en la línea Marketing rompería el margen del plan barato sin agregar lo que vende:
+> **en Marketing no hay estrategia que acompañar.**
 
 ### El margen final, con mentoría adentro
 
 | Plan | Precio | Margen sin mentor | **Margen con mentor** |
 |---|---|---|---|
-| 🟦 **Ignite** | Q6,160 | 64% | **60%** ✅ |
-| 🟪 **Accelerate** | Q9,240 | 65% | **60%** ✅ |
-| 🟨 **Compound** | Q15,400 | 71% | **61%** ✅ |
+| 🔷 **Marketing** | Q6,545 | 65% | **65%** ✅ |
+| 🔷 **Marketing Pro** | Q10,010 | 67% | **67%** ✅ |
+| 🟨 **Accelerate** | Q19,250 | 72% | **69%** ✅ |
+| 🟨 **Compound** | Q30,800 | 76% | **71%** ✅ |
 
-> ✅ **Los tres quedan parejos en 60-61%.** Ese es el piso del modelo: un plan que baje de ahí
+> ✅ **Los cuatro quedan entre 65% y 71%.** El piso del modelo es **60%**: un plan que baje de ahí
 > con el mentor adentro está mal preciado. Ver `06-ECONOMIA.md`.
+>
+> 🔑 **Con los precios nuevos el mentor pesa la mitad que antes** — el costo no cambió, el
+> precio sí.
 
 ---
 
@@ -425,7 +434,7 @@ y el costo de servirlo es el mismo desde acá.
 
 **Por qué:** en MentorPass hay mentores de $360, $540, $720 y arriba de $1,000 la sesión.
 **Dos sesiones premium al mes se comen entre 36 y 54 puntos.**
-**Un mentor de $950 no cabe dentro de ningún plan — ni del de $2,000.**
+**Un mentor de $950 no cabe dentro de ningún plan — ni del de $4,000.**
 
 **Cómo se vende:** *«Hay un mentor que es exactamente lo que necesitás. Cuesta $X la sesión.
 ¿Lo traemos?»* — **es decisión del cliente, no un costo nuestro escondido.**
@@ -442,7 +451,7 @@ y el costo de servirlo es el mismo desde acá.
 | **Primero lo gratis** | Wingman, EntreArchitect y MicroMentor cuestan Q0. **Si la industria tiene comunidad, se usa** |
 | **El match filtra por presupuesto** | No solo por afinidad. **Un mentor que no cabe en el plan no se propone** |
 | **La membresía siempre se paga anual** | Baja hasta 41% y sirve a todos los clientes de esa industria. **Es de Inherent, no del cliente** |
-| **Trimestral en Ignite y Accelerate** | El valor está en el criterio, no en la frecuencia |
+| **Solo en la línea Growth · trimestral en Accelerate** | El valor está en el criterio, no en la frecuencia |
 | **Arriba de $180 la sesión: add-on facturado** | Nunca se absorbe. Es decisión del cliente |
 | **Se verifica la experiencia real** | Un mentor de suplementos para mascotas no sirve para suplementos deportivos |
 | **Grupal ≠ 1:1** | EntreArchitect Mastermind es grupal. **No se vende como sesión privada** |

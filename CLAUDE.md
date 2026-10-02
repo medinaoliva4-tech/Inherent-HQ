@@ -70,8 +70,8 @@ acción a cada agente, y **qué entrega cada uno según el plan contratado.**
 **El plan contratado es el techo de todos, no una sugerencia:** entregar de más rompe el margen,
 entregar de menos rompe la promesa publicada.
 
-✅ **Once de doce construidos.** ⬜ **Falta `08-community-management`** — y sostiene dos promesas
-que ya están publicadas en la web.
+✅ **Once de doce construidos.** 🔴 **Falta `08-community-management`** — y sostiene dos líneas
+de las tarjetas: *«tus comentarios y mensajes»* en Marketing Pro y *«comunidad»* en Compound.
 
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate, y
 **②B Branding valida con `br-guardian`** antes de que nada se publique.
@@ -105,15 +105,27 @@ visión: **Marketing · Branding · Creatividad · Tecnología · ADS.**
 canales, qué capas de la escalera entran y cuántas revisiones. **Es restricción dura para todos
 los agentes.** Se lee antes de prometer nada.
 
-### Los tres planes
+### Dos líneas, cuatro planes
 
 ```
-🟦 IGNITE      $800     invisible → deseado      aprender a comunicarse y existir
-🟪 ACCELERATE  $1,200   estancado → escalando    escalar lo que ya funciona, sin perderlo
-🟨 COMPOUND    $2,000   escalando → autónomo     que crezca sin vos
+🔷 MARKETING      $850     86 piezas    arrancando → visible
+🔷 MARKETING PRO  $1,300   145 piezas   visible → presencia sostenida
+🟨 ACCELERATE     $2,500   145 piezas   estancado → escalando
+🟨 COMPOUND       $4,000   204 piezas   escalando → autónomo
 ```
 
 **Más `Tailor Made`** — multi-locación, regulatorio, integraciones, proyectos por hito.
+
+🔑 **El eje es qué promete cada línea, no cuánto entrega:**
+**🔷 Marketing promete ATENCIÓN** *(compite con agencias)* · **🟨 Growth promete FACTURACIÓN**
+*(compite con consultoría y CMO fraccional)*.
+
+⚠️ **Marketing Pro y Accelerate entregan las mismas 145 piezas, a propósito.**
+El salto **no compra contenido — compra sistemas**: oferta, precio, conversión, canales y SOPs.
+**Venderlo como «más piezas» es venderlo mal.**
+
+⚠️ **La línea Marketing NO promete % de crecimiento.** El % no sale del contenido, sale de la
+oferta y la conversión. **Prometerlo ahí es vender algo que no controlamos.**
 
 🚀 **Somos un acelerador de marcas. Cada plan es un BOOST distinto, no más volumen del anterior.**
 ⚠️ **Accelerate NO es «que te conozcan más».** Ese comprador ya se siente estancado y **teme
@@ -127,7 +139,8 @@ romper lo que le funciona.**
 ```
 
 **Los pilares no cambian — son la metodología. Cambia el verbo:**
-Ignite **mapea** · Accelerate **ejecuta** · Compound **sistematiza**. Ver `inherent/03-OFERTA.md`.
+Accelerate **ejecuta** · Compound **sistematiza**. **La línea Marketing no activa pilares** —
+ejecuta atención. Ver `inherent/03-OFERTA.md`.
 
 ### Los cuatro sistemas
 
@@ -140,15 +153,16 @@ MONEY OS        que quede utilidad
 
 **Una agencia solo trabaja el primero.** Por eso sus clientes crecen y se rompen.
 
-| | IGNITE | ACCELERATE | COMPOUND |
-|---|---|---|---|
-| **Growth OS** | Pilar 1 ejecuta · Pilar 2 mapea | Los 3 ejecutando | Los 3 sistematizados |
-| **Conversion OS** | ⬜ | ✅ | ✅ |
-| **Operations OS** | ⬜ | 🟡 SOPs **de crecimiento** | ✅ SOPs **de empresa** |
-| **Money OS** | ⬜ | ⬜ | ✅ |
+| | 🔷 MARKETING | 🔷 MKT PRO | 🟨 ACCELERATE | 🟨 COMPOUND |
+|---|---|---|---|---|
+| **Ejecución de marketing** | ✅ | ✅ Mayor volumen | ✅ | ✅ Máximo |
+| **Growth OS** | ⬜ | ⬜ | Los 3 ejecutando | Los 3 sistematizados |
+| **Conversion OS** | ⬜ | ⬜ | ✅ | ✅ |
+| **Operations OS** | ⬜ | ⬜ | 🟡 SOPs **de crecimiento** | ✅ SOPs **de empresa** |
+| **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
 
-🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra en Ignite
-porque **antes no hay nada que perder**; Operations porque **no se puede documentar un proceso que
+🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra en la
+línea Marketing porque **antes no hay nada que perder**; Operations porque **no se puede documentar un proceso que
 todavía no funcionó**; Money porque **sin transacciones el margen por línea es teoría.**
 **Meterlo antes es cobrar por algo que no se puede usar.** Ver `inherent/02-METODO.md`.
 
@@ -160,20 +174,23 @@ todavía no funcionó**; Money porque **sin transacciones el margen por línea e
 marca ahí y responde *«¿qué harías si esta fuera tu empresa?»*.
 **Por área** *(nuestros)*: corporate structure, eventos, networking y PR, talent production,
 talent marketing. **Red, no nómina.**
-🔑 **Tres reglas lo hacen rentable:** solo se propone el mentor que cabe en el plan ·
-**trimestral en Ignite y Accelerate**, mensual en Compound · **la membresía se paga anual y es de
-Inherent** *(sirve a todos los clientes de esa industria, −41% de costo)*.
-Con eso el mentor cuesta **−4 · −5 · −10 pts** y los márgenes quedan parejos en **60% · 60% · 61%**.
+🔑 **Tres reglas lo hacen rentable:** **el mentor es exclusivo de la línea Growth** — meterlo en
+Marketing rompe el margen del plan barato · **trimestral en Accelerate**, mensual en Compound ·
+**la membresía se paga anual y es de Inherent** *(sirve a todos los clientes de esa industria,
+−41% de costo)*.
+Con eso los márgenes quedan en **65% · 67% · 69% · 71%**.
 ⚠️ **Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `inherent/04-MERCADO.md`.
 
-## 🌐 La web ya está publicada — es la promesa
+## 🌐 La web es la promesa
 
-**Las tres tarjetas de precio están vivas en inherentglobal.com. Ya se comunicó. Ya se vio.**
+🔴 **inherentglobal.com todavía muestra las tres tarjetas viejas** *(Ignite $800 · Accelerate
+$1,200 · Compound $2,000)*. **El repo ya corre con las cuatro nuevas.**
+**Hasta que la web se actualice, a quien llegue por la web se le respeta lo publicado.**
 
-🔒 **El repo no puede prometer menos, más ni distinto que la web.** Si algo interno contradice una
-línea publicada, **gana la web** y se corrige el repo. Si una línea publicada no tiene capacidad
-detrás, **se arregla la capacidad — no se borra la línea.**
-**El texto publicado y qué respalda cada línea están en `inherent/03-OFERTA.md`.**
+🔒 **Una vez publicadas, el repo no puede prometer menos, más ni distinto que las cuatro
+tarjetas.** Si algo interno contradice una línea publicada, **gana la web** y se corrige el repo.
+Si una línea publicada no tiene capacidad detrás, **se arregla la capacidad — no se borra la línea.**
+**El texto exacto de las cuatro tarjetas y qué respalda cada línea están en `inherent/03-OFERTA.md`.**
 
 ✍️ **Toda la copia al cliente va de TÚ, no de vos.** Así está publicado.
 
@@ -210,26 +227,27 @@ rango que el mercado ya acepta**, con 3x a 5x el volumen de su tramo.
 
 🌐 **Guatemala es dónde arrancamos, no el techo.** Los costos se pagan en quetzales y no cambian
 al cambiar de mercado; **lo único que cambia es el precio.** A precio de México los mismos costos
-dan **76-82%**; a precio de Miami, **86-89%**. Ver `inherent/04-MERCADO.md`.
+dan **77-81%**; a precio de Miami, **86-88%**. Ver `inherent/04-MERCADO.md`.
 ⚠️ **La web se escribe para los tres mercados: precios en USD y sin «Guatemala» como alcance.** El de entrada
-da **86 piezas a Q6,160 (Q72/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
+da **86 piezas a Q6,545 (Q76/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
 
-**El volumen nos separa del mercado. La profundidad separa los niveles entre sí.**
+**El volumen nos separa del mercado. La profundidad separa las líneas entre sí.**
+⚠️ **El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica
+por cuántos sistemas activamos — **usar Q/pieza para vender Accelerate lo abarata.**
 
-**El bundle no es descuento, es eficiencia.** Subir de escalón cuesta 75% menos que comprar lo
-mismo suelto, porque todo lo que corre sobre agentes suma Q0 al costo variable.
+**Dentro de Marketing el bundle sí es descuento** *(44% menos que comprar suelto)*, porque todo
+lo que corre sobre agentes suma Q0 al costo variable.
+**El salto a Growth NO es descuento — es acceso:** nada de lo que agrega se vende à la carte.
 **El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
 
 **Ganamos de hacerles dinero.** El fee base cubre la operación; **la utilidad de verdad sale del
 performance fee — 10% de las ventas atribuidas, con costo marginal Q0.** Cada quetzal de fee es
-utilidad pura: lleva Accelerate de 60% a 70% sin tocar el precio base.
-⚠️ **Sin atribución limpia no hay fee.**
+utilidad pura: lleva Accelerate de 69% a 74% sin tocar el precio base.
+⚠️ **Sin atribución limpia no hay fee — y por eso el fee no existe en la línea Marketing.**
 
 **Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes
 altísimos.** Cierran **no bajando el precio, bajando el costo.**
-**Con 5 clientes: 64% · 65% · 71%.** Con 10: 67% · 67% · 72%.
-**Con la mentoría adentro quedan parejos en 60% · 60% · 61%**, y con performance fee
-Accelerate pasa de 60% a 70-78%.
+**Con 5 clientes: 65% · 67% · 69% · 71%.** Con 10: 68% · 69% · 71% · 72%.
 Ver `inherent/06-ECONOMIA.md` → «Los márgenes reales» y `inherent/05-OPERACION.md`.
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
@@ -251,10 +269,14 @@ contenido crudo del cliente.
 ⚠️ **Esto exige agentes que trabajen entre autónomos y dirigidos:** que levanten excepciones, no
 preguntas. **Si el agente pregunta todo, no ahorra nada.**
 
-⚠️ **No se vende una capa suelta.** Crecer exige algo íntegro; vender solo contenido o solo pauta
-contradice lo que predicamos.
+⚠️ **No se vende una capa suelta DISFRAZADA DE CRECIMIENTO.** Crecer exige algo íntegro.
+**La línea Marketing vende atención y lo dice en la tarjeta** — el cliente sabe qué compró.
+Lo prohibido es cobrar contenido o pauta prometiendo facturación.
 
-⚠️ **Los tres niveles incluyen estrategia.** Cambia la profundidad, no la existencia.
+⚠️ **Los cuatro planes incluyen estrategia.** Cambia la profundidad, no la existencia.
+⚠️ **Pero solo Growth toca la OFERTA.** Marketing trabaja el **mensaje** —cómo se cuenta lo que ya
+vende—; Growth trabaja **qué vende, en qué paquetes y a qué precio.**
+**Confundirlos es regalar el trabajo caro dentro del plan barato.**
 
 🕷️ **Todo lo que haya que scrapear se hace con Apify** — IG, TikTok, YouTube, LinkedIn, Google
 Maps, Google Search y la biblioteca de anuncios de Facebook. **Plan Starter $19/mes, ~Q205

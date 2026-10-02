@@ -248,7 +248,8 @@ constructora. **Nosotros no, porque no adivinamos: preguntamos a alguien que ya 
 Los conseguimos en **MentorCruise**, **GrowthMentor** y **MentorPass** *(e-commerce)* —
 plataformas donde operadores reales venden sesiones. **Se paga por sesión, no por mes.**
 
-⚠️ **El precio del mentor define en qué plan cabe.** Uno premium no entra en Ignite.
+⚠️ **El mentor es exclusivo de la línea Growth**, y su precio define en qué plan cabe.
+Arriba de $180 la sesión va como add-on facturado al cliente, nunca absorbido.
 
 No los contratamos para que ejecuten. Los traemos a la estrategia para responder una sola
 pregunta: **¿qué harías vos si esta fuera tu empresa?**
@@ -316,21 +317,25 @@ convierte en sistema. Hoy no lo pide.**
 
 # Qué entra en cada nivel
 
-| | **IGNITE** $800 | **ACCELERATE** $1,200 | **COMPOUND** $2,000 |
-|---|---|---|---|
-| **Diagnóstico** | ✅ | ✅ Profundo | ✅ + trimestral |
-| **Growth OS** | Pilares 1 y 2 | **Los 3 pilares** | **Los 3, a fondo** |
-| **Conversion OS** | ⬜ | ✅ | ✅ |
-| **Operations OS** | ⬜ | Parcial *(herramientas)* | ✅ Completo |
-| **Money OS** | ⬜ | ⬜ | ✅ |
-| | | | |
-| **Capacidades** | Marketing · Creative · Production · Branding | + Tech | **Las seis** |
-| **Especialistas** | Por industria | + por área | **Toda la red** |
-| **Somos** | Tu equipo de demanda | Tu operating partner | **Tu socio operador** |
+| | 🔷 **MARKETING** $850 | 🔷 **MKT PRO** $1,300 | 🟨 **ACCELERATE** $2,500 | 🟨 **COMPOUND** $4,000 |
+|---|---|---|---|---|
+| **Qué promete** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
+| **Diagnóstico** | ✅ | ✅ | ✅ Profundo | ✅ + trimestral |
+| **Growth OS** | ⬜ | ⬜ | **Los 3 pilares** | **Los 3, a fondo** |
+| **Conversion OS** | ⬜ | ⬜ | ✅ | ✅ |
+| **Operations OS** | ⬜ | ⬜ | Parcial *(SOPs de crecimiento)* | ✅ Completo |
+| **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
+| | | | | |
+| **Capacidades** | Marketing · Creative · Branding | + Production | + Tech · Consulting | **Las seis** |
+| **Especialistas** | ⬜ | ⬜ | Por industria | **Toda la red** |
+| **Somos** | Tu equipo de marketing | Tu equipo creativo completo | Tu operating partner | **Tu socio operador** |
 
-**Por qué Ignite no lleva los otros sistemas:** un negocio que arranca no tiene un problema de
-capacidad — tiene un problema de existencia. Meterse en sus finanzas hoy sería cobrarle por algo
-que todavía no necesita.
+**Por qué la línea Marketing no lleva los sistemas:** un negocio que arranca no tiene un problema
+de capacidad — tiene un problema de existencia. Meterse en sus finanzas hoy sería cobrarle por
+algo que todavía no necesita.
+
+⚠️ **Y por eso Marketing no promete un % de crecimiento.** El % sale de la oferta y la conversión,
+que son Growth OS y Conversion OS. **Sin ellos solo se amplifica lo que ya hay.**
 
 **Por qué Compound cuesta más:** tocamos tu equipo y tus números. Eso no lo carga una
 herramienta — lo carga una cabeza.

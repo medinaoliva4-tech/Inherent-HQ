@@ -7,7 +7,7 @@
 |---|---|---|---|
 | **01** | [`01-IDENTIDAD.md`](01-IDENTIDAD.md) | **¿Quiénes somos?** | Antes que nada. La categoría y los diferenciadores |
 | **02** | [`METODO.md`](02-METODO.md) | **¿Cómo pensamos?** | Los cuatro sistemas y las dos divisiones |
-| **03** | [`OFERTA.md`](03-OFERTA.md) | **¿Qué vendemos?** | Los tres planes y cómo se activan |
+| **03** | [`OFERTA.md`](03-OFERTA.md) | **¿Qué vendemos?** | Las dos líneas, los cuatro planes y cómo se activan |
 | **04** | [`MERCADO.md`](04-MERCADO.md) | **¿A quién y dónde?** | Industrias, mercados y mentores |
 | **05** | [`05-OPERACION.md`](05-OPERACION.md) | **¿Cómo lo entregamos?** | Pipeline, equipos y ciclos |
 | **06** | [`ECONOMIA.md`](06-ECONOMIA.md) | **¿Cuánto cuesta y cuánto queda?** | 🔒 Interno. Nunca sale del repo |
