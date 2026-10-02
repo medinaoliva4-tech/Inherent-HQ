@@ -523,7 +523,7 @@ escenario donde la herramienta se nota. A partir de 5 clientes baja a Q341.
 
 *Prod. = video + fotógrafo + fee de sesión · Otros = tecnología + mentor + membresía*
 
-**Utilidad total del mes: Q49,378** sobre Q73,150 de facturación.
+**Utilidad total del mes: Q49,131** sobre Q73,150 de facturación.
 
 ---
 
@@ -957,7 +957,138 @@ capas que corren sobre agentes. **Se revisa cuando haya casos.**
 | **Utilidad @Q150/h** | **Q3,979** | **Q6,649** | **Q13,176** | **Q21,595** |
 | **Utilidad @Q250/h** | **Q3,479** | **Q5,949** | **Q11,876** | **Q19,995** |
 
-## 6 · La hoja de ruta de automatización
+## 7 · 🧾 El desglose por tarea — la línea 🔷 Marketing
+
+> **De acá sale el costo de operación de los planes 🔷.** Cada tarea tiene horas, complejidad
+> y responsable. **La tarifa la fija la complejidad, no la persona.**
+
+### La escalera de tarifa por complejidad
+
+| Complejidad | Qué significa | Q/hora |
+|---|---|---|
+| **1-2** | Coordinar lo que ya está definido | **Q65** |
+| **3-4** | Ejecutar siguiendo reglas escritas | **Q100** |
+| **5-6** | Operar con criterio dentro del sistema | **Q150** |
+| **7-8** | Decidir criterio nuevo | **Q200** |
+| **9-10** | Decisión que cambia el negocio | **Q250** |
+
+🔑 **Trabajo de menor complejidad cuesta menos la hora.** Por eso un plan caro no cuesta más
+solo por tener más horas: cuesta más porque **sus horas son de complejidad más alta.**
+
+⚠️ **Hoy ninguna tarea de la línea 🔷 Marketing pasa de complejidad 7**, y la 7 se paga a Q150
+para no romper el margen. **Pagarla a Q200 cuesta 3 puntos.**
+
+---
+
+### 🔷 MARKETING — $850
+
+#### 🔵 Onboarding · una sola vez · 5 h · Q700
+
+| Tarea | Quién | h | Compl. | Q/h | Costo |
+|---|---|---|---|---|---|
+| Comprensión | **Allan** | 1 | 4 | 100 | Q100 |
+| Estrategia | **Allan** | 1 | 6 | 150 | Q150 |
+| Branding brief *(Milanote — guidelines de presencia digital)* | **Allan** | 1.5 | 7 | 150 | Q225 |
+| Branding guidelines | **Pablo** | 1.5 | 7 | 150 | Q225 |
+
+🛑 **Esto NO se rehace cada mes.** Si se rehiciera, el margen cae de 60% a **48%** —
+doce puntos. **La marca se construye una vez y se mantiene.** Ver `br-brief`.
+
+#### 🟢 Mensual · 11 h · Q1,355
+
+| Tarea | Quién | h | Compl. | Q/h | Costo |
+|---|---|---|---|---|---|
+| Marketing — el plan del ciclo | **Allan** | 1 | 4 | 100 | Q100 |
+| **Revisión de estrategia** *(no se rehace, se revisa)* | **Allan** | 0.5 | 6 | 150 | Q75 |
+| Creative | **Pablo** | 2 | 7 | 150 | Q300 |
+| Producción — planificar | **Operador** | 1 | 3 | 65 | Q65 |
+| Coordinar las cosas de producción | **Operador** | 1 | 2 | 65 | Q65 |
+| Graphic design | **Pablo** | 1.5 | 5 | 150 | Q150 |
+| Video editing *(2 h × 2 días)* | **Pablo** | 4 | 6 | 150 | Q600 |
+
+---
+
+### 🔷 MARKETING PRO — $1,300
+
+**Las mismas tareas, más horas y más complejidad donde se promete más.**
+
+#### 🔵 Onboarding · 6.5 h · Q925
+
+| Tarea | Quién | h | Compl. | vs Marketing |
+|---|---|---|---|---|
+| Comprensión | **Allan** | 1 | 4 | = |
+| Estrategia | **Allan** | 1.5 | 6 | +0.5 h |
+| Branding brief | **Allan** | 2 | 7 | +0.5 h |
+| Branding guidelines | **Pablo** | 2 | 7 | +0.5 h |
+
+#### 🟢 Mensual · 19.75 h · Q2,460
+
+| Tarea | Quién | h | Compl. | vs Marketing |
+|---|---|---|---|---|
+| Marketing | **Allan** | 1.5 | 5 | +0.5 h · **+1 compl.** *(entra Google)* |
+| Revisión de estrategia | **Allan** | 0.75 | 6 | +0.25 h |
+| Creative | **Pablo** | 3 | 7 | +1 h |
+| Producción — planificar | **Operador** | 1.5 | 4 | +0.5 h · **+1** *(2 sesiones)* |
+| Coordinar prod. | **Operador** | 1.5 | 3 | +0.5 h · **+1** |
+| Graphic design | **Pablo** | 2.5 | 5 | +1 h *(72 vs 43 estáticos)* |
+| Video editing | **Pablo** | 6 | 6 | +2 h *(18-24 vs 13-18 videos)* |
+| **Community management** | **Pablo** | 2 | 4 | 🆕 |
+| **Alianzas con creadores** | **Allan** | 1 | 6 | 🆕 |
+
+---
+
+## 8 · 🔑 Pablo es el cuello — y la palanca
+
+**Con 5 clientes, Pablo acumula ~61.5 h/mes** *(creative + diseño + video + community de los
+cuatro planes)*.
+
+**Eso cruza el escalón de 60 h de la escalera de horas** → pasa a **sueldo fijo** → su tarifa
+baja de 80% a 65% de la base.
+
+| | 🔷 Marketing | 🔷 Marketing Pro |
+|---|---|---|
+| **① Hoy (1-4 clientes)** | Q2,829 · **57%** 🔴 | Q4,328 · **57%** 🔴 |
+| **② Con 5 clientes — Pablo a sueldo** | **Q2,632 · 60%** ✅ | **Q3,990 · 60%** ✅ |
+
+> 🔑 **La escalera de horas ya resolvía este problema.** No hay que subir el precio:
+> **hay que llegar a 5 clientes.** Hasta entonces se opera a 57%, y es una decisión consciente.
+
+⚠️ **Los primeros clientes son los que dan los casos medidos.** Vale el margen más fino al inicio.
+
+---
+
+## 9 · 🔴 El pendiente que puede mover todo
+
+**El desglose de arriba NO incluye el tiempo de cliente:**
+
+| Lo que falta | 🔷 Marketing | 🔷 Pro |
+|---|---|---|
+| Reunión mensual con el cliente | 1.0 h | 1.5 h |
+| Preparar la reunión | 0.5 h | 0.5 h |
+| Comunicación continua | 1.0 h | 1.5 h |
+| **TOTAL** | **2.5 h · Q375** | **3.5 h · Q525** |
+
+| Si ese tiempo es APARTE | Margen con 5 clientes |
+|---|---|
+| 🔷 Marketing | **54%** 🔴 |
+| 🔷 Marketing Pro | **55%** 🔴 |
+
+🔴 **Seis puntos.** **Pendiente de Allan: confirmar si el tiempo de cliente está adentro de
+las horas declaradas o es adicional.** Hasta que se confirme, el modelo corre con la lectura ②.
+
+---
+
+## 10 · ⚠️ Lo que todavía no tiene desglose
+
+**🟨 Accelerate y 🟨 Compound NO tienen lista de tareas.** Sus costos siguen calculados con
+la estimación vieja *(Allan 13 h y 16 h · operador 7.75 h y 12 h)*.
+
+🔴 **Pendiente: el mismo desglose por tarea para los dos planes de la línea Growth.**
+Sin él, sus márgenes de 68% y 70% son estimación, no modelo.
+
+---
+
+## 11 · La hoja de ruta de automatización
 
 > **Los márgenes del modelo canónico (hora con escalera, 5 clientes) son 61% / 66% / 68% / 70%** —
 > **y asumen que estos agentes existen.** Sin ellos, las horas se duplican y caen ~15 puntos.

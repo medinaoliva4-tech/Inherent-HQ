@@ -178,7 +178,7 @@ talent marketing. **Red, no nómina.**
 Marketing rompe el margen del plan barato · **trimestral en Accelerate**, mensual en Compound ·
 **la membresía se paga anual y es de Inherent** *(sirve a todos los clientes de esa industria,
 −41% de costo)*.
-Con eso los márgenes quedan en **61% · 66% · 68% · 70%**.
+Con eso los márgenes quedan en **60% · 60% · 68% · 70%**.
 ⚠️ **Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `inherent/04-MERCADO.md`.
 
 ## 🌐 La web es la promesa
@@ -247,7 +247,8 @@ utilidad pura: lleva Accelerate de 68% a 73% sin tocar el precio base.
 
 **Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes
 altísimos.** Cierran **no bajando el precio, bajando el costo.**
-**Con 5 clientes: 61% · 66% · 68% · 70%.** Con 10: 64% · 68% · 70% · 71%.
+**Con 5 clientes: 60% · 60% · 68% · 70%.** Con 1-4 clientes la línea 🔷 corre a **57%**.
+⚠️ **Accelerate y Compound todavía no tienen desglose por tarea** — sus márgenes son estimación.
 Ver `inherent/06-ECONOMIA.md` → «Los márgenes reales» y `inherent/05-OPERACION.md`.
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la

@@ -328,7 +328,7 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 | Mercado | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| **🇬🇹 Guatemala** *(hoy)* | $850 → **61%** | $1,300 → **66%** | $2,500 → **68%** | $4,000 → **70%** |
+| **🇬🇹 Guatemala** *(hoy)* | $850 → **60%** | $1,300 → **60%** | $2,500 → **68%** | $4,000 → **70%** |
 | **🇲🇽 México** | $1,275 → **77%** | $1,950 → **78%** | $3,750 → **79%** | $6,000 → **81%** |
 | **🇺🇸 Miami** | $2,125 → **86%** | $3,250 → **87%** | $6,250 → **88%** | $10,000 → **88%** |
 
@@ -336,7 +336,7 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 | Mercado | Al mes |
 |---|---|
-| 🇬🇹 Guatemala | Q49,378 · **$6,413** |
+| 🇬🇹 Guatemala | Q49,131 · **$6,381** |
 | 🇲🇽 México | Q85,954 · **$11,163** |
 | 🇺🇸 Miami | Q159,104 · **$20,663** |
 
@@ -473,12 +473,12 @@ cumplirse.** Hay que buscarlos antes de venderlos.
 
 | Plan | Precio | Margen sin mentor | **Margen con mentor** |
 |---|---|---|---|
-| 🔷 **Marketing** | Q6,545 | 61% | **61%** 🟡 |
-| 🔷 **Marketing Pro** | Q10,010 | 66% | **66%** ✅ |
+| 🔷 **Marketing** | Q6,545 | 60% | **60%** 🟡 |
+| 🔷 **Marketing Pro** | Q10,010 | 60% | **60%** 🟡 |
 | 🟨 **Accelerate** | Q19,250 | 71% | **68%** ✅ |
 | 🟨 **Compound** | Q30,800 | 75% | **70%** ✅ |
 
-> ✅ **Los cuatro quedan entre 61% y 70%.** El piso del modelo es **60%**: un plan que baje de ahí
+> ✅ **Los cuatro quedan entre 60% y 70%.** El piso del modelo es **60%**: un plan que baje de ahí
 > con el mentor adentro está mal preciado. Ver `06-ECONOMIA.md`.
 >
 > 🔑 **Con los precios nuevos el mentor pesa la mitad que antes** — el costo no cambió, el

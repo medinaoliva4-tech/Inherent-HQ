@@ -157,9 +157,9 @@ contra 16). **Lo que falla es el costo.** Y el costo falla por una razón concre
 | Claude + Apify | Q341 | Q341 | Q341 | Q341 |
 | Allan | Q750 | Q1,050 | Q1,950 | Q2,400 |
 | Tecnología · mentor · membresía | Q0 | Q0 | Q1,313 | Q3,079 |
-| **COSTO** | **Q2,566** | **Q3,361** | **Q6,074** | **Q9,205** |
-| **UTILIDAD** | **Q3,979** | **Q6,649** | **Q13,176** | **Q21,595** |
-| **MARGEN** | **61%** | **66%** | **68%** | **70%** |
+| **COSTO** | **Q2,632** | **Q3,990** | **Q6,074** ⚠️ | **Q9,205** ⚠️ |
+| **UTILIDAD** | **Q3,912** | **Q6,019** | **Q13,176** | **Q21,595** |
+| **MARGEN** | **60%** | **60%** | **68%** ⚠️ | **70%** ⚠️ |
 
 ### El margen crece solo con cada cliente
 
@@ -380,7 +380,7 @@ primero, aunque la venta fácil sea más pauta.
 
 ### F · Si el cliente «se conforma» con Marketing, ganamos igual
 
-**Marketing deja 61% de margen.** 🟡 **Es el más ajustado de los cuatro.** No es un plan de pérdida que se compensa después.
+**Marketing deja 60% de margen con 5 clientes — exactamente el piso.** 🔴 **Con menos, 57%.** No es un plan de pérdida que se compensa después.
 **Es el plan que gana la cuenta** — y la cuenta se sube cuando aparece el dolor, no antes.
 
 ### G · Lo que NO se desagrega
@@ -729,12 +729,16 @@ Marketing perdería 6.2 puntos.**
 | Claude | Q1,500 ÷ 5 | Q300 |
 | Apify | Q205 ÷ 5 | Q41 |
 | Tecnología · mentor · membresía | no incluye | Q0 |
-| **COSTO TOTAL** | | **Q2,566** |
-| **UTILIDAD** | | **Q3,979** |
-| **MARGEN** | | **61%** |
+| **COSTO TOTAL** | | **Q2,632** |
+| **UTILIDAD** | | **Q3,912** |
+| **MARGEN** | | **60%** |
 
-> 🔴 **Marketing es el plan más ajustado.** Subir de 2h a 3h de grabación costó **4 puntos**
-> *(65% → 61%)*. Sigue arriba del piso de 60%, **pero sin colchón.**
+> 🔴 **Marketing es el plan más ajustado y está exactamente en el piso.**
+> **Con 1-4 clientes corre a 57%** — llega a 60% solo cuando Pablo cruza las 60 h/mes.
+> **Es una decisión consciente, no un descuido.** Ver `05-OPERACION.md` → «Pablo es el cuello».
+
+🔑 **El desglose real por tarea está en `05-OPERACION.md` → «El desglose por tarea».**
+11 h mensuales + 5 h de onboarding amortizadas.
 
 ---
 
@@ -750,9 +754,12 @@ Marketing perdería 6.2 puntos.**
 | Claude | Q1,500 ÷ 5 | Q300 |
 | Apify | Q205 ÷ 5 | Q41 |
 | Tecnología · mentor · membresía | no incluye | Q0 |
-| **COSTO TOTAL** | | **Q3,361** |
-| **UTILIDAD** | | **Q6,649** |
-| **MARGEN** | | **66%** |
+| **COSTO TOTAL** | | **Q3,990** |
+| **UTILIDAD** | | **Q6,019** |
+| **MARGEN** | | **60%** |
+
+> 🔴 **Pro también cae al piso.** Las 19.75 h mensuales reales son casi el doble de lo que
+> estimaba el modelo viejo. **Con 1-4 clientes corre a 57%.**
 
 ---
 
@@ -812,13 +819,13 @@ Marketing perdería 6.2 puntos.**
 | Tecnología | Q0 | Q0 | Q750 | Q1,500 |
 | Membresía | Q0 | Q0 | Q193 | Q193 |
 | Mentor 1:1 | Q0 | Q0 | Q370 | Q1,386 |
-| **COSTO TOTAL** | **Q2,566** | **Q3,361** | **Q6,074** | **Q9,205** |
-| **UTILIDAD** | **Q3,979** | **Q6,649** | **Q13,176** | **Q21,595** |
-| **MARGEN** | **61%** 🟡 | **66%** ✅ | **68%** ✅ | **70%** ✅ |
+| **COSTO TOTAL** | **Q2,632** | **Q3,990** | **Q6,074** ⚠️ | **Q9,205** ⚠️ |
+| **UTILIDAD** | **Q3,912** | **Q6,019** | **Q13,176** | **Q21,595** |
+| **MARGEN** | **60%** 🟡 | **60%** 🟡 | **68%** ⚠️ | **70%** ⚠️ |
 | Costo por pieza | Q30 | Q23 | Q42 | Q45 |
 
 > **Utilidad del mes con 5 clientes (2 Marketing · 1 Pro · 1 Accelerate · 1 Compound):
-> Q49,378** sobre Q73,150 de facturación.
+> Q49,131** sobre Q73,150 de facturación.
 
 > ✅ **Este es el número que se lleva a la mesa.** Incluye la mentoría, que siempre se entrega en
 > la línea Growth. **El piso es 60%: un plan que baje de ahí con un cliente real se revisa.**
@@ -1026,7 +1033,7 @@ Piso mensual                 Q4,105
 | 1 Marketing | Q3,567 *(a tarifa de 2 clientes)* | ⚠️ Justo |
 | **2 Marketing** | **Q7,134** | ✅ Sí |
 | **1 Compound** | **Q21,595** | ✅ Con espacio |
-| **5 mixtos** *(2·1·1·1)* | **Q49,378** | ✅ Negocio sano |
+| **5 mixtos** *(2·1·1·1)* | **Q49,131** | ✅ Negocio sano |
 | 10 mixtos *(4·2·2·2)* | **Q100,784** | ✅ Reinversión real |
 
 **Capacidad: 8-10 clientes con el agente de QA construido.**
@@ -1157,9 +1164,9 @@ comprometerlo en un contrato.
 | | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Precio** | Q6,545 | Q10,010 | Q19,250 | Q30,800 |
-| **COSTO** | Q2,566 | Q3,361 | Q6,074 | Q9,205 |
-| **UTILIDAD** | Q3,979 | Q6,649 | Q13,176 | Q21,595 |
-| **MARGEN** | **61%** | **66%** | **68%** | **70%** |
+| **COSTO** | Q2,632 | Q3,990 | Q6,074 ⚠️ | Q9,205 ⚠️ |
+| **UTILIDAD** | Q3,912 | Q6,019 | Q13,176 | Q21,595 |
+| **MARGEN** | **60%** | **60%** | **68%** ⚠️ | **70%** ⚠️ |
 | *Costo por pieza* | *Q30* | *Q23* | *Q42* | *Q45* |
 
 **Con 5 clientes (2·1·1·1): Q49,378 / mes de utilidad sobre Q73,150 de facturación.**
@@ -1168,8 +1175,8 @@ comprometerlo en un contrato.
 
 | | **Hoy** | **Con los agentes** | **+ performance fee** |
 |---|---|---|---|
-| 🔷 Marketing | **61%** | **70%** | *no aplica* |
-| 🔷 Marketing Pro | **66%** | **73%** | *no aplica* |
+| 🔷 Marketing | **60%** | **69%** | *no aplica* |
+| 🔷 Marketing Pro | **60%** | **69%** | *no aplica* |
 | 🟨 Accelerate | **68%** | **76%** | **77 – 83%** |
 | 🟨 Compound | **70%** | **78%** | **78 – 84%** |
 
@@ -1182,7 +1189,7 @@ comprometerlo en un contrato.
 
 | Mercado | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|---|
-| 🇬🇹 Guatemala *(hoy)* | 61% | 66% | 68% | 70% |
+| 🇬🇹 Guatemala *(hoy)* | 60% | 60% | 68% | 70% |
 | 🇲🇽 México | 77% | 78% | 79% | 81% |
 | 🇺🇸 Miami | 86% | 87% | 87% | 88% |
 
