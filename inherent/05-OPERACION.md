@@ -150,7 +150,7 @@
 
 | % | Qué es | De dónde sale |
 |---|---|---|
-| **70%** | Contenido que **ya funcionó** en la categoría | Ingeniería inversa · AdWhispr · Eden |
+| **70%** | Contenido que **ya funcionó** en la categoría | Ingeniería inversa · AdWhispr · **Apify** |
 | **20%** | Contenido **nuevo nuestro** | Apuesta creativa |
 | **10%** | Contenido que **nos funcionó a nosotros** | Analítica propia |
 
@@ -236,7 +236,7 @@
 | **Incluye** | Comentarios · DMs · auto-DM · derivación a WhatsApp · escalamiento a Allan |
 | **Entrega** | 💬 **Conversaciones atendidas** + leads derivados |
 | **Corre en** | ⬜ **No corre en la línea Marketing** · 🟨 A y C *(embudos de WhatsApp y auto-DM)* |
-| **Estado** | ⬜ **No construido** · tools parciales *(Eden auto-DM · Zapier)* |
+| **Estado** | ⬜ **No construido** · tools parciales *(Zapier → ManyChat)* |
 
 ---
 
@@ -250,7 +250,7 @@
 | **Incluye** | Copy final · captions · hashtags · fecha · hora · formato · canal · revisión final |
 | **Entrega** | 📅 **Contenido calendarizado o publicado** |
 | **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
-| **Estado** | 🟡 Tools disponibles *(Eden `schedule_post` · `publish_post_now`)* · **falta el agente** |
+| **Estado** | 🔴 **Sin MCP de publicación.** Hoy lo hace el operador a mano. Ver «El hueco de publicación» |
 
 ⚠️ **Publicar es acción destructiva. Requiere gate de Allan** — ver Reglas en `CLAUDE.md`.
 
@@ -793,7 +793,7 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 | 5 | Replanteo trimestral | **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
 | **INTELIGENCIA** |
 | 6 | Radar de competencia | Agentes (AdWhispr) | Claude | mensual | mensual | semanal | semanal |
-| 7 | Mapa de intereses y tendencias | Agentes (Eden) | Claude | al inicio | mensual | mensual | mensual |
+| 7 | Mapa de intereses y tendencias | Agentes (**Apify**) | Claude | al inicio | mensual | mensual | mensual |
 | 8 | Ingeniería inversa de contenido | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
 | 9 | Clonar anuncio longevo del competidor | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ | ✅ |
 | **PRODUCCIÓN** |
@@ -813,21 +813,21 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 | 22 | Brief de contenido | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
 | 23 | Aprobación de ideas y calendario | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
 | **PUBLICACIÓN** |
-| 24 | Programar y publicar | Agentes (Eden) | Claude | ✅ | ✅ | ✅ | ✅ |
+| 24 | Programar y publicar | 🔴 **Operador a mano** *(sin MCP)* | su tiempo | ✅ | ✅ | ✅ | ✅ |
 | 25 | **Comentarios y mensajes** | Agentes (⑧ CM) | Claude | ❌ | 🔴 ✅ | 🔴 ✅ | 🔴 ✅ |
 | 26 | Operar los agentes | Operador | **Q80/h** | Q400 | Q520 | Q620 | Q960 |
 | **ADQUISICIÓN** |
 | 27 | Pauta Meta + TikTok | Agentes (AdWhispr) | Claude | ✅ | ✅ | ✅ | ✅ |
 | 28 | Pauta Google Search + PMax | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ | ✅ |
 | 29 | Variantes de creativo | Agentes | Claude | 20 | 30 | 35 | 50 |
-| 30 | Alianzas con creadores | Agentes (Eden) | Claude | ❌ | ✅ | ✅ | ✅ |
+| 30 | Alianzas con creadores | Agentes (**Apify**) | Claude | ❌ | ✅ | ✅ | ✅ |
 | **OFERTA — solo línea Growth** |
 | 31 | **Rediseño de oferta, paquetes y precio** | ② Growth + **Allan** | su tiempo | ❌ | ❌ | ✅ | ✅ |
 | 32 | **Abrir canales grandes** | ② Growth + **Allan** | su tiempo | ❌ | ❌ | ✅ | ✅ |
 | 33 | **Upsells y escalera de ticket** | ② Growth | Claude | ❌ | ❌ | ✅ | ✅ |
 | **CONVERSIÓN — solo línea Growth** |
 | 34 | Embudos de WhatsApp | Agentes (Zapier) | Claude | ❌ | ❌ | ✅ | ✅ |
-| 35 | Auto-DM en redes | Agentes (Eden) | Claude | ❌ | ❌ | ✅ | ✅ |
+| 35 | Auto-DM en redes | Agentes (**Zapier**) | Claude | ❌ | ❌ | ✅ | ✅ |
 | 36 | Atribución (CAPI + GA4) | Agentes | Claude | ❌ | ❌ | ✅ | ✅ |
 | 37 | Pruebas A/B y CRO | Agentes | Claude | ❌ | ❌ | ✅ | continua |
 | 38 | Entrenamiento de closing | **Allan** | su tiempo | ❌ | ❌ | ✅ | ✅ |
@@ -849,7 +849,7 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 | 49 | Reporte mensual | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
 | 50 | Dashboard en vivo | Agentes | Claude | ❌ | ❌ | ✅ | ✅ |
 | **AUTONOMÍA** |
-| 51 | IA propia del cliente | Agentes (Eden) | Claude | ❌ | ❌ | ❌ | ✅ |
+| 51 | IA propia del cliente | **Build propio** (Vercel + Claude API) | Q1,500 | ❌ | ❌ | ❌ | ✅ |
 | 52 | Documentación y entrenamiento | Agentes + **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
 | **CLIENTE** |
 | 53 | Reunión mensual | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |

@@ -281,7 +281,9 @@ vende—; Growth trabaja **qué vende, en qué paquetes y a qué precio.**
 🕷️ **Todo lo que haya que scrapear se hace con Apify** — IG, TikTok, YouTube, LinkedIn, Google
 Maps, Google Search y la biblioteca de anuncios de Facebook. **Plan Starter $19/mes, ~Q205
 totales al mes con 5 clientes: menos de 1 punto de margen.** 🟡 **Falta instalar el MCP y probar
-los nueve actores.** Ver `inherent/06-ECONOMIA.md` → «Apify».
+los trece actores.** Ver `inherent/06-ECONOMIA.md` → «Apify».
+🛡️ **Las tres garantías —contenido, alcance y ventas— están en `inherent/03-OFERTA.md`.**
+**Ninguna se publica hasta que sus cuatro pendientes estén cerrados.**
 
 ⚠️ **No se promete lo que no está en «Capacidades reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay
 acción, y sin acción no hay promesa. **Los límites declarados están en `inherent/01-IDENTIDAD.md`:**

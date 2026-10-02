@@ -34,8 +34,8 @@ Las piezas, no las opiniones sobre la marca.
 | Qué | Dónde |
 |---|---|
 | Anuncios activos y **cuánto tiempo llevan corriendo** | AdWhispr |
-| Posts que rinden **muy por encima de su propia media** | Eden |
-| Títulos, portadas y carruseles que ganan | Eden |
+| Posts que rinden **muy por encima de su propia media** | Apify `easy_scraper/instagram-profile-engagement-analytics` |
+| Títulos, portadas y carruseles que ganan | Apify `parseforge/instagram-posts-scraper` |
 | Landings, páginas de venta | Firecrawl |
 | Reviews, comentarios, quejas | Firecrawl |
 | **Descubrir competidores, referentes y UGC creators en Instagram** | **Muse Spark, manual** ↓ |
@@ -89,11 +89,19 @@ verificados en vez de recordados. Y la voz literal del comprador, en los comenta
 `hauls y reviews` · `embajadores de marca` · `análisis financiero o de negocio` · `la marca oficial` ·
 `menciones incidentales`. Para ingeniería inversa sirven los primeros dos; el resto es ruido.
 
-**Complemento — Eden.** `eden_search_social_content` trae posts con métricas reales, outlier score
-sobre la base del propio creador y descripción del contenido por AI. Menos volumen de descubrimiento,
-pero **mejor data por pieza**. El flujo que funciona: **descubrir en meta.ai, medir en Eden.**
-⚠️ `eden_search_creators` requiere plan Starter · el filtro `minFollowerCount` se ignora en
-content search, hay que filtrar a mano.
+**Complemento — Apify.** El flujo que funciona: **descubrir en meta.ai, medir en Apify.**
+
+| Qué se mide | Actor |
+|---|---|
+| **La mediana del propio creador** *(la base contra la que se detecta el outlier)* | `easy_scraper/instagram-profile-engagement-analytics` |
+| Posts pieza por pieza con engagement | `apify/instagram-scraper` · `parseforge/instagram-posts-scraper` *(44 campos)* |
+| TikTok | `clockworks/tiktok-scraper` |
+
+🔑 **Un outlier solo existe contra su propia base.** Sin la mediana del creador, un post con
+10,000 vistas no dice nada. **Por eso la mediana se mide primero y se guarda.**
+
+⚠️ **Apify ve la versión deslogueada**, así que las métricas pueden ser menores a las reales.
+**Sirve para comparar entre piezas, no como número absoluto** — y se dice así.
 
 **Camino autorizado a futuro.** Si hace falta automatizar de verdad, el único legítimo es la
 **Instagram Creator Marketplace API**: filtra creadores por seguidores, engagement, demografía,

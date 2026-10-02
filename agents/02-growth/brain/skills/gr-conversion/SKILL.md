@@ -43,7 +43,7 @@ infraestructura sin uso.
 | | |
 |---|---|
 | **Respuesta inmediata** | Aunque sea para decir cuándo responde alguien |
-| **Fuera de hora** | Eden `create_auto_dm_automation` |
+| **Fuera de hora** | Zapier → ManyChat / WhatsApp Business |
 | **Las 5 preguntas de siempre** | Respondidas antes de que las haga |
 
 ### B · Que el interesado no se enfríe

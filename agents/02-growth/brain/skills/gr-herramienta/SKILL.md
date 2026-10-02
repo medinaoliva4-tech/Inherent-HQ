@@ -46,7 +46,7 @@ que nadie va a usar.
 | Sitio, landing o app | Higgsfield `create_website` + Vercel | ⬜ |
 | Conectar con lo que ya usa | Zapier *(9,000+ apps)* | ⬜ |
 | Guardar registros | Inherent OS | ⬜ |
-| IA propia del cliente | Eden `create_custom_ai` *(🟨 solamente)* | ⬜ |
+| IA propia del cliente | **Build propio** — Vercel + Claude API *(🟨 solamente)* | ⬜ |
 
 ## 4 · Las tres reglas de construcción
 

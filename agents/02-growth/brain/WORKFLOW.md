@@ -117,7 +117,7 @@ paso vive en las skills: `skills/README.md`.
 | Ver qué vende y cómo lo vende la categoría | AdWhispr `find_competitors` · `get_brand_ads` | ✅ |
 | Negocios, reseñas y contactos de una zona | Apify `crawler-google-places` | 🟡 |
 | Qué busca la gente antes de comprar | Apify `google-search-scraper` | 🟡 |
-| Automatizar seguimiento y recompra | Zapier · Eden `create_auto_dm_automation` | ⬜ |
+| Automatizar seguimiento y recompra | Zapier → ManyChat / WhatsApp Business | ⬜ |
 | Construir landing, panel o CRM a medida | Higgsfield `create_website` + Vercel | ⬜ |
 | Llevar los registros del negocio | Inherent OS | ⬜ |
 

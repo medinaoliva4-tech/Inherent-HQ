@@ -163,8 +163,8 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 | Leer el contexto que entrega Allan | **`read_file_content` (Drive)** ✅ · un Google Doc alcanza · o pegado en el chat | El brief del cliente |
 | Buscar material previo | `notion-search` → `notion-fetch` ✅ | Páginas, decisiones del equipo |
 | **Leer el sitio completo, la oferta, los precios** | **`firecrawl_scrape`** ✅ | El cuerpo real de la página en markdown |
-| Ver qué publica el cliente y cómo rinde | `eden_analyze_creator` | Perfil, totales, mezcla de temas, sus mejores posts |
-| Ver su contenido pieza por pieza | `eden_search_social_content` scope `creator` ✅ | Posts con métricas y fecha |
+| Ver qué publica el cliente y cómo rinde | Apify `easy_scraper/instagram-profile-engagement-analytics` | Perfil, totales, mezcla de temas, sus mejores posts |
+| Ver su contenido pieza por pieza | Apify `apify/instagram-scraper` | Posts con métricas y fecha |
 | Dimensionar si se busca su categoría | `research_keywords` (AdWhispr) | Volumen de búsqueda |
 | Escribir el núcleo | `Write` a `clients/<cliente>/` | — |
 
@@ -199,20 +199,20 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 | Demanda de búsqueda | `research_keywords` · `research_competitor_keywords` | |
 | Anuncios de TikTok | `research_tiktok_ads` | |
 
-**Contenido orgánico — Eden**
+**Contenido orgánico — Apify**
 
 | Acción | Tool | Ojo |
 |---|---|---|
-| **Outliers de la categoría** | `eden_search_social_content` global + `minOutlierScore` ✅ | ⚠️ `minFollowerCount` se ignora, filtrar a mano |
-| Resolver un handle antes de analizar | `eden_resolve_creator` | Si devuelve ambiguo, **preguntar**, no adivinar |
-| Estudiar un referente a fondo | `eden_analyze_creator` | Base de rendimiento para detectar outliers |
-| Títulos y portadas que ganan | `eden_study_top_titles` | |
-| Carruseles y estáticos que ganan | `eden_study_top_carousels` | |
-| Leer una pieza completa | `eden_read_social_post` | Cuerpo y transcripción |
+| **Outliers de la categoría** | Apify `apify/instagram-hashtag-scraper` + cálculo propio de outlier | ⚠️ `minFollowerCount` se ignora, filtrar a mano |
+| Resolver un handle antes de analizar | Apify `apify/instagram-profile-scraper` | Si devuelve ambiguo, **preguntar**, no adivinar |
+| Estudiar un referente a fondo | Apify `easy_scraper/instagram-profile-engagement-analytics` | **Da la mediana — es el umbral de la garantía de contenido** |
+| Títulos y portadas que ganan | Apify `parseforge/instagram-posts-scraper` | 44 campos sin login |
+| Carruseles y estáticos que ganan | Apify `parseforge/instagram-posts-scraper` | |
+| Leer una pieza completa | Apify `apify/instagram-post-scraper` | Cuerpo y comentarios |
 | **Ver las imágenes reales** | Las URLs de `mediaMirror` que vienen en cada resultado | Así el agente mira, no adivina |
-| Buscar personas por tema | `eden_search_creators` | ⛔ **Requiere plan Starter** |
+| Buscar personas por tema | Apify `apify/instagram-hashtag-scraper` → perfiles | |
 
-**Eden cubre:** `tiktok` · `instagram` · `youtube` · `twitter` · `linkedin` · `threads` · `substack`
+**Apify cubre:** `instagram` · `tiktok` · `youtube` · `linkedin` · `google maps` · `google search` · `meta ad library`
 — se filtra con `platform` o `platforms`. **TikTok incluido.**
 
 **Web y contexto — no depender de una sola herramienta**
@@ -244,7 +244,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 | Acción | Tool |
 |---|---|
-| Guardar la evidencia en un board | 🔒 `eden_create_board` → `eden_save_posts_to_board` |
+| Guardar la evidencia | 🔒 **En el folder del cliente.** `clients/<cliente>/data/` **es nuestro Notion** |
 
 ---
 
@@ -254,8 +254,8 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 |---|---|
 | **Mirar las imágenes para el mapa visual** | Las URLs de `mediaMirror` del bloque 03 |
 | **Ver cómo se ve el sitio de un competidor** | `firecrawl_scrape` `formats: ["screenshot","branding"]` |
-| Verificar cómo se ve un estilo aplicado a un formato | `eden_search_social_content` |
-| Buscar referencias fuera de la categoría | `eden_search_social_content` con otro tema |
+| Verificar cómo se ve un estilo aplicado a un formato | Apify `apify/instagram-hashtag-scraper` |
+| Buscar referencias fuera de la categoría | Apify `apify/instagram-hashtag-scraper` con otro hashtag |
 | Escribir los 9 bloques | `Write` |
 
 > El resto es razonamiento. **Methodology decide, no sale a buscar** — si le falta evidencia,
@@ -273,7 +273,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 ---
 
-### Por qué Eden es la herramienta central
+### Por qué Apify es la herramienta central
 
 Cubre **YouTube, Instagram, TikTok, LinkedIn, X, Threads y Substack** en una sola acción, y trae
 tres cosas que ninguna otra:

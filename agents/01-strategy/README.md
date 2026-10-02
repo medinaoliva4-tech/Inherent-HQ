@@ -14,9 +14,9 @@ plan contratado.
 | Leer cualquier web, oferta o precio | Firecrawl `firecrawl_scrape` | ✅ |
 | Ver qué competidores pautan hoy, verificados | AdWhispr `find_competitors` | ✅ |
 | Sacar los anuncios activos y más longevos de una marca | AdWhispr `get_brand_ads` | ✅ |
-| Encontrar outliers de contenido de la categoría | Eden `eden_search_social_content` | ✅ |
-| Analizar un referente a fondo | Eden `eden_analyze_creator` | ✅ |
-| Títulos y carruseles que ganan | Eden `eden_study_top_titles` · `study_top_carousels` | ⬜ |
+| Encontrar outliers de contenido de la categoría | Apify `apify/instagram-scraper` · `clockworks/tiktok-scraper` | 🟡 |
+| Analizar un referente a fondo | Apify `easy_scraper/instagram-profile-engagement-analytics` | 🟡 |
+| Títulos y carruseles que ganan | Apify `parseforge/instagram-posts-scraper` *(44 campos)* | 🟡 |
 | **Scrapear IG, TikTok, YouTube y LinkedIn** | Apify `instagram-scraper` · `tiktok-scraper` · `youtube-scraper` · `linkedin-post-search` | 🟡 |
 | **Biblioteca de anuncios de Facebook** | Apify `facebook-ads-library-scraper` | 🟡 |
 | **Competencia local y reseñas** | Apify `crawler-google-places` | 🟡 |

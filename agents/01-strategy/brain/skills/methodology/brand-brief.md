@@ -33,7 +33,8 @@ opuesto.* La dirección la marca el tipo de marca, no se opone por oponerse.
 categoría.* **El criterio es "le habla a la gente que queremos", no "se parece a nuestro rubro".**
 
 **d · Ojos** — el estilo se mira **aplicado al formato donde va a vivir**, nunca en abstracto.
-Eden devuelve `aiDescription`, `aiTags` y `mediaMirror` con las imágenes reales. Se abren y se miran.
+Apify devuelve la URL de cada imagen y video. **Se abren y se miran** — nunca se juzga un estilo
+por su descripción de texto.
 
 ---
 

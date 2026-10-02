@@ -416,7 +416,7 @@ La línea Marketing vende atención **y lo dice en la tarjeta.** El cliente sabe
 | Doblaje y voz sintética | Higgsfield `dubbing` · `create_voice` | ⬜ |
 | Quitar fondo · escalar calidad | Higgsfield `remove_background` · `upscale_*` | ⬜ |
 | Análisis de video | Higgsfield `video_analysis_create` | ⬜ |
-| Programar y publicar | Eden `schedule_post` · `publish_post_now` | ⬜ |
+| Programar y publicar | 🔴 **SIN MCP** — Zapier → Buffer/Metricool *(sin probar)* · Higgsfield solo TikTok | 🔴 |
 
 ### Adquisición
 
@@ -435,13 +435,13 @@ La línea Marketing vende atención **y lo dice en la tarjeta.** El cliente sabe
 |---|---|---|
 | Competidores verificados que pautan hoy | AdWhispr `find_competitors` | ✅ |
 | Anuncios activos y más longevos de una marca | AdWhispr `get_brand_ads` | ✅ |
-| Outliers de contenido de la categoría | Eden `eden_search_social_content` | ✅ |
-| Analizar un referente a fondo | Eden `eden_analyze_creator` | ✅ |
-| Títulos y carruseles que ganan | Eden `eden_study_top_titles` · `study_top_carousels` | ⬜ |
+| Outliers de contenido de la categoría | Apify `apify/instagram-hashtag-scraper` | 🟡 |
+| Analizar un referente a fondo | Apify `easy_scraper/instagram-profile-engagement-analytics` | 🟡 |
+| Títulos y carruseles que ganan | Apify `parseforge/instagram-posts-scraper` *(44 campos)* | 🟡 |
 | Leer cualquier web, oferta o precio | Firecrawl `firecrawl_scrape` | ✅ |
 | **Scrapear datos estructurados de cualquier plataforma** | **Apify** — ver abajo | 🟡 |
 
-> **Eden cubre** IG · TikTok · YouTube · LinkedIn · X · Threads · Substack.
+> **Apify cubre** IG · TikTok · YouTube · LinkedIn · Google Maps · Google Search · Meta Ad Library.
 
 ---
 
@@ -451,9 +451,13 @@ La línea Marketing vende atención **y lo dice en la tarjeta.** El cliente sabe
 > a Strategy, Growth, Marketing, Creative y Ads.
 > `[fuente: precios públicos de apify.com al 30-sep-2026 · verificar antes de presupuestar]`
 
-### Los nueve actores
+### Los trece actores
 
 **Este es el set. Se elige por precio y por volumen de uso, no por quién los publica.**
+
+> 🔑 **Apify reemplazó a Eden en todo el repo.** Eden daba inteligencia de contenido con menos
+> profundidad y a cambio de una dependencia. **Apify da el dato crudo, más barato y sin lock-in.**
+> Lo que Eden sí hacía y Apify no —**publicar**— quedó como hueco declarado. Ver abajo.
 
 | Qué scrapea | Actor | **$/1,000** *(Starter)* | Free plan |
 |---|---|---|---|
@@ -467,12 +471,51 @@ La línea Marketing vende atención **y lo dice en la tarjeta.** El cliente sabe
 | Instagram — detalle de posts | `apify/instagram-post-scraper` | **$2.30** | $2.70 |
 | **YouTube** — canales, videos, subtítulos | `streamers/youtube-scraper` | **$5.00** ⚠️ | — |
 
+### 🎯 Los cuatro que habilitan las garantías
+
+**Estos no son «más scraping»: cada uno sostiene una promesa comercial.**
+
+| Qué da | Actor | Qué garantía habilita |
+|---|---|---|
+| 🔑 **KPIs de engagement de cualquier perfil, SIN Instagram Insights** | `easy_scraper/instagram-profile-engagement-analytics` | **La mediana de la cuenta = el umbral contra el que se mide «que el contenido funcione»** |
+| 🔑 **Los ads que llevan 30+ días corriendo** *(vista «Winners»)* | `maxencebernerd/meta-ad-library-scraper` | **El 70% probado.** Un ad que lleva 30 días es un ad que paga |
+| 🔑 **Ads con REACH y demografía reales** | `data_xplorer/facebook-ads-library` *(`fetchDetails: true`)* | **El CPM real de la categoría** — lo que vuelve comprometible el alcance |
+| **44 campos por post, sin login, costo optimizado** | `parseforge/instagram-posts-scraper` | Línea base barata a volumen |
+
+> 🔥 **`maxencebernerd/meta-ad-library-scraper` es el hallazgo del set.** Su vista **Winners**
+> lista los anuncios corriendo **30 días o más** — que es exactamente la regla que ya usa
+> `cr-swipe-file`. **Automatiza a mano lo que hoy se hace a ojo.**
+
+⚠️ **Los cuatro están 🟡 SIN PROBAR.** Hasta que corran contra una cuenta real, **no sostienen
+ninguna garantía publicada.**
+
 > 🔥 **Facebook Ads Library a $0.75 es lo más barato del set** — y es inteligencia de pauta pura.
 > ⚠️ **YouTube cuesta 3x el promedio.** Se usa con criterio, no a volumen.
 
-**Cinco son de terceros** *(`curious_coder` · `compass` · `harvestapi` · `clockworks` ·
-`streamers`)* **y cuatro son de la cuenta oficial `apify/`** *(los tres de Instagram y el de
-Google Search)*.
+**Nueve son de terceros** y **cuatro son de la cuenta oficial `apify/`** *(los tres de
+Instagram y el de Google Search)*.
+
+### 🔴 El hueco que dejó sacar Eden: PUBLICAR
+
+| Función | Antes | Ahora |
+|---|---|---|
+| Inteligencia de contenido | Eden | ✅ **Apify** — más barato y más profundo |
+| Alianzas con creadores | Eden | ✅ **Apify** *(vetting por engagement real)* |
+| Auto-DM | Eden | ✅ **Zapier → ManyChat / WhatsApp Business** |
+| IA propia del cliente | Eden | ✅ **Build propio** — Vercel + Claude API |
+| 🔴 **Programar y publicar** | Eden `schedule_post` | 🔴 **SIN MCP** |
+
+**Hoy lo hace el operador a mano**, y eso está dentro de sus horas. **Pero a 204 piezas al mes
+es el próximo cuello.**
+
+| Candidato | Qué falta |
+|---|---|
+| **Zapier → Buffer / Metricool / Later** | Probar si el MCP de Zapier lo ejecuta de verdad |
+| **Higgsfield `tiktok_prepare_publish`** | Solo TikTok. No cubre Instagram |
+| **API de Meta directa** | Build propio. Es lo único que da control total |
+
+⚠️ **Mientras no haya MCP de publicación, `⑨ Posting` no es un agente autónomo: es un agente
+asistido.** Está declarado así en `05-OPERACION.md`.
 
 🔑 **La distinción no cambia la decisión.** En TikTok, Maps, YouTube y LinkedIn **Apify no
 publica actor propio**, así que el tercero es la única vía. Y en Facebook Ads el oficial
@@ -570,7 +613,7 @@ Marketing perdería 6.2 puntos.**
 | **2** | **Contratar Starter — $19/mes** | El Free ($5) no alcanza ni para un onboarding |
 | **3** | Sacar el **API token** | Settings → Integrations |
 | **4** | Instalar el MCP | `apify mcp install claude-code`, o agregar `https://mcp.apify.com` con `Authorization: Bearer <APIFY_TOKEN>` |
-| **5** | **Probar los nueve actores** y confirmar cuáles corren por MCP | ⚠️ El MCP **excluye los actores de renta y los de permiso total** |
+| **5** | **Probar los trece actores** y confirmar cuáles corren por MCP | ⚠️ El MCP **excluye los actores de renta y los de permiso total** |
 | **6** | Fijar el tope de gasto y la alerta | En la consola de Apify |
 
 > ⚠️ **El paso 5 es el que decide.** Los nueve que elegiste son *pay-per-result*, no de renta,
@@ -591,8 +634,8 @@ Marketing perdería 6.2 puntos.**
 
 | Capacidad | Con qué | |
 |---|---|---|
-| Auto-DM y automatización de mensajes | Eden `create_auto_dm_automation` | ⬜ |
-| **IA propia del cliente, con su conocimiento** | Eden `create_custom_ai` + `manage_custom_ai_sources` | ⬜ |
+| Auto-DM y automatización de mensajes | Zapier → ManyChat / WhatsApp Business | ⬜ |
+| **IA propia del cliente, con su conocimiento** | **Build propio** — Vercel + Claude API | ⬜ |
 | **Construir y desplegar sitios y herramientas** | Higgsfield `create_website` + Vercel | ⬜ |
 | **Integrar con 9,000+ apps** (CRM, WhatsApp, facturación) | Zapier | ⬜ |
 | Base de datos de registros | Inherent OS | ⬜ |
