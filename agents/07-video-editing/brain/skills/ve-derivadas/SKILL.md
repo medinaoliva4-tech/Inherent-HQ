@@ -3,13 +3,13 @@ name: ve-derivadas
 description: >
   Capa 3 de ⑥B Video Editing — multiplica el corte principal aprobado en todas las piezas que
   puede dar: cortes más cortos, variantes de hook para pauta, reencuadres por formato y
-  fragmentos para story. Es donde el modelo gana margen, porque cada derivada cuesta Q0 marginal
-  sobre horas de grabación ya pagadas. Úsala cuando pidan "sacá las derivadas", "multiplicá
+  fragmentos para story. Es donde el modelo gana volumen, porque cada derivada sale del mismo
+  material ya grabado y del mismo costo fijo de Producción. Úsala cuando pidan "sacá las derivadas", "multiplicá
   esto", "variantes para pauta", "cortalo para story", "cuántas piezas salen de esto". Requiere
   el GATE 1 aprobado: derivar de un corte no aprobado multiplica el error.
 ---
 
-# Capa 3 · Derivadas — multiplicar a Q0 marginal
+# Capa 3 · Derivadas — multiplicar el mismo material
 
 | | |
 |---|---|
@@ -48,10 +48,10 @@ dirigir.
 |---|---|
 | **El sujeto queda en el encuadre** | Un reencuadre automático que corta la cara no sirve |
 | **El texto se reposiciona** | Las safe zones cambian con el formato |
-| **Se revisa pieza por pieza** | `reframe` acelera, **no aprueba** |
+| **Se revisa pieza por pieza** | `ffmpeg` acelera el recorte, **no aprueba** |
 
-> ⚠️ **Higgsfield `reframe` y el workflow `ad-multiplier` hacen el trabajo pesado**, pero cada
-> salida se mira antes de entregarla. `⬜` sin probar en cliente real.
+> ⚠️ **Las derivadas las arma Pablo recombinando escenas; `ffmpeg` local ayuda con el recorte por
+> formato.** Cada salida se mira antes de entregarla. `⬜` sin probar en cliente real.
 
 ## 4 · El reparto del techo
 
@@ -66,9 +66,9 @@ dirigir.
 
 🛑 **Si no alcanza el techo para todo, se corta por el final de la lista y se declara.**
 
-## 5 · El segundo idioma — solo 🟨 Compound
+## 5 · El segundo idioma — no se ofrece
 
-**Higgsfield `dubbing`.** Solo 🟨 Compound: **prometerlo en cualquier otro plan rompe el margen.**
+⛔ **No hay herramienta de doblaje.** El segundo idioma **no se promete en ningún plan.**
 
 ## 6 · Cada derivada hereda
 
@@ -87,4 +87,3 @@ dirigir.
 - [ ] El texto se reposicionó según la safe zone del nuevo formato
 - [ ] El total **entra en el techo** del plan
 - [ ] Lo que no se alcanzó a derivar está **declarado**
-- [ ] Segundo idioma **solo si es Compound**

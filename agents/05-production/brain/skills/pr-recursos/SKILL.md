@@ -187,8 +187,8 @@ sin plan B es un 🔴.**
 | Subir material | Drive (escritura) | `ask` — **solo post-GATE 3** |
 
 **Qué NO se usa desde Producción:** Figma (es de ⑥A) · editores de video y color (⑥B) ·
-**generadores de imagen o video** —Producción consigue material **real**; si la pieza pide media
-generada, la genera ⑥A— · Ad Library y Meta Ads (⑧B y ④) · publicación y programación (⑦).
+**generadores de imagen o video** —no hay; Producción consigue material **real**, y si la pieza
+pide media que no se puede grabar, se devuelve a ④— · Ad Library y Meta Ads (⑧B y ④) · publicación y programación (⑦).
 
 **Reglas de permiso:** nada se escribe afuera antes de su gate · **nada destructivo**: el material no
 se borra, se marca · **ninguna reserva ni compromiso antes del GATE 1** · toda cotización se registra

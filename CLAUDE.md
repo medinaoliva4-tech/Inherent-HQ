@@ -178,7 +178,7 @@ talent marketing. **Red, no nómina.**
 Marketing rompe el margen del plan barato · **trimestral en Accelerate**, mensual en Compound ·
 **la membresía se paga anual y es de Inherent** *(sirve a todos los clientes de esa industria,
 −41% de costo)*.
-Con eso los márgenes quedan en **64% · 64% · 68% · 72%**.
+Con eso los márgenes quedan en **77% · 77% · 72% · 75%**, fijos.
 ⚠️ **Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `inherent/04-MERCADO.md`.
 
 ## 🌐 La web es la promesa
@@ -227,7 +227,7 @@ rango que el mercado ya acepta**, con 3x a 5x el volumen de su tramo.
 
 🌐 **Guatemala es dónde arrancamos, no el techo.** Los costos se pagan en quetzales y no cambian
 al cambiar de mercado; **lo único que cambia es el precio.** A precio de México los mismos costos
-dan **76-81%**; a precio de Miami, **86-89%**. Ver `inherent/04-MERCADO.md`.
+dan **82-85%**; a precio de Miami, **89-91%**. Ver `inherent/04-MERCADO.md`.
 ⚠️ **La web se escribe para los tres mercados: precios en USD y sin «Guatemala» como alcance.** El de entrada
 da **86 piezas a Q7,315 (Q85/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
 
@@ -242,37 +242,38 @@ lo que corre sobre agentes suma Q0 al costo variable.
 
 **Ganamos de hacerles dinero.** El fee base cubre la operación; **la utilidad de verdad sale del
 performance fee — 10% de las ventas atribuidas, con costo marginal Q0.** Cada quetzal de fee es
-utilidad pura: lleva Accelerate de 68% a 73% sin tocar el precio base.
+utilidad pura: lleva Accelerate de 72% a 76% sin tocar el precio base.
 ⚠️ **Sin atribución limpia no hay fee — y por eso el fee no existe en la línea Marketing.**
 
 **Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes
-altísimos.** Cierran **no bajando el precio, bajando el costo.**
-**Con 5 clientes: 64% · 64% · 68% · 72%.** Con 1-4 clientes la línea 🔷 corre a **61%**.
-⚠️ **Accelerate y Compound todavía no tienen desglose por tarea** — sus márgenes son estimación.
-Ver `inherent/06-ECONOMIA.md` → «Los márgenes reales» y `inherent/05-OPERACION.md`.
+altísimos.** Cierran **no bajando el precio, con el costo fijo.**
 
-🎯 **Hay dos costos por plan y no son lo mismo.** El **objetivo** *(Q1,665 · Q2,555 · Q5,300 ·
-Q8,200)* es el techo al que queremos llegar; el **real** *(Q2,632 · Q3,990 · Q6,074 · Q9,205)*
-es el que sale del desglose por tarea y **es el que opera.**
-⚠️ **Nunca se cotiza ni se proyecta contra el objetivo.** El gap está en producción, en las
-horas de Allan y en el operador — **y ninguno se cierra subiendo el precio.**
-Ver `inherent/06-ECONOMIA.md` → «El costo máximo objetivo».
+🔒 **El costo de cada plan es FIJO, por cuenta y por rubro — no es estimación.**
+
+```
+              PRODUCCIÓN  OPERADOR  HERRAM./IA  ESPECIALISTA  AUDIT.  BUFFER   COSTO    MARGEN
+🔷 MARKETING     Q900       Q350      Q150         Q100         —     Q165    Q1,665    77%
+🔷 MKT PRO      Q1,400      Q550      Q200         Q150         —     Q255    Q2,555    77%
+🟨 ACCELERATE   Q1,900      Q900      Q300        Q1,000     Q1,200    —      Q5,300    72%
+🟨 COMPOUND     Q2,500     Q1,400     Q500        Q2,000     Q1,800    —      Q8,200    75%
+```
+
+**El margen no cambia con el número de clientes.** Si una cuenta consume más, se cotiza extra o
+sube de plan — **nunca se absorbe.** Ver `inherent/06-ECONOMIA.md` → «Los costos por plan — fijos».
+🔑 **Allan no es un rubro:** su tiempo sale de la utilidad. Sus horas son **capacidad**, no costo.
 
 ⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
-operación.** Ahí está el 70% del costo matable.
+operación.** No mueven el margen — **mueven cuántas cuentas aguanta el equipo.**
 
 **El equipo son dos personas y los agentes.** Allan dirige y es el gate; un operador corre los
 agentes; producción solo graba; **los agentes hacen el resto.**
 
-🔑 **Nadie cobra por cuenta. Todos cobran por hora, y cada cuenta paga su porción.**
-Un sueldo por cuenta significa diez sueldos con diez cuentas — ese costo nunca baja.
-**La tarifa baja según el volumen que le garantizamos** (100% / 80% / 65% / 50%), y **pasa a
-sueldo fijo a partir de 60 h/mes.** Con ese modelo los márgenes van de **52-64% con 2 clientes a
-66-74% con 10**, y **la utilidad vuelve a subir con el precio.** Ver `inherent/05-OPERACION.md`.
+🔑 **Cada cuenta paga a cada rubro el monto fijo de su plan.** Se firma una vez con cada
+persona y no se renegocia por cliente. Ver `inherent/05-OPERACION.md` → «El costo fijo de cada cuenta».
 
 ⚠️ **La producción no se baja recortando horas** — eso es bajarle el precio a la persona por el
-mismo trabajo. Se baja **garantizándole volumen** a cambio de tarifa, o con el sistema de
-contenido crudo del cliente.
+mismo trabajo. Si el monto no alcanza, **se cambia la mezcla** *(más derivados, contenido crudo
+del cliente)* **o se cotiza extra.**
 
 ⚠️ **Esto exige agentes que trabajen entre autónomos y dirigidos:** que levanten excepciones, no
 preguntas. **Si el agente pregunta todo, no ahorra nada.**
@@ -292,15 +293,17 @@ carga `calendario.csv` directo y trae las mejores horas según la data de la cue
 
 🕷️ **Todo lo que haya que scrapear se hace con Apify** — IG, TikTok, YouTube, LinkedIn, Google
 Maps, Google Search y la biblioteca de anuncios de Facebook. **Plan Starter $19/mes, ~Q205
-totales al mes con 5 clientes: menos de 1 punto de margen.** 🟡 **Falta instalar el MCP y probar
+totales al mes con 5 clientes: menos de 1 punto de margen, dentro de Herramientas / IA.** 🟡 **Falta instalar el MCP y probar
 los trece actores.** Ver `inherent/06-ECONOMIA.md` → «Apify».
 🛡️ **Las tres garantías —contenido, alcance y ventas— están en `inherent/03-OFERTA.md`.**
 **Ninguna se publica hasta que sus cuatro pendientes estén cerrados.**
 
 🔌 **Un MCP declarado NO es un MCP conectado.** `inherent/06-ECONOMIA.md` → «El estado real de
-conexión» tiene la prueba en vivo. **De ~35 capacidades, 3 están probadas.**
-🔴 **Higgsfield está en plan free con 0 créditos** — y sostiene nueve capacidades, incluida la
-generación de las 86-204 piezas. **Es el primer desbloqueo, antes que cualquier otro.**
+conexión» tiene la prueba en vivo. **De las capacidades declaradas, 3 están probadas.**
+🔴 **No generamos imagen ni video con IA.** Las 86-204 piezas salen de grabación, edición y
+plantillas sobre material propio. **⑥A Diseño y ⑦ Video Editing no tienen MCP:** hoy todo el
+volumen pasa por Pablo, y **es el primer techo de capacidad.**
+⛔ **No se promete:** predicción de viralidad, fotos de producto sin sesión, doblaje ni voz sintética.
 
 ⚠️ **No se promete lo que no está en «Capacidades reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay
 acción, y sin acción no hay promesa. **Los límites declarados están en `inherent/01-IDENTIDAD.md`:**

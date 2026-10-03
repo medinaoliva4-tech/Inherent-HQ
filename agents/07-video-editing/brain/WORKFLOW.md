@@ -10,7 +10,7 @@ paso vive en las skills: `skills/README.md`.
 
 ## 1 · Acá está la eficiencia del modelo
 
-**⑤ Producción cuesta horas humanas. ⑥B multiplica ese material a Q0 marginal.**
+**⑤ Producción cuesta horas humanas. ⑥B multiplica ese material dentro del mismo costo fijo de Producción.**
 
 | | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|---|
@@ -21,7 +21,6 @@ paso vive en las skills: `skills/README.md`.
 | **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
 | *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
 | *TOTAL videos — tope* | *18* | *24* | *36* | *48* |
-| **Segundo idioma** | ⬜ | ⬜ | ⬜ | ✅ |
 | **Revisiones por pieza** | 1 | 2 | 2 | **3** |
 
 > 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba
@@ -112,14 +111,14 @@ paso vive en las skills: `skills/README.md`.
 
 | Acción | MCP | |
 |---|---|---|
-| Multiplicar una grabación en variantes | Higgsfield workflow `ad-multiplier` | ⬜ |
-| Reencuadrar para cada formato | Higgsfield `reframe` | ⬜ |
-| Escalar calidad de video | Higgsfield `upscale_video` | ⬜ |
-| Doblaje y segundo idioma | Higgsfield `dubbing` | ⬜ |
-| Analizar el video antes de cortarlo | Higgsfield `video_analysis_create` | ⬜ |
-| Generar video cuando no hay material | Higgsfield `generate_video` | ⬜ |
+| Cortar, editar y armar el reel | **Pablo** — dentro del costo fijo de Producción | 👤 |
+| Multiplicar una grabación en variantes | **Pablo** — recombinando escenas del mismo material | 👤 |
+| Reencuadrar para cada formato | `ffmpeg` local *(recorte y escala)* | ⬜ |
+| Analizar el video antes de cortarlo | `ffmpeg` local — el mismo de `cr-lectura-de-video` | ⬜ |
+| Escalar calidad · doblaje · generar video | ⛔ **Sin herramienta — no se promete** | 🔴 |
 
-> ⚠️ **`⬜` = la tool existe, sin probar en cliente real.** No se promete lo que no se corrió.
+> ⚠️ **`⬜` = la tool existe, sin probar en cliente real · `👤` = lo hace una persona.**
+> 🔴 **⑦ no tiene MCP de edición.** Todo el volumen de video pasa por Pablo.
 
 ---
 

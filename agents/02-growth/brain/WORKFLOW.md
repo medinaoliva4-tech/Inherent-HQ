@@ -118,7 +118,7 @@ paso vive en las skills: `skills/README.md`.
 | Negocios, reseñas y contactos de una zona | Apify `crawler-google-places` | 🟡 |
 | Qué busca la gente antes de comprar | Apify `google-search-scraper` | 🟡 |
 | Automatizar seguimiento y recompra | Zapier → ManyChat / WhatsApp Business | ⬜ |
-| Construir landing, panel o CRM a medida | Higgsfield `create_website` + Vercel | ⬜ |
+| Construir landing, panel o CRM a medida | Claude *(código)* + Vercel | ⬜ |
 | Llevar los registros del negocio | Inherent OS | ⬜ |
 
 ---

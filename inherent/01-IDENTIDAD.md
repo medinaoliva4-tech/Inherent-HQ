@@ -134,12 +134,11 @@ es que Accelerate toca **la oferta, el precio y la conversión.**
 
 | | Por qué nadie más lo da |
 |---|---|
-| **86 piezas al mes, no 16** | Porque editamos y generamos con agentes. A ellos les costaría 4 personas |
+| **86 piezas al mes, no 16** | Porque grabamos por setup y multiplicamos el material con sistema. A ellos les costaría 4 personas |
 | **Estrategia con ingeniería inversa** desde la meta financiera hasta la pieza | Porque la mayoría arranca en el calendario, no en el número |
 | **Regla 70/20/10** — el 70% del contenido sale de lo que **ya funcionó** en la categoría | Porque requiere inteligencia de competencia corriendo todo el mes |
-| **Predicción de viralidad antes de publicar** | Porque nadie en el mercado tiene la herramienta |
 | **Radar de competencia** — qué anuncios lanzaron y cuáles sostienen | Porque su reporte es del día 30. El nuestro es del martes |
-| **1 grabación → 15 piezas** | Porque multiplicamos el material con agentes, no con horas |
+| **1 grabación → muchas piezas** | Porque grabamos por setup y cada escena se reusa en derivados |
 | **Mapa de aliados** y gestión de asociaciones | Porque crecer no es solo pautar: es pararse al lado de quien ya tiene la audiencia |
 | **Mensaje y posicionamiento trabajados de verdad** | Porque una agencia recibe el brief y ejecuta. Nosotros decidimos qué decir |
 
@@ -188,7 +187,6 @@ Lo más cercano es una consultoría que **entrega un documento y se va.**
 | **👥 Talento** | Perfiles de puesto, SOPs, onboarding y documentación. **Para que el equipo del cliente pueda sostener lo que construimos** |
 | **🤖 IA propia del cliente** | Entrenada con su marca, su oferta y sus datos. El conocimiento sale de la cabeza del fundador |
 | **🔧 Una herramienta a medida por mes** | No por trimestre |
-| **🌎 Contenido en segundo idioma** | Doblaje y voz sobre el material existente. Abrir mercado sin producción nueva |
 | **📊 Atribución completa de punta a punta** | Del primer impacto a la venta |
 
 > **Compound es el único paquete cuyo objetivo declarado es que nos necesiten menos.**

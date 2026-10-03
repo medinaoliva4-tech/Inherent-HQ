@@ -162,10 +162,8 @@ estructura.
 
 ### 5 · 🤖 Cosas que solo se pueden con agentes
 
-- **Predicción de viralidad antes de publicar** — dejás de apostar
-- **Una grabación se convierte en 15 piezas** — el costo se divide, no se multiplica
+- **Una grabación se convierte en muchas piezas** — el costo se divide, no se multiplica
 - **Vemos qué anuncios le funcionan a tu competencia** — cada semana
-- **Fotos de producto sin sesión de fotos**
 - **Tu propia IA**, entrenada con tu marca y tus datos
 
 ### 6 · 💰 Ganamos cuando tú ganas
@@ -394,7 +392,7 @@ o proyectos por hito. **Precio según alcance.**
 | Línea publicada | Qué toca |
 |---|---|
 | *«un especialista cada trimestre / cada mes»* | **La cadencia de mentores.** Solo línea Growth — ver `04-MERCADO.md` |
-| *«una herramienta nueva cada trimestre / cada mes»* | **El build de tecnología.** Q750 y Q1,500/mes |
+| *«una herramienta nueva cada trimestre / cada mes»* | **El build de tecnología.** No tiene rubro propio: sale de Herramientas / IA + Operador |
 | *«tus números claros»* | **Money OS.** Lo entrega Allan con Strategy, no un CFO contratado |
 | *«que te encuentren en Google»* | **Es pauta de búsqueda, no SEO técnico.** Ver `06-ECONOMIA.md` |
 | *«presencia todos los días»* | **86 · 145 · 145 · 204 piezas.** El techo real es la grabación |

@@ -86,13 +86,14 @@ alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se 
 
 | Acción | MCP | |
 |---|---|---|
-| Generar imagen en lote | Higgsfield `generate_image_batch` | ⬜ |
-| Fotos de producto sin sesión | Higgsfield Marketing Studio `product-shot` | ⬜ |
-| Quitar fondo | Higgsfield `remove_background` | ⬜ |
-| Escalar calidad | Higgsfield `upscale_image` | ⬜ |
-| Reencuadrar para cada formato | Higgsfield `reframe` | ⬜ |
+| Componer cada pieza sobre la plantilla | **Pablo** — dentro del costo fijo de su rubro | 👤 |
+| Fotos de producto | ⑤ Producción — la sesión de foto del mes | 👤 |
+| Reencuadrar para cada formato | `ffmpeg` local *(recorte y escala)* | ⬜ |
+| Generar imagen con IA · quitar fondo · escalar calidad | ⛔ **Sin herramienta — no se promete** | 🔴 |
 
-> ⚠️ **`⬜` = la tool existe, sin probar en cliente real.**
+> ⚠️ **`⬜` = la tool existe, sin probar en cliente real · `👤` = lo hace una persona.**
+> 🔴 **⑥A no tiene MCP.** Hoy es ejecución de Pablo con plantillas: **sus horas son el techo del
+> volumen.** Por eso el GATE 1 de plantillas es lo que hace viable el departamento.
 
 ---
 

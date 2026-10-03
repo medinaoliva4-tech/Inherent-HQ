@@ -200,11 +200,12 @@
 | **Recibe** | El material que grabó Production |
 | **Hace** | Convierte cada grabación en el reel terminado **y todas sus derivadas** |
 | **Entrega** | 🎬 **6 · 10 · 14 reels** + **10 · 20 · 30 piezas derivadas** |
-| **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C — segundo idioma solo en 🟨 C |
+| **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
 | **Estado** | ⬜ Sin construir — ficha en `agents/07-video-editing/README.md` |
 
 > 🔑 **Acá está la eficiencia del modelo.** Production cuesta horas humanas; esta etapa
-> multiplica ese material a **Q0 marginal**.
+> multiplica ese material **dentro del mismo monto de Producción.**
+> 🔴 **Hoy no tiene MCP:** la edición y las derivadas son de Pablo.
 
 ---
 
@@ -215,13 +216,13 @@
 | **Agente** | `qa` — **el gate, no una etapa** |
 | **Recibe** | Toda pieza terminada, antes de publicarse |
 | **Hace** | **Revisa cada pieza contra el brief, la marca y el paquete.** Allan aprueba solo las excepciones |
-| **Incluye** | ¿Cumple el brief? · ¿Respeta la guía de marca? · ¿Está dentro del paquete? · ¿El copy es correcto? · ¿Formato y canal correctos? · **predicción de viralidad** |
+| **Incluye** | ¿Cumple el brief? · ¿Respeta la guía de marca? · ¿Está dentro del paquete? · ¿El copy es correcto? · ¿Formato y canal correctos? |
 | **Entrega** | ✅ **Piezas aprobadas** + ⚠️ **lista de excepciones para Allan** |
 | **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
 | **Estado** | 🔴 **NO CONSTRUIDO — es el bloqueador del modelo** |
 
 > **A 204 piezas al mes, el QA humano son ~1 minuto por pieza. No alcanza.**
-> **Sin este agente, las horas de Allan se duplican y los márgenes caen ~15 puntos.**
+> **Sin este agente, las horas de Allan se duplican y él se vuelve el techo de capacidad.**
 > **Es el primer agente a construir.** Ver **este documento** → hoja de ruta.
 
 ---
@@ -318,7 +319,7 @@ y Strategy es una etapa de doce.
 
 | # | Construir | Por qué ahora |
 |---|---|---|
-| **1** | 🔴 **QA** | Sin él el volumen no es entregable y el margen no cierra. **Bloquea todo** |
+| **1** | 🔴 **QA** | Sin él el volumen no es entregable y Allan es el techo. **Bloquea todo** |
 | **2** | **Creatividad** | Es el que produce las 86-204 piezas. Sin él no hay volumen que revisar |
 | **3** | **Diseño** | Ejecuta lo que Creatividad decide. Van en par |
 | **4** | **Marketing** | Hoy el salto de Estrategia a Creatividad se hace a mano |
@@ -374,30 +375,26 @@ Una sesión por cliente
 
 ---
 
-# Equipo — responsabilidades, tarifas y sueldos
+# Equipo — responsabilidades y costo fijo por cuenta
 
-> **Nadie cobra por cuenta. Todos cobran por hora.**
-> Cada cuenta paga **su porción de horas**, no un sueldo entero.
+> **Cada cuenta paga un monto fijo a cada rubro, según su plan.**
+> **No es estimación: es el techo.** Ningún rubro se pasa de su monto.
 
 ---
 
-## 🔴 Los dos errores que esto corrige
+## 🔴 Las dos reglas que esto fija
 
-### Error 1 · Pagar un sueldo por cuenta
+### Regla 1 · El costo de una cuenta no se negocia cuenta por cuenta
 
-**Si a alguien se le paga Q500 por cuenta, con 10 cuentas cobra 10 sueldos.**
-Ese costo nunca baja — sube en línea recta con cada cliente nuevo.
+**Cada plan tiene su monto por rubro, escrito.** Entra un cliente Marketing → se suman Q1,665 de
+costo, siempre. **No cambia con el volumen ni con quién lo ejecuta.**
 
-✅ **Correcto:** se mide **cuántas horas toma esa cuenta**, y se paga esa porción.
-El sueldo sale de sumar las porciones de todas las cuentas.
-
-### Error 2 · Bajar la producción recortando horas
+### Regla 2 · La producción no se baja recortando horas
 
 **El trabajo de grabar no desaparece porque le quitemos horas al papel.**
-Recortar horas es bajarle el precio a la persona por el mismo trabajo.
-
-✅ **Correcto:** se le **garantiza volumen** y a cambio baja la tarifa —
-y cuando el volumen alcanza, **se le asigna un sueldo fijo.**
+Si el monto de Producción no alcanza para lo que pide el plan, **se cambia la mezcla** *(más
+derivados del mismo material, contenido crudo del cliente)* o **se cotiza extra.** Nunca se le
+baja el pago a la persona por el mismo trabajo.
 
 ---
 
@@ -431,174 +428,61 @@ y cuando el volumen alcanza, **se le asigna un sueldo fijo.**
 
 ---
 
-## 2 · Las horas que toma cada cuenta, al mes
+## 2 · 💰 El costo fijo de cada cuenta, por rubro
 
-| Rol | 🔷 Mkt | 🔷 Pro | 🟨 Accel | 🟨 Comp |
-|---|---|---|---|
-| **Producción** | 3 h | 5 h | 8 h |
-| **Operación** | 4 h | 6 h | 8 h |
-| **Allan** | 4 h | 6 h | 8 h |
+| Rubro | 🔷 Mkt | 🔷 Pro | 🟨 Accel | 🟨 Comp | Quién |
+|---|---|---|---|---|---|
+| **Producción** *(video, foto, edición)* | Q900 | Q1,400 | Q1,900 | Q2,500 | Productor + Pablo |
+| **Operador de agentes** | Q350 | Q550 | Q900 | Q1,400 | Pablo |
+| **Herramientas / IA** | Q150 | Q200 | Q300 | Q500 | Claude · Apify · Postpone |
+| **Especialista** *(prorrateado)* | Q100 | Q150 | Q1,000 | Q2,000 | Red de especialistas |
+| **Auditoría conta** | — | — | Q600 | Q900 | Especialista |
+| **Auditoría admin** *(SOPs)* | — | — | Q600 | Q900 | Especialista |
+| **Buffer / QA** | Q165 | Q255 | — | — | — |
+| **TOTAL** | **Q1,665** | **Q2,555** | **Q5,300** | **Q8,200** | |
 
-⚠️ **Estas horas son estimación.** Es lo primero que hay que medir: sin ellas, todo el modelo
-es una hipótesis.
-
----
-
-## 3 · 🔑 La escalera de tarifa
-
-> **La tarifa baja porque le garantizamos volumen.**
-> No es apretar a la persona: es que **20 horas seguras valen más que 4 sueltas.**
-
-| Horas/mes que le garantizamos | Modalidad | Tarifa |
-|---|---|---|
-| Menos de 20 h | Freelance puro | **100%** |
-| 20 – 60 h | Freelance con volumen | **80%** |
-| 60 – 120 h | **Medio tiempo con sueldo** | **65%** |
-| Más de 120 h | **Tiempo completo con sueldo** | **50%** |
-
-### Las tarifas base
-
-| Rol | Tarifa base | A tiempo completo |
-|---|---|---|
-| **Producción** | Q250 / h | Q125 / h |
-| **Operación** | Q100 / h | Q50 / h |
-
-> **Cuando el volumen pasa de 60 h/mes, deja de ser tarifa y pasa a ser sueldo.**
-> El sueldo se calcula: `horas totales × tarifa del tramo`.
+🔑 **Allan no es un rubro.** Su tiempo se paga de la utilidad — por eso sus horas son
+**capacidad**, no costo.
 
 ---
 
-## 4 · 🔧 Cómo se calcula — la mecánica
+## 3 · Los escenarios, con números
 
-### La fórmula
+| Escenario | Mix *(Mkt·Pro·Accel·Comp)* | Facturación | Costo | **Utilidad** | Horas de Allan *(sin agentes)* |
+|---|---|---|---|---|---|
+| 🔵 **Hoy** | 2·0·0·0 | Q14,630 | Q3,330 | **Q11,300** | 10 h |
+| 🟢 **Meta corta** | 2·1·1·1 | Q77,385 | Q19,385 | **Q58,000** | 46 h |
+| 🟡 **Meta media** | 4·2·2·2 | Q154,770 | Q38,770 | **Q116,000** | 92 h |
+| 🔴 **Meta larga** | 6·4·5·5 | Q346,500 | Q87,710 | **Q258,790** | 203 h |
 
-```
-1.  HORAS TOTALES  =  suma de las horas de todas las cuentas activas
-2.  TARIFA         =  tarifa base × el factor del tramo que dan esas horas
-3.  SUELDO         =  horas totales × tarifa
-4.  PORCIÓN DE     =  horas de esa cuenta × tarifa
-    CADA CUENTA
-```
-
-> **Cada cuenta paga las horas que consume, a la tarifa que el volumen total permite.**
-> Nadie paga un sueldo entero. La suma de las porciones **es** el sueldo.
-
----
-
-## 5 · Los cuatro escenarios, con números
-
-### 🔵 HOY — 2 clientes Marketing
-
-| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
-|---|---|---|---|---|
-| Producción de video | 4 h | Freelance | Q250 | **Q1,000** |
-| Operación | 8 h | Freelance | Q100 | **Q800** |
-| Claude + Apify | — | fijo | — | Q1,705 ÷ 2 = **Q853/cuenta** |
-
-| Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q975 | Q400 | Q853 | Q750 | Q0 | **Q2,978** | **Q4,337** | **59%** |
-
-**Utilidad total del mes: Q8,674**
-
-⚠️ **Con 2 clientes el fijo de Claude pesa Q853 por cuenta — 13% del precio.** Es el único
-escenario donde la herramienta se nota. A partir de 5 clientes baja a Q341.
-
----
-
-### 🟢 META CORTA — 5 clientes *(2 Marketing · 1 Pro · 1 Accelerate · 1 Compound)*
-
-| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
-|---|---|---|---|---|
-| Producción de video | 24 h | Freelance con volumen | **Q200** | **Q4,800** |
-| Operación | 36 h | Freelance con volumen | **Q80** | **Q2,880** |
-| Claude | — | fijo | — | Q1,500 ÷ 5 = **Q300/cuenta** |
-
-| Cuenta | Prod. | Operador | Claude+Apify | **Allan + Pablo** | Onb./12 | **Costo** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q1,075 | Q130 | Q341 | Q1,028 | Q58 | **Q2,632** | **Q4,683** | **64%** |
-| 🔷 Marketing Pro | Q1,450 | Q248 | Q341 | Q1,874 | Q77 | **Q3,990** | **Q7,175** | **64%** |
-| 🟨 Accelerate | Q1,850 | Q620 | Q341 | Q1,950 | Q1,313 | **Q6,074** | **Q13,176** | **68%** |
-| 🟨 Compound | Q2,425 | Q960 | Q341 | Q2,400 | Q3,079 | **Q9,205** | **Q23,135** | **72%** |
-
-*Prod. = video + fotógrafo + fee de sesión · Otros = tecnología + mentor + membresía*
-
-**Utilidad total del mes: Q52,852** sobre Q77,385 de facturación.
-
----
-
-### 🟡 META MEDIA — 10 clientes *(4 Marketing · 2 Pro · 2 Accelerate · 2 Compound)*
-
-| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
-|---|---|---|---|---|
-| Producción de video | 44 h | Freelance con volumen | Q200 | **Q8,800** |
-| Operación | 56 h | Freelance con volumen | **Q80** | **Q4,480** |
-| Claude + Apify | — | fijo | — | Q1,705 ÷ 10 = **Q171/cuenta** |
-
-| Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q1,075 | Q400 | Q171 | Q750 | Q0 | **Q2,396** | **Q4,919** | **67%** |
-| 🔷 Marketing Pro | Q1,450 | Q520 | Q171 | Q1,050 | Q0 | **Q3,191** | **Q7,974** | **71%** |
-| 🟨 Accelerate | Q1,850 | Q620 | Q171 | Q1,950 | Q1,216 | **Q5,807** | **Q13,443** | **70%** |
-| 🟨 Compound | Q2,425 | Q960 | Q171 | Q2,400 | Q2,982 | **Q8,938** | **Q23,402** | **72%** |
-
-**Utilidad total del mes: Q109,314**
-
-⚠️ **La operación queda en 56 h — a 4 horas del tramo de Q65.** Un cliente Compound más cruza
-el escalón y **baja la tarifa para todas las cuentas a la vez.**
-
----
-
-### 🔴 META LARGA — 20 clientes *(6 Marketing · 4 Pro · 5 Accelerate · 5 Compound)*
-
-| Rol | Horas/mes | Tramo | Tarifa | **Sueldo** |
-|---|---|---|---|---|
-| Producción de video | 98 h | **Medio tiempo · sueldo** | **Q162** | **Q15,876** |
-| Operación | 118 h | **Medio tiempo · sueldo** | **Q65** | **Q7,670** |
-| Claude + Apify | — | fijo | — | Q1,705 ÷ 20 = **Q85/cuenta** |
-
-| Cuenta | Prod. | Oper. | Claude+Apify | Allan | Otros | **Costo** | **Utilidad** | **Margen** |
-|---|---|---|---|---|---|---|---|---|
-| 🔷 Marketing | Q961 | Q325 | Q85 | Q750 | Q0 | **Q2,121** | **Q4,424** | **68%** |
-| 🔷 Marketing Pro | Q1,298 | Q423 | Q85 | Q1,050 | Q0 | **Q2,856** | **Q7,154** | **71%** |
-| 🟨 Accelerate | Q1,622 | Q504 | Q85 | Q1,950 | Q1,159 | **Q5,320** | **Q13,930** | **72%** |
-| 🟨 Compound | Q2,121 | Q780 | Q85 | Q2,400 | Q2,925 | **Q8,311** | **Q22,489** | **73%** |
-
-**Utilidad total del mes: Q240,619**
+🔑 **El margen de cada plan es el mismo en los cuatro escenarios.** Lo que cambia es la
+utilidad absoluta y las horas de Allan.
 
 🔴 **A 20 clientes Allan está en 203 h/mes.** Ahí ya no alcanza: **o entra un segundo director,
 o el agente de QA baja sus horas a la mitad.** Es el techo real del modelo.
 
 ---
 
-## 6 · 📄 El contrato con cada persona
+## 4 · 📄 El acuerdo con cada persona
 
-> **Se firma una vez, con los tramos escritos. No se renegocia en cada cliente nuevo.**
+> **Se firma una vez, con los montos por plan escritos. No se renegocia en cada cliente nuevo.**
 
 | Cláusula | Qué dice |
 |---|---|
-| **Sueldo garantizado** | `horas garantizadas × tarifa del tramo`. **Es el piso** — se paga aunque el mes venga flojo |
-| **Horas extra** | Si una cuenta consume más, se pagan **a la misma tarifa del tramo** |
-| **Escalera de tarifa** | Los cuatro tramos, con sus factores, escritos desde el día uno |
-| **Revisión** | Al cruzar un tramo. **Automática, no negociada** |
-| **Qué gana con esto** | Tarifa menor **a cambio de ingreso garantizado y creciente** |
-
-### Ejemplo de cómo se le plantea
-
-> *"Hoy son 24 horas al mes a Q200 la hora: **Q4,800 garantizados**, te llegue o no el trabajo.*
-> *Cuando pasemos de 60 horas, entrás a sueldo de medio tiempo: la tarifa baja a Q162,*
-> *pero tu ingreso sube a **Q18,850**. Está escrito desde hoy."*
+| **Monto por cuenta** | El de su rubro, según el plan de cada cuenta. **Es fijo** |
+| **Qué incluye** | Lo que el plan promete de ese rubro — ni más, ni menos |
+| **Si una cuenta pide más** | Se cotiza extra al cliente o se sube de plan. **No se absorbe** |
+| **Revisión** | Solo si cambia la tabla de costos del plan. **No por volumen** |
 
 ---
 
-## 7 · Qué pasa cuando entra o sale un cliente
+## 5 · Qué pasa cuando entra o sale un cliente
 
 | Situación | Qué se hace |
 |---|---|
-| **Entra un cliente** | Se suman sus horas al total. Si cruza un tramo, **la tarifa baja para todos** y el margen sube solo |
-| **Sale un cliente** | Se restan sus horas. **El sueldo garantizado no baja ese mes** — es el piso |
-| **Si el total cae de tramo** | La tarifa se revisa **el mes siguiente**, con aviso |
-| **Una cuenta consume más horas** | Se cotiza como extra o se sube de paquete. **Nunca se absorbe** |
+| **Entra un cliente** | Se suma el costo fijo de su plan. **El margen no cambia** |
+| **Sale un cliente** | Se resta su costo fijo |
+| **Una cuenta consume más** | Se cotiza como extra o se sube de paquete. **Nunca se absorbe** |
 
 ---
 
@@ -606,11 +490,10 @@ o el agente de QA baja sus horas a la mitad.** Es el techo real del modelo.
 
 | | |
 |---|---|
-| **Nadie cobra por cuenta** | Se cobra por hora. La cuenta paga su porción |
-| **La tarifa se revisa al cambiar de tramo** | Se acuerda desde el inicio, no se negocia después |
-| **El sueldo arranca a las 60 h/mes** | Antes de eso es freelance |
-| **Las horas se miden, no se asumen** | Si una cuenta toma más horas, **se cotiza o se ajusta el paquete** |
-| **El Claude es fijo (Q1,500/mes)** | Se prorratea entre todas las cuentas activas |
+| **El costo es fijo por plan y por rubro** | No se estima, no se promedia, no se pasa |
+| **Allan no es costo** | Su tiempo sale de la utilidad. Sus horas se cuidan como capacidad |
+| **Herramientas / IA es un rubro, no un fijo aparte** | Claude, Apify y Postpone salen de ahí |
+| **Las horas se miden, no se asumen** | Si una cuenta toma más, **se cotiza o se ajusta el paquete** |
 
 ---
 
@@ -624,7 +507,7 @@ o el agente de QA baja sus horas a la mitad.** Es el techo real del modelo.
 | **Autónomos donde se puede** | Diseño, copy, programación, reportes: sin humano en el medio |
 | **Dirigidos donde importa** | Estrategia, creatividad y pauta proponen; **Allan decide** |
 | **Que levanten excepciones, no preguntas** | Si el agente pregunta todo, no ahorra nada |
-| **Que se auto-revisen** | El agente de QA es lo que mantiene bajas las horas de operación |
+| **Que se auto-revisen** | El agente de QA es lo que mantiene a Pablo y a Allan dentro de sus horas |
 
 🔴 **Por eso el agente de QA es el primero.** No es una mejora: **es lo que sostiene el modelo.**
 
@@ -766,107 +649,105 @@ La revisión del 20 es el punto donde los cuatro se cruzan:
 
 | Pendiente | Por qué importa |
 |---|---|
-| **Medir las horas reales** de producción, operación y Allan | Es la base de todo. Hoy son estimación |
-| **Acordar la escalera de tarifa** con cada persona, por escrito | Evita renegociar en cada tramo |
-| **Probar el contenido crudo del cliente** | Único camino para bajar horas de producción sin bajarle el precio a nadie |
-| **Construir el agente de QA** | Sin él las horas de operación se duplican |
+| **Medir las horas reales** de producción, Pablo y Allan | Confirma que cada monto fijo alcanza para lo que promete el plan |
+| **Firmar el monto por plan** con cada persona | Evita renegociar en cada cliente nuevo |
+| **Probar el contenido crudo del cliente** | Único camino para más video sin pasarse del monto de Producción |
+| **Construir el agente de QA** | Sin él, las horas de Pablo y Allan se duplican |
 
 
 ---
 
 # Operación — qué se hace, quién lo hace, cuánto cuesta
 
-> Desglose por **marca, al mes**. De acá salen los costos de `06-ECONOMIA.md`.
+> Desglose por **marca, al mes**: qué se hace y de qué rubro sale. **El costo es fijo por plan** —
+> está en `06-ECONOMIA.md` → «Los costos por plan — fijos».
 > **`Marketing` $950** · **`Marketing Pro` $1,450** · **`Accelerate` $2,500** · **`Compound` $4,200**
 
 ---
 
 ## 1 · Todo lo que hay que hacer
 
-| # | Trabajo | Quién | Costo | 🔷 Mkt | 🔷 Pro | 🟨 Accel | 🟨 Comp |
+| # | Trabajo | Quién | Sale de | 🔷 Mkt | 🔷 Pro | 🟨 Accel | 🟨 Comp |
 |---|---|---|---|---|---|---|---|
 | **ESTRATEGIA** |
-| 1 | Estrategia inicial — los 4 bloques | Agentes + Allan | Claude | ✅ | ✅ | ✅ | ✅ |
-| 2 | Revisión del 20 | Agentes | Claude | ligera | ligera | completa | completa |
-| 3 | Ajuste de la estrategia | Allan | su tiempo | ✅ | ✅ | ✅ | ✅ |
-| 4 | Sesión de dirección | **Allan** | su tiempo | ❌ | ❌ | mensual | quincenal |
-| 5 | Replanteo trimestral | **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
+| 1 | Estrategia inicial — los 4 bloques | Agentes + Allan | Herramientas / IA | ✅ | ✅ | ✅ | ✅ |
+| 2 | Revisión del 20 | Agentes | Herramientas / IA | ligera | ligera | completa | completa |
+| 3 | Ajuste de la estrategia | Allan | Allan *(utilidad)* | ✅ | ✅ | ✅ | ✅ |
+| 4 | Sesión de dirección | **Allan** | Allan *(utilidad)* | ❌ | ❌ | mensual | quincenal |
+| 5 | Replanteo trimestral | **Allan** | Allan *(utilidad)* | ❌ | ❌ | ❌ | ✅ |
 | **INTELIGENCIA** |
-| 6 | Radar de competencia | Agentes (AdWhispr) | Claude | mensual | mensual | semanal | semanal |
-| 7 | Mapa de intereses y tendencias | Agentes (**Apify**) | Claude | al inicio | mensual | mensual | mensual |
-| 8 | Ingeniería inversa de contenido | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
-| 9 | Clonar anuncio longevo del competidor | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ | ✅ |
+| 6 | Radar de competencia | Agentes (AdWhispr) | Herramientas / IA | mensual | mensual | semanal | semanal |
+| 7 | Mapa de intereses y tendencias | Agentes (**Apify**) | Herramientas / IA | al inicio | mensual | mensual | mensual |
+| 8 | Ingeniería inversa de contenido | Agentes | Herramientas / IA | ✅ | ✅ | ✅ | ✅ |
+| 9 | Clonar anuncio longevo del competidor | Agentes (AdWhispr) | Herramientas / IA | ❌ | ✅ | ✅ | ✅ |
 | **PRODUCCIÓN** |
-| 10 | Sesión de grabación | Producción | Q175/sesión | **1** | **2** | **2** | **3** |
-| 11 | Horas de producción de video | Producción | **Q200/h** | **3h** | **4h** | **6h** | **8h** |
-| 12 | Sesión de fotógrafo | Producción | **Q300** | 1h | 1h | 1h | 1h |
-| 13 | Edición de videos **planificados** *(20 min de grabación c/u)* | Agentes | Claude | 9 | 12 | 18 | 24 |
-| 14 | **Videos derivados** *(escenas de apoyo + VO)* · mínimo 1:2 | Agentes (Higgsfield) | Claude | 4 | 6 | 9 | 12 |
-| 15 | Estáticos y carruseles | Agentes (Higgsfield) | Claude | **43** | **72** | **63** | **88** |
-| 16 | Stories y recortes | Agentes | Claude | 30 | 55 | 55 | 80 |
-| 17 | **Predicción de viralidad** antes de publicar | Agentes (Higgsfield) | Claude | ✅ | ✅ | ✅ | ✅ |
-| 18 | Fotos de producto generadas | Agentes (Higgsfield) | Claude | ❌ | ✅ | ✅ | ✅ |
-| 19 | Revisiones por pieza | Agentes + Allan | Claude | 1 | 2 | 2 | 3 |
-| 20 | Doblaje a segundo idioma | Agentes (Higgsfield) | Claude | ❌ | ❌ | ❌ | ✅ |
+| 10 | Sesión de grabación | Producción | Producción | **1** | **2** | **2** | **3** |
+| 11 | Horas de producción de video | Producción | Producción | **3h** | **4h** | **6h** | **8h** |
+| 12 | Sesión de fotógrafo | Producción | Producción | 1h | 1h | 1h | 1h |
+| 13 | Edición de videos **planificados** *(20 min de grabación c/u)* | Pablo | Producción | 9 | 12 | 18 | 24 |
+| 14 | **Videos derivados** *(escenas de apoyo + VO)* · mínimo 1:2 | Pablo | Producción | 4 | 6 | 9 | 12 |
+| 15 | Estáticos y carruseles | Pablo *(plantillas)* | Operador | **43** | **72** | **63** | **88** |
+| 16 | Stories y recortes | Pablo *(plantillas)* | Operador | 30 | 55 | 55 | 80 |
+| 17 | Revisiones por pieza | Agentes + Allan | Herramientas / IA | 1 | 2 | 2 | 3 |
 | **PLANIFICACIÓN** |
-| 21 | Calendario del mes | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
-| 22 | Brief de contenido | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
-| 23 | Aprobación de ideas y calendario | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
+| 18 | Calendario del mes | Agentes | Herramientas / IA | ✅ | ✅ | ✅ | ✅ |
+| 19 | Brief de contenido | Agentes | Herramientas / IA | ✅ | ✅ | ✅ | ✅ |
+| 20 | Aprobación de ideas y calendario | **Allan** | Allan *(utilidad)* | ✅ | ✅ | ✅ | ✅ |
 | **PUBLICACIÓN** |
-| 24 | Programar y publicar | Agentes (**Postpone**) | ⚠️ sin dato | ✅ | ✅ | ✅ | ✅ |
-| 25 | **Comentarios y mensajes** | ⑧ CM + **Postpone Inbox** 🔴 *sin TikTok* | ⚠️ sin dato | ❌ | ✅ | ✅ | ✅ |
-| 26 | Operar los agentes | Operador | **Q80/h** | Q400 | Q520 | Q620 | Q960 |
+| 21 | Programar y publicar | Agentes (**Postpone**) | Herramientas / IA | ✅ | ✅ | ✅ | ✅ |
+| 22 | **Comentarios y mensajes** | ⑧ CM + **Postpone Inbox** 🔴 *sin TikTok* | Herramientas / IA | ❌ | ✅ | ✅ | ✅ |
+| 23 | Operar los agentes | Operador | Operador | Q350 | Q550 | Q900 | Q1,400 |
 | **ADQUISICIÓN** |
-| 27 | Pauta Meta + TikTok | Agentes (AdWhispr) | Claude | ✅ | ✅ | ✅ | ✅ |
-| 28 | Pauta Google Search + PMax | Agentes (AdWhispr) | Claude | ❌ | ✅ | ✅ | ✅ |
-| 29 | Variantes de creativo | Agentes | Claude | 20 | 30 | 35 | 50 |
-| 30 | Alianzas con creadores | Agentes (**Apify**) | Claude | ❌ | ✅ | ✅ | ✅ |
+| 24 | Pauta Meta + TikTok | Agentes (AdWhispr) | Herramientas / IA | ✅ | ✅ | ✅ | ✅ |
+| 25 | Pauta Google Search + PMax | Agentes (AdWhispr) | Herramientas / IA | ❌ | ✅ | ✅ | ✅ |
+| 26 | Variantes de creativo | Agentes | Herramientas / IA | 20 | 30 | 35 | 50 |
+| 27 | Alianzas con creadores | Agentes (**Apify**) | Herramientas / IA | ❌ | ✅ | ✅ | ✅ |
 | **OFERTA — solo línea Growth** |
-| 31 | **Rediseño de oferta, paquetes y precio** | ② Growth + **Allan** | su tiempo | ❌ | ❌ | ✅ | ✅ |
-| 32 | **Abrir canales grandes** | ② Growth + **Allan** | su tiempo | ❌ | ❌ | ✅ | ✅ |
-| 33 | **Upsells y escalera de ticket** | ② Growth | Claude | ❌ | ❌ | ✅ | ✅ |
+| 28 | **Rediseño de oferta, paquetes y precio** | ② Growth + **Allan** | Allan *(utilidad)* | ❌ | ❌ | ✅ | ✅ |
+| 29 | **Abrir canales grandes** | ② Growth + **Allan** | Allan *(utilidad)* | ❌ | ❌ | ✅ | ✅ |
+| 30 | **Upsells y escalera de ticket** | ② Growth | Herramientas / IA | ❌ | ❌ | ✅ | ✅ |
 | **CONVERSIÓN — solo línea Growth** |
-| 34 | Embudos de WhatsApp | Agentes (Zapier) | Claude | ❌ | ❌ | ✅ | ✅ |
-| 35 | Auto-DM en redes | Agentes (**Zapier**) | Claude | ❌ | ❌ | ✅ | ✅ |
-| 36 | Atribución (CAPI + GA4) | Agentes | Claude | ❌ | ❌ | ✅ | ✅ |
-| 37 | Pruebas A/B y CRO | Agentes | Claude | ❌ | ❌ | ✅ | continua |
-| 38 | Entrenamiento de closing | **Allan** | su tiempo | ❌ | ❌ | ✅ | ✅ |
+| 31 | Embudos de WhatsApp | Agentes (Zapier) | Herramientas / IA | ❌ | ❌ | ✅ | ✅ |
+| 32 | Auto-DM en redes | Agentes (**Zapier**) | Herramientas / IA | ❌ | ❌ | ✅ | ✅ |
+| 33 | Atribución (CAPI + GA4) | Agentes | Herramientas / IA | ❌ | ❌ | ✅ | ✅ |
+| 34 | Pruebas A/B y CRO | Agentes | Herramientas / IA | ❌ | ❌ | ✅ | continua |
+| 35 | Entrenamiento de closing | **Allan** | Allan *(utilidad)* | ❌ | ❌ | ✅ | ✅ |
 | **TECNOLOGÍA — solo línea Growth** |
-| 39 | Herramienta a medida | Agentes + **Allan** | Q750-1,500 | ❌ | ❌ | 1/trim. | **1/mes** |
-| 40 | Landings y microsites | Agentes (Higgsfield + Vercel) | Claude | ❌ | ❌ | ✅ | ✅ |
-| 41 | Automatización de procesos | Agentes (Zapier) | Claude | ❌ | ❌ | ✅ | ✅ |
+| 36 | Herramienta a medida | Agentes + **Allan** | Herramientas / IA + Operador 🟡 | ❌ | ❌ | 1/trim. | **1/mes** |
+| 37 | Landings y microsites | Agentes (Vercel) | Herramientas / IA | ❌ | ❌ | ✅ | ✅ |
+| 38 | Automatización de procesos | Agentes (Zapier) | Herramientas / IA | ❌ | ❌ | ✅ | ✅ |
 | **OPERACIÓN — solo línea Growth** |
-| 42 | SOPs de crecimiento | Agentes + Allan | Claude | ❌ | ❌ | ✅ | ✅ |
-| 43 | SOPs de empresa y estructura | Agentes + **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
-| 44 | Money OS — márgenes y precios | Agentes + **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
+| 39 | SOPs de crecimiento | Agentes + Allan | Herramientas / IA | ❌ | ❌ | ✅ | ✅ |
+| 40 | SOPs de empresa y estructura | Agentes + **Allan** | Allan *(utilidad)* | ❌ | ❌ | ❌ | ✅ |
+| 41 | Money OS — márgenes y precios | Agentes + **Allan** | Allan *(utilidad)* | ❌ | ❌ | ❌ | ✅ |
 | **EXPERIENCIA** |
-| 45 | Secuencias de recompra | Agentes | Claude | ❌ | ❌ | parcial | ✅ |
-| 46 | Sistema de reseñas | Agentes | Claude | ❌ | ❌ | ✅ | ✅ |
-| 47 | Mapa de experiencia y LTV | Agentes + Allan | Claude | ❌ | ❌ | ❌ | ✅ |
+| 42 | Secuencias de recompra | Agentes | Herramientas / IA | ❌ | ❌ | parcial | ✅ |
+| 43 | Sistema de reseñas | Agentes | Herramientas / IA | ❌ | ❌ | ✅ | ✅ |
+| 44 | Mapa de experiencia y LTV | Agentes + Allan | Herramientas / IA | ❌ | ❌ | ❌ | ✅ |
 | **MENTORÍA — solo línea Growth** |
-| 48 | Sesión 1:1 con especialista | Red de mentores | **Q370 · Q1,386** | ❌ | ❌ | 1/trim. | **1/mes** |
+| 45 | Sesión 1:1 con especialista | Red de mentores | Especialista | ❌ | ❌ | 1/trim. | **1/mes** |
 | **MEDICIÓN** |
-| 49 | Reporte mensual | Agentes | Claude | ✅ | ✅ | ✅ | ✅ |
-| 50 | Dashboard en vivo | Agentes | Claude | ❌ | ❌ | ✅ | ✅ |
+| 46 | Reporte mensual | Agentes | Herramientas / IA | ✅ | ✅ | ✅ | ✅ |
+| 47 | Dashboard en vivo | Agentes | Herramientas / IA | ❌ | ❌ | ✅ | ✅ |
 | **AUTONOMÍA** |
-| 51 | IA propia del cliente | **Build propio** (Vercel + Claude API) | Q1,500 | ❌ | ❌ | ❌ | ✅ |
-| 52 | Documentación y entrenamiento | Agentes + **Allan** | su tiempo | ❌ | ❌ | ❌ | ✅ |
+| 48 | IA propia del cliente | **Build propio** (Vercel + Claude API) | Herramientas / IA + Operador 🟡 | ❌ | ❌ | ❌ | ✅ |
+| 49 | Documentación y entrenamiento | Agentes + **Allan** | Allan *(utilidad)* | ❌ | ❌ | ❌ | ✅ |
 | **CLIENTE** |
-| 53 | Reunión mensual | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
-| 54 | Comunicación continua | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
-| 55 | QA final de entregables | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
-| 56 | Coordinar producción | **Allan** | su tiempo | ✅ | ✅ | ✅ | ✅ |
+| 50 | Reunión mensual | **Allan** | Allan *(utilidad)* | ✅ | ✅ | ✅ | ✅ |
+| 51 | Comunicación continua | **Allan** | Allan *(utilidad)* | ✅ | ✅ | ✅ | ✅ |
+| 52 | QA final de entregables | **Allan** | Allan *(utilidad)* | ✅ | ✅ | ✅ | ✅ |
+| 53 | Coordinar producción | **Allan** | Allan *(utilidad)* | ✅ | ✅ | ✅ | ✅ |
 
-🔴 **La fila 25 depende de `agents/08-community-management`, que no está construido.**
+🔴 **La fila 22 depende de `agents/08-community-management`, que no está construido.**
 
-> **De las 56 tareas, 38 las hacen agentes.** Lo humano que queda: **grabar** (producción),
-> **operar los agentes** (operador) y **dirigir y responder por la cuenta** (Allan).
+> **De las 53 tareas, 35 las hacen agentes.** Lo humano que queda: **grabar** (producción),
+> **editar, diseñar y operar los agentes** (Pablo) y **dirigir y responder por la cuenta** (Allan).
 >
 > 👉 **Esa es la ventaja de costo — y es la misma que permite ofrecerle al cliente cosas que una
 > agencia no puede.** No es solo que nos cuesta menos: es que ellos no pueden hacerlo a ningún precio.
 
 🔑 **El bloque de OFERTA, CONVERSIÓN, TECNOLOGÍA y OPERACIÓN es lo que separa las dos líneas.**
-Son 14 de las 56 tareas, **y son las que no se pueden hacer con volumen** — por eso el precio
+Son 14 de las 53 tareas, **y son las que no se pueden hacer con volumen** — por eso el precio
 de Growth no se justifica por pieza.
 
 ---
@@ -888,123 +769,85 @@ de Growth no se justifica por pieza.
 | **Alcance de la tecnología** | — | — | 0.5 h | 1.0 h |
 | | | | | |
 | **TOTAL** | **5 h** | **7 h** | **13 h** | **16 h** |
-| **COSTO @ Q150/h** | **Q750** | **Q1,050** | **Q1,950** | **Q2,400** |
 
 🔑 **La línea Marketing casi no consume a Allan — ejecuta.** Lo que sube de 7 h a 13 h es
-**decidir la oferta, el precio y los canales.** Eso es lo que Growth cobra, y no escala en costo.
+**decidir la oferta, el precio y los canales.** Eso es lo que Growth cobra.
+
+🔑 **Estas horas no son costo: Allan no es un rubro.** Son capacidad — dicen cuántas cuentas
+entran, no cuánto margen deja cada una.
 
 > 🔴 **Estas horas ASUMEN que el QA está automatizado.** A 86, 145 y 204 piezas al mes, 1-2 horas
 > de QA humano es imposible sin un agente que filtre primero.
 >
 > **El agente de QA no es una mejora: es un requisito del modelo.** Sin él, las horas reales
-> serían el doble y los márgenes caen ~15 puntos.
+> serían el doble y **Allan se vuelve el techo de cuántas cuentas entran.**
 
 ---
 
-## 3 · ¿Cuánto vale su hora?
-
-| Criterio | Tarifa | Qué significa |
-|---|---|---|
-| **Lo básico** | Q60/h | Cubrir gasolina y mensualidades. Infla el margen aparente |
-| **Reemplazo** | **Q150/h** | Lo que costaría contratar a alguien que haga su trabajo. **El número honesto y el canónico** |
-| **Igual que producción** | **Q250/h** | Su hora vale lo mismo que la de quien graba. **El número ambicioso** |
-
-### El margen con cada tarifa
-
-| Tarifa | 🔷 **Mkt** (5h) | 🔷 **Pro** (7h) | 🟨 **Accel** (13h) | 🟨 **Comp** (16h) |
-|---|---|---|---|---|
-| **Q60/h** | 70% | 70% | 75% | 76% |
-| **Q150/h** ✅ | **64%** | **64%** | **68%** | **72%** |
-| **Q250/h** | 57% | 58% | 62% | 67% |
-
-> **Modelo canónico: Q150/h con la escalera de producción y operación** — con 5 clientes y mix
-> realista. Es el que usa `06-ECONOMIA.md`.
-
-✅ **Con los precios nuevos, hasta Q250/h cierra arriba de 57% en los cuatro.**
-**El modelo ya no es frágil a la tarifa de Allan** — eso sí lo era con los precios viejos.
-
----
-
-## 4 · Lo que esto revela
+## 3 · Lo que esto revela
 
 🟢 **Bajamos el costo cambiando la mezcla, no recortando valor.**
-🔷 Marketing corre con 2h de producción y entrega **86 piezas**. Menos grabación (cara, humana),
-mucho más contenido generado (gratis). **El volumen subió 30% mientras el costo bajó.**
+🔷 Marketing corre con 3 h de producción y entrega **86 piezas**. Menos grabación (cara, humana),
+mucho más contenido sobre el mismo material.
 
-🔴 **El AI es solo el 4.5% del costo.** El 96% es humano. **La ventaja de AI ya está capturada**
-— bajar más el precio sale del bolsillo de Allan, no del ahorro de Claude.
+🔴 **Herramientas / IA es solo el 6-9% del costo.** Más del 90% es humano. **Lo barato de la IA
+ya está capturado** — bajar más el precio sale de bajarle el pago a la gente.
 
-🟡 **Accelerate a Q250/h queda en 37%. Es el escalón más ajustado.**
-No es un problema del precio: es que agrega **producción real** (+3h y una sesión), no solo
-capas que corren sobre agentes. **Se revisa cuando haya casos.**
+🟡 **Pro → Accelerate es el salto de menor margen (66%).** No es un problema del precio: ahí
+entran el especialista y las dos auditorías. **Igual suma Q5,340 de utilidad por cliente.**
 
-🟢 **Las horas de Allan no son el cuello de botella.**
-5 clientes Compound = 75 h/mes. Le sobra tiempo. **El cuello es el QA.**
+🟢 **Las horas de Allan no son el cuello de botella hoy.**
+5 clientes Compound = 80 h/mes sin agentes. **El cuello es el QA.**
 
-🟢 **Marketing es el arma comercial Y deja 65%.**
+🟢 **Marketing es el arma comercial Y deja 77%.**
 86 piezas a Q7,315 es una oferta que **ninguna agencia guatemalteca puede igualar.**
 **No es un plan de pérdida:** gana la cuenta Y deja margen. El upsell solo lo mejora.
 
 ---
 
-## 5 · Utilidad absoluta — lo que entra al bolsillo
+## 4 · Utilidad absoluta — lo que entra al bolsillo
 
 | | 🔷 **Marketing** | 🔷 **Pro** | 🟨 **Accelerate** | 🟨 **Compound** |
 |---|---|---|---|---|
 | Precio | Q7,315 | Q11,165 | Q19,250 | Q32,340 |
 | Piezas/mes | 86 | 145 | 145 | 204 |
-| Costo *(5 clientes)* | Q2,632 | Q3,990 | Q6,074 ⚠️ | Q9,205 ⚠️ |
-| **Utilidad** | **Q4,683** | **Q7,175** | **Q13,176** | **Q23,135** |
-| **Utilidad @Q250/h** | **Q4,250** | **Q7,105** | **Q11,876** | **Q21,535** |
+| Costo fijo | Q1,665 | Q2,555 | Q5,300 | Q8,200 |
+| **Utilidad** | **Q5,650** | **Q8,610** | **Q13,950** | **Q24,140** |
+| **Margen** | **77%** | **77%** | **72%** | **75%** |
 
-## 7 · 🧾 El desglose por tarea — la línea 🔷 Marketing
+## 5 · 🧾 El desglose por tarea — la línea 🔷 Marketing
 
-> **De acá sale el costo de operación de los planes 🔷.** Cada tarea tiene horas, complejidad
-> y responsable. **La tarifa la fija la complejidad, no la persona.**
-
-### La escalera de tarifa por complejidad
-
-| Complejidad | Qué significa | Q/hora |
-|---|---|---|
-| **1-2** | Coordinar lo que ya está definido | **Q65** |
-| **3-4** | Ejecutar siguiendo reglas escritas | **Q100** |
-| **5-6** | Operar con criterio dentro del sistema | **Q150** |
-| **7-8** | Decidir criterio nuevo | **Q200** |
-| **9-10** | Decisión que cambia el negocio | **Q250** |
-
-🔑 **Trabajo de menor complejidad cuesta menos la hora.** Por eso un plan caro no cuesta más
-solo por tener más horas: cuesta más porque **sus horas son de complejidad más alta.**
-
-⚠️ **Hoy ninguna tarea de la línea 🔷 Marketing pasa de complejidad 7**, y la 7 se paga a Q150
-para no romper el margen. **Pagarla a Q200 cuesta 3 puntos.**
+> **De acá salen las horas y los responsables de los planes 🔷 — no el costo.** El costo es fijo
+> por plan *(ver «El costo fijo de cada cuenta»)*. Esta tabla dice **quién hace qué y cuánto
+> tarda**, para verificar que cada monto fijo alcanza.
 
 ---
 
 ### 🔷 MARKETING — $950
 
-#### 🔵 Onboarding · una sola vez · 5 h · Q700
+#### 🔵 Onboarding · una sola vez · 5 h
 
-| Tarea | Quién | h | Compl. | Q/h | Costo |
-|---|---|---|---|---|---|
-| Comprensión | **Allan** | 1 | 4 | 100 | Q100 |
-| Estrategia | **Allan** | 1 | 6 | 150 | Q150 |
-| Branding brief *(Milanote — guidelines de presencia digital)* | **Allan** | 1.5 | 7 | 150 | Q225 |
-| Branding guidelines | **Pablo** | 1.5 | 7 | 150 | Q225 |
+| Tarea | Quién | h | Compl. |
+|---|---|---|---|
+| Comprensión | **Allan** | 1 | 4 |
+| Estrategia | **Allan** | 1 | 6 |
+| Branding brief *(Milanote — guidelines de presencia digital)* | **Allan** | 1.5 | 7 |
+| Branding guidelines | **Pablo** | 1.5 | 7 |
 
-🛑 **Esto NO se rehace cada mes.** Si se rehiciera, el margen cae de 64% a **53%** —
-once puntos. **La marca se construye una vez y se mantiene.** Ver `br-brief`.
+🛑 **Esto NO se rehace cada mes.** Si se rehiciera, **no cabe en el costo fijo del plan.**
+**La marca se construye una vez y se mantiene.** Ver `br-brief`.
 
-#### 🟢 Mensual · 11 h · Q1,355
+#### 🟢 Mensual · 11 h
 
-| Tarea | Quién | h | Compl. | Q/h | Costo |
-|---|---|---|---|---|---|
-| Marketing — el plan del ciclo | **Allan** | 1 | 4 | 100 | Q100 |
-| **Revisión de estrategia** *(no se rehace, se revisa)* | **Allan** | 0.5 | 6 | 150 | Q75 |
-| Creative | **Pablo** | 2 | 7 | 150 | Q300 |
-| Producción — planificar | **Operador** | 1 | 3 | 65 | Q65 |
-| Coordinar las cosas de producción | **Operador** | 1 | 2 | 65 | Q65 |
-| Graphic design | **Pablo** | 1.5 | 5 | 150 | Q150 |
-| Video editing *(2 h × 2 días)* | **Pablo** | 4 | 6 | 150 | Q600 |
+| Tarea | Quién | h | Compl. |
+|---|---|---|---|
+| Marketing — el plan del ciclo | **Allan** | 1 | 4 |
+| **Revisión de estrategia** *(no se rehace, se revisa)* | **Allan** | 0.5 | 6 |
+| Creative | **Pablo** | 2 | 7 |
+| Producción — planificar | **Operador** | 1 | 3 |
+| Coordinar las cosas de producción | **Operador** | 1 | 2 |
+| Graphic design | **Pablo** | 1.5 | 5 |
+| Video editing *(2 h × 2 días)* | **Pablo** | 4 | 6 |
 
 ---
 
@@ -1012,7 +855,7 @@ once puntos. **La marca se construye una vez y se mantiene.** Ver `br-brief`.
 
 **Las mismas tareas, más horas y más complejidad donde se promete más.**
 
-#### 🔵 Onboarding · 6.5 h · Q925
+#### 🔵 Onboarding · 6.5 h
 
 | Tarea | Quién | h | Compl. | vs Marketing |
 |---|---|---|---|---|
@@ -1021,7 +864,7 @@ once puntos. **La marca se construye una vez y se mantiene.** Ver `br-brief`.
 | Branding brief | **Allan** | 2 | 7 | +0.5 h |
 | Branding guidelines | **Pablo** | 2 | 7 | +0.5 h |
 
-#### 🟢 Mensual · 19.75 h · Q2,460
+#### 🟢 Mensual · 19.75 h
 
 | Tarea | Quién | h | Compl. | vs Marketing |
 |---|---|---|---|---|
@@ -1037,72 +880,50 @@ once puntos. **La marca se construye una vez y se mantiene.** Ver `br-brief`.
 
 ---
 
-## 8 · 🔑 Pablo es el cuello — y la palanca
+## 6 · 🔑 Pablo es el cuello de capacidad
 
 **Con 5 clientes, Pablo acumula ~61.5 h/mes** *(creative + diseño + video + community de los
 cuatro planes)*.
 
-**Eso cruza el escalón de 60 h de la escalera de horas** → pasa a **sueldo fijo** → su tarifa
-baja de 80% a 65% de la base.
+**Su pago es fijo por cuenta** *(Operador + su parte de Producción)*, así que sus horas **no
+mueven el margen.** Lo que mueven es **cuántas cuentas aguanta** antes de necesitar a otra persona.
 
-| | 🔷 Marketing | 🔷 Marketing Pro |
+🔴 **Sin herramienta para ⑥A Diseño y ⑦ Video Editing, todo el volumen pasa por sus manos.**
+Es el primer techo que se toca al crecer.
+
+---
+
+## 7 · ✅ El tiempo de cliente — resuelto
+
+**El desglose de arriba no incluye el tiempo de cliente** *(reunión, preparación y comunicación:
+2.5 h en Marketing, 3.5 h en Pro)*.
+
+🟢 **Con costos fijos, ya no mueve el margen:** es tiempo de Allan, y Allan no es un rubro.
+**Suma a sus horas** — es decir, a la capacidad — **no al costo.**
+
+---
+
+## 8 · ⚠️ Lo que todavía no tiene desglose
+
+**🟨 Accelerate y 🟨 Compound ya tienen costo fijo, pero todavía no tienen lista de tareas** con
+responsable y horas *(como la de la línea 🔷 de arriba)*.
+
+🔴 **Pendiente: el mismo desglose por tarea para los dos planes de la línea Growth.** No cambia
+el costo — **confirma que el monto fijo alcanza** para lo que promete cada plan.
+
+---
+
+## 9 · La hoja de ruta de automatización
+
+> **El margen ya es fijo: 77% · 77% · 72% · 75%.** Estos agentes no lo cambian —
+> **cambian cuántas cuentas entran con el mismo equipo.**
+
+| # | Agente a construir | Qué libera |
 |---|---|---|
-| **① Hoy (1-4 clientes)** | Q2,829 · **61%** 🟡 | Q4,328 · **61%** 🟡 |
-| **② Con 5 clientes — Pablo a sueldo** | **Q2,632 · 64%** ✅ | **Q3,990 · 64%** ✅ |
-
-> 🔑 **La escalera de horas ya resolvía este problema.** No hay que subir el precio:
-> **hay que llegar a 5 clientes.** Hasta entonces se opera a 61%, y es una decisión consciente.
-
-⚠️ **Los primeros clientes son los que dan los casos medidos.** Vale el margen más fino al inicio.
-
----
-
-## 9 · 🔴 El pendiente que puede mover todo
-
-**El desglose de arriba NO incluye el tiempo de cliente:**
-
-| Lo que falta | 🔷 Marketing | 🔷 Pro |
-|---|---|---|
-| Reunión mensual con el cliente | 1.0 h | 1.5 h |
-| Preparar la reunión | 0.5 h | 0.5 h |
-| Comunicación continua | 1.0 h | 1.5 h |
-| **TOTAL** | **2.5 h · Q375** | **3.5 h · Q525** |
-
-| Si ese tiempo es APARTE | Margen con 5 clientes |
-|---|---|
-| 🔷 Marketing | **54%** 🔴 |
-| 🔷 Marketing Pro | **55%** 🔴 |
-
-🔴 **Seis puntos.** **Pendiente de Allan: confirmar si el tiempo de cliente está adentro de
-las horas declaradas o es adicional.** Hasta que se confirme, el modelo corre con la lectura ②.
-
----
-
-## 10 · ⚠️ Lo que todavía no tiene desglose
-
-**🟨 Accelerate y 🟨 Compound NO tienen lista de tareas.** Sus costos siguen calculados con
-la estimación vieja *(Allan 13 h y 16 h · operador 7.75 h y 12 h)*.
-
-🔴 **Pendiente: el mismo desglose por tarea para los dos planes de la línea Growth.**
-Sin él, sus márgenes de 68% y 70% son estimación, no modelo.
-
----
-
-## 11 · La hoja de ruta de automatización
-
-> **Los márgenes del modelo canónico (hora con escalera, 5 clientes) son 61% / 66% / 68% / 70%** —
-> **y asumen que estos agentes existen.** Sin ellos, las horas se duplican y caen ~15 puntos.
-> Ver **este documento**.
-
-| # | Agente a construir | Qué mata | Ahorro por cliente |
-|---|---|---|---|
-| **1** | **Agente de QA** — revisa cada pieza contra brief, marca y paquete. Allan aprueba solo excepciones | 45% de las horas de Allan | Q750 – Q1,750 |
-| **2** | **Operación automatizada** — programar, publicar y reportar sin humano. El operador supervisa 5 cuentas en vez de operar 1 | 55% del costo de operador | Q350 – Q650 |
-| **3** | **Pipeline de herramientas** — plantillas y despliegue automatizado | 47% del build de tecnología | Q350 – Q700 |
-| 🟡 | **Contenido crudo del cliente** — graba con su teléfono, los agentes lo terminan | Horas de producción | Más video a Q0 |
-
-**Costo de automatizar:** Claude sube de ~Q200 a ~Q300 por cliente.
-👉 **Se ahorran Q9 de trabajo humano por cada Q1 de Claude extra.**
+| **1** | **Agente de QA** — revisa cada pieza contra brief, marca y paquete. Allan aprueba solo excepciones | Casi la mitad de las horas de Allan |
+| **2** | **Operación automatizada** — programar, publicar y reportar sin humano. El operador supervisa 5 cuentas en vez de operar 1 | Horas de Pablo |
+| **3** | **Pipeline de herramientas** — plantillas y despliegue automatizado | Que la tecnología de Growth quepa en su rubro |
+| 🟡 | **Contenido crudo del cliente** — graba con su teléfono, los agentes lo terminan | Más video sin pasarse del monto de Producción |
 
 ### Las horas de Allan
 
@@ -1112,7 +933,7 @@ Sin él, sus márgenes de 68% y 70% son estimación, no modelo.
 | Sin el agente de QA | ~5 h | ~7 h | ~13 h | ~16 h |
 
 **Lo que esto desbloquea no es el margen, es la capacidad:**
-**8 clientes Compound = Q175,320/mes con 72 horas de Allan** — menos de medio tiempo.
+**8 clientes Compound = Q193,120/mes con 72 horas de Allan** — menos de medio tiempo.
 
 ---
 
@@ -1120,7 +941,8 @@ Sin él, sus márgenes de 68% y 70% son estimación, no modelo.
 
 | Pendiente | Por qué importa |
 |---|---|
-| **Medir las horas de Allan** un mes real | Son estimación desde el desglose, no medición |
+| **Medir las horas de Allan y de Pablo** un mes real | Son capacidad: dicen cuántas cuentas entran |
 | **Correr un mes al volumen prometido** | 86 / 145 / 145 / 204 piezas es propuesta, no capacidad probada |
 | **Construir el agente de QA** | 🔴 **Requisito del modelo, no mejora.** Sin él las horas se duplican |
+| 🔴 **Herramienta para ⑥A Diseño y ⑦ Video Editing** | Hoy no tienen MCP: todo el volumen pasa por Pablo |
 | **Probar en cliente las capacidades `⬜`** | Ver `06-ECONOMIA.md` — muchas tools no se han corrido en producción |

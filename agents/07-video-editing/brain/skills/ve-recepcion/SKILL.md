@@ -48,7 +48,6 @@ le falta cobertura es trabajo tirado que se descubre a mitad del montaje.
 | Salida | Cuándo |
 |---|---|
 | **Banco de assets** | Si ya existe material de ciclos anteriores que sirve. **Se declara que es reuso** |
-| **Generar** | Higgsfield `generate_video`, si la escena lo permite y ②B lo autoriza |
 | **Reencuadre de otra pieza** | Si el plano existe en otra toma del mismo ciclo |
 
 🛑 **Si ninguna sirve, se devuelve.** Inventar una solución en el momento es cómo una pieza

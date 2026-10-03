@@ -95,7 +95,7 @@
 |---|---|
 | 🔷 **Marketing** | Define el territorio: de qué es dueña esta persona. Volumen alto para ganar superficie. Colaboraciones con pares |
 | 🟨 **Accelerate** | Lead magnet + lista propia. **Deja de alquilar la audiencia a Instagram.** Lanzamientos con campaña |
-| 🟨 **Compound** | Comunidad propia, membresía, contenido en segundo idioma. **IA entrenada con su voz** para escalar sin grabar más |
+| 🟨 **Compound** | Comunidad propia y membresía. **IA entrenada con su voz** para escalar sin grabar más |
 
 ---
 
@@ -160,9 +160,9 @@ más gente: necesita que la misma gente venga más veces.
 
 | | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | 🔥 **Acá el volumen es la ventaja decisiva.** **Fotos de producto generadas** — catálogo completo sin sesión de fotos. 40 estáticos al mes cubren una colección entera |
+| 🔷 **Marketing** | 🔥 **Acá el volumen es la ventaja decisiva.** **La sesión de foto del mes se planifica por colección** — 43 estáticos al mes cubren una colección entera |
 | 🟨 **Accelerate** | Catálogo en Meta y **Performance Max**. Recuperación de carrito. Influencers con código |
-| 🟨 **Compound** | Recompra, LTV, segundo idioma para exportar. Dashboard de rotación conectado a la pauta |
+| 🟨 **Compound** | Recompra y LTV. Dashboard de rotación conectado a la pauta |
 
 ---
 
@@ -192,7 +192,7 @@ más gente: necesita que la misma gente venga más veces.
 |---|---|
 | 🔷 **Marketing** | Traduce el producto a problema. Contenido que educa antes de vender. Alianzas con integradores y comunidades |
 | 🟨 **Accelerate** | **Lead magnets técnicos** — plantillas, benchmarks, demos. Google Search por intención de problema. Onboarding a prueba gratuita |
-| 🟨 **Compound** | Activación y retención dentro del producto. Contenido en segundo idioma. **IA propia entrenada con su documentación** |
+| 🟨 **Compound** | Activación y retención dentro del producto. **IA propia entrenada con su documentación** |
 
 ---
 
@@ -236,8 +236,8 @@ más gente: necesita que la misma gente venga más veces.
 | | Qué hace acá |
 |---|---|
 | 🔷 **Marketing** | Convierte el portafolio en contenido: proceso, antes y después, criterio. Alianzas con desarrolladoras y proveedores |
-| 🟨 **Accelerate** | Lead magnet de proyecto. **Renders y visualización generada.** Campañas segmentadas por zona y nivel socioeconómico |
-| 🟨 **Compound** | Portal de cliente para seguimiento de obra. Contenido en segundo idioma para proyectos internacionales |
+| 🟨 **Accelerate** | Lead magnet de proyecto. **Renders que entrega el cliente**, editados con marca. Campañas segmentadas por zona y nivel socioeconómico |
+| 🟨 **Compound** | Portal de cliente para seguimiento de obra |
 
 ---
 
@@ -324,21 +324,21 @@ Los agentes corren igual. El productor y el operador cobran en quetzales.
 
 ## Qué pasa con el mismo costo y otro precio
 
-*Costo por cuenta con 5 clientes: Marketing Q2,632 · Pro Q3,990 · Accelerate Q6,074 ⚠️ · Compound Q9,205 ⚠️*
+*Costo fijo por cuenta: Marketing Q1,665 · Pro Q2,555 · Accelerate Q5,300 · Compound Q8,200*
 
 | Mercado | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| **🇬🇹 Guatemala** *(hoy)* | $950 → **64%** | $1,450 → **64%** | $2,500 → **68%** | $4,200 → **72%** |
-| **🇲🇽 México** | $1,425 → **76%** | $2,175 → **76%** | $3,750 → **79%** | $6,300 → **81%** |
-| **🇺🇸 Miami** | $2,375 → **86%** | $3,625 → **86%** | $6,250 → **88%** | $10,500 → **89%** |
+| **🇬🇹 Guatemala** *(hoy)* | $950 → **77%** | $1,450 → **77%** | $2,500 → **72%** | $4,200 → **75%** |
+| **🇲🇽 México** | $1,425 → **85%** | $2,175 → **85%** | $3,750 → **82%** | $6,300 → **83%** |
+| **🇺🇸 Miami** | $2,375 → **91%** | $3,625 → **91%** | $6,250 → **89%** | $10,500 → **90%** |
 
 ### Utilidad mensual con 5 clientes *(2 Marketing · 1 Pro · 1 Accelerate · 1 Compound)*
 
 | Mercado | Al mes |
 |---|---|
-| 🇬🇹 Guatemala | Q52,852 · **$6,864** |
-| 🇲🇽 México | Q91,546 · **$11,889** |
-| 🇺🇸 Miami | Q168,931 · **$21,939** |
+| 🇬🇹 Guatemala | Q58,000 · **$7,532** |
+| 🇲🇽 México | Q96,694 · **$12,558** |
+| 🇺🇸 Miami | Q174,079 · **$22,608** |
 
 ⚠️ **Los precios de México y Miami son hipótesis, no benchmark verificado.**
 `[sin fuente — hay que investigar cada mercado antes de publicarlos]`
@@ -456,14 +456,21 @@ cumplirse.** Hay que buscarlos antes de venderlos.
 
 ## La política — qué se absorbe y qué no
 
-| Plan | Qué incluye | Techo por sesión | Costo real/mes | Efecto |
+| Plan | Qué incluye | Techo por sesión | **Monto fijo/mes** | Uso real |
 |---|---|---|---|---|
-| 🔷 **Marketing** | ⬜ **No lleva mentor** | — | Q0 | — |
-| 🔷 **Marketing Pro** | ⬜ **No lleva mentor** | — | Q0 | — |
-| 🟨 **Accelerate** | Comunidad + **1 sesión por trimestre** | **$144** | ~Q563 | **−3 pts** |
-| 🟨 **Compound** | Comunidad + **1 sesión al mes** | **$180** | ~Q1,579 | **−5 pts** |
+| 🔷 **Marketing** | ⬜ **No lleva mentor de industria** · especialista por área ocasional 🟡 | — | **Q100** | — |
+| 🔷 **Marketing Pro** | ⬜ **No lleva mentor de industria** · especialista por área ocasional 🟡 | — | **Q150** | — |
+| 🟨 **Accelerate** | Comunidad + **1 sesión por trimestre** | **$144** | **Q1,000** | ~Q563 |
+| 🟨 **Compound** | Comunidad + **1 sesión al mes** | **$180** | **Q2,000** | ~Q1,579 |
 
-*(Costo = membresía prorrateada Q193 + sesiones. Sesiones no usadas se acumulan dentro del trimestre.)*
+*(El monto fijo es el rubro Especialista del costo. La membresía prorrateada (Q193) y las sesiones
+salen de ahí. Sesiones no usadas se acumulan dentro del trimestre.)*
+
+✅ **Las dos sesiones caben en su monto con espacio.** Lo que sobra cubre un mentor un poco más
+caro o una segunda sesión puntual — **nunca uno arriba de $180.**
+
+🟡 **Por confirmar:** el especialista de Q100 / Q150 en la línea Marketing es **por área**
+*(nuestros: eventos, PR, talent)*, no mentor de industria.
 
 > 🔑 **El mentor es exclusivo de la línea Growth.** Es el diferenciador que la justifica, y
 > meterlo en la línea Marketing rompería el margen del plan barato sin agregar lo que vende:
@@ -471,18 +478,15 @@ cumplirse.** Hay que buscarlos antes de venderlos.
 
 ### El margen final, con mentoría adentro
 
-| Plan | Precio | Margen sin mentor | **Margen con mentor** |
+| Plan | Precio | Margen sin especialista | **Margen con especialista** |
 |---|---|---|---|
-| 🔷 **Marketing** | Q7,315 | 64% | **64%** ✅ |
-| 🔷 **Marketing Pro** | Q11,165 | 64% | **64%** ✅ |
-| 🟨 **Accelerate** | Q19,250 | 71% | **68%** ✅ |
-| 🟨 **Compound** | Q32,340 | 76% | **72%** ✅ |
+| 🔷 **Marketing** | Q7,315 | 79% | **77%** ✅ |
+| 🔷 **Marketing Pro** | Q11,165 | 78% | **77%** ✅ |
+| 🟨 **Accelerate** | Q19,250 | 78% | **72%** ✅ |
+| 🟨 **Compound** | Q32,340 | 81% | **75%** ✅ |
 
-> ✅ **Los cuatro quedan entre 64% y 72%.** El piso del modelo es **60%**: un plan que baje de ahí
-> con el mentor adentro está mal preciado. Ver `06-ECONOMIA.md`.
->
-> 🔑 **Con los precios nuevos el mentor pesa la mitad que antes** — el costo no cambió, el
-> precio sí.
+> ✅ **Los cuatro quedan entre 72% y 77%, fijos.** El piso del modelo es **60%**: un plan que
+> baje de ahí con el especialista adentro está mal preciado. Ver `06-ECONOMIA.md`.
 
 ---
 

@@ -257,7 +257,7 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 
 | Línea publicada | Con qué se entrega | |
 |---|---|---|
-| Tu marca construida en serio | ②B Branding + Higgsfield `generate_image_batch` | 👤⬜ |
+| Tu marca construida en serio | ②B Branding | 👤 |
 | Tu mensaje claro | ③ Marketing · `mk-mensaje` + ②B `br-voz` | 👤 |
 | Presencia todos los días | ④⑥A⑥B + ⑨ Posting + **Postpone** — **86 piezas** | 🟡 |
 | Campañas en Meta y TikTok | AdWhispr `launch_meta_ad` · `launch_tiktok_campaign` | ⬜ |
@@ -284,7 +284,7 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 | Que te encuentren en Google | AdWhispr `research_keywords` + contenido guiado por keywords | ⬜ |
 | Que tu equipo sepa cerrar | Guiones y entrenamiento — **Conversion OS** | 👤 |
 | Lo volvemos repetible | ① Strategy + Notion · **SOPs de crecimiento** | 👤✅ |
-| Una herramienta cada trimestre | ② `gr-herramienta` + Higgsfield `create_website` + Vercel | ⬜ |
+| Una herramienta cada trimestre | ② `gr-herramienta` + Claude *(código)* + Vercel | ⬜ |
 | Especialista cada trimestre | Red de mentores — techo **$144** | 👤 |
 
 ## 🟨 Compound — *todo lo de Accelerate, más:*
@@ -292,7 +292,7 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 | Línea publicada | Con qué se entrega | |
 |---|---|---|
 | 204 piezas | ⑤ Producción 8 h + ⑥A + ⑥B | 👤⬜ |
-| Una herramienta cada **mes** | Higgsfield + Vercel + Zapier *(9,000+ apps)* + Inherent OS | ⬜ |
+| Una herramienta cada **mes** | Claude *(código)* + Vercel + Zapier *(9,000+ apps)* + Inherent OS | ⬜ |
 | Estructura corporativa | Allan + especialista de **corporate structure** | 👤 |
 | SOPs de toda la empresa | ① Strategy + Notion · **Operations OS completo** | 👤✅ |
 | Tus números claros | ② `gr-numeros` · **Money OS** — Allan + Strategy | 👤 |

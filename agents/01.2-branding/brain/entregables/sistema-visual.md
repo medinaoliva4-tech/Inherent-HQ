@@ -45,7 +45,7 @@
 
 ## § Imagen
 
-**Ruta principal:** foto / ilustración / generada
+**Ruta principal:** foto / ilustración
 
 | | |
 |---|---|

@@ -60,7 +60,7 @@ description: >
 | **Jerarquía** | Qué se lee primero, segundo, tercero |
 | **Densidad** | Cuánto espacio vacío. **Es donde más se nota el territorio** |
 
-## 4 · Imagen — foto, ilustración o generada
+## 4 · Imagen — foto o ilustración
 
 **Se decide una ruta principal y se escribe qué la define.**
 
@@ -68,10 +68,10 @@ description: >
 |---|---|
 | **Foto** | Luz, encuadre, qué se ve y qué no, con o sin gente, pose o natural |
 | **Ilustración** | Estilo, grosor de línea, relleno, paleta propia |
-| **Generada** | El prompt base, el modelo, y **qué se corrige siempre a mano** |
 
 > ⚠️ **La ruta tiene que ser sostenible.** Si el cliente graba una vez al mes, el sistema no
-> puede depender de foto nueva cada semana — se diseña con banco y con generación.
+> puede depender de foto nueva cada semana — se diseña con banco y con lo que da la sesión del mes.
+> ⛔ **No se genera imagen con IA:** no hay herramienta.
 
 ## 5 · Movimiento — lo que ⑥B necesita
 

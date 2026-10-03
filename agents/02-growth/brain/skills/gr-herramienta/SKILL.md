@@ -3,7 +3,7 @@ name: gr-herramienta
 description: >
   Capa 5 de ② Growth — la herramienta a medida que el plan incluye: una por trimestre en
   Accelerate, una por mes en Compound. Elige qué construir por el cuello que destraba, no por lo
-  que sería lindo tener, y la construye con Higgsfield, Vercel, Zapier o Inherent OS. Una
+  que sería lindo tener, y la construye con Claude, Vercel, Zapier o Inherent OS. Una
   herramienta que nadie usa en dos semanas se declara muerta y se aprende de eso. Úsala cuando
   pidan "necesitamos un CRM", "un panel", "una landing que convierta", "automatizá esto", "qué
   herramienta hacemos este trimestre". Requiere Accelerate o Compound.
@@ -43,7 +43,7 @@ que nadie va a usar.
 
 | Qué | Con qué | |
 |---|---|---|
-| Sitio, landing o app | Higgsfield `create_website` + Vercel | ⬜ |
+| Sitio, landing o app | Claude *(código)* + Vercel | ⬜ |
 | Conectar con lo que ya usa | Zapier *(9,000+ apps)* | ⬜ |
 | Guardar registros | Inherent OS | ⬜ |
 | IA propia del cliente | **Build propio** — Vercel + Claude API *(🟨 solamente)* | ⬜ |

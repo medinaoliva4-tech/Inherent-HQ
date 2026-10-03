@@ -30,7 +30,7 @@ compra ni ciclo largo. **El eje es volumen y repetición.**
 | **Revisiones** | 2 por pieza |
 
 ⛔ **NO entra:** Money OS · SOPs de empresa · estructura corporativa · IA propia ·
-herramienta mensual · segundo idioma.
+herramienta mensual.
 
 ## El objetivo del trimestre
 
