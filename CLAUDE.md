@@ -70,6 +70,11 @@ acción a cada agente, y **qué entrega cada uno según el plan contratado.**
 **El plan contratado es el techo de todos, no una sugerencia:** entregar de más rompe el margen,
 entregar de menos rompe la promesa publicada.
 
+📅 **El ciclo de contenido corre del día 1 al 20 de cada mes, con fechas fijas:** día 1 reunión ·
+1-3 plan · 2-3 calendario y shot list · 3-6 brand guidelines · 4-5 coordinar · 6-10 producir ·
+🔴 **11 último día para producir** · 12-15 montar · 16-19 cambios y programación ·
+🔴 **20 presentación al cliente.** Ver `inherent/05-OPERACION.md` → «📅 El calendario del ciclo».
+
 ✅ **Once de doce construidos.** 🔴 **Falta `08-community-management`** — y sostiene dos líneas
 de las tarjetas: *«tus comentarios y mensajes»* en Marketing Pro y *«comunidad»* en Compound.
 

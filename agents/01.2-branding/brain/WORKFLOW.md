@@ -8,6 +8,18 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 📅 Tu ventana en el ciclo
+
+> Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
+
+| Días | Qué corre | Entrega |
+|---|---|---|
+| **3 – 6** | 🆕 Primer ciclo: **Brand Guidelines** *(capas 0-5)* · ↻ Siguientes: **no se rehacen** | Guía de marca **a más tardar el día 6** |
+| **16 – 19** | `br-guardian` — valida los cambios antes de programar | Piezas aprobadas **a más tardar el día 19** |
+| **20** | `br-loop` | Qué se refuerza en la marca |
+
+---
+
 ## 1 · La distinción que define el departamento
 
 **② Estrategia decidió qué tipo de marca es y contra qué se opone. ②B decide cómo se ve, cómo

@@ -8,6 +8,17 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 📅 Tu ventana en el ciclo
+
+> Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
+
+| Días | Qué corre | Entrega |
+|---|---|---|
+| **1 – 3** | El plan del ciclo — `mk-encargo` → `mk-pilares` / `mk-campana` | — |
+| **2 – 3** | **Montar el calendario** — `mk-calendario` | Calendario de slots a ④ **a más tardar el día 3** |
+
+---
+
 ## 1 · La distinción que define el departamento
 
 **② Estrategia decide el rumbo. ③ Marketing reparte ese rumbo en el tiempo y en los canales.**

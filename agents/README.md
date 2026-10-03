@@ -46,6 +46,10 @@ No espera al resto del pipeline.
 
 **La cadena de entrega completa está en `inherent/05-OPERACION.md`.**
 
+📅 **Cada ciclo de contenido corre del día 1 al 20 del mes, con fechas fijas.** 🔴 **Día 11:** último
+día para producir · 🔴 **Día 20:** presentación al cliente. Cada `WORKFLOW.md` abre con
+**«📅 Tu ventana en el ciclo»**. Calendario completo en `inherent/05-OPERACION.md`.
+
 ---
 
 ## 🔑 Cada agente sabe qué entrega según el plan

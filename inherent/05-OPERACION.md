@@ -36,13 +36,68 @@
 │                                                                       │
 │   ⚠️ QA no es una etapa: es el gate que corre ENTRE cada una           │
 │                                                                       │
-│   ↻ El 20 de cada mes: REVISIÓN — qué funcionó, qué cambia            │
+│   Días 1 → 20 · día 11 último para producir · día 20 cliente          │
 │                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
 **Regla dura:** ninguna etapa arranca sin el entregable de la anterior.
 **Si falta el input, se vuelve — no se improvisa.**
+
+---
+
+## 📅 El calendario del ciclo — las fechas fijas
+
+> **Cada ciclo de contenido corre del día 1 al día 20 del mes.** Las fechas son de calendario y
+> son las mismas cada mes. **Ningún agente corre fuera de su ventana.**
+> `[fuente: calendario de Allan, octubre 2026]`
+
+| Días | Qué pasa | Quién | Agente · skills |
+|---|---|---|---|
+| **1** | **Reunión con el cliente** | **Allan** | — |
+| **1 – 3** | Comprensión · Estrategia · Marketing · Creatividad · Producción *(el plan del ciclo)* | Agentes + Allan | ① · ③ · ④ · ⑤ `pr-brief` |
+| **2 – 3** | **Montar el calendario y el shot list** | Agentes + Allan | ③ `mk-calendario` · ④ `cr-arte-video` |
+| **3 – 6** | **Hacer las Brand Guidelines** | Allan + Pablo | ②B Branding |
+| **4 – 5** | **Coordinar el equipo de producción + modelos** | Operador | ⑤ `pr-jornadas` · `pr-recursos` |
+| **6 – 10** | **Días hábiles para producir** | Producción | ⑤ `pr-rodaje` |
+| **11** | 🔴 **ÚLTIMO DÍA PARA PRODUCIR** | Producción | ⑤ `pr-entrega` |
+| **12 – 15** | **Montar el contenido** | Pablo | ⑥A Diseño · ⑦ Video Editing |
+| **16 – 19** | **Cambios y programación** | Pablo + agentes | ②B `br-guardian` · ⑨ Posting |
+| **20** | 🔴 **PRESENTACIÓN AL CLIENTE** | **Allan** | — |
+
+```
+DÍA   1    2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18   19   20
+      ●  REUNIÓN CON EL CLIENTE
+      ├─────────┤  PLAN DEL CICLO
+           ├────┤  CALENDARIO + SHOT LIST
+                ├──────────────┤  BRAND GUIDELINES
+                     ├────┤  COORDINAR EQUIPO + MODELOS
+                               ├───────────────────┤  PRODUCIR
+                                                        ●  ÚLTIMO DÍA PARA PRODUCIR
+                                                             ├──────────────┤  MONTAR EL CONTENIDO
+                                                                                 ├──────────────┤  CAMBIOS Y PROGRAMACIÓN
+                                                                                                     ●  PRESENTACIÓN AL CLIENTE
+```
+
+### Las dos fechas que no se mueven
+
+| Fecha | Qué significa | Si no se cumple |
+|---|---|---|
+| 🔴 **Día 11 — último día para producir** | Después del 11 **no se graba nada del ciclo.** Lo que no se grabó, sale con el material que hay | Se monta con banco y derivados. **No se corre el montaje** |
+| 🔴 **Día 20 — presentación al cliente** | El ciclo llega completo, revisado y programado | Se presenta lo que pasó el gate. **No se presenta nada sin `br-guardian`** |
+
+### Primer ciclo vs. ciclos siguientes
+
+| Bloque | 🆕 Primer ciclo *(onboarding)* | ↻ Ciclos siguientes |
+|---|---|---|
+| Días 1-3 · Comprensión y Estrategia | Completas | **Se revisa, no se rehace** — entra lo aprendido el día 20 anterior |
+| Días 3-6 · Brand Guidelines | **Se construyen** | **No se rehacen.** Esos días quedan para coordinar y producir |
+| Días 6-20 | Igual | Igual |
+
+⚠️ **Por confirmar con Allan:**
+- **¿El contenido presentado el día 20 se publica desde el día 1 del mes siguiente?**
+- **¿Qué pasa cuando el día 11 o el 20 cae en fin de semana o feriado?** En octubre 2026 el 11
+  es domingo y **el 20 es el Día de la Revolución.**
 
 ---
 
@@ -610,10 +665,9 @@ experto en marketing a correr esos mismos agentes.**
 |---|---|---|
 | **Diario** | Conversion — responder, dar seguimiento, atender comentarios | Agentes + operador |
 | **Semanal** | Radar de competencia · revisión de pauta · cola de piezas | Operador + Dir. Growth |
-| **Del 1 al 18** | Producción y publicación del plan del mes | Agentes + producción |
-| **Día 20** | **Revisión mensual** — qué funcionó y qué cambia | Todos los directores |
-| **Día 22-25** | Planificación del mes siguiente | Dir. Growth + agentes |
-| **Día 25-30** | Grabación del mes siguiente | Producción |
+| **Días 1-20** | **El ciclo de contenido** — ver «📅 El calendario del ciclo» | Todos |
+| **Día 11** | 🔴 **Último día para producir** | Producción |
+| **Día 20** | 🔴 **Presentación al cliente** + revisión del mes — lo aprendido entra al día 1 siguiente | Allan + todos |
 | **Mensual** | Operations — un proceso documentado o automatizado | Dir. Operaciones |
 | **Mensual** | Money — números del mes | Allan + Strategy *(CFO si existe)* |
 | **Trimestral** | Replanteo de estrategia · revisión de precio · mentor de industria | Allan + todos |

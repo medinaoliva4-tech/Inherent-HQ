@@ -9,6 +9,22 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 📅 Tu ventana en el ciclo
+
+> Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
+
+| Días | Qué corre | Entrega |
+|---|---|---|
+| **1 – 3** | `pr-brief` — recibe el shot list de ④ | — |
+| **4 – 5** | **Coordinar equipo + modelos** — `pr-desglose` · `pr-jornadas` · `pr-recursos` · `pr-presupuesto` | Jornadas y recursos confirmados |
+| **6 – 10** | **Días hábiles para producir** — `pr-rodaje` | — |
+| **11** | 🔴 **ÚLTIMO DÍA PARA PRODUCIR** — `pr-entrega` | Material + manifiesto a ⑥A y ⑦ **el día 11** |
+
+🛑 **Después del 11 no se graba nada del ciclo.** Lo que no se grabó se devuelve a ④ y sale con
+banco o derivados.
+
+---
+
 ## 1 · La distinción que define el departamento
 
 Creatividad entrega una **intención**. Producción entrega **logística**.

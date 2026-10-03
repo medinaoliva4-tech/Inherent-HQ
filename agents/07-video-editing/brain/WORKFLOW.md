@@ -8,6 +8,17 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 📅 Tu ventana en el ciclo
+
+> Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
+
+| Días | Qué corre | Entrega |
+|---|---|---|
+| **12 – 15** | **Montar el contenido** — `ve-recepcion` → `ve-armado` → `ve-marca` → `ve-derivadas` | Cortes principales y derivadas |
+| **16 – 19** | **Cambios** — lo que devuelve `br-guardian` · `ve-export` | Paquete exportado **a más tardar el día 19** |
+
+---
+
 ## 1 · Acá está la eficiencia del modelo
 
 **⑤ Producción cuesta horas humanas. ⑥B multiplica ese material dentro del mismo costo fijo de Producción.**

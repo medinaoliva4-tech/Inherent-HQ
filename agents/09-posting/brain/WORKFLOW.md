@@ -9,6 +9,17 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 📅 Tu ventana en el ciclo
+
+> Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
+
+| Días | Qué corre | Entrega |
+|---|---|---|
+| **16 – 19** | **Programación** — `po-recepcion` → `po-specs` → `po-caption` → `po-programacion` → `po-carga` | Todo el ciclo programado **a más tardar el día 19** |
+| **20** | Se presenta al cliente lo programado | — |
+
+---
+
 ## 1 · La distinción que define el departamento
 
 **④ Creatividad escribe el mensaje. ⑦ Posting lo hace publicable.**

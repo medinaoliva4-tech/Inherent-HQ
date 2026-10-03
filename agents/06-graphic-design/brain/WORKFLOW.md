@@ -8,6 +8,17 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 📅 Tu ventana en el ciclo
+
+> Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
+
+| Días | Qué corre | Entrega |
+|---|---|---|
+| **12 – 15** | **Montar el contenido** — `gd-recepcion` → `gd-plantillas` → `gd-imagen` → `gd-composicion` | Piezas compuestas |
+| **16 – 19** | **Cambios** — lo que devuelve `br-guardian` · `gd-export` | Paquete exportado **a más tardar el día 19** |
+
+---
+
 ## 1 · El problema de este departamento es el volumen
 
 | | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |

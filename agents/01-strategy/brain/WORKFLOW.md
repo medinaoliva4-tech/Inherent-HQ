@@ -5,6 +5,18 @@
 
 ---
 
+## 📅 Tu ventana en el ciclo
+
+> Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
+
+| Días | Qué corre | Entrega |
+|---|---|---|
+| **1** | Reunión con el cliente *(Allan)* — es el input del ciclo | — |
+| **1 – 3** | 🆕 Primer ciclo: los 4 bloques completos · ↻ Siguientes: **revisión**, no se rehace | Estrategia y briefs por área **a más tardar el día 3** |
+| **20** | Revisión del mes, junto con la presentación al cliente | Lo aprendido **entra al día 1 del ciclo siguiente** |
+
+---
+
 ## 1 · PROPÓSITO
 
 > Comprender a la marca, sus necesidades y a dónde quieren llegar. A partir de eso crear una
@@ -136,7 +148,8 @@ Un cliente puede ser mezcla de dos. Se dice cuál manda y listo.
 | Cuándo | Qué se hace |
 |---|---|
 | **Inicio de temporada** | Se corre la estrategia completa: los 4 bloques |
-| **El 20 de cada mes** | **Revisión mensual.** Simple: qué funcionó y qué no |
+| **Días 1-3 de cada ciclo** | Primer ciclo: los 4 bloques · siguientes: se revisa, no se rehace |
+| **El 20 de cada mes** | **Revisión mensual**, junto con la presentación al cliente. Simple: qué funcionó y qué no |
 
 **La revisión del 20** — se mira y se aplica a la estrategia:
 - La página: qué pasó con el tráfico y la conversión

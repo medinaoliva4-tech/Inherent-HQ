@@ -8,6 +8,17 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 📅 Tu ventana en el ciclo
+
+> Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
+
+| Días | Qué corre | Entrega |
+|---|---|---|
+| **1 – 3** | Ideas del ciclo — capas 0-4 | — |
+| **2 – 3** | **Shot list** — `cr-arte-video` · cierra con `cr-adaptacion` | Plan de contenido con **GATE 3 a más tardar el día 3** — ⑤ coordina desde el 4 |
+
+---
+
 ## 1 · Qué entrega
 
 El Excel, más un doc de dirección y un doc por formato. Nada más.
@@ -469,6 +480,6 @@ párrafos largos. Lo accionable arriba. Sin relleno.
 | Cada | Qué pasa |
 |---|---|
 | **Semana** | Refresco del swipe file (Capa 1) |
-| **Semana / quincena** | Bloque de ideas del calendario (Capas 0-6) |
+| **Días 1-3 de cada ciclo** | Ideas, shot list y plan de contenido (Capas 0-6) — ver «📅 Tu ventana en el ciclo» |
 | **Mes** | Loop: qué funcionó a nivel pieza, no agregado (Capa 7) |
 | **3 meses** | Revisión de las skills con los patrones acumulados. Si un tipo de hook ganó consistentemente, sube al tope de su skill |
