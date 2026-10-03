@@ -31,7 +31,7 @@ delivery**, con un **incremento real en ventas**. ⚠️ No hay cifra publicada:
 | | |
 |---|---|
 | ⚠️ **Cuántos locales y cuáles** | Antigua y Ciudad de Guatemala aparecen; falta confirmar si son una sola operación |
-| ⚠️ **Handles de Instagram** | Falta el de Ciudad de Guatemala |
+| ⚠️ **Handle de Ciudad de Guatemala** | `@akaisushigt_` lo dio el cliente; falta confirmar que es el perfil oficial y que es el mismo negocio que `@akaisushiantigua` |
 | ⚠️ **Ticket promedio, % de delivery, ocupación** | → ① Comprensión |
 | ⚠️ **Qué compró exactamente** | Plan contratado y alcance |
 | 🔴 **Un solo negocio con dos precios (Tripadvisor `$$` vs Instagram `$$$$`)** | Dato de terceros, sin confirmar. No usarlo para posicionar |
