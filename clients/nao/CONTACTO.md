@@ -9,15 +9,15 @@
 | **Nombre comercial** | NAO — Sushi & Japanese Cuisine |
 | **Tipo** | Restaurante |
 | **Responsable** | Sra. Karina de Medina |
-| **WhatsApp del responsable** | ⚠️ SIN DATOS — falta el número, con código de país |
+| **WhatsApp del responsable** | **+502 4217 0030** `[dice el cliente, sin verificar]` — llegó como 42170030; se asume +502 por ser de 8 dígitos de Guatemala, **confirmar** · formato máquina: `50242170030` |
 | **Otros números autorizados** | ⚠️ SIN DATOS |
-| **Plan contratado** | ⚠️ SIN DATOS — se anota primero |
-| **División** | ⚠️ SIN DATOS — la fija ② Strategy |
+| **Plan contratado** | 🟫 **TAILOR MADE** — acordado **por restaurante** `[dice el cliente, sin verificar]` · alcance ⚠️ SIN DATOS, ver `data/00-encargo.md` |
+| **División** | ⚠️ SIN DATOS — la fija ② Strategy. **Propuesta, sin confirmar: 🔵 low ticket** (la compra se decide por volumen y repetición) |
 | **Alta** | ⚠️ SIN DATOS |
 
-## 🔗 Comparte responsable con Akai
+## 🔗 Comparte responsable y número con Akai
 
-Ver `clients/akai/CONTACTO.md`. **Dos clientes, dos folders.** Si el mensaje es ambiguo, el agente pregunta
+Ver `clients/akai/CONTACTO.md`. **Un solo número de WhatsApp para los dos** (`clients/akai/` tiene el mismo). **Dos clientes, dos folders.** Si el mensaje es ambiguo, el agente pregunta
 **«¿Es por Akai o por NAO?»**. 🔴 **Nunca mezcla datos de uno en el otro.**
 
 ## Reglas de este folder

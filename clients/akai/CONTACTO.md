@@ -5,17 +5,17 @@
 
 | | |
 |---|---|
-| **Cliente nº** | 02 |
+| **Cliente nº** | 02 *(el mismo número de cliente que NAO: una sola responsable, dos restaurantes)* |
 | **Nombre comercial** | Akai Sushi & Oriental Food |
 | **Tipo** | Restaurante |
 | **Responsable** | Sra. Karina de Medina |
-| **WhatsApp del responsable** | ⚠️ SIN DATOS — falta el número, con código de país |
+| **WhatsApp del responsable** | **+502 4217 0030** `[dice el cliente, sin verificar]` — llegó como 42170030; se asume +502 por ser de 8 dígitos de Guatemala, **confirmar** · formato máquina: `50242170030` |
 | **Otros números autorizados** | ⚠️ SIN DATOS |
-| **Plan contratado** | ⚠️ SIN DATOS — se anota primero |
-| **División** | ⚠️ SIN DATOS — la fija ② Strategy. Todo apunta a 🔵 low ticket, pero no se asume |
+| **Plan contratado** | 🟫 **TAILOR MADE** — acordado **por restaurante** `[dice el cliente, sin verificar]` · alcance ⚠️ SIN DATOS, ver `data/00-encargo.md` |
+| **División** | ⚠️ SIN DATOS — la fija ② Strategy. **Propuesta, sin confirmar: 🔵 low ticket** (la compra se decide por volumen y repetición) |
 | **Alta** | ⚠️ SIN DATOS |
 
-## 🔗 Comparte responsable con NAO
+## 🔗 Comparte responsable y número con NAO
 
 La Sra. de Medina responde por **Akai y por NAO** (`clients/nao/`). Son **dos clientes, dos folders**.
 

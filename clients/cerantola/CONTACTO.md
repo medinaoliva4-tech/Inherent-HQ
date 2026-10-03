@@ -11,8 +11,8 @@
 | **Responsable** | Sr. Allan Omar Medina |
 | **WhatsApp del responsable** | ⚠️ SIN DATOS — falta el número, con código de país |
 | **Otros números autorizados** | ⚠️ SIN DATOS |
-| **Plan contratado** | ⚠️ SIN DATOS — se anota primero: define el techo de lo que se puede prometer |
-| **División** | ⚠️ SIN DATOS — la fija ② Strategy en su Capa 0 |
+| **Plan contratado** | ⚠️ Por decidir — **no se promete nada hasta que se defina** |
+| **División** | ⚠️ SIN DATOS — la fija ② Strategy. **Propuesta, sin confirmar: 🟣 high ticket** (B2B de contratos grandes y ciclo largo) |
 | **Alta** | ⚠️ SIN DATOS |
 
 ## ⚠️ Cuidado con el nombre
