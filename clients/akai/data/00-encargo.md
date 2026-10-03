@@ -1,3 +1,4 @@
+<!-- bot:oculto -->
 # Akai — el encargo
 
 > 🔒 **Interno.** El bot **no** repite nada de este archivo hacia afuera. Precios y alcance los cierra Allan.
