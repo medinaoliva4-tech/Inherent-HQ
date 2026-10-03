@@ -9,7 +9,7 @@
 | **Nombre comercial** | NAO — Sushi & Japanese Cuisine |
 | **Tipo** | Restaurante |
 | **Responsable** | Sra. Karina de Medina |
-| **WhatsApp del responsable** | **+502 4217 0030** `[dice el cliente, sin verificar]` — llegó como 42170030; se asume +502 por ser de 8 dígitos de Guatemala, **confirmar** · formato máquina: `50242170030` |
+| **WhatsApp del responsable** | **+502 4217 0030** `[dice el cliente, sin verificar]` — código de país **+502 confirmado por el cliente** · formato máquina: `50242170030` |
 | **Otros números autorizados** | ⚠️ SIN DATOS |
 | **Plan contratado** | 🟫 **TAILOR MADE** — acordado **por restaurante** `[dice el cliente, sin verificar]` · alcance ⚠️ SIN DATOS, ver `data/00-encargo.md` |
 | **División** | ⚠️ SIN DATOS — la fija ② Strategy. **Propuesta, sin confirmar: 🔵 low ticket** (la compra se decide por volumen y repetición) |

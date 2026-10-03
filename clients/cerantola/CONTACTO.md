@@ -9,7 +9,7 @@
 | **Nombre comercial** | Cerantola |
 | **Tipo** | Empresa |
 | **Responsable** | Sr. Allan Omar Medina |
-| **WhatsApp del responsable** | ⚠️ SIN DATOS — falta el número, con código de país |
+| **WhatsApp del responsable** | **+502 4217 5038** `[dice el cliente, sin verificar]` · formato máquina: `50242175038` |
 | **Otros números autorizados** | ⚠️ SIN DATOS |
 | **Plan contratado** | ⚠️ Por decidir — **no se promete nada hasta que se defina** |
 | **División** | ⚠️ SIN DATOS — la fija ② Strategy. **Propuesta, sin confirmar: 🟣 high ticket** (B2B de contratos grandes y ciclo largo) |
