@@ -15,7 +15,7 @@ paso vive en las skills: `skills/README.md`.
 
 | Días | Qué corre | Entrega |
 |---|---|---|
-| **16 – 19** | **Programación** — `po-recepcion` → `po-specs` → `po-caption` → `po-programacion` → `po-carga` | Todo el ciclo programado **a más tardar el día 19** |
+| **16 – 19** | **Programación** — `po-recepcion` → `po-specs` → `po-caption` → `po-programacion` → `po-carga` | Todo el ciclo programado **a más tardar el día 19**, para publicar **desde el día 1 del mes siguiente** |
 | **20** | Se presenta al cliente lo programado | — |
 
 ---

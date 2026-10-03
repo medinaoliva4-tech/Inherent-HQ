@@ -94,10 +94,25 @@ DÍA   1    2    3    4    5    6    7    8    9    10   11   12   13   14   15 
 | Días 3-6 · Brand Guidelines | **Se construyen** | **No se rehacen.** Esos días quedan para coordinar y producir |
 | Días 6-20 | Igual | Igual |
 
-⚠️ **Por confirmar con Allan:**
-- **¿El contenido presentado el día 20 se publica desde el día 1 del mes siguiente?**
-- **¿Qué pasa cuando el día 11 o el 20 cae en fin de semana o feriado?** En octubre 2026 el 11
-  es domingo y **el 20 es el Día de la Revolución.**
+### Las dos reglas del calendario
+
+| Regla | Qué dice |
+|---|---|
+| **1 · Cuándo se publica** | **Lo que se presenta el día 20 se publica desde el día 1 del mes siguiente.** El ciclo de octubre es el contenido de noviembre |
+| **2 · Fin de semana o feriado** | **Si una fecha cae en fin de semana o feriado, se mueve al día hábil más cercano.** Si hay empate entre el anterior y el siguiente, gana el **anterior** 🟡 |
+
+🟡 **El empate se resuelve hacia atrás** porque las dos fechas rojas son límites: llegar antes
+nunca rompe una promesa, llegar después sí. *(Regla de desempate propuesta, por confirmar con Allan.)*
+
+**Octubre 2026, aplicado** *(feriados según el calendario de Allan)*:
+
+| Fecha | Cae en | Opciones más cercanas | Queda |
+|---|---|---|---|
+| 🔴 **11 · último día para producir** | Domingo | Sáb 10 ❌ fin de semana · Lun 12 ❌ Día de la Raza → **Vie 9** o **Mar 13** | **Viernes 9** |
+| 🔴 **20 · presentación al cliente** | Martes · Día de la Revolución | **Lun 19** o **Mié 21** | **Lunes 19** |
+
+⚠️ **Cuando una fecha roja se adelanta, el bloque que la precede se acorta** *(producir queda
+6-9; cambios y programación 16-18)*. **No se mueve el resto del ciclo.**
 
 ---
 

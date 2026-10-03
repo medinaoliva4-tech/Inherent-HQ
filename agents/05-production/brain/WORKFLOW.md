@@ -20,6 +20,8 @@ paso vive en las skills: `skills/README.md`.
 | **6 – 10** | **Días hábiles para producir** — `pr-rodaje` | — |
 | **11** | 🔴 **ÚLTIMO DÍA PARA PRODUCIR** — `pr-entrega` | Material + manifiesto a ⑥A y ⑦ **el día 11** |
 
+📆 **Si el 11 cae en fin de semana o feriado, se mueve al día hábil más cercano** *(empate → el anterior)*.
+
 🛑 **Después del 11 no se graba nada del ciclo.** Lo que no se grabó se devuelve a ④ y sale con
 banco o derivados.
 
