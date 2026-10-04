@@ -78,7 +78,7 @@ existe para Creative — agregarlo es pisar a ③ Marketing.
 ## 3 · Llenar `plan-de-contenido.csv` — las 12 columnas
 
 ```
-id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · rodaje · estado
+id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · material · estado
 ```
 
 | Columna | Qué lleva | De dónde sale |
@@ -93,7 +93,7 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | `concepto` | **Una línea.** Qué es la pieza | Creative |
 | `mezcla` | `70·probado` / `20·apuesta` / `10·propio` | Creative |
 | `traza` | La letra de la MUST BE TRUE que mueve | ② Estrategia |
-| `rodaje` | `si` / `no` — decide si va a ⑤ Producción o directo a ⑥A Diseño | Creative |
+| `material` | `ninguno` / `video` / `foto` — **qué material nuevo necesita de ⑤ Producción** | Creative |
 | `estado` | `listo` / `pendiente` / `⏸️ aprobación` | Creative |
 
 🛑 **Lo heredado se copia, no se reescribe.** Si un `canal` o una `funcion` te incomodan, se devuelve
@@ -192,7 +192,10 @@ Se cuenta la columna `mezcla` **sobre el total del ciclo**, no por campaña.
 🚦 **GATE 3 — Aprobación del ciclo.** El lead revisa el CSV y el doc antes del handoff. **Nada se
 libera a producción sin esta revisión.**
 
-- Las filas con `rodaje = si` van a **⑤ Producción**; las de `rodaje = no`, directo a **⑥A Diseño**.
+- **`material` dice qué le hace falta a ⑤; el `formato` dice quién arma la pieza.** `video` y `foto`
+  van a **⑤ Producción**; `ninguno` no pasa por ahí. Después, los estáticos, carruseles y stories los
+  arma **⑥A Diseño** y los videos **⑦ Video Editing**.
+- 🛑 **Un estático con `material = foto` espera su foto antes de componerse.**
 - Una fila `pendiente` **no se libera**. O se completa, o sale del bloque y se declara.
 - **El CSV y el doc son la interfaz.** Si ⑤, ⑥A o ⑦ tienen que preguntar algo, el brief estaba
   incompleto — y eso se corrige en el brief, no por chat.
@@ -224,7 +227,8 @@ Ninguna capa se entrega sin pasar su bloque completo.
 - [ ] 🛑 **Toda fila tiene `traza`** — las que no, **eliminadas**
 - [ ] 🛑 **Toda fila tiene hipótesis escrita**, con qué la confirmaría
 - [ ] La **aprobación de claim** está marcada en toda pieza con dato, precio o promesa, con quién valida
-- [ ] `rodaje` declarado en toda fila: `si` → ⑤ Producción · `no` → ⑥A Diseño
+- [ ] `material` declarado en toda fila (`ninguno` / `video` / `foto`), y el ruteo por `formato` cuadra: estáticos → ⑥A · videos → ⑦
+- [ ] 🛑 Toda fila con `material = foto` tiene su **§ Foto** en el `ideas-<formato>.md`
 - [ ] Las filas `pendiente` están listadas y **no se liberan a producción**
 - [ ] Verificación de trazabilidad: toda fila recorre `Fila → Slot → Campaña → Objetivo → MUST BE TRUE`
 - [ ] **Ninguna fila cambia la promesa** de ② Estrategia ni el pilar o su peso de ③ Marketing

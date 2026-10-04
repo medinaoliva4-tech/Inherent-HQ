@@ -21,7 +21,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · **④ Creatividad**: `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `rodaje = si`, + el `ideas-<formato>.md` de cada pieza · **②B Branding**: guidelines, dirección visual y **banco de assets** · **③ Marketing**: fechas de campaña y **de preparación** · **① Comprensión**: capacidad declarada, presupuesto disponible y restricciones |
+| **Consume** | El pedido del usuario · **④ Creatividad**: `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `material = video` o `material = foto`, + el `ideas-<formato>.md` de cada pieza (de las de foto, su **§ Foto**) · **②B Branding**: guidelines, dirección visual y **banco de assets** · **③ Marketing**: fechas de campaña y **de preparación** · **① Comprensión**: capacidad declarada, presupuesto disponible y restricciones |
 | **Produce** | El **PRE-FLIGHT**, el **plan de capas**, el registro de los **3 gates humanos**, las **devoluciones a ④** y el bloque **HANDOFF**. 🛑 **Ningún entregable por su cuenta:** no desglosa, no agrupa, no costea, no entrega. **Deriva** |
 
 El departamento completo: `agents/05-production/brain/WORKFLOW.md`. Qué hace cada skill y cómo se encadenan:
@@ -37,7 +37,7 @@ archivo exacto**. 🛑 **Nunca se duplica un archivo de otro departamento: se ci
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Campañas: [nombres]
-④ Creatividad: Excel aprobado (Gate 3) [✅/⬜] · filas con rodaje=si: [n] · escenas totales: [n]
+④ Creatividad: Excel aprobado (Gate 3) [✅/⬜] · material=video: [n] · material=foto: [n] · escenas totales: [n]
 ②B Branding [✅/⬜] · ③ Marketing fechas de preparación [✅/⬜] · ① capacidad y presupuesto [✅/⬜]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · horas: [n] · sesiones: [n] · videos planificados: [n]
 Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
@@ -215,7 +215,9 @@ caduca. **Convenciones:** 🟢 confirmado · 🟡 gestionando · 🔴 en riesgo 
 
 - [ ] El **PRE-FLIGHT** está emitido con **PASS o BLOQUEADO**, y cada skill corrió **con el output de la anterior**, sin faltantes improvisados
 - [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
-- [ ] 🛑 El Excel de ④ tiene **Gate 3 aprobado**, y solo se tomaron las filas con **`rodaje = si`**
+- [ ] 🛑 El Excel de ④ tiene **Gate 3 aprobado**, y solo se tomaron las filas con **`material = video`** o **`material = foto`**
+- [ ] 🛑 **Toda fila con `material = foto` tiene su foto planificada** en `plan-de-fotos.csv` — y si no entró en la hora, su plan B está decidido y escrito *(frame del rodaje, o a ③ como alcance)*
+- [ ] El **pedido al cliente** está redactado en `presupuesto.md` con fecha y responsable — 🛑 **y lo envía una persona, no el agente**
 - [ ] Existen **los dos entregables** —`presupuesto.md` y `plan-de-rodaje.md`— más los internos `plan-de-produccion.csv` (16 columnas) y `presupuesto.csv` (6 columnas) completos, y 🛑 **toda fila traza a un `id_creativo`**, y de ahí a un slot de ③ y a una MUST BE TRUE
 - [ ] `presupuesto.md` está en **lenguaje natural**, con *qué necesitamos del cliente* y *qué NO incluye*, y sus números **cuadran con el CSV interno**
 - [ ] `plan-de-rodaje.md` **compiló** lo de ④ con el filtro aplicado, citando la fuente — 🛑 **nada de ④ fue reescrito ni editado acá**

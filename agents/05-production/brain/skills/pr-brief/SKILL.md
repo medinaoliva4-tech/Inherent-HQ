@@ -3,7 +3,7 @@ name: pr-brief
 description: >
   Capa 0 de ⑤ Producción — verifica qué se aprobó producir antes de gastar un minuto en desglosar.
   Carga los 4 inputs bloqueantes, exige el Gate 3 de ④ Creatividad, filtra las filas con
-  `rodaje = si`, verifica fila por fila que la pieza sea producible, cruza contra el banco de assets
+  `material = video` o `material = foto`, verifica fila por fila que la pieza sea producible, cruza contra el banco de assets
   para no volver a grabar lo que ya existe y declara el techo de realidad: presupuesto disponible,
   días de rodaje posibles y capacidad declarada. Escribe la sección § Verificación y devoluciones de `plan-de-rodaje.md`.
   Úsala cuando pidan "arrancá el plan de producción de X", "qué vamos a producir este ciclo",
@@ -28,7 +28,7 @@ decisión de producción. Es la verificación de que lo que llegó **se puede pr
 
 | De | Qué se carga | Si falta |
 |---|---|---|
-| **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `rodaje = si`. Del `ideas-<formato>.md` de cada pieza: escenas, encuadres, duraciones, tipo de lugar, estética/mood, concepto, emoción | 🛑 **BLOQUEADO** |
+| **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `material = video` o `material = foto`. Del `ideas-<formato>.md` de cada pieza: escenas, encuadres, duraciones, tipo de lugar, estética/mood, concepto, emoción — y de las de foto, la **§ Foto** | 🛑 **BLOQUEADO** |
 | **②B Branding** | Guidelines, dirección visual, paleta, do's & don'ts y el **banco de assets existente** | 🛑 **BLOQUEADO** |
 | **③ Marketing** | Fechas de la campaña y **fechas de preparación** — cuánto margen real hay | 🛑 **BLOQUEADO** |
 | **① Comprensión** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 **BLOQUEADO** |
@@ -43,14 +43,14 @@ es gastar dos veces la misma plata.
 🛑 **Ningún archivo de otro departamento se copia: se cita su ruta.** Duplicarlo crea una segunda
 versión de la verdad, y en dos ciclos no coinciden.
 
-**Después de cargar:** se filtran **solo** las filas con `rodaje = si` y se **agrupan por `campana`**.
-Las de `rodaje = no` no pasan por Producción. El Excel se lee y se aprueba por campaña.
+**Después de cargar:** se filtran **solo** las filas con `material = video` o `material = foto` y se
+**agrupan por `campana`**. Las de `material = ninguno` no pasan por Producción. El Excel se lee y se aprueba por campaña.
 
 ## 2 · El pre-flight, antes de tocar nada
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: 0 · Campañas: [nombres]
-④ Creatividad: Excel aprobado (Gate 3) [✅/⬜] · filas con rodaje=si: [n] · escenas totales: [n]
+④ Creatividad: Excel aprobado (Gate 3) [✅/⬜] · material=video: [n] · material=foto: [n] · escenas totales: [n]
 ②B Branding [✅/⬜] · ③ Marketing fechas de preparación [✅/⬜] · ① capacidad y presupuesto [✅/⬜]
 Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
 → PASS | BLOQUEADO: [qué falta exactamente]
@@ -58,7 +58,8 @@ Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
 
 ## 3 · Verificación de producibilidad — fila por fila
 
-Se verifica **cada pieza con `rodaje = si`**, sin muestreo. Una fila que no se verificó es una fila
+Se verifica **cada pieza con `material = video` o `material = foto`**, sin muestreo. **Las de foto se
+verifican contra su § Foto, no contra Escenas.** Una fila que no se verificó es una fila
 que se va a caer en la Capa 1.
 
 | Chequeo | Qué se mira | Si falla → qué se devuelve |
@@ -149,7 +150,7 @@ Una sola sección, § Verificación y devoluciones, con estos bloques:
 
 | Bloque | Qué lleva |
 |---|---|
-| **Piezas recibidas** | `[n]` con `rodaje = si` · escenas totales `[n]` · agrupadas por `campana` · con la **ruta** del Excel creativo |
+| **Piezas recibidas** | `[n]` con `material = video` · `[n]` con `material = foto` · escenas totales `[n]` · agrupadas por `campana` · con la **ruta** del Excel creativo |
 | **Techo de realidad** | Los tres números + el veredicto *¿entra?* ✅ / ⚠️ con el exceso en filas concretas |
 | **Verificación de producibilidad** | La tabla fila por fila, con veredicto por pieza |
 | **Material que ya existe** | La tabla de reutilización, con escenas ahorradas contadas |
@@ -164,7 +165,8 @@ No escribe filas de `plan-de-produccion.csv` ni toca `presupuesto.csv`: eso es C
 - [ ] Las fechas de campaña y **de preparación** de ③ Marketing están cargadas — si no, **BLOQUEADO**
 - [ ] El presupuesto disponible y la capacidad declarada de ① Comprensión están **cuantificados**
 - [ ] Cada input está **citado con su ruta**, ninguno copiado
-- [ ] Solo se filtraron las filas con **`rodaje = si`**
+- [ ] Solo se filtraron las filas con **`material = video`** o **`material = foto`**
+- [ ] 🛑 Toda fila con **`material = foto`** tiene su **§ Foto** completa, o está **↩️ DEVUELTA**
 - [ ] Las filas están **agrupadas por `campana`**
 - [ ] **Producibilidad verificada fila por fila:** escenas, encuadres y duraciones tienen el mismo número de ítems y el mismo orden
 - [ ] Cada escena declara **qué acción ocurre y en qué tipo de lugar**

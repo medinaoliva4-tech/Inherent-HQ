@@ -171,8 +171,8 @@ Tabla completa en `WORKFLOW.md §8`.
 - Gates: brief [✅/⬜] · conceptos [✅/⬜] · ciclo [✅/⬜]
 - Filas totales: [n] · por campaña: [desglose]
 - Reparto 70/20/10: [n / n / n] → [✅ cumple / ⚠️ desviado + por qué]
-- Filas con rodaje = sí: [n] → ⑤ Producción
-- Filas con rodaje = no: [n] → ⑥A Diseño gráfico
+- Filas por `material`: ninguno [n] · video [n] · foto [n] → ⑤ Producción recibe [n]
+- Reparto por destino: ⑥A Diseño [n] *(estáticos)* · ⑦ Video Editing [n]
 - BIG IDEAS del bloque: [1 frase cada una]
 - MUST BE TRUE que se mueven: [letras]
 - Claims pendientes: [⏸️ lista + quién los valida]
@@ -211,7 +211,8 @@ mezcla** con 🟢/🟡/⚪) · ⚠️ SIN DATOS · ⏸️ PENDIENTE APROBACIÓN 
 - [ ] **Ninguna fila cambia la promesa** de ② Estrategia ni **el pilar o su peso** de ③ Marketing
 - [ ] **Toda BIG IDEA cuelga de la idea de campaña**, y toda fila de una BIG IDEA
 - [ ] Hook, guion y copy están **literales, entre comillas**, en todas las piezas
-- [ ] `rodaje` declarado por fila, el reparto ⑤ / ⑥A cuadra, y el total **cabe en la capacidad real** de ①
+- [ ] `material` declarado por fila (`ninguno` / `video` / `foto`), el reparto ⑥A / ⑦ cuadra por `formato`, y el total **cabe en la capacidad real** de ①
+- [ ] 🛑 Toda pieza con **`material = foto`** tiene su **§ Foto** completa, con el espacio libre para el texto y las piezas que comparten la foto
 - [ ] **Ningún entregable pisa** a ①②③, ②B Branding, ⑤, ⑥A, ⑦ u ⑧B — se verifica contra la tabla «Qué NO hace» de `WORKFLOW.md §3` — y **ningún campo ajeno reescrito**: todos citados con su ruta
 - [ ] Claims, precios y promesas sin validar están `⏸️ PENDIENTE APROBACIÓN` **con quién valida**, y las filas `pendiente` **no se liberan**
 - [ ] Todo faltante marcado `BLOQUEADO` o `⚠️ SIN DATOS`, con **qué lo desbloquea y a quién pedírselo** — ninguno omitido en silencio

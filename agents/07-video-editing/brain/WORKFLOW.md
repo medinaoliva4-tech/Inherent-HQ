@@ -168,7 +168,7 @@ paso vive en las skills: `skills/README.md`.
 
 ## 9 · Antes de entregar
 
-- [ ] Toda pieza con `rodaje = si` del Excel de ④ tiene su archivo, o su devolución escrita
+- [ ] Toda pieza con `material = video` del Excel de ④ tiene su archivo, o su devolución escrita
 - [ ] Cada archivo lleva su **`id_creativo`** en el nombre
 - [ ] El **hook está montado literal**, como lo escribió ④
 - [ ] Toda pieza lleva **activo distintivo en el primer frame**
