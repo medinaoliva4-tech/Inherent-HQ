@@ -1,0 +1,6 @@
+id_foto,ids_creativos,sujeto,encuadre,fondo_props,espacio_texto,formato,setup,orden,pedido_cliente,estado
+FT-001,CR-003;CR-011,"Menu Ejecutivo de res, plato montado",Cenital,"Mesa de madera clara; servilleta de lino; sin cubiertos","Tercio superior libre",4:5,Mesa cenital luz natural,1,"1 plato del Menu Ejecutivo de res, montado como se sirve",planificada
+FT-002,CR-003,"Menu Ejecutivo de pollo, plato montado",Cenital,"Mesa de madera clara; servilleta de lino; sin cubiertos","Tercio superior libre",4:5,Mesa cenital luz natural,2,"1 plato del Menu Ejecutivo de pollo, montado como se sirve",planificada
+FT-003,CR-003,"Postre del dia, porcion individual",45 grados,"Mesa de madera clara; plato blanco chico","Lado derecho libre",4:5,Mesa cenital luz natural,3,"1 porcion del postre del dia",planificada
+FT-004,CR-007,"Fachada del restaurante con el rotulo visible",Frontal wide,"Calle; sin autos en cuadro","Tercio inferior libre",9:16,Exterior fachada,4,"Rotulo encendido; entrada despejada 10 min",planificada
+FT-005,CR-012,"Detalle de las manos del chef emplatando",Detalle,"Cocina; superficie de acero","Sin texto",1:1,Cocina barra,5,"Chef disponible 10 min durante el bloque de cocina",⏸️ sin confirmar

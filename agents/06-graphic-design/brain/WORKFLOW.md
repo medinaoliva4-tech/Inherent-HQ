@@ -141,7 +141,7 @@ alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se 
 
 ## 9 · Antes de entregar
 
-- [ ] Toda pieza con `rodaje = no` del Excel de ④ tiene su archivo, o su devolución escrita
+- [ ] Toda pieza de formato estático con `material = ninguno` o `material = foto` del Excel de ④ tiene su archivo, o su devolución escrita
 - [ ] Cada archivo lleva su **`id_creativo`** en el nombre
 - [ ] El copy está **literal**, como lo escribió ④
 - [ ] Toda pieza lleva los **activos distintivos** que su formato exige

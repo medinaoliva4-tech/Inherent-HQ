@@ -58,8 +58,23 @@ Archivo **interno**: no se entrega al cliente, pero se guarda en la carpeta del 
 | Cambio de locación | 60 min + traslado | | |
 | Desmontaje | 45 min | | |
 | Escena simple | | | |
+| 🖼️ **Fotos por hora de fotógrafo** | 🟡 **sin medir** | | **Primera medición: este ciclo** |
 
 *(Un margen que falló tres ciclos seguidos deja de ser estimación y pasa a ser dato.)*
+
+**🖼️ La capa de foto**
+
+| | |
+|---|---|
+| Fotos planificadas | |
+| Fotos tomadas en la hora | |
+| **Fotos por hora — el número real** | |
+| Resueltas con frame del rodaje | |
+| Fueron a ③ como decisión de alcance | |
+| Setups de foto | |
+
+🛑 **Este es el número que § 2B del `WORKFLOW.md` declara «a medir en la primera sesión».**
+Una vez medido, deja de ser pendiente.
 
 ---
 

@@ -22,10 +22,10 @@ le falta cobertura es trabajo tirado que se descubre a mitad del montaje.
 
 ## 1 · El filtro: solo las filas con rodaje
 
-**Del Excel de ④ se toman únicamente las filas con `rodaje = si`.** Las demás van directo a
+**Del Excel de ④ se toman únicamente las filas con `material = video`.** Las demás van directo a
 ⑥A Diseño gráfico.
 
-🛑 **Una fila sin `rodaje` que llega acá está mal clasificada: se devuelve a ④.**
+🛑 **Una fila sin `material` que llega acá está mal clasificada: se devuelve a ④.**
 
 ## 2 · El cruce, fila por fila
 
@@ -77,7 +77,7 @@ termina sin parecerse a lo que ④ dirigió.
 
 ## 6 · Checklist
 
-- [ ] Solo entraron filas con **`rodaje = si`**
+- [ ] Solo entraron filas con **`material = video`**
 - [ ] Cada fila se cruzó contra el manifiesto de ⑤ — **sin muestreo**
 - [ ] Cada devolución nombra **a quién y qué falta**
 - [ ] Ninguna pieza con claim `⏸️` entró al ciclo

@@ -18,10 +18,12 @@ description: >
 
 ## 1 · El filtro: las filas sin rodaje
 
-**Del Excel de ④ se toman las filas con `rodaje = no`.** Las de `rodaje = si` van a
+**Del Excel de ④ se toman las filas de formato estático —`estatico`, `carrusel`, `story`— con
+`material = ninguno` o `material = foto`.** 🛑 **Una fila con `material = foto` espera su foto de ⑤
+antes de componerse.** Las de `material = video` van a
 ⑥B Video Editing.
 
-> ⚠️ **Excepción:** una pieza con `rodaje = si` puede necesitar también un estático —una portada,
+> ⚠️ **Excepción:** una pieza con `material = video` puede necesitar también un estático —una portada,
 > un frame para feed—. Eso lo declara ④ en el `ideas-<formato>.md`, no se asume acá.
 
 ## 2 · La agrupación — así se produce el volumen
@@ -71,7 +73,7 @@ entre 160 piezas y 160 decisiones.
 
 ## 6 · Checklist
 
-- [ ] Solo entraron filas con **`rodaje = no`** *(más las excepciones que ④ declaró)*
+- [ ] Solo entraron filas de **formato estático** con **`material = ninguno`** o **`material = foto`** *(más las excepciones que ④ declaró)*, y las de `foto` **tienen su imagen de ⑤**
 - [ ] Las piezas están **agrupadas por formato**
 - [ ] Cada fila se cruzó — **sin muestreo**
 - [ ] Ninguna pieza entró con copy **descrito** en vez de escrito

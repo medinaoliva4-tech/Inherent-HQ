@@ -30,8 +30,8 @@ en un solo lugar: `agents/05-production/brain/`.
 | Capa | Skill | Se dispara cuando… | Produce |
 |---|---|---|---|
 | **0** | **`pr-brief`** | Arranca el ciclo · *"esto se puede grabar"*, *"qué vamos a producir"* | La sección **§ Verificación y devoluciones** de `plan-de-rodaje.md`: producibilidad fila por fila, techo de realidad, material reutilizable |
-| **1** | **`pr-desglose`** | *"qué hace falta para grabar esto"*, *"desglosá estas escenas"* | Las **filas base** de `plan-de-produccion.csv` — una por escena, con las 8 categorías |
-| **2** | **`pr-jornadas`** | *"en cuántos días se graba"*, *"agrupá esto"* | La columna `jornada`, el **factor de consolidación**, el **índice de jornadas** y la sección de cada una |
+| **1** | **`pr-desglose`** | *"qué hace falta para grabar esto"*, *"desglosá estas escenas"* | Las **filas base** de `plan-de-produccion.csv` — una por escena, con las 8 categorías — y las de **`plan-de-fotos.csv`**, una por foto *(WORKFLOW § 2B)* |
+| **2** | **`pr-jornadas`** | *"en cuántos días se graba"*, *"agrupá esto"* | La columna `jornada`, el **factor de consolidación**, el **índice de jornadas** y la sección de cada una — y el agrupado de fotos por `setup` |
 | **3** | **`pr-recursos`** | *"quién consigue qué"*, *"está confirmada la locación"*, *"qué pasa si llueve"* | Columnas `locacion`, `talento`, `recursos`, `equipo`, `riesgo` + **§ Lo que hay que conseguir**, **§ Permisos** y los riesgos de cada jornada |
 | **4** | **`pr-presupuesto`** | *"cuánto cuesta producir esto"* | **`presupuesto.md`** (el que ve el cliente) + `presupuesto.csv` interno + la columna `costo_estimado` |
 | **5** | **`pr-rodaje`** | *"armá el call sheet de la jornada 2"* | Los call sheets dentro de **la sección de cada jornada** + la sección **§ Cómo se nombran los archivos** |
@@ -39,9 +39,10 @@ en un solo lugar: `agents/05-production/brain/`.
 | **7** | **`pr-loop`** | *"cómo nos fue"*, *"qué se pasó de presupuesto"* | **`aprendizaje-de-produccion.md`** — las 4 lecturas, con el material no usado arriba |
 
 Los entregables son **dos** —`presupuesto.md`, que lee el cliente, y `plan-de-rodaje.md`, con el que
-rueda el equipo— más tres archivos internos: `plan-de-produccion.csv` (16 columnas),
-`presupuesto.csv` (6 columnas) y `aprendizaje-de-produccion.md`. **Ninguna skill inventa un archivo
-nuevo: todas escriben dentro de esos cinco.**
+rueda el equipo— más cuatro archivos internos: `plan-de-produccion.csv` (16 columnas),
+**`plan-de-fotos.csv` (11 columnas)**, `presupuesto.csv` (6 columnas) y
+`aprendizaje-de-produccion.md`. **Ninguna skill inventa un archivo nuevo: todas escriben dentro de
+esos seis.**
 
 ---
 
