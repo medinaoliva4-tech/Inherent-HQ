@@ -335,6 +335,8 @@ no hacemos LinkedIn Ads, SEO técnico profundo, ni reclutamos personal.
 1. **Identificá el agente** que corresponde al pedido.
 2. **Leé su `brain/WORKFLOW.md` completo.** Es la única fuente de cómo trabaja.
 3. **Identificá el cliente.** Un cliente = un folder en `clients/`. Nunca mezclar dos.
+   🔒 **Si el repo es público, `clients/` solo guarda un README con el link al repo privado del
+   cliente.** Ver `clients/README.md`.
 4. Seguí el workflow. Las skills se invocan donde el workflow lo indica.
 
 ## Reglas

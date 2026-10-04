@@ -1,5 +1,17 @@
 # Los clientes
 
+## 🔒 Primero: ¿el repo es público o privado?
+
+**La información de un cliente nunca vive en un repo público.**
+
+| Si `Inherent-HQ` es… | Qué va en `clients/<cliente>/` |
+|---|---|
+| 🔴 **Público** | **Solo un `README.md`** con el nombre del cliente y el **link a su repo privado**. Nada más: ni estrategia, ni data, ni links a Drive |
+| 🟢 **Privado** | **Todo lo del cliente**, con la estructura de abajo |
+
+🛑 **Antes de escribir en `clients/`, se verifica la visibilidad del repo.** Si es público y la
+información no tiene a dónde ir, **se bloquea y se avisa a Allan** — no se sube «por mientras».
+
 **Un cliente = un folder.** Vive **afuera** de los agentes: todos leen y escriben acá.
 
 ```
