@@ -39,6 +39,7 @@ archivo exacto**. 🛑 **Nunca se duplica un archivo de otro departamento: se ci
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Campañas: [nombres]
 ④ Creatividad: Excel aprobado (Gate 3) [✅/⬜] · filas con rodaje=si: [n] · escenas totales: [n]
 ②B Branding [✅/⬜] · ③ Marketing fechas de preparación [✅/⬜] · ① capacidad y presupuesto [✅/⬜]
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · horas: [n] · sesiones: [n] · videos planificados: [n]
 Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
 Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
@@ -213,6 +214,7 @@ caduca. **Convenciones:** 🟢 confirmado · 🟡 gestionando · 🔴 en riesgo 
 **Checks transversales del handoff. Ninguno se omite en silencio, y el ciclo no se libera sin este bloque completo.**
 
 - [ ] El **PRE-FLIGHT** está emitido con **PASS o BLOQUEADO**, y cada skill corrió **con el output de la anterior**, sin faltantes improvisados
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
 - [ ] 🛑 El Excel de ④ tiene **Gate 3 aprobado**, y solo se tomaron las filas con **`rodaje = si`**
 - [ ] Existen **los dos entregables** —`presupuesto.md` y `plan-de-rodaje.md`— más los internos `plan-de-produccion.csv` (16 columnas) y `presupuesto.csv` (6 columnas) completos, y 🛑 **toda fila traza a un `id_creativo`**, y de ahí a un slot de ③ y a una MUST BE TRUE
 - [ ] `presupuesto.md` está en **lenguaje natural**, con *qué necesitamos del cliente* y *qué NO incluye*, y sus números **cuadran con el CSV interno**

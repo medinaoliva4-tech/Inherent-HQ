@@ -20,6 +20,61 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 0 · El plan contratado — cuánto y a qué profundidad
+
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar:
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+
+- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
+  «El desglose por tarea». **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Publicaciones del ciclo** | **86** | **145** | **145** | **204** |
+| de las cuales **videos** *(mínimo)* | 13 | 18 | **27** | 36 |
+| de las cuales **estáticos y carruseles** | 43 | 72 | **63** | 88 |
+| de las cuales **stories** | 30 | 55 | 55 | 80 |
+| **Revisiones por pieza** | **1** | 2 | 2 | 3 |
+| **Conversación después de publicar** *(es de ⑧ CM, no de acá)* | ⛔ No incluida | ✅ | ✅ | ✅ |
+
+**Cómo se lee:**
+
+- **Posting carga TODAS las piezas aprobadas del ciclo, stories incluidas.** El número de la primera
+  fila es el total del plan: no hay piezas aprobadas que se queden sin programar.
+- **Si la herramienta no programa stories, no se descartan:** se entregan en una **lista aparte para
+  subir a mano**, con su fecha y su hora, y se declara en el handoff. 🛑 **Una story que no se pudo
+  programar sigue siendo una pieza entregada del plan.**
+- 🛑 **Las variantes de creativo de pauta NO van a orgánico.** Las 20/30/35/50 variantes existen para
+  ⑩ Ads y **no cuentan como publicaciones** ni entran al calendario del ciclo. Cargarlas infla el
+  volumen con piezas que el cliente nunca pidió ver en su feed.
+- ⚠️ **🟨 Accelerate publica lo mismo que Pro, con otra mezcla:** las mismas 145, pero **27 videos
+  contra 18** y **63 estáticos contra 72**. **Copiar el reparto de Pro es un error.**
+- **Posting no contesta.** Deja la pieza publicada; lo que pasa en comentarios y DMs es de
+  ⑧ Community Management — y **no está incluido en 🔷 Marketing.**
+- ⛔ **No hay segundo idioma en ningún plan:** un caption por pieza
+  (`agents/07-video-editing/brain/skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma»).
+- 🛑 **Si llegan más piezas que el techo del plan, las de más no se cargan:** se declaran a Allan.
+
+> 🟡 **La herramienta de publicación está en prueba.** Esta sección define **cuánto** se publica, no
+> **con qué**. El resto de este WORKFLOW y las skills `po-*` nombran la herramienta vigente.
+
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+
+Allan lo cotiza **en las mismas unidades de la tabla de arriba**, y el departamento trabaja con esos
+números igual que con un plan estándar. **El precio lo define Allan.**
+
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- 🛑 **No existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
+  en todos los planes.
+- **Arriba de 🟨 Compound sube el volumen**, pero más publicaciones exigen más archivos terminados de
+  ⑥A Diseño y ⑦ Video Editing: **sin ellos no hay calendario.**
+
+---
+
 ## 1 · La distinción que define el departamento
 
 **④ Creatividad escribe el mensaje. ⑦ Posting lo hace publicable.**
@@ -307,6 +362,7 @@ qué falló al publicar · cuánto tardó cada aprobación.
 PRE-FLIGHT — Cliente: [x] · Capa: [0-6] · Ciclo: [x]
 ④ Creatividad: Excel con Gate 3 [✅/⬜] · filas del ciclo: [n]
 ⑥A entregó: [n/n] · ⑥B entregó: [n/n] · ⚠️ SIN ARCHIVO: [n]
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · publicaciones del ciclo: [n] de [techo del plan]
 ②B Branding [✅/⬜] · ① cuentas y accesos [✅/⬜] · claims pendientes: [n]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```

@@ -27,6 +27,77 @@ banco o derivados.
 
 ---
 
+## 0 · El plan contratado — cuánto y a qué profundidad
+
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar:
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+
+- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
+  «El desglose por tarea». **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Horas de grabación** | **3 h** | **4 h** | **6 h** | **8 h** |
+| **Sesiones (jornadas) por mes** | **1** | **2** | **2** | **3** |
+| **Sesión de fotógrafo** | 1 h | 1 h | 1 h | 1 h |
+| **Videos planificados** a capturar *(20 min c/u)* | 9 | 12 | **18** | 24 |
+| **Material base** para estáticos y carruseles | para 43 | para 72 | para 63 | para 88 |
+| **Márgenes de rodaje** *(montaje · setup · desmontaje)* | 🟡 **PENDIENTE DE ALLAN** | 🟡 **PENDIENTE** | 🟡 **PENDIENTE** | 🟡 **PENDIENTE** |
+
+**Cómo se lee:**
+
+- **Las horas y sesiones del plan son el techo de realidad de la Capa 0.** Si la capacidad que
+  declara el cliente es menor, **manda la menor.** Lo que no entre es **decisión de alcance**: va a
+  ③ Marketing con números, no se devuelve a ④ Creatividad.
+- 🔑 **La regla de los 20 minutos.** Un video planificado se graba en 20 minutos **si se graba por
+  SETUP y no por pieza.** Cada uno deja 5-7 escenas, y las de apoyo se recombinan en derivados.
+  **Agrupar por setup no es una optimización: es lo que hace que las horas alcancen.**
+- ⚠️ **🟨 Accelerate es la jornada más apretada.** Captura **50% más video que Pro** *(18 contra 12)*
+  en las **mismas 2 sesiones**. La consolidación de la Capa 2 ahí no es opcional.
+
+#### 🟡 PENDIENTE DE ALLAN — los márgenes de rodaje no entran en ningún plan
+
+**Las horas contratadas son exactamente el tiempo de cámara, sin un minuto de margen.** A 20 minutos
+por video planificado, los cuatro planes dan justo:
+
+| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| Videos × 20 min | 9 × 20 = **3 h** | 12 × 20 = **4 h** | 18 × 20 = **6 h** | 24 × 20 = **8 h** |
+| Horas contratadas | 3 h | 4 h | 6 h | 8 h |
+| **Margen que queda** | **0** | **0** | **0** | **0** |
+
+Pero el § 5 de este WORKFLOW pide **montaje inicial 60-90 min · cambio de setup de luz 30-45 min ·
+cambio de locación 60 min + traslado · desmontaje 45 min.** **Eso no cabe en ninguna de las cuatro
+columnas**, y en 🔷 Marketing se come la jornada entera antes de grabar la primera toma.
+
+🛑 **Hasta que Allan decida el margen de rodaje liviano, se declaran márgenes reducidos como ajuste
+marcado en `plan-de-rodaje.md` — nunca en silencio, y nunca asumiendo que el día alcanza.**
+
+#### Lo que el plan NO cubre
+
+- 🛑 **Nunca graba el cliente.** Las horas de grabación son el piso de costo de cada plan, y por eso
+  **no existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- **Modelos, props y locaciones son costo del cliente, aparte** (`inherent/06-ECONOMIA.md` → «⛔ Lo
+  que nunca está incluido»). `presupuesto.md` separa siempre **lo que cubre el plan** de **lo que
+  paga el cliente**.
+- **Una locación adicional es add-on, no parte del plan** (`inherent/06-ECONOMIA.md` → «Extras»).
+
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+
+Allan lo cotiza **en las mismas unidades de la tabla de arriba** —horas, sesiones, videos— y el
+departamento trabaja con esos números igual que con un plan estándar. **El precio lo define Allan.**
+
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
+  en todos los planes.
+- **Arriba de 🟨 Compound las horas extra se cotizan como horas, no como piezas:** el video de
+  grabación es el único techo real del modelo.
+
+---
+
 ## 1 · La distinción que define el departamento
 
 Creatividad entrega una **intención**. Producción entrega **logística**.
@@ -402,6 +473,7 @@ estimado que falló tres ciclos seguidos deja de ser estimación y pasa a ser da
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Campañas: [nombres]
 ④ Creatividad: Excel aprobado (Gate 3) [✅/⬜] · filas con rodaje=si: [n]
 ②B Branding [✅/⬜] · ③ Marketing fechas de preparación [✅/⬜] · ① capacidad y presupuesto [✅/⬜]
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · horas: [n] · sesiones: [n] · videos planificados: [n]
 Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
