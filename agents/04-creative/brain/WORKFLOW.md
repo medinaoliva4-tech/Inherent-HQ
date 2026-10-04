@@ -19,6 +19,68 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 0 · El plan contratado — cuánto y a qué profundidad
+
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar:
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+
+- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
+  «El desglose por tarea». La profundidad, de `inherent/03-OFERTA.md` → «🔒 Uso interno».
+  **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **BIG IDEAS del mes** | 1 | 1 | 1 | **2** |
+| **Conceptos del ciclo** *(videos planificados ÷ 3)* | 3 | 4 | 6 | 8 |
+| **Videos planificados** a idear *(20 min de grabación c/u)* | 9 | 12 | **18** | 24 |
+| **Videos derivados** *(mínimo 1:2 — los ejecuta ⑦)* | 4 | 6 | 9 | 12 |
+| **Estáticos y carruseles** | 43 | 72 | **63** | 88 |
+| **Stories** | 30 | 55 | 55 | 80 |
+| **Filas de `plan-de-contenido.csv`** | **86** | **145** | **145** | **204** |
+| **Variantes de creativo por campaña** | hasta 20 | hasta 30 | hasta 35 | hasta 50 |
+| **Revisiones por pieza** | **1** | 2 | 2 | 3 |
+| **Qué empuja el contenido** | El **mensaje** — cómo se cuenta lo que ya vende | Igual, con más volumen | + **oferta rediseñada**, canales grandes, subir el ticket, contenido guiado por keywords | + **recompra, referidos y comunidad** |
+
+**Cómo se lee:**
+
+- **Las 2 BIG IDEAS de 🟨 Compound no son «una más»:** una es de **adquisición** y la otra de
+  **recompra y comunidad**. Son dos trabajos distintos, no la misma idea estirada.
+- **Cada pieza es una fila con su `id`**, también las derivadas y las stories. Las derivadas las
+  ejecuta ⑦ Video Editing, pero Creative las marca en la fila del video que las origina. Las stories
+  se pueden idear como **series repetibles** —un formato, muchas piezas— y cada una sigue siendo su
+  fila.
+- ⚠️ **🟨 Accelerate no es «Pro con más piezas».** Entrega las **mismas 145**, pero con **50% más
+  video** *(18 planificados contra 12)* y **menos estáticos** *(63 contra 72)*. La mezcla cambia a
+  propósito: **copiar la fila de Pro es un error.**
+- 🛑 **En la línea 🔷 Marketing, Creative trabaja el MENSAJE, nunca la OFERTA.** Qué vende el cliente,
+  en qué paquetes y a qué precio **solo se toca desde 🟨 Accelerate** (`inherent/03-OFERTA.md` →
+  «🔒 Uso interno»). **Confundirlos es regalar el trabajo caro dentro del plan barato.**
+- **Las variantes de creativo se definen acá y se ejecutan afuera.** Creative declara en su entregable
+  **qué se varía** —gancho, texto en pantalla, formato—; ⑥A Diseño y ⑦ Video Editing las producen, y
+  ⑩ Ads las sube. 🛑 **Salen de material ya grabado: una variante nunca pide grabación extra.**
+- 🛑 **Si el calendario de ③ Marketing pide más piezas que el plan, no se idean de más:** se declara
+  la diferencia y se devuelve a ③. Recortar es decisión de alcance, no de Creative.
+- ⛔ **No hay segundo idioma en ningún plan.** No existe herramienta de doblaje — ver
+  `agents/07-video-editing/brain/skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma».
+
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+
+Allan lo cotiza **en las mismas unidades de la tabla de arriba**, y el departamento trabaja con esos
+números igual que con un plan estándar. **El precio lo define Allan.**
+
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- 🛑 **No existe un plan por debajo de 🔷 Marketing.** Las horas de grabación son el piso de costo
+  (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
+  en todos los planes.
+- **Arriba de 🟨 Compound sube el volumen**, pero el techo real sigue siendo lo que se puede
+  **grabar**: más ideas de video que horas de producción es trabajo que no va a existir.
+
+---
+
 ## 1 · Qué entrega
 
 El Excel, más un doc de dirección y un doc por formato. Nada más.
@@ -307,6 +369,7 @@ swipe file actualizado con el ganador propio · 3 hipótesis para la próxima ro
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
 ① Comprensión [✅/⬜] · ② Estrategia [✅/⬜] · ③ Marketing [✅/⬜] · ②B Branding [✅/⬜] · ⑧B Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 

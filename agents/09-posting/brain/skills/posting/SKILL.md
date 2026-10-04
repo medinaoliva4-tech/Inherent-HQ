@@ -40,6 +40,7 @@ ofrece dejarlo listo para subir.**
 PRE-FLIGHT — Cliente: [x] · Capa: [0-6] · Ciclo: [x]
 ④ Creatividad: Excel con Gate 3 [✅/⬜] · filas del ciclo: [n] → social [n] · email [n] · manual [n] · SIN RUTA [n]
 ⑥A entregó: [n/n] · ⑥B entregó: [n/n] · ⚠️ SIN ARCHIVO: [n]
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · publicaciones del ciclo: [n] de [techo del plan]
 ②B Branding [✅/⬜] · ① cuentas y accesos [✅/⬜] · ① herramienta de email [✅/⬜] · claims pendientes: [n]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
@@ -151,6 +152,7 @@ cargadas, las que no salen y las marcadas para pauta, que van a ⑧B.
 ## Control de calidad del orquestador
 
 - [ ] Se declaró el **pre-flight** antes de producir nada
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
 - [ ] El cliente está identificado y su carpeta existe, con el **nombre canónico** del repo
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
 - [ ] 🛑 **`po-specs` corrió antes que `po-carga`**
