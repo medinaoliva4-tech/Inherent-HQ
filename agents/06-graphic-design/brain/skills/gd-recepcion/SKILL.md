@@ -37,7 +37,7 @@ antes de componerse.** Las de `material = video` van a
 | **Todas las stories juntas** | Mismo formato, misma safe zone |
 
 🛑 **Producir en orden de calendario obliga a cambiar de molde en cada pieza.** Es la diferencia
-entre 160 piezas y 160 decisiones.
+entre 168 piezas y 168 decisiones.
 
 ## 3 · El cruce, fila por fila
 
