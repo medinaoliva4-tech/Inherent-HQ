@@ -2,7 +2,7 @@
 name: gd-plantillas
 description: >
   Capa 1 de ⑥A Diseño gráfico — arma el sistema de plantillas del ciclo, que es lo que hace
-  posible producir 160 piezas sin tomar 160 decisiones. Una plantilla por combinación de formato
+  posible producir 168 piezas sin tomar 168 decisiones. Una plantilla por combinación de formato
   y tipo de contenido, con las zonas de texto, imagen y activo ya fijadas, probada con el copy
   más largo y el más corto del ciclo. Se aprueba el molde, no las piezas. Úsala cuando pidan
   "las plantillas del mes", "el molde", "cómo vamos a producir tanto", "esto no escala".
@@ -89,7 +89,7 @@ entere, y al tercer ciclo el sistema tiene dos reglas contradictorias.
 
 ## 7 · 🚦 GATE 1
 
-**Allan aprueba las plantillas, no las 160 piezas.**
+**Allan aprueba las plantillas, no las 168 piezas.**
 
 > 🔑 **Es el gate que hace viable el departamento.** Con el molde aprobado, las piezas son
 > ejecución y se revisan en el GATE 2 como paquete.

@@ -31,7 +31,7 @@ detalle de cada herramienta.
 
 ## La regla que hace viable el departamento
 
-🛑 **160 piezas no se diseñan una por una.** Se arma el sistema de plantillas, se aprueba el
+🛑 **168 piezas no se diseñan una por una.** Se arma el sistema de plantillas, se aprueba el
 molde en el GATE 1, y las piezas son ejecución.
 
 **Si una pieza pide una decisión nueva en la Capa 3, la plantilla está mal.**
@@ -40,5 +40,5 @@ molde en el GATE 1, y las piezas son ejecución.
 
 | 🚦 | Después de | Qué aprueba Allan |
 |---|---|---|
-| **GATE 1** | `gd-plantillas` | **Las plantillas** — no las 160 piezas |
+| **GATE 1** | `gd-plantillas` | **Las plantillas** — no las 168 piezas |
 | **GATE 2** | `gd-export` | El paquete completo |

@@ -24,7 +24,7 @@ description: >
 | `plan-por-canal.md` | ③ Marketing | 🛑 **BLOQUEADO** |
 | El **plan contratado** | `clients/<cliente>/` | 🛑 **BLOQUEADO** — define el techo |
 
-🛑 **Sin `sistema-visual.md` no se compone nada.** Diseñar sin sistema produce 160 piezas que no
+🛑 **Sin `sistema-visual.md` no se compone nada.** Diseñar sin sistema produce 168 piezas que no
 se parecen entre sí, y eso es peor que no publicar.
 
 ## 2 · Qué capa corre según el pedido
@@ -41,7 +41,7 @@ se parecen entre sí, y eso es peor que no publicar.
 
 ## 3 · La regla que hace viable el departamento
 
-🛑 **160 piezas no se diseñan una por una.**
+🛑 **168 piezas no se diseñan una por una.**
 
 **Se arma el sistema de plantillas en la Capa 1, se aprueba el molde en el GATE 1, y las piezas
 son ejecución.** Si para cada pieza hace falta una decisión de diseño, el ciclo no entra en las
@@ -51,5 +51,5 @@ horas que paga el plan.
 
 | 🚦 | Después de | Qué aprueba Allan |
 |---|---|---|
-| **GATE 1** | `gd-plantillas` | **Las plantillas** — no las 160 piezas |
+| **GATE 1** | `gd-plantillas` | **Las plantillas** — no las 168 piezas |
 | **GATE 2** | `gd-export` | El paquete completo |

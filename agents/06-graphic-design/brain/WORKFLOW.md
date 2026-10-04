@@ -28,7 +28,11 @@ paso vive en las skills: `skills/README.md`.
 | **Total** | **73** | **127** | **118** | **168** |
 | **Revisiones por pieza** | 1 | 2 | 2 | **3** |
 
-> 🔑 **160 piezas al mes no se diseñan una por una. Se arma un sistema de plantillas y se
+> Fuente: `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` → «El desglose
+> por tarea», filas 15, 16 y 17. **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+> **168 es el techo, el de 🟨 Compound.**
+
+> 🔑 **168 piezas al mes no se diseñan una por una. Se arma un sistema de plantillas y se
 > llenan.** Por eso la Capa 1 es la que decide si el ciclo entra o no.
 
 🛑 **Si para cada pieza hace falta una decisión de diseño, el departamento no escala** — y el
@@ -85,10 +89,10 @@ alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se 
 
 | Gate | Qué se aprueba | Por qué |
 |---|---|---|
-| **1** | **Las plantillas del ciclo** | Aprobar 160 piezas una por una es imposible. **Se aprueba el molde** |
+| **1** | **Las plantillas del ciclo** | Aprobar 168 piezas una por una es imposible. **Se aprueba el molde** |
 | **2** | **El paquete completo** | Es lo que entra a QA y después a publicación |
 
-> 🔑 **El GATE 1 es el que hace viable el departamento.** Con las plantillas aprobadas, las 160
+> 🔑 **El GATE 1 es el que hace viable el departamento.** Con las plantillas aprobadas, las 168
 > piezas son ejecución.
 
 ---
