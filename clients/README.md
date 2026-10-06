@@ -23,9 +23,13 @@ información no tiene a dónde ir, **se bloquea y se avisa al CEO** — no se su
 ```
 clients/<cliente>/
 ├── ESTRATEGIA.md   ← el documento que se le entrega al cliente
-├── LINKS.md        ← lo que vive afuera: Drive de fotos, de videos, de entregables, Figma
+├── LINKS.md        ← lo que vive afuera: Drive, Figma, Notion, las cuentas y quién tiene su acceso
 └── data/           ← todo lo investigado y recibido, expandido, para los demás agentes
 ```
+
+🔒 **`LINKS.md` lleva una fila por cuenta con QUIÉN tiene el acceso — el nombre de la persona,
+nunca la credencial.** Contraseñas, tokens y llaves de API **no van al repo en ninguna forma**,
+ni siquiera con el repo privado. Si hace falta una credencial para operar, **se pide fuera del repo.**
 
 ## Reglas
 
@@ -33,6 +37,7 @@ clients/<cliente>/
 |---|---|
 | **Nunca mezclar dos clientes** | Una sesión trabaja un folder |
 | **Lo externo no se copia, se linkea** | Va en `LINKS.md` |
+| 🔒 **Las credenciales nunca se escriben** | En `LINKS.md` va **quién** tiene el acceso, no la contraseña |
 | **El plan contratado se anota primero** | Define el techo de lo que se puede prometer |
 | **Nada se envía al cliente sin gate** | El CEO cierra, el agente propone |
 

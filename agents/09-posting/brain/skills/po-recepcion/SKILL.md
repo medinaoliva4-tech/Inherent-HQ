@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` con **Gate 3** de ④ (`clients/<cliente>/data/`) · los exports de ⑥A y ⑥B con su ruta · § La capacidad de `agents/comprension/clients/<cliente>/comprension.md` (cuentas y accesos) · guidelines de ②B |
+| **Consume** | `plan-de-contenido.csv` con **Gate 3** de ④ (`clients/<cliente>/data/`) · los exports de ⑥A y ⑥B con su ruta · `clients/<cliente>/LINKS.md` (las cuentas y **quién tiene el acceso**) · `data/contexto.md` §D (restricciones y velocidad de aprobación) · guidelines de ②B |
 | **Produce** | Las **filas base** de `calendario-de-publicacion.csv` — una por publicación — y la tabla **§ Lo que no sale este ciclo** de `publicaciones.md` |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantillas:

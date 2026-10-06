@@ -114,7 +114,5 @@
 | 1 | **`agents/`: pasar «Allan» a «el CEO»** — 54 archivos lo nombran como gate |
 | 2 | **`agents/`: quitar advertencias y estados** con el mismo criterio que `inherent/` |
 | 3 | **`agents/00-account/`: que hable como Nicole, la secretaria**, y escale al COO |
-| 4 | Creatividad y Producción apuntan a `agents/comprension/` y `agents/strategy/`, que no existen |
-| 5 | Definir las rutas de ①②③ dentro de `clients/<cliente>/` |
-| 6 | Mover lo de Akai a `clients/akai-sushi/` |
-| 7 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y traer `main` a sus ramas |
+| 4 | Mover lo de Akai a `clients/akai-sushi/` |
+| 5 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y traer `main` a sus ramas |

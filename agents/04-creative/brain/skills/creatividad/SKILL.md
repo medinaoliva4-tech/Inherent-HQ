@@ -28,7 +28,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · **① Comprensión** (audiencia, competencia, producto, **capacidad real de producción**) · **② Estrategia** (posicionamiento, ingeniería inversa, lenguaje literal del comprador) · **③ Marketing** (campañas, canales, fechas, **pilares y su mix**, calendario con los slots) · **②B Branding** (guidelines, tono, lente de marca, banco de assets) · **⑧B Ads** (qué rinde en pauta, claims aprobados — no bloqueante) |
+| **Consume** | El pedido del usuario · **① Comprensión** (audiencia, competencia, producto, **capacidad real de producción**) · **② Estrategia** (`posicionamiento.md`, `ingenieria-inversa.md`, `nucleo.md`) · **③ Marketing** (campañas, canales, fechas, **pilares y su mix**, calendario con los slots) · **②B Branding** (guidelines, tono, lente de marca, banco de assets) · **⑧B Ads** (qué rinde en pauta, claims aprobados — no bloqueante) |
 | **Produce** | El **PRE-FLIGHT**, el **plan de capas**, el registro de los **3 gates humanos** y el bloque **HANDOFF** |
 | **No produce** | Ningún contenido creativo por su cuenta: no escribe hooks, conceptos ni filas. **Deriva** |
 
@@ -55,16 +55,23 @@ Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]
 **posicionamiento de ②** o el **plan de campañas de ③** no están aprobados · el pedido pisa otro
 departamento.
 
-> 🔄 **Transición.** **①** ya es un departamento propio: se lee de
-> `agents/comprension/clients/<cliente>/comprension.md` (el lenguaje literal del comprador y la
-> capacidad). **②③** todavía comparten `agents/strategy/`: **②** `ingenieria-inversa.md` +
-> `posicionamiento.md` · **③** `estrategia-de-contenido.md` + `contenido-por-canal.md` +
-> `calendario-estrategico.csv`. El WIN y el arquetipo siguen en `nucleo.md`. Cuando ②③ se separen
-> cambian **las rutas, no el método**.
+> 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/`:
 >
-> ⚠️ **En `main` esas carpetas todavía no existen:** `agents/comprension/` y `agents/strategy/` viven
-> en la rama `agente-creatividad`, y en `main` Strategy es `agents/01-strategy/`. Hasta que se decida
-> dónde va cada cosa, si el archivo no está se marca `BLOQUEADO` con qué falta — no se inventa.
+> | Qué | Dónde | De quién |
+> |---|---|---|
+> | Audiencia actual, capacidad y restricciones | `data/contexto.md` | ① Strategy · `context` |
+> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `data/nucleo.md` | ① Strategy · `analysis` |
+> | Patrones de categoría y mapa de saturación | `data/ingenieria-inversa.md` | ① Strategy · `reverse-engineering` |
+> | Posicionamiento, promesa y briefs por área | `data/posicionamiento.md` | ① Strategy · `methodology` |
+> | La idea de campaña y los pilares con su mix | `data/estrategia-de-contenido.md` | ③ Marketing |
+> | La función de cada canal y qué NO se hace ahí | `data/plan-por-canal.md` | ③ Marketing |
+> | Los slots del ciclo | `data/calendario.csv` | ③ Marketing |
+>
+> 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo — no se deduce
+> de los otros.**
+
+> 🗣️ **El lenguaje literal del comprador lo arma ④** con las reseñas y comentarios públicos del
+> negocio — ver `WORKFLOW.md` §2B. **No es bloqueante.**
 
 ---
 
@@ -163,7 +170,7 @@ presupuestar, optimizar) → **decílo en una línea** y ofrecé lo que sí se p
 **Cuando el plan llega roto se devuelve, no se arregla:** cadencia que no cabe en la capacidad ·
 slot sin traza · dos canales con la misma función · pilares que no cierran → **③ Marketing**.
 Ninguna idea sobrevive el D/N/R · promesa no escribible → **② Estrategia**. Lenguaje literal vacío o
-inventado → **① Comprensión**. Guidelines que contradicen el concepto → **②B Branding**.
+inventado → **se rehace acá** con las reseñas públicas (`WORKFLOW.md` §2B). Guidelines que contradicen el concepto → **②B Branding**.
 Tabla completa en `WORKFLOW.md §8`.
 
 ---

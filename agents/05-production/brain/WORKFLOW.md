@@ -293,16 +293,20 @@ Producción **no arranca nunca sin el Excel creativo aprobado**.
 
 Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
 
-> 🔄 **Regla de transición.** **①** ya es un departamento propio: la capacidad declarada, el
-> presupuesto disponible y las restricciones se leen de
-> `agents/comprension/clients/<cliente>/comprension.md` § La capacidad. 🛑 **Ahí vuelve también la
-> corrección de `pr-loop`** — como propuesta, nunca editando su archivo. **②③** todavía se leen de
-> `agents/strategy/`, con el mapeo de `agents/04-creative/brain/WORKFLOW.md` §2. Los archivos de Creatividad se
-> leen siempre de `clients/<cliente>/data/`.
+> 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/data/`:
 >
-> ⚠️ **En `main` esas carpetas todavía no existen:** `agents/comprension/` y `agents/strategy/` viven
-> en la rama `agente-creatividad`, y en `main` Strategy es `agents/01-strategy/`. Hasta que se decida
-> dónde va cada cosa, si el archivo no está se marca `BLOQUEADO` con qué falta — no se inventa.
+> | Qué | Dónde | De quién |
+> |---|---|---|
+> | **La capacidad declarada**, el presupuesto y las restricciones | `contexto.md` §B y §D | ① Strategy · `context` |
+> | El `WIN` y las `MUST BE TRUE` que la pieza traza | `nucleo.md` | ① Strategy · `analysis` |
+> | La idea de campaña y los pilares | `estrategia-de-contenido.md` | ③ Marketing |
+> | Los slots del ciclo | `calendario.csv` | ③ Marketing |
+> | El Excel con Gate 3 y los `ideas-<formato>.md` | mismos archivos de ④ | ④ Creatividad |
+>
+> 🛑 **A `contexto.md` §B vuelve también la corrección de `pr-loop`** — como propuesta para
+> ① Strategy, **nunca editando su archivo.**
+>
+> 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo.**
 
 ---
 

@@ -56,14 +56,10 @@ Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]
 desglosar ideas que todavía pueden cambiar es gastar el trabajo dos veces — y si ya se comprometieron
 recursos, gastar **la plata** dos veces.
 
-> 🔄 **Transición.** **①** ya es un departamento propio: la capacidad y el presupuesto se leen de
-> `agents/comprension/clients/<cliente>/comprension.md` § La capacidad. **②③** todavía se leen de
-> `agents/strategy/`, con el mapeo de `agents/04-creative/brain/WORKFLOW.md §2`; los archivos de ④, de
-> `clients/<cliente>/data/`.
->
-> ⚠️ **En `main` esas carpetas todavía no existen:** `agents/comprension/` y `agents/strategy/` viven
-> en la rama `agente-creatividad`, y en `main` Strategy es `agents/01-strategy/`. Hasta que se decida
-> dónde va cada cosa, si el archivo no está se marca `BLOQUEADO` con qué falta — no se inventa.
+> 📂 **De dónde sale cada input.** Todo en `clients/<cliente>/data/`: la **capacidad y el
+> presupuesto** de `contexto.md` §B y §D · el `WIN` y las `MUST BE TRUE` de `nucleo.md` · la campaña
+> de `estrategia-de-contenido.md` y los slots de `calendario.csv` · el Excel y los
+> `ideas-<formato>.md` de ④. **El mapa completo está en `WORKFLOW.md` §3.**
 
 ## 2 · Los 6 modos de entrada
 

@@ -116,11 +116,10 @@ ROI del arquetipo `01 — Local de Alta Frecuencia` es **WhatsApp**, y la cartel
 *media propia gratuita*. Un plan de ③ puede apoyar su objetivo central en un canal que ninguna
 herramienta programa.
 
-🛑 **Ni la herramienta de email ni la lista de WhatsApp se suponen.** Cuál usa el cliente y quién la
-opera está en `agents/comprension/clients/<cliente>/comprension.md` § La capacidad. Si no está:
-`⚠️ SIN DATOS`, y el paquete se entrega igual — es agnóstico de herramienta.
-⚠️ En `main` todavía no existe `agents/comprension/` (vive en la rama `agente-creatividad`): mientras
-tanto, la capacidad se toma de lo que entregue el cliente y se marca su fuente.
+🛑 **Ni la herramienta de email ni la lista de WhatsApp se suponen.** Cuál usa el cliente está en
+`clients/<cliente>/data/contexto.md` §D, y **quién la opera en `clients/<cliente>/LINKS.md`** — la
+fila de esa cuenta dice quién tiene el acceso. Si no está: `⚠️ SIN DATOS`, y el paquete se entrega
+igual — es agnóstico de herramienta.
 
 > 🛑 **Una fila de `Email` o de la ruta manual que se mete en `publer-import.csv` falla la
 > importación entera.** Se separan en la Capa 0, no al cargar.

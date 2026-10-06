@@ -145,6 +145,11 @@ sobre una casualidad.
 - **Lo que nadie hace vale más que el patrón**, si es relevante
 - Si la hipótesis podría llevar el logo de un competidor sin que nadie note la diferencia, **falló**
 
+## 6B · Salida
+
+**`clients/<cliente>/data/ingenieria-inversa.md`** — los patrones observados con sus marcas
+🟢/🟡/⚪ y su fuente. **④ Creatividad lo lee para no re-mapear la categoría** en su swipe file.
+
 ## 7 · Antes de cerrar
 - [ ] Los competidores están **verificados**, no listados de memoria
 - [ ] Cada patrón marcado 🟢 / 🟡 / ⚪ con su conteo de fuentes
