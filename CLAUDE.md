@@ -332,6 +332,11 @@ no hacemos LinkedIn Ads, SEO técnico profundo, ni reclutamos personal.
 
 ## Cómo arrancás una sesión
 
+🧭 **Todo pedido de trabajo para un cliente entra por el router `/inherent`.** Imprime el
+`ENRUTAMIENTO` y le pasa el pedido al orquestador del departamento. **El prompt es el pedido, no
+el método** — el método es el `WORKFLOW.md`. Un hook (`.claude/hooks/enrutar.sh`) lo recuerda en
+cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, etc. directo.
+
 1. **Identificá el agente** que corresponde al pedido.
 2. **Leé su `brain/WORKFLOW.md` completo.** Es la única fuente de cómo trabaja.
 3. **Identificá el cliente.** Un cliente = un folder en `clients/`. Nunca mezclar dos.

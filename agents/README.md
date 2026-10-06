@@ -46,6 +46,10 @@ No espera al resto del pipeline.
 
 **La cadena de entrega completa está en `inherent/05-OPERACION.md`.**
 
+🧭 **La puerta de entrada es `/inherent`** (`agents/_router/`): lee el pedido, imprime el
+`ENRUTAMIENTO` y lo pasa al orquestador que toca. **Si una respuesta de trabajo de cliente no
+arranca con `ENRUTAMIENTO` o con el `PRE-FLIGHT` del orquestador, se saltó el método.**
+
 📅 **Cada ciclo de contenido corre del día 1 al 20 del mes, con fechas fijas.** 🔴 **Día 11:** último
 día para producir · 🔴 **Día 20:** presentación al cliente. Cada `WORKFLOW.md` abre con
 **«📅 Tu ventana en el ciclo»**. Calendario completo en `inherent/05-OPERACION.md`.
