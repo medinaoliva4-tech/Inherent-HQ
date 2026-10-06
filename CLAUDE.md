@@ -8,23 +8,24 @@ Cada agente vive en `agents/<NN>-<área>/`, numerado en el orden en que corre el
 ```
 README.md                  ← qué es esto y qué tan profundo va un agente
 CLAUDE.md                  ← este archivo. La entrada de toda sesión
+PENDIENTES.md              ← lo que falta decidir, construir o probar. NO es manual
 
 inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── README.md              ← el índice. Empezá acá
 ├── 01-IDENTIDAD.md        quiénes somos
 ├── 02-METODO.md           cómo pensamos — los 4 sistemas
-├── 03-OFERTA.md           qué vendemos — los 3 planes y su activación
+├── 03-OFERTA.md           qué vendemos — los planes y su activación
 ├── 04-MERCADO.md          a quién y dónde — industrias, mercados, mentores
-├── 05-OPERACION.md        cómo lo entregamos — pipeline, equipos, ciclos
+├── 05-OPERACION.md        cómo lo entregamos — roles, pipeline, calendario
 ├── 06-ECONOMIA.md         🔒 cuánto cuesta y cuánto queda
 └── 07-COMUNICACION.md     cómo lo decimos — brief de web
 
 agents/                    ← LOS AGENTES — uno por etapa del pipeline
 ├── README.md              ← el roster y el estado de cada uno
-└── <NN>-<área>/           01-strategy · 01.2-branding · 02-growth · 03-marketing
-    ├── README.md          04-creative · 05-production · 06-graphic-design
-    └── brain/             07-video-editing · 08-community-management
-        ├── WORKFLOW.md    09-posting · 10-ads-management · qa
+└── <NN>-<área>/           00-account · 01-strategy · 01.2-branding · 02-growth
+    ├── README.md          03-marketing · 04-creative · 05-production
+    └── brain/             06-graphic-design · 07-video-editing
+        ├── WORKFLOW.md    08-community-management · 09-posting · 10-ads-management
         └── skills/<skill>/
 
 clients/                   ← LOS CLIENTES
@@ -60,33 +61,43 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 
 ---
 
+## Los roles
+
+| Rol | Qué hace |
+|---|---|
+| **CEO** | Decide estrategia, ruta, servicios y promesas. Reunión del día 1 con cada cliente. Aprueba ideas y calendario. **Es el gate humano** |
+| **COO** | Organiza y coordina al equipo operativo y las entregas. QA final. Presenta el día 20 en la línea Marketing |
+| **Operador de agentes** | Solo opera agentes: Creatividad, Branding, Diseño, Posting y Community |
+| **Editor de video · Fotografía · Producción** | Editan, fotografían y graban |
+| **Secretaria** *(WhatsApp)* | El agente `00-account`. Atiende al cliente y escala al COO |
+| **Especialista** | La auditoría de la línea Growth |
+
+**Quién ocupa cada rol, qué herramienta llena cada slot y quién hace cada tarea:
+`inherent/05-OPERACION.md`.** El resto del repo nombra el rol, nunca la persona.
+
 ## Los agentes
 
-**`agents/README.md` tiene el roster completo:** las doce etapas en orden, qué MCP le da cada
-acción a cada agente, y **qué entrega cada uno según el plan contratado.**
-**`inherent/05-OPERACION.md` tiene la cadena de entrega.**
+**`agents/README.md` tiene el roster completo:** las etapas en orden, qué MCP le da cada acción
+a cada agente, y **qué entrega cada uno según el plan contratado.**
 
 🔑 **Cada agente tiene su `brain/WORKFLOW.md` con sus capas, sus gates y sus entregables.**
 **El plan contratado es el techo de todos, no una sugerencia:** entregar de más rompe el margen,
 entregar de menos rompe la promesa publicada.
 
-📅 **El ciclo de contenido corre del día 1 al 20 de cada mes, con fechas fijas:** día 1 reunión ·
-1-3 plan · 2-3 calendario y shot list · 3-6 brand guidelines · 4-5 coordinar · 6-10 producir ·
-🔴 **11 último día para producir** · 12-15 montar · 16-19 cambios y programación ·
-🔴 **20 presentación al cliente.** **Lo presentado el 20 se publica desde el día 1 del mes siguiente.**
-Si una fecha cae en fin de semana o feriado, **se mueve al día hábil más cercano.**
-Ver `inherent/05-OPERACION.md` → «📅 El calendario del ciclo».
+📅 **El ciclo de contenido corre del día 1 al 20 de cada mes:** día 1 reunión · 1-3 plan ·
+2-3 calendario y shot list · 3-6 brand guidelines · 4-5 coordinar · 6-10 producir ·
+**11 último día para producir** · 12-15 montar · 16-19 cambios y programación ·
+**20 presentación al cliente.** **Lo presentado el 20 se publica desde el día 1 del mes siguiente.**
+Las fechas se ajustan cada mes al calendario real; los límites del 11 y el 20 se respetan.
+Ver `inherent/05-OPERACION.md` → «El calendario del ciclo».
 
-✅ **Once de doce construidos.** 🔴 **Falta `08-community-management`** — y sostiene dos líneas
-de las tarjetas: *«tus comentarios y mensajes»* en Marketing Pro y *«comunidad»* en Compound.
-
-🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate, y
-**②B Branding valida con `br-guardian`** antes de que nada se publique.
+🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate,
+**②B Branding valida con `br-guardian`** y el COO hace el QA final.
 
 🗣️ **`agents/00-account/` es el único agente que le habla al cliente.** Vive en WhatsApp,
-siempre encendido, **habla con la voz de Allan** y abre la sesión del agente que toca.
-🔒 **Nunca dice costos, márgenes, ni nada de otro cliente, ni compromete precio, fecha o
-alcance.** `inherent/06-ECONOMIA.md` no sale del repo.
+siempre encendido, **habla como la secretaria de Inherent** y escala al COO lo que no puede
+resolver. 🔒 **Nunca dice costos, márgenes, ni nada de otro cliente, ni compromete precio, fecha
+o alcance.** `inherent/06-ECONOMIA.md` no sale del repo.
 
 ## La identidad
 
@@ -108,9 +119,9 @@ visión: **Marketing · Branding · Creatividad · Tecnología · ADS.**
 
 ## El techo comercial
 
-**`inherent/06-ECONOMIA.md`** define qué se puede entregar según el nivel contratado: cuántas piezas, qué
-canales, qué capas de la escalera entran y cuántas revisiones. **Es restricción dura para todos
-los agentes.** Se lee antes de prometer nada.
+**`inherent/06-ECONOMIA.md`** define qué se puede entregar según el plan contratado: cuántas
+piezas, qué canales, qué capas entran y cuántas revisiones. **Es restricción dura para todos los
+agentes.** Se lee antes de prometer nada.
 
 ### Dos líneas, cuatro planes
 
@@ -127,16 +138,16 @@ los agentes.** Se lee antes de prometer nada.
 **🔷 Marketing promete ATENCIÓN** *(compite con agencias)* · **🟨 Growth promete FACTURACIÓN**
 *(compite con consultoría y CMO fraccional)*.
 
-⚠️ **Marketing Pro y Accelerate entregan las mismas 145 piezas, a propósito.**
+🔑 **Marketing Pro y Accelerate entregan las mismas 145 piezas, a propósito.**
 El salto **no compra contenido — compra sistemas**: oferta, precio, conversión, canales y SOPs.
 **Venderlo como «más piezas» es venderlo mal.**
 
-⚠️ **La línea Marketing NO promete % de crecimiento.** El % no sale del contenido, sale de la
+🔑 **La línea Marketing NO promete % de crecimiento.** El % no sale del contenido, sale de la
 oferta y la conversión. **Prometerlo ahí es vender algo que no controlamos.**
 
 🚀 **Somos un acelerador de marcas. Cada plan es un BOOST distinto, no más volumen del anterior.**
-⚠️ **Accelerate NO es «que te conozcan más».** Ese comprador ya se siente estancado y **teme
-romper lo que le funciona.**
+**Accelerate NO es «que te conozcan más».** Ese comprador ya se siente estancado y **teme romper
+lo que le funciona.**
 
 **Dos divisiones — el eje es cómo se decide la compra, no quién compra:**
 
@@ -163,49 +174,44 @@ MONEY OS        que quede utilidad
 | | 🔷 MARKETING | 🔷 MKT PRO | 🟨 ACCELERATE | 🟨 COMPOUND |
 |---|---|---|---|---|
 | **Ejecución de marketing** | ✅ | ✅ Mayor volumen | ✅ | ✅ Máximo |
-| **Growth OS** | ⬜ | ⬜ | Los 3 ejecutando | Los 3 sistematizados |
-| **Conversion OS** | ⬜ | ⬜ | ✅ | ✅ |
-| **Operations OS** | ⬜ | ⬜ | 🟡 SOPs **de crecimiento** | ✅ SOPs **de empresa** |
-| **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
+| **Growth OS** | — | — | Los 3 ejecutando | Los 3 sistematizados |
+| **Conversion OS** | — | — | ✅ | ✅ |
+| **Operations OS** | — | — | SOPs **de crecimiento** | SOPs **de empresa** |
+| **Money OS** | — | — | — | ✅ |
 
 🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra en la
-línea Marketing porque **antes no hay nada que perder**; Operations porque **no se puede documentar un proceso que
-todavía no funcionó**; Money porque **sin transacciones el margen por línea es teoría.**
-**Meterlo antes es cobrar por algo que no se puede usar.** Ver `inherent/02-METODO.md`.
+línea Marketing porque **antes no hay nada que perder**; Operations porque **no se puede
+documentar un proceso que todavía no funcionó**; Money porque **sin transacciones el margen por
+línea es teoría.** **Meterlo antes es cobrar por algo que no se puede usar.** Ver
+`inherent/02-METODO.md`.
 
 **Seis capacidades bajo un techo:** 📣 Marketing · 🎨 Creative · 🎬 Production · 🏷️ Branding ·
 🔧 Tech · 📊 Consulting. **Strategy debe conocer las seis** para decidir qué activar.
 
 🎓 **La red de especialistas es el diferenciador que más pesa.**
 **Por industria** *(externos — MentorCruise · GrowthMentor · MentorPass)*: gente que ya creció su
-marca ahí y responde *«¿qué harías si esta fuera tu empresa?»*.
+marca ahí y responde *«¿qué harías si esta fuera tu empresa?»*. **El mentor hace la auditoría.**
 **Por área** *(nuestros)*: corporate structure, eventos, networking y PR, talent production,
 talent marketing. **Red, no nómina.**
 🔑 **Tres reglas lo hacen rentable:** **el mentor es exclusivo de la línea Growth** — meterlo en
 Marketing rompe el margen del plan barato · **trimestral en Accelerate**, mensual en Compound ·
 **la membresía se paga anual y es de Inherent** *(sirve a todos los clientes de esa industria,
-−41% de costo)*.
-Con eso los márgenes quedan en **77% · 77% · 72% · 75%**, fijos.
-⚠️ **Arriba de $180/sesión NO se absorbe: va como add-on facturado al cliente.** Ver `inherent/04-MERCADO.md`.
+−41% de costo)*. **Arriba de $180/sesión no se absorbe: va como add-on facturado al cliente.**
+Ver `inherent/04-MERCADO.md`.
 
 ## 🌐 La web es la promesa
 
-🔴 **inherentglobal.com todavía muestra las tres tarjetas viejas** *(Ignite $800 · Accelerate
-$1,200 · Compound $2,000)*. **El repo ya corre con las cuatro nuevas.**
-**Hasta que la web se actualice, a quien llegue por la web se le respeta lo publicado.**
-
-🔒 **Una vez publicadas, el repo no puede prometer menos, más ni distinto que las cuatro
-tarjetas.** Si algo interno contradice una línea publicada, **gana la web** y se corrige el repo.
-Si una línea publicada no tiene capacidad detrás, **se arregla la capacidad — no se borra la línea.**
+🔒 **El repo no puede prometer menos, más ni distinto que las cuatro tarjetas publicadas.** Si
+algo interno contradice una línea publicada, **gana la web** y se corrige el repo. Si una línea
+publicada no tiene capacidad detrás, **se arregla la capacidad — no se borra la línea.**
 **El texto exacto de las cuatro tarjetas y qué respalda cada línea están en `inherent/03-OFERTA.md`.**
 
 ✍️ **Toda la copia al cliente va de TÚ, no de vos.** Así está publicado.
 
-🟡 **Lo único prometido que todavía no tiene persona asignada:** el **especialista de corporate
-structure** — Allan lo cubre mientras tanto.
-⚠️ **No se promete un CFO.** «Tus números claros» lo entrega **Money OS** con Allan y Strategy.
+**No se promete un CFO.** «Tus números claros» lo entrega **Money OS** con el CEO y Strategy.
+**Corporate structure** lo cubre la auditoría del especialista.
 
-⚠️ **«Que te encuentren en Google» = pauta de búsqueda y contenido guiado por keywords.**
+**«Que te encuentren en Google» = pauta de búsqueda y contenido guiado por keywords.**
 **Nunca posicionamiento orgánico, auditoría técnica ni link building.**
 
 ---
@@ -215,16 +221,16 @@ structure** — Allan lo cubre mientras tanto.
 **Se le habla de lo que DESEA, no de lo que la industria dice que necesita.** Ver `inherent/03-OFERTA.md`.
 
 🚫 **No vendemos servicios. Vendemos resultado.** *"Te damos SOPs"* ❌ ·
-*"Te podés ir una semana y la empresa factura igual"* ✅
+*"Te puedes ir una semana y la empresa factura igual"* ✅
 **El volumen y las herramientas son la EVIDENCIA de que podemos — nunca la oferta.**
 
-⚠️ **El precio se justifica por cuántos sistemas activamos y qué tan adentro entramos.**
+🔑 **El precio se justifica por cuántos sistemas activamos y qué tan adentro entramos.**
 **Nunca por volumen de entregables.**
 
-⚠️ **La etapa no es mérito, es realidad:** lo que el cliente puede pagar dice en qué etapa está,
+🔑 **La etapa no es mérito, es realidad:** lo que el cliente puede pagar dice en qué etapa está,
 y la etapa dice qué necesita.
 
-⚠️ **Si la empresa es el estorbo, más demanda empeora el problema:** se arregla la capacidad
+🔑 **Si la empresa es el estorbo, más demanda empeora el problema:** se arregla la capacidad
 primero, aunque la venta fácil sea más pauta.
 
 ### La economía
@@ -233,24 +239,22 @@ primero, aunque la venta fácil sea más pauta.
 rango que el mercado ya acepta**, con 3x a 5x el volumen de su tramo.
 
 🌐 **Guatemala es dónde arrancamos, no el techo.** Los costos se pagan en quetzales y no cambian
-al cambiar de mercado; **lo único que cambia es el precio.** A precio de México los mismos costos
-dan **82-85%**; a precio de Miami, **89-91%**. Ver `inherent/04-MERCADO.md`.
-⚠️ **La web se escribe para los tres mercados: precios en USD y sin «Guatemala» como alcance.** El de entrada
-da **86 piezas a Q7,315 (Q85/pieza)** contra las ~16 de un paquete de Q3,000 **(Q188/pieza)**.
+al cambiar de mercado; **lo único que cambia es el precio.** Ver `inherent/04-MERCADO.md`.
+**La web se escribe para todos los mercados: precios en USD y sin «Guatemala» como alcance.**
+El plan de entrada da **86 piezas a Q7,315 (Q85/pieza)** contra las ~16 de un paquete de Q3,000
+**(Q188/pieza)**.
 
 **El volumen nos separa del mercado. La profundidad separa las líneas entre sí.**
-⚠️ **El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica
-por cuántos sistemas activamos — **usar Q/pieza para vender Accelerate lo abarata.**
+**El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica por
+cuántos sistemas activamos — **usar Q/pieza para vender Accelerate lo abarata.**
 
-**Dentro de Marketing el bundle sí es descuento** *(38% menos que comprar suelto)*, porque todo
-lo que corre sobre agentes suma Q0 al costo variable.
+**Dentro de Marketing el bundle sí es descuento** *(38% menos que comprar suelto)*.
 **El salto a Growth NO es descuento — es acceso:** nada de lo que agrega se vende à la carte.
 **El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
 
 **Ganamos de hacerles dinero.** El fee base cubre la operación; **la utilidad de verdad sale del
 performance fee — 10% de las ventas atribuidas, con costo marginal Q0.** Cada quetzal de fee es
-utilidad pura: lleva Accelerate de 72% a 76% sin tocar el precio base.
-⚠️ **Sin atribución limpia no hay fee — y por eso el fee no existe en la línea Marketing.**
+utilidad pura. **Sin atribución limpia no hay fee — y por eso no existe en la línea Marketing.**
 
 **Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes
 altísimos.** Cierran **no bajando el precio, con el costo fijo.**
@@ -258,63 +262,58 @@ altísimos.** Cierran **no bajando el precio, con el costo fijo.**
 🔒 **El costo de cada plan es FIJO, por cuenta y por rubro — no es estimación.**
 
 ```
-              PRODUCCIÓN  OPERADOR  HERRAM./IA  ESPECIALISTA  AUDIT.  BUFFER   COSTO    MARGEN
-🔷 MARKETING     Q900       Q350      Q150         Q100         —     Q165    Q1,665    77%
-🔷 MKT PRO      Q1,400      Q550      Q200         Q150         —     Q255    Q2,555    77%
-🟨 ACCELERATE   Q1,900      Q900      Q300        Q1,000     Q1,200    —      Q5,300    72%
-🟨 COMPOUND     Q2,500     Q1,400     Q500        Q2,000     Q1,800    —      Q8,200    75%
+              GRABAC.  FOTO   EDICIÓN  OPERADOR  HERRAM.  ESPECIAL.  AUDIT.   BUFFER   COSTO    MARGEN
+🔷 MARKETING   Q450    Q300    Q200     Q350      Q150       —         —      Q215    Q1,665    77%
+🔷 MKT PRO     Q560    Q300    Q500     Q550      Q200       —         —      Q445    Q2,555    77%
+🟨 ACCELERATE  Q780    Q300    Q700     Q900      Q300     Q1,000    Q1,200   Q520    Q5,700    70%
+🟨 COMPOUND    Q960    Q300   Q1,000   Q1,400     Q500     Q2,000    Q1,800   Q840    Q8,800    73%
 ```
 
 **El margen no cambia con el número de clientes.** Si una cuenta consume más, se cotiza extra o
 sube de plan — **nunca se absorbe.** Ver `inherent/06-ECONOMIA.md` → «Los costos por plan — fijos».
-🔑 **Allan no es un rubro:** su tiempo sale de la utilidad. Sus horas son **capacidad**, no costo.
-
-⚠️ **Hay dos trabajos que ya deberían hacer agentes y todavía los hace gente: el QA y la
-operación.** No mueven el margen — **mueven cuántas cuentas aguanta el equipo.**
-
-**El equipo son dos personas y los agentes.** Allan dirige y es el gate; un operador corre los
-agentes; producción solo graba; **los agentes hacen el resto.**
+🔑 **El CEO y el COO no son rubro:** cobran de la utilidad. Sus horas son **capacidad**, no costo.
 
 🔑 **Cada cuenta paga a cada rubro el monto fijo de su plan.** Se firma una vez con cada
-persona y no se renegocia por cliente. Ver `inherent/05-OPERACION.md` → «El costo fijo de cada cuenta».
+persona y no se renegocia por cliente. Ver `inherent/05-OPERACION.md` → «Lo que cuesta cada rol».
 
-⚠️ **La producción no se baja recortando horas** — eso es bajarle el precio a la persona por el
+🔑 **La producción no se baja recortando horas** — eso es bajarle el precio a la persona por el
 mismo trabajo. Si el monto no alcanza, **se cambia la mezcla** *(más derivados, contenido crudo
 del cliente)* **o se cotiza extra.**
 
-⚠️ **Esto exige agentes que trabajen entre autónomos y dirigidos:** que levanten excepciones, no
+🔑 **Esto exige agentes que trabajen entre autónomos y dirigidos:** que levanten excepciones, no
 preguntas. **Si el agente pregunta todo, no ahorra nada.**
 
-⚠️ **No se vende una capa suelta DISFRAZADA DE CRECIMIENTO.** Crecer exige algo íntegro.
+🔑 **No se vende una capa suelta DISFRAZADA DE CRECIMIENTO.** Crecer exige algo íntegro.
 **La línea Marketing vende atención y lo dice en la tarjeta** — el cliente sabe qué compró.
 Lo prohibido es cobrar contenido o pauta prometiendo facturación.
 
-⚠️ **Los cuatro planes incluyen estrategia.** Cambia la profundidad, no la existencia.
-⚠️ **Pero solo Growth toca la OFERTA.** Marketing trabaja el **mensaje** —cómo se cuenta lo que ya
+🔑 **Los cuatro planes incluyen estrategia.** Cambia la profundidad, no la existencia.
+**Pero solo Growth toca la OFERTA.** Marketing trabaja el **mensaje** —cómo se cuenta lo que ya
 vende—; Growth trabaja **qué vende, en qué paquetes y a qué precio.**
 **Confundirlos es regalar el trabajo caro dentro del plan barato.**
 
-🚀 **Publicar y atender comentarios se hace con Postpone** — MCP oficial, 12 plataformas,
-carga `calendario.csv` directo y trae las mejores horas según la data de la cuenta.
-🔴 **Su inbox NO cubre TikTok, que es canal principal.** 🟡 **Falta probarlo y ver su precio real.**
+### Las herramientas son slots
 
-🕷️ **Todo lo que haya que scrapear se hace con Apify** — IG, TikTok, YouTube, LinkedIn, Google
-Maps, Google Search y la biblioteca de anuncios de Facebook. **Plan Starter $19/mes, ~Q205
-totales al mes con 5 clientes: menos de 1 punto de margen, dentro de Herramientas / IA.** 🟡 **Falta instalar el MCP y probar
-los trece actores.** Ver `inherent/06-ECONOMIA.md` → «Apify».
-🛡️ **Las tres garantías —contenido, alcance y ventas— están en `inherent/03-OFERTA.md`.**
-**Ninguna se publica hasta que sus cuatro pendientes estén cerrados.**
+**El manual describe la responsabilidad; la herramienta que la cumple hoy está en la tabla de
+slots de `inherent/05-OPERACION.md`.** Si cambia una herramienta, se cambia esa tabla.
 
-🔌 **Un MCP declarado NO es un MCP conectado.** `inherent/06-ECONOMIA.md` → «El estado real de
-conexión» tiene la prueba en vivo. **De las capacidades declaradas, 3 están probadas.**
-🔴 **No generamos imagen ni video con IA.** Las 86-204 piezas salen de grabación, edición y
-plantillas sobre material propio. **⑥A Diseño y ⑦ Video Editing no tienen MCP:** hoy todo el
-volumen pasa por Pablo, y **es el primer techo de capacidad.**
-⛔ **No se promete:** predicción de viralidad, fotos de producto sin sesión, doblaje ni voz sintética.
+| Responsabilidad | Qué hace |
+|---|---|
+| **Publicación y bandeja de mensajes** | Programa y publica lo aprobado; atiende comentarios y mensajes |
+| **Scraping** | IG, TikTok, YouTube, LinkedIn, Google Maps, Google Search y la biblioteca de anuncios de Facebook |
+| **IA** | Corre los agentes |
 
-⚠️ **No se promete lo que no está en «Capacidades reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay
-acción, y sin acción no hay promesa. **Los límites declarados están en `inherent/01-IDENTIDAD.md`:**
-no hacemos LinkedIn Ads, SEO técnico profundo, ni reclutamos personal.
+🔌 **Un MCP declarado NO es un MCP conectado.** **No se promete lo que no está en «Capacidades
+reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción no hay promesa.
+
+**No generamos imagen ni video con IA.** Las 86-204 piezas salen de grabación, edición y
+plantillas sobre material propio.
+⛔ **No se promete:** predicción de viralidad, fotos de producto sin sesión, doblaje ni voz
+sintética. **Los límites declarados están en `inherent/01-IDENTIDAD.md`:** no hacemos LinkedIn
+Ads, SEO técnico profundo, ni reclutamos personal.
+
+🛡️ **Las garantías y sus condiciones están en `inherent/03-OFERTA.md`.** No se ofrece ninguna que
+no esté ahí.
 
 ## Dónde está cada cosa
 
@@ -326,9 +325,10 @@ no hacemos LinkedIn Ads, SEO técnico profundo, ni reclutamos personal.
 | El método — los 4 sistemas y las 2 divisiones | `inherent/02-METODO.md` |
 | Los planes, precios y cómo se activa cada uno | `inherent/03-OFERTA.md` |
 | Industrias, mercados o la red de mentores | `inherent/04-MERCADO.md` |
-| El pipeline, los equipos o los ciclos | `inherent/05-OPERACION.md` |
+| Los roles, el pipeline o el calendario | `inherent/05-OPERACION.md` |
 | 🔒 Costos, márgenes, capacidades MCP | `inherent/06-ECONOMIA.md` |
 | Copy, tono o el brief de la web | `inherent/07-COMUNICACION.md` |
+| Lo que falta decidir, construir o probar | `PENDIENTES.md` |
 
 ## Cómo arrancás una sesión
 
@@ -349,12 +349,14 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
 
 - **Español.** Los términos del método quedan en inglés: `WIN`, `MUST BE TRUE`, `UNFAIR`, `GO GET`, `MOVE`, `COMPOUND`.
 - **El repo es el manual, no el chat.** `CLAUDE.md`, `inherent/` y `agents/` solo reciben lo que
-  Allan aprobó **en ese mismo turno**. Nada de lo conversado se sube solo.
+  el CEO aprobó **en ese mismo turno**. Nada de lo conversado se sube solo.
   Lo que no está decidido **no entra: se pregunta.** Sin rastros de conversación: ni «por confirmar»,
   ni «pendiente», ni fechas de verificación, ni historia de cómo se llegó a la decisión.
+  **Lo que falta decidir, construir o probar vive en `PENDIENTES.md`, nunca en el manual.**
+- **Roles, no nombres.** Los nombres de las personas están solo en la tabla de slots de `inherent/05-OPERACION.md`.
 - **Evidencia o etiqueta** — en el trabajo de cliente. Sin fuente va como `[dice el cliente, sin verificar]`
   o `⚠️ SIN DATOS`. Nunca inventar.
 - **Solo la info que entrega el usuario**, salvo que él habilite fuentes externas.
-- **Gate humano: Allan (Rodrigo).** El agente propone, no cierra.
+- **Gate humano: el CEO.** El agente propone, no cierra.
 - **Nada destructivo sin autorización:** no publicar, no pautar, no enviar al cliente, no borrar.
 - Formato de respuesta: headings, bullets, negritas. Lo accionable arriba. Sin párrafos largos.

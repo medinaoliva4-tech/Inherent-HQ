@@ -1,7 +1,6 @@
-# Comunicacion — Cómo lo decimos
+# Comunicación — Cómo lo decimos
 
 > El brief de la web: qué sentir, qué decir y la tabla de traducción.
-
 
 ---
 
@@ -65,13 +64,13 @@ Instagram y siente que están en otra liga.
 **Su cabeza:** tiene marca, tiene audiencia y está cansado de improvisar cada semana.
 **Su miedo:** pagar por algo que él ya cree saber hacer.
 **Lo que necesita leer:** que deja de depender de que a alguien se le ocurra qué subir.
-⚠️ **Este comprador NO quiere que le toquen el negocio.** Ofrecerle consultoría lo espanta.
+🔑 **Este comprador NO quiere que le toquen el negocio.** Ofrecerle consultoría lo espanta.
 
 ### 🟨 El estancado
 *«Ya funciona. Pero llegué a un techo y no sé cómo pasarlo.»*
 
 **Su cabeza:** vende, tiene clientes, lo conocen. Y hace meses que el número no se mueve.
-**Su miedo:** 🔴 **romper lo que ya le funciona.** Este es el más importante de los tres miedos.
+**Su miedo:** **romper lo que ya le funciona.** Es el miedo más importante de los cuatro.
 **Lo que necesita leer:** que vamos a escalar lo que ya le sirve, **no a cambiárselo todo.**
 
 ### 🟨 El atrapado en su propia empresa
@@ -129,7 +128,8 @@ constructora. Nosotros no, porque no adivinamos: preguntamos a alguien que ya lo
 
 - **Por industria:** gente que **ya hizo crecer su propia marca en tu categoría.** Entran a tu
   estrategia a responder una sola pregunta: *«¿qué haría yo si esta fuera mi empresa?»*
-- **Por área:** corporate structure, eventos, networking y PR, producción, marketing de talento
+- **Por área:** eventos, networking y PR, producción, marketing de talento
+- **La estructura de tu empresa** la cubre la auditoría
 
 > *Un restaurante no crece igual que una clínica. Los canales que importan, las métricas que
 > mienten y dónde vive la confianza — eso lo sabe quien ya lo vivió, no quien lo leyó.*
@@ -155,9 +155,9 @@ estructura.
 ### 4 · ⚡ Volumen que no se sostiene a mano
 
 **Entre 86 y 204 piezas al mes.** Un paquete típico del mercado entrega ~16.
-⚠️ **Es evidencia de capacidad, no la oferta — y nunca se usa para vender la línea Growth.**
+**Es evidencia de capacidad, no la oferta — y nunca se usa para vender la línea Growth.**
 
-**Cómo se comunica:** ⚠️ **Nunca como número principal.** Va como **evidencia**, no como oferta.
+**Cómo se comunica:** **nunca como número principal.** Va como **evidencia**, no como oferta.
 *«Presencia todos los días, hecha por gente talentosa.»*
 
 ### 5 · 🤖 Cosas que solo se pueden con agentes
@@ -168,7 +168,7 @@ estructura.
 
 ### 6 · 💰 Ganamos cuando tú ganas
 
-**Fee base + porcentaje sobre las ventas que producimos.**
+**Fee base + porcentaje sobre las ventas que producimos.** Solo en la línea Growth.
 *No sobre tu tráfico de siempre. Sobre lo que traemos nosotros.*
 
 **Cómo se comunica:** *«Nos conviene que te vaya bien. Literalmente.»*
@@ -179,13 +179,13 @@ estructura.
 
 ```
 1  HERO                 la promesa + quién eres tú
-2  ¿EN CUÁL ESTÁS?      los tres momentos — el visitante se auto-selecciona
+2  ¿EN CUÁL ESTÁS?      los cuatro momentos — el visitante se auto-selecciona
 3  CÓMO LO HACEMOS      los cuatro sistemas, en lenguaje humano
 4  LOS ESPECIALISTAS    el diferenciador más fuerte
-5  LOS PLANES           tres, con precio visible
+5  LOS PLANES           cuatro, en dos líneas, con precio visible
 6  INDUSTRIAS           que se vea su caso
 7  LO QUE SÍ Y LO QUE NO  los límites, escritos
-8  FILOSOFÍA            el manifiesto (ya existe)
+8  FILOSOFÍA            el manifiesto
 9  DIAGNÓSTICO          el CTA principal
 ```
 
@@ -222,7 +222,7 @@ tu tecnología y tus números.
 | 🟨 | *«Ya funciona, pero llegué a un techo.»* | Accelerate |
 | 🟨 | *«Todo pasa por mí y no puedo soltar.»* | Compound |
 
-> ⚠️ **Sin nombres de plan en las tarjetas. Sin precios. Solo la frase.**
+> 🔑 **Sin nombres de plan en las tarjetas. Sin precios. Solo la frase.**
 > El plan aparece después, cuando ya se reconoció.
 
 ---
@@ -233,7 +233,7 @@ tu tecnología y tus números.
 
 **Los cuatro sistemas, en lenguaje de resultado:**
 
-| | Lo que hacemos | Lo que ganás |
+| | Lo que hacemos | Lo que ganas |
 |---|---|---|
 | **Que te quieran** | Tu marca, tu oferta y tu presencia | **La gente que te importa sabe que existes** |
 | **Que te compren** | El camino desde que te escriben hasta que te pagan | **Nadie que te busca se pierde** |
@@ -258,15 +258,15 @@ una marca como la tuya. Y responde una sola pregunta:
         "¿Qué haría yo si esta fuera mi empresa?"
 ```
 
-**Mostrar:** la lógica de industria + área, sin nombres propios todavía *(no hay acuerdos)*.
+**Mostrar:** la lógica de industria + área. **Sin nombres propios de especialistas.**
 **No mostrar:** las plataformas de donde salen. Es nuestra plomería, no su beneficio.
 
 ---
 
 ## Sección 5 · LOS PLANES
 
-> 🔴 **CAMBIO MAYOR PENDIENTE DE PUBLICAR.** El sitio todavía muestra las tres tarjetas viejas
-> *(Ignite $800 · Accelerate $1,200 · Compound $2,000)*. **Esto es lo que las reemplaza.**
+> **El texto oficial de las cuatro tarjetas está en `03-OFERTA.md`.** El repo no puede prometer
+> menos, más ni distinto que lo publicado.
 
 ### 🧭 Cómo se muestran cuatro planes sin abrumar
 
@@ -285,12 +285,12 @@ una marca como la tuya. Y responde una sola pregunta:
 | Por qué funciona | |
 |---|---|
 | **Nunca ve más de dos precios a la vez** | Comparar dos es decidir. Comparar cuatro es postergar |
-| **El toggle hace la pregunta de calificación** | *«¿querés marketing o querés crecer?»* — él se clasifica solo |
+| **El toggle hace la pregunta de calificación** | *«¿quieres marketing o quieres crecer?»* — él se clasifica solo |
 | **Separa el salto de precio** | $1,450 y $2,500 nunca se ven juntos, así que el salto no asusta |
 | **Deja el upsell abierto** | El que entra por marketing ya sabe que existe el otro lado |
 
-**Por defecto se abre en `Quiero crecer en serio`.** Es la línea de más margen, y el que solo
-quiere marketing igual va a buscar su opción.
+**Por defecto se abre en `Quiero crecer en serio`.** Es la línea que más utilidad deja por cuenta,
+y el que solo quiere marketing igual va a buscar su opción.
 
 **Debajo del toggle, una línea que une las dos:**
 > *Todos incluyen marca, contenido y campañas. Lo que cambia es qué tan adentro entramos.*
@@ -311,7 +311,7 @@ quiere marketing igual va a buscar su opción.
 
 ---
 
-### 🔷 MARKETING PRO · $1,450/mes — *Para el establecido que solo quiere marketing*
+### 🔷 MARKETING PRO · $1,450/mes — *Para el negocio establecido que solo quiere marketing*
 > *«Ya me conocen. Quiero sostener presencia en serio y no quedarme sin qué publicar.»*
 
 - **Todo lo de Marketing**
@@ -326,8 +326,10 @@ quiere marketing igual va a buscar su opción.
 
 ---
 
-### 🟨 ACCELERATE · $2,500/mes — *Para el que necesita más de lo que ya le funcionó*
+### 🟨 ACCELERATE · $2,500/mes — *Para el negocio que necesita más de lo que ya le funcionó*
 > *«Ya funciona, pero llegué a un techo y no quiero romper lo que me sirve.»*
+
+**Aquí no venimos a que te conozcan más. Venimos a que vendas más.**
 
 - **Todo lo de Marketing Pro**
 - **Tu oferta y tu precio rediseñados: qué vendes, en qué paquetes y por cuánto**
@@ -344,8 +346,10 @@ quiere marketing igual va a buscar su opción.
 
 ---
 
-### 🟨 COMPOUND · $4,200/mes — *Para el que necesita que todo corra sin él*
+### 🟨 COMPOUND · $4,200/mes — *Para el negocio que necesita que todo corra sin él*
 > *«Quiero que esto crezca sin que yo esté en todo, y que al final del mes quede dinero.»*
+
+**El freno ya no es el mercado: eres tú, tu equipo y tus números.**
 
 - **Todo lo de Accelerate, al máximo**
 - **Tu operación más liviana: una herramienta nueva cada mes**
@@ -371,7 +375,7 @@ quiere marketing igual va a buscar su opción.
 | *«Garantizamos 10x»* | **«Apuntamos a»** — es la meta contra la que trabajamos |
 | *«ROI del 670%»* | **Nada de porcentajes técnicos en la tarjeta** |
 
-> 🔴 **«Apuntamos a» no es decoración legal — es la verdad.** Hoy no hay un solo caso medido.
+> 🔑 **«Apuntamos a» no es decoración legal — es la verdad:** es la meta contra la que trabajamos.
 > **Decir «garantizamos» sin evidencia rompe la regla de `evidencia o etiqueta` y la credibilidad
 > el día que no pase.**
 
@@ -382,8 +386,8 @@ Ver `03-OFERTA.md` → «Para la llamada».
 **TAILOR MADE** — *Para lo que no cabe en un molde.* Multi-locación, regulatorio, integraciones
 o proyectos por hito. **Precio según alcance.**
 
-> ⚠️ **Precios siempre en USD.** ⚠️ **Nunca decir «Guatemala» como alcance.**
-> ⚠️ **Nunca mostrar costos, márgenes ni cantidad de piezas en la web.**
+> 🔑 **Precios siempre en USD.** **Nunca decir «Guatemala» como alcance.**
+> **Nunca mostrar costos, márgenes ni cantidad de piezas en la web.**
 
 ---
 
@@ -392,11 +396,13 @@ o proyectos por hito. **Precio según alcance.**
 | Línea publicada | Qué toca |
 |---|---|
 | *«un especialista cada trimestre / cada mes»* | **La cadencia de mentores.** Solo línea Growth — ver `04-MERCADO.md` |
-| *«una herramienta nueva cada trimestre / cada mes»* | **El build de tecnología.** No tiene rubro propio: sale de Herramientas / IA + Operador |
-| *«tus números claros»* | **Money OS.** Lo entrega Allan con Strategy, no un CFO contratado |
-| *«que te encuentren en Google»* | **Es pauta de búsqueda, no SEO técnico.** Ver `06-ECONOMIA.md` |
+| *«una herramienta nueva cada trimestre / cada mes»* · *«tu propia IA»* | **El build de tecnología.** El CEO define el alcance y el operador de agentes la construye. Sale del rubro Operador |
+| *«tus números claros»* | **Money OS.** Lo entrega el CEO con Strategy, no un CFO contratado |
+| *«estructura corporativa»* | **La cubre la auditoría** |
+| *«SOPs de toda la empresa»* | **El especialista audita, el CEO y el COO coordinan, el COO implementa con agentes** |
+| *«que te encuentren en Google»* | **Es pauta de búsqueda y contenido guiado por keywords.** Nunca posicionamiento orgánico, auditoría técnica ni link building |
 | *«presencia todos los días»* | **86 · 145 · 145 · 204 piezas.** El techo real es la grabación |
-| *«comentarios y mensajes» · «comunidad»* | 🔴 **⑧ Community Management no está construido** |
+| *«comentarios y mensajes» · «comunidad»* | **⑧ Community Management.** El operador de agentes hace cada mes el setup del agente con la info del cliente, y queda corriendo |
 | *«tu oferta y tu precio rediseñados»* | **Solo Growth.** Marketing trabaja el mensaje, no la oferta |
 | *«apuntamos a Nx»* | **El modelo del múltiplo.** Ver `06-ECONOMIA.md` → «El múltiplo» |
 
@@ -422,7 +428,8 @@ Hotelería · Software · Financiero · Salud especializada · Arquitectura y di
 
 ```
 No hacemos LinkedIn Ads.
-No hacemos SEO técnico — hacemos SEO de contenido, y es distinto.
+No hacemos SEO técnico. Que te encuentren en Google es pauta de búsqueda
+y contenido pensado para lo que la gente busca.
 No reclutamos personal: damos el sistema, no las personas.
 La inversión publicitaria la pones tú, siempre, aparte.
 ```
@@ -467,14 +474,14 @@ quiere empezar.
 | Integramos tus sistemas operativos | **No vas a estar solo en esto** |
 | Implementación de CRM | **Nadie que te escriba se queda sin respuesta** |
 | Documentación de SOPs | **Lo que te funcionó una vez, ahora se repite** |
-| Análisis de unit economics | **Sabés cuál producto te deja y cuál te quita** |
+| Análisis de unit economics | **Sabes cuál producto te deja y cuál te quita** |
 | 86 piezas de contenido al mes | **Presencia todos los días, hecha por gente talentosa** |
 | Rediseño de pricing y packaging | **Qué vendes, en qué paquetes y por cuánto** |
-| Optimización de estructura corporativa | **Ahorrás donde se puede ahorrar** |
-| Estrategia de comunidad | **Gente que te sigue porque le importás** |
+| Optimización de estructura corporativa | **Ahorras donde se puede ahorrar** |
+| Estrategia de comunidad | **Gente que te sigue porque le importas** |
 | Escalamiento de canales | **Creces sin romper lo que ya te funciona** |
 | Auditoría de fulfillment | **Crecer deja de dar miedo** |
-| Atribución multi-touch | **Sabés de dónde vino cada venta** |
+| Atribución multi-touch | **Sabes de dónde vino cada venta** |
 | Expansión de cuenta | **Creces sin buscar clientes nuevos todo el tiempo** |
 
 ---
@@ -498,11 +505,11 @@ mediocre, **nadie cree nada de lo demás.**
 
 # 8 · La prueba — qué mostrar
 
-**Hoy hay dos clientes reales: NAO y Akai.** Ambos con testimonio escrito.
+**Los casos son clientes reales con testimonio escrito:** NAO y Akai.
 **Los números publicados** *(+42%, 3.1x, −28%)* van con su contexto.
 
-⚠️ **Los dos clientes actuales pagan precio de amigos. Eso nunca se dice.**
-⚠️ **Guatemala puede aparecer en el equipo y en los casos. Nunca en la oferta ni en el precio.**
+🔒 **Lo que paga un cliente nunca se dice.**
+🔑 **Guatemala puede aparecer en el equipo y en los casos. Nunca en la oferta ni en el precio.**
 
 ---
 

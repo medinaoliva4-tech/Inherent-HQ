@@ -1,7 +1,6 @@
-# Metodo — Cómo pensamos
+# Método — Cómo pensamos
 
 > Los cuatro sistemas, las dos divisiones, las capacidades y la red de especialistas.
-
 
 ---
 
@@ -162,8 +161,8 @@ enfría. Desde ahí construimos el camino completo para que **nadie que ya te bu
    automáticas y recordatorios, con guion de objeciones para las conversaciones difíciles
 3. **El camino de compra** — landings, checkout y formularios que no piden lo que no hace falta,
    probados y ajustados hasta que rinden
-4. **Saber qué pasó** — atribución real con Meta CAPI y GA4, enlaces y códigos rastreables, y un
-   panel donde se ve de dónde vino cada venta
+4. **Saber qué pasó** — atribución real del anuncio a la venta, enlaces y códigos rastreables, y
+   un panel donde se ve de dónde vino cada venta
 
 **Causando que dejes de perder a los que ya te habían buscado.**
 
@@ -189,9 +188,13 @@ una sola persona y qué pasa si esa persona no está.
 4. **El equipo que sostiene** — perfiles de puesto según lo que el crecimiento va a exigir,
    onboarding para que alguien nuevo sea útil rápido, y los criterios documentados
 
-**Causando que crecer deje de depender de vos.**
+**Causando que crecer deje de depender de ti.**
 
 **No reclutamos. Damos el sistema, no las personas.**
+
+🔑 **Quién lo hace:** el especialista audita → el CEO y el COO coordinan lo que sale de la
+auditoría → el COO lo implementa con agentes *(SOPs, mapa de experiencia y LTV, documentación y
+entrenamiento)*. La estructura corporativa también la cubre la auditoría.
 
 `Consulting` `Tech`
 
@@ -208,11 +211,13 @@ cosa que vendés, cuánto te cuesta traer un cliente y cuánto te deja con el ti
    y qué hay que cambiar para poder subirlo sin perder clientes
 2. **Margen por línea** — producto por producto: cuál te sostiene, cuál te desangra, cuál hay que
    empujar y cuál retirar
-3. **Costo de adquisición** — cuánto te cuesta un cliente por canal y cuánto podés pagar por él
+3. **Costo de adquisición** — cuánto te cuesta un cliente por canal y cuánto puedes pagar por él
    sin perder, para que la pauta deje de ser una apuesta
 4. **Valor de vida** — cuánto te deja un cliente en el tiempo, por segmento, y qué lo cambia
 
 **Causando que vender más signifique ganar más.**
+
+🔑 **Money OS lo lleva el CEO**, con Strategy. No es un CFO contratado.
 
 `Consulting` `Tech`
 
@@ -245,29 +250,37 @@ constructora. **Nosotros no, porque no adivinamos: preguntamos a alguien que ya 
 
 **Gente que ya hizo crecer su propia marca en esa industria.**
 
-Los conseguimos en **MentorCruise**, **GrowthMentor** y **MentorPass** *(e-commerce)* —
-plataformas donde operadores reales venden sesiones. **Se paga por sesión, no por mes.**
-
-⚠️ **El mentor es exclusivo de la línea Growth**, y su precio define en qué plan cabe.
-Arriba de $180 la sesión va como add-on facturado al cliente, nunca absorbido.
+Los conseguimos en plataformas de mentoría donde operadores reales venden sesiones
+*(las actuales: MentorCruise, GrowthMentor y MentorPass para e-commerce)*.
 
 No los contratamos para que ejecuten. Los traemos a la estrategia para responder una sola
-pregunta: **¿qué harías vos si esta fuera tu empresa?**
+pregunta: **¿qué harías tú si esta fuera tu empresa?**
 
 Eso cambia la conversación. Un restaurante no crece igual que una clínica. Los canales que
 importan, las métricas que mienten, dónde vive la confianza y qué compra realmente la gente —
 todo eso lo sabe quien ya lo vivió, no quien lo leyó.
 
+**El mentor de la industria hace la auditoría** de la línea Growth.
+
+### Las reglas que lo hacen rentable
+
+| | |
+|---|---|
+| **1** | **El mentor es exclusivo de la línea Growth.** En la línea Marketing no existe |
+| **2** | **Trimestral en Accelerate, mensual en Compound** |
+| **3** | **La membresía se paga anual y es de Inherent** — sirve a todos los clientes de esa industria |
+| **4** | **Arriba de $180 la sesión va como add-on facturado al cliente.** Nunca se absorbe |
+
 **Causando que la estrategia sea realista desde el día uno, y no una teoría bonita que se cae
 al mes.**
 
-## Especialistas por área — *de nuestro equipo*
+## Especialistas por área — *nuestra red*
 
-**Para lo que necesita profundidad, no generalidad. Estos son nuestros, no rentados.**
+**Para lo que necesita profundidad, no generalidad. Red, no nómina.**
 
 | Área | Cuándo entra |
 |---|---|
-| **Corporate structure** | Cuando el problema es cómo está armada la empresa, no cómo se comunica |
+| **Corporate structure** | Cuando el problema es cómo está armada la empresa, no cómo se comunica. **La cubre la auditoría** |
 | **Eventos** | Cuando el canal grande son celebraciones, corporativos o activaciones |
 | **Networking y PR** | Cuando lo que falta es estar en la conversación correcta |
 | **Talent production** | Cuando la producción necesita un nivel que no se improvisa |
@@ -277,11 +290,10 @@ al mes.**
 
 | | Industria | Área |
 |---|---|---|
-| **Quién es** | Alguien que ya creció su marca en esa industria | Nuestro director de esa área |
-| **De dónde sale** | MentorCruise · GrowthMentor · MentorPass | Nuestro equipo |
-| **Cómo se paga** | Por sesión | Fijo o por horas |
-| **Qué aporta** | *«Qué haría yo si esta fuera mi empresa»* | Dirige la ejecución |
-| **Cuándo entra** | En la estrategia y en los replanteos | Todo el ciclo |
+| **Quién es** | Alguien que ya creció su marca en esa industria | Un especialista de esa área |
+| **De dónde sale** | Plataformas de mentoría | Nuestra red |
+| **Qué aporta** | *«Qué haría yo si esta fuera mi empresa»* · la auditoría | Dirige la ejecución |
+| **Cuándo entra** | En la estrategia, la auditoría y los replanteos | Todo el ciclo |
 
 **Causando que el cliente tenga acceso a gente que no podría contratar, por lo que cuesta un
 proveedor.**
@@ -310,8 +322,8 @@ Si no la tiene, no es un sistema: es un tema dentro de otro.
 | **Talento** | Es una condición para que la empresa aguante | Operations |
 | **Contenido y pauta** | Son **el cómo**, no el qué | Growth · Conversion |
 
-⚠️ **Si algo de esto empieza a pedir su propio equipo y sus propias reuniones, ahí sí se
-convierte en sistema. Hoy no lo pide.**
+🔑 **Si algo de esto llega a pedir su propio equipo y sus propias reuniones, ahí se convierte en
+sistema.**
 
 ---
 
@@ -321,20 +333,20 @@ convierte en sistema. Hoy no lo pide.**
 |---|---|---|---|---|
 | **Qué promete** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
 | **Diagnóstico** | ✅ | ✅ | ✅ Profundo | ✅ + trimestral |
-| **Growth OS** | ⬜ | ⬜ | **Los 3 pilares** | **Los 3, a fondo** |
+| **Growth OS** | ⬜ | ⬜ | **Los 3 pilares, ejecutando** | **Los 3, sistematizados** |
 | **Conversion OS** | ⬜ | ⬜ | ✅ | ✅ |
-| **Operations OS** | ⬜ | ⬜ | Parcial *(SOPs de crecimiento)* | ✅ Completo |
+| **Operations OS** | ⬜ | ⬜ | Parcial *(SOPs de crecimiento)* | ✅ Completo *(SOPs de empresa)* |
 | **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
 | | | | | |
-| **Capacidades** | Marketing · Creative · Branding | + Production | + Tech · Consulting | **Las seis** |
-| **Especialistas** | ⬜ | ⬜ | Por industria | **Toda la red** |
+| **Capacidades** | Marketing · Creative · Branding · Production | Las mismas, con mayor volumen | + Tech · Consulting | **Las seis, a fondo** |
+| **Especialistas** | ⬜ | ⬜ | Mentor de industria, trimestral | **Mentor mensual + toda la red** |
 | **Somos** | Tu equipo de marketing | Tu equipo creativo completo | Tu operating partner | **Tu socio operador** |
 
 **Por qué la línea Marketing no lleva los sistemas:** un negocio que arranca no tiene un problema
 de capacidad — tiene un problema de existencia. Meterse en sus finanzas hoy sería cobrarle por
 algo que todavía no necesita.
 
-⚠️ **Y por eso Marketing no promete un % de crecimiento.** El % sale de la oferta y la conversión,
+🔑 **Y por eso Marketing no promete un % de crecimiento.** El % sale de la oferta y la conversión,
 que son Growth OS y Conversion OS. **Sin ellos solo se amplifica lo que ya hay.**
 
 **Por qué Compound cuesta más:** tocamos tu equipo y tus números. Eso no lo carga una
@@ -344,16 +356,17 @@ herramienta — lo carga una cabeza.
 
 # Cómo se comunica esto
 
-**La regla: cada cosa que decimos termina en un resultado, no en un servicio.**
+**La regla: cada cosa que decimos termina en un resultado, no en un servicio.** La copia al
+cliente va de TÚ. La tabla completa está en `07-COMUNICACION.md`.
 
 | No decir | Decir |
 |---|---|
-| "Incluye SOPs y documentación" | **"Te podés ir una semana y la empresa factura igual"** |
-| "Análisis de unit economics" | **"Sabés cuál producto te da y cuál te quita"** |
+| "Incluye SOPs y documentación" | **"Te puedes ir una semana y la empresa factura igual"** |
+| "Análisis de unit economics" | **"Sabes cuál producto te deja y cuál te quita"** |
 | "Implementación de CRM" | **"Ningún interesado se enfría por olvido"** |
-| "86 piezas de contenido al mes" | **"La gente que te importa sabe que existís"** |
+| "86 piezas de contenido al mes" | **"La gente que te importa sabe que existes"** |
 | "Auditoría de fulfillment" | **"Crecer deja de dar miedo"** |
-| "Estrategia de expansión de cuenta" | **"Crecés sin buscar clientes nuevos todo el tiempo"** |
+| "Estrategia de expansión de cuenta" | **"Creces sin buscar clientes nuevos todo el tiempo"** |
 
 **El volumen, las herramientas y los servicios son la evidencia de que podemos. Nunca son la
 oferta.**

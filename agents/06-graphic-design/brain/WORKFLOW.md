@@ -48,7 +48,7 @@ paso vive en las skills: `skills/README.md`.
 - 🔑 **168 es el techo real del departamento**, el de 🟨 Compound — y **no se diseñan una por una.**
   Se arma el sistema de plantillas del ciclo y se llenan: **el GATE 1 aprueba el molde, no las
   piezas.** Sin ese gate el volumen no es viable.
-- 🔴 **⑥A no tiene MCP: hoy el volumen pasa entero por Pablo.** Sus horas son el techo de capacidad,
+- 🔴 **⑥A no tiene MCP: hoy el volumen pasa entero por el operador de agentes.** Sus horas son el techo de capacidad,
   no el plan. Si el ciclo no entra, **se declara antes de empezar a componer**, no a mitad.
 - 🛑 **Si llegan más piezas que el techo del plan, las de más no se componen:** se declara la
   diferencia y se devuelve a ③ Marketing. Recortar es decisión de alcance, no de ⑥A.
@@ -64,7 +64,7 @@ el departamento trabaja con esos números igual que con un plan estándar. **El 
 - 🛑 **No existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
 - **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
   en todos los planes.
-- **Arriba de 🟨 Compound sube el volumen**, pero el techo real son **las horas de Pablo y las
+- **Arriba de 🟨 Compound sube el volumen**, pero el techo real son **las horas del operador de agentes y las
   plantillas aprobadas**: más piezas sin plantilla nueva es ejecución que no existe.
 
 ---
@@ -142,13 +142,13 @@ alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se 
 
 | Acción | MCP | |
 |---|---|---|
-| Componer cada pieza sobre la plantilla | **Pablo** — dentro del costo fijo de su rubro | 👤 |
+| Componer cada pieza sobre la plantilla | **Operador de agentes** — dentro del costo fijo de su rubro | 👤 |
 | Fotos de producto | ⑤ Producción — la sesión de foto del mes | 👤 |
 | Reencuadrar para cada formato | `ffmpeg` local *(recorte y escala)* | ⬜ |
 | Generar imagen con IA · quitar fondo · escalar calidad | ⛔ **Sin herramienta — no se promete** | 🔴 |
 
 > ⚠️ **`⬜` = la tool existe, sin probar en cliente real · `👤` = lo hace una persona.**
-> 🔴 **⑥A no tiene MCP.** Hoy es ejecución de Pablo con plantillas: **sus horas son el techo del
+> 🔴 **⑥A no tiene MCP.** Hoy es ejecución del operador de agentes con plantillas: **sus horas son el techo del
 > volumen.** Por eso el GATE 1 de plantillas es lo que hace viable el departamento.
 
 ---

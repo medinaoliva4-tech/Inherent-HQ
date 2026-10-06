@@ -47,7 +47,7 @@ LÓGICA      CÓMO hace esas cosas. Son las skills.
 | **Skills que son método, no instrucciones** | Cada una responde una pregunta del trabajo real y produce un entregable nombrado |
 | **Límites declarados** | Lo que el agente **no** hace está escrito, para que no lo intente |
 | **Correlación con el resto** | De quién recibe y a quién entrega, en la cadena de doce etapas |
-| **Su propia entrega** | Cada agente entrega algo distinto, y su formato vive en su workflow. Lo único igual: **Allan aprueba antes de que algo salga** |
+| **Su propia entrega** | Cada agente entrega algo distinto, y su formato vive en su workflow. Lo único igual: **el CEO aprueba antes de que algo salga** |
 | **Qué entrega según el plan** | Cada ficha dice qué le toca en Marketing, Marketing Pro, Accelerate y Compound. **El plan es el techo, no una sugerencia** |
 
 > 🔑 **Un agente que pregunta todo no ahorra nada.** Tienen que trabajar entre autónomos y
@@ -100,7 +100,7 @@ el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno 
 
 | | |
 |---|---|
-| **Gate humano** | El agente propone, **no cierra**. Allan decide |
+| **Gate humano** | El agente propone, **no cierra**. El CEO decide |
 | **Nada destructivo sin autorización** | No publicar, no pautar, no enviar al cliente, no borrar |
 | **Evidencia o etiqueta** | Sin fuente va como `[dice el cliente, sin verificar]` o `⚠️ SIN DATOS`. **Nunca inventar** |
 | **Sin MCP no hay promesa** | Lo que no está en «Capacidades reales» de `inherent/06-ECONOMIA.md` no se vende |

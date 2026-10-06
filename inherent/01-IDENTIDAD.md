@@ -2,10 +2,7 @@
 
 > La categoría, la promesa, los diferenciadores y los límites.
 
-
 ---
-
-# Identidad Inherent
 
 ## Qué somos
 
@@ -51,7 +48,7 @@ LA DEMANDA QUE HACE FALTA
       │  ¿cuánta gente, de qué tipo, con qué intención?
       ▼
 EL POSICIONAMIENTO Y LA OFERTA
-      │  ¿por qué te elegirían a vos?
+      │  ¿por qué te elegirían a ti?
       ▼
 LAS CAMPAÑAS Y LOS ÁNGULOS
       │  ¿qué decimos y cuándo?
@@ -109,7 +106,7 @@ oferta, y la pauta no salva una experiencia rota.
 | **Llega gente y se pierde** — hay demanda, no hay conversión | 🟨 **Accelerate** |
 | **Funciona pero todo depende de alguien** — hay conversión, no hay sistema | 🟨 **Compound** |
 
-⚠️ **Marketing Pro y Accelerate entregan las mismas 145 piezas.** El salto no es volumen:
+🔑 **Marketing Pro y Accelerate entregan las mismas 145 piezas.** El salto no es volumen:
 es que Accelerate toca **la oferta, el precio y la conversión.**
 
 ---
@@ -121,7 +118,7 @@ es que Accelerate toca **la oferta, el precio y la conversión.**
 
 ---
 
-## 🔷 MARKETING — Q7,315/mes *($950)*
+## 🔷 MARKETING — $950/mes *(Q7,315)*
 
 ### Lo básico *(lo que da cualquier agencia)*
 - Manejo de redes sociales
@@ -142,12 +139,12 @@ es que Accelerate toca **la oferta, el precio y la conversión.**
 | **Mapa de aliados** y gestión de asociaciones | Porque crecer no es solo pautar: es pararse al lado de quien ya tiene la audiencia |
 | **Mensaje y posicionamiento trabajados de verdad** | Porque una agencia recibe el brief y ejecuta. Nosotros decidimos qué decir |
 
-⚠️ **En Marketing se trabaja el MENSAJE, no la oferta.** Qué vende, en qué paquetes y a qué
+🔑 **En Marketing se trabaja el MENSAJE, no la oferta.** Qué vende, en qué paquetes y a qué
 precio **solo lo toca la línea Growth.** Confundirlos regala el trabajo caro dentro del plan barato.
 
 ---
 
-## 🟨 ACCELERATE — Q19,250/mes *($2,500)*
+## 🟨 ACCELERATE — $2,500/mes *(Q19,250)*
 
 ### Lo básico *(lo que da cualquier agencia "con pauta")*
 - Campañas en Meta
@@ -163,16 +160,16 @@ precio **solo lo toca la línea Growth.** Confundirlos regala el trabajo caro de
 | **Contenido creado PARA ads**, no reciclado del orgánico | Porque producir creativo específico a volumen solo es viable con agentes |
 | **Hasta 35 variantes por campaña** | Porque el algoritmo necesita volumen para encontrar al ganador. Ellos entregan 3 |
 | **Clonar el anuncio más longevo del competidor** | Porque él ya pagó por descubrir qué funciona. Nosotros arrancamos donde él terminó |
-| **SEO de intención** — keywords, contenido y landings que capturan búsqueda | Porque el volumen de contenido lo hace posible sin equipo de SEO |
+| **Que te encuentren en Google** — pauta de búsqueda y contenido guiado por keywords | Porque el volumen de contenido lo hace posible sin equipo aparte |
 | **Closing** — estructura de cierre, objeciones y seguimiento, con entrenamiento al equipo | Porque una agencia entrega leads y se lava las manos |
 | **Lead magnets y lista propia** | Porque dejás de alquilarle la audiencia a Instagram |
 | **Influencers elegidos por afinidad con el ICP**, no por alcance | Porque medimos su audiencia real con datos, no con el conteo de seguidores |
 | **Embudos de WhatsApp** con flujos y entrenamiento | Porque en Guatemala la venta se cierra ahí, y casi nadie lo estructura |
-| **Atribución limpia** — CAPI + GA4 | Porque sin esto nadie sabe qué quetzal funcionó |
+| **Atribución limpia** — del anuncio a la venta | Porque sin esto nadie sabe qué quetzal funcionó |
 
 ---
 
-## 🟨 COMPOUND — Q32,340/mes *($4,200)*
+## 🟨 COMPOUND — $4,200/mes *(Q32,340)*
 
 ### Lo básico
 **No existe.** Ninguna agencia guatemalteca ofrece este nivel.
@@ -185,6 +182,7 @@ Lo más cercano es una consultoría que **entrega un documento y se va.**
 | **🔁 Sistemas de demanda** | La demanda deja de comprarse cada mes. Referidos, comunidad, recompra y contenido que sigue trayendo gente meses después |
 | **📦 Fulfillment** | Mapeamos cómo entrega el negocio, encontramos dónde se rompe y lo automatizamos. **Porque crecer con una entrega rota destruye la marca** |
 | **👥 Talento** | Perfiles de puesto, SOPs, onboarding y documentación. **Para que el equipo del cliente pueda sostener lo que construimos** |
+| **🏛️ Estructura corporativa** | Organigrama, qué puestos necesita y quién decide qué. **La cubre la auditoría** |
 | **🤖 IA propia del cliente** | Entrenada con su marca, su oferta y sus datos. El conocimiento sale de la cabeza del fundador |
 | **🔧 Una herramienta a medida por mes** | No por trimestre |
 | **📊 Atribución completa de punta a punta** | Del primer impacto a la venta |
@@ -195,19 +193,19 @@ Lo más cercano es una consultoría que **entrega un documento y se va.**
 
 ---
 
-## ⚠️ Los límites — lo que NO prometemos
+## Los límites — lo que NO prometemos
 
 **La credibilidad se sostiene en lo que no decimos.**
 
 | No hacemos | Por qué |
 |---|---|
-| **LinkedIn Ads** | Ningún MCP lo ejecuta. Damos inteligencia de LinkedIn, no pauta |
-| **SEO técnico profundo** — crawl, schema, core web vitals, link building | Es otra disciplina. Damos **SEO de contenido e intención**, que es distinto y lo decimos |
+| **LinkedIn Ads** | Ninguna de nuestras herramientas lo ejecuta. Damos inteligencia de LinkedIn, no pauta |
+| **SEO técnico profundo** — crawl, schema, core web vitals, link building | Es otra disciplina. «Que te encuentren en Google» es **pauta de búsqueda y contenido guiado por keywords** — nunca posicionamiento orgánico |
 | **Inversión publicitaria incluida** | La pone el cliente, siempre, aparte |
 | **Modelos, props y locaciones** | Costo del cliente |
 | **Contratar personal por el cliente** | En Talento damos perfiles, SOPs y onboarding. **No reclutamos** |
 
-⚠️ **Nada se promete si no está en «Capacidades reales» de `06-ECONOMIA.md`.**
+🔑 **Nada se promete si no está en «Capacidades reales» de `06-ECONOMIA.md`.**
 Sin MCP no hay acción, y sin acción no hay promesa.
 
 ---
@@ -230,7 +228,7 @@ Precio según alcance.
 > 💀 **Marketing está dentro del rango que el mercado ya acepta, con 5.4x el volumen de su tramo.
 > Para igualarlo tendrían que contratar cuatro personas y cobrar lo mismo.**
 
-⚠️ **El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica
+🔑 **El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica
 por **cuántos sistemas activamos y qué tan adentro entramos** — nunca por volumen de entregables.
 
 ---

@@ -3,15 +3,15 @@
 > **Todo lo que Inherent es, vende y cobra.** Siete documentos, en orden de lectura.
 > Los agentes viven en `agents/`. Los clientes en `clients/`. **Acá vive la empresa.**
 
-| # | Archivo | Responde | Cuándo se lee |
+| # | Archivo | Responde | Qué tiene |
 |---|---|---|---|
-| **01** | [`01-IDENTIDAD.md`](01-IDENTIDAD.md) | **¿Quiénes somos?** | Antes que nada. La categoría y los diferenciadores |
-| **02** | [`METODO.md`](02-METODO.md) | **¿Cómo pensamos?** | Los cuatro sistemas y las dos divisiones |
-| **03** | [`OFERTA.md`](03-OFERTA.md) | **¿Qué vendemos?** | Las dos líneas, los cuatro planes y cómo se activan |
-| **04** | [`MERCADO.md`](04-MERCADO.md) | **¿A quién y dónde?** | Industrias, mercados y mentores |
-| **05** | [`05-OPERACION.md`](05-OPERACION.md) | **¿Cómo lo entregamos?** | Pipeline, equipos y ciclos |
-| **06** | [`ECONOMIA.md`](06-ECONOMIA.md) | **¿Cuánto cuesta y cuánto queda?** | 🔒 Interno. Nunca sale del repo |
-| **07** | [`COMUNICACION.md`](07-COMUNICACION.md) | **¿Cómo lo decimos?** | Para la web y para el contenido |
+| **01** | [`01-IDENTIDAD.md`](01-IDENTIDAD.md) | **¿Quiénes somos?** | La categoría, la promesa, lo básico vs. el valor único y los límites. Se lee antes que nada |
+| **02** | [`02-METODO.md`](02-METODO.md) | **¿Cómo pensamos?** | Los cuatro sistemas, las dos divisiones y sus pilares, las capacidades y la red de especialistas |
+| **03** | [`03-OFERTA.md`](03-OFERTA.md) | **¿Qué vendemos?** | Las dos líneas, los cuatro planes, el texto de las tarjetas y cómo se activa cada uno |
+| **04** | [`04-MERCADO.md`](04-MERCADO.md) | **¿A quién y dónde?** | Las industrias, los tres mercados y la red de mentores |
+| **05** | [`05-OPERACION.md`](05-OPERACION.md) | **¿Cómo lo entregamos?** | Los roles, el pipeline, el calendario del ciclo y el costo fijo de cada cuenta |
+| **06** | [`06-ECONOMIA.md`](06-ECONOMIA.md) | **¿Cuánto cuesta y cuánto queda?** | 🔒 Interno, nunca sale del repo. Costos, márgenes y capacidades reales |
+| **07** | [`07-COMUNICACION.md`](07-COMUNICACION.md) | **¿Cómo lo decimos?** | El brief de la web: qué sentir, qué decir, el tono y la tabla de traducción |
 
 ---
 

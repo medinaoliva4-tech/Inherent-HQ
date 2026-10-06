@@ -52,7 +52,7 @@ paso vive en las skills: `skills/README.md`.
   total de 145 piezas del plan. **Copiar el reparto de Pro es un error.**
 - 🔑 **Acá está la eficiencia del modelo:** ⑤ Producción cuesta horas humanas; ⑥B multiplica ese
   material **dentro del mismo monto de Producción.** Por eso el mínimo 1:2 es piso, no aspiración.
-- 🔴 **⑥B no tiene MCP: hoy la edición y las derivadas son de Pablo.** Sus horas son el techo de
+- 🔴 **⑥B no tiene MCP: hoy la edición y las derivadas son del editor de video.** Sus horas son el techo de
   capacidad, no el plan.
 - 🛑 **Una derivada nunca pide grabación extra.** Sale de material ya rodado. Si para llegar al
   número haría falta volver a grabar, **el número está mal, no el rodaje.**
@@ -144,14 +144,14 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 
 | Acción | MCP | |
 |---|---|---|
-| Cortar, editar y armar el reel | **Pablo** — dentro del costo fijo de Producción | 👤 |
-| Multiplicar una grabación en variantes | **Pablo** — recombinando escenas del mismo material | 👤 |
+| Cortar, editar y armar el reel | **Editor de video** — dentro del costo fijo de Edición de video | 👤 |
+| Multiplicar una grabación en variantes | **Editor de video** — recombinando escenas del mismo material | 👤 |
 | Reencuadrar para cada formato | `ffmpeg` local *(recorte y escala)* | ⬜ |
 | Analizar el video antes de cortarlo | `ffmpeg` local — el mismo de `cr-lectura-de-video` | ⬜ |
 | Escalar calidad · doblaje · generar video | ⛔ **Sin herramienta — no se promete** | 🔴 |
 
 > ⚠️ **`⬜` = la tool existe, sin probar en cliente real · `👤` = lo hace una persona.**
-> 🔴 **⑦ no tiene MCP de edición.** Todo el volumen de video pasa por Pablo.
+> 🔴 **⑦ no tiene MCP de edición.** Todo el volumen de video pasa por el editor de video.
 
 ---
 

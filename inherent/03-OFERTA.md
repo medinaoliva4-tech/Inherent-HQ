@@ -6,10 +6,11 @@
 - Las dos líneas — el eje
 - Los cuatro planes, lado a lado
 - Las cuatro tarjetas · texto de web
-- Qué significa cada línea, adentro
+- El múltiplo
 - Qué respalda cada línea publicada
-- 🛡️ Las garantías — qué se compromete y con qué se sostiene
+- 🛡️ Las garantías
 - 🔒 Uso interno — cómo se activa la metodología por plan
+- Cómo se habla de esto · cómo se mueve un cliente entre planes
 
 ---
 
@@ -51,9 +52,8 @@ que no controlamos.**
 Por eso el mismo +25% de crecimiento llega **al mes 11 en Marketing y al mes 5 en Compound**:
 no es más esfuerzo, es que Growth toca la cadena completa.
 
-> ⚠️ **Esto no contradice «no se vende una capa suelta» — lo precisa.**
-> Lo que no se vende es **una capa suelta disfrazada de crecimiento.**
-> La línea Marketing vende atención **y lo dice en la tarjeta.** El cliente sabe qué compró.
+**Lo que no se vende es una capa suelta disfrazada de crecimiento.** La línea Marketing vende
+atención **y lo dice en la tarjeta.** El cliente sabe qué compró.
 
 ---
 
@@ -72,14 +72,6 @@ no es más esfuerzo, es que Growth toca la cadena completa.
 | Stories | 30 | 55 | 55 | 80 |
 | Horas de grabación | **3 h** | 4 h | 6 h | 8 h |
 | Revisiones por pieza | 1 | 2 | 2 | 3 |
-
-> 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba
-> por SETUP y no por pieza.** Cada uno deja 5-7 escenas; las de apoyo se recombinan en derivados.
->
-> **El rango es honestidad, no flojera:** material muy scripted no se recombina y cae al
-> **mínimo (1 derivado por cada 2 planificados)**; material suelto llega al **tope (1:1)**.
->
-> ⚠️ **Se promete el MÍNIMO.** El tope es techo interno — **nunca se le dice al cliente.**
 | | | | | |
 | Marca e identidad | ✅ | ✅ | ✅ | ✅ |
 | Mensaje y ángulos | ✅ | ✅ | ✅ | ✅ |
@@ -103,13 +95,22 @@ no es más esfuerzo, es que Growth toca la cadena completa.
 **Y `TAILOR MADE`** — multi-locación, regulatorio, integraciones, proyectos por hito.
 Precio según alcance.
 
+### 🔑 La regla de los 20 minutos
+
+Un video planificado se graba en **20 minutos — si se graba por SETUP y no por pieza.** Cada uno
+deja 5-7 escenas; las de apoyo se recombinan en derivados.
+
+- **El rango es honestidad, no flojera:** material muy scripted no se recombina y cae al
+  **mínimo (1 derivado por cada 2 planificados)**; material suelto llega al **tope (1:1)**.
+- **Se promete el MÍNIMO.** El tope es techo interno — **nunca se le dice al cliente.**
+
 ### 🔑 Marketing Pro y Accelerate entregan las mismas 145 piezas
 
 **A propósito.** El salto de $1,450 a $2,500 **no compra más contenido — compra sistemas**:
 tu oferta rediseñada, los canales grandes abiertos, el seguimiento que no se pierde, los SOPs
 y el especialista de tu industria.
 
-⚠️ **Si alguien vende ese salto como «más piezas», está vendiendo mal y el cliente lo va a notar.**
+**Venderlo como «más piezas» es venderlo mal**, y el cliente lo nota.
 
 ### La etapa no es mérito, es realidad
 
@@ -219,9 +220,8 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 
 # 📈 El múltiplo — cómo se dice y cómo se sostiene
 
-> ⚠️ **«Apuntamos a» no es «garantizamos».** Es la meta contra la que trabajamos, y así se
-> escribe. **Hoy no hay un solo caso medido** — hasta que lo haya, el múltiplo es modelo.
-> Ver `06-ECONOMIA.md` → «El múltiplo».
+**«Apuntamos a» no es «garantizamos».** Es la meta contra la que trabajamos, y así se escribe.
+El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → «El múltiplo».
 
 | | Toca | **Techo a 12 meses** | En «x» |
 |---|---|---|---|
@@ -251,67 +251,58 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 # ✅ Qué respalda cada línea publicada
 
 > **Regla: si está en la web, tiene que tener acción detrás.** Esta tabla es el control.
-> **`✅` corrido · `⬜` la tool existe, sin probar en cliente real · `👤` horas humanas.**
+> Las herramientas se nombran por su función; cuál es la actual está en la tabla de slots de
+> `05-OPERACION.md`. Lo que cada una puede hacer hoy está en `06-ECONOMIA.md` → «Capacidades reales».
 
 ## 🔷 Marketing
 
-| Línea publicada | Con qué se entrega | |
-|---|---|---|
-| Tu marca construida en serio | ②B Branding | 👤 |
-| Tu mensaje claro | ③ Marketing · `mk-mensaje` + ②B `br-voz` | 👤 |
-| Presencia todos los días | ④⑥A⑥B + ⑨ Posting + **Postpone** — **86 piezas** | 🟡 |
-| Campañas en Meta y TikTok | AdWhispr `launch_meta_ad` · `launch_tiktok_campaign` | ⬜ |
-| Reporte al mes | ③ `mk-loop` + ⑩ `ad-loop` | ✅ |
+| Línea publicada | Con qué se entrega |
+|---|---|
+| Tu marca construida en serio | ②B Branding |
+| Tu mensaje claro | ③ Marketing · `mk-mensaje` + ②B `br-voz` |
+| Presencia todos los días — **86 piezas** | ④ ⑥A ⑥B + ⑨ Posting · herramienta de publicación |
+| Campañas en Meta y TikTok | ⑩ Ads Management · herramienta de pauta |
+| Reporte al mes | ③ `mk-loop` + ⑩ `ad-loop` |
 
 ## 🔷 Marketing Pro — *todo lo de Marketing, más:*
 
-| Línea publicada | Con qué se entrega | |
-|---|---|---|
-| 145 piezas, doble de video | ⑤ Producción 4 h + ⑥B Video Editing | 👤⬜ |
-| Campañas de Google | AdWhispr `launch_search_campaign` · `launch_pmax_campaign` | ⬜ |
-| Alianzas con creadores | Apify `apify/instagram-scraper` *(vetting por engagement real)* | 🟡 |
-| Comentarios y mensajes | ⑧ Community Management + **Postpone Inbox** | 🔴 **agente sin construir** · 🔴 **sin TikTok** |
-| Dos revisiones por pieza | ⑥A `gd-composicion` + ②B `br-guardian` | ✅ |
+| Línea publicada | Con qué se entrega |
+|---|---|
+| 145 piezas, doble de video | ⑤ Producción 4 h + ⑥B Video Editing |
+| Campañas de Google | ⑩ Ads Management · herramienta de pauta *(búsqueda y Performance Max)* |
+| Alianzas con creadores | Herramienta de scraping · vetting por engagement real |
+| Comentarios y mensajes | ⑧ Community Management — el operador de agentes hace el setup mensual del agente con la info del cliente, y queda corriendo |
+| Dos revisiones por pieza | ⑥A `gd-composicion` + ②B `br-guardian` → QA final del COO |
 
 ## 🟨 Accelerate — *todo lo de Marketing Pro, más:*
 
-| Línea publicada | Con qué se entrega | |
-|---|---|---|
-| Tu oferta y tu precio rediseñados | ② Growth · `gr-oferta` · **Pilar 1 ejecutando** | 👤 |
-| Abrimos los canales grandes | ② Growth · `gr-canales-grandes` · **Pilar 2 ejecutando** | 👤 |
-| Subimos tu ticket | ② Growth · `gr-upsells` · **Pilar 3** | 👤 |
-| Nadie se queda sin respuesta | ② `gr-conversion` + **Zapier → ManyChat / WhatsApp** | ⬜ |
-| Que te encuentren en Google | AdWhispr `research_keywords` + contenido guiado por keywords | ⬜ |
-| Que tu equipo sepa cerrar | Guiones y entrenamiento — **Conversion OS** | 👤 |
-| Lo volvemos repetible | ① Strategy + Notion · **SOPs de crecimiento** | 👤✅ |
-| Una herramienta cada trimestre | ② `gr-herramienta` + Claude *(código)* + Vercel | ⬜ |
-| Especialista cada trimestre | Red de mentores — techo **$144** | 👤 |
+| Línea publicada | Con qué se entrega |
+|---|---|
+| Tu oferta y tu precio rediseñados | ② Growth · `gr-oferta` · **Pilar 1 ejecutando** |
+| Abrimos los canales grandes | ② Growth · `gr-canales-grandes` · **Pilar 2 ejecutando** |
+| Subimos tu ticket | ② Growth · `gr-upsells` · **Pilar 3** |
+| Nadie se queda sin respuesta | ② `gr-conversion` + automatización de mensajes y WhatsApp |
+| Que te encuentren en Google | Pauta de búsqueda + contenido guiado por keywords. **Nunca posicionamiento orgánico, auditoría técnica ni link building** |
+| Que tu equipo sepa cerrar | Guiones y entrenamiento de closing — **Conversion OS** · el CEO |
+| Lo volvemos repetible | **SOPs de crecimiento** — la auditoría levanta, el CEO y el COO coordinan, el COO implementa con agentes |
+| Una herramienta cada trimestre | ② `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
+| Especialista cada trimestre | Red de mentores — el mentor de la industria hace la auditoría · rubro Especialista · techo **$144** por sesión |
 
 ## 🟨 Compound — *todo lo de Accelerate, más:*
 
-| Línea publicada | Con qué se entrega | |
-|---|---|---|
-| 204 piezas | ⑤ Producción 8 h + ⑥A + ⑥B | 👤⬜ |
-| Una herramienta cada **mes** | Claude *(código)* + Vercel + Zapier *(9,000+ apps)* + Inherent OS | ⬜ |
-| Estructura corporativa | Allan + especialista de **corporate structure** | 👤 |
-| SOPs de toda la empresa | ① Strategy + Notion · **Operations OS completo** | 👤✅ |
-| Tus números claros | ② `gr-numeros` · **Money OS** — Allan + Strategy | 👤 |
-| Crecimiento que se sostiene solo | ⑧ Community + **Zapier** | 🔴⬜ |
-| Tu propia IA | **Build propio** — Vercel + Claude API + el folder del cliente como base | ⬜ |
-| Especialista mensual | Red de mentores — techo **$180** | 👤 |
+| Línea publicada | Con qué se entrega |
+|---|---|
+| 204 piezas | ⑤ Producción 8 h + ⑥A + ⑥B |
+| Una herramienta cada **mes** | ② `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
+| Estructura corporativa | La cubre la auditoría · el CEO y el COO coordinan lo que sale de ahí |
+| SOPs de toda la empresa | **Operations OS completo** — la auditoría levanta, el CEO y el COO coordinan, el COO implementa con agentes *(documentación y entrenamiento)* |
+| Tus números claros | ② `gr-numeros` · **Money OS** — el CEO con Strategy |
+| Crecimiento que se sostiene solo | ⑧ Community Management + automatización |
+| Tu propia IA | Construida sobre el folder del cliente — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
+| Especialista mensual | Red de mentores — el mentor de la industria hace la auditoría · rubro Especialista · techo **$180** por sesión |
 
-### 🔴 Los dos huecos que la web promete
-
-| Hueco | Qué falta | Impacto |
-|---|---|---|
-| **⑧ Community Management** | **El agente no está construido** | 🔴 Sostiene *«tus comentarios y mensajes»* (Pro+) y *«comunidad»* (Compound) |
-| **Especialista de corporate structure** | Está en la red declarada, sin persona confirmada | 🟡 Allan lo cubre mientras tanto |
-
-> 🔑 **«Tus números claros» no necesita un CFO contratado.** Lo entrega **Money OS** con Allan
-> y Strategy. **No se promete una persona — se promete el número.**
-
-⚠️ **Lo que está en `⬜` existe como tool pero no se ha corrido en cliente real** — ver
-`06-ECONOMIA.md` → «Capacidades reales».
+> 🔑 **«Tus números claros» no es un CFO contratado.** Lo entrega **Money OS** con el CEO y
+> Strategy. **No se promete una persona — se promete el número.**
 
 ---
 
@@ -319,6 +310,10 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 
 > **El principio:** no se garantiza un resultado que no controlamos.
 > **Se garantiza lo que la ingeniería inversa vuelve CALCULABLE y el volumen vuelve REPETIBLE.**
+>
+> 🔒 **Las garantías son de uso interno.** No van a la web hasta que cada una se haya ejecutado
+> en un cliente real. **Publicar una garantía que nunca se ejecutó es la forma más rápida de
+> perder una cuenta.**
 
 ## La cadena que lo hace posible
 
@@ -333,9 +328,7 @@ Meta financiera
 
 **Cada división es una tasa.** Si se conocen las tasas, el resultado deja de ser esperanza y
 pasa a ser aritmética. **Lo que es aritmética se puede comprometer.**
-
-🔴 **Por eso hoy no se garantiza nada: no conocemos una sola tasa de ningún cliente.**
-**Los MCPs son lo que vuelve medibles esas tasas.** Sin ellos, la garantía es una apuesta.
+**Sin las tasas medidas del cliente, la garantía es una apuesta — y no se compromete.**
 
 ---
 
@@ -348,26 +341,26 @@ pasa a ser aritmética. **Lo que es aritmética se puede comprometer.**
 ### El umbral, definido
 **`la mediana de engagement de la propia cuenta en los últimos 90 días`**
 
-⚠️ **Nunca un número absoluto.** Un post con 10,000 vistas no dice nada sin su base.
+**Nunca un número absoluto.** Un post con 10,000 vistas no dice nada sin su base.
 **Un outlier solo existe contra su propia mediana.**
 
 ### El mecanismo
 
 | Paso | Qué pasa | Con qué |
 |---|---|---|
-| **1 · Línea base** | Se mide la mediana de la cuenta **antes de empezar** | `easy_scraper/instagram-profile-engagement-analytics` |
-| **2 · El 70% probado** | El 70% del ciclo sale de patrones **que ya pagan** en la categoría | `maxencebernerd/meta-ad-library-scraper` → vista **Winners** *(ads de 30+ días)* |
-| **3 · La revisión del 20** | Se lee pieza por pieza contra el umbral | `apify/instagram-scraper` |
+| **1 · Línea base** | Se mide la mediana de la cuenta **antes de empezar** | Herramienta de scraping · engagement del perfil |
+| **2 · El 70% probado** | El 70% del ciclo sale de patrones **que ya pagan** en la categoría | Herramienta de scraping · biblioteca de anuncios de Meta → **ads de 30+ días** |
+| **3 · La revisión del 20** | Se lee pieza por pieza contra el umbral | Herramienta de scraping · posts de la cuenta |
 | **4 · La redirección** | Lo que queda del ciclo **se reemplaza por variantes del patrón que ganó** | ④ `cr-loop` → ③ `mk-calendario` |
 
 ### 🔑 Por qué esta garantía cuesta Q0
 
 **No se reponen piezas: se redirige el volumen que todavía no se produjo.**
-Al día 20 quedan ~1/3 del ciclo sin producir. **Esas piezas ya están presupuestadas** — lo
+Al día 20 queda ~1/3 del ciclo sin producir. **Esas piezas ya están presupuestadas** — lo
 único que cambia es **qué** se produce con ellas.
 
-⚠️ **Una garantía de «reposición gratis» costaría 3 a 5 puntos de margen.**
-**Esta cuesta cero, y solo es posible porque tenemos volumen y una revisión a mitad de ciclo.**
+**Una garantía de «reposición gratis» costaría margen.** Esta cuesta cero, y solo es posible
+porque tenemos volumen y una revisión a mitad de ciclo.
 
 ### Qué la rompe
 🛑 **Una cuenta sin 90 días de historia.** Sin línea base no hay umbral, y sin umbral no hay
@@ -387,8 +380,8 @@ es aritmética: `presupuesto ÷ CPM × 1,000`.
 
 | Lo que hace falta | Con qué |
 |---|---|
-| **El CPM real de la categoría** *(no el promedio global)* | `data_xplorer/facebook-ads-library` con `fetchDetails: true` → **reach y demografía de los ads de la competencia** |
-| Ejecutar la compra | AdWhispr |
+| **El CPM real de la categoría** *(no el promedio global)* | Herramienta de scraping · biblioteca de anuncios con detalle → **reach y demografía de los ads de la competencia** |
+| Ejecutar la compra | ⑩ Ads Management · herramienta de pauta |
 | Que el público sea el correcto | ⑩ `ad-estructura` |
 
 ### La cláusula que protege el margen
@@ -466,33 +459,19 @@ y se dice en la propuesta.**
 | **2** | **Presupuesto de pauta aprobado por escrito** | ⛔ Sin garantía de alcance |
 | **3** | **Atribución instalada antes del primer gasto** | ⛔ Sin garantía de ventas ni performance fee |
 
-🔴 **Una garantía sin su condición verificada no es una garantía: es una deuda.**
+**Una garantía sin su condición verificada no es una garantía: es una deuda.**
 
 ---
 
-# ⚠️ Lo que NUNCA se garantiza
+# Lo que NUNCA se garantiza
 
 | | Por qué |
 |---|---|
 | ❌ **Viralidad** | No se controla, y **la viralidad desalineada encarece las ventas** en vez de abaratarlas |
 | ❌ **Un número de seguidores** | Es la métrica que menos correlaciona con negocio |
-| ❌ **Posición orgánica en Google** | No está en «Capacidades reales» |
-| ❌ **Un múltiplo del negocio** *(«10x»)* | **No hay un solo caso medido.** En la web va «apuntamos a», nunca «garantizamos» |
+| ❌ **Posición orgánica en Google** | No lo hacemos: «que te encuentren en Google» es pauta de búsqueda y contenido guiado por keywords |
+| ❌ **Un múltiplo del negocio** *(«10x»)* | El múltiplo es meta, no resultado. En la web va «apuntamos a», nunca «garantizamos» |
 | ❌ **Ventas en la línea 🔷 Marketing** | No tocamos oferta, conversión ni atribución |
-
----
-
-# 🔴 Lo que falta para que esto se pueda publicar
-
-| # | Pendiente | Sin esto |
-|---|---|---|
-| **1** | **Probar los 4 actores nuevos** contra una cuenta real | Las tres garantías son teoría |
-| **2** | **Medir la línea base de los clientes actuales** | No hay umbral que comprometer |
-| **3** | **Instalar atribución (CAPI + GA4)** en al menos un cliente | No hay garantía de ventas ni fee |
-| **4** | **Correr un ciclo completo con la redirección del día 20** | La garantía 1 nunca se ejecutó |
-
-🛑 **Hasta que los cuatro estén, las garantías viven en este repo y NO en la web.**
-**Publicar una garantía que no se ha ejecutado una vez es la forma más rápida de perder una cuenta.**
 
 ---
 
@@ -509,7 +488,7 @@ y se dice en la propuesta.**
 | **Ejecución de marketing** | ✅ | ✅ Mayor volumen | ✅ | ✅ Máximo |
 | **Growth OS** | ⬜ | ⬜ | **Los 3 pilares, ejecutando** | Los 3, sistematizados |
 | **Conversion OS** | ⬜ | ⬜ | ✅ Completo | ✅ |
-| **Operations OS** | ⬜ | ⬜ | 🟡 **SOPs de crecimiento** | ✅ **SOPs de empresa** |
+| **Operations OS** | ⬜ | ⬜ | **SOPs de crecimiento** | ✅ **SOPs de empresa** |
 | **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
 
 🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra en la
@@ -554,7 +533,7 @@ línea es teoría.** **Meterlo antes es cobrar por algo que no se puede usar.**
 | **Capacidades** | Marketing · Creative · Branding | + Production | + Tech · Consulting | **Las seis** |
 | **Mentor** | ⬜ | ⬜ | 1/trimestre · techo **$144** | **1/mes** · techo **$180** |
 
-⚠️ **El mentor es el diferenciador de la línea Growth.** No entra en Marketing: ahí no hay
+**El mentor es el diferenciador de la línea Growth.** No entra en Marketing: ahí no hay
 estrategia que acompañar, y meterlo rompe el margen del plan barato.
 
 🔑 **Arriba del techo, el mentor va como add-on facturado al cliente, con margen.** No se absorbe
@@ -586,22 +565,11 @@ de esa industria. Ver `04-MERCADO.md`.
 | Movimiento | Qué lo dispara |
 |---|---|
 | **Marketing → Marketing Pro** | Se quedó sin volumen o quiere video en serio. **Sigue sin necesitar sistemas.** |
-| **Marketing Pro → Accelerate** | **Hay tráfico y no se cobra.** Llegan mensajes, se pierden; la oferta no cierra. **Es el salto que más margen deja.** |
+| **Marketing Pro → Accelerate** | **Hay tráfico y no se cobra.** Llegan mensajes, se pierden; la oferta no cierra. |
 | **Accelerate → Compound** | Funciona, pero todo pasa por el dueño. |
 
 🔑 **El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
 Ver `06-ECONOMIA.md` → «La estrategia de bundle».
 
-⚠️ **El salto de Marketing Pro a Accelerate se vende con el diagnóstico, no con el catálogo:**
+**El salto de Marketing Pro a Accelerate se vende con el diagnóstico, no con el catálogo:**
 *«estás pagando por atención que no se está cobrando.»*
-
----
-
-## ⏳ Pendiente — el match de mentores
-
-Que Strategy busque en MentorCruise, GrowthMentor y MentorPass **un mentor que haga match** con
-la industria y la etapa del cliente, y lo proponga dentro de la estrategia.
-
-**Cómo:** scraping con Playwright *(ya instalado)* o Apify.
-**Qué falta:** login en las plataformas.
-⚠️ **El match tiene que filtrar por presupuesto, no solo por afinidad.**

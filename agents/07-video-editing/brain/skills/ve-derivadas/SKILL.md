@@ -50,7 +50,7 @@ dirigir.
 | **El texto se reposiciona** | Las safe zones cambian con el formato |
 | **Se revisa pieza por pieza** | `ffmpeg` acelera el recorte, **no aprueba** |
 
-> ⚠️ **Las derivadas las arma Pablo recombinando escenas; `ffmpeg` local ayuda con el recorte por
+> ⚠️ **Las derivadas las arma el editor de video recombinando escenas; `ffmpeg` local ayuda con el recorte por
 > formato.** Cada salida se mira antes de entregarla. `⬜` sin probar en cliente real.
 
 ## 4 · El reparto del techo

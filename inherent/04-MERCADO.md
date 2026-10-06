@@ -1,19 +1,17 @@
 # Mercado — A quién y dónde
 
-> Las diez industrias, los tres mercados geográficos y la red de mentores.
+> Las doce industrias, los tres mercados geográficos y la red de mentores.
 
 **Contenido:**
 - Industrias — qué significa crecer en cada una
 - Mercados — Guatemala es donde arrancamos, no el techo
-- Red de mentores — mapa y costos
-
+- Red de mentores — mapa, costos y reglas
 
 ---
 
 # Industrias — qué significa crecer en cada una
 
-> **Las diez industrias de `inherentglobal.com`.** Para cada una: cómo gana plata el negocio,
-> dónde se traba, y qué hace cada paquete ahí.
+> **Para cada industria:** cómo gana plata el negocio, dónde se traba, y qué hace cada paquete ahí.
 >
 > **Para la web:** el visitante elige su industria y ve su propio caso, no uno genérico.
 > **Para los agentes:** es el punto de partida del bloque 01 · Comprensión.
@@ -30,7 +28,7 @@
 
 | Momento | Facturación / mes | Paquete |
 |---|---|---|
-| Aún no vendo | — | ⚠️ **Todavía no.** Primero producto y oferta |
+| Aún no vendo | — | **Todavía no.** Primero producto y oferta |
 | **Construyendo** | $2k – $10k | 🔷 **Marketing** |
 | **Creciendo** | $10k – $50k | 🔷 Marketing Pro → 🟨 **Accelerate** |
 | **Escalando** | $50k – $100k | 🟨 **Accelerate** → 🟨 Compound |
@@ -44,7 +42,7 @@
 | **Llega gente pero se pierde.** Hay demanda, no hay conversión | 🟨 **Accelerate** | **ACELERAR** |
 | **Funciona, pero todo depende de alguien.** Hay conversión, no hay sistema | 🟨 **Compound** | **COMPONER** |
 
-> ⚠️ **Manda el eje 2.** Un negocio de $100k que nadie conoce va a Marketing, no a Compound.
+> 🔑 **Manda el eje 2.** Un negocio de $100k que nadie conoce va a Marketing, no a Compound.
 > **El dinero dice cuánto puede pagar. El cuello dice qué necesita.**
 
 ---
@@ -54,7 +52,7 @@
 ```
 🔷 MARKETING — ENCENDER
    Empezar el motor. Atraer, crear nombre y hacer las asociaciones correctas.
-   ⚠️ Mejora el MENSAJE, no la oferta.
+   Mejora el MENSAJE, no la oferta.
 
 🟨 ACCELERATE — ACELERAR
    Crecer mucho más. Lead magnets, embudos, influencers, canales nuevos
@@ -146,7 +144,7 @@
 > Un restaurante pelea **distribución de demanda** *(llenar martes)*. Una cafetería pelea
 > **frecuencia** *(que vuelva el jueves)*. **Misma industria aparente, otro problema.**
 
-⚠️ **El error típico es venderle pauta de alcance.** Una cafetería no necesita que la conozcan
+**El error típico es venderle pauta de alcance.** Una cafetería no necesita que la conozca
 más gente: necesita que la misma gente venga más veces.
 
 ---
@@ -205,7 +203,7 @@ más gente: necesita que la misma gente venga más veces.
 
 | | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Autoridad y claridad. Educación financiera que construye confianza. ⚠️ Tono cuidado: **la categoría castiga la promesa exagerada** |
+| 🔷 **Marketing** | Autoridad y claridad. Educación financiera que construye confianza. Tono cuidado: **la categoría castiga la promesa exagerada** |
 | 🟨 **Accelerate** | Lead magnets de diagnóstico. Embudo con calificación previa. Google Search de intención alta |
 | 🟨 **Compound** | CRM con seguimiento largo, portal de cliente, secuencias por etapa de vida |
 
@@ -220,7 +218,7 @@ más gente: necesita que la misma gente venga más veces.
 
 | | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Credibilidad del especialista. Casos, proceso, educación. Alianzas con médicos referentes. ⚠️ **Restricciones de pauta en salud — se revisan antes de prometer** |
+| 🔷 **Marketing** | Credibilidad del especialista. Casos, proceso, educación. Alianzas con médicos referentes. **Las restricciones de pauta en salud se revisan antes de prometer** |
 | 🟨 **Accelerate** | Embudo de consulta con calificación. WhatsApp para agendar. Google Search por síntoma y procedimiento |
 | 🟨 **Compound** | Seguimiento post procedimiento, recordatorios, portal de paciente, sistema de referidos |
 
@@ -254,7 +252,7 @@ más gente: necesita que la misma gente venga más veces.
 | 🟨 **Accelerate** | **La lista de espera y el referido de socio** son el canal, no la pauta fría. Proceso de admisión que se siente selectivo. Corporativo como cuenta grande |
 | 🟨 **Compound** | **Que la comunidad se sostenga sola:** rituales, comités, embajadores. Medir **churn de membresía**, que es la métrica real del negocio |
 
-### ⚠️ Lo que lo hace distinto de todo lo demás
+### Lo que lo hace distinto de todo lo demás
 
 | | |
 |---|---|
@@ -266,8 +264,8 @@ más gente: necesita que la misma gente venga más veces.
 Comunidad → ventas → contenido → alcance parecido. **Es la industria donde la metodología se
 ve más literal.** Ver `agents/01-strategy/brain/skills/methodology/SKILL.md`.
 
-⚠️ **Y es la única donde se le dice que no a un comprador.** Si el perfil no cabe, entra
-como excepción a Allan — no se cierra la venta por cerrarla.
+**Y es la única donde se le dice que no a un comprador.** Si el perfil no cabe, entra
+como excepción al CEO — no se cierra la venta por cerrarla.
 
 ---
 
@@ -279,7 +277,7 @@ como excepción a Allan — no se cierra la venta por cerrarla.
 |---|---|---|
 | **No me conocen** | Arquitectura · Software · B2B | 🔷 Marketing |
 | **Me conocen y no convierto** | Restaurantes · Salud · Hotelería | 🟨 Accelerate |
-| **Convierto y no retengo** | Wellness · Retail · Marca personal · **Cafeterías** · **Clubes** | 🟨 Compound |
+| **Convierto y no retengo** | Wellness · Retail · Marca personal · Cafeterías · Clubes | 🟨 Compound |
 
 > **Por eso los paquetes no son por industria: son por cuello.**
 > La industria define **cómo se ve** la solución. El cuello define **cuál es**.
@@ -288,15 +286,11 @@ como excepción a Allan — no se cierra la venta por cerrarla.
 
 ## Para la web
 
-**Fase 1 — ahora:** el visitante elige su industria y ve su caso: cómo gana, dónde se traba, y qué
-hace cada paquete ahí.
+El visitante elige su industria y ve su caso: cómo gana, dónde se traba, y qué hace cada
+paquete ahí.
 
-**Fase 2 — después:** cada industria abre a detalle — entregables puntuales, ejemplos y el
-diagnóstico específico de esa categoría.
-
-⚠️ **Nada de lo que se publique puede salirse de «Capacidades reales» de `06-ECONOMIA.md`.**
+🔒 **Nada de lo que se publique puede salirse de «Capacidades reales» de `06-ECONOMIA.md`.**
 Si un entregable suena bien para una industria pero no hay MCP que lo ejecute, **no va a la web.**
-
 
 ---
 
@@ -310,39 +304,25 @@ Si un entregable suena bien para una industria pero no hay MCP que lo ejecute, *
 ## 🔑 El arbitraje
 
 ```
-COSTOS          en quetzales      producción · operación · Allan
+COSTOS          en quetzales      producción · operación
     │           no cambian al cambiar de mercado
     ▼
 INGRESOS        en dólares        al precio del mercado donde esté el cliente
 ```
 
 **El costo de entregar una cuenta es el mismo en Guatemala, México o Miami.**
-Los agentes corren igual. El productor y el operador cobran en quetzales.
-**Lo único que cambia es el precio.**
+Los agentes corren igual. Producción y operación cobran en quetzales.
+**Lo único que cambia es el precio** — y con el mismo costo, un precio más alto es margen más alto.
 
----
+### El punto de partida · Guatemala
 
-## Qué pasa con el mismo costo y otro precio
+| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| **Precio** | $950 | $1,450 | $2,500 | $4,200 |
+| **Costo fijo por cuenta** | Q1,665 | Q2,555 | Q5,700 | Q8,800 |
+| **Margen** | **77%** | **77%** | **70%** | **73%** |
 
-*Costo fijo por cuenta: Marketing Q1,665 · Pro Q2,555 · Accelerate Q5,300 · Compound Q8,200*
-
-| Mercado | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| **🇬🇹 Guatemala** *(hoy)* | $950 → **77%** | $1,450 → **77%** | $2,500 → **72%** | $4,200 → **75%** |
-| **🇲🇽 México** | $1,425 → **85%** | $2,175 → **85%** | $3,750 → **82%** | $6,300 → **83%** |
-| **🇺🇸 Miami** | $2,375 → **91%** | $3,625 → **91%** | $6,250 → **89%** | $10,500 → **90%** |
-
-### Utilidad mensual con 5 clientes *(2 Marketing · 1 Pro · 1 Accelerate · 1 Compound)*
-
-| Mercado | Al mes |
-|---|---|
-| 🇬🇹 Guatemala | Q58,000 · **$7,532** |
-| 🇲🇽 México | Q96,694 · **$12,558** |
-| 🇺🇸 Miami | Q174,079 · **$22,608** |
-
-⚠️ **Los precios de México y Miami son hipótesis, no benchmark verificado.**
-`[sin fuente — hay que investigar cada mercado antes de publicarlos]`
-Lo que **sí** es cierto y no depende de ninguna fuente: **el costo no sube al cambiar de mercado.**
+**El costo no sube al cambiar de mercado.** Ver `06-ECONOMIA.md` → «Los costos por plan — fijos».
 
 ---
 
@@ -357,7 +337,7 @@ Lo que **sí** es cierto y no depende de ninguna fuente: **el costo no sube al c
 | **No decir «Guatemala» como alcance** | Cierra la puerta al cliente de Miami antes de que lea la oferta |
 | **Industrias en lenguaje internacional** | B2B, software, wellness y retail se leen igual en los tres mercados |
 | **Casos con números, no con banderas** | *"+42% en leads calificados"* viaja. *"la mejor agencia de Guatemala"* no |
-| **Español e inglés** | El sitio ya tiene el toggle ES/EN. Hay que mantener los dos completos |
+| **Español e inglés, los dos completos** | El sitio tiene toggle ES/EN |
 | **Sin referencias locales en la oferta** | Nada de *"precios adaptados al mercado guatemalteco"* |
 
 ### Lo que sí puede decir Guatemala
@@ -372,63 +352,54 @@ Lo que **sí** es cierto y no depende de ninguna fuente: **el costo no sube al c
 
 | Fase | Mercado | Qué habilita el salto |
 |---|---|---|
-| **1 · Hoy** | 🇬🇹 Guatemala | Construir 3 casos con números medidos |
+| **1** | 🇬🇹 Guatemala | Construir 3 casos con números medidos |
 | **2** | 🇲🇽 México | Casos publicables + web en dos idiomas + cobro internacional |
 | **3** | 🇺🇸 Miami | Casos en dólares + un cliente ancla + presencia legal o socio local |
 
-### Lo que hay que resolver antes de cada salto
+**Antes de cada salto:** cobro internacional con facturación que el cliente pueda deducir,
+precios investigados en ese mercado, web completa en su idioma y casos en el idioma del mercado
+— **un caso en español no vende en Miami.**
 
-| | Pendiente |
-|---|---|
-| **Cobro internacional** | Stripe, Wise o equivalente. Facturación que el cliente pueda deducir |
-| **Investigar precios reales** | Los de México y Miami son hipótesis. Hay que verificarlos |
-| **Web bilingüe completa** | Hoy existe el toggle; hay que auditar que EN esté al día |
-| **Casos en el idioma del mercado** | Un caso en español no vende en Miami |
-| **Huso horario y disponibilidad** | Miami es GMT-5, Guatemala GMT-6. Manejable |
+## El benchmark guatemalteco no es nuestro techo
 
----
-
-## ⚠️ El benchmark guatemalteco no es nuestro techo
-
-**`06-ECONOMIA.md` compara contra el mercado guatemalteco porque es donde estamos hoy.**
+**`06-ECONOMIA.md` compara contra el mercado guatemalteco porque es donde estamos.**
 Sirve para saber que **estamos por encima en valor y dentro en precio.**
 
 **No sirve para fijar el techo.** El techo lo pone el mercado donde esté el cliente —
 y el costo de servirlo es el mismo desde acá.
 
-
 ---
 
-# Red de mentores — mapa y costos
+# Red de mentores — mapa, costos y reglas
 
-> **El acompañamiento es el hilo de la línea Growth.** Este archivo dice **de dónde sale cada
+> **El acompañamiento es el hilo de la línea Growth.** Esta sección dice **de dónde sale cada
 > mentor y cuánto cuesta** — porque el precio define en qué plan cabe.
-
-`[investigación de Allan · precios públicos al momento de relevarlos · verificar antes de cotizar]`
+> **El mentor de la industria hace la auditoría del cliente**, y su costo sale del rubro
+> Especialista.
 
 ---
 
 ## El mapa por industria
 
+*Precios públicos de cada plataforma. Se re-verifican antes de cotizar.*
+
 | Industria | Low *(≤$100)* | Medio | Premium |
 |---|---|---|---|
 | **Restaurantes** | **Wingman** — gratis · comunidad de dueños | **GrowthMentor** — $50/mes anual · $85/mes trimestral. Crecimiento y marketing, **no garantiza mentor de operaciones** | **MASTERESTAURANT** — $950 por sesión virtual de 1.5 h |
-| **Arquitectura** | **EntreArchitect Network** — gratis · comunidad para firmas pequeñas | **EntreArchitect Pro** — $49/mes · $499/año · coaching grupal | **EntreArchitect Mastermind** — $99/mes · $999/año. ⚠️ Grupal, **no es 1:1 privado** |
-| **Moda y fast fashion** | **The Apparel Mentor** — $39/mes · clases, eventos y coaching 1:1 *(confirmar cuántas sesiones)* | **MentorPass** — operador de moda DTC, $144 / 30 min | **MentorPass** — fundador DTC, $360 / 30 min · **WE are COCO** — red de 350+ compradores de retail, **pide cotización** |
+| **Arquitectura** | **EntreArchitect Network** — gratis · comunidad para firmas pequeñas | **EntreArchitect Pro** — $49/mes · $499/año · coaching grupal | **EntreArchitect Mastermind** — $99/mes · $999/año. Grupal, **no es 1:1 privado** |
+| **Moda y fast fashion** | **The Apparel Mentor** — $39/mes · clases, eventos y coaching 1:1 | **MentorPass** — operador de moda DTC, $144 / 30 min | **MentorPass** — fundador DTC, $360 / 30 min · **WE are COCO** — red de 350+ compradores de retail, **pide cotización** |
 | **E-commerce y DTC** | **MentorPass** — mentor de crecimiento, $72 / 30 min | **MentorPass** — especialista en CX, $180 / 30 min | **MentorPass** — retención y CX, $540 / 30 min |
 | **Wellness y fitness** | **MentorPass** — fundador de marca fitness, $72 / 30 min | **MentorPass** — fundador wellness, $180 / 30 min | **The Maxwell Method** — $600 por 2 sesiones de 90 min · mentoría de 6 semanas $2,900 |
-| **Suplementos** | **MicroMentor** — gratis · **no garantiza experiencia en suplementos** | **MentorPass** — fundador de Obvi, $144 / 30 min | **MentorPass** — fundador de Zesty Paws, $720 / 30 min. ⚠️ Verificar que el producto corresponda |
-| **Servicios profesionales** | **MicroMentor** — gratis · orientación general | **GrowthMentor** — $50-85/mes *(algunos mentores cobran aparte)* | **GLG** · **Guidepoint** — cotización. Estimaciones independientes: **$700-1,500+/hora**. ⚠️ Demasiado caro para clientes pequeños |
-| **Cafeterías** | ⚠️ **SIN MAPEAR** | ⚠️ **SIN MAPEAR** | ⚠️ **SIN MAPEAR** |
-| **Clubes y comunidades** | ⚠️ **SIN MAPEAR** | ⚠️ **SIN MAPEAR** | ⚠️ **SIN MAPEAR** |
+| **Suplementos** | **MicroMentor** — gratis · **no garantiza experiencia en suplementos** | **MentorPass** — fundador de Obvi, $144 / 30 min | **MentorPass** — fundador de Zesty Paws, $720 / 30 min |
+| **Servicios profesionales** | **MicroMentor** — gratis · orientación general | **GrowthMentor** — $50-85/mes *(algunos mentores cobran aparte)* | **GLG** · **Guidepoint** — cotización. Estimaciones independientes: **$700-1,500+/hora**. Fuera del techo de cualquier plan |
 
-🔴 **Las dos industrias nuevas no tienen mentor mapeado.** Si entra un cliente de cafetería o de
-club en 🟨 Accelerate o Compound, **la línea «un especialista de tu industria» no tiene con qué
-cumplirse.** Hay que buscarlos antes de venderlos.
+🔑 **Si la industria del cliente no está en el mapa, el mentor se busca antes de vender
+Accelerate o Compound.** Sin mentor, la línea «un especialista de tu industria» no tiene con qué
+cumplirse.
 
 ---
 
-# 🔴 El impacto en el margen — y cómo se resuelve
+# El mentor dentro del margen
 
 **El mentor tiene costo real. La política lo mete dentro del margen en vez de romperlo.**
 
@@ -437,8 +408,8 @@ cumplirse.** Hay que buscarlos antes de venderlos.
 | | Regla | Por qué |
 |---|---|---|
 | **1** | **Solo se selecciona el mentor que cabe en el plan.** El presupuesto filtra antes que la afinidad | Un mentor que no cabe no se propone. No se descubre el costo después |
-| **2** | **La frecuencia es trimestral en los planes chicos.** No mensual | El valor del mentor está en el criterio, no en la cadencia. Un fundador no necesita 12 sesiones al año — necesita la correcta en el momento correcto |
-| **3** | **La membresía se compra anual y es de Inherent, no del cliente** | Se paga una vez y sirve a todos los clientes de esa industria durante el año. Costo fijo prorrateado, como Claude |
+| **2** | **Trimestral en Accelerate, mensual en Compound** | El valor del mentor está en el criterio, no en la cadencia. Un fundador no necesita 12 sesiones al año — necesita la correcta en el momento correcto |
+| **3** | **La membresía se compra anual y es de Inherent, no del cliente** | Se paga una vez y sirve a todos los clientes de esa industria durante el año. Costo fijo prorrateado, como la IA |
 
 ### 💡 La regla 3 es la que más plata ahorra
 
@@ -456,36 +427,33 @@ cumplirse.** Hay que buscarlos antes de venderlos.
 
 ## La política — qué se absorbe y qué no
 
-| Plan | Qué incluye | Techo por sesión | **Monto fijo/mes** | Uso real |
-|---|---|---|---|---|
-| 🔷 **Marketing** | ⬜ **No lleva mentor de industria** · especialista por área ocasional 🟡 | — | **Q100** | — |
-| 🔷 **Marketing Pro** | ⬜ **No lleva mentor de industria** · especialista por área ocasional 🟡 | — | **Q150** | — |
-| 🟨 **Accelerate** | Comunidad + **1 sesión por trimestre** | **$144** | **Q1,000** | ~Q563 |
-| 🟨 **Compound** | Comunidad + **1 sesión al mes** | **$180** | **Q2,000** | ~Q1,579 |
+| Plan | Qué incluye | Techo por sesión | **Rubro Especialista / mes** |
+|---|---|---|---|
+| 🔷 **Marketing** | **No lleva mentor ni especialista** | — | — |
+| 🔷 **Marketing Pro** | **No lleva mentor ni especialista** | — | — |
+| 🟨 **Accelerate** | Comunidad + **1 sesión por trimestre** · auditoría con el mentor | **$144** | **Q1,000** |
+| 🟨 **Compound** | Comunidad + **1 sesión al mes** · auditoría con el mentor | **$180** | **Q2,000** |
 
-*(El monto fijo es el rubro Especialista del costo. La membresía prorrateada (Q193) y las sesiones
-salen de ahí. Sesiones no usadas se acumulan dentro del trimestre.)*
+*La membresía prorrateada, la auditoría y las sesiones salen del rubro Especialista. Las sesiones
+no usadas se acumulan dentro del trimestre.*
 
-✅ **Las dos sesiones caben en su monto con espacio.** Lo que sobra cubre un mentor un poco más
-caro o una segunda sesión puntual — **nunca uno arriba de $180.**
-
-🟡 **Por confirmar:** el especialista de Q100 / Q150 en la línea Marketing es **por área**
-*(nuestros: eventos, PR, talent)*, no mentor de industria.
+Lo que sobra del rubro cubre un mentor un poco más caro o una segunda sesión puntual —
+**nunca uno arriba de $180.**
 
 > 🔑 **El mentor es exclusivo de la línea Growth.** Es el diferenciador que la justifica, y
 > meterlo en la línea Marketing rompería el margen del plan barato sin agregar lo que vende:
 > **en Marketing no hay estrategia que acompañar.**
 
-### El margen final, con mentoría adentro
+### El margen final, con el mentor adentro
 
-| Plan | Precio | Margen sin especialista | **Margen con especialista** |
-|---|---|---|---|
-| 🔷 **Marketing** | Q7,315 | 79% | **77%** ✅ |
-| 🔷 **Marketing Pro** | Q11,165 | 78% | **77%** ✅ |
-| 🟨 **Accelerate** | Q19,250 | 78% | **72%** ✅ |
-| 🟨 **Compound** | Q32,340 | 81% | **75%** ✅ |
+| Plan | Precio | Costo fijo total | De eso, Especialista | **Margen** |
+|---|---|---|---|---|
+| 🔷 **Marketing** | Q7,315 | Q1,665 | — | **77%** |
+| 🔷 **Marketing Pro** | Q11,165 | Q2,555 | — | **77%** |
+| 🟨 **Accelerate** | Q19,250 | Q5,700 | Q1,000 | **70%** |
+| 🟨 **Compound** | Q32,340 | Q8,800 | Q2,000 | **73%** |
 
-> ✅ **Los cuatro quedan entre 72% y 77%, fijos.** El piso del modelo es **60%**: un plan que
+> **Los cuatro quedan entre 70% y 77%, fijos.** El piso del modelo es **60%**: un plan que
 > baje de ahí con el especialista adentro está mal preciado. Ver `06-ECONOMIA.md`.
 
 ---
@@ -495,10 +463,9 @@ caro o una segunda sesión puntual — **nunca uno arriba de $180.**
 **Arriba de $180 por sesión, el mentor va como add-on facturado al cliente, con margen.**
 
 **Por qué:** en MentorPass hay mentores de $360, $540, $720 y arriba de $1,000 la sesión.
-**Dos sesiones premium al mes se comen entre 36 y 54 puntos.**
-**Un mentor de $950 la sesión no cabe dentro de ningún plan — ni del de $4,200.**
+**Un mentor de $950 la sesión no cabe en el rubro Especialista de ningún plan — ni del de $4,200.**
 
-**Cómo se vende:** *«Hay un mentor que es exactamente lo que necesitás. Cuesta $X la sesión.
+**Cómo se vende:** *«Hay un mentor que es exactamente lo que necesitas. Cuesta $X la sesión.
 ¿Lo traemos?»* — **es decisión del cliente, no un costo nuestro escondido.**
 
 > 🔑 **Esto es una ventaja comercial, no una limitación.** Le damos acceso a una red que solo
@@ -518,13 +485,3 @@ caro o una segunda sesión puntual — **nunca uno arriba de $180.**
 | **Se verifica la experiencia real** | Un mentor de suplementos para mascotas no sirve para suplementos deportivos |
 | **Grupal ≠ 1:1** | EntreArchitect Mastermind es grupal. **No se vende como sesión privada** |
 | **Los precios se re-verifican antes de cotizar** | Cambian, y algunos son «pide cotización» |
-
----
-
-## ⏳ Pendiente — el match automático
-
-Que Strategy busque en **MentorCruise · GrowthMentor · MentorPass** un mentor que haga match con
-la industria, la etapa **y el presupuesto del plan**, y lo proponga dentro de la estrategia.
-
-**Cómo:** scraping con Playwright *(ya instalado)* o Apify.
-**Qué falta:** login en las plataformas.
