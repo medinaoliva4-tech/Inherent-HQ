@@ -1,6 +1,6 @@
 # Identidad — Quiénes somos
 
-> La categoría, la promesa, los diferenciadores y los límites.
+> La categoría, la promesa y los diferenciadores.
 
 ---
 
@@ -191,20 +191,6 @@ Lo más cercano es una consultoría que **entrega un documento y se va.**
 > Principio #08: *"una empresa debe depender cada vez menos de su fundador."*
 > Compound hace que además dependa menos de nosotros.
 
----
-
-## Los límites — lo que NO prometemos
-
-**La credibilidad se sostiene en lo que no decimos.**
-
-| No hacemos | Por qué |
-|---|---|
-| **LinkedIn Ads** | Ninguna de nuestras herramientas lo ejecuta. Damos inteligencia de LinkedIn, no pauta |
-| **SEO técnico profundo** — crawl, schema, core web vitals, link building | Es otra disciplina. «Que te encuentren en Google» es **pauta de búsqueda y contenido guiado por keywords** — nunca posicionamiento orgánico |
-| **Inversión publicitaria incluida** | La pone el cliente, siempre, aparte |
-| **Modelos, props y locaciones** | Costo del cliente |
-| **Contratar personal por el cliente** | En Talento damos perfiles, SOPs y onboarding. **No reclutamos** |
-
 🔑 **Nada se promete si no está en «Capacidades reales» de `06-ECONOMIA.md`.**
 Sin MCP no hay acción, y sin acción no hay promesa.
 
@@ -227,9 +213,6 @@ Precio según alcance.
 
 > 💀 **Marketing está dentro del rango que el mercado ya acepta, con 5.4x el volumen de su tramo.
 > Para igualarlo tendrían que contratar cuatro personas y cobrar lo mismo.**
-
-🔑 **El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica
-por **cuántos sistemas activamos y qué tan adentro entramos** — nunca por volumen de entregables.
 
 ---
 

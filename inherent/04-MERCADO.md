@@ -326,28 +326,6 @@ Los agentes corren igual. Producción y operación cobran en quetzales.
 
 ---
 
-## 🌐 Reglas para la web
-
-> **La web no puede leerse como una agencia guatemalteca.**
-> Guatemala es dónde estamos, no a quién le vendemos.
-
-| Regla | Por qué |
-|---|---|
-| **Precios en USD siempre** | El quetzal es referencia interna, no cara pública |
-| **No decir «Guatemala» como alcance** | Cierra la puerta al cliente de Miami antes de que lea la oferta |
-| **Industrias en lenguaje internacional** | B2B, software, wellness y retail se leen igual en los tres mercados |
-| **Casos con números, no con banderas** | *"+42% en leads calificados"* viaja. *"la mejor agencia de Guatemala"* no |
-| **Español e inglés, los dos completos** | El sitio tiene toggle ES/EN |
-| **Sin referencias locales en la oferta** | Nada de *"precios adaptados al mercado guatemalteco"* |
-
-### Lo que sí puede decir Guatemala
-
-- **En el equipo:** de dónde somos, dónde operamos
-- **En los casos:** NAO y Akai son de Guatemala, y está bien decirlo
-- **Nunca en la oferta ni en el precio**
-
----
-
 ## La secuencia
 
 | Fase | Mercado | Qué habilita el salto |

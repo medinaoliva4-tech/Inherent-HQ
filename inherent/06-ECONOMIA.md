@@ -62,9 +62,6 @@ que el mercado ya acepta.**
 
 👉 **5.4x el volumen. 55% más barato por pieza. Y trae estrategia, inteligencia y pauta.**
 
-🔑 **Esto aplica a la línea Marketing y nada más.** La línea Growth no se vende por pieza —
-se vende por cuántos sistemas activamos.
-
 ### La ventaja de costo está en la mezcla
 
 **El costo de 🔷 Marketing, por rubro:**
@@ -249,7 +246,7 @@ Marcas o locaciones adicionales son add-on.
 🔑 **El video es el 11-15% de las piezas y la mayor parte del costo de producción.** Lo demás
 sale de plantillas y del material ya grabado.
 
-### El precio por pieza — y por qué no aplica en Growth
+### El precio por pieza
 
 | | Precio | Piezas | **Q/pieza** |
 |---|---|---|---|
@@ -258,10 +255,6 @@ sale de plantillas y del material ya grabado.
 | 🔷 **MARKETING PRO** | Q11,165 | 145 | **Q77** |
 | 🟨 ACCELERATE | Q19,250 | 145 | Q133 |
 | 🟨 COMPOUND | Q32,340 | 204 | Q159 |
-
-🔑 **El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica
-por cuántos sistemas se activan y qué tan adentro entramos. **Usar Q/pieza para vender
-Accelerate es venderlo mal.**
 
 **Qué incluye cada plan, las cuatro tarjetas publicadas y los pilares × divisiones × planes
 están en `03-OFERTA.md`.** Acá viven el techo de volumen, las capacidades y la economía.
@@ -385,9 +378,9 @@ utilidad.
 | **Requisito** | **Sin atribución limpia no hay fee.** Por eso no existe en la línea Marketing: no incluye Conversion OS |
 | **Se cobra** | El mes siguiente, sobre lo efectivamente vendido |
 
-### El múltiplo — qué se puede prometer
+### El múltiplo
 
-**La web dice «apuntamos a», nunca «garantizamos».** Es modelo, no evidencia.
+**El múltiplo es modelo, no evidencia.**
 
 **Supuestos:** 2 meses de arranque sin lift · el lift sube lineal hasta su techo en el mes 12 ·
 margen del cliente 30%.
@@ -399,8 +392,7 @@ margen del cliente 30%.
 | 🟨 **ACCELERATE** | oferta + conversión + canales | +70% | **1.7x** | mes 6 |
 | 🟨 **COMPOUND** | todo + que corra sin el dueño | +100% | **2x** | mes 5 |
 
-🔑 **El % de crecimiento no sale del contenido, sale de la oferta y la conversión.** Por eso el
-mismo +25% tarda **el doble** en la línea Marketing.
+🔑 El mismo +25% tarda **el doble** en la línea Marketing.
 
 ### Desde qué facturación tiene sentido cada plan
 
@@ -461,20 +453,6 @@ todavía no es para ti»* vende el siguiente mejor que cualquier otra cosa.
 | **Construir y desplegar sitios y herramientas** | Claude + Vercel | ⬜ |
 | **Integrar con 9,000+ apps** *(CRM, WhatsApp, facturación)* | Zapier | ⬜ |
 | Documentación y entregables | Google Drive | ✅ |
-
-### ⛔ No tenemos la acción — no se vende
-
-| No disponible | Por qué |
-|---|---|
-| **LinkedIn Ads** | Ningún MCP lo ejecuta |
-| **SEO técnico** | Otra disciplina: horas humanas, infraestructura, resultados a 6 meses |
-| **Email marketing masivo** | No hay plataforma propia |
-| **Modelos, props, locaciones** | Costo del cliente, aparte |
-| **Generar imagen o video con IA** | Todo sale de material grabado |
-| **Predicción de viralidad** | Sin herramienta |
-| **Fotos de producto sin sesión** | Las fotos salen de la sesión del mes |
-| **Doblaje y voz sintética** | Sin herramienta |
-| **Quitar fondo y escalar calidad automático** | Se resuelve a mano o no se hace |
 
 🔑 **Las 86 a 204 piezas salen de grabación (⑤), edición (⑦) y plantillas de diseño (⑥A) sobre
 material propio.**
@@ -633,14 +611,3 @@ según alcance.*
 
 - **Inversión publicitaria** — la pone el cliente, aparte
 - Modelos, props y locaciones
-- **LinkedIn Ads · SEO técnico profundo · reclutamiento de personal**
-
-### Reglas de comunicación
-
-| | |
-|---|---|
-| **Precios siempre en USD** | El quetzal es referencia interna |
-| **Nunca «Guatemala» como alcance** | Cierra los otros mercados antes de que lean la oferta |
-| **Nunca vender Growth por pieza** | El conteo defiende el precio de Marketing; **en Growth lo abarata** |
-| **Nunca «garantizamos» un múltiplo** | Se dice **«apuntamos a»** |
-| **Nunca costos ni márgenes** | Nada de la sección 2 en adelante sale de acá, salvo esta parte pública |

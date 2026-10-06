@@ -38,18 +38,12 @@
 | **Qué promete** | Atención y demanda | **Facturación** |
 | **Qué toca** | Marca, mensaje, contenido, pauta | + **oferta, precio, conversión, canales, operación** |
 | **Contra quién compite** | Agencias de marketing | Consultoría · CMO fraccional |
-| **¿Promete % de crecimiento?** | ❌ **No** | ✅ **Sí** |
+| **Crecimiento** | Apunta a crecimiento medible | ✅ **Promete % de crecimiento** |
 | **Sistemas operativos activos** | ⬜ Ninguno | ✅ Growth · Conversion · Operations · Money |
 
-### 🔑 Por qué Marketing no promete crecimiento
+🔷 **La línea Marketing apunta a un crecimiento medible:** *(métrica — slot)*
 
-**El % de crecimiento no sale del contenido. Sale de la oferta y de la conversión.**
-
-La línea Marketing entrega 86 o 145 piezas y campañas — **amplifica lo que ya hay.** Si el
-negocio no convierte, el contenido amplifica la fuga. **Prometer un número ahí sería vender algo
-que no controlamos.**
-
-Por eso el mismo +25% de crecimiento llega **al mes 11 en Marketing y al mes 5 en Compound**:
+El mismo +25% de crecimiento llega **al mes 11 en Marketing y al mes 5 en Compound**:
 no es más esfuerzo, es que Growth toca la cadena completa.
 
 **Lo que no se vende es una capa suelta disfrazada de crecimiento.** La línea Marketing vende
@@ -102,7 +96,7 @@ deja 5-7 escenas; las de apoyo se recombinan en derivados.
 
 - **El rango es honestidad, no flojera:** material muy scripted no se recombina y cae al
   **mínimo (1 derivado por cada 2 planificados)**; material suelto llega al **tope (1:1)**.
-- **Se promete el MÍNIMO.** El tope es techo interno — **nunca se le dice al cliente.**
+- **Se promete el MÍNIMO.** El tope es techo, no promesa: se entrega solo si el material lo permite.
 
 ### 🔑 Marketing Pro y Accelerate entregan las mismas 145 piezas
 
@@ -128,9 +122,6 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 > 🔒 **Regla dura:** el repo no puede prometer **menos**, **más** ni **distinto** que esto.
 > Si algo interno contradice una línea de acá, **gana la web** y se corrige el repo.
 > Si una línea de acá no tiene capacidad detrás, **se arregla la capacidad — no se borra la línea.**
->
-> ✍️ **Y se habla de TÚ, no de vos.**
-> 💵 **Precios en USD y sin «Guatemala» como alcance** — la web se escribe para los tres mercados.
 
 ---
 
@@ -220,7 +211,6 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 
 # 📈 El múltiplo — cómo se dice y cómo se sostiene
 
-**«Apuntamos a» no es «garantizamos».** Es la meta contra la que trabajamos, y así se escribe.
 El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → «El múltiplo».
 
 | | Toca | **Techo a 12 meses** | En «x» |
@@ -282,7 +272,7 @@ El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → �
 | Abrimos los canales grandes | ② Growth · `gr-canales-grandes` · **Pilar 2 ejecutando** |
 | Subimos tu ticket | ② Growth · `gr-upsells` · **Pilar 3** |
 | Nadie se queda sin respuesta | ② `gr-conversion` + automatización de mensajes y WhatsApp |
-| Que te encuentren en Google | Pauta de búsqueda + contenido guiado por keywords. **Nunca posicionamiento orgánico, auditoría técnica ni link building** |
+| Que te encuentren en Google | Pauta de búsqueda + contenido guiado por keywords |
 | Que tu equipo sepa cerrar | Guiones y entrenamiento de closing — **Conversion OS** · el CEO |
 | Lo volvemos repetible | **SOPs de crecimiento** — la auditoría levanta, el CEO y el COO coordinan, el COO implementa con agentes |
 | Una herramienta cada trimestre | ② `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
@@ -310,10 +300,6 @@ El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → �
 
 > **El principio:** no se garantiza un resultado que no controlamos.
 > **Se garantiza lo que la ingeniería inversa vuelve CALCULABLE y el volumen vuelve REPETIBLE.**
->
-> 🔒 **Las garantías son de uso interno.** No van a la web hasta que cada una se haya ejecutado
-> en un cliente real. **Publicar una garantía que nunca se ejecutó es la forma más rápida de
-> perder una cuenta.**
 
 ## La cadena que lo hace posible
 
@@ -467,10 +453,8 @@ y se dice en la propuesta.**
 
 | | Por qué |
 |---|---|
-| ❌ **Viralidad** | No se controla, y **la viralidad desalineada encarece las ventas** en vez de abaratarlas |
 | ❌ **Un número de seguidores** | Es la métrica que menos correlaciona con negocio |
-| ❌ **Posición orgánica en Google** | No lo hacemos: «que te encuentren en Google» es pauta de búsqueda y contenido guiado por keywords |
-| ❌ **Un múltiplo del negocio** *(«10x»)* | El múltiplo es meta, no resultado. En la web va «apuntamos a», nunca «garantizamos» |
+| ❌ **Un múltiplo del negocio** *(«10x»)* | El múltiplo es meta, no resultado |
 | ❌ **Ventas en la línea 🔷 Marketing** | No tocamos oferta, conversión ni atribución |
 
 ---

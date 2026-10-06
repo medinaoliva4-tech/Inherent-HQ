@@ -190,8 +190,6 @@ una sola persona y qué pasa si esa persona no está.
 
 **Causando que crecer deje de depender de ti.**
 
-**No reclutamos. Damos el sistema, no las personas.**
-
 🔑 **Quién lo hace:** el especialista audita → el CEO y el COO coordinan lo que sale de la
 auditoría → el COO lo implementa con agentes *(SOPs, mapa de experiencia y LTV, documentación y
 entrenamiento)*. La estructura corporativa también la cubre la auditoría.
@@ -346,9 +344,6 @@ sistema.**
 de capacidad — tiene un problema de existencia. Meterse en sus finanzas hoy sería cobrarle por
 algo que todavía no necesita.
 
-🔑 **Y por eso Marketing no promete un % de crecimiento.** El % sale de la oferta y la conversión,
-que son Growth OS y Conversion OS. **Sin ellos solo se amplifica lo que ya hay.**
-
 **Por qué Compound cuesta más:** tocamos tu equipo y tus números. Eso no lo carga una
 herramienta — lo carga una cabeza.
 
@@ -356,8 +351,8 @@ herramienta — lo carga una cabeza.
 
 # Cómo se comunica esto
 
-**La regla: cada cosa que decimos termina en un resultado, no en un servicio.** La copia al
-cliente va de TÚ. La tabla completa está en `07-COMUNICACION.md`.
+**La regla: cada cosa que decimos termina en un resultado, no en un servicio.**
+La tabla completa está en `07-COMUNICACION.md`.
 
 | No decir | Decir |
 |---|---|
