@@ -884,9 +884,9 @@ entran el especialista y las dos auditorías. **Igual suma Q5,340 de utilidad po
 | **Utilidad** | **Q5,650** | **Q8,610** | **Q13,950** | **Q24,140** |
 | **Margen** | **77%** | **77%** | **72%** | **75%** |
 
-## 5 · 🧾 El desglose por tarea — la línea 🔷 Marketing
+## 5 · 🧾 El desglose por tarea — los cuatro planes
 
-> **De acá salen las horas y los responsables de los planes 🔷 — no el costo.** El costo es fijo
+> **De acá salen las horas y los responsables de cada plan — no el costo.** El costo es fijo
 > por plan *(ver «El costo fijo de cada cuenta»)*. Esta tabla dice **quién hace qué y cuánto
 > tarda**, para verificar que cada monto fijo alcanza.
 
@@ -949,6 +949,79 @@ entran el especialista y las dos auditorías. **Igual suma Q5,340 de utilidad po
 
 ---
 
+### 🟨 ACCELERATE — $2,500
+
+**Lo planificado hasta hoy.** Lo que falta va marcado ⚠️ y no se completa por inferencia.
+
+#### 🔵 Onboarding
+
+⚠️ **SIN DATOS.** No hay horas planificadas para el onboarding de Growth *(comprensión,
+estrategia, oferta, branding)*.
+
+#### 🟢 Mensual
+
+| Tarea | Quién | h | De dónde sale |
+|---|---|---|---|
+| Reunión mensual con el cliente | **Allan** | 1 | Tabla de horas de Allan |
+| Preparar la reunión | **Allan** | 0.5 | ″ |
+| **Sesión de dirección** *(mensual)* | **Allan** | 1.5 | ″ |
+| Comunicación continua | **Allan** | 2 | ″ |
+| Aprobar calendario e ideas | **Allan** | 1.5 | ″ |
+| QA final de entregables | **Allan** | 1.5 | ″ |
+| Revisión del 20 | **Allan** | 1.5 | ″ |
+| Coordinar producción | **Allan** | 1 | ″ |
+| Dirección estratégica | **Allan** | 1 | ″ |
+| **Rediseño de oferta y canales** | **Allan** | 2 | ″ |
+| Alcance de la tecnología | **Allan** | 0.5 | ″ |
+| Grabación de video | **Producción** | 6 | Tabla de tareas · **2 sesiones** |
+| Sesión de foto | **Producción** | 1 | ″ |
+| Operar los agentes | **Operador** | 7.75 | `[modelo anterior · por confirmar]` |
+| Sesión 1:1 con especialista | **Red de mentores** | 1 sesión / **trimestre** | Techo **$144** |
+| Creative · diseño · video · community | **Pablo** | ⚠️ **SIN DATOS** | — |
+
+**Allan: las tareas suman 14 h; la tabla de horas de Allan dice 13 h.** 🟡 Ver «Lo que todavía
+no tiene desglose».
+
+> 🔑 **Referencia, no plan:** Marketing Pro usa **13.5 h de Pablo** para las mismas 145 piezas.
+> Accelerate cambia la mezcla: **más video** *(27-36 contra 18-24)* y **menos estáticos** *(63
+> contra 72)*.
+
+---
+
+### 🟨 COMPOUND — $4,200
+
+#### 🔵 Onboarding
+
+⚠️ **SIN DATOS.** Igual que Accelerate.
+
+#### 🟢 Mensual
+
+| Tarea | Quién | h | De dónde sale |
+|---|---|---|---|
+| Reunión mensual con el cliente | **Allan** | 1 | Tabla de horas de Allan |
+| Preparar la reunión | **Allan** | 1 | ″ |
+| **Sesión de dirección** *(quincenal)* | **Allan** | 3 | ″ |
+| Comunicación continua | **Allan** | 2.5 | ″ |
+| Aprobar calendario e ideas | **Allan** | 1.5 | ″ |
+| QA final de entregables | **Allan** | 2 | ″ |
+| Revisión del 20 | **Allan** | 2 | ″ |
+| Coordinar producción | **Allan** | 1 | ″ |
+| Dirección estratégica | **Allan** | 1 | ″ |
+| **Rediseño de oferta y canales** | **Allan** | 2 | ″ |
+| Alcance de la tecnología | **Allan** | 1 | ″ |
+| Grabación de video | **Producción** | 8 | Tabla de tareas · **3 sesiones** |
+| Sesión de foto | **Producción** | 1 | ″ |
+| Operar los agentes | **Operador** | 12 | `[modelo anterior · por confirmar]` |
+| Sesión 1:1 con especialista | **Red de mentores** | 1 sesión / **mes** | Techo **$180** |
+| Creative · diseño · video · community | **Pablo** | ⚠️ **SIN DATOS** | — |
+
+**Allan: las tareas suman 18 h; la tabla de horas de Allan dice 16 h.** 🟡 Ver abajo.
+
+> 🔑 **Referencia, no plan:** Compound entrega **204 piezas** *(36-48 videos · 88 estáticos ·
+> 80 stories)* — un 40% más que Pro y Accelerate.
+
+---
+
 ## 6 · 🔑 Pablo es el cuello de capacidad
 
 **Con 5 clientes, Pablo acumula ~61.5 h/mes** *(creative + diseño + video + community de los
@@ -974,11 +1047,18 @@ Es el primer techo que se toca al crecer.
 
 ## 8 · ⚠️ Lo que todavía no tiene desglose
 
-**🟨 Accelerate y 🟨 Compound ya tienen costo fijo, pero todavía no tienen lista de tareas** con
-responsable y horas *(como la de la línea 🔷 de arriba)*.
+**🟨 Accelerate y 🟨 Compound ya tienen costo fijo y parte de sus horas** *(Allan, producción,
+operador y especialista — ver arriba)*. **Falta:**
 
-🔴 **Pendiente: el mismo desglose por tarea para los dos planes de la línea Growth.** No cambia
-el costo — **confirma que el monto fijo alcanza** para lo que promete cada plan.
+| Pendiente | Accelerate | Compound |
+|---|---|---|
+| 🔴 **Horas de Pablo** *(creative, diseño, video, community)* | ⚠️ SIN DATOS | ⚠️ SIN DATOS |
+| 🔴 **Onboarding** *(tareas y horas)* | ⚠️ SIN DATOS | ⚠️ SIN DATOS |
+| 🟡 **Horas del operador** | 7.75 h — del modelo anterior | 12 h — del modelo anterior |
+| 🟡 **Total de Allan** | Las tareas suman **14 h**, la tabla dice **13 h** | Suman **18 h**, la tabla dice **16 h** |
+
+**No cambia el costo** — es fijo. **Confirma que el monto fijo alcanza** para lo que promete cada
+plan, y cuántas cuentas aguantan Pablo y Allan.
 
 ---
 
