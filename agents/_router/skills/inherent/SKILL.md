@@ -44,6 +44,10 @@ Del prompt CHOCA con el workflow: [qué pide saltarse o hacer distinto · «nada
 donde lo anota ① Strategy. **Si el archivo no existe, va `⛔ falta`** — y el orquestador del
 departamento bloquea, porque el plan es el techo de todos.
 
+🏠 **Cuando el cliente es Inherent** *(nuestras propias redes)*, el folder es
+`inherent/inherent-social-media/` en lugar de `clients/<cliente>/`. Corre igual que cualquier
+cliente.
+
 🔑 **Este bloque es la prueba de que se siguió el método.** Si una respuesta de trabajo de
 cliente no empieza con `ENRUTAMIENTO`, se saltó el router.
 

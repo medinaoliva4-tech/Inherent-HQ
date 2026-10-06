@@ -10,19 +10,13 @@
 
 | # | Decisión | Contexto |
 |---|---|---|
-| 1 | **¿Las tarjetas de la web muestran el número de piezas?** | `03-OFERTA` pone 86 / 145 / 204 en las tarjetas; `07-COMUNICACION` dice «nunca mostrar cantidad de piezas en la web» |
-| 2 | **¿La tarjeta de Marketing dice «Apuntamos a 1.3x tu facturación»?** | Choca con la regla «la línea Marketing no promete % de crecimiento» |
-| 3 | **Herramienta de publicación y bandeja de mensajes** | ⑨ Posting está armado con Publer; el repo hablaba de Postpone. El slot queda vacío en `05-OPERACION` hasta decidir |
-| 4 | **¿Qué argumento vende el salto Pro → Accelerate?** | Con los costos nuevos es el salto de menor margen (61%); suma ~Q4,940 de utilidad |
-| 5 | **Especialistas por área** *(eventos, networking y PR, talent production, talent marketing)* | No tienen rubro en el costo fijo ni persona asignada |
-| 6 | **¿Cuál de las tres auditorías cubre corporate structure?** | Hoy dice solo «la auditoría» |
-| 7 | **Marca personal en Compound: «IA entrenada con su voz para escalar sin grabar más»** | Puede chocar con «no se promete voz sintética» |
-| 8 | **¿«Guatemala» en los argumentos internos de venta?** | `01-IDENTIDAD` dice «nadie más en Guatemala», «ninguna agencia guatemalteca». ¿Pasan a multi-mercado? |
-| 9 | **¿Cafeterías y Clubes van en la web?** | `04-MERCADO` tiene 12 industrias; la web y `07` tienen 10 |
-| 10 | **¿Se muestran nombres de especialistas en la web cuando haya acuerdos?** | Hoy la web va sin nombres |
-| 11 | **El techo de capacidad** | `07` dice que el techo es la grabación; el manual dice que es diseño y edición a mano |
-| 12 | **Reposición gratis en las garantías** | El costo «3 a 5 puntos de margen» se calculó con la tabla vieja: recalcular o descartar |
-| 13 | **Bloque «Lo básico vs. el valor único» de Marketing Pro** | `01-IDENTIDAD` lo tiene para Marketing, Accelerate y Compound, no para Pro |
+| 1 | **La métrica de crecimiento medible de la línea Marketing** | El slot ya está en `CLAUDE.md` y `03-OFERTA` |
+| 2 | **Herramienta de publicación y bandeja de mensajes** | ⑨ Posting está armado con Publer; el repo hablaba de Postpone. El slot queda vacío en `05-OPERACION` hasta decidir |
+| 3 | **¿Qué argumento vende el salto Pro → Accelerate?** | Con los costos nuevos es el salto de menor margen (61%); suma ~Q4,940 de utilidad |
+| 4 | **Especialistas por área** *(eventos, networking y PR, talent production, talent marketing)* | No tienen rubro en el costo fijo ni persona asignada |
+| 5 | **¿Cuál de las tres auditorías cubre corporate structure?** | Hoy dice solo «la auditoría» |
+| 6 | **Reposición gratis en las garantías** | El costo «3 a 5 puntos de margen» se calculó con la tabla vieja: recalcular o descartar |
+| 7 | **Bloque «Lo básico vs. el valor único» de Marketing Pro** | `01-IDENTIDAD` lo tiene para Marketing, Accelerate y Compound, no para Pro |
 
 ---
 
@@ -82,15 +76,13 @@
 
 ---
 
-## 🌐 5 · Web y mercados
+## 🌐 5 · Mercados
 
 | # | Qué |
 |---|---|
-| 1 | **Actualizar inherentglobal.com** con las cuatro tarjetas nuevas. Hasta entonces, a quien llegue por la web se le respeta lo publicado *(Ignite $800 · Accelerate $1,200 · Compound $2,000)* |
-| 2 | Auditar que la versión en inglés esté al día con la española |
-| 3 | Casos en el idioma de cada mercado |
-| 4 | Fase 2: que cada industria abra a detalle con entregables, ejemplos y diagnóstico |
-| 5 | **Investigar precios reales de México y Miami** y recalcular sus márgenes con los costos nuevos |
+| 1 | **Investigar precios reales de México y Miami** y recalcular sus márgenes con los costos nuevos |
+
+> Lo de la web *(tarjetas, idiomas, industrias, casos)* vive en el repo de la web.
 
 ---
 

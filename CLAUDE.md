@@ -18,7 +18,8 @@ inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── 04-MERCADO.md          a quién y dónde — industrias, mercados, mentores
 ├── 05-OPERACION.md        cómo lo entregamos — roles, pipeline, calendario
 ├── 06-ECONOMIA.md         🔒 cuánto cuesta y cuánto queda
-└── 07-COMUNICACION.md     cómo lo decimos — brief de web
+├── 07-COMUNICACION.md     cómo lo decimos — brief de web
+└── inherent-social-media/ Inherent como cliente — nuestras propias redes, plan Marketing Pro
 
 agents/                    ← LOS AGENTES — uno por etapa del pipeline
 ├── README.md              ← el roster y el estado de cada uno
@@ -142,8 +143,7 @@ agentes.** Se lee antes de prometer nada.
 El salto **no compra contenido — compra sistemas**: oferta, precio, conversión, canales y SOPs.
 **Venderlo como «más piezas» es venderlo mal.**
 
-🔑 **La línea Marketing NO promete % de crecimiento.** El % no sale del contenido, sale de la
-oferta y la conversión. **Prometerlo ahí es vender algo que no controlamos.**
+🔷 **La línea Marketing apunta a un crecimiento medible:** *(métrica — slot)*
 
 🚀 **Somos un acelerador de marcas. Cada plan es un BOOST distinto, no más volumen del anterior.**
 **Accelerate NO es «que te conozcan más».** Ese comprador ya se siente estancado y **teme romper
@@ -199,20 +199,13 @@ Marketing rompe el margen del plan barato · **trimestral en Accelerate**, mensu
 −41% de costo)*. **Arriba de $180/sesión no se absorbe: va como add-on facturado al cliente.**
 Ver `inherent/04-MERCADO.md`.
 
-## 🌐 La web es la promesa
+## Lo que entrega cada línea
 
-🔒 **El repo no puede prometer menos, más ni distinto que las cuatro tarjetas publicadas.** Si
-algo interno contradice una línea publicada, **gana la web** y se corrige el repo. Si una línea
-publicada no tiene capacidad detrás, **se arregla la capacidad — no se borra la línea.**
-**El texto exacto de las cuatro tarjetas y qué respalda cada línea están en `inherent/03-OFERTA.md`.**
+**El texto de las cuatro tarjetas y qué respalda cada línea están en `inherent/03-OFERTA.md`.**
+**La web vive en su propio repo.**
 
-✍️ **Toda la copia al cliente va de TÚ, no de vos.** Así está publicado.
-
-**No se promete un CFO.** «Tus números claros» lo entrega **Money OS** con el CEO y Strategy.
+«Tus números claros» lo entrega **Money OS** con el CEO y Strategy.
 **Corporate structure** lo cubre la auditoría del especialista.
-
-**«Que te encuentren en Google» = pauta de búsqueda y contenido guiado por keywords.**
-**Nunca posicionamiento orgánico, auditoría técnica ni link building.**
 
 ---
 
@@ -240,13 +233,10 @@ rango que el mercado ya acepta**, con 3x a 5x el volumen de su tramo.
 
 🌐 **Guatemala es dónde arrancamos, no el techo.** Los costos se pagan en quetzales y no cambian
 al cambiar de mercado; **lo único que cambia es el precio.** Ver `inherent/04-MERCADO.md`.
-**La web se escribe para todos los mercados: precios en USD y sin «Guatemala» como alcance.**
 El plan de entrada da **86 piezas a Q7,315 (Q85/pieza)** contra las ~16 de un paquete de Q3,000
 **(Q188/pieza)**.
 
 **El volumen nos separa del mercado. La profundidad separa las líneas entre sí.**
-**El Q/pieza es el arma de la línea Marketing y nada más.** En Growth el precio se justifica por
-cuántos sistemas activamos — **usar Q/pieza para vender Accelerate lo abarata.**
 
 **Dentro de Marketing el bundle sí es descuento** *(38% menos que comprar suelto)*.
 **El salto a Growth NO es descuento — es acceso:** nada de lo que agrega se vende à la carte.
@@ -306,14 +296,7 @@ slots de `inherent/05-OPERACION.md`.** Si cambia una herramienta, se cambia esa 
 🔌 **Un MCP declarado NO es un MCP conectado.** **No se promete lo que no está en «Capacidades
 reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción no hay promesa.
 
-**No generamos imagen ni video con IA.** Las 86-204 piezas salen de grabación, edición y
-plantillas sobre material propio.
-⛔ **No se promete:** predicción de viralidad, fotos de producto sin sesión, doblaje ni voz
-sintética. **Los límites declarados están en `inherent/01-IDENTIDAD.md`:** no hacemos LinkedIn
-Ads, SEO técnico profundo, ni reclutamos personal.
-
-🛡️ **Las garantías y sus condiciones están en `inherent/03-OFERTA.md`.** No se ofrece ninguna que
-no esté ahí.
+🛡️ **Las garantías y sus condiciones están en `inherent/03-OFERTA.md`.**
 
 ## Dónde está cada cosa
 
@@ -343,6 +326,8 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
    🔒 **El repo es privado: toda la información del cliente vive en su folder.** Si alguna vez
    vuelve a ser público, `clients/` solo guarda un README con el link al repo privado del
    cliente. Ver `clients/README.md`.
+   🏠 **Cuando el cliente es Inherent** *(nuestras propias redes)*, el folder es
+   `inherent/inherent-social-media/`.
 4. Seguí el workflow. Las skills se invocan donde el workflow lo indica.
 
 ## Reglas

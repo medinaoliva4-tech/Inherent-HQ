@@ -9,11 +9,14 @@
 | 🔴 **Público** | **Solo un `README.md`** con el nombre del cliente y el **link a su repo privado**. Nada más: ni estrategia, ni data, ni links a Drive |
 | 🟢 **Privado** | **Todo lo del cliente**, con la estructura de abajo |
 
-✅ **Hoy `Inherent-HQ` es privado** `[verificado el 4-oct-2026]` → **toda la información del
+✅ **Hoy `Inherent-HQ` es privado** → **toda la información del
 cliente vive acá.** Si alguna vez vuelve a ser público, aplica la fila 🔴.
 
+🏠 **Inherent como cliente** *(nuestras propias redes)* vive en `inherent/inherent-social-media/`,
+con la misma estructura.
+
 🛑 **Antes de escribir en `clients/`, se verifica la visibilidad del repo.** Si es público y la
-información no tiene a dónde ir, **se bloquea y se avisa a Allan** — no se sube «por mientras».
+información no tiene a dónde ir, **se bloquea y se avisa al CEO** — no se sube «por mientras».
 
 **Un cliente = un folder.** Vive **afuera** de los agentes: todos leen y escriben acá.
 
@@ -31,8 +34,8 @@ clients/<cliente>/
 | **Nunca mezclar dos clientes** | Una sesión trabaja un folder |
 | **Lo externo no se copia, se linkea** | Va en `LINKS.md` |
 | **El plan contratado se anota primero** | Define el techo de lo que se puede prometer |
-| **Nada se envía al cliente sin gate** | Allan cierra, el agente propone |
+| **Nada se envía al cliente sin gate** | El CEO cierra, el agente propone |
 
 > **Cómo se entrega lo define cada agente en su propio `brain/WORKFLOW.md`.**
-> Cada uno entrega algo distinto; lo único igual para todos es que **Allan aprueba antes de que
+> Cada uno entrega algo distinto; lo único igual para todos es que **el CEO aprueba antes de que
 > algo salga.**
