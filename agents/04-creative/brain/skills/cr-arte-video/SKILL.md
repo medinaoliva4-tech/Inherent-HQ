@@ -16,7 +16,7 @@ description: >
 
 **Consume:** el concepto aprobado en **Gate 2** · el **hook, guion y copy literales** de la Capa 4, con
 su **frame 1 visual** · de **②B Branding**: guidelines, lente de marca, paleta, tipografía y **banco de
-assets** · de **③ Marketing**: activos distintivos y formato del slot · de **① Comprensión**: la **capacidad real de producción**.
+assets** · de **③ Marketing**: activos distintivos y formato del slot · de **① Strategy**: la **capacidad real de producción**.
 
 **Produce**, dentro del `ideas-<formato>.md` de la pieza, en su sección:
 

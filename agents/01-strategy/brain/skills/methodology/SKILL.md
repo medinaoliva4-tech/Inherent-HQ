@@ -82,10 +82,14 @@ Eso determina **cuáles son sus 3 pilares** → ver `inherent/02-METODO.md`.
 Vender Compound a quien no tiene demanda es autonomía sobre una máquina rota.
 **El agente propone; Allan decide si se ajusta el paquete o el objetivo.**
 
-### A.1 · ¿Qué significa ganar para ESTA empresa?
+### A.1 · ¿Qué significa ganar para ESTA empresa? — el `WIN`
 
 Con todo lo que se entendió del negocio, el mercado y la industria: **para ellos, ser número uno
 significa esto.** Concreto y reconocible, no "ser los mejores".
+
+> 🔑 **Esto es el `WIN`** — el nombre con el que lo piden los demás departamentos (`CLAUDE.md`).
+> Va a `clients/<cliente>/data/nucleo.md` junto con el arquetipo, y de él cuelgan las
+> `MUST BE TRUE` de `analysis`.
 
 ### A.2 · Objetivos macro, por trimestre
 
@@ -361,6 +365,12 @@ comunidad chica y **solo se escala lo que muestre señales de negocio**.
 - **Si faltan datos, preguntar.** No inventar cultura, percepción ni capacidades
 
 ---
+
+## Salida
+
+**`clients/<cliente>/data/posicionamiento.md`** — la plataforma de marca completa (§B) y los
+objetivos macro (§A), más los briefs por área. **`clients/<cliente>/data/nucleo.md`** recibe el
+`WIN` y el arquetipo. El resumen para el cliente va a `ESTRATEGIA.md` (`../../WORKFLOW.md` §7).
 
 ## Antes de cerrar
 

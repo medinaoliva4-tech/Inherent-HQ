@@ -4,7 +4,7 @@ description: >
   Capa 6 de ⑦ Posting — cierra el ciclo con las cuatro lecturas: qué no llegó a tiempo y de dónde
   venía, qué se devolvió y por qué, qué falló al publicar, y cuánto tardó cada aprobación. Devuelve
   como dato —no como reclamo— lo que es de ③ Marketing (fechas de preparación cortas) y de ⑥A/⑥B
-  (specs que fallan siempre), y propone a ① Comprensión la corrección del tiempo real de aprobación.
+  (specs que fallan siempre), y propone a ① Strategy la corrección del tiempo real de aprobación.
   Escribe `aprendizaje-de-posting.md`. Úsala cuando pidan "qué se cayó este mes", "por qué llegó
   tarde", "cerrá el ciclo de posting", "cuánto tarda en aprobar este cliente". Requiere el ciclo
   publicado y verificado.
@@ -44,7 +44,7 @@ Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`.
 |---|---|
 | Siempre llega tarde el **mismo formato** | ⑥A o ⑥B: ese formato lleva más tiempo del previsto |
 | Llega tarde **todo, parejo** | ③ Marketing: las fechas de preparación son cortas para el ciclo |
-| Llega tarde lo que **depende del cliente** | ① Comprensión: el tiempo de respuesta declarado no es el real |
+| Llega tarde lo que **depende del cliente** | ① Strategy: el tiempo de respuesta declarado no es el real |
 
 ## 3 · Lectura 2 — las devoluciones que se repiten
 
@@ -81,7 +81,7 @@ existe, el problema no es el proceso: es que ese chequeo se saltó, y eso tambi�
 | 2 · Paquete de carga| 2026-10-04  | 2026-10-04  | mismo día |
 ```
 
-**El promedio del ciclo se compara con lo declarado** en `comprension.md` § La capacidad
+**El promedio del ciclo se compara con lo declarado** en `data/contexto.md` §D · Restricciones
 (*"aprueba Ana, 24-48 h"*). Si no coincide después de 2-3 ciclos, **se propone la corrección a ①
 Comprensión** — como propuesta, nunca editando su archivo.
 
@@ -112,5 +112,5 @@ que nadie lo note.
 - [ ] Cada falla publicada tiene su **causa raíz**, no solo el incidente
 - [ ] Si la causa ya estaba cubierta por un chequeo, está anotado que **el chequeo se saltó**
 - [ ] El **tiempo real de aprobación** está medido y comparado con lo declarado en ①
-- [ ] Si difiere tras 2-3 ciclos, se **propuso la corrección a ① Comprensión** — sin editar su archivo
+- [ ] Si difiere tras 2-3 ciclos, se **propuso la corrección a ① Strategy** — sin editar su archivo
 - [ ] Los datos de plataforma que cambiaron se actualizaron **con fecha**

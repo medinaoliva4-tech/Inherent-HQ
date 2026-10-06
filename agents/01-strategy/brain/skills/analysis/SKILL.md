@@ -19,7 +19,11 @@ El contexto trajo la data. Acá se responde: **¿qué nos dice esto que es relev
 
 Siempre estas tres. Siempre en este orden. Para cualquier cliente.
 
-### 1 · ¿Qué tiene que ser verdad?
+> 🔑 **Los nombres en inglés son el vocabulario del método** —`MUST BE TRUE` · `UNFAIR` ·
+> `GO GET`— y es con esos nombres que los demás departamentos los piden. Ver `CLAUDE.md`.
+> **Las preguntas no cambian: se les pone su etiqueta.**
+
+### 1 · ¿Qué tiene que ser verdad? — `MUST BE TRUE`
 
 > Para que la gente los vea y diga: **"ellos son los número uno en esto"**.
 
@@ -35,7 +39,7 @@ Después: qué condiciones tendrían que cumplirse para que eso pase. Cosas como
 Para cada condición: **¿dónde está la marca hoy?** Es diagnóstico, no aspiración.
 Sin dato: `⚠️ SIN DATOS`.
 
-### 2 · ¿Qué tienen a su ventaja?
+### 2 · ¿Qué tienen a su ventaja? — `UNFAIR`
 
 Todo lo que **ya poseen** y se puede usar a favor: relaciones, acceso, producto, ubicación,
 historia, la persona del founder, data, comunidad, distribución, talento, credibilidad, tecnología,
@@ -46,7 +50,7 @@ Una ventaja impresionante que no sirve al objetivo no entra — se lista aparte 
 
 Cada ventaja necesita de dónde salió. Sin fuente: `[dice el cliente, sin verificar]`.
 
-### 3 · ¿Qué hay que ir a buscar?
+### 3 · ¿Qué hay que ir a buscar? — `GO GET`
 
 Lo que **falta** y hay que conseguir o mejorar. No es lo que tenemos, es lo que podemos provocar:
 
@@ -110,6 +114,12 @@ el área que arregla el cuello va primero y con más profundidad.
 Se dice, no se calla.
 
 ---
+
+## Salida
+
+**Las tres respuestas van a `clients/<cliente>/data/nucleo.md`**, debajo del `WIN`:
+`MUST BE TRUE` con el diagnóstico de hoy · `UNFAIR` con las descartadas · `GO GET` con qué
+condición mueve cada una. **Es de ahí que los demás departamentos trazan sus piezas.**
 
 ## Antes de cerrar
 - [ ] "Número uno en qué" está respondido con algo concreto y reconocible

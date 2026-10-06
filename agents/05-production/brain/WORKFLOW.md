@@ -289,20 +289,24 @@ Producción **no arranca nunca sin el Excel creativo aprobado**.
 | **④ Creatividad** | `plan-de-contenido.csv` **con Gate 3 aprobado**, filtrado a las filas con `material = video` o `material = foto`. De `video`: escenas, encuadres, duraciones, estética/mood, concepto, emoción. De `foto`: la **§ Foto** de esa pieza | 🛑 Sí |
 | **②B Branding** | Guidelines, dirección visual, paleta, do's & don'ts, **banco de assets existente** | 🛑 Sí |
 | **③ Marketing** | Fechas de la campaña y **fechas de preparación** — cuánto margen real hay | 🛑 Sí |
-| **① Comprensión** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 Sí |
+| **① Strategy** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 Sí |
 
 Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
 
-> 🔄 **Regla de transición.** **①** ya es un departamento propio: la capacidad declarada, el
-> presupuesto disponible y las restricciones se leen de
-> `agents/comprension/clients/<cliente>/comprension.md` § La capacidad. 🛑 **Ahí vuelve también la
-> corrección de `pr-loop`** — como propuesta, nunca editando su archivo. **②③** todavía se leen de
-> `agents/strategy/`, con el mapeo de `agents/04-creative/brain/WORKFLOW.md` §2. Los archivos de Creatividad se
-> leen siempre de `clients/<cliente>/data/`.
+> 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/data/`:
 >
-> ⚠️ **En `main` esas carpetas todavía no existen:** `agents/comprension/` y `agents/strategy/` viven
-> en la rama `agente-creatividad`, y en `main` Strategy es `agents/01-strategy/`. Hasta que se decida
-> dónde va cada cosa, si el archivo no está se marca `BLOQUEADO` con qué falta — no se inventa.
+> | Qué | Dónde | De quién |
+> |---|---|---|
+> | **La capacidad declarada**, el presupuesto y las restricciones | `contexto.md` §B y §D | ① Strategy · `context` |
+> | El `WIN` y las `MUST BE TRUE` que la pieza traza | `nucleo.md` | ① Strategy · `analysis` |
+> | La idea de campaña y los pilares | `estrategia-de-contenido.md` | ③ Marketing |
+> | Los slots del ciclo | `calendario.csv` | ③ Marketing |
+> | El Excel con Gate 3 y los `ideas-<formato>.md` | mismos archivos de ④ | ④ Creatividad |
+>
+> 🛑 **A `contexto.md` §B vuelve también la corrección de `pr-loop`** — como propuesta para
+> ① Strategy, **nunca editando su archivo.**
+>
+> 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo.**
 
 ---
 
@@ -368,7 +372,7 @@ TRADUCIR     Capas 0-1    De idea a lista de cosas físicas que hay que consegui
 OPTIMIZAR    Capas 2-4    Agrupar para que cueste menos y dure menos
 EJECUTAR     Capas 5-6    Volverlo un día que sucede, y entregarlo ordenado
                  ↓
-LOOP         Capa 7       ¿Qué costó más de lo previsto?  → vuelve a Capa 2 y a ① Comprensión
+LOOP         Capa 7       ¿Qué costó más de lo previsto?  → vuelve a Capa 2 y a ① Strategy
 ```
 
 > **El valor del departamento está en la Capa 2.** Traducir una idea a una lista es mecánico.
@@ -560,7 +564,7 @@ hora de fotógrafo.**
 > no necesitaba. Eso se devuelve a ④ **como dato, no como reclamo** — y en dos ciclos baja el costo
 > sin bajar la calidad.
 
-**Lo que vuelve a ① Comprensión.** La capacidad de producción declarada es una estimación; al cerrar
+**Lo que vuelve a ① Strategy.** La capacidad de producción declarada es una estimación; al cerrar
 el ciclo, Producción la corrige con datos reales. Es la única corrección que Producción hace sobre un
 documento de otro departamento, y se hace **como propuesta**, nunca editando su archivo.
 

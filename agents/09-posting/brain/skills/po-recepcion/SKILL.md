@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` con **Gate 3** de ④ (`clients/<cliente>/data/`) · los exports de ⑥A y ⑥B con su ruta · § La capacidad de `agents/comprension/clients/<cliente>/comprension.md` (cuentas y accesos) · guidelines de ②B |
+| **Consume** | `plan-de-contenido.csv` con **Gate 3** de ④ (`clients/<cliente>/data/`) · los exports de ⑥A y ⑥B con su ruta · `clients/<cliente>/LINKS.md` (las cuentas y **quién tiene el acceso**) · `data/contexto.md` §D (restricciones y velocidad de aprobación) · guidelines de ②B |
 | **Produce** | Las **filas base** de `calendario-de-publicacion.csv` — una por publicación — y la tabla **§ Lo que no sale este ciclo** de `publicaciones.md` |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantillas:
@@ -52,7 +52,8 @@ canal termina cargado donde no va.
 | **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3 aprobado** · el copy y el caption literales del `ideas-<formato>.md` de cada pieza · la `fecha` | 🛑 **BLOQUEADO** |
 | **⑥B Video Editing** | Los videos finales por plataforma, con nombre de archivo y ruta | 🛑 **BLOQUEADO** para esas filas |
 | **⑥A Diseño gráfico** | Las piezas estáticas exportadas, por formato | 🛑 **BLOQUEADO** para esas filas |
-| **① Comprensión** | **Quién tiene las claves de cada cuenta**, de § La capacidad | 🛑 **BLOQUEADO** |
+| **① Strategy** | Las restricciones y la velocidad de aprobación, de `data/contexto.md` §D | 🛑 **BLOQUEADO** |
+| **`LINKS.md`** | **Quién tiene el acceso a cada cuenta** — la fuente única | 🛑 **BLOQUEADO** |
 | **②B Branding** | Tono de voz, do's & don'ts, cómo se nombra la marca | 🛑 **BLOQUEADO** |
 
 🛑 **Ningún archivo de otro departamento se copia: se cita su ruta.**
@@ -68,10 +69,10 @@ que no se verificó es una fila que se cae al cargar.
 | **El archivo es el correcto** | El `id_creativo` del nombre coincide con la fila | ↩️ **DEVUELTO** a ⑥A / ⑥B — motivo 3 |
 | **Tiene copy y caption** | Están escritos y **literales** en su `ideas-<formato>.md` | ↩️ **DEVUELTO** a ④ — motivo 4. *"Un caption de curiosidad"* no es un caption |
 | **No arrastra claims ⏸️** | La pieza no tiene `⏸️ PENDIENTE APROBACIÓN` de ④ | 🛑 **No entra al ciclo** hasta que ②B o ⑧B validen |
-| **Existe la cuenta** *(social)* | La `cuenta` concreta está identificada y alguien tiene las claves | 🛑 **BLOQUEADO** — ① § La capacidad |
-| **Existe la lista** *(email)* | La lista o segmento y la herramienta de email están identificadas | 🛑 **BLOQUEADO** — ① § La capacidad |
-| **Existe la lista y quién la opera** *(manual · WhatsApp y SMS)* | La lista o difusión existe, y hay alguien que la manda **y que contesta lo que entre** | 🛑 **BLOQUEADO** — ① § La capacidad. 🛑 **Sostener la conversación es de ⑧A Orgánico**, no de ⑦ |
-| **Existe el permiso** *(manual · impresos)* | Se puede intervenir el lugar donde va: contrato de alquiler, permiso municipal, dueño del espacio | 🛑 **BLOQUEADO** — ① § La capacidad |
+| **Existe la cuenta** *(social)* | La `cuenta` concreta está identificada y alguien tiene las claves | 🛑 **BLOQUEADO** — `LINKS.md` |
+| **Existe la lista** *(email)* | La lista o segmento y la herramienta de email están identificadas | 🛑 **BLOQUEADO** — `LINKS.md` |
+| **Existe la lista y quién la opera** *(manual · WhatsApp y SMS)* | La lista o difusión existe, y hay alguien que la manda **y que contesta lo que entre** | 🛑 **BLOQUEADO** — `LINKS.md`. 🛑 **Sostener la conversación es de ⑧A Orgánico**, no de ⑦ |
+| **Existe el permiso** *(manual · impresos)* | Se puede intervenir el lugar donde va: contrato de alquiler, permiso municipal, dueño del espacio | 🛑 **BLOQUEADO** — `LINKS.md` |
 
 **Una fila de ④ puede ser más de una publicación.** Si la misma pieza va a dos cuentas, son **dos
 filas de Posting**, cada una con su `id` y su archivo.

@@ -30,7 +30,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 |---|---|---|
 | Objetivo del ciclo y MUST BE TRUE | ② Estrategia | 🛑 **BLOQUEADO** |
 | Posicionamiento aprobado | ② Estrategia | 🛑 **BLOQUEADO** |
-| Capacidad declarada y cuentas que existen | ① Comprensión | 🛑 **BLOQUEADO** |
+| Capacidad declarada y cuentas que existen | ① Strategy | 🛑 **BLOQUEADO** |
 | Tono, territorio, activos distintivos | ②B Branding | 🛑 **BLOQUEADO** |
 | **El plan contratado del cliente** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
 | Qué ángulos rindieron en pauta | ⑧B Ads | 🟡 Se sigue sin eso |

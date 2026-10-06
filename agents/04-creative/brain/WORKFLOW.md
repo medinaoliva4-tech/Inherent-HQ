@@ -179,23 +179,52 @@ Creative **no arranca de cero nunca**.
 | De | Qué recibe | ¿Bloqueante? |
 |---|---|---|
 | **③ Marketing** | Plan de campañas · canales · fechas · **pilares y su mix** · frecuencia · calendario con los slots | 🛑 Sí |
-| **② Estrategia** | Posicionamiento (promesa, mecanismo, enemigo, objeciones) · ingeniería inversa (tabla 15×7, mapa de saturación, lenguaje literal del comprador) | 🛑 Sí |
-| **① Comprensión** | Audiencia y comportamiento · competencia · producto y precios · **capacidad real de producción** | 🛑 Sí |
+| **② Estrategia** | `posicionamiento.md` (promesa, mecanismo, enemigo) · `ingenieria-inversa.md` (tabla 15×7, mapa de saturación, **objeciones de las reseñas de la competencia**) | 🛑 Sí |
+| **① Strategy** | Audiencia y comportamiento · competencia · producto y precios · **capacidad real de producción** | 🛑 Sí |
 | **②B Branding** | Guidelines · tono de voz · lente de marca · do's & don'ts · banco de assets | 🛑 Sí |
 | **⑧B Ads** | Qué creativo rinde en pauta · claims ya aprobados | No — reduce confianza |
 
 Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto. No se deduce de los otros.
 
-> 🔄 **Regla de transición.** **①** ya es un departamento propio: se lee de
-> `agents/comprension/clients/<cliente>/comprension.md` — el avatar y el **lenguaje literal del
-> comprador** de § El cliente, y la capacidad de § La capacidad. **②③** todavía comparten
-> `agents/strategy/`: **②** → `ingenieria-inversa.md` + `posicionamiento.md` · **③** →
-> `estrategia-de-contenido.md` + `contenido-por-canal.md` + `calendario-estrategico.csv`. El WIN y el
-> arquetipo siguen en `nucleo.md`. Cuando ②③ se separen cambian **las rutas, no el método**.
+> 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/`:
 >
-> ⚠️ **En `main` esas carpetas todavía no existen:** `agents/comprension/` y `agents/strategy/` viven
-> en la rama `agente-creatividad`, y en `main` Strategy es `agents/01-strategy/`. Hasta que se decida
-> dónde va cada cosa, si el archivo no está se marca `BLOQUEADO` con qué falta — no se inventa.
+> | Qué | Dónde | De quién |
+> |---|---|---|
+> | Audiencia actual, capacidad y restricciones | `data/contexto.md` | ① Strategy · `context` |
+> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `data/nucleo.md` | ① Strategy · `analysis` |
+> | Patrones de categoría y mapa de saturación | `data/ingenieria-inversa.md` | ① Strategy · `reverse-engineering` |
+> | Posicionamiento, promesa y briefs por área | `data/posicionamiento.md` | ① Strategy · `methodology` |
+> | La idea de campaña y los pilares con su mix | `data/estrategia-de-contenido.md` | ③ Marketing |
+> | La función de cada canal y qué NO se hace ahí | `data/plan-por-canal.md` | ③ Marketing |
+> | Los slots del ciclo | `data/calendario.csv` | ③ Marketing |
+>
+> 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo — no se deduce
+> de los otros.**
+
+> 🗣️ **El lenguaje literal del comprador lo arma ④, no lo recibe.** Ver §2B.
+
+---
+
+## 2B · El lenguaje literal del comprador — lo arma ④
+
+🔑 **No se recibe: se construye acá.** Es la materia prima del copy, y nadie aguas arriba la entrega
+ya hecha.
+
+**De dónde sale, en este orden:**
+
+| Fuente | Qué da | Cómo se consigue |
+|---|---|---|
+| **Reseñas públicas del negocio** *(Google, Maps)* | Cómo describen lo bueno y lo malo con sus palabras | Públicas — se leen directo |
+| **Comentarios públicos** *(Instagram, TikTok)* | Qué preguntan y qué objetan antes de comprar | Públicos — se leen directo |
+| **DMs y WhatsApp** | La objeción real, la que no se escribe en público | 🟡 **Solo si el cliente los comparte** |
+
+- 🛑 **Cita textual, entre comillas y con su origen.** Una paráfrasis no sirve: el valor está en la
+  palabra exacta que usa el comprador, no en lo que quisimos entender.
+- 🟡 **No es bloqueante.** Si el cliente no comparte DMs, **se anota que faltan y se sigue** con lo
+  público. Lo que no se hace es inventar la cita.
+- ⚠️ **No confundir con las objeciones de `ingenieria-inversa.md`:** esas salen de las reseñas **de la
+  competencia** y las trae ① Strategy. Estas son del **propio negocio**. **Las dos sirven, y no son
+  la misma.**
 
 ---
 
@@ -203,7 +232,7 @@ Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto. No se deduce
 
 | No hace | De quién es |
 |---|---|
-| Investigar negocio, audiencia, competencia, mercado, precios | ① Comprensión |
+| Investigar negocio, audiencia, competencia, mercado, precios | ① Strategy |
 | Decidir posicionamiento, promesa, territorio, enemigo, las 3 verdades, la tabla 15×7 | ② Estrategia |
 | Crear o cambiar paleta, tipografía, logo, guidelines, tono de voz | ②B Branding |
 | Elegir campañas, canales, fechas, frecuencia, **los pilares y su mix** | ③ Marketing |
@@ -394,7 +423,7 @@ swipe file actualizado con el ganador propio · 3 hipótesis para la próxima ro
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
-① Comprensión [✅/⬜] · ② Estrategia [✅/⬜] · ③ Marketing [✅/⬜] · ②B Branding [✅/⬜] · ⑧B Ads [✅/⚠️]
+① Strategy [✅/⬜] · ② Estrategia [✅/⬜] · ③ Marketing [✅/⬜] · ②B Branding [✅/⬜] · ⑧B Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
 → PASS | BLOQUEADO: [qué falta exactamente]
@@ -495,7 +524,7 @@ escala; nunca se resuelve por cuenta propia.
 | Los pilares y su mix no cierran con la frecuencia | ③ Marketing | Declara la diferencia. **No reajusta el mix solo** |
 | Ninguna idea sobrevive el filtro D/N/R | ② Estrategia | Puede ser que el territorio no sea distintivo |
 | La promesa no es escribible en el lenguaje del comprador | ② Estrategia | Devuelve con las 3 objeciones que la contradicen |
-| El lenguaje literal del comprador está vacío o inventado | ① Comprensión | Sin citas textuales el copy se escribe a ciegas |
+| El lenguaje literal del comprador está vacío o inventado | 🔁 **de ④, §2B** | Sin citas textuales el copy se escribe a ciegas — se vuelve a las reseñas, no se inventa |
 | Las guidelines contradicen lo que el concepto necesita | ②B Branding | Declara la contradicción. No la resuelve sola |
 
 ### Las devoluciones que llegan de ⑤ Producción

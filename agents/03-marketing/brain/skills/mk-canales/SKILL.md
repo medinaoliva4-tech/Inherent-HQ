@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Sistema de contenido · § La capacidad de ① Comprensión |
+| **Consume** | § Sistema de contenido · `data/contexto.md` §B y §D de ① Strategy · `LINKS.md` |
 | **Produce** | `plan-por-canal.md` — una ficha por canal |
 
 ## 1 · La regla que define la capa
@@ -36,7 +36,7 @@ convierta en el basurero del ciclo.**
 | **Cadencia** | Cuántas veces por semana |
 | **Temperatura** | A quién le habla este canal |
 | **La cuenta** | **El handle concreto**, no «Instagram» |
-| **Quién tiene el acceso** | De ① Comprensión. **Con nombre** |
+| **Quién tiene el acceso** | → ver `clients/<cliente>/LINKS.md` — **la fuente única.** Si la cuenta no está ahí, se agrega ahí, no acá |
 | **Qué métrica lo juzga** | Una. La que decide si el canal sirve |
 
 ## 3 · El filtro de entrada — tres preguntas

@@ -148,7 +148,7 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 | **③ Marketing** | Qué piezas del ciclo se pautan y con qué objetivo | 🛑 BLOQUEADO |
 | **⑥A y ⑥B** | Los creativos, **con sus variantes de hook** | 🛑 BLOQUEADO |
 | **②B Branding** | Qué claims están validados | 🛑 BLOQUEADO |
-| **① Comprensión** | Las cuentas publicitarias y quién tiene el acceso | 🛑 BLOQUEADO |
+| **`LINKS.md`** | Las cuentas publicitarias y **quién tiene el acceso** — la fuente única | 🛑 BLOQUEADO |
 
 ---
 

@@ -200,7 +200,7 @@ de más esperando que alguien aguante.
 
 | De | Qué | Si falta |
 |---|---|---|
-| **① Comprensión** | La realidad del negocio, la capacidad declarada, las cuentas que existen | 🛑 BLOQUEADO |
+| **① Strategy** | La realidad del negocio, la capacidad declarada, las cuentas que existen | 🛑 BLOQUEADO |
 | **② Estrategia** | Objetivo del ciclo, posicionamiento aprobado, **las MUST BE TRUE**, el brief de marketing | 🛑 BLOQUEADO |
 | **②B Branding** | Tono, territorio, activos distintivos | 🛑 BLOQUEADO |
 | **⑧B Ads** | Qué ángulos ya rindieron en pauta | 🟡 No bloqueante |

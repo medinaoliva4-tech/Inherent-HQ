@@ -4,7 +4,7 @@ description: >
   Capa 7 de ⑤ Producción — cierra el ciclo con datos reales y no con impresiones. Hace las cuatro
   lecturas: desvío de costo (`costo_estimado` vs `costo_real`), desvío de tiempo, material grabado
   que nadie usó y factor de consolidación real vs. previsto. Devuelve el material no usado a ④
-  Creatividad como dato, propone a ① Comprensión la corrección de la capacidad declarada y sube a
+  Creatividad como dato, propone a ① Strategy la corrección de la capacidad declarada y sube a
   las skills los tiempos y costos que ya son dato. Escribe
   `aprendizaje-de-produccion.md`. Úsala cuando pidan "cómo nos fue", "cerrá el ciclo", "cuánto nos
   pasamos de presupuesto", "qué grabamos que no se usó", "por qué llevó más jornadas", "qué hacemos
@@ -16,7 +16,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `presupuesto.csv` con **`costo_real` cargado en todas las filas** · `plan-de-produccion.csv` completo, con `costo_estimado`, `jornada` y `estado` · de `plan-de-rodaje.md`: los tiempos estimados del orden de tiro y el factor de consolidación previsto (la sección de cada jornada) y el manifiesto de entrega (§ La entrega) · **qué usó ⑥A y ⑥B en la pieza final** · la capacidad declarada por ① Comprensión |
+| **Consume** | `presupuesto.csv` con **`costo_real` cargado en todas las filas** · `plan-de-produccion.csv` completo, con `costo_estimado`, `jornada` y `estado` · de `plan-de-rodaje.md`: los tiempos estimados del orden de tiro y el factor de consolidación previsto (la sección de cada jornada) y el manifiesto de entrega (§ La entrega) · **qué usó ⑥A y ⑥B en la pieza final** · la capacidad declarada por ① Strategy |
 | **Produce** | **`aprendizaje-de-produccion.md`** — archivo de trabajo interno: no se entrega al cliente pero **sí se guarda** en la carpeta del cliente. Plantilla: `aprendizaje-de-produccion.md`, al lado de esta skill |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Cómo encadena con el resto:
@@ -99,7 +99,7 @@ Escenas grabadas: [n]   ·   Escenas efectivamente usadas: [n]
 
 ---
 
-## 4 · Lo que vuelve a ① Comprensión
+## 4 · Lo que vuelve a ① Strategy
 
 **La capacidad de producción declarada en ① es una estimación**, y nadie la corrige nunca. Producción
 es el único departamento que sale del ciclo con el dato real: cuántas piezas entraron de verdad,
@@ -161,7 +161,7 @@ mejora sin que nadie lo decida.
 - [ ] El **% no usado y su costo** están en números, no en adjetivos
 - [ ] El material no usado se devuelve a ④ Creatividad **como dato, no como reclamo**, con **patrón y propuesta**
 - [ ] Factor de consolidación **real vs. previsto**, con **dónde se perdió**
-- [ ] La **corrección de capacidad** para ① Comprensión está redactada **como propuesta**, con la fuente del dato
+- [ ] La **corrección de capacidad** para ① Strategy está redactada **como propuesta**, con la fuente del dato
 - [ ] 🛑 **No se editó ningún archivo de otro departamento** — todo citado con su ruta
 - [ ] Está declarado **qué tiempo o costo sube a qué skill `pr-*`**, y con **cuántos ciclos** de evidencia
 - [ ] Ninguna conclusión sobre **rendimiento de la pieza** — eso es Capa 7 de ④ Creatividad

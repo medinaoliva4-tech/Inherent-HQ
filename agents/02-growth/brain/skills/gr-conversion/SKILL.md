@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § La oferta · cómo se compra, de ① Comprensión |
+| **Consume** | § La oferta · cómo se compra, de ① Strategy |
 | **Produce** | La sección **§ Conversión** de `motor-de-crecimiento.md` |
 
 ## 1 · ⛔ No entra en la línea Marketing

@@ -170,7 +170,7 @@ sesiones de especialista— y el departamento trabaja con esos números igual qu
 
 | De | Qué | Si falta |
 |---|---|---|
-| **① Comprensión** | Unit economics, cómo se compra, qué canales ya existen, la capacidad real | 🛑 BLOQUEADO |
+| **① Strategy** | Unit economics, cómo se compra, qué canales ya existen, la capacidad real | 🛑 BLOQUEADO |
 | **② Estrategia** | El objetivo, las MUST BE TRUE, **la división** y qué pilar está roto | 🛑 BLOQUEADO |
 | **②B Branding** | Cómo se dice todo esto | 🛑 BLOQUEADO |
 | **⑩ Ads** | Qué ángulos y ofertas ya rindieron | 🟡 No bloqueante |

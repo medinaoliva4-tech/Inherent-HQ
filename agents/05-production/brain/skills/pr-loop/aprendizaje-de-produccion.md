@@ -117,7 +117,7 @@ Real:     [x.x]   ([n] escenas ÷ [n] jornadas)
 
 ---
 
-## 5. Corrección de capacidad → ① Comprensión
+## 5. Corrección de capacidad → ① Strategy
 
 > 🛑 **Se redacta como propuesta.** Es la única corrección que Producción hace sobre un documento de
 > otro departamento, y **nunca se edita su archivo.**
@@ -129,7 +129,7 @@ Real:     [x.x]   ([n] escenas ÷ [n] jornadas)
 | Costo real por pieza | | | |
 
 **Propuesta de actualización:**
-> [Texto sugerido para la sección de capacidad de ① Comprensión, con el dato real y su fuente.]
+> [Texto sugerido para la sección de capacidad de ① Strategy, con el dato real y su fuente.]
 
 ---
 

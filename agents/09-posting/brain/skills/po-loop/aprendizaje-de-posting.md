@@ -53,7 +53,7 @@
 | | |
 |---|---|
 | **Promedio del ciclo** | [x días] |
-| **Declarado en `comprension.md` § La capacidad** | [x] |
+| **Declarado en `data/contexto.md` §D** | [x] |
 | **¿Coincide?** | ✅ / ⚠️ difiere — [cuántos ciclos lleva difiriendo] |
 | **¿Se propone corregir a ①?** | ⬜ — 🛑 como propuesta, sin editar su archivo |
 

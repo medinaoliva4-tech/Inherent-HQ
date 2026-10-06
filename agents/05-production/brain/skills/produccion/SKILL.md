@@ -27,7 +27,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · **④ Creatividad**: `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `material = video` o `material = foto`, + el `ideas-<formato>.md` de cada pieza (de las de foto, su **§ Foto**) · **②B Branding**: guidelines, dirección visual y **banco de assets** · **③ Marketing**: fechas de campaña y **de preparación** · **① Comprensión**: capacidad declarada, presupuesto disponible y restricciones |
+| **Consume** | El pedido del usuario · **④ Creatividad**: `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `material = video` o `material = foto`, + el `ideas-<formato>.md` de cada pieza (de las de foto, su **§ Foto**) · **②B Branding**: guidelines, dirección visual y **banco de assets** · **③ Marketing**: fechas de campaña y **de preparación** · **① Strategy**: capacidad declarada, presupuesto disponible y restricciones |
 | **Produce** | El **PRE-FLIGHT**, el **plan de capas**, el registro de los **3 gates humanos**, las **devoluciones a ④** y el bloque **HANDOFF**. 🛑 **Ningún entregable por su cuenta:** no desglosa, no agrupa, no costea, no entrega. **Deriva** |
 
 El departamento completo: `agents/05-production/brain/WORKFLOW.md`. Qué hace cada skill y cómo se encadenan:
@@ -56,14 +56,10 @@ Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]
 desglosar ideas que todavía pueden cambiar es gastar el trabajo dos veces — y si ya se comprometieron
 recursos, gastar **la plata** dos veces.
 
-> 🔄 **Transición.** **①** ya es un departamento propio: la capacidad y el presupuesto se leen de
-> `agents/comprension/clients/<cliente>/comprension.md` § La capacidad. **②③** todavía se leen de
-> `agents/strategy/`, con el mapeo de `agents/04-creative/brain/WORKFLOW.md §2`; los archivos de ④, de
-> `clients/<cliente>/data/`.
->
-> ⚠️ **En `main` esas carpetas todavía no existen:** `agents/comprension/` y `agents/strategy/` viven
-> en la rama `agente-creatividad`, y en `main` Strategy es `agents/01-strategy/`. Hasta que se decida
-> dónde va cada cosa, si el archivo no está se marca `BLOQUEADO` con qué falta — no se inventa.
+> 📂 **De dónde sale cada input.** Todo en `clients/<cliente>/data/`: la **capacidad y el
+> presupuesto** de `contexto.md` §B y §D · el `WIN` y las `MUST BE TRUE` de `nucleo.md` · la campaña
+> de `estrategia-de-contenido.md` y los slots de `calendario.csv` · el Excel y los
+> `ideas-<formato>.md` de ④. **El mapa completo está en `WORKFLOW.md` §3.**
 
 ## 2 · Los 6 modos de entrada
 
@@ -86,7 +82,7 @@ siempre**. Ofrecé correr la Capa 2 primero.
 
 **TRADUCIR** 0-1 *(de idea a lista de cosas físicas)* → **OPTIMIZAR** 2-4 *(agrupar para que cueste
 y dure menos)* → **EJECUTAR** 5-6 *(un día que sucede, entregado ordenado)* → **LOOP** 7, que vuelve
-a la Capa 2 y a ① Comprensión.
+a la Capa 2 y a ① Strategy.
 
 | Capa | Skill | Se llama cuando… | Produce |
 |---|---|---|---|

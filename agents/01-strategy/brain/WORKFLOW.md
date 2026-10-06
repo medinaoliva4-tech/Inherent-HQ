@@ -424,18 +424,38 @@ lo que falta se dice, no se disimula.
 
 ```
 clients/<cliente>/
-├── ESTRATEGIA.md   ← el de arriba
-├── LINKS.md        ← todo lo que vive afuera
-└── data/           ← lo que se investigó, expandido
+├── ESTRATEGIA.md             ← el de arriba
+├── LINKS.md                  ← todo lo que vive afuera
+└── data/
+    ├── plan-contratado.md    ← §0 · el techo de todos
+    ├── contexto.md           ← bloque 01 · `context`
+    ├── nucleo.md             ← el WIN, el arquetipo y las 3 verdades
+    ├── ingenieria-inversa.md ← bloque 03 · `reverse-engineering`
+    └── posicionamiento.md    ← bloque 04 · `methodology`
 ```
+
+🔑 **Los cuatro archivos tienen nombre porque otros departamentos los citan por ruta.** Las
+plantillas viven en `brain/entregables/` y se copian al abrir el folder. **Si se les cambia el
+nombre, se rompen las referencias de ④, ⑤ y ⑨.**
 
 **`LINKS.md`** — lo externo **no se copia, se linkea**: Drive de fotos, de videos, de
 entregables, Figma, Notion, redes del cliente, analytics. Con una línea de qué hay en cada uno.
 
+**Y una fila por cuenta con quién tiene el acceso** — nombre de la persona, nunca la credencial.
+🛑 **Contraseñas, tokens y llaves NO van al repo, en ninguna forma** (`clients/README.md`).
+**Lo lee ⑨ Posting** para saber a quién pedirle que suba, y ⑩ Ads para las cuentas publicitarias.
+
+```
+| Cuenta | @handle | Quién tiene el acceso |
+|---|---|---|
+```
+
 **`data/`** — todo lo crudo y expandido, que en `ESTRATEGIA.md` está resumido:
-- Lo que entregó el cliente
-- La evidencia de la ingeniería inversa, con sus marcas 🟢/🟡/⚪ y su fecha
-- Las 3 Verdades completas, incluido lo que se descartó y por qué
+- Lo que entregó el cliente → **`contexto.md`**
+- La evidencia de la ingeniería inversa, con sus marcas 🟢/🟡/⚪ y su fecha → **`ingenieria-inversa.md`**
+- El `WIN`, el arquetipo y las 3 verdades completas —`MUST BE TRUE` · `UNFAIR` · `GO GET`—
+  incluido lo que se descartó y por qué → **`nucleo.md`**
+- La plataforma de marca, los objetivos macro y las renuncias → **`posicionamiento.md`**
 - Los movimientos candidatos que **no** se eligieron
 - Los huecos abiertos `⚠️ SIN DATOS`
 
