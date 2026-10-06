@@ -31,6 +31,10 @@ description: >
 
 ## 2 · Pre-flight
 
+```
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · variantes por campaña: [n] de [techo] · presupuesto aprobado: [monto]
+```
+
 | Input | De | Si falta |
 |---|---|---|
 | La oferta, el precio y el objetivo | ② Growth | 🛑 **BLOQUEADO** |
@@ -39,6 +43,7 @@ description: >
 | Qué claims están **validados** | ②B Branding | 🛑 **BLOQUEADO** |
 | Las cuentas publicitarias y **quién tiene el acceso** | ① Comprensión | 🛑 **BLOQUEADO** |
 | **El presupuesto, aprobado por el cliente** | 00 Account · Allan | 🛑 **BLOQUEADO** |
+| **El plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define canales y variantes |
 
 🛑 **Sin presupuesto aprobado por escrito no se toca una cuenta.**
 
@@ -75,3 +80,13 @@ description: >
 
 `claude-ads` lo lista. **Nosotros lo tenemos declarado como que no lo hacemos.**
 🛑 **No se promete ni se vende hasta probar que el plugin lo ejecuta de verdad.**
+
+---
+
+## Control de calidad del orquestador
+
+- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
+- [ ] 🛑 **La inversión publicitaria la pone el cliente**, y el presupuesto está **aprobado por escrito** antes de tocar la cuenta
+- [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
+- [ ] Los **gates humanos** quedaron registrados con estado — ninguno asumido por silencio

@@ -269,7 +269,7 @@ nunca rompe una promesa, llegar después sí. *(Regla de desempate propuesta, po
 | **Agente** | `07-video-editing` |
 | **Recibe** | El material que grabó Production |
 | **Hace** | Convierte cada grabación en el reel terminado **y todas sus derivadas** |
-| **Entrega** | 🎬 **6 · 10 · 14 reels** + **10 · 20 · 30 piezas derivadas** |
+| **Entrega** | 🎬 **13 · 18 · 27 · 36 videos — mínimo** *(9 · 12 · 18 · 24 planificados + 4 · 6 · 9 · 12 derivados)* |
 | **Corre en** | 🔷 M · 🔷 MP · 🟨 A · 🟨 C |
 | **Estado** | ⬜ Sin construir — ficha en `agents/07-video-editing/README.md` |
 

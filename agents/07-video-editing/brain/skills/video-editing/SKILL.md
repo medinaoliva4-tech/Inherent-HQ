@@ -23,6 +23,10 @@ description: >
 
 ## 1 · Pre-flight
 
+```
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · videos del ciclo: [n] de [techo del plan]
+```
+
 | Input | De | Si falta |
 |---|---|---|
 | `plan-de-contenido.csv` con **Gate 3** | ④ Creatividad | 🛑 **BLOQUEADO** |
@@ -30,7 +34,7 @@ description: >
 | El material con **nomenclatura y selects** + el manifiesto | ⑤ Producción | 🛑 **BLOQUEADO** |
 | `sistema-visual.md` **§ Movimiento** | ②B Branding | 🛑 **BLOQUEADO** |
 | `plan-por-canal.md` — a qué plataforma va cada pieza | ③ Marketing | 🛑 **BLOQUEADO** |
-| El **plan contratado** | `clients/<cliente>/` | 🛑 **BLOQUEADO** — define el techo |
+| El **plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
 
 🛑 **Sin selects marcados no se edita.** Buscar la toma buena entre todo el material es el
 trabajo de ⑤, y hacerlo acá duplica horas que ya se pagaron.
@@ -64,3 +68,12 @@ loop.
 
 🛑 **Derivar de un corte mal aprobado multiplica el error por 3.** Por eso el primer gate está
 antes de las derivadas.
+
+---
+
+## Control de calidad del orquestador
+
+- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
+- [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
+- [ ] Los **gates humanos** quedaron registrados con estado — ninguno asumido por silencio

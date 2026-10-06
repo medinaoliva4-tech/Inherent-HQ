@@ -20,6 +20,54 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 0 · El plan contratado — cuánto y a qué profundidad
+
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+`clients/<cliente>/data/plan-contratado.md`:
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+
+- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
+  «01.2 · BRANDING». La profundidad, de `inherent/03-OFERTA.md` → «🔒 Uso interno».
+  **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **El peso del departamento** | ✅ **Acá se construye la marca** | Se extiende | Se evoluciona | Se sistematiza |
+| **Identidad, voz y sistema visual** | ✅ Completo | + formatos nuevos | Se mantiene y se extiende | Se documenta para que lo use cualquiera |
+| **Activos distintivos** | ✅ 3 a 5 | + activos para pauta | + activos para pauta | + guía operable por terceros |
+| **Autoridad** *(high ticket)* | ⬜ | 🟡 Empaquetada | ✅ Construida | ✅ **Del sistema, no del fundador** |
+| **Revisiones por pieza** *(`br-guardian`)* | **1** | 2 | 2 | 3 |
+| **Piezas que valida por ciclo** | **86** | **145** | **145** | **204** |
+
+**Cómo se lee:**
+
+- 🔑 **La marca se construye en 🔷 Marketing, el plan más barato, y se construye entera.** Rehacerla
+  en 🟨 Accelerate contradice la promesa publicada: *«escalar lo que ya funciona, sin perderlo»*.
+  **Lo que sube con el plan no es la marca: es cuánto se extiende y cuánto se documenta.**
+- ⚠️ **②B trabaja la VOZ y el sistema visual en los cuatro planes.** Qué se vende y a qué precio es
+  de ② Growth y **solo entra desde 🟨 Accelerate.**
+- **`br-guardian` corre todos los ciclos, en los cuatro planes.** Lo que cambia es cuántas vueltas
+  de devolución paga el plan: **con 1 revisión, la primera devolución es la única.**
+- 🛑 **Si llegan más piezas que el techo del plan, las de más no se validan:** se declaran a Allan.
+  Validar de más es trabajo que nadie pagó.
+
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+
+Allan lo cotiza **en las mismas unidades de la tabla de arriba**, y el departamento trabaja con esos
+números igual que con un plan estándar. **El precio lo define Allan.**
+
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- 🛑 **No existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
+  en todos los planes.
+- **Arriba de 🟨 Compound no se agrega marca, se agrega aplicación:** más formatos y más documentación,
+  no una identidad nueva.
+
+---
+
 ## 1 · La distinción que define el departamento
 
 **② Estrategia decidió qué tipo de marca es y contra qué se opone. ②B decide cómo se ve, cómo
@@ -108,20 +156,7 @@ decorativo.
 | **El 20 de cada mes** | `br-loop` |
 | **Ciclos siguientes** | **La marca se evoluciona, no se rehace** |
 
-### ⚠️ Dónde pesa cada plan
-
-| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **El peso del departamento** | ✅ **Acá se construye la marca** | Se extiende | Se evoluciona | Se sistematiza |
-| Identidad, voz y sistema visual | ✅ Completo | + formatos nuevos | Se mantiene y se extiende | Se documenta para que lo use cualquiera |
-| Activos distintivos | ✅ | + activos para pauta | + activos para pauta | + guía operable por terceros |
-| Autoridad *(high ticket)* | ⬜ | 🟡 Empaquetada | ✅ Construida | ✅ **Del sistema, no del fundador** |
-
-> 🔑 **La marca se construye en Marketing, el plan más barato.** Rehacerla en Accelerate
-> contradice la promesa publicada: *«escalar lo que ya funciona, sin perderlo»*.
-
-⚠️ **②B trabaja la VOZ y el sistema visual en los cuatro planes.**
-**Qué se vende y a qué precio es de ② Growth, y solo entra desde Accelerate.**
+> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
 
 ---
 

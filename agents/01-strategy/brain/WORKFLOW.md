@@ -17,6 +17,62 @@
 
 ---
 
+## 0 · El plan contratado — lo primero que se anota
+
+🔑 **Strategy no lee el plan: lo ANOTA.** Es el único departamento que lo origina; los otros once
+lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloqueados.**
+
+**Dónde se anota:** `clients/<cliente>/data/plan-contratado.md`, al abrir el folder del cliente
+(§7 → «El folder — para los demás agentes»).
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+**Y antes que eso: qué LÍNEA es.** 🔷 Marketing promete atención · 🟨 Growth promete facturación.
+
+- 🛑 **Sin plan anotado, Strategy no cierra ni pasa a ningún departamento:**
+  `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Prometer de más rompe el margen; prometer de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- 🔒 **Va en `data/`, nunca en `ESTRATEGIA.md`:** ese documento se le manda al cliente y no lleva
+  ruido interno (§7).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y la profundidad de
+  `inherent/05-OPERACION.md` → «ONBOARDING». **Si cambian allá, cambian acá** — esta tabla no manda
+  sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Profundidad de la estrategia** | Ligera | Ligera | **Completa** | **Completa + trimestral** |
+| **Revisión del 20** | Ligera | Ligera | Completa | Completa |
+| **Toca la OFERTA** *(qué vende, en qué paquetes, a qué precio)* | ⛔ Solo el mensaje | ⛔ Solo el mensaje | ✅ | ✅ |
+| **Brief de ② Growth al cerrar** | ⛔ No se arma | ⛔ No se arma | ✅ | ✅ |
+| **SOPs** | ⬜ | ⬜ | 🟡 De crecimiento | ✅ De toda la empresa |
+| **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
+| **Piezas del ciclo que habilita** | **86** | **145** | **145** | **204** |
+
+**Cómo se lee:**
+
+- 🛑 **«Ligera» no es «incompleta».** En la línea 🔷 la estrategia existe entera: lo que no entra es
+  **tocar la oferta**. Se trabaja el **mensaje** —cómo se cuenta lo que ya vende— y nada más.
+  **Confundirlos es regalar el trabajo caro dentro del plan barato.**
+- 🛑 **En 🔷 Marketing y Pro no se arma brief de ② Growth.** Ese departamento no corre en la línea
+  Marketing (`agents/02-growth/brain/WORKFLOW.md` → §0). Si el negocio lo necesita, **es upsell a
+  🟨 Accelerate y se levanta como excepción** — no se absorbe.
+- ⚠️ **La línea 🔷 Marketing NO promete % de crecimiento.** El porcentaje no sale del contenido,
+  sale de la oferta y la conversión. **Prometerlo ahí es vender algo que no controlamos.**
+- **La ingeniería inversa se corre en los cuatro planes.** Lo que cambia es hasta dónde llega: en
+  🔷 cierra en alcance y piezas; en 🟨 cierra en facturación porque hay atribución que lo sostenga.
+
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+
+Allan lo cotiza **en las mismas unidades de la tabla de arriba**, y Strategy lo anota igual que un
+plan estándar. **El precio lo define Allan.**
+
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- 🛑 **No existe un plan por debajo de 🔷 Marketing.** Las horas de grabación son el piso de costo
+  (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
+  en todos los planes.
+
+---
+
 ## 1 · PROPÓSITO
 
 > Comprender a la marca, sus necesidades y a dónde quieren llegar. A partir de eso crear una
@@ -402,11 +458,17 @@ Growth     → oferta, precio y objetivo
 
 ### 4 · Antes de entregar
 
+```
+Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made]
+```
+
 - [ ] `ESTRATEGIA.md` se entiende **sin haber leído el método**
 - [ ] Las renuncias están escritas, no implícitas
 - [ ] Lo externo está en `LINKS.md`, no copiado
 - [ ] Los huecos abiertos están nombrados, no disimulados
+- [ ] 🛑 **El plan quedó anotado en `clients/<cliente>/data/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
 - [ ] Nada promete lo que el **plan contratado** no cubre — ver `inherent/06-ECONOMIA.md`
+- [ ] Si es ⬜ Tailor Made, **todas las filas de la §0 tienen número** — ninguna supuesta
 - [ ] **Allan aprobó.** El agente propone, no cierra
 
 ---

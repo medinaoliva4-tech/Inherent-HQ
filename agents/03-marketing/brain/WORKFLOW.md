@@ -19,6 +19,67 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 0 · El plan contratado — cuánto y a qué profundidad
+
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+`clients/<cliente>/data/plan-contratado.md`:
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+
+- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
+  «El desglose por tarea». La profundidad, de `inherent/03-OFERTA.md` → «🔒 Uso interno».
+  **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Slots por ciclo** | **86** | **145** | **145** | **204** |
+| **Campañas por ciclo** | **1** | **2** | **2** | **2** |
+| **Horas de grabación** | 3 h | 4 h | 6 h | 8 h |
+| **Videos planificados** *(20 min c/u)* | 9 | 12 | **18** | 24 |
+| **Derivados — mínimo** *(1:2)* | 4 | 6 | 9 | 12 |
+| **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
+| *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
+| **Estáticos y carruseles** | 43 | 72 | **63** | 88 |
+| **Stories** | 30 | 55 | 55 | 80 |
+| **Canales** | Donde esté la audiencia | **+ Google y alianzas** | + los que apliquen | + canal permanente |
+| **Revisiones por pieza** | **1** | 2 | 2 | 3 |
+
+**Cómo se lee:**
+
+- 🔑 **Una campaña, una BIG IDEA.** El número de campañas de esta tabla es el que ④ Creatividad usa
+  como número de BIG IDEAS del ciclo (`agents/04-creative/brain/WORKFLOW.md` → §0). **Si acá se
+  encargan 2 campañas, allá se idean 2 BIG IDEAS — no una estirada en dos.**
+- 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba por
+  SETUP y no por pieza.** Cada uno deja 5-7 escenas; las de apoyo se recombinan en derivados.
+- **El rango de derivados no es flojera, es honestidad:** si el material salió muy scripted las
+  escenas no se reusan y cae al **mínimo (1:2)**. Si salió suelto llega al **tope (1:1)**.
+  ⚠️ **Se promete el MÍNIMO. El tope es techo, no promesa.**
+- ⚠️ **🔷 Marketing Pro y 🟨 Accelerate piden las mismas 145 piezas.** La diferencia no es volumen:
+  **en Accelerate el calendario se arma contra una oferta rediseñada por ② Growth.** En la línea 🔷
+  la oferta llega como está y **solo se trabaja el mensaje.**
+- ⚠️ **🟨 Accelerate no es «Pro con más piezas»:** **50% más video** *(18 planificados contra 12)* y
+  **menos estáticos** *(63 contra 72)*. La mezcla cambia a propósito — **copiar la fila de Pro es un
+  error.**
+- 🛑 **Si el plan del ciclo no entra en el techo, se recorta ACÁ y se declara** — nunca se manda de
+  más esperando que alguien aguante. Recortar es decisión de alcance, y es de este departamento.
+
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+
+Allan lo cotiza **en las mismas unidades de la tabla de arriba** —slots, campañas, horas, videos— y
+el departamento trabaja con esos números igual que con un plan estándar. **El precio lo define Allan.**
+
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- 🛑 **No existe un plan por debajo de 🔷 Marketing.** Las horas de grabación son el piso de costo
+  (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
+  en todos los planes.
+- **Arriba de 🟨 Compound sube el volumen**, pero el techo real sigue siendo lo que se puede
+  **grabar**: más slots de video que horas de producción es trabajo que no va a existir.
+
+---
+
 ## 1 · La distinción que define el departamento
 
 **② Estrategia decide el rumbo. ③ Marketing reparte ese rumbo en el tiempo y en los canales.**
@@ -98,36 +159,10 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 
 **Marketing no puede encargar más piezas de las que el plan paga.** Es restricción dura.
 
-| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Slots por ciclo** | **86** | **145** | **145** | **204** |
-| **Horas de grabación** | 3h | 4h | 6h | 8h |
-| **Videos planificados** *(20 min c/u)* | 9 | 12 | 18 | 24 |
-| **Derivados — mínimo** *(1:2)* | 4 | 6 | 9 | 12 |
-| **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
-| *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
-| **Estáticos y carruseles** | 43 | 72 | 63 | 88 |
-| **Stories** | 30 | 55 | 55 | 80 |
-| **Canales** | Donde esté la audiencia | **+ Google y alianzas** | + los que apliquen | + canal permanente |
-| **Campañas por ciclo** | 1 | 1-2 | 1-2 por ángulo | Sistema de demanda completo |
-| **Revisiones por pieza** | 1 | 2 | 2 | 3 |
-
-> 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba
-> por SETUP y no por pieza.** Cada uno deja 5-7 escenas; las de apoyo se recombinan en derivados.
->
-> **El rango no es flojera, es honestidad:** si el material salió muy scripted las escenas no se
-> reusan y cae al **mínimo (1 derivado por cada 2 planificados)**. Si salió suelto llega al
-> **tope (1:1)**.
->
-> ⚠️ **Se promete el MÍNIMO. El tope es techo, no promesa** — y solo se entrega si el material
-> lo permite **y** el operador tiene las horas.
-
-⚠️ **Marketing Pro y Accelerate piden las mismas 145 piezas.** La diferencia no es volumen:
-**en Accelerate el calendario se arma contra una oferta rediseñada por ② Growth.**
-En la línea Marketing la oferta llega como está y **solo se trabaja el mensaje.**
+> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
 
 🛑 **Si el plan del ciclo no entra en el techo, se recorta acá y se declara** — nunca se manda
-de más esperando que alguien aguante. Ver `inherent/06-ECONOMIA.md`.
+de más esperando que alguien aguante.
 
 ---
 

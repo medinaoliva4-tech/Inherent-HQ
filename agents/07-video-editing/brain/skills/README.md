@@ -23,7 +23,7 @@ detalle de cada herramienta.
 | 1 | **`ve-recepcion`** | 0 | *«¿llegó todo?»*, *«qué nos falta»* | Filas base de `entregas-video.md` |
 | 2 | **`ve-armado`** | 1 | *«armá este reel»*, *«montá la pieza»* | El corte principal |
 | 3 | **`ve-marca`** | 2 | *«ponele subtítulos»*, *«aplicá la marca»* | El corte de marca · **🚦 GATE 1** |
-| 4 | **`ve-derivadas`** | 3 | *«sacá las derivadas»*, *«variantes para pauta»* | Las 10 · 20 · 30 derivadas |
+| 4 | **`ve-derivadas`** | 3 | *«sacá las derivadas»*, *«variantes para pauta»* | Las 4 · 6 · 9 · 12 derivadas |
 | 5 | **`ve-export`** | 4 | *«exportá el paquete»* | Archivos finales + manifiesto · **🚦 GATE 2** |
 | 6 | **`ve-loop`** | 5 | La revisión del 20 | `aprendizaje-de-video.md` |
 

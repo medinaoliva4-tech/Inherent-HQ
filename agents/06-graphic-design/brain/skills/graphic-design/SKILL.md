@@ -22,13 +22,17 @@ description: >
 
 ## 1 · Pre-flight
 
+```
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
+```
+
 | Input | De | Si falta |
 |---|---|---|
 | `plan-de-contenido.csv` con **Gate 3** | ④ Creatividad | 🛑 **BLOQUEADO** |
 | El `ideas-<formato>.md` con el **copy literal** y el layout | ④ Creatividad | 🛑 **BLOQUEADO** |
 | **`sistema-visual.md`** | ②B Branding | 🛑 **BLOQUEADO** |
 | `plan-por-canal.md` | ③ Marketing | 🛑 **BLOQUEADO** |
-| El **plan contratado** | `clients/<cliente>/` | 🛑 **BLOQUEADO** — define el techo |
+| El **plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
 
 🛑 **Sin `sistema-visual.md` no se compone nada.** Diseñar sin sistema produce 168 piezas que no
 se parecen entre sí, y eso es peor que no publicar.
@@ -59,3 +63,13 @@ horas que paga el plan.
 |---|---|---|
 | **GATE 1** | `gd-plantillas` | **Las plantillas** — no las 168 piezas |
 | **GATE 2** | `gd-export` | El paquete completo |
+
+---
+
+## Control de calidad del orquestador
+
+- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
+- [ ] ⚠️ Si el plan es 🟨 Accelerate, se respetaron los **63 estáticos** — menos que 🔷 Pro, **a propósito**
+- [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
+- [ ] Los **gates humanos** quedaron registrados con estado — ninguno asumido por silencio

@@ -22,13 +22,17 @@ description: >
 
 ## 1 · Pre-flight
 
+```
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas que valida este ciclo: [n] de [techo del plan]
+```
+
 | Input | De | Si falta |
 |---|---|---|
 | **El brief de branding** — los 8 bloques | ② Estrategia · `methodology/brand-brief.md` | 🛑 **BLOQUEADO** |
 | El **código saturado** de la categoría | ② Estrategia, bloque 4 | 🛑 **BLOQUEADO** |
 | Qué puede sostener el cliente | ① Comprensión | 🛑 **BLOQUEADO** |
 | Qué ya existe de marca | ① Comprensión · `clients/<cliente>/` | 🟡 Se sigue sin eso |
-| **El plan contratado** | `clients/<cliente>/` | 🛑 **BLOQUEADO** — define la profundidad |
+| **El plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define la profundidad |
 
 🛑 **Sin el código saturado no se puede oponer a nada**, y una marca que no se opone a nada no
 se distingue de nada.
@@ -62,3 +66,12 @@ publicada de Accelerate: *«escalar lo que ya funciona, sin perderlo»*.
 |---|---|---|
 | **GATE 1** | `br-voz` | Territorio y voz |
 | **GATE 2** | `br-aplicacion` | La guía completa |
+
+---
+
+## Control de calidad del orquestador
+
+- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
+- [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
+- [ ] Los **gates humanos** quedaron registrados con estado — ninguno asumido por silencio
