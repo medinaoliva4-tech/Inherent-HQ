@@ -22,7 +22,8 @@ paso vive en las skills: `skills/README.md`.
 
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar:
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+`clients/<cliente>/data/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
 - 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
