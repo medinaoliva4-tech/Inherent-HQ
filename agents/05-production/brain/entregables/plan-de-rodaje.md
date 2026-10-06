@@ -199,7 +199,7 @@ escena, con el nombre de archivo de cada toma, vive en `plan-de-produccion.csv`,
 ```
 Presupuesto disponible: [monto + moneda + fecha]
 Días de rodaje posibles: [n]   — según fechas de preparación de ③ Marketing
-Capacidad declarada:     [n]   — de ① Comprensión
+Capacidad declarada:     [n]   — de ① Strategy
 ```
 **¿Entra?** [✅ sí / ⚠️ se excede en [qué] → devuelto a ③ y ④, con las filas concretas]
 

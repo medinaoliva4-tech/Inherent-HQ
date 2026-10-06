@@ -28,7 +28,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · **① Comprensión** (audiencia, competencia, producto, **capacidad real de producción**) · **② Estrategia** (`posicionamiento.md`, `ingenieria-inversa.md`, `nucleo.md`) · **③ Marketing** (campañas, canales, fechas, **pilares y su mix**, calendario con los slots) · **②B Branding** (guidelines, tono, lente de marca, banco de assets) · **⑧B Ads** (qué rinde en pauta, claims aprobados — no bloqueante) |
+| **Consume** | El pedido del usuario · **① Strategy** (audiencia, competencia, producto, **capacidad real de producción**) · **② Estrategia** (`posicionamiento.md`, `ingenieria-inversa.md`, `nucleo.md`) · **③ Marketing** (campañas, canales, fechas, **pilares y su mix**, calendario con los slots) · **②B Branding** (guidelines, tono, lente de marca, banco de assets) · **⑧B Ads** (qué rinde en pauta, claims aprobados — no bloqueante) |
 | **Produce** | El **PRE-FLIGHT**, el **plan de capas**, el registro de los **3 gates humanos** y el bloque **HANDOFF** |
 | **No produce** | Ningún contenido creativo por su cuenta: no escribe hooks, conceptos ni filas. **Deriva** |
 
@@ -44,7 +44,7 @@ se pide **el archivo exacto**. No se deduce.
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
-① Comprensión [✅/⬜] · ② Estrategia [✅/⬜] · ③ Marketing [✅/⬜] · ②B Branding [✅/⬜] · ⑧B Ads [✅/⚠️]
+① Strategy [✅/⬜] · ② Estrategia [✅/⬜] · ③ Marketing [✅/⬜] · ②B Branding [✅/⬜] · ⑧B Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
 Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]

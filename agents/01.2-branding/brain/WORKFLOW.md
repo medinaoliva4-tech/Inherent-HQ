@@ -165,7 +165,7 @@ decorativo.
 | De | Qué | Si falta |
 |---|---|---|
 | **② Estrategia** | El **brief de branding** completo — los 8 bloques de `brand-brief.md` | 🛑 BLOQUEADO |
-| **① Comprensión** | Qué puede sostener el cliente: con qué graba, quién lo opera, qué ya existe | 🛑 BLOQUEADO |
+| **① Strategy** | Qué puede sostener el cliente: con qué graba, quién lo opera, qué ya existe | 🛑 BLOQUEADO |
 | **④ Creatividad** | Las piezas del ciclo, para validarlas | Solo para `br-guardian` |
 
 ---

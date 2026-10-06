@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `brand-brief.md` de ② Estrategia · § La capacidad de ① Comprensión · el plan contratado |
+| **Consume** | `brand-brief.md` de ② Estrategia · `data/contexto.md` §B y §D de ① Strategy · el plan contratado |
 | **Produce** | La sección **§ El brief** de `guia-de-marca.md` |
 
 ## 1 · Los 8 bloques de ② — se verifican uno por uno

@@ -90,7 +90,7 @@ hace fallar la importación entera.)*
 
 | | |
 |---|---|
-| **Herramienta** | [la que usa el cliente, de `comprension.md` § La capacidad · o ⚠️ SIN DATOS] |
+| **Herramienta** | [la que usa el cliente, de `data/contexto.md` §D · o ⚠️ SIN DATOS] |
 | **Quién carga y envía** | [nombre] |
 
 ## PO-00X · [asunto en una línea]
@@ -155,7 +155,7 @@ los pega **un humano, a mano**.)*
 
 | | |
 |---|---|
-| **Quién lo manda o lo pega** | [nombre, de `comprension.md` § La capacidad · o ⚠️ SIN DATOS] |
+| **Quién lo manda o lo pega** | [nombre, de `LINKS.md` · o ⚠️ SIN DATOS] |
 | **Quién contesta lo que entre** | [nombre **y horario**. 🛑 Si no hay nadie, se declara: es de **⑧A Orgánico**, no de ⑦] |
 
 ## PO-00X · [el mensaje en una línea] — *WhatsApp / SMS*

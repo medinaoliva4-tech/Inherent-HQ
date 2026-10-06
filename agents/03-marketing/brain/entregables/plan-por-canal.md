@@ -15,7 +15,7 @@
 | **Cadencia** | × por semana |
 | **Temperatura** | `Frío` / `Tibio` / `Caliente` / `Cliente` |
 | **La cuenta** | @handle concreto |
-| **Quién tiene el acceso** | Nombre |
+| **Quién tiene el acceso** | → ver `clients/<cliente>/LINKS.md` — **no se repite acá** |
 | **Ruta de salida** | `Social` / `Email` / `Manual` |
 | **Métrica que lo juzga** | Una |
 

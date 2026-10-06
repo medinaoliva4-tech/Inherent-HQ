@@ -22,7 +22,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · `plan-de-contenido.csv` con Gate 3 de ④ · los exports de ⑥A y ⑥B · § La capacidad de ① (cuentas, accesos, listas y quién las opera) · guidelines de ②B |
+| **Consume** | El pedido del usuario · `plan-de-contenido.csv` con Gate 3 de ④ · los exports de ⑥A y ⑥B · `LINKS.md` (cuentas, accesos, listas y quién las opera) · guidelines de ②B |
 | **Produce** | Nada por sí mismo. **Decide qué capa corre y con qué skill**, y arma el pre-flight y el handoff |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Índice de skills:
@@ -62,9 +62,9 @@ Publer, se devuelven a ③ Marketing.
 |---|---|
 | No se nombró el cliente | `BLOQUEADO — ¿de qué cliente?` |
 | Falta el Excel de ④ con **Gate 3** | `BLOQUEADO` — se pide la ruta exacta |
-| **No sabemos quién tiene las claves** de las cuentas | `BLOQUEADO` — está en `comprension.md` § La capacidad |
+| **No sabemos quién tiene el acceso** a las cuentas | `BLOQUEADO` — está en `clients/<cliente>/LINKS.md` |
 | Hay **claims ⏸️ sin validar** en piezas del ciclo | Esas filas no entran. Se nombra quién las valida |
-| Hay filas de **ruta manual** y no sabemos **quién manda ni quién contesta** | `BLOQUEADO` — está en `comprension.md` § La capacidad. Sostener la conversación es de **⑧A Orgánico** |
+| Hay filas de **ruta manual** y no sabemos **quién manda ni quién contesta** | `BLOQUEADO` — está en `clients/<cliente>/LINKS.md`. Sostener la conversación es de **⑧A Orgánico** |
 | Un `canal` del plan **no cae en ninguna de las tres rutas** | La fila va `🛑 SIN RUTA DE SALIDA` y se **devuelve a ③**. 🛑 No se fuerza dentro de Publer ni se reescribe el plan |
 | Piden la Capa 4 sin Gate 1 | Se dice qué falta y se ofrece correr las capas previas |
 | Piden publicar directo | 🛑 Se explica la regla de `CLAUDE.md` (no publicar sin autorización) y se ofrece dejarlo listo |

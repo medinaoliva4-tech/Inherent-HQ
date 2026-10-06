@@ -2,7 +2,7 @@
 name: gr-encargo
 description: >
   Capa 0 de ② Growth — identifica la división, lee el plan contratado y declara exactamente qué
-  pilares y sistemas se activan en este cliente. Carga los unit economics de ① Comprensión, que
+  pilares y sistemas se activan en este cliente. Carga los unit economics de ① Strategy, que
   son el piso de cualquier decisión de oferta o precio, y declara qué queda afuera y por qué.
   Úsala cuando pidan "arrancá growth de X", "qué podemos hacer con este plan", "es low o high
   ticket", "qué pilar está roto". Bloquea si falta la división, los unit economics o el plan.

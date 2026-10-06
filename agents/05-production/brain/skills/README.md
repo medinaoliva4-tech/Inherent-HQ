@@ -56,7 +56,7 @@ pr-brief ──→ pr-desglose ──→ pr-jornadas ──→ pr-recursos ─�
                                   │                                                                │
                                   └──────────── pr-loop ←──── costo_real + qué usaron ⑥A y ⑥B ←────┘
                                        │
-                                       └──→ propuesta de capacidad a ① Comprensión
+                                       └──→ propuesta de capacidad a ① Strategy
 ```
 
 **Las reglas de encadenado:**

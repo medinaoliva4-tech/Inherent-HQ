@@ -15,7 +15,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` **con Gate 3 aprobado** y el `ideas-<formato>.md` de cada pieza, de ④ Creatividad (`clients/<cliente>/data/`) · guidelines y **banco de assets** de ②B Branding · fechas de campaña y **de preparación** de ③ Marketing · capacidad declarada, presupuesto disponible y restricciones de ① Comprensión |
+| **Consume** | `plan-de-contenido.csv` **con Gate 3 aprobado** y el `ideas-<formato>.md` de cada pieza, de ④ Creatividad (`clients/<cliente>/data/`) · guidelines y **banco de assets** de ②B Branding · fechas de campaña y **de preparación** de ③ Marketing · capacidad declarada, presupuesto disponible y restricciones de ① Strategy |
 | **Produce** | La sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` — piezas y escenas recibidas, techo de realidad, tabla de producibilidad, material reutilizable y escenas devueltas a ④ |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:
@@ -31,7 +31,7 @@ decisión de producción. Es la verificación de que lo que llegó **se puede pr
 | **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `material = video` o `material = foto`. Del `ideas-<formato>.md` de cada pieza: escenas, encuadres, duraciones, tipo de lugar, estética/mood, concepto, emoción — y de las de foto, la **§ Foto** | 🛑 **BLOQUEADO** |
 | **②B Branding** | Guidelines, dirección visual, paleta, do's & don'ts y el **banco de assets existente** | 🛑 **BLOQUEADO** |
 | **③ Marketing** | Fechas de la campaña y **fechas de preparación** — cuánto margen real hay | 🛑 **BLOQUEADO** |
-| **① Comprensión** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 **BLOQUEADO** |
+| **① Strategy** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 **BLOQUEADO** |
 
 🛑 **Sin Gate 3 de ④ no hay rodaje.** No se negocia: producir sobre ideas que todavía pueden cambiar
 es gastar dos veces la misma plata.
@@ -86,9 +86,9 @@ dos alternativas** — nunca se reescribe el encuadre, la acción ni la duració
 Los tres techos van **en números**, no en adjetivos:
 
 ```
-Presupuesto disponible: [monto + moneda + fecha de referencia]   ← ① Comprensión
+Presupuesto disponible: [monto + moneda + fecha de referencia]   ← ① Strategy
 Días de rodaje posibles: [n]   ← según fechas de preparación de ③ Marketing
-Capacidad declarada:     [n piezas/ciclo]                         ← ① Comprensión
+Capacidad declarada:     [n piezas/ciclo]                         ← ① Strategy
 ```
 
 **Si el Excel creativo pide más de lo que entra en cualquiera de los tres**, el exceso se declara
@@ -163,7 +163,7 @@ No escribe filas de `plan-de-produccion.csv` ni toca `presupuesto.csv`: eso es C
 - [ ] El `plan-de-contenido.csv` de ④ Creatividad existe y **tiene el Gate 3 aprobado** — si no, **BLOQUEADO**
 - [ ] Las guidelines y el **banco de assets** de ②B Branding están cargados — si no, **BLOQUEADO**
 - [ ] Las fechas de campaña y **de preparación** de ③ Marketing están cargadas — si no, **BLOQUEADO**
-- [ ] El presupuesto disponible y la capacidad declarada de ① Comprensión están **cuantificados**
+- [ ] El presupuesto disponible y la capacidad declarada de ① Strategy están **cuantificados**
 - [ ] Cada input está **citado con su ruta**, ninguno copiado
 - [ ] Solo se filtraron las filas con **`material = video`** o **`material = foto`**
 - [ ] 🛑 Toda fila con **`material = foto`** tiene su **§ Foto** completa, o está **↩️ DEVUELTA**

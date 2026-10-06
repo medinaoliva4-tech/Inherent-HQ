@@ -48,7 +48,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | Input | De | Si falta |
 |---|---|---|
 | **La LÍNEA del plan** | `clients/<cliente>/data/00-encargo.md` | 🛑 **Ver Capa 0** |
-| Unit economics y cómo se compra | ① Comprensión | 🛑 **BLOQUEADO** |
+| Unit economics y cómo se compra | ① Strategy | 🛑 **BLOQUEADO** |
 | Objetivo, MUST BE TRUE y **la división** | ② Estrategia | 🛑 **BLOQUEADO** |
 | Qué pilar está roto | ② Estrategia | 🛑 **BLOQUEADO** |
 | Tono y cómo se dice | ②B Branding | 🛑 **BLOQUEADO** |

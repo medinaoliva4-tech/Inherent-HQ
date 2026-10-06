@@ -289,7 +289,7 @@ Producción **no arranca nunca sin el Excel creativo aprobado**.
 | **④ Creatividad** | `plan-de-contenido.csv` **con Gate 3 aprobado**, filtrado a las filas con `material = video` o `material = foto`. De `video`: escenas, encuadres, duraciones, estética/mood, concepto, emoción. De `foto`: la **§ Foto** de esa pieza | 🛑 Sí |
 | **②B Branding** | Guidelines, dirección visual, paleta, do's & don'ts, **banco de assets existente** | 🛑 Sí |
 | **③ Marketing** | Fechas de la campaña y **fechas de preparación** — cuánto margen real hay | 🛑 Sí |
-| **① Comprensión** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 Sí |
+| **① Strategy** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 Sí |
 
 Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
 
@@ -372,7 +372,7 @@ TRADUCIR     Capas 0-1    De idea a lista de cosas físicas que hay que consegui
 OPTIMIZAR    Capas 2-4    Agrupar para que cueste menos y dure menos
 EJECUTAR     Capas 5-6    Volverlo un día que sucede, y entregarlo ordenado
                  ↓
-LOOP         Capa 7       ¿Qué costó más de lo previsto?  → vuelve a Capa 2 y a ① Comprensión
+LOOP         Capa 7       ¿Qué costó más de lo previsto?  → vuelve a Capa 2 y a ① Strategy
 ```
 
 > **El valor del departamento está en la Capa 2.** Traducir una idea a una lista es mecánico.
@@ -564,7 +564,7 @@ hora de fotógrafo.**
 > no necesitaba. Eso se devuelve a ④ **como dato, no como reclamo** — y en dos ciclos baja el costo
 > sin bajar la calidad.
 
-**Lo que vuelve a ① Comprensión.** La capacidad de producción declarada es una estimación; al cerrar
+**Lo que vuelve a ① Strategy.** La capacidad de producción declarada es una estimación; al cerrar
 el ciclo, Producción la corrige con datos reales. Es la única corrección que Producción hace sobre un
 documento de otro departamento, y se hace **como propuesta**, nunca editando su archivo.
 

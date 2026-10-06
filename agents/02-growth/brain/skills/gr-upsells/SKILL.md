@@ -43,7 +43,7 @@ vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede
 | **Al terminarlo** | La reposición, en el momento en que se acaba |
 | **A los X meses** | La versión siguiente, cuando ya le quedó chico |
 
-> 🔑 **La frecuencia de recompra de ① Comprensión define los momentos.** Sin ese dato, la
+> 🔑 **La frecuencia de recompra de ① Strategy define los momentos.** Sin ese dato, la
 > escalera es teoría: se marca `⚠️ SIN DATOS`.
 
 ## 4 · Cada escalón lleva cuatro cosas

@@ -11,7 +11,7 @@
 ### A · Contexto cargado
 | Archivo | De | Ruta | Estado |
 |---|---|---|---|
-| | ① Comprensión | | |
+| | ① Strategy | | |
 | | ② Estrategia | | |
 | | ②B Branding | | |
 

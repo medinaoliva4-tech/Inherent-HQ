@@ -180,7 +180,7 @@ Creative **no arranca de cero nunca**.
 |---|---|---|
 | **③ Marketing** | Plan de campañas · canales · fechas · **pilares y su mix** · frecuencia · calendario con los slots | 🛑 Sí |
 | **② Estrategia** | `posicionamiento.md` (promesa, mecanismo, enemigo) · `ingenieria-inversa.md` (tabla 15×7, mapa de saturación, **objeciones de las reseñas de la competencia**) | 🛑 Sí |
-| **① Comprensión** | Audiencia y comportamiento · competencia · producto y precios · **capacidad real de producción** | 🛑 Sí |
+| **① Strategy** | Audiencia y comportamiento · competencia · producto y precios · **capacidad real de producción** | 🛑 Sí |
 | **②B Branding** | Guidelines · tono de voz · lente de marca · do's & don'ts · banco de assets | 🛑 Sí |
 | **⑧B Ads** | Qué creativo rinde en pauta · claims ya aprobados | No — reduce confianza |
 
@@ -232,7 +232,7 @@ ya hecha.
 
 | No hace | De quién es |
 |---|---|
-| Investigar negocio, audiencia, competencia, mercado, precios | ① Comprensión |
+| Investigar negocio, audiencia, competencia, mercado, precios | ① Strategy |
 | Decidir posicionamiento, promesa, territorio, enemigo, las 3 verdades, la tabla 15×7 | ② Estrategia |
 | Crear o cambiar paleta, tipografía, logo, guidelines, tono de voz | ②B Branding |
 | Elegir campañas, canales, fechas, frecuencia, **los pilares y su mix** | ③ Marketing |
@@ -423,7 +423,7 @@ swipe file actualizado con el ganador propio · 3 hipótesis para la próxima ro
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
-① Comprensión [✅/⬜] · ② Estrategia [✅/⬜] · ③ Marketing [✅/⬜] · ②B Branding [✅/⬜] · ⑧B Ads [✅/⚠️]
+① Strategy [✅/⬜] · ② Estrategia [✅/⬜] · ③ Marketing [✅/⬜] · ②B Branding [✅/⬜] · ⑧B Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
 → PASS | BLOQUEADO: [qué falta exactamente]

@@ -15,7 +15,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Entregables de ① Comprensión · ② Estrategia · ③ Marketing · ②B Branding · el calendario con los slots del ciclo · claims ya aprobados de ⑧B Ads *(no bloqueante)* |
+| **Consume** | Entregables de ① Strategy · ② Estrategia · ③ Marketing · ②B Branding · el calendario con los slots del ciclo · claims ya aprobados de ⑧B Ads *(no bloqueante)* |
 | **Produce** | La sección **"El brief del ciclo"** dentro de `brief-del-ciclo.md` · la columna `fecha` de cada fila futura de `plan-de-contenido.csv` |
 
 Contexto del departamento: `agents/04-creative/brain/WORKFLOW.md`.
@@ -32,7 +32,7 @@ que se puede idear sin adivinar. Nada de lo que escribís acá es una decisión 
 | Plan de campañas **aprobado** · sistema de contenido · pilares y su mix | ③ Marketing | 🛑 Sí |
 | Plan por canal — **función única y "qué NO se hace acá"** | ③ Marketing | 🛑 Sí |
 | Calendario con los slots del ciclo | ③ Marketing | 🛑 Sí |
-| Núcleo: audiencia, competencia, producto y **capacidad real de producción** | ① Comprensión | 🛑 Sí |
+| Núcleo: audiencia, competencia, producto y **capacidad real de producción** | ① Strategy | 🛑 Sí |
 | Guidelines, tono de voz y **lente de marca** | ②B Branding | 🛑 Sí |
 | Qué creativo rinde en pauta + claims ya aprobados | ⑧B Ads | No |
 

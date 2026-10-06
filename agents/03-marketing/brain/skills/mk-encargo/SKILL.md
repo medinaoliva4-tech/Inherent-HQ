@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Entregables de ① Comprensión y ② Estrategia · guidelines de ②B · `clients/<cliente>/` · `inherent/06-ECONOMIA.md` *(solo el techo de volumen)* |
+| **Consume** | Entregables de ① Strategy y ② Estrategia · guidelines de ②B · `clients/<cliente>/` · `inherent/06-ECONOMIA.md` *(solo el techo de volumen)* |
 | **Produce** | La sección **§ El encargo** de `estrategia-de-contenido.md` |
 
 **No se planea nada todavía: se verifica.** Un ciclo planeado sobre un techo equivocado se
@@ -25,7 +25,7 @@ descubre cuando producción no da abasto.
 |---|---|---|
 | **② Estrategia** | Objetivo del ciclo con plazo y métrica · posicionamiento aprobado · **la PROMESA** · **la HISTORIA** *(héroe, enemigo, transformación)* · **las MUST BE TRUE con su letra** · el brief de marketing | 🛑 **BLOQUEADO** |
 | **② Estrategia** | **El diagnóstico: qué síntoma tiene el cliente y qué causa se declaró** | 🛑 **BLOQUEADO** |
-| **① Comprensión** | Qué puede grabar el cliente y cada cuánto · qué cuentas existen y quién las opera · estacionalidad | 🛑 **BLOQUEADO** |
+| **① Strategy** | Qué puede grabar el cliente y cada cuánto · qué cuentas existen y quién las opera · estacionalidad | 🛑 **BLOQUEADO** |
 | **②B Branding** | Tono, territorio, activos distintivos, do's & don'ts | 🛑 **BLOQUEADO** |
 | **La línea y el plan** | 🔷 Marketing · 🔷 Marketing Pro · 🟨 Accelerate · 🟨 Compound · ⬜ Tailor Made | 🛑 **BLOQUEADO** |
 

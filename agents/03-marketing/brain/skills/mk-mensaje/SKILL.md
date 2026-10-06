@@ -50,13 +50,13 @@ conoce.** Acá se escribe cada versión — ④ la usa para fijar el ángulo de 
 
 ## 4 · Las objeciones
 
-**El ciclo responde objeciones concretas, no genéricas.** Salen de ① Comprensión —de lo que el
+**El ciclo responde objeciones concretas, no genéricas.** Salen de ① Strategy —de lo que el
 cliente dice que le dicen— no de la imaginación.
 
 | | |
 |---|---|
 | **Cuáles entran** | Las 2 o 3 que más frenan la venta |
-| **De dónde salen** | ① Comprensión, con fuente |
+| **De dónde salen** | ① Strategy, con fuente |
 | **Sin fuente** | Va como `[dice el cliente, sin verificar]` o `⚠️ SIN DATOS` |
 
 ## 5 · Lo que NO se dice este ciclo
@@ -96,7 +96,7 @@ acá y no más adelante.
 - [ ] Hay **un** mensaje madre, no dos
 - [ ] Los soportes tienen prueba, no adjetivos
 - [ ] Las versiones por awareness cubren los niveles que el ciclo trabaja
-- [ ] Las objeciones salen de ① Comprensión, **con fuente**
+- [ ] Las objeciones salen de ① Strategy, **con fuente**
 - [ ] **Lo que NO se dice** está escrito
 - [ ] Ningún mensaje promete algo fuera de «Capacidades reales»
 - [ ] **Allan aprobó el GATE 1**
