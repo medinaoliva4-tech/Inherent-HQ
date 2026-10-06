@@ -348,7 +348,12 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
 ## Reglas
 
 - **Español.** Los términos del método quedan en inglés: `WIN`, `MUST BE TRUE`, `UNFAIR`, `GO GET`, `MOVE`, `COMPOUND`.
-- **Evidencia o etiqueta.** Sin fuente va como `[dice el cliente, sin verificar]` o `⚠️ SIN DATOS`. Nunca inventar.
+- **El repo es el manual, no el chat.** `CLAUDE.md`, `inherent/` y `agents/` solo reciben lo que
+  Allan aprobó **en ese mismo turno**. Nada de lo conversado se sube solo.
+  Lo que no está decidido **no entra: se pregunta.** Sin rastros de conversación: ni «por confirmar»,
+  ni «pendiente», ni fechas de verificación, ni historia de cómo se llegó a la decisión.
+- **Evidencia o etiqueta** — en el trabajo de cliente. Sin fuente va como `[dice el cliente, sin verificar]`
+  o `⚠️ SIN DATOS`. Nunca inventar.
 - **Solo la info que entrega el usuario**, salvo que él habilite fuentes externas.
 - **Gate humano: Allan (Rodrigo).** El agente propone, no cierra.
 - **Nada destructivo sin autorización:** no publicar, no pautar, no enviar al cliente, no borrar.
