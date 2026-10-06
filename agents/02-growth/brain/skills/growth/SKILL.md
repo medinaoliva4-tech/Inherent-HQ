@@ -41,6 +41,10 @@ y a qué precio es el siguiente paso.»*
 
 ## 1 · Pre-flight
 
+```
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · ② Growth: [✅ corre / ⛔ no corre en la línea 🔷]
+```
+
 | Input | De | Si falta |
 |---|---|---|
 | **La LÍNEA del plan** | `clients/<cliente>/data/00-encargo.md` | 🛑 **Ver Capa 0** |
@@ -48,7 +52,7 @@ y a qué precio es el siguiente paso.»*
 | Objetivo, MUST BE TRUE y **la división** | ② Estrategia | 🛑 **BLOQUEADO** |
 | Qué pilar está roto | ② Estrategia | 🛑 **BLOQUEADO** |
 | Tono y cómo se dice | ②B Branding | 🛑 **BLOQUEADO** |
-| **El plan contratado** | `clients/<cliente>/` | 🛑 **BLOQUEADO** — define qué pilares se activan |
+| **El plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define qué pilares se activan |
 
 🛑 **Sin unit economics no se toca la oferta.** Cambiar un precio sin saber el margen es jugar
 con el negocio de otro.
@@ -90,3 +94,13 @@ con el negocio de otro.
 |---|---|---|
 | **GATE 1** | `gr-oferta` | **Allan y el cliente.** El precio es decisión del cliente |
 | **GATE 2** | La última capa activa | Allan aprueba el motor completo |
+
+---
+
+## Control de calidad del orquestador
+
+- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
+- [ ] 🛑 Si el plan es 🔷 Marketing o 🔷 Pro, **el encargo se BLOQUEÓ y se levantó como excepción** — no se absorbió
+- [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
+- [ ] Los **gates humanos** quedaron registrados con estado — ninguno asumido por silencio

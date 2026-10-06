@@ -8,6 +8,61 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 0 · El plan contratado — cuánto y a qué profundidad
+
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+`clients/<cliente>/data/plan-contratado.md`:
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+
+- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y los canales de
+  `inherent/05-OPERACION.md` → «10 · ADS MANAGEMENT». **Si cambian allá, cambian acá** — esta tabla
+  no manda sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Meta y TikTok** | ✅ | ✅ | ✅ | ✅ |
+| **Google Search y Performance Max** | ⬜ | ✅ | ✅ | ✅ |
+| **Variantes de creativo por campaña** | hasta **20** | hasta **30** | hasta **35** | hasta **50** |
+| **Optimización** | Mensual | Mensual | Por ángulo, continua | Continua + presupuesto sistematizado |
+| **Experimentos controlados** | ⬜ | ⬜ | 🟡 | ✅ |
+| **Atribución para el performance fee** | ⛔ **No aplica** | ⛔ **No aplica** | ✅ | ✅ |
+
+**Cómo se lee:**
+
+- 🛑 **La inversión publicitaria la pone el cliente, aparte — nunca sale del plan.**
+  `inherent/06-ECONOMIA.md` → «⛔ Lo que nunca está incluido». **El plan solo pone techo al TRABAJO:**
+  cuántas campañas se arman, cuántas variantes se montan y cada cuánto se optimiza.
+  ⚠️ **Un presupuesto de pauta más grande no sube el plan, y un plan más caro no pone más dinero en
+  la cuenta.** Confundirlos hace prometer resultados con dinero que nadie puso.
+- 🛑 **El presupuesto de pauta lo aprueba Allan antes de cada lanzamiento** (§2). Sin monto aprobado
+  no se lanza, por más que el plan incluya el canal.
+- ⚠️ **«Que te encuentren en Google» entra desde 🔷 Marketing Pro**, y es **pauta de búsqueda**, no
+  posicionamiento orgánico, ni auditoría técnica, ni link building.
+- 🛑 **El performance fee NO existe en la línea 🔷 Marketing.** Requiere atribución limpia
+  (CAPI + GA4), que es parte de Conversion OS y **solo entra desde 🟨 Accelerate.** Si alguien pide
+  fee sobre un plan 🔷, **se levanta como excepción.**
+- **Las variantes salen de material ya producido.** ④ declara qué se varía, ⑥A y ⑥B las montan, ⑩ las
+  sube. 🛑 **Una variante nunca pide grabación extra**, y **no cuenta como publicación**: no entra al
+  calendario orgánico del ciclo.
+
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+
+Allan lo cotiza **en las mismas unidades de la tabla de arriba** —canales, variantes, cadencia de
+optimización— y el departamento trabaja con esos números igual que con un plan estándar.
+**El precio lo define Allan.**
+
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- 🛑 **No existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- 🛑 **La atribución no se cotiza como add-on de pauta:** sin Conversion OS no hay fee, y eso no
+  cambia por cuánto se pague en Tailor Made.
+- **Se baja el volumen, nunca el método:** el gate de Allan antes de lanzar es igual en todos los
+  planes. **Pautar es acción destructiva en los cuatro.**
+
+---
+
 ## 1 · Las dos herramientas, y qué hace cada una
 
 | | **AdWhispr** *(MCP)* | **`claude-ads`** *(plugin)* |
@@ -49,21 +104,10 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 
 ## 3 · Qué se activa según el plan
 
-| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Meta y TikTok** | ✅ | ✅ | ✅ | ✅ |
-| **Google Search y Performance Max** | ⬜ | ✅ | ✅ | ✅ |
-| **Variantes de creativo por campaña** | hasta **20** | hasta **30** | hasta **35** | hasta **50** |
-| **Optimización** | Mensual | Mensual | Por ángulo, continua | Continua + presupuesto sistematizado |
-| **Experimentos controlados** | ⬜ | ⬜ | 🟡 | ✅ |
-| **Atribución para el performance fee** | ⛔ **No aplica** | ⛔ **No aplica** | ✅ | ✅ |
+> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
 
-> ⚠️ **«Que te encuentren en Google» entra desde Marketing Pro**, y es **pauta de búsqueda**, no
-> posicionamiento orgánico ni SEO técnico.
-
-> 🛑 **El performance fee NO existe en la línea Marketing.** Requiere atribución limpia
-> (CAPI + GA4), que es parte de Conversion OS y solo entra desde Accelerate.
-> **Si alguien pide fee sobre un plan de Marketing, se levanta como excepción.**
+🛑 **La inversión publicitaria la pone el cliente, aparte.** El plan solo pone techo al
+**trabajo**: cuántas campañas se arman, cuántas variantes se montan y cada cuánto se optimiza.
 
 ---
 

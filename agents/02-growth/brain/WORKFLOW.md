@@ -8,6 +8,72 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 0 · El plan contratado — cuánto y a qué profundidad
+
+**Lo primero de cada encargo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+`clients/<cliente>/data/plan-contratado.md`:
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+
+- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y la profundidad de
+  `inherent/03-OFERTA.md` → «🔒 Uso interno» y `inherent/02-METODO.md`.
+  **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Verbo** | ⛔ **No corre** | ⛔ **No corre** | **Ejecuta** | **Sistematiza** |
+| **Pilar 1 · Oferta** | ⬜ | ⬜ | ✅ Escalarla / autoridad | ✅ Sistematizarla |
+| **Pilar 2 · Canales grandes** | ⬜ | ⬜ | ✅ Abrir y vender | ✅ Canal permanente |
+| **Pilar 3 · Upsells** | ⬜ | ⬜ | ✅ Diseñar y lanzar | ✅ Operando solo |
+| **Conversion OS** | ⬜ | ⬜ | ✅ Que nadie se pierda · closing | ✅ + referidos y comunidad |
+| **Operations OS** | ⬜ | ⬜ | 🟡 SOPs **de crecimiento** | ✅ SOPs **de empresa** |
+| **Money OS** | ⬜ | ⬜ | ⬜ | ✅ Margen por línea · CAC · LTV |
+| **Herramienta a medida** | ⬜ | ⬜ | **1 por trimestre** | **1 por mes** |
+| **Especialista de industria** | ⬜ | ⬜ | Trimestral · techo **$144** | Mensual · techo **$180** |
+
+**Cómo se lee:**
+
+- 🛑 **② Growth NO corre en la línea 🔷 Marketing — en ninguno de sus dos planes.** Si llega un
+  encargo de growth sobre 🔷 Marketing o 🔷 Pro, **se BLOQUEA y se levanta como excepción:** es
+  upsell a 🟨 Accelerate, no trabajo a absorber.
+- **Lo que sí corre en la línea 🔷 es el MENSAJE, y lo llevan ③ Marketing con ②B Branding.**
+  Mensaje = cómo se cuenta lo que ya vende. Oferta = qué vende, en qué paquetes y por cuánto.
+- ⚠️ **🟨 Accelerate y 🟨 Compound entregan los mismos tres pilares.** Lo que cambia es el verbo:
+  Accelerate **ejecuta**, Compound **sistematiza**. **Venderlo como «más pilares» es venderlo mal.**
+- 🛑 **El especialista es exclusivo de la línea 🟨.** Meterlo en un plan 🔷 rompe el margen de ese
+  plan (`inherent/04-MERCADO.md` → «Red de mentores»).
+- ⚠️ **Arriba de $180 por sesión el especialista NO se absorbe:** va como add-on facturado al
+  cliente. **El presupuesto filtra antes que la afinidad.**
+
+### 🔑 Por qué no todo entra en la línea Marketing
+
+| Sistema | Por qué espera |
+|---|---|
+| **Pilar 2 ejecutando** | Abrir canales grandes sin oferta clara quema la oportunidad |
+| **Pilar 3** | No se le puede vender más a quien todavía no compró una vez |
+| **Conversion OS** | **Antes no hay nada que perder** |
+| **Operations OS** | **No se puede documentar un proceso que todavía no funcionó** |
+| **Money OS** | **Sin transacciones, el margen por línea es teoría** |
+
+🛑 **Meterlo antes es cobrar por algo que no se puede usar.**
+
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+
+Allan lo cotiza **en las mismas unidades de la tabla de arriba** —pilares, sistemas, herramientas,
+sesiones de especialista— y el departamento trabaja con esos números igual que con un plan estándar.
+**El precio lo define Allan.**
+
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- 🛑 **No existe un plan por debajo de 🔷 Marketing**, y **② Growth no se activa por debajo de
+  🟨 Accelerate** por más que el Tailor Made lo pague: sin Conversion OS no hay atribución, y sin
+  atribución el trabajo de Growth no se puede leer.
+- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
+  en todos los planes.
+
+---
+
 ## 1 · Qué es y qué no
 
 🛑 **Growth no es pauta.** La pauta es **⑩ Ads Management**.
@@ -41,33 +107,10 @@ paso vive en las skills: `skills/README.md`.
 
 ## 3 · Qué se activa según el plan — es restricción dura
 
-| | 🔷 **MARKETING / PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|
-| **Verbo** | ⛔ **No corre** | **Ejecuta** | **Sistematiza** |
-| **Pilar 1 · Oferta** | ⬜ | ✅ Escalarla / autoridad | ✅ Sistematizarla |
-| **Pilar 2 · Canales grandes** | ⬜ | ✅ Abrir y vender | ✅ Canal permanente |
-| **Pilar 3 · Upsells** | ⬜ | ✅ Diseñar y lanzar | ✅ Operando solo |
-| **Conversion OS** | ⬜ | ✅ Que nadie se pierda · closing | ✅ + referidos y comunidad |
-| **Herramienta a medida** | ⬜ | **1 por trimestre** | **1 por mes** |
-| **Money OS** | ⬜ | ⬜ | ✅ Margen por línea · CAC · LTV |
+> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
 
-> 🛑 **② Growth NO corre en la línea Marketing.** Si llega un encargo de growth sobre un plan
-> de Marketing o Marketing Pro, **se BLOQUEA y se levanta como excepción** — es upsell a
-> Accelerate, no trabajo a absorber.
->
-> **Lo que sí corre en Marketing es el MENSAJE, y lo lleva ③ Marketing con ②B Branding.**
-> Mensaje = cómo se cuenta lo que ya vende. Oferta = qué vende, en qué paquetes y por cuánto.
-
-### 🔑 Por qué no todo entra en la línea Marketing
-
-| Sistema | Por qué espera |
-|---|---|
-| **Pilar 2 ejecutando** | Abrir canales grandes sin oferta clara quema la oportunidad |
-| **Pilar 3** | No se le puede vender más a quien todavía no compró una vez |
-| **Conversion OS** | **Antes no hay nada que perder** |
-| **Money OS** | **Sin transacciones, el margen por línea es teoría** |
-
-🛑 **Meterlo antes es cobrar por algo que no se puede usar.**
+🛑 **② Growth no corre en la línea 🔷 Marketing.** Un encargo de growth sobre 🔷 Marketing o
+🔷 Pro **se BLOQUEA y se levanta como excepción:** es upsell a 🟨 Accelerate, no trabajo a absorber.
 
 ---
 

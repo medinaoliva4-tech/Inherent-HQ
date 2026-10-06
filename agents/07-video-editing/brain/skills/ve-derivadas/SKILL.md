@@ -14,7 +14,7 @@ description: >
 | | |
 |---|---|
 | **Consume** | El corte principal **con GATE 1** · `plan-de-contenido.csv` · `plan-por-canal.md` |
-| **Produce** | Las **10 · 20 · 30** piezas derivadas del ciclo |
+| **Produce** | Las **4 · 6 · 9 · 12** piezas derivadas del ciclo *(mínimo 1:2 — ver §0 del `WORKFLOW.md`)* |
 
 > 🔑 **Acá está el margen del modelo.** ⑤ Producción cuesta horas humanas; cada derivada cuesta
 > Q0. **Entregar menos derivadas no ahorra: desperdicia grabación pagada.**

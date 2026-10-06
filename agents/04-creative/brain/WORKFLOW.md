@@ -21,7 +21,8 @@ paso vive en las skills: `skills/README.md`.
 
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar:
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+`clients/<cliente>/data/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
 - 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
@@ -33,7 +34,7 @@ paso vive en las skills: `skills/README.md`.
 
 | Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
-| **BIG IDEAS del mes** | 1 | 1 | 1 | **2** |
+| **BIG IDEAS del mes** *(una por campaña de ③)* | **1** | **2** | **2** | **2** |
 | **Conceptos del ciclo** *(videos planificados ÷ 3)* | 3 | 4 | 6 | 8 |
 | **Videos planificados** a idear *(20 min de grabación c/u)* | 9 | 12 | **18** | 24 |
 | **Videos derivados** *(mínimo 1:2 — los ejecuta ⑦)* | 4 | 6 | 9 | 12 |
@@ -46,8 +47,9 @@ paso vive en las skills: `skills/README.md`.
 
 **Cómo se lee:**
 
-- **Las 2 BIG IDEAS de 🟨 Compound no son «una más»:** una es de **adquisición** y la otra de
-  **recompra y comunidad**. Son dos trabajos distintos, no la misma idea estirada.
+- 🔑 **Una campaña, una BIG IDEA.** El número sale de las campañas que encargó ③ Marketing
+  (`agents/03-marketing/brain/WORKFLOW.md` → §0). **Dos campañas son dos ideas distintas, no una
+  estirada en dos.**
 - **Cada pieza es una fila con su `id`**, también las derivadas y las stories. Las derivadas las
   ejecuta ⑦ Video Editing, pero Creative las marca en la fila del video que las origina. Las stories
   se pueden idear como **series repetibles** —un formato, muchas piezas— y cada una sigue siendo su

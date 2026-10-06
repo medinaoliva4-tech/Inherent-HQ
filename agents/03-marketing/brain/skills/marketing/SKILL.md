@@ -22,13 +22,17 @@ description: >
 
 ## 1 · Pre-flight — se verifica antes de todo
 
+```
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · slots: [n] de [techo del plan] · campañas: [n] de [techo]
+```
+
 | Input | De | Si falta |
 |---|---|---|
 | Objetivo del ciclo y MUST BE TRUE | ② Estrategia | 🛑 **BLOQUEADO** |
 | Posicionamiento aprobado | ② Estrategia | 🛑 **BLOQUEADO** |
 | Capacidad declarada y cuentas que existen | ① Comprensión | 🛑 **BLOQUEADO** |
 | Tono, territorio, activos distintivos | ②B Branding | 🛑 **BLOQUEADO** |
-| **El plan contratado del cliente** | `clients/<cliente>/` | 🛑 **BLOQUEADO** — define el techo |
+| **El plan contratado del cliente** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
 | Qué ángulos rindieron en pauta | ⑧B Ads | 🟡 Se sigue sin eso |
 
 🛑 **Sin estrategia aprobada no hay plan.** Armar un calendario sobre una estrategia en borrador
@@ -59,3 +63,12 @@ campaña. Si falta el input de una capa, **se corre la anterior** — nunca se i
 | **GATE 2** | `mk-calendario` | El calendario completo del ciclo |
 
 **No se sigue sin la aprobación.** El agente propone, no cierra.
+
+---
+
+## Control de calidad del orquestador
+
+- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
+- [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
+- [ ] Los **gates humanos** quedaron registrados con estado — ninguno asumido por silencio

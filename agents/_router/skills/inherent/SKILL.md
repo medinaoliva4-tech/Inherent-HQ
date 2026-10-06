@@ -33,12 +33,16 @@ description: >
 ```
 ENRUTAMIENTO
 Pedido: [el pedido en una línea, con las palabras del usuario]
-Cliente: [clients/<cliente>/ · ⛔ falta]  ·  Plan: [🔷 Mkt / 🔷 Pro / 🟨 Accel / 🟨 Comp · ⛔ falta]
+Cliente: [clients/<cliente>/ · ⛔ falta]  ·  Plan: [🔷 Mkt / 🔷 Pro / 🟨 Accel / 🟨 Comp / ⬜ Tailor Made · ⛔ falta]
 Departamento: [n · nombre]  →  Orquestador: [/skill]
 Del prompt entra como INPUT: [datos, fechas, piezas, ideas, referencias que trae el usuario]
 Del prompt CHOCA con el workflow: [qué pide saltarse o hacer distinto · «nada»]
 → PASA A [/skill] | BLOQUEADO: [qué falta]
 ```
+
+🔑 **El `Plan:` se LEE, no se adivina:** sale de `clients/<cliente>/data/plan-contratado.md`,
+donde lo anota ① Strategy. **Si el archivo no existe, va `⛔ falta`** — y el orquestador del
+departamento bloquea, porque el plan es el techo de todos.
 
 🔑 **Este bloque es la prueba de que se siguió el método.** Si una respuesta de trabajo de
 cliente no empieza con `ENRUTAMIENTO`, se saltó el router.

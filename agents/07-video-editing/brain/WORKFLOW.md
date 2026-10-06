@@ -19,44 +19,66 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
-## 1 · Acá está la eficiencia del modelo
+## 0 · El plan contratado — cuánto y a qué profundidad
 
-**⑤ Producción cuesta horas humanas. ⑥B multiplica ese material dentro del mismo costo fijo de Producción.**
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+`clients/<cliente>/data/plan-contratado.md`:
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
-| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
+  «El desglose por tarea». **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
-| **Horas grabadas** *(⑤)* | **3 h** | 4 h | 6 h | 8 h |
-| **Horas de grabación** | **3h** | **4h** | **6h** | **8h** |
 | **Videos planificados** *(20 min c/u)* | **9** | **12** | **18** | **24** |
 | **Derivados — mínimo** *(1:2)* | **4** | **6** | **9** | **12** |
 | **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
 | *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
 | *TOTAL videos — tope* | *18* | *24* | *36* | *48* |
-| **Revisiones por pieza** | 1 | 2 | 2 | **3** |
+| **Revisiones por pieza** | **1** | 2 | 2 | 3 |
 
-> 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba
-> por SETUP y no por pieza.** Cada uno deja 5-7 escenas; las de apoyo se recombinan en derivados.
->
-> **El rango no es flojera, es honestidad:** si el material salió muy scripted las escenas no se
-> reusan y cae al **mínimo (1 derivado por cada 2 planificados)**. Si salió suelto llega al
-> **tope (1:1)**.
->
-> ⚠️ **Se promete el MÍNIMO. El tope es techo, no promesa** — y solo se entrega si el material
-> lo permite **y** el operador tiene las horas.
+**Cómo se lee:**
 
-### 🔴 Lo que ⑥B necesita de ④ Creatividad para que el número cierre
+- 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba por
+  SETUP y no por pieza.** Cada uno deja 5-7 escenas; las de apoyo se recombinan en derivados.
+- **El rango no es flojera, es honestidad:** si el material salió muy scripted las escenas no se
+  reusan y cae al **mínimo (1 derivado por cada 2 planificados)**. Si salió suelto llega al
+  **tope (1:1)**. ⚠️ **Se promete el MÍNIMO. El tope es techo, no promesa** — y solo se entrega si
+  el material lo permite **y** el operador tiene las horas.
+- ⚠️ **🟨 Accelerate monta 50% más video que 🔷 Pro** *(18 planificados contra 12)* con el mismo
+  total de 145 piezas del plan. **Copiar el reparto de Pro es un error.**
+- 🔑 **Acá está la eficiencia del modelo:** ⑤ Producción cuesta horas humanas; ⑥B multiplica ese
+  material **dentro del mismo monto de Producción.** Por eso el mínimo 1:2 es piso, no aspiración.
+- 🔴 **⑥B no tiene MCP: hoy la edición y las derivadas son de Pablo.** Sus horas son el techo de
+  capacidad, no el plan.
+- 🛑 **Una derivada nunca pide grabación extra.** Sale de material ya rodado. Si para llegar al
+  número haría falta volver a grabar, **el número está mal, no el rodaje.**
+- ⛔ **No hay segundo idioma en ningún plan.** No existe herramienta de doblaje — ver
+  `skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma».
 
-| Requisito | Por qué |
-|---|---|
-| **Shot list agrupado por SETUP, no por pieza** | 20 min por video solo se logra si se arma el lugar una vez y se graban todas sus escenas. Grabando pieza por pieza son 45+ min |
-| **Escenas marcadas `hablada` o `apoyo`** | Solo las de apoyo se recombinan. Sin la marca, ⑥B no sabe qué puede reusar |
-| **Mínimo 60% de escenas de apoyo** | Debajo de eso el material queda muy scripted y los derivados caen al mínimo |
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
 
-⚠️ **Esto es un pedido abierto a ④ Creatividad** *(skill `cr-arte-video`)*. Hasta que esté,
-⑥B marca las escenas a mano y lo declara en el loop.
+Allan lo cotiza **en las mismas unidades de la tabla de arriba** —videos planificados, derivados,
+revisiones— y el departamento trabaja con esos números igual que con un plan estándar.
+**El precio lo define Allan.**
 
-> 🔑 **De 2 horas de grabación salen 16 piezas.** Ese número es la razón por la que el margen
-> cierra. **Editar de menos no ahorra tiempo: tira producción pagada.**
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- 🛑 **No existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
+  en todos los planes.
+- **Arriba de 🟨 Compound el techo es el material rodado**, no el plan: más derivadas de las que el
+  rodaje aguanta es volumen que no existe.
+
+---
+
+## 1 · Acá está la eficiencia del modelo
+
+**⑤ Producción cuesta horas humanas. ⑥B multiplica ese material dentro del mismo costo fijo de Producción.**
+
+> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
 
 ---
 

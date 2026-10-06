@@ -19,18 +19,59 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
-## 1 · El problema de este departamento es el volumen
+## 0 · El plan contratado — cuánto y a qué profundidad
 
-| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+`clients/<cliente>/data/plan-contratado.md`:
+🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+
+- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
+  «El desglose por tarea». **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+
+| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Estáticos y carruseles** | **43** | **72** | **63** | **88** |
-| **Stories** | **30** | **55** | **55** | **80** |
-| **Total** | **73** | **127** | **118** | **168** |
-| **Revisiones por pieza** | 1 | 2 | 2 | **3** |
+| **Stories** | 30 | 55 | 55 | 80 |
+| **Total de piezas** | **73** | **127** | **118** | **168** |
+| **Revisiones por pieza** | **1** | 2 | 2 | 3 |
 
-> Fuente: `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` → «El desglose
-> por tarea», filas 15, 16 y 17. **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
-> **168 es el techo, el de 🟨 Compound.**
+**Cómo se lee:**
+
+- ⚠️ **🟨 Accelerate baja a 63 estáticos A PROPÓSITO — no es un error de tabla.** Entrega **menos
+  estáticos que 🔷 Pro** *(63 contra 72)* porque la mezcla se corre hacia video: **18 videos
+  planificados contra 12.** El total del plan sigue siendo 145 piezas; lo que cambia es de qué están
+  hechas. 🛑 **Copiar el reparto de Pro es un error**, y «corregir» el 63 hacia arriba rompe el
+  margen de Producción.
+- 🔑 **168 es el techo real del departamento**, el de 🟨 Compound — y **no se diseñan una por una.**
+  Se arma el sistema de plantillas del ciclo y se llenan: **el GATE 1 aprueba el molde, no las
+  piezas.** Sin ese gate el volumen no es viable.
+- 🔴 **⑥A no tiene MCP: hoy el volumen pasa entero por Pablo.** Sus horas son el techo de capacidad,
+  no el plan. Si el ciclo no entra, **se declara antes de empezar a componer**, no a mitad.
+- 🛑 **Si llegan más piezas que el techo del plan, las de más no se componen:** se declara la
+  diferencia y se devuelve a ③ Marketing. Recortar es decisión de alcance, no de ⑥A.
+- **Las variantes de creativo de pauta no cuentan acá.** Las 20/30/35/50 existen para ⑩ Ads, salen
+  de material ya compuesto y **no entran a este total.**
+
+### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+
+Allan lo cotiza **en las mismas unidades de la tabla de arriba** —estáticos, stories, revisiones— y
+el departamento trabaja con esos números igual que con un plan estándar. **El precio lo define Allan.**
+
+- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
+- 🛑 **No existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
+  en todos los planes.
+- **Arriba de 🟨 Compound sube el volumen**, pero el techo real son **las horas de Pablo y las
+  plantillas aprobadas**: más piezas sin plantilla nueva es ejecución que no existe.
+
+---
+
+## 1 · El problema de este departamento es el volumen
+
+> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
 
 > 🔑 **168 piezas al mes no se diseñan una por una. Se arma un sistema de plantillas y se
 > llenan.** Por eso la Capa 1 es la que decide si el ciclo entra o no.
