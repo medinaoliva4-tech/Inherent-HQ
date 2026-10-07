@@ -4,13 +4,48 @@ archivo_original: "Drive › Hormozi Brain › Videos/01 Monetize.mp4 (id 1zMjG2
 etapa: "STAGE 0: IMPROVISE"
 duracion: "00:31:59"
 transcripcion: "faster-whisper small.en (int8, greedy) — automática, literal; solo se quitaron muletillas obvias (um/uh/erm/hmm): 0"
-frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 300 frames revisados → 0 estados visuales distintos documentados; 0 frames sin contenido de pantalla"
+frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 300 frames revisados → 85 estados visuales distintos documentados; 5 frames sin contenido de pantalla"
 imagenes: "NO se guardan en el repo. Fuente de verdad = el video en ese timestamp. Cada bloque FRAME lleva el nombre stageX_HH-MM-SS.png como referencia."
 formato_cita: "[ROADMAP VIDEO | STAGE 0: IMPROVISE | HH:MM:SS] (+ frame si aplica)"
 nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Stage 0: Improvise (los slides dicen «0: IMPROVISE»)."
 ---
 
 # STAGE 0: IMPROVISE
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:00:02 | stage0_00-00-02b.png]** · tipo: texto-en-pantalla
+También visible en: 00:00:02
+
+Texto en pantalla (literal):
+
+> STAGES OF SCALING
+> 250 TO 499
+> 100 TO 249
+> 50 TO 99
+> 20 TO 49
+> 10 TO 19
+> 5 TO 9
+> IMPROV[ISE]
+> $100M SCALING ROADMAP
+> ACQUISITION.COM
+> [¿0: IMPROVISE?] · [¿1: MONETIZE?] · [¿2: ADVERTISE?] · [¿3: STABILIZE?] · [¿4: PRIORITIZE?]
+> [¿5: PRODUCTIZE?] · [¿6: OPTIMIZE?] · [¿7: CATEGORIZE?] · [¿8: SPECIALIZE?] · [¿9: CAPITALIZE?]
+
+Recreación:
+
+```text
++------------------------------------------+      PANTALLA:  STAGES OF SCALING
+| $100M SCALING ROADMAP                    |                 (pirámide, ver 00:00:38)
+|        [logo] ACQUISITION.COM            |
+|                                          |
+| [tabla] [tabla] [tabla] [tabla] [tabla]  |   <- fila 1: 5 tablas de etapa (0 a 4)
+| [tabla] [tabla] [tabla] [tabla] [tabla]  |   <- fila 2: 5 tablas de etapa (5 a 9)
++------------------------------------------+
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Apertura en la toma abierta. Alex sostiene frente a él un póster blanco horizontal con el título «$100M SCALING ROADMAP» en negro, el logo de Acquisition.com (montaña) con «ACQUISITION.COM» debajo, y diez miniaturas de la tabla de etapa (columna de rótulos morada, encabezados negros) en dos filas de cinco; los títulos de cada miniatura son demasiado pequeños para leerse con certeza. Detrás, en la pantalla, la pirámide «STAGES OF SCALING» en azul con los rangos de headcount a la izquierda; el póster tapa la parte baja izquierda y Leila tapa el final de «IMPROVISE». Leila de pie a la derecha. En 00:00:02 el mismo momento con una transición de viñeta/destello: el póster aparece girado y cortado («…LING ROADMAP», «…ISITION.COM»).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:00]
 
 [00:00:00] Welcome to the $100 million scaling roadmap.
 [00:00:04] If you're clicking here and this is the first video from the personalized plan that we sent
@@ -22,16 +57,244 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:00:28] have our thousand dwarves in the background process it and then send it out to you so
 [00:00:33] that you have an exact plan for your business right now.
 [00:00:36] That being said, we are at the first stage.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:00:38 | stage0_00-00-38.png]** · tipo: pirámide
+También visible en: 00:00:15, 00:00:16, 00:00:24, 00:00:30, 00:00:33, 00:00:36
+
+Texto en pantalla (literal):
+
+> STAGES OF SCALING
+> 250 TO 499
+> 100 TO 249
+> 50 TO 99
+> 20 TO 49
+> 10 TO 19
+> 5 TO 9
+> 1 TO 4
+> FREELANCERS
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> IMPROVISE
+
+Recreación:
+
+```text
+                       STAGES OF SCALING
+
+                               /\
+   250 TO 499                 /||\
+ ----------------------------/-||-\----------------------------
+   100 TO 249               /  ||  \
+ --------------------------/---||---\--------------------------
+   50 TO 99                /   ||   \
+ -------------------------/----||----\-------------------------
+   20 TO 49              /     ||     \
+ ------------------------/-----||-----\------------------------
+   10 TO 19             /      ||      \
+ ----------------------/-------||-------\----------------------
+   5 TO 9              /       ||       \
+ ---------------------/--------||--------\---------------------
+   1 TO 4             /        ||        \
+ --------------------/---------||---------\--------------------
+   FREELANCERS       /         ||         \
+ -------------------/----------||----------\-------------------
+   JUST YOU         /          ||          \
+ ------------------/-----------||-----------\------------------
+   JUST YOU       / FUNCTIONS  ||           \        IMPROVISE
+                 /_____________||____________\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Pirámide morada centrada, dividida por dos líneas que salen del vértice (tres gajos verticales) y por líneas horizontales que la cruzan y se prolongan a todo el ancho de la pantalla, formando diez franjas. A la izquierda de cada franja, el rótulo de tamaño del equipo en negro (de arriba abajo: 250 TO 499 … JUST YOU). «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. A la derecha de la franja inferior, «IMPROVISE» en morado (la etapa actual); las demás franjas no tienen rótulo a la derecha. Insert a pantalla completa. En las tomas abiertas (00:00:15, 00:00:24, 00:00:30, 00:00:36) la pirámide se ve azul en la pantalla del estudio, con Alex y Leila a los lados (en 00:00:36 Leila señala la base con el control); en 00:00:16 y 00:00:33 (primeros planos de Alex con papeles en la mano) se ven los rótulos de 250 TO … JUST YOU y FUNCTIONS.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:38]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:00:39 | stage0_00-00-39.png]** · tipo: pirámide
+
+Texto en pantalla (literal):
+
+> STAGES OF SCALING
+> JUST YOU
+> FUNCTIONS
+> IMPROVISE
+
+Recreación:
+
+```text
+                       STAGES OF SCALING
+
+                               /\
+                              /||\
+                             / || \
+                            /  ||  \
+                           /   ||   \
+                          /    ||    \
+                         /     ||     \
+                        /      ||      \
+ ----------------------/-------||-------\----------------------
+   JUST YOU           / FUNCTIONS ||     \           IMPROVISE
+                     /____________||______\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] La misma pirámide morada, ahora sin las líneas horizontales intermedias ni los rangos: solo queda la franja inferior, con «JUST YOU» en negro a la izquierda, «FUNCTIONS» en blanco dentro del gajo izquierdo e «IMPROVISE» en morado a la derecha. Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:38]
+
 [00:00:38] Okay, so the first stage of scaling is just you.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:00:42 | stage0_00-00-42.png]** · tipo: tabla
+
+Texto en pantalla (literal):
+
+> HEADCOUNT
+> YOUR ROLE
+> LEADERSHIP STRUCTURE
+> # OF COMPANIES HERE
+> CONSTRAINT | TO GRADUATE
+> PRODUCT
+> MARKETING
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| — | |
+|---|---|
+| **HEADCOUNT** | — |
+| **YOUR ROLE** | — |
+| **LEADERSHIP STRUCTURE** | — |
+| **# OF COMPANIES HERE** | — |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | — | — |
+| **MARKETING** | — | — |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. La barra de título está vacía (sin número ni nombre de etapa) y todas las celdas están vacías. Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:42]
+
 [00:00:42] And so we call this improvise.
 [00:00:44] Okay, at the stage of improvise, your head count is one because it is just you.
 [00:00:50] Right?
 [00:00:51] What is your role?
 [00:00:52] Your role is really to be a researcher.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:00:54 | stage0_00-00-54.png]** · tipo: tabla
+También visible en: 00:01:00
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | **RESEARCHER**
+> LEADERSHIP STRUCTURE
+> # OF COMPANIES HERE
+> CONSTRAINT | TO GRADUATE
+> PRODUCT
+> MARKETING
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | **RESEARCHER** |
+| **LEADERSHIP STRUCTURE** | — |
+| **# OF COMPANIES HERE** | — |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | — | — |
+| **MARKETING** | — | — |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. Primeras celdas llenas: HEADCOUNT «1» (texto fino) y YOUR ROLE «RESEARCHER» en negrita (el dato recién agregado va en negrita). Resto vacío. Solo en la toma abierta: Alex y Leila de pie a los lados de la pantalla.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:54]
+
 [00:00:54] You're just trying to figure out what's going to work.
 [00:00:57] But in this stage, people lack clarity and the way to gain clarity so that you can know
 [00:01:01] what to do next is by researching.
 [00:01:04] Right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:01:05 | stage0_00-01-05.png]** · tipo: tabla
+También visible en: 00:01:09, 00:01:15
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | **Just you.**
+> # OF COMPANIES HERE
+> CONSTRAINT | TO GRADUATE
+> PRODUCT
+> MARKETING
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | **Just you.** |
+| **# OF COMPANIES HERE** | — |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | — | — |
+| **MARKETING** | — | — |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. HEADCOUNT «1» y YOUR ROLE «RESEARCHER» en texto fino; LEADERSHIP STRUCTURE «Just you.» en negrita (recién agregado). # OF COMPANIES HERE y el bloque CONSTRAINT / TO GRADUATE vacíos. Insert a pantalla completa; en 00:01:09 y 00:01:15 la misma tabla en la toma abierta.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:01:05]
+
 [00:01:05] Now what is your leadership structure like?
 [00:01:07] Just you.
 [00:01:08] So notice the theme here.
@@ -42,12 +305,175 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:01:16] The number of companies that are here.
 [00:01:18] Not really any because you're not a company yet.
 [00:01:20] You are a one person just trying to figure out what the heck to do next.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:01:25 | stage0_00-01-25.png]** · tipo: tabla
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | Just you.
+> # OF COMPANIES HERE | **NA...you're not a company yet.**
+> CONSTRAINT | TO GRADUATE
+> PRODUCT
+> MARKETING
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | Just you. |
+| **# OF COMPANIES HERE** | **NA...you're not a company yet.** |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | — | — |
+| **MARKETING** | — | — |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. Las cuatro celdas de arriba llenas; «NA...you're not a company yet.» en negrita (recién agregado), el resto en texto fino. Bloque CONSTRAINT / TO GRADUATE vacío. Solo en la toma abierta (Alex y Leila de pie a los lados).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:01:24]
+
 [00:01:24] All right, so I'm going to kick it off with products.
 [00:01:26] We have the constraint and then what is needed to graduate.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:01:29 | stage0_00-01-29.png]** · tipo: tabla
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | Just you.
+> # OF COMPANIES HERE | NA...you're not a company yet.
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | YOU ARE HERE | **Goods, services, and results you deliver.**
+> MARKETING
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | Just you. |
+| **# OF COMPANIES HERE** | NA...you're not a company yet. |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | ◀ YOU ARE HERE | **Goods, services, and results you deliver.** |
+| **MARKETING** | — | — |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. Fila PRODUCT: en la columna CONSTRAINT, una flecha morada que apunta a la izquierda (hacia el rótulo PRODUCT) con «YOU ARE HERE» en blanco; en la columna TO GRADUATE, en negrita grande, la definición de la función «Goods, services, and results you deliver.». Resto de filas vacías. Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:01:29]
+
 [00:01:29] And so at the product level, we are here.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:01:34 | stage0_00-01-34.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: PRODUCT
+> At this level…
+> CONSTRAINT
+> You have nothing to sell.
+
+Recreación:
+
+```text
+[0: IMPROVISE: PRODUCT]
+
+                         At this level…
+
+   +--------------+          |
+   |  CONSTRAINT  |          |
+   +--------------+          |
+ You have nothing to sell.   |
+                             |
+        ?                    |
+      (persona rascándose    |
+       la cabeza)            |
+                             |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Solo la mitad izquierda tiene contenido: caja «CONSTRAINT», el texto y un pictograma negro de una persona rascándose la cabeza con un signo «?» encima. La mitad derecha está vacía (todavía sin flecha ni TO GRADUATE). Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:01:31]
+
 [00:01:31] Remember, this is the good services and results that you deliver in the business.
 [00:01:34] At this level, the constraint is you have nothing to sell.
 [00:01:37] All right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:01:40 | stage0_00-01-40.png]** · tipo: slide
+También visible en: 00:01:44
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: PRODUCT
+> And…
+> CONSTRAINT
+> You have nothing to sell.
+> TO GRADUATE
+> Give something away for free
+> FREE!
+
+Recreación:
+
+```text
+[0: IMPROVISE: PRODUCT]
+
+                               And…
+
+   +--------------+            |           +---------------+
+   |  CONSTRAINT  |            |           |  TO GRADUATE  |
+   +--------------+            |           +---------------+
+ You have nothing to sell.     |     Give something away for free
+                               |
+        ?                      ⇒              FREE!
+   (persona rascándose         |       (persona cargando
+    la cabeza)                 |        un regalo)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «CONSTRAINT», el texto y el pictograma de la persona rascándose la cabeza con «?». Derecha: caja «TO GRADUATE», el texto y un pictograma negro de una persona que carga una caja de regalo con moño, con «FREE!» en negrita al lado. Insert a pantalla completa; en 00:01:44 la misma slide en la toma abierta (Alex la señala con la mano).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:01:38]
+
 [00:01:38] This is the big problem.
 [00:01:40] And so to graduate, you have to give something away for free.
 [00:01:42] Now you don't have to.
@@ -55,6 +481,56 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:01:44] This is what we've done with every company we've had is that we give away free stuff.
 [00:01:47] And there's a lot of strategic reasons for that.
 [00:01:50] All right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:01:51 | stage0_00-01-51.png]** · tipo: slide
+También visible en: 00:02:09, 00:02:15, 00:02:28, 00:02:28, 00:02:30, 00:02:50, 00:03:00, 00:03:00, 00:03:03, 00:03:07, 00:03:09, 00:03:19, 00:03:30, 00:03:30, 00:03:38
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: PRODUCT
+> What that looks like…
+> TO GRADUATE
+> Give something away for free
+> FREE!
+> Product Categories:
+> _DELIVERY MECHANISMS_
+> #1 SOFTWARE
+> #2 Media
+> #3 SERVICES
+> #4 PHYSICAL PRODUCTS
+> 3 Types of Free Stuff:
+> _LEAD MAGNET TYPES_
+> #1 REVEAL PROBLEM
+> #2 FREE TRIAL
+> #3 FREE STEP 1 OF X
+> STEP 1 · STEP 2 · STEP 3 · STEP 4 · STEP 5
+> FREE $ $ $ $
+
+Recreación:
+
+```text
+[0: IMPROVISE: PRODUCT]
+
+                          What that looks like…
+
+   +---------------+          |   Product Categories:
+   |  TO GRADUATE  |          |        _DELIVERY MECHANISMS_
+   +---------------+          |   #1        #2       #3        #4
+ Give something away for free |   SOFTWARE  Media    SERVICES  PHYSICAL PRODUCTS
+                              |   [monitor] [play]   [caras]   [caja]
+         FREE!                ⇒   3 Types of Free Stuff:
+   (persona cargando          |        _LEAD MAGNET TYPES_
+    un regalo)                |   #1 REVEAL   #2 FREE   #3 FREE STEP 1 OF X
+                              |      PROBLEM     TRIAL    STEP1 STEP2 STEP3 STEP4 STEP5
+                              |   [lupa]      |  ||||    | |   |:|   |X|   |=|   |X|
+                              |   x<- - -        ^        FREE  $     $     $     $
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «TO GRADUATE», el texto y el pictograma negro de una persona que carga una caja de regalo con moño, con «FREE!» en negrita al lado. Derecha, en negrita tipográfica: «Product Categories:» y «3 Types of Free Stuff:»; todo lo demás es dibujo a mano (marcador negro): bajo «DELIVERY MECHANISMS» (subrayado) cuatro íconos numerados — #1 Software un monitor con engranajes, #2 Media un recuadro con botón de play, #3 Services dos perfiles de cara hablando, #4 Physical Products una caja en perspectiva; bajo «LEAD MAGNET TYPES» (subrayado) tres tipos — #1 Reveal Problem una lupa con líneas punteadas hacia una «x», #2 Free Trial una barra suelta separada de un bloque de cuatro barras con una flecha que la señala, #3 Free Step 1 of X cinco barras verticales rotuladas STEP 1 a STEP 5 con distintos rellenos (vacía, punteada, con X, con rayas, con X) y debajo «FREE» bajo la primera y «$» bajo cada una de las otras cuatro. Insert a pantalla completa; en 00:02:09–00:03:19 la misma slide en la toma abierta (Alex la señala). En 00:03:00, 00:03:00b, 00:03:07, 00:03:30, 00:03:30b y 00:03:38 (primeros planos de Alex) solo se ve la mitad izquierda (TO GRADUATE · Give something away for free · FREE! con el regalo) y la flecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:01:51]
+
 [00:01:51] So this is what this really looks like.
 [00:01:52] So big picture, we're looking at product categories.
 [00:01:54] So okay, are we going to give away our free thing as software?
@@ -100,6 +576,46 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:03:35] And so you say, okay, well, we got this one thing, but there's still these other
 [00:03:38] things that you want to have to make this whole thing work.
 [00:03:41] Now beyond that, I just like having these as my little back of napkin, right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:03:45 | stage0_00-03-45b.png]** · tipo: slide
+También visible en: 00:03:42, 00:03:45, 00:03:57, 00:04:00, 00:04:18, 00:04:18
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: PRODUCT
+> What that looks like…
+> TO GRADUATE
+> Give something away for free
+> FREE!
+> Physical products, services, access, risk, money, media, data, software that does any of the above.
+> **B2C Services:** You do things everyone hates for them for $.
+> **B2B Services:** Things businesses aren’t as good at for $: (Product, Sales, Mktg, CS, IT, Fin, HR, Recruit).
+
+Recreación:
+
+```text
+[0: IMPROVISE: PRODUCT]
+
+                          What that looks like…
+
+   +---------------+          |   Physical products, services,
+   |  TO GRADUATE  |          |   access, risk, money, media, data,
+   +---------------+          |   software that does any of the
+ Give something away for free |   above.
+                              |
+         FREE!                ⇒   B2C Services: You do things
+   (persona cargando          |   everyone hates for them for $.
+    un regalo)                |
+                              |   B2B Services: Things businesses
+                              |   aren’t as good at for $: (Product,
+                              |   Sales, Mktg, CS, IT, Fin, HR, Recruit).
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Misma mitad izquierda (TO GRADUATE, texto y pictograma negro de una persona que carga una caja de regalo con moño, con «FREE!» en negrita al lado). La mitad derecha cambia: tres párrafos de texto, con «B2C Services:» y «B2B Services:» en negrita. Insert a pantalla completa; en las demás marcas, la misma slide en la toma abierta (en 00:03:45 Alex señala la mitad derecha).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:03:44]
+
 [00:03:44] We want the services, products, access, risk, money, media, data, software.
 [00:03:48] These are all the types of things that people sell.
 [00:03:50] And so B2C services, if you're just getting started, I just like to remember that these
@@ -130,16 +646,146 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:05:04] And so our objective at this point is really to learn more than it is to earn.
 [00:05:07] And I think a lot of people mess this up is they, they want to immediately start
 [00:05:10] selling but they have no expertise, they have no proof.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:05:15 | stage0_00-05-15.png]** · tipo: slide
+También visible en: 00:04:49, 00:05:00, 00:05:00, 00:05:05, 00:05:19, 00:05:19, 00:05:24
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: PRODUCT
+> What that looks like…
+> TO GRADUATE
+> Give something away for free
+> FREE!
+> Physical products, services, access, risk, money, media, data, software that does any of the above.
+> **B2C Services:** You do things everyone hates for them for $.
+> **B2B Services:** Things businesses aren’t as good at for $: (Product, Sales, Mktg, CS, IT, Fin, HR, Recruit).
+> • Think “Unscalable” value
+> • “1 on 1” Time/Work
+> • Learn > Earn
+
+Recreación:
+
+```text
+[0: IMPROVISE: PRODUCT]
+
+                          What that looks like…
+
+   +---------------+          |   Physical products, services,
+   |  TO GRADUATE  |          |   access, risk, money, media, data,
+   +---------------+          |   software that does any of the
+ Give something away for free |   above.
+                              |
+         FREE!                ⇒   B2C Services: You do things
+   (persona cargando          |   everyone hates for them for $.
+    un regalo)                |
+                              |   B2B Services: Things businesses
+                              |   aren’t as good at for $: (Product,
+                              |   Sales, Mktg, CS, IT, Fin, HR, Recruit).
+                              |     • Think “Unscalable” value
+                              |     • “1 on 1” Time/Work
+                              |     • Learn > Earn
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Build de la slide anterior: bajo el párrafo de B2B Services aparecen tres viñetas nuevas. Solo en la toma abierta (en 00:05:05 y 00:05:15 Alex señala las viñetas con la mano); en 00:05:00, 00:05:00b, 00:05:19, 00:05:19b y 00:05:24 (primeros planos de Alex) solo se ve la mitad izquierda (TO GRADUATE · Give something away for free · FREE!) y la flecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:05:13]
+
 [00:05:13] And I can promise you long-term for your reputation, and you talk to the best
 [00:05:17] founders in the world, you just want to learn more about your customers, learn
 [00:05:20] all the pains they have so that you can create and innovate and iterate the
 [00:05:23] product to make it a little bit better.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:05:25 | stage0_00-05-25.png]** · tipo: slide
+También visible en: 00:05:32
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: PRODUCT
+> What that looks like…
+> TO GRADUATE
+> Give something away for free
+> FREE!
+> References:
+> _Engage Your Leads_: _Offers & Lead Magnets Chapter_ in _$100M Leads_.
+
+Recreación:
+
+```text
+[0: IMPROVISE: PRODUCT]
+
+                          What that looks like…
+
+   +---------------+          |   References:
+   |  TO GRADUATE  |          |
+   +---------------+          |   Engage Your Leads: Offers & Lead
+ Give something away for free |   Magnets Chapter in $100M Leads.
+                              |
+         FREE!                ⇒
+   (persona cargando          |
+    un regalo)                |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Misma mitad izquierda. A la derecha, «References:» en texto normal y la referencia en cursiva (todo el texto en cursiva salvo «: » e «in»; «$100M Leads» además subrayado). Insert a pantalla completa; en 00:05:32 la misma slide en la toma abierta.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:05:25]
+
 [00:05:25] We talk about this in more depth around in our lead matters chapter inside of
 [00:05:29] the leads training, which is also on the site.
 [00:05:31] The offers book helps you make offers and the lead matters chapter within
 [00:05:34] hundred million dollar leads covers this in a lot of depth if you're like,
 [00:05:37] what do I give away for free?
 [00:05:38] All right. So this is the constraint that we had was they had nothing to
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:05:45 | stage0_00-05-45.png]** · tipo: tabla
+También visible en: 00:05:45, 00:05:53
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | Just you.
+> # OF COMPANIES HERE | **NA...you're not a company yet.**
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You have nothing to sell. | Make something FREE to give away
+> MARKETING | YOU ARE HERE | **How you tell people about your stuff.**
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | Just you. |
+| **# OF COMPANIES HERE** | **NA...you're not a company yet.** |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You have nothing to sell. | Make something FREE to give away |
+| **MARKETING** | ◀ YOU ARE HERE | **How you tell people about your stuff.** |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. La fila PRODUCT ya está llena en texto fino y centrado (CONSTRAINT «You have nothing to sell.» · TO GRADUATE «Make something FREE to give away»). Fila MARKETING: flecha morada «YOU ARE HERE» apuntando a la izquierda en la columna CONSTRAINT y, en TO GRADUATE, la definición de la función en negrita grande. En esta versión «NA...you're not a company yet.» aparece en negrita. Insert a pantalla completa; en 00:05:45b la misma tabla en la toma abierta (Alex la señala) y en 00:05:53 (primer plano de Leila) solo se ve la parte derecha: «TO GRADUATE», «Make something FREE to give away» y «How you tell people about your stuff.».
+<!-- /FRAME -->
+↳ alineado con el audio de [00:05:42]
+
 [00:05:42] sell. To graduate, you make something that you give away for free.
 [00:05:45] And then we move on to marketing.
 [00:05:46] So the next function that we have is marketing.
@@ -150,6 +796,57 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:05:58] Right. And so at this level, nobody knows about your stuff.
 [00:06:01] You have made it in the dark, in the corner with nobody watching.
 [00:06:04] Right. And so to graduate, you just need to tell them about your stuff.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:06:08 | stage0_00-06-08.png]** · tipo: slide
+También visible en: 00:06:16, 00:06:33, 00:06:51, 00:06:52, 00:06:55, 00:07:05, 00:07:15
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: MARKETING
+> What that looks like…
+> TO GRADUATE
+> Tell them about your free stuff.
+> FREE!
+> SMS
+> YOU ARE HERE
+> CORE FOUR
+> PEOPLE WHO KNOW YOU
+> PEOPLE WHO DON'T
+> 1 TO 1 PRIVATE
+> 1 TO ∞ PUBLIC
+> WARM OUTREACH
+> COLD OUTREACH
+> POST FREE CONTENT
+> RUN PAID ADS
+
+Recreación:
+
+```text
+[0: IMPROVISE: MARKETING]
+
+                          What that looks like…
+
+   +---------------+          |   [sobre]  [teléfono]  (SMS)  [avión de papel]
+   |  TO GRADUATE  |          |
+   +---------------+          |      YOU
+ Tell them about your free    |      ARE              CORE FOUR
+ stuff.                       |      HERE      PEOPLE WHO    PEOPLE WHO
+                              |        \       KNOW YOU      DON'T
+    (persona con              ⇒         v    +============+------------+
+     megáfono y               |   1 TO 1     ‖   WARM     ‖   COLD     |
+     regalo)    FREE!         |   PRIVATE    ‖  OUTREACH  ‖  OUTREACH  |
+                              |              +============+------------+
+                              |   1 TO ∞     |   POST     |   RUN      |
+                              |   PUBLIC     |   FREE     |   PAID     |
+                              |              |  CONTENT   |   ADS      |
+                              |              +------------+------------+
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «TO GRADUATE», el texto y un pictograma negro de una persona que carga una caja de regalo mientras grita por un megáfono (con ondas de sonido), con «FREE!» en negrita al lado. Derecha arriba: fila de cuatro íconos negros: un sobre de correo, un círculo con un auricular de teléfono, un globo de diálogo con «SMS» en blanco y un avión de papel (enviar). Derecha abajo, dibujado a mano con marcador: la matriz «CORE FOUR» de 2×2 (columnas «PEOPLE WHO KNOW YOU» / «PEOPLE WHO DON'T»; filas «1 TO 1 PRIVATE» / «1 TO ∞ PUBLIC»); la celda «WARM OUTREACH» tiene el borde remarcado más grueso y una flecha a mano desde la nota «YOU ARE HERE» que la señala. Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta (en 07:05 Leila la señala) y en 00:06:55 (primer plano de Leila) solo se ven los íconos y la matriz CORE FOUR.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:06:08]
+
 [00:06:08] Right. And it's free. So that makes it easy. Right.
 [00:06:10] So let's tell people about the free stuff we have.
 [00:06:13] Now there's a few different ways that we can do that.
@@ -179,6 +876,47 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:07:15] that's typically the platform people start with and they start reaching out to
 [00:07:18] let people know about their stuff.
 [00:07:20] And when we say platform that you have the most people on, to be clear,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:07:26 | stage0_00-07-26.png]** · tipo: slide
+También visible en: 00:07:36, 00:07:44, 00:07:52, 00:07:58, 00:08:00, 00:08:02, 00:08:11, 00:08:15
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: MARKETING
+> What that looks like…
+> TO GRADUATE
+> Tell them about your free stuff.
+> FREE!
+> SMS
+> Use all the contacts you’ve ever gained throughout your life.
+> • Every person you’ve emailed.
+> • Every contact in your phone.
+> • Every person who follows you on social media.
+
+Recreación:
+
+```text
+[0: IMPROVISE: MARKETING]
+
+                          What that looks like…
+
+   +---------------+          |   [sobre]  [teléfono]  (SMS)  [avión de papel]
+   |  TO GRADUATE  |          |
+   +---------------+          |
+ Tell them about your free    |
+ stuff.                       |   Use all the contacts you’ve ever
+                              ⇒   gained throughout your life.
+    (persona con              |     • Every person you’ve emailed.
+     megáfono y      FREE!    |     • Every contact in your phone.
+     regalo)                  |     • Every person who follows you
+                              |       on social media.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Misma mitad izquierda (TO GRADUATE, texto y pictograma negro de una persona que carga una caja de regalo mientras grita por un megáfono (con ondas de sonido), con «FREE!» en negrita al lado). Derecha: la misma fila de cuatro íconos negros: un sobre de correo, un círculo con un auricular de teléfono, un globo de diálogo con «SMS» en blanco y un avión de papel (enviar); la matriz CORE FOUR desaparece y en su lugar va el texto con tres viñetas. Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta (en 00:07:58 Leila señala las viñetas), en 00:07:52 y 00:08:02 (primeros planos de Leila) solo se ven los íconos y el texto con viñetas, y en 00:07:36 (primer plano de Alex) solo la caja TO GRADUATE con «Tell them about your fre[e stuff.]» y el pictograma del megáfono.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:07:25]
+
 [00:07:25] you're using all the contacts you've ever gained throughout your entire life.
 [00:07:28] So think about every person you've ever emailed,
 [00:07:30] every contact in your phone, every person who follows you.
@@ -202,6 +940,59 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:08:13] So we both did the same thing and it worked.
 [00:08:15] It's just a matter of what platform that you're on right now that you have
 [00:08:18] the most amount of followers. Again, it could be a hundred people.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:08:22 | stage0_00-08-22.png]** · tipo: slide
+También visible en: 00:08:29, 00:08:43, 00:08:45, 00:08:54, 00:09:00, 00:09:12, 00:09:15, 00:09:17
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: MARKETING
+> What that looks like…
+> TO GRADUATE
+> Tell them about your free stuff.
+> FREE!
+> Alex Hormozi
+> @AlexHormozi
+> If you have no money, you should have no shame.
+> Knock.
+> Call.
+> Email.
+> Text.
+> DM.
+> Ask.
+> Life-changing doors don’t open themselves.
+
+Recreación:
+
+```text
+[0: IMPROVISE: MARKETING]
+
+                          What that looks like…
+
+   +---------------+          |    +-----------------------------------------+
+   |  TO GRADUATE  |          |    | (foto) Alex Hormozi ✔                   |
+   +---------------+          |    |        @AlexHormozi                     |
+ Tell them about your free    |    |                                         |
+ stuff.                       |    | If you have no money, you should have   |
+                              ⇒    | no shame.                               |
+    (persona con              |    |                                         |
+     megáfono y      FREE!    |    | Knock.                                  |
+     regalo)                  |    | Call.                                   |
+                              |    | Email.                                  |
+                              |    | Text.                                   |
+                              |    | DM.                                     |
+                              |    | Ask.                                    |
+                              |    |                                         |
+                              |    | Life-changing doors don’t open          |
+                              |    | themselves.                             |
+                              |    +-----------------------------------------+
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Misma mitad izquierda (TO GRADUATE, texto y pictograma negro de una persona que carga una caja de regalo mientras grita por un megáfono (con ondas de sonido), con «FREE!» en negrita al lado). Derecha: desaparecen los íconos y el texto; en su lugar, una captura de un post de X/Twitter de Alex Hormozi (foto de perfil con gorra, nombre en negrita, insignia azul de verificado, usuario en gris) dentro de un recuadro de borde negro. Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta, y en 00:08:43, 00:08:45, 00:09:12 y 00:09:15 (primeros planos de Leila, que señala la pantalla) solo se ve el post.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:08:21]
+
 [00:08:21] And so if you have no money, you should have no shame.
 [00:08:23] So knock, call, email, text, DM, ask life changing doors.
 [00:08:27] Do not open themselves.
@@ -237,15 +1028,143 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:09:39] but that at least takes you one step closer to be able to ask for money in the
 [00:09:42] future.
 [00:09:43] So great. You graduate marketing, right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:09:46 | stage0_00-09-46.png]** · tipo: tabla
+También visible en: 00:12:32
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | Just you.
+> # OF COMPANIES HERE | **NA...you're not a company yet.**
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You have nothing to sell. | Make something FREE to give away
+> MARKETING | No one knows about your stuff. | Tell people you have FREE stuff.
+> SALES | YOU ARE HERE | **How you get people to give you money for your stuff.**
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | Just you. |
+| **# OF COMPANIES HERE** | **NA...you're not a company yet.** |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You have nothing to sell. | Make something FREE to give away |
+| **MARKETING** | No one knows about your stuff. | Tell people you have FREE stuff. |
+| **SALES** | ◀ YOU ARE HERE | **How you get people to give you money for your stuff.** |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. Filas PRODUCT y MARKETING llenas en texto fino centrado. Fila SALES: flecha morada «YOU ARE HERE» apuntando a la izquierda en CONSTRAINT y la definición de la función en negrita grande (dos líneas) en TO GRADUATE. Resto vacío. Insert a pantalla completa (la barra «Bottom line» queda cortada abajo); en 00:12:32 la misma tabla en la toma abierta, con Alex de pie delante.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:09:45]
+
 [00:09:45] You told people about the free stuff you have.
 [00:09:47] So now we will move to sales.
 [00:09:49] So sales as a reminder,
 [00:09:50] how you get people to give you money for that stuff. All right.
 [00:09:53] So mind you now at this point, we're giving away free stuff.
 [00:09:55] So the issue that you have now is you just don't know how to sell.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:09:59 | stage0_00-09-59.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: SALES
+> And…
+> CONSTRAINT
+> You don’t know how to sell.
+> TO GRADUATE
+> Get them to _**try it**_ for free.
+> FREE!
+
+Recreación:
+
+```text
+[0: IMPROVISE: SALES]
+
+                               And…
+
+   +--------------+            |           +---------------+
+   |  CONSTRAINT  |            |           |  TO GRADUATE  |
+   +--------------+            |           +---------------+
+ You don’t know how to sell.   |     Get them to try it for free.
+                               |
+        ?                      ⇒              FREE!
+   (persona rascándose         |      (dos personas pasándose
+    la cabeza)                 |       un regalo)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «CONSTRAINT», el texto y el pictograma negro de una persona rascándose la cabeza con «?». Derecha: caja «TO GRADUATE», el texto («try it» en negrita, cursiva y subrayado) y un pictograma negro de dos personas frente a frente pasándose una caja de regalo con moño, con «FREE!» en negrita arriba. Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:09:58]
+
 [00:09:58] You don't have the skillset. And so to graduate,
 [00:10:00] all we have to do is to get them to try it for free.
 [00:10:03] Like that's the sales, getting them to try it, getting them to use it.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:10:06 | stage0_00-10-06.png]** · tipo: slide
+También visible en: 00:10:17, 00:10:30, 00:10:47, 00:10:51, 00:10:52, 00:10:57, 00:10:57, 00:11:00, 00:11:12, 00:11:15, 00:11:32, 00:11:32, 00:11:52, 00:11:56, 00:12:13, 00:12:15, 00:12:30, 00:12:33, 00:12:38, 00:12:42, 00:12:45, 00:13:00
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: SALES
+> What that looks like…
+> TO GRADUATE
+> Get them to _**try it**_ for free.
+> FREE!
+> 1) _Ask them what their problems are._
+> 2) _Offer to solve them in exchange for:_
+> • Telling you what you could do better
+> • And if you’re good: leaving a review or sending a friend.
+> 3) _Figure out their **perceived hidden costs**_:
+> **1) Effort 2) Sacrifice 3) Risk 4) Delay**
+
+Recreación:
+
+```text
+[0: IMPROVISE: SALES]
+
+                          What that looks like…
+
+   +---------------+          |   1) Ask them what their problems are.
+   |  TO GRADUATE  |          |
+   +---------------+          |   2) Offer to solve them in exchange
+ Get them to try it for free. |      for:
+                              |        • Telling you what you could do
+          FREE!               |          better
+   (dos personas              ⇒        • And if you’re good: leaving a
+    pasándose un regalo)      |          review or sending a friend.
+                              |
+                              |   3) Figure out their perceived hidden
+                              |      costs:
+                              |
+                              |   1) Effort 2) Sacrifice 3) Risk 4) Delay
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «TO GRADUATE», el texto («try it» en negrita, cursiva y subrayado) y el pictograma negro de dos personas frente a frente pasándose una caja de regalo con moño, con «FREE!» en negrita arriba. Derecha: lista numerada; los textos de 1), 2) y 3) van subrayados; en 3) «perceived» en negrita y cursiva y «hidden costs» en negrita; la última línea toda en negrita. Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta (Alex la señala varias veces), en 00:10:51, 00:10:52 y 00:11:52 (primeros planos de Alex) solo se ve la mitad izquierda con la flecha y los números «1)», «2)», «3)» cortados, y en 00:12:33 (primer plano de Leila) solo la lista de la derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:10:06]
+
 [00:10:06] All right. So this is what that looks like.
 [00:10:07] So you ask them what their problems are,
 [00:10:09] and then you offer to solve those problems in exchange for one,
@@ -313,43 +1232,747 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:12:58] And for every reason they don't want to do that for us,
 [00:13:02] we want to find out why.
 [00:13:03] And if you're not sure what businesses start or where to begin, watch this.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:08 | stage0_00-13-08.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> CYB[¿ERTRUCK?]
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Las letras «CYB» van en amarillo y la palabra queda cortada por un destello amarillo de la transición. Detrás, la carrocería plateada y angulosa de una camioneta en un estacionamiento techado; una mano la señala.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:07]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:09 | stage0_00-13-09.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> AND
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa gris semitransparente (letras blancas, en plena animación de entrada/salida). Alex con camiseta sin mangas blanca con el logo «skool» de colores, junto a la camioneta plateada en el estacionamiento.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:07]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:10 | stage0_00-13-10.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> THIS IS
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores empujando un carrito de metal; detrás, otro hombre de camiseta oscura.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:07]
+
 [00:13:07] This is a Cybertruck and this is 100 grand.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:11 | stage0_00-13-11b.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> SOMEONE WATCHING
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores levanta el índice y sonríe; detrás, el carrito lleno de billetes arrugados.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:11]
+
 [00:13:11] And someone watching this ad right now is one of these two in the next 30 days.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:15 | stage0_00-13-15.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> LISTEN
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa gris semitransparente (letras blancas, en plena animación de entrada/salida). Alex con camiseta sin mangas blanca con el logo «skool» de colores moviéndose hacia la cámara (imagen barrida).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:14]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:15 | stage0_00-13-15b.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> [sk]ool
+> [G]AMES
+> THIS IS WHAT
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa gris semitransparente (letras blancas, en plena animación de entrada/salida). Alex con camiseta sin mangas blanca con el logo «skool» de colores de espaldas, señalando un tablero blanco grande con el logo «skool» de colores y «GAMES» en rojo, con una tabla de nombres (ilegible) debajo; a la derecha, personas con carteles escritos a mano.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:14]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:16 | stage0_00-13-16.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> [sk]ool
+> [GAME]S
+> NIC[HOLAS]
+> $50[,ilegible]
+> LAST MONTH'S
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores frente al tablero «skool GAMES»; a la derecha, un joven con gorra sostiene un cartel escrito a mano con marcador (nombre en negro, cifra en verde).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:14]
+
 [00:13:14] But listen, this is what last month's winners did.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:19 | stage0_00-13-19.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> NICHO[LAS]
+> $50,24[¿6?]
+> HELPING PEOPLE MA[KE] [ilegible] FORM [ilegible]
+> WITH ME
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). El brazo de Alex señala el cartel escrito a mano de un joven con gorra (nombre en negro, cifra en verde, descripción en azul); detrás, el tablero «skool GAMES».
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:17]
+
 [00:13:17] And here they are in person with me.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:21 | stage0_00-13-21.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> NICHO[LAS]
+> $50,2[ilegible]
+> HELPING PEOPLE MA[KE] [ilegible]
+> LAST MONTH
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa gris semitransparente (letras blancas, en plena animación de entrada/salida). Alex de perfil, con el brazo extendido señalando el mismo cartel de NICHOLAS; detrás, el tablero «skool GAMES».
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:19]
+
 [00:13:19] Nicholas got to $50,000 last month.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:22 | stage0_00-13-22.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> HAYDEN
+> $38,[ilegible]45 M[RR]
+> [ilegible] YOUTUBE
+> HAYDEN $38,000
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). En el subtítulo, «HAYDEN» en blanco y «$38,000» en amarillo. Un joven rubio con sudadera gris sostiene un cartel escrito a mano (nombre en negro, cifra en verde, descripción en azul que termina en «YOUTUBE»); el brazo de Alex lo señala.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:21]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:22 | stage0_00-13-22b.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> [ilegible]DEN
+> THO[MAS]
+> $35,4[ilegible]
+> HELPING [ilegible]
+> THOMAS $35,000
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). En el subtítulo, «THOMAS» en blanco y «$35,000» en amarillo. El brazo de Alex señala el cartel escrito a mano de THOMAS (nombre en negro, cifra en verde, descripción en azul); a la izquierda, parte del cartel de HAYDEN.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:21]
+
 [00:13:21] Peyton 38000 Thomas 35000.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:24 | stage0_00-13-24.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> D[ION]
+> [$3]1,470 MRR
+> PAT[ilegible]
+> $29,[ilegible]
+> DION $31,000
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). En el subtítulo, «DION» en blanco y «$31,000» en amarillo. Un hombre con camiseta verde sostiene su cartel escrito a mano; el brazo de Alex lo señala; a la derecha, parte de otro cartel («PAT…», «$29,…»).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:23]
+
 [00:13:23] Dion 31000.
 [00:13:24] Patrice 29000.
 [00:13:25] Jesper 35.
 [00:13:26] Eddie 36.
 [00:13:27] Elmer 28.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:28 | stage0_00-13-28b.png]** · tipo: texto-en-pantalla
+También visible en: 00:13:28
+
+Texto en pantalla (literal):
+
+> RUBEN
+> $2728[ilegible]
+> HELPING [ilegible] AGENCIES
+> RUBEN $27,000
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). En el subtítulo, «RUBEN» en blanco y «$27,000» en amarillo. Ya al aire libre, frente a un muro gris: un hombre con lentes y camiseta negra sostiene su cartel escrito a mano (nombre en negro, cifra en verde, descripción en azul que termina en «AGENCIES»); el brazo de Alex lo señala. En 00:13:28 el mismo subtítulo en gris semitransparente (animación de entrada).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:28]
+
 [00:13:28] Ruben 27.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:30 | stage0_00-13-30.png]** · tipo: texto-en-pantalla
+También visible en: 00:13:29
+
+Texto en pantalla (literal):
+
+> EVELYN
+> $81,280 MRR
+> EVELYN $81,000
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). En el subtítulo, «EVELYN» en blanco y «$81,000» en amarillo. Una mujer de pelo castaño y falda de animal print sostiene su cartel escrito a mano (nombre en negro, cifra en verde). En 00:13:29 el brazo de Alex la señala y se ve el comienzo del cartel de RUBEN a la izquierda.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:28]
+
 [00:13:28] Evelyn 81000.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:30 | stage0_00-13-30b.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> [E]VELYN
+> [$81,]280 MRR
+> HELPING PEOPLE [ilegible]
+> BUT LISTEN
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex, entrando por la izquierda, gesticula delante del cartel de EVELYN.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:30]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:32 | stage0_00-13-32.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> skool
+> GAMES
+> ELMER
+> [¿$28,405?] [ilegible]
+> HELPING PEOPLE [ilegible]
+> INSANE OUTCOMES
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Toma abierta desde la puerta de un garaje: una fila de unas diez personas sostiene sus carteles escritos a mano; al fondo, el tablero «skool GAMES»; en primer plano, el cartel de ELMER (la cifra en verde no se lee con certeza).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:30]
+
 [00:13:30] But listen, these are all insane outcomes.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:33 | stage0_00-13-33.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> [R]UBEN
+> [$2]728[ilegible]
+> [HELP]ING SCAL[ilegible]
+> [AGE]NCIES
+> BUT WHAT IS
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores y gorra azul al revés, gesticulando con los puños frente a la cámara; detrás, RUBEN con su cartel y EVELYN.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:32]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:33 | stage0_00-13-33b.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> THE AVERAGE PAID
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores, con las manos abiertas al frente; detrás, carteles cortados.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:32]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:34 | stage0_00-13-34.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> OWNER MAKE
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores, de perfil, girando hacia la derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:32]
+
 [00:13:32] But what is the average paid community rate make?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:36 | stage0_00-13-36b.png]** · tipo: texto-en-pantalla
+También visible en: 00:13:36
+
+Texto en pantalla (literal):
+
+> $1,360/mo
+> $1,360 PER MONTH
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). En el subtítulo, «$1,360» en amarillo y «PER MONTH» en blanco. Alex señala el cartel escrito a mano en verde que sostiene una mujer sonriente de vestido rojo. En 00:13:36 el mismo instante, encuadre un poco más a la izquierda.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:35]
+
 [00:13:35] $1360 per month.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:38 | stage0_00-13-38.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> [EVE]LYN
+> [$81,2]80 M[RR]
+> [HELPING] PEO[PLE] [ilegible] CONTENT
+> [$1,3]60/mo
+> WHAT ABOUT LIKE
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores gesticulando entre el cartel de EVELYN (izquierda) y el de «$1,360/mo» (derecha).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:37]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:39 | stage0_00-13-39.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> DON'T MAKE IT
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores juntando las manos; detrás, los carteles de EVELYN y «$1,360/mo» cortados.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:37]
+
 [00:13:37] You might be like, well, shoot, but what about like, what if I don't make it?
 [00:13:39] What if it doesn't work for me?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:41 | stage0_00-13-41.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> WELL ONE OUT
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex señala a la derecha un cartel dibujado a mano con dos monigotes de palo (uno sonriente con un billete y un «$» verde arriba, otro triste) que sostiene un hombre con gorra.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:40]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:42 | stage0_00-13-42.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> OF TWO PEOPLE
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex señala el cartel de los dos monigotes (uno feliz con billete y «$», otro triste).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:40]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:42 | stage0_00-13-42b.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> 54.1%
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). «54.1%» en amarillo. Alex con las manos frente al pecho; a la derecha, el cartel de los dos monigotes.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:40]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:44 | stage0_00-13-44.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> OF PEOPLE WHO START
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores, hablando a cámara; a la derecha, el cartel de los monigotes.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:40]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:45 | stage0_00-13-45.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> ON SKOOL
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). «ON» en blanco y «SKOOL» en amarillo. Alex con camiseta sin mangas blanca con el logo «skool» de colores en primer plano; a la derecha, el cartel de los monigotes.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:40]
+
 [00:13:40] Well, one out of two people, 54.1% people start a paid community school
 [00:13:45] make their first dollar in life.
 [00:13:46] And the reason we have such a high success rate is because we have a blueprint
 [00:13:49] of what every single one of these people did step by step with exactly what you have to do.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:54 | stage0_00-13-54.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> Alex Hormozi
+> EVERY
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Recorte de una videollamada: Alex con gorra beige con el logo «skool» y camiseta sin mangas, en una oficina; abajo a la izquierda, la etiqueta pequeña con su nombre.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:53]
+
 [00:13:53] And I help out a call every single week.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:56 | stage0_00-13-56.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> [nombres de los participantes, ilegibles]
+> CALL
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Recorte de una videollamada en cuadrícula (seis recuadros con distintos participantes, cada uno con su etiqueta de nombre, demasiado pequeña para leerse con certeza), superpuesto a la toma de Alex en el exterior.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:55]
+
 [00:13:55] We have a couple hundred people on the call.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:57 | stage0_00-13-57.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> SMALL
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores en el exterior, gesticulando; a la derecha, el cartel de los monigotes.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:56]
+
 [00:13:56] So it's still small.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:57 | stage0_00-13-57b.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> ANSWER
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores, con las manos al frente; a la derecha, el cartel de los monigotes.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:57]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:13:58 | stage0_00-13-58.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> WEEK
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores, juntando las manos; a la derecha, el cartel de los monigotes.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:57]
+
 [00:13:57] And I answer questions that we help people actually win.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:00 | stage0_00-14-00.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> WIN
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). «WIN» en amarillo, más grande. Alex con camiseta sin mangas blanca con el logo «skool» de colores; a la derecha, el cartel de los monigotes.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:59]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:01 | stage0_00-14-01.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> IS
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores con los brazos abiertos; detrás, carteles cortados.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:59]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:03 | stage0_00-14-03.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> CLICK THE
+> LINK
+> TO START
+> FREE
+> ABSOLUTELY
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). A la derecha, una mujer con lentes sostiene un cartel escrito a mano en rojo (CLICK THE / LINK) y negro (TO START / FREE); Alex con camiseta sin mangas blanca con el logo «skool» de colores a la izquierda.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:59]
+
 [00:13:59] And the best part of all is you can start absolutely free.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:06 | stage0_00-14-06.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> [CLICK T]HE
+> HAVE
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). Alex con camiseta sin mangas blanca con el logo «skool» de colores muy cerca de la cámara (gran angular); detrás, el cartel de «CLICK THE LINK…» cortado.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:14:03]
+
 [00:14:03] And so if that sounds interesting, click the link, make money, have fun,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:08 | stage0_00-14-08.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> SAVE
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). «SAVE» en amarillo. Alex con camiseta sin mangas blanca con el logo «skool» de colores, gesticulando; a la izquierda, el cartel de los monigotes.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:14:06]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:09 | stage0_00-14-09.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> WORLD
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa negra (letras blancas). «WORLD» en amarillo. Alex con camiseta sin mangas blanca con el logo «skool» de colores lanzando algo al aire (imagen barrida).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:14:06]
+
 [00:14:06] join the community and save the world.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:10 | stage0_00-14-10b.png]** · tipo: texto-en-pantalla
+También visible en: 00:14:10
+
+Texto en pantalla (literal):
+
+> [B]uild Y[o]ur Business With Hormozi
+> skool
+> Games
+> ZERO AUDI[ENCE OR]
+> BUSINESS E[XPERIENCE]
+> [¿IT'S SIMPLE AND?]
+> [¿YOU CAN DO IT?]
+> [¿IN LESS THAN 20?]
+> [¿MINS?]
+> EVERYTHING
+> IS ALREADY
+> BUILT-IN
+> WE'VE MADE IT SIMPLE TO CROWDSOURCE COMMUNITY
+> 7:50
+> Private group
+> 20.7k members
+> Free
+> By Alex Hormozi
+> JOIN GROUP
+
+[DESCRIPCIÓN DEL DIBUJO] Insert publicitario de Skool a mitad del video (no es parte del pizarrón ni de la tabla de la etapa): video vertical centrado sobre una versión desenfocada de sí mismo, con un subtítulo quemado en mayúsculas sobre una placa; aquí sin subtítulo: captura de la página de un grupo de Skool («Build Your Business With Hormozi») con lluvia de confeti dorado encima. Miniatura de video (Alex con camisa a cuadros frente a un pizarrón, botón de play, duración «7:50») con el logo «skool Games», un recuadro rojo con «EVERYTHING IS ALREADY BUILT-IN» y textos en el pizarrón; debajo, una fila de cinco miniaturas, los datos del grupo (candado «Private group», «20.7k members», etiqueta «Free», avatar «By Alex Hormozi») y el botón amarillo «JOIN GROUP». El confeti tapa letras sueltas; el texto se completó combinando 00:14:10b y 00:14:10 (en 00:14:10 el confeti es más denso).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:14:10]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:14 | stage0_00-14-14.png]** · tipo: tabla
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | Just you.
+> # OF COMPANIES HERE | **NA...you're not a company yet.**
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You have nothing to sell. | Make something FREE to give away
+> MARKETING | No one knows about your stuff. | Tell people you have FREE stuff.
+> SALES | You don't know how to sell | Get people to try it for free
+> CUSTOMER SERVICE | YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.**
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | Just you. |
+| **# OF COMPANIES HERE** | **NA...you're not a company yet.** |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You have nothing to sell. | Make something FREE to give away |
+| **MARKETING** | No one knows about your stuff. | Tell people you have FREE stuff. |
+| **SALES** | You don't know how to sell | Get people to try it for free |
+| **CUSTOMER SERVICE** | ◀ YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.** |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. Filas PRODUCT, MARKETING y SALES llenas en texto fino centrado (en la tabla, SALES dice «You don't know how to sell» / «Get people to try it for free», sin punto final). Fila CUSTOMER SERVICE: flecha morada «YOU ARE HERE» apuntando a la izquierda en CONSTRAINT y la definición de la función en negrita grande (dos líneas) en TO GRADUATE. Resto vacío. Insert a pantalla completa, justo después del anuncio.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:14:12]
+
 [00:14:12] Great. So now that we've covered sales, we go into customer service.
 [00:14:15] OK, so this is how you get customers to refer, retain, review and resell.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:22 | stage0_00-14-22.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: CUSTOMER SERVICE
+> At this level…
+> CONSTRAINT
+> You have no customers to service.
+> Where are my customers?
+
+Recreación:
+
+```text
+[0: IMPROVISE: CUSTOMER SERVICE]
+
+                         At this level…
+
+   +--------------+                     |
+   |  CONSTRAINT  |                     |
+   +--------------+                     |
+ You have no customers to service.      |
+                                        |
+        ?   +------------------+        |
+            | Where are my     |        |
+            | customers?       |        |
+            +--/---------------+        |
+   (persona rascándose la cabeza)       |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Solo la mitad izquierda tiene contenido: caja «CONSTRAINT», el texto y el pictograma negro de una persona rascándose la cabeza con «?», con un globo de diálogo rectangular «Where are my customers?» en negrita. La mitad derecha está vacía. Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:14:19]
+
 [00:14:19] The four R's that Alex was just speaking on.
 [00:14:22] Right. And so what's the constraint at this level is that you don't have customers
 [00:14:25] to service big surprise, right?
 [00:14:27] You're like, where the heck are my customers?
 [00:14:28] I don't have any.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:29 | stage0_00-14-29.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: CUSTOMER SERVICE
+> And…
+> CONSTRAINT
+> You have no customers to service.
+> Where are my customers?
+> TO GRADUATE
+> Service your free customers.
+> Y tho?
+> This sucks.
+
+Recreación:
+
+```text
+[0: IMPROVISE: CUSTOMER SERVICE]
+
+                               And…
+
+   +--------------+                  |        +---------------+
+   |  CONSTRAINT  |                  |        |  TO GRADUATE  |
+   +--------------+                  |        +---------------+
+ You have no customers to service.   |   Service your free customers.
+                                     |                       +--------+
+     ?  [Where are my customers?]    |                       | This   |
+                                     ⇒ [Y tho?]  (2 personas | sucks. |
+   (persona rascándose la cabeza)    |           con regalo) +--------+
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: igual que «At this level…» (persona rascándose la cabeza con «?» y el globo «Where are my customers?»). Derecha: caja «TO GRADUATE», el texto y un pictograma negro de dos personas frente a frente pasándose una caja de regalo con moño; la de la izquierda dice en un globo de diálogo «Y tho?» y la de la derecha «This sucks.». Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:14:29]
+
 [00:14:29] OK, so in order to graduate, you want to service the free customers you have.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:14:34 | stage0_00-14-34.png]** · tipo: slide
+También visible en: 00:14:52, 00:15:01, 00:15:15, 00:15:22, 00:15:30, 00:15:45, 00:16:00, 00:16:03, 00:16:15, 00:16:15, 00:16:30, 00:16:38, 00:16:45, 00:16:48, 00:17:00, 00:17:05, 00:17:11, 00:17:15
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: CUSTOMER SERVICE
+> What that looks like…
+> TO GRADUATE
+> Service your free customers.
+> This sucks.
+> Y tho?
+> • Be available at all times.
+> • Be fast in your response.
+> • No job too small.
+> • Zero resentment.
+> • Act as if they’re paying you (because they are, with their time).
+> • Remember: You’re getting the better end of the deal.
+
+Recreación:
+
+```text
+[0: IMPROVISE: CUSTOMER SERVICE]
+
+                          What that looks like…
+
+   +---------------+          |
+   |  TO GRADUATE  |          |   • Be available at all times.
+   +---------------+          |   • Be fast in your response.
+ Service your free customers. |   • No job too small.
+                 +--------+   |   • Zero resentment.
+                 | This   |   ⇒   • Act as if they’re paying you
+  +-----+        | sucks. |   |     (because they are, with their
+  | Y   | (2 personas         |     time).
+  | tho?|  con regalo)        |   • Remember: You’re getting the
+  +-----+                     |     better end of the deal.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «TO GRADUATE», el texto y el pictograma negro de dos personas frente a frente pasándose una caja de regalo con moño; la de la izquierda dice en un globo de diálogo «Y tho?» y la de la derecha «This sucks.». Derecha: lista de seis viñetas. Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta (Leila la explica y la señala), en 00:15:01, 00:15:15, 00:16:03, 00:16:38 y 00:16:45 (primeros planos de Leila) solo se ve la lista de viñetas y en 00:17:05 (primer plano de Alex) solo la caja TO GRADUATE con «Service your free cust[omers.]» y el pictograma con «Y tho?».
+<!-- /FRAME -->
+↳ alineado con el audio de [00:14:33]
+
 [00:14:33] OK, so what does that mean?
 [00:14:36] Right. This means being available all the time, being fast in how you respond.
 [00:14:42] It means, you know, cleaning the toilet if you have to.
@@ -402,6 +2025,54 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:17:08] on the fact that their customer service didn't suck.
 [00:17:10] And so that is customer service.
 [00:17:13] It is doing whatever the F you have to do to get value to these customers.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:17:17 | stage0_00-17-17.png]** · tipo: tabla
+También visible en: 00:17:22, 00:17:30, 00:17:37
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | Just you.
+> # OF COMPANIES HERE | **NA...you're not a company yet.**
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You have nothing to sell. | Make something FREE to give away
+> MARKETING | No one knows about your stuff. | Tell people you have FREE stuff.
+> SALES | You don't know how to sell | Get people to try it for free
+> CUSTOMER SERVICE | No customers to service. | Service your free customers.
+> INFORMATION TECH (IT) | YOU ARE HERE | **How you gather, store, analyze, and display information.**
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | Just you. |
+| **# OF COMPANIES HERE** | **NA...you're not a company yet.** |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You have nothing to sell. | Make something FREE to give away |
+| **MARKETING** | No one knows about your stuff. | Tell people you have FREE stuff. |
+| **SALES** | You don't know how to sell | Get people to try it for free |
+| **CUSTOMER SERVICE** | No customers to service. | Service your free customers. |
+| **INFORMATION TECH (IT)** | ◀ YOU ARE HERE | **How you gather, store, analyze, and display information.** |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. Filas PRODUCT a CUSTOMER SERVICE llenas en texto fino centrado. Fila INFORMATION TECH (IT): flecha morada «YOU ARE HERE» apuntando a la izquierda en CONSTRAINT y la definición de la función en negrita grande (dos líneas) en TO GRADUATE. Resto vacío. Insert a pantalla completa; en 00:17:22, 00:17:30 y 00:17:37 la misma tabla en la toma abierta.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:17:17]
+
 [00:17:17] So we went from having no customers to service to servicing our free customers.
 [00:17:22] All right. Everyone's sexiest topic that they want to know at the beginning,
 [00:17:26] at Ground Zero, when you have no employees and only free customers, maybe,
@@ -412,9 +2083,78 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:17:42] They're going to give you feedback on the product.
 [00:17:43] All this stuff is information.
 [00:17:44] And if you have no way to gather, store, analyze it and display it, it's going to be tough.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:17:49 | stage0_00-17-49.png]** · tipo: slide
+También visible en: 00:17:48
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: INFORMATION TECHNOLOGY (IT)
+> At this level…
+> CONSTRAINT
+> You have no hardware.
+
+Recreación:
+
+```text
+[0: IMPROVISE: INFORMATION TECHNOLOGY (IT)]
+
+                         At this level…
+
+   +--------------+                 |
+   |  CONSTRAINT  |                 |
+   +--------------+                 |
+ You have no hardware.              |
+                                    |
+ [celular X] [micrófono X] ?  [monitor X]
+          (persona rascándose       |
+           la cabeza)   [wifi X]    |
+ [sobre X]                          |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Solo la mitad izquierda tiene contenido: caja «CONSTRAINT», el texto y un pictograma negro de una persona rascándose la cabeza con «?», rodeada de cinco íconos negros tachados con una X morada: un celular, un micrófono, un monitor, un sobre de correo y el símbolo de wifi. La mitad derecha está vacía. Insert a pantalla completa; en 00:17:48 la misma slide en la toma abierta.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:17:48]
+
 [00:17:48] All right. And so here's the constraint is that you currently,
 [00:17:51] in the very beginning, remember, this is level zero, all right,
 [00:17:53] is that you have no hardware.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:17:56 | stage0_00-17-56.png]** · tipo: slide
+También visible en: 00:17:59, 00:18:00, 00:18:15
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: INFORMATION TECHNOLOGY (IT)
+> And…
+> CONSTRAINT
+> You have no hardware.
+> TO GRADUATE
+> Save up to _**buy your hardware**_.
+
+Recreación:
+
+```text
+[0: IMPROVISE: INFORMATION TECHNOLOGY (IT)]
+
+                               And…
+
+   +--------------+             |          +---------------+
+   |  CONSTRAINT  |             |          |  TO GRADUATE  |
+   +--------------+             |          +---------------+
+ You have no hardware.          |   Save up to buy your hardware.
+                                |
+ [celular X] [mic X] ? [monitor X]   [celular] [mic]     [monitor]
+    (persona rascándose)        ⇒      (persona con brazos
+ [sobre X]           [wifi X]   |       en alto)   [sobre]  [wifi]
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «CONSTRAINT», el texto y el pictograma negro de una persona rascándose la cabeza con «?», rodeada de cinco íconos negros tachados con una X morada: un celular, un micrófono, un monitor, un sobre de correo y el símbolo de wifi. Derecha: caja «TO GRADUATE», el texto («buy your hardware» en negrita, cursiva y subrayado) y un pictograma negro de una persona con los brazos en alto (celebrando), rodeada de los mismos cinco íconos sin tachar: celular, micrófono, monitor, sobre de correo y wifi. Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:17:55]
+
 [00:17:55] OK. And so to graduate, save up and buy your hardware.
 [00:17:58] Some of you, if you're watching this right now,
 [00:18:00] are watching it in Pakistan on a public computer.
@@ -426,6 +2166,43 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:18:15] Like Laila and I said, like some of these, you might already be two,
 [00:18:18] three steps ahead, which is great.
 [00:18:19] But we wanted to have a true zero all the way up so that no one will be left behind.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:18:24 | stage0_00-18-24.png]** · tipo: slide
+También visible en: 00:18:42, 00:18:45, 00:19:00, 00:19:01, 00:19:01, 00:19:05, 00:19:07
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: INFORMATION TECHNOLOGY (IT)
+> What that looks like…
+> TO GRADUATE
+> Save up to _**buy your hardware**_.
+> Your tech only has to help you do **two things**
+> Communicate with people
+> Deliver your stuff
+
+Recreación:
+
+```text
+[0: IMPROVISE: INFORMATION TECHNOLOGY (IT)]
+
+                          What that looks like…
+
+   +---------------+             |   Your tech only has to help you do
+   |  TO GRADUATE  |             |              two things
+   +---------------+             |
+ Save up to buy your hardware.   |
+                                 |   Communicate          Deliver your stuff
+ [celular] [mic]     [monitor]   ⇒   with people
+    (persona con brazos          |
+     en alto)        [wifi]      |     [mano: 1 dedo]      [mano: 2 dedos]
+ [sobre]                         |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «TO GRADUATE», el texto («buy your hardware» en negrita, cursiva y subrayado) y el pictograma negro de una persona con los brazos en alto (celebrando), rodeada de los mismos cinco íconos sin tachar: celular, micrófono, monitor, sobre de correo y wifi. Derecha: la frase con «two things» en negrita y, debajo, dos columnas: «Communicate with people» con una mano dibujada en contorno que muestra un dedo (1) y «Deliver your stuff» con una mano que muestra dos dedos en V (2). Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta (Alex la explica) y en 00:19:01, 00:19:01b y 00:19:05 (primeros planos de Alex) solo se ve la mitad izquierda: TO GRADUATE, «[Save up] to buy your hardware.», el pictograma y la flecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:18:23]
+
 [00:18:23] All right. So here's what that looks like.
 [00:18:25] So your tech only has to do two things.
 [00:18:27] This is the clear. This is the output of the technology.
@@ -447,12 +2224,149 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:19:05] Point being, the two things that you want with the hardware is a way
 [00:19:09] to communicate with people and a way to deliver your stuff.
 [00:19:11] All right. So with that being said,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:19:15 | stage0_00-19-15.png]** · tipo: tabla
+También visible en: 00:19:23
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | Just you.
+> # OF COMPANIES HERE | **NA...you're not a company yet.**
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You have nothing to sell. | Make something FREE to give away
+> MARKETING | No one knows about your stuff. | Tell people you have FREE stuff.
+> SALES | You don't know how to sell | Get people to try it for free
+> CUSTOMER SERVICE | No customers to service. | Service your free customers.
+> INFORMATION TECH (IT) | You have no tech. | Get a Computer. Internet. Microphone. Phone. Email.
+> RECRUITING | YOU ARE HERE | **How you find and hire people to work for your company.**
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | Just you. |
+| **# OF COMPANIES HERE** | **NA...you're not a company yet.** |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You have nothing to sell. | Make something FREE to give away |
+| **MARKETING** | No one knows about your stuff. | Tell people you have FREE stuff. |
+| **SALES** | You don't know how to sell | Get people to try it for free |
+| **CUSTOMER SERVICE** | No customers to service. | Service your free customers. |
+| **INFORMATION TECH (IT)** | You have no tech. | Get a Computer. Internet. Microphone. Phone. Email. |
+| **RECRUITING** | ◀ YOU ARE HERE | **How you find and hire people to work for your company.** |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. Filas PRODUCT a INFORMATION TECH (IT) llenas en texto fino centrado. Fila RECRUITING: flecha morada «YOU ARE HERE» apuntando a la izquierda en CONSTRAINT y la definición de la función en negrita grande (dos líneas) en TO GRADUATE. Resto vacío. Insert a pantalla completa (la barra «Bottom line» queda cortada abajo); en 00:19:23 la misma tabla en la toma abierta.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:19:14]
+
 [00:19:14] now you had no tech and now you graduate by getting a computer,
 [00:19:19] an internet, microphone, phone and email.
 [00:19:21] And so we move on to recruiting.
 [00:19:23] So recruiting, this is how you find and hire people to work for your company.
 [00:19:27] So at this level, you actually don't know how to work.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:19:32 | stage0_00-19-32.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: RECRUITING
+> And…
+> CONSTRAINT
+> You don’t know how to work.
+> TO GRADUATE
+> You recruit yourself to work.
+
+Recreación:
+
+```text
+[0: IMPROVISE: RECRUITING]
+
+                               And…
+
+   +--------------+            |           +---------------+
+   |  CONSTRAINT  |            |           |  TO GRADUATE  |
+   +--------------+            |           +---------------+
+ You don’t know how to work.   |     You recruit yourself to work.
+                               |
+        ?                      ⇒     [ilustración: hombre señalando
+   (persona rascándose         |      a su reflejo en el espejo]
+    la cabeza)                 |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «CONSTRAINT», el texto y el pictograma negro de una persona rascándose la cabeza con «?». Derecha: caja «TO GRADUATE», el texto y una ilustración a color estilo manual de instrucciones: un hombre de camiseta amarilla se mira en un espejo y señala con el dedo a su reflejo (en tonos azules), que lo señala de vuelta. Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:19:31]
+
 [00:19:31] OK, and so in order to graduate, you recruit yourself to work.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:19:36 | stage0_00-19-36.png]** · tipo: slide
+También visible en: 00:19:39, 00:19:45, 00:19:49, 00:20:00, 00:20:02, 00:20:11, 00:20:15, 00:20:28, 00:20:30, 00:20:44, 00:21:00, 00:21:09, 00:21:15, 00:21:19, 00:21:55, 00:22:00, 00:22:08, 00:22:15, 00:22:19, 00:22:30, 00:22:31
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: RECRUITING
+> What that looks like…
+> TO GRADUATE
+> You recruit yourself to work.
+> Alex Hormozi @AlexHormozi · 4/30/24
+> You can **beat** 99% of people by
+> ...preparing the night before
+> ...showing up early
+> ...leaving only when the job is done right
+> ...remembering peoples names
+> ...following up
+> ...improving one thing each time
+> It’s not **about** being fancy. Doing the basics every time is what makes you advanced.
+> Alex Hormozi @AlexHormozi · 6/13/24
+> If you’re willing to work exceptionally hard, get rejected, and live below your means for three years...you can **beat just about** everyone.
+> Alex Hormozi @AlexHormozi · 8/1/23
+> You can **beat** 99% of people simply by continuing to work without needing immediate reward.
+
+Recreación:
+
+```text
+[0: IMPROVISE: RECRUITING]
+
+                          What that looks like…
+
+   +---------------+            |      (foto) Alex Hormozi ✔ @AlexHormozi · 4/30/24  ···
+   |  TO GRADUATE  |            |      You can beat 99% of people by
+   +---------------+            |        ...preparing the night before
+                                |        ...showing up early
+ You recruit yourself to work.  |        ...leaving only when the job is done right
+                                |        ...remembering peoples names
+ [ilustración: hombre señalando |        ...following up
+  a su reflejo en el espejo]    |        ...improving one thing each time
+                                |      It’s not about being fancy. Doing the basics every
+                                ⇒      time is what makes you advanced.
+                                |   (foto) Alex Hormozi ✔ @AlexHormozi · 6/13/24
+                                |   If you’re willing to work exceptionally hard, get
+                                |   rejected, and live below your means for three
+                                |   years...you can beat just about everyone.
+                                |  (foto) Alex Hormozi ✔ @AlexHormozi · 8/1/23  ···
+                                |  You can beat 99% of people simply by continuing
+                                |  to work without needing immediate reward.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «TO GRADUATE», el texto y la ilustración a color estilo manual de instrucciones: un hombre de camiseta amarilla se mira en un espejo y señala con el dedo a su reflejo (en tonos azules), que lo señala de vuelta. Derecha: tres capturas de posts de X/Twitter de Alex Hormozi apiladas en escalera (foto de perfil con gorra, nombre en negrita, insignia azul de verificado, usuario y fecha en gris, «···» en dos de ellas); dentro de los posts, «beat», «about» y «beat just about» en negrita. Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta, y en 00:19:39, 00:19:45, 00:20:02, 00:20:28, 00:20:30, 00:21:09, 00:21:15, 00:22:08, 00:22:15 y 00:22:31 (primeros planos de Leila) solo se ven los tres posts.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:19:35]
+
 [00:19:35] OK. And so what that means, right?
 [00:19:38] This means working early mornings, working late nights, learning how to put
 [00:19:42] in the work, because a lot of times you can beat 99 percent people out there
@@ -523,6 +2437,63 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:22:32] And that's the reality of it.
 [00:22:33] And you can't skip that part.
 [00:22:35] More quotes for me, fine.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:22:37 | stage0_00-22-37.png]** · tipo: slide
+También visible en: 00:22:35, 00:22:55, 00:23:00, 00:23:15, 00:23:18, 00:23:19, 00:23:30
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: RECRUITING
+> What that looks like…
+> TO GRADUATE
+> You recruit yourself to work.
+> Alex Hormozi
+> @AlexHormozi
+> Find what works.
+> Do more of what works.
+> Find the thing preventing you from doing more of what works.
+> Solve it.
+> Do more of what works.
+> Repeat.
+> 5:50 AM · 9/3/24 · **164K** Views
+> 257 · 871 · 5.7K · 1.3K
+> Alex Hormozi @AlexHormozi · 8/16/23
+> You can get “good enough” at almost anything in 20 hours of focused effort.
+> The problem is...most people spend a decade delaying the first hour.
+> 167 · 948 · 6.3K · 328K
+
+Recreación:
+
+```text
+[0: IMPROVISE: RECRUITING]
+
+                          What that looks like…
+
+   +---------------+            |     (foto) Alex Hormozi ✔
+   |  TO GRADUATE  |            |            @AlexHormozi
+   +---------------+            |     Find what works.
+                                |     Do more of what works.
+ You recruit yourself to work.  |     Find the thing preventing you from doing more of
+                                |     what works.
+ [ilustración: hombre señalando |     Solve it.
+  a su reflejo en el espejo]    |     Do more of what works.
+                                |     Repeat.
+                                |     5:50 AM · 9/3/24 · 164K Views
+                                ⇒     💬 257  🔁 871  ♡ 5.7K  🔖 1.3K  ⇪
+                                |  (foto) Alex Hormozi ✔ @AlexHormozi · 8/16/23  ···
+                                |  You can get “good enough” at almost anything in
+                                |  20 hours of focused effort.
+                                |
+                                |  The problem is...most people spend a decade
+                                |  delaying the first hour.
+                                |  💬 167  🔁 948  ♡ 6.3K  📊 328K  🔖  ⇪
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Misma mitad izquierda (TO GRADUATE, texto e ilustración del espejo). Derecha: cambian los posts — dos capturas de X/Twitter de Alex Hormozi, la primera con la hora, la fecha y «164K» Views (en negrita) y su fila de íconos (respuestas 257, reposts 871, likes 5.7K, guardados 1.3K, compartir), la segunda con su fila de íconos (167, 948, 6.3K, 328K vistas, guardar, compartir). Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta, y en 00:23:18, 00:23:19 y 00:23:30 (primeros planos de Leila) solo se ven los dos posts.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:22:36]
+
 [00:22:36] Find what works.
 [00:22:37] Do more of what works.
 [00:22:39] Find the thing preventing you from doing more of what works.
@@ -549,18 +2520,182 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:23:33] if something works than you would from 10 years of reading about something to
 [00:23:36] see if it will work. And so with that, that is recruiting.
 [00:23:39] That is how you find and hire people to work for your company.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:23:43 | stage0_00-23-43.png]** · tipo: tabla
+También visible en: 00:23:46, 00:23:53, 00:23:56, 00:23:56, 00:24:35, 00:24:39
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | Just you.
+> # OF COMPANIES HERE | **NA...you're not a company yet.**
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You have nothing to sell. | Make something FREE to give away
+> MARKETING | No one knows about your stuff. | Tell people you have FREE stuff.
+> SALES | You don't know how to sell | Get people to try it for free
+> CUSTOMER SERVICE | No customers to service. | Service your free customers.
+> INFORMATION TECH (IT) | You have no tech. | Get a Computer. Internet. Microphone. Phone. Email.
+> RECRUITING | You don't know how to work. | You recruit yourself to work.
+> HUMAN RESOURCES (HR) | YOU ARE HERE | **How you decrease the likelihood employees or regulators sue you.**
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | Just you. |
+| **# OF COMPANIES HERE** | **NA...you're not a company yet.** |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You have nothing to sell. | Make something FREE to give away |
+| **MARKETING** | No one knows about your stuff. | Tell people you have FREE stuff. |
+| **SALES** | You don't know how to sell | Get people to try it for free |
+| **CUSTOMER SERVICE** | No customers to service. | Service your free customers. |
+| **INFORMATION TECH (IT)** | You have no tech. | Get a Computer. Internet. Microphone. Phone. Email. |
+| **RECRUITING** | You don't know how to work. | You recruit yourself to work. |
+| **HUMAN RESOURCES (HR)** | ◀ YOU ARE HERE | **How you decrease the likelihood employees or regulators sue you.** |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. Filas PRODUCT a RECRUITING llenas en texto fino centrado. Fila HUMAN RESOURCES (HR): flecha morada «YOU ARE HERE» apuntando a la izquierda en CONSTRAINT y la definición de la función en negrita grande (dos líneas, cortada en el borde derecho) en TO GRADUATE. FINANCE vacía. Insert a pantalla completa; en 00:23:46, 00:23:53 y 00:24:35 la misma tabla en la toma abierta (Alex la señala), y en 00:23:56, 00:23:56b y 00:24:39 (primeros planos de Alex) solo se ve la mitad izquierda de la tabla con la flecha «YOU AR[E HERE]» en la fila HR.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:23:42]
+
 [00:23:42] And in the beginning, that means you recruit yourself.
 [00:23:44] Thank you, Layla.
 [00:23:45] Now we're going to be talking about H.R., which is my favorite function, which is
 [00:23:48] how I define it, how you decrease the likelihood employees or regulators sue
 [00:23:51] you. That is the output of H.R.
 [00:23:53] People may reject me on this and those people would be wrong.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:23:57 | stage0_00-23-57.png]** · tipo: slide
+También visible en: 00:23:44, 00:24:03
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: HUMAN RESOURCES
+> At this level…
+> CONSTRAINT
+> You’re personal assets and credit are unprotected.
+> YOUR $
+> LAWYERS
+
+Recreación:
+
+```text
+[0: IMPROVISE: HUMAN RESOURCES]
+
+                         At this level…
+
+   +--------------+                       |
+   |  CONSTRAINT  |                       |
+   +--------------+                       |
+ You’re personal assets and credit are    |
+            unprotected.                  |
+                                          |
+   [YOUR $]          [LAWYERS]            |
+  ($) \o/  <-pistola-  o                  |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Solo la mitad izquierda tiene contenido: caja «CONSTRAINT», el texto y un pictograma negro de una persona con los brazos en alto junto a una bolsa de dinero con «$», bajo la etiqueta «YOUR $», y otra persona que le apunta con una pistola, bajo la etiqueta «LAWYERS» (etiquetas en recuadros de borde negro). La mitad derecha está vacía. Insert a pantalla completa; en 00:23:44 y 00:24:03 la misma slide en la toma abierta (en 00:24:03 Alex la señala).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:23:56]
+
 [00:23:56] And so at this point, the constraint of your H.R.
 [00:24:00] is that your personal assets and credit are unprotected.
 [00:24:02] And so here's the lawyer holding you up for your money and you're like, oh, no,
 [00:24:06] that's me. I'm losing everything.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:24:08 | stage0_00-24-08.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: HUMAN RESOURCES
+> And…
+> CONSTRAINT
+> You’re personal assets and credit are unprotected.
+> YOUR $
+> LAWYERS
+> TO GRADUATE
+> Create a business entity to separate your personal assets from your business assets.
+> YOUR $
+> ENTITY
+> LAWYERS
+
+Recreación:
+
+```text
+[0: IMPROVISE: HUMAN RESOURCES]
+
+                               And…
+
+   +--------------+                |        +---------------+
+   |  CONSTRAINT  |                |        |  TO GRADUATE  |
+   +--------------+                |  Create a business entity to separate
+ You’re personal assets and credit |    your personal assets from your
+         are unprotected.          |          business assets.
+                                   |
+   [YOUR $]       [LAWYERS]        ⇒  [YOUR $]  [ENTITY]  [LAWYERS]
+  ($) \o/ <-pistola- o             |  ($) \o/    ███   <-pistola- o
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «CONSTRAINT», el texto y el pictograma negro de una persona con los brazos en alto junto a una bolsa de dinero con «$», bajo la etiqueta «YOUR $», y otra persona que le apunta con una pistola, bajo la etiqueta «LAWYERS» (etiquetas en recuadros de borde negro). Derecha: caja «TO GRADUATE», el texto y el mismo pictograma con un bloque negro vertical en medio, bajo la etiqueta «ENTITY», que separa a la persona con la bolsa de dinero («YOUR $») de la que apunta con la pistola («LAWYERS»). Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:24:08]
+
 [00:24:08] And so to graduate, we create a business entity separate your personal assets
 [00:24:11] from business assets. We have to put this wall that blocks your stuff
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:24:16 | stage0_00-24-16.png]** · tipo: slide
+También visible en: 00:24:25
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: HUMAN RESOURCES
+> What that looks like…
+> TO GRADUATE
+> Create a business entity to separate your personal assets from your business assets.
+> YOUR $
+> ENTITY
+> LAWYERS
+> In the US, **LLC or S Corp** for most businesses unless you have investors (in which case, this video isn’t for you).
+> **Go to an attorney** or use any online **tool like legalzoom** to set it up on your own.
+> Costs a _few hundred bucks_.
+
+Recreación:
+
+```text
+[0: IMPROVISE: HUMAN RESOURCES]
+
+                          What that looks like…
+
+   +---------------+              |
+   |  TO GRADUATE  |              |   In the US, LLC or S Corp for
+   +---------------+              |   most businesses unless you
+ Create a business entity to      |   have investors (in which
+ separate your personal assets    |   case, this video isn’t for you).
+ from your business assets.       |
+                                  ⇒   Go to an attorney or use any
+ [YOUR $]  [ENTITY]  [LAWYERS]    |   online tool like legalzoom to
+ ($) \o/    ███   <-pistola- o    |   set it up on your own.
+                                  |
+                                  |   Costs a few hundred bucks.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «TO GRADUATE», el texto y el mismo pictograma con un bloque negro vertical en medio, bajo la etiqueta «ENTITY», que separa a la persona con la bolsa de dinero («YOUR $») de la que apunta con la pistola («LAWYERS») (con marcas de agua tenues de banco de imágenes). Derecha: tres párrafos; «LLC or S Corp», «Go to an attorney» y «tool like legalzoom» en negrita; «few hundred bucks» subrayado. Insert a pantalla completa; en 00:24:25 la misma slide en la toma abierta (Alex la señala con el brazo).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:24:14]
+
 [00:24:14] from people who might otherwise try and take it.
 [00:24:17] And so this is what it looks like in practicality.
 [00:24:19] So in the U.S., at least it's an LLC or an S Corp for most businesses,
@@ -572,6 +2707,54 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:24:35] That's it. That's all we have to do at this level.
 [00:24:36] Very, very simple.
 [00:24:37] If you're level zero, just get an LLC so that your personal assets are not
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:24:42 | stage0_00-24-42.png]** · tipo: tabla
+También visible en: 00:24:46
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE
+> HEADCOUNT | 1
+> YOUR ROLE | RESEARCHER
+> LEADERSHIP STRUCTURE | Just you.
+> # OF COMPANIES HERE | **NA...you're not a company yet.**
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You have nothing to sell. | Make something FREE to give away
+> MARKETING | No one knows about your stuff. | Tell people you have FREE stuff.
+> SALES | You don't know how to sell | Get people to try it for free
+> CUSTOMER SERVICE | No customers to service. | Service your free customers.
+> INFORMATION TECH (IT) | You have no tech. | Get a Computer. Internet. Microphone. Phone. Email.
+> RECRUITING | You don't know how to work. | You recruit yourself to work.
+> HUMAN RESOURCES (HR) | You're personal assets & credit are unprotected. | Create an entity to separate your personal assets from your business assets.
+> FINANCE | YOU ARE HERE | **How you report and manage your money.**
+> Bottom line
+
+Recreación:
+
+| 0: IMPROVISE | |
+|---|---|
+| **HEADCOUNT** | 1 |
+| **YOUR ROLE** | RESEARCHER |
+| **LEADERSHIP STRUCTURE** | Just you. |
+| **# OF COMPANIES HERE** | **NA...you're not a company yet.** |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You have nothing to sell. | Make something FREE to give away |
+| **MARKETING** | No one knows about your stuff. | Tell people you have FREE stuff. |
+| **SALES** | You don't know how to sell | Get people to try it for free |
+| **CUSTOMER SERVICE** | No customers to service. | Service your free customers. |
+| **INFORMATION TECH (IT)** | You have no tech. | Get a Computer. Internet. Microphone. Phone. Email. |
+| **RECRUITING** | You don't know how to work. | You recruit yourself to work. |
+| **HUMAN RESOURCES (HR)** | You're personal assets & credit are unprotected. | Create an entity to separate your personal assets from your business assets. |
+| **FINANCE** | ◀ YOU ARE HERE | **How you report and manage your money.** |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas blancas; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); barra negra abajo con «Bottom line» en blanco y cursiva. Filas PRODUCT a HUMAN RESOURCES (HR) llenas en texto fino centrado (en HR la tabla dice «You're personal assets & credit are unprotected.» / «Create an entity to separate your personal assets from your business assets.»). Fila FINANCE: flecha morada «YOU ARE HERE» apuntando a la izquierda en CONSTRAINT y la definición de la función en negrita grande en TO GRADUATE. Tabla completa salvo la fila Bottom line. Insert a pantalla completa; en 00:24:46 la misma tabla en la toma abierta (Alex la señala).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:24:40]
+
 [00:24:40] tied up with the business. That's what we were at.
 [00:24:42] This is what we did.
 [00:24:43] And now we move on to finance.
@@ -580,7 +2763,82 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:24:50] OK, so the constraint at this level is that your personal money is your business
 [00:24:55] money, right? In fact, you might not even know at this level.
 [00:24:57] There's a difference between the two.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:25:00 | stage0_00-25-00.png]** · tipo: slide
+También visible en: 00:24:56
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: FINANCE
+> At this level…
+> CONSTRAINT
+> Your personal money is the business’s money.
+
+Recreación:
+
+```text
+[0: IMPROVISE: FINANCE]
+
+                         At this level…
+
+   +--------------+                 |
+   |  CONSTRAINT  |                 |
+   +--------------+                 |
+ Your personal money is the         |
+     business’s money.              |
+                                    |
+        ?                           |
+   (persona rascándose la cabeza)   |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Solo la mitad izquierda tiene contenido: caja «CONSTRAINT», el texto y el pictograma de una persona rascándose la cabeza con «?». La mitad derecha está vacía. Solo en la toma abierta (Alex y Leila a los lados de la pantalla).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:24:58]
+
 [00:24:58] Yes, in the future, there will be.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:25:01 | stage0_00-25-01.png]** · tipo: slide
+También visible en: 00:25:12, 00:25:15, 00:25:28, 00:25:30, 00:25:45, 00:25:56, 00:26:00, 00:26:14, 00:26:15, 00:26:30, 00:26:45, 00:26:53, 00:26:53, 00:27:00, 00:27:02, 00:27:15, 00:27:27, 00:27:27, 00:27:30, 00:27:33, 00:27:33, 00:27:45, 00:27:52, 00:28:00
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: FINANCE
+> And…
+> CONSTRAINT
+> Your personal money is the business’s money.
+> Your money
+> Business money
+> TO GRADUATE
+> Get a business bank account. Put money in. Write off start up expenses to save on taxes.
+> Your money
+> Bus. money
+
+Recreación:
+
+```text
+[0: IMPROVISE: FINANCE]
+
+                               And…
+
+   +--------------+               |          +---------------+
+   |  CONSTRAINT  |               |          |  TO GRADUATE  |
+   +--------------+               |   Get a business bank account.
+ Your personal money is the       |   Put money in. Write off start up
+     business’s money.            |   expenses to save on taxes.
+                                  |
+   +--------------------+         ⇒  +------------+      +------------+
+   |====================|         |  |============| ---> |============|
+   |    Your money      |         |  | Your money |      | Bus. money |
+   |  Business money    |         |  +------------+      +------------+
+   +--------------------+         |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «CONSTRAINT», el texto y una tarjeta bancaria dibujada en contorno negro grueso (banda negra arriba) con «Your money» y «Business money» en negrita, una debajo de la otra, en la misma tarjeta. Derecha: caja «TO GRADUATE», el texto y dos tarjetas bancarias en contorno negro, «Your money» y «Bus. money», unidas por una flecha morada que va de la primera a la segunda. Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta, en 00:25:12 y 00:25:15 (primeros planos de Leila) solo se ve la mitad derecha (TO GRADUATE, el texto y las dos tarjetas) y en 00:25:56, 00:26:00, 00:26:53, 00:26:53b, 00:27:00, 00:27:27, 00:27:27b y 00:27:30 (primeros planos de Alex) solo la mitad izquierda (CONSTRAINT, «Your personal money is th[e] business’s money.» y la tarjeta).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:25:00]
+
 [00:25:00] Right. And so to graduate this level, what you want to do is get a business
 [00:25:05] bank account set up, put money in it right off startup expenses to save on taxes.
 [00:25:11] OK, so what you want to do is go to a bank.
@@ -650,9 +2908,92 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:28:08] or is this from the business?
 [00:28:09] And you just use your one or two cards.
 [00:28:10] Very easy way to set that up.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:28:13 | stage0_00-28-13.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: FINANCE
+> What that looks like…
+> TO GRADUATE
+> Get a business bank account. Put money in. Write off start up expenses to save on taxes.
+> Your money
+> Bus. money
+> Everything you use in any way to work (or the tech you bought), you can now expense against your regular income.
+> EXPENSES
+
+Recreación:
+
+```text
+[0: IMPROVISE: FINANCE]
+
+                          What that looks like…
+
+   +---------------+                |  Everything you use in any way to work
+   |  TO GRADUATE  |                |  (or the tech you bought), you can
+   +---------------+                |  now expense against your regular
+ Get a business bank account.       |  income.
+ Put money in. Write off start up   |
+ expenses to save on taxes.         |        [celular]  [wifi]  [casa: persona en escritorio]
+                                    ⇒   ▬   [monitor]  [auto]  [surtidor de gasolina]
+ +------------+      +------------+ |  ==========================================
+ |============| ---> |============| |  |              EXPENSES                  |
+ | Your money |      | Bus. money | |  ==========================================
+ +------------+      +------------+ |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: caja «TO GRADUATE», el texto y dos tarjetas bancarias en contorno negro, «Your money» y «Bus. money», unidas por una flecha morada que va de la primera a la segunda. Derecha: el texto y, debajo, seis íconos negros (celular, wifi, una casa con una persona trabajando en un escritorio, un monitor, un auto y un surtidor de gasolina) apoyados sobre una barra negra, con un signo menos morado a la izquierda; abajo, un rectángulo morado con «EXPENSES» en blanco. Insert a pantalla completa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:28:12]
+
 [00:28:12] So fundamentally, everything that you use to work, you can use to
 [00:28:15] offset your regular income, right?
 [00:28:17] And you expense against it.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:28:19 | stage0_00-28-19.png]** · tipo: slide
+También visible en: 00:28:44, 00:28:54, 00:29:00, 00:29:01, 00:29:02, 00:29:09, 00:29:26, 00:29:34, 00:29:44, 00:29:45, 00:29:49, 00:30:00
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: FINANCE
+> What that looks like…
+> TO GRADUATE
+> Get a business bank account. Put money in. Write off start up expenses to save on taxes.
+> Your money
+> Bus. money
+> **Easy Tip:** Banks want your business and incentivize you to use them with cash.
+> **Chase Total Checking®** offers a $300 bonus if you open a new account and set up a qualifying direct deposit within 90 days. The bonus is typically paid within 15 business days after fulfilling the requirements
+> **PNC Virtual Wallet with Performance Select** offers up to a $400 bonus. You need to make a qualifying direct deposit, and the exact bonus amount depends on the total amount of the direct deposits you make within a certain period
+> **U.S. Bank's Smartly® Checking** provides up to a $400 bonus if you open a new account online and make direct deposits totaling $5,000 or more. The bonus is credited within 60 days after the requirements are met
+> **BMO offers up to $600** when you open a new checking account and complete qualifying activities such as making direct deposits of certain amounts within the first 90 days. You might also receive a $100 digital gift card depending on your activities post-account opening
+> **TD Beyond Checking** grants a $300 bonus for new personal checking customers who receive $2,500 or more in direct deposits within 60 days of account opening. The bonus is paid within 180 days of account opening
+
+Recreación:
+
+```text
+[0: IMPROVISE: FINANCE]
+
+                          What that looks like…
+
+   +---------------+                |  Easy Tip: Banks want your business
+   |  TO GRADUATE  |                |  and incentivize you to use them with
+   +---------------+                |  cash.
+ Get a business bank account.       |    Chase Total Checking® offers a $300 bonus … (párrafo)
+ Put money in. Write off start up   |    PNC Virtual Wallet with Performance Select offers
+ expenses to save on taxes.         |    up to a $400 bonus … (párrafo)
+                                    ⇒    U.S. Bank's Smartly® Checking provides up to a
+ +------------+      +------------+ |    $400 bonus … (párrafo)
+ |============| ---> |============| |    BMO offers up to $600 when you open a new
+ | Your money |      | Bus. money | |    checking account … (párrafo)
+ +------------+      +------------+ |    TD Beyond Checking grants a $300 bonus … (párrafo)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de función: pestaña morada arriba a la izquierda con el título en blanco; encabezado centrado en negrita; una línea vertical negra gruesa divide la slide en dos mitades, cortada a media altura por una flecha blanca de contorno negro que apunta a la derecha (⇒); rótulos en cajas negras con texto blanco. Izquierda: igual que la versión anterior (TO GRADUATE, texto y dos tarjetas bancarias en contorno negro, «Your money» y «Bus. money», unidas por una flecha morada que va de la primera a la segunda). Derecha: «Easy Tip:» en negrita seguido del texto en tamaño grande y, debajo, cinco párrafos en letra pequeña, cada uno con el nombre de la cuenta o la oferta en negrita (texto completo arriba). Insert a pantalla completa; en las demás marcas la misma slide en la toma abierta (Leila la explica), en 00:28:54 y 00:29:00 (primeros planos de Leila) solo se ven el Easy Tip y los cinco párrafos, y en 00:29:09, 00:29:44 y 00:29:45 (primeros planos de Alex) solo la mitad izquierda (TO GRADUATE, el texto y las tarjetas «Your money» → «Bus. mo[ney]»).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:28:18]
+
 [00:28:18] So something a lot of you might not know is that a lot of banks actually
 [00:28:21] want to watch your business and they will incentivize you to actually
 [00:28:26] do business with them and use your cash.
@@ -703,18 +3044,147 @@ nota: "El archivo de Drive se llama «01 Monetize.mp4» pero el contenido es Sta
 [00:30:11] Great.
 [00:30:11] So we went from personal money is the businesses money to you get a business
 [00:30:15] bank account, you put money in it and you start to write off expenses.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:30:19 | stage0_00-30-19.png]** · tipo: slide
+También visible en: 00:30:30, 00:30:32
+
+Texto en pantalla (literal):
+
+> 0: IMPROVISE: Bottom Line
+> **Constraint:**
+> Nothing is happening.
+> **To Graduate:**
+> Get people to try your stuff for free.
+
+Recreación:
+
+```text
+[0: IMPROVISE: Bottom Line]
+
+   +--------------------------------------------------+
+   |                   Constraint:                    |
+   |              Nothing is happening.               |
+   |                  To Graduate:                    |
+   |      Get people to try your stuff for free.      |
+   +--------------------------------------------------+
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de cierre de la etapa sobre fondo negro: pestaña morada arriba a la izquierda con el título en blanco; al centro, un recuadro blanco con borde morado y el texto centrado («Constraint:» y «To Graduate:» en negrita). Insert a pantalla completa; en 00:30:30 la misma slide en la toma abierta (Leila la señala) y en 00:30:32 (primer plano de Alex) solo se ve la parte izquierda del recuadro («…Nothin[g]…», «To…», «Get people t[o]…»).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:30:18]
+
 [00:30:18] And so the bottom line, if you forgot everything that we just talked about at
 [00:30:21] level zero, the big problem is that nothing is happening.
 [00:30:24] You don't even have a business yet.
 [00:30:26] So to graduate, you get people to try your stuff for free.
 [00:30:30] Ta-da.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:30:34 | stage0_00-30-34.png]** · tipo: pirámide
+También visible en: 00:30:32
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATED FROM: 0: IMPROVISE
+> JUST YOU
+> FUNCTIONS
+> IMPROVISE
+
+Recreación:
+
+```text
+             STAGE WE GRADUATED FROM: 0: IMPROVISE
+
+                               /\
+                              /||\
+                             / || \
+                            /  ||  \
+                           /   ||   \
+                          /    ||    \
+                         /     ||     \
+                        /      ||      \
+ ----------------------/-------||-------\----------------------
+   JUST YOU           / FUNCTIONS ||     \           IMPROVISE
+                     /____________||______\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Pirámide morada (tres gajos) con una sola franja inferior: «JUST YOU» a la izquierda e «IMPROVISE» a la derecha, ambos en morado; «FUNCTIONS» en blanco dentro del gajo izquierdo. En el título, «STAGE WE GRADUATED FROM:» en negro y «0: IMPROVISE» en morado. Insert a pantalla completa; en 00:30:32b (primer plano de Alex) solo se ve la esquina inferior izquierda de la pirámide con «JUST YOU» y «FUNCTIONS».
+<!-- /FRAME -->
+↳ alineado con el audio de [00:30:32]
+
 [00:30:32] And so with that, we have now graduated from improvise to monetize, which is
 [00:30:39] stage one, because we started at zero because we don't even have a business yet.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:30:45 | stage0_00-30-45.png]** · tipo: pirámide
+También visible en: 00:30:47
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATE TO: 1: MONETIZE
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> MONETIZE
+> IMPROVISE
+
+Recreación:
+
+```text
+               STAGE WE GRADUATE TO: 1: MONETIZE
+
+                               /\
+                              /||\
+                             / || \
+                            /  ||  \
+                           /   ||   \
+                          /    ||    \
+                         /     ||     \
+ -----------------------/------||------\-----------------------
+   JUST YOU            /       ||       \          MONETIZE
+ ---------------------/--------||--------\---------------------
+   JUST YOU          / FUNCTIONS ||       \        IMPROVISE
+                    /____________||________\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] La misma pirámide morada con una franja más: arriba «JUST YOU» (izquierda) y «MONETIZE» (derecha) en morado — la etapa nueva —; abajo «JUST YOU» e «IMPROVISE» ahora en negro; «FUNCTIONS» en blanco dentro del gajo izquierdo. En el título, «STAGE WE GRADUATE TO:» en negro y «1: MONETIZE» en morado. Insert a pantalla completa; en 00:30:47 la misma slide en la toma abierta.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:30:43]
+
 [00:30:43] At monetize, we'll cross the threshold into officially being a business.
 [00:30:46] And real quick, guys, if you just finished this and you are truly at
 [00:30:49] level zero, you're thinking about what business to start.
 [00:30:51] I'm co-owner of a company called School, S-K-O-O-L dot com.
 [00:30:55] And we help thousands, well now it's tens of thousands of people start
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 0: IMPROVISE | 00:31:00 | stage0_00-31-00.png]** · tipo: pirámide
+También visible en: 00:31:13, 00:31:15, 00:31:26, 00:31:30
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATE TO: 1: MONETIZE
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> MONETIZE
+> IMPROVISE
+> skool
+
+Recreación:
+
+```text
+   PANTALLA:  STAGE WE GRADUATE TO: 1: MONETIZE
+              (pirámide, ver 00:30:45: JUST YOU / MONETIZE arriba, JUST YOU / FUNCTIONS / IMPROVISE abajo)
+
+   SOBREIMPRESO (abajo al centro, encima de la toma):   skool
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Toma abierta con la slide «STAGE WE GRADUATE TO: 1: MONETIZE» en la pantalla (Alex y Leila a los lados) y, sobreimpreso por edición en la parte baja, el logo «skool» grande con letras de colores (azul, rojo, amarillo, azul claro, rojo). En 00:31:13 y 00:31:15 (primeros planos de Alex) se ven la esquina de la pirámide con «JUST YOU» (morado), «JUST YOU» (negro) y «FUNCTIONS», con el mismo logo «skool» sobreimpreso; en 00:31:26 y 00:31:30 otra vez la toma abierta con el logo.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:30:59]
+
 [00:30:59] their first business online.
 [00:31:00] So it's one of the easiest ways to get into business.
 [00:31:02] There's no inventory.
