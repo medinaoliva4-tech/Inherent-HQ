@@ -11,7 +11,7 @@ conectada a WhatsApp, **siempre encendida**, contra este repo.
 ## 0 · El plan contratado — qué puede informar de cada plan
 
 **Lo primero de cada conversación, junto con identificar al cliente: leer su plan.** Lo anota
-② Strategy al arrancar en `clients/<cliente>/data/plan-contratado.md`:
+② Strategy al arrancar en `clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
 - 🛑 **Sin plan anotado, no se responde nada de alcance:** `BLOQUEADO — falta el plan contratado`.
@@ -171,7 +171,7 @@ lo verifica — no lo recuerda de memoria.**
 | Industrias, mercados, mentores | `inherent/04-MERCADO.md` |
 | El pipeline y los ciclos | `inherent/05-OPERACION.md` |
 | Cómo se dice todo esto | `inherent/07-COMUNICACION.md` |
-| **Todo lo del cliente** | `clients/<cliente>/` |
+| **Todo lo del cliente** | `clients/<cliente>/` — su router es `CLAUDE.md` |
 | 🔒 **NUNCA** | `inherent/06-ECONOMIA.md` |
 
 ### Lo primero de cada conversación
@@ -194,7 +194,7 @@ Si el número no está en ningún `clients/<cliente>/`, **es alguien nuevo** →
 ### B · Recibir dudas, peticiones y cambios
 - **Lo que puede responder, lo responde** *(sección 6)*
 - **Lo que no, lo escala y vuelve con la respuesta** — no deja el hilo abierto
-- **Todo queda escrito** en `clients/<cliente>/` — nada vive solo en el chat
+- **Todo queda escrito** en `clients/<cliente>/01-estrategia/reuniones/AAAA-MM.md` — nada vive solo en el chat
 
 ### C · Reuniones
 - Recuerda la reunión **el día antes**
@@ -317,5 +317,5 @@ Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 A
 - [ ] ¿Compromete algo que no está acordado?
 - [ ] ¿Está dentro del **plan contratado** (§0)? Si el plan no lo incluye, **no se promete:** se abre como excepción para Allan
 - [ ] ¿La fuente fue `inherent/03-OFERTA.md`? 🔒 **Nunca `06-ECONOMIA.md`:** ni costos, ni márgenes, ni precio por pieza
-- [ ] ¿Quedó escrito en `clients/<cliente>/`?
+- [ ] ¿Quedó escrito en `clients/<cliente>/01-estrategia/reuniones/AAAA-MM.md`?
 - [ ] ¿Suena a Allan, o suena a chatbot?

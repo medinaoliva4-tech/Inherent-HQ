@@ -81,7 +81,7 @@ existe, el problema no es el proceso: es que ese chequeo se saltó, y eso tambi�
 | 2 · Paquete de carga| 2026-10-04  | 2026-10-04  | mismo día |
 ```
 
-**El promedio del ciclo se compara con lo declarado** en `data/contexto.md` §D · Restricciones
+**El promedio del ciclo se compara con lo declarado** en `00-onboarding/comprension.md` §D · Restricciones
 (*"aprueba Ana, 24-48 h"*). Si no coincide después de 2-3 ciclos, **se propone la corrección a ①
 Comprensión** — como propuesta, nunca editando su archivo.
 

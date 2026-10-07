@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Entregables de ① Strategy y ② Estrategia · guidelines de ②B · `clients/<cliente>/` · `inherent/06-ECONOMIA.md` *(solo el techo de volumen)* |
+| **Consume** | Entregables de ① Strategy y ② Estrategia · guidelines de ②B · `clients/<cliente>/CLAUDE.md` · `inherent/06-ECONOMIA.md` *(solo el techo de volumen)* |
 | **Produce** | La sección **§ El encargo** de `estrategia-de-contenido.md` |
 
 **No se planea nada todavía: se verifica.** Un ciclo planeado sobre un techo equivocado se

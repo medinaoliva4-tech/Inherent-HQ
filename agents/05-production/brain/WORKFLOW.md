@@ -30,7 +30,7 @@ banco o derivados.
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
 **Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
-`clients/<cliente>/data/plan-contratado.md`:
+`clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
 - 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
@@ -293,17 +293,17 @@ Producción **no arranca nunca sin el Excel creativo aprobado**.
 
 Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
 
-> 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/data/`:
+> 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/`:
 >
 > | Qué | Dónde | De quién |
 > |---|---|---|
-> | **La capacidad declarada**, el presupuesto y las restricciones | `contexto.md` §B y §D | ① Strategy · `context` |
-> | El `WIN` y las `MUST BE TRUE` que la pieza traza | `nucleo.md` | ① Strategy · `analysis` |
-> | La idea de campaña y los pilares | `estrategia-de-contenido.md` | ③ Marketing |
-> | Los slots del ciclo | `calendario.csv` | ③ Marketing |
-> | El Excel con Gate 3 y los `ideas-<formato>.md` | mismos archivos de ④ | ④ Creatividad |
+> | **La capacidad declarada**, el presupuesto y las restricciones | `00-onboarding/comprension.md` §B y §D | ① Strategy · `context` |
+> | El `WIN` y las `MUST BE TRUE` que la pieza traza | `01-estrategia/nucleo.md` | ① Strategy · `analysis` |
+> | La idea de campaña y los pilares | `03-marketing/AAAA-MM/estrategia-de-contenido.md` | ③ Marketing |
+> | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | ③ Marketing |
+> | El Excel con Gate 3 y los `ideas-<formato>.md` | `04-contenido/AAAA-MM/ideas/` | ④ Creatividad |
 >
-> 🛑 **A `contexto.md` §B vuelve también la corrección de `pr-loop`** — como propuesta para
+> 🛑 **A `comprension.md` §B vuelve también la corrección de `pr-loop`** — como propuesta para
 > ① Strategy, **nunca editando su archivo.**
 >
 > 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo.**
@@ -595,43 +595,42 @@ Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
 | *"Armá el call sheet de la jornada 2"* | Solo Capa 5 — requiere Gate 1 |
 | *"¿Qué se pasó de presupuesto?"* | Solo Capa 7 — requiere `costo_real` completo |
 
-### La carpeta del cliente — `clients/<cliente>/data/`
+### La carpeta del cliente — `clients/<cliente>/04-contenido/AAAA-MM/produccion/`
 
 Un cliente = **un solo folder**, afuera de los agentes (`clients/README.md`). Este departamento escribe
-en su `data/`, **al lado de lo que dejan los demás agentes**: por eso cada archivo lleva un nombre que
+en `04-contenido/AAAA-MM/produccion/`, **al lado de lo que dejan los demás agentes**: por eso cada archivo lleva un nombre que
 dice de quién es, y ningún agente toca los archivos de otro.
 
 ```
-clients/<cliente>/data/
-├── _INPUTS/                      # compartido · guidelines, banco de assets, cotizaciones
+clients/<cliente>/04-contenido/AAAA-MM/produccion/
 ├── presupuesto.md                # ← ENTREGABLE · para el cliente, en lenguaje natural
 ├── plan-de-rodaje.md             # ← ENTREGABLE · para el equipo, con lo que se rueda
 ├── plan-de-produccion.csv        # trabajo interno · una fila por escena, 16 columnas
 ├── plan-de-fotos.csv             # trabajo interno · una fila por foto, 11 columnas (§ 2B)
 ├── presupuesto.csv               # trabajo interno · categorías cerradas, estimado vs real
-└── aprendizaje-de-produccion.md  # trabajo interno · el cierre del ciclo
+├── aprendizaje-de-produccion.md  # trabajo interno · el cierre del ciclo
+└── MATERIAL.md                   # los links al Drive · crudo y final de cada sesión
 ```
 
 **Al iniciar un cliente:**
 
-1. Verificar que `plan-de-contenido.csv` de ④ Creatividad está en el mismo `data/` con el
+1. Verificar que `plan-de-contenido.csv` de ④ Creatividad está en `04-contenido/AAAA-MM/ideas/` con el
    **Gate 3 aprobado**. **Si no está aprobado, Producción no arranca.**
 2. Copiar las cinco plantillas de `brain/entregables/` (la de `aprendizaje-de-produccion.md` vive al
    lado de la skill `pr-loop`).
-3. Guardar en `_INPUTS/` las guidelines de ②B y el banco de assets existente.
+3. Ubicar en `02-marca/` las guidelines de ②B y el banco de assets existente; las cotizaciones van a
+   `99-referencias/recibido/`.
 4. Correr el pre-flight de §7.
 
 🛑 **Nunca se copia un archivo de otro agente: se cita su ruta.** Si lo que pide ④ no se puede
 producir, **se devuelve la fila con ↩️** (§9). 🛑 **No se edita el archivo de Creatividad.**
 
-🛑 **El material grabado no vive en el repo.** RAW, selects y fotos van a **Drive**, con la
-estructura de `pr-entrega`; `plan-de-rodaje.md` § Cómo se nombran los archivos guarda la ruta y el
-patrón de nombres.
+🛑 **El material grabado no vive en el repo.** RAW, selects y fotos van al **Drive del cliente**, en
+`04-contenido/AAAA-MM/produccion/`, con la estructura de `pr-entrega`; `plan-de-rodaje.md` § Cómo se
+nombran los archivos guarda la ruta y el patrón de nombres. Cada sesión se anota en `MATERIAL.md`
+*(Sesión · Fecha · Crudo · Final · Subió)*.
 
-**Se versiona por ciclo**, no se sobrescribe. Los cerrados van a `_historico/` con el nombre completo:
-`_historico/2026-09-presupuesto.md` · `_historico/2026-09-plan-de-rodaje.md` ·
-`_historico/2026-09-plan-de-produccion.csv` · `_historico/2026-09-presupuesto.csv` ·
-`_historico/2026-09-aprendizaje-de-produccion.md`.
+**Se versiona por ciclo**, no se sobrescribe: cada ciclo vive en su `04-contenido/AAAA-MM/produccion/`.
 El `presupuesto.csv` cerrado del ciclo anterior —con su `costo_real` completo— es **input obligatorio**
 del siguiente.
 

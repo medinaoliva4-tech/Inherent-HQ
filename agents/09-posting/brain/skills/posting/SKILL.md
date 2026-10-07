@@ -62,9 +62,9 @@ Publer, se devuelven a ③ Marketing.
 |---|---|
 | No se nombró el cliente | `BLOQUEADO — ¿de qué cliente?` |
 | Falta el Excel de ④ con **Gate 3** | `BLOQUEADO` — se pide la ruta exacta |
-| **No sabemos quién tiene el acceso** a las cuentas | `BLOQUEADO` — está en `clients/<cliente>/LINKS.md` |
+| **No sabemos quién tiene el acceso** a las cuentas | `BLOQUEADO` — está en `clients/<cliente>/00-onboarding/LINKS.md` |
 | Hay **claims ⏸️ sin validar** en piezas del ciclo | Esas filas no entran. Se nombra quién las valida |
-| Hay filas de **ruta manual** y no sabemos **quién manda ni quién contesta** | `BLOQUEADO` — está en `clients/<cliente>/LINKS.md`. Sostener la conversación es de **⑧A Orgánico** |
+| Hay filas de **ruta manual** y no sabemos **quién manda ni quién contesta** | `BLOQUEADO` — está en `clients/<cliente>/00-onboarding/LINKS.md`. Sostener la conversación es de **⑧A Orgánico** |
 | Un `canal` del plan **no cae en ninguna de las tres rutas** | La fila va `🛑 SIN RUTA DE SALIDA` y se **devuelve a ③**. 🛑 No se fuerza dentro de Publer ni se reescribe el plan |
 | Piden la Capa 4 sin Gate 1 | Se dice qué falta y se ofrece correr las capas previas |
 | Piden publicar directo | 🛑 Se explica la regla de `CLAUDE.md` (no publicar sin autorización) y se ofrece dejarlo listo |

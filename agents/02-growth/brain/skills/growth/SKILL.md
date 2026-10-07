@@ -47,12 +47,12 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 
 | Input | De | Si falta |
 |---|---|---|
-| **La LÍNEA del plan** | `clients/<cliente>/data/00-encargo.md` | 🛑 **Ver Capa 0** |
+| **La LÍNEA del plan** | `clients/<cliente>/07-oferta-y-ventas/00-encargo.md` | 🛑 **Ver Capa 0** |
 | Unit economics y cómo se compra | ① Strategy | 🛑 **BLOQUEADO** |
 | Objetivo, MUST BE TRUE y **la división** | ② Estrategia | 🛑 **BLOQUEADO** |
 | Qué pilar está roto | ② Estrategia | 🛑 **BLOQUEADO** |
 | Tono y cómo se dice | ②B Branding | 🛑 **BLOQUEADO** |
-| **El plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define qué pilares se activan |
+| **El plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define qué pilares se activan |
 
 🛑 **Sin unit economics no se toca la oferta.** Cambiar un precio sin saber el margen es jugar
 con el negocio de otro.

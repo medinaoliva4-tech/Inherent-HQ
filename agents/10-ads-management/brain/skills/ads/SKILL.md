@@ -41,9 +41,9 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | Qué piezas se pautan y con qué objetivo | ③ Marketing | 🛑 **BLOQUEADO** |
 | Los creativos **con variantes de hook** | ⑥A y ⑥B | 🛑 **BLOQUEADO** |
 | Qué claims están **validados** | ②B Branding | 🛑 **BLOQUEADO** |
-| Las cuentas publicitarias y **quién tiene el acceso** | `clients/<cliente>/LINKS.md` | 🛑 **BLOQUEADO** |
+| Las cuentas publicitarias y **quién tiene el acceso** | `clients/<cliente>/00-onboarding/LINKS.md` | 🛑 **BLOQUEADO** |
 | **El presupuesto, aprobado por el cliente** | 00 Account · Allan | 🛑 **BLOQUEADO** |
-| **El plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define canales y variantes |
+| **El plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define canales y variantes |
 
 🛑 **Sin presupuesto aprobado por escrito no se toca una cuenta.**
 

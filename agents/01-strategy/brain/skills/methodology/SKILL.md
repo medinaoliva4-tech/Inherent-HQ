@@ -88,7 +88,7 @@ Con todo lo que se entendió del negocio, el mercado y la industria: **para ello
 significa esto.** Concreto y reconocible, no "ser los mejores".
 
 > 🔑 **Esto es el `WIN`** — el nombre con el que lo piden los demás departamentos (`CLAUDE.md`).
-> Va a `clients/<cliente>/data/nucleo.md` junto con el arquetipo, y de él cuelgan las
+> Va a `clients/<cliente>/01-estrategia/nucleo.md` junto con el arquetipo, y de él cuelgan las
 > `MUST BE TRUE` de `analysis`.
 
 ### A.2 · Objetivos macro, por trimestre
@@ -368,9 +368,9 @@ comunidad chica y **solo se escala lo que muestre señales de negocio**.
 
 ## Salida
 
-**`clients/<cliente>/data/posicionamiento.md`** — la plataforma de marca completa (§B) y los
-objetivos macro (§A), más los briefs por área. **`clients/<cliente>/data/nucleo.md`** recibe el
-`WIN` y el arquetipo. El resumen para el cliente va a `ESTRATEGIA.md` (`../../WORKFLOW.md` §7).
+**`clients/<cliente>/01-estrategia/posicionamiento.md`** — la plataforma de marca completa (§B) y los
+objetivos macro (§A), más los briefs por área. **`clients/<cliente>/01-estrategia/nucleo.md`** recibe el
+`WIN` y el arquetipo. El resumen para el cliente va a `01-estrategia/estrategia.md` (`../../WORKFLOW.md` §7).
 
 ## Antes de cerrar
 

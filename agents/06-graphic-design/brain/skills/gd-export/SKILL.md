@@ -60,7 +60,7 @@ se descubre con el material ya impreso.
 | `id_creativo` | El del Excel de ④ |
 | `formato` | Carrusel · estático · story · impreso |
 | `slides` | Cuántas, si aplica |
-| `archivo` | **La ruta**, no el archivo copiado |
+| `archivo` | **El link al Drive**, no el archivo copiado |
 | `plantilla` | Cuál se usó. **Lo necesita `gd-loop`** |
 | `specs_ok` | ✅ / ❌ con el motivo |
 | `estado` | `entregado` · `⚠️ SIN IMAGEN` · `↩️ devuelto` |

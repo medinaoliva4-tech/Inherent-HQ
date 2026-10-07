@@ -53,7 +53,7 @@
 | | |
 |---|---|
 | **Promedio del ciclo** | [x días] |
-| **Declarado en `data/contexto.md` §D** | [x] |
+| **Declarado en `00-onboarding/comprension.md` §D** | [x] |
 | **¿Coincide?** | ✅ / ⚠️ difiere — [cuántos ciclos lleva difiriendo] |
 | **¿Se propone corregir a ①?** | ⬜ — 🛑 como propuesta, sin editar su archivo |
 

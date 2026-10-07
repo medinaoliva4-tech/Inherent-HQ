@@ -16,7 +16,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · las guidelines y el banco de assets de ②B Branding · las cotizaciones del `_INPUTS/` del cliente |
+| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · las guidelines y el banco de assets de ②B Branding · las cotizaciones de `99-referencias/recibido/` del cliente |
 | **Produce** | Las columnas **`locacion`**, **`talento`**, **`recursos`**, **`equipo`** y **`riesgo`** de `plan-de-produccion.csv` · las secciones **§ Lo que hay que conseguir** y **§ Permisos y autorizaciones** de `plan-de-rodaje.md`, y los **Riesgos del día** de cada jornada |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:

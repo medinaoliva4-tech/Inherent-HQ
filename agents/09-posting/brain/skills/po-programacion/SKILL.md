@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las filas con `caption_ok` y `specs_ok` en ✅ · la `fecha` de ④ · métricas de la cuenta del `_INPUTS/` si existen · `LINKS.md` (quién publica) |
+| **Consume** | Las filas con `caption_ok` y `specs_ok` en ✅ · la `fecha` de ④ · métricas de la cuenta de `99-referencias/recibido/` si existen · `LINKS.md` (quién publica) |
 | **Produce** | Las columnas **`cuenta`**, **`fecha`** y **`hora`** de `calendario-de-publicacion.csv` · la tabla del ciclo de un vistazo en `publicaciones.md` |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`.
@@ -43,8 +43,8 @@ que se ven desde afuera**, y no se puede deshacer del timeline de nadie.
 
 | Verificación | Dónde está |
 |---|---|
-| Qué cuentas existen | `clients/<cliente>/LINKS.md` |
-| Quién tiene el acceso | `clients/<cliente>/LINKS.md` — **la fuente única** |
+| Qué cuentas existen | `clients/<cliente>/00-onboarding/LINKS.md` |
+| Quién tiene el acceso | `clients/<cliente>/00-onboarding/LINKS.md` — **la fuente única** |
 | Cuál está conectada en Publer | Se confirma **dentro de Publer** antes de cargar |
 
 ## 3 · La hora — con dato, o declarada sin dato
@@ -53,13 +53,13 @@ que se ven desde afuera**, y no se puede deshacer del timeline de nadie.
 |---|---|
 | **Hay métricas de la cuenta** | Se usa la franja donde esa cuenta rinde. Se anota de dónde salió el dato |
 | **No hay métricas** | Se usa la hora que indicó ③, y se marca `⚠️ SIN DATOS` |
-| **No hay ni métricas ni indicación** | Se usa una hora razonable para el hábito del comprador según `data/contexto.md` §C · Demanda, **y se declara que es un supuesto** |
+| **No hay ni métricas ni indicación** | Se usa una hora razonable para el hábito del comprador según `00-onboarding/comprension.md` §C · Demanda, **y se declara que es un supuesto** |
 
 🛑 **La «mejor hora» no se inventa.** No existe una hora universalmente buena, y afirmarla sin dato
 es exactamente lo que prohíbe la regla «Evidencia o etiqueta» de `CLAUDE.md`. `⚠️ SIN DATOS` es una respuesta válida; *"a las 6
 pm funciona mejor"* sin fuente, no.
 
-> **El dato del comprador sí sirve como supuesto declarado.** Si `data/contexto.md` dice *"el 60 % del
+> **El dato del comprador sí sirve como supuesto declarado.** Si `00-onboarding/comprension.md` dice *"el 60 % del
 > ingreso entra al mediodía de días hábiles"*, publicar a las 11:30 es un supuesto razonable — y se
 > escribe **como supuesto**, citando de dónde salió.
 

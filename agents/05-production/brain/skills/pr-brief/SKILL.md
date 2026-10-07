@@ -15,7 +15,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` **con Gate 3 aprobado** y el `ideas-<formato>.md` de cada pieza, de ④ Creatividad (`clients/<cliente>/data/`) · guidelines y **banco de assets** de ②B Branding · fechas de campaña y **de preparación** de ③ Marketing · capacidad declarada, presupuesto disponible y restricciones de ① Strategy |
+| **Consume** | `plan-de-contenido.csv` **con Gate 3 aprobado** y el `ideas-<formato>.md` de cada pieza, de ④ Creatividad (`clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · guidelines y **banco de assets** de ②B Branding · fechas de campaña y **de preparación** de ③ Marketing · capacidad declarada, presupuesto disponible y restricciones de ① Strategy |
 | **Produce** | La sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` — piezas y escenas recibidas, techo de realidad, tabla de producibilidad, material reutilizable y escenas devueltas a ④ |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:
@@ -38,7 +38,7 @@ es gastar dos veces la misma plata.
 🛑 **Falta un bloqueante → BLOQUEADO**, y se nombra **el archivo exacto y a quién pedírselo**.
 
 ❌ *"Arrancamos con lo que hay y después ajustamos"*
-✅ `BLOQUEADO — falta clients/acme/data/plan-de-contenido.csv con Gate 3. Se lo pide a ④.`
+✅ `BLOQUEADO — falta clients/acme/04-contenido/2026-11/ideas/plan-de-contenido.csv con Gate 3. Se lo pide a ④.`
 
 🛑 **Ningún archivo de otro departamento se copia: se cita su ruta.** Duplicarlo crea una segunda
 versión de la verdad, y en dos ciclos no coinciden.

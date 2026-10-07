@@ -89,7 +89,7 @@ el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno 
 
 1. **Identificá el agente** que corresponde al pedido.
 2. **Leé su `brain/WORKFLOW.md` completo.** Es la única fuente de cómo trabaja.
-3. **Identificá el cliente.** Un cliente = un folder en `clients/`. Nunca mezclar dos.
+3. **Identificá el cliente.** Un cliente = un folder en `clients/`, con su `CLAUDE.md` como router. Nunca mezclar dos.
 4. Seguí el workflow. Las skills se invocan donde el workflow lo indica.
 
 **`CLAUDE.md` es la entrada.** Se lee solo al empezar cualquier sesión.

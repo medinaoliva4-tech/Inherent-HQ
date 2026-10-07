@@ -59,13 +59,13 @@ departamento.
 >
 > | Qué | Dónde | De quién |
 > |---|---|---|
-> | Audiencia actual, capacidad y restricciones | `data/contexto.md` | ① Strategy · `context` |
-> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `data/nucleo.md` | ① Strategy · `analysis` |
-> | Patrones de categoría y mapa de saturación | `data/ingenieria-inversa.md` | ① Strategy · `reverse-engineering` |
-> | Posicionamiento, promesa y briefs por área | `data/posicionamiento.md` | ① Strategy · `methodology` |
-> | La idea de campaña y los pilares con su mix | `data/estrategia-de-contenido.md` | ③ Marketing |
-> | La función de cada canal y qué NO se hace ahí | `data/plan-por-canal.md` | ③ Marketing |
-> | Los slots del ciclo | `data/calendario.csv` | ③ Marketing |
+> | Audiencia actual, capacidad y restricciones | `00-onboarding/comprension.md` | ① Strategy · `context` |
+> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `01-estrategia/nucleo.md` | ① Strategy · `analysis` |
+> | Patrones de categoría y mapa de saturación | `99-referencias/investigacion/ingenieria-inversa.md` | ① Strategy · `reverse-engineering` |
+> | Posicionamiento, promesa y briefs por área | `01-estrategia/posicionamiento.md` | ① Strategy · `methodology` |
+> | La idea de campaña y los pilares con su mix | `03-marketing/AAAA-MM/estrategia-de-contenido.md` | ③ Marketing |
+> | La función de cada canal y qué NO se hace ahí | `03-marketing/AAAA-MM/plan-por-canal.md` | ③ Marketing |
+> | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | ③ Marketing |
 >
 > 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo — no se deduce
 > de los otros.**
@@ -153,7 +153,8 @@ abrís `ideas-carrusel.md` y buscás `CR-007` ahí. **La lista de formatos no es
 
 **Más dos archivos de trabajo interno** — no se entregan al cliente pero **sí se guardan**:
 `swipe-file.md` (la bóveda) y `aprendizaje-creativo.md` (el cierre del ciclo). Todos viven en
-`clients/<cliente>/data/`, con los insumos en `_INPUTS/`; la carpeta usa **el nombre canónico** de aguas
+`clients/<cliente>/04-contenido/AAAA-MM/ideas/` —el swipe file en `99-referencias/investigacion/`,
+los insumos en `99-referencias/recibido/`—; la carpeta usa **el nombre canónico** de aguas
 arriba. 🛑 **Nunca se duplica un archivo de otro departamento adentro de Creative: se cita su ruta.**
 
 ---

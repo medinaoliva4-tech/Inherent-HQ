@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | La sección § Verificación y devoluciones de `plan-de-rodaje.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en ④ Creatividad (`clients/<cliente>/data/`) · las guidelines de ②B Branding |
+| **Consume** | La sección § Verificación y devoluciones de `plan-de-rodaje.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en ④ Creatividad (`clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · las guidelines de ②B Branding |
 | **Produce** | Las **filas base de `plan-de-produccion.csv`**: `id`, `id_creativo`, `campana`, `escena`, `accion`, `encuadre`, `duracion_s`, `destino`, `estado` + el desglose de las 8 categorías que alimenta las columnas `locacion`, `talento`, `recursos`, `equipo` |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:

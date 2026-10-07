@@ -80,7 +80,7 @@ en el set, es como se pierden tomas. Por eso la información creativa que hace f
 **se trae acá**.
 
 > 🛑 **Se compila, no se reescribe.** El original sigue siendo
-> `clients/<cliente>/data/ideas-<formato>.md`, y esta sección **lo cita como fuente**. Si
+> `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`, y esta sección **lo cita como fuente**. Si
 > ④ cambia algo, se vuelve a compilar — nunca se edita acá. Un campo reescrito con otras palabras
 > crea una segunda versión de la verdad, y en dos ciclos las dos no coinciden.
 

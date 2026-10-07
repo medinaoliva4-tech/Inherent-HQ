@@ -31,7 +31,7 @@ Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantilla:
 ni imprime: una fila de `Email` o de la ruta manual ahí hace fallar la importación entera, con todo
 el ciclo adentro.
 
-🛑 **Ni la herramienta de email ni la lista de WhatsApp se suponen** — están en `data/contexto.md`
+🛑 **Ni la herramienta de email ni la lista de WhatsApp se suponen** — están en `00-onboarding/comprension.md`
 §D. Si no están, `⚠️ SIN DATOS` y el paquete se entrega igual: es agnóstico de herramienta.
 
 🛑 **La ruta manual se entrega igual de completa que las otras dos.** El texto va **listo para

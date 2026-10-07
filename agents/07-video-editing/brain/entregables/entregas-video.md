@@ -7,7 +7,7 @@
 
 ## § El paquete
 
-| `id_creativo` | variante | plataforma | archivo *(ruta)* | duración | `specs_ok` | estado |
+| `id_creativo` | variante | plataforma | archivo *(link al Drive)* | duración | `specs_ok` | estado |
 |---|---|---|---|---|---|---|
 | CR-001 | principal | ig-reel | | | ✅ | entregado |
 | CR-001 | hookB | ig-reel | | | | |

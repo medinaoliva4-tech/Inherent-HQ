@@ -34,7 +34,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | El material con **nomenclatura y selects** + el manifiesto | ⑤ Producción | 🛑 **BLOQUEADO** |
 | `sistema-visual.md` **§ Movimiento** | ②B Branding | 🛑 **BLOQUEADO** |
 | `plan-por-canal.md` — a qué plataforma va cada pieza | ③ Marketing | 🛑 **BLOQUEADO** |
-| El **plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
+| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
 
 🛑 **Sin selects marcados no se edita.** Buscar la toma buena entre todo el material es el
 trabajo de ⑤, y hacerlo acá duplica horas que ya se pagaron.

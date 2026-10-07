@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` con **Gate 3** de ④ (`clients/<cliente>/data/`) · los exports de ⑥A y ⑥B con su ruta · `clients/<cliente>/LINKS.md` (las cuentas y **quién tiene el acceso**) · `data/contexto.md` §D (restricciones y velocidad de aprobación) · guidelines de ②B |
+| **Consume** | `plan-de-contenido.csv` con **Gate 3** de ④ (`clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · los exports de ⑥A y ⑥B con su ruta · `clients/<cliente>/00-onboarding/LINKS.md` (las cuentas y **quién tiene el acceso**) · `00-onboarding/comprension.md` §D (restricciones y velocidad de aprobación) · guidelines de ②B |
 | **Produce** | Las **filas base** de `calendario-de-publicacion.csv` — una por publicación — y la tabla **§ Lo que no sale este ciclo** de `publicaciones.md` |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantillas:
@@ -52,7 +52,7 @@ canal termina cargado donde no va.
 | **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3 aprobado** · el copy y el caption literales del `ideas-<formato>.md` de cada pieza · la `fecha` | 🛑 **BLOQUEADO** |
 | **⑥B Video Editing** | Los videos finales por plataforma, con nombre de archivo y ruta | 🛑 **BLOQUEADO** para esas filas |
 | **⑥A Diseño gráfico** | Las piezas estáticas exportadas, por formato | 🛑 **BLOQUEADO** para esas filas |
-| **① Strategy** | Las restricciones y la velocidad de aprobación, de `data/contexto.md` §D | 🛑 **BLOQUEADO** |
+| **① Strategy** | Las restricciones y la velocidad de aprobación, de `00-onboarding/comprension.md` §D | 🛑 **BLOQUEADO** |
 | **`LINKS.md`** | **Quién tiene el acceso a cada cuenta** — la fuente única | 🛑 **BLOQUEADO** |
 | **②B Branding** | Tono de voz, do's & don'ts, cómo se nombra la marca | 🛑 **BLOQUEADO** |
 

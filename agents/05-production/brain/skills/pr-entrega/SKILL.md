@@ -111,7 +111,7 @@ Esta capa **aplica** la nomenclatura; no la inventa.
 ## 5 · La estructura de carpetas
 
 ```
-<cliente>/
+<cliente>/04-contenido/AAAA-MM/produccion/   ← en el Drive del cliente
 └── <campana>/
     ├── 00_RAW/
     │   ├── jornada-1/
@@ -132,6 +132,9 @@ Esta capa **aplica** la nomenclatura; no la inventa.
 | `01_SELECTS` | Las tomas buenas, **organizadas por `id_creativo`** | ⑥A y ⑥B — es su punto de entrada |
 | `02_AMBIENTES` | Los ambientes por locación (30 s cada uno) | ⑥B, para rellenar cortes |
 | `_ENTREGA` | Las rutas y el manifiesto | ⑥A, ⑥B y la Capa 7 |
+
+Cada sesión se anota en `clients/<cliente>/04-contenido/AAAA-MM/produccion/MATERIAL.md`
+*(Sesión · Fecha · Crudo · Final · Subió)*, con el link al Drive.
 
 🛑 **`01_SELECTS` se organiza por pieza creativa, no por jornada.** La jornada es una categoría de
 Producción; **⑥A y ⑥B trabajan por pieza**, y una pieza casi siempre se grabó en dos días distintos.

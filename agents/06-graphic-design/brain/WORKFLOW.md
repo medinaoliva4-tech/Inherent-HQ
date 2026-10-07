@@ -22,7 +22,7 @@ paso vive en las skills: `skills/README.md`.
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
 **Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
-`clients/<cliente>/data/plan-contratado.md`:
+`clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
 - 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
@@ -100,9 +100,9 @@ alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se 
 
 | Qué | Dónde | Nombre |
 |---|---|---|
-| **Las piezas finales**, una por formato donde va | `clients/<cliente>/entregas/<ciclo>/diseno/` | `<id_creativo>_<formato>.png` |
-| **Las plantillas del ciclo** | `clients/<cliente>/data/plantillas/` | Se reusan ciclo a ciclo |
-| **`entregas-diseno.md`** | El manifiesto: una fila por pieza, con ruta y estado | — |
+| **Las piezas finales**, una por formato donde va | El Drive del cliente, en `04-contenido/AAAA-MM/diseno/` | `<id_creativo>_<formato>.png` |
+| **Las plantillas del ciclo** | `clients/<cliente>/02-marca/kit-de-redes/plantillas/` | Se reusan ciclo a ciclo |
+| **`entregas-diseno.md`** | El manifiesto, en `clients/<cliente>/04-contenido/AAAA-MM/diseno/`: una fila por pieza, con el link al Drive y estado | — |
 | **`aprendizaje-de-diseno.md`** | Qué plantilla se usó más, qué se devolvió, qué falta en el sistema | — |
 
 🛑 **El `id_creativo` en el nombre no es opcional.** ⑨ Posting cruza por ese campo.

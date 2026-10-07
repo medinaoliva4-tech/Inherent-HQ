@@ -81,7 +81,7 @@ Aplicar una emoción que **incomode un poco**: miedo, ego, vergüenza, enojo.
 
 ## Qué técnica pesa según el arquetipo
 
-El arquetipo del cliente (`strategy/clients/<cliente>/nucleo.md` §E) **no cambia la taxonomía,
+El arquetipo del cliente (`clients/<cliente>/01-estrategia/nucleo.md` §E) **no cambia la taxonomía,
 cambia los pesos**. Punto de partida, no verdad:
 
 | Arquetipo | Técnicas que pesan |

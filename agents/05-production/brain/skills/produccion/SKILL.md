@@ -56,10 +56,10 @@ Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]
 desglosar ideas que todavía pueden cambiar es gastar el trabajo dos veces — y si ya se comprometieron
 recursos, gastar **la plata** dos veces.
 
-> 📂 **De dónde sale cada input.** Todo en `clients/<cliente>/data/`: la **capacidad y el
-> presupuesto** de `contexto.md` §B y §D · el `WIN` y las `MUST BE TRUE` de `nucleo.md` · la campaña
-> de `estrategia-de-contenido.md` y los slots de `calendario.csv` · el Excel y los
-> `ideas-<formato>.md` de ④. **El mapa completo está en `WORKFLOW.md` §3.**
+> 📂 **De dónde sale cada input.** Todo en `clients/<cliente>/`: la **capacidad y el
+> presupuesto** de `00-onboarding/comprension.md` §B y §D · el `WIN` y las `MUST BE TRUE` de
+> `01-estrategia/nucleo.md` · la campaña de `estrategia-de-contenido.md` y los slots de `calendario.csv`,
+> en `03-marketing/AAAA-MM/` · el Excel y los `ideas-<formato>.md` de ④, en `04-contenido/AAAA-MM/ideas/`. **El mapa completo está en `WORKFLOW.md` §3.**
 
 ## 2 · Los 6 modos de entrada
 
@@ -127,8 +127,8 @@ día del rodaje, es presupuesto que nadie aprobó.
 
 **Más tres archivos de trabajo interno** que no se entregan pero **sí se guardan**:
 `plan-de-produccion.csv` (una fila por escena, 16 columnas), `presupuesto.csv` (categorías cerradas,
-estimado vs. real) y `aprendizaje-de-produccion.md`. Todos viven en `clients/<cliente>/data/` —insumos en
-`_INPUTS/`— con **el mismo nombre canónico** que en `clients/`.
+estimado vs. real) y `aprendizaje-de-produccion.md`. Todos viven en `clients/<cliente>/04-contenido/AAAA-MM/produccion/`
+—insumos en `99-referencias/recibido/`— con **el mismo nombre canónico** que en `clients/`.
 
 ## 6 · Verificá alcance antes de producir
 

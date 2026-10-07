@@ -32,7 +32,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | Posicionamiento aprobado | ② Estrategia | 🛑 **BLOQUEADO** |
 | Capacidad declarada y cuentas que existen | ① Strategy | 🛑 **BLOQUEADO** |
 | Tono, territorio, activos distintivos | ②B Branding | 🛑 **BLOQUEADO** |
-| **El plan contratado del cliente** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
+| **El plan contratado del cliente** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
 | Qué ángulos rindieron en pauta | ⑧B Ads | 🟡 Se sigue sin eso |
 
 🛑 **Sin estrategia aprobada no hay plan.** Armar un calendario sobre una estrategia en borrador

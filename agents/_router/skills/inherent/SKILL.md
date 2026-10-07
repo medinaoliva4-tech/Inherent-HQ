@@ -40,7 +40,7 @@ Del prompt CHOCA con el workflow: [qué pide saltarse o hacer distinto · «nada
 → PASA A [/skill] | BLOQUEADO: [qué falta]
 ```
 
-🔑 **El `Plan:` se LEE, no se adivina:** sale de `clients/<cliente>/data/plan-contratado.md`,
+🔑 **El `Plan:` se LEE, no se adivina:** sale de `clients/<cliente>/00-onboarding/plan-contratado.md`,
 donde lo anota ① Strategy. **Si el archivo no existe, va `⛔ falta`** — y el orquestador del
 departamento bloquea, porque el plan es el techo de todos.
 

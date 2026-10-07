@@ -117,7 +117,7 @@ Se dice, no se calla.
 
 ## Salida
 
-**Las tres respuestas van a `clients/<cliente>/data/nucleo.md`**, debajo del `WIN`:
+**Las tres respuestas van a `clients/<cliente>/01-estrategia/nucleo.md`**, debajo del `WIN`:
 `MUST BE TRUE` con el diagnóstico de hoy · `UNFAIR` con las descartadas · `GO GET` con qué
 condición mueve cada una. **Es de ahí que los demás departamentos trazan sus piezas.**
 

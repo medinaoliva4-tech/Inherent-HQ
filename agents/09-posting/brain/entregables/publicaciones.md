@@ -5,7 +5,7 @@
 
 > Este documento lo lee **quien aprueba**. Acompaña a `publer-import.csv`, que es el que se sube.
 > 🛑 **El mensaje es de ④ Creatividad.** Acá se adapta el largo y el formato, nunca la idea.
-> Fuente del copy: `clients/<cliente>/data/ideas-<formato>.md`.
+> Fuente del copy: `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`.
 
 ---
 
@@ -29,7 +29,7 @@
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-007` — ver `clients/<cliente>/data/ideas-reel.md` §CR-007 |
+| **Pieza de ④** | `CR-007` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-reel.md` §CR-007 |
 | **Campaña** | |
 | **Cuenta** | `@cliente` — 🛑 la cuenta concreta, no *"Instagram"* |
 | **Canal · formato** | |
@@ -90,14 +90,14 @@ hace fallar la importación entera.)*
 
 | | |
 |---|---|
-| **Herramienta** | [la que usa el cliente, de `data/contexto.md` §D · o ⚠️ SIN DATOS] |
+| **Herramienta** | [la que usa el cliente, de `00-onboarding/comprension.md` §D · o ⚠️ SIN DATOS] |
 | **Quién carga y envía** | [nombre] |
 
 ## PO-00X · [asunto en una línea]
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/data/ideas-newsletter.md` §CR-00X |
+| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-newsletter.md` §CR-00X |
 | **Campaña** | |
 | **Lista / segmento** | [a quién se le manda, concreto] |
 | **Fecha y hora** | [aaaa-mm-dd hh:mm] · [zona horaria] |
@@ -162,7 +162,7 @@ los pega **un humano, a mano**.)*
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/data/ideas-<formato>.md` §CR-00X |
+| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md` §CR-00X |
 | **Lista o difusión** | [cuál, y **a cuántas personas le llega**] |
 | **Fecha y hora** | [aaaa-mm-dd, hh:mm] |
 
@@ -187,7 +187,7 @@ los pega **un humano, a mano**.)*
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/data/ideas-<formato>.md` §CR-00X |
+| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md` §CR-00X |
 | **Archivo final** | [ruta del export de ⑥A · o ⚠️ SIN ARCHIVO, con de quién se espera] |
 | **Dónde va** | [el lugar concreto, no *"el local"*] |
 | **Desde cuándo** | [aaaa-mm-dd] · permanente o hasta [fecha] |

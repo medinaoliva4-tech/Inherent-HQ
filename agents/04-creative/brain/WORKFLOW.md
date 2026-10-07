@@ -22,7 +22,7 @@ paso vive en las skills: `skills/README.md`.
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
 **Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
-`clients/<cliente>/data/plan-contratado.md`:
+`clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
 - 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
@@ -191,13 +191,13 @@ Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto. No se deduce
 >
 > | Qué | Dónde | De quién |
 > |---|---|---|
-> | Audiencia actual, capacidad y restricciones | `data/contexto.md` | ① Strategy · `context` |
-> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `data/nucleo.md` | ① Strategy · `analysis` |
-> | Patrones de categoría y mapa de saturación | `data/ingenieria-inversa.md` | ① Strategy · `reverse-engineering` |
-> | Posicionamiento, promesa y briefs por área | `data/posicionamiento.md` | ① Strategy · `methodology` |
-> | La idea de campaña y los pilares con su mix | `data/estrategia-de-contenido.md` | ③ Marketing |
-> | La función de cada canal y qué NO se hace ahí | `data/plan-por-canal.md` | ③ Marketing |
-> | Los slots del ciclo | `data/calendario.csv` | ③ Marketing |
+> | Audiencia actual, capacidad y restricciones | `00-onboarding/comprension.md` | ① Strategy · `context` |
+> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `01-estrategia/nucleo.md` | ① Strategy · `analysis` |
+> | Patrones de categoría y mapa de saturación | `99-referencias/investigacion/ingenieria-inversa.md` | ① Strategy · `reverse-engineering` |
+> | Posicionamiento, promesa y briefs por área | `01-estrategia/posicionamiento.md` | ① Strategy · `methodology` |
+> | La idea de campaña y los pilares con su mix | `03-marketing/AAAA-MM/estrategia-de-contenido.md` | ③ Marketing |
+> | La función de cada canal y qué NO se hace ahí | `03-marketing/AAAA-MM/plan-por-canal.md` | ③ Marketing |
+> | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | ③ Marketing |
 >
 > 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo — no se deduce
 > de los otros.**
@@ -447,22 +447,24 @@ posicionamiento no está aprobado · el plan de campañas no está aprobado · e
 
 **Si falta una capa previa:** se dice qué falta y se ofrece correrla. **No se improvisa el faltante.**
 
-### La carpeta del cliente — `clients/<cliente>/data/`
+### La carpeta del cliente — `clients/<cliente>/04-contenido/AAAA-MM/ideas/`
 
 Un cliente = **un solo folder**, afuera de los agentes (`clients/README.md`). Este departamento escribe
-en su `data/`, **al lado de lo que dejan los demás agentes**: por eso cada archivo lleva un nombre que
+en `04-contenido/AAAA-MM/ideas/`, **al lado de lo que dejan los demás agentes**: por eso cada archivo lleva un nombre que
 dice de quién es, y ningún agente toca los archivos de otro.
 
 ```
-clients/<cliente>/data/
-├── _INPUTS/                 # compartido · brand kit, banco de assets, exports de métricas
-├── plan-de-contenido.csv    # ← ENTREGABLE · la estructura, 12 columnas
-├── brief-del-ciclo.md       # ← ENTREGABLE · el brief y las BIG IDEAS del ciclo
-├── ideas-tiktok.md          # ← ENTREGABLE · uno por formato con slot este ciclo
-├── ideas-carrusel.md        # ← ENTREGABLE
-├── ideas-....md             # ← tantos como formatos traiga el calendario
-├── swipe-file.md            # trabajo interno · la bóveda de referencias
-└── aprendizaje-creativo.md  # trabajo interno · el cierre del ciclo
+clients/<cliente>/
+├── 04-contenido/AAAA-MM/ideas/
+│   ├── plan-de-contenido.csv    # ← ENTREGABLE · la estructura, 12 columnas
+│   ├── brief-del-ciclo.md       # ← ENTREGABLE · el brief y las BIG IDEAS del ciclo
+│   ├── ideas-tiktok.md          # ← ENTREGABLE · uno por formato con slot este ciclo
+│   ├── ideas-carrusel.md        # ← ENTREGABLE
+│   ├── ideas-....md             # ← tantos como formatos traiga el calendario
+│   └── aprendizaje-creativo.md  # trabajo interno · el cierre del ciclo
+└── 99-referencias/
+    ├── investigacion/swipe-file.md  # trabajo interno · la bóveda de referencias
+    └── recibido/                    # exports de métricas
 ```
 
 **Al iniciar un cliente:**
@@ -473,16 +475,14 @@ clients/<cliente>/data/
    la traza entre agentes se rompe.
 3. Copiar `brief-del-ciclo.md` de `brain/entregables/` — los `ideas-<formato>.md` se crean sobre la
    marcha, uno por cada formato del calendario de este ciclo, a partir de `ideas-formato.md`.
-4. Guardar en `_INPUTS/` el brand kit de Branding y el banco de assets.
+4. Ubicar en `02-marca/kit-de-redes/` el brand kit de Branding y el banco de assets.
 5. Correr el pre-flight de §6.
 
 🛑 **Nunca se copia un archivo de otro agente: se cita su ruta.** Copiarlo crea una segunda versión de
 la verdad, y en dos ciclos nadie sabe cuál manda.
 
-**Se versiona por bloque de calendario**, no se sobrescribe. Los cerrados van a `_historico/`, con el
-nombre completo del archivo para no pisarse con los de otros agentes:
-`_historico/2026-09-plan-de-contenido.csv` · `_historico/2026-09-brief-del-ciclo.md` ·
-`_historico/2026-09-ideas-tiktok.md` · `_historico/2026-09-aprendizaje-creativo.md`.
+**Se versiona por bloque de calendario**, no se sobrescribe: cada bloque vive en su
+`04-contenido/AAAA-MM/ideas/`.
 El `aprendizaje-creativo.md` del bloque anterior es **input obligatorio** del siguiente.
 
 ---

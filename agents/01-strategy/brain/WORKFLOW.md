@@ -22,7 +22,7 @@
 🔑 **Strategy no lee el plan: lo ANOTA.** Es el único departamento que lo origina; los otros once
 lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloqueados.**
 
-**Dónde se anota:** `clients/<cliente>/data/plan-contratado.md`, al abrir el folder del cliente
+**Dónde se anota:** `clients/<cliente>/00-onboarding/plan-contratado.md`, al abrir el folder del cliente
 (§7 → «El folder — para los demás agentes»).
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 **Y antes que eso: qué LÍNEA es.** 🔷 Marketing promete atención · 🟨 Growth promete facturación.
@@ -31,7 +31,7 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
   `BLOQUEADO — falta el plan contratado`.
 - 🛑 **El plan es el techo, no una sugerencia.** Prometer de más rompe el margen; prometer de menos
   rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- 🔒 **Va en `data/`, nunca en `ESTRATEGIA.md`:** ese documento se le manda al cliente y no lleva
+- 🔒 **Va en `00-onboarding/`, nunca en `01-estrategia/estrategia.md`:** ese documento se le manda al cliente y no lleva
   ruido interno (§7).
 - Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y la profundidad de
   `inherent/05-OPERACION.md` → «ONBOARDING». **Si cambian allá, cambian acá** — esta tabla no manda
@@ -314,7 +314,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 | Acción | Tool |
 |---|---|
-| Guardar la evidencia | 🔒 **En el folder del cliente.** `clients/<cliente>/data/` **es nuestro Notion** |
+| Guardar la evidencia | 🔒 **En el folder del cliente.** `clients/<cliente>/99-referencias/investigacion/` **es nuestro Notion** |
 
 ---
 
@@ -394,12 +394,12 @@ incompleto y la medición arranca sin baseline.
 
 | # | Qué | Dónde | Para quién |
 |---|---|---|---|
-| 1 | **Documento de estrategia** — resume todo, listo para mandar | `clients/<cliente>/ESTRATEGIA.md` | El cliente |
+| 1 | **Documento de estrategia** — resume todo, listo para mandar | `clients/<cliente>/01-estrategia/estrategia.md` | El cliente |
 | 2 | **Folder del cliente** — toda la data, expandida, más los links a lo externo | `clients/<cliente>/` | Los demás agentes |
 
 ---
 
-### 1 · `ESTRATEGIA.md` — para el cliente
+### 1 · `estrategia.md` — para el cliente
 
 Lo que se manda. Resume todo **sin ruido interno**: sin marcas de confianza, sin pendientes,
 sin notas de método.
@@ -425,19 +425,22 @@ lo que falta se dice, no se disimula.
 
 ```
 clients/<cliente>/
-├── ESTRATEGIA.md             ← el de arriba
-├── LINKS.md                  ← todo lo que vive afuera
-└── data/
-    ├── plan-contratado.md    ← §0 · el techo de todos
-    ├── contexto.md           ← bloque 01 · `context`
-    ├── nucleo.md             ← el WIN, el arquetipo y las 3 verdades
-    ├── ingenieria-inversa.md ← bloque 03 · `reverse-engineering`
-    └── posicionamiento.md    ← bloque 04 · `methodology`
+├── CLAUDE.md                     ← el router
+├── 00-onboarding/
+│   ├── plan-contratado.md        ← §0 · el techo de todos
+│   ├── comprension.md            ← bloque 01 · `context`
+│   └── LINKS.md                  ← todo lo que vive afuera
+├── 01-estrategia/
+│   ├── estrategia.md             ← el de arriba
+│   ├── nucleo.md                 ← el WIN, el arquetipo y las 3 verdades
+│   └── posicionamiento.md        ← bloque 04 · `methodology`
+└── 99-referencias/investigacion/
+    └── ingenieria-inversa.md     ← bloque 03 · `reverse-engineering`
 ```
 
 🔑 **Los cuatro archivos tienen nombre porque otros departamentos los citan por ruta.** Las
-plantillas viven en `brain/entregables/` y se copian al abrir el folder. **Si se les cambia el
-nombre, se rompen las referencias de ④, ⑤ y ⑨.**
+plantillas viven en `brain/entregables/` y se copian al abrir el folder (`contexto.md` se copia
+como `comprension.md`). **Si se les cambia el nombre, se rompen las referencias de ④, ⑤ y ⑨.**
 
 **`LINKS.md`** — lo externo **no se copia, se linkea**: Drive de fotos, de videos, de
 entregables, Figma, Notion, redes del cliente, analytics. Con una línea de qué hay en cada uno.
@@ -451,8 +454,8 @@ entregables, Figma, Notion, redes del cliente, analytics. Con una línea de qué
 |---|---|---|
 ```
 
-**`data/`** — todo lo crudo y expandido, que en `ESTRATEGIA.md` está resumido:
-- Lo que entregó el cliente → **`contexto.md`**
+**El resto** — todo lo crudo y expandido, que en `estrategia.md` está resumido:
+- Lo que entregó el cliente → **`comprension.md`**
 - La evidencia de la ingeniería inversa, con sus marcas 🟢/🟡/⚪ y su fecha → **`ingenieria-inversa.md`**
 - El `WIN`, el arquetipo y las 3 verdades completas —`MUST BE TRUE` · `UNFAIR` · `GO GET`—
   incluido lo que se descartó y por qué → **`nucleo.md`**
@@ -483,11 +486,11 @@ Growth     → oferta, precio y objetivo
 Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made]
 ```
 
-- [ ] `ESTRATEGIA.md` se entiende **sin haber leído el método**
+- [ ] `estrategia.md` se entiende **sin haber leído el método**
 - [ ] Las renuncias están escritas, no implícitas
 - [ ] Lo externo está en `LINKS.md`, no copiado
 - [ ] Los huecos abiertos están nombrados, no disimulados
-- [ ] 🛑 **El plan quedó anotado en `clients/<cliente>/data/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
+- [ ] 🛑 **El plan quedó anotado en `clients/<cliente>/00-onboarding/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
 - [ ] Nada promete lo que el **plan contratado** no cubre — ver `inherent/06-ECONOMIA.md`
 - [ ] Si es ⬜ Tailor Made, **todas las filas de la §0 tienen número** — ninguna supuesta
 - [ ] **Allan aprobó.** El agente propone, no cierra

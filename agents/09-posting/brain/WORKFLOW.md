@@ -23,7 +23,7 @@ paso vive en las skills: `skills/README.md`.
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
 **Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
-`clients/<cliente>/data/plan-contratado.md`:
+`clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
 - 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
@@ -117,7 +117,7 @@ ROI del arquetipo `01 — Local de Alta Frecuencia` es **WhatsApp**, y la cartel
 herramienta programa.
 
 🛑 **Ni la herramienta de email ni la lista de WhatsApp se suponen.** Cuál usa el cliente está en
-`clients/<cliente>/data/contexto.md` §D, y **quién la opera en `clients/<cliente>/LINKS.md`** — la
+`clients/<cliente>/00-onboarding/comprension.md` §D, y **quién la opera en `clients/<cliente>/00-onboarding/LINKS.md`** — la
 fila de esa cuenta dice quién tiene el acceso. Si no está: `⚠️ SIN DATOS`, y el paquete se entrega
 igual — es agnóstico de herramienta.
 
@@ -196,7 +196,7 @@ Pin board, FB album, or Google category · Post subtype · CTA · Reminder
 | **⑥A Diseño gráfico** | Las piezas estáticas exportadas, por formato | 🛑 Sí |
 | **④ Creatividad** | `plan-de-contenido.csv` con Gate 3 · el **copy y el caption literales** del `ideas-<formato>.md` de cada pieza · la `fecha` | 🛑 Sí |
 | **②B Branding** | Tono de voz, do's & don'ts, cómo se nombra la marca | 🛑 Sí |
-| **① Strategy** | Quién aprueba y en cuánto tiempo, de `data/contexto.md` §D. **Quién tiene el acceso a cada cuenta, de `LINKS.md`** | 🛑 Sí |
+| **① Strategy** | Quién aprueba y en cuánto tiempo, de `00-onboarding/comprension.md` §D. **Quién tiene el acceso a cada cuenta, de `LINKS.md`** | 🛑 Sí |
 | **③ Marketing** | Qué es campaña pagada y qué es orgánico | No — pero sin esto se puede publicar en orgánico algo que era de pauta |
 
 Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
@@ -381,15 +381,14 @@ sabemos quién tiene las claves de las cuentas · hay claims sin validar en las 
 | *"¿Salió todo?"* | Solo Capa 5 |
 | *"¿Qué se cayó este mes?"* | Solo Capa 6 |
 
-### La carpeta del cliente — `clients/<cliente>/data/`
+### La carpeta del cliente — `clients/<cliente>/04-contenido/AAAA-MM/publicacion/`
 
 Un cliente = **un solo folder**, afuera de los agentes (`clients/README.md`). Este departamento escribe
-en su `data/`, **al lado de lo que dejan los demás agentes**: por eso cada archivo lleva un nombre que
+en `04-contenido/AAAA-MM/publicacion/`, **al lado de lo que dejan los demás agentes**: por eso cada archivo lleva un nombre que
 dice de quién es, y ningún agente toca los archivos de otro.
 
 ```
-clients/<cliente>/data/
-├── _INPUTS/                        # compartido · accesos, métricas de la cuenta, plantilla vigente de Publer
+clients/<cliente>/04-contenido/AAAA-MM/publicacion/
 ├── publicaciones.md                # ← ENTREGABLE · para quien aprueba
 ├── publer-import.csv               # ← ENTREGABLE · para quien carga · solo la ruta social
 ├── calendario-de-publicacion.csv   # trabajo interno · una fila por publicación, 12 columnas
@@ -403,7 +402,7 @@ clients/<cliente>/data/
 2. Verificar **qué cuentas existen y quién tiene las claves** (§1). Sin eso, `BLOQUEADO`.
 3. Copiar las tres plantillas de `brain/entregables/` — la de `aprendizaje-de-posting.md` vive al
    lado de la skill `po-loop`.
-4. Bajar a `_INPUTS/` las métricas de la cuenta si existen y **la plantilla vigente de Publer**.
+4. Bajar a `99-referencias/recibido/` las métricas de la cuenta si existen y **la plantilla vigente de Publer**.
 5. Correr el pre-flight de §7.
 
 🛑 **Nunca se copia un archivo de otro agente: se cita su ruta.** Si lo que llegó no se puede publicar
@@ -413,9 +412,7 @@ como está, **se devuelve con ↩️**. No se edita el archivo de otro agente ni
 ⑥B; acá va su ruta y su URL. 🛑 **`Media URL` de Publer tiene que ser una URL pública**: se verifica
 abriéndola **sin sesión** antes de cargar. Lo más seguro es la biblioteca de Publer (`cdn.publer.com`).
 
-**Se versiona por ciclo**, no se sobrescribe. Los cerrados van a `_historico/` con el nombre completo:
-`_historico/2026-09-publicaciones.md` · `_historico/2026-09-publer-import.csv` ·
-`_historico/2026-09-calendario-de-publicacion.csv` · `_historico/2026-09-aprendizaje-de-posting.md`.
+**Se versiona por ciclo**, no se sobrescribe: cada ciclo vive en su `04-contenido/AAAA-MM/publicacion/`.
 🛑 **Antes de cargar un ciclo nuevo se verifica que el anterior no dejó filas en `cargado` sin
 publicar.** Es la forma más común de publicar algo dos veces.
 
@@ -466,7 +463,7 @@ rompería si lo adaptáramos por cuenta propia · **al menos dos alternativas** 
 | Las piezas llegan sistemáticamente tarde | Problema de calendario | **③ Marketing**, vía Capa 6 |
 | Un claim no está aprobado | Falta una validación | **②B Branding** o **⑧B Ads** |
 | No tenemos acceso a la cuenta | Restricción de acceso | **`LINKS.md`** — la fila de esa cuenta |
-| La lista de WhatsApp no existe, o nadie contesta lo que entra | Restricción de capacidad | **① Strategy** `data/contexto.md` §D · y **⑧A Orgánico** si hay que sostener la conversación |
+| La lista de WhatsApp no existe, o nadie contesta lo que entra | Restricción de capacidad | **① Strategy** `00-onboarding/comprension.md` §D · y **⑧A Orgánico** si hay que sostener la conversación |
 | Un canal del plan no cae en ninguna de las tres rutas | El plan pide algo que ⑦ no puede sacar | **③ Marketing** — se declara, **no se fuerza dentro de Publer** |
 | El cliente quiere cambiar el copy | Cambio de mensaje | **④ Creatividad** decide, no Posting |
 

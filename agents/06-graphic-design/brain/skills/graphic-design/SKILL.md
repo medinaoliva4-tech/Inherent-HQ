@@ -32,7 +32,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | El `ideas-<formato>.md` con el **copy literal** y el layout | ④ Creatividad | 🛑 **BLOQUEADO** |
 | **`sistema-visual.md`** | ②B Branding | 🛑 **BLOQUEADO** |
 | `plan-por-canal.md` | ③ Marketing | 🛑 **BLOQUEADO** |
-| El **plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
+| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
 
 🛑 **Sin `sistema-visual.md` no se compone nada.** Diseñar sin sistema produce 168 piezas que no
 se parecen entre sí, y eso es peor que no publicar.

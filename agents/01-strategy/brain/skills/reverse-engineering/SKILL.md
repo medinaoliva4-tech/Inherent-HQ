@@ -187,7 +187,7 @@ sobre una casualidad.
 
 ## 6B · Salida
 
-**`clients/<cliente>/data/ingenieria-inversa.md`** — los patrones observados con sus marcas
+**`clients/<cliente>/99-referencias/investigacion/ingenieria-inversa.md`** — los patrones observados con sus marcas
 🟢/🟡/⚪ y su fuente. **④ Creatividad lo lee para no re-mapear la categoría** en su swipe file.
 
 ## 7 · Antes de cerrar

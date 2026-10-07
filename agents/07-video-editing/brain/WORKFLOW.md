@@ -22,7 +22,7 @@ paso vive en las skills: `skills/README.md`.
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
 **Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
-`clients/<cliente>/data/plan-contratado.md`:
+`clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
 - 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
@@ -104,9 +104,9 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 
 | Qué | Dónde | Nombre |
 |---|---|---|
-| **Los reels finales**, uno por plataforma donde va | `clients/<cliente>/entregas/<ciclo>/video/` | `<id_creativo>_<plataforma>.mp4` |
+| **Los reels finales**, uno por plataforma donde va | El Drive del cliente, en `04-contenido/AAAA-MM/video/` | `<id_creativo>_<plataforma>.mp4` |
 | **Las derivadas** | Misma carpeta | `<id_creativo>_<variante>_<plataforma>.mp4` |
-| **`entregas-video.md`** | El manifiesto: una fila por pieza, con ruta y estado | — |
+| **`entregas-video.md`** | El manifiesto, en `clients/<cliente>/04-contenido/AAAA-MM/video/`: una fila por pieza, con el link al Drive y estado | — |
 | **`aprendizaje-de-video.md`** | Qué se devolvió, qué faltó, cuánto rindió cada grabación | — |
 
 > 🛑 **El `id_creativo` en el nombre no es opcional.** ⑨ Posting cruza por ese campo; un archivo

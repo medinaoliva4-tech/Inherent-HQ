@@ -31,8 +31,8 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | **El brief de branding** — los 8 bloques | ② Estrategia · `methodology/brand-brief.md` | 🛑 **BLOQUEADO** |
 | El **código saturado** de la categoría | ② Estrategia, bloque 4 | 🛑 **BLOQUEADO** |
 | Qué puede sostener el cliente | ① Strategy | 🛑 **BLOQUEADO** |
-| Qué ya existe de marca | ① Strategy · `clients/<cliente>/` | 🟡 Se sigue sin eso |
-| **El plan contratado** | `clients/<cliente>/data/plan-contratado.md` | 🛑 **BLOQUEADO** — define la profundidad |
+| Qué ya existe de marca | ① Strategy · `clients/<cliente>/02-marca/` | 🟡 Se sigue sin eso |
+| **El plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define la profundidad |
 
 🛑 **Sin el código saturado no se puede oponer a nada**, y una marca que no se opone a nada no
 se distingue de nada.

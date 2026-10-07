@@ -14,7 +14,7 @@ description: >
 | | |
 |---|---|
 | **Consume** | § Agrupación del ciclo · `sistema-visual.md` · el copy de todas las piezas |
-| **Produce** | Las **plantillas del ciclo** en `clients/<cliente>/data/plantillas/` |
+| **Produce** | Las **plantillas del ciclo** en `clients/<cliente>/02-marca/kit-de-redes/plantillas/` |
 
 > 🔑 **Esta capa decide si el ciclo entra en las horas que paga el plan.**
 
@@ -66,7 +66,7 @@ de las piezas, como `br-activos` exige.
 
 ## 5 · Las plantillas se reusan ciclo a ciclo
 
-**No se rehacen cada mes.** Se guardan en `clients/<cliente>/data/plantillas/` y el ciclo
+**No se rehacen cada mes.** Se guardan en `clients/<cliente>/02-marca/kit-de-redes/plantillas/` y el ciclo
 siguiente:
 
 | | |

@@ -12,7 +12,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Entregables de ① y ② · `clients/<cliente>/` · `inherent/03-OFERTA.md` |
+| **Consume** | Entregables de ① y ② · `clients/<cliente>/CLAUDE.md` · `inherent/03-OFERTA.md` |
 | **Produce** | La sección **§ El encargo** de `motor-de-crecimiento.md` |
 
 ## 1 · La división — no se elige acá

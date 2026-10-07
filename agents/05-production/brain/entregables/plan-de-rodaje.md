@@ -16,7 +16,7 @@
 
 > 🛑 **Lo que dice la columna "Qué se graba" viene de ④ Creatividad y no se cambia en el set.** Si
 > algo no se puede grabar como está escrito, se avisa y se devuelve — no se resuelve improvisando.
-> Fuente: `clients/<cliente>/data/ideas-<formato>.md`.
+> Fuente: `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`.
 
 ---
 
@@ -143,7 +143,7 @@ acme_menuejecutivo_LOC-salon_ambiente.wav
 
 Todo en minúsculas, sin espacios ni tildes. El número de toma con dos dígitos (`t03`, no `t3`).
 
-**Dónde va el material:** [ruta de Drive]
+**Dónde va el material:** [link al Drive del cliente, en `04-contenido/AAAA-MM/produccion/`] · se anota en `MATERIAL.md`
 
 ```
 00_RAW/          todo lo grabado, incluido el descarte, ordenado por jornada

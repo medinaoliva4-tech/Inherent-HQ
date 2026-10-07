@@ -31,7 +31,7 @@ agents/                    ← LOS AGENTES — uno por etapa del pipeline
 
 clients/                   ← LOS CLIENTES
 ├── README.md              cómo se arma un folder de cliente
-└── <cliente>/             todo lo del cliente
+└── <cliente>/             todo lo del cliente — su CLAUDE.md es el router
 ```
 
 **Tres carpetas, tres preguntas:**
@@ -322,7 +322,7 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
 
 1. **Identificá el agente** que corresponde al pedido.
 2. **Leé su `brain/WORKFLOW.md` completo.** Es la única fuente de cómo trabaja.
-3. **Identificá el cliente.** Un cliente = un folder en `clients/`. Nunca mezclar dos.
+3. **Identificá el cliente.** Un cliente = un folder en `clients/`, con su `CLAUDE.md` como router. Nunca mezclar dos.
    🔒 **El repo es privado: toda la información del cliente vive en su folder.** Si alguna vez
    vuelve a ser público, `clients/` solo guarda un README con el link al repo privado del
    cliente. Ver `clients/README.md`.

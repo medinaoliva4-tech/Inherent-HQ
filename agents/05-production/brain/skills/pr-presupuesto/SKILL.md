@@ -16,7 +16,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las jornadas cerradas de la Capa 2 (columna `jornada` + el factor de consolidación) · los recursos de la Capa 3 con su origen (`propio`/`prestado`/`alquilado`/`comprado`/`a-producir`) · el techo de presupuesto declarado en la Capa 0 · las cotizaciones de `_INPUTS/` |
+| **Consume** | Las jornadas cerradas de la Capa 2 (columna `jornada` + el factor de consolidación) · los recursos de la Capa 3 con su origen (`propio`/`prestado`/`alquilado`/`comprado`/`a-producir`) · el techo de presupuesto declarado en la Capa 0 · las cotizaciones de `99-referencias/recibido/` |
 | **Produce** | **`presupuesto.md`** — el entregable que lee el cliente · `presupuesto.csv` interno, 6 columnas, categorías cerradas, `TOTAL` por campaña y `TOTAL CICLO` · la columna `costo_estimado` de `plan-de-produccion.csv` · el costo por pieza · y, si no entra, las 3 opciones con su impacto |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:

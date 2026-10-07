@@ -62,7 +62,7 @@ sus specs.
 | `id_creativo` | El del Excel de ④ |
 | `variante` | `principal` o cuál |
 | `plataforma` | Dónde va |
-| `archivo` | **La ruta**, no el archivo copiado |
+| `archivo` | **El link al Drive**, no el archivo copiado |
 | `duracion` | Segundos |
 | `specs_ok` | ✅ / ❌ con el motivo |
 | `estado` | `entregado` · `⚠️ SIN MATERIAL` · `↩️ devuelto` |
