@@ -4,7 +4,7 @@ archivo_original: "Drive › Hormozi Brain › Videos/05 Productize.mp4 (id 1iWd
 etapa: "STAGE 5: PRODUCTIZE"
 duracion: "00:59:49"
 transcripcion: "faster-whisper small.en (int8, greedy) — automática, literal; solo se quitaron muletillas obvias (um/uh/erm/hmm): 0"
-frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 406 frames revisados → 0 estados visuales distintos documentados; 0 frames sin contenido de pantalla"
+frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 406 frames revisados → 46 estados visuales distintos documentados; 18 frames sin contenido de pantalla"
 imagenes: "NO se guardan en el repo. Fuente de verdad = el video en ese timestamp. Cada bloque FRAME lleva el nombre stageX_HH-MM-SS.png como referencia."
 formato_cita: "[ROADMAP VIDEO | STAGE 5: PRODUCTIZE | HH:MM:SS] (+ frame si aplica)"
 nota: "—"
@@ -13,12 +13,158 @@ nota: "—"
 # STAGE 5: PRODUCTIZE
 
 [00:00:00] So we started at it was just you, you weren't doing anything.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:00:05 | stage5_00-00-05.png]** · tipo: pirámide
+También visible en: 00:00:02, 00:00:02, 00:00:16
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATE TO: 5: PRODUCTIZE
+> 10 TO 19
+> 5 TO 9
+> 1 TO 4
+> FREELANCERS
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> PRODUCTIZE
+> PRIORITIZE
+> STABILIZE
+> ADVERTISE
+> MONETIZE
+> IMPROVISE
+
+Recreación:
+
+```text
+              STAGE WE GRADUATE TO: 5: PRODUCTIZE
+
+                            /\
+                           /||\
+                          / || \
+                         /  ||  \
+                        /   ||   \
+  ---------------------/----||----\---------------------
+   10 TO 19           /     ||     \       PRODUCTIZE
+  -------------------/------||------\-------------------
+   5 TO 9           /       ||       \      PRIORITIZE
+  -----------------/--------||--------\-----------------
+   1 TO 4         /         ||         \     STABILIZE
+  ---------------/----------||----------\---------------
+   FREELANCERS  /           ||           \    ADVERTISE
+  -------------/------------||------------\-------------
+   JUST YOU   /             ||             \   MONETIZE
+  -----------/--------------||--------------\-----------
+   JUST YOU / FUNCTIONS     ||               \ IMPROVISE
+           /________________||________________\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Pirámide morada centrada, dividida por tres líneas que salen del vértice (cuatro gajos verticales) y por seis franjas horizontales en la base; cada franja se prolonga con una línea a ambos lados. A la izquierda, el rótulo de estructura (de arriba abajo): «10 TO 19» en morado, «5 TO 9», «1 TO 4», «FREELANCERS», «JUST YOU» y «JUST YOU» en negro. A la derecha, la etapa: «PRODUCTIZE» en morado (la etapa actual), «PRIORITIZE», «STABILIZE», «ADVERTISE», «MONETIZE» e «IMPROVISE» en negro. «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. En el título, «5: PRODUCTIZE» va en morado y el resto en negro. Frame principal: insert a pantalla completa. También en toma abierta (00:00:02 con viñeta/transición de luz; 00:00:02 b y 00:00:16), con Alex señalando las franjas; en la pantalla la pirámide se ve azul.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:04]
+
 [00:00:04] Then you finally got your first sale, then you were able to hire some freelancers,
 [00:00:08] then you get your first one to four full-time employees.
 [00:00:10] Now you're a man, you know, you were just a manager, you had your first five to nine employees.
 [00:00:13] Now we're at 10 to 20 employees.
 [00:00:15] All right, so we want to get past 20 and we're starting in the 10 to 20 range right now.
 [00:00:19] And the theme of the stage is product ties.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:00:22 | stage5_00-00-22.png]** · tipo: tabla
+También visible en: 00:00:23
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT
+> YOUR ROLE
+> LEADERSHIP STRUCTURE
+> # OF COMPANIES HERE
+> CONSTRAINT | TO GRADUATE
+> PRODUCT
+> MARKETING
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | — |
+| **YOUR ROLE** | — |
+| **LEADERSHIP STRUCTURE** | — |
+| **# OF COMPANIES HERE** | — |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | — | — |
+| **MARKETING** | — | — |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título «5: PRODUCTIZE» en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; celdas en blanco; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); fila «Bottom line» en barra negra abajo, con texto blanco en cursiva. Tabla vacía. Solo en toma abierta (Alex y Leila frente a la pantalla).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:22]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:00:25 | stage5_00-00-25.png]** · tipo: tabla
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | **10 to 19**
+> YOUR ROLE
+> LEADERSHIP STRUCTURE
+> # OF COMPANIES HERE
+> CONSTRAINT | TO GRADUATE
+> PRODUCT
+> MARKETING
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | **10 to 19** |
+| **YOUR ROLE** | — |
+| **LEADERSHIP STRUCTURE** | — |
+| **# OF COMPANIES HERE** | — |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | — | — |
+| **MARKETING** | — | — |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). Solo HEADCOUNT lleno (en negrita, el último dato agregado). Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:22]
+
 [00:00:22] All right, and so at this level, 10 to 19 is where we're at.
 [00:00:25] Our role is that you're a director now.
 [00:00:27] So you basically went from a manager to now you're directing,
@@ -26,12 +172,149 @@ nota: "—"
 [00:00:31] And so this is now one and a half layers of infrastructure.
 [00:00:34] So basically you're going to have your first two, maybe three, kind of like small managers
 [00:00:39] that are running two to three people on their team.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:00:43 | stage5_00-00-43.png]** · tipo: tabla
+También visible en: 00:00:45
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | **1.5 Layers: First 2-3 Managers**
+> # OF COMPANIES HERE
+> CONSTRAINT | TO GRADUATE
+> PRODUCT
+> MARKETING
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | **1.5 Layers: First 2-3 Managers** |
+| **# OF COMPANIES HERE** | — |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | — | — |
+| **MARKETING** | — | — |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). HEADCOUNT, YOUR ROLE y LEADERSHIP STRUCTURE llenos; el último dato agregado («1.5 Layers: First 2-3 Managers») va en negrita. # OF COMPANIES HERE y las columnas CONSTRAINT / TO GRADUATE vacías. Solo en toma abierta; Alex tapa con el cuerpo parte de los rótulos de la izquierda (PRODUCT a FINANCE).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:42]
+
 [00:00:42] And that's like your that's why we have our first almost two layers of infrastructure,
 [00:00:45] but you still have some people that you're directly leading yourself.
 [00:00:48] All right, so companies here is 2.4 million.
 [00:00:51] So we're going from 3 million to 2.4.
 [00:00:52] So we're still marching our way down in terms of rarefied air.
 [00:00:56] At this level, let's break into product.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:00:59 | stage5_00-00-59.png]** · tipo: tabla
+También visible en: 00:00:57
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | 1.5 Layers: First 2-3 Managers
+> # OF COMPANIES HERE | 2,400,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | YOU ARE HERE | **Goods, services, & results you deliver**
+> MARKETING
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | 1.5 Layers: First 2-3 Managers |
+| **# OF COMPANIES HERE** | 2,400,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | ◀ YOU ARE HERE | **Goods, services, & results you deliver** |
+| **MARKETING** | — | — |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). Las cuatro filas de encabezado llenas (sin negrita). En la fila PRODUCT, una flecha morada que apunta a la izquierda ocupa la celda CONSTRAINT con «YOU ARE HERE» en blanco; en la celda TO GRADUATE, la definición del área en negrita grande. El resto de las filas vacías. Frame principal: insert a pantalla completa. También en toma abierta (00:00:57), con Alex señalando la flecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:59]
+
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:01:01 | stage5_00-01-01.png]** · tipo: slide
+También visible en: 00:01:21
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: PRODUCT
+> At this level...
+> CONSTRAINT
+> Customers have nothing else to buy from you & churn.
+> No. I hate money.
+> SHUT UP AND
+> TAKE MY MONEY!
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: PRODUCT]
+
+                         At this level...
+
+   [ CONSTRAINT ]                         |
+   Customers have nothing else to buy     |
+   from you & churn.                      |
+                       .-------------.    |
+                       | No. I hate  |    |
+                       | money.      |    |
+                       '------v------'    |
+   +------------------+       O           |
+   | SHUT UP AND      |      /|\          |
+   |  (meme: Fry con  |       ?           |
+   |   billetes)      |      / \          |
+   | TAKE MY MONEY!   |                   |
+   +------------------+                   |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Encabezado en barra morada arriba a la izquierda con texto blanco. Título «At this level...» en negrita al centro. Caja negra «CONSTRAINT» con texto blanco; debajo el texto del constraint. Abajo a la izquierda, el meme de Fry (Futurama) con un fajo de billetes y el texto «SHUT UP AND / TAKE MY MONEY!»; a su derecha, silueta negra de una persona con un signo «?» blanco en el pecho y los brazos abiertos, con globo de diálogo «No. I hate money.». Línea vertical negra al centro; la mitad derecha vacía. Frame principal: insert a pantalla completa. También en toma abierta (00:01:21).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:00:59]
+
 [00:00:59] And so this is the good services and results that you deliver.
 [00:01:01] And so the problem at this level or the constraint is that customers have nothing else to buy from you
 [00:01:06] and then they churn.
@@ -42,7 +325,87 @@ nota: "—"
 [00:01:18] And then you're like, yeah, no, I hate money.
 [00:01:21] And so that's it.
 [00:01:22] That's the end of the relationship, which sucks, right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:01:25 | stage5_00-01-25.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: PRODUCT
+> And...
+> CONSTRAINT
+> Customers have nothing else to buy from you & churn.
+> No. I hate money.
+> SHUT UP AND
+> TAKE MY MONEY!
+> TO GRADUATE
+> Connect CS & product. Make something new to sell them.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: PRODUCT]
+
+                               And...
+
+   [ CONSTRAINT ]                   |        [ TO GRADUATE ]
+   Customers have nothing else to   |   Connect CS & product. Make
+   buy from you & churn.            |   something new to sell them.
+                  .------------.    |
+                  | No. I hate |    |
+                  | money.     |    |
+                  '-----v------'    |
+   +---------------+    O          ==>   (personas en ciclo) ==> (caja abierta
+   | SHUT UP AND   |   /|\          |     con flechas            con foco)
+   | (meme Fry)    |    ?           |
+   | TAKE MY MONEY!|   / \          |
+   +---------------+                |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo slide que «At this level...» con la mitad derecha completa: caja negra «TO GRADUATE» con texto blanco y debajo el texto. Una flecha blanca contorneada en negro cruza la línea vertical central de izquierda a derecha. A la derecha, ícono de dos personas (naranja y verde) unidas por flechas circulares azul y amarilla (ciclo), una flecha morada, y una caja de cartón abierta negra con un foco encendido saliendo de ella. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:01:24]
+
 [00:01:24] And so to graduate, we have to connect CS and product together
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:01:31 | stage5_00-01-31.png]** · tipo: slide
+También visible en: 00:01:36, 00:01:45, 00:02:05, 00:02:05, 00:02:14, 00:02:15, 00:02:44, 00:02:45
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: PRODUCT
+> What that looks like...
+> TO GRADUATE
+> Connect CS & product. Make something new to sell them.
+> **Back End upsell:**
+> • Typically 5x the price of the core offer: 80/20 again.
+> • Ex: 100 customers buy $1000 thing = $100,000
+> • 20 customers buy $5000 = $100,000
+> • This doubles revenue (and more than doubles profit)
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: PRODUCT]
+
+                     What that looks like...
+
+        [ TO GRADUATE ]                |  Back End upsell:
+   Connect CS & product. Make          |   • Typically 5x the price of the
+   something new to sell them.         |     core offer: 80/20 again.
+                                       |   • Ex: 100 customers buy $1000
+                                      ==>    thing = $100,000
+   (personas en ciclo) ==> (caja con   |   • 20 customers buy $5000 =
+                            foco)      |     $100,000
+                                       |   • This doubles revenue (and
+                                       |     more than doubles profit)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide «What that looks like...» en dos columnas: a la izquierda la caja negra «TO GRADUATE» con su texto y los íconos (dos personas en ciclo de flechas azul/amarilla → flecha morada → caja abierta con foco); flecha blanca contorneada ⇒ que cruza la línea vertical negra; a la derecha «Back End upsell:» en negrita y la lista con viñetas. Frame principal: insert a pantalla completa. También en toma abierta (00:01:36, 00:01:45, 00:02:14, 00:02:15, 00:02:44, 00:02:45) y en primeros planos de Alex (00:02:05, 00:02:05 b) donde solo se ve la caja TO GRADUATE y los íconos.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:01:28]
+
 [00:01:28] and then make something new to sell them.
 [00:01:31] And so this is what that looks like.
 [00:01:33] So typically this is where a back-end upsell comes into play.
@@ -94,6 +457,59 @@ nota: "—"
 [00:03:12] and then better slash newer version
 [00:03:14] of the thing they just bought
 [00:03:15] or for longer periods of time.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:03:17 | stage5_00-03-17.png]** · tipo: slide
+También visible en: 00:03:23, 00:03:30, 00:03:56, 00:04:00, 00:04:16, 00:04:16, 00:04:30, 00:04:49, 00:05:00, 00:05:10, 00:05:10, 00:05:15, 00:05:15, 00:05:30, 00:05:45, 00:06:00, 00:06:15, 00:06:30, 00:06:41, 00:06:45, 00:06:46
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: PRODUCT
+> What that looks like...
+> TO GRADUATE
+> Connect CS & product. Make something new to sell them.
+> **Examples:**
+> • **CHAIR**
+> • **AGENCY**
+> • **LAWNCARE**
+> Increase *PRICES*
+> Repurchases *AGAIN*
+> Decrease *COSTS*
+> Cross-Sells *DIFFERENT*
+> Increase *PRICES*
+> Repurchases *AGAIN*
+> Decrease *COSTS*
+> Cross-Sells *DIFFERENT*
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: PRODUCT]
+                                                    +--------------+--------------+
+                 What that looks like...            | Increase     | Repurchases  |
+                                                    | PRICES       | AGAIN        |
+      [ TO GRADUATE ]          |  Examples:         | $ -> $       | ($)($)($)    |
+  Connect CS & product. Make   |   • CHAIR          +--------------+--------------+
+  something new to sell them.  |   • AGENCY         | Decrease     | Cross-Sells  |
+                               |   • LAWNCARE       | COSTS        | DIFFERENT    |
+                              ==>                   | (tijera + $) | (hamburguesa |
+  (personas en ciclo) ==>      |                    |              |  -> combo)   |
+  (caja con foco)              |                    +--------------+--------------+
+                               |                    | Increase     | Repurchases  |
+                               |                    | PRICES       | AGAIN        |
+                               |                    | $ -> $       | ($)($)($)    |
+                               |                    +--------------+--------------+
+                               |                    | Decrease     | Cross-Sells  |
+                               |                    | COSTS        | DIFFERENT    |
+                               |                    | (tijera + $) | (hamburguesa |
+                               |                    |              |  -> combo)   |
+                               |                    +--------------+--------------+
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo lado izquierdo que el slide anterior (caja «TO GRADUATE», íconos de ciclo de personas → caja con foco, flecha ⇒ sobre la línea vertical). A la derecha, «Examples:» en negrita y lista con viñetas «CHAIR / AGENCY / LAWNCARE» en mayúsculas negritas. En el borde derecho, dos cuadrículas idénticas de 2×2 con marco negro (una arriba, otra abajo); en cada celda la primera palabra en negro y la segunda en morado cursiva (PRICES, AGAIN, COSTS, DIFFERENT), todo en negrita: «Increase PRICES» con un «$» pequeño → flecha → «$» grande; «Repurchases AGAIN» con tres monedas «$» con flechas circulares; «Decrease COSTS» con una tijera cortando un «$» por una línea punteada; «Cross-Sells DIFFERENT» con una hamburguesa → flecha → hamburguesa con bebida. Frame principal: insert a pantalla completa. También en toma abierta (Alex señala la lista y la cuadrícula) y en primeros planos de Alex (00:05:10, 00:05:10 b, 00:05:15, 00:06:41, 00:06:45) donde solo se ve la caja TO GRADUATE y los íconos.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:03:17]
+
 [00:03:17] And so this is a little matrix that I make
 [00:03:20] for our companies.
 [00:03:21] And I call this the crazy eight.
@@ -210,6 +626,54 @@ nota: "—"
 [00:06:51] or a service business to make anything more profitable.
 [00:06:54] All right, and so at this level,
 [00:06:56] we've productized, we have our second thing,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:07:00 | stage5_00-07-00.png]** · tipo: tabla
+También visible en: 00:07:08, 00:07:14, 00:07:15, 00:07:19
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | 1.5 Layers: First 2-3 Managers
+> # OF COMPANIES HERE | 2,400,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them.
+> MARKETING | YOU ARE HERE | **How you tell people about your stuff**
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | 1.5 Layers: First 2-3 Managers |
+| **# OF COMPANIES HERE** | 2,400,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them. |
+| **MARKETING** | ◀ YOU ARE HERE | **How you tell people about your stuff** |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). Encabezado completo. La fila PRODUCT ya tiene su CONSTRAINT y su TO GRADUATE en letra chica; la flecha morada «YOU ARE HERE» bajó a MARKETING, con la definición del área en negrita grande en TO GRADUATE. El resto vacío. Frame principal: insert a pantalla completa. También en toma abierta (00:07:08, 00:07:19) y en primeros planos de Alex frente a la tabla (00:07:14, 00:07:15).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:06:58]
+
 [00:06:58] and we went from nothing else to buy
 [00:07:01] to making something new to sell them.
 [00:07:03] And the reason I had ConnectCS in product
@@ -222,6 +686,38 @@ nota: "—"
 [00:07:16] And then that'll help guide your selection.
 [00:07:18] So I'm gonna talk about marketing at this level,
 [00:07:20] and we're gonna keep the party going.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:07:22 | stage5_00-07-22.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: MARKETING
+> At this level...
+> CONSTRAINT
+> Qualified leads are too expensive and cap your ability to advertise
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: MARKETING]
+
+                          At this level...
+
+   [ CONSTRAINT ]                          |
+   Qualified leads are too expensive       |
+   and cap your ability to advertise       |
+                                           |
+    O    O    O    O                       |
+   /|\  /|\  /|\  /|\--[$]      ^          |
+    |    |    |    |            |  (flecha |
+   / \  / \  / \  / \           |   roja)  |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Encabezado en barra morada con texto blanco. Título «At this level...». Caja negra «CONSTRAINT» y su texto. Abajo a la izquierda, cuatro siluetas negras de personas en fila; la última sostiene con el brazo extendido una etiqueta de precio con «$»; a su derecha, una flecha roja grande apuntando hacia arriba. Línea vertical negra al centro; la mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:07:22]
+
 [00:07:22] So at this level for marketing,
 [00:07:24] the constraint is that qualified leads are too expensive,
 [00:07:25] and they cap your ability to advertise.
@@ -232,6 +728,50 @@ nota: "—"
 [00:07:32] And so the LTV is not high enough,
 [00:07:34] and so it's getting harder and harder for us to buy leads
 [00:07:36] because they're getting more and more expensive.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:07:38 | stage5_00-07-38.png]** · tipo: slide
+También visible en: 00:07:57, 00:07:57, 00:08:00, 00:08:11, 00:08:11, 00:08:15
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: MARKETING
+> And...
+> CONSTRAINT
+> Qualified leads are too expensive and cap your ability to advertise
+> TO GRADUATE
+> Spend more on niche down messaging with new offer.
+> Raise CAC limit (spend more).
+> Start scoring your leads (you select)
+> BEGIN CRO + Lead Gen Scrambler.
+> 100
+> 80
+> 10
+> 50
+> CRO
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: MARKETING]
+
+                               And...
+
+   [ CONSTRAINT ]                   |         [ TO GRADUATE ]
+   Qualified leads are too          |   Spend more on niche down
+   expensive and cap your ability   |   messaging with new offer.
+   to advertise                     |   Raise CAC limit (spend more).
+                                    |   Start scoring your leads (you select)
+    O   O   O   O         ^        ==>  BEGIN CRO + Lead Gen Scrambler.
+   /|\ /|\ /|\ /|\-[$]    |         |                          (diana)
+   / \ / \ / \ / \     (roja)       |  (100) (80) (10) (50)    [CRO]
+                                    |   O     O    O    O     (embudo)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo lado izquierdo que «At this level...» (cuatro siluetas, la última con etiqueta «$», flecha roja hacia arriba). Flecha blanca contorneada ⇒ que cruza la línea vertical central; la punta de la flecha toca la «B» de «BEGIN». A la derecha, caja negra «TO GRADUATE» con el texto; abajo, cuatro bustos de personas (dos hombres de traje y dos mujeres) con globos de diálogo azules que dicen «100», «80», «10» y «50»; una diana con flecha clavada; y un embudo azul con «CRO» en blanco sobre engranajes celestes. Frame principal: insert a pantalla completa. También en toma abierta (00:07:57, 00:07:57 b, 00:08:00, 00:08:11, 00:08:11 b, 00:08:15).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:07:38]
+
 [00:07:38] So to graduate, we do a few things.
 [00:07:40] So one is that we spend more on our niche down messaging
 [00:07:42] with the new offer, so that's what we graduate.
@@ -262,6 +802,57 @@ nota: "—"
 [00:08:33] And at this point, we gotta be professionals.
 [00:08:35] We gotta put our big boy hats on
 [00:08:36] because now we're getting into the bigger leagues.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:08:39 | stage5_00-08-39.png]** · tipo: slide
+También visible en: 00:08:49, 00:09:32, 00:09:45
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: MARKETING
+> What that looks like...
+> TO GRADUATE
+> Spend more on niche down messaging with new offer.
+> Raise CAC limit (spend more).
+> Start scoring your leads (you select)
+> Begin CRO + Attribution.
+> 100
+> 80
+> 10
+> 50
+> CRO
+> • Prioritize leads with highest closing potential to best closers based on answers given:
+>   ○ Qualifications: *who they are*
+>     ■ Answers/Stats
+>   ○ Behavior: *what they did*
+>     ■ Recent optin, email open, better c
+>   ○ Source: *Where they came from*
+>     ■ Referral, outbound, content, ads (platform/funnel)
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: MARKETING]
+
+                       What that looks like...
+
+        [ TO GRADUATE ]               |  • Prioritize leads with highest closing
+  Spend more on niche down messaging  |    potential to best closers based on
+  with new offer.                     |    answers given:
+  Raise CAC limit (spend more).       |     ○ Qualifications: who they are
+  Start scoring your leads (you select)|        ■ Answers/Stats
+  Begin CRO + Attribution.            |     ○ Behavior: what they did
+                         (diana)     ==>       ■ Recent optin, email open,
+  (100) (80) (10) (50)                |          better c
+   O     O    O    O       [CRO]      |     ○ Source: Where they came from
+                          (embudo)    |        ■ Referral, outbound, content,
+                                      |          ads (platform/funnel)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] A la izquierda, caja negra «TO GRADUATE» con el texto (la última línea ahora dice «Begin CRO + Attribution.»), y abajo los íconos de las cuatro personas con globos «100 / 80 / 10 / 50», la diana y el embudo «CRO» con engranajes. Flecha blanca contorneada ⇒ sobre la línea vertical negra. A la derecha, lista con viñetas en tres niveles (•, ○, ■); «who they are», «what they did» y «Where they came from» en cursiva. La línea «better c» aparece así, cortada, en el slide. Frame principal: insert a pantalla completa. También en toma abierta (00:09:32, 00:09:45) y en un primer plano de Alex (00:08:49) donde solo se ve la caja TO GRADUATE y los íconos.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:08:38]
+
 [00:08:38] And so this is what it looks like.
 [00:08:40] So prioritizing leads comes to the leads
 [00:08:43] with the highest closing potential.
@@ -314,6 +905,56 @@ nota: "—"
 [00:10:25] And the reason that I test this above the offer
 [00:10:27] is not that the offer isn't more impactful,
 [00:10:29] it's just higher investment.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:10:31 | stage5_00-10-31.png]** · tipo: slide
+También visible en: 00:10:04, 00:10:15, 00:11:02, 00:11:19, 00:11:19
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: MARKETING
+> What that looks like...
+> TO GRADUATE
+> Spend more on niche down messaging with new offer.
+> Raise CAC limit (spend more).
+> Start scoring your leads (you select)
+> Begin CRO + Attribution.
+> CRO
+> **CRO Priorities:** *(Rough Order)*
+> • Headline
+> • Subheadline
+> • Offer
+> • Image
+> • Benefit Bullets
+> • Proof
+> • Everything above the fold/order on page
+> **Install Attribution Software** for more accurate testing and reporting.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: MARKETING]
+
+                       What that looks like...
+
+        [ TO GRADUATE ]               |  CRO Priorities: (Rough Order)
+  Spend more on niche down messaging  |    • Headline
+  with new offer.                     |    • Subheadline
+  Raise CAC limit (spend more).       |    • Offer
+  Start scoring your leads (you select)|   • Image
+  Begin CRO + Attribution.           ==>   • Benefit Bullets
+                         (diana)      |    • Proof
+  (personas con globos)    [CRO]      |    • Everything above the fold/order on
+                          (embudo)    |      page
+                                      |
+                                      |  Install Attribution Software for more
+                                      |  accurate testing and reporting.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo lado izquierdo que el slide anterior (caja «TO GRADUATE», íconos de personas con globos, diana y embudo «CRO»), flecha ⇒ sobre la línea vertical. A la derecha cambia la lista: «CRO Priorities:» en negrita seguido de «(Rough Order)» en cursiva; siete viñetas; abajo «Install Attribution Software» en negrita y el resto en regular. Sin insert a pantalla completa: solo en toma abierta, con Alex delante de la columna izquierda (tapa buena parte del texto TO GRADUATE y de los íconos; el texto TO GRADUATE se lee completo en los primeros planos 00:11:19 y 00:11:19 b). Frame principal: toma abierta, leído recortando el video a resolución nativa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:10:30]
+
 [00:10:30] If you change the offer,
 [00:10:31] you have to change everything about the business.
 [00:10:33] You have to change what you deliver,
@@ -355,6 +996,49 @@ nota: "—"
 [00:11:38] Actually, we can now spend $3,000
 [00:11:40] when we used to only be able to spend $1,000.
 [00:11:42] And we wanna understand what our 30 day cash collected is.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:11:48 | stage5_00-11-48.png]** · tipo: slide
+También visible en: 00:11:24, 00:11:24, 00:11:30, 00:11:39, 00:12:00, 00:12:06, 00:12:15, 00:12:20
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: MARKETING
+> What that looks like...
+> TO GRADUATE
+> Spend more on niche down messaging with new offer.
+> Raise CAC limit (spend more).
+> Start scoring your leads (you select)
+> Begin [¿CRO?] & Attribution process.
+> 100
+> 50
+> CRO
+> • Recalculate LTV:CAC and create new acceptable CAC
+> • Understand 30 day cash collected.
+> • Move to break even to scale ads further (this is how big boys do it…they even lose money up front).
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: MARKETING]
+
+                       What that looks like...
+
+        [ TO GRADUATE ]               |  • Recalculate LTV:CAC and create
+  Spend more on niche down messaging  |    new acceptable CAC
+  with new offer.                     |  • Understand 30 day cash
+  Raise CAC limit (spend more).       |    collected.
+  Start scoring your leads (you select)| • Move to break even to scale ads
+  Begin [¿CRO?] & Attribution process.==>  further (this is how big boys do
+                         (diana)      |    it…they even lose money up
+  (personas con globos)    [CRO]      |    front).
+                          (embudo)    |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo lado izquierdo (caja «TO GRADUATE» e íconos de personas con globos, diana y embudo «CRO»), pero la última línea del texto TO GRADUATE cambia a «… & Attribution process.»; la palabra después de «Begin» queda siempre tapada por Alex (se ven solo una «C» inicial y una «O» final). Flecha ⇒ sobre la línea vertical. A la derecha, tres viñetas. Sin insert a pantalla completa: solo en toma abierta (Alex delante de la columna izquierda) y en primeros planos de Alex (00:12:06, 00:12:15) donde se ve la caja TO GRADUATE. Frame principal: toma abierta, leído recortando el video a resolución nativa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:11:46]
+
 [00:11:46] Meaning if we have a prospect that's coming in,
 [00:11:49] how much does it cost us just within the first month
 [00:11:51] to get them in?
@@ -382,6 +1066,54 @@ nota: "—"
 [00:12:27] And like I said, we lose money upfront sometimes.
 [00:12:30] And so at this point, you're now,
 [00:12:32] you're at stage five for marketing,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:12:35 | stage5_00-12-35.png]** · tipo: tabla
+También visible en: 00:12:47, 00:12:48
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | 1.5 Layers: First 2-3 Managers
+> # OF COMPANIES HERE | 2,400,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them.
+> MARKETING | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO.
+> SALES | YOU ARE HERE | **How you get people to give you money for your stuff**
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | 1.5 Layers: First 2-3 Managers |
+| **# OF COMPANIES HERE** | 2,400,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them. |
+| **MARKETING** | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO. |
+| **SALES** | ◀ YOU ARE HERE | **How you get people to give you money for your stuff** |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). Encabezado completo; filas PRODUCT y MARKETING llenas en letra chica; la flecha morada «YOU ARE HERE» en SALES, con la definición del área en negrita grande (en dos líneas) en TO GRADUATE. El resto vacío. Frame principal: insert a pantalla completa. También en toma abierta (00:12:47, 00:12:48), con Alex señalando la fila.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:12:33]
+
 [00:12:33] like we're getting into the big leagues.
 [00:12:35] And so qualified leads are too expensive
 [00:12:37] and they cap your ability to advertise,
@@ -397,10 +1129,87 @@ nota: "—"
 [00:12:51] Oh, it's sales.
 [00:12:52] Fine, I'm back to sales.
 [00:12:53] It's me again.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:12:56 | stage5_00-12-56.png]** · tipo: slide
+También visible en: 00:12:55, 00:12:55
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: SALES
+> At this level...
+> CONSTRAINT
+> Customers get sold with unrealistic expectations and refunds/bad reviews become an issue.
+> The sales guy said it cured cancer!
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: SALES]
+
+                          At this level...
+
+   [ CONSTRAINT ]                          |
+   Customers get sold with unrealistic     |
+   expectations and refunds/bad            |
+   reviews become an issue.                |
+                                           |
+          ★ ☆ ☆ ☆ ☆                        |
+    .---------------------------.          |
+    |  The sales guy said       |          |
+    |  it cured cancer!         |          |
+    '-----------v---------------'          |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Encabezado en barra morada con texto blanco. Título «At this level...». Caja negra «CONSTRAINT» y su texto. Debajo, una calificación de una estrella llena y cuatro vacías; y un globo de diálogo redondeado con «The sales guy said it cured cancer!» en negrita. Línea vertical negra al centro; la mitad derecha vacía. Frame principal: insert a pantalla completa. También en toma abierta (00:12:55, 00:12:55 b).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:12:54]
+
 [00:12:54] All right, so the constraint at this level
 [00:12:58] is customers get sold with unrealistic expectations
 [00:13:00] and refunds slash bad reviews become an issue.
 [00:13:03] All right, the sales guy said this is incurious cancer,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:13:07 | stage5_00-13-07.png]** · tipo: slide
+También visible en: 00:13:24, 00:13:30
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: SALES
+> And...
+> CONSTRAINT
+> Customers get sold with unrealistic expectations and refunds/bad reviews become an issue.
+> The sales guy said it cured cancer!
+> TO GRADUATE
+> Create sales aids/materials.
+> Install weekly game tape between CS & Sales/Marketing for QA & feedback.
+> Track NPS/CSAT/Refund rate by rep.
+> NPS
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: SALES]
+
+                               And...
+
+   [ CONSTRAINT ]                    |          [ TO GRADUATE ]
+   Customers get sold with           |   Create sales aids/materials.
+   unrealistic expectations and      |   Install weekly game tape between CS
+   refunds/bad reviews become an     |   & Sales/Marketing for QA & feedback.
+   issue.                            |   Track NPS/CSAT/Refund rate by rep.
+         ★ ☆ ☆ ☆ ☆                  ==>
+   .------------------------.        |  (persona     (pantalla de   (medidor
+   | The sales guy said     |        |   en pizarra)  video + lupa)  NPS)
+   | it cured cancer!       |        |
+   '----------v-------------'        |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Lado izquierdo igual que «At this level...» (una estrella de cinco y el globo). Flecha blanca contorneada ⇒ sobre la línea vertical. A la derecha, caja negra «TO GRADUATE» con el texto y tres íconos de línea negra: una persona presentando un gráfico en un pizarrón, una pantalla con botón de play y una lupa con un ojo, y un medidor/velocímetro negro con la palabra «NPS». Frame principal: insert a pantalla completa. También en toma abierta (00:13:24, 00:13:30).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:06]
+
 [00:13:06] right, like you don't want that.
 [00:13:07] All right, and so to graduate,
 [00:13:09] create sales aids slash materials
@@ -422,6 +1231,59 @@ nota: "—"
 [00:13:39] And so sometimes because you brought you guys in,
 [00:13:41] they set bad expectations.
 [00:13:42] And so your reputation takes a hit.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:13:45 | stage5_00-13-45.png]** · tipo: slide
+También visible en: 00:14:02, 00:14:15, 00:14:30, 00:14:50, 00:14:51, 00:15:00, 00:15:39, 00:15:45, 00:16:06, 00:16:14, 00:16:15, 00:16:29, 00:16:30, 00:16:30
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: SALES
+> What that looks like...
+> TO GRADUATE
+> Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep.
+> NPS
+> **Sales Aids:** Slide decks, Video Sales Letters, Sales Letters, Charts, Graphs, Data visualization, Calculators
+> **VSL BASICS:**
+> • STRONG DETAILED PAIN BASED HOOK
+> • Why hasn’t this problem been solved yet?
+> • What is the impact if this problem continues?
+> • What is the solution? How does the solution work?
+> • What makes your **solution different** or better than others?
+> • What **proof** do you have that your solution works?
+>   ○ Weave in throughout
+> • What are the risks of investing in this solution?
+>   ○ FAQs & Common objections
+> • What should they do next?
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: SALES]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |  Sales Aids: Slide decks, Video Sales Letters, Sales
+  Create sales aids/materials. Install|  Letters, Charts, Graphs, Data visualization, Calculators
+  weekly game tape between CS &       |
+  Sales/Marketing for QA & feedback.  |  VSL BASICS:
+  Track NPS/CSAT/Refund rate by rep.  |   • STRONG DETAILED PAIN BASED HOOK
+                                      |   • Why hasn’t this problem been solved yet?
+                                      |   • What is the impact if this problem continues?
+                                     ==>  • What is the solution? How does the solution work?
+                                      |   • What makes your solution different or better than
+  (persona en   (pantalla de  (medidor|     others?
+   pizarra)      video+lupa)   NPS)   |   • What proof do you have that your solution works?
+                                      |        ○ Weave in throughout
+                                      |   • What are the risks of investing in this solution?
+                                      |        ○ FAQs & Common objections
+                                      |   • What should they do next?
+```
+
+[DESCRIPCIÓN DEL DIBUJO] A la izquierda, caja negra «TO GRADUATE» con su texto y los tres íconos (persona en pizarrón, pantalla de video con lupa y ojo, medidor «NPS»). Flecha blanca contorneada ⇒ sobre la línea vertical negra. A la derecha, «Sales Aids:» y «VSL BASICS:» en negrita; en la lista, «solution different» y «proof» van en negrita dentro de la frase. Frame principal: insert a pantalla completa. También en toma abierta (Alex señala la lista) y en primeros planos de Alex (00:14:50, 00:14:51, 00:15:00, 00:16:06, 00:16:29, 00:16:30, 00:16:30 b) donde solo se ve la caja TO GRADUATE y los íconos.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:43]
+
 [00:13:43] All right, so let's talk through it.
 [00:13:45] So first one is sales aids.
 [00:13:46] These are slide decks, video sales letters,
@@ -516,6 +1378,47 @@ nota: "—"
 [00:16:36] because we found the best sales
 [00:16:38] and then we replicated it over and over again, all right?
 [00:16:41] And so that's the front end on the sales side.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:16:44 | stage5_00-16-44.png]** · tipo: slide
+También visible en: 00:16:40, 00:16:41, 00:16:41, 00:16:58, 00:17:15, 00:17:32, 00:17:45, 00:17:55, 00:17:56, 00:18:00, 00:18:11, 00:18:15, 00:18:25, 00:18:30, 00:18:31, 00:18:43, 00:18:45, 00:19:00, 00:19:00, 00:19:01, 00:19:15, 00:19:16, 00:19:22, 00:19:30, 00:19:45, 00:19:48, 00:19:54, 00:20:00, 00:20:18, 00:20:30, 00:20:45, 00:21:00, 00:21:23, 00:21:30, 00:21:45, 00:21:47, 00:21:59, 00:22:15, 00:22:30, 00:22:59, 00:23:00
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: SALES
+> What that looks like...
+> TO GRADUATE
+> Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep.
+> NPS
+> • **Game Tape:** CS, Sales alternate sales & onboarding calls.
+> • FOLLOW THE 5 As
+>   ○ Arrange
+>   ○ Assemble
+>   ○ Assess
+>   ○ Analyze
+>   ○ Act
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: SALES]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |  • Game Tape: CS, Sales alternate
+  Create sales aids/materials. Install|    sales & onboarding calls.
+  weekly game tape between CS &       |  • FOLLOW THE 5 As
+  Sales/Marketing for QA & feedback.  |       ○ Arrange
+  Track NPS/CSAT/Refund rate by rep.  |       ○ Assemble
+                                     ==>      ○ Assess
+  (persona en   (pantalla de  (medidor|       ○ Analyze
+   pizarra)      video+lupa)   NPS)   |       ○ Act
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo lado izquierdo que el slide anterior (caja «TO GRADUATE» y los tres íconos), flecha ⇒ sobre la línea vertical. A la derecha cambia la lista: «Game Tape:» en negrita y el resto en regular; los cinco pasos como sub-viñetas (○). Frame principal: insert a pantalla completa. Es el slide que más tiempo queda en pantalla: también en tomas abiertas con Alex y Leila, en primeros planos de Leila con la lista «FOLLOW THE 5 As» detrás (00:17:55 a 00:19:15, 00:21:47) y en primeros planos de Alex con la caja TO GRADUATE y los íconos (00:19:16, 00:19:48, 00:22:59, 00:23:00).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:16:44]
+
 [00:16:44] So the next thing you wanna consider
 [00:16:45] is putting in a game tape.
 [00:16:46] And so game tape review is basically
@@ -737,6 +1640,47 @@ nota: "—"
 [00:23:36] And so you want to minimize that
 [00:23:38] or eliminate it altogether, obviously.
 [00:23:41] State the facts and tell the truth.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:23:45 | stage5_00-23-45.png]** · tipo: slide
+También visible en: 00:23:36
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: SALES
+> What that looks like...
+> TO GRADUATE
+> Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep.
+> NPS
+> • **Marketing:** watches gametape to listen for messaging and hooks - and to see lead quality
+> • **NPS/CSAT/Refund Rate:** track down _to the rep_ so you can see if one person is throwing stuff off (usually it’s 1 or 2 people).
+>   ○ Bad expectations
+>   ○ Over promising
+>   ○ “Selling hot”
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: SALES]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |  • Marketing: watches gametape
+  Create sales aids/materials. Install|    to listen for messaging and
+  weekly game tape between CS &       |    hooks - and to see lead quality
+  Sales/Marketing for QA & feedback.  |  • NPS/CSAT/Refund Rate: track
+  Track NPS/CSAT/Refund rate by rep.  |    down to the rep so you can see
+                                     ==>   if one person is throwing stuff off
+                                      |    (usually it’s 1 or 2 people).
+  (persona en   (pantalla de  (medidor|       ○ Bad expectations
+   pizarra)      video+lupa)   NPS)   |       ○ Over promising
+                                      |       ○ “Selling hot”
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo lado izquierdo (caja «TO GRADUATE» y los tres íconos), flecha ⇒ sobre la línea vertical. A la derecha, dos viñetas con rótulo en negrita («Marketing:», «NPS/CSAT/Refund Rate:»); «to the rep» va subrayado; tres sub-viñetas (○). Sin insert a pantalla completa: solo en toma abierta (Alex a la izquierda de la pantalla); leído recortando el video a resolución nativa en 00:23:45, donde la pantalla queda despejada.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:23:42]
+
 [00:23:42] It's been our number one code of marketing and sales
 [00:23:45] that we have like every,
 [00:23:46] if you ask anybody in our departments,
@@ -745,6 +1689,54 @@ nota: "—"
 [00:23:49] And if the truth isn't compelling enough,
 [00:23:51] then change reality so that it is.
 [00:23:53] All right, and so that's sales at this level.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:23:56 | stage5_00-23-56.png]** · tipo: tabla
+También visible en: 00:24:22, 00:24:30, 00:26:06
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | 1.5 Layers: First 2-3 Managers
+> # OF COMPANIES HERE | 2,400,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them.
+> MARKETING | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO.
+> SALES | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep.
+> CUSTOMER SERVICE | YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.**
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | 1.5 Layers: First 2-3 Managers |
+| **# OF COMPANIES HERE** | 2,400,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them. |
+| **MARKETING** | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO. |
+| **SALES** | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep. |
+| **CUSTOMER SERVICE** | ◀ YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.** |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). Encabezado completo; filas PRODUCT, MARKETING y SALES llenas en letra chica; la flecha morada «YOU ARE HERE» en CUSTOMER SERVICE, con la definición del área en negrita grande en TO GRADUATE. Debajo de la línea gruesa, todo vacío. Frame principal: insert a pantalla completa. También en toma abierta (00:24:22, 00:24:30 y, tras el segmento de entrevista, 00:26:06).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:23:55]
+
 [00:23:55] And now we started with customers,
 [00:23:57] get sold with unrealistic expectations and refunds
 [00:23:59] and battery to speak of an issue.
@@ -812,16 +1804,132 @@ nota: "—"
 [00:26:06] And that leads us to the servicing of customers.
 [00:26:09] All right, so customer service is how you get customers
 [00:26:12] to refer, retain, review and resell.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:26:15 | stage5_00-26-15.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: CUSTOMER SERVICE
+> At this level...
+> CONSTRAINT
+> Customers come in with unrealistic expectations. Get inconsistent answers.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: CUSTOMER SERVICE]
+
+                          At this level...
+
+   [ CONSTRAINT ]                          |
+   Customers come in with unrealistic      |
+   expectations. Get inconsistent          |
+   answers.                                |
+     [<-]                                  |
+        [->]   ?                           |
+      O       O                            |
+     /|\-    /|\                           |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Encabezado en barra morada con texto blanco. Título «At this level...». Caja negra «CONSTRAINT» y su texto. Debajo, ícono en azul de dos personas: la de la izquierda señala y de ella salen dos globos de diálogo, uno con una flecha hacia la izquierda y otro con una flecha hacia la derecha (respuestas contradictorias); sobre la persona de la derecha, un signo «?». Línea vertical negra al centro; la mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:26:14]
+
 [00:26:14] Customers come in with unrealistic expectations
 [00:26:16] and they get inconsistent answers, right?
 [00:26:18] So they talk to one person, they get one kind of answer,
 [00:26:20] they talk to another person, they get another kind of answer.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:26:22 | stage5_00-26-22.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: CUSTOMER SERVICE
+> And...
+> CONSTRAINT
+> Customers come in with unrealistic expectations. Get inconsistent answers.
+> TO GRADUATE
+> Build proper CS playbook to onboard & train team to answer Qs same way.
+> WKLY Game tape review.
+> Customer ascension path.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: CUSTOMER SERVICE]
+
+                               And...
+
+   [ CONSTRAINT ]                    |          [ TO GRADUATE ]
+   Customers come in with            |   Build proper CS playbook to onboard
+   unrealistic expectations. Get     |   & train team to answer Qs same way.
+   inconsistent answers.             |   WKLY Game tape review.
+                                     |   Customer ascension path.
+     [<-]                           ==>
+        [->]   ?                     |   (libro azul con     ($ con flecha
+      O       O                      |    engranaje y         ascendente y
+     /|\-    /|\                     |    gráfico)            carrito)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Lado izquierdo igual que «At this level...» (dos personas con globos de flechas opuestas y «?»). Flecha blanca contorneada ⇒ sobre la línea vertical. A la derecha, caja negra «TO GRADUATE» con el texto y dos íconos: un libro/manual azul con un engranaje, una jugada «x → o» y barras de gráfico, con un marcador amarillo (el playbook); y un ícono de línea negra con un «$» dentro de un círculo, una flecha en zigzag ascendente y un carrito de compras. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:26:22]
+
 [00:26:22] And so to graduate this,
 [00:26:23] you wanna build out a proper customer service playbook
 [00:26:27] to onboard and train your team
 [00:26:29] to answer questions the same way.
 [00:26:31] You also, again, you're gonna have weekly game tape review
 [00:26:34] and customer ascension path.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:26:36 | stage5_00-26-36.png]** · tipo: slide
+También visible en: 00:26:40, 00:26:52, 00:27:00, 00:27:15, 00:27:28, 00:27:30, 00:27:43, 00:27:48, 00:27:52, 00:28:00, 00:29:45, 00:30:00, 00:30:15, 00:30:20, 00:30:30, 00:30:36
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: CUSTOMER SERVICE
+> What that looks like...
+> TO GRADUATE
+> Build proper CS playbook to onboard & train team to answer Qs same way.
+> WKLY Game tape review.
+> Customer ascension path.
+> **Question Categories**
+>   ○ Chunk up to 5 categories
+>   ○ Ex: Change card, Address, flavor, cadence, amount
+>   ○ Create templated answers
+> **Empowerment Wheel & Budget**
+>   ○ Create 4 actions a rep can take to over deliver and delight a customer to create raving fans
+>   ○ - Ex: Every Ritz Employee has up to 2k per guest per day to over deliver if they mess up, here are the options
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: CUSTOMER SERVICE]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |  Question Categories
+  Build proper CS playbook to onboard |     ○ Chunk up to 5 categories
+  & train team to answer Qs same way. |     ○ Ex: Change card, Address, flavor,
+  WKLY Game tape review.              |       cadence, amount
+  Customer ascension path.            |     ○ Create templated answers
+                                      |  Empowerment Wheel & Budget
+                                     ==>    ○ Create 4 actions a rep can take
+  (libro/playbook   ($ con flecha     |       to over deliver and delight a
+   azul)             y carrito)       |       customer to create raving fans
+                                      |     ○ - Ex: Every Ritz Employee has up
+                                      |       to 2k per guest per day to over
+                                      |       deliver if they mess up, here are
+                                      |       the options
+```
+
+[DESCRIPCIÓN DEL DIBUJO] A la izquierda, caja negra «TO GRADUATE» con su texto y los dos íconos (libro/playbook azul; «$» con flecha ascendente y carrito). Flecha blanca contorneada ⇒ sobre la línea vertical negra. A la derecha, dos subtítulos en negrita («Question Categories», «Empowerment Wheel & Budget») con sub-viñetas (○). Frame principal: insert a pantalla completa. También en toma abierta con Alex y Leila (Leila señala la lista) y en primeros planos de Leila con la lista detrás (00:27:43, 00:27:48, 00:30:20, 00:30:30). El slide vuelve después del de «Employee Empowerment Wheel» (00:29:45 a 00:30:36).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:26:35]
+
 [00:26:35] What does this look like
 [00:26:36] when it comes to building out a CS playbook?
 [00:26:39] Okay, it's really, I wanna break it down
@@ -877,6 +1985,66 @@ nota: "—"
 [00:28:21] for every single thing that happens, right?
 [00:28:23] We want to create four actions that a rep can take
 [00:28:26] to over-deliver and delight a customer
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:28:30 | stage5_00-28-30.png]** · tipo: diagrama
+También visible en: 00:28:51, 00:29:18, 00:29:30
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: CUSTOMER SERVICE
+> What that looks like...
+> TO GRADUATE
+> Build proper CS playbook to onboard & train team to answer Qs same way.
+> WKLY Game tape review.
+> Customer ascension path.
+> **Employee Empowerment Wheel**
+> Risk Level
+> Major Operational Decisions
+> Contractual or Legal Issues
+> Regulatory Issues
+> Minor Operational Decisions
+> Comps or Discounts
+> Public Communication
+> Cash or Credit Refunds
+> Direct Customer Communication
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: CUSTOMER SERVICE]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |          Employee Empowerment Wheel
+  Build proper CS playbook to onboard |
+  & train team to answer Qs same way. |
+  WKLY Game tape review.              |
+  Customer ascension path.            |
+                                     ==>
+  (libro/playbook   ($ con flecha     |
+   azul)             y carrito)       |
+
+  Recuadro de borde morado (a la derecha):
+  +--------------------------------------------------------------------+
+  |                                                     [Risk Level]   |
+  |   Major Operational Decisions        Contractual or Legal Issues   |
+  |                      \  [OSCURO] | [OSCURO]  /                     |
+  |   Regulatory Issues     [OSCURO] | [CLARO]      Minor Operational  |
+  |                                  |              Decisions          |
+  |                     -------------+-------------                    |
+  |   Comps or Discounts    [MEDIO]  | [CLARO]      Public             |
+  |                                  |              Communication      |
+  |                      /  [MEDIO]  | [CLARO]   \                     |
+  |   Cash or Credit Refunds             Direct Customer Communication |
+  +--------------------------------------------------------------------+
+  (rueda de 8 gajos iguales; OSCURO / MEDIO / CLARO = tono de gris del gajo)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Lado izquierdo igual que el slide anterior (caja «TO GRADUATE» e íconos), flecha ⇒ sobre la línea vertical. A la derecha, el título «Employee Empowerment Wheel» en negrita y, dentro de un recuadro con borde morado, un gráfico de torta de 8 gajos iguales en escala de grises, con una etiqueta en letra chica junto a cada gajo. Gajos gris oscuro: «Major Operational Decisions» (arriba a la izquierda), «Contractual or Legal Issues» (arriba a la derecha) y «Regulatory Issues» (izquierda arriba). Gajos gris claro: «Minor Operational Decisions» (derecha arriba), «Public Communication» (derecha abajo) y «Direct Customer Communication» (abajo a la derecha). Gajos gris medio: «Comps or Discounts» (izquierda abajo) y «Cash or Credit Refunds» (abajo a la izquierda). Arriba a la derecha, una pequeña caja de leyenda que solo dice «Risk Level» (sin escala visible). Frame principal: insert a pantalla completa. También en toma abierta (00:28:51, 00:29:18, 00:29:30), con Leila señalando la rueda.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:28:28]
+
 [00:28:28] to create rating fans.
 [00:28:30] So this is what an employee empowerment wheel looks like.
 [00:28:33] And when you have an empowerment wheel,
@@ -938,6 +2106,53 @@ nota: "—"
 [00:30:35] Those were three options that we gave our CS reps
 [00:30:38] within their empowerment wheel as options of actions
 [00:30:41] they could take on things to delight the customer.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:30:44 | stage5_00-30-44.png]** · tipo: diagrama
+También visible en: 00:30:57, 00:31:00, 00:31:15, 00:31:17, 00:31:18, 00:31:22, 00:31:23, 00:31:24, 00:31:30, 00:31:45, 00:31:49, 00:32:00, 00:32:23, 00:32:24, 00:32:30, 00:32:36, 00:32:36, 00:32:45, 00:32:50, 00:33:00, 00:33:09, 00:33:15, 00:33:30, 00:33:45, 00:33:47, 00:34:00, 00:34:15, 00:34:15, 00:34:16, 00:34:27, 00:34:29, 00:34:30, 00:34:44, 00:34:45, 00:35:00, 00:35:15, 00:35:30, 00:35:36, 00:35:39, 00:35:45, 00:35:54, 00:36:00, 00:36:12, 00:36:30, 00:36:30, 00:36:40, 00:36:47, 00:36:48, 00:36:56, 00:36:56, 00:36:58, 00:37:00
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: CUSTOMER SERVICE
+> What that looks like...
+> TO GRADUATE
+> Build proper CS playbook to onboard & train team to answer Qs same way.
+> WKLY Game tape review.
+> Customer ascension path.
+> **Ascension Path**
+> • With new product, must make clear ascension (multiple shots on goal).
+> • Grand Slam Offer with immediate bonus. **Ex:** GL
+> Immediate
+> 24-48hrs
+> 1st Big Win
+> Halfway Pt
+> Last Shot
+> Customer Timeline
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: CUSTOMER SERVICE]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |  Ascension Path
+  Build proper CS playbook to onboard |   • With new product, must make
+  & train team to answer Qs same way. |     clear ascension (multiple shots on
+  WKLY Game tape review.              |     goal).
+  Customer ascension path.            |   • Grand Slam Offer with immediate
+                                      |     bonus. Ex: GL
+                                     ==>
+  (libro/playbook   ($ con flecha     |    Immediate  24-48hrs  1st Big Win  Halfway Pt  Last Shot
+   azul)             y carrito)       |       \\         \\         \\           \\          \\
+                                      |   ====v=========v=========v===========v==========v====>
+                                      |                    Customer Timeline
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Lado izquierdo igual (caja «TO GRADUATE» e íconos), flecha ⇒ sobre la línea vertical. A la derecha, «Ascension Path» en negrita, dos viñetas («Ex:» en negrita) y abajo una línea de tiempo: una flecha negra gruesa horizontal hacia la derecha con «Customer Timeline» en blanco, y cinco flechas negras diagonales que bajan desde arriba a la derecha hasta la línea, cada una con su rótulo en blanco escrito en diagonal: «Immediate», «24-48hrs», «1st Big Win», «Halfway Pt», «Last Shot». Frame principal: insert a pantalla completa. Es uno de los slides que más dura: también en tomas abiertas con Alex y Leila, en primeros planos de Leila con la línea de tiempo detrás (00:31:17 a 00:31:45, 00:34:27, 00:35:36) y en primeros planos de Alex con la caja TO GRADUATE y los íconos (00:32:36 a 00:34:00, 00:35:54 a 00:37:00).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:30:43]
+
 [00:30:43] The last piece is the Ascension Path.
 [00:30:45] Okay, so with a new product,
 [00:30:47] you must make a clear Ascension Path, okay?
@@ -1131,6 +2346,54 @@ nota: "—"
 [00:37:00] You know what I mean?
 [00:37:01] Like make it an offer so good they feel stupid saying no,
 [00:37:03] and fewer of them will.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:37:05 | stage5_00-37-05.png]** · tipo: tabla
+También visible en: 00:37:20
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | 1.5 Layers: First 2-3 Managers
+> # OF COMPANIES HERE | 2,400,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them.
+> MARKETING | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO.
+> SALES | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep.
+> CUSTOMER SERVICE | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path.
+> INFORMATION TECH (IT) | YOU ARE HERE | **How you gather, store, analyze, and display information.**
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | 1.5 Layers: First 2-3 Managers |
+| **# OF COMPANIES HERE** | 2,400,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them. |
+| **MARKETING** | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO. |
+| **SALES** | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep. |
+| **CUSTOMER SERVICE** | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path. |
+| **INFORMATION TECH (IT)** | ◀ YOU ARE HERE | **How you gather, store, analyze, and display information.** |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). Encabezado completo; filas PRODUCT a CUSTOMER SERVICE llenas en letra chica; la flecha morada «YOU ARE HERE» en INFORMATION TECH (IT), justo debajo de la línea gruesa, con la definición del área en negrita grande en TO GRADUATE. El resto vacío. Frame principal: insert a pantalla completa. También en toma abierta (00:37:20).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:37:04]
+
 [00:37:04] So that is customer service.
 [00:37:05] Customers came in with unrealistic expectations.
 [00:37:07] They got inconsistent answers.
@@ -1142,14 +2405,130 @@ nota: "—"
 [00:37:19] So next we move to IT,
 [00:37:21] which is how you gather, store, analyze,
 [00:37:23] and display information.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:37:25 | stage5_00-37-25.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: INFORMATION TECHNOLOGY (IT)
+> At this level...
+> CONSTRAINT
+> Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: INFORMATION TECHNOLOGY (IT)]
+
+                          At this level...
+
+   [ CONSTRAINT ]                          |
+   Employees using their personal          |
+   hardware and software and creates       |
+   issues when people leave. No            |
+   tracking for leads and customers        |
+   interacting with your business.         |
+                                           |
+  <== (persona en casa     (monitor con    |
+       con computadora)     mapa + lupa)   |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Encabezado en barra morada con texto blanco. Título «At this level...». Caja negra «CONSTRAINT» y su texto. Debajo, dos íconos negros: una flecha gruesa hacia la izquierda saliendo de una casa con una persona sentada frente a una computadora (trabajo desde casa / alguien que se va), y un monitor con un pin de ubicación, una línea de puntos y una lupa (seguimiento). Línea vertical negra al centro; la mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:37:24]
+
 [00:37:24] And so right now, the constraint of IT
 [00:37:26] is that employees are using their personal hardware
 [00:37:29] and software, which creates issues when people leave.
 [00:37:32] There's no tracking for leads
 [00:37:33] and customers interacting with your business.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:37:36 | stage5_00-37-36.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: INFORMATION TECHNOLOGY (IT)
+> And...
+> CONSTRAINT
+> Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business.
+> TO GRADUATE
+> Company provides company owned/controlled hardware and software. Need dashboard/reporting system.
+> COMPANY HARDWARE
+> PERSONAL HARDWARE
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: INFORMATION TECHNOLOGY (IT)]
+
+                               And...
+
+   [ CONSTRAINT ]                     |          [ TO GRADUATE ]
+   Employees using their personal     |   Company provides company
+   hardware and software and creates  |   owned/controlled hardware and
+   issues when people leave. No       |   software. Need dashboard/reporting
+   tracking for leads and customers   |   system.
+   interacting with your business.   ==>
+                                      |  [COMPANY HARDWARE]  [PERSONAL HARDWARE]
+  <== (persona en casa  (monitor con  |   (monitor + torre)   (monitor + torre)
+       con computadora)  mapa + lupa) |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Lado izquierdo igual que «At this level...». Flecha blanca contorneada ⇒ sobre la línea vertical. A la derecha, caja negra «TO GRADUATE» con el texto; abajo, dos íconos idénticos de computadora de escritorio (monitor y torre, negros), el de la izquierda con la etiqueta «COMPANY HARDWARE» en caja morada y el de la derecha con «PERSONAL HARDWARE» en caja negra. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:37:35]
+
 [00:37:35] And so to graduate, the company needs to provide
 [00:37:38] company owned and controlled hardware and software.
 [00:37:42] Also, you need a dashboard and reporting system.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:37:46 | stage5_00-37-46.png]** · tipo: slide
+También visible en: 00:37:53, 00:38:00, 00:38:12, 00:38:14, 00:38:27, 00:38:41, 00:38:45, 00:38:55, 00:39:00, 00:39:15, 00:39:17, 00:39:30, 00:39:37, 00:39:45, 00:39:52
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: INFORMATION TECHNOLOGY (IT)
+> What that looks like...
+> TO GRADUATE
+> Company provides company owned/controlled hardware and software. Need dashboard/reporting system.
+> COMPANY HARDWARE
+> PERSONAL HARDWARE
+> **Advice:** *Don’t skimp. If their personal device is better/faster, they will hate their work device & be less productive.*
+> • It’s the cheapest way to increase worker productivity (fast internet, fast computers, fast phones).
+> • Yes, sales guys get iphones
+> • Commit to PC or Mac & software suite that goes with it.
+> • They turn them in when fired or quit.
+> ****EMPLOYEE HANDBOOK POLICIES****
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: INFORMATION TECHNOLOGY (IT)]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |  Advice: Don’t skimp. If their personal
+  Company provides company            |  device is better/faster, they will hate
+  owned/controlled hardware and       |  their work device & be less productive.
+  software. Need dashboard/reporting  |
+  system.                             |   • It’s the cheapest way to increase
+                                     ==>    worker productivity (fast internet,
+  [COMPANY HARDWARE] [PERSONAL HARDWARE]    fast computers, fast phones).
+   (monitor + torre)  (monitor + torre)|  • Yes, sales guys get iphones
+                                      |   • Commit to PC or Mac & software
+                                      |     suite that goes with it.
+                                      |   • They turn them in when fired or quit.
+                                      |
+                                      |  **EMPLOYEE HANDBOOK POLICIES**
+```
+
+[DESCRIPCIÓN DEL DIBUJO] A la izquierda, caja negra «TO GRADUATE» con su texto y los dos íconos de computadora («COMPANY HARDWARE» en caja morada, «PERSONAL HARDWARE» en caja negra). Flecha blanca contorneada ⇒ sobre la línea vertical negra. A la derecha, «Advice:» en negrita seguido del consejo en cursiva; cuatro viñetas; abajo, en mayúsculas negritas, la línea con asteriscos literales en pantalla: «**EMPLOYEE HANDBOOK POLICIES**». Frame principal: insert a pantalla completa. También en toma abierta con Alex y Leila, en un primer plano de Leila con la lista detrás (00:38:14) y en primeros planos de Alex con la caja TO GRADUATE y los íconos (00:38:12, 00:38:55, 00:39:00, 00:39:15, 00:39:37, 00:39:45).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:37:45]
+
 [00:37:45] So what does that look like?
 [00:37:46] It looks like getting them company hardware.
 [00:37:49] Here's the thing.
@@ -1225,13 +2604,129 @@ nota: "—"
 [00:40:13] the stuff they did on the hardware belongs to you.
 [00:40:15] If you have these super complex models that they built,
 [00:40:17] but it's just on the computer and it's gone, it's gone.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:40:21 | stage5_00-40-21.png]** · tipo: tabla
+También visible en: 00:39:56, 00:40:00, 00:40:06, 00:40:12, 00:40:15, 00:40:27, 00:40:28
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | 1.5 Layers: First 2-3 Managers
+> # OF COMPANIES HERE | 2,400,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them.
+> MARKETING | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO.
+> SALES | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep.
+> CUSTOMER SERVICE | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path.
+> INFORMATION TECH (IT) | Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business. | Company provides company owned/controlled hardware and software. Need dashboard/reporting system.
+> RECRUITING | YOU ARE HERE | **How you find and hire people to work for your company.**
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | 1.5 Layers: First 2-3 Managers |
+| **# OF COMPANIES HERE** | 2,400,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them. |
+| **MARKETING** | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO. |
+| **SALES** | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep. |
+| **CUSTOMER SERVICE** | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path. |
+| **INFORMATION TECH (IT)** | Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business. | Company provides company owned/controlled hardware and software. Need dashboard/reporting system. |
+| **RECRUITING** | ◀ YOU ARE HERE | **How you find and hire people to work for your company.** |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). Encabezado completo; filas PRODUCT a INFORMATION TECH (IT) llenas en letra chica; la flecha morada «YOU ARE HERE» en RECRUITING, con la definición del área en negrita grande en TO GRADUATE. HUMAN RESOURCES (HR) y FINANCE vacías. Frame principal: insert a pantalla completa. También en toma abierta (00:40:06, 00:40:27, 00:40:28) y en primeros planos de Alex frente a la tabla (00:39:56, 00:40:00, 00:40:12, 00:40:15), donde se ve la flecha «YOU ARE HERE» en RECRUITING.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:40:20]
+
 [00:40:20] So for IT, people are using their personal software
 [00:40:23] and hardware and so to graduate,
 [00:40:25] we wanna provide them with their own.
 [00:40:27] So next we move to is recruiting.
 [00:40:29] So recruiting is how you find and hire people
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:40:32 | stage5_00-40-32.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: RECRUITING
+> At this level...
+> CONSTRAINT
+> Have trouble finding higher level roles/managers.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: RECRUITING]
+
+                          At this level...
+
+   [ CONSTRAINT ]                          |
+   Have trouble finding higher level       |
+   roles/managers.                         |
+                                           |
+            \ | /                          |
+     O  O  \ (X) /  O  O                   |
+    /|\/|\   /|\   /|\/|\                  |
+            [___]                          |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Encabezado en barra morada con texto blanco. Título «At this level...». Caja negra «CONSTRAINT» y su texto. Debajo, ícono negro de un grupo de cinco personas: la del centro, sobre un pedestal y con rayitas de «destacado» sobre la cabeza, levanta el brazo, y tiene una «X» roja sobre el pecho/cuello. Línea vertical negra al centro; la mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:40:31]
+
 [00:40:31] to work for you and your company.
 [00:40:33] So at this level, you have trouble finding
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:40:37 | stage5_00-40-37.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: RECRUITING
+> And...
+> CONSTRAINT
+> Have trouble finding higher level roles/managers.
+> TO GRADUATE
+> Deliberate promotions from within rather than Peter Principle.
+> Incentivize employee referrals = CAT = cost to acquire talent.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: RECRUITING]
+
+                               And...
+
+   [ CONSTRAINT ]                    |          [ TO GRADUATE ]
+   Have trouble finding higher level |   Deliberate promotions from within
+   roles/managers.                   |   rather than Peter Principle.
+                                     |   Incentivize employee referrals = CAT
+            \ | /                   ==>  = cost to acquire talent.
+     O  O  \ (X) /  O  O             |
+    /|\/|\   /|\   /|\/|\            |   (persona subiendo   [+]   (grupo con persona
+            [___]                    |    escalera con              destacada en
+                                     |    maletín)                  pedestal)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Lado izquierdo igual que «At this level...» (grupo con la persona destacada tachada con «X» roja). Flecha blanca contorneada ⇒ sobre la línea vertical. A la derecha, caja negra «TO GRADUATE» con el texto y, abajo, tres íconos: una persona de traje con maletín subiendo una escalera, un signo «+» morado, y el mismo grupo de cinco personas con la del centro destacada sobre un pedestal, ahora sin la «X». Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:40:35]
+
 [00:40:35] higher level roles or managers.
 [00:40:37] And so to graduate, you wanna make sure
 [00:40:39] that you have deliberate promotions from within
@@ -1239,6 +2734,54 @@ nota: "—"
 [00:40:44] the Peter Principle.
 [00:40:45] And you wanna incentivize employee referrals
 [00:40:47] so that your cost to acquire talent stays low.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:40:51 | stage5_00-40-51.png]** · tipo: slide
+También visible en: 00:40:55, 00:41:00, 00:41:12, 00:41:15, 00:41:28, 00:41:30, 00:41:42, 00:41:45, 00:41:48, 00:42:08, 00:42:08, 00:42:11, 00:42:15, 00:42:31, 00:42:45, 00:43:00, 00:43:15, 00:43:18, 00:43:19, 00:43:28, 00:43:30, 00:43:42, 00:43:45, 00:44:00, 00:44:06, 00:44:07, 00:44:15, 00:44:32, 00:44:45, 00:45:04, 00:45:10, 00:45:12, 00:45:15, 00:45:17, 00:45:30, 00:45:32, 00:45:45, 00:45:47, 00:45:59, 00:46:00, 00:46:07, 00:46:07, 00:46:20, 00:46:30, 00:46:36, 00:46:45, 00:47:14, 00:47:15, 00:47:28, 00:47:30
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: RECRUITING
+> What that looks like...
+> TO GRADUATE
+> Deliberate promotions from within rather than Peter Principle. Incentivize employee referrals = CAT = cost to acquire talent.
+> **Peter Principle**: People are promoted to their point of incompetence.
+> • Do a normal hiring process to see what they compare against
+> • Have them prep & interview for the role like normal
+> • “Try before you buy” trial period
+>   ○ Red/Yellow/Green JD rating
+> **Employee referrals are gold:**
+> • Insurance story
+> • Referrals stay 70% longer on average
+> • Treat CAT like CAC (ratio)
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: RECRUITING]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |  Peter Principle: People are promoted
+  Deliberate promotions from within   |  to their point of incompetence.
+  rather than Peter Principle.        |
+  Incentivize employee referrals =    |   • Do a normal hiring process to see what
+  CAT = cost to acquire talent.       |     they compare against
+                                      |   • Have them prep & interview for the role
+                                     ==>    like normal
+  (persona subiendo [+] (grupo con    |   • “Try before you buy” trial period
+   escalera)             persona      |        ○ Red/Yellow/Green JD rating
+                         destacada)   |
+                                      |  Employee referrals are gold:
+                                      |   • Insurance story
+                                      |   • Referrals stay 70% longer on average
+                                      |   • Treat CAT like CAC (ratio)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] A la izquierda, caja negra «TO GRADUATE» con su texto y los íconos (persona subiendo la escalera con maletín, «+» morado, grupo con persona destacada en pedestal). Flecha blanca contorneada ⇒ sobre la línea vertical negra. A la derecha, «Peter Principle» en negrita (los dos puntos y la definición en regular), tres viñetas con una sub-viñeta (○), y «Employee referrals are gold:» en negrita con tres viñetas. Frame principal: insert a pantalla completa. Es uno de los slides que más dura: también en tomas abiertas con Alex y Leila, en primeros planos de Leila con la lista detrás (00:41:12 a 00:46:00) y en primeros planos de Alex con la caja TO GRADUATE y los íconos (00:41:42, 00:41:45, 00:46:20, 00:46:30, 00:47:14, 00:47:15).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:40:50]
+
 [00:40:50] So I will break down.
 [00:40:51] So the Peter Principle is when people are promoted
 [00:40:53] to the point of their incompetence.
@@ -1446,12 +2989,97 @@ nota: "—"
 [00:47:39] you don't have to pay these recruiting firms,
 [00:47:40] you don't have to keep the money in the family.
 [00:47:42] And by family, I mean team.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:47:46 | stage5_00-47-46.png]** · tipo: tabla
+También visible en: 00:47:45, 00:47:55
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | 1.5 Layers: First 2-3 Managers
+> # OF COMPANIES HERE | 2,400,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them.
+> MARKETING | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO.
+> SALES | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep.
+> CUSTOMER SERVICE | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path.
+> INFORMATION TECH (IT) | Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business. | Company provides company owned/controlled hardware and software. Need dashboard/reporting system.
+> RECRUITING | Have trouble finding higher level roles/managers. | Deliberate promotions from within rather than Peter Principle. Incentivize employee referrals = CAT = cost to acquire talent.
+> HUMAN RESOURCES (HR) | YOU ARE HERE | **How you decrease the likelihood employees or regulators sue you.**
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | 1.5 Layers: First 2-3 Managers |
+| **# OF COMPANIES HERE** | 2,400,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them. |
+| **MARKETING** | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO. |
+| **SALES** | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep. |
+| **CUSTOMER SERVICE** | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path. |
+| **INFORMATION TECH (IT)** | Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business. | Company provides company owned/controlled hardware and software. Need dashboard/reporting system. |
+| **RECRUITING** | Have trouble finding higher level roles/managers. | Deliberate promotions from within rather than Peter Principle. Incentivize employee referrals = CAT = cost to acquire talent. |
+| **HUMAN RESOURCES (HR)** | ◀ YOU ARE HERE | **How you decrease the likelihood employees or regulators sue you.** |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). Encabezado completo; filas PRODUCT a RECRUITING llenas en letra chica; la flecha morada «YOU ARE HERE» en HUMAN RESOURCES (HR), con la definición del área en negrita grande en TO GRADUATE. FINANCE vacía. Frame principal: insert a pantalla completa. También en toma abierta (00:47:45, 00:47:55).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:47:44]
+
 [00:47:44] So for recruiting, right?
 [00:47:46] We have trouble finding higher level roles and managers.
 [00:47:49] And so to graduate, we need to deliberately promote people
 [00:47:52] and then also incentivize referrals,
 [00:47:55] which brings us to human resources, okay?
 [00:47:57] So human resources is how you decrease the likelihood
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:48:02 | stage5_00-48-02.png]** · tipo: slide
+También visible en: 00:48:09
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: HUMAN RESOURCES
+> At this level...
+> CONSTRAINT
+> You're firing people incorrectly and exposed.
+> I'M SUING!
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: HUMAN RESOURCES]
+
+                          At this level...
+
+   [ CONSTRAINT ]                          |
+   You're firing people incorrectly and    |
+   exposed.                                |
+                        .-----------.      |
+                        |   I'M     |      |
+                        |  SUING!   |      |
+                        '--/--------'      |
+     [mano señalando] =>   O               |
+                          [caja]           |
+                           / \             |
+                       ...                 |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Encabezado en barra morada con texto blanco. Título «At this level...». Caja negra «CONSTRAINT» y su texto. Debajo, íconos de línea negra: una mano grande con el dedo índice señalando hacia la derecha (despedido) a una persona que se va caminando cargando una caja, con «...» a sus pies, y un globo de diálogo cuadrado con «I'M SUING!» en mayúsculas negritas. Línea vertical negra al centro; la mitad derecha vacía. Frame principal: insert a pantalla completa. También en toma abierta (00:48:09).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:48:00]
+
 [00:48:00] that regulators and employees sue you, exciting.
 [00:48:04] And so the constraint at this point
 [00:48:05] is you're firing people incorrectly and so you're exposed.
@@ -1459,6 +3087,43 @@ nota: "—"
 [00:48:10] I know how to hire people,
 [00:48:11] but they have a really hard time
 [00:48:12] knowing how to fire people, right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:48:15 | stage5_00-48-15.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: HUMAN RESOURCES
+> And...
+> CONSTRAINT
+> You're firing people incorrectly and exposed.
+> I'M SUING!
+> TO GRADUATE
+> Create termination policies and process.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: HUMAN RESOURCES]
+
+                               And...
+
+   [ CONSTRAINT ]                    |          [ TO GRADUATE ]
+   You're firing people incorrectly  |   Create termination policies and
+   and exposed.                      |   process.
+                     .---------.     |
+                     |  I'M    |    ==>        (documento roto)
+                     | SUING!  |     |
+                     '--/------'     |        (apretón de manos)
+   [mano señalando] =>  O            |
+                       [caja]        |
+                    ...  / \         |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Lado izquierdo igual que «At this level...» (mano señalando a la persona que se va con una caja y el globo «I'M SUING!»). Flecha blanca contorneada ⇒ sobre la línea vertical. A la derecha, caja negra «TO GRADUATE» con el texto y, debajo, un ícono azul marino de un documento/contrato partido en dos por una grieta, sobre un apretón de manos. Sin insert a pantalla completa: solo en toma abierta; leído recortando el video a resolución nativa.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:48:14]
+
 [00:48:14] And so to graduate, you wanna create
 [00:48:15] a termination policy and process, okay?
 [00:48:18] So what does that look like?
@@ -1481,6 +3146,63 @@ nota: "—"
 [00:48:50] They're not gonna feel safe.
 [00:48:51] They're gonna feel like that guy's just like a loose cannon.
 [00:48:53] We never know when Sally or Jerry's gonna go, right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:48:56 | stage5_00-48-56.png]** · tipo: slide
+También visible en: 00:48:30, 00:48:32, 00:48:32, 00:48:44, 00:48:45, 00:49:03, 00:49:14, 00:49:15, 00:49:15, 00:49:25, 00:49:30, 00:49:45, 00:49:58, 00:49:58, 00:50:00, 00:50:22, 00:50:30, 00:50:48, 00:51:16, 00:51:16, 00:51:30, 00:51:33, 00:51:45, 00:52:00, 00:52:06, 00:52:12, 00:52:15, 00:52:16, 00:52:30, 00:52:33, 00:52:34, 00:53:06, 00:53:15, 00:53:30, 00:53:45, 00:54:00, 00:54:13, 00:54:14, 00:54:15, 00:54:23, 00:54:24, 00:54:30, 00:54:33, 00:54:45, 00:54:46, 00:55:00, 00:55:15, 00:55:15, 00:55:26, 00:55:30
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: HUMAN RESOURCES
+> What that looks like...
+> TO GRADUATE
+> Create termination policies and process.
+> • Firing Well
+>   ○ Never should be a surprise
+>   ○ Eliminate **you** as an option
+>   ○ Give more than you want
+> • _When_ to fire a person
+>   ○ Bad culture fit
+>   ○ Bad skill fit
+>   ○ Low will
+> • _How_ to fire a person
+>   ○ Create a plan
+>   ○ Check on coverage
+>   ○ Do the deed
+>   ○ Tie up loose ends
+>     ■ Severance
+>     ■ Benefits
+>     ■ Hardware
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: HUMAN RESOURCES]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |  • Firing Well
+  Create termination policies and     |      ○ Never should be a surprise
+  process.                            |      ○ Eliminate you as an option
+                                      |      ○ Give more than you want
+                                      |  • When to fire a person
+                                      |      ○ Bad culture fit
+          (documento roto)           ==>     ○ Bad skill fit
+                                      |      ○ Low will
+          (apretón de manos)          |  • How to fire a person
+                                      |      ○ Create a plan
+                                      |      ○ Check on coverage
+                                      |      ○ Do the deed
+                                      |      ○ Tie up loose ends
+                                      |          ■ Severance
+                                      |          ■ Benefits
+                                      |          ■ Hardware
+```
+
+[DESCRIPCIÓN DEL DIBUJO] A la izquierda, caja negra «TO GRADUATE» con su texto y el ícono del documento roto sobre el apretón de manos. Flecha blanca contorneada ⇒ sobre la línea vertical negra. A la derecha, lista en tres niveles (•, ○, ■); «you» en negrita; «When» y «How» en color verde azulado y subrayados (como hipervínculo). Frame principal: insert a pantalla completa. Es uno de los slides que más dura: también en tomas abiertas con Alex y Leila, en primeros planos de Leila con la lista detrás (00:48:32 a 00:52:34, 00:54:33, 00:54:45, 00:55:15) y en primeros planos de Alex con la caja TO GRADUATE y el ícono (00:54:13, 00:54:14, 00:54:15).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:48:56]
+
 [00:48:56] And so here's what you wanna think about one.
 [00:48:58] Firing well.
 [00:48:59] Firing should never be a surprise for people, okay?
@@ -1690,10 +3412,124 @@ nota: "—"
 [00:55:31] where they have no future.
 [00:55:32] So that being said, HR,
 [00:55:34] we were firing people incorrectly, we were exposed.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:55:39 | stage5_00-55-39.png]** · tipo: tabla
+También visible en: 00:57:15
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | 1.5 Layers: First 2-3 Managers
+> # OF COMPANIES HERE | 2,400,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them.
+> MARKETING | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO.
+> SALES | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep.
+> CUSTOMER SERVICE | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path.
+> INFORMATION TECH (IT) | Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business. | Company provides company owned/controlled hardware and software. Need dashboard/reporting system.
+> RECRUITING | Have trouble finding higher level roles/managers. | Deliberate promotions from within rather than Peter Principle. Incentivize employee referrals = CAT = cost to acquire talent.
+> HUMAN RESOURCES (HR) | You're firing people incorrectly and exposed. | Create termination policies and process.
+> FINANCE | YOU ARE HERE | **How you report and manage your money.**
+> Bottom line
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | 1.5 Layers: First 2-3 Managers |
+| **# OF COMPANIES HERE** | 2,400,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them. |
+| **MARKETING** | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO. |
+| **SALES** | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep. |
+| **CUSTOMER SERVICE** | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path. |
+| **INFORMATION TECH (IT)** | Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business. | Company provides company owned/controlled hardware and software. Need dashboard/reporting system. |
+| **RECRUITING** | Have trouble finding higher level roles/managers. | Deliberate promotions from within rather than Peter Principle. Incentivize employee referrals = CAT = cost to acquire talent. |
+| **HUMAN RESOURCES (HR)** | You're firing people incorrectly and exposed. | Create termination policies and process. |
+| **FINANCE** | ◀ YOU ARE HERE | **How you report and manage your money.** |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato). Encabezado completo; filas PRODUCT a HUMAN RESOURCES (HR) llenas en letra chica; la flecha morada «YOU ARE HERE» en FINANCE, con la definición del área en negrita grande en TO GRADUATE. Sin insert a pantalla completa: solo en toma abierta (Alex señala la fila FINANCE); leído recortando el video a resolución nativa (la columna TO GRADUATE se lee; la columna CONSTRAINT se asume igual a la de las tablas anteriores y a la tabla final de 00:57:16). También en toma abierta en 00:57:15, justo antes del insert de la tabla final.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:55:36]
+
 [00:55:36] We create termination policies and processes,
 [00:55:39] which brings us to finance.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:55:41 | stage5_00-55-41.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: FINANCE
+> At this level...
+> CONSTRAINT
+> You don't know how much money you can reinvest into growth.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: FINANCE]
+
+                          At this level...
+
+   [ CONSTRAINT ]                          |
+   You don't know how much money you       |
+   can reinvest into growth.               |
+                                           |
+          ?     ^                          |
+        (bolsa  |  /'                      |
+         de $) ||| (barras + flecha)       |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Encabezado en barra morada con texto blanco. Título «At this level...». Caja negra «CONSTRAINT» y su texto. Debajo, un signo «?» morado sobre un ícono de línea negra: una bolsa de dinero con «$», flechas hacia arriba y un gráfico de barras ascendente. Línea vertical negra al centro; la mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:55:41]
+
 [00:55:41] All right, so the constraint of this level
 [00:55:43] is that you don't have much money,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:55:45 | stage5_00-55-45.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: FINANCE
+> And...
+> CONSTRAINT
+> You don't know how much money you can reinvest into growth.
+> TO GRADUATE
+> Make a budget (save for big expenses), simple financial forecasting, begin keeping track of tax write offs.
+> PLAN
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: FINANCE]
+
+                               And...
+
+   [ CONSTRAINT ]                    |          [ TO GRADUATE ]
+   You don't know how much money     |   Make a budget (save for big
+   you can reinvest into growth.     |   expenses), simple financial
+                                     |   forecasting, begin keeping track of
+          ?                         ==>  tax write offs.
+   (bolsa de $ + barras              |
+    y flecha hacia arriba)           |  [PLAN ☑☑☐ $]  (tijera   (gráfico con
+                                     |                  + $)     líneas y ? ?)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Lado izquierdo igual que «At this level...» («?» morado sobre la bolsa de dinero y el gráfico). Flecha blanca contorneada ⇒ sobre la línea vertical. A la derecha, caja negra «TO GRADUATE» con el texto y tres íconos: una hoja «PLAN» azul con casillas marcadas y una moneda «$» sobre una pila de monedas naranjas; una tijera cortando un «$»; y un gráfico con una línea continua ascendente, dos líneas punteadas que se bifurcan y dos círculos con «?». Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:55:44]
+
 [00:55:44] you can reinvest into growth.
 [00:55:45] And so to graduate from here,
 [00:55:47] you make a budget so you can save for big expenses.
@@ -1705,6 +3541,54 @@ nota: "—"
 [00:55:57] and what things can we plan for?
 [00:55:59] And then you begin keeping track of tax write off.
 [00:56:01] So we did little versions of this.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:56:04 | stage5_00-56-04.png]** · tipo: slide
+También visible en: 00:56:23, 00:56:30, 00:56:36, 00:56:45, 00:57:03
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: FINANCE
+> What that looks like...
+> TO GRADUATE
+> Make a budget (save for big expenses), simple financial forecasting, begin keeping track of tax write offs.
+> PLAN
+> • Think about the big expenses/investments coming up:
+>   ○ Events
+>   ○ Promotions
+>   ○ Inventory
+>   ○ Equipment
+>   ○ New Locations
+> • Figure out how much they cost and when you’ll need it by. Begin saving.
+> • Figure out how much $ you’ll have with current run rate 6-12 mo out.
+> • Write offs: Be reasonable - My .02
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: FINANCE]
+
+                        What that looks like...
+
+        [ TO GRADUATE ]               |  • Think about the big
+  Make a budget (save for big         |    expenses/investments coming up:
+  expenses), simple financial         |       ○ Events
+  forecasting, begin keeping track of |       ○ Promotions
+  tax write offs.                     |       ○ Inventory
+                                     ==>      ○ Equipment
+                                      |       ○ New Locations
+  [PLAN ☑☑☐ $]  (tijera   (gráfico    |  • Figure out how much they cost
+                 + $)     con ? ?)    |    and when you’ll need it by. Begin
+                                      |    saving.
+                                      |  • Figure out how much $ you’ll have
+                                      |    with current run rate 6-12 mo out.
+                                      |  • Write offs: Be reasonable - My .02
+```
+
+[DESCRIPCIÓN DEL DIBUJO] A la izquierda, caja negra «TO GRADUATE» con su texto y los tres íconos (hoja «PLAN» con casillas y monedas; tijera cortando «$»; gráfico con líneas punteadas y dos «?»). Flecha blanca contorneada ⇒ sobre la línea vertical negra. A la derecha, lista con viñetas y sub-viñetas (○). Frame principal: insert a pantalla completa. También en toma abierta (00:56:23 a 00:57:03), con Alex señalando la lista y los íconos.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:56:03]
+
 [00:56:03] Now we're kind of doing the slighter,
 [00:56:05] bigger boy version of this, all right?
 [00:56:06] And so thinking about the big expenses
@@ -1749,6 +3633,53 @@ nota: "—"
 [00:57:10] And so pretty much that's it for finance.
 [00:57:13] Like there's not a huge amount there.
 [00:57:14] Like the big point here,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:57:16 | stage5_00-57-16.png]** · tipo: tabla
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE
+> HEADCOUNT | 10 to 19
+> YOUR ROLE | Director
+> LEADERSHIP STRUCTURE | 1.5 Layers: First 2-3 Managers
+> # OF COMPANIES HERE | 2,400,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them.
+> MARKETING | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO.
+> SALES | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep.
+> CUSTOMER SERVICE | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path.
+> INFORMATION TECH (IT) | Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business. | Company provides company owned/controlled hardware and software. Need dashboard/reporting system.
+> RECRUITING | Have trouble finding higher level roles/managers. | Deliberate promotions from within rather than Peter Principle. Incentivize employee referrals = CAT = cost to acquire talent.
+> HUMAN RESOURCES (HR) | You're firing people incorrectly and exposed. | Create termination policies and process.
+> FINANCE | You don't know how much money you can reinvest into growth. | Make a budget (save for big expenses), simple financial forecasting, begin keeping track of tax write offs.
+> Bottom line | YOU ARE HERE | **What you prioritize your company’s resources to achieve**
+
+Recreación:
+
+| 5: PRODUCTIZE | |
+|---|---|
+| **HEADCOUNT** | 10 to 19 |
+| **YOUR ROLE** | Director |
+| **LEADERSHIP STRUCTURE** | 1.5 Layers: First 2-3 Managers |
+| **# OF COMPANIES HERE** | 2,400,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Customers have nothing else to buy from you & churn. | Connect CS & product. Make something new to sell them. |
+| **MARKETING** | Qualified leads are too expensive and cap your ability to advertise | Spend more on niche down messaging with new offer & raise CAC limit (spend more). Start scoring your leads (you select). Attr. + CRO. |
+| **SALES** | Customers get sold with unrealistic expectations and refunds/bad reviews become an issue | Create sales aids/materials. Install weekly game tape between CS & Sales/Marketing for QA & feedback. Track NPS/CSAT/Refund rate by rep. |
+| **CUSTOMER SERVICE** | Customers come in with unrealistic expectations. Get inconsistent answers. | Build proper CS playbook to onboard & train team to answer Qs same way. WKLY Game tape review. Customer ascension path. |
+| **INFORMATION TECH (IT)** | Employees using their personal hardware and software and creates issues when people leave. No tracking for leads and customers interacting with your business. | Company provides company owned/controlled hardware and software. Need dashboard/reporting system. |
+| **RECRUITING** | Have trouble finding higher level roles/managers. | Deliberate promotions from within rather than Peter Principle. Incentivize employee referrals = CAT = cost to acquire talent. |
+| **HUMAN RESOURCES (HR)** | You're firing people incorrectly and exposed. | Create termination policies and process. |
+| **FINANCE** | You don't know how much money you can reinvest into growth. | Make a budget (save for big expenses), simple financial forecasting, begin keeping track of tax write offs. |
+| ***Bottom line*** | ◀ YOU ARE HERE | **What you prioritize your company’s resources to achieve** |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato), completa: las ocho áreas con su CONSTRAINT y su TO GRADUATE en letra chica. La flecha morada «YOU ARE HERE» está en la fila «Bottom line» (barra negra); en TO GRADUATE, en negrita grande y en blanco sobre negro, la definición, cuya segunda línea («to achieve») queda cortada por el borde inferior de la imagen (no se ve si sigue algún signo). Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:57:15]
+
 [00:57:15] you don't know how much money you can reinvest in growth
 [00:57:17] and you need to.
 [00:57:18] And so we make a budget,
@@ -1759,6 +3690,39 @@ nota: "—"
 [00:57:25] And then we begin keeping track of those expenses.
 [00:57:28] And write off so that at the end of the year,
 [00:57:30] maybe we don't get hit with as big of a tax bill.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:57:33 | stage5_00-57-33.png]** · tipo: slide
+También visible en: 00:57:43, 00:57:45
+
+Texto en pantalla (literal):
+
+> 5: PRODUCTIZE: Bottom Line
+> **Constraint:**
+> Nothing new to sell to customers.
+> LTV: CAC too low.
+> **To Graduate:**
+> Make and sell your second premium product to customers.
+
+Recreación:
+
+```text
+[5: PRODUCTIZE: Bottom Line]
+
+   +-----------------------------------------------+
+   |                  Constraint:                  |
+   |       Nothing new to sell to customers.       |
+   |               LTV: CAC too low.               |
+   |                 To Graduate:                  |
+   |      Make and sell your second premium        |
+   |            product to customers.              |
+   +-----------------------------------------------+
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Fondo negro; encabezado en barra morada arriba a la izquierda con texto blanco. Al centro, un recuadro blanco con borde morado y texto negro centrado; «Constraint:» y «To Graduate:» en negrita. Frame principal: insert a pantalla completa. También en toma abierta (00:57:43, 00:57:45), con Alex señalando el recuadro.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:57:32]
+
 [00:57:32] And so the bottom line at this level of product size
 [00:57:35] is that right now you had nothing new
 [00:57:37] to sell new customers
@@ -1775,6 +3739,61 @@ nota: "—"
 [00:57:54] And so now our business should be at the point
 [00:57:56] we're in the 20 to 50 range.
 [00:57:57] All right, so we're starting to become,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 5: PRODUCTIZE | 00:58:00 | stage5_00-58-00.png]** · tipo: pirámide
+También visible en: 00:58:06, 00:58:15, 00:58:29, 00:58:41, 00:58:45, 00:59:00, 00:59:15, 00:59:30, 00:59:45
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATE TO: 6: OPTIMIZE
+> 20 TO 49
+> 10 TO 19
+> 5 TO 9
+> 1 TO 4
+> FREELANCERS
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> OPTIMIZE
+> PRODUCTIZE
+> PRIORITIZE
+> STABILIZE
+> ADVERTISE
+> MONETIZE
+> IMPROVISE
+
+Recreación:
+
+```text
+              STAGE WE GRADUATE TO: 6: OPTIMIZE
+
+                            /\
+                           /||\
+                          / || \
+                         /  ||  \
+                        /   ||   \
+  ---------------------/----||----\---------------------
+   20 TO 49           /     ||     \         OPTIMIZE
+  -------------------/------||------\-------------------
+   10 TO 19         /       ||       \      PRODUCTIZE
+  -----------------/--------||--------\-----------------
+   5 TO 9         /         ||         \     PRIORITIZE
+  ---------------/----------||----------\---------------
+   1 TO 4       /           ||           \    STABILIZE
+  -------------/------------||------------\-------------
+   FREELANCERS/             ||             \   ADVERTISE
+  -----------/--------------||--------------\-----------
+   JUST YOU /               ||               \  MONETIZE
+  ---------/----------------||----------------\---------
+   JUST YOU/ FUNCTIONS      ||                 \ IMPROVISE
+          /_________________||_________________\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] La misma pirámide morada del inicio, ahora con siete franjas: a la izquierda «20 TO 49» en morado (nueva) y el resto en negro; a la derecha «OPTIMIZE» en morado (la etapa siguiente) y el resto en negro. «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. En el título, «6: OPTIMIZE» va en morado y el resto en negro. Frame principal: insert a pantalla completa. También en toma abierta (00:58:06 a 00:59:45; Alex sostiene un cuaderno/libro blanco y señala las franjas; en pantalla la pirámide se ve azul) y en un primer plano de Alex hojeando el cuaderno (00:58:29), donde solo se ve la mitad izquierda de la pirámide.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:57:59]
+
 [00:57:59] like we're starting to really be a business business.
 [00:58:01] And we go from productizing
 [00:58:02] where we had to create the second product
