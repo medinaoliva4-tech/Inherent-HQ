@@ -117,7 +117,7 @@ Only when the data says so, and only once:
 - They start asking for reporting the sheet cannot do
 
 ```
-You're at 180 open deals and Teri's editing this too. That's about where a
+You're at 180 open deals and <socio>'s editing this too. That's about where a
 spreadsheet starts costing you more than it saves. Worth a look at HubSpot —
 everything here exports straight in.
 ```

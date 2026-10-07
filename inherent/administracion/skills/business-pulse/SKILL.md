@@ -72,7 +72,7 @@ Assign a 🟢/🟡/🔴 status to each section. If a source returned nothing, ma
 
 ## Step 3 — Flag risks proactively
 
-Scan for actionable items. Every risk entry must name a specific record and a next step — "some overdue invoices" is useless; "USD 3,400 from Acme Corp, 47 days overdue, no response since Mar 12" is actionable.
+Scan for actionable items. Every risk entry must name a specific record and a next step — "some overdue invoices" is useless; "USD 3,400 from <cliente>, 47 days overdue, no response since Mar 12" is actionable.
 
 - Ledger invoices past due > 30 days — name customer, amount, days overdue
 - HubSpot deals with no activity in 7+ days, or close date in past but still open
@@ -88,7 +88,7 @@ Cross-connector synthesis is where this skill earns its keep. If a Slack message
 Writing rules:
 - Numbers lead, words follow. Never write "revenue is healthy" — write "USD 43k this month, ▲ 8% MoM" and let the owner judge.
 - Every number carries a delta vs. the prior period where available. Absolute snapshots (cash balance) still show WoW delta.
-- Names and dollars, not adjectives. "USD 4,200 from Acme, 23 days overdue" beats "some concerning receivables."
+- Names and dollars, not adjectives. "USD 4,200 from <cliente>, 23 days overdue" beats "some concerning receivables."
 - No filler. If a section has nothing worth reporting, write "No material changes" and move on.
 
 ## Step 5 — Deliver the pulse page

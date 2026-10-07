@@ -158,7 +158,7 @@ Send it and move on.
 Record won, lost, or no response, with the final price and the reason when it's known:
 
 ```
-Ridgeline — lost. USD 18,650. Dana said a competitor came in at USD 16,000.
+<cliente> — lost. USD 18,650. <contacto> said a competitor came in at USD 16,000.
 Our per-unit was USD 3,550; theirs implies about USD 3,050.
 ```
 

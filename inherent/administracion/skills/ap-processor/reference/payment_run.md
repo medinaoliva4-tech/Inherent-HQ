@@ -66,11 +66,11 @@ When the owner wants to pay part of a bill:
 
 ## Worked example
 
-Ray's Thursday run, proposed:
+<dueño>'s Thursday run, proposed:
 
 - 11 bills, USD 22,140 total
-- 2 past due: Johnstone USD 1,880 (18 days), Ferguson USD 940 (7 days)
-- 1 discount available: Watsco USD 6,200 at 2/10, worth USD 124 if paid by Friday
+- 2 past due: <proveedor 2> USD 1,880 (18 days), <proveedor 1> USD 940 (7 days)
+- 1 discount available: <proveedor 3> USD 6,200 at 2/10, worth USD 124 if paid by Friday
 - 3 held: two with quantity variances, one with an unreadable total
 - Balance after run, per the cash snapshot: USD 31,400, payroll of USD 18,900 clears on the 15th
 

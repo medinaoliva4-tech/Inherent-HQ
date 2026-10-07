@@ -25,7 +25,7 @@ A good comparable matches on type of work, rough scale, and customer type. Two o
 State the arithmetic:
 
 ```
-Comparable: Fairmount Commercial, Mar 2026 — 4 rooftop units, same scope.
+Comparable: <cliente 2>, Mar 2026 — 4 rooftop units, same scope.
             USD 14,200 total, USD 3,550 per unit.
 
 This job:   5 units, one on a lower roof with harder access.
@@ -122,4 +122,4 @@ Pull the owner's standard terms from past proposals rather than inventing them. 
 
 After a proposal is sent, record what happened — won, lost, or no response — with the final price and the reason if known.
 
-Won proposals become tomorrow's comparables. Lost ones are just as valuable: knowing that USD 18,650 lost the Ridgeline job to a competitor at USD 16,000 is the only way the next quote gets sharper. Nothing else in the plugin captures that, and owners almost never track it themselves.
+Won proposals become tomorrow's comparables. Lost ones are just as valuable: knowing that USD 18,650 lost the <cliente> job to a competitor at USD 16,000 is the only way the next quote gets sharper. Nothing else in the plugin captures that, and owners almost never track it themselves.

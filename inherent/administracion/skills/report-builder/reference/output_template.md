@@ -37,7 +37,7 @@ Three findings maximum. A summary with nine bullets is a table with extra steps.
 ```
 ## Monday operating pack — week of Jul 20
 
-Portland is the only location below last year, and it's the reason total sales are flat.
+<sucursal 1> is the only location below last year, and it's the reason total sales are flat.
 
 **Sales** — USD 43,200, up 2% vs. same week last year
 **AR past 30 days** — USD 18,400 across 6 invoices
@@ -45,13 +45,13 @@ Portland is the only location below last year, and it's the reason total sales a
 
 ### What stands out
 
-- Portland did USD 6,100, down 22% year over year. Every other location is up.
-- Labor crossed 30% for the first time in nine weeks, driven by overtime at Salem.
-- Acme Corp is USD 4,200 and 47 days past due, with no payment since May 12.
+- <sucursal 1> did USD 6,100, down 22% year over year. Every other location is up.
+- Labor crossed 30% for the first time in nine weeks, driven by overtime at <sucursal 2>.
+- <cliente> is USD 4,200 and 47 days past due, with no payment since May 12.
 
 ### Worth a look
 
-- Portland's drop is four weeks running now, not a one-week blip. Worth a look at
+- <sucursal 1>'s drop is four weeks running now, not a one-week blip. Worth a look at
   staffing or local competition before it becomes the quarter's story.
 
 Workbook attached. Tabs: summary, sales by location, AR aging, labor detail, raw data.

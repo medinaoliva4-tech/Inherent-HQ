@@ -81,7 +81,7 @@ Templates and tone in `reference/candidate_comms.md`. Rejections go out fast; a 
 
 **Nothing sends without approval.** Show the drafts, get an explicit yes, then send. A misdirected rejection is not recoverable.
 
-**Name the recipients in the batch summary, not just the count.** "31 declines" hides the one person who should have been in the interview group; "31 declines — Alvarez, Brennan, Cho, …" is checkable in ten seconds, which is the only moment a mis-sort gets caught.
+**Name the recipients in the batch summary, not just the count.** "31 declines" hides the one person who should have been in the interview group; "31 declines — <candidato 6>, <candidato 7>, <candidato 8>, …" is checkable in ten seconds, which is the only moment a mis-sort gets caught.
 
 **Without Gmail, the drafts are the deliverable.** Hand the owner every message, labelled with who it goes to, ready to paste. That is a complete outcome, not a partial one.
 

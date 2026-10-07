@@ -8,10 +8,10 @@ Getting each bill to the right account, class, and job.
 
 Use the strongest available signal and stop. Stacking weak signals produces confident nonsense.
 
-1. **This vendor's history in this ledger.** If the last eight Ferguson bills went to Materials and Supplies, the ninth almost certainly does too.
+1. **This vendor's history in this ledger.** If the last eight <proveedor 1> bills went to Materials and Supplies, the ninth almost certainly does too.
 2. **The PO.** A PO written against a job carries the job code with it.
 3. **The line detail.** "Compressor, 3-ton" reads differently from "shop towels."
-4. **The owner's stated rule.** If Ray said once that anything from the uniform service is Overhead, that holds until he changes it.
+4. **The owner's stated rule.** If the CEO said once that anything from the uniform service is Overhead, that holds until it is changed.
 5. **Nothing above applies.** Ask.
 
 ---
@@ -59,12 +59,12 @@ Flag a recurring bill whose amount moved more than 10% from the prior period. Th
 
 ## Worked example
 
-Ferguson invoice 88231, USD 3,417.02, four lines.
+<proveedor 1> invoice 88231, USD 3,417.02, four lines.
 
-- Lines 1–2, condenser and line set, USD 2,980 — job reference "Maple St" printed on the line, coded to Materials, job Maple St
+- Lines 1–2, condenser and line set, USD 2,980 — job reference "<proyecto>" printed on the line, coded to Materials, job <proyecto>
 - Line 3, shop consumables, USD 196 — no job reference, coded to Shop Supplies, overhead
-- Line 4, freight, USD 241.02 — allocated to Maple St with the materials it carried
+- Line 4, freight, USD 241.02 — allocated to <proyecto> with the materials it carried
 
 No question raised. Vendor history and printed line references agreed.
 
-Contrast: a first bill from a new sheet-metal fabricator, USD 8,900, single line reading "fabrication per quote." That one goes to Ray with a proposed code of Subcontractor and the note that it is a new vendor with no history and an amount large enough to matter.
+Contrast: a first bill from a new sheet-metal fabricator, USD 8,900, single line reading "fabrication per quote." That one goes to <dueño> with a proposed code of Subcontractor and the note that it is a new vendor with no history and an amount large enough to matter.

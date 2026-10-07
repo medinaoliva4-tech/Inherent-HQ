@@ -37,7 +37,7 @@ The pulse is context, not a second report. It answers the question the pack alwa
 
 One message, in this order: the pack summary, then the pulse in two or three lines, then the workbook.
 
-Ray Okonkwo at Okonkwo Mechanical gets his Monday pack — revenue by crew versus last year, AR aging, labor as a percent of revenue — and under it: cash at USD 61,400, two invoices past 60 days, one van still down. He reads both in ninety seconds and knows what Monday is.
+<dueño> at <negocio> gets his Monday pack — revenue by crew versus last year, AR aging, labor as a percent of revenue — and under it: cash at USD 61,400, two invoices past 60 days, one van still down. He reads both in ninety seconds and knows what Monday is.
 
 Never send two separate deliverables. A pack and a pulse arriving apart is two things to read; together it is one briefing.
 

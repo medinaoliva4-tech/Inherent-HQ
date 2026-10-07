@@ -99,7 +99,7 @@ Always show the assessed weight next to the score. 92 out of 80 assessed weight 
 
 ---
 
-## Worked example — Okonkwo Mechanical, Commercial Service Tech
+## Worked example — <negocio>, Commercial Service Tech
 
 ```
 MUST-HAVE
@@ -119,4 +119,4 @@ NICE-TO-HAVE
   Spanish
 ```
 
-Note what is not there: no degree, no "professional appearance," no minimum years figure that would exclude a strong two-year tech. Everything listed is something Ray would defend out loud to the person he did not hire.
+Note what is not there: no degree, no "professional appearance," no minimum years figure that would exclude a strong two-year tech. Everything listed is something <dueño> would defend out loud to the person not hired.

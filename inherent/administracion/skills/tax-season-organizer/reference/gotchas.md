@@ -62,10 +62,10 @@ SAT-2046 en cero y se dice.
 
 ## Proveedores duplicados
 
-**BAD:** Juntar "Juan López" y "Estudio López" porque se parecen.
+**BAD:** Juntar "<nombre> <apellido>" y "Estudio <apellido>" porque se parecen.
 
 **GOOD:** Marcarlos para que un humano decida.
-> "Pueden ser la misma persona — confirmar: Juan López (Q3,000) | Estudio López
+> "Pueden ser la misma persona — confirmar: <nombre> <apellido> (Q3,000) | Estudio <apellido>
 > (Q1,500), NIT distintos."
 
 ---

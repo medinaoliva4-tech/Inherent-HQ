@@ -139,10 +139,10 @@ Send the batch and report it afterward.
 
 ```
 Ready to send, pending your yes:
-  3 interview invites — Marcus O., Dana R., Priya S.
-  2 holds through Aug 8 — Luis T., Ana G.
-  31 declines — Alvarez, Brennan, Cho, Deng, Ferro, … (full list below)
-  4 question emails (cannot-assess) — Kim, Osei, Vance, Whitlock
+  3 interview invites — <candidato 1>, <candidato 2>, <candidato 3>
+  2 holds through Aug 8 — <candidato 4>, <candidato 5>
+  31 declines — <candidato 6>, <candidato 7>, <candidato 8>, <candidato 9>, <candidato 10>, … (full list below)
+  4 question emails (cannot-assess) — <candidato 37>, <candidato 38>, <candidato 39>, <candidato 40>
 Want to read any before I send?
 ```
 
@@ -157,14 +157,14 @@ Grouped, so approving forty is one decision. But it is still a decision.
 ### Bad
 
 ```
-"Marcus is your hire."
+"<candidato 1> is your hire."
 ```
 
 ### Good
 
 ```
-"Ranked by the rubric: Marcus 89, Dana 84, Priya 81. Evidence on each below.
-Dana scores lower on rooftop specifically but higher on customer contact,
+"Ranked by the rubric: <candidato 1> 89, <candidato 2> 84, <candidato 3> 81. Evidence on each below.
+<candidato 2> scores lower on rooftop specifically but higher on customer contact,
 which you weighted at 20 — worth a look if that's the bigger gap on the crew."
 ```
 

@@ -21,18 +21,18 @@ Short. The point is to get a time on the calendar, not to sell the job yet.
 Carries: that they are moving forward, what the interview is (who, how long, in person or call), two or three specific time options, and anything to bring — license, references, tools.
 
 ```
-Hi Marcus,
+Hi <candidato 1>,
 
 Thanks for applying for the commercial service tech role. I'd like to talk.
 
-It's about 45 minutes with me at the shop on Vernon. Any of these work?
+It's about 45 minutes with me at the shop on <dirección>. Any of these work?
   Tue Jul 29, 8am
   Tue Jul 29, 2pm
   Thu Jul 31, 8am
 
 Bring your 608 card if you have it handy.
 
-Thanks, Ray
+Thanks, <nombre>
 ```
 
 ---
@@ -44,7 +44,7 @@ For strong candidates who are not first in line. Honest that they are still in i
 Carries: that they are under consideration, roughly where things stand, and a specific date by which they will hear. The date is the whole value of the message.
 
 ```
-Hi Dana,
+Hi <candidato 4>,
 
 Wanted to update you rather than leave you hanging. You're still in
 consideration for the service tech role — I'm talking to a couple of people
@@ -52,7 +52,7 @@ this week and will know by Friday Aug 8.
 
 I'll let you know either way by then.
 
-Thanks, Ray
+Thanks, <nombre>
 ```
 
 **Then actually follow up on that date.** A hold message with a broken promise is worse than no message. Put the date on the calendar as part of sending it.
@@ -66,14 +66,14 @@ Kind, prompt, honest. In that order.
 Carries: a clear no, thanks for the time they spent, and nothing else. It does not need a reason and it should not have an invented one.
 
 ```
-Hi Sam,
+Hi <candidato 6>,
 
 Thanks for applying for the service tech role, and for taking the time.
 
 We're moving forward with other candidates for this one. I appreciate you
 putting your name in.
 
-Thanks, Ray
+Thanks, <nombre>
 ```
 
 **Fast beats gentle.** Two weeks of silence costs the owner far more goodwill than a clear no on day three. Send declines as soon as the decision is real.
@@ -117,10 +117,10 @@ Present them grouped, with counts, so approving forty is one decision and not fo
 
 ```
 Ready to send, pending your yes:
-  3 interview invites — Marcus R., Dana W., Priya S. (times below)
-  2 holds — through Aug 8 — Luis T., Ana G.
-  31 declines — Alvarez, Brennan, Cho, Deng, Ferro, … (full list below)
-  4 question emails — the "cannot assess" group — Kim, Osei, Vance, Whitlock
+  3 interview invites — <candidato 1>, <candidato 2>, <candidato 3> (times below)
+  2 holds — through Aug 8 — <candidato 4>, <candidato 5>
+  31 declines — <candidato 6>, <candidato 7>, <candidato 8>, <candidato 9>, <candidato 10>, … (full list below)
+  4 question emails — the "cannot assess" group — <candidato 37>, <candidato 38>, <candidato 39>, <candidato 40>
 
 Want to read any of them before I send?
 ```

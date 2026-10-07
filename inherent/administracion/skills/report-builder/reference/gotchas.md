@@ -53,25 +53,25 @@ Rule of thumb: the books are the revenue source when connected. Processors suppl
 
 ## Gotcha: a group disappears instead of showing zero
 
-**Why it matters:** If Portland sold nothing this week and the row vanishes, the owner assumes the data is broken and goes looking. A zero is information; a missing row is noise.
+**Why it matters:** If <sucursal 1> sold nothing this week and the row vanishes, the owner assumes the data is broken and goes looking. A zero is information; a missing row is noise.
 
 ### Bad
 
 ```
 Sales by location:
-  Salem      USD 18,200
-  Eugene     USD 19,000
+  <sucursal 2>  USD 18,200
+  <sucursal 3>  USD 19,000
 ```
 
-Portland existed last week. Where did it go?
+<sucursal 1> existed last week. Where did it go?
 
 ### Good
 
 ```
 Sales by location:
-  Salem      USD 18,200
-  Eugene     USD 19,000
-  Portland   USD 0        (no sales recorded this period)
+  <sucursal 2>  USD 18,200
+  <sucursal 3>  USD 19,000
+  <sucursal 1>  USD 0        (no sales recorded this period)
 ```
 
 ---

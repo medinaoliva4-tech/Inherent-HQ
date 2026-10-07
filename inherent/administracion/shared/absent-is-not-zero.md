@@ -79,8 +79,8 @@ Concretely, in order of how often it bites:
 
 The owner does not need the mechanism. They need to know which numbers to trust.
 
-> *"Your books show USD 37,055 owed across 20 customers. One account, Pearl Street
-> Bistro, is 91 days late at USD 467 — that is the only genuinely old debt."*
+> *"Your books show USD 37,055 owed across 20 customers. One account,
+> <cliente>, is 91 days late at USD 467 — that is the only genuinely old debt."*
 
 Not "receivables are USD 25,907," which was true of the slice and false of the
 business.

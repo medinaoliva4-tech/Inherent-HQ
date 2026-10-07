@@ -47,7 +47,7 @@ Then answer the one question the owner is actually asking, in a sentence with nu
 
 > Paying all 14 bills on Friday leaves USD 6,200. Payroll on the 15th is USD 18,400. Paying the four that are actually due this week leaves USD 21,700 and clears payroll.
 
-That is the sentence Ray Okonkwo at Okonkwo Mechanical needs before he approves anything. Without it, this command is just a bill printer.
+That is the sentence the CEO needs before approving anything. Without it, this command is just a bill printer.
 
 **If the cash data is not available, say so plainly** and say the payment run is being proposed without a cash check. Never imply the money is there when nothing was checked.
 

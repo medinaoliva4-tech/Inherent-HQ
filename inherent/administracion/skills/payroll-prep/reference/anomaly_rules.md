@@ -21,7 +21,7 @@ Flagging costs the owner ten seconds. Guessing costs someone their correct pay a
 - **Zero-length shift.** In and out within a few minutes. Usually a double-tap; still asked.
 - **Overlapping shifts for one person.** Two entries covering the same clock time. Never merged.
 
-> Marcus, Thursday 3/12: clocked in 6:40 AM, never clocked out. Hours unknown. What did he work?
+> <empleado 1>, Thursday 3/12: clocked in 6:40 AM, never clocked out. Hours unknown. What did he work?
 
 ### Hours anomalies
 
@@ -36,12 +36,12 @@ Flagging costs the owner ten seconds. Guessing costs someone their correct pay a
   to be worth a sentence even when it turns out to be real, and it is the rule that
   catches the missed clock-out that every other rule cannot see yet.
 
-  > Marcus shows a 19-hour shift Tuesday, 5:10 AM to 12:20 AM. This is your first
+  > <empleado 1> shows a 19-hour shift Tuesday, 5:10 AM to 12:20 AM. This is your first
   > run so I have nothing to compare it against — real long day, or a punch he
   > forgot to close?
 - **Seven consecutive days worked** — matters for both fatigue and, in some states, premium pay.
 
-> Dee logged 14.5 OT hours. Her four-period average is 2. That is 12.5 hours above normal, about USD 560 extra. Real, or a punch problem?
+> <empleado 2> logged 14.5 OT hours. Her four-period average is 2. That is 12.5 hours above normal, about USD 560 extra. Real, or a punch problem?
 
 ### Pay setup anomalies
 
@@ -52,7 +52,7 @@ Flagging costs the owner ten seconds. Guessing costs someone their correct pay a
 - **PTO taken beyond the available balance.** The balance is the payroll source's figure (Gusto `get_time_off_balances`; QuickBooks Payroll policy balances), never an estimate from accrual rules.
 - **Salaried person with logged hours** that suggest an unpaid partial week.
 
-> Luis's rate reads USD 32.00 this period, USD 29.50 last period. If that raise is real I'll use it. If not, it is USD 100 a week I would rather ask about.
+> <empleado 3>'s rate reads USD 32.00 this period, USD 29.50 last period. If that raise is real I'll use it. If not, it is USD 100 a week I would rather ask about.
 
 ### Cross-checks
 
@@ -77,7 +77,7 @@ A flag without a name and a date is noise. A flag without a dollar figure is har
 
 ## Presenting flags
 
-Group by person, not by flag type. The owner thinks in people: "what is going on with Marcus," not "show me all the missed punches."
+Group by person, not by flag type. The owner thinks in people: "what is going on with <empleado 1>," not "show me all the missed punches."
 
 Order people by the size of the open question — unknown hours first, then large dollar variances, then everything else.
 

@@ -49,7 +49,7 @@ No preview, no approval — owner doesn't know what was written.
 > "Here's what I'm about to save as your business profile — let me know if anything needs fixing:"
 >
 > ```
-> Business: Lakewood Hardware — retail hardware store
+> Business: <negocio> — retail hardware store
 > Size: 4 people (including owner)
 > Top headaches: cash flow gaps · slow-paying contractors · scheduling part-timers
 > Connected tools: QuickBooks, Gmail

@@ -93,7 +93,7 @@ Writing rules, same as every reporting skill in this plugin:
 
 - Numbers lead, words follow. Not "sales were strong" — "USD 43,200, up 8% versus last year."
 - Every number carries its comparison. A figure with no baseline is a missed insight.
-- Name the outlier. "Portland is down 22%, the only location below last year" beats "results were mixed."
+- Name the outlier. "<sucursal 1> is down 22%, the only location below last year" beats "results were mixed."
 - Three findings maximum in the summary. The workbook holds everything else.
 
 **Then the XLSX.** One tab per metric group, a summary tab first, raw pulled data on a final tab so the owner can check your math. Build it with a script rather than by hand.

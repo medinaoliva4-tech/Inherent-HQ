@@ -117,7 +117,7 @@ Never report period-over-period product growth from this call.
 
 ## Trap 5 — product detail covers a fraction of revenue
 
-The same call returns one product, Wholesale Coffee, at USD 36,587.65. The P&L for
+The same call returns one product, <producto>, at USD 36,587.65. The P&L for
 the same quarter reports USD 971,794.04 of income. **The product report covers 3.8%
 of the business.** The rest is revenue booked without product detail — deposits,
 journal entries, café takings — and it is invisible to every product-level view.

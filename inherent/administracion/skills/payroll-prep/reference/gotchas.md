@@ -11,14 +11,14 @@ The mistakes that shortchange a person or double-pay a period. Payroll errors ar
 ### Bad
 
 ```
-Marcus, Thursday: 6:40 AM – 3:10 PM (estimated out, matches his usual)
+<empleado 1>, Thursday: 6:40 AM – 3:10 PM (estimated out, matches his usual)
 8.0 regular hours
 ```
 
 ### Good
 
 ```
-Marcus, Thursday 3/12: clocked in 6:40 AM, no clock-out.
+<empleado 1>, Thursday 3/12: clocked in 6:40 AM, no clock-out.
 Hours unknown — his gross below excludes that shift entirely.
 What did he actually work?
 ```
@@ -71,7 +71,7 @@ Read USD 32.00 from the record, use it, mention nothing.
 ### Good
 
 ```
-Luis reads USD 32.00 this period, USD 29.50 last. That is USD 100 a week.
+<empleado 3> reads USD 32.00 this period, USD 29.50 last. That is USD 100 a week.
 Raise, or a bad entry?
 ```
 
@@ -134,7 +134,7 @@ New name on the sheet, hours look normal, include them.
 ### Good
 
 ```
-"D. Amara" appears on the sheet with 22 hours. No hire record.
+"<inicial>. <apellido>" appears on the sheet with 22 hours. No hire record.
 New apprentice, or a name I should be matching to someone?
 ```
 

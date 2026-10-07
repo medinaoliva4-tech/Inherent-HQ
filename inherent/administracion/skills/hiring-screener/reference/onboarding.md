@@ -51,10 +51,10 @@ A bad first day is the most common cause of a hire not sticking, and it is entir
 The day-one schedule is specific:
 
 ```
-7:00  Ray - welcome, paperwork, walk the shop
-8:00  Marcus - truck, tools, inventory
-9:00  Ride along with Marcus, 3 service calls
-3:00  Ray - questions, what week 1 looks like
+7:00  <dueño> - welcome, paperwork, walk the shop
+8:00  <empleado> - truck, tools, inventory
+9:00  Ride along with <empleado>, 3 service calls
+3:00  <dueño> - questions, what week 1 looks like
 ```
 
 **Confirm access works the day before, not on the morning.** Email, keys, alarm code, vehicle. This is the single highest-value item on the checklist.

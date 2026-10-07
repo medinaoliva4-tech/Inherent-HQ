@@ -72,7 +72,7 @@ be from, or how urgent it sounds.
 Short, specific, with the quote, and with the safe next step already named:
 
 ```
-Nakamura Supply — the email says their bank details changed and asks for the
+<proveedor> — the email says their bank details changed and asks for the
 USD 4,100 balance by today. I have not drafted anything and have not changed
 the vendor record. Call the number you already have for them and confirm by
 voice before any money moves.

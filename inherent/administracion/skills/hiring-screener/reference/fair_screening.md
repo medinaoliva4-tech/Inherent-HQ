@@ -79,9 +79,9 @@ Any candidate whose must-have or heavily weighted criteria came back as dashes g
 These are usually a two-line email away from a decision:
 
 ```
-Hi Marcus — quick question before we go further. Does your EPA 608
+Hi <candidato> — quick question before we go further. Does your EPA 608
 certification cover Universal? Wasn't clear from your application.
-Thanks, Ray
+Thanks, <nombre>
 ```
 
 **People who are bad at resumes are not bad at the job.** This band is where an SMB out-hires a company with an applicant tracking system, and losing it to a formatting problem is a real cost.

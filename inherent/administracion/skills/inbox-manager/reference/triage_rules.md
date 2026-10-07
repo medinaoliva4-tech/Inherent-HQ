@@ -53,16 +53,16 @@ Receipts, newsletters, shipping notices, calendar invites already accepted, plat
 
 ---
 
-## Worked example — Okonkwo Mechanical, Tuesday morning
+## Worked example — <negocio>, Tuesday morning
 
-Ray's inbox: 63 new since yesterday afternoon.
+<dueño>'s inbox: 63 new since yesterday afternoon.
 
 **Needs you (4)**
 
-1. **Bexar County permit renewal — expires Friday.** Mechanical contractor license renewal, USD 340, needs Ray's signature. Missing it stops work on three active jobs.
-2. **Delgado Properties — change order, USD 4,200.** Ellen Delgado wants two extra rooftop units added to the Rosewood job. Needs a yes or a no before their Thursday board meeting.
-3. **Marisol Reyes — second email, unhappy.** Unit at the Alamo Heights house still cycling after last week's service. First email was Thursday, unanswered.
-4. **Fitzgerald & Co — you promised a number Wednesday.** Ray wrote "I'll have a price to you Wednesday" on the 14th. It is Wednesday.
+1. **<municipalidad> permit renewal — expires Friday.** Mechanical contractor license renewal, USD 340, needs <dueño>'s signature. Missing it stops work on three active jobs.
+2. **<cliente 1> — change order, USD 4,200.** <contacto 1> wants two extra rooftop units added to the <proyecto> job. Needs a yes or a no before their Thursday board meeting.
+3. **<contacto 2> — second email, unhappy.** Unit at the <zona> house still cycling after last week's service. First email was Thursday, unanswered.
+4. **<cliente 3> — you promised a number Wednesday.** <dueño> wrote "I'll have a price to you Wednesday" on the 14th. It is Wednesday.
 
 **Drafted and waiting (11)** — three scheduling replies, two supplier confirmations, four routine service questions, two referral thank-yous.
 
@@ -70,4 +70,4 @@ Ray's inbox: 63 new since yesterday afternoon.
 
 **Handed off (3)** — 2 facturas de proveedor a `ap-processor`, 1 consulta de formulario web a `lead-triage` (con la respuesta ya redactada aquí).
 
-Ray reads that in about a minute and knows exactly what his morning is.
+<dueño> reads that in about a minute and knows exactly what his morning is.

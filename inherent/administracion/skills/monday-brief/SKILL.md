@@ -55,7 +55,7 @@ Merge rules:
 - **The one thing closes the document.** Pick one and say why — the deadline, the dollar amount, the person waiting.
 - Every number carries its comparison. Missing sources are named once, in a short line at the bottom, not apologized for three times.
 
-Example close, Okonkwo Mechanical: "The one thing: Rosewood's USD 12,400 invoice is 41 days out and their site visit is Thursday. Ask for the check in person."
+Example close, <negocio>: "The one thing: <cliente>'s USD 12,400 invoice is 41 days out and their site visit is Thursday. Ask for the check in person."
 
 ## Step 5 — Deliver, save, and optionally post
 

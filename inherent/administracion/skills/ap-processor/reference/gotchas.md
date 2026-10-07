@@ -11,14 +11,14 @@ The failure modes that pay a bill twice, pay the wrong one, or quietly wreck the
 ### Bad
 
 ```
-Watsco, invoice 40218, total USD 1,847.00
+<proveedor 3>, invoice 40218, total USD 1,847.00
 ```
 (read from a glare-washed photo where only "1,84" was visible)
 
 ### Good
 
 ```
-Watsco, invoice 40218 — total unreadable, glare across the amount block.
+<proveedor 3>, invoice 40218 — total unreadable, glare across the amount block.
 Vendor, date, and PO are clear. Send me the figure or a better photo and
 this one's ready.
 ```
@@ -75,7 +75,7 @@ Code it automatically, include it in the proposal, and flag that it moved from U
 
 ## Gotcha: splitting a job cost evenly because the split is unknown
 
-**Why it matters:** An invented allocation is indistinguishable from a real one three months later, when the owner is trying to work out why the Maple St job lost money.
+**Why it matters:** An invented allocation is indistinguishable from a real one three months later, when the owner is trying to work out why the <proyecto> job lost money.
 
 ### Bad
 
@@ -112,15 +112,15 @@ Present a clean run of 11 bills. Say nothing about the 3 that were held.
 ### Good
 
 ```
-Held 3: Johnstone (billed 12, received 8), Grainger (no receiving record),
-Watsco (total unreadable). None of these are late yet. Two need the vendor.
+Held 3: <proveedor 2> (billed 12, received 8), <proveedor 4> (no receiving record),
+<proveedor 3> (total unreadable). None of these are late yet. Two need the vendor.
 ```
 
 ---
 
 ## Gotcha: creating a vendor record from a bad name read
 
-**Why it matters:** "ACME SUPPLY #4412" as a new vendor splits the history that makes future coding automatic, and it makes the AP aging report wrong.
+**Why it matters:** "PROVEEDOR XYZ #4412" as a new vendor splits the history that makes future coding automatic, and it makes the AP aging report wrong.
 
 ### Bad
 

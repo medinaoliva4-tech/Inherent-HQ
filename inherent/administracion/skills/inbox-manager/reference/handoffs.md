@@ -43,7 +43,7 @@ Hand over the whole thread, not a summary. The receiving skill needs the attachm
 **In pasted mode, hand over the full pasted text exactly as the owner gave it**, and say plainly that the attachment is not there:
 
 ```
-Ferguson bill → ap-processor. I only have the pasted text, not the PDF, so
+<proveedor 1> bill → ap-processor. I only have the pasted text, not the PDF, so
 the line items will have to come from what's below or from the file itself.
 ```
 
@@ -60,7 +60,7 @@ Also pass what you already know, so the work is not repeated:
 Say so by name and keep the item. Do not drop it and do not pretend it was handled.
 
 ```
-2 vendor bills came in (Ferguson USD 1,847, Sid Harvey USD 612). ap-processor isn't
+2 vendor bills came in (<proveedor 1> USD 1,847, <proveedor 3> USD 612). ap-processor isn't
 installed, so I've left them in "needs you" with the due dates pulled out.
 ```
 
@@ -68,12 +68,12 @@ The owner can then decide whether to install it or handle the bills by hand. Eit
 
 ---
 
-## Worked example — Okonkwo Mechanical
+## Worked example — <negocio>
 
-Ray's Tuesday triage produced three handoffs:
+<dueño>'s Tuesday triage produced three handoffs:
 
-- **Ferguson Enterprises invoice #88214, USD 1,847, net 30, due Aug 12** → `ap-processor`. Full PDF attached, coded nothing yet.
-- **Sid Harvey statement, USD 612** → `ap-processor`. Statement, not an invoice, so flagged for Ray to confirm it matches the two bills already paid.
-- **Formulario web — propietario en Alamo Heights, "el aire no enfría arriba"** → respuesta redactada aquí y prospecto a `lead-triage`. Llegó a las 11:40 pm sin respuesta, así que es lo más viejo de la cola por tiempo de respuesta.
+- **<proveedor 1> invoice #88214, USD 1,847, net 30, due Aug 12** → `ap-processor`. Full PDF attached, coded nothing yet.
+- **<proveedor 3> statement, USD 612** → `ap-processor`. Statement, not an invoice, so flagged for <dueño> to confirm it matches the two bills already paid.
+- **Formulario web — propietario en <zona>, "el aire no enfría arriba"** → respuesta redactada aquí y prospecto a `lead-triage`. Llegó a las 11:40 pm sin respuesta, así que es lo más viejo de la cola por tiempo de respuesta.
 
-All three appeared in the digest under "handed off," with one line each. Ray knows where they went.
+All three appeared in the digest under "handed off," with one line each. <dueño> knows where they went.

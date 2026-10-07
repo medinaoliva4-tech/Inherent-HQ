@@ -95,10 +95,10 @@ reminders all print times.
 One calendar shows why that is not survivable. Every event carries an
 offset of **-04:00** — Eastern — while its own `timeZone` field says
 **America/Los_Angeles**, and the calendar's default zone is
-**America/New_York**. The business is in **Portland**. Three signals, three
+**America/New_York**. The business is in **<ciudad>** (Pacific time). Three signals, three
 different answers, on every event.
 
-An 11:00 in that payload is 08:00 in Portland. A brief that prints the wall
+An 11:00 in that payload is 08:00 in <ciudad>. A brief that prints the wall
 clock is **three hours wrong**, and wrong in the direction that makes the owner
 late.
 
@@ -120,7 +120,7 @@ fixes it.
    outward-facing or the meeting has attendees: "9:00am PT."
 4. **When the signals disagree, say so rather than picking.** *"Your calendar
    stores these as Eastern but is labelled Pacific — I've read them as 8:00am
-   Portland time. Worth a look."* A named contradiction takes ten seconds to
+   <ciudad> time. Worth a look."* A named contradiction takes ten seconds to
    check. A silent guess costs a meeting.
 
 ---

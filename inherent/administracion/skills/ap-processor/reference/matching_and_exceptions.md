@@ -36,22 +36,22 @@ The asymmetry is deliberate. Being billed for more units than arrived is theft o
 Each exception gets the vendor, the invoice number, both numbers, and the dollar impact. Vague exceptions get ignored.
 
 **Price above PO**
-> Ferguson inv 88231, line 2: billed USD 1,240 per unit, PO says USD 1,160. Two units. USD 160 over.
+> <proveedor 1> inv 88231, line 2: billed USD 1,240 per unit, PO says USD 1,160. Two units. USD 160 over.
 
 **Billed more than received**
-> Johnstone inv 4471: billed 12 filters, receiving ticket shows 8. USD 84 over. Nothing was signed for the other 4.
+> <proveedor 2> inv 4471: billed 12 filters, receiving ticket shows 8. USD 84 over. Nothing was signed for the other 4.
 
 **Received but never billed**
-> Receiving ticket 2201 from Ferguson, 3/14, has no matching bill. Either it is coming or it was missed. Worth knowing before the month closes.
+> Receiving ticket 2201 from <proveedor 1>, 3/14, has no matching bill. Either it is coming or it was missed. Worth knowing before the month closes.
 
 **Billed, never received**
-> Grainger inv 55019 for USD 612. No receiving record. Ask whether this shipped.
+> <proveedor 4> inv 55019 for USD 612. No receiving record. Ask whether this shipped.
 
 **Duplicate**
-> Ferguson inv 88231 appears twice — emailed 3/2 as a PDF and again on the March statement. Same invoice number. One of them is a copy.
+> <proveedor 1> inv 88231 appears twice — emailed 3/2 as a PDF and again on the March statement. Same invoice number. One of them is a copy.
 
 **Unreadable field**
-> Photo of a Watsco invoice, total unreadable from glare. Vendor and date are clear. I need the total before this can be staged.
+> Photo of a <proveedor 3> invoice, total unreadable from glare. Vendor and date are clear. I need the total before this can be staged.
 
 ---
 

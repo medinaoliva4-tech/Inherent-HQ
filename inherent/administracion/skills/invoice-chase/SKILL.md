@@ -66,9 +66,9 @@ Do not ask again on subsequent runs. Stripe is not a setup question: when it is 
 
    | Customer | Amount Due | Days Late | Tone | Send via |
    |---|---|---|---|---|
-   | Acme Corp | USD 1,200 | 18 days | Gentle | PayPal |
-   | Smith LLC | USD 450 | 47 days | Firm | Gmail draft |
-   | Pearl St Bistro | USD 467 | 91 days | Firm | Gmail draft + Airwallex pay link |
+   | <cliente 1> | USD 1,200 | 18 days | Gentle | PayPal |
+   | <cliente 2> | USD 450 | 47 days | Firm | Gmail draft |
+   | <cliente 3> | USD 467 | 91 days | Firm | Gmail draft + Airwallex pay link |
 
    Then show each draft email in full. Wait for owner to say "send these" or approve individually.
 

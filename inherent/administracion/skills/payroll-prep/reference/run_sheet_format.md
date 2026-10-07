@@ -15,7 +15,7 @@ The owner is checking two things, in this order: does anyone's line look wrong, 
 One block per person. Flags attached to the person, not collected in a separate section at the bottom where they get skipped.
 
 ```
-Marcus Reyes
+<empleado 1>
   Regular      32.0 h @ USD 34.00      USD 1,088.00
   Overtime      0.0 h
   PTO           8.0 h               $  272.00
@@ -55,7 +55,7 @@ Employer taxes appear only when the payroll provider supplies them. **Never esti
 
 Any move over 10% from the prior period gets one sentence naming the driver.
 
-> Up USD 880 from last period. Dee's first full week accounts for USD 640 of it; the rest is Marcus's overtime on the Maple St callback.
+> Up USD 880 from last period. <empleado 2>'s first full week accounts for USD 640 of it; the rest is <empleado 1>'s overtime on the <proyecto> callback.
 
 If the driver cannot be identified from the data, say that instead of offering a theory.
 
@@ -65,7 +65,7 @@ If the driver cannot be identified from the data, say that instead of offering a
 
 With cash data available:
 
-> Account balance is USD 31,400. This run takes USD 10,652 on the 20th. The Ferguson payment run of USD 22,140 is also queued for the 18th, which would leave USD 8,608 — tight but clear.
+> Account balance is USD 31,400. This run takes USD 10,652 on the 20th. The <proveedor> payment run of USD 22,140 is also queued for the 18th, which would leave USD 8,608 — tight but clear.
 
 Without it:
 

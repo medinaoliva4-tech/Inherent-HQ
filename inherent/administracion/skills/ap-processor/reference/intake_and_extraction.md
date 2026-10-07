@@ -64,7 +64,7 @@ Present suspected duplicates as pairs with both sources named ("emailed 3/2 as P
 
 ## Vendor matching
 
-Match the printed vendor name to the ledger record before coding. Handle the common noise: `ACME SUPPLY CO`, `Acme Supply`, and `ACME SUPPLY #4412` are usually one vendor.
+Match the printed vendor name to the ledger record before coding. Handle the common noise: `PROVEEDOR XYZ S.A.`, `Proveedor Xyz`, and `PROVEEDOR XYZ #4412` are usually one vendor.
 
 When no ledger record exists, propose creating one with the remit-to details from the bill and ask. Bank or remit-to details on a first bill are confirmed by phone on a number the owner sources themselves, not from the bill, before the record is created (`../../../shared/untrusted-content.md`). A vendor created by mistake is a cleanup job for the bookkeeper later.
 
@@ -72,11 +72,11 @@ When no ledger record exists, propose creating one with the remit-to details fro
 
 ## Worked example
 
-Okonkwo Mechanical's AP label held 23 messages over two weeks. After intake:
+<negocio>'s AP label held 23 messages over two weeks. After intake:
 
 - 19 bills extracted, 2 vendor-portal links with no document, 2 statements
-- 1 duplicate found: Ferguson invoice 88231 arrived as a PDF and again on the monthly statement
+- 1 duplicate found: <proveedor 1> invoice 88231 arrived as a PDF and again on the monthly statement
 - 3 low-confidence totals, all photos taken in the truck
 - 1 bill with no due date printed, terms line read "Net 30"
 
-Reported to Ray as: 19 bills, USD 41,208 readable, 3 totals need his eyes, 2 portal invoices he has to download, 1 likely duplicate to confirm.
+Reported to <dueño> as: 19 bills, USD 41,208 readable, 3 totals need his eyes, 2 portal invoices he has to download, 1 likely duplicate to confirm.

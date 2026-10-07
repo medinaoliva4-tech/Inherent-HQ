@@ -33,13 +33,13 @@ Everything above the attachment is for the owner alone. The customer never sees 
 ## Worked example
 
 ```
-## Proposal — Ridgeline Property Group, 5 rooftop units
+## Proposal — <cliente>, 5 rooftop units
 
-**USD 18,650** · Priced from your Fairmount job, adjusted for the extra unit
+**USD 18,650** · Priced from your <cliente 2> job, adjusted for the extra unit
 and the lower-roof access.
 
-Based on: Fairmount Commercial, Mar 2026 — 4 units, same scope, USD 14,200
-          (USD 3,550/unit). Corwin & Bay, Nov 2025 — 6 units, USD 21,300
+Based on: <cliente 2>, Mar 2026 — 4 units, same scope, USD 14,200
+          (USD 3,550/unit). <cliente 3>, Nov 2025 — 6 units, USD 21,300
           (USD 3,550/unit). Your per-unit number has been steady.
 
 ### Open assumptions
@@ -54,16 +54,16 @@ Based on: Fairmount Commercial, Mar 2026 — 4 units, same scope, USD 14,200
 - The lower-roof unit is the risk on this job. Photo 3 shows ladder access
   only and I couldn't see the parapet height. If it needs a lift, the USD 900
   allowance won't cover it.
-- Dana mentioned "we paid around 8 last time" on the call. That was for two
+- <contacto> mentioned "we paid around 8 last time" on the call. That was for two
   units, so USD 18,650 for five is consistent — but it's worth saying that out
   loud in your cover note, because the headline number is more than double
   what she remembers.
 - Your usual deposit is 50%. I put 40% here because it's a repeat-adjacent
   customer. Change it if you'd rather not.
 
-Proposal-Ridgeline-2026-07-27.docx and .pdf attached.
+Proposal-<cliente>-2026-07-27.docx and .pdf attached.
 
-Send to Dana for signature via DocuSign, or do you want to change anything first?
+Send to <contacto> for signature via DocuSign, or do you want to change anything first?
 ```
 
 The second risk bullet is the kind of thing that wins jobs. It came from the transcript, not from the pricing, and no template would have surfaced it.
@@ -75,7 +75,7 @@ The second risk bullet is the kind of thing that wins jobs. It came from the tra
 Show the proposal as complete except for the gap, and make the ask trivial:
 
 ```
-## Proposal — Corwin & Bay, controls upgrade
+## Proposal — <cliente 3>, controls upgrade
 
 **USD 12,400 + controls integration** · Everything priced except one line.
 
@@ -92,7 +92,7 @@ and this is ready to go. Everything else is built.
 Compliance leads, because a perfect price on a non-compliant submission loses:
 
 ```
-## RFP response — Marion County, HVAC maintenance, RFP 26-114
+## RFP response — <entidad pública>, HVAC maintenance, RFP 26-114
 
 **USD 84,000/yr** · 3-year term, priced from your commercial service contracts.
 

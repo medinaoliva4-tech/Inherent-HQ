@@ -108,11 +108,11 @@ Rules that keep this honest:
 
 ## Worked example
 
-Okonkwo Mechanical, week ending 3/15, five on the crew.
+<negocio>, week ending 3/15, five on the crew.
 
-- Gusto not connected. Ray uploaded a shared sheet with in and out times, breaks not deducted.
+- Gusto not connected. <dueño> uploaded a shared sheet with in and out times, breaks not deducted.
 - Confirmed: breaks are 30 minutes unpaid, taken daily, not punched.
-- Roster matched last period except one new apprentice, Dee, started Wednesday.
-- One row for Marcus on 3/12 has a 6:40 AM in and no out.
+- Roster matched last period except one new apprentice, <empleado 2>, started Wednesday.
+- One row for <empleado 1> on 3/12 has a 6:40 AM in and no out.
 
-Reported: 5 people, 214 hours readable, 1 shift with no clock-out (Marcus, Thursday), 1 new hire to confirm hours for (Dee, started 3/12).
+Reported: 5 people, 214 hours readable, 1 shift with no clock-out (<empleado 1>, Thursday), 1 new hire to confirm hours for (<empleado 2>, started 3/12).

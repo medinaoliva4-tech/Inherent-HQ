@@ -36,7 +36,7 @@ Reference it from a SKILL.md by relative path: `../../shared/voice-profile.md`
 
 | Trait | What to capture |
 |---|---|
-| Greeting | The exact form. "Hi Dana," vs "Dana —" vs "Good morning Dana," |
+| Greeting | The exact form. "Hi <contacto>," vs "<contacto> —" vs "Good morning <contacto>," |
 | Sign-off | Exact, including whether the name is full or first only |
 | Sentence length | Average, and whether they run long or clipped |
 | Contractions | Do they write "I'll" or "I will" |
@@ -82,12 +82,12 @@ Sample, verbatim:
 ## Worked example
 
 ```
-## Voice profile — Ray Okonkwo, Okonkwo Mechanical
+## Voice profile — <dueño>, <negocio>
 Built:    2026-07-27  ·  Sources: 22 sent emails, website
 Updated:  2026-07-27 — initial
 
 Greeting:      "Hi <first name>," — always first name, always comma
-Sign-off:      "Thanks, Ray" — never "Best," never full name
+Sign-off:      "Thanks, <nombre>" — never "Best," never full name
 Sentences:     Short. Average 11 words. Often fragments.
 Contractions:  Yes, consistently. "I'll," "we've," "don't"
 Exclamations:  Rare — 2 in 22 emails, both about finished jobs
@@ -107,14 +107,14 @@ Never uses:
   Any sentence over about 25 words
 
 Sample, verbatim:
-  Hi Dana,
+  Hi <contacto>,
   Straight answer: yes, we can cover all six buildings on one plan. It'd
   actually be cheaper than the two you have now.
   Happy to swing by Thursday and walk through it. Let me know what works.
-  Thanks, Ray
+  Thanks, <nombre>
 ```
 
-Anyone reading that profile can write as Ray. That is the bar.
+Anyone reading that profile can write as <dueño>. That is the bar.
 
 ---
 
@@ -125,7 +125,7 @@ Anyone reading that profile can write as Ray. That is the bar.
 Append to Updated rather than overwriting, so the reasoning stays visible:
 
 ```
-Updated: 2026-08-14 — cut "Just following up" from follow-ups. Ray: "sounds
+Updated: 2026-08-14 — cut "Just following up" from follow-ups. <dueño>: "sounds
          like I'm nagging." Replaced with a specific reason each time.
 ```
 

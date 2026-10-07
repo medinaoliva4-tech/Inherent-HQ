@@ -69,7 +69,7 @@ Ejemplo (cifras ilustrativas): "SAT-2046 de septiembre: Q731.50, dentro de octub
 - **No volver a cerrar un mes que ya está cerrado.** Se verifica y se sigue.
 - **No dar asesoría tributaria.** Todo entregable es material para el contador y lo dice en el encabezado.
 - **No esconder un supuesto.** Fuente de los ingresos, facturas excluidas, tipo de cambio, constancias que faltan, monto del tope usado — todos en la lista, para que el contador tenga las palancas.
-- **No juntar proveedores automáticamente.** "Juan López" y "Juan A. López" se marcan para un humano.
+- **No juntar proveedores automáticamente.** "<nombre> <apellido>" y "<nombre> A. <apellido>" se marcan para un humano.
 - **No decidir el cambio de régimen.** Se alerta; deciden el CEO y el contador.
 - **No presentar ni pagar nada, nunca.**
 

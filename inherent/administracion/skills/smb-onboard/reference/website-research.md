@@ -38,8 +38,8 @@ Always show it before storing anything, and keep it short — a wall of
 extracted facts is worse than the interview it was meant to replace.
 
 ```
-Read your site. Looks like: commercial HVAC repair and maintenance, Denver
-metro, same-day service is a big deal to you — it's on every page. Found a
+Read your site. Looks like: commercial HVAC repair and maintenance, <ciudad>,
+same-day service is a big deal to you — it's on every page. Found a
 deep green and a slab serif in your branding.
 
 Anything off, or should I use that for your reports too?

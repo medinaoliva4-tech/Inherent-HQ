@@ -233,10 +233,10 @@ no illustration.
 
 ```html
 <header class="page-header">
-  <div class="brand-mark">RM</div>
+  <div class="brand-mark">IN</div>
   <div>
     <h1>Cash Flow Snapshot</h1>
-    <p class="meta">Ridgeline Mechanical · Generated Aug 21, 2026</p>
+    <p class="meta">Inherent · Generated Aug 21, 2026</p>
   </div>
 </header>
 ```
@@ -296,7 +296,7 @@ Hairline row dividers, no heavy grid. Numbers right-aligned in
   <table>
     <thead><tr><th>Customer</th><th>Amount</th><th>Days overdue</th></tr></thead>
     <tbody>
-      <tr><td>Corwin & Bay</td><td class="num">USD 1,240</td><td class="num">14</td></tr>
+      <tr><td>&lt;cliente&gt;</td><td class="num">USD 1,240</td><td class="num">14</td></tr>
     </tbody>
   </table>
 </div>
@@ -311,7 +311,7 @@ fallback if the sandbox blocks it (test — do not assume it always works).
 ```html
 <div class="copy-block">
   <button class="copy-btn" onclick="copyBlock(this)">Copy</button>
-  <pre>Add this to your homepage title tag: "Ridgeline Mechanical — Same-Day HVAC Repair, Denver Metro"</pre>
+  <pre>Add this to your homepage title tag: "&lt;negocio&gt; — &lt;servicio&gt;, &lt;ciudad&gt;"</pre>
 </div>
 <script>
 function copyBlock(btn) {

@@ -26,38 +26,38 @@ Needs-you always goes first. Chronological order buries the item that matters.
 
 ---
 
-## Worked example — Okonkwo Mechanical
+## Worked example — <negocio>
 
 ```
 63 emails since yesterday. 4 need you.
 
 NEEDS YOU
-1. Bexar County — mechanical license renewal, USD 340, expires Friday.
+1. <municipalidad> — mechanical license renewal, USD 340, expires Friday.
    Needs your signature. Missing it stops three active jobs.
-2. Delgado Properties — change order, USD 4,200, two extra rooftop units at
-   Rosewood. Ellen needs yes or no before Thursday's board meeting.
-3. Marisol Reyes — second email, unit still cycling after last week's
+2. <cliente 1> — change order, USD 4,200, two extra rooftop units at
+   <proyecto>. <contacto 1> needs yes or no before Thursday's board meeting.
+3. <contacto 2> — second email, unit still cycling after last week's
    service. First one was Thursday, unanswered. I've drafted an
    acknowledgement but this needs a call.
-4. Fitzgerald & Co — you told Tom you'd have a price Wednesday. It's
+4. <cliente 3> — you told <contacto 3> you'd have a price Wednesday. It's
    Wednesday.
 
 DRAFTED — 11 ready to send
-   3 scheduling replies (Dana Whitfield, Corley, Nguyen)
-   2 supplier confirmations (Ferguson, Johnstone)
+   3 scheduling replies (<contacto 4>, <contacto 5>, <contacto 6>)
+   2 supplier confirmations (<proveedor 1>, <proveedor 2>)
    4 routine service questions
    2 referral thank-yous
 
 HANDED OFF — 3
-   Ferguson invoice #88214, USD 1,847 → ap-processor — staged with your other
+   <proveedor 1> invoice #88214, USD 1,847 → ap-processor — staged with your other
       bills; say "process my bills" to review
-   Sid Harvey statement, USD 612 → ap-processor — same payment run as above
-   Consulta web, propietario en Alamo Heights, 11:40pm → lead-triage — la
+   <proveedor 3> statement, USD 612 → ap-processor — same payment run as above
+   Consulta web, propietario en <zona>, 11:40pm → lead-triage — la
       primera respuesta quedó redactada aquí, esperando tu aprobación
 
 COVERED BY SOMEONE ELSE — 2
-   Nguyen warranty question — Teresa answered it 9:15am
-   Corley reschedule — Teresa confirmed Friday
+   <contacto 6> warranty question — <empleado> answered it 9:15am
+   <contacto 5> reschedule — <empleado> confirmed Friday
 
 HANDLED — 48
    26 receipts · 11 newsletters · 7 shipping · 4 platform notices
@@ -66,10 +66,10 @@ HANDLED — 48
 Send all 11 drafts, or review them one at a time?
 
 --- DRAFTS ---
-1. To Dana Whitfield — re: Thursday walkthrough
-   Hi Dana,
+1. To <contacto 4> — re: Thursday walkthrough
+   Hi <contacto 4>,
    Thursday at 9 works. I'll bring the plan for all six buildings.
-   Thanks, Ray
+   Thanks, <nombre>
 
 (…the other ten, same shape…)
 ```

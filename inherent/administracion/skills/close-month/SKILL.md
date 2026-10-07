@@ -57,7 +57,7 @@ Run `report-builder` to package and deliver the close.
 
 Merge, do not staple. The packet reads: what the month was, what the books say, what the next 90 days look like off those books, and what is still open.
 
-Example, Okonkwo Mechanical: "April closed at USD 84,200, up 6% on March. Margin held at 38%. Two receipts outstanding. The 30-day forecast is USD 11,400 net at the midpoint — Rosewood's USD 12,400 is the swing."
+Example, <negocio>: "April closed at USD 84,200, up 6% on March. Margin held at 38%. Two receipts outstanding. The 30-day forecast is USD 11,400 net at the midpoint — <cliente>'s USD 12,400 is the swing."
 
 ## What not to do
 

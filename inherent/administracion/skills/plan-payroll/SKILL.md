@@ -56,7 +56,7 @@ Carry Step 1 forward instead of recomputing it. When `payroll-prep` reports whet
 
 One recap, in this order: the cash verdict, what was sent and to whom, the projected position if the reminders convert, and the staged run — headcount, total hours, total gross, cash leaving the account, pay date, and any flags left open.
 
-Ray Okonkwo sees it in four lines: cash short USD 4,200 on the 15th, three reminders sent covering USD 6,800, two likely inside the window, run staged for 9 people at USD 18,340 with one missing punch still open on Marcus.
+The CEO sees it in four lines: cash short USD 4,200 on the 15th, three reminders sent covering USD 6,800, two likely inside the window, run staged for 9 people at USD 18,340 with one missing punch still open on <empleado>.
 
 ## Output
 

@@ -16,7 +16,7 @@ Variables in `{{double braces}}` are placeholders — replace with computed valu
 ## TL;DR
 
 - {{Most important number-backed fact, e.g. "Cash balance USD 84k, down USD 6k WoW — two large vendor payments cleared."}}
-- {{Second most important, e.g. "USD 3,400 from Acme Corp is 47 days overdue — no response since Mar 12."}}
+- {{Second most important, e.g. "USD 3,400 from <cliente> is 47 days overdue — no response since Mar 12."}}
 - {{Third, e.g. "Pipeline USD 128k weighted; two deals gone cold this week."}}
 
 ---
@@ -82,8 +82,8 @@ Variables in `{{double braces}}` are placeholders — replace with computed valu
 ## ⚠️ #1 Priority
 
 {{One specific thing to act on today. Name amounts, people, deadlines.
-Not "review cash flow" — say "The USD 4,200 invoice from Acme Corp is 23 days
-overdue. Call Sarah Chen at 415-555-0192 today."}}
+Not "review cash flow" — say "The USD 4,200 invoice from <cliente> is 23 days
+overdue. Call <contacto> at <teléfono> today."}}
 
 ---
 

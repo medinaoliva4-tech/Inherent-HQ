@@ -13,7 +13,7 @@ Flagging these as duplicates sends the owner on a wild goose chase.
 
 ### ✗ Bad
 
-> Flagged as duplicate: Office Depot USD 47.50 on March 12 and Office Depot USD 62.50
+> Flagged as duplicate: <proveedor> USD 47.50 on March 12 and <proveedor> USD 62.50
 > on March 12 — same vendor, same date.
 
 Both rows share the same `TxnID` — they're splits of a USD 110 purchase across

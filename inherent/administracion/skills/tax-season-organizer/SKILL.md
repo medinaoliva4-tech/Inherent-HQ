@@ -164,7 +164,7 @@ operador de agentes). Por persona o empresa:
 - **Documento recibido:** factura FEL (y de qué régimen), otro documento, o nada
 - Estado: ✅ factura en todos los pagos · ⚠️ falta factura en algún pago · ❓ no se puede saber con los datos
 
-**No se juntan personas por parecido de nombre** («Juan López» y «Juan A. López»): se
+**No se juntan personas por parecido de nombre** («<nombre> <apellido>» y «<nombre> A. <apellido>»): se
 marcan para que un humano decida.
 
 **Retenciones:** si Inherent no es agente de retención (lo dice el contexto), no se

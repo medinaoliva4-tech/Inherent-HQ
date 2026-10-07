@@ -39,15 +39,15 @@ Pull these:
 Write the summary in three to five lines. The transcript stays available; the summary is what gets read.
 
 ```
-Call summary — Ridgeline, Jul 27, 34 min
+Call summary — <cliente 1>, Jul 27, 34 min
 
-Dana confirmed all six buildings, wants one plan not per-building. Budget
+<contacto> confirmed all six buildings, wants one plan not per-building. Budget
 signal: "we paid around 8 last time" (that was 2 units, not 6).
 
 Objection, her words: "the part I can't sell upstairs is another vendor
 changeover — last one was a mess."
 
-Next step: Ray sends the proposal by Wed. Dana loops in Priya (facilities
+Next step: <dueño> sends the proposal by Wed. <contacto> loops in <contacto 2> (facilities
 director, wasn't on the call) before they decide.
 ```
 
@@ -63,7 +63,7 @@ Rank by what's at stake — value first, then how long it's been silent. An owne
 
 **Draft the next touch, don't just flag it.** A flag creates work. A draft removes it.
 
-Ground each draft in what actually happened last: the last exchange, what was promised, what was left open. "Following up on our conversation" is the generic version and it converts poorly. "You were going to check with Priya on the changeover timing — any word?" is a real message.
+Ground each draft in what actually happened last: the last exchange, what was promised, what was left open. "Following up on our conversation" is the generic version and it converts poorly. "You were going to check with <contacto 2> on the changeover timing — any word?" is a real message.
 
 Read [the shared voice profile](../../../shared/voice-profile.md) so drafts sound like the owner. Every one waits for approval.
 
@@ -77,8 +77,8 @@ Surfacing them is most of the value in a standing run:
 
 ```
 No next step set — these are the ones that go quiet:
-  Fairmount Commercial   USD 9,400   last activity Jul 11
-  Delta Park             USD 22,000  last activity Jul 19
+  <cliente 4>   USD 9,400   last activity Jul 11
+  <cliente 3>   USD 22,000  last activity Jul 19
 ```
 
 Two lines, and the owner can fix both in a minute.
@@ -94,10 +94,10 @@ Lead with what needs the owner. Never open with a list of everything logged — 
 
 ### Needs you
 
-  3 follow-ups drafted on quiet deals — Ridgeline, Corwin & Bay, Delta Park.
+  3 follow-ups drafted on quiet deals — <cliente 1>, <cliente 2>, <cliente 3>.
   Review and send?
 
-  Fairmount close date passed Jul 18 and it's still open. Push the date, or
+  <cliente 4> close date passed Jul 18 and it's still open. Push the date, or
   mark it lost?
 
 ### Logged automatically
@@ -106,12 +106,12 @@ Lead with what needs the owner. Never open with a list of everything logged — 
 
 ### Proposed field updates
 
-  Ridgeline    next step: proposal by Wed (from Thursday's call)
-  Corwin & Bay budget: ~USD 9,400 mentioned (from Tuesday's email)
+  <cliente 1>  next step: proposal by Wed (from Thursday's call)
+  <cliente 2>  budget: ~USD 9,400 mentioned (from Tuesday's email)
 
 ### No next step set
 
-  Fairmount USD 9,400 · Delta Park USD 22,000
+  <cliente 4> USD 9,400 · <cliente 3> USD 22,000
 ```
 
 The owner reads the first section and acts. Everything below it is there for when they want to check.
