@@ -75,6 +75,15 @@ description: >
 🛑 **Es lo que ④ ⑥A ⑥B ⑨ y ⑩ van a usar como ley.** A partir de acá, una pieza que no la cumple
 se devuelve.
 
+## 6.1 · El kit en el Drive del cliente
+
+**Aprobado el GATE 2, los assets del kit se bajan de Figma y se suben al Drive del cliente:**
+logos en todas sus versiones, tipografías, plantillas, fondos y elementos gráficos.
+**El link del Drive va en `clients/<cliente>/02-marca/kit-de-redes/kit.md`**, junto al de Figma.
+
+🔑 **Así se edita en cualquier computadora.** Quien no tiene Figma abierto —el editor de video, otra
+máquina, otro operador— toma los assets del Drive. **Si el kit cambia en Figma, se vuelve a subir.**
+
 ## 7 · Checklist
 
 - [ ] Están cubiertos **los formatos que `plan-por-canal.md` declara**, y solo esos
@@ -84,3 +93,4 @@ se devuelve.
 - [ ] Todo video lleva activo **en el primer frame**
 - [ ] Toda slide 1 de carrusel se entiende **sola**
 - [ ] **Allan aprobó el GATE 2**
+- [ ] **Los assets del kit están en el Drive del cliente** y el link está en `kit.md`

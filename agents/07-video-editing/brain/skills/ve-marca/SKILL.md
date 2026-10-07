@@ -13,10 +13,13 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El corte principal · `sistema-visual.md` **§ Movimiento** y **§ Color/Tipografía** · el layout de `cr-arte-video` |
+| **Consume** | El corte principal · `sistema-visual.md` **§ Movimiento** y **§ Color/Tipografía** · el layout de `cr-arte-video` · **los assets del kit en el Drive** *(link en `clients/<cliente>/02-marca/kit-de-redes/kit.md`)* |
 | **Produce** | El corte principal **terminado y de marca**, listo para derivar |
 
 > 🔑 **Esta es la capa que hace que 14 reels distintos se vean de la misma marca.**
+>
+> **Logos, tipografías y elementos gráficos se toman del Drive del cliente, no de Figma.** No hace
+> falta Figma para editar.
 
 ## 1 · Los subtítulos
 

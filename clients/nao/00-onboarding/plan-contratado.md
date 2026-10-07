@@ -5,11 +5,10 @@
 | **Plan** | ⬜ **Acuerdo especial** — no es un plan de lista |
 | **Línea** | 🔷 Marketing, con la excepción de oferta de abajo |
 | **Precio** | **Q2,500 al mes** |
-| **Desde** | ⚠️ SIN DATOS |
 | **Cambio a precio de lista** | Sin fecha |
 | **Redes** | Instagram · TikTok · Facebook |
 | **Community** | **Básico** — el nivel de 🔷 Marketing |
-| **Pauta** | Meta Ads. **El presupuesto lo pone el cliente:** ≈ USD 320 al mes `[dice el CEO, sin confirmar]` |
+| **Pauta** | Meta Ads. **El presupuesto lo pone el cliente:** USD 320 al mes |
 | **Producción** | **3 h de video al mes para NAO y Akai juntos.** Graba el CEO |
 | **Edición de video** | **3 a 4 h al mes para NAO y Akai juntos.** El editor de video hace los planificados; el CEO hace los derivados |
 | **Operador** | Sube todo y facilita las tomas |
@@ -37,4 +36,4 @@ Sale de las 3 h de grabación con la regla de los 20 minutos de ⑦ Video Editin
 | *TOTAL — tope (1:1)* | *18* |
 
 **Quién edita:** el editor de video, los **9 planificados** · el CEO, los **4 derivados**.
-**Estáticos, carruseles y stories:** ⚠️ SIN DATOS.
+**Estáticos, carruseles y stories:** alto volumen y poco esfuerzo, con las plantillas del kit. La cantidad sale de lo que tenga el kit en Figma: ⚠️ SIN DATOS.

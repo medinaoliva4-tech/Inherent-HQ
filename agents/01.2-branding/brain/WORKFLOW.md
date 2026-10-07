@@ -93,6 +93,7 @@ mal, **se devuelve a ② Estrategia** — no se corrige acá.
 | **`guia-de-marca.md`** | El documento completo: territorio, personalidad, voz, sistema visual, activos distintivos y aplicación por formato | **Todos.** ④ ⑥A ⑥B ⑨ ⑩ y el cliente |
 | **`sistema-visual.md`** | Las **especificaciones ejecutables**: valores de color, tipografías con su peso, grilla, safe zones, reglas de composición | ⑥A Diseño · ⑥B Video Editing |
 | **`aprendizaje-de-branding.md`** | Qué activo se reconoció, qué regla estorbó, qué cambia | ②B y ② |
+| **El kit en el Drive** | Los assets del kit bajados de Figma y subidos al Drive del cliente. El link va en `02-marca/kit-de-redes/kit.md` | ⑥A Diseño · ⑥B Video Editing · **quien no tenga Figma** |
 
 > 🔑 **`guia-de-marca.md` se lee para entender. `sistema-visual.md` se abre para ejecutar.**
 > Son dos documentos porque se usan en dos momentos distintos.
@@ -175,8 +176,8 @@ decorativo.
 | A | Qué le toca |
 |---|---|
 | **④ Creatividad** | Tono, territorio, activos distintivos. Es input bloqueante de `cr-brief` |
-| **⑥A Diseño gráfico** | `sistema-visual.md` — las specs ejecutables |
-| **⑥B Video Editing** | `sistema-visual.md` — paleta, tipografía, cómo se titula, cómo se cierra |
+| **⑥A Diseño gráfico** | `sistema-visual.md` — las specs ejecutables · los assets del kit en el Drive |
+| **⑥B Video Editing** | `sistema-visual.md` — paleta, tipografía, cómo se titula, cómo se cierra · los assets del kit en el Drive |
 | **⑨ Posting** | Tono de voz, do's & don'ts, **cómo se nombra la marca** |
 | **⑩ Ads** | Activos distintivos y qué claims están validados |
 
@@ -201,3 +202,4 @@ decorativo.
 - [ ] `sistema-visual.md` tiene **valores**, no adjetivos
 - [ ] Los activos distintivos son **3 a 5**, no una lista
 - [ ] **Allan aprobó** los dos gates
+- [ ] **Los assets del kit están en el Drive del cliente**, con el link en `kit.md`

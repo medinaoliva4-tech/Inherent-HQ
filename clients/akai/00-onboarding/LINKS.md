@@ -12,4 +12,4 @@
 
 ## Quién tiene acceso
 
-⚠️ SIN DATOS
+El CEO.

@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` con Gate 3 · los `ideas-<formato>.md` · `sistema-visual.md` |
+| **Consume** | `plan-de-contenido.csv` con Gate 3 · los `ideas-<formato>.md` · `sistema-visual.md` · **los assets del kit en el Drive** *(link en `clients/<cliente>/02-marca/kit-de-redes/kit.md`)* |
 | **Produce** | Las filas base de **`entregas-diseno.md`** y la tabla **§ Lo que no se diseña este ciclo** |
 
 ## 1 · El filtro: las filas sin rodaje
