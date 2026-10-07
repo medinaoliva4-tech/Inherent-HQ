@@ -207,7 +207,7 @@ Original: Drive › Hormozi Brain › Docs/5-scaling-frameworks.pdf
 | STAGE 6: OPTIMIZE | `references/roadmap/stage-6-optimize.md` | Videos missing/Optimize.mp4 | 01:18:00 | ✅ | 49 |
 | STAGE 7: CATEGORIZE | `references/roadmap/stage-7-categorize.md` | Videos missing/Categorize.mp4 | 01:11:53 | ✅ | 46 |
 | STAGE 8: SPECIALIZE | ⛔ no existe | Videos missing/Specialize.mp4 | — | — | — |
-| STAGE 9: CAPITALIZE | ⛔ no existe | Videos/09 Capitalize.mp4 | — | — | — |
+| STAGE 9: CAPITALIZE | `references/roadmap/stage-9-capitalize.md` | Videos/09 Capitalize.mp4 | 00:52:26 | ✅ | 49 |
 
 ## 📄 Roadmap — guías PDF (`references/roadmap/guides/`)
 
