@@ -14,13 +14,4 @@
 
 ## Estructura
 
-Igual que un folder de `clients/`:
-
-```
-inherent/inherent-social-media/
-├── README.md       ← este archivo: el perfil
-├── ESTRATEGIA.md   ← la estrategia de Inherent, la escribe ① Strategy
-├── LINKS.md        ← Drive de fotos, de videos, de entregables, Figma
-└── data/           ← todo lo investigado y recibido, para los demás agentes
-    └── plan-contratado.md
-```
+La misma de cualquier cliente *(`clients/README.md`)*. El router es `CLAUDE.md`.
