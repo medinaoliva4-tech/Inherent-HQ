@@ -29,6 +29,7 @@ elige la skill.
 | 📄 **Operación** | `contract-review` · `inbox-manager` | Contratos y correo |
 | 👥 **Equipo** | `job-post-builder` · `hiring-screener` | Publicar puestos y filtrar candidatos |
 | 🧭 **Resumen** | `monday-brief` · `business-pulse` | El negocio en una página |
+| 🗂️ **CRM** | `crm/` | Los prospectos: contactos, oportunidades y actividad |
 | ⚙️ **Arranque** | `smb-router` · `smb-onboard` | La entrada y la configuración inicial |
 
 `shared/` tiene las reglas comunes que usan todas *(moneda, datos personales, contenido no
