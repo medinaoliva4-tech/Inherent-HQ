@@ -7,8 +7,8 @@ description: >
   cortar, subtitular, reencuadrar, multiplicar en variantes, exportar video, o el paquete de
   video de un ciclo. Se dispara con "editá el ciclo de X", "armá los reels", "sacá las
   derivadas", "reencuadrá esto para TikTok", "exportá el paquete", "ponele subtítulos", "qué nos
-  falta para publicar video". Requiere el Excel de ④ con Gate 3 y el material de ⑤ con selects:
-  si faltan, BLOQUEA.
+  falta para publicar video", "pasale el link al cliente". Requiere el Excel de ④ con Gate 3 y
+  el material de ⑤: si faltan, BLOQUEA. Si ⑤ no marcó selects, los hace ve-recepcion con /watch.
 ---
 
 # ⑥B Video Editing — el orquestador
@@ -20,6 +20,10 @@ description: >
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 **Si no sabés qué skill usar, es esta.**
+
+> **Quién hace qué:** el **editor de video** (una persona) da las instrucciones, mira y aprueba;
+> **Claude Code ejecuta todo** con el motor de `brain/motor/` (ver su `README.md`). Las skills
+> dicen qué se hace en cada paso; el motor, con qué se corre.
 
 ## 1 · Pre-flight
 
@@ -35,9 +39,11 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | `sistema-visual.md` **§ Movimiento** | ②B Branding | 🛑 **BLOQUEADO** |
 | `plan-por-canal.md` — a qué plataforma va cada pieza | ③ Marketing | 🛑 **BLOQUEADO** |
 | El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
+| Los **selects** de ⑤ | ⑤ Producción | ⚠️ **Se seleccionan acá** con `/watch` (`ve-recepcion` §4) y se registra para ⑤ en el loop |
+| Las **herramientas** del motor | `brain/motor/README.md` § Instalación | 🛑 **BLOQUEADO** — sin `ffmpeg`, `yt-dlp`, `/watch` y Node no se puede ver ni montar |
 
-🛑 **Sin selects marcados no se edita.** Buscar la toma buena entre todo el material es el
-trabajo de ⑤, y hacerlo acá duplica horas que ya se pagaron.
+⚠️ **Buscar la toma buena es trabajo de ⑤.** Si llega sin selects, Claude califica cada clip con
+`/watch` (no el editor a mano) para no frenar el ciclo, y el loop lo devuelve a ⑤ como dato.
 
 ## 2 · Qué capa corre según el pedido
 
@@ -45,10 +51,11 @@ trabajo de ⑤, y hacerlo acá duplica horas que ya se pagaron.
 |---|---|
 | *«editá el ciclo»*, *«armá el paquete»* | **Todas, en orden** |
 | *«¿llegó todo?»*, *«qué nos falta»* | `ve-recepcion` |
-| *«armá este reel»*, *«montá esto»* | `ve-armado` |
-| *«ponele subtítulos»*, *«el cierre de marca»* | `ve-marca` |
+| *«calificá el material»*, *«¿qué tomas sirven?»* | `ve-recepcion` §4 |
+| *«armá este reel»*, *«montá esto»*, *«mostrame el guion»* | `ve-armado` |
+| *«ponele subtítulos»*, *«el cierre de marca»*, *«se ve azul / trabado»* | `ve-marca` |
 | *«sacá las derivadas»*, *«multiplicá esto»* | `ve-derivadas` |
-| *«reencuadrá para TikTok»*, *«exportá»* | `ve-export` |
+| *«reencuadrá para TikTok»*, *«exportá»*, *«el link para el cliente»* | `ve-export` |
 | *«qué se devolvió»*, la revisión del 20 | `ve-loop` |
 
 ## 3 · La regla que no se rompe
@@ -69,6 +76,16 @@ loop.
 🛑 **Derivar de un corte mal aprobado multiplica el error por 3.** Por eso el primer gate está
 antes de las derivadas.
 
+**Además de los gates, el editor aprueba el guion visual** antes del primer render (`ve-armado`
+§2), y **el cliente** responde en su página después del GATE 2 (`ve-export` §7). Ninguno
+reemplaza a los gates de Allan.
+
+## 5 · Las rondas de cambios
+
+**Cada pedido de cambio —del editor o del cliente— se hace en el guion de montaje
+(`build_reels.py`) y se renderiza una versión nueva.** Nunca se parchea un MP4 a mano. La versión
+anterior se archiva. Lo que se pide dos veces se vuelve regla (`ve-loop`).
+
 ---
 
 ## Control de calidad del orquestador
@@ -77,3 +94,4 @@ antes de las derivadas.
 - [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
 - [ ] Los **gates humanos** quedaron registrados con estado — ninguno asumido por silencio
+- [ ] Cada ronda de cambios quedó como **versión nueva**, con la anterior archivada
