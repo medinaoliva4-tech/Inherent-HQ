@@ -24,7 +24,7 @@
 
 | # | Qué | Por qué |
 |---|---|---|
-| 1 | **Herramienta o MCP para ⑥A Diseño y ⑦ Video Editing** | Hoy son 100% manuales: las horas del operador y del editor son el techo. ✅ **⑦ ya tiene motor** (Claude Code + Remotion + `/watch`, probado con Akai); falta ⑥A |
+| 1 | **Herramienta o MCP para ⑥A Diseño y ⑦ Video Editing** | Hoy son 100% manuales: las horas del operador y del editor son el techo |
 | 2 | **Operación automatizada** | Programar, publicar y reportar sin humano; el operador supervisa más cuentas |
 | 3 | **Pipeline de herramientas** | Plantillas y despliegue automatizado para que la tecnología de Growth quepa en el rubro Operador |
 | 4 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
@@ -50,7 +50,7 @@
 | 8 | **Automatización de mensajes y WhatsApp** | «Nadie se queda sin respuesta» |
 | 9 | **Herramienta a medida e IA propia** | Accelerate y Compound |
 | 10 | **Vetting de creadores con el scraper de Instagram** | Alianzas con creadores |
-| 11 | **`ffmpeg` local:** reencuadre y análisis de video. ✅ Análisis probado con Akai (`/watch` + `ffmpeg`); falta el reencuadre a 1:1 y 16:9 | ⑦ y `cr-lectura-de-video` |
+| 11 | **`ffmpeg` local:** reencuadre y análisis de video | ⑦ y `cr-lectura-de-video` |
 | 12 | **Un mes completo al volumen prometido** *(86 / 145 / 145 / 204)* | Que el volumen sea capacidad probada |
 
 ### Las garantías — no se publican hasta cerrar los cuatro
