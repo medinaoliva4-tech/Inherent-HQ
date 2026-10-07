@@ -72,13 +72,10 @@ el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno 
 | **05** | [Production](agents/05-production/) | La grabación | ✅ |
 | **06** | [Graphic Design](agents/06-graphic-design/) | Estáticos, carruseles y stories | ✅ |
 | **07** | [Video Editing](agents/07-video-editing/) | Reels y sus derivadas | ✅ |
-| **08** | [Community](agents/08-community-management/) | Respuesta, seguimiento y comunidad | ⬜ |
+| **08** | [Community](agents/08-community-management/) | Respuesta, seguimiento y comunidad | ✅ |
 | **09** | [Posting](agents/09-posting/) | Lo aprobado, publicado | ✅ |
 | **10** | [Ads Management](agents/10-ads-management/) | La pauta corriendo | ✅ |
 | ↻ | [Strategy](agents/01-strategy/) | La revisión del 20 | ✅ |
-
-⬜ **Community Management es el único que falta.** Sostiene dos promesas que ya están publicadas:
-*«nadie que te escribe se queda sin respuesta»* y *«que el crecimiento se sostenga solo»*.
 
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate, y
 **②B Branding valida con `br-guardian`** antes de que nada se publique.

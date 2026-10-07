@@ -344,6 +344,8 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
   quiénes son y en qué plan sale **solo de `clients/`** *(el `00-onboarding/plan-contratado.md` de
   cada uno)*. Lo que factura Inherent sale **solo de la contabilidad**. Los escenarios del manual
   *(«con 5 clientes», «con 10 clientes»)* son modelos, no la realidad. Si el dato no está, se dice.
+- **Antes de escribir en el repo, se presenta qué se va a escribir:** los archivos, qué lleva cada
+  uno y qué cambia en los que ya existen. **Se escribe solo con el OK del CEO en ese mismo turno.**
 - **Roles, no nombres.** Los nombres de las personas están solo en la tabla de slots de `inherent/05-OPERACION.md`.
 - **Evidencia o etiqueta** — en el trabajo de cliente. Sin fuente va como `[dice el cliente, sin verificar]`
   o `⚠️ SIN DATOS`. Nunca inventar.

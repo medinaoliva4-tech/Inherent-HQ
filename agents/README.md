@@ -30,7 +30,7 @@ agents/<NN>-<área>/
 | **05** | [Production](05-production/) | La grabación | ✅ **construido** |
 | **06** | [Graphic Design](06-graphic-design/) | Estáticos, carruseles y stories | ✅ **construido** |
 | **07** | [Video Editing](07-video-editing/) | Reels y sus derivadas | ✅ **construido** |
-| **08** | [Community Management](08-community-management/) | Respuesta, seguimiento y comunidad | ⬜ **el único que falta** |
+| **08** | [Community Management](08-community-management/) | Respuesta, seguimiento y comunidad | ✅ **construido** |
 | **09** | [Posting](09-posting/) | Lo aprobado, publicado | ✅ **construido** |
 | **10** | [Ads Management](10-ads-management/) | La pauta corriendo | ✅ **construido** |
 | ↻ | [Strategy](01-strategy/) | La revisión del 20 | ✅ |

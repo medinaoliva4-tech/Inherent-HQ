@@ -58,8 +58,8 @@ de un ciclo nuevo se revisan contra la fuente de la plataforma.
 
 | Plataforma | Caption máx. | Visible antes del corte | Hashtags |
 |---|---|---|---|
-| **Instagram — feed** | 2.200 | **~125 caracteres** | Máx. 30 · **recomendado 3-5** |
-| **Instagram — Reels** | 2.200 | **~55 caracteres** | Máx. 30 · **recomendado 3-5** |
+| **Instagram — feed** | 2.200 | **~125 caracteres** | **Máx. 5** · recomendado 3-5 |
+| **Instagram — Reels** | 2.200 | **~55 caracteres** | **Máx. 5** · recomendado 3-5 |
 | **TikTok** | 4.000 *(incluye hashtags y menciones)* | Pocas líneas, varía | Dentro del límite total |
 
 | Plataforma | Estado |
@@ -97,7 +97,7 @@ romperse, es una devolución a ④, igual que en social.
 
 | Regla | Por qué |
 |---|---|
-| **3-5 en Instagram**, no 30 | El máximo no es la recomendación |
+| **3-5 en Instagram** · el máximo son 5 | Instagram no permite más |
 | **Relacionados con la pieza**, no con la marca en general | Un hashtag genérico no trae a nadie |
 | **Nunca inventados sobre volumen** | Si no sabemos cuánto se usa un hashtag, se dice: no se afirma que *"tiene alcance"* |
 | **Los de marca van siempre**, si ②B los definió | Consistencia |

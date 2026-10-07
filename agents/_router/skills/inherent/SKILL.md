@@ -67,7 +67,7 @@ cliente no empieza con `ENRUTAMIENTO`, se saltó el router.
 | Reels, edición, derivadas, cortes | ⑦ Video Editing | `/video-editing` |
 | Captions, hashtags, fechas y horas, programar, archivo de carga | ⑨ Posting | `/posting` |
 | Pauta, presupuesto de ads, campañas pagas, CPA, ROAS, atribución | ⑩ Ads | `/ads` |
-| Comentarios y DMs | ⑧ Community | 🔴 **BLOQUEADO — el agente no está construido** |
+| Comentarios, DMs, menciones, la bandeja, moderar | ⑧ Community | `/community` |
 | Hablarle al cliente | 00 Account | 🔴 **No desde acá** — vive en WhatsApp |
 
 **Si el pedido toca dos departamentos**, se enruta al que va **primero en el pipeline** y se

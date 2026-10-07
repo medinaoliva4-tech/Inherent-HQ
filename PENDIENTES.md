@@ -16,6 +16,7 @@
 | 4 | **¿Cuál de las tres auditorías cubre corporate structure?** | Hoy dice solo «la auditoría» |
 | 5 | **Reposición gratis en las garantías** | El costo «3 a 5 puntos de margen» se calculó con la tabla vieja: recalcular o descartar |
 | 6 | **Bloque «Lo básico vs. el valor único» de Marketing Pro** | `01-IDENTIDAD` lo tiene para Marketing, Accelerate y Compound, no para Pro |
+| 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de ⑧ |
 
 ---
 
@@ -23,13 +24,12 @@
 
 | # | Qué | Por qué |
 |---|---|---|
-| 1 | **Agente ⑧ Community Management** | Sostiene «tus comentarios y mensajes» en los cuatro planes y el agente de WhatsApp a medida desde Accelerate |
-| 2 | **Herramienta o MCP para ⑥A Diseño y ⑦ Video Editing** | Hoy son 100% manuales: las horas del operador y del editor son el techo |
-| 3 | **Operación automatizada** | Programar, publicar y reportar sin humano; el operador supervisa más cuentas |
-| 4 | **Pipeline de herramientas** | Plantillas y despliegue automatizado para que la tecnología de Growth quepa en el rubro Operador |
-| 5 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
-| 6 | **Match automático de mentores** | Strategy busca por industria, etapa y presupuesto en las plataformas de mentores. Falta el login |
-| 7 | **Cobro internacional** | Stripe, Wise o equivalente, con factura deducible para el cliente |
+| 1 | **Herramienta o MCP para ⑥A Diseño y ⑦ Video Editing** | Hoy son 100% manuales: las horas del operador y del editor son el techo |
+| 2 | **Operación automatizada** | Programar, publicar y reportar sin humano; el operador supervisa más cuentas |
+| 3 | **Pipeline de herramientas** | Plantillas y despliegue automatizado para que la tecnología de Growth quepa en el rubro Operador |
+| 4 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
+| 5 | **Match automático de mentores** | Strategy busca por industria, etapa y presupuesto en las plataformas de mentores. Falta el login |
+| 6 | **Cobro internacional** | Stripe, Wise o equivalente, con factura deducible para el cliente |
 
 ---
 
@@ -40,8 +40,8 @@
 
 | # | Qué | Respalda |
 |---|---|---|
-| 1 | **Zernio:** publicación y bandeja de mensajes con una cuenta real, y su precio con 15-20 cuentas | «Presencia todos los días» y community management |
-| 2 | **IA que contesta comentarios y mensajes** *(API de pocos dólares al mes conectada a Zernio)* | Community básico de la línea Marketing |
+| 1 | **Zernio:** publicar y responder con una cuenta real, y su precio con 15-20 cuentas. ✅ Conectado; leer cuentas, comentarios y DMs ya está probado, también desde el VPS | «Presencia todos los días» y community management |
+| 2 | **⑧ en vivo con NAO y Akai:** una semana en modo borrador, después envío activo. Corre con Claude Code y el plan de la empresa en el VPS; si el plan no alcanza, una API de IA | Community en los cuatro planes |
 | 3 | **Pasar ⑨ Posting de Publer a Zernio** | El agente está armado con Publer |
 | 4 | **Scraping:** probar los actores que faltan. ✅ Cuenta, MCP y `apify/facebook-ads-scraper` ya están probados | Inteligencia de ①②③④ y las garantías |
 | 5 | **Pauta:** Meta, TikTok, Google Search y Performance Max | ⑩ Ads y «Que te encuentren en Google» |
@@ -117,3 +117,5 @@
 | 4 | **Borrar las ramas viejas de GitHub:** solo quedan `main` y `rodrigo-medina` |
 | 5 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y trabajar sobre `main` |
 | 6 | **Onboarding de Akai, NAO y Cerantola:** los folders existen, vacíos, en `clients/` |
+| 7 | **El VPS es KVM 1, no KVM 2** | Lo dice mal `agents/04-creative/brain/skills/BARRIDO-NOCTURNO.md` |
+| 8 | **En el VPS, `~/inherent-hq` es un clon viejo sin acceso** | El que se usa es `~/inherent-hq-src`. Renombrar el viejo para que nadie lo use por error |
