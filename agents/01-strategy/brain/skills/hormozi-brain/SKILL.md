@@ -75,9 +75,9 @@ Todo dato del cliente lleva evidencia o etiqueta: `[dice el cliente, sin verific
 - **Solo con base en `references/`.** Nunca de memoria. Si no está: «No está en el material».
 - **Buscar en el texto completo y leer el pasaje literal con su contexto antes de responder.**
 - **Citar SIEMPRE la referencia exacta:**
-  `[$100M OFFERS | 6. Value Offer: The Value Equation | pág. PDF 80]` ·
-  `[ROADMAP VIDEO | STAGE 2: ADVERTISE | 00:09:07]` (+ frame `stage2_00-09-07.png` si aplica) ·
-  `[100M SCALING ROADMAP PDF | Guía Stage 2: Advertise | Sección Stage 1: Monetize | pág. PDF 37]`
+  `[$100M OFFERS | 6. Value Offer: The Value Equation | pág. PDF 81]` ·
+  `[ROADMAP VIDEO | STAGE 2: ADVERTISE | 00:02:47]` (+ frame `stage2_00-02-48.png` si es del pizarrón) ·
+  `[100M SCALING ROADMAP PDF | Guía Stage 2: Advertise | Sección Stage 2: Advertise | pág. PDF 28]`
 - **Al citar, pegar el pasaje literal** (en inglés, tal cual), no una paráfrasis. La explicación va aparte, en español.
 - **Cruzar fuentes** cuando aplique: libro + video + guía.
 - Los transcripts de video son **automáticos** (Whisper). Si una palabra clave suena rara, se contrasta con el pizarrón o el PDF.

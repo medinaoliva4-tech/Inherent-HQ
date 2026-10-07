@@ -4,7 +4,7 @@ archivo_original: "Drive › Hormozi Brain › Videos missing/Categorize.mp4 (id
 etapa: "STAGE 7: CATEGORIZE"
 duracion: "01:11:53"
 transcripcion: "faster-whisper small.en (int8, greedy) — automática, literal; solo se quitaron muletillas obvias (um/uh/erm/hmm): 0"
-frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 608 frames revisados → 10 estados visuales distintos documentados; 1 frames sin contenido de pantalla"
+frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 608 frames revisados → 46 estados visuales distintos documentados; 20 frames sin contenido de pantalla"
 imagenes: "NO se guardan en el repo. Fuente de verdad = el video en ese timestamp. Cada bloque FRAME lleva el nombre stageX_HH-MM-SS.png como referencia."
 formato_cita: "[ROADMAP VIDEO | STAGE 7: CATEGORIZE | HH:MM:SS] (+ frame si aplica)"
 nota: "Se usó la versión con audio de «Videos missing»; «Videos/07 Categorize.mp4» es el mismo video sin audio."
@@ -61,7 +61,7 @@ Recreación:
             /_________________||_________________\
 ```
 
-[DESCRIPCIÓN DEL DIBUJO] Pirámide de la etapa anterior (la misma con la que cerró el video de la etapa 6), vista solo en toma abierta: Alex a la izquierda señalando las franjas con la mano y Leila a la derecha de la pantalla. Pirámide azul dividida por tres líneas que salen del vértice (cuatro gajos verticales) y por siete franjas horizontales prolongadas con líneas negras a ambos lados. «20 TO 49» y «OPTIMIZE» en azul claro (la franja actual); el resto de los rótulos en negro; «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. En el título, «6: OPTIMIZE» en azul claro. En 00:00:02 b la mano de Alex tapa parte de «10 TO 19» (se lee completo en 00:00:02, que lleva encima una viñeta/transición de luz en forma de rombo).
+[DESCRIPCIÓN DEL DIBUJO] Pirámide de la etapa anterior (la misma con la que cerró el video de la etapa 6), vista solo en toma abierta: Alex a la izquierda señalando las franjas con la mano y Leila a la derecha de la pantalla. Pirámide (morada en el slide; en cámara se ve azul) dividida por tres líneas que salen del vértice (cuatro gajos verticales) y por siete franjas horizontales prolongadas con líneas negras a ambos lados. «20 TO 49» y «OPTIMIZE» en el color de acento, que en cámara se ve azul claro (la franja actual); el resto de los rótulos en negro; «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. En el título, «6: OPTIMIZE» en el mismo color de acento. En 00:00:02 b la mano de Alex tapa parte de «10 TO 19» (se lee completo en 00:00:02, que lleva encima una viñeta/transición de luz en forma de rombo).
 <!-- /FRAME -->
 ↳ alineado con el audio de [00:00:00]
 
@@ -604,6 +604,54 @@ Recreación:
 [00:06:49] And so at this point, we graduate from product being outdated,
 [00:06:53] improvements taking too long to roll out,
 [00:06:55] to fixing one problem at a time with a focused feature-specific team.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:07:00 | stage7_00-07-00.png]** · tipo: tabla
+También visible en: 00:07:12, 00:07:15, 00:07:26, 00:07:30, 00:07:33, 00:07:34, 00:07:44, 00:08:00, 00:08:02, 00:08:15, 00:08:18, 00:08:30, 00:08:38, 00:08:46, 00:08:51, 00:08:52, 00:09:03, 00:09:35, 00:09:45, 00:09:54, 00:24:18
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE
+> HEADCOUNT | 50 to 99
+> YOUR ROLE | Executive
+> LEADERSHIP STRUCTURE | 3 Layers: Leadership Team
+> # OF COMPANIES HERE | 1,200,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams.
+> MARKETING | YOU ARE HERE | **How you tell people about your stuff.**
+> SALES
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 7: CATEGORIZE | |
+|---|---|
+| **HEADCOUNT** | 50 to 99 |
+| **YOUR ROLE** | Executive |
+| **LEADERSHIP STRUCTURE** | 3 Layers: Leadership Team |
+| **# OF COMPANIES HERE** | 1,200,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams. |
+| **MARKETING** | ◀ YOU ARE HERE | **How you tell people about your stuff.** |
+| **SALES** | — | — |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato: título «7: CATEGORIZE» en barra negra, rótulos en celdas moradas con texto blanco, línea negra gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva sobre barra negra). PRODUCT ya lleno en texto normal y letra chica (CONSTRAINT y TO GRADUATE). La celda CONSTRAINT de la fila actual la ocupa una flecha morada que apunta a la izquierda (hacia el rótulo) con «YOU ARE HERE» en blanco; en su celda TO GRADUATE va la definición del área en negrita y letra más grande (el último dato agregado). El resto de las filas, vacío. Solo en toma abierta (no hay insert a pantalla completa de este estado): frame principal con Alex a la izquierda y Leila a la derecha, leído recortando y ampliando; también en las tomas abiertas de 00:07:26, 00:07:30, 00:07:44, 00:08:00, 00:08:15, 00:08:38, 00:08:52, 00:09:54 y, de vuelta a la tabla después de los slides de MARKETING, 00:24:18. En los primeros planos de Alex con la pantalla a la derecha (00:07:12, 00:07:15, 00:08:02, 00:09:03, 00:09:35, 00:09:45) se ven los rótulos, el encabezado, el texto de PRODUCT cortado («Product outdated. Improvements take too long t…») y la flecha «YOU ARE HERE» en MARKETING; en los de Leila (00:07:33, 00:07:34, 00:08:18, 00:08:30, 00:08:46, 00:08:51) solo la columna «TO GRADUATE» con «Fix one problem at a time with focused feature specific teams.» y «How you tell people about your stuff.»
+<!-- /FRAME -->
+↳ alineado con el audio de [00:06:59]
+
 [00:06:59] So it's like, OK, this is the one big objective.
 [00:07:02] Now, if we say, OK, you know, risk is our biggest objective
 [00:07:05] that we need to tackle, well, there's going to be components to that.
@@ -696,6 +744,38 @@ Recreación:
 [00:09:59] All right, so from there,
 [00:10:01] that's what we have to do for products.
 [00:10:02] So what do the constraints look like
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:10:05 | stage7_00-10-05.png]** · tipo: slide
+También visible en: 00:10:11, 00:10:15, 00:10:18, 00:10:19, 00:10:21, 00:10:30
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: MARKETING
+> At this level...
+> CONSTRAINT
+> Lead flow is volatile because you only have _one way_ to get customers.
+> One Customer Channel
+
+Recreación:
+
+```text
+7: CATEGORIZE: MARKETING
+
+                     At this level...
+
+         [ CONSTRAINT ]                  |
+  Lead flow is volatile because you only |
+   have one way to get customers.        |
+                                         |
+  [One Customer Channel]   /\/\/\        |
+  ==[]===(válvula)===[]==  /    ⇅        |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, primer build: pestaña morada arriba a la izquierda con «7: CATEGORIZE: MARKETING» en blanco; título «At this level...» en negro, centrado; a la izquierda, caja negra «CONSTRAINT» con texto blanco y el texto de la restricción debajo («one way» subrayado); debajo, la etiqueta «One Customer Channel» en blanco sobre fondo morado, encima de una tubería negra horizontal con una válvula al centro, de cuyo extremo derecho sale una línea en zigzag que sube y baja, con dos flechitas opuestas (⇅) debajo. Una línea vertical negra divide el slide; la mitad derecha está vacía. Frame principal: insert a pantalla completa. También en tomas abiertas (00:10:11, 00:10:15, 00:10:21, 00:10:30, con Alex señalando la tubería y Leila a la derecha) y en primeros planos de Alex (00:10:18, 00:10:19), donde se ve la columna izquierda.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:10:04]
+
 [00:10:04] for marketing at this level?
 [00:10:06] So lead flow becomes volatile
 [00:10:08] because you only have one way to get customers.
@@ -711,6 +791,49 @@ Recreación:
 [00:10:31] when you're small, you barely notice.
 [00:10:33] When you're big, those couple percentage points
 [00:10:35] make huge swings in the business.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:10:38 | stage7_00-10-38.png]** · tipo: slide
+También visible en: 00:10:54
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: MARKETING
+> And...
+> CONSTRAINT
+> Lead flow is volatile because you only have _one way_ to get customers.
+> One Customer Channel
+> TO GRADUATE
+> Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> 1st Channel
+> REFERRALS
+> SEGMENTED NURTURE
+> 2nd Channel
+
+Recreación:
+
+```text
+7: CATEGORIZE: MARKETING
+
+                                   And...
+
+         [ CONSTRAINT ]              |              [ TO GRADUATE ]
+  Lead flow is volatile because you  |   Fund 2nd acq channel with referral
+  only have one way to get customers.|   process (& track it) & segmented LT
+                                     |   nurture by lead score. Pick most
+                                     |   similar platform-->or new core 4.
+  [One Customer Channel]  /\/\/\    ⇒   [1st Channel]       +  [REFERRALS]
+  ==[]==(válvula)==[]==  /   ⇅       |   ==[]==(válvula)==[]==  [SEGMENTED
+                                     |                            NURTURE]
+                                     |              [2nd Channel]    |
+                                     |                               v
+                                     |            ==[]==(válvula)==[]==
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, segundo build: pestaña morada «7: CATEGORIZE: MARKETING»; título «And...»; a la izquierda, lo mismo del primer build (caja «CONSTRAINT», texto con «one way» subrayado, etiqueta morada «One Customer Channel», tubería con válvula y zigzag con ⇅); línea vertical negra con una flecha blanca de contorno negro (⇒) que apunta a la derecha; a la derecha, caja negra «TO GRADUATE», el texto, la etiqueta morada «1st Channel» sobre una tubería con válvula, un signo «+» morado, dos cajas moradas con texto blanco «REFERRALS» y «SEGMENTED NURTURE», una flecha morada gruesa hacia abajo y la etiqueta morada «2nd Channel» sobre una segunda tubería con válvula, abajo a la derecha. Frame principal: insert a pantalla completa. También en toma abierta (00:10:54), con Alex señalando y Leila a la derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:10:38]
+
 [00:10:38] And so to graduate,
 [00:10:39] you want to fund a second acquisition channel
 [00:10:41] with a referral process and track it,
@@ -722,6 +845,65 @@ Recreación:
 [00:10:54] I'll walk through like,
 [00:10:55] how do we prioritize what platform we're going to go
 [00:10:57] as our second platform for acquisition?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:10:59 | stage7_00-10-59.png]** · tipo: slide
+También visible en: 00:11:07, 00:11:15, 00:11:24, 00:11:30, 00:11:37, 00:11:45, 00:11:50, 00:11:50, 00:12:00, 00:12:01, 00:12:05, 00:12:15, 00:12:15, 00:12:30, 00:12:41, 00:12:45, 00:12:56, 00:12:58, 00:13:00, 00:13:08, 00:13:10, 00:13:12, 00:13:29, 00:13:29, 00:13:30, 00:13:45, 00:13:56, 00:14:00, 00:14:06, 00:14:06, 00:14:15, 00:14:19, 00:14:30, 00:14:45, 00:14:59, 00:15:00, 00:15:15, 00:15:24, 00:15:24, 00:15:30
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: MARKETING
+> What that looks like...
+> TO GRADUATE
+> Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> 1st Channel
+> REFERRALS
+> SEGMENTED NURTURE
+> 2nd Channel
+> One of the hardest transitions in business.
+> See it as an investment
+> Expect 12 month delay for return
+> Doubles acquisition
+> Reduces risk
+> “Intervention” Story
+> Cash flow the transition by getting more out of more segmented long term nurture with lead scoring you’ve already done + strong referral process. (MAKE IT WORTH IT)
+
+Recreación:
+
+```text
+7: CATEGORIZE: MARKETING
+
+                        What that looks like...
+
+        [ TO GRADUATE ]           |
+  Fund 2nd acq channel with       |
+  referral process (& track it) & |
+  segmented LT nurture by lead    |
+  score. Pick most similar        |
+  platform-->or new core 4.       |
+  [1st Channel]  +  [REFERRALS]   ⇒
+  ==[]=(válvula)=[]= [SEGMENTED   |
+                      NURTURE]    |
+          [2nd Channel]   |       |
+                          v       |
+     ==[]=(válvula)=[]==          |
+
+  (columna derecha, a la derecha de la flecha ⇒)
+  • One of the hardest transitions in business.
+  • See it as an investment
+  • Expect 12 month delay for return
+       ○ Doubles acquisition
+       ○ Reduces risk
+  • “Intervention” Story
+  • Cash flow the transition by getting more out of more
+    segmented long term nurture with lead scoring you’ve
+    already done + strong referral process. (MAKE IT WORTH IT)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide «What that looks like...» de MARKETING (primera versión): pestaña morada arriba a la izquierda con «7: CATEGORIZE: MARKETING» en blanco; título en negro centrado. A la izquierda, caja negra «TO GRADUATE» con texto blanco, el texto y el diagrama de las tuberías («1st Channel» + «REFERRALS» / «SEGMENTED NURTURE» → flecha morada hacia abajo → «2nd Channel»). Línea vertical negra al centro, interrumpida por una flecha blanca de contorno negro (⇒) que apunta a la lista de la derecha (viñetas negras; sub-viñetas con círculos huecos). Frame principal: insert a pantalla completa. También en tomas abiertas (00:11:07, 00:11:15, 00:11:37, 00:11:45, 00:12:01, 00:12:15 b, 00:12:30, 00:12:58, 00:13:00, 00:13:12, 00:13:45, 00:14:19, 00:14:30, 00:14:45, 00:14:59, 00:15:00, 00:15:15), en primeros planos de Alex con la pantalla a la derecha, donde solo se ve la columna izquierda (00:11:24, 00:11:30, 00:11:50, 00:11:50 b, 00:12:00, 00:12:05, 00:12:15, 00:12:41, 00:12:45, 00:12:56, 00:13:08, 00:13:10, 00:13:29, 00:13:29 b, 00:13:30, 00:13:56, 00:14:00, 00:15:24, 00:15:24 b, 00:15:30), y en primeros planos de Leila con la pantalla a la izquierda, donde se ve la lista de la derecha (00:14:06, 00:14:06 b, 00:14:15).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:10:59]
+
 [00:10:59] So one of the hardest transitions in business
 [00:11:00] is adding the second channel.
 [00:11:01] So I want to be really clear about this.
@@ -899,6 +1081,78 @@ Recreación:
 [00:16:01] $3,000 for a customer.
 [00:16:02] And a referral is gonna be way more likely to stick,
 [00:16:05] way more likely to refer another customer.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:16:09 | stage7_00-16-09.png]** · tipo: slide
+También visible en: 00:15:43, 00:15:45, 00:15:52, 00:16:00, 00:16:27, 00:16:30, 00:16:41, 00:16:45, 00:16:53, 00:17:00, 00:17:03, 00:17:03, 00:17:13, 00:17:15, 00:17:54, 00:18:00, 00:18:08, 00:18:09, 00:18:11, 00:18:15, 00:18:22, 00:18:22, 00:18:28, 00:18:30, 00:18:45, 00:18:45, 00:18:50, 00:18:56, 00:19:00, 00:19:25, 00:19:30, 00:19:30, 00:19:32, 00:19:45, 00:19:46, 00:19:52, 00:20:00, 00:20:03, 00:20:15, 00:20:25, 00:20:25, 00:20:30
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: MARKETING
+> What that looks like...
+> TO GRADUATE
+> Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> 1st Channel
+> REFERRALS
+> SEGMENTED NURTURE
+> 2nd Channel
+> **7 REFERRAL PLAYS _THAT WORK_:**
+> 1. **One-Sided Referral Benefit:** Pay your average cost to acquire a customer (CAC) to the referrer or the friend. Make them aware of the incentive.
+> 2. **Two-Sided Referral Benefits:** Pay your CAC to both parties. Half goes to the referrer (in credit or cash) and half goes to the friend (in credit).
+> 3. **Ask For A Referral Right When They Buy:** On the sales contract or checkout page, ask for some names and phone numbers of people they’d like to do this with.
+> 4. **Add Referrals As A Negotiation Chip:** Ask for referrals as a way to negotiate a lower price.
+> 5. **Referral Events:** Where people get points, credits, dollars, or even just bragging rights for bringing friends within an explicit time period.
+> 6. **Ongoing Referral Programs:** Talk about the benefits of doing things with others all the time.
+> 7. **Unlockable Referral Bonuses:** Create bonuses for people who refer and leave a testimonial.
+
+Recreación:
+
+```text
+7: CATEGORIZE: MARKETING
+
+                        What that looks like...
+
+  (columna izquierda: igual que la primera versión)
+        [ TO GRADUATE ]           |
+  Fund 2nd acq channel with       |
+  referral process (& track it) & |
+  segmented LT nurture by lead    |
+  score. Pick most similar        |
+  platform-->or new core 4.       |
+  [1st Channel]  +  [REFERRALS]   ⇒
+  ==[]=(válvula)=[]= [SEGMENTED   |
+                      NURTURE]    |
+          [2nd Channel]   |       |
+                          v       |
+     ==[]=(válvula)=[]==          |
+
+  (columna derecha, a la derecha de la flecha ⇒)
+  7 REFERRAL PLAYS THAT WORK:
+                   ‾‾‾‾‾‾‾‾‾
+    1. One-Sided Referral Benefit: Pay your average cost to acquire a
+       customer (CAC) to the referrer or the friend. Make them aware of
+       the incentive.
+    2. Two-Sided Referral Benefits: Pay your CAC to both parties. Half
+       goes to the referrer (in credit or cash) and half goes to the
+       friend (in credit).
+    3. Ask For A Referral Right When They Buy: On the sales contract or
+       checkout page, ask for some names and phone numbers of people
+       they’d like to do this with.
+    4. Add Referrals As A Negotiation Chip: Ask for referrals as a way to
+       negotiate a lower price.
+    5. Referral Events: Where people get points, credits, dollars, or even
+       just bragging rights for bringing friends within an explicit time
+       period.
+    6. Ongoing Referral Programs: Talk about the benefits of doing things
+       with others all the time.
+    7. Unlockable Referral Bonuses: Create bonuses for people who refer
+       and leave a testimonial.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Segunda versión del slide «What that looks like...» de MARKETING: misma columna izquierda (caja negra «TO GRADUATE», texto y diagrama de tuberías) y misma flecha ⇒; la lista de la derecha se reemplaza por un encabezado en negrita y mayúsculas «7 REFERRAL PLAYS THAT WORK:» («THAT WORK» subrayado) y siete puntos numerados, cada uno con el nombre de la jugada en negrita seguido de su explicación en texto regular gris, en letra chica. No hay insert a pantalla completa de este estado: el frame principal es una toma abierta (Alex a la izquierda de la pantalla, Leila a la derecha) y la lista se lee recortando y ampliando la columna derecha. También en las tomas abiertas de 00:15:43, 00:15:45, 00:15:52, 00:16:27, 00:16:30, 00:16:53, 00:17:00, 00:17:13, 00:17:15, 00:17:54, 00:18:00, 00:18:11, 00:18:15, 00:18:28, 00:18:30, 00:18:56, 00:19:00, 00:19:25, 00:19:32, 00:19:45, 00:20:03 y 00:20:15, y en primeros planos de Alex con la pantalla a la derecha, donde solo se ve la columna izquierda (00:16:00, 00:16:41, 00:16:45, 00:17:03, 00:17:03 b, 00:18:08, 00:18:09, 00:18:22, 00:18:22 b, 00:18:45, 00:18:45 b, 00:18:50, 00:19:30, 00:19:30 b, 00:19:46, 00:19:52, 00:20:00, 00:20:25, 00:20:25 b, 00:20:30).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:16:07]
+
 [00:16:07] They say yes at higher prices, they convert better,
 [00:16:10] they stay longer, all those benefits.
 [00:16:11] And for some reason, we're not willing to do that.
@@ -1022,6 +1276,69 @@ Recreación:
 [00:20:27] from here, we get more cash.
 [00:20:28] This is from our customers, this is from our leads,
 [00:20:30] and now we dump that cash in the second channel.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:20:33 | stage7_00-20-33.png]** · tipo: slide
+También visible en: 00:20:45, 00:21:10, 00:21:15, 00:21:29, 00:21:30, 00:21:45, 00:21:58, 00:22:00, 00:22:15, 00:22:18, 00:22:18, 00:22:19, 00:22:33, 00:22:45, 00:23:00, 00:23:02, 00:23:02, 00:23:07, 00:23:15, 00:23:17, 00:23:30, 00:23:30, 00:23:44, 00:24:00, 00:24:01, 00:24:15, 00:24:17
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: MARKETING
+> What that looks like...
+> TO GRADUATE
+> Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> 1st Channel
+> REFERRALS
+> SEGMENTED NURTURE
+> 2nd Channel
+> **How to Pick Your Next Channel:**
+> *In order of risk/likelihood*
+> 1. **Same Core four, platform, placement. New Audience.** Ex: Meta Newsfeed Ads, new audience/targeting.
+> 2. **Same Core four, platform, audience. New Placement.** Ex: Meta STORY Ads, same audience.
+> 3. **Same Core Four, new platform.** Ex: Youtube pre-roll ads.
+> 4. **New Core Four** Ex: Cold outbound to affiliates.
+
+Recreación:
+
+```text
+7: CATEGORIZE: MARKETING
+
+                        What that looks like...
+
+  (columna izquierda: igual que las versiones anteriores)
+        [ TO GRADUATE ]           |
+  Fund 2nd acq channel with       |
+  referral process (& track it) & |
+  segmented LT nurture by lead    |
+  score. Pick most similar        |
+  platform-->or new core 4.       |
+  [1st Channel]  +  [REFERRALS]   ⇒
+  ==[]=(válvula)=[]= [SEGMENTED   |
+                      NURTURE]    |
+          [2nd Channel]   |       |
+                          v       |
+     ==[]=(válvula)=[]==          |
+
+  (columna derecha, a la derecha de la flecha ⇒)
+  How to Pick Your Next Channel:
+  In order of risk/likelihood
+
+    1. Same Core four, platform, placement. New Audience. Ex: Meta
+       Newsfeed Ads, new audience/targeting.
+
+    2. Same Core four, platform, audience. New Placement. Ex: Meta STORY
+       Ads, same audience.
+
+    3. Same Core Four, new platform.
+       Ex: Youtube pre-roll ads.
+
+    4. New Core Four Ex: Cold outbound to affiliates.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Tercera versión del slide «What that looks like...» de MARKETING: misma columna izquierda y misma flecha ⇒; a la derecha, el encabezado «How to Pick Your Next Channel:» en negrita, el subtítulo «In order of risk/likelihood» en cursiva y cuatro puntos numerados: la primera parte de cada uno en negrita y el ejemplo («Ex: …») en regular. Frame principal: insert a pantalla completa. También en tomas abiertas (00:20:45, 00:21:10, 00:21:15, 00:21:29, 00:21:30, 00:21:45, 00:21:58, 00:22:00, 00:22:15, 00:22:19, 00:22:33, 00:22:45, 00:23:00, 00:23:17, 00:23:30, 00:23:44), en primeros planos de Alex con la columna izquierda a la derecha del cuadro (00:22:18, 00:22:18 b, 00:24:15, 00:24:17) y en primeros planos de Leila con la lista numerada a la izquierda del cuadro (00:23:02, 00:23:02 b, 00:23:07, 00:23:15, 00:23:30 b, 00:24:00, 00:24:01).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:20:32]
+
 [00:20:32] So then you think, okay, well,
 [00:20:34] what am I gonna make my second channel,
 [00:20:37] which, there's all these different places
@@ -1141,6 +1458,53 @@ Recreación:
 [00:24:15] and it's not gonna happen in 30 days.
 [00:24:17] It's very unlikely.
 [00:24:18] All right, and so at this point at category seven,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:24:24 | stage7_00-24-24.png]** · tipo: tabla
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE
+> HEADCOUNT | 50 to 99
+> YOUR ROLE | Executive
+> LEADERSHIP STRUCTURE | 3 Layers: Leadership Team
+> # OF COMPANIES HERE | 1,200,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams.
+> MARKETING | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> SALES | YOU ARE HERE | **How you get people to give you money for your stuff.**
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 7: CATEGORIZE | |
+|---|---|
+| **HEADCOUNT** | 50 to 99 |
+| **YOUR ROLE** | Executive |
+| **LEADERSHIP STRUCTURE** | 3 Layers: Leadership Team |
+| **# OF COMPANIES HERE** | 1,200,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams. |
+| **MARKETING** | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4. |
+| **SALES** | ◀ YOU ARE HERE | **How you get people to give you money for your stuff.** |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato: título «7: CATEGORIZE» en barra negra, rótulos en celdas moradas con texto blanco, línea negra gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva sobre barra negra). PRODUCT y MARKETING ya llenos en texto normal y letra chica («one way» subrayado). La celda CONSTRAINT de la fila actual la ocupa una flecha morada que apunta a la izquierda (hacia el rótulo) con «YOU ARE HERE» en blanco; en su celda TO GRADUATE va la definición del área en negrita y letra más grande (el último dato agregado). El resto de las filas, vacío. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:24:22]
+
 [00:24:22] we went from more volatile lead flow
 [00:24:24] because you only had one way to get customers
 [00:24:26] to funding our second channel
@@ -1151,15 +1515,138 @@ Recreación:
 [00:24:35] that's gonna take us six months, maybe nine months
 [00:24:38] to get fully profitable and spun up to the same level
 [00:24:40] as our existing lead channel.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:24:44 | stage7_00-24-44.png]** · tipo: slide
+También visible en: 00:24:53
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: SALES
+> At this level...
+> CONSTRAINT
+> Leads getting wasted. Not worked consistently.
+> YOUR LEADS
+
+Recreación:
+
+```text
+7: CATEGORIZE: SALES
+
+                     At this level...
+
+        [ CONSTRAINT ]               |
+     Leads getting wasted.           |
+    Not worked consistently.         |
+                                     |
+                       (persona)     |
+   [YOUR LEADS] ==>  (tirando a la   |
+                       basura)       |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, primer build: pestaña morada arriba a la izquierda con «7: CATEGORIZE: SALES» en blanco; título «At this level...» en negro, centrado; a la izquierda, caja negra «CONSTRAINT» con texto blanco, el texto de la restricción debajo y el pictograma negro de una persona tirando un papel a un bote de basura, con una flecha morada «YOUR LEADS» (texto blanco) que apunta al papel. Una línea vertical negra divide el slide; la mitad derecha está vacía. Frame principal: insert a pantalla completa. También en toma abierta (00:24:53), con Alex señalando la flecha «YOUR LEADS» y Leila a la derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:24:42]
+
 [00:24:42] And so that leads us to the sales
 [00:24:45] which is how we get people to give us money.
 [00:24:47] And so the constraint at this level
 [00:24:49] is that leads are getting wasted
 [00:24:51] and you're not working them consistently.
 [00:24:53] See, your leads are getting wasted, very sad.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:24:57 | stage7_00-24-57.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: SALES
+> And...
+> CONSTRAINT
+> Leads getting wasted. Not worked consistently.
+> YOUR LEADS
+> TO GRADUATE
+> Better schedule coverage. Create lead nurture checklist & kudos for top show rates.
+> MORE TIMES MORE DAYS
+> SHOW UP CHECKLIST
+
+Recreación:
+
+```text
+7: CATEGORIZE: SALES
+
+                                 And...
+
+        [ CONSTRAINT ]            |            [ TO GRADUATE ]
+     Leads getting wasted.        |       Better schedule coverage.
+    Not worked consistently.      |  Create lead nurture checklist & kudos
+                                  |          for top show rates.
+                    (persona)    ⇒  [MORE TIMES]  [SHOW UP  ]
+  [YOUR LEADS] ==> (basura)       |  [MORE DAYS ]  [CHECKLIST]  (aplauso)
+                                  |  (calendario   (portapapeles
+                                  |   + reloj)      con checks)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, segundo build: pestaña morada «7: CATEGORIZE: SALES»; título «And...»; a la izquierda, lo mismo del primer build (caja «CONSTRAINT», texto, persona tirando un papel a la basura y flecha morada «YOUR LEADS»); línea vertical negra con una flecha blanca de contorno negro (⇒) que apunta a la derecha; a la derecha, caja negra «TO GRADUATE», el texto y tres íconos: una caja negra «MORE TIMES MORE DAYS» sobre un calendario con un reloj, una caja negra «SHOW UP CHECKLIST» sobre un portapapeles con checks verdes, y dos manos aplaudiendo. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:24:55]
+
 [00:24:55] All right, and so to graduate,
 [00:24:57] you get better schedule coverage
 [00:24:59] and you create a lead nurture checklist
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:25:04 | stage7_00-25-04.png]** · tipo: slide
+También visible en: 00:25:07, 00:25:36, 00:25:40, 00:25:45, 00:25:48, 00:25:49, 00:26:00, 00:26:11, 00:26:15, 00:26:17, 00:26:39, 00:26:45, 00:27:00, 00:27:05, 00:27:06, 00:27:13, 00:27:15, 00:27:30, 00:27:40, 00:27:45, 00:27:49, 00:27:50, 00:27:55, 00:28:00, 00:28:06, 00:28:09, 00:28:15, 00:28:19, 00:28:20, 00:28:22, 00:28:23, 00:28:30, 00:28:34, 00:28:45, 00:29:00, 00:29:00, 00:29:16, 00:29:26, 00:29:30, 00:29:45, 00:29:52, 00:29:52, 00:29:54, 00:29:54, 00:30:00, 00:30:02, 00:30:15, 00:30:15, 00:30:19, 00:30:30
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: SALES
+> What that looks like...
+> TO GRADUATE
+> Better schedule coverage. Create lead nurture checklist & kudos for top show rates.
+> MORE TIMES MORE DAYS
+> SHOW UP CHECKLIST
+> BASICS
+> **Change TY page headline to XXX**
+> **Move scheduler above the fold**
+> **Change to 15min timeslots**
+> **Open to 7 days per week**
+> **9am-9pm**
+> **Incentivize setters with 3% of sales**
+> **Implement automated reminders**
+> **Implement Manual Reminders: 24 Hr, Am, 1HR reminders**
+> **Daily kudos to team for show up rates**
+> **Implement bribe for show**
+> **Hire one new salesman as LOW MAN to take off time coverage**
+
+Recreación:
+
+```text
+7: CATEGORIZE: SALES
+
+                        What that looks like...
+
+        [ TO GRADUATE ]             | BASICS
+     Better schedule coverage.      |   • Change TY page headline to XXX
+  Create lead nurture checklist &   |   • Move scheduler above the fold
+     kudos for top show rates.      |   • Change to 15min timeslots
+                                    |   • Open to 7 days per week
+  [MORE TIMES] [SHOW UP  ]          |   • 9am-9pm
+  [MORE DAYS ] [CHECKLIST] (aplauso)⇒   • Incentivize setters with 3% of sales
+  (calendario  (portapapeles        |   • Implement automated reminders
+   + reloj)     con checks)         |   • Implement Manual Reminders: 24
+                                    |     Hr, Am, 1HR reminders
+                                    |   • Daily kudos to team for show up rates
+                                    |   • Implement bribe for show
+                                    |   • Hire one new salesman as LOW
+                                    |     MAN to take off time coverage
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide «What that looks like...» de SALES: pestaña morada arriba a la izquierda con «7: CATEGORIZE: SALES» en blanco; título en negro centrado. A la izquierda, caja negra «TO GRADUATE» con texto blanco, el texto y los tres íconos (calendario con reloj bajo «MORE TIMES MORE DAYS», portapapeles con checks verdes bajo «SHOW UP CHECKLIST», manos aplaudiendo). Línea vertical negra al centro, interrumpida por una flecha blanca de contorno negro (⇒). A la derecha, el rótulo «BASICS» y once viñetas negras, todas en negrita. Frame principal: insert a pantalla completa. También en tomas abiertas (00:25:07, 00:25:36, 00:25:48, 00:25:49, 00:26:00, 00:26:17, 00:26:39, 00:26:45, 00:27:00, 00:27:13, 00:27:15, 00:27:30, 00:27:40, 00:27:45, 00:27:55, 00:28:00, 00:28:09, 00:28:15, 00:28:22, 00:28:23, 00:28:30, 00:29:00, 00:29:00 b, 00:29:26, 00:29:30, 00:29:45, 00:30:02, 00:30:15, 00:30:19, 00:30:30), en primeros planos de Alex con la columna izquierda a la derecha del cuadro (00:25:40, 00:25:45, 00:26:11, 00:26:15, 00:27:05, 00:27:06, 00:28:19, 00:28:20, 00:29:16, 00:29:52, 00:29:52 b, 00:29:54, 00:29:54 b, 00:30:00) y en primeros planos de Leila con la lista de viñetas a la izquierda del cuadro (00:27:49, 00:27:50, 00:28:06, 00:28:34, 00:28:45, 00:30:15 b).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:25:01]
+
 [00:25:01] and you give kudos for top show rates.
 [00:25:05] All right, and so I covered this in one of the earlier ones.
 [00:25:08] If this is the only video you've watched,
@@ -1343,22 +1830,179 @@ Recreación:
 [00:30:38] And so we put in better schedule coverage.
 [00:30:40] We do the lead nurture checklist.
 [00:30:41] We create kudos and kind of a culture
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:30:45 | stage7_00-30-45.png]** · tipo: tabla
+También visible en: 00:30:54, 00:30:55
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE
+> HEADCOUNT | 50 to 99
+> YOUR ROLE | Executive
+> LEADERSHIP STRUCTURE | 3 Layers: Leadership Team
+> # OF COMPANIES HERE | 1,200,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams.
+> MARKETING | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> SALES | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates.
+> CUSTOMER SERVICE | YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.**
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 7: CATEGORIZE | |
+|---|---|
+| **HEADCOUNT** | 50 to 99 |
+| **YOUR ROLE** | Executive |
+| **LEADERSHIP STRUCTURE** | 3 Layers: Leadership Team |
+| **# OF COMPANIES HERE** | 1,200,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams. |
+| **MARKETING** | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4. |
+| **SALES** | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates. |
+| **CUSTOMER SERVICE** | ◀ YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.** |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato: título «7: CATEGORIZE» en barra negra, rótulos en celdas moradas con texto blanco, línea negra gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva sobre barra negra). PRODUCT, MARKETING y SALES ya llenos en texto normal y letra chica. La celda CONSTRAINT de la fila actual la ocupa una flecha morada que apunta a la izquierda (hacia el rótulo) con «YOU ARE HERE» en blanco; en su celda TO GRADUATE va la definición del área en negrita y letra más grande (el último dato agregado). El resto de las filas, vacío. Frame principal: insert a pantalla completa. También en toma abierta (00:30:54, 00:30:55), con Alex de brazos cruzados a la izquierda y Leila a la derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:30:44]
+
 [00:30:44] of show-up rate being equally valued as close rates
 [00:30:48] because at the end of the day, the dollar spend the same.
 [00:30:50] So with that being said,
 [00:30:51] let's transition to is a customer service.
 [00:30:54] All right, so customer service is how you get customers
 [00:30:56] to refer, retain, review and result.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:30:59 | stage7_00-30-59.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: CUSTOMER SERVICE
+> At this level...
+> CONSTRAINT
+> CS only reactive. All firefighting.
+
+Recreación:
+
+```text
+7: CATEGORIZE: CUSTOMER SERVICE
+
+                     At this level...
+
+        [ CONSTRAINT ]               |
+  CS only reactive. All firefighting.|
+                                     |
+   (fuego) <== (humo) (persona con   |
+                       extintor)     |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, primer build: pestaña morada arriba a la izquierda con «7: CATEGORIZE: CUSTOMER SERVICE» en blanco; título «At this level...» en negro, centrado; a la izquierda, caja negra «CONSTRAINT» con texto blanco, el texto de la restricción debajo y el pictograma negro de una persona apagando un fuego con un extintor (nube de humo/espuma sobre las llamas); sobre el humo se nota una marca de agua muy tenue, casi invisible ([¿dreamstime?]). Una línea vertical negra divide el slide; la mitad derecha está vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:30:58]
+
 [00:30:58] And so that is actually what we're gonna talk about
 [00:31:00] because at this level,
 [00:31:01] your customer service is only reactive, okay?
 [00:31:04] It's all firefighting and there's no proactivity happening.
 [00:31:07] And typically what you're realizing
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:31:10 | stage7_00-31-10.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: CUSTOMER SERVICE
+> And...
+> CONSTRAINT
+> CS only reactive. All firefighting.
+> TO GRADUATE
+> Create proactive customer journey & communication. Focus on renewals and ascensions.
+
+Recreación:
+
+```text
+7: CATEGORIZE: CUSTOMER SERVICE
+
+                                 And...
+
+        [ CONSTRAINT ]             |            [ TO GRADUATE ]
+  CS only reactive. All            |  Create proactive customer journey &
+  firefighting.                    |  communication. Focus on renewals
+                                   |          and ascensions.
+                                  ⇒
+   (persona con extintor          |   (cliente) ——————————X      (persona
+    apagando fuego)                |        X ←—— ←—— ←——X       con bandera)
+                                   |  (persona X
+                                   |   con     X ——> ——> (✓)
+                                   |   bandera)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, segundo build: pestaña morada «7: CATEGORIZE: CUSTOMER SERVICE»; título «And...»; a la izquierda, lo mismo del primer build (caja «CONSTRAINT», texto y la persona con extintor); línea vertical negra con una flecha blanca de contorno negro (⇒) que apunta a la derecha; a la derecha, caja negra «TO GRADUATE», el texto y un diagrama de recorrido: un ícono de usuario en círculo negro del que sale una línea que baja y vuelve en zigzag con flechas negras, marcada con cuatro «X» moradas en las esquinas, y termina en un círculo negro con un check blanco; dos personas con gafete levantando una bandera (una arriba a la derecha y otra abajo a la izquierda). Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:08]
+
 [00:31:08] is that's probably not gonna cut it, right?
 [00:31:10] And so what you wanna do to graduate
 [00:31:12] is you wanna create a proactive customer journey
 [00:31:15] and communication so you can focus on renewals
 [00:31:18] and ascensions.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:31:19 | stage7_00-31-19.png]** · tipo: slide
+También visible en: 00:31:39, 00:31:43, 00:31:45, 00:32:02, 00:32:06, 00:32:07, 00:32:14, 00:32:15, 00:32:35, 00:32:35, 00:32:45, 00:32:58, 00:33:00, 00:33:10, 00:33:15, 00:33:25, 00:33:30, 00:33:36, 00:33:45, 00:34:06, 00:34:15, 00:34:27, 00:34:30, 00:34:45, 00:34:53, 00:34:54, 00:34:59, 00:35:00, 00:35:00, 00:35:11, 00:35:15, 00:35:18, 00:35:27, 00:35:30, 00:35:39, 00:35:45, 00:35:51, 00:35:55, 00:36:00
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: CUSTOMER SERVICE
+> What that looks like...
+> TO GRADUATE
+> Create proactive customer journey & communication. Focus on renewals and ascensions.
+> **The 4Rs of Customer Journey**
+> **1. Retain:** Ensure customers remain engaged and satisfied by delivering exceptional experiences and continuous value.
+> **2. Review:** Gather feedback through surveys and reviews to identify improvement opportunities or additional products & services.
+> **3. Refer:** Encourage happy customers to recommend your business by launching referral programs and tracking advocacy.
+> **4. Resell:** Boost revenue by upselling, cross-selling, or renewing subscriptions to maximize customer lifetime value
+
+Recreación:
+
+```text
+7: CATEGORIZE: CUSTOMER SERVICE
+
+                        What that looks like...
+
+        [ TO GRADUATE ]             |      The 4Rs of Customer Journey
+  Create proactive customer         |
+  journey & communication. Focus    | 1. Retain: Ensure customers remain engaged and
+  on renewals and ascensions.       |    satisfied by delivering exceptional experiences
+                                    |    and continuous value.
+  (diagrama del recorrido del       | 2. Review: Gather feedback through surveys and
+   cliente con X moradas, flechas, ⇒    reviews to identify improvement opportunities or
+   check y dos personas con         |    additional products & services.
+   bandera)                         | 3. Refer: Encourage happy customers to recommend
+                                    |    your business by launching referral programs
+                                    |    and tracking advocacy.
+                                    | 4. Resell: Boost revenue by upselling, cross-selling,
+                                    |    or renewing subscriptions to maximize customer
+                                    |    lifetime value
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide «What that looks like...» de CUSTOMER SERVICE: pestaña morada arriba a la izquierda con «7: CATEGORIZE: CUSTOMER SERVICE» en blanco; título en negro centrado. A la izquierda, caja negra «TO GRADUATE» con texto blanco, el texto y el diagrama del recorrido del cliente (ícono de usuario, línea en zigzag con flechas y cuatro «X» moradas, check final y dos personas con gafete y bandera). Línea vertical negra al centro, interrumpida por una flecha blanca de contorno negro (⇒). A la derecha, el encabezado «The 4Rs of Customer Journey» en negrita y cuatro puntos numerados con el nombre en negrita («1. Retain:», «2. Review:», «3. Refer:», «4. Resell:») y la explicación en regular; el último punto no lleva punto final. Frame principal: insert a pantalla completa. También en tomas abiertas (00:31:39, 00:31:43, 00:31:45, 00:32:35, 00:32:35 b, 00:32:45, 00:33:10, 00:33:15, 00:33:36, 00:33:45, 00:34:06, 00:34:15, 00:34:54, 00:35:11, 00:35:15, 00:35:27, 00:35:30, 00:35:55, 00:36:00, casi siempre con Leila señalando la lista y Alex de brazos cruzados), en primeros planos de Alex con la columna izquierda a la derecha del cuadro (00:32:14, 00:32:15, 00:34:27, 00:34:30, 00:34:45, 00:34:53) y en primeros planos de Leila con la lista de las 4Rs a la izquierda del cuadro (00:32:02, 00:32:06, 00:32:07, 00:32:58, 00:33:00, 00:33:25, 00:33:30, 00:34:59, 00:35:00, 00:35:00 b, 00:35:18, 00:35:39, 00:35:45, 00:35:51).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:19]
+
 [00:31:19] So here's what that looks like.
 [00:31:20] When you're looking at what you wanna input
 [00:31:23] into your customer journey, okay,
@@ -1568,8 +2212,92 @@ Recreación:
 [00:38:12] to come out to one of our workshops.
 [00:38:13] If you do, we'd love to see you and help you scale.
 [00:38:16] From there, we're gonna go into IT.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:38:18 | stage7_00-38-18.png]** · tipo: tabla
+También visible en: 00:38:16
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE
+> HEADCOUNT | 50 to 99
+> YOUR ROLE | Executive
+> LEADERSHIP STRUCTURE | 3 Layers: Leadership Team
+> # OF COMPANIES HERE | 1,200,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams.
+> MARKETING | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> SALES | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates.
+> CUSTOMER SERVICE | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions.
+> INFORMATION TECH (IT) | YOU ARE HERE | **How you gather, store, analyze, and display information.**
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 7: CATEGORIZE | |
+|---|---|
+| **HEADCOUNT** | 50 to 99 |
+| **YOUR ROLE** | Executive |
+| **LEADERSHIP STRUCTURE** | 3 Layers: Leadership Team |
+| **# OF COMPANIES HERE** | 1,200,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams. |
+| **MARKETING** | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4. |
+| **SALES** | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates. |
+| **CUSTOMER SERVICE** | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions. |
+| **INFORMATION TECH (IT)** | ◀ YOU ARE HERE | **How you gather, store, analyze, and display information.** |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato: título «7: CATEGORIZE» en barra negra, rótulos en celdas moradas con texto blanco, línea negra gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva sobre barra negra). PRODUCT, MARKETING, SALES y CUSTOMER SERVICE ya llenos en texto normal y letra chica. La celda CONSTRAINT de la fila actual la ocupa una flecha morada que apunta a la izquierda (hacia el rótulo) con «YOU ARE HERE» en blanco; en su celda TO GRADUATE va la definición del área en negrita y letra más grande (el último dato agregado). RECRUITING, HUMAN RESOURCES (HR), FINANCE y Bottom line, vacíos. Frame principal: insert a pantalla completa. También en toma abierta (00:38:16), con Alex junto a la pantalla y Leila a la derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:38:18]
+
 [00:38:18] IT is how you gather, store, analyze
 [00:38:20] and display information.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:38:22 | stage7_00-38-22.png]** · tipo: slide
+También visible en: 00:38:34, 00:38:42, 00:38:45
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: INFORMATION TECHNOLOGY (IT)
+> At this level...
+> CONSTRAINT
+> Data, IP, Access all over the place and disorganized.
+> What’s the password? Where’s that document??
+
+Recreación:
+
+```text
+7: CATEGORIZE: INFORMATION TECHNOLOGY (IT)
+
+                     At this level...
+
+        [ CONSTRAINT ]                |
+  Data, IP, Access all over the place |
+         and disorganized.            |
+                     .--------------------.
+                     | What’s the          |
+                     | password? Where’s   |
+                     | that document??     |
+                     '-------v------------'
+  (monitor con carpetas)                |
+  (servidor)          (persona en laptop)|
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, primer build: pestaña morada arriba a la izquierda con «7: CATEGORIZE: INFORMATION TECHNOLOGY (IT)» en blanco (en la tabla el rótulo dice «INFORMATION TECH (IT)»); título «At this level...» en negro, centrado; a la izquierda, caja negra «CONSTRAINT» con texto blanco, el texto de la restricción debajo y una ilustración en línea negra: una pantalla de computadora llena de carpetas conectada a un rack de servidor, y una persona sentada frente a una laptop con un globo de diálogo rectangular «What’s the password? Where’s that document??». Una línea vertical negra divide el slide; la mitad derecha está vacía. Frame principal: insert a pantalla completa. También en toma abierta (00:38:34), con Alex de brazos cruzados a la izquierda y Leila a la derecha, y en primeros planos de Leila (00:38:42, 00:38:45) donde solo se ve, a la izquierda del cuadro, parte de la mitad derecha del slide, todavía vacía.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:38:22]
+
 [00:38:22] Okay, so at this level, our constraint is
 [00:38:25] that everything is disorganized.
 [00:38:26] It's all over the place.
@@ -1589,9 +2317,85 @@ Recreación:
 [00:38:45] And so that's often what happens at this level.
 [00:38:47] So what you want to do is this is gonna sound dry.
 [00:38:52] This is gonna sound really dry right now.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:38:54 | stage7_00-38-54.png]** · tipo: slide
+También visible en: 00:38:46, 00:38:49, 00:38:50
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: INFORMATION TECHNOLOGY (IT)
+> And...
+> CONSTRAINT
+> Data, IP, Access all over the place and disorganized.
+> What’s the password? Where’s that document??
+> TO GRADUATE
+> Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware.
+
+Recreación:
+
+```text
+7: CATEGORIZE: INFORMATION TECHNOLOGY (IT)
+
+                                  And...
+
+        [ CONSTRAINT ]              |             [ TO GRADUATE ]
+  Data, IP, Access all over the     |          Network technology.
+  place and disorganized.           |     Bring solutions to the cloud.
+              .------------------.  |  Data host. Centrally locate hardware.
+              | What’s the        | ⇒
+              | password? Where’s |  |     (monitor)        (laptop)
+              | that document??   |  |            \  (globo) /
+              '--------v---------'  |            /  terráqueo\
+  (monitor con carpetas) (persona   |     (laptop)          (monitor)
+  (servidor)             en laptop) |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, segundo build: pestaña morada «7: CATEGORIZE: INFORMATION TECHNOLOGY (IT)»; título «And...»; a la izquierda, lo mismo del primer build (caja «CONSTRAINT», texto, monitor con carpetas, servidor y la persona en laptop con el globo «What’s the password? Where’s that document??»); línea vertical negra con una flecha blanca de contorno negro (⇒) que apunta a la derecha; a la derecha, caja negra «TO GRADUATE», el texto en tres líneas y un ícono de red: un globo terráqueo al centro conectado por líneas a dos monitores y dos laptops. Frame principal: insert a pantalla completa. También en un primer plano de Leila con la columna derecha («TO GRADUATE», el texto y el ícono de red) a la izquierda del cuadro (00:38:46) y en tomas abiertas con Alex de brazos cruzados a la izquierda y Leila a la derecha (00:38:49, 00:38:50).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:38:54]
+
 [00:38:54] But you want to look at network technology,
 [00:38:56] bringing solutions to the cloud,
 [00:38:58] getting a data host and centrally locating hardware.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:39:02 | stage7_00-39-02.png]** · tipo: slide
+También visible en: 00:39:03, 00:39:26, 00:39:30, 00:39:42, 00:39:45, 00:39:49, 00:40:00, 00:40:02, 00:40:11, 00:40:15, 00:40:24, 00:40:32, 00:40:45, 00:41:00, 00:41:15
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: INFORMATION TECHNOLOGY (IT)
+> What that looks like...
+> TO GRADUATE
+> Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware.
+> **Centralize all data and hardware**
+> Tools like AWS allow companies to store all of their data in one place for extra layer of security and backup
+> Centrally locating hardware you can do by opening an account with companies like Apple that will store and track on your behalf (if remote)
+
+Recreación:
+
+```text
+7: CATEGORIZE: INFORMATION TECHNOLOGY (IT)
+
+                        What that looks like...
+
+        [ TO GRADUATE ]              |   Centralize all data and hardware
+       Network technology.           |
+  Bring solutions to the cloud.      |   Tools like AWS allow companies to
+  Data host. Centrally locate        |   store all of their data in one place for
+  hardware.                          ⇒   extra layer of security and backup
+                                     |
+   (monitor)        (laptop)         |   Centrally locating hardware you can
+          \ (globo) /                |   do by opening an account with
+          / terráqueo\               |   companies like Apple that will store
+   (laptop)         (monitor)        |   and track on your behalf (if remote)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide «What that looks like...» de INFORMATION TECHNOLOGY (IT): pestaña morada arriba a la izquierda con «7: CATEGORIZE: INFORMATION TECHNOLOGY (IT)» en blanco; título en negro centrado. A la izquierda, caja negra «TO GRADUATE» con texto blanco, el texto y el ícono de red (globo terráqueo conectado a dos monitores y dos laptops). Línea vertical negra al centro, interrumpida por una flecha blanca de contorno negro (⇒). A la derecha, el encabezado «Centralize all data and hardware» en negrita y dos párrafos centrados en texto regular, sin viñetas. Frame principal: insert a pantalla completa. También en tomas abiertas (00:39:03, 00:39:26, 00:39:30, 00:39:49, 00:40:00, 00:40:11, 00:40:15, 00:40:32, 00:40:45, 00:41:00, 00:41:15; Alex y Leila a los lados de la pantalla), en primeros planos de Alex con la columna izquierda a la derecha del cuadro (00:39:42, 00:39:45) y en primeros planos de Leila con los dos párrafos de la derecha a la izquierda del cuadro (00:40:02, 00:40:24).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:39:01]
+
 [00:39:01] Let me explain what that means so you understand it.
 [00:39:03] Okay, so I'm gonna do my best.
 [00:39:04] I am not a tech geek, but I do understand this well enough
@@ -1656,6 +2460,54 @@ Recreación:
 [00:41:12] and anything else at one person's house if you are remote
 [00:41:15] and if you are not remote then it is easy
 [00:41:17] to have them in a place in the office.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:41:19 | stage7_00-41-19.png]** · tipo: tabla
+También visible en: 00:41:30, 00:41:45, 00:42:00, 00:42:15, 00:42:17, 00:42:24, 00:42:25, 00:42:30
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE
+> HEADCOUNT | 50 to 99
+> YOUR ROLE | Executive
+> LEADERSHIP STRUCTURE | 3 Layers: Leadership Team
+> # OF COMPANIES HERE | 1,200,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams.
+> MARKETING | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> SALES | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates.
+> CUSTOMER SERVICE | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions.
+> INFORMATION TECH (IT) | Data, IP, Access all over the place and disorganized. | Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware if onsite.
+> RECRUITING | YOU ARE HERE | **How you find and hire people to work for your company.**
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 7: CATEGORIZE | |
+|---|---|
+| **HEADCOUNT** | 50 to 99 |
+| **YOUR ROLE** | Executive |
+| **LEADERSHIP STRUCTURE** | 3 Layers: Leadership Team |
+| **# OF COMPANIES HERE** | 1,200,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams. |
+| **MARKETING** | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4. |
+| **SALES** | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates. |
+| **CUSTOMER SERVICE** | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions. |
+| **INFORMATION TECH (IT)** | Data, IP, Access all over the place and disorganized. | Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware if onsite. |
+| **RECRUITING** | ◀ YOU ARE HERE | **How you find and hire people to work for your company.** |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato: título «7: CATEGORIZE» en barra negra, rótulos en celdas moradas con texto blanco, línea negra gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva sobre barra negra). PRODUCT a INFORMATION TECH (IT) ya llenos en texto normal y letra chica; en la tabla, el TO GRADUATE de IT termina en «…Centrally locate hardware if onsite.» (el slide de IT dice solo «…Centrally locate hardware.»). La celda CONSTRAINT de la fila actual la ocupa una flecha morada que apunta a la izquierda (hacia el rótulo) con «YOU ARE HERE» en blanco; en su celda TO GRADUATE va la definición del área en negrita y letra más grande (el último dato agregado). HUMAN RESOURCES (HR), FINANCE y Bottom line, vacíos. Frame principal: insert a pantalla completa. También en tomas abiertas (00:41:45, 00:42:25, 00:42:30; Alex y Leila a los lados de la pantalla) y en primeros planos de Alex con la pantalla a la derecha (00:41:30, 00:42:00, 00:42:15, 00:42:17, 00:42:24), donde se ven los rótulos, la columna CONSTRAINT y la flecha «YOU ARE HERE» en RECRUITING.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:41:18]
+
 [00:41:18] Great, so at this point everything was all over the place
 [00:41:21] and disorganized, you get a network solution
 [00:41:24] to centrally locate everything and you want to get
@@ -1694,6 +2546,48 @@ Recreación:
 [00:42:29] and name them properly so that going forward,
 [00:42:31] we can expand this team.
 [00:42:32] So next we have recruiting, which is how we find
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:42:37 | stage7_00-42-37.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: RECRUITING
+> At this level...
+> CONSTRAINT
+> Takes too long to hire good people and they get hired elsewhere. You have too many roles open to keep track of candidates and where they're at in the process.
+> Role 1
+> Role 2
+> Role 3
+> Role 4
+> Role 5
+> Role 6
+
+Recreación:
+
+```text
+7: CATEGORIZE: RECRUITING
+
+                     At this level...
+
+         [ CONSTRAINT ]                   |
+  Takes too long to hire good people      |
+  and they get hired elsewhere. You       |
+  have too many roles open to keep        |
+  track of candidates and where           |
+  they're at in the process.              |
+                                          |
+  (3 pers.)    (3 pers.)    (3 pers.)     |
+  [Role 1]     [Role 2]     [Role 3]      |
+  (banda)      (banda)      (banda)       |
+  (3 pers.)    (3 pers.)    (3 pers.)     |
+  [Role 4]     [Role 5]     [Role 6]      |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, primer build: pestaña morada arriba a la izquierda con «7: CATEGORIZE: RECRUITING» en blanco; título «At this level...» en negro, centrado; a la izquierda, caja negra «CONSTRAINT» con texto blanco, el texto de la restricción debajo y seis íconos iguales en dos filas de tres: tres personas de traje sobre una banda transportadora, cada grupo con una etiqueta morada de texto blanco («Role 1» a «Role 6»). Una línea vertical negra divide el slide; la mitad derecha está vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:42:35]
+
 [00:42:35] and hire people to work for our company.
 [00:42:37] So at this level, what happens is that it takes too long
 [00:42:40] to find good people and they get hired somewhere else
@@ -1729,6 +2623,51 @@ Recreación:
 [00:43:33] And you're like, seven days we're waiting?
 [00:43:35] And so you start to notice things like that
 [00:43:37] start to slip through the cracks.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:43:40 | stage7_00-43-40.png]** · tipo: slide
+También visible en: 00:42:54, 00:42:54, 00:43:00, 00:43:06, 00:43:15, 00:43:26, 00:43:30, 00:43:36, 00:43:53, 00:44:00, 00:44:05, 00:44:14, 00:44:15, 00:44:30, 00:44:38, 00:44:45, 00:44:51, 00:45:00, 00:45:14, 00:45:15, 00:45:29
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: RECRUITING
+> And...
+> CONSTRAINT
+> Takes too long to hire good people and they get hired elsewhere. You have too many roles open to keep track of candidates and where they're at in the process.
+> Role 1
+> Role 2
+> Role 3
+> Role 4
+> Role 5
+> Role 6
+> TO GRADUATE
+> Install Applicant Tracking System to keep track of so many open roles. Pay specialized recruiting firms to keep up.
+> Role Specific Recruiters
+> Applicant Tracking System (ATS)
+
+Recreación:
+
+```text
+7: CATEGORIZE: RECRUITING
+
+                                   And...
+
+         [ CONSTRAINT ]               |            [ TO GRADUATE ]
+  Takes too long to hire good people  |  Install Applicant Tracking System to
+  and they get hired elsewhere. You   |  keep track of so many open roles.
+  have too many roles open to keep    |  Pay specialized recruiting firms to
+  track of candidates and where       |  keep up.
+  they're at in the process.         ⇒      [Role Specific Recruiters]
+                                      |    (mira)    (mira)    (mira)
+  [Role 1]   [Role 2]   [Role 3]      |
+  [Role 4]   [Role 5]   [Role 6]      |  o---o---o---o---o---o---o--->  (apretón
+                                      |  [Applicant Tracking System (ATS)] de manos)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, segundo build: pestaña morada «7: CATEGORIZE: RECRUITING»; título «And...»; a la izquierda, lo mismo del primer build (caja «CONSTRAINT», texto y los seis grupos «Role 1» a «Role 6» sobre bandas transportadoras); línea vertical negra con una flecha blanca de contorno negro (⇒) que apunta a la derecha; a la derecha, caja negra «TO GRADUATE», el texto, la etiqueta morada «Role Specific Recruiters» (texto blanco) sobre tres íconos de persona dentro de una mira de tiro, una línea negra con siete círculos morados que termina en flecha hacia un apretón de manos, y debajo la etiqueta morada «Applicant Tracking System (ATS)». Frame principal: insert a pantalla completa. También en tomas abiertas (00:42:54, 00:42:54 b, 00:43:00, 00:43:26, 00:43:30, 00:43:53, 00:44:00, 00:44:14, 00:44:15, 00:44:30, 00:44:51, 00:45:00, 00:45:29), en primeros planos de Alex señalando los íconos «Role» de la columna izquierda (00:43:06, 00:43:15) y en primeros planos de Leila con la columna derecha (TO GRADUATE, «Role Specific Recruiters», ATS) a la izquierda del cuadro (00:43:36, 00:44:05, 00:44:38, 00:44:45, 00:45:14, 00:45:15).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:43:38]
+
 [00:43:38] And so to graduate from this,
 [00:43:40] you wanna install an applicant tracking system.
 [00:43:42] It's called an ATS to keep track of all the open roles
@@ -1790,6 +2729,66 @@ Recreación:
 [00:45:29] and it makes no sense to bring people into your team
 [00:45:31] to recruit for something
 [00:45:32] that's going to probably resolve itself in two years.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:45:36 | stage7_00-45-36.png]** · tipo: slide
+También visible en: 00:45:40, 00:45:40, 00:45:45, 00:45:46, 00:45:47, 00:46:03, 00:46:15, 00:46:30, 00:46:30, 00:46:44, 00:46:45, 00:46:51, 00:46:58, 00:47:00, 00:47:15, 00:47:15, 00:47:16, 00:47:42, 00:47:45, 00:48:00, 00:48:20, 00:48:33, 00:48:41, 00:48:45, 00:48:49, 00:49:03, 00:49:03, 00:49:15, 00:49:20, 00:49:30, 00:49:45
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: RECRUITING
+> What that looks like...
+> TO GRADUATE
+> Install Applicant Tracking System to keep track of so many open roles. Pay specialized recruiting firms to keep up.
+> Role Specific Recruiters
+> Applicant Tracking System (ATS)
+> **_How to Select an ATS_**
+> **1. Easy User Experience:** Select an ATS with an easy-to-use interface that _simplifies_ workflows for recruiters and candidates.
+> **2. Integration Capabilities:** Make sure it connects smoothly with job boards, payroll, calendars, and other HR tools you have or CRM you use.
+> **3. Automation:** Look for features like resume parsing, interview scheduling, and AI-driven candidate matching so you can save on headcount.
+> **4. Analytics and Reporting:** Choose a system that provides **actionable** data on hiring metrics and recruitment performance (DASHBOARD)
+> **5. Scalability and Support:** Pick a solution that grows with your business and offers top-tier customer service, training, and ongoing support (saves headcount)
+
+Recreación:
+
+```text
+7: CATEGORIZE: RECRUITING
+
+                        What that looks like...
+
+        [ TO GRADUATE ]            |
+  Install Applicant Tracking       |
+  System to keep track of so many  |
+  open roles. Pay specialized      |
+  recruiting firms to keep up.     |
+                                   ⇒
+   [Role Specific Recruiters]      |
+    (mira)    (mira)    (mira)     |
+  o---o---o---o---o---o---o--->    |
+  (apretón de manos)               |
+  [Applicant Tracking System (ATS)]|
+
+  (columna derecha, a la derecha de la flecha ⇒)
+                 How to Select an ATS
+                 ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+  1. Easy User Experience: Select an ATS with an easy-to-use interface
+     that simplifies workflows for recruiters and candidates.
+  2. Integration Capabilities: Make sure it connects smoothly with job
+     boards, payroll, calendars, and other HR tools you have or CRM you use.
+  3. Automation: Look for features like resume parsing, interview
+     scheduling, and AI-driven candidate matching so you can save on
+     headcount.
+  4. Analytics and Reporting: Choose a system that provides actionable
+     data on hiring metrics and recruitment performance (DASHBOARD)
+  5. Scalability and Support: Pick a solution that grows with your
+     business and offers top-tier customer service, training, and ongoing
+     support (saves headcount)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide «What that looks like...» de RECRUITING (primera versión): pestaña morada arriba a la izquierda con «7: CATEGORIZE: RECRUITING» en blanco; título en negro centrado. A la izquierda, caja negra «TO GRADUATE» con texto blanco, el texto, la etiqueta morada «Role Specific Recruiters» con las tres personas en mira, la línea de círculos morados con flecha hacia el apretón de manos y la etiqueta morada «Applicant Tracking System (ATS)». Línea vertical negra al centro, interrumpida por una flecha blanca de contorno negro (⇒). A la derecha, el encabezado «How to Select an ATS» en negrita y subrayado, y cinco puntos numerados con el nombre en negrita y la explicación en regular; «simplifies» va en cursiva y subrayado; «actionable» en negrita. Frame principal: insert a pantalla completa. También en tomas abiertas (00:45:40, 00:45:40 b, 00:45:45, 00:45:47, 00:46:03, 00:46:30, 00:46:30 b, 00:46:51, 00:47:15, 00:47:15 b, 00:47:16, 00:47:42, 00:47:45, 00:48:20, 00:48:49, 00:49:03, 00:49:03 b, 00:49:15), en primeros planos de Alex con la columna izquierda a la derecha del cuadro (00:45:46, 00:46:58, 00:47:00) y en primeros planos de Leila con la lista a la izquierda del cuadro (00:46:15, 00:46:44, 00:46:45, 00:48:00, 00:48:33, 00:48:41, 00:48:45, 00:49:20, 00:49:30, 00:49:45).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:45:36]
+
 [00:45:36] So let's talk about how to select an ATS, okay?
 [00:45:39] Because a lot of people,
 [00:45:40] this is like selecting a CRM.
@@ -1924,6 +2923,65 @@ Recreación:
 [00:49:41] And I'm like, yeah, it's just the wrong tool for you.
 [00:49:43] So make sure that you pick one
 [00:49:45] that you have room to grow with.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:49:47 | stage7_00-49-47.png]** · tipo: slide
+También visible en: 00:49:52, 00:50:00, 00:50:00, 00:50:01, 00:50:05, 00:50:15, 00:50:23, 00:50:30, 00:50:36, 00:50:45, 00:50:57, 00:51:00, 00:51:02, 00:51:15, 00:51:41, 00:51:45, 00:51:55, 00:51:58, 00:52:07, 00:52:15, 00:52:21, 00:52:33, 00:52:45, 00:52:45, 00:53:07, 00:53:20, 00:53:24, 00:53:28, 00:53:39, 00:53:45, 00:53:49, 00:53:56, 00:54:00, 00:54:00, 00:54:11, 00:54:15, 00:54:32
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: RECRUITING
+> What that looks like...
+> TO GRADUATE
+> Install Applicant Tracking System to keep track of so many open roles. Pay specialized recruiting firms to keep up.
+> Role Specific Recruiters
+> Applicant Tracking System (ATS)
+> **_How to Select Specialized Recruiters_**
+> **1. Identify highest job concentration hiring needs:** Which jobs do you hire for time over time? (sales? CS?)
+> **2. Kick Off Specialized Recruiters Search:** Search/ask around for recruiters with experience in that job market (they have a network)
+> **3. Look at Track Record and Results:** Review their placement success rate, 2 way fit ratings and client testimonials
+> **4. Ask About Process and Expectations:** Ask them how they source, what messages they send, how they find talent and what turnaround times are.
+> **5. Do a Trial Job before Committing:** Start with a small project or ONE role with low commitment before signing on
+
+Recreación:
+
+```text
+7: CATEGORIZE: RECRUITING
+
+                        What that looks like...
+
+  (columna izquierda: igual que la primera versión)
+        [ TO GRADUATE ]            |
+  Install Applicant Tracking       |
+  System to keep track of so many  |
+  open roles. Pay specialized      |
+  recruiting firms to keep up.     |
+                                   ⇒
+   [Role Specific Recruiters]      |
+    (mira)    (mira)    (mira)     |
+  o---o---o---o---o---o---o--->    |
+  (apretón de manos)               |
+  [Applicant Tracking System (ATS)]|
+
+  (columna derecha, a la derecha de la flecha ⇒)
+             How to Select Specialized Recruiters
+             ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+  1. Identify highest job concentration hiring needs: Which jobs do you
+     hire for time over time? (sales? CS?)
+  2. Kick Off Specialized Recruiters Search: Search/ask around for
+     recruiters with experience in that job market (they have a network)
+  3. Look at Track Record and Results: Review their placement success
+     rate, 2 way fit ratings and client testimonials
+  4. Ask About Process and Expectations: Ask them how they source, what
+     messages they send, how they find talent and what turnaround times are.
+  5. Do a Trial Job before Committing: Start with a small project or ONE
+     role with low commitment before signing on
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Segunda versión del slide «What that looks like...» de RECRUITING: misma columna izquierda (caja negra «TO GRADUATE», texto, «Role Specific Recruiters», línea de círculos con apretón de manos y «Applicant Tracking System (ATS)») y misma flecha ⇒; la lista de la derecha se reemplaza por el encabezado «How to Select Specialized Recruiters» en negrita y subrayado y cinco puntos numerados con el nombre en negrita y la explicación en regular. Frame principal: insert a pantalla completa. También en tomas abiertas (00:49:52, 00:50:05, 00:50:15, 00:50:23, 00:50:30, 00:50:57, 00:51:00, 00:51:15, 00:51:41, 00:51:45, 00:51:58, 00:52:21, 00:52:33, 00:53:07, 00:53:28, 00:53:39, 00:53:45, 00:54:11, 00:54:15, 00:54:32), en primeros planos de Leila con la lista a la izquierda del cuadro (00:50:00, 00:50:00 b, 00:50:01, 00:50:36, 00:50:45, 00:51:02, 00:51:55, 00:52:07, 00:52:15, 00:52:45, 00:52:45 b, 00:53:20, 00:53:24, 00:53:49) y en primeros planos de Alex con la columna izquierda a la derecha del cuadro (00:53:56, 00:54:00, 00:54:00 b).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:49:46]
+
 [00:49:46] The second piece that goes with this
 [00:49:47] is we need to pick specialized recruiters.
 [00:49:50] So this is something that I have gotten really skilled at.
@@ -2087,6 +3145,54 @@ Recreación:
 [00:54:36] that you need for the businesses to survive.
 [00:54:38] So you can kind of test them out.
 [00:54:39] And that is recruiting.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:54:41 | stage7_00-54-41.png]** · tipo: tabla
+También visible en: 00:54:54, 00:54:54, 00:55:00
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE
+> HEADCOUNT | 50 to 99
+> YOUR ROLE | Executive
+> LEADERSHIP STRUCTURE | 3 Layers: Leadership Team
+> # OF COMPANIES HERE | 1,200,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams.
+> MARKETING | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> SALES | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates.
+> CUSTOMER SERVICE | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions.
+> INFORMATION TECH (IT) | Data, IP, Access all over the place and disorganized. | Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware if onsite.
+> RECRUITING | Takes too long to hire good people and they get hired elsewhere. You have too many roles open to keep track of candidates and where they're at in the process. | Install Applicant Tracking System to keep track of so many open roles. Pay specialized recruiting firms to keep up.
+> HUMAN RESOURCES (HR) | YOU ARE HERE | **How you decrease the likelihood employees or regulators sue you.**
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 7: CATEGORIZE | |
+|---|---|
+| **HEADCOUNT** | 50 to 99 |
+| **YOUR ROLE** | Executive |
+| **LEADERSHIP STRUCTURE** | 3 Layers: Leadership Team |
+| **# OF COMPANIES HERE** | 1,200,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams. |
+| **MARKETING** | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4. |
+| **SALES** | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates. |
+| **CUSTOMER SERVICE** | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions. |
+| **INFORMATION TECH (IT)** | Data, IP, Access all over the place and disorganized. | Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware if onsite. |
+| **RECRUITING** | Takes too long to hire good people and they get hired elsewhere. You have too many roles open to keep track of candidates and where they're at in the process. | Install Applicant Tracking System to keep track of so many open roles. Pay specialized recruiting firms to keep up. |
+| **HUMAN RESOURCES (HR)** | ◀ YOU ARE HERE | **How you decrease the likelihood employees or regulators sue you.** |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato: título «7: CATEGORIZE» en barra negra, rótulos en celdas moradas con texto blanco, línea negra gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva sobre barra negra). PRODUCT a RECRUITING ya llenos en texto normal y letra chica. La celda CONSTRAINT de la fila actual la ocupa una flecha morada que apunta a la izquierda (hacia el rótulo) con «YOU ARE HERE» en blanco; en su celda TO GRADUATE va la definición del área en negrita y letra más grande (el último dato agregado). FINANCE y Bottom line, vacíos. Frame principal: insert a pantalla completa. También en toma abierta (00:54:54, 00:54:54 b, 00:55:00), con Alex a la izquierda y Leila a la derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:54:40]
+
 [00:54:40] So first we had,
 [00:54:42] it took too long to hire good people.
 [00:54:44] So they were getting hired other places
@@ -2098,6 +3204,42 @@ Recreación:
 [00:54:55] which is how do we reduce the likelihood
 [00:54:57] that employees and regulators sue us?
 [00:54:59] Yay.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:55:00 | stage7_00-55-00b.png]** · tipo: slide
+También visible en: 00:55:07, 00:55:15, 00:55:21
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: HUMAN RESOURCES
+> At this level...
+> CONSTRAINT
+> There are too many different places for employee information and you have no data.
+> What’s John’s date of birth again??
+
+Recreación:
+
+```text
+7: CATEGORIZE: HUMAN RESOURCES
+
+                     At this level...
+
+         [ CONSTRAINT ]              |
+  There are too many different places|
+  for employee information and you   |
+  have no data.                      |
+              .--------------------. |
+              | What’s John’s date  | |
+              | of birth again??    | |
+              '--------v-----------' |
+  (monitor con carpetas)  (persona   |
+  (servidor)              en laptop) |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, primer build: pestaña morada arriba a la izquierda con «7: CATEGORIZE: HUMAN RESOURCES» en blanco; título «At this level...» en negro, centrado; a la izquierda, caja negra «CONSTRAINT» con texto blanco, el texto de la restricción debajo y la misma ilustración del slide de IT (pantalla con carpetas conectada a un servidor y persona sentada frente a una laptop), ahora con el globo de diálogo «What’s John’s date of birth again??». Una línea vertical negra divide el slide; la mitad derecha está vacía. Frame principal: insert a pantalla completa. También en tomas abiertas (00:55:07, 00:55:15) y en un primer plano de Leila (00:55:21) donde solo se ve el borde de la mitad derecha, todavía vacía.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:55:00]
+
 [00:55:00] So at this level,
 [00:55:01] the constraint is that there are too many different places
 [00:55:03] for employee information and you have no data.
@@ -2117,6 +3259,46 @@ Recreación:
 [00:55:24] When's John's birthday?
 [00:55:25] Does this person get a raise yet?
 [00:55:27] What's going on?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:55:29 | stage7_00-55-29.png]** · tipo: slide
+También visible en: 00:55:37, 00:55:44, 00:55:45, 00:55:48, 00:55:58, 00:55:58, 00:56:00, 00:56:07, 00:56:14, 00:56:15
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: HUMAN RESOURCES
+> And...
+> CONSTRAINT
+> There are too many different places for employee information and you have no data.
+> What’s John’s date of birth again??
+> TO GRADUATE
+> Setup HRIS - Human Resource Information System
+> Ah! There it is!
+
+Recreación:
+
+```text
+7: CATEGORIZE: HUMAN RESOURCES
+
+                                  And...
+
+         [ CONSTRAINT ]              |            [ TO GRADUATE ]
+  There are too many different places|   Setup HRIS - Human Resource
+  for employee information and you   |       Information System
+  have no data.                      |
+           .---------------------.   |                 .-----------------.
+           | What’s John’s date of|  ⇒                 | Ah! There it is! |
+           | birth again??        |  |                 '--------v--------'
+           '---------v-----------'   |  (pila de    (persona
+  (monitor con carpetas) (persona    |   discos)    de traje)  (persona
+  (servidor)             en laptop)  |  (monitor <--            en laptop)
+                                     |   con flecha ↑)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, segundo build: pestaña morada «7: CATEGORIZE: HUMAN RESOURCES»; título «And...»; a la izquierda, lo mismo del primer build (caja «CONSTRAINT», texto, monitor con carpetas, servidor y la persona en laptop con el globo «What’s John’s date of birth again??»); línea vertical negra con una flecha blanca de contorno negro (⇒) que apunta a la derecha; a la derecha, caja negra «TO GRADUATE», el texto, y una ilustración: una pila de discos/cilindros conectada a un monitor con una flecha hacia arriba, una flecha que apunta del lado de la persona al monitor, el busto de una persona de traje y corbata, y una persona sentada frente a una laptop con el globo «Ah! There it is!». Frame principal: insert a pantalla completa. También en tomas abiertas (00:55:37, 00:55:48, 00:56:07), en primeros planos de Alex con la columna izquierda (CONSTRAINT y el globo «What’s John’s date of birth again??») a la derecha del cuadro (00:55:44, 00:55:45, 00:55:58, 00:55:58 b, 00:56:00) y en primeros planos de Leila con la columna derecha («Setup HRIS…», «Ah! There it is!» y la ilustración) a la izquierda del cuadro (00:56:14, 00:56:15).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:55:28]
+
 [00:55:28] And so to graduate,
 [00:55:29] we wanna set up an HRIS.
 [00:55:32] That is a human resource information system.
@@ -2143,6 +3325,67 @@ Recreación:
 [00:56:11] all the stuff that's already happening in the business.
 [00:56:13] So in order to remain efficient,
 [00:56:15] we have to make things easy for people.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:56:18 | stage7_00-56-18.png]** · tipo: slide
+También visible en: 00:57:16, 00:57:30, 00:57:34, 00:57:34, 00:57:44, 00:58:02, 00:58:09, 00:58:10, 00:58:15, 00:58:17, 00:58:30
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: HUMAN RESOURCES
+> What that looks like...
+> TO GRADUATE
+> Setup HRIS - Human Resource Information System
+> Ah! There it is!
+> **What is included in an HRIS?**
+> **Employee Records:** Personal details, job titles, salaries, benefits, and performance reviews.
+> **Payroll and Benefits Administration:** Automates payroll processing, tax calculations, and benefits enrollment.
+> **Time and Attendance Management:** Tracks work hours, leave requests, and vacation balances.
+> **Recruitment and Onboarding:** Supports hiring workflows, candidate tracking, and new employee onboarding (often integrates WITH your ATS)
+> **Performance Management:** Monitors employee goals, performance reviews, and KPIs.
+
+Recreación:
+
+```text
+7: CATEGORIZE: HUMAN RESOURCES
+
+                        What that looks like...
+
+        [ TO GRADUATE ]             |
+  Setup HRIS - Human Resource       |
+      Information System            |
+               .-----------------.  |
+               | Ah! There it is! |  ⇒
+               '--------v--------'  |
+  (pila de    (persona   (persona   |
+   discos)    de traje)  en laptop) |
+  (monitor <--                      |
+   con flecha ↑)                    |
+
+  (columna derecha, a la derecha de la flecha ⇒)
+               What is included in an HRIS?
+
+  Employee Records: Personal details, job titles, salaries,
+  benefits, and performance reviews.
+
+  Payroll and Benefits Administration: Automates payroll
+  processing, tax calculations, and benefits enrollment.
+
+  Time and Attendance Management: Tracks work hours,
+  leave requests, and vacation balances.
+
+  Recruitment and Onboarding: Supports hiring workflows,
+  candidate tracking, and new employee onboarding (often
+  integrates WITH your ATS)
+
+  Performance Management: Monitors employee goals,
+  performance reviews, and KPIs.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide «What that looks like...» de HUMAN RESOURCES (primera versión): pestaña morada arriba a la izquierda con «7: CATEGORIZE: HUMAN RESOURCES» en blanco; título en negro centrado. A la izquierda, caja negra «TO GRADUATE» con texto blanco, el texto y la ilustración del TO GRADUATE (pila de discos y monitor, persona de traje, persona en laptop con el globo «Ah! There it is!»). Línea vertical negra al centro, interrumpida por una flecha blanca de contorno negro (⇒). A la derecha, el encabezado «What is included in an HRIS?» en negrita y cinco párrafos sin numerar, cada uno con el nombre en negrita y la explicación en regular. Frame principal: insert a pantalla completa. También en tomas abiertas (00:57:16, 00:57:30, 00:57:44, 00:58:02, 00:58:17, 00:58:30, con Leila señalando la lista) y en primeros planos de Leila con la lista a la izquierda del cuadro (00:57:34, 00:57:34 b, 00:58:09, 00:58:10, 00:58:15).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:56:18]
+
 [00:56:18] So what is an HRIS?
 [00:56:19] What does it have?
 [00:56:20] So it's gonna store things like your employee records.
@@ -2224,6 +3467,72 @@ Recreación:
 [00:58:38] and is life changing.
 [00:58:40] So how do you select one?
 [00:58:41] Really quick gonna run through this.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 00:58:45 | stage7_00-58-45.png]** · tipo: slide
+También visible en: 00:58:57, 00:59:00, 00:59:02, 00:59:23, 00:59:30, 00:59:37, 00:59:45, 00:59:56, 01:00:00, 01:00:13, 01:00:14, 01:00:15, 01:00:22, 01:00:34, 01:00:43, 01:00:45, 01:01:03, 01:01:14, 01:01:17, 01:01:30, 01:01:32, 01:01:45, 01:01:49, 01:01:49, 01:01:51, 01:02:00, 01:02:07, 01:02:15
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: HUMAN RESOURCES
+> What that looks like...
+> TO GRADUATE
+> Setup HRIS - Human Resource Information System
+> Ah! There it is!
+> **How to Select an HRIS?**
+> **1. Business Needs:** List the HR functions you need to manage (prior slide) and define any specific requirements based on your company's growth rate.
+> **2. Look At Options:** Research and compare HRIS solutions based on features, industry reputation, user reviews, and whether they align with your growth needs.
+> **3. Integrate with Current Tools:** Ensure the HRIS can seamlessly connect with your existing software (payroll, ATS, accounting) to avoid friction and bad reporting.
+> **4. Involve Key Stakeholders:** Engage HR, IT, and leadership team to review demos, assess usability, and gather input on essential features.
+> **5. Test the System:** Choose a provider with strong onboarding support, run pilot tests, and train your team before fully launching the HRIS
+
+Recreación:
+
+```text
+7: CATEGORIZE: HUMAN RESOURCES
+
+                        What that looks like...
+
+  (columna izquierda: igual que la primera versión)
+        [ TO GRADUATE ]             |
+  Setup HRIS - Human Resource       |
+      Information System            |
+               .-----------------.  |
+               | Ah! There it is! |  ⇒
+               '--------v--------'  |
+  (pila de    (persona   (persona   |
+   discos)    de traje)  en laptop) |
+  (monitor <--                      |
+   con flecha ↑)                    |
+
+  (columna derecha, a la derecha de la flecha ⇒)
+                  How to Select an HRIS?
+
+  1. Business Needs: List the HR functions you need to manage (prior
+     slide) and define any specific requirements based on your company's
+     growth rate.
+
+  2. Look At Options: Research and compare HRIS solutions based on
+     features, industry reputation, user reviews, and whether they align
+     with your growth needs.
+
+  3. Integrate with Current Tools: Ensure the HRIS can seamlessly
+     connect with your existing software (payroll, ATS, accounting) to
+     avoid friction and bad reporting.
+
+  4. Involve Key Stakeholders: Engage HR, IT, and leadership team to
+     review demos, assess usability, and gather input on essential
+     features.
+
+  5. Test the System: Choose a provider with strong onboarding support,
+     run pilot tests, and train your team before fully launching the
+     HRIS
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Segunda versión del slide «What that looks like...» de HUMAN RESOURCES: misma columna izquierda (caja negra «TO GRADUATE», texto e ilustración con «Ah! There it is!») y misma flecha ⇒; la lista de la derecha se reemplaza por el encabezado «How to Select an HRIS?» en negrita y cinco puntos numerados con el nombre en negrita y la explicación en regular gris, en letra chica. No hay insert a pantalla completa de este estado: el frame principal es una toma abierta (Alex a la izquierda, Leila a la derecha señalando la lista) y el texto se lee recortando y ampliando la columna derecha; la última palabra («HRIS», en una línea aparte) se confirma en el primer plano de Leila de 00:59:02. También en tomas abiertas (00:58:57, 00:59:00, 00:59:23, 00:59:30, 00:59:56, 01:00:00, 01:00:22, 01:00:34, 01:01:03, 01:01:17, 01:01:30, 01:01:49, 01:01:49 b, 01:02:07, 01:02:15), en primeros planos de Leila con la lista a la izquierda del cuadro (00:59:02, 00:59:37, 00:59:45, 01:00:13, 01:00:14, 01:00:15, 01:00:43, 01:00:45, 01:01:51, 01:02:00) y en primeros planos de Alex con la columna izquierda a la derecha del cuadro (01:01:14, 01:01:32, 01:01:45).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:58:43]
+
 [00:58:43] Think about your business needs, right?
 [00:58:45] And so I just talked about what I think your business needs
 [00:58:47] because if you're at this point with your company,
@@ -2334,6 +3643,54 @@ Recreación:
 [01:02:13] And if you measure it and you can see
 [01:02:15] what actions affect the results,
 [01:02:18] then you can keep doing that as you grow.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 01:02:20 | stage7_01-02-20.png]** · tipo: tabla
+También visible en: 01:02:31, 01:02:31
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE
+> HEADCOUNT | 50 to 99
+> YOUR ROLE | Executive
+> LEADERSHIP STRUCTURE | 3 Layers: Leadership Team
+> # OF COMPANIES HERE | 1,200,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams.
+> MARKETING | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> SALES | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates.
+> CUSTOMER SERVICE | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions.
+> INFORMATION TECH (IT) | Data, IP, Access all over the place and disorganized. | Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware if onsite.
+> RECRUITING | Takes too long to hire good people and they get hired elsewhere. You have too many roles open to keep track of candidates and where they're at in the process. | Install Applicant Tracking System to keep track of so many open roles. Pay specialized recruiting firms to keep up.
+> HUMAN RESOURCES (HR) | There are too many different places for employee information and you have no data | Setup HRIS - Human Resource Information System
+> FINANCE | YOU ARE HERE | **How you report and manage your money.**
+> Bottom line
+
+Recreación:
+
+| 7: CATEGORIZE | |
+|---|---|
+| **HEADCOUNT** | 50 to 99 |
+| **YOUR ROLE** | Executive |
+| **LEADERSHIP STRUCTURE** | 3 Layers: Leadership Team |
+| **# OF COMPANIES HERE** | 1,200,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams. |
+| **MARKETING** | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4. |
+| **SALES** | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates. |
+| **CUSTOMER SERVICE** | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions. |
+| **INFORMATION TECH (IT)** | Data, IP, Access all over the place and disorganized. | Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware if onsite. |
+| **RECRUITING** | Takes too long to hire good people and they get hired elsewhere. You have too many roles open to keep track of candidates and where they're at in the process. | Install Applicant Tracking System to keep track of so many open roles. Pay specialized recruiting firms to keep up. |
+| **HUMAN RESOURCES (HR)** | There are too many different places for employee information and you have no data | Setup HRIS - Human Resource Information System |
+| **FINANCE** | ◀ YOU ARE HERE | **How you report and manage your money.** |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato: título «7: CATEGORIZE» en barra negra, rótulos en celdas moradas con texto blanco, línea negra gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva sobre barra negra). PRODUCT a HUMAN RESOURCES (HR) ya llenos en texto normal y letra chica (en la tabla, la restricción de HR no lleva punto final). La celda CONSTRAINT de la fila actual la ocupa una flecha morada que apunta a la izquierda (hacia el rótulo) con «YOU ARE HERE» en blanco; en su celda TO GRADUATE va la definición del área en negrita y letra más grande (el último dato agregado). Bottom line, vacío. Frame principal: insert a pantalla completa. También en toma abierta (01:02:31, 01:02:31 b), con Alex a la izquierda y Leila a la derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [01:02:20]
+
 [01:02:20] And so that is HR.
 [01:02:21] So there were too many different places
 [01:02:22] for employee information and you had no data
@@ -2342,12 +3699,82 @@ Recreación:
 [01:02:27] to make sure that you organize all of that.
 [01:02:29] Which brings us to finance.
 [01:02:30] The nonce, how you report and manage your money.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 01:02:34 | stage7_01-02-34.png]** · tipo: slide
+También visible en: 01:02:33
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: FINANCE
+> At this level...
+> CONSTRAINT
+> Your team starts spending your money stupidly.
+
+Recreación:
+
+```text
+7: CATEGORIZE: FINANCE
+
+                     At this level...
+
+        [ CONSTRAINT ]               |
+  Your team starts spending your     |
+       money stupidly.               |
+                                     |
+   (persona con bolsa de dinero      |
+    lanzando billetes)               |
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, primer build: pestaña morada arriba a la izquierda con «7: CATEGORIZE: FINANCE» en blanco; título «At this level...» en negro, centrado; a la izquierda, caja negra «CONSTRAINT» con texto blanco, el texto de la restricción debajo y el pictograma negro de una persona sonriente que abraza una bolsa con signo $ y lanza billetes al aire, sobre un fondo cuadriculado gris tenue (marca de agua). Una línea vertical negra divide el slide; la mitad derecha está vacía. Frame principal: insert a pantalla completa. También en toma abierta (01:02:33), con Alex y Leila a los lados de la pantalla.
+<!-- /FRAME -->
+↳ alineado con el audio de [01:02:33]
+
 [01:02:33] So at this level, the constraint is
 [01:02:35] your team starts spending your money stupidly.
 [01:02:37] Because you've kind of delegated a certain level of spending
 [01:02:39] because you can't approve every single thing
 [01:02:41] that gets spent every day
 [01:02:42] because you're spending money all over the place
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 01:02:45 | stage7_01-02-45.png]** · tipo: slide
+También visible en: 01:03:01, 01:03:02
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: FINANCE
+> And...
+> CONSTRAINT
+> Your team starts spending your money stupidly.
+> TO GRADUATE
+> Quarterly expense management. Budgets by dept. Cards w limits. Expense approval process. Add insurance coverage & get fancier projections.
+> By Department
+> EXPENSES
+> Approval
+
+Recreación:
+
+```text
+7: CATEGORIZE: FINANCE
+
+                                  And...
+
+        [ CONSTRAINT ]               |            [ TO GRADUATE ]
+  Your team starts spending your     |     Quarterly expense management.
+       money stupidly.               |    Budgets by dept. Cards w limits.
+                                     |    Expense approval process. Add
+   (persona con bolsa de dinero     ⇒   insurance coverage & get fancier
+    lanzando billetes)               |             projections.
+                                     |  [By Department]
+                                     |  (billetes)[EXPENSES]==[Approval]==> (pulgar
+                                     |   (mano firmando)                    arriba)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de la sección, segundo build: pestaña morada «7: CATEGORIZE: FINANCE»; título «And...»; a la izquierda, lo mismo del primer build (caja «CONSTRAINT», texto y la persona lanzando billetes); línea vertical negra con una flecha blanca de contorno negro (⇒) que apunta a la derecha; a la derecha, caja negra «TO GRADUATE», el texto, la etiqueta morada «By Department» (texto blanco) sobre un ícono de billetes y una hoja «EXPENSES» que una mano firma con una pluma (con una marca de agua tenue ilegible encima), una flecha negra gruesa con «Approval» en blanco y una mano con el pulgar arriba. Frame principal: insert a pantalla completa. También en toma abierta (01:03:01, 01:03:02), con Alex señalando el slide y Leila a la derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [01:02:44]
+
 [01:02:44] because you're growing, right?
 [01:02:45] And so to graduate,
 [01:02:47] we put in quarterly expense management.
@@ -2360,6 +3787,89 @@ Recreación:
 [01:03:03] on a regular basis for this stuff up to here, right?
 [01:03:07] And then I also like to throw this in,
 [01:03:09] add insurance coverage and get fancier projections.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 01:03:12 | stage7_01-03-12.png]** · tipo: slide
+También visible en: 01:03:22, 01:03:30, 01:03:32, 01:03:45, 01:03:58, 01:04:27, 01:04:30, 01:04:38, 01:04:45, 01:04:47, 01:05:01, 01:05:07, 01:05:15, 01:05:26, 01:05:30, 01:05:32, 01:05:33
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: FINANCE
+> What that looks like...
+> TO GRADUATE
+> QTRLY expense management. Budgets by dept. Cards w limits. Expense approval process. Add insurance coverage & get fancier projections.
+> By Department
+> EXPENSES
+> Approval
+> ACQUISITION.COM
+> **Standard Operating Procedures/Policies**
+> **Accounts Payable - Purchasing Managers**
+> The below listing represents all those with purchasing authority at _Acquisition.com_, who are able to approve vendor spend up to $10,000 (please see the process _document_ for how to handle spend exceeding $10,000).
+> Please see _here_ for process re: submitting Vendors for Payment, and Purchasing Managers are expected to manage communications/payment expectations with Vendors on an ongoing basis
+> **Position** | **Name(s)** | **Area of Oversight**
+> Founders | [nombres tapados] | Significant company expenses
+> CFO | | Overall business expenses/financial expenses
+> Director, Recruiting | | Human resource expenses
+> Book Manager | | Book expenses
+> Director, Brand | | Brand related expenses
+> Managing Director, Business Development | | Business development expenses
+> Portfolio Operating Partner | | Portfolio expenses
+> Director, Marketing | | Marketing expenses
+> Principal, Marketing | | Marketing expenses
+> Event Manager | | Event Expenses
+> Facilities Manager | | Facility
+> Director, Operations | | Corporate spend/events/building expenses
+
+Recreación:
+
+```text
+7: CATEGORIZE: FINANCE
+
+                        What that looks like...
+
+        [ TO GRADUATE ]             |
+   QTRLY expense management.        |
+  Budgets by dept. Cards w limits.  |
+  Expense approval process. Add     |
+  insurance coverage & get fancier  ⇒
+          projections.              |
+  [By Department]                   |
+  (billetes)[EXPENSES]==[Approval]==> (pulgar arriba)
+   (mano firmando)                  |
+
+  (columna derecha, a la derecha de la flecha ⇒: captura de un documento)
+     (logo) ACQUISITION.COM
+
+           Standard Operating Procedures/Policies
+              Accounts Payable - Purchasing Managers
+  ------------------------------------------------------------------
+  The below listing represents all those with purchasing authority at
+  Acquisition.com, who are able to approve vendor spend up to $10,000
+  (please see the process document for how to handle spend exceeding
+  $10,000).
+  Please see here for process re: submitting Vendors for Payment, and
+  Purchasing Managers are expected to manage communications/payment
+  expectations with Vendors on an ongoing basis
+
+  Position                               Name(s)   Area of Oversight
+  Founders                               |██████|  Significant company expenses
+  CFO                                    |██████|  Overall business expenses/financial expenses
+  Director, Recruiting                   |██████|  Human resource expenses
+  Book Manager                           |██████|  Book expenses
+  Director, Brand                        |██████|  Brand related expenses
+  Managing Director, Business Development|██████|  Business development expenses
+  Portfolio Operating Partner            |██████|  Portfolio expenses
+  Director, Marketing                    |██████|  Marketing expenses
+  Principal, Marketing                   |██████|  Marketing expenses
+  Event Manager                          |██████|  Event Expenses
+  Facilities Manager                     |██████|  Facility
+  Director, Operations                   |██████|  Corporate spend/events/building expenses
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide «What that looks like...» de FINANCE (primera versión): pestaña morada arriba a la izquierda con «7: CATEGORIZE: FINANCE» en blanco; título en negro centrado. A la izquierda, caja negra «TO GRADUATE» con texto blanco, el texto (aquí abreviado «QTRLY»; en el slide «And...» decía «Quarterly») y la ilustración «By Department» / «EXPENSES» / «Approval» / pulgar arriba. Línea vertical negra al centro, interrumpida por una flecha blanca de contorno negro (⇒). A la derecha, la captura de un documento de políticas: logo de montaña y «ACQUISITION.COM», título y subtítulo en negrita, una línea negra, dos párrafos centrados con «Acquisition.com», «document» y «here» como enlaces azules subrayados, y una tabla de tres columnas sin bordes; la columna «Name(s)» está tapada por un rectángulo negro (nombres censurados). Frame principal: insert a pantalla completa. También en tomas abiertas (01:03:22, 01:03:30, 01:03:58, 01:04:27, 01:04:30, 01:04:47, 01:05:07, 01:05:15), en primeros planos de Leila con el documento a la izquierda del cuadro (01:03:32, 01:03:45, 01:04:38, 01:04:45) y en primeros planos de Alex con la columna izquierda a la derecha del cuadro (01:05:01, 01:05:26, 01:05:30, 01:05:32, 01:05:33).
+<!-- /FRAME -->
+↳ alineado con el audio de [01:03:11]
+
 [01:03:11] All right, so let's break this down.
 [01:03:12] SOPs.
 [01:03:13] So at this point in time,
@@ -2438,6 +3948,59 @@ Recreación:
 [01:05:27] and all the nutrition on the one tree that matters, right?
 [01:05:29] So this is not a problem that will ever get solved.
 [01:05:32] It's just that you have to manage it.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 01:05:34 | stage7_01-05-34.png]** · tipo: slide
+También visible en: 01:05:42, 01:05:45, 01:06:03, 01:06:11, 01:06:15, 01:06:17, 01:06:29, 01:06:30, 01:06:37, 01:06:45, 01:06:55, 01:07:00, 01:07:01, 01:07:13, 01:07:15, 01:07:27, 01:07:30, 01:07:31, 01:07:45, 01:08:00, 01:08:15, 01:08:16, 01:08:23, 01:08:30, 01:08:34, 01:08:45, 01:08:45, 01:08:54, 01:09:00, 01:09:01, 01:09:15, 01:09:16, 01:09:17, 01:09:23, 01:09:28, 01:09:30, 01:09:36, 01:09:47, 01:09:50, 01:09:50, 01:09:56, 01:09:57, 01:10:00, 01:10:15, 01:10:15
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: FINANCE
+> What that looks like...
+> TO GRADUATE
+> QTRLY expense management. Budgets by dept. Cards w limits. Expense approval process. Add insurance coverage & get fancier projections.
+> By Department
+> EXPENSES
+> Approval
+> Assign a PM to each department with a budget
+> Let marketing spend as long as within profitable metrics
+> Card limits limit downside for you as a business owner. With good software can make solid reporting.
+> Get 3% back on expenses in cash back with correct cards.It adds up.
+> Fancy projections typically require a FTexperienced person
+> Insure where exposed.
+
+Recreación:
+
+```text
+7: CATEGORIZE: FINANCE
+
+                        What that looks like...
+
+  (columna izquierda: igual que la primera versión)
+        [ TO GRADUATE ]             |
+   QTRLY expense management.        |
+  Budgets by dept. Cards w limits.  |
+  Expense approval process. Add     |
+  insurance coverage & get fancier  ⇒
+          projections.              |
+  [By Department]                   |
+  (billetes)[EXPENSES]==[Approval]==> (pulgar arriba)
+   (mano firmando)                  |
+
+  (columna derecha, a la derecha de la flecha ⇒)
+  • Assign a PM to each department with a budget
+  • Let marketing spend as long as within profitable metrics
+  • Card limits limit downside for you as a business owner. With good
+    software can make solid reporting.
+  • Get 3% back on expenses in cash back with correct cards.It adds up.
+  • Fancy projections typically require a FTexperienced person
+  • Insure where exposed.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Segunda versión del slide «What that looks like...» de FINANCE: misma columna izquierda (caja negra «TO GRADUATE», texto con «QTRLY» e ilustración «By Department» / «EXPENSES» / «Approval» / pulgar arriba) y misma flecha ⇒; la captura del documento se reemplaza por seis viñetas negras en texto regular (se respeta tal cual «cards.It» sin espacio y «FTexperienced» junto). Frame principal: insert a pantalla completa. También en tomas abiertas (01:05:42, 01:05:45, 01:06:03, 01:06:17, 01:06:29, 01:06:30, 01:06:45, 01:07:01, 01:07:27, 01:07:30, 01:07:45, 01:08:00, 01:08:15, 01:08:23, 01:08:30, 01:08:45 b, 01:09:01, 01:09:15, 01:09:23, 01:09:36, 01:09:56, 01:09:57, 01:10:00, 01:10:15, 01:10:15 b), en primeros planos de Alex con la columna izquierda a la derecha del cuadro (01:06:11, 01:06:15, 01:06:37, 01:07:31, 01:08:54, 01:09:00, 01:09:16, 01:09:17, 01:09:47, 01:09:50, 01:09:50 b) y en primeros planos de Leila con las viñetas a la izquierda del cuadro (01:06:55, 01:07:00, 01:07:13, 01:07:15, 01:08:16, 01:08:34, 01:08:45, 01:09:28, 01:09:30).
+<!-- /FRAME -->
+↳ alineado con el audio de [01:05:33]
+
 [01:05:33] Right off the top,
 [01:05:34] you're gonna assign your people, managers,
 [01:05:35] or wherever the leader is in the department
@@ -2609,8 +4172,87 @@ Recreación:
 [01:10:32] with Laila went over,
 [01:10:32] and then you add coverage to your insurance
 [01:10:34] and get fancier projections.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 01:10:36 | stage7_01-10-36.png]** · tipo: tabla
+También visible en: 01:10:37
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE
+> HEADCOUNT | 50 to 99
+> YOUR ROLE | Executive
+> LEADERSHIP STRUCTURE | 3 Layers: Leadership Team
+> # OF COMPANIES HERE | 1,200,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams.
+> MARKETING | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4.
+> SALES | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates.
+> CUSTOMER SERVICE | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions.
+> INFORMATION TECH (IT) | Data, IP, Access all over the place and disorganized. | Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware if onsite.
+> RECRUITING | Takes too long to hire good people and they get hired elsewhere. You have too many roles open to keep track of candidates and where they're at in the process. | Install Applicant Tracking System to keep track of so many open roles. Pay specialized recruiting firms to keep up.
+> HUMAN RESOURCES (HR) | There are too many different places for employee information and you have no data | Setup HRIS - Human Resource Information System
+> FINANCE | Your team starts spending your money stupidly. | QTRLY expense management. Budgets by dept. Cards w limits. Expense approval process. Add insurance coverage & get fancier projections.
+> Bottom line | YOU ARE HERE | **What you prioritize your company’s resources to achieve**
+
+Recreación:
+
+| 7: CATEGORIZE | |
+|---|---|
+| **HEADCOUNT** | 50 to 99 |
+| **YOUR ROLE** | Executive |
+| **LEADERSHIP STRUCTURE** | 3 Layers: Leadership Team |
+| **# OF COMPANIES HERE** | 1,200,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | Product outdated. Improvements take too long to roll out. | Fix one problem at a time with focused feature specific teams. |
+| **MARKETING** | Lead flow is volatile because you only have _one way_ to get customers. | Fund 2nd acq channel with referral process (& track it) & segmented LT nurture by lead score. Pick most similar platform-->or new core 4. |
+| **SALES** | Leads getting wasted. Not worked consistently. | Better schedule coverage. Create lead nurture checklist & kudos for top show rates. |
+| **CUSTOMER SERVICE** | CS only reactive. All firefighting. | Create proactive customer journey & communication. Focus on renewals and ascensions. |
+| **INFORMATION TECH (IT)** | Data, IP, Access all over the place and disorganized. | Network technology. Bring solutions to the cloud. Data host. Centrally locate hardware if onsite. |
+| **RECRUITING** | Takes too long to hire good people and they get hired elsewhere. You have too many roles open to keep track of candidates and where they're at in the process. | Install Applicant Tracking System to keep track of so many open roles. Pay specialized recruiting firms to keep up. |
+| **HUMAN RESOURCES (HR)** | There are too many different places for employee information and you have no data | Setup HRIS - Human Resource Information System |
+| **FINANCE** | Your team starts spending your money stupidly. | QTRLY expense management. Budgets by dept. Cards w limits. Expense approval process. Add insurance coverage & get fancier projections. |
+| ***Bottom line*** | ◀ YOU ARE HERE | **What you prioritize your company’s resources to achieve** |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (mismo formato: título «7: CATEGORIZE» en barra negra, rótulos en celdas moradas con texto blanco, línea negra gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva sobre barra negra). Las ocho filas de área ya llenas en texto normal y letra chica. En la fila «Bottom line» (barra negra), la flecha morada «YOU ARE HERE» apunta a la izquierda y la definición va en blanco, en negrita y letra más grande; su segunda línea («to achieve») queda cortada por el borde inferior de la pantalla, así que no se puede ver si lleva punto final. Solo en toma abierta (no hay insert a pantalla completa de este estado): Alex a la izquierda señalando la tabla y Leila a la derecha; leída recortando y ampliando.
+<!-- /FRAME -->
+↳ alineado con el audio de [01:10:36]
+
 [01:10:36] Notice how these are getting longer
 [01:10:37] as the company gets bigger.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 01:10:42 | stage7_01-10-42.png]** · tipo: slide
+También visible en: 01:10:41
+
+Texto en pantalla (literal):
+
+> 7: CATEGORIZE: BOTTOM LINE
+> **Constraint:**
+> Everything is disorganized.
+> **To Graduate:**
+> Begin triaging everything (leads, customers, applicants, etc)
+
+Recreación:
+
+```text
+7: CATEGORIZE: BOTTOM LINE
+
+   +--------------------------------------------------------+
+   |                      Constraint:                       |
+   |              Everything is disorganized.               |
+   |                     To Graduate:                       |
+   |       Begin triaging everything (leads,                |
+   |       customers, applicants, etc)                      |
+   +--------------------------------------------------------+
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Slide de cierre de la etapa sobre fondo negro: pestaña morada arriba a la izquierda con «7: CATEGORIZE: BOTTOM LINE» en blanco; al centro, un recuadro blanco con borde morado y texto negro centrado; «Constraint:» y «To Graduate:» en negrita. Frame principal: insert a pantalla completa. También en toma abierta (01:10:41), con Alex y Leila mirando la pantalla.
+<!-- /FRAME -->
+↳ alineado con el audio de [01:10:39]
+
 [01:10:39] And so at this thing, bottom line is that your constraint
 [01:10:42] is that everything is disorganized.
 [01:10:44] And to graduate, you have to start triaging everything
@@ -2618,6 +4260,66 @@ Recreación:
 [01:10:50] That's all we're doing is you're just like,
 [01:10:51] okay, let's just organize this stuff.
 [01:10:52] Now we're getting into the hundred employee range.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 7: CATEGORIZE | 01:10:55 | stage7_01-10-55.png]** · tipo: pirámide
+También visible en: 01:11:03, 01:11:09, 01:11:15, 01:11:19, 01:11:22, 01:11:30, 01:11:32, 01:11:45, 01:11:45, 01:11:50
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATE TO: 8: SPECIALIZE
+> 100 TO 249
+> 50 TO 99
+> 20 TO 49
+> 10 TO 19
+> 5 TO 9
+> 1 TO 4
+> FREELANCERS
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> SPECIALIZE
+> CATEGORIZE
+> OPTIMIZE
+> PRODUCTIZE
+> PRIORITIZE
+> STABILIZE
+> ADVERTISE
+> MONETIZE
+> IMPROVISE
+
+Recreación:
+
+```text
+               STAGE WE GRADUATE TO: 8: SPECIALIZE
+
+                                 /\
+                                /||\
+  -----------------------------/-||-\----------------------------
+   100 TO 249                 /  ||  \         SPECIALIZE
+  ---------------------------/---||---\--------------------------
+   50 TO 99                 /    ||    \        CATEGORIZE
+  -------------------------/-----||-----\------------------------
+   20 TO 49               /      ||      \       OPTIMIZE
+  -----------------------/-------||-------\----------------------
+   10 TO 19             /        ||        \      PRODUCTIZE
+  ---------------------/---------||---------\--------------------
+   5 TO 9              /         ||         \      PRIORITIZE
+  -------------------/-----------||-----------\------------------
+   1 TO 4           /            ||            \     STABILIZE
+  -----------------/-------------||-------------\----------------
+   FREELANCERS     /             ||             \    ADVERTISE
+  ---------------/---------------||---------------\--------------
+   JUST YOU     /                ||                \   MONETIZE
+  -------------/-----------------||-----------------\------------
+   JUST YOU   / FUNCTIONS        ||                  \ IMPROVISE
+             /___________________||___________________\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Misma pirámide morada, ahora con nueve franjas: se agrega arriba «100 TO 249» (en morado) a la izquierda y «SPECIALIZE» (en morado) a la derecha; «50 TO 99» y «CATEGORIZE» pasan a negro. En el título, «8: SPECIALIZE» va en morado y el resto en negro. «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. Es el cierre del video: anuncia la etapa siguiente. Frame principal: insert a pantalla completa. También en tomas abiertas (01:11:03, 01:11:32, 01:11:45, 01:11:50) y en primeros planos de Alex con la mitad izquierda de la pirámide de fondo (01:11:09, 01:11:15, 01:11:19, 01:11:22, 01:11:30, 01:11:45 b). En 01:11:09 Alex muestra a cámara una carpeta blanca de argollas cuya portada dice «$100M SCALING ROADMAP», el logo «ACQUISITION.COM», una cuadrícula de diez tablas miniatura con barras azules y la franja negra «STAGE 6: OPTIMIZE»; en 01:11:15 la abre (página interior con una imagen azul, ilegible) y en 01:11:19, 01:11:22 y 01:11:30 la sostiene cerrada (en 01:11:30 hace el gesto de hablar por teléfono).
+<!-- /FRAME -->
+↳ alineado con el audio de [01:10:55]
+
 [01:10:55] So we go from categorizing
 [01:10:56] slash organizing everything into specializing.
 [01:10:59] And so that is what we begin in the next one.

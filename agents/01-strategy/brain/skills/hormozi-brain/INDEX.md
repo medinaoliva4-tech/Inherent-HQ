@@ -205,7 +205,7 @@ Original: Drive › Hormozi Brain › Docs/5-scaling-frameworks.pdf
 | STAGE 4: PRIORITIZE | `references/roadmap/stage-4-prioritize.md` | Videos/04 Prioritize.mp4 | 00:43:05 | ✅ | 49 |
 | STAGE 5: PRODUCTIZE | `references/roadmap/stage-5-productize.md` | Videos/05 Productize.mp4 | 00:59:49 | ✅ | 46 |
 | STAGE 6: OPTIMIZE | `references/roadmap/stage-6-optimize.md` | Videos missing/Optimize.mp4 | 01:18:00 | ✅ | 49 |
-| STAGE 7: CATEGORIZE | `references/roadmap/stage-7-categorize.md` | Videos missing/Categorize.mp4 | 01:11:53 | ✅ | 10 |
+| STAGE 7: CATEGORIZE | `references/roadmap/stage-7-categorize.md` | Videos missing/Categorize.mp4 | 01:11:53 | ✅ | 46 |
 | STAGE 8: SPECIALIZE | ⛔ no existe | Videos missing/Specialize.mp4 | — | — | — |
 | STAGE 9: CAPITALIZE | ⛔ no existe | Videos/09 Capitalize.mp4 | — | — | — |
 
