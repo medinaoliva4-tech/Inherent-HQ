@@ -43,7 +43,7 @@
 | 1 | **Zernio:** publicación y bandeja de mensajes con una cuenta real, y su precio con 15-20 cuentas | «Presencia todos los días» y community management |
 | 2 | **IA que contesta comentarios y mensajes** *(API de pocos dólares al mes conectada a Zernio)* | Community básico de la línea Marketing |
 | 3 | **Pasar ⑨ Posting de Publer a Zernio** | El agente está armado con Publer |
-| 4 | **Scraping:** cuenta, instalar el MCP, probar los trece actores y fijar el tope de gasto | Inteligencia de ①②③④ y las garantías |
+| 4 | **Scraping:** probar los actores que faltan. ✅ Cuenta, MCP y `apify/facebook-ads-scraper` ya están probados | Inteligencia de ①②③④ y las garantías |
 | 5 | **Pauta:** Meta, TikTok, Google Search y Performance Max | ⑩ Ads y «Que te encuentren en Google» |
 | 6 | **AdWhispr:** guardar la marca | Que `find_competitors` sirva sin preguntar cada vez |
 | 7 | **Plugin `claude-ads`** | Auditoría y monitoreo de cuentas |

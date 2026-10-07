@@ -52,7 +52,7 @@
 | **Producción** *(grabación)* | Marcos |
 | **Secretaria** *(WhatsApp)* | Nicole — agente `00-account` |
 | **IA** | Claude |
-| **Scraping** | Apify |
+| **Scraping** | Apify — conectado por MCP en `.mcp.json`, cada quien con su cuenta |
 | **Publicación y bandeja de mensajes** | Zernio |
 | **Diseño** | Figma |
 

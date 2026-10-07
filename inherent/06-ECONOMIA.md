@@ -177,16 +177,22 @@ la decisión.
 | Herramienta | Cómo se cobra | Al mes |
 |---|---|---|
 | **IA** *(Claude)* | **Una sola factura para la empresa.** Sirve para casi cualquier número de clientes | **Q1,500** |
-| **Scraping** *(Apify)* | **Por uso:** crece con cada cliente | **~Q26 por cliente** + **~Q73 por onboarding** |
+| **Scraping** *(Apify)* | **Por uso:** crece con cada cliente | **~Q4.70** 🔷 · **~Q9.40** 🟨 por cliente *(US$0.61 / US$1.22 a Q7.70)* |
 
 **El rubro Herramientas / IA de cada cuenta es su aporte** *(Q150 · Q200 · Q300 · Q500)*.
 
+**La tabla se calcula con el escenario caro —todas las cuentas en 🟨 Growth, Q9.40 cada una—** para
+que el número nunca quede corto.
+
 | Clientes | Hay que pagar | Aportan las cuentas | Resultado |
 |---|---|---|---|
-| **3** | ~Q1,651 | ~Q780 | La diferencia sale de la utilidad |
-| **5** | ~Q1,703 | ~Q1,300 | La diferencia sale de la utilidad |
-| **~7** | ~Q1,755 | ~Q1,820 | **Se cubre solo** |
-| **10** | ~Q1,833 | ~Q2,600 | Sobra |
+| **3** | ~Q1,528 | ~Q780 | La diferencia sale de la utilidad |
+| **5** | ~Q1,547 | ~Q1,300 | La diferencia sale de la utilidad |
+| **~7** | ~Q1,566 | ~Q1,820 | **Se cubre solo** |
+| **10** | ~Q1,594 | ~Q2,600 | Sobra |
+
+🆓 **Y hasta 4-5 clientes el scraping no se paga:** los US$5 mensuales gratis de Apify son **por
+organización** y cubren esa cantidad de cuentas. El costo de arriba es el que aparece al pasarlos.
 
 🔑 **Con menos de ~7 clientes, lo que falta sale de la utilidad** — no del buffer. La IA es un
 costo de empresa.
@@ -196,9 +202,9 @@ costo de empresa.
 ```
 CEO                  Q2,400
 IA                   Q1,500
-Scraping             Q  205
+Scraping             Q   47    ← 5 cuentas 🟨 a Q9.40
 ─────────────────────────────
-Piso mensual         Q4,105
+Piso mensual         Q3,947
 ```
 
 **Un solo cliente Marketing ya lo cubre** *(Q5,650 de utilidad)*.
@@ -443,7 +449,8 @@ todavía no es para ti»* vende el siguiente mejor que cualquier otra cosa.
 | Competidores verificados que pautan hoy | AdWhispr `find_competitors` | ✅ |
 | Anuncios activos y más longevos de una marca | AdWhispr `get_brand_ads` | ✅ |
 | Leer cualquier web, oferta o precio | Firecrawl `firecrawl_scrape` | ✅ |
-| Datos estructurados de IG · TikTok · YouTube · LinkedIn · Maps · Google · Meta Ad Library | Scraping *(Apify)* | ⬜ |
+| **Anuncios de una marca en Meta, con días corriendo y el copy de los DCO** | Scraping *(Apify)* `apify/facebook-ads-scraper` | ✅ |
+| Datos estructurados de IG · TikTok · YouTube · LinkedIn · Maps · Google | Scraping *(Apify)* | ⬜ |
 
 ### Conversión, tecnología y autonomía
 
@@ -463,14 +470,17 @@ material propio.**
 **Todo lo que haya que scrapear pasa por la herramienta de scraping.** Le da datos
 estructurados a Strategy, Growth, Marketing, Creative y Ads.
 
+🔌 **Apify está conectado por MCP** —en `.mcp.json`, para todo el equipo— **y probado contra la Ad
+Library real.** Cada quien autentica con su propia cuenta de Apify; el repo no guarda ningún token.
+
 | Qué scrapea | Actor | **$/1,000** |
 |---|---|---|
-| **Facebook Ads Library** | `curious_coder/facebook-ads-library-scraper` | **$0.75** |
-| **Instagram** — perfiles, posts, hashtags, comentarios | `apify/instagram-scraper` | **$1.50** |
+| **Facebook Ads Library** — ✅ **la fuente oficial de anuncios, probada** | **`apify/facebook-ads-scraper`** | **$5.80** |
+| **Instagram** — perfiles, posts, hashtags, comentarios | `apify/instagram-scraper` | **$2.70** |
 | **Google Maps** — negocios, reseñas, contactos | `compass/crawler-google-places` | **$1.50** |
 | **LinkedIn** — búsqueda de posts | `harvestapi/linkedin-post-search` | **$1.50** |
 | Instagram — perfiles | `apify/instagram-profile-scraper` | **$1.60** |
-| **TikTok** — perfiles, hashtags, posts | `clockworks/tiktok-scraper` | **$1.70** |
+| **TikTok** — perfiles, hashtags, posts | `clockworks/tiktok-scraper` | **$3.70** |
 | **Google Search** — orgánico, ads, People Also Ask | `apify/google-search-scraper` | **$1.80** |
 | Instagram — detalle de posts | `apify/instagram-post-scraper` | **$2.30** |
 | **YouTube** — canales, videos, subtítulos | `streamers/youtube-scraper` | **$5.00** |
@@ -478,16 +488,44 @@ estructurados a Strategy, Growth, Marketing, Creative y Ads.
 | Los ads que llevan 30+ días corriendo *(vista Winners)* | `maxencebernerd/meta-ad-library-scraper` | — |
 | Ads con reach y demografía reales | `data_xplorer/facebook-ads-library` | — |
 | 44 campos por post, sin login | `parseforge/instagram-posts-scraper` | — |
+| Alternativas para Ads Library si el actor oficial falla | `curious_coder/facebook-ads-library-scraper` | $0.75 |
 
-**Cuánto cuesta:** **~Q73 por onboarding** y **~Q26 por cliente al mes.**
+### Cuánto cuesta — la cuenta
+
+**La investigación se hace por plataforma del cliente**, con el volumen que fija el plan contratado:
+**50 contenidos** por plataforma en 🔷 Marketing y Mkt Pro, **100** en 🟨 Accelerate y Compound.
+Mitad competencia, mitad referencias. Precios del **plan Free**, por cada 1,000.
+
+```
+🔷 MARKETING · MKT PRO  —  50 contenidos × 3 plataformas
+     anuncios     50 × $5.80 / 1,000  =  $0.29
+     TikTok       50 × $3.70 / 1,000  =  $0.185
+     Instagram    50 × $2.70 / 1,000  =  $0.135
+                                        ───────
+                                         $0.61  por cliente al mes
+
+🟨 ACCELERATE · COMPOUND — 100 contenidos × 3 plataformas
+                                         $1.22  por cliente al mes
+```
+
+🔑 **Es el costo real, no el tope.** El tope de US$5 por cliente es **límite de seguridad**: si una
+cuenta se le acerca, algo se está pidiendo mal.
+
+🆓 **Los US$5 gratis de Apify son por organización, no por cliente.** Alcanzan para **~4 cuentas de
+🟨 Growth** *(a $1.22)* o **~8 de 🔷 Marketing** *(a $0.61)*; **se planifica con 4-5.** Pasado eso,
+hace falta plan pago.
 
 | Regla | Qué dice |
 |---|---|
-| **Tope por cliente** | **$5 al mes** en operación normal. Arriba de eso, se revisa qué se está pidiendo |
+| **Tope por cliente** | **$5 al mes — límite de seguridad**, no presupuesto. El gasto real es menos de $1.30. Si se acerca al tope, se revisa qué se está pidiendo |
 | **YouTube** | Solo con pregunta concreta. Es el que más rápido se come el presupuesto |
 | **Nada «por si acaso»** | Cada corrida responde una pregunta del workflow |
 | **Solo datos públicos** | No se usan cuentas del cliente ni se guardan datos personales que no hagan falta |
 | **Si un actor falla** | Se busca otro en el store el mismo día. No se bloquea la entrega |
+| **Topes en los tres actores** | **Siempre** `resultsLimit` y `maxTotalChargeUsd`. Cobran por contenido: un run sin freno se come el tope del cliente |
+| **Volumen por ciclo** | **Por plataforma del cliente**, según el plan: 50 · 50 · 100 · 100. Las plataformas salen de `plan-por-canal.md` de ③ |
+| **Lectura profunda** | Se scrapean todos; **solo 10-15 pasan** a disección. Scrapear es barato, leer a fondo no |
+| **Las dos capas** | **Competencia solo Guatemala** (`country=GT`); **referencias ganadoras** de países parecidos, con la lista fija de `cr-fuentes`. **No se mezclan en el mismo archivo** |
 
 ---
 

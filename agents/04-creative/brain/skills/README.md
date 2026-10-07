@@ -97,4 +97,4 @@ cr-brief ──→ cr-swipe-file ──→ cr-big-idea ──→ cr-storytelling
 
 | Archivo | Qué es | Estado |
 |---|---|---|
-| `BARRIDO-NOCTURNO.md` | Recolección propia de anuncios en el VPS, de madrugada y sin nadie conectado. Reemplaza la búsqueda manual de `cr-fuentes` | 🟡 **Pendiente.** Cuando se construya, pasa a ser skill |
+| `BARRIDO-NOCTURNO.md` | Histórico de la recolección propia de anuncios en un VPS. **Lo reemplazó Apify `apify/facebook-ads-scraper`**, la fuente oficial de `cr-fuentes` | 🔴 **Reemplazado.** No se construye. Queda como histórico de la decisión |

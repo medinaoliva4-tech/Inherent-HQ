@@ -50,11 +50,24 @@ campaña.
 
 > ⚠️ **Las plataformas rechazan anuncios por claims.** Un rechazo frena la campaña entera.
 
-## 4 · Clonar lo que funciona en la categoría
+## 4 · Partir de lo que ya funciona en la categoría
 
-**AdWhispr `clone_tiktok_ad`** permite partir de un anuncio que ya rinde.
+| Qué se busca | Con qué |
+|---|---|
+| **Los anuncios de Meta de una página, con días corriendo** | **Apify `apify/facebook-ads-scraper`** — la fuente oficial. Reglas completas en `cr-fuentes` |
+| Un anuncio de TikTok que ya rinde | AdWhispr `clone_tiktok_ad` |
 
-🛑 **Se clona la estructura, no la pieza.** Copiar el creativo de un competidor es un problema
+> **Decisión del CEO · las dos capas.** No se mezclan en el mismo análisis:
+> **competencia** se busca **solo en Guatemala** (`country=GT`), por página de cada competidor;
+> **referencias ganadoras** salen de países parecidos a Guatemala, con la lista fija de
+> `cr-fuentes`. Y **primero se descubre por keyword qué páginas lideran, después se scrapea por
+> página** (`search_type=page` + `view_all_page_id=…`).
+
+**Ganador = 60-90+ días corriendo.** El mismo criterio de `cr-swipe-file`, para que ①, ④ y ⑩ no
+midan con reglas distintas.
+
+🛑 **Se adapta la estructura y el ángulo, nunca la pieza.** Y lo que viene de otro país se pasa a
+quetzales y a la cultura local antes de usarlo. Copiar el creativo de un competidor es un problema
 legal y además nos mete en su código visual — justo lo contrario de lo que ②B construyó.
 
 ## 5 · Qué pieza va a qué campaña

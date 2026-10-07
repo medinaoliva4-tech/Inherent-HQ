@@ -34,6 +34,7 @@ paso vive en las skills: `skills/README.md`.
 
 | Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
+| **Contenidos a investigar** *(por plataforma del cliente — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
 | **BIG IDEAS del mes** *(una por campaña de ③)* | **1** | **2** | **2** | **2** |
 | **Conceptos del ciclo** *(videos planificados ÷ 3)* | 3 | 4 | 6 | 8 |
 | **Videos planificados** a idear *(20 min de grabación c/u)* | 9 | 12 | **18** | 24 |

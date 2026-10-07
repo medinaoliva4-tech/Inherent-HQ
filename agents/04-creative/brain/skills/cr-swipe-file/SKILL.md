@@ -81,7 +81,7 @@ evidencia de rendimiento. **En orden de fuerza:**
 | **Ad en pauta** | **60-90+ días corriendo** | `⏱️60-90+d` | **La más fuerte.** Las marcas matan rápido a los perdedores: un ad viejo es un ad que paga |
 | **Ad en pauta** | 30-60 días | `⏱️30-60d` | Señal a confirmar |
 | **Ad en pauta** | <30 días | — | Descartada. Todavía está en test |
-| **Orgánico** | **Outlier contra la media de esa cuenta** | `⏱️outlier` | Fuerte |
+| **Orgánico** | **2x o más** las vistas o interacciones **del promedio de esa cuenta** | `⏱️outlier` | Fuerte |
 | **Orgánico** | Muchas views en cuenta enorme, sin comparar con su base | — | Descartada. No es evidencia |
 | **Landing** | Existe hace tiempo y no la rehicieron | `⏱️estable` | Media |
 

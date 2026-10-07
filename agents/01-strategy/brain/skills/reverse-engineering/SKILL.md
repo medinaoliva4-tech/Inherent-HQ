@@ -33,12 +33,50 @@ Las piezas, no las opiniones sobre la marca.
 
 | Qué | Dónde |
 |---|---|
-| Anuncios activos y **cuánto tiempo llevan corriendo** | AdWhispr |
+| Anuncios activos y **cuánto tiempo llevan corriendo** | **Apify `apify/facebook-ads-scraper`** ↓ · AdWhispr para confirmar **quién** pauta hoy |
 | Posts que rinden **muy por encima de su propia media** | Apify `easy_scraper/instagram-profile-engagement-analytics` |
 | Títulos, portadas y carruseles que ganan | Apify `parseforge/instagram-posts-scraper` |
 | Landings, páginas de venta | Firecrawl |
 | Reviews, comentarios, quejas | Firecrawl |
 | **Descubrir competidores, referentes y UGC creators en Instagram** | **Muse Spark, manual** ↓ |
+
+### 🛑 Se investiga por plataforma, y la competencia es de Guatemala nada más
+
+**La fuente oficial es Apify**, la misma que usa ④ Creative, con **un actor por plataforma**. Las
+reglas completas —los 3 aprendizajes del actor de anuncios, los topes y el orden de trabajo— viven
+en **`cr-fuentes`**. Acá solo lo que cambia para Strategy.
+
+**Las plataformas son las del cliente**, las que figuran en `plan-por-canal.md` de ③ Marketing:
+
+| Plataforma | Actor |
+|---|---|
+| **Meta Ad Library** *(anuncios)* | `apify/facebook-ads-scraper` |
+| **Instagram** *(orgánico)* | `apify/instagram-scraper` |
+| **TikTok** *(orgánico)* | `clockworks/tiktok-scraper` |
+
+🛑 **Toda corrida lleva `resultsLimit` y `maxTotalChargeUsd`.**
+
+**Cuántos:** el volumen por plataforma lo fija el plan contratado — **50** en 🔷 Marketing y Pro,
+**100** en 🟨 Accelerate y Compound. **Mitad competencia, mitad referencias.** La tabla está en la
+§0 de `agents/01-strategy/brain/WORKFLOW.md`.
+
+> **Decisión del CEO · las dos capas.** El barrido de **competencia** y el de **referencias
+> ganadoras** son dos cosas distintas y **no se mezclan en el mismo archivo**.
+
+| | 🔍 **Competencia** — es la de Strategy | ⭐ **Referencias ganadoras** — es de ④ Creative |
+|---|---|---|
+| **Para qué** | De qué hay que despegarse. Alimenta el posicionamiento | Qué estructura ya funciona. Alimenta el swipe file |
+| **Países** | **Solo Guatemala** (`country=GT`) | Países parecidos a Guatemala — la lista fija está en `cr-fuentes` |
+| **Cómo se busca** | **Por página de cada competidor**: `search_type=page` + `view_all_page_id=…` | Descubrir por keyword, después por página |
+
+🛑 **Un anuncio de México no es competencia.** Si no se le puede ganar el cliente en Guatemala, no
+entra a `ingenieria-inversa.md` — entra, si acaso, al swipe file de ④, y en su propia sección.
+
+🛑 **Primero se descubre, después se scrapea.** La búsqueda por keyword dice **qué páginas lideran
+la categoría**; recién con la página identificada se piden sus ads.
+
+🛑 **Se scrapean todos, se descomponen a fondo 10-15.** El resto queda listado con su señal. Pasar
+150 piezas por el molde completo de la §3 no es rigor, es desperdicio.
 
 ### Muse Spark — paso manual, no automático
 
@@ -108,9 +146,11 @@ verificados en vez de recordados. Y la voz literal del comprador, en los comenta
 nicho y menciones previas de marca. Requiere cuenta de Meta Business y cuenta profesional de
 Instagram, y está en 18+ países — **verificar disponibilidad en Guatemala antes de contar con ella**.
 
-**Qué cuenta como "ganadora":**
-- **Anuncio:** lleva mucho tiempo corriendo → está pagando
-- **Orgánico:** rinde muy por encima de la media **de esa cuenta**, no en números absolutos
+**Qué cuenta como "ganadora":** — los mismos criterios de `cr-swipe-file`, para que Strategy y ④
+Creative no midan con reglas distintas.
+- **Anuncio: 60-90+ días corriendo** → está pagando
+- **Orgánico: 2x o más** las vistas o interacciones **del promedio de esa cuenta**, nunca en
+  números absolutos
 - **Página:** existe hace tiempo y no la rehicieron → funciona
 
 > Un post con muchas vistas de una cuenta enorme puede ser **su peor contenido**. Siempre relativo

@@ -1,5 +1,9 @@
 {
   "mcpServers": {
+    "apify": {
+      "type": "http",
+      "url": "https://mcp.apify.com"
+    },
     "figwright": {
       "command": "npx",
       "args": ["-y", "@figwright/mcp@latest"]
