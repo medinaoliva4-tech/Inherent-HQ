@@ -43,7 +43,7 @@ Correr `month-end-prep` sobre los períodos de los que depende el trabajo: el me
 
 No se calcula nada hasta que los libros del período estén resueltos. Si quedan cosas abiertas, se dice qué son y qué le hacen al número:
 
-> "Hay cuatro facturas emitidas en los DTE que no están en el Excel de septiembre, por Q18,400. Hasta que se aclaren, el IVA del mes puede moverse hasta Q920. Aclaralas, o decime que siga y lo dejo como supuesto."
+> "Hay cuatro facturas emitidas en los DTE que no están en el Excel de septiembre, por Q<monto>. Hasta que se aclaren, el IVA del mes puede moverse hasta Q<monto × 5%>. Aclaralas, o decime que siga y lo dejo como supuesto."
 
 Si el CEO sigue igual, eso pasa a ser un supuesto declarado en el entregable — no una nota al pie.
 
@@ -61,7 +61,7 @@ Decir de dónde salió el número: "Esta declaración está hecha sobre los libr
 
 **El tope del régimen va arriba de todo si hay alerta.** Si los ingresos del año o de los últimos 12 meses se acercan o pasan el tope del Régimen de Pequeño Contribuyente, la primera línea del entregable es la alerta para el CEO: "Revisar con el contador el cambio de régimen." Las líneas de alerta y el tope con su fuente están en `../tax-season-organizer/reference/calculation-assumptions.md`.
 
-Ejemplo (cifras ilustrativas): "SAT-2046 de septiembre: Q731.50, dentro de octubre. Hecho sobre Q25,795.00 de ingresos del cierre de septiembre, menos una constancia de Q558.25. Tope: 46% del año. Confirmar con el contador."
+Ejemplo: "SAT-2046 de septiembre: Q<monto>, dentro de octubre. Hecho sobre Q<ingresos> del cierre de septiembre, menos una constancia de Q<monto>. Tope: <X>% del año. Confirmar con el contador."
 
 ## What not to do
 
