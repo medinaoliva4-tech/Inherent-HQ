@@ -59,7 +59,7 @@ CTA:       "..."
 
 | | |
 |---|---|
-| **Sujeto** | *(exacto, no genérico: «el Menú Ejecutivo de res, plato montado», no «comida»)* |
+| **Sujeto** | *(exacto, no genérico: «el <plato exacto del cliente>, plato montado», no «comida»)* |
 | **Encuadre** | *(plano y ángulo: cenital / 45° / frontal / detalle)* |
 | **Fondo y props** | *(superficie, qué acompaña — y qué **nunca** entra en cuadro)* |
 | **Espacio libre para el texto** | *(dónde NO puede haber sujeto — **sale del Layout de arriba**, no se inventa)* |

@@ -34,7 +34,7 @@ decide ③ Marketing. Correr una fecha rompe la secuencia de una campaña sin qu
 
 ```
 canal  = instagram-reels
-cuenta = @cafederiva
+cuenta = @<cuenta-del-cliente>
 ```
 
 Un cliente puede tener dos cuentas del mismo canal —la de la marca y la del local nuevo, la

@@ -84,7 +84,7 @@ Es lo que le dice a ⑤ Producción qué tiene que existir antes de que nadie ar
 
 | Campo | Qué lleva |
 |---|---|
-| **Sujeto** | **Exacto, no genérico.** *«el Menú Ejecutivo de res, plato montado»*, no *«comida»* |
+| **Sujeto** | **Exacto, no genérico.** *«el <plato exacto del cliente>, plato montado»*, no *«comida»* |
 | **Encuadre** | Plano y ángulo — cenital, 45°, frontal, detalle |
 | **Fondo y props** | Superficie, qué acompaña, qué **nunca** entra en cuadro |
 | **Espacio libre para el texto** | Dónde NO puede haber sujeto, **según el Layout de esta pieza** |

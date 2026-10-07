@@ -61,7 +61,7 @@ distintos.
 cambiar la intención sin declararlo.
 
 ❌ `accion: "plano de comida"` ✅ `accion: "Manos cortando la proteína, vapor visible"`
-❌ `locacion: "una cocina de día"` ✅ `locacion: "Restaurante zona 10 — cocina, franja 9-13 h"`
+❌ `locacion: "una cocina de día"` ✅ `locacion: "<local del cliente> — cocina, franja 9-13 h"`
 
 ## 3 · Las 8 categorías — ninguna se omite
 

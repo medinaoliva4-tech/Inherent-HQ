@@ -81,7 +81,7 @@ filas de Posting**, cada una con su `id` y su archivo.
 
 ```
 id,id_creativo,campana,canal,cuenta,formato,fecha,hora,archivo,caption_ok,specs_ok,estado
-PO-001,CR-001,Lanzamiento,instagram-reels,@cafederiva,reel,2026-10-06,,cafederiva_..._v01.mp4,⬜,⬜,pendiente
+PO-001,CR-001,Lanzamiento,instagram-reels,@<cuenta-del-cliente>,reel,2026-10-06,,<cliente>_..._v01.mp4,⬜,⬜,pendiente
 ```
 
 | Columna | En esta capa |

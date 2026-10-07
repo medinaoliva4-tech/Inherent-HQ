@@ -217,7 +217,7 @@ id_foto · ids_creativos · sujeto · encuadre · fondo_props · espacio_texto �
 |---|---|
 | `id_foto` | `FT-001`, correlativo del ciclo |
 | `ids_creativos` | **Los `id` de ④ que usan esta foto, separados por `;`** — una foto puede servir a varias piezas |
-| `sujeto` | Exacto, copiado de la § Foto. *«Menú Ejecutivo de res, plato montado»* |
+| `sujeto` | Exacto, copiado de la § Foto. *«<plato exacto del cliente>, plato montado»* |
 | `encuadre` | Cenital · 45° · frontal · detalle · wide |
 | `fondo_props` | Superficie, qué acompaña y **qué nunca entra en cuadro** |
 | `espacio_texto` | Dónde NO puede haber sujeto — **sale del Layout de ④** |
@@ -393,7 +393,7 @@ contra Escenas:**
 | No contradice las guidelines de ②B | Se declara y se escala. **No se resuelve en set** |
 | **¿Existe material ya grabado que sirve?** | Se marca `reutiliza` y **no se vuelve a grabar** |
 | *(foto)* La **§ Foto** tiene sujeto exacto, encuadre, fondo, espacio de texto y proporción | ↩️ **DEVUELTO** — una foto vaga se vuelve a tomar |
-| *(foto)* El **sujeto es concreto**, no una categoría *(«el Menú Ejecutivo de res», no «comida»)* | ↩️ **DEVUELTO** |
+| *(foto)* El **sujeto es concreto**, no una categoría *(«el <plato exacto del cliente>», no «comida»)* | ↩️ **DEVUELTO** |
 
 **El techo de realidad** se declara antes de seguir: presupuesto disponible · días de rodaje posibles
 · capacidad declarada. Si el Excel creativo pide más de lo que entra en cualquiera de los tres, **se
