@@ -25,7 +25,7 @@ conectada a WhatsApp, **siempre encendida**, contra este repo.
 |---|---|---|---|---|
 | **Piezas del mes** | **86** | **145** | **145** | **204** |
 | **Revisiones por pieza** | **1** | 2 | 2 | 3 |
-| **Comentarios y mensajes** | ⛔ No incluido | ✅ | ✅ | ✅ |
+| **Comentarios y mensajes** | ✅ Básico | ✅ Todos los días | ✅ + WhatsApp a medida | ✅ + WhatsApp a medida |
 | **Campañas de Google** | ⛔ No incluido | ✅ | ✅ | ✅ |
 | **Oferta y precio** | ⛔ No se tocan | ⛔ No se tocan | ✅ Rediseñados | ✅ Sistematizados |
 | **Herramienta a medida** | ⛔ | ⛔ | Una por trimestre | **Una por mes** |

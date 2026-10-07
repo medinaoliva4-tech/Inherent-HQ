@@ -213,7 +213,7 @@ Piso mensual         Q4,105
 | **Unidad** | 1 marca | 1 marca | 1 marca | 1 marca |
 | **Qué promete** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
 | **Qué hacemos** | Que lo vean y lo entiendan | Que lo sostenga sin quedarse sin qué decir | **Rediseñamos la máquina** | **Construimos la máquina que se sostiene sola** |
-| **Qué incluye** | Marca · Mensaje · Contenido · Pauta | + Video · Google · Creadores · Community | + Oferta · Conversión · Canales · SOPs · Tech · Mentor | + Operación · Estructura · Money OS · IA propia |
+| **Qué incluye** | Marca · Mensaje · Contenido · Pauta · Community básico | + Video · Google · Creadores · Community diario | + Oferta · Conversión · Canales · SOPs · Tech · Mentor · WhatsApp a medida | + Operación · Estructura · Money OS · IA propia |
 | **Performance fee** | No aplica | No aplica | ✅ Incluido | ✅ Incluido |
 
 **Y `Tailor Made`** — multi-locación, regulatorio, integraciones, proyectos por hito. Precio según alcance.
@@ -424,6 +424,7 @@ todavía no es para ti»* vende el siguiente mejor que cualquier otra cosa.
 | Reencuadrar para cada formato | `ffmpeg` local | ⬜ |
 | Análisis de video *(cortes, frames, texto en pantalla)* | `ffmpeg` local | ⬜ |
 | Programar y publicar | La herramienta de publicación *(ver los slots en `05-OPERACION.md`)* | ⬜ |
+| Responder comentarios y mensajes *(IG, Facebook, TikTok, WhatsApp)* | La bandeja de mensajes + una API de IA, desde el rubro Herramientas / IA | ⬜ |
 
 ### Adquisición
 
