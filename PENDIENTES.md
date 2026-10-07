@@ -114,5 +114,6 @@
 | 1 | **`agents/`: pasar «Allan» a «el CEO»** — 54 archivos lo nombran como gate |
 | 2 | **`agents/`: quitar advertencias y estados** con el mismo criterio que `inherent/` |
 | 3 | **`agents/00-account/`: que hable como Nicole, la secretaria**, y escale al COO |
-| 4 | Mover lo de Akai a `clients/akai-sushi/` |
-| 5 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y traer `main` a sus ramas |
+| 4 | **Borrar las ramas viejas de GitHub:** solo quedan `main` y `rodrigo-medina` |
+| 5 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y trabajar sobre `main` |
+| 6 | **Onboarding de Akai, NAO y Cerantola:** los folders existen, vacíos, en `clients/` |
