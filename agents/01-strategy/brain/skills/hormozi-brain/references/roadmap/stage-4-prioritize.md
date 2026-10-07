@@ -4,7 +4,7 @@ archivo_original: "Drive › Hormozi Brain › Videos/04 Prioritize.mp4 (id 19H3
 etapa: "STAGE 4: PRIORITIZE"
 duracion: "00:43:05"
 transcripcion: "faster-whisper small.en (int8, greedy) — automática, literal; solo se quitaron muletillas obvias (um/uh/erm/hmm): 0"
-frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 346 frames revisados → 13 estados visuales distintos documentados; 14 frames sin contenido de pantalla"
+frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 346 frames revisados → 49 estados visuales distintos documentados; 14 frames sin contenido de pantalla"
 imagenes: "NO se guardan en el repo. Fuente de verdad = el video en ese timestamp. Cada bloque FRAME lleva el nombre stageX_HH-MM-SS.png como referencia."
 formato_cita: "[ROADMAP VIDEO | STAGE 4: PRIORITIZE | HH:MM:SS] (+ frame si aplica)"
 nota: "—"
@@ -824,6 +824,54 @@ Recreación:
 [00:11:38] and clearer on who you want.
 [00:11:41] And so those are the things that we do to prioritize
 [00:11:43] in terms of sifting through the traffic at this level.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:11:46 | stage4_00-11-46.png]** · tipo: tabla
+También visible en: 00:11:59, 00:12:00
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE
+> HEADCOUNT | 5 to 9
+> YOUR ROLE | Manager
+> LEADERSHIP STRUCTURE | 1 Layer: First Team
+> # OF COMPANIES HERE | 3,000,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar.
+> MARKETING | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects.
+> SALES | YOU ARE HERE | **How you get people to give you money for your stuff.**
+> CUSTOMER SERVICE
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 4: PRIORITIZE | |
+|---|---|
+| **HEADCOUNT** | 5 to 9 |
+| **YOUR ROLE** | Manager |
+| **LEADERSHIP STRUCTURE** | 1 Layer: First Team |
+| **# OF COMPANIES HERE** | 3,000,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar. |
+| **MARKETING** | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects. |
+| **SALES** | ◀ YOU ARE HERE | **How you get people to give you money for your stuff.** |
+| **CUSTOMER SERVICE** | — | — |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (título en barra negra, rótulos en celdas moradas, línea gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva en barra negra). Filas PRODUCT y MARKETING ya llenas. En SALES, la flecha morada «YOU ARE HERE» apunta a la izquierda ocupando la celda CONSTRAINT, y en TO GRADUATE va la definición de la función en negrita, más grande. Frame principal: insert a pantalla completa; también en toma abierta (00:11:59, 00:12:00).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:11:46]
+
 [00:11:46] So we went from too many unqualified leads
 [00:11:48] to more better free stuff, more creative to boost volume,
 [00:11:51] lead magnets that match the new narrower avatar,
@@ -833,6 +881,39 @@ Recreación:
 [00:11:59] So next we have sales, okay?
 [00:12:00] And sales is how to get people
 [00:12:02] to give you money for your stuff.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:12:04 | stage4_00-12-04.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: SALES
+> At this level…
+> CONSTRAINT
+> Speed to contact drops. You have no metrics around sales.
+
+Recreación:
+
+```text
+[4: PRIORITIZE: SALES]
+
+                         At this level…
+
+   ┌────────────┐                       ┃
+   │ CONSTRAINT │                       ┃
+   └────────────┘                       ┃
+     Speed to contact drops.            ┃
+   You have no metrics around sales.    ┃      (vacío)
+                                        ┃
+     │   [velocímetro]                  ┃
+     │    o o o o                       ┃
+     ▼   (personas)                     ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: SALES» arriba a la izquierda. Título centrado en negrita negra. Rótulo «CONSTRAINT» en caja negra con letras blancas. Debajo, una flecha roja gruesa apuntando hacia abajo, junto a un ícono negro de velocímetro (semicírculo con aguja) y, debajo de él, una fila de cuatro siluetas de personas a línea. Línea vertical negra al centro; mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:12:04]
+
 [00:12:04] So the constraint of this level
 [00:12:05] is that your speed to contact drops,
 [00:12:06] so you're generating leads,
@@ -843,9 +924,97 @@ Recreación:
 [00:12:15] The second thing is you have no metrics around sales.
 [00:12:17] So if I were to ask you right now,
 [00:12:18] what's your close percentage, you might not actually know.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:12:21 | stage4_00-12-21.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: SALES
+> And…
+> CONSTRAINT
+> Speed to contact drops. You have no metrics around sales.
+> TO GRADUATE
+> Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected).
+
+Recreación:
+
+```text
+[4: PRIORITIZE: SALES]
+
+                              And…
+
+   ┌────────────┐                       ┃        ┌─────────────┐
+   │ CONSTRAINT │                       ┃        │ TO GRADUATE │
+   └────────────┘                       ┃        └─────────────┘
+  Speed to contact drops. You have no   ┃  Track basic KPIs manually on
+        metrics around sales.           ┃  spreadsheet (contact rate, sched,
+                                        ┃  show, offer, close, cash collected).
+     │   [velocímetro]                  ⇒   [reporte: gráfico + diana]
+     │    o o o o                       ┃
+     ▼   (personas)                     ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: SALES» arriba a la izquierda. A la izquierda, la flecha roja hacia abajo, el velocímetro y las cuatro siluetas de personas. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, un ícono de reporte: hoja con un gráfico de líneas/barras en zigzag ascendente relleno de celeste, cuatro renglones abajo a la izquierda y una diana roja con un dardo abajo a la derecha. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:12:20]
+
 [00:12:20] And so to graduate this level,
 [00:12:22] you wanna track basic KPIs manually on a spreadsheet.
 [00:12:26] Yes, we are using Google Sheets.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:12:29 | stage4_00-12-29.png]** · tipo: slide
+También visible en: 00:12:36, 00:12:54, 00:12:55, 00:12:56, 00:13:06, 00:13:15, 00:13:16
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: SALES
+> What that looks like…
+> TO GRADUATE
+> Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected).
+> **Basic Sales Key Performance Indicators:**
+> Contact Rate
+> Schedule Rate
+> Cancellation Rate
+> Show Rate
+> Offer Rate
+> Close Rate
+> Cash Collected
+> By Rep
+> ADV:
+> Sched Call→Close %
+> Optin→Close %
+> Track Absolute Amount & Percentage every week
+
+Recreación:
+
+```text
+[4: PRIORITIZE: SALES]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  Basic Sales Key Performance
+        │ TO GRADUATE │              ┃  Indicators:
+        └─────────────┘              ┃   • Contact Rate
+  Track basic KPIs manually on       ┃   • Schedule Rate
+  spreadsheet (contact rate, sched,  ┃   • Cancellation Rate
+  show, offer, close, cash           ┃   • Show Rate
+  collected).                        ⇒   • Offer Rate
+                                     ┃   • Close Rate
+                                     ┃   • Cash Collected
+  [reporte: gráfico + diana]         ┃   • By Rep
+                                     ┃   • ADV:
+                                     ┃       ○ Sched Call→Close %
+                                     ┃       ○ Optin→Close %
+                                     ┃  Track Absolute Amount &
+                                     ┃  Percentage every week
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: SALES» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase y el ícono de reporte (hoja con gráfico zigzag ascendente relleno de celeste, renglones y diana roja con dardo). Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: encabezado «Basic Sales Key Performance Indicators:» en negrita, nueve viñetas con punto negro y dos sub-viñetas con círculo hueco bajo «ADV:» (con flechas «→»), y una línea final sin viñeta. Frame principal: insert a pantalla completa. También en toma abierta (00:12:36, 00:12:54, 00:12:55, 00:13:06, 00:13:15), en primer plano de Leila con solo la lista visible (00:12:56) y en primer plano de Alex con solo el bloque TO GRADUATE y el ícono (00:13:16); esa mitad izquierda es igual en el slide siguiente, así que ese primer plano se asigna por tiempo.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:12:28]
+
 [00:12:28] And so what that looks like, okay?
 [00:12:31] Basic sales key performance indicators.
 [00:12:33] A KPI is a key performance indicator.
@@ -877,6 +1046,56 @@ Recreación:
 [00:13:25] because your speed to contact goes down,
 [00:13:27] we wanna do some things
 [00:13:28] to incorporate some basic lead nurture, right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:13:32 | stage4_00-13-32.png]** · tipo: slide
+También visible en: 00:13:24, 00:13:30, 00:13:41, 00:13:45, 00:13:47, 00:13:55, 00:14:00, 00:14:03, 00:14:09, 00:14:15, 00:14:19, 00:14:20, 00:14:30, 00:14:36, 00:14:45, 00:14:45, 00:15:00, 00:15:20, 00:15:21, 00:15:30, 00:15:43, 00:15:44, 00:15:45, 00:15:48, 00:16:02, 00:16:09, 00:16:10, 00:16:15, 00:16:28, 00:16:30, 00:16:41, 00:16:45, 00:16:46, 00:16:49, 00:16:57, 00:17:00, 00:17:03, 00:17:04, 00:17:13, 00:17:15, 00:17:30, 00:17:32, 00:17:45, 00:18:00, 00:18:12, 00:18:15, 00:18:28, 00:18:30, 00:18:59, 00:19:08, 00:19:15, 00:19:22, 00:19:30, 00:19:31, 00:19:41, 00:19:45, 00:19:50, 00:19:59, 00:20:00
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: SALES
+> What that looks like…
+> TO GRADUATE
+> Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected).
+> **Lead Nurture Basics:**
+> Change TY page headline to sell booking
+> Move scheduler above the fold
+> Change to 15min timeslots
+> Open to 7 days per week
+> 9am-9pm
+> Incentivize setters with 3% of sales
+> Implement automated reminders
+> Implement Manual Reminders: 24 Hr, Am, 1HR reminders
+> Daily kudos to team for show up rates
+> Implement bribe for show
+
+Recreación:
+
+```text
+[3: STABILIZE: SALES]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  Lead Nurture Basics:
+        │ TO GRADUATE │              ┃   • Change TY page headline to sell
+        └─────────────┘              ┃     booking
+  Track basic KPIs manually on       ┃   • Move scheduler above the fold
+  spreadsheet (contact rate, sched,  ┃   • Change to 15min timeslots
+  show, offer, close, cash           ⇒   • Open to 7 days per week
+  collected).                        ┃   • 9am-9pm
+                                     ┃   • Incentivize setters with 3% of sales
+                                     ┃   • Implement automated reminders
+  [reporte: gráfico + diana]         ┃   • Implement Manual Reminders: 24
+                                     ┃     Hr, Am, 1HR reminders
+                                     ┃   • Daily kudos to team for show up
+                                     ┃     rates
+                                     ┃   • Implement bribe for show
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo diseño que el slide anterior, pero la etiqueta morada de arriba a la izquierda dice «3: STABILIZE: SALES» (no «4: PRIORITIZE»). A la izquierda: rótulo «TO GRADUATE» en caja negra, la misma frase y el ícono de reporte (gráfico zigzag celeste, renglones, diana roja con dardo). Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: encabezado «Lead Nurture Basics:» en negrita y diez viñetas con punto negro. Frame principal: insert a pantalla completa. También en toma abierta (00:13:24, 00:13:30, 00:13:55, 00:14:00, 00:14:19, 00:14:20, 00:14:30, 00:14:45, 00:14:45 b, 00:15:00, 00:15:20, 00:15:21, 00:15:30, 00:16:02, 00:16:28, 00:16:30, 00:16:49, 00:16:57, 00:17:00, 00:17:13, 00:17:15, 00:17:30, 00:17:45, 00:18:00, 00:18:28, 00:18:30, 00:19:08, 00:19:15, 00:19:31, 00:19:50), en primeros planos de Leila con solo la lista visible (00:13:41, 00:13:45, 00:13:47, 00:14:03, 00:14:09, 00:14:15, 00:14:36, 00:15:43, 00:15:44, 00:15:45, 00:15:48, 00:16:41, 00:16:45, 00:16:46, 00:17:03, 00:17:04, 00:18:59, 00:19:22, 00:19:30) y en primeros planos de Alex con solo el bloque TO GRADUATE y el ícono (00:16:09, 00:16:10, 00:16:15, 00:17:32, 00:18:12, 00:18:15, 00:19:41, 00:19:45, 00:19:59, 00:20:00), asignados por tiempo.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:13:31]
+
 [00:13:31] Okay, the first one is that you wanna change
 [00:13:33] the thank you page headline to sell booking.
 [00:13:37] Okay, so you want to sell people on booking a call.
@@ -1075,6 +1294,54 @@ Recreación:
 [00:20:05] Like, but if you can get a 10% lift in show rate,
 [00:20:08] which translates to a 10% lift in revenue, massive.
 [00:20:11] And this is such an underutilized opportunity.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:20:15 | stage4_00-20-15.png]** · tipo: tabla
+También visible en: 00:21:48, 00:28:47
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE
+> HEADCOUNT | 5 to 9
+> YOUR ROLE | Manager
+> LEADERSHIP STRUCTURE | 1 Layer: First Team
+> # OF COMPANIES HERE | 3,000,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar.
+> MARKETING | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects.
+> SALES | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected).
+> CUSTOMER SERVICE | YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.**
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 4: PRIORITIZE | |
+|---|---|
+| **HEADCOUNT** | 5 to 9 |
+| **YOUR ROLE** | Manager |
+| **LEADERSHIP STRUCTURE** | 1 Layer: First Team |
+| **# OF COMPANIES HERE** | 3,000,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar. |
+| **MARKETING** | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects. |
+| **SALES** | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected). |
+| **CUSTOMER SERVICE** | ◀ YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.** |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (título en barra negra, rótulos en celdas moradas, línea gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva en barra negra). Filas PRODUCT, MARKETING y SALES ya llenas. En CUSTOMER SERVICE, la flecha morada «YOU ARE HERE» apunta a la izquierda ocupando la celda CONSTRAINT, y en TO GRADUATE va la definición de la función en negrita, más grande. Frame principal: insert a pantalla completa; también en toma abierta (00:21:48 y 00:28:47, esta última justo antes de pasar a la fila INFORMATION TECH (IT)).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:20:13]
+
 [00:20:13] So that being said, for sales, right?
 [00:20:16] Speed to contact was crappy.
 [00:20:18] And you had no metrics.
@@ -1120,9 +1387,79 @@ Recreación:
 [00:21:47] and your industry right now.
 [00:21:48] Which brings us to customer service.
 [00:21:50] All right, so customer service is how you get customers
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:21:54 | stage4_00-21-54.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: CUSTOMER SERVICE
+> At this level…
+> CONSTRAINT
+> No metrics for customer success.
+> ?
+
+Recreación:
+
+```text
+[4: PRIORITIZE: CUSTOMER SERVICE]
+
+                         At this level…
+
+   ┌────────────┐                       ┃
+   │ CONSTRAINT │                       ┃
+   └────────────┘                       ┃
+   No metrics for customer success.     ┃
+                                        ┃      (vacío)
+        ╭──▶──╮                         ┃
+   [persona]  ▼  ( ? )                  ┃
+              ╰──▶──╯                   ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: CUSTOMER SERVICE» arriba a la izquierda. Título centrado en negrita negra. Rótulo «CONSTRAINT» en caja negra con letras blancas. Debajo, un ícono gris oscuro: un círculo con el busto de una persona y un círculo con un signo «?», unidos por una flecha curva en forma de S (sale de la persona hacia arriba, baja y llega al círculo de la derecha por abajo). Línea vertical negra al centro; mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:21:52]
+
 [00:21:52] refer, retain, review, and resell.
 [00:21:54] And so the problem at this level, at four for prioritize,
 [00:21:57] is you have no metrics for customer success.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:21:59 | stage4_00-21-59.png]** · tipo: slide
+También visible en: 00:22:11, 00:22:15
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: CUSTOMER SERVICE
+> And…
+> CONSTRAINT
+> No metrics for customer success.
+> ?
+> TO GRADUATE
+> Install tracking & KPIs and centralize notes for each customer by getting a basic CRM.
+
+Recreación:
+
+```text
+[4: PRIORITIZE: CUSTOMER SERVICE]
+
+                              And…
+
+   ┌────────────┐                       ┃        ┌─────────────┐
+   │ CONSTRAINT │                       ┃        │ TO GRADUATE │
+   └────────────┘                       ┃        └─────────────┘
+   No metrics for customer success.     ┃  Install tracking & KPIs and centralize
+                                        ┃  notes for each customer by getting a
+                                        ┃              basic CRM.
+        ╭──▶──╮                         ⇒          ╭──▶──╮
+   [persona]  ▼  ( ? )                  ┃     [persona]  ▼  ( ✓ )
+              ╰──▶──╯                   ┃                ╰──▶──╯
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: CUSTOMER SERVICE» arriba a la izquierda. A la izquierda, el ícono de persona unida por una flecha en S a un círculo con «?». Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, el mismo ícono pero con una palomita (✓) en lugar del «?». Frame principal: insert a pantalla completa; también en toma abierta (00:22:11, 00:22:15).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:21:59]
+
 [00:21:59] And so to graduate, we install tracking KPIs
 [00:22:02] and centralized notes, key points, centralized notes,
 [00:22:05] for each customer by getting a basic CRM.
@@ -1135,6 +1472,52 @@ Recreación:
 [00:22:16] Or do we need to get another kind of system
 [00:22:18] for CS or delivery, so that we can make sure
 [00:22:21] that every customer is being kept track of, all right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:22:24 | stage4_00-22-24.png]** · tipo: slide
+También visible en: 00:22:35, 00:23:02, 00:23:03, 00:23:15, 00:23:16, 00:23:30, 00:23:38, 00:23:45, 00:23:50, 00:24:00, 00:24:03, 00:24:03, 00:24:09, 00:24:21, 00:24:30
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: CUSTOMER SERVICE
+> What that looks like…
+> TO GRADUATE
+> Install tracking & KPIs and centralize notes for each customer by getting a basic CRM.
+> Google Sheets to CRM
+> KPI Installation:
+> NPS/CSAT
+> Churn %
+> Refund/CB %
+> Centralized notes from all touch points in basic CRM
+> "Magic" of not repeating oneself
+> Centralized "Complaints and Opportunities for improvement" tab
+> Always open and adding
+
+Recreación:
+
+```text
+[4: PRIORITIZE: CUSTOMER SERVICE]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃   • Google Sheets to CRM
+        │ TO GRADUATE │              ┃   • KPI Installation:
+        └─────────────┘              ┃       ○ NPS/CSAT
+  Install tracking & KPIs and        ┃       ○ Churn %
+  centralize notes for each          ┃       ○ Refund/CB %
+  customer by getting a basic CRM.   ⇒   • Centralized notes from all touch
+                                     ┃     points in basic CRM
+      [persona ↝ ✓]                  ┃       ○ "Magic" of not repeating oneself
+                                     ┃   • Centralized "Complaints and
+                                     ┃     Opportunities for improvement"
+                                     ┃     tab
+                                     ┃       ○ Always open and adding
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: CUSTOMER SERVICE» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase y el ícono de persona unida por una flecha en S a un círculo con palomita. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: cuatro viñetas con punto negro y sub-viñetas con círculo hueco (las sub-viñetas en letra más chica). En este slide el TO GRADUATE todavía dice «…and centralize notes for each customer by getting a basic CRM.»; en los slides siguientes de CUSTOMER SERVICE cambia. Frame principal: insert a pantalla completa. También en toma abierta (00:22:35, 00:23:16, 00:23:30, 00:23:50, 00:24:00, 00:24:09, 00:24:21, 00:24:30) y en primeros planos de Alex con solo el bloque TO GRADUATE y el ícono (00:23:02, 00:23:03, 00:23:15, 00:23:38, 00:23:45, 00:24:03, 00:24:03 b), donde se lee el mismo texto de TO GRADUATE.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:22:23]
+
 [00:22:23] And so this is what it looks like.
 [00:22:25] Yet again, Google Sheets, reign supreme.
 [00:22:27] But KPI installation.
@@ -1203,6 +1586,53 @@ Recreación:
 [00:24:29] because these are still the problems
 [00:24:30] that we have to solve now,
 [00:24:31] even though you're a little bit removed.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:24:33 | stage4_00-24-33.png]** · tipo: diagrama
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: CUSTOMER SERVICE
+> What that looks like…
+> TO GRADUATE
+> Install tracking & KPIs. Record and centralize notes for each customer in a CRM.
+> KPIs
+> SHALLOW
+> MEDIUM
+> DEEP
+> NPS
+> CES
+> CSAT
+> SURVEYS
+> CUSTOMER FOCUS GROUPS
+> CUSTOMER INTERVIEWS
+
+Recreación:
+
+```text
+[4: PRIORITIZE: CUSTOMER SERVICE]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃                 KPIs
+        │ TO GRADUATE │              ┃      ╭───────────────────────────────╮
+        └─────────────┘              ┃     ( ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔         NPS     )
+  Install tracking & KPIs. Record    ┃     (  \     SHALLOW     /        CES  )
+  and centralize notes for each      ┃     (   \               /        CSAT  )
+  customer in a CRM.                 ⇒     (    \─────────────/──────────────  )
+                                     ┃      ╰────\  MEDIUM   /─────────────╯
+      [persona ↝ ✓]                  ┃            \         /          SURVEYS
+                                     ┃             \───────/───────────────────
+                                     ┃              \ DEEP/   CUSTOMER FOCUS GROUPS
+                                     ┃               \   /    CUSTOMER INTERVIEWS
+                                     ┃                \ /
+                                     ┃                 V
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: CUSTOMER SERVICE» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase (nueva redacción: «Install tracking & KPIs. Record and centralize notes for each customer in a CRM.») y el ícono de persona unida por una flecha en S a un círculo con palomita. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, bajo el título «KPIs» en negrita, un triángulo morado invertido dividido en tres franjas con los rótulos blancos «SHALLOW», «MEDIUM» y «DEEP» (de arriba abajo); de la derecha salen dos líneas negras horizontales que separan tres grupos de rótulos negros: «NPS / CES / CSAT» (junto a SHALLOW), «SURVEYS» (junto a MEDIUM) y «CUSTOMER FOCUS GROUPS / CUSTOMER INTERVIEWS» (junto a DEEP). Un óvalo rojo a mano alzada encierra la franja SHALLOW y el grupo «NPS / CES / CSAT»; su borde inferior pasa sobre la palabra «MEDIUM» y tapa la parte de arriba de sus letras. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:24:32]
+
 [00:24:32] So like Alex was talking about
 [00:24:34] when it comes to CS KPIs, you really have three levels.
 [00:24:37] You've got shallow, medium and deep data,
@@ -1215,6 +1645,51 @@ Recreación:
 [00:24:49] And then shallow is where we wanna focus right now
 [00:24:51] because we're just trying to get a pulse
 [00:24:53] and that is NPS, CES and C-STAP, right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:24:56 | stage4_00-24-56.png]** · tipo: slide
+También visible en: 00:25:07, 00:25:15, 00:25:45, 00:26:08, 00:26:09, 00:26:15, 00:26:15, 00:26:30, 00:26:37, 00:26:38, 00:26:40, 00:26:45
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: CUSTOMER SERVICE
+> What that looks like…
+> TO GRADUATE
+> Install tracking & KPIs. Record and centralize notes for each customer in a CRM.
+> NPS
+> **How to Use It:** NPS is calculated based on responses to a single question:
+> "On a scale of 0 to 10, how likely are you to recommend our product/service to a friend or colleague?"
+> **Promoters (Score 9-10):** These are loyal customers who are highly likely to recommend the company. They are considered enthusiastic supporters who will fuel growth.
+> **Passives (Score 7-8):** These customers are satisfied but not enthusiastic enough to be promoters. They are considered neutral and are vulnerable to competitive offerings.
+> **Detractors (Score 0-6):** These customers are unhappy and could potentially damage the brand through negative word-of-mouth.
+> NPS = %Promoters − %Detractors
+
+Recreación:
+
+```text
+[4: PRIORITIZE: CUSTOMER SERVICE]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃                  NPS
+        │ TO GRADUATE │              ┃  How to Use It: NPS is calculated based on
+        └─────────────┘              ┃  responses to a single question:
+  Install tracking & KPIs. Record    ┃
+  and centralize notes for each      ┃  "On a scale of 0 to 10, how likely are you to
+  customer in a CRM.                 ┃  recommend our product/service to a friend or
+                                     ⇒  colleague?"
+      [persona ↝ ✓]                  ┃
+                                     ┃  Promoters (Score 9-10): …
+                                     ┃  Passives (Score 7-8): …
+                                     ┃  Detractors (Score 0-6): …
+                                     ┃
+                                     ┃      NPS = %Promoters − %Detractors
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: CUSTOMER SERVICE» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase y el ícono de persona unida por una flecha en S a un círculo con palomita. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: título «NPS» en negrita; «How to Use It:», «Promoters (Score 9-10):», «Passives (Score 7-8):» y «Detractors (Score 0-6):» en negrita; la pregunta entre comillas va en cursiva; la fórmula final, en tipografía serif de ecuación (estilo LaTeX), más grande. Frame principal: insert a pantalla completa. También en toma abierta (00:25:07, 00:25:15, 00:25:45, 00:26:15, 00:26:15 b, 00:26:30, 00:26:40, 00:26:45), donde la columna derecha solo se lee a grandes rasgos, y en primeros planos de Alex con solo el bloque TO GRADUATE y el ícono (00:26:08, 00:26:09, 00:26:37, 00:26:38); esa mitad izquierda es igual en los slides NPS, CSAT y Revenue Churn, así que se asignan por tiempo.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:24:56]
+
 [00:24:56] And so there's some instructions here of how to use NPS.
 [00:24:58] It's probably one of the most popular ones
 [00:25:00] that you can use for customer service in general.
@@ -1272,6 +1747,64 @@ Recreación:
 [00:26:52] everyone has for the perfect experience.
 [00:26:55] And if you're wondering what our NPS score is,
 [00:26:56] on average for our workshops, it's 91.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:26:59 | stage4_00-26-59.png]** · tipo: slide
+También visible en: 00:27:40, 00:27:40, 00:27:45
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: CUSTOMER SERVICE
+> What that looks like…
+> TO GRADUATE
+> Install tracking & KPIs. Record and centralize notes for each customer in a CRM.
+> CSAT
+> **How to Use CSAT**
+> CSAT (Customer Satisfaction Score) uses a 5-point scale to measure how satisfied customers are with a company's products or services. CSAT focuses on the last customer support interaction or key moment (like completing onboarding).
+> **CSAT Examples**
+> How satisfied were you with the support you received?
+> How satisfied are you with our onboarding process?
+> How satisfied are you with our help materials?
+> How satisfied are you with our product/service?
+> Customer satisfaction indicator survey
+> How satisfied are you with the service provided by IT?
+> Very dissatisfied
+> Dissatisfied
+> Neutral
+> Satisfied
+> Very Satisfied
+
+Recreación:
+
+```text
+[4: PRIORITIZE: CUSTOMER SERVICE]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃                  CSAT
+        │ TO GRADUATE │              ┃  How to Use CSAT
+        └─────────────┘              ┃  CSAT (Customer Satisfaction Score) uses a
+  Install tracking & KPIs. Record    ┃  5-point scale … (like completing onboarding).
+  and centralize notes for each      ┃
+  customer in a CRM.                 ⇒  CSAT Examples
+                                     ┃   • How satisfied were you with the support you received?
+      [persona ↝ ✓]                  ┃   • How satisfied are you with our onboarding process?
+                                     ┃   • How satisfied are you with our help materials?
+                                     ┃   • How satisfied are you with our product/service?
+                                     ┃   ┌──────────────────────────────────────────────┐
+                                     ┃   │ Customer satisfaction indicator survey       │
+                                     ┃   │ How satisfied are you with the service       │
+                                     ┃   │ provided by IT?                              │
+                                     ┃   │  (:(     (:(     (:|     (:)      (:)          │
+                                     ┃   │ Very    Dissat. Neutral Satisfied Very       │
+                                     ┃   │ dissatisfied                     Satisfied   │
+                                     ┃   └──────────────────────────────────────────────┘
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: CUSTOMER SERVICE» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase y el ícono de persona unida por una flecha en S a un círculo con palomita. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: título «CSAT» en negrita; «How to Use CSAT» y «CSAT Examples» en negrita; las cuatro preguntas de ejemplo en cursiva, con viñetas. Abajo, una captura de pantalla de una encuesta enmarcada en morado: barra superior verde oscuro con «Customer satisfaction indicator survey» en blanco, la pregunta en gris y cinco caritas a línea de colores (roja, naranja, amarilla, verde agua, turquesa) con sus etiquetas; la letra de la captura es muy chica y se transcribió ampliando el insert. Frame principal: insert a pantalla completa; también en toma abierta (00:27:40, 00:27:40 b, 00:27:45), con Leila señalando la lista.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:26:59]
+
 [00:26:59] The next one you can use is CSAT,
 [00:27:00] which is customer satisfaction score.
 [00:27:02] This is a really easy one.
@@ -1300,6 +1833,52 @@ Recreación:
 [00:27:46] so that immediately after they use it,
 [00:27:48] you ask them for the feedback
 [00:27:50] and you're getting it in real time.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:27:52 | stage4_00-27-52.png]** · tipo: slide
+También visible en: 00:28:11, 00:28:15, 00:28:26, 00:28:30, 00:28:36
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: CUSTOMER SERVICE
+> What that looks like…
+> TO GRADUATE
+> Install tracking & KPIs. Record and centralize notes for each customer in a CRM.
+> **Revenue Churn**
+> How much revenue is lost due to churn (excluding new customer revenue)
+> Revenue Churn Rate = (Revenue Lost from Churn / Total Revenue at Start) × 100
+> Example:
+> Revenue at start: $10,000
+> Lost revenue from churn: $500
+> Revenue Churn Rate = (500 / 10000) × 100 = 5%
+
+Recreación:
+
+```text
+[4: PRIORITIZE: CUSTOMER SERVICE]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃             Revenue Churn
+        │ TO GRADUATE │              ┃  How much revenue is lost due to churn
+        └─────────────┘              ┃  (excluding new customer revenue)
+  Install tracking & KPIs. Record    ┃
+  and centralize notes for each      ┃                         ⎛ Revenue Lost from Churn ⎞
+  customer in a CRM.                 ┃  Revenue Churn Rate =   ⎜ ─────────────────────── ⎟ × 100
+                                     ⇒                         ⎝ Total Revenue at Start  ⎠
+      [persona ↝ ✓]                  ┃  Example:
+                                     ┃
+                                     ┃  Revenue at start: $10,000
+                                     ┃  Lost revenue from churn: $500
+                                     ┃                         ⎛  500  ⎞
+                                     ┃  Revenue Churn Rate =   ⎜ ───── ⎟ × 100 = 5%
+                                     ┃                         ⎝ 10000 ⎠
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: CUSTOMER SERVICE» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase y el ícono de persona unida por una flecha en S a un círculo con palomita. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: título «Revenue Churn» en negrita; las dos fórmulas en tipografía serif de ecuación (estilo LaTeX), con fracción entre paréntesis grandes. Frame principal: insert a pantalla completa. También en toma abierta (00:28:11, 00:28:15, 00:28:36) y en primeros planos de Alex con solo el bloque TO GRADUATE y el ícono (00:28:26, 00:28:30), asignados por tiempo.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:27:51]
+
 [00:27:51] So next we have revenue churn,
 [00:27:52] which is how much revenue is lost due to churn
 [00:27:55] excluding new customer revenue.
@@ -1331,18 +1910,185 @@ Recreación:
 [00:28:54] there's gonna be a little bit more detail along the way.
 [00:28:56] And that's because the company's bigger
 [00:28:58] and you just need to do more stuff.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:29:00 | stage4_00-29-00.png]** · tipo: tabla
+También visible en: 00:29:09
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE
+> HEADCOUNT | 5 to 9
+> YOUR ROLE | Manager
+> LEADERSHIP STRUCTURE | 1 Layer: First Team
+> # OF COMPANIES HERE | 3,000,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar.
+> MARKETING | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects.
+> SALES | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected).
+> CUSTOMER SERVICE | No metrics for customer success. | Install tracking & KPIs and centralize notes for each customer by getting a basic CRM
+> INFORMATION TECH (IT) | YOU ARE HERE | **How you gather, store, analyze, and display information.**
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 4: PRIORITIZE | |
+|---|---|
+| **HEADCOUNT** | 5 to 9 |
+| **YOUR ROLE** | Manager |
+| **LEADERSHIP STRUCTURE** | 1 Layer: First Team |
+| **# OF COMPANIES HERE** | 3,000,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar. |
+| **MARKETING** | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects. |
+| **SALES** | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected). |
+| **CUSTOMER SERVICE** | No metrics for customer success. | Install tracking & KPIs and centralize notes for each customer by getting a basic CRM |
+| **INFORMATION TECH (IT)** | ◀ YOU ARE HERE | **How you gather, store, analyze, and display information.** |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (título en barra negra, rótulos en celdas moradas, línea gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva en barra negra). Filas de PRODUCT a CUSTOMER SERVICE ya llenas; en CUSTOMER SERVICE el TO GRADUATE va con la redacción del primer slide de esa función y sin punto final. En INFORMATION TECH (IT), la flecha morada «YOU ARE HERE» apunta a la izquierda ocupando la celda CONSTRAINT, y en TO GRADUATE va la definición de la función en negrita, más grande. Frame principal: insert a pantalla completa; también en toma abierta (00:29:09).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:29:00]
+
 [00:29:00] All right, so that being said, we started with no metrics
 [00:29:02] and we installed tracking and KPI centralized notes
 [00:29:04] for each customer and get a backend CRM in place.
 [00:29:08] All right, so IT is how you gather, store, analyze,
 [00:29:11] and display information.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:29:13 | stage4_00-29-13.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: INFORMATION TECHNOLOGY (IT)
+> At this level…
+> CONSTRAINT
+> New team isn't using everything.
+> Err, which one?
+> ??
+
+Recreación:
+
+```text
+[4: PRIORITIZE: INFORMATION TECHNOLOGY (IT)]
+
+                         At this level…
+
+   ┌────────────┐                       ┃
+   │ CONSTRAINT │                       ┃
+   └────────────┘                       ┃
+   New team isn't using everything.     ┃
+                                        ┃      (vacío)
+     Err, which one?    ??              ┃
+         [figura de dos cabezas         ┃
+          con casco y dos llaves]       ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: INFORMATION TECHNOLOGY (IT)» arriba a la izquierda. Título centrado en negrita negra. Rótulo «CONSTRAINT» en caja negra con letras blancas. Debajo, un pictograma negro de una figura de palo con dos cabezas con casco de obra y gesto confundido, una llave inglesa en cada mano; un globo de pensamiento a la izquierda dice «Err, which one?» (en cursiva) y a la derecha «??». Línea vertical negra al centro; mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:29:13]
+
 [00:29:13] And so the constraint at this level
 [00:29:15] is really that the new team that you have
 [00:29:17] is not using everything, okay?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:29:19 | stage4_00-29-19.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: INFORMATION TECHNOLOGY (IT)
+> And…
+> CONSTRAINT
+> New team isn't using everything.
+> Err, which one?
+> ??
+> TO GRADUATE
+> Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool).
+> ****
+
+Recreación:
+
+```text
+[4: PRIORITIZE: INFORMATION TECHNOLOGY (IT)]
+
+                              And…
+
+   ┌────────────┐                       ┃        ┌─────────────┐
+   │ CONSTRAINT │                       ┃        │ TO GRADUATE │
+   └────────────┘                       ┃        └─────────────┘
+   New team isn't using everything.     ┃  Get everyone on platforms. Protect
+                                        ┃  passwords. Get project management
+     Err, which one?    ??              ┃  tool & comms (work chat tool).
+         [figura de dos cabezas         ⇒          [diagrama de Gantt]
+          con casco y dos llaves]       ┃   [candado]
+                                        ┃   [ **** ]              [globos de chat]
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: INFORMATION TECHNOLOGY (IT)» arriba a la izquierda. A la izquierda, el pictograma de la figura de dos cabezas con casco y llaves inglesas («Err, which one?», «??»). Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, tres íconos negros: un diagrama de Gantt en una ventana (barras horizontales escalonadas con rombos y líneas punteadas), un candado sobre un campo de contraseña «****» y dos globos de chat superpuestos, uno con tres puntos. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:29:19]
+
 [00:29:19] And so in order to graduate that level,
 [00:29:21] you wanna get everyone on all the platforms,
 [00:29:23] protect passwords, get project management tools in place
 [00:29:26] and communication tools.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:29:29 | stage4_00-29-29.png]** · tipo: slide
+También visible en: 00:29:37, 00:29:38, 00:29:45, 00:29:54, 00:30:00, 00:30:13, 00:30:14, 00:30:15, 00:30:16, 00:30:44, 00:30:45, 00:31:00, 00:31:05, 00:31:05, 00:31:09, 00:31:15
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: INFORMATION TECHNOLOGY (IT)
+> What that looks like…
+> TO GRADUATE
+> Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool).
+> ****
+> **Stop using phone and *switch* to work chat tool**
+> Slack is a good option
+> **Stop saving passwords on computer and *switch* to centralized password protection tool**
+> Lastpass is a good option
+> **Stop using individual to do lists and *switch* to PM tool to allow multiple people to work on and see the same thing with progress**
+> Monday.com, Asana, Clickup
+> The key is responsiveness
+
+Recreación:
+
+```text
+[4: PRIORITIZE: INFORMATION TECHNOLOGY (IT)]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  Stop using phone and switch to
+        │ TO GRADUATE │              ┃  work chat tool
+        └─────────────┘              ┃       ○ Slack is a good option
+  Get everyone on platforms. Protect ┃  Stop saving passwords on
+  passwords. Get project management  ┃  computer and switch to
+  tool & comms (work chat tool).     ┃  centralized password protection
+                                     ⇒  tool
+        [diagrama de Gantt]          ┃       ○ Lastpass is a good option
+  [candado]                          ┃  Stop using individual to do lists
+  [ **** ]          [globos de chat] ┃  and switch to PM tool to allow
+                                     ┃  multiple people to work on and see
+                                     ┃  the same thing with progress
+                                     ┃       ○ Monday.com, Asana, Clickup
+                                     ┃       ○ The key is responsiveness
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: INFORMATION TECHNOLOGY (IT)» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase y los tres íconos (Gantt, candado con «****», globos de chat). Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: tres frases en negrita sin viñeta, con la palabra «switch» en negrita cursiva en cada una, y debajo de cada frase sub-viñetas con círculo hueco en texto normal. Frame principal: insert a pantalla completa. También en toma abierta (00:29:37, 00:29:38, 00:29:45, 00:29:54, 00:30:00, 00:30:44, 00:30:45, 00:31:00, 00:31:09, 00:31:15) y en primeros planos de Leila con solo la columna derecha visible (00:30:13, 00:30:14, 00:30:15, 00:30:16, 00:31:05, 00:31:05 b).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:29:28]
+
 [00:29:28] So I will break that down, okay?
 [00:29:30] First thing you wanna do is stop using your phones
 [00:29:33] and text messages and switch to a work chat tool, okay?
@@ -1395,12 +2141,94 @@ Recreación:
 [00:31:18] We need to get on more platforms
 [00:31:19] and we need to formalize how we track things
 [00:31:22] and how we log things.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:31:24 | stage4_00-31-24.png]** · tipo: tabla
+También visible en: 00:31:31, 00:31:32
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE
+> HEADCOUNT | 5 to 9
+> YOUR ROLE | Manager
+> LEADERSHIP STRUCTURE | 1 Layer: First Team
+> # OF COMPANIES HERE | 3,000,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar.
+> MARKETING | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects.
+> SALES | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected).
+> CUSTOMER SERVICE | No metrics for customer success. | Install tracking & KPIs. Record and centralize notes for each customer in a CRM.
+> INFORMATION TECH (IT) | New team isn't using everything. | Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool).
+> RECRUITING | YOU ARE HERE | **How you find & hire people to work for your company.**
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 4: PRIORITIZE | |
+|---|---|
+| **HEADCOUNT** | 5 to 9 |
+| **YOUR ROLE** | Manager |
+| **LEADERSHIP STRUCTURE** | 1 Layer: First Team |
+| **# OF COMPANIES HERE** | 3,000,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar. |
+| **MARKETING** | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects. |
+| **SALES** | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected). |
+| **CUSTOMER SERVICE** | No metrics for customer success. | Install tracking & KPIs. Record and centralize notes for each customer in a CRM. |
+| **INFORMATION TECH (IT)** | New team isn't using everything. | Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool). |
+| **RECRUITING** | ◀ YOU ARE HERE | **How you find & hire people to work for your company.** |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (título en barra negra, rótulos en celdas moradas, línea gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva en barra negra). Filas de PRODUCT a INFORMATION TECH (IT) ya llenas; el TO GRADUATE de CUSTOMER SERVICE ya aparece con la redacción nueva («Install tracking & KPIs. Record and centralize notes…»). En RECRUITING, la flecha morada «YOU ARE HERE» apunta a la izquierda ocupando la celda CONSTRAINT, y en TO GRADUATE va la definición de la función en negrita, más grande. Frame principal: insert a pantalla completa (la fila «Bottom line» sale cortada abajo); también en toma abierta (00:31:31, 00:31:32).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:23]
+
 [00:31:23] And so we went from essentially a new team
 [00:31:25] that isn't using everything
 [00:31:26] to a team that is on all the same platforms
 [00:31:28] with protected passwords using a project management tool.
 [00:31:31] And that brings us to recruiting.
 [00:31:32] Recruiting is how you hire and find people
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:31:35 | stage4_00-31-35.png]** · tipo: slide
+También visible en: 00:31:45
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: RECRUITING
+> At this level…
+> CONSTRAINT
+> Wasting time with bad candidates. Mishire bad people because of bad interview process.
+
+Recreación:
+
+```text
+[4: PRIORITIZE: RECRUITING]
+
+                         At this level…
+
+   ┌────────────┐                       ┃
+   │ CONSTRAINT │                       ┃
+   └────────────┘                       ┃
+   Wasting time with bad candidates.    ┃
+   Mishire bad people because of bad    ┃      (vacío)
+        interview process.              ┃
+                                        ┃
+   [candidatos ✗✗✗ + lupa]  [reloj +    ┃
+                             papelera]  ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: RECRUITING» arriba a la izquierda. Título centrado en negrita negra. Rótulo «CONSTRAINT» en caja negra con letras blancas. Debajo, dos pictogramas negros: un grupo de tres siluetas de traje con una lupa sobre la del centro y una «X» roja sobre cada cabeza; y una figura de palo tirando un reloj a un bote de basura. Línea vertical negra al centro; mitad derecha vacía. Frame principal: insert a pantalla completa; también en toma abierta (00:31:45).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:34]
+
 [00:31:34] to work for your business.
 [00:31:35] And so the constraint at this level
 [00:31:37] is that you're wasting time with bad candidates
@@ -1412,8 +2240,93 @@ Recreación:
 [00:31:47] Well, now we're, okay,
 [00:31:48] now we're living with some of the fruits
 [00:31:50] of still not being as good as we'd like to be.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:31:52 | stage4_00-31-52.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: RECRUITING
+> And…
+> CONSTRAINT
+> Wasting time with bad candidates. Mishire bad people because of bad interview process.
+> TO GRADUATE
+> Learn how to screen & conduct a _2-step_ _interview_ process.
+
+Recreación:
+
+```text
+[4: PRIORITIZE: RECRUITING]
+
+                              And…
+
+   ┌────────────┐                       ┃        ┌─────────────┐
+   │ CONSTRAINT │                       ┃        │ TO GRADUATE │
+   └────────────┘                       ┃        └─────────────┘
+   Wasting time with bad candidates.    ┃  Learn how to screen & conduct a 2-step
+   Mishire bad people because of bad    ┃         interview process.
+        interview process.              ┃
+                                        ⇒  [entrevista: dos personas    [candidatos
+   [candidatos ✗✗✗ + lupa]  [reloj +    ┃   y globo de diálogo]          ✓✓✓ + lupa]
+                             papelera]  ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: RECRUITING» arriba a la izquierda. A la izquierda, los pictogramas de candidatos con «X» rojas bajo la lupa y la figura tirando el reloj a la basura. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, «2-step» e «interview» subrayados; debajo, un recuadro con fondo de cuadrícula gris con dos siluetas negras frente a frente, una sosteniendo un papel y un globo de diálogo entre ambas; y el grupo de tres siluetas de traje con la lupa, ahora con una palomita verde en recuadro (✅) sobre cada cabeza. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:52]
+
 [00:31:52] All right, so to graduate,
 [00:31:53] we learned how to screen and conduct
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:31:55 | stage4_00-31-55.png]** · tipo: slide
+También visible en: 00:31:59, 00:32:11, 00:32:15, 00:32:42, 00:33:06, 00:33:07, 00:33:26, 00:33:27, 00:33:30, 00:33:38, 00:33:39, 00:33:39, 00:33:45, 00:33:58, 00:34:00, 00:34:08, 00:34:08, 00:34:15, 00:34:30
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: RECRUITING
+> What that looks like…
+> TO GRADUATE
+> Learn how to screen & conduct a _2-step_ _interview_ process.
+> **The 2 Step 4 Way Fit Interview**
+> 1. **Screen for Expectations Fit**
+> a. Expectations Fit
+> 2. **Check for Culture**
+> a. Values fit
+> 3. **Check for Skill Fit**
+> a. Skill Fit
+> 4. **Check For Potential Fit**
+> a. Potential Fit
+> 5. **Select**
+> a. Offer job
+> b. **Check references**
+
+Recreación:
+
+```text
+[4: PRIORITIZE: RECRUITING]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  The 2 Step 4 Way Fit Interview
+        │ TO GRADUATE │              ┃
+        └─────────────┘              ┃  1. Screen for Expectations Fit
+  Learn how to screen & conduct a    ┃       a. Expectations Fit
+  2-step interview process.          ┃  2. Check for Culture
+                                     ┃       a. Values fit
+  [entrevista: dos personas          ⇒  3. Check for Skill Fit
+   y globo de diálogo]               ┃       a. Skill Fit
+          [candidatos ✓✓✓ + lupa]    ┃  4. Check For Potential Fit
+                                     ┃       a. Potential Fit
+                                     ┃  5. Select
+                                     ┃       a. Offer job
+                                     ┃       b. Check references
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: RECRUITING» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase con «2-step» e «interview» subrayados, el recuadro de la entrevista (dos siluetas, papel y globo de diálogo, fondo de cuadrícula) y el grupo de candidatos con lupa y palomitas verdes. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: título «The 2 Step 4 Way Fit Interview» en negrita; lista numerada 1-5 con los pasos en negrita y sub-puntos con letra en texto normal, salvo «b. Check references», que va en negrita. Frame principal: insert a pantalla completa. También en toma abierta (00:31:59, 00:32:11, 00:32:15, 00:32:42, 00:33:06, 00:33:07, 00:33:26, 00:33:27, 00:33:30, 00:33:39 b, 00:33:45, 00:34:08, 00:34:08 b, 00:34:15, 00:34:30) y en primeros planos de Alex con solo el bloque TO GRADUATE y los íconos (00:33:38, 00:33:39, 00:33:58, 00:34:00).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:54]
+
 [00:31:54] a two-step interview process.
 [00:31:56] So the next part is a two-step four-way fit interview.
 [00:31:58] And I'm gonna let Layla take this
@@ -1498,20 +2411,186 @@ Recreación:
 [00:34:28] You're probably not.
 [00:34:29] Because the thing is is that people have more experience
 [00:34:31] lying than you have detecting liars.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:34:34 | stage4_00-34-34.png]** · tipo: tabla
+También visible en: 00:34:40, 00:34:40
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE
+> HEADCOUNT | 5 to 9
+> YOUR ROLE | Manager
+> LEADERSHIP STRUCTURE | 1 Layer: First Team
+> # OF COMPANIES HERE | 3,000,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar.
+> MARKETING | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects.
+> SALES | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected).
+> CUSTOMER SERVICE | No metrics for customer success. | Install tracking & KPIs. Record and centralize notes for each customer in a CRM.
+> INFORMATION TECH (IT) | New team isn't using everything. | Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool).
+> RECRUITING | Wasting time with bad candidates. | Learn how to conduct a proper interview and check references.
+> HUMAN RESOURCES (HR) | YOU ARE HERE | **How you minimize the risk of employees or regulators suing you.**
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 4: PRIORITIZE | |
+|---|---|
+| **HEADCOUNT** | 5 to 9 |
+| **YOUR ROLE** | Manager |
+| **LEADERSHIP STRUCTURE** | 1 Layer: First Team |
+| **# OF COMPANIES HERE** | 3,000,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar. |
+| **MARKETING** | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects. |
+| **SALES** | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected). |
+| **CUSTOMER SERVICE** | No metrics for customer success. | Install tracking & KPIs. Record and centralize notes for each customer in a CRM. |
+| **INFORMATION TECH (IT)** | New team isn't using everything. | Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool). |
+| **RECRUITING** | Wasting time with bad candidates. | Learn how to conduct a proper interview and check references. |
+| **HUMAN RESOURCES (HR)** | ◀ YOU ARE HERE | **How you minimize the risk of employees or regulators suing you.** |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (título en barra negra, rótulos en celdas moradas, línea gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva en barra negra). Filas de PRODUCT a RECRUITING ya llenas; en RECRUITING la tabla resume distinto que los slides de esa función («Learn how to conduct a proper interview and check references.»). En HUMAN RESOURCES (HR), la flecha morada «YOU ARE HERE» apunta a la izquierda ocupando la celda CONSTRAINT, y en TO GRADUATE va la definición de la función en negrita, más grande. Frame principal: insert a pantalla completa; también en toma abierta (00:34:40, 00:34:40 b), con Alex tapando parte de los rótulos.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:34:33]
+
 [00:34:33] And so from here,
 [00:34:34] we went from wasting time with bad candidates
 [00:34:36] to learning how to conduct a proper interview
 [00:34:37] and importantly check references.
 [00:34:39] So now we move to HR.
 [00:34:41] HR is how you minimize the risk of employees
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:34:45 | stage4_00-34-45.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: HUMAN RESOURCES
+> At this level…
+> CONSTRAINT
+> Employees don't know how to behave (PTO, sick days, dress code, code of conduct).
+> HOW DO I BEHAVE??
+
+Recreación:
+
+```text
+[4: PRIORITIZE: HUMAN RESOURCES]
+
+                         At this level…
+
+   ┌────────────┐                       ┃
+   │ CONSTRAINT │                       ┃
+   └────────────┘                       ┃
+   Employees don't know how to          ┃
+   behave (PTO, sick days, dress code,  ┃      (vacío)
+        code of conduct).               ┃
+  ┌───────────┐                         ┃
+  │ HOW DO I  │                         ┃
+  │ BEHAVE??  │╲  [persona confundida]  ┃
+  └───────────┘                         ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: HUMAN RESOURCES» arriba a la izquierda. Título centrado en negrita negra. Rótulo «CONSTRAINT» en caja negra con letras blancas. Debajo, un ícono a línea negra del busto de una persona desaliñada (pelo revuelto, cejas caídas, boca triste, parches en la ropa, líneas de temblor a los lados) con un globo de diálogo rectangular que dice «HOW DO I BEHAVE??» en negrita. Línea vertical negra al centro; mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:34:43]
+
 [00:34:43] and regulators suing you.
 [00:34:45] So at this level, the constraint is that employees
 [00:34:47] actually don't know how to behave.
 [00:34:48] So they don't know what PTO is or how to get PTO.
 [00:34:51] They don't understand sick days and how to handle them.
 [00:34:53] They don't know what to wear
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:34:56 | stage4_00-34-56.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: HUMAN RESOURCES
+> And…
+> CONSTRAINT
+> Employees don't know how to behave (PTO, sick days, dress code, code of conduct).
+> HOW DO I BEHAVE??
+> TO GRADUATE
+> Employee handbook & policies.
+> EMPLOYEE HANDBOOK
+
+Recreación:
+
+```text
+[4: PRIORITIZE: HUMAN RESOURCES]
+
+                              And…
+
+   ┌────────────┐                       ┃        ┌─────────────┐
+   │ CONSTRAINT │                       ┃        │ TO GRADUATE │
+   └────────────┘                       ┃        └─────────────┘
+   Employees don't know how to          ┃   Employee handbook & policies.
+   behave (PTO, sick days, dress code,  ┃
+        code of conduct).               ┃        ┌──────────────┐
+  ┌───────────┐                         ⇒        │  [marcador]  │
+  │ HOW DO I  │                         ┃        │   EMPLOYEE   │
+  │ BEHAVE??  │╲  [persona confundida]  ┃        │   HANDBOOK   │
+  └───────────┘                         ┃        └──────────────┘
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: HUMAN RESOURCES» arriba a la izquierda. A la izquierda, el ícono de la persona confundida con el globo «HOW DO I BEHAVE??». Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, un ícono de libro gris oscuro con un marcador blanco, una silueta de persona y el texto blanco «EMPLOYEE HANDBOOK» en tipografía condensada. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:34:54]
+
 [00:34:54] and they don't know code of contact, how to act.
 [00:34:57] And so in order to graduate,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:35:00 | stage4_00-35-00.png]** · tipo: slide
+También visible en: 00:35:01, 00:35:02, 00:35:15, 00:35:44, 00:35:45, 00:36:05
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: HUMAN RESOURCES
+> What that looks like…
+> TO GRADUATE
+> Employee handbook & policies.
+> EMPLOYEE HANDBOOK
+> **Typical Policies you have employees sign. \*GET BASIC TEMPLATE ONLINE FREE\***
+> **1. Welcome Statement:** An introduction to the company, its history, mission, and values.
+> **2. Employment Policies:** Information on the nature of employment, such as at-will employment, job classifications, and employee records.
+> **3. Code of Conduct:** Guidelines for professional behavior, conflict of interest policies, confidentiality agreements, and ethics.
+
+Recreación:
+
+```text
+[4: PRIORITIZE: HUMAN RESOURCES]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  Typical Policies you have
+        │ TO GRADUATE │              ┃  employees sign. *GET BASIC
+        └─────────────┘              ┃  TEMPLATE ONLINE FREE*
+   Employee handbook & policies.     ┃  1. Welcome Statement: An
+                                     ┃  introduction to the company, its
+        ┌──────────────┐             ┃  history, mission, and values.
+        │  [marcador]  │             ⇒  2. Employment Policies:
+        │   EMPLOYEE   │             ┃  Information on the nature of
+        │   HANDBOOK   │             ┃  employment, such as at-will
+        └──────────────┘             ┃  employment, job classifications,
+                                     ┃  and employee records.
+                                     ┃  3. Code of Conduct: Guidelines for
+                                     ┃  professional behavior, conflict of
+                                     ┃  interest policies, confidentiality
+                                     ┃  agreements, and ethics.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: HUMAN RESOURCES» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase y el ícono del libro «EMPLOYEE HANDBOOK». Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: el encabezado en negrita (los asteriscos de «*GET BASIC TEMPLATE ONLINE FREE*» están escritos en el slide) y los puntos 1-3, con el número y el nombre de cada política en negrita. Frame principal: insert a pantalla completa; también en toma abierta (00:35:01, 00:35:02, 00:35:15, 00:35:44, 00:35:45, 00:36:05).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:34:58]
+
 [00:34:58] you want to have an employee handbook and policies.
 [00:35:01] So what we've outlined in the next few slides
 [00:35:03] are the basic policies that you want to have
@@ -1565,6 +2644,51 @@ Recreación:
 [00:36:45] Like we need to look like a business.
 [00:36:46] And so it starts with setting expectations,
 [00:36:49] which means having an employee handbook.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:36:51 | stage4_00-36-51.png]** · tipo: slide
+También visible en: 00:36:15, 00:36:23, 00:36:30, 00:36:37, 00:36:45, 00:36:47, 00:36:48, 00:37:23
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: HUMAN RESOURCES
+> What that looks like…
+> TO GRADUATE
+> Employee handbook & policies.
+> EMPLOYEE HANDBOOK
+> **4. Work Schedules:** Details about work hours, attendance, punctuality, and remote work policies.
+> **5. Compensation:** Information on payroll, salary grades, overtime pay, bonuses, and salary increases.
+> **6. Benefits:** Details about health insurance, dental and vision plans, retirement plans, wellness programs, and other employee benefits.
+> **7. Leave Policies:** Policies on vacation, holidays, sick leave, family and medical leave, and other types of leave.
+
+Recreación:
+
+```text
+[4: PRIORITIZE: HUMAN RESOURCES]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  4. Work Schedules: Details about
+        │ TO GRADUATE │              ┃  work hours, attendance, punctuality,
+        └─────────────┘              ┃  and remote work policies.
+   Employee handbook & policies.     ┃  5. Compensation: Information on
+                                     ┃  payroll, salary grades, overtime pay,
+        ┌──────────────┐             ┃  bonuses, and salary increases.
+        │  [marcador]  │             ⇒  6. Benefits: Details about health
+        │   EMPLOYEE   │             ┃  insurance, dental and vision plans,
+        │   HANDBOOK   │             ┃  retirement plans, wellness
+        └──────────────┘             ┃  programs, and other employee
+                                     ┃  benefits.
+                                     ┃  7. Leave Policies: Policies on
+                                     ┃  vacation, holidays, sick leave, family
+                                     ┃  and medical leave, and other types
+                                     ┃  of leave.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo diseño que el slide anterior de HUMAN RESOURCES; cambia la columna derecha: puntos 4-7, con el número y el nombre de cada política en negrita. Frame principal: insert a pantalla completa. También en toma abierta (00:36:15, 00:36:37, 00:36:45, 00:37:23), en primeros planos de Leila con solo la lista visible (00:36:47, 00:36:48) y en primeros planos de Alex con solo el bloque TO GRADUATE y el libro (00:36:23, 00:36:30), asignados por tiempo (esa mitad izquierda es igual en los cuatro slides de la lista).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:36:51]
+
 [00:36:51] You know, we wanna outline work schedules.
 [00:36:52] So what are working hours?
 [00:36:54] What's attendance mean?
@@ -1588,6 +2712,50 @@ Recreación:
 [00:37:24] We wanna tell them ahead of time,
 [00:37:26] what's going to happen.
 [00:37:27] See, sex strikes again.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:37:30 | stage4_00-37-30.png]** · tipo: slide
+También visible en: 00:39:15
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: HUMAN RESOURCES
+> What that looks like…
+> TO GRADUATE
+> Employee handbook & policies.
+> EMPLOYEE HANDBOOK
+> **8. Employee Performance:** Criteria and processes for performance reviews, promotions, and disciplinary action.
+> **9. Safety and Health Policies:** Workplace safety guidelines, emergency procedures, and health-related policies.
+> **10. Anti-Discrimination Policies:** Information on preventing workplace harassment and discrimination based on race, color, religion, gender, sexual orientation, national origin, age, disability, or veteran status.
+
+Recreación:
+
+```text
+[4: PRIORITIZE: HUMAN RESOURCES]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  8. Employee Performance: Criteria
+        │ TO GRADUATE │              ┃  and processes for performance
+        └─────────────┘              ┃  reviews, promotions, and
+   Employee handbook & policies.     ┃  disciplinary action.
+                                     ┃  9. Safety and Health Policies:
+        ┌──────────────┐             ┃  Workplace safety guidelines,
+        │  [marcador]  │             ⇒  emergency procedures, and
+        │   EMPLOYEE   │             ┃  health-related policies.
+        │   HANDBOOK   │             ┃  10. Anti-Discrimination Policies:
+        └──────────────┘             ┃  Information on preventing
+                                     ┃  workplace harassment and
+                                     ┃  discrimination based on race, color,
+                                     ┃  religion, gender, sexual orientation,
+                                     ┃  national origin, age, disability, or
+                                     ┃  veteran status.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo diseño que los slides anteriores de HUMAN RESOURCES; cambia la columna derecha: puntos 8-10, con el número y el nombre de cada política en negrita. Sin insert a pantalla completa: solo en toma abierta (00:37:30 y 00:39:15, este último después del slide de los puntos 11-13); el texto se lee ampliando la pantalla. Leila señala la lista con la mano.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:37:30]
+
 [00:37:30] And then the last few we've got,
 [00:37:32] employee performance.
 [00:37:33] How are we going to grade people's performance
@@ -1600,6 +2768,51 @@ Recreación:
 [00:37:50] harassment from occurring based on discrimination,
 [00:37:53] which could be your religion, gender, sexual orientation,
 [00:37:56] origin, age, disability, all those things.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:37:59 | stage4_00-37-59.png]** · tipo: slide
+También visible en: 00:38:10, 00:38:15, 00:38:26, 00:38:30, 00:38:45, 00:38:52, 00:38:58, 00:39:00
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: HUMAN RESOURCES
+> What that looks like…
+> TO GRADUATE
+> Employee handbook & policies.
+> EMPLOYEE HANDBOOK
+> **11. Technology Use:** Policies regarding the use of company technology, internet use, social media, and privacy.
+> **12. Resignation and Termination:** Guidelines on the resignation process, termination policies, and exit interviews.
+> **13. Acknowledgment of Receipt:** A statement for employees to sign, confirming they have received, read, and understood the handbook.
+> **\*USE WHAT'S USEFUL. DISREGARD REST FOR NOW\***
+
+Recreación:
+
+```text
+[4: PRIORITIZE: HUMAN RESOURCES]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  11. Technology Use: Policies
+        │ TO GRADUATE │              ┃  regarding the use of company
+        └─────────────┘              ┃  technology, internet use, social
+   Employee handbook & policies.     ┃  media, and privacy.
+                                     ┃  12. Resignation and Termination:
+        ┌──────────────┐             ┃  Guidelines on the resignation
+        │  [marcador]  │             ⇒  process, termination policies, and
+        │   EMPLOYEE   │             ┃  exit interviews.
+        │   HANDBOOK   │             ┃  13. Acknowledgment of Receipt: A
+        └──────────────┘             ┃  statement for employees to sign,
+                                     ┃  confirming they have received,
+                                     ┃  read, and understood the
+                                     ┃  handbook.
+                                     ┃  *USE WHAT'S USEFUL. DISREGARD
+                                     ┃  REST FOR NOW*
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Mismo diseño que los slides anteriores de HUMAN RESOURCES; cambia la columna derecha: puntos 11-13, con el número y el nombre de cada política en negrita, y una nota final en mayúsculas y negrita entre asteriscos (los asteriscos están escritos en el slide). Frame principal: insert a pantalla completa. También en toma abierta (00:38:10, 00:38:15, 00:38:26, 00:38:30, 00:38:45, 00:38:58, 00:39:00) y en primer plano de Leila con solo la lista visible (00:38:52).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:37:58]
+
 [00:37:58] And then we go into some of the last stuff,
 [00:38:00] which is technology use, which is understanding,
 [00:38:03] how to use the internet, don't go to Pornhub.
@@ -1647,18 +2860,187 @@ Recreación:
 [00:39:13] on every single one of these slides,
 [00:39:15] probably in the last six months.
 [00:39:16] So you will have to do that too eventually.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:39:20 | stage4_00-39-20.png]** · tipo: tabla
+También visible en: 00:39:26
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE
+> HEADCOUNT | 5 to 9
+> YOUR ROLE | Manager
+> LEADERSHIP STRUCTURE | 1 Layer: First Team
+> # OF COMPANIES HERE | 3,000,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar.
+> MARKETING | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects.
+> SALES | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected).
+> CUSTOMER SERVICE | No metrics for customer success. | Install tracking & KPIs. Record and centralize notes for each customer in a CRM.
+> INFORMATION TECH (IT) | New team isn't using everything. | Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool).
+> RECRUITING | Wasting time with bad candidates. | Learn how to conduct a proper interview and check references.
+> HUMAN RESOURCES (HR) | Employees don't know how to behave (PTO, sick days, dress code, code of conduct). | Employee handbook & policies.
+> FINANCE | YOU ARE HERE | **How you report on & manage your money.**
+> Bottom line
+
+Recreación:
+
+| 4: PRIORITIZE | |
+|---|---|
+| **HEADCOUNT** | 5 to 9 |
+| **YOUR ROLE** | Manager |
+| **LEADERSHIP STRUCTURE** | 1 Layer: First Team |
+| **# OF COMPANIES HERE** | 3,000,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar. |
+| **MARKETING** | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects. |
+| **SALES** | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected). |
+| **CUSTOMER SERVICE** | No metrics for customer success. | Install tracking & KPIs. Record and centralize notes for each customer in a CRM. |
+| **INFORMATION TECH (IT)** | New team isn't using everything. | Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool). |
+| **RECRUITING** | Wasting time with bad candidates. | Learn how to conduct a proper interview and check references. |
+| **HUMAN RESOURCES (HR)** | Employees don't know how to behave (PTO, sick days, dress code, code of conduct). | Employee handbook & policies. |
+| **FINANCE** | ◀ YOU ARE HERE | **How you report on & manage your money.** |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa (título en barra negra, rótulos en celdas moradas, línea gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT), «Bottom line» en cursiva en barra negra). Filas de PRODUCT a HUMAN RESOURCES (HR) ya llenas. En FINANCE, la flecha morada «YOU ARE HERE» apunta a la izquierda ocupando la celda CONSTRAINT, y en TO GRADUATE va la definición de la función en negrita, más grande. Frame principal: insert a pantalla completa; también en toma abierta (00:39:26).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:39:18]
+
 [00:39:18] So that is HR, okay?
 [00:39:20] So we had employees that didn't know how to behave
 [00:39:22] and then we wanna install an employee handbook
 [00:39:24] and procedures.
 [00:39:25] And that brings us to finance.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:39:30 | stage4_00-39-30.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: FINANCE
+> At this level…
+> CONSTRAINT
+> Cash flow is lumpy due to random "one-time" expenses.
+> You find out that businesses cost money to run.
+> $
+> EXPENSES
+
+Recreación:
+
+```text
+[4: PRIORITIZE: FINANCE]
+
+                         At this level…
+
+   ┌────────────┐                       ┃
+   │ CONSTRAINT │                       ┃
+   └────────────┘                       ┃
+   Cash flow is lumpy due to random     ┃
+       "one-time" expenses.             ┃      (vacío)
+   You find out that businesses cost    ┃
+          money to run.                 ┃
+                                        ┃
+  [figura con bolsas $]  [EXPENSES +    ┃
+                          billetes +    ┃
+                          mano]         ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: FINANCE» arriba a la izquierda. Título centrado en negrita negra. Rótulo «CONSTRAINT» en caja negra con letras blancas. Debajo, dos pictogramas negros: una figura sosteniendo en una mano una bolsa con «$» y del otro lado una bolsa colgando (como balanza); y una hoja con el título «EXPENSES» y renglones, con billetes a la izquierda y una mano escribiendo con una pluma. Línea vertical negra al centro; mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:39:27]
+
 [00:39:27] All right, so it's how you report and manage your monies.
 [00:39:31] So at this level, the constraint is that cashflow is lumpy
 [00:39:34] due to random one-time expenses
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:39:39 | stage4_00-39-39.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: FINANCE
+> And…
+> CONSTRAINT
+> Cash flow is lumpy due to random "one-time" expenses.
+> You find out that businesses cost money to run.
+> $
+> EXPENSES
+> TO GRADUATE
+> Get profit and loss statements and cash flow statements setup. Get basic business insurance.
+> $ %
+
+Recreación:
+
+```text
+[4: PRIORITIZE: FINANCE]
+
+                              And…
+
+   ┌────────────┐                       ┃        ┌─────────────┐
+   │ CONSTRAINT │                       ┃        │ TO GRADUATE │
+   └────────────┘                       ┃        └─────────────┘
+   Cash flow is lumpy due to random     ┃  Get profit and loss statements and
+       "one-time" expenses.             ┃  cash flow statements setup. Get basic
+   You find out that businesses cost    ┃       business insurance.
+          money to run.                 ⇒
+  [figura con bolsas $]  [EXPENSES +    ┃  [recibo $ % +       [paraguas
+                          billetes +    ┃   calculadora]        sobre maletín]
+                          mano]         ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: FINANCE» arriba a la izquierda. A la izquierda, los pictogramas de la figura con bolsas de dinero y de la hoja «EXPENSES» con billetes y mano escribiendo. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, dos íconos negros: un recibo enrollado con «$» y «%», renglones y una calculadora; y un paraguas abierto sobre un maletín. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:39:36]
+
 [00:39:36] and you find out that businesses cost money to run.
 [00:39:39] And so to graduate, you get a profit and loss statement,
 [00:39:42] otherwise known as a P&L,
 [00:39:43] and a cashflow statement's set up.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:39:48 | stage4_00-39-48.png]** · tipo: slide
+También visible en: 00:39:52, 00:40:00, 00:40:14, 00:40:15
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: FINANCE
+> What that looks like…
+> TO GRADUATE
+> Get profit and loss statements and cash flow statements setup.
+> Get basic business insurance.
+> $ %
+> **General liability insurance:**
+> Protects against claims of bodily injury, property damage, and personal injury that can happen during normal business operations.
+> Ex: *If a customer slips and falls in a store or an employee accidentally damages a customer's property, or hurts themselves.*
+
+Recreación:
+
+```text
+[4: PRIORITIZE: FINANCE]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  General liability insurance:
+        │ TO GRADUATE │              ┃
+        └─────────────┘              ┃   • Protects against claims of bodily
+  Get profit and loss statements and ┃     injury, property damage, and
+  cash flow statements setup.        ┃     personal injury that can happen
+  Get basic business insurance.      ⇒     during normal business
+                                     ┃     operations.
+  [recibo $ % +      [paraguas       ┃       ○ Ex: If a customer slips and
+   calculadora]       sobre maletín] ┃         falls in a store or an
+                                     ┃         employee accidentally
+                                     ┃         damages a customer's
+                                     ┃         property, or hurts
+                                     ┃         themselves.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: FINANCE» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase (aquí en dos renglones, terminando cada oración en su línea) y los íconos del recibo con «$ %» y calculadora y del paraguas sobre el maletín. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: título «General liability insurance:» en negrita, una viñeta con punto y una sub-viñeta con círculo hueco; el ejemplo después de «Ex:» va en cursiva. Frame principal: insert a pantalla completa; también en toma abierta (00:39:52, 00:40:00, 00:40:14, 00:40:15), con Alex señalando la lista.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:39:45]
+
 [00:39:45] And you wanna get basic business insurance.
 [00:39:48] All right, and so general liability insurance,
 [00:39:50] now you're like, oh, this is like Yawn stuff.
@@ -1681,6 +3063,52 @@ Recreación:
 [00:40:23] People have heard it before.
 [00:40:23] It just shows if your business made money or lost money
 [00:40:26] over a certain period of time.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:40:30 | stage4_00-40-30.png]** · tipo: slide
+También visible en: 00:40:28, 00:40:45, 00:41:00, 00:41:03
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: FINANCE
+> What that looks like…
+> TO GRADUATE
+> Get profit and loss statements and cash flow statements setup.
+> Get basic business insurance.
+> $ %
+> **Profit & Loss Statement:** shows if your business made money or lost money over a certain time.
+> *Ex: adding up how much you earned from selling lemonade and subtracting how much you spent on lemons and cups.*
+> **Cash Flow Statement:** tells you how much cash came into vs. how much went out over a month. (Net gain/loss).
+> ***_Note_: cash flow may be negative while profit may be positive if you reinvest in growth.***
+
+Recreación:
+
+```text
+[4: PRIORITIZE: FINANCE]
+
+                      What that looks like…
+
+        ┌─────────────┐              ┃  Profit & Loss Statement: shows if your
+        │ TO GRADUATE │              ┃  business made money or lost money
+        └─────────────┘              ┃  over a certain time.
+  Get profit and loss statements and ┃    • Ex: adding up how much you earned
+  cash flow statements setup.        ┃      from selling lemonade and subtracting
+  Get basic business insurance.      ┃      how much you spent on lemons and
+                                     ⇒      cups.
+  [recibo $ % +      [paraguas       ┃  Cash Flow Statement: tells you how
+   calculadora]       sobre maletín] ┃  much cash came into vs. how much
+                                     ┃  went out over a month. (Net
+                                     ┃  gain/loss).
+                                     ┃
+                                     ┃  Note: cash flow may be negative
+                                     ┃  while profit may be positive if you
+                                     ┃  reinvest in growth.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «4: PRIORITIZE: FINANCE» arriba a la izquierda. A la izquierda, el mismo bloque TO GRADUATE con los íconos del recibo «$ %» con calculadora y del paraguas sobre el maletín. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha: «Profit & Loss Statement:» y «Cash Flow Statement:» en negrita; el ejemplo de la limonada, con viñeta, en cursiva y letra más chica; la nota final entera en negrita cursiva, con «Note» además subrayado. Sin insert a pantalla completa: solo en toma abierta (00:40:28, 00:40:30, 00:40:45, 00:41:00); la lista se lee ampliando la pantalla. El primer plano de Alex de 00:41:03 (solo el bloque TO GRADUATE con los íconos, igual en los dos slides de FINANCE) se asigna aquí por tiempo.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:40:28]
+
 [00:40:28] And so example is you just add up how much you earn
 [00:40:30] from selling lemonade and subtract how much you spent
 [00:40:33] on lemons and cups, all right?
@@ -1703,6 +3131,54 @@ Recreación:
 [00:41:09] At this level, that's all we gotta set up.
 [00:41:11] The cash flow statement, P&L,
 [00:41:12] and get our general liability insurance.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:41:15 | stage4_00-41-15.png]** · tipo: tabla
+También visible en: 00:41:20, 00:41:27, 00:41:30
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE
+> HEADCOUNT | 5 to 9
+> YOUR ROLE | Manager
+> LEADERSHIP STRUCTURE | 1 Layer: First Team
+> # OF COMPANIES HERE | 3,000,000
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar.
+> MARKETING | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects.
+> SALES | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected).
+> CUSTOMER SERVICE | No metrics for customer success. | Install tracking & KPIs. Record and centralize notes for each customer in a CRM.
+> INFORMATION TECH (IT) | New team isn't using everything. | Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool).
+> RECRUITING | Wasting time with bad candidates. | Learn how to conduct a proper interview and check references.
+> HUMAN RESOURCES (HR) | Employees don't know how to behave (PTO, sick days, dress code, code of conduct). | Employee handbook & policies.
+> FINANCE | Cash flow is lumpy due to random "one-time" expenses. You find out that businesses cost money to run. | Get profit and loss statements and cash flow statements setup. Get basic business insurance.
+> Bottom line | YOU ARE HERE | **What you prioritize your company's resources to achieve**
+
+Recreación:
+
+| 4: PRIORITIZE | |
+|---|---|
+| **HEADCOUNT** | 5 to 9 |
+| **YOUR ROLE** | Manager |
+| **LEADERSHIP STRUCTURE** | 1 Layer: First Team |
+| **# OF COMPANIES HERE** | 3,000,000 |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | You said yes to anyone who would pay. Feedback from so many different customers creates too many product directions. | Specialize product (V2) & price to serve niched down avatar. |
+| **MARKETING** | Too many unqualified leads | Make better free stuff & more creative to boost volume. Add qualification/friction so the extra volume self-selects. |
+| **SALES** | Speed to contact drops. You have no metrics around sales. | Track basic KPIs manually on spreadsheet (contact rate, sched, show, offer, close, cash collected). |
+| **CUSTOMER SERVICE** | No metrics for customer success. | Install tracking & KPIs. Record and centralize notes for each customer in a CRM. |
+| **INFORMATION TECH (IT)** | New team isn't using everything. | Get everyone on platforms. Protect passwords. Get project management tool & comms (work chat tool). |
+| **RECRUITING** | Wasting time with bad candidates. | Learn how to conduct a proper interview and check references. |
+| **HUMAN RESOURCES (HR)** | Employees don't know how to behave (PTO, sick days, dress code, code of conduct). | Employee handbook & policies. |
+| **FINANCE** | Cash flow is lumpy due to random "one-time" expenses. You find out that businesses cost money to run. | Get profit and loss statements and cash flow statements setup. Get basic business insurance. |
+| ***Bottom line*** | ◀ YOU ARE HERE | **What you prioritize your company's resources to achieve** |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa completa (título en barra negra, rótulos en celdas moradas, línea gruesa entre CUSTOMER SERVICE e INFORMATION TECH (IT)). Las nueve funciones ya llenas. En la fila «Bottom line» (barra negra, rótulo en cursiva), la flecha morada «YOU ARE HERE» apunta a la izquierda y a la derecha va la definición en negrita blanca, sin punto final. En el insert (00:41:15) la fila sale cortada abajo y «to achieve» se lee a medias; el texto completo se lee en la toma abierta (00:41:20). También en primeros planos de Alex con la tabla de fondo, cortada a la derecha (00:41:27, 00:41:30).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:41:14]
+
 [00:41:14] So we go from random lumpy one-time expenses
 [00:41:17] to getting the P&L.
 [00:41:19] And if you know, the reason the lumpy expenses
@@ -1716,6 +3192,37 @@ Recreación:
 [00:41:33] these lumpy things that occur,
 [00:41:35] and so you start planning for them.
 [00:41:36] And so the bottom line of this whole stage
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:41:40 | stage4_00-41-40.png]** · tipo: texto-en-pantalla
+También visible en: 00:41:45, 00:41:45, 00:41:55, 00:41:55, 00:42:00
+
+Texto en pantalla (literal):
+
+> 4: PRIORITIZE: BOTTOM LINE
+> **Constraint:**
+> Trying to be everything to everyone.
+> **To Graduate:**
+> Niche down to only serve people like your best customers.
+
+Recreación:
+
+```text
+[4: PRIORITIZE: BOTTOM LINE]
+
+  ┌──────────────────────────────────────────────┐
+  │                 Constraint:                  │
+  │     Trying to be everything to everyone.     │
+  │                 To Graduate:                 │
+  │  Niche down to only serve people like your   │
+  │               best customers.                │
+  └──────────────────────────────────────────────┘
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Fondo negro. Etiqueta morada «4: PRIORITIZE: BOTTOM LINE» arriba a la izquierda. Al centro, un recuadro blanco con borde morado y el texto negro centrado; «Constraint:» y «To Graduate:» en negrita. Frame principal: insert a pantalla completa; también en toma abierta (00:41:45, 00:41:45 b, 00:41:55, 00:41:55 b, 00:42:00), con Alex tapando parte del recuadro.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:41:39]
+
 [00:41:39] is that the problem, the constraint,
 [00:41:42] is you're trying to be everything to everyone.
 [00:41:44] If you recall the beginning,
@@ -1738,6 +3245,56 @@ Recreación:
 [00:42:14] And if you're just new to this,
 [00:42:15] or you're just randomly hopped on here,
 [00:42:18] I wanna make a little offer for you,
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 4: PRIORITIZE | 00:42:21 | stage4_00-42-21.png]** · tipo: pirámide
+También visible en: 00:42:14, 00:42:15, 00:42:26, 00:42:30, 00:42:45, 00:42:46, 00:43:00
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATE TO: 5: PRODUCTIZE
+> 10 TO 19
+> 5 TO 9
+> 1 TO 4
+> FREELANCERS
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> PRODUCTIZE
+> PRIORITIZE
+> STABILIZE
+> ADVERTISE
+> MONETIZE
+> IMPROVISE
+
+Recreación:
+
+```text
+              STAGE WE GRADUATE TO: 5: PRODUCTIZE
+
+                            /\
+                           /||\
+                          / || \
+                         /  ||  \
+  ----------------------/---||---\----------------------
+   10 TO 19            /    ||    \        PRODUCTIZE
+  --------------------/-----||-----\--------------------
+   5 TO 9            /      ||      \       PRIORITIZE
+  ------------------/-------||-------\------------------
+   1 TO 4          /        ||        \      STABILIZE
+  ----------------/---------||---------\----------------
+   FREELANCERS   /          ||          \    ADVERTISE
+  --------------/-----------||-----------\--------------
+   JUST YOU    /            ||            \   MONETIZE
+  ------------/-------------||-------------\------------
+   JUST YOU  / FUNCTIONS    ||              \ IMPROVISE
+            /_______________||_______________\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] La misma pirámide morada del inicio, ahora con seis franjas horizontales en la base (una más arriba), cada una prolongada con una línea a ambos lados. A la izquierda, de arriba abajo: «10 TO 19» en morado claro, «5 TO 9», «1 TO 4», «FREELANCERS», «JUST YOU» y «JUST YOU» en negro. A la derecha: «PRODUCTIZE» en morado claro (la etapa nueva), «PRIORITIZE», «STABILIZE», «ADVERTISE», «MONETIZE» e «IMPROVISE» en negro. «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. En el título, «5: PRODUCTIZE» va en morado y el resto en gris oscuro. Solo en toma abierta (00:42:14, 00:42:15, 00:42:21, 00:42:46, 00:43:00) y en primeros planos de Alex donde solo se ve la mitad izquierda de la pirámide (00:42:26, 00:42:30, 00:42:45). Alex sostiene una carpeta impresa del roadmap y la hojea en los primeros planos (objeto en mano, no es pantalla; su texto no se lee).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:42:20]
+
 [00:42:20] which is if this stuff's interesting,
 [00:42:23] we will make you a custom scaling roadmap
 [00:42:26] where it'll show you what stage you're currently at,

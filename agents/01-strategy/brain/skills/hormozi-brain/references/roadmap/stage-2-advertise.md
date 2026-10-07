@@ -4,7 +4,7 @@ archivo_original: "Drive › Hormozi Brain › Videos/02 Advertise.mp4 (id 1iORA
 etapa: "STAGE 2: ADVERTISE"
 duracion: "00:33:32"
 transcripcion: "faster-whisper small.en (int8, greedy) — automática, literal; solo se quitaron muletillas obvias (um/uh/erm/hmm): 6"
-frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 286 frames revisados → 54 estados visuales distintos documentados; 8 frames sin contenido de pantalla"
+frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 286 frames revisados → 60 estados visuales distintos documentados; 8 frames sin contenido de pantalla"
 imagenes: "NO se guardan en el repo. Fuente de verdad = el video en ese timestamp. Cada bloque FRAME lleva el nombre stageX_HH-MM-SS.png como referencia."
 formato_cita: "[ROADMAP VIDEO | STAGE 2: ADVERTISE | HH:MM:SS] (+ frame si aplica)"
 nota: "—"
@@ -2665,10 +2665,120 @@ Recreación:
 ↳ alineado con el audio de [00:28:50]
 
 [00:28:50] So finance is how you report and manage your money.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 2: ADVERTISE | 00:28:53 | stage2_00-28-53.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 2: ADVERTISE: FINANCE
+> At this level…
+> CONSTRAINT
+> You don't keep track of money or have a way to pay taxes.
+
+Recreación:
+
+```text
+[2: ADVERTISE: FINANCE]
+
+                         At this level…
+
+   ┌────────────┐                  ┃
+   │ CONSTRAINT │                  ┃
+   └────────────┘                  ┃
+  You don't keep track of money or ┃
+     have a way to pay taxes.      ┃      (vacío)
+                                   ┃
+  [hoja $ + lápiz    [TAX +         ┃
+   + calculadora]     billete]      ┃
+    (prohibido)      (prohibido)    ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «2: ADVERTISE: FINANCE» arriba a la izquierda. Rótulo «CONSTRAINT» en caja negra con letras blancas. Debajo, dos íconos negros de línea, cada uno tachado con un círculo rojo de prohibido: (1) hojas de documento con renglones, palomitas y una moneda con «$», un lápiz y una calculadora; (2) un recibo/factura con «TAX» en letras grandes, borde inferior rasgado en zigzag y un billete encima. Línea vertical negra al centro; mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:28:52]
+
 [00:28:52] And so at this phase, the constraint is that you don't keep track of your
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 2: ADVERTISE | 00:28:59 | stage2_00-28-59.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 2: ADVERTISE: FINANCE
+> And…
+> CONSTRAINT
+> You don't keep track of money or have a way to pay taxes.
+> TO GRADUATE
+> Spin up quickbooks equivalent. Save for taxes. Check your bank account daily.
+
+Recreación:
+
+```text
+[2: ADVERTISE: FINANCE]
+
+                              And…
+
+   ┌────────────┐                  ┃        ┌─────────────┐
+   │ CONSTRAINT │                  ┃        │ TO GRADUATE │
+   └────────────┘                  ┃        └─────────────┘
+  You don't keep track of money or ┃  Spin up quickbooks equivalent. Save
+     have a way to pay taxes.      ┃  for taxes. Check your bank account
+                                   ┃               daily.
+  [hoja $ + lápiz  [TAX +          ⇒  [hoja $ + lápiz  [TAX +
+   + calculadora]   billete]        ┃   + calculadora]   billete]
+    (prohibido)    (prohibido)      ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «2: ADVERTISE: FINANCE» arriba a la izquierda. A la izquierda, los dos íconos negros de línea tachados con círculo rojo de prohibido: hojas de documento con renglones, palomitas y moneda «$», lápiz y calculadora; y un recibo «TAX» de borde rasgado con un billete. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, los mismos dos íconos sin el círculo de prohibido. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:28:56]
+
 [00:28:56] money or have a way to pay taxes, which is a problem, right?
 [00:28:59] And so to graduate, you want to spin up a QuickBooks or an equivalent to that.
 [00:29:03] You want to save for taxes and you want to check your bank account daily.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 2: ADVERTISE | 00:29:06 | stage2_00-29-06.png]** · tipo: slide
+También visible en: 00:29:17, 00:29:38, 00:29:45, 00:30:00, 00:30:15, 00:30:30, 00:30:49, 00:30:49, 00:30:56, 00:31:00, 00:31:15
+
+Texto en pantalla (literal):
+
+> 2: ADVERTISE: FINANCE
+> What that looks like…
+> TO GRADUATE
+> Spin up quickbooks equivalent. Save for taxes. Check your bank account daily.
+> New business owners often forget they need to pay taxes and get surprised with a massive bill ***for money they already spent.***
+> **Begin paying taxes quarterly**. This will also teach financial discipline.
+> *Get a non sketchy CPA*
+> **Personal Habit:** Check your bank account daily, it will give you an idea for the flow of money. And you'll *feel* every expense that hits.
+
+Recreación:
+
+```text
+[2: ADVERTISE: FINANCE]
+
+                      What that looks like…
+
+        ┌─────────────┐            ┃  New business owners often forget
+        │ TO GRADUATE │            ┃  they need to pay taxes and get
+        └─────────────┘            ┃  surprised with a massive bill for
+  Spin up quickbooks equivalent.   ┃  money they already spent.
+  Save for taxes. Check your bank  ┃
+          account daily.           ⇒  Begin paying taxes quarterly. This
+                                   ┃  will also teach financial discipline.
+  [hoja $ + lápiz  [TAX + billete] ┃  Get a non sketchy CPA
+   + calculadora]                  ┃
+                                   ┃  Personal Habit: Check your bank
+                                   ┃  account daily, it will give you an
+                                   ┃  idea for the flow of money. And
+                                   ┃  you'll feel every expense that hits.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «2: ADVERTISE: FINANCE» arriba a la izquierda. A la izquierda: rótulo «TO GRADUATE» en caja negra, la frase, y los dos íconos negros de línea sin prohibido (hojas con renglones, palomitas y moneda «$», lápiz y calculadora; recibo «TAX» de borde rasgado con un billete). Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, tres párrafos: «for money they already spent.» en negrita cursiva; «Begin paying taxes quarterly» en negrita; «Get a non sketchy CPA» en cursiva, en su propia línea; «Personal Habit:» en negrita; «feel» en cursiva. También en toma abierta (00:29:17, 00:29:38, 00:29:45, 00:30:00, 00:30:15, 00:30:30, 00:30:56, 00:31:00, 00:31:15) y en primer plano de Leila (00:30:49, 00:30:49 b), donde solo se ve la columna derecha.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:29:06]
+
 [00:29:06] Okay.
 [00:29:07] So here's the thing.
 [00:29:08] New business owners often forget that they're going to have to pay taxes.
@@ -2733,6 +2843,36 @@ Recreación:
 [00:31:28] or have a way to pay taxes.
 [00:31:29] You start to keep track of money with something like a QuickBooks or an
 [00:31:32] equivalent, you save for taxes with a non shitty CPA and you check your
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 2: ADVERTISE | 00:31:38 | stage2_00-31-38.png]** · tipo: texto-en-pantalla
+También visible en: 00:31:47, 00:32:00, 00:32:10, 00:32:15, 00:32:20, 00:32:30
+
+Texto en pantalla (literal):
+
+> 2: ADVERTISE: BOTTOM LINE
+> **Constraint:**
+> New customers are inconsistent.
+> **To Graduate:**
+> Let more people know about your stuff.
+
+Recreación:
+
+```text
+[2: ADVERTISE: BOTTOM LINE]
+
+  ┌──────────────────────────────────────────────┐
+  │                 Constraint:                  │
+  │        New customers are inconsistent.       │
+  │                 To Graduate:                 │
+  │    Let more people know about your stuff.    │
+  └──────────────────────────────────────────────┘
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Fondo negro. Etiqueta morada «2: ADVERTISE: BOTTOM LINE» arriba a la izquierda. Al centro, un recuadro blanco con borde morado y el texto negro centrado; «Constraint:» y «To Graduate:» en negrita. También en toma abierta (00:31:47, 00:32:00, 00:32:20, 00:32:30) y en primer plano de Alex (00:32:10, 00:32:15), donde el recuadro sale cortado.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:36]
+
 [00:31:36] bank account every day, which brings us to the bottom line, right?
 [00:31:39] The constraint is that new customers were inconsistent and to graduate,
 [00:31:44] you need to let more people know about your stuff.
@@ -2759,6 +2899,49 @@ Recreación:
 [00:32:33] I take a call every week in there to answer questions in real time.
 [00:32:36] If some of the stuff that we went over was a little bit basic for the
 [00:32:38] level of business that you're at.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 2: ADVERTISE | 00:32:40 | stage2_00-32-40.png]** · tipo: pirámide
+También visible en: 00:32:37, 00:32:37, 00:32:41, 00:32:45, 00:33:00, 00:33:07, 00:33:07, 00:33:15, 00:33:15, 00:33:25, 00:33:26, 00:33:30
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATE TO: 3: STABILIZE
+> 1 TO 4
+> FREELANCERS
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> STABILIZE
+> ADVERTISE
+> MONETIZE
+> IMPROVISE
+
+Recreación:
+
+```text
+              STAGE WE GRADUATE TO: 3: STABILIZE
+
+                            /\
+                           /||\
+                          / || \
+                         /  ||  \
+                        /   ||   \
+  ---------------------/----||----\---------------------
+   1 TO 4             /     ||     \         STABILIZE
+  -------------------/------||------\-------------------
+   FREELANCERS      /       ||       \       ADVERTISE
+  -----------------/--------||--------\-----------------
+   JUST YOU       /         ||         \      MONETIZE
+  ---------------/----------||----------\---------------
+   JUST YOU     / FUNCTIONS ||           \    IMPROVISE
+               /____________||____________\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] La misma pirámide azul-morada del inicio, ahora con cuatro franjas horizontales en la base (una más arriba), cada una prolongada con una línea a ambos lados. A la izquierda, de arriba abajo: «1 TO 4» en morado claro, «FREELANCERS», «JUST YOU» y «JUST YOU» en negro. A la derecha: «STABILIZE» en morado claro (la etapa nueva), «ADVERTISE», «MONETIZE» e «IMPROVISE» en negro. «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. En el título, «3: STABILIZE» va en morado y el resto en gris oscuro. Solo en toma abierta (00:32:40, 00:32:41, 00:32:45, 00:33:00, 00:33:15 b, 00:33:30) y en primeros planos de Alex (00:32:37, 00:32:37 b, 00:33:07, 00:33:07 b, 00:33:15, 00:33:25, 00:33:26) donde solo se ve la esquina izquierda («1 TO 4», «FREELANCERS», «JUST YOU», «JUST YOU», «FUNCTIONS»). Entre 00:32:45 y 00:33:15 b Alex sostiene una carpeta impresa del «$100M SCALING ROADMAP» (objeto en mano, no es pantalla; su texto no se lee).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:32:40]
+
 [00:32:40] Two things.
 [00:32:41] One is that's by design because this is for a smaller business owner
 [00:32:46] up to this point.
@@ -2779,6 +2962,44 @@ Recreación:
 [00:33:23] from no humans to all the humans.
 [00:33:25] All right.
 [00:33:25] So that being said, we'll see you in the next vid.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 2: ADVERTISE | 00:33:27 | stage2_00-33-27.png]** · tipo: pirámide
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATED: 2: ADVERTISE
+> FREELANCERS
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> ADVERTIS[ilegible]
+> MONE[ilegible]
+> IM[ilegible]
+
+Recreación:
+
+```text
+              STAGE WE GRADUATED: 2: ADVERTISE
+
+                            /\
+                           /||\
+                          / || \
+                         /  ||  \
+                        /   ||   \
+  ---------------------/----||----\---------------------
+   FREELANCERS        /     ||     \         ADVERTIS…
+  -------------------/------||------\-------------------
+   JUST YOU         /       ||       \        MONE…
+  -----------------/--------||--------\-----------------
+   JUST YOU       / FUNCTIONS ||       \      IM…
+                 /____________||________\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Pirámide azul-morada con tres franjas horizontales en la base (sin la franja «1 TO 4»). A la izquierda, «FREELANCERS» en morado claro, «JUST YOU» y «JUST YOU» en negro. A la derecha, «ADVERTIS…» en morado claro y «MONE…», «IM…» en negro: Leila tapa el final de las tres palabras. «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. En el título, «2: ADVERTISE» va en morado y el resto en gris oscuro. Solo en toma abierta, un instante entre dos tomas de la pirámide «3: STABILIZE».
+<!-- /FRAME -->
+↳ alineado con el audio de [00:33:27]
+
 [00:33:27] Which is.
 [00:33:29] Stabilize.
 [00:33:30] Wonderful employees.

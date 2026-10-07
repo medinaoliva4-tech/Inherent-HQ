@@ -200,9 +200,9 @@ Original: Drive › Hormozi Brain › Docs/5-scaling-frameworks.pdf
 | OVERVIEW: LAS 10 ETAPAS | `references/roadmap/overview-las-10-etapas.md` | Videos/00 Improvise.mp4 | 00:41:13 | ✅ | 15 |
 | STAGE 0: IMPROVISE | `references/roadmap/stage-0-improvise.md` | Videos/01 Monetize.mp4 | 00:31:59 | ✅ | 0 |
 | STAGE 1: MONETIZE | `references/roadmap/stage-1-monetize.md` | Videos missing/Monetize.mp4 | 00:27:48 | ✅ | 0 |
-| STAGE 2: ADVERTISE | `references/roadmap/stage-2-advertise.md` | Videos/02 Advertise.mp4 | 00:33:32 | ✅ | 54 |
+| STAGE 2: ADVERTISE | `references/roadmap/stage-2-advertise.md` | Videos/02 Advertise.mp4 | 00:33:32 | ✅ | 60 |
 | STAGE 3: STABILIZE | `references/roadmap/stage-3-stabilize.md` | Videos/03 Stabilize.mp4 | 00:01:00 | ✅ | 4 |
-| STAGE 4: PRIORITIZE | `references/roadmap/stage-4-prioritize.md` | Videos/04 Prioritize.mp4 | 00:43:05 | ✅ | 13 |
+| STAGE 4: PRIORITIZE | `references/roadmap/stage-4-prioritize.md` | Videos/04 Prioritize.mp4 | 00:43:05 | ✅ | 49 |
 | STAGE 5: PRODUCTIZE | `references/roadmap/stage-5-productize.md` | Videos/05 Productize.mp4 | 00:59:49 | ✅ | 0 |
 | STAGE 6: OPTIMIZE | ⛔ no existe | Videos missing/Optimize.mp4 | — | — | — |
 | STAGE 7: CATEGORIZE | ⛔ no existe | Videos missing/Categorize.mp4 | — | — | — |
