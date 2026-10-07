@@ -1,0 +1,24 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><link rel="icon" href="data:,">
+<title>Respuestas __CLIENTE__</title>
+<style>
+:root{--bg:#F6EFE0;--surface:#FFFDF8;--ink:#191919;--muted:#6B6257;--line:#E2D5BD;--ok:#4F6B2E;--warn:#A35A16;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#141312;--surface:#1D1B19;--ink:#F3ECDD;--muted:#A89C8A;--line:#36302A;--ok:#9DBB6E;--warn:#E0A060;color-scheme:dark}}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{max-width:900px;margin:0 auto;padding:28px 18px 60px}
+h1{font-size:30px;margin:0 0 4px}.muted{color:var(--muted)}table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.ok{color:var(--ok);font-weight:700}.warn{color:var(--warn);font-weight:700}.box{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px 12px;margin-top:18px}td.c{white-space:pre-wrap;min-width:220px}
+</style></head><body><div class="wrap"><h1>Respuestas de __CLIENTE__</h1><p class="muted" id="st">Cargando…</p>
+<div class="box"><h3>Estado actual</h3><table id="now"></table></div><div class="box"><h3>Historial</h3><table id="hist"></table></div></div>
+<script>
+const T=__TITLES__;const k=new URLSearchParams(location.search).get("k")||"";
+const fmt=s=>new Date(s).toLocaleString("es-GT",{dateStyle:"medium",timeStyle:"short"});
+const lab=e=>e==="aprobado"?'<span class="ok">Aprobado</span>':e==="cambios"?'<span class="warn">Pide cambios</span>':"Pendiente";
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const row=r=>`<tr><td>${esc(T[r.video]||r.video)} <span class="muted">${esc(r.version)}</span></td><td>${lab(r.estado)}</td><td>${"★".repeat(r.calificacion||0)||"—"}</td><td class="c">${esc(r.comentarios)||"—"}</td><td class="muted">${r.actualizado?fmt(r.actualizado):"—"}</td></tr>`;
+const hd="<tr><th>Pieza</th><th>Estado</th><th>Calificación</th><th>Comentarios</th><th>Fecha</th></tr>";
+fetch("/api/historial?k="+encodeURIComponent(k),{cache:"no-store"}).then(r=>{if(r.status===401)throw new Error("clave");return r.json()}).then(d=>{
+  document.getElementById("now").innerHTML=hd+Object.keys(T).map(id=>row(d.ultimo[id]||{video:id,estado:"pendiente"})).join("");
+  document.getElementById("hist").innerHTML=hd+(d.historial.map(row).join("")||'<tr><td colspan="5" class="muted">Todavía no hay respuestas.</td></tr>');
+  document.getElementById("st").textContent=`${d.historial.length} respuestas guardadas.`;
+}).catch(e=>{document.getElementById("st").textContent=e.message==="clave"?"Este enlace no tiene la clave correcta.":"No se pudieron cargar las respuestas."});
+</script></body></html>

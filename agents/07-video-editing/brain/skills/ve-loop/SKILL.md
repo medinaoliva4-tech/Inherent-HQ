@@ -4,16 +4,17 @@ description: >
   Capa 5 de ⑥B Video Editing — cierra el ciclo con cuatro lecturas: cuántas piezas salieron de
   cada hora grabada, qué se devolvió y a quién, qué material quedó sin usar y qué spec falló
   siempre. Devuelve como dato a ⑤ Producción lo que faltó de cobertura y a ④ Creatividad lo que
-  dirigió y no se pudo montar. Escribe `aprendizaje-de-video.md`. Úsala cuando pidan "cómo nos
-  fue con el video", "cerrá el ciclo", "por qué devolvimos tanto", "cuánto rindió la grabación",
-  "qué material no usamos".
+  dirigió y no se pudo montar. Cuenta las rondas de cambios por pieza y convierte el feedback
+  que se repite en reglas escritas. Escribe `aprendizaje-de-video.md`. Úsala cuando pidan "cómo
+  nos fue con el video", "cerrá el ciclo", "por qué devolvimos tanto", "cuánto rindió la
+  grabación", "qué material no usamos", "¿por qué tantas rondas?".
 ---
 
 # Capa 5 · Loop — qué rindió cada hora grabada
 
 | | |
 |---|---|
-| **Consume** | `entregas-video.md` · las devoluciones del ciclo · el manifiesto de ⑤ · métricas de ⑨ y ⑩ |
+| **Consume** | `entregas-video.md` · las devoluciones del ciclo · el manifiesto de ⑤ · métricas de ⑨ y ⑩ · `grading.json` · las notas del guion visual y las respuestas de la página del cliente |
 | **Produce** | **`aprendizaje-de-video.md`** |
 
 > 🔑 **Corre el 20 de cada mes.**
@@ -59,11 +60,30 @@ el tope solo cuando el material lo permite **y** hay horas de operador.
 ### C · Material grabado que nadie usó
 **Se cuenta.** Material sin usar es presupuesto de ⑤ tirado.
 
+**`grading.json` ya lo tiene:** cuántos clips se descartaron y **por qué** (desenfocado, tiembla,
+gente de fondo, toma repetida, cámara en mano sin trípode). El motivo es lo que le sirve a ⑤.
+
 > 🔑 **Se devuelve a ④ y a ⑤ como dato:** o se dirigió de más, o se grabó de más.
 
 ### D · Qué spec falló siempre
 **Si la misma spec falla cada ciclo, el problema no es descuido: es que la spec no está escrita
 donde se ejecuta.**
+
+### E · Las rondas de cambios
+**Cuántas versiones necesitó cada pieza hasta quedar aprobada, y por qué.** Se cuenta en
+`outputs/video/` (cada `<versión>-anterior/` es una ronda) y en las notas del operador y del cliente.
+
+| Pieza | Versiones | Motivos agrupados |
+|---|---|---|
+| `CR-007` | v5 | texto (2) · color (2) · ritmo (1) |
+
+> 🔑 **El feedback que se repite en dos piezas deja de ser un comentario y se vuelve regla.**
+> Se escribe donde se ejecuta: si es de montaje, en `ve-armado`; si es de marca o QA, en
+> `ve-marca`; si es de la marca del cliente, se propone a ②B para `sistema-visual.md`.
+
+*Ejemplo real (AKAI, oct 2026, 7 reels, hasta 11 versiones):* «va muy rápido» → escenas de 3 a
+4.5 s · «se ve trabado» → estabilizar solo si mide mejor · «se ve azul» → color por toma, original
++ temperatura · «el logo se ve gris» → logo por encima de los velos. Todas quedaron escritas.
 
 ## 2 · Qué se decide
 
@@ -74,6 +94,8 @@ donde se ejecuta.**
 | ④ dirigió algo irrodable dos veces | Se devuelve a ④ con el límite real de producción |
 | Material sin usar arriba del 30% | Se declara a ④ y a ⑤ |
 | Una spec falla siempre | Se propone a ②B agregarla a `sistema-visual.md` |
+| El mismo pedido de cambio en dos piezas | Se escribe como regla en la skill `ve-*` que corresponde |
+| Una pieza pasó de 4 versiones | Se revisa si el guion visual se aprobó antes del render |
 
 ## 3 · ⚠️ Sin datos no se concluye
 
@@ -88,8 +110,9 @@ Si no hay métricas por pieza de ⑨ y ⑩, **no se declara qué derivada rindi�
 | **B · Devoluciones** | Tabla por destino, con el motivo agrupado |
 | **C · Material sin usar** | Cuánto, y qué escenas |
 | **D · Specs que fallaron** | Cuáles y cuántas veces |
-| **E · Qué se devuelve** | A ⑤, a ④, a ②B — **como dato, no como reclamo** |
-| **F · Los huecos** | `⚠️ SIN DATOS`, con responsable |
+| **E · Rondas de cambios** | Versiones por pieza, motivos agrupados y **qué regla nueva quedó escrita** |
+| **F · Qué se devuelve** | A ⑤, a ④, a ②B — **como dato, no como reclamo** |
+| **G · Los huecos** | `⚠️ SIN DATOS`, con responsable |
 
 ## 5 · Checklist
 
@@ -98,3 +121,5 @@ Si no hay métricas por pieza de ⑨ y ⑩, **no se declara qué derivada rindi�
 - [ ] El material sin usar está **contado**
 - [ ] Ninguna conclusión de rendimiento está hecha **sin datos**
 - [ ] Lo que se devuelve va **como dato**
+- [ ] Las **rondas de cambios** están contadas por pieza
+- [ ] Todo feedback repetido quedó **escrito como regla** donde se ejecuta

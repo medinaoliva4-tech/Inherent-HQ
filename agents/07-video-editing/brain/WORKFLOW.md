@@ -2,6 +2,10 @@
 
 > **En una frase:** convierte el material grabado en **las piezas finales listas para publicar**.
 > ④ Creatividad dirigió, ⑤ Producción rodó, **⑥B ensambla y multiplica**.
+>
+> **Quién ejecuta:** el **editor de video** (una persona) da las instrucciones y aprueba; **Claude Code
+> hace todo el trabajo** con el motor del departamento — `motor/README.md`. Probado de punta a punta
+> en cliente real (AKAI, oct 2026).
 
 Este documento es todo lo que hay que saber para operar el departamento. El **cómo se hace** cada
 paso vive en las skills: `skills/README.md`.
@@ -52,8 +56,8 @@ paso vive en las skills: `skills/README.md`.
   total de 145 piezas del plan. **Copiar el reparto de Pro es un error.**
 - 🔑 **Acá está la eficiencia del modelo:** ⑤ Producción cuesta horas humanas; ⑥B multiplica ese
   material **dentro del mismo monto de Producción.** Por eso el mínimo 1:2 es piso, no aspiración.
-- 🔴 **⑥B no tiene MCP: hoy la edición y las derivadas son del editor de video.** Sus horas son el techo de
-  capacidad, no el plan.
+- 🔑 **⑥B edita con Claude Code y el motor (`motor/README.md`); el editor de video dirige y aprueba.**
+  El techo de capacidad es el material rodado y las horas de revisión del editor, no el plan.
 - 🛑 **Una derivada nunca pide grabación extra.** Sale de material ya rodado. Si para llegar al
   número haría falta volver a grabar, **el número está mal, no el rodaje.**
 - ⛔ **No hay segundo idioma en ningún plan.** No existe herramienta de doblaje — ver
@@ -118,18 +122,24 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 
 ```
    0  RECEPCIÓN     qué llegó de ⑤ y es editable            → ve-recepcion
+        │           + SELECCIÓN con /watch si ⑤ no marcó selects (§4 de la skill)
         ▼
-   1  ARMADO        el corte principal, según el guion de ④ → ve-armado
+   1  ARMADO        guion visual → corte principal          → ve-armado
+        │           (el operador confirma el layout sobre el fotograma real antes de renderizar)
         ▼
-   2  MARCA         § Movimiento de ②B aplicado             → ve-marca
+   2  MARCA         § Movimiento de ②B + QA medido          → ve-marca
         ▼           🚦 GATE 1 — Allan aprueba el corte principal
    3  DERIVADAS     multiplicar en variantes y formatos     → ve-derivadas
         ▼
-   4  EXPORT        specs por plataforma y nomenclatura     → ve-export
+   4  EXPORT        specs, nomenclatura, previews           → ve-export
         ▼           🚦 GATE 2 — Allan aprueba el paquete
-        ▼           →→→ pasa a QA y después a ⑨ Posting
-   ↻  LOOP          qué se devolvió, qué material sobró     → ve-loop
+        ▼           → página de aprobación del CLIENTE (día 20) → QA → ⑨ Posting
+   ↻  LOOP          rondas de cambios, qué se devolvió,     → ve-loop
+                    qué material sobró
 ```
+
+> 🔑 **Las rondas de cambios son normales y se guardan.** Cada render nuevo es una versión (`_v2`,
+> `_v3`…) y la anterior se mueve a `<versión>-anterior/`. Nunca se sobreescribe un entregable.
 
 ### 🚦 Los dos gates
 
@@ -140,18 +150,29 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 
 ---
 
-## 5 · Las acciones — qué MCP le da cada una
+## 5 · Las acciones — con qué las hace
 
-| Acción | MCP | |
+**Claude Code ejecuta; el editor de video dirige.** Las herramientas son locales y viven en
+`motor/` — instalación y comandos en `motor/README.md`.
+
+| Acción | Con qué | |
 |---|---|---|
-| Cortar, editar y armar el reel | **Editor de video** — dentro del costo fijo de Edición de video | 👤 |
-| Multiplicar una grabación en variantes | **Editor de video** — recombinando escenas del mismo material | 👤 |
-| Reencuadrar para cada formato | `ffmpeg` local *(recorte y escala)* | ⬜ |
-| Analizar el video antes de cortarlo | `ffmpeg` local — el mismo de `cr-lectura-de-video` | ⬜ |
+| Bajar el material de Drive *(proxies 360p y originales 4K)* | `yt-dlp` + `scripts/index_clips.py` · `prep.py` | ✅ |
+| **Ver** cada clip y elegir las tomas *(selects)* | Skill **`/watch`** con tiempos exactos + `ffmpeg` | ✅ |
+| Cortar, editar y armar el reel *(doble cuadro, cámara lenta, texto, cierre)* | **Remotion** — `motor/remotion` | ✅ |
+| Mostrar el guion con el fotograma real para aprobar el layout | `motor/guion-visual` — Artifact con base de datos | ✅ |
+| Medir temblor y estabilizar *(solo si mejora)* | OpenCV — `jitter.py` · `stabilize.py` | ✅ |
+| Medir y ajustar el color por toma | `colorstats.py` + `ffmpeg` | ✅ |
+| Revisar cada render cuadro por cuadro | `review.py` — hoja de fotogramas | ✅ |
+| Página para que el **cliente** apruebe o pida cambios | Vercel + Blob privado — `motor/aprobacion/vercel` | ✅ |
+| Multiplicar una grabación en variantes *(derivadas)* | El mismo motor, recombinando escenas | ⬜ |
+| Reencuadrar para otros formatos *(1:1, 16:9)* | Remotion / `ffmpeg` | ⬜ |
 | Escalar calidad · doblaje · generar video | ⛔ **Sin herramienta — no se promete** | 🔴 |
 
-> ⚠️ **`⬜` = la tool existe, sin probar en cliente real · `👤` = lo hace una persona.**
-> 🔴 **⑦ no tiene MCP de edición.** Todo el volumen de video pasa por el editor de video.
+> ⚠️ **`✅` = probado en cliente real · `⬜` = la tool existe, sin entregar todavía en cliente real.**
+> 🛑 **El editor de video no edita a mano lo que el motor puede hacer:** si algo no sale, se
+> corrige el guion de montaje (`edit/build_reels.py`) y se vuelve a renderizar. Así cada cambio
+> queda escrito y se puede repetir.
 
 ---
 
@@ -160,7 +181,7 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 | De | Qué | Si falta |
 |---|---|---|
 | **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3** · el `ideas-<formato>.md` con hook, guion, copy literal, escenas y layout | 🛑 BLOQUEADO |
-| **⑤ Producción** | El material con **nomenclatura y selects**, y el manifiesto que cruza fila por fila | 🛑 BLOQUEADO |
+| **⑤ Producción** | El material con **nomenclatura y selects**, y el manifiesto que cruza fila por fila | 🛑 BLOQUEADO sin material · ⚠️ **sin selects, se seleccionan acá** con `/watch` (`ve-recepcion` §4) y se registra para ⑤ en el loop |
 | **②B Branding** | `sistema-visual.md` § Movimiento — subtítulos, entrada de texto, ritmo, cierre | 🛑 BLOQUEADO |
 | **③ Marketing** | `plan-por-canal.md` — a qué plataforma va cada pieza | 🛑 BLOQUEADO |
 
@@ -181,7 +202,9 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 ## 8 · Lo que este departamento NO hace
 
 - **No cambia el hook ni el guion.** Si no se puede montar, se devuelve a ④
-- **No escribe copy ni captions.** El copy es de ④, el caption es de ⑨
+- **No escribe copy ni captions.** El copy es de ④, el caption es de ⑨. En el guion visual el
+  operador decide **posición, estilo y efecto** del texto; si cambia una **palabra**, es un cambio de
+  copy: lo aprueba Allan y se avisa a ④ por escrito
 - **No decide a qué plataforma va** cada pieza. Eso es ③
 - **No arregla una pieza que incumple la guía.** La devuelve ②B y se corrige acá
 - **No publica.** Eso es ⑨, con gate
@@ -197,4 +220,6 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 - [ ] Los **subtítulos están dentro de la safe zone** del formato
 - [ ] El **cierre de marca** está en toda pieza de video
 - [ ] El total de piezas **entra en el techo del plan contratado**
+- [ ] Cada pieza pasó el **QA medido** de `ve-marca` §6: hoja de revisión, temblor y color
+- [ ] Hay **master + preview** de cada pieza, y las versiones anteriores quedaron archivadas
 - [ ] **Allan aprobó** los dos gates

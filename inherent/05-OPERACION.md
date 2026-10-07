@@ -27,7 +27,7 @@
 | **CEO** | Decide la estrategia, la ruta, los servicios y las promesas. Tiene la reunión del día 1 con cada cliente y aprueba ideas y calendario | De la utilidad. **Sus horas son capacidad, no costo** |
 | **COO** | Recibe del CEO y organiza al equipo operativo. Coordina producción, fotografía, edición y al operador. **Coordina las entregas, no hace todos los trabajos:** recibe lo terminado, lo arma y lo pasa | De la utilidad, después de los costos fijos |
 | **Operador de agentes** | **Solo opera agentes:** Creatividad, Branding, Diseño gráfico, Posting y Community management. Construye la herramienta a medida | Rubro **Operador de agentes** |
-| **Editor de video** | Edita los videos y sus derivadas con el workflow de Video Editing | Rubro **Edición de video** |
+| **Editor de video** | Edita los videos y sus derivadas con el workflow de Video Editing: **dirige a Claude Code**, que ejecuta con el motor de ⑦, y aprueba cada versión | Rubro **Edición de video** |
 | **Fotografía** | La sesión de fotos del ciclo | Rubro **Fotografía** |
 | **Producción** | Graba | Rubro **Grabación** |
 | **Secretaria** *(WhatsApp)* | El agente `00-account`. Atiende al cliente todos los días y escala lo que no puede resolver | Rubro **Herramientas / IA** |

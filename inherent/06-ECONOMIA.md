@@ -425,10 +425,11 @@ todavía no es para ti»* vende el siguiente mejor que cualquier otra cosa.
 | Capacidad | Con qué | |
 |---|---|---|
 | Componer estáticos y carruseles sobre plantilla | ⑥A — operador de agentes | 👤 |
-| Editar y derivar video del material grabado | ⑦ — editor de video | 👤 |
+| Editar video del material grabado | ⑦ — el editor de video dirige; **Claude Code ejecuta** con el motor de `agents/07-video-editing/brain/motor/` | ✅ *(Akai, oct 2026)* |
+| Derivar video *(hook B, cortos, fragmentos)* | El mismo motor | ⬜ |
 | Fotos de producto | ⑤ — la sesión de foto del mes | 👤 |
 | Reencuadrar para cada formato | `ffmpeg` local | ⬜ |
-| Análisis de video *(cortes, frames, texto en pantalla)* | `ffmpeg` local | ⬜ |
+| Análisis de video *(calificar clips, cortes, frames, temblor, color)* | Skill `/watch` + `ffmpeg` + OpenCV local | ✅ *(Akai, oct 2026)* |
 | Programar y publicar | La herramienta de publicación *(ver los slots en `05-OPERACION.md`)* | ⬜ |
 | Responder comentarios y mensajes *(IG, Facebook, TikTok, WhatsApp)* | La bandeja de mensajes + una API de IA, desde el rubro Herramientas / IA | ⬜ |
 

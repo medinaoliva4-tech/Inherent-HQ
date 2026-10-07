@@ -1,0 +1,6 @@
+node_modules
+public
+api/_ids.js
+.vercel
+.env*
+.admin_key
