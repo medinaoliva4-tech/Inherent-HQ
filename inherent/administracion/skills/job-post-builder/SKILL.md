@@ -198,7 +198,6 @@ Load these when reaching the relevant phase — don't load all upfront.
 | `reference/offer-letter-template.md` | Phase 5 — before writing the offer letter |
 | `reference/docusign-routing.md` | Phase 6 — the browser flow and its fallback |
 | `reference/gotchas.md` | Any phase — non-obvious edge cases |
-| `reference/examples/worked-example.md` | For the expected output shape |
 
 ## Using a tool that isn't listed
 

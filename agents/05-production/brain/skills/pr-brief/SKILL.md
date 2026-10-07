@@ -38,7 +38,7 @@ es gastar dos veces la misma plata.
 🛑 **Falta un bloqueante → BLOQUEADO**, y se nombra **el archivo exacto y a quién pedírselo**.
 
 ❌ *"Arrancamos con lo que hay y después ajustamos"*
-✅ `BLOQUEADO — falta clients/acme/04-contenido/2026-11/ideas/plan-de-contenido.csv con Gate 3. Se lo pide a ④.`
+✅ `BLOQUEADO — falta clients/<cliente>/04-contenido/2026-11/ideas/plan-de-contenido.csv con Gate 3. Se lo pide a ④.`
 
 🛑 **Ningún archivo de otro departamento se copia: se cita su ruta.** Duplicarlo crea una segunda
 versión de la verdad, y en dos ciclos no coinciden.
@@ -124,7 +124,7 @@ entera, casi siempre sirven 2 o 3 escenas.
 
 ```
 | Qué se necesitaba | Qué hay en el banco de assets | Escenas que se ahorran |
-| CU del plato, 3s  | acme_menu2025_E4_video (ruta) | PR-002 · PR-014 → 2 escenas |
+| CU del plato, 3s  | <cliente>_<campaña>_E4_video (ruta) | PR-002 · PR-014 → 2 escenas |
 ```
 
 🛑 **Si esta tabla queda vacía, el cruce no se hizo.** *"Sin material previo"* escrito es un

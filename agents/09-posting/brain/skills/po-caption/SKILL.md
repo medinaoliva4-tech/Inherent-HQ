@@ -110,8 +110,8 @@ hashtags.
 
 | ❌ | ✅ |
 |---|---|
-| *"Nuestro delicioso menú ejecutivo"* | *"Plato con proteína, arroz y ensalada servido en mesa de madera, vapor visible"* |
-| *"Promo imperdible #menu #almuerzo"* | *"Placa con texto: Menú ejecutivo Q85, lunes a viernes"* |
+| Adjetivos: *"nuestro delicioso producto"* | Lo que se ve: el objeto, dónde está, qué pasa en el cuadro |
+| Hashtags o promo: *"promo imperdible #…"* | El texto de la placa, literal |
 
 🛑 **No se autogenera con adjetivos.** Si la pieza tiene texto en pantalla, el alt text lo incluye:
 es la única forma de que alguien con lector de pantalla sepa qué dice.
@@ -120,10 +120,10 @@ es la única forma de que alguien con lector de pantalla sepa qué dice.
 
 ```
 | Caracteres         | 412 / 2.200                                          |
-| Antes del corte    | "Tu almuerzo llega antes de que termines de conte..." |
+| Antes del corte    | "<lo que se lee antes del «más»>"                     |
 | ¿Sobrevive el hook?| ✅                                                    |
-| Hashtags           | 4 — #almuerzo #guatemala #menuejecutivo #zona10      |
-| Alt text           | "Plato del menú servido en mesa, vapor visible"       |
+| Hashtags           | 4 — #<tema> #<categoría> #<ciudad> #<zona>           |
+| Alt text           | "<qué se ve y qué dice el texto en pantalla>"         |
 ```
 
 **Y qué se cambió respecto de ④, y por qué.** Si la respuesta es *"nada, entró tal cual"*, se

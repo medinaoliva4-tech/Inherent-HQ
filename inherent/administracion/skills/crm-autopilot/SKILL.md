@@ -156,7 +156,6 @@ The CRM is current and the next-step queue has an owner and a date on every open
 - `reference/salesforce-fields.md` — the same for Salesforce, through the Headless 360 four-tool flow
 - `reference/cleanup-checklist.md` — what the hygiene sweep checks and the evidence each flag needs
 - `reference/gotchas.md` — contact resolution, activity summaries, and cleanup failures
-- `reference/examples/` — worked examples for email, call, and cleanup paths
 
 ## Using a tool that isn't listed
 

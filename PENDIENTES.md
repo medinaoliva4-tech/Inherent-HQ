@@ -58,7 +58,7 @@
 | # | Bloqueo |
 |---|---|
 | 1 | Probar los 4 actores de scraping de las garantías contra una cuenta real |
-| 2 | Medir la línea base de los clientes actuales |
+| 2 | Medir la línea base de cada cliente |
 | 3 | Instalar atribución *(CAPI + GA4)* en al menos un cliente |
 | 4 | Correr un ciclo completo con la redirección del día 20 |
 
@@ -71,7 +71,7 @@
 | 1 | **Las horas reales de cada rol por plan** *(COO, operador, editor, fotografía, producción)* | Confirmar que cada monto fijo alcanza y cuántas cuentas aguanta cada rol |
 | 2 | **Las horas del CEO con la nueva asignación de tareas** | Capacidad: cuántas cuentas entran |
 | 3 | **El onboarding de Accelerate y Compound** *(tareas y horas)* | Hoy solo Marketing y Pro tienen desglose |
-| 4 | **Instrumentar a los clientes actuales** *(ventas antes y después, atribución)* | El primer caso medido del múltiplo y del performance fee |
+| 4 | **Instrumentar a cada cliente** *(ventas antes y después, atribución)* | El primer caso medido del múltiplo y del performance fee |
 | 5 | **Las tasas reales de los clientes** | Sin eso no se compromete ninguna garantía |
 
 ---

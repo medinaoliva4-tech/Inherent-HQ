@@ -67,7 +67,6 @@ User: "prioritize my leads"
 
 - [reference/hubspot-scoring.md](reference/hubspot-scoring.md) — HubSpot field names, scoring weights, ICP defaults
 - [reference/gotchas.md](reference/gotchas.md) — edge cases: stale data, zero leads, pipeline disambiguation, customer contamination
-- [reference/examples/happy-path-triage.md](reference/examples/happy-path-triage.md) — worked output for a 7-lead list with draft and slot proposal
 
 ## Closing offer
 

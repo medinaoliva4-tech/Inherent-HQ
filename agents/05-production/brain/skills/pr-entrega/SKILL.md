@@ -89,9 +89,9 @@ buena.** Las dos formas de equivocarse cuestan una jornada de su lado.
 
 ```
 <cliente>_<campana>_<id_creativo>_<escena>_<tipo>_<take>.<ext>
-acme_menuejecutivo_CR-007_E2_video_t03.mov
-acme_menuejecutivo_CR-007_E2_video_t03_SELECT.mov
-acme_menuejecutivo_LOC-salon_ambiente.wav
+<cliente>_<campaña>_CR-007_E2_video_t03.mov
+<cliente>_<campaña>_CR-007_E2_video_t03_SELECT.mov
+<cliente>_<campaña>_LOC-salon_ambiente.wav
 ```
 
 | Regla | Por qué |
@@ -151,7 +151,7 @@ Se cruza **cada fila** de `plan-de-produccion.csv`, sin muestreo, y se escribe e
 
 ```
 | id | id_creativo | escena | ¿grabada? | archivo | ¿cobertura? | estado |
-| PR-002 | CR-001 | 2 | ✅ | acme_menuejecutivo_CR-001_E2_video_t03_SELECT.mov | ✅ | entregada |
+| PR-002 | CR-001 | 2 | ✅ | <cliente>_<campaña>_CR-001_E2_video_t03_SELECT.mov | ✅ | entregada |
 | PR-006 | CR-003 | 3 | ⬜ | — | — | ↩️ devuelta — reflejo irreducible, ver plan B |
 ```
 

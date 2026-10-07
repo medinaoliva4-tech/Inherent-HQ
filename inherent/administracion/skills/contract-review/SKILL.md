@@ -152,7 +152,6 @@ End with one line on what was reviewed and how it netted out, then the single mo
 - `reference/docusign-fetch.md` — pulling envelopes from DocuSign
 - `reference/gmail-fetch.md` — finding contract attachments in Gmail
 - `reference/m365-fetch.md` — the same on Microsoft 365: mail attachments and a named file-store folder
-- `reference/examples/flagged-summary-saas.md` — worked example: SaaS agreement review output
 
 ## Using a tool that isn't listed
 

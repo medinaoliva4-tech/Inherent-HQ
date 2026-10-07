@@ -246,7 +246,6 @@ Scheduling is a property of this skill. There is no separate command for it.
 | File | Load when |
 |---|---|
 | `reference/gotchas.md` | When a connector returns unexpected data or variance is extreme |
-| `reference/examples/worked-example.md` | When modeling the output format for a new data shape |
 
 ## Using a tool that isn't listed
 

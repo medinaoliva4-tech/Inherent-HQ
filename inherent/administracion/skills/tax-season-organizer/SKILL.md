@@ -228,8 +228,6 @@ lo que el CEO ya rechazó en la sesión.
 - [reference/output-formats.md](reference/output-formats.md) — estructura de la declaración del mes y del paquete anual
 - [reference/connector-queries.md](reference/connector-queries.md) — cómo leer el Excel, la exportación de DTE y, si se conecta, cada ledger
 - [reference/gotchas.md](reference/gotchas.md) — patrones buenos y malos
-- [reference/examples/declaracion-del-mes.md](reference/examples/declaracion-del-mes.md) — ejemplo trabajado de la declaración del mes
-- [reference/examples/cierre-del-ano.md](reference/examples/cierre-del-ano.md) — ejemplo trabajado del cierre del año
 
 ## Using a tool that isn't listed
 

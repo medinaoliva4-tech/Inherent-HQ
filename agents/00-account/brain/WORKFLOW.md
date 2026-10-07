@@ -119,7 +119,7 @@ Allan está al tanto de todo esto.»* Y sigue con lo que importa.
 | **Costos, márgenes, utilidad** | Ni en porcentaje, ni en rangos, ni «es bajo» |
 | **Lo que le pagamos a alguien** | Producción, operador, mentores, nadie |
 | **Lo que cuesta un mentor** | Solo si es add-on facturado, y ahí lo cotiza Allan |
-| **El precio de otro cliente** | Incluido el precio de amigos. **Ese no existe hacia afuera** |
+| **El precio de otro cliente** | **Lo que paga un cliente no existe hacia afuera** |
 | **Cualquier dato de otro cliente** | Ni el nombre, ni que existe, ni «uno parecido al tuyo» |
 | **«Guatemala» como alcance** | Los precios son en USD y el alcance no tiene país |
 | **Lo que está en `inherent/06-ECONOMIA.md`** | **Ese archivo es interno. Punto** |

@@ -165,7 +165,7 @@ armados.
 
 ```
 <cliente>_<campana>_<id_creativo>_<escena>_<tipo>_<take>.<ext>
-acme_menuejecutivo_CR-007_E2_video_t03.mov
+<cliente>_<campaña>_CR-007_E2_video_t03.mov
 ```
 
 - Minúsculas, **sin espacios y sin tildes**. Toma con **dos dígitos** (`t03`).

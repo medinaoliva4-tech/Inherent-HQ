@@ -60,7 +60,7 @@ Do not ask again on subsequent runs. Stripe is not a setup question: when it is 
 
 3. **Score each customer.** Read [reference/tone-matching.md](reference/tone-matching.md) for scoring logic. Result: `good-payer`, `occasionally-late`, or `repeat-late`.
 
-4. **Draft reminder emails.** One email per customer — consolidate multiple overdue invoices into one email. Match tone to score. See [reference/examples/gentle-reminder.md](reference/examples/gentle-reminder.md) and [reference/examples/firm-reminder.md](reference/examples/firm-reminder.md).
+4. **Draft reminder emails.** One email per customer — consolidate multiple overdue invoices into one email. Match tone to score.
 
 5. **Present drafts to owner.** Show a summary table first:
 
@@ -125,8 +125,6 @@ Reminders are sent or queued and the possibly-paid flags are named. If the chase
 
 - [reference/tone-matching.md](reference/tone-matching.md) — scoring logic, tone guidelines, subject line formulas
 - [reference/gotchas.md](reference/gotchas.md) — known failure modes
-- [reference/examples/gentle-reminder.md](reference/examples/gentle-reminder.md) — good-payer email example
-- [reference/examples/firm-reminder.md](reference/examples/firm-reminder.md) — repeat-late-payer email example
 
 ## Using a tool that isn't listed
 

@@ -213,9 +213,6 @@ Structure:
 
 Avoid jargon; define anything that isn't plain English ("MoM" = month over month).
 
-See [reference/examples/pl-narrative.md](reference/examples/pl-narrative.md) for a
-worked example.
-
 ### Step 8 — Export the close packet
 
 Produce two files:
@@ -326,8 +323,6 @@ Same close sequence, same packet. More sources reconciled.
   specs, PDF layout, file naming convention
 - [reference/gotchas.md](reference/gotchas.md) — duplicate false positives, split
   transactions, partial-month edge cases
-- [reference/examples/pl-narrative.md](reference/examples/pl-narrative.md) — worked
-  P&L narrative example
 
 ## Using a tool that isn't listed
 

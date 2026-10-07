@@ -136,9 +136,9 @@ Esto se define **antes** de grabar. Renombrar 400 archivos al final es cuando se
 ```
 <cliente>_<campana>_<pieza>_<escena>_<tipo>_<toma>.<extensión>
 
-acme_menuejecutivo_CR-007_E2_video_t03.mov
-acme_menuejecutivo_CR-007_E2_video_t03_SELECT.mov     ← las tomas buenas llevan _SELECT
-acme_menuejecutivo_LOC-salon_ambiente.wav
+<cliente>_<campaña>_CR-007_E2_video_t03.mov
+<cliente>_<campaña>_CR-007_E2_video_t03_SELECT.mov     ← las tomas buenas llevan _SELECT
+<cliente>_<campaña>_LOC-salon_ambiente.wav
 ```
 
 Todo en minúsculas, sin espacios ni tildes. El número de toma con dos dígitos (`t03`, no `t3`).

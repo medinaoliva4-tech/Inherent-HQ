@@ -510,7 +510,7 @@ marcada aparte** · los riesgos 🟡/🔴 activos con su plan B · nomenclatura 
 **La nomenclatura se define acá, no al entregar:**
 ```
 <cliente>_<campana>_<id_creativo>_<escena>_<tipo>_<take>.<ext>
-acme_menuejecutivo_CR-007_E2_video_t03.mov
+<cliente>_<campaña>_CR-007_E2_video_t03.mov
 ```
 
 **Márgenes reales** — sin ellos no es un plan, es una lista de deseos: montaje inicial **60-90 min**

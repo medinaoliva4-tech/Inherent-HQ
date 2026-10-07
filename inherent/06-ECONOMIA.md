@@ -591,8 +591,7 @@ Growth **nunca** es *«somos más baratos»* — es *«decidimos y ejecutamos.»
 
 | Situación | Precio |
 |---|---|
-| **Clientes nuevos** | Precio de lista, sin excepción |
-| **Clientes de precio de amigos** *(Q2,500/cuenta)* | No es precio oficial y no se usa como referencia. Se migran a precio de lista; antes se instrumentan *(ventas antes y después, atribución)* para que sean el primer caso medido |
+| **Todo cliente** | Precio de lista, sin excepción |
 
 **El gatillo para subir precios otra vez:**
 
