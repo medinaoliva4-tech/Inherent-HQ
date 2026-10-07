@@ -71,7 +71,7 @@ atención **y lo dice en la tarjeta.** El cliente sabe qué compró.
 | Mensaje y ángulos | ✅ | ✅ | ✅ | ✅ |
 | Campañas | Meta · TikTok | + Google | + los que apliquen | + los que apliquen |
 | Alianzas con creadores | ⬜ | ✅ | ✅ | ✅ |
-| Community management | ⬜ | ✅ | ✅ | ✅ |
+| Community management | ✅ **Básico** | ✅ Todos los días | ✅ + WhatsApp a medida | ✅ + WhatsApp a medida |
 | | | | | |
 | **Tu oferta y tu precio** | ⬜ | ⬜ | ✅ **Rediseñados** | ✅ Sistematizados |
 | **Ventas grandes** | ⬜ | ⬜ | ✅ **Abiertas** | ✅ Canal permanente |
@@ -136,7 +136,8 @@ conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
 | 2 | **Tu mensaje claro, para que quien te lea te entienda y te quiera** |
 | 3 | **Presencia todos los días: 86 piezas al mes, hechas por gente talentosa** |
 | 4 | **Campañas donde está tu gente, en Meta y TikTok** |
-| 5 | **Un reporte al mes de qué funcionó y qué sigue** |
+| 5 | **Respuesta a tus comentarios y mensajes** |
+| 6 | **Un reporte al mes de qué funcionó y qué sigue** |
 
 > **Dejas de ser invisible.**
 > **Apuntamos a 1.3x tu facturación en 12 meses.**
@@ -238,6 +239,22 @@ El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → �
 
 ---
 
+# 💬 Community management — la escalera
+
+**Los cuatro planes atienden comentarios y mensajes. Cambia la profundidad.**
+
+| | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| **Responder comentarios y mensajes** | ✅ **Básico:** una IA contesta lo simple *(horarios, ubicación, precios publicados, links)* | ✅ **Todos los días**, todas las redes | ✅ | ✅ |
+| **Pasar al interesado al WhatsApp del cliente** | ✅ | ✅ | ✅ | ✅ |
+| **Moderar y dar seguimiento** *(quién preguntó y qué)* | — | ✅ | ✅ | ✅ |
+| **Auto-DM por palabra clave y embudo de WhatsApp** | — | — | ✅ | ✅ |
+| **Agente de WhatsApp a medida** *(entrenado con la marca: responde, califica, agenda)* | — | — | ✅ | ✅ |
+
+🔑 **Lo simple se contesta en todos los planes. Lo complejo sube por la escalera.**
+
+---
+
 # ✅ Qué respalda cada línea publicada
 
 > **Regla: si está en la web, tiene que tener acción detrás.** Esta tabla es el control.
@@ -252,6 +269,7 @@ El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → �
 | Tu mensaje claro | ③ Marketing · `mk-mensaje` + ②B `br-voz` |
 | Presencia todos los días — **86 piezas** | ④ ⑥A ⑥B + ⑨ Posting · herramienta de publicación |
 | Campañas en Meta y TikTok | ⑩ Ads Management · herramienta de pauta |
+| Respuesta a tus comentarios y mensajes | ⑧ Community Management — nivel básico: la bandeja de mensajes + una IA que contesta lo simple. Lo complejo se pasa al WhatsApp del cliente |
 | Reporte al mes | ③ `mk-loop` + ⑩ `ad-loop` |
 
 ## 🔷 Marketing Pro — *todo lo de Marketing, más:*
@@ -261,7 +279,7 @@ El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → �
 | 145 piezas, doble de video | ⑤ Producción 4 h + ⑥B Video Editing |
 | Campañas de Google | ⑩ Ads Management · herramienta de pauta *(búsqueda y Performance Max)* |
 | Alianzas con creadores | Herramienta de scraping · vetting por engagement real |
-| Comentarios y mensajes | ⑧ Community Management — el operador de agentes hace el setup mensual del agente con la info del cliente, y queda corriendo |
+| Comentarios y mensajes todos los días | ⑧ Community Management — el operador de agentes hace el setup mensual del agente con la info del cliente, y queda corriendo. Todas las redes, con moderación y seguimiento de quién preguntó |
 | Dos revisiones por pieza | ⑥A `gd-composicion` + ②B `br-guardian` → QA final del COO |
 
 ## 🟨 Accelerate — *todo lo de Marketing Pro, más:*
@@ -271,7 +289,7 @@ El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → �
 | Tu oferta y tu precio rediseñados | ② Growth · `gr-oferta` · **Pilar 1 ejecutando** |
 | Abrimos los canales grandes | ② Growth · `gr-canales-grandes` · **Pilar 2 ejecutando** |
 | Subimos tu ticket | ② Growth · `gr-upsells` · **Pilar 3** |
-| Nadie se queda sin respuesta | ② `gr-conversion` + automatización de mensajes y WhatsApp |
+| Nadie se queda sin respuesta | ② `gr-conversion` + auto-DM por palabra clave, embudo de WhatsApp y **agente de WhatsApp a medida**, entrenado con la marca: responde, califica y agenda |
 | Que te encuentren en Google | Pauta de búsqueda + contenido guiado por keywords |
 | Que tu equipo sepa cerrar | Guiones y entrenamiento de closing — **Conversion OS** · el CEO |
 | Lo volvemos repetible | **SOPs de crecimiento** — la auditoría levanta, el CEO y el COO coordinan, el COO implementa con agentes |

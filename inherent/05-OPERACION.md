@@ -53,7 +53,7 @@
 | **Secretaria** *(WhatsApp)* | Nicole — agente `00-account` |
 | **IA** | Claude |
 | **Scraping** | Apify — conectado por MCP en `.mcp.json`, cada quien con su cuenta |
-| **Publicación y bandeja de mensajes** | *Se define en esta tabla* |
+| **Publicación y bandeja de mensajes** | Zernio |
 | **Diseño** | Figma |
 
 🔑 **El resto del repo nombra el rol o la responsabilidad, nunca la persona.**
@@ -127,7 +127,7 @@ coordina el COO; todo lo que se puede ejecutar lo ejecutan los agentes.
 | **05** | **Production** | Las ideas aprobadas | Material grabado y fotografiado | Todos |
 | **06** | **Graphic Design** | Ideas, marca y material | Estáticos, carruseles y stories | Todos |
 | **07** | **Video Editing** | El material grabado | Reels y todas sus derivadas | Todos |
-| **08** | **Community** | Lo publicado y lo que entra | Comentarios y mensajes atendidos | 🔷 Pro · 🟨 |
+| **08** | **Community** | Lo publicado y lo que entra | Comentarios y mensajes atendidos | Todos · básico en 🔷 Marketing |
 | **09** | **Posting** | Lo aprobado | Contenido programado o publicado | Todos |
 | **10** | **Ads** | Lo apto para pauta | Campañas activas y su reporte | Todos |
 | **↻** | **Strategy** | La analítica del mes | El ajuste de estrategia que entra al ciclo siguiente | Todos |
@@ -256,7 +256,8 @@ costo fijo del plan.
 | Tarea | Rol | Dónde |
 |---|---|---|
 | Programar y publicar | **Operador** con ⑨ | Todos |
-| **Comentarios y mensajes** | **Operador:** una vez al mes configura el agente con la información del cliente, y el agente queda atendiendo | 🔷 Pro · 🟨 |
+| **Comentarios y mensajes** | **Operador:** una vez al mes configura el agente con la información del cliente, y el agente queda atendiendo. Escalera en `03-OFERTA.md` → «Community management» | Todos |
+| **Agente de WhatsApp a medida** | **CEO** define el alcance → **Operador** lo construye | 🟨 |
 | Pauta | **Operador** con ⑩ · **CEO** aprueba plan y presupuesto | Todos |
 
 ### Tecnología

@@ -11,12 +11,11 @@
 | # | Decisión | Contexto |
 |---|---|---|
 | 1 | **La métrica de crecimiento medible de la línea Marketing** | El slot ya está en `CLAUDE.md` y `03-OFERTA` |
-| 2 | **Herramienta de publicación y bandeja de mensajes** | ⑨ Posting está armado con Publer; el repo hablaba de Postpone. El slot queda vacío en `05-OPERACION` hasta decidir |
-| 3 | **¿Qué argumento vende el salto Pro → Accelerate?** | Con los costos nuevos es el salto de menor margen (61%); suma ~Q4,940 de utilidad |
-| 4 | **Especialistas por área** *(eventos, networking y PR, talent production, talent marketing)* | No tienen rubro en el costo fijo ni persona asignada |
-| 5 | **¿Cuál de las tres auditorías cubre corporate structure?** | Hoy dice solo «la auditoría» |
-| 6 | **Reposición gratis en las garantías** | El costo «3 a 5 puntos de margen» se calculó con la tabla vieja: recalcular o descartar |
-| 7 | **Bloque «Lo básico vs. el valor único» de Marketing Pro** | `01-IDENTIDAD` lo tiene para Marketing, Accelerate y Compound, no para Pro |
+| 2 | **¿Qué argumento vende el salto Pro → Accelerate?** | Con los costos nuevos es el salto de menor margen (61%); suma ~Q4,940 de utilidad |
+| 3 | **Especialistas por área** *(eventos, networking y PR, talent production, talent marketing)* | No tienen rubro en el costo fijo ni persona asignada |
+| 4 | **¿Cuál de las tres auditorías cubre corporate structure?** | Hoy dice solo «la auditoría» |
+| 5 | **Reposición gratis en las garantías** | El costo «3 a 5 puntos de margen» se calculó con la tabla vieja: recalcular o descartar |
+| 6 | **Bloque «Lo básico vs. el valor único» de Marketing Pro** | `01-IDENTIDAD` lo tiene para Marketing, Accelerate y Compound, no para Pro |
 
 ---
 
@@ -24,7 +23,7 @@
 
 | # | Qué | Por qué |
 |---|---|---|
-| 1 | **Agente ⑧ Community Management** | Sostiene «tus comentarios y mensajes» *(Pro y arriba)* y «comunidad» *(Compound)*, que están publicadas |
+| 1 | **Agente ⑧ Community Management** | Sostiene «tus comentarios y mensajes» en los cuatro planes y el agente de WhatsApp a medida desde Accelerate |
 | 2 | **Herramienta o MCP para ⑥A Diseño y ⑦ Video Editing** | Hoy son 100% manuales: las horas del operador y del editor son el techo |
 | 3 | **Operación automatizada** | Programar, publicar y reportar sin humano; el operador supervisa más cuentas |
 | 4 | **Pipeline de herramientas** | Plantillas y despliegue automatizado para que la tecnología de Growth quepa en el rubro Operador |
@@ -41,17 +40,18 @@
 
 | # | Qué | Respalda |
 |---|---|---|
-| 1 | **Herramienta de publicación:** cuenta, precio real del tramo de agencia *(15-20 cuentas, ~666 piezas/mes)* | «Presencia todos los días» |
-| 2 | **Bandeja de mensajes en TikTok** | La herramienta evaluada no cubre el inbox de TikTok, que es canal principal |
-| 3 | **Scraping:** probar los actores que faltan. ✅ Cuenta, MCP y `apify/facebook-ads-scraper` ya están probados | Inteligencia de ①②③④ y las garantías |
-| 4 | **Pauta:** Meta, TikTok, Google Search y Performance Max | ⑩ Ads y «Que te encuentren en Google» |
-| 5 | **AdWhispr:** guardar la marca | Que `find_competitors` sirva sin preguntar cada vez |
-| 6 | **Plugin `claude-ads`** | Auditoría y monitoreo de cuentas |
-| 7 | **Automatización de mensajes y WhatsApp** | «Nadie se queda sin respuesta» |
-| 8 | **Herramienta a medida e IA propia** | Accelerate y Compound |
-| 9 | **Vetting de creadores con el scraper de Instagram** | Alianzas con creadores |
-| 10 | **`ffmpeg` local:** reencuadre y análisis de video | ⑦ y `cr-lectura-de-video` |
-| 11 | **Un mes completo al volumen prometido** *(86 / 145 / 145 / 204)* | Que el volumen sea capacidad probada |
+| 1 | **Zernio:** publicación y bandeja de mensajes con una cuenta real, y su precio con 15-20 cuentas | «Presencia todos los días» y community management |
+| 2 | **IA que contesta comentarios y mensajes** *(API de pocos dólares al mes conectada a Zernio)* | Community básico de la línea Marketing |
+| 3 | **Pasar ⑨ Posting de Publer a Zernio** | El agente está armado con Publer |
+| 4 | **Scraping:** probar los actores que faltan. ✅ Cuenta, MCP y `apify/facebook-ads-scraper` ya están probados | Inteligencia de ①②③④ y las garantías |
+| 5 | **Pauta:** Meta, TikTok, Google Search y Performance Max | ⑩ Ads y «Que te encuentren en Google» |
+| 6 | **AdWhispr:** guardar la marca | Que `find_competitors` sirva sin preguntar cada vez |
+| 7 | **Plugin `claude-ads`** | Auditoría y monitoreo de cuentas |
+| 8 | **Automatización de mensajes y WhatsApp** | «Nadie se queda sin respuesta» |
+| 9 | **Herramienta a medida e IA propia** | Accelerate y Compound |
+| 10 | **Vetting de creadores con el scraper de Instagram** | Alianzas con creadores |
+| 11 | **`ffmpeg` local:** reencuadre y análisis de video | ⑦ y `cr-lectura-de-video` |
+| 12 | **Un mes completo al volumen prometido** *(86 / 145 / 145 / 204)* | Que el volumen sea capacidad probada |
 
 ### Las garantías — no se publican hasta cerrar los cuatro
 
