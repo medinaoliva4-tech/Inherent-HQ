@@ -340,6 +340,10 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
   Lo que no está decidido **no entra: se pregunta.** Sin rastros de conversación: ni «por confirmar»,
   ni «pendiente», ni fechas de verificación, ni historia de cómo se llegó a la decisión.
   **Lo que falta decidir, construir o probar vive en `PENDIENTES.md`, nunca en el manual.**
+- **Los clientes y la facturación de Inherent se leen, nunca se suponen.** Cuántos clientes hay,
+  quiénes son y en qué plan sale **solo de `clients/`** *(el `00-onboarding/plan-contratado.md` de
+  cada uno)*. Lo que factura Inherent sale **solo de la contabilidad**. Los escenarios del manual
+  *(«con 5 clientes», «con 10 clientes»)* son modelos, no la realidad. Si el dato no está, se dice.
 - **Roles, no nombres.** Los nombres de las personas están solo en la tabla de slots de `inherent/05-OPERACION.md`.
 - **Evidencia o etiqueta** — en el trabajo de cliente. Sin fuente va como `[dice el cliente, sin verificar]`
   o `⚠️ SIN DATOS`. Nunca inventar.
