@@ -11,8 +11,9 @@
 | **Community** | **Básico** — el nivel de 🔷 Marketing |
 | **Pauta** | Meta Ads. **El presupuesto lo pone el cliente:** ≈ USD 320 al mes `[dice el CEO, sin confirmar]` |
 | **Producción** | **3 h de video al mes para NAO y Akai juntos.** Graba el CEO |
-| **Edición de video** | **3 a 4 h al mes para NAO y Akai juntos** |
+| **Edición de video** | **3 a 4 h al mes para NAO y Akai juntos.** El editor de video hace los planificados; el CEO hace los derivados |
 | **Operador** | Sube todo y facilita las tomas |
+| 🔒 **Costo de la cuenta** | **Q1,600 al mes para NAO y Akai juntos.** Interno: no sale del repo |
 
 ## La excepción
 
@@ -35,5 +36,5 @@ Sale de las 3 h de grabación con la regla de los 20 minutos de ⑦ Video Editin
 | **TOTAL — mínimo** | **13**, repartidos entre las dos cuentas |
 | *TOTAL — tope (1:1)* | *18* |
 
-⚠️ **El primer ciclo se valida contra las 3-4 h del editor.** Si no alcanzan, manda la edición.
+**Quién edita:** el editor de video, los **9 planificados** · el CEO, los **4 derivados**.
 **Estáticos, carruseles y stories:** ⚠️ SIN DATOS.

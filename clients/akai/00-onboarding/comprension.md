@@ -9,6 +9,7 @@
 - **Posicionamiento:** la gente busca **ofertas y combos**. `[dice el CEO]`
 - **Ticket:** Q200 a Q400. `[dice el CEO]`
 - **En zona 16 ya tiene fama**, y nunca la aprovecharon mucho. `[dice el CEO]`
+- **Akai Antigua y Akai San Cristóbal son otra franquicia:** no son de esta cuenta. `[dice el CEO]`
 - **La promoción conocida:** **2x1 los martes y jueves**, en NAO y en las dos sedes de Akai. `[dice el CEO]`
 
 ## Su cliente
