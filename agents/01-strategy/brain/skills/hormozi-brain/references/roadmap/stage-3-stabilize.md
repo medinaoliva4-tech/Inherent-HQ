@@ -4,7 +4,7 @@ archivo_original: "Drive › Hormozi Brain › Videos missing/acquisition.com_tr
 etapa: "STAGE 3: STABILIZE"
 duracion: "00:32:41"
 transcripcion: "faster-whisper small.en (int8, greedy) — automática, literal; solo se quitaron muletillas obvias (um/uh/erm/hmm): 0"
-frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 225 frames revisados → 20 estados visuales distintos documentados; 1 frames sin contenido de pantalla"
+frames: "ffmpeg scene detection (scene>0.1 sobre 2 fps) + muestreo cada 15 s, deduplicados por perceptual hash: 225 frames revisados → 46 estados visuales distintos documentados; 13 frames sin contenido de pantalla"
 imagenes: "NO se guardan en el repo. Fuente de verdad = el video en ese timestamp. Cada bloque FRAME lleva el nombre stageX_HH-MM-SS.png como referencia."
 formato_cita: "[ROADMAP VIDEO | STAGE 3: STABILIZE | HH:MM:SS] (+ frame si aplica)"
 nota: "Video completo. «Videos/03 Stabilize.mp4» (1:00) es el primer minuto de este mismo video (mismo audio desde 00:00:00); no se usa aparte."
@@ -1236,7 +1236,7 @@ Recreación:
 
 <!-- FRAME -->
 **🖼️ [FRAME | STAGE 3: STABILIZE | 00:13:31 | stage3_00-13-31.png]** · tipo: slide
-También visible en: 00:13:44, 00:13:45, 00:13:54, 00:13:56, 00:14:00, 00:14:00, 00:14:02, 00:14:02, 00:14:15, 00:14:30, 00:14:40, 00:14:45, 00:14:53, 00:15:00, 00:15:23, 00:15:30, 00:15:42, 00:15:45
+También visible en: 00:13:44, 00:13:45, 00:13:54, 00:13:56, 00:14:00, 00:14:00, 00:14:02, 00:14:02, 00:14:15, 00:14:30, 00:14:40, 00:14:45, 00:14:53, 00:15:00, 00:15:23, 00:15:30, 00:15:42, 00:15:45, 00:15:50, 00:16:00
 
 Texto en pantalla (literal):
 
@@ -1273,7 +1273,7 @@ Recreación:
                                     ┃      └──────────┴──────────┘
 ```
 
-[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: SALES» arriba a la izquierda. A la izquierda, el bloque TO GRADUATE con el mismo dibujo del slide anterior (cuatro ejecutivos, portapapeles con palomita, flecha morada hacia el ejecutivo con dos bolsas de dinero). Flecha ⇒ sobre la línea vertical central. A la derecha, «Qualifying:» en negrita, tres viñetas, «B-A-N-T:» en negrita. Debajo, un ícono a color de esquinas redondeadas dividido en cuatro cuadrantes celestes: una moneda rosa con «$» (arriba izquierda), un mazo de juez (arriba derecha), una bolsa de compras (abajo izquierda) y un reloj rosa (abajo derecha), con una etiqueta azul «BANT» en letras blancas al centro. Frame principal: insert a pantalla completa; también en la toma abierta (00:13:44, 00:13:45, 00:14:02, 00:14:02 (b), 00:14:15, 00:14:30, 00:14:53, 00:15:00, 00:15:23, 00:15:30), en primeros planos de Leila con la columna derecha de fondo (00:13:54, 00:13:56, 00:14:00, 00:14:00 (b), 00:14:40, 00:14:45) y en primeros planos de Alex donde se ve solo la columna izquierda (00:15:42, 00:15:45).
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: SALES» arriba a la izquierda. A la izquierda, el bloque TO GRADUATE con el mismo dibujo del slide anterior (cuatro ejecutivos, portapapeles con palomita, flecha morada hacia el ejecutivo con dos bolsas de dinero). Flecha ⇒ sobre la línea vertical central. A la derecha, «Qualifying:» en negrita, tres viñetas, «B-A-N-T:» en negrita. Debajo, un ícono a color de esquinas redondeadas dividido en cuatro cuadrantes celestes: una moneda rosa con «$» (arriba izquierda), un mazo de juez (arriba derecha), una bolsa de compras (abajo izquierda) y un reloj rosa (abajo derecha), con una etiqueta azul «BANT» en letras blancas al centro. Frame principal: insert a pantalla completa; también en la toma abierta (00:13:44, 00:13:45, 00:14:02, 00:14:02 (b), 00:14:15, 00:14:30, 00:14:53, 00:15:00, 00:15:23, 00:15:30, 00:15:50, 00:16:00), en primeros planos de Leila con la columna derecha de fondo (00:13:54, 00:13:56, 00:14:00, 00:14:00 (b), 00:14:40, 00:14:45) y en primeros planos de Alex donde se ve solo la columna izquierda (00:15:42, 00:15:45).
 <!-- /FRAME -->
 ↳ alineado con el audio de [00:13:31]
 
@@ -1402,6 +1402,45 @@ Recreación:
 [00:16:03] But if you are a B2B
 [00:16:04] business, one of our favorite
 [00:16:05] tactics for outbound is
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:16:08 | stage3_00-16-08.png]** · tipo: slide
+También visible en: 00:16:02, 00:16:26, 00:16:30, 00:16:34
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: SALES
+> What that looks like…
+> TO GRADUATE
+> Decide on basic qualifications. Outsource setting & calendaring.
+> $?
+> $?
+> $?
+> **Favorite Voicemail:**
+> "Hey this is NAME calling in regards to COMPETITOR. Give me a call back when you get a chance."
+
+Recreación:
+
+```text
+[3: STABILIZE: SALES]
+
+                       What that looks like…
+
+        ┌─────────────┐             ┃ **Favorite Voicemail:**
+        │ TO GRADUATE │             ┃
+        └─────────────┘             ┃ "Hey this is NAME calling in regards
+  Decide on basic qualifications.   ┃ to COMPETITOR. Give me a call back
+  Outsource setting & calendaring.  ┃ when you get a chance."
+                                    ⇒
+ (ejec. $?) (ejec. $$) [portapap. ✓]┃
+                ━━━━━━━━━▶ (ejec. $$)┃
+ (ejec. $?) (ejec. $?)              ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: SALES» arriba a la izquierda. A la izquierda, el bloque TO GRADUATE con el dibujo de los cuatro ejecutivos (tres con globo «$?», uno con bolsas de dinero), el portapapeles con palomita y la flecha morada hacia el ejecutivo con dos bolsas «$». Flecha ⇒ sobre la línea vertical central. A la derecha, «Favorite Voicemail:» en negrita y el guion del mensaje de voz en cursiva, entre comillas. Frame principal: insert a pantalla completa; también en la toma abierta (00:16:26, 00:16:30) y en primeros planos de Leila con la columna derecha de fondo (00:16:02, 00:16:34).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:16:07]
+
 [00:16:07] actually this voicemail.
 [00:16:08] So basically you're going to
 [00:16:09] call somebody and you're
@@ -1430,6 +1469,54 @@ Recreación:
 [00:16:33] cool tactic that we have in
 [00:16:34] terms of what you can do
 [00:16:35] from an outbound standpoint.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:16:37 | stage3_00-16-37.png]** · tipo: tabla
+También visible en: 00:16:45, 00:19:46
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE
+> HEADCOUNT | 1 to 4
+> YOUR ROLE | TRAINER
+> LEADERSHIP STRUCTURE | First full-time hires
+> # OF COMPANIES HERE | 7,140,000 (24% of companies)
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | No time to fix everything that's wrong. | Fix the thing they complain about most.
+> MARKETING | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content)
+> SALES | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring.
+> CUSTOMER SERVICE | YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.**
+> INFORMATION TECH (IT)
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 3: STABILIZE | |
+|---|---|
+| **HEADCOUNT** | 1 to 4 |
+| **YOUR ROLE** | TRAINER |
+| **LEADERSHIP STRUCTURE** | First full-time hires |
+| **# OF COMPANIES HERE** | 7,140,000 (24% of companies) |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | No time to fix everything that's wrong. | Fix the thing they complain about most. |
+| **MARKETING** | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content) |
+| **SALES** | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring. |
+| **CUSTOMER SERVICE** | ◀ YOU ARE HERE | **How you get more customers to refer, retain, review, & resell.** |
+| **INFORMATION TECH (IT)** | — | — |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título «3: STABILIZE» en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; fondo de celdas blanco; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); fila «Bottom line» en barra negra abajo, con texto blanco en cursiva. Filas PRODUCT, MARKETING y SALES llenas en texto normal centrado (en SALES cada celda en dos renglones). En la fila CUSTOMER SERVICE, la celda CONSTRAINT la ocupa una flecha morada gruesa que apunta a la izquierda (hacia el rótulo) con el texto blanco «YOU ARE HERE»; en la celda TO GRADUATE de esa misma fila va, en negrita negra y más grande que el resto, la definición de la función. Resto vacío. Frame principal: insert a pantalla completa; también en la toma abierta (00:16:45, 00:19:46).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:16:36]
+
 [00:16:36] So that brings us to sales.
 [00:16:37] We wasted time with bad
 [00:16:39] leads and we didn't have
@@ -1440,6 +1527,38 @@ Recreación:
 [00:16:44] we calendar.
 [00:16:45] And that brings us to
 [00:16:46] customer service.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:16:47 | stage3_00-16-47.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: CUSTOMER SERVICE
+> At this level…
+> CONSTRAINT
+> New customers feel lost. Not same experience as when it was "just you."
+
+Recreación:
+
+```text
+[3: STABILIZE: CUSTOMER SERVICE]
+
+                         At this level…
+
+        ┌────────────┐            ┃
+        │ CONSTRAINT │            ┃
+        └────────────┘            ┃
+  New customers feel lost. Not    ┃
+  same experience as when it was  ┃
+         "just you."              ┃
+                                  ┃
+  [poste indicador] [persona ?]   ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: CUSTOMER SERVICE» arriba a la izquierda. A la izquierda: rótulo «CONSTRAINT» en caja negra con texto blanco, el texto, y dos siluetas negras: un poste indicador con dos flechas en direcciones opuestas y una persona rascándose la cabeza con un «?» (confundida). Línea vertical negra al centro; la mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:16:47]
+
 [00:16:47] All right.
 [00:16:47] So customer service is how
 [00:16:48] you get the four hours,
@@ -1457,10 +1576,91 @@ Recreación:
 [00:17:00] Like they're like, I'm in.
 [00:17:01] I miss when it was just us,
 [00:17:02] just us and a couple gals.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:17:05 | stage3_00-17-05.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: CUSTOMER SERVICE
+> And…
+> CONSTRAINT
+> New customers feel lost. Not same experience as when it was "just you."
+> TO GRADUATE
+> Learn to onboard customers properly.
+
+Recreación:
+
+```text
+[3: STABILIZE: CUSTOMER SERVICE]
+
+                              And…
+
+   ┌────────────┐                ┃         ┌─────────────┐
+   │ CONSTRAINT │                ┃         │ TO GRADUATE │
+   └────────────┘                ┃         └─────────────┘
+  New customers feel lost. Not   ┃  Learn to onboard customers properly.
+  same experience as when it was ┃
+         "just you."             ⇒
+                                 ┃   [mochilero con mapa] [guía señalando]
+  [poste indicador] [persona ?]  ┃                          [poste]
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: CUSTOMER SERVICE» arriba a la izquierda. A la izquierda, el bloque CONSTRAINT con el poste indicador y la persona confundida con «?». Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, bajo el texto TO GRADUATE, un pictograma negro: un mochilero encorvado que mira un papel/mapa y, a su lado, otra persona que señala con el brazo un poste con carteles de dirección (la que lo orienta), ambos sobre una línea de suelo. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:17:04]
+
 [00:17:04] Right.
 [00:17:05] And so to graduate,
 [00:17:07] you learn to onboard
 [00:17:08] customers properly.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:17:10 | stage3_00-17-10.png]** · tipo: slide
+También visible en: 00:17:22, 00:17:30, 00:17:56, 00:18:29, 00:18:30, 00:18:53, 00:18:54, 00:19:00, 00:19:04, 00:19:15, 00:19:39, 00:19:45
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: CUSTOMER SERVICE
+> What that looks like…
+> TO GRADUATE
+> Learn to onboard customers properly.
+> **GROWTH Framework**
+> **Goal Setting** – Establish clear expectations
+> **Resource Allocation and Training** – Provide personal success path and clear instruction.
+> **Optimize First Experience** – Ensure a positive start with quick wins so they see immediate value.
+> **Workflow Integration** – Help the product fit seamlessly into daily operations.
+> **Track Progress and Provide Feedback Loops** – Monitor, recognize, reward & relay.
+> **Hand-off to Ongoing Support and Growth** – Transition to long-term support and relationship building once success is realized. _Make sure they know where to ask questions._
+
+Recreación:
+
+```text
+[3: STABILIZE: CUSTOMER SERVICE]
+
+                       What that looks like…
+
+        ┌─────────────┐             ┃          **GROWTH Framework**
+        │ TO GRADUATE │             ┃
+        └─────────────┘             ┃ **Goal Setting** – Establish clear expectations
+  Learn to onboard customers        ┃ **Resource Allocation and Training** – Provide
+           properly.                ┃ personal success path and clear instruction.
+                                    ┃ **Optimize First Experience** – Ensure a positive
+                                    ⇒ start with quick wins so they see immediate value.
+  [mochilero con mapa] [guía        ┃ **Workflow Integration** – Help the product fit
+   señalando el poste]              ┃ seamlessly into daily operations.
+                                    ┃ **Track Progress and Provide Feedback Loops** –
+                                    ┃ Monitor, recognize, reward & relay.
+                                    ┃ **Hand-off to Ongoing Support and Growth** –
+                                    ┃ Transition to long-term support and relationship
+                                    ┃ building once success is realized. _Make sure
+                                    ┃ they know where to ask questions._
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: CUSTOMER SERVICE» arriba a la izquierda. A la izquierda, el bloque TO GRADUATE con el pictograma del mochilero y la persona que señala el poste de direcciones. Flecha ⇒ sobre la línea vertical central. A la derecha, título «GROWTH Framework» en negrita y seis párrafos cuyo nombre va en negrita (las iniciales forman G-R-O-W-T-H); «Make sure they know where to ask questions.» subrayado. Frame principal: insert a pantalla completa; también en la toma abierta (00:17:22, 00:17:30, 00:17:56, 00:18:29, 00:18:30, 00:19:04, 00:19:15, 00:19:39, 00:19:45) y en primeros planos de Alex donde solo se ve la columna izquierda y el inicio de la derecha (00:18:53, 00:18:54, 00:19:00).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:17:10]
+
 [00:17:10] All right.
 [00:17:10] So this is what this
 [00:17:10] looks like.
@@ -1627,6 +1827,54 @@ Recreación:
 [00:19:40] I feel pretty good.
 [00:19:40] I think I know what's going on.
 [00:19:41] These people seem legit.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:19:48 | stage3_00-19-48.png]** · tipo: tabla
+También visible en: 00:19:53
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE
+> HEADCOUNT | 1 to 4
+> YOUR ROLE | TRAINER
+> LEADERSHIP STRUCTURE | First full-time hires
+> # OF COMPANIES HERE | 7,140,000 (24% of companies)
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | No time to fix everything that's wrong. | Fix the thing they complain about most.
+> MARKETING | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content)
+> SALES | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring.
+> CUSTOMER SERVICE | New customers feel lost. | Learn how to onboard customers the right way.
+> INFORMATION TECH (IT) | YOU ARE HERE | **How you gather, store, analyze, & display information.**
+> RECRUITING
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 3: STABILIZE | |
+|---|---|
+| **HEADCOUNT** | 1 to 4 |
+| **YOUR ROLE** | TRAINER |
+| **LEADERSHIP STRUCTURE** | First full-time hires |
+| **# OF COMPANIES HERE** | 7,140,000 (24% of companies) |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | No time to fix everything that's wrong. | Fix the thing they complain about most. |
+| **MARKETING** | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content) |
+| **SALES** | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring. |
+| **CUSTOMER SERVICE** | New customers feel lost. | Learn how to onboard customers the right way. |
+| **INFORMATION TECH (IT)** | ◀ YOU ARE HERE | **How you gather, store, analyze, & display information.** |
+| **RECRUITING** | — | — |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título «3: STABILIZE» en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; fondo de celdas blanco; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); fila «Bottom line» en barra negra abajo, con texto blanco en cursiva. Filas PRODUCT a CUSTOMER SERVICE llenas en texto normal centrado. En la fila INFORMATION TECH (IT), la celda CONSTRAINT la ocupa una flecha morada gruesa que apunta a la izquierda (hacia el rótulo) con el texto blanco «YOU ARE HERE»; en la celda TO GRADUATE de esa misma fila va, en negrita negra y más grande que el resto, la definición de la función. Resto vacío. Frame principal: insert a pantalla completa; también en la toma abierta (00:19:53).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:19:46]
+
 [00:19:46] And so from here at Stabilize,
 [00:19:49] they felt lost and we learned
 [00:19:50] how to onboard customers
@@ -1634,6 +1882,41 @@ Recreación:
 [00:19:52] So we go to I Tizzle.
 [00:19:54] How you gather, store,
 [00:19:55] analyze and display information.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:19:58 | stage3_00-19-58.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: INFORMATION TECHNOLOGY (IT)
+> At this level…
+> CONSTRAINT
+> You have a bunch of tools you are paying for (and thought you would use) but don't.
+> $ $ $ $ $
+> $ $ $ $ $
+
+Recreación:
+
+```text
+[3: STABILIZE: INFORMATION TECHNOLOGY (IT)]
+
+                         At this level…
+
+        ┌────────────┐            ┃
+        │ CONSTRAINT │            ┃
+        └────────────┘            ┃
+  You have a bunch of tools you   ┃
+  are paying for (and thought you ┃
+       would use) but don't.      ┃
+                                  ┃
+  $destornillador $martillo $llave $cruceta $rodillo     (verde)
+  $amoladora $sierra $taladro $llave-ajust. $pinzas      (rojo)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: INFORMATION TECHNOLOGY (IT)» arriba a la izquierda. A la izquierda: rótulo «CONSTRAINT» en caja negra con texto blanco, el texto, y dos filas de cinco íconos de herramientas en gris oscuro, cada una con un signo «$»: fila de arriba con «$» verde (destornillador, martillo, llave, llave en cruz, rodillo de pintura); fila de abajo con «$» rojo (amoladora, sierra circular, taladro, llave ajustable, pinzas). Línea vertical negra al centro; la mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:19:57]
+
 [00:19:57] OK, and so at this point,
 [00:19:59] your constraint is that you have
 [00:20:01] a bunch of tools
@@ -1641,6 +1924,46 @@ Recreación:
 [00:20:03] and you thought you would use,
 [00:20:03] but you don't pay for them
 [00:20:04] and you don't use them.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:20:06 | stage3_00-20-06.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: INFORMATION TECHNOLOGY (IT)
+> And…
+> CONSTRAINT
+> You have a bunch of tools you are paying for (and thought you would use) but don't.
+> TO GRADUATE
+> Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline.
+> Optin
+> Sched
+> Show
+> Close
+
+Recreación:
+
+```text
+[3: STABILIZE: INFORMATION TECHNOLOGY (IT)]
+
+                              And…
+
+   ┌────────────┐                  ┃         ┌─────────────┐
+   │ CONSTRAINT │                  ┃         │ TO GRADUATE │
+   └────────────┘                  ┃         └─────────────┘
+  You have a bunch of tools you    ┃ Figure out the useful ones. Extend free
+  are paying for (and thought you  ┃ trial thru credits/discounts. Cut the
+       would use) but don't.       ┃ rest. Basic sales pipeline.
+                                   ⇒
+  $ $ $ $ $  (herramientas, verde) ┃  $ $ $ $ $  (herramientas, verde)
+  $ $ $ $ $  (herramientas, rojo)  ┃
+                                   ┃  [Optin] [Sched] [Show] [Close]  (válvulas)
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: INFORMATION TECHNOLOGY (IT)» arriba a la izquierda. A la izquierda, el bloque CONSTRAINT con las dos filas de herramientas (cinco con «$» verde, cinco con «$» rojo). Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, bajo el texto TO GRADUATE, solo queda la fila de cinco herramientas con «$» verde (las rojas desaparecieron) y debajo cuatro íconos negros de válvulas de tubería en fila, cada uno con un rótulo blanco: «Optin», «Sched», «Show», «Close». Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:20:05]
+
 [00:20:05] Right. So to graduate,
 [00:20:07] what you want to do
 [00:20:07] is you want to figure out
@@ -1658,6 +1981,56 @@ Recreación:
 [00:20:23] together at this point,
 [00:20:24] but that's OK.
 [00:20:25] We're going to get everything
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:20:28 | stage3_00-20-28.png]** · tipo: slide
+También visible en: 00:20:46, 00:20:46, 00:21:09
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: INFORMATION TECHNOLOGY (IT)
+> What that looks like…
+> TO GRADUATE
+> Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline.
+> Optin
+> Sched
+> Show
+> Close
+> **Basic Sales Pipeline (IMPORTANT!)**
+> Stage | Description | Metric to Track
+> Page Conversion | Visitors who convert into leads via landing pages | Conversion Rate (% visitors to leads)
+> Opt-ins/Leads | Contacts who express interest by signing up | Number of Opt-ins/Leads
+> Scheduled | Leads that schedule an appointment or call | Scheduled Appointments
+> Showed | Leads that show up for the scheduled appointment | Show-up Rate (% scheduled vs showed)
+> Offer | Leads that receive your sales pitch or proposal | Offers Presented
+> Closed | Deals successfully closed or sales made | Close Rate (% offers to closed deals)
+> Cash Collected | Actual cash received from closed deals | Amount of Cash Collected
+> Backouts | Deals that were closed but later cancelled or refunded | Number of Backouts
+> THIS IS YOUR BASELINE. YOU CANNOT IMPROVE WITHOUT KNOWING WHERE YOU ARE!
+
+Recreación:
+
+```text
+[3: STABILIZE: INFORMATION TECHNOLOGY (IT)]
+
+                       What that looks like…
+
+        ┌─────────────┐             ┃   **Basic Sales Pipeline (IMPORTANT!)**
+        │ TO GRADUATE │             ┃ ┌────────────┬────────────────────┬──────────────────┐
+        └─────────────┘             ┃ │ Stage      │ Description        │ Metric to Track  │
+ Figure out the useful ones. Extend ┃ ├────────────┼────────────────────┼──────────────────┤
+ free trial thru credits/discounts. ┃ │ (8 filas: Page Conversion … Backouts — ver texto) │
+ Cut the rest. Basic sales pipeline.⇒ └────────────┴────────────────────┴──────────────────┘
+                                    ┃
+   $ $ $ $ $ (herramientas, verde)  ┃  THIS IS YOUR BASELINE. YOU CANNOT
+                                    ┃  IMPROVE WITHOUT KNOWING WHERE YOU
+ [Optin] [Sched] [Show] [Close]     ┃              ARE!
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: INFORMATION TECHNOLOGY (IT)» arriba a la izquierda. A la izquierda, el bloque TO GRADUATE con la fila de herramientas con «$» verde y las cuatro válvulas «Optin», «Sched», «Show», «Close». Flecha ⇒ sobre la línea vertical central. A la derecha, título en negrita y una captura de una tabla de tres columnas (Stage en negrita / Description / Metric to Track) con filas en fondo blanco y gris claro alternados, enmarcada en morado; debajo, el aviso en mayúsculas. Frame principal: insert a pantalla completa; también en la toma abierta (00:20:46, 00:20:46 (b), 00:21:09), con Leila señalando la tabla.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:20:26]
+
 [00:20:26] tied up in a later stage.
 [00:20:28] And so a basic sales pipeline.
 [00:20:30] OK, what does that look like?
@@ -1694,6 +2067,54 @@ Recreación:
 [00:21:10] and you can iterate
 [00:21:11] from this point on.
 [00:21:12] And that really covers IT.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:21:14 | stage3_00-21-14.png]** · tipo: tabla
+También visible en: 00:21:23, 00:21:23
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE
+> HEADCOUNT | 1 to 4
+> YOUR ROLE | TRAINER
+> LEADERSHIP STRUCTURE | First full-time hires
+> # OF COMPANIES HERE | 7,140,000 (24% of companies)
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | No time to fix everything that's wrong. | Fix the thing they complain about most.
+> MARKETING | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content)
+> SALES | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring.
+> CUSTOMER SERVICE | New customers feel lost. | Learn how to onboard customers the right way.
+> INFORMATION TECH (IT) | You have a bunch of different tools that you don't use. | Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline.
+> RECRUITING | YOU ARE HERE | **How you find & hire people to work for your company.**
+> HUMAN RESOURCES (HR)
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 3: STABILIZE | |
+|---|---|
+| **HEADCOUNT** | 1 to 4 |
+| **YOUR ROLE** | TRAINER |
+| **LEADERSHIP STRUCTURE** | First full-time hires |
+| **# OF COMPANIES HERE** | 7,140,000 (24% of companies) |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | No time to fix everything that's wrong. | Fix the thing they complain about most. |
+| **MARKETING** | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content) |
+| **SALES** | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring. |
+| **CUSTOMER SERVICE** | New customers feel lost. | Learn how to onboard customers the right way. |
+| **INFORMATION TECH (IT)** | You have a bunch of different tools that you don't use. | Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline. |
+| **RECRUITING** | ◀ YOU ARE HERE | **How you find & hire people to work for your company.** |
+| **HUMAN RESOURCES (HR)** | — | — |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título «3: STABILIZE» en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; fondo de celdas blanco; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); fila «Bottom line» en barra negra abajo, con texto blanco en cursiva. Filas PRODUCT a INFORMATION TECH (IT) llenas en texto normal centrado. En la fila RECRUITING, la celda CONSTRAINT la ocupa una flecha morada gruesa que apunta a la izquierda (hacia el rótulo) con el texto blanco «YOU ARE HERE»; en la celda TO GRADUATE de esa misma fila va, en negrita negra y más grande que el resto, la definición de la función. Resto vacío. Frame principal: insert a pantalla completa; también en la toma abierta (00:21:23, 00:21:23 (b)).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:21:13]
+
 [00:21:13] At that point, you have a bunch
 [00:21:15] of different tools.
 [00:21:16] You're going to cut the ones
@@ -1706,16 +2127,132 @@ Recreación:
 [00:21:22] Which brings us to recruiting.
 [00:21:23] All right.
 [00:21:24] So recruiting is how you find
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:21:26 | stage3_00-21-26.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: RECRUITING
+> At this level…
+> CONSTRAINT
+> Not getting quality job applicants or takes forever.
+
+Recreación:
+
+```text
+[3: STABILIZE: RECRUITING]
+
+                         At this level…
+
+        ┌────────────┐            ┃
+        │ CONSTRAINT │            ┃
+        └────────────┘            ┃
+  Not getting quality job         ┃
+  applicants or takes forever.    ┃
+                                  ┃
+   [tres personas + lupa]         ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: RECRUITING» arriba a la izquierda. A la izquierda: rótulo «CONSTRAINT» en caja negra con texto blanco, el texto, y un ícono negro de tres siluetas de personas con una lupa grande sobre la del centro (búsqueda de candidatos). Línea vertical negra al centro; la mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:21:25]
+
 [00:21:25] and hire people for your business
 [00:21:26] and the constraint at this level
 [00:21:28] at Stabilize stage three
 [00:21:30] is you're not getting
 [00:21:30] quality job applications
 [00:21:32] or it just takes forever
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:21:35 | stage3_00-21-35.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: RECRUITING
+> And…
+> CONSTRAINT
+> Not getting quality job applicants or takes forever.
+> TO GRADUATE
+> Learn how to write a job description & review resumes.
+> JOB
+
+Recreación:
+
+```text
+[3: STABILIZE: RECRUITING]
+
+                              And…
+
+   ┌────────────┐                ┃         ┌─────────────┐
+   │ CONSTRAINT │                ┃         │ TO GRADUATE │
+   └────────────┘                ┃         └─────────────┘
+  Not getting quality job        ┃ Learn how to write a job description &
+  applicants or takes forever.   ┃           review resumes.
+                                 ⇒
+   [tres personas + lupa]        ┃      [hoja «JOB» + lápiz]
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: RECRUITING» arriba a la izquierda. A la izquierda, el bloque CONSTRAINT con el ícono de las tres personas y la lupa. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, bajo el texto TO GRADUATE, un ícono a línea negra de dos hojas superpuestas: la del frente con «JOB» arriba, un avatar de persona, un recuadro y renglones con viñetas; a la derecha, un lápiz. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:21:33]
+
 [00:21:33] to find good people or new people.
 [00:21:35] And so to graduate,
 [00:21:36] you have to learn how to write
 [00:21:37] a job description
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:21:39 | stage3_00-21-39.png]** · tipo: slide
+También visible en: 00:22:43, 00:22:45, 00:23:00, 00:23:09, 00:23:15, 00:23:21, 00:23:30, 00:23:31
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: RECRUITING
+> What that looks like…
+> TO GRADUATE
+> Learn how to write a job description & review resumes.
+> JOB
+> **Job Description** (_SOP here_)
+> ● Hook them
+>   ○ In the first line you want to speak to their dream job, as well as the ways in which we see this role differently. "Why should they apply here and not the other CEX job???"
+> ● Retain them
+>   ○ Now that you have them reading, explain why the values of the company are important, what they are, and how they translate into this role
+> ● Educate them
+>   ○ Educate them on the main 'stuff' this job entails. What are the top 3 things they are responsible for?
+> ● Reinforce them
+>   ○ How much money? What are the benefits?
+
+Recreación:
+
+```text
+[3: STABILIZE: RECRUITING]
+
+                       What that looks like…
+
+        ┌─────────────┐             ┃ **Job Description** (_SOP here_)
+        │ TO GRADUATE │             ┃
+        └─────────────┘             ┃  ● Hook them
+  Learn how to write a job          ┃      ○ In the first line you want to speak to their
+  description & review resumes.     ┃        dream job, as well as the ways in which we see
+                                    ┃        this role differently. "Why should they apply
+                                    ┃        here and not the other CEX job???"
+     [hoja «JOB» + lápiz]           ⇒  ● Retain them
+                                    ┃      ○ Now that you have them reading, explain why the
+                                    ┃        values of the company are important, what they
+                                    ┃        are, and how they translate into this role
+                                    ┃  ● Educate them
+                                    ┃      ○ Educate them on the main 'stuff' this job entails.
+                                    ┃        What are the top 3 things they are responsible for?
+                                    ┃  ● Reinforce them
+                                    ┃      ○ How much money? What are the benefits?
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: RECRUITING» arriba a la izquierda. A la izquierda, el bloque TO GRADUATE con el ícono de la hoja «JOB» y el lápiz. Flecha ⇒ sobre la línea vertical central. A la derecha, «Job Description» en negrita y «SOP here» como link subrayado en azul verdoso, entre paréntesis negros; lista de cuatro viñetas en texto grande con sub-viñetas en letra más chica; la pregunta «Why should they apply here and not the other CEX job???» en cursiva. Frame principal: insert a pantalla completa; también en la toma abierta (00:22:43, 00:22:45, 00:23:00, 00:23:21, 00:23:30), en primeros planos de Alex donde solo se ve la columna izquierda (00:23:09, 00:23:15) y en un primer plano de Leila con la lista de fondo (00:23:31).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:21:37]
+
 [00:21:37] and review resumes.
 [00:21:39] And so we have an SOP
 [00:21:40] that's available below this video
@@ -1836,6 +2373,59 @@ Recreación:
 [00:23:56] So what are the what are
 [00:23:57] the past achievements
 [00:23:58] that they have objective data
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:24:00 | stage3_00-24-00.png]** · tipo: slide
+También visible en: 00:23:33, 00:24:14, 00:24:15, 00:24:31, 00:24:45, 00:24:48, 00:24:49, 00:24:52, 00:24:52, 00:25:00, 00:25:10, 00:25:15, 00:25:26, 00:25:27, 00:25:30
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: RECRUITING
+> What that looks like…
+> TO GRADUATE
+> Learn how to write a job description & review resumes.
+> JOB
+> **Review Resumes:** _SOP HERE_
+> ● **What you want**
+>   ○ Past achievements backed by data
+>   ○ Relevant experience
+>   ○ Skills that transfer
+> ● **What you don't want**
+>   ○ Irrelevant experience
+>   ○ Too much experience
+>   ○ Too little experience
+>   ○ Wrong skills
+> ● **Target: 20% pass to screening**
+>   ○ If less, you may be off on job/posting
+>   ○ If more, you may be 'on' or too lax on reqs
+
+Recreación:
+
+```text
+[3: STABILIZE: RECRUITING]
+
+                       What that looks like…
+
+        ┌─────────────┐             ┃ **Review Resumes:** _SOP HERE_
+        │ TO GRADUATE │             ┃
+        └─────────────┘             ┃  ● **What you want**
+  Learn how to write a job          ┃      ○ Past achievements backed by data
+  description & review resumes.     ┃      ○ Relevant experience
+                                    ┃      ○ Skills that transfer
+     [hoja «JOB» + lápiz]           ⇒  ● **What you don't want**
+                                    ┃      ○ Irrelevant experience
+                                    ┃      ○ Too much experience
+                                    ┃      ○ Too little experience
+                                    ┃      ○ Wrong skills
+                                    ┃  ● **Target: 20% pass to screening**
+                                    ┃      ○ If less, you may be off on job/posting
+                                    ┃      ○ If more, you may be 'on' or too lax on reqs
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: RECRUITING» arriba a la izquierda. A la izquierda, el bloque TO GRADUATE con el ícono de la hoja «JOB» y el lápiz. Flecha ⇒ sobre la línea vertical central. A la derecha, «Review Resumes:» en negrita y «SOP HERE» como link subrayado en azul verdoso; viñetas principales en negrita y sub-viñetas de círculo hueco; «Relevant» en cursiva. Frame principal: insert a pantalla completa; también en la toma abierta (00:23:33, 00:24:14, 00:24:15, 00:24:31, 00:24:45, 00:24:52, 00:24:52 (b), 00:25:00, 00:25:27, 00:25:30), en primeros planos de Alex donde solo se ve la columna izquierda (00:24:48, 00:24:49) y en primeros planos de Leila con la lista de fondo (00:25:10, 00:25:15, 00:25:26).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:23:59]
+
 [00:23:59] to support that they actually did it,
 [00:24:00] not just claiming they did it.
 [00:24:02] Right. What's the relevant experience?
@@ -1920,6 +2510,54 @@ Recreación:
 [00:25:41] that you want to pay attention to today.
 [00:25:43] Boom.
 [00:25:44] And so that concludes
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:25:47 | stage3_00-25-47.png]** · tipo: tabla
+También visible en: 00:27:27, 00:27:28
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE
+> HEADCOUNT | 1 to 4
+> YOUR ROLE | TRAINER
+> LEADERSHIP STRUCTURE | First full-time hires
+> # OF COMPANIES HERE | 7,140,000 (24% of companies)
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | No time to fix everything that's wrong. | Fix the thing they complain about most.
+> MARKETING | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content)
+> SALES | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring.
+> CUSTOMER SERVICE | New customers feel lost. | Learn how to onboard customers the right way.
+> INFORMATION TECH (IT) | You have a bunch of different tools that you don't use. | Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline.
+> RECRUITING | Not getting quality applicants. | Learn how to write a job description & review resumes.
+> HUMAN RESOURCES (HR) | YOU ARE HERE | **How you protect yourself from employees and regulators suing you.**
+> FINANCE
+> Bottom line
+
+Recreación:
+
+| 3: STABILIZE | |
+|---|---|
+| **HEADCOUNT** | 1 to 4 |
+| **YOUR ROLE** | TRAINER |
+| **LEADERSHIP STRUCTURE** | First full-time hires |
+| **# OF COMPANIES HERE** | 7,140,000 (24% of companies) |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | No time to fix everything that's wrong. | Fix the thing they complain about most. |
+| **MARKETING** | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content) |
+| **SALES** | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring. |
+| **CUSTOMER SERVICE** | New customers feel lost. | Learn how to onboard customers the right way. |
+| **INFORMATION TECH (IT)** | You have a bunch of different tools that you don't use. | Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline. |
+| **RECRUITING** | Not getting quality applicants. | Learn how to write a job description & review resumes. |
+| **HUMAN RESOURCES (HR)** | ◀ YOU ARE HERE | **How you protect yourself from employees and regulators suing you.** |
+| **FINANCE** | — | — |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título «3: STABILIZE» en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; fondo de celdas blanco; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); fila «Bottom line» en barra negra abajo, con texto blanco en cursiva. Filas PRODUCT a RECRUITING llenas en texto normal centrado. En la fila HUMAN RESOURCES (HR), la celda CONSTRAINT la ocupa una flecha morada gruesa que apunta a la izquierda (hacia el rótulo) con el texto blanco «YOU ARE HERE»; en la celda TO GRADUATE de esa misma fila va, en negrita negra y más grande que el resto, la definición de la función. FINANCE vacía. Frame principal: insert a pantalla completa; también en la toma abierta (00:27:27, 00:27:28), con Alex señalando la pantalla.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:25:45]
+
 [00:25:45] our recruiting step at stage three.
 [00:25:48] So you're not getting
 [00:25:48] quality applicants or it takes forever.
@@ -1994,15 +2632,121 @@ Recreación:
 [00:27:27] And then boom, over to Human Resources.
 [00:27:29] So Human Resources,
 [00:27:31] Human Resources is how you protect yourself
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:27:35 | stage3_00-27-35.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: HUMAN RESOURCES
+> At this level…
+> CONSTRAINT
+> You're not withholding employee taxes and fees.
+
+Recreación:
+
+```text
+[3: STABILIZE: HUMAN RESOURCES]
+
+                         At this level…
+
+        ┌────────────┐            ┃
+        │ CONSTRAINT │            ┃
+        └────────────┘            ┃
+  You're not withholding employee ┃
+        taxes and fees.           ┃
+                                  ┃
+  [documento $ + hoja + bolsa +]  ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: HUMAN RESOURCES» arriba a la izquierda. A la izquierda: rótulo «CONSTRAINT» en caja negra con texto blanco, el texto, y un ícono a línea negra: un documento con un escudo con «$», una hoja con renglones superpuesta adelante y una bolsa de dinero con una cruz (+). Línea vertical negra al centro; la mitad derecha vacía. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:27:32]
+
 [00:27:32] from employees and regulators, right?
 [00:27:35] And so at this level,
 [00:27:36] the constraint is that you are not
 [00:27:38] withholding employee taxes or fees.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:27:41 | stage3_00-27-41.png]** · tipo: slide
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: HUMAN RESOURCES
+> And…
+> CONSTRAINT
+> You're not withholding employee taxes and fees.
+> TO GRADUATE
+> Get a payroll provider so all taxes and fees by state are handled. Onboard team to platform.
+
+Recreación:
+
+```text
+[3: STABILIZE: HUMAN RESOURCES]
+
+                              And…
+
+   ┌────────────┐                  ┃         ┌─────────────┐
+   │ CONSTRAINT │                  ┃         │ TO GRADUATE │
+   └────────────┘                  ┃         └─────────────┘
+  You're not withholding employee  ┃ Get a payroll provider so all taxes and
+        taxes and fees.            ┃ fees by state are handled. Onboard
+                                   ⇒ team to platform.
+  [documento $ + hoja + bolsa +]   ┃
+                                   ┃  [moneda $ + recibo + calculadora]
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: HUMAN RESOURCES» arriba a la izquierda. A la izquierda, el bloque CONSTRAINT con el ícono del documento con escudo «$», la hoja y la bolsa de dinero con cruz. Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, bajo el texto TO GRADUATE, un ícono negro de máquina/caja de nómina: un recibo largo con renglones saliendo de una bandeja, una calculadora a la derecha y una moneda «$» al frente. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:27:40]
+
 [00:27:40] OK, that's where a lot of people are.
 [00:27:42] And so to graduate,
 [00:27:43] you want to get a payroll provider.
 [00:27:45] So all taxes and fees by state are handled
 [00:27:48] and onboard the team to that platform.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:27:51 | stage3_00-27-51.png]** · tipo: slide
+También visible en: 00:28:15, 00:28:15, 00:28:30, 00:28:43, 00:28:45
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: HUMAN RESOURCES
+> What that looks like…
+> TO GRADUATE
+> Get a payroll provider so all taxes and fees by state are handled. Onboard your team to the platform.
+> **Payroll Providers:**
+> ● **ADP**
+> ● **Gusto**
+> ● **Paychex**
+> To tell you how not techy I am…I paid all my company's payroll over the phone until eventually I got someone to take it over for me.
+
+Recreación:
+
+```text
+[3: STABILIZE: HUMAN RESOURCES]
+
+                       What that looks like…
+
+        ┌─────────────┐             ┃ **Payroll Providers:**
+        │ TO GRADUATE │             ┃
+        └─────────────┘             ┃   ● **ADP**
+ Get a payroll provider so all taxes┃   ● **Gusto**
+ and fees by state are handled.     ┃   ● **Paychex**
+ Onboard your team to the platform. ⇒
+                                    ┃  To tell you how not techy I am…I
+ [moneda $ + recibo + calculadora]  ┃  paid all my company's payroll
+                                    ┃  over the phone until eventually I
+                                    ┃  got someone to take it over for
+                                    ┃               me.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: HUMAN RESOURCES» arriba a la izquierda. A la izquierda, el bloque TO GRADUATE (aquí dice «Onboard your team to the platform.», distinto del slide «And…» que dice «Onboard team to platform.») con el ícono de nómina (recibo, calculadora, moneda «$»). Flecha ⇒ sobre la línea vertical central. A la derecha, «Payroll Providers:» y los tres nombres en negrita; debajo, el párrafo en cursiva centrado. Frame principal: insert a pantalla completa; también en la toma abierta (00:28:15, 00:28:15 (b), 00:28:30) y en primeros planos de Leila con la columna derecha de fondo (00:28:43, 00:28:45).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:27:50]
+
 [00:27:50] OK, so what does that look like?
 [00:27:52] Payroll providers are fairly easy to find.
 [00:27:54] There are large ones like ADP,
@@ -2043,6 +2787,42 @@ Recreación:
 [00:28:45] you owe fees to all those different states
 [00:28:47] and a payroll provider will actually
 [00:28:49] pay those fees to the states for you.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:28:51 | stage3_00-28-51.png]** · tipo: slide
+También visible en: 00:29:05
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: FINANCE
+> At this level…
+> CONSTRAINT
+> People are getting paid informally. You forget to pay bills. Customers aren't getting billed properly.
+> OVERDUE
+
+Recreación:
+
+```text
+[3: STABILIZE: FINANCE]
+
+                         At this level…
+
+        ┌────────────┐            ┃
+        │ CONSTRAINT │            ┃
+        └────────────┘            ┃
+  People are getting paid         ┃
+  informally. You forget to pay   ┃
+  bills. Customers aren't getting ┃
+       billed properly.           ┃
+                                  ┃
+  [factura $ ←]  [factura $ →]    ┃
+              [OVERDUE]           ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: FINANCE» arriba a la izquierda. A la izquierda: rótulo «CONSTRAINT» en caja negra con texto blanco, el texto, y dos íconos negros de factura/documento con «$»: el primero con una flecha que entra (apunta a la izquierda, hacia el documento) y el segundo con una flecha que sale (a la derecha); debajo, un sello rojo inclinado con «OVERDUE». Línea vertical negra al centro; la mitad derecha vacía. Frame principal: insert a pantalla completa; también en la toma abierta (00:29:05).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:28:51]
+
 [00:28:51] All right, so finance is how you
 [00:28:52] manage your money and how you report it.
 [00:28:55] And so the constraint here is that
@@ -2059,6 +2839,44 @@ Recreación:
 [00:29:09] I don't know, right?
 [00:29:10] So all the stuff, like you get more volume
 [00:29:12] and things start breaking, right?
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:29:14 | stage3_00-29-14.png]** · tipo: slide
+También visible en: 00:29:33, 00:29:45, 00:29:48
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: FINANCE
+> And…
+> CONSTRAINT
+> People are getting paid informally. You forget to pay bills. Customers aren't getting billed properly.
+> OVERDUE
+> TO GRADUATE
+> Setup: Payroll processing, basic bookkeeping, managing invoices and payments (AR/AP)
+
+Recreación:
+
+```text
+[3: STABILIZE: FINANCE]
+
+                              And…
+
+   ┌────────────┐                  ┃         ┌─────────────┐
+   │ CONSTRAINT │                  ┃         │ TO GRADUATE │
+   └────────────┘                  ┃         └─────────────┘
+  People are getting paid          ┃ Setup: Payroll processing, basic
+  informally. You forget to pay    ┃ bookkeeping, managing invoices and
+  bills. Customers aren't getting  ┃ payments (AR/AP)
+       billed properly.            ⇒
+                                   ┃   [calendario] [celular con engranaje
+  [factura $ ←]  [factura $ →]     ┃                 y moneda $ →]
+              [OVERDUE]            ┃
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: FINANCE» arriba a la izquierda. A la izquierda, el bloque CONSTRAINT con las dos facturas con «$» (flecha que entra y flecha que sale) y el sello rojo «OVERDUE». Flecha blanca de contorno negro (⇒) sobre la línea vertical central. A la derecha, bajo el texto TO GRADUATE, un ícono a línea: un calendario y, a su derecha, un celular con un engranaje con flechas circulares (automatización) y una moneda «$» con una flecha que sale hacia la derecha (pago automático). Frame principal: insert a pantalla completa; también en la toma abierta (00:29:33, 00:29:45) y en un primer plano de Alex donde solo se ve la columna izquierda (00:29:48).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:29:13]
+
 [00:29:13] Instead of graduate, you set up payroll processing,
 [00:29:16] which we covered, right?
 [00:29:18] Because that depends on how you want
@@ -2080,6 +2898,51 @@ Recreación:
 [00:29:45] because you didn't pay me.
 [00:29:47] And so these types of business interruptions occur
 [00:29:50] right when you're at this stage
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:29:53 | stage3_00-29-53.png]** · tipo: slide
+También visible en: 00:30:01, 00:30:19, 00:30:30, 00:30:51, 00:30:51, 00:31:00, 00:31:00, 00:31:01
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: FINANCE
+> What that looks like…
+> TO GRADUATE
+> Setup: Payroll processing, basic bookkeeping, managing invoices and payments (AR/AP)
+> _**Finance Processes**_
+> ● Billing Process
+>   ○ (Make sure all client contracts entered properly). Lost $3M+ here.
+> ● Collections process (2nd)
+>   ○ Always pays for itself
+> ● Set aside money for fixed/recurring bills
+> ● Create process (even an email will work) for incoming bills to get forwarded to.
+
+Recreación:
+
+```text
+[3: STABILIZE: FINANCE]
+
+                       What that looks like…
+
+        ┌─────────────┐             ┃ _**Finance Processes**_
+        │ TO GRADUATE │             ┃
+        └─────────────┘             ┃  ● Billing Process
+  Setup: Payroll processing, basic  ┃      ○ (Make sure all client
+  bookkeeping, managing invoices and┃        contracts entered
+       payments (AR/AP)             ┃        properly). Lost $3M+ here.
+                                    ⇒  ● Collections process (2nd)
+   [calendario] [celular con        ┃      ○ Always pays for itself
+    engranaje y moneda $ →]         ┃  ● Set aside money for
+                                    ┃    fixed/recurring bills
+                                    ┃  ● Create process (even an email
+                                    ┃    will work) for incoming bills to
+                                    ┃    get forwarded to.
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: FINANCE» arriba a la izquierda. A la izquierda, el bloque TO GRADUATE con el ícono del calendario y el celular con engranaje y moneda «$». Flecha ⇒ sobre la línea vertical central. A la derecha, «Finance Processes» en negrita subrayada y la lista con viñetas negras y sub-viñetas de círculo hueco. Frame principal: insert a pantalla completa; también en la toma abierta (00:30:01, 00:30:19, 00:30:30, 00:30:51, 00:30:51 (b)) y en primeros planos de Alex donde solo se ve la columna izquierda (00:31:00, 00:31:00 (b), 00:31:01).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:29:50]
+
 [00:29:50] because you have no formal finance process.
 [00:29:53] And so this is what this looks like.
 [00:29:55] So billing processes is make sure
@@ -2120,10 +2983,105 @@ Recreación:
 [00:31:02] And then that way you can just get it off your plate
 [00:31:04] and then you can chunk the time later
 [00:31:05] and then you can make sure it all gets done.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:31:08 | stage3_00-31-08.png]** · tipo: tabla
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE
+> HEADCOUNT | 1 to 4
+> YOUR ROLE | TRAINER
+> LEADERSHIP STRUCTURE | First full-time hires
+> # OF COMPANIES HERE | 7,140,000 (24% of companies)
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | No time to fix everything that's wrong. | Fix the thing they complain about most.
+> MARKETING | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content)
+> SALES | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring.
+> CUSTOMER SERVICE | New customers feel lost. | Learn how to onboard customers the right way.
+> INFORMATION TECH (IT) | You have a bunch of different tools that you don't use. | Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline.
+> RECRUITING | Not getting quality applicants. | Learn how to write a job description & review resumes.
+> HUMAN RESOURCES (HR) | You're not withholding employee taxes and fees. | Get a payroll provider so all taxes and fees by state are handled.
+> FINANCE | YOU ARE HERE | **How you manage & report on your money.**
+> Bottom line
+
+Recreación:
+
+| 3: STABILIZE | |
+|---|---|
+| **HEADCOUNT** | 1 to 4 |
+| **YOUR ROLE** | TRAINER |
+| **LEADERSHIP STRUCTURE** | First full-time hires |
+| **# OF COMPANIES HERE** | 7,140,000 (24% of companies) |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | No time to fix everything that's wrong. | Fix the thing they complain about most. |
+| **MARKETING** | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content) |
+| **SALES** | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring. |
+| **CUSTOMER SERVICE** | New customers feel lost. | Learn how to onboard customers the right way. |
+| **INFORMATION TECH (IT)** | You have a bunch of different tools that you don't use. | Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline. |
+| **RECRUITING** | Not getting quality applicants. | Learn how to write a job description & review resumes. |
+| **HUMAN RESOURCES (HR)** | You're not withholding employee taxes and fees. | Get a payroll provider so all taxes and fees by state are handled. |
+| **FINANCE** | ◀ YOU ARE HERE | **How you manage & report on your money.** |
+| ***Bottom line*** | — | — |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título «3: STABILIZE» en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; fondo de celdas blanco; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); fila «Bottom line» en barra negra abajo, con texto blanco en cursiva. Filas PRODUCT a HUMAN RESOURCES (HR) llenas en texto normal centrado. En la fila FINANCE, la celda CONSTRAINT la ocupa una flecha morada gruesa que apunta a la izquierda (hacia el rótulo) con el texto blanco «YOU ARE HERE»; en la celda TO GRADUATE de esa misma fila va, en negrita negra y más grande que el resto, la definición de la función. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:07]
+
 [00:31:07] And so for finance,
 [00:31:09] we started with people are getting paid informally.
 [00:31:11] So you get the payable processor,
 [00:31:13] you forget to pay bills.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:31:15 | stage3_00-31-15.png]** · tipo: tabla
+También visible en: 00:31:25, 00:31:35, 00:31:40
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE
+> HEADCOUNT | 1 to 4
+> YOUR ROLE | TRAINER
+> LEADERSHIP STRUCTURE | First full-time hires
+> # OF COMPANIES HERE | 7,140,000 (24% of companies)
+> CONSTRAINT | TO GRADUATE
+> PRODUCT | No time to fix everything that's wrong. | Fix the thing they complain about most.
+> MARKETING | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content)
+> SALES | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring.
+> CUSTOMER SERVICE | New customers feel lost. | Learn how to onboard customers the right way.
+> INFORMATION TECH (IT) | You have a bunch of different tools that you don't use. | Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline.
+> RECRUITING | Not getting quality applicants. | Learn how to write a job description & review resumes.
+> HUMAN RESOURCES (HR) | You're not withholding employee taxes and fees. | Get a payroll provider so all taxes and fees by state are handled.
+> FINANCE | People are getting paid informally. You forget to pay bills. Customers aren't getting billed properly. | Setup: Payroll processing, basic bookkeeping, managing invoices and payments (AR/AP) processes.
+> Bottom line | YOU ARE HERE | **What you prioritize your company's resources [¿to achieve?]**
+
+Recreación:
+
+| 3: STABILIZE | |
+|---|---|
+| **HEADCOUNT** | 1 to 4 |
+| **YOUR ROLE** | TRAINER |
+| **LEADERSHIP STRUCTURE** | First full-time hires |
+| **# OF COMPANIES HERE** | 7,140,000 (24% of companies) |
+
+| | **CONSTRAINT** | **TO GRADUATE** |
+|---|---|---|
+| **PRODUCT** | No time to fix everything that's wrong. | Fix the thing they complain about most. |
+| **MARKETING** | Leads aren't buying fast enough (colder) | Add long term nurture (emails &/or content) |
+| **SALES** | Wasting time with bad leads. You don't have enough time to talk to good leads. | Decide on basic qualifications. Outsource setting & calendaring. |
+| **CUSTOMER SERVICE** | New customers feel lost. | Learn how to onboard customers the right way. |
+| **INFORMATION TECH (IT)** | You have a bunch of different tools that you don't use. | Figure out the useful ones. Extend free trial thru credits/discounts. Cut the rest. Basic sales pipeline. |
+| **RECRUITING** | Not getting quality applicants. | Learn how to write a job description & review resumes. |
+| **HUMAN RESOURCES (HR)** | You're not withholding employee taxes and fees. | Get a payroll provider so all taxes and fees by state are handled. |
+| **FINANCE** | People are getting paid informally. You forget to pay bills. Customers aren't getting billed properly. | Setup: Payroll processing, basic bookkeeping, managing invoices and payments (AR/AP) processes. |
+| ***Bottom line*** | ◀ YOU ARE HERE | **What you prioritize your company's resources [¿to achieve?]** |
+
+[DESCRIPCIÓN DEL DIBUJO] Tabla de la etapa: título «3: STABILIZE» en barra negra arriba; rótulos en celdas moradas a la izquierda con texto blanco; fondo de celdas blanco; una línea negra gruesa separa CUSTOMER SERVICE de INFORMATION TECH (IT); fila «Bottom line» en barra negra abajo, con texto blanco en cursiva. Las ocho funciones llenas en texto normal centrado. En la fila «Bottom line» (barra negra), la celda CONSTRAINT la ocupa la flecha morada «YOU ARE HERE» que apunta a la izquierda, y en la celda TO GRADUATE va en negrita blanca la definición; su segundo renglón queda cortado por el borde inferior del slide (solo se ve la mitad superior de «to achieve»). Frame principal: insert a pantalla completa; también en la toma abierta (00:31:25, 00:31:40) y en un primer plano de Alex con la tabla de lado (00:31:35).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:14]
+
 [00:31:14] So you get a AP in place, so accounts payable.
 [00:31:17] And then customers aren't getting billed properly.
 [00:31:19] So you put AR in place.
@@ -2139,6 +3097,35 @@ Recreación:
 [00:31:37] It's like, well, one person can go collect that
 [00:31:38] and they usually don't cost $50,000 a month.
 [00:31:40] So like worth doing.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:31:43 | stage3_00-31-43.png]** · tipo: texto-en-pantalla
+
+Texto en pantalla (literal):
+
+> 3: STABILIZE: BOTTOM LINE
+> **Constraint:**
+> Workload exceeding your resources
+> **To Graduate:**
+> Get Help.
+
+Recreación:
+
+```text
+[3: STABILIZE: BOTTOM LINE]
+
+   ┌──────────────────────────────────────────┐
+   │              **Constraint:**             │
+   │     Workload exceeding your resources    │
+   │              **To Graduate:**            │
+   │                 Get Help.                │
+   └──────────────────────────────────────────┘
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Etiqueta morada «3: STABILIZE: BOTTOM LINE» arriba a la izquierda sobre fondo negro. Al centro, un recuadro blanco con borde morado y texto negro centrado; «Constraint:» y «To Graduate:» en negrita. Solo a pantalla completa (insert).
+<!-- /FRAME -->
+↳ alineado con el audio de [00:31:42]
+
 [00:31:42] All right, that being said,
 [00:31:44] the bottom line if you forgot everything about the stage
 [00:31:46] is that the constraint you have right now
@@ -2155,9 +3142,91 @@ Recreación:
 [00:32:08] All right, you have a business,
 [00:32:09] you're generating revenue, you have employees.
 [00:32:11] And so if you're watching this video
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:32:15 | stage3_00-32-15.png]** · tipo: pirámide
+También visible en: 00:32:06, 00:32:30, 00:32:33
+
+Texto en pantalla (literal):
+
+> STAGE WE GRADUATE TO: 4: PRIORITIZE
+> 5 TO 9
+> 1 TO 4
+> FREELANCERS
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+> PRIORITIZE
+> STABILIZE
+> ADVERTISE
+> MONETIZE
+> IMPROVISE
+
+Recreación:
+
+```text
+              STAGE WE GRADUATE TO: 4: PRIORITIZE
+
+                            /\
+                           /||\
+                          / || \
+                         /  ||  \
+  ----------------------/---||---\----------------------
+   5 TO 9              /    ||    \         PRIORITIZE
+  --------------------/-----||-----\--------------------
+   1 TO 4            /      ||      \       STABILIZE
+  ------------------/-------||-------\------------------
+   FREELANCERS     /        ||        \     ADVERTISE
+  ----------------/---------||---------\----------------
+   JUST YOU      /          ||          \   MONETIZE
+  --------------/-----------||-----------\--------------
+   JUST YOU    / FUNCTIONS   ||           \ IMPROVISE
+              /______________||____________\
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Pirámide azul-morada centrada (la misma de la apertura, con una franja más): tres líneas desde el vértice y cinco franjas horizontales en la base que se prolongan a ambos lados. A la izquierda, de arriba abajo: «5 TO 9» en morado claro (la etapa siguiente), «1 TO 4», «FREELANCERS», «JUST YOU», «JUST YOU» en negro. A la derecha: «PRIORITIZE» en morado claro, «STABILIZE», «ADVERTISE», «MONETIZE», «IMPROVISE» en negro. «FUNCTIONS» en blanco dentro del gajo inferior izquierdo. En el título, «4: PRIORITIZE» en morado y el resto en gris oscuro. Solo en la toma abierta (00:32:06, 00:32:15, 00:32:30, 00:32:33); en 00:32:30 es un primer plano de Alex con la mitad izquierda de la pirámide de fondo.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:32:12]
+
 [00:32:12] and you don't have a custom scaling roadmap,
 [00:32:15] we offer them to you absolutely free.
 [00:32:17] You can click the button below and you can get them.
+
+<!-- FRAME -->
+**🖼️ [FRAME | STAGE 3: STABILIZE | 00:32:19 | stage3_00-32-19.png]** · tipo: texto-en-pantalla
+También visible en: 00:32:20
+
+Texto en pantalla (literal):
+
+> $100M SCALING ROADMAP
+> [¿ACQUISITION.COM?]
+> STAGE [¿6?]: OPTIMIZE
+> 5 TO 9
+> 1 TO 4
+> FREELANCERS
+> JUST YOU
+> JUST YOU
+> FUNCTIONS
+
+Recreación:
+
+```text
+  (hoja impresa en manos de Alex)        (pantalla de fondo)
+  ┌──────────────────────────────┐
+  │    $100M SCALING ROADMAP     │        5 TO 9      /█
+  │   [logo] [¿ACQUISITION.COM?] │        1 TO 4     /██
+  │ [▭] [▭] [▭] [▭] [▭]           │     FREELANCERS  /███
+  │ [▭] [▭] [▭] [▭] [▭]           │       JUST YOU  /████
+  │    ┌──────────────────────┐  │       JUST YOU /█FUNCTIONS
+  │    │ STAGE [¿6?]: OPTIMIZE │  │
+  │    └──────────────────────┘  │
+  └──────────────────────────────┘
+```
+
+[DESCRIPCIÓN DEL DIBUJO] Primer plano de Alex sosteniendo y hojeando un cuadernillo impreso anillado/engrapado arriba: en la página visible, título «$100M SCALING ROADMAP», logo de Acquisition.com debajo (texto borroso), dos filas de cinco miniaturas de tablas con barra morada a la izquierda, y abajo un rótulo en caja negra con texto blanco «STAGE [¿6?]: OPTIMIZE» (el número se lee borroso). A la derecha, de fondo, la mitad izquierda de la pirámide «4: PRIORITIZE» de la pantalla con los rótulos de estructura («5 TO 9» en morado). En 00:32:20 el mismo plano con la hoja algo más inclinada.
+<!-- /FRAME -->
+↳ alineado con el audio de [00:32:19]
+
 [00:32:19] So it's a custom, a download basically that we work
 [00:32:22] and it's a lot more stuff beyond the stuff
 [00:32:25] that's in this video to help you get to the next level.

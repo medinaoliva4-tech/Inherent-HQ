@@ -30,7 +30,6 @@
 | 5 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
 | 6 | **Match automático de mentores** | Strategy busca por industria, etapa y presupuesto en las plataformas de mentores. Falta el login |
 | 7 | **Cobro internacional** | Stripe, Wise o equivalente, con factura deducible para el cliente |
-| 8 | **`hormozi-brain`: video completo de Stage 3 (Stabilize)** | En Drive solo está el clip de 1 min: el audio y el pizarrón de Stage 3 viven solo en las guías PDF del roadmap |
 
 ---
 

@@ -201,7 +201,7 @@ Original: Drive › Hormozi Brain › Docs/5-scaling-frameworks.pdf
 | STAGE 0: IMPROVISE | `references/roadmap/stage-0-improvise.md` | Videos/01 Monetize.mp4 | 00:31:59 | ✅ | 85 |
 | STAGE 1: MONETIZE | `references/roadmap/stage-1-monetize.md` | Videos missing/Monetize.mp4 | 00:27:48 | ✅ | 52 |
 | STAGE 2: ADVERTISE | `references/roadmap/stage-2-advertise.md` | Videos/02 Advertise.mp4 | 00:33:32 | ✅ | 60 |
-| STAGE 3: STABILIZE | `references/roadmap/stage-3-stabilize.md` | Videos missing/acquisition.com_training_stabilize.mp4 | 00:32:41 | ✅ | 20 |
+| STAGE 3: STABILIZE | `references/roadmap/stage-3-stabilize.md` | Videos missing/acquisition.com_training_stabilize.mp4 | 00:32:41 | ✅ | 46 |
 | STAGE 4: PRIORITIZE | `references/roadmap/stage-4-prioritize.md` | Videos/04 Prioritize.mp4 | 00:43:05 | ✅ | 49 |
 | STAGE 5: PRODUCTIZE | `references/roadmap/stage-5-productize.md` | Videos/05 Productize.mp4 | 00:59:49 | ✅ | 46 |
 | STAGE 6: OPTIMIZE | `references/roadmap/stage-6-optimize.md` | Videos missing/Optimize.mp4 | 01:18:00 | ✅ | 49 |
