@@ -45,7 +45,7 @@ description: >
 | **Propios** | Lista del cliente, visitantes, interacciones. **Los más baratos** |
 | **Similares** | Derivados de los propios. Necesitan volumen de origen |
 | **Por interés o keyword** | AdWhispr `research_keywords` · `search_ad_targeting` |
-| **Competencia** | AdWhispr `find_competitors` · `research_competitor_keywords` |
+| **Competencia** | AdWhispr `find_competitors` · `research_competitor_keywords`. **Sus anuncios salen de Apify `apify/facebook-ads-scraper`, solo `country=GT` y por página** — ver `cr-fuentes` |
 
 > 🔑 **Se empieza por los propios.** Son los que mejor convierten y los que menos cuestan.
 

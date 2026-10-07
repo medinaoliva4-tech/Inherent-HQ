@@ -2,13 +2,15 @@
 name: cr-fuentes
 description: >
   Capa 1 de ④ Creatividad — la skill que CONSIGUE los anuncios. Decide de dónde salen las
-  referencias (Meta Ad Library, TikTok Creative Center, MCPs de ad intelligence, recolección propia
-  con navegador o modo manual), qué da y qué no da cada fuente, y con qué techos de consulta se
-  trabaja; extrae id, anunciante, copy, plataformas y fecha de inicio, calcula la antigüedad y
-  ordena por ella. Úsala cuando pidan "buscá los anuncios de esta marca", "qué está corriendo la
-  competencia", "de dónde saco referencias", "conseguime ads de este formato", "ordená estos ads
-  por antigüedad", "¿pagamos Foreplay?". No lee la imagen (eso es cr-lectura-de-video) ni decide
-  qué entra a la bóveda (eso es cr-swipe-file).
+  referencias: la investigación se hace **por plataforma**, en las que usa el cliente según el
+  plan por canal de ③, con tres actores de Apify —anuncios, Instagram y TikTok— y volumen fijado
+  por el plan contratado. Define qué da y qué no da cada fuente, los topes de gasto, en qué países
+  se busca según sea competencia o referencia ganadora, y cuáles pasan a lectura profunda; extrae
+  id, anunciante, copy, plataformas y fecha de inicio, y calcula la antigüedad. Úsala cuando pidan
+  "buscá los anuncios de esta marca", "qué está corriendo la competencia", "de dónde saco
+  referencias", "cuántos contenidos investigamos", "de qué países sacamos referencias", "qué
+  plataformas investigamos". No lee la imagen (eso es cr-lectura-de-video) ni decide qué entra a la
+  bóveda (eso es cr-swipe-file).
 ---
 
 # Capa 1 · Fuentes — conseguir los anuncios
@@ -57,7 +59,7 @@ funciona.
 | **Meta Ad Library (web)** | Los ads activos de cualquier página, con **fecha de inicio**, copy, plataformas, id de biblioteca y la **URL del creativo en el DOM** | Una columna de días corriendo. Sin exportación. Hay que abrir cada ad y hacer la resta — o extraer y ordenar nosotros |
 | **API oficial de Ad Library** | Consulta programática | 🔴 **No sirve:** solo ads políticos y de temas sociales (los comerciales, solo para audiencias UE/UK por el DSA), **devuelve solo texto** —ni imagen ni video—, verificación con documento, token a ~60 días, ~200 llamadas/hora |
 | **TikTok Creative Center** | Top Ads público y navegable: tendencias de **formato** | 🟡 **Sin API oficial.** Y es la **curaduría de TikTok**, no los competidores del cliente: no responde *"qué está haciendo esta marca"* |
-| **Foreplay** (MCP oficial, 200M+ ads) | Días corriendo y estado · el creativo, copy, CTA y landing · **transcripción con timestamps** · filtros por formato, duración, mercado, idioma y fecha · boards | Cuesta **$49/mes** (plan Basic, el MCP viene en los tres planes). No cubre orgánico con base del creador |
+| **Apify** *(MCP · la fuente oficial)* — tres actores, uno por plataforma | Anuncios con id, anunciante, fecha de inicio, copy —**incluido el de los DCO**— y la URL del video · orgánico de IG y TikTok con sus métricas. Filtrable por país | **Cobra por contenido.** Sin `resultsLimit` y `maxTotalChargeUsd` un run mal filtrado se dispara. El orgánico se ve **deslogueado**: sirve para comparar entre piezas, no como número absoluto |
 | **MCPs de ad intelligence** *(si están habilitados)* | Ads ordenables **por antigüedad**, competidores verificados, búsqueda por ángulo | 🛑 Instalado **no es** habilitado: un MCP sin habilitar en la sesión no tiene sus tools cargadas |
 
 > **Dato verificado:** la Ad Library **solo ordena por "impresiones" o "más recientes"**. **No tiene
@@ -88,37 +90,121 @@ para transcribir audio o como segunda lectura de ambientación. Lo que **no** pu
 anuncios corre un competidor y desde cuándo: eso es un índice, y los índices los tiene quien los
 construyó.
 
-## El estado de la decisión
+## La fuente oficial — Apify, un actor por plataforma
 
-**Se eligió la vía propia — recolección con navegador — sobre pagar Foreplay Basic ($49/mes).**
-Probado sobre la Ad Library real: **48 anuncios extraídos** con id, anunciante, copy, plataformas y
-fecha de inicio leyendo el DOM; antigüedad calculada y ordenada; las URLs de los videos están en el
-DOM y son descargables.
+**Apify es la fuente oficial del departamento.** Está conectada por MCP y probada contra la Ad
+Library real: el run queda registrado en la organización Inherent y las fechas que devuelve
+coinciden con las que muestra la página.
 
-El proceso automatizado —cron nocturno, Chromium headless, extracción, descarga, lectura y fichas—
-está documentado en **`agents/04-creative/brain/skills/BARRIDO-NOCTURNO.md`**.
-🟡 **Está PENDIENTE de construir.** Mientras no exista, se recolecta a mano o por MCP, y se declara.
+🛑 **Sustituye al barrido propio con navegador.** No hay servidor, no hay cron y no hay Chromium
+headless: el histórico de esa decisión quedó en `BARRIDO-NOCTURNO.md`, marcado como reemplazado.
 
-**Foreplay se compra el día que pase cualquiera de estas tres:**
+### 🛑 La investigación se hace por plataforma
 
-1. **Meta bloquea la IP del VPS** y el barrido deja de correr.
-2. **El extractor se rompe dos veces en un mes.**
-3. **Se pasan de 4 clientes** y hace falta TikTok en serio.
+**Las plataformas son las del cliente** — las que figuran en **`plan-por-canal.md` de ③ Marketing**.
+No se investiga una plataforma donde el cliente no publica, por interesante que sea lo que haya ahí.
 
-> Los $49 no compran una capacidad que no tengamos: compran que un rediseño de Meta no sea problema
-> nuestro. El arreglo típico es cambiar el texto que el script busca — una línea, diez minutos.
+| Plataforma | Actor | **$/1,000** |
+|---|---|---|
+| **Meta Ad Library** *(anuncios)* | `apify/facebook-ads-scraper` | **$5.80** |
+| **Instagram** *(orgánico)* | `apify/instagram-scraper` | **$2.70** |
+| **TikTok** *(orgánico)* | `clockworks/tiktok-scraper` | **$3.70** |
+
+🛑 **Toda corrida lleva `resultsLimit` y `maxTotalChargeUsd`.** Sin excepción, en los tres actores.
+
+### Cuántos contenidos por ciclo
+
+**Por plataforma, y según el plan contratado:**
+
+| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+|---|---|---|---|---|
+| **Contenidos a investigar, por plataforma** | **50** | **50** | **100** | **100** |
+
+**Se parte por la mitad:** **50 % competencia** *(Guatemala)* · **50 % referencias ganadoras**
+*(los países de la lista)*. En un cliente de 🔷 Marketing con tres plataformas son 150 contenidos:
+25 de competencia y 25 de referencias en cada una.
+
+### Los 3 aprendizajes de la prueba
+
+| # | Qué se aprendió | Por qué importa |
+|---|---|---|
+| **1** | **El copy de los DCO está en `snapshot.cards[].body`** — no en el cuerpo del anuncio | Un anuncio con creativo dinámico se lee **vacío** si solo se mira el campo de arriba. El lenguaje literal del comprador está en las cards |
+| **2** | **El video se detecta con `cards[].videoSdUrl`** | Separa video de estático sin abrir el anuncio, y es la URL que `cr-lectura-de-video` necesita |
+| **3** | **Se busca por página:** `search_type=page` + `view_all_page_id=…` | La búsqueda por keyword devuelve **la categoría**; la búsqueda por página devuelve **esa marca**. Para competencia hace falta la segunda |
+
+*(Los tres son del actor de anuncios. Para IG y TikTok el criterio de corte es otro — ver «ganador» abajo.)*
+
+### El orden de trabajo — descubrir, después scrapear
+
+```
+① DESCUBRIR   búsqueda por keyword  →  qué páginas lideran la categoría
+② SCRAPEAR    search_type=page & view_all_page_id=…  →  los ads de cada página
+```
+
+🛑 **No al revés.** Scrapear por keyword y quedarse ahí mezcla marcas y no deja medir a nadie.
+
+## 🛑 Las dos capas — competencia e inspiración no se mezclan
+
+> **Decisión del CEO.** Son dos barridos distintos, con países distintos, para departamentos
+> distintos. **Van en archivos o secciones separadas** — nunca en la misma lista.
+
+| | 🔍 **Competencia** | ⭐ **Referencias ganadoras** |
+|---|---|---|
+| **Para qué** | Saber de qué hay que despegarse | Encontrar qué estructura ya funciona |
+| **Quién la usa** | ① Strategy — ingeniería inversa y posicionamiento | ④ Creative — el swipe file |
+| **Países** | **Solo Guatemala** (`country=GT`) | La lista fija de países parecidos ↓ |
+| **Cómo se busca** | Por página de cada competidor | Descubrir por keyword, después por página |
+| **Qué sale de ahí** | El código saturado de la categoría | Estructura y ángulo para **adaptar** |
+
+### Los países de la capa de referencias
+
+**Parecidos a Guatemala en lo económico, lo cultural y lo demográfico.** La lista es fija:
+
+| Orden | Países | Cuándo |
+|---|---|---|
+| **1 · Primero** | 🇸🇻 El Salvador · 🇭🇳 Honduras | Siempre. Es el vecindario real |
+| **2 · Después** | 🇲🇽 México · 🇨🇴 Colombia · 🇵🇪 Perú · 🇪🇨 Ecuador · 🇩🇴 República Dominicana | Cuando los dos primeros no llenan el hueco |
+| **3 · Solo premium** | 🇨🇷 Costa Rica · 🇵🇦 Panamá | **Solo** en clientes premium o de ticket alto |
+
+🛑 **Costa Rica y Panamá no entran en un cliente de ticket bajo.** Su poder adquisitivo y su código
+de categoría son otros: la referencia se ve bien y no vende acá.
+
+### Qué es «ganador» — cambia según sea pauta u orgánico
+
+| Tipo | Criterio | Por qué |
+|---|---|---|
+| **Anuncio** *(Meta Ad Library)* | **60-90+ días corriendo** | Las marcas matan rápido a los perdedores: un ad viejo es un ad que paga |
+| **Orgánico** *(Instagram · TikTok)* | **2x o más** las vistas o interacciones **del promedio de esa cuenta** | Un número absoluto no dice nada. 2x contra su propia base sí |
+
+🛑 **Son los mismos criterios de `cr-swipe-file`**, para que nadie mida con dos reglas.
+
+### 🛑 Se scrapean todos, se leen a fondo 10-15
+
+```
+TODOS            →  se scrapean y se filtran por señal de ganador
+LOS 10-15 MEJORES →  pasan a cr-lectura-de-video (lectura profunda)
+EL RESTO          →  queda en el listado, con su señal, sin leer a fondo
+```
+
+**Por qué.** Scrapear es barato; leer a fondo cuesta tiempo de agente y de persona. El valor está
+en diseccionar las mejores, no en pasar 150 piezas por el mismo molde.
+
+🛑 **Se adapta, nunca se copia el creativo.** Lo que cruza la frontera es **la estructura y el
+ángulo**, pasados a quetzales y a la cultura local. Copiar la pieza nos mete en el código visual de
+otro — lo contrario de lo que ②B construyó.
 
 ## 🟡 El modo manual es legítimo y se declara
 
-Un humano navega la Ad Library o el Creative Center, pega los links o suelta el archivo de video, y
-el agente lo lee con `cr-lectura-de-video`. **El departamento funciona.** Lo que se pierde es el
-barrido semanal a escala, el orden por antigüedad y las transcripciones — o sea, el trabajo pasa de
-la herramienta a una persona. Cuando se corre así, el entregable lo dice:
+Cuando Apify no está disponible, o cuando hace falta TikTok, un humano navega la Ad Library o el
+Creative Center, pega los links o suelta el archivo de video, y el agente lo lee con
+`cr-lectura-de-video`. **El departamento funciona.** Lo que se pierde es el barrido a escala, el
+orden por antigüedad y el copy de los DCO — o sea, el trabajo pasa de la herramienta a una persona.
+Cuando se corre así, el entregable lo dice:
 `🟡 recolección manual — [n] anuncios · sin barrido a escala`.
 
 ⚠️ **El agente no puede bajar el video** de TikTok, Instagram ni Meta: esos dominios están fuera de
-alcance de red del entorno. Cuando hace falta leer la **imagen** y no solo el mensaje, el archivo lo
-aporta un humano, sale de Drive, o lo baja el barrido nocturno desde el VPS.
+alcance de red del entorno. Apify entrega **la URL** (`cards[].videoSdUrl`), no el archivo. Cuando
+hace falta leer la **imagen** y no solo el mensaje, el archivo lo aporta un humano o sale de Drive.
 
 ## 🛑 Techos de disciplina de consulta
 
@@ -129,11 +215,15 @@ barrido sin control.
 |---|---|
 | Resultados por búsqueda | **máximo 50.** Se ordena por antigüedad y se lee la primera página |
 | Ads por marca en el barrido de competidores | **máximo 25** |
-| Techo por cliente por semana | **400 anuncios.** Si se pasa, **se declara y se para** |
+| Volumen por cliente por ciclo | **El del plan contratado, por plataforma** *(50 / 50 / 100 / 100)*. Si se pasa, **se declara y se para** |
+| Tope de gasto por cliente | **US$5 al mes.** No es el presupuesto esperado —el real es menos de US$1,30— sino **el límite de seguridad**: si se acerca, algo se está pidiendo mal |
 | Paginar más allá de la primera página | Solo si la primera trajo señal y falta cubrir el hueco |
 | Volver a pedir un ad ya leído | 🛑 **Nunca.** Está en su ficha de referencia — la ficha es la caché |
 | Metadata | **Completa, en una sola llamada.** Nunca en dos pasadas: se paga dos veces por lo mismo |
 | Búsquedas infructuosas | **máximo 3 por objetivo.** Después se pide al usuario un nombre, un handle o un link |
+| `resultsLimit` | **Se fija por país, nunca global.** Un límite global se gasta entero en el primer país de la lista y los demás vuelven vacíos |
+| `maxTotalChargeUsd` | **Siempre puesto, en los tres actores.** Es el freno duro: sin él un run mal filtrado se come el tope del cliente antes de que nadie lo vea |
+| Lectura profunda | **10-15 contenidos por ciclo.** El resto queda listado con su señal |
 
 **Y tres reglas de lectura de resultados:**
 
@@ -149,7 +239,10 @@ Todo relevamiento cierra con:
 
 ```
 - Fuentes usadas: [lista] · no disponibles: [lista] → evidencia faltante: [qué]
-- Anuncios extraídos: [n] · techo del cliente: 400/semana · consumo: [n]
+- Plataformas investigadas: [lista, de `plan-por-canal.md`] · plan del cliente: [plan]
+- Contenidos por plataforma: [n] de [50 / 100] · competencia [n] · referencias [n]
+- Pasaron a lectura profunda: [n] de 10-15
+- Gasto de la corrida: US$[n] · tope de seguridad: US$5/mes
 - Modo: automatizado / MCP / 🟡 manual
 - Fecha del relevamiento: [fecha]   ← la antigüedad se mide a esta fecha
 - Confianza: 🟢 alta / 🟡 parcial / 🔴 insuficiente para dirigir
@@ -168,7 +261,16 @@ Lo que le toca a las fuentes. El bloque completo de la capa lo cierra `cr-swipe-
 - [ ] El listado está **ordenado por antigüedad**, no por impresiones ni por engagement
 - [ ] Para orgánico: **la base del creador se midió** antes de declarar un outlier
 - [ ] Ninguna referencia se pidió dos veces — se buscó su ficha antes de volver a consultar
-- [ ] Los **techos** se respetaron: 50 por búsqueda · 25 por marca · 400 por cliente/semana
+- [ ] Se investigaron **solo las plataformas del cliente**, según `plan-por-canal.md` de ③
+- [ ] El **volumen por plataforma** es el del plan contratado *(50 / 50 / 100 / 100)*, **mitad y mitad**
+- [ ] Los **techos** se respetaron: 50 por búsqueda · 25 por marca · US$5/mes de tope de seguridad
+- [ ] Toda corrida de Apify llevó **`resultsLimit`** y **`maxTotalChargeUsd`** — en los tres actores
+- [ ] Los anuncios se filtraron por **60-90+ días**; el orgánico por **2x el promedio de su cuenta**
+- [ ] Solo **10-15 contenidos** pasaron a lectura profunda; el resto quedó listado con su señal
+- [ ] El copy se leyó de **`snapshot.cards[].body`**, no solo del cuerpo del anuncio
+- [ ] La competencia se barrió **solo con `country=GT`** y **por página** (`search_type=page`)
+- [ ] Las referencias ganadoras salieron de la **lista fija de países**, y 🇨🇷/🇵🇦 solo si el cliente es premium o de ticket alto
+- [ ] **Competencia y referencias quedaron en secciones o archivos separados** — no en la misma lista
 - [ ] La metadata se pidió **completa en una sola llamada**
 - [ ] Máximo **3 búsquedas infructuosas** por objetivo; después se pidió un nombre, handle o link
 - [ ] Ningún error ni timeout se reportó como cero; ningún cero se describió como *"no existe"*

@@ -43,7 +43,7 @@
 |---|---|---|
 | 1 | **Herramienta de publicación:** cuenta, precio real del tramo de agencia *(15-20 cuentas, ~666 piezas/mes)* | «Presencia todos los días» |
 | 2 | **Bandeja de mensajes en TikTok** | La herramienta evaluada no cubre el inbox de TikTok, que es canal principal |
-| 3 | **Scraping:** cuenta, instalar el MCP, probar los trece actores y fijar el tope de gasto | Inteligencia de ①②③④ y las garantías |
+| 3 | **Scraping:** probar los actores que faltan. ✅ Cuenta, MCP y `apify/facebook-ads-scraper` ya están probados | Inteligencia de ①②③④ y las garantías |
 | 4 | **Pauta:** Meta, TikTok, Google Search y Performance Max | ⑩ Ads y «Que te encuentren en Google» |
 | 5 | **AdWhispr:** guardar la marca | Que `find_competitors` sirva sin preguntar cada vez |
 | 6 | **Plugin `claude-ads`** | Auditoría y monitoreo de cuentas |

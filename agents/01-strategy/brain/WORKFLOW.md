@@ -45,6 +45,7 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 | **Brief de ② Growth al cerrar** | ⛔ No se arma | ⛔ No se arma | ✅ | ✅ |
 | **SOPs** | ⬜ | ⬜ | 🟡 De crecimiento | ✅ De toda la empresa |
 | **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
+| **Contenidos a investigar** *(por plataforma del cliente — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
 | **Piezas del ciclo que habilita** | **86** | **145** | **145** | **204** |
 
 **Cómo se lee:**
