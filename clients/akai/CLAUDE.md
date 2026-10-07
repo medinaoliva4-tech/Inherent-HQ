@@ -21,11 +21,8 @@
 | `04-contenido/` | Ideas, producción, diseño, video y publicación, por mes | ✅ |
 | `05-comunidad/` | Comentarios y mensajes | ✅ |
 | `06-pauta/` | Campañas, creativos y resultados, por mes | ✅ |
-| `07-oferta-y-ventas/` | Oferta, canales grandes, upsells y conversión | 🟨 |
-| `08-tecnologia/` | Herramientas a medida e IA propia | 🟨 |
-| `09-operacion/` | Auditorías, SOPs y estructura | 🟨 |
-| `10-finanzas/` | Money OS | 🟨 Compound |
+| `07-oferta-y-ventas/` | La oferta | ✅ Excepción aprobada por Allan |
 | `99-referencias/` | Investigación y lo que manda el cliente | ✅ |
 
-**Los folders 🟨 se crean solo si el plan los activa.** Al cerrar el onboarding se borran los que
-no aplican.
+**Acuerdo especial:** lleva `07-oferta-y-ventas/` por la excepción de oferta. No lleva tecnología,
+operación ni finanzas.

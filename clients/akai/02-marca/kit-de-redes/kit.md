@@ -4,8 +4,8 @@
 
 | | |
 |---|---|
-| **Figma** | [Abrir el kit](<link>) |
-| **Archivos exportados** *(logos, assets)* | [Drive](<link>) |
+| **Figma** | [akai — brand world](https://www.figma.com/design/ZJzCE6YXKV5wmHFifjQfqv/akai---brand-world?node-id=2127-310) |
+| **Archivos exportados** *(logos, assets)* | ⚠️ SIN DATOS |
 
 ## Specs
 

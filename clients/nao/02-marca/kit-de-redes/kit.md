@@ -4,8 +4,8 @@
 
 | | |
 |---|---|
-| **Figma** | [Abrir el kit](<link>) |
-| **Archivos exportados** *(logos, assets)* | [Drive](<link>) |
+| **Figma** | [nao — brand world](https://www.figma.com/design/DuVghhzHbMiW6zzPIZC0dS/nao---brand-world?node-id=0-1) |
+| **Archivos exportados** *(logos, assets)* | ⚠️ SIN DATOS |
 
 ## Specs
 
