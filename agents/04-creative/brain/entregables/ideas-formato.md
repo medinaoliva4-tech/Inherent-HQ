@@ -1,5 +1,5 @@
 # Ideas — [Formato] — [Cliente]
-**Ciclo:** [semana / quincena / mes] · **Fecha de entrega:** [aaaa-mm-dd] · **Gate:** ciclo [✅/⬜]
+**Ciclo:** [semana / quincena / mes] · **Fecha de entrega:** [aaaa-mm-dd]
 
 > Este documento acompaña a `plan-de-contenido.csv` y a `brief-del-ciclo.md`. El Excel dice **qué
 > piezas hay**; `brief-del-ciclo.md` dice **con qué idea**; este doc dice **cómo es cada pieza de
@@ -48,7 +48,7 @@ CTA:       "..."
 
 **Layout de texto:** [dónde vive cada uno, tamaño, peso, safe zones]
 
-**Plantilla:** [nombre de la plantilla de ⑥A] — *o* `pendiente — sin plantillas aprobadas`
+**Plantilla:** [nombre de la plantilla de ⑥A] — *o* `pendiente — sin plantillas de ⑥A`
 *(obligatorio en estático, carrusel y story. En video: `N/A — formato de video`)*
 
 ### Foto

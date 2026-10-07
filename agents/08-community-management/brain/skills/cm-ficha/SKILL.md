@@ -21,6 +21,9 @@ description: >
 Se lee el plan y se anota **qué prende** según la tabla de `WORKFLOW.md` → «0 · El plan
 contratado». **Sin plan: BLOQUEADO.** No se asume Marketing «por mientras».
 
+**⬜ Tailor Made:** prende lo que declara **Su pipeline** → ⑧ *(«Básico» = 🔷 Marketing)*. Si ⑧ no
+está en su pipeline, no corre para ese cliente.
+
 ## 2 · La ficha — qué tiene que tener
 
 | Bloque de `respuestas.md` | Si falta |
@@ -38,6 +41,8 @@ contratado». **Sin plan: BLOQUEADO.** No se asume Marketing «por mientras».
 cambian; una respuesta con un precio viejo es peor que no contestar.
 
 ## 3 · ¿Hay algo nuevo?
+
+Sin el MCP de Zernio: `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio`.
 
 1. `accounts_list` → confirma que las cuentas de la ficha siguen conectadas.
 2. Por cuenta: `comments_list_inbox_comments` · `messages_list_inbox_conversations` (inbox **y**

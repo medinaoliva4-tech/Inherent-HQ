@@ -32,12 +32,15 @@ bandeja vacía.
 
 - 🛑 **Sin plan anotado, ⑧ no corre para ese cliente:** `BLOQUEADO — falta el plan contratado`.
 - 🛑 **El plan es el techo.** Lo que el plan no incluye no se hace aunque sea fácil.
+- ⬜ **Tailor Made: manda Su pipeline** del `plan-contratado.md`, sin cuestionarlo. Si ⑧ no está,
+  no corre para ese cliente; si está, prende el nivel que declara —**«Básico» es la columna
+  🔷 Marketing**—.
 
 | Qué hace ⑧ | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Contesta lo simple** *(horarios, ubicación, menú o catálogo, precios publicados, links)* | ✅ | ✅ | ✅ | ✅ |
 | **Pasa lo complejo al WhatsApp del cliente** | ✅ | ✅ | ✅ | ✅ |
-| **Redes que atiende** | Las del plan por canal de ③ | **Todas las del cliente, todos los días** | Todas | Todas |
+| **Redes que atiende** | Las **Redes** del `plan-contratado.md` *(o las del plan por canal de ③, si existe)* | **Todas las del cliente, todos los días** | Todas | Todas |
 | **Modera** *(oculta spam y abuso)* | — | ✅ | ✅ | ✅ |
 | **Seguimiento** *(quién preguntó qué, avisos al CEO, `seguimiento/`)* | — | ✅ | ✅ | ✅ |
 | **Auto-DM por palabra clave y embudo de WhatsApp** | — | — | ✅ | ✅ |

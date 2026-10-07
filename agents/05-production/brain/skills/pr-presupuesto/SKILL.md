@@ -3,28 +3,31 @@ name: pr-presupuesto
 description: >
   Capa 4 de ⑤ Producción — cuesta el ciclo por jornada (nunca por pieza), separa los cinco bloques
   de costo, declara la contingencia como línea propia según el perfil del rodaje, calcula el costo
-  por pieza y verifica si entra en el presupuesto disponible. Si no entra, presenta tres opciones
-  con su impacto y decide un humano. Produce `presupuesto.md` —el entregable que lee el cliente, en
-  lenguaje natural—, el `presupuesto.csv` interno que lo respalda y la columna
+  por pieza y lo compara contra el presupuesto de referencia del onboarding, si existe. Si se pasa,
+  presenta tres opciones con su impacto y decide un humano. Produce `presupuesto.md` —el
+  entregable que lee el cliente, en lenguaje natural—, el `presupuesto.csv` interno que lo respalda y la columna
   `costo_estimado` del plan. Úsala cuando pidan "cuánto cuesta producir esto", "presupuestá el
   ciclo", "armá el presupuesto", "cuánto sale cada pieza", "no nos alcanza, qué recortamos",
   "cuánta contingencia le ponemos". Requiere la Capa 2 hecha: presupuestar sin consolidar se
   rechaza.
 ---
 
-# Capa 4 · Presupuesto — cuánto cuesta y si entra
+# Capa 4 · Presupuesto — cuánto cuesta
 
 | | |
 |---|---|
-| **Consume** | Las jornadas cerradas de la Capa 2 (columna `jornada` + el factor de consolidación) · los recursos de la Capa 3 con su origen (`propio`/`prestado`/`alquilado`/`comprado`/`a-producir`) · el techo de presupuesto declarado en la Capa 0 · las cotizaciones de `99-referencias/recibido/` |
-| **Produce** | **`presupuesto.md`** — el entregable que lee el cliente · `presupuesto.csv` interno, 6 columnas, categorías cerradas, `TOTAL` por campaña y `TOTAL CICLO` · la columna `costo_estimado` de `plan-de-produccion.csv` · el costo por pieza · y, si no entra, las 3 opciones con su impacto |
+| **Consume** | Las jornadas cerradas de la Capa 2 (columna `jornada` + el factor de consolidación) · los recursos de la Capa 3 con su origen (`propio`/`prestado`/`alquilado`/`comprado`/`a-producir`) · el presupuesto de referencia declarado en la Capa 0, si existe · las cotizaciones de `99-referencias/recibido/` |
+| **Produce** | **`presupuesto.md`** — el entregable que lee el cliente · `presupuesto.csv` interno, 6 columnas, categorías cerradas, `TOTAL` por campaña y `TOTAL CICLO` · la columna `costo_estimado` de `plan-de-produccion.csv` · el costo por pieza · y, si se pasa de la referencia, las 3 opciones con su impacto |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:
 `agents/05-production/brain/entregables/presupuesto.md`.
 
-**Qué es:** poner número al plan que ya está agrupado, y decir con datos si entra o no.
+**Qué es:** poner número al plan que ya está agrupado, y compararlo con datos contra la referencia.
 **Qué no es:** no es decidir qué se produce (③ Marketing) ni cambiar el contenido de una escena
 (④ Creatividad). No incluye la edición final: eso se presupuesta en ⑥A y ⑥B.
+
+🔑 **El presupuesto de producción del onboarding, si existe, es referencia** para saber por dónde
+presupuestar — no techo ni bloqueo. **Cada campaña o sesión puede llevar su propio presupuesto.**
 
 ## 🛑 La regla que manda: no se presupuesta sin Capa 2 hecha
 
@@ -158,7 +161,7 @@ cerradas. Plantilla: `agents/05-production/brain/entregables/presupuesto.md`.
 > por campaña aparece **solo si el ciclo tiene dos o más**, y ahí se cierra con el total del ciclo.
 > La estructura del CSV soporta N campañas siempre; lo que se ajusta es qué se muestra.
 
-## Paso 5 · Si no entra — las 3 opciones, siempre las tres
+## Paso 5 · Si se pasa de la referencia — las 3 opciones, siempre las tres
 
 Se presentan **con su impacto**, y **decide un humano**:
 
@@ -207,7 +210,7 @@ convocatoria, ni una compra, ni una seña de locación. Se registra con fecha y 
 - [ ] `presupuesto.md` **no usa jerga del método**: ni `jornada`, ni `factor de consolidación`, ni ids de pieza, ni las categorías cerradas
 - [ ] `presupuesto.md` trae **qué necesitamos del cliente** (con fecha y responsable) y **qué NO incluye**
 - [ ] Con una sola campaña, `presupuesto.md` **no muestra desglose por campaña**
-- [ ] Si no entra: están **las 3 opciones** con su impacto y con quién decide cada una
+- [ ] Si se pasa de la referencia: están **las 3 opciones** con su impacto y con quién decide cada una
 - [ ] 🛑 **Producción no eligió sola qué pieza se cae**
 - [ ] Todo gasto que excede lo aprobado está marcado **⏸️ PENDIENTE APROBACIÓN**, no ejecutado
 - [ ] Lo que no se pudo cotizar está declarado **⚠️ SIN DATOS** con a quién pedírselo

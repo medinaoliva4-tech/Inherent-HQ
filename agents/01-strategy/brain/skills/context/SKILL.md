@@ -30,14 +30,15 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 | 🔷 **MARKETING PRO** $1,450 | Sostener presencia en serio | ⛔ *no corren* | ⬜ Ninguno |
 | 🟨 **ACCELERATE** $2,500 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | Growth · Conversion · Operations *(parcial)* |
 | 🟨 **COMPOUND** $4,200 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
-| ⬜ **Tailor Made** | Se define con Allan | Según alcance | Según alcance |
+| ⬜ **Tailor Made** | Lo define el CEO en el onboarding | Según su pipeline | Según su pipeline |
 
 | Plan | Briefs que se arman |
 |---|---|
-| 🔷 **MARKETING** | Branding · Marketing · Creative |
+| 🔷 **MARKETING** | Branding · Marketing · Creative · Growth *(ligero)* |
 | 🔷 **MARKETING PRO** | + Producción |
-| 🟨 **ACCELERATE** | + **Growth** · **Tecnología** |
+| 🟨 **ACCELERATE** | **Growth completo** · + **Tecnología** |
 | 🟨 **COMPOUND** | + **Sistemas** |
+| ⬜ **Tailor Made** | Los de los departamentos de **Su pipeline** *(`plan-contratado.md`)* |
 
 **Los cuatro incluyen estrategia. Cambia la profundidad, no la existencia.**
 ⚠️ **Pero en la línea 🔷 Marketing la estrategia llega hasta el MENSAJE.**

@@ -23,7 +23,7 @@ en un solo lugar: `agents/09-posting/brain/`.
 
 | Skill | Qué hace |
 |---|---|
-| **`posting`** | La puerta de entrada. Lee el pedido, verifica el pre-flight, decide qué capas correr y llama a las demás en orden, parando en los 2 gates. **Si no sabés cuál usar, es esta.** |
+| **`posting`** | La puerta de entrada. Lee el pedido, verifica el pre-flight, decide qué capas correr y llama a las demás en orden, con la auto-revisión de cada capa y un solo OK del CEO: antes de programar. **Si no sabés cuál usar, es esta.** |
 
 ## Las 7 skills, en orden del flujo
 
@@ -33,14 +33,14 @@ en un solo lugar: `agents/09-posting/brain/`.
 | **1** | **`po-caption`** | *"escribí los captions"*, *"el texto del post"* | El **caption final** de cada sección de `publicaciones.md`, con el hook antes del corte |
 | **2** | **`po-specs`** | *"¿esto cumple?"*, *"revisá los archivos"* | La columna `specs_ok` + el **bloque de QA** de cada sección |
 | **3** | **`po-programacion`** | *"¿a qué hora sale?"*, *"armá el calendario"* | Las columnas `cuenta`, `fecha` y `hora`, sin pisadas |
-| **4** | **`po-carga`** | *"armá el archivo de Publer"*, *"dejalo listo para subir"* | **`publer-import.csv`** con las 12 columnas exactas + el checklist de subida |
-| **5** | **`po-verificacion`** | *"¿salió todo?"*, *"revisá lo publicado"* | La columna `estado` + la **§ Verificación** de `publicaciones.md` |
+| **4** | **`po-carga`** | *"programalo en Zernio"*, *"dejalo programado"* | Las publicaciones **programadas en Zernio**, con el OK del CEO + su **`zernio_post_id`** en `calendario-de-publicacion.csv` |
+| **5** | **`po-verificacion`** | *"¿salió todo?"*, *"¿qué falló?"* | La columna `estado` según Zernio —programada · publicada · fallida— + la **§ Verificación** de `publicaciones.md` |
 | **6** | **`po-loop`** | *"¿qué se cayó este mes?"*, *"por qué llegó tarde"* | **`aprendizaje-de-posting.md`** — las 4 lecturas |
 
-Los entregables son **dos** —`publicaciones.md`, que lee quien aprueba, y `publer-import.csv`, que
-sube quien carga— más dos internos: `calendario-de-publicacion.csv` (12 columnas) y
-`aprendizaje-de-posting.md`. **Ninguna skill inventa un archivo nuevo: todas escriben dentro de esos
-cuatro.**
+Los entregables son **dos** —`publicaciones.md`, que lee el CEO para dar el OK, y
+`calendario-de-publicacion.csv` (13 columnas), el registro de lo programado en Zernio con su
+`zernio_post_id`— más uno interno: `aprendizaje-de-posting.md`. **Ninguna skill inventa un archivo
+nuevo: todas escriben dentro de esos tres.**
 
 ---
 
@@ -48,15 +48,12 @@ cuatro.**
 
 ```
 po-recepcion ──→ po-caption ──→ po-specs ──→ po-programacion ──→ po-carga
-      │                                            │                 │
-      │                                         GATE 1            GATE 2
-      │                                       (captions)     (paquete de carga)
-      │                                                            │
-      │                                          🛑 acá sube un HUMANO a Publer
-      │                                                            │
-      │                                                            ↓
-      └────────── po-loop ←──── qué se cayó ←──── po-verificacion ←─┘
-                     │
+      │                                                              │
+      │                                         valida → 🚦 OK del CEO → programa en Zernio
+      │                                                              │
+      │                                                              ↓
+      └────────── po-loop ←──── qué se cayó ←──── po-verificacion ←──┘
+                     │                        (estado en Zernio · reintento)
                      ├──→ piezas que llegan tarde → ③ Marketing
                      └──→ specs que fallan siempre → ⑥A / ⑥B
 ```
@@ -66,13 +63,12 @@ po-recepcion ──→ po-caption ──→ po-specs ──→ po-programacion �
 1. **Ninguna skill arranca sin el output de la anterior.** Si falta, se dice qué falta y se ofrece
    correrla. **No se improvisa el faltante.**
 2. 🛑 **`po-specs` va antes que `po-carga`, siempre.** Un archivo que no cumple detectado antes de
-   cargar se arregla en una hora; detectado después de publicar no se arregla nunca.
-3. 🛑 **`po-carga` es donde para el departamento.** Deja el archivo y el checklist; **sube un
-   humano.** Ninguna skill de acá publica ni programa por su cuenta.
-4. **Los gates son humanos.** `po-programacion` cierra con el Gate 1 —los captions, que es lo que
-   aprueba el cliente— y `po-carga` con el Gate 2, antes de que alguien suba nada.
-5. **`po-verificacion` corre después de que salió**, no antes. Es la única capa que se ejecuta con el
-   contenido ya público.
+   programar se arregla en una hora; detectado después de publicar no se arregla nunca.
+3. 🛑 **`po-carga` programa solo con el OK del CEO.** Uno solo, para el ciclo, antes de crear nada
+   en Zernio. Ninguna otra skill programa.
+4. **Las demás capas se auto-revisan** con su control de calidad y siguen: no hay otra parada.
+5. **`po-verificacion` lee el estado en Zernio** —programada, publicada o fallida— y reintenta las
+   fallidas. No abre las redes.
 6. **Cada skill trae su propio control de calidad al final.**
 
 ---
@@ -85,7 +81,8 @@ po-recepcion ──→ po-caption ──→ po-specs ──→ po-programacion �
 | **`po-caption`** | **Adapta el texto**: largo, orden, hashtags, alt text | 🛑 No cambia el mensaje. Si no entra sin romperse, devuelve a ④ |
 | **`po-specs`** | **Verifica el archivo** contra la spec de la plataforma | 🛑 No arregla el archivo. Devuelve a ⑥A o ⑥B |
 | **`po-programacion`** | **Fija hora y cuenta**, y evita pisadas | No elige el día — ese lo puso ④ — ni el canal, que es de ③ |
-| **`po-carga`** | **Arma el archivo** de Publer y el checklist | 🛑 **No sube ni publica** |
+| **`po-carga`** | **Programa en Zernio** lo que pasó por las Capas 0-3, con el OK del CEO | 🛑 **No programa sin el OK** ni publica en el acto |
+| **`po-verificacion`** | **Lee el estado** en Zernio y reintenta las fallidas | No abre las redes: el control de calidad de lo publicado es del CEO |
 
 > 🛑 **Adaptar no es reescribir.** `po-caption` puede recortar, partir una frase o mover el CTA de
 > lugar. En el momento en que cambia la idea o el hook, dejó de ser Posting y se metió en ④ — y nadie
@@ -103,35 +100,45 @@ po-recepcion ──→ po-caption ──→ po-specs ──→ po-programacion �
 ## Las tres rutas de salida
 
 No todo lo que ③ programa es una red social, y **no todo pasa por una herramienta**. El calendario
-trae `Email / Newsletter` como canal de primera clase —y **Publer no manda email**—, y trae canales
-que no programa nadie: **WhatsApp** y los **impresos**.
+trae `Email / Newsletter` como canal de primera clase, y trae canales que salen a mano:
+**WhatsApp** y los **impresos**. **Solo la ruta social se programa en Zernio.**
 
 | Ruta | Canales | Sale por |
 |---|---|---|
-| **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | `publer-import.csv` |
+| **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | Zernio — `po-carga` |
 | **Email** | Email / Newsletter | § Los envíos de email de `publicaciones.md` |
 | **Manual** | WhatsApp · SMS · impresos: cartel, vidriera, packaging | § Los envíos manuales de `publicaciones.md` |
 
-🛑 **Se separan en `po-recepcion`, no al cargar.** Una fila de `Email` o de la ruta manual que se
-cuela en `publer-import.csv` hace fallar la importación entera, con todo el ciclo adentro.
+🛑 **Se separan en `po-recepcion`, no al programar.** Una fila de `Email` o de la ruta manual no se
+programa en Zernio.
 🛑 **Una pieza de email o de WhatsApp no se marca `⚠️ SIN ARCHIVO` por no tener video:** su archivo
 es el texto, y lo escribió ④. **Los impresos sí llevan archivo** — sin el export de ⑥A no hay qué imprimir.
 🛑 **La ruta manual no es un cajón de descartes.** El canal de mayor ROI del arquetipo `01` es
 WhatsApp: un plan puede apoyar su objetivo central en algo que ninguna herramienta programa.
 🛑 **Un `canal` que no cae en ninguna de las tres se declara y se devuelve a ③** — no se fuerza
-dentro de Publer ni se reescribe el plan.
+dentro de Zernio ni se reescribe el plan.
 
-## Sobre Publer
+## Sobre Zernio
 
 | | |
 |---|---|
-| **Qué usamos** | El **archivo de carga masiva** (CSV, hasta 500 posts). `po-carga` lo genera con las 12 columnas exactas, **solo con las filas de la ruta social** |
-| **Qué NO usamos** | La API de publicación. El repo no publica: **sube un humano** |
-| **Credenciales** | 🛑 **Ninguna en el repo.** El archivo se sube desde la sesión del cliente en Publer |
-| **Formato** | ⏱️ Verificado en **2026-09**. Es de un proveedor externo: antes de la primera carga de cada ciclo se descarga la plantilla vigente y se comparan los encabezados |
+| **Qué es** | El MCP del slot «Publicación y bandeja de mensajes» (`inherent/05-OPERACION.md`). ⑧ Community lo usa para la bandeja; Posting, para programar y leer el estado |
+| **La cuenta** | 🛑 **Siempre con `account_id` explícito.** Sale de `clients/<cliente>/00-onboarding/LINKS.md` —o de `05-comunidad/respuestas.md`, si ⑧ ya lo anotó— y se confirma con `accounts_list`. **Nunca se adivina** |
+| **Credenciales** | 🛑 **Ninguna en el repo** |
+| **Si no está conectado** | `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio` |
 
-> 🛑 **Las 12 columnas no se renombran, no se reordenan y no se borra ninguna**, aunque queden
-> vacías. La importación falla si falta una.
+| Para qué | Herramienta | Skill |
+|---|---|---|
+| Las cuentas | `accounts_list` | `po-carga` |
+| Subir la media | `media_generate_upload_link` → `media_check_upload_status` | `po-carga` |
+| Validar la media | `validate_media` | `po-carga` |
+| Validar el post | `validate_post` · `validate_post_length` | `po-carga` |
+| Programar | `posts_create` · `posts_cross_post` · `queue_*` si el cliente usa cola | `po-carga` |
+| Leer el estado | `posts_get` · `posts_list` · `posts_list_failed` | `po-verificacion` |
+| Reintentar las fallidas | `posts_retry` · `posts_retry_all_failed` | `po-verificacion` |
+
+Lo que no está en la lista se busca con `search_tools`. 🛑 **Solo `po-carga` programa, y solo con el
+OK del CEO.**
 
 ---
 
@@ -142,9 +149,9 @@ dentro de Publer ni se reescribe el plan.
 2. **El `name` del encabezado tiene que ser igual al nombre de la carpeta.** Si no, no carga.
 3. **Toda skill declara arriba qué consume, qué produce y en qué sección de qué entregable escribe.**
 4. **Toda skill cierra con su bloque de QA.**
-5. **Ninguna skill nueva agrega un entregable.** Los cuatro archivos están cerrados.
-6. 🛑 **Ninguna skill de este departamento publica, programa ni manda nada afuera.** Si una skill
-   nueva necesita hacerlo, no es de ⑦ Posting y hay que discutirla antes de escribirla.
+5. **Ninguna skill nueva agrega un entregable.** Los tres archivos están cerrados.
+6. 🛑 **Solo `po-carga` programa, y solo con el OK del CEO.** Ninguna skill publica en el acto ni
+   manda nada al cliente.
 7. **Todo dato de plataforma lleva fecha de verificación.** Un límite de caracteres sin fecha caduca.
 8. **Enlazala en `.claude/skills/`** de la raíz (`ln -s ../../agents/09-posting/brain/skills/<skill> .claude/skills/<skill>`), o no se puede invocar por nombre.
 9. **Agregala a la tabla de arriba**, o en tres meses nadie sabe que existe.

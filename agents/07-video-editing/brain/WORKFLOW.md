@@ -63,16 +63,18 @@ paso vive en las skills: `skills/README.md`.
 - ⛔ **No hay segundo idioma en ningún plan.** No existe herramienta de doblaje — ver
   `skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma».
 
-### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+### ⬜ Tailor Made — se sigue su pipeline
 
-Allan lo cotiza **en las mismas unidades de la tabla de arriba** —videos planificados, derivados,
-revisiones— y el departamento trabaja con esos números igual que con un plan estándar.
-**El precio lo define Allan.**
+Se define en el onboarding, en `plan-contratado.md`, con dos secciones: **Qué incluye** y **Su
+pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—. **⑥B lee
+de ahí cuántos videos planificados, derivados y revisiones le tocan** y trabaja con esos números
+igual que con un plan estándar.
 
-- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
-- 🛑 **No existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
-- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
-  en todos los planes.
+- **El pipeline se sigue, no se cuestiona:** no se bloquea por no ser un plan de lista ni se
+  discute por precio.
+- 🛑 **Si ⑥B no está en su pipeline, no corre para ese cliente.**
+- **Cambia el volumen, nunca el método:** la trazabilidad, las devoluciones y la auto-revisión son
+  iguales en todos los planes.
 - **Arriba de 🟨 Compound el techo es el material rodado**, no el plan: más derivadas de las que el
   rodaje aguanta es volumen que no existe.
 
@@ -128,11 +130,11 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
         │           (el operador confirma el layout sobre el fotograma real antes de renderizar)
         ▼
    2  MARCA         § Movimiento de ②B + QA medido          → ve-marca
-        ▼           🚦 GATE 1 — Allan aprueba el corte principal
+        ▼           (auto-revisión del corte principal antes de derivar)
    3  DERIVADAS     multiplicar en variantes y formatos     → ve-derivadas
         ▼
    4  EXPORT        specs, nomenclatura, previews           → ve-export
-        ▼           🚦 GATE 2 — Allan aprueba el paquete
+        ▼           🚦 OK del CEO — antes de que la página le llegue al cliente
         ▼           → página de aprobación del CLIENTE (día 20) → QA → ⑨ Posting
    ↻  LOOP          rondas de cambios, qué se devolvió,     → ve-loop
                     qué material sobró
@@ -141,12 +143,13 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 > 🔑 **Las rondas de cambios son normales y se guardan.** Cada render nuevo es una versión (`_v2`,
 > `_v3`…) y la anterior se mueve a `<versión>-anterior/`. Nunca se sobreescribe un entregable.
 
-### 🚦 Los dos gates
+### Sin paradas internas — un solo OK del CEO
 
-| Gate | Qué se aprueba | Por qué |
+| Qué | Cómo se controla | Por qué |
 |---|---|---|
-| **1** | **El corte principal** de cada reel | Derivar de un corte mal aprobado multiplica el error por 3 |
-| **2** | **El paquete completo** | Es lo que entra a QA y después a publicación |
+| **El corte principal** de cada reel | Auto-revisión: QA medido y checklist de `ve-marca`, **antes de derivar** | Derivar de un corte flojo multiplica el error por 3 |
+| **El paquete completo** | Auto-revisión: QA técnico y checklist de `ve-export` | Es lo que entra a QA y después a publicación |
+| 🚦 **La página de aprobación del cliente** | **OK del CEO** antes de publicarla y mandarle el link | Es enviarle algo al cliente |
 
 ---
 
@@ -170,6 +173,9 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 | Escalar calidad · doblaje · generar video | ⛔ **Sin herramienta — no se promete** | 🔴 |
 
 > ⚠️ **`✅` = probado en cliente real · `⬜` = la tool existe, sin entregar todavía en cliente real.**
+> 🛑 **Si falta una herramienta:** `BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § <sección>`
+> — `ffmpeg`, `yt-dlp`, `/watch` y OpenCV → **§ Herramientas de video** · Node, Remotion y la CLI de
+> Vercel → **§ Node y Remotion**.
 > 🛑 **El editor de video no edita a mano lo que el motor puede hacer:** si algo no sale, se
 > corrige el guion de montaje (`edit/build_reels.py`) y se vuelve a renderizar. Así cada cambio
 > queda escrito y se puede repetir.
@@ -180,10 +186,10 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 
 | De | Qué | Si falta |
 |---|---|---|
-| **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3** · el `ideas-<formato>.md` con hook, guion, copy literal, escenas y layout | 🛑 BLOQUEADO |
+| **④ Creatividad** | **El Excel del ciclo cerrado** — `plan-de-contenido.csv` + `ideas-<formato>.md` con hook, guion, copy literal, escenas y layout | 🛑 BLOQUEADO |
 | **⑤ Producción** | El material con **nomenclatura y selects**, y el manifiesto que cruza fila por fila | 🛑 BLOQUEADO sin material · ⚠️ **sin selects, se seleccionan acá** con `/watch` (`ve-recepcion` §4) y se registra para ⑤ en el loop |
-| **②B Branding** | `sistema-visual.md` § Movimiento — subtítulos, entrada de texto, ritmo, cierre | 🛑 BLOQUEADO |
-| **③ Marketing** | `plan-por-canal.md` — a qué plataforma va cada pieza | 🛑 BLOQUEADO |
+| **②B Branding** | `sistema-visual.md` § Movimiento — subtítulos, entrada de texto, ritmo, cierre · los assets del kit en el Drive | 🟡 **Se usan si existen, no bloquean.** Sin § Movimiento, las entradas por defecto del motor (`ve-marca` §2) |
+| **③ Marketing** | `plan-por-canal.md` — a qué plataforma va cada pieza | 🟡 No bloqueante — se usan las **Redes** del `plan-contratado.md` |
 
 🛑 **Ningún archivo se copia: se cita su ruta.**
 
@@ -204,7 +210,7 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 - **No cambia el hook ni el guion.** Si no se puede montar, se devuelve a ④
 - **No escribe copy ni captions.** El copy es de ④, el caption es de ⑨. En el guion visual el
   operador decide **posición, estilo y efecto** del texto; si cambia una **palabra**, es un cambio de
-  copy: lo aprueba Allan y se avisa a ④ por escrito
+  copy: se registra y se avisa a ④ por escrito
 - **No decide a qué plataforma va** cada pieza. Eso es ③
 - **No arregla una pieza que incumple la guía.** La devuelve ②B y se corrige acá
 - **No publica.** Eso es ⑨, con gate
@@ -219,7 +225,6 @@ revisiones— y el departamento trabaja con esos números igual que con un plan 
 - [ ] Toda pieza lleva **activo distintivo en el primer frame**
 - [ ] Los **subtítulos están dentro de la safe zone** del formato
 - [ ] El **cierre de marca** está en toda pieza de video
-- [ ] El total de piezas **entra en el techo del plan contratado**
+- [ ] El total de piezas **entra en el techo del plan contratado** *(en ⬜ Tailor Made, el de su pipeline)*
 - [ ] Cada pieza pasó el **QA medido** de `ve-marca` §6: hoja de revisión, temblor y color
 - [ ] Hay **master + preview** de cada pieza, y las versiones anteriores quedaron archivadas
-- [ ] **Allan aprobó** los dos gates

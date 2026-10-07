@@ -10,6 +10,14 @@
 | **TikTok** | [@akaisushizgt](https://www.tiktok.com/@akaisushizgt) |
 | **Facebook** | [Akai Sushi GT](https://www.facebook.com/akaisushiz16/) |
 
+## Zernio — las cuentas para programar y la bandeja
+
+| Red | Cuenta | ID de Zernio |
+|---|---|---|
+| Instagram | @akaisushigt_ | `6ac5822f7e53db78d51e6cbc` |
+| TikTok | — | ⚠️ No está conectada en Zernio |
+| Facebook | — | ⚠️ No está conectada en Zernio |
+
 ## Quién tiene acceso
 
 El CEO.

@@ -52,6 +52,8 @@ Un correo por corrida al correo de «Avisos» de la ficha, con la plantilla
 **Asunto:** `⑧ [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`. Si no hubo nada nuevo, no se
 manda correo.
 
+Sin el MCP de Gmail: `BLOQUEADO — falta Gmail. Instalala: ver INSTALAR.md § Gmail`.
+
 ## 4 · Nunca
 
 - Escribirle a alguien que no escribió primero.

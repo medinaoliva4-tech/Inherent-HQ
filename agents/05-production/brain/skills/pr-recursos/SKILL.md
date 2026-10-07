@@ -16,7 +16,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · las guidelines y el banco de assets de ②B Branding · las cotizaciones de `99-referencias/recibido/` del cliente |
+| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · la guía y el banco de assets de ②B Branding, si existen · las cotizaciones de `99-referencias/recibido/` del cliente |
 | **Produce** | Las columnas **`locacion`**, **`talento`**, **`recursos`**, **`equipo`** y **`riesgo`** de `plan-de-produccion.csv` · las secciones **§ Lo que hay que conseguir** y **§ Permisos y autorizaciones** de `plan-de-rodaje.md`, y los **Riesgos del día** de cada jornada |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:
@@ -183,14 +183,14 @@ sin plan B es un 🔴.**
 | **Cotizar** alquiler de equipo o locación | Búsqueda web | `ask` |
 | **Clima previsto** para exteriores | Búsqueda web | `ask` |
 | Armar el Sheet de seguimiento | Google Sheets | `ask` — **solo post-GATE 1** |
-| Agendar jornadas | Calendario | `ask` — **solo post-GATE 2** |
-| Subir material | Drive (escritura) | `ask` — **solo post-GATE 3** |
+| Agendar jornadas | Calendario | `ask` — **solo post-GATE 1, con el call sheet completo** |
+| Subir material | Drive (escritura) | `ask` — **solo con el manifiesto de entrega cruzado** |
 
 **Qué NO se usa desde Producción:** Figma (es de ⑥A) · editores de video y color (⑥B) ·
 **generadores de imagen o video** —no hay; Producción consigue material **real**, y si la pieza
 pide media que no se puede grabar, se devuelve a ④— · Ad Library y Meta Ads (⑧B y ④) · publicación y programación (⑦).
 
-**Reglas de permiso:** nada se escribe afuera antes de su gate · **nada destructivo**: el material no
+**Reglas de permiso:** nada se escribe afuera antes de su momento · **nada destructivo**: el material no
 se borra, se marca · **ninguna reserva ni compromiso antes del GATE 1** · toda cotización se registra
 con **moneda y fecha** —un número sin fecha caduca y no sirve para la Capa 7— · los datos de contacto
 de talento y proveedores **no se pegan en herramientas externas** sin necesidad operativa.

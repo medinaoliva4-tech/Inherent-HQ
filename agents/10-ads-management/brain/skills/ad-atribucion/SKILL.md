@@ -19,6 +19,9 @@ description: >
 > 🔑 **Esta capa es la que habilita el performance fee: 10% de las ventas atribuidas.**
 > ⚠️ **Sin atribución limpia no hay fee.**
 
+🔷 **En Marketing y Marketing Pro no hay fee:** antes de gastar basta el pixel de Meta. **La
+atribución limpia (CAPI + GA4) y el performance fee son de 🟨 Accelerate y Compound.**
+
 ## 1 · Qué se atribuye y qué no
 
 | ✅ Se atribuye | ❌ No se atribuye |

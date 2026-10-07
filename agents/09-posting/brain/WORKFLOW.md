@@ -1,8 +1,8 @@
 # ⑦ Posting — cómo trabaja
 
 > **En una frase:** toma lo que ⑥A y ⑥B terminaron y lo deja **listo para salir** — con el caption
-> final, la ficha técnica verificada, la fecha y la hora, cargado en un archivo que un humano sube a
-> Publer. Creatividad escribe **el mensaje**; Posting lo **adapta a la plataforma** y lo **agenda**.
+> final, la ficha técnica verificada, la fecha y la hora, y **programado en Zernio** con el OK del CEO.
+> Creatividad escribe **el mensaje**; Posting lo **adapta a la plataforma** y lo **agenda**.
 
 Este documento es todo lo que hay que saber para operar el departamento. El **cómo se hace** cada
 paso vive en las skills: `skills/README.md`.
@@ -43,13 +43,13 @@ paso vive en las skills: `skills/README.md`.
 
 **Cómo se lee:**
 
-- **Posting carga TODAS las piezas aprobadas del ciclo, stories incluidas.** El número de la primera
-  fila es el total del plan: no hay piezas aprobadas que se queden sin programar.
+- **Posting programa TODAS las piezas del ciclo, stories incluidas.** El número de la primera
+  fila es el total del plan: no hay piezas del ciclo que se queden sin programar.
 - **Si la herramienta no programa stories, no se descartan:** se entregan en una **lista aparte para
   subir a mano**, con su fecha y su hora, y se declara en el handoff. 🛑 **Una story que no se pudo
   programar sigue siendo una pieza entregada del plan.**
 - 🛑 **Las variantes de creativo de pauta NO van a orgánico.** Las 20/30/35/50 variantes existen para
-  ⑩ Ads y **no cuentan como publicaciones** ni entran al calendario del ciclo. Cargarlas infla el
+  ⑩ Ads y **no cuentan como publicaciones** ni entran al calendario del ciclo. Programarlas infla el
   volumen con piezas que el cliente nunca pidió ver en su feed.
 - ⚠️ **🟨 Accelerate publica lo mismo que Pro, con otra mezcla:** las mismas 145, pero **27 videos
   contra 18** y **63 estáticos contra 72**. **Copiar el reparto de Pro es un error.**
@@ -57,20 +57,21 @@ paso vive en las skills: `skills/README.md`.
   ⑧ Community Management — y **no está incluido en 🔷 Marketing.**
 - ⛔ **No hay segundo idioma en ningún plan:** un caption por pieza
   (`agents/07-video-editing/brain/skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma»).
-- 🛑 **Si llegan más piezas que el techo del plan, las de más no se cargan:** se declaran a Allan.
+- 🛑 **Si llegan más piezas que el techo del plan, las de más no se programan:** se declaran al CEO.
 
 > 🟡 **La herramienta de publicación está en prueba.** Esta sección define **cuánto** se publica, no
 > **con qué**. El resto de este WORKFLOW y las skills `po-*` nombran la herramienta vigente.
 
-### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+### ⬜ Tailor Made — el acuerdo especial
 
-Allan lo cotiza **en las mismas unidades de la tabla de arriba**, y el departamento trabaja con esos
-números igual que con un plan estándar. **El precio lo define Allan.**
+Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
+secciones: **Qué incluye** y **Su pipeline** — qué departamentos corren, en qué orden, qué entrega
+cada uno y a qué nivel.
 
-- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
-- 🛑 **No existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
-- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
-  en todos los planes.
+- **Posting sigue ese pipeline.** No se bloquea por no ser un plan de lista ni se cuestiona por precio.
+- 🛑 **Si Posting no está en su pipeline, no corre para ese cliente.**
+- **Cambia el pipeline y qué se verifica, nunca el método:** la trazabilidad, las devoluciones y el
+  OK del CEO antes de programar son iguales en todos los planes.
 - **Arriba de 🟨 Compound sube el volumen**, pero más publicaciones exigen más archivos terminados de
   ⑥A Diseño y ⑦ Video Editing: **sin ellos no hay calendario.**
 
@@ -90,24 +91,25 @@ números igual que con un plan estándar. **El precio lo define Allan.**
 > una frase — **nunca reescribir la idea ni cambiar el hook.** Si el copy no entra en la plataforma
 > sin romperse, **vuelve a ④** con motivo y dos alternativas.
 
-### Dónde para: el humano sube
+### Dónde para: el OK del CEO
 
-Este departamento **no publica.** Deja el paquete completo y el archivo de carga; **un humano lo sube
-y aprieta programar.**
+Este departamento **programa en Zernio, y solo con el OK del CEO.** Deja el paquete completo en
+`publicaciones.md`; el CEO da **un único OK para el ciclo** y recién ahí `po-carga` crea las
+publicaciones, cada una a la fecha y hora del calendario.
 
-Es una decisión declarada del repo, no una limitación: las reglas de `CLAUDE.md` dicen **«Nada
-destructivo sin autorización: no publicar, no pautar, no enviar al cliente»**. Un error de copy o de fecha que sale publicado no se puede despublicar del
-timeline de nadie.
+Es la regla de `CLAUDE.md`: **«Nada destructivo sin autorización: no publicar, no pautar, no enviar
+al cliente»**. Un error de copy o de fecha que sale publicado no se puede despublicar del timeline de
+nadie. 🛑 **Nada se publica en el acto:** todo se programa a la fecha y hora del calendario.
 
 ### Las tres rutas de salida
 
 No todo lo que ③ Marketing programa es una red social, y **no todo lo que programa pasa por una
-herramienta.** Publer no manda email, y tampoco manda WhatsApp ni imprime un cartel. Hay tres rutas,
-y **toda fila cae en una y solo una**:
+herramienta.** Solo la ruta social se programa en Zernio; el email, el WhatsApp y el cartel salen
+por su propia ruta. Hay tres rutas, y **toda fila cae en una y solo una**:
 
 | Ruta | Canales | Sale por | Quién lo hace |
 |---|---|---|---|
-| **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | **`publer-import.csv`** | Un humano, en Publer |
+| **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | **Zernio** — `po-carga` | Posting, en Zernio, con el OK del CEO |
 | **Email** | Email / Newsletter | La sección **§ Los envíos de email** de `publicaciones.md` | Un humano, en la herramienta de email del cliente |
 | **Manual** | **WhatsApp** (lista o difusión) · **SMS** · **impresos y material físico**: cartel, vidriera, packaging, mesa | La sección **§ Los envíos manuales** de `publicaciones.md` | Un humano, **a mano**: lo manda desde el teléfono, o lo imprime y lo pega |
 
@@ -121,10 +123,10 @@ herramienta programa.
 fila de esa cuenta dice quién tiene el acceso. Si no está: `⚠️ SIN DATOS`, y el paquete se entrega
 igual — es agnóstico de herramienta.
 
-> 🛑 **Una fila de `Email` o de la ruta manual que se mete en `publer-import.csv` falla la
-> importación entera.** Se separan en la Capa 0, no al cargar.
+> 🛑 **Una fila de `Email` o de la ruta manual no se programa en Zernio.** Se separan en la Capa 0,
+> no al programar.
 
-> 🛑 **La ruta manual no se fuerza dentro de Publer, y el plan de ③ no se reescribe para que entre.**
+> 🛑 **La ruta manual no se fuerza dentro de Zernio, y el plan de ③ no se reescribe para que entre.**
 > Si un canal no cae en ninguna de las tres, se **declara** y se devuelve a ③ — no se inventa una
 > cuarta ruta en el momento.
 
@@ -136,17 +138,16 @@ igual — es agnóstico de herramienta.
 
 | Archivo | Para quién | Qué es |
 |---|---|---|
-| **`publicaciones.md`** | **Quien aprueba** — el lead, y el cliente si corresponde | Una sección por publicación: caption final, hashtags, alt text, link, qué archivo va, fecha y hora, y el QA de plataforma. Se lee para dar el OK. **Lleva las tres rutas**: las de social, § Los envíos de email y § Los envíos manuales |
-| **`publer-import.csv`** | **Quien carga** | El archivo con las **12 columnas exactas de Publer**, listo para subir. No se lee: se sube. **Solo lleva las filas de la ruta social** |
+| **`publicaciones.md`** | **El CEO** — para dar el OK antes de programar | Una sección por publicación: caption final, hashtags, alt text, link, qué archivo va, fecha y hora, y el QA de plataforma. **Lleva las tres rutas**: las de social, § Los envíos de email y § Los envíos manuales |
+| **`calendario-de-publicacion.csv`** | **Quien opera** y los departamentos que siguen | **El registro del ciclo:** una fila por publicación, 13 columnas. Lo que se programó en Zernio queda acá con su **`zernio_post_id`** y su **`estado`** |
 
-**Más dos archivos de trabajo interno** que no se entregan pero **sí se guardan**:
-`calendario-de-publicacion.csv` (una fila por publicación, 12 columnas — es el control de estado) y
+**Más un archivo de trabajo interno** que no se entrega pero **sí se guarda**:
 `aprendizaje-de-posting.md`, el cierre del ciclo.
 
-### Las 12 columnas de `calendario-de-publicacion.csv` *(interno)*
+### Las 13 columnas de `calendario-de-publicacion.csv`
 
 ```
-id · id_creativo · campana · canal · cuenta · formato · fecha · hora · archivo · caption_ok · specs_ok · estado
+id · id_creativo · campana · canal · cuenta · formato · fecha · hora · archivo · caption_ok · specs_ok · zernio_post_id · estado
 ```
 
 | Columna | Qué lleva | De dónde sale |
@@ -159,32 +160,20 @@ id · id_creativo · campana · canal · cuenta · formato · fecha · hora · a
 | `fecha` · `hora` | Día y hora exactos | ④ pone la fecha · Posting pone la **hora** |
 | `archivo` | El nombre del archivo final de ⑥A o ⑥B | ⑥A / ⑥B |
 | `caption_ok` · `specs_ok` | `✅` / `⬜` | Posting |
-| `estado` | `pendiente` / `listo` / `cargado` / `publicado` / `↩️ devuelto` | Posting |
+| `zernio_post_id` | El ID que devuelve Zernio al crear la publicación. Vacío hasta programar. Si un solo post de Zernio va a varias cuentas, sus filas comparten el ID | Zernio, vía `po-carga` |
+| `estado` | `pendiente` / `listo` / `programada` / `publicada` / `fallida` / `↩️ devuelto` | Posting · `programada`, `publicada` y `fallida` salen de Zernio |
 
-> 🛑 **`cuenta` no es `canal`.** Un cliente puede tener dos cuentas de Instagram. Cargar en la
+> 🛑 **`cuenta` no es `canal`.** Un cliente puede tener dos cuentas de Instagram. Programar en la
 > equivocada es de los pocos errores de este departamento que se ven desde afuera.
 
-### Las 12 columnas de `publer-import.csv`
+### Zernio
 
-**Son las de Publer, no las nuestras. No se renombran, no se reordenan y no se borra ninguna** —
-aunque queden vacías, o la importación falla.
-
-```
-Date · Text · Link · Media URL · Title · Label · Alt text(s) · Comment(s) ·
-Pin board, FB album, or Google category · Post subtype · CTA · Reminder
-```
-
-| Regla | Detalle |
+| | |
 |---|---|
-| **Fecha y hora** | `YYYY/MM/DD HH:MM`, en 24 h |
-| **Varios media o labels** | Separados por **coma** |
-| **Varios alt text o comentarios** | Separados por **doble pipe** `\|\|` |
-| **Máximo** | 500 posts por archivo |
-| **`Media URL`** | 🛑 Tiene que ser una **URL pública**. Un link de Drive privado no lo puede leer Publer |
-
-> ⏱️ **Verificado contra la documentación de Publer en 2026-09.** Es el formato de un proveedor
-> externo: **antes de la primera carga de cada ciclo se descarga su plantilla vigente y se comparan
-> los encabezados.** Un formato que cambió y nadie verificó falla con 40 posts adentro.
+| **Qué es** | El MCP del slot «Publicación y bandeja de mensajes» (`inherent/05-OPERACION.md`). `po-carga` programa con él y `po-verificacion` lee el estado |
+| **La cuenta** | 🛑 **Siempre con `account_id` explícito**, nunca adivinado. Sale de `clients/<cliente>/00-onboarding/LINKS.md` —o de `05-comunidad/respuestas.md`, si ⑧ ya lo anotó— y se confirma con `accounts_list` |
+| **Credenciales** | 🛑 **Ninguna en el repo** |
+| **Si no está conectado** | `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio` |
 
 ---
 
@@ -194,12 +183,13 @@ Pin board, FB album, or Google category · Post subtype · CTA · Reminder
 |---|---|---|
 | **⑥B Video Editing** | Los videos finales, por plataforma, con su nombre de archivo y su ruta | 🛑 Sí |
 | **⑥A Diseño gráfico** | Las piezas estáticas exportadas, por formato | 🛑 Sí |
-| **④ Creatividad** | `plan-de-contenido.csv` con Gate 3 · el **copy y el caption literales** del `ideas-<formato>.md` de cada pieza · la `fecha` | 🛑 Sí |
-| **②B Branding** | Tono de voz, do's & don'ts, cómo se nombra la marca | 🛑 Sí |
-| **① Strategy** | Quién aprueba y en cuánto tiempo, de `00-onboarding/comprension.md` §D. **Quién tiene el acceso a cada cuenta, de `LINKS.md`** | 🛑 Sí |
+| **④ Creatividad** | **El Excel del ciclo cerrado** (`plan-de-contenido.csv`) · el **copy y el caption literales** del `ideas-<formato>.md` de cada pieza · la `fecha` | 🛑 Sí |
+| **②B Branding** | Tono de voz, do's & don'ts, cómo se nombra la marca | No — se usan si existen |
+| **① Strategy** | Las restricciones del cliente, de `00-onboarding/comprension.md` §D. **Quién tiene el acceso a cada cuenta y su ID de Zernio, de `LINKS.md`** | 🛑 Sí |
 | **③ Marketing** | Qué es campaña pagada y qué es orgánico | No — pero sin esto se puede publicar en orgánico algo que era de pauta |
 
 Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
+🛑 **Sin Zernio conectado no se programa ni se verifica:** `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio`.
 
 > 🛑 **Una pieza sin archivo final no entra al calendario.** *"El video está casi"* no es un archivo.
 > Se declara como `⚠️ SIN ARCHIVO` y se nombra a quién pedírselo.
@@ -216,7 +206,7 @@ Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
 | Definir tono de voz, paleta o cómo se nombra la marca | ②B Branding |
 | Editar el video, recortar, poner subtítulos, exportar otra versión | ⑥B Video Editing |
 | Recomponer una pieza, cambiar un texto en pantalla, reexportar | ⑥A Diseño gráfico |
-| **Apretar publicar** | 🛑 **Un humano**, en Publer |
+| **Decidir que el ciclo se publica** | 🛑 **El CEO** — Posting programa en Zernio solo con su OK |
 | Contestar comentarios, DMs, seguimiento de comunidad | ⑧A Orgánico |
 | Segmentar, pautar, presupuestar, optimizar | ⑧B Ads |
 
@@ -239,17 +229,20 @@ Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
 3. **El mensaje no se cambia.** Se adapta el largo y el formato, nunca la idea ni el hook.
 4. **El hook sobrevive al corte.** Instagram muestra ~125 caracteres en feed y ~55 en Reels antes del
    *"… más"*. Si el gancho quedó después del corte, el caption está mal escrito.
-5. **🛑 Nadie publica desde acá.** El departamento deja el paquete; sube un humano. Sin excepción.
+5. **🛑 Nada se programa sin el OK del CEO.** Uno solo, para el ciclo, antes de crear nada en Zernio. Y nada se
+   publica en el acto: todo sale a la fecha y hora del calendario.
 6. **Una fila por cuenta, no por canal.** Dos cuentas del mismo cliente son dos filas.
-7. **El QA de plataforma se hace antes de cargar**, no después de publicar.
+7. **El QA de plataforma se hace antes de programar**, no después de publicar.
 8. **Alt text siempre.** En toda pieza con imagen. No es opcional y no se autogenera con adjetivos.
-9. **Los claims pendientes no se publican.** Una pieza con `⏸️ PENDIENTE APROBACIÓN` de ④ no entra al
-   archivo de carga, aunque el archivo esté listo.
+9. **Los claims pendientes no se publican.** Una pieza con `⏸️ PENDIENTE APROBACIÓN` de ④ no se
+   programa, aunque el archivo esté listo.
 10. **La hora se elige con dato o se declara que no lo hay.** Si no hay métricas de la cuenta, se usa
     la hora que ③ indicó y se marca `⚠️ SIN DATOS` — **no se inventa la «mejor hora»**.
-11. **Nada se sube dos veces.** Antes de cargar se verifica que el ciclo anterior no dejó filas en
-    `cargado` sin publicar.
-12. **Lo que se publicó se verifica mirándolo.** No se da por publicado porque Publer dijo que sí.
+11. **Nada se programa dos veces.** Una fila que ya tiene `zernio_post_id` no se vuelve a crear: se
+    lee su estado.
+12. **Toda cuenta va con su `account_id` explícito.** Nunca se adivina ni se deja que Zernio elija.
+13. **El estado se lee en Zernio, no se supone.** Cada publicación queda `programada`, `publicada` o
+    `fallida`; las fallidas se reintentan y lo que sigue fallando se reporta.
 
 ---
 
@@ -258,9 +251,9 @@ Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
 ```
 RECIBIR      Capa 0      ¿Qué llegó y está realmente publicable?
 PREPARAR     Capas 1-2   El caption que entra y el archivo que cumple
-AGENDAR      Capas 3-4   Cuándo sale y en qué archivo se carga
+AGENDAR      Capas 3-4   Cuándo sale, y se programa en Zernio — con el OK del CEO
                  ↓
-CERRAR       Capa 5      ¿Salió y se ve bien?
+CERRAR       Capa 5      ¿Salió? El estado de cada publicación en Zernio
 LOOP         Capa 6      ¿Qué se cayó, qué llegó tarde?
 ```
 
@@ -271,8 +264,8 @@ LOOP         Capa 6      ¿Qué se cayó, qué llegó tarde?
 **Skill:** `po-recepcion` · **Output:** las filas base de `calendario-de-publicacion.csv`
 
 Cruzar `plan-de-contenido.csv` de ④ **fila por fila** contra lo que entregaron ⑥A y ⑥B. Lo primero
-es **separar las tres rutas por el `canal`**: lo que va a Publer, lo que va por email y lo que sale
-**a mano**. Después, cada fila con lo que necesita se convierte en fila de publicación; lo que falta
+es **separar las tres rutas por el `canal`**: lo que se programa en Zernio, lo que va por email y lo
+que sale **a mano**. Después, cada fila con lo que necesita se convierte en fila de publicación; lo que falta
 **se declara**.
 
 | Chequeo | Ruta | Si falla |
@@ -281,7 +274,7 @@ es **separar las tres rutas por el `canal`**: lo que va a Publer, lo que va por 
 | El archivo corresponde al `id_creativo` correcto | social | ↩️ **DEVUELTO** a ⑥A / ⑥B |
 | La pieza tiene **copy y caption** en su `ideas-<formato>.md` | ambas | ↩️ **DEVUELTO** a ④ |
 | La pieza **no tiene claims pendientes** | ambas | 🛑 No entra al ciclo hasta que ②B o ⑧B la validen |
-| Existe la **cuenta** donde va y sabemos quién tiene las claves | social | 🛑 **BLOQUEADO** — `LINKS.md` |
+| Existe la **cuenta** donde va, sabemos quién tiene las claves y tiene su **ID de Zernio** | social | 🛑 **BLOQUEADO** — `LINKS.md` |
 | Existe la **lista o segmento** y la herramienta de email | email | 🛑 **BLOQUEADO** — `LINKS.md` |
 | Existe la lista, **quién la manda y quién contesta** | manual | 🛑 **BLOQUEADO** — `LINKS.md`. Sostener la conversación es de ⑧A |
 | Existe el **permiso** para intervenir el lugar | manual · impresos | 🛑 **BLOQUEADO** — `LINKS.md` |
@@ -321,35 +314,37 @@ no se pisen el mismo día.
 > 🛑 **La «mejor hora» no se inventa.** O sale de las métricas de la cuenta, o se usa la de ③ y se
 > marca `⚠️ SIN DATOS`.
 
-🚦 **GATE 1 — los captions.** Antes de armar el archivo de carga. Es lo que aprueba el cliente.
+Cierra con su **auto-revisión** y sigue a la Capa 4.
 
-### Capa 4 · CARGA — ¿qué se sube y cómo?
-**Skill:** `po-carga` · **Output:** `publer-import.csv` + § Los envíos de email + los checklists
+### Capa 4 · CARGA — se programa en Zernio
+**Skill:** `po-carga` · **Output:** las publicaciones programadas en Zernio, con su `zernio_post_id` y
+su `estado` en `calendario-de-publicacion.csv` + § Los envíos de email y § Los envíos manuales
 
-**Ruta social:** se genera el archivo con las 12 columnas de Publer, se resuelven las **URLs
-públicas** de cada media y se deja el checklist de qué verificar **dentro de Publer** antes de
-apretar programar.
+**Ruta social:** se confirma cada cuenta con `accounts_list` y su `account_id` explícito, se sube la
+media a Zernio y se valida (`validate_media`), se valida cada post (`validate_post` ·
+`validate_post_length`) y, **con el OK del CEO**, se programa a la fecha y hora del calendario.
 
 **Ruta email:** se arma el paquete de envío —asunto, preheader, cuerpo, lista o segmento, fecha y
 hora— en `publicaciones.md`, agnóstico de herramienta, con su propio checklist.
 
-🚦 **GATE 2 — el paquete de carga.** 🛑 **Acá para el departamento.** Un humano revisa, sube y
-programa. Nada se publica desde el repo.
+🚦 **El OK del CEO — antes de programar.** Es el único del departamento: cubre el ciclo entero, las
+tres rutas. Sin él no se crea nada en Zernio. Las demás capas se auto-revisan y siguen.
 
-### Capa 5 · VERIFICACIÓN — ¿salió y se ve bien?
+### Capa 5 · VERIFICACIÓN — ¿salió?
 **Skill:** `po-verificacion` · **Output:** columna `estado` + § Verificación de `publicaciones.md`
 
-Después de que sale: **se mira la publicación real.** Que esté, que se vea bien en móvil, que el
-link funcione, que el caption no se haya cortado raro, que esté en la cuenta correcta.
+Se lee en Zernio el estado de cada publicación del registro —**programada · publicada · fallida**—
+con `posts_get` y `posts_list_failed`. Las fallidas se reintentan con `posts_retry`; lo que sigue
+fallando se reporta.
 
-> 🛑 **No se da por publicado porque Publer dijo que sí.** Una publicación fallida que nadie miró es
-> una pieza que el cliente descubre antes que nosotros.
+> 🛑 **No se abren las redes.** El control de calidad de lo publicado lo hace el CEO en persona, y no
+> se registra.
 
 ### Capa 6 · LOOP — ¿qué se cayó y por qué?
 **Skill:** `po-loop` · **Output:** `aprendizaje-de-posting.md`
 
 **Las cuatro lecturas:** qué no llegó a tiempo y de dónde venía · qué se devolvió y por qué ·
-qué falló al publicar · cuánto tardó cada aprobación.
+qué falló al publicar · cuánto tardó el OK para programar.
 
 > **Si el 30 % de las piezas llega tarde, el problema no está en Posting:** está en las fechas de
 > preparación de ③ o en los tiempos de ⑥. Eso se devuelve **como dato, no como reclamo**.
@@ -360,25 +355,28 @@ qué falló al publicar · cuánto tardó cada aprobación.
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-6] · Ciclo: [x]
-④ Creatividad: Excel con Gate 3 [✅/⬜] · filas del ciclo: [n]
+④ Creatividad: Excel del ciclo cerrado [✅/⬜] · filas del ciclo: [n]
 ⑥A entregó: [n/n] · ⑥B entregó: [n/n] · ⚠️ SIN ARCHIVO: [n]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · publicaciones del ciclo: [n] de [techo del plan]
-②B Branding [✅/⬜] · ① cuentas y accesos [✅/⬜] · claims pendientes: [n]
+① cuentas y accesos [✅/⬜] · cuentas con ID de Zernio [n/n] · Zernio conectado [✅/⬜]
+②B Branding [✅ / — no bloquea] · claims pendientes: [n]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
-**Se bloquea si:** no hay cliente · no existe su carpeta · falta el Excel de ④ con Gate 3 · no
-sabemos quién tiene las claves de las cuentas · hay claims sin validar en las piezas del ciclo.
+**Se bloquea si:** no hay cliente · no existe su carpeta · falta el Excel del ciclo cerrado de ④ ·
+no sabemos quién tiene las claves de las cuentas · hay claims sin validar en las piezas del ciclo.
+**Para programar y verificar (Capas 4 y 5), además:** falta Zernio · una cuenta no tiene su ID de
+Zernio en `LINKS.md`.
 
 ### Modos de entrada
 
 | Pedido | Qué corre |
 |---|---|
-| *"Dejá listo el mes de X"* / *"programá el ciclo"* | **Completo** — Capas 0 → 4, con 2 gates |
+| *"Dejá listo el mes de X"* / *"programá el ciclo"* | **Completo** — Capas 0 → 4, con el OK del CEO antes de programar |
 | *"¿Qué nos falta para publicar?"* | Solo Capa 0 |
 | *"Escribí los captions"* | Capas 1-2 — requiere Capa 0 |
-| *"Armá el archivo de Publer"* | Capa 4 — requiere Gate 1 |
-| *"¿Salió todo?"* | Solo Capa 5 |
+| *"Programalo en Zernio"* | Capa 4 — requiere las Capas 0-3 |
+| *"¿Salió todo?"* / *"¿qué falló?"* | Solo Capa 5 |
 | *"¿Qué se cayó este mes?"* | Solo Capa 6 |
 
 ### La carpeta del cliente — `clients/<cliente>/04-contenido/AAAA-MM/publicacion/`
@@ -389,32 +387,30 @@ dice de quién es, y ningún agente toca los archivos de otro.
 
 ```
 clients/<cliente>/04-contenido/AAAA-MM/publicacion/
-├── publicaciones.md                # ← ENTREGABLE · para quien aprueba
-├── publer-import.csv               # ← ENTREGABLE · para quien carga · solo la ruta social
-├── calendario-de-publicacion.csv   # trabajo interno · una fila por publicación, 12 columnas
+├── publicaciones.md                # ← ENTREGABLE · para el CEO, que da el OK
+├── calendario-de-publicacion.csv   # ← ENTREGABLE · el registro · una fila por publicación, con su zernio_post_id
 └── aprendizaje-de-posting.md       # trabajo interno · el cierre del ciclo
 ```
 
 **Al iniciar un cliente:**
 
-1. Verificar que `plan-de-contenido.csv` de ④ tiene el **Gate 3 aprobado** y que ⑥A y ⑥B
+1. Verificar que existe **el Excel del ciclo cerrado** de ④ (`plan-de-contenido.csv`) y que ⑥A y ⑥B
    entregaron los archivos finales. **Sin archivos no hay calendario.**
-2. Verificar **qué cuentas existen y quién tiene las claves** (§1). Sin eso, `BLOQUEADO`.
-3. Copiar las tres plantillas de `brain/entregables/` — la de `aprendizaje-de-posting.md` vive al
-   lado de la skill `po-loop`.
-4. Bajar a `99-referencias/recibido/` las métricas de la cuenta si existen y **la plantilla vigente de Publer**.
+2. Verificar **qué cuentas existen, quién tiene las claves y el ID de Zernio de cada una** (§1). Sin
+   eso, `BLOQUEADO`.
+3. Copiar las tres plantillas — `publicaciones.md` y `calendario-de-publicacion.csv` de
+   `brain/entregables/`, y `aprendizaje-de-posting.md`, que vive al lado de la skill `po-loop`.
+4. Bajar a `99-referencias/recibido/` las métricas de la cuenta si existen.
 5. Correr el pre-flight de §7.
 
 🛑 **Nunca se copia un archivo de otro agente: se cita su ruta.** Si lo que llegó no se puede publicar
 como está, **se devuelve con ↩️**. No se edita el archivo de otro agente ni se arregla el export.
 
 🛑 **Los videos y las piezas de diseño no viven en el repo.** Viven en Drive, donde los dejaron ⑥A y
-⑥B; acá va su ruta y su URL. 🛑 **`Media URL` de Publer tiene que ser una URL pública**: se verifica
-abriéndola **sin sesión** antes de cargar. Lo más seguro es la biblioteca de Publer (`cdn.publer.com`).
+⑥B; acá va su ruta. Para programar, **la media se sube a Zernio** (`media_generate_upload_link`) y
+cada URL se valida con `validate_media` antes de crear la publicación.
 
 **Se versiona por ciclo**, no se sobrescribe: cada ciclo vive en su `04-contenido/AAAA-MM/publicacion/`.
-🛑 **Antes de cargar un ciclo nuevo se verifica que el anterior no dejó filas en `cargado` sin
-publicar.** Es la forma más común de publicar algo dos veces.
 
 ---
 
@@ -423,9 +419,9 @@ publicar.** Es la forma más común de publicar algo dos veces.
 ```markdown
 ## HANDOFF — ⑦ Posting → ⑧A Orgánico / ⑧B Ads
 - Cliente: · Campaña(s): · Ciclo: · Fecha:
-- Entregables: publicaciones.md (aprobación) · publer-import.csv (carga)
-- Gates: captions [✅/⬜] · paquete de carga [✅/⬜]
-- Ruta social: en el archivo [n] · cargadas en Publer [n] · publicadas [n] · verificadas [n]
+- Entregables: publicaciones.md (OK del CEO) · calendario-de-publicacion.csv (registro, con zernio_post_id)
+- OK del CEO para programar: [✅/⬜]
+- Ruta social: programadas en Zernio [n] · publicadas [n] · fallidas [n] · reintentadas [n]
 - Ruta email: envíos preparados [n] · enviados [n] · herramienta: [x o ⚠️ SIN DATOS]
 - Filas SIN ARCHIVO: [n + de quién se esperaba]
 - Devueltas a ④ / ⑥A / ⑥B: [n + motivos]
@@ -435,9 +431,9 @@ publicar.** Es la forma más común de publicar algo dos veces.
 - Confianza: 🟢 / 🟡 / 🔴
 ```
 
-- Una fila `pendiente` **no se carga.** O se completa, o sale del ciclo y se declara.
-- **El archivo de carga es la interfaz.** Si quien sube tiene que preguntar algo, el paquete estaba
-  incompleto — y eso se corrige en el paquete, no por chat.
+- Una fila `pendiente` **no se programa.** O se completa, o sale del ciclo y se declara.
+- **`publicaciones.md` es la interfaz.** Si el CEO tiene que preguntar algo para dar el OK, el paquete
+  estaba incompleto — y eso se corrige en el paquete, no por chat.
 
 ---
 
@@ -464,7 +460,7 @@ rompería si lo adaptáramos por cuenta propia · **al menos dos alternativas** 
 | Un claim no está aprobado | Falta una validación | **②B Branding** o **⑧B Ads** |
 | No tenemos acceso a la cuenta | Restricción de acceso | **`LINKS.md`** — la fila de esa cuenta |
 | La lista de WhatsApp no existe, o nadie contesta lo que entra | Restricción de capacidad | **① Strategy** `00-onboarding/comprension.md` §D · y **⑧A Orgánico** si hay que sostener la conversación |
-| Un canal del plan no cae en ninguna de las tres rutas | El plan pide algo que ⑦ no puede sacar | **③ Marketing** — se declara, **no se fuerza dentro de Publer** |
+| Un canal del plan no cae en ninguna de las tres rutas | El plan pide algo que ⑦ no puede sacar | **③ Marketing** — se declara, **no se fuerza dentro de Zernio** |
 | El cliente quiere cambiar el copy | Cambio de mensaje | **④ Creatividad** decide, no Posting |
 
 ---
@@ -478,10 +474,10 @@ rompería si lo adaptáramos por cuenta propia · **al menos dos alternativas** 
 | 🔴 | No sale este ciclo |
 | ⚠️ SIN ARCHIVO | La pieza no tiene export. Se nombra de quién se espera. 🛑 No aplica a la ruta email |
 | ⚠️ SIN DATOS | Falta el dato — típicamente la hora óptima de la cuenta |
-| ⏸️ PENDIENTE APROBACIÓN | Claim, precio o promesa sin validar. **No se carga** |
+| ⏸️ PENDIENTE APROBACIÓN | Claim, precio o promesa sin validar. **No se programa** |
 | ↩️ DEVUELTO | Vuelve a ④, ⑥A o ⑥B, con motivo y alternativas |
 | BLOQUEADO | No se puede avanzar. Se nombra qué desbloquea |
 
 **Cómo responde:** español, con los términos de plataforma fijos (`CAPTION`, `ALT TEXT`, `SAFE ZONE`,
 `FEED`, `REEL`, `STORY`, `CAROUSEL`, `HANDLE`). Tablas y bullets. Lo accionable arriba: **qué falta
-para poder cargar.** Toda fecha con hora y zona horaria.
+para poder programar.** Toda fecha con hora y zona horaria.

@@ -9,7 +9,7 @@
 *Capa 0 · `br-brief`*
 
 ### A · Contexto cargado
-| Bloque del brief de ② | Estado | Ruta |
+| Bloque del brief de ① | Estado | Ruta |
 |---|---|---|
 | 1 · Tipo de marca | | |
 | 2 · Audiencia objetivo | | |
@@ -20,7 +20,7 @@
 | 7 · Voz de marca | | |
 | 8 · Dónde vive | | |
 
-### B · Lo que ② decidió *(restricción)*
+### B · Lo que ① decidió *(restricción)*
 ### C · Lo que ②B resuelve
 ### D · El código saturado y hacia dónde vamos
 ### E · El techo de realidad
@@ -44,7 +44,7 @@
 ---
 
 ## § Voz
-*Capa 2 · `br-voz` · **🚦 GATE 1***
+*Capa 2 · `br-voz`*
 
 ### A · Los ejes
 | Eje | ← | → | Dónde estamos |
@@ -88,7 +88,7 @@
 ---
 
 ## § Aplicación por formato
-*Capa 5 · `br-aplicacion` · **🚦 GATE 2***
+*Capa 5 · `br-aplicacion`*
 
 ### <Formato>
 | | |

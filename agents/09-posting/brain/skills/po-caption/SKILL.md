@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las filas de `calendario-de-publicacion.csv` con archivo (de `po-recepcion`) · el **copy y el caption literales** del `ideas-<formato>.md` de cada pieza en ④ · tono de voz y do's & don'ts de ②B |
+| **Consume** | Las filas de `calendario-de-publicacion.csv` con archivo (de `po-recepcion`) · el **copy y el caption literales** del `ideas-<formato>.md` de cada pieza en ④ · tono de voz, do's & don'ts y cómo se nombra la marca, de ②B, si existen |
 | **Produce** | El **caption final** de cada sección de `publicaciones.md`, con su conteo, su corte, sus hashtags y su alt text · la columna `caption_ok` |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantilla:
@@ -64,10 +64,14 @@ de un ciclo nuevo se revisan contra la fuente de la plataforma.
 
 | Plataforma | Estado |
 |---|---|
-| Facebook · LinkedIn · X · YouTube | ⚠️ **SIN VERIFICAR.** Se consulta la fuente de la plataforma antes de usarlos y se anota la fecha acá |
+| Facebook · LinkedIn · X · YouTube | El límite lo da **`validate_post_length`** de Zernio: devuelve el conteo y el límite de cada plataforma |
 
 🛑 **No se inventa un límite.** Un caption cortado por un límite que nadie verificó sale mal
 publicado y no se puede editar en todas las plataformas.
+
+**El límite duro lo vuelve a comprobar Zernio** antes de programar (`validate_post_length` ·
+`validate_post`, en `po-carga`). **Lo que Zernio no mide es cuánto se ve antes del corte:** eso es de
+esta capa.
 
 > **El límite de Reels (~55) es el más cruel del repo.** Un hook de ④ de 80 caracteres entra en el
 > caption pero **no se ve**. Ahí es donde el hook se reordena, nunca se reescribe.
@@ -138,10 +142,10 @@ escribe: es la mejor noticia posible y deja constancia de que no se tocó.
 - [ ] En la ruta email: **asunto y preheader escritos**, el preheader no repite el asunto, y el
       asunto no promete nada que el cuerpo no cumpla
 - [ ] El conteo de caracteres está anotado contra el límite **con su fecha de verificación**
-- [ ] 🛑 **Ningún límite fue inventado** — los no verificados están marcados `⚠️ SIN VERIFICAR`
+- [ ] 🛑 **Ningún límite fue inventado** — los que no están en la tabla salen de `validate_post_length`
 - [ ] Los hashtags son **3-5 en Instagram** y están relacionados con la pieza
 - [ ] 🛑 **Ningún hashtag afirma alcance** sin dato que lo respalde
 - [ ] **Alt text escrito** en toda pieza con imagen, describiendo lo que se ve y el texto en pantalla
 - [ ] Está anotado **qué se cambió respecto de ④ y por qué** — o que no se cambió nada
 - [ ] Lo que no entraba sin romperse se **devolvió a ④** con motivo 5 y **dos alternativas**
-- [ ] El caption respeta el **tono de voz y los do's & don'ts** de ②B
+- [ ] Si ②B tiene guía, el caption respeta su **tono de voz, sus do's & don'ts y cómo se nombra la marca**

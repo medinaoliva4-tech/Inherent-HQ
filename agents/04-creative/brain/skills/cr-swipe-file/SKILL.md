@@ -15,7 +15,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El brief del ciclo (de `cr-brief`) · la tabla 15×7 y el mapa de saturación de ② Estrategia · los anuncios que trae `cr-fuentes` · las fichas de referencia que produce `cr-lectura-de-video` · el banco de hooks propio del ciclo anterior |
+| **Consume** | El brief del ciclo (de `cr-brief`) · los anuncios que trae `cr-fuentes` · las fichas de referencia que produce `cr-lectura-de-video` · **si existen:** la tabla 15×7 y el mapa de saturación de `ingenieria-inversa.md` (① Strategy) y el banco de hooks propio de un ciclo anterior |
 | **Produce** | `swipe-file.md` — archivo de trabajo interno: referencias con señal, patrones, cubetas e hipótesis atadas a un slot · y la columna `mezcla` de cada fila de `plan-de-contenido.csv` |
 
 Contexto del departamento: `agents/04-creative/brain/WORKFLOW.md`. Cadencia: **refresco semanal**.
@@ -42,8 +42,10 @@ El 70 % de la mezcla se apoya en evidencia de rendimiento. Si esa evidencia la r
 
 ## Paso 0 · Arrancar de la 15×7 y calcular **el hueco**
 
-② Estrategia ya descompuso **15+ piezas ganadoras en 7 capas** (gancho, promesa, mecanismo, prueba,
-formato, distribución, oferta), con sus patrones marcados 🟢/🟡/⚪. **Ese es el punto de partida.**
+Si existe `ingenieria-inversa.md`, ① Strategy ya descompuso **15+ piezas ganadoras en 7 capas**
+(gancho, promesa, mecanismo, prueba, formato, distribución, oferta), con sus patrones marcados
+🟢/🟡/⚪. **Ese es el punto de partida.** Si no existe, todo es hueco: se cosecha con `cr-fuentes` y
+se declara `⚠️ SIN DATOS — sin tabla 15×7`.
 
 El primer bloque de `swipe-file.md` es lo heredado:
 
@@ -67,7 +69,7 @@ El hueco es casi siempre de uno de tres tipos:
 2. **Canal exacto** que la ingeniería inversa no priorizó y el calendario de ③ Marketing sí tiene
 3. **Tipo de hook** que falta para el `goal_del_arte` de este ciclo
 
-**Antes de salir a buscar:** el banco de hooks propios del ciclo anterior va **primero y arriba**, y
+**Antes de salir a buscar:** el banco de hooks propios de un ciclo anterior, si existe, va **primero y arriba**, y
 se revisan las fichas de referencia ya existentes — **una referencia leída no se vuelve a leer**.
 Conseguir los anuncios es trabajo de `cr-fuentes`; leerlos de verdad, de `cr-lectura-de-video`.
 
@@ -167,9 +169,10 @@ El único paso donde se genera algo nuevo.
 4. Si la hipótesis podría llevar el logo de un competidor sin que nadie note la diferencia, **falló
    distintividad**. Se vuelve atrás.
 
-## Paso 6 · Verificación anti-default (obligatoria)
+## Paso 6 · Verificación anti-default (si existe el mapa)
 
-Cada patrón se cruza contra el **mapa de saturación** de ② Estrategia:
+Cada patrón se cruza contra el **mapa de saturación** de `ingenieria-inversa.md`, si existe. Si no
+existe, se declara `⚠️ SIN DATOS — sin mapa de saturación` y se sigue:
 
 | Resultado del cruce | Qué se hace |
 |---|---|
@@ -200,8 +203,8 @@ Cada patrón se cruza contra el **mapa de saturación** de ② Estrategia:
 - [ ] **Cada patrón tiene exactamente una cubeta**: `70·probado` / `20·apuesta` / `10·propio`
 - [ ] El **reparto previsto cierra en 70/20/10 ±10 puntos** — o la desviación está declarada con su motivo
 - [ ] Si es el **primer ciclo** del cliente, el reparto se declaró como **80/20**
-- [ ] **Cada patrón cruzado contra el mapa de saturación** — los defaults de categoría descartados
-- [ ] El banco de hooks propios del ciclo anterior está incorporado y **arriba**
+- [ ] **Cada patrón cruzado contra el mapa de saturación**, si existe — los defaults de categoría descartados — o `⚠️ SIN DATOS` declarado
+- [ ] El banco de hooks propios de un ciclo anterior, si existe, está incorporado y **arriba**
 - [ ] Fecha del relevamiento + fuentes usadas y no disponibles + confianza 🟢/🟡/🔴
 - [ ] 🛑 **Ninguna referencia se llevó al brief como imagen a replicar**
 

@@ -1,6 +1,7 @@
 # Motor de crecimiento — <cliente>
 
 > Plantilla de ② Growth. **Solo se llenan las secciones que el plan contratado activa.**
+> 🔷 **En la línea Marketing, qué ofertas se empujan va en `ofertas-a-empujar.md`**, no en § La oferta.
 > 🔒 **Nunca se mencionan los costos ni los márgenes de Inherent.**
 
 ---
@@ -12,7 +13,7 @@
 |---|---|
 | **División** | 🔵 Low ticket / 🟣 High ticket — *de ② Estrategia* |
 | **El pilar roto** | |
-| **Plan contratado** | 🔷 Marketing / 🔷 Marketing Pro / 🟨 Accelerate / 🟨 Compound |
+| **Plan contratado** | 🔷 Marketing / 🔷 Marketing Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made |
 
 ### Unit economics
 | Línea | Precio | Costo | Margen | Frecuencia |
@@ -38,7 +39,7 @@
 ---
 
 ## § La oferta
-*Capa 1 · `gr-oferta` · **🚦 GATE 1 — Allan y el cliente***
+*Capa 1 · `gr-oferta` · 🟨 · **🚦 GATE 1 — el CEO, antes de llevarla al cliente***
 
 ### A · Qué se vende hoy
 ### B · Los cuatro ángulos

@@ -2,7 +2,7 @@
 name: br-territorio
 description: >
   Capa 1 de ②B Branding — define el territorio y la personalidad de la marca a partir del tipo y
-  el posicionamiento que fijó ② Estrategia. Traduce rebelde, formal, premium o local a rasgos de
+  el posicionamiento que fijó ① Strategy. Traduce rebelde, formal, premium o local a rasgos de
   personalidad concretos, nombra el enemigo en lenguaje de persona y escribe la idea madre en una
   frase. Aplica la regla de oposición contra el código saturado de la categoría. Úsala cuando
   pidan "cuál es el territorio", "la personalidad de la marca", "contra qué nos oponemos", "cómo
@@ -18,7 +18,7 @@ description: >
 
 ## 1 · La regla de oposición
 
-**② mapeó el código saturado. Acá se va al contrario — pero la dirección la marca el tipo de
+**① mapeó el código saturado. Acá se va al contrario — pero la dirección la marca el tipo de
 marca, no se opone por oponerse.**
 
 | La categoría hace | Queremos | Vamos hacia |
@@ -46,7 +46,7 @@ condescendiente»* dice algo.
 
 ## 3 · El enemigo
 
-**② lo nombró. Acá se escribe en lenguaje de persona.**
+**① lo nombró. Acá se escribe en lenguaje de persona.**
 
 | ❌ Abstracto | ✅ En lenguaje de persona |
 |---|---|
@@ -68,7 +68,7 @@ condescendiente»* dice algo.
 
 ## 5 · La prueba del logo tapado
 
-**Con el territorio escrito, se hace la prueba sobre las referencias de ②:**
+**Con el territorio escrito, se hace la prueba sobre las referencias de ①:**
 
 > Si tapás el logo de esas referencias y podrían ser de cualquiera, **el territorio todavía no
 > está definido.** Se vuelve al paso 1.

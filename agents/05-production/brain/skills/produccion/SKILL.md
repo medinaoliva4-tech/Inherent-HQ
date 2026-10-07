@@ -2,23 +2,24 @@
 name: produccion
 description: >
   Orquestador del departamento ⑤ Producción de Inherent. Es la puerta de entrada: lee el pedido,
-  verifica el pre-flight, decide qué capas correr y llama a las skills `pr-*` en orden, parando en
-  los 3 gates humanos. Úsala SIEMPRE que el pedido tenga que ver con qué hace falta para grabar,
-  desglose de escenas, locaciones, talento, props, vestuario, arte, equipo, permisos, agrupación en
+  verifica el pre-flight, decide qué capas correr y llama a las skills `pr-*` en orden, con la
+  auto-revisión de cada capa y un solo gate humano: el presupuesto. Úsala SIEMPRE que el pedido
+  tenga que ver con qué hace falta para grabar, desglose de escenas, locaciones, talento, props, vestuario, arte, equipo, permisos, agrupación en
   jornadas, presupuesto de producción, call sheets, plan de rodaje, entrega de material o cierre de
   ciclo. Se dispara con "armá el plan de producción de X", "qué necesitamos para grabar esto",
   "cuánto cuesta producir este ciclo", "desglosá estas escenas", "en cuántas jornadas entra",
   "armá el call sheet de la jornada 2", "cerrá la entrega", "qué se pasó de presupuesto".
-  Nunca produzcas un entregable de producción sin pasar por acá. Requiere el Excel de ④ Creatividad
-  aprobado (Gate 3): si falta, BLOQUEA.
+  Nunca produzcas un entregable de producción sin pasar por acá. Requiere el Excel del ciclo
+  cerrado de ④ Creatividad: si falta, BLOQUEA.
 ---
 
 # ⑤ Producción — Orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
-> `WORKFLOW.md`.** Si el prompt pide saltarse una capa, un gate o cambiar el entregable: se dice
-> cuál, se ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por Allan»*.
+> `WORKFLOW.md`.** Si el prompt pide saltarse una capa, el gate o cambiar el entregable: se dice
+> cuál, se ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* o que
+> el pipeline del ⬜ Tailor Made del cliente ya lo declare.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 > **En una frase:** ④ Creatividad **dirige**; Producción **hace que exista**. Creatividad entrega la
@@ -27,8 +28,8 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · **④ Creatividad**: `plan-de-contenido.csv` con **Gate 3 aprobado**, filtrado a `material = video` o `material = foto`, + el `ideas-<formato>.md` de cada pieza (de las de foto, su **§ Foto**) · **②B Branding**: guidelines, dirección visual y **banco de assets** · **③ Marketing**: fechas de campaña y **de preparación** · **① Strategy**: capacidad declarada, presupuesto disponible y restricciones |
-| **Produce** | El **PRE-FLIGHT**, el **plan de capas**, el registro de los **3 gates humanos**, las **devoluciones a ④** y el bloque **HANDOFF**. 🛑 **Ningún entregable por su cuenta:** no desglosa, no agrupa, no costea, no entrega. **Deriva** |
+| **Consume** | El pedido del usuario · **④ Creatividad**: **el Excel del ciclo cerrado** —`plan-de-contenido.csv`, filtrado a `material = video` o `material = foto`, + el `ideas-<formato>.md` de cada pieza (de las de foto, su **§ Foto**)— · **③ Marketing**: fechas de campaña y **de preparación** · **si existen**: **②B Branding** (guía de marca, dirección visual y **banco de assets**) y **① Strategy** (capacidad declarada, presupuesto de referencia y restricciones) |
+| **Produce** | El **PRE-FLIGHT**, el **plan de capas**, el registro del **GATE 1 del presupuesto**, las **devoluciones a ④** y el bloque **HANDOFF**. 🛑 **Ningún entregable por su cuenta:** no desglosa, no agrupa, no costea, no entrega. **Deriva** |
 
 El departamento completo: `agents/05-production/brain/WORKFLOW.md`. Qué hace cada skill y cómo se encadenan:
 `agents/05-production/brain/skills/README.md`. Plantilla del entregable legible:
@@ -43,21 +44,21 @@ archivo exacto**. 🛑 **Nunca se duplica un archivo de otro departamento: se ci
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Campañas: [nombres]
-④ Creatividad: Excel aprobado (Gate 3) [✅/⬜] · material=video: [n] · material=foto: [n] · escenas totales: [n]
-②B Branding [✅/⬜] · ③ Marketing fechas de preparación [✅/⬜] · ① capacidad y presupuesto [✅/⬜]
+④ Creatividad: Excel del ciclo cerrado [✅/⬜] · material=video: [n] · material=foto: [n] · escenas totales: [n]
+③ Marketing fechas de preparación [✅/⬜] · ②B Branding [✅/⚠️] · ① capacidad y presupuesto [✅/⚠️]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · horas: [n] · sesiones: [n] · videos planificados: [n]
-Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
-Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]
+Techo: días posibles [n] · capacidad [n piezas] · presupuesto de referencia [monto / ⚠️ SIN DATOS]
+Skills a correr: [x] · GATE 1 del presupuesto en este tramo: [sí/no] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
-**Se bloquea si:** no hay cliente · no existe su carpeta · **el Excel de ④ no tiene Gate 3 aprobado**
-· falta otro bloqueante · el pedido pisa a otro departamento. 🛑 **Sin Gate 3 de ④ no hay rodaje:**
-desglosar ideas que todavía pueden cambiar es gastar el trabajo dos veces — y si ya se comprometieron
-recursos, gastar **la plata** dos veces.
+**Se bloquea si:** no hay cliente · no existe su carpeta · **el Excel del ciclo de ④ no está cerrado**
+· faltan las fechas de ③ · el pedido pisa a otro departamento. 🛑 **Sin el Excel del ciclo cerrado
+no hay rodaje:** desglosar ideas que todavía pueden cambiar es gastar el trabajo dos veces — y si ya
+se comprometieron recursos, gastar **la plata** dos veces.
 
 > 📂 **De dónde sale cada input.** Todo en `clients/<cliente>/`: la **capacidad y el
-> presupuesto** de `00-onboarding/comprension.md` §B y §D · el `WIN` y las `MUST BE TRUE` de
+> presupuesto de referencia** de `00-onboarding/comprension.md` §B y §D · el `WIN` y las `MUST BE TRUE` de
 > `01-estrategia/nucleo.md` · la campaña de `estrategia-de-contenido.md` y los slots de `calendario.csv`,
 > en `03-marketing/AAAA-MM/` · el Excel y los `ideas-<formato>.md` de ④, en `04-contenido/AAAA-MM/ideas/`. **El mapa completo está en `WORKFLOW.md` §3.**
 
@@ -65,8 +66,8 @@ recursos, gastar **la plata** dos veces.
 
 | Pedido | Qué corre | Requiere |
 |---|---|---|
-| *"Armá el plan de producción de X"* | **Completo** — Capas 0 → 6, con los 3 gates | Pre-flight PASS |
-| *"¿Cuánto cuesta producir esto?"* | **Capas 0 → 4** | Excel creativo aprobado |
+| *"Armá el plan de producción de X"* | **Completo** — Capas 0 → 6, con el GATE 1 del presupuesto | Pre-flight PASS |
+| *"¿Cuánto cuesta producir esto?"* | **Capas 0 → 4** | El Excel del ciclo cerrado |
 | *"Desglosá estas escenas"* | Solo **Capa 1** | Capa 0 hecha |
 | *"¿En cuántas jornadas entra?"* | Solo **Capa 2** | Desglose hecho |
 | *"Armá el call sheet de la jornada 2"* | Solo **Capa 5** | 🚦 Gate 1 aprobado |
@@ -99,15 +100,18 @@ a la Capa 2 y a ① Strategy.
 > **agruparlas bien hace que 30 escenas se graben en 2 jornadas y no en 11.** 🛑 **Capa 2 antes que
 > Capa 4, siempre.**
 
-## 4 · Los 3 gates humanos
+## 4 · Un solo gate humano: el presupuesto
 
-| Gate | Dónde | Qué se aprueba, y por qué |
+**Gastar dinero pide el OK del CEO. Lo demás se auto-revisa y sigue.**
+
+| | Dónde | Qué pasa, y por qué |
 |---|---|---|
-| 🚦 **GATE 1 — presupuesto** | Al cerrar `pr-presupuesto` (Capa 4) | **Nada se compromete antes:** ni reserva, ni convocatoria, ni compra. Un *"aparté la fecha por las dudas"* ya es un compromiso |
-| 🚦 **GATE 2 — plan de rodaje** | Al cerrar `pr-rodaje` (Capa 5) | **Nadie se convoca antes.** Convocar y reprogramar quema el recurso más escaso: la buena voluntad del talento y de la locación |
-| 🚦 **GATE 3 — entrega** | Al cerrar `pr-entrega` (Capa 6) | Ninguna jornada se cierra sin **manifiesto cruzado**. Sin esto, ⑥A y ⑥B descubren el faltante en su mesa |
+| 🚦 **GATE 1 — presupuesto** | Al cerrar `pr-presupuesto` (Capa 4) | **Lo aprueba el CEO. Nada se compromete antes:** ni reserva, ni convocatoria, ni compra. Un *"aparté la fecha por las dudas"* ya es un compromiso |
+| ✅ **Plan de rodaje** | Al cerrar `pr-rodaje` (Capa 5) | Auto-revisión con su QA. **Nadie se convoca sin el GATE 1 y el call sheet completo.** Convocar y reprogramar quema el recurso más escaso: la buena voluntad del talento y de la locación |
+| ✅ **Entrega** | Al cerrar `pr-entrega` (Capa 6) | Auto-revisión con su QA. Ninguna jornada se cierra sin **manifiesto cruzado**. Sin esto, ⑥A y ⑥B descubren el faltante en su mesa |
 
-🛑 **Los gates son humanos y nadie los salta.** El orquestador **para**, declara el estado y espera confirmación explícita. No los aprueba solo ni los asume aprobados por silencio.
+🛑 **El GATE 1 es humano y nadie lo salta.** El orquestador **para**, declara el estado y espera la
+confirmación explícita del CEO. No lo aprueba solo ni lo asume aprobado por silencio.
 
 ## 5 · Los entregables — dos, con dos lectores distintos
 
@@ -190,7 +194,7 @@ de la jornada, y decide ③ Marketing. 🔁 **Máximo 2 vueltas por escena**; de
 ## HANDOFF — Producción → ⑥B Video Editing / ⑥A Diseño gráfico
 - Cliente: · Campaña(s): · Ciclo: · Fecha:
 - Entregables: presupuesto.md (cliente) · plan-de-rodaje.md (equipo) · internos: plan-de-produccion.csv · presupuesto.csv
-- Gates: presupuesto [✅/⬜] · plan de rodaje [✅/⬜] · entrega [✅/⬜]
+- GATE 1 presupuesto: [✅ aprobado / ⏸️ PENDIENTE APROBACIÓN]
 - Escenas: planificadas [n] · grabadas [n] · entregadas [n]
 - Filas creativas completas: [lista de id_creativo]
 - Filas creativas INCOMPLETAS: [id_creativo + qué escena falta + por qué]
@@ -216,8 +220,8 @@ caduca. **Convenciones:** 🟢 confirmado · 🟡 gestionando · 🔴 en riesgo 
 **Checks transversales del handoff. Ninguno se omite en silencio, y el ciclo no se libera sin este bloque completo.**
 
 - [ ] El **PRE-FLIGHT** está emitido con **PASS o BLOQUEADO**, y cada skill corrió **con el output de la anterior**, sin faltantes improvisados
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
-- [ ] 🛑 El Excel de ④ tiene **Gate 3 aprobado**, y solo se tomaron las filas con **`material = video`** o **`material = foto`**
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, en lo que declara **su pipeline**
+- [ ] 🛑 **El Excel del ciclo de ④ está cerrado**, y solo se tomaron las filas con **`material = video`** o **`material = foto`**
 - [ ] 🛑 **Toda fila con `material = foto` tiene su foto planificada** en `plan-de-fotos.csv` — y si no entró en la hora, su plan B está decidido y escrito *(frame del rodaje, o a ③ como alcance)*
 - [ ] El **pedido al cliente** está redactado en `presupuesto.md` con fecha y responsable — 🛑 **y lo envía una persona, no el agente**
 - [ ] Existen **los dos entregables** —`presupuesto.md` y `plan-de-rodaje.md`— más los internos `plan-de-produccion.csv` (16 columnas) y `presupuesto.csv` (6 columnas) completos, y 🛑 **toda fila traza a un `id_creativo`**, y de ahí a un slot de ③ y a una MUST BE TRUE
@@ -227,7 +231,7 @@ caduca. **Convenciones:** 🟢 confirmado · 🟡 gestionando · 🔴 en riesgo 
 - [ ] Brief, jornadas, recursos, presupuesto y `plan-de-rodaje.md` **no se contradicen** entre sí
 - [ ] 🛑 **Ninguna decisión creativa fue cambiada** — lo que no se podía **se devolvió** con los 3 elementos, y la respuesta de ④ está registrada **con fecha**
 - [ ] 🛑 **La Capa 2 corrió antes de la Capa 4**, y el **factor de consolidación** está declarado con su lectura
-- [ ] Los **3 gates humanos** están registrados con estado — ninguno asumido por silencio
+- [ ] El **GATE 1 del presupuesto** está registrado con estado — no asumido por silencio
 - [ ] Todo costo lleva **moneda y fecha de cotización**, la **contingencia va como línea propia**, y al cerrar el ciclo el 🛑 **`costo_real` está completo** aunque coincida con el estimado
 - [ ] La columna `estado` está completa, **ninguna fila creativa se declaró completa si le falta una escena**, 🛑 **nada se borró** —ni el descarte— y el **backup doble** está verificado
 - [ ] 🛑 **Ningún entregable pisa** a ①②③, ②B Branding, ④ Creatividad, ⑥A, ⑥B, ⑦ u ⑧B — se verifica contra la tabla «Qué NO hace» de `agents/05-production/brain/WORKFLOW.md §4`

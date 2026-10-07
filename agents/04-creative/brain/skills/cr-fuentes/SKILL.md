@@ -2,8 +2,8 @@
 name: cr-fuentes
 description: >
   Capa 1 de ④ Creatividad — la skill que CONSIGUE los anuncios. Decide de dónde salen las
-  referencias: la investigación se hace **por plataforma**, en las que usa el cliente según el
-  plan por canal de ③, con tres actores de Apify —anuncios, Instagram y TikTok— y volumen fijado
+  referencias: la investigación se hace **por plataforma**, en las que usa el cliente según las
+  Redes de su plan contratado, con tres actores de Apify —anuncios, Instagram y TikTok— y volumen fijado
   por el plan contratado. Define qué da y qué no da cada fuente, los topes de gasto, en qué países
   se busca según sea competencia o referencia ganadora, y cuáles pasan a lectura profunda; extrae
   id, anunciante, copy, plataformas y fecha de inicio, y calcula la antigüedad. Úsala cuando pidan
@@ -101,8 +101,10 @@ headless: el histórico de esa decisión quedó en `BARRIDO-NOCTURNO.md`, marcad
 
 ### 🛑 La investigación se hace por plataforma
 
-**Las plataformas son las del cliente** — las que figuran en **`plan-por-canal.md` de ③ Marketing**.
-No se investiga una plataforma donde el cliente no publica, por interesante que sea lo que haya ahí.
+**Las plataformas son las del cliente** — las **Redes** de
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(si existe `plan-por-canal.md` de ③ Marketing,
+también sirve)*. No se investiga una plataforma donde el cliente no publica, por interesante que sea
+lo que haya ahí.
 
 | Plataforma | Actor | **$/1,000** |
 |---|---|---|
@@ -239,7 +241,7 @@ Todo relevamiento cierra con:
 
 ```
 - Fuentes usadas: [lista] · no disponibles: [lista] → evidencia faltante: [qué]
-- Plataformas investigadas: [lista, de `plan-por-canal.md`] · plan del cliente: [plan]
+- Plataformas investigadas: [lista, de las Redes del `plan-contratado.md`] · plan del cliente: [plan]
 - Contenidos por plataforma: [n] de [50 / 100] · competencia [n] · referencias [n]
 - Pasaron a lectura profunda: [n] de 10-15
 - Gasto de la corrida: US$[n] · tope de seguridad: US$5/mes
@@ -261,7 +263,7 @@ Lo que le toca a las fuentes. El bloque completo de la capa lo cierra `cr-swipe-
 - [ ] El listado está **ordenado por antigüedad**, no por impresiones ni por engagement
 - [ ] Para orgánico: **la base del creador se midió** antes de declarar un outlier
 - [ ] Ninguna referencia se pidió dos veces — se buscó su ficha antes de volver a consultar
-- [ ] Se investigaron **solo las plataformas del cliente**, según `plan-por-canal.md` de ③
+- [ ] Se investigaron **solo las plataformas del cliente**, según las **Redes** del `plan-contratado.md` *(o `plan-por-canal.md` de ③, si existe)*
 - [ ] El **volumen por plataforma** es el del plan contratado *(50 / 50 / 100 / 100)*, **mitad y mitad**
 - [ ] Los **techos** se respetaron: 50 por búsqueda · 25 por marca · US$5/mes de tope de seguridad
 - [ ] Toda corrida de Apify llevó **`resultsLimit`** y **`maxTotalChargeUsd`** — en los tres actores

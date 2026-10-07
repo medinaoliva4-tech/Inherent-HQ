@@ -8,15 +8,15 @@ description: >
   contra lo entregado. Escribe la sección § La entrega de `plan-de-rodaje.md` y completa la columna `estado`
   de `plan-de-produccion.csv`. Úsala cuando pidan "cerrá la entrega", "qué quedó grabado", "subí el
   material", "está completo esto", "cruzá lo grabado contra el Excel", "qué le falta a esta pieza",
-  "dejá el material listo para edición", "marcá los selects". Requiere el plan de rodaje aprobado
-  (🚦 Gate 2).
+  "dejá el material listo para edición", "marcá los selects". Requiere el plan de rodaje de la
+  Capa 5.
 ---
 
 # Capa 6 · Rodaje y entrega — ¿se grabó todo y se entregó usable?
 
 | | |
 |---|---|
-| **Consume** | El plan de rodaje aprobado (🚦 Gate 2): las secciones **la sección de cada jornada** y **§ Cómo se nombran los archivos** de `plan-de-rodaje.md` · las filas de `plan-de-produccion.csv` en `estado = planificada`, con su `id`, `id_creativo`, `escena`, `destino` y su cobertura marcada · lo que efectivamente se grabó en cada jornada |
+| **Consume** | El plan de rodaje de la Capa 5: las secciones **la sección de cada jornada** y **§ Cómo se nombran los archivos** de `plan-de-rodaje.md` · las filas de `plan-de-produccion.csv` en `estado = planificada`, con su `id`, `id_creativo`, `escena`, `destino` y su cobertura marcada · lo que efectivamente se grabó en cada jornada |
 | **Produce** | La sección **§ La entrega** de `plan-de-rodaje.md` —checklist de cierre por locación, manifiesto cruzado, escenas no entregadas con motivo y la tabla de qué se entrega / qué no— y la columna **`estado`** de `plan-de-produccion.csv` completa: `grabada` / `entregada` / `↩️ devuelta` |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:
@@ -176,13 +176,12 @@ vuelve a ④ con motivo y dos alternativas.
 
 ---
 
-## 7 · 🚦 GATE 3 — la entrega
+## 7 · ✅ Auto-revisión de la entrega
 
-**La entrega se confirma antes de cerrar la jornada como completa.** El gate es humano: esta skill
-**para**, declara el estado del manifiesto y espera confirmación explícita. No se aprueba solo ni se
-asume aprobado por silencio.
+**La entrega se auto-revisa con el QA de abajo antes de cerrar la jornada como completa:** checklist
+de cierre de locación y manifiesto cruzado. Lo que falla se declara, no se da por completo.
 
-Después del gate se emite el bloque **HANDOFF** de `agents/05-production/brain/WORKFLOW.md §8`, con las filas
+Con el QA completo se emite el bloque **HANDOFF** de `agents/05-production/brain/WORKFLOW.md §8`, con las filas
 creativas completas y las **incompletas nombradas una por una**.
 
 ---
@@ -206,7 +205,7 @@ creativas completas y las **incompletas nombradas una por una**.
 - [ ] La columna `estado` está completa en **todas** las filas del CSV
 - [ ] Las escenas `↩️ devuelta` tienen los **tres elementos** (qué no se puede · por qué importa · dos alternativas)
 - [ ] Todo faltante está marcado `BLOQUEADO` o `⚠️ SIN DATOS`, **ninguno omitido en silencio**
-- [ ] 🚦 **GATE 3 registrado** con estado, y el bloque **HANDOFF emitido** con las filas incompletas nombradas
+- [ ] El bloque **HANDOFF emitido** con las filas incompletas nombradas
 
 **Handoff →** `pr-loop` (Capa 7). El manifiesto es su insumo: sin la columna `estado` completa no se
 puede medir material no usado, y la Capa 7 se queda sin su lectura más valiosa.

@@ -12,7 +12,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Entregables de ① y ② · `clients/<cliente>/CLAUDE.md` · `inherent/03-OFERTA.md` |
+| **Consume** | Entregables de ① y ② · `clients/<cliente>/00-onboarding/plan-contratado.md` · `clients/<cliente>/CLAUDE.md` · `inherent/03-OFERTA.md` |
 | **Produce** | La sección **§ El encargo** de `motor-de-crecimiento.md` |
 
 ## 1 · La división — no se elige acá
@@ -51,14 +51,16 @@ description: >
 
 | | 🔷 Marketing / Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| Pilar 1 · Oferta | ⛔ | ✅ | ✅ |
+| Pilar 1 · Oferta | 🟡 **Ligero** — qué ofertas se empujan | ✅ | ✅ |
 | Pilar 2 · Canales grandes | ⛔ | ✅ | ✅ |
 | Pilar 3 · Upsells | ⛔ | ✅ | ✅ |
 | Conversion OS | ⛔ | ✅ | ✅ |
 | Herramienta | ⛔ | 1/trimestre | 1/mes |
 | Money OS | ⛔ | ⬜ | ✅ |
 
-🛑 **Sobre un plan de la línea 🔷 Marketing, esta skill BLOQUEA.**
+🔷 **Sobre un plan de la línea Marketing, Growth corre ligero:** solo se elige qué ofertas que ya
+existen se empujan (`gr-oferta`). **No se cambia qué se vende, en qué paquetes ni a qué precio.**
+⬜ **Tailor Made:** se copia lo que declara su pipeline en `plan-contratado.md`.
 
 ---
 
@@ -89,7 +91,6 @@ Ver `inherent/03-OFERTA.md` → «Desde qué facturación tiene sentido cada pla
 ⚠️ **No se bloquea el trabajo** — el cliente ya firmó. **Se bloquea el silencio.**
 **Un cliente que no puede pagar el plan con el resultado del plan se va a ir**, y es mejor
 saberlo el mes 1 que el mes 6.
-| Money OS | ⬜ | ⬜ | ✅ |
 
 ## 4 · Qué queda afuera — y se dice
 
@@ -101,7 +102,7 @@ para responder sin prometer de más.
 | ❌ Interno | ✅ Al cliente |
 |---|---|
 | *«Pilar 3 no se activa en la línea Marketing»* | *«Los upsells los trabajamos cuando ya haya gente comprando una vez»* |
-| *«Growth no corre en tu plan»* | *«Tu plan trabaja que te vean y te entiendan. Rediseñar qué vendes y a qué precio es el siguiente paso»* |
+| *«Growth no rediseña la oferta en tu plan»* | *«Tu plan trabaja que te vean y te entiendan. Rediseñar qué vendes y a qué precio es el siguiente paso»* |
 | *«Money OS es Compound»* | *«El análisis de margen por producto entra cuando haya suficientes transacciones para que el dato sea real»* |
 
 ## 5 · Qué escribe

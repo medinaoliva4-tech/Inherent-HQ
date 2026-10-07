@@ -1,12 +1,12 @@
 ---
 name: po-specs
 description: >
-  Capa 2 de ⑦ Posting — el QA técnico antes de cargar. Verifica que cada archivo de ⑥A y ⑥B cumpla la
+  Capa 2 de ⑦ Posting — el QA técnico antes de programar. Verifica que cada archivo de ⑥A y ⑥B cumpla la
   spec de su plataforma: aspecto, duración, peso, safe zones, audio, ausencia de watermark de otra
   app, y que el caption y los hashtags entren en el límite. Lo que no cumple se DEVUELVE a ⑥A o ⑥B —
   nunca se arregla acá. Escribe la columna `specs_ok` y el bloque de QA de cada sección de
   `publicaciones.md`. Úsala cuando pidan "revisá los archivos", "¿esto cumple?", "¿entra en Reels?",
-  "¿por qué se ve cortado?", "hacé el QA antes de cargar". Requiere la Capa 0 hecha.
+  "¿por qué se ve cortado?", "hacé el QA antes de programar". Requiere la Capa 0 hecha.
 ---
 
 # Capa 2 · Specs — ¿el archivo cumple?
@@ -48,7 +48,7 @@ sí se hace acá, y se anota.
 | **Caption** | Entra en el límite y el hook sobrevive al corte | ← Capa 1 |
 | **Hashtags** | Dentro del máximo de la plataforma | ← Capa 1 |
 | **Alt text** | Escrito | ← Capa 1 |
-| **Claims** | Todos aprobados | 🛑 **No se carga** |
+| **Claims** | Todos aprobados | 🛑 **No se programa** |
 
 ### Aspecto — lo estable
 
@@ -71,11 +71,12 @@ visible.
 | Duración máxima de Reels, TikTok, Shorts y Stories | ⚠️ **A VERIFICAR cada ciclo.** Las plataformas las mueven seguido — Reels en particular cambió varias veces |
 | Peso máximo por archivo | ⚠️ **A VERIFICAR** |
 
-**Cómo se verifica:** en la página de especificaciones de la plataforma, o en la plantilla vigente de
-Publer. Se anota la fecha de verificación al lado del número.
+**Cómo se verifica:** en la página de especificaciones de la plataforma. Se anota la fecha de
+verificación al lado del número. El peso lo vuelve a comprobar Zernio antes de programar:
+**`validate_media`** compara cada archivo contra el límite de cada plataforma (`po-carga`).
 
-🛑 **No se afirma una duración de memoria.** Un video rechazado al cargar con 40 posts adentro cuesta
-la ventana de publicación.
+🛑 **No se afirma una duración de memoria.** Un video rechazado al programar cuesta la ventana de
+publicación.
 
 ### Safe zones — dónde se come la plataforma el contenido
 
@@ -97,7 +98,7 @@ Si ⑥A o ⑥B ya trabajaron con safe zones —que deberían—, acá **se verif
 | Sin watermark             | ✅   |                    |
 ```
 
-**Una fila con un ⬜ no es `specs_ok = ✅`.** No hay medio cumplimiento: o se carga, o se devuelve.
+**Una fila con un ⬜ no es `specs_ok = ✅`.** No hay medio cumplimiento: o se programa, o se devuelve.
 
 ## 4 · La devolución
 

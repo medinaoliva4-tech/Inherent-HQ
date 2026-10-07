@@ -189,7 +189,7 @@ resuelve acá**: se devuelve, **con números**.
 ```
 ↩️ DEVUELTO — dispersión de locaciones
 12 piezas piden 12 locaciones distintas → factor 1.0 → 12 jornadas
-Costo estimado: [monto + moneda]. Presupuesto disponible: [monto].
+Costo estimado: [monto + moneda]. Presupuesto de referencia: [monto / ⚠️ SIN DATOS].
 
 Alternativas, sin cambiar la intención de ninguna pieza:
 A) 4 locaciones sirven para 9 de las 12 → factor 3.0 → 4 jornadas

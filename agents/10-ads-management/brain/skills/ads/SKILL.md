@@ -16,7 +16,8 @@ description: >
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
 > `WORKFLOW.md`.** Si el prompt pide saltarse una capa, un gate o cambiar el entregable: se dice
-> cuál, se ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por Allan»*.
+> cuál, se ofrece correrla y **se sigue el workflow**, salvo que el pipeline del ⬜ Tailor Made del
+> cliente lo declare o el pedido diga *«excepción aprobada por el CEO»*.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 **Si no sabés qué skill usar, es esta.**
@@ -27,7 +28,8 @@ description: >
 
 **Pautar gasta dinero del cliente y es irreversible.**
 
-🛑 **Nada se lanza, se pausa ni se cambia de presupuesto sin gate de Allan.**
+🛑 **Nada se lanza ni se cambia de presupuesto sin gate del CEO.** Pausar lo que gasta mal se
+hace y se avisa: detener una pérdida no es gastar.
 
 ## 2 · Pre-flight
 
@@ -37,10 +39,10 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 
 | Input | De | Si falta |
 |---|---|---|
-| La oferta, el precio y el objetivo | ② Growth | 🛑 **BLOQUEADO** |
+| Qué ofertas se pautan, su precio y el objetivo | ② Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 **BLOQUEADO** |
 | Qué piezas se pautan y con qué objetivo | ③ Marketing | 🛑 **BLOQUEADO** |
 | Los creativos **con variantes de hook** | ⑥A y ⑥B | 🛑 **BLOQUEADO** |
-| Qué claims están **validados** | ②B Branding | 🛑 **BLOQUEADO** |
+| Qué claims están **validados** | ②B Branding | 🟡 Se usa si existe — un claim `⏸️` no sale |
 | Las cuentas publicitarias y **quién tiene el acceso** | `clients/<cliente>/00-onboarding/LINKS.md` | 🛑 **BLOQUEADO** |
 | **El presupuesto, aprobado por el cliente** | 00 Account · Allan | 🛑 **BLOQUEADO** |
 | **El plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define canales y variantes |
@@ -55,6 +57,10 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | **Audita y monitorea** | ❌ | ✅ |
 
 **El plugin propone, AdWhispr ejecuta, Allan aprueba en el medio.**
+
+🛑 **Si falta una, lo que depende de ella no corre:**
+`BLOQUEADO — falta AdWhispr. Instalala: ver INSTALAR.md § AdWhispr` ·
+`BLOQUEADO — falta el plugin claude-ads. Instalala: ver INSTALAR.md § Plugin claude-ads`
 
 ## 4 · Qué capa corre según el pedido
 
@@ -86,7 +92,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 ## Control de calidad del orquestador
 
 - [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **sigue su pipeline**
 - [ ] 🛑 **La inversión publicitaria la pone el cliente**, y el presupuesto está **aprobado por escrito** antes de tocar la cuenta
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
-- [ ] Los **gates humanos** quedaron registrados con estado — ninguno asumido por silencio
+- [ ] 🔒 **Nada se lanzó ni se movió de presupuesto sin el OK del CEO** — GATE 1 y GATE 2

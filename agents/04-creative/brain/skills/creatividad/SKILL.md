@@ -9,34 +9,35 @@ description: >
   "traducí la estrategia de X a brief", "dame conceptos para X", "escribí el hook y el copy de esta
   pieza", "buscá referencias de qué está funcionando", "mirá este video y decime qué tiene",
   "adaptalo a los otros canales", "armá el Excel del ciclo", "¿qué funcionó el mes pasado?".
-  Nunca produzcas un entregable de creatividad sin pasar por acá. Requiere estrategia y plan de
-  campañas aprobados: si faltan, BLOQUEA.
+  Nunca produzcas un entregable de creatividad sin pasar por acá. Requiere las campañas y el
+  calendario de ③ Marketing: si faltan, BLOQUEA.
 ---
 
 # ④ Creatividad — Orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
-> `WORKFLOW.md`.** Si el prompt pide saltarse una capa, un gate o cambiar el entregable: se dice
-> cuál, se ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por Allan»*.
+> `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se dice cuál, se
+> ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* o que el
+> pipeline del ⬜ Tailor Made del cliente ya lo declare.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 > **En una frase:** Creatividad **dirige**; ⑤ Producción, ⑥A Diseño y ⑦ Posting **ejecutan**.
-> Convierte la estrategia aprobada en **ideas dirigidas**, listas para ejecutar sin adivinar nada.
+> Convierte el plan del ciclo en **ideas dirigidas**, listas para ejecutar sin adivinar nada.
 
 ## Qué consume · qué produce
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · **① Strategy** (audiencia, competencia, producto, **capacidad real de producción**) · **② Estrategia** (`posicionamiento.md`, `ingenieria-inversa.md`, `nucleo.md`) · **③ Marketing** (campañas, canales, fechas, **pilares y su mix**, calendario con los slots) · **②B Branding** (guidelines, tono, lente de marca, banco de assets) · **⑧B Ads** (qué rinde en pauta, claims aprobados — no bloqueante) |
-| **Produce** | El **PRE-FLIGHT**, el **plan de capas**, el registro de los **3 gates humanos** y el bloque **HANDOFF** |
+| **Consume** | El pedido del usuario · **③ Marketing** — **lo único bloqueante**: las campañas y su brief (`estrategia-de-contenido.md`: idea de campaña, **pilares y su mix**, jerarquía de mensaje) y el calendario con los slots (`calendario.csv`) · **si existen**: `plan-por-canal.md` de ③ · **① Strategy** (audiencia, competencia, producto, **capacidad real de producción**) · **② Estrategia** (`posicionamiento.md`, `ingenieria-inversa.md`, `nucleo.md`) · **②B Branding** (guía de marca, tono, banco de assets) · **⑧B Ads** (qué rinde en pauta, claims aprobados) |
+| **Produce** | El **PRE-FLIGHT**, el **plan de capas**, la **auto-revisión** de cada tramo y el bloque **HANDOFF** |
 | **No produce** | Ningún contenido creativo por su cuenta: no escribe hooks, conceptos ni filas. **Deriva** |
 
 El departamento completo: `agents/04-creative/brain/WORKFLOW.md`. Qué hace cada skill y cómo se encadenan:
 `agents/04-creative/brain/skills/README.md`.
 
 🛑 **No reconstruyas la estrategia ni el plan leyendo los otros documentos.** Si falta un bloqueante
-se pide **el archivo exacto**. No se deduce.
+se pide **el archivo exacto**; si falta otro, `⚠️ SIN DATOS` y se sigue. No se deduce.
 
 ---
 
@@ -44,16 +45,15 @@ se pide **el archivo exacto**. No se deduce.
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
-① Strategy [✅/⬜] · ② Estrategia [✅/⬜] · ③ Marketing [✅/⬜] · ②B Branding [✅/⬜] · ⑧B Ads [✅/⚠️]
+③ Marketing [✅/⬜] · ① Strategy [✅/⚠️] · ② Estrategia [✅/⚠️] · ②B Branding [✅/⚠️] · ⑧B Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
-Skills a correr: [x] · Gate humano en este tramo: [sí/no] · Output: [ruta]
+Skills a correr: [x] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
-**Se bloquea si:** no hay cliente · no existe su carpeta · falta un entregable bloqueante · el
-**posicionamiento de ②** o el **plan de campañas de ③** no están aprobados · el pedido pisa otro
-departamento.
+**Se bloquea si:** no hay cliente · no existe su carpeta · faltan **las campañas o el calendario de
+③ Marketing** · el pedido pisa otro departamento.
 
 > 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/`:
 >
@@ -67,8 +67,8 @@ departamento.
 > | La función de cada canal y qué NO se hace ahí | `03-marketing/AAAA-MM/plan-por-canal.md` | ③ Marketing |
 > | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | ③ Marketing |
 >
-> 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo — no se deduce
-> de los otros.**
+> 🛑 **Si falta un archivo de ③ Marketing, se marca `BLOQUEADO` con qué falta y a quién pedírselo.
+> Los demás se usan si existen; el que falta va `⚠️ SIN DATOS`. Ninguno se deduce de los otros.**
 
 > 🗣️ **El lenguaje literal del comprador lo arma ④** con las reseñas y comentarios públicos del
 > negocio — ver `WORKFLOW.md` §2B. **No es bloqueante.**
@@ -79,12 +79,12 @@ departamento.
 
 | Pedido | Qué corre | Requiere |
 |---|---|---|
-| *"Armá las ideas de contenido de X"* · *"llená el calendario"* | **Completo** — Capas 0 → 6, con los 3 gates | Pre-flight PASS |
+| *"Armá las ideas de contenido de X"* · *"llená el calendario"* | **Completo** — Capas 0 → 6 | Pre-flight PASS |
 | *"Traducí la estrategia de X a brief"* | Solo **Capa 0** | Pre-flight PASS |
 | *"Qué está funcionando en este formato"* · *"buscá referencias"* · *"mirá este video"* | Solo **Capa 1** | Nada aguas abajo |
-| *"Dame conceptos para X"* | **Capas 2-3** | Capa 0 hecha + 🚦 Gate 1 |
-| *"Escribí el hook y el copy de esta pieza"* | **Capas 4-5** | 🚦 Gate 2 aprobado |
-| *"Producción devolvió escenas"* · *"respondé las devoluciones de ⑤"* | **Capa 5** (`cr-arte-video`) + 🚦 Gate 3 — o **Capas 3-6** con 🚦 Gate 2 si el cambio rompe la intención | La devolución de ⑤ con motivo y dos alternativas · `WORKFLOW.md` §8 |
+| *"Dame conceptos para X"* | **Capas 2-3** | Capa 0 hecha |
+| *"Escribí el hook y el copy de esta pieza"* | **Capas 4-5** | Capas 2-3 hechas |
+| *"Producción devolvió escenas"* · *"respondé las devoluciones de ⑤"* | **Capa 5** (`cr-arte-video`) y se vuelve a cerrar el Excel del ciclo — o **Capas 3-6** si el cambio rompe la intención | La devolución de ⑤ con motivo y dos alternativas · `WORKFLOW.md` §8 |
 | *"¿Qué funcionó el mes pasado?"* · *"cerremos el ciclo"* | Solo **Capa 7** | Métricas por pieza |
 
 🛑 **Si falta una capa previa: decí qué falta y ofrecé correrla. No se improvisa el faltante.**
@@ -116,22 +116,23 @@ de la siguiente**: saltar de Interpretar a Dirigir produce piezas bonitas sin id
 
 ---
 
-## 4 · Los 3 gates humanos
+## 4 · Dónde se auto-revisa — no para entre capas
 
-| Gate | Dónde | Por qué existe |
+**④ no para a pedir aprobación.** Cada tramo cierra con el QA de su skill y sigue. ④ no publica, no
+gasta ni le envía nada al cliente: el control de calidad lo hace el CEO en persona.
+
+| Cierre | Dónde | Por qué pesa |
 |---|---|---|
-| 🚦 **GATE 1 — brief** | Al cerrar `cr-brief` (Capa 0) | Antes de gastar tiempo ideando sobre una lectura equivocada |
-| 🚦 **GATE 2 — conceptos** | Al cerrar `cr-storytelling` (Capa 3) | El más importante: hook, copy, layout, tomas y estética derivan de acá. Un concepto equivocado se multiplica por 20 filas |
-| 🚦 **GATE 3 — ciclo** | Al cerrar `cr-adaptacion` (Capa 6), antes del handoff | El lead revisa el Excel y los docs. **Nada se libera a producción sin esta revisión** |
-
-🛑 **Los gates son humanos y nadie los salta.** El orquestador **para**, declara el estado y espera
-confirmación explícita. No los aprueba solo ni los asume aprobados por silencio.
+| ✅ **Brief** | Al cerrar `cr-brief` (Capa 0) | Antes de gastar tiempo ideando sobre una lectura equivocada |
+| ✅ **Conceptos** | Al cerrar `cr-storytelling` (Capa 3) | El que más pesa: hook, copy, layout, tomas y estética derivan de acá. Un concepto equivocado se multiplica por 20 filas |
+| ✅ **El Excel del ciclo cerrado** | Al cerrar `cr-adaptacion` (Capa 6), antes del handoff | `plan-de-contenido.csv` + los `ideas-<formato>.md` pasan el QA. **Es lo que esperan Producción, Diseño, Video Editing y Posting para arrancar** |
 
 **Cuando ⑤ Producción devuelve una escena**, el orquestador responde con **una de las 4 respuestas**
 —alternativa 1 · alternativa 2 · alternativa nueva · se retira— y la corrige en `cr-arte-video`. Si
-el cambio **no toca la intención**, la fila vuelve a pasar por 🚦 Gate 3; si **la rompe**, vuelve a
-Capa 3 y a 🚦 Gate 2. Motivo 6 (Branding) no se resuelve: se declara a ②B. **Plazo 2 días hábiles,
-máximo 2 vueltas por escena**; después deciden el lead de ④ y el de ⑤. Detalle en `WORKFLOW.md` §8.
+el cambio **no toca la intención**, la fila vuelve a pasar el QA y el Excel del ciclo se vuelve a
+cerrar; si **la rompe**, vuelve a Capa 3 y corre de nuevo hasta la 6. Motivo 6 (Branding) no se
+resuelve: se declara a ②B. **Plazo 2 días hábiles, máximo 2 vueltas por escena**; después deciden el
+lead de ④ y el de ⑤. Detalle en `WORKFLOW.md` §8.
 
 ---
 
@@ -139,12 +140,12 @@ máximo 2 vueltas por escena**; después deciden el lead de ④ y el de ⑤. Det
 
 | Archivo | Qué es | Cómo se lee |
 |---|---|---|
-| **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, **12 columnas** | **De arriba abajo**, para aprobar el ciclo completo |
-| **`brief-del-ciclo.md`** | El brief (Capa 0) y las BIG IDEAS (Capas 2-3) | **Una vez, entero** — ahí viven Gate 1 y Gate 2 |
+| **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, **12 columnas** | **De arriba abajo**, para revisar el ciclo completo |
+| **`brief-del-ciclo.md`** | El brief (Capa 0) y las BIG IDEAS (Capas 2-3) | **Una vez, entero** — antes de mirar una sola pieza |
 | **`ideas-<formato>.md`** | El desarrollo. Una sección por pieza, `## CR-007 · <concepto>`, agrupadas por `formato` | **De a un formato**, para ejecutar todas sus piezas juntas |
 
 ```
-id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · rodaje · estado
+id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · material · estado
 ```
 
 **El puente es el `id` + la columna `formato`.** Ves `CR-007` en el Excel con `formato = Carrusel`,
@@ -182,7 +183,6 @@ Tabla completa en `WORKFLOW.md §8`.
 ## HANDOFF — Creative → ⑤ Producción / ⑥A Diseño
 - Cliente: · Bloque: · Fecha:
 - Entregables: plan-de-contenido.csv · brief-del-ciclo.md · ideas-<formato>.md (uno por formato: [lista])
-- Gates: brief [✅/⬜] · conceptos [✅/⬜] · ciclo [✅/⬜]
 - Filas totales: [n] · por campaña: [desglose]
 - Reparto 70/20/10: [n / n / n] → [✅ cumple / ⚠️ desviado + por qué]
 - Filas por `material`: ninguno [n] · video [n] · foto [n] → ⑤ Producción recibe [n]
@@ -215,10 +215,9 @@ mezcla** con 🟢/🟡/⚪) · ⚠️ SIN DATOS · ⏸️ PENDIENTE APROBACIÓN 
 **Checks transversales. Ninguno se omite en silencio, y el ciclo no se libera sin este bloque.**
 
 - [ ] El **PRE-FLIGHT** está emitido con **PASS o BLOQUEADO**, y cada skill corrió **con el output de la anterior**, sin faltantes improvisados
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
-- [ ] Los **3 gates humanos** registrados con estado — ninguno asumido por silencio
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, en lo que declara **su pipeline**
 - [ ] Existen **exactamente los entregables esperados** —`plan-de-contenido.csv`, `brief-del-ciclo.md` y un `ideas-<formato>.md` por cada formato del ciclo— y **todo `id` del CSV tiene su sección `## CR-00N · <concepto>` en el doc de su formato, y al revés**: el puente no se rompe
-- [ ] Las **12 columnas** están completas en cada fila, y **toda fila cuelga de una `campana`**: el ciclo se puede aprobar campaña por campaña
+- [ ] Las **12 columnas** están completas en cada fila, y **toda fila cuelga de una `campana`**: el ciclo se puede revisar campaña por campaña
 - [ ] 🛑 **Toda fila tiene `traza`** a una MUST BE TRUE —las que no, **eliminadas**— y **toda pieza su hipótesis escrita**, con qué la confirmaría
 - [ ] El reparto **70/20/10 cierra ±10 puntos** sobre el total del ciclo — o la desviación está declarada con su motivo (y el **primer ciclo** se declaró como **80/20**)
 - [ ] Brief, conceptos, Excel y doc **no se contradicen** entre sí
@@ -230,5 +229,5 @@ mezcla** con 🟢/🟡/⚪) · ⚠️ SIN DATOS · ⏸️ PENDIENTE APROBACIÓN 
 - [ ] **Ningún entregable pisa** a ①②③, ②B Branding, ⑤, ⑥A, ⑦ u ⑧B — se verifica contra la tabla «Qué NO hace» de `WORKFLOW.md §3` — y **ningún campo ajeno reescrito**: todos citados con su ruta
 - [ ] Claims, precios y promesas sin validar están `⏸️ PENDIENTE APROBACIÓN` **con quién valida**, y las filas `pendiente` **no se liberan**
 - [ ] Todo faltante marcado `BLOQUEADO` o `⚠️ SIN DATOS`, con **qué lo desbloquea y a quién pedírselo** — ninguno omitido en silencio
-- [ ] Toda devolución de ⑤ tiene **una de las 4 respuestas, con fecha**, dentro del plazo y sin pasar de 2 vueltas — la que rompió la intención volvió a 🚦 Gate 2
+- [ ] Toda devolución de ⑤ tiene **una de las 4 respuestas, con fecha**, dentro del plazo y sin pasar de 2 vueltas — la que rompió la intención volvió a correr desde Capa 3
 - [ ] El bloque **HANDOFF está emitido completo**, con nivel de confianza

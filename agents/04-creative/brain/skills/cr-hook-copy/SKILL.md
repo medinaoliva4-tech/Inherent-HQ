@@ -19,7 +19,7 @@ exactas** lleva. Se decide acá para que el editor y el diseñador no las invent
 
 | | |
 |---|---|
-| **Consume** | El concepto aprobado en **Gate 2** (la BIG IDEA y su arco) · el **objetivo del slot** y su **etapa** (TOFU / MOFU / BOFU / post-compra) · el **tono de voz** de ②B Branding · el **lenguaje literal del comprador** de ② Estrategia |
+| **Consume** | El concepto de las **Capas 2-3** (la BIG IDEA y su arco) · el **objetivo del slot** y su **etapa** (TOFU / MOFU / BOFU / post-compra) · el **tono de voz** de ②B Branding, si existe · el **lenguaje literal del comprador** de ② Estrategia |
 | **Produce** | En el `ideas-<formato>.md` de cada pieza: las secciones **Hook**, **Guion** y **Copy** · en `plan-de-contenido.csv`, la columna **`concepto`** — una línea que dice qué es la pieza |
 | **No produce** | Layout, estética, escenas, encuadres ni duraciones (Capa 5) · hashtags y adaptación a plataforma (⑦ Posting) |
 

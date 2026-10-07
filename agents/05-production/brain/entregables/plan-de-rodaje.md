@@ -1,7 +1,7 @@
 # Plan de rodaje — [Cliente]
 
 **Campaña(s):** [nombres] · **Ciclo:** [x] · **Fecha:** [aaaa-mm-dd]
-**Gates:** presupuesto [✅/⬜] · plan de rodaje [✅/⬜] · entrega [✅/⬜]
+**GATE 1 presupuesto:** [✅ aprobado / ⏸️ PENDIENTE APROBACIÓN]
 
 > Este documento es **con el que se rueda**. Acompaña a `presupuesto.md` (lo que ve el cliente) y se
 > apoya en `plan-de-produccion.csv` (interno, una fila por escena).
@@ -197,9 +197,9 @@ escena, con el nombre de archivo de cada toma, vive en `plan-de-produccion.csv`,
 
 ### El techo de realidad
 ```
-Presupuesto disponible: [monto + moneda + fecha]
-Días de rodaje posibles: [n]   — según fechas de preparación de ③ Marketing
-Capacidad declarada:     [n]   — de ① Strategy
+Días de rodaje posibles:    [n]   — según fechas de preparación de ③ Marketing
+Capacidad:                  [n]   — horas y sesiones del plan · la declarada en ① si es menor
+Presupuesto de referencia:  [monto + moneda + fecha / ⚠️ SIN DATOS]   — del onboarding, si existe
 ```
 **¿Entra?** [✅ sí / ⚠️ se excede en [qué] → devuelto a ③ y ④, con las filas concretas]
 

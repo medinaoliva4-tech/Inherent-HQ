@@ -26,10 +26,10 @@ detalle de cada herramienta.
 |---|---|---|---|---|
 | 1 | **`mk-encargo`** | 0 | *«arrancá el ciclo»*, *«cuántas piezas podemos»* | § El encargo — el techo del plan y la capacidad real |
 | 2 | **`mk-campana`** | 1 | *«qué campaña corremos»* | § Idea de campaña — una frase que el equipo repite |
-| 3 | **`mk-mensaje`** | 2 | *«qué decimos primero»* | § Jerarquía de mensaje · **🚦 GATE 1** |
+| 3 | **`mk-mensaje`** | 2 | *«qué decimos primero»* | § Jerarquía de mensaje |
 | 4 | **`mk-pilares`** | 3 | *«qué pilares»*, *«el sistema de contenido»* | § Sistema de contenido — pilares con su peso |
 | 5 | **`mk-canales`** | 4 | *«qué hace cada canal»* | `plan-por-canal.md` — función única y qué NO va ahí |
-| 6 | **`mk-calendario`** | 5 | *«armá el calendario»* | **`calendario.csv`** · **🚦 GATE 2** |
+| 6 | **`mk-calendario`** | 5 | *«armá el calendario»* | **`calendario.csv`** |
 | 7 | **`mk-loop`** | 6 | *«qué rindió»*, la revisión del 20 | `aprendizaje-de-marketing.md` |
 
 ---
@@ -39,11 +39,7 @@ detalle de cada herramienta.
 **Cada capa consume la anterior.** Si falta el input de una, **se corre la anterior** — nunca se
 improvisa el faltante.
 
-## Los dos gates
+## Sin paradas entre capas
 
-| 🚦 | Después de | Qué aprueba Allan |
-|---|---|---|
-| **GATE 1** | `mk-mensaje` | La campaña y la jerarquía de mensaje |
-| **GATE 2** | `mk-calendario` | El calendario completo |
-
-**El agente propone, no cierra.**
+**Cada capa cierra con su checklist y sigue.** No hay gates entre capas: el control de calidad lo
+hace el CEO en persona. Ver `../WORKFLOW.md` §4.

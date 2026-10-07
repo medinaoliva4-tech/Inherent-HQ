@@ -28,6 +28,7 @@ paso vive en las skills: `skills/README.md`.
 | **Variantes de creativo por campaña** | hasta **20** | hasta **30** | hasta **35** | hasta **50** |
 | **Optimización** | Mensual | Mensual | Por ángulo, continua | Continua + presupuesto sistematizado |
 | **Experimentos controlados** | ⬜ | ⬜ | 🟡 | ✅ |
+| **Tracking antes de gastar** | **Pixel de Meta** | **Pixel de Meta** | Atribución completa — CAPI + GA4 | Atribución completa — CAPI + GA4 |
 | **Atribución para el performance fee** | ⛔ **No aplica** | ⛔ **No aplica** | ✅ | ✅ |
 
 **Cómo se lee:**
@@ -41,25 +42,25 @@ paso vive en las skills: `skills/README.md`.
   no se lanza, por más que el plan incluya el canal.
 - ⚠️ **«Que te encuentren en Google» entra desde 🔷 Marketing Pro**, y es **pauta de búsqueda**, no
   posicionamiento orgánico, ni auditoría técnica, ni link building.
-- 🛑 **El performance fee NO existe en la línea 🔷 Marketing.** Requiere atribución limpia
-  (CAPI + GA4), que es parte de Conversion OS y **solo entra desde 🟨 Accelerate.** Si alguien pide
-  fee sobre un plan 🔷, **se levanta como excepción.**
+- 🔷 **En la línea Marketing, antes de gastar basta el pixel de Meta instalado.**
+  🛑 **El performance fee NO existe ahí:** requiere atribución limpia (CAPI + GA4), que es parte de
+  Conversion OS y **solo entra desde 🟨 Accelerate.** Si alguien pide fee sobre un plan 🔷, **se
+  levanta como excepción.**
 - **Las variantes salen de material ya producido.** ④ declara qué se varía, ⑥A y ⑥B las montan, ⑩ las
   sube. 🛑 **Una variante nunca pide grabación extra**, y **no cuenta como publicación**: no entra al
   calendario orgánico del ciclo.
 
-### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+### ⬜ Tailor Made — se sigue su pipeline
 
-Allan lo cotiza **en las mismas unidades de la tabla de arriba** —canales, variantes, cadencia de
-optimización— y el departamento trabaja con esos números igual que con un plan estándar.
-**El precio lo define Allan.**
+Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
+secciones: **Qué incluye** y **Su pipeline** —qué departamentos corren, en qué orden, qué entrega
+cada uno y a qué nivel—. **⑩ Ads sigue ese pipeline** *(canales, variantes, cadencia de
+optimización)*: no lo bloquea por no ser un plan de lista ni lo cuestiona por precio.
 
-- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
-- 🛑 **No existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
-- 🛑 **La atribución no se cotiza como add-on de pauta:** sin Conversion OS no hay fee, y eso no
-  cambia por cuánto se pague en Tailor Made.
-- **Se baja el volumen, nunca el método:** el gate de Allan antes de lanzar es igual en todos los
-  planes. **Pautar es acción destructiva en los cuatro.**
+- 🛑 **Si ⑩ Ads no está en su pipeline, no corre para ese cliente.**
+- 🛑 **La atribución no se agrega como add-on de pauta:** sin Conversion OS en su pipeline no hay fee.
+- **El método es el mismo:** lo que cambia es el pipeline y qué se verifica. **El gate del CEO antes
+  de gastar es igual en todos los planes** — pautar es acción destructiva en todos.
 
 ---
 
@@ -79,6 +80,10 @@ optimización— y el departamento trabaja con esos números igual que con un pl
 > 🔑 **El plugin propone, AdWhispr ejecuta.** `launch` y `optimize` del plugin corren en
 > `--draft` por defecto: **eso encaja con nuestra regla —el agente propone, Allan cierra—**,
 > pero significa que la ejecución real la hace AdWhispr.
+
+🛑 **Si falta una, lo que depende de ella no corre:**
+`BLOQUEADO — falta AdWhispr. Instalala: ver INSTALAR.md § AdWhispr` ·
+`BLOQUEADO — falta el plugin claude-ads. Instalala: ver INSTALAR.md § Plugin claude-ads`
 
 ### ⚠️ LinkedIn Ads
 
@@ -144,10 +149,10 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 
 | De | Qué | Si falta |
 |---|---|---|
-| **② Growth** | La oferta, el precio y el objetivo de la pauta | 🛑 BLOQUEADO |
+| **② Growth** | Qué ofertas se pautan, su precio y el objetivo — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 BLOQUEADO |
 | **③ Marketing** | Qué piezas del ciclo se pautan y con qué objetivo | 🛑 BLOQUEADO |
 | **⑥A y ⑥B** | Los creativos, **con sus variantes de hook** | 🛑 BLOQUEADO |
-| **②B Branding** | Qué claims están validados | 🛑 BLOQUEADO |
+| **②B Branding** | Qué claims están validados | 🟡 Se usa si existe — un claim `⏸️` no sale |
 | **`LINKS.md`** | Las cuentas publicitarias y **quién tiene el acceso** — la fuente única | 🛑 BLOQUEADO |
 
 ---
@@ -170,5 +175,5 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 - [ ] Las cuentas son del cliente y **hay acceso**
 - [ ] Los creativos llevan **claims validados** por ②B
 - [ ] Hay **variantes de hook** para testear, no un solo anuncio
-- [ ] La **atribución está puesta** antes de gastar el primer quetzal
+- [ ] El **tracking está puesto** antes de gastar el primer quetzal — 🔷 el pixel de Meta · 🟨 CAPI + GA4
 - [ ] **Allan aprobó el GATE 1**

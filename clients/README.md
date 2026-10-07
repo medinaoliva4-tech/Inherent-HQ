@@ -32,7 +32,7 @@ clients/<cliente>/
 ├── 04-contenido/AAAA-MM/  ideas · produccion · diseno · video · publicacion     TODOS
 ├── 05-comunidad/          comentarios y mensajes, según la escalera             TODOS
 ├── 06-pauta/AAAA-MM/      campañas, creativos y resultados                      TODOS
-├── 07-oferta-y-ventas/    oferta · canales grandes · upsells · conversión       🟨
+├── 07-oferta-y-ventas/    ofertas a empujar 🔷 · oferta completa 🟨             TODOS
 ├── 08-tecnologia/         herramientas a medida · IA propia                     🟨
 ├── 09-operacion/          auditorías · SOPs · estructura                        🟨
 ├── 10-finanzas/           Money OS                                              🟨 Compound

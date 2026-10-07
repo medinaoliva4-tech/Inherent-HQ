@@ -9,7 +9,7 @@
 | | |
 |---|---|
 | **Objetivo** | *En una métrica, con número y plazo* |
-| **Qué se vende** | De ② Growth |
+| **Qué se vende** | De ② Growth — 🔷 `ofertas-a-empujar.md` · 🟨 § La oferta |
 | **Presupuesto total** | |
 | **Diario** | |
 | **Si se agota antes** | |
@@ -21,7 +21,7 @@
 ### Atribución y capacidad
 | | |
 |---|---|
-| **Qué está puesto** | Pixel, conversión |
+| **Qué está puesto** | 🔷 Pixel de Meta · 🟨 CAPI + GA4 |
 | **Qué falta** | |
 | **¿Puede entregar el volumen?** | ⚠️ |
 

@@ -46,7 +46,8 @@ Las piezas, no las opiniones sobre la marca.
 reglas completas —los 3 aprendizajes del actor de anuncios, los topes y el orden de trabajo— viven
 en **`cr-fuentes`**. Acá solo lo que cambia para Strategy.
 
-**Las plataformas son las del cliente**, las que figuran en `plan-por-canal.md` de ③ Marketing:
+**Las plataformas son las del cliente:** las **Redes** de `00-onboarding/plan-contratado.md`. Si ya
+existe `plan-por-canal.md` de ③ Marketing, también sirve.
 
 | Plataforma | Actor |
 |---|---|

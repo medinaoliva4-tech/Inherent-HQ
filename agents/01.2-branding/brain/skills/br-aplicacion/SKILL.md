@@ -6,23 +6,23 @@ description: >
   los activos distintivos y un ejemplo de bien y mal. Es la capa que evita que la guía quede
   bonita y sin aplicar. Cierra la guía de marca. Úsala cuando pidan "cómo se ve en un reel",
   "cómo se arma un carrusel", "las medidas de cada formato", "bajá la guía a los formatos".
-  Requiere los activos distintivos. Cierra con el GATE 2.
+  Requiere los activos distintivos. Los formatos salen de las Redes del plan contratado.
 ---
 
 # Capa 5 · Aplicación — cómo se ve en cada formato real
 
 | | |
 |---|---|
-| **Consume** | `sistema-visual.md` · § Activos distintivos · `plan-por-canal.md` de ③ Marketing |
+| **Consume** | `sistema-visual.md` · § Activos distintivos · las **Redes** de `00-onboarding/plan-contratado.md` |
 | **Produce** | La sección **§ Aplicación por formato** de `guia-de-marca.md` |
 
 > 🔑 **Una guía que no se baja a formatos se lee una vez y no se aplica nunca.**
 
 ## 1 · Qué formatos se cubren
 
-**Los que `plan-por-canal.md` de ③ Marketing declara para este cliente. No todos los que existen.**
+**Los de las Redes que `plan-contratado.md` declara para este cliente. No todos los que existen.**
 
-🛑 **Un formato que el plan no usa no se documenta.** Es trabajo que nadie va a leer.
+🛑 **Un formato que sus Redes no usan no se documenta.** Es trabajo que nadie va a leer.
 
 ## 2 · La ficha de cada formato
 
@@ -68,29 +68,30 @@ description: >
 | **§ Resumen** | Tabla con formato, medidas, activos que van |
 | **§ Lo que rompe el sistema** | La lista de errores que ⑥A y ⑥B tienen que evitar |
 
-## 6 · 🚦 GATE 2
-
-**Allan aprueba la guía completa.**
+## 6 · La guía cerrada
 
 🛑 **Es lo que ④ ⑥A ⑥B ⑨ y ⑩ van a usar como ley.** A partir de acá, una pieza que no la cumple
-se devuelve.
+se devuelve. Se auto-revisa con el checklist de §7 y sigue.
 
 ## 6.1 · El kit en el Drive del cliente
 
-**Aprobado el GATE 2, los assets del kit se bajan de Figma y se suben al Drive del cliente:**
-logos en todas sus versiones, tipografías, plantillas, fondos y elementos gráficos.
+**Al cerrar la guía, los assets de la marca se bajan de Figma y se suben al Drive del cliente:**
+logos en todas sus versiones, íconos, texturas y fuentes.
 **El link del Drive va en `clients/<cliente>/02-marca/kit-de-redes/kit.md`**, junto al de Figma.
 
-🔑 **Así se edita en cualquier computadora.** Quien no tiene Figma abierto —el editor de video, otra
-máquina, otro operador— toma los assets del Drive. **Si el kit cambia en Figma, se vuelve a subir.**
+🔑 **Es para ⑥B Video Editing:** el editor usa los assets de la marca sin abrir Figma, en cualquier
+computadora. **Las plantillas no se suben:** se desarrollan en Figma y ⑥A Diseño trabaja ahí.
+**Si el kit cambia en Figma, se vuelve a subir.**
+
+Sin acceso a Figma o al Drive: `BLOQUEADO — falta Figma. Instalala: ver INSTALAR.md § Figma + Figwright`
+· `BLOQUEADO — falta Google Drive. Instalala: ver INSTALAR.md § Google Drive`.
 
 ## 7 · Checklist
 
-- [ ] Están cubiertos **los formatos que `plan-por-canal.md` declara**, y solo esos
+- [ ] Están cubiertos **los formatos de las Redes de `plan-contratado.md`**, y solo esos
 - [ ] Cada formato tiene **medidas y safe zones**
 - [ ] Cada formato dice **qué activos van y dónde**
 - [ ] Cada formato tiene un ejemplo **bien** y uno **mal**
 - [ ] Todo video lleva activo **en el primer frame**
 - [ ] Toda slide 1 de carrusel se entiende **sola**
-- [ ] **Allan aprobó el GATE 2**
 - [ ] **Los assets del kit están en el Drive del cliente** y el link está en `kit.md`

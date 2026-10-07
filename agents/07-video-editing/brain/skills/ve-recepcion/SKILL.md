@@ -9,14 +9,14 @@ description: >
   posproducción (qué se usa, qué segundos, qué se descarta y por qué). Úsala cuando pidan "¿llegó
   todo?", "qué nos falta para editar", "arrancá el ciclo de video", "cruzá el material contra el
   Excel", "analizá los videos", "calificá el material", "qué tomas sirven". Bloquea si falta el
-  Gate 3 de ④.
+  Excel del ciclo cerrado de ④.
 ---
 
 # Capa 0 · Recepción — qué llegó y es editable
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` con Gate 3 · el manifiesto y el material de ⑤ · `ideas-<formato>.md` |
+| **Consume** | **El Excel del ciclo cerrado** (`plan-de-contenido.csv` + `ideas-<formato>.md`) · el manifiesto y el material de ⑤ |
 | **Produce** | Las filas base de **`entregas-video.md`** · la tabla **§ Lo que no se edita este ciclo** · si hizo falta, **`post-production-list.md`** (los selects) |
 | **Herramientas** | `motor/remotion/scripts/` — `index_clips.py` · `watch_sheet.py` · `grade_add.py` · `merge_grading.py` · skill `/watch` |
 
@@ -74,7 +74,7 @@ reels en cliente real: se descartaron 25 de 123 clips antes de abrir el motor.
 
 | Paso | Qué se hace |
 |---|---|
-| **1 · La rúbrica** | Se copia `motor/remotion/edit/RUBRIC.md` a `production/grading/` y se completa con la dirección de ④ y § Imagen de ②B |
+| **1 · La rúbrica** | Se copia `motor/remotion/edit/RUBRIC.md` a `production/grading/` y se completa con la dirección de ④ y § Imagen de ②B *(si existe)* |
 | **2 · Ver cada clip** | `watch_sheet.py R1_01 …` — hoja con un fotograma por segundo y **el tiempo real quemado** (skill `/watch` en modo `--timestamps`) |
 | **3 · Afinar los cortes** | `watch_sheet.py R1_30:2.5-6.0 --step 0.25` en cada punto de corte y en cada momento protagonista |
 | **4 · Calificar** | Nota 0–10, veredicto (`USAR COMPLETO` · `USAR CON RECORTES` · `DESCARTADO` · `SIN ARCHIVO`), segundos a conservar y a cortar con motivo, momento protagonista, si cabe en doble cuadro |
@@ -104,6 +104,9 @@ montaje. Ningún tiempo se escribe de memoria.
 | **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
 | *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
 | **Total** | **10** | **16** | **20** | **24** |
+
+⬜ **Tailor Made:** el techo son los videos planificados y derivados que declara **Su pipeline** en
+`plan-contratado.md`.
 
 🛑 **Si el Excel pide más, se declara y se devuelve a ③ Marketing.** No se edita de más.
 

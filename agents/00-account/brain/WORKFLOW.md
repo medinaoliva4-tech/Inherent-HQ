@@ -10,8 +10,8 @@ conectada a WhatsApp, **siempre encendida**, contra este repo.
 
 ## 0 · El plan contratado — qué puede informar de cada plan
 
-**Lo primero de cada conversación, junto con identificar al cliente: leer su plan.** Lo anota
-② Strategy al arrancar en `clients/<cliente>/00-onboarding/plan-contratado.md`:
+**Lo primero de cada conversación, junto con identificar al cliente: leer su plan.** Se define en
+el onboarding y lo anota ① Strategy en `clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
 - 🛑 **Sin plan anotado, no se responde nada de alcance:** `BLOQUEADO — falta el plan contratado`.
@@ -45,13 +45,18 @@ conectada a WhatsApp, **siempre encendida**, contra este repo.
 
 ### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
 
-Allan lo cotiza **en las mismas unidades de la tabla de arriba**, y el agente informa esos números
-igual que los de un plan estándar. **El precio lo define Allan.**
+**Se define en el onboarding**, en su `plan-contratado.md`, con dos secciones: **Qué incluye** y
+**Su pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—. **Esa
+es su tarjeta:** el agente informa el alcance desde ahí, igual que el de un plan estándar.
+**El precio lo define el CEO.**
 
-- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pregunta a Allan.
+- **No se cuestiona:** ni por no ser un plan de lista, ni por precio. Lo que declara se informa tal cual.
+- 🔒 **Las filas marcadas 🔒 no salen:** el costo de la cuenta es interno (§3).
+- **Lo que no declara no se promete:** se abre como excepción para el CEO, igual que en un plan estándar.
+- **Un departamento que no está en Su pipeline no corre para ese cliente:** no se le abre sesión (§5 D).
 - 🛑 **No existe un plan por debajo de 🔷 Marketing.** Si piden menos, **no se cotiza acá:** se
   escala a Allan.
-- **Baja el volumen, nunca el método:** los gates y las revisiones son iguales en todos los planes.
+- **Cambia el pipeline, nunca el método:** cómo se hace cada cosa es igual en todos los planes.
 
 ---
 
@@ -217,6 +222,8 @@ Si el número no está en ningún `clients/<cliente>/`, **es alguien nuevo** →
 | Comunidad, respuestas, recompra | `08-community-management` |
 | Publicar o reprogramar | `09-posting` |
 | Pauta | `10-ads-management` |
+
+⬜ **En Tailor Made, solo abre los departamentos de Su pipeline** (§0).
 
 ---
 

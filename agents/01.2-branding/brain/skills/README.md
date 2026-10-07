@@ -21,12 +21,12 @@ detalle de cada herramienta.
 
 | # | Skill | Capa | Se dispara cuando… | Produce |
 |---|---|---|---|---|
-| 1 | **`br-brief`** | 0 | *«arrancá el branding»* | § El brief — lo que ② decidió vs. lo que ②B resuelve |
+| 1 | **`br-brief`** | 0 | *«arrancá el branding»* | § El brief — lo que ① decidió vs. lo que ②B resuelve |
 | 2 | **`br-territorio`** | 1 | *«cuál es el territorio»* | § Territorio y personalidad |
-| 3 | **`br-voz`** | 2 | *«el tono de voz»* | § Voz · **🚦 GATE 1** |
+| 3 | **`br-voz`** | 2 | *«el tono de voz»* | § Voz |
 | 4 | **`br-sistema`** | 3 | *«qué colores»*, *«la tipografía»* | **`sistema-visual.md`** |
 | 5 | **`br-activos`** | 4 | *«qué nos hace reconocibles»* | § Activos distintivos |
-| 6 | **`br-aplicacion`** | 5 | *«cómo se ve en un reel»* | § Aplicación por formato · **🚦 GATE 2** |
+| 6 | **`br-aplicacion`** | 5 | *«cómo se ve en un reel»* | § Aplicación por formato · **cierra la guía** |
 
 ## Las capas de ciclo — corren todos los meses
 
@@ -46,9 +46,7 @@ detalle de cada herramienta.
 
 🛑 **La marca se evoluciona, no se rehace.**
 
-## Los dos gates
+## Sin paradas entre capas
 
-| 🚦 | Después de | Qué aprueba Allan |
-|---|---|---|
-| **GATE 1** | `br-voz` | Territorio y voz |
-| **GATE 2** | `br-aplicacion` | La guía completa |
+**Cada capa cierra con su checklist y sigue.** No hay gates entre capas: el control de calidad lo
+hace el CEO en persona. Ver `../WORKFLOW.md` §4.

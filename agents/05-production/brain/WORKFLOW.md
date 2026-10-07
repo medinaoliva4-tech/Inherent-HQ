@@ -1,6 +1,6 @@
 # ⑤ Producción — cómo trabaja
 
-> **En una frase:** convierte las ideas aprobadas de ④ Creatividad en **material real** —fotos,
+> **En una frase:** convierte las ideas de ④ Creatividad en **material real** —fotos,
 > videos y assets base— dentro de un presupuesto y una agenda que construye él mismo.
 > Creatividad **dirige**; Producción **hace que exista**.
 
@@ -46,7 +46,6 @@ banco o derivados.
 | **Sesión de fotógrafo** | 1 h | 1 h | 1 h | 1 h |
 | **Videos planificados** a capturar *(20 min c/u)* | 9 | 12 | **18** | 24 |
 | **Material base** para estáticos y carruseles | para 43 | para 72 | para 63 | para 88 |
-| **Márgenes de rodaje** *(montaje · setup · desmontaje)* | 🟡 **PENDIENTE DE ALLAN** | 🟡 **PENDIENTE** | 🟡 **PENDIENTE** | 🟡 **PENDIENTE** |
 
 **Cómo se lee:**
 
@@ -59,7 +58,7 @@ banco o derivados.
 - ⚠️ **🟨 Accelerate es la jornada más apretada.** Captura **50% más video que Pro** *(18 contra 12)*
   en las **mismas 2 sesiones**. La consolidación de la Capa 2 ahí no es opcional.
 
-#### 🟡 PENDIENTE DE ALLAN — los márgenes de rodaje no entran en ningún plan
+#### Los márgenes de rodaje — referencia
 
 **Las horas contratadas son exactamente el tiempo de cámara, sin un minuto de margen.** A 20 minutos
 por video planificado, los cuatro planes dan justo:
@@ -70,32 +69,34 @@ por video planificado, los cuatro planes dan justo:
 | Horas contratadas | 3 h | 4 h | 6 h | 8 h |
 | **Margen que queda** | **0** | **0** | **0** | **0** |
 
-Pero el § 5 de este WORKFLOW pide **montaje inicial 60-90 min · cambio de setup de luz 30-45 min ·
-cambio de locación 60 min + traslado · desmontaje 45 min.** **Eso no cabe en ninguna de las cuatro
-columnas**, y en 🔷 Marketing se come la jornada entera antes de grabar la primera toma.
+Los márgenes de la Capa 5 —**montaje inicial 60-90 min · cambio de setup de luz 30-45 min · cambio
+de locación 60 min + traslado · desmontaje 45 min**— son **referencia**, no bloqueo. **No caben en
+ninguna de las cuatro columnas**, y en 🔷 Marketing se comen la jornada entera antes de grabar la
+primera toma.
 
-🛑 **Hasta que Allan decida el margen de rodaje liviano, se declaran márgenes reducidos como ajuste
-marcado en `plan-de-rodaje.md` — nunca en silencio, y nunca asumiendo que el día alcanza.**
+🛑 **Por eso se declaran los márgenes que se usan como ajuste marcado en `plan-de-rodaje.md` — nunca
+en silencio, y nunca asumiendo que el día alcanza.**
 
 #### Lo que el plan NO cubre
 
-- 🛑 **Nunca graba el cliente.** Las horas de grabación son el piso de costo de cada plan, y por eso
-  **no existe un plan por debajo de 🔷 Marketing** (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
+- 🛑 **Nunca graba el cliente.** Las horas de grabación son el piso de costo de cada plan
+  (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
 - **Modelos, props y locaciones son costo del cliente, aparte** (`inherent/06-ECONOMIA.md` → «⛔ Lo
   que nunca está incluido»). `presupuesto.md` separa siempre **lo que cubre el plan** de **lo que
   paga el cliente**.
 - **Una locación adicional es add-on, no parte del plan** (`inherent/06-ECONOMIA.md` → «Extras»).
 
-### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+### ⬜ Tailor Made — se sigue su pipeline
 
-Allan lo cotiza **en las mismas unidades de la tabla de arriba** —horas, sesiones, videos— y el
-departamento trabaja con esos números igual que con un plan estándar. **El precio lo define Allan.**
+Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
+secciones: **Qué incluye** y **Su pipeline** —qué departamentos corren, en qué orden, qué entrega
+cada uno y a qué nivel—. **El departamento sigue ese pipeline** igual que un plan estándar: no lo
+bloquea por no ser un plan de lista ni lo cuestiona por precio.
 
-- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
-- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
-  en todos los planes.
-- **Arriba de 🟨 Compound las horas extra se cotizan como horas, no como piezas:** el video de
-  grabación es el único techo real del modelo.
+- **Lo que el pipeline declara para ⑤ —horas, sesiones, videos— es el techo del ciclo.**
+- 🛑 **Si ⑤ no está en su pipeline, no corre para ese cliente.**
+- **Cambia el pipeline, nunca el método:** la trazabilidad y las devoluciones son iguales en todos
+  los planes.
 
 ---
 
@@ -257,7 +258,7 @@ existencia, accesos, personas disponibles — a partir de la columna `pedido_cli
 Va como una sección de `presupuesto.md`, en lenguaje natural, con **fecha límite y responsable**.
 
 🛑 **Lo envía una persona, nunca el agente.** `CLAUDE.md`: *«Nada destructivo sin autorización: no
-publicar, no pautar, no enviar al cliente»*. El agente **redacta y deja listo**; Allan envía.
+publicar, no pautar, no enviar al cliente»*. El agente **redacta y deja listo**; el CEO envía.
 
 ### 🛑 Si no entra en la hora
 
@@ -282,31 +283,32 @@ tomar es una pieza que no sale.
 
 ## 3 · Qué recibe, y de quién
 
-Producción **no arranca nunca sin el Excel creativo aprobado**.
+Producción **no arranca nunca sin el Excel del ciclo cerrado** de ④.
 
 | De | Qué recibe | ¿Bloqueante? |
 |---|---|---|
-| **④ Creatividad** | `plan-de-contenido.csv` **con Gate 3 aprobado**, filtrado a las filas con `material = video` o `material = foto`. De `video`: escenas, encuadres, duraciones, estética/mood, concepto, emoción. De `foto`: la **§ Foto** de esa pieza | 🛑 Sí |
-| **②B Branding** | Guidelines, dirección visual, paleta, do's & don'ts, **banco de assets existente** | 🛑 Sí |
+| **④ Creatividad** | **El Excel del ciclo cerrado** —`plan-de-contenido.csv` cerrado + los `ideas-<formato>.md`—, filtrado a las filas con `material = video` o `material = foto`. De `video`: escenas, encuadres, duraciones, estética/mood, concepto, emoción. De `foto`: la **§ Foto** de esa pieza | 🛑 Sí |
 | **③ Marketing** | Fechas de la campaña y **fechas de preparación** — cuánto margen real hay | 🛑 Sí |
-| **① Strategy** | Capacidad de producción declarada · presupuesto disponible · restricciones reales | 🛑 Sí |
+| **②B Branding** | Guía de marca, dirección visual, paleta, do's & don'ts, **banco de assets existente** | No — se usa si existe |
+| **① Strategy** | Capacidad de producción declarada · presupuesto de producción del onboarding · restricciones reales | No — se usa si existe. **El presupuesto es referencia**, no techo ni bloqueo |
 
-Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto.
+Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto. Si falta otro, `⚠️ SIN DATOS` y
+se sigue.
 
 > 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/`:
 >
 > | Qué | Dónde | De quién |
 > |---|---|---|
-> | **La capacidad declarada**, el presupuesto y las restricciones | `00-onboarding/comprension.md` §B y §D | ① Strategy · `context` |
+> | **La capacidad declarada**, el presupuesto de referencia y las restricciones | `00-onboarding/comprension.md` §B y §D | ① Strategy · `context` |
 > | El `WIN` y las `MUST BE TRUE` que la pieza traza | `01-estrategia/nucleo.md` | ① Strategy · `analysis` |
 > | La idea de campaña y los pilares | `03-marketing/AAAA-MM/estrategia-de-contenido.md` | ③ Marketing |
 > | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | ③ Marketing |
-> | El Excel con Gate 3 y los `ideas-<formato>.md` | `04-contenido/AAAA-MM/ideas/` | ④ Creatividad |
+> | El Excel del ciclo cerrado: `plan-de-contenido.csv` y los `ideas-<formato>.md` | `04-contenido/AAAA-MM/ideas/` | ④ Creatividad |
 >
 > 🛑 **A `comprension.md` §B vuelve también la corrección de `pr-loop`** — como propuesta para
 > ① Strategy, **nunca editando su archivo.**
 >
-> 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo.**
+> 🛑 **Si falta un bloqueante, se marca `BLOQUEADO` con qué falta y a quién pedírselo.**
 
 ---
 
@@ -341,7 +343,7 @@ Producción llega hasta **el material base entregado y nombrado**. Después hace
 
 ## 5 · Las reglas duras
 
-1. **Sin Excel creativo aprobado no hay rodaje.** Sin Gate 3 de ④, se **BLOQUEA**.
+1. **Sin el Excel del ciclo cerrado no hay rodaje.** Sin `plan-de-contenido.csv` cerrado de ④, se **BLOQUEA**.
 2. **Toda escena traza a una fila creativa.** `id_creativo` obligatorio. Una escena sin fila es
    presupuesto sin justificación: se elimina.
 3. **La intención no se toca.** Si algo es imposible, caro o no llega: se **devuelve** con motivo y
@@ -378,7 +380,7 @@ LOOP         Capa 7       ¿Qué costó más de lo previsto?  → vuelve a Capa 
 > **El valor del departamento está en la Capa 2.** Traducir una idea a una lista es mecánico.
 > **Agruparlas bien es lo que hace que 30 escenas se graben en 2 jornadas y no en 11.**
 
-### Capa 0 · BRIEF — ¿qué se aprobó producir, exactamente?
+### Capa 0 · BRIEF — ¿qué hay que producir, exactamente?
 **Skill:** `pr-brief` · **Output:** la sección § Verificación y devoluciones de `plan-de-rodaje.md`
 
 No decide nada: **lee y verifica**. Filtra las filas con `material = video` o `material = foto` y
@@ -390,14 +392,15 @@ contra Escenas:**
 | Escenas, encuadres y duraciones tienen el **mismo número de ítems y el mismo orden** | ↩️ **DEVUELTO** — el shot list está roto |
 | Cada escena dice **qué acción ocurre y en qué tipo de lugar** | ↩️ **DEVUELTO** — no se puede desglosar |
 | La pieza tiene estética/mood y emoción | ↩️ **DEVUELTO** — el equipo dirige a ciegas |
-| No contradice las guidelines de ②B | Se declara y se escala. **No se resuelve en set** |
+| No contradice la guía de ②B, si existe | Se declara y se escala. **No se resuelve en set** |
 | **¿Existe material ya grabado que sirve?** | Se marca `reutiliza` y **no se vuelve a grabar** |
 | *(foto)* La **§ Foto** tiene sujeto exacto, encuadre, fondo, espacio de texto y proporción | ↩️ **DEVUELTO** — una foto vaga se vuelve a tomar |
 | *(foto)* El **sujeto es concreto**, no una categoría *(«el <plato exacto del cliente>», no «comida»)* | ↩️ **DEVUELTO** |
 
-**El techo de realidad** se declara antes de seguir: presupuesto disponible · días de rodaje posibles
-· capacidad declarada. Si el Excel creativo pide más de lo que entra en cualquiera de los tres, **se
-declara el exceso en filas concretas** y se devuelve. Nunca se recorta en silencio.
+**El techo de realidad** se declara antes de seguir: días de rodaje posibles · capacidad. Si el Excel
+creativo pide más de lo que entra en cualquiera de los dos, **se declara el exceso en filas
+concretas** y se devuelve. Nunca se recorta en silencio. **El presupuesto de producción del
+onboarding, si existe, es referencia** para saber por dónde presupuestar — no es techo ni bloqueo.
 
 ### Capa 1 · DESGLOSE — ¿qué hace falta conseguir?
 **Skill:** `pr-desglose` · **Output:** las filas base de `plan-de-produccion.csv`
@@ -473,7 +476,7 @@ automáticamente a 🔴 y activa su plan B.**
 | **Permiso** | Locación alternativa, o versión sin el fondo identificable |
 | **Producto** | Unidad de respaldo, o la escena se mueve a la jornada siguiente |
 
-### Capa 4 · PRESUPUESTO — ¿cuánto cuesta y entra en lo disponible?
+### Capa 4 · PRESUPUESTO — ¿cuánto cuesta?
 **Skill:** `pr-presupuesto` · **Output:** `presupuesto.md` (cliente) + `presupuesto.csv` interno + columna `costo_estimado`
 
 **Se cuesta por jornada, no por pieza.** Costear por pieza duplica los fijos.
@@ -489,7 +492,10 @@ costo por pieza = (fijos de su jornada ÷ piezas de esa jornada) + variables pro
 Ese número es el que vuelve en la Capa 7 y el que le permite a ③ Marketing decidir el ciclo siguiente
 con datos y no con intuición.
 
-**Si no entra**, se declaran **tres opciones concretas** con su impacto, y decide un humano:
+**Cada campaña o sesión puede llevar su propio presupuesto.** El presupuesto de producción del
+onboarding, si existe, es **referencia** para saber por dónde presupuestar — no techo ni bloqueo.
+
+**Si se pasa de la referencia**, se declaran **tres opciones concretas** con su impacto, y decide un humano:
 
 | Opción | Qué se toca | Qué NO se toca |
 |---|---|---|
@@ -521,7 +527,8 @@ desmontaje **45 min**.
 su orden de tiro por `id_foto` y su desmontaje. **Una hora que no está en el call sheet es una hora
 que no sucede.** Su nomenclatura es la de § 2B: `<id_foto>_<id_creativo>.<ext>`.
 
-🚦 **GATE 2 — el plan de rodaje se aprueba antes de convocar a nadie.**
+✅ **Auto-revisión con el QA de `pr-rodaje`, y sigue.** Los llamados salen con el GATE 1 aprobado y
+el call sheet completo.
 
 ### Capa 6 · RODAJE Y ENTREGA — ¿se grabó todo y se entregó usable?
 **Skill:** `pr-entrega` · **Output:** la sección de entrega de `plan-de-rodaje.md` + material en Drive
@@ -546,7 +553,8 @@ contra `plan-de-produccion.csv` y las fotos contra `plan-de-fotos.csv`.** Toda e
 `planificada` que no terminó `entregada` lleva **motivo escrito**. Una escena que desaparece en
 silencio es una pieza que ⑥A o ⑥B van a descubrir que no pueden armar.
 
-🚦 **GATE 3 — la entrega se confirma antes de cerrar la jornada como completa.**
+✅ **Auto-revisión con el checklist de cierre y el manifiesto cruzado** antes de cerrar la jornada
+como completa.
 
 ### Capa 7 · LOOP — ¿qué costó más de lo previsto?
 **Skill:** `pr-loop` · **Output:** `aprendizaje-de-produccion.md`
@@ -577,10 +585,10 @@ estimado que falló tres ciclos seguidos deja de ser estimación y pasa a ser da
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Campañas: [nombres]
-④ Creatividad: Excel aprobado (Gate 3) [✅/⬜] · filas material=video: [n] · material=foto: [n]
-②B Branding [✅/⬜] · ③ Marketing fechas de preparación [✅/⬜] · ① capacidad y presupuesto [✅/⬜]
+④ Creatividad: Excel del ciclo cerrado [✅/⬜] · filas material=video: [n] · material=foto: [n]
+③ Marketing fechas de preparación [✅/⬜] · ②B Branding [✅/⚠️] · ① capacidad y presupuesto [✅/⚠️]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · horas: [n] · sesiones: [n] · videos planificados: [n]
-Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
+Techo: días posibles [n] · capacidad [n piezas] · presupuesto de referencia [monto / ⚠️ SIN DATOS]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
@@ -588,8 +596,8 @@ Techo: presupuesto [monto] · días posibles [n] · capacidad [n piezas]
 
 | Pedido | Qué corre |
 |---|---|
-| *"Armá el plan de producción de X"* | **Completo** — Capas 0 → 6, con 3 gates |
-| *"¿Cuánto cuesta producir esto?"* | Capas 0 → 4 — requiere el Excel creativo aprobado |
+| *"Armá el plan de producción de X"* | **Completo** — Capas 0 → 6, con el GATE 1 del presupuesto |
+| *"¿Cuánto cuesta producir esto?"* | Capas 0 → 4 — requiere el Excel del ciclo cerrado |
 | *"Desglosá estas escenas"* | Solo Capa 1 |
 | *"¿En cuántas jornadas entra?"* | Solo Capa 2 — requiere desglose |
 | *"Armá el call sheet de la jornada 2"* | Solo Capa 5 — requiere Gate 1 |
@@ -614,12 +622,12 @@ clients/<cliente>/04-contenido/AAAA-MM/produccion/
 
 **Al iniciar un cliente:**
 
-1. Verificar que `plan-de-contenido.csv` de ④ Creatividad está en `04-contenido/AAAA-MM/ideas/` con el
-   **Gate 3 aprobado**. **Si no está aprobado, Producción no arranca.**
+1. Verificar que el Excel del ciclo está cerrado: `plan-de-contenido.csv` cerrado de ④ Creatividad en
+   `04-contenido/AAAA-MM/ideas/`. **Si no está cerrado, Producción no arranca.**
 2. Copiar las cinco plantillas de `brain/entregables/` (la de `aprendizaje-de-produccion.md` vive al
    lado de la skill `pr-loop`).
-3. Ubicar en `02-marca/` las guidelines de ②B y el banco de assets existente; las cotizaciones van a
-   `99-referencias/recibido/`.
+3. Ubicar en `02-marca/` la guía de ②B y el banco de assets existente, si existen; las cotizaciones
+   van a `99-referencias/recibido/`.
 4. Correr el pre-flight de §7.
 
 🛑 **Nunca se copia un archivo de otro agente: se cita su ruta.** Si lo que pide ④ no se puede
@@ -631,8 +639,8 @@ nombran los archivos guarda la ruta y el patrón de nombres. Cada sesión se ano
 *(Sesión · Fecha · Crudo · Final · Subió)*.
 
 **Se versiona por ciclo**, no se sobrescribe: cada ciclo vive en su `04-contenido/AAAA-MM/produccion/`.
-El `presupuesto.csv` cerrado del ciclo anterior —con su `costo_real` completo— es **input obligatorio**
-del siguiente.
+Nada del ciclo anterior es requisito. **El presupuesto de producción del onboarding, si existe, es
+referencia** para saber por dónde presupuestar; cada campaña o sesión puede tener el suyo.
 
 ---
 
@@ -642,7 +650,7 @@ del siguiente.
 ## HANDOFF — Producción → ⑥B Video Editing / ⑥A Diseño gráfico
 - Cliente: · Campaña(s): · Ciclo: · Fecha:
 - Entregables: presupuesto.md (cliente) · plan-de-rodaje.md (equipo) · internos: plan-de-produccion.csv · plan-de-fotos.csv · presupuesto.csv
-- Gates: presupuesto [✅/⬜] · plan de rodaje [✅/⬜] · entrega [✅/⬜]
+- GATE 1 presupuesto: [✅ aprobado / ⏸️ PENDIENTE APROBACIÓN]
 - Escenas: planificadas [n] · grabadas [n] · entregadas [n]
 - Fotos: planificadas [n] · tomadas [n] · entregadas [n] · resueltas con frame [n] · a ③ por alcance [n]
 - 🛑 Filas de ④ con `material = foto` sin su foto entregada: [ids + motivo]
@@ -703,7 +711,7 @@ del siguiente.
 | 🔁 **Máximo 2 vueltas** | Por escena. Si después de la segunda no hay acuerdo, deja de ser de los agentes: deciden **el lead de ④ y el de ⑤** |
 | **Cuando vuelve la respuesta** | La escena pasa a `planificada` y **se re-desglosa** (Capa 1 en adelante) solo en lo que cambió. La corrección vive en el `ideas-<formato>.md` de ④ — Producción la **cita**, no la copia |
 
-Cómo responde ④ del otro lado —quién corrige y qué gate vuelve a pasar—: `agents/04-creative/brain/WORKFLOW.md` §8.
+Cómo responde ④ del otro lado —quién corrige y qué capas vuelven a correr—: `agents/04-creative/brain/WORKFLOW.md` §8.
 
 ---
 

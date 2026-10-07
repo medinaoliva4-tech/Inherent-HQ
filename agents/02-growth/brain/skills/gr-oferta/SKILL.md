@@ -2,11 +2,13 @@
 name: gr-oferta
 description: >
   Capa 1 de ② Growth — el Pilar 1, Better your Offer. Trabaja qué se vende, cómo se empaqueta y
-  a qué precio, con la profundidad que el plan paga: no corre en la linea Marketing, se escala en
-  Accelerate y se sistematiza en Compound. Compara contra lo que la categoría ofrece y cobra, y
+  a qué precio, con la profundidad que el plan paga: en la línea Marketing corre ligero —elige
+  cuáles de las ofertas que ya existen se empujan y con qué objetivo, sin cambiarlas—, se escala
+  en Accelerate y se sistematiza en Compound. Compara contra lo que la categoría ofrece y cobra, y
   nunca cambia un precio sin el cliente, porque es su negocio. Úsala cuando pidan "mejorá la
-  oferta", "cómo lo empaquetamos", "cuánto deberíamos cobrar", "la gente dice que es caro",
-  "qué vendemos exactamente". Cierra con el GATE 1, que aprueban Allan y el cliente.
+  oferta", "qué oferta empujamos este mes", "cómo lo empaquetamos", "cuánto deberíamos cobrar",
+  "la gente dice que es caro", "qué vendemos exactamente". En Accelerate y Compound cierra con el
+  GATE 1: el CEO aprueba antes de llevar la oferta al cliente.
 ---
 
 # Capa 1 · Oferta — el Pilar 1
@@ -14,19 +16,37 @@ description: >
 | | |
 |---|---|
 | **Consume** | § El encargo · lo que la categoría ofrece y cobra |
-| **Produce** | La sección **§ La oferta** de `motor-de-crecimiento.md` |
+| **Produce** | 🔷 **`clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md`** · 🟨 la sección **§ La oferta** de `motor-de-crecimiento.md` |
 
 ## 1 · La profundidad la da el plan
 
-| 🔷 **Marketing / Pro — NO CORRE** | 🟨 **Accelerate — escalarla** | 🟨 **Compound — sistematizarla** |
+| 🔷 **Marketing / Pro — LIGERO** | 🟨 **Accelerate — escalarla** | 🟨 **Compound — sistematizarla** |
 |---|---|---|
-| ⛔ La oferta llega como está | Que la misma oferta soporte más volumen sin romperse | Que se pueda explicar, cotizar y entregar sin el fundador |
+| La oferta llega como está: se elige cuáles se empujan y con qué objetivo | Que la misma oferta soporte más volumen sin romperse | Que se pueda explicar, cotizar y entregar sin el fundador |
 | | *High ticket:* empaquetar y construir autoridad | *High ticket:* autoridad del sistema |
 
 > 🔑 **La diferencia entre MENSAJE y OFERTA — es la línea que separa los dos productos.**
 > **Mensaje** = cómo se cuenta lo que ya vende → lo hace ③ Marketing con ②B, en los cuatro planes.
 > **Oferta** = qué vende, en qué paquetes y a qué precio → **solo acá, desde Accelerate.**
 > **Confundirlos regala el trabajo caro dentro del plan barato.**
+
+## 1b · 🔷 Ligero — qué ofertas se empujan este ciclo
+
+**En la línea Marketing no se trabaja la oferta: se elige entre lo que ya se vende.**
+
+| Paso | Qué se hace |
+|---|---|
+| **1 · Lo que se vende hoy** | Las ofertas tal cual están, con su precio — de los unit economics de ① |
+| **2 · Cuáles se empujan** | Las que este ciclo tienen más con qué: margen, temporada, capacidad de entregar |
+| **3 · Con qué objetivo** | Uno por oferta, **en una métrica** — es lo que ⑩ pauta |
+| **4 · Cuáles no, y por qué** | En una línea cada una |
+
+🛑 **No se cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide, es upsell
+a 🟨 Accelerate. **En modo ligero no corren los ángulos, la investigación ni el precio (§2 a §4),
+y no hay gate:** no se toca el precio y no sale al cliente.
+
+**Escribe `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md`** — plantilla en
+`agents/02-growth/brain/entregables/ofertas-a-empujar.md`. **Lo leen ③ Marketing y ⑩ Ads.**
 
 ## 2 · Los cuatro ángulos de una oferta
 
@@ -85,18 +105,20 @@ solo por precio.
 | **E · El precio** | Propuesta · por qué · impacto en margen · riesgo |
 | **F · Cómo se dice** | En lenguaje de cliente, con el tono de ②B |
 
-## 7 · 🚦 GATE 1
+## 7 · 🚦 GATE 1 — 🟨
 
-**Allan y el cliente aprueban la oferta — precio incluido.**
+**Antes de llevar la oferta al cliente, el CEO la aprueba — precio incluido.** Es comprometer
+precio. Después, **el cliente decide.**
 
 🛑 **Es su negocio.** Nosotros proponemos.
 
 ## 8 · Checklist
 
 - [ ] La profundidad corresponde al **plan contratado**
-- [ ] Los **cuatro ángulos** están trabajados
-- [ ] La investigación de categoría tiene **fuente**
-- [ ] El precio viene con **razonamiento, margen y riesgo**
-- [ ] Sin costo por línea, **no se propuso precio**
+- [ ] 🔷 **No se tocó** qué se vende, sus paquetes ni su precio · cada oferta empujada tiene **objetivo en una métrica**
+- [ ] 🟨 Los **cuatro ángulos** están trabajados
+- [ ] 🟨 La investigación de categoría tiene **fuente**
+- [ ] 🟨 El precio viene con **razonamiento, margen y riesgo**
+- [ ] 🟨 Sin costo por línea, **no se propuso precio**
 - [ ] Nada promete algo fuera de «Capacidades reales»
-- [ ] **Allan y el cliente aprobaron el GATE 1**
+- [ ] 🟨 La oferta **no llegó al cliente sin el GATE 1**

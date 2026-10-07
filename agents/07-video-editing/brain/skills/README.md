@@ -26,9 +26,9 @@ detalle de cada herramienta.
 |---|---|---|---|---|
 | 1 | **`ve-recepcion`** | 0 | *«¿llegó todo?»*, *«qué nos falta»*, *«calificá el material»* | Filas base de `entregas-video.md` · la selección si ⑤ no la hizo |
 | 2 | **`ve-armado`** | 1 | *«armá este reel»*, *«mostrame el guion»* | El guion visual aprobado + el corte principal |
-| 3 | **`ve-marca`** | 2 | *«ponele subtítulos»*, *«aplicá la marca»*, *«se ve azul»* | El corte de marca con QA medido · **🚦 GATE 1** |
+| 3 | **`ve-marca`** | 2 | *«ponele subtítulos»*, *«aplicá la marca»*, *«se ve azul»* | El corte de marca con QA medido, auto-revisado antes de derivar |
 | 4 | **`ve-derivadas`** | 3 | *«sacá las derivadas»*, *«variantes para pauta»* | Las 4 · 6 · 9 · 12 derivadas |
-| 5 | **`ve-export`** | 4 | *«exportá el paquete»*, *«el link para el cliente»* | Archivos finales + manifiesto · **🚦 GATE 2** · página del cliente |
+| 5 | **`ve-export`** | 4 | *«exportá el paquete»*, *«el link para el cliente»* | Archivos finales + manifiesto · página del cliente **🚦 con el OK del CEO** |
 | 6 | **`ve-loop`** | 5 | La revisión del 20 | `aprendizaje-de-video.md` · rondas de cambios → reglas |
 
 ---
@@ -38,11 +38,14 @@ detalle de cada herramienta.
 🛑 **El hook y el guion vienen literales de ④ y no se cambian en edición.** Si el material no
 permite montarlos, se devuelve a ④.
 
-🛑 **No se deriva de un corte sin GATE 1.** Un corte principal flojo produce 3 derivadas flojas.
+🛑 **No se deriva de un corte que no pasó su auto-revisión** (`ve-marca` §6-7). Un corte principal
+flojo produce 3 derivadas flojas.
 
-## Los dos gates
+## Un solo OK del CEO
 
-| 🚦 | Después de | Qué aprueba Allan |
+**Las capas no paran: cada una se auto-revisa con su checklist y sigue.** Lo único que espera al
+CEO es lo que le llega al cliente:
+
+| 🚦 | Antes de | Qué aprueba el CEO |
 |---|---|---|
-| **GATE 1** | `ve-marca` | El corte principal de cada reel |
-| **GATE 2** | `ve-export` | El paquete completo |
+| **OK** | `ve-export` §7 | Publicar la página de aprobación y mandarle el link al cliente |

@@ -1,19 +1,19 @@
 ---
 name: ve-derivadas
 description: >
-  Capa 3 de ⑥B Video Editing — multiplica el corte principal aprobado en todas las piezas que
+  Capa 3 de ⑥B Video Editing — multiplica el corte principal auto-revisado en todas las piezas que
   puede dar: cortes más cortos, variantes de hook para pauta, reencuadres por formato y
   fragmentos para story. Es donde el modelo gana volumen, porque cada derivada sale del mismo
   material ya grabado y del mismo costo fijo de Producción. Úsala cuando pidan "sacá las derivadas", "multiplicá
   esto", "variantes para pauta", "cortalo para story", "cuántas piezas salen de esto". Requiere
-  el GATE 1 aprobado: derivar de un corte no aprobado multiplica el error.
+  el corte principal auto-revisado en ve-marca: derivar de un corte flojo multiplica el error.
 ---
 
 # Capa 3 · Derivadas — multiplicar el mismo material
 
 | | |
 |---|---|
-| **Consume** | El corte principal **con GATE 1** · `plan-de-contenido.csv` · `plan-por-canal.md` |
+| **Consume** | El corte principal **auto-revisado** (`ve-marca` §8) · `plan-de-contenido.csv` · `plan-por-canal.md` *(si no existe, las **Redes** del `plan-contratado.md`)* |
 | **Produce** | Las **4 · 6 · 9 · 12** piezas derivadas del ciclo *(mínimo 1:2 — ver §0 del `WORKFLOW.md`)* |
 
 > 🔑 **Acá está el margen del modelo.** ⑤ Producción cuesta horas humanas; cada derivada cuesta
@@ -80,7 +80,7 @@ dirigir.
 
 ## 7 · Checklist
 
-- [ ] Se derivó del corte **con GATE 1 aprobado**
+- [ ] Se derivó del corte que pasó la **auto-revisión de `ve-marca`**
 - [ ] Las variantes de hook cambian **solo los primeros 3 segundos**
 - [ ] Ninguna variante cambia el mensaje ni la traza
 - [ ] Cada reencuadre **se miró**, no solo se procesó

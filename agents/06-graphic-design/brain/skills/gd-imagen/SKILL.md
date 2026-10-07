@@ -5,14 +5,14 @@ description: >
   costo: banco propio, material de ⑤ Producción o pedirle al cliente. No se genera imagen con IA.
   Verifica resolución, encuadre y derechos antes de componer, porque una imagen que no sirve se
   descubre recién al exportar. Úsala cuando pidan "de dónde sacamos la imagen", "fotos de
-  producto", "esta foto no da". Requiere las plantillas aprobadas.
+  producto", "esta foto no da". Requiere las plantillas de la Capa 1.
 ---
 
 # Capa 2 · Imagen — de dónde sale cada una
 
 | | |
 |---|---|
-| **Consume** | Las plantillas con GATE 1 · § Imagen de `sistema-visual.md` · material de ⑤ · el banco del cliente |
+| **Consume** | Las plantillas de la Capa 1 · § Imagen de `sistema-visual.md` · material de ⑤ · el banco del cliente |
 | **Produce** | Las imágenes del ciclo, resueltas y verificadas |
 
 ## 1 · El orden de costo

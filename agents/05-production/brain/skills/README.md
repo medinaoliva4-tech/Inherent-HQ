@@ -23,7 +23,7 @@ en un solo lugar: `agents/05-production/brain/`.
 
 | Skill | Qué hace |
 |---|---|
-| **`produccion`** | La puerta de entrada. Lee el pedido, verifica el pre-flight, decide qué capas correr y llama a las demás en orden, parando en los 3 gates. **Si no sabés cuál usar, es esta.** |
+| **`produccion`** | La puerta de entrada. Lee el pedido, verifica el pre-flight, decide qué capas correr y llama a las demás en orden, parando solo en el gate del presupuesto. **Si no sabés cuál usar, es esta.** |
 
 ## Las 8 skills, en orden del flujo
 
@@ -51,7 +51,7 @@ esos seis.**
 ```
 pr-brief ──→ pr-desglose ──→ pr-jornadas ──→ pr-recursos ──→ pr-presupuesto ──→ pr-rodaje ──→ pr-entrega
                                   │                               │                 │             │
-                                  │                            GATE 1            GATE 2        GATE 3
+                                  │                            GATE 1         auto-revisión  auto-revisión
                                   │                        (presupuesto)     (plan de rodaje)  (entrega)
                                   │                                                                │
                                   └──────────── pr-loop ←──── costo_real + qué usaron ⑥A y ⑥B ←────┘
@@ -66,8 +66,9 @@ pr-brief ──→ pr-desglose ──→ pr-jornadas ──→ pr-recursos ─�
 2. 🛑 **`pr-jornadas` va antes que `pr-presupuesto`, siempre.** Costear sin consolidar infla el
    presupuesto entre 3 y 5 veces, y ese número se vuelve la referencia del cliente. Presupuestar sin
    Capa 2 **se rechaza**, aunque lo pidan directo.
-3. **Los gates son humanos.** `pr-presupuesto` para antes de comprometer un recurso · `pr-rodaje` para
-   antes de convocar a nadie · `pr-entrega` para antes de cerrar la jornada. Nadie los salta.
+3. **Un solo gate humano: el presupuesto.** `pr-presupuesto` para antes de comprometer un recurso y
+   espera el OK del CEO. `pr-rodaje` y `pr-entrega` se auto-revisan con su QA y siguen: nadie se
+   convoca sin el GATE 1 y el call sheet completo, y ninguna jornada se cierra sin manifiesto.
 4. **`pr-loop` cierra el ciclo y abre el siguiente:** alimenta a `pr-jornadas` y `pr-presupuesto` con el dato real. Si no vuelve a esas dos capas, no fue un loop: fue un informe.
 5. **Cada skill trae su propio control de calidad al final.** El check vive donde se hace el trabajo, no en un archivo aparte que nadie abre.
 

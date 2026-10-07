@@ -14,8 +14,8 @@ description: >
 
 # Capa 5 — Forma
 
-**Consume:** el concepto aprobado en **Gate 2** · el **hook, guion y copy literales** de la Capa 4, con
-su **frame 1 visual** · de **②B Branding**: guidelines, lente de marca, paleta, tipografía y **banco de
+**Consume:** el concepto de las **Capas 2-3** · el **hook, guion y copy literales** de la Capa 4, con
+su **frame 1 visual** · de **②B Branding**, si existen: guía de marca, paleta, tipografía y **banco de
 assets** · de **③ Marketing**: activos distintivos y formato del slot · de **① Strategy**: la **capacidad real de producción**.
 
 **Produce**, dentro del `ideas-<formato>.md` de la pieza, en su sección:
@@ -171,7 +171,7 @@ Se resuelven las ocho, sin excepción. Una toma incompleta es una toma que se im
 | **Orden de lectura** | Qué se ve 1°, 2° y 3°, explícito |
 | **Layout de texto** | Ubicación, tamaño, proporción y peso de **cada** texto |
 | **Safe zones** | Canal por canal, para que la UI no tape nada |
-| **Estética / mood** | Paleta, iluminación, acabado — **del lente de Branding** |
+| **Estética / mood** | Paleta, iluminación, acabado — **de la guía de ②B Branding**, si existe |
 
 > 🛑 **Un foco por pieza. Cuando todo parece importante, nada resalta.**
 
@@ -179,7 +179,7 @@ Se resuelven las ocho, sin excepción. Una toma incompleta es una toma que se im
 
 1. **Jerarquía explícita:** `título > subtítulo > CTA`. Nunca implícita.
 2. **Safe zones respetadas.** Un texto tapado por la UI es un texto que no existe.
-3. **Paleta, tipografía y lente son de ②B Branding.** Creative los **aplica**, no los estira.
+3. **Paleta y tipografía son de ②B Branding.** Creative las **aplica**, no las estira.
 4. **Los activos distintivos de ③ Marketing se refuerzan, no se reinventan** cada pieza: es lo que hace que la marca acumule memoria.
 5. **Foto real antes que stock** — obligatorio en locales y servicios, donde la evidencia real vence a la producción cara.
 6. **Nunca hex, tipografía, píxeles ni coordenadas.** Se dice la **zona**; el resto lo resuelve ⑥A Diseño.
@@ -247,7 +247,7 @@ Formato **familia + qué + para qué**, separados por `·`. Una línea por eleme
 - [ ] 🛑 **Máximo 1 foco visual** por pieza, y el **orden de lectura** escrito (1° / 2° / 3°)
 - [ ] **Layout de texto** con ubicación, tamaño, proporción y peso de cada texto — **sin adjetivos**
 - [ ] **Safe zones** del canal marcadas
-- [ ] Mood, paleta e iluminación **coherentes con el lente de ②B Branding**
+- [ ] Mood, paleta e iluminación **coherentes con la guía de ②B Branding**, si existe
 - [ ] Los **activos distintivos de ③ Marketing se refuerzan**, no se reinventan
 - [ ] Los elementos gráficos salen **del banco de assets**, usan las **4 familias cerradas**, son **máximo 3**, y si no lleva ninguno dice `ninguno` con su motivo
 - [ ] Ninguna fila especifica **hex, tipografía, píxeles, lente, locación concreta, permiso o casting** — eso es de ⑥A Diseño y ⑤ Producción

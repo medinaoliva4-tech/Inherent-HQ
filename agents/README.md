@@ -41,7 +41,7 @@ todo** — recibe al cliente, lo mantiene al día y abre la sesión del agente q
 **Por qué Branding es 01.2:** con la data de Strategy **ya se puede armar la marca**.
 No espera al resto del pipeline.
 
-🔑 **El QA no es un agente aparte: cada departamento se auto-revisa antes de su gate**, y
+🔑 **El QA no es un agente aparte: cada departamento se auto-revisa y sigue**, y
 **②B Branding valida con `br-guardian`** antes de que nada se publique.
 
 **La cadena de entrega completa está en `inherent/05-OPERACION.md`.**
@@ -62,7 +62,11 @@ día para producir · 🔴 **Día 20:** presentación al cliente. Cada `WORKFLOW
 🟨 Accelerate y 🟨 Compound.**
 
 🔑 **Primero se lee la LÍNEA, después el plan.** 🔷 Marketing promete atención · 🟨 Growth
-promete facturación. **② Growth no corre en la línea Marketing.**
+promete facturación. **En la línea Marketing, ② Growth corre ligero:** elige qué ofertas que ya
+existen se empujan, sin cambiar la oferta.
+
+⬜ **Un Tailor Made no se cuestiona:** su `plan-contratado.md` declara qué incluye y su pipeline, y
+los agentes lo siguen.
 
 **El plan contratado es el techo, no una sugerencia.** Un agente que entrega de más rompe el
 margen; uno que entrega de menos rompe la promesa publicada.
@@ -82,7 +86,7 @@ margen; uno que entrega de menos rompe la promesa publicada.
 ## Cómo se construye uno
 
 1. **`README.md` del área** — propósito, las acciones con su MCP, **qué entrega según el plan**, y qué falta.
-2. **`brain/WORKFLOW.md`** — el proceso de 0 a 100, con los gates humanos marcados y una sección
+2. **`brain/WORKFLOW.md`** — el proceso de 0 a 100, con las aprobaciones del CEO marcadas y una sección
    de **lo que este agente NO hace**.
 3. **`brain/skills/README.md`** — cuándo se invoca cada skill dentro del workflow.
 4. **Una carpeta por skill**, con su `SKILL.md`.
@@ -91,5 +95,6 @@ margen; uno que entrega de menos rompe la promesa publicada.
 
 > ⚠️ **La entrega no es una skill compartida.** Cada agente entrega algo distinto —Strategy un
 > documento de estrategia, Design un lote de piezas, Ads una campaña corriendo— así que
-> **cada workflow define su propia entrega.** Lo único igual para todos es el gate: **Allan
-> aprueba antes de que algo salga.**
+> **cada workflow define su propia entrega.** Lo único igual para todos es el gate: **el CEO
+> aprueba lo importante** —publicar, gastar dinero, enviar al cliente, comprometer precio, fecha o
+> alcance, y borrar—. Lo demás fluye.

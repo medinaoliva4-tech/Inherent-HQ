@@ -9,6 +9,7 @@ Cada agente vive en `agents/<NN>-<área>/`, numerado en el orden en que corre el
 README.md                  ← qué es esto y qué tan profundo va un agente
 CLAUDE.md                  ← este archivo. La entrada de toda sesión
 PENDIENTES.md              ← lo que falta decidir, construir o probar. NO es manual
+INSTALAR.md                ← qué instalar en cada computadora para que corran los agentes
 
 inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── README.md              ← el índice. Empezá acá
@@ -67,7 +68,7 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 
 | Rol | Qué hace |
 |---|---|
-| **CEO** | Decide estrategia, ruta, servicios y promesas. Reunión del día 1 con cada cliente. Aprueba ideas y calendario. **Es el gate humano** |
+| **CEO** | Decide estrategia, ruta, servicios y promesas. Reunión del día 1 con cada cliente. Hace el control de calidad en persona. **Es el gate humano de lo importante** |
 | **COO** | Organiza y coordina al equipo operativo y las entregas. QA final. Presenta el día 20 en la línea Marketing |
 | **Operador de agentes** | Solo opera agentes: Creatividad, Branding, Diseño, Posting y Community |
 | **Editor de video · Fotografía · Producción** | Editan, fotografían y graban |
@@ -93,7 +94,7 @@ entregar de menos rompe la promesa publicada.
 Las fechas se ajustan cada mes al calendario real; los límites del 11 y el 20 se respetan.
 Ver `inherent/05-OPERACION.md` → «El calendario del ciclo».
 
-🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate,
+🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa y sigue,
 **②B Branding valida con `br-guardian`** y el COO hace el QA final.
 
 🗣️ **`agents/00-account/` es el único agente que le habla al cliente.** Vive en WhatsApp,
@@ -135,6 +136,8 @@ agentes.** Se lee antes de prometer nada.
 ```
 
 **Más `Tailor Made`** — multi-locación, regulatorio, integraciones, proyectos por hito.
+**Un Tailor Made no se cuestiona:** en el onboarding se define **qué incluye y su pipeline** —qué
+departamentos corren, en qué orden y a qué nivel— y los agentes lo siguen.
 
 🔑 **El eje es qué promete cada línea, no cuánto entrega:**
 **🔷 Marketing promete ATENCIÓN** *(compite con agencias)* · **🟨 Growth promete FACTURACIÓN**
@@ -281,6 +284,8 @@ Lo prohibido es cobrar contenido o pauta prometiendo facturación.
 🔑 **Los cuatro planes incluyen estrategia.** Cambia la profundidad, no la existencia.
 **Pero solo Growth toca la OFERTA.** Marketing trabaja el **mensaje** —cómo se cuenta lo que ya
 vende—; Growth trabaja **qué vende, en qué paquetes y a qué precio.**
+**En la línea Marketing, ② Growth corre ligero:** elige cuáles de las ofertas que ya existen se
+empujan, para que la pauta sepa qué pautar. No cambia la oferta.
 **Confundirlos es regalar el trabajo caro dentro del plan barato.**
 
 ### Las herramientas son slots
@@ -313,6 +318,7 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 | 🔒 Costos, márgenes, capacidades MCP | `inherent/06-ECONOMIA.md` |
 | Copy, tono o el brief de la web | `inherent/07-COMUNICACION.md` |
 | Administrar Inherent: caja, cobros, impuestos, ventas | `inherent/administracion/` |
+| Qué instalar en una computadora nueva | `INSTALAR.md` |
 | Lo que falta decidir, construir o probar | `PENDIENTES.md` |
 
 ## Cómo arrancás una sesión
@@ -350,6 +356,9 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
 - **Evidencia o etiqueta** — en el trabajo de cliente. Sin fuente va como `[dice el cliente, sin verificar]`
   o `⚠️ SIN DATOS`. Nunca inventar.
 - **Solo la info que entrega el usuario**, salvo que él habilite fuentes externas.
-- **Gate humano: el CEO.** El agente propone, no cierra.
+- **Gate humano: el CEO, solo para lo importante:** publicar, gastar dinero, enviar algo al cliente,
+  comprometer precio, fecha o alcance, y borrar. **Lo demás fluye:** cada departamento se
+  auto-revisa y sigue. El control de calidad lo hace el CEO en persona y no se registra.
+  **Lo que está en el repo ya pasó por el CEO.**
 - **Nada destructivo sin autorización:** no publicar, no pautar, no enviar al cliente, no borrar.
 - Formato de respuesta: headings, bullets, negritas. Lo accionable arriba. Sin párrafos largos.

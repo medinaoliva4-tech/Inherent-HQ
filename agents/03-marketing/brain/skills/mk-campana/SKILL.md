@@ -3,7 +3,7 @@ name: mk-campana
 description: >
   Capa 1 de ③ Marketing — define la idea de campaña que une todo el ciclo. Una por ciclo, dos si
   el ciclo lo justifica y nunca más, porque la aprobación y el presupuesto se arman por campaña.
-  Sale del objetivo y las MUST BE TRUE de ② Estrategia, se escribe en una frase que cualquiera
+  Sale del objetivo y las MUST BE TRUE de ① Strategy, se escribe en una frase que cualquiera
   del equipo pueda repetir, y declara qué MUST BE TRUE mueve y en qué se va a notar. Úsala cuando
   pidan "qué campaña corremos", "cuál es la idea del mes", "cómo unimos el ciclo", "necesito la
   campaña para presupuestar". Requiere la Capa 0 hecha.
@@ -63,7 +63,7 @@ tres aprobaciones, tres presupuestos y un mes que nadie entiende.
 
 | Paso | Qué se hace |
 |---|---|
-| **1** | Se lee el objetivo del ciclo de ② y **las MUST BE TRUE** |
+| **1** | Se lee el objetivo del ciclo de ① y **las MUST BE TRUE** |
 | **2** | Se elige **la** MUST BE TRUE que este ciclo va a mover. Una |
 | **3** | Se busca el ángulo: ¿qué tendría que creer la gente para que esa verdad se cumpla? |
 | **4** | Se escribe en **una frase**, en lenguaje de persona, no de marca |
@@ -100,7 +100,7 @@ tres aprobaciones, tres presupuestos y un mes que nadie entiende.
 |---|---|
 | **1** | **Nunca un solo aviso.** Un anuncio único lo ve menos del 20% de la audiencia |
 | **2** | **El último empujón siempre existe.** Es el que más convierte y el que más se olvida |
-| **3** | **La anticipación no puede exceder el ciclo.** Un evento a 5 semanas con un ciclo de 4 se planifica **desde el ciclo anterior** — se avisa a ② y se declara |
+| **3** | **La anticipación no puede exceder el ciclo.** Un evento a 5 semanas con un ciclo de 4 se planifica **desde el ciclo anterior** — se avisa a ① y se declara |
 
 🛑 **Si la fecha del evento cae en los primeros 7 días del ciclo, la campaña ya llegó tarde.**
 Se declara y se trabaja con lo que queda, pero se escribe que el aviso fue corto.

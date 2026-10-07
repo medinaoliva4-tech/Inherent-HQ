@@ -11,6 +11,14 @@
 | **Facebook** | [Nao Sushi](https://www.facebook.com/p/Nao-Sushi-61567125846436/) |
 | **Web** | [naoguatemala.com](https://naoguatemala.com/) |
 
+## Zernio — las cuentas para programar y la bandeja
+
+| Red | Cuenta | ID de Zernio |
+|---|---|---|
+| Instagram | @naoguatemala | `6ac57ddf3a599d470a44d6d9` |
+| TikTok | — | ⚠️ No está conectada en Zernio |
+| Facebook | — | ⚠️ No está conectada en Zernio |
+
 ## Quién tiene acceso
 
 El CEO.

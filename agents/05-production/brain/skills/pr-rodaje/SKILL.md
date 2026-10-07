@@ -177,10 +177,10 @@ armados.
 > final **es cuando se pierde material**, y es cuando ⑥A y ⑥B reciben una carpeta que no puede
 > cruzarse contra el Excel.
 
-## 🚦 GATE 2 — plan de rodaje
+## ✅ Auto-revisión del plan de rodaje
 
-**El plan de rodaje se aprueba antes de convocar a nadie.** Se registra con fecha y con quién
-aprobó. Después del GATE 2 se emiten los llamados; no antes.
+**El plan de rodaje se auto-revisa con el QA de abajo antes de convocar a nadie.** Con el QA completo
+y el GATE 1 aprobado se emiten los llamados; no antes.
 
 ## QA — Capa 5
 
@@ -202,7 +202,7 @@ aprobó. Después del GATE 2 se emiten los llamados; no antes.
 - [ ] Los **márgenes están incluidos**: montaje 60-90 min · setup de luz 30-45 min · locación 60 min + traslado · desmontaje 45 min
 - [ ] El llamado del talento es **≥ 30 min antes** de su primer tiro, escalonado por bloque
 - [ ] Ninguna escena del call sheet falta en `plan-de-produccion.csv` — **si no está en el Excel, no se graba**
-- [ ] 🚦 **GATE 2 registrado.** Nadie convocado antes
+- [ ] **QA completo antes de convocar.** Nadie convocado antes
 
 **Handoff →** `pr-entrega` (Capa 6). El call sheet es el documento con el que se rueda: si hay que
 preguntar algo por chat el día del rodaje, faltaba un bloque.

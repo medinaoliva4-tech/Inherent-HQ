@@ -2,8 +2,9 @@
 name: ad-encargo
 description: >
   Capa 0 de ⑩ Ads Management — fija el objetivo en una métrica, el presupuesto aprobado y qué se
-  está vendiendo, antes de tocar una cuenta. Verifica que exista acceso a las cuentas, que la
-  atribución esté puesta y que el cliente pueda entregar lo que la pauta va a traer. Corre la
+  está vendiendo, antes de tocar una cuenta. Verifica que exista acceso a las cuentas, que el
+  tracking del plan esté puesto (en la línea Marketing, el pixel de Meta; en Accelerate y
+  Compound, CAPI + GA4) y que el cliente pueda entregar lo que la pauta va a traer. Corre la
   auditoría del plugin para saber en qué estado está la cuenta. Úsala cuando pidan "arrancá la
   pauta de X", "cuánto presupuesto", "qué objetivo le ponemos", "cómo está la cuenta". Bloquea
   si falta el presupuesto aprobado o el acceso.
@@ -13,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § La oferta de ② Growth · `calendario.csv` de ③ · las cuentas de ① |
+| **Consume** | Las ofertas a pautar de ② Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · `calendario.csv` de ③ · las cuentas de ① |
 | **Produce** | La sección **§ El encargo** de `plan-de-pauta.md` |
 
 ## 1 · El objetivo va en una métrica
@@ -44,7 +45,7 @@ description: >
 | ¿Existe la cuenta publicitaria? | 🛑 No se pauta. **No se crea una cuenta a nombre nuestro** |
 | ¿Tenemos acceso de operación? | 🛑 Se pide. Se registra **quién nos lo dio** |
 | ¿El método de pago es del cliente? | 🛑 **Nunca se pauta con tarjeta nuestra** |
-| ¿Hay pixel o conversión configurada? | 🔴 **Se resuelve antes de gastar el primer quetzal** |
+| ¿Está el tracking del plan? 🔷 **el pixel de Meta** · 🟨 **CAPI + GA4** | 🔴 **Se resuelve antes de gastar el primer quetzal** |
 
 ## 4 · 🔴 ¿Puede entregar lo que la pauta va a traer?
 
@@ -73,10 +74,10 @@ que el objetivo implica.** Si no puede, **se baja el objetivo o se para** — y 
 | Bloque | Qué lleva |
 |---|---|
 | **A · El objetivo** | En una métrica, con número y plazo |
-| **B · Qué se vende** | La oferta y el precio, de ② Growth |
+| **B · Qué se vende** | Las ofertas a pautar y su precio, de ② Growth |
 | **C · El presupuesto** | Total, diario, y qué pasa si se agota |
 | **D · Las cuentas** | Cuáles, con acceso verificado y quién lo dio |
-| **E · La atribución** | Qué está puesto, qué falta |
+| **E · El tracking** | 🔷 pixel de Meta · 🟨 CAPI + GA4 — qué está puesto, qué falta |
 | **F · La capacidad** | ¿Puede entregar lo que esto trae? |
 | **G · La auditoría** | Qué dice el estado de la cuenta |
 
@@ -86,5 +87,5 @@ que el objetivo implica.** Si no puede, **se baja el objetivo o se para** — y 
 - [ ] El presupuesto está **aprobado por escrito**
 - [ ] Las cuentas son del cliente y **hay acceso verificado**
 - [ ] El **método de pago es del cliente**
-- [ ] La **atribución está puesta** antes de gastar
+- [ ] El **tracking del plan está puesto** antes de gastar — 🔷 pixel de Meta · 🟨 CAPI + GA4
 - [ ] Se verificó que el cliente **puede entregar** el volumen

@@ -1,6 +1,6 @@
 # ④ Creatividad — cómo trabaja
 
-> **En una frase:** convierte la estrategia aprobada en **ideas dirigidas**, listas para que otro las
+> **En una frase:** convierte el plan del ciclo en **ideas dirigidas**, listas para que otro las
 > ejecute sin adivinar nada. Creatividad **dirige**; Producción, Diseño y Posting **ejecutan**.
 
 Este documento es todo lo que hay que saber para operar el departamento. El **cómo se hace** cada
@@ -15,7 +15,7 @@ paso vive en las skills: `skills/README.md`.
 | Días | Qué corre | Entrega |
 |---|---|---|
 | **1 – 3** | Ideas del ciclo — capas 0-4 | — |
-| **2 – 3** | **Shot list** — `cr-arte-video` · cierra con `cr-adaptacion` | Plan de contenido con **GATE 3 a más tardar el día 3** — ⑤ coordina desde el 4 |
+| **2 – 3** | **Shot list** — `cr-arte-video` · cierra con `cr-adaptacion` | **El Excel del ciclo cerrado a más tardar el día 3** — ⑤ coordina desde el 4 |
 
 ---
 
@@ -69,18 +69,17 @@ paso vive en las skills: `skills/README.md`.
 - ⛔ **No hay segundo idioma en ningún plan.** No existe herramienta de doblaje — ver
   `agents/07-video-editing/brain/skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma».
 
-### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+### ⬜ Tailor Made — se sigue su pipeline
 
-Allan lo cotiza **en las mismas unidades de la tabla de arriba**, y el departamento trabaja con esos
-números igual que con un plan estándar. **El precio lo define Allan.**
+Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
+secciones: **Qué incluye** y **Su pipeline** —qué departamentos corren, en qué orden, qué entrega
+cada uno y a qué nivel—. **El departamento sigue ese pipeline** igual que un plan estándar: no lo
+bloquea por no ser un plan de lista ni lo cuestiona por precio.
 
-- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
-- 🛑 **No existe un plan por debajo de 🔷 Marketing.** Las horas de grabación son el piso de costo
-  (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
-- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
-  en todos los planes.
-- **Arriba de 🟨 Compound sube el volumen**, pero el techo real sigue siendo lo que se puede
-  **grabar**: más ideas de video que horas de producción es trabajo que no va a existir.
+- **Lo que el pipeline declara para ④ es el techo del ciclo.**
+- 🛑 **Si ④ no está en su pipeline, no corre para ese cliente.**
+- **Cambia el pipeline, nunca el método:** la trazabilidad y las devoluciones son iguales en todos
+  los planes.
 
 ---
 
@@ -90,14 +89,18 @@ El Excel, más un doc de dirección y un doc por formato. Nada más.
 
 | Archivo | Qué es | Para qué se usa |
 |---|---|---|
-| **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, 12 columnas | Se lee **de arriba abajo** para aprobar el ciclo completo |
-| **`brief-del-ciclo.md`** | La dirección: el brief y las BIG IDEAS del ciclo | Se lee **una vez**, al aprobar Gate 1 y Gate 2 — antes de mirar una sola pieza |
+| **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, 12 columnas | Se lee **de arriba abajo** para revisar el ciclo completo |
+| **`brief-del-ciclo.md`** | La dirección: el brief y las BIG IDEAS del ciclo | Se lee **una vez**, entero — antes de mirar una sola pieza |
 | **`ideas-<formato>.md`** | El desarrollo de las piezas de un formato — una sección por pieza | Se lee **de a un formato**, para ejecutar todas las piezas de ese tipo juntas |
 
 **Un doc por cada valor de `formato`** que exista ese ciclo en el Excel — `formato` lo define
 ③ Marketing, así que la lista no es fija: si el calendario trae Carrusel, Reel, Story y Newsletter,
 salen `ideas-carrusel.md`, `ideas-reel.md`, `ideas-story.md` e `ideas-newsletter.md`. Un ciclo con un
 formato nuevo simplemente suma un doc; no hace falta tocar el método.
+
+🔑 **`plan-de-contenido.csv` + los `ideas-<formato>.md` completos son «el Excel del ciclo».** Cuando
+pasan el QA de `cr-adaptacion`, **el Excel del ciclo está cerrado**: es lo que esperan Producción,
+Diseño, Video Editing y Posting para arrancar.
 
 **El puente entre el Excel y los docs es el `id`.** Ves `CR-007` en el Excel, columna `formato` te
 dice en cuál doc buscarlo, y ahí buscás `CR-007`. Funciona en Excel, en Sheets y en Drive, sin
@@ -153,8 +156,7 @@ mueven, qué queda afuera. **Los conceptos** (Capas 2-3): un bloque `## BIG IDEA
 del ciclo, con su frase, insight, técnicas aplicadas, arco y filtro D/N/R, y la lista de piezas que
 cuelgan de cada una.
 
-Es el documento que aprueba el lead **antes** de mirar una sola pieza terminada: Gate 1 y Gate 2
-viven acá.
+Es el documento que se lee **antes** de mirar una sola pieza terminada.
 
 ### Qué lleva cada sección de `ideas-<formato>.md`
 
@@ -179,13 +181,15 @@ Creative **no arranca de cero nunca**.
 
 | De | Qué recibe | ¿Bloqueante? |
 |---|---|---|
-| **③ Marketing** | Plan de campañas · canales · fechas · **pilares y su mix** · frecuencia · calendario con los slots | 🛑 Sí |
-| **② Estrategia** | `posicionamiento.md` (promesa, mecanismo, enemigo) · `ingenieria-inversa.md` (tabla 15×7, mapa de saturación, **objeciones de las reseñas de la competencia**) | 🛑 Sí |
-| **① Strategy** | Audiencia y comportamiento · competencia · producto y precios · **capacidad real de producción** | 🛑 Sí |
-| **②B Branding** | Guidelines · tono de voz · lente de marca · do's & don'ts · banco de assets | 🛑 Sí |
+| **③ Marketing** | **Las campañas y su brief** —idea de campaña, **pilares y su mix**, jerarquía de mensaje— en `estrategia-de-contenido.md` · **el calendario con los slots** en `calendario.csv` | 🛑 Sí — **lo único bloqueante** |
+| **③ Marketing** | `plan-por-canal.md` — la función de cada canal y qué NO se hace ahí | No — se usa si existe |
+| **② Estrategia** | `posicionamiento.md` (promesa, mecanismo, enemigo) · `ingenieria-inversa.md` (tabla 15×7, mapa de saturación, **objeciones de las reseñas de la competencia**) | No — se usa si existe |
+| **① Strategy** | Audiencia y comportamiento · competencia · producto y precios · **capacidad real de producción** | No — se usa si existe |
+| **②B Branding** | Guía de marca · tono de voz · do's & don'ts · banco de assets | No — se usa si existe |
 | **⑧B Ads** | Qué creativo rinde en pauta · claims ya aprobados | No — reduce confianza |
 
-Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto. No se deduce de los otros.
+Si falta lo de ③ Marketing: **BLOQUEADO**, y se pide el archivo exacto. Si falta otro, se marca
+`⚠️ SIN DATOS` y se sigue. **Nada se deduce de los otros.**
 
 > 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/`:
 >
@@ -199,8 +203,8 @@ Si falta un bloqueante: **BLOQUEADO**, y se pide el archivo exacto. No se deduce
 > | La función de cada canal y qué NO se hace ahí | `03-marketing/AAAA-MM/plan-por-canal.md` | ③ Marketing |
 > | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | ③ Marketing |
 >
-> 🛑 **Si un archivo no está, se marca `BLOQUEADO` con qué falta y a quién pedírselo — no se deduce
-> de los otros.**
+> 🛑 **Si falta un archivo de ③ Marketing, se marca `BLOQUEADO` con qué falta y a quién pedírselo.
+> Los demás se usan si existen; el que falta va `⚠️ SIN DATOS`. Ninguno se deduce de los otros.**
 
 > 🗣️ **El lenguaje literal del comprador lo arma ④, no lo recibe.** Ver §2B.
 
@@ -254,7 +258,7 @@ ya hecha.
 
 ## 4 · Las reglas duras
 
-1. **Sin plan no hay idea.** Sin posicionamiento aprobado de ② y plan de campañas de ③, se **BLOQUEA**.
+1. **Sin plan no hay idea.** Sin las campañas y el calendario de ③ Marketing, se **BLOQUEA**.
 2. **Toda fila traza a un slot y a una MUST BE TRUE.** Si no se puede trazar, se elimina.
 3. **Nunca cambia la promesa.** Si una idea necesita otra promesa, o la promesa está mal (y eso se
    devuelve a ②) o la idea no es nuestra.
@@ -269,7 +273,7 @@ ya hecha.
 9. **Toda pieza nace de una hipótesis escrita.** Sin hipótesis no hay aprendizaje.
 10. **La `fecha` es lo único que fija del calendario.** El día dentro de la semana del slot. La
     semana, el canal, la campaña y la cadencia son de ③ Marketing.
-11. **Todo cuelga de una campaña.** Ninguna fila suelta. El ciclo se lee y se aprueba **por campaña**.
+11. **Todo cuelga de una campaña.** Ninguna fila suelta. El ciclo se lee y se revisa **por campaña**.
 12. **70 / 20 / 10.** Cada ciclo: **70 %** patrón probado afuera · **20 %** apuesta propia ·
     **10 %** re-explotación de lo nuestro que ganó. Se verifica sobre el total del ciclo, no por
     campaña. Tolerancia ±10 puntos. **El primer ciclo arranca en 80/20** porque no hay aprendizaje propio.
@@ -296,22 +300,24 @@ LOOP          Capa 7       ¿Qué patrón ganó?  → vuelve a Capa 1 y Capa 2
 ### Capa 0 · BRIEF — ¿qué pide exactamente?
 **Skill:** `cr-brief` · **Output:** sección de brief en `brief-del-ciclo.md`
 
-Cargar los entregables de ①②③ y Branding → agrupar los slots del ciclo **por campaña** → traducir
-cada slot a etapa del funnel → fijar la `fecha` de cada uno → declarar el filtro de audiencia →
-declarar el reparto 70/20/10 previsto.
+Cargar el encargo de ③ Marketing, y lo que exista de ①② y Branding → agrupar los slots del ciclo
+**por campaña** → traducir cada slot a etapa del funnel → fijar la `fecha` de cada uno → declarar el
+filtro de audiencia → declarar el reparto 70/20/10 previsto.
 
 > **El slot es un encargo.** Creative no agrega slots, no mueve fechas y no cambia canales. Si el
 > calendario pide más de lo que la capacidad aguanta, **se declara y se devuelve a ③** — no se
 > recorta en silencio.
 
-🚦 **GATE 1 — Aprobación del brief.** Antes de gastar tiempo ideando sobre una lectura equivocada.
+✅ **Auto-revisión con el QA de `cr-brief`, y sigue.** Antes de gastar tiempo ideando sobre una
+lectura equivocada.
 
 ### Capa 1 · REFERENCIA — ¿qué ya funciona y por qué?
 **Skills:** `cr-swipe-file` · `cr-lectura-de-video` · `cr-fuentes` · **Output:** `swipe-file.md`
 
-Arrancar de la tabla 15×7 de ② Estrategia → **cosechar solo el hueco** → filtrar por longevidad →
-leer el video de verdad → extraer el patrón → organizar por pilar y tipo de hook → traducir a
-hipótesis → verificar contra el mapa de saturación → clasificar en 70 / 20 / 10.
+Arrancar de la tabla 15×7 de `ingenieria-inversa.md`, si existe → **cosechar solo el hueco** →
+filtrar por longevidad → leer el video de verdad → extraer el patrón → organizar por pilar y tipo de
+hook → traducir a hipótesis → verificar contra el mapa de saturación, si existe → clasificar en
+70 / 20 / 10.
 
 **La señal, en orden de fuerza:** pauta corriendo 60-90+ días (`⏱️60-90+d`) · orgánico outlier contra
 su propia base (`⏱️outlier`) · landing vieja que sigue igual (`⏱️estable`).
@@ -346,8 +352,8 @@ filosófico) · **guía** (la marca: Yoda, no Luke) · **plan** (3 pasos) · **l
 > tu Instagram a un cliente"*.
 > **1 transformación por pieza.** El arco completo cabe en un Reel de 30 s.
 
-🚦 **GATE 2 — Aprobación de conceptos.** El gate más importante: hook, copy, layout, tomas y estética
-derivan de acá. Un concepto equivocado se multiplica por 20 filas.
+✅ **Auto-revisión con el QA de `cr-storytelling`, y sigue.** Es la que más pesa: hook, copy, layout,
+tomas y estética derivan de acá. Un concepto equivocado se multiplica por 20 filas.
 
 ### Capa 4 · GANCHO Y PALABRA — ¿con qué entra y qué dice?
 **Skill:** `cr-hook-copy` · **Output:** hook, guion y copy en `ideas-<formato>.md`
@@ -397,8 +403,8 @@ todos lados el algoritmo lo penaliza.
 **Verificación de trazabilidad** — toda fila recorre el camino inverso:
 `Fila → Slot → Campaña → Objetivo → MUST BE TRUE`. Si no puede, **se elimina**.
 
-🚦 **GATE 3 — Aprobación del ciclo.** El lead revisa el Excel y el doc antes del handoff. Nada se
-libera a producción sin esta revisión.
+✅ **El Excel del ciclo cerrado.** Pasa el QA de `cr-adaptacion` y el del orquestador antes del
+handoff. Nada se libera a producción sin ese cierre.
 
 ### Capa 7 · LOOP — ¿qué patrón ganó?
 **Skill:** `cr-loop` · **Output:** `aprendizaje-creativo.md`
@@ -424,25 +430,25 @@ swipe file actualizado con el ganador propio · 3 hipótesis para la próxima ro
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
-① Strategy [✅/⬜] · ② Estrategia [✅/⬜] · ③ Marketing [✅/⬜] · ②B Branding [✅/⬜] · ⑧B Ads [✅/⚠️]
+③ Marketing [✅/⬜] · ① Strategy [✅/⚠️] · ② Estrategia [✅/⚠️] · ②B Branding [✅/⚠️] · ⑧B Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
-**Se bloquea si:** no hay cliente · no existe su carpeta · falta un entregable bloqueante · el
-posicionamiento no está aprobado · el plan de campañas no está aprobado · el pedido pisa otro departamento.
+**Se bloquea si:** no hay cliente · no existe su carpeta · faltan las campañas o el calendario de
+③ Marketing · el pedido pisa otro departamento.
 
 ### Modos de entrada
 
 | Pedido | Qué corre |
 |---|---|
-| *"Armá las ideas de contenido de X"* | **Completo** — Capas 0 → 6, con 3 gates |
+| *"Armá las ideas de contenido de X"* | **Completo** — Capas 0 → 6 |
 | *"Traducí la estrategia de X a brief"* | Solo Capa 0 |
 | *"Qué está funcionando en este formato"* | Solo Capa 1 |
 | *"Dame conceptos para X"* | Capas 2-3 — requiere Capa 0 hecha |
-| *"Escribí el hook y el copy de esta pieza"* | Capas 4-5 — requiere Gate 2 |
-| *"Producción devolvió escenas"* | Solo Capa 5 + Gate 3 — o Capas 3-6 con Gate 2 si el cambio rompe la intención (§8) |
+| *"Escribí el hook y el copy de esta pieza"* | Capas 4-5 — requiere Capas 2-3 hechas |
+| *"Producción devolvió escenas"* | Solo Capa 5 y se vuelve a cerrar el Excel del ciclo — o Capas 3-6 si el cambio rompe la intención (§8) |
 | *"¿Qué funcionó el mes pasado?"* | Solo Capa 7 — requiere métricas |
 
 **Si falta una capa previa:** se dice qué falta y se ofrece correrla. **No se improvisa el faltante.**
@@ -469,13 +475,13 @@ clients/<cliente>/
 
 **Al iniciar un cliente:**
 
-1. Verificar que la estrategia existe con sus gates aprobados. **Si no existe, Creative no arranca** —
-   se pide la estrategia primero.
+1. Verificar que existen las campañas y el calendario de ③ Marketing del ciclo. **Si no existen,
+   Creative no arranca** — se piden a ③ primero.
 2. Usar **el nombre canónico** del folder del cliente: el mismo en Notion y en Drive. Si no coincide,
    la traza entre agentes se rompe.
 3. Copiar `brief-del-ciclo.md` de `brain/entregables/` — los `ideas-<formato>.md` se crean sobre la
    marcha, uno por cada formato del calendario de este ciclo, a partir de `ideas-formato.md`.
-4. Ubicar en `02-marca/kit-de-redes/` el brand kit de Branding y el banco de assets.
+4. Ubicar en `02-marca/kit-de-redes/` el brand kit de Branding y el banco de assets, si existen.
 5. Correr el pre-flight de §6.
 
 🛑 **Nunca se copia un archivo de otro agente: se cita su ruta.** Copiarlo crea una segunda versión de
@@ -483,7 +489,7 @@ la verdad, y en dos ciclos nadie sabe cuál manda.
 
 **Se versiona por bloque de calendario**, no se sobrescribe: cada bloque vive en su
 `04-contenido/AAAA-MM/ideas/`.
-El `aprendizaje-creativo.md` del bloque anterior es **input obligatorio** del siguiente.
+El `aprendizaje-creativo.md` de un bloque anterior **se usa si existe**; no es requisito.
 
 ---
 
@@ -493,7 +499,6 @@ El `aprendizaje-creativo.md` del bloque anterior es **input obligatorio** del si
 ## HANDOFF — Creative → ⑤ Producción / ⑥A Diseño
 - Cliente: · Bloque: · Fecha:
 - Entregables: plan-de-contenido.csv · brief-del-ciclo.md · ideas-<formato>.md (uno por formato: [lista])
-- Gates: brief [✅/⬜] · conceptos [✅/⬜] · ciclo [✅/⬜]
 - Filas totales: [n] · por campaña: [desglose]
 - Reparto 70/20/10: [n / n / n] → [✅ cumple / ⚠️ desviado + por qué]
 - Filas por `material`: ninguno [n] · video [n] · foto [n]
@@ -552,13 +557,13 @@ válida.
 | **3** Imposibilidad física · **4** De calendario · **5** Desproporción de costo | Restricción real | `cr-arte-video` (Capa 5): se elige alternativa o se propone otra |
 | **6** Contradicción con ②B Branding | Conflicto entre dos departamentos | **No se resuelve acá**: se declara a ②B, igual que la última fila de la tabla de arriba |
 
-**Qué gate vuelve a pasar:**
+**Qué capas vuelven a correr:**
 
 - **Si el cambio no toca la intención** —cambia el lugar, el encuadre o la duración, pero la emoción,
-  el concepto y el objetivo son los mismos—: la fila corregida pasa de nuevo por 🚦 **Gate 3** antes
-  de volver a ⑤.
-- **Si el cambio rompe la intención**, ya es otra pieza: vuelve a **Capa 3** y pasa por 🚦 **Gate 2**,
-  y después por 4 → 5 → 6 y 🚦 **Gate 3**, como cualquier concepto nuevo.
+  el concepto y el objetivo son los mismos—: la fila corregida pasa de nuevo el QA de `cr-adaptacion`
+  y **el Excel del ciclo se vuelve a cerrar** antes de volver a ⑤.
+- **Si el cambio rompe la intención**, ya es otra pieza: vuelve a **Capa 3** y corre 4 → 5 → 6, con
+  la auto-revisión de cada capa, como cualquier concepto nuevo.
 
 **Los límites:**
 

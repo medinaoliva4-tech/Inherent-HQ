@@ -6,14 +6,14 @@ description: >
   fotografía o ilustración. Es lo que ⑥A Diseño gráfico y ⑥B Video Editing abren para ejecutar,
   así que cada decisión tiene que poder aplicarse sin criterio. Escribe `sistema-visual.md`.
   Úsala cuando pidan "qué colores", "la tipografía", "cómo se compone", "las specs visuales",
-  "el sistema gráfico". Requiere el GATE 1 aprobado.
+  "el sistema gráfico". Requiere el territorio y la voz definidos.
 ---
 
 # Capa 3 · Sistema visual — con valores, no adjetivos
 
 | | |
 |---|---|
-| **Consume** | § Territorio y personalidad **con GATE 1** · bloques 5 y 6 del brief de ② |
+| **Consume** | § Territorio y personalidad · § Voz · bloques 5 y 6 del brief de ① |
 | **Produce** | **`sistema-visual.md`** — el documento que abren ⑥A y ⑥B para ejecutar |
 
 > 🔑 **La prueba de esta capa:** ¿puede ⑥A producir 100 estáticos con esto, sin preguntar nada?

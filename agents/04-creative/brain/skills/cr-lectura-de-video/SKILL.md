@@ -76,6 +76,9 @@ python3 .claude/skills/cr-lectura-de-video/leer-video.py <ruta-al-video> --hook 
 Deja en `<video>_lectura/`: `hoja-de-contacto.jpg`, los frames del hook y por plano, y
 `lectura.json` con ritmo, texto en pantalla y paleta.
 
+Si falta una herramienta, la vía B no corre:
+`BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § Herramientas de video`.
+
 ### Los 8 pasos
 
 | # | Paso | Herramienta | Qué produce |

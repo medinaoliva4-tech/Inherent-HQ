@@ -21,7 +21,7 @@
 | `04-contenido/` | Ideas, producción, diseño, video y publicación, por mes | ✅ |
 | `05-comunidad/` | Comentarios y mensajes | ✅ |
 | `06-pauta/` | Campañas, creativos y resultados, por mes | ✅ |
-| `07-oferta-y-ventas/` | Oferta, canales grandes, upsells y conversión | 🟨 |
+| `07-oferta-y-ventas/` | Oferta, canales grandes, upsells y conversión | ✅ 🔷 solo `ofertas-a-empujar.md` · 🟨 completo |
 | `08-tecnologia/` | Herramientas a medida e IA propia | 🟨 |
 | `09-operacion/` | Auditorías, SOPs y estructura | 🟨 |
 | `10-finanzas/` | Money OS | 🟨 Compound |

@@ -42,10 +42,10 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 | **Profundidad de la estrategia** | Ligera | Ligera | **Completa** | **Completa + trimestral** |
 | **Revisión del 20** | Ligera | Ligera | Completa | Completa |
 | **Toca la OFERTA** *(qué vende, en qué paquetes, a qué precio)* | ⛔ Solo el mensaje | ⛔ Solo el mensaje | ✅ | ✅ |
-| **Brief de ② Growth al cerrar** | ⛔ No se arma | ⛔ No se arma | ✅ | ✅ |
+| **Brief de ② Growth al cerrar** | 🟡 Ligero | 🟡 Ligero | ✅ Completo | ✅ Completo |
 | **SOPs** | ⬜ | ⬜ | 🟡 De crecimiento | ✅ De toda la empresa |
 | **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
-| **Contenidos a investigar** *(por plataforma del cliente — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
+| **Contenidos a investigar** *(por cada una de las **Redes** de `plan-contratado.md` — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
 | **Piezas del ciclo que habilita** | **86** | **145** | **145** | **204** |
 
 **Cómo se lee:**
@@ -53,9 +53,10 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 - 🛑 **«Ligera» no es «incompleta».** En la línea 🔷 la estrategia existe entera: lo que no entra es
   **tocar la oferta**. Se trabaja el **mensaje** —cómo se cuenta lo que ya vende— y nada más.
   **Confundirlos es regalar el trabajo caro dentro del plan barato.**
-- 🛑 **En 🔷 Marketing y Pro no se arma brief de ② Growth.** Ese departamento no corre en la línea
-  Marketing (`agents/02-growth/brain/WORKFLOW.md` → §0). Si el negocio lo necesita, **es upsell a
-  🟨 Accelerate y se levanta como excepción** — no se absorbe.
+- 🟡 **En 🔷 Marketing y Pro el brief de ② Growth es ligero:** las ofertas que ya existen y el
+  objetivo. Growth elige **cuáles se empujan**; no cambia qué se vende, en qué paquetes ni a qué
+  precio (`agents/02-growth/brain/WORKFLOW.md` → §0). Si el negocio necesita tocar la oferta, **es
+  upsell a 🟨 Accelerate y se levanta como excepción** — no se absorbe.
 - ⚠️ **La línea 🔷 Marketing NO promete % de crecimiento.** El porcentaje no sale del contenido,
   sale de la oferta y la conversión. **Prometerlo ahí es vender algo que no controlamos.**
 - **La ingeniería inversa se corre en los cuatro planes.** Lo que cambia es hasta dónde llega: en
@@ -63,14 +64,19 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 
 ### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
 
-Allan lo cotiza **en las mismas unidades de la tabla de arriba**, y Strategy lo anota igual que un
-plan estándar. **El precio lo define Allan.**
+El CEO lo define en el onboarding, con su precio, y Strategy lo anota en `plan-contratado.md` con
+dos secciones:
 
-- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
-- 🛑 **No existe un plan por debajo de 🔷 Marketing.** Las horas de grabación son el piso de costo
-  (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
-- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
-  en todos los planes.
+| Sección | Qué lleva |
+|---|---|
+| **Qué incluye** | Lo que se entrega, en las mismas unidades de la tabla de arriba |
+| **Su pipeline** | Qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel |
+
+- **Los departamentos siguen ese pipeline.** No se bloquea por no ser un plan de lista ni se
+  cuestiona por precio.
+- **Un departamento que no está en su pipeline no corre para ese cliente.**
+- **El método es el mismo; cambia el pipeline.** Cómo se hace cada cosa no cambia: cambia qué corre
+  y qué se verifica.
 
 ---
 
@@ -221,6 +227,9 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 > Las acciones las determinan los MCPs. **Si falta una acción, falta un MCP** — no se arregla con
 > mejor prompt. Acá está cada acción del workflow atada a su tool exacta.
+>
+> **Si falta la herramienta, el bloque para y lo dice así:**
+> `BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § <herramienta>`.
 
 **Leyenda:** ✅ probado en esta sesión · ⬜ sin probar todavía · 🔒 requiere gate de Allan · 👤 manual
 
@@ -382,7 +391,8 @@ incompleto y la medición arranca sin baseline.
 
 1. Lo que entrega el cliente y lo que entrega Allan en la conversación
 2. `clients/<cliente>/` si ya existe
-3. Evidencia pública externa — **solo si Allan la habilita**
+3. Evidencia pública externa, **con su link** — el research de `context` §F y la ingeniería
+   inversa. **Sin link no entra**
 
 **Nunca:** otros repos, cuentas o workspaces que no se hayan entregado.
 
@@ -492,8 +502,7 @@ Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 A
 - [ ] Los huecos abiertos están nombrados, no disimulados
 - [ ] 🛑 **El plan quedó anotado en `clients/<cliente>/00-onboarding/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
 - [ ] Nada promete lo que el **plan contratado** no cubre — ver `inherent/06-ECONOMIA.md`
-- [ ] Si es ⬜ Tailor Made, **todas las filas de la §0 tienen número** — ninguna supuesta
-- [ ] **Allan aprobó.** El agente propone, no cierra
+- [ ] Si es ⬜ Tailor Made, `plan-contratado.md` tiene **Qué incluye** y **Su pipeline** (§0)
 
 ---
 
@@ -513,7 +522,7 @@ Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 A
      │
      ▼
    …05 producción · 06 diseño · 07 edición · 08 community · 09 posting · 10 ads…
-   …con QA como gate entre cada etapa…
+   …cada etapa se auto-revisa con su checklist y sigue…
      │
 ↻ REVISIÓN DEL 20  ←  Strategy · skill analysis        vuelve al inicio
 ```

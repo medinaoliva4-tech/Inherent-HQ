@@ -14,14 +14,14 @@ description: >
 # Capa 6 — Multiplicación y ensamblado
 
 **Qué consume**
-- El brief y las BIG IDEAS del ciclo, en `brief-del-ciclo.md` (Capas 0-3, 🚦 Gate 1 y Gate 2 aprobados).
+- El brief y las BIG IDEAS del ciclo, en `brief-del-ciclo.md` (Capas 0-3).
 - Los conceptos, hooks, guiones, copys, escenas y estética ya producidos en las Capas 4-5, en el `ideas-<formato>.md` de cada pieza.
 - Los slots del ciclo: canal, formato, pilar, función, campaña y objetivo — heredados de ③ Marketing.
 - La traza a MUST BE TRUE de cada slot — heredada de ② Estrategia.
 - La capacidad real de producción del cliente.
 - El método completo del departamento: `agents/04-creative/brain/WORKFLOW.md`.
 
-**Qué produce** — los entregables del ciclo, completos:
+**Qué produce** — los entregables del ciclo, completos: **el Excel del ciclo**.
 - **`plan-de-contenido.csv`** — una fila por pieza, 12 columnas, sin celdas vacías.
 - **Un `ideas-<formato>.md` por cada valor de `formato`** que tenga slot este ciclo — una sección por
   pieza, titulada `## CR-007 · <concepto>`, agrupadas por formato: todos los carruseles juntos, todos
@@ -189,8 +189,8 @@ Se cuenta la columna `mezcla` **sobre el total del ciclo**, no por campaña.
 
 ## 8 · Cierre y handoff
 
-🚦 **GATE 3 — Aprobación del ciclo.** El lead revisa el CSV y el doc antes del handoff. **Nada se
-libera a producción sin esta revisión.**
+✅ **El Excel del ciclo cerrado.** `plan-de-contenido.csv` + los `ideas-<formato>.md` pasan el QA de
+abajo antes del handoff. **Nada se libera a producción sin ese cierre.**
 
 - **`material` dice qué le hace falta a ⑤; el `formato` dice quién arma la pieza.** `video` y `foto`
   van a **⑤ Producción**; `ninguno` no pasa por ahí. Después, los estáticos, carruseles y stories los
@@ -212,11 +212,11 @@ Ninguna capa se entrega sin pasar su bloque completo.
 - [ ] **Ninguna pieza idéntica en dos canales** — cada fila tiene sus specs
 - [ ] **Sin watermark**, declarado
 - [ ] Hook temprano en todas — **2s en TikTok**
-- [ ] **Ningún par de canales comparte `funcion`**, y ningún canal tiene una función que el plan por canal de ③ Marketing no le asigne — si pasó, **devuelto a ③ Marketing**
-- [ ] El **"qué NO se hace acá"** de cada canal está respetado en todas sus filas
+- [ ] **Ningún par de canales comparte `funcion`**, y ningún canal tiene una función que el plan por canal de ③ Marketing no le asigne, si existe — si pasó, **devuelto a ③ Marketing**
+- [ ] El **"qué NO se hace acá"** de cada canal está respetado en todas sus filas, si existe `plan-por-canal.md`
 - [ ] El total de filas **cabe en la capacidad de producción real**
 - [ ] Las **12 columnas** están completas en cada fila del `plan-de-contenido.csv`
-- [ ] **Toda fila tiene `campana`**, y el ciclo se puede leer y aprobar campaña por campaña
+- [ ] **Toda fila tiene `campana`**, y el ciclo se puede leer y revisar campaña por campaña
 - [ ] **Cada `id` del CSV tiene su sección `## CR-00X · <concepto>` en el `ideas-<formato>.md` que corresponde a su columna `formato`** — y ninguna sección queda huérfana ni duplicada en dos docs
 - [ ] **Toda fila tiene `mezcla`**, y el reparto del ciclo cierra en **70/20/10 ±10 puntos** (u 80/20 si es el primer ciclo), o la desviación está declarada con su motivo
 - [ ] Cada sección declara su **emoción** — una sola, en lenguaje del comprador

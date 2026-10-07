@@ -7,14 +7,15 @@ description: >
   zona horaria. Si no hay métricas de la cuenta, se usa la hora de ③ y se marca ⚠️ SIN DATOS: la
   "mejor hora" no se inventa. Escribe las columnas `cuenta`, `fecha` y `hora` de
   `calendario-de-publicacion.csv`. Úsala cuando pidan "a qué hora sale", "armá el calendario de
-  publicación", "en qué cuenta va", "¿no se pisan dos posts?". Cierra con el GATE 1 de captions.
+  publicación", "en qué cuenta va", "¿no se pisan dos posts?". Cierra con el resumen del ciclo, que
+  es lo que lee el CEO para dar el OK en `po-carga`.
 ---
 
 # Capa 3 · Programación — cuándo y dónde exactamente
 
 | | |
 |---|---|
-| **Consume** | Las filas con `caption_ok` y `specs_ok` en ✅ · la `fecha` de ④ · métricas de la cuenta de `99-referencias/recibido/` si existen · `LINKS.md` (quién publica) |
+| **Consume** | Las filas con `caption_ok` y `specs_ok` en ✅ · la `fecha` de ④ · métricas de la cuenta de `99-referencias/recibido/` si existen · `LINKS.md` (quién tiene el acceso y el ID de Zernio de cada cuenta) |
 | **Produce** | Las columnas **`cuenta`**, **`fecha`** y **`hora`** de `calendario-de-publicacion.csv` · la tabla del ciclo de un vistazo en `publicaciones.md` |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`.
@@ -38,14 +39,14 @@ cuenta = @<cuenta-del-cliente>
 ```
 
 Un cliente puede tener dos cuentas del mismo canal —la de la marca y la del local nuevo, la
-principal y la de otro país—. **Cargar en la equivocada es de los pocos errores de este departamento
+principal y la de otro país—. **Programar en la equivocada es de los pocos errores de este departamento
 que se ven desde afuera**, y no se puede deshacer del timeline de nadie.
 
 | Verificación | Dónde está |
 |---|---|
 | Qué cuentas existen | `clients/<cliente>/00-onboarding/LINKS.md` |
 | Quién tiene el acceso | `clients/<cliente>/00-onboarding/LINKS.md` — **la fuente única** |
-| Cuál está conectada en Publer | Se confirma **dentro de Publer** antes de cargar |
+| Su ID de Zernio | `LINKS.md` *(o `05-comunidad/respuestas.md`, si ⑧ ya lo anotó)* — se confirma con `accounts_list` en `po-carga` |
 
 ## 3 · La hora — con dato, o declarada sin dato
 
@@ -63,8 +64,8 @@ pm funciona mejor"* sin fuente, no.
 > ingreso entra al mediodía de días hábiles"*, publicar a las 11:30 es un supuesto razonable — y se
 > escribe **como supuesto**, citando de dónde salió.
 
-**La zona horaria se declara una vez, arriba del documento.** Publer programa en la zona de la
-cuenta; si no coinciden, todo el ciclo sale corrido.
+**La zona horaria se declara una vez, arriba del documento**, y es la que `po-carga` le pasa a Zernio
+al programar. Si no se le pasa, Zernio usa la del perfil —o UTC—, y todo el ciclo sale corrido.
 
 ## 4 · Que nada se pise
 
@@ -74,12 +75,11 @@ cuenta; si no coinciden, todo el ciclo sale corrido.
 | **Dos piezas, misma cuenta, misma hora** | 🛑 Nunca. Se mueve una |
 | **Story y feed el mismo día** | Está bien — son formatos distintos. Se verifica que la story no adelante el feed sin querer |
 | **Pieza de pauta y orgánica iguales** | Se marca cuál es cuál. ⑧B necesita saberlo |
-| **El ciclo anterior** | 🛑 Se verifica que no quedaron filas en `cargado` sin publicar antes de cargar el nuevo |
 
-## 5 · El gate
+## 5 · El resumen del ciclo
 
-🚦 **GATE 1 — los captions.** Se presenta a quien aprueba el paquete completo de textos, cuenta por
-cuenta y fecha por fecha, antes de armar el archivo de carga:
+Se cierra con el resumen, arriba de `publicaciones.md`: es lo que el CEO lee para dar el OK en
+`po-carga`, junto con los textos cuenta por cuenta y fecha por fecha.
 
 ```
 - Publicaciones listas: [n] · pendientes: [n] · no salen: [n]
@@ -89,20 +89,19 @@ cuenta y fecha por fecha, antes de armar el archivo de carga:
 - Claims ⏸️ que no entran: [lista]
 ```
 
-🛑 **Es el gate que aprueba el cliente.** Un caption mal aprobado se multiplica por todas las filas
-del ciclo, y corregirlo después de cargar significa rehacer el archivo entero.
+🛑 **Un caption mal escrito se multiplica por todas las filas del ciclo**, y corregirlo después de
+programar significa rehacer cada publicación en Zernio.
 
 ---
 
 ## Control de calidad de la Capa 3
 
 - [ ] Toda fila tiene **`cuenta` concreta** (`@handle`), no solo el canal
-- [ ] Se verificó **quién tiene las claves** de cada cuenta usada
+- [ ] Se verificó **quién tiene las claves** y el **ID de Zernio** de cada cuenta usada
 - [ ] 🛑 **Ninguna fecha se movió** — las que no llegan se declararon y decide ③
 - [ ] Toda `hora` tiene **origen declarado**: dato de la cuenta, indicación de ③, o supuesto con su fuente
 - [ ] 🛑 **Ninguna «mejor hora» fue afirmada sin fuente**
 - [ ] La **zona horaria** está declarada arriba del documento
 - [ ] **Nada se pisa**: ninguna cuenta con dos piezas a la misma hora
-- [ ] Se verificó que el **ciclo anterior** no dejó filas en `cargado` sin publicar
 - [ ] Las piezas que van a pauta están **marcadas** para ⑧B
-- [ ] 🚦 **GATE 1** presentado a un humano, con el resumen arriba
+- [ ] El **resumen del ciclo** está arriba de `publicaciones.md`

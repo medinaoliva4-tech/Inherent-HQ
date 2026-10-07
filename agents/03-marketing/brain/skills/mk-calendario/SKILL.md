@@ -6,7 +6,7 @@ description: >
   Verifica que todo slot trace a una MUST BE TRUE, que el total entre en el techo del plan
   contratado y que no aparezca ninguna de las cinco combinaciones prohibidas. Úsala cuando pidan
   "armá el calendario", "cuántas piezas y cuándo", "el encargo para creatividad", "distribuí los
-  slots". Requiere el plan por canal. Cierra con el GATE 2.
+  slots". Requiere el plan por canal.
 ---
 
 # Capa 5 · Calendario — los slots del ciclo
@@ -61,8 +61,8 @@ El gate barato va arriba.
 | Pregunta | De dónde sale la respuesta |
 |---|---|
 | 1 · Por qué querría verlo | `audiencia profunda` de ① · el deseo, no la demografía |
-| 2 · Qué posicionamiento refuerza | `posicionamiento aprobado` de ② |
-| 3 · Qué promesa demuestra | **`promesa` de ② — es input bloqueante de `mk-encargo`** |
+| 2 · Qué posicionamiento refuerza | `posicionamiento` de ① |
+| 3 · Qué promesa demuestra | **`promesa` de ① — es input bloqueante de `mk-encargo`** |
 | 4 · Qué deseo activa | Se escribe acá, y es lo que alimenta `objetivo_del_slot` |
 | 5 · Qué siguiente acción | Lo da `funcion` + `temperatura` del slot |
 
@@ -107,7 +107,7 @@ de negocio asignado.**
 | **Los `Hero` van en semana 1 o 2** | Necesitan tiempo para rendir dentro del ciclo |
 | **Los `Conversion` se concentran**, no se riegan | Una tanda convierte; uno suelto cada semana, no |
 | **Los `Series` van parejos** las 4 semanas | Son el hábito |
-| **Nada de rodaje en la semana 1** | ⑤ Producción necesita margen desde la aprobación |
+| **Nada de rodaje en la semana 1** | ⑤ Producción necesita margen desde que sale el calendario |
 | **La estacionalidad manda** | Si ① declaró fechas duras, el calendario se acomoda a ellas |
 
 ## 5 · El cierre contra el techo
@@ -130,14 +130,10 @@ de negocio asignado.**
 | **⑤ Producción** | Cuenta los slots con rodaje para dimensionar jornadas |
 | **⑨ Posting** | Sabe en qué cuenta va cada cosa |
 
-## 7 · 🚦 GATE 2
+## 7 · Checklist
 
-**Allan aprueba el calendario completo.**
-
-🛑 **Es lo que ④ va a producir.** Aprobarlo pieza por pieza después es imposible: por eso se
-aprueba entero, acá.
-
-## 8 · Checklist
+🛑 **Es lo que ④ va a producir.** Corregirlo pieza por pieza después es imposible: por eso se
+auto-revisa entero, acá, y pasa directo a ④.
 
 - [ ] Las **11 columnas** están completas en todas las filas
 - [ ] `semana` es un número, **nunca una fecha**
@@ -147,6 +143,5 @@ aprueba entero, acá.
 - [ ] Cada `funcion` coincide con la que `plan-por-canal.md` le asigna a ese canal
 - [ ] El total **entra en el techo** del plan contratado
 - [ ] Lo que se recortó está **escrito**
-- [ ] **Allan aprobó el GATE 2**
 - [ ] **Cada slot pasó las 5 preguntas de la prueba de alineación**
 - [ ] **Ningún slot quedó sin responder la 3** *(qué parte de la promesa demuestra)*

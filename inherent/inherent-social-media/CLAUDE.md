@@ -22,6 +22,7 @@
 | `04-contenido/` | Ideas, producción, diseño, video y publicación, por mes | ✅ |
 | `05-comunidad/` | Comentarios y mensajes | ✅ |
 | `06-pauta/` | Campañas, creativos y resultados, por mes | ✅ |
+| `07-oferta-y-ventas/` | Las ofertas que se empujan cada ciclo | ✅ Solo `ofertas-a-empujar.md` |
 | `99-referencias/` | Investigación y lo que manda el cliente | ✅ |
 
-**Plan Marketing Pro:** no lleva los folders de la línea Growth.
+**Plan Marketing Pro:** de la línea Growth solo lleva `07-oferta-y-ventas/ofertas-a-empujar.md`.

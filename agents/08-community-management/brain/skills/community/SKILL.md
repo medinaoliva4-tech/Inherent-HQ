@@ -42,7 +42,7 @@ sigue.
 
 ```
 PRE-FLIGHT ⑧ — Cliente: [x] · Modo: [a mano / programada] · Envío: [borrador / activo]
-Plan: [🔷 Mkt / 🔷 Pro / 🟨 Accel / 🟨 Comp] → prende: [simple · WhatsApp · moderación · seguimiento · auto-DM]
+Plan: [🔷 Mkt / 🔷 Pro / 🟨 Accel / 🟨 Comp / ⬜ Tailor Made: nivel de Su pipeline] → prende: [simple · WhatsApp · moderación · seguimiento · auto-DM]
 Ficha respuestas.md [✅/⛔] · menú o catálogo [✅/⛔] · cuentas en Zernio [n] · avisos a: [correo]
 Bandeja: comentarios nuevos [n] · DMs nuevos [n] · menciones [n]
 → PASS | SIN NADA NUEVO (termina) | BLOQUEADO: [qué falta]
@@ -53,6 +53,9 @@ Bandeja: comentarios nuevos [n] · DMs nuevos [n] · menciones [n]
 | Situación | Qué se responde |
 |---|---|
 | No existe `plan-contratado.md` | `BLOQUEADO — falta el plan contratado` |
+| ⬜ Tailor Made sin ⑧ en Su pipeline | ⑧ no corre para ese cliente |
+| Zernio no está conectado | `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio` |
+| Gmail no está conectado | `BLOQUEADO — falta Gmail. Instalala: ver INSTALAR.md § Gmail` |
 | No existe `05-comunidad/respuestas.md` | `BLOQUEADO — falta la ficha.` Se ofrece armarla con la plantilla y presentarla |
 | La cuenta de la red no está en Zernio | Esa red no se atiende. Se dice cuál falta |
 | El pedido es escribirle a alguien que no escribió primero | 🛑 No. ⑧ solo responde |

@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| **Plan** | ⬜ **Acuerdo especial** — no es un plan de lista |
-| **Línea** | 🔷 Marketing, con la excepción de oferta de abajo |
+| **Plan** | ⬜ **Tailor Made** — acuerdo especial |
+| **Línea** | 🔷 Marketing, con la oferta trabajada por ② Growth *(ver «Su pipeline»)* |
 | **Precio** | **Q2,500 al mes** |
 | **Cambio a precio de lista** | Sin fecha |
 | **Redes** | Instagram · TikTok · Facebook |
@@ -14,15 +14,25 @@
 | **Operador** | Sube todo y facilita las tomas |
 | 🔒 **Costo de la cuenta** | **Q1,600 al mes para NAO y Akai juntos.** Interno: no sale del repo |
 
-## La excepción
+## Su pipeline
 
-```
-EXCEPCIÓN: trabajar la oferta (qué vende, en qué paquetes y a qué precio) · aprobada por Allan
-```
+> **El método es el mismo; esto es lo que corre para NAO y a qué nivel.** Lo que no está acá, no corre.
 
-El acuerdo especial existe para **hacerlos crecer en ventas** —oferta, experiencia, eventos—
-y así crecer la cuenta. Por eso ② Growth puede trabajar la oferta aunque la línea sea 🔷 Marketing.
-El resto del plan no cambia: **no lleva Conversion OS, Operations OS ni Money OS.**
+| Paso | Qué hace |
+|---|---|
+| **① Strategy** | Comprensión y estrategia ligera |
+| **② Growth** | **Trabaja la oferta:** NAO vende experiencia; Akai, ofertas y combos. El objetivo es crecer sus ventas —oferta, experiencia, eventos— para crecer la cuenta |
+| **②B Branding** | El kit de NAO **todavía no existe**. Hasta que exista, ⑥A Diseño no corre para NAO |
+| **③ Marketing** | Campañas, calendario y brief del ciclo |
+| **④ Creatividad** | Las ideas del ciclo |
+| **⑤ Producción** | 3 h de grabación para NAO y Akai juntos, con el CEO |
+| **⑦ Video Editing** | 9 planificados *(editor de video)* + 4 derivados *(CEO)* |
+| **⑥A Diseño** | Estáticos, carruseles y stories con las plantillas del kit: **alto volumen, poco esfuerzo.** Los hace el operador |
+| **⑧ Community** | Básico |
+| **⑨ Posting** | Instagram · TikTok · Facebook, por Zernio |
+| **⑩ Ads** | Meta Ads, USD 320 al mes que pone el cliente |
+
+**No lleva Conversion OS, Operations OS ni Money OS.**
 
 ## El techo de video — NAO y Akai juntos
 
@@ -36,4 +46,3 @@ Sale de las 3 h de grabación con la regla de los 20 minutos de ⑦ Video Editin
 | *TOTAL — tope (1:1)* | *18* |
 
 **Quién edita:** el editor de video, los **9 planificados** · el CEO, los **4 derivados**.
-**Estáticos, carruseles y stories:** alto volumen y poco esfuerzo, con las plantillas del kit. La cantidad sale de lo que tenga el kit en Figma: ⚠️ SIN DATOS.

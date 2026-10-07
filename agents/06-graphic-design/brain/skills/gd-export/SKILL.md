@@ -6,14 +6,14 @@ description: >
   legibilidad en pantalla chica antes de entregar. Para impresos cambian las reglas: CMYK,
   márgenes de corte y resolución de impresión. Úsala cuando pidan "exportá el paquete", "dejalo
   listo para posting", "¿cumple las medidas?", "armá el manifiesto", "esto va a imprenta".
-  Cierra con el GATE 2.
+  Cierra con la auto-revisión del paquete.
 ---
 
 # Capa 4 · Export — specs, nombres y manifiesto
 
 | | |
 |---|---|
-| **Consume** | Las piezas compuestas · `plan-por-canal.md` · § Aplicación de `sistema-visual.md` |
+| **Consume** | Las piezas compuestas · `plan-por-canal.md` *(si no existe, las **Redes** del `plan-contratado.md`)* · § Aplicación de `sistema-visual.md` |
 | **Produce** | Los archivos finales + **`entregas-diseno.md`** |
 
 ## 1 · La nomenclatura
@@ -71,9 +71,10 @@ se descubre con el material ya impreso.
 
 **Se escribe, no se omite.** Pieza, motivo, de quién se espera.
 
-## 6 · 🚦 GATE 2
+## 6 · La entrega
 
-**Allan aprueba el paquete completo**, y recién ahí entra a QA y después a ⑨ Posting.
+**Con el checklist de §7 completo, el paquete entra a QA y después a ⑨ Posting.** No para a pedir
+aprobación: ⑥A no publica ni le envía nada al cliente.
 
 ## 7 · Checklist
 
@@ -85,4 +86,3 @@ se descubre con el material ya impreso.
 - [ ] Ningún **placeholder** quedó adentro
 - [ ] `entregas-diseno.md` tiene la columna **`plantilla`** llena
 - [ ] Lo que no salió está **escrito**
-- [ ] **Allan aprobó el GATE 2**

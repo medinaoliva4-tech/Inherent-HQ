@@ -1,7 +1,7 @@
 ---
 name: pr-desglose
 description: >
-  Capa 1 de ⑤ Producción — convierte cada escena aprobada en la lista concreta de cosas que alguien
+  Capa 1 de ⑤ Producción — convierte cada escena verificada en la lista concreta de cosas que alguien
   tiene que conseguir, con las 8 categorías: locación, talento, producto, props, vestuario, arte y
   ambientación, equipo técnico y permisos y legales. Parte cada fila creativa en una fila de
   producción por escena —la unidad que después se agrupa, se cuesta y se graba— y escribe las filas
@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | La sección § Verificación y devoluciones de `plan-de-rodaje.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en ④ Creatividad (`clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · las guidelines de ②B Branding |
+| **Consume** | La sección § Verificación y devoluciones de `plan-de-rodaje.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en ④ Creatividad (`clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · la guía de ②B Branding, si existe |
 | **Produce** | Las **filas base de `plan-de-produccion.csv`**: `id`, `id_creativo`, `campana`, `escena`, `accion`, `encuadre`, `duracion_s`, `destino`, `estado` + el desglose de las 8 categorías que alimenta las columnas `locacion`, `talento`, `recursos`, `equipo` |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:

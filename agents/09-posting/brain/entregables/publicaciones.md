@@ -1,9 +1,10 @@
 # Publicaciones — [Cliente]
 
 **Ciclo:** [x] · **Campaña(s):** [nombres] · **Fecha:** [aaaa-mm-dd] · **Zona horaria:** [x]
-**Gates:** captions [✅/⬜] · paquete de carga [✅/⬜]
+**OK del CEO para programar:** [✅ / ⬜] · pedido [aaaa-mm-dd] · llegó [aaaa-mm-dd]
 
-> Este documento lo lee **quien aprueba**. Acompaña a `publer-import.csv`, que es el que se sube.
+> Este documento lo lee **el CEO** para dar el OK antes de programar. Lo programado queda registrado
+> en `calendario-de-publicacion.csv`, con su `zernio_post_id` y su estado.
 > 🛑 **El mensaje es de ④ Creatividad.** Acá se adapta el largo y el formato, nunca la idea.
 > Fuente del copy: `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`.
 
@@ -13,10 +14,10 @@
 
 | | |
 |---|---|
-| **Publicaciones en el archivo** | [n] |
+| **Publicaciones a programar en Zernio** | [n] |
 | **Piezas sin archivo final** | [n] → [de quién se esperan] |
 | **Devueltas** | [n] → ④ [n] · ⑥A [n] · ⑥B [n] |
-| **Claims ⏸️ que no se cargan** | [n] |
+| **Claims ⏸️ que no se programan** | [n] |
 | **Hora con dato / ⚠️ SIN DATOS** | [n] / [n] |
 
 | id | id_creativo | Cuenta | Formato | Fecha y hora | Estado |
@@ -31,11 +32,12 @@
 |---|---|
 | **Pieza de ④** | `CR-007` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-reel.md` §CR-007 |
 | **Campaña** | |
-| **Cuenta** | `@cliente` — 🛑 la cuenta concreta, no *"Instagram"* |
+| **Cuenta** | `@cliente` — 🛑 la cuenta concreta, no *"Instagram"* · ID de Zernio: `[account_id]` |
 | **Canal · formato** | |
 | **Fecha y hora** | [aaaa-mm-dd hh:mm] · [con dato / ⚠️ SIN DATOS — hora de ③] |
 | **Archivo** | [nombre exacto del export de ⑥A o ⑥B] |
-| **Ruta / URL pública** | [Drive] · [URL que va en `Media URL`] |
+| **Ruta / media en Zernio** | [Drive] · [URL de la media subida a Zernio, validada con `validate_media`] |
+| **Post en Zernio** | [`zernio_post_id`, al programar] |
 
 ### Caption
 
@@ -75,7 +77,8 @@ Reels antes del *"… más"*.
 | Alt text escrito | | 🛑 no es opcional |
 | Sin watermark de otra app | | 🛑 alcance muerto |
 | Audio correcto y con volumen | | |
-| Claims aprobados | | ✅ / ⏸️ PENDIENTE — **no se carga** |
+| `validate_post` de Zernio sin errores | | [advertencias, si hubo] |
+| Claims aprobados | | ✅ / ⏸️ PENDIENTE — **no se programa** |
 
 **Estado:** 🟢 listo / 🟡 [qué falta, quién y para cuándo] / 🔴 no sale este ciclo / ↩️ DEVUELTO
 
@@ -85,8 +88,8 @@ Reels antes del *"… más"*.
 
 # Los envíos de email
 
-*(Ruta email. 🛑 **No van en `publer-import.csv`**: Publer no manda email, y una fila de `Email` ahí
-hace fallar la importación entera.)*
+*(Ruta email. 🛑 **No se programan en Zernio**: salen por la herramienta de email del cliente, y los
+manda un humano.)*
 
 | | |
 |---|---|
@@ -150,8 +153,7 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 
 # Los envíos manuales
 
-*(Ruta manual. 🛑 **No van en `publer-import.csv`**: Publer no manda WhatsApp ni imprime. Los manda o
-los pega **un humano, a mano**.)*
+*(Ruta manual. 🛑 **No se programan en Zernio**. Los manda o los pega **un humano, a mano**.)*
 
 | | |
 |---|---|
@@ -228,18 +230,19 @@ nosotros.** Toda pieza que no sale lleva motivo escrito.
 
 ---
 
-# Verificación — después de publicar
+# Verificación — el estado en Zernio
 
-🛑 **Se mira la publicación real.** No se da por publicado porque Publer dijo que sí.
+🛑 **El estado sale de Zernio, publicación por publicación** (`posts_get` · `posts_list_failed`). No
+se abren las redes: el control de calidad de lo publicado lo hace el CEO en persona.
 
-*(Ruta social y email. 🛑 **Los impresos de la ruta manual no entran acá**: se verifican con la foto
-del lugar, en su propia sección.)*
+*(Ruta social. 🛑 **Los impresos de la ruta manual no entran acá**: se verifican con la foto del
+lugar, en su propia sección.)*
 
-| id | ¿Salió? | ¿Cuenta correcta? | ¿Se ve bien en móvil? | ¿Link funciona? | ¿Caption completo? | URL |
-|---|---|---|---|---|---|---|
-| PO-001 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | |
+| id | zernio_post_id | Estado en Zernio | ¿Cuenta y fecha coinciden? | ¿Reintentada? | URL |
+|---|---|---|---|---|---|
+| PO-001 | | programada / publicada / fallida | ⬜ | — / ✅ [n] | |
 
-**Fallas y qué se hizo**
+**Lo que sigue fallando**
 
-| id | Qué pasó | Qué se hizo | ¿Se republicó? |
+| id | Qué dice Zernio | Reintentos | Qué hace falta |
 |---|---|---|---|

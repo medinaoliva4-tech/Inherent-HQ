@@ -24,7 +24,7 @@ description: >
 
 | Chequeo | Si falla |
 |---|---|
-| **El tracking funciona** | 🛑 **No se lanza.** Gastar sin medir es tirar el presupuesto |
+| **El tracking del plan funciona** — 🔷 pixel de Meta · 🟨 CAPI + GA4 | 🛑 **No se lanza.** Gastar sin medir es tirar el presupuesto |
 | **El presupuesto diario es el aprobado** | 🛑 Se corrige |
 | **El destino abre** | Link, WhatsApp, formulario — **se prueba uno por uno** |
 | **El destino es móvil** | La mayoría del tráfico es móvil |

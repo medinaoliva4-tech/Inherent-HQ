@@ -1,2 +1,2 @@
-id,id_creativo,campana,canal,cuenta,formato,fecha,hora,archivo,caption_ok,specs_ok,estado
-<id>,<id_creativo>,<campana>,<canal>,<cuenta>,<formato>,<fecha>,<hora>,<archivo>,<caption_ok>,<specs_ok>,<estado>
+id,id_creativo,campana,canal,cuenta,formato,fecha,hora,archivo,caption_ok,specs_ok,zernio_post_id,estado
+<id>,<id_creativo>,<campana>,<canal>,<cuenta>,<formato>,<fecha>,<hora>,<archivo>,<caption_ok>,<specs_ok>,<zernio_post_id>,<estado>

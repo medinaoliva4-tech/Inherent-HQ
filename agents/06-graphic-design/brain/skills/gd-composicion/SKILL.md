@@ -1,19 +1,19 @@
 ---
 name: gd-composicion
 description: >
-  Capa 3 de ⑥A Diseño gráfico — llena las plantillas aprobadas con el copy literal de ④ y las
+  Capa 3 de ⑥A Diseño gráfico — llena las plantillas del ciclo con el copy literal de ④ y las
   imágenes resueltas, pieza por pieza y por formato agrupado. Verifica jerarquía, un solo foco
   visual, safe zones y que la slide 1 de cada carrusel se entienda sola. Es ejecución, no
   diseño: si una pieza pide una decisión nueva, la plantilla está mal. Úsala cuando pidan "armá
   este carrusel", "componé las piezas", "llená las plantillas", "esta pieza no se lee". Requiere
-  las plantillas con GATE 1 y las imágenes resueltas.
+  las plantillas de la Capa 1 y las imágenes resueltas.
 ---
 
 # Capa 3 · Composición — llenar las plantillas
 
 | | |
 |---|---|
-| **Consume** | Las plantillas con GATE 1 · las imágenes de la Capa 2 · el **copy literal** de ④ |
+| **Consume** | Las plantillas de la Capa 1 · las imágenes de la Capa 2 · el **copy literal** de ④ |
 | **Produce** | Las piezas compuestas, antes de exportar |
 
 > 🔑 **Esta capa es ejecución, no diseño.** Si una pieza pide una decisión nueva, **la plantilla

@@ -4,17 +4,17 @@ description: >
   Capa 4 de ⑥B Video Editing — exporta cada pieza con las specs de su plataforma y la
   nomenclatura que ⑨ Posting cruza, y arma el manifiesto que cierra el ciclo. Verifica aspecto,
   duración, peso, audio y ausencia de watermark antes de entregar, porque lo que no cumple lo
-  devuelve po-specs y vuelve acá igual, pero tarde. Después del GATE 2 publica la página donde
+  devuelve po-specs y vuelve acá igual, pero tarde. Con el OK del CEO publica la página donde
   el cliente aprueba o pide cambios. Úsala cuando pidan "exportá el paquete", "dejalo listo para
   posting", "¿cumple las specs?", "armá el manifiesto", "pasame un link para el cliente", "¿qué
-  respondió el cliente?". Cierra con el GATE 2.
+  respondió el cliente?".
 ---
 
 # Capa 4 · Export — specs, nombres y manifiesto
 
 | | |
 |---|---|
-| **Consume** | Las piezas terminadas · `plan-por-canal.md` · las specs de cada plataforma |
+| **Consume** | Las piezas terminadas · `plan-por-canal.md` *(si no existe, las **Redes** del `plan-contratado.md`)* · las specs de cada plataforma |
 | **Produce** | Los archivos finales (master + preview) + **`entregas-video.md`** + la **página de aprobación del cliente** |
 | **Herramientas** | `ffmpeg` · `motor/aprobacion/vercel/` (`build.py` + `vercel deploy --prod`) |
 
@@ -88,14 +88,17 @@ dice «me gustaba más antes», tiene que existir el antes.
 
 🛑 **Un ciclo que entrega 9 de 10 reels sin decir cuál falta obliga a ⑨ a descubrirlo.**
 
-## 6 · 🚦 GATE 2
+## 6 · 🚦 El OK del CEO — solo para lo que le llega al cliente
 
-**Allan aprueba el paquete completo**, y recién ahí entra a QA y después a ⑨ Posting.
+**El paquete no para:** con el checklist de §8 completo entra a QA y después a ⑨ Posting.
+
+🛑 **Lo único que espera el OK del CEO es la página del cliente (§7):** sin ese OK no se corre
+`vercel deploy --prod` ni se le manda el link. Es enviarle algo al cliente.
 
 ## 7 · La página de aprobación del cliente
 
-**Después del GATE 2, el cliente ve las piezas en un link público, las califica y aprueba o pide
-cambios por escrito.** Reemplaza los audios de WhatsApp: el pedido queda escrito, por pieza y con
+**Con el OK del CEO (§6), el cliente ve las piezas en un link público, las califica y aprueba o
+pide cambios por escrito.** Reemplaza los audios de WhatsApp: el pedido queda escrito, por pieza y con
 versión.
 
 | | |
@@ -124,6 +127,5 @@ el cliente.** El link que se manda es solo el de la página.
 - [ ] `entregas-video.md` cruza el Excel de ④ **fila por fila**
 - [ ] Lo que no salió está **escrito**, con responsable
 - [ ] Hay **master + preview < 30 MB** de cada pieza; las versiones anteriores quedaron archivadas
-- [ ] **Allan aprobó el GATE 2**
 - [ ] La página del cliente tiene **la versión actual** de cada video (`?v=`) y el caption de ⑨
 - [ ] La clave de respuestas **no** está en el repo ni en el link al cliente

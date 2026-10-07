@@ -138,7 +138,7 @@ transicional en BOFU deja la venta sin pedir.
 - [ ] **1 transformación por pieza**
 - [ ] El arco **cabe** en el formato del slot, con su distribución declarada
 
-🚦 **GATE 2 — aprobación de conceptos.** El gate más importante: hook, copy, layout, tomas y estética
+✅ **Auto-revisión de conceptos, y sigue.** Es la que más pesa: hook, copy, layout, tomas y estética
 derivan de acá. Un concepto equivocado se multiplica por todas las filas del ciclo.
 
-**Handoff** → `cr-hook-copy` (Capa 4), una vez pasado el gate.
+**Handoff** → `cr-hook-copy` (Capa 4), con este QA completo.

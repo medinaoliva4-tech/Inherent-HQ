@@ -34,7 +34,7 @@
 ## D · Lo que se devuelve
 | A | Qué | Por qué |
 |---|---|---|
-| ② Estrategia | | |
+| ① Strategy | | |
 | 02 Growth | | |
 | ④ Creatividad | | |
 

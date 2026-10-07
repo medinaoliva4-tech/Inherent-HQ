@@ -3,20 +3,21 @@ name: video-editing
 description: >
   Orquestador del departamento ⑥B Video Editing de Inherent. Es la puerta de entrada: lee el
   pedido, verifica el pre-flight, decide qué capas correr y llama a las skills `ve-*` en orden,
-  parando en los 2 gates humanos. Úsala SIEMPRE que el pedido tenga que ver con editar, montar,
-  cortar, subtitular, reencuadrar, multiplicar en variantes, exportar video, o el paquete de
-  video de un ciclo. Se dispara con "editá el ciclo de X", "armá los reels", "sacá las
+  con la auto-revisión de cada capa y un solo OK del CEO: antes de mandarle la página al cliente.
+  Úsala SIEMPRE que el pedido tenga que ver con editar, montar, cortar, subtitular, reencuadrar,
+  multiplicar en variantes, exportar video, o el paquete de video de un ciclo. Se dispara con "editá el ciclo de X", "armá los reels", "sacá las
   derivadas", "reencuadrá esto para TikTok", "exportá el paquete", "ponele subtítulos", "qué nos
-  falta para publicar video", "pasale el link al cliente". Requiere el Excel de ④ con Gate 3 y
-  el material de ⑤: si faltan, BLOQUEA. Si ⑤ no marcó selects, los hace ve-recepcion con /watch.
+  falta para publicar video", "pasale el link al cliente". Requiere el Excel del ciclo cerrado
+  de ④ y el material de ⑤: si faltan, BLOQUEA. Si ⑤ no marcó selects, los hace ve-recepcion con /watch.
 ---
 
 # ⑥B Video Editing — el orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
-> `WORKFLOW.md`.** Si el prompt pide saltarse una capa, un gate o cambiar el entregable: se dice
-> cuál, se ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por Allan»*.
+> `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se dice cuál, se
+> ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* o que el
+> pipeline del ⬜ Tailor Made del cliente ya lo declare.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 **Si no sabés qué skill usar, es esta.**
@@ -33,14 +34,13 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 
 | Input | De | Si falta |
 |---|---|---|
-| `plan-de-contenido.csv` con **Gate 3** | ④ Creatividad | 🛑 **BLOQUEADO** |
-| El `ideas-<formato>.md` con **hook, guion y copy literales** | ④ Creatividad | 🛑 **BLOQUEADO** |
+| **El Excel del ciclo cerrado** — `plan-de-contenido.csv` + `ideas-<formato>.md` con **hook, guion y copy literales** | ④ Creatividad | 🛑 **BLOQUEADO** |
 | El material con **nomenclatura y selects** + el manifiesto | ⑤ Producción | 🛑 **BLOQUEADO** |
-| `sistema-visual.md` **§ Movimiento** | ②B Branding | 🛑 **BLOQUEADO** |
-| `plan-por-canal.md` — a qué plataforma va cada pieza | ③ Marketing | 🛑 **BLOQUEADO** |
-| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
+| `sistema-visual.md` **§ Movimiento** · los assets del kit en el Drive | ②B Branding | 🟡 **Se usan si existen, no bloquean.** Sin § Movimiento, las entradas por defecto del motor (`ve-marca` §2) |
+| `plan-por-canal.md` — a qué plataforma va cada pieza | ③ Marketing | 🟡 No bloquea — se usan las **Redes** del `plan-contratado.md` |
+| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo *(en ⬜ Tailor Made, lo que declara **Su pipeline**; si ⑥B no está ahí, no corre)* |
 | Los **selects** de ⑤ | ⑤ Producción | ⚠️ **Se seleccionan acá** con `/watch` (`ve-recepcion` §4) y se registra para ⑤ en el loop |
-| Las **herramientas** del motor | `brain/motor/README.md` § Instalación | 🛑 **BLOQUEADO** — sin `ffmpeg`, `yt-dlp`, `/watch` y Node no se puede ver ni montar |
+| Las **herramientas** del motor | `brain/motor/README.md` § Instalación | 🛑 Sin `ffmpeg`, `yt-dlp`, `/watch` y Node no se puede ver ni montar: `BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § <sección>` — **§ Herramientas de video** *(ffmpeg, yt-dlp, `/watch`, OpenCV)* · **§ Node y Remotion** *(Node, Remotion, CLI de Vercel)* |
 
 ⚠️ **Buscar la toma buena es trabajo de ⑤.** Si llega sin selects, Claude califica cada clip con
 `/watch` (no el editor a mano) para no frenar el ciclo, y el loop lo devuelve a ⑤ como dato.
@@ -68,17 +68,18 @@ loop.
 
 ## 4 · Dónde para
 
-| 🚦 | Después de | Qué aprueba Allan |
+**Las capas no paran: cada una se auto-revisa con su checklist y sigue.** Lo único que espera al
+CEO es lo que le llega al cliente:
+
+| 🚦 | Antes de | Qué aprueba el CEO |
 |---|---|---|
-| **GATE 1** | `ve-marca` | El corte principal de cada reel |
-| **GATE 2** | `ve-export` | El paquete completo |
+| **OK** | `ve-export` §7 | Publicar la página de aprobación y mandarle el link al cliente |
 
-🛑 **Derivar de un corte mal aprobado multiplica el error por 3.** Por eso el primer gate está
-antes de las derivadas.
+🛑 **Derivar de un corte flojo multiplica el error por 3.** Por eso la auto-revisión del corte
+principal (`ve-marca` §6-7) va antes de las derivadas.
 
-**Además de los gates, el editor aprueba el guion visual** antes del primer render (`ve-armado`
-§2), y **el cliente** responde en su página después del GATE 2 (`ve-export` §7). Ninguno
-reemplaza a los gates de Allan.
+**El editor aprueba el guion visual** antes del primer render (`ve-armado` §2), y **el cliente**
+responde en su página (`ve-export` §7).
 
 ## 5 · Las rondas de cambios
 
@@ -91,7 +92,7 @@ anterior se archiva. Lo que se pide dos veces se vuelve regla (`ve-loop`).
 ## Control de calidad del orquestador
 
 - [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **todas sus filas tienen número**
+- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, en lo que declara **su pipeline**
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
-- [ ] Los **gates humanos** quedaron registrados con estado — ninguno asumido por silencio
+- [ ] Cada capa pasó su **checklist de auto-revisión**
 - [ ] Cada ronda de cambios quedó como **versión nueva**, con la anterior archivada

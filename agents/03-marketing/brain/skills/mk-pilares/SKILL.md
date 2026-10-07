@@ -6,14 +6,14 @@ description: >
   recurrente que la audiencia aprende a esperar. Reparte los slots entre pilares con porcentaje y
   verifica que la mezcla sirva al mensaje madre y no al gusto de nadie. Úsala cuando pidan "qué
   pilares trabajamos", "el sistema de contenido", "cuánto de cada cosa", "de qué vamos a hablar
-  este mes". Requiere el GATE 1 aprobado.
+  este mes". Requiere la jerarquía de mensaje escrita.
 ---
 
 # Capa 3 · Pilares — el sistema de contenido
 
 | | |
 |---|---|
-| **Consume** | § Jerarquía de mensaje **con GATE 1** · el techo de slots de § El encargo |
+| **Consume** | § Jerarquía de mensaje · el techo de slots de § El encargo |
 | **Produce** | La sección **§ Sistema de contenido** de `estrategia-de-contenido.md` |
 
 ## 1 · Qué es un pilar

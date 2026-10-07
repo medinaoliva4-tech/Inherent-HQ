@@ -6,14 +6,14 @@ description: >
   tenga copy literal y no descrito, que el layout esté definido, que el formato exista en el
   sistema visual y que no arrastre claims pendientes. Agrupa las piezas por formato, que es como
   se van a producir. Úsala cuando pidan "¿llegó todo?", "qué nos falta para diseñar", "arrancá
-  el ciclo de diseño". Bloquea si falta el Gate 3 de ④ o el sistema visual de ②B.
+  el ciclo de diseño". Bloquea si falta el Excel del ciclo cerrado de ④ o el sistema visual de ②B.
 ---
 
 # Capa 0 · Recepción — qué llegó y es componible
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` con Gate 3 · los `ideas-<formato>.md` · `sistema-visual.md` · **los assets del kit en el Drive** *(link en `clients/<cliente>/02-marca/kit-de-redes/kit.md`)* |
+| **Consume** | **El Excel del ciclo cerrado** (`plan-de-contenido.csv` + los `ideas-<formato>.md`) · `sistema-visual.md` · **las plantillas en Figma** |
 | **Produce** | Las filas base de **`entregas-diseno.md`** y la tabla **§ Lo que no se diseña este ciclo** |
 
 ## 1 · El filtro: las filas sin rodaje
@@ -60,6 +60,9 @@ entre 168 piezas y 168 decisiones.
 | Stories | 30 | 55 | 55 | 80 |
 | **Total de ⑥A** | **73** | **127** | **118** | **168** |
 | Revisiones por pieza | 1 | 2 | 2 | 3 |
+
+⬜ **Tailor Made:** el techo son los estáticos, carruseles y stories que declara **Su pipeline** en
+`plan-contratado.md`.
 
 🛑 **Si el Excel pide más, se declara y se devuelve a ③ Marketing.**
 

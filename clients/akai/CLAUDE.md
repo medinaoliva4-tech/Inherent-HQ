@@ -21,8 +21,8 @@
 | `04-contenido/` | Ideas, producción, diseño, video y publicación, por mes | ✅ |
 | `05-comunidad/` | Comentarios y mensajes | ✅ |
 | `06-pauta/` | Campañas, creativos y resultados, por mes | ✅ |
-| `07-oferta-y-ventas/` | La oferta | ✅ Excepción aprobada por Allan |
+| `07-oferta-y-ventas/` | La oferta | ✅ Está en su pipeline |
 | `99-referencias/` | Investigación y lo que manda el cliente | ✅ |
 
-**Acuerdo especial:** lleva `07-oferta-y-ventas/` por la excepción de oferta. No lleva tecnología,
-operación ni finanzas.
+**Tailor Made:** lleva `07-oferta-y-ventas/` porque ② Growth está en su pipeline. No lleva
+tecnología, operación ni finanzas.

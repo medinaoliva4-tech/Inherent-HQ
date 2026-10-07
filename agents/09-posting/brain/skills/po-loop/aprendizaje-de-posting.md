@@ -36,26 +36,18 @@
 
 ---
 
-## 3 · Qué falló publicado
+## 3 · Qué falló al publicar
 
-| id | Qué falló | Causa raíz | ¿Ya había un chequeo que lo cubría? | Qué evita que se repita |
-|---|---|---|---|---|
+| id | Qué dijo Zernio | ¿Se recuperó con el reintento? | Causa raíz | ¿Ya había un chequeo que lo cubría? | Qué evita que se repita |
+|---|---|---|---|---|---|
 
 ---
 
-## 4 · Cuánto tardó cada aprobación
+## 4 · Cuánto tardó el OK para programar
 
-| Gate | Presentado | Aprobado | Tardó |
-|---|---|---|---|
-| 1 · Captions | | | |
-| 2 · Paquete de carga | | | |
-
-| | |
-|---|---|
-| **Promedio del ciclo** | [x días] |
-| **Declarado en `00-onboarding/comprension.md` §D** | [x] |
-| **¿Coincide?** | ✅ / ⚠️ difiere — [cuántos ciclos lleva difiriendo] |
-| **¿Se propone corregir a ①?** | ⬜ — 🛑 como propuesta, sin editar su archivo |
+| OK | Pedido | Llegó | Tardó | ¿Programado al día 19? |
+|---|---|---|---|---|
+| OK del CEO del ciclo | | | | ✅ / ⚠️ |
 
 ---
 

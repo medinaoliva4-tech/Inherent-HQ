@@ -6,15 +6,15 @@ description: >
   única forma, el layout que ④ definió y el cierre de marca que lleva toda pieza. Es la capa que
   hace que 14 reels se vean de la misma marca. Úsala cuando pidan "ponele subtítulos", "aplicá
   la marca", "el cierre", "los textos en pantalla", "esto no se ve nuestro", "el logo se ve
-  gris", "se ve azul", "se ve trabado". Incluye el QA medido (temblor, color, voces) antes del
-  gate. Requiere el corte principal armado. Cierra con el GATE 1.
+  gris", "se ve azul", "se ve trabado". Incluye el QA medido (temblor, color, voces) antes de
+  derivar. Requiere el corte principal armado.
 ---
 
 # Capa 2 · Marca — § Movimiento aplicado
 
 | | |
 |---|---|
-| **Consume** | El corte principal · `sistema-visual.md` **§ Movimiento** y **§ Color/Tipografía** · el layout de `cr-arte-video` · **los assets del kit en el Drive** *(link en `clients/<cliente>/02-marca/kit-de-redes/kit.md`)* |
+| **Consume** | El corte principal · `sistema-visual.md` **§ Movimiento** y **§ Color/Tipografía** · el layout de `cr-arte-video` · **los assets del kit en el Drive** *(link en `clients/<cliente>/02-marca/kit-de-redes/kit.md`)* — **los archivos de marca se usan si existen; no bloquean** |
 | **Produce** | El corte principal **terminado y de marca**, listo para derivar |
 | **Herramientas** | `motor/remotion/src/` (`brand.ts`, `components/type.tsx`, `endcard.tsx`) · `scripts/review.py` · `jitter_all.py` · `colorstats.py` · `finish_audio.sh` |
 
@@ -118,7 +118,7 @@ deciden a ojo ni con un filtro general.**
 
 ## 7 · La auto-revisión contra ②B
 
-**Antes del gate se corre el checklist del guardián sobre la propia pieza:**
+**Antes de derivar se corre el checklist del guardián sobre la propia pieza:**
 
 - [ ] ¿Un solo acento de color?
 - [ ] ¿Las tipografías son las del sistema, con su peso?
@@ -130,11 +130,12 @@ deciden a ojo ni con un filtro general.**
 
 > 🔑 **Auto-revisarse acá es más barato que que lo devuelva `br-guardian` después de derivar.**
 
-## 8 · 🚦 GATE 1
+## 8 · Antes de derivar
 
-**Allan aprueba el corte principal de cada reel.**
+**El corte principal no para a pedir aprobación:** con el QA medido (§6), la auto-revisión (§7) y
+el checklist de §9 completos, pasa a `ve-derivadas`.
 
-🛑 **De este corte salen todas las derivadas.** Aprobarlo mal multiplica el error por 3.
+🛑 **De este corte salen todas las derivadas.** Dejarlo flojo multiplica el error por 3.
 
 ## 9 · Checklist
 
@@ -148,4 +149,3 @@ deciden a ojo ni con un filtro general.**
 - [ ] Pasa la **prueba del logo tapado**
 - [ ] **QA medido**: hoja de revisión vista, temblor y color medidos por toma, sin voces del equipo
 - [ ] Ninguna tilde cortada; ningún velo fijo
-- [ ] **Allan aprobó el GATE 1**

@@ -6,14 +6,14 @@ description: >
   anuales, proyectos por fases). No corre en la linea Marketing; en Accelerate se abren y venden, en
   Compound se vuelven canal permanente. Antes de abrir uno verifica que la capacidad de entrega
   lo aguante. Úsala cuando pidan "qué ventas grandes podríamos hacer", "eventos", "mayoreo",
-  "corporativos", "cuentas grandes", "contratos anuales". Requiere la oferta con GATE 1.
+  "corporativos", "cuentas grandes", "contratos anuales". Requiere § La oferta.
 ---
 
 # Capa 2 · Canales grandes — el Pilar 2
 
 | | |
 |---|---|
-| **Consume** | § La oferta con GATE 1 · § El encargo · la capacidad de ① |
+| **Consume** | § La oferta · § El encargo · la capacidad de ① |
 | **Produce** | La sección **§ Canales grandes** de `motor-de-crecimiento.md` |
 
 ## 1 · Qué es, según la división

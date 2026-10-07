@@ -15,7 +15,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El `ideas-<formato>.md` de la pieza · el material con selects · § Movimiento de ②B |
+| **Consume** | El `ideas-<formato>.md` de la pieza · el material con selects · § Movimiento de ②B *(si existe)* |
 | **Produce** | El **guion visual** aprobado y el corte principal de cada reel |
 | **Herramientas** | `motor/guion-visual/` · `motor/remotion/edit/build_reels.py` · `stab_shots.py` · `npx remotion render` |
 
@@ -44,8 +44,8 @@ más redujo rondas de cambios en cliente real.
 | **4** | El operador anota por escena: texto, posición, estilo, efecto, notas y «aprobada». Se guarda solo |
 | **5** | Claude lee las notas (`ArtifactData list` de la colección `notas`) y las pasa al guion de montaje |
 
-🛑 **Si el operador cambia una palabra del texto, es un cambio de copy:** se registra, lo aprueba
-Allan y se avisa a ④. Posición, estilo, efecto, duración y toma sí se deciden acá.
+🛑 **Si el operador cambia una palabra del texto, es un cambio de copy:** se registra y se avisa a
+④ por escrito. Posición, estilo, efecto, duración y toma sí se deciden acá.
 
 ## 3 · El reparto HOOK-BODY-PAYOFF
 
@@ -116,8 +116,8 @@ cambiarlo rompe la cadena y nadie se entera hasta el loop.
 
 ## 6 · El corte principal es el que se multiplica
 
-**De este corte salen todas las derivadas de la Capa 3.** Por eso el GATE 1 está después de la
-Capa 2 y antes de derivar.
+**De este corte salen todas las derivadas de la Capa 3.** Por eso su auto-revisión (`ve-marca`
+§6-7) está después de la Capa 2 y antes de derivar.
 
 > 🔑 **Un corte principal flojo produce 3 derivadas flojas.** Se invierte el tiempo acá.
 
@@ -128,7 +128,7 @@ Capa 2 y antes de derivar.
 - [ ] El hook está montado **literal**, como lo escribió ④
 - [ ] El reparto **HOOK-BODY-PAYOFF** se respeta
 - [ ] El orden y las duraciones son las del shot list
-- [ ] El ritmo coincide con **§ Movimiento** de ②B
+- [ ] El ritmo coincide con **§ Movimiento** de ②B *(si existe)*
 - [ ] El operador aprobó el **guion visual** antes del render, y sus notas están en `build_reels.py`
 - [ ] Ninguna escena dura menos de 3 s salvo las de paso; ninguna toma se repite seguida
 - [ ] La cámara lenta solo está en momentos protagonistas, desde fuente de 60 fps

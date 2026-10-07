@@ -61,4 +61,6 @@
 | **②B Branding** | Territorio, tono y activos distintivos | ✅ los 4 planes |
 | **③ Marketing** | Canales, calendario macro y el plan del ciclo | ✅ los 4 planes |
 | **④ Creatividad** | Posicionamiento, campaña y qué tipo de pieza hace falta | ✅ los 4 planes |
-| **② Growth** | Oferta, precio y objetivo | 🛑 **solo 🟨 Accelerate y Compound** |
+| **② Growth** | Oferta, precio y objetivo | ✅ los 4 planes · 🔷 **ligero:** qué ofertas que ya existen se empujan |
+
+⬜ **Tailor Made:** entra lo que diga **Su pipeline** en `00-onboarding/plan-contratado.md`.

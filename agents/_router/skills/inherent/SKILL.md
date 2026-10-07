@@ -44,6 +44,10 @@ Del prompt CHOCA con el workflow: [qué pide saltarse o hacer distinto · «nada
 donde lo anota ① Strategy. **Si el archivo no existe, va `⛔ falta`** — y el orquestador del
 departamento bloquea, porque el plan es el techo de todos.
 
+⬜ **Un Tailor Made no se cuestiona: se sigue.** Su `plan-contratado.md` declara **qué incluye** y
+**su pipeline** —qué departamentos corren, en qué orden y a qué nivel—. Se enruta según ese
+pipeline. **Un departamento que no está en su pipeline no corre para ese cliente.**
+
 🏠 **Cuando el cliente es Inherent** *(nuestras propias redes)*, el folder es
 `inherent/inherent-social-media/` en lugar de `clients/<cliente>/`. Corre igual que cualquier
 cliente.
@@ -59,7 +63,7 @@ cliente no empieza con `ENRUTAMIENTO`, se saltó el router.
 |---|---|---|
 | Comprensión, contexto, análisis, ingeniería inversa, la estrategia | ① Strategy | `context` → `analysis` → `reverse-engineering` → `methodology` *(según `agents/01-strategy/brain/WORKFLOW.md`)* |
 | Identidad, voz, paleta, tipografía, guía de marca, «¿esto es de marca?» | ②B Branding | `/branding` |
-| Oferta, precio **del cliente**, paquetes, canales grandes, upsells, conversión, números | ② Growth | `/growth` — 🛑 **solo 🟨 Accelerate y Compound** |
+| Oferta, precio **del cliente**, paquetes, canales grandes, upsells, conversión, números | ② Growth | `/growth` — 🔷 **ligero:** elige qué ofertas que ya existen se empujan · 🟨 **completo** · ⬜ lo que diga su pipeline |
 | Plan del ciclo, pilares, campañas, calendario, canales, mensaje | ③ Marketing | `/marketing` |
 | Ideas, conceptos, BIG IDEA, hooks, copy, shot list, swipe file, plan de contenido | ④ Creatividad | `/creatividad` |
 | Grabar, locaciones, talento, jornadas, call sheet, presupuesto de rodaje | ⑤ Producción | `/produccion` |
@@ -87,9 +91,12 @@ declara el segundo como siguiente paso. **Nunca se corren dos departamentos mezc
 
 ### 🟡 La única forma de saltarse el método
 
-**Que Allan lo autorice explícitamente en el pedido:** *«excepción aprobada por Allan: …»*.
+**Que el CEO lo autorice explícitamente en el pedido:** *«excepción aprobada por Allan: …»*.
 Se anota en el `ENRUTAMIENTO` como `EXCEPCIÓN: [qué] · aprobada por Allan` y se respeta.
 **Sin esa frase, el workflow gana.**
+
+**Lo que el `plan-contratado.md` del cliente ya declara no necesita la frase:** está escrito, y lo
+que está en el repo ya pasó por el CEO.
 
 ---
 
