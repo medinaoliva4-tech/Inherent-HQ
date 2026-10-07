@@ -6,7 +6,12 @@
 
 Vienen del plugin **Small Business** de Anthropic *(licencia Apache 2.0, ver `LICENSE`)*,
 adaptadas a Inherent. El diseño va por Figma, no por Canva, y el marketing lo hacen nuestros
-agentes, así que esas skills no están aquí.
+agentes, así que esas skills no están aquí: todo lo de clientes, marketing, contenido, pauta,
+marca y comunidad —incluidas nuestras propias redes— entra por `/inherent`.
+
+**Valores por defecto:** Guatemala, quetzales (`Q`), español, `America/Guatemala`. **Los libros
+viven en Excel y los cierra un contador externo:** donde una skill pide un ledger, corre sobre el
+Excel exportado y entrega el paquete para el contador.
 
 **La puerta de entrada es `smb-router`:** se le dice en lenguaje normal lo que se necesita y él
 elige la skill.
@@ -24,7 +29,7 @@ elige la skill.
 | 📒 **Cierre** | `month-end-prep` | Conciliar y encontrar lo que falta |
 | | `close-month` | Cerrar el mes y armar el paquete para el contador |
 | | `report-builder` · `report-pack` | Reportes y reportes recurrentes |
-| 🏛️ **Impuestos (SAT)** | `tax-prep` · `tax-season-organizer` | Declaraciones y orden de documentos para la SAT |
+| 🏛️ **Impuestos (SAT)** | `tax-prep` · `tax-season-organizer` | La declaración mensual de Pequeño Contribuyente, el paquete anual del contador y la alerta del tope del régimen |
 | 📈 **Ventas** | `lead-triage` · `call-list` · `crm-autopilot` · `proposal-builder` | Prospectos, a quién llamar, el CRM y las propuestas de nuestros planes |
 | 📄 **Operación** | `contract-review` · `inbox-manager` | Contratos y correo |
 | 👥 **Equipo** | `job-post-builder` · `hiring-screener` | Publicar puestos y filtrar candidatos |

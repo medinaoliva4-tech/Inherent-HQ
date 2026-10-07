@@ -13,6 +13,7 @@ allowed-tools: Read, WebFetch
 ---
 
 # Lead Triage
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 ## Quick start
 
@@ -70,7 +71,7 @@ User: "prioritize my leads"
 
 ## Closing offer
 
-End with one line on what the triage produced, then the most relevant next step with its trigger phrase — usually "call list" (`/call-list`) to add calendar blocks around the ranking. Up to two others when they fit: "write this outreach" (`outreach-composer`) or "update the CRM" (`crm-autopilot`). Never more than three, and never re-offer something the owner already declined this session.
+End with one line on what the triage produced, then the most relevant next step with its trigger phrase — usually "call list" (`/call-list`) to add calendar blocks around the ranking. Como máximo otro más cuando encaje: "update the CRM" (`crm-autopilot`), que también redacta los seguimientos de los deals quietos. Never more than three, and never re-offer something the owner already declined this session.
 
 ## No HubSpot?
 
@@ -78,4 +79,4 @@ Paste or upload the lead list — a CSV export or even a rough list works. Scori
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.

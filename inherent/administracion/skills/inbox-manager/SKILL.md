@@ -16,6 +16,7 @@ allowed-tools: Read, WebFetch
 ---
 
 # Inbox Manager
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 Turn the inbox into a short list of decisions, not a pile of mail.
 
@@ -73,7 +74,7 @@ Draft everything. Send nothing yet.
 The inbox is where most business events first appear, so this skill is the trigger surface for the rest of the plugin. Per `reference/handoffs.md`:
 
 - **A vendor bill or invoice** goes to `ap-processor` for extraction and coding.
-- **An inbound inquiry or form notification** goes to `speed-to-lead`, which qualifies it and drafts the reply for the owner's approval.
+- **Una consulta entrante o un aviso de formulario** de un prospecto se queda aquí: se redacta la respuesta para aprobación del CEO y el prospecto pasa a `lead-triage` para rankearlo. **Un mensaje de un cliente actual** no se responde desde aquí: lo atiende la Secretaria (agente `00-account`), que escala al COO.
 - **A meeting request or scheduling thread** stays here: draft the scheduling reply per `reference/reply_drafting.md` and surface the conflict if the owner's calendar already has one. Nothing gets booked without the owner.
 - **An overdue-invoice reply from a customer** goes to `invoice-chase`.
 
@@ -115,7 +116,7 @@ Every edit the owner makes to a draft is a signal. When they change one, note wh
 
 ## After the digest
 
-The inbox is a short list again: replies sent or waiting, the rest filed. If bills piled up in the handoffs, the natural next step is "pay the bills" — it takes what went to `ap-processor` through to a staged payment run. Also nearby: "leads are going cold" (`speed-to-lead`) if inquiries surfaced in the triage, and "brief me" (`business-pulse`) to see the rest of the day beyond the mail. Offer at most three, and skip any offer the owner already declined this session.
+The inbox is a short list again: replies sent or waiting, the rest filed. If bills piled up in the handoffs, the natural next step is "pay the bills" — it takes what went to `ap-processor` through to a staged payment run. También a mano: "rank my leads" (`lead-triage`) si en el triage aparecieron consultas de prospectos, and "brief me" (`business-pulse`) to see the rest of the day beyond the mail. Offer at most three, and skip any offer the owner already declined this session.
 
 ## Reference files
 
@@ -127,4 +128,4 @@ The inbox is a short list again: replies sent or waiting, the rest filed. If bil
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.

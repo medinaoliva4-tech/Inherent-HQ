@@ -1,4 +1,5 @@
 # Voice Profile
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 **Shared across the plugin.** The owner's writing voice, learned once from real samples and reused by every skill that writes anything in their name.
 
@@ -8,17 +9,13 @@ Skills that read this file:
 
 | Skill | Writes |
 |---|---|
-| `outreach-composer` | Prospect outreach and follow-up sequences |
-| `speed-to-lead` | Instant replies to inbound inquiries |
 | `invoice-chase` | Overdue-invoice reminders |
-| `review-reputation` | Public review responses and win-back offers |
 | `inbox-manager` | Email replies and drafts |
-| `social-content-engine` | Post captions and copy |
-| `ticket-deflector` | Customer service replies |
 | `hiring-screener` | Candidate responses and rejections |
-| `grant-rfp-writer` | Cover letters and application prose |
-| `inventory-planner` | Vendor emails and PO cover notes |
 | `lead-triage` | Follow-up drafts |
+| `crm-autopilot` | Seguimientos de deals quietos |
+
+**Lo que esta carpeta no escribe:** las respuestas a clientes las escribe la Secretaria (agente `00-account`), y el copy de las redes de Inherent lo escribe ④ Creatividad con la voz que fija ②B Branding. Ninguno de los dos lee este archivo.
 
 **A correction made here fixes all of them.** That is the point of it being shared — an owner who strikes "just following up" once should never see it again from any skill.
 

@@ -1,11 +1,11 @@
 # Tenant scope — a connected document store is not the owner's by default
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
-**Shared across the plugin.** The failure this prevents: `grant-rfp-writer`
-has no opportunity-feed connector, falls back to Google Drive,
-and the Drive attached to the session belongs to a different
-company. The skill reads another tenant's confidential project notes and
-treats them as the owner's past performance. Nothing in the connector says
-whose Drive it is.
+**Shared across the plugin.** La falla que esto previene: `proposal-builder`
+busca propuestas y precios pasados en Google Drive, y el Drive conectado a la
+sesión es de otra empresa —por ejemplo, el de un cliente de Inherent—. La skill
+lee notas confidenciales ajenas y las trata como historial de Inherent. Nada en
+el conector dice de quién es el Drive.
 
 ## The rules
 
@@ -32,9 +32,8 @@ whose Drive it is.
 
 ## Skills this governs first
 
-`grant-rfp-writer` (past submissions from Drive or M365). The same four
-rules are linked at the first read in `proposal-builder`, `contract-review`,
-`job-post-builder`, `hiring-screener`, `inbox-manager`, `speed-to-lead`,
-`outreach-composer`, and `invoice-chase`. A mailbox is a document store for
+`proposal-builder` (propuestas pasadas desde Drive o M365). Las mismas cuatro
+reglas se enlazan en la primera lectura de `contract-review`,
+`job-post-builder`, `hiring-screener`, `inbox-manager` e `invoice-chase`. A mailbox is a document store for
 this purpose: a connected Gmail or Microsoft 365 is the owner's only once its
 address matches the business context or the owner names it.

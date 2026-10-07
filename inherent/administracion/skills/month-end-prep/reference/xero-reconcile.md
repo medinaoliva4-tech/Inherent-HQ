@@ -1,4 +1,5 @@
 # Xero — Reconciliation Reference
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 Sibling of [quickbooks-reconcile.md](quickbooks-reconcile.md). Same close
 sequence, same packet; the reads and the "needs attention" signal differ
@@ -147,7 +148,7 @@ and use them for:
 
 - Every amount in the packet (`AUD 12,400`, never `$`)
 - The 0.50 / 0.01 / 25 thresholds, which are in the base currency
-- Whether Step 9 offers `/tax-prep` at all (US only)
+- Si el Step 9 ofrece `/tax-prep` (solo Guatemala)
 
 The rule is `../../../shared/currency-and-locale.md`.
 

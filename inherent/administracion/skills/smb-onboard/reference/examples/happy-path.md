@@ -1,4 +1,5 @@
 # Happy path: Retail shop owner, first session
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 ## Setup
 
@@ -162,9 +163,9 @@ Look right?
 
 **Priya:** Let's just do ServiceTrade, that's the whole point of asking for help.
 
-**Claude:** Good — running `build-connector` now.
+**Claude:** Bien — lo conecto ahora.
 
-*[build-connector checks the connector directory, confirms no native ServiceTrade connector, finds it on Zapier with work-order actions, sends Priya the link to connect it — she clicks it and signs in on Zapier's page — ~15 minutes]*
+*[se revisa el directorio de conectores, no hay conector nativo de ServiceTrade, se encuentra en Zapier con acciones de órdenes de trabajo y se le manda a Priya el link para conectarlo — ella entra y se autentica en la página de Zapier — ~15 minutos]*
 
 **Claude:** ServiceTrade is connected. Let me pull your open work orders right now.
 
@@ -183,8 +184,8 @@ Look right?
 ## Pass criteria
 
 - [ ] Named the function ("your field-service tool"), not a guess at the platform
-- [ ] Checked the native connector directory before offering Zapier, per `build-connector`'s own Step 2
+- [ ] Revisó el directorio de conectores nativos antes de ofrecer Zapier
 - [ ] Named the setup time honestly ("twenty minutes") before starting
-- [ ] Ran `build-connector` only after the owner chose it, never by default
+- [ ] Conectó solo después de que la dueña lo eligió, nunca por defecto
 - [ ] Proved value immediately — pulled real work orders right after the connection completed
 - [ ] Did not stall the second tool (Calendar) waiting on the connection to feel "finished"

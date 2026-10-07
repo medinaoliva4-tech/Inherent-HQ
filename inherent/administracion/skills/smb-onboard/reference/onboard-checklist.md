@@ -1,4 +1,5 @@
 # Onboard checklist
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 ## The seven interview questions
 
@@ -9,8 +10,8 @@ Ask one at a time. Wait for the full answer before moving on. One follow-up is f
 3. **Top three headaches.** "What are your three biggest headaches right now — the things that eat your time or keep you up at night?"
 4. **Tools already in use.** "Which tools do you already use day-to-day? Your bookkeeping software, email, online store or point of sale, a CRM, team chat…" Ask by category, never by product name. The owner names the vendors.
 5. **Preferred cadence.** "How would you like me to check in — daily, weekly, or only when you ask?"
-6. **Website and brand look.** Run the `brand-style` skill's capture-and-preview flow (Steps 2–3 there): a pasted website link auto-pulls logo, colors, and tagline; with no site, a plain-words description ("forest green and cream") is translated to colors. Never hex codes, pickers, or uploads. The welcome page in Step 6 doubles as the live preview.
-7. **Output format.** Run `brand-style` Step 4 — the six-way multiple choice: visual artifacts (default) / Word docs / markdown / Notion pages / Canva Docs / best for the skill. Store the answer verbatim as one of: `visual artifacts`, `docx`, `md`, `notion`, `canva`, `best for skill`.
+6. **Web y marca.** No se pregunta: la marca de Inherent la define ②B Branding y vive en `inherent/inherent-social-media/02-marca/`. Se leen de ahí el logo, los colores y la línea, y se guardan en el perfil. Si falta algo, se marca `⚠️ SIN DATOS` y se le pide a ②B Branding por `/inherent`; nunca se inventa.
+7. **Formato de salida.** Opción múltiple de cinco: páginas visuales (por defecto) / Word / markdown / páginas de Notion / lo mejor para cada skill. Se guarda tal cual como uno de: `visual artifacts`, `docx`, `md`, `notion`, `best for skill`. Canva no se ofrece (`../../../shared/document-format.md`).
 
 If the owner is short on time, compress to questions 1, 3, and 4 — those three feed the most downstream skills. Skipped questions keep their defaults (visual pages for output).
 
@@ -27,7 +28,6 @@ Map the owner's stated headache to the two **categories** of tool to link first.
 | Hiring / job posts | Mail | Calendar | `job-post-builder` |
 | Staying organized | Desktop (folder setup) | Mail | Desktop folder structure demo |
 | Scheduling overload | Calendar | Mail | `business-pulse` |
-| Selling online / stock | Storefront or point of sale (holds orders and stock) | Accounting ledger | `inventory-planner` |
 | General / unsure | Mail | Accounting ledger | `cash-flow-snapshot` |
 
 One optional third category for the customer follow-up row: **lead data and enrichment**, which fills in company size and industry when the CRM's leads carry no company record. It is metered (credits per row), so it is never the first ask and never named by vendor here — if the owner already has one, connect it after the CRM and `lead-triage` uses it; if not, the recipe runs without it.
@@ -35,7 +35,7 @@ One optional third category for the customer follow-up row: **lead data and enri
 **How to fill a category.** Ask what the owner uses for it: *"What do you use for bookkeeping?"* Then one of three, in this order, said once with the trade-off in one line:
 
 1. **We have the connector** (see the category table in `../../../shared/connector-neutrality.md`) — guide the connection.
-2. **We do not** — offer `build-connector`, which checks the connector directory and connects through Zapier otherwise. Say what the connection unlocks and what it costs them in setup time.
+2. **No existe** — se conecta primero como MCP (directorio de conectores o, si no hay, Zapier). Se dice qué desbloquea la conexión y cuánto tiempo de configuración cuesta. Un MCP declarado no es un MCP conectado.
 3. **They do not want the Zapier connection, or have no tool in that category** — run the recipe's zero-connector path (CSV, pasted text) and move to the next category. Name the category, not a product, when saying what would make it deeper.
 
 Never suggest the owner switch to a tool we support. If they ask "which one should I get?", that is an explicit invitation: describe what each connector in the category unlocks, in the same number of words each, alphabetically, and leave the choice with them.
@@ -48,10 +48,9 @@ Run the prove-value recipe immediately after the **first** connector is live —
 
 1. Any accounting ledger, or any payments / point-of-sale connector → `cash-flow-snapshot`
 2. Any CRM → `lead-triage` (rank the open leads, recommend today's callbacks — nothing is written back)
-3. Any storefront or point-of-sale connector that holds orders and stock → `inventory-planner` (a payments-only connector with no stock data belongs under rung 1)
-4. Any mail connector → search for unread invoice-related emails, surface top 3
-5. Calendar → `business-pulse`
-6. Desktop only → walk Desktop folder setup, create recommended structure
+3. Any mail connector → search for unread invoice-related emails, surface top 3
+4. Calendar → `business-pulse`
+5. Desktop only → walk Desktop folder setup, create recommended structure
 
 ### Connector-specific setup notes
 
@@ -81,16 +80,17 @@ Write this block to the Cowork session memory directory under the heading `## Bu
 - **Size:** <number of people, including owner>
 - **Top headaches:** <headache 1> · <headache 2> · <headache 3>
 - **Connected tools:** <comma-separated list of active connectors, by product name — "Trello", never a registration name like "small-business:trello">
-- **Country:** <ISO 3166 two-letter code, e.g. GB, AU, NZ, US, CA>
-- **Currency:** <ISO 4217 code the business invoices in, e.g. GBP, AUD, USD>
-- **Financial year end:** <day and month, e.g. 30 June, 31 March, 31 December>
+- **Country:** <ISO 3166 two-letter code — para Inherent, GT>
+- **Currency:** <ISO 4217 code the business invoices in — para Inherent, GTQ; USD solo si el documento está en USD>
+- **Financial year end:** <day and month — para Inherent, 31 de diciembre; ver `../../../shared/currency-and-locale.md`>
+- **Régimen tributario:** <régimen inscrito en el RTU — para Inherent, IVA Pequeño Contribuyente; si cambia, se actualiza aquí y `tax-season-organizer` cambia de ruta>
+- **Libros:** <dónde viven los libros — para Inherent, Excel (exportado como CSV/XLSX) cerrado por un contador externo; sin ledger conectado>
 - **Weekly cadence:** <trigger phrase and day, e.g. "weekly check-in every Monday">
 - **Website:** <URL, if any>
 - **Brand colors:** <primary and secondary colors, from the website or the owner's plain-words description, if any>
 - **Logo:** <logo image URL pulled from the website, if any>
-- **Output preference:** <"visual artifacts" (default), "docx", "md", "notion", "canva", or "best for skill">
+- **Output preference:** <"visual artifacts" (default), "docx", "md", "notion", or "best for skill">
 - **Notion destination:** <the parent page or database the owner named for skill output, if the preference is "notion"; asked once, the first time a skill needs it>
-- **Canva brand kit:** <the name and id of the Canva brand kit the owner chose for skill output, or "none", if the preference is "canva"; asked once, by brand-style Step 4 or the first time a skill needs it>
 - **Onboarded:** <YYYY-MM-DD>
 ```
 

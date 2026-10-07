@@ -4,13 +4,16 @@ description: Closes the books and turns them into a decision as a three-link cha
 allowed-tools: Read, WebFetch
 ---
 
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
+> **En Inherent:** los libros viven en Excel y los cierra un contador externo; no hay ledger conectado. Donde esta skill pide un ledger, el camino por defecto es el Excel exportado (CSV/XLSX) y el paquete para el contador (`../../shared/currency-and-locale.md`).
+
 Run the month-end chain. Close, then forecast off the closed books, then publish. The ordering is the product.
 
 Parse arguments:
 - `--month` (default: previous calendar month) — `YYYY-MM`
 - `--save-to` (default `files`) — `files` (Drive / OneDrive), `desktop`, or `both`
 
-**A ledger is required** — MYOB, NetSuite, QuickBooks, Xero, or Zoho Books, whichever is connected; they are peers (`../../shared/connector-neutrality.md`). If none is reachable, stop and say so. Reconciliation without a ledger is not a close. Offer the CSV path from `month-end-prep` rather than producing a partial packet. If two ledgers are connected, ask which holds the books being closed and name it in the packet.
+**A ledger is required** — MYOB, NetSuite, QuickBooks, Xero, or Zoho Books, whichever is connected; they are peers (`../../shared/connector-neutrality.md`). En Inherent no hay ninguno conectado: el cierre corre sobre el Excel exportado (CSV/XLSX) y los estados de cuenta, por el camino CSV de `month-end-prep`, y el paquete va al contador externo. No se detiene la cadena por falta de ledger. If two ledgers are connected, ask which holds the books being closed and name it in the packet.
 
 ## Step 1 — Close and reconcile (month-end-prep)
 
@@ -63,7 +66,7 @@ Example, Okonkwo Mechanical: "April closed at USD 84,200, up 6% on March. Margin
 - **Do not delete a suspected duplicate without explicit confirmation.** Show both records side by side.
 - **Do not restate a number downstream.** Step 1 owns the books; later steps cite them.
 - **Do not send the packet to an accountant without approval.**
-- **Do not proceed without a ledger.** Say what is missing, by category, and offer the CSV path.
+- **No avanzar sin libros.** Sin ledger, los libros son el Excel exportado; si tampoco está el Excel del mes, se dice qué falta y se pide.
 
 ## Output
 
@@ -83,4 +86,4 @@ Max three offers. Never repeat an offer the owner declined this session.
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.

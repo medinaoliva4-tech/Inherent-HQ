@@ -4,6 +4,8 @@ description: Builds today's call list. Runs lead-triage to rank the top-5 leads 
 allowed-tools: Read, WebFetch
 ---
 
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
+
 Run the lead prioritization. Scan the pipeline, rank by urgency and opportunity, pull relevant email context, and get the owner ready to make calls.
 
 Parse arguments:
@@ -75,8 +77,8 @@ Alongside the chat summary — never replacing it — render the list as a CALL 
 
 ## Closing offer
 
-Close with one line on what got built, then the single most relevant next step with its trigger phrase — usually "write this outreach" (`outreach-composer`) for the leads that need email instead of a call. Up to two others: "fill my funnel" (`/grow-pipeline`) or "update the CRM" (`crm-autopilot`). Max three, and skip anything the owner declined earlier this session.
+Close with one line on what got built, then the single most relevant next step with its trigger phrase — normalmente "update the CRM" (`crm-autopilot`), que también redacta el seguimiento por correo para los leads que necesitan email en vez de llamada. Como máximo otro más: "go through my email" (`inbox-manager`). Max three, and skip anything the owner declined earlier this session.
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.

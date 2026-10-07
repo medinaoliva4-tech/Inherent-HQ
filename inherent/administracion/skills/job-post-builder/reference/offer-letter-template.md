@@ -1,4 +1,5 @@
 # Offer Letter Template
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 Use this as the base template for the offer letter .docx file.
 Replace all `[BRACKETED FIELDS]` with actual values or leave them as placeholders
@@ -25,7 +26,7 @@ still needs to be completed before sending.
 [CANDIDATE ADDRESS LINE 2]
 [CITY, STATE, ZIP]
 
-Dear [CANDIDATE FIRST NAME],
+Dear [NOMBRE DEL CANDIDATO],
 
 We are thrilled to offer you the position of **<JOB TITLE>** at <COMPANY NAME>.
 We were genuinely impressed by [a brief, specific, warm note about the candidate —

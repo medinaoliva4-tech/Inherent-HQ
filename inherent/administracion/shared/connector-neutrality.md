@@ -1,4 +1,5 @@
 # Connector neutrality — plugin-wide rule
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 Scope: **every skill, command, reference file, and onboarding flow.** This is
 Anthropic's positioning for the plugin, not a house preference: the owner's
@@ -30,9 +31,15 @@ which is the order every list in the plugin uses when more than one is named):
 | Files | Google Drive, Microsoft 365 |
 | Support | Zoho Desk |
 
-Salesforce is reached as a custom connector the owner adds (its Headless 360 server has a per-org address and OAuth client), not through the plugin manifest; once added it is a peer like the rest. A connector that is not on this table is reached through `build-connector`,
-which checks the connector directory first and connects through Zapier
-otherwise. Once connected, it joins its category as a peer.
+Salesforce is reached as a custom connector the owner adds (its Headless 360 server has a per-org address and OAuth client), not through the plugin manifest; once added it is a peer like the rest. Un conector que no está en esta tabla se conecta primero como MCP o conector
+nativo —se revisa el directorio de conectores y, si no existe, Zapier—. Un MCP
+declarado no es un MCP conectado. Una vez conectado, entra a su categoría como
+par.
+
+**En Inherent la categoría «ledger» está vacía:** los libros viven en Excel y
+los cierra un contador externo. El camino por defecto de toda skill que pide
+un ledger es el Excel exportado (CSV/XLSX) y el paquete para el contador
+(`currency-and-locale.md`).
 
 ---
 

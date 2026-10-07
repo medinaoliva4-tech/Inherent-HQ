@@ -1,4 +1,5 @@
 # Digest format
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 The digest is the product. Everything else this skill does is upstream of it.
 
@@ -51,8 +52,8 @@ HANDED OFF — 3
    Ferguson invoice #88214, USD 1,847 → ap-processor — staged with your other
       bills; say "process my bills" to review
    Sid Harvey statement, USD 612 → ap-processor — same payment run as above
-   Web inquiry, Alamo Heights homeowner, 11:40pm → speed-to-lead — first
-      reply drafted there, waiting on your approval
+   Consulta web, propietario en Alamo Heights, 11:40pm → lead-triage — la
+      primera respuesta quedó redactada aquí, esperando tu aprobación
 
 COVERED BY SOMEONE ELSE — 2
    Nguyen warranty question — Teresa answered it 9:15am

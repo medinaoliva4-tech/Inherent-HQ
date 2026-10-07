@@ -1,4 +1,5 @@
 # Triage rules
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 Three buckets. The whole value of this skill is that the first bucket is short and correct.
 
@@ -67,6 +68,6 @@ Ray's inbox: 63 new since yesterday afternoon.
 
 **Handled (48)** — 26 receipts, 11 newsletters, 7 shipping notices, 4 platform notifications.
 
-**Handed off (3)** — 2 vendor bills to `ap-processor`, 1 web form inquiry to `speed-to-lead`.
+**Handed off (3)** — 2 facturas de proveedor a `ap-processor`, 1 consulta de formulario web a `lead-triage` (con la respuesta ya redactada aquí).
 
 Ray reads that in about a minute and knows exactly what his morning is.

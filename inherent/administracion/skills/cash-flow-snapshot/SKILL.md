@@ -13,6 +13,8 @@ allowed-tools: Read, WebFetch
 ---
 
 # Cash Flow Snapshot
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
+> **En Inherent:** los libros viven en Excel y los cierra un contador externo; no hay ledger conectado. Donde esta skill pide un ledger, el camino por defecto es el Excel exportado (CSV/XLSX) y el paquete para el contador (`../../shared/currency-and-locale.md`).
 
 Produces a 30/60/90-day cash flow forecast with percentage-variance confidence
 bands and named risk flags. Delivers a two-part output: a concise chat summary
@@ -248,4 +250,4 @@ Scheduling is a property of this skill. There is no separate command for it.
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.

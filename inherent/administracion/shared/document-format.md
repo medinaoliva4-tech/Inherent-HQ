@@ -1,4 +1,5 @@
 # Document format preference — plugin-wide default and override
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 **Scope:** skills that hand the owner a document meant to leave the
 conversation — a proposal, a job post, a hiring packet. This is not about
@@ -39,6 +40,11 @@ Six options, asked as multiple choice:
 - **Whichever fits the moment** — the owner is fine leaving it to judgment
   call per document. Treat this the same as no preference at all.
 
+**En Inherent no se usa Canva:** el diseño va por Figma (Figwright). La opción
+`canva` no se ofrece ni se guarda; si apareciera guardada, se trata como
+`visual artifacts` y se dice por qué. Las menciones a Canva Docs en las skills
+quedan solo como el camino original del plugin.
+
 ## The default
 
 **No stored preference, or "whichever fits the moment" → HTML artifact.**
@@ -76,15 +82,14 @@ courtesy copy; a genuine external requirement is never optional.**
 **Deliberately not touched:** `contract-review`'s redline DOCX (a lawyer
 markup format the owner explicitly asks for, not a default), `report-builder`
 /`report-pack`'s XLSX (a working data appendix, not a stylistic document
-choice), and `grant-rfp-writer` (funder portals dictate the submission
-format, not the owner). Applying a personal-taste preference to a file a
+choice). Applying a personal-taste preference to a file a
 third party requires in a specific format would be the wrong fix.
 
 ## If the preference is unset when a skill runs
 
 Ask once, briefly, the same way any other missing-context gap gets handled:
-*"Quick one — want this as a page here, a Word doc, a Notion or Canva page,
-or does it depend?"*
+*"Rápido: ¿lo querés como página aquí, documento de Word, página de Notion, o
+depende?"*
 Store the answer as the `Output preference` line in the `## Business context`
 block so it is never asked again. Do not
 block the deliverable on the answer — default to HTML artifact for this run

@@ -1,4 +1,5 @@
 # Zoho Books — Reconciliation Reference
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 Sibling of [quickbooks-reconcile.md](quickbooks-reconcile.md) and
 [xero-reconcile.md](xero-reconcile.md). Same close sequence, same packet;
@@ -18,7 +19,7 @@ fields) and reuse it.
 | Invoices, estimates, sales orders, customer payments | Bills, vendor payments |
 | Expenses, purchase orders | Bank transactions or a bank feed |
 | Bank and cash accounts with balances and an uncategorised count | Journals |
-| Contacts (customers and vendors, with a 1099 flag) | Any report: P&L, cash flow, aging |
+| Contactos (clientes y proveedores, con una marca fiscal de EE. UU. que en Guatemala no aplica) | Any report: P&L, cash flow, aging |
 | Chart of accounts with balances (`list_chart_of_accounts` with `showbalance`) | |
 | Organisation record: country, currency, fiscal year start | |
 

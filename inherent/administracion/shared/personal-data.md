@@ -1,4 +1,5 @@
 # Personal data — what never leaves the source system
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 **Shared across the plugin.** Connected payroll, HR, tax, ledger, payments,
 and support systems return more about a person than any deliverable needs.
@@ -12,8 +13,10 @@ reproduce it.
 Not in chat, not in an HTML artifact, not in a Notion or Canva page, not in a
 spreadsheet, not in a CRM note, not in a draft email, not in a log line:
 
-- Social Security numbers, individual tax IDs, and national ID numbers. A
-  business EIN on a 1099 is the one designed exception.
+- Social Security numbers, individual tax IDs, and national ID numbers
+  (en Guatemala: el DPI/CUI y el número de afiliación al IGSS). El NIT de
+  quien emite o recibe una factura o una constancia de retención es la única
+  excepción prevista: la factura electrónica (FEL) lo lleva.
 - Dates of birth.
 - Home addresses of employees and contractors. A work location is fine.
 - Full card numbers, CVVs, and expiry dates. The last four digits identify a
@@ -55,6 +58,6 @@ system, where it sits under its own access controls. One line, no lecture.
 ## Skills this governs first
 
 `payroll-prep`, `plan-payroll`, `hiring-screener`, `tax-season-organizer`,
-`ap-processor`, `ticket-deflector`, and `month-end-prep`. Every
+`ap-processor`, and `month-end-prep`. Every
 other skill applies it the moment a connector returns one of the fields
 above.

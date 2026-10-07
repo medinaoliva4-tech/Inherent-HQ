@@ -17,6 +17,8 @@ allowed-tools: Read, WebFetch
 ---
 
 # Month End Prep
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
+> **En Inherent:** los libros viven en Excel y los cierra un contador externo; no hay ledger conectado. Donde esta skill pide un ledger, el camino por defecto es el Excel exportado (CSV/XLSX) y el paquete para el contador (`../../shared/currency-and-locale.md`).
 
 ## Quick start
 
@@ -264,8 +266,9 @@ relevant next step, plus at most two others nearby:
 
 - "Cash forecast" runs `cash-flow-snapshot` off the freshly closed numbers.
 - "Build me a report" runs `report-builder` to publish and distribute the packet.
-- "Taxes" runs `/tax-prep` when quarter or year end is near — offered only when the
-  business context says Country is US, since that chain's tax math is US federal.
+- "Impuestos" corre `/tax-prep` para la declaración mensual de la SAT y la revisión
+  del tope de Pequeño Contribuyente — se ofrece cuando el contexto dice Country GT,
+  porque ese cálculo es de la SAT de Guatemala.
 
 Max three offers. Never repeat an offer the owner declined this session.
 
@@ -328,4 +331,4 @@ Same close sequence, same packet. More sources reconciled.
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.

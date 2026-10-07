@@ -1,104 +1,98 @@
 # Good / Bad Patterns
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
-Common failure modes and how to avoid them.
+Fallas comunes y cómo evitarlas.
 
 ---
 
-## Calculations
+## El cálculo
 
-**BAD:** Apply 22% to gross revenue.
+**BAD:** Sacar el IVA del Pequeño Contribuyente como si fuera Régimen General.
 ```
-Gross revenue: USD 120,000
-Tax estimate: USD 120,000 × 22% = USD 26,400  ← wildly wrong
+Ventas del mes:  Q40,000
+IVA: Q40,000 ÷ 1.12 × 12% = Q4,285.71  ← régimen equivocado
 ```
 
-**GOOD:** Apply bracket rate to net profit AFTER SE tax deduction.
+**GOOD:** 5% sobre los ingresos brutos del mes, menos las constancias.
 ```
-Gross revenue: USD 120,000
-Expenses:      USD 45,000
-Net profit:    USD 75,000
-SE tax:        USD 75,000 × 92.35% × 15.3% = USD 10,628
-Deductible ½: USD 5,314
-Adjusted net:  USD 75,000 − USD 5,314 = USD 69,686
-Fed. tax est.: USD 69,686 × 22% = USD 15,331
-Total:         USD 10,628 + USD 15,331 = USD 25,959
+Ingresos brutos del mes:  Q40,000.00
+IVA 5%:                   Q 2,000.00
+Retenciones (constancia): −Q  250.00
+A pagar con SAT-2046:     Q 1,750.00
 ```
 
 ---
 
-## Assumptions
+## Los supuestos
 
-**BAD:** State a dollar figure without any context.
-> "Your Q2 estimated payment is USD 6,500."
+**BAD:** Dar un monto sin contexto.
+> "Este mes pagan Q1,750."
 
-**GOOD:** State the figure with the assumptions table.
-> "Based on 22% federal bracket, sole proprietor structure, and no prior-year
-> safe harbor data: **Q2 payment ≈ USD 6,500**. State taxes not included.
-> QBI deduction not applied. Review with your accountant."
-
----
-
-## 1099 threshold
-
-**BAD:** Only flag vendors with a QuickBooks "1099 eligible" tag.
-Many QuickBooks users never set this flag. Silently missing contractors is worse
-than over-flagging.
-
-**GOOD:** Pull ALL vendors with ≥ USD 600 in payments, then note which ones are
-1099-eligible per QuickBooks and which are flagged by category heuristics.
-Let the accountant make the final call.
+**GOOD:** El monto con su régimen, su fuente y sus supuestos.
+> "Régimen de Pequeño Contribuyente, ingresos tomados del Excel de septiembre, dos
+> constancias recibidas: **SAT-2046 ≈ Q1,750, dentro de octubre**. Una factura de Q5,000
+> a un agente de retención no tiene constancia todavía. Revisar con el contador."
 
 ---
 
-## Payee deduplication
+## El tope
 
-**BAD:** Auto-merge "Bob Smith" and "Robert Smith Design LLC" because they sound similar.
-These could be different people or the same person's sole-prop vs. LLC.
+**BAD:** Avisar del tope solo cuando ya se pasó, o enterrarlo al final.
 
-**GOOD:** Flag likely duplicates for human review.
-> "These look like they may be the same person — confirm before filing:
-> Bob Smith (USD 1,200) | Robert Smith Design (USD 800) — combined would be USD 2,000"
+**GOOD:** Mostrar el % del tope todos los meses y poner la alerta arriba en cuanto
+aparece.
+> "🔴 A septiembre vamos al 78% del tope del año (Q390,000 de Q500,285) y al ritmo actual
+> cerraríamos diciembre en Q520,000, arriba del tope. Revisar con el contador el cambio de
+> régimen antes de que pase."
 
----
+**BAD:** Calcular cuánto se pagaría en el Régimen General y recomendar cambiar.
 
-## PayPal / Stripe 1099-K overlap
-
-**BAD:** Instruct the user to file 1099-NECs for all contractors paid via PayPal.
-
-**GOOD:** Flag the overlap and defer to the accountant.
-> "Contractors paid via PayPal or Stripe may already receive a 1099-K from those
-> platforms. Your accountant should confirm whether you also need to issue a
-> 1099-NEC — double-reporting is an issue some accountants handle differently."
+**GOOD:** Avisar y mandar la decisión al contador y al CEO.
 
 ---
 
-## Corporation exemption
+## Un mes en cero
 
-**BAD:** Automatically exclude "Smith Consulting Inc." from the 1099 list because it
-has "Inc." in the name.
+**BAD:** No preparar declaración porque el mes no tuvo ventas o porque todo fue retenido.
 
-**GOOD:** Flag it for the accountant with a note.
-> "Smith Consulting Inc. — USD 4,500. Corporations are generally exempt from 1099-NEC
-> requirements, but confirm with your accountant (S-corps and some professional corps
-> are exceptions)."
+**GOOD:** El Pequeño Contribuyente declara cada mes, haya o no actividad. Se prepara el
+SAT-2046 en cero y se dice.
 
 ---
 
-## Tax advice boundary
+## Proveedores duplicados
 
-**BAD:** "You should use a SEP-IRA to reduce your tax bill."
+**BAD:** Juntar "Juan López" y "Estudio López" porque se parecen.
 
-**GOOD:** "Your accountant may recommend a SEP-IRA or Solo 401(k) contribution to
-reduce taxable income — these can significantly change the estimate above."
-
-The skill surfaces options; the accountant advises.
+**GOOD:** Marcarlos para que un humano decida.
+> "Pueden ser la misma persona — confirmar: Juan López (Q3,000) | Estudio López
+> (Q1,500), NIT distintos."
 
 ---
 
-## S-corp owners
+## Facturas en USD
 
-**BAD:** Apply SE tax to an S-corp owner's full income.
+**BAD:** Convertir a quetzales con un tipo de cambio inventado.
 
-**GOOD:** Note that SE tax applies only to W-2 wages for S-corp shareholders, not to
-K-1 distributions — and ask the user to confirm their business structure before
-running calculations. If unsure, default to sole prop math and note the assumption.
+**GOOD:** Mostrar el monto en USD y pedir el tipo de cambio que usa el contador. Sin él,
+`⚠️ SIN DATOS` en esa línea.
+
+---
+
+## La frontera de la asesoría
+
+**BAD:** "Les conviene pasarse al Régimen General ya."
+
+**GOOD:** "El contador puede evaluar si conviene el cambio de régimen antes de llegar al
+tope; esa decisión cambia el IVA y el ISR que pagaría Inherent."
+
+La skill muestra las opciones; el contador asesora y el CEO decide.
+
+---
+
+## Cifras sin fuente
+
+**BAD:** Escribir una tasa, un tope o un plazo de memoria.
+
+**GOOD:** Usar solo lo que está en `calculation-assumptions.md` con su fuente; lo que no
+está, se le pide al contador.

@@ -4,6 +4,8 @@ description: Runs the owner's Monday morning briefing as a two-link chain — bu
 allowed-tools: Read, WebFetch
 ---
 
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
+
 Run the Monday briefing chain. Three skills, one document. The owner should read it in under two minutes and know exactly what their week is.
 
 Parse arguments:
@@ -74,7 +76,7 @@ step, plus at most two others nearby:
 
 - If the one thing is a collections problem: "who owes me money" runs `invoice-chase`.
 - If cash is the worry: "cash forecast" runs `cash-flow-snapshot`.
-- For the growth side of the same week: "weekly growth brief" runs `/marketing-monday`.
+- Para el lado de marketing de la misma semana: no corre aquí, va por `/inherent` → ③ Marketing (Inherent como cliente).
 
 Max three offers. Never repeat an offer the owner declined this session.
 
@@ -94,4 +96,4 @@ Designed to run weekly. Scheduling is a property of the chain: Monday 7am produc
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.

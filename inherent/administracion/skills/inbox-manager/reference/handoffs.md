@@ -1,4 +1,5 @@
 # Handoffs
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
 The inbox is where most business events first appear. A bill, a new lead, a scheduling request, and a customer complaint all arrive as email before they exist anywhere else. That makes this skill the trigger surface for the rest of the plugin.
 
@@ -11,14 +12,15 @@ The inbox is where most business events first appear. A bill, a new lead, a sche
 | What arrived | Goes to | What that skill does with it |
 |---|---|---|
 | Vendor bill, invoice, statement, receipt over the owner's threshold | `ap-processor` | Extracts line items, codes them, stages the entry, and proposes a payment run for separate approval |
-| Web form notification, inbound inquiry, "do you handle…" from a stranger | `speed-to-lead` | Qualifies, writes the instant reply with real meeting times, flags hot ones for a human |
+| Aviso de formulario web, consulta entrante, "¿ustedes hacen…?" de un prospecto | se queda aquí; después `lead-triage` | Aquí se redacta la respuesta para aprobación del CEO; `lead-triage` lo rankea contra el resto del pipeline |
+| Mensaje de un cliente actual de Inherent (queja, pedido, cambio) | la Secretaria (agente `00-account`) | Es la única que le habla al cliente; escala al COO lo que no puede resolver |
 | Meeting request, calendar back-and-forth, agenda for something already booked | stays in this skill — no handoff | The scheduling reply is drafted here, per `reply_drafting.md`, with any calendar conflict named |
 | Customer replying about an overdue invoice | `invoice-chase` | Owns the collection thread and the payment arrangement |
 | Contract, NDA, MSA, or agreement attached | `contract-review` | Flags non-standard terms and produces a redline |
 
 Anything that does not match stays here and gets triaged normally.
 
-**A handed-off inquiry is still draft-only.** `speed-to-lead` never sends on its own either; a reply that starts life in this inbox waits for the owner's yes like every other draft here. The handoff moves the qualifying work, not the send permission.
+**Una consulta sigue siendo solo borrador.** Ninguna skill de esta carpeta envía sola; una respuesta que nace en este inbox espera el sí del CEO como cualquier otro borrador. Pasarle el prospecto a `lead-triage` mueve el ranking, no el permiso de enviar.
 
 **Nor does a scheduling thread ever leave the owner's hands.** This skill drafts the reply; it never books, accepts, or declines anything. Say the reply is drafted and waiting.
 
@@ -72,6 +74,6 @@ Ray's Tuesday triage produced three handoffs:
 
 - **Ferguson Enterprises invoice #88214, USD 1,847, net 30, due Aug 12** → `ap-processor`. Full PDF attached, coded nothing yet.
 - **Sid Harvey statement, USD 612** → `ap-processor`. Statement, not an invoice, so flagged for Ray to confirm it matches the two bills already paid.
-- **Web form — Alamo Heights homeowner, "AC not cooling upstairs"** → `speed-to-lead`. Arrived 11:40 pm, unanswered, so it is the oldest thing in the queue by response-time.
+- **Formulario web — propietario en Alamo Heights, "el aire no enfría arriba"** → respuesta redactada aquí y prospecto a `lead-triage`. Llegó a las 11:40 pm sin respuesta, así que es lo más viejo de la cola por tiempo de respuesta.
 
 All three appeared in the digest under "handed off," with one line each. Ray knows where they went.

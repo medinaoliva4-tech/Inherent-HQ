@@ -1,210 +1,236 @@
 ---
 name: tax-season-organizer
 description: >
-  Prepares tax-season materials for the owner's accountant, not tax advice.
-  US federal tax; a non-US business gets its closed-books packet instead. Two
-  modes: (1) quarterly estimated tax from YTD net income in the ledger (MYOB,
-  NetSuite, QuickBooks, Xero, or Zoho Books); (2) year-end 1099 prep, scanning
-  the ledger, PayPal, and Stripe for contractors paid over USD 600 into a
-  1099-NEC list with missing W-9 flags.
+  Prepara el material de impuestos de Inherent para el contador, no asesoría
+  tributaria. SAT de Guatemala. Régimen por defecto: Pequeño Contribuyente del
+  IVA (5% mensual, SAT-2046), con vigilancia del tope de ingresos anuales del
+  régimen. Dos modos: (1) la declaración del mes, desde el Excel exportado de
+  ventas y compras y las constancias de retención; (2) el cierre del año, con el
+  paquete de documentos y libros que necesita el contador. Los otros regímenes
+  (General, Opcional Simplificado, Utilidades, ISO) quedan como referencia.
 
-  Any tax request routes first to /tax-prep, which confirms the books are
-  closed and reconciled before running this skill. Use this skill directly
-  only when the owner says the period's books are already closed: "books are
-  closed, now do the 1099s," "run the quarterly estimate off the closed
-  numbers," or "just the contractor W-9 list."
+  Todo pedido de impuestos entra primero por /tax-prep, que confirma que los
+  libros del período estén cerrados. Esta skill se usa directo solo cuando el CEO
+  dice que los libros ya están cerrados: "los libros ya están cerrados, solo la
+  declaración," "armá el paquete anual del contador," o "¿cómo vamos con el tope?"
 allowed-tools: Read, WebFetch
 ---
 
 # Tax Season Organizer
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
 
-> **Framing:** This skill produces prep material for a CPA, not tax advice. Say so early
-> and state every assumption explicitly so the accountant can adjust.
+> **Framing:** Esta skill produce material para el contador, no asesoría tributaria. Se
+> dice temprano y se declara cada supuesto para que el contador pueda ajustar.
 
 ## Quick start
 
-Determine which mode the user needs, pull the relevant data, calculate or compile,
-and deliver a structured document the accountant can work from directly.
+Se decide qué modo hace falta, se leen los datos, se calcula o se compila, y se entrega
+un documento con el que el contador trabaja directo.
 
 ```
-User: "what do I owe for estimated taxes this quarter?"
-→ Pull YTD P&L from QuickBooks
-→ Calculate estimated federal income tax + SE tax
-→ Subtract payments already made this year
-→ Show Q-specific amount due with due date and assumptions stated
-→ Output: "Estimated Q2 payment due June 16: USD X — see full breakdown below"
+CEO: "¿cuánto declaramos de IVA este mes?"
+→ Leer las ventas del mes del Excel exportado (o la exportación de DTE emitidos)
+→ IVA Pequeño Contribuyente = ingresos brutos del mes × 5%
+→ Restar las retenciones de IVA con constancia recibidas en el mes
+→ Revisar el tope del régimen (año calendario y últimos 12 meses)
+→ Output: "SAT-2046 de septiembre: Q X a pagar, dentro de octubre — detalle abajo"
 
-User: "I need to send out 1099s"
-→ Pull all contractor/vendor payments from QuickBooks + PayPal + Stripe
-→ Identify contractors paid ≥ USD 600 YTD
-→ Flag records missing W-9 / EIN
-→ Output: 1099-NEC candidate list + missing W-9 action list
+CEO: "armá lo del contador para el cierre del año"
+→ Los 12 meses: ventas, compras con factura, constancias, SAT-2046 presentados
+→ Proveedores: quién facturó, con qué NIT y qué documento falta
+→ El tope del año contra el régimen
+→ Output: paquete anual + lista de lo que falta
 ```
 
-## Step 0 — Check the country first
+## Step 0 — Revisar el país y el régimen
 
-Both paths below are **US federal tax**: self-employment tax, the federal bracket table, 1099-NEC and W-9. Before choosing a mode, read `Country` from the `## Business context` block (rule: `../../shared/currency-and-locale.md`). If it is absent, ask.
+Leer `Country` y `Régimen tributario` del bloque `## Business context`
+(regla: `../../shared/currency-and-locale.md`).
 
-- **US** → continue to Determine mode.
-- **Anything else** → say so in one line and stop the US math: *"The quarterly-estimate and 1099 paths here are built for US federal tax. Your books are in the UK, so I'll get your closed-books packet ready for your accountant instead of a US estimate."* Then offer `/close-month` for the periods in scope. Do not run a US calculation on a non-US business, and do not relabel one as a generic estimate.
+- **País:** por defecto GT. Si un documento es de otro país, se dice en una línea y se
+  prepara solo el paquete de libros cerrados. No se corre un cálculo de la SAT sobre
+  otro país, ni se le pone otra etiqueta.
+- **Régimen:** **Inherent está inscrita en el Régimen de Pequeño Contribuyente del IVA**
+  —es el camino por defecto—. Si el contexto dice otro régimen, se sigue la tabla
+  «Otros regímenes» de [reference/calculation-assumptions.md](reference/calculation-assumptions.md)
+  y se dice en el entregable qué régimen se usó. Si hay una constancia del RTU a mano,
+  se compara contra el contexto y cualquier diferencia se le avisa al CEO antes de
+  calcular.
+- **Agente de retención:** si el contexto no dice si Inherent retiene ISR o IVA a sus
+  proveedores, no se supone: se pregunta al contador una vez y se guarda.
 
-Every amount in the output is in the business's currency code; the USD 600 line is US law and is named as such.
+Todo monto sale en quetzales (`Q`). Un umbral o un plazo legal se escribe con su fuente.
 
 ## Determine mode
 
-Read the user's message and context to decide which path applies:
+Leer el mensaje y el contexto para decidir la ruta:
 
-- **Quarterly estimate** — keywords: estimated payment, quarterly taxes, how much to set aside, safe harbor, Q1/Q2/Q3/Q4
-- **Year-end 1099 prep** — keywords: 1099, 1099-NEC, year-end, contractors, W-9, send 1099s, file 1099s
-- **Combined** — some users will ask "year-end summary" and need both. Run quarterly last; run 1099 prep first since it drives the most action items.
+- **Declaración del mes** — palabras: declaración, IVA del mes, SAT-2046, cuánto pagamos, retenciones, el tope
+- **Cierre del año** — palabras: cierre, fin de año, paquete del contador, libro de compras y ventas, proveedores, facturas que faltan
+- **Las dos** — en enero se corren las dos: primero el cierre del año anterior (genera las acciones con más plazo encima), después la declaración de diciembre.
 
-If the intent is ambiguous, ask: "Are you looking at your estimated tax payment for this quarter, or are you preparing 1099s for your contractors — or both?"
+Si no está claro, preguntar: "¿Es la declaración de este mes, el paquete del cierre del año, o las dos?"
 
----
-
-## Path 1: Quarterly estimated tax
-
-### 1. Pull YTD financials
-
-Use the connected ledger (MYOB, NetSuite, QuickBooks, Xero, or Zoho Books — peers, per `../../shared/connector-neutrality.md`) to pull a Profit & Loss report from January 1 of the current year through the last day of the most recently completed quarter. Capture:
-- **Gross revenue** (total income)
-- **Total expenses** (operating expenses, COGS, etc.)
-- **Net ordinary income** = revenue − expenses
-
-If no ledger is connected, ask the user to upload a P&L as CSV or paste the key numbers. For field names and query approach per ledger, see [reference/connector-queries.md](reference/connector-queries.md).
-
-### 2. Ask about prior estimated payments
-
-Before calculating, ask: "How much have you already paid in estimated taxes so far this year?" If the user doesn't know, note that you'll calculate total liability — they can subtract payments themselves or check with their accountant.
-
-### 3. Calculate estimated liability
-
-See [reference/calculation-assumptions.md](reference/calculation-assumptions.md) for the full math and the assumptions table you must include in output.
-
-**First, annualize.** The math runs on projected full-year net profit, not YTD:
-`annualized net = YTD net ÷ months elapsed × 12`. Show both, labeled. Seasonal
-business: ask rather than straight-lining.
-
-Short version, all six steps running on **annualized** net profit:
-1. **SE tax** = annualized net profit × 0.9235 × 0.153 (then halve it — the deductible half offsets income)
-2. **Adjusted net** = annualized net profit − (SE tax / 2)
-3. **Federal income tax** = apply the bracket rate appropriate to the user's business type and estimated annual income (default to 22% unless the user tells you their bracket; note this assumption explicitly)
-4. **Total annual liability** = federal income tax + SE tax
-5. **Quarterly payment** = (total annual liability − payments made) ÷ quarters still ahead
-6. **Safe harbor check** — note whether the user should verify against prior-year tax (100% of prior year, or 110% if AGI > USD 150k)
-
-**If a due date has already passed unpaid**, name it and show the catch-up on its own
-line, separate from the next payment. Penalty and interest go to the accountant — flag
-that they apply, never estimate them. With no quarters left, it is due with the return.
-
-### 4. State assumptions and deliver output
-
-The full section-by-section document structure is in
-[reference/output-formats.md](reference/output-formats.md).
-
-Two things that are not negotiable: the **tax year appears in the header**, and the
-**Assumptions section lists every assumption** — bracket rate, business structure, state
-taxes excluded, deductible SE half, and the deductions not applied. The accountant adjusts
-from those levers, so leaving one out costs them a rebuild.
+**La revisión del tope corre en los dos modos, siempre.**
 
 ---
 
-## Path 2: Year-end 1099 prep
+## Path 1: Declaración del mes (Pequeño Contribuyente)
 
-### 1. Pull contractor payments from all sources
+### 1. Leer las ventas del mes
 
-Query each connected source for **all payments made to individuals or businesses for services** in the tax year. Do not include payments for goods, refunds, or internal transfers.
+**El camino por defecto es el Excel:** los libros de Inherent viven en Excel y los cierra
+un contador externo. Se pide la hoja del mes exportada como CSV/XLSX, o la exportación de
+DTE emitidos de la Agencia Virtual. Se captura:
 
-**The ledger — try the live connector first, fall back to a CSV export.** QuickBooks
-may return only category-level totals with no payee breakdown, in which case you need the
-user to export a Transaction List by Vendor. Xero supplies bills and payments by contact,
-and a 1099 report summary for US organisations. The detection logic, the exact wording to
-ask with, and the column mapping per ledger are in
-[reference/connector-queries.md](reference/connector-queries.md).
+- **Ingresos brutos del mes** — el total facturado por ventas y servicios, factura por factura
+- **Facturas anuladas** — se excluyen, y se listan
+- **Facturas en USD** — se muestran en USD y en quetzales, con el tipo de cambio que use el contador; si no está, va como `⚠️ SIN DATOS`
 
-**PayPal:** Pull all "Goods & Services" payments sent. Note: PayPal issues its own 1099-K to contractors above the threshold — flag these separately in output so the accountant can determine whether a 1099-NEC is also needed.
+Mapeo de columnas y qué hacer con cada fuente: [reference/connector-queries.md](reference/connector-queries.md).
 
-**Stripe:** Pull all transfers/payouts made to external parties. Same 1099-K caveat as PayPal applies.
+### 2. Leer las constancias de retención
 
-**Square:** holds no payments to external parties through the connector (payouts go to the owner's own bank; contractor pay is in Square Payroll, which it does not reach). Name it as a source with nothing to contribute rather than dropping it silently; the 1099-K note applies to the business's own receipts. Detail in [reference/connector-queries.md](reference/connector-queries.md).
+Preguntar o leer: "¿Qué constancias de retención de IVA nos entregaron este mes?" Por cada
+una: cliente, NIT, factura, monto retenido. Un cliente agente de retención retiene el 5%
+en facturas de Pequeño Contribuyente de Q2,500.01 o más; si una factura de ese tamaño a un
+agente de retención no tiene constancia, se marca para pedirla (fuente en
+[reference/calculation-assumptions.md](reference/calculation-assumptions.md)).
 
-**Desktop/CSV:** If the user uploads a CSV directly (without going through QuickBooks export), map columns: payee name, amount, date, payment method, EIN/SSN status.
+### 3. Calcular
 
-### 2. Aggregate by payee
+La fórmula, las fuentes y la tabla de supuestos están en
+[reference/calculation-assumptions.md](reference/calculation-assumptions.md).
 
-Combine across sources and sum payments by individual or business entity. Deduplicate by name (watch for "John Smith" vs "John A. Smith" — flag likely duplicates for human review rather than auto-merging).
+1. **IVA del mes** = ingresos brutos del mes × 5%
+2. **Retenciones** = suma de las constancias de IVA recibidas en el mes
+3. **A pagar con el SAT-2046** = IVA del mes − retenciones (si da cero o menos, se presenta igual)
+4. **Plazo** = dentro del mes calendario siguiente
+5. **ISR** = no aplica: el Pequeño Contribuyente está relevado del ISR (se dice, con la fuente)
 
-### 3. Apply the USD 600 threshold
+**Si un mes ya venció sin presentar**, se nombra y va en su propia línea, separado del mes
+actual. Multas y recargos los calcula el contador — se avisa que aplican, nunca se estiman.
 
-- **Flag for 1099-NEC:** any payee paid ≥ USD 600 for services (contractors, freelancers, consultants)
-- **Flag for 1099-MISC:** any payee paid ≥ USD 600 for rent, attorney fees, prizes/awards
-- **Near-threshold alert:** flag payees paid USD 400–USD 599 — close to the threshold, accountant may want to verify
+### 4. Revisar el tope del régimen
 
-Corporations (Inc., Corp., LLC taxed as C or S corp) generally do not need a 1099-NEC — note this but flag for accountant confirmation.
+Con la serie de ingresos mensuales (pedir los 12 meses anteriores la primera vez y
+guardarla), mostrar:
 
-### 4. Check W-9 status
+- **Año calendario a la fecha** contra el tope, en Q y en %
+- **Últimos 12 meses** contra el tope, en Q y en %
+- **Proyección del año** al ritmo actual, rotulada como proyección
 
-For each flagged payee, note whether a W-9 / EIN is on file in the ledger. Mark as:
-- ✅ W-9 on file (EIN/SSN recorded in the ledger's vendor or contact record)
-- ⚠️ Missing — W-9 not on file; must collect before filing
-- ❓ Unknown — cannot determine from available data
+Y aplicar las líneas de alerta de [reference/calculation-assumptions.md](reference/calculation-assumptions.md).
+**Una alerta 🟡, 🔴 o ⛔ va arriba de todo en el entregable, antes del monto a pagar**,
+dirigida al CEO: "Revisar con el contador el cambio de régimen." Nunca se decide el
+cambio, ni se calcula cuánto costaría el otro régimen.
 
-### 5. Deliver the 1099 prep package
+### 5. Declarar supuestos y entregar
 
-The full section-by-section structure is in
+La estructura sección por sección está en
 [reference/output-formats.md](reference/output-formats.md).
 
-The parts that carry the most weight: the **missing-W-9 action list**, because those block
-filing and the deadline is January 31, and the **payment processor note**, because a
-contractor paid only through PayPal or Stripe may already be getting a 1099-K and the
-accountant has to decide whether a 1099-NEC is also needed.
+Dos cosas no se negocian: **el período y el régimen van en el encabezado**, y **la sección
+de Supuestos lista todo** — la fuente de los ingresos (Excel o DTE), las facturas
+excluidas, el tipo de cambio de las facturas en USD, las constancias que faltan y el
+monto del tope que se usó con su fuente.
+
+---
+
+## Path 2: Cierre del año
+
+### 1. Los 12 meses completos
+
+Por cada mes del año: ingresos brutos, IVA del mes, constancias recibidas, si el SAT-2046
+se presentó (con número de formulario si el CEO o el contador lo tienen). **Un mes sin
+declaración presentada es la primera acción de la lista**, aunque haya sido cero: el
+Pequeño Contribuyente declara cada mes.
+
+### 2. El libro de compras y ventas
+
+El Pequeño Contribuyente lleva el libro de compras y ventas habilitado por la SAT. Se
+cruza:
+
+- **Ventas del libro vs. DTE emitidos** del año — toda diferencia se lista, factura por factura
+- **Compras del libro vs. DTE recibidos** — una compra sin factura se marca: la ley obliga a exigir y conservar las facturas
+
+### 3. Proveedores y personas a las que se les pagó
+
+Juntar del Excel (y de la exportación de DTE recibidos) **todos los pagos por servicios
+del año** — incluidos los rubros fijos por cuenta (grabación, fotografía, edición,
+operador de agentes). Por persona o empresa:
+
+- Nombre, NIT, total pagado, meses
+- **Documento recibido:** factura FEL (y de qué régimen), otro documento, o nada
+- Estado: ✅ factura en todos los pagos · ⚠️ falta factura en algún pago · ❓ no se puede saber con los datos
+
+**No se juntan personas por parecido de nombre** («Juan López» y «Juan A. López»): se
+marcan para que un humano decida.
+
+**Retenciones:** si Inherent no es agente de retención (lo dice el contexto), no se
+calcula ninguna. Si el contexto dice que sí, se marcan los pagos que podrían llevar
+retención y el contador decide; esta skill no calcula retenciones a terceros.
+
+### 4. El tope del año
+
+El total del año calendario contra el tope del régimen, con la alerta que corresponda. Si
+se pasó, es la primera línea del paquete.
+
+### 5. Entregar el paquete anual
+
+La estructura está en [reference/output-formats.md](reference/output-formats.md). Lo que
+más pesa: **los meses sin declaración**, **las facturas que faltan** y **el tope**.
 
 ---
 
 ## Guardrails
 
-- **Name the tax year in every output.** The brackets, wage base, and due dates in
-  [reference/calculation-assumptions.md](reference/calculation-assumptions.md) are
-  **2025 figures**. Preparing a different year: say so loudly before showing any number,
-  then cite current figures from IRS.gov or ask the owner. **Never invent a bracket,
-  a wage base, or a due date.**
-- **Not tax advice.** Open every deliverable with this: "Prepared for review by your accountant — not tax advice." Include it in the document header, not just in chat.
-- **State every assumption.** If you assumed a 22% bracket, say so. If you excluded state taxes, say so. The accountant will adjust; give them the levers.
-- **Don't merge payees automatically.** Flag likely duplicates for human review.
-- **Don't file anything.** The output is prep material. Filing is out of scope.
-- **Corporation exemption is a judgment call.** Note it; don't auto-exclude.
-- **Never reproduce a contractor's SSN or a full bank or card number** in the packet, the chat, or a rendered page. A business EIN on a 1099 is the one designed exception (`../../shared/personal-data.md`).
+- **Nombrar el período y el régimen en todo entregable.** Las tasas, el tope y los plazos
+  de [reference/calculation-assumptions.md](reference/calculation-assumptions.md) llevan
+  fuente. Si se pregunta por un año o un régimen que ese archivo no cubre, se dice fuerte
+  antes de mostrar un número. **Nunca se inventa una tasa, un tope ni un plazo.**
+- **No es asesoría tributaria.** Todo entregable abre con: "Preparado para revisión del contador — no es asesoría tributaria." En el encabezado del documento, no solo en el chat.
+- **Declarar cada supuesto.** El contador ajusta; hay que darle las palancas.
+- **No juntar proveedores automáticamente.** Se marcan los posibles duplicados.
+- **No presentar nada.** Nada se declara, se paga ni se envía a la SAT. El entregable es material para el contador.
+- **El cambio de régimen es una alerta, no una decisión.** Lo decide el CEO con el contador.
+- **Nunca reproducir un DPI/CUI, un número de afiliación al IGSS ni una cuenta bancaria completa** en el paquete, el chat o una página. El NIT en una factura o una constancia es la única excepción prevista (`../../shared/personal-data.md`).
 
 ## More sources
 
-- **Gusto** — payroll actually run: wages, withholdings, and contractor payments. This deepens both modes — quarterly estimates stop guessing at payroll figures, and 1099 prep can reconcile contractor payments against what Gusto already filed. When Gusto shows a 1099 was already issued for a payee, flag it rather than double-preparing.
-- **Xero** — P&L for the quarterly path; bills and payments by contact for the payee list; and, for a US organisation, a 1099 report summary that is the expected output of Path 2 in one read. Queries in `reference/connector-queries.md`.
-- **Ramp, Expensify** — card spend and expense detail for the deduction side of the quarterly estimate, and vendor payment detail that helps confirm the 1099 list is complete. Expensify's receipt filter finds the expenses that will not survive substantiation, which is the flag an accountant most wants before filing.
-- **MYOB** — P&L only, for MYOB shops. Read-only, three financial years of history, **and no contractor or vendor payee detail** — so it feeds the quarterly estimate and plays no part in 1099 prep.
+- **Exportación de DTE de la Agencia Virtual** — emitidos y recibidos, descargados por el CEO o el contador. Es la fuente más limpia para cruzar contra el Excel. La skill no entra a la Agencia Virtual: no hay MCP para eso.
+- **Un ledger, si algún día se conecta** (MYOB, NetSuite, QuickBooks, Xero o Zoho Books) — reemplaza al Excel como fuente de ventas y compras. Consultas en `reference/connector-queries.md`.
+- **PayPal, Stripe** — cobros de clientes del exterior, para cruzar contra las facturas emitidas.
+- **Ramp, Expensify** — gastos con y sin comprobante: el gasto sin factura es lo primero que va a preguntar el contador.
 
-Same tax math, same accountant packet. More sources, fewer assumptions to state.
+El mismo cálculo y el mismo paquete. Más fuentes, menos supuestos que declarar.
 
 ## Output
 
-**Deliver the estimate or 1099 package per the owner's stored output preference — never default to a markdown file.** Check the `## Business context` block's `Output preference` (shared style guide rule, `../../shared/artifact-style.md`):
+**Deliver the declaration or the annual package per the owner's stored output preference — never default to a markdown file.** Check the `## Business context` block's `Output preference` (shared style guide rule, `../../shared/artifact-style.md`):
 
-- **Visual artifact (the default):** render the summary as an HTML page in the house style — the estimate or 1099 count as the lead stat tile, the assumptions table, missing W-9s as rows with a pill each, and the deadline up top. Open with the not-tax-advice line. The accountant documents themselves keep the structure in `reference/output-formats.md`.
-- **docx / md / notion / canva preference:** deliver the same content in that form — a DOCX or markdown file, a Notion page created via the connector (named destination, never overwriting), or a Canva Doc created via the Canva connector (a new design each run, named with the date; tables become lists); fall back to the visual artifact if Notion or Canva is not connected — and say that is why.
-- **Best for skill:** use the visual artifact — this output is a status page over accountant-bound documents.
+- **Visual artifact (the default):** la página en el estilo de la casa — la alerta del tope arriba si la hay, el monto a pagar del SAT-2046 como dato principal con su plazo, el medidor del tope, la tabla de supuestos, y las facturas o constancias que faltan como filas con su pill. Abre con la línea de no-asesoría. Los documentos para el contador mantienen la estructura de `reference/output-formats.md`.
+- **docx / md / notion preference:** el mismo contenido en ese formato — un DOCX o markdown, o una página de Notion creada por el conector (destino nombrado, sin sobrescribir); si Notion no está conectado, la página visual, y se dice por qué.
+- **Best for skill:** la página visual — es una página de estado sobre documentos para el contador.
 
 ## After the packet
 
-The estimate or the 1099 package is in the accountant's hands, assumptions stated. The natural next step is "close the month" — `/close-month` keeps the next estimate running on reconciled numbers instead of the raw register. Also nearby: "cash forecast" (`cash-flow-snapshot`) to confirm the payment clears on its due date, and "who owes me money" (`invoice-chase`) if collections need to cover it. Offer at most three, and skip any offer the owner already declined this session.
+La declaración o el paquete anual está en manos del contador, con los supuestos
+declarados. El siguiente paso natural es "close the month" — `/close-month` mantiene la
+próxima declaración sobre números conciliados. También a mano: "cash forecast"
+(`cash-flow-snapshot`) para confirmar que el pago sale en su plazo, y "who owes me money"
+(`invoice-chase`) si hay que cobrar para cubrirlo. Ofrecer tres como máximo, y no repetir
+lo que el CEO ya rechazó en la sesión.
 
 ## Reference files
 
-- [reference/calculation-assumptions.md](reference/calculation-assumptions.md) — full tax math, 2025 bracket table, SE tax walkthrough, YTD-vs-annualized, missed quarters
-- [reference/output-formats.md](reference/output-formats.md) — document structure for both the quarterly summary and the 1099 package
-- [reference/connector-queries.md](reference/connector-queries.md) — how to pull data from each ledger (MYOB, NetSuite, QuickBooks, Xero, Zoho Books), PayPal, Square, and Stripe, including the vendor-level fallback
-- [reference/gotchas.md](reference/gotchas.md) — Good / Bad patterns for common failure modes
-- [reference/examples/quarterly-estimate.md](reference/examples/quarterly-estimate.md) — worked quarterly estimate example
-- [reference/examples/year-end-1099.md](reference/examples/year-end-1099.md) — worked year-end 1099 prep example
+- [reference/calculation-assumptions.md](reference/calculation-assumptions.md) — el régimen de Pequeño Contribuyente, el tope y sus alertas, los otros regímenes como referencia; cada cifra con su fuente
+- [reference/output-formats.md](reference/output-formats.md) — estructura de la declaración del mes y del paquete anual
+- [reference/connector-queries.md](reference/connector-queries.md) — cómo leer el Excel, la exportación de DTE y, si se conecta, cada ledger
+- [reference/gotchas.md](reference/gotchas.md) — patrones buenos y malos
+- [reference/examples/declaracion-del-mes.md](reference/examples/declaracion-del-mes.md) — ejemplo trabajado de la declaración del mes
+- [reference/examples/cierre-del-ano.md](reference/examples/cierre-del-ano.md) — ejemplo trabajado del cierre del año
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.

@@ -5,6 +5,8 @@ allowed-tools: Read, WebFetch
 ---
 
 # Plan Payroll
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
+> **En Inherent:** los libros viven en Excel y los cierra un contador externo; no hay ledger conectado. Donde esta skill pide un ledger, el camino por defecto es el Excel exportado (CSV/XLSX) y el paquete para el contador (`../../shared/currency-and-locale.md`).
 
 Three skills in order: know payroll is covered, close the gap if it is not, then run it.
 
@@ -66,7 +68,7 @@ Ray Okonkwo sees it in four lines: cash short USD 4,200 on the 15th, three remin
 
 ## Connector failures
 
-If no ledger is reachable (MYOB, NetSuite, QuickBooks, Xero, or Zoho Books — whichever the owner uses), stop and say so by category — the forecast is the foundation of the chain. If a payment connector or the mail connector (Gmail or M365) fails, name it and continue with the rest. If the payroll system fails, fall to the run sheet path rather than aborting; the owner still gets a payroll they can run. When the run cannot be staged or synced into the books — blockers, missing write access — say so in the Step 4 recap and deliver the run sheet plus the journal-entry summary for the bookkeeper to key in; `payroll-prep`'s blocker check decides which path applies.
+Sin ledger conectado (el caso de Inherent), el pronóstico corre sobre el Excel exportado de cuentas por cobrar y por pagar; si tampoco está ese Excel, se detiene y se pide — el pronóstico es la base de la cadena. If a payment connector or the mail connector (Gmail or M365) fails, name it and continue with the rest. If the payroll system fails, fall to the run sheet path rather than aborting; the owner still gets a payroll they can run. When the run cannot be staged or synced into the books — blockers, missing write access — say so in the Step 4 recap and deliver the run sheet plus the journal-entry summary for the bookkeeper to key in; `payroll-prep`'s blocker check decides which path applies.
 
 ## What not to do
 
@@ -85,4 +87,4 @@ Payroll is covered, the reminders are out, and the run is staged for the owner t
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.

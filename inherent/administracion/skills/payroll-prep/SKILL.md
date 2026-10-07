@@ -18,6 +18,8 @@ allowed-tools: Read, WebFetch
 ---
 
 # Payroll Prep
+> Adaptado para Inherent a partir de Anthropic small-business (Apache 2.0).
+> **En Inherent:** no hay sistema de planilla conectado; el camino por defecto es la hoja de horas y la planilla en Excel. IGSS, IRTRA, aguinaldo y Bono 14 no se calculan con tasas propias (`../../shared/currency-and-locale.md`, «Planilla en Guatemala»).
 
 Get the hours right before anyone gets paid.
 
@@ -124,7 +126,7 @@ After the run is submitted, post the journal entry to the ledger: gross wages, e
 
 ## After the run
 
-The run is staged, the flags are resolved, and the books entry is posted. If cash was the worry going in, the natural next step is "can I make payroll" — `/plan-payroll` runs the forecast and the invoice chase in front of the next run. Also nearby: "cash forecast" (`cash-flow-snapshot`) to see what this run does to the next 30 days, and "taxes" (`/tax-prep`) when quarterly estimates or 1099s are coming due. Offer at most three, and skip any offer the owner already declined this session.
+The run is staged, the flags are resolved, and the books entry is posted. If cash was the worry going in, the natural next step is "can I make payroll" — `/plan-payroll` runs the forecast and the invoice chase in front of the next run. Also nearby: "cash forecast" (`cash-flow-snapshot`) to see what this run does to the next 30 days, y "impuestos" (`/tax-prep`) cuando se acerca la declaración mensual de la SAT. Las cuotas del IGSS, el IRTRA, el aguinaldo y el Bono 14 no se calculan con tasas propias: se leen de la planilla o se le piden al contador (`../../shared/currency-and-locale.md`, «Planilla en Guatemala»). Offer at most three, and skip any offer the owner already declined this session.
 
 ## Reference files
 
@@ -136,4 +138,4 @@ The run is staged, the flags are resolved, and the books entry is posted. If cas
 
 ## Using a tool that isn't listed
 
-The connectors named in this skill are the tested paths, not a wall. If the owner wants this flow to use a tool that isn't connected or listed, offer `build-connector` — it checks the connector directory first and connects through Zapier otherwise, never hand-building against a raw API. Once the connection exists, the tool joins this skill like any other optional connector, under the same approval gates.
+Los conectores nombrados en esta skill son los caminos probados, no un muro. Si el CEO quiere que este flujo use una herramienta que no está conectada ni listada, primero se conecta como MCP o conector nativo —se revisa el directorio de conectores y, si no existe, Zapier—, nunca armando a mano contra una API cruda. **Un MCP declarado no es un MCP conectado:** hasta que la conexión existe, la skill no la promete. Una vez conectada, la herramienta entra a esta skill como cualquier otro conector opcional, bajo las mismas aprobaciones.
