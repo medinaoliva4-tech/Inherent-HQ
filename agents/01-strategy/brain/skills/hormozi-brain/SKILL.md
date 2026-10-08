@@ -32,7 +32,7 @@ references/
 
 ## Workflow con un cliente
 
-**0 · El techo.** Leer `clients/<cliente>/data/plan-contratado.md`. Lo que el material recomienda y el
+**0 · El techo.** Leer `clients/<cliente>/00-onboarding/plan-contratado.md`. Lo que el material recomienda y el
 plan no incluye se marca `FUERA DEL PLAN` y no entra al brief (ver `CLAUDE.md`: solo Growth toca la oferta).
 
 **1 · Diagnosticar la ETAPA** — máximo 3 preguntas:
@@ -44,7 +44,7 @@ Con las respuestas se ubica la etapa contra las tablas de `roadmap/overview-las-
 secciones «YOUR STAGE» de `roadmap/guides/` (HEADCOUNT · YOUR ROLE · CONSTRAINT · TO GRADUATE · BOTTOM LINE).
 Se cita la fila que la ubica. Si no calza clara: se dice entre qué etapas está y qué dato falta.
 
-**2 · Análisis de cliente y competencia.** La data del cliente (`clients/<cliente>/data/`) contra el
+**2 · Análisis de cliente y competencia.** La data del cliente (`clients/<cliente>/00-onboarding/` y `01-estrategia/`) contra el
 material: el constraint de su etapa por función, y lo que dicen los libros del tema que lo traba.
 Todo dato del cliente lleva evidencia o etiqueta: `[dice el cliente, sin verificar]` · `⚠️ SIN DATOS`.
 

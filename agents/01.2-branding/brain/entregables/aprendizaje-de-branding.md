@@ -29,5 +29,5 @@
 | Secciones que salen | |
 | Reglas que se agregan | |
 
-## E · Lo que se devuelve a ② Estrategia
+## E · Lo que se devuelve a ① Strategy
 *Solo si el problema es de territorio, no de ejecución.*

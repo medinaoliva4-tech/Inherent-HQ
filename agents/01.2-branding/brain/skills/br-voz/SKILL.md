@@ -6,14 +6,14 @@ description: >
   palabras nunca usa. Es lo que ④ Creatividad y ⑨ Posting consumen como ley, así que se escribe
   con ejemplos y no con adjetivos. Úsala cuando pidan "el tono de voz", "cómo hablamos", "cómo
   se escribe el nombre", "qué palabras no usamos", "esto no suena a nosotros". Requiere el
-  territorio definido. Cierra con el GATE 1.
+  territorio definido.
 ---
 
 # Capa 2 · Voz — cómo suena
 
 | | |
 |---|---|
-| **Consume** | § Territorio y personalidad · bloque 7 del brief de ② |
+| **Consume** | § Territorio y personalidad · bloque 7 del brief de ① Strategy |
 | **Produce** | La sección **§ Voz** de `guia-de-marca.md` |
 
 > 🔑 **④ Creatividad y ⑨ Posting la usan como ley.** Si está escrita con adjetivos, no sirve:
@@ -63,8 +63,8 @@ comentario, un CTA, y un error de la marca.
 | **Prohibidas** | Las que la categoría gastó: *«innovador»*, *«líder»*, *«solución integral»*, *«360°»* |
 | **Claims que necesitan validación** | Todo lo que afirme un resultado, un número o una comparación |
 
-> ⚠️ **Un claim sin validar no sale.** ④ lo marca `⏸️ PENDIENTE APROBACIÓN` y **②B lo valida
-> antes de que ⑨ lo publique.**
+> ⚠️ **Un claim sin validar no sale.** ④ Creatividad lo marca `⏸️ PENDIENTE APROBACIÓN` y
+> **②B Branding lo valida antes de que ⑨ Posting lo publique.**
 
 ## 5 · El tono NO cambia por canal
 
@@ -86,17 +86,13 @@ comentario, un CTA, y un error de la marca.
 | **E · Palabras prohibidas** | Las de la categoría, y por qué |
 | **F · Claims** | Cuáles están validados y cuáles necesitan validación |
 
-## 7 · 🚦 GATE 1
+## 7 · Checklist
 
-**Allan aprueba territorio y voz.**
-
-🛑 **Es la dirección.** Cambiarla después tira el sistema visual entero.
-
-## 8 · Checklist
+🛑 **Territorio y voz son la dirección.** Cambiarlos después tira el sistema visual entero: se
+auto-revisa con este checklist antes de pasar a `br-sistema`.
 
 - [ ] Al menos **dos ejes** están en un extremo
 - [ ] Hay **mínimo 6 pares** de do's & don'ts, con el mismo mensaje bien y mal
 - [ ] El nombre está escrito **literal**, con sus variantes prohibidas
 - [ ] Hay **5 a 10 palabras propias**
 - [ ] Los claims están separados entre **validados** y **pendientes**
-- [ ] **Allan aprobó el GATE 1**

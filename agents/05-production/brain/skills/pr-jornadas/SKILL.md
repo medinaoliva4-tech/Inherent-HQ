@@ -38,7 +38,7 @@ y **no es reescribir escenas** para que entren.
 hace igual. **Agrupar es donde se decide si el ciclo cuesta X o 4X.**
 
 🛑 **Ninguna decisión creativa se cambia para lograr el agrupamiento.** Si la dispersión no se puede
-resolver, se **devuelve a ④ con números y alternativas** (Paso 6). Nunca se reagrupa cambiando una
+resolver, se **devuelve a ④ Creatividad con números y alternativas** (Paso 6). Nunca se reagrupa cambiando una
 acción, un encuadre o una duración.
 
 ## Paso 1 · Armar la matriz completa
@@ -171,7 +171,7 @@ Factor de consolidación = escenas de rodaje ÷ jornadas de rodaje
 
 | Factor | Lectura | Qué hacer |
 |---|---|---|
-| **< 4** | **Mal agrupado**, o el Excel creativo pide locaciones muy dispersas | Volver al Paso 2. Si la dispersión es real, **devolver a ④ con el costo** |
+| **< 4** | **Mal agrupado**, o el Excel creativo pide locaciones muy dispersas | Volver al Paso 2. Si la dispersión es real, **devolver a ④ Creatividad con el costo** |
 | **4-10** | **Normal** | Seguir a Capa 3 |
 | **> 10** | Muy eficiente | **Verificar que entre en horas**, no solo en papel |
 
@@ -183,13 +183,13 @@ más que el anterior, la respuesta casi nunca es *"subieron los precios"*: es qu
 
 ## Paso 6 · Cuando la dispersión es del Excel creativo
 
-A veces no se puede consolidar porque ④ pidió 12 lugares distintos para 12 piezas. Eso **no se
+A veces no se puede consolidar porque ④ Creatividad pidió 12 lugares distintos para 12 piezas. Eso **no se
 resuelve acá**: se devuelve, **con números**.
 
 ```
 ↩️ DEVUELTO — dispersión de locaciones
 12 piezas piden 12 locaciones distintas → factor 1.0 → 12 jornadas
-Costo estimado: [monto + moneda]. Presupuesto disponible: [monto].
+Costo estimado: [monto + moneda]. Presupuesto de referencia: [monto / ⚠️ SIN DATOS].
 
 Alternativas, sin cambiar la intención de ninguna pieza:
 A) 4 locaciones sirven para 9 de las 12 → factor 3.0 → 4 jornadas
@@ -215,7 +215,7 @@ por su cuenta.
 - [ ] La carga de cada jornada incluye **montaje, cambios de setup, comida y desmontaje** con los márgenes reales
 - [ ] 🛑 **Ninguna jornada supera 10 h efectivas** — si no entra, **se parte, no se comprime**
 - [ ] El **factor de consolidación** está declarado con su lectura, junto a las horas de cada jornada
-- [ ] Si el factor es **< 4**: está explicado por qué, y devuelto a ④ **con números y dos alternativas** si la dispersión es del Excel creativo
+- [ ] Si el factor es **< 4**: está explicado por qué, y devuelto a ④ Creatividad **con números y dos alternativas** si la dispersión es del Excel creativo
 - [ ] Si el factor es **> 10**: está verificado que entra en horas
 - [ ] Toda fila del CSV tiene su **columna `jornada`** cargada — ninguna vacía
 - [ ] 🛑 **Ninguna decisión creativa fue cambiada para lograr el agrupamiento**

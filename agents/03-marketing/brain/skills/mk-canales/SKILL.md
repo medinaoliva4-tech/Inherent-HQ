@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Sistema de contenido · `data/contexto.md` §B y §D de ① Strategy · `LINKS.md` |
+| **Consume** | § Sistema de contenido · `00-onboarding/comprension.md` §B y §D de ① Strategy · `LINKS.md` |
 | **Produce** | `plan-por-canal.md` — una ficha por canal |
 
 ## 1 · La regla que define la capa
@@ -36,7 +36,7 @@ convierta en el basurero del ciclo.**
 | **Cadencia** | Cuántas veces por semana |
 | **Temperatura** | A quién le habla este canal |
 | **La cuenta** | **El handle concreto**, no «Instagram» |
-| **Quién tiene el acceso** | → ver `clients/<cliente>/LINKS.md` — **la fuente única.** Si la cuenta no está ahí, se agrega ahí, no acá |
+| **Quién tiene el acceso** | → ver `clients/<cliente>/00-onboarding/LINKS.md` — **la fuente única.** Si la cuenta no está ahí, se agrega ahí, no acá |
 | **Qué métrica lo juzga** | Una. La que decide si el canal sirve |
 
 ## 3 · El filtro de entrada — tres preguntas
@@ -60,7 +60,7 @@ convierta en el basurero del ciclo.**
 | Ruta | Canales | Qué necesita |
 |---|---|---|
 | **Social** | Instagram · TikTok · YouTube · Facebook · Google Business | Archivo + copy + cuenta |
-| **Email** | Newsletter | El cuerpo escrito por ④, la lista y la herramienta |
+| **Email** | Newsletter | El cuerpo escrito por ④ Creatividad, la lista y la herramienta |
 | **Manual** | WhatsApp · SMS · impresos | El texto o el archivo, la lista, y **quién lo opera** |
 
 🛑 **Un canal que no cae en ninguna de las tres rutas no entra.** Inventar la ruta en el momento
@@ -93,7 +93,7 @@ es cómo un canal termina cargado donde no va.
 | Dos canales con la misma función | 🛑 **Se decide: uno cambia de función o sale** |
 | Un canal sin cuenta o sin acceso | **No entra.** Se escribe en descartados |
 | La suma de cadencias no da el total de slots | Se rehace. Hay un error de aritmética |
-| El cliente pide un canal fuera del plan contratado | 🔴 **Se escala a Allan.** Es add-on, no favor |
+| El cliente pide un canal fuera del plan contratado | 🔴 **Se escala al CEO.** Es add-on, no favor |
 
 ## 8 · Checklist
 

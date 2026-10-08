@@ -1,13 +1,13 @@
 # Entregas de video — <cliente> · ciclo <mes año>
 
-> Plantilla de ⑥B Video Editing · `ve-export`. **Es lo que ⑨ Posting abre primero.**
+> Plantilla de ⑦ Video Editing · `ve-export`. **Es lo que ⑨ Posting abre primero.**
 > 🛑 **Ningún archivo se copia: se cita su ruta.**
 
 ---
 
 ## § El paquete
 
-| `id_creativo` | variante | plataforma | archivo *(ruta)* | duración | `specs_ok` | estado |
+| `id_creativo` | variante | plataforma | archivo *(link al Drive)* | duración | `specs_ok` | estado |
 |---|---|---|---|---|---|---|
 | CR-001 | principal | ig-reel | | | ✅ | entregado |
 | CR-001 | hookB | ig-reel | | | | |

@@ -13,8 +13,10 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `entregas-diseno.md` · las devoluciones del ciclo · métricas de ⑨ y ⑩ |
-| **Produce** | **`aprendizaje-de-diseno.md`** |
+| **Consume** | `entregas-diseno.md` · las devoluciones del ciclo · métricas de ⑨ Posting y ⑩ Ads |
+| **Produce** | **`clients/<cliente>/04-contenido/aprendizaje-de-diseno.md`** — en la raíz del área, no dentro del mes |
+
+🛑 **Al cerrar el ciclo, el aprendizaje del ciclo anterior pasa a `_historico/<AAAA-MM>-aprendizaje-de-diseno.md`.** El vigente siempre vive en la raíz del área.
 
 > 🔑 **Corre el 20 de cada mes.**
 
@@ -47,7 +49,7 @@ imágenes del banco ÷ imágenes totales del ciclo
 cuesta lo mismo que el primero.
 
 ### D · Qué le faltó al sistema visual
-**Las preguntas que la Capa 1 tuvo que devolver a ②B.** Si se repiten, `sistema-visual.md`
+**Las preguntas que la Capa 1 tuvo que devolver a ②B Branding.** Si se repiten, `sistema-visual.md`
 tiene un hueco estructural.
 
 ## 2 · Las plantillas que pasan al próximo ciclo
@@ -72,7 +74,7 @@ Si no hay métricas por pieza, **no se declara qué plantilla rindió mejor**: s
 | **A · Uso de plantillas** | Tabla con plantilla, piezas, %, veredicto |
 | **B · Devoluciones por regla** | Agrupadas, con diagnóstico |
 | **C · Reutilización del banco** | El %, contra lo esperado del ciclo |
-| **D · Huecos del sistema visual** | Las preguntas devueltas a ②B que se repitieron |
+| **D · Huecos del sistema visual** | Las preguntas devueltas a ②B Branding que se repitieron |
 | **E · El set del próximo ciclo** | Qué se guarda, qué se arregla, qué sale |
 
 ## 5 · Checklist
@@ -80,6 +82,6 @@ Si no hay métricas por pieza, **no se declara qué plantilla rindió mejor**: s
 - [ ] El uso de plantillas está **contado** desde el manifiesto
 - [ ] Las devoluciones están **agrupadas por regla**
 - [ ] La **reutilización del banco** está calculada contra lo esperado
-- [ ] Los huecos del sistema visual **se devolvieron a ②B**
+- [ ] Los huecos del sistema visual **se devolvieron a ②B Branding**
 - [ ] El set del próximo ciclo está **decidido**
 - [ ] Ninguna conclusión de rendimiento está hecha **sin datos**

@@ -1,5 +1,5 @@
 # Ideas — [Formato] — [Cliente]
-**Ciclo:** [semana / quincena / mes] · **Fecha de entrega:** [aaaa-mm-dd] · **Gate:** ciclo [✅/⬜]
+**Ciclo:** [semana / quincena / mes] · **Fecha de entrega:** [aaaa-mm-dd]
 
 > Este documento acompaña a `plan-de-contenido.csv` y a `brief-del-ciclo.md`. El Excel dice **qué
 > piezas hay**; `brief-del-ciclo.md` dice **con qué idea**; este doc dice **cómo es cada pieza de
@@ -48,7 +48,7 @@ CTA:       "..."
 
 **Layout de texto:** [dónde vive cada uno, tamaño, peso, safe zones]
 
-**Plantilla:** [nombre de la plantilla de ⑥A] — *o* `pendiente — sin plantillas aprobadas`
+**Plantilla:** [nombre de la plantilla de ⑥A Diseño gráfico] — *o* `pendiente — sin plantillas de ⑥A Diseño gráfico`
 *(obligatorio en estático, carrusel y story. En video: `N/A — formato de video`)*
 
 ### Foto
@@ -59,14 +59,14 @@ CTA:       "..."
 
 | | |
 |---|---|
-| **Sujeto** | *(exacto, no genérico: «el Menú Ejecutivo de res, plato montado», no «comida»)* |
+| **Sujeto** | *(exacto, no genérico: «el <plato exacto del cliente>, plato montado», no «comida»)* |
 | **Encuadre** | *(plano y ángulo: cenital / 45° / frontal / detalle)* |
 | **Fondo y props** | *(superficie, qué acompaña — y qué **nunca** entra en cuadro)* |
 | **Espacio libre para el texto** | *(dónde NO puede haber sujeto — **sale del Layout de arriba**, no se inventa)* |
 | **Proporción** | `1:1` / `4:5` / `9:16` — la del formato donde va |
 | **También la usan** | [ids de las otras piezas que comparten esta misma foto] — *o* `solo esta` |
 
-🛑 **Si varias piezas comparten la foto, esta sección se escribe igual en todas.** ⑤ la agrupa una
+🛑 **Si varias piezas comparten la foto, esta sección se escribe igual en todas.** ⑤ Producción la agrupa una
 sola vez; dos descripciones distintas de la misma foto son dos fotos.
 
 ### Escenas

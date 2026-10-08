@@ -17,10 +17,10 @@
 
 | Qué se repite | A quién va | Qué se le pasa |
 |---|---|---|
-| | ⑥A / ⑥B / ③ / ① | [el número, no la queja] |
+| | ⑥A Diseño gráfico / ⑦ Video Editing / ③ Marketing / ① Strategy | [el número, no la queja] |
 
-> Si el 30 % llega tarde, el problema no está en Posting: está en las fechas de preparación de ③ o
-> en los tiempos de ⑥.
+> Si el 30 % llega tarde, el problema no está en Posting: está en las fechas de preparación de
+> ③ Marketing o en los tiempos de ⑥A Diseño gráfico y ⑦ Video Editing.
 
 ---
 
@@ -36,26 +36,18 @@
 
 ---
 
-## 3 · Qué falló publicado
+## 3 · Qué falló al publicar
 
-| id | Qué falló | Causa raíz | ¿Ya había un chequeo que lo cubría? | Qué evita que se repita |
-|---|---|---|---|---|
+| id | Qué dijo Zernio | ¿Se recuperó con el reintento? | Causa raíz | ¿Ya había un chequeo que lo cubría? | Qué evita que se repita |
+|---|---|---|---|---|---|
 
 ---
 
-## 4 · Cuánto tardó cada aprobación
+## 4 · ¿Quedó programado a tiempo?
 
-| Gate | Presentado | Aprobado | Tardó |
-|---|---|---|---|
-| 1 · Captions | | | |
-| 2 · Paquete de carga | | | |
-
-| | |
-|---|---|
-| **Promedio del ciclo** | [x días] |
-| **Declarado en `data/contexto.md` §D** | [x] |
-| **¿Coincide?** | ✅ / ⚠️ difiere — [cuántos ciclos lleva difiriendo] |
-| **¿Se propone corregir a ①?** | ⬜ — 🛑 como propuesta, sin editar su archivo |
+| Última fila programada | ¿Programado al día 19? | Qué lo atrasó |
+|---|---|---|
+| | ✅ / ⚠️ | |
 
 ---
 

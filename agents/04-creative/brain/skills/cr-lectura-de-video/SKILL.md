@@ -76,6 +76,9 @@ python3 .claude/skills/cr-lectura-de-video/leer-video.py <ruta-al-video> --hook 
 Deja en `<video>_lectura/`: `hoja-de-contacto.jpg`, los frames del hook y por plano, y
 `lectura.json` con ritmo, texto en pantalla y paleta.
 
+Si falta una herramienta, la vía B no corre:
+`BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § Herramientas de video`.
+
 ### Los 8 pasos
 
 | # | Paso | Herramienta | Qué produce |
@@ -182,9 +185,9 @@ de la skill `cr-swipe-file`: señal `⏱️` de rendimiento, conteo de fuentes i
 
 ## Fronteras
 
-- 🛑 **No genera media.** Leer una referencia no es producir una pieza — eso es ⑤ Producción y ⑥A Diseño.
+- 🛑 **No genera media.** Leer una referencia no es producir una pieza — eso es ⑤ Producción y ⑥A Diseño gráfico.
 - 🛑 **No decide si la referencia sirve.** Eso lo decide el filtro de señal, no la calidad de la lectura.
-- 🛑 **No re-investiga la categoría.** Lo que la tabla 15×7 de ② Estrategia ya cubre se cita; acá se
+- 🛑 **No re-investiga la categoría.** Lo que la tabla 15×7 de ① Strategy ya cubre se cita; acá se
   lee **el hueco**.
 - 🛑 **Nunca se copia la ejecución.** De la lectura sale el patrón, no la pieza.
 

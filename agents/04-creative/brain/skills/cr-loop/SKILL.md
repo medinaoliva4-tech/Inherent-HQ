@@ -20,8 +20,8 @@ nombre, evidencia y una hipótesis nueva colgada de él.**
 
 | | |
 |---|---|
-| **Consume** | Las filas ya publicadas de `plan-de-contenido.csv` (con su `funcion`, `mezcla`, `traza` y `concepto`) · la **hipótesis** y el **Objetivo del slot** de cada sección `## CR-007 · <concepto>`, en el `ideas-<formato>.md` que corresponda · las **métricas por pieza**, exportadas a `clients/<cliente>/data/_INPUTS/` · el `swipe-file.md` vigente |
-| **Produce** | **`aprendizaje-creativo.md`** — trabajo interno, no se entrega al cliente pero **sí se guarda** · y el **`swipe-file.md` actualizado** con los ganadores propios arriba |
+| **Consume** | Las filas ya publicadas de `plan-de-contenido.csv` (con su `funcion`, `mezcla`, `traza` y `concepto`) · la **hipótesis** y el **Objetivo del slot** de cada sección `## CR-007 · <concepto>`, en el `ideas-<formato>.md` que corresponda · las **métricas por pieza**, exportadas a `clients/<cliente>/99-referencias/recibido/` · el `swipe-file.md` vigente |
+| **Produce** | **`clients/<cliente>/04-contenido/aprendizaje-creativo.md`** — trabajo interno, no se entrega al cliente pero **sí se guarda** · y el **`clients/<cliente>/99-referencias/investigacion/swipe-file.md` actualizado** con los ganadores propios arriba |
 | **No produce** | Dashboards ni reporte de performance (③ Marketing) · piezas nuevas (eso es el ciclo siguiente, desde Capa 0) · ninguna conclusión estratégica |
 
 El flujo del departamento y sus reglas viven en `agents/04-creative/brain/WORKFLOW.md`.
@@ -121,7 +121,7 @@ seguidos es un patrón de cómo escribe Creative, y entra como hipótesis del ci
 
 | Departamento | Su pregunta | Quién la responde |
 |---|---|---|
-| **④ Creative** — Capa 7 | *¿Qué **patrón creativo** ganó y qué entra al próximo brief?* | 🟢 Esta skill |
+| **④ Creatividad** — Capa 7 | *¿Qué **patrón creativo** ganó y qué entra al próximo brief?* | 🟢 Esta skill |
 | **③ Marketing** | *¿Se movió la **MUST BE TRUE**? ¿Compoundea?* | 🛑 **No es de Creative** |
 | **③ Marketing** | Los dashboards y el reporte de performance | 🛑 **No es de Creative** |
 
@@ -130,7 +130,7 @@ Son **preguntas distintas sobre los mismos datos**, y ninguna reemplaza a otra.
 🛑 **Creative no responde la segunda: la devuelve.** Una pieza que rindió bien pero no movió nada
 estratégico se declara y **se devuelve a ③ Marketing** — desde acá no se declara victoria
 estratégica, y tampoco se declara derrota. Lo mismo al revés: un patrón que ganó sigue siendo un
-hallazgo válido aunque ③ todavía no vea el movimiento.
+hallazgo válido aunque ③ Marketing todavía no vea el movimiento.
 
 ---
 
@@ -180,8 +180,9 @@ hallazgo válido aunque ③ todavía no vea el movimiento.
 - [ ] 🛑 Sin métricas: `⚠️ SIN DATOS` + **a quién pedírselas**. **Ningún ganador inventado**
 - [ ] **Ninguna conclusión estratégica emitida** — lo que le toca a ③ Marketing **está devuelto, no respondido**
 - [ ] Las **devoluciones aguas arriba** están listadas: lo que Creative detectó y no le toca arreglar
-- [ ] Las **devoluciones de ⑤ están contadas por motivo**, y todo motivo repetido dos ciclos seguidos está declarado como patrón
-- [ ] `aprendizaje-creativo.md` quedó **guardado en la carpeta del cliente** — es interno, no se entrega
+- [ ] Las **devoluciones de ⑤ Producción están contadas por motivo**, y todo motivo repetido dos ciclos seguidos está declarado como patrón
+- [ ] `aprendizaje-creativo.md` quedó **en `clients/<cliente>/04-contenido/`**, la raíz del área y no dentro del mes — es interno, no se entrega
+- [ ] El aprendizaje del ciclo anterior pasó a **`04-contenido/_historico/<AAAA-MM>-aprendizaje-creativo.md`**
 
 **Handoff** → `cr-swipe-file` (Capa 1, los ganadores propios y el banco de hooks) y `cr-big-idea`
 (Capa 2, las candidatas de concepto del próximo ciclo). El loop **cierra el ciclo y abre el

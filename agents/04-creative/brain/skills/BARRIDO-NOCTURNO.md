@@ -1,15 +1,24 @@
 # Barrido nocturno — recolección propia de anuncios
 
-> 🟡 **ESTADO: PENDIENTE.** Decidido el 16-sep-2026, **no implementado todavía**.
-> Este documento existe para que la decisión y lo aprendido no se pierdan.
-> Cuando se construya, pasa a ser una skill.
+> 🔴 **ESTADO: REEMPLAZADO.** La recolección de anuncios la hace **Apify
+> `apify/facebook-ads-scraper`**, por MCP y sin servidor. **Este barrido no se construye.**
+> La fuente oficial y sus reglas están en `cr-fuentes`.
+>
+> **Qué sobrevive de acá:** la regla dura de la antigüedad y el aviso de fallo. Lo demás —VPS,
+> cron, Chromium headless— era la forma de conseguir lo que Apify ya entrega.
+> El documento queda como histórico de la decisión, no como plan.
 
 ---
 
-## La decisión que lo origina
+## La decisión que lo originó — y la que la reemplazó
 
-Se evaluó pagar **Foreplay Basic ($49/mes)** contra recolectar por cuenta propia. Se eligió
-**la vía propia**, con condiciones de compra definidas (abajo).
+Se evaluó pagar **Foreplay Basic ($49/mes)** contra recolectar por cuenta propia. Se eligió **la
+vía propia**: un VPS con Chromium headless leyendo el DOM de la Ad Library.
+
+🔴 **Esa decisión quedó sin efecto.** Apify `apify/facebook-ads-scraper` entrega lo mismo —y el
+copy de los DCO, que el DOM no daba limpio— por **~US$0,006 por anuncio**, sin servidor que
+mantener ni IP que Meta pueda bloquear. **Las tres condiciones de compra de Foreplay de abajo ya no
+aplican.**
 
 **Lo que se probó y funcionó** (16-sep-2026, sobre la Ad Library real de Guatemala):
 
@@ -38,6 +47,11 @@ El 70 % de la mezcla 70/20/10 se apoya en evidencia de rendimiento. Si esa evide
 modelo, el 70 % es opinión disfrazada de dato.
 
 ---
+
+## 🔴 De acá para abajo: histórico
+
+> Lo que sigue describe el barrido que **no se construyó**. Se conserva porque explica por qué la
+> regla dura existe y qué hay que exigirle a cualquier fuente. **No es un plan de trabajo.**
 
 ## Arquitectura: separar **recolectar** de **pensar**
 
@@ -82,22 +96,18 @@ Si un barrido devuelve **cero anuncios, o menos de la mitad de lo normal**, mand
 Sin esto, un rediseño de Meta deja al departamento trabajando con datos viejos en silencio, y el
 70 % vuelve a ser opinión — justo lo que la regla dura prohíbe.
 
-## Lo que falta probar
+## Lo que faltaba probar — 🔴 sin efecto
 
-⚠️ **El único riesgo sin medir:** Meta puede tratar con más sospecha la IP de un datacenter que la
-de una computadora normal. La prueba de hoy se hizo desde un navegador residencial. **Hay que correr
-el primer barrido desde la IP del VPS** antes de darlo por bueno.
+El riesgo sin medir era que Meta tratara con más sospecha la IP de un datacenter. **Dejó de
+importar:** la corrida la hace la infraestructura de Apify, no una IP nuestra.
 
-## Cuándo se compra Foreplay
+## Cuándo se compraba Foreplay — 🔴 sin efecto
 
-Se compra el día que pase **cualquiera** de estas tres:
+Las tres condiciones eran: Meta bloquea la IP del VPS · el extractor se rompe dos veces en un mes ·
+se pasan de 4 clientes y hace falta TikTok en serio.
 
-1. Meta bloquea la IP del VPS y el barrido deja de correr.
-2. El extractor se rompe **dos veces en un mes**.
-3. Se pasan de **4 clientes** y hace falta TikTok en serio.
-
-Los $49 no compran una capacidad que no tengamos: compran que un rediseño de Meta no sea problema
-nuestro. El arreglo típico es cambiar el texto que el script busca — una línea, diez minutos.
+🔴 **Ninguna aplica ya:** no hay VPS ni extractor propio. **Si algún día hace falta TikTok en serio,
+se evalúa de cero contra lo que Apify cubre**, no contra este documento.
 
 ## Lo que Muse Spark sí aporta
 

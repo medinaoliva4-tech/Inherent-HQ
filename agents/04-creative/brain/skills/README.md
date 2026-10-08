@@ -50,17 +50,17 @@ cr-brief ──→ cr-swipe-file ──→ cr-big-idea ──→ cr-storytelling
    │              │  └── cr-fuentes  (trae los anuncios)                                                     │
    │              └───── cr-lectura-de-video  (los lee de verdad)                                            │
    │                                                                                                          │
-  GATE 1                                    GATE 2 (tras storytelling)                                    GATE 3
+  brief                                   conceptos (tras storytelling)              el Excel del ciclo cerrado
    │                                                                                                          │
    └──────────────────────────────── cr-loop ←──── métricas de las piezas publicadas ←─────────────────────┘
 ```
 
 **Las tres reglas de encadenado:**
 
-1. **Ninguna skill arranca sin el output de la anterior.** Si falta, se dice qué falta y se ofrece
-   correrla. **No se improvisa el faltante.**
-2. **Los gates son humanos.** `cr-brief` para después del brief. `cr-storytelling` para después del
-   concepto. `cr-adaptacion` para antes del handoff. Nadie los salta.
+1. **Ninguna skill arranca sin el output de la anterior** —salvo el swipe file, que se usa si
+   existe—. Si falta, se dice qué falta y se ofrece correrla. **No se improvisa el faltante.**
+2. **No hay paradas entre capas: cada una se auto-revisa y sigue.** `cr-brief` cierra el brief,
+   `cr-storytelling` el concepto y `cr-adaptacion` **el Excel del ciclo cerrado**, antes del handoff.
 3. **Cada skill trae su propio control de calidad al final.** El check vive donde se hace el trabajo,
    no en un archivo aparte que nadie abre.
 
@@ -97,4 +97,4 @@ cr-brief ──→ cr-swipe-file ──→ cr-big-idea ──→ cr-storytelling
 
 | Archivo | Qué es | Estado |
 |---|---|---|
-| `BARRIDO-NOCTURNO.md` | Recolección propia de anuncios en el VPS, de madrugada y sin nadie conectado. Reemplaza la búsqueda manual de `cr-fuentes` | 🟡 **Pendiente.** Cuando se construya, pasa a ser skill |
+| `BARRIDO-NOCTURNO.md` | Histórico de la recolección propia de anuncios en un VPS. **Lo reemplazó Apify `apify/facebook-ads-scraper`**, la fuente oficial de `cr-fuentes` | 🔴 **Reemplazado.** No se construye. Queda como histórico de la decisión |

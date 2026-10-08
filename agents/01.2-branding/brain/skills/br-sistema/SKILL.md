@@ -3,20 +3,20 @@ name: br-sistema
 description: >
   Capa 3 de ②B Branding — el sistema visual con valores ejecutables, no adjetivos. Paleta con
   hex y su rol, tipografías con peso y tamaño, grilla, márgenes, safe zones, y las reglas de
-  fotografía o ilustración. Es lo que ⑥A Diseño gráfico y ⑥B Video Editing abren para ejecutar,
+  fotografía o ilustración. Es lo que ⑥A Diseño gráfico y ⑦ Video Editing abren para ejecutar,
   así que cada decisión tiene que poder aplicarse sin criterio. Escribe `sistema-visual.md`.
   Úsala cuando pidan "qué colores", "la tipografía", "cómo se compone", "las specs visuales",
-  "el sistema gráfico". Requiere el GATE 1 aprobado.
+  "el sistema gráfico". Requiere el territorio y la voz definidos.
 ---
 
 # Capa 3 · Sistema visual — con valores, no adjetivos
 
 | | |
 |---|---|
-| **Consume** | § Territorio y personalidad **con GATE 1** · bloques 5 y 6 del brief de ② |
-| **Produce** | **`sistema-visual.md`** — el documento que abren ⑥A y ⑥B para ejecutar |
+| **Consume** | § Territorio y personalidad · § Voz · bloques 5 y 6 del brief de ① Strategy |
+| **Produce** | **`clients/<cliente>/02-marca/sistema-visual.md`** — el documento que abren ⑥A Diseño gráfico y ⑦ Video Editing para ejecutar |
 
-> 🔑 **La prueba de esta capa:** ¿puede ⑥A producir 100 estáticos con esto, sin preguntar nada?
+> 🔑 **La prueba de esta capa:** ¿puede ⑥A Diseño gráfico producir 100 estáticos con esto, sin preguntar nada?
 > Si hace falta criterio en cada pieza, no es sistema.
 
 ## 1 · Color — cada uno con su rol
@@ -47,7 +47,7 @@ description: >
 | Regla | Por qué |
 |---|---|
 | **Máximo 2 familias** | Tres familias es un collage |
-| **La fuente tiene que estar disponible** | Si ⑥A no la puede usar, no existe |
+| **La fuente tiene que estar disponible** | Si ⑥A Diseño gráfico no la puede usar, no existe |
 | **Se declara la alternativa web-safe** | Para lo que no se exporta como imagen |
 
 ## 3 · Composición
@@ -73,7 +73,7 @@ description: >
 > puede depender de foto nueva cada semana — se diseña con banco y con lo que da la sesión del mes.
 > ⛔ **No se genera imagen con IA:** no hay herramienta.
 
-## 5 · Movimiento — lo que ⑥B necesita
+## 5 · Movimiento — lo que ⑦ Video Editing necesita
 
 **El sistema visual no termina en el estático.**
 

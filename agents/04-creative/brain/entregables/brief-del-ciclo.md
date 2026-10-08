@@ -1,9 +1,9 @@
 # Brief del ciclo — [Cliente]
-**Ciclo:** [semana / quincena / mes] · **Fecha de entrega:** [aaaa-mm-dd] · **Gates:** brief [✅/⬜] · conceptos [✅/⬜]
+**Ciclo:** [semana / quincena / mes] · **Fecha de entrega:** [aaaa-mm-dd]
 
 > Este documento acompaña a `plan-de-contenido.csv` y a los `ideas-<formato>.md` del ciclo. Dice
 > **de dónde sale cada pieza y con qué idea** — no cómo es cada una: eso vive en el doc de su formato.
-> Se lee **una vez, entero**, para aprobar Gate 1 y Gate 2 antes de mirar una sola pieza terminada.
+> Se lee **una vez, entero**, antes de mirar una sola pieza terminada.
 
 ---
 
@@ -16,8 +16,6 @@
 **Qué tiene que pasar.** [Las MUST BE TRUE que este ciclo mueve, y cómo.]
 
 **Qué NO hacemos este ciclo.** [Lo que se dejó afuera a propósito, para que no se pregunte después.]
-
-🚦 **GATE 1 — brief.** [✅ aprobado por [nombre] el [fecha] / ⏸️ PENDIENTE APROBACIÓN]
 
 ---
 
@@ -32,15 +30,13 @@
 | Filtro | ✅/⬜ | Por qué |
 |---|---|---|
 | Distintiva | | |
-| Nueva *(contra el mapa de saturación)* | | |
+| Nueva *(contra el mapa de saturación, si existe)* | | |
 | Relevante *(para este avatar y este objetivo)* | | |
 | **Prueba del logo** | | *si le ponés el logo de un competidor y nadie nota la diferencia, falló* |
 
 **Piezas que salen de esta BIG IDEA:** `CR-001` (→ `ideas-<formato>.md`) · `CR-002` (→ `ideas-<formato>.md`) · …
 
 *(Una sección así por cada BIG IDEA del ciclo.)*
-
-🚦 **GATE 2 — conceptos.** [✅ aprobado por [nombre] el [fecha] / ⏸️ PENDIENTE APROBACIÓN]
 
 ---
 

@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El bloque `## BIG IDEA · <nombre>` de `brief-del-ciclo.md` (Capa 2) · el avatar y el lenguaje literal del comprador del brief del ciclo · el **mapa de objeciones** y el **enemigo** de ③ Marketing · el **mecanismo único** y los RTB de ② Estrategia |
+| **Consume** | El bloque `## BIG IDEA · <nombre>` de `brief-del-ciclo.md` (Capa 2) · el avatar y el lenguaje literal del comprador del brief del ciclo · el **mapa de objeciones** y el **enemigo** de ③ Marketing · el **mecanismo único** y los RTB de ① Strategy |
 | **Produce** | En `brief-del-ciclo.md`: la línea **Arco** del bloque de BIG IDEA. Y, en el `ideas-<formato>.md` de cada pieza, dentro de su sección `## CR-007 · <concepto>`, el arco bajado a esa pieza — héroe, nivel de problema atacado, cómo entra la guía, plan, llamado, éxito, fracaso evitado y su distribución por tramo o slide |
 | **Llena del Excel** | Afina `concepto` de `plan-de-contenido.csv` — no crea filas nuevas |
 | **Alimenta** | Hook, guion y copy de la Capa 4 · la emoción y las escenas de la Capa 5 |
@@ -31,7 +31,7 @@ una pieza **se sienta**, no solo se vea.
 
 | # | Pieza | Cómo se aplica | De dónde sale |
 |---|---|---|---|
-| 1 | **Héroe** | Es el **cliente**, nombrado — nunca la marca. La pieza arranca desde su deseo | El avatar del brief (ingeniería inversa de ② Estrategia) |
+| 1 | **Héroe** | Es el **cliente**, nombrado — nunca la marca. La pieza arranca desde su deseo | El avatar del brief (ingeniería inversa de ① Strategy) |
 | 2 | **Problema** | Externo (lo tangible) · **interno** (cómo lo hace sentir) · filosófico (por qué está mal) | Mapa de objeciones de ③ Marketing |
 | 3 | **Guía** | Acá entra la marca: **empatía + autoridad**. Yoda, no Luke | Empatía = el insight · Autoridad = los RTB |
 | 4 | **Plan** | **3 pasos** simples que bajan el miedo a actuar | Derivados del **mecanismo único** |
@@ -138,7 +138,7 @@ transicional en BOFU deja la venta sin pedir.
 - [ ] **1 transformación por pieza**
 - [ ] El arco **cabe** en el formato del slot, con su distribución declarada
 
-🚦 **GATE 2 — aprobación de conceptos.** El gate más importante: hook, copy, layout, tomas y estética
+✅ **Auto-revisión de conceptos, y sigue.** Es la que más pesa: hook, copy, layout, tomas y estética
 derivan de acá. Un concepto equivocado se multiplica por todas las filas del ciclo.
 
-**Handoff** → `cr-hook-copy` (Capa 4), una vez pasado el gate.
+**Handoff** → `cr-hook-copy` (Capa 4), con este QA completo.

@@ -266,21 +266,21 @@ El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → �
 | Línea publicada | Con qué se entrega |
 |---|---|
 | Tu marca construida en serio | ②B Branding |
-| Tu mensaje claro | ③ Marketing · `mk-mensaje` + ②B `br-voz` |
-| Presencia todos los días — **86 piezas** | ④ ⑥A ⑥B + ⑨ Posting · herramienta de publicación |
+| Tu mensaje claro | ③ Marketing · `mk-mensaje` + ②B Branding `br-voz` |
+| Presencia todos los días — **86 piezas** | ④ Creatividad · ⑥A Diseño gráfico · ⑦ Video Editing + ⑨ Posting · herramienta de publicación |
 | Campañas en Meta y TikTok | ⑩ Ads Management · herramienta de pauta |
 | Respuesta a tus comentarios y mensajes | ⑧ Community Management — nivel básico: la bandeja de mensajes + una IA que contesta lo simple. Lo complejo se pasa al WhatsApp del cliente |
-| Reporte al mes | ③ `mk-loop` + ⑩ `ad-loop` |
+| Reporte al mes | ③ Marketing `mk-loop` + ⑩ Ads `ad-loop` |
 
 ## 🔷 Marketing Pro — *todo lo de Marketing, más:*
 
 | Línea publicada | Con qué se entrega |
 |---|---|
-| 145 piezas, doble de video | ⑤ Producción 4 h + ⑥B Video Editing |
+| 145 piezas, doble de video | ⑤ Producción 4 h + ⑦ Video Editing |
 | Campañas de Google | ⑩ Ads Management · herramienta de pauta *(búsqueda y Performance Max)* |
 | Alianzas con creadores | Herramienta de scraping · vetting por engagement real |
 | Comentarios y mensajes todos los días | ⑧ Community Management — el operador de agentes hace el setup mensual del agente con la info del cliente, y queda corriendo. Todas las redes, con moderación y seguimiento de quién preguntó |
-| Dos revisiones por pieza | ⑥A `gd-composicion` + ②B `br-guardian` → QA final del COO |
+| Dos revisiones por pieza | ⑥A Diseño gráfico `gd-composicion` + ②B Branding `br-guardian` → QA final del COO |
 
 ## 🟨 Accelerate — *todo lo de Marketing Pro, más:*
 
@@ -289,22 +289,22 @@ El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → �
 | Tu oferta y tu precio rediseñados | ② Growth · `gr-oferta` · **Pilar 1 ejecutando** |
 | Abrimos los canales grandes | ② Growth · `gr-canales-grandes` · **Pilar 2 ejecutando** |
 | Subimos tu ticket | ② Growth · `gr-upsells` · **Pilar 3** |
-| Nadie se queda sin respuesta | ② `gr-conversion` + auto-DM por palabra clave, embudo de WhatsApp y **agente de WhatsApp a medida**, entrenado con la marca: responde, califica y agenda |
+| Nadie se queda sin respuesta | ② Growth `gr-conversion` + auto-DM por palabra clave, embudo de WhatsApp y **agente de WhatsApp a medida**, entrenado con la marca: responde, califica y agenda |
 | Que te encuentren en Google | Pauta de búsqueda + contenido guiado por keywords |
 | Que tu equipo sepa cerrar | Guiones y entrenamiento de closing — **Conversion OS** · el CEO |
 | Lo volvemos repetible | **SOPs de crecimiento** — la auditoría levanta, el CEO y el COO coordinan, el COO implementa con agentes |
-| Una herramienta cada trimestre | ② `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
+| Una herramienta cada trimestre | ② Growth `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
 | Especialista cada trimestre | Red de mentores — el mentor de la industria hace la auditoría · rubro Especialista · techo **$144** por sesión |
 
 ## 🟨 Compound — *todo lo de Accelerate, más:*
 
 | Línea publicada | Con qué se entrega |
 |---|---|
-| 204 piezas | ⑤ Producción 8 h + ⑥A + ⑥B |
-| Una herramienta cada **mes** | ② `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
+| 204 piezas | ⑤ Producción 8 h + ⑥A Diseño gráfico + ⑦ Video Editing |
+| Una herramienta cada **mes** | ② Growth `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
 | Estructura corporativa | La cubre la auditoría · el CEO y el COO coordinan lo que sale de ahí |
 | SOPs de toda la empresa | **Operations OS completo** — la auditoría levanta, el CEO y el COO coordinan, el COO implementa con agentes *(documentación y entrenamiento)* |
-| Tus números claros | ② `gr-numeros` · **Money OS** — el CEO con Strategy |
+| Tus números claros | ② Growth `gr-numeros` · **Money OS** — el CEO con Strategy |
 | Crecimiento que se sostiene solo | ⑧ Community Management + automatización |
 | Tu propia IA | Construida sobre el folder del cliente — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
 | Especialista mensual | Red de mentores — el mentor de la industria hace la auditoría · rubro Especialista · techo **$180** por sesión |
@@ -355,7 +355,7 @@ pasa a ser aritmética. **Lo que es aritmética se puede comprometer.**
 | **1 · Línea base** | Se mide la mediana de la cuenta **antes de empezar** | Herramienta de scraping · engagement del perfil |
 | **2 · El 70% probado** | El 70% del ciclo sale de patrones **que ya pagan** en la categoría | Herramienta de scraping · biblioteca de anuncios de Meta → **ads de 30+ días** |
 | **3 · La revisión del 20** | Se lee pieza por pieza contra el umbral | Herramienta de scraping · posts de la cuenta |
-| **4 · La redirección** | Lo que queda del ciclo **se reemplaza por variantes del patrón que ganó** | ④ `cr-loop` → ③ `mk-calendario` |
+| **4 · La redirección** | Lo que queda del ciclo **se reemplaza por variantes del patrón que ganó** | ④ Creatividad `cr-loop` → ③ Marketing `mk-calendario` |
 
 ### 🔑 Por qué esta garantía cuesta Q0
 
@@ -386,7 +386,7 @@ es aritmética: `presupuesto ÷ CPM × 1,000`.
 |---|---|
 | **El CPM real de la categoría** *(no el promedio global)* | Herramienta de scraping · biblioteca de anuncios con detalle → **reach y demografía de los ads de la competencia** |
 | Ejecutar la compra | ⑩ Ads Management · herramienta de pauta |
-| Que el público sea el correcto | ⑩ `ad-estructura` |
+| Que el público sea el correcto | ⑩ Ads `ad-estructura` |
 
 ### La cláusula que protege el margen
 **El compromiso se escribe a un CPM declarado.**
@@ -425,9 +425,9 @@ Cobramos **10% de las ventas atribuidas**. Si no hay ventas, **no hay fee.**
 
 | Palanca | Quién | Entra desde |
 |---|---|---|
-| **La oferta** — qué se vende y a qué precio | ② `gr-oferta` | 🟨 Accelerate |
-| **La conversión** — que lo que llega se cobre | ② `gr-conversion` | 🟨 Accelerate |
-| **La atribución** — saber cuál venta fue nuestra | ⑩ `ad-atribucion` | 🟨 Accelerate |
+| **La oferta** — qué se vende y a qué precio | ② Growth `gr-oferta` | 🟨 Accelerate |
+| **La conversión** — que lo que llega se cobre | ② Growth `gr-conversion` | 🟨 Accelerate |
+| **La atribución** — saber cuál venta fue nuestra | ⑩ Ads `ad-atribucion` | 🟨 Accelerate |
 
 🛑 **La línea 🔷 Marketing no toca ninguna de las tres.** Por eso **no promete ventas** —
 y por eso tampoco tiene performance fee. **Es la misma razón.**

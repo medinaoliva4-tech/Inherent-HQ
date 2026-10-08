@@ -30,7 +30,7 @@ agents/<NN>-<área>/
 | **05** | [Production](05-production/) | La grabación | ✅ **construido** |
 | **06** | [Graphic Design](06-graphic-design/) | Estáticos, carruseles y stories | ✅ **construido** |
 | **07** | [Video Editing](07-video-editing/) | Reels y sus derivadas | ✅ **construido** |
-| **08** | [Community Management](08-community-management/) | Respuesta, seguimiento y comunidad | ⬜ **el único que falta** |
+| **08** | [Community Management](08-community-management/) | Respuesta, seguimiento y comunidad | ✅ **construido** |
 | **09** | [Posting](09-posting/) | Lo aprobado, publicado | ✅ **construido** |
 | **10** | [Ads Management](10-ads-management/) | La pauta corriendo | ✅ **construido** |
 | ↻ | [Strategy](01-strategy/) | La revisión del 20 | ✅ |
@@ -41,7 +41,7 @@ todo** — recibe al cliente, lo mantiene al día y abre la sesión del agente q
 **Por qué Branding es 01.2:** con la data de Strategy **ya se puede armar la marca**.
 No espera al resto del pipeline.
 
-🔑 **El QA no es un agente aparte: cada departamento se auto-revisa antes de su gate**, y
+🔑 **El QA no es un agente aparte: cada departamento se auto-revisa y sigue**, y
 **②B Branding valida con `br-guardian`** antes de que nada se publique.
 
 **La cadena de entrega completa está en `inherent/05-OPERACION.md`.**
@@ -62,7 +62,11 @@ día para producir · 🔴 **Día 20:** presentación al cliente. Cada `WORKFLOW
 🟨 Accelerate y 🟨 Compound.**
 
 🔑 **Primero se lee la LÍNEA, después el plan.** 🔷 Marketing promete atención · 🟨 Growth
-promete facturación. **② Growth no corre en la línea Marketing.**
+promete facturación. **En la línea Marketing, ② Growth corre ligero:** elige qué ofertas que ya
+existen se empujan, sin cambiar la oferta.
+
+⬜ **Un Tailor Made no se cuestiona:** su `plan-contratado.md` declara qué incluye y su pipeline, y
+los agentes lo siguen.
 
 **El plan contratado es el techo, no una sugerencia.** Un agente que entrega de más rompe el
 margen; uno que entrega de menos rompe la promesa publicada.
@@ -82,8 +86,8 @@ margen; uno que entrega de menos rompe la promesa publicada.
 ## Cómo se construye uno
 
 1. **`README.md` del área** — propósito, las acciones con su MCP, **qué entrega según el plan**, y qué falta.
-2. **`brain/WORKFLOW.md`** — el proceso de 0 a 100, con los gates humanos marcados y una sección
-   de **lo que este agente NO hace**.
+2. **`brain/WORKFLOW.md`** — el proceso de 0 a 100, con su auto-revisión, sus gates y sus escalaciones
+   marcados, y una sección de **lo que este agente NO hace**.
 3. **`brain/skills/README.md`** — cuándo se invoca cada skill dentro del workflow.
 4. **Una carpeta por skill**, con su `SKILL.md`.
 5. **Enlazarla** en `.claude/skills/` para que se pueda invocar por nombre.
@@ -91,5 +95,12 @@ margen; uno que entrega de menos rompe la promesa publicada.
 
 > ⚠️ **La entrega no es una skill compartida.** Cada agente entrega algo distinto —Strategy un
 > documento de estrategia, Design un lote de piezas, Ads una campaña corriendo— así que
-> **cada workflow define su propia entrega.** Lo único igual para todos es el gate: **Allan
-> aprueba antes de que algo salga.**
+> **cada workflow define su propia entrega.** Lo único igual para todos es cómo se cierra:
+> **cada departamento se auto-revisa y sigue.** Lo que está en el repo ya pasó por el CEO.
+>
+> 🚦 **El CEO solo para el flujo en dos puntos:** aprueba la estrategia de **① Strategy** antes de
+> que pase a los departamentos, y en **⑩ Ads** da el OK antes de lanzar *(plan + presupuesto)* y
+> ante cualquier cambio de presupuesto.
+>
+> 📣 **Las escalaciones no son paradas — avisan y el flujo sigue:** precio, alcance y fechas →
+> **el CEO** · todo lo demás → **el COO**.

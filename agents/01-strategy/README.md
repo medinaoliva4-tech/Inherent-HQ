@@ -42,12 +42,12 @@ Growth, Tecnología y Sistemas.
 | | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Qué promete el plan** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
-| **Verbo** | ⛔ *Growth no corre* | ⛔ *Growth no corre* | **Ejecuta** | **Sistematiza** |
+| **Verbo** | ⛔ *los pilares no corren* · Growth ligero | ⛔ *los pilares no corren* · Growth ligero | **Ejecuta** | **Sistematiza** |
 | **Pilar 1 · Oferta** | ⬜ *solo el mensaje* | ⬜ *solo el mensaje* | Escalarla / autoridad | Sistematizarla |
 | **Pilar 2 · Canales grandes** | ⬜ | ⬜ | Abrir y vender | Canal permanente |
 | **Pilar 3 · Upsells / Expansión** | ⬜ | ⬜ | Diseñar y lanzar | Sistema operando solo |
 | **Sistemas activados** | ⬜ Ninguno | ⬜ Ninguno | Growth · Conversion · Operations *(SOPs de crecimiento)* | **Los cuatro** · SOPs de empresa · Money OS |
-| **Briefs que entrega** | Branding · Marketing · Creative | + Producción | + Growth · Tecnología | + Sistemas · estructura corporativa |
+| **Briefs que entrega** | Branding · Marketing · Creative · Growth *(ligero)* | + Producción | Growth completo · + Tecnología | + Sistemas · estructura corporativa |
 | **Revisión del 20** | ✅ | ✅ | ✅ | ✅ |
 
 🔑 **En la línea Marketing, Strategy entrega posicionamiento y mensaje — no toca la oferta.**

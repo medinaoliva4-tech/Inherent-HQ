@@ -1,6 +1,6 @@
 # Aprendizaje Creativo — [Cliente]
 **Bloque medido:** [x] · **Fecha:** [fecha] · **Capa 7**
-**Excel de referencia:** `_historico/[bloque]-plan-de-contenido.csv`
+**Excel de referencia:** `04-contenido/[AAAA-MM]/ideas/plan-de-contenido.csv`
 
 > Mide **patrones creativos**, no resultado de negocio. Revenue, share y awareness son de ③ Marketing
 > Capa 8; los dashboards son de ③ Marketing.

@@ -1,20 +1,20 @@
 ---
 name: po-caption
 description: >
-  Capa 1 de ⑦ Posting — convierte el copy literal de ④ Creatividad en el caption que sale, adaptado
+  Capa 1 de ⑨ Posting — convierte el copy literal de ④ Creatividad en el caption que sale, adaptado
   al largo y la forma de cada plataforma sin cambiar el mensaje. Pone el hook antes del corte (~125
-  caracteres en feed de Instagram, ~55 en Reels), acomoda el cuerpo, deja el CTA de ④, elige los
-  hashtags que corresponden y escribe el alt text. Si el mensaje no entra sin romperse, devuelve a ④
-  con dos alternativas. Escribe el caption de cada sección de `publicaciones.md`. Úsala cuando pidan
-  "escribí los captions", "el texto del post", "qué hashtags le ponemos", "el alt text", "adaptá
-  este copy a TikTok". 🛑 No cambia la idea ni el hook.
+  caracteres en feed de Instagram, ~55 en Reels), acomoda el cuerpo, deja el CTA de ④ Creatividad,
+  elige los hashtags que corresponden y escribe el alt text. Si el mensaje no entra sin romperse,
+  devuelve a ④ Creatividad con dos alternativas. Escribe el caption de cada sección de
+  `publicaciones.md`. Úsala cuando pidan "escribí los captions", "el texto del post", "qué hashtags
+  le ponemos", "el alt text", "adaptá este copy a TikTok". 🛑 No cambia la idea ni el hook.
 ---
 
 # Capa 1 · Caption — qué texto sale
 
 | | |
 |---|---|
-| **Consume** | Las filas de `calendario-de-publicacion.csv` con archivo (de `po-recepcion`) · el **copy y el caption literales** del `ideas-<formato>.md` de cada pieza en ④ · tono de voz y do's & don'ts de ②B |
+| **Consume** | Las filas de `calendario-de-publicacion.csv` con archivo (de `po-recepcion`) · el **copy y el caption literales** del `ideas-<formato>.md` de cada pieza en ④ Creatividad · tono de voz, do's & don'ts y cómo se nombra la marca, de ②B Branding, si existen |
 | **Produce** | El **caption final** de cada sección de `publicaciones.md`, con su conteo, su corte, sus hashtags y su alt text · la columna `caption_ok` |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantilla:
@@ -27,20 +27,20 @@ Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantilla:
 | **Recortar** para que entre en el límite | Cambiar la idea o el ángulo |
 | **Reordenar** para que el hook quede antes del corte | Cambiar **el hook** |
 | **Partir** una frase larga en dos líneas | Cambiar el CTA por otro |
-| **Elegir** los hashtags | Agregar una promesa, un precio o un claim que ④ no escribió |
-| **Escribir** el alt text | Corregirle el tono a ④ — eso se devuelve |
+| **Elegir** los hashtags | Agregar una promesa, un precio o un claim que ④ Creatividad no escribió |
+| **Escribir** el alt text | Corregirle el tono a ④ Creatividad — eso se devuelve |
 
 > 🛑 **Si para que entre hay que sacarle el hook o el CTA, no es una adaptación: es una devolución.**
-> Vuelve a ④ con motivo 5 y **dos alternativas concretas** de versión corta.
+> Vuelve a ④ Creatividad con motivo 5 y **dos alternativas concretas** de versión corta.
 
 ## 2 · La estructura del caption
 
 ```
 Línea 1    EL HOOK          antes del corte. Es lo único que se lee sin tocar "… más"
 (línea en blanco)
-Cuerpo     EL VALOR         lo que ④ escribió, acomodado a la plataforma
+Cuerpo     EL VALOR         lo que ④ Creatividad escribió, acomodado a la plataforma
 (línea en blanco)
-Cierre     EL CTA           el de ④, según la etapa
+Cierre     EL CTA           el de ④ Creatividad, según la etapa
 (línea en blanco)
 Al final   LOS HASHTAGS     los que corresponden, no los que caben
 ```
@@ -58,19 +58,23 @@ de un ciclo nuevo se revisan contra la fuente de la plataforma.
 
 | Plataforma | Caption máx. | Visible antes del corte | Hashtags |
 |---|---|---|---|
-| **Instagram — feed** | 2.200 | **~125 caracteres** | Máx. 30 · **recomendado 3-5** |
-| **Instagram — Reels** | 2.200 | **~55 caracteres** | Máx. 30 · **recomendado 3-5** |
+| **Instagram — feed** | 2.200 | **~125 caracteres** | **Máx. 5** · recomendado 3-5 |
+| **Instagram — Reels** | 2.200 | **~55 caracteres** | **Máx. 5** · recomendado 3-5 |
 | **TikTok** | 4.000 *(incluye hashtags y menciones)* | Pocas líneas, varía | Dentro del límite total |
 
 | Plataforma | Estado |
 |---|---|
-| Facebook · LinkedIn · X · YouTube | ⚠️ **SIN VERIFICAR.** Se consulta la fuente de la plataforma antes de usarlos y se anota la fecha acá |
+| Facebook · LinkedIn · X · YouTube | El límite lo da **`validate_post_length`** de Zernio: devuelve el conteo y el límite de cada plataforma |
 
 🛑 **No se inventa un límite.** Un caption cortado por un límite que nadie verificó sale mal
 publicado y no se puede editar en todas las plataformas.
 
-> **El límite de Reels (~55) es el más cruel del repo.** Un hook de ④ de 80 caracteres entra en el
-> caption pero **no se ve**. Ahí es donde el hook se reordena, nunca se reescribe.
+**El límite duro lo vuelve a comprobar Zernio** antes de programar (`validate_post_length` ·
+`validate_post`, en `po-carga`). **Lo que Zernio no mide es cuánto se ve antes del corte:** eso es de
+esta capa.
+
+> **El límite de Reels (~55) es el más cruel del repo.** Un hook de ④ Creatividad de 80 caracteres
+> entra en el caption pero **no se ve**. Ahí es donde el hook se reordena, nunca se reescribe.
 
 ## 3B · El email: asunto y preheader
 
@@ -84,23 +88,23 @@ Preheader: "[la segunda línea: completa el asunto, no lo repite]"
 
 | Regla | Por qué |
 |---|---|
-| **El asunto es el hook de ④**, acortado — no uno nuevo | Cambiarlo es cambiar el mensaje |
+| **El asunto es el hook de ④ Creatividad**, acortado — no uno nuevo | Cambiarlo es cambiar el mensaje |
 | **El preheader no repite el asunto** | Repetirlo desperdicia el único renglón extra que hay |
 | 🛑 **El asunto no promete algo que el cuerpo no cumple** | Es la forma más rápida de que marquen spam |
 | 🛑 **Nada de mayúsculas gritadas ni de `RE:` falsos** | Además de engañoso, dispara los filtros |
 | **Sin hashtags y sin emojis decorativos** | No es una red social |
 
-El **cuerpo** es el copy de ④ acomodado al formato: mismos cortes, mismo CTA. Si no entra sin
-romperse, es una devolución a ④, igual que en social.
+El **cuerpo** es el copy de ④ Creatividad acomodado al formato: mismos cortes, mismo CTA. Si no
+entra sin romperse, es una devolución a ④ Creatividad, igual que en social.
 
 ## 4 · Hashtags — los que corresponden, no los que caben
 
 | Regla | Por qué |
 |---|---|
-| **3-5 en Instagram**, no 30 | El máximo no es la recomendación |
+| **3-5 en Instagram** · el máximo son 5 | Instagram no permite más |
 | **Relacionados con la pieza**, no con la marca en general | Un hashtag genérico no trae a nadie |
 | **Nunca inventados sobre volumen** | Si no sabemos cuánto se usa un hashtag, se dice: no se afirma que *"tiene alcance"* |
-| **Los de marca van siempre**, si ②B los definió | Consistencia |
+| **Los de marca van siempre**, si ②B Branding los definió | Consistencia |
 | 🛑 **Ninguno que prometa algo** que la pieza no cumple | Es un claim con otro formato |
 
 ## 5 · Alt text — obligatorio en toda pieza con imagen
@@ -110,8 +114,8 @@ hashtags.
 
 | ❌ | ✅ |
 |---|---|
-| *"Nuestro delicioso menú ejecutivo"* | *"Plato con proteína, arroz y ensalada servido en mesa de madera, vapor visible"* |
-| *"Promo imperdible #menu #almuerzo"* | *"Placa con texto: Menú ejecutivo Q85, lunes a viernes"* |
+| Adjetivos: *"nuestro delicioso producto"* | Lo que se ve: el objeto, dónde está, qué pasa en el cuadro |
+| Hashtags o promo: *"promo imperdible #…"* | El texto de la placa, literal |
 
 🛑 **No se autogenera con adjetivos.** Si la pieza tiene texto en pantalla, el alt text lo incluye:
 es la única forma de que alguien con lector de pantalla sepa qué dice.
@@ -120,14 +124,14 @@ es la única forma de que alguien con lector de pantalla sepa qué dice.
 
 ```
 | Caracteres         | 412 / 2.200                                          |
-| Antes del corte    | "Tu almuerzo llega antes de que termines de conte..." |
+| Antes del corte    | "<lo que se lee antes del «más»>"                     |
 | ¿Sobrevive el hook?| ✅                                                    |
-| Hashtags           | 4 — #almuerzo #guatemala #menuejecutivo #zona10      |
-| Alt text           | "Plato del menú servido en mesa, vapor visible"       |
+| Hashtags           | 4 — #<tema> #<categoría> #<ciudad> #<zona>           |
+| Alt text           | "<qué se ve y qué dice el texto en pantalla>"         |
 ```
 
-**Y qué se cambió respecto de ④, y por qué.** Si la respuesta es *"nada, entró tal cual"*, se
-escribe: es la mejor noticia posible y deja constancia de que no se tocó.
+**Y qué se cambió respecto de ④ Creatividad, y por qué.** Si la respuesta es *"nada, entró tal
+cual"*, se escribe: es la mejor noticia posible y deja constancia de que no se tocó.
 
 ---
 
@@ -138,10 +142,10 @@ escribe: es la mejor noticia posible y deja constancia de que no se tocó.
 - [ ] En la ruta email: **asunto y preheader escritos**, el preheader no repite el asunto, y el
       asunto no promete nada que el cuerpo no cumpla
 - [ ] El conteo de caracteres está anotado contra el límite **con su fecha de verificación**
-- [ ] 🛑 **Ningún límite fue inventado** — los no verificados están marcados `⚠️ SIN VERIFICAR`
+- [ ] 🛑 **Ningún límite fue inventado** — los que no están en la tabla salen de `validate_post_length`
 - [ ] Los hashtags son **3-5 en Instagram** y están relacionados con la pieza
 - [ ] 🛑 **Ningún hashtag afirma alcance** sin dato que lo respalde
 - [ ] **Alt text escrito** en toda pieza con imagen, describiendo lo que se ve y el texto en pantalla
-- [ ] Está anotado **qué se cambió respecto de ④ y por qué** — o que no se cambió nada
-- [ ] Lo que no entraba sin romperse se **devolvió a ④** con motivo 5 y **dos alternativas**
-- [ ] El caption respeta el **tono de voz y los do's & don'ts** de ②B
+- [ ] Está anotado **qué se cambió respecto de ④ Creatividad y por qué** — o que no se cambió nada
+- [ ] Lo que no entraba sin romperse se **devolvió a ④ Creatividad** con motivo 5 y **dos alternativas**
+- [ ] Si ②B Branding tiene guía, el caption respeta su **tono de voz, sus do's & don'ts y cómo se nombra la marca**

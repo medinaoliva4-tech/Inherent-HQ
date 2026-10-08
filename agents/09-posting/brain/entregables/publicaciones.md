@@ -1,11 +1,12 @@
 # Publicaciones — [Cliente]
 
 **Ciclo:** [x] · **Campaña(s):** [nombres] · **Fecha:** [aaaa-mm-dd] · **Zona horaria:** [x]
-**Gates:** captions [✅/⬜] · paquete de carga [✅/⬜]
+**Programado:** [✅ / ⬜] · [aaaa-mm-dd] — a más tardar el día 19
 
-> Este documento lo lee **quien aprueba**. Acompaña a `publer-import.csv`, que es el que se sube.
+> Este documento lo lee **el COO** para el QA final del ciclo. Lo programado queda registrado
+> en `calendario-de-publicacion.csv`, con su `zernio_post_id` y su estado.
 > 🛑 **El mensaje es de ④ Creatividad.** Acá se adapta el largo y el formato, nunca la idea.
-> Fuente del copy: `clients/<cliente>/data/ideas-<formato>.md`.
+> Fuente del copy: `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`.
 
 ---
 
@@ -13,10 +14,10 @@
 
 | | |
 |---|---|
-| **Publicaciones en el archivo** | [n] |
+| **Publicaciones a programar en Zernio** | [n] |
 | **Piezas sin archivo final** | [n] → [de quién se esperan] |
-| **Devueltas** | [n] → ④ [n] · ⑥A [n] · ⑥B [n] |
-| **Claims ⏸️ que no se cargan** | [n] |
+| **Devueltas** | [n] → ④ Creatividad [n] · ⑥A Diseño gráfico [n] · ⑦ Video Editing [n] |
+| **Claims ⏸️ que no se programan** | [n] |
 | **Hora con dato / ⚠️ SIN DATOS** | [n] / [n] |
 
 | id | id_creativo | Cuenta | Formato | Fecha y hora | Estado |
@@ -29,13 +30,14 @@
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-007` — ver `clients/<cliente>/data/ideas-reel.md` §CR-007 |
+| **Pieza de ④ Creatividad** | `CR-007` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-reel.md` §CR-007 |
 | **Campaña** | |
-| **Cuenta** | `@cliente` — 🛑 la cuenta concreta, no *"Instagram"* |
+| **Cuenta** | `@cliente` — 🛑 la cuenta concreta, no *"Instagram"* · ID de Zernio: `[account_id]` |
 | **Canal · formato** | |
-| **Fecha y hora** | [aaaa-mm-dd hh:mm] · [con dato / ⚠️ SIN DATOS — hora de ③] |
-| **Archivo** | [nombre exacto del export de ⑥A o ⑥B] |
-| **Ruta / URL pública** | [Drive] · [URL que va en `Media URL`] |
+| **Fecha y hora** | [aaaa-mm-dd hh:mm] · [con dato / ⚠️ SIN DATOS — hora de ③ Marketing] |
+| **Archivo** | [nombre exacto del export de ⑥A Diseño gráfico o ⑦ Video Editing] |
+| **Ruta / media en Zernio** | [Drive] · [URL de la media subida a Zernio, validada con `validate_media`] |
+| **Post en Zernio** | [`zernio_post_id`, al programar] |
 
 ### Caption
 
@@ -43,11 +45,11 @@
 Reels antes del *"… más"*.
 
 ```
-[Línea 1 — el hook de ④, entero, antes del corte]
+[Línea 1 — el hook de ④ Creatividad, entero, antes del corte]
 
 [El cuerpo: el valor, acomodado a la plataforma]
 
-[El CTA de ④, según la etapa]
+[El CTA de ④ Creatividad, según la etapa]
 
 [hashtags]
 ```
@@ -60,8 +62,8 @@ Reels antes del *"… más"*.
 | **Alt text** | *"[literal — describe la imagen, no la adjetiva]"* |
 | **Link** | [si lleva] |
 
-**Qué se cambió respecto de ④, y por qué:** [solo largo y forma. Si hubo que tocar el mensaje,
-🛑 esto es una devolución, no un cambio.]
+**Qué se cambió respecto de ④ Creatividad, y por qué:** [solo largo y forma. Si hubo que tocar el
+mensaje, 🛑 esto es una devolución, no un cambio.]
 
 ### QA de plataforma
 
@@ -75,7 +77,8 @@ Reels antes del *"… más"*.
 | Alt text escrito | | 🛑 no es opcional |
 | Sin watermark de otra app | | 🛑 alcance muerto |
 | Audio correcto y con volumen | | |
-| Claims aprobados | | ✅ / ⏸️ PENDIENTE — **no se carga** |
+| `validate_post` de Zernio sin errores | | [advertencias, si hubo] |
+| Claims aprobados | | ✅ / ⏸️ PENDIENTE — **no se programa** |
 
 **Estado:** 🟢 listo / 🟡 [qué falta, quién y para cuándo] / 🔴 no sale este ciclo / ↩️ DEVUELTO
 
@@ -85,23 +88,23 @@ Reels antes del *"… más"*.
 
 # Los envíos de email
 
-*(Ruta email. 🛑 **No van en `publer-import.csv`**: Publer no manda email, y una fila de `Email` ahí
-hace fallar la importación entera.)*
+*(Ruta email. 🛑 **No se programan en Zernio**: salen por la herramienta de email del cliente, y los
+manda un humano.)*
 
 | | |
 |---|---|
-| **Herramienta** | [la que usa el cliente, de `data/contexto.md` §D · o ⚠️ SIN DATOS] |
+| **Herramienta** | [la que usa el cliente, de `00-onboarding/comprension.md` §D · o ⚠️ SIN DATOS] |
 | **Quién carga y envía** | [nombre] |
 
 ## PO-00X · [asunto en una línea]
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/data/ideas-newsletter.md` §CR-00X |
+| **Pieza de ④ Creatividad** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-newsletter.md` §CR-00X |
 | **Campaña** | |
 | **Lista / segmento** | [a quién se le manda, concreto] |
 | **Fecha y hora** | [aaaa-mm-dd hh:mm] · [zona horaria] |
-| **Imágenes** | [de ⑥A, con su ruta · o `N/A — solo texto`] |
+| **Imágenes** | [de ⑥A Diseño gráfico, con su ruta · o `N/A — solo texto`] |
 
 ### Asunto y preheader
 
@@ -120,7 +123,7 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 
 ### Cuerpo
 
-*(El mensaje de ④, acomodado al formato de email. 🛑 **No se reescribe.**)*
+*(El mensaje de ④ Creatividad, acomodado al formato de email. 🛑 **No se reescribe.**)*
 
 ```
 [el cuerpo literal, con sus saltos de línea]
@@ -128,8 +131,8 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 
 | | |
 |---|---|
-| **CTA** | [el de ④] → [link] |
-| **Qué se cambió respecto de ④, y por qué** | [solo largo y forma] |
+| **CTA** | [el de ④ Creatividad] → [link] |
+| **Qué se cambió respecto de ④ Creatividad, y por qué** | [solo largo y forma] |
 
 ### QA del envío
 
@@ -150,19 +153,18 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 
 # Los envíos manuales
 
-*(Ruta manual. 🛑 **No van en `publer-import.csv`**: Publer no manda WhatsApp ni imprime. Los manda o
-los pega **un humano, a mano**.)*
+*(Ruta manual. 🛑 **No se programan en Zernio**. Los manda o los pega **un humano, a mano**.)*
 
 | | |
 |---|---|
 | **Quién lo manda o lo pega** | [nombre, de `LINKS.md` · o ⚠️ SIN DATOS] |
-| **Quién contesta lo que entre** | [nombre **y horario**. 🛑 Si no hay nadie, se declara: es de **⑧A Orgánico**, no de ⑦] |
+| **Quién contesta lo que entre** | [nombre **y horario**. 🛑 Si no hay nadie, se declara: es de **⑧ Community**, no de ⑨ Posting] |
 
 ## PO-00X · [el mensaje en una línea] — *WhatsApp / SMS*
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/data/ideas-<formato>.md` §CR-00X |
+| **Pieza de ④ Creatividad** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md` §CR-00X |
 | **Lista o difusión** | [cuál, y **a cuántas personas le llega**] |
 | **Fecha y hora** | [aaaa-mm-dd, hh:mm] |
 
@@ -175,7 +177,7 @@ los pega **un humano, a mano**.)*
 ### QA del envío
 | Chequeo | Estado |
 |---|---|
-| El texto es el de ④, adaptado al canal y **sin cambiar el mensaje** | ⬜ |
+| El texto es el de ④ Creatividad, adaptado al canal y **sin cambiar el mensaje** | ⬜ |
 | Entra sin cortarse, y los links funcionan | ⬜ |
 | La lista existe y sé a cuántas personas le llega | ⬜ |
 | 🛑 **Hay alguien que contesta, y sé en qué horario** | ⬜ |
@@ -187,8 +189,8 @@ los pega **un humano, a mano**.)*
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/data/ideas-<formato>.md` §CR-00X |
-| **Archivo final** | [ruta del export de ⑥A · o ⚠️ SIN ARCHIVO, con de quién se espera] |
+| **Pieza de ④ Creatividad** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md` §CR-00X |
+| **Archivo final** | [ruta del export de ⑥A Diseño gráfico · o ⚠️ SIN ARCHIVO, con de quién se espera] |
 | **Dónde va** | [el lugar concreto, no *"el local"*] |
 | **Desde cuándo** | [aaaa-mm-dd] · permanente o hasta [fecha] |
 | **Permiso** | [contrato / municipal / el dueño del espacio — o 🛑 BLOQUEADO] |
@@ -196,7 +198,7 @@ los pega **un humano, a mano**.)*
 ### QA del impreso
 | Chequeo | Estado |
 |---|---|
-| El archivo es el **export final de ⑥A**, no un borrador | ⬜ |
+| El archivo es el **export final de ⑥A Diseño gráfico**, no un borrador | ⬜ |
 | Se lee a la **distancia real** a la que va a estar | ⬜ |
 | 🛑 **Está el permiso** para intervenir ese lugar | ⬜ |
 | Claims validados | ⬜ |
@@ -228,18 +230,19 @@ nosotros.** Toda pieza que no sale lleva motivo escrito.
 
 ---
 
-# Verificación — después de publicar
+# Verificación — el estado en Zernio
 
-🛑 **Se mira la publicación real.** No se da por publicado porque Publer dijo que sí.
+🛑 **El estado sale de Zernio, publicación por publicación** (`posts_get` · `posts_list_failed`). No
+se abren las redes: el control de calidad de lo publicado lo hace el CEO en persona.
 
-*(Ruta social y email. 🛑 **Los impresos de la ruta manual no entran acá**: se verifican con la foto
-del lugar, en su propia sección.)*
+*(Ruta social. 🛑 **Los impresos de la ruta manual no entran acá**: se verifican con la foto del
+lugar, en su propia sección.)*
 
-| id | ¿Salió? | ¿Cuenta correcta? | ¿Se ve bien en móvil? | ¿Link funciona? | ¿Caption completo? | URL |
-|---|---|---|---|---|---|---|
-| PO-001 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | |
+| id | zernio_post_id | Estado en Zernio | ¿Cuenta y fecha coinciden? | ¿Reintentada? | URL |
+|---|---|---|---|---|---|
+| PO-001 | | programada / publicada / fallida | ⬜ | — / ✅ [n] | |
 
-**Fallas y qué se hizo**
+**Lo que sigue fallando**
 
-| id | Qué pasó | Qué se hizo | ¿Se republicó? |
+| id | Qué dice Zernio | Reintentos | Qué hace falta |
 |---|---|---|---|

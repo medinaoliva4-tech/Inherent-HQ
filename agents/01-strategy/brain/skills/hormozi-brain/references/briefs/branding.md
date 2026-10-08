@@ -5,7 +5,7 @@ uso: "Paso 4 del workflow de hormozi-brain. Se copia, se llena y se guarda en el
 
 # Brief de Branding — [cliente]
 
-**Plan:** [sale de `clients/<cliente>/data/plan-contratado.md`] · **Fecha:** [AAAA-MM-DD]
+**Plan:** [sale de `clients/<cliente>/00-onboarding/plan-contratado.md`] · **Fecha:** [AAAA-MM-DD]
 
 ## 1 · Etapa
 

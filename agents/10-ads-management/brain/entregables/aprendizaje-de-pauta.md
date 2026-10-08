@@ -24,7 +24,7 @@
 | A | Qué |
 |---|---|
 | ④ Creatividad | **El patrón de hook que ganó** |
-| ⑥B Video Editing | Cuántas variantes hicieron falta |
+| ⑦ Video Editing | Cuántas variantes hicieron falta |
 | ② Growth | Lo que fue de oferta |
 | ③ Marketing | Si trajo a quien no era |
 

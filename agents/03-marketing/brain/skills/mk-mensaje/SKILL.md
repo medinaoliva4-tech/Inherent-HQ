@@ -5,14 +5,14 @@ description: >
   qué no se dice. Es la ley del ciclo y ④ Creatividad la copia tal cual, así que define el orden
   de prioridad, el mensaje por nivel de awareness y las objeciones que el ciclo responde. Úsala
   cuando pidan "qué decimos primero", "cuál es el mensaje del mes", "qué objeciones atacamos",
-  "ordená los mensajes". Requiere la campaña definida. Cierra con el GATE 1.
+  "ordená los mensajes". Requiere la campaña definida.
 ---
 
 # Capa 2 · Mensaje — la jerarquía del ciclo
 
 | | |
 |---|---|
-| **Consume** | § Idea de campaña · posicionamiento de ② · tono de ②B |
+| **Consume** | § Idea de campaña · posicionamiento de ① Strategy · tono de ②B Branding, si existe |
 | **Produce** | La sección **§ Jerarquía de mensaje** de `estrategia-de-contenido.md` |
 
 > 🔑 **④ Creatividad la copia tal cual. Es la ley del ciclo.** Abreviarla es reescribirla.
@@ -35,7 +35,7 @@ no suma: se siente como contenido suelto, no como una campaña.
 ## 3 · El mensaje por awareness
 
 **El mensaje madre no se dice igual a quien no sabe que tiene el problema que a quien ya nos
-conoce.** Acá se escribe cada versión — ④ la usa para fijar el ángulo de cada pieza.
+conoce.** Acá se escribe cada versión — ④ Creatividad la usa para fijar el ángulo de cada pieza.
 
 | `awareness` | Qué se le dice |
 |---|---|
@@ -83,15 +83,10 @@ cliente dice que le dicen— no de la imaginación.
 | **E · Objeciones** | Las 2-3 que se atacan, con fuente |
 | **F · Lo que NO se dice** | Explícito |
 
-## 7 · 🚦 GATE 1
+## 7 · Checklist
 
-**Acá para el departamento.** Allan aprueba la **campaña** y la **jerarquía de mensaje** antes
-de que se arme un solo slot.
-
-🛑 **Cambiar el mensaje después del calendario tira el calendario entero.** Por eso el gate está
-acá y no más adelante.
-
-## 8 · Checklist
+🛑 **Cambiar el mensaje después del calendario tira el calendario entero.** Por eso la campaña y
+la jerarquía se auto-revisan acá, antes de que se arme un solo slot.
 
 - [ ] Hay **un** mensaje madre, no dos
 - [ ] Los soportes tienen prueba, no adjetivos
@@ -99,4 +94,3 @@ acá y no más adelante.
 - [ ] Las objeciones salen de ① Strategy, **con fuente**
 - [ ] **Lo que NO se dice** está escrito
 - [ ] Ningún mensaje promete algo fuera de «Capacidades reales»
-- [ ] **Allan aprobó el GATE 1**

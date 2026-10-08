@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Conversión · § La escalera · la operación real de ① |
+| **Consume** | § Conversión · § La escalera · la operación real de ① Strategy |
 | **Produce** | La herramienta + la sección **§ Herramientas** de `motor-de-crecimiento.md` |
 
 ## 1 · Cuántas, según el plan

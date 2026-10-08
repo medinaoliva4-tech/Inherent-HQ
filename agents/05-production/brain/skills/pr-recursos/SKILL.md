@@ -16,7 +16,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · las guidelines y el banco de assets de ②B Branding · las cotizaciones del `_INPUTS/` del cliente |
+| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · la guía y el banco de assets de ②B Branding, si existen · las cotizaciones de `99-referencias/recibido/` del cliente |
 | **Produce** | Las columnas **`locacion`**, **`talento`**, **`recursos`**, **`equipo`** y **`riesgo`** de `plan-de-produccion.csv` · las secciones **§ Lo que hay que conseguir** y **§ Permisos y autorizaciones** de `plan-de-rodaje.md`, y los **Riesgos del día** de cada jornada |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:
@@ -24,14 +24,14 @@ Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla d
 
 **Qué es:** convertir una lista de cosas en **compromisos con nombre y fecha**.
 **Qué no es:** no es cotizar el ciclo (eso es Capa 4) y **no es comprometer nada**: 🛑 ninguna
-reserva, convocatoria ni compra antes del **GATE 1**. Un *"aparté la fecha por las dudas"* ya es un
+reserva, convocatoria ni compra antes de cerrar el presupuesto (**Capa 4**). Un *"aparté la fecha por las dudas"* ya es un
 compromiso.
 
 ## Cómo se llenan las columnas
 
 | Columna | Qué lleva |
 |---|---|
-| `locacion` | El **lugar concreto**, no el tipo de lugar heredado de ④ |
+| `locacion` | El **lugar concreto**, no el tipo de lugar heredado de ④ Creatividad |
 | `talento` | **Quién específicamente**, no *"una persona joven"* |
 | `recursos` | **Producto + props + vestuario + arte/ambientación en una sola celda**, separados por `;` |
 | `equipo` | Cámara, óptica, soporte, luz, audio — **derivado del `encuadre`** |
@@ -98,7 +98,7 @@ se espera a ver si aparece: a 48 h ya no hay margen para conseguir un reemplazo.
 
 🛑 **Una locación sin visita ni fotos actuales es 🔴**, por más que *"la conozcamos"*.
 
-- La locación se elige para **cumplir el `tipo_de_lugar` que pidió ④**, no para lucirse: una cocina
+- La locación se elige para **cumplir el `tipo_de_lugar` que pidió ④ Creatividad**, no para lucirse: una cocina
   de diseño espectacular puede contradecir el mood pedido.
 - **El permiso se gestiona primero.** Es lo único que puede anular la jornada entera el día antes.
 - **Exterior = plan B obligatorio**: interior alternativo o **fecha de reemplazo reservada**.
@@ -129,7 +129,7 @@ agenda) · creador o influencer (trae audiencia · **trae condiciones de uso y v
 🛑 **Sin cesión firmada no se graba a esa persona** —incluidas las de fondo identificables—. Es lo
 único que vuelve a morder meses después, con la pieza ya pauteada.
 
-**La `emocion` heredada de ④ es la instrucción de dirección.** No el concepto, no el hook: la
+**La `emocion` heredada de ④ Creatividad es la instrucción de dirección.** No el concepto, no el hook: la
 emoción. Se dirige con **situación**, nunca con adjetivos de resultado.
 
 ❌ *"Hacelo más natural"*, *"con más energía"* ✅ *"Contalo como si acabaras de darte cuenta, no como si lo supieras hace años"*
@@ -150,7 +150,7 @@ bloque**. Nunca se convoca a alguien para *"estar disponible todo el día"* sin 
 | **Cenital** (mesa, producto) | 35-50 mm | Brazo o columna cenital | Difusa pareja | Sin audio |
 | **Pantalla partida / captura** | N/A | N/A | N/A | N/A |
 
-🛑 **Si el encuadre pide algo que no tenemos, se alquila o se devuelve a ④ con alternativa** — el
+🛑 **Si el encuadre pide algo que no tenemos, se alquila o se devuelve a ④ Creatividad con alternativa** — el
 encuadre no se cambia.
 
 **Audio — lo que más se descubre tarde:** si alguien habla en cuadro va **solapa y respaldo de
@@ -170,7 +170,7 @@ sin plan B es un 🔴.**
 | Dependencia | Plan B mínimo exigible |
 |---|---|
 | **Clima** (exterior) | Locación interior alternativa, o **fecha de reemplazo reservada** |
-| **Talento** | **Segundo nombre confirmado**, o reescritura a manos/detalle **propuesta a ④** |
+| **Talento** | **Segundo nombre confirmado**, o reescritura a manos/detalle **propuesta a ④ Creatividad** |
 | **Permiso** | Locación alternativa, o versión **sin el fondo identificable** |
 | **Producto** | **Unidad de respaldo**, o la escena se mueve a la jornada siguiente |
 
@@ -182,16 +182,17 @@ sin plan B es un 🔴.**
 | Buscar **referencias de locación** | Búsqueda web / Maps | `ask` |
 | **Cotizar** alquiler de equipo o locación | Búsqueda web | `ask` |
 | **Clima previsto** para exteriores | Búsqueda web | `ask` |
-| Armar el Sheet de seguimiento | Google Sheets | `ask` — **solo post-GATE 1** |
-| Agendar jornadas | Calendario | `ask` — **solo post-GATE 2** |
-| Subir material | Drive (escritura) | `ask` — **solo post-GATE 3** |
+| Armar el Sheet de seguimiento | Google Sheets | `ask` — **solo con el presupuesto cerrado** |
+| Agendar jornadas | Calendario | `ask` — **solo con el presupuesto cerrado y el call sheet completo** |
+| Subir material | Drive (escritura) | `ask` — **solo con el manifiesto de entrega cruzado** |
 
-**Qué NO se usa desde Producción:** Figma (es de ⑥A) · editores de video y color (⑥B) ·
+**Qué NO se usa desde Producción:** Figma (es de ⑥A Diseño gráfico) · editores de video y color (⑦ Video Editing) ·
 **generadores de imagen o video** —no hay; Producción consigue material **real**, y si la pieza
-pide media que no se puede grabar, se devuelve a ④— · Ad Library y Meta Ads (⑧B y ④) · publicación y programación (⑦).
+pide media que no se puede grabar, se devuelve a ④ Creatividad— · Ad Library y Meta Ads (⑩ Ads y ④ Creatividad) · publicación y
+programación (⑨ Posting).
 
-**Reglas de permiso:** nada se escribe afuera antes de su gate · **nada destructivo**: el material no
-se borra, se marca · **ninguna reserva ni compromiso antes del GATE 1** · toda cotización se registra
+**Reglas de permiso:** nada se escribe afuera antes de su momento · **nada destructivo**: el material no
+se borra, se marca · **ninguna reserva ni compromiso antes de cerrar el presupuesto** · toda cotización se registra
 con **moneda y fecha** —un número sin fecha caduca y no sirve para la Capa 7— · los datos de contacto
 de talento y proveedores **no se pegan en herramientas externas** sin necesidad operativa.
 
@@ -211,7 +212,7 @@ de talento y proveedores **no se pegan en herramientas externas** sin necesidad 
 - [ ] `locacion` es un **lugar concreto** y `talento` es **quién específicamente**
 - [ ] La celda `recursos` fusiona **producto; props; vestuario; arte** separados por `;`, ítem por ítem — *"ambientación de oficina"* no es un ítem
 - [ ] El `equipo` se **derivó del `encuadre`**, no se eligió por gusto
-- [ ] 🛑 **Nada se comprometió antes del GATE 1**: ni reserva, ni convocatoria, ni compra
+- [ ] 🛑 **Nada se comprometió antes de cerrar el presupuesto**: ni reserva, ni convocatoria, ni compra
 - [ ] Toda cotización quedó registrada con **moneda y fecha**
 
 **Handoff →** `pr-presupuesto` (Capa 4). Un recurso sin origen no se puede costear, y un recurso sin

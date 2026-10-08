@@ -6,9 +6,9 @@
 
 ---
 
-## 1.1 Heredado de ③ Marketing *(punto de partida — no se re-cosecha)*
+## 1.1 Heredado de la ingeniería inversa de ① Strategy *(si existe — punto de partida, no se re-cosecha)*
 
-De la ② ingeniería inversa §1.3b (tabla 15×7):
+De `ingenieria-inversa.md` §1.3b (tabla 15×7) — o `⚠️ SIN DATOS — sin tabla 15×7`:
 
 | # de fila | Capa | Patrón | Marca | Aplica a qué slot |
 |---|---|---|---|---|
@@ -39,13 +39,13 @@ De la ② ingeniería inversa §1.3b (tabla 15×7):
 |---|---|---|---|---|---|---|
 | | | | | | | |
 
-## 1.7 Verificación anti-default *(contra el mapa de saturación de ② Estrategia)*
+## 1.7 Verificación anti-default *(contra el mapa de saturación de `ingenieria-inversa.md`, si existe — si no, `⚠️ SIN DATOS`)*
 
 | Patrón | ¿Está en el mapa de saturación? | Veredicto |
 |---|---|---|
 | | sí / no | 🛑 descartado (es el default) / conservar estructura e invertir / 🟢 entra |
 
-## 1.8 Banco de hooks propios *(de `aprendizaje-creativo.md` del ciclo anterior — van primero)*
+## 1.8 Banco de hooks propios *(de `aprendizaje-creativo.md` de un ciclo anterior, si existe — van primero)*
 
 | Hook (texto) | Caja | Goal en el que ganó | Métrica | Veces usado | ¿Fatigado? |
 |---|---|---|---|---|---|

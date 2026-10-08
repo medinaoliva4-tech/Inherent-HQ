@@ -12,8 +12,9 @@ description: >
 
 Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del bloque 02.
 
-> Si el input es escaso: **documentá menos**. Nunca completes con inferencia.
-> Lo que falta va como `⚠️ SIN DATOS — [qué falta y cómo conseguirlo]`.
+> Lo que dice el CEO o el cliente **se completa con research público, con fuente** (§F).
+> **Nunca se completa con inferencia.** Lo que no aparece ni ahí va como
+> `⚠️ SIN DATOS — [qué falta y cómo conseguirlo]`.
 
 ---
 
@@ -29,14 +30,15 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 | 🔷 **MARKETING PRO** $1,450 | Sostener presencia en serio | ⛔ *no corren* | ⬜ Ninguno |
 | 🟨 **ACCELERATE** $2,500 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | Growth · Conversion · Operations *(parcial)* |
 | 🟨 **COMPOUND** $4,200 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
-| ⬜ **Tailor Made** | Se define con Allan | Según alcance | Según alcance |
+| ⬜ **Tailor Made** | Lo define el CEO en el onboarding | Según su pipeline | Según su pipeline |
 
 | Plan | Briefs que se arman |
 |---|---|
-| 🔷 **MARKETING** | Branding · Marketing · Creative |
+| 🔷 **MARKETING** | Branding · Marketing · Creative · Growth *(ligero)* |
 | 🔷 **MARKETING PRO** | + Producción |
-| 🟨 **ACCELERATE** | + **Growth** · **Tecnología** |
+| 🟨 **ACCELERATE** | **Growth completo** · + **Tecnología** |
 | 🟨 **COMPOUND** | + **Sistemas** |
+| ⬜ **Tailor Made** | Los de los departamentos de **Su pipeline** *(`plan-contratado.md`)* |
 
 **Los cuatro incluyen estrategia. Cambia la profundidad, no la existencia.**
 ⚠️ **Pero en la línea 🔷 Marketing la estrategia llega hasta el MENSAJE.**
@@ -55,7 +57,7 @@ Qué vende, en qué paquetes y a qué precio **solo se toca desde 🟨 Accelerat
 
 ⚠️ **Si el objetivo del cliente vive en una capa que su plan no cubre** —por ejemplo quiere
 arreglar su embudo de WhatsApp y está en 🔷 Marketing— **no se entrega igual.**
-**Se avisa a Allan** y se ofrece subir de plan o cotizarlo como extra.
+**Se escala al CEO** y se ofrece subir de plan o cotizarlo como extra.
 
 🛑 **El plan es techo duro.** El agente propone dentro de él, nunca por encima.
 
@@ -115,16 +117,47 @@ ya dijo que no quiere hacer.
 Cierre obligatorio. Ver `../../WORKFLOW.md` §3. Se describe con las 7 preguntas, no se fuerza a
 una lista cerrada.
 
+## F · El research — lo que no dijo el cliente
+
+> **La comprensión no se queda en lo que escribe el CEO.** Se completa con datos públicos, y
+> **cada dato lleva su fuente.** Es la fuente externa que el CEO habilitó para la comprensión.
+
+| Qué se busca | Dónde |
+|---|---|
+| **Perfiles** | Instagram · TikTok · Facebook · web: bio, seguidores, qué publican, qué les comentan |
+| **Reseñas** | Google y las plataformas de la industria: qué elogian y de qué se quejan, con sus palabras |
+| **Ubicación** | Google Maps: sedes, horarios, calificación y número de reseñas |
+| **Menú, catálogo y precios** | La web, las redes o el menú publicado |
+| **Competencia** | Quiénes compiten por el mismo cliente, qué ofrecen y a qué precio |
+
+**Cómo se escribe:**
+
+| Origen | Etiqueta |
+|---|---|
+| Lo dijo el CEO | `[dice el CEO]` |
+| Lo dijo el cliente | `[dice el cliente, sin verificar]` |
+| Salió del research | `[fuente: <link>]` |
+
+- 🛑 **Sin link no es research.** Un dato público sin fuente no entra.
+- **Si el research contradice lo que dijo el CEO o el cliente, se escriben los dos.** El research
+  no borra lo dicho: lo contrasta. Decidir quién tiene razón es del bloque 02.
+- **El research describe, no interpreta**, igual que el resto del bloque.
+- Las herramientas son las del slot de **Scraping** y la búsqueda web *(ver `inherent/05-OPERACION.md`
+  → la tabla de slots)*. **El gasto respeta el tope de scraping por cliente de `inherent/06-ECONOMIA.md`.**
+- **Las cuentas o sedes que el CEO dijo que no son del cliente** *(otra franquicia, otro dueño)*
+  **no entran**, aunque aparezcan con el mismo nombre.
+
 ---
 
 ## Salida
 
-**`clients/<cliente>/data/contexto.md`** — toda la data cruda de §A a §E, con su etiqueta de
+**`clients/<cliente>/00-onboarding/comprension.md`** — toda la data cruda de §A a §E, con su etiqueta de
 confianza por dato. **Es el archivo que ④ Creatividad, ⑤ Producción y ⑨ Posting leen** cuando
 necesitan la audiencia actual, la capacidad o las restricciones del cliente.
 
 ## Antes de cerrar
 - [ ] Todo lo que dice el cliente está etiquetado como tal, no como hecho
+- [ ] **Se hizo el research de §F** y cada dato público tiene su link
 - [ ] Los huecos están nombrados con `⚠️ SIN DATOS`, no disimulados
 - [ ] Hay arquetipo descrito
 - [ ] **Ninguna frase interpreta ni recomienda** — eso es del bloque 02

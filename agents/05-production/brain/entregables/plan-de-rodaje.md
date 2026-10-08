@@ -1,7 +1,7 @@
 # Plan de rodaje — [Cliente]
 
 **Campaña(s):** [nombres] · **Ciclo:** [x] · **Fecha:** [aaaa-mm-dd]
-**Gates:** presupuesto [✅/⬜] · plan de rodaje [✅/⬜] · entrega [✅/⬜]
+**Presupuesto contra la referencia:** [✅ dentro / ⏸️ ESCALADO AL CEO: qué gasto y por cuánto / ⚠️ SIN DATOS]
 
 > Este documento es **con el que se rueda**. Acompaña a `presupuesto.md` (lo que ve el cliente) y se
 > apoya en `plan-de-produccion.csv` (interno, una fila por escena).
@@ -16,7 +16,7 @@
 
 > 🛑 **Lo que dice la columna "Qué se graba" viene de ④ Creatividad y no se cambia en el set.** Si
 > algo no se puede grabar como está escrito, se avisa y se devuelve — no se resuelve improvisando.
-> Fuente: `clients/<cliente>/data/ideas-<formato>.md`.
+> Fuente: `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`.
 
 ---
 
@@ -65,7 +65,7 @@ No es el orden en que se ve la pieza: es el orden que menos tiempo pierde movien
 
 | # | id | Qué se graba | Encuadre | Dur. | Tiempo | Qué necesitás a mano |
 |---|---|---|---|---|---|---|
-| 1 | PR-001 | [acción, literal de ④] | [encuadre, literal de ④] | [s] | [min] | [producto, props, equipo de esa toma] |
+| 1 | PR-001 | [acción, literal de ④ Creatividad] | [encuadre, literal de ④ Creatividad] | [s] | [min] | [producto, props, equipo de esa toma] |
 
 **Comida — [hh:mm] a [hh:mm]**
 
@@ -80,7 +80,7 @@ No es el orden en que se ve la pieza: es el orden que menos tiempo pierde movien
 
 🛑 **Solo va acá lo que alguien dice frente a cámara.** La voz en off se graba otro día, en un lugar
 silencioso — no ocupa tiempo de jornada, y se declara así. El texto en pantalla tampoco va: lo pone
-⑥B en edición.
+⑦ Video Editing en edición.
 
 > **PR-00X — [quién]:** [el texto literal, o los puntos a tocar si es una persona real y no un actor]
 
@@ -136,14 +136,14 @@ Esto se define **antes** de grabar. Renombrar 400 archivos al final es cuando se
 ```
 <cliente>_<campana>_<pieza>_<escena>_<tipo>_<toma>.<extensión>
 
-acme_menuejecutivo_CR-007_E2_video_t03.mov
-acme_menuejecutivo_CR-007_E2_video_t03_SELECT.mov     ← las tomas buenas llevan _SELECT
-acme_menuejecutivo_LOC-salon_ambiente.wav
+<cliente>_<campaña>_CR-007_E2_video_t03.mov
+<cliente>_<campaña>_CR-007_E2_video_t03_SELECT.mov     ← las tomas buenas llevan _SELECT
+<cliente>_<campaña>_LOC-salon_ambiente.wav
 ```
 
 Todo en minúsculas, sin espacios ni tildes. El número de toma con dos dígitos (`t03`, no `t3`).
 
-**Dónde va el material:** [ruta de Drive]
+**Dónde va el material:** [link al Drive del cliente, en `04-contenido/AAAA-MM/produccion/`] · se anota en `MATERIAL.md`
 
 ```
 00_RAW/          todo lo grabado, incluido el descarte, ordenado por jornada
@@ -193,15 +193,15 @@ escena, con el nombre de archivo de cada toma, vive en `plan-de-produccion.csv`,
 
 # Verificación y devoluciones
 
-*(Interno. Es el rastro de que se verificó antes de gastar, y de lo que se devolvió a ④.)*
+*(Interno. Es el rastro de que se verificó antes de gastar, y de lo que se devolvió a ④ Creatividad.)*
 
 ### El techo de realidad
 ```
-Presupuesto disponible: [monto + moneda + fecha]
-Días de rodaje posibles: [n]   — según fechas de preparación de ③ Marketing
-Capacidad declarada:     [n]   — de ① Strategy
+Días de rodaje posibles:    [n]   — según fechas de preparación de ③ Marketing
+Capacidad:                  [n]   — horas y sesiones del plan · la declarada en ① Strategy si es menor
+Presupuesto de referencia:  [monto + moneda + fecha / ⚠️ SIN DATOS]   — del onboarding, si existe
 ```
-**¿Entra?** [✅ sí / ⚠️ se excede en [qué] → devuelto a ③ y ④, con las filas concretas]
+**¿Entra?** [✅ sí / ⚠️ se excede en [qué] → devuelto a ③ Marketing y ④ Creatividad, con las filas concretas]
 
 ### Producibilidad, pieza por pieza
 | Pieza | Shot list completo | Acción y lugar por escena | Mood y emoción | ¿Reutiliza material? | Veredicto |
@@ -215,10 +215,10 @@ Capacidad declarada:     [n]   — de ① Strategy
 🛑 Si esta tabla queda vacía, el cruce no se hizo. *"Sin material previo"* escrito es un resultado.
 
 ### Escenas devueltas a ④ Creatividad
-| Escena | Vuelta | Motivo (de los 6) | Qué intención se rompería | Alternativa 1 | Alternativa 2 | Fecha límite | Respuesta de ④ + fecha |
+| Escena | Vuelta | Motivo (de los 6) | Qué intención se rompería | Alternativa 1 | Alternativa 2 | Fecha límite | Respuesta de ④ Creatividad + fecha |
 |---|---|---|---|---|---|---|---|
 
-*Respuesta de ④: una de 4 — `alternativa 1` · `alternativa 2` · `alternativa nueva` · `se retira`.
+*Respuesta de ④ Creatividad: una de 4 — `alternativa 1` · `alternativa 2` · `alternativa nueva` · `se retira`.
 Plazo: 2 días hábiles, o antes si la jornada lo exige. Vencido sin respuesta: la escena queda fuera de
-la jornada y decide ③ Marketing. Vuelta 3: ya no la resuelven los agentes — deciden el lead de ④ y el
-de ⑤.*
+la jornada y decide ③ Marketing. Vuelta 3: ya no la resuelven los agentes — deciden el lead de ④ Creatividad y el
+de ⑤ Producción.*

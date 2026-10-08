@@ -1,7 +1,7 @@
 ---
 name: pr-desglose
 description: >
-  Capa 1 de ⑤ Producción — convierte cada escena aprobada en la lista concreta de cosas que alguien
+  Capa 1 de ⑤ Producción — convierte cada escena verificada en la lista concreta de cosas que alguien
   tiene que conseguir, con las 8 categorías: locación, talento, producto, props, vestuario, arte y
   ambientación, equipo técnico y permisos y legales. Parte cada fila creativa en una fila de
   producción por escena —la unidad que después se agrupa, se cuesta y se graba— y escribe las filas
@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | La sección § Verificación y devoluciones de `plan-de-rodaje.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en ④ Creatividad (`clients/<cliente>/data/`) · las guidelines de ②B Branding |
+| **Consume** | La sección § Verificación y devoluciones de `plan-de-rodaje.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en ④ Creatividad (`clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · la guía de ②B Branding, si existe |
 | **Produce** | Las **filas base de `plan-de-produccion.csv`**: `id`, `id_creativo`, `campana`, `escena`, `accion`, `encuadre`, `duracion_s`, `destino`, `estado` + el desglose de las 8 categorías que alimenta las columnas `locacion`, `talento`, `recursos`, `equipo` |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:
@@ -38,7 +38,7 @@ distintos.
   presupuesto sin justificación.
 - El vínculo `id_creativo` + `escena` **nunca se rompe**: es lo que permite volver de un archivo
   entregado hasta la MUST BE TRUE que lo justificó.
-- 🛑 **No se agrega ninguna escena** que ④ no haya pedido. Si hace falta una, **se devuelve** para
+- 🛑 **No se agrega ninguna escena** que ④ Creatividad no haya pedido. Si hace falta una, **se devuelve** para
   que la agregue ella.
 - Lo que la Capa 0 marcó `reutiliza` **no se desglosa**: ya existe.
 
@@ -49,7 +49,7 @@ distintos.
 
 🛑 **Lo que se hereda no se toca. Lo que se decide es el trabajo de Producción.**
 
-| Se hereda de ④ (no se cambia) | Lo decide Producción |
+| Se hereda de ④ Creatividad (no se cambia) | Lo decide Producción |
 |---|---|
 | La **acción** de cada escena | Cómo se logra esa acción |
 | El **tipo de lugar** (*"cocina de día"*) | **Qué** cocina, de quién, con qué permiso |
@@ -61,7 +61,7 @@ distintos.
 cambiar la intención sin declararlo.
 
 ❌ `accion: "plano de comida"` ✅ `accion: "Manos cortando la proteína, vapor visible"`
-❌ `locacion: "una cocina de día"` ✅ `locacion: "Restaurante zona 10 — cocina, franja 9-13 h"`
+❌ `locacion: "una cocina de día"` ✅ `locacion: "<local del cliente> — cocina, franja 9-13 h"`
 
 ## 3 · Las 8 categorías — ninguna se omite
 
@@ -192,7 +192,7 @@ optimismo, no estimación.)*
 - [ ] `destino` derivado del formato · `estado` = `planificada` en todas las filas
 - [ ] Lo marcado **`reutiliza` en Capa 0 no se desglosó**
 - [ ] 🛑 **No se agregó ninguna escena** que el Excel creativo no pidió
-- [ ] 🛑 **Ninguna decisión creativa fue cambiada** — lo que no se podía, se devolvió a ④
+- [ ] 🛑 **Ninguna decisión creativa fue cambiada** — lo que no se podía, se devolvió a ④ Creatividad
 - [ ] El **inventario consolidado del ciclo** está armado, sin repetir ítems
 - [ ] Todo faltante está marcado `⚠️ SIN DATOS` + a quién pedírselo, **ninguno omitido en silencio**
 

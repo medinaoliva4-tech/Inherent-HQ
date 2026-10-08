@@ -15,14 +15,15 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | La sección **brief del ciclo** de `brief-del-ciclo.md` (🚦 Gate 1) · `swipe-file.md` con sus patrones y cubetas · el **lente de marca** y las guidelines de ②B Branding · la **idea de campaña** y el **mapa de saturación** de ③ Marketing · el avatar y el lenguaje literal del comprador |
+| **Consume** | La sección **brief del ciclo** de `brief-del-ciclo.md` · la **idea de campaña** de ③ Marketing · el avatar y el lenguaje literal del comprador · **si existen:** `swipe-file.md` con sus patrones y cubetas, la guía de marca de ②B Branding y el **mapa de saturación** de `ingenieria-inversa.md` (① Strategy) |
 | **Produce** | En `brief-del-ciclo.md`: un bloque **`## BIG IDEA · <nombre corto>`** por idea del ciclo — frase, insight, técnicas aplicadas, filtro D/N/R, prueba del logo, piezas que cuelgan. Y, en el `ideas-<formato>.md` de cada pieza, la línea **concepto** de su sección `## CR-007 · <concepto>` |
 | **Llena del Excel** | `concepto` de `plan-de-contenido.csv` |
 | **Alimenta** | Hook, tono, emoción y estética de las capas 3, 4 y 5 |
 
 El departamento completo: `agents/04-creative/brain/WORKFLOW.md`.
-🛑 **Sin brief aprobado, sin swipe file o sin lente de marca: DETENÉ** y corré esa capa primero.
-No se improvisa el faltante.
+🛑 **Sin brief: DETENÉ** y corré la Capa 0 primero. No se improvisa el faltante.
+**El swipe file, la guía de marca y el mapa de saturación se usan si existen.** Sin swipe file, la
+idea sale sin referencia y va como `20·apuesta`.
 
 ---
 
@@ -44,11 +45,12 @@ Hacer algo **muy grande o muy chico** lo vuelve interesante al instante.
 - **Dónde pesa:** e-commerce · local · marketplace · infoproducto (el número del resultado)
 
 ### 2 · ESTÉTICA / LENTE
-Tener un **lente de marca** fuerte y predefinido (viene de ②B Branding) y pasarle **cualquier
-referencia** por encima.
+Tener una **estética de marca** fuerte y predefinida —la guía de marca de ②B Branding— y pasarle
+**cualquier referencia** por encima.
 - *"Tomemos esta misma foto, pero en nuestra versión: esta paleta, estas fuentes, este acabado"*
 - Convierte una idea ajena en una idea propia **sin cambiarle la estructura**
-- 🛑 **Requiere que Branding haya definido el lente.** Si no está, se pide — no se inventa
+- 🛑 **Requiere la guía de ②B Branding.** Si no existe, esta técnica no se elige — no se inventa una
+  estética
 - **Dónde pesa:** B2B · institución · marca personal · SaaS
 
 ### 3 · BELLEZA
@@ -81,7 +83,7 @@ Aplicar una emoción que **incomode un poco**: miedo, ego, vergüenza, enojo.
 
 ## Qué técnica pesa según el arquetipo
 
-El arquetipo del cliente (`strategy/clients/<cliente>/nucleo.md` §E) **no cambia la taxonomía,
+El arquetipo del cliente (`clients/<cliente>/01-estrategia/nucleo.md` §E) **no cambia la taxonomía,
 cambia los pesos**. Punto de partida, no verdad:
 
 | Arquetipo | Técnicas que pesan |
@@ -129,7 +131,7 @@ misma idea, la idea no está organizando la pieza.
 | | Pregunta |
 |---|---|
 | **DISTINCTIVENESS** | ¿Puede sentirse inequívocamente como nosotros? |
-| **NOVELTY** | ¿Algo que no se ve todos los días? **Se mide contra el mapa de saturación**, no en abstracto |
+| **NOVELTY** | ¿Algo que no se ve todos los días? **Se mide contra el mapa de saturación** si existe, no en abstracto — si no existe, `⚠️ SIN DATOS` |
 | **RELEVANCE** | ¿Esa novedad le importa a este avatar y a este objetivo? |
 
 **7 · Prueba del logo.** Con el logo de un competidor, ¿alguien nota la diferencia?
@@ -145,7 +147,7 @@ misma idea, la idea no está organizando la pieza.
 3. **Si ninguna técnica salva la referencia, la referencia no servía.** Se vuelve al swipe file.
 4. **La técnica se aplica a la referencia, no a la promesa.** Ninguna técnica justifica cambiar lo
    que la marca afirma. Si la idea necesita otra promesa, o la promesa está mal —y eso se devuelve a
-   ② Estrategia— o la idea no es nuestra.
+   ① Strategy— o la idea no es nuestra.
 5. **1 sola idea por pieza, en 1 frase.**
 6. **Toda idea pasa el filtro del avatar** del brief: si no le habla, se descarta **antes** de
    escribirla.
@@ -177,7 +179,7 @@ misma idea, la idea no está organizando la pieza.
 | Aplicar las 6 técnicas a una pieza | Ninguna se lee. El foco se pierde |
 | *"Lo hicimos más creativo"* sin nombrar la técnica | No es auditable ni repetible: el mes que viene nadie sabe qué funcionó |
 | Usar Tensión como crueldad | Daña la marca y no convierte |
-| Aplicar Estética sin lente de marca definido | Estética arbitraria que no acumula memoria |
+| Aplicar Estética sin guía de marca | Estética arbitraria que no acumula memoria |
 | Elegir la técnica por gusto del creativo | La técnica sale del arquetipo, del objetivo del slot y de qué le falta a la referencia |
 | BIG IDEA que necesita otra promesa | No es nuestra idea. Se devuelve |
 
@@ -191,9 +193,9 @@ misma idea, la idea no está organizando la pieza.
 - [ ] Hay **3 BIG IDEAS**, cada una en **1 sola frase**, con la elegida marcada
 - [ ] La elegida **cuelga de la idea de campaña** de ③ Marketing — no compite con ella
 - [ ] Hook, tono y dirección estética **derivan todos de la misma idea**
-- [ ] Filtro **D/N/R** con las tres explícitas — Novelty medida **contra el mapa de saturación**
+- [ ] Filtro **D/N/R** con las tres explícitas — Novelty medida **contra el mapa de saturación** si existe, o `⚠️ SIN DATOS`
 - [ ] **Prueba del logo:** con el logo de un competidor, ¿alguien nota la diferencia? Si no, **falló**
 - [ ] **1 sola idea por pieza**
 - [ ] La idea **no requiere cambiar la promesa**
 
-**Handoff** → `cr-storytelling` (Capa 3). Después de esa capa corre 🚦 **GATE 2**.
+**Handoff** → `cr-storytelling` (Capa 3).

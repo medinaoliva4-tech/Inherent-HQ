@@ -12,12 +12,12 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Entregables de ① y ② · `clients/<cliente>/` · `inherent/03-OFERTA.md` |
+| **Consume** | Entregables de ① Strategy · `clients/<cliente>/00-onboarding/plan-contratado.md` · `clients/<cliente>/CLAUDE.md` · `inherent/03-OFERTA.md` |
 | **Produce** | La sección **§ El encargo** de `motor-de-crecimiento.md` |
 
 ## 1 · La división — no se elige acá
 
-**② Estrategia la definió en el contexto.** Se copia, no se discute.
+**① Strategy la definió en el contexto.** Se copia, no se discute.
 
 | 🔵 **LOW TICKET** | 🟣 **HIGH TICKET** |
 |---|---|
@@ -27,7 +27,7 @@ description: >
 > 🔑 **El eje es cómo se decide la compra, no quién compra.** Un colchón de $3,000 es B2C y high
 > ticket; un SaaS de $30/mes es B2B y low ticket.
 
-🛑 **Si ② no la definió, se devuelve.** Elegirla acá cambia los tres pilares.
+🛑 **Si ① Strategy no la definió, se devuelve.** Elegirla acá cambia los tres pilares.
 
 ## 2 · Los unit economics — el piso de todo
 
@@ -42,7 +42,7 @@ description: >
 
 | Si falta | Qué se hace |
 |---|---|
-| No hay costo por línea | `⚠️ SIN DATOS` · **no se cambia precio** · se pide a ① |
+| No hay costo por línea | `⚠️ SIN DATOS` · **no se cambia precio** · se pide a ① Strategy |
 | El cliente lo estima de memoria | `[dice el cliente, sin verificar]`. **Se usa con esa etiqueta** |
 
 ## 3 · Qué activa el plan
@@ -51,14 +51,16 @@ description: >
 
 | | 🔷 Marketing / Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
-| Pilar 1 · Oferta | ⛔ | ✅ | ✅ |
+| Pilar 1 · Oferta | 🟡 **Ligero** — qué ofertas se empujan | ✅ | ✅ |
 | Pilar 2 · Canales grandes | ⛔ | ✅ | ✅ |
 | Pilar 3 · Upsells | ⛔ | ✅ | ✅ |
 | Conversion OS | ⛔ | ✅ | ✅ |
 | Herramienta | ⛔ | 1/trimestre | 1/mes |
 | Money OS | ⛔ | ⬜ | ✅ |
 
-🛑 **Sobre un plan de la línea 🔷 Marketing, esta skill BLOQUEA.**
+🔷 **Sobre un plan de la línea Marketing, Growth corre ligero:** solo se elige qué ofertas que ya
+existen se empujan (`gr-oferta`). **No se cambia qué se vende, en qué paquetes ni a qué precio.**
+⬜ **Tailor Made:** se copia lo que declara su pipeline en `plan-contratado.md`.
 
 ---
 
@@ -78,7 +80,7 @@ Ver `inherent/03-OFERTA.md` → «Desde qué facturación tiene sentido cada pla
 
 ### Si factura menos que el piso
 
-🔴 **Se declara en el encargo y se levanta como excepción a Allan.** No se calla.
+🔴 **Se declara en el encargo y se escala al CEO.** No se calla.
 
 | Qué se escribe | Ejemplo |
 |---|---|
@@ -89,7 +91,6 @@ Ver `inherent/03-OFERTA.md` → «Desde qué facturación tiene sentido cada pla
 ⚠️ **No se bloquea el trabajo** — el cliente ya firmó. **Se bloquea el silencio.**
 **Un cliente que no puede pagar el plan con el resultado del plan se va a ir**, y es mejor
 saberlo el mes 1 que el mes 6.
-| Money OS | ⬜ | ⬜ | ✅ |
 
 ## 4 · Qué queda afuera — y se dice
 
@@ -101,7 +102,7 @@ para responder sin prometer de más.
 | ❌ Interno | ✅ Al cliente |
 |---|---|
 | *«Pilar 3 no se activa en la línea Marketing»* | *«Los upsells los trabajamos cuando ya haya gente comprando una vez»* |
-| *«Growth no corre en tu plan»* | *«Tu plan trabaja que te vean y te entiendan. Rediseñar qué vendes y a qué precio es el siguiente paso»* |
+| *«Growth no rediseña la oferta en tu plan»* | *«Tu plan trabaja que te vean y te entiendan. Rediseñar qué vendes y a qué precio es el siguiente paso»* |
 | *«Money OS es Compound»* | *«El análisis de margen por producto entra cuando haya suficientes transacciones para que el dato sea real»* |
 
 ## 5 · Qué escribe
@@ -110,15 +111,15 @@ para responder sin prometer de más.
 
 | Bloque | Qué lleva |
 |---|---|
-| **A · La división** | Cuál, copiada de ② |
-| **B · El pilar roto** | Cuál es el cuello, según ② |
+| **A · La división** | Cuál, copiada de ① Strategy |
+| **B · El pilar roto** | Cuál es el cuello, según ① Strategy |
 | **C · Unit economics** | Precio, costo y margen por línea · CAC · frecuencia · capacidad |
 | **D · Qué activa el plan** | La tabla, con el caso de este cliente marcado |
 | **E · Qué queda afuera** | En lenguaje de cliente |
 
 ## 6 · Checklist
 
-- [ ] La división viene de **② Estrategia**, no se eligió acá
+- [ ] La división viene de **① Strategy**, no se eligió acá
 - [ ] Los unit economics están, o marcados `⚠️ SIN DATOS`
 - [ ] Está claro **qué pilares activa el plan**
 - [ ] Lo que queda afuera está **escrito en lenguaje de cliente**

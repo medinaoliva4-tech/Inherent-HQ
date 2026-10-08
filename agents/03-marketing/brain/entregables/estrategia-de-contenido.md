@@ -12,11 +12,10 @@
 | Archivo | De | Ruta | Estado |
 |---|---|---|---|
 | | ① Strategy | | |
-| | ② Estrategia | | |
-| | ②B Branding | | |
+| | ②B Branding *(si existe)* | | |
 
 ### B · El objetivo del ciclo
-*Literal de ② Estrategia, con plazo y métrica.*
+*Literal de ① Strategy, con plazo y métrica.*
 
 ### C · Las MUST BE TRUE
 | Letra | Qué tiene que ser verdad |
@@ -55,7 +54,7 @@
 ---
 
 ## § Jerarquía de mensaje
-*Capa 2 · `mk-mensaje` · **🚦 GATE 1***
+*Capa 2 · `mk-mensaje`*
 
 ### A · Mensaje madre
 ### B · Soportes

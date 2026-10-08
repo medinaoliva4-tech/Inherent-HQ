@@ -37,11 +37,11 @@ Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qu�
 | Ejecuta | ✅ | ❌ — `--draft` |
 | Audita y monitorea | ❌ | ✅ |
 
-**El plugin propone, AdWhispr ejecuta, Allan aprueba en el medio.**
+**El plugin propone, AdWhispr ejecuta, el CEO aprueba en el medio.**
 
 ## 🔴 Pautar es acción destructiva
 
-🛑 **Nada se lanza ni se mueve de presupuesto sin gate de Allan.**
+🛑 **Nada se lanza ni se mueve de presupuesto sin gate del CEO.**
 **La inversión la pone el cliente, siempre, aparte del fee.**
 
 | 🚦 | Después de | Qué aprueba |

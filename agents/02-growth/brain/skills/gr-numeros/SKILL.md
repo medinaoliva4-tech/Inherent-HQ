@@ -4,7 +4,7 @@ description: >
   Capa 6 de ② Growth — el Money OS, solo en Compound. Calcula qué producto deja y cuál quita,
   cuánto se puede pagar por un cliente y cuánto deja cada uno con el tiempo, y revisa precios y
   estructura para que quede más. Entra solo en Compound porque sin suficientes transacciones el
-  margen por línea es teoría. Lo entrega Allan con Strategy, no un CFO contratado. Úsala cuando
+  margen por línea es teoría. Lo entrega el CEO con Strategy, no un CFO contratado. Úsala cuando
   pidan "cuánto nos deja cada producto", "cuánto podemos pagar por un cliente", "dónde estamos
   perdiendo plata", "los números claros". Requiere Compound y datos reales de transacciones.
 ---
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Transacciones reales del cliente · unit economics de ① · atribución de ⑩ |
+| **Consume** | Transacciones reales del cliente · unit economics de ① Strategy · atribución de ⑩ Ads |
 | **Produce** | La sección **§ Los números** de `motor-de-crecimiento.md` |
 
 ## 1 · ⬜ Solo en Compound
@@ -21,7 +21,7 @@ description: >
 🛑 **Sin transacciones suficientes, el margen por línea es teoría.**
 
 > 🔑 **Es promesa publicada:** *«Tus números claros: qué producto te deja y cuál te quita.»*
-> ⚠️ **No se promete un CFO.** Lo entrega **Money OS con Allan y Strategy.**
+> ⚠️ **No se promete un CFO.** Lo entrega **Money OS con el CEO y Strategy.**
 
 ## 2 · Las cuatro preguntas
 
@@ -38,7 +38,7 @@ description: >
 |---|---|
 | Hay transacciones en un sistema | Se leen. **Se declara el período** |
 | El cliente lo estima de memoria | `[dice el cliente, sin verificar]` · **no se decide sobre eso** |
-| No hay registro | `⚠️ SIN DATOS` · 🔴 **se escala: el primer entregable es armar el registro** |
+| No hay registro | `⚠️ SIN DATOS` · 🔴 **se escala al COO: el primer entregable es armar el registro** |
 
 🛑 **Nunca se inventa un número.** Una decisión de precio sobre un margen estimado puede romper
 el negocio del cliente.
@@ -61,7 +61,7 @@ LTV ÷ CAC
 
 | Resultado | Qué significa |
 |---|---|
-| **Menos de 1** | 🔴 **Se pierde plata con cada cliente nuevo.** Se para la pauta y se escala |
+| **Menos de 1** | 🔴 **Se pierde plata con cada cliente nuevo.** Se escala al CEO para parar la pauta |
 | **1 a 3** | Ajustado. El crecimiento consume caja |
 | **3 o más** | Hay margen para invertir en adquisición |
 

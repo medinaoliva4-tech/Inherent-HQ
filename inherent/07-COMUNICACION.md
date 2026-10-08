@@ -505,8 +505,8 @@ mediocre, **nadie cree nada de lo demás.**
 
 # 8 · La prueba — qué mostrar
 
-**Los casos son clientes reales con testimonio escrito:** NAO y Akai.
-**Los números publicados** *(+42%, 3.1x, −28%)* van con su contexto.
+**Los casos son clientes reales de `clients/`, con testimonio escrito.**
+**Los números publicados** van con su contexto.
 
 🔒 **Lo que paga un cliente nunca se dice.**
 🔑 **Guatemala puede aparecer en el equipo y en los casos. Nunca en la oferta ni en el precio.**

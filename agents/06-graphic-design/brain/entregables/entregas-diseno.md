@@ -18,7 +18,7 @@
 
 ## § El paquete
 
-| `id_creativo` | formato | slides | archivo *(ruta)* | plantilla | `specs_ok` | estado |
+| `id_creativo` | formato | slides | archivo *(link al Drive)* | plantilla | `specs_ok` | estado |
 |---|---|---|---|---|---|---|
 | CR-012 | carrusel | 6 | | portada+desarrollo | ✅ | entregado |
 

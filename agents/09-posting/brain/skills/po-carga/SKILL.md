@@ -1,37 +1,40 @@
 ---
 name: po-carga
 description: >
-  Capa 4 de ⑦ Posting — genera `publer-import.csv` con las 12 columnas exactas de Publer, resuelve
-  las URLs públicas de cada media (un link privado de Drive Publer no lo puede leer) y deja el
-  checklist de qué verificar dentro de Publer antes de apretar programar. Es donde PARA el
-  departamento: deja el archivo listo y lo sube un humano. Úsala cuando pidan "armá el archivo de
-  Publer", "dejalo listo para subir", "exportá el calendario para cargar", "el CSV de publicación".
-  Requiere el GATE 1 de captions. 🛑 No publica, no programa y no manda nada afuera.
+  Capa 4 de ⑨ Posting — programa el ciclo en Zernio. Confirma cada cuenta con su `account_id`
+  explícito (nunca la adivina), sube la media a Zernio y la valida, valida cada post y programa
+  cada publicación a la fecha y hora del calendario. Registra el
+  `zernio_post_id` y el estado de cada una en `calendario-de-publicacion.csv`, y deja listos los
+  paquetes de email y de envío manual. Úsala cuando pidan "programalo en Zernio", "subí el ciclo a
+  Zernio", "dejalo programado", "cargá el calendario en Zernio". Requiere las Capas 0-3 hechas.
+  🛑 Lo que no pasa la validación no se programa, y nunca publica en el acto.
 ---
 
-# Capa 4 · Carga — qué se sube y cómo
+# Capa 4 · Carga — se programa en Zernio
 
 | | |
 |---|---|
-| **Consume** | `calendario-de-publicacion.csv` con `caption_ok` y `specs_ok` en ✅ y el **Gate 1 aprobado** · los captions de `publicaciones.md` · las rutas de los archivos en Drive |
-| **Produce** | **`publer-import.csv`** con las 12 columnas exactas · el **checklist de subida** · la columna `estado` en `listo` |
+| **Consume** | `calendario-de-publicacion.csv` con `caption_ok` y `specs_ok` en ✅, y `cuenta`, `fecha` y `hora` puestas · los captions y el alt text de `publicaciones.md` · los archivos finales en Drive · el **ID de Zernio** de cada cuenta, de `clients/<cliente>/00-onboarding/LINKS.md` *(o de `05-comunidad/respuestas.md`, si ⑧ Community ya lo anotó)* |
+| **Produce** | Las publicaciones **programadas en Zernio** · en `calendario-de-publicacion.csv`, el **`zernio_post_id`** de cada una y su `estado` en `programada` · § Los envíos de email y § Los envíos manuales de `publicaciones.md`, con sus checklists |
 
-Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantilla:
-`agents/09-posting/brain/entregables/publer-import.csv`.
+Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantilla del registro:
+`agents/09-posting/brain/entregables/calendario-de-publicacion.csv`. Herramienta: el MCP de Zernio,
+slot «Publicación y bandeja de mensajes» de `inherent/05-OPERACION.md`.
+
+🛑 **Sin Zernio conectado no se programa:** `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio`.
 
 ## 0 · Tres rutas, tres paquetes
 
 | Ruta | Qué se produce | Quién lo hace |
 |---|---|---|
-| **Social** | `publer-import.csv` + checklist de subida | Un humano, en Publer |
+| **Social** | Las publicaciones **programadas en Zernio**, con su `zernio_post_id` en el registro | Posting, en Zernio, **después de validar** |
 | **Email** | La sección **§ Los envíos de email** de `publicaciones.md` + su checklist | Un humano, en la herramienta de email del cliente |
 | **Manual** | La sección **§ Los envíos manuales** de `publicaciones.md` + su checklist | Un humano, **a mano**: lo manda desde el teléfono, o lo imprime y lo pega |
 
-🛑 **`publer-import.csv` lleva solo las filas de la ruta social.** Publer no manda email, ni WhatsApp,
-ni imprime: una fila de `Email` o de la ruta manual ahí hace fallar la importación entera, con todo
-el ciclo adentro.
+🛑 **Solo la ruta social se programa en Zernio.** Las filas de `Email` y de la ruta manual se
+separaron en la Capa 0 y no entran acá.
 
-🛑 **Ni la herramienta de email ni la lista de WhatsApp se suponen** — están en `data/contexto.md`
+🛑 **Ni la herramienta de email ni la lista de WhatsApp se suponen** — están en `00-onboarding/comprension.md`
 §D. Si no están, `⚠️ SIN DATOS` y el paquete se entrega igual: es agnóstico de herramienta.
 
 🛑 **La ruta manual se entrega igual de completa que las otras dos.** El texto va **listo para
@@ -48,7 +51,6 @@ y dónde se pega. *"Es por WhatsApp, lo resuelve el cliente"* no es un paquete.
 - [ ] Todos los links funcionan y llevan a donde dicen
 - [ ] Hay forma de desuscribirse
 - [ ] 🛑 Ninguna pieza con claim pendiente está en la cola
-- [ ] 🚦 Tengo la aprobación del GATE 2
 ```
 
 ### El checklist del envío manual — WhatsApp o SMS
@@ -61,151 +63,161 @@ y dónde se pega. *"Es por WhatsApp, lo resuelve el cliente"* no es un paquete.
 - [ ] 🛑 **Sé quién contesta lo que entre, y en qué horario** — un aviso que abre una conversación
       que nadie atiende es peor que no mandarlo
 - [ ] 🛑 Ninguna pieza con claim pendiente está en la cola
-- [ ] 🚦 Tengo la aprobación del GATE 2
 ```
 
 ### El checklist del impreso
 
 ```markdown
-- [ ] El archivo es el **export final de ⑥A**, no un borrador ni una captura
+- [ ] El archivo es el **export final de ⑥A Diseño gráfico**, no un borrador ni una captura
 - [ ] Se lee **a la distancia real** a la que va a estar, y con la luz que hay ahí
 - [ ] 🛑 Tengo el permiso para intervenir el lugar: contrato de alquiler, municipal o el dueño del espacio
 - [ ] Está puesto donde dice el paquete, no donde quedaba cómodo
 - [ ] Saqué una foto del lugar, puesta — es la única verificación posible
 - [ ] 🛑 Ninguna pieza con claim pendiente está en la cola
-- [ ] 🚦 Tengo la aprobación del GATE 2
 ```
 
-🛑 **Un impreso no se verifica en la Capa 5 como una publicación.** No hay URL que mirar ni métrica
-que leer: se verifica con **la foto del lugar**, y su rendimiento **no es medible** con lo que hay.
-Eso se declara; no se inventa un proxy.
+🛑 **Un impreso no se verifica en la Capa 5 como una publicación.** No tiene estado en Zernio ni
+métrica que leer: se verifica con **la foto del lugar**, y su rendimiento **no es medible** con lo
+que hay. Eso se declara; no se inventa un proxy.
 
-## 1 · 🛑 Acá para el departamento
+## 1 · 🛑 Antes de programar — se valida todo, sin parada
 
-**Se genera el archivo. No se sube, no se publica, no se programa.**
+**Publicar no se deshace:** un error de copy o de fecha que sale publicado no se puede despublicar
+del timeline de nadie. Por eso se valida todo (§2-§4) antes de crear nada en Zernio. **No hay parada
+del CEO:** lo que pasó la validación se programa, y lo que está en el repo ya pasó por el CEO.
 
-No es una limitación técnica —Publer tiene API— sino una decisión declarada: las reglas de
-`CLAUDE.md` dicen **«Nada destructivo sin autorización: no publicar, no pautar, no enviar al
-cliente»**. Un error de copy o de fecha que sale publicado no
-se puede despublicar del timeline de nadie.
+- 🛑 **Lo que no pasó §2-§4 no se programa:** se declara.
+- 🛑 **Nada se publica en el acto** (`publish_now`): todo sale a la fecha y hora del calendario.
+- 🛑 **Ninguna credencial de Zernio vive en el repo.**
 
-**Si piden publicar directo:** se explica la regla y se ofrece dejarlo listo para subir. No se busca
-una vía alternativa.
-
-🛑 **Ninguna credencial de Publer vive en el repo.** El archivo se sube desde la sesión del cliente.
-
-## 2 · Las 12 columnas — de Publer, no nuestras
+Lo que queda anotado arriba de `publicaciones.md` antes de programar — es lo que lee el COO en el QA
+final:
 
 ```
-Date · Text · Link · Media URL · Title · Label · Alt text(s) · Comment(s) ·
-Pin board, FB album, or Google category · Post subtype · CTA · Reminder
-```
-
-🛑 **No se renombran, no se reordenan y no se borra ninguna**, aunque queden vacías: la importación
-falla si falta una.
-
-| Columna | Qué le va | De dónde sale |
-|---|---|---|
-| `Date` | `YYYY/MM/DD HH:MM`, 24 h | `fecha` + `hora` del calendario |
-| `Text` | El **caption completo**, con saltos de línea y hashtags | `publicaciones.md` |
-| `Link` | El link del CTA, si lleva | ④ |
-| `Media URL` | 🛑 **URL pública** del archivo. Varias, separadas por coma | Drive |
-| `Title` | Título, donde la plataforma lo use | Normalmente vacío |
-| `Label` | La campaña — sirve para filtrar dentro de Publer | `campana` |
-| `Alt text(s)` | El alt text. Varios: separados por **doble pipe** `\|\|` | `publicaciones.md` |
-| `Comment(s)` | Primer comentario automático. Varios: `\|\|` | Solo si ④ lo pidió |
-| `Pin board, FB album…` | Solo para Pinterest, álbum de FB o categoría de Google | Normalmente vacío |
-| `Post subtype` | `reel`, `story`, `short`… según la plataforma | `formato` |
-| `CTA` | El botón, donde la plataforma lo soporte | ④ |
-| `Reminder` | Recordatorio en vez de publicación automática | Normalmente vacío |
-
-| Regla del formato | Detalle |
-|---|---|
-| **Máximo** | 500 posts por archivo |
-| **Separador de varios media o labels** | Coma |
-| **Separador de varios alt text o comentarios** | Doble pipe `\|\|` |
-| **Codificación** | UTF-8. Los acentos y emojis se verifican abriendo el archivo |
-
-> ⏱️ **Formato verificado contra la documentación de Publer en 2026-09.** Es de un proveedor externo:
-> 🛑 **antes de la primera carga de cada ciclo se descarga la plantilla vigente desde Publer y se
-> comparan los encabezados uno por uno.** Un formato que cambió y nadie verificó falla con 40 posts
-> adentro, y la ventana de publicación ya pasó.
-
-## 3 · `Media URL` — el paso que más falla
-
-🛑 **Publer necesita una URL que pueda leer sin estar logueado.** Un link normal de Drive es privado:
-Publer recibe una página de permiso, no el archivo.
-
-| Paso | Qué se hace |
-|---|---|
-| 1 | Se ubica el archivo final en Drive — la ruta la dejó ⑥A o ⑥B |
-| 2 | Se pide que el archivo quede **accesible por link** |
-| 3 | Se arma la URL de descarga directa, no la de vista previa |
-| 4 | 🛑 **Se verifica abriéndola en una ventana sin sesión.** Si pide permiso, no sirve |
-
-**Compartir un archivo cambia su acceso:** es una acción sobre los archivos del cliente. Se pide, no
-se decide solo — y se acota a los archivos de este ciclo.
-
-## 4 · El checklist de subida
-
-Se entrega junto al archivo. Es lo que hace la persona que sube:
-
-```markdown
-## Antes de importar
-- [ ] Estoy en el workspace correcto de Publer
-- [ ] Las cuentas del ciclo están conectadas y activas: [lista de @handles]
-- [ ] La zona horaria del workspace es [x] — la misma del calendario
-- [ ] Descargué la plantilla vigente de Publer y los encabezados coinciden con el archivo
-- [ ] No quedaron posts del ciclo anterior en cola sin publicar
-
-## Al importar
-- [ ] El archivo subió sin errores de formato
-- [ ] La cantidad de posts importados es [n] — la misma del archivo
-- [ ] Abrí 3 al azar: el caption se ve completo, con saltos de línea y emojis correctos
-- [ ] La media cargó en los 3 — ninguno quedó sin imagen o video
-- [ ] Las fechas y horas se ven como en el calendario, no corridas
-- [ ] Cada post quedó en la cuenta correcta
-
-## Antes de programar
-- [ ] 🛑 Ninguna pieza con claim pendiente está en la cola
-- [ ] Los Reels están como Reel, no como video de feed
-- [ ] Reviso el primero de cada cuenta en la vista previa de la plataforma
-- [ ] 🚦 Tengo la aprobación del GATE 2
-```
-
-## 5 · El gate
-
-🚦 **GATE 2 — el paquete de carga.** Se presenta el archivo y el checklist, con:
-
-```
-- Posts en el archivo: [n] · cuentas: [lista] · rango de fechas: [x] a [y]
-- Media URLs verificadas sin sesión: [n/n]
-- Encabezados comparados contra la plantilla vigente: [✅ fecha]
-- Filas que NO entraron y por qué: [lista]
+RESUMEN DE CARGA — Cliente: [x] · Ciclo: [x] · Zona horaria: [x]
+- Publicaciones a programar: [n] · rango: [aaaa-mm-dd] a [aaaa-mm-dd]
+- Cuentas: [@handle → account_id de Zernio] — confirmadas con accounts_list
+- Media subida a Zernio y validada (validate_media): [n/n]
+- Posts validados (validate_post): [n/n] · con advertencia: [n]
+- Envíos de email: [n] · envíos manuales: [n]
+- Filas que NO entran y por qué: [lista]
 ```
 
 🛑 **Es el último punto donde un error todavía es gratis.** Después de esto, lo que salga mal está
 publicado.
 
+## 2 · Las cuentas — `account_id` explícito, nunca adivinado
+
+| Paso | Qué se hace |
+|---|---|
+| 1 | Se toma el **ID de Zernio** de cada `cuenta` del calendario, de `LINKS.md` *(o de `05-comunidad/respuestas.md`)* |
+| 2 | **`accounts_list`** — se confirma que ese ID existe y que su usuario es el `@handle` del calendario |
+| 3 | Toda llamada que programa lleva ese **`account_id` explícito** |
+
+🛑 **Nunca se adivina la cuenta** — ni por el nombre, ni dejando que Zernio elija. Zernio tiene las
+cuentas de varios clientes: la cuenta equivocada publica en el perfil de otro.
+🛑 **Una cuenta sin ID de Zernio en `LINKS.md` ni en `respuestas.md`:**
+`BLOQUEADO — falta el ID de Zernio de @<cuenta> en clients/<cliente>/00-onboarding/LINKS.md`.
+🛑 **Un ID que `accounts_list` no devuelve, o cuyo usuario no coincide con el `@handle`:**
+`BLOQUEADO` para esa cuenta — se nombra cuál.
+
+## 3 · La media — subida a Zernio y validada
+
+Los archivos finales viven en Drive, donde los dejaron ⑥A Diseño gráfico y ⑦ Video Editing. **Zernio
+necesita una URL que pueda leer**, y la forma segura es subirlos a Zernio:
+
+| Paso | Herramienta | Qué se hace |
+|---|---|---|
+| 1 | — | Se ubica el archivo final en Drive — la ruta la dejó ⑥A Diseño gráfico o ⑦ Video Editing |
+| 2 | **`media_generate_upload_link`** | Zernio da un link de subida. Quien opera los agentes lo abre y sube los archivos del ciclo |
+| 3 | **`media_check_upload_status`** | Devuelve las URLs de lo subido. 🛑 Si dice `pending` o `expired`, no se sigue |
+| 4 | **`validate_media`** | Por cada URL: que se pueda leer, su tipo y su peso contra el límite de cada plataforma |
+
+🛑 **Una URL que `validate_media` no puede leer, o que pasa el límite de su plataforma, no se
+programa.** Si es el peso, es una devolución a ⑦ Video Editing — motivo 2 —: no se comprime acá.
+
+**Abrir por link un archivo de Drive cambia su acceso:** es una acción sobre los archivos del
+cliente. Se pide, no se decide solo — por eso la vía es la subida a Zernio.
+
+## 4 · Validar antes de programar
+
+| Herramienta | Qué detecta |
+|---|---|
+| **`validate_post_length`** | El conteo de caracteres del caption contra el límite de cada plataforma |
+| **`validate_post`** | Lo que haría fallar la publicación: media que falta en Instagram, TikTok o YouTube, límite de hashtags, requisitos del Reel de Facebook, caracteres. Se le pasa la plataforma con su `accountId`, el caption y la media con su alt text |
+
+🛑 **Un error de `validate_post` no se programa:** se corrige en su capa —el caption en `po-caption`,
+el archivo ↩️ a ⑥A Diseño gráfico / ⑦ Video Editing — y se vuelve a validar. Las advertencias
+*(más del 90 % del límite)* se anotan.
+🛑 **Lo que Zernio no mide sigue siendo de las capas anteriores:** el hook antes del corte
+(`po-caption`) y las safe zones (`po-specs`).
+
+**La fila que pasó §2-§4 queda en `estado = listo`**, y se programa.
+
+## 5 · Programar
+
+Cada fila de la ruta social en `listo` se crea en Zernio:
+
+| Caso | Herramienta |
+|---|---|
+| Una publicación en una cuenta | **`posts_create`** con `account_id` explícito |
+| La misma pieza, con el mismo caption, en varias cuentas a la misma hora | **`posts_cross_post`** con `account_ids` en paralelo a `platforms` |
+| El cliente publica por cola | **`queue_list_queue_slots`** · **`queue_preview_queue`** para ver sus horarios; el post entra a la cola de su perfil en vez de llevar hora |
+
+**Las tres reglas de la llamada:**
+
+1. 🛑 **La hora es la del calendario, con su zona.** `posts_create` en su forma simple programa por
+   `schedule_minutes` *(minutos desde ahora)*, y `posts_cross_post` simple no recibe hora: programa a
+   una hora desde ahora. Para fijar la fecha y hora exactas se usa su versión completa
+   (`search_tools` → `call_tool`), con **`scheduled_for` y `timezone` explícitos**. 🛑 Una
+   `scheduled_for` en el pasado publica en el acto: se verifica que toda fecha sea futura.
+2. 🛑 **El alt text y el tipo de publicación van en la llamada:** el alt text de cada imagen y si es
+   Reel, story o feed. La forma simple no los recibe: se usa la completa.
+3. 🛑 **Nunca `publish_now`.**
+
+**Después de cada creación:** `posts_get` con el ID que devolvió Zernio — se confirma que quedó
+programada, en la cuenta y a la fecha y hora del calendario. Si quedó corrida, se corrige con
+`posts_update` (`scheduled_for`).
+
+🛑 **Nada se programa dos veces.** Una fila que ya tiene `zernio_post_id` no se vuelve a crear: se
+lee su estado con `posts_get`.
+
+**Una story que Zernio no puede programar** va a la lista aparte para subir a mano, con su fecha y su
+hora (`WORKFLOW.md` §0). Sigue siendo una pieza entregada del plan.
+
+## 6 · El registro — `calendario-de-publicacion.csv`
+
+Cada publicación programada queda anotada en el registro del ciclo:
+
+```
+id,id_creativo,campana,canal,cuenta,formato,fecha,hora,archivo,caption_ok,specs_ok,zernio_post_id,estado
+PO-001,CR-001,Lanzamiento,instagram-reels,@<cuenta-del-cliente>,reel,2026-11-03,12:45,<cliente>_..._v01.mp4,✅,✅,<id de Zernio>,programada
+```
+
+| Columna | En esta capa |
+|---|---|
+| `zernio_post_id` | El ID que devuelve Zernio al crear la publicación. Si un solo post va a varias cuentas, sus filas comparten el ID |
+| `estado` | `programada`. Desde acá lo actualiza `po-verificacion`: `publicada` / `fallida` |
+
+🛑 **Una fila sin `zernio_post_id` no está programada**, diga lo que diga el chat.
+
 ---
 
 ## Control de calidad de la Capa 4
 
-- [ ] 🛑 **No se publicó ni se programó nada** — el archivo quedó listo para que lo suba un humano
-- [ ] 🛑 **Ninguna credencial de Publer quedó en el repo**
-- [ ] El archivo tiene **las 12 columnas exactas**, en orden, sin renombrar ni borrar ninguna
-- [ ] Los **encabezados se compararon** contra la plantilla vigente descargada de Publer, con fecha
-- [ ] Toda `Date` está en `YYYY/MM/DD HH:MM` y en la **zona horaria declarada**
-- [ ] 🛑 **Toda `Media URL` se verificó abriéndola sin sesión** — ninguna pide permiso
-- [ ] Los separadores son los correctos: **coma** para media y labels, **doble pipe** para alt text y comentarios
-- [ ] El archivo no pasa de **500 filas**
-- [ ] El `Text` conserva saltos de línea, acentos y emojis — se verificó abriendo el archivo
-- [ ] 🛑 **Ninguna fila con claim ⏸️ entró al archivo**
-- [ ] Toda fila del archivo tiene su `id_creativo` trazable en el calendario interno
-- [ ] 🛑 **Ninguna fila de `Email` ni de la ruta manual entró a `publer-import.csv`**
+- [ ] 🛑 **Solo se programó lo que pasó §2-§4** — lo que no, quedó declarado
+- [ ] 🛑 **Nada se publicó en el acto** — ninguna llamada con `publish_now` ni con fecha en el pasado
+- [ ] 🛑 **Toda publicación lleva `account_id` explícito**, tomado de `LINKS.md` (o `respuestas.md`) y confirmado con `accounts_list`
+- [ ] 🛑 **Ninguna credencial de Zernio quedó en el repo**
+- [ ] Toda la media se subió a Zernio y **pasó `validate_media`**
+- [ ] Todo post **pasó `validate_post`** sin errores; las advertencias están anotadas
+- [ ] Toda publicación quedó a la **fecha y hora del calendario, en la zona declarada** — confirmado con `posts_get`
+- [ ] El **alt text** quedó en toda imagen de una plataforma que lo acepta
+- [ ] 🛑 **Ninguna fila con claim ⏸️ se programó**
+- [ ] 🛑 **Ninguna fila de `Email` ni de la ruta manual se programó en Zernio**
+- [ ] Toda fila programada tiene su **`zernio_post_id`** y `estado = programada` en `calendario-de-publicacion.csv`
+- [ ] **Ninguna fila se programó dos veces**
 - [ ] Los envíos de email tienen su paquete completo —asunto, preheader, cuerpo, lista, fecha— y su checklist
 - [ ] Los envíos manuales tienen su paquete completo —texto listo para copiar, destinatario, fecha y hora— y su checklist
 - [ ] Los impresos tienen **la ruta de su archivo final**, dónde van y el permiso resuelto o declarado
-- [ ] 🛑 **Nada se mandó ni se imprimió desde acá** — el paquete queda listo y lo hace un humano
-- [ ] El **checklist de subida** está entregado junto al archivo
-- [ ] 🚦 **GATE 2** presentado a un humano
+- [ ] 🛑 **Nada se mandó ni se imprimió desde acá** — el email y la ruta manual los hace un humano

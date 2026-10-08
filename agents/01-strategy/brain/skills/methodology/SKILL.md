@@ -80,7 +80,7 @@ Eso determina **cuáles son sus 3 pilares** → ver `inherent/02-METODO.md`.
 
 ⚠️ **Si el cliente contrató un nivel que no ataca su cuello, se dice.**
 Vender Compound a quien no tiene demanda es autonomía sobre una máquina rota.
-**El agente propone; Allan decide si se ajusta el paquete o el objetivo.**
+**El agente propone; el CEO decide si se ajusta el paquete o el objetivo.**
 
 ### A.1 · ¿Qué significa ganar para ESTA empresa? — el `WIN`
 
@@ -88,7 +88,7 @@ Con todo lo que se entendió del negocio, el mercado y la industria: **para ello
 significa esto.** Concreto y reconocible, no "ser los mejores".
 
 > 🔑 **Esto es el `WIN`** — el nombre con el que lo piden los demás departamentos (`CLAUDE.md`).
-> Va a `clients/<cliente>/data/nucleo.md` junto con el arquetipo, y de él cuelgan las
+> Va a `clients/<cliente>/01-estrategia/nucleo.md` junto con el arquetipo, y de él cuelgan las
 > `MUST BE TRUE` de `analysis`.
 
 ### A.2 · Objetivos macro, por trimestre
@@ -282,6 +282,9 @@ Cada bloque con **decisión + puntos a resolver**. Ver `brand-brief.md` en esta 
   `modelos / talento` · `producción` · `pauta`
 - Qué se prueba primero con la comunidad chica antes de escalar
 
+🔷 **En la línea Marketing, ligero:** las ofertas que ya existen y el objetivo del ciclo. Growth
+elige cuáles se empujan — **no toca qué se vende, en qué paquetes ni a qué precio.**
+
 ### C.4 · Brief de CREATIVE
 - Qué tiene que lograr el contenido, no qué pieza hacer
 - La intersección obligatoria: `lo que la audiencia quiere consumir` + `el posicionamiento` + `la promesa`
@@ -327,13 +330,14 @@ RESTRICCIONES        presupuesto, tiempo, lo que el cliente ya dijo que no
 ```
 
 > **Los briefs que se arman dependen del nivel contratado** — ver A.0.
-> 🔷 Marketing: Branding · Marketing · Creative
+> 🔷 Marketing: Branding · Marketing · Creative · Growth *(ligero)*
 > 🔷 Marketing Pro: + Producción
-> 🟨 Accelerate: + **Growth** · Tecnología
+> 🟨 Accelerate: **Growth completo** · + Tecnología
 > 🟨 Compound: + Sistemas
+> ⬜ Tailor Made: los de los departamentos de **Su pipeline**
 >
-> ⚠️ **El brief de Growth solo se arma desde Accelerate.** En la línea Marketing, Strategy
-> entrega posicionamiento y mensaje — **no toca qué se vende ni a qué precio.**
+> ⚠️ **En la línea Marketing el brief de Growth es ligero** *(C.3)*. Strategy entrega
+> posicionamiento y mensaje — **no toca qué se vende ni a qué precio.**
 
 ---
 
@@ -368,9 +372,9 @@ comunidad chica y **solo se escala lo que muestre señales de negocio**.
 
 ## Salida
 
-**`clients/<cliente>/data/posicionamiento.md`** — la plataforma de marca completa (§B) y los
-objetivos macro (§A), más los briefs por área. **`clients/<cliente>/data/nucleo.md`** recibe el
-`WIN` y el arquetipo. El resumen para el cliente va a `ESTRATEGIA.md` (`../../WORKFLOW.md` §7).
+**`clients/<cliente>/01-estrategia/posicionamiento.md`** — la plataforma de marca completa (§B) y los
+objetivos macro (§A), más los briefs por área. **`clients/<cliente>/01-estrategia/nucleo.md`** recibe el
+`WIN` y el arquetipo. El resumen para el cliente va a `01-estrategia/estrategia.md` (`../../WORKFLOW.md` §7).
 
 ## Antes de cerrar
 

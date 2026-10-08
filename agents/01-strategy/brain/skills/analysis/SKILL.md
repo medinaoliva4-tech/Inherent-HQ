@@ -92,7 +92,7 @@ Los pasos
 | **Nadie ve** | Distribución o contenido | ③ Marketing — `mk-canales` · `mk-pilares` |
 | **Preguntan precio y desaparecen** | Valor percibido — **mecanismo o prueba**, casi nunca el precio | ② Growth — `gr-oferta` |
 | **Compran una vez y no vuelven** | Experiencia o retención | ② Growth — `gr-upsells` · ⑧ Community |
-| **Buen producto y nadie entiende** | Mensaje | ③ Marketing — `mk-mensaje` + ②B `br-voz` |
+| **Buen producto y nadie entiende** | Mensaje | ③ Marketing — `mk-mensaje` + ②B Branding — `br-voz` |
 
 ### 🔑 Por qué esto vive acá y no en ③ Marketing
 
@@ -107,7 +107,7 @@ el área que arregla el cuello va primero y con más profundidad.
 
 | Si el cuello está en… | Y el plan es… | Entonces |
 |---|---|---|
-| Oferta · conversión · retención | 🔷 **Marketing / Pro** | 🔴 **Se declara que el plan NO cubre el cuello.** Se avisa a Allan y se propone subir a Accelerate |
+| Oferta · conversión · retención | 🔷 **Marketing / Pro** | 🔴 **Se declara que el plan NO cubre el cuello.** Se escala al CEO y se propone subir a Accelerate |
 | Distribución · contenido · mensaje | cualquiera | ✅ Se trabaja dentro del plan |
 
 **Entregar contenido sobre un cuello de oferta es cobrar por amplificar una fuga.**
@@ -117,7 +117,7 @@ Se dice, no se calla.
 
 ## Salida
 
-**Las tres respuestas van a `clients/<cliente>/data/nucleo.md`**, debajo del `WIN`:
+**Las tres respuestas van a `clients/<cliente>/01-estrategia/nucleo.md`**, debajo del `WIN`:
 `MUST BE TRUE` con el diagnóstico de hoy · `UNFAIR` con las descartadas · `GO GET` con qué
 condición mueve cada una. **Es de ahí que los demás departamentos trazan sus piezas.**
 

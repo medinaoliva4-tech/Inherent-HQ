@@ -39,7 +39,7 @@
 
 | A | Qué | Por qué |
 |---|---|---|
-| ② Estrategia | | |
+| ① Strategy | | |
 | ③ Marketing | | |
 | ⑩ Ads | | |
 

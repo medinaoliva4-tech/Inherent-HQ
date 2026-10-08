@@ -1,27 +1,28 @@
 ---
 name: po-recepcion
 description: >
-  Capa 0 de ⑦ Posting — verifica qué llegó y está realmente publicable antes de escribir un solo
-  caption. Cruza `plan-de-contenido.csv` de ④ fila por fila contra los exports de ⑥A Diseño y ⑥B
-  Video Editing, verifica que cada archivo corresponda a su `id_creativo`, que la pieza tenga copy
-  escrito, que no arrastre claims sin validar y que exista la cuenta donde va con alguien que tenga
-  las claves. Escribe las filas base de `calendario-de-publicacion.csv`. Úsala cuando pidan "qué nos
-  falta para publicar", "¿llegó todo?", "arrancá el ciclo de posting", "cruzá lo entregado contra el
-  calendario". Bloquea si falta el Gate 3 de ④ o si no sabemos quién tiene los accesos.
+  Capa 0 de ⑨ Posting — verifica qué llegó y está realmente publicable antes de escribir un solo
+  caption. Cruza `plan-de-contenido.csv` de ④ Creatividad fila por fila contra los exports de
+  ⑥A Diseño gráfico y ⑦ Video Editing, verifica que cada archivo corresponda a su `id_creativo`, que
+  la pieza tenga copy escrito, que no arrastre claims sin validar y que exista la cuenta donde va,
+  con alguien que tenga las claves y su ID de Zernio. Escribe las filas base de
+  `calendario-de-publicacion.csv`. Úsala cuando pidan "qué nos falta para publicar", "¿llegó todo?",
+  "arrancá el ciclo de posting", "cruzá lo entregado contra el calendario". Bloquea si falta el Excel
+  del ciclo cerrado de ④ Creatividad o si no sabemos quién tiene los accesos.
 ---
 
 # Capa 0 · Recepción — qué llegó y está publicable
 
 | | |
 |---|---|
-| **Consume** | `plan-de-contenido.csv` con **Gate 3** de ④ (`clients/<cliente>/data/`) · los exports de ⑥A y ⑥B con su ruta · `clients/<cliente>/LINKS.md` (las cuentas y **quién tiene el acceso**) · `data/contexto.md` §D (restricciones y velocidad de aprobación) · guidelines de ②B |
+| **Consume** | **El Excel del ciclo cerrado** de ④ Creatividad (`plan-de-contenido.csv`, en `clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · los exports de ⑥A Diseño gráfico y ⑦ Video Editing con su ruta · `clients/<cliente>/00-onboarding/LINKS.md` (las cuentas, **quién tiene el acceso** y su **ID de Zernio**) · `00-onboarding/comprension.md` §D (restricciones) · guidelines de ②B Branding, si existen |
 | **Produce** | Las **filas base** de `calendario-de-publicacion.csv` — una por publicación — y la tabla **§ Lo que no sale este ciclo** de `publicaciones.md` |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`. Plantillas:
 `agents/09-posting/brain/entregables/`.
 
 **No escribís nada todavía: cruzás y verificás.** Escribir el caption de una pieza que no tiene
-archivo es trabajo tirado, y se descubre recién al cargar.
+archivo es trabajo tirado, y se descubre recién al programar.
 
 ## 0 · Lo primero: separar las tres rutas
 
@@ -30,69 +31,70 @@ una**:
 
 | Ruta | Canales | Qué necesita para estar completa |
 |---|---|---|
-| **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | El **export** de ⑥A o ⑥B, más copy y cuenta |
-| **Email** | Email / Newsletter | El **cuerpo escrito por ④**, la lista y la herramienta. El export de ⑥A solo si lleva imágenes |
-| **Manual** | **WhatsApp** (lista o difusión) · **SMS** · **impresos**: cartel, vidriera, packaging | **WhatsApp y SMS:** el texto de ④, la lista y **quién la opera**. **Impresos:** el export de ⑥A, más dónde va y el permiso para ponerlo |
+| **Social** | Instagram · TikTok · Facebook · Google Business · YouTube… | El **export** de ⑥A Diseño gráfico o ⑦ Video Editing, más copy y cuenta |
+| **Email** | Email / Newsletter | El **cuerpo escrito por ④ Creatividad**, la lista y la herramienta. El export de ⑥A Diseño gráfico solo si lleva imágenes |
+| **Manual** | **WhatsApp** (lista o difusión) · **SMS** · **impresos**: cartel, vidriera, packaging | **WhatsApp y SMS:** el texto de ④ Creatividad, la lista y **quién la opera**. **Impresos:** el export de ⑥A Diseño gráfico, más dónde va y el permiso para ponerlo |
 
-🛑 **Publer no manda email, ni WhatsApp, ni imprime.** Una fila de `Email` o de la ruta manual que se
-cuela en `publer-import.csv` hace fallar la importación entera, con todo el ciclo adentro.
+🛑 **Solo la ruta social se programa en Zernio.** Una fila de `Email` o de la ruta manual que se
+cuela ahí se programa en una red donde no va.
 
 🛑 **Una pieza de email o de WhatsApp no se marca `⚠️ SIN ARCHIVO` por no tener video.** Es un falso
-bloqueo que retrasa un envío que se podía mandar. Su archivo es el texto, y lo escribió ④.
-**Los impresos sí llevan archivo**: sin el export de ⑥A no hay nada que imprimir.
+bloqueo que retrasa un envío que se podía mandar. Su archivo es el texto, y lo escribió ④ Creatividad.
+**Los impresos sí llevan archivo**: sin el export de ⑥A Diseño gráfico no hay nada que imprimir.
 
 🛑 **Si un `canal` del plan no cae en ninguna de las tres, no se fuerza.** Se declara la fila como
 `🛑 SIN RUTA DE SALIDA` y **se devuelve a ③ Marketing**. Inventar la ruta en el momento es cómo un
-canal termina cargado donde no va.
+canal termina programado donde no va.
 
 ## 1 · Los inputs bloqueantes
 
 | De | Qué se carga | Si falta |
 |---|---|---|
-| **④ Creatividad** | `plan-de-contenido.csv` con **Gate 3 aprobado** · el copy y el caption literales del `ideas-<formato>.md` de cada pieza · la `fecha` | 🛑 **BLOQUEADO** |
-| **⑥B Video Editing** | Los videos finales por plataforma, con nombre de archivo y ruta | 🛑 **BLOQUEADO** para esas filas |
+| **④ Creatividad** | **El Excel del ciclo cerrado** (`plan-de-contenido.csv`) · el copy y el caption literales del `ideas-<formato>.md` de cada pieza · la `fecha` | 🛑 **BLOQUEADO** |
+| **⑦ Video Editing** | Los videos finales por plataforma, con nombre de archivo y ruta | 🛑 **BLOQUEADO** para esas filas |
 | **⑥A Diseño gráfico** | Las piezas estáticas exportadas, por formato | 🛑 **BLOQUEADO** para esas filas |
-| **① Strategy** | Las restricciones y la velocidad de aprobación, de `data/contexto.md` §D | 🛑 **BLOQUEADO** |
-| **`LINKS.md`** | **Quién tiene el acceso a cada cuenta** — la fuente única | 🛑 **BLOQUEADO** |
-| **②B Branding** | Tono de voz, do's & don'ts, cómo se nombra la marca | 🛑 **BLOQUEADO** |
+| **① Strategy** | Las restricciones del cliente, de `00-onboarding/comprension.md` §D | 🛑 **BLOQUEADO** |
+| **`LINKS.md`** | **Quién tiene el acceso a cada cuenta** — la fuente única — y su **ID de Zernio** *(o el de `05-comunidad/respuestas.md`, si ⑧ Community ya lo anotó)* | 🛑 **BLOQUEADO** |
+| **②B Branding** | Tono de voz, do's & don'ts, cómo se nombra la marca | Se usan si existen. **No bloquea** |
 
 🛑 **Ningún archivo de otro departamento se copia: se cita su ruta.**
 
 ## 2 · El cruce, fila por fila
 
-Se recorre **cada fila del Excel de ④** del ciclo y se le busca su archivo. Sin muestreo: una fila
-que no se verificó es una fila que se cae al cargar.
+Se recorre **cada fila del Excel de ④ Creatividad** del ciclo y se le busca su archivo. Sin
+muestreo: una fila que no se verificó es una fila que se cae al programar.
 
 | Chequeo | Qué se mira | Si falla |
 |---|---|---|
-| **Tiene archivo final** *(ruta social e impresos)* | Existe el export de ⑥A o ⑥B, con ruta | `⚠️ SIN ARCHIVO` — se nombra **de quién se espera y desde cuándo** |
-| **El archivo es el correcto** | El `id_creativo` del nombre coincide con la fila | ↩️ **DEVUELTO** a ⑥A / ⑥B — motivo 3 |
-| **Tiene copy y caption** | Están escritos y **literales** en su `ideas-<formato>.md` | ↩️ **DEVUELTO** a ④ — motivo 4. *"Un caption de curiosidad"* no es un caption |
-| **No arrastra claims ⏸️** | La pieza no tiene `⏸️ PENDIENTE APROBACIÓN` de ④ | 🛑 **No entra al ciclo** hasta que ②B o ⑧B validen |
-| **Existe la cuenta** *(social)* | La `cuenta` concreta está identificada y alguien tiene las claves | 🛑 **BLOQUEADO** — `LINKS.md` |
+| **Tiene archivo final** *(ruta social e impresos)* | Existe el export de ⑥A Diseño gráfico o ⑦ Video Editing, con ruta | `⚠️ SIN ARCHIVO` — se nombra **de quién se espera y desde cuándo** |
+| **El archivo es el correcto** | El `id_creativo` del nombre coincide con la fila | ↩️ **DEVUELTO** a ⑥A Diseño gráfico / ⑦ Video Editing — motivo 3 |
+| **Tiene copy y caption** | Están escritos y **literales** en su `ideas-<formato>.md` | ↩️ **DEVUELTO** a ④ Creatividad — motivo 4. *"Un caption de curiosidad"* no es un caption |
+| **No arrastra claims ⏸️** | La pieza no tiene `⏸️ PENDIENTE APROBACIÓN` de ④ Creatividad | 🛑 **No entra al ciclo** hasta que ②B Branding o ⑩ Ads validen |
+| **Existe la cuenta** *(social)* | La `cuenta` concreta está identificada, alguien tiene las claves y tiene su **ID de Zernio** | 🛑 **BLOQUEADO** — `LINKS.md` |
 | **Existe la lista** *(email)* | La lista o segmento y la herramienta de email están identificadas | 🛑 **BLOQUEADO** — `LINKS.md` |
-| **Existe la lista y quién la opera** *(manual · WhatsApp y SMS)* | La lista o difusión existe, y hay alguien que la manda **y que contesta lo que entre** | 🛑 **BLOQUEADO** — `LINKS.md`. 🛑 **Sostener la conversación es de ⑧A Orgánico**, no de ⑦ |
+| **Existe la lista y quién la opera** *(manual · WhatsApp y SMS)* | La lista o difusión existe, y hay alguien que la manda **y que contesta lo que entre** | 🛑 **BLOQUEADO** — `LINKS.md`. 🛑 **Sostener la conversación es de ⑧ Community**, no de ⑨ Posting |
 | **Existe el permiso** *(manual · impresos)* | Se puede intervenir el lugar donde va: contrato de alquiler, permiso municipal, dueño del espacio | 🛑 **BLOQUEADO** — `LINKS.md` |
 
-**Una fila de ④ puede ser más de una publicación.** Si la misma pieza va a dos cuentas, son **dos
-filas de Posting**, cada una con su `id` y su archivo.
+**Una fila de ④ Creatividad puede ser más de una publicación.** Si la misma pieza va a dos cuentas,
+son **dos filas de Posting**, cada una con su `id` y su archivo.
 
 ## 3 · Las filas base
 
 ```
-id,id_creativo,campana,canal,cuenta,formato,fecha,hora,archivo,caption_ok,specs_ok,estado
-PO-001,CR-001,Lanzamiento,instagram-reels,@cafederiva,reel,2026-10-06,,cafederiva_..._v01.mp4,⬜,⬜,pendiente
+id,id_creativo,campana,canal,cuenta,formato,fecha,hora,archivo,caption_ok,specs_ok,zernio_post_id,estado
+PO-001,CR-001,Lanzamiento,instagram-reels,@<cuenta-del-cliente>,reel,2026-10-06,,<cliente>_..._v01.mp4,⬜,⬜,,pendiente
 ```
 
 | Columna | En esta capa |
 |---|---|
 | `id` | `PO-001`, correlativo del ciclo |
 | `id_creativo` | 🛑 **Obligatorio.** Ninguna fila suelta |
-| `campana` · `canal` · `formato` · `fecha` | **Heredados sin cambio** de ④ |
+| `campana` · `canal` · `formato` · `fecha` | **Heredados sin cambio** de ④ Creatividad |
 | `cuenta` | Se identifica acá; la asignación definitiva la cierra `po-programacion` |
 | `hora` | Vacía todavía — es de la Capa 3 |
 | `archivo` | El nombre exacto del export, o `⚠️ SIN ARCHIVO` |
 | `caption_ok` · `specs_ok` | `⬜` — se llenan en las capas 1 y 2 |
+| `zernio_post_id` | Vacío — lo llena `po-carga` al programar |
 | `estado` | `pendiente`, o `↩️ devuelto` |
 
 ## 4 · Lo que no sale, se declara
@@ -102,43 +104,43 @@ nosotros.**
 
 ```
 | id_creativo | Qué falta          | De quién se espera | Desde cuándo | Motivo              |
-| CR-003      | El carrusel export | ⑥A Diseño          | 2026-10-02   | ⚠️ SIN ARCHIVO      |
+| CR-003      | El carrusel export | ⑥A Diseño gráfico  | 2026-10-02   | ⚠️ SIN ARCHIVO      |
 | CR-009      | Validación de claim| ②B Branding        | 2026-09-28   | ⏸️ PENDIENTE        |
 ```
 
 ## 5 · El resumen de recepción
 
-Se cierra con la foto, que es lo primero que lee quien aprueba:
+Se cierra con la foto, que es lo primero que lee el COO:
 
 ```
-Filas del ciclo en ④:        [n]
-Con archivo y publicables:   [n]
-⚠️ SIN ARCHIVO:              [n]  → ⑥A [n] · ⑥B [n]
-↩️ DEVUELTAS:                [n]  → ④ [n] · ⑥A [n] · ⑥B [n]
-⏸️ Claims sin validar:       [n]
+Filas del ciclo en ④ Creatividad:  [n]
+Con archivo y publicables:         [n]
+⚠️ SIN ARCHIVO:                    [n]  → ⑥A Diseño gráfico [n] · ⑦ Video Editing [n]
+↩️ DEVUELTAS:                      [n]  → ④ Creatividad [n] · ⑥A Diseño gráfico [n] · ⑦ Video Editing [n]
+⏸️ Claims sin validar:             [n]
 ```
 
 | Confianza | Cuándo |
 |---|---|
 | 🟢 | Todas las filas con archivo, copy y cuenta |
 | 🟡 | Faltan piezas, pero todas identificadas con responsable y fecha |
-| 🔴 | Falta un bloqueante de departamento: accesos, Gate 3 o guidelines |
+| 🔴 | Falta un bloqueante de departamento: accesos o el Excel del ciclo cerrado |
 
 ---
 
 ## Control de calidad de la Capa 0
 
-- [ ] El Excel de ④ tiene **Gate 3 aprobado** — si no, `BLOQUEADO`
+- [ ] Existe **el Excel del ciclo cerrado** de ④ Creatividad — si no, `BLOQUEADO`
 - [ ] Se cruzó **fila por fila**, sin muestreo
 - [ ] Toda fila tiene su **`id_creativo`**; ninguna fila suelta
 - [ ] Cada archivo se verificó que **corresponde** a su pieza, no solo que existe
 - [ ] Las piezas sin export están como `⚠️ SIN ARCHIVO` con **de quién se esperan y desde cuándo**
 - [ ] 🛑 **Ninguna pieza con claim ⏸️ entró al ciclo**
-- [ ] La **cuenta** de cada fila está identificada, y sabemos quién tiene las claves
+- [ ] La **cuenta** de cada fila está identificada, sabemos quién tiene las claves y tiene su **ID de Zernio**
 - [ ] Las piezas que van a dos cuentas son **dos filas**, no una
 - [ ] La tabla **§ Lo que no sale este ciclo** está escrita — ninguna pieza desapareció en silencio
-- [ ] 🛑 **Las tres rutas están separadas por `canal`** — ninguna fila de `Email` ni de la ruta manual quedó del lado de Publer
-- [ ] 🛑 **Ninguna pieza de email ni de WhatsApp se marcó `⚠️ SIN ARCHIVO`** por no tener export de ⑥ — su archivo es el texto
-- [ ] 🛑 **Todo impreso de la ruta manual sí lleva su export de ⑥A**, o quedó `⚠️ SIN ARCHIVO`
-- [ ] 🛑 **Ningún `canal` quedó sin ruta en silencio** — el que no cae en las tres va `🛑 SIN RUTA DE SALIDA` y se devuelve a ③
+- [ ] 🛑 **Las tres rutas están separadas por `canal`** — ninguna fila de `Email` ni de la ruta manual quedó del lado de Zernio
+- [ ] 🛑 **Ninguna pieza de email ni de WhatsApp se marcó `⚠️ SIN ARCHIVO`** por no tener export de ⑥A Diseño gráfico ni de ⑦ Video Editing — su archivo es el texto
+- [ ] 🛑 **Todo impreso de la ruta manual sí lleva su export de ⑥A Diseño gráfico**, o quedó `⚠️ SIN ARCHIVO`
+- [ ] 🛑 **Ningún `canal` quedó sin ruta en silencio** — el que no cae en las tres va `🛑 SIN RUTA DE SALIDA` y se devuelve a ③ Marketing
 - [ ] 🛑 **No se escribió ningún caption todavía** — eso es la Capa 1

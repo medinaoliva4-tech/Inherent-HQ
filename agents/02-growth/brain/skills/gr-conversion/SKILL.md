@@ -64,8 +64,9 @@ infraestructura sin uso.
 
 ## 4 · ⚠️ Responder al cliente final es acción hacia afuera
 
-🛑 **Toda respuesta automática pasa por gate de Allan antes de encenderse.**
-Un auto-DM mal escrito le habla a todos los clientes del cliente.
+🛑 **Toda respuesta automática se auto-revisa antes de encenderse:** contra la oferta y el tono de
+②B Branding. Un auto-DM mal escrito le habla a todos los clientes del cliente.
+**Si dice un precio o una oferta nueva, se escala al CEO:** es comprometer precio.
 
 ## 5 · Compound — que se sostenga solo
 
@@ -83,7 +84,7 @@ recompra — y la **IA propia del cliente** con `create_custom_ai`, entrenada co
 | **C · Seguimiento** | Cuántos toques, cada cuánto, hasta cuándo |
 | **D · Closing** | Guiones, las 3 objeciones, cómo se entrena |
 | **E · Qué opera ⑧ Community** | El handoff |
-| **F · Qué necesita gate** | Lo que habla con el cliente final |
+| **F · Qué se auto-revisa antes de encenderse** | Lo que habla con el cliente final |
 
 ## 7 · Checklist
 
@@ -92,4 +93,4 @@ recompra — y la **IA propia del cliente** con `create_custom_ai`, entrenada co
 - [ ] Hay respuesta para **fuera de hora**
 - [ ] El seguimiento tiene **cantidad, frecuencia y final**
 - [ ] Las **3 objeciones** tienen respuesta escrita
-- [ ] **Todo lo automático que le habla al cliente final tiene gate**
+- [ ] **Todo lo automático que le habla al cliente final se auto-revisó antes de encenderse**

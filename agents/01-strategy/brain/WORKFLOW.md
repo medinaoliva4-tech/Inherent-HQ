@@ -1,7 +1,7 @@
 # Strategy — Cómo trabaja
 
 > Documento único del agente. Si algo no está acá, el agente no lo hace.
-> `❓ PENDIENTE` = falta la decisión de Allan. No se completa por inferencia.
+> `❓ PENDIENTE` = falta la decisión del CEO. No se completa por inferencia.
 
 ---
 
@@ -11,7 +11,7 @@
 
 | Días | Qué corre | Entrega |
 |---|---|---|
-| **1** | Reunión con el cliente *(Allan)* — es el input del ciclo | — |
+| **1** | Reunión con el cliente *(el CEO)* — es el input del ciclo | — |
 | **1 – 3** | 🆕 Primer ciclo: los 4 bloques completos · ↻ Siguientes: **revisión**, no se rehace | Estrategia y briefs por área **a más tardar el día 3** |
 | **20** | Revisión del mes, junto con la presentación al cliente | Lo aprendido **entra al día 1 del ciclo siguiente** |
 
@@ -22,7 +22,7 @@
 🔑 **Strategy no lee el plan: lo ANOTA.** Es el único departamento que lo origina; los otros once
 lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloqueados.**
 
-**Dónde se anota:** `clients/<cliente>/data/plan-contratado.md`, al abrir el folder del cliente
+**Dónde se anota:** `clients/<cliente>/00-onboarding/plan-contratado.md`, al abrir el folder del cliente
 (§7 → «El folder — para los demás agentes»).
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 **Y antes que eso: qué LÍNEA es.** 🔷 Marketing promete atención · 🟨 Growth promete facturación.
@@ -31,7 +31,7 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
   `BLOQUEADO — falta el plan contratado`.
 - 🛑 **El plan es el techo, no una sugerencia.** Prometer de más rompe el margen; prometer de menos
   rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- 🔒 **Va en `data/`, nunca en `ESTRATEGIA.md`:** ese documento se le manda al cliente y no lleva
+- 🔒 **Va en `00-onboarding/`, nunca en `01-estrategia/estrategia.md`:** ese documento se le manda al cliente y no lleva
   ruido interno (§7).
 - Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y la profundidad de
   `inherent/05-OPERACION.md` → «ONBOARDING». **Si cambian allá, cambian acá** — esta tabla no manda
@@ -42,9 +42,10 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 | **Profundidad de la estrategia** | Ligera | Ligera | **Completa** | **Completa + trimestral** |
 | **Revisión del 20** | Ligera | Ligera | Completa | Completa |
 | **Toca la OFERTA** *(qué vende, en qué paquetes, a qué precio)* | ⛔ Solo el mensaje | ⛔ Solo el mensaje | ✅ | ✅ |
-| **Brief de ② Growth al cerrar** | ⛔ No se arma | ⛔ No se arma | ✅ | ✅ |
+| **Brief de ② Growth al cerrar** | 🟡 Ligero | 🟡 Ligero | ✅ Completo | ✅ Completo |
 | **SOPs** | ⬜ | ⬜ | 🟡 De crecimiento | ✅ De toda la empresa |
 | **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
+| **Contenidos a investigar** *(por cada una de las **Redes** de `plan-contratado.md` — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
 | **Piezas del ciclo que habilita** | **86** | **145** | **145** | **204** |
 
 **Cómo se lee:**
@@ -52,9 +53,10 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 - 🛑 **«Ligera» no es «incompleta».** En la línea 🔷 la estrategia existe entera: lo que no entra es
   **tocar la oferta**. Se trabaja el **mensaje** —cómo se cuenta lo que ya vende— y nada más.
   **Confundirlos es regalar el trabajo caro dentro del plan barato.**
-- 🛑 **En 🔷 Marketing y Pro no se arma brief de ② Growth.** Ese departamento no corre en la línea
-  Marketing (`agents/02-growth/brain/WORKFLOW.md` → §0). Si el negocio lo necesita, **es upsell a
-  🟨 Accelerate y se levanta como excepción** — no se absorbe.
+- 🟡 **En 🔷 Marketing y Pro el brief de ② Growth es ligero:** las ofertas que ya existen y el
+  objetivo. Growth elige **cuáles se empujan**; no cambia qué se vende, en qué paquetes ni a qué
+  precio (`agents/02-growth/brain/WORKFLOW.md` → §0). Si el negocio necesita tocar la oferta, **es
+  upsell a 🟨 Accelerate y se levanta como excepción** — no se absorbe.
 - ⚠️ **La línea 🔷 Marketing NO promete % de crecimiento.** El porcentaje no sale del contenido,
   sale de la oferta y la conversión. **Prometerlo ahí es vender algo que no controlamos.**
 - **La ingeniería inversa se corre en los cuatro planes.** Lo que cambia es hasta dónde llega: en
@@ -62,14 +64,19 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 
 ### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
 
-Allan lo cotiza **en las mismas unidades de la tabla de arriba**, y Strategy lo anota igual que un
-plan estándar. **El precio lo define Allan.**
+El CEO lo define en el onboarding, con su precio, y Strategy lo anota en `plan-contratado.md` con
+dos secciones:
 
-- 🛑 **Una fila sin número es un bloqueo, no una invitación a suponer:** se le pide a Allan.
-- 🛑 **No existe un plan por debajo de 🔷 Marketing.** Las horas de grabación son el piso de costo
-  (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
-- **Se baja el volumen, nunca el método:** los gates, la trazabilidad y las devoluciones son iguales
-  en todos los planes.
+| Sección | Qué lleva |
+|---|---|
+| **Qué incluye** | Lo que se entrega, en las mismas unidades de la tabla de arriba |
+| **Su pipeline** | Qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel |
+
+- **Los departamentos siguen ese pipeline.** No se bloquea por no ser un plan de lista ni se
+  cuestiona por precio.
+- **Un departamento que no está en su pipeline no corre para ese cliente.**
+- **El método es el mismo; cambia el pipeline.** Cómo se hace cada cosa no cambia: cambia qué corre
+  y qué se verifica.
 
 ---
 
@@ -110,6 +117,9 @@ arranca sin el anterior.
         │
         ▼
    05 ENTREGA               el documento y el folder del cliente
+        │
+        ▼
+   🔒 GATE DEL CEO          aprueba la estrategia antes de que pase a los departamentos
 ```
 
 ### 01 · CONTEXTO → skill `context`
@@ -167,7 +177,8 @@ historia (el cliente es el héroe) · personalidad · el fundador · comunidad i
 > audiencia nos desee. Se entregan **las acciones que hay que hacer**, no piezas.
 
 ### 05 · ENTREGA
-Arma los dos entregables. **El formato está en §7.**
+Arma los dos entregables. **El formato está en §7.** Cierra con **el gate del CEO**
+(§7 → «5 · 🔒 El gate del CEO»): sin su OK, la estrategia no pasa a los departamentos.
 
 ---
 
@@ -220,8 +231,11 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 > Las acciones las determinan los MCPs. **Si falta una acción, falta un MCP** — no se arregla con
 > mejor prompt. Acá está cada acción del workflow atada a su tool exacta.
+>
+> **Si falta la herramienta, el bloque para y lo dice así:**
+> `BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § <herramienta>`.
 
-**Leyenda:** ✅ probado en esta sesión · ⬜ sin probar todavía · 🔒 requiere gate de Allan · 👤 manual
+**Leyenda:** ✅ probado en esta sesión · ⬜ sin probar todavía · 🔒 espera el gate del CEO (§7) · 👤 manual
 
 ---
 
@@ -229,7 +243,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 | Acción | Tool | Devuelve |
 |---|---|---|
-| Leer el contexto que entrega Allan | **`read_file_content` (Drive)** ✅ · un Google Doc alcanza · o pegado en el chat | El brief del cliente |
+| Leer el contexto que entrega el CEO | **`read_file_content` (Drive)** ✅ · un Google Doc alcanza · o pegado en el chat | El brief del cliente |
 | Buscar material previo | `notion-search` → `notion-fetch` ✅ | Páginas, decisiones del equipo |
 | **Leer el sitio completo, la oferta, los precios** | **`firecrawl_scrape`** ✅ | El cuerpo real de la página en markdown |
 | Ver qué publica el cliente y cómo rinde | Apify `easy_scraper/instagram-profile-engagement-analytics` | Perfil, totales, mezcla de temas, sus mejores posts |
@@ -313,7 +327,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 | Acción | Tool |
 |---|---|
-| Guardar la evidencia | 🔒 **En el folder del cliente.** `clients/<cliente>/data/` **es nuestro Notion** |
+| Guardar la evidencia | 🔒 **En el folder del cliente.** `clients/<cliente>/99-referencias/investigacion/` **es nuestro Notion** |
 
 ---
 
@@ -368,20 +382,21 @@ incompleto y la medición arranca sin baseline.
 | Acción | De quién es |
 |---|---|
 | Descubrir influencers para contratar | **Marketing** |
-| Analizar físico y características para casting | **Allan lo provee.** No se outsourcea |
+| Analizar físico y características para casting | **El CEO lo provee.** No se outsourcea |
 | Generar o editar media | **Production** |
 | Publicar, programar, pautar | **Social Media / Media Buy** |
 
-**Reglas:** leer es libre · escribir requiere decirlo antes · 🔒 publicar, pautar, enviar o borrar
-**siempre** pasa por Allan.
+**Reglas:** leer es libre · escribir requiere decirlo antes · 🔒 **enviar la estrategia al
+cliente o pasarla a los departamentos espera el gate del CEO** (§7 → «5 · 🔒 El gate del CEO»).
 
 ---
 
 ## 6 · FUENTES
 
-1. Lo que entrega el cliente y lo que entrega Allan en la conversación
+1. Lo que entrega el cliente y lo que entrega el CEO en la conversación
 2. `clients/<cliente>/` si ya existe
-3. Evidencia pública externa — **solo si Allan la habilita**
+3. Evidencia pública externa, **con su link** — el research de `context` §F y la ingeniería
+   inversa. **Sin link no entra**
 
 **Nunca:** otros repos, cuentas o workspaces que no se hayan entregado.
 
@@ -393,12 +408,12 @@ incompleto y la medición arranca sin baseline.
 
 | # | Qué | Dónde | Para quién |
 |---|---|---|---|
-| 1 | **Documento de estrategia** — resume todo, listo para mandar | `clients/<cliente>/ESTRATEGIA.md` | El cliente |
+| 1 | **Documento de estrategia** — resume todo, listo para mandar | `clients/<cliente>/01-estrategia/estrategia.md` | El cliente |
 | 2 | **Folder del cliente** — toda la data, expandida, más los links a lo externo | `clients/<cliente>/` | Los demás agentes |
 
 ---
 
-### 1 · `ESTRATEGIA.md` — para el cliente
+### 1 · `estrategia.md` — para el cliente
 
 Lo que se manda. Resume todo **sin ruido interno**: sin marcas de confianza, sin pendientes,
 sin notas de método.
@@ -424,19 +439,23 @@ lo que falta se dice, no se disimula.
 
 ```
 clients/<cliente>/
-├── ESTRATEGIA.md             ← el de arriba
-├── LINKS.md                  ← todo lo que vive afuera
-└── data/
-    ├── plan-contratado.md    ← §0 · el techo de todos
-    ├── contexto.md           ← bloque 01 · `context`
-    ├── nucleo.md             ← el WIN, el arquetipo y las 3 verdades
-    ├── ingenieria-inversa.md ← bloque 03 · `reverse-engineering`
-    └── posicionamiento.md    ← bloque 04 · `methodology`
+├── CLAUDE.md                     ← el router
+├── 00-onboarding/
+│   ├── plan-contratado.md        ← §0 · el techo de todos
+│   ├── comprension.md            ← bloque 01 · `context`
+│   └── LINKS.md                  ← todo lo que vive afuera
+├── 01-estrategia/
+│   ├── estrategia.md             ← el de arriba
+│   ├── nucleo.md                 ← el WIN, el arquetipo y las 3 verdades
+│   └── posicionamiento.md        ← bloque 04 · `methodology`
+└── 99-referencias/investigacion/
+    └── ingenieria-inversa.md     ← bloque 03 · `reverse-engineering`
 ```
 
 🔑 **Los cuatro archivos tienen nombre porque otros departamentos los citan por ruta.** Las
-plantillas viven en `brain/entregables/` y se copian al abrir el folder. **Si se les cambia el
-nombre, se rompen las referencias de ④, ⑤ y ⑨.**
+plantillas viven en `brain/entregables/` y se copian al abrir el folder (`contexto.md` se copia
+como `comprension.md`). **Si se les cambia el nombre, se rompen las referencias de ④ Creatividad,
+⑤ Producción y ⑨ Posting.**
 
 **`LINKS.md`** — lo externo **no se copia, se linkea**: Drive de fotos, de videos, de
 entregables, Figma, Notion, redes del cliente, analytics. Con una línea de qué hay en cada uno.
@@ -450,8 +469,8 @@ entregables, Figma, Notion, redes del cliente, analytics. Con una línea de qué
 |---|---|---|
 ```
 
-**`data/`** — todo lo crudo y expandido, que en `ESTRATEGIA.md` está resumido:
-- Lo que entregó el cliente → **`contexto.md`**
+**El resto** — todo lo crudo y expandido, que en `estrategia.md` está resumido:
+- Lo que entregó el cliente → **`comprension.md`**
 - La evidencia de la ingeniería inversa, con sus marcas 🟢/🟡/⚪ y su fecha → **`ingenieria-inversa.md`**
 - El `WIN`, el arquetipo y las 3 verdades completas —`MUST BE TRUE` · `UNFAIR` · `GO GET`—
   incluido lo que se descartó y por qué → **`nucleo.md`**
@@ -482,14 +501,28 @@ Growth     → oferta, precio y objetivo
 Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made]
 ```
 
-- [ ] `ESTRATEGIA.md` se entiende **sin haber leído el método**
+- [ ] `estrategia.md` se entiende **sin haber leído el método**
 - [ ] Las renuncias están escritas, no implícitas
 - [ ] Lo externo está en `LINKS.md`, no copiado
 - [ ] Los huecos abiertos están nombrados, no disimulados
-- [ ] 🛑 **El plan quedó anotado en `clients/<cliente>/data/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
+- [ ] 🛑 **El plan quedó anotado en `clients/<cliente>/00-onboarding/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
 - [ ] Nada promete lo que el **plan contratado** no cubre — ver `inherent/06-ECONOMIA.md`
-- [ ] Si es ⬜ Tailor Made, **todas las filas de la §0 tienen número** — ninguna supuesta
-- [ ] **Allan aprobó.** El agente propone, no cierra
+- [ ] Si es ⬜ Tailor Made, `plan-contratado.md` tiene **Qué incluye** y **Su pipeline** (§0)
+
+---
+
+### 5 · 🔒 El gate del CEO — la única parada de Strategy
+
+**El CEO aprueba la estrategia antes de que pase a los departamentos.** Con el checklist de
+arriba en verde, Strategy le presenta `estrategia.md` y el handoff (§7 → «3 · El handoff») y
+espera su OK.
+
+- 🛑 **Sin el OK del CEO, no se manda `estrategia.md` al cliente** —ni a Notion ni al Drive—
+  **y no se pasa ningún brief a los departamentos.**
+- **Es la única parada.** Los cuatro bloques se auto-revisan y siguen; el CEO no aprueba bloque por
+  bloque.
+- **Con el OK, la estrategia se toma como aprobada:** los demás departamentos la leen sin volver a
+  pedirla.
 
 ---
 
@@ -500,16 +533,18 @@ Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 A
 ```
 01 STRATEGY  ←  context + analysis + reverse-engineering + methodology
      │
+   🔒 GATE DEL CEO  ←  aprueba la estrategia
+     │
      ├──→ 01.2 BRANDING    brief de branding     → 01.2-branding
      ├──→ 02   GROWTH      brief de growth       → 02-growth
      ├──→ 03   MARKETING   brief de marketing    → 03-marketing
      ├──→ 04   CREATIVE    brief de creative     → 04-creative
      ├──→ 🔧   TECNOLOGÍA  brief de tecnología   → 02-growth  (Accelerate y Compound)
-     └──→ 🔁   SISTEMAS    brief de sistemas     → Allan      (solo Compound)
+     └──→ 🔁   SISTEMAS    brief de sistemas     → el CEO     (solo Compound)
      │
      ▼
    …05 producción · 06 diseño · 07 edición · 08 community · 09 posting · 10 ads…
-   …con QA como gate entre cada etapa…
+   …cada etapa se auto-revisa con su checklist y sigue…
      │
 ↻ REVISIÓN DEL 20  ←  Strategy · skill analysis        vuelve al inicio
 ```
@@ -544,6 +579,7 @@ estrategia. **No es un reporte: es el input del mes siguiente.**
 | Segmentación, presupuesto, optimización de campañas | Growth |
 | Construir la herramienta ni definir stack | Builder |
 | Grabar | Production |
-| Publicar o pautar | **Nadie sin el gate de Allan** |
+| Publicar | **⑨ Posting** |
+| Pautar | **⑩ Ads**, con el OK del CEO antes de lanzar |
 
 **Strategy decide el QUÉ y el POR QUÉ. Nunca el CÓMO.**

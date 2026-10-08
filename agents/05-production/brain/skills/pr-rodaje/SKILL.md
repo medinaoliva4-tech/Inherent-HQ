@@ -7,14 +7,14 @@ description: >
   con su plan B y la nomenclatura definida antes de grabar. Escribe los call sheets dentro de la
   sección de cada jornada y la sección de nomenclatura de `plan-de-rodaje.md`. Úsala cuando pidan "armá el call
   sheet", "el plan del jueves", "a qué hora convocamos", "en qué orden grabamos", "cómo nombramos
-  los archivos", "qué tomas de seguridad hay que hacer". Requiere el presupuesto aprobado (GATE 1).
+  los archivos", "qué tomas de seguridad hay que hacer". Requiere el presupuesto cerrado (Capa 4).
 ---
 
 # Capa 5 · Plan de rodaje — qué día, a qué hora, en qué orden
 
 | | |
 |---|---|
-| **Consume** | Las jornadas de la Capa 2 (columna `jornada` + el orden por costo de cambio) · los recursos confirmados de la Capa 3 con responsable, fecha y semáforo 🟢/🟡/🔴 · el presupuesto **aprobado en GATE 1** · las escenas de `plan-de-produccion.csv` con `accion`, `encuadre`, `duracion_s`, `locacion`, `talento`, `recursos`, `equipo` |
+| **Consume** | Las jornadas de la Capa 2 (columna `jornada` + el orden por costo de cambio) · los recursos confirmados de la Capa 3 con responsable, fecha y semáforo 🟢/🟡/🔴 · el presupuesto **cerrado en la Capa 4** · las escenas de `plan-de-produccion.csv` con `accion`, `encuadre`, `duracion_s`, `locacion`, `talento`, `recursos`, `equipo` |
 | **Produce** | Un **call sheet por jornada** como subsección dentro de **`plan-de-rodaje.md`, la sección de cada jornada** · la sección **`plan-de-rodaje.md` § Cómo se nombran los archivos** · los riesgos del día enlazados a **§ Riesgos del día** de cada jornada |
 
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:
@@ -24,11 +24,11 @@ Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla d
 **Qué no es:** no es agrupar (eso ya lo hizo la Capa 2), no es conseguir recursos (Capa 3) y no es
 cambiar qué se graba. Una escena que no está en el CSV **no entra al call sheet**.
 
-## 🛑 Requisito: GATE 1 aprobado
+## 🛑 Requisito: el presupuesto cerrado
 
-> 🛑 **Sin presupuesto aprobado no se convoca a nadie ni se reserva nada.** Un call sheet emitido
-> sobre un presupuesto sin aprobar es una jornada que se cae con el equipo ya citado — y se paga
-> igual.
+> 🛑 **Sin el presupuesto cerrado (Capa 4) no se convoca a nadie ni se reserva nada.** Un call sheet
+> emitido sobre un presupuesto sin cerrar es una jornada que se cae con el equipo ya citado — y se
+> paga igual. **Lo que quedó `⏸️ ESCALADO AL CEO` no se convoca hasta su respuesta; lo demás sí.**
 
 ## Paso 1 · Los 8 bloques obligatorios del call sheet
 
@@ -61,7 +61,7 @@ jornada— respetando la plantilla `agents/05-production/brain/entregables/plan-
 # Jornada 1 — [día y fecha] · [locación]
 ### Datos del día          → dirección completa · horarios · clima · escenas
 **Quiénes están**          → nombre · rol · teléfono
-### Las piezas de esta jornada   → compilado de ④ (ver Paso 2b)
+### Las piezas de esta jornada   → compilado de ④ Creatividad (ver Paso 2b)
 ### Orden de tiro          → por bloque de setup: # · id · qué se graba · encuadre · dur. · tiempo · qué necesitás a mano
 ### Lo que se dice en cámara     → solo lo hablado a cámara (ver Paso 2b)
 ### Cobertura obligatoria  → 🛑 antes de desarmar
@@ -80,8 +80,8 @@ en el set, es como se pierden tomas. Por eso la información creativa que hace f
 **se trae acá**.
 
 > 🛑 **Se compila, no se reescribe.** El original sigue siendo
-> `clients/<cliente>/data/ideas-<formato>.md`, y esta sección **lo cita como fuente**. Si
-> ④ cambia algo, se vuelve a compilar — nunca se edita acá. Un campo reescrito con otras palabras
+> `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`, y esta sección **lo cita como fuente**. Si
+> ④ Creatividad cambia algo, se vuelve a compilar — nunca se edita acá. Un campo reescrito con otras palabras
 > crea una segunda versión de la verdad, y en dos ciclos las dos no coinciden.
 
 **El filtro es una sola pregunta: ¿lo necesita alguien parado en el set, con la cámara en la mano?**
@@ -90,7 +90,7 @@ en el set, es como se pierden tomas. Por eso la información creativa que hace f
 |---|---|
 | La **acción** y el **encuadre** de cada escena, literales | La BIG IDEA, el insight y el filtro D/N/R |
 | La **duración** y el **tipo de lugar** | La hipótesis y la cubeta 70/20/10 |
-| La **emoción** y la **estética/mood** de cada pieza | El **copy** — el texto en pantalla lo pone ⑥B en edición |
+| La **emoción** y la **estética/mood** de cada pieza | El **copy** — el texto en pantalla lo pone ⑦ Video Editing en edición |
 | El **guion, solo si se dice frente a cámara** | La **voz en off** — se graba otro día, en un lugar silencioso |
 
 - La emoción y el mood van **una vez por pieza**, en *Las piezas de esta jornada* — no se repiten escena por escena.
@@ -128,7 +128,7 @@ La comida y el desmontaje se escriben como bloques del día, no se asumen.
 | 1 | **Segunda toma buena** | La primera siempre tiene algo: un parpadeo, un ruido, un foco | 2-3 min |
 | 2 | **Wide de la escena** | Permite cortar sin salto y da contexto si la pieza cambia de formato | 3-5 min |
 | 3 | **Detalle / inserto** | Tapa cualquier corte y salva el ritmo en la edición | 3-5 min |
-| 4 | **Reacción o pausa** | El segundo de respiro que ⑥A necesita para el final | 2 min |
+| 4 | **Reacción o pausa** | El segundo de respiro que ⑦ Video Editing necesita para el final | 2 min |
 | 5 | **Ambiente de la locación (30 s)** | Sincronizar y rellenar. **Una vez por locación**, no por escena | 1 min |
 
 **Total: 10-15 min por escena.** Una vuelta a locación: **una jornada entera.**
@@ -165,7 +165,7 @@ armados.
 
 ```
 <cliente>_<campana>_<id_creativo>_<escena>_<tipo>_<take>.<ext>
-acme_menuejecutivo_CR-007_E2_video_t03.mov
+<cliente>_<campaña>_CR-007_E2_video_t03.mov
 ```
 
 - Minúsculas, **sin espacios y sin tildes**. Toma con **dos dígitos** (`t03`).
@@ -174,19 +174,19 @@ acme_menuejecutivo_CR-007_E2_video_t03.mov
 - Se declara también el **destino del material** y la estructura de carpetas.
 
 > 🛑 **La nomenclatura se define ACÁ, antes de grabar — no al entregar.** Renombrar 400 archivos al
-> final **es cuando se pierde material**, y es cuando ⑥A y ⑥B reciben una carpeta que no puede
+> final **es cuando se pierde material**, y es cuando ⑥A Diseño gráfico y ⑦ Video Editing reciben una carpeta que no puede
 > cruzarse contra el Excel.
 
-## 🚦 GATE 2 — plan de rodaje
+## ✅ Auto-revisión del plan de rodaje
 
-**El plan de rodaje se aprueba antes de convocar a nadie.** Se registra con fecha y con quién
-aprobó. Después del GATE 2 se emiten los llamados; no antes.
+**El plan de rodaje se auto-revisa con el QA de abajo antes de convocar a nadie.** Con el QA completo
+y el presupuesto cerrado se emiten los llamados; no antes.
 
 ## QA — Capa 5
 
 - [ ] Un call sheet **por jornada**, como sección propia de **`plan-de-rodaje.md`**, y el **índice de jornadas** al principio del doc
 - [ ] Encabezado completo: cliente · campaña · jornada · fecha · **dirección** · clima previsto
-- [ ] **Lo de ④ está compilado, no reescrito:** cada jornada trae *Las piezas de esta jornada* (concepto, emoción, mood) y la fuente citada
+- [ ] **Lo de ④ Creatividad está compilado, no reescrito:** cada jornada trae *Las piezas de esta jornada* (concepto, emoción, mood) y la fuente citada
 - [ ] 🛑 **Pasó el filtro:** no entró la BIG IDEA, ni el insight, ni la hipótesis, ni el copy de pantalla, ni la voz en off
 - [ ] El **guion aparece solo donde alguien habla a cámara**, y la voz en off está declarada como *"se graba aparte"*
 - [ ] Horarios: llamado · primer tiro · comida · wrap previsto, con **horas efectivas ≤ 10**
@@ -202,7 +202,7 @@ aprobó. Después del GATE 2 se emiten los llamados; no antes.
 - [ ] Los **márgenes están incluidos**: montaje 60-90 min · setup de luz 30-45 min · locación 60 min + traslado · desmontaje 45 min
 - [ ] El llamado del talento es **≥ 30 min antes** de su primer tiro, escalonado por bloque
 - [ ] Ninguna escena del call sheet falta en `plan-de-produccion.csv` — **si no está en el Excel, no se graba**
-- [ ] 🚦 **GATE 2 registrado.** Nadie convocado antes
+- [ ] **QA completo antes de convocar.** Nadie convocado antes
 
 **Handoff →** `pr-entrega` (Capa 6). El call sheet es el documento con el que se rueda: si hay que
 preguntar algo por chat el día del rodaje, faltaba un bloque.

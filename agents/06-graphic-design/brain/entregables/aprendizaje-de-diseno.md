@@ -27,7 +27,7 @@
 
 ## D · Huecos del sistema visual
 
-| Pregunta devuelta a ②B | Veces |
+| Pregunta devuelta a ②B Branding | Veces |
 |---|---|
 
 ## E · El set del próximo ciclo

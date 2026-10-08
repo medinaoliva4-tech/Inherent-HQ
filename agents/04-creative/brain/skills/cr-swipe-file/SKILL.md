@@ -2,27 +2,27 @@
 name: cr-swipe-file
 description: >
   Capa 1 de ④ Creatividad — la bóveda de referencias y el análisis de piezas ganadoras. Arranca de
-  la tabla 15×7 que ② Estrategia ya descompuso, cosecha solo el hueco, filtra por señal de
+  la tabla 15×7 que ① Strategy ya descompuso, cosecha solo el hueco, filtra por señal de
   rendimiento (un ad de 60-90+ días es un ad que paga; un orgánico vale si es outlier contra su
   propia base), extrae el patrón —nunca la imagen—, lo clasifica en 70/20/10 y lo traduce a
   hipótesis verificadas contra el mapa de saturación. Úsala cuando pidan "armá el swipe file",
   "buscá referencias", "qué está funcionando en este formato", "analizá estos ads", "qué hooks
   están ganando", "de dónde sacamos el 70 probado". No re-mapea la categoría: eso ya lo hizo
-  ② Estrategia.
+  ① Strategy.
 ---
 
 # Capa 1 · Swipe file — qué ya funciona y por qué
 
 | | |
 |---|---|
-| **Consume** | El brief del ciclo (de `cr-brief`) · la tabla 15×7 y el mapa de saturación de ② Estrategia · los anuncios que trae `cr-fuentes` · las fichas de referencia que produce `cr-lectura-de-video` · el banco de hooks propio del ciclo anterior |
+| **Consume** | El brief del ciclo (de `cr-brief`) · los anuncios que trae `cr-fuentes` · las fichas de referencia que produce `cr-lectura-de-video` · **si existen:** la tabla 15×7 y el mapa de saturación de `ingenieria-inversa.md` (① Strategy) y el banco de hooks propio de un ciclo anterior |
 | **Produce** | `swipe-file.md` — archivo de trabajo interno: referencias con señal, patrones, cubetas e hipótesis atadas a un slot · y la columna `mezcla` de cada fila de `plan-de-contenido.csv` |
 
 Contexto del departamento: `agents/04-creative/brain/WORKFLOW.md`. Cadencia: **refresco semanal**.
 
 **Qué es:** bajar el riesgo de una pieza **antes** de producirla, leyendo lo que el mercado ya validó
 con tiempo y con dinero.
-**Qué no es:** no es investigar la categoría (eso es ② Estrategia y ya está hecho), no es un
+**Qué no es:** no es investigar la categoría (eso es ① Strategy y ya está hecho), no es un
 moodboard, y no son las referencias estéticas de ②B Branding — esas dicen cómo debe *verse* la
 marca, estas dicen qué **funciona**.
 
@@ -42,8 +42,10 @@ El 70 % de la mezcla se apoya en evidencia de rendimiento. Si esa evidencia la r
 
 ## Paso 0 · Arrancar de la 15×7 y calcular **el hueco**
 
-② Estrategia ya descompuso **15+ piezas ganadoras en 7 capas** (gancho, promesa, mecanismo, prueba,
-formato, distribución, oferta), con sus patrones marcados 🟢/🟡/⚪. **Ese es el punto de partida.**
+Si existe `ingenieria-inversa.md`, ① Strategy ya descompuso **15+ piezas ganadoras en 7 capas**
+(gancho, promesa, mecanismo, prueba, formato, distribución, oferta), con sus patrones marcados
+🟢/🟡/⚪. **Ese es el punto de partida.** Si no existe, todo es hueco: se cosecha con `cr-fuentes` y
+se declara `⚠️ SIN DATOS — sin tabla 15×7`.
 
 El primer bloque de `swipe-file.md` es lo heredado:
 
@@ -58,7 +60,7 @@ Y recién después, el hueco:
 ```
 
 🛑 **Solo se cosecha el hueco.** Repetir el barrido de categoría es duplicar el trabajo de
-② Estrategia y llegar, con menos rigor, a otra conclusión sobre la misma categoría. Lo que la 15×7
+① Strategy y llegar, con menos rigor, a otra conclusión sobre la misma categoría. Lo que la 15×7
 ya cubre **se cita por número de fila, no se re-investiga**.
 
 El hueco es casi siempre de uno de tres tipos:
@@ -67,7 +69,7 @@ El hueco es casi siempre de uno de tres tipos:
 2. **Canal exacto** que la ingeniería inversa no priorizó y el calendario de ③ Marketing sí tiene
 3. **Tipo de hook** que falta para el `goal_del_arte` de este ciclo
 
-**Antes de salir a buscar:** el banco de hooks propios del ciclo anterior va **primero y arriba**, y
+**Antes de salir a buscar:** el banco de hooks propios de un ciclo anterior, si existe, va **primero y arriba**, y
 se revisan las fichas de referencia ya existentes — **una referencia leída no se vuelve a leer**.
 Conseguir los anuncios es trabajo de `cr-fuentes`; leerlos de verdad, de `cr-lectura-de-video`.
 
@@ -81,7 +83,7 @@ evidencia de rendimiento. **En orden de fuerza:**
 | **Ad en pauta** | **60-90+ días corriendo** | `⏱️60-90+d` | **La más fuerte.** Las marcas matan rápido a los perdedores: un ad viejo es un ad que paga |
 | **Ad en pauta** | 30-60 días | `⏱️30-60d` | Señal a confirmar |
 | **Ad en pauta** | <30 días | — | Descartada. Todavía está en test |
-| **Orgánico** | **Outlier contra la media de esa cuenta** | `⏱️outlier` | Fuerte |
+| **Orgánico** | **2x o más** las vistas o interacciones **del promedio de esa cuenta** | `⏱️outlier` | Fuerte |
 | **Orgánico** | Muchas views en cuenta enorme, sin comparar con su base | — | Descartada. No es evidencia |
 | **Landing** | Existe hace tiempo y no la rehicieron | `⏱️estable` | Media |
 
@@ -162,14 +164,15 @@ El único paso donde se genera algo nuevo.
 ```
 
 1. Se modela la **estructura**; nunca se copia la **ejecución**.
-2. La hipótesis se escribe en **nuestra voz**, con el lenguaje literal del comprador de ② Estrategia.
+2. La hipótesis se escribe en **nuestra voz**, con el lenguaje literal del comprador de ① Strategy.
 3. Un patrón que no sirve a ningún slot de este ciclo **no entra**. Nada se guarda "por si acaso".
 4. Si la hipótesis podría llevar el logo de un competidor sin que nadie note la diferencia, **falló
    distintividad**. Se vuelve atrás.
 
-## Paso 6 · Verificación anti-default (obligatoria)
+## Paso 6 · Verificación anti-default (si existe el mapa)
 
-Cada patrón se cruza contra el **mapa de saturación** de ② Estrategia:
+Cada patrón se cruza contra el **mapa de saturación** de `ingenieria-inversa.md`, si existe. Si no
+existe, se declara `⚠️ SIN DATOS — sin mapa de saturación` y se sigue:
 
 | Resultado del cruce | Qué se hace |
 |---|---|
@@ -177,7 +180,7 @@ Cada patrón se cruza contra el **mapa de saturación** de ② Estrategia:
 | Está en el mapa, pero **el white space está al lado** | Se conserva la **estructura** y se invierte el contenido |
 | **No está** en el mapa | Entra. Es novedad real para esta categoría |
 
-> Esta verificación es la razón por la que Creative arranca de la evidencia de ② Estrategia y no de
+> Esta verificación es la razón por la que Creative arranca de la evidencia de ① Strategy y no de
 > cero: sin el mapa de saturación no hay forma de saber si un patrón ganador es también un patrón
 > **agotado**.
 
@@ -200,8 +203,8 @@ Cada patrón se cruza contra el **mapa de saturación** de ② Estrategia:
 - [ ] **Cada patrón tiene exactamente una cubeta**: `70·probado` / `20·apuesta` / `10·propio`
 - [ ] El **reparto previsto cierra en 70/20/10 ±10 puntos** — o la desviación está declarada con su motivo
 - [ ] Si es el **primer ciclo** del cliente, el reparto se declaró como **80/20**
-- [ ] **Cada patrón cruzado contra el mapa de saturación** — los defaults de categoría descartados
-- [ ] El banco de hooks propios del ciclo anterior está incorporado y **arriba**
+- [ ] **Cada patrón cruzado contra el mapa de saturación**, si existe — los defaults de categoría descartados — o `⚠️ SIN DATOS` declarado
+- [ ] El banco de hooks propios de un ciclo anterior, si existe, está incorporado y **arriba**
 - [ ] Fecha del relevamiento + fuentes usadas y no disponibles + confianza 🟢/🟡/🔴
 - [ ] 🛑 **Ninguna referencia se llevó al brief como imagen a replicar**
 

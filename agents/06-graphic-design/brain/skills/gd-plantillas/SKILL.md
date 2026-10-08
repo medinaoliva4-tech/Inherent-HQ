@@ -4,17 +4,17 @@ description: >
   Capa 1 de ⑥A Diseño gráfico — arma el sistema de plantillas del ciclo, que es lo que hace
   posible producir 168 piezas sin tomar 168 decisiones. Una plantilla por combinación de formato
   y tipo de contenido, con las zonas de texto, imagen y activo ya fijadas, probada con el copy
-  más largo y el más corto del ciclo. Se aprueba el molde, no las piezas. Úsala cuando pidan
+  más largo y el más corto del ciclo. Se prueba el molde, no las piezas. Úsala cuando pidan
   "las plantillas del mes", "el molde", "cómo vamos a producir tanto", "esto no escala".
-  Requiere la Capa 0. Cierra con el GATE 1.
+  Requiere la Capa 0.
 ---
 
 # Capa 1 · Plantillas — el sistema que hace posible el volumen
 
 | | |
 |---|---|
-| **Consume** | § Agrupación del ciclo · `sistema-visual.md` · el copy de todas las piezas |
-| **Produce** | Las **plantillas del ciclo** en `clients/<cliente>/data/plantillas/` |
+| **Consume** | § Agrupación del ciclo · `clients/<cliente>/02-marca/sistema-visual.md` · el copy de todas las piezas |
+| **Produce** | Las **plantillas del ciclo** en `clients/<cliente>/02-marca/kit-de-redes/plantillas/` |
 
 > 🔑 **Esta capa decide si el ciclo entra en las horas que paga el plan.**
 
@@ -45,7 +45,7 @@ description: >
 | **6-12** | ✅ El rango que funciona |
 | **13+** | Ya no es sistema: es diseñar pieza por pieza con pasos extra |
 
-## 3 · La prueba de estrés — se hace antes del gate
+## 3 · La prueba de estrés — se hace antes de llenar
 
 **Toda plantilla se prueba con los dos extremos del ciclo:**
 
@@ -66,7 +66,7 @@ de las piezas, como `br-activos` exige.
 
 ## 5 · Las plantillas se reusan ciclo a ciclo
 
-**No se rehacen cada mes.** Se guardan en `clients/<cliente>/data/plantillas/` y el ciclo
+**No se rehacen cada mes.** Se guardan en `clients/<cliente>/02-marca/kit-de-redes/plantillas/` y el ciclo
 siguiente:
 
 | | |
@@ -81,18 +81,19 @@ siguiente:
 
 **Si una pieza necesita algo que `sistema-visual.md` no define:**
 
-↩️ **Se devuelve a ②B con la regla que falta**, escrita como pregunta concreta:
+↩️ **Se devuelve a ②B Branding con la regla que falta**, escrita como pregunta concreta:
 *«¿Qué tratamiento lleva un número grande sobre fondo de acento?»*
 
-🛑 **No se inventa la regla acá.** Una decisión tomada en ⑥A se vuelve precedente sin que ②B se
-entere, y al tercer ciclo el sistema tiene dos reglas contradictorias.
+🛑 **No se inventa la regla acá.** Una decisión tomada en ⑥A Diseño gráfico se vuelve precedente sin que
+②B Branding se entere, y al tercer ciclo el sistema tiene dos reglas contradictorias.
 
-## 7 · 🚦 GATE 1
+## 7 · Se revisa el molde, no las piezas
 
-**Allan aprueba las plantillas, no las 168 piezas.**
+**La prueba de estrés de §3 es la revisión de las plantillas.** Con el checklist completo, la capa
+sigue: no para a pedir aprobación.
 
-> 🔑 **Es el gate que hace viable el departamento.** Con el molde aprobado, las piezas son
-> ejecución y se revisan en el GATE 2 como paquete.
+> 🔑 **Es lo que hace viable el departamento.** Con el molde probado, las piezas son ejecución y
+> se revisan como paquete en `gd-export`.
 
 ## 8 · Checklist
 
@@ -101,5 +102,4 @@ entere, y al tercer ciclo el sistema tiene dos reglas contradictorias.
 - [ ] Cada una pasó la **prueba de estrés** con los cuatro extremos
 - [ ] El **activo distintivo está en el molde**, no agregado por pieza
 - [ ] Se **reusaron** las del ciclo anterior que no dieron devoluciones
-- [ ] Lo que el sistema no cubría **se devolvió a ②B**, no se inventó
-- [ ] **Allan aprobó el GATE 1**
+- [ ] Lo que el sistema no cubría **se devolvió a ②B Branding**, no se inventó

@@ -19,6 +19,9 @@ description: >
 > 🔑 **Esta capa es la que habilita el performance fee: 10% de las ventas atribuidas.**
 > ⚠️ **Sin atribución limpia no hay fee.**
 
+🔷 **En Marketing y Marketing Pro no hay fee:** antes de gastar basta el pixel de Meta. **La
+atribución limpia (CAPI + GA4) y el performance fee son de 🟨 Accelerate y Compound.**
+
 ## 1 · Qué se atribuye y qué no
 
 | ✅ Se atribuye | ❌ No se atribuye |
@@ -56,8 +59,8 @@ depende de esa confianza.
 
 | Situación | Qué se hace |
 |---|---|
-| No hay pixel ni conversión configurada | `⚠️ SIN DATOS` · 🔴 **se escala.** Sin esto no hay fee |
-| El cliente no comparte sus ventas | 🔴 Se escala a Allan. **Es conversación comercial** |
+| No hay pixel ni conversión configurada | `⚠️ SIN DATOS` · 🔴 **se escala al COO.** Sin esto no hay fee |
+| El cliente no comparte sus ventas | 🔴 Se escala al CEO. **Es conversación comercial** |
 | La venta cierra por WhatsApp sin rastro | Se propone un identificador. **Mientras tanto, no se atribuye** |
 
 🛑 **Nunca se estima el fee.** Un fee sobre un número inventado es un cobro sin respaldo.

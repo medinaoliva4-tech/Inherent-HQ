@@ -19,9 +19,9 @@ exactas** lleva. Se decide acá para que el editor y el diseñador no las invent
 
 | | |
 |---|---|
-| **Consume** | El concepto aprobado en **Gate 2** (la BIG IDEA y su arco) · el **objetivo del slot** y su **etapa** (TOFU / MOFU / BOFU / post-compra) · el **tono de voz** de ②B Branding · el **lenguaje literal del comprador** de ② Estrategia |
+| **Consume** | El concepto de las **Capas 2-3** (la BIG IDEA y su arco) · el **objetivo del slot** y su **etapa** (TOFU / MOFU / BOFU / post-compra) · el **tono de voz** de ②B Branding, si existe · el **lenguaje literal del comprador** de ① Strategy |
 | **Produce** | En el `ideas-<formato>.md` de cada pieza: las secciones **Hook**, **Guion** y **Copy** · en `plan-de-contenido.csv`, la columna **`concepto`** — una línea que dice qué es la pieza |
-| **No produce** | Layout, estética, escenas, encuadres ni duraciones (Capa 5) · hashtags y adaptación a plataforma (⑦ Posting) |
+| **No produce** | Layout, estética, escenas, encuadres ni duraciones (Capa 5) · hashtags y adaptación a plataforma (⑨ Posting) |
 
 El flujo del departamento y sus reglas viven en `agents/04-creative/brain/WORKFLOW.md`.
 
@@ -38,7 +38,7 @@ El flujo del departamento y sus reglas viven en `agents/04-creative/brain/WORKFL
 | 3 | **Curiosity Gap** | Necesidad de cerrar | MOFU, confianza | 🛑 **El cierre se escribe en el mismo brief** |
 | 4 | **Question** | Autoselección | Segmenta: le habla al avatar | La pregunta usa el **lenguaje literal del comprador** |
 | 5 | **Pain / Frustration** | Reconocimiento | Frío y BOFU | El dolor **real** del avatar, nunca genérico |
-| 6 | **Bold Claim** | Provocación | Cuando hay dato o resultado | ⏸️ Con dato, precio o promesa → **aprobación de ②B Branding o ⑧B Ads** |
+| 6 | **Bold Claim** | Provocación | Cuando hay dato o resultado | ⏸️ Con dato, precio o promesa → **aprobación de ②B Branding o ⑩ Ads** |
 | 7 | **Story / Tease** | Arco abierto | Comunidad, marca personal | 🛑 **El cierre se escribe en el mismo brief** |
 
 **Cómo se elige la caja.** No por gusto: sale del **objetivo del slot** y de su **etapa**, más el

@@ -55,7 +55,7 @@ description: >
 |---|---|---|
 | **1** | **Logo tapado:** ¿se reconoce la marca? | No es distintivo. Es decoración |
 | **2** | ¿La categoría **no** lo usa? | Es un código de categoría. No distingue |
-| **3** | ¿⑥A y ⑥B lo pueden aplicar **sin criterio**? | No es sistema. Se reescribe la regla |
+| **3** | ¿⑥A Diseño gráfico y ⑦ Video Editing lo pueden aplicar **sin criterio**? | No es sistema. Se reescribe la regla |
 
 ## 5 · Cada activo lleva su regla de aplicación
 

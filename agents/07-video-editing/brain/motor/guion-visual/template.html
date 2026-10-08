@@ -1,0 +1,200 @@
+<title>Guiones __CLIENTE__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+/* Mesa de guion: columna de fotograma 9:16 a la izquierda, ficha de la escena a la derecha */
+@font-face{font-family:"Display";src:url(data:font/ttf;base64,__DISPLAY__) format("truetype");font-display:block}
+@font-face{font-family:"Sans";src:url(data:font/ttf;base64,__SANS__) format("truetype");font-weight:300 900;font-display:swap}
+:root{
+  --bg:#FDF7E8; --surface:#FFFFFF; --ink:#191919; --muted:#6B6257; --line:#E4D9C4;
+  --beige:#B29166; --red:#842A15; --ok:#4F6B2E; --field:#FFFDF7;
+  --display:"Display",Impact,"Arial Narrow",sans-serif;
+  --sans:"Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Instrument Serif",Georgia,serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151413;--surface:#1E1C1A;--ink:#F3ECDD;--muted:#A89C8A;--line:#3A342D;--beige:#C4A57A;--red:#D07A62;--ok:#9DBB6E;--field:#24211E;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#151413;--surface:#1E1C1A;--ink:#F3ECDD;--muted:#A89C8A;--line:#3A342D;--beige:#C4A57A;--red:#D07A62;--ok:#9DBB6E;--field:#24211E;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:28px 80px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(44px,8vw,76px);line-height:.92;letter-spacing:-.01em;text-transform:uppercase;margin:0;text-wrap:balance}
+.lede{max-width:64ch;color:var(--muted);margin:14px 0 0}
+.kick{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--red)}
+.changes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:24px 0 8px}
+.change{border-top:2px solid var(--beige);padding-top:10px}
+.change b{display:block;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.change span{color:var(--muted);font-size:14px}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:14px 0 12px;margin-top:22px;border-bottom:1px solid var(--line)}
+nav.tabs button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 13px var(--sans);padding:8px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+nav.tabs button .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-left:6px;vertical-align:1px}
+.vhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;margin:26px 0 6px}
+.vhead h2{font-family:var(--display);font-weight:400;font-size:44px;line-height:1;text-transform:uppercase;margin:0}
+.vmeta{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.general{margin:10px 0 18px}
+.scene{display:grid;grid-template-columns:200px minmax(0,1fr);gap:22px;padding:22px 0;border-top:1px solid var(--line)}
+@media (max-width:640px){.scene{grid-template-columns:1fr}.phone{margin:0 auto}}
+.phone{position:relative;width:200px;aspect-ratio:9/16;max-width:100%;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 0 0 1px var(--line)}
+.phone img{width:100%;height:100%;object-fit:cover;display:block}
+.ov{position:absolute;inset:0;pointer-events:none;font-family:var(--sans)}
+.ov .scrim-top{position:absolute;inset:0 0 55% 0;background:linear-gradient(180deg,rgba(25,25,25,.55),rgba(25,25,25,0))}
+.ov .t{position:absolute;color:#FDF7E8;max-width:78%}
+.ov .h1{font-family:var(--display);text-transform:uppercase;font-size:30px;line-height:.9;letter-spacing:-.02em}
+.ov .k{font-weight:700;font-size:6.5px;letter-spacing:.09em;text-transform:uppercase;display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.ov .k i{display:inline-block;width:10px;height:1px;background:currentColor}
+.ov .pill{display:inline-block;background:#FDF7E8;color:#191919;font-weight:700;font-size:6.5px;letter-spacing:.1em;text-transform:uppercase;padding:4px 7px;border-radius:99px;white-space:nowrap}
+.ov .serif{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.05}
+.ov .small{font-size:9px;font-weight:500}
+.info{min-width:0;display:flex;flex-direction:column;gap:12px}
+.shead{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.shead strong{font-family:var(--display);font-weight:400;font-size:26px;line-height:1;text-transform:uppercase}
+.tag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
+.shots{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.shots b{color:var(--ink);font-weight:600}
+.prop{font-size:13.5px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px}
+.prop dt{color:var(--muted)}.prop dd{margin:0}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.form{grid-template-columns:1fr}}
+.form .full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+input[type=text],textarea,select{font:15px var(--sans);color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%;text-transform:none;letter-spacing:0;font-weight:400}
+textarea{min-height:64px;resize:vertical}
+input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.ok{display:flex;flex-direction:row;align-items:center;gap:8px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:600}
+.state{font-size:12px;color:var(--muted)}
+.state.saved{color:var(--ok)}.state.err{color:var(--red)}
+.banner{margin-top:16px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:14px}
+.banner[data-kind="off"]{border-color:var(--red)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="kick">__CLIENTE__ · __CICLO__</div>
+  <h1>Guiones para revisar</h1>
+  <p class="lede">Cada escena muestra el fotograma real y el texto que propongo, en la posición propuesta. Cambia el texto, la posición, el estilo o el efecto y el fotograma se actualiza. Tus cambios se guardan solos; yo los leo para editar.</p>
+  <div class="banner" id="banner" hidden></div>
+  <nav class="tabs" id="tabs" aria-label="Videos"></nav>
+  <main id="video"></main>
+</div>
+
+<script>
+const DATA = __DATA__;
+const POS = ["Arriba izquierda","Arriba centro","Centro","Sobre la línea","Junto a la línea, izquierda","Abajo izquierda","Abajo centro","Sin texto"];
+const STY = {"titular":"Titular grande","píldora":"Píldora","etiqueta":"Píldora","etiquetas":"Dos píldoras (una por cuadro)","remate":"Frase en cursiva","titular + etiquetas":"Titular grande","cierre":"Cierre de marca"};
+const STYLES = ["Titular grande","Píldora","Dos píldoras (una por cuadro)","Frase en cursiva","Texto pequeño","Cierre de marca"];
+const FX = ["Revelado por líneas","Aparece suave","Píldora se abre","Letra por letra","Desliza de lado","Sube desde abajo","Corte seco (sin animación)","Fondo beige sube, logo y frase aparecen suave","Otro (descríbelo en notas)"];
+const notes = {}; let db = null; let current = null;
+
+function el(tag, attrs, ...kids){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs||{})){if(k==="class")e.className=v;else if(k==="text")e.textContent=v;else e.setAttribute(k,v)}for(const c of kids)if(c!=null)e.append(c);return e}
+function fmt(t){return t.toFixed(1).replace(".",",")+" s"}
+function val(sc,f){const n=notes[sc.id];if(n&&n[f]!=null&&n[f]!=="")return n[f];return null}
+function eff(sc){return{texto:val(sc,"texto")??sc.text,pos:val(sc,"posicion")??(sc.pos||"Sin texto"),estilo:val(sc,"estilo")??(STY[sc.role]||"Titular grande"),fx:val(sc,"efecto")??(sc.fx||"")}}
+
+function overlay(sc,box){
+  box.textContent="";const e=eff(sc);if(!e.texto||e.pos==="Sin texto"||sc.layout==="cierre")return;
+  const split=sc.layout==="doble";
+  const t=el("div",{class:"t"});
+  const st=e.estilo;
+  if(st==="Dos píldoras (una por cuadro)"){
+    const [a,b]=e.texto.split("|").map(s=>s.trim());
+    const p1=el("span",{class:"pill",text:a||""}),p2=el("span",{class:"pill",text:b||""});
+    const w1=el("div",{class:"t"},p1),w2=el("div",{class:"t"},p2);
+    const left=e.pos.includes("izquierda")||e.pos==="Sobre la línea"?"8%":"50%";
+    for(const[w,top]of[[w1,"40%"],[w2,"53%"]]){w.style.top=top;w.style.left=left;if(left==="50%")w.style.transform="translateX(-50%)";box.append(w)}
+    return}
+  if(st==="Titular grande"){
+    const parts=e.texto.split("/").map(s=>s.trim());
+    if(parts.length>1){t.append(el("div",{class:"k"},el("i"),document.createTextNode(parts[0])));t.append(el("div",{class:"h1",text:parts.slice(1).join(" ")}))}
+    else t.append(el("div",{class:"h1",text:parts[0]}))}
+  else if(st==="Píldora")t.append(el("span",{class:"pill",text:e.texto}));
+  else if(st==="Frase en cursiva")t.append(el("div",{class:"serif",text:e.texto}));
+  else t.append(el("div",{class:"small",text:e.texto}));
+  const p=e.pos;
+  if(p.startsWith("Arriba")){box.append(el("div",{class:"scrim-top"}));t.style.top="14%"}
+  if(p==="Centro"){t.style.top="50%";t.style.transform="translateY(-50%)"}
+  if(p==="Sobre la línea"){t.style.top="50%";t.style.transform="translate(-50%,-50%)";t.style.left="50%";t.style.textAlign="center"}
+  if(p==="Junto a la línea, izquierda"){t.style.top=split?"41%":"44%"}
+  if(p.startsWith("Abajo")){t.style.bottom="26%"}
+  if(p.endsWith("izquierda")||p==="Centro"&&false){t.style.left="8%"}
+  if(p==="Centro"){t.style.left="8%"}
+  if(p.endsWith("centro")){t.style.left="50%";t.style.textAlign="center";t.style.transform=(t.style.transform||"")+" translateX(-50%)"}
+  box.append(t);
+}
+
+const timers={};
+async function save(sc,state){
+  if(!db){state.textContent="No se puede guardar en esta vista";state.className="state err";return}
+  const n=notes[sc.id]||{};const body={video:sc.id.slice(0,3),escena:sc.n,texto:n.texto||"",posicion:n.posicion||"",estilo:n.estilo||"",efecto:n.efecto||"",notas:n.notas||"",aprobada:!!n.aprobada,actualizado:new Date().toISOString()};
+  state.textContent="Guardando…";state.className="state";
+  try{await db.collection("notas").doc(sc.id).set(body);state.textContent="Guardado";state.className="state saved";markTabs()}
+  catch(err){state.textContent="No se guardó: "+(err&&err.message||"error")+". Intenta de nuevo.";state.className="state err"}
+}
+function queue(sc,state){clearTimeout(timers[sc.id]);state.textContent="Sin guardar";state.className="state";timers[sc.id]=setTimeout(()=>save(sc,state),700)}
+
+function select(id,opts,value,ph){const s=el("select",{id});s.append(el("option",{value:"",text:ph}));for(const o of opts){const op=el("option",{value:o,text:o});if(o===value)op.selected=true;s.append(op)}return s}
+
+function sceneRow(sc){
+  const box=el("div",{class:"ov"});
+  const phone=el("div",{class:"phone"},el("img",{src:"thumbs/"+sc.id+".jpg",alt:"Fotograma de la escena "+sc.n,loading:"lazy"}),box);
+  const kind=sc.layout==="doble"?"Doble cuadro":sc.layout==="cierre"?"Cierre de marca":"Pantalla completa";
+  const shots=el("div",{class:"shots"});
+  sc.shots.forEach((s,i)=>{const where=sc.layout==="doble"?(i?"Abajo: ":"Arriba: "):"";shots.append(el("div",{},document.createTextNode(where),el("b",{text:s.clip}),document.createTextNode(` · ${fmt(s.from)}–${fmt(s.to)}`+(s.speed&&s.speed<1?" · cámara lenta 50 %":""))))});
+  if(sc.note)shots.append(el("div",{text:"Nota: "+sc.note}));
+  const prop=el("dl",{class:"prop"},el("dt",{text:"Texto"}),el("dd",{text:sc.text||"Sin texto"}),el("dt",{text:"Posición"}),el("dd",{text:sc.pos||"—"}),el("dt",{text:"Efecto"}),el("dd",{text:sc.fx||"—"}));
+  const n=notes[sc.id]||(notes[sc.id]={});
+  const state=el("span",{class:"state",text:n.actualizado?"Guardado":""});if(n.actualizado)state.className="state saved";
+  const tx=el("textarea",{id:"t_"+sc.id,placeholder:sc.text?"Propuesto: "+sc.text:"Sin texto propuesto. Escribe uno si quieres."});tx.value=n.texto||"";
+  const ps=select("p_"+sc.id,POS,n.posicion||"","Posición: igual a la propuesta");
+  const es=select("s_"+sc.id,STYLES,n.estilo||"","Estilo: igual al propuesto");
+  const fx=select("f_"+sc.id,FX,n.efecto||"","Efecto: igual al propuesto");
+  const nt=el("textarea",{id:"n_"+sc.id,placeholder:"Qué cambiar en la escena: toma, duración, encuadre, color…"});nt.value=n.notas||"";
+  const ok=el("input",{type:"checkbox",id:"a_"+sc.id});ok.checked=!!n.aprobada;
+  const refresh=()=>overlay(sc,box);
+  tx.addEventListener("input",()=>{n.texto=tx.value;refresh();queue(sc,state)});
+  ps.addEventListener("change",()=>{n.posicion=ps.value;refresh();queue(sc,state)});
+  es.addEventListener("change",()=>{n.estilo=es.value;refresh();queue(sc,state)});
+  fx.addEventListener("change",()=>{n.efecto=fx.value;queue(sc,state)});
+  nt.addEventListener("input",()=>{n.notas=nt.value;queue(sc,state)});
+  ok.addEventListener("change",()=>{n.aprobada=ok.checked;queue(sc,state)});
+  const form=el("div",{class:"form"},
+    el("label",{class:"full"},document.createTextNode("Texto final (usa / para separar etiqueta y titular, | para las dos píldoras)"),tx),
+    el("label",{},document.createTextNode("Posición"),ps),el("label",{},document.createTextNode("Estilo"),es),
+    el("label",{class:"full"},document.createTextNode("Efecto"),fx),
+    el("label",{class:"full"},document.createTextNode("Notas para mí"),nt),
+    el("div",{class:"row full"},el("label",{class:"ok",for:"a_"+sc.id},ok,document.createTextNode("Escena aprobada")),state));
+  refresh();
+  return el("section",{class:"scene"},phone,el("div",{class:"info"},
+    el("div",{class:"shead"},el("strong",{text:"Escena "+sc.n}),el("span",{class:"tag",text:`${fmt(sc.start)} – ${fmt(sc.end)} · ${kind}`})),
+    shots,prop,form));
+}
+
+function render(v){
+  current=v.id;const main=document.getElementById("video");main.textContent="";
+  main.append(el("div",{class:"vhead"},el("h2",{text:v.title}),el("span",{class:"vmeta",text:`${v.id} · ${v.pillar} · ${fmt(v.duration)} · ${v.scenes.length} escenas`})));
+  const gk=v.id+"_general";const g=notes[gk]||(notes[gk]={});
+  const gs=el("span",{class:"state",text:g.actualizado?"Guardado":""});
+  const gt=el("textarea",{id:"g_"+v.id,placeholder:"Comentarios generales de este video (tono, música, duración…)"});gt.value=g.notas||"";
+  const gsc={id:gk,n:0};gt.addEventListener("input",()=>{g.notas=gt.value;queue(gsc,gs)});
+  main.append(el("div",{class:"general"},el("label",{},document.createTextNode("Notas generales del video"),gt),gs));
+  v.scenes.forEach(sc=>main.append(sceneRow(sc)));
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.id===v.id?"true":"false"));
+  try{history.replaceState(null,"","#"+v.id)}catch(e){}
+}
+function markTabs(){document.querySelectorAll("#tabs button").forEach(b=>{const v=DATA.find(x=>x.id===b.dataset.id);const all=v.scenes.every(s=>notes[s.id]&&notes[s.id].aprobada);b.querySelector(".dot").hidden=!all})}
+const tabs=document.getElementById("tabs");
+DATA.forEach(v=>{const b=el("button",{type:"button","data-id":v.id,"aria-selected":"false"},document.createTextNode(`${v.id.slice(1)} · ${v.title}`),el("span",{class:"dot",title:"Todas las escenas aprobadas"}));b.querySelector(".dot").hidden=true;b.addEventListener("click",()=>render(v));tabs.append(b)});
+const start=DATA.find(v=>"#"+v.id===location.hash)||DATA[0];render(start);
+
+(async()=>{
+  const banner=document.getElementById("banner");
+  try{db=window.claude?await window.claude.use("db"):null}catch(e){db=null}
+  if(!db){banner.hidden=false;banner.dataset.kind="off";banner.textContent="Estás viendo una copia sin guardado. Ábrela con tu sesión de claude.ai para que tus notas se guarden.";return}
+  try{
+    const snap=await db.collection("notas").get();
+    snap.docs.forEach(d=>{notes[d.id]=Object.assign({},d.data())});
+    const v=DATA.find(x=>x.id===current);render(v);markTabs();
+  }catch(e){banner.hidden=false;banner.dataset.kind="off";banner.textContent="No pude cargar las notas guardadas. Recarga la página."}
+})();
+</script>

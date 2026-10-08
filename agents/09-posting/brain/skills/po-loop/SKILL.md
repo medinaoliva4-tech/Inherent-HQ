@@ -1,20 +1,20 @@
 ---
 name: po-loop
 description: >
-  Capa 6 de ⑦ Posting — cierra el ciclo con las cuatro lecturas: qué no llegó a tiempo y de dónde
-  venía, qué se devolvió y por qué, qué falló al publicar, y cuánto tardó cada aprobación. Devuelve
-  como dato —no como reclamo— lo que es de ③ Marketing (fechas de preparación cortas) y de ⑥A/⑥B
-  (specs que fallan siempre), y propone a ① Strategy la corrección del tiempo real de aprobación.
-  Escribe `aprendizaje-de-posting.md`. Úsala cuando pidan "qué se cayó este mes", "por qué llegó
-  tarde", "cerrá el ciclo de posting", "cuánto tarda en aprobar este cliente". Requiere el ciclo
-  publicado y verificado.
+  Capa 6 de ⑨ Posting — cierra el ciclo con las cuatro lecturas: qué no llegó a tiempo y de dónde
+  venía, qué se devolvió y por qué, qué falló al publicar, y si el ciclo quedó programado a tiempo.
+  Devuelve como dato —no como reclamo— lo que es de ③ Marketing (fechas de preparación cortas) y de
+  ⑥A Diseño gráfico / ⑦ Video Editing (specs que fallan siempre). Escribe
+  `aprendizaje-de-posting.md`. Úsala cuando pidan "qué se cayó este mes", "por qué llegó tarde",
+  "cerrá el ciclo de posting", "qué falló en Zernio".
+  Requiere el ciclo publicado y verificado.
 ---
 
 # Capa 6 · Loop — qué se cayó y por qué
 
 | | |
 |---|---|
-| **Consume** | `calendario-de-publicacion.csv` completo, con `estado` de todas las filas · la § Verificación de `publicaciones.md` · las fechas de preparación de ③ · los tiempos reales de aprobación del ciclo |
+| **Consume** | `calendario-de-publicacion.csv` completo, con `estado` de todas las filas · la § Verificación de `publicaciones.md` · las fechas de preparación de ③ Marketing · cuándo quedó `programada` cada fila en Zernio |
 | **Produce** | **`aprendizaje-de-posting.md`** — archivo de trabajo interno: no se entrega al cliente pero **sí se guarda**. Plantilla: `aprendizaje-de-posting.md`, al lado de esta skill |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`.
@@ -23,26 +23,26 @@ Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`.
 
 | # | Lectura | La pregunta | De dónde sale |
 |---|---|---|---|
-| **1** | **Llegó tarde** | ¿Qué piezas no estaban a tiempo, y de dónde venían? | Fecha de entrega real de ⑥A/⑥B vs. la `fecha` de la fila |
+| **1** | **Llegó tarde** | ¿Qué piezas no estaban a tiempo, y de dónde venían? | Fecha de entrega real de ⑥A Diseño gráfico / ⑦ Video Editing vs. la `fecha` de la fila |
 | **2** | **Se devolvió** | ¿Qué se devolvió, a quién y por cuál de los 5 motivos? | La tabla de devoluciones de `publicaciones.md` |
-| **3** | **Falló al publicar** | ¿Qué salió mal después de cargar? | La § Verificación |
-| **4** | **Tiempo de aprobación** | ¿Cuánto tardó cada gate en volver aprobado? | Las fechas de los gates |
+| **3** | **Falló al publicar** | ¿Qué quedó `fallida` en Zernio, y qué se recuperó con el reintento? | La § Verificación |
+| **4** | **Programado a tiempo** | ¿El ciclo quedó programado a más tardar el día 19, y qué lo atrasó? | Cuándo quedó `programada` cada fila — Zernio (`posts_get`) |
 
 ## 2 · Lectura 1 — el que llega tarde no siempre es el que falla
 
 ```
 | id_creativo | Se esperaba | Llegó     | Atraso | De quién venía |
-| CR-003      | 2026-10-02  | 2026-10-07| 5 días | ⑥A Diseño      |
-| CR-009      | 2026-10-04  | nunca     | —      | ⑥B Video       |
+| CR-003      | 2026-10-02  | 2026-10-07| 5 días | ⑥A Diseño gráfico |
+| CR-009      | 2026-10-04  | nunca     | —      | ⑦ Video Editing   |
 ```
 
 > 🛑 **Si el 30 % de las piezas llega tarde, el problema no está en Posting.** Está en las fechas de
-> preparación de ③ o en los tiempos de ⑥. Eso se devuelve **como dato, no como reclamo**: con el
-> número, no con la queja.
+> preparación de ③ Marketing o en los tiempos de ⑥A Diseño gráfico y ⑦ Video Editing. Eso se
+> devuelve **como dato, no como reclamo**: con el número, no con la queja.
 
 | Patrón | A quién va |
 |---|---|
-| Siempre llega tarde el **mismo formato** | ⑥A o ⑥B: ese formato lleva más tiempo del previsto |
+| Siempre llega tarde el **mismo formato** | ⑥A Diseño gráfico o ⑦ Video Editing: ese formato lleva más tiempo del previsto |
 | Llega tarde **todo, parejo** | ③ Marketing: las fechas de preparación son cortas para el ciclo |
 | Llega tarde lo que **depende del cliente** | ① Strategy: el tiempo de respuesta declarado no es el real |
 
@@ -52,14 +52,14 @@ Una devolución aislada es ruido. **La misma devolución tres ciclos seguidos es
 
 ```
 | Motivo                        | Veces | A quién | ¿Se repite de ciclos anteriores? |
-| 2 · No cumple la spec (9:16)  | 4     | ⑥B      | Sí — tercer ciclo                |
+| 2 · No cumple la spec (9:16)  | 4     | ⑦ Video Editing      | Sí — tercer ciclo                |
 ```
 
 | Si se repite | Qué se propone |
 |---|---|
-| **Specs** que fallan siempre | Que ⑥A/⑥B fijen la spec **antes** de exportar. Se les pasa la tabla de aspectos |
-| **Falta de copy** en ④ | Que ④ verifique el copy literal en su Gate 3 |
-| **Claims** que llegan sin validar | Que ②B los valide **antes** del cierre de ④, no en Posting |
+| **Specs** que fallan siempre | Que ⑥A Diseño gráfico / ⑦ Video Editing fijen la spec **antes** de exportar. Se les pasa la tabla de aspectos |
+| **Falta de copy** en ④ Creatividad | Que ④ Creatividad verifique el copy literal antes de cerrar el Excel del ciclo |
+| **Claims** que llegan sin validar | Que ②B Branding los valide **antes** del cierre de ④ Creatividad, no en Posting |
 
 🛑 **Se propone, no se impone.** Cada departamento decide sobre su propio proceso.
 
@@ -67,26 +67,21 @@ Una devolución aislada es ruido. **La misma devolución tres ciclos seguidos es
 
 ```
 | id     | Qué falló              | Causa raíz                    | Qué evita que se repita |
-| PO-004 | Salió sin la media     | Media URL privada de Drive    | Verificar sin sesión — ya está en el QA de po-carga |
+| PO-004 | Fallida — sin la media | URL que Zernio no podía leer  | `validate_media` antes de programar — ya está en el QA de po-carga |
 ```
 
 **La causa raíz importa más que el incidente.** Si la causa ya está cubierta por un chequeo que
 existe, el problema no es el proceso: es que ese chequeo se saltó, y eso también se anota.
 
-## 5 · Lectura 4 — cuánto tarda en aprobar este cliente
+## 5 · Lectura 4 — ¿quedó programado a tiempo?
 
 ```
-| Gate                | Presentado  | Aprobado    | Tardó   |
-| 1 · Captions        | 2026-10-01  | 2026-10-03  | 2 días  |
-| 2 · Paquete de carga| 2026-10-04  | 2026-10-04  | mismo día |
+| Última fila programada | ¿Programado al día 19? | Qué lo atrasó |
+| 2026-10-18             | ✅                     | —             |
 ```
 
-**El promedio del ciclo se compara con lo declarado** en `data/contexto.md` §D · Restricciones
-(*"aprueba Ana, 24-48 h"*). Si no coincide después de 2-3 ciclos, **se propone la corrección a ①
-Comprensión** — como propuesta, nunca editando su archivo.
-
-> Un cliente que dice que aprueba en 24 h y tarda 6 días no está mintiendo: está describiendo la
-> semana buena. **Ese número cambia el calendario entero de ③.**
+🛑 **El ciclo queda programado a más tardar el día 19.** Si se programó tarde porque las capas
+anteriores llegaron tarde, la causa va a la Lectura 1 — con el número.
 
 ## 6 · Lo que sube a las skills
 
@@ -94,7 +89,7 @@ Comprensión** — como propuesta, nunca editando su archivo.
 |---|---|
 | Un límite de plataforma cambió | La tabla de `po-caption`, con fecha nueva |
 | Una spec falla siempre en el mismo formato | La tabla de `po-specs` |
-| El formato de Publer cambió | `po-carga` y la § de Publer en `skills/README.md`, con fecha |
+| Zernio cambió una herramienta o lo que pide | `po-carga` y la § Sobre Zernio de `skills/README.md` |
 | Una hora rindió consistentemente en una cuenta | Deja de ser `⚠️ SIN DATOS`: pasa a dato en `po-programacion` |
 
 🛑 **Un dato de plataforma que se actualiza, se actualiza con fecha.** Sin fecha vuelve a caducar sin
@@ -111,6 +106,5 @@ que nadie lo note.
 - [ ] Las devoluciones repetidas están identificadas, con **cuántos ciclos** llevan
 - [ ] Cada falla publicada tiene su **causa raíz**, no solo el incidente
 - [ ] Si la causa ya estaba cubierta por un chequeo, está anotado que **el chequeo se saltó**
-- [ ] El **tiempo real de aprobación** está medido y comparado con lo declarado en ①
-- [ ] Si difiere tras 2-3 ciclos, se **propuso la corrección a ① Strategy** — sin editar su archivo
+- [ ] Está anotado **cuándo quedó programado el ciclo**, y si fue a más tardar el día 19
 - [ ] Los datos de plataforma que cambiaron se actualizaron **con fecha**

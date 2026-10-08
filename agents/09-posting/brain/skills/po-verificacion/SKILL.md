@@ -1,98 +1,92 @@
 ---
 name: po-verificacion
 description: >
-  Capa 5 de ⑦ Posting — se ejecuta después de que el contenido salió. Mira la publicación real: que
-  esté, que esté en la cuenta correcta, que se vea bien en móvil, que el link funcione, que el
-  caption no se haya cortado raro y que la media no se haya recomprimido a nada. Registra la URL
-  pública de cada pieza y completa la columna `estado`. Escribe la sección § Verificación de
-  `publicaciones.md`. Úsala cuando pidan "¿salió todo?", "revisá lo publicado", "¿se ve bien?",
-  "pasame los links de lo que salió". 🛑 No se da por publicado porque Publer dijo que sí.
+  Capa 5 de ⑨ Posting — revisa en Zernio el estado de cada publicación del ciclo: programada,
+  publicada o fallida. Lee cada `zernio_post_id` del registro con `posts_get`, cruza las fallidas con
+  `posts_list_failed`, las reintenta con `posts_retry` y reporta lo que sigue fallando. Actualiza la
+  columna `estado` de `calendario-de-publicacion.csv` y escribe la sección § Verificación de
+  `publicaciones.md`, con la URL de lo publicado. No abre las redes: el control de calidad de lo
+  publicado lo hace el CEO en persona. Úsala cuando pidan "¿salió todo?", "¿qué falló?", "revisá lo
+  programado", "pasame los links de lo que salió".
 ---
 
-# Capa 5 · Verificación — ¿salió y se ve bien?
+# Capa 5 · Verificación — ¿salió?
 
 | | |
 |---|---|
-| **Consume** | Las filas en `estado = cargado` · el reporte de Publer de lo publicado · las publicaciones reales en cada plataforma |
-| **Produce** | La sección **§ Verificación** de `publicaciones.md`, con la URL de cada pieza · la columna **`estado`** en `publicado` |
+| **Consume** | `calendario-de-publicacion.csv` — las filas con `zernio_post_id` · el estado de cada publicación en Zernio |
+| **Produce** | La columna **`estado`** en `programada` / `publicada` / `fallida` · la sección **§ Verificación** de `publicaciones.md`, con la URL de cada publicación y lo que sigue fallando |
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`.
 
+🛑 **Sin Zernio conectado no se verifica:** `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio`.
+
 ## 1 · 🛑 La regla de la capa
 
-**No se da por publicado porque Publer dijo que sí.** Se mira la publicación real.
+**El estado sale de Zernio, publicación por publicación. No se abren las redes.**
 
-Un post puede figurar como publicado en Publer y en la plataforma estar:
+El control de calidad de lo publicado —cómo se ve en el teléfono, si el link funciona, si el Reel
+quedó como Reel— lo hace **el CEO en persona**, y no se registra.
 
-| Lo que pasa | Cómo se ve en Publer |
+**Corre en dos momentos:** después de programar, para confirmar que todo quedó `programada`, y
+después de las fechas del calendario, para saber qué se publicó y qué falló.
+
+## 2 · Qué se revisa
+
+| Paso | Herramienta | Qué se hace |
+|---|---|---|
+| 1 | **`posts_get`** | Por cada `zernio_post_id` del registro: su estado, su cuenta y su fecha y hora |
+| 2 | **`posts_list_failed`** | Las fallidas de Zernio — se cruzan con el registro por `zernio_post_id` |
+| 3 | **`posts_list`** | El panorama por estado, si hace falta. 🛑 Trae 10 por defecto: se le pone un `limit` que cubra el ciclo |
+
+| Zernio dice | `estado` en el registro |
 |---|---|
-| La media no cargó y salió solo el texto | ✅ publicado |
-| El Reel entró como video de feed | ✅ publicado |
-| El caption se cortó a la mitad | ✅ publicado |
-| Salió en la cuenta equivocada | ✅ publicado |
-| El link del CTA está roto | ✅ publicado |
+| `scheduled` | **`programada`** |
+| `published` | **`publicada`** — se registra la URL de la publicación |
+| `failed` · `partial` *(salió en unas cuentas y en otras no)* | **`fallida`** |
 
-> **Una publicación fallida que nadie miró es una pieza que el cliente descubre antes que nosotros.**
-> Ese es el único error de este departamento que se ve desde afuera, y cuesta la confianza del ciclo.
+🛑 **Se reporta igual que una fallida:** una publicación que `posts_get` no encuentra, una que sigue
+`programada` después de su fecha, o una cuya cuenta o fecha no coinciden con el registro.
 
-## 2 · Qué se verifica, pieza por pieza
+**Se registra la URL de cada publicación publicada.** Es lo que después necesitan ④ Creatividad para
+su loop y ⑩ Ads para pautar sobre el orgánico.
 
-| Chequeo | Cómo |
+## 3 · Las fallidas
+
+| Paso | Qué se hace |
 |---|---|
-| **¿Salió?** | Está visible en el perfil |
-| **¿Cuenta correcta?** | El `@handle` es el que dice el calendario |
-| **¿Se ve bien en móvil?** | 🛑 **En un teléfono, no en el escritorio.** Es donde lo ve el 95 % |
-| **¿El formato es el correcto?** | El Reel está en la pestaña de Reels, no en el feed |
-| **¿Caption completo?** | No se cortó, los saltos de línea están, los emojis se ven |
-| **¿Media bien?** | No se recomprimió a nada, no tiene bandas, el audio suena |
-| **¿Link funciona?** | Se abre y lleva a donde tiene que llevar |
-| **¿Alt text quedó?** | Algunas plataformas lo pierden en la importación |
+| 1 | Se lee en `posts_get` **qué dice Zernio** de la falla |
+| 2 | **`posts_retry`** con su `zernio_post_id` |
+| 3 | Se vuelve a leer el estado: si salió, pasa a `publicada` |
+| 4 | **Lo que sigue fallando se reporta** — qué publicación, qué dice Zernio, cuántos reintentos y qué hace falta |
 
-**Se registra la URL pública de cada pieza.** Es lo que después necesitan ④ para su loop y ⑧B para
-pautar sobre el orgánico.
+🛑 **`posts_retry_all_failed` reintenta todo lo fallido de Zernio, de cualquier cliente.** Solo se
+usa si todas las fallidas de `posts_list_failed` son de este cliente y de este ciclo; si no, se
+reintenta una por una.
 
-## 3 · Cuando algo falló
-
-```
-| id     | Qué pasó                      | Qué se hizo              | ¿Se republicó? |
-| PO-004 | Salió sin la media            | Se borró y se republicó  | ✅ 12:10       |
-| PO-007 | Entró como video, no como Reel| Se deja — republicar pierde el alcance inicial | ⬜ |
-```
-
-🛑 **Borrar y republicar es una decisión, no un reflejo.** Se pierde el alcance acumulado y el
-horario elegido. Se decide con criterio:
-
-| Falla | Qué suele convenir |
-|---|---|
-| Salió **sin media** | Republicar — sin la pieza no comunica nada |
-| Salió en la **cuenta equivocada** | Bajar y republicar donde va |
-| Entró como **video y no como Reel** | Depende del alcance que ya tomó. Se consulta |
-| **Caption cortado** o con un error de texto | Editar, si la plataforma lo permite. No republicar |
-| **Link roto** | Editar el link, o corregirlo en la bio |
-
-🛑 **Bajar una publicación es una acción irreversible hacia afuera.** Se propone y **decide un
-humano** — igual que la carga.
+🛑 **Bajar o borrar una publicación** (`posts_unpublish_post`, `posts_delete`) **no se decide en
+esta capa:** se escala al COO.
 
 ## 4 · Qué se pasa para adelante
 
 | A quién | Qué |
 |---|---|
 | **④ Creatividad** (`cr-loop`) | Las URLs de lo publicado — sin ellas no puede leer el rendimiento pieza por pieza |
-| **⑧B Ads** | Las piezas marcadas para pauta, con su URL de post orgánico |
-| **⑧A Orgánico** | Qué salió y cuándo, para el seguimiento de comentarios |
+| **⑩ Ads** | Las piezas marcadas para pauta, con su URL de post orgánico |
+| **⑧ Community** | Qué salió y cuándo, para el seguimiento de comentarios |
+| **El COO** | Lo que sigue fallando después del reintento |
 | **`po-loop`** | Lo que falló y lo que llegó tarde |
 
 ---
 
 ## Control de calidad de la Capa 5
 
-- [ ] 🛑 **Se miró cada publicación real** — ninguna se dio por buena por el reporte de Publer
-- [ ] Se verificó **en móvil**, no solo en escritorio
-- [ ] La **cuenta** de cada pieza es la que decía el calendario
-- [ ] Los Reels están **como Reel**, no como video de feed
-- [ ] Los **captions** se ven completos, con saltos de línea y emojis correctos
-- [ ] Los **links** se abrieron y funcionan
-- [ ] La **URL pública** de cada pieza está registrada
-- [ ] Lo que falló tiene **qué pasó y qué se hizo** escrito
-- [ ] 🛑 **Nada se bajó ni se republicó sin que lo decidiera un humano**
-- [ ] Las URLs se pasaron a **④ para su loop** y a **⑧B** las marcadas para pauta
+- [ ] 🛑 **El estado de cada publicación salió de Zernio** (`posts_get`), una por una — ninguna se dio por buena sin leerla
+- [ ] Toda fila del registro con `zernio_post_id` tiene su **`estado` actualizado**: `programada` / `publicada` / `fallida`
+- [ ] Las fallidas se cruzaron con **`posts_list_failed`** y se **reintentaron**
+- [ ] 🛑 `posts_retry_all_failed` solo se usó si todas las fallidas eran de **este cliente y este ciclo**
+- [ ] Lo que **sigue fallando está reportado**, con lo que dice Zernio y qué hace falta
+- [ ] Las publicaciones que Zernio no encuentra, o que siguen `programada` después de su fecha, están reportadas
+- [ ] La **URL** de cada publicación publicada está registrada
+- [ ] 🛑 **Nada se bajó ni se borró desde acá** — se escaló al COO
+- [ ] Las URLs se pasaron a **④ Creatividad para su loop** y a **⑩ Ads** las marcadas para pauta

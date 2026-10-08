@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `motor-de-crecimiento.md` · ventas reales · atribución de ⑩ · `aprendizaje-de-marketing.md` |
+| **Consume** | `motor-de-crecimiento.md` · ventas reales · atribución de ⑩ Ads · `aprendizaje-de-marketing.md` |
 | **Produce** | **`aprendizaje-de-growth.md`** |
 
 > 🔑 **Corre el 20 de cada mes.**
@@ -35,8 +35,8 @@ corrección es opuesta.**
 | Señal | Probablemente es |
 |---|---|
 | Llega **igual de gente** y compra menos | **Oferta.** Algo del mensaje o del precio cambió |
-| Llega **menos gente** y convierte igual | **Pauta.** Es de ⑩ |
-| Llega más gente y convierte mucho peor | **Pauta trayendo a quien no es.** Es de ⑩ y de ③ |
+| Llega **menos gente** y convierte igual | **Pauta.** Es de ⑩ Ads |
+| Llega más gente y convierte mucho peor | **Pauta trayendo a quien no es.** Es de ⑩ Ads y de ③ Marketing |
 | Preguntan y no compran | **Conversión.** Es de acá |
 
 🛑 **Cambiar la oferta cuando el problema era la pauta destruye lo que funcionaba.** Es el error
@@ -51,7 +51,7 @@ funciona, sin perderlo»*.
 |---|---|
 | **Qué ventas se atribuyen** | Las que vinieron de nuestro trabajo, no el tráfico preexistente |
 | **Con qué** | La atribución de ⑩ Ads |
-| ⚠️ **Sin atribución limpia** | **No hay fee.** Se declara y se escala |
+| ⚠️ **Sin atribución limpia** | **No hay fee.** Se declara y se escala al CEO |
 
 ## 4 · Qué se decide
 
@@ -61,7 +61,7 @@ funciona, sin perderlo»*.
 | Un canal grande no avanzó en dos ciclos | Se cierra o se cambia el ángulo |
 | Un escalón de la escalera no se compró nunca | **Sale** |
 | El tiempo de respuesta no bajó | 🔴 La automatización no se encendió o no funciona |
-| El margen de una línea está negativo | 🔴 Se escala a `gr-numeros` *(🟨)* o a Allan |
+| El margen de una línea está negativo | 🔴 Se escala a `gr-numeros` *(🟨)* o al CEO |
 
 ## 5 · ⚠️ Sin datos no se concluye
 
@@ -75,7 +75,7 @@ Sin ventas atribuidas, **no se declara qué funcionó**: `⚠️ SIN DATOS` y a 
 | **B · Oferta o pauta** | El diagnóstico, con la señal que lo sostiene |
 | **C · El fee** | Ventas atribuidas del ciclo, o por qué no se pudo medir |
 | **D · Qué cambia** | Con responsable |
-| **E · Lo que se devuelve** | A ② Estrategia, a ③ Marketing, a ⑩ Ads |
+| **E · Lo que se devuelve** | A ① Strategy, a ③ Marketing, a ⑩ Ads |
 | **F · Los huecos** | `⚠️ SIN DATOS`, con responsable |
 
 ## 7 · Checklist
