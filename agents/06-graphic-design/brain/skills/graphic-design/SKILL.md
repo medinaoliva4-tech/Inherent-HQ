@@ -7,7 +7,8 @@ description: >
   carruseles, stories, plantillas, composición, imágenes de producto, o el paquete de diseño de
   un ciclo. Se dispara con "diseñá el ciclo de X", "armá los carruseles", "las plantillas del
   mes", "necesito 40 estáticos", "fotos de producto", "exportá el paquete de diseño". Requiere
-  el Excel del ciclo cerrado de ④ y el sistema visual de ②B: si faltan, BLOQUEA.
+  el Excel del ciclo cerrado de ④ Creatividad y el sistema visual de ②B Branding: si faltan,
+  BLOQUEA.
 ---
 
 # ⑥A Diseño gráfico — el orquestador
@@ -32,7 +33,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | **El Excel del ciclo cerrado** — `plan-de-contenido.csv` + `ideas-<formato>.md` con el **copy literal** y el layout | ④ Creatividad | 🛑 **BLOQUEADO** |
 | **`sistema-visual.md`** — la guía de marca | ②B Branding | 🛑 **BLOQUEADO** |
 | `plan-por-canal.md` | ③ Marketing | 🟡 No bloquea — se usan las **Redes** del `plan-contratado.md` |
-| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo *(en ⬜ Tailor Made, lo que declara **Su pipeline**; si ⑥A no está ahí, no corre)* |
+| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo *(en ⬜ Tailor Made, lo que declara **Su pipeline**; si ⑥A Diseño gráfico no está ahí, no corre)* |
 
 🛑 **Sin `sistema-visual.md` no se compone nada.** La guía existe para traducir el posicionamiento
 a algo gráfico: diseñar sin ella produce 168 piezas que no se parecen entre sí ni dicen lo que el
@@ -60,8 +61,8 @@ horas que paga el plan.
 
 ## 4 · Dónde para
 
-**No para entre capas.** Cada una se auto-revisa con su checklist y sigue. ⑥A no publica ni le
-envía nada al cliente: publicar es de ⑨, con el OK del CEO.
+**No para entre capas.** Cada una se auto-revisa con su checklist y sigue. ⑥A Diseño gráfico no
+publica ni le envía nada al cliente: publicar es de ⑨ Posting.
 
 ---
 

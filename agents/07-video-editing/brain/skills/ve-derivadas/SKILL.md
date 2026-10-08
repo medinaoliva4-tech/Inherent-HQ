@@ -1,7 +1,7 @@
 ---
 name: ve-derivadas
 description: >
-  Capa 3 de ⑥B Video Editing — multiplica el corte principal auto-revisado en todas las piezas que
+  Capa 3 de ⑦ Video Editing — multiplica el corte principal auto-revisado en todas las piezas que
   puede dar: cortes más cortos, variantes de hook para pauta, reencuadres por formato y
   fragmentos para story. Es donde el modelo gana volumen, porque cada derivada sale del mismo
   material ya grabado y del mismo costo fijo de Producción. Úsala cuando pidan "sacá las derivadas", "multiplicá
@@ -35,11 +35,11 @@ description: >
 | | |
 |---|---|
 | **Cuántas** | 2 o 3 por pieza que vaya a pauta |
-| **De dónde salen** | De las **7 cajas de hook** que ④ maneja en `cr-hook-copy` |
+| **De dónde salen** | De las **7 cajas de hook** que ④ Creatividad maneja en `cr-hook-copy` |
 | **Qué cambia** | Solo los primeros 3 segundos |
 | **Qué NO cambia** | El cuerpo, el CTA y la traza a la MUST BE TRUE |
 
-🛑 **Una variante que cambia el mensaje no es una variante: es otra pieza**, y ④ la tiene que
+🛑 **Una variante que cambia el mensaje no es una variante: es otra pieza**, y ④ Creatividad la tiene que
 dirigir.
 
 ## 3 · El reencuadre no es recortar

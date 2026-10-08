@@ -38,7 +38,7 @@ distintos.
   presupuesto sin justificación.
 - El vínculo `id_creativo` + `escena` **nunca se rompe**: es lo que permite volver de un archivo
   entregado hasta la MUST BE TRUE que lo justificó.
-- 🛑 **No se agrega ninguna escena** que ④ no haya pedido. Si hace falta una, **se devuelve** para
+- 🛑 **No se agrega ninguna escena** que ④ Creatividad no haya pedido. Si hace falta una, **se devuelve** para
   que la agregue ella.
 - Lo que la Capa 0 marcó `reutiliza` **no se desglosa**: ya existe.
 
@@ -49,7 +49,7 @@ distintos.
 
 🛑 **Lo que se hereda no se toca. Lo que se decide es el trabajo de Producción.**
 
-| Se hereda de ④ (no se cambia) | Lo decide Producción |
+| Se hereda de ④ Creatividad (no se cambia) | Lo decide Producción |
 |---|---|
 | La **acción** de cada escena | Cómo se logra esa acción |
 | El **tipo de lugar** (*"cocina de día"*) | **Qué** cocina, de quién, con qué permiso |
@@ -192,7 +192,7 @@ optimismo, no estimación.)*
 - [ ] `destino` derivado del formato · `estado` = `planificada` en todas las filas
 - [ ] Lo marcado **`reutiliza` en Capa 0 no se desglosó**
 - [ ] 🛑 **No se agregó ninguna escena** que el Excel creativo no pidió
-- [ ] 🛑 **Ninguna decisión creativa fue cambiada** — lo que no se podía, se devolvió a ④
+- [ ] 🛑 **Ninguna decisión creativa fue cambiada** — lo que no se podía, se devolvió a ④ Creatividad
 - [ ] El **inventario consolidado del ciclo** está armado, sin repetir ítems
 - [ ] Todo faltante está marcado `⚠️ SIN DATOS` + a quién pedírselo, **ninguno omitido en silencio**
 

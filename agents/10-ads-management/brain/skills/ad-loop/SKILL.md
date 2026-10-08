@@ -24,7 +24,7 @@ description: >
 
 | | |
 |---|---|
-| Qué caja de hook rindió | De las 7 que ④ maneja |
+| Qué caja de hook rindió | De las 7 que ④ Creatividad maneja |
 | Con qué temperatura | Un hook puede ganar en frío y perder en caliente |
 
 ### B · Qué público rindió
@@ -32,7 +32,7 @@ description: >
 revisar en el seguimiento de ② Growth.
 
 ### C · Cuánto duró cada creativo
-**La vida útil antes de fatigar.** Es lo que le dice a ⑥B cuántas variantes hacen falta el
+**La vida útil antes de fatigar.** Es lo que le dice a ⑦ Video Editing cuántas variantes hacen falta el
 próximo ciclo.
 
 | Duración | Qué significa |
@@ -49,7 +49,7 @@ próximo ciclo.
 | A | Qué | Por qué |
 |---|---|---|
 | **④ Creatividad** | **El patrón de hook que ganó** | Para que el próximo ciclo arranque de ahí |
-| **⑥B Video Editing** | Cuántas variantes hicieron falta de verdad | Para dimensionar el próximo ciclo |
+| **⑦ Video Editing** | Cuántas variantes hicieron falta de verdad | Para dimensionar el próximo ciclo |
 | **② Growth** | Lo que fue de **oferta**, no de pauta | Llegó gente y no compró |
 | **③ Marketing** | Si la pauta trajo a **quien no era** | El público del slot estaba mal |
 
@@ -62,7 +62,7 @@ próximo ciclo.
 |---|---|
 | Menos de 10 conversiones en una variante | **No alcanza para declarar nada.** `⚠️ SIN DATOS` |
 | Se cambiaron dos cosas a la vez | **No se puede atribuir el cambio.** Se declara |
-| No hay registro de cambios | 🔴 Se escala. El loop no se puede hacer |
+| No hay registro de cambios | 🔴 Se escala al COO. El loop no se puede hacer |
 
 🛑 **Un ganador falso se repite tres ciclos antes de que alguien lo note.**
 
@@ -74,7 +74,7 @@ próximo ciclo.
 | **B · Públicos** | Con su costo por resultado |
 | **C · Vida útil** | Por creativo, con los ganadores marcados |
 | **D · Contra el objetivo** | Se cumplió o no, con el número |
-| **E · Qué vuelve a cada uno** | ④ · ⑥B · ② Growth · ③ Marketing |
+| **E · Qué vuelve a cada uno** | ④ Creatividad · ⑦ Video Editing · ② Growth · ③ Marketing |
 | **F · Los huecos** | `⚠️ SIN DATOS`, con responsable |
 
 ## 5 · Checklist
@@ -83,5 +83,5 @@ próximo ciclo.
 - [ ] Cada público tiene su **costo por resultado**
 - [ ] La **vida útil** de cada creativo está medida
 - [ ] El resultado se comparó contra el **objetivo de `ad-encargo`**
-- [ ] **El patrón de hook volvió a ④**
+- [ ] **El patrón de hook volvió a ④ Creatividad**
 - [ ] Ningún ganador se declaró con **menos de 10 conversiones**

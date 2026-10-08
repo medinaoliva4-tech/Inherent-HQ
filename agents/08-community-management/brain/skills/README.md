@@ -29,7 +29,7 @@ pasa, en qué orden y con qué reglas; acá está el detalle de cada herramienta
 | **2** | **`cm-respuesta`** | *"contestá esto"*, *"¿qué le respondemos?"* | La respuesta con cierre, pasada por `humanizar.py` |
 | **3** | **`cm-escalado`** | Evento, reserva, queja, colaboración, dato fuera de la ficha | El aviso y la respuesta puente |
 | **4** | **`cm-envio`** | Las respuestas están escritas | Lo enviado por Zernio · el reporte por Gmail |
-| **↻** | **`cm-loop`** | Una vez por semana · *"¿qué preguntó la gente?"* | `seguimiento/<AAAA-MM>.md` · FAQ nuevas propuestas · ideas para ④ |
+| **↻** | **`cm-loop`** | Una vez por semana · *"¿qué preguntó la gente?"* | `seguimiento/<AAAA-MM>.md` · FAQ nuevas propuestas · ideas para ④ Creatividad |
 
 ## Las herramientas de Zernio que se usan
 

@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Entregables de ① Strategy · la guía de ②B, si existe · `clients/<cliente>/CLAUDE.md` · `inherent/06-ECONOMIA.md` *(solo el techo de volumen)* |
+| **Consume** | Entregables de ① Strategy · la guía de ②B Branding, si existe · `clients/<cliente>/CLAUDE.md` · `inherent/06-ECONOMIA.md` *(solo el techo de volumen)* |
 | **Produce** | La sección **§ El encargo** de `estrategia-de-contenido.md` |
 
 **No se planea nada todavía: se verifica.** Un ciclo planeado sobre un techo equivocado se
@@ -33,19 +33,19 @@ descubre cuando producción no da abasto.
 
 > 🔑 **Por qué la PROMESA es bloqueante.** El contenido es la intersección de
 > `deseo de la audiencia` **+** `posicionamiento` **+** `promesa`.
-> **Sin la promesa, ③ hace dos tercios del trabajo** y ningún slot puede pasar la pregunta 3
+> **Sin la promesa, ③ Marketing hace dos tercios del trabajo** y ningún slot puede pasar la pregunta 3
 > de la prueba de alineación — ver `mk-calendario`.
 
-### 🛑 Si el diagnóstico de ① apunta fuera de Marketing
+### 🛑 Si el diagnóstico de ① Strategy apunta fuera de Marketing
 
 **Cuatro de los cinco cuellos típicos no se arreglan con contenido.**
 
 | Si la causa declarada es… | ③ Marketing |
 |---|---|
 | Distribución · contenido · mensaje | ✅ **Es nuestra.** Se trabaja |
-| **Oferta · conversión · valor percibido · retención** | 🔴 **NO es nuestra.** Se levanta como **excepción a Allan** |
+| **Oferta · conversión · valor percibido · retención** | 🔴 **NO es nuestra.** Se escala **al CEO**: es alcance |
 
-⚠️ **Se levanta la excepción y se sigue trabajando el ciclo** — no se bloquea el calendario.
+⚠️ **Se escala y se sigue trabajando el ciclo** — no se bloquea el calendario.
 Lo que no se hace es **fingir que más contenido arregla una oferta rota.**
 Ver `agents/01-strategy/brain/skills/analysis/SKILL.md` → «El diagnóstico por síntoma».
 
@@ -90,7 +90,7 @@ rediseñada por ② Growth.**
 
 | Bloque | Qué lleva |
 |---|---|
-| **A · Contexto cargado** | Checklist con estado y **ruta** de cada archivo de ① y ②B |
+| **A · Contexto cargado** | Checklist con estado y **ruta** de cada archivo de ① Strategy y ②B Branding |
 | **B · El objetivo del ciclo** | Copiado literal de ① Strategy |
 | **C · Las MUST BE TRUE** | Con su letra. Son las únicas a las que un slot puede trazar |
 | **D · El techo** | Plan contratado · total de slots · reparto por tipo |
@@ -101,15 +101,15 @@ rediseñada por ② Growth.**
 
 | Situación | Qué se hace |
 |---|---|
-| La estrategia no existe | 🛑 **BLOQUEADO.** Se pide a ① |
+| La estrategia no existe | 🛑 **BLOQUEADO.** Se pide a ① Strategy |
 | No hay MUST BE TRUE con letra | 🛑 **BLOQUEADO.** Sin ellas ningún slot puede trazar |
-| El objetivo del ciclo no tiene métrica ni plazo | ↩️ **Devuelto a ①** |
-| La capacidad del cliente no alcanza ni para el mínimo del plan | 🔴 **Se escala a Allan.** Es conversación comercial, no de marketing |
-| No se sabe qué cuentas existen | 🛑 **BLOQUEADO.** Se pide a ① |
+| El objetivo del ciclo no tiene métrica ni plazo | ↩️ **Devuelto a ① Strategy** |
+| La capacidad del cliente no alcanza ni para el mínimo del plan | 🔴 **Se escala al CEO.** Es conversación comercial, no de marketing |
+| No se sabe qué cuentas existen | 🛑 **BLOQUEADO.** Se pide a ① Strategy |
 
 ## 6 · Checklist
 
-- [ ] Los inputs bloqueantes están cargados y **citados con ruta** — y la guía de ②B, si existe
+- [ ] Los inputs bloqueantes están cargados y **citados con ruta** — y la guía de ②B Branding, si existe
 - [ ] El plan contratado está identificado y su techo escrito
 - [ ] Las MUST BE TRUE están copiadas **con su letra**
 - [ ] La capacidad real del cliente está declarada

@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las ofertas a pautar de ② Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · `calendario.csv` de ③ · las cuentas de ① |
+| **Consume** | Las ofertas a pautar de ② Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · `calendario.csv` de ③ Marketing · las cuentas de ① Strategy |
 | **Produce** | La sección **§ El encargo** de `plan-de-pauta.md` |
 
 ## 1 · El objetivo va en una métrica

@@ -1,6 +1,6 @@
 # Entregas de video — <cliente> · ciclo <mes año>
 
-> Plantilla de ⑥B Video Editing · `ve-export`. **Es lo que ⑨ Posting abre primero.**
+> Plantilla de ⑦ Video Editing · `ve-export`. **Es lo que ⑨ Posting abre primero.**
 > 🛑 **Ningún archivo se copia: se cita su ruta.**
 
 ---

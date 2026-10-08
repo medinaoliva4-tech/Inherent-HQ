@@ -30,7 +30,7 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 
 | Columna | Regla |
 |---|---|
-| `semana` | **Número, nunca un día.** `1` · `2` · `3` · `4`. El día lo pone ④ |
+| `semana` | **Número, nunca un día.** `1` · `2` · `3` · `4`. El día lo pone ④ Creatividad |
 | `funcion` | Solo los 6 valores. **La que su canal tiene asignada en `plan-por-canal.md`** |
 | `temperatura` | 4 valores, `Cliente` incluido |
 | `awareness` | 5 valores, **escritos literal** |
@@ -60,9 +60,9 @@ El gate barato va arriba.
 
 | Pregunta | De dónde sale la respuesta |
 |---|---|
-| 1 · Por qué querría verlo | `audiencia profunda` de ① · el deseo, no la demografía |
-| 2 · Qué posicionamiento refuerza | `posicionamiento` de ① |
-| 3 · Qué promesa demuestra | **`promesa` de ① — es input bloqueante de `mk-encargo`** |
+| 1 · Por qué querría verlo | `audiencia profunda` de ① Strategy · el deseo, no la demografía |
+| 2 · Qué posicionamiento refuerza | `posicionamiento` de ① Strategy |
+| 3 · Qué promesa demuestra | **`promesa` de ① Strategy — es input bloqueante de `mk-encargo`** |
 | 4 · Qué deseo activa | Se escribe acá, y es lo que alimenta `objetivo_del_slot` |
 | 5 · Qué siguiente acción | Lo da `funcion` + `temperatura` del slot |
 
@@ -79,7 +79,7 @@ de negocio asignado.**
 
 ## 2 · `objetivo_del_slot` — el campo que más se escribe mal
 
-**Es lo que ④ usa para decidir el contenido concreto. Genérico, no sirve.**
+**Es lo que ④ Creatividad usa para decidir el contenido concreto. Genérico, no sirve.**
 
 | ❌ | ✅ |
 |---|---|
@@ -94,7 +94,7 @@ de negocio asignado.**
 
 | Combinación | Por qué |
 |---|---|
-| `balance = Marca` + slot que pide CTA de conversión | ④ deriva el CTA del balance. Se contradice |
+| `balance = Marca` + slot que pide CTA de conversión | ④ Creatividad deriva el CTA del balance. Se contradice |
 | `funcion = Community` + `temperatura ≠ Cliente` | Community le habla a quien ya compró |
 | `awareness = Unaware` + `funcion = Conversion` | Le vende a quien no sabe que tiene el problema |
 | Dos canales con la misma `funcion` | Ya se resolvió en la Capa 4. Si reaparece, hay un error |
@@ -108,7 +108,7 @@ de negocio asignado.**
 | **Los `Conversion` se concentran**, no se riegan | Una tanda convierte; uno suelto cada semana, no |
 | **Los `Series` van parejos** las 4 semanas | Son el hábito |
 | **Nada de rodaje en la semana 1** | ⑤ Producción necesita margen desde que sale el calendario |
-| **La estacionalidad manda** | Si ① declaró fechas duras, el calendario se acomoda a ellas |
+| **La estacionalidad manda** | Si ① Strategy declaró fechas duras, el calendario se acomoda a ellas |
 
 ## 5 · El cierre contra el techo
 
@@ -132,8 +132,8 @@ de negocio asignado.**
 
 ## 7 · Checklist
 
-🛑 **Es lo que ④ va a producir.** Corregirlo pieza por pieza después es imposible: por eso se
-auto-revisa entero, acá, y pasa directo a ④.
+🛑 **Es lo que ④ Creatividad va a producir.** Corregirlo pieza por pieza después es imposible: por eso se
+auto-revisa entero, acá, y pasa directo a ④ Creatividad.
 
 - [ ] Las **11 columnas** están completas en todas las filas
 - [ ] `semana` es un número, **nunca una fecha**

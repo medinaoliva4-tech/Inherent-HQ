@@ -1,22 +1,22 @@
 ---
 name: ve-recepcion
 description: >
-  Capa 0 de ⑥B Video Editing — verifica qué llegó de ⑤ Producción y es realmente editable antes
-  de abrir un proyecto. Cruza fila por fila las piezas con rodaje del Excel de ④ contra el
-  manifiesto de ⑤, verifica que exista material con selects marcados, que el audio sirva, que la
-  cobertura alcance para el guion escrito y que el backup esté. Si ⑤ no marcó selects, los hace
+  Capa 0 de ⑦ Video Editing — verifica qué llegó de ⑤ Producción y es realmente editable antes
+  de abrir un proyecto. Cruza fila por fila las piezas con rodaje del Excel de ④ Creatividad contra el
+  manifiesto de ⑤ Producción, verifica que exista material con selects marcados, que el audio sirva, que la
+  cobertura alcance para el guion escrito y que el backup esté. Si ⑤ Producción no marcó selects, los hace
   acá: califica cada clip con la skill /watch contra una rúbrica escrita y deja la lista de
   posproducción (qué se usa, qué segundos, qué se descarta y por qué). Úsala cuando pidan "¿llegó
   todo?", "qué nos falta para editar", "arrancá el ciclo de video", "cruzá el material contra el
   Excel", "analizá los videos", "calificá el material", "qué tomas sirven". Bloquea si falta el
-  Excel del ciclo cerrado de ④.
+  Excel del ciclo cerrado de ④ Creatividad.
 ---
 
 # Capa 0 · Recepción — qué llegó y es editable
 
 | | |
 |---|---|
-| **Consume** | **El Excel del ciclo cerrado** (`plan-de-contenido.csv` + `ideas-<formato>.md`) · el manifiesto y el material de ⑤ |
+| **Consume** | **El Excel del ciclo cerrado** (`plan-de-contenido.csv` + `ideas-<formato>.md`) · el manifiesto y el material de ⑤ Producción |
 | **Produce** | Las filas base de **`entregas-video.md`** · la tabla **§ Lo que no se edita este ciclo** · si hizo falta, **`post-production-list.md`** (los selects) |
 | **Herramientas** | `motor/remotion/scripts/` — `index_clips.py` · `watch_sheet.py` · `grade_add.py` · `merge_grading.py` · skill `/watch` |
 
@@ -25,10 +25,10 @@ le falta cobertura es trabajo tirado que se descubre a mitad del montaje.
 
 ## 1 · El filtro: solo las filas con rodaje
 
-**Del Excel de ④ se toman únicamente las filas con `material = video`.** Las demás van directo a
+**Del Excel de ④ Creatividad se toman únicamente las filas con `material = video`.** Las demás van directo a
 ⑥A Diseño gráfico.
 
-🛑 **Una fila sin `material` que llega acá está mal clasificada: se devuelve a ④.**
+🛑 **Una fila sin `material` que llega acá está mal clasificada: se devuelve a ④ Creatividad.**
 
 ## 2 · El cruce, fila por fila
 
@@ -36,13 +36,13 @@ le falta cobertura es trabajo tirado que se descubre a mitad del montaje.
 
 | Chequeo | Qué se mira | Si falla |
 |---|---|---|
-| **Existe el material** | El manifiesto de ⑤ lo lista y la ruta abre | `⚠️ SIN MATERIAL` — se nombra **de quién se espera y desde cuándo** |
-| **Tiene selects marcados** | ⑤ marcó la toma buena | ⚠️ **Se seleccionan acá (§4)** y se anota para ⑤ en el loop |
-| **La cobertura alcanza** | Hay planos para todas las escenas del `ideas-<formato>.md` | ↩️ **Devuelto a ⑤** con qué escena falta |
-| **El audio sirve** | Se entiende, sin saturar, sin ruido que no se pueda limpiar | ↩️ **Devuelto a ⑤** |
-| **El guion es montable** | El hook de ④ se puede armar con lo que hay | ↩️ **Devuelto a ④** — nunca se improvisa otro hook |
-| **Hay copy literal** | El `ideas-<formato>.md` tiene el texto escrito, no descrito | ↩️ **Devuelto a ④** |
-| **No arrastra claims ⏸️** | La pieza no tiene `⏸️ PENDIENTE APROBACIÓN` | 🛑 **No entra** hasta que ②B valide |
+| **Existe el material** | El manifiesto de ⑤ Producción lo lista y la ruta abre | `⚠️ SIN MATERIAL` — se nombra **de quién se espera y desde cuándo** |
+| **Tiene selects marcados** | ⑤ Producción marcó la toma buena | ⚠️ **Se seleccionan acá (§4)** y se anota para ⑤ Producción en el loop |
+| **La cobertura alcanza** | Hay planos para todas las escenas del `ideas-<formato>.md` | ↩️ **Devuelto a ⑤ Producción** con qué escena falta |
+| **El audio sirve** | Se entiende, sin saturar, sin ruido que no se pueda limpiar | ↩️ **Devuelto a ⑤ Producción** |
+| **El guion es montable** | El hook de ④ Creatividad se puede armar con lo que hay | ↩️ **Devuelto a ④ Creatividad** — nunca se improvisa otro hook |
+| **Hay copy literal** | El `ideas-<formato>.md` tiene el texto escrito, no descrito | ↩️ **Devuelto a ④ Creatividad** |
+| **No arrastra claims ⏸️** | La pieza no tiene `⏸️ PENDIENTE APROBACIÓN` | 🛑 **No entra** hasta que ②B Branding valide |
 
 ## 3 · Cuando falta material pero la pieza se puede salvar
 
@@ -54,7 +54,7 @@ le falta cobertura es trabajo tirado que se descubre a mitad del montaje.
 | **Reencuadre de otra pieza** | Si el plano existe en otra toma del mismo ciclo |
 
 🛑 **Si ninguna sirve, se devuelve.** Inventar una solución en el momento es cómo una pieza
-termina sin parecerse a lo que ④ dirigió.
+termina sin parecerse a lo que ④ Creatividad dirigió.
 
 ## 3B · Bajar el material
 
@@ -65,16 +65,16 @@ termina sin parecerse a lo que ④ dirigió.
 | **Originales** | `prep.py` / `fetch_all.py`, **solo los que se usan**, después de seleccionar | Un rodaje pesa 10+ GB; se baja lo que entra al corte |
 
 > ⚠️ **Drive a veces no ha procesado un video** («formato no disponible»): se marca `SIN ARCHIVO`,
-> se reintenta al día siguiente y, si sigue, se pide a ⑤ que lo vuelva a subir.
+> se reintenta al día siguiente y, si sigue, se pide a ⑤ Producción que lo vuelva a subir.
 
-## 4 · La selección — cuando ⑤ no marcó selects
+## 4 · La selección — cuando ⑤ Producción no marcó selects
 
 **Ver de verdad cada clip, no adivinar por el nombre.** Es lo que más subió la calidad de los
 reels en cliente real: se descartaron 25 de 123 clips antes de abrir el motor.
 
 | Paso | Qué se hace |
 |---|---|
-| **1 · La rúbrica** | Se copia `motor/remotion/edit/RUBRIC.md` a `production/grading/` y se completa con la dirección de ④ y § Imagen de ②B *(si existe)* |
+| **1 · La rúbrica** | Se copia `motor/remotion/edit/RUBRIC.md` a `production/grading/` y se completa con la dirección de ④ Creatividad y § Imagen de ②B Branding *(si existe)* |
 | **2 · Ver cada clip** | `watch_sheet.py R1_01 …` — hoja con un fotograma por segundo y **el tiempo real quemado** (skill `/watch` en modo `--timestamps`) |
 | **3 · Afinar los cortes** | `watch_sheet.py R1_30:2.5-6.0 --step 0.25` en cada punto de corte y en cada momento protagonista |
 | **4 · Calificar** | Nota 0–10, veredicto (`USAR COMPLETO` · `USAR CON RECORTES` · `DESCARTADO` · `SIN ARCHIVO`), segundos a conservar y a cortar con motivo, momento protagonista, si cabe en doble cuadro |
@@ -116,14 +116,14 @@ montaje. Ningún tiempo se escribe de memoria.
 |---|---|
 | **Las filas base de `entregas-video.md`** | Una por pieza: `id_creativo` · formato · plataformas · estado |
 | **§ Lo que no se edita este ciclo** | Tabla con pieza, motivo, de quién se espera, desde cuándo |
-| **`post-production-list.md`** | Si no hubo selects de ⑤: la calificación de cada clip (§4) |
+| **`post-production-list.md`** | Si no hubo selects de ⑤ Producción: la calificación de cada clip (§4) |
 
 ## 7 · Checklist
 
 - [ ] Solo entraron filas con **`material = video`**
-- [ ] Cada fila se cruzó contra el manifiesto de ⑤ — **sin muestreo**
+- [ ] Cada fila se cruzó contra el manifiesto de ⑤ Producción — **sin muestreo**
 - [ ] Cada devolución nombra **a quién y qué falta**
 - [ ] Ninguna pieza con claim `⏸️` entró al ciclo
-- [ ] Si no hubo selects de ⑤: **todos** los clips se calificaron con `/watch`, con tiempos exactos, y existe `post-production-list.md`
+- [ ] Si no hubo selects de ⑤ Producción: **todos** los clips se calificaron con `/watch`, con tiempos exactos, y existe `post-production-list.md`
 - [ ] Los descartados tienen **motivo** y las tomas repetidas apuntan a la mejor
 - [ ] El total **entra en el techo** del plan contratado

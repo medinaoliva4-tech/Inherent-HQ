@@ -10,7 +10,7 @@ paso vive en las skills: `skills/README.md`.
 
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
 `clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
@@ -38,7 +38,7 @@ paso vive en las skills: `skills/README.md`.
   cuántas campañas se arman, cuántas variantes se montan y cada cuánto se optimiza.
   ⚠️ **Un presupuesto de pauta más grande no sube el plan, y un plan más caro no pone más dinero en
   la cuenta.** Confundirlos hace prometer resultados con dinero que nadie puso.
-- 🛑 **El presupuesto de pauta lo aprueba Allan antes de cada lanzamiento** (§2). Sin monto aprobado
+- 🛑 **El presupuesto de pauta lo aprueba el CEO antes de cada lanzamiento** (§2). Sin monto aprobado
   no se lanza, por más que el plan incluya el canal.
 - ⚠️ **«Que te encuentren en Google» entra desde 🔷 Marketing Pro**, y es **pauta de búsqueda**, no
   posicionamiento orgánico, ni auditoría técnica, ni link building.
@@ -46,9 +46,9 @@ paso vive en las skills: `skills/README.md`.
   🛑 **El performance fee NO existe ahí:** requiere atribución limpia (CAPI + GA4), que es parte de
   Conversion OS y **solo entra desde 🟨 Accelerate.** Si alguien pide fee sobre un plan 🔷, **se
   levanta como excepción.**
-- **Las variantes salen de material ya producido.** ④ declara qué se varía, ⑥A y ⑥B las montan, ⑩ las
-  sube. 🛑 **Una variante nunca pide grabación extra**, y **no cuenta como publicación**: no entra al
-  calendario orgánico del ciclo.
+- **Las variantes salen de material ya producido.** ④ Creatividad declara qué se varía,
+  ⑥A Diseño gráfico y ⑦ Video Editing las montan, ⑩ Ads las sube. 🛑 **Una variante nunca pide
+  grabación extra**, y **no cuenta como publicación**: no entra al calendario orgánico del ciclo.
 
 ### ⬜ Tailor Made — se sigue su pipeline
 
@@ -78,7 +78,7 @@ optimización)*: no lo bloquea por no ser un plan de lista ni lo cuestiona por p
 | Keywords propias y de competencia | ✅ `research_keywords` | ✅ |
 
 > 🔑 **El plugin propone, AdWhispr ejecuta.** `launch` y `optimize` del plugin corren en
-> `--draft` por defecto: **eso encaja con nuestra regla —el agente propone, Allan cierra—**,
+> `--draft` por defecto: **eso encaja con nuestra regla —el agente propone, el CEO cierra—**,
 > pero significa que la ejecución real la hace AdWhispr.
 
 🛑 **Si falta una, lo que depende de ella no corre:**
@@ -97,7 +97,7 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 
 ## 2 · 🔴 Pautar es acción destructiva
 
-🛑 **Nada sale sin gate de Allan.** Gastar dinero del cliente es irreversible.
+🛑 **Nada sale sin gate del CEO.** Gastar dinero del cliente es irreversible.
 
 | | |
 |---|---|
@@ -122,7 +122,7 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 |---|---|
 | **`plan-de-pauta.md`** | Objetivo, presupuesto, estructura, públicos y qué creativos van |
 | **`reporte-de-pauta.md`** | Qué corrió, qué rindió, qué se cambió y por qué |
-| **`aprendizaje-de-pauta.md`** | Qué ángulo ganó, qué fatigó, qué vuelve a ④ y a ② Growth |
+| **`aprendizaje-de-pauta.md`** | Qué ángulo ganó, qué fatigó, qué vuelve a ④ Creatividad y a ② Growth |
 
 ---
 
@@ -134,13 +134,13 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
    1  ESTRUCTURA    cuentas, campañas y públicos             → ad-estructura
         ▼
    2  CREATIVOS     qué piezas y qué variantes de hook       → ad-creativos
-        ▼           🚦 GATE 1 — Allan aprueba el plan y el presupuesto
+        ▼           🚦 GATE 1 — el CEO aprueba el plan y el presupuesto
    3  LANZAMIENTO   se corre                                 → ad-lanzamiento
         ▼
    4  OPTIMIZACIÓN  pacing, fatiga, qué se mueve             → ad-optimizacion
-        ▼           🚦 GATE 2 — Allan aprueba todo cambio de presupuesto
+        ▼           🚦 GATE 2 — el CEO aprueba todo cambio de presupuesto
    5  ATRIBUCIÓN    qué ventas vinieron de acá               → ad-atribucion
-   ↻  LOOP          qué ángulo ganó, qué vuelve a ④          → ad-loop
+   ↻  LOOP          qué ángulo ganó, qué vuelve a ④ Creatividad → ad-loop
 ```
 
 ---
@@ -151,7 +151,7 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 |---|---|---|
 | **② Growth** | Qué ofertas se pautan, su precio y el objetivo — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 BLOQUEADO |
 | **③ Marketing** | Qué piezas del ciclo se pautan y con qué objetivo | 🛑 BLOQUEADO |
-| **⑥A y ⑥B** | Los creativos, **con sus variantes de hook** | 🛑 BLOQUEADO |
+| **⑥A Diseño gráfico y ⑦ Video Editing** | Los creativos, **con sus variantes de hook** | 🛑 BLOQUEADO |
 | **②B Branding** | Qué claims están validados | 🟡 Se usa si existe — un claim `⏸️` no sale |
 | **`LINKS.md`** | Las cuentas publicitarias y **quién tiene el acceso** — la fuente única | 🛑 BLOQUEADO |
 
@@ -160,11 +160,11 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 ## 7 · Lo que este departamento NO hace
 
 - **No decide la oferta ni el precio.** Eso es ② Growth
-- **No produce creativos.** Pide variantes a ⑥A y ⑥B
+- **No produce creativos.** Pide variantes a ⑥A Diseño gráfico y ⑦ Video Editing
 - **No gasta sin gate.** Pautar es acción destructiva
 - **No promete LinkedIn Ads** hasta que esté probado
 - **No pone la inversión.** La pone el cliente, aparte
-- **No inventa claims.** Solo los que ②B validó
+- **No inventa claims.** Solo los que ②B Branding validó
 
 ---
 
@@ -173,7 +173,7 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 - [ ] El objetivo está escrito en **una métrica**, no en un deseo
 - [ ] El presupuesto está **aprobado por el cliente**
 - [ ] Las cuentas son del cliente y **hay acceso**
-- [ ] Los creativos llevan **claims validados** por ②B
+- [ ] Los creativos llevan **claims validados** por ②B Branding
 - [ ] Hay **variantes de hook** para testear, no un solo anuncio
 - [ ] El **tracking está puesto** antes de gastar el primer quetzal — 🔷 el pixel de Meta · 🟨 CAPI + GA4
-- [ ] **Allan aprobó el GATE 1**
+- [ ] **El CEO aprobó el GATE 1**

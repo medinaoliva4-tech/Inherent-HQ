@@ -1,11 +1,10 @@
 ---
 name: cm-envio
 description: >
-  Capa 4 de ⑧ Community Management — el único paso que escribe afuera. Aplica el gate (qué sale solo,
-  qué espera el OK del CEO, qué no sale), respeta el modo borrador, envía por Zernio respetando las
+  Capa 4 de ⑧ Community Management — el único paso que escribe afuera. Decide qué sale solo y qué no,
+  respeta el modo borrador, envía por Zernio respetando las
   reglas de cada plataforma, y manda el reporte de la corrida por Gmail con los avisos arriba. Úsala
-  al final de cada corrida, o cuando pidan "mandá las respuestas", "¿qué se envió?", "aprobado,
-  enviá la de la queja". Acción hacia afuera: en modo borrador no envía nada.
+  al final de cada corrida, o cuando pidan "mandá las respuestas", "¿qué se envió?". Acción hacia afuera: en modo borrador no envía nada.
 ---
 
 # cm-envio — Capa 4
@@ -15,16 +14,16 @@ description: >
 | **Lee** | Las respuestas de `cm-respuesta` · los avisos de `cm-escalado` · `respuestas.md` → «Modo» y «Avisos» |
 | **Produce** | Lo enviado por Zernio · el reporte por Gmail con `entregables/reporte-de-corrida.md` |
 
-## 1 · El gate
+## 1 · Qué sale y qué no
 
 | Si la respuesta es… | Modo **borrador** | Modo **activo** |
 |---|---|---|
 | 🟢 Apoyo, pregunta simple, evento, reserva, lo que viene | Va al reporte, **no se envía** | **Se envía** |
-| 🔴 Queja | Va al reporte | Va al reporte. **Sale solo con el OK del CEO** |
+| 🔴 Queja | Va al reporte, **no se envía** | **Se envía**, y va arriba del reporte como aviso al COO |
 | 🔴 Colaboración, fuera de la ficha | Va al reporte | Va al reporte |
 | ⚫ Spam, hater | Se reporta | Se oculta si es abuso *(Pro+)* y se reporta |
 
-🛑 **El modo lo cambia solo el CEO**, en la ficha. La corrida nunca lo cambia sola.
+🛑 **El modo lo prende o lo apaga solo el COO**, en la ficha. La corrida nunca lo cambia sola.
 
 ## 2 · Cómo se envía
 
@@ -45,11 +44,11 @@ Un correo por corrida al correo de «Avisos» de la ficha, con la plantilla
 `entregables/reporte-de-corrida.md`:
 
 1. **Arriba:** los avisos 🔴 de `cm-escalado`
-2. **Lo que espera OK:** respuestas en borrador, con el mensaje original al lado
+2. **En borrador:** las respuestas propuestas, con el mensaje original al lado
 3. **Lo enviado:** red, usuario, qué se contestó y a quién se le mandó link
 4. **Lo que falló:** con el error
 
-**Asunto:** `⑧ [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`. Si no hubo nada nuevo, no se
+**Asunto:** `⑧ Community · [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`. Si no hubo nada nuevo, no se
 manda correo.
 
 Sin el MCP de Gmail: `BLOQUEADO — falta Gmail. Instalala: ver INSTALAR.md § Gmail`.

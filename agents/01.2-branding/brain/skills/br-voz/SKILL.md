@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Territorio y personalidad · bloque 7 del brief de ① |
+| **Consume** | § Territorio y personalidad · bloque 7 del brief de ① Strategy |
 | **Produce** | La sección **§ Voz** de `guia-de-marca.md` |
 
 > 🔑 **④ Creatividad y ⑨ Posting la usan como ley.** Si está escrita con adjetivos, no sirve:
@@ -63,8 +63,8 @@ comentario, un CTA, y un error de la marca.
 | **Prohibidas** | Las que la categoría gastó: *«innovador»*, *«líder»*, *«solución integral»*, *«360°»* |
 | **Claims que necesitan validación** | Todo lo que afirme un resultado, un número o una comparación |
 
-> ⚠️ **Un claim sin validar no sale.** ④ lo marca `⏸️ PENDIENTE APROBACIÓN` y **②B lo valida
-> antes de que ⑨ lo publique.**
+> ⚠️ **Un claim sin validar no sale.** ④ Creatividad lo marca `⏸️ PENDIENTE APROBACIÓN` y
+> **②B Branding lo valida antes de que ⑨ Posting lo publique.**
 
 ## 5 · El tono NO cambia por canal
 

@@ -1,7 +1,7 @@
 # Strategy — Cómo trabaja
 
 > Documento único del agente. Si algo no está acá, el agente no lo hace.
-> `❓ PENDIENTE` = falta la decisión de Allan. No se completa por inferencia.
+> `❓ PENDIENTE` = falta la decisión del CEO. No se completa por inferencia.
 
 ---
 
@@ -11,7 +11,7 @@
 
 | Días | Qué corre | Entrega |
 |---|---|---|
-| **1** | Reunión con el cliente *(Allan)* — es el input del ciclo | — |
+| **1** | Reunión con el cliente *(el CEO)* — es el input del ciclo | — |
 | **1 – 3** | 🆕 Primer ciclo: los 4 bloques completos · ↻ Siguientes: **revisión**, no se rehace | Estrategia y briefs por área **a más tardar el día 3** |
 | **20** | Revisión del mes, junto con la presentación al cliente | Lo aprendido **entra al día 1 del ciclo siguiente** |
 
@@ -117,6 +117,9 @@ arranca sin el anterior.
         │
         ▼
    05 ENTREGA               el documento y el folder del cliente
+        │
+        ▼
+   🔒 GATE DEL CEO          aprueba la estrategia antes de que pase a los departamentos
 ```
 
 ### 01 · CONTEXTO → skill `context`
@@ -174,7 +177,8 @@ historia (el cliente es el héroe) · personalidad · el fundador · comunidad i
 > audiencia nos desee. Se entregan **las acciones que hay que hacer**, no piezas.
 
 ### 05 · ENTREGA
-Arma los dos entregables. **El formato está en §7.**
+Arma los dos entregables. **El formato está en §7.** Cierra con **el gate del CEO**
+(§7 → «5 · 🔒 El gate del CEO»): sin su OK, la estrategia no pasa a los departamentos.
 
 ---
 
@@ -231,7 +235,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 > **Si falta la herramienta, el bloque para y lo dice así:**
 > `BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § <herramienta>`.
 
-**Leyenda:** ✅ probado en esta sesión · ⬜ sin probar todavía · 🔒 requiere gate de Allan · 👤 manual
+**Leyenda:** ✅ probado en esta sesión · ⬜ sin probar todavía · 🔒 espera el gate del CEO (§7) · 👤 manual
 
 ---
 
@@ -239,7 +243,7 @@ No es un reporte largo. Es un análisis sencillo que **vuelve a la estrategia**.
 
 | Acción | Tool | Devuelve |
 |---|---|---|
-| Leer el contexto que entrega Allan | **`read_file_content` (Drive)** ✅ · un Google Doc alcanza · o pegado en el chat | El brief del cliente |
+| Leer el contexto que entrega el CEO | **`read_file_content` (Drive)** ✅ · un Google Doc alcanza · o pegado en el chat | El brief del cliente |
 | Buscar material previo | `notion-search` → `notion-fetch` ✅ | Páginas, decisiones del equipo |
 | **Leer el sitio completo, la oferta, los precios** | **`firecrawl_scrape`** ✅ | El cuerpo real de la página en markdown |
 | Ver qué publica el cliente y cómo rinde | Apify `easy_scraper/instagram-profile-engagement-analytics` | Perfil, totales, mezcla de temas, sus mejores posts |
@@ -378,18 +382,18 @@ incompleto y la medición arranca sin baseline.
 | Acción | De quién es |
 |---|---|
 | Descubrir influencers para contratar | **Marketing** |
-| Analizar físico y características para casting | **Allan lo provee.** No se outsourcea |
+| Analizar físico y características para casting | **El CEO lo provee.** No se outsourcea |
 | Generar o editar media | **Production** |
 | Publicar, programar, pautar | **Social Media / Media Buy** |
 
-**Reglas:** leer es libre · escribir requiere decirlo antes · 🔒 publicar, pautar, enviar o borrar
-**siempre** pasa por Allan.
+**Reglas:** leer es libre · escribir requiere decirlo antes · 🔒 **enviar la estrategia al
+cliente o pasarla a los departamentos espera el gate del CEO** (§7 → «5 · 🔒 El gate del CEO»).
 
 ---
 
 ## 6 · FUENTES
 
-1. Lo que entrega el cliente y lo que entrega Allan en la conversación
+1. Lo que entrega el cliente y lo que entrega el CEO en la conversación
 2. `clients/<cliente>/` si ya existe
 3. Evidencia pública externa, **con su link** — el research de `context` §F y la ingeniería
    inversa. **Sin link no entra**
@@ -450,7 +454,8 @@ clients/<cliente>/
 
 🔑 **Los cuatro archivos tienen nombre porque otros departamentos los citan por ruta.** Las
 plantillas viven en `brain/entregables/` y se copian al abrir el folder (`contexto.md` se copia
-como `comprension.md`). **Si se les cambia el nombre, se rompen las referencias de ④, ⑤ y ⑨.**
+como `comprension.md`). **Si se les cambia el nombre, se rompen las referencias de ④ Creatividad,
+⑤ Producción y ⑨ Posting.**
 
 **`LINKS.md`** — lo externo **no se copia, se linkea**: Drive de fotos, de videos, de
 entregables, Figma, Notion, redes del cliente, analytics. Con una línea de qué hay en cada uno.
@@ -506,6 +511,21 @@ Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 A
 
 ---
 
+### 5 · 🔒 El gate del CEO — la única parada de Strategy
+
+**El CEO aprueba la estrategia antes de que pase a los departamentos.** Con el checklist de
+arriba en verde, Strategy le presenta `estrategia.md` y el handoff (§7 → «3 · El handoff») y
+espera su OK.
+
+- 🛑 **Sin el OK del CEO, no se manda `estrategia.md` al cliente** —ni a Notion ni al Drive—
+  **y no se pasa ningún brief a los departamentos.**
+- **Es la única parada.** Los cuatro bloques se auto-revisan y siguen; el CEO no aprueba bloque por
+  bloque.
+- **Con el OK, la estrategia se toma como aprobada:** los demás departamentos la leen sin volver a
+  pedirla.
+
+---
+
 ## 8 · CORRELACIÓN — dónde entra Strategy en el pipeline
 
 **`agents/README.md` tiene el pipeline completo.** Strategy abre la cadena y la cierra:
@@ -513,12 +533,14 @@ Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 A
 ```
 01 STRATEGY  ←  context + analysis + reverse-engineering + methodology
      │
+   🔒 GATE DEL CEO  ←  aprueba la estrategia
+     │
      ├──→ 01.2 BRANDING    brief de branding     → 01.2-branding
      ├──→ 02   GROWTH      brief de growth       → 02-growth
      ├──→ 03   MARKETING   brief de marketing    → 03-marketing
      ├──→ 04   CREATIVE    brief de creative     → 04-creative
      ├──→ 🔧   TECNOLOGÍA  brief de tecnología   → 02-growth  (Accelerate y Compound)
-     └──→ 🔁   SISTEMAS    brief de sistemas     → Allan      (solo Compound)
+     └──→ 🔁   SISTEMAS    brief de sistemas     → el CEO     (solo Compound)
      │
      ▼
    …05 producción · 06 diseño · 07 edición · 08 community · 09 posting · 10 ads…
@@ -557,6 +579,7 @@ estrategia. **No es un reporte: es el input del mes siguiente.**
 | Segmentación, presupuesto, optimización de campañas | Growth |
 | Construir la herramienta ni definir stack | Builder |
 | Grabar | Production |
-| Publicar o pautar | **Nadie sin el gate de Allan** |
+| Publicar | **⑨ Posting** |
+| Pautar | **⑩ Ads**, con el OK del CEO antes de lanzar |
 
 **Strategy decide el QUÉ y el POR QUÉ. Nunca el CÓMO.**

@@ -9,7 +9,7 @@ context → analysis → reverse-engineering → methodology → entrega
 
 | # | Skill | Qué hace | Input que necesita |
 |---|---|---|---|
-| **01** | `context` | Junta la data cruda: comprensión, negocio, demanda, restricciones, arquetipo. **Describe, no decide** | Lo que entregue el cliente y Allan |
+| **01** | `context` | Junta la data cruda: comprensión, negocio, demanda, restricciones, arquetipo. **Describe, no decide** | Lo que entregue el cliente y el CEO |
 | **02** | `analysis` | Las 3 preguntas fijas: qué tiene que ser verdad · qué tienen a su ventaja · qué hay que ir a buscar. De ahí salen los pasos | `context` |
 | **03** | `reverse-engineering` | Saca de la media real los patrones que explican por qué funciona. **Termina en patrón, no en recomendación** | `analysis` |
 | **04** | `methodology` | Arma la estrategia: posicionamiento, ICP, identidad y branding, historia, comunicación, canales, monetización y medición | los tres anteriores |
@@ -26,4 +26,4 @@ context → analysis → reverse-engineering → methodology → entrega
 3. Si falta el input de un bloque, **se corre el anterior**. Nunca se improvisa el faltante.
 
 **No se inventan skills nuevas sobre la marcha.** Si un procedimiento se repite lo suficiente como
-para merecer una, se propone a Allan primero.
+para merecer una, se propone al CEO primero.

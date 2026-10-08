@@ -70,7 +70,7 @@ Archivo **interno**: no se entrega al cliente, pero se guarda en la carpeta del 
 | Fotos tomadas en la hora | |
 | **Fotos por hora — el número real** | |
 | Resueltas con frame del rodaje | |
-| Fueron a ③ como decisión de alcance | |
+| Fueron a ③ Marketing como decisión de alcance | |
 | Setups de foto | |
 
 🛑 **Este es el número que § 2B del `WORKFLOW.md` declara «a medir en la primera sesión».**
@@ -80,7 +80,7 @@ Una vez medido, deja de ser pendiente.
 
 ## 3. Material no usado — **el hallazgo más valioso**
 
-| `id_creativo` | Escena | `estado` en el Excel | ¿⑥A o ⑥B la usaron? | Costo de haberla grabado |
+| `id_creativo` | Escena | `estado` en el Excel | ¿⑥A Diseño gráfico o ⑦ Video Editing la usaron? | Costo de haberla grabado |
 |---|---|---|---|---|
 
 ```
@@ -122,7 +122,7 @@ Real:     [x.x]   ([n] escenas ÷ [n] jornadas)
 > 🛑 **Se redacta como propuesta.** Es la única corrección que Producción hace sobre un documento de
 > otro departamento, y **nunca se edita su archivo.**
 
-| | Declarado en ① | Real este ciclo | Diferencia |
+| | Declarado en ① Strategy | Real este ciclo | Diferencia |
 |---|---|---|---|
 | Piezas producidas por ciclo | | | |
 | Jornadas disponibles reales | | | |

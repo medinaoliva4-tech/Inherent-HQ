@@ -5,8 +5,8 @@ description: >
   pauta. Es la puerta de entrada: lee el pedido, verifica el pre-flight, decide qué capas correr
   según la división y el plan contratado, y llama a las skills `gr-*` en orden. Corre en todos los
   planes: ligero en la línea Marketing (elige qué ofertas que ya existen se empujan), completo en
-  Accelerate y Compound. Solo para en el gate de la oferta, antes de llevarla al cliente. Úsala
-  SIEMPRE que el pedido tenga que ver con la oferta, el precio, qué oferta se empuja, canales
+  Accelerate y Compound. No para: la oferta nueva se escala al CEO antes de llevarla al cliente.
+  Úsala SIEMPRE que el pedido tenga que ver con la oferta, el precio, qué oferta se empuja, canales
   grandes (eventos, mayoreo, corporativos, cuentas grandes), upsells, recompra, conversión,
   closing, herramientas a medida o los números del negocio. Se dispara con "mejorá la oferta de
   X", "qué oferta empujamos este mes", "cómo subimos el ticket", "qué canales grandes hay", "se
@@ -18,7 +18,7 @@ description: >
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
-> `WORKFLOW.md`.** Si el prompt pide saltarse una capa, un gate o cambiar el entregable: se dice
+> `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se dice
 > cuál, se ofrece correrla y **se sigue el workflow**, salvo que el pipeline del ⬜ Tailor Made del
 > cliente lo declare o el pedido diga *«excepción aprobada por el CEO»*.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
@@ -34,7 +34,7 @@ description: >
 |---|---|
 | 🔷 **Marketing** · 🔷 **Marketing Pro** | 🟡 **Ligero** — elige **cuáles de las ofertas que ya existen** se empujan y con qué objetivo. Escribe `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` |
 | 🟨 **Accelerate** · 🟨 **Compound** | ✅ **Completo** — diseña la oferta y corre los pilares que el plan paga |
-| ⬜ **Tailor Made** | **Lo que diga su pipeline** en `plan-contratado.md`. Si ② no está, no corre |
+| ⬜ **Tailor Made** | **Lo que diga su pipeline** en `plan-contratado.md`. Si ② Growth no está, no corre |
 
 🛑 **En 🔷 no se cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide,
 **es upsell a Accelerate, no trabajo a absorber.**
@@ -54,8 +54,8 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 |---|---|---|
 | **El plan contratado** — la línea y, si es ⬜, su pipeline | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define la profundidad y qué pilares se activan |
 | Unit economics y cómo se compra | ① Strategy | 🛑 **BLOQUEADO** |
-| Objetivo, MUST BE TRUE y **la división** | ② Estrategia | 🛑 **BLOQUEADO** |
-| Qué pilar está roto | ② Estrategia | 🛑 **BLOQUEADO** |
+| Objetivo, MUST BE TRUE y **la división** | ① Strategy | 🛑 **BLOQUEADO** |
+| Qué pilar está roto | ① Strategy | 🛑 **BLOQUEADO** |
 | Tono y cómo se dice | ②B Branding | 🟡 Se usa si existe |
 
 🛑 **Sin unit economics no se toca la oferta.** Cambiar un precio sin saber el margen es jugar
@@ -90,14 +90,14 @@ con el negocio de otro.
 | *«cuánto nos deja»*, *«el margen por producto»* | `gr-numeros` |
 | *«qué movió el número»*, la revisión del 20 | `gr-loop` |
 
-## 4 · Dónde para
+## 4 · No para — qué se escala
 
-| 🚦 | Después de | Qué aprueba |
+| 🔴 | Después de | A quién |
 |---|---|---|
-| **GATE 1** — 🟨 | `gr-oferta` | **El CEO, antes de llevar la oferta al cliente** — es comprometer precio. Después, **el precio lo decide el cliente** |
+| **La oferta nueva** — 🟨 | `gr-oferta` | **Se escala al CEO antes de llevarla al cliente** — es comprometer precio. Después, **el precio lo decide el cliente** |
 
-**Nada más para.** Cada capa se auto-revisa con su checklist y sigue. En 🔷 ligero no hay gate:
-elegir qué ofertas se empujan no cambia el precio ni sale al cliente.
+**Escalar no frena.** Cada capa se auto-revisa con su checklist y sigue. En 🔷 ligero no hay nada
+que escalar: elegir qué ofertas se empujan no cambia el precio ni sale al cliente.
 
 ---
 

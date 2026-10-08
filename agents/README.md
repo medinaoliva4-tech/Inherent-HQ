@@ -86,8 +86,8 @@ margen; uno que entrega de menos rompe la promesa publicada.
 ## Cómo se construye uno
 
 1. **`README.md` del área** — propósito, las acciones con su MCP, **qué entrega según el plan**, y qué falta.
-2. **`brain/WORKFLOW.md`** — el proceso de 0 a 100, con las aprobaciones del CEO marcadas y una sección
-   de **lo que este agente NO hace**.
+2. **`brain/WORKFLOW.md`** — el proceso de 0 a 100, con su auto-revisión, sus gates y sus escalaciones
+   marcados, y una sección de **lo que este agente NO hace**.
 3. **`brain/skills/README.md`** — cuándo se invoca cada skill dentro del workflow.
 4. **Una carpeta por skill**, con su `SKILL.md`.
 5. **Enlazarla** en `.claude/skills/` para que se pueda invocar por nombre.
@@ -95,6 +95,12 @@ margen; uno que entrega de menos rompe la promesa publicada.
 
 > ⚠️ **La entrega no es una skill compartida.** Cada agente entrega algo distinto —Strategy un
 > documento de estrategia, Design un lote de piezas, Ads una campaña corriendo— así que
-> **cada workflow define su propia entrega.** Lo único igual para todos es el gate: **el CEO
-> aprueba lo importante** —publicar, gastar dinero, enviar al cliente, comprometer precio, fecha o
-> alcance, y borrar—. Lo demás fluye.
+> **cada workflow define su propia entrega.** Lo único igual para todos es cómo se cierra:
+> **cada departamento se auto-revisa y sigue.** Lo que está en el repo ya pasó por el CEO.
+>
+> 🚦 **El CEO solo para el flujo en dos puntos:** aprueba la estrategia de **① Strategy** antes de
+> que pase a los departamentos, y en **⑩ Ads** da el OK antes de lanzar *(plan + presupuesto)* y
+> ante cualquier cambio de presupuesto.
+>
+> 📣 **Las escalaciones no son paradas — avisan y el flujo sigue:** precio, alcance y fechas →
+> **el CEO** · todo lo demás → **el COO**.

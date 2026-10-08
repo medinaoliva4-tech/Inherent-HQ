@@ -2,21 +2,21 @@
 name: br-brief
 description: >
   Capa 0 de ②B Branding — carga el brief de ① Strategy desde los archivos de estrategia del
-  cliente y verifica que esté completo antes de desarrollar nada. Separa lo que ① ya decidió
-  (tipo de marca, código saturado, dirección visual, referencias) de lo que Branding tiene que
-  resolver, cruza contra lo que el cliente puede sostener y contra la profundidad que paga su
-  plan. Úsala cuando pidan "arrancá el branding de X", "qué decidió estrategia", "verificá el
-  brief de marca". Bloquea si la estrategia no existe o le falta un bloque marcado 🛑.
+  cliente y verifica que esté completo antes de desarrollar nada. Separa lo que ① Strategy ya
+  decidió (tipo de marca, código saturado, dirección visual, referencias) de lo que Branding
+  tiene que resolver, cruza contra lo que el cliente puede sostener y contra la profundidad que
+  paga su plan. Úsala cuando pidan "arrancá el branding de X", "qué decidió estrategia",
+  "verificá el brief de marca". Bloquea si la estrategia no existe o le falta un bloque marcado 🛑.
 ---
 
-# Capa 0 · Brief — qué decidió ① y qué toca resolver
+# Capa 0 · Brief — qué decidió ① Strategy y qué toca resolver
 
 | | |
 |---|---|
 | **Consume** | La estrategia del cliente: `01-estrategia/posicionamiento.md` *(§ Los briefs por área)* · `01-estrategia/nucleo.md` · `99-referencias/investigacion/ingenieria-inversa.md` *(§ El mapa de saturación)* · `00-onboarding/comprension.md` §B y §D · el plan contratado, con sus **Redes** · lo que ya existe en `02-marca/` |
 | **Produce** | La sección **§ El brief** de `guia-de-marca.md` |
 
-## 1 · Los 8 bloques de ① — se verifican uno por uno
+## 1 · Los 8 bloques de ① Strategy — se verifican uno por uno
 
 **Se leen de los archivos de estrategia del cliente**, los que existan. Los 8 bloques son los de
 `agents/01-strategy/brain/skills/methodology/brand-brief.md`: **es la referencia de qué lleva cada
@@ -41,10 +41,10 @@ uno, no un archivo que el cliente tenga que tener.**
 
 | | |
 |---|---|
-| **Lo que ① decidió** | Es **restricción**. No se discute, no se mejora, no se reinterpreta |
-| **Lo que ②B resuelve** | Es el trabajo de este departamento |
+| **Lo que ① Strategy decidió** | Es **restricción**. No se discute, no se mejora, no se reinterpreta |
+| **Lo que ②B Branding resuelve** | Es el trabajo de este departamento |
 
-> 🛑 **Si al leer el brief aparece que la dirección está mal, se devuelve a ①** con el problema
+> 🛑 **Si al leer el brief aparece que la dirección está mal, se devuelve a ① Strategy** con el problema
 > escrito. **No se corrige acá en silencio.**
 
 ## 3 · El techo de realidad
@@ -55,7 +55,7 @@ uno, no un archivo que el cliente tenga que tener.**
 |---|---|
 | ¿Con qué produce imágenes? | Si no hay fotógrafo, **el sistema no puede depender de foto propia** |
 | ¿Cada cuánto puede grabar? | Un sistema que necesita material nuevo semanal no sirve si graba una vez al mes |
-| ¿Quién va a ejecutar esto? | Si lo ejecuta ⑥A con agentes, el sistema tiene que ser **ejecutable sin criterio** |
+| ¿Quién va a ejecutar esto? | Si lo ejecuta ⑥A Diseño gráfico con agentes, el sistema tiene que ser **ejecutable sin criterio** |
 | ¿Tiene activos previos? | Se declaran. **Lo que ya existe vale y no se rehace:** se construye encima |
 
 ## 4 · La profundidad según el plan
@@ -76,8 +76,8 @@ posicionamiento y mensaje; **la oferta llega como está.** En 🟨 Growth trae l
 | Bloque | Qué lleva |
 |---|---|
 | **A · Contexto cargado** | Los 8 bloques con su estado y **ruta** |
-| **B · Lo que ① decidió** | Restricciones, literales |
-| **C · Lo que ②B resuelve** | La lista de trabajo de este ciclo |
+| **B · Lo que ① Strategy decidió** | Restricciones, literales |
+| **C · Lo que ②B Branding resuelve** | La lista de trabajo de este ciclo |
 | **D · El código saturado** | Qué repite la categoría, y **hacia dónde vamos** |
 | **E · El techo de realidad** | Qué puede sostener el cliente |
 | **F · Lo que ya existe** | Activos previos, que se respetan |
@@ -85,7 +85,7 @@ posicionamiento y mensaje; **la oferta llega como está.** En 🟨 Growth trae l
 ## 6 · Checklist
 
 - [ ] Los **8 bloques** están presentes y citados con ruta
-- [ ] Lo que ① decidió está separado de lo que ②B resuelve
+- [ ] Lo que ① Strategy decidió está separado de lo que ②B Branding resuelve
 - [ ] El **código saturado** está escrito, y la dirección contraria también
 - [ ] El techo de realidad está declarado
 - [ ] Los activos previos están listados y **se respetan**

@@ -21,7 +21,7 @@ detalle de cada herramienta.
 
 | # | Skill | Capa | Se dispara cuando… | Produce |
 |---|---|---|---|---|
-| 1 | **`br-brief`** | 0 | *«arrancá el branding»* | § El brief — lo que ① decidió vs. lo que ②B resuelve |
+| 1 | **`br-brief`** | 0 | *«arrancá el branding»* | § El brief — lo que ① Strategy decidió vs. lo que ②B Branding resuelve |
 | 2 | **`br-territorio`** | 1 | *«cuál es el territorio»* | § Territorio y personalidad |
 | 3 | **`br-voz`** | 2 | *«el tono de voz»* | § Voz |
 | 4 | **`br-sistema`** | 3 | *«qué colores»*, *«la tipografía»* | **`sistema-visual.md`** |

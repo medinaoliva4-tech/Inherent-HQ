@@ -1,4 +1,4 @@
-# El motor de ⑥B — las herramientas con las que Claude edita
+# El motor de ⑦ Video Editing — las herramientas con las que Claude edita
 
 > **Quién hace qué:** el **editor de video** (una persona) da las instrucciones y aprueba; **Claude Code
 > ejecuta todo** con este kit. Probado de punta a punta en cliente real (AKAI, oct 2026: 123 clips
@@ -91,10 +91,10 @@ ffmpeg -i master.mp4 -c:v libx264 -crf 24 -an -movflags +faststart preview.mp4  
 cd aprobacion/vercel && python3 build.py data.json display.ttf sans.ttf <carpeta-videos> && vercel deploy --prod
 ```
 
-🛑 **`vercel deploy --prod` y el link al cliente, solo con el OK del CEO** (`ve-export` §6).
+🛑 **`vercel deploy --prod` y el link al cliente, solo con el checklist de `ve-export` completo** (`ve-export` §6).
 
 ## Lo que el kit NO hace
 
 - ⛔ **No genera video, no escala calidad, no dobla.** Edita material real.
-- ⛔ **No publica.** Eso es ⑨ con su gate.
+- ⛔ **No publica.** Eso es ⑨ Posting.
 - ⚠️ **Reencuadre a otros formatos (1:1, 16:9) sin probar en cliente real.** El motor lo permite (cambiar `W`/`H`), no se ha entregado todavía.

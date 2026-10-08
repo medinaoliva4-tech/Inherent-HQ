@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Datos del guion visual → storyboard.json (una entrada por reel, una fila por escena).
 
-El texto de cada escena es el COPY LITERAL de ④ (ideas-<formato>.md). El guion visual no inventa copy:
+El texto de cada escena es el COPY LITERAL de ④ Creatividad (ideas-<formato>.md). El guion visual no inventa copy:
 lo pone sobre el fotograma real para que el operador confirme posición, estilo y efecto (ve-armado §2).
 Toma = (clip, desde, hasta, velocidad, focusY) con los segundos de la lista de posproducción.
 """

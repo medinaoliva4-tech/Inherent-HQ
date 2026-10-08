@@ -2,13 +2,13 @@
 name: cr-swipe-file
 description: >
   Capa 1 de ④ Creatividad — la bóveda de referencias y el análisis de piezas ganadoras. Arranca de
-  la tabla 15×7 que ② Estrategia ya descompuso, cosecha solo el hueco, filtra por señal de
+  la tabla 15×7 que ① Strategy ya descompuso, cosecha solo el hueco, filtra por señal de
   rendimiento (un ad de 60-90+ días es un ad que paga; un orgánico vale si es outlier contra su
   propia base), extrae el patrón —nunca la imagen—, lo clasifica en 70/20/10 y lo traduce a
   hipótesis verificadas contra el mapa de saturación. Úsala cuando pidan "armá el swipe file",
   "buscá referencias", "qué está funcionando en este formato", "analizá estos ads", "qué hooks
   están ganando", "de dónde sacamos el 70 probado". No re-mapea la categoría: eso ya lo hizo
-  ② Estrategia.
+  ① Strategy.
 ---
 
 # Capa 1 · Swipe file — qué ya funciona y por qué
@@ -22,7 +22,7 @@ Contexto del departamento: `agents/04-creative/brain/WORKFLOW.md`. Cadencia: **r
 
 **Qué es:** bajar el riesgo de una pieza **antes** de producirla, leyendo lo que el mercado ya validó
 con tiempo y con dinero.
-**Qué no es:** no es investigar la categoría (eso es ② Estrategia y ya está hecho), no es un
+**Qué no es:** no es investigar la categoría (eso es ① Strategy y ya está hecho), no es un
 moodboard, y no son las referencias estéticas de ②B Branding — esas dicen cómo debe *verse* la
 marca, estas dicen qué **funciona**.
 
@@ -60,7 +60,7 @@ Y recién después, el hueco:
 ```
 
 🛑 **Solo se cosecha el hueco.** Repetir el barrido de categoría es duplicar el trabajo de
-② Estrategia y llegar, con menos rigor, a otra conclusión sobre la misma categoría. Lo que la 15×7
+① Strategy y llegar, con menos rigor, a otra conclusión sobre la misma categoría. Lo que la 15×7
 ya cubre **se cita por número de fila, no se re-investiga**.
 
 El hueco es casi siempre de uno de tres tipos:
@@ -164,7 +164,7 @@ El único paso donde se genera algo nuevo.
 ```
 
 1. Se modela la **estructura**; nunca se copia la **ejecución**.
-2. La hipótesis se escribe en **nuestra voz**, con el lenguaje literal del comprador de ② Estrategia.
+2. La hipótesis se escribe en **nuestra voz**, con el lenguaje literal del comprador de ① Strategy.
 3. Un patrón que no sirve a ningún slot de este ciclo **no entra**. Nada se guarda "por si acaso".
 4. Si la hipótesis podría llevar el logo de un competidor sin que nadie note la diferencia, **falló
    distintividad**. Se vuelve atrás.
@@ -180,7 +180,7 @@ existe, se declara `⚠️ SIN DATOS — sin mapa de saturación` y se sigue:
 | Está en el mapa, pero **el white space está al lado** | Se conserva la **estructura** y se invierte el contenido |
 | **No está** en el mapa | Entra. Es novedad real para esta categoría |
 
-> Esta verificación es la razón por la que Creative arranca de la evidencia de ② Estrategia y no de
+> Esta verificación es la razón por la que Creative arranca de la evidencia de ① Strategy y no de
 > cero: sin el mapa de saturación no hay forma de saber si un patrón ganador es también un patrón
 > **agotado**.
 

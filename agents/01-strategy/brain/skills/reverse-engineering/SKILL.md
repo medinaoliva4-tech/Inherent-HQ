@@ -42,9 +42,9 @@ Las piezas, no las opiniones sobre la marca.
 
 ### 🛑 Se investiga por plataforma, y la competencia es de Guatemala nada más
 
-**La fuente oficial es Apify**, la misma que usa ④ Creative, con **un actor por plataforma**. Las
-reglas completas —los 3 aprendizajes del actor de anuncios, los topes y el orden de trabajo— viven
-en **`cr-fuentes`**. Acá solo lo que cambia para Strategy.
+**La fuente oficial es Apify**, la misma que usa ④ Creatividad, con **un actor por plataforma**.
+Las reglas completas —los 3 aprendizajes del actor de anuncios, los topes y el orden de trabajo—
+viven en **`cr-fuentes`**. Acá solo lo que cambia para Strategy.
 
 **Las plataformas son las del cliente:** las **Redes** de `00-onboarding/plan-contratado.md`. Si ya
 existe `plan-por-canal.md` de ③ Marketing, también sirve.
@@ -64,14 +64,15 @@ existe `plan-por-canal.md` de ③ Marketing, también sirve.
 > **Decisión del CEO · las dos capas.** El barrido de **competencia** y el de **referencias
 > ganadoras** son dos cosas distintas y **no se mezclan en el mismo archivo**.
 
-| | 🔍 **Competencia** — es la de Strategy | ⭐ **Referencias ganadoras** — es de ④ Creative |
+| | 🔍 **Competencia** — es la de Strategy | ⭐ **Referencias ganadoras** — es de ④ Creatividad |
 |---|---|---|
 | **Para qué** | De qué hay que despegarse. Alimenta el posicionamiento | Qué estructura ya funciona. Alimenta el swipe file |
 | **Países** | **Solo Guatemala** (`country=GT`) | Países parecidos a Guatemala — la lista fija está en `cr-fuentes` |
 | **Cómo se busca** | **Por página de cada competidor**: `search_type=page` + `view_all_page_id=…` | Descubrir por keyword, después por página |
 
 🛑 **Un anuncio de México no es competencia.** Si no se le puede ganar el cliente en Guatemala, no
-entra a `ingenieria-inversa.md` — entra, si acaso, al swipe file de ④, y en su propia sección.
+entra a `ingenieria-inversa.md` — entra, si acaso, al swipe file de ④ Creatividad, y en su propia
+sección.
 
 🛑 **Primero se descubre, después se scrapea.** La búsqueda por keyword dice **qué páginas lideran
 la categoría**; recién con la página identificada se piden sus ads.
@@ -98,11 +99,11 @@ es que deshabiliten la cuenta.
 > no el modelo.
 
 **El manual no es un parche: es el proceso.** Dos minutos por consulta, y encaja con la regla de
-fuentes: la info la entrega Allan.
+fuentes: la info la entrega el CEO.
 
 **Límite:** solo contenido público, desde el **1 de enero de 2025** en adelante.
 
-**Cómo entra al proceso:** Allan corre la consulta en meta.ai y pega los resultados. El agente los
+**Cómo entra al proceso:** el CEO corre la consulta en meta.ai y pega los resultados. El agente los
 procesa como cualquier otra evidencia entregada.
 
 **Consultas listas para copiar:**
@@ -147,8 +148,8 @@ verificados en vez de recordados. Y la voz literal del comprador, en los comenta
 nicho y menciones previas de marca. Requiere cuenta de Meta Business y cuenta profesional de
 Instagram, y está en 18+ países — **verificar disponibilidad en Guatemala antes de contar con ella**.
 
-**Qué cuenta como "ganadora":** — los mismos criterios de `cr-swipe-file`, para que Strategy y ④
-Creative no midan con reglas distintas.
+**Qué cuenta como "ganadora":** — los mismos criterios de `cr-swipe-file`, para que Strategy y
+④ Creatividad no midan con reglas distintas.
 - **Anuncio: 60-90+ días corriendo** → está pagando
 - **Orgánico: 2x o más** las vistas o interacciones **del promedio de esa cuenta**, nunca en
   números absolutos

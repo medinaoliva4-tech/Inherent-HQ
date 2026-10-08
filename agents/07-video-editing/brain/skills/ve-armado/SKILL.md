@@ -1,8 +1,8 @@
 ---
 name: ve-armado
 description: >
-  Capa 1 de ⑥B Video Editing — el corte principal. Monta el hook literal de ④ en el primer frame,
-  respeta el reparto HOOK-BODY-PAYOFF que ④ definió, ensambla las escenas en el orden y con las
+  Capa 1 de ⑦ Video Editing — el corte principal. Monta el hook literal de ④ Creatividad en el primer frame,
+  respeta el reparto HOOK-BODY-PAYOFF que ④ Creatividad definió, ensambla las escenas en el orden y con las
   duraciones del shot list, y corta al ritmo que la personalidad de la marca pide. Antes de
   renderizar muestra el guion visual (el fotograma real de cada escena con su texto) para que el
   operador confirme el layout. Arma con el motor Remotion. Es la capa donde se decide si la pieza
@@ -15,7 +15,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El `ideas-<formato>.md` de la pieza · el material con selects · § Movimiento de ②B *(si existe)* |
+| **Consume** | El `ideas-<formato>.md` de la pieza · el material con selects · § Movimiento de ②B Branding *(si existe)* |
 | **Produce** | El **guion visual** aprobado y el corte principal de cada reel |
 | **Herramientas** | `motor/guion-visual/` · `motor/remotion/edit/build_reels.py` · `stab_shots.py` · `npx remotion render` |
 
@@ -23,7 +23,7 @@ description: >
 
 | Segundo | Qué tiene que pasar |
 |---|---|
-| **0** | El **frame 1 visual** que ④ definió. **Con activo distintivo de marca** |
+| **0** | El **frame 1 visual** que ④ Creatividad definió. **Con activo distintivo de marca** |
 | **0-1** | El hook ya empezó. **No hay intro, no hay logo animado, no hay "hola a todos"** |
 | **1-3** | Se entiende de qué va. Quien se queda, se queda acá |
 
@@ -38,18 +38,18 @@ más redujo rondas de cambios en cliente real.
 
 | Paso | Qué se hace |
 |---|---|
-| **1** | `guion-visual/build_data.py`: una fila por escena — tomas (clip + segundos de la lista de posproducción), el **texto literal de ④**, posición, estilo y efecto propuestos |
+| **1** | `guion-visual/build_data.py`: una fila por escena — tomas (clip + segundos de la lista de posproducción), el **texto literal de ④ Creatividad**, posición, estilo y efecto propuestos |
 | **2** | `thumbs.py` saca el fotograma real de cada escena del original; en doble cuadro, las dos mitades con la línea |
 | **3** | `build.py` arma la página y se publica como **Artifact con base de datos** (`capabilities: {db: {}}`) |
 | **4** | El operador anota por escena: texto, posición, estilo, efecto, notas y «aprobada». Se guarda solo |
 | **5** | Claude lee las notas (`ArtifactData list` de la colección `notas`) y las pasa al guion de montaje |
 
 🛑 **Si el operador cambia una palabra del texto, es un cambio de copy:** se registra y se avisa a
-④ por escrito. Posición, estilo, efecto, duración y toma sí se deciden acá.
+④ Creatividad por escrito. Posición, estilo, efecto, duración y toma sí se deciden acá.
 
 ## 3 · El reparto HOOK-BODY-PAYOFF
 
-**④ lo definió en `cr-hook-copy`. Se respeta.**
+**④ Creatividad lo definió en `cr-hook-copy`. Se respeta.**
 
 | Bloque | Qué hace | Error típico |
 |---|---|---|
@@ -67,14 +67,14 @@ más redujo rondas de cambios en cliente real.
 
 | | Regla |
 |---|---|
-| **Orden** | El del shot list de `cr-arte-video`. Si se cambia, se declara y se avisa a ④ |
-| **Duraciones** | Las que ④ definió. Un plano que se estira mata el ritmo |
-| **Ritmo** | El de § Movimiento de ②B. Una marca calma no corta cada 0.8 s |
+| **Orden** | El del shot list de `cr-arte-video`. Si se cambia, se declara y se avisa a ④ Creatividad |
+| **Duraciones** | Las que ④ Creatividad definió. Un plano que se estira mata el ritmo |
+| **Ritmo** | El de § Movimiento de ②B Branding. Una marca calma no corta cada 0.8 s |
 | **Audio** | Limpio primero. Música después, y **nunca tapando la voz** |
 
 ### Las reglas de montaje que funcionaron *(cliente real, oct 2026)*
 
-**Se aplican salvo que § Movimiento de ②B diga otra cosa** — la guía manda.
+**Se aplican salvo que § Movimiento de ②B Branding diga otra cosa** — la guía manda.
 
 | Regla | Número / cómo |
 |---|---|
@@ -109,7 +109,7 @@ más redujo rondas de cambios en cliente real.
 |---|---|
 | **1** | ¿Hay otra toma del mismo setup que sirva? |
 | **2** | ¿Hay material de banco que cubra esa escena? |
-| **3** | ↩️ **Se devuelve a ④** con qué escena falta y qué sí hay |
+| **3** | ↩️ **Se devuelve a ④ Creatividad** con qué escena falta y qué sí hay |
 
 🛑 **Nunca se cambia el hook para que entre el material.** El hook traza a una MUST BE TRUE;
 cambiarlo rompe la cadena y nadie se entera hasta el loop.
@@ -123,12 +123,12 @@ cambiarlo rompe la cadena y nadie se entera hasta el loop.
 
 ## 7 · Checklist
 
-- [ ] El **frame 1** es el que ④ definió, **con activo distintivo**
+- [ ] El **frame 1** es el que ④ Creatividad definió, **con activo distintivo**
 - [ ] **No hay intro ni logo animado** antes del hook
-- [ ] El hook está montado **literal**, como lo escribió ④
+- [ ] El hook está montado **literal**, como lo escribió ④ Creatividad
 - [ ] El reparto **HOOK-BODY-PAYOFF** se respeta
 - [ ] El orden y las duraciones son las del shot list
-- [ ] El ritmo coincide con **§ Movimiento** de ②B *(si existe)*
+- [ ] El ritmo coincide con **§ Movimiento** de ②B Branding *(si existe)*
 - [ ] El operador aprobó el **guion visual** antes del render, y sus notas están en `build_reels.py`
 - [ ] Ninguna escena dura menos de 3 s salvo las de paso; ninguna toma se repite seguida
 - [ ] La cámara lenta solo está en momentos protagonistas, desde fuente de 60 fps

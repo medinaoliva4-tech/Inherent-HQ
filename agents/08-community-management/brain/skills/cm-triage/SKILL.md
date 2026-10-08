@@ -22,7 +22,7 @@ pasa con él.
 | 🎉 **Evento** | Cumpleaños, empresa, grupo grande, «¿hacen eventos?», cotización | `cm-respuesta` + `cm-escalado` |
 | 📅 **Reserva** | «Quiero reservar», mesa, fecha y hora | `cm-respuesta` + `cm-escalado` |
 | ⏳ **Lo que viene** | Pregunta por algo que la ficha marca como «próximamente» | `cm-respuesta` · 🟢 |
-| 😠 **Queja** | Mala experiencia, pedido equivocado, demora, trato | `cm-respuesta` (borrador) + `cm-escalado` · 🔴 |
+| 😠 **Queja** | Mala experiencia, pedido equivocado, demora, trato | `cm-respuesta` + `cm-escalado` · 🔴 |
 | 🤝 **Colaboración** | Influencer, prensa, proveedor, alianza, empleo | `cm-escalado` · 🔴 |
 | ❓ **Fuera de la ficha** | Pregunta razonable cuya respuesta no está en la ficha | `cm-escalado` · 🔴 |
 | 🚫 **Spam · hater** | Promoción ajena, link sospechoso, insulto, bait, bots | ⚫ Nada. Ocultar si es abuso *(Pro+)* |
@@ -41,4 +41,4 @@ pasa con él.
 Una tabla por cliente: `id`, red, tipo (comentario / DM / mención), usuario, texto, **caja**, y si
 es comentario, la publicación donde cayó.
 
-Las preguntas que **se repiten** se marcan aparte: son materia de `cm-loop` y de ④.
+Las preguntas que **se repiten** se marcan aparte: son materia de `cm-loop` y de ④ Creatividad.

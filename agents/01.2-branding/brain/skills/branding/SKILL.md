@@ -64,8 +64,8 @@ publicada de Accelerate: *«escalar lo que ya funciona, sin perderlo»*.
 ## 4 · No para entre capas
 
 **Cada capa se auto-revisa con su checklist y sigue.** El control de calidad lo hace el CEO en
-persona. La aprobación del CEO queda solo para publicar, gastar, enviar algo al cliente,
-comprometer precio, fecha o alcance, y borrar.
+persona. **El CEO solo para el flujo en ① Strategy y ⑩ Ads.** Precio, alcance y fechas se
+escalan al CEO; todo lo demás, al COO. Escalar avisa y sigue: no frena el flujo.
 
 ---
 

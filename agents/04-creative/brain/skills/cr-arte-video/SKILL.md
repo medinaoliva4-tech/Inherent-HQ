@@ -9,7 +9,7 @@ description: >
   foto se escribe la § Foto. Úsala cuando pidan "el shot list", "qué tomas
   necesitamos", "cómo se filma esto", "el layout", "dónde va cada texto", "la estética", "el mood",
   "qué elementos gráficos lleva", o cuando el hook y el copy de la Capa 4 ya estén escritos.
-  Creative dirige y especifica; ⑤ Producción rueda y ⑥A Diseño compone.
+  Creative dirige y especifica; ⑤ Producción rueda y ⑥A Diseño gráfico compone.
 ---
 
 # Capa 5 — Forma
@@ -57,29 +57,29 @@ La segunda **no admite interpretación**. Eso es dirección.
 
 Es lo que le dice a ⑤ Producción qué tiene que existir antes de que nadie arme la pieza.
 
-| `material` | Cuándo | Qué se escribe | Qué le pide a ⑤ |
+| `material` | Cuándo | Qué se escribe | Qué le pide a ⑤ Producción |
 |---|---|---|---|
 | **`ninguno`** | Se arma con assets existentes, banco de ②B Branding o solo grafismo | `Escenas: N/A — sin material nuevo` + Forma + Layout | Nada |
 | **`video`** | La pieza necesita **metraje nuevo** | Escenas + cobertura + Forma + Layout | `plan-de-produccion.csv` |
 | **`foto`** | La pieza necesita una **imagen fija nueva** —producto, platillo, detalle, retrato— | **§ Foto** + Forma + Layout *(sin tabla de Escenas)* | `plan-de-fotos.csv` |
 
 > 🔑 **`material` NO decide quién arma la pieza.** Eso lo decide el `formato`: los estáticos,
-> carruseles y stories van a **⑥A Diseño**, los videos a **⑦ Video Editing**.
-> **Un carrusel con `material = foto` sigue siendo de ⑥A** — solo que espera su foto primero.
+> carruseles y stories van a **⑥A Diseño gráfico**, los videos a **⑦ Video Editing**.
+> **Un carrusel con `material = foto` sigue siendo de ⑥A Diseño gráfico** — solo que espera su foto primero.
 
 - 🛑 **Se decide por si el material existe**, no por presupuesto ni por pereza. Si la idea pide una
   toma o una foto que nadie tiene, no es `ninguno`.
 - 🛑 **Si el plan no cabe en la capacidad de producción**, se recorta acá **y se declara**. Nunca se
   pasa a `ninguno` en silencio para que entre.
 - 🛑 **Nunca `video` para conseguir una imagen fija.** Si lo que hace falta es una foto, es `foto`:
-  sacar un frame del rodaje es el **plan B** que decide ⑤ cuando la hora de foto no alcanza, no la
+  sacar un frame del rodaje es el **plan B** que decide ⑤ Producción cuando la hora de foto no alcanza, no la
   forma normal de pedirla.
 - Una pieza `ninguno` igual lleva **Forma y Layout completos**: Diseño necesita la intención tanto
   como Producción.
 
 ### § Foto — qué se escribe en `ideas-<formato>.md`
 
-**Toda pieza con `material = foto` lleva esta sección.** Es lo que ⑤ convierte en una fila de
+**Toda pieza con `material = foto` lleva esta sección.** Es lo que ⑤ Producción convierte en una fila de
 `plan-de-fotos.csv`, y lo que decide si la foto sirve para varias piezas o solo para una.
 
 | Campo | Qué lleva |
@@ -93,7 +93,7 @@ Es lo que le dice a ⑤ Producción qué tiene que existir antes de que nadie ar
 
 - 🛑 **El «espacio libre para el texto» sale del Layout, no se inventa.** Una foto encuadrada sin
   saber dónde va el texto se vuelve a tomar.
-- **Si varias piezas comparten la foto, se escribe en todas**, con los mismos valores. ⑤ la agrupa
+- **Si varias piezas comparten la foto, se escribe en todas**, con los mismos valores. ⑤ Producción la agrupa
   una sola vez.
 
 ## 2 · Escenas — el shot list
@@ -182,7 +182,7 @@ Se resuelven las ocho, sin excepción. Una toma incompleta es una toma que se im
 3. **Paleta y tipografía son de ②B Branding.** Creative las **aplica**, no las estira.
 4. **Los activos distintivos de ③ Marketing se refuerzan, no se reinventan** cada pieza: es lo que hace que la marca acumule memoria.
 5. **Foto real antes que stock** — obligatorio en locales y servicios, donde la evidencia real vence a la producción cara.
-6. **Nunca hex, tipografía, píxeles ni coordenadas.** Se dice la **zona**; el resto lo resuelve ⑥A Diseño.
+6. **Nunca hex, tipografía, píxeles ni coordenadas.** Se dice la **zona**; el resto lo resuelve ⑥A Diseño gráfico.
 
 ## 4 · Elementos gráficos — el vocabulario cerrado
 
@@ -235,7 +235,7 @@ Formato **familia + qué + para qué**, separados por `·`. Una línea por eleme
 | Pedir 5 o 6 elementos "por si acaso" | Diseño decide qué sacar — o sea, decide la intención |
 | El mismo set de elementos en todas las filas | Dejó de ser decisión creativa: es plantilla |
 | Una textura para tapar una foto mala | El problema es la foto, y vuelve en la próxima pieza |
-| Entregar un mockup o el video editado | Se cruzó la frontera con ⑤ Producción y ⑥A Diseño |
+| Entregar un mockup o el video editado | Se cruzó la frontera con ⑤ Producción y ⑥A Diseño gráfico |
 
 ---
 
@@ -250,7 +250,7 @@ Formato **familia + qué + para qué**, separados por `·`. Una línea por eleme
 - [ ] Mood, paleta e iluminación **coherentes con la guía de ②B Branding**, si existe
 - [ ] Los **activos distintivos de ③ Marketing se refuerzan**, no se reinventan
 - [ ] Los elementos gráficos salen **del banco de assets**, usan las **4 familias cerradas**, son **máximo 3**, y si no lleva ninguno dice `ninguno` con su motivo
-- [ ] Ninguna fila especifica **hex, tipografía, píxeles, lente, locación concreta, permiso o casting** — eso es de ⑥A Diseño y ⑤ Producción
+- [ ] Ninguna fila especifica **hex, tipografía, píxeles, lente, locación concreta, permiso o casting** — eso es de ⑥A Diseño gráfico y ⑤ Producción
 - [ ] **La toma 1 es el frame 1 visual** definido en la Capa 4
 - [ ] Cada toma resuelta con las **8 propiedades** (# · plano · ángulo · movimiento · acción · duración · audio · equipo)
 - [ ] `#`, `acción`, `encuadre` y `duración` tienen **el mismo número de ítems y el mismo orden**, o la sección dice `N/A — sin material nuevo` *(o `N/A — pieza de foto`)*

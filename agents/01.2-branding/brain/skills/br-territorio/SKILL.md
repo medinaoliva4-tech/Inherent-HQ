@@ -18,7 +18,7 @@ description: >
 
 ## 1 · La regla de oposición
 
-**① mapeó el código saturado. Acá se va al contrario — pero la dirección la marca el tipo de
+**① Strategy mapeó el código saturado. Acá se va al contrario — pero la dirección la marca el tipo de
 marca, no se opone por oponerse.**
 
 | La categoría hace | Queremos | Vamos hacia |
@@ -46,7 +46,7 @@ condescendiente»* dice algo.
 
 ## 3 · El enemigo
 
-**① lo nombró. Acá se escribe en lenguaje de persona.**
+**① Strategy lo nombró. Acá se escribe en lenguaje de persona.**
 
 | ❌ Abstracto | ✅ En lenguaje de persona |
 |---|---|
@@ -68,7 +68,7 @@ condescendiente»* dice algo.
 
 ## 5 · La prueba del logo tapado
 
-**Con el territorio escrito, se hace la prueba sobre las referencias de ①:**
+**Con el territorio escrito, se hace la prueba sobre las referencias de ① Strategy:**
 
 > Si tapás el logo de esas referencias y podrían ser de cualquiera, **el territorio todavía no
 > está definido.** Se vuelve al paso 1.

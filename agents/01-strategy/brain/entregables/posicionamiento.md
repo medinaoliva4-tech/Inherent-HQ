@@ -23,7 +23,7 @@
 |---|---|
 | **Qué exige del cliente** | |
 | **Qué exige de nosotros** | |
-| **Entra en el plan contratado** | ✅ / 🛑 **no — declarado a Allan** |
+| **Entra en el plan contratado** | ✅ / 🛑 **no — escalado al CEO** |
 
 ---
 

@@ -147,7 +147,7 @@ misma idea, la idea no está organizando la pieza.
 3. **Si ninguna técnica salva la referencia, la referencia no servía.** Se vuelve al swipe file.
 4. **La técnica se aplica a la referencia, no a la promesa.** Ninguna técnica justifica cambiar lo
    que la marca afirma. Si la idea necesita otra promesa, o la promesa está mal —y eso se devuelve a
-   ② Estrategia— o la idea no es nuestra.
+   ① Strategy— o la idea no es nuestra.
 5. **1 sola idea por pieza, en 1 frase.**
 6. **Toda idea pasa el filtro del avatar** del brief: si no le habla, se descarta **antes** de
    escribirla.

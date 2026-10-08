@@ -1,7 +1,7 @@
 # ⑥A Diseño gráfico — cómo trabaja
 
 > **En una frase:** produce **el grueso del volumen** —estáticos, carruseles y stories— dentro
-> del sistema visual que ②B definió. ④ dirigió, **⑥A compone**.
+> del sistema visual que ②B Branding definió. ④ Creatividad dirigió, **⑥A Diseño gráfico compone**.
 
 Este documento es todo lo que hay que saber para operar el departamento. El **cómo se hace** cada
 paso vive en las skills: `skills/README.md`.
@@ -21,7 +21,7 @@ paso vive en las skills: `skills/README.md`.
 
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
 `clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
@@ -48,23 +48,23 @@ paso vive en las skills: `skills/README.md`.
 - 🔑 **168 es el techo real del departamento**, el de 🟨 Compound — y **no se diseñan una por una.**
   Se arma el sistema de plantillas del ciclo y se llenan: **se prueba el molde, no las piezas.**
   Sin ese molde el volumen no es viable.
-- 🔴 **⑥A no tiene MCP: hoy el volumen pasa entero por el operador de agentes.** Sus horas son el techo de capacidad,
+- 🔴 **⑥A Diseño gráfico no tiene MCP: hoy el volumen pasa entero por el operador de agentes.** Sus horas son el techo de capacidad,
   no el plan. Si el ciclo no entra, **se declara antes de empezar a componer**, no a mitad.
 - 🛑 **Si llegan más piezas que el techo del plan, las de más no se componen:** se declara la
-  diferencia y se devuelve a ③ Marketing. Recortar es decisión de alcance, no de ⑥A.
+  diferencia y se devuelve a ③ Marketing. Recortar es decisión de alcance, no de ⑥A Diseño gráfico.
 - **Las variantes de creativo de pauta no cuentan acá.** Las 20/30/35/50 existen para ⑩ Ads, salen
   de material ya compuesto y **no entran a este total.**
 
 ### ⬜ Tailor Made — se sigue su pipeline
 
 Se define en el onboarding, en `plan-contratado.md`, con dos secciones: **Qué incluye** y **Su
-pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—. **⑥A lee
+pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—. **⑥A Diseño gráfico lee
 de ahí cuántos estáticos, carruseles y stories le tocan** y trabaja con esos números igual que con
 un plan estándar.
 
 - **El pipeline se sigue, no se cuestiona:** no se bloquea por no ser un plan de lista ni se
   discute por precio.
-- 🛑 **Si ⑥A no está en su pipeline, no corre para ese cliente.**
+- 🛑 **Si ⑥A Diseño gráfico no está en su pipeline, no corre para ese cliente.**
 - **Cambia el volumen, nunca el método:** la trazabilidad, las devoluciones y la auto-revisión son
   iguales en todos los planes.
 - **Arriba de 🟨 Compound sube el volumen**, pero el techo real son **las horas del operador de agentes y las
@@ -86,16 +86,16 @@ margen se come las horas.
 
 ## 2 · La distinción que define el departamento
 
-**②B definió el sistema. ④ dirigió el contenido. ⑥A compone dentro de los dos.**
+**②B Branding definió el sistema. ④ Creatividad dirigió el contenido. ⑥A Diseño gráfico compone dentro de los dos.**
 
 | Quién | Qué decidió |
 |---|---|
 | **②B Branding** | Paleta, tipografía, grilla, safe zones, activos distintivos |
 | **④ Creatividad** | El concepto, el copy **literal** y el layout de cada pieza |
-| **⑥A Diseño** | **Cómo se compone eso**, dentro del sistema |
+| **⑥A Diseño gráfico** | **Cómo se compone eso**, dentro del sistema |
 
-🛑 **⑥A no escribe copy, no inventa conceptos y no cambia el sistema visual.** Si el sistema no
-alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se improvisa.
+🛑 **⑥A Diseño gráfico no escribe copy, no inventa conceptos y no cambia el sistema visual.** Si el sistema no
+alcanza para una pieza, **se devuelve a ②B Branding con la regla que falta** — no se improvisa.
 
 ---
 
@@ -115,7 +115,7 @@ alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se 
 ## 4 · El flujo, de 0 a 100
 
 ```
-   0  RECEPCIÓN     qué llegó de ④ y es componible          → gd-recepcion
+   0  RECEPCIÓN     qué llegó de ④ Creatividad, componible  → gd-recepcion
         ▼
    1  PLANTILLAS    el sistema que hace posible el volumen   → gd-plantillas
         ▼
@@ -136,8 +136,8 @@ alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se 
 | **El paquete completo** | El checklist de §9 y el QA técnico de `gd-export` | Es lo que entra a QA y después a publicación |
 
 > 🔑 **El sistema de plantillas es lo que hace viable el departamento.** Con el molde probado, las
-> 168 piezas son ejecución. **⑥A no publica ni le envía nada al cliente**, así que no espera el
-> OK del CEO: publicar es de ⑨.
+> 168 piezas son ejecución. **⑥A Diseño gráfico no publica ni le envía nada al cliente**: publicar
+> es de ⑨ Posting.
 
 ---
 
@@ -151,7 +151,7 @@ alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se 
 | Generar imagen con IA · quitar fondo · escalar calidad | ⛔ **Sin herramienta — no se promete** | 🔴 |
 
 > ⚠️ **`⬜` = la tool existe, sin probar en cliente real · `👤` = lo hace una persona.**
-> 🔴 **⑥A no tiene MCP.** Hoy es ejecución del operador de agentes con plantillas: **sus horas son el techo del
+> 🔴 **⑥A Diseño gráfico no tiene MCP.** Hoy es ejecución del operador de agentes con plantillas: **sus horas son el techo del
 > volumen.** Por eso el sistema de plantillas es lo que hace viable el departamento.
 
 🛑 **Sin `ffmpeg` no hay reencuadre:** `BLOQUEADO — falta ffmpeg. Instalala: ver INSTALAR.md § Herramientas de video`.
@@ -167,7 +167,7 @@ alcanza para una pieza, **se devuelve a ②B con la regla que falta** — no se 
 | **③ Marketing** | `plan-por-canal.md` — a qué formato va cada pieza | 🟡 No bloqueante — se usan las **Redes** del `plan-contratado.md` |
 | **⑤ Producción** | Material fotográfico, si lo hubo | 🟡 No bloqueante |
 
-🛑 **⑥A es el único departamento que se bloquea sin la guía de marca.** La guía existe para
+🛑 **⑥A Diseño gráfico es el único departamento que se bloquea sin la guía de marca.** La guía existe para
 traducir el posicionamiento a algo gráfico; sin `sistema-visual.md`, 168 piezas no se parecen entre
 sí y no dicen lo que el posicionamiento decidió.
 
@@ -185,19 +185,19 @@ sí y no dicen lo que el posicionamiento decidió.
 
 ## 8 · Lo que este departamento NO hace
 
-- **No escribe copy.** El copy es de ④, literal
-- **No inventa conceptos.** Eso es ④
-- **No cambia el sistema visual.** Si falta una regla, se devuelve a ②B
+- **No escribe copy.** El copy es de ④ Creatividad, literal
+- **No inventa conceptos.** Eso es ④ Creatividad
+- **No cambia el sistema visual.** Si falta una regla, se devuelve a ②B Branding
 - **No diseña pieza por pieza.** Arma plantillas y las llena
-- **No publica.** Eso es ⑨, con gate
+- **No publica.** Eso es ⑨ Posting
 
 ---
 
 ## 9 · Antes de entregar
 
-- [ ] Toda pieza de formato estático con `material = ninguno` o `material = foto` del Excel de ④ tiene su archivo, o su devolución escrita
+- [ ] Toda pieza de formato estático con `material = ninguno` o `material = foto` del Excel de ④ Creatividad tiene su archivo, o su devolución escrita
 - [ ] Cada archivo lleva su **`id_creativo`** en el nombre
-- [ ] El copy está **literal**, como lo escribió ④
+- [ ] El copy está **literal**, como lo escribió ④ Creatividad
 - [ ] Toda pieza lleva los **activos distintivos** que su formato exige
 - [ ] **La slide 1 de cada carrusel se entiende sola**
 - [ ] Todo el texto está dentro de las **safe zones**

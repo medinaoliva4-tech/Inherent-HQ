@@ -60,7 +60,7 @@ description: >
 
 ## 5 · 🚦 GATE 2 — todo movimiento de presupuesto
 
-🛑 **Subir, bajar o mover presupuesto entre campañas necesita aprobación de Allan.**
+🛑 **Subir, bajar o mover presupuesto entre campañas necesita aprobación del CEO.**
 Pausar algo que está gastando mal **se puede hacer y se avisa** — detener una pérdida no es
 gastar.
 

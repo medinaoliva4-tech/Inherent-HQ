@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ④ Creatividad · ⑤ Producción · ⑥A Diseño · ⑥B Video · ⑨ Posting |
+| **Escribe aquí** | ④ Creatividad · ⑤ Producción · ⑥A Diseño gráfico · ⑦ Video Editing · ⑨ Posting |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |

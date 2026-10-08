@@ -80,7 +80,7 @@ Eso determina **cuáles son sus 3 pilares** → ver `inherent/02-METODO.md`.
 
 ⚠️ **Si el cliente contrató un nivel que no ataca su cuello, se dice.**
 Vender Compound a quien no tiene demanda es autonomía sobre una máquina rota.
-**El agente propone; Allan decide si se ajusta el paquete o el objetivo.**
+**El agente propone; el CEO decide si se ajusta el paquete o el objetivo.**
 
 ### A.1 · ¿Qué significa ganar para ESTA empresa? — el `WIN`
 

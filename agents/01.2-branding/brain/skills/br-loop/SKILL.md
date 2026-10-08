@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Los veredictos de `br-guardian` del ciclo · métricas de ⑨ y ⑩ · `aprendizaje-creativo.md` de ④ |
+| **Consume** | Los veredictos de `br-guardian` del ciclo · métricas de ⑨ Posting y ⑩ Ads · `aprendizaje-creativo.md` de ④ Creatividad |
 | **Produce** | **`aprendizaje-de-branding.md`** |
 
 > 🔑 **Corre el 20 de cada mes.**
@@ -58,7 +58,7 @@ equipo se cansa, la audiencia recién la está aprendiendo.
 | Una regla se incumple siempre | **Se arregla la regla** |
 | Una parte de la guía nadie la usó en 3 ciclos | **Sale** |
 | Falta una regla que el guardián no pudo citar | **Se agrega** |
-| La marca no se está reconociendo, con datos | 🔴 **Se escala.** Puede ser el territorio, y eso es de ① |
+| La marca no se está reconociendo, con datos | 🔴 **Se escala al COO.** Puede ser el territorio, y eso es de ① Strategy |
 
 ## 4 · Qué escribe
 
@@ -70,7 +70,7 @@ equipo se cansa, la audiencia recién la está aprendiendo.
 | **B · Devoluciones por regla** | Qué regla, cuántas veces, diagnóstico |
 | **C · Lo que nadie usó** | Secciones de la guía sin uso, con cuántos ciclos lleva |
 | **D · Qué cambia** | Reglas que se reescriben, secciones que salen, reglas que se agregan |
-| **E · Lo que se devuelve a ①** | Si el problema es de territorio, no de ejecución |
+| **E · Lo que se devuelve a ① Strategy** | Si el problema es de territorio, no de ejecución |
 
 ## 5 · Checklist
 

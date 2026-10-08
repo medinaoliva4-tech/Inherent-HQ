@@ -11,7 +11,7 @@
 
 | | |
 |---|---|
-| **División** | 🔵 Low ticket / 🟣 High ticket — *de ② Estrategia* |
+| **División** | 🔵 Low ticket / 🟣 High ticket — *de ① Strategy* |
 | **El pilar roto** | |
 | **Plan contratado** | 🔷 Marketing / 🔷 Marketing Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made |
 
@@ -39,7 +39,7 @@
 ---
 
 ## § La oferta
-*Capa 1 · `gr-oferta` · 🟨 · **🚦 GATE 1 — el CEO, antes de llevarla al cliente***
+*Capa 1 · `gr-oferta` · 🟨 · **🔴 se escala al CEO antes de llevarla al cliente***
 
 ### A · Qué se vende hoy
 ### B · Los cuatro ángulos
@@ -88,7 +88,7 @@
 ### A · El recorrido real — dónde se cae la gente
 ### B · Respuesta · C · Seguimiento · D · Closing
 ### E · Qué opera ⑧ Community
-### F · Qué necesita gate de Allan
+### F · Qué se auto-revisa antes de encenderse
 
 ---
 

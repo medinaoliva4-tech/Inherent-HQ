@@ -57,7 +57,7 @@ Qué vende, en qué paquetes y a qué precio **solo se toca desde 🟨 Accelerat
 
 ⚠️ **Si el objetivo del cliente vive en una capa que su plan no cubre** —por ejemplo quiere
 arreglar su embudo de WhatsApp y está en 🔷 Marketing— **no se entrega igual.**
-**Se avisa a Allan** y se ofrece subir de plan o cotizarlo como extra.
+**Se escala al CEO** y se ofrece subir de plan o cotizarlo como extra.
 
 🛑 **El plan es techo duro.** El agente propone dentro de él, nunca por encima.
 

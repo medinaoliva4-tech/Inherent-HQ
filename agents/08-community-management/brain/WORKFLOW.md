@@ -11,7 +11,7 @@ paso vive en las skills: `skills/README.md`.
 
 ## 📅 Cuándo corre
 
-**⑧ no vive en el ciclo del 1 al 20: corre todos los días.** Lo publicado desde el día 1 genera
+**⑧ Community no vive en el ciclo del 1 al 20: corre todos los días.** Lo publicado desde el día 1 genera
 conversación todos los días.
 
 | Qué | Cuándo | Skill |
@@ -30,19 +30,19 @@ bandeja vacía.
 **Lo primero de cada corrida: leer el plan del cliente** en
 `clients/<cliente>/00-onboarding/plan-contratado.md`.
 
-- 🛑 **Sin plan anotado, ⑧ no corre para ese cliente:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **Sin plan anotado, ⑧ Community no corre para ese cliente:** `BLOQUEADO — falta el plan contratado`.
 - 🛑 **El plan es el techo.** Lo que el plan no incluye no se hace aunque sea fácil.
-- ⬜ **Tailor Made: manda Su pipeline** del `plan-contratado.md`, sin cuestionarlo. Si ⑧ no está,
+- ⬜ **Tailor Made: manda Su pipeline** del `plan-contratado.md`, sin cuestionarlo. Si ⑧ Community no está,
   no corre para ese cliente; si está, prende el nivel que declara —**«Básico» es la columna
   🔷 Marketing**—.
 
-| Qué hace ⑧ | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+| Qué hace ⑧ Community | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Contesta lo simple** *(horarios, ubicación, menú o catálogo, precios publicados, links)* | ✅ | ✅ | ✅ | ✅ |
 | **Pasa lo complejo al WhatsApp del cliente** | ✅ | ✅ | ✅ | ✅ |
-| **Redes que atiende** | Las **Redes** del `plan-contratado.md` *(o las del plan por canal de ③, si existe)* | **Todas las del cliente, todos los días** | Todas | Todas |
+| **Redes que atiende** | Las **Redes** del `plan-contratado.md` *(o las del plan por canal de ③ Marketing, si existe)* | **Todas las del cliente, todos los días** | Todas | Todas |
 | **Modera** *(oculta spam y abuso)* | — | ✅ | ✅ | ✅ |
-| **Seguimiento** *(quién preguntó qué, avisos al CEO, `seguimiento/`)* | — | ✅ | ✅ | ✅ |
+| **Seguimiento** *(quién preguntó qué, avisos al COO, `seguimiento/`)* | — | ✅ | ✅ | ✅ |
 | **Auto-DM por palabra clave y embudo de WhatsApp** | — | — | ✅ | ✅ |
 | **Agente de WhatsApp a medida** | — | — | ✅ *(se construye en `05-comunidad/whatsapp/`)* | ✅ |
 
@@ -50,9 +50,9 @@ bandeja vacía.
 
 - **En 🔷 Marketing, un evento, una reserva o una queja = darle al usuario el WhatsApp correcto del
   cliente, y listo.** No se registra ni se avisa: eso es seguimiento, y empieza en Pro.
-- **Desde Pro, además se registra y se avisa al CEO.**
+- **Desde Pro, además se registra y se avisa al COO.**
 - **El auto-DM por palabra clave es una automatización de Zernio** que corre sola, sin la corrida.
-  Se arma solo en 🟨, cuando ③ o ④ piden una palabra clave para una pieza.
+  Se arma solo en 🟨, cuando ③ Marketing o ④ Creatividad piden una palabra clave para una pieza.
 
 ---
 
@@ -64,23 +64,23 @@ bandeja vacía.
 | **1** | **`cm-triage`** | Clasifica cada comentario y DM en **una sola caja** | — |
 | **2** | **`cm-respuesta`** | Escribe la respuesta con la ficha, la voz y **el cierre**. La pasa por `humanizar.py` | Si el dato no está en la ficha, no inventa: escala |
 | **3** | **`cm-escalado`** | Eventos, reservas, quejas y lo que no está en la ficha: a quién y cómo | — |
-| **4** | **`cm-envio`** | Aplica el gate, envía por Zernio, manda el reporte por Gmail | En modo borrador no envía nada |
-| **↻** | **`cm-loop`** | Semanal: pasa el seguimiento al repo, propone FAQ nuevas, preguntas que son ideas para ④ | — |
+| **4** | **`cm-envio`** | Decide qué sale solo, envía por Zernio, manda el reporte por Gmail | En modo borrador no envía nada |
+| **↻** | **`cm-loop`** | Semanal: pasa el seguimiento al repo, propone FAQ nuevas, preguntas que son ideas para ④ Creatividad | — |
 
 ---
 
-## 2 · 🚦 El gate — qué sale solo y qué no
+## 2 · Qué sale solo y qué se escala
 
-| Caja | Qué hace ⑧ | ¿Sale solo? |
+| Caja | Qué hace ⑧ Community | ¿Sale solo? |
 |---|---|---|
 | 💬 **Apoyo** *(«qué rico», 👏, una etiqueta)* | Agradece corto, con la voz de la marca, y cierra | 🟢 Sí |
 | 🛍️ **Pregunta simple** *(menú, horario, ubicación, precio publicado, cómo pedir)* | Contesta **solo con lo que dice la ficha** y cierra | 🟢 Sí |
-| 🎉 **Evento** | Contesta, comparte el WhatsApp de eventos y pide el número del usuario | 🟢 La respuesta sí · 📬 **aviso al CEO** *(Pro+)* |
-| 📅 **Reserva** *(si el cliente reserva)* | Pide los datos que dice la ficha y confirma **que recibió**, nunca que reservó | 🟢 La respuesta sí · 📬 **aviso al CEO** *(Pro+)* |
+| 🎉 **Evento** | Contesta, comparte el WhatsApp de eventos y pide el número del usuario | 🟢 La respuesta sí · 📬 **aviso al COO** *(Pro+)* |
+| 📅 **Reserva** *(si el cliente reserva)* | Pide los datos que dice la ficha y confirma **que recibió**, nunca que reservó | 🟢 La respuesta sí · 📬 **aviso al COO** *(Pro+)* |
 | ⏳ **Lo que todavía no existe** *(un lanzamiento, un taller sin fecha)* | «Viene pronto, ¿te avisamos?» | 🟢 Sí · se anota como interesado *(Pro+)* |
-| 😠 **Queja** | Redacta una disculpa con tacto | 🔴 **No. Espera el OK del CEO** |
-| 🤝 **Colaboración · prensa · influencer · empleo** | No contesta | 🔴 **Se pasa al CEO** |
-| ❓ **Algo que no está en la ficha** | No inventa | 🔴 **Se pasa al CEO** |
+| 😠 **Queja** | Redacta una disculpa con tacto | 🟢 La respuesta sí · 🔴 **se escala al COO** |
+| 🤝 **Colaboración · prensa · influencer · empleo** | No contesta | 🔴 **Se escala al COO** |
+| ❓ **Algo que no está en la ficha** | No inventa | 🔴 **Se escala al COO** |
 | 🚫 **Spam · hater · bait** | No contesta. Oculta si es abuso *(Pro+)* | ⚫ — |
 
 🔒 **Nunca:** comprometer precio, fecha, disponibilidad o alcance que no estén en la ficha ·
@@ -90,8 +90,8 @@ primero · discutir con un hater.
 ### 🧪 Modo borrador
 
 **Todo cliente nuevo arranca en modo borrador:** la corrida redacta todo y **no envía nada.** El
-reporte llega con las respuestas propuestas. **El CEO decide cuándo se prende el envío**, y queda
-anotado en `05-comunidad/respuestas.md` → «Modo».
+reporte llega con las respuestas propuestas. **El COO decide cuándo se prende o se apaga el envío**, y
+queda anotado en `05-comunidad/respuestas.md` → «Modo».
 
 ---
 
@@ -117,7 +117,7 @@ conversación.** Los números y los textos viven en la ficha.
 
 ## 4 · Las reglas de cada plataforma
 
-| Plataforma | Regla | Qué hace ⑧ |
+| Plataforma | Regla | Qué hace ⑧ Community |
 |---|---|---|
 | **Instagram · comentarios** | Los links **no se pueden tocar** | Contesta corto en público y **manda el link por DM privado** |
 | **Instagram · DM privado a un comentario** | **Uno solo por comentario**, dentro de 7 días. A quien no sigue la cuenta, IG **rechaza botones** y el intento gasta el DM | El primer DM va **en texto plano**, con el link escrito |
@@ -132,8 +132,8 @@ conversación.** Los números y los textos viven en la ficha.
 
 | Qué | A quién | Cómo |
 |---|---|---|
-| **El reporte de cada corrida** | El CEO | Gmail, al correo que dice `05-comunidad/respuestas.md` → «Avisos». Plantilla: `entregables/reporte-de-corrida.md` |
-| **Evento, reserva, queja, colaboración** | El CEO | En el mismo correo, **arriba**, marcado 🔴 |
+| **El reporte de cada corrida** | El COO | Gmail, al correo que dice `05-comunidad/respuestas.md` → «Avisos». Plantilla: `entregables/reporte-de-corrida.md` |
+| **Evento, reserva, queja, colaboración** | El COO | En el mismo correo, **arriba**, marcado 🔴 |
 | **El evento al encargado del cliente** | El usuario le escribe directo | Por el link de WhatsApp de eventos de la ficha |
 
 🔑 **Las corridas programadas no escriben en el repo.** Todo lo que entra al repo
@@ -148,7 +148,7 @@ conversación.** Los números y los textos viven en la ficha.
 | **④ Creatividad** | Las preguntas que se repiten: **son reels con el hook ya escrito** | `cm-loop`, semanal |
 | **③ Marketing** | Qué se pregunta por canal y qué objeciones aparecen | `cm-loop`, para el plan del ciclo |
 | **① Strategy** | La lectura del mes | La revisión del 20 |
-| **El cliente** | Quejas repetidas y lo que la ficha no cubre | Por el CEO |
+| **El cliente** | Quejas repetidas y lo que la ficha no cubre | Por el COO |
 
 ---
 
@@ -157,5 +157,5 @@ conversación.** Los números y los textos viven en la ficha.
 | Archivo | Dónde | Quién lo escribe |
 |---|---|---|
 | **`respuestas.md`** — la ficha | `clients/<cliente>/05-comunidad/` | El operador de agentes, con la plantilla `entregables/respuestas.md`. **Se presenta antes de escribirla** |
-| **El reporte de cada corrida** | El correo del CEO | `cm-envio` |
+| **El reporte de cada corrida** | El correo del COO | `cm-envio` |
 | **`seguimiento/<AAAA-MM>.md`** | `clients/<cliente>/05-comunidad/` | `cm-loop` *(Pro+)* |

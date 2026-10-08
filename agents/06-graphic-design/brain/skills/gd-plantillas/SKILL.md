@@ -81,11 +81,11 @@ siguiente:
 
 **Si una pieza necesita algo que `sistema-visual.md` no define:**
 
-↩️ **Se devuelve a ②B con la regla que falta**, escrita como pregunta concreta:
+↩️ **Se devuelve a ②B Branding con la regla que falta**, escrita como pregunta concreta:
 *«¿Qué tratamiento lleva un número grande sobre fondo de acento?»*
 
-🛑 **No se inventa la regla acá.** Una decisión tomada en ⑥A se vuelve precedente sin que ②B se
-entere, y al tercer ciclo el sistema tiene dos reglas contradictorias.
+🛑 **No se inventa la regla acá.** Una decisión tomada en ⑥A Diseño gráfico se vuelve precedente sin que
+②B Branding se entere, y al tercer ciclo el sistema tiene dos reglas contradictorias.
 
 ## 7 · Se revisa el molde, no las piezas
 
@@ -102,4 +102,4 @@ sigue: no para a pedir aprobación.
 - [ ] Cada una pasó la **prueba de estrés** con los cuatro extremos
 - [ ] El **activo distintivo está en el molde**, no agregado por pieza
 - [ ] Se **reusaron** las del ciclo anterior que no dieron devoluciones
-- [ ] Lo que el sistema no cubría **se devolvió a ②B**, no se inventó
+- [ ] Lo que el sistema no cubría **se devolvió a ②B Branding**, no se inventó

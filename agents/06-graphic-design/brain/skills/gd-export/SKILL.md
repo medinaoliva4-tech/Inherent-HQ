@@ -57,7 +57,7 @@ se descubre con el material ya impreso.
 
 | Columna | Qué lleva |
 |---|---|
-| `id_creativo` | El del Excel de ④ |
+| `id_creativo` | El del Excel de ④ Creatividad |
 | `formato` | Carrusel · estático · story · impreso |
 | `slides` | Cuántas, si aplica |
 | `archivo` | **El link al Drive**, no el archivo copiado |
@@ -74,7 +74,7 @@ se descubre con el material ya impreso.
 ## 6 · La entrega
 
 **Con el checklist de §7 completo, el paquete entra a QA y después a ⑨ Posting.** No para a pedir
-aprobación: ⑥A no publica ni le envía nada al cliente.
+aprobación: ⑥A Diseño gráfico no publica ni le envía nada al cliente.
 
 ## 7 · Checklist
 

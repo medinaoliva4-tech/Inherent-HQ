@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § La oferta · frecuencia de recompra y unit economics de ① |
+| **Consume** | § La oferta · frecuencia de recompra y unit economics de ① Strategy |
 | **Produce** | La sección **§ La escalera** de `motor-de-crecimiento.md` |
 
 ## 1 · ⬜ No se activa en la línea Marketing
@@ -76,16 +76,16 @@ vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede
 
 | Bloque | Qué lleva |
 |---|---|
-| **A · Los momentos** | Qué momentos existen en este negocio, con la frecuencia real de ① |
+| **A · Los momentos** | Qué momentos existen en este negocio, con la frecuencia real de ① Strategy |
 | **B · La escalera** | Tabla: escalón · qué · cuándo · cómo se entera · margen |
-| **C · Qué necesita ⑧ y ⑩** | Para operarla |
+| **C · Qué necesita ⑧ Community y ⑩ Ads** | Para operarla |
 | **D · Lo que no entra** | Upsells descartados, con el motivo |
 
 ## 8 · Checklist
 
 - [ ] El plan es **Accelerate o Compound**
 - [ ] La escalera está diseñada **por momento**, no por producto
-- [ ] Los momentos salen de la **frecuencia real** de ①, o van `⚠️ SIN DATOS`
+- [ ] Los momentos salen de la **frecuencia real** de ① Strategy, o van `⚠️ SIN DATOS`
 - [ ] Cada escalón tiene sus **cuatro datos**, margen incluido
 - [ ] Ningún escalón **baja la utilidad total**
-- [ ] Está escrito **qué necesitan ⑧ y ⑩** para operarla
+- [ ] Está escrito **qué necesitan ⑧ Community y ⑩ Ads** para operarla

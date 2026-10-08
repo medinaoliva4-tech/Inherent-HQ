@@ -59,8 +59,8 @@ depende de esa confianza.
 
 | Situación | Qué se hace |
 |---|---|
-| No hay pixel ni conversión configurada | `⚠️ SIN DATOS` · 🔴 **se escala.** Sin esto no hay fee |
-| El cliente no comparte sus ventas | 🔴 Se escala a Allan. **Es conversación comercial** |
+| No hay pixel ni conversión configurada | `⚠️ SIN DATOS` · 🔴 **se escala al COO.** Sin esto no hay fee |
+| El cliente no comparte sus ventas | 🔴 Se escala al CEO. **Es conversación comercial** |
 | La venta cierra por WhatsApp sin rastro | Se propone un identificador. **Mientras tanto, no se atribuye** |
 
 🛑 **Nunca se estima el fee.** Un fee sobre un número inventado es un cobro sin respaldo.

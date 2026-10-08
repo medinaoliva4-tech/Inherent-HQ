@@ -1,9 +1,9 @@
 # Publicaciones — [Cliente]
 
 **Ciclo:** [x] · **Campaña(s):** [nombres] · **Fecha:** [aaaa-mm-dd] · **Zona horaria:** [x]
-**OK del CEO para programar:** [✅ / ⬜] · pedido [aaaa-mm-dd] · llegó [aaaa-mm-dd]
+**Programado:** [✅ / ⬜] · [aaaa-mm-dd] — a más tardar el día 19
 
-> Este documento lo lee **el CEO** para dar el OK antes de programar. Lo programado queda registrado
+> Este documento lo lee **el COO** para el QA final del ciclo. Lo programado queda registrado
 > en `calendario-de-publicacion.csv`, con su `zernio_post_id` y su estado.
 > 🛑 **El mensaje es de ④ Creatividad.** Acá se adapta el largo y el formato, nunca la idea.
 > Fuente del copy: `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`.
@@ -16,7 +16,7 @@
 |---|---|
 | **Publicaciones a programar en Zernio** | [n] |
 | **Piezas sin archivo final** | [n] → [de quién se esperan] |
-| **Devueltas** | [n] → ④ [n] · ⑥A [n] · ⑥B [n] |
+| **Devueltas** | [n] → ④ Creatividad [n] · ⑥A Diseño gráfico [n] · ⑦ Video Editing [n] |
 | **Claims ⏸️ que no se programan** | [n] |
 | **Hora con dato / ⚠️ SIN DATOS** | [n] / [n] |
 
@@ -30,12 +30,12 @@
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-007` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-reel.md` §CR-007 |
+| **Pieza de ④ Creatividad** | `CR-007` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-reel.md` §CR-007 |
 | **Campaña** | |
 | **Cuenta** | `@cliente` — 🛑 la cuenta concreta, no *"Instagram"* · ID de Zernio: `[account_id]` |
 | **Canal · formato** | |
-| **Fecha y hora** | [aaaa-mm-dd hh:mm] · [con dato / ⚠️ SIN DATOS — hora de ③] |
-| **Archivo** | [nombre exacto del export de ⑥A o ⑥B] |
+| **Fecha y hora** | [aaaa-mm-dd hh:mm] · [con dato / ⚠️ SIN DATOS — hora de ③ Marketing] |
+| **Archivo** | [nombre exacto del export de ⑥A Diseño gráfico o ⑦ Video Editing] |
 | **Ruta / media en Zernio** | [Drive] · [URL de la media subida a Zernio, validada con `validate_media`] |
 | **Post en Zernio** | [`zernio_post_id`, al programar] |
 
@@ -45,11 +45,11 @@
 Reels antes del *"… más"*.
 
 ```
-[Línea 1 — el hook de ④, entero, antes del corte]
+[Línea 1 — el hook de ④ Creatividad, entero, antes del corte]
 
 [El cuerpo: el valor, acomodado a la plataforma]
 
-[El CTA de ④, según la etapa]
+[El CTA de ④ Creatividad, según la etapa]
 
 [hashtags]
 ```
@@ -62,8 +62,8 @@ Reels antes del *"… más"*.
 | **Alt text** | *"[literal — describe la imagen, no la adjetiva]"* |
 | **Link** | [si lleva] |
 
-**Qué se cambió respecto de ④, y por qué:** [solo largo y forma. Si hubo que tocar el mensaje,
-🛑 esto es una devolución, no un cambio.]
+**Qué se cambió respecto de ④ Creatividad, y por qué:** [solo largo y forma. Si hubo que tocar el
+mensaje, 🛑 esto es una devolución, no un cambio.]
 
 ### QA de plataforma
 
@@ -100,11 +100,11 @@ manda un humano.)*
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-newsletter.md` §CR-00X |
+| **Pieza de ④ Creatividad** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-newsletter.md` §CR-00X |
 | **Campaña** | |
 | **Lista / segmento** | [a quién se le manda, concreto] |
 | **Fecha y hora** | [aaaa-mm-dd hh:mm] · [zona horaria] |
-| **Imágenes** | [de ⑥A, con su ruta · o `N/A — solo texto`] |
+| **Imágenes** | [de ⑥A Diseño gráfico, con su ruta · o `N/A — solo texto`] |
 
 ### Asunto y preheader
 
@@ -123,7 +123,7 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 
 ### Cuerpo
 
-*(El mensaje de ④, acomodado al formato de email. 🛑 **No se reescribe.**)*
+*(El mensaje de ④ Creatividad, acomodado al formato de email. 🛑 **No se reescribe.**)*
 
 ```
 [el cuerpo literal, con sus saltos de línea]
@@ -131,8 +131,8 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 
 | | |
 |---|---|
-| **CTA** | [el de ④] → [link] |
-| **Qué se cambió respecto de ④, y por qué** | [solo largo y forma] |
+| **CTA** | [el de ④ Creatividad] → [link] |
+| **Qué se cambió respecto de ④ Creatividad, y por qué** | [solo largo y forma] |
 
 ### QA del envío
 
@@ -158,13 +158,13 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 | | |
 |---|---|
 | **Quién lo manda o lo pega** | [nombre, de `LINKS.md` · o ⚠️ SIN DATOS] |
-| **Quién contesta lo que entre** | [nombre **y horario**. 🛑 Si no hay nadie, se declara: es de **⑧A Orgánico**, no de ⑦] |
+| **Quién contesta lo que entre** | [nombre **y horario**. 🛑 Si no hay nadie, se declara: es de **⑧ Community**, no de ⑨ Posting] |
 
 ## PO-00X · [el mensaje en una línea] — *WhatsApp / SMS*
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md` §CR-00X |
+| **Pieza de ④ Creatividad** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md` §CR-00X |
 | **Lista o difusión** | [cuál, y **a cuántas personas le llega**] |
 | **Fecha y hora** | [aaaa-mm-dd, hh:mm] |
 
@@ -177,7 +177,7 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 ### QA del envío
 | Chequeo | Estado |
 |---|---|
-| El texto es el de ④, adaptado al canal y **sin cambiar el mensaje** | ⬜ |
+| El texto es el de ④ Creatividad, adaptado al canal y **sin cambiar el mensaje** | ⬜ |
 | Entra sin cortarse, y los links funcionan | ⬜ |
 | La lista existe y sé a cuántas personas le llega | ⬜ |
 | 🛑 **Hay alguien que contesta, y sé en qué horario** | ⬜ |
@@ -189,8 +189,8 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 
 | | |
 |---|---|
-| **Pieza de ④** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md` §CR-00X |
-| **Archivo final** | [ruta del export de ⑥A · o ⚠️ SIN ARCHIVO, con de quién se espera] |
+| **Pieza de ④ Creatividad** | `CR-00X` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md` §CR-00X |
+| **Archivo final** | [ruta del export de ⑥A Diseño gráfico · o ⚠️ SIN ARCHIVO, con de quién se espera] |
 | **Dónde va** | [el lugar concreto, no *"el local"*] |
 | **Desde cuándo** | [aaaa-mm-dd] · permanente o hasta [fecha] |
 | **Permiso** | [contrato / municipal / el dueño del espacio — o 🛑 BLOQUEADO] |
@@ -198,7 +198,7 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 ### QA del impreso
 | Chequeo | Estado |
 |---|---|
-| El archivo es el **export final de ⑥A**, no un borrador | ⬜ |
+| El archivo es el **export final de ⑥A Diseño gráfico**, no un borrador | ⬜ |
 | Se lee a la **distancia real** a la que va a estar | ⬜ |
 | 🛑 **Está el permiso** para intervenir ese lugar | ⬜ |
 | Claims validados | ⬜ |

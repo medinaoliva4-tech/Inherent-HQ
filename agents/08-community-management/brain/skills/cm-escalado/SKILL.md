@@ -1,10 +1,10 @@
 ---
 name: cm-escalado
 description: >
-  Capa 3 de ⑧ Community Management — decide a quién y cómo pasa lo que ⑧ no resuelve solo: eventos,
+  Capa 3 de ⑧ Community Management — decide a quién y cómo pasa lo que ⑧ Community no resuelve solo: eventos,
   reservas, quejas, colaboraciones y cualquier pregunta cuya respuesta no está en la ficha. En
   🔷 Marketing escalar es darle al usuario el WhatsApp correcto del cliente; desde Pro, además se
-  registra y se avisa al CEO. Úsala después de cm-triage cuando una caja escala, o cuando pidan
+  registra y se avisa al COO. Úsala después de cm-triage cuando una caja escala, o cuando pidan
   "¿a quién le pasamos esto?", "avisame de los eventos", "esta persona se quejó".
 ---
 
@@ -19,12 +19,12 @@ description: >
 
 | Caja | 🔷 Marketing | 🔷 Pro en adelante |
 |---|---|---|
-| 🎉 **Evento** | El usuario recibe el WhatsApp de eventos de la ficha | + **aviso al CEO** con usuario, red, qué pidió y su número si lo dio |
-| 📅 **Reserva** | El usuario recibe el WhatsApp de la sede | + **aviso al CEO** con los datos de la reserva |
+| 🎉 **Evento** | El usuario recibe el WhatsApp de eventos de la ficha | + **aviso al COO** con usuario, red, qué pidió y su número si lo dio |
+| 📅 **Reserva** | El usuario recibe el WhatsApp de la sede | + **aviso al COO** con los datos de la reserva |
 | ⏳ **Lo que viene** | Se le dice que pronto | + se anota en la lista de interesados |
-| 😠 **Queja** | El usuario recibe el WhatsApp de la sede | + **aviso 🔴 al CEO** con la disculpa en borrador. **No sale sin su OK** |
-| 🤝 **Colaboración** | No se contesta | + **aviso al CEO** |
-| ❓ **Fuera de la ficha** | El usuario recibe el WhatsApp de la sede | + **aviso al CEO** con la pregunta, para sumarla a la ficha |
+| 😠 **Queja** | El usuario recibe el WhatsApp de la sede | + **aviso 🔴 al COO** con la disculpa que se le contestó |
+| 🤝 **Colaboración** | No se contesta | + **aviso al COO** |
+| ❓ **Fuera de la ficha** | El usuario recibe el WhatsApp de la sede | + **aviso al COO** con la pregunta, para sumarla a la ficha |
 
 ## 2 · El aviso
 

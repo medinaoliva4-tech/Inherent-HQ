@@ -37,14 +37,14 @@ END = lambda: sc("cierre", [], None, 3.2)
 # ── EJEMPLO (estructura real de un reel aprobado; reemplazar ids y textos por los del ciclo) ──
 REELS = [
  ("V01", "Armado del platillo", [
-  # HOOK: el momento más apetitoso, en cámara lenta, con el hook literal de ④
+  # HOOK: el momento más apetitoso, en cámara lenta, con el hook literal de ④ Creatividad
   sc("full", [sh("R1_34", 4.0, 6.0, 0.5, 0.55)], T("titular", ["Hook literal", "de ④"], "arriba-centro", "lineas", kicker="Etiqueta")),
   # BODY: doble cuadro — arriba el detalle, abajo el contexto; una píldora por paso
   sc("doble", [sh("R1_03", 8.3, 11.8, 1, 0.56), sh("R1_02", 0.6, 4.1, 1, 0.62)], T("pildora", ["Paso 1"], "linea", "pildora")),
   sc("doble", [sh("R1_04", 3.4, 6.9, 1, 0.52), sh("R1_05", 9.2, 12.7, 1, 0.56)]),
   # Lo más rico al final y más largo
   sc("full", [sh("R1_30", 3.3, 5.0, 0.5, 0.5)]),
-  # PAYOFF: remate de ④, centrado
+  # PAYOFF: remate de ④ Creatividad, centrado
   sc("full", [sh("R1_32", 8.0, 12.0, 1, 0.52)], T("cursiva", ["Remate", "literal de ④"], "centro", "suave")),
   END()]),
 ]

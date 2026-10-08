@@ -37,7 +37,7 @@
 ## § MUST BE TRUE
 
 > Qué tendría que ser cierto para que el `WIN` pase. **Cada condición con su letra** — es la letra
-> que cada pieza traza en el `plan-de-contenido.csv` de ④.
+> que cada pieza traza en el `plan-de-contenido.csv` de ④ Creatividad.
 
 | | Condición | Dónde está la marca HOY | Confianza |
 |---|---|---|---|

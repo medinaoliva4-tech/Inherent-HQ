@@ -68,11 +68,11 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 
 | Rol | Qué hace |
 |---|---|
-| **CEO** | Decide estrategia, ruta, servicios y promesas. Reunión del día 1 con cada cliente. Hace el control de calidad en persona. **Es el gate humano de lo importante** |
+| **CEO** | Decide estrategia, ruta, servicios y promesas. Reunión del día 1 con cada cliente. Hace el control de calidad en persona. **Es el gate de la estrategia y de la pauta** |
 | **COO** | Organiza y coordina al equipo operativo y las entregas. QA final. Presenta el día 20 en la línea Marketing |
 | **Operador de agentes** | Solo opera agentes: Creatividad, Branding, Diseño, Posting y Community |
 | **Editor de video · Fotografía · Producción** | Editan, fotografían y graban |
-| **Secretaria** *(WhatsApp)* | El agente `00-account`. Atiende al cliente y escala al COO |
+| **Secretaria** *(WhatsApp)* | El agente `00-account`. Atiende al cliente. Escala precio, alcance y fechas al CEO, y lo demás al COO |
 | **Especialista** | La auditoría de la línea Growth |
 
 **Quién ocupa cada rol, qué herramienta llena cada slot y quién hace cada tarea:
@@ -98,8 +98,8 @@ Ver `inherent/05-OPERACION.md` → «El calendario del ciclo».
 **②B Branding valida con `br-guardian`** y el COO hace el QA final.
 
 🗣️ **`agents/00-account/` es el único agente que le habla al cliente.** Vive en WhatsApp,
-siempre encendido, **habla como la secretaria de Inherent** y escala al COO lo que no puede
-resolver. 🔒 **Nunca dice costos, márgenes, ni nada de otro cliente, ni compromete precio, fecha
+siempre encendido, **habla como la secretaria de Inherent** y escala lo que no puede resolver:
+**precio, alcance y fechas al CEO; lo demás al COO.** 🔒 **Nunca dice costos, márgenes, ni nada de otro cliente, ni compromete precio, fecha
 o alcance.** `inherent/06-ECONOMIA.md` no sale del repo.
 
 ## La identidad
@@ -356,9 +356,11 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
 - **Evidencia o etiqueta** — en el trabajo de cliente. Sin fuente va como `[dice el cliente, sin verificar]`
   o `⚠️ SIN DATOS`. Nunca inventar.
 - **Solo la info que entrega el usuario**, salvo que él habilite fuentes externas.
-- **Gate humano: el CEO, solo para lo importante:** publicar, gastar dinero, enviar algo al cliente,
-  comprometer precio, fecha o alcance, y borrar. **Lo demás fluye:** cada departamento se
-  auto-revisa y sigue. El control de calidad lo hace el CEO en persona y no se registra.
-  **Lo que está en el repo ya pasó por el CEO.**
-- **Nada destructivo sin autorización:** no publicar, no pautar, no enviar al cliente, no borrar.
+- **El CEO solo bloquea en dos lugares:** **① Strategy** *(aprueba la estrategia antes de que pase a
+  los departamentos)* y **⑩ Ads** *(aprueba el plan y el presupuesto antes de lanzar, y cada cambio
+  de presupuesto)*. **Lo demás fluye:** cada departamento se auto-revisa y sigue. El control de
+  calidad lo hace el CEO en persona y no se registra. **Lo que está en el repo ya pasó por el CEO.**
+- **Escalar no es bloquear:** precio, alcance y fechas → el CEO · lo demás → el COO.
+- **Los departamentos se escriben con número y nombre:** «⑤ Producción», nunca «⑤» solo.
+- **Nada destructivo sin autorización:** no pautar sin el OK del CEO y no borrar sin autorización.
 - Formato de respuesta: headings, bullets, negritas. Lo accionable arriba. Sin párrafos largos.

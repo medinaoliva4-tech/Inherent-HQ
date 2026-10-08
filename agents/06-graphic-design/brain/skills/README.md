@@ -38,5 +38,5 @@ molde en la Capa 1, y las piezas son ejecución.
 
 ## Sin paradas internas
 
-**Cada skill se auto-revisa con su checklist y sigue.** ⑥A no publica ni le envía nada al cliente:
-publicar es de ⑨, con el OK del CEO.
+**Cada skill se auto-revisa con su checklist y sigue.** ⑥A Diseño gráfico no publica ni le envía nada
+al cliente: publicar es de ⑨ Posting.

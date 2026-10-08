@@ -7,7 +7,7 @@ description: >
   jerarquía de mensaje, pilares de contenido, plan por canal, calendario de slots, cadencia, o
   cerrar el mes de marketing. Se dispara con "armá el plan del mes de X", "qué campaña corremos",
   "cuántas piezas por canal", "el calendario del ciclo", "qué pilares trabajamos", "qué rindió el
-  mes pasado". Requiere que exista la estrategia de ①: si no existe, BLOQUEA.
+  mes pasado". Requiere que exista la estrategia de ① Strategy: si no existe, BLOQUEA.
 ---
 
 # ③ Marketing — el orquestador
@@ -35,7 +35,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | Tono, territorio, activos distintivos | ②B Branding | 🟡 Se usan si existen. No bloquea |
 | Qué ofertas se empujan este ciclo | ② Growth · `07-oferta-y-ventas/ofertas-a-empujar.md` | 🟡 Se usa si existe. No bloquea |
 | **El plan contratado del cliente** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
-| Qué ángulos rindieron en pauta | ⑧B Ads | 🟡 Se sigue sin eso |
+| Qué ángulos rindieron en pauta | ⑩ Ads | 🟡 Se sigue sin eso |
 
 🛑 **Sin estrategia no hay plan.** Lo que está en `clients/<cliente>/01-estrategia/` es la
 estrategia vigente: **un archivo que existe se toma como aprobado.**
@@ -59,9 +59,9 @@ campaña. Si falta el input de una capa, **se corre la anterior** — nunca se i
 
 ## 4 · No para entre capas
 
-**Cada capa se auto-revisa con su checklist y sigue;** el calendario pasa directo a ④. El control
-de calidad lo hace el CEO en persona. La aprobación del CEO queda solo para publicar, gastar,
-enviar algo al cliente, comprometer precio, fecha o alcance, y borrar.
+**Cada capa se auto-revisa con su checklist y sigue;** el calendario pasa directo a ④ Creatividad. El
+control de calidad lo hace el CEO en persona. El CEO solo frena el flujo en ① Strategy y en ⑩ Ads.
+**Escalar no es parar:** precio, alcance y fechas → el CEO · lo demás → el COO.
 
 ---
 

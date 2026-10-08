@@ -8,7 +8,7 @@
 ---
 
 ## A · Lo que se vende hoy
-*Tal cual está — de los unit economics de ①*
+*Tal cual está — de los unit economics de ① Strategy*
 
 | Oferta | Precio | Margen |
 |---|---|---|

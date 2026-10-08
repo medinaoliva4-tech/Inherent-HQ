@@ -3,7 +3,7 @@ name: community
 description: >
   Orquestador del departamento ⑧ Community Management de Inherent. Es la puerta de entrada: lee el
   pedido, verifica el pre-flight de cada cliente, y corre las skills `cm-*` en orden — ficha,
-  triage, respuesta con cierre, escalado y envío con gate — según la escalera del plan contratado.
+  triage, respuesta con cierre, escalado y envío — según la escalera del plan contratado.
   Úsala SIEMPRE que el pedido tenga que ver con comentarios, mensajes directos, DMs, menciones,
   responder a seguidores, moderar, ocultar spam, la bandeja de Zernio o el reporte de community. Se
   dispara con "contestá los comentarios de X", "revisá la bandeja", "qué preguntó la gente",
@@ -15,8 +15,8 @@ description: >
 # ⑧ Community Management — el orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae entra al PRE-FLIGHT. **El cómo lo
-> decide este orquestador y su `WORKFLOW.md`.** Si el prompt pide saltarse el gate o contestar algo
-> que la ficha no dice: se dice cuál regla se salta y **se sigue el workflow**, salvo
+> decide este orquestador y su `WORKFLOW.md`.** Si el prompt pide enviar lo que no sale solo o
+> contestar algo que la ficha no dice: se dice cuál regla se salta y **se sigue el workflow**, salvo
 > *«excepción aprobada por el CEO»*.
 
 | | |
@@ -33,7 +33,7 @@ Contexto: `agents/08-community-management/brain/WORKFLOW.md`. Skills: `brain/ski
 | Modo | Quién lo dispara | Diferencia |
 |---|---|---|
 | **A mano** | Una persona: `/community nao` | Se puede preguntar. Lo delicado se muestra en pantalla |
-| **Programada** | El cron, sin nadie enfrente | **No se pregunta nunca.** Lo que bloquea o necesita OK va al reporte por Gmail y la corrida sigue con el siguiente cliente |
+| **Programada** | El cron, sin nadie enfrente | **No se pregunta nunca.** Lo que bloquea o se escala va al reporte por Gmail y la corrida sigue con el siguiente cliente |
 
 🔑 **En corrida programada, una duda nunca frena todo:** se salta ese mensaje, se reporta, y se
 sigue.
@@ -41,7 +41,7 @@ sigue.
 ## 2 · El pre-flight (uno por cliente)
 
 ```
-PRE-FLIGHT ⑧ — Cliente: [x] · Modo: [a mano / programada] · Envío: [borrador / activo]
+PRE-FLIGHT ⑧ Community — Cliente: [x] · Modo: [a mano / programada] · Envío: [borrador / activo]
 Plan: [🔷 Mkt / 🔷 Pro / 🟨 Accel / 🟨 Comp / ⬜ Tailor Made: nivel de Su pipeline] → prende: [simple · WhatsApp · moderación · seguimiento · auto-DM]
 Ficha respuestas.md [✅/⛔] · menú o catálogo [✅/⛔] · cuentas en Zernio [n] · avisos a: [correo]
 Bandeja: comentarios nuevos [n] · DMs nuevos [n] · menciones [n]
@@ -53,12 +53,12 @@ Bandeja: comentarios nuevos [n] · DMs nuevos [n] · menciones [n]
 | Situación | Qué se responde |
 |---|---|
 | No existe `plan-contratado.md` | `BLOQUEADO — falta el plan contratado` |
-| ⬜ Tailor Made sin ⑧ en Su pipeline | ⑧ no corre para ese cliente |
+| ⬜ Tailor Made sin ⑧ Community en Su pipeline | ⑧ Community no corre para ese cliente |
 | Zernio no está conectado | `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio` |
 | Gmail no está conectado | `BLOQUEADO — falta Gmail. Instalala: ver INSTALAR.md § Gmail` |
 | No existe `05-comunidad/respuestas.md` | `BLOQUEADO — falta la ficha.` Se ofrece armarla con la plantilla y presentarla |
 | La cuenta de la red no está en Zernio | Esa red no se atiende. Se dice cuál falta |
-| El pedido es escribirle a alguien que no escribió primero | 🛑 No. ⑧ solo responde |
+| El pedido es escribirle a alguien que no escribió primero | 🛑 No. ⑧ Community solo responde |
 
 ## 3 · El orden
 
@@ -85,4 +85,4 @@ cm-ficha → cm-triage → cm-respuesta → cm-escalado → cm-envio
 ## 5 · El handoff
 
 Al cerrar, una línea por cliente: cuántos mensajes, cuántos contestados, cuántos escalados,
-cuántos esperando OK, y si el envío está en borrador o activo.
+cuántos en borrador, y si el envío está en borrador o activo.

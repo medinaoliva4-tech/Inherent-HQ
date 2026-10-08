@@ -47,21 +47,21 @@ paso vive en las skills: `skills/README.md`.
 - 🔑 **La marca se construye en 🔷 Marketing, el plan más barato, y se construye entera.** Rehacerla
   en 🟨 Accelerate contradice la promesa publicada: *«escalar lo que ya funciona, sin perderlo»*.
   **Lo que sube con el plan no es la marca: es cuánto se extiende y cuánto se documenta.**
-- ⚠️ **②B trabaja la VOZ y el sistema visual en los cuatro planes.** Qué se vende y a qué precio es
-  de ② Growth y **solo entra desde 🟨 Accelerate.**
+- ⚠️ **②B Branding trabaja la VOZ y el sistema visual en los cuatro planes.** Qué se vende y a
+  qué precio es de ② Growth y **solo entra desde 🟨 Accelerate.**
 - **`br-guardian` corre todos los ciclos, en los cuatro planes.** Lo que cambia es cuántas vueltas
   de devolución paga el plan: **con 1 revisión, la primera devolución es la única.**
-- 🛑 **Si llegan más piezas que el techo del plan, las de más no se validan:** se declaran a Allan.
+- 🛑 **Si llegan más piezas que el techo del plan, las de más no se validan:** se escalan al CEO.
   Validar de más es trabajo que nadie pagó.
 
 ### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
 
 Se define en el onboarding, en `plan-contratado.md`, con dos secciones: **Qué incluye** y **Su
 pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—.
-**②B hace lo que su pipeline le asigna.**
+**②B Branding hace lo que su pipeline le asigna.**
 
 - **No se bloquea por no ser un plan de lista ni se cuestiona por precio.**
-- **Si ②B no está en su pipeline, no corre para ese cliente.**
+- **Si ②B Branding no está en su pipeline, no corre para ese cliente.**
 - **El método es el mismo; cambia el pipeline.** Cómo se hace cada capa no cambia: cambia qué capas
   corren y qué se verifica.
 - **Arriba de 🟨 Compound no se agrega marca, se agrega aplicación:** más formatos y más documentación,
@@ -71,8 +71,8 @@ pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y 
 
 ## 1 · La distinción que define el departamento
 
-**① Strategy decidió qué tipo de marca es y contra qué se opone. ②B decide cómo se ve, cómo
-suena y qué la hace reconocible.**
+**① Strategy decidió qué tipo de marca es y contra qué se opone. ②B Branding decide cómo se
+ve, cómo suena y qué la hace reconocible.**
 
 | ① Strategy entregó | ②B Branding resuelve |
 |---|---|
@@ -83,7 +83,8 @@ suena y qué la hace reconocible.**
 🛑 **Branding no decide el posicionamiento.** Si al desarrollarlo aparece que la dirección está
 mal, **se devuelve a ① Strategy** — no se corrige acá.
 
-🛑 **Y no produce piezas.** Define el sistema; **⑥A Diseño y ⑥B Video Editing lo ejecutan.**
+🛑 **Y no produce piezas.** Define el sistema; **⑥A Diseño gráfico y ⑦ Video Editing lo
+ejecutan.**
 
 ---
 
@@ -91,10 +92,10 @@ mal, **se devuelve a ① Strategy** — no se corrige acá.
 
 | Archivo | Qué es | Quién lo lee |
 |---|---|---|
-| **`guia-de-marca.md`** | El documento completo: territorio, personalidad, voz, sistema visual, activos distintivos y aplicación por formato | **Todos.** ④ ⑥A ⑥B ⑨ ⑩ y el cliente |
-| **`sistema-visual.md`** | Las **especificaciones ejecutables**: valores de color, tipografías con su peso, grilla, safe zones, reglas de composición | ⑥A Diseño · ⑥B Video Editing |
-| **`aprendizaje-de-branding.md`** | Qué activo se reconoció, qué regla estorbó, qué cambia | ②B y ① |
-| **El kit en el Drive** | Los assets de la marca —logos, íconos, texturas, fuentes— bajados de Figma y subidos al Drive del cliente. El link va en `02-marca/kit-de-redes/kit.md` | **⑥B Video Editing** |
+| **`guia-de-marca.md`** | El documento completo: territorio, personalidad, voz, sistema visual, activos distintivos y aplicación por formato | **Todos.** ④ Creatividad · ⑥A Diseño gráfico · ⑦ Video Editing · ⑨ Posting · ⑩ Ads y el cliente |
+| **`sistema-visual.md`** | Las **especificaciones ejecutables**: valores de color, tipografías con su peso, grilla, safe zones, reglas de composición | ⑥A Diseño gráfico · ⑦ Video Editing |
+| **`aprendizaje-de-branding.md`** | Qué activo se reconoció, qué regla estorbó, qué cambia | ②B Branding y ① Strategy |
+| **El kit en el Drive** | Los assets de la marca —logos, íconos, texturas, fuentes— bajados de Figma y subidos al Drive del cliente. El link va en `02-marca/kit-de-redes/kit.md` | **⑦ Video Editing** |
 
 > 🔑 **`guia-de-marca.md` se lee para entender. `sistema-visual.md` se abre para ejecutar.**
 > Son dos documentos porque se usan en dos momentos distintos.
@@ -114,7 +115,7 @@ decorativo.
 
 | | Pregunta |
 |---|---|
-| **1** | ¿Esto nos separa del **código saturado** que ① mapeó, o nos mete adentro? |
+| **1** | ¿Esto nos separa del **código saturado** que ① Strategy mapeó, o nos mete adentro? |
 | **2** | ¿Se puede **ejecutar** sin preguntar? Si hace falta criterio en cada pieza, no es sistema |
 | **3** | ¿Lo puede sostener este cliente con lo que tiene? Un sistema que necesita un fotógrafo cada semana no sirve si solo graba una vez al mes |
 
@@ -123,7 +124,7 @@ decorativo.
 ## 4 · El flujo, de 0 a 100
 
 ```
-   0  BRIEF         qué decidió ① y qué toca resolver         → br-brief
+   0  BRIEF         qué decidió ① Strategy, qué resolver      → br-brief
         ▼
    1  TERRITORIO    personalidad, enemigo, idea madre          → br-territorio
         ▼
@@ -134,7 +135,7 @@ decorativo.
    4  ACTIVOS       lo que la hace reconocible sin logo        → br-activos
         ▼
    5  APLICACIÓN    cómo se ve en cada formato real            → br-aplicacion
-        ▼           →→→ pasa a ④ ⑥A ⑥B
+        ▼           →→→ pasa a ④ Creatividad · ⑥A Diseño gráfico · ⑦ Video Editing
    ↻  GUARDIÁN      valida piezas y claims, ciclo a ciclo      → br-guardian
    ↻  LOOP          qué se reconoció, qué estorbó              → br-loop
 ```
@@ -142,8 +143,8 @@ decorativo.
 ### ✅ La auto-revisión — no hay paradas entre capas
 
 **Cada capa cierra con su checklist y sigue.** El control de calidad lo hace el CEO en persona.
-La aprobación del CEO queda solo para publicar, gastar, enviar algo al cliente, comprometer precio,
-fecha o alcance, y borrar.
+**El CEO solo para el flujo en ① Strategy y ⑩ Ads.** Precio, alcance y fechas se escalan al
+CEO; todo lo demás, al COO. Escalar avisa y sigue: no frena el flujo.
 
 | El checklist que más pesa | Por qué |
 |---|---|
@@ -157,7 +158,7 @@ fecha o alcance, y borrar.
 | Momento | Qué corre |
 |---|---|
 | **Onboarding** | Las capas 0 a 5, completas. **Es donde se construye la marca** |
-| **Cada ciclo** | `br-guardian` — valida lo que ④ ⑥A ⑥B produjeron |
+| **Cada ciclo** | `br-guardian` — valida lo que ④ Creatividad, ⑥A Diseño gráfico y ⑦ Video Editing produjeron |
 | **El 20 de cada mes** | `br-loop` |
 | **Ciclos siguientes** | **La marca se evoluciona, no se rehace** |
 
@@ -181,21 +182,22 @@ fecha o alcance, y borrar.
 | A | Qué le toca |
 |---|---|
 | **④ Creatividad** | Tono, territorio, activos distintivos. Los usa si existen |
-| **⑥A Diseño gráfico** | `sistema-visual.md` — las specs ejecutables · **las plantillas, que se desarrollan en Figma.** **Sin `sistema-visual.md`, ⑥A no arranca** |
-| **⑥B Video Editing** | `sistema-visual.md` — paleta, tipografía, cómo se titula, cómo se cierra · los assets del kit en el Drive |
+| **⑥A Diseño gráfico** | `sistema-visual.md` — las specs ejecutables · **las plantillas, que se desarrollan en Figma.** **Sin `sistema-visual.md`, ⑥A Diseño gráfico no arranca** |
+| **⑦ Video Editing** | `sistema-visual.md` — paleta, tipografía, cómo se titula, cómo se cierra · los assets del kit en el Drive |
 | **⑨ Posting** | Tono de voz, do's & don'ts, **cómo se nombra la marca** |
 | **⑩ Ads** | Activos distintivos y qué claims están validados |
 
-🔑 **Solo ⑥A se bloquea sin la guía:** existe para traducir el posicionamiento a algo gráfico.
-④ ⑥B ⑨ y ⑩ la usan si existe, sin bloquearse.
+🔑 **Solo ⑥A Diseño gráfico se bloquea sin la guía:** existe para traducir el posicionamiento
+a algo gráfico. ④ Creatividad, ⑦ Video Editing, ⑨ Posting y ⑩ Ads la usan si existe, sin
+bloquearse.
 
 ---
 
 ## 8 · Lo que este departamento NO hace
 
-- **No decide el posicionamiento.** Si está mal, se devuelve a ①
-- **No produce piezas.** Define el sistema; ⑥A y ⑥B lo ejecutan
-- **No escribe copy de piezas.** Define cómo suena; ④ escribe
+- **No decide el posicionamiento.** Si está mal, se devuelve a ① Strategy
+- **No produce piezas.** Define el sistema; ⑥A Diseño gráfico y ⑦ Video Editing lo ejecutan
+- **No escribe copy de piezas.** Define cómo suena; ④ Creatividad escribe
 - **No para a esperar aprobación entre capas.** Se auto-revisa con el checklist y sigue
 - **No rehace la marca cada ciclo.** La evoluciona
 
@@ -203,7 +205,7 @@ fecha o alcance, y borrar.
 
 ## 9 · Antes de cerrar
 
-- [ ] El brief de ① está cargado y **citado con ruta**
+- [ ] El brief de ① Strategy está cargado y **citado con ruta**
 - [ ] Todo pasa la **prueba del logo tapado**
 - [ ] El sistema se puede **ejecutar sin preguntar**
 - [ ] El cliente **puede sostenerlo** con lo que tiene

@@ -1,16 +1,16 @@
 # Respuestas — [MARCA]
 
 > **La ficha de ⑧ Community Management.** Va en `clients/<cliente>/05-comunidad/respuestas.md`.
-> Es lo único que ⑧ puede decir: **lo que no está acá no se contesta, se escala.**
+> Es lo único que ⑧ Community puede decir: **lo que no está acá no se contesta, se escala.**
 > Se presenta al CEO antes de escribirla.
 
 | | |
 |---|---|
 | **Actualizada** | AAAA-MM-DD |
-| **Modo** | 🧪 Borrador *(redacta, no envía)* · ✅ Activo — **lo cambia solo el CEO** |
+| **Modo** | 🧪 Borrador *(redacta, no envía)* · ✅ Activo — **lo prende o lo apaga solo el COO** |
 | **Avisos** | El correo donde llega el reporte de cada corrida |
 
-## 1 · Cuentas que atiende ⑧
+## 1 · Cuentas que atiende ⑧ Community
 
 | Red | Usuario | ID de cuenta en Zernio |
 |---|---|---|
@@ -24,7 +24,7 @@
 |---|---|
 | | |
 
-Si ②B ya tiene guía de voz, **manda la guía** y acá solo va el link.
+Si ②B Branding ya tiene guía de voz, **manda la guía** y acá solo va el link.
 
 ## 3 · Sedes
 

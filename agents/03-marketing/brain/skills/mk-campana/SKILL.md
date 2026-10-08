@@ -46,7 +46,7 @@ después. **Pero se declara cuál es cuál** — nunca se deja ambiguo.
 |---|---|
 | Un ángulo sostenido durante el ciclo | Un hashtag |
 | Algo que mueve **una** MUST BE TRUE | Un tema general |
-| Algo que se nota al final del mes | Un concepto creativo *(eso es ④)* |
+| Algo que se nota al final del mes | Un concepto creativo *(eso es ④ Creatividad)* |
 
 ## 2 · Una por ciclo. Dos como máximo
 
@@ -63,7 +63,7 @@ tres aprobaciones, tres presupuestos y un mes que nadie entiende.
 
 | Paso | Qué se hace |
 |---|---|
-| **1** | Se lee el objetivo del ciclo de ① y **las MUST BE TRUE** |
+| **1** | Se lee el objetivo del ciclo de ① Strategy y **las MUST BE TRUE** |
 | **2** | Se elige **la** MUST BE TRUE que este ciclo va a mover. Una |
 | **3** | Se busca el ángulo: ¿qué tendría que creer la gente para que esa verdad se cumpla? |
 | **4** | Se escribe en **una frase**, en lenguaje de persona, no de marca |
@@ -100,7 +100,7 @@ tres aprobaciones, tres presupuestos y un mes que nadie entiende.
 |---|---|
 | **1** | **Nunca un solo aviso.** Un anuncio único lo ve menos del 20% de la audiencia |
 | **2** | **El último empujón siempre existe.** Es el que más convierte y el que más se olvida |
-| **3** | **La anticipación no puede exceder el ciclo.** Un evento a 5 semanas con un ciclo de 4 se planifica **desde el ciclo anterior** — se avisa a ① y se declara |
+| **3** | **La anticipación no puede exceder el ciclo.** Un evento a 5 semanas con un ciclo de 4 se planifica **desde el ciclo anterior** — se avisa a ① Strategy y se declara |
 
 🛑 **Si la fecha del evento cae en los primeros 7 días del ciclo, la campaña ya llegó tarde.**
 Se declara y se trabaja con lo que queda, pero se escribe que el aviso fue corto.
@@ -113,7 +113,7 @@ Se declara y se trabaja con lo que queda, pero se escribe que el aviso fue corto
 
 | Bloque | Qué lleva |
 |---|---|
-| **Nombre** | Corto, interno. Es la etiqueta de la columna `campana` del Excel de ④ |
+| **Nombre** | Corto, interno. Es la etiqueta de la columna `campana` del Excel de ④ Creatividad |
 | **La frase** | Una línea. La que el equipo repite |
 | **MUST BE TRUE** | Cuál mueve, con su letra |
 | **En qué se nota** | El cambio observable al cierre del ciclo |

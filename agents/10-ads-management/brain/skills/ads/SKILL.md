@@ -8,7 +8,7 @@ description: >
   presupuesto, campañas, anuncios, públicos, CPA, ROAS, fatiga de creativo o atribución. Se
   dispara con "lanzá las campañas de X", "cuánto presupuesto", "no está rindiendo la pauta",
   "pausá esto", "qué ángulo funciona", "cuánto vendimos por pauta". Pautar es acción
-  destructiva: nada sale sin gate de Allan.
+  destructiva: nada sale sin gate del CEO.
 ---
 
 # ⑩ Ads Management — el orquestador
@@ -41,10 +41,10 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 |---|---|---|
 | Qué ofertas se pautan, su precio y el objetivo | ② Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 **BLOQUEADO** |
 | Qué piezas se pautan y con qué objetivo | ③ Marketing | 🛑 **BLOQUEADO** |
-| Los creativos **con variantes de hook** | ⑥A y ⑥B | 🛑 **BLOQUEADO** |
+| Los creativos **con variantes de hook** | ⑥A Diseño gráfico y ⑦ Video Editing | 🛑 **BLOQUEADO** |
 | Qué claims están **validados** | ②B Branding | 🟡 Se usa si existe — un claim `⏸️` no sale |
 | Las cuentas publicitarias y **quién tiene el acceso** | `clients/<cliente>/00-onboarding/LINKS.md` | 🛑 **BLOQUEADO** |
-| **El presupuesto, aprobado por el cliente** | 00 Account · Allan | 🛑 **BLOQUEADO** |
+| **El presupuesto, aprobado por el cliente** | 00 Account (Secretaria) · el CEO | 🛑 **BLOQUEADO** |
 | **El plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define canales y variantes |
 
 🛑 **Sin presupuesto aprobado por escrito no se toca una cuenta.**
@@ -56,7 +56,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | **Ejecuta** | ✅ | ❌ — corre en `--draft` |
 | **Audita y monitorea** | ❌ | ✅ |
 
-**El plugin propone, AdWhispr ejecuta, Allan aprueba en el medio.**
+**El plugin propone, AdWhispr ejecuta, el CEO aprueba en el medio.**
 
 🛑 **Si falta una, lo que depende de ella no corre:**
 `BLOQUEADO — falta AdWhispr. Instalala: ver INSTALAR.md § AdWhispr` ·
@@ -77,7 +77,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 
 ## 5 · Dónde para
 
-| 🚦 | Después de | Qué aprueba Allan |
+| 🚦 | Después de | Qué aprueba el CEO |
 |---|---|---|
 | **GATE 1** | `ad-creativos` | El plan y **el presupuesto** |
 | **GATE 2** | Cada cambio de `ad-optimizacion` | **Todo movimiento de presupuesto** |

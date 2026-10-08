@@ -28,8 +28,8 @@ PROPÓSITO   Cuidar los comentarios y mensajes de cada marca, con su voz, todos 
             y llevar cada conversación a un siguiente paso: pedir, reservar o escribir.
 ACCIONES    Zernio por MCP → leer y responder comentarios y DMs, DM privado a un comentario,
             ocultar spam, automatizaciones por palabra clave.
-            Gmail por MCP → el reporte de cada corrida y los avisos al CEO.
-LÓGICA      triage → respuesta con la ficha y cierre → escalado → envío con gate → loop.
+            Gmail por MCP → el reporte de cada corrida y los avisos al COO.
+LÓGICA      triage → respuesta con la ficha y cierre → escalado → envío → loop.
 ```
 
 | | |

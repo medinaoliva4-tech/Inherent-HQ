@@ -15,7 +15,7 @@ paso vive en las skills: `skills/README.md`.
 | Días | Qué corre | Entrega |
 |---|---|---|
 | **1 – 3** | El plan del ciclo — `mk-encargo` → `mk-pilares` / `mk-campana` | — |
-| **2 – 3** | **Montar el calendario** — `mk-calendario` | Calendario de slots a ④ **a más tardar el día 3** |
+| **2 – 3** | **Montar el calendario** — `mk-calendario` | Calendario de slots a ④ Creatividad **a más tardar el día 3** |
 
 ---
 
@@ -69,11 +69,11 @@ paso vive en las skills: `skills/README.md`.
 
 Se define en el onboarding, en `plan-contratado.md`, con dos secciones: **Qué incluye** y **Su
 pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—.
-**③ trabaja con lo que su pipeline le asigna**, en las unidades de la tabla de arriba: slots,
+**③ Marketing trabaja con lo que su pipeline le asigna**, en las unidades de la tabla de arriba: slots,
 campañas, horas, videos.
 
 - **No se bloquea por no ser un plan de lista ni se cuestiona por precio.**
-- **Si ③ no está en su pipeline, no corre para ese cliente.**
+- **Si ③ Marketing no está en su pipeline, no corre para ese cliente.**
 - **El método es el mismo; cambia el pipeline.** La trazabilidad y las devoluciones no cambian:
   cambia qué corre y qué se verifica.
 - **Arriba de 🟨 Compound sube el volumen**, pero el techo real sigue siendo lo que se puede
@@ -100,7 +100,7 @@ objetivo del ciclo  →  ¿es CAMPAÑA o es PILAR?  →  mensaje  →  canales
                     →  slots con fecha y anticipación  →  ④ Creatividad
 ```
 
-**Lo tangible que decide ③:** qué se dice, **en qué canal**, **en qué semana**,
+**Lo tangible que decide ③ Marketing:** qué se dice, **en qué canal**, **en qué semana**,
 **cuánto antes se anuncia** y **qué trabajo de negocio hace cada slot.**
 
 🛑 **Y no decide el rumbo.** Si al armar el plan aparece que la estrategia está mal, **se
@@ -115,7 +115,7 @@ devuelve a ① Strategy** — no se corrige acá.
 | **`estrategia-de-contenido.md`** | La **idea de campaña** del ciclo, el sistema de contenido, los pilares con su mix y la **jerarquía de mensaje** | ④ Creatividad — **la lee entera antes de idear** |
 | **`plan-por-canal.md`** | Una ficha por canal: su **función única** y **qué NO se hace ahí** | ④ Creatividad · ⑨ Posting |
 | **`calendario.csv`** | **Los slots del ciclo.** Una fila por pieza a producir, en **semanas** | ④ Creatividad — es su encargo |
-| **`aprendizaje-de-marketing.md`** | El cierre: qué función y qué canal rindieron, y qué cambia el próximo ciclo | ③ y ① |
+| **`aprendizaje-de-marketing.md`** | El cierre: qué función y qué canal rindieron, y qué cambia el próximo ciclo | ③ Marketing y ① Strategy |
 
 ### Las 11 columnas de `calendario.csv`
 
@@ -142,13 +142,13 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 > que Creative sí mueve, porque producción necesita una fecha.
 
 > 🛑 **Todo slot traza a una MUST BE TRUE.** Un slot sin `traza` es contenido porque sí, y
-> ④ lo devuelve.
+> ④ Creatividad lo devuelve.
 
 ### Las combinaciones que están prohibidas
 
 | Combinación | Por qué se rechaza |
 |---|---|
-| `balance = Marca` + CTA de conversión | Rompe el slot. El CTA lo deriva ④ del balance |
+| `balance = Marca` + CTA de conversión | Rompe el slot. El CTA lo deriva ④ Creatividad del balance |
 | `funcion = Community` + `temperatura ≠ Cliente` | Community le habla a quien ya compró |
 | `awareness = Unaware` + `funcion = Conversion` | Vender a quien no sabe que tiene el problema |
 | Dos canales con la **misma** `funcion` | Si dos canales hacen lo mismo, sobra uno |
@@ -170,7 +170,7 @@ de más esperando que alguien aguante.
 ## 4 · El flujo, de 0 a 100
 
 ```
-   0  ENCARGO       qué decidió ① y qué se puede de verdad    → mk-encargo
+   0  ENCARGO       qué decidió ① Strategy y qué se puede de verdad → mk-encargo
         ▼
    1  CAMPAÑA       ¿campaña o pilar? · la idea · la anticipación → mk-campana
         ▼
@@ -188,13 +188,13 @@ de más esperando que alguien aguante.
 ### ✅ La auto-revisión — no hay paradas entre capas
 
 **Cada capa cierra con su checklist y sigue.** El control de calidad lo hace el CEO en persona.
-La aprobación del CEO queda solo para publicar, gastar, enviar algo al cliente, comprometer precio,
-fecha o alcance, y borrar — nada de eso pasa en ③.
+El CEO solo frena el flujo en ① Strategy y en ⑩ Ads — ninguna de las dos paradas pasa en
+③ Marketing. **Escalar no es parar:** precio, alcance y fechas → el CEO · lo demás → el COO.
 
 | El checklist que más pesa | Por qué |
 |---|---|
 | **El de `mk-mensaje`** | La campaña y la jerarquía de mensaje son la ley del ciclo. Cambiarlas después tira todo el calendario |
-| **El de `mk-calendario`** | Es lo que ④ va a producir. Corregirlo pieza por pieza después es imposible |
+| **El de `mk-calendario`** | Es lo que ④ Creatividad va a producir. Corregirlo pieza por pieza después es imposible |
 
 ---
 
@@ -205,7 +205,7 @@ fecha o alcance, y borrar — nada de eso pasa en ③.
 | **① Strategy** · `00-onboarding/` | La realidad del negocio, la capacidad declarada, las cuentas que existen | 🛑 BLOQUEADO |
 | **① Strategy** · `01-estrategia/` | Objetivo del ciclo, posicionamiento, **las MUST BE TRUE**, el brief de marketing | 🛑 BLOQUEADO si la estrategia no existe |
 | **②B Branding** | Tono, territorio, activos distintivos | 🟡 Se usan si existen. No bloquea |
-| **⑧B Ads** | Qué ángulos ya rindieron en pauta | 🟡 No bloqueante |
+| **⑩ Ads** | Qué ángulos ya rindieron en pauta | 🟡 No bloqueante |
 
 🛑 **Ningún archivo de otro departamento se copia: se cita su ruta.**
 
@@ -224,10 +224,10 @@ fecha o alcance, y borrar — nada de eso pasa en ③.
 
 ## 7 · Lo que este departamento NO hace
 
-- **No escribe copy, hooks ni conceptos.** Eso es ④
-- **No decide estética.** Eso es ②B y ④
-- **No publica ni pauta.** Eso es ⑨ y ⑩
-- **No cambia la estrategia.** Si está mal, se devuelve a ①
+- **No escribe copy, hooks ni conceptos.** Eso es ④ Creatividad
+- **No decide estética.** Eso es ②B Branding y ④ Creatividad
+- **No publica ni pauta.** Eso es ⑨ Posting y ⑩ Ads
+- **No cambia la estrategia.** Si está mal, se devuelve a ① Strategy
 - **No encarga más de lo que el plan contratado paga**
 - **No inventa un canal** que el cliente no tiene o no puede sostener
 

@@ -17,10 +17,10 @@
 
 | Qué se repite | A quién va | Qué se le pasa |
 |---|---|---|
-| | ⑥A / ⑥B / ③ / ① | [el número, no la queja] |
+| | ⑥A Diseño gráfico / ⑦ Video Editing / ③ Marketing / ① Strategy | [el número, no la queja] |
 
-> Si el 30 % llega tarde, el problema no está en Posting: está en las fechas de preparación de ③ o
-> en los tiempos de ⑥.
+> Si el 30 % llega tarde, el problema no está en Posting: está en las fechas de preparación de
+> ③ Marketing o en los tiempos de ⑥A Diseño gráfico y ⑦ Video Editing.
 
 ---
 
@@ -43,11 +43,11 @@
 
 ---
 
-## 4 · Cuánto tardó el OK para programar
+## 4 · ¿Quedó programado a tiempo?
 
-| OK | Pedido | Llegó | Tardó | ¿Programado al día 19? |
-|---|---|---|---|---|
-| OK del CEO del ciclo | | | | ✅ / ⚠️ |
+| Última fila programada | ¿Programado al día 19? | Qué lo atrasó |
+|---|---|---|
+| | ✅ / ⚠️ | |
 
 ---
 

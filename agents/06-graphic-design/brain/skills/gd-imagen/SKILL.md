@@ -12,7 +12,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las plantillas de la Capa 1 · § Imagen de `sistema-visual.md` · material de ⑤ · el banco del cliente |
+| **Consume** | Las plantillas de la Capa 1 · § Imagen de `sistema-visual.md` · material de ⑤ Producción · el banco del cliente |
 | **Produce** | Las imágenes del ciclo, resueltas y verificadas |
 
 ## 1 · El orden de costo
@@ -26,7 +26,7 @@ description: >
 | **3** | **Pedirle al cliente** | Tiempo del cliente | Último recurso |
 
 ⛔ **No se genera imagen con IA ni foto de producto sin sesión.** Si el producto necesita foto,
-**se pide en la próxima sesión de ⑤** — la foto de producto sale de ahí.
+**se pide en la próxima sesión de ⑤ Producción** — la foto de producto sale de ahí.
 
 🛑 **Nunca se compra stock sin autorización.** Es costo que no está en el plan.
 
@@ -41,12 +41,12 @@ description: >
 | **Personas** | ¿Hay cesión de imagen? → 🔴 **Sin cesión no sale** |
 
 > ⚠️ **Una foto con una persona sin cesión firmada es un problema legal del cliente, no un
-> detalle de diseño.** Se escala.
+> detalle de diseño.** Se escala al COO.
 
 ## 3 · Producto sobre fondo de marca
 
 **Es el caso más común del ciclo.** Sin herramienta de recorte automático, **se resuelve en la
-sesión de ⑤**: el producto se fotografía ya sobre el fondo o la superficie del sistema visual.
+sesión de ⑤ Producción**: el producto se fotografía ya sobre el fondo o la superficie del sistema visual.
 
 | Chequeo | Qué se mira |
 |---|---|

@@ -3,7 +3,7 @@
 > **El correo que manda `cm-envio` al final de cada corrida con algo nuevo.** Sin nada nuevo, no se
 > manda. Lo urgente va arriba.
 
-**Asunto:** `⑧ [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`
+**Asunto:** `⑧ Community · [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`
 
 ---
 
@@ -13,13 +13,14 @@
 |---|---|---|---|---|---|
 | 🎉 Evento | | @ | | | |
 
-## ⏸️ Esperando tu OK
+## 🧪 En borrador
 
 | Red | Usuario | Lo que escribió | Respuesta propuesta |
 |---|---|---|---|
 | | @ | | |
 
-*Para aprobar, contesta este correo o abre una sesión con `/community`.*
+*Solo en modo borrador: no se envió nada. Para enviar una, contesta este correo o abre una sesión
+con `/community`.*
 
 ## ✅ Enviado
 

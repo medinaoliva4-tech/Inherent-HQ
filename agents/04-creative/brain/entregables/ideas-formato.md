@@ -48,7 +48,7 @@ CTA:       "..."
 
 **Layout de texto:** [dónde vive cada uno, tamaño, peso, safe zones]
 
-**Plantilla:** [nombre de la plantilla de ⑥A] — *o* `pendiente — sin plantillas de ⑥A`
+**Plantilla:** [nombre de la plantilla de ⑥A Diseño gráfico] — *o* `pendiente — sin plantillas de ⑥A Diseño gráfico`
 *(obligatorio en estático, carrusel y story. En video: `N/A — formato de video`)*
 
 ### Foto
@@ -66,7 +66,7 @@ CTA:       "..."
 | **Proporción** | `1:1` / `4:5` / `9:16` — la del formato donde va |
 | **También la usan** | [ids de las otras piezas que comparten esta misma foto] — *o* `solo esta` |
 
-🛑 **Si varias piezas comparten la foto, esta sección se escribe igual en todas.** ⑤ la agrupa una
+🛑 **Si varias piezas comparten la foto, esta sección se escribe igual en todas.** ⑤ Producción la agrupa una
 sola vez; dos descripciones distintas de la misma foto son dos fotos.
 
 ### Escenas

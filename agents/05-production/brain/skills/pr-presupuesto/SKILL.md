@@ -4,7 +4,7 @@ description: >
   Capa 4 de ⑤ Producción — cuesta el ciclo por jornada (nunca por pieza), separa los cinco bloques
   de costo, declara la contingencia como línea propia según el perfil del rodaje, calcula el costo
   por pieza y lo compara contra el presupuesto de referencia del onboarding, si existe. Si se pasa,
-  presenta tres opciones con su impacto y decide un humano. Produce `presupuesto.md` —el
+  lo escala al CEO —es precio— con tres opciones y su impacto, y sigue. Produce `presupuesto.md` —el
   entregable que lee el cliente, en lenguaje natural—, el `presupuesto.csv` interno que lo respalda y la columna
   `costo_estimado` del plan. Úsala cuando pidan "cuánto cuesta producir esto", "presupuestá el
   ciclo", "armá el presupuesto", "cuánto sale cada pieza", "no nos alcanza, qué recortamos",
@@ -24,7 +24,8 @@ Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla d
 
 **Qué es:** poner número al plan que ya está agrupado, y compararlo con datos contra la referencia.
 **Qué no es:** no es decidir qué se produce (③ Marketing) ni cambiar el contenido de una escena
-(④ Creatividad). No incluye la edición final: eso se presupuesta en ⑥A y ⑥B.
+(④ Creatividad). No incluye la edición final: eso se presupuesta en ⑥A Diseño gráfico y
+⑦ Video Editing.
 
 🔑 **El presupuesto de producción del onboarding, si existe, es referencia** para saber por dónde
 presupuestar — no techo ni bloqueo. **Cada campaña o sesión puede llevar su propio presupuesto.**
@@ -55,8 +56,8 @@ Decílo así y ofrecé correr `pr-jornadas` primero.
 | 5 | **Contingencia** | % declarado, **como línea propia** | **Total** |
 
 🛑 **Post base ≠ edición.** Ordenar, respaldar y marcar selects es de Producción y va acá. Montar,
-corregir color de entrega, versionar por plataforma y exportar es de ⑥A Diseño y ⑥B Video Editing, y
-va en **su** presupuesto. Meterlo acá hace que se presupueste dos veces o ninguna.
+corregir color de entrega, versionar por plataforma y exportar es de ⑥A Diseño gráfico y ⑦ Video Editing,
+y va en **su** presupuesto. Meterlo acá hace que se presupueste dos veces o ninguna.
 
 🛑 **El talento se paga por jornada, no por toma.** Si alguien aparece en 9 escenas de la misma
 jornada, es **una** línea de talento, no nueve.
@@ -161,21 +162,22 @@ cerradas. Plantilla: `agents/05-production/brain/entregables/presupuesto.md`.
 > por campaña aparece **solo si el ciclo tiene dos o más**, y ahí se cierra con el total del ciclo.
 > La estructura del CSV soporta N campañas siempre; lo que se ajusta es qué se muestra.
 
-## Paso 5 · Si se pasa de la referencia — las 3 opciones, siempre las tres
+## Paso 5 · Si se pasa de la referencia — se escala al CEO, con las 3 opciones
 
-Se presentan **con su impacto**, y **decide un humano**:
+**Pasar la referencia es precio: se escala al CEO.** Se presentan las tres opciones **con su
+impacto**, y el ciclo sigue — **solo el gasto que pasa la referencia espera su respuesta:**
 
 | Opción | Qué se toca | Qué **NO** se toca | Quién decide |
 |---|---|---|---|
 | **Reagrupar** | Volver a la Capa 2 y buscar más consolidación: menos locaciones, menos convocatorias, menos setups | **Nada del contenido.** Ni una escena, ni un encuadre | Producción sola puede |
 | **Recortar filas** | Se **proponen** las de menor traza a la intención, con su costo al lado | La intención de las filas que quedan | **③ Marketing** |
-| **Bajar de especificación** | Locación más simple, menos talento, menos equipo, arte más liviano | **El encuadre, la acción y la duración** — tocar eso vuelve a ④ | **④ Creatividad** si roza encuadre, acción o duración |
+| **Bajar de especificación** | Locación más simple, menos talento, menos equipo, arte más liviano | **El encuadre, la acción y la duración** — tocar eso vuelve a ④ Creatividad | **④ Creatividad** si roza encuadre, acción o duración |
 
 > 🛑 **Producción nunca elige sola qué pieza se cae.** Propone, con números; **deciden ③ Marketing y
 > ④ Creatividad**. Recortar en silencio es decidir el alcance de la campaña sin mandato.
 
-Un gasto que excede lo aprobado se marca **⏸️ PENDIENTE APROBACIÓN** y **espera**. No se ejecuta
-"porque era urgente".
+El gasto que pasa la referencia se marca **⏸️ ESCALADO AL CEO** y **no se compromete** hasta su
+respuesta. No se ejecuta "porque era urgente". Todo lo demás sigue.
 
 ## Moneda y fecha, en todo número
 
@@ -187,10 +189,11 @@ Un gasto que excede lo aprobado se marca **⏸️ PENDIENTE APROBACIÓN** y **es
 Si un costo no se pudo cotizar, se escribe **⚠️ SIN DATOS** con a quién pedírselo. **Ningún número
 se estima a ojo sin declararlo como estimación.**
 
-## 🚦 GATE 1 — presupuesto
+## ✅ Auto-revisión — y sigue
 
-**El presupuesto lo aprueba un humano antes de comprometer un solo recurso:** ni una reserva, ni una
-convocatoria, ni una compra, ni una seña de locación. Se registra con fecha y con quién aprobó.
+**Ningún recurso se compromete antes de cerrar esta capa con su QA:** ni una reserva, ni una
+convocatoria, ni una compra, ni una seña de locación. Con el QA completo, **se sigue sin esperar al
+CEO**; lo único que espera es el gasto `⏸️ ESCALADO AL CEO`.
 
 ## QA — Capa 4
 
@@ -212,10 +215,10 @@ convocatoria, ni una compra, ni una seña de locación. Se registra con fecha y 
 - [ ] Con una sola campaña, `presupuesto.md` **no muestra desglose por campaña**
 - [ ] Si se pasa de la referencia: están **las 3 opciones** con su impacto y con quién decide cada una
 - [ ] 🛑 **Producción no eligió sola qué pieza se cae**
-- [ ] Todo gasto que excede lo aprobado está marcado **⏸️ PENDIENTE APROBACIÓN**, no ejecutado
+- [ ] Todo gasto que pasa la referencia está **escalado al CEO** y marcado **⏸️ ESCALADO AL CEO**, no ejecutado
 - [ ] Lo que no se pudo cotizar está declarado **⚠️ SIN DATOS** con a quién pedírselo
-- [ ] 🚦 **GATE 1 registrado.** Nada comprometido antes: ni reserva, ni convocatoria, ni compra
+- [ ] **Nada comprometido antes de cerrar esta capa:** ni reserva, ni convocatoria, ni compra
 
-**Handoff →** `pr-rodaje` (Capa 5). Sin GATE 1 aprobado no se convoca a nadie ni se reserva nada: un
-call sheet sobre un presupuesto no aprobado es una jornada que se puede caer con todo el equipo ya
-citado.
+**Handoff →** `pr-rodaje` (Capa 5). Sin el presupuesto cerrado no se convoca a nadie ni se reserva
+nada: un call sheet sobre un presupuesto sin cerrar es una jornada que se puede caer con todo el
+equipo ya citado.

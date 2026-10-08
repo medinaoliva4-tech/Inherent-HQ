@@ -10,7 +10,7 @@ paso vive en las skills: `skills/README.md`.
 
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
-**Lo primero de cada encargo: leer el plan del cliente.** Lo anota ② Strategy al arrancar en
+**Lo primero de cada encargo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
 `clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
@@ -37,7 +37,7 @@ paso vive en las skills: `skills/README.md`.
 
 - 🔷 **En la línea Marketing ② Growth corre LIGERO — en sus dos planes:** elige **cuáles de las
   ofertas que ya existen** se empujan este ciclo y con qué objetivo, y lo escribe en
-  `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` para ③ y ⑩.
+  `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` para ③ Marketing y ⑩ Ads.
   🛑 **No cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide, es upsell
   a 🟨 Accelerate, no trabajo a absorber.
 - **Lo que sí corre en la línea 🔷 es el MENSAJE, y lo llevan ③ Marketing con ②B Branding.**
@@ -101,7 +101,7 @@ ni lo cuestiona por precio.
 | **Pilar 3** | **Upsells** | **Expansión de cuenta** |
 
 > 🔑 **Un colchón de $3,000 es B2C y high ticket. Un SaaS de $30/mes es B2B y low ticket.**
-> La división la define ② Estrategia en el contexto, no se elige acá.
+> La división la define ① Strategy en el contexto, no se elige acá.
 
 ---
 
@@ -121,7 +121,7 @@ de 🟨. Si el cliente lo pide, es upsell a 🟨 Accelerate, no trabajo a absorb
 |---|---|---|
 | **`motor-de-crecimiento.md`** | La oferta trabajada, el mapa o la apertura de canales grandes, la escalera de upsells y el sistema de conversión | El cliente · ③ Marketing · ⑩ Ads |
 | **`ofertas-a-empujar.md`** — 🔷 | Cuáles de las ofertas que ya existen se empujan este ciclo y con qué objetivo. Vive en `clients/<cliente>/07-oferta-y-ventas/` | ③ Marketing · ⑩ Ads |
-| **`aprendizaje-de-growth.md`** | Qué pilar movió el número, qué canal cerró, qué upsell se compró | ② y ② Estrategia |
+| **`aprendizaje-de-growth.md`** | Qué pilar movió el número, qué canal cerró, qué upsell se compró | ② Growth y ① Strategy |
 
 ---
 
@@ -132,7 +132,7 @@ de 🟨. Si el cliente lo pide, es upsell a 🟨 Accelerate, no trabajo a absorb
         ▼
    1  OFERTA        🔷 ligero — qué ofertas se empujan       → gr-oferta
         ▼           🟨 Pilar 1 — qué se vende y a qué precio
-        ▼           🚦 GATE 1 — 🟨 el CEO, antes de llevar la oferta al cliente
+        ▼           🔴 🟨 la oferta nueva se escala al CEO — no para
    2  CANALES       Pilar 2 — mapear o abrir                 → gr-canales-grandes
         ▼
    3  UPSELLS       Pilar 3 — 🟨 A y C solamente                 → gr-upsells
@@ -146,14 +146,16 @@ de 🟨. Si el cliente lo pide, es upsell a 🟨 Accelerate, no trabajo a absorb
    ↻  LOOP          qué movió el número                      → gr-loop
 ```
 
-### 🚦 El gate
+### 🔴 Sin paradas — la oferta nueva se escala al CEO
 
-| Gate | Qué se aprueba | Por qué |
+**② Growth no para:** cada capa se auto-revisa con su checklist y sigue.
+
+| Qué se escala | A quién | Por qué |
 |---|---|---|
-| **1** — 🟨 | **La oferta** — precio incluido, **antes de llevarla al cliente** | Es enviarle algo al cliente y comprometer precio. Y el precio es decisión comercial del cliente, no nuestra: **nunca se cambia sin él** |
+| 🟨 **La oferta nueva** — precio incluido, **antes de llevarla al cliente** | **El CEO** | Llevarle al cliente una oferta o un precio nuevo es comprometer precio. Y el precio es decisión comercial del cliente, no nuestra: **nunca se cambia sin él** |
 
-**Lo demás no para:** cada capa se auto-revisa con su checklist y sigue. En 🔷 ligero no hay gate:
-no se toca el precio y no sale al cliente.
+**Escalar no frena:** se avisa al CEO y Growth sigue con las capas que vienen. En 🔷 ligero no hay
+nada que escalar: no se toca el precio y no sale al cliente.
 
 ---
 
@@ -176,7 +178,7 @@ no se toca el precio y no sale al cliente.
 | De | Qué | Si falta |
 |---|---|---|
 | **① Strategy** | Unit economics, cómo se compra, qué canales ya existen, la capacidad real | 🛑 BLOQUEADO |
-| **② Estrategia** | El objetivo, las MUST BE TRUE, **la división** y qué pilar está roto | 🛑 BLOQUEADO |
+| **① Strategy** | El objetivo, las MUST BE TRUE, **la división** y qué pilar está roto | 🛑 BLOQUEADO |
 | **②B Branding** | Cómo se dice todo esto | 🟡 Se usa si existe |
 | **⑩ Ads** | Qué ángulos y ofertas ya rindieron | 🟡 No bloqueante |
 
@@ -196,20 +198,20 @@ no se toca el precio y no sale al cliente.
 
 ## 9 · Lo que este departamento NO hace
 
-- **No corre pauta.** Eso es ⑩
+- **No corre pauta.** Eso es ⑩ Ads
 - **No cambia el precio sin el cliente.** El precio es su decisión
 - **No promete lo que no está en «Capacidades reales»**
 - **No activa un pilar que el plan no paga**
 - **En 🔷 no cambia qué se vende, en qué paquetes ni a qué precio.** Solo elige qué se empuja
-- **No arregla el rumbo.** Si está mal, se devuelve a ② Estrategia
+- **No arregla el rumbo.** Si está mal, se devuelve a ① Strategy
 
 ---
 
 ## 10 · Antes de cerrar
 
-- [ ] La **división** está identificada, de ② Estrategia
+- [ ] La **división** está identificada, de ① Strategy
 - [ ] Solo se activaron **los pilares que el plan paga**
 - [ ] 🟨 La oferta tiene **precio**, y lo aprobó el cliente · 🔷 **no se tocó** qué se vende, sus paquetes ni su precio
 - [ ] Cada movimiento traza a una **MUST BE TRUE**
 - [ ] Nada promete algo fuera de «Capacidades reales»
-- [ ] 🟨 La oferta **no llegó al cliente sin el GATE 1**
+- [ ] 🟨 La oferta nueva **se escaló al CEO** antes de llegar al cliente

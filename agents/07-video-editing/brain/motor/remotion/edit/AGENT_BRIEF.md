@@ -1,6 +1,6 @@
 # Brief para subagentes de calificación — <cliente>
 
-> Plantilla de ⑥B · `ve-recepcion` §4. Se usa cuando hay muchos clips y la calificación se reparte entre
+> Plantilla de ⑦ Video Editing · `ve-recepcion` §4. Se usa cuando hay muchos clips y la calificación se reparte entre
 > subagentes en paralelo (un grupo de clips por subagente). Se copia a `production/grading/AGENT_BRIEF.md`.
 
 Proyecto (P): `<ruta del proyecto de edición>` — si tiene espacios, citarla entre comillas.

@@ -12,7 +12,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Idea de campaña · posicionamiento de ① · tono de ②B, si existe |
+| **Consume** | § Idea de campaña · posicionamiento de ① Strategy · tono de ②B Branding, si existe |
 | **Produce** | La sección **§ Jerarquía de mensaje** de `estrategia-de-contenido.md` |
 
 > 🔑 **④ Creatividad la copia tal cual. Es la ley del ciclo.** Abreviarla es reescribirla.
@@ -35,7 +35,7 @@ no suma: se siente como contenido suelto, no como una campaña.
 ## 3 · El mensaje por awareness
 
 **El mensaje madre no se dice igual a quien no sabe que tiene el problema que a quien ya nos
-conoce.** Acá se escribe cada versión — ④ la usa para fijar el ángulo de cada pieza.
+conoce.** Acá se escribe cada versión — ④ Creatividad la usa para fijar el ángulo de cada pieza.
 
 | `awareness` | Qué se le dice |
 |---|---|

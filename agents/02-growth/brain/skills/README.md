@@ -23,7 +23,7 @@ detalle de cada herramienta.
 | # | Skill | Capa | Plan | Produce |
 |---|---|---|---|---|
 | 1 | **`gr-encargo`** | 0 | Todos | § El encargo — división, unit economics, qué activa el plan |
-| 2 | **`gr-oferta`** | 1 | Todos — 🔷 ligero | 🔷 `07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta · **🚦 GATE 1** *(el CEO, antes de llevarla al cliente)* |
+| 2 | **`gr-oferta`** | 1 | Todos — 🔷 ligero | 🔷 `07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta · **🔴 se escala al CEO** *(antes de llevarla al cliente)* |
 | 3 | **`gr-canales-grandes`** | 2 | ⛔ Marketing · 🟨 A y C | § Canales grandes |
 | 4 | **`gr-upsells`** | 3 | 🟨 A y C | § La escalera |
 | 5 | **`gr-conversion`** | 4 | 🟨 A y C | § Conversión |
@@ -44,10 +44,10 @@ peor.**
 | **Conversion OS** | Antes no hay nada que perder |
 | **Money OS** | Sin transacciones, el margen por línea es teoría |
 
-## El gate
+## Sin paradas — qué se escala
 
-| 🚦 | Después de | Quién aprueba |
+| 🔴 | Después de | A quién |
 |---|---|---|
-| **GATE 1** — 🟨 | `gr-oferta` | **El CEO, antes de llevar la oferta al cliente.** El precio es decisión del cliente |
+| **La oferta nueva** — 🟨 | `gr-oferta` | **Se escala al CEO antes de llevarla al cliente:** es comprometer precio. El precio es decisión del cliente |
 
-**Lo demás no para:** cada capa se auto-revisa con su checklist y sigue.
+**Escalar no frena:** cada capa se auto-revisa con su checklist y sigue.

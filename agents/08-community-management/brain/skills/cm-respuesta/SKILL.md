@@ -57,7 +57,7 @@ precargado, la app de pedidos, o el WhatsApp de eventos.
 | 🎉 **Evento** | Entusiasmo + el WhatsApp de eventos de la ficha + «¿nos compartes tu número para que te contacten?» |
 | 📅 **Reserva** | Pide los datos que dice la ficha (nombre, fecha, hora, personas, teléfono) → «¡Listo! Te confirmamos en un momento». **Nunca «tu reserva está confirmada»** |
 | ⏳ **Lo que viene** | «¡Viene pronto! ¿Te avisamos primero?» |
-| 😠 **Queja** | Disculpa sin excusas, en sus palabras, y una salida concreta. **Queda en borrador hasta el OK del CEO** |
+| 😠 **Queja** | Disculpa sin excusas, en sus palabras, y una salida concreta. **Además se escala al COO** (`cm-escalado`) |
 
 ## 5 · Antes de entregar
 

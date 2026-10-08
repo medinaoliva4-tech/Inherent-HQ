@@ -1,6 +1,6 @@
 # Plan de pauta — <cliente> · ciclo <mes año>
 
-> Plantilla de ⑩ Ads Management. **🚦 GATE 1 al final: Allan aprueba plan y presupuesto.**
+> Plantilla de ⑩ Ads Management. **🚦 GATE 1 al final: el CEO aprueba plan y presupuesto.**
 > ⚠️ **La inversión la pone el cliente, aparte del fee.**
 
 ---
@@ -45,4 +45,4 @@
 | `id_creativo` | Campaña | Temperatura | Variantes de hook | Claims validados |
 |---|---|---|---|---|
 
-*Mínimo 3 variantes por campaña. Todo claim validado por ②B.*
+*Mínimo 3 variantes por campaña. Todo claim validado por ②B Branding.*

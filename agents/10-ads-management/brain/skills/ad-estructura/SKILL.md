@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § El encargo · la temperatura y el awareness de `calendario.csv` de ③ |
+| **Consume** | § El encargo · la temperatura y el awareness de `calendario.csv` de ③ Marketing |
 | **Produce** | La sección **§ La estructura** de `plan-de-pauta.md` |
 
 ## 1 · La regla del presupuesto repartido

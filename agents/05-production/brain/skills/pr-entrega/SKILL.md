@@ -2,7 +2,7 @@
 name: pr-entrega
 description: >
   Capa 6 de ⑤ Producción — cierra el rodaje y entrega el material de forma que ⑥A Diseño gráfico y
-  ⑥B Video Editing puedan trabajar sin renombrar ni preguntar. Corre el checklist de cierre de
+  ⑦ Video Editing puedan trabajar sin renombrar ni preguntar. Corre el checklist de cierre de
   locación antes de desarmar, verifica cobertura, audio y backup doble, marca los selects, aplica la
   nomenclatura y la estructura de carpetas, y arma el manifiesto que cruza el Excel fila por fila
   contra lo entregado. Escribe la sección § La entrega de `plan-de-rodaje.md` y completa la columna `estado`
@@ -22,8 +22,8 @@ description: >
 Contexto del departamento: `agents/05-production/brain/WORKFLOW.md`. Plantilla del entregable:
 `agents/05-production/brain/entregables/plan-de-rodaje.md`. Cómo encadena: `agents/05-production/brain/skills/README.md`.
 
-> **La prueba de una buena entrega:** ⑥A o ⑥B abren la carpeta, la cruzan contra el Excel creativo y
-> **encuentran cada escena sin escribirle a nadie.**
+> **La prueba de una buena entrega:** ⑥A Diseño gráfico o ⑦ Video Editing abren la carpeta, la
+> cruzan contra el Excel creativo y **encuentran cada escena sin escribirle a nadie.**
 
 ---
 
@@ -44,7 +44,7 @@ antes de tocar un trípode.
 
 | Ítem del checklist | Qué falla si se saltea |
 |---|---|
-| Escenas marcadas en `estado` | Nadie sabe qué falta hasta que ⑥B no lo encuentra |
+| Escenas marcadas en `estado` | Nadie sabe qué falta hasta que ⑦ Video Editing no lo encuentra |
 | Cobertura | El corte no cierra y no hay con qué taparlo |
 | Audio escuchado | El medidor no oye el zumbido del aire ni el roce del lavalier |
 | Dos tomas buenas | Una toma única con un micro-error obliga a volver |
@@ -63,10 +63,10 @@ antes de tocar un trípode.
 |---|---|
 | **⑤ Producción** | Cuál toma **sirve**: enfoque, exposición, audio, actuación utilizable |
 | **⑥A Diseño gráfico** | **El frame exacto**, el recorte, la composición y el retoque |
-| **⑥B Video Editing** | **El montaje**, el ritmo, el color de entrega y las versiones por plataforma |
+| **⑦ Video Editing** | **El montaje**, el ritmo, el color de entrega y las versiones por plataforma |
 
-🛑 **Marcar de más obliga a ⑥A y ⑥B a revisar todo el material; marcar de menos les esconde la toma
-buena.** Las dos formas de equivocarse cuestan una jornada de su lado.
+🛑 **Marcar de más obliga a ⑥A Diseño gráfico y ⑦ Video Editing a revisar todo el material; marcar
+de menos les esconde la toma buena.** Las dos formas de equivocarse cuestan una jornada de su lado.
 
 ---
 
@@ -81,7 +81,7 @@ buena.** Las dos formas de equivocarse cuestan una jornada de su lado.
 | Nomenclatura y estructura de carpetas **ya aplicadas** | Montaje, captions y versiones por plataforma |
 
 🛑 **Producción no entrega piezas terminadas.** Si entrega un archivo listo para publicar, se saltó a
-⑥A o ⑥B y nadie revisó la composición contra lo que pidió ④ Creatividad.
+⑥A Diseño gráfico o ⑦ Video Editing y nadie revisó la composición contra lo que pidió ④ Creatividad.
 
 ---
 
@@ -98,7 +98,7 @@ buena.** Las dos formas de equivocarse cuestan una jornada de su lado.
 |---|---|
 | Todo en **minúsculas**, sin espacios, sin tildes, sin caracteres especiales | Se rompen en la sincronización y en cualquier script |
 | `id_creativo` y `escena` **exactos como están en el Excel** | Son **la llave del cruce**. Un `CR-7` en vez de `CR-007` rompe el manifiesto |
-| El sufijo `_SELECT` marca las tomas buenas — **nada más las marca** | Es lo que ⑥A y ⑥B buscan primero |
+| El sufijo `_SELECT` marca las tomas buenas — **nada más las marca** | Es lo que ⑥A Diseño gráfico y ⑦ Video Editing buscan primero |
 | El número de toma con **dos dígitos** (`t01`, no `t1`) | Para que ordene bien al listar la carpeta |
 | Los ambientes van por **locación**, no por escena | No pertenecen a una escena: se usan para rellenar cortes |
 
@@ -119,7 +119,7 @@ Esta capa **aplica** la nomenclatura; no la inventa.
     │   │   ├── foto/
     │   │   └── audio/
     │   └── jornada-2/
-    ├── 01_SELECTS/          ← lo que ⑥A y ⑥B abren primero
+    ├── 01_SELECTS/          ← lo que ⑥A Diseño gráfico y ⑦ Video Editing abren primero
     │   ├── CR-001/
     │   └── CR-007/
     ├── 02_AMBIENTES/
@@ -129,15 +129,15 @@ Esta capa **aplica** la nomenclatura; no la inventa.
 | Carpeta | Qué va | Quién la usa |
 |---|---|---|
 | `00_RAW` | **Todo**, incluido el descarte. Organizado por jornada | Archivo. Casi nunca se abre |
-| `01_SELECTS` | Las tomas buenas, **organizadas por `id_creativo`** | ⑥A y ⑥B — es su punto de entrada |
-| `02_AMBIENTES` | Los ambientes por locación (30 s cada uno) | ⑥B, para rellenar cortes |
-| `_ENTREGA` | Las rutas y el manifiesto | ⑥A, ⑥B y la Capa 7 |
+| `01_SELECTS` | Las tomas buenas, **organizadas por `id_creativo`** | ⑥A Diseño gráfico y ⑦ Video Editing — es su punto de entrada |
+| `02_AMBIENTES` | Los ambientes por locación (30 s cada uno) | ⑦ Video Editing, para rellenar cortes |
+| `_ENTREGA` | Las rutas y el manifiesto | ⑥A Diseño gráfico, ⑦ Video Editing y la Capa 7 |
 
 Cada sesión se anota en `clients/<cliente>/04-contenido/AAAA-MM/produccion/MATERIAL.md`
 *(Sesión · Fecha · Crudo · Final · Subió)*, con el link al Drive.
 
 🛑 **`01_SELECTS` se organiza por pieza creativa, no por jornada.** La jornada es una categoría de
-Producción; **⑥A y ⑥B trabajan por pieza**, y una pieza casi siempre se grabó en dos días distintos.
+Producción; **⑥A Diseño gráfico y ⑦ Video Editing trabajan por pieza**, y una pieza casi siempre se grabó en dos días distintos.
 
 🛑 **No se borra material crudo. Ni el descartado.** El descarte se **marca**, no se elimina: queda
 en `00_RAW`. Lo que hoy es descarte es el plan B de la Capa 7, y el material que se borró es el que
@@ -164,7 +164,7 @@ Y el resumen **por pieza creativa**:
 ```
 
 🛑 **Toda escena `planificada` que no terminó `entregada` lleva motivo escrito.** Una escena que
-desaparece en silencio es una pieza que ⑥A o ⑥B van a descubrir que no pueden armar, en su mesa, y
+desaparece en silencio es una pieza que ⑥A Diseño gráfico o ⑦ Video Editing van a descubrir que no pueden armar, en su mesa, y
 eso cuesta una jornada entera de vuelta.
 
 🛑 **Una fila creativa está completa solo si TODAS sus escenas están entregadas.** No se declara
@@ -172,7 +172,7 @@ completa una pieza a la que le falta una escena, por chica que sea.
 
 **La columna `estado` se completa acá**, fila por fila: `grabada` cuando existe el material ·
 `entregada` cuando está nombrada, respaldada y en su carpeta · `↩️ devuelta` cuando no se grabó y
-vuelve a ④ con motivo y dos alternativas.
+vuelve a ④ Creatividad con motivo y dos alternativas.
 
 ---
 
@@ -195,7 +195,7 @@ creativas completas y las **incompletas nombradas una por una**.
 - [ ] El audio de cada escena con voz se **escuchó con auriculares**, no se asumió por el medidor
 - [ ] 🛑 **Backup en dos lugares antes de salir de la locación**
 - [ ] Los **selects están marcados** — las tomas buenas, y solo esas
-- [ ] 🛑 **No se entregó ninguna pieza terminada** — eso es de ⑥A Diseño y ⑥B Video Editing
+- [ ] 🛑 **No se entregó ninguna pieza terminada** — eso es de ⑥A Diseño gráfico y ⑦ Video Editing
 - [ ] La nomenclatura de `plan-de-rodaje.md` § Cómo se nombran los archivos está **aplicada**, con `id_creativo` y `escena` **exactos**
 - [ ] La estructura de carpetas está armada, con `01_SELECTS` organizado **por `id_creativo`**
 - [ ] El **manifiesto cruza el Excel fila por fila**, sin muestreo
