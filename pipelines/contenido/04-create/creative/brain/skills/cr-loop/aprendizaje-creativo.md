@@ -18,7 +18,7 @@
 | `accion` (BOFU) | | DMs / leads / agendas | | |
 | `pertenencia` (post-compra) | | respuestas / UGC / referidos | | |
 
-🛑 **Nunca "likes" por default.** Un CTR alto con CPA malo es un mal creativo: atrae a la gente
+**Nunca "likes" por default.** Un CTR alto con CPA malo es un mal creativo: atrae a la gente
 equivocada.
 
 ## 2. Hipótesis con veredicto
@@ -44,7 +44,7 @@ equivocada.
 |---|---|---|---|---|
 | | | | remixar / retirar / sigue vigente | |
 
-**Cómo se remixa:** mismo ángulo, nuevo visual. 🛑 Ni repetirla idéntica hasta el cansancio, ni
+**Cómo se remixa:** mismo ángulo, nuevo visual. Ni repetirla idéntica hasta el cansancio, ni
 abandonarla.
 
 ## 5. Actualización del toolkit

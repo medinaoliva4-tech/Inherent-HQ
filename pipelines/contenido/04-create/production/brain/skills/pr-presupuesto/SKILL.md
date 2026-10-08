@@ -19,7 +19,7 @@ description: >
 | **Consume** | Las jornadas cerradas de la Capa 2 (columna `jornada` + el factor de consolidación) · los recursos de la Capa 3 con su origen (`propio`/`prestado`/`alquilado`/`comprado`/`a-producir`) · el presupuesto de referencia declarado en la Capa 0, si existe · las cotizaciones de `99-referencias/recibido/` |
 | **Produce** | **`presupuesto.md`** — el entregable que lee el cliente · `presupuesto.csv` interno, 6 columnas, categorías cerradas, `TOTAL` por campaña y `TOTAL CICLO` · la columna `costo_estimado` de `plan-de-produccion.csv` · el costo por pieza · y, si se pasa de la referencia, las 3 opciones con su impacto |
 
-Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Plantilla del entregable:
+Contexto del departamento: `pipelines/contenido/04-create/production/README.md`. Plantilla del entregable:
 `pipelines/contenido/04-create/production/brain/entregables/presupuesto.md`.
 
 **Qué es:** poner número al plan que ya está agrupado, y compararlo con datos contra la referencia.
@@ -30,9 +30,9 @@ Video Editing.
 🔑 **El presupuesto de producción del onboarding, si existe, es referencia** para saber por dónde
 presupuestar — no techo ni bloqueo. **Cada campaña o sesión puede llevar su propio presupuesto.**
 
-## 🛑 La regla que manda: no se presupuesta sin Capa 2 hecha
+## La regla que manda: no se presupuesta sin Capa 2 hecha
 
-> 🛑 **Si las jornadas no están consolidadas, la Capa 4 no corre** — aunque lo pidan directo.
+> **Si las jornadas no están consolidadas, la Capa 4 no corre** — aunque lo pidan directo.
 
 **Por qué.** Un presupuesto sin consolidar está inflado **entre 3 y 5 veces**, porque cada escena
 carga sus propios fijos. Y si ese número se aprueba, se vuelve la referencia del cliente para
@@ -44,7 +44,7 @@ Decílo así y ofrecé correr `pr-jornadas` primero.
 
 ## Paso 1 · Los 5 bloques — se cuesta por jornada, no por pieza
 
-> 🛑 **Costear por pieza duplica los fijos.** La locación, el equipo, el traslado y la asistencia se
+> **Costear por pieza duplica los fijos.** La locación, el equipo, el traslado y la asistencia se
 > pagan una vez por día, no una vez por pieza. Si se cargan por pieza, cada pieza paga el día entero.
 
 | # | Bloque | Qué entra | Se cuesta por |
@@ -55,11 +55,11 @@ Decílo así y ofrecé correr `pr-jornadas` primero.
 | 4 | **Post base** | Backup doble · descarga · selects · transcodificación | **Jornada** |
 | 5 | **Contingencia** | % declarado, **como línea propia** | **Total** |
 
-🛑 **Post base ≠ edición.** Ordenar, respaldar y marcar selects es de Producción y va acá. Montar,
+**Post base ≠ edición.** Ordenar, respaldar y marcar selects es de Producción y va acá. Montar,
 corregir color de entrega, versionar por plataforma y exportar es de Diseño gráfico y Video Editing,
 y va en **su** presupuesto. Meterlo acá hace que se presupueste dos veces o ninguna.
 
-🛑 **El talento se paga por jornada, no por toma.** Si alguien aparece en 9 escenas de la misma
+**El talento se paga por jornada, no por toma.** Si alguien aparece en 9 escenas de la misma
 jornada, es **una** línea de talento, no nueve.
 
 ## Paso 2 · La contingencia — según el perfil del rodaje
@@ -81,7 +81,7 @@ Contingencia (15%)       Q  495     ← línea visible, con su % y su motivo
 TOTAL                    Q3.695
 ```
 
-> 🛑 **La contingencia va como línea propia y nunca repartida dentro de los ítems.** Escondida en los
+> **La contingencia va como línea propia y nunca repartida dentro de los ítems.** Escondida en los
 > ítems **se gasta sin que nadie note que se gastó**, y al cierre no hay forma de saber si el desvío
 > fue real o fue contingencia consumida — que es justo lo que la Capa 7 necesita distinguir.
 
@@ -107,7 +107,7 @@ formato y con qué presupuesto.
 
 ## Paso 4 · Escribir `presupuesto.csv` — el respaldo interno
 
-> 🛑 **El CSV es interno, no es el entregable.** Es donde vive el número con su categoría cerrada y,
+> **El CSV es interno, no es el entregable.** Es donde vive el número con su categoría cerrada y,
 > al cierre, el `costo_real`. Lo que ve el cliente es `presupuesto.md` (Paso 4b).
 
 ```
@@ -155,10 +155,10 @@ cerradas. Plantilla: `pipelines/contenido/04-create/production/brain/entregables
 
 1. **Qué vamos a producir y cuándo se graba** — en piezas, no en escenas ni en ids.
 2. **Qué necesitamos del cliente** — acceso, producto, personas, con fecha y responsable. No cuesta plata y es lo que más atrasa un rodaje.
-3. **Qué NO incluye** — la edición, el diseño y la pauta se cotizan aparte. 🛑 Si no está escrito, el cliente lo asume incluido.
+3. **Qué NO incluye** — la edición, el diseño y la pauta se cotizan aparte. Si no está escrito, el cliente lo asume incluido.
 4. **Por qué cuesta lo que cuesta** — una línea sobre los días que se ahorran por consolidar. Convierte el número en un argumento en vez de un dato suelto.
 
-> 🛑 **Con una sola campaña no se muestra desglose por campaña: va el total y listo.** El desglose
+> **Con una sola campaña no se muestra desglose por campaña: va el total y listo.** El desglose
 > por campaña aparece **solo si el ciclo tiene dos o más**, y ahí se cierra con el total del ciclo.
 > La estructura del CSV soporta N campañas siempre; lo que se ajusta es qué se muestra.
 
@@ -173,7 +173,7 @@ impacto**, y el ciclo sigue — **solo el gasto que pasa la referencia espera su
 | **Recortar filas** | Se **proponen** las de menor traza a la intención, con su costo al lado | La intención de las filas que quedan | **Marketing** |
 | **Bajar de especificación** | Locación más simple, menos talento, menos equipo, arte más liviano | **El encuadre, la acción y la duración** — tocar eso vuelve a Creatividad | **Creatividad** si roza encuadre, acción o duración |
 
-> 🛑 **Producción nunca elige sola qué pieza se cae.** Propone, con números; **deciden Marketing y
+> **Producción nunca elige sola qué pieza se cae.** Propone, con números; **deciden Marketing y
 > Creatividad**. Recortar en silencio es decidir el alcance de la campaña sin mandato.
 
 El gasto que pasa la referencia se marca **⏸️ ESCALADO AL CEO** y **no se compromete** hasta su
@@ -181,7 +181,7 @@ respuesta. No se ejecuta "porque era urgente". Todo lo demás sigue.
 
 ## Moneda y fecha, en todo número
 
-> 🛑 **Un número sin fecha caduca y nadie sabe cuándo.** Todo costo lleva **moneda y fecha de
+> **Un número sin fecha caduca y nadie sabe cuándo.** Todo costo lleva **moneda y fecha de
 > cotización**.
 
 ❌ *"Equipo: 1200"* ✅ *"Equipo: Q1.200 — cotizado 08-oct-2026, vigencia 30 días"*
@@ -197,24 +197,24 @@ CEO**; lo único que espera es el gasto `⏸️ ESCALADO AL CEO`.
 
 ## QA — Capa 4
 
-- [ ] 🛑 **La Capa 2 está hecha.** Presupuestar sin consolidar se rechaza, aunque lo pidan directo
+- [ ] **La Capa 2 está hecha.** Presupuestar sin consolidar se rechaza, aunque lo pidan directo
 - [ ] Se costeó **por jornada**, no por pieza
 - [ ] Los **5 bloques** están separados: fijos de jornada · talento · variables por escena · post base · contingencia
-- [ ] 🛑 **Post base ≠ edición.** El montaje, el color de entrega y el export **no están acá**
+- [ ] **Post base ≠ edición.** El montaje, el color de entrega y el export **no están acá**
 - [ ] La **contingencia va como línea propia y visible**, con su % según el perfil del rodaje
-- [ ] 🛑 **La contingencia no está repartida dentro de ningún ítem**
+- [ ] **La contingencia no está repartida dentro de ningún ítem**
 - [ ] Todo número lleva **moneda y fecha de cotización**
 - [ ] El **costo por pieza está calculado**: fijos prorrateados de su jornada + variables propias
 - [ ] `presupuesto.csv` usa **solo las 9 categorías cerradas**, sin inventar ni renombrar
 - [ ] `presupuesto.csv` cierra con una fila **`TOTAL` por campaña** y una **`TOTAL CICLO`**
 - [ ] La columna `costo_estimado` está completa en **todas** las filas de `plan-de-produccion.csv`
 - [ ] El `costo_real` quedó en `presupuesto.csv` para la Capa 6/7 — **no** en el CSV de escenas
-- [ ] 🛑 **`presupuesto.md` está escrito y sus números cuadran con el CSV** — el cliente y el interno no pueden decir cosas distintas
+- [ ] **`presupuesto.md` está escrito y sus números cuadran con el CSV** — el cliente y el interno no pueden decir cosas distintas
 - [ ] `presupuesto.md` **no usa jerga del método**: ni `jornada`, ni `factor de consolidación`, ni ids de pieza, ni las categorías cerradas
 - [ ] `presupuesto.md` trae **qué necesitamos del cliente** (con fecha y responsable) y **qué NO incluye**
 - [ ] Con una sola campaña, `presupuesto.md` **no muestra desglose por campaña**
 - [ ] Si se pasa de la referencia: están **las 3 opciones** con su impacto y con quién decide cada una
-- [ ] 🛑 **Producción no eligió sola qué pieza se cae**
+- [ ] **Producción no eligió sola qué pieza se cae**
 - [ ] Todo gasto que pasa la referencia está **escalado al CEO** y marcado **⏸️ ESCALADO AL CEO**, no ejecutado
 - [ ] Lo que no se pudo cotizar está declarado **⚠️ SIN DATOS** con a quién pedírselo
 - [ ] **Nada comprometido antes de cerrar esta capa:** ni reserva, ni convocatoria, ni compra

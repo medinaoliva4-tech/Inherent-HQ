@@ -39,14 +39,14 @@ description: >
 | **Ritmo** | Una idea por tarjeta. **Nunca el párrafo entero** |
 | **Ortografía** | Se revisa. Un subtítulo con error es un error en todas las copias |
 
-🛑 **Los subtítulos automáticos no se publican sin revisar.** Transcriben mal los nombres propios
+**Los subtítulos automáticos no se publican sin revisar.** Transcriben mal los nombres propios
 y los términos del cliente, que es justo lo que más importa.
 
 ## 2 · La entrada de texto
 
 **Una sola forma, la que Branding definió.**
 
-🛑 **Cinco animaciones distintas en un ciclo es ninguna.** La repetición es lo que vuelve
+**Cinco animaciones distintas en un ciclo es ninguna.** La repetición es lo que vuelve
 reconocible el movimiento.
 
 **Si Branding todavía no la definió** (guía sin § Movimiento), el motor trae estas; se elige **una por
@@ -108,8 +108,8 @@ deciden a ojo ni con un filtro general.**
 | Qué | Cómo | Regla |
 |---|---|---|
 | **Hoja de revisión** | `review.py` — un fotograma cada 0.5 s del render | Claude la mira entera antes de entregar: textos cortados, logo, saltos, tomas repetidas |
-| **Temblor** | `jitter_all.py` compara original vs estabilizado por tramo | **Se estabiliza solo si mide mejor.** 🛑 El estabilizador sigue las manos, no el fondo: en tomas con manos u objetos en movimiento empeora y se ve «trabado». Si una toma tiembla mucho aun en original, **se reemplaza** |
-| **Color** | `colorstats.py` mide temperatura (b\*) y brillo (L\*) de las zonas neutras de **cada toma** | Se corrige **toma por toma**, solo las que se desvían (p. ej. mesas que salen azules). Preferir el **original + un toque de temperatura** (`colortemperature`). 🛑 Ni filtro global ni «neutralizar» canal por canal: el cliente lo vio peor |
+| **Temblor** | `jitter_all.py` compara original vs estabilizado por tramo | **Se estabiliza solo si mide mejor.** El estabilizador sigue las manos, no el fondo: en tomas con manos u objetos en movimiento empeora y se ve «trabado». Si una toma tiembla mucho aun en original, **se reemplaza** |
+| **Color** | `colorstats.py` mide temperatura (b\*) y brillo (L\*) de las zonas neutras de **cada toma** | Se corrige **toma por toma**, solo las que se desvían (p. ej. mesas que salen azules). Preferir el **original + un toque de temperatura** (`colortemperature`). Ni filtro global ni «neutralizar» canal por canal: el cliente lo vio peor |
 | **Voces del equipo** | Espectrograma del audio; `finish_audio.sh` silencia los tramos y normaliza a −20 LUFS | Solo si la pieza va con sonido directo. Si la música se pone en la app, la entrega va **sin audio** (`ve-export`) |
 | **Texto vs glosario** | El texto en pantalla contra el glosario de voz del cliente (palabras prohibidas) | Si choca, **vuelve a Creatividad**. No se reescribe acá |
 
@@ -135,7 +135,7 @@ deciden a ojo ni con un filtro general.**
 **El corte principal no para a pedir aprobación:** con el QA medido (§6), la auto-revisión (§7) y
 el checklist de §9 completos, pasa a `ve-derivadas`.
 
-🛑 **De este corte salen todas las derivadas.** Dejarlo flojo multiplica el error por 3.
+**De este corte salen todas las derivadas.** Dejarlo flojo multiplica el error por 3.
 
 ## 9 · Checklist
 

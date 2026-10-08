@@ -26,14 +26,14 @@ la Capa 0 agrupó.
 
 ## 2 · El copy va literal
 
-🛑 **El texto es el que Creatividad escribió.** No se acorta, no se mejora, no se corrige el estilo.
+**El texto es el que Creatividad escribió.** No se acorta, no se mejora, no se corrige el estilo.
 
 | Si el copy no entra | Qué se hace |
 |---|---|
 | Se pasa por poco | Se revisa la jerarquía de la plantilla |
 | Se pasa de verdad | ↩️ **Se devuelve a Creatividad** con el máximo de caracteres que entra |
 
-🛑 **Acortar el copy en Diseño gráfico rompe el hook que Creatividad diseñó**, y nadie se entera hasta el loop.
+**Acortar el copy en Diseño gráfico rompe el hook que Creatividad diseñó**, y nadie se entera hasta el loop.
 
 ## 3 · Las cuatro verificaciones de cada pieza
 
@@ -51,7 +51,7 @@ la Capa 0 agrupó.
 | **La slide 1 se entiende sola** | Es la única que la mayoría va a ver |
 | **Cada slide se sostiene sola** | Nadie garantiza que deslicen en orden |
 
-🛑 **Una slide 1 que dice *«deslizá para ver»* y nada más desperdicia la única impresión que
+**Una slide 1 que dice *«deslizá para ver»* y nada más desperdicia la única impresión que
 tenés asegurada.**
 
 ## 5 · La story tiene una regla propia

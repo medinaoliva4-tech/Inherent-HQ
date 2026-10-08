@@ -56,7 +56,7 @@ description: >
 | **La imagen peor** | Baja resolución, mal encuadre: ¿la plantilla la sostiene? |
 | **Sin imagen** | ¿Hay una variante que funcione solo con tipografía? |
 
-🛑 **Una plantilla que solo funciona con el copy ideal se rompe en la pieza 12** — y ahí ya no
+**Una plantilla que solo funciona con el copy ideal se rompe en la pieza 12** — y ahí ya no
 hay tiempo de rehacerla.
 
 ## 4 · El activo distintivo va en la plantilla
@@ -84,7 +84,7 @@ siguiente:
 ↩️ **Se devuelve a Branding con la regla que falta**, escrita como pregunta concreta:
 *«¿Qué tratamiento lleva un número grande sobre fondo de acento?»*
 
-🛑 **No se inventa la regla acá.** Una decisión tomada en Diseño gráfico se vuelve precedente sin que
+**No se inventa la regla acá.** Una decisión tomada en Diseño gráfico se vuelve precedente sin que
 Branding se entere, y al tercer ciclo el sistema tiene dos reglas contradictorias.
 
 ## 7 · Se revisa el molde, no las piezas

@@ -26,7 +26,7 @@ description: >
 | Qué concepto funcionó | Qué **pilar** vale su peso |
 | Qué pieza fatigó | Qué **canal** se sostiene |
 
-🛑 **Si el loop de Marketing habla de piezas, invadió a Creatividad.**
+**Si el loop de Marketing habla de piezas, invadió a Creatividad.**
 
 ## 2 · Las cinco lecturas
 
@@ -66,7 +66,7 @@ negocio no está creciendo: está exprimiendo.**
 | Hay métricas de algunos canales | Se lee lo que hay y **se declara qué falta** |
 | El cliente no da acceso a su analítica | 🔴 Se escala. **Sin atribución limpia no hay performance fee** |
 
-🛑 **Nunca se inventa un ganador.** Un patrón falso se repite tres ciclos antes de que alguien
+**Nunca se inventa un ganador.** Un patrón falso se repite tres ciclos antes de que alguien
 lo note.
 
 ## 5 · Qué escribe

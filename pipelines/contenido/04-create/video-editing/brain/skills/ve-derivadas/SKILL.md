@@ -14,7 +14,7 @@ description: >
 | | |
 |---|---|
 | **Consume** | El corte principal **auto-revisado** (`ve-marca` §8) · `plan-de-contenido.csv` · `plan-por-canal.md` *(si no existe, las **Redes** del `plan-contratado.md`)* |
-| **Produce** | Las **4 · 6 · 9 · 12** piezas derivadas del ciclo *(mínimo 1:2 — ver §0 del `WORKFLOW.md`)* |
+| **Produce** | Las **4 · 6 · 9 · 12** piezas derivadas del ciclo *(mínimo 1:2 — ver §0 del `README.md`)* |
 
 > 🔑 **Acá está el margen del modelo.** Producción cuesta horas humanas; cada derivada cuesta
 > Q0. **Entregar menos derivadas no ahorra: desperdicia grabación pagada.**
@@ -39,7 +39,7 @@ description: >
 | **Qué cambia** | Solo los primeros 3 segundos |
 | **Qué NO cambia** | El cuerpo, el CTA y la traza a la MUST BE TRUE |
 
-🛑 **Una variante que cambia el mensaje no es una variante: es otra pieza**, y Creatividad la tiene que
+**Una variante que cambia el mensaje no es una variante: es otra pieza**, y Creatividad la tiene que
 dirigir.
 
 ## 3 · El reencuadre no es recortar
@@ -64,7 +64,7 @@ dirigir.
 | **3** | Fragmentos para **story** |
 | **4** | Cortes cortos |
 
-🛑 **Si no alcanza el techo para todo, se corta por el final de la lista y se declara.**
+**Si no alcanza el techo para todo, se corta por el final de la lista y se declara.**
 
 ## 5 · El segundo idioma — no se ofrece
 

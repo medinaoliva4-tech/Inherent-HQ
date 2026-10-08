@@ -18,7 +18,7 @@ description: >
 
 ## 1 · ⛔ No entra en la línea Marketing
 
-🛑 **Antes no hay nada que perder.** Un sistema de conversión sobre 3 mensajes al mes es
+**Antes no hay nada que perder.** Un sistema de conversión sobre 3 mensajes al mes es
 infraestructura sin uso.
 
 > 🔑 **Es una promesa publicada de Accelerate:** *«Nadie que te escribe se queda sin respuesta.»*
@@ -35,7 +35,7 @@ infraestructura sin uso.
 | **Compra** | ¿Qué fricción tiene el pago o el cierre? |
 | **No compra** | ¿Qué pasa con él? **Casi siempre: nada** |
 
-🛑 **Automatizar un embudo que no se mapeó es automatizar el desorden.**
+**Automatizar un embudo que no se mapeó es automatizar el desorden.**
 
 ## 3 · Los tres frentes
 
@@ -64,7 +64,7 @@ infraestructura sin uso.
 
 ## 4 · ⚠️ Responder al cliente final es acción hacia afuera
 
-🛑 **Toda respuesta automática se auto-revisa antes de encenderse:** contra la oferta y el tono de
+**Toda respuesta automática se auto-revisa antes de encenderse:** contra la oferta y el tono de
 Branding. Un auto-DM mal escrito le habla a todos los clientes del cliente.
 **Si dice un precio o una oferta nueva, se escala al CEO:** es comprometer precio.
 

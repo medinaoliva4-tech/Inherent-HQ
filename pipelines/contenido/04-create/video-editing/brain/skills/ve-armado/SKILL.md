@@ -27,7 +27,7 @@ description: >
 | **0-1** | El hook ya empezó. **No hay intro, no hay logo animado, no hay "hola a todos"** |
 | **1-3** | Se entiende de qué va. Quien se queda, se queda acá |
 
-🛑 **Un logo animado al inicio es tirar el 40% de la retención.** El branding va **dentro** de la
+**Un logo animado al inicio es tirar el 40% de la retención.** El branding va **dentro** de la
 pieza, no antes. **El logo fijo sobre el frame del hook sí va** —es el activo del primer frame—:
 entra en ≤ 10 frames, al 100 % y sin tapar el hook (`ve-marca` §1).
 
@@ -44,7 +44,7 @@ más redujo rondas de cambios en cliente real.
 | **4** | El operador anota por escena: texto, posición, estilo, efecto, notas y «aprobada». Se guarda solo |
 | **5** | Claude lee las notas (`ArtifactData list` de la colección `notas`) y las pasa al guion de montaje |
 
-🛑 **Si el operador cambia una palabra del texto, es un cambio de copy:** se registra y se avisa a
+**Si el operador cambia una palabra del texto, es un cambio de copy:** se registra y se avisa a
 Creatividad por escrito. Posición, estilo, efecto, duración y toma sí se deciden acá.
 
 ## 3 · El reparto HOOK-BODY-PAYOFF
@@ -57,7 +57,7 @@ Creatividad por escrito. Posición, estilo, efecto, duración y toma sí se deci
 | **BODY** | Entrega lo prometido | Meter tres ideas donde iba una |
 | **PAYOFF** | Cierra y pide la acción | Cortar antes del CTA |
 
-> 🛑 **Si la pieza se pasa de largo, se corta del BODY — nunca del HOOK ni del PAYOFF.**
+> **Si la pieza se pasa de largo, se corta del BODY — nunca del HOOK ni del PAYOFF.**
 
 > 🔑 **El hook visual es el momento más apetitoso del material, en cámara lenta** (el `hero` de la
 > lista de posproducción). **Lo más rico va al final y dura más**: los pasos poco vistosos (aderezo,
@@ -111,7 +111,7 @@ Creatividad por escrito. Posición, estilo, efecto, duración y toma sí se deci
 | **2** | ¿Hay material de banco que cubra esa escena? |
 | **3** | ↩️ **Se devuelve a Creatividad** con qué escena falta y qué sí hay |
 
-🛑 **Nunca se cambia el hook para que entre el material.** El hook traza a una MUST BE TRUE;
+**Nunca se cambia el hook para que entre el material.** El hook traza a una MUST BE TRUE;
 cambiarlo rompe la cadena y nadie se entera hasta el loop.
 
 ## 6 · El corte principal es el que se multiplica

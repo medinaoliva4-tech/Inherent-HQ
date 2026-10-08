@@ -18,7 +18,7 @@ description: >
 | **Consume** | El brief del ciclo (de `cr-brief`) · los anuncios que trae `cr-fuentes` · las fichas de referencia que produce `cr-lectura-de-video` · **si existen:** la tabla 15×7 y el mapa de saturación de `ingenieria-inversa.md` (Strategy) y el banco de hooks propio de un ciclo anterior |
 | **Produce** | `swipe-file.md` — archivo de trabajo interno: referencias con señal, patrones, cubetas e hipótesis atadas a un slot · y la columna `mezcla` de cada fila de `plan-de-contenido.csv` |
 
-Contexto del departamento: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`. Cadencia: **refresco semanal**.
+Contexto del departamento: `pipelines/contenido/04-create/creative/README.md`. Cadencia: **refresco semanal**.
 
 **Qué es:** bajar el riesgo de una pieza **antes** de producirla, leyendo lo que el mercado ya validó
 con tiempo y con dinero.
@@ -26,9 +26,9 @@ con tiempo y con dinero.
 moodboard, y no son las referencias estéticas de Branding — esas dicen cómo debe *verse* la
 marca, estas dicen qué **funciona**.
 
-## 🛑 La regla que manda: la antigüedad se lee, no se pregunta
+## La regla que manda: la antigüedad se lee, no se pregunta
 
-> 🛑 **Ninguna fecha de antigüedad entra al swipe file si no fue leída directamente de la Ad
+> **Ninguna fecha de antigüedad entra al swipe file si no fue leída directamente de la Ad
 > Library** — de la página, o de un MCP que la lea. **NUNCA de un modelo.**
 
 **Por qué.** Se le pidió a un modelo que listara anuncios activos: devolvió 5, con id y fecha.
@@ -59,7 +59,7 @@ Y recién después, el hueco:
 | Qué falta | Por qué la 15×7 no lo cubre | Dónde lo cosecho |
 ```
 
-🛑 **Solo se cosecha el hueco.** Repetir el barrido de categoría es duplicar el trabajo de
+**Solo se cosecha el hueco.** Repetir el barrido de categoría es duplicar el trabajo de
 Strategy y llegar, con menos rigor, a otra conclusión sobre la misma categoría. Lo que la 15×7
 ya cubre **se cita por número de fila, no se re-investiga**.
 
@@ -90,9 +90,9 @@ evidencia de rendimiento. **En orden de fuerza:**
 > Una pieza con muchas views de una cuenta enorme puede ser **el peor** contenido de esa cuenta.
 > *"Ganadora"* es siempre **relativo a su propia base**.
 
-🛑 **Sin señal de rendimiento no entra a la bóveda.** Se descarta y se cuenta en el bloque de fuentes.
-🛑 **Nunca se guarda una referencia por gusto estético.** *"Me gusta"* no es evidencia.
-🛑 **Leer no es validar.** Una referencia impecablemente leída sin señal `⏱️` sigue siendo `⚪ ruido`.
+**Sin señal de rendimiento no entra a la bóveda.** Se descarta y se cuenta en el bloque de fuentes.
+**Nunca se guarda una referencia por gusto estético.** *"Me gusta"* no es evidencia.
+**Leer no es validar.** Una referencia impecablemente leída sin señal `⏱️` sigue siendo `⚪ ruido`.
 
 ### Las dos escalas no se mezclan
 
@@ -101,7 +101,7 @@ evidencia de rendimiento. **En orden de fuerza:**
 | `⏱️` | El **rendimiento de UNA referencia** | Días corriendo, outlier vs. su base, estabilidad. **Escala propia** |
 | 🟢 / 🟡 / ⚪ | El **patrón**, por conteo de fuentes | 🟢 = **3+ fuentes independientes** · 🟡 = 1-2, o 3+ de la misma fuente · ⚪ = una sola aparición |
 
-🛑 Un ad `⏱️60-90+d` visto en **una sola** fuente da un patrón **🟡**, no 🟢. Mezclar las dos escalas
+Un ad `⏱️60-90+d` visto en **una sola** fuente da un patrón **🟡**, no 🟢. Mezclar las dos escalas
 hace que un 🟢 no se pueda auditar.
 
 ## Paso 2 · Diseccionar: extraer el patrón
@@ -121,7 +121,7 @@ De cada ganadora, en este orden:
 | # | Link | Fuente | Señal ⏱️ | Patrón 🟢/🟡/⚪ | Hook | Ángulo | Formato | Estructura | Prueba | CTA |
 ```
 
-🛑 **Patrón, no pieza.** El link va a la referencia visual del `ideas-<formato>.md` de la pieza para que el ejecutor **vea**
+**Patrón, no pieza.** El link va a la referencia visual del `ideas-<formato>.md` de la pieza para que el ejecutor **vea**
 la referencia, pero lo que se dirige es el patrón. Si lo que se lleva al brief es la imagen, la
 estructura del copy o el creativo, es clonar — y falla el filtro de distintividad.
 
@@ -176,7 +176,7 @@ existe, se declara `⚠️ SIN DATOS — sin mapa de saturación` y se sigue:
 
 | Resultado del cruce | Qué se hace |
 |---|---|
-| El patrón **está** en el mapa (todos lo hacen) | 🛑 **Se descarta.** Adoptar el default de categoría nos vuelve invisibles |
+| El patrón **está** en el mapa (todos lo hacen) | **Se descarta.** Adoptar el default de categoría nos vuelve invisibles |
 | Está en el mapa, pero **el white space está al lado** | Se conserva la **estructura** y se invierte el contenido |
 | **No está** en el mapa | Entra. Es novedad real para esta categoría |
 
@@ -188,14 +188,14 @@ existe, se declara `⚠️ SIN DATOS — sin mapa de saturación` y se sigue:
 
 - [ ] El bloque heredado de la **tabla 15×7** está citado **por número de fila**
 - [ ] El **hueco** está calculado, y **solo se cosechó el hueco**
-- [ ] 🛑 **Ninguna fecha de antigüedad viene de un modelo** — todas leídas de la Ad Library, con fecha de lectura
+- [ ] **Ninguna fecha de antigüedad viene de un modelo** — todas leídas de la Ad Library, con fecha de lectura
 - [ ] Toda referencia tiene señal de rendimiento en escala `⏱️` (`⏱️60-90+d` / `⏱️30-60d` / `⏱️outlier` / `⏱️estable`), **sin mezclar con 🟢/🟡/⚪**, que marcan patrón por conteo de fuentes
 - [ ] **Ninguna referencia entró por gusto estético**
 - [ ] Para orgánico: **la base del creador se midió** antes de declarar un outlier
 - [ ] Toda referencia de video leída a fondo tiene su **ficha de referencia** con fecha de lectura
 - [ ] Ninguna referencia se leyó dos veces — se buscó la ficha antes de leer
 - [ ] Lo que no se pudo leer está declarado: `⚠️ SIN ARCHIVO` / `⚠️ SIN TRANSCRIPCIÓN`
-- [ ] 🛑 **Ningún plano descrito que no se vio, ningún audio descrito sin transcripción**
+- [ ] **Ningún plano descrito que no se vio, ningún audio descrito sin transcripción**
 - [ ] Las fichas con lectura de imagen traen **ritmo** (duración media de plano) y **setups distintos**
 - [ ] Cada patrón descompuesto en los **6 elementos** (hook, ángulo, formato, estructura, prueba, CTA)
 - [ ] La bóveda está organizada **por pilar y por tipo de hook**
@@ -206,7 +206,7 @@ existe, se declara `⚠️ SIN DATOS — sin mapa de saturación` y se sigue:
 - [ ] **Cada patrón cruzado contra el mapa de saturación**, si existe — los defaults de categoría descartados — o `⚠️ SIN DATOS` declarado
 - [ ] El banco de hooks propios de un ciclo anterior, si existe, está incorporado y **arriba**
 - [ ] Fecha del relevamiento + fuentes usadas y no disponibles + confianza 🟢/🟡/🔴
-- [ ] 🛑 **Ninguna referencia se llevó al brief como imagen a replicar**
+- [ ] **Ninguna referencia se llevó al brief como imagen a replicar**
 
 **Handoff →** `cr-big-idea` (Capa 2). Un swipe file sin fecha es un swipe file muerto: la longevidad
 se mide al momento de la consulta y un ganador de hace seis meses probablemente ya fatigó.

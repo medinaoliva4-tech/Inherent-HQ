@@ -1,12 +1,11 @@
 ---
 name: br-brief
 description: >
-  Capa 0 de Branding — carga el brief de Strategy desde los archivos de estrategia del
-  cliente y verifica que esté completo antes de desarrollar nada. Separa lo que Strategy ya
-  decidió (tipo de marca, código saturado, dirección visual, referencias) de lo que Branding
-  tiene que resolver, cruza contra lo que el cliente puede sostener y contra la profundidad que
-  paga su plan. Úsala cuando pidan "arrancá el branding de X", "qué decidió estrategia",
-  "verificá el brief de marca". Bloquea si la estrategia no existe o le falta un bloque marcado 🛑.
+  Capa 0 de Branding — carga el brief de Strategy desde los archivos de estrategia del cliente y
+  verifica que esté completo antes de desarrollar nada. Separa lo que Strategy ya decidió (tipo de
+  marca, código saturado, dirección visual, referencias) de lo que Branding tiene que resolver,
+  cruza contra lo que el cliente puede sostener y contra la profundidad que paga su plan. Úsala
+  cuando pidan "arrancá el branding de X", "qué decidió estrategia", "verificá el brief de marca".
 ---
 
 # Capa 0 · Brief — qué decidió Strategy y qué toca resolver
@@ -24,16 +23,16 @@ uno, no un archivo que el cliente tenga que tener.**
 
 | # | Bloque | Si falta |
 |---|---|---|
-| **1** | **Tipo de marca** — rebelde / formal / premium / local, con su por qué | 🛑 BLOQUEADO |
-| **2** | **Audiencia objetivo** | 🛑 BLOQUEADO |
-| **3** | **Posicionamiento** — territorio · enemigo · idea madre | 🛑 BLOQUEADO |
-| **4** | **Código saturado** — qué estilo repite la categoría | 🛑 BLOQUEADO |
-| **5** | **Dirección visual** — hacia dónde vamos y por qué | 🛑 BLOQUEADO |
+| **1** | **Tipo de marca** — rebelde / formal / premium / local, con su por qué | FALTA |
+| **2** | **Audiencia objetivo** | FALTA |
+| **3** | **Posicionamiento** — territorio · enemigo · idea madre | FALTA |
+| **4** | **Código saturado** — qué estilo repite la categoría | FALTA |
+| **5** | **Dirección visual** — hacia dónde vamos y por qué | FALTA |
 | **6** | **Referencias** — incluido el robo de adyacencia | 🟡 Se puede construir |
-| **7** | **Voz de marca** | 🛑 BLOQUEADO |
+| **7** | **Voz de marca** | FALTA |
 | **8** | **Dónde vive** | 🟡 Sale de las **Redes** de `plan-contratado.md` |
 
-🛑 **Ningún bloque se completa por inferencia.** Si falta, se pide a Strategy.
+**Ningún bloque se completa por inferencia.** Si falta, se pide a Strategy.
 
 ## 2 · La separación que ordena todo
 
@@ -44,7 +43,7 @@ uno, no un archivo que el cliente tenga que tener.**
 | **Lo que Strategy decidió** | Es **restricción**. No se discute, no se mejora, no se reinterpreta |
 | **Lo que Branding resuelve** | Es el trabajo de este departamento |
 
-> 🛑 **Si al leer el brief aparece que la dirección está mal, se devuelve a Strategy** con el problema
+> **Si al leer el brief aparece que la dirección está mal, se devuelve a Strategy** con el problema
 > escrito. **No se corrige acá en silencio.**
 
 ## 3 · El techo de realidad

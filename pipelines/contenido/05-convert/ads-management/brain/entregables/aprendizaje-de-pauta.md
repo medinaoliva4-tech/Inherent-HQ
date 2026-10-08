@@ -1,6 +1,6 @@
 # Aprendizaje de pauta — <cliente> · ciclo <mes año>
 
-> `ad-loop`. **Corre el 20.** 🛑 Sin 10 conversiones no se declara un ganador.
+> `ad-loop`. **Corre el 20.** Sin 10 conversiones no se declara un ganador.
 
 ---
 

@@ -21,7 +21,7 @@
 
 ## § Arquetipo
 
-> Se describe con las 7 preguntas de `../../WORKFLOW.md` §3. **No se fuerza a una lista cerrada.**
+> Se describe con las 7 preguntas de `../../../README.md` §3. **No se fuerza a una lista cerrada.**
 
 | | |
 |---|---|

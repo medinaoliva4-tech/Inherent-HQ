@@ -20,7 +20,7 @@ description: >
 | **Consume** | Las filas base de `plan-de-produccion.csv` que dejó `pr-desglose` (Capa 1), con `locacion`, `talento`, `recursos` y `equipo` ya identificados · la sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` con el techo de días posibles · las fechas de preparación de Marketing |
 | **Produce** | La columna **`jornada`** de `plan-de-produccion.csv` (`J0`, `J1`, `J2`…) · la sección de cada jornada de `plan-de-rodaje.md`: factor de consolidación, ficha y orden de tiro de cada jornada, y la cobertura obligatoria de cada locación |
 
-Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Plantilla del entregable:
+Contexto del departamento: `pipelines/contenido/04-create/production/README.md`. Plantilla del entregable:
 `pipelines/contenido/04-create/production/brain/entregables/plan-de-rodaje.md`.
 
 **Qué es:** decidir **qué se graba junto y en qué orden**, para que el ciclo cueste X y no 4X.
@@ -28,7 +28,7 @@ Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKF
 presupuestar (Capa 4, y va **después** — costear sin consolidar infla el costo entre 3 y 5 veces),
 y **no es reescribir escenas** para que entren.
 
-## 🛑 El principio: lo caro no son las tomas, son los montajes
+## El principio: lo caro no son las tomas, son los montajes
 
 > Cada cambio de locación, cada convocatoria de talento y cada esquema de luz nuevo cuesta **tiempo
 > muerto que se paga igual**. Treinta escenas pueden ser **once jornadas o dos**, y la diferencia
@@ -37,7 +37,7 @@ y **no es reescribir escenas** para que entren.
 **Por qué esta capa es la más importante del departamento.** Desglosar es mecánico: cualquiera lo
 hace igual. **Agrupar es donde se decide si el ciclo cuesta X o 4X.**
 
-🛑 **Ninguna decisión creativa se cambia para lograr el agrupamiento.** Si la dispersión no se puede
+**Ninguna decisión creativa se cambia para lograr el agrupamiento.** Si la dispersión no se puede
 resolver, se **devuelve a Creatividad con números y alternativas** (Paso 6). Nunca se reagrupa cambiando una
 acción, un encuadre o una duración.
 
@@ -49,7 +49,7 @@ Antes de agrupar nada, se mira **todo el ciclo junto**:
 | id | id_creativo | escena | locacion | talento | setup de luz | producto | duracion_s | tiempo de set (min) |
 ```
 
-🛑 **No se agrupa leyendo el CSV fila por fila.** Los patrones solo aparecen cuando se ve la matriz
+**No se agrupa leyendo el CSV fila por fila.** Los patrones solo aparecen cuando se ve la matriz
 completa.
 
 **`duracion_s` no es tiempo de set.** El tiempo de set es lo que se suma para armar la jornada:
@@ -97,7 +97,7 @@ Si una persona aparece en 9 escenas repartidas en 3 locaciones, hay dos caminos:
 | Traer las 3 locaciones al mismo día | Si están cerca y el día alcanza |
 | Convocar a la persona 2 días | Si las locaciones son incompatibles |
 
-🛑 **Antes de convocar a alguien dos veces, se revisa si su escena se resuelve como voz** —que se
+**Antes de convocar a alguien dos veces, se revisa si su escena se resuelve como voz** —que se
 graba otro día, en otro lugar, más barato— **o como manos**, que es reemplazable. Es la palanca más
 barata para descomprimir un día cargado y casi nunca se usa. **Se propone a Creatividad como
 devolución — nunca se cambia solo.**
@@ -118,7 +118,7 @@ devolución — nunca se cambia solo.**
 4. Cobertura de cada escena          → antes de desarmar su setup, NUNCA al final del día
 ```
 
-🛑 **La cobertura al final del día es cobertura que no se hace.** Cuando el día se atrasa —y se
+**La cobertura al final del día es cobertura que no se hace.** Cuando el día se atrasa —y se
 atrasa— lo último es lo primero que se cae. Y volver a una locación cuesta más que todas las tomas
 extra juntas.
 
@@ -128,7 +128,7 @@ extra juntas.
 buena · wide de la escena · detalle o inserto · reacción o pausa · **ambiente de 30 s, una vez por
 locación**. Son **10-15 min por escena**; una vuelta a locación es una jornada.
 
-🛑 **La cobertura no es una escena nueva:** no entra como fila al CSV, es parte del tiempo de set de
+**La cobertura no es una escena nueva:** no entra como fila al CSV, es parte del tiempo de set de
 su escena.
 
 ## Paso 4 · Verificar que entre en el día — con márgenes reales
@@ -157,7 +157,7 @@ Carga de la jornada = montaje inicial (60-90 min)
 | **10-12 h** | ⚠️ Se pasa la escena de menor traza a otra jornada |
 | **> 12 h** | 🔴 **Se parte en dos jornadas. No se comprime** |
 
-🛑 **Una jornada no pasa de 10 horas de trabajo efectivo.** Una jornada de 14 h en papel es una
+**Una jornada no pasa de 10 horas de trabajo efectivo.** Una jornada de 14 h en papel es una
 jornada de 10 h en la que **la última mitad no se grabó**. Comprimir no ahorra: mueve el costo a una
 jornada de recuperación que además es peor.
 
@@ -175,7 +175,7 @@ Factor de consolidación = escenas de rodaje ÷ jornadas de rodaje
 | **4-10** | **Normal** | Seguir a Capa 3 |
 | **> 10** | Muy eficiente | **Verificar que entre en horas**, no solo en papel |
 
-🛑 **Un factor alto que no entra en el día no está consolidado: está sobrecargado.** El factor se
+**Un factor alto que no entra en el día no está consolidado: está sobrecargado.** El factor se
 lee siempre **junto con la carga horaria**, nunca solo.
 
 **El factor es el argumento del departamento.** Cuando Marketing pregunta por qué un ciclo cuesta
@@ -198,7 +198,7 @@ B) 8 piezas se resuelven en 2 locaciones si se acepta otro tipo de lugar
    equivalente → requiere confirmación de Creatividad
 ```
 
-🛑 **Se devuelve con alternativas concretas, no con un "no se puede".** Una devolución sin
+**Se devuelve con alternativas concretas, no con un "no se puede".** Una devolución sin
 alternativa es un bloqueo, y bloquear sin proponer es lo que hace que el resto del equipo resuelva
 por su cuenta.
 
@@ -210,15 +210,15 @@ por su cuenta.
 - [ ] El **orden de tiro** de cada jornada está escrito en la sección de cada jornada de `plan-de-rodaje.md`, **por costo de cambio, no narrativo**
 - [ ] Los cambios de vestuario están **agrupados, no alternados**
 - [ ] El producto destructivo está **al final de su bloque**, con toma completa antes de destruirlo
-- [ ] La **cobertura** está ubicada **antes de desarmar cada setup**, 🛑 **nunca al final del día**, y listada por jornada
+- [ ] La **cobertura** está ubicada **antes de desarmar cada setup**, **nunca al final del día**, y listada por jornada
 - [ ] El tiempo estimado es **tiempo de set**, no `duracion_s` de la pieza
 - [ ] La carga de cada jornada incluye **montaje, cambios de setup, comida y desmontaje** con los márgenes reales
-- [ ] 🛑 **Ninguna jornada supera 10 h efectivas** — si no entra, **se parte, no se comprime**
+- [ ] **Ninguna jornada supera 10 h efectivas** — si no entra, **se parte, no se comprime**
 - [ ] El **factor de consolidación** está declarado con su lectura, junto a las horas de cada jornada
 - [ ] Si el factor es **< 4**: está explicado por qué, y devuelto a Creatividad **con números y dos alternativas** si la dispersión es del Excel creativo
 - [ ] Si el factor es **> 10**: está verificado que entra en horas
 - [ ] Toda fila del CSV tiene su **columna `jornada`** cargada — ninguna vacía
-- [ ] 🛑 **Ninguna decisión creativa fue cambiada para lograr el agrupamiento**
+- [ ] **Ninguna decisión creativa fue cambiada para lograr el agrupamiento**
 
 **Handoff →** `pr-recursos` (Capa 3). Sin las jornadas cerradas no se puede asignar responsables ni
 fechas de confirmación: **el margen de cada recurso se cuenta hacia atrás desde su jornada.**

@@ -10,7 +10,7 @@ description: >
 
 # Ingeniería inversa conectada con media
 
-> 🛑 **Regla dura:** esto termina en **patrón observado**. Si el output dice "por lo tanto deberíamos…",
+> **Regla dura:** esto termina en **patrón observado**. Si el output dice "por lo tanto deberíamos…",
 > se salió de su rol. Decidir es del paso 02 en adelante.
 
 ## 1 · A quién estudiar
@@ -40,7 +40,7 @@ Las piezas, no las opiniones sobre la marca.
 | Reviews, comentarios, quejas | Firecrawl |
 | **Descubrir competidores, referentes y UGC creators en Instagram** | **Muse Spark, manual** ↓ |
 
-### 🛑 Se investiga por plataforma, y la competencia es de Guatemala nada más
+### Se investiga por plataforma, y la competencia es de Guatemala nada más
 
 **La fuente oficial es Apify**, la misma que usa Creatividad, con **un actor por plataforma**.
 Las reglas completas —los 3 aprendizajes del actor de anuncios, los topes y el orden de trabajo—
@@ -55,11 +55,11 @@ existe `plan-por-canal.md` de Marketing, también sirve.
 | **Instagram** *(orgánico)* | `apify/instagram-scraper` |
 | **TikTok** *(orgánico)* | `clockworks/tiktok-scraper` |
 
-🛑 **Toda corrida lleva `resultsLimit` y `maxTotalChargeUsd`.**
+**Toda corrida lleva `resultsLimit` y `maxTotalChargeUsd`.**
 
 **Cuántos:** el volumen por plataforma lo fija el plan contratado — **50** en 🔷 Marketing y Pro,
 **100** en 🟨 Accelerate y Compound. **Mitad competencia, mitad referencias.** La tabla está en la
-§0 de `pipelines/contenido/02-strategize/strategy/brain/WORKFLOW.md`.
+§0 de `pipelines/contenido/02-strategize/strategy/README.md`.
 
 > **Decisión del CEO · las dos capas.** El barrido de **competencia** y el de **referencias
 > ganadoras** son dos cosas distintas y **no se mezclan en el mismo archivo**.
@@ -70,14 +70,14 @@ existe `plan-por-canal.md` de Marketing, también sirve.
 | **Países** | **Solo Guatemala** (`country=GT`) | Países parecidos a Guatemala — la lista fija está en `cr-fuentes` |
 | **Cómo se busca** | **Por página de cada competidor**: `search_type=page` + `view_all_page_id=…` | Descubrir por keyword, después por página |
 
-🛑 **Un anuncio de México no es competencia.** Si no se le puede ganar el cliente en Guatemala, no
+**Un anuncio de México no es competencia.** Si no se le puede ganar el cliente en Guatemala, no
 entra a `ingenieria-inversa.md` — entra, si acaso, al swipe file de Creatividad, y en su propia
 sección.
 
-🛑 **Primero se descubre, después se scrapea.** La búsqueda por keyword dice **qué páginas lideran
+**Primero se descubre, después se scrapea.** La búsqueda por keyword dice **qué páginas lideran
 la categoría**; recién con la página identificada se piden sus ads.
 
-🛑 **Se scrapean todos, se descomponen a fondo 10-15.** El resto queda listado con su señal. Pasar
+**Se scrapean todos, se descomponen a fondo 10-15.** El resto queda listado con su señal. Pasar
 150 piezas por el molde completo de la §3 no es rigor, es desperdicio.
 
 ### Muse Spark — paso manual, no automático

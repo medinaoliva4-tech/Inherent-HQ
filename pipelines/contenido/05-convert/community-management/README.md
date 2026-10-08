@@ -1,41 +1,37 @@
 # Community Management
 
-**Atiende los comentarios y mensajes de las redes del cliente.** Corre en los cuatro planes; lo
-que cambia es la profundidad.
-
-| | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| **Responder comentarios y mensajes** | ✅ **Básico:** una IA contesta lo simple | ✅ Todos los días, todas las redes | ✅ | ✅ |
-| **Pasar al interesado al WhatsApp del cliente** | ✅ | ✅ | ✅ | ✅ |
-| **Moderar y dar seguimiento** | — | ✅ | ✅ | ✅ |
-| **Auto-DM y embudo de WhatsApp** | — | — | ✅ | ✅ |
-| **Agente de WhatsApp a medida** | — | — | ✅ | ✅ |
-
-**Acción:** la bandeja de mensajes de la herramienta de publicación *(slot en
-`inherent/05-OPERACION.md`)* + una API de IA.
-**Quién lo corre:** el operador de agentes configura el agente una vez al mes con la información
-del cliente, y queda atendiendo.
-**Lo complejo sube:** lo que no es simple se pasa al WhatsApp del cliente o al plan siguiente.
-
-La escalera completa está en `inherent/03-OFERTA.md` → «Community management».
-
----
-
-## Las tres capas
-
-```
-PROPÓSITO   Cuidar los comentarios y mensajes de cada marca, con su voz, todos los días,
-            y llevar cada conversación a un siguiente paso: pedir, reservar o escribir.
-ACCIONES    Zernio por MCP → leer y responder comentarios y DMs, DM privado a un comentario,
-            ocultar spam, automatizaciones por palabra clave.
-            Gmail por MCP → el reporte de cada corrida y los avisos al COO.
-LÓGICA      triage → respuesta con la ficha y cierre → escalado → envío → loop.
-```
+> Lee los comentarios y mensajes que entran a las redes del cliente, contesta lo que la ficha permite contestar, **lleva cada conversación a un siguiente paso** —pedir, reservar o escribir— y pasa lo que no le toca a la persona correcta.
 
 | | |
 |---|---|
-| **Cómo corre** | Claude Code con el plan de la empresa: programado, o a mano con `/community` |
-| **Lo que lee** | `clients/<cliente>/00-onboarding/plan-contratado.md` · `05-comunidad/respuestas.md` · los menús o catálogos en `99-referencias/` |
-| **Lo que escribe** | Nada en las corridas programadas: **contesta y manda el reporte por correo.** `cm-loop` pasa el seguimiento a `05-comunidad/seguimiento/<AAAA-MM>.md` desde una sesión normal |
+| **Pipeline** | Contenido |
+| **Paso** | 05 · Convert |
+| **Propósito del paso** | Distribuir el contenido y conectar la atención con un sistema de adquisición y ventas |
+| **Su responsabilidad** | Conectar la atención con la conversación: responder y llevar cada comentario o DM a un siguiente paso |
+| **Artifact del equipo** | Revenue Engine |
+| **Entregable al cliente** | Ninguno propio |
 
-El método completo: `brain/WORKFLOW.md`. Las skills: `brain/skills/README.md`.
+## Skills
+
+Playbooks: úsalos en el orden que convenga, no son trámites obligatorios.
+
+| Skill | Para qué |
+|---|---|
+| [`cm-ficha`](brain/skills/cm-ficha/SKILL.md) | Antes de leer un solo mensaje, verifica que el cliente tenga plan contratado, ficha `05-comunidad/respuestas.md` completa y menú o catálogo vigente, lee qué prende la… |
+| [`cm-triage`](brain/skills/cm-triage/SKILL.md) | Clasifica cada comentario, DM y mención nuevo en una sola caja antes de escribir nada: apoyo, pregunta simple, evento, reserva, lo que todavía no existe, queja,… |
+| [`cm-respuesta`](brain/skills/cm-respuesta/SKILL.md) | Escribe la respuesta de cada comentario o DM con los datos de la ficha, la voz de la marca y un cierre que lleva a pedir, reservar o escribir. |
+| [`cm-escalado`](brain/skills/cm-escalado/SKILL.md) | Decide a quién y cómo pasa lo que Community no resuelve solo: eventos, reservas, quejas, colaboraciones y cualquier pregunta cuya respuesta no está en la ficha. |
+| [`cm-envio`](brain/skills/cm-envio/SKILL.md) | El único paso que escribe afuera. |
+| [`cm-loop`](brain/skills/cm-loop/SKILL.md) | Lee los reportes de la semana, pasa el seguimiento al repo, encuentra las preguntas que se repiten y las convierte en FAQ nuevas para la ficha y en ideas de contenido… |
+
+## Herramientas
+
+Zernio, Gmail.
+
+## Plantillas y motor
+
+`brain/entregables/`.
+
+---
+
+*El método anterior, más largo, está en el historial de git: `git show d2ebdaf:pipelines/contenido/05-convert/community-management/README.md`.*

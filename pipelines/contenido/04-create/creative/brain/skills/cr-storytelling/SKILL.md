@@ -18,8 +18,8 @@ description: >
 | **Llena del Excel** | Afina `concepto` de `plan-de-contenido.csv` — no crea filas nuevas |
 | **Alimenta** | Hook, guion y copy de la Capa 4 · la emoción y las escenas de la Capa 5 |
 
-El departamento completo: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
-🛑 **Sin BIG IDEA elegida, DETENÉ.** El arco no inventa la idea: la cuenta.
+El departamento completo: `pipelines/contenido/04-create/creative/README.md`.
+**Sin BIG IDEA elegida, DETENÉ.** El arco no inventa la idea: la cuenta.
 
 **Qué decide esta capa:** quién es el héroe y qué transformación se cuenta. Convierte un mensaje
 (*"compra esto"*) en una historia donde **el cliente se ve a sí mismo ganando**. Es lo que hace que
@@ -63,14 +63,14 @@ Elegir el nivel es **la decisión más importante del arco**.
 | **MOFU** | Transicional fuerte | *"Escribinos y lo revisamos juntos"* |
 | **BOFU** | Directo | *"Agendá tu diagnóstico"* |
 
-🛑 **El llamado no se elige por costumbre.** Un llamado directo en TOFU quema la pieza; uno
+**El llamado no se elige por costumbre.** Un llamado directo en TOFU quema la pieza; uno
 transicional en BOFU deja la venta sin pedir.
 
 ---
 
 ## Reglas duras
 
-1. 🛑 **El error #1 del contenido de marca es ponerse de héroe.** *"Somos los mejores, 10 años de
+1. **El error #1 del contenido de marca es ponerse de héroe.** *"Somos los mejores, 10 años de
    experiencia, el equipo más grande"* no le importa a nadie: a la gente le importa **su propia
    historia**.
 2. **En pieza corta se ataca el problema INTERNO.**

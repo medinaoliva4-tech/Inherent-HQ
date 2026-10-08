@@ -17,7 +17,7 @@ description: >
 | **Consume** | `clients/<cliente>/01-estrategia/roadmap-okrs.md` · la lectura de `pf-cuentas` · `reporte-de-pauta.md` y su § Atribución *(línea Growth)* · el seguimiento de Community *(conversaciones)* |
 | **Produce** | **`clients/<cliente>/01-estrategia/revisiones-del-20/<AAAA-MM>/lectura-de-kr.md`** — trabajo interno, no se entrega al cliente pero **sí se guarda** |
 
-🛑 **Sin `roadmap-okrs.md`, esta capa no corre:** `BLOQUEADO — falta el roadmap de OKRs. Lo crea Strategy`.
+**Sin `roadmap-okrs.md`, esta capa no corre:** `FALTA — falta el roadmap de OKRs. Lo crea Strategy`.
 
 ## 1 · Los dos objetivos
 
@@ -61,7 +61,7 @@ Por cada KR del roadmap:
 | 🔴 | No se cumple con el ritmo actual |
 | ⚪ | `⚠️ SIN DATOS`: **no hay veredicto** |
 
-🛑 **Sin dato no hay semáforo.** No se pinta amarillo «por prudencia» ni verde «por tendencia».
+**Sin dato no hay semáforo.** No se pinta amarillo «por prudencia» ni verde «por tendencia».
 
 ## 4 · Reglas de lectura
 
@@ -95,7 +95,7 @@ Por cada KR del roadmap:
 | **D · Resumen** | Cuántos KR en 🟢 · 🟡 · 🔴 · ⚪ |
 | **E · Los huecos** | `⚠️ SIN DATOS`, con responsable |
 
-🛑 **Al cerrar el ciclo, la lectura anterior no se sobrescribe:** cada mes tiene su carpeta.
+**Al cerrar el ciclo, la lectura anterior no se sobrescribe:** cada mes tiene su carpeta.
 
 ## 7 · Checklist
 

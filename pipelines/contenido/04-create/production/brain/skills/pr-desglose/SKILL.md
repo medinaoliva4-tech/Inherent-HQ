@@ -17,7 +17,7 @@ description: >
 | **Consume** | La sección § Verificación y devoluciones de `plan-de-rodaje.md` (de `pr-brief`) · las escenas, encuadres, duraciones y tipo de lugar del `ideas-<formato>.md` de cada pieza, en Creatividad (`clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · la guía de Branding, si existe |
 | **Produce** | Las **filas base de `plan-de-produccion.csv`**: `id`, `id_creativo`, `campana`, `escena`, `accion`, `encuadre`, `duracion_s`, `destino`, `estado` + el desglose de las 8 categorías que alimenta las columnas `locacion`, `talento`, `recursos`, `equipo` |
 
-Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Plantilla del entregable:
+Contexto del departamento: `pipelines/contenido/04-create/production/README.md`. Plantilla del entregable:
 `pipelines/contenido/04-create/production/brain/entregables/plan-de-rodaje.md`.
 
 **Traducís.** Una escena escrita se vuelve una lista de cosas físicas que alguien tiene que
@@ -34,11 +34,11 @@ CR-001 (1 pieza, 3 escenas) → PR-001 · PR-002 · PR-003     (todas con id_cre
 pieza no se graba: se graban sus escenas, en locaciones distintas, con talento distinto y en días
 distintos.
 
-- 🛑 **Toda fila lleva `id_creativo`.** Sin él se elimina: una escena sin fila creativa es
+- **Toda fila lleva `id_creativo`.** Sin él se elimina: una escena sin fila creativa es
   presupuesto sin justificación.
 - El vínculo `id_creativo` + `escena` **nunca se rompe**: es lo que permite volver de un archivo
   entregado hasta la MUST BE TRUE que lo justificó.
-- 🛑 **No se agrega ninguna escena** que Creatividad no haya pedido. Si hace falta una, **se devuelve** para
+- **No se agrega ninguna escena** que Creatividad no haya pedido. Si hace falta una, **se devuelve** para
   que la agregue ella.
 - Lo que la Capa 0 marcó `reutiliza` **no se desglosa**: ya existe.
 
@@ -47,7 +47,7 @@ distintos.
 
 ## 2 · Lo que se hereda y lo que decide Producción
 
-🛑 **Lo que se hereda no se toca. Lo que se decide es el trabajo de Producción.**
+**Lo que se hereda no se toca. Lo que se decide es el trabajo de Producción.**
 
 | Se hereda de Creatividad (no se cambia) | Lo decide Producción |
 |---|---|
@@ -65,7 +65,7 @@ cambiar la intención sin declararlo.
 
 ## 3 · Las 8 categorías — ninguna se omite
 
-> 🛑 **Ninguna categoría se omite. Si no aplica, se escribe `N/A`.** Una categoría vacía es
+> **Ninguna categoría se omite. Si no aplica, se escribe `N/A`.** Una categoría vacía es
 > ambigua —¿no aplica, o nadie la pensó?— y esa ambigüedad se descubre el día del rodaje.
 
 ### ① Locación
@@ -91,7 +91,7 @@ El lugar **concreto**, no el tipo.
 ### ③ Producto
 Qué producto, **cuántas unidades**, en qué estado, quién lo provee y para cuándo.
 
-🛑 **Lo que se destruye en cuadro necesita respaldo.** Si se corta, se abre, se derrite o se consume:
+**Lo que se destruye en cuadro necesita respaldo.** Si se corta, se abre, se derrite o se consume:
 **mínimo 3 unidades**, y va **último en su bloque**.
 
 ### ④ Props
@@ -101,7 +101,7 @@ Objetos en cuadro que **no** son el producto. Se listan **uno por uno**.
 ### ⑤ Vestuario
 Ropa, calzado, accesorios. **De quién sale cada prenda y quién la lleva el día.**
 
-🛑 **Sin logos de terceros, sin rayas finas, sin verde si hay croma.** Son las tres que más se
+**Sin logos de terceros, sin rayas finas, sin verde si hay croma.** Son las tres que más se
 descubren tarde — y se descubren en cámara, no en la lista.
 
 ### ⑥ Arte y ambientación
@@ -120,12 +120,12 @@ gusto. Un CU frontal fijo y un plano medio en mano no piden el mismo soporte.
 | **Derechos de música** | Si suena música en set o si se usa en la pieza |
 | **Seguro** | Equipo alquilado · espacios de terceros · vía pública |
 
-🛑 **El permiso se gestiona primero**, no al final: es lo que más tarda y lo único que puede anular
+**El permiso se gestiona primero**, no al final: es lo que más tarda y lo único que puede anular
 la jornada entera.
 
 ## 4 · Cómo caen las 8 categorías en el Excel
 
-🛑 **La columna `recursos` fusiona cuatro categorías en una sola celda, separadas por `;`**:
+**La columna `recursos` fusiona cuatro categorías en una sola celda, separadas por `;`**:
 producto + props + vestuario + arte y ambientación. **Ya no hay columnas separadas para esas cuatro.**
 
 | Categoría | Columna de `plan-de-produccion.csv` |
@@ -191,10 +191,10 @@ optimismo, no estimación.)*
 - [ ] El `equipo` se **derivó del `encuadre`**, no se eligió por gusto
 - [ ] `destino` derivado del formato · `estado` = `planificada` en todas las filas
 - [ ] Lo marcado **`reutiliza` en Capa 0 no se desglosó**
-- [ ] 🛑 **No se agregó ninguna escena** que el Excel creativo no pidió
-- [ ] 🛑 **Ninguna decisión creativa fue cambiada** — lo que no se podía, se devolvió a Creatividad
+- [ ] **No se agregó ninguna escena** que el Excel creativo no pidió
+- [ ] **Ninguna decisión creativa fue cambiada** — lo que no se podía, se devolvió a Creatividad
 - [ ] El **inventario consolidado del ciclo** está armado, sin repetir ítems
 - [ ] Todo faltante está marcado `⚠️ SIN DATOS` + a quién pedírselo, **ninguno omitido en silencio**
 
-**Handoff →** `pr-jornadas` (Capa 2). 🛑 **Se agrupa antes de presupuestar:** presupuestar fila por
+**Handoff →** `pr-jornadas` (Capa 2). **Se agrupa antes de presupuestar:** presupuestar fila por
 fila sin consolidar infla el costo entre 3 y 5 veces.

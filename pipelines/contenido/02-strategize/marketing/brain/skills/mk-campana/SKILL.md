@@ -50,14 +50,14 @@ después. **Pero se declara cuál es cuál** — nunca se deja ambiguo.
 
 ## 2 · Una por ciclo. Dos como máximo
 
-🛑 **La aprobación y el presupuesto se arman por campaña.** Tres campañas en un ciclo significan
+**La aprobación y el presupuesto se arman por campaña.** Tres campañas en un ciclo significan
 tres aprobaciones, tres presupuestos y un mes que nadie entiende.
 
 | Cuántas | Cuándo |
 |---|---|
 | **1** | El caso normal |
 | **2** | Cuando hay **dos ángulos que no se pueden mezclar** — por ejemplo una de marca y una de activación con fechas duras |
-| **3+** | 🛑 **Nunca.** Si parecen tres, es que ninguna está definida |
+| **3+** | **Nunca.** Si parecen tres, es que ninguna está definida |
 
 ## 3 · Cómo se construye
 
@@ -102,7 +102,7 @@ tres aprobaciones, tres presupuestos y un mes que nadie entiende.
 | **2** | **El último empujón siempre existe.** Es el que más convierte y el que más se olvida |
 | **3** | **La anticipación no puede exceder el ciclo.** Un evento a 5 semanas con un ciclo de 4 se planifica **desde el ciclo anterior** — se avisa a Strategy y se declara |
 
-🛑 **Si la fecha del evento cae en los primeros 7 días del ciclo, la campaña ya llegó tarde.**
+**Si la fecha del evento cae en los primeros 7 días del ciclo, la campaña ya llegó tarde.**
 Se declara y se trabaja con lo que queda, pero se escribe que el aviso fue corto.
 
 ---
@@ -119,17 +119,6 @@ Se declara y se trabaja con lo que queda, pero se escribe que el aviso fue corto
 | **KR que mueve** | La métrica del KR de `roadmap-okrs.md`, con su meta para este ciclo. Tiene que ser un KR de Revenue Growth, o la campaña declara cuál es el de Revenue que mueve el ciclo |
 | **En qué se nota** | El cambio observable al cierre del ciclo |
 | **Qué NO es** | El malentendido más probable, escrito antes de que pase |
-
-## 6 · Bloqueos
-
-| Situación | Qué se hace |
-|---|---|
-| Salen tres o más campañas | Se vuelve al paso 2: **ninguna está definida** |
-| La campaña no traza a ninguna MUST BE TRUE | ↩️ No es campaña, es un tema. Se descarta |
-| El objetivo no tiene fecha después de la cual deje de servir | ↩️ **No es campaña, es un pilar.** Pasa a `mk-pilares` |
-| La fecha del evento cae en los primeros 7 días del ciclo | 🔴 **El aviso llegó tarde.** Se trabaja igual y se declara |
-| Dos campañas mueven la misma MUST BE TRUE | Es **una** campaña con dos ejecuciones |
-| La frase necesita explicación | Se reescribe hasta que no la necesite |
 
 ## 7 · Checklist
 

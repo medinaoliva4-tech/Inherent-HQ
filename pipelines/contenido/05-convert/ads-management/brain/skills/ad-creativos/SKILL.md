@@ -18,7 +18,7 @@ description: >
 
 ## 1 · Se testean hooks, no creativos
 
-🛑 **El error más caro de la pauta: cambiar todo el anuncio cuando no rinde.** Así nunca se
+**El error más caro de la pauta: cambiar todo el anuncio cuando no rinde.** Así nunca se
 sabe qué falló.
 
 **Video Editing produce variantes de hook sobre el mismo cuerpo.** Eso es lo que se testea.
@@ -35,18 +35,18 @@ sabe qué falló.
 |---|---|---|---|
 | hasta **20** | hasta **30** | hasta **35** | hasta **50** |
 
-🛑 **Si hacen falta más, se pide a Video Editing dentro del techo** — no se pauta con menos de 3
+**Si hacen falta más, se pide a Video Editing dentro del techo** — no se pauta con menos de 3
 por campaña.
 
 ## 3 · 🔴 Todo claim va validado
 
-🛑 **Un claim sin validar, con dinero detrás, es un problema legal y de marca.**
+**Un claim sin validar, con dinero detrás, es un problema legal y de marca.**
 
 | Antes de pautar | |
 |---|---|
 | ¿Branding lo marcó validado? | Si tiene `⏸️` **no sale** |
 | ¿Hay número o comparación? | Necesita fuente |
-| ¿Dice *«el mejor»*, *«el único»*? | 🛑 **Rechazado por defecto** |
+| ¿Dice *«el mejor»*, *«el único»*? | **Rechazado por defecto** |
 
 > ⚠️ **Las plataformas rechazan anuncios por claims.** Un rechazo frena la campaña entera.
 
@@ -66,7 +66,7 @@ por campaña.
 **Ganador = 60-90+ días corriendo.** El mismo criterio de `cr-swipe-file`, para que Strategy,
 Creatividad y Ads no midan con reglas distintas.
 
-🛑 **Se adapta la estructura y el ángulo, nunca la pieza.** Y lo que viene de otro país se pasa a
+**Se adapta la estructura y el ángulo, nunca la pieza.** Y lo que viene de otro país se pasa a
 quetzales y a la cultura local antes de usarlo. Copiar el creativo de un competidor es un problema
 legal y además nos mete en su código visual — justo lo contrario de lo que Branding construyó.
 
@@ -79,13 +79,13 @@ legal y además nos mete en su código visual — justo lo contrario de lo que B
 | **Caliente** | La prueba y la oferta |
 | **Cliente** | Recompra y comunidad |
 
-🛑 **Es el mismo vocabulario de Marketing.** Si la pieza no trae temperatura, se devuelve.
+**Es el mismo vocabulario de Marketing.** Si la pieza no trae temperatura, se devuelve.
 
 ## 6 · 🚦 GATE 1
 
 **El CEO aprueba el plan completo y el presupuesto.**
 
-🛑 **Después de este gate se gasta dinero del cliente.**
+**Después de este gate se gasta dinero del cliente.**
 
 ## 7 · Qué escribe
 

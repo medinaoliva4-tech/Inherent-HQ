@@ -17,7 +17,7 @@ description: >
 | **Consume** | `calendario-de-publicacion.csv` completo, con `estado` de todas las filas · la § Verificación de `publicaciones.md` · las fechas de preparación de Marketing · cuándo quedó `programada` cada fila en Zernio |
 | **Produce** | **`aprendizaje-de-posting.md`** — archivo de trabajo interno: no se entrega al cliente pero **sí se guarda**. Plantilla: `aprendizaje-de-posting.md`, al lado de esta skill |
 
-Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md`.
+Contexto del departamento: `pipelines/contenido/05-convert/posting/README.md`.
 
 ## 1 · Las cuatro lecturas
 
@@ -36,7 +36,7 @@ Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLO
 | CR-009      | 2026-10-04  | nunca     | —      | Video Editing   |
 ```
 
-> 🛑 **Si el 30 % de las piezas llega tarde, el problema no está en Posting.** Está en las fechas de
+> **Si el 30 % de las piezas llega tarde, el problema no está en Posting.** Está en las fechas de
 > preparación de Marketing o en los tiempos de Diseño gráfico y Video Editing. Eso se
 > devuelve **como dato, no como reclamo**: con el número, no con la queja.
 
@@ -61,7 +61,7 @@ Una devolución aislada es ruido. **La misma devolución tres ciclos seguidos es
 | **Falta de copy** en Creatividad | Que Creatividad verifique el copy literal antes de cerrar el Excel del ciclo |
 | **Claims** que llegan sin validar | Que Branding los valide **antes** del cierre de Creatividad, no en Posting |
 
-🛑 **Se propone, no se impone.** Cada departamento decide sobre su propio proceso.
+**Se propone, no se impone.** Cada departamento decide sobre su propio proceso.
 
 ## 4 · Lectura 3 — lo que falló publicado
 
@@ -80,7 +80,7 @@ existe, el problema no es el proceso: es que ese chequeo se saltó, y eso tambi�
 | 2026-10-18             | ✅                     | —             |
 ```
 
-🛑 **El ciclo queda programado a más tardar el día 19.** Si se programó tarde porque las capas
+**El ciclo queda programado a más tardar el día 19.** Si se programó tarde porque las capas
 anteriores llegaron tarde, la causa va a la Lectura 1 — con el número.
 
 ## 6 · Lo que sube a las skills
@@ -92,7 +92,7 @@ anteriores llegaron tarde, la causa va a la Lectura 1 — con el número.
 | Zernio cambió una herramienta o lo que pide | `po-carga` y la § Sobre Zernio de `skills/README.md` |
 | Una hora rindió consistentemente en una cuenta | Deja de ser `⚠️ SIN DATOS`: pasa a dato en `po-programacion` |
 
-🛑 **Un dato de plataforma que se actualiza, se actualiza con fecha.** Sin fecha vuelve a caducar sin
+**Un dato de plataforma que se actualiza, se actualiza con fecha.** Sin fecha vuelve a caducar sin
 que nadie lo note.
 
 ---
@@ -102,7 +102,7 @@ que nadie lo note.
 - [ ] Las **cuatro lecturas** están hechas — ninguna se omitió
 - [ ] Lo que llegó tarde tiene **de quién venía** y cuántos días
 - [ ] Los patrones de atraso están atribuidos al **departamento correcto**, con el número
-- [ ] 🛑 **Todo lo que vuelve a otro departamento va como dato, no como reclamo**
+- [ ] **Todo lo que vuelve a otro departamento va como dato, no como reclamo**
 - [ ] Las devoluciones repetidas están identificadas, con **cuántos ciclos** llevan
 - [ ] Cada falla publicada tiene su **causa raíz**, no solo el incidente
 - [ ] Si la causa ya estaba cubierta por un chequeo, está anotado que **el chequeo se saltó**

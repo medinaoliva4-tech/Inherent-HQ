@@ -37,7 +37,7 @@ description: >
 | 🟨 **Accelerate** | **3-4** |
 | 🟨 **Compound** | **4-5** |
 
-🛑 **Más pilares que esos no es más variedad: es menos reconocimiento.** Cada pilar necesita
+**Más pilares que esos no es más variedad: es menos reconocimiento.** Cada pilar necesita
 repetición para que la audiencia lo aprenda.
 
 ## 3 · Cada pilar declara cuatro cosas
@@ -60,7 +60,7 @@ repetición para que la audiencia lo aprenda.
 | **Conversion** | Pide la acción | Caliente |
 | **Community** | Le habla a **quien ya compró** | **Cliente** |
 
-🛑 **Un ciclo todo `Conversion` quema la audiencia. Un ciclo sin `Conversion` no cobra.**
+**Un ciclo todo `Conversion` quema la audiencia. Un ciclo sin `Conversion` no cobra.**
 
 ## 5 · El reparto
 
@@ -84,15 +84,6 @@ en 100%.**
 | **B · El reparto** | Tabla con pilar, %, slots que le tocan. **Cierra en 100%** |
 | **C · El mix de funciones** | Cuántos slots por función. Se verifica contra las reglas de arriba |
 | **D · Lo que se descartó** | Pilares que se consideraron y no entraron, con el motivo |
-
-## 7 · Bloqueos
-
-| Situación | Qué se hace |
-|---|---|
-| Un pilar no sostiene ningún soporte del mensaje | **Se cae.** No entra |
-| El reparto no cierra en 100% | Se rehace |
-| Salen 6 o más pilares | Se agrupan: hay pilares que son el mismo |
-| `Conversion` queda en 0% | 🔴 Se escala: **un ciclo que no pide la acción no cobra** |
 
 ## 8 · Checklist
 

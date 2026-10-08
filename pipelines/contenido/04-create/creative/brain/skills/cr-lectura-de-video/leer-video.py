@@ -24,7 +24,7 @@ def sh(cmd, **kw):
 def need(bins):
     falta = [b for b in bins if not shutil.which(b)]
     if falta:
-        sys.exit(f"BLOQUEADO — falta {', '.join(falta)}. Instalala: ver INSTALAR.md § Herramientas de video")
+        sys.exit(f"FALTA — falta {', '.join(falta)}. Instalala: ver INSTALAR.md § Herramientas de video")
 
 def tecnico(v):
     r = sh(["ffprobe","-v","error","-select_streams","v:0",

@@ -26,7 +26,7 @@
 | Python + OpenCV | Medir temblor y color, estabilizar | `python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt` |
 | Vercel CLI | Publicar la página del cliente | `npm i -g vercel` + `vercel login` |
 
-🛑 **Si falta una:** `BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § <sección>` —
+**Si falta una:** `FALTA — falta <herramienta>. Instalala: ver INSTALAR.md § <sección>` —
 `ffmpeg`, `yt-dlp`, `/watch` y OpenCV → **§ Herramientas de video** · Node, Remotion y la CLI de
 Vercel → **§ Node y Remotion**.
 
@@ -91,7 +91,7 @@ ffmpeg -i master.mp4 -c:v libx264 -crf 24 -an -movflags +faststart preview.mp4  
 cd aprobacion/vercel && python3 build.py data.json display.ttf sans.ttf <carpeta-videos> && vercel deploy --prod
 ```
 
-🛑 **`vercel deploy --prod` y el link al cliente, solo con el checklist de `ve-export` completo** (`ve-export` §6).
+**`vercel deploy --prod` y el link al cliente, solo con el checklist de `ve-export` completo** (`ve-export` §6).
 
 ## Lo que el kit NO hace
 

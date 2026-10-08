@@ -1,6 +1,6 @@
 # Instalar — lo que necesita cada computadora
 
-> **Si un agente dice `BLOQUEADO — falta <herramienta>`, la instalación está acá.**
+> **Si un agente dice `FALTA — falta <herramienta>`, la instalación está acá.**
 > Sin la herramienta no hay acción: el bloqueo es correcto. Se instala y se vuelve a correr.
 
 ## Lo primero — en toda computadora

@@ -5,7 +5,7 @@
 
 > Este documento lo lee **el COO** para el QA final del ciclo. Lo programado queda registrado
 > en `calendario-de-publicacion.csv`, con su `zernio_post_id` y su estado.
-> 🛑 **El mensaje es de Creatividad.** Acá se adapta el largo y el formato, nunca la idea.
+> **El mensaje es de Creatividad.** Acá se adapta el largo y el formato, nunca la idea.
 > Fuente del copy: `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`.
 
 ---
@@ -32,7 +32,7 @@
 |---|---|
 | **Pieza de Creatividad** | `CR-007` — ver `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-reel.md` §CR-007 |
 | **Campaña** | |
-| **Cuenta** | `@cliente` — 🛑 la cuenta concreta, no *"Instagram"* · ID de Zernio: `[account_id]` |
+| **Cuenta** | `@cliente` — la cuenta concreta, no *"Instagram"* · ID de Zernio: `[account_id]` |
 | **Canal · formato** | |
 | **Fecha y hora** | [aaaa-mm-dd hh:mm] · [con dato / ⚠️ SIN DATOS — hora de Marketing] |
 | **Archivo** | [nombre exacto del export de Diseño gráfico o Video Editing] |
@@ -41,7 +41,7 @@
 
 ### Caption
 
-🛑 **El hook va en la línea 1, antes del corte.** Instagram muestra ~125 caracteres en feed y ~55 en
+**El hook va en la línea 1, antes del corte.** Instagram muestra ~125 caracteres en feed y ~55 en
 Reels antes del *"… más"*.
 
 ```
@@ -63,7 +63,7 @@ Reels antes del *"… más"*.
 | **Link** | [si lleva] |
 
 **Qué se cambió respecto de Creatividad, y por qué:** [solo largo y forma. Si hubo que tocar el
-mensaje, 🛑 esto es una devolución, no un cambio.]
+mensaje, esto es una devolución, no un cambio.]
 
 ### QA de plataforma
 
@@ -74,8 +74,8 @@ mensaje, 🛑 esto es una devolución, no un cambio.]
 | Texto fuera de las safe zones | | |
 | Caption dentro del límite | | |
 | Cantidad de hashtags permitida | | |
-| Alt text escrito | | 🛑 no es opcional |
-| Sin watermark de otra app | | 🛑 alcance muerto |
+| Alt text escrito | | no es opcional |
+| Sin watermark de otra app | | alcance muerto |
 | Audio correcto y con volumen | | |
 | `validate_post` de Zernio sin errores | | [advertencias, si hubo] |
 | Claims aprobados | | ✅ / ⏸️ PENDIENTE — **no se programa** |
@@ -88,7 +88,7 @@ mensaje, 🛑 esto es una devolución, no un cambio.]
 
 # Los envíos de email
 
-*(Ruta email. 🛑 **No se programan en Zernio**: salen por la herramienta de email del cliente, y los
+*(Ruta email. **No se programan en Zernio**: salen por la herramienta de email del cliente, y los
 manda un humano.)*
 
 | | |
@@ -108,7 +108,7 @@ manda un humano.)*
 
 ### Asunto y preheader
 
-🛑 **El asunto es el hook del email.** Se decide igual que un hook: es lo único que se ve en la
+**El asunto es el hook del email.** Se decide igual que un hook: es lo único que se ve en la
 bandeja, junto al preheader.
 
 ```
@@ -123,7 +123,7 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 
 ### Cuerpo
 
-*(El mensaje de Creatividad, acomodado al formato de email. 🛑 **No se reescribe.**)*
+*(El mensaje de Creatividad, acomodado al formato de email. **No se reescribe.**)*
 
 ```
 [el cuerpo literal, con sus saltos de línea]
@@ -140,7 +140,7 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 |---|---|
 | El asunto no promete algo que el cuerpo no cumple | |
 | Los links funcionan y llevan a donde dicen | |
-| Hay forma de desuscribirse | 🛑 no es opcional |
+| Hay forma de desuscribirse | no es opcional |
 | El remitente es el que el cliente usa siempre | |
 | Se mandó una prueba a una casilla propia y se leyó **en el celular** | |
 | Claims aprobados | ✅ / ⏸️ **no se envía** |
@@ -153,12 +153,12 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 
 # Los envíos manuales
 
-*(Ruta manual. 🛑 **No se programan en Zernio**. Los manda o los pega **un humano, a mano**.)*
+*(Ruta manual. **No se programan en Zernio**. Los manda o los pega **un humano, a mano**.)*
 
 | | |
 |---|---|
 | **Quién lo manda o lo pega** | [nombre, de `LINKS.md` · o ⚠️ SIN DATOS] |
-| **Quién contesta lo que entre** | [nombre **y horario**. 🛑 Si no hay nadie, se declara: es de **Community**, no de Posting] |
+| **Quién contesta lo que entre** | [nombre **y horario**. Si no hay nadie, se declara: es de **Community**, no de Posting] |
 
 ## PO-00X · [el mensaje en una línea] — *WhatsApp / SMS*
 
@@ -180,7 +180,7 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 | El texto es el de Creatividad, adaptado al canal y **sin cambiar el mensaje** | ⬜ |
 | Entra sin cortarse, y los links funcionan | ⬜ |
 | La lista existe y sé a cuántas personas le llega | ⬜ |
-| 🛑 **Hay alguien que contesta, y sé en qué horario** | ⬜ |
+| **Hay alguien que contesta, y sé en qué horario** | ⬜ |
 | Claims validados | ⬜ |
 
 **Estado:** 🟢 listo / 🟡 [qué falta] / 🔴 no sale este ciclo / ↩️ DEVUELTO
@@ -193,19 +193,19 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 | **Archivo final** | [ruta del export de Diseño gráfico · o ⚠️ SIN ARCHIVO, con de quién se espera] |
 | **Dónde va** | [el lugar concreto, no *"el local"*] |
 | **Desde cuándo** | [aaaa-mm-dd] · permanente o hasta [fecha] |
-| **Permiso** | [contrato / municipal / el dueño del espacio — o 🛑 BLOQUEADO] |
+| **Permiso** | [contrato / municipal / el dueño del espacio — o FALTA] |
 
 ### QA del impreso
 | Chequeo | Estado |
 |---|---|
 | El archivo es el **export final de Diseño gráfico**, no un borrador | ⬜ |
 | Se lee a la **distancia real** a la que va a estar | ⬜ |
-| 🛑 **Está el permiso** para intervenir ese lugar | ⬜ |
+| **Está el permiso** para intervenir ese lugar | ⬜ |
 | Claims validados | ⬜ |
 
 **Estado:** 🟢 listo / 🟡 [qué falta] / 🔴 no sale este ciclo / ↩️ DEVUELTO
 
-> 🛑 **Un impreso no se verifica en § Verificación como una publicación.** No hay URL ni métrica: se
+> **Un impreso no se verifica en § Verificación como una publicación.** No hay URL ni métrica: se
 > verifica con **una foto del lugar, puesta**. Su rendimiento **no es medible** con lo que hay, y eso
 > se declara en vez de inventar un proxy.
 
@@ -218,7 +218,7 @@ Preheader: "[literal — la segunda línea, que completa el asunto, no lo repite
 | id_creativo | Qué falta | De quién se espera | Desde cuándo | Motivo |
 |---|---|---|---|---|
 
-🛑 **Una pieza que desaparece en silencio es un hueco en el calendario que el cliente ve antes que
+**Una pieza que desaparece en silencio es un hueco en el calendario que el cliente ve antes que
 nosotros.** Toda pieza que no sale lleva motivo escrito.
 
 ---
@@ -232,10 +232,10 @@ nosotros.** Toda pieza que no sale lleva motivo escrito.
 
 # Verificación — el estado en Zernio
 
-🛑 **El estado sale de Zernio, publicación por publicación** (`posts_get` · `posts_list_failed`). No
+**El estado sale de Zernio, publicación por publicación** (`posts_get` · `posts_list_failed`). No
 se abren las redes: el control de calidad de lo publicado lo hace el CEO en persona.
 
-*(Ruta social. 🛑 **Los impresos de la ruta manual no entran acá**: se verifican con la foto del
+*(Ruta social. **Los impresos de la ruta manual no entran acá**: se verifican con la foto del
 lugar, en su propia sección.)*
 
 | id | zernio_post_id | Estado en Zernio | ¿Cuenta y fecha coinciden? | ¿Reintentada? | URL |

@@ -42,7 +42,7 @@ description: >
 | **3 · Con qué objetivo** | Uno por oferta, **en una métrica** — es lo que Ads pauta |
 | **4 · Cuáles no, y por qué** | En una línea cada una |
 
-🛑 **No se cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide, es upsell
+**No se cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide, es upsell
 a 🟨 Accelerate. **En modo ligero no corren los ángulos, la investigación ni el precio (§2 a §4),
 y no hay nada que escalar:** no se toca el precio y no sale al cliente.
 
@@ -72,12 +72,12 @@ y no hay nada que escalar:** no se toca el precio y no sale al cliente.
 | Qué busca la gente antes de comprar | Apify `google-search-scraper` |
 | Qué dicen las reseñas de la categoría | Apify `crawler-google-places` |
 
-🛑 **Se mira para encontrar el hueco, no para copiar.** Una oferta igual a la de todos compite
+**Se mira para encontrar el hueco, no para copiar.** Una oferta igual a la de todos compite
 solo por precio.
 
 ## 4 · 🔴 El precio es decisión del cliente
 
-🛑 **Nunca se cambia un precio sin él.** Se propone, con el razonamiento y el impacto en margen.
+**Nunca se cambia un precio sin él.** Se propone, con el razonamiento y el impacto en margen.
 
 | | Qué se entrega |
 |---|---|
@@ -91,7 +91,7 @@ Strategy.
 
 ## 5 · El límite de lo que podemos prometer
 
-🛑 **La oferta del cliente es suya, pero lo que nosotros aportamos tiene techo.**
+**La oferta del cliente es suya, pero lo que nosotros aportamos tiene techo.**
 **No se promete lo que no está en «Capacidades reales»** de `inherent/06-ECONOMIA.md`.
 
 ## 6 · Qué escribe
@@ -112,7 +112,7 @@ Strategy.
 **Llevarle al cliente una oferta o un precio nuevo es comprometer precio: se escala al CEO antes de
 llevarla.** No es una parada: Growth sigue con las capas que vienen. Después, **el cliente decide.**
 
-🛑 **Es su negocio.** Nosotros proponemos.
+**Es su negocio.** Nosotros proponemos.
 
 ## 8 · Checklist
 

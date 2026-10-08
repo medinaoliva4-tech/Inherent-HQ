@@ -19,7 +19,7 @@ description: >
 - Los slots del ciclo: canal, formato, pilar, función, campaña y objetivo — heredados de Marketing.
 - La traza a MUST BE TRUE de cada slot — heredada de Strategy.
 - La capacidad real de producción del cliente.
-- El método completo del departamento: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
+- El método completo del departamento: `pipelines/contenido/04-create/creative/README.md`.
 
 **Qué produce** — los entregables del ciclo, completos: **el Excel del ciclo**.
 - **`plan-de-contenido.csv`** — una fila por pieza, 12 columnas, sin celdas vacías.
@@ -51,10 +51,10 @@ description: >
 | El activo distintivo | El audio y el texto en pantalla |
 | La `traza` | El CTA, si el slot cambia de etapa |
 
-🛑 **Solo se multiplica hacia canales que TIENEN SLOT en el calendario.** Un canal sin slot no
+**Solo se multiplica hacia canales que TIENEN SLOT en el calendario.** Un canal sin slot no
 existe para Creative — agregarlo es pisar a Marketing.
 
-🛑 **Watermark de otra app = alcance muerto.** Se declara explícitamente en la sección de la pieza.
+**Watermark de otra app = alcance muerto.** Se declara explícitamente en la sección de la pieza.
 
 ---
 
@@ -63,7 +63,7 @@ existe para Creative — agregarlo es pisar a Marketing.
 | Canal | Qué premia | Versión que se hace | Specs |
 |---|---|---|---|
 | **TikTok** | Watch time y completion | Más cruda y veloz, montada sobre un sonido del momento | **<60s** · hook en **2s** · 9:16 · audio en tendencia |
-| **Instagram Reels** | Factura visual y relación con seguidores | La de mejor acabado, con texto on-screen | **7-30s** · 9:16 · 1080×1920 · 🛑 **sin watermark** |
+| **Instagram Reels** | Factura visual y relación con seguidores | La de mejor acabado, con texto on-screen | **7-30s** · 9:16 · 1080×1920 · **sin watermark** |
 | **YouTube Shorts** | Lo educativo / how-to y la autoridad del canal | Tono how-to, título buscable | **<30s** ideal · 9:16 · título con keyword |
 | **Carrusel (IG / LinkedIn)** | Profundidad y guardados | El guion roto en slides, 1 idea por slide | 4:5 o 1:1 · 5-8 slides · slide 1 = hook |
 | **Story** | Inmediatez y cercanía | La versión más informal, con interacción | 9:16 · 15s por card · safe zones arriba y abajo |
@@ -96,16 +96,16 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | `material` | `ninguno` / `video` / `foto` — **qué material nuevo necesita de Producción** | Creative |
 | `estado` | `listo` / `pendiente` / `⏸️ aprobación` | Creative |
 
-🛑 **Lo heredado se copia, no se reescribe.** Si un `canal` o una `funcion` te incomodan, se devuelve
+**Lo heredado se copia, no se reescribe.** Si un `canal` o una `funcion` te incomodan, se devuelve
 el slot a Marketing; no se corrige en la celda.
 
-🛑 **En `funcion` va la función del calendario, nunca el `goal_del_arte`.** Son dos vocabularios
+**En `funcion` va la función del calendario, nunca el `goal_del_arte`.** Son dos vocabularios
 distintos y confundirlos rompe la trazabilidad: con `Alcance` en la celda ya no se puede cruzar la
 fila contra el slot `Hero` del que salió. El `goal_del_arte` (`alcance` · `memoria` · `valor-de-uso`
 · `confianza` · `accion` · `pertenencia`) lo deriva `cr-brief` y **vive en `brief-del-ciclo.md`,
 no en el Excel**.
 
-🛑 **Ninguna celda vacía.** Si falta un dato, la fila es `pendiente` y se declara qué falta.
+**Ninguna celda vacía.** Si falta un dato, la fila es `pendiente` y se declara qué falta.
 
 ---
 
@@ -124,7 +124,7 @@ Cada sección lleva: **Objetivo del slot** · **Emoción** · **Hook** · **Guio
 **Layout de texto** · **Escenas** · **Encuadres** · **Duraciones** · **Referencia visual** ·
 **Estética / mood** · **Elementos gráficos** · **Hipótesis** · **Aprobación de claim** (si aplica).
 
-> 🛑 **El hook, el guion y el copy van literales, entre comillas.** *"un hook de curiosidad"* no es
+> **El hook, el guion y el copy van literales, entre comillas.** *"un hook de curiosidad"* no es
 > un entregable; el texto exacto sí.
 
 - `guion` = lo que se **dice**. Si el formato no lleva voz: `N/A — formato estático`. Nunca vacío.
@@ -134,7 +134,7 @@ Cada sección lleva: **Objetivo del slot** · **Emoción** · **Hook** · **Guio
   alineación y Producción no puede partir la fila.
 - `elementos_graficos`: vocabulario cerrado de **4 familias** (ilustraciones · assets png ·
   texturas · formas), **máximo 3** por pieza, o `ninguno` con su motivo.
-- 🛑 **Ninguna sección especifica hex, tipografía, tamaño en píxeles, lente, locación concreta,
+- **Ninguna sección especifica hex, tipografía, tamaño en píxeles, lente, locación concreta,
   permiso ni casting.** Eso es de Diseño gráfico y Producción.
 
 ---
@@ -147,7 +147,7 @@ Toda fila recorre el camino inverso, completo:
 Fila → Slot → Campaña → Objetivo → MUST BE TRUE
 ```
 
-🛑 **Si no traza, SE ELIMINA.** La pregunta correcta es: *¿por qué estamos haciendo esta pieza?*
+**Si no traza, SE ELIMINA.** La pregunta correcta es: *¿por qué estamos haciendo esta pieza?*
 Cinco filas de un mismo concepto trazan **a la misma** MUST BE TRUE.
 
 ❌ *"Va porque el concepto daba para un carrusel."*
@@ -195,12 +195,12 @@ abajo antes del handoff. **Nada se libera a producción sin ese cierre.**
 - **`material` dice qué le hace falta a Producción; el `formato` dice quién arma la pieza.** `video` y `foto`
   van a **Producción**; `ninguno` no pasa por ahí. Después, los estáticos, carruseles y stories los
   arma **Diseño gráfico** y los videos **Video Editing**.
-- 🛑 **Un estático con `material = foto` espera su foto antes de componerse.**
+- **Un estático con `material = foto` espera su foto antes de componerse.**
 - Una fila `pendiente` **no se libera**. O se completa, o sale del bloque y se declara.
 - **El CSV y el doc son la interfaz.** Si Producción, Diseño gráfico, Video Editing o Posting
   tienen que preguntar algo, el brief estaba incompleto — y eso se corrige en el brief, no por chat.
 
-El formato exacto del bloque HANDOFF está en `pipelines/contenido/04-create/creative/brain/WORKFLOW.md` §7.
+El formato exacto del bloque HANDOFF está en `pipelines/contenido/04-create/creative/README.md` §7.
 
 ---
 
@@ -224,11 +224,11 @@ Ninguna capa se entrega sin pasar su bloque completo.
 - [ ] `escenas`, `encuadres` y `duraciones` tienen el **mismo número de ítems y el mismo orden**, o los tres dicen `N/A` — sin ítem `total` ni comentarios extra
 - [ ] Los **elementos gráficos** usan las 4 familias cerradas, **máximo 3** por pieza, o dicen `ninguno` con su motivo
 - [ ] Ninguna fila especifica **hex, tipografía, tamaño en píxeles, lente, locación concreta, permiso o casting**
-- [ ] 🛑 **Toda fila tiene `traza`** — las que no, **eliminadas**
-- [ ] 🛑 **Toda fila tiene hipótesis escrita**, con qué la confirmaría
+- [ ] **Toda fila tiene `traza`** — las que no, **eliminadas**
+- [ ] **Toda fila tiene hipótesis escrita**, con qué la confirmaría
 - [ ] La **aprobación de claim** está marcada en toda pieza con dato, precio o promesa, con quién valida
 - [ ] `material` declarado en toda fila (`ninguno` / `video` / `foto`), y el ruteo por `formato` cuadra: estáticos → Diseño gráfico · videos → Video Editing
-- [ ] 🛑 Toda fila con `material = foto` tiene su **§ Foto** en el `ideas-<formato>.md`
+- [ ] Toda fila con `material = foto` tiene su **§ Foto** en el `ideas-<formato>.md`
 - [ ] Las filas `pendiente` están listadas y **no se liberan a producción**
 - [ ] Verificación de trazabilidad: toda fila recorre `Fila → Slot → Campaña → Objetivo → MUST BE TRUE`
 - [ ] **Ninguna fila cambia la promesa** de Strategy ni el pilar o su peso de Marketing

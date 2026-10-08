@@ -17,11 +17,11 @@ description: >
 | **Consume** | `calendario-de-publicacion.csv` — las filas con `zernio_post_id` · el estado de cada publicación en Zernio |
 | **Produce** | La columna **`estado`** en `programada` / `publicada` / `fallida` · la sección **§ Verificación** de `publicaciones.md`, con la URL de cada publicación y lo que sigue fallando |
 
-Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md`.
+Contexto del departamento: `pipelines/contenido/05-convert/posting/README.md`.
 
-🛑 **Sin Zernio conectado no se verifica:** `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio`.
+**Sin Zernio conectado no se verifica:** `FALTA — falta Zernio. Instalala: ver INSTALAR.md § Zernio`.
 
-## 1 · 🛑 La regla de la capa
+## 1 · La regla de la capa
 
 **El estado sale de Zernio, publicación por publicación. No se abren las redes.**
 
@@ -37,7 +37,7 @@ después de las fechas del calendario, para saber qué se publicó y qué falló
 |---|---|---|
 | 1 | **`posts_get`** | Por cada `zernio_post_id` del registro: su estado, su cuenta y su fecha y hora |
 | 2 | **`posts_list_failed`** | Las fallidas de Zernio — se cruzan con el registro por `zernio_post_id` |
-| 3 | **`posts_list`** | El panorama por estado, si hace falta. 🛑 Trae 10 por defecto: se le pone un `limit` que cubra el ciclo |
+| 3 | **`posts_list`** | El panorama por estado, si hace falta. Trae 10 por defecto: se le pone un `limit` que cubra el ciclo |
 
 | Zernio dice | `estado` en el registro |
 |---|---|
@@ -45,7 +45,7 @@ después de las fechas del calendario, para saber qué se publicó y qué falló
 | `published` | **`publicada`** — se registra la URL de la publicación |
 | `failed` · `partial` *(salió en unas cuentas y en otras no)* | **`fallida`** |
 
-🛑 **Se reporta igual que una fallida:** una publicación que `posts_get` no encuentra, una que sigue
+**Se reporta igual que una fallida:** una publicación que `posts_get` no encuentra, una que sigue
 `programada` después de su fecha, o una cuya cuenta o fecha no coinciden con el registro.
 
 **Se registra la URL de cada publicación publicada.** Es lo que después necesitan Creatividad para
@@ -60,11 +60,11 @@ su loop y Ads para pautar sobre el orgánico.
 | 3 | Se vuelve a leer el estado: si salió, pasa a `publicada` |
 | 4 | **Lo que sigue fallando se reporta** — qué publicación, qué dice Zernio, cuántos reintentos y qué hace falta |
 
-🛑 **`posts_retry_all_failed` reintenta todo lo fallido de Zernio, de cualquier cliente.** Solo se
+**`posts_retry_all_failed` reintenta todo lo fallido de Zernio, de cualquier cliente.** Solo se
 usa si todas las fallidas de `posts_list_failed` son de este cliente y de este ciclo; si no, se
 reintenta una por una.
 
-🛑 **Bajar o borrar una publicación** (`posts_unpublish_post`, `posts_delete`) **no se decide en
+**Bajar o borrar una publicación** (`posts_unpublish_post`, `posts_delete`) **no se decide en
 esta capa:** se escala al COO.
 
 ## 4 · Qué se pasa para adelante
@@ -81,12 +81,12 @@ esta capa:** se escala al COO.
 
 ## Control de calidad de la Capa 5
 
-- [ ] 🛑 **El estado de cada publicación salió de Zernio** (`posts_get`), una por una — ninguna se dio por buena sin leerla
+- [ ] **El estado de cada publicación salió de Zernio** (`posts_get`), una por una — ninguna se dio por buena sin leerla
 - [ ] Toda fila del registro con `zernio_post_id` tiene su **`estado` actualizado**: `programada` / `publicada` / `fallida`
 - [ ] Las fallidas se cruzaron con **`posts_list_failed`** y se **reintentaron**
-- [ ] 🛑 `posts_retry_all_failed` solo se usó si todas las fallidas eran de **este cliente y este ciclo**
+- [ ] `posts_retry_all_failed` solo se usó si todas las fallidas eran de **este cliente y este ciclo**
 - [ ] Lo que **sigue fallando está reportado**, con lo que dice Zernio y qué hace falta
 - [ ] Las publicaciones que Zernio no encuentra, o que siguen `programada` después de su fecha, están reportadas
 - [ ] La **URL** de cada publicación publicada está registrada
-- [ ] 🛑 **Nada se bajó ni se borró desde acá** — se escaló al COO
+- [ ] **Nada se bajó ni se borró desde acá** — se escaló al COO
 - [ ] Las URLs se pasaron a **Creatividad para su loop** y a **Ads** las marcadas para pauta

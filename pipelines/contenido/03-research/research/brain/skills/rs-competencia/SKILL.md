@@ -18,13 +18,13 @@ description: >
 | **Consume** | `audiencia.md` · el mapa de categoría y los competidores que Strategy ya identificó · las Redes del plan · la cuota por Red |
 | **Produce** | `competencia-y-referentes.md` — dos secciones separadas, con la **base de rendimiento** de cada cuenta |
 
-Contexto del departamento: `pipelines/contenido/03-research/research/brain/WORKFLOW.md`.
+Contexto del departamento: `pipelines/contenido/03-research/research/README.md`.
 
 **Elige a quién se scrapea; no scrapea el contenido** *(eso es `rs-winners`)*. Strategy ya mapeó la
 categoría en lo macro; esta capa **baja a la lista de cuentas** que valen la pena mirar pieza por
 pieza. Lo que Strategy ya cubre **se cita, no se re-investiga**.
 
-## 🛑 Dos capas que no se mezclan
+## Dos capas que no se mezclan
 
 | | 🔍 **Competidores** | ⭐ **Referentes** |
 |---|---|---|
@@ -34,7 +34,7 @@ pieza. Lo que Strategy ya cubre **se cita, no se re-investiga**.
 | **Dónde** | **Solo Guatemala** | La **lista fija de países** de `cr-fuentes`; dentro y fuera de la categoría |
 | **Cuota** | **La mitad** de los contenidos de cada Red | **La otra mitad** |
 
-🛑 **Costa Rica y Panamá entran solo en un cliente premium o de ticket alto**, como dice `cr-fuentes`.
+**Costa Rica y Panamá entran solo en un cliente premium o de ticket alto**, como dice `cr-fuentes`.
 
 ## Paso 1 · Descubrir, después medir
 
@@ -43,7 +43,7 @@ pieza. Lo que Strategy ya cubre **se cita, no se re-investiga**.
 2 · MEDIR      por página o perfil    →  cuánto publican, cuánto rinden, cuál es su base
 ```
 
-🛑 **No al revés.** Buscar por keyword y quedarse ahí mezcla marcas y no deja medir a nadie.
+**No al revés.** Buscar por keyword y quedarse ahí mezcla marcas y no deja medir a nadie.
 
 | Acción | Herramienta |
 |---|---|
@@ -55,8 +55,8 @@ pieza. Lo que Strategy ya cubre **se cita, no se re-investiga**.
 | Leer su sitio, oferta y precios | Firecrawl `firecrawl_scrape` ✅ |
 | Reseñas y prensa | `WebSearch` ✅ |
 
-🛑 **Si el handle devuelve ambiguo, se pregunta.** Nunca se adivina cuál es la cuenta.
-🛑 **`find_competitors` no se reemplaza con nombres sacados de memoria:** un competidor que no
+**Si el handle devuelve ambiguo, se pregunta.** Nunca se adivina cuál es la cuenta.
+**`find_competitors` no se reemplaza con nombres sacados de memoria:** un competidor que no
 pauta ni publica no es evidencia. Si no devuelve nada, se declara y se pide un nombre.
 
 ## Paso 2 · La ficha de cada cuenta
@@ -77,13 +77,6 @@ pauta ni publica no es evidencia. Si no devuelve nada, se declara y se pide un n
 - Los **ingresos, conversiones y ventas** de un competidor normalmente no son públicos:
   `⚠️ SIN DATOS`. No se estiman como dato.
 - Lo que sugiere un competidor no mapeado por Strategy se **levanta como hallazgo**.
-
-## 🛑 Bloqueos
-
-- Sin plan o sin Redes: no corre.
-- Herramienta de descubrimiento no habilitada: se declara y se pide la lista a una persona
-  *(`🟡 lista manual`)*; no se rellena de memoria.
-- Máximo **3** búsquedas infructuosas por objetivo; después se pide un nombre, un handle o un link.
 
 ## ✅ Checklist
 

@@ -14,7 +14,7 @@
 2. **Lo que está antes de cada tabla de tiro** —las piezas de la jornada— dice *qué tiene que transmitir* lo que estás grabando. Leelo una vez antes de arrancar.
 3. **Lo que está al final del documento** es común a todos los días: lo que hay que conseguir, los permisos, los planes B, cómo se nombran los archivos y cómo se entrega.
 
-> 🛑 **Lo que dice la columna "Qué se graba" viene de Creatividad y no se cambia en el set.** Si
+> **Lo que dice la columna "Qué se graba" viene de Creatividad y no se cambia en el set.** Si
 > algo no se puede grabar como está escrito, se avisa y se devuelve — no se resuelve improvisando.
 > Fuente: `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`.
 
@@ -74,11 +74,11 @@ No es el orden en que se ve la pieza: es el orden que menos tiempo pierde movien
 | # | id | Qué se graba | Encuadre | Dur. | Tiempo | Qué necesitás a mano |
 |---|---|---|---|---|---|---|
 
-🛑 **Lo que se consume o se destruye en cámara va al final de su bloque**, con una toma completa hecha antes.
+**Lo que se consume o se destruye en cámara va al final de su bloque**, con una toma completa hecha antes.
 
 ### Lo que se dice en cámara
 
-🛑 **Solo va acá lo que alguien dice frente a cámara.** La voz en off se graba otro día, en un lugar
+**Solo va acá lo que alguien dice frente a cámara.** La voz en off se graba otro día, en un lugar
 silencioso — no ocupa tiempo de jornada, y se declara así. El texto en pantalla tampoco va: lo pone
 Video Editing en edición.
 
@@ -94,7 +94,7 @@ indicación de dirección por situación — nunca *"hacelo más natural"*.)*
 - [ ] Un detalle — `PR-00X`
 - [ ] 30 segundos de ambiente de la locación, una sola vez en el día
 
-🛑 **La cobertura se hace antes de mover la luz, nunca al final del día.** Cuando el día se atrasa,
+**La cobertura se hace antes de mover la luz, nunca al final del día.** Cuando el día se atrasa,
 lo último es lo primero que se cae — y es justo lo que salva la edición.
 
 ### Riesgos del día
@@ -115,7 +115,7 @@ Cada cosa tiene un responsable con nombre y una fecha. **Nada queda "por consegu
 |---|---|---|---|---|---|
 | | | `propio` / `prestado` / `alquilado` / `comprado` / `a-producir` | [nombre] | [fecha] | 🟢/🟡/🔴 |
 
-> 🛑 **Una cosa en 🟡 a menos de 48 horas de su jornada pasa a 🔴 y se activa su plan B.**
+> **Una cosa en 🟡 a menos de 48 horas de su jornada pasa a 🔴 y se activa su plan B.**
 
 ---
 
@@ -152,7 +152,7 @@ Todo en minúsculas, sin espacios ni tildes. El número de toma con dos dígitos
 _ENTREGA/        el manifiesto y las rutas
 ```
 
-🛑 **No se borra nada, ni el descarte.** Lo que no sirve se marca; queda en `00_RAW`.
+**No se borra nada, ni el descarte.** Lo que no sirve se marca; queda en `00_RAW`.
 
 ---
 
@@ -172,7 +172,7 @@ _ENTREGA/        el manifiesto y las rutas
 |---|---|---|---|
 | CR-00X | | | ✅ / ❌ falta [cuál] — motivo escrito |
 
-🛑 **Una pieza está completa solo si TODAS sus escenas están entregadas.** El detalle escena por
+**Una pieza está completa solo si TODAS sus escenas están entregadas.** El detalle escena por
 escena, con el nombre de archivo de cada toma, vive en `plan-de-produccion.csv`, columna `estado`.
 
 **Escenas que no se entregaron** — *toda escena planificada que no llegó a entregada lleva motivo escrito*
@@ -212,7 +212,7 @@ Presupuesto de referencia:  [monto + moneda + fecha / ⚠️ SIN DATOS]   — de
 | Qué se necesitaba | Qué hay en el banco de assets | Escenas que se ahorran |
 |---|---|---|
 
-🛑 Si esta tabla queda vacía, el cruce no se hizo. *"Sin material previo"* escrito es un resultado.
+Si esta tabla queda vacía, el cruce no se hizo. *"Sin material previo"* escrito es un resultado.
 
 ### Escenas devueltas a Creatividad
 | Escena | Vuelta | Motivo (de los 6) | Qué intención se rompería | Alternativa 1 | Alternativa 2 | Fecha límite | Respuesta de Creatividad + fecha |

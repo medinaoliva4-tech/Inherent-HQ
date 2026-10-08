@@ -16,7 +16,7 @@ description: >
 | **Consume** | Los veredictos de `br-guardian` del ciclo · métricas de Posting y Ads · `clients/<cliente>/04-contenido/aprendizaje-creativo.md` de Creatividad |
 | **Produce** | **`clients/<cliente>/02-marca/aprendizaje-de-branding.md`** — en la raíz del área, no dentro del mes |
 
-🛑 **Al cerrar el ciclo, el aprendizaje del ciclo anterior pasa a `_historico/<AAAA-MM>-aprendizaje-de-branding.md`.** El vigente siempre vive en la raíz del área.
+**Al cerrar el ciclo, el aprendizaje del ciclo anterior pasa a `_historico/<AAAA-MM>-aprendizaje-de-branding.md`.** El vigente siempre vive en la raíz del área.
 
 > 🔑 **Corre el 20 de cada mes.**
 
@@ -50,7 +50,7 @@ descuidados.**
 **El equipo ve la marca todos los días; la audiencia la ve 3 segundos cada tanto.** Cuando el
 equipo se cansa, la audiencia recién la está aprendiendo.
 
-🛑 **Cambiar activos por aburrimiento destruye lo único que hace acumulativo el contenido.**
+**Cambiar activos por aburrimiento destruye lo único que hace acumulativo el contenido.**
 
 ## 3 · Qué se decide
 

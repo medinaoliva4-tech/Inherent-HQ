@@ -19,21 +19,21 @@ description: >
 | **Consume** | `presupuesto.csv` con **`costo_real` cargado en todas las filas** · `plan-de-produccion.csv` completo, con `costo_estimado`, `jornada` y `estado` · de `plan-de-rodaje.md`: los tiempos estimados del orden de tiro y el factor de consolidación previsto (la sección de cada jornada) y el manifiesto de entrega (§ La entrega) · **qué usó Diseño gráfico y Video Editing en la pieza final** · la capacidad declarada por Strategy |
 | **Produce** | **`aprendizaje-de-produccion.md`** — archivo de trabajo interno: no se entrega al cliente pero **sí se guarda** en la carpeta del cliente. Plantilla: `aprendizaje-de-produccion.md`, al lado de esta skill |
 
-Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Cómo encadena con el resto:
-`pipelines/contenido/04-create/production/brain/skills/README.md`.
+Contexto del departamento: `pipelines/contenido/04-create/production/README.md`. Cómo encadena con el resto:
+`pipelines/contenido/04-create/production/README.md`.
 
 **Qué mide: ejecución.** No resultado creativo ni de negocio. Si una pieza no funcionó, eso lo lee
 Creatividad en su propia Capa 7, con métricas por pieza. Acá se lee **qué costó más, qué llevó más
 y qué se grabó al vacío**.
 
-🛑 **Sin datos: `⚠️ SIN DATOS` + a quién pedírselos. Ningún desvío inventado.** Un modelo sin acceso
+**Sin datos: `⚠️ SIN DATOS` + a quién pedírselos. Ningún desvío inventado.** Un modelo sin acceso
 al número real no dice *"no sé"*: rellena, y ese relleno se vuelve la referencia del próximo ciclo.
 
 ---
 
 ## 1 · El dato de entrada que no se negocia
 
-🛑 **El `costo_real` se completa siempre, aunque sea igual al estimado.**
+**El `costo_real` se completa siempre, aunque sea igual al estimado.**
 
 Una fila sin `costo_real` no es una fila neutra: es media muestra perdida. Y las que coinciden son
 justamente las que confirman que la estimación **ya es dato** y puede subir a las skills. Si se
@@ -42,7 +42,7 @@ cargan solo las que se desviaron, el archivo dice que Producción estima mal sie
 ❌ *"Ese ítem salió igual a lo cotizado, lo dejé vacío"*
 ✅ `equipo · estimado Q1.200 · real Q1.200 · desvío 0 % → la estimación de equipo ya es dato`
 
-Sin `costo_real` completo **esta capa no corre**: se declara `BLOQUEADO` y se nombra quién carga la
+Sin `costo_real` completo **esta capa no corre**: se declara `FALTA` y se nombra quién carga la
 columna.
 
 ---
@@ -81,9 +81,9 @@ Escenas grabadas: [n]   ·   Escenas efectivamente usadas: [n]
 |---|---|
 | **Hasta ~15 %** | Normal. Es el costo de la cobertura que sí sirve |
 | **20-30 %** | Hay un patrón. Se nombra qué tipo de escena se repite en el descarte |
-| **> 30-40 %** | 🛑 El shot list está pidiendo más de lo que la pieza usa. **Se devuelve a Creatividad** |
+| **> 30-40 %** | El shot list está pidiendo más de lo que la pieza usa. **Se devuelve a Creatividad** |
 
-🛑 **Se devuelve a Creatividad como DATO, no como reclamo.** Tres cosas, y ninguna es un juicio:
+**Se devuelve a Creatividad como DATO, no como reclamo.** Tres cosas, y ninguna es un juicio:
 
 | Qué lleva la devolución | Ejemplo |
 |---|---|
@@ -111,7 +111,7 @@ cuántas jornadas hubo, cuánto costó cada pieza.
 | Jornadas realmente disponibles | | |
 | Costo real por pieza | | |
 
-🛑 **Es la única corrección que Producción hace sobre un documento de otro departamento, y se hace
+**Es la única corrección que Producción hace sobre un documento de otro departamento, y se hace
 COMO PROPUESTA — nunca editando su archivo.** Se redacta el texto sugerido, se cita la fuente del
 dato y decide Strategy. Editar el archivo ajeno crea dos versiones de la verdad y en dos ciclos no coinciden.
 
@@ -130,7 +130,7 @@ Los márgenes, tiempos y costos de referencia de las skills `pr-*` se actualizan
 | Costos de referencia por categoría y **contingencia por perfil de rodaje** | `pr-presupuesto` |
 | Márgenes de confirmación por origen del recurso | `pr-recursos` |
 
-🛑 **Nada sube con un solo ciclo de evidencia.** Un desvío aislado es una anécdota; tres ciclos
+**Nada sube con un solo ciclo de evidencia.** Un desvío aislado es una anécdota; tres ciclos
 seguidos en la misma dirección es el número nuevo. Ese es el mecanismo por el que el departamento
 mejora sin que nadie lo decida.
 
@@ -138,21 +138,21 @@ mejora sin que nadie lo decida.
 
 ## 6 · Reglas duras
 
-1. 🛑 **`costo_real` en todas las filas**, aunque coincida con el estimado.
+1. **`costo_real` en todas las filas**, aunque coincida con el estimado.
 2. **Los desvíos se leen por ítem y por jornada**, nunca solo en total.
 3. **Todo desvío lleva su explicación escrita**, no solo el porcentaje.
 4. **El material no usado se devuelve a Creatividad como dato**, con patrón y propuesta.
-5. **La corrección de capacidad va a Strategy como propuesta.** 🛑 **No se edita el archivo de otro
+5. **La corrección de capacidad va a Strategy como propuesta.** **No se edita el archivo de otro
    departamento.**
 6. **Nada sube a las skills sin tres ciclos** en la misma dirección.
-7. 🛑 **Ningún desvío inventado.** Sin dato: `⚠️ SIN DATOS` + a quién pedírselo.
+7. **Ningún desvío inventado.** Sin dato: `⚠️ SIN DATOS` + a quién pedírselo.
 8. **Esta capa no juzga la pieza.** Si rindió o no rindió es Capa 7 de Creatividad.
 
 ---
 
 ## QA — Capa 7
 
-- [ ] 🛑 **`costo_real` cargado en todas las filas** de `presupuesto.csv`, aunque coincida con el estimado
+- [ ] **`costo_real` cargado en todas las filas** de `presupuesto.csv`, aunque coincida con el estimado
 - [ ] Desvío de costo calculado **por categoría y por jornada**, no solo el total
 - [ ] Los **3 ítems que más se pasaron** están nombrados, con su explicación escrita
 - [ ] **Contingencia consumida** declarada aparte, con qué la consumió
@@ -162,7 +162,7 @@ mejora sin que nadie lo decida.
 - [ ] El material no usado se devuelve a Creatividad **como dato, no como reclamo**, con **patrón y propuesta**
 - [ ] Factor de consolidación **real vs. previsto**, con **dónde se perdió**
 - [ ] La **corrección de capacidad** para Strategy está redactada **como propuesta**, con la fuente del dato
-- [ ] 🛑 **No se editó ningún archivo de otro departamento** — todo citado con su ruta
+- [ ] **No se editó ningún archivo de otro departamento** — todo citado con su ruta
 - [ ] Está declarado **qué tiempo o costo sube a qué skill `pr-*`**, y con **cuántos ciclos** de evidencia
 - [ ] Ninguna conclusión sobre **rendimiento de la pieza** — eso es Capa 7 de Creatividad
 - [ ] Sin datos: `⚠️ SIN DATOS` + a quién pedírselos. **Ningún desvío inventado**

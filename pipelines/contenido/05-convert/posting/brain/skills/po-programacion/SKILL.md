@@ -18,7 +18,7 @@ description: >
 | **Consume** | Las filas con `caption_ok` y `specs_ok` en ✅ · la `fecha` de Creatividad · métricas de la cuenta de `99-referencias/recibido/` si existen · `LINKS.md` (quién tiene el acceso y el ID de Zernio de cada cuenta) |
 | **Produce** | Las columnas **`cuenta`**, **`fecha`** y **`hora`** de `calendario-de-publicacion.csv` · la tabla del ciclo de un vistazo en `publicaciones.md` |
 
-Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md`.
+Contexto del departamento: `pipelines/contenido/05-convert/posting/README.md`.
 
 ## 1 · Qué se decide acá y qué no
 
@@ -28,7 +28,7 @@ Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLO
 | **El canal** — Marketing lo asignó | **La cuenta concreta** dentro de ese canal |
 | Qué pieza va en qué campaña | El **orden** cuando dos caen el mismo día |
 
-🛑 **La fecha no se mueve.** Si una pieza no llega a su día, **no se corre sola**: se declara y
+**La fecha no se mueve.** Si una pieza no llega a su día, **no se corre sola**: se declara y
 decide Marketing. Correr una fecha rompe la secuencia de una campaña sin que nadie lo haya decidido.
 
 ## 2 · `cuenta` no es `canal`
@@ -56,7 +56,7 @@ que se ven desde afuera**, y no se puede deshacer del timeline de nadie.
 | **No hay métricas** | Se usa la hora que indicó Marketing, y se marca `⚠️ SIN DATOS` |
 | **No hay ni métricas ni indicación** | Se usa una hora razonable para el hábito del comprador según `00-onboarding/comprension.md` §C · Demanda, **y se declara que es un supuesto** |
 
-🛑 **La «mejor hora» no se inventa.** No existe una hora universalmente buena, y afirmarla sin dato
+**La «mejor hora» no se inventa.** No existe una hora universalmente buena, y afirmarla sin dato
 es exactamente lo que prohíbe la regla «Evidencia o etiqueta» de `CLAUDE.md`. `⚠️ SIN DATOS` es una respuesta válida; *"a las 6
 pm funciona mejor"* sin fuente, no.
 
@@ -72,7 +72,7 @@ al programar. Si no se le pasa, Zernio usa la del perfil —o UTC—, y todo el 
 | Chequeo | Regla |
 |---|---|
 | **Dos piezas, misma cuenta, mismo día** | Se separan al menos unas horas, y se anota por qué van juntas |
-| **Dos piezas, misma cuenta, misma hora** | 🛑 Nunca. Se mueve una |
+| **Dos piezas, misma cuenta, misma hora** | Nunca. Se mueve una |
 | **Story y feed el mismo día** | Está bien — son formatos distintos. Se verifica que la story no adelante el feed sin querer |
 | **Pieza de pauta y orgánica iguales** | Se marca cuál es cuál. Ads necesita saberlo |
 
@@ -89,7 +89,7 @@ con los textos cuenta por cuenta y fecha por fecha.
 - Claims ⏸️ que no entran: [lista]
 ```
 
-🛑 **Un caption mal escrito se multiplica por todas las filas del ciclo**, y corregirlo después de
+**Un caption mal escrito se multiplica por todas las filas del ciclo**, y corregirlo después de
 programar significa rehacer cada publicación en Zernio.
 
 ---
@@ -98,9 +98,9 @@ programar significa rehacer cada publicación en Zernio.
 
 - [ ] Toda fila tiene **`cuenta` concreta** (`@handle`), no solo el canal
 - [ ] Se verificó **quién tiene las claves** y el **ID de Zernio** de cada cuenta usada
-- [ ] 🛑 **Ninguna fecha se movió** — las que no llegan se declararon y decide Marketing
+- [ ] **Ninguna fecha se movió** — las que no llegan se declararon y decide Marketing
 - [ ] Toda `hora` tiene **origen declarado**: dato de la cuenta, indicación de Marketing, o supuesto con su fuente
-- [ ] 🛑 **Ninguna «mejor hora» fue afirmada sin fuente**
+- [ ] **Ninguna «mejor hora» fue afirmada sin fuente**
 - [ ] La **zona horaria** está declarada arriba del documento
 - [ ] **Nada se pisa**: ninguna cuenta con dos piezas a la misma hora
 - [ ] Las piezas que van a pauta están **marcadas** para Ads

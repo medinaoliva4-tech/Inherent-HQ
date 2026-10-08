@@ -17,9 +17,9 @@ description: >
 | **Consume** | Las filas con archivo de `calendario-de-publicacion.csv` · los captions de la Capa 1 · los exports de Diseño gráfico y Video Editing |
 | **Produce** | La columna **`specs_ok`** + el **bloque de QA** de cada sección de `publicaciones.md` · las devoluciones a Diseño gráfico / Video Editing |
 
-Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md`.
+Contexto del departamento: `pipelines/contenido/05-convert/posting/README.md`.
 
-## 1 · 🛑 Verificar no es arreglar
+## 1 · Verificar no es arreglar
 
 **Lo que no cumple se devuelve. Nunca se arregla acá.**
 
@@ -45,12 +45,12 @@ sí se hace acá, y se anota.
 | **Duración** | Dentro del límite de la plataforma | ↩️ Video Editing |
 | **Peso** | Sube sin que la plataforma lo recomprima al mínimo | ↩️ Video Editing |
 | **Safe zones** | Nada de texto ni logo bajo la UI de la plataforma | ↩️ Diseño gráfico / Video Editing |
-| **Watermark** | 🛑 Ninguna marca de otra app | ↩️ Video Editing — **alcance muerto** |
+| **Watermark** | Ninguna marca de otra app | ↩️ Video Editing — **alcance muerto** |
 | **Audio** | Existe, está sincronizado y tiene volumen audible | ↩️ Video Editing |
 | **Caption** | Entra en el límite y el hook sobrevive al corte | ← Capa 1 |
 | **Hashtags** | Dentro del máximo de la plataforma | ← Capa 1 |
 | **Alt text** | Escrito | ← Capa 1 |
-| **Claims** | Todos aprobados | 🛑 **No se programa** |
+| **Claims** | Todos aprobados | **No se programa** |
 
 ### Aspecto — lo estable
 
@@ -63,10 +63,10 @@ Los aspectos casi no cambian y son los que más errores causan:
 | Feed cuadrado | **1:1** | |
 | Feed horizontal | **1,91:1** | |
 
-🛑 **Un 1:1 subido como Reel se ve con bandas o se recorta solo.** Es el error más común y el más
+**Un 1:1 subido como Reel se ve con bandas o se recorta solo.** Es el error más común y el más
 visible.
 
-### Duración y peso — 🛑 se verifican, no se recuerdan
+### Duración y peso — se verifican, no se recuerdan
 
 | Dato | Estado |
 |---|---|
@@ -77,7 +77,7 @@ visible.
 verificación al lado del número. El peso lo vuelve a comprobar Zernio antes de programar:
 **`validate_media`** compara cada archivo contra el límite de cada plataforma (`po-carga`).
 
-🛑 **No se afirma una duración de memoria.** Un video rechazado al programar cuesta la ventana de
+**No se afirma una duración de memoria.** Un video rechazado al programar cuesta la ventana de
 publicación.
 
 ### Safe zones — dónde se come la plataforma el contenido
@@ -118,12 +118,12 @@ Toda devolución lleva **tres cosas**, igual que en el resto del repo:
 ## Control de calidad de la Capa 2
 
 - [ ] Se verificó **pieza por pieza**, sin muestreo
-- [ ] 🛑 **Ningún archivo se arregló acá** — los que no cumplían se devolvieron
+- [ ] **Ningún archivo se arregló acá** — los que no cumplían se devolvieron
 - [ ] Los **aspectos** coinciden con el formato de destino de cada fila
 - [ ] Duración y peso se **verificaron contra la fuente**, con fecha anotada — no de memoria
 - [ ] Las **safe zones** están verificadas en todo formato vertical
-- [ ] 🛑 **Ninguna pieza lleva watermark** de otra app
+- [ ] **Ninguna pieza lleva watermark** de otra app
 - [ ] El **audio** se escuchó, no se asumió por el medidor
-- [ ] 🛑 **Ninguna pieza con claim ⏸️ quedó como `specs_ok = ✅`**
+- [ ] **Ninguna pieza con claim ⏸️ quedó como `specs_ok = ✅`**
 - [ ] Toda fila es `✅` completa o `↩️ DEVUELTA` — **ninguna a medias**
 - [ ] Cada devolución lleva **qué no cumple · qué se rompería · dos alternativas**

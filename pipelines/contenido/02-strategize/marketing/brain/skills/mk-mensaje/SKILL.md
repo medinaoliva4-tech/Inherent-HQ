@@ -30,7 +30,7 @@ no suma: se siente como contenido suelto, no como una campaña.
 | **2 · Los soportes** | Lo que lo hace creíble | **2 o 3** |
 | **3 · Lo secundario** | Lo que suma si hay espacio, y se cae primero si no lo hay | Los que sean |
 
-🛑 **Dos mensajes madre son cero mensajes madre.**
+**Dos mensajes madre son cero mensajes madre.**
 
 ## 3 · El mensaje por awareness
 
@@ -45,7 +45,7 @@ conoce.** Acá se escribe cada versión — Creatividad la usa para fijar el án
 | **Product aware** | Prueba, diferencia, respuesta a la objeción |
 | **Most aware** | La oferta y por qué ahora |
 
-> 🛑 **No hace falta cubrir los cinco.** Se cubren los que el ciclo va a trabajar, según dónde
+> **No hace falta cubrir los cinco.** Se cubren los que el ciclo va a trabajar, según dónde
 > esté el negocio. Un negocio invisible no tiene gente `Most aware`.
 
 ## 4 · Las objeciones
@@ -85,7 +85,7 @@ cliente dice que le dicen— no de la imaginación.
 
 ## 7 · Checklist
 
-🛑 **Cambiar el mensaje después del calendario tira el calendario entero.** Por eso la campaña y
+**Cambiar el mensaje después del calendario tira el calendario entero.** Por eso la campaña y
 la jerarquía se auto-revisan acá, antes de que se arme un solo slot.
 
 - [ ] Hay **un** mensaje madre, no dos

@@ -18,7 +18,7 @@ description: >
 
 ## 1 · ⬜ No se activa en la línea Marketing
 
-🛑 **No se le puede vender más a quien todavía no compró una vez.**
+**No se le puede vender más a quien todavía no compró una vez.**
 
 **Al cliente se le dice así:** *«Los upsells los trabajamos cuando ya haya gente comprando una
 vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede usar.**

@@ -16,7 +16,7 @@ description: >
 **Qué consume**
 - Un **link de anuncio** (vía A, por MCP) o **el archivo de video** (vía B, pipeline local).
 - El hueco de referencia que la Capa 1 definió: qué canal, formato o tipo de hook falta cosechar.
-- El método completo del departamento: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
+- El método completo del departamento: `pipelines/contenido/04-create/creative/README.md`.
 
 **Qué produce**
 - Una **ficha de referencia** por pieza leída, según la plantilla
@@ -28,7 +28,7 @@ description: >
 
 ## Lo primero: un modelo no mira videos, mira imágenes
 
-🛑 **Cualquier lectura de video es en realidad una EXTRACCIÓN:** frames, texto en pantalla, audio,
+**Cualquier lectura de video es en realidad una EXTRACCIÓN:** frames, texto en pantalla, audio,
 tiempos. La pregunta no es *si* se puede, es **cuántos frames hacen falta** — y ahí se gana o se
 pierde la eficiencia.
 
@@ -55,7 +55,7 @@ vuelve a leer**: la ficha es la caché del departamento.
 | **El mensaje**: gancho, promesa, oferta, estructura de guion | **A · por MCP** | Pedir el ad al MCP de ads: días corriendo, copy, CTA, landing y —si lo trae— transcripción con timestamps |
 | **La imagen**: ambientación, luz, encuadre, paleta, ritmo de corte | **B · pipeline local** | Correr el pipeline sobre el archivo de video |
 
-- **Vía A** es la barata y cubre la mayor parte de la cubeta `70·probado`. 🛑 **Vía A primero:** si lo
+- **Vía A** es la barata y cubre la mayor parte de la cubeta `70·probado`. **Vía A primero:** si lo
   que se busca es el patrón de mensaje, pedir el archivo es trabajo de más.
 - **Vía A no alcanza** cuando hay que leer la imagen. Ambientación, luz, encuadre, paleta y ritmo
   **ningún MCP los devuelve masticados**.
@@ -77,7 +77,7 @@ Deja en `<video>_lectura/`: `hoja-de-contacto.jpg`, los frames del hook y por pl
 `lectura.json` con ritmo, texto en pantalla y paleta.
 
 Si falta una herramienta, la vía B no corre:
-`BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § Herramientas de video`.
+`FALTA — falta <herramienta>. Instalala: ver INSTALAR.md § Herramientas de video`.
 
 ### Los 8 pasos
 
@@ -105,7 +105,7 @@ núcleos**. Una imagen en lugar de treinta y seis.
 | `--hook` | `3` (segundos) | Subilo a `5` si la pieza es de formato largo. El default de 3 s es para social |
 | `--scene` | `0.12` (umbral de corte) | Subilo a `0.20` si detecta cortes falsos por mucho movimiento de cámara. Bajalo a `0.08` si se pierde cortes entre planos de luminancia parecida |
 
-🛑 **Por qué `0.12` y no `0.25`:** con `0.25` se pierden los cortes entre planos de luminancia
+**Por qué `0.12` y no `0.25`:** con `0.25` se pierden los cortes entre planos de luminancia
 parecida — **probado: en un video con 4 cortes, `0.25` detectó 3.** Un corte perdido es un plano que
 no se lee y un setup que Producción no presupuesta.
 
@@ -118,7 +118,7 @@ no se lee y un setup que Producción no presupuesta.
 3. **Frames sueltos, solo si hace falta un detalle** — un encuadre puntual, una textura, cómo está
    resuelto un rótulo.
 
-🛑 **No abras los 5 frames si la hoja ya te lo dijo.** Cada imagen cuesta.
+**No abras los 5 frames si la hoja ya te lo dijo.** Cada imagen cuesta.
 
 ---
 
@@ -148,7 +148,7 @@ Es el único paso que **no siempre está disponible**, y hay que decirlo en vez 
 | **Captions de la plataforma** | Si el humano las pega | 🟢 Alta |
 | **Transcripción local** (`faster-whisper`) | Solo si el modelo está disponible en el entorno | 🟡 Verificar antes de prometerla |
 
-🛑 **Si no hay transcripción, se declara `⚠️ SIN TRANSCRIPCIÓN` y se lee lo que sí hay.** El texto en
+**Si no hay transcripción, se declara `⚠️ SIN TRANSCRIPCIÓN` y se lee lo que sí hay.** El texto en
 pantalla suele traer el mensaje completo en video social: no tenerlo hablado baja la confianza sobre
 el **tono**, no sobre el mensaje.
 
@@ -156,7 +156,7 @@ el **tono**, no sobre el mensaje.
 
 ## Lo que no se pudo leer se declara
 
-🛑 **Nunca se describe un plano que no se vio, ni un audio sin transcripción.**
+**Nunca se describe un plano que no se vio, ni un audio sin transcripción.**
 
 | Falta | Cómo se escribe |
 |---|---|
@@ -176,7 +176,7 @@ cliente. **Siempre con fecha de lectura:** la longevidad de un ad se mide al mom
 
 ## Paso 6 — Pasásela al filtro de señal
 
-🛑 **Leer no es validar.** Una referencia leída entra a la bóveda **solo si pasa el filtro de señal**
+**Leer no es validar.** Una referencia leída entra a la bóveda **solo si pasa el filtro de señal**
 de la skill `cr-swipe-file`: señal `⏱️` de rendimiento, conteo de fuentes independientes para
 🟢/🟡/⚪, y una cubeta del reparto 70/20/10. Un video bien leído sin señal de rendimiento es
 `⚪ ruido` — bien leído, pero ruido.
@@ -185,11 +185,11 @@ de la skill `cr-swipe-file`: señal `⏱️` de rendimiento, conteo de fuentes i
 
 ## Fronteras
 
-- 🛑 **No genera media.** Leer una referencia no es producir una pieza — eso es Producción y Diseño gráfico.
-- 🛑 **No decide si la referencia sirve.** Eso lo decide el filtro de señal, no la calidad de la lectura.
-- 🛑 **No re-investiga la categoría.** Lo que la tabla 15×7 de Strategy ya cubre se cita; acá se
+- **No genera media.** Leer una referencia no es producir una pieza — eso es Producción y Diseño gráfico.
+- **No decide si la referencia sirve.** Eso lo decide el filtro de señal, no la calidad de la lectura.
+- **No re-investiga la categoría.** Lo que la tabla 15×7 de Strategy ya cubre se cita; acá se
   lee **el hueco**.
-- 🛑 **Nunca se copia la ejecución.** De la lectura sale el patrón, no la pieza.
+- **Nunca se copia la ejecución.** De la lectura sale el patrón, no la pieza.
 
 ---
 
@@ -201,13 +201,13 @@ Bloque **Capa 1** — los checks relativos a lectura de video.
 - [ ] **Ninguna referencia se leyó dos veces** — se buscó la ficha antes de correr el pipeline
 - [ ] Se agotó la **vía A (MCP)** antes de pedir el archivo, cuando lo que se buscaba era el mensaje
 - [ ] Lo que no se pudo leer está declarado: `⚠️ SIN ARCHIVO` / `⚠️ SIN TRANSCRIPCIÓN`
-- [ ] 🛑 **Ningún plano descrito que no se vio, ningún audio descrito sin transcripción**
+- [ ] **Ningún plano descrito que no se vio, ningún audio descrito sin transcripción**
 - [ ] La **fuente de la transcripción** está nombrada (MCP · captions · OCR · whisper local) con su confianza
 - [ ] Las fichas con lectura de imagen traen **ritmo** (duración media de plano) y **setups distintos** — el segundo viaja a Producción
 - [ ] El **hook está leído aparte**: cuadro 1, texto desde el arranque, corte dentro del hook, si se entiende en mute
 - [ ] El patrón está **descompuesto en los 6 elementos** (hook, ángulo, formato, estructura, prueba, CTA)
 - [ ] Cada referencia tiene su señal de rendimiento en escala `⏱️` (`⏱️60-90+d` / `⏱️30-60d` / `⏱️outlier` / `⏱️estable`), **sin mezclarla** con 🟢/🟡/⚪, que marcan patrón por conteo de fuentes
-- [ ] 🛑 **Leer no es validar:** ninguna referencia entró a la bóveda por gusto estético ni por estar bien leída
+- [ ] **Leer no es validar:** ninguna referencia entró a la bóveda por gusto estético ni por estar bien leída
 - [ ] Cada patrón tiene **exactamente una cubeta**: `70·probado` / `20·apuesta` / `10·propio`
 - [ ] La hipótesis que sale de la ficha está **atada a un slot de este bloque**
-- [ ] 🛑 **Ninguna referencia se llevó al brief como imagen a replicar** — solo el patrón
+- [ ] **Ninguna referencia se llevó al brief como imagen a replicar** — solo el patrón

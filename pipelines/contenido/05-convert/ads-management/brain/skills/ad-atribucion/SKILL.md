@@ -30,7 +30,7 @@ atribución limpia (CAPI + GA4) y el performance fee son de 🟨 Accelerate y Co
 | Venta de alguien que llegó por contenido nuestro | Venta de cliente recurrente que compraba igual |
 | Lead que entró por un formulario nuestro y cerró | Referido que no pasó por nada nuestro |
 
-🛑 **Inflar la atribución es la forma más rápida de perder la confianza del cliente**, y el fee
+**Inflar la atribución es la forma más rápida de perder la confianza del cliente**, y el fee
 depende de esa confianza.
 
 ## 2 · Siempre se declara el modelo
@@ -63,7 +63,7 @@ depende de esa confianza.
 | El cliente no comparte sus ventas | 🔴 Se escala al CEO. **Es conversación comercial** |
 | La venta cierra por WhatsApp sin rastro | Se propone un identificador. **Mientras tanto, no se atribuye** |
 
-🛑 **Nunca se estima el fee.** Un fee sobre un número inventado es un cobro sin respaldo.
+**Nunca se estima el fee.** Un fee sobre un número inventado es un cobro sin respaldo.
 
 ## 5 · Qué escribe
 

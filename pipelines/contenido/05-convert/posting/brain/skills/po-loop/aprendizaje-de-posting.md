@@ -4,7 +4,7 @@
 **Publicaciones del ciclo:** [n] · publicadas [n] · no salieron [n] · devueltas [n]
 
 > Archivo de **trabajo interno**: no se entrega al cliente, pero **sí se guarda**.
-> 🛑 **Todo lo que vuelve a otro departamento va como dato, no como reclamo.**
+> **Todo lo que vuelve a otro departamento va como dato, no como reclamo.**
 
 ---
 
@@ -57,7 +57,7 @@
 |---|---|---|
 | | `po-caption` / `po-specs` / `po-carga` / `po-programacion` | |
 
-🛑 **Todo dato de plataforma se actualiza con fecha.** Sin fecha vuelve a caducar sin que nadie lo note.
+**Todo dato de plataforma se actualiza con fecha.** Sin fecha vuelve a caducar sin que nadie lo note.
 
 ---
 

@@ -20,15 +20,15 @@ description: >
 | **Consume** | El hueco calculado en `cr-swipe-file` (qué formato, canal o tipo de hook falta) · los competidores del cliente de Strategy · los canales con slot del calendario de Marketing |
 | **Produce** | El listado crudo de anuncios: **id de biblioteca · anunciante · copy · plataformas · fecha de inicio · antigüedad calculada · link · URL del creativo**, ordenado por antigüedad · y el registro de fuentes usadas, no disponibles y consumo |
 
-Contexto del departamento: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
+Contexto del departamento: `pipelines/contenido/04-create/creative/README.md`.
 
 **Consigue. No lee y no juzga.** Leer el video a fondo es `cr-lectura-de-video`; decidir qué entra a
 la bóveda, con qué señal y en qué cubeta, es `cr-swipe-file`. Esta skill solo responde *"¿de dónde
 salen los anuncios y cuántos días llevan corriendo?"*.
 
-## 🛑 La regla dura: la antigüedad se lee, nunca se pregunta
+## La regla dura: la antigüedad se lee, nunca se pregunta
 
-> 🛑 **Ninguna fecha de antigüedad entra al swipe file si no fue leída directamente de la Ad
+> **Ninguna fecha de antigüedad entra al swipe file si no fue leída directamente de la Ad
 > Library** — de la página, o de un MCP que la lea. **NUNCA de un modelo.**
 
 **Por qué.** Se le pidió a un modelo que listara anuncios activos: devolvió 5, con id y fecha.
@@ -60,7 +60,7 @@ funciona.
 | **API oficial de Ad Library** | Consulta programática | 🔴 **No sirve:** solo ads políticos y de temas sociales (los comerciales, solo para audiencias UE/UK por el DSA), **devuelve solo texto** —ni imagen ni video—, verificación con documento, token a ~60 días, ~200 llamadas/hora |
 | **TikTok Creative Center** | Top Ads público y navegable: tendencias de **formato** | 🟡 **Sin API oficial.** Y es la **curaduría de TikTok**, no los competidores del cliente: no responde *"qué está haciendo esta marca"* |
 | **Apify** *(MCP · la fuente oficial)* — tres actores, uno por plataforma | Anuncios con id, anunciante, fecha de inicio, copy —**incluido el de los DCO**— y la URL del video · orgánico de IG y TikTok con sus métricas. Filtrable por país | **Cobra por contenido.** Sin `resultsLimit` y `maxTotalChargeUsd` un run mal filtrado se dispara. El orgánico se ve **deslogueado**: sirve para comparar entre piezas, no como número absoluto |
-| **MCPs de ad intelligence** *(si están habilitados)* | Ads ordenables **por antigüedad**, competidores verificados, búsqueda por ángulo | 🛑 Instalado **no es** habilitado: un MCP sin habilitar en la sesión no tiene sus tools cargadas |
+| **MCPs de ad intelligence** *(si están habilitados)* | Ads ordenables **por antigüedad**, competidores verificados, búsqueda por ángulo | Instalado **no es** habilitado: un MCP sin habilitar en la sesión no tiene sus tools cargadas |
 
 > **Dato verificado:** la Ad Library **solo ordena por "impresiones" o "más recientes"**. **No tiene
 > orden por antigüedad.** Por eso hay que **extraer y ordenar nosotros**: es el paso que ninguna
@@ -85,7 +85,7 @@ discontinuó en enero de 2025— y que no existía nada más con ese nombre. **E
 | Sin acceso a datos de publicidad, Ad Library ni research de competidores | Exactamente eso |
 | Sin API pública ni acceso al modelo | Algo cableable |
 
-🛑 **Un modelo no es una base de datos.** Puede *razonar* sobre un video que se le muestre, y sirve
+**Un modelo no es una base de datos.** Puede *razonar* sobre un video que se le muestre, y sirve
 para transcribir audio o como segunda lectura de ambientación. Lo que **no** puede es decir qué
 anuncios corre un competidor y desde cuándo: eso es un índice, y los índices los tiene quien los
 construyó.
@@ -96,10 +96,10 @@ construyó.
 Library real: el run queda registrado en la organización Inherent y las fechas que devuelve
 coinciden con las que muestra la página.
 
-🛑 **Sustituye al barrido propio con navegador.** No hay servidor, no hay cron y no hay Chromium
+**Sustituye al barrido propio con navegador.** No hay servidor, no hay cron y no hay Chromium
 headless: el histórico de esa decisión quedó en `BARRIDO-NOCTURNO.md`, marcado como reemplazado.
 
-### 🛑 La investigación se hace por plataforma
+### La investigación se hace por plataforma
 
 **Las plataformas son las del cliente** — las **Redes** de
 `clients/<cliente>/00-onboarding/plan-contratado.md` *(si existe `plan-por-canal.md` de Marketing,
@@ -112,7 +112,7 @@ lo que haya ahí.
 | **Instagram** *(orgánico)* | `apify/instagram-scraper` | **$2.70** |
 | **TikTok** *(orgánico)* | `clockworks/tiktok-scraper` | **$3.70** |
 
-🛑 **Toda corrida lleva `resultsLimit` y `maxTotalChargeUsd`.** Sin excepción, en los tres actores.
+**Toda corrida lleva `resultsLimit` y `maxTotalChargeUsd`.** Sin excepción, en los tres actores.
 
 ### Cuántos contenidos por ciclo
 
@@ -143,9 +143,9 @@ lo que haya ahí.
 ② SCRAPEAR    search_type=page & view_all_page_id=…  →  los ads de cada página
 ```
 
-🛑 **No al revés.** Scrapear por keyword y quedarse ahí mezcla marcas y no deja medir a nadie.
+**No al revés.** Scrapear por keyword y quedarse ahí mezcla marcas y no deja medir a nadie.
 
-## 🛑 Las dos capas — competencia e inspiración no se mezclan
+## Las dos capas — competencia e inspiración no se mezclan
 
 > **Decisión del CEO.** Son dos barridos distintos, con países distintos, para departamentos
 > distintos. **Van en archivos o secciones separadas** — nunca en la misma lista.
@@ -168,7 +168,7 @@ lo que haya ahí.
 | **2 · Después** | 🇲🇽 México · 🇨🇴 Colombia · 🇵🇪 Perú · 🇪🇨 Ecuador · 🇩🇴 República Dominicana | Cuando los dos primeros no llenan el hueco |
 | **3 · Solo premium** | 🇨🇷 Costa Rica · 🇵🇦 Panamá | **Solo** en clientes premium o de ticket alto |
 
-🛑 **Costa Rica y Panamá no entran en un cliente de ticket bajo.** Su poder adquisitivo y su código
+**Costa Rica y Panamá no entran en un cliente de ticket bajo.** Su poder adquisitivo y su código
 de categoría son otros: la referencia se ve bien y no vende acá.
 
 ### Qué es «ganador» — cambia según sea pauta u orgánico
@@ -178,9 +178,9 @@ de categoría son otros: la referencia se ve bien y no vende acá.
 | **Anuncio** *(Meta Ad Library)* | **60-90+ días corriendo** | Las marcas matan rápido a los perdedores: un ad viejo es un ad que paga |
 | **Orgánico** *(Instagram · TikTok)* | **2x o más** las vistas o interacciones **del promedio de esa cuenta** | Un número absoluto no dice nada. 2x contra su propia base sí |
 
-🛑 **Son los mismos criterios de `cr-swipe-file`**, para que nadie mida con dos reglas.
+**Son los mismos criterios de `cr-swipe-file`**, para que nadie mida con dos reglas.
 
-### 🛑 Se scrapean todos, se leen a fondo 10-15
+### Se scrapean todos, se leen a fondo 10-15
 
 ```
 TODOS            →  se scrapean y se filtran por señal de ganador
@@ -191,7 +191,7 @@ EL RESTO          →  queda en el listado, con su señal, sin leer a fondo
 **Por qué.** Scrapear es barato; leer a fondo cuesta tiempo de agente y de persona. El valor está
 en diseccionar las mejores, no en pasar 150 piezas por el mismo molde.
 
-🛑 **Se adapta, nunca se copia el creativo.** Lo que cruza la frontera es **la estructura y el
+**Se adapta, nunca se copia el creativo.** Lo que cruza la frontera es **la estructura y el
 ángulo**, pasados a quetzales y a la cultura local. Copiar la pieza nos mete en el código visual de
 otro — lo contrario de lo que Branding construyó.
 
@@ -208,7 +208,7 @@ Cuando se corre así, el entregable lo dice:
 alcance de red del entorno. Apify entrega **la URL** (`cards[].videoSdUrl`), no el archivo. Cuando
 hace falta leer la **imagen** y no solo el mensaje, el archivo lo aporta un humano o sale de Drive.
 
-## 🛑 Techos de disciplina de consulta
+## Techos de disciplina de consulta
 
 El riesgo no es el volumen: es la indisciplina. Ocho marcas × tres búsquedas × 500 resultados es un
 barrido sin control.
@@ -220,7 +220,7 @@ barrido sin control.
 | Volumen por cliente por ciclo | **El del plan contratado, por plataforma** *(50 / 50 / 100 / 100)*. Si se pasa, **se declara y se para** |
 | Tope de gasto por cliente | **US$5 al mes.** No es el presupuesto esperado —el real es menos de US$1,30— sino **el límite de seguridad**: si se acerca, algo se está pidiendo mal |
 | Paginar más allá de la primera página | Solo si la primera trajo señal y falta cubrir el hueco |
-| Volver a pedir un ad ya leído | 🛑 **Nunca.** Está en su ficha de referencia — la ficha es la caché |
+| Volver a pedir un ad ya leído | **Nunca.** Está en su ficha de referencia — la ficha es la caché |
 | Metadata | **Completa, en una sola llamada.** Nunca en dos pasadas: se paga dos veces por lo mismo |
 | Búsquedas infructuosas | **máximo 3 por objetivo.** Después se pide al usuario un nombre, un handle o un link |
 | `resultsLimit` | **Se fija por país, nunca global.** Un límite global se gasta entero en el primer país de la lista y los demás vuelven vacíos |
@@ -232,7 +232,7 @@ barrido sin control.
 - **Un error o un timeout no es un cero.** Nunca se reporta un fallo como *"no hay datos"*.
 - **Cero resultados describe esos términos y filtros**, nunca *"no hay contenido de esto"*.
 - **Si una fuente no está disponible:** `⚠️ SIN [fuente] — [qué evidencia falta y qué confianza
-  pierde el concepto]`, y se sigue con el resto. 🛑 **Nunca se rellena el hueco con inferencia
+  pierde el concepto]`, y se sigue con el resto. **Nunca se rellena el hueco con inferencia
   presentada como dato.**
 
 ## Registro obligatorio
@@ -257,7 +257,7 @@ sin fecha es un relevamiento muerto. Refresco **semanal**.
 
 Lo que le toca a las fuentes. El bloque completo de la capa lo cierra `cr-swipe-file`.
 
-- [ ] 🛑 **Ninguna fecha de antigüedad viene de un modelo** — todas leídas de la Ad Library (página o MCP que la lea), con **fecha de lectura** registrada
+- [ ] **Ninguna fecha de antigüedad viene de un modelo** — todas leídas de la Ad Library (página o MCP que la lea), con **fecha de lectura** registrada
 - [ ] El **hueco** está calculado antes de salir a buscar, y **solo se cosechó el hueco**
 - [ ] Cada anuncio trae **id de biblioteca, anunciante, fecha de inicio y antigüedad calculada**
 - [ ] El listado está **ordenado por antigüedad**, no por impresiones ni por engagement

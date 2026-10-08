@@ -1,7 +1,7 @@
 # Entregas de video — <cliente> · ciclo <mes año>
 
 > Plantilla de Video Editing · `ve-export`. **Es lo que Posting abre primero.**
-> 🛑 **Ningún archivo se copia: se cita su ruta.**
+> **Ningún archivo se copia: se cita su ruta.**
 
 ---
 

@@ -17,19 +17,19 @@ description: >
 
 ## 1 · 🔴 Es acción destructiva
 
-🛑 **Gasta dinero del cliente y no se deshace.**
+**Gasta dinero del cliente y no se deshace.**
 **Sin GATE 1 aprobado por escrito, esta capa no corre.**
 
 ## 2 · La verificación final — antes de apretar
 
 | Chequeo | Si falla |
 |---|---|
-| **El tracking del plan funciona** — 🔷 pixel de Meta · 🟨 CAPI + GA4 | 🛑 **No se lanza.** Gastar sin medir es tirar el presupuesto |
-| **El presupuesto diario es el aprobado** | 🛑 Se corrige |
+| **El tracking del plan funciona** — 🔷 pixel de Meta · 🟨 CAPI + GA4 | **No se lanza.** Gastar sin medir es tirar el presupuesto |
+| **El presupuesto diario es el aprobado** | Se corrige |
 | **El destino abre** | Link, WhatsApp, formulario — **se prueba uno por uno** |
 | **El destino es móvil** | La mayoría del tráfico es móvil |
-| **El anuncio no tiene claim `⏸️`** | 🛑 No sale |
-| **Hay 3+ variantes por campaña** | 🛑 El test no sirve con menos |
+| **El anuncio no tiene claim `⏸️`** | No sale |
+| **Hay 3+ variantes por campaña** | El test no sirve con menos |
 
 > 🔑 **Un destino roto convierte 0% y gasta 100%.** Es el error más caro y el más fácil de
 > evitar.
@@ -57,7 +57,7 @@ description: >
 | Presupuesto diario | Para detectar cambios no autorizados |
 | Quién aprobó | Trazabilidad |
 
-🛑 **Una campaña corriendo que nadie registró es una campaña que nadie va a pausar.**
+**Una campaña corriendo que nadie registró es una campaña que nadie va a pausar.**
 
 ## 5 · Las primeras 48 horas
 

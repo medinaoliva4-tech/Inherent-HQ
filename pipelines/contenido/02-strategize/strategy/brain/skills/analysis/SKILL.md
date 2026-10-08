@@ -103,7 +103,7 @@ que es justo el error que la metodología prohíbe.
 ⚠️ **Y por eso el diagnóstico decide el ORDEN de los briefs**, no solo su contenido:
 el área que arregla el cuello va primero y con más profundidad.
 
-### 🛑 El cruce con el plan contratado
+### El cruce con el plan contratado
 
 | Si el cuello está en… | Y el plan es… | Entonces |
 |---|---|---|

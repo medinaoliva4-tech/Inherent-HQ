@@ -33,7 +33,7 @@ aplican.**
 
 ## La regla dura que salió de esto
 
-> 🛑 **Ninguna fecha de antigüedad entra al swipe file si no fue leída directamente de la Ad
+> **Ninguna fecha de antigüedad entra al swipe file si no fue leída directamente de la Ad
 > Library** — de la página, o de un MCP que la lea. **Nunca de un modelo.**
 
 **Por qué.** Se le pidió a Meta Muse Spark (vía OpenRouter) que listara anuncios activos en
@@ -68,7 +68,7 @@ A la mañana
   ⑧ el agente abre archivos ya listos y hace su trabajo
 ```
 
-🛑 **El agente nunca scrapea.** Lee archivos ya escritos. Un script determinista es más barato, más
+**El agente nunca scrapea.** Lee archivos ya escritos. Un script determinista es más barato, más
 rápido, y cuando falla falla fuerte en vez de fallar raro.
 
 ## Entorno

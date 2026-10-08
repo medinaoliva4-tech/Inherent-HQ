@@ -2,7 +2,7 @@
 
 Referencia del bloque **C.1** de `SKILL.md`.
 
-> 🛑 **Strategy NO arma la marca.** No hace brand strategy ni guideline. No define paleta,
+> **Strategy NO arma la marca.** No hace brand strategy ni guideline. No define paleta,
 > tipografía, logo ni sistema visual. Entrega **dirección y restricciones** para que Branding lo
 > desarrolle con sus propias skills.
 

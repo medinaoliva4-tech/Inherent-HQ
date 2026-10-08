@@ -18,7 +18,7 @@ description: >
 | **Consume** | Las Redes del plan · el arquetipo y la audiencia actual de Strategy · los comentarios de las cuentas del cliente, de los competidores y de los referentes · las preguntas repetidas de `cm-loop` · **si el cliente los entrega:** ventas, CRM y analytics |
 | **Produce** | `audiencia.md` — lo observado, las oportunidades clasificadas en cuatro ejes y el lenguaje literal citado |
 
-Contexto del departamento: `pipelines/contenido/03-research/research/brain/WORKFLOW.md`.
+Contexto del departamento: `pipelines/contenido/03-research/research/README.md`.
 
 **Describe lo observable. No decide a quién se le habla:** esa decisión es de Strategy. Esta capa
 entrega la evidencia sobre la que Strategy y Marketing deciden.
@@ -35,7 +35,7 @@ entrega la evidencia sobre la que Strategy y Marketing deciden.
 | **Datos propios del cliente** | Qué compran de verdad, cuánto, cada cuánto | 👤 Lo que el cliente entregue |
 | **Preguntas repetidas en la bandeja** | Lo que ya le escriben a la marca | `cm-loop` de Community Management |
 
-🛑 **Los datos propios del cliente se leen, nunca se suponen.** Sin ventas ni CRM, la intención de
+**Los datos propios del cliente se leen, nunca se suponen.** Sin ventas ni CRM, la intención de
 compra se estima **solo desde señales públicas** y se marca `[señal pública, sin verificar con ventas]`.
 
 ## Paso 2 · Clasificar cada oportunidad en cuatro ejes
@@ -64,20 +64,13 @@ suyo (venta).
 Una sección aparte con **las palabras del comprador, tal cual**: cómo nombra el problema, cómo nombra
 la solución, qué objeción repite, qué compara. Cada cita lleva **plataforma, fecha y enlace**.
 
-🛑 **Se cita, no se parafrasea.** Y nunca se atribuye una cita a una persona identificable fuera de
+**Se cita, no se parafrasea.** Y nunca se atribuye una cita a una persona identificable fuera de
 lo ya público en la pieza.
 
 ## Paso 4 · Lo que sugiere tocar la estrategia
 
 Si lo observado contradice la audiencia que Strategy asumió, **se levanta como hallazgo**, con su
 evidencia. Research no reescribe la audiencia objetivo.
-
-## 🛑 Bloqueos
-
-- Sin Redes en el plan: no corre.
-- Sin ningún comentario ni dato accesible: el archivo existe y dice
-  `⚠️ SIN DATOS — [qué fuente faltó]`; **no se rellena con lo que «normalmente» pide la audiencia.**
-- Una oportunidad con **una sola aparición** no se declara patrón: va como `⚪ una sola aparición`.
 
 ## ✅ Checklist
 

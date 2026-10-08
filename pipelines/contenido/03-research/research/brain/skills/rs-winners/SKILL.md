@@ -19,7 +19,7 @@ description: >
 | **Consume** | `competencia-y-referentes.md` *(las cuentas y su mediana)* · `audiencia.md` · las Redes y la cuota del plan · los ganadores propios que trae Performance |
 | **Produce** | `biblioteca-winners.csv` — una fila por pieza, orgánica y de pauta · y la entrada del registro de la corrida |
 
-Contexto del departamento: `pipelines/contenido/03-research/research/brain/WORKFLOW.md`.
+Contexto del departamento: `pipelines/contenido/03-research/research/README.md`.
 
 **Qué es:** el repositorio que cada cliente tiene de lo que ya funciona en sus plataformas, con la
 pieza entendida —no solo listada—. Se muestra en el **Creative Intelligence Engine**.
@@ -41,13 +41,13 @@ referencias.
 - Se scrapea **solo las Redes del cliente** y **solo las cuentas** de `rs-competencia`.
 - **La pauta se busca por página** *(`search_type=page` + `view_all_page_id`)*: la búsqueda por
   keyword devuelve la categoría; por página devuelve esa marca. Competencia con `country=GT`.
-- 🛑 **Toda corrida lleva `resultsLimit` y `maxTotalChargeUsd`.** El `resultsLimit` se fija
+- **Toda corrida lleva `resultsLimit` y `maxTotalChargeUsd`.** El `resultsLimit` se fija
   **por país**, no global.
-- 🛑 **Una pieza ya en la biblioteca no se vuelve a pedir:** su fila es la caché. Si cambió, se
+- **Una pieza ya en la biblioteca no se vuelve a pedir:** su fila es la caché. Si cambió, se
   actualizan sus métricas, no se re-lee.
 - **La metadata se pide completa, en una sola llamada.**
 
-## 🛑 Paso 2 · El rendimiento relativo
+## Paso 2 · El rendimiento relativo
 
 > **Un video con millones de vistas no es necesariamente mejor que uno con 20,000.** Se calcula el
 > rendimiento **relativo al tamaño del creador, a la antigüedad de la pieza y al objetivo.**
@@ -67,9 +67,9 @@ referencias.
 | Pauta de 30-60 días | Señal a confirmar | `⏱️30-60d` |
 | Pauta de menos de 30 días | **No entra:** todavía está en test | — |
 
-🛑 **La antigüedad de un anuncio se lee de la biblioteca, nunca se pregunta a un modelo.**
-🛑 **Sin señal de rendimiento no entra a la biblioteca.** «Me gusta» no es evidencia.
-🛑 **Los ingresos o conversiones de un competidor normalmente no son públicos:** la columna dice
+**La antigüedad de un anuncio se lee de la biblioteca, nunca se pregunta a un modelo.**
+**Sin señal de rendimiento no entra a la biblioteca.** «Me gusta» no es evidencia.
+**Los ingresos o conversiones de un competidor normalmente no son públicos:** la columna dice
 `⚠️ SIN DATOS`; **nunca se estiman.**
 
 ### El crecimiento temporal
@@ -108,14 +108,6 @@ copia el creativo.**
 
 🟡 **Sin cron, el refresco se corre a mano con `/rs-winners` y se declara:**
 `🟡 refresco manual`.
-
-## 🛑 Bloqueos
-
-- Sin la lista de cuentas de `rs-competencia`: se corre esa capa primero.
-- Sin Apify habilitado: **pauta de Meta** puede salir de AdWhispr `get_brand_ads` ✅; el orgánico
-  pasa a `🟡 recolección manual` o `⚠️ SIN DATOS`.
-- Si el volumen llega al tope de la cuota: **se declara y se para.**
-- Un error o un timeout no es un cero.
 
 ## ✅ Checklist
 

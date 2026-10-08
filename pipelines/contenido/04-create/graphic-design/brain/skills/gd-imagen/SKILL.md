@@ -28,7 +28,7 @@ description: >
 ⛔ **No se genera imagen con IA ni foto de producto sin sesión.** Si el producto necesita foto,
 **se pide en la próxima sesión de Producción** — la foto de producto sale de ahí.
 
-🛑 **Nunca se compra stock sin autorización.** Es costo que no está en el plan.
+**Nunca se compra stock sin autorización.** Es costo que no está en el plan.
 
 ## 2 · La verificación, antes de componer
 
@@ -53,7 +53,7 @@ sesión de Producción**: el producto se fotografía ya sobre el fondo o la supe
 | La sombra es coherente con la luz del fondo | Un producto flotando se nota |
 | El color del producto **no cambió** | Es el error que más devuelve el cliente |
 
-🛑 **Nunca se usa una persona que parezca un cliente real** ni un testimonio falso.
+**Nunca se usa una persona que parezca un cliente real** ni un testimonio falso.
 
 ## 4 · El banco crece cada ciclo
 

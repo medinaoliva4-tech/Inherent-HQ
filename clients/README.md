@@ -78,6 +78,6 @@ ni siquiera con el repo privado. Si hace falta una credencial para operar, **se 
 | **El plan contratado se anota primero** | Define el techo de lo que se puede prometer |
 | **Nada se envía al cliente sin gate** | El CEO cierra, el agente propone |
 
-> **Cómo se entrega lo define cada agente en su propio `brain/WORKFLOW.md`.**
+> **Cómo se entrega lo define cada agente en su propio `README.md`.**
 > Cada uno entrega algo distinto; lo único igual para todos es que **el CEO aprueba antes de que
 > algo salga.**

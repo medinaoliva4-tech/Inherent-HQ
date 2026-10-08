@@ -18,7 +18,7 @@ description: >
 
 ## 1 · La regla del presupuesto repartido
 
-🛑 **Pocas campañas con presupuesto suficiente, no muchas campañas sin datos.**
+**Pocas campañas con presupuesto suficiente, no muchas campañas sin datos.**
 
 | | Por qué |
 |---|---|
@@ -36,7 +36,7 @@ description: >
 | **Caliente** | Conversión | Compra, lead |
 | **Cliente** | Retención | Recompra, comunidad |
 
-🛑 **Una campaña de conversión apuntada a público frío gasta sin convertir.**
+**Una campaña de conversión apuntada a público frío gasta sin convertir.**
 
 ## 3 · Los públicos
 
@@ -63,7 +63,7 @@ búsqueda, **nunca SEO técnico ni posicionamiento orgánico**.
 
 **`/ads plan`** arma canales, campañas, presupuestos y medición.
 
-🛑 **Lo que devuelva se contrasta contra el objetivo y el techo del plan contratado.** El plugin
+**Lo que devuelva se contrasta contra el objetivo y el techo del plan contratado.** El plugin
 no sabe qué plan tiene el cliente.
 
 ## 6 · Qué escribe

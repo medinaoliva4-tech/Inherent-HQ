@@ -43,7 +43,7 @@ De `ingenieria-inversa.md` §1.3b (tabla 15×7) — o `⚠️ SIN DATOS — sin 
 
 | Patrón | ¿Está en el mapa de saturación? | Veredicto |
 |---|---|---|
-| | sí / no | 🛑 descartado (es el default) / conservar estructura e invertir / 🟢 entra |
+| | sí / no | descartado (es el default) / conservar estructura e invertir / 🟢 entra |
 
 ## 1.8 Banco de hooks propios *(de `aprendizaje-creativo.md` de un ciclo anterior, si existe — van primero)*
 

@@ -1,7 +1,7 @@
 # Ingeniería inversa — <cliente>
 
 > Plantilla de Strategy, bloque 03 · `reverse-engineering`.
-> 🛑 **Termina en patrón observado.** Si una línea dice «por lo tanto deberíamos…», se salió de su rol.
+> **Termina en patrón observado.** Si una línea dice «por lo tanto deberíamos…», se salió de su rol.
 > **Creatividad lo lee para NO re-mapear la categoría** en su swipe file.
 
 ---
@@ -57,7 +57,7 @@
 
 ## § Traducción a hipótesis
 
-> 🛑 **Un patrón no es una hipótesis.** Acá se dice qué se va a probar, no qué se va a copiar.
+> **Un patrón no es una hipótesis.** Acá se dice qué se va a probar, no qué se va a copiar.
 
 | Hipótesis | Qué patrón la sostiene | Qué la confirmaría |
 |---|---|---|

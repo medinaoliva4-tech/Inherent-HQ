@@ -32,7 +32,7 @@
 | **Marca de patrón** | 🟢 3+ fuentes distintas · 🟡 1-2 · ⚪ una sola aparición |
 | **Cubeta** | `70·probado` / `20·apuesta` / `10·propio` |
 
-🛑 Sin señal de rendimiento la ficha se archiva como **⚪ ruido**. Bien leída, pero ruido.
+Sin señal de rendimiento la ficha se archiva como **⚪ ruido**. Bien leída, pero ruido.
 
 ---
 

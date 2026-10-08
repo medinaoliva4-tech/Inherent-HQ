@@ -50,7 +50,7 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 | **2** | **¿Qué parte del posicionamiento refuerza?** | No construye. Suma ruido |
 | **3** | **¿Qué parte de la promesa demuestra?** | Promete en la pauta y no lo prueba en el contenido |
 | **4** | **¿Qué deseo o conversación activa?** | No va a generar señal, y sin señal no hay alcance |
-| **5** | **¿Qué siguiente acción acerca a la compra?** | 🛑 Es la que más se salta |
+| **5** | **¿Qué siguiente acción acerca a la compra?** | Es la que más se salta |
 
 🔑 **Se corre acá y no antes de publicar.**
 **Rechazar un slot cuesta Q0. Rechazar una pieza ya producida cuesta una pieza.**
@@ -69,7 +69,7 @@ El gate barato va arriba.
 ⚠️ **La 3 es la que descubre los slots vacíos.** Un slot que no demuestra nada de la promesa
 es contenido de relleno aunque se vea bien.
 
-### 🛑 Lo que NO es esta prueba
+### Lo que NO es esta prueba
 
 **No evalúa si la idea es buena** — eso es Creatividad con su filtro
 *Distinctiveness / Novelty / Relevance*. **Acá solo se verifica que el slot tenga trabajo
@@ -120,7 +120,7 @@ de negocio asignado.**
 - [ ] Stories ≤ el techo
 - [ ] El reparto por pilar coincide con los % de la Capa 3
 
-🛑 **Si pasa el techo, se recorta acá y se escribe qué se cayó.** Nunca se manda de más.
+**Si pasa el techo, se recorta acá y se escribe qué se cayó.** Nunca se manda de más.
 
 ## 6 · Qué pasa aguas abajo
 
@@ -132,7 +132,7 @@ de negocio asignado.**
 
 ## 7 · Checklist
 
-🛑 **Es lo que Creatividad va a producir.** Corregirlo pieza por pieza después es imposible: por eso se
+**Es lo que Creatividad va a producir.** Corregirlo pieza por pieza después es imposible: por eso se
 auto-revisa entero, acá, y pasa directo a Creatividad.
 
 - [ ] Las **11 columnas** están completas en todas las filas

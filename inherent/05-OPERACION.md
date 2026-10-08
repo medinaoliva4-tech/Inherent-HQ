@@ -141,7 +141,7 @@ tiene los agentes que trabajan su resultado.** El mapa completo está en
 | **↻** | **Strategy** | La lectura de Performance | El ajuste de estrategia que entra al ciclo siguiente | Todos |
 
 **El detalle de cada agente —sus acciones y qué entrega en cada plan— está en
-`pipelines/README.md` y en el `brain/WORKFLOW.md` de cada uno.**
+`pipelines/README.md` y en el `README.md` de cada uno.**
 
 ### Las reglas del pipeline
 

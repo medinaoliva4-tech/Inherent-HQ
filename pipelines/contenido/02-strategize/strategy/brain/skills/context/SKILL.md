@@ -71,7 +71,7 @@ Qué vende, en qué paquetes y a qué precio **solo se toca desde 🟨 Accelerat
 arreglar su embudo de WhatsApp y está en 🔷 Marketing— **no se entrega igual.**
 **Se escala al CEO** y se ofrece subir de plan o cotizarlo como extra.
 
-🛑 **El plan es techo duro.** El agente propone dentro de él, nunca por encima.
+**El plan es techo duro.** El agente propone dentro de él, nunca por encima.
 
 ---
 
@@ -126,7 +126,7 @@ ya dijo que no quiere hacer.
 
 ## E · Arquetipo
 
-Cierre obligatorio. Ver `../../WORKFLOW.md` §3. Se describe con las 7 preguntas, no se fuerza a
+Cierre obligatorio. Ver `../../../README.md` §3. Se describe con las 7 preguntas, no se fuerza a
 una lista cerrada.
 
 ## F · El research — lo que no dijo el cliente
@@ -150,7 +150,7 @@ una lista cerrada.
 | Lo dijo el cliente | `[dice el cliente, sin verificar]` |
 | Salió del research | `[fuente: <link>]` |
 
-- 🛑 **Sin link no es research.** Un dato público sin fuente no entra.
+- **Sin link no es research.** Un dato público sin fuente no entra.
 - **Si el research contradice lo que dijo el CEO o el cliente, se escriben los dos.** El research
   no borra lo dicho: lo contrasta. Decidir quién tiene razón es del bloque 02.
 - **El research describe, no interpreta**, igual que el resto del bloque.

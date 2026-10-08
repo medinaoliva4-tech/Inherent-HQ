@@ -32,7 +32,7 @@ description: >
 | ⛔ No se mapea ni se abre | Se ejecutan | Opera solo |
 | | Con proceso y seguimiento | Con acuerdos marco |
 
-🛑 **En la línea Marketing esta capa no corre.** Abrir un canal grande necesita material de
+**En la línea Marketing esta capa no corre.** Abrir un canal grande necesita material de
 ventas, outreach y seguimiento — **eso es Conversion OS, que la línea Marketing no incluye.**
 **Si el cliente lo pide, es upsell a Accelerate.**
 
@@ -51,11 +51,11 @@ ventas, outreach y seguimiento — **eso es Conversion OS, que la línea Marketi
 
 | Pregunta | Si la respuesta es no |
 |---|---|
-| ¿Puede **entregar** ese volumen? | 🛑 **No se abre.** Se arregla la capacidad primero |
-| ¿Puede **facturar** como ese canal exige? | 🛑 No se abre hasta resolverlo |
+| ¿Puede **entregar** ese volumen? | **No se abre.** Se arregla la capacidad primero |
+| ¿Puede **facturar** como ese canal exige? | No se abre hasta resolverlo |
 | ¿Puede **sostener** el precio de ese canal con margen? | 🔴 Se escala al CEO. Vender con pérdida no es crecer |
 
-🛑 **Abrir un canal grande que el cliente no puede entregar le rompe la reputación** — y es más
+**Abrir un canal grande que el cliente no puede entregar le rompe la reputación** — y es más
 caro que no haberlo abierto.
 
 ## 5 · Abrir — solo 🟨 Accelerate y Compound

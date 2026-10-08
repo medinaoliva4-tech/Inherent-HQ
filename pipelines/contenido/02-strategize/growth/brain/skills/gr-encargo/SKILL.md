@@ -2,10 +2,10 @@
 name: gr-encargo
 description: >
   Capa 0 de Growth — identifica la división, lee el plan contratado y declara exactamente qué
-  pilares y sistemas se activan en este cliente. Carga los unit economics de Strategy, que
-  son el piso de cualquier decisión de oferta o precio, y declara qué queda afuera y por qué.
-  Úsala cuando pidan "arrancá growth de X", "qué podemos hacer con este plan", "es low o high
-  ticket", "qué pilar está roto". Bloquea si falta la división, los unit economics o el plan.
+  pilares y sistemas se activan en este cliente. Carga los unit economics de Strategy, que son el
+  piso de cualquier decisión de oferta o precio, y declara qué queda afuera y por qué. Úsala
+  cuando pidan "arrancá growth de X", "qué podemos hacer con este plan", "es low o high ticket",
+  "qué pilar está roto".
 ---
 
 # Capa 0 · Encargo — qué se activa y qué no
@@ -27,7 +27,7 @@ description: >
 > 🔑 **El eje es cómo se decide la compra, no quién compra.** Un colchón de $3,000 es B2C y high
 > ticket; un SaaS de $30/mes es B2B y low ticket.
 
-🛑 **Si Strategy no la definió, se devuelve.** Elegirla acá cambia los tres pilares.
+**Si Strategy no la definió, se devuelve.** Elegirla acá cambia los tres pilares.
 
 ## 2 · Los unit economics — el piso de todo
 
@@ -94,7 +94,7 @@ saberlo el mes 1 que el mes 6.
 
 ## 4 · Qué queda afuera — y se dice
 
-🛑 **Lo que el plan no activa se escribe, no se omite.** Es lo que el account manager necesita
+**Lo que el plan no activa se escribe, no se omite.** Es lo que el account manager necesita
 para responder sin prometer de más.
 
 **Y se escribe en lenguaje de cliente:**

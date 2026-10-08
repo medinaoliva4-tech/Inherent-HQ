@@ -1,7 +1,7 @@
 # Aprendizaje de growth — <cliente> · ciclo <mes año>
 
 > Plantilla de Growth · `gr-loop`. **Corre el 20 de cada mes.**
-> 🛑 **Cambiar la oferta cuando el problema era la pauta destruye lo que funcionaba.**
+> **Cambiar la oferta cuando el problema era la pauta destruye lo que funcionaba.**
 
 ---
 

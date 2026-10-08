@@ -20,7 +20,7 @@ description: >
 
 **Cada canal tiene UNA función y un «qué NO se hace acá».**
 
-> 🛑 **Dos canales con la misma `funcion` significan que sobra uno.** Si Instagram y TikTok
+> **Dos canales con la misma `funcion` significan que sobra uno.** Si Instagram y TikTok
 > hacen lo mismo, estamos pagando dos veces por el mismo resultado. **Se fuerza la decisión acá.**
 
 El *«qué NO se hace acá»* es tan importante como la función: **es lo que impide que un canal se
@@ -63,7 +63,7 @@ convierta en el basurero del ciclo.**
 | **Email** | Newsletter | El cuerpo escrito por Creatividad, la lista y la herramienta |
 | **Manual** | WhatsApp · SMS · impresos | El texto o el archivo, la lista, y **quién lo opera** |
 
-🛑 **Un canal que no cae en ninguna de las tres rutas no entra.** Inventar la ruta en el momento
+**Un canal que no cae en ninguna de las tres rutas no entra.** Inventar la ruta en el momento
 es cómo un canal termina cargado donde no va.
 
 ## 5 · La cadencia
@@ -85,15 +85,6 @@ es cómo un canal termina cargado donde no va.
 | **§ Resumen** | Tabla con canal, función, cadencia, slots del ciclo |
 | **§ Verificación de funciones** | Que no haya dos canales con la misma `funcion` |
 | **§ Canales descartados** | Cuáles y **por cuál de las tres preguntas** se cayeron |
-
-## 7 · Bloqueos
-
-| Situación | Qué se hace |
-|---|---|
-| Dos canales con la misma función | 🛑 **Se decide: uno cambia de función o sale** |
-| Un canal sin cuenta o sin acceso | **No entra.** Se escribe en descartados |
-| La suma de cadencias no da el total de slots | Se rehace. Hay un error de aritmética |
-| El cliente pide un canal fuera del plan contratado | 🔴 **Se escala al CEO.** Es add-on, no favor |
 
 ## 8 · Checklist
 

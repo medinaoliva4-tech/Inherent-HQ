@@ -3,7 +3,7 @@
 **Campaña:** [nombre] · **Período:** [fechas del ciclo]
 **Fecha de cotización:** [fecha] · **Validez:** 30 días
 
-> 🛑 **Este documento lo lee el cliente.** Se escribe en lenguaje natural: sin `jornadas`, sin
+> **Este documento lo lee el cliente.** Se escribe en lenguaje natural: sin `jornadas`, sin
 > `factor de consolidación`, sin las 9 categorías internas, sin ids de pieza. Si una frase necesita
 > que alguien conozca el método para entenderla, está mal escrita.
 > Los números salen de `presupuesto.csv` (interno); acá se traducen.
@@ -60,7 +60,7 @@ Esto no tiene costo, pero **sin esto la jornada se mueve de fecha.**
 
 **Costo promedio por pieza: [monto].**
 
-> 🛑 **Con una sola campaña no se muestra desglose por campaña: se muestra el total y listo.**
+> **Con una sola campaña no se muestra desglose por campaña: se muestra el total y listo.**
 > Si el ciclo tiene dos o más, se repite la tabla por campaña y se cierra con un total del ciclo.
 
 ---
@@ -73,7 +73,7 @@ Esto no tiene costo, pero **sin esto la jornada se mueve de fecha.**
 
 Este presupuesto cubre **filmar y entregar el material ordenado**. Lo demás se cotiza aparte.
 
-🛑 Esta sección no se borra nunca, aunque parezca obvia: si no está escrita, el cliente asume que la
+Esta sección no se borra nunca, aunque parezca obvia: si no está escrita, el cliente asume que la
 edición está incluida.
 
 ---

@@ -20,8 +20,8 @@ description: >
 | **Llena del Excel** | `concepto` de `plan-de-contenido.csv` |
 | **Alimenta** | Hook, tono, emoción y estética de las capas 3, 4 y 5 |
 
-El departamento completo: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
-🛑 **Sin brief: DETENÉ** y corré la Capa 0 primero. No se improvisa el faltante.
+El departamento completo: `pipelines/contenido/04-create/creative/README.md`.
+**Sin brief: DETENÉ** y corré la Capa 0 primero. No se improvisa el faltante.
 **El swipe file, la guía de marca y el mapa de saturación se usan si existen.** Sin swipe file, la
 idea sale sin referencia y va como `20·apuesta`.
 
@@ -49,7 +49,7 @@ Tener una **estética de marca** fuerte y predefinida —la guía de marca de Br
 **cualquier referencia** por encima.
 - *"Tomemos esta misma foto, pero en nuestra versión: esta paleta, estas fuentes, este acabado"*
 - Convierte una idea ajena en una idea propia **sin cambiarle la estructura**
-- 🛑 **Requiere la guía de Branding.** Si no existe, esta técnica no se elige — no se inventa una
+- **Requiere la guía de Branding.** Si no existe, esta técnica no se elige — no se inventa una
   estética
 - **Dónde pesa:** B2B · institución · marca personal · SaaS
 
@@ -75,7 +75,7 @@ Poner la idea en un lugar **completamente ajeno o inesperado**.
 Aplicar una emoción que **incomode un poco**: miedo, ego, vergüenza, enojo.
 - Crear un sentimiento real, no una pieza bonita pero tibia
 - Sale del **problema interno** del arco (Capa 3) y del **enemigo** declarado por Marketing
-- 🛑 **Con cuidado y ética.** Tensión no es crueldad, ni miedo inventado, ni vergüenza sobre el
+- **Con cuidado y ética.** Tensión no es crueldad, ni miedo inventado, ni vergüenza sobre el
   cuerpo o la identidad de alguien
 - **Dónde pesa:** infoproducto · B2B · marca personal · alto ticket
 

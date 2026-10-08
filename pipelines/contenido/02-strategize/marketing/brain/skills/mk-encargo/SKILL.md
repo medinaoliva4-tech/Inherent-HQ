@@ -1,12 +1,11 @@
 ---
 name: mk-encargo
 description: >
-  Capa 0 de Marketing — verifica qué decidió Strategy y qué se puede de verdad antes de
-  planear nada. Carga los inputs bloqueantes, lee el plan contratado para fijar el techo de slots
-  del ciclo, cruza la capacidad declarada del cliente contra lo que el plan paga y declara el
-  margen real. Úsala cuando pidan "arrancá el ciclo de X", "cuántas piezas podemos este mes",
-  "qué decidió estrategia", "verificá si esto se puede". Bloquea si no existe la estrategia, el
-  posicionamiento o el plan contratado.
+  Capa 0 de Marketing — verifica qué decidió Strategy y qué se puede de verdad antes de planear
+  nada. Carga los inputs bloqueantes, lee el plan contratado para fijar el techo de slots del
+  ciclo, cruza la capacidad declarada del cliente contra lo que el plan paga y declara el margen
+  real. Úsala cuando pidan "arrancá el ciclo de X", "cuántas piezas podemos este mes", "qué
+  decidió estrategia", "verificá si esto se puede".
 ---
 
 # Capa 0 · Encargo — qué se decidió y qué se puede
@@ -23,20 +22,20 @@ descubre cuando producción no da abasto.
 
 | De | Qué se carga | Si falta |
 |---|---|---|
-| **Strategy** | Objetivo del ciclo con plazo y métrica **(el KR del trimestre en `roadmap-okrs.md`)** · posicionamiento · **la PROMESA** · **la HISTORIA** *(héroe, enemigo, transformación)* · **las MUST BE TRUE con su letra** · el brief de marketing | 🛑 **BLOQUEADO** |
-| **Strategy** | **El diagnóstico: qué síntoma tiene el cliente y qué causa se declaró** | 🛑 **BLOQUEADO** |
-| **Strategy** | Qué puede grabar el cliente y cada cuánto · qué cuentas existen y quién las opera · estacionalidad | 🛑 **BLOQUEADO** |
+| **Strategy** | Objetivo del ciclo con plazo y métrica **(el KR del trimestre en `roadmap-okrs.md`)** · posicionamiento · **la PROMESA** · **la HISTORIA** *(héroe, enemigo, transformación)* · **las MUST BE TRUE con su letra** · el brief de marketing | **FALTA** |
+| **Strategy** | **El diagnóstico: qué síntoma tiene el cliente y qué causa se declaró** | **FALTA** |
+| **Strategy** | Qué puede grabar el cliente y cada cuánto · qué cuentas existen y quién las opera · estacionalidad | **FALTA** |
 | **Branding** | Tono, territorio, activos distintivos, do's & don'ts | 🟡 Se usan si existen. No bloquea |
-| **La línea y el plan** | 🔷 Marketing · 🔷 Marketing Pro · 🟨 Accelerate · 🟨 Compound · ⬜ Tailor Made | 🛑 **BLOQUEADO** |
+| **La línea y el plan** | 🔷 Marketing · 🔷 Marketing Pro · 🟨 Accelerate · 🟨 Compound · ⬜ Tailor Made | **FALTA** |
 
-🛑 **Ningún archivo se copia: se cita su ruta.**
+**Ningún archivo se copia: se cita su ruta.**
 
 > 🔑 **Por qué la PROMESA es bloqueante.** El contenido es la intersección de
 > `deseo de la audiencia` **+** `posicionamiento` **+** `promesa`.
 > **Sin la promesa, Marketing hace dos tercios del trabajo** y ningún slot puede pasar la pregunta 3
 > de la prueba de alineación — ver `mk-calendario`.
 
-### 🛑 Si el diagnóstico de Strategy apunta fuera de Marketing
+### Si el diagnóstico de Strategy apunta fuera de Marketing
 
 **Cuatro de los cinco cuellos típicos no se arreglan con contenido.**
 
@@ -69,7 +68,7 @@ Ver `pipelines/contenido/02-strategize/strategy/brain/skills/analysis/SKILL.md` 
 «más piezas», está mal planteado: **lo que cambia en Accelerate es que la oferta viene
 rediseñada por Growth.**
 
-> 🛑 **El techo manda sobre la ambición.** Si la estrategia pide más de lo que el plan paga,
+> **El techo manda sobre la ambición.** Si la estrategia pide más de lo que el plan paga,
 > **se declara y se recorta acá**, con el recorte escrito. Nunca se manda de más.
 
 ## 3 · El techo de realidad — lo que el cliente puede
@@ -96,16 +95,6 @@ rediseñada por Growth.**
 | **D · El techo** | Plan contratado · total de slots · reparto por tipo |
 | **E · La capacidad real** | Qué puede el cliente, y dónde queda por debajo del techo |
 | **F · Lo que queda afuera** | Canales descartados y por qué. **Escrito, no omitido** |
-
-## 5 · Bloqueos y devoluciones
-
-| Situación | Qué se hace |
-|---|---|
-| La estrategia no existe | 🛑 **BLOQUEADO.** Se pide a Strategy |
-| No hay MUST BE TRUE con letra | 🛑 **BLOQUEADO.** Sin ellas ningún slot puede trazar |
-| El objetivo del ciclo no tiene métrica ni plazo | ↩️ **Devuelto a Strategy** |
-| La capacidad del cliente no alcanza ni para el mínimo del plan | 🔴 **Se escala al CEO.** Es conversación comercial, no de marketing |
-| No se sabe qué cuentas existen | 🛑 **BLOQUEADO.** Se pide a Strategy |
 
 ## 6 · Checklist
 

@@ -40,7 +40,7 @@ description: >
 | ¿Nombra la marca como corresponde? | ↩️ Devuelto a Creatividad |
 | **Logo tapado: ¿se reconoce?** | ↩️ Devuelto con la razón |
 
-> 🛑 **Se devuelve con el motivo escrito y la regla que incumple.** *«No me gusta»* no es un
+> **Se devuelve con el motivo escrito y la regla que incumple.** *«No me gusta»* no es un
 > motivo: **si no se puede citar una regla, la pieza pasa** — y la regla que falta se anota para
 > `br-loop`.
 
@@ -53,14 +53,14 @@ comparación. Acá se resuelve.**
 |---|---|
 | ✅ **Validado** | Hay evidencia, y está citada con fuente |
 | 🔄 **Reformulado** | Se puede decir, pero de otra forma. Se escribe la versión que sí |
-| 🛑 **Rechazado** | No hay evidencia. **No sale** |
+| **Rechazado** | No hay evidencia. **No sale** |
 
 | Tipo de claim | Qué evidencia necesita |
 |---|---|
 | Un número | La fuente del dato, con fecha |
 | Un resultado | El caso, con permiso del cliente para contarlo |
 | Una comparación | 🔴 **Escala al COO.** Comparar con competidores tiene riesgo legal |
-| *«El mejor»*, *«el único»*, *«el líder»* | 🛑 **Rechazado por defecto**, salvo prueba |
+| *«El mejor»*, *«el único»*, *«el líder»* | **Rechazado por defecto**, salvo prueba |
 
 > ⚠️ **Sin fuente va como `[dice el cliente, sin verificar]` o `⚠️ SIN DATOS`. Nunca se
 > inventa.**

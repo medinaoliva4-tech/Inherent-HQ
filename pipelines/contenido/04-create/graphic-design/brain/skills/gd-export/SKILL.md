@@ -24,8 +24,8 @@ description: >
 
 **Para carruseles:** `<id_creativo>_carrusel_01.png`, `_02`, `_03`…
 
-🛑 **Posting cruza por `id_creativo`.** Un archivo sin él **se devuelve sin abrirse**.
-🛑 **Las slides van numeradas con dos dígitos**, o se desordenan al cargar.
+**Posting cruza por `id_creativo`.** Un archivo sin él **se devuelve sin abrirse**.
+**Las slides van numeradas con dos dígitos**, o se desordenan al cargar.
 
 ## 2 · El QA técnico, pieza por pieza
 
@@ -50,7 +50,7 @@ description: >
 | Márgenes | Safe zones | **+ márgenes de corte** |
 | Formato | PNG / JPG | **PDF** |
 
-🛑 **Un impreso exportado en RGB sale con otro color.** Es el error que más caro se paga porque
+**Un impreso exportado en RGB sale con otro color.** Es el error que más caro se paga porque
 se descubre con el material ya impreso.
 
 ## 4 · El manifiesto — `entregas-diseno.md`
@@ -65,7 +65,7 @@ se descubre con el material ya impreso.
 | `specs_ok` | ✅ / ❌ con el motivo |
 | `estado` | `entregado` · `⚠️ SIN IMAGEN` · `↩️ devuelto` |
 
-🛑 **La columna `plantilla` no es opcional:** sin ella el loop no puede saber qué molde rindió.
+**La columna `plantilla` no es opcional:** sin ella el loop no puede saber qué molde rindió.
 
 ## 5 · Lo que no salió
 

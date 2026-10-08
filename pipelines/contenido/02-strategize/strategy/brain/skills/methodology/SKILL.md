@@ -36,7 +36,7 @@ personas desconectadas del producto crea una base grande e inútil y encarece la
 
 ---
 
-## 🛑 El nivel es MACRO
+## El nivel es MACRO
 
 Esta estrategia dice **cómo se va a lograr**, no qué pieza se publica.
 
@@ -227,7 +227,7 @@ Se cumple en cada contacto: anuncio, contenido, venta, producto, servicio, comun
 Héroe en su mundo normal · deseos, fortalezas y debilidades · entrada al mundo extraordinario ·
 obstáculos y enemigos · transformación · final feliz.
 
-🛑 **La empresa es la guía, no el protagonista.** Contar a la empresa como héroe y a los competidores
+**La empresa es la guía, no el protagonista.** Contar a la empresa como héroe y a los competidores
 como villanos, sin conectarlo con la vida del cliente, es narrativa centrada en la empresa y aburre.
 
 ### B.6 · Personalidad
@@ -303,7 +303,7 @@ cuenta.** No cómo hacerlo — eso lo resuelve cada agente con sus propias skill
 
 Cada bloque con **decisión + puntos a resolver**. Ver `brand-brief.md` en esta carpeta.
 
-🛑 **Strategy no arma la marca.** No define paleta, tipografía, logo ni sistema visual.
+**Strategy no arma la marca.** No define paleta, tipografía, logo ni sistema visual.
 
 ### C.2 · Brief de MARKETING
 - **Qué campañas** hay que crear, y **para quiénes**
@@ -339,7 +339,7 @@ elige cuáles se empujan — **no toca qué se vende, en qué paquetes ni a qué
 - **Qué tiene que pasar para que valga la pena** — el número que debería moverse
 - **Qué NO hace** — el alcance cerrado, para que no crezca sola
 
-🛑 **Strategy no la construye ni define stack.** Define **qué problema resuelve y para quién.**
+**Strategy no la construye ni define stack.** Define **qué problema resuelve y para quién.**
 
 ⚠️ **Si no se identifica una fricción real, no se construye nada.** Una herramienta que nadie usa
 es peor que ninguna: consume el presupuesto del trimestre y no mueve un número.
@@ -411,7 +411,7 @@ comunidad chica y **solo se escala lo que muestre señales de negocio**.
 
 **`clients/<cliente>/01-estrategia/posicionamiento.md`** — la plataforma de marca completa (§B) y los
 objetivos macro (§A), más los briefs por área. **`clients/<cliente>/01-estrategia/nucleo.md`** recibe el
-`WIN` y el arquetipo. El resumen para el cliente va a `01-estrategia/estrategia.md` (`../../WORKFLOW.md` §7).
+`WIN` y el arquetipo. El resumen para el cliente va a `01-estrategia/estrategia.md` (`../../../README.md` §7).
 
 ## Antes de cerrar
 
@@ -428,4 +428,4 @@ objetivos macro (§A), más los briefs por área. **`clients/<cliente>/01-estrat
 - [ ] Cada paso de la lógica fortalece al siguiente
 
 ## Handoff
-→ la entrega — `../../WORKFLOW.md` §7
+→ la entrega — `../../../README.md` §7

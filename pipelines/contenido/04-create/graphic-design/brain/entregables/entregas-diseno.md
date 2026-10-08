@@ -1,7 +1,7 @@
 # Entregas de diseño — <cliente> · ciclo <mes año>
 
 > Plantilla de Diseño gráfico · `gd-export`. **Es lo que Posting abre primero.**
-> 🛑 **Ningún archivo se copia: se cita su ruta.**
+> **Ningún archivo se copia: se cita su ruta.**
 
 ---
 

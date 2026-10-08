@@ -17,7 +17,7 @@ description: >
 | **Consume** | `lectura-de-kr.md` · todos los `aprendizaje-de-*.md` vigentes, desde la raíz de cada área |
 | **Produce** | **`clients/<cliente>/01-estrategia/revisiones-del-20/<AAAA-MM>/aprendizaje-del-ciclo.md`** — trabajo interno, no se entrega al cliente pero **sí se guarda** |
 
-🛑 **Performance propone; Strategy decide.** Esta capa no cambia el roadmap, la oferta ni el plan
+**Performance propone; Strategy decide.** Esta capa no cambia el roadmap, la oferta ni el plan
 del ciclo: entrega la propuesta con su evidencia.
 
 ## 1 · Los aprendizajes que se cruzan
@@ -75,10 +75,10 @@ diagnóstico del dueño: lo conecta con el KR.
 | Mejores horas distintas a las programadas | Que Marketing ajuste los slots | **Marketing** |
 | Un KR se cumplió con holgura | Subir la meta del siguiente trimestre | **Strategy** |
 
-🛑 **No se propone lo que no tiene evidencia nombrada.** Cada fila de la propuesta cita el KR, el
+**No se propone lo que no tiene evidencia nombrada.** Cada fila de la propuesta cita el KR, el
 dato y el aprendizaje que la sostiene.
 
-🛑 **Se separa oferta de pauta.** Si llega la misma gente y compra menos, el problema probable es
+**Se separa oferta de pauta.** Si llega la misma gente y compra menos, el problema probable es
 la oferta; si llega menos gente y convierte igual, es la pauta. Se devuelve a quien corresponde,
 nunca al revés.
 

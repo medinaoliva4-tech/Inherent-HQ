@@ -22,7 +22,7 @@ description: >
 |---|---|---|---|
 | ⬜ No incluye | ⬜ No incluye | **1 por trimestre** | **1 por mes** |
 
-🛑 **Es promesa publicada.** *«Herramientas hechas para ti, una nueva cada trimestre»* ·
+**Es promesa publicada.** *«Herramientas hechas para ti, una nueva cada trimestre»* ·
 *«Tu operación más liviana: una herramienta nueva cada mes»*.
 
 ## 2 · Qué se construye: el cuello, no el deseo
@@ -36,7 +36,7 @@ description: >
 | El cliente **no puede ver** algo que necesita ver | Un tablero de su operación |
 | Una venta **se cae por fricción** | Una landing o un flujo de pago más corto |
 
-🛑 **No se construye porque suena moderno.** Una herramienta sin cuello que destrabar es trabajo
+**No se construye porque suena moderno.** Una herramienta sin cuello que destrabar es trabajo
 que nadie va a usar.
 
 ## 3 · Con qué

@@ -7,7 +7,7 @@ description: >
   elige los hashtags que corresponden y escribe el alt text. Si el mensaje no entra sin romperse,
   devuelve a Creatividad con dos alternativas. Escribe el caption de cada sección de
   `publicaciones.md`. Úsala cuando pidan "escribí los captions", "el texto del post", "qué hashtags
-  le ponemos", "el alt text", "adaptá este copy a TikTok". 🛑 No cambia la idea ni el hook.
+  le ponemos", "el alt text", "adaptá este copy a TikTok". No cambia la idea ni el hook.
 ---
 
 # Capa 1 · Caption — qué texto sale
@@ -17,10 +17,10 @@ description: >
 | **Consume** | Las filas de `calendario-de-publicacion.csv` con archivo (de `po-recepcion`) · el **copy y el caption literales** del `ideas-<formato>.md` de cada pieza en Creatividad · tono de voz, do's & don'ts y cómo se nombra la marca, de Branding, si existen |
 | **Produce** | El **caption final** de cada sección de `publicaciones.md`, con su conteo, su corte, sus hashtags y su alt text · la columna `caption_ok` |
 
-Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md`. Plantilla:
+Contexto del departamento: `pipelines/contenido/05-convert/posting/README.md`. Plantilla:
 `pipelines/contenido/05-convert/posting/brain/entregables/publicaciones.md`.
 
-## 1 · 🛑 Qué se puede tocar y qué no
+## 1 · Qué se puede tocar y qué no
 
 | Se puede | No se puede |
 |---|---|
@@ -30,7 +30,7 @@ Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLO
 | **Elegir** los hashtags | Agregar una promesa, un precio o un claim que Creatividad no escribió |
 | **Escribir** el alt text | Corregirle el tono a Creatividad — eso se devuelve |
 
-> 🛑 **Si para que entre hay que sacarle el hook o el CTA, no es una adaptación: es una devolución.**
+> **Si para que entre hay que sacarle el hook o el CTA, no es una adaptación: es una devolución.**
 > Vuelve a Creatividad con motivo 5 y **dos alternativas concretas** de versión corta.
 
 ## 2 · La estructura del caption
@@ -45,7 +45,7 @@ Cierre     EL CTA           el de Creatividad, según la etapa
 Al final   LOS HASHTAGS     los que corresponden, no los que caben
 ```
 
-🛑 **El hook va completo en la línea 1.** Si se parte a la mitad en el corte, la mitad que se lee no
+**El hook va completo en la línea 1.** Si se parte a la mitad en el corte, la mitad que se lee no
 engancha y el resto nadie lo abre.
 
 **La prueba, siempre:** se copian los primeros caracteres visibles de la plataforma y se leen solos.
@@ -66,7 +66,7 @@ de un ciclo nuevo se revisan contra la fuente de la plataforma.
 |---|---|
 | Facebook · LinkedIn · X · YouTube | El límite lo da **`validate_post_length`** de Zernio: devuelve el conteo y el límite de cada plataforma |
 
-🛑 **No se inventa un límite.** Un caption cortado por un límite que nadie verificó sale mal
+**No se inventa un límite.** Un caption cortado por un límite que nadie verificó sale mal
 publicado y no se puede editar en todas las plataformas.
 
 **El límite duro lo vuelve a comprobar Zernio** antes de programar (`validate_post_length` ·
@@ -90,8 +90,8 @@ Preheader: "[la segunda línea: completa el asunto, no lo repite]"
 |---|---|
 | **El asunto es el hook de Creatividad**, acortado — no uno nuevo | Cambiarlo es cambiar el mensaje |
 | **El preheader no repite el asunto** | Repetirlo desperdicia el único renglón extra que hay |
-| 🛑 **El asunto no promete algo que el cuerpo no cumple** | Es la forma más rápida de que marquen spam |
-| 🛑 **Nada de mayúsculas gritadas ni de `RE:` falsos** | Además de engañoso, dispara los filtros |
+| **El asunto no promete algo que el cuerpo no cumple** | Es la forma más rápida de que marquen spam |
+| **Nada de mayúsculas gritadas ni de `RE:` falsos** | Además de engañoso, dispara los filtros |
 | **Sin hashtags y sin emojis decorativos** | No es una red social |
 
 El **cuerpo** es el copy de Creatividad acomodado al formato: mismos cortes, mismo CTA. Si no
@@ -105,7 +105,7 @@ entra sin romperse, es una devolución a Creatividad, igual que en social.
 | **Relacionados con la pieza**, no con la marca en general | Un hashtag genérico no trae a nadie |
 | **Nunca inventados sobre volumen** | Si no sabemos cuánto se usa un hashtag, se dice: no se afirma que *"tiene alcance"* |
 | **Los de marca van siempre**, si Branding los definió | Consistencia |
-| 🛑 **Ninguno que prometa algo** que la pieza no cumple | Es un claim con otro formato |
+| **Ninguno que prometa algo** que la pieza no cumple | Es un claim con otro formato |
 
 ## 5 · Alt text — obligatorio en toda pieza con imagen
 
@@ -117,7 +117,7 @@ hashtags.
 | Adjetivos: *"nuestro delicioso producto"* | Lo que se ve: el objeto, dónde está, qué pasa en el cuadro |
 | Hashtags o promo: *"promo imperdible #…"* | El texto de la placa, literal |
 
-🛑 **No se autogenera con adjetivos.** Si la pieza tiene texto en pantalla, el alt text lo incluye:
+**No se autogenera con adjetivos.** Si la pieza tiene texto en pantalla, el alt text lo incluye:
 es la única forma de que alguien con lector de pantalla sepa qué dice.
 
 ## 6 · Qué se anota de cada caption
@@ -137,14 +137,14 @@ cual"*, se escribe: es la mejor noticia posible y deja constancia de que no se t
 
 ## Control de calidad de la Capa 1
 
-- [ ] 🛑 **El mensaje no cambió** — ni la idea, ni el hook, ni el CTA
+- [ ] **El mensaje no cambió** — ni la idea, ni el hook, ni el CTA
 - [ ] El **hook entra completo antes del corte** de su plataforma, y se verificó leyéndolo solo
 - [ ] En la ruta email: **asunto y preheader escritos**, el preheader no repite el asunto, y el
       asunto no promete nada que el cuerpo no cumpla
 - [ ] El conteo de caracteres está anotado contra el límite **con su fecha de verificación**
-- [ ] 🛑 **Ningún límite fue inventado** — los que no están en la tabla salen de `validate_post_length`
+- [ ] **Ningún límite fue inventado** — los que no están en la tabla salen de `validate_post_length`
 - [ ] Los hashtags son **3-5 en Instagram** y están relacionados con la pieza
-- [ ] 🛑 **Ningún hashtag afirma alcance** sin dato que lo respalde
+- [ ] **Ningún hashtag afirma alcance** sin dato que lo respalde
 - [ ] **Alt text escrito** en toda pieza con imagen, describiendo lo que se ve y el texto en pantalla
 - [ ] Está anotado **qué se cambió respecto de Creatividad y por qué** — o que no se cambió nada
 - [ ] Lo que no entraba sin romperse se **devolvió a Creatividad** con motivo 5 y **dos alternativas**

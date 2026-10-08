@@ -16,7 +16,7 @@ description: >
 | **Lee** | Los reportes de la semana en Gmail (asunto `Community · [cliente]`) · `05-comunidad/respuestas.md` · `seguimiento/` |
 | **Produce** | `05-comunidad/seguimiento/<AAAA-MM>.md` *(Pro+)* · FAQ nuevas propuestas · ideas para Creatividad · la lectura del mes |
 
-🛑 **Todo lo que se escribe en el repo se presenta antes**, con el OK del CEO en el mismo turno.
+**Todo lo que se escribe en el repo se presenta antes**, con el OK del CEO en el mismo turno.
 
 ## 1 · Las cuatro lecturas
 

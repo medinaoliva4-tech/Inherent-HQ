@@ -6,8 +6,7 @@ description: >
   tracking del plan esté puesto (en la línea Marketing, el pixel de Meta; en Accelerate y
   Compound, CAPI + GA4) y que el cliente pueda entregar lo que la pauta va a traer. Corre la
   auditoría del plugin para saber en qué estado está la cuenta. Úsala cuando pidan "arrancá la
-  pauta de X", "cuánto presupuesto", "qué objetivo le ponemos", "cómo está la cuenta". Bloquea
-  si falta el presupuesto aprobado o el acceso.
+  pauta de X", "cuánto presupuesto", "qué objetivo le ponemos", "cómo está la cuenta".
 ---
 
 # Capa 0 · Encargo — objetivo, presupuesto y estado de la cuenta
@@ -25,7 +24,7 @@ description: >
 | *«Que nos conozcan»* | *«5,000 personas nuevas alcanzadas, 3% al sitio»* |
 | *«Leads»* | *«30 conversaciones de WhatsApp a menos de Q40 cada una»* |
 
-🛑 **Un objetivo sin número no se puede optimizar ni evaluar.** Se devuelve a Growth.
+**Un objetivo sin número no se puede optimizar ni evaluar.** Se devuelve a Growth.
 
 ## 2 · El presupuesto
 
@@ -42,9 +41,9 @@ description: >
 
 | Chequeo | Si falla |
 |---|---|
-| ¿Existe la cuenta publicitaria? | 🛑 No se pauta. **No se crea una cuenta a nombre nuestro** |
-| ¿Tenemos acceso de operación? | 🛑 Se pide. Se registra **quién nos lo dio** |
-| ¿El método de pago es del cliente? | 🛑 **Nunca se pauta con tarjeta nuestra** |
+| ¿Existe la cuenta publicitaria? | No se pauta. **No se crea una cuenta a nombre nuestro** |
+| ¿Tenemos acceso de operación? | Se pide. Se registra **quién nos lo dio** |
+| ¿El método de pago es del cliente? | **Nunca se pauta con tarjeta nuestra** |
 | ¿Está el tracking del plan? 🔷 **el pixel de Meta** · 🟨 **CAPI + GA4** | 🔴 **Se resuelve antes de gastar el primer quetzal** |
 
 ## 4 · 🔴 ¿Puede entregar lo que la pauta va a traer?

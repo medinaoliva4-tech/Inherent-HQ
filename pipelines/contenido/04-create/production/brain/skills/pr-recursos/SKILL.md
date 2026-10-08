@@ -19,11 +19,11 @@ description: >
 | **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · la guía y el banco de assets de Branding, si existen · las cotizaciones de `99-referencias/recibido/` del cliente |
 | **Produce** | Las columnas **`locacion`**, **`talento`**, **`recursos`**, **`equipo`** y **`riesgo`** de `plan-de-produccion.csv` · las secciones **§ Lo que hay que conseguir** y **§ Permisos y autorizaciones** de `plan-de-rodaje.md`, y los **Riesgos del día** de cada jornada |
 
-Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Plantilla del entregable:
+Contexto del departamento: `pipelines/contenido/04-create/production/README.md`. Plantilla del entregable:
 `pipelines/contenido/04-create/production/brain/entregables/plan-de-rodaje.md`.
 
 **Qué es:** convertir una lista de cosas en **compromisos con nombre y fecha**.
-**Qué no es:** no es cotizar el ciclo (eso es Capa 4) y **no es comprometer nada**: 🛑 ninguna
+**Qué no es:** no es cotizar el ciclo (eso es Capa 4) y **no es comprometer nada**: ninguna
 reserva, convocatoria ni compra antes de cerrar el presupuesto (**Capa 4**). Un *"aparté la fecha por las dudas"* ya es un
 compromiso.
 
@@ -39,11 +39,11 @@ compromiso.
 
 ❌ `recursos: ambientación de oficina` ✅ `recursos: producto x3; taza; libreta; camisa lisa celeste; planta chica`
 
-🛑 **Origen, responsable, fecha de confirmación, permisos y plan B no son columnas del CSV: viven en
+**Origen, responsable, fecha de confirmación, permisos y plan B no son columnas del CSV: viven en
 `plan-de-rodaje.md`.** El CSV dice **qué hay y cómo está**; `plan-de-rodaje.md` dice **quién lo consigue y qué pasa si
 falla**.
 
-## 🛑 El vocabulario cerrado de origen — 5 valores, ninguno más
+## El vocabulario cerrado de origen — 5 valores, ninguno más
 
 | Origen | Qué implica | Riesgo típico | Margen mínimo |
 |---|---|---|---|
@@ -51,9 +51,9 @@ falla**.
 | `prestado` | Alguien nos lo da sin cobrar: **favor, no contrato** | **Se cae sin compromiso escrito**, y a último momento | **5 días** |
 | `alquilado` | Hay proveedor, hay precio y hay **franja horaria** | Reserva sin confirmar · **recargo por exceso de franja, por hora iniciada** | **5 días** |
 | `comprado` | Entra al presupuesto y no vuelve | **El tiempo de entrega es lo que más se subestima** | **10 días** |
-| `a-producir` | Hay que **fabricarlo**: cartelería, torta, prop a medida, gráfica impresa | 🛑 **El que más se subestima: siempre lleva más de lo previsto** y no tiene plan B rápido | **15 días** |
+| `a-producir` | Hay que **fabricarlo**: cartelería, torta, prop a medida, gráfica impresa | **El que más se subestima: siempre lleva más de lo previsto** y no tiene plan B rápido | **15 días** |
 
-## 🛑 La regla del responsable
+## La regla del responsable
 
 **Ningún recurso queda "por conseguir".** Cada ítem de la sección **§ Lo que hay que conseguir** lleva las cinco
 cosas, sin excepción:
@@ -68,7 +68,7 @@ qué · origen · responsable (NOMBRE) · fecha de confirmación · estado 🟢/
 | 🟡 | **Gestionando** — pedido, sin confirmación |
 | 🔴 | **En riesgo** — sin alternativa identificada |
 
-🛑 **Un recurso 🟡 a menos de 48 h de su jornada pasa automáticamente a 🔴 y activa su plan B.** No
+**Un recurso 🟡 a menos de 48 h de su jornada pasa automáticamente a 🔴 y activa su plan B.** No
 se espera a ver si aparece: a 48 h ya no hay margen para conseguir un reemplazo.
 
 ❌ *"La locación está casi confirmada"* ✅ `Cocina del local · prestado · Marina G. · confirmar antes del 04-oct · 🟡`
@@ -96,7 +96,7 @@ se espera a ver si aparece: a 48 h ya no hay margen para conseguir un reemplazo.
 - [ ] Qué se puede mover y qué no
 - [ ] Plan B identificado si es exterior o si el permiso está 🟡
 
-🛑 **Una locación sin visita ni fotos actuales es 🔴**, por más que *"la conozcamos"*.
+**Una locación sin visita ni fotos actuales es 🔴**, por más que *"la conozcamos"*.
 
 - La locación se elige para **cumplir el `tipo_de_lugar` que pidió Creatividad**, no para lucirse: una cocina
   de diseño espectacular puede contradecir el mood pedido.
@@ -111,7 +111,7 @@ se espera a ver si aparece: a 48 h ya no hay margen para conseguir un reemplazo.
 | **Rostro protagonista** | Obligatoria | Alto | No — cambia la pieza |
 | **Rostro secundario / fondo** | Obligatoria (**toda persona identificable**) | Bajo | Sí |
 | **Manos y detalle** | Recomendable | Muy bajo | Sí, casi siempre |
-| **Voz** | Obligatoria si es identificable | Bajo | Sí, y 🛑 **se puede grabar otro día** |
+| **Voz** | Obligatoria si es identificable | Bajo | Sí, y **se puede grabar otro día** |
 
 **Los 5 orígenes:** cliente o su equipo (credibilidad, costo 0 · riesgo: comodidad frente a cámara)
 · equipo propio (rápido y gratis · riesgo: **la marca termina con la misma cara en todo**) · amateur
@@ -126,7 +126,7 @@ agenda) · creador o influencer (trae audiencia · **trae condiciones de uso y v
 | **Acuerdo de honorarios** | Monto, jornadas incluidas, qué pasa si se extiende | Antes de convocar |
 | **Uso en pauta** | Si el material va a Ads, **se declara aparte** | Antes de grabar |
 
-🛑 **Sin cesión firmada no se graba a esa persona** —incluidas las de fondo identificables—. Es lo
+**Sin cesión firmada no se graba a esa persona** —incluidas las de fondo identificables—. Es lo
 único que vuelve a morder meses después, con la pieza ya pauteada.
 
 **La `emocion` heredada de Creatividad es la instrucción de dirección.** No el concepto, no el hook: la
@@ -150,12 +150,12 @@ bloque**. Nunca se convoca a alguien para *"estar disponible todo el día"* sin 
 | **Cenital** (mesa, producto) | 35-50 mm | Brazo o columna cenital | Difusa pareja | Sin audio |
 | **Pantalla partida / captura** | N/A | N/A | N/A | N/A |
 
-🛑 **Si el encuadre pide algo que no tenemos, se alquila o se devuelve a Creatividad con alternativa** — el
+**Si el encuadre pide algo que no tenemos, se alquila o se devuelve a Creatividad con alternativa** — el
 encuadre no se cambia.
 
 **Audio — lo que más se descubre tarde:** si alguien habla en cuadro va **solapa y respaldo de
 ambiente**; la voz en off **puede grabarse otro día, más barato**; y toda locación lleva **30 s de
-ambiente**, aunque ninguna escena tenga voz. 🛑 **El audio se verifica escuchándolo con auriculares
+ambiente**, aunque ninguna escena tenga voz. **El audio se verifica escuchándolo con auriculares
 en set**, nunca porque el medidor se mueve: un audio roto no se arregla en post, se vuelve a grabar.
 
 **Siempre en la lista:** batería y tarjeta de respaldo · **monitor externo** en toda escena con
@@ -164,7 +164,7 @@ de convocar al talento**: 15 min que salvan la jornada.
 
 ## Riesgos y planes B — § Riesgos del día de `plan-de-rodaje.md`
 
-Toda escena con dependencia externa lleva su plan B **escrito antes de la jornada**. 🛑 **Un riesgo
+Toda escena con dependencia externa lleva su plan B **escrito antes de la jornada**. **Un riesgo
 sin plan B es un 🔴.**
 
 | Dependencia | Plan B mínimo exigible |
@@ -202,7 +202,7 @@ de talento y proveedores **no se pegan en herramientas externas** sin necesidad 
 - [ ] **Cada ítem tiene responsable con NOMBRE**, no rol genérico
 - [ ] Cada ítem tiene **fecha de confirmación**, con más margen para `comprado` (10 d) y `a-producir` (15 d)
 - [ ] Semáforo 🟢/🟡/🔴 aplicado a **todo** ítem, y la columna `riesgo` del CSV cargada en toda fila
-- [ ] 🛑 Todo 🟡 a menos de **48 h** de su jornada está marcado **🔴 y con su plan B activado**
+- [ ] Todo 🟡 a menos de **48 h** de su jornada está marcado **🔴 y con su plan B activado**
 - [ ] Toda escena con dependencia externa (**clima · talento · permiso · producto**) tiene su **plan B escrito** en `plan-de-rodaje.md` § Riesgos del día
 - [ ] Las locaciones pasaron el **chequeo de viabilidad**: visita o fotos actuales, franja por escrito con nombre, luz verificada **a la hora del rodaje**, ruido, acceso, electricidad
 - [ ] Toda locación **exterior** tiene plan B con **interior alternativo o fecha reservada**
@@ -212,7 +212,7 @@ de talento y proveedores **no se pegan en herramientas externas** sin necesidad 
 - [ ] `locacion` es un **lugar concreto** y `talento` es **quién específicamente**
 - [ ] La celda `recursos` fusiona **producto; props; vestuario; arte** separados por `;`, ítem por ítem — *"ambientación de oficina"* no es un ítem
 - [ ] El `equipo` se **derivó del `encuadre`**, no se eligió por gusto
-- [ ] 🛑 **Nada se comprometió antes de cerrar el presupuesto**: ni reserva, ni convocatoria, ni compra
+- [ ] **Nada se comprometió antes de cerrar el presupuesto**: ni reserva, ni convocatoria, ni compra
 - [ ] Toda cotización quedó registrada con **moneda y fecha**
 
 **Handoff →** `pr-presupuesto` (Capa 4). Un recurso sin origen no se puede costear, y un recurso sin

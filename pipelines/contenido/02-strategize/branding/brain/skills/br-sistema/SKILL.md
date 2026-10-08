@@ -32,7 +32,7 @@ description: >
 
 **Cada color va con su hex**, y el acento con **dónde se usa y dónde no**.
 
-> 🛑 **Dos acentos son cero acentos.** Si todo resalta, nada resalta.
+> **Dos acentos son cero acentos.** Si todo resalta, nada resalta.
 > ⚠️ **El contraste texto/fondo se verifica**, no se asume.
 
 ## 2 · Tipografía — con peso, tamaño y uso

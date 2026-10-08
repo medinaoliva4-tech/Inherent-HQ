@@ -1,14 +1,14 @@
 # Contexto — <cliente>
 
 > Plantilla de Strategy, bloque 01 · `context`.
-> 🛑 **Describe, no decide.** Ninguna frase interpreta ni recomienda — eso es de `analysis`.
+> **Describe, no decide.** Ninguna frase interpreta ni recomienda — eso es de `analysis`.
 > Lo que falta va como `⚠️ SIN DATOS — [qué falta y cómo conseguirlo]`, nunca se completa por inferencia.
 
 ---
 
 ## § A.0 · El plan contratado
 
-> **El primer dato de todos.** Define hasta dónde se puede llegar. Ver `../../WORKFLOW.md` §0.
+> **El primer dato de todos.** Define hasta dónde se puede llegar. Ver `../../../README.md` §0.
 
 | | |
 |---|---|
@@ -42,12 +42,12 @@
 | **Margen** | |
 | **Capacidad de entrega** | |
 | **Punto de equilibrio** | |
-| **Ad spend del cliente** | 🛑 Nunca está incluido en el paquete |
+| **Ad spend del cliente** | Nunca está incluido en el paquete |
 | **Mercado donde vende** | 🇬🇹 · 🇲🇽 · 🇺🇸 · otro |
 | **Dónde está trabado** | |
 | **División** | 🔵 Low ticket · 🟣 High ticket |
 | **Qué pilar está roto** | |
-| **Capacidad de producción de contenido** | 🛑 Techo duro de la cadencia |
+| **Capacidad de producción de contenido** | Techo duro de la cadencia |
 
 ---
 
@@ -71,7 +71,7 @@
 | **Presupuesto** | |
 | **Equipo** | |
 | **Tiempo** | |
-| **Velocidad de aprobación del cliente** | 🛑 La lee Posting |
+| **Velocidad de aprobación del cliente** | La lee Posting |
 | **Legales** | |
 | **Lo que el cliente ya dijo que NO** | |
 

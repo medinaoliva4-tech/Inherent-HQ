@@ -18,7 +18,7 @@ description: >
 
 ## 1 · ⬜ Solo en Compound
 
-🛑 **Sin transacciones suficientes, el margen por línea es teoría.**
+**Sin transacciones suficientes, el margen por línea es teoría.**
 
 > 🔑 **Es promesa publicada:** *«Tus números claros: qué producto te deja y cuál te quita.»*
 > ⚠️ **No se promete un CFO.** Lo entrega **Money OS con el CEO y Strategy.**
@@ -40,7 +40,7 @@ description: >
 | El cliente lo estima de memoria | `[dice el cliente, sin verificar]` · **no se decide sobre eso** |
 | No hay registro | `⚠️ SIN DATOS` · 🔴 **se escala al COO: el primer entregable es armar el registro** |
 
-🛑 **Nunca se inventa un número.** Una decisión de precio sobre un margen estimado puede romper
+**Nunca se inventa un número.** Una decisión de precio sobre un margen estimado puede romper
 el negocio del cliente.
 
 ## 4 · El margen por línea — cómo se arma
@@ -78,7 +78,7 @@ LTV ÷ CAC
 
 ## 7 · 🔒 Lo que no sale de acá
 
-🛑 **Los números de Inherent nunca se mezclan con los del cliente.**
+**Los números de Inherent nunca se mezclan con los del cliente.**
 **Nuestros costos y márgenes no se mencionan, ni como referencia ni como ejemplo.**
 Ver `inherent/06-ECONOMIA.md` — **ese archivo no sale del repo.**
 

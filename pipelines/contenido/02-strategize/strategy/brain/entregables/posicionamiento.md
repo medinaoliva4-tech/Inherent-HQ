@@ -23,7 +23,7 @@
 |---|---|
 | **Qué exige del cliente** | |
 | **Qué exige de nosotros** | |
-| **Entra en el plan contratado** | ✅ / 🛑 **no — escalado al CEO** |
+| **Entra en el plan contratado** | ✅ / **no — escalado al CEO** |
 
 ---
 
@@ -44,7 +44,7 @@
 
 ## § Las renuncias
 
-> 🛑 **Una estrategia sin renuncias no es estrategia.** Se escriben, no se dejan implícitas.
+> **Una estrategia sin renuncias no es estrategia.** Se escriben, no se dejan implícitas.
 
 | Qué NO vamos a hacer | Por qué |
 |---|---|
@@ -54,7 +54,7 @@
 
 ## § Los briefs por área
 
-> Qué se le pasa a cada departamento al cerrar. Ver `../../WORKFLOW.md` §7.
+> Qué se le pasa a cada departamento al cerrar. Ver `../../../README.md` §7.
 
 | Área | Qué le toca | ¿Entra en el plan? |
 |---|---|---|

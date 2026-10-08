@@ -68,7 +68,7 @@ description: >
 | **Cómo se aplica** | La regla exacta. Posición, tamaño, momento |
 | **Cuándo NO** | La excepción, si existe |
 
-> 🛑 **Al menos uno aparece en el 100% de las piezas.** Si todos tienen excepción, ninguno se
+> **Al menos uno aparece en el 100% de las piezas.** Si todos tienen excepción, ninguno se
 > repite lo suficiente.
 
 ## 6 · El sesgo de aburrirse antes que la audiencia

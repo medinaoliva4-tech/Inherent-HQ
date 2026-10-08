@@ -22,7 +22,7 @@ description: >
 | **1** | **Un cambio a la vez** | Dos cambios juntos y no se sabe cuál funcionó |
 | **2** | **No se toca sin datos suficientes** | Mover algo con 3 conversiones es mover ruido |
 
-🛑 **Optimizar de más es la forma más común de romper una campaña que estaba aprendiendo.**
+**Optimizar de más es la forma más común de romper una campaña que estaba aprendiendo.**
 
 ## 2 · Qué se mira — el monitor del plugin
 
@@ -60,7 +60,7 @@ description: >
 
 ## 5 · 🚦 GATE 2 — todo movimiento de presupuesto
 
-🛑 **Subir, bajar o mover presupuesto entre campañas necesita aprobación del CEO.**
+**Subir, bajar o mover presupuesto entre campañas necesita aprobación del CEO.**
 Pausar algo que está gastando mal **se puede hacer y se avisa** — detener una pérdida no es
 gastar.
 
@@ -73,7 +73,7 @@ gastar.
 | Cuándo | Para medir el efecto desde ahí |
 | Quién aprobó | Si tocó presupuesto |
 
-🛑 **Un cambio sin registro hace imposible el loop.** Al cierre nadie sabe qué movió el número.
+**Un cambio sin registro hace imposible el loop.** Al cierre nadie sabe qué movió el número.
 
 ## 7 · Checklist
 

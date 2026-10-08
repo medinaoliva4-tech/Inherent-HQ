@@ -22,7 +22,7 @@ description: >
 
 **Los de las Redes que `plan-contratado.md` declara para este cliente. No todos los que existen.**
 
-🛑 **Un formato que sus Redes no usan no se documenta.** Es trabajo que nadie va a leer.
+**Un formato que sus Redes no usan no se documenta.** Es trabajo que nadie va a leer.
 
 ## 2 · La ficha de cada formato
 
@@ -57,7 +57,7 @@ description: >
 | **Todo carrusel** | La slide 1 lleva activo y se entiende **sola** |
 | **Todo estático** | Se reconoce la marca **sin leer el texto** |
 
-> 🛑 **Poner el branding solo al cierre es ponerlo donde ya nadie mira.**
+> **Poner el branding solo al cierre es ponerlo donde ya nadie mira.**
 
 ## 5 · Qué escribe
 
@@ -70,7 +70,7 @@ description: >
 
 ## 6 · La guía cerrada
 
-🛑 **Es lo que Creatividad, Diseño gráfico, Video Editing, Posting y Ads van a usar como ley.** A partir de acá, una pieza que no la cumple
+**Es lo que Creatividad, Diseño gráfico, Video Editing, Posting y Ads van a usar como ley.** A partir de acá, una pieza que no la cumple
 se devuelve. Se auto-revisa con el checklist de §7 y sigue.
 
 ## 6.1 · El kit en el Drive del cliente
@@ -84,8 +84,8 @@ cualquier computadora. **Las plantillas no se suben:** se desarrollan en Figma y
 Diseño gráfico trabaja ahí.
 **Si el kit cambia en Figma, se vuelve a subir.**
 
-Sin acceso a Figma o al Drive: `BLOQUEADO — falta Figma. Instalala: ver INSTALAR.md § Figma + Figwright`
-· `BLOQUEADO — falta Google Drive. Instalala: ver INSTALAR.md § Google Drive`.
+Sin acceso a Figma o al Drive: `FALTA — falta Figma. Instalala: ver INSTALAR.md § Figma + Figwright`
+· `FALTA — falta Google Drive. Instalala: ver INSTALAR.md § Google Drive`.
 
 ## 7 · Checklist
 

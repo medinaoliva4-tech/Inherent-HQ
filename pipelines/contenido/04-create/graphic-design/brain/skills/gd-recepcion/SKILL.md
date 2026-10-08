@@ -1,13 +1,11 @@
 ---
 name: gd-recepcion
 description: >
-  Capa 0 de Diseño gráfico — verifica qué llegó de Creatividad y es realmente componible
-  antes de abrir un archivo. Filtra las filas sin rodaje, cruza fila por fila que cada pieza
-  tenga copy literal y no descrito, que el layout esté definido, que el formato exista en el
-  sistema visual y que no arrastre claims pendientes. Agrupa las piezas por formato, que es como
-  se van a producir. Úsala cuando pidan "¿llegó todo?", "qué nos falta para diseñar", "arrancá
-  el ciclo de diseño". Bloquea si falta el Excel del ciclo cerrado de Creatividad o el sistema
-  visual de Branding.
+  Capa 0 de Diseño gráfico — verifica qué llegó de Creatividad y es realmente componible antes de
+  abrir un archivo. Filtra las filas sin rodaje, cruza fila por fila que cada pieza tenga copy
+  literal y no descrito, que el layout esté definido, que el formato exista en el sistema visual y
+  que no arrastre claims pendientes. Agrupa las piezas por formato, que es como se van a producir.
+  Úsala cuando pidan "¿llegó todo?", "qué nos falta para diseñar", "arrancá el ciclo de diseño".
 ---
 
 # Capa 0 · Recepción — qué llegó y es componible
@@ -20,7 +18,7 @@ description: >
 ## 1 · El filtro: las filas sin rodaje
 
 **Del Excel de Creatividad se toman las filas de formato estático —`estatico`, `carrusel`,
-`story`— con `material = ninguno` o `material = foto`.** 🛑 **Una fila con `material = foto` espera
+`story`— con `material = ninguno` o `material = foto`.** **Una fila con `material = foto` espera
 su foto de Producción antes de componerse.** Las de `material = video` van a Video Editing.
 
 > ⚠️ **Excepción:** una pieza con `material = video` puede necesitar también un estático —una portada,
@@ -36,7 +34,7 @@ su foto de Producción antes de componerse.** Las de `material = video` van a Vi
 | **Todos los estáticos de feed juntos** | Mismo molde, misma sesión |
 | **Todas las stories juntas** | Mismo formato, misma safe zone |
 
-🛑 **Producir en orden de calendario obliga a cambiar de molde en cada pieza.** Es la diferencia
+**Producir en orden de calendario obliga a cambiar de molde en cada pieza.** Es la diferencia
 entre 168 piezas y 168 decisiones.
 
 ## 3 · El cruce, fila por fila
@@ -50,7 +48,7 @@ entre 168 piezas y 168 decisiones.
 | **El formato existe en el sistema** | `sistema-visual.md` § Aplicación lo cubre | ↩️ **Devuelto a Branding** — falta la regla |
 | **El copy entra** | El largo cabe en el formato sin romper la jerarquía | ↩️ **Devuelto a Creatividad** con el máximo que entra |
 | **Hay imagen o se puede generar** | Existe la fuente, o la Capa 2 la resuelve | `⚠️ SIN IMAGEN` — se nombra de quién se espera |
-| **No arrastra claims ⏸️** | Sin `⏸️ PENDIENTE APROBACIÓN` | 🛑 **No entra** hasta que Branding valide |
+| **No arrastra claims ⏸️** | Sin `⏸️ PENDIENTE APROBACIÓN` | **No entra** hasta que Branding valide |
 
 ## 4 · El techo
 
@@ -64,7 +62,7 @@ entre 168 piezas y 168 decisiones.
 ⬜ **Tailor Made:** el techo son los estáticos, carruseles y stories que declara **Su pipeline** en
 `plan-contratado.md`.
 
-🛑 **Si el Excel pide más, se declara y se devuelve a Marketing.**
+**Si el Excel pide más, se declara y se devuelve a Marketing.**
 
 ## 5 · Qué escribe
 

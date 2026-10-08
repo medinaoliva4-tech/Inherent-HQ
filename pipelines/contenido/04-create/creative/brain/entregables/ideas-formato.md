@@ -66,7 +66,7 @@ CTA:       "..."
 | **Proporción** | `1:1` / `4:5` / `9:16` — la del formato donde va |
 | **También la usan** | [ids de las otras piezas que comparten esta misma foto] — *o* `solo esta` |
 
-🛑 **Si varias piezas comparten la foto, esta sección se escribe igual en todas.** Producción la agrupa una
+**Si varias piezas comparten la foto, esta sección se escribe igual en todas.** Producción la agrupa una
 sola vez; dos descripciones distintas de la misma foto son dos fotos.
 
 ### Escenas

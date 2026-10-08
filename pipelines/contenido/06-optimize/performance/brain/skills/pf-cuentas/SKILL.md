@@ -64,7 +64,7 @@ darlo a la audiencia.
 | Menos de 3 piezas de un formato | No hay mediana: `⚠️ SIN DATOS` en ese formato |
 | La pieza no se puede cruzar con el plan de contenido | Se lee como pieza, sin pilar ni formato asignado, y se declara |
 
-🛑 **Un dato que no se pudo leer nunca se rellena.** Un número inventado en esta capa contamina
+**Un dato que no se pudo leer nunca se rellena.** Un número inventado en esta capa contamina
 el semáforo de la siguiente.
 
 ## 5 · Qué entrega a la Capa 2

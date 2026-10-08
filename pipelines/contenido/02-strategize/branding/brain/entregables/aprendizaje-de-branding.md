@@ -1,7 +1,7 @@
 # Aprendizaje de branding — <cliente> · ciclo <mes año>
 
 > Plantilla de Branding · `br-loop`. **Corre el 20 de cada mes.**
-> 🛑 **Un activo se cambia solo si no se reconoce. Nunca porque el equipo se aburrió.**
+> **Un activo se cambia solo si no se reconoce. Nunca porque el equipo se aburrió.**
 
 ---
 

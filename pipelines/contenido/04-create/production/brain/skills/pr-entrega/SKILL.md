@@ -19,8 +19,8 @@ description: >
 | **Consume** | El plan de rodaje de la Capa 5: las secciones **la sección de cada jornada** y **§ Cómo se nombran los archivos** de `plan-de-rodaje.md` · las filas de `plan-de-produccion.csv` en `estado = planificada`, con su `id`, `id_creativo`, `escena`, `destino` y su cobertura marcada · lo que efectivamente se grabó en cada jornada |
 | **Produce** | La sección **§ La entrega** de `plan-de-rodaje.md` —checklist de cierre por locación, manifiesto cruzado, escenas no entregadas con motivo y la tabla de qué se entrega / qué no— y la columna **`estado`** de `plan-de-produccion.csv` completa: `grabada` / `entregada` / `↩️ devuelta` |
 
-Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Plantilla del entregable:
-`pipelines/contenido/04-create/production/brain/entregables/plan-de-rodaje.md`. Cómo encadena: `pipelines/contenido/04-create/production/brain/skills/README.md`.
+Contexto del departamento: `pipelines/contenido/04-create/production/README.md`. Plantilla del entregable:
+`pipelines/contenido/04-create/production/brain/entregables/plan-de-rodaje.md`. Cómo encadena: `pipelines/contenido/04-create/production/README.md`.
 
 > **La prueba de una buena entrega:** Diseño gráfico o Video Editing abren la carpeta, la
 > cruzan contra el Excel creativo y **encuentran cada escena sin escribirle a nadie.**
@@ -29,7 +29,7 @@ Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKF
 
 ## 1 · El checklist de cierre de locación
 
-🛑 **Se corre por locación y por jornada, antes de desarmar.** No al final del día, no al volver:
+**Se corre por locación y por jornada, antes de desarmar.** No al final del día, no al volver:
 antes de tocar un trípode.
 
 - [ ] **Todas las escenas** de esta locación están **grabadas y marcadas** en `estado`
@@ -65,7 +65,7 @@ antes de tocar un trípode.
 | **Diseño gráfico** | **El frame exacto**, el recorte, la composición y el retoque |
 | **Video Editing** | **El montaje**, el ritmo, el color de entrega y las versiones por plataforma |
 
-🛑 **Marcar de más obliga a Diseño gráfico y Video Editing a revisar todo el material; marcar
+**Marcar de más obliga a Diseño gráfico y Video Editing a revisar todo el material; marcar
 de menos les esconde la toma buena.** Las dos formas de equivocarse cuestan una jornada de su lado.
 
 ---
@@ -80,7 +80,7 @@ de menos les esconde la toma buena.** Las dos formas de equivocarse cuestan una 
 | Fotos con exposición y encuadre correctos | Retoque y adaptación por formato |
 | Nomenclatura y estructura de carpetas **ya aplicadas** | Montaje, captions y versiones por plataforma |
 
-🛑 **Producción no entrega piezas terminadas.** Si entrega un archivo listo para publicar, se saltó a
+**Producción no entrega piezas terminadas.** Si entrega un archivo listo para publicar, se saltó a
 Diseño gráfico o Video Editing y nadie revisó la composición contra lo que pidió Creatividad.
 
 ---
@@ -102,7 +102,7 @@ Diseño gráfico o Video Editing y nadie revisó la composición contra lo que p
 | El número de toma con **dos dígitos** (`t01`, no `t1`) | Para que ordene bien al listar la carpeta |
 | Los ambientes van por **locación**, no por escena | No pertenecen a una escena: se usan para rellenar cortes |
 
-🛑 **Los nombres se definen en la Capa 5, dentro de `plan-de-rodaje.md` § Cómo se nombran los archivos, antes de grabar.** Renombrar 400
+**Los nombres se definen en la Capa 5, dentro de `plan-de-rodaje.md` § Cómo se nombran los archivos, antes de grabar.** Renombrar 400
 archivos al final es cuando se pierde material y cuando el cruce contra el Excel deja de ser posible.
 Esta capa **aplica** la nomenclatura; no la inventa.
 
@@ -136,10 +136,10 @@ Esta capa **aplica** la nomenclatura; no la inventa.
 Cada sesión se anota en `clients/<cliente>/04-contenido/AAAA-MM/produccion/MATERIAL.md`
 *(Sesión · Fecha · Crudo · Final · Subió)*, con el link al Drive.
 
-🛑 **`01_SELECTS` se organiza por pieza creativa, no por jornada.** La jornada es una categoría de
+**`01_SELECTS` se organiza por pieza creativa, no por jornada.** La jornada es una categoría de
 Producción; **Diseño gráfico y Video Editing trabajan por pieza**, y una pieza casi siempre se grabó en dos días distintos.
 
-🛑 **No se borra material crudo. Ni el descartado.** El descarte se **marca**, no se elimina: queda
+**No se borra material crudo. Ni el descartado.** El descarte se **marca**, no se elimina: queda
 en `00_RAW`. Lo que hoy es descarte es el plan B de la Capa 7, y el material que se borró es el que
 siempre hacía falta.
 
@@ -163,11 +163,11 @@ Y el resumen **por pieza creativa**:
 | CR-003 | 4 | 3 | ❌ falta escena 3 — motivo escrito |
 ```
 
-🛑 **Toda escena `planificada` que no terminó `entregada` lleva motivo escrito.** Una escena que
+**Toda escena `planificada` que no terminó `entregada` lleva motivo escrito.** Una escena que
 desaparece en silencio es una pieza que Diseño gráfico o Video Editing van a descubrir que no pueden armar, en su mesa, y
 eso cuesta una jornada entera de vuelta.
 
-🛑 **Una fila creativa está completa solo si TODAS sus escenas están entregadas.** No se declara
+**Una fila creativa está completa solo si TODAS sus escenas están entregadas.** No se declara
 completa una pieza a la que le falta una escena, por chica que sea.
 
 **La columna `estado` se completa acá**, fila por fila: `grabada` cuando existe el material ·
@@ -181,7 +181,7 @@ vuelve a Creatividad con motivo y dos alternativas.
 **La entrega se auto-revisa con el QA de abajo antes de cerrar la jornada como completa:** checklist
 de cierre de locación y manifiesto cruzado. Lo que falla se declara, no se da por completo.
 
-Con el QA completo se emite el bloque **HANDOFF** de `pipelines/contenido/04-create/production/brain/WORKFLOW.md §8`, con las filas
+Con el QA completo se emite el bloque **HANDOFF** de `pipelines/contenido/04-create/production/README.md §8`, con las filas
 creativas completas y las **incompletas nombradas una por una**.
 
 ---
@@ -193,18 +193,18 @@ creativas completas y las **incompletas nombradas una por una**.
 - [ ] Las tomas de **cobertura** están hechas en cada escena con talento o producto
 - [ ] El **ambiente de cada locación** está grabado (30 s)
 - [ ] El audio de cada escena con voz se **escuchó con auriculares**, no se asumió por el medidor
-- [ ] 🛑 **Backup en dos lugares antes de salir de la locación**
+- [ ] **Backup en dos lugares antes de salir de la locación**
 - [ ] Los **selects están marcados** — las tomas buenas, y solo esas
-- [ ] 🛑 **No se entregó ninguna pieza terminada** — eso es de Diseño gráfico y Video Editing
+- [ ] **No se entregó ninguna pieza terminada** — eso es de Diseño gráfico y Video Editing
 - [ ] La nomenclatura de `plan-de-rodaje.md` § Cómo se nombran los archivos está **aplicada**, con `id_creativo` y `escena` **exactos**
 - [ ] La estructura de carpetas está armada, con `01_SELECTS` organizado **por `id_creativo`**
 - [ ] El **manifiesto cruza el Excel fila por fila**, sin muestreo
 - [ ] Toda escena `planificada` que no llegó a `entregada` tiene **motivo escrito**
-- [ ] 🛑 **Ninguna fila creativa se declaró completa si le falta una escena**
-- [ ] 🛑 **Nada se borró**, ni el descarte — el descarte está **marcado** y guardado en `00_RAW`
+- [ ] **Ninguna fila creativa se declaró completa si le falta una escena**
+- [ ] **Nada se borró**, ni el descarte — el descarte está **marcado** y guardado en `00_RAW`
 - [ ] La columna `estado` está completa en **todas** las filas del CSV
 - [ ] Las escenas `↩️ devuelta` tienen los **tres elementos** (qué no se puede · por qué importa · dos alternativas)
-- [ ] Todo faltante está marcado `BLOQUEADO` o `⚠️ SIN DATOS`, **ninguno omitido en silencio**
+- [ ] Todo faltante está marcado `FALTA` o `⚠️ SIN DATOS`, **ninguno omitido en silencio**
 - [ ] El bloque **HANDOFF emitido** con las filas incompletas nombradas
 
 **Handoff →** `pr-loop` (Capa 7). El manifiesto es su insumo: sin la columna `estado` completa no se

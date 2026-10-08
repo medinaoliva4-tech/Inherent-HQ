@@ -24,10 +24,10 @@ nombre, evidencia y una hipótesis nueva colgada de él.**
 | **Produce** | **`clients/<cliente>/04-contenido/aprendizaje-creativo.md`** — trabajo interno, no se entrega al cliente pero **sí se guarda** · y el **`clients/<cliente>/99-referencias/investigacion/swipe-file.md` actualizado** con los ganadores propios arriba |
 | **No produce** | Dashboards ni reporte de performance (Marketing) · piezas nuevas (eso es el ciclo siguiente, desde Capa 0) · ninguna conclusión estratégica |
 
-El flujo del departamento y sus reglas viven en `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
-Cómo encadena con el resto: `pipelines/contenido/04-create/creative/brain/skills/README.md`.
+El flujo del departamento y sus reglas viven en `pipelines/contenido/04-create/creative/README.md`.
+Cómo encadena con el resto: `pipelines/contenido/04-create/creative/README.md`.
 
-🛑 **Sin métricas por pieza: `⚠️ SIN DATOS — [qué falta exactamente y a quién pedírselo]`.**
+**Sin métricas por pieza: `⚠️ SIN DATOS — [qué falta exactamente y a quién pedírselo]`.**
 **Ningún ganador inventado.** Un modelo sin acceso a los datos no dice *"no sé"*: rellena.
 
 ---
@@ -42,7 +42,7 @@ repetir el mes que viene.
 ✅  pieza A vs. pieza B: mismo concepto, mismo CTA, SOLO cambia el hook   → el hook explica la diferencia
 ```
 
-🛑 **Si el ciclo no aisló variables, se declara que el aprendizaje no es limpio** y se nombra qué
+**Si el ciclo no aisló variables, se declara que el aprendizaje no es limpio** y se nombra qué
 test habría hecho falta. No se atribuye el resultado a la variable que más nos gusta.
 
 ---
@@ -60,7 +60,7 @@ Marketing—, nunca por lo que da un número más lindo.
 | **acción** | DMs · leads · agendas |
 | **pertenencia** | Respuestas · UGC · referidos |
 
-🛑 **Nunca "likes" por default.** Un CTR alto con CPA malo **es un mal creativo**: atrajo a la gente
+**Nunca "likes" por default.** Un CTR alto con CPA malo **es un mal creativo**: atrajo a la gente
 equivocada. Y se lee **a nivel pieza**, nunca en agregado: el promedio del ciclo esconde exactamente
 lo que esta capa vino a buscar.
 
@@ -91,7 +91,7 @@ el CPM sube solo por subasta o estacionalidad, y el CTR baja solo por cambio de 
 gana → se REMIXA (mismo ángulo y misma estructura, nuevo visual) → se refresca ANTES de que la fatiga lo mate
 ```
 
-🛑 **Ni se repite idéntico hasta el cansancio, ni se abandona. Se remixa.** Repetirlo idéntico quema
+**Ni se repite idéntico hasta el cansancio, ni se abandona. Se remixa.** Repetirlo idéntico quema
 el patrón; abandonarlo tira el único activo probado que tiene el cliente.
 
 Todo lo que se marca para refrescar sale **con fecha límite**, no con un *"pronto"*.
@@ -113,7 +113,7 @@ trimestral · las **devoluciones aguas arriba** (lo que Creative detectó y no l
 **devoluciones que llegaron de Producción, contadas por motivo** — el mismo motivo dos ciclos
 seguidos es un patrón de cómo escribe Creative, y entra como hipótesis del ciclo siguiente.
 
-🛑 **Ninguna opción nueva se agrega a una taxonomía de skill sin evidencia de 3+ piezas.**
+**Ninguna opción nueva se agrega a una taxonomía de skill sin evidencia de 3+ piezas.**
 
 ---
 
@@ -122,12 +122,12 @@ seguidos es un patrón de cómo escribe Creative, y entra como hipótesis del ci
 | Departamento | Su pregunta | Quién la responde |
 |---|---|---|
 | **Creatividad** — Capa 7 | *¿Qué **patrón creativo** ganó y qué entra al próximo brief?* | 🟢 Esta skill |
-| **Marketing** | *¿Se movió la **MUST BE TRUE**? ¿Compoundea?* | 🛑 **No es de Creative** |
-| **Marketing** | Los dashboards y el reporte de performance | 🛑 **No es de Creative** |
+| **Marketing** | *¿Se movió la **MUST BE TRUE**? ¿Compoundea?* | **No es de Creative** |
+| **Marketing** | Los dashboards y el reporte de performance | **No es de Creative** |
 
 Son **preguntas distintas sobre los mismos datos**, y ninguna reemplaza a otra.
 
-🛑 **Creative no responde la segunda: la devuelve.** Una pieza que rindió bien pero no movió nada
+**Creative no responde la segunda: la devuelve.** Una pieza que rindió bien pero no movió nada
 estratégico se declara y **se devuelve a Marketing** — desde acá no se declara victoria
 estratégica, y tampoco se declara derrota. Lo mismo al revés: un patrón que ganó sigue siendo un
 hallazgo válido aunque Marketing todavía no vea el movimiento.
@@ -143,7 +143,7 @@ hallazgo válido aunque Marketing todavía no vea el movimiento.
 5. **Toda hipótesis del ciclo recibe veredicto.** Dejarla sin responder es perder el ciclo entero.
 6. **Fatiga = CPM sube + CTR baja**, las dos juntas, y sale con fecha de refresco.
 7. **El ganador se remixa**, ni se clona ni se tira.
-8. 🛑 **Sin datos: `⚠️ SIN DATOS`.** Nunca se infiere un ganador de lo que "se siente" que funcionó.
+8. **Sin datos: `⚠️ SIN DATOS`.** Nunca se infiere un ganador de lo que "se siente" que funcionó.
 9. **No se reescribe nada de otro departamento.** Lo que no es de Creative se devuelve, no se corrige.
 
 ---
@@ -168,7 +168,7 @@ hallazgo válido aunque Marketing todavía no vea el movimiento.
 **Capa 7 no se entrega sin este bloque completo.**
 
 - [ ] Las métricas se leyeron **a nivel pieza**, por **Objetivo del slot**, **nunca en agregado**
-- [ ] La métrica usada es la del objetivo, **no vanity** — 🛑 nunca *"likes"* por default
+- [ ] La métrica usada es la del objetivo, **no vanity** — nunca *"likes"* por default
 - [ ] Hay **3 patrones ganadores** identificados, cada uno **con su evidencia nombrada**
 - [ ] Cada **hipótesis** del ciclo tiene veredicto: `confirmada` / `refutada` / `⚠️ SIN DATOS`
 - [ ] Se probó **una variable a la vez** — si no, **está declarado que el aprendizaje no es limpio**
@@ -177,7 +177,7 @@ hallazgo válido aunque Marketing todavía no vea el movimiento.
 - [ ] Los **ganadores propios entraron a `swipe-file.md`**, con cubeta `10·propio` y ubicados **arriba**
 - [ ] Está declarado **qué patrón sube al tope de qué skill** en la revisión trimestral
 - [ ] Hay **3 hipótesis nuevas**, cada una atada a un objetivo de slot y con qué la confirmaría
-- [ ] 🛑 Sin métricas: `⚠️ SIN DATOS` + **a quién pedírselas**. **Ningún ganador inventado**
+- [ ] Sin métricas: `⚠️ SIN DATOS` + **a quién pedírselas**. **Ningún ganador inventado**
 - [ ] **Ninguna conclusión estratégica emitida** — lo que le toca a Marketing **está devuelto, no respondido**
 - [ ] Las **devoluciones aguas arriba** están listadas: lo que Creative detectó y no le toca arreglar
 - [ ] Las **devoluciones de Producción están contadas por motivo**, y todo motivo repetido dos ciclos seguidos está declarado como patrón

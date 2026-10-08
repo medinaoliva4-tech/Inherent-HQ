@@ -23,7 +23,7 @@ description: >
 | 🔴 Colaboración, fuera de la ficha | Va al reporte | Va al reporte |
 | ⚫ Spam, hater | Se reporta | Se oculta si es abuso *(Pro+)* y se reporta |
 
-🛑 **El modo lo prende o lo apaga solo el COO**, en la ficha. La corrida nunca lo cambia sola.
+**El modo lo prende o lo apaga solo el COO**, en la ficha. La corrida nunca lo cambia sola.
 
 ## 2 · Cómo se envía
 
@@ -51,7 +51,7 @@ Un correo por corrida al correo de «Avisos» de la ficha, con la plantilla
 **Asunto:** `Community · [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`. Si no hubo nada nuevo, no se
 manda correo.
 
-Sin el MCP de Gmail: `BLOQUEADO — falta Gmail. Instalala: ver INSTALAR.md § Gmail`.
+Sin el MCP de Gmail: `FALTA — falta Gmail. Instalala: ver INSTALAR.md § Gmail`.
 
 ## 4 · Nunca
 

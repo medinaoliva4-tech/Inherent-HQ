@@ -39,7 +39,7 @@ Archivo **interno**: no se entrega al cliente, pero se guarda en la carpeta del 
 | Ítem | Estimado | Real | Por qué | Corrección propuesta para `pr-presupuesto` |
 |---|---|---|---|---|
 
-> 🛑 `costo_real` tiene que estar cargado en **todas** las filas, aunque coincida con el estimado.
+> `costo_real` tiene que estar cargado en **todas** las filas, aunque coincida con el estimado.
 > Sin eso se pierde la mitad de la muestra, y el próximo ciclo se estima a ojo otra vez.
 
 ---
@@ -73,7 +73,7 @@ Archivo **interno**: no se entrega al cliente, pero se guarda en la carpeta del 
 | Fueron a Marketing como decisión de alcance | |
 | Setups de foto | |
 
-🛑 **Este es el número que § 2B del `WORKFLOW.md` declara «a medir en la primera sesión».**
+**Este es el número que § 2B del `README.md` declara «a medir en la primera sesión».**
 Una vez medido, deja de ser pendiente.
 
 ---
@@ -119,7 +119,7 @@ Real:     [x.x]   ([n] escenas ÷ [n] jornadas)
 
 ## 5. Corrección de capacidad → Strategy
 
-> 🛑 **Se redacta como propuesta.** Es la única corrección que Producción hace sobre un documento de
+> **Se redacta como propuesta.** Es la única corrección que Producción hace sobre un documento de
 > otro departamento, y **nunca se edita su archivo.**
 
 | | Declarado en Strategy | Real este ciclo | Diferencia |
@@ -135,7 +135,7 @@ Real:     [x.x]   ([n] escenas ÷ [n] jornadas)
 
 ## 6. Qué sube a las skills
 
-🛑 **Nada sube con un solo ciclo de evidencia.** Tres ciclos seguidos en la misma dirección.
+**Nada sube con un solo ciclo de evidencia.** Tres ciclos seguidos en la misma dirección.
 
 | Skill | Qué se actualiza | Dato nuevo | Ciclos de evidencia |
 |---|---|---|---|
@@ -160,4 +160,4 @@ Real:     [x.x]   ([n] escenas ÷ [n] jornadas)
 **Estado de datos**
 - `costo_real` cargado: [✅ todas las filas / ⬜ faltan [n]] · Fecha del corte: [fecha]
 - ⚠️ SIN DATOS — [qué falta y a quién pedírselo]
-- 🛑 **Ningún desvío inventado.** Confianza del aprendizaje: 🟢 / 🟡 / 🔴
+- **Ningún desvío inventado.** Confianza del aprendizaje: 🟢 / 🟡 / 🔴

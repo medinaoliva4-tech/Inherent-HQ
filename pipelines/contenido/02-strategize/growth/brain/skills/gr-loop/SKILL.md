@@ -39,7 +39,7 @@ corrección es opuesta.**
 | Llega más gente y convierte mucho peor | **Pauta trayendo a quien no es.** Es de Ads y de Marketing |
 | Preguntan y no compran | **Conversión.** Es de acá |
 
-🛑 **Cambiar la oferta cuando el problema era la pauta destruye lo que funcionaba.** Es el error
+**Cambiar la oferta cuando el problema era la pauta destruye lo que funcionaba.** Es el error
 que más caro sale, y es exactamente lo que Accelerate promete evitar: *«escalar lo que ya
 funciona, sin perderlo»*.
 

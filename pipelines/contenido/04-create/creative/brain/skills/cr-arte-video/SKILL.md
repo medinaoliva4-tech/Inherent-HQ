@@ -28,10 +28,10 @@ assets** · de **Marketing**: activos distintivos y formato del slot · de **Str
 
 **Y decide una columna del `plan-de-contenido.csv`:** `material` → `ninguno` / `video` / `foto`.
 
-> 🛑 **Creative dirige, no ejecuta.** Nada de archivos de diseño, mockups finales, tomas grabadas,
+> **Creative dirige, no ejecuta.** Nada de archivos de diseño, mockups finales, tomas grabadas,
 > media generada ni edición. La especificación **es** el límite exacto del departamento.
 
-El departamento entero está en `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
+El departamento entero está en `pipelines/contenido/04-create/creative/README.md`.
 
 ---
 
@@ -51,7 +51,7 @@ set y una toma que falta en la edición. Lo mismo en arte:
 
 La segunda **no admite interpretación**. Eso es dirección.
 
-🛑 **Ningún adjetivo es una instrucción.** *"Impactante"*, *"limpio"*, *"que se vea lindo"*: el ejecutor tiene que inventar la intención.
+**Ningún adjetivo es una instrucción.** *"Impactante"*, *"limpio"*, *"que se vea lindo"*: el ejecutor tiene que inventar la intención.
 
 ## 1 · La decisión de `material`
 
@@ -67,11 +67,11 @@ Es lo que le dice a Producción qué tiene que existir antes de que nadie arme l
 > carruseles y stories van a **Diseño gráfico**, los videos a **Video Editing**.
 > **Un carrusel con `material = foto` sigue siendo de Diseño gráfico** — solo que espera su foto primero.
 
-- 🛑 **Se decide por si el material existe**, no por presupuesto ni por pereza. Si la idea pide una
+- **Se decide por si el material existe**, no por presupuesto ni por pereza. Si la idea pide una
   toma o una foto que nadie tiene, no es `ninguno`.
-- 🛑 **Si el plan no cabe en la capacidad de producción**, se recorta acá **y se declara**. Nunca se
+- **Si el plan no cabe en la capacidad de producción**, se recorta acá **y se declara**. Nunca se
   pasa a `ninguno` en silencio para que entre.
-- 🛑 **Nunca `video` para conseguir una imagen fija.** Si lo que hace falta es una foto, es `foto`:
+- **Nunca `video` para conseguir una imagen fija.** Si lo que hace falta es una foto, es `foto`:
   sacar un frame del rodaje es el **plan B** que decide Producción cuando la hora de foto no alcanza, no la
   forma normal de pedirla.
 - Una pieza `ninguno` igual lleva **Forma y Layout completos**: Diseño necesita la intención tanto
@@ -91,7 +91,7 @@ Es lo que le dice a Producción qué tiene que existir antes de que nadie arme l
 | **Proporción** | `1:1` · `4:5` · `9:16` — la del formato donde va |
 | **También la usan** | Los `id` de las otras piezas que comparten esta misma foto, o `solo esta` |
 
-- 🛑 **El «espacio libre para el texto» sale del Layout, no se inventa.** Una foto encuadrada sin
+- **El «espacio libre para el texto» sale del Layout, no se inventa.** Una foto encuadrada sin
   saber dónde va el texto se vuelve a tomar.
 - **Si varias piezas comparten la foto, se escribe en todas**, con los mismos valores. Producción la agrupa
   una sola vez.
@@ -167,13 +167,13 @@ Se resuelven las ocho, sin excepción. Una toma incompleta es una toma que se im
 
 | Elemento | Qué se especifica |
 |---|---|
-| **Foco visual** | 🛑 **UNO SOLO.** El que la BIG IDEA exige |
+| **Foco visual** | **UNO SOLO.** El que la BIG IDEA exige |
 | **Orden de lectura** | Qué se ve 1°, 2° y 3°, explícito |
 | **Layout de texto** | Ubicación, tamaño, proporción y peso de **cada** texto |
 | **Safe zones** | Canal por canal, para que la UI no tape nada |
 | **Estética / mood** | Paleta, iluminación, acabado — **de la guía de Branding**, si existe |
 
-> 🛑 **Un foco por pieza. Cuando todo parece importante, nada resalta.**
+> **Un foco por pieza. Cuando todo parece importante, nada resalta.**
 
 ### Reglas duras de arte
 
@@ -188,7 +188,7 @@ Se resuelven las ocho, sin excepción. Una toma incompleta es una toma que se im
 
 Lo que se le **agrega encima** al material filmado o fotográfico.
 
-> 🛑 **Acá está la frontera con Diseño gráfico. Creative PIDE por nombre; Diseño CREA.**
+> **Acá está la frontera con Diseño gráfico. Creative PIDE por nombre; Diseño CREA.**
 > Creative dice qué elementos lleva la pieza y por qué. Diseño los crea o los saca del banco, los
 > aplica, y decide tamaño, posición fina y acabado. Si la fila dice *"algo que se vea lindo arriba"*,
 > la frontera se rompió: Diseño tiene que inventar la intención.
@@ -218,7 +218,7 @@ Formato **familia + qué + para qué**, separados por `·`. Una línea por eleme
 
 ### Reglas duras de elementos gráficos
 
-1. 🛑 **Máximo 3 por pieza.** Del cuarto en adelante la pieza no tiene jerarquía: tiene ruido. Si hacen falta más, el problema está en el concepto.
+1. **Máximo 3 por pieza.** Del cuarto en adelante la pieza no tiene jerarquía: tiene ruido. Si hacen falta más, el problema está en el concepto.
 2. **Una familia por función, no por gusto.** Si un círculo y una flecha señalan lo mismo, uno sobra. Vale la regla general: **1 foco por pieza**.
 3. **Del banco antes que nuevo.** Si Branding ya tiene el asset, se pide **ese**: uno nuevo multiplica versiones de lo mismo.
 4. **Lo que tapa, se declara.** Qué puede taparse y qué no. Es lo que más se corrige tarde.
@@ -244,7 +244,7 @@ Formato **familia + qué + para qué**, separados por `·`. Una línea por eleme
 **Ninguna pieza sale de la Capa 5 sin pasar el bloque completo.**
 
 - [ ] El **grid está declarado** y corresponde al formato
-- [ ] 🛑 **Máximo 1 foco visual** por pieza, y el **orden de lectura** escrito (1° / 2° / 3°)
+- [ ] **Máximo 1 foco visual** por pieza, y el **orden de lectura** escrito (1° / 2° / 3°)
 - [ ] **Layout de texto** con ubicación, tamaño, proporción y peso de cada texto — **sin adjetivos**
 - [ ] **Safe zones** del canal marcadas
 - [ ] Mood, paleta e iluminación **coherentes con la guía de Branding**, si existe
@@ -259,8 +259,8 @@ Formato **familia + qué + para qué**, separados por `·`. Una línea por eleme
 - [ ] Hay **2-3 tomas de cobertura** nombradas (reaction · wide · detalle)
 - [ ] El plan **cabe en la capacidad de producción** del cliente — y si se recortó, está declarado
 - [ ] La columna **`material`** está decidida (`ninguno` / `video` / `foto`) y coherente con lo escrito en Escenas o en § Foto
-- [ ] 🛑 Toda pieza con **`material = foto`** tiene su **§ Foto completa**, con el **espacio libre para el texto tomado del Layout** y los `id` de las piezas que comparten la foto
-- [ ] 🛑 No hay archivos de diseño, mockups finales, media generada ni video editado
+- [ ] Toda pieza con **`material = foto`** tiene su **§ Foto completa**, con el **espacio libre para el texto tomado del Layout** y los `id` de las piezas que comparten la foto
+- [ ] No hay archivos de diseño, mockups finales, media generada ni video editado
 
 ## Siguiente
 

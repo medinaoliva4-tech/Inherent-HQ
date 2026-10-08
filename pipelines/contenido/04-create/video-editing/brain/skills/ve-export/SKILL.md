@@ -33,7 +33,7 @@ description: >
 | `variante` | `principal` · `hookB` · `corto` · `fragmento1` |
 | `plataforma` | `ig-reel` · `tiktok` · `yt-short` · `ig-story` |
 
-🛑 **Posting cruza por `id_creativo`.** Un archivo sin él **se devuelve sin abrirse**.
+**Posting cruza por `id_creativo`.** Un archivo sin él **se devuelve sin abrirse**.
 
 ## 2 · El QA técnico, pieza por pieza
 
@@ -47,7 +47,7 @@ description: >
 | **Sin watermark** | De ninguna app de edición ni de generación |
 | **Primer frame** | No es negro. Es el frame que Creatividad definió |
 
-🛑 **El watermark de una herramienta de IA en una pieza de cliente es un problema de marca, no
+**El watermark de una herramienta de IA en una pieza de cliente es un problema de marca, no
 un detalle.**
 
 ## 3 · Una pieza, un archivo por plataforma
@@ -63,7 +63,7 @@ sus specs.
 ### Las versiones
 
 **Cada ronda de cambios es una versión nueva** (`_v2`, `_v3`…). La anterior se mueve a
-`outputs/video/<versión>-anterior/`. 🛑 **Nunca se sobreescribe un entregable**: si el cliente
+`outputs/video/<versión>-anterior/`. **Nunca se sobreescribe un entregable**: si el cliente
 dice «me gustaba más antes», tiene que existir el antes.
 
 ## 4 · El manifiesto — `entregas-video.md`
@@ -80,19 +80,19 @@ dice «me gustaba más antes», tiene que existir el antes.
 | `specs_ok` | ✅ / ❌ con el motivo |
 | `estado` | `entregado` · `⚠️ SIN MATERIAL` · `↩️ devuelto` |
 
-🛑 **Ningún archivo se copia a otra carpeta: se cita su ruta.**
+**Ningún archivo se copia a otra carpeta: se cita su ruta.**
 
 ## 5 · Lo que no salió
 
 **Se escribe, no se omite.** Una tabla con pieza, motivo y de quién se espera.
 
-🛑 **Un ciclo que entrega 9 de 10 reels sin decir cuál falta obliga a Posting a descubrirlo.**
+**Un ciclo que entrega 9 de 10 reels sin decir cuál falta obliga a Posting a descubrirlo.**
 
 ## 6 · Sin paradas — se auto-revisa y sigue
 
 **El paquete no para:** con el checklist de §8 completo entra a QA y después a Posting.
 
-🛑 **La página del cliente (§7) sale con el checklist de §8 completo:** sin eso no se corre
+**La página del cliente (§7) sale con el checklist de §8 completo:** sin eso no se corre
 `vercel deploy --prod` ni se le manda el link. Es lo que ve el cliente.
 
 ## 7 · La página de aprobación del cliente
@@ -109,7 +109,7 @@ versión.
 | **Cómo se arma** | `data.json` (piezas, captions, pie) → `build.py data.json display.ttf sans.ttf <videos>` → `vercel deploy --prod`. Un proyecto de Vercel por cliente |
 | **Nueva versión** | Se sube el preview nuevo y se sube el `?v=` de ese video en `data.json`. Sin eso, el navegador muestra el video viejo |
 
-🛑 **La clave de respuestas, el `.env` y el `.admin_key` nunca entran al repo ni se comparten con
+**La clave de respuestas, el `.env` y el `.admin_key` nunca entran al repo ni se comparten con
 el cliente.** El link que se manda es solo el de la página.
 
 > 🔑 **Lo que pide el cliente vuelve como una ronda de cambios**: se anota por pieza, se corrige

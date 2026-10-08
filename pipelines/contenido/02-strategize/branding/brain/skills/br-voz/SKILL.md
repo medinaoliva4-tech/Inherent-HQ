@@ -30,7 +30,7 @@ description: >
 | **Humor** | Serio | Divertido | |
 | **Cercanía** | Distante | Íntimo | |
 
-> 🛑 **No se está en el medio de todos los ejes.** Una marca que es medio todo no suena a nada.
+> **No se está en el medio de todos los ejes.** Una marca que es medio todo no suena a nada.
 > **Al menos dos ejes están en un extremo.**
 
 ## 2 · Los do's & don'ts se escriben con ejemplos
@@ -70,7 +70,7 @@ comentario, un CTA, y un error de la marca.
 
 **Cambia el formato, no la voz.** Un reel es más corto que un email, pero suena a lo mismo.
 
-> 🛑 **Si una marca suena distinta en TikTok que en su newsletter, no tiene voz: tiene dos
+> **Si una marca suena distinta en TikTok que en su newsletter, no tiene voz: tiene dos
 > marcas.** Lo que sí cambia es el largo y la densidad — y eso lo resuelve Posting.
 
 ## 6 · Qué escribe
@@ -88,7 +88,7 @@ comentario, un CTA, y un error de la marca.
 
 ## 7 · Checklist
 
-🛑 **Territorio y voz son la dirección.** Cambiarlos después tira el sistema visual entero: se
+**Territorio y voz son la dirección.** Cambiarlos después tira el sistema visual entero: se
 auto-revisa con este checklist antes de pasar a `br-sistema`.
 
 - [ ] Al menos **dos ejes** están en un extremo

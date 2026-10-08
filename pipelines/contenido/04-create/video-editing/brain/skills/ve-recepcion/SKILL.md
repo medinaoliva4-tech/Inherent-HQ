@@ -1,15 +1,14 @@
 ---
 name: ve-recepcion
 description: >
-  Capa 0 de Video Editing — verifica qué llegó de Producción y es realmente editable antes
-  de abrir un proyecto. Cruza fila por fila las piezas con rodaje del Excel de Creatividad contra el
-  manifiesto de Producción, verifica que exista material con selects marcados, que el audio sirva, que la
-  cobertura alcance para el guion escrito y que el backup esté. Si Producción no marcó selects, los hace
-  acá: califica cada clip con la skill /watch contra una rúbrica escrita y deja la lista de
-  posproducción (qué se usa, qué segundos, qué se descarta y por qué). Úsala cuando pidan "¿llegó
-  todo?", "qué nos falta para editar", "arrancá el ciclo de video", "cruzá el material contra el
-  Excel", "analizá los videos", "calificá el material", "qué tomas sirven". Bloquea si falta el
-  Excel del ciclo cerrado de Creatividad.
+  Capa 0 de Video Editing — verifica qué llegó de Producción y es realmente editable antes de
+  abrir un proyecto. Cruza fila por fila las piezas con rodaje del Excel de Creatividad contra el
+  manifiesto de Producción, verifica que exista material con selects marcados, que el audio sirva,
+  que la cobertura alcance para el guion escrito y que el backup esté. Si Producción no marcó
+  selects, los hace acá: califica cada clip con la skill /watch contra una rúbrica escrita y deja
+  la lista de posproducción (qué se usa, qué segundos, qué se descarta y por qué). Úsala cuando
+  pidan "¿llegó todo?", "qué nos falta para editar", "arrancá el ciclo de video", "cruzá el
+  material contra el Excel", "analizá los videos", "calificá el material", "qué tomas sirven".
 ---
 
 # Capa 0 · Recepción — qué llegó y es editable
@@ -28,7 +27,7 @@ le falta cobertura es trabajo tirado que se descubre a mitad del montaje.
 **Del Excel de Creatividad se toman únicamente las filas con `material = video`.** Las demás van directo a
 Diseño gráfico.
 
-🛑 **Una fila sin `material` que llega acá está mal clasificada: se devuelve a Creatividad.**
+**Una fila sin `material` que llega acá está mal clasificada: se devuelve a Creatividad.**
 
 ## 2 · El cruce, fila por fila
 
@@ -42,7 +41,7 @@ Diseño gráfico.
 | **El audio sirve** | Se entiende, sin saturar, sin ruido que no se pueda limpiar | ↩️ **Devuelto a Producción** |
 | **El guion es montable** | El hook de Creatividad se puede armar con lo que hay | ↩️ **Devuelto a Creatividad** — nunca se improvisa otro hook |
 | **Hay copy literal** | El `ideas-<formato>.md` tiene el texto escrito, no descrito | ↩️ **Devuelto a Creatividad** |
-| **No arrastra claims ⏸️** | La pieza no tiene `⏸️ PENDIENTE APROBACIÓN` | 🛑 **No entra** hasta que Branding valide |
+| **No arrastra claims ⏸️** | La pieza no tiene `⏸️ PENDIENTE APROBACIÓN` | **No entra** hasta que Branding valide |
 
 ## 3 · Cuando falta material pero la pieza se puede salvar
 
@@ -53,7 +52,7 @@ Diseño gráfico.
 | **Banco de assets** | Si ya existe material de ciclos anteriores que sirve. **Se declara que es reuso** |
 | **Reencuadre de otra pieza** | Si el plano existe en otra toma del mismo ciclo |
 
-🛑 **Si ninguna sirve, se devuelve.** Inventar una solución en el momento es cómo una pieza
+**Si ninguna sirve, se devuelve.** Inventar una solución en el momento es cómo una pieza
 termina sin parecerse a lo que Creatividad dirigió.
 
 ## 3B · Bajar el material
@@ -83,7 +82,7 @@ reels en cliente real: se descartaron 25 de 123 clips antes de abrir el motor.
 
 | Regla | Por qué |
 |---|---|
-| 🛑 **Las etiquetas `t=` de la pasada uniforme de `/watch` vienen adelantadas ~0.4 s** | Cortar con ellas deja medio segundo de basura. Los tiempos de corte salen **siempre** de la hoja de tiempos exactos |
+| **Las etiquetas `t=` de la pasada uniforme de `/watch` vienen adelantadas ~0.4 s** | Cortar con ellas deja medio segundo de basura. Los tiempos de corte salen **siempre** de la hoja de tiempos exactos |
 | **Tomas repetidas: se quedan las 2–3 mejores** | El resto `DESCARTADO` con `duplicate_of`. Diez tomas del mismo gesto no son diez opciones |
 | **Distractores que descartan una toma** | Mano sin guante, cables, impresora, basura, trapos de color, gente que cruza, cámara que se cae al final |
 | **Más de ~40 clips: subagentes en paralelo** | Un grupo de clips por subagente con `edit/AGENT_BRIEF.md`; cada uno escribe su `.jsonl`. Grupos chicos (8–12 clips) para que no se corten |
@@ -108,7 +107,7 @@ montaje. Ningún tiempo se escribe de memoria.
 ⬜ **Tailor Made:** el techo son los videos planificados y derivados que declara **Su pipeline** en
 `plan-contratado.md`.
 
-🛑 **Si el Excel pide más, se declara y se devuelve a Marketing.** No se edita de más.
+**Si el Excel pide más, se declara y se devuelve a Marketing.** No se edita de más.
 
 ## 6 · Qué escribe
 

@@ -46,7 +46,7 @@ ARTIFACT    DÓNDE se ve el resultado. La herramienta visual del equipo,
 
 | | |
 |---|---|
-| **Un workflow de 0 a 100** | `brain/WORKFLOW.md`. Cada paso, qué lo dispara, qué entrega, dónde está el gate humano |
+| **Un workflow de 0 a 100** | `README.md`. Cada paso, qué lo dispara, qué entrega, dónde está el gate humano |
 | **Skills que son método, no instrucciones** | Cada una responde una pregunta del trabajo real y produce un entregable nombrado |
 | **Límites declarados** | Lo que el agente **no** hace está escrito, para que no lo intente |
 | **Correlación con el resto** | De quién recibe y a quién entrega, en la cadena de doce etapas |
@@ -83,7 +83,7 @@ completo está en [`pipelines/contenido/README.md`](pipelines/contenido/README.m
 ## Cómo se arranca una sesión
 
 1. **Identificá el agente** que corresponde al pedido.
-2. **Leé su `brain/WORKFLOW.md` completo.** Es la única fuente de cómo trabaja.
+2. **Leé su `README.md` completo.** Es la única fuente de cómo trabaja.
 3. **Identificá el cliente.** Un cliente = un folder en `clients/`, con su `CLAUDE.md` como router. Nunca mezclar dos.
 4. Seguí el workflow. Las skills se invocan donde el workflow lo indica.
 

@@ -28,7 +28,7 @@ marca, no se opone por oponerse.**
 | Barato y recargado | Valor percibido | Silencio visual, material, espacio |
 | Corporativo | Confianza humana | Cara visible, imperfección |
 
-> 🛑 **Oponerse por oponerse produce una marca rara que no le habla a nadie.** El criterio es
+> **Oponerse por oponerse produce una marca rara que no le habla a nadie.** El criterio es
 > *«le habla a la gente que queremos»*, no *«se diferencia»*.
 
 ## 2 · La personalidad — 3 a 5 rasgos, con su opuesto
