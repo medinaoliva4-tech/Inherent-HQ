@@ -1,7 +1,7 @@
 ---
 name: br-activos
 description: >
-  Capa 4 de ②B Branding — define los activos distintivos: lo que hace reconocible a la marca con
+  Capa 4 de Branding — define los activos distintivos: lo que hace reconocible a la marca con
   el logo tapado. Entre 3 y 5, cada uno con la prueba de que es distintivo y no solo decorativo,
   y con la regla de que aparece en toda pieza. Es lo que vuelve el contenido acumulativo en vez
   de suelto. Úsala cuando pidan "qué nos hace reconocibles", "los activos de marca", "por qué
@@ -55,7 +55,7 @@ description: >
 |---|---|---|
 | **1** | **Logo tapado:** ¿se reconoce la marca? | No es distintivo. Es decoración |
 | **2** | ¿La categoría **no** lo usa? | Es un código de categoría. No distingue |
-| **3** | ¿⑥A Diseño gráfico y ⑦ Video Editing lo pueden aplicar **sin criterio**? | No es sistema. Se reescribe la regla |
+| **3** | ¿Diseño gráfico y Video Editing lo pueden aplicar **sin criterio**? | No es sistema. Se reescribe la regla |
 
 ## 5 · Cada activo lleva su regla de aplicación
 

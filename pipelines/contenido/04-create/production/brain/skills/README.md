@@ -1,4 +1,4 @@
-# Las skills de ⑤ Producción — cuál, cuándo y en qué orden
+# Las skills de Producción — cuál, cuándo y en qué orden
 
 Una skill es **cómo se hace un paso**. `pipelines/contenido/04-create/production/brain/WORKFLOW.md` dice qué pasa, en qué orden y
 con qué reglas; acá está el detalle de cada herramienta.
@@ -56,7 +56,7 @@ pr-brief ──→ pr-desglose ──→ pr-jornadas ──→ pr-recursos ─�
                                   │                                                                │
                                   └───── pr-loop ←──── costo_real + qué usaron Diseño y Video ←────┘
                                        │
-                                       └──→ propuesta de capacidad a ① Strategy
+                                       └──→ propuesta de capacidad a Strategy
 ```
 
 **Las reglas de encadenado:**
@@ -90,7 +90,7 @@ pr-brief ──→ pr-desglose ──→ pr-jornadas ──→ pr-recursos ─�
 
 | | Qué mide | De quién es la otra pregunta |
 |---|---|---|
-| **`pr-loop`** | **Ejecución**: qué costó más, qué llevó más, qué se grabó y nadie usó | Si la pieza **rindió** o no es Capa 7 de **④ Creatividad** |
+| **`pr-loop`** | **Ejecución**: qué costó más, qué llevó más, qué se grabó y nadie usó | Si la pieza **rindió** o no es Capa 7 de **Creatividad** |
 
 ---
 

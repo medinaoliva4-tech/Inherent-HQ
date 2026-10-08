@@ -18,7 +18,7 @@
 
 ## Figma + Figwright
 
-**Para qué:** leer y exportar el kit de redes. ②B Branding.
+**Para qué:** leer y exportar el kit de redes. Branding.
 
 1. **Figma de escritorio** instalado y con sesión iniciada.
 2. **Node.js** instalado *(trae `npx`)*: [nodejs.org](https://nodejs.org).
@@ -30,14 +30,14 @@
 
 ## Apify
 
-**Para qué:** scraping de redes, Google Maps y la biblioteca de anuncios. ① ② ④ ⑩.
+**Para qué:** scraping de redes, Google Maps y la biblioteca de anuncios. Strategy, Growth, Creatividad y Ads.
 
 1. Ya está en `.mcp.json`. La primera vez pide **iniciar sesión con tu cuenta de Apify**.
 2. **Probar:** `/mcp` → `apify` conectado.
 
 ## Zernio
 
-**Para qué:** programar y publicar, y la bandeja de comentarios y mensajes. ⑧ ⑨.
+**Para qué:** programar y publicar, y la bandeja de comentarios y mensajes. Community y Posting.
 
 1. **claude.ai → Configuración → Conectores → Zernio**, con la cuenta de Inherent.
 2. **Dentro de Zernio**, las cuentas del cliente tienen que estar conectadas *(Instagram, TikTok,
@@ -46,14 +46,14 @@
 
 ## AdWhispr
 
-**Para qué:** investigar competencia y lanzar pauta. ① ② ⑩.
+**Para qué:** investigar competencia y lanzar pauta. Strategy, Growth y Ads.
 
 1. **claude.ai → Configuración → Conectores → AdWhispr.**
 2. Para pautar: la **cuenta publicitaria del cliente** conectada dentro de AdWhispr.
 
 ## Gmail
 
-**Para qué:** los reportes de ⑧ Community y la bandeja de Administración.
+**Para qué:** los reportes de Community y la bandeja de Administración.
 
 1. **claude.ai → Configuración → Conectores → Gmail**, con el correo de Inherent.
 
@@ -66,13 +66,13 @@
 
 ## Firecrawl
 
-**Para qué:** búsqueda web y el research de la comprensión. ①.
+**Para qué:** búsqueda web y el research de la comprensión. Strategy.
 
 1. **claude.ai → Configuración → Conectores → Firecrawl.**
 
 ## Herramientas de video
 
-**Para qué:** leer videos de referencia, reencuadrar y el motor de ⑦ Video Editing. ④ ⑥A ⑦.
+**Para qué:** leer videos de referencia, reencuadrar y el motor de Video Editing. Creatividad, Diseño gráfico y Video Editing.
 
 **Mac:**
 ```
@@ -95,7 +95,7 @@ python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt pillo
 
 ## Node y Remotion
 
-**Para qué:** el motor que arma los videos de ⑦ Video Editing y la página donde el cliente aprueba.
+**Para qué:** el motor que arma los videos de Video Editing y la página donde el cliente aprueba.
 
 1. **Node 20 o más nuevo:** [nodejs.org](https://nodejs.org).
 2. **En cada proyecto:**
@@ -110,7 +110,7 @@ python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt pillo
 
 ## Plugin claude-ads
 
-**Para qué:** auditar y monitorear cuentas de pauta. ⑩.
+**Para qué:** auditar y monitorear cuentas de pauta. Ads.
 
 Dentro de Claude Code:
 ```

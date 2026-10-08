@@ -108,7 +108,7 @@ coordina el COO; todo lo que se puede ejecutar lo ejecutan los agentes.
 │   → 08 COMMUNITY → 09 POSTING → 10 ADS                                │
 │                                                                       │
 │   Cada departamento se auto-revisa antes de su gate.                  │
-│   ②B Branding valida con br-guardian antes de que nada se publique.   │
+│   Branding valida con br-guardian antes de que nada se publique.   │
 │                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
                                    │
@@ -155,14 +155,14 @@ y en el `brain/WORKFLOW.md` de cada uno.**
 | Días | Qué pasa | Rol | Agente · skills |
 |---|---|---|---|
 | **1** | **Reunión con el cliente** | **CEO** | — |
-| **1 – 3** | El plan del ciclo: estrategia, marketing, creatividad y producción | Operador + agentes · **CEO aprueba la estrategia** | ① Strategy · ③ Marketing · ④ Creatividad · ⑤ Producción `pr-brief` |
-| **2 – 3** | **Calendario y shot list** | Operador + agentes | ③ Marketing `mk-calendario` · ④ Creatividad `cr-arte-video` |
-| **3 – 6** | **Brand guidelines** | Operador + agentes | ②B Branding |
-| **4 – 5** | **Coordinar producción, fotografía y modelos** | **COO** | ⑤ Producción `pr-jornadas` · `pr-recursos` |
-| **6 – 10** | **Producir** | Producción · Fotografía | ⑤ Producción `pr-rodaje` |
-| **11** | **ÚLTIMO DÍA PARA PRODUCIR** | Producción | ⑤ Producción `pr-entrega` |
-| **12 – 15** | **Montar el contenido** | Editor de video · Operador | ⑦ Video Editing · ⑥A Diseño gráfico |
-| **16 – 19** | **Cambios, QA y programación** | Operador + agentes · **COO hace el QA final** | ②B Branding `br-guardian` · ⑨ Posting |
+| **1 – 3** | El plan del ciclo: estrategia, marketing, creatividad y producción | Operador + agentes · **CEO aprueba la estrategia** | Strategy · Marketing · Creatividad · Producción `pr-brief` |
+| **2 – 3** | **Calendario y shot list** | Operador + agentes | Marketing `mk-calendario` · Creatividad `cr-arte-video` |
+| **3 – 6** | **Brand guidelines** | Operador + agentes | Branding |
+| **4 – 5** | **Coordinar producción, fotografía y modelos** | **COO** | Producción `pr-jornadas` · `pr-recursos` |
+| **6 – 10** | **Producir** | Producción · Fotografía | Producción `pr-rodaje` |
+| **11** | **ÚLTIMO DÍA PARA PRODUCIR** | Producción | Producción `pr-entrega` |
+| **12 – 15** | **Montar el contenido** | Editor de video · Operador | Video Editing · Diseño gráfico |
+| **16 – 19** | **Cambios, QA y programación** | Operador + agentes · **COO hace el QA final** | Branding `br-guardian` · Posting |
 | **20** | **PRESENTACIÓN AL CLIENTE** | **COO** en 🔷 · **CEO** en 🟨 | — |
 
 ```
@@ -224,7 +224,7 @@ costo fijo del plan.
 
 | Tarea | Rol | Dónde |
 |---|---|---|
-| Estrategia inicial y revisión del 20 | Agentes ① Strategy → **CEO aprueba** | Todos |
+| Estrategia inicial y revisión del 20 | Agentes Strategy → **CEO aprueba** | Todos |
 | Ajuste de la estrategia | **CEO** | Todos |
 | **Aprobar ideas y calendario** | **CEO** | Todos |
 | Replanteo trimestral | **CEO** | 🟨 Compound |
@@ -233,9 +233,9 @@ costo fijo del plan.
 
 | Tarea | Rol | Dónde |
 |---|---|---|
-| Rediseño de oferta, paquetes y precio | ② Growth + **CEO** | 🟨 |
-| Abrir canales grandes | ② Growth + **CEO** | 🟨 |
-| Upsells y escalera de ticket | ② Growth · Operador | 🟨 |
+| Rediseño de oferta, paquetes y precio | Growth + **CEO** | 🟨 |
+| Abrir canales grandes | Growth + **CEO** | 🟨 |
+| Upsells y escalera de ticket | Growth · Operador | 🟨 |
 | Embudos, auto-DM, atribución y pruebas A/B | Agentes · Operador | 🟨 |
 | Entrenamiento de closing | **CEO** | 🟨 |
 
@@ -247,7 +247,7 @@ costo fijo del plan.
 | Grabar | **Producción** | Todos |
 | Fotografiar | **Fotografía** | Todos |
 | Editar los videos y sus derivadas | **Editor de video** | Todos |
-| Estáticos, carruseles y stories | **Operador** con ⑥A Diseño gráfico | Todos |
+| Estáticos, carruseles y stories | **Operador** con Diseño gráfico | Todos |
 | Correr Creatividad, Branding, Diseño, Posting y Community | **Operador** | Todos |
 | **QA final** | Agentes *(`br-guardian`)* → **COO** | Todos |
 
@@ -255,10 +255,10 @@ costo fijo del plan.
 
 | Tarea | Rol | Dónde |
 |---|---|---|
-| Programar y publicar | **Operador** con ⑨ Posting | Todos |
+| Programar y publicar | **Operador** con Posting | Todos |
 | **Comentarios y mensajes** | **Operador:** una vez al mes configura el agente con la información del cliente, y el agente queda atendiendo. Escalera en `03-OFERTA.md` → «Community management» | Todos |
 | **Agente de WhatsApp a medida** | **CEO** define el alcance → **Operador** lo construye | 🟨 |
-| Pauta | **Operador** con ⑩ Ads · **CEO** aprueba plan y presupuesto | Todos |
+| Pauta | **Operador** con Ads · **CEO** aprueba plan y presupuesto | Todos |
 
 ### Tecnología
 

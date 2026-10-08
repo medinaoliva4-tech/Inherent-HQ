@@ -1,7 +1,7 @@
 ---
 name: cr-fuentes
 description: >
-  Capa 1 de ④ Creatividad — la skill que CONSIGUE los anuncios. Decide de dónde salen las
+  Capa 1 de Creatividad — la skill que CONSIGUE los anuncios. Decide de dónde salen las
   referencias: la investigación se hace **por plataforma**, en las que usa el cliente según las
   Redes de su plan contratado, con tres actores de Apify —anuncios, Instagram y TikTok— y volumen fijado
   por el plan contratado. Define qué da y qué no da cada fuente, los topes de gasto, en qué países
@@ -17,7 +17,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El hueco calculado en `cr-swipe-file` (qué formato, canal o tipo de hook falta) · los competidores del cliente de ① Strategy · los canales con slot del calendario de ③ Marketing |
+| **Consume** | El hueco calculado en `cr-swipe-file` (qué formato, canal o tipo de hook falta) · los competidores del cliente de Strategy · los canales con slot del calendario de Marketing |
 | **Produce** | El listado crudo de anuncios: **id de biblioteca · anunciante · copy · plataformas · fecha de inicio · antigüedad calculada · link · URL del creativo**, ordenado por antigüedad · y el registro de fuentes usadas, no disponibles y consumo |
 
 Contexto del departamento: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
@@ -102,7 +102,7 @@ headless: el histórico de esa decisión quedó en `BARRIDO-NOCTURNO.md`, marcad
 ### 🛑 La investigación se hace por plataforma
 
 **Las plataformas son las del cliente** — las **Redes** de
-`clients/<cliente>/00-onboarding/plan-contratado.md` *(si existe `plan-por-canal.md` de ③ Marketing,
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(si existe `plan-por-canal.md` de Marketing,
 también sirve)*. No se investiga una plataforma donde el cliente no publica, por interesante que sea
 lo que haya ahí.
 
@@ -153,7 +153,7 @@ lo que haya ahí.
 | | 🔍 **Competencia** | ⭐ **Referencias ganadoras** |
 |---|---|---|
 | **Para qué** | Saber de qué hay que despegarse | Encontrar qué estructura ya funciona |
-| **Quién la usa** | ① Strategy — ingeniería inversa y posicionamiento | ④ Creatividad — el swipe file |
+| **Quién la usa** | Strategy — ingeniería inversa y posicionamiento | Creatividad — el swipe file |
 | **Países** | **Solo Guatemala** (`country=GT`) | La lista fija de países parecidos ↓ |
 | **Cómo se busca** | Por página de cada competidor | Descubrir por keyword, después por página |
 | **Qué sale de ahí** | El código saturado de la categoría | Estructura y ángulo para **adaptar** |
@@ -193,7 +193,7 @@ en diseccionar las mejores, no en pasar 150 piezas por el mismo molde.
 
 🛑 **Se adapta, nunca se copia el creativo.** Lo que cruza la frontera es **la estructura y el
 ángulo**, pasados a quetzales y a la cultura local. Copiar la pieza nos mete en el código visual de
-otro — lo contrario de lo que ②B Branding construyó.
+otro — lo contrario de lo que Branding construyó.
 
 ## 🟡 El modo manual es legítimo y se declara
 
@@ -263,7 +263,7 @@ Lo que le toca a las fuentes. El bloque completo de la capa lo cierra `cr-swipe-
 - [ ] El listado está **ordenado por antigüedad**, no por impresiones ni por engagement
 - [ ] Para orgánico: **la base del creador se midió** antes de declarar un outlier
 - [ ] Ninguna referencia se pidió dos veces — se buscó su ficha antes de volver a consultar
-- [ ] Se investigaron **solo las plataformas del cliente**, según las **Redes** del `plan-contratado.md` *(o `plan-por-canal.md` de ③ Marketing, si existe)*
+- [ ] Se investigaron **solo las plataformas del cliente**, según las **Redes** del `plan-contratado.md` *(o `plan-por-canal.md` de Marketing, si existe)*
 - [ ] El **volumen por plataforma** es el del plan contratado *(50 / 50 / 100 / 100)*, **mitad y mitad**
 - [ ] Los **techos** se respetaron: 50 por búsqueda · 25 por marca · US$5/mes de tope de seguridad
 - [ ] Toda corrida de Apify llevó **`resultsLimit`** y **`maxTotalChargeUsd`** — en los tres actores

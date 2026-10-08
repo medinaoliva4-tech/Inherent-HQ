@@ -1,22 +1,22 @@
 ---
 name: cr-arte-video
 description: >
-  Capa 5 del método de ④ Creatividad — la forma. Convierte el concepto y el copy ya escritos en
+  Capa 5 del método de Creatividad — la forma. Convierte el concepto y el copy ya escritos en
   instrucciones que se ejecutan sin adivinar: las escenas (acción, encuadre, duración y tipo de
   lugar), el layout de texto, la estética y el mood, el foco visual único y los elementos gráficos
   del vocabulario cerrado de 4 familias. Acá también se decide la columna `material` del Excel
-  (`ninguno` / `video` / `foto`), la que dice qué le hace falta a ⑤ Producción, y para las piezas de
+  (`ninguno` / `video` / `foto`), la que dice qué le hace falta a Producción, y para las piezas de
   foto se escribe la § Foto. Úsala cuando pidan "el shot list", "qué tomas
   necesitamos", "cómo se filma esto", "el layout", "dónde va cada texto", "la estética", "el mood",
   "qué elementos gráficos lleva", o cuando el hook y el copy de la Capa 4 ya estén escritos.
-  Creative dirige y especifica; ⑤ Producción rueda y ⑥A Diseño gráfico compone.
+  Creative dirige y especifica; Producción rueda y Diseño gráfico compone.
 ---
 
 # Capa 5 — Forma
 
 **Consume:** el concepto de las **Capas 2-3** · el **hook, guion y copy literales** de la Capa 4, con
-su **frame 1 visual** · de **②B Branding**, si existen: guía de marca, paleta, tipografía y **banco de
-assets** · de **③ Marketing**: activos distintivos y formato del slot · de **① Strategy**: la **capacidad real de producción**.
+su **frame 1 visual** · de **Branding**, si existen: guía de marca, paleta, tipografía y **banco de
+assets** · de **Marketing**: activos distintivos y formato del slot · de **Strategy**: la **capacidad real de producción**.
 
 **Produce**, dentro del `ideas-<formato>.md` de la pieza, en su sección:
 
@@ -55,31 +55,31 @@ La segunda **no admite interpretación**. Eso es dirección.
 
 ## 1 · La decisión de `material`
 
-Es lo que le dice a ⑤ Producción qué tiene que existir antes de que nadie arme la pieza.
+Es lo que le dice a Producción qué tiene que existir antes de que nadie arme la pieza.
 
-| `material` | Cuándo | Qué se escribe | Qué le pide a ⑤ Producción |
+| `material` | Cuándo | Qué se escribe | Qué le pide a Producción |
 |---|---|---|---|
-| **`ninguno`** | Se arma con assets existentes, banco de ②B Branding o solo grafismo | `Escenas: N/A — sin material nuevo` + Forma + Layout | Nada |
+| **`ninguno`** | Se arma con assets existentes, banco de Branding o solo grafismo | `Escenas: N/A — sin material nuevo` + Forma + Layout | Nada |
 | **`video`** | La pieza necesita **metraje nuevo** | Escenas + cobertura + Forma + Layout | `plan-de-produccion.csv` |
 | **`foto`** | La pieza necesita una **imagen fija nueva** —producto, platillo, detalle, retrato— | **§ Foto** + Forma + Layout *(sin tabla de Escenas)* | `plan-de-fotos.csv` |
 
 > 🔑 **`material` NO decide quién arma la pieza.** Eso lo decide el `formato`: los estáticos,
-> carruseles y stories van a **⑥A Diseño gráfico**, los videos a **⑦ Video Editing**.
-> **Un carrusel con `material = foto` sigue siendo de ⑥A Diseño gráfico** — solo que espera su foto primero.
+> carruseles y stories van a **Diseño gráfico**, los videos a **Video Editing**.
+> **Un carrusel con `material = foto` sigue siendo de Diseño gráfico** — solo que espera su foto primero.
 
 - 🛑 **Se decide por si el material existe**, no por presupuesto ni por pereza. Si la idea pide una
   toma o una foto que nadie tiene, no es `ninguno`.
 - 🛑 **Si el plan no cabe en la capacidad de producción**, se recorta acá **y se declara**. Nunca se
   pasa a `ninguno` en silencio para que entre.
 - 🛑 **Nunca `video` para conseguir una imagen fija.** Si lo que hace falta es una foto, es `foto`:
-  sacar un frame del rodaje es el **plan B** que decide ⑤ Producción cuando la hora de foto no alcanza, no la
+  sacar un frame del rodaje es el **plan B** que decide Producción cuando la hora de foto no alcanza, no la
   forma normal de pedirla.
 - Una pieza `ninguno` igual lleva **Forma y Layout completos**: Diseño necesita la intención tanto
   como Producción.
 
 ### § Foto — qué se escribe en `ideas-<formato>.md`
 
-**Toda pieza con `material = foto` lleva esta sección.** Es lo que ⑤ Producción convierte en una fila de
+**Toda pieza con `material = foto` lleva esta sección.** Es lo que Producción convierte en una fila de
 `plan-de-fotos.csv`, y lo que decide si la foto sirve para varias piezas o solo para una.
 
 | Campo | Qué lleva |
@@ -93,7 +93,7 @@ Es lo que le dice a ⑤ Producción qué tiene que existir antes de que nadie ar
 
 - 🛑 **El «espacio libre para el texto» sale del Layout, no se inventa.** Una foto encuadrada sin
   saber dónde va el texto se vuelve a tomar.
-- **Si varias piezas comparten la foto, se escribe en todas**, con los mismos valores. ⑤ Producción la agrupa
+- **Si varias piezas comparten la foto, se escribe en todas**, con los mismos valores. Producción la agrupa
   una sola vez.
 
 ## 2 · Escenas — el shot list
@@ -114,7 +114,7 @@ Se resuelven las ocho, sin excepción. Una toma incompleta es una toma que se im
 | 8 | **Equipo** | Trípode, gimbal, luz, micro — **solo si hace falta algo especial** |
 
 **Las 8 caen en las 5 columnas así:** `#` ← ① · `encuadre` ← ② + ③ + ④ · `acción` ← ⑤ + ⑦ + ⑧ ·
-`duración` ← ⑥. La quinta, `tipo de lugar`, es **la frontera con ⑤ Producción**: Creative escribe
+`duración` ← ⑥. La quinta, `tipo de lugar`, es **la frontera con Producción**: Creative escribe
 *"cocina profesional en hora pico"*; Producción consigue **cuál**, con permisos, y arma la jornada.
 
 ### Ejemplo — Reel testimonial de 20 s
@@ -171,7 +171,7 @@ Se resuelven las ocho, sin excepción. Una toma incompleta es una toma que se im
 | **Orden de lectura** | Qué se ve 1°, 2° y 3°, explícito |
 | **Layout de texto** | Ubicación, tamaño, proporción y peso de **cada** texto |
 | **Safe zones** | Canal por canal, para que la UI no tape nada |
-| **Estética / mood** | Paleta, iluminación, acabado — **de la guía de ②B Branding**, si existe |
+| **Estética / mood** | Paleta, iluminación, acabado — **de la guía de Branding**, si existe |
 
 > 🛑 **Un foco por pieza. Cuando todo parece importante, nada resalta.**
 
@@ -179,16 +179,16 @@ Se resuelven las ocho, sin excepción. Una toma incompleta es una toma que se im
 
 1. **Jerarquía explícita:** `título > subtítulo > CTA`. Nunca implícita.
 2. **Safe zones respetadas.** Un texto tapado por la UI es un texto que no existe.
-3. **Paleta y tipografía son de ②B Branding.** Creative las **aplica**, no las estira.
-4. **Los activos distintivos de ③ Marketing se refuerzan, no se reinventan** cada pieza: es lo que hace que la marca acumule memoria.
+3. **Paleta y tipografía son de Branding.** Creative las **aplica**, no las estira.
+4. **Los activos distintivos de Marketing se refuerzan, no se reinventan** cada pieza: es lo que hace que la marca acumule memoria.
 5. **Foto real antes que stock** — obligatorio en locales y servicios, donde la evidencia real vence a la producción cara.
-6. **Nunca hex, tipografía, píxeles ni coordenadas.** Se dice la **zona**; el resto lo resuelve ⑥A Diseño gráfico.
+6. **Nunca hex, tipografía, píxeles ni coordenadas.** Se dice la **zona**; el resto lo resuelve Diseño gráfico.
 
 ## 4 · Elementos gráficos — el vocabulario cerrado
 
 Lo que se le **agrega encima** al material filmado o fotográfico.
 
-> 🛑 **Acá está la frontera con ⑥A Diseño gráfico. Creative PIDE por nombre; Diseño CREA.**
+> 🛑 **Acá está la frontera con Diseño gráfico. Creative PIDE por nombre; Diseño CREA.**
 > Creative dice qué elementos lleva la pieza y por qué. Diseño los crea o los saca del banco, los
 > aplica, y decide tamaño, posición fina y acabado. Si la fila dice *"algo que se vea lindo arriba"*,
 > la frontera se rompió: Diseño tiene que inventar la intención.
@@ -220,7 +220,7 @@ Formato **familia + qué + para qué**, separados por `·`. Una línea por eleme
 
 1. 🛑 **Máximo 3 por pieza.** Del cuarto en adelante la pieza no tiene jerarquía: tiene ruido. Si hacen falta más, el problema está en el concepto.
 2. **Una familia por función, no por gusto.** Si un círculo y una flecha señalan lo mismo, uno sobra. Vale la regla general: **1 foco por pieza**.
-3. **Del banco antes que nuevo.** Si ②B Branding ya tiene el asset, se pide **ese**: uno nuevo multiplica versiones de lo mismo.
+3. **Del banco antes que nuevo.** Si Branding ya tiene el asset, se pide **ese**: uno nuevo multiplica versiones de lo mismo.
 4. **Lo que tapa, se declara.** Qué puede taparse y qué no. Es lo que más se corrige tarde.
 
 ## Anti-patterns
@@ -235,7 +235,7 @@ Formato **familia + qué + para qué**, separados por `·`. Una línea por eleme
 | Pedir 5 o 6 elementos "por si acaso" | Diseño decide qué sacar — o sea, decide la intención |
 | El mismo set de elementos en todas las filas | Dejó de ser decisión creativa: es plantilla |
 | Una textura para tapar una foto mala | El problema es la foto, y vuelve en la próxima pieza |
-| Entregar un mockup o el video editado | Se cruzó la frontera con ⑤ Producción y ⑥A Diseño gráfico |
+| Entregar un mockup o el video editado | Se cruzó la frontera con Producción y Diseño gráfico |
 
 ---
 
@@ -247,10 +247,10 @@ Formato **familia + qué + para qué**, separados por `·`. Una línea por eleme
 - [ ] 🛑 **Máximo 1 foco visual** por pieza, y el **orden de lectura** escrito (1° / 2° / 3°)
 - [ ] **Layout de texto** con ubicación, tamaño, proporción y peso de cada texto — **sin adjetivos**
 - [ ] **Safe zones** del canal marcadas
-- [ ] Mood, paleta e iluminación **coherentes con la guía de ②B Branding**, si existe
-- [ ] Los **activos distintivos de ③ Marketing se refuerzan**, no se reinventan
+- [ ] Mood, paleta e iluminación **coherentes con la guía de Branding**, si existe
+- [ ] Los **activos distintivos de Marketing se refuerzan**, no se reinventan
 - [ ] Los elementos gráficos salen **del banco de assets**, usan las **4 familias cerradas**, son **máximo 3**, y si no lleva ninguno dice `ninguno` con su motivo
-- [ ] Ninguna fila especifica **hex, tipografía, píxeles, lente, locación concreta, permiso o casting** — eso es de ⑥A Diseño gráfico y ⑤ Producción
+- [ ] Ninguna fila especifica **hex, tipografía, píxeles, lente, locación concreta, permiso o casting** — eso es de Diseño gráfico y Producción
 - [ ] **La toma 1 es el frame 1 visual** definido en la Capa 4
 - [ ] Cada toma resuelta con las **8 propiedades** (# · plano · ángulo · movimiento · acción · duración · audio · equipo)
 - [ ] `#`, `acción`, `encuadre` y `duración` tienen **el mismo número de ítems y el mismo orden**, o la sección dice `N/A — sin material nuevo` *(o `N/A — pieza de foto`)*

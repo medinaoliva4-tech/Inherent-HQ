@@ -24,5 +24,5 @@
 | `07-oferta-y-ventas/` | La oferta | ✅ Está en su pipeline |
 | `99-referencias/` | Investigación y lo que manda el cliente | ✅ |
 
-**Tailor Made:** lleva `07-oferta-y-ventas/` porque ② Growth está en su pipeline. No lleva
+**Tailor Made:** lleva `07-oferta-y-ventas/` porque Growth está en su pipeline. No lleva
 tecnología, operación ni finanzas.

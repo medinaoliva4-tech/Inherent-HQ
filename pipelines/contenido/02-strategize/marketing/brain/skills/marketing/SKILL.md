@@ -1,16 +1,16 @@
 ---
 name: marketing
 description: >
-  Orquestador del departamento ③ Marketing de Inherent. Es la puerta de entrada: lee el pedido,
+  Orquestador del departamento Marketing de Inherent. Es la puerta de entrada: lee el pedido,
   verifica el pre-flight, decide qué capas correr y llama a las skills `mk-*` en orden, con la
   auto-revisión de cada capa. Úsala SIEMPRE que el pedido tenga que ver con el plan del ciclo, campañas,
   jerarquía de mensaje, pilares de contenido, plan por canal, calendario de slots, cadencia, o
   cerrar el mes de marketing. Se dispara con "armá el plan del mes de X", "qué campaña corremos",
   "cuántas piezas por canal", "el calendario del ciclo", "qué pilares trabajamos", "qué rindió el
-  mes pasado". Requiere que exista la estrategia de ① Strategy: si no existe, BLOQUEA.
+  mes pasado". Requiere que exista la estrategia de Strategy: si no existe, BLOQUEA.
 ---
 
-# ③ Marketing — el orquestador
+# Marketing — el orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
@@ -29,13 +29,13 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 
 | Input | De | Si falta |
 |---|---|---|
-| Objetivo del ciclo y MUST BE TRUE | ① Strategy | 🛑 **BLOQUEADO** |
-| Posicionamiento | ① Strategy | 🛑 **BLOQUEADO** |
-| Capacidad declarada y cuentas que existen | ① Strategy | 🛑 **BLOQUEADO** |
-| Tono, territorio, activos distintivos | ②B Branding | 🟡 Se usan si existen. No bloquea |
-| Qué ofertas se empujan este ciclo | ② Growth · `07-oferta-y-ventas/ofertas-a-empujar.md` | 🟡 Se usa si existe. No bloquea |
+| Objetivo del ciclo y MUST BE TRUE | Strategy | 🛑 **BLOQUEADO** |
+| Posicionamiento | Strategy | 🛑 **BLOQUEADO** |
+| Capacidad declarada y cuentas que existen | Strategy | 🛑 **BLOQUEADO** |
+| Tono, territorio, activos distintivos | Branding | 🟡 Se usan si existen. No bloquea |
+| Qué ofertas se empujan este ciclo | Growth · `07-oferta-y-ventas/ofertas-a-empujar.md` | 🟡 Se usa si existe. No bloquea |
 | **El plan contratado del cliente** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
-| Qué ángulos rindieron en pauta | ⑩ Ads | 🟡 Se sigue sin eso |
+| Qué ángulos rindieron en pauta | Ads | 🟡 Se sigue sin eso |
 
 🛑 **Sin estrategia no hay plan.** Lo que está en `clients/<cliente>/01-estrategia/` es la
 estrategia vigente: **un archivo que existe se toma como aprobado.**
@@ -59,8 +59,8 @@ campaña. Si falta el input de una capa, **se corre la anterior** — nunca se i
 
 ## 4 · No para entre capas
 
-**Cada capa se auto-revisa con su checklist y sigue;** el calendario pasa directo a ④ Creatividad. El
-control de calidad lo hace el CEO en persona. El CEO solo frena el flujo en ① Strategy y en ⑩ Ads.
+**Cada capa se auto-revisa con su checklist y sigue;** el calendario pasa directo a Creatividad. El
+control de calidad lo hace el CEO en persona. El CEO solo frena el flujo en Strategy y en Ads.
 **Escalar no es parar:** precio, alcance y fechas → el CEO · lo demás → el COO.
 
 ---

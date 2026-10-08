@@ -1,7 +1,7 @@
 ---
 name: gr-upsells
 description: >
-  Capa 3 de ② Growth — el Pilar 3. En low ticket son upsells, combos, versiones, membresías y
+  Capa 3 de Growth — el Pilar 3. En low ticket son upsells, combos, versiones, membresías y
   recompra; en high ticket es expansión de cuenta, cross-sell y renovación. No se activa en
   la línea Marketing porque no se le puede vender más a quien todavía no compró una vez. Diseña la escalera
   con el momento exacto en que se ofrece cada escalón. Úsala cuando pidan "cómo subimos el
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § La oferta · frecuencia de recompra y unit economics de ① Strategy |
+| **Consume** | § La oferta · frecuencia de recompra y unit economics de Strategy |
 | **Produce** | La sección **§ La escalera** de `motor-de-crecimiento.md` |
 
 ## 1 · ⬜ No se activa en la línea Marketing
@@ -43,7 +43,7 @@ vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede
 | **Al terminarlo** | La reposición, en el momento en que se acaba |
 | **A los X meses** | La versión siguiente, cuando ya le quedó chico |
 
-> 🔑 **La frecuencia de recompra de ① Strategy define los momentos.** Sin ese dato, la
+> 🔑 **La frecuencia de recompra de Strategy define los momentos.** Sin ese dato, la
 > escalera es teoría: se marca `⚠️ SIN DATOS`.
 
 ## 4 · Cada escalón lleva cuatro cosas
@@ -52,7 +52,7 @@ vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede
 |---|---|
 | **Qué se ofrece** | Concreto |
 | **Cuándo** | El momento exacto, no *«después»* |
-| **Cómo se entera** | El canal. **Acá se conecta con ⑧ Community y ⑩ Ads** |
+| **Cómo se entera** | El canal. **Acá se conecta con Community y Ads** |
 | **Qué margen deja** | Con los unit economics. **Un upsell de margen bajo baja la utilidad total** |
 
 ## 5 · La renovación — high ticket
@@ -67,7 +67,7 @@ vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede
 
 ## 6 · Compound — operando solo
 
-**La escalera deja de ser una campaña y pasa a dispararse sola:** ⑧ Community la automatiza con
+**La escalera deja de ser una campaña y pasa a dispararse sola:** Community la automatiza con
 `create_auto_dm_automation` y Zapier, y los referidos y la comunidad la alimentan.
 
 ## 7 · Qué escribe
@@ -76,16 +76,16 @@ vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede
 
 | Bloque | Qué lleva |
 |---|---|
-| **A · Los momentos** | Qué momentos existen en este negocio, con la frecuencia real de ① Strategy |
+| **A · Los momentos** | Qué momentos existen en este negocio, con la frecuencia real de Strategy |
 | **B · La escalera** | Tabla: escalón · qué · cuándo · cómo se entera · margen |
-| **C · Qué necesita ⑧ Community y ⑩ Ads** | Para operarla |
+| **C · Qué necesita Community y Ads** | Para operarla |
 | **D · Lo que no entra** | Upsells descartados, con el motivo |
 
 ## 8 · Checklist
 
 - [ ] El plan es **Accelerate o Compound**
 - [ ] La escalera está diseñada **por momento**, no por producto
-- [ ] Los momentos salen de la **frecuencia real** de ① Strategy, o van `⚠️ SIN DATOS`
+- [ ] Los momentos salen de la **frecuencia real** de Strategy, o van `⚠️ SIN DATOS`
 - [ ] Cada escalón tiene sus **cuatro datos**, margen incluido
 - [ ] Ningún escalón **baja la utilidad total**
-- [ ] Está escrito **qué necesitan ⑧ Community y ⑩ Ads** para operarla
+- [ ] Está escrito **qué necesitan Community y Ads** para operarla

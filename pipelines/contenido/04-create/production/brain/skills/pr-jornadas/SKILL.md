@@ -1,7 +1,7 @@
 ---
 name: pr-jornadas
 description: >
-  Capa 2 de ⑤ Producción — la consolidación: convierte N escenas dispersas en M jornadas
+  Capa 2 de Producción — la consolidación: convierte N escenas dispersas en M jornadas
   ejecutables, al menor costo posible y sin tocar una sola decisión creativa. Es la capa donde se
   gana o se pierde el presupuesto: desglosar es mecánico, agrupar es lo que hace que 30 escenas se
   graben en 2 jornadas y no en 11. Arma la matriz completa del ciclo, agrupa por los 4 ejes en
@@ -17,7 +17,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las filas base de `plan-de-produccion.csv` que dejó `pr-desglose` (Capa 1), con `locacion`, `talento`, `recursos` y `equipo` ya identificados · la sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` con el techo de días posibles · las fechas de preparación de ③ Marketing |
+| **Consume** | Las filas base de `plan-de-produccion.csv` que dejó `pr-desglose` (Capa 1), con `locacion`, `talento`, `recursos` y `equipo` ya identificados · la sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` con el techo de días posibles · las fechas de preparación de Marketing |
 | **Produce** | La columna **`jornada`** de `plan-de-produccion.csv` (`J0`, `J1`, `J2`…) · la sección de cada jornada de `plan-de-rodaje.md`: factor de consolidación, ficha y orden de tiro de cada jornada, y la cobertura obligatoria de cada locación |
 
 Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Plantilla del entregable:
@@ -38,7 +38,7 @@ y **no es reescribir escenas** para que entren.
 hace igual. **Agrupar es donde se decide si el ciclo cuesta X o 4X.**
 
 🛑 **Ninguna decisión creativa se cambia para lograr el agrupamiento.** Si la dispersión no se puede
-resolver, se **devuelve a ④ Creatividad con números y alternativas** (Paso 6). Nunca se reagrupa cambiando una
+resolver, se **devuelve a Creatividad con números y alternativas** (Paso 6). Nunca se reagrupa cambiando una
 acción, un encuadre o una duración.
 
 ## Paso 1 · Armar la matriz completa
@@ -99,7 +99,7 @@ Si una persona aparece en 9 escenas repartidas en 3 locaciones, hay dos caminos:
 
 🛑 **Antes de convocar a alguien dos veces, se revisa si su escena se resuelve como voz** —que se
 graba otro día, en otro lugar, más barato— **o como manos**, que es reemplazable. Es la palanca más
-barata para descomprimir un día cargado y casi nunca se usa. **Se propone a ④ Creatividad como
+barata para descomprimir un día cargado y casi nunca se usa. **Se propone a Creatividad como
 devolución — nunca se cambia solo.**
 
 ### Ejes 3 y 4 · Lo que ordena el interior del día
@@ -171,19 +171,19 @@ Factor de consolidación = escenas de rodaje ÷ jornadas de rodaje
 
 | Factor | Lectura | Qué hacer |
 |---|---|---|
-| **< 4** | **Mal agrupado**, o el Excel creativo pide locaciones muy dispersas | Volver al Paso 2. Si la dispersión es real, **devolver a ④ Creatividad con el costo** |
+| **< 4** | **Mal agrupado**, o el Excel creativo pide locaciones muy dispersas | Volver al Paso 2. Si la dispersión es real, **devolver a Creatividad con el costo** |
 | **4-10** | **Normal** | Seguir a Capa 3 |
 | **> 10** | Muy eficiente | **Verificar que entre en horas**, no solo en papel |
 
 🛑 **Un factor alto que no entra en el día no está consolidado: está sobrecargado.** El factor se
 lee siempre **junto con la carga horaria**, nunca solo.
 
-**El factor es el argumento del departamento.** Cuando ③ Marketing pregunta por qué un ciclo cuesta
+**El factor es el argumento del departamento.** Cuando Marketing pregunta por qué un ciclo cuesta
 más que el anterior, la respuesta casi nunca es *"subieron los precios"*: es que **el factor bajó**.
 
 ## Paso 6 · Cuando la dispersión es del Excel creativo
 
-A veces no se puede consolidar porque ④ Creatividad pidió 12 lugares distintos para 12 piezas. Eso **no se
+A veces no se puede consolidar porque Creatividad pidió 12 lugares distintos para 12 piezas. Eso **no se
 resuelve acá**: se devuelve, **con números**.
 
 ```
@@ -195,7 +195,7 @@ Alternativas, sin cambiar la intención de ninguna pieza:
 A) 4 locaciones sirven para 9 de las 12 → factor 3.0 → 4 jornadas
    (CR-004, CR-007 y CR-011 mantienen locación propia por su concepto)
 B) 8 piezas se resuelven en 2 locaciones si se acepta otro tipo de lugar
-   equivalente → requiere confirmación de ④ Creatividad
+   equivalente → requiere confirmación de Creatividad
 ```
 
 🛑 **Se devuelve con alternativas concretas, no con un "no se puede".** Una devolución sin
@@ -215,7 +215,7 @@ por su cuenta.
 - [ ] La carga de cada jornada incluye **montaje, cambios de setup, comida y desmontaje** con los márgenes reales
 - [ ] 🛑 **Ninguna jornada supera 10 h efectivas** — si no entra, **se parte, no se comprime**
 - [ ] El **factor de consolidación** está declarado con su lectura, junto a las horas de cada jornada
-- [ ] Si el factor es **< 4**: está explicado por qué, y devuelto a ④ Creatividad **con números y dos alternativas** si la dispersión es del Excel creativo
+- [ ] Si el factor es **< 4**: está explicado por qué, y devuelto a Creatividad **con números y dos alternativas** si la dispersión es del Excel creativo
 - [ ] Si el factor es **> 10**: está verificado que entra en horas
 - [ ] Toda fila del CSV tiene su **columna `jornada`** cargada — ninguna vacía
 - [ ] 🛑 **Ninguna decisión creativa fue cambiada para lograr el agrupamiento**

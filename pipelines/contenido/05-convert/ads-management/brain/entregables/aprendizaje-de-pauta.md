@@ -23,10 +23,10 @@
 ## E · Qué vuelve a cada uno
 | A | Qué |
 |---|---|
-| ④ Creatividad | **El patrón de hook que ganó** |
-| ⑦ Video Editing | Cuántas variantes hicieron falta |
-| ② Growth | Lo que fue de oferta |
-| ③ Marketing | Si trajo a quien no era |
+| Creatividad | **El patrón de hook que ganó** |
+| Video Editing | Cuántas variantes hicieron falta |
+| Growth | Lo que fue de oferta |
+| Marketing | Si trajo a quien no era |
 
 ## F · Los huecos
 | `⚠️ SIN DATOS` | A quién se le pide |

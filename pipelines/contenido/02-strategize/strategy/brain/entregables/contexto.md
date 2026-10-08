@@ -1,6 +1,6 @@
 # Contexto — <cliente>
 
-> Plantilla de ① Strategy, bloque 01 · `context`.
+> Plantilla de Strategy, bloque 01 · `context`.
 > 🛑 **Describe, no decide.** Ninguna frase interpreta ni recomienda — eso es de `analysis`.
 > Lo que falta va como `⚠️ SIN DATOS — [qué falta y cómo conseguirlo]`, nunca se completa por inferencia.
 
@@ -71,7 +71,7 @@
 | **Presupuesto** | |
 | **Equipo** | |
 | **Tiempo** | |
-| **Velocidad de aprobación del cliente** | 🛑 La lee ⑨ Posting |
+| **Velocidad de aprobación del cliente** | 🛑 La lee Posting |
 | **Legales** | |
 | **Lo que el cliente ya dijo que NO** | |
 

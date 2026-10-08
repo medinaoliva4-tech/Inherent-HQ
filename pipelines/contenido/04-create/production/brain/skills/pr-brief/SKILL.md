@@ -1,23 +1,23 @@
 ---
 name: pr-brief
 description: >
-  Capa 0 de ⑤ Producción — verifica qué hay que producir antes de gastar un minuto en desglosar.
-  Carga los inputs, exige el Excel del ciclo cerrado de ④ Creatividad, filtra las filas con
+  Capa 0 de Producción — verifica qué hay que producir antes de gastar un minuto en desglosar.
+  Carga los inputs, exige el Excel del ciclo cerrado de Creatividad, filtra las filas con
   `material = video` o `material = foto`, verifica fila por fila que la pieza sea producible, cruza contra el banco de assets
   para no volver a grabar lo que ya existe y declara el techo de realidad: días de rodaje posibles y
   capacidad, con el presupuesto del onboarding como referencia. Escribe la sección § Verificación y
   devoluciones de `plan-de-rodaje.md`.
   Úsala cuando pidan "arrancá el plan de producción de X", "qué vamos a producir este ciclo",
   "esto se puede grabar", "verificá si estas piezas son producibles", "qué ya tenemos grabado",
-  "cuánto margen real hay". Bloquea si el Excel del ciclo de ④ Creatividad no está cerrado.
+  "cuánto margen real hay". Bloquea si el Excel del ciclo de Creatividad no está cerrado.
 ---
 
 # Capa 0 · Brief — qué hay que producir, exactamente
 
 | | |
 |---|---|
-| **Consume** | **El Excel del ciclo cerrado** —`plan-de-contenido.csv` cerrado y el `ideas-<formato>.md` de cada pieza— de ④ Creatividad (`clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · fechas de campaña y **de preparación** de ③ Marketing · **si existen:** guía de marca y **banco de assets** de ②B Branding · capacidad declarada, presupuesto de referencia y restricciones de ① Strategy |
-| **Produce** | La sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` — piezas y escenas recibidas, techo de realidad, tabla de producibilidad, material reutilizable y escenas devueltas a ④ Creatividad |
+| **Consume** | **El Excel del ciclo cerrado** —`plan-de-contenido.csv` cerrado y el `ideas-<formato>.md` de cada pieza— de Creatividad (`clients/<cliente>/04-contenido/AAAA-MM/ideas/`) · fechas de campaña y **de preparación** de Marketing · **si existen:** guía de marca y **banco de assets** de Branding · capacidad declarada, presupuesto de referencia y restricciones de Strategy |
+| **Produce** | La sección **§ Verificación y devoluciones** de `plan-de-rodaje.md` — piezas y escenas recibidas, techo de realidad, tabla de producibilidad, material reutilizable y escenas devueltas a Creatividad |
 
 Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Plantilla del entregable:
 `pipelines/contenido/04-create/production/brain/entregables/plan-de-rodaje.md`.
@@ -29,17 +29,17 @@ decisión de producción. Es la verificación de que lo que llegó **se puede pr
 
 | De | Qué se carga | Si falta |
 |---|---|---|
-| **④ Creatividad** | **El Excel del ciclo cerrado** —`plan-de-contenido.csv` cerrado—, filtrado a `material = video` o `material = foto`. Del `ideas-<formato>.md` de cada pieza: escenas, encuadres, duraciones, tipo de lugar, estética/mood, concepto, emoción — y de las de foto, la **§ Foto** | 🛑 **BLOQUEADO** |
-| **③ Marketing** | Fechas de la campaña y **fechas de preparación** — cuánto margen real hay | 🛑 **BLOQUEADO** |
-| **②B Branding** | Guía de marca, dirección visual, paleta, do's & don'ts y el **banco de assets existente** | `⚠️ SIN DATOS` — se usa si existe |
-| **① Strategy** | Capacidad de producción declarada · presupuesto de producción del onboarding · restricciones reales | `⚠️ SIN DATOS` — se usa si existe. **El presupuesto es referencia**, no techo ni bloqueo |
+| **Creatividad** | **El Excel del ciclo cerrado** —`plan-de-contenido.csv` cerrado—, filtrado a `material = video` o `material = foto`. Del `ideas-<formato>.md` de cada pieza: escenas, encuadres, duraciones, tipo de lugar, estética/mood, concepto, emoción — y de las de foto, la **§ Foto** | 🛑 **BLOQUEADO** |
+| **Marketing** | Fechas de la campaña y **fechas de preparación** — cuánto margen real hay | 🛑 **BLOQUEADO** |
+| **Branding** | Guía de marca, dirección visual, paleta, do's & don'ts y el **banco de assets existente** | `⚠️ SIN DATOS` — se usa si existe |
+| **Strategy** | Capacidad de producción declarada · presupuesto de producción del onboarding · restricciones reales | `⚠️ SIN DATOS` — se usa si existe. **El presupuesto es referencia**, no techo ni bloqueo |
 
 🛑 **Sin el Excel del ciclo cerrado no hay rodaje.** No se negocia: producir sobre ideas que todavía
 pueden cambiar es gastar dos veces la misma plata.
 🛑 **Falta un bloqueante → BLOQUEADO**, y se nombra **el archivo exacto y a quién pedírselo**.
 
 ❌ *"Arrancamos con lo que hay y después ajustamos"*
-✅ `BLOQUEADO — falta clients/<cliente>/04-contenido/2026-11/ideas/plan-de-contenido.csv cerrado. Se lo pide a ④ Creatividad.`
+✅ `BLOQUEADO — falta clients/<cliente>/04-contenido/2026-11/ideas/plan-de-contenido.csv cerrado. Se lo pide a Creatividad.`
 
 🛑 **Ningún archivo de otro departamento se copia: se cita su ruta.** Duplicarlo crea una segunda
 versión de la verdad, y en dos ciclos no coinciden.
@@ -51,8 +51,8 @@ versión de la verdad, y en dos ciclos no coinciden.
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: 0 · Campañas: [nombres]
-④ Creatividad: Excel del ciclo cerrado [✅/⬜] · material=video: [n] · material=foto: [n] · escenas totales: [n]
-③ Marketing fechas de preparación [✅/⬜] · ②B Branding [✅/⚠️] · ① Strategy capacidad y presupuesto [✅/⚠️]
+Creatividad: Excel del ciclo cerrado [✅/⬜] · material=video: [n] · material=foto: [n] · escenas totales: [n]
+Marketing fechas de preparación [✅/⬜] · Branding [✅/⚠️] · Strategy capacidad y presupuesto [✅/⚠️]
 Techo: días posibles [n] · capacidad [n piezas] · presupuesto de referencia [monto / ⚠️ SIN DATOS]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
@@ -65,11 +65,11 @@ que se va a caer en la Capa 1.
 
 | Chequeo | Qué se mira | Si falla → qué se devuelve |
 |---|---|---|
-| **Shot list íntegro** | Escenas, encuadres y duraciones con el **mismo número de ítems y el mismo orden** | ↩️ **DEVUELTO** a ④ Creatividad — motivo 1, *shot list roto*. No se puede desglosar una escena sin su encuadre |
-| **Acción y lugar por escena** | Cada escena dice **qué acción ocurre y en qué tipo de lugar** | ↩️ **DEVUELTO** a ④ Creatividad — motivo 2. Sin acción ni lugar no hay nada que conseguir |
-| **Estética/mood y emoción** | La pieza las declara en su `ideas-<formato>.md` | ↩️ **DEVUELTO** a ④ Creatividad — el equipo dirigiría a ciegas: sin mood no hay luz, sin emoción no hay dirección de actor |
-| **Coherencia con ②B Branding** *(si existe la guía)* | Lo pedido no contradice la guía, la paleta ni los do's & don'ts | **Se declara y se escala a ④ Creatividad y ②B Branding.** 🛑 **No se resuelve en set** — es un conflicto entre dos departamentos, no una devolución |
-| **¿Ya existe material que sirve?** | Cruce contra el banco de assets de ②B Branding | Se marca `reutiliza` y **no se vuelve a grabar**: la escena no entra al desglose |
+| **Shot list íntegro** | Escenas, encuadres y duraciones con el **mismo número de ítems y el mismo orden** | ↩️ **DEVUELTO** a Creatividad — motivo 1, *shot list roto*. No se puede desglosar una escena sin su encuadre |
+| **Acción y lugar por escena** | Cada escena dice **qué acción ocurre y en qué tipo de lugar** | ↩️ **DEVUELTO** a Creatividad — motivo 2. Sin acción ni lugar no hay nada que conseguir |
+| **Estética/mood y emoción** | La pieza las declara en su `ideas-<formato>.md` | ↩️ **DEVUELTO** a Creatividad — el equipo dirigiría a ciegas: sin mood no hay luz, sin emoción no hay dirección de actor |
+| **Coherencia con Branding** *(si existe la guía)* | Lo pedido no contradice la guía, la paleta ni los do's & don'ts | **Se declara y se escala a Creatividad y Branding.** 🛑 **No se resuelve en set** — es un conflicto entre dos departamentos, no una devolución |
+| **¿Ya existe material que sirve?** | Cruce contra el banco de assets de Branding | Se marca `reutiliza` y **no se vuelve a grabar**: la escena no entra al desglose |
 
 La tabla se escribe tal cual en `plan-de-rodaje.md`, una fila por pieza, con veredicto:
 
@@ -87,8 +87,8 @@ dos alternativas** — nunca se reescribe el encuadre, la acción ni la duració
 Los dos techos van **en números**, no en adjetivos — y al lado, la referencia de presupuesto:
 
 ```
-Días de rodaje posibles:    [n]   ← según fechas de preparación de ③ Marketing
-Capacidad:                  [n piezas/ciclo]   ← horas y sesiones del plan · la declarada en ① Strategy si es menor
+Días de rodaje posibles:    [n]   ← según fechas de preparación de Marketing
+Capacidad:                  [n piezas/ciclo]   ← horas y sesiones del plan · la declarada en Strategy si es menor
 Presupuesto de referencia:  [monto + moneda + fecha / ⚠️ SIN DATOS]   ← onboarding, si existe
 ```
 
@@ -101,23 +101,23 @@ declara **en filas concretas** y se devuelve:
 
 | Techo excedido | Cómo se declara | A quién va |
 |---|---|---|
-| **Días posibles** | *"`CR-003` necesita 2 jornadas y solo queda 1 en la ventana de preparación"* | **③ Marketing** |
-| **Capacidad** | *"entran 8 piezas y el Excel pide 12: exceden `CR-009` a `CR-012`"* | **③ Marketing** |
+| **Días posibles** | *"`CR-003` necesita 2 jornadas y solo queda 1 en la ventana de preparación"* | **Marketing** |
+| **Capacidad** | *"entran 8 piezas y el Excel pide 12: exceden `CR-009` a `CR-012`"* | **Marketing** |
 
 🛑 **Nunca se recorta en silencio.** Sacar filas sin declararlo es la forma más cara de romper una
 campaña: se descubre en la edición, cuando ya no hay presupuesto para volver.
-🛑 **Producción nunca elige sola qué pieza se cae.** Propone con números; deciden ③ Marketing y
-④ Creatividad.
+🛑 **Producción nunca elige sola qué pieza se cae.** Propone con números; deciden Marketing y
+Creatividad.
 
 ❌ *"No entra todo, armé el plan con las 8 más importantes"*
-✅ *"Entran 8 de 12. Exceden `CR-009` a `CR-012`. Decide ③ Marketing."*
+✅ *"Entran 8 de 12. Exceden `CR-009` a `CR-012`. Decide Marketing."*
 
 ## 5 · Verificación de reutilización — la que más plata ahorra
 
 > 🛑 **Antes de desglosar, se cruza contra el banco de assets.** **Media campaña suele estar grabada
 > ya.** Es lo que más plata ahorra y lo que menos se hace.
 
-Se cruza **escena por escena** contra el banco de ②B Branding, no pieza por pieza: casi nunca sirve una pieza
+Se cruza **escena por escena** contra el banco de Branding, no pieza por pieza: casi nunca sirve una pieza
 entera, casi siempre sirven 2 o 3 escenas.
 
 | Qué se pregunta | Qué se hace |
@@ -135,19 +135,19 @@ entera, casi siempre sirven 2 o 3 escenas.
 🛑 **Si esta tabla queda vacía, el cruce no se hizo.** *"Sin material previo"* escrito es un
 resultado; una tabla en blanco no.
 
-## 6 · Las devoluciones a ④ Creatividad — los 3 elementos, sin excepción
+## 6 · Las devoluciones a Creatividad — los 3 elementos, sin excepción
 
 | Elemento | Por qué es obligatorio |
 |---|---|
 | **Qué no se puede** | En términos físicos y verificables. *"Es muy complicado"* **no es un motivo** |
 | **Por qué importa** | Se cita la **intención** que se rompería: la emoción, el concepto, el objetivo. Demuestra que se leyó la pieza, no solo la escena |
-| **Mínimo dos alternativas** | Con su viabilidad de fecha y costo. Una devolución sin alternativa obliga a ④ Creatividad a empezar de cero |
+| **Mínimo dos alternativas** | Con su viabilidad de fecha y costo. Una devolución sin alternativa obliga a Creatividad a empezar de cero |
 
 Los motivos válidos en esta capa son **1** (shot list roto), **2** (escena sin acción ni lugar) y
 **4** (imposibilidad de calendario). Los motivos 3, 5 y 6 aparecen recién al desglosar y costear.
 
 - Una devolución sin dos alternativas concretas **es un bloqueo, no una devolución**.
-- La respuesta de ④ Creatividad a cada devolución se registra **con fecha**.
+- La respuesta de Creatividad a cada devolución se registra **con fecha**.
 
 ## 7 · Qué escribe en `plan-de-rodaje.md`
 
@@ -159,16 +159,16 @@ Una sola sección, § Verificación y devoluciones, con estos bloques:
 | **Techo de realidad** | Días y capacidad + la referencia de presupuesto + el veredicto *¿entra?* ✅ / ⚠️ con el exceso en filas concretas |
 | **Verificación de producibilidad** | La tabla fila por fila, con veredicto por pieza |
 | **Material que ya existe** | La tabla de reutilización, con escenas ahorradas contadas |
-| **Escenas devueltas a ④ Creatividad** | Escena · motivo (de los 6) · intención que se rompería · alternativa 1 · alternativa 2 |
+| **Escenas devueltas a Creatividad** | Escena · motivo (de los 6) · intención que se rompería · alternativa 1 · alternativa 2 |
 
 No escribe filas de `plan-de-produccion.csv` ni toca `presupuesto.csv`: eso es Capa 1 y Capa 4.
 
 ## QA — Capa 0
 
-- [ ] **El Excel del ciclo de ④ Creatividad está cerrado** — `plan-de-contenido.csv` cerrado — si no, **BLOQUEADO**
-- [ ] Las fechas de campaña y **de preparación** de ③ Marketing están cargadas — si no, **BLOQUEADO**
-- [ ] La guía y el **banco de assets** de ②B Branding están cargados si existen — si no, `⚠️ SIN DATOS`
-- [ ] La capacidad y el presupuesto de referencia de ① Strategy están **cuantificados** si existen — si no, `⚠️ SIN DATOS`
+- [ ] **El Excel del ciclo de Creatividad está cerrado** — `plan-de-contenido.csv` cerrado — si no, **BLOQUEADO**
+- [ ] Las fechas de campaña y **de preparación** de Marketing están cargadas — si no, **BLOQUEADO**
+- [ ] La guía y el **banco de assets** de Branding están cargados si existen — si no, `⚠️ SIN DATOS`
+- [ ] La capacidad y el presupuesto de referencia de Strategy están **cuantificados** si existen — si no, `⚠️ SIN DATOS`
 - [ ] Cada input está **citado con su ruta**, ninguno copiado
 - [ ] Solo se filtraron las filas con **`material = video`** o **`material = foto`**
 - [ ] 🛑 Toda fila con **`material = foto`** tiene su **§ Foto** completa, o está **↩️ DEVUELTA**
@@ -176,16 +176,16 @@ No escribe filas de `plan-de-produccion.csv` ni toca `presupuesto.csv`: eso es C
 - [ ] **Producibilidad verificada fila por fila:** escenas, encuadres y duraciones tienen el mismo número de ítems y el mismo orden
 - [ ] Cada escena declara **qué acción ocurre y en qué tipo de lugar**
 - [ ] Cada pieza tiene **estética/mood y emoción** — sin ellas el equipo dirige a ciegas
-- [ ] Las contradicciones con ②B Branding están **declaradas y escaladas**, no resueltas acá
+- [ ] Las contradicciones con Branding están **declaradas y escaladas**, no resueltas acá
 - [ ] **Cruce contra el banco de assets hecho:** lo que ya existe está marcado `reutiliza` y **no entra al desglose**
 - [ ] La tabla de reutilización **no está vacía** — si no hay material, dice *"sin material previo"*
 - [ ] Los **dos techos** están declarados en números —días de rodaje · capacidad— y el presupuesto de referencia al lado
 - [ ] Si el ciclo excede algún techo: el exceso está declarado **en filas concretas**, no en general
-- [ ] 🛑 **Nada se recortó en silencio** — el exceso va a ③ Marketing para que decida
+- [ ] 🛑 **Nada se recortó en silencio** — el exceso va a Marketing para que decida
 - [ ] Las devoluciones ↩️ tienen los **tres elementos** (qué no se puede · por qué importa · dos alternativas)
-- [ ] La respuesta de ④ Creatividad a cada devolución queda registrada **con fecha**
+- [ ] La respuesta de Creatividad a cada devolución queda registrada **con fecha**
 - [ ] 🛑 **Ninguna decisión creativa fue cambiada**
 - [ ] Todo faltante está marcado `BLOQUEADO` o `⚠️ SIN DATOS`, **ninguno omitido en silencio**
 
 **Handoff →** `pr-desglose` (Capa 1). Lo que se marcó `reutiliza` **no se desglosa**, y lo devuelto a
-④ Creatividad no avanza hasta tener respuesta con fecha.
+Creatividad no avanza hasta tener respuesta con fecha.

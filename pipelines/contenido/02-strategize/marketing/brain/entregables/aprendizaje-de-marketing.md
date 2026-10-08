@@ -1,6 +1,6 @@
 # Aprendizaje de marketing — <cliente> · ciclo <mes año>
 
-> Plantilla de ③ Marketing, Capa 6 · `mk-loop`. **Corre el 20 de cada mes.**
+> Plantilla de Marketing, Capa 6 · `mk-loop`. **Corre el 20 de cada mes.**
 > **Acá se juzga el reparto, no la pieza.** Sin métricas no se declara un ganador.
 
 ---
@@ -34,9 +34,9 @@
 ## D · Lo que se devuelve
 | A | Qué | Por qué |
 |---|---|---|
-| ① Strategy | | |
+| Strategy | | |
 | 02 Growth | | |
-| ④ Creatividad | | |
+| Creatividad | | |
 
 ## E · Los huecos
 | `⚠️ SIN DATOS` | A quién se le pide |

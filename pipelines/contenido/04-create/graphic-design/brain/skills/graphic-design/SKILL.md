@@ -1,17 +1,17 @@
 ---
 name: graphic-design
 description: >
-  Orquestador del departamento ⑥A Diseño gráfico de Inherent. Es la puerta de entrada: lee el
+  Orquestador del departamento Diseño gráfico de Inherent. Es la puerta de entrada: lee el
   pedido, verifica el pre-flight, decide qué capas correr y llama a las skills `gd-*` en orden,
   con la auto-revisión de cada capa. Úsala SIEMPRE que el pedido tenga que ver con estáticos,
   carruseles, stories, plantillas, composición, imágenes de producto, o el paquete de diseño de
   un ciclo. Se dispara con "diseñá el ciclo de X", "armá los carruseles", "las plantillas del
   mes", "necesito 40 estáticos", "fotos de producto", "exportá el paquete de diseño". Requiere
-  el Excel del ciclo cerrado de ④ Creatividad y el sistema visual de ②B Branding: si faltan,
+  el Excel del ciclo cerrado de Creatividad y el sistema visual de Branding: si faltan,
   BLOQUEA.
 ---
 
-# ⑥A Diseño gráfico — el orquestador
+# Diseño gráfico — el orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
@@ -30,10 +30,10 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 
 | Input | De | Si falta |
 |---|---|---|
-| **El Excel del ciclo cerrado** — `plan-de-contenido.csv` + `ideas-<formato>.md` con el **copy literal** y el layout | ④ Creatividad | 🛑 **BLOQUEADO** |
-| **`sistema-visual.md`** — la guía de marca | ②B Branding | 🛑 **BLOQUEADO** |
-| `plan-por-canal.md` | ③ Marketing | 🟡 No bloquea — se usan las **Redes** del `plan-contratado.md` |
-| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo *(en ⬜ Tailor Made, lo que declara **Su pipeline**; si ⑥A Diseño gráfico no está ahí, no corre)* |
+| **El Excel del ciclo cerrado** — `plan-de-contenido.csv` + `ideas-<formato>.md` con el **copy literal** y el layout | Creatividad | 🛑 **BLOQUEADO** |
+| **`sistema-visual.md`** — la guía de marca | Branding | 🛑 **BLOQUEADO** |
+| `plan-por-canal.md` | Marketing | 🟡 No bloquea — se usan las **Redes** del `plan-contratado.md` |
+| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo *(en ⬜ Tailor Made, lo que declara **Su pipeline**; si Diseño gráfico no está ahí, no corre)* |
 
 🛑 **Sin `sistema-visual.md` no se compone nada.** La guía existe para traducir el posicionamiento
 a algo gráfico: diseñar sin ella produce 168 piezas que no se parecen entre sí ni dicen lo que el
@@ -61,8 +61,8 @@ horas que paga el plan.
 
 ## 4 · Dónde para
 
-**No para entre capas.** Cada una se auto-revisa con su checklist y sigue. ⑥A Diseño gráfico no
-publica ni le envía nada al cliente: publicar es de ⑨ Posting.
+**No para entre capas.** Cada una se auto-revisa con su checklist y sigue. Diseño gráfico no
+publica ni le envía nada al cliente: publicar es de Posting.
 
 ---
 

@@ -1,4 +1,4 @@
-# Las skills de ⑨ Posting — cuál, cuándo y en qué orden
+# Las skills de Posting — cuál, cuándo y en qué orden
 
 Una skill es **cómo se hace un paso**. `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md` dice qué pasa, en qué orden y con
 qué reglas; acá está el detalle de cada herramienta.
@@ -54,8 +54,8 @@ po-recepcion ──→ po-caption ──→ po-specs ──→ po-programacion �
       │                                                              ↓
       └────────── po-loop ←──── qué se cayó ←──── po-verificacion ←──┘
                      │                        (estado en Zernio · reintento)
-                     ├──→ piezas que llegan tarde → ③ Marketing
-                     └──→ specs que fallan siempre → ⑥A Diseño gráfico / ⑦ Video Editing
+                     ├──→ piezas que llegan tarde → Marketing
+                     └──→ specs que fallan siempre → Diseño gráfico / Video Editing
 ```
 
 **Las reglas de encadenado:**
@@ -77,29 +77,29 @@ po-recepcion ──→ po-caption ──→ po-specs ──→ po-programacion �
 
 | | Qué hace | Qué NO hace |
 |---|---|---|
-| **`po-recepcion`** | **Cruza** lo que pidió ④ Creatividad contra lo que entregaron ⑥A Diseño gráfico y ⑦ Video Editing | No escribe caption ni revisa specs técnicas |
-| **`po-caption`** | **Adapta el texto**: largo, orden, hashtags, alt text | 🛑 No cambia el mensaje. Si no entra sin romperse, devuelve a ④ Creatividad |
-| **`po-specs`** | **Verifica el archivo** contra la spec de la plataforma | 🛑 No arregla el archivo. Devuelve a ⑥A Diseño gráfico o ⑦ Video Editing |
-| **`po-programacion`** | **Fija hora y cuenta**, y evita pisadas | No elige el día — ese lo puso ④ Creatividad — ni el canal, que es de ③ Marketing |
+| **`po-recepcion`** | **Cruza** lo que pidió Creatividad contra lo que entregaron Diseño gráfico y Video Editing | No escribe caption ni revisa specs técnicas |
+| **`po-caption`** | **Adapta el texto**: largo, orden, hashtags, alt text | 🛑 No cambia el mensaje. Si no entra sin romperse, devuelve a Creatividad |
+| **`po-specs`** | **Verifica el archivo** contra la spec de la plataforma | 🛑 No arregla el archivo. Devuelve a Diseño gráfico o Video Editing |
+| **`po-programacion`** | **Fija hora y cuenta**, y evita pisadas | No elige el día — ese lo puso Creatividad — ni el canal, que es de Marketing |
 | **`po-carga`** | **Programa en Zernio** lo que pasó por las Capas 0-3 y su validación | 🛑 **No programa lo que no validó** ni publica en el acto |
 | **`po-verificacion`** | **Lee el estado** en Zernio y reintenta las fallidas | No abre las redes: el control de calidad de lo publicado es del CEO |
 
 > 🛑 **Adaptar no es reescribir.** `po-caption` puede recortar, partir una frase o mover el CTA de
 > lugar. En el momento en que cambia la idea o el hook, dejó de ser Posting y se metió en
-> ④ Creatividad — y nadie aprobó ese mensaje.
+> Creatividad — y nadie aprobó ese mensaje.
 
-> 🛑 **Verificar no es arreglar.** Si el Reel vino en 1:1, `po-specs` lo devuelve a ⑦ Video Editing.
-> Recortarlo acá significa que nadie revisó la composición contra lo que pidió ④ Creatividad.
+> 🛑 **Verificar no es arreglar.** Si el Reel vino en 1:1, `po-specs` lo devuelve a Video Editing.
+> Recortarlo acá significa que nadie revisó la composición contra lo que pidió Creatividad.
 
 | | Qué mide | De quién es la otra pregunta |
 |---|---|---|
-| **`po-loop`** | **Ejecución**: qué llegó tarde, qué se devolvió, qué falló al publicar | Si la pieza **rindió** es Capa 7 de **④ Creatividad** (`cr-loop`) |
+| **`po-loop`** | **Ejecución**: qué llegó tarde, qué se devolvió, qué falló al publicar | Si la pieza **rindió** es Capa 7 de **Creatividad** (`cr-loop`) |
 
 ---
 
 ## Las tres rutas de salida
 
-No todo lo que ③ Marketing programa es una red social, y **no todo pasa por una herramienta**. El
+No todo lo que Marketing programa es una red social, y **no todo pasa por una herramienta**. El
 calendario trae `Email / Newsletter` como canal de primera clase, y trae canales que salen a mano:
 **WhatsApp** y los **impresos**. **Solo la ruta social se programa en Zernio.**
 
@@ -112,19 +112,19 @@ calendario trae `Email / Newsletter` como canal de primera clase, y trae canales
 🛑 **Se separan en `po-recepcion`, no al programar.** Una fila de `Email` o de la ruta manual no se
 programa en Zernio.
 🛑 **Una pieza de email o de WhatsApp no se marca `⚠️ SIN ARCHIVO` por no tener video:** su archivo
-es el texto, y lo escribió ④ Creatividad. **Los impresos sí llevan archivo** — sin el export de
-⑥A Diseño gráfico no hay qué imprimir.
+es el texto, y lo escribió Creatividad. **Los impresos sí llevan archivo** — sin el export de
+Diseño gráfico no hay qué imprimir.
 🛑 **La ruta manual no es un cajón de descartes.** El canal de mayor ROI del arquetipo `01` es
 WhatsApp: un plan puede apoyar su objetivo central en algo que ninguna herramienta programa.
-🛑 **Un `canal` que no cae en ninguna de las tres se declara y se devuelve a ③ Marketing** — no se
+🛑 **Un `canal` que no cae en ninguna de las tres se declara y se devuelve a Marketing** — no se
 fuerza dentro de Zernio ni se reescribe el plan.
 
 ## Sobre Zernio
 
 | | |
 |---|---|
-| **Qué es** | El MCP del slot «Publicación y bandeja de mensajes» (`inherent/05-OPERACION.md`). ⑧ Community lo usa para la bandeja; Posting, para programar y leer el estado |
-| **La cuenta** | 🛑 **Siempre con `account_id` explícito.** Sale de `clients/<cliente>/00-onboarding/LINKS.md` —o de `05-comunidad/respuestas.md`, si ⑧ Community ya lo anotó— y se confirma con `accounts_list`. **Nunca se adivina** |
+| **Qué es** | El MCP del slot «Publicación y bandeja de mensajes» (`inherent/05-OPERACION.md`). Community lo usa para la bandeja; Posting, para programar y leer el estado |
+| **La cuenta** | 🛑 **Siempre con `account_id` explícito.** Sale de `clients/<cliente>/00-onboarding/LINKS.md` —o de `05-comunidad/respuestas.md`, si Community ya lo anotó— y se confirma con `accounts_list`. **Nunca se adivina** |
 | **Credenciales** | 🛑 **Ninguna en el repo** |
 | **Si no está conectado** | `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio` |
 

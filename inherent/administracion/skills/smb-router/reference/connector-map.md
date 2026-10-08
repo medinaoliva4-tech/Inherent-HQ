@@ -56,7 +56,7 @@ Storefront and point-of-sale capability notes (what each holds, per its own refe
 | `proposal-builder` | Drive or M365 | Apollo, Atlassian, DocuSign, Notion, Trello, Zoom; a ledger or a payments connector for pricing history and the deposit invoice | uploads in, DOCX/PDF out |
 | `crm-autopilot` | a CRM (HubSpot, Monday.com, Salesforce, or Zoho CRM) | Calendar, Notion, RingEx Chat, Trello, Zoom | built-in spreadsheet CRM |
 
-**Marketing, contenido, pauta, SEO, reputación y marca no están en esta carpeta:** van por `/inherent` a los agentes de Inherent (③ Marketing, ④ Creatividad, ⑩ Ads, ②B Branding, ⑧ Community). El diseño va por Figma (Figwright), nunca por Canva.
+**Marketing, contenido, pauta, SEO, reputación y marca no están en esta carpeta:** van por `/inherent` a los agentes de Inherent (Marketing, Creatividad, Ads, Branding, Community). El diseño va por Figma (Figwright), nunca por Canva.
 
 ## Build & meta
 

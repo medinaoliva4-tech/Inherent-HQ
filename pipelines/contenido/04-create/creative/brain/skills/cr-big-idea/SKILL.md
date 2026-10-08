@@ -1,7 +1,7 @@
 ---
 name: cr-big-idea
 description: >
-  Capa 2 de ④ Creatividad — dirección creativa. Encuentra el insight específico en el lenguaje
+  Capa 2 de Creatividad — dirección creativa. Encuentra el insight específico en el lenguaje
   literal del comprador y le aplica 1-2 técnicas de dirección (escala, estética/lente, belleza,
   transportación, choque, tensión) a una referencia del swipe file para volverla original y de
   marca, hasta producir 3 BIG IDEAS de una frase de las que se elige una. Cierra con el filtro
@@ -15,7 +15,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | La sección **brief del ciclo** de `brief-del-ciclo.md` · la **idea de campaña** de ③ Marketing · el avatar y el lenguaje literal del comprador · **si existen:** `swipe-file.md` con sus patrones y cubetas, la guía de marca de ②B Branding y el **mapa de saturación** de `ingenieria-inversa.md` (① Strategy) |
+| **Consume** | La sección **brief del ciclo** de `brief-del-ciclo.md` · la **idea de campaña** de Marketing · el avatar y el lenguaje literal del comprador · **si existen:** `swipe-file.md` con sus patrones y cubetas, la guía de marca de Branding y el **mapa de saturación** de `ingenieria-inversa.md` (Strategy) |
 | **Produce** | En `brief-del-ciclo.md`: un bloque **`## BIG IDEA · <nombre corto>`** por idea del ciclo — frase, insight, técnicas aplicadas, filtro D/N/R, prueba del logo, piezas que cuelgan. Y, en el `ideas-<formato>.md` de cada pieza, la línea **concepto** de su sección `## CR-007 · <concepto>` |
 | **Llena del Excel** | `concepto` de `plan-de-contenido.csv` |
 | **Alimenta** | Hook, tono, emoción y estética de las capas 3, 4 y 5 |
@@ -45,11 +45,11 @@ Hacer algo **muy grande o muy chico** lo vuelve interesante al instante.
 - **Dónde pesa:** e-commerce · local · marketplace · infoproducto (el número del resultado)
 
 ### 2 · ESTÉTICA / LENTE
-Tener una **estética de marca** fuerte y predefinida —la guía de marca de ②B Branding— y pasarle
+Tener una **estética de marca** fuerte y predefinida —la guía de marca de Branding— y pasarle
 **cualquier referencia** por encima.
 - *"Tomemos esta misma foto, pero en nuestra versión: esta paleta, estas fuentes, este acabado"*
 - Convierte una idea ajena en una idea propia **sin cambiarle la estructura**
-- 🛑 **Requiere la guía de ②B Branding.** Si no existe, esta técnica no se elige — no se inventa una
+- 🛑 **Requiere la guía de Branding.** Si no existe, esta técnica no se elige — no se inventa una
   estética
 - **Dónde pesa:** B2B · institución · marca personal · SaaS
 
@@ -74,7 +74,7 @@ Poner la idea en un lugar **completamente ajeno o inesperado**.
 ### 6 · TENSIÓN
 Aplicar una emoción que **incomode un poco**: miedo, ego, vergüenza, enojo.
 - Crear un sentimiento real, no una pieza bonita pero tibia
-- Sale del **problema interno** del arco (Capa 3) y del **enemigo** declarado por ③ Marketing
+- Sale del **problema interno** del arco (Capa 3) y del **enemigo** declarado por Marketing
 - 🛑 **Con cuidado y ética.** Tensión no es crueldad, ni miedo inventado, ni vergüenza sobre el
   cuerpo o la identidad de alguien
 - **Dónde pesa:** infoproducto · B2B · marca personal · alto ticket
@@ -108,7 +108,7 @@ cambia los pesos**. Punto de partida, no verdad:
 ## El proceso — 7 pasos
 
 **1 · Insight.** El dolor o deseo **específico**, con cita literal del comprador que lo respalda.
-Si ③ Marketing no lo dejó explícito, escribí **3 candidatos y elegí el más específico**. Los
+Si Marketing no lo dejó explícito, escribí **3 candidatos y elegí el más específico**. Los
 descartados se listan con su por qué.
 ```
 ❌ "quiere crecer"                                    → genérico, no sirve
@@ -121,7 +121,7 @@ descartados se listan con su por qué.
 **3 · Escribir 3 BIG IDEAS**, **1 frase cada una**. Si no cabe en una frase, no es una idea: son dos.
 
 **4 · Elegir 1** y verificar que conecta **insight + marca**, y que **cuelga de la idea de campaña**
-de ③ Marketing — no compite con ella.
+de Marketing — no compite con ella.
 
 **5 · Derivar** en 1 línea cada uno: **hook, tono y dirección estética**. Si los tres no salen de la
 misma idea, la idea no está organizando la pieza.
@@ -147,7 +147,7 @@ misma idea, la idea no está organizando la pieza.
 3. **Si ninguna técnica salva la referencia, la referencia no servía.** Se vuelve al swipe file.
 4. **La técnica se aplica a la referencia, no a la promesa.** Ninguna técnica justifica cambiar lo
    que la marca afirma. Si la idea necesita otra promesa, o la promesa está mal —y eso se devuelve a
-   ① Strategy— o la idea no es nuestra.
+   Strategy— o la idea no es nuestra.
 5. **1 sola idea por pieza, en 1 frase.**
 6. **Toda idea pasa el filtro del avatar** del brief: si no le habla, se descarta **antes** de
    escribirla.
@@ -163,7 +163,7 @@ misma idea, la idea no está organizando la pieza.
 | Paso | Qué se hizo |
 |---|---|
 | **Técnica 1 — Escala** | El número del resultado (`+40%`) ocupa el 70% de la pantalla |
-| **Técnica 2 — Tensión** | Ángulo de miedo competitivo, tomado del enemigo declarado por ③ Marketing |
+| **Técnica 2 — Tensión** | Ángulo de miedo competitivo, tomado del enemigo declarado por Marketing |
 | **BIG IDEA** | *"El testimonio que da miedo no leer."* |
 | **Derivación** | Hook: Bold Claim con dato · Tono: directo, sin adornos · Estética: editorial oscuro, 1 acento |
 | **Filtro D/N/R** | D ✅ el acento y el encuadre son activos distintivos · N ✅ la categoría hace testimonios sonrientes, no tensos · R ✅ responde la objeción #1 del mapa |
@@ -191,7 +191,7 @@ misma idea, la idea no está organizando la pieza.
 - [ ] Los insights genéricos descartados están listados con su por qué
 - [ ] Se nombran **1-2 técnicas**, y qué le hicieron a la referencia
 - [ ] Hay **3 BIG IDEAS**, cada una en **1 sola frase**, con la elegida marcada
-- [ ] La elegida **cuelga de la idea de campaña** de ③ Marketing — no compite con ella
+- [ ] La elegida **cuelga de la idea de campaña** de Marketing — no compite con ella
 - [ ] Hook, tono y dirección estética **derivan todos de la misma idea**
 - [ ] Filtro **D/N/R** con las tres explícitas — Novelty medida **contra el mapa de saturación** si existe, o `⚠️ SIN DATOS`
 - [ ] **Prueba del logo:** con el logo de un competidor, ¿alguien nota la diferencia? Si no, **falló**

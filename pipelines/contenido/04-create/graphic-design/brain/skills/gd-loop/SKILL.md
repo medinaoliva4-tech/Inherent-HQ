@@ -1,7 +1,7 @@
 ---
 name: gd-loop
 description: >
-  Capa 5 de ⑥A Diseño gráfico — cierra el ciclo con cuatro lecturas: qué plantilla se usó más y
+  Capa 5 de Diseño gráfico — cierra el ciclo con cuatro lecturas: qué plantilla se usó más y
   cuál no se usó nunca, cuántas piezas se devolvieron y por qué regla, cuánto del banco de
   imágenes se reutilizó, y qué le faltó al sistema visual. Decide qué plantillas se guardan para
   el ciclo siguiente. Escribe `aprendizaje-de-diseno.md`. Úsala cuando pidan "qué plantilla
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `entregas-diseno.md` · las devoluciones del ciclo · métricas de ⑨ Posting y ⑩ Ads |
+| **Consume** | `entregas-diseno.md` · las devoluciones del ciclo · métricas de Posting y Ads |
 | **Produce** | **`clients/<cliente>/04-contenido/aprendizaje-de-diseno.md`** — en la raíz del área, no dentro del mes |
 
 🛑 **Al cerrar el ciclo, el aprendizaje del ciclo anterior pasa a `_historico/<AAAA-MM>-aprendizaje-de-diseno.md`.** El vigente siempre vive en la raíz del área.
@@ -49,7 +49,7 @@ imágenes del banco ÷ imágenes totales del ciclo
 cuesta lo mismo que el primero.
 
 ### D · Qué le faltó al sistema visual
-**Las preguntas que la Capa 1 tuvo que devolver a ②B Branding.** Si se repiten, `sistema-visual.md`
+**Las preguntas que la Capa 1 tuvo que devolver a Branding.** Si se repiten, `sistema-visual.md`
 tiene un hueco estructural.
 
 ## 2 · Las plantillas que pasan al próximo ciclo
@@ -74,7 +74,7 @@ Si no hay métricas por pieza, **no se declara qué plantilla rindió mejor**: s
 | **A · Uso de plantillas** | Tabla con plantilla, piezas, %, veredicto |
 | **B · Devoluciones por regla** | Agrupadas, con diagnóstico |
 | **C · Reutilización del banco** | El %, contra lo esperado del ciclo |
-| **D · Huecos del sistema visual** | Las preguntas devueltas a ②B Branding que se repitieron |
+| **D · Huecos del sistema visual** | Las preguntas devueltas a Branding que se repitieron |
 | **E · El set del próximo ciclo** | Qué se guarda, qué se arregla, qué sale |
 
 ## 5 · Checklist
@@ -82,6 +82,6 @@ Si no hay métricas por pieza, **no se declara qué plantilla rindió mejor**: s
 - [ ] El uso de plantillas está **contado** desde el manifiesto
 - [ ] Las devoluciones están **agrupadas por regla**
 - [ ] La **reutilización del banco** está calculada contra lo esperado
-- [ ] Los huecos del sistema visual **se devolvieron a ②B Branding**
+- [ ] Los huecos del sistema visual **se devolvieron a Branding**
 - [ ] El set del próximo ciclo está **decidido**
 - [ ] Ninguna conclusión de rendimiento está hecha **sin datos**

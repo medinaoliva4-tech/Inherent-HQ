@@ -1,7 +1,7 @@
 ---
 name: pr-presupuesto
 description: >
-  Capa 4 de ⑤ Producción — cuesta el ciclo por jornada (nunca por pieza), separa los cinco bloques
+  Capa 4 de Producción — cuesta el ciclo por jornada (nunca por pieza), separa los cinco bloques
   de costo, declara la contingencia como línea propia según el perfil del rodaje, calcula el costo
   por pieza y lo compara contra el presupuesto de referencia del onboarding, si existe. Si se pasa,
   lo escala al CEO —es precio— con tres opciones y su impacto, y sigue. Produce `presupuesto.md` —el
@@ -23,9 +23,9 @@ Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKF
 `pipelines/contenido/04-create/production/brain/entregables/presupuesto.md`.
 
 **Qué es:** poner número al plan que ya está agrupado, y compararlo con datos contra la referencia.
-**Qué no es:** no es decidir qué se produce (③ Marketing) ni cambiar el contenido de una escena
-(④ Creatividad). No incluye la edición final: eso se presupuesta en ⑥A Diseño gráfico y
-⑦ Video Editing.
+**Qué no es:** no es decidir qué se produce (Marketing) ni cambiar el contenido de una escena
+(Creatividad). No incluye la edición final: eso se presupuesta en Diseño gráfico y
+Video Editing.
 
 🔑 **El presupuesto de producción del onboarding, si existe, es referencia** para saber por dónde
 presupuestar — no techo ni bloqueo. **Cada campaña o sesión puede llevar su propio presupuesto.**
@@ -56,7 +56,7 @@ Decílo así y ofrecé correr `pr-jornadas` primero.
 | 5 | **Contingencia** | % declarado, **como línea propia** | **Total** |
 
 🛑 **Post base ≠ edición.** Ordenar, respaldar y marcar selects es de Producción y va acá. Montar,
-corregir color de entrega, versionar por plataforma y exportar es de ⑥A Diseño gráfico y ⑦ Video Editing,
+corregir color de entrega, versionar por plataforma y exportar es de Diseño gráfico y Video Editing,
 y va en **su** presupuesto. Meterlo acá hace que se presupueste dos veces o ninguna.
 
 🛑 **El talento se paga por jornada, no por toma.** Si alguien aparece en 9 escenas de la misma
@@ -102,7 +102,7 @@ costo por pieza = (fijos de su jornada ÷ piezas de esa jornada) + variables pro
 proveedores, baja consolidando.**
 
 Ese número es el que **vuelve en la Capa 7** —contra el costo real— y el que le permite a
-③ Marketing **decidir el ciclo siguiente con datos y no con intuición**: cuántas piezas pide, en qué
+Marketing **decidir el ciclo siguiente con datos y no con intuición**: cuántas piezas pide, en qué
 formato y con qué presupuesto.
 
 ## Paso 4 · Escribir `presupuesto.csv` — el respaldo interno
@@ -170,11 +170,11 @@ impacto**, y el ciclo sigue — **solo el gasto que pasa la referencia espera su
 | Opción | Qué se toca | Qué **NO** se toca | Quién decide |
 |---|---|---|---|
 | **Reagrupar** | Volver a la Capa 2 y buscar más consolidación: menos locaciones, menos convocatorias, menos setups | **Nada del contenido.** Ni una escena, ni un encuadre | Producción sola puede |
-| **Recortar filas** | Se **proponen** las de menor traza a la intención, con su costo al lado | La intención de las filas que quedan | **③ Marketing** |
-| **Bajar de especificación** | Locación más simple, menos talento, menos equipo, arte más liviano | **El encuadre, la acción y la duración** — tocar eso vuelve a ④ Creatividad | **④ Creatividad** si roza encuadre, acción o duración |
+| **Recortar filas** | Se **proponen** las de menor traza a la intención, con su costo al lado | La intención de las filas que quedan | **Marketing** |
+| **Bajar de especificación** | Locación más simple, menos talento, menos equipo, arte más liviano | **El encuadre, la acción y la duración** — tocar eso vuelve a Creatividad | **Creatividad** si roza encuadre, acción o duración |
 
-> 🛑 **Producción nunca elige sola qué pieza se cae.** Propone, con números; **deciden ③ Marketing y
-> ④ Creatividad**. Recortar en silencio es decidir el alcance de la campaña sin mandato.
+> 🛑 **Producción nunca elige sola qué pieza se cae.** Propone, con números; **deciden Marketing y
+> Creatividad**. Recortar en silencio es decidir el alcance de la campaña sin mandato.
 
 El gasto que pasa la referencia se marca **⏸️ ESCALADO AL CEO** y **no se compromete** hasta su
 respuesta. No se ejecuta "porque era urgente". Todo lo demás sigue.

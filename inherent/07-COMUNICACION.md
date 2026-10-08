@@ -402,7 +402,7 @@ o proyectos por hito. **Precio según alcance.**
 | *«SOPs de toda la empresa»* | **El especialista audita, el CEO y el COO coordinan, el COO implementa con agentes** |
 | *«que te encuentren en Google»* | **Es pauta de búsqueda y contenido guiado por keywords.** Nunca posicionamiento orgánico, auditoría técnica ni link building |
 | *«presencia todos los días»* | **86 · 145 · 145 · 204 piezas.** El techo real es la grabación |
-| *«comentarios y mensajes» · «comunidad»* | **⑧ Community Management.** El operador de agentes hace cada mes el setup del agente con la info del cliente, y queda corriendo |
+| *«comentarios y mensajes» · «comunidad»* | **Community Management.** El operador de agentes hace cada mes el setup del agente con la info del cliente, y queda corriendo |
 | *«tu oferta y tu precio rediseñados»* | **Solo Growth.** Marketing trabaja el mensaje, no la oferta |
 | *«apuntamos a Nx»* | **El modelo del múltiplo.** Ver `06-ECONOMIA.md` → «El múltiplo» |
 

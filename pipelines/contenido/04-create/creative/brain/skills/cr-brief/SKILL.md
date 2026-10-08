@@ -1,21 +1,21 @@
 ---
 name: cr-brief
 description: >
-  Capa 0 de ④ Creatividad — traduce el encargo de ③ Marketing en un brief que se puede idear.
-  Carga el encargo de ③ Marketing y lo que exista de ① Strategy y ②B Branding, agrupa los slots
+  Capa 0 de Creatividad — traduce el encargo de Marketing en un brief que se puede idear.
+  Carga el encargo de Marketing y lo que exista de Strategy y Branding, agrupa los slots
   del ciclo por campaña, traduce funcion + temperatura + awareness a goal del arte y etapa del funnel, fija la fecha de cada slot
   y declara el reparto 70/20/10 previsto. Escribe la sección "El brief del ciclo" dentro de
   brief-del-ciclo.md. Úsala cuando pidan "traducí la estrategia de X a brief", "armá el brief del ciclo",
   "qué pide este slot", "en qué etapa juega esta pieza", "qué goal del arte le toca acá",
   "arrancá el ciclo de contenido de X". Bloquea si faltan las campañas o el calendario de
-  ③ Marketing.
+  Marketing.
 ---
 
 # Capa 0 · Brief — traducir el encargo
 
 | | |
 |---|---|
-| **Consume** | **③ Marketing — lo único bloqueante:** las campañas y su brief (`estrategia-de-contenido.md`) y el calendario con los slots del ciclo (`calendario.csv`) · **si existen:** ① Strategy · ②B Branding · `plan-por-canal.md` de ③ Marketing · claims ya aprobados de ⑩ Ads |
+| **Consume** | **Marketing — lo único bloqueante:** las campañas y su brief (`estrategia-de-contenido.md`) y el calendario con los slots del ciclo (`calendario.csv`) · **si existen:** Strategy · Branding · `plan-por-canal.md` de Marketing · claims ya aprobados de Ads |
 | **Produce** | La sección **"El brief del ciclo"** dentro de `brief-del-ciclo.md` · la columna `fecha` de cada fila futura de `plan-de-contenido.csv` |
 
 Contexto del departamento: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
@@ -27,18 +27,18 @@ que se puede idear sin adivinar. Nada de lo que escribís acá es una decisión 
 
 | Archivo | De | ¿Bloqueante? |
 |---|---|---|
-| Las campañas y su brief · sistema de contenido · pilares y su mix · jerarquía de mensaje — `estrategia-de-contenido.md` | ③ Marketing | 🛑 Sí |
-| Calendario con los slots del ciclo — `calendario.csv` | ③ Marketing | 🛑 Sí |
-| Plan por canal — **función única y "qué NO se hace acá"** — `plan-por-canal.md` | ③ Marketing | No — se usa si existe |
-| Posicionamiento (promesa, mecanismo, enemigo, objeciones) | ① Strategy | No — se usa si existe |
-| Ingeniería inversa (tabla 15×7, mapa de saturación, lenguaje literal del comprador) — `ingenieria-inversa.md` | ① Strategy | No — se usa si existe |
-| Núcleo: audiencia, competencia, producto y **capacidad real de producción** | ① Strategy | No — se usa si existe |
-| Guía de marca y tono de voz | ②B Branding | No — se usa si existe |
-| Qué creativo rinde en pauta + claims ya aprobados | ⑩ Ads | No |
+| Las campañas y su brief · sistema de contenido · pilares y su mix · jerarquía de mensaje — `estrategia-de-contenido.md` | Marketing | 🛑 Sí |
+| Calendario con los slots del ciclo — `calendario.csv` | Marketing | 🛑 Sí |
+| Plan por canal — **función única y "qué NO se hace acá"** — `plan-por-canal.md` | Marketing | No — se usa si existe |
+| Posicionamiento (promesa, mecanismo, enemigo, objeciones) | Strategy | No — se usa si existe |
+| Ingeniería inversa (tabla 15×7, mapa de saturación, lenguaje literal del comprador) — `ingenieria-inversa.md` | Strategy | No — se usa si existe |
+| Núcleo: audiencia, competencia, producto y **capacidad real de producción** | Strategy | No — se usa si existe |
+| Guía de marca y tono de voz | Branding | No — se usa si existe |
+| Qué creativo rinde en pauta + claims ya aprobados | Ads | No |
 
-🛑 **Si falta lo de ③ Marketing: BLOQUEADO.** Se nombra el archivo exacto y a quién pedírselo.
+🛑 **Si falta lo de Marketing: BLOQUEADO.** Se nombra el archivo exacto y a quién pedírselo.
 Si falta otro: `⚠️ SIN DATOS` y se sigue.
-❌ Reconstruir el posicionamiento leyendo el calendario ✅ Nombrar qué falta: si es de ③ Marketing se para; si
+❌ Reconstruir el posicionamiento leyendo el calendario ✅ Nombrar qué falta: si es de Marketing se para; si
 no, se declara y se sigue.
 
 🛑 **Ningún campo de otro departamento se reescribe: se cita con su ruta y sección.** Reescribirlo
@@ -58,15 +58,15 @@ crea una segunda versión de la verdad, y en dos ciclos no coinciden.
 `funcion`, `temperatura`, `awareness`, `balance`, `pilar`, `formato`, `canal`, `objetivo_del_slot`,
 `traza` y `semana` salen del **calendario** (`calendario.csv`).
 🛑 Creative **los hereda tal cual y no reasigna ninguno**. Si un slot parece mal clasificado,
-**se devuelve a ③ Marketing** — no se corrige acá.
+**se devuelve a Marketing** — no se corrige acá.
 
 > 🛑 **La `campana` no viene en el calendario.** `calendario.csv` **no trae columna de campaña**. El
 > nombre sale de `estrategia-de-contenido.md` § *Idea de campaña*: es **una por ciclo** —dos si
-> ③ Marketing eligió dos—. Con una, todos los slots cuelgan de ella; con dos, cada slot cuelga de la campaña
+> Marketing eligió dos—. Con una, todos los slots cuelgan de ella; con dos, cada slot cuelga de la campaña
 > cuya **MUST BE TRUE** coincide con su `traza` *(dos campañas nunca mueven la misma)*. Un slot que
-> no cae en ninguna se devuelve a ③ Marketing. Creative **copia ese nombre; no lo inventa ni lo abrevia**. Si no hay idea de campaña escrita:
-> **BLOQUEADO**, y se pide a ③ Marketing. Una campaña inventada acá rompe la lectura por campaña
-> del ciclo y el `TOTAL` por campaña del presupuesto de ⑤ Producción.
+> no cae en ninguna se devuelve a Marketing. Creative **copia ese nombre; no lo inventa ni lo abrevia**. Si no hay idea de campaña escrita:
+> **BLOQUEADO**, y se pide a Marketing. Una campaña inventada acá rompe la lectura por campaña
+> del ciclo y el `TOTAL` por campaña del presupuesto de Producción.
 
 ## 3 · La tabla de traducción (obligatoria)
 
@@ -105,20 +105,20 @@ Brief: goal_del_arte=confianza · etapa=MOFU · hook=Curiosity Gap · CTA=tráfi
 ## 4 · `objetivo_del_slot` y `goal_del_arte` no compiten
 
 El `goal_del_arte` es **grueso** (6 valores, decide hook y CTA). El `objetivo_del_slot` que escribió
-③ Marketing es **específico** (*"Responder objeción #1"*, *"Ocupar el CEP de martes 18-20h"*), y
+Marketing es **específico** (*"Responder objeción #1"*, *"Ocupar el CEP de martes 18-20h"*), y
 **manda sobre el contenido concreto**.
 
 > 🛑 **Verificación obligatoria:** el `goal_del_arte` derivado **no puede contradecir** el
-> `objetivo_del_slot`. Si lo contradice, el slot está mal clasificado: **se devuelve a ③ Marketing**.
+> `objetivo_del_slot`. Si lo contradice, el slot está mal clasificado: **se devuelve a Marketing**.
 > ❌ Elegir uno de los dos y seguir · ✅ devolver el slot con la contradicción escrita.
 
 ## 5 · La `fecha`: lo único que Creative fija del calendario
 
-El calendario de ③ Marketing trabaja en **semanas**, no en días.
+El calendario de Marketing trabaja en **semanas**, no en días.
 
 | | Quién decide |
 |---|---|
-| La **semana**, el canal, la campaña, la cadencia | 🛑 **③ Marketing.** No se mueven |
+| La **semana**, el canal, la campaña, la cadencia | 🛑 **Marketing.** No se mueven |
 | El **día concreto** dentro de esa semana | Creative, respetando la `frecuencia` y la estacionalidad |
 
 Es la única excepción a *"el calendario es un encargo"*, y existe porque `plan-de-contenido.csv` va
@@ -128,7 +128,7 @@ si no, se distribuye uniforme dentro de la semana.
 ## 6 · El ángulo lo dicta el `awareness`
 
 La etapa decide el **hook y el CTA**; el awareness decide **qué se dice**. Las etiquetas se copian
-literales de ③ Marketing — abreviarlas es reescribirlas.
+literales de Marketing — abreviarlas es reescribirlas.
 
 | `awareness` | Qué sabe | El ángulo de la pieza |
 |---|---|---|
@@ -142,7 +142,7 @@ Una pieza `Unaware` que arranca hablando del producto está desperdiciada, por b
 
 ## 7 · Post-compra — el hueco que TOFU/MOFU/BOFU no cubre
 
-La temperatura de ③ Marketing tiene **cuatro** estados, `Cliente` incluido. Los slots de función
+La temperatura de Marketing tiene **cuatro** estados, `Cliente` incluido. Los slots de función
 **Community** caen ahí.
 
 | | Tratamiento |
@@ -157,7 +157,7 @@ La temperatura de ③ Marketing tiene **cuatro** estados, `Cliente` incluido. Lo
 
 **El `balance` (Marca / Activación) también se hereda y no se cambia:** `Marca` → pesa el activo
 distintivo, CTA suave · `Activación` → pesa la oferta y la prueba, CTA directo. 🛑 Balance `Marca`
-con CTA de conversión rompe el slot: se devuelve a ③ Marketing.
+con CTA de conversión rompe el slot: se devuelve a Marketing.
 
 ## 8 · Qué escribe en `brief-del-ciclo.md`
 
@@ -165,9 +165,9 @@ Una sola sección, `## El brief del ciclo`, con estos bloques:
 
 | Bloque | Qué lleva |
 |---|---|
-| **A · Contexto cargado** | Checklist con estado y **ruta** de cada archivo de ① Strategy, ③ Marketing y ②B Branding |
+| **A · Contexto cargado** | Checklist con estado y **ruta** de cada archivo de Strategy, Marketing y Branding |
 | **B · Extracto de estrategia** | Promesa, mecanismo único, enemigo, territorio, activos, CEPs, objeciones + RTB, idea de campaña — **citados con ruta y sección, nunca reescritos** |
-| **C · Jerarquía de mensaje** | Copiada tal cual de ③ Marketing. Es la ley del ciclo |
+| **C · Jerarquía de mensaje** | Copiada tal cual de Marketing. Es la ley del ciclo |
 | **D · Avatar** | Dolores, deseo y **lenguaje literal**, declarado **como filtro de ideas**, no re-analizado |
 | **E · Slots por campaña** | Las filas del calendario **sin editar**, agrupadas bajo la campaña de `estrategia-de-contenido.md` |
 | **F · Traducción** | Por slot: `goal_del_arte` · etapa · caja de hook candidata · familia de CTA · ángulo · `fecha` |
@@ -175,26 +175,26 @@ Una sola sección, `## El brief del ciclo`, con estos bloques:
 | **H · Restricciones** | Capacidad → **cuántas filas caben** · do's & don'ts · claims aprobados · **reparto 70/20/10 previsto** |
 
 🛑 **La capacidad de producción es techo duro.** Si el calendario pide más de lo que el cliente
-puede producir, **se declara y se devuelve a ③ Marketing** — no se recorta en silencio.
+puede producir, **se declara y se devuelve a Marketing** — no se recorta en silencio.
 
 ## 9 · Cuando el slot llega incompleto o inconsistente
 
 | Situación | Qué hace Creative |
 |---|---|
 | Falta `funcion` | **BLOQUEADO.** Es la que genera el `goal_del_arte` |
-| No hay **idea de campaña** en `estrategia-de-contenido.md` | **BLOQUEADO.** Sin campaña el ciclo no se puede leer por campaña ni presupuestar. Se pide a ③ Marketing |
+| No hay **idea de campaña** en `estrategia-de-contenido.md` | **BLOQUEADO.** Sin campaña el ciclo no se puede leer por campaña ni presupuestar. Se pide a Marketing |
 | Falta `traza` a MUST BE TRUE | **No produce la fila.** Devuelve el slot |
 | Falta `awareness` | Lo busca en la especificación de tipos de pieza; si no está, `⚠️ SIN DATOS` y ángulo con confianza reducida |
 | Falta `temperatura` | Se usa la típica de la función + `🟡 temperatura asumida` |
-| Falta `formato` | Se propone del plan por canal + `🟡 propuesto por Creative`, para que ③ Marketing lo confirme |
-| `goal_del_arte` contradice el `objetivo_del_slot` · dos canales con la misma `funcion` · un canal con una `funcion` que el plan no le asigna | **Se devuelve el slot a ③ Marketing** |
+| Falta `formato` | Se propone del plan por canal + `🟡 propuesto por Creative`, para que Marketing lo confirme |
+| `goal_del_arte` contradice el `objetivo_del_slot` · dos canales con la misma `funcion` · un canal con una `funcion` que el plan no le asigna | **Se devuelve el slot a Marketing** |
 
 ## QA — Capa 0
 
-- [ ] Las **campañas y el calendario de ③ Marketing** existen — si no, **BLOQUEADO**
-- [ ] Lo que existe de **① Strategy, `plan-por-canal.md` y ②B Branding** está **citado con su ruta**; lo que falta, `⚠️ SIN DATOS`
+- [ ] Las **campañas y el calendario de Marketing** existen — si no, **BLOQUEADO**
+- [ ] Lo que existe de **Strategy, `plan-por-canal.md` y Branding** está **citado con su ruta**; lo que falta, `⚠️ SIN DATOS`
 - [ ] Promesa, mecanismo único, enemigo y activos distintivos **citados, no reescritos**
-- [ ] La **jerarquía de mensaje** de ③ Marketing está copiada tal cual
+- [ ] La **jerarquía de mensaje** de Marketing está copiada tal cual
 - [ ] El avatar está declarado **como filtro de ideas**, no re-analizado
 - [ ] Los slots del ciclo están copiados del calendario **sin editar** y **agrupados por campaña**
 - [ ] **Cada slot quedó bajo una `campana`** copiada de `estrategia-de-contenido.md` § *Idea de campaña* — ninguna fila cuelga de la nada, y ninguna campaña fue inventada acá
@@ -204,11 +204,11 @@ puede producir, **se declara y se devuelve a ③ Marketing** — no se recorta e
 - [ ] Si la temperatura no es la típica: `🟡 temperatura atípica` + ajuste declarado
 - [ ] La `fecha` está fijada **dentro de la semana** del slot, respetando la frecuencia
 - [ ] Cada slot tiene etapa declarada (TOFU / MOFU / BOFU / **Post-compra**)
-- [ ] Cada slot tiene `traza` a MUST BE TRUE — los que no, **devueltos a ③ Marketing**
+- [ ] Cada slot tiene `traza` a MUST BE TRUE — los que no, **devueltos a Marketing**
 - [ ] El `awareness` está con la **etiqueta literal** (`Unaware` / `Problem aware` / `Solution aware` / `Product aware` / `Most aware`), o `⚠️ SIN DATOS` con confianza reducida
 - [ ] La **función única y el "qué NO se hace acá"** de cada canal están copiados, si existe `plan-por-canal.md`
 - [ ] La capacidad de producción está cuantificada: **cuántas filas caben**
-- [ ] Los claims ya aprobados por ⑩ Ads están listados
+- [ ] Los claims ya aprobados por Ads están listados
 - [ ] Ningún campo de estrategia fue reescrito con otras palabras
 
 ✅ **Auto-revisión:** con este QA completo el brief refleja el encargo, y se sigue. Es lo que evita

@@ -3,7 +3,7 @@
 **Capa 7** · Plantilla de la skill `pr-loop`
 
 > Mide **ejecución**, no resultado creativo ni de negocio. Si una pieza no funcionó, eso lo lee
-> ④ Creatividad en su propia Capa 7.
+> Creatividad en su propia Capa 7.
 
 **Fuentes:** `presupuesto.csv` (con `costo_real` cargado) · `plan-de-produccion.csv` ·
 `plan-de-rodaje.md`, la sección de su jornada (jornadas y tiempos) · `plan-de-rodaje.md` § La entrega (manifiesto de entrega).
@@ -70,7 +70,7 @@ Archivo **interno**: no se entrega al cliente, pero se guarda en la carpeta del 
 | Fotos tomadas en la hora | |
 | **Fotos por hora — el número real** | |
 | Resueltas con frame del rodaje | |
-| Fueron a ③ Marketing como decisión de alcance | |
+| Fueron a Marketing como decisión de alcance | |
 | Setups de foto | |
 
 🛑 **Este es el número que § 2B del `WORKFLOW.md` declara «a medir en la primera sesión».**
@@ -80,7 +80,7 @@ Una vez medido, deja de ser pendiente.
 
 ## 3. Material no usado — **el hallazgo más valioso**
 
-| `id_creativo` | Escena | `estado` en el Excel | ¿⑥A Diseño gráfico o ⑦ Video Editing la usaron? | Costo de haberla grabado |
+| `id_creativo` | Escena | `estado` en el Excel | ¿Diseño gráfico o Video Editing la usaron? | Costo de haberla grabado |
 |---|---|---|---|---|
 
 ```
@@ -93,7 +93,7 @@ Costo del material no usado: [monto]
 **Lectura:** hasta ~15 % es normal · 20-30 % hay un patrón · **> 30-40 % el problema no está en
 producción**: el Excel creativo pidió cobertura que la pieza final no necesitaba.
 
-**↩️ Devolución a ④ Creatividad — como dato, no como reclamo:**
+**↩️ Devolución a Creatividad — como dato, no como reclamo:**
 
 | Qué se grabó y no se usó | Patrón que se repite | Propuesta para el próximo ciclo |
 |---|---|---|
@@ -117,19 +117,19 @@ Real:     [x.x]   ([n] escenas ÷ [n] jornadas)
 
 ---
 
-## 5. Corrección de capacidad → ① Strategy
+## 5. Corrección de capacidad → Strategy
 
 > 🛑 **Se redacta como propuesta.** Es la única corrección que Producción hace sobre un documento de
 > otro departamento, y **nunca se edita su archivo.**
 
-| | Declarado en ① Strategy | Real este ciclo | Diferencia |
+| | Declarado en Strategy | Real este ciclo | Diferencia |
 |---|---|---|---|
 | Piezas producidas por ciclo | | | |
 | Jornadas disponibles reales | | | |
 | Costo real por pieza | | | |
 
 **Propuesta de actualización:**
-> [Texto sugerido para la sección de capacidad de ① Strategy, con el dato real y su fuente.]
+> [Texto sugerido para la sección de capacidad de Strategy, con el dato real y su fuente.]
 
 ---
 

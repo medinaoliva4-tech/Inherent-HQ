@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ⑩ Ads Management |
+| **Escribe aquí** | Ads Management |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |

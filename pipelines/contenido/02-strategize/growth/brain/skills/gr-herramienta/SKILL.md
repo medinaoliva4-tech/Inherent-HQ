@@ -1,7 +1,7 @@
 ---
 name: gr-herramienta
 description: >
-  Capa 5 de ② Growth — la herramienta a medida que el plan incluye: una por trimestre en
+  Capa 5 de Growth — la herramienta a medida que el plan incluye: una por trimestre en
   Accelerate, una por mes en Compound. Elige qué construir por el cuello que destraba, no por lo
   que sería lindo tener, y la construye con Claude, Vercel, Zapier o Inherent OS. Una
   herramienta que nadie usa en dos semanas se declara muerta y se aprende de eso. Úsala cuando
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Conversión · § La escalera · la operación real de ① Strategy |
+| **Consume** | § Conversión · § La escalera · la operación real de Strategy |
 | **Produce** | La herramienta + la sección **§ Herramientas** de `motor-de-crecimiento.md` |
 
 ## 1 · Cuántas, según el plan

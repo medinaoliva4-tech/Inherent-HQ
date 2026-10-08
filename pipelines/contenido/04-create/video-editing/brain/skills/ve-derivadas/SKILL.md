@@ -1,7 +1,7 @@
 ---
 name: ve-derivadas
 description: >
-  Capa 3 de ⑦ Video Editing — multiplica el corte principal auto-revisado en todas las piezas que
+  Capa 3 de Video Editing — multiplica el corte principal auto-revisado en todas las piezas que
   puede dar: cortes más cortos, variantes de hook para pauta, reencuadres por formato y
   fragmentos para story. Es donde el modelo gana volumen, porque cada derivada sale del mismo
   material ya grabado y del mismo costo fijo de Producción. Úsala cuando pidan "sacá las derivadas", "multiplicá
@@ -16,7 +16,7 @@ description: >
 | **Consume** | El corte principal **auto-revisado** (`ve-marca` §8) · `plan-de-contenido.csv` · `plan-por-canal.md` *(si no existe, las **Redes** del `plan-contratado.md`)* |
 | **Produce** | Las **4 · 6 · 9 · 12** piezas derivadas del ciclo *(mínimo 1:2 — ver §0 del `WORKFLOW.md`)* |
 
-> 🔑 **Acá está el margen del modelo.** ⑤ Producción cuesta horas humanas; cada derivada cuesta
+> 🔑 **Acá está el margen del modelo.** Producción cuesta horas humanas; cada derivada cuesta
 > Q0. **Entregar menos derivadas no ahorra: desperdicia grabación pagada.**
 
 ## 1 · Los cuatro tipos de derivada
@@ -24,22 +24,22 @@ description: >
 | Tipo | Qué es | Para qué |
 |---|---|---|
 | **Corte corto** | La misma pieza en menos tiempo | Plataformas con menos paciencia |
-| **Variante de hook** | **Mismo cuerpo, otro arranque** | Pauta: es lo que ⑩ Ads testea |
+| **Variante de hook** | **Mismo cuerpo, otro arranque** | Pauta: es lo que Ads testea |
 | **Reencuadre** | El mismo corte en otra relación de aspecto | Publicar en varios formatos |
 | **Fragmento** | Un momento suelto que se sostiene solo | Story, teaser |
 
 ## 2 · Las variantes de hook son las que más valen
 
-**⑩ Ads no testea creativos distintos: testea hooks distintos sobre el mismo cuerpo.**
+**Ads no testea creativos distintos: testea hooks distintos sobre el mismo cuerpo.**
 
 | | |
 |---|---|
 | **Cuántas** | 2 o 3 por pieza que vaya a pauta |
-| **De dónde salen** | De las **7 cajas de hook** que ④ Creatividad maneja en `cr-hook-copy` |
+| **De dónde salen** | De las **7 cajas de hook** que Creatividad maneja en `cr-hook-copy` |
 | **Qué cambia** | Solo los primeros 3 segundos |
 | **Qué NO cambia** | El cuerpo, el CTA y la traza a la MUST BE TRUE |
 
-🛑 **Una variante que cambia el mensaje no es una variante: es otra pieza**, y ④ Creatividad la tiene que
+🛑 **Una variante que cambia el mensaje no es una variante: es otra pieza**, y Creatividad la tiene que
 dirigir.
 
 ## 3 · El reencuadre no es recortar

@@ -1,8 +1,8 @@
 ---
 name: gd-imagen
 description: >
-  Capa 2 de ⑥A Diseño gráfico — resuelve de dónde sale la imagen de cada pieza, en orden de
-  costo: banco propio, material de ⑤ Producción o pedirle al cliente. No se genera imagen con IA.
+  Capa 2 de Diseño gráfico — resuelve de dónde sale la imagen de cada pieza, en orden de
+  costo: banco propio, material de Producción o pedirle al cliente. No se genera imagen con IA.
   Verifica resolución, encuadre y derechos antes de componer, porque una imagen que no sirve se
   descubre recién al exportar. Úsala cuando pidan "de dónde sacamos la imagen", "fotos de
   producto", "esta foto no da". Requiere las plantillas de la Capa 1.
@@ -12,7 +12,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las plantillas de la Capa 1 · § Imagen de `sistema-visual.md` · material de ⑤ Producción · el banco del cliente |
+| **Consume** | Las plantillas de la Capa 1 · § Imagen de `sistema-visual.md` · material de Producción · el banco del cliente |
 | **Produce** | Las imágenes del ciclo, resueltas y verificadas |
 
 ## 1 · El orden de costo
@@ -22,11 +22,11 @@ description: >
 | # | Fuente | Costo | Cuándo |
 |---|---|---|---|
 | **1** | **Banco del cliente** | Q0 | Siempre se mira primero |
-| **2** | **Material de ⑤ Producción** | Ya pagado | Si el ciclo tuvo rodaje |
+| **2** | **Material de Producción** | Ya pagado | Si el ciclo tuvo rodaje |
 | **3** | **Pedirle al cliente** | Tiempo del cliente | Último recurso |
 
 ⛔ **No se genera imagen con IA ni foto de producto sin sesión.** Si el producto necesita foto,
-**se pide en la próxima sesión de ⑤ Producción** — la foto de producto sale de ahí.
+**se pide en la próxima sesión de Producción** — la foto de producto sale de ahí.
 
 🛑 **Nunca se compra stock sin autorización.** Es costo que no está en el plan.
 
@@ -46,7 +46,7 @@ description: >
 ## 3 · Producto sobre fondo de marca
 
 **Es el caso más común del ciclo.** Sin herramienta de recorte automático, **se resuelve en la
-sesión de ⑤ Producción**: el producto se fotografía ya sobre el fondo o la superficie del sistema visual.
+sesión de Producción**: el producto se fotografía ya sobre el fondo o la superficie del sistema visual.
 
 | Chequeo | Qué se mira |
 |---|---|

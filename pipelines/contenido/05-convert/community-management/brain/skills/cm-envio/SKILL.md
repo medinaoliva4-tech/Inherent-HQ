@@ -1,7 +1,7 @@
 ---
 name: cm-envio
 description: >
-  Capa 4 de ⑧ Community Management — el único paso que escribe afuera. Decide qué sale solo y qué no,
+  Capa 4 de Community Management — el único paso que escribe afuera. Decide qué sale solo y qué no,
   respeta el modo borrador, envía por Zernio respetando las
   reglas de cada plataforma, y manda el reporte de la corrida por Gmail con los avisos arriba. Úsala
   al final de cada corrida, o cuando pidan "mandá las respuestas", "¿qué se envió?". Acción hacia afuera: en modo borrador no envía nada.
@@ -48,7 +48,7 @@ Un correo por corrida al correo de «Avisos» de la ficha, con la plantilla
 3. **Lo enviado:** red, usuario, qué se contestó y a quién se le mandó link
 4. **Lo que falló:** con el error
 
-**Asunto:** `⑧ Community · [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`. Si no hubo nada nuevo, no se
+**Asunto:** `Community · [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`. Si no hubo nada nuevo, no se
 manda correo.
 
 Sin el MCP de Gmail: `BLOQUEADO — falta Gmail. Instalala: ver INSTALAR.md § Gmail`.

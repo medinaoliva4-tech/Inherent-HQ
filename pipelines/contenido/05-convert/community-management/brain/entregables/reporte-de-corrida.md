@@ -3,7 +3,7 @@
 > **El correo que manda `cm-envio` al final de cada corrida con algo nuevo.** Sin nada nuevo, no se
 > manda. Lo urgente va arriba.
 
-**Asunto:** `⑧ Community · [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`
+**Asunto:** `Community · [cliente] · [n] nuevos · [n] 🔴 · [borrador/activo]`
 
 ---
 

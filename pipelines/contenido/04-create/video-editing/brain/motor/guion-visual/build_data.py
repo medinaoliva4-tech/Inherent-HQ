@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Datos del guion visual → storyboard.json (una entrada por reel, una fila por escena).
 
-El texto de cada escena es el COPY LITERAL de ④ Creatividad (ideas-<formato>.md). El guion visual no inventa copy:
+El texto de cada escena es el COPY LITERAL de Creatividad (ideas-<formato>.md). El guion visual no inventa copy:
 lo pone sobre el fotograma real para que el operador confirme posición, estilo y efecto (ve-armado §2).
 Toma = (clip, desde, hasta, velocidad, focusY) con los segundos de la lista de posproducción.
 """
@@ -17,9 +17,9 @@ def end(): return s(E, [], "Logo · frase de cierre de la guía", "cierre", "Cen
 # rol: titular | píldora | etiquetas | remate · texto: "ETIQUETA / Titular" para titular con kicker; "A | B" para dos píldoras
 V = [
  ("V01", "<id_creativo · título>", "<pilar>", [
-  s(F, [("R1_34", 4.0, 6.0, 0.5, 0.55)], "ETIQUETA / Hook literal de ④", "titular", "Arriba centro", "Revelado por líneas"),
+  s(F, [("R1_34", 4.0, 6.0, 0.5, 0.55)], "ETIQUETA / Hook literal de Creatividad", "titular", "Arriba centro", "Revelado por líneas"),
   s(D, [("R1_03", 8.3, 11.0, 1, 0.56), ("R1_02", 0.5, 4.5, 1, 0.62)], "Paso 1", "píldora", "Sobre la línea", "Píldora se abre"),
-  s(F, [("R1_30", 3.3, 4.8, 0.5, 0.5)], "Remate literal de ④", "remate", "Centro", "Aparece suave"),
+  s(F, [("R1_30", 3.3, 4.8, 0.5, 0.5)], "Remate literal de Creatividad", "remate", "Centro", "Aparece suave"),
   end()]),
 ]
 

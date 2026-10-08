@@ -1,6 +1,6 @@
 # Plan de pauta — <cliente> · ciclo <mes año>
 
-> Plantilla de ⑩ Ads Management. **🚦 GATE 1 al final: el CEO aprueba plan y presupuesto.**
+> Plantilla de Ads Management. **🚦 GATE 1 al final: el CEO aprueba plan y presupuesto.**
 > ⚠️ **La inversión la pone el cliente, aparte del fee.**
 
 ---
@@ -9,7 +9,7 @@
 | | |
 |---|---|
 | **Objetivo** | *En una métrica, con número y plazo* |
-| **Qué se vende** | De ② Growth — 🔷 `ofertas-a-empujar.md` · 🟨 § La oferta |
+| **Qué se vende** | De Growth — 🔷 `ofertas-a-empujar.md` · 🟨 § La oferta |
 | **Presupuesto total** | |
 | **Diario** | |
 | **Si se agota antes** | |
@@ -45,4 +45,4 @@
 | `id_creativo` | Campaña | Temperatura | Variantes de hook | Claims validados |
 |---|---|---|---|---|
 
-*Mínimo 3 variantes por campaña. Todo claim validado por ②B Branding.*
+*Mínimo 3 variantes por campaña. Todo claim validado por Branding.*

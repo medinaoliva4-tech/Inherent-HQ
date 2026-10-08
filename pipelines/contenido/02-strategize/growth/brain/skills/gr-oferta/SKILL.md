@@ -1,7 +1,7 @@
 ---
 name: gr-oferta
 description: >
-  Capa 1 de ② Growth — el Pilar 1, Better your Offer. Trabaja qué se vende, cómo se empaqueta y
+  Capa 1 de Growth — el Pilar 1, Better your Offer. Trabaja qué se vende, cómo se empaqueta y
   a qué precio, con la profundidad que el plan paga: en la línea Marketing corre ligero —elige
   cuáles de las ofertas que ya existen se empujan y con qué objetivo, sin cambiarlas—, se escala
   en Accelerate y se sistematiza en Compound. Compara contra lo que la categoría ofrece y cobra, y
@@ -26,7 +26,7 @@ description: >
 | | *High ticket:* empaquetar y construir autoridad | *High ticket:* autoridad del sistema |
 
 > 🔑 **La diferencia entre MENSAJE y OFERTA — es la línea que separa los dos productos.**
-> **Mensaje** = cómo se cuenta lo que ya vende → lo hace ③ Marketing con ②B Branding, en los
+> **Mensaje** = cómo se cuenta lo que ya vende → lo hace Marketing con Branding, en los
 > cuatro planes.
 > **Oferta** = qué vende, en qué paquetes y a qué precio → **solo acá, desde Accelerate.**
 > **Confundirlos regala el trabajo caro dentro del plan barato.**
@@ -37,9 +37,9 @@ description: >
 
 | Paso | Qué se hace |
 |---|---|
-| **1 · Lo que se vende hoy** | Las ofertas tal cual están, con su precio — de los unit economics de ① Strategy |
+| **1 · Lo que se vende hoy** | Las ofertas tal cual están, con su precio — de los unit economics de Strategy |
 | **2 · Cuáles se empujan** | Las que este ciclo tienen más con qué: margen, temporada, capacidad de entregar |
-| **3 · Con qué objetivo** | Uno por oferta, **en una métrica** — es lo que ⑩ Ads pauta |
+| **3 · Con qué objetivo** | Uno por oferta, **en una métrica** — es lo que Ads pauta |
 | **4 · Cuáles no, y por qué** | En una línea cada una |
 
 🛑 **No se cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide, es upsell
@@ -47,7 +47,7 @@ a 🟨 Accelerate. **En modo ligero no corren los ángulos, la investigación ni
 y no hay nada que escalar:** no se toca el precio y no sale al cliente.
 
 **Escribe `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md`** — plantilla en
-`pipelines/contenido/02-strategize/growth/brain/entregables/ofertas-a-empujar.md`. **Lo leen ③ Marketing y ⑩ Ads.**
+`pipelines/contenido/02-strategize/growth/brain/entregables/ofertas-a-empujar.md`. **Lo leen Marketing y Ads.**
 
 ## 2 · Los cuatro ángulos de una oferta
 
@@ -83,11 +83,11 @@ solo por precio.
 |---|---|
 | **La propuesta** | El precio sugerido |
 | **Por qué** | El razonamiento, en una línea |
-| **Qué pasa con el margen** | Con los unit economics de ① Strategy |
+| **Qué pasa con el margen** | Con los unit economics de Strategy |
 | **El riesgo** | Qué pasa si no funciona, y cómo se vuelve atrás |
 
 ⚠️ **Si no hay costo por línea, no se propone precio.** Se marca `⚠️ SIN DATOS` y se pide a
-① Strategy.
+Strategy.
 
 ## 5 · El límite de lo que podemos prometer
 
@@ -105,7 +105,7 @@ solo por precio.
 | **C · El hueco de la categoría** | Qué nadie está ofreciendo, con fuente |
 | **D · La oferta propuesta** | Cómo queda empaquetada |
 | **E · El precio** | Propuesta · por qué · impacto en margen · riesgo |
-| **F · Cómo se dice** | En lenguaje de cliente, con el tono de ②B Branding |
+| **F · Cómo se dice** | En lenguaje de cliente, con el tono de Branding |
 
 ## 7 · 🔴 La oferta nueva se escala al CEO — 🟨
 

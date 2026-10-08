@@ -1,9 +1,9 @@
 ---
 name: ad-creativos
 description: >
-  Capa 2 de ⑩ Ads Management — elige qué piezas del ciclo se pautan y con qué variantes de hook,
+  Capa 2 de Ads Management — elige qué piezas del ciclo se pautan y con qué variantes de hook,
   porque la pauta no testea creativos distintos sino hooks distintos sobre el mismo cuerpo.
-  Verifica que todo claim esté validado por ②B Branding antes de que salga con dinero detrás y que haya
+  Verifica que todo claim esté validado por Branding antes de que salga con dinero detrás y que haya
   suficientes variantes para que el test sirva. Úsala cuando pidan "qué anuncios corremos",
   "cuántas variantes", "este anuncio se quemó", "podemos decir esto en pauta". Cierra con el
   GATE 1, donde el CEO aprueba plan y presupuesto.
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Los entregables de ⑥A Diseño gráfico y ⑦ Video Editing · los claims validados de ②B Branding · § La estructura |
+| **Consume** | Los entregables de Diseño gráfico y Video Editing · los claims validados de Branding · § La estructura |
 | **Produce** | La sección **§ Los creativos** de `plan-de-pauta.md` |
 
 ## 1 · Se testean hooks, no creativos
@@ -21,7 +21,7 @@ description: >
 🛑 **El error más caro de la pauta: cambiar todo el anuncio cuando no rinde.** Así nunca se
 sabe qué falló.
 
-**⑦ Video Editing produce variantes de hook sobre el mismo cuerpo.** Eso es lo que se testea.
+**Video Editing produce variantes de hook sobre el mismo cuerpo.** Eso es lo que se testea.
 
 | | |
 |---|---|
@@ -35,7 +35,7 @@ sabe qué falló.
 |---|---|---|---|
 | hasta **20** | hasta **30** | hasta **35** | hasta **50** |
 
-🛑 **Si hacen falta más, se pide a ⑦ Video Editing dentro del techo** — no se pauta con menos de 3
+🛑 **Si hacen falta más, se pide a Video Editing dentro del techo** — no se pauta con menos de 3
 por campaña.
 
 ## 3 · 🔴 Todo claim va validado
@@ -44,7 +44,7 @@ por campaña.
 
 | Antes de pautar | |
 |---|---|
-| ¿②B Branding lo marcó validado? | Si tiene `⏸️` **no sale** |
+| ¿Branding lo marcó validado? | Si tiene `⏸️` **no sale** |
 | ¿Hay número o comparación? | Necesita fuente |
 | ¿Dice *«el mejor»*, *«el único»*? | 🛑 **Rechazado por defecto** |
 
@@ -63,12 +63,12 @@ por campaña.
 > `cr-fuentes`. Y **primero se descubre por keyword qué páginas lideran, después se scrapea por
 > página** (`search_type=page` + `view_all_page_id=…`).
 
-**Ganador = 60-90+ días corriendo.** El mismo criterio de `cr-swipe-file`, para que ① Strategy,
-④ Creatividad y ⑩ Ads no midan con reglas distintas.
+**Ganador = 60-90+ días corriendo.** El mismo criterio de `cr-swipe-file`, para que Strategy,
+Creatividad y Ads no midan con reglas distintas.
 
 🛑 **Se adapta la estructura y el ángulo, nunca la pieza.** Y lo que viene de otro país se pasa a
 quetzales y a la cultura local antes de usarlo. Copiar el creativo de un competidor es un problema
-legal y además nos mete en su código visual — justo lo contrario de lo que ②B Branding construyó.
+legal y además nos mete en su código visual — justo lo contrario de lo que Branding construyó.
 
 ## 5 · Qué pieza va a qué campaña
 
@@ -79,7 +79,7 @@ legal y además nos mete en su código visual — justo lo contrario de lo que �
 | **Caliente** | La prueba y la oferta |
 | **Cliente** | Recompra y comunidad |
 
-🛑 **Es el mismo vocabulario de ③ Marketing.** Si la pieza no trae temperatura, se devuelve.
+🛑 **Es el mismo vocabulario de Marketing.** Si la pieza no trae temperatura, se devuelve.
 
 ## 6 · 🚦 GATE 1
 
@@ -96,13 +96,13 @@ legal y además nos mete en su código visual — justo lo contrario de lo que �
 | **A · Qué piezas van** | `id_creativo` · campaña · temperatura |
 | **B · Las variantes** | Cuántas por campaña, con su hook |
 | **C · Claims** | Cuáles se usan, y quién los validó |
-| **D · Qué se pidió a ⑦ Video Editing** | Si hizo falta más |
+| **D · Qué se pidió a Video Editing** | Si hizo falta más |
 
 ## 8 · Checklist
 
 - [ ] **Mínimo 3 variantes de hook** por campaña
 - [ ] Las variantes cambian **solo los primeros 3 segundos**
-- [ ] **Todo claim está validado por ②B Branding**
+- [ ] **Todo claim está validado por Branding**
 - [ ] Ninguna pieza clonó el **creativo** de un competidor
 - [ ] Cada pieza va a la campaña de **su temperatura**
 - [ ] El total está dentro del **techo del plan**

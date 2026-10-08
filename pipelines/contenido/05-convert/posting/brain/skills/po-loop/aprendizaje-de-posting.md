@@ -17,10 +17,10 @@
 
 | Qué se repite | A quién va | Qué se le pasa |
 |---|---|---|
-| | ⑥A Diseño gráfico / ⑦ Video Editing / ③ Marketing / ① Strategy | [el número, no la queja] |
+| | Diseño gráfico / Video Editing / Marketing / Strategy | [el número, no la queja] |
 
 > Si el 30 % llega tarde, el problema no está en Posting: está en las fechas de preparación de
-> ③ Marketing o en los tiempos de ⑥A Diseño gráfico y ⑦ Video Editing.
+> Marketing o en los tiempos de Diseño gráfico y Video Editing.
 
 ---
 

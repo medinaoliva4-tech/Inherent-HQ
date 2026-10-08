@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ① Strategy · ⓪ Account |
+| **Escribe aquí** | Strategy · ⓪ Account |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |

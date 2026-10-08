@@ -1,7 +1,7 @@
 ---
 name: gd-composicion
 description: >
-  Capa 3 de ⑥A Diseño gráfico — llena las plantillas del ciclo con el copy literal de ④ Creatividad y las
+  Capa 3 de Diseño gráfico — llena las plantillas del ciclo con el copy literal de Creatividad y las
   imágenes resueltas, pieza por pieza y por formato agrupado. Verifica jerarquía, un solo foco
   visual, safe zones y que la slide 1 de cada carrusel se entienda sola. Es ejecución, no
   diseño: si una pieza pide una decisión nueva, la plantilla está mal. Úsala cuando pidan "armá
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las plantillas de la Capa 1 · las imágenes de la Capa 2 · el **copy literal** de ④ Creatividad |
+| **Consume** | Las plantillas de la Capa 1 · las imágenes de la Capa 2 · el **copy literal** de Creatividad |
 | **Produce** | Las piezas compuestas, antes de exportar |
 
 > 🔑 **Esta capa es ejecución, no diseño.** Si una pieza pide una decisión nueva, **la plantilla
@@ -26,14 +26,14 @@ la Capa 0 agrupó.
 
 ## 2 · El copy va literal
 
-🛑 **El texto es el que ④ Creatividad escribió.** No se acorta, no se mejora, no se corrige el estilo.
+🛑 **El texto es el que Creatividad escribió.** No se acorta, no se mejora, no se corrige el estilo.
 
 | Si el copy no entra | Qué se hace |
 |---|---|
 | Se pasa por poco | Se revisa la jerarquía de la plantilla |
-| Se pasa de verdad | ↩️ **Se devuelve a ④ Creatividad** con el máximo de caracteres que entra |
+| Se pasa de verdad | ↩️ **Se devuelve a Creatividad** con el máximo de caracteres que entra |
 
-🛑 **Acortar el copy en ⑥A Diseño gráfico rompe el hook que ④ Creatividad diseñó**, y nadie se entera hasta el loop.
+🛑 **Acortar el copy en Diseño gráfico rompe el hook que Creatividad diseñó**, y nadie se entera hasta el loop.
 
 ## 3 · Las cuatro verificaciones de cada pieza
 
@@ -59,7 +59,7 @@ tenés asegurada.**
 **Lleva activo distintivo igual que todo lo demás.** El *«es efímero»* es la razón por la que
 las stories de la mayoría de las marcas no se reconocen.
 
-## 6 · La auto-revisión contra ②B Branding
+## 6 · La auto-revisión contra Branding
 
 **Antes de exportar, se corre el checklist del guardián sobre la propia pieza:**
 
@@ -74,8 +74,8 @@ las stories de la mayoría de las marcas no se reconocen.
 ## 7 · Checklist
 
 - [ ] Se produjo **por formato agrupado**
-- [ ] El copy está **literal**, como lo escribió ④ Creatividad
-- [ ] Lo que no entró **se devolvió a ④ Creatividad**, no se acortó
+- [ ] El copy está **literal**, como lo escribió Creatividad
+- [ ] Lo que no entró **se devolvió a Creatividad**, no se acortó
 - [ ] Cada pieza pasó las **cuatro verificaciones**
 - [ ] Cada **slide 1** se entiende sola
 - [ ] Las stories llevan **activo distintivo**

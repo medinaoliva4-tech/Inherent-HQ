@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ② Growth · `gr-herramienta` · Operador |
+| **Escribe aquí** | Growth · `gr-herramienta` · Operador |
 | **Se activa en** | 🟨 Accelerate y Compound |
 
 | Archivo o folder | Qué tiene |

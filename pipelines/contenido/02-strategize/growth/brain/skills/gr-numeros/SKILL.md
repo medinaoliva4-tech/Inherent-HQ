@@ -1,7 +1,7 @@
 ---
 name: gr-numeros
 description: >
-  Capa 6 de ② Growth — el Money OS, solo en Compound. Calcula qué producto deja y cuál quita,
+  Capa 6 de Growth — el Money OS, solo en Compound. Calcula qué producto deja y cuál quita,
   cuánto se puede pagar por un cliente y cuánto deja cada uno con el tiempo, y revisa precios y
   estructura para que quede más. Entra solo en Compound porque sin suficientes transacciones el
   margen por línea es teoría. Lo entrega el CEO con Strategy, no un CFO contratado. Úsala cuando
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Transacciones reales del cliente · unit economics de ① Strategy · atribución de ⑩ Ads |
+| **Consume** | Transacciones reales del cliente · unit economics de Strategy · atribución de Ads |
 | **Produce** | La sección **§ Los números** de `motor-de-crecimiento.md` |
 
 ## 1 · ⬜ Solo en Compound
@@ -65,7 +65,7 @@ LTV ÷ CAC
 | **1 a 3** | Ajustado. El crecimiento consume caja |
 | **3 o más** | Hay margen para invertir en adquisición |
 
-⚠️ **Sin atribución limpia de ⑩ Ads no hay CAC real** — y sin CAC real esta capa es estimación.
+⚠️ **Sin atribución limpia de Ads no hay CAC real** — y sin CAC real esta capa es estimación.
 
 ## 6 · Qué se decide con esto
 
@@ -73,7 +73,7 @@ LTV ÷ CAC
 |---|---|
 | Una línea tiene margen negativo | Se sube el precio, se baja el costo o **se discontinúa** |
 | LTV ÷ CAC bajo 1 | 🔴 Se para la adquisición hasta arreglar la oferta o el costo |
-| Un producto deja mucho y se vende poco | **Va al Pilar 3 y a ③ Marketing** como prioridad |
+| Un producto deja mucho y se vende poco | **Va al Pilar 3 y a Marketing** como prioridad |
 | Un costo no sostiene ingreso | Se propone cortarlo |
 
 ## 7 · 🔒 Lo que no sale de acá

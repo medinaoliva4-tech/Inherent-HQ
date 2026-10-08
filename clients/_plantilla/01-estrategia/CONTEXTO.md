@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ① Strategy · 00 Account (Secretaria) |
+| **Escribe aquí** | Strategy · 00 Account (Secretaria) |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |

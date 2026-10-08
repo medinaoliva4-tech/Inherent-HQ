@@ -1,7 +1,7 @@
 ---
 name: gr-conversion
 description: >
-  Capa 4 de ② Growth — el Conversion OS. Hace que lo que ya llega se cobre: que nadie que
+  Capa 4 de Growth — el Conversion OS. Hace que lo que ya llega se cobre: que nadie que
   escribe se quede sin respuesta, que el interesado de hace dos semanas reciba seguimiento, y
   que el equipo sepa cerrar. Entra desde Accelerate porque en la linea Marketing todavia no hay nada que
   perder. Mapea dónde se pierde la gente hoy antes de automatizar nada. Úsala cuando pidan "se
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § La oferta · cómo se compra, de ① Strategy |
+| **Consume** | § La oferta · cómo se compra, de Strategy |
 | **Produce** | La sección **§ Conversión** de `motor-de-crecimiento.md` |
 
 ## 1 · ⛔ No entra en la línea Marketing
@@ -65,7 +65,7 @@ infraestructura sin uso.
 ## 4 · ⚠️ Responder al cliente final es acción hacia afuera
 
 🛑 **Toda respuesta automática se auto-revisa antes de encenderse:** contra la oferta y el tono de
-②B Branding. Un auto-DM mal escrito le habla a todos los clientes del cliente.
+Branding. Un auto-DM mal escrito le habla a todos los clientes del cliente.
 **Si dice un precio o una oferta nueva, se escala al CEO:** es comprometer precio.
 
 ## 5 · Compound — que se sostenga solo
@@ -83,7 +83,7 @@ recompra — y la **IA propia del cliente** con `create_custom_ai`, entrenada co
 | **B · Respuesta** | Qué se automatiza, qué queda humano |
 | **C · Seguimiento** | Cuántos toques, cada cuánto, hasta cuándo |
 | **D · Closing** | Guiones, las 3 objeciones, cómo se entrena |
-| **E · Qué opera ⑧ Community** | El handoff |
+| **E · Qué opera Community** | El handoff |
 | **F · Qué se auto-revisa antes de encenderse** | Lo que habla con el cliente final |
 
 ## 7 · Checklist

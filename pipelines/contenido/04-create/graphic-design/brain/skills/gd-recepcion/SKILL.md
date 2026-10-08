@@ -1,13 +1,13 @@
 ---
 name: gd-recepcion
 description: >
-  Capa 0 de ⑥A Diseño gráfico — verifica qué llegó de ④ Creatividad y es realmente componible
+  Capa 0 de Diseño gráfico — verifica qué llegó de Creatividad y es realmente componible
   antes de abrir un archivo. Filtra las filas sin rodaje, cruza fila por fila que cada pieza
   tenga copy literal y no descrito, que el layout esté definido, que el formato exista en el
   sistema visual y que no arrastre claims pendientes. Agrupa las piezas por formato, que es como
   se van a producir. Úsala cuando pidan "¿llegó todo?", "qué nos falta para diseñar", "arrancá
-  el ciclo de diseño". Bloquea si falta el Excel del ciclo cerrado de ④ Creatividad o el sistema
-  visual de ②B Branding.
+  el ciclo de diseño". Bloquea si falta el Excel del ciclo cerrado de Creatividad o el sistema
+  visual de Branding.
 ---
 
 # Capa 0 · Recepción — qué llegó y es componible
@@ -19,12 +19,12 @@ description: >
 
 ## 1 · El filtro: las filas sin rodaje
 
-**Del Excel de ④ Creatividad se toman las filas de formato estático —`estatico`, `carrusel`,
+**Del Excel de Creatividad se toman las filas de formato estático —`estatico`, `carrusel`,
 `story`— con `material = ninguno` o `material = foto`.** 🛑 **Una fila con `material = foto` espera
-su foto de ⑤ Producción antes de componerse.** Las de `material = video` van a ⑦ Video Editing.
+su foto de Producción antes de componerse.** Las de `material = video` van a Video Editing.
 
 > ⚠️ **Excepción:** una pieza con `material = video` puede necesitar también un estático —una portada,
-> un frame para feed—. Eso lo declara ④ Creatividad en el `ideas-<formato>.md`, no se asume acá.
+> un frame para feed—. Eso lo declara Creatividad en el `ideas-<formato>.md`, no se asume acá.
 
 ## 2 · La agrupación — así se produce el volumen
 
@@ -45,12 +45,12 @@ entre 168 piezas y 168 decisiones.
 
 | Chequeo | Qué se mira | Si falla |
 |---|---|---|
-| **Tiene copy literal** | El texto está **escrito**, no descrito | ↩️ **Devuelto a ④ Creatividad**. *«Un título de curiosidad»* no es copy |
-| **Tiene layout** | `cr-arte-video` definió dónde va cada texto | ↩️ **Devuelto a ④ Creatividad** |
-| **El formato existe en el sistema** | `sistema-visual.md` § Aplicación lo cubre | ↩️ **Devuelto a ②B Branding** — falta la regla |
-| **El copy entra** | El largo cabe en el formato sin romper la jerarquía | ↩️ **Devuelto a ④ Creatividad** con el máximo que entra |
+| **Tiene copy literal** | El texto está **escrito**, no descrito | ↩️ **Devuelto a Creatividad**. *«Un título de curiosidad»* no es copy |
+| **Tiene layout** | `cr-arte-video` definió dónde va cada texto | ↩️ **Devuelto a Creatividad** |
+| **El formato existe en el sistema** | `sistema-visual.md` § Aplicación lo cubre | ↩️ **Devuelto a Branding** — falta la regla |
+| **El copy entra** | El largo cabe en el formato sin romper la jerarquía | ↩️ **Devuelto a Creatividad** con el máximo que entra |
 | **Hay imagen o se puede generar** | Existe la fuente, o la Capa 2 la resuelve | `⚠️ SIN IMAGEN` — se nombra de quién se espera |
-| **No arrastra claims ⏸️** | Sin `⏸️ PENDIENTE APROBACIÓN` | 🛑 **No entra** hasta que ②B Branding valide |
+| **No arrastra claims ⏸️** | Sin `⏸️ PENDIENTE APROBACIÓN` | 🛑 **No entra** hasta que Branding valide |
 
 ## 4 · El techo
 
@@ -58,13 +58,13 @@ entre 168 piezas y 168 decisiones.
 |---|---|---|---|---|
 | Estáticos y carruseles | 43 | 72 | 63 | 88 |
 | Stories | 30 | 55 | 55 | 80 |
-| **Total de ⑥A Diseño gráfico** | **73** | **127** | **118** | **168** |
+| **Total de Diseño gráfico** | **73** | **127** | **118** | **168** |
 | Revisiones por pieza | 1 | 2 | 2 | 3 |
 
 ⬜ **Tailor Made:** el techo son los estáticos, carruseles y stories que declara **Su pipeline** en
 `plan-contratado.md`.
 
-🛑 **Si el Excel pide más, se declara y se devuelve a ③ Marketing.**
+🛑 **Si el Excel pide más, se declara y se devuelve a Marketing.**
 
 ## 5 · Qué escribe
 
@@ -76,7 +76,7 @@ entre 168 piezas y 168 decisiones.
 
 ## 6 · Checklist
 
-- [ ] Solo entraron filas de **formato estático** con **`material = ninguno`** o **`material = foto`** *(más las excepciones que ④ Creatividad declaró)*, y las de `foto` **tienen su imagen de ⑤ Producción**
+- [ ] Solo entraron filas de **formato estático** con **`material = ninguno`** o **`material = foto`** *(más las excepciones que Creatividad declaró)*, y las de `foto` **tienen su imagen de Producción**
 - [ ] Las piezas están **agrupadas por formato**
 - [ ] Cada fila se cruzó — **sin muestreo**
 - [ ] Ninguna pieza entró con copy **descrito** en vez de escrito

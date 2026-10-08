@@ -76,7 +76,7 @@ step, plus at most two others nearby:
 
 - If the one thing is a collections problem: "who owes me money" runs `invoice-chase`.
 - If cash is the worry: "cash forecast" runs `cash-flow-snapshot`.
-- Para el lado de marketing de la misma semana: no corre aquí, va por `/inherent` → ③ Marketing (Inherent como cliente).
+- Para el lado de marketing de la misma semana: no corre aquí, va por `/inherent` → Marketing (Inherent como cliente).
 
 Max three offers. Never repeat an offer the owner declined this session.
 

@@ -1,10 +1,10 @@
 # Rúbrica de calificación de clips — <cliente> · <rodaje>
 
-> Plantilla de ⑦ Video Editing · `ve-recepcion` §4. Se copia a `production/grading/RUBRIC.md` del proyecto y se
-> completa la cabecera con el objetivo del ciclo y la dirección de ④ Creatividad y ②B Branding.
+> Plantilla de Video Editing · `ve-recepcion` §4. Se copia a `production/grading/RUBRIC.md` del proyecto y se
+> completa la cabecera con el objetivo del ciclo y la dirección de Creatividad y Branding.
 
 Objetivo de los clips: **<formato y plataforma — p. ej. Reels/TikTok 9:16>**.
-Dirección de ④ Creatividad y ②B Branding para este material: **<qué tiene que verse — p. ej. doble cuadro, detalle que dé
+Dirección de Creatividad y Branding para este material: **<qué tiene que verse — p. ej. doble cuadro, detalle que dé
 apetito, sensorial: vapor, salsa cayendo, corte, brillo, textura>** — citar la regla de § Imagen de la guía.
 
 ## Nota 0–10

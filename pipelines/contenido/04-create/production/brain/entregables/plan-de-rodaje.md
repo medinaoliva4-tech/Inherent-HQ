@@ -14,7 +14,7 @@
 2. **Lo que está antes de cada tabla de tiro** —las piezas de la jornada— dice *qué tiene que transmitir* lo que estás grabando. Leelo una vez antes de arrancar.
 3. **Lo que está al final del documento** es común a todos los días: lo que hay que conseguir, los permisos, los planes B, cómo se nombran los archivos y cómo se entrega.
 
-> 🛑 **Lo que dice la columna "Qué se graba" viene de ④ Creatividad y no se cambia en el set.** Si
+> 🛑 **Lo que dice la columna "Qué se graba" viene de Creatividad y no se cambia en el set.** Si
 > algo no se puede grabar como está escrito, se avisa y se devuelve — no se resuelve improvisando.
 > Fuente: `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`.
 
@@ -51,7 +51,7 @@
 
 ### Las piezas de esta jornada
 
-*(Compilado de ④ Creatividad — no se reescribe.)*
+*(Compilado de Creatividad — no se reescribe.)*
 
 | Pieza | Qué es | Qué tiene que sentirse | Cómo se ve |
 |---|---|---|---|
@@ -65,7 +65,7 @@ No es el orden en que se ve la pieza: es el orden que menos tiempo pierde movien
 
 | # | id | Qué se graba | Encuadre | Dur. | Tiempo | Qué necesitás a mano |
 |---|---|---|---|---|---|---|
-| 1 | PR-001 | [acción, literal de ④ Creatividad] | [encuadre, literal de ④ Creatividad] | [s] | [min] | [producto, props, equipo de esa toma] |
+| 1 | PR-001 | [acción, literal de Creatividad] | [encuadre, literal de Creatividad] | [s] | [min] | [producto, props, equipo de esa toma] |
 
 **Comida — [hh:mm] a [hh:mm]**
 
@@ -80,7 +80,7 @@ No es el orden en que se ve la pieza: es el orden que menos tiempo pierde movien
 
 🛑 **Solo va acá lo que alguien dice frente a cámara.** La voz en off se graba otro día, en un lugar
 silencioso — no ocupa tiempo de jornada, y se declara así. El texto en pantalla tampoco va: lo pone
-⑦ Video Editing en edición.
+Video Editing en edición.
 
 > **PR-00X — [quién]:** [el texto literal, o los puntos a tocar si es una persona real y no un actor]
 
@@ -193,15 +193,15 @@ escena, con el nombre de archivo de cada toma, vive en `plan-de-produccion.csv`,
 
 # Verificación y devoluciones
 
-*(Interno. Es el rastro de que se verificó antes de gastar, y de lo que se devolvió a ④ Creatividad.)*
+*(Interno. Es el rastro de que se verificó antes de gastar, y de lo que se devolvió a Creatividad.)*
 
 ### El techo de realidad
 ```
-Días de rodaje posibles:    [n]   — según fechas de preparación de ③ Marketing
-Capacidad:                  [n]   — horas y sesiones del plan · la declarada en ① Strategy si es menor
+Días de rodaje posibles:    [n]   — según fechas de preparación de Marketing
+Capacidad:                  [n]   — horas y sesiones del plan · la declarada en Strategy si es menor
 Presupuesto de referencia:  [monto + moneda + fecha / ⚠️ SIN DATOS]   — del onboarding, si existe
 ```
-**¿Entra?** [✅ sí / ⚠️ se excede en [qué] → devuelto a ③ Marketing y ④ Creatividad, con las filas concretas]
+**¿Entra?** [✅ sí / ⚠️ se excede en [qué] → devuelto a Marketing y Creatividad, con las filas concretas]
 
 ### Producibilidad, pieza por pieza
 | Pieza | Shot list completo | Acción y lugar por escena | Mood y emoción | ¿Reutiliza material? | Veredicto |
@@ -214,11 +214,11 @@ Presupuesto de referencia:  [monto + moneda + fecha / ⚠️ SIN DATOS]   — de
 
 🛑 Si esta tabla queda vacía, el cruce no se hizo. *"Sin material previo"* escrito es un resultado.
 
-### Escenas devueltas a ④ Creatividad
-| Escena | Vuelta | Motivo (de los 6) | Qué intención se rompería | Alternativa 1 | Alternativa 2 | Fecha límite | Respuesta de ④ Creatividad + fecha |
+### Escenas devueltas a Creatividad
+| Escena | Vuelta | Motivo (de los 6) | Qué intención se rompería | Alternativa 1 | Alternativa 2 | Fecha límite | Respuesta de Creatividad + fecha |
 |---|---|---|---|---|---|---|---|
 
-*Respuesta de ④ Creatividad: una de 4 — `alternativa 1` · `alternativa 2` · `alternativa nueva` · `se retira`.
+*Respuesta de Creatividad: una de 4 — `alternativa 1` · `alternativa 2` · `alternativa nueva` · `se retira`.
 Plazo: 2 días hábiles, o antes si la jornada lo exige. Vencido sin respuesta: la escena queda fuera de
-la jornada y decide ③ Marketing. Vuelta 3: ya no la resuelven los agentes — deciden el lead de ④ Creatividad y el
-de ⑤ Producción.*
+la jornada y decide Marketing. Vuelta 3: ya no la resuelven los agentes — deciden el lead de Creatividad y el
+de Producción.*

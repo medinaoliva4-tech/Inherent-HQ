@@ -1,4 +1,4 @@
-# Las skills de ⑩ Ads Management — cuál, cuándo y en qué orden
+# Las skills de Ads Management — cuál, cuándo y en qué orden
 
 Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qué orden.
 
@@ -14,7 +14,7 @@ Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qu�
 |---|---|
 | **`ads`** | La puerta de entrada. **Si no sabés cuál usar, es esta.** |
 
-🛑 **Si el pedido es sobre la oferta, el precio o los canales grandes, es ② Growth.**
+🛑 **Si el pedido es sobre la oferta, el precio o los canales grandes, es Growth.**
 
 ## Las 7 capas
 

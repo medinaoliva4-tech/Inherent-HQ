@@ -1,7 +1,7 @@
 ---
 name: ad-atribucion
 description: >
-  Capa 5 de ⑩ Ads Management — mide qué ventas vinieron de nuestro trabajo y cuáles no, que es
+  Capa 5 de Ads Management — mide qué ventas vinieron de nuestro trabajo y cuáles no, que es
   lo que habilita el performance fee. Separa lo atribuible del tráfico preexistente, declara la
   ventana y el modelo usado, y marca sin datos antes que inflar un número. Sin atribución limpia
   no hay fee. Úsala cuando pidan "cuánto vendimos por pauta", "cuánto se atribuye", "el fee de

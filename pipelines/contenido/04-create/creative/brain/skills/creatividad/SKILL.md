@@ -1,7 +1,7 @@
 ---
 name: creatividad
 description: >
-  Orquestador del departamento ④ Creatividad de Inherent. Es la puerta de entrada: lee el pedido,
+  Orquestador del departamento Creatividad de Inherent. Es la puerta de entrada: lee el pedido,
   verifica el pre-flight, decide qué capas correr y llama a las skills `cr-*` en orden. Úsala SIEMPRE
   que el pedido tenga que ver con ideas de contenido, plan de contenido, conceptos, BIG IDEAS, hooks,
   copy de piezas, dirección de arte, shot lists, adaptación por canal, swipe file o cierre de ciclo.
@@ -10,10 +10,10 @@ description: >
   pieza", "buscá referencias de qué está funcionando", "mirá este video y decime qué tiene",
   "adaptalo a los otros canales", "armá el Excel del ciclo", "¿qué funcionó el mes pasado?".
   Nunca produzcas un entregable de creatividad sin pasar por acá. Requiere las campañas y el
-  calendario de ③ Marketing: si faltan, BLOQUEA.
+  calendario de Marketing: si faltan, BLOQUEA.
 ---
 
-# ④ Creatividad — Orquestador
+# Creatividad — Orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
@@ -22,14 +22,14 @@ description: >
 > pipeline del ⬜ Tailor Made del cliente ya lo declare.
 > Entrada normal: el router `/inherent`. Ver `pipelines/_router/skills/inherent/SKILL.md`.
 
-> **En una frase:** Creatividad **dirige**; ⑤ Producción, ⑥A Diseño gráfico y ⑨ Posting **ejecutan**.
+> **En una frase:** Creatividad **dirige**; Producción, Diseño gráfico y Posting **ejecutan**.
 > Convierte el plan del ciclo en **ideas dirigidas**, listas para ejecutar sin adivinar nada.
 
 ## Qué consume · qué produce
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · **③ Marketing** — **lo único bloqueante**: las campañas y su brief (`estrategia-de-contenido.md`: idea de campaña, **pilares y su mix**, jerarquía de mensaje) y el calendario con los slots (`calendario.csv`) · **si existen**: `plan-por-canal.md` de ③ Marketing · **① Strategy** (audiencia, competencia, producto, **capacidad real de producción**, `posicionamiento.md`, `ingenieria-inversa.md`, `nucleo.md`) · **②B Branding** (guía de marca, tono, banco de assets) · **⑩ Ads** (qué rinde en pauta, claims aprobados) |
+| **Consume** | El pedido del usuario · **Marketing** — **lo único bloqueante**: las campañas y su brief (`estrategia-de-contenido.md`: idea de campaña, **pilares y su mix**, jerarquía de mensaje) y el calendario con los slots (`calendario.csv`) · **si existen**: `plan-por-canal.md` de Marketing · **Strategy** (audiencia, competencia, producto, **capacidad real de producción**, `posicionamiento.md`, `ingenieria-inversa.md`, `nucleo.md`) · **Branding** (guía de marca, tono, banco de assets) · **Ads** (qué rinde en pauta, claims aprobados) |
 | **Produce** | El **PRE-FLIGHT**, el **plan de capas**, la **auto-revisión** de cada tramo y el bloque **HANDOFF** |
 | **No produce** | Ningún contenido creativo por su cuenta: no escribe hooks, conceptos ni filas. **Deriva** |
 
@@ -45,7 +45,7 @@ se pide **el archivo exacto**; si falta otro, `⚠️ SIN DATOS` y se sigue. No 
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
-③ Marketing [✅/⬜] · ① Strategy [✅/⚠️] · ②B Branding [✅/⚠️] · ⑩ Ads [✅/⚠️]
+Marketing [✅/⬜] · Strategy [✅/⚠️] · Branding [✅/⚠️] · Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
 Skills a correr: [x] · Output: [ruta]
@@ -53,24 +53,24 @@ Skills a correr: [x] · Output: [ruta]
 ```
 
 **Se bloquea si:** no hay cliente · no existe su carpeta · faltan **las campañas o el calendario de
-③ Marketing** · el pedido pisa otro departamento.
+Marketing** · el pedido pisa otro departamento.
 
 > 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/`:
 >
 > | Qué | Dónde | De quién |
 > |---|---|---|
-> | Audiencia actual, capacidad y restricciones | `00-onboarding/comprension.md` | ① Strategy · `context` |
-> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `01-estrategia/nucleo.md` | ① Strategy · `analysis` |
-> | Patrones de categoría y mapa de saturación | `99-referencias/investigacion/ingenieria-inversa.md` | ① Strategy · `reverse-engineering` |
-> | Posicionamiento, promesa y briefs por área | `01-estrategia/posicionamiento.md` | ① Strategy · `methodology` |
-> | La idea de campaña y los pilares con su mix | `03-marketing/AAAA-MM/estrategia-de-contenido.md` | ③ Marketing |
-> | La función de cada canal y qué NO se hace ahí | `03-marketing/AAAA-MM/plan-por-canal.md` | ③ Marketing |
-> | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | ③ Marketing |
+> | Audiencia actual, capacidad y restricciones | `00-onboarding/comprension.md` | Strategy · `context` |
+> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `01-estrategia/nucleo.md` | Strategy · `analysis` |
+> | Patrones de categoría y mapa de saturación | `99-referencias/investigacion/ingenieria-inversa.md` | Strategy · `reverse-engineering` |
+> | Posicionamiento, promesa y briefs por área | `01-estrategia/posicionamiento.md` | Strategy · `methodology` |
+> | La idea de campaña y los pilares con su mix | `03-marketing/AAAA-MM/estrategia-de-contenido.md` | Marketing |
+> | La función de cada canal y qué NO se hace ahí | `03-marketing/AAAA-MM/plan-por-canal.md` | Marketing |
+> | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | Marketing |
 >
-> 🛑 **Si falta un archivo de ③ Marketing, se marca `BLOQUEADO` con qué falta y a quién pedírselo.
+> 🛑 **Si falta un archivo de Marketing, se marca `BLOQUEADO` con qué falta y a quién pedírselo.
 > Los demás se usan si existen; el que falta va `⚠️ SIN DATOS`. Ninguno se deduce de los otros.**
 
-> 🗣️ **El lenguaje literal del comprador lo arma ④ Creatividad** con las reseñas y comentarios públicos del
+> 🗣️ **El lenguaje literal del comprador lo arma Creatividad** con las reseñas y comentarios públicos del
 > negocio — ver `WORKFLOW.md` §2B. **No es bloqueante.**
 
 ---
@@ -84,7 +84,7 @@ Skills a correr: [x] · Output: [ruta]
 | *"Qué está funcionando en este formato"* · *"buscá referencias"* · *"mirá este video"* | Solo **Capa 1** | Nada aguas abajo |
 | *"Dame conceptos para X"* | **Capas 2-3** | Capa 0 hecha |
 | *"Escribí el hook y el copy de esta pieza"* | **Capas 4-5** | Capas 2-3 hechas |
-| *"Producción devolvió escenas"* · *"respondé las devoluciones de ⑤ Producción"* | **Capa 5** (`cr-arte-video`) y se vuelve a cerrar el Excel del ciclo — o **Capas 3-6** si el cambio rompe la intención | La devolución de ⑤ Producción con motivo y dos alternativas · `WORKFLOW.md` §8 |
+| *"Producción devolvió escenas"* · *"respondé las devoluciones de Producción"* | **Capa 5** (`cr-arte-video`) y se vuelve a cerrar el Excel del ciclo — o **Capas 3-6** si el cambio rompe la intención | La devolución de Producción con motivo y dos alternativas · `WORKFLOW.md` §8 |
 | *"¿Qué funcionó el mes pasado?"* · *"cerremos el ciclo"* | Solo **Capa 7** | Métricas por pieza |
 
 🛑 **Si falta una capa previa: decí qué falta y ofrecé correrla. No se improvisa el faltante.**
@@ -118,8 +118,8 @@ de la siguiente**: saltar de Interpretar a Dirigir produce piezas bonitas sin id
 
 ## 4 · Dónde se auto-revisa — no para entre capas
 
-**④ Creatividad no para a pedir aprobación.** Cada tramo cierra con el QA de su skill y sigue.
-④ Creatividad no publica, no gasta ni le envía nada al cliente: el control de calidad lo hace el CEO en persona.
+**Creatividad no para a pedir aprobación.** Cada tramo cierra con el QA de su skill y sigue.
+Creatividad no publica, no gasta ni le envía nada al cliente: el control de calidad lo hace el CEO en persona.
 
 | Cierre | Dónde | Por qué pesa |
 |---|---|---|
@@ -127,12 +127,12 @@ de la siguiente**: saltar de Interpretar a Dirigir produce piezas bonitas sin id
 | ✅ **Conceptos** | Al cerrar `cr-storytelling` (Capa 3) | El que más pesa: hook, copy, layout, tomas y estética derivan de acá. Un concepto equivocado se multiplica por 20 filas |
 | ✅ **El Excel del ciclo cerrado** | Al cerrar `cr-adaptacion` (Capa 6), antes del handoff | `plan-de-contenido.csv` + los `ideas-<formato>.md` pasan el QA. **Es lo que esperan Producción, Diseño, Video Editing y Posting para arrancar** |
 
-**Cuando ⑤ Producción devuelve una escena**, el orquestador responde con **una de las 4 respuestas**
+**Cuando Producción devuelve una escena**, el orquestador responde con **una de las 4 respuestas**
 —alternativa 1 · alternativa 2 · alternativa nueva · se retira— y la corrige en `cr-arte-video`. Si
 el cambio **no toca la intención**, la fila vuelve a pasar el QA y el Excel del ciclo se vuelve a
 cerrar; si **la rompe**, vuelve a Capa 3 y corre de nuevo hasta la 6. Motivo 6 (Branding) no se
-resuelve: se declara a ②B Branding. **Plazo 2 días hábiles, máximo 2 vueltas por escena**; después deciden el
-lead de ④ Creatividad y el de ⑤ Producción. Detalle en `WORKFLOW.md` §8.
+resuelve: se declara a Branding. **Plazo 2 días hábiles, máximo 2 vueltas por escena**; después deciden el
+lead de Creatividad y el de Producción. Detalle en `WORKFLOW.md` §8.
 
 ---
 
@@ -150,7 +150,7 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 
 **El puente es el `id` + la columna `formato`.** Ves `CR-007` en el Excel con `formato = Carrusel`,
 abrís `ideas-carrusel.md` y buscás `CR-007` ahí. **La lista de formatos no es fija**: sale de lo que
-③ Marketing haya puesto en el calendario de ese ciclo — un formato nuevo simplemente suma un doc.
+Marketing haya puesto en el calendario de ese ciclo — un formato nuevo simplemente suma un doc.
 
 **Más dos archivos de trabajo interno** — no se entregan al cliente pero **sí se guardan**:
 `swipe-file.md` (la bóveda) y `aprendizaje-creativo.md` (el cierre del ciclo). Todos viven en
@@ -162,17 +162,17 @@ arriba. 🛑 **Nunca se duplica un archivo de otro departamento adentro de Creat
 
 ## 6 · Verificá alcance antes de producir
 
-Si el pedido es de **① Strategy** (investigar negocio, audiencia, competencia, precios ·
-posicionamiento, promesa, territorio, las 3 verdades, la tabla 15×7), **②B Branding** (paleta,
-tipografía, logo, guidelines, tono), **③ Marketing** (campañas, canales, fechas, frecuencia, **los
-pilares y su mix**), **⑤ Producción** (locaciones, props, talento, equipo, presupuesto, rodaje),
-**⑥A Diseño gráfico** (crear los gráficos, componer, exportar), **⑨ Posting** (publicar, programar,
-hashtags) u **⑩ Ads** (segmentar, presupuestar, optimizar) → **decílo en una línea** y ofrecé lo que sí se puede hacer desde Creative.
+Si el pedido es de **Strategy** (investigar negocio, audiencia, competencia, precios ·
+posicionamiento, promesa, territorio, las 3 verdades, la tabla 15×7), **Branding** (paleta,
+tipografía, logo, guidelines, tono), **Marketing** (campañas, canales, fechas, frecuencia, **los
+pilares y su mix**), **Producción** (locaciones, props, talento, equipo, presupuesto, rodaje),
+**Diseño gráfico** (crear los gráficos, componer, exportar), **Posting** (publicar, programar,
+hashtags) u **Ads** (segmentar, presupuestar, optimizar) → **decílo en una línea** y ofrecé lo que sí se puede hacer desde Creative.
 
 **Cuando el plan llega roto se devuelve, no se arregla:** cadencia que no cabe en la capacidad ·
-slot sin traza · dos canales con la misma función · pilares que no cierran → **③ Marketing**.
-Ninguna idea sobrevive el D/N/R · promesa no escribible → **① Strategy**. Lenguaje literal vacío o
-inventado → **se rehace acá** con las reseñas públicas (`WORKFLOW.md` §2B). Guidelines que contradicen el concepto → **②B Branding**.
+slot sin traza · dos canales con la misma función · pilares que no cierran → **Marketing**.
+Ninguna idea sobrevive el D/N/R · promesa no escribible → **Strategy**. Lenguaje literal vacío o
+inventado → **se rehace acá** con las reseñas públicas (`WORKFLOW.md` §2B). Guidelines que contradicen el concepto → **Branding**.
 Tabla completa en `WORKFLOW.md §8`.
 
 ---
@@ -180,13 +180,13 @@ Tabla completa en `WORKFLOW.md §8`.
 ## 7 · El handoff
 
 ```markdown
-## HANDOFF — Creative → ⑤ Producción / ⑥A Diseño gráfico
+## HANDOFF — Creative → Producción / Diseño gráfico
 - Cliente: · Bloque: · Fecha:
 - Entregables: plan-de-contenido.csv · brief-del-ciclo.md · ideas-<formato>.md (uno por formato: [lista])
 - Filas totales: [n] · por campaña: [desglose]
 - Reparto 70/20/10: [n / n / n] → [✅ cumple / ⚠️ desviado + por qué]
-- Filas por `material`: ninguno [n] · video [n] · foto [n] → ⑤ Producción recibe [n]
-- Reparto por destino: ⑥A Diseño gráfico [n] *(estáticos)* · ⑦ Video Editing [n]
+- Filas por `material`: ninguno [n] · video [n] · foto [n] → Producción recibe [n]
+- Reparto por destino: Diseño gráfico [n] *(estáticos)* · Video Editing [n]
 - BIG IDEAS del bloque: [1 frase cada una]
 - MUST BE TRUE que se mueven: [letras]
 - Claims pendientes: [⏸️ lista + quién los valida]
@@ -194,7 +194,7 @@ Tabla completa en `WORKFLOW.md §8`.
 ```
 
 - Una fila `pendiente` **no se libera**. O se completa, o sale del bloque y se declara.
-- **El Excel y el doc son la interfaz.** Si ⑤ Producción, ⑥A Diseño gráfico, ⑦ Video Editing o ⑨ Posting
+- **El Excel y el doc son la interfaz.** Si Producción, Diseño gráfico, Video Editing o Posting
   tienen que preguntar algo, el brief estaba incompleto — y eso se corrige **en el brief, no por chat**.
 
 ---
@@ -221,13 +221,13 @@ mezcla** con 🟢/🟡/⚪) · ⚠️ SIN DATOS · ⏸️ PENDIENTE APROBACIÓN 
 - [ ] 🛑 **Toda fila tiene `traza`** a una MUST BE TRUE —las que no, **eliminadas**— y **toda pieza su hipótesis escrita**, con qué la confirmaría
 - [ ] El reparto **70/20/10 cierra ±10 puntos** sobre el total del ciclo — o la desviación está declarada con su motivo (y el **primer ciclo** se declaró como **80/20**)
 - [ ] Brief, conceptos, Excel y doc **no se contradicen** entre sí
-- [ ] **Ninguna fila cambia la promesa** de ① Strategy ni **el pilar o su peso** de ③ Marketing
+- [ ] **Ninguna fila cambia la promesa** de Strategy ni **el pilar o su peso** de Marketing
 - [ ] **Toda BIG IDEA cuelga de la idea de campaña**, y toda fila de una BIG IDEA
 - [ ] Hook, guion y copy están **literales, entre comillas**, en todas las piezas
-- [ ] `material` declarado por fila (`ninguno` / `video` / `foto`), el reparto ⑥A Diseño gráfico / ⑦ Video Editing cuadra por `formato`, y el total **cabe en la capacidad real** de ① Strategy
+- [ ] `material` declarado por fila (`ninguno` / `video` / `foto`), el reparto Diseño gráfico / Video Editing cuadra por `formato`, y el total **cabe en la capacidad real** de Strategy
 - [ ] 🛑 Toda pieza con **`material = foto`** tiene su **§ Foto** completa, con el espacio libre para el texto y las piezas que comparten la foto
-- [ ] **Ningún entregable pisa** a ① Strategy, ②B Branding, ③ Marketing, ⑤ Producción, ⑥A Diseño gráfico, ⑨ Posting u ⑩ Ads — se verifica contra la tabla «Qué NO hace» de `WORKFLOW.md §3` — y **ningún campo ajeno reescrito**: todos citados con su ruta
+- [ ] **Ningún entregable pisa** a Strategy, Branding, Marketing, Producción, Diseño gráfico, Posting u Ads — se verifica contra la tabla «Qué NO hace» de `WORKFLOW.md §3` — y **ningún campo ajeno reescrito**: todos citados con su ruta
 - [ ] Claims, precios y promesas sin validar están `⏸️ PENDIENTE APROBACIÓN` **con quién valida**, y las filas `pendiente` **no se liberan**
 - [ ] Todo faltante marcado `BLOQUEADO` o `⚠️ SIN DATOS`, con **qué lo desbloquea y a quién pedírselo** — ninguno omitido en silencio
-- [ ] Toda devolución de ⑤ Producción tiene **una de las 4 respuestas, con fecha**, dentro del plazo y sin pasar de 2 vueltas — la que rompió la intención volvió a correr desde Capa 3
+- [ ] Toda devolución de Producción tiene **una de las 4 respuestas, con fecha**, dentro del plazo y sin pasar de 2 vueltas — la que rompió la intención volvió a correr desde Capa 3
 - [ ] El bloque **HANDOFF está emitido completo**, con nivel de confianza

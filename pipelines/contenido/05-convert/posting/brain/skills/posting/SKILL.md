@@ -1,7 +1,7 @@
 ---
 name: posting
 description: >
-  Orquestador del departamento ⑨ Posting de Inherent. Es la puerta de entrada: lee el pedido,
+  Orquestador del departamento Posting de Inherent. Es la puerta de entrada: lee el pedido,
   verifica el pre-flight, decide qué capas correr y llama a las skills `po-*` en orden, con la
   auto-revisión de cada capa y sin parada del CEO. Úsala SIEMPRE que el pedido
   tenga que ver con dejar contenido listo para salir: captions finales, hashtags, alt text, QA de
@@ -9,11 +9,11 @@ description: >
   programar en Zernio, o revisar el estado de lo programado. Se dispara con "dejá listo el mes de X",
   "programá el ciclo de X", "escribí los captions", "¿qué nos falta para publicar?", "programalo en
   Zernio", "¿salió todo?", "¿qué falló?", "qué se cayó este mes". Requiere el Excel del ciclo cerrado
-  de ④ Creatividad y los archivos finales de ⑥A Diseño gráfico y ⑦ Video Editing: si faltan,
+  de Creatividad y los archivos finales de Diseño gráfico y Video Editing: si faltan,
   BLOQUEA. 🛑 Nada se publica en el acto.
 ---
 
-# ⑨ Posting — el orquestador
+# Posting — el orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
@@ -24,7 +24,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El pedido del usuario · el Excel del ciclo cerrado de ④ Creatividad (`plan-de-contenido.csv`) · los exports de ⑥A Diseño gráfico y ⑦ Video Editing · `LINKS.md` (cuentas, accesos, su ID de Zernio, listas y quién las opera) · guidelines de ②B Branding, si existen |
+| **Consume** | El pedido del usuario · el Excel del ciclo cerrado de Creatividad (`plan-de-contenido.csv`) · los exports de Diseño gráfico y Video Editing · `LINKS.md` (cuentas, accesos, su ID de Zernio, listas y quién las opera) · guidelines de Branding, si existen |
 | **Produce** | Nada por sí mismo. **Decide qué capa corre y con qué skill**, y arma el pre-flight y el handoff |
 
 Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md`. Índice de skills:
@@ -46,18 +46,18 @@ calendario, y si piden otra fecha, se escala al CEO.
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-6] · Ciclo: [x]
-④ Creatividad: Excel del ciclo cerrado [✅/⬜] · filas del ciclo: [n] → social [n] · email [n] · manual [n] · SIN RUTA [n]
-⑥A Diseño gráfico entregó: [n/n] · ⑦ Video Editing entregó: [n/n] · ⚠️ SIN ARCHIVO: [n]
+Creatividad: Excel del ciclo cerrado [✅/⬜] · filas del ciclo: [n] → social [n] · email [n] · manual [n] · SIN RUTA [n]
+Diseño gráfico entregó: [n/n] · Video Editing entregó: [n/n] · ⚠️ SIN ARCHIVO: [n]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · publicaciones del ciclo: [n] de [techo del plan]
-① Strategy: cuentas y accesos [✅/⬜] · cuentas con ID de Zernio [n/n] · Zernio conectado [✅/⬜] · herramienta de email [✅/⬜]
-②B Branding [✅ / — no bloquea] · claims pendientes: [n]
+Strategy: cuentas y accesos [✅/⬜] · cuentas con ID de Zernio [n/n] · Zernio conectado [✅/⬜] · herramienta de email [✅/⬜]
+Branding [✅ / — no bloquea] · claims pendientes: [n]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
 🛑 **El reparto social / email / manual se declara desde el pre-flight.** Solo la ruta social se
 programa en Zernio, y descubrir al programar que una fila no va ahí cuesta la ventana del ciclo.
 **`SIN RUTA` son las filas cuyo `canal` no cae en ninguna de las tres**: no se fuerzan dentro de
-Zernio, se devuelven a ③ Marketing.
+Zernio, se devuelven a Marketing.
 
 **Se bloquea si:**
 
@@ -65,13 +65,13 @@ Zernio, se devuelven a ③ Marketing.
 |---|---|
 | No se nombró el cliente | `BLOQUEADO — ¿de qué cliente?` |
 | ⬜ Tailor Made y Posting **no está en su pipeline** | No corre para ese cliente. Se dice |
-| Falta **el Excel del ciclo cerrado** de ④ Creatividad | `BLOQUEADO` — se pide la ruta exacta |
+| Falta **el Excel del ciclo cerrado** de Creatividad | `BLOQUEADO` — se pide la ruta exacta |
 | **No sabemos quién tiene el acceso** a las cuentas | `BLOQUEADO` — está en `clients/<cliente>/00-onboarding/LINKS.md` |
 | Zernio no está conectado *(Capas 4 y 5)* | `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio` |
 | Una cuenta **no tiene su ID de Zernio** *(Capas 4 y 5)* | `BLOQUEADO — falta el ID de Zernio de @<cuenta> en clients/<cliente>/00-onboarding/LINKS.md` |
 | Hay **claims ⏸️ sin validar** en piezas del ciclo | Esas filas no entran. Se nombra quién las valida |
-| Hay filas de **ruta manual** y no sabemos **quién manda ni quién contesta** | `BLOQUEADO` — está en `clients/<cliente>/00-onboarding/LINKS.md`. Sostener la conversación es de **⑧ Community** |
-| Un `canal` del plan **no cae en ninguna de las tres rutas** | La fila va `🛑 SIN RUTA DE SALIDA` y se **devuelve a ③ Marketing**. 🛑 No se fuerza dentro de Zernio ni se reescribe el plan |
+| Hay filas de **ruta manual** y no sabemos **quién manda ni quién contesta** | `BLOQUEADO` — está en `clients/<cliente>/00-onboarding/LINKS.md`. Sostener la conversación es de **Community** |
+| Un `canal` del plan **no cae en ninguna de las tres rutas** | La fila va `🛑 SIN RUTA DE SALIDA` y se **devuelve a Marketing**. 🛑 No se fuerza dentro de Zernio ni se reescribe el plan |
 | Piden la Capa 4 sin las Capas 0-3 | Se dice qué falta y se ofrece correr las capas previas |
 | Piden publicar en el acto | 🛑 Nunca `publish_now`: se programa a la fecha y hora del calendario. Si piden otra fecha, se escala al CEO |
 
@@ -92,16 +92,16 @@ Zernio, se devuelven a ③ Marketing.
 
 | Pedido | De quién es |
 |---|---|
-| *"cambiá el copy"*, *"no me gusta el hook"*, *"otra idea"* | ④ Creatividad |
-| *"recortá el video"*, *"poné subtítulos"*, *"exportalo en 9:16"* | ⑦ Video Editing |
-| *"cambiá el texto de la pieza"*, *"movelo en el diseño"* | ⑥A Diseño gráfico |
-| *"contestá los comentarios"*, *"respondé los DMs"* | ⑧ Community |
-| *"pautalo"*, *"segmentá"*, *"subí el presupuesto"* | ⑩ Ads |
-| *"cambiá la fecha de la campaña"*, *"agregá un post"* | ③ Marketing |
+| *"cambiá el copy"*, *"no me gusta el hook"*, *"otra idea"* | Creatividad |
+| *"recortá el video"*, *"poné subtítulos"*, *"exportalo en 9:16"* | Video Editing |
+| *"cambiá el texto de la pieza"*, *"movelo en el diseño"* | Diseño gráfico |
+| *"contestá los comentarios"*, *"respondé los DMs"* | Community |
+| *"pautalo"*, *"segmentá"*, *"subí el presupuesto"* | Ads |
+| *"cambiá la fecha de la campaña"*, *"agregá un post"* | Marketing |
 
 > 🛑 **La confusión más común es pedirle a Posting que arregle el archivo.** Si el Reel vino en 1:1,
-> no se recorta acá: **se devuelve a ⑦ Video Editing**. Recortarlo significa que nadie revisó la
-> composición contra lo que pidió ④ Creatividad.
+> no se recorta acá: **se devuelve a Video Editing**. Recortarlo significa que nadie revisó la
+> composición contra lo que pidió Creatividad.
 
 ## 4 · El orden
 
@@ -121,7 +121,7 @@ po-recepcion ──→ po-caption ──→ po-specs ──→ po-programacion �
 
 **Posting no espera un OK para programar.** Cada capa se auto-revisa con su control de calidad y
 sigue; `po-carga` programa lo que pasó la validación de Zernio. Lo que está en el repo ya pasó por
-el CEO, y las piezas ya pasaron por ②B Branding (`br-guardian`). El control de calidad del CEO es
+el CEO, y las piezas ya pasaron por Branding (`br-guardian`). El control de calidad del CEO es
 en persona y no se registra.
 
 📣 **Lo que no se resuelve acá se escala, y el flujo sigue:** precio, alcance y fechas → **el CEO** ·
@@ -153,13 +153,13 @@ programar.** Toda fecha con hora y zona horaria.
 | ⚠️ SIN ARCHIVO | La pieza no tiene export. Se nombra de quién se espera |
 | ⚠️ SIN DATOS | Falta el dato — típicamente la hora óptima de la cuenta |
 | ⏸️ PENDIENTE APROBACIÓN | Claim sin validar. **No se programa** |
-| ↩️ DEVUELTO | Vuelve a ④ Creatividad, ⑥A Diseño gráfico o ⑦ Video Editing, con motivo y alternativas |
+| ↩️ DEVUELTO | Vuelve a Creatividad, Diseño gráfico o Video Editing, con motivo y alternativas |
 | BLOQUEADO | No se puede avanzar. Se nombra qué desbloquea |
 
 ## 8 · El handoff
 
 Al programar el ciclo se emite el bloque **HANDOFF** de `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md §8`,
-con las filas programadas, las que no salen y las marcadas para pauta, que van a ⑩ Ads.
+con las filas programadas, las que no salen y las marcadas para pauta, que van a Ads.
 
 ---
 
@@ -175,11 +175,11 @@ con las filas programadas, las que no salen y las marcadas para pauta, que van a
 - [ ] Toda publicación programada tiene su **`zernio_post_id`** en `calendario-de-publicacion.csv`
 - [ ] 🛑 **Ninguna pieza con claim ⏸️ se programó**
 - [ ] 🛑 **Las filas de `Email` y las de la ruta manual salieron por su ruta**, no por Zernio
-- [ ] 🛑 **Ningún `canal` quedó sin ruta en silencio** — el que no cae en las tres se declaró y se devolvió a ③ Marketing
-- [ ] 🛑 **Ningún archivo se "arregló" en Posting** — los que no cumplían se devolvieron a ⑥A Diseño gráfico o ⑦ Video Editing
-- [ ] 🛑 **Ningún mensaje se reescribió** — lo que no entraba se devolvió a ④ Creatividad con dos alternativas
+- [ ] 🛑 **Ningún `canal` quedó sin ruta en silencio** — el que no cae en las tres se declaró y se devolvió a Marketing
+- [ ] 🛑 **Ningún archivo se "arregló" en Posting** — los que no cumplían se devolvieron a Diseño gráfico o Video Editing
+- [ ] 🛑 **Ningún mensaje se reescribió** — lo que no entraba se devolvió a Creatividad con dos alternativas
 - [ ] Toda fila traza a un **`id_creativo`**; ninguna fila suelta
 - [ ] **Cada capa se auto-revisó** antes de seguir; lo escalado fue al CEO *(precio, alcance, fechas)* o al COO *(lo demás)*
-- [ ] 🛑 **Ningún entregable pisa** a ④ Creatividad, ⑥A Diseño gráfico, ⑦ Video Editing, ⑧ Community o ⑩ Ads — se verifica contra la tabla «Qué NO hace»
+- [ ] 🛑 **Ningún entregable pisa** a Creatividad, Diseño gráfico, Video Editing, Community o Ads — se verifica contra la tabla «Qué NO hace»
       de `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md §4`
 - [ ] 🛑 **Ningún archivo de otro departamento fue copiado ni editado** — se citan por ruta

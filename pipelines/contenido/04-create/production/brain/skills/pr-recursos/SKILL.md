@@ -1,7 +1,7 @@
 ---
 name: pr-recursos
 description: >
-  Capa 3 de ⑤ Producción — de dónde sale cada cosa, quién la consigue y para cuándo. Convierte el
+  Capa 3 de Producción — de dónde sale cada cosa, quién la consigue y para cuándo. Convierte el
   inventario del desglose en compromisos con nombre y fecha: asigna el origen del vocabulario
   cerrado (propio, prestado, alquilado, comprado, a-producir), un responsable con nombre, una fecha
   de confirmación y el semáforo 🟢🟡🔴, y escribe el plan B de toda escena con dependencia externa.
@@ -16,7 +16,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · la guía y el banco de assets de ②B Branding, si existen · las cotizaciones de `99-referencias/recibido/` del cliente |
+| **Consume** | `plan-de-produccion.csv` con la columna `jornada` ya cargada por `pr-jornadas` · la sección de cada jornada de `plan-de-rodaje.md` (fechas y orden de tiro) · la guía y el banco de assets de Branding, si existen · las cotizaciones de `99-referencias/recibido/` del cliente |
 | **Produce** | Las columnas **`locacion`**, **`talento`**, **`recursos`**, **`equipo`** y **`riesgo`** de `plan-de-produccion.csv` · las secciones **§ Lo que hay que conseguir** y **§ Permisos y autorizaciones** de `plan-de-rodaje.md`, y los **Riesgos del día** de cada jornada |
 
 Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Plantilla del entregable:
@@ -31,7 +31,7 @@ compromiso.
 
 | Columna | Qué lleva |
 |---|---|
-| `locacion` | El **lugar concreto**, no el tipo de lugar heredado de ④ Creatividad |
+| `locacion` | El **lugar concreto**, no el tipo de lugar heredado de Creatividad |
 | `talento` | **Quién específicamente**, no *"una persona joven"* |
 | `recursos` | **Producto + props + vestuario + arte/ambientación en una sola celda**, separados por `;` |
 | `equipo` | Cámara, óptica, soporte, luz, audio — **derivado del `encuadre`** |
@@ -98,7 +98,7 @@ se espera a ver si aparece: a 48 h ya no hay margen para conseguir un reemplazo.
 
 🛑 **Una locación sin visita ni fotos actuales es 🔴**, por más que *"la conozcamos"*.
 
-- La locación se elige para **cumplir el `tipo_de_lugar` que pidió ④ Creatividad**, no para lucirse: una cocina
+- La locación se elige para **cumplir el `tipo_de_lugar` que pidió Creatividad**, no para lucirse: una cocina
   de diseño espectacular puede contradecir el mood pedido.
 - **El permiso se gestiona primero.** Es lo único que puede anular la jornada entera el día antes.
 - **Exterior = plan B obligatorio**: interior alternativo o **fecha de reemplazo reservada**.
@@ -129,7 +129,7 @@ agenda) · creador o influencer (trae audiencia · **trae condiciones de uso y v
 🛑 **Sin cesión firmada no se graba a esa persona** —incluidas las de fondo identificables—. Es lo
 único que vuelve a morder meses después, con la pieza ya pauteada.
 
-**La `emocion` heredada de ④ Creatividad es la instrucción de dirección.** No el concepto, no el hook: la
+**La `emocion` heredada de Creatividad es la instrucción de dirección.** No el concepto, no el hook: la
 emoción. Se dirige con **situación**, nunca con adjetivos de resultado.
 
 ❌ *"Hacelo más natural"*, *"con más energía"* ✅ *"Contalo como si acabaras de darte cuenta, no como si lo supieras hace años"*
@@ -150,7 +150,7 @@ bloque**. Nunca se convoca a alguien para *"estar disponible todo el día"* sin 
 | **Cenital** (mesa, producto) | 35-50 mm | Brazo o columna cenital | Difusa pareja | Sin audio |
 | **Pantalla partida / captura** | N/A | N/A | N/A | N/A |
 
-🛑 **Si el encuadre pide algo que no tenemos, se alquila o se devuelve a ④ Creatividad con alternativa** — el
+🛑 **Si el encuadre pide algo que no tenemos, se alquila o se devuelve a Creatividad con alternativa** — el
 encuadre no se cambia.
 
 **Audio — lo que más se descubre tarde:** si alguien habla en cuadro va **solapa y respaldo de
@@ -170,7 +170,7 @@ sin plan B es un 🔴.**
 | Dependencia | Plan B mínimo exigible |
 |---|---|
 | **Clima** (exterior) | Locación interior alternativa, o **fecha de reemplazo reservada** |
-| **Talento** | **Segundo nombre confirmado**, o reescritura a manos/detalle **propuesta a ④ Creatividad** |
+| **Talento** | **Segundo nombre confirmado**, o reescritura a manos/detalle **propuesta a Creatividad** |
 | **Permiso** | Locación alternativa, o versión **sin el fondo identificable** |
 | **Producto** | **Unidad de respaldo**, o la escena se mueve a la jornada siguiente |
 
@@ -178,7 +178,7 @@ sin plan B es un 🔴.**
 
 | Para qué | Herramienta típica | Permiso |
 |---|---|---|
-| Cruzar el **banco de assets** de ②B Branding | Drive (lectura) | `ask` |
+| Cruzar el **banco de assets** de Branding | Drive (lectura) | `ask` |
 | Buscar **referencias de locación** | Búsqueda web / Maps | `ask` |
 | **Cotizar** alquiler de equipo o locación | Búsqueda web | `ask` |
 | **Clima previsto** para exteriores | Búsqueda web | `ask` |
@@ -186,10 +186,10 @@ sin plan B es un 🔴.**
 | Agendar jornadas | Calendario | `ask` — **solo con el presupuesto cerrado y el call sheet completo** |
 | Subir material | Drive (escritura) | `ask` — **solo con el manifiesto de entrega cruzado** |
 
-**Qué NO se usa desde Producción:** Figma (es de ⑥A Diseño gráfico) · editores de video y color (⑦ Video Editing) ·
+**Qué NO se usa desde Producción:** Figma (es de Diseño gráfico) · editores de video y color (Video Editing) ·
 **generadores de imagen o video** —no hay; Producción consigue material **real**, y si la pieza
-pide media que no se puede grabar, se devuelve a ④ Creatividad— · Ad Library y Meta Ads (⑩ Ads y ④ Creatividad) · publicación y
-programación (⑨ Posting).
+pide media que no se puede grabar, se devuelve a Creatividad— · Ad Library y Meta Ads (Ads y Creatividad) · publicación y
+programación (Posting).
 
 **Reglas de permiso:** nada se escribe afuera antes de su momento · **nada destructivo**: el material no
 se borra, se marca · **ninguna reserva ni compromiso antes de cerrar el presupuesto** · toda cotización se registra

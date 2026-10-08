@@ -10,7 +10,7 @@ Ask one at a time. Wait for the full answer before moving on. One follow-up is f
 3. **Top three headaches.** "What are your three biggest headaches right now — the things that eat your time or keep you up at night?"
 4. **Tools already in use.** "Which tools do you already use day-to-day? Your bookkeeping software, email, online store or point of sale, a CRM, team chat…" Ask by category, never by product name. The owner names the vendors.
 5. **Preferred cadence.** "How would you like me to check in — daily, weekly, or only when you ask?"
-6. **Web y marca.** No se pregunta: la marca de Inherent la define ②B Branding y vive en `inherent/inherent-social-media/02-marca/`. Se leen de ahí el logo, los colores y la línea, y se guardan en el perfil. Si falta algo, se marca `⚠️ SIN DATOS` y se le pide a ②B Branding por `/inherent`; nunca se inventa.
+6. **Web y marca.** No se pregunta: la marca de Inherent la define Branding y vive en `inherent/inherent-social-media/02-marca/`. Se leen de ahí el logo, los colores y la línea, y se guardan en el perfil. Si falta algo, se marca `⚠️ SIN DATOS` y se le pide a Branding por `/inherent`; nunca se inventa.
 7. **Formato de salida.** Opción múltiple de cinco: páginas visuales (por defecto) / Word / markdown / páginas de Notion / lo mejor para cada skill. Se guarda tal cual como uno de: `visual artifacts`, `docx`, `md`, `notion`, `best for skill`. Canva no se ofrece (`../../../shared/document-format.md`).
 
 If the owner is short on time, compress to questions 1, 3, and 4 — those three feed the most downstream skills. Skipped questions keep their defaults (visual pages for output).

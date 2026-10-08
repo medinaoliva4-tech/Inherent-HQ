@@ -78,7 +78,7 @@ el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno 
 | ↻ | [Strategy](pipelines/contenido/02-strategize/strategy/) | La revisión del 20 | ✅ |
 
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate, y
-**②B Branding valida con `br-guardian`** antes de que nada se publique.
+**Branding valida con `br-guardian`** antes de que nada se publique.
 
 ---
 

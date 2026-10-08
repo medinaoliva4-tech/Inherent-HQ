@@ -1,4 +1,4 @@
-# Las skills de ② Growth — cuál, cuándo y en qué orden
+# Las skills de Growth — cuál, cuándo y en qué orden
 
 Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qué orden; acá está el
 detalle de cada herramienta.
@@ -16,7 +16,7 @@ detalle de cada herramienta.
 | **`growth`** | La puerta de entrada. **Si no sabés cuál usar, es esta.** |
 
 🛑 **Growth no es pauta.** Si el pedido es sobre presupuesto, campañas o anuncios, es
-**⑩ Ads Management**.
+**Ads Management**.
 
 ## Las 8 capas
 

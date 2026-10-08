@@ -16,8 +16,8 @@ description: >
 **Qué consume**
 - El brief y las BIG IDEAS del ciclo, en `brief-del-ciclo.md` (Capas 0-3).
 - Los conceptos, hooks, guiones, copys, escenas y estética ya producidos en las Capas 4-5, en el `ideas-<formato>.md` de cada pieza.
-- Los slots del ciclo: canal, formato, pilar, función, campaña y objetivo — heredados de ③ Marketing.
-- La traza a MUST BE TRUE de cada slot — heredada de ① Strategy.
+- Los slots del ciclo: canal, formato, pilar, función, campaña y objetivo — heredados de Marketing.
+- La traza a MUST BE TRUE de cada slot — heredada de Strategy.
 - La capacidad real de producción del cliente.
 - El método completo del departamento: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
 
@@ -52,7 +52,7 @@ description: >
 | La `traza` | El CTA, si el slot cambia de etapa |
 
 🛑 **Solo se multiplica hacia canales que TIENEN SLOT en el calendario.** Un canal sin slot no
-existe para Creative — agregarlo es pisar a ③ Marketing.
+existe para Creative — agregarlo es pisar a Marketing.
 
 🛑 **Watermark de otra app = alcance muerto.** Se declara explícitamente en la sección de la pieza.
 
@@ -84,20 +84,20 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | Columna | Qué lleva | De dónde sale |
 |---|---|---|
 | `id` | `CR-001`, correlativo del ciclo | Creative |
-| `campana` | Nombre de la campaña — de `estrategia-de-contenido.md` § *Idea de campaña* | ③ Marketing |
+| `campana` | Nombre de la campaña — de `estrategia-de-contenido.md` § *Idea de campaña* | Marketing |
 | `fecha` | Día concreto | Creative (dentro de la semana del slot) |
-| `canal` | El canal del slot | ③ Marketing — heredado sin cambio |
-| `formato` | Reel · carrusel · estático · story… | ③ Marketing — heredado sin cambio |
-| `pilar` | El pilar de contenido | ③ Marketing — heredado sin cambio |
-| `funcion` | `Hero` · `Series` · `Proof` · `Utility` · `Conversion` · `Community` | ③ Marketing — heredado sin cambio |
+| `canal` | El canal del slot | Marketing — heredado sin cambio |
+| `formato` | Reel · carrusel · estático · story… | Marketing — heredado sin cambio |
+| `pilar` | El pilar de contenido | Marketing — heredado sin cambio |
+| `funcion` | `Hero` · `Series` · `Proof` · `Utility` · `Conversion` · `Community` | Marketing — heredado sin cambio |
 | `concepto` | **Una línea.** Qué es la pieza | Creative |
 | `mezcla` | `70·probado` / `20·apuesta` / `10·propio` | Creative |
-| `traza` | La letra de la MUST BE TRUE que mueve | ① Strategy |
-| `material` | `ninguno` / `video` / `foto` — **qué material nuevo necesita de ⑤ Producción** | Creative |
+| `traza` | La letra de la MUST BE TRUE que mueve | Strategy |
+| `material` | `ninguno` / `video` / `foto` — **qué material nuevo necesita de Producción** | Creative |
 | `estado` | `listo` / `pendiente` / `⏸️ aprobación` | Creative |
 
 🛑 **Lo heredado se copia, no se reescribe.** Si un `canal` o una `funcion` te incomodan, se devuelve
-el slot a ③ Marketing; no se corrige en la celda.
+el slot a Marketing; no se corrige en la celda.
 
 🛑 **En `funcion` va la función del calendario, nunca el `goal_del_arte`.** Son dos vocabularios
 distintos y confundirlos rompe la trazabilidad: con `Alcance` en la celda ya no se puede cruzar la
@@ -111,7 +111,7 @@ no en el Excel**.
 
 ## 4 · Llenar `ideas-<formato>.md` — una sección por pieza, agrupadas por formato
 
-**Un doc por cada valor de `formato`** que tenga slot este ciclo — la lista la define ③ Marketing en
+**Un doc por cada valor de `formato`** que tenga slot este ciclo — la lista la define Marketing en
 el calendario, no es fija acá. Cada fila del CSV se escribe en el doc de **su** `formato`:
 `formato = Carrusel` → `ideas-carrusel.md` · `formato = TikTok` / `Video corto` → `ideas-tiktok.md`
 · y así con cada uno. Si el ciclo trae un formato que todavía no tiene doc, esta capa lo crea a partir
@@ -131,11 +131,11 @@ Cada sección lleva: **Objetivo del slot** · **Emoción** · **Hook** · **Guio
 - `copy` = lo que se **ve**. Con jerarquía explícita: título > subtítulo > CTA.
 - `escenas`, `encuadres` y `duraciones` llevan **el mismo número de ítems y el mismo orden**
   (E1, E2, E3…), o los tres dicen `N/A`. Sin ítem `total` ni comentarios extra: rompen la
-  alineación y ⑤ Producción no puede partir la fila.
+  alineación y Producción no puede partir la fila.
 - `elementos_graficos`: vocabulario cerrado de **4 familias** (ilustraciones · assets png ·
   texturas · formas), **máximo 3** por pieza, o `ninguno` con su motivo.
 - 🛑 **Ninguna sección especifica hex, tipografía, tamaño en píxeles, lente, locación concreta,
-  permiso ni casting.** Eso es de ⑥A Diseño gráfico y ⑤ Producción.
+  permiso ni casting.** Eso es de Diseño gráfico y Producción.
 
 ---
 
@@ -181,7 +181,7 @@ Se cuenta la columna `mezcla` **sobre el total del ciclo**, no por campaña.
 | ❌ Multiplicar sin mirar la capacidad de producción | El bloque no se produce y el calendario queda con huecos |
 | ❌ Cambiar la promesa al adaptar el tono | El tono cambia; la promesa **no** |
 | ❌ Un concepto → 1 sola pieza, siempre | Se desperdicia el trabajo de ideación |
-| ❌ Dos canales con la misma `funcion` | Si dos hacen lo mismo, uno sobra → se devuelve a ③ Marketing |
+| ❌ Dos canales con la misma `funcion` | Si dos hacen lo mismo, uno sobra → se devuelve a Marketing |
 
 ✅ **El repurposing ahorra ideación, no producción.** El total de filas cabe en la capacidad real.
 
@@ -192,12 +192,12 @@ Se cuenta la columna `mezcla` **sobre el total del ciclo**, no por campaña.
 ✅ **El Excel del ciclo cerrado.** `plan-de-contenido.csv` + los `ideas-<formato>.md` pasan el QA de
 abajo antes del handoff. **Nada se libera a producción sin ese cierre.**
 
-- **`material` dice qué le hace falta a ⑤ Producción; el `formato` dice quién arma la pieza.** `video` y `foto`
-  van a **⑤ Producción**; `ninguno` no pasa por ahí. Después, los estáticos, carruseles y stories los
-  arma **⑥A Diseño gráfico** y los videos **⑦ Video Editing**.
+- **`material` dice qué le hace falta a Producción; el `formato` dice quién arma la pieza.** `video` y `foto`
+  van a **Producción**; `ninguno` no pasa por ahí. Después, los estáticos, carruseles y stories los
+  arma **Diseño gráfico** y los videos **Video Editing**.
 - 🛑 **Un estático con `material = foto` espera su foto antes de componerse.**
 - Una fila `pendiente` **no se libera**. O se completa, o sale del bloque y se declara.
-- **El CSV y el doc son la interfaz.** Si ⑤ Producción, ⑥A Diseño gráfico, ⑦ Video Editing o ⑨ Posting
+- **El CSV y el doc son la interfaz.** Si Producción, Diseño gráfico, Video Editing o Posting
   tienen que preguntar algo, el brief estaba incompleto — y eso se corrige en el brief, no por chat.
 
 El formato exacto del bloque HANDOFF está en `pipelines/contenido/04-create/creative/brain/WORKFLOW.md` §7.
@@ -212,7 +212,7 @@ Ninguna capa se entrega sin pasar su bloque completo.
 - [ ] **Ninguna pieza idéntica en dos canales** — cada fila tiene sus specs
 - [ ] **Sin watermark**, declarado
 - [ ] Hook temprano en todas — **2s en TikTok**
-- [ ] **Ningún par de canales comparte `funcion`**, y ningún canal tiene una función que el plan por canal de ③ Marketing no le asigne, si existe — si pasó, **devuelto a ③ Marketing**
+- [ ] **Ningún par de canales comparte `funcion`**, y ningún canal tiene una función que el plan por canal de Marketing no le asigne, si existe — si pasó, **devuelto a Marketing**
 - [ ] El **"qué NO se hace acá"** de cada canal está respetado en todas sus filas, si existe `plan-por-canal.md`
 - [ ] El total de filas **cabe en la capacidad de producción real**
 - [ ] Las **12 columnas** están completas en cada fila del `plan-de-contenido.csv`
@@ -227,9 +227,9 @@ Ninguna capa se entrega sin pasar su bloque completo.
 - [ ] 🛑 **Toda fila tiene `traza`** — las que no, **eliminadas**
 - [ ] 🛑 **Toda fila tiene hipótesis escrita**, con qué la confirmaría
 - [ ] La **aprobación de claim** está marcada en toda pieza con dato, precio o promesa, con quién valida
-- [ ] `material` declarado en toda fila (`ninguno` / `video` / `foto`), y el ruteo por `formato` cuadra: estáticos → ⑥A Diseño gráfico · videos → ⑦ Video Editing
+- [ ] `material` declarado en toda fila (`ninguno` / `video` / `foto`), y el ruteo por `formato` cuadra: estáticos → Diseño gráfico · videos → Video Editing
 - [ ] 🛑 Toda fila con `material = foto` tiene su **§ Foto** en el `ideas-<formato>.md`
 - [ ] Las filas `pendiente` están listadas y **no se liberan a producción**
 - [ ] Verificación de trazabilidad: toda fila recorre `Fila → Slot → Campaña → Objetivo → MUST BE TRUE`
-- [ ] **Ninguna fila cambia la promesa** de ① Strategy ni el pilar o su peso de ③ Marketing
+- [ ] **Ninguna fila cambia la promesa** de Strategy ni el pilar o su peso de Marketing
 - [ ] El bloque **HANDOFF** está emitido completo

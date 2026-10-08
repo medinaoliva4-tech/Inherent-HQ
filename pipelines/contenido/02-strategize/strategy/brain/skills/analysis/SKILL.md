@@ -88,15 +88,15 @@ Los pasos
 
 | El síntoma que describe el cliente | La causa probable | Qué área lo arregla |
 |---|---|---|
-| **Mucha gente ve y nadie compra** | Oferta o conversión | ② Growth — `gr-oferta` · `gr-conversion` |
-| **Nadie ve** | Distribución o contenido | ③ Marketing — `mk-canales` · `mk-pilares` |
-| **Preguntan precio y desaparecen** | Valor percibido — **mecanismo o prueba**, casi nunca el precio | ② Growth — `gr-oferta` |
-| **Compran una vez y no vuelven** | Experiencia o retención | ② Growth — `gr-upsells` · ⑧ Community |
-| **Buen producto y nadie entiende** | Mensaje | ③ Marketing — `mk-mensaje` + ②B Branding — `br-voz` |
+| **Mucha gente ve y nadie compra** | Oferta o conversión | Growth — `gr-oferta` · `gr-conversion` |
+| **Nadie ve** | Distribución o contenido | Marketing — `mk-canales` · `mk-pilares` |
+| **Preguntan precio y desaparecen** | Valor percibido — **mecanismo o prueba**, casi nunca el precio | Growth — `gr-oferta` |
+| **Compran una vez y no vuelven** | Experiencia o retención | Growth — `gr-upsells` · Community |
+| **Buen producto y nadie entiende** | Mensaje | Marketing — `mk-mensaje` + Branding — `br-voz` |
 
-### 🔑 Por qué esto vive acá y no en ③ Marketing
+### 🔑 Por qué esto vive acá y no en Marketing
 
-**Cuatro de las cinco causas apuntan fuera de Marketing.** Tres caen en ② Growth y una en
+**Cuatro de las cinco causas apuntan fuera de Marketing.** Tres caen en Growth y una en
 retención. **Un diagnóstico que solo mira contenido va a responder «más contenido» a todo** —
 que es justo el error que la metodología prohíbe.
 

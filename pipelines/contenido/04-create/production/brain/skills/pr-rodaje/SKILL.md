@@ -1,7 +1,7 @@
 ---
 name: pr-rodaje
 description: >
-  Capa 5 de ⑤ Producción — convierte las jornadas presupuestadas en call sheets ejecutables: uno por
+  Capa 5 de Producción — convierte las jornadas presupuestadas en call sheets ejecutables: uno por
   jornada, con encabezado y dirección, horarios, contactos con teléfono, orden de tiro por costo de
   cambio, requerimientos por escena, la cobertura obligatoria marcada aparte, los riesgos del día
   con su plan B y la nomenclatura definida antes de grabar. Escribe los call sheets dentro de la
@@ -61,7 +61,7 @@ jornada— respetando la plantilla `pipelines/contenido/04-create/production/bra
 # Jornada 1 — [día y fecha] · [locación]
 ### Datos del día          → dirección completa · horarios · clima · escenas
 **Quiénes están**          → nombre · rol · teléfono
-### Las piezas de esta jornada   → compilado de ④ Creatividad (ver Paso 2b)
+### Las piezas de esta jornada   → compilado de Creatividad (ver Paso 2b)
 ### Orden de tiro          → por bloque de setup: # · id · qué se graba · encuadre · dur. · tiempo · qué necesitás a mano
 ### Lo que se dice en cámara     → solo lo hablado a cámara (ver Paso 2b)
 ### Cobertura obligatoria  → 🛑 antes de desarmar
@@ -73,7 +73,7 @@ jornada— respetando la plantilla `pipelines/contenido/04-create/production/bra
 - 🛑 **El tiempo de set no es la duración de la pieza.** Un CU de 3 s se rueda en 45 min. Si el call
   sheet suma `duracion_s`, el día se cae antes de la comida.
 
-## Paso 2b · Compilar lo de ④ Creatividad — no copiarlo
+## Paso 2b · Compilar lo de Creatividad — no copiarlo
 
 El equipo rueda con **un solo documento**: tener que abrir el de Producción y el de Creative a la vez,
 en el set, es como se pierden tomas. Por eso la información creativa que hace falta para ejecutar
@@ -81,7 +81,7 @@ en el set, es como se pierden tomas. Por eso la información creativa que hace f
 
 > 🛑 **Se compila, no se reescribe.** El original sigue siendo
 > `clients/<cliente>/04-contenido/AAAA-MM/ideas/ideas-<formato>.md`, y esta sección **lo cita como fuente**. Si
-> ④ Creatividad cambia algo, se vuelve a compilar — nunca se edita acá. Un campo reescrito con otras palabras
+> Creatividad cambia algo, se vuelve a compilar — nunca se edita acá. Un campo reescrito con otras palabras
 > crea una segunda versión de la verdad, y en dos ciclos las dos no coinciden.
 
 **El filtro es una sola pregunta: ¿lo necesita alguien parado en el set, con la cámara en la mano?**
@@ -90,7 +90,7 @@ en el set, es como se pierden tomas. Por eso la información creativa que hace f
 |---|---|
 | La **acción** y el **encuadre** de cada escena, literales | La BIG IDEA, el insight y el filtro D/N/R |
 | La **duración** y el **tipo de lugar** | La hipótesis y la cubeta 70/20/10 |
-| La **emoción** y la **estética/mood** de cada pieza | El **copy** — el texto en pantalla lo pone ⑦ Video Editing en edición |
+| La **emoción** y la **estética/mood** de cada pieza | El **copy** — el texto en pantalla lo pone Video Editing en edición |
 | El **guion, solo si se dice frente a cámara** | La **voz en off** — se graba otro día, en un lugar silencioso |
 
 - La emoción y el mood van **una vez por pieza**, en *Las piezas de esta jornada* — no se repiten escena por escena.
@@ -128,7 +128,7 @@ La comida y el desmontaje se escriben como bloques del día, no se asumen.
 | 1 | **Segunda toma buena** | La primera siempre tiene algo: un parpadeo, un ruido, un foco | 2-3 min |
 | 2 | **Wide de la escena** | Permite cortar sin salto y da contexto si la pieza cambia de formato | 3-5 min |
 | 3 | **Detalle / inserto** | Tapa cualquier corte y salva el ritmo en la edición | 3-5 min |
-| 4 | **Reacción o pausa** | El segundo de respiro que ⑦ Video Editing necesita para el final | 2 min |
+| 4 | **Reacción o pausa** | El segundo de respiro que Video Editing necesita para el final | 2 min |
 | 5 | **Ambiente de la locación (30 s)** | Sincronizar y rellenar. **Una vez por locación**, no por escena | 1 min |
 
 **Total: 10-15 min por escena.** Una vuelta a locación: **una jornada entera.**
@@ -174,7 +174,7 @@ armados.
 - Se declara también el **destino del material** y la estructura de carpetas.
 
 > 🛑 **La nomenclatura se define ACÁ, antes de grabar — no al entregar.** Renombrar 400 archivos al
-> final **es cuando se pierde material**, y es cuando ⑥A Diseño gráfico y ⑦ Video Editing reciben una carpeta que no puede
+> final **es cuando se pierde material**, y es cuando Diseño gráfico y Video Editing reciben una carpeta que no puede
 > cruzarse contra el Excel.
 
 ## ✅ Auto-revisión del plan de rodaje
@@ -186,7 +186,7 @@ y el presupuesto cerrado se emiten los llamados; no antes.
 
 - [ ] Un call sheet **por jornada**, como sección propia de **`plan-de-rodaje.md`**, y el **índice de jornadas** al principio del doc
 - [ ] Encabezado completo: cliente · campaña · jornada · fecha · **dirección** · clima previsto
-- [ ] **Lo de ④ Creatividad está compilado, no reescrito:** cada jornada trae *Las piezas de esta jornada* (concepto, emoción, mood) y la fuente citada
+- [ ] **Lo de Creatividad está compilado, no reescrito:** cada jornada trae *Las piezas de esta jornada* (concepto, emoción, mood) y la fuente citada
 - [ ] 🛑 **Pasó el filtro:** no entró la BIG IDEA, ni el insight, ni la hipótesis, ni el copy de pantalla, ni la voz en off
 - [ ] El **guion aparece solo donde alguien habla a cámara**, y la voz en off está declarada como *"se graba aparte"*
 - [ ] Horarios: llamado · primer tiro · comida · wrap previsto, con **horas efectivas ≤ 10**

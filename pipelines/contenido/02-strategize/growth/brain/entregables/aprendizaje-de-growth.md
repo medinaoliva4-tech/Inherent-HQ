@@ -1,6 +1,6 @@
 # Aprendizaje de growth — <cliente> · ciclo <mes año>
 
-> Plantilla de ② Growth · `gr-loop`. **Corre el 20 de cada mes.**
+> Plantilla de Growth · `gr-loop`. **Corre el 20 de cada mes.**
 > 🛑 **Cambiar la oferta cuando el problema era la pauta destruye lo que funcionaba.**
 
 ---
@@ -39,9 +39,9 @@
 
 | A | Qué | Por qué |
 |---|---|---|
-| ① Strategy | | |
-| ③ Marketing | | |
-| ⑩ Ads | | |
+| Strategy | | |
+| Marketing | | |
+| Ads | | |
 
 ## F · Los huecos
 

@@ -55,7 +55,7 @@
 | **Duración media de plano** | [n] s |
 | **Más corto / más largo** | [n] s / [n] s |
 | **¿Acelera o desacelera?** | [y qué efecto tiene] |
-| **Setups distintos a grabar** | [n] — *dato para ⑤ Producción* |
+| **Setups distintos a grabar** | [n] — *dato para Producción* |
 
 **Lectura:** [1-2 s de plano es vértigo; 4 s es expositivo. Qué energía tiene esta pieza y si es
 coherente con su función.]

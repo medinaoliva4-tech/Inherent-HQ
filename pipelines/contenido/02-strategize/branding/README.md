@@ -1,6 +1,6 @@
 # 01.2 · Branding
 
-**Convierte la dirección de ① Strategy en una marca que se puede ejecutar.**
+**Convierte la dirección de Strategy en una marca que se puede ejecutar.**
 Va justo después de Strategy: con su data ya se puede armar la marca.
 
 **Todo lo que define cómo trabaja está en `brain/WORKFLOW.md`.**

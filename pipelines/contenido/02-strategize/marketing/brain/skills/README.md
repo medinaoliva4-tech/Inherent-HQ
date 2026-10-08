@@ -1,4 +1,4 @@
-# Las skills de ③ Marketing — cuál, cuándo y en qué orden
+# Las skills de Marketing — cuál, cuándo y en qué orden
 
 Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qué orden; acá está el
 detalle de cada herramienta.

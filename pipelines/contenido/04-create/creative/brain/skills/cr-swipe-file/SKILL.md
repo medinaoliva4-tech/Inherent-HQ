@@ -1,29 +1,29 @@
 ---
 name: cr-swipe-file
 description: >
-  Capa 1 de ④ Creatividad — la bóveda de referencias y el análisis de piezas ganadoras. Arranca de
-  la tabla 15×7 que ① Strategy ya descompuso, cosecha solo el hueco, filtra por señal de
+  Capa 1 de Creatividad — la bóveda de referencias y el análisis de piezas ganadoras. Arranca de
+  la tabla 15×7 que Strategy ya descompuso, cosecha solo el hueco, filtra por señal de
   rendimiento (un ad de 60-90+ días es un ad que paga; un orgánico vale si es outlier contra su
   propia base), extrae el patrón —nunca la imagen—, lo clasifica en 70/20/10 y lo traduce a
   hipótesis verificadas contra el mapa de saturación. Úsala cuando pidan "armá el swipe file",
   "buscá referencias", "qué está funcionando en este formato", "analizá estos ads", "qué hooks
   están ganando", "de dónde sacamos el 70 probado". No re-mapea la categoría: eso ya lo hizo
-  ① Strategy.
+  Strategy.
 ---
 
 # Capa 1 · Swipe file — qué ya funciona y por qué
 
 | | |
 |---|---|
-| **Consume** | El brief del ciclo (de `cr-brief`) · los anuncios que trae `cr-fuentes` · las fichas de referencia que produce `cr-lectura-de-video` · **si existen:** la tabla 15×7 y el mapa de saturación de `ingenieria-inversa.md` (① Strategy) y el banco de hooks propio de un ciclo anterior |
+| **Consume** | El brief del ciclo (de `cr-brief`) · los anuncios que trae `cr-fuentes` · las fichas de referencia que produce `cr-lectura-de-video` · **si existen:** la tabla 15×7 y el mapa de saturación de `ingenieria-inversa.md` (Strategy) y el banco de hooks propio de un ciclo anterior |
 | **Produce** | `swipe-file.md` — archivo de trabajo interno: referencias con señal, patrones, cubetas e hipótesis atadas a un slot · y la columna `mezcla` de cada fila de `plan-de-contenido.csv` |
 
 Contexto del departamento: `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`. Cadencia: **refresco semanal**.
 
 **Qué es:** bajar el riesgo de una pieza **antes** de producirla, leyendo lo que el mercado ya validó
 con tiempo y con dinero.
-**Qué no es:** no es investigar la categoría (eso es ① Strategy y ya está hecho), no es un
-moodboard, y no son las referencias estéticas de ②B Branding — esas dicen cómo debe *verse* la
+**Qué no es:** no es investigar la categoría (eso es Strategy y ya está hecho), no es un
+moodboard, y no son las referencias estéticas de Branding — esas dicen cómo debe *verse* la
 marca, estas dicen qué **funciona**.
 
 ## 🛑 La regla que manda: la antigüedad se lee, no se pregunta
@@ -42,7 +42,7 @@ El 70 % de la mezcla se apoya en evidencia de rendimiento. Si esa evidencia la r
 
 ## Paso 0 · Arrancar de la 15×7 y calcular **el hueco**
 
-Si existe `ingenieria-inversa.md`, ① Strategy ya descompuso **15+ piezas ganadoras en 7 capas**
+Si existe `ingenieria-inversa.md`, Strategy ya descompuso **15+ piezas ganadoras en 7 capas**
 (gancho, promesa, mecanismo, prueba, formato, distribución, oferta), con sus patrones marcados
 🟢/🟡/⚪. **Ese es el punto de partida.** Si no existe, todo es hueco: se cosecha con `cr-fuentes` y
 se declara `⚠️ SIN DATOS — sin tabla 15×7`.
@@ -60,13 +60,13 @@ Y recién después, el hueco:
 ```
 
 🛑 **Solo se cosecha el hueco.** Repetir el barrido de categoría es duplicar el trabajo de
-① Strategy y llegar, con menos rigor, a otra conclusión sobre la misma categoría. Lo que la 15×7
+Strategy y llegar, con menos rigor, a otra conclusión sobre la misma categoría. Lo que la 15×7
 ya cubre **se cita por número de fila, no se re-investiga**.
 
 El hueco es casi siempre de uno de tres tipos:
 
 1. **Formato exacto** del slot que la 15×7 no incluyó (carrusel de 5 slides, cover de Reel)
-2. **Canal exacto** que la ingeniería inversa no priorizó y el calendario de ③ Marketing sí tiene
+2. **Canal exacto** que la ingeniería inversa no priorizó y el calendario de Marketing sí tiene
 3. **Tipo de hook** que falta para el `goal_del_arte` de este ciclo
 
 **Antes de salir a buscar:** el banco de hooks propios de un ciclo anterior, si existe, va **primero y arriba**, y
@@ -148,7 +148,7 @@ relleno.
 ## Paso 4 · Organizar la bóveda
 
 **Por pilar y por tipo de hook** — no por fecha ni por plataforma, porque así es como la Capa 2 la va
-a buscar. Los pilares son los del cliente, definidos por ③ Marketing, no una lista universal.
+a buscar. Los pilares son los del cliente, definidos por Marketing, no una lista universal.
 
 ```
 por-pilar/   educativo · entretenimiento · promocional · inspiracional · comunidad
@@ -164,7 +164,7 @@ El único paso donde se genera algo nuevo.
 ```
 
 1. Se modela la **estructura**; nunca se copia la **ejecución**.
-2. La hipótesis se escribe en **nuestra voz**, con el lenguaje literal del comprador de ① Strategy.
+2. La hipótesis se escribe en **nuestra voz**, con el lenguaje literal del comprador de Strategy.
 3. Un patrón que no sirve a ningún slot de este ciclo **no entra**. Nada se guarda "por si acaso".
 4. Si la hipótesis podría llevar el logo de un competidor sin que nadie note la diferencia, **falló
    distintividad**. Se vuelve atrás.
@@ -180,7 +180,7 @@ existe, se declara `⚠️ SIN DATOS — sin mapa de saturación` y se sigue:
 | Está en el mapa, pero **el white space está al lado** | Se conserva la **estructura** y se invierte el contenido |
 | **No está** en el mapa | Entra. Es novedad real para esta categoría |
 
-> Esta verificación es la razón por la que Creative arranca de la evidencia de ① Strategy y no de
+> Esta verificación es la razón por la que Creative arranca de la evidencia de Strategy y no de
 > cero: sin el mapa de saturación no hay forma de saber si un patrón ganador es también un patrón
 > **agotado**.
 

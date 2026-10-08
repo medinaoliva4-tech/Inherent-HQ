@@ -1,6 +1,6 @@
 # Motor de crecimiento — <cliente>
 
-> Plantilla de ② Growth. **Solo se llenan las secciones que el plan contratado activa.**
+> Plantilla de Growth. **Solo se llenan las secciones que el plan contratado activa.**
 > 🔷 **En la línea Marketing, qué ofertas se empujan va en `ofertas-a-empujar.md`**, no en § La oferta.
 > 🔒 **Nunca se mencionan los costos ni los márgenes de Inherent.**
 
@@ -11,7 +11,7 @@
 
 | | |
 |---|---|
-| **División** | 🔵 Low ticket / 🟣 High ticket — *de ① Strategy* |
+| **División** | 🔵 Low ticket / 🟣 High ticket — *de Strategy* |
 | **El pilar roto** | |
 | **Plan contratado** | 🔷 Marketing / 🔷 Marketing Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made |
 
@@ -69,7 +69,7 @@
 |---|---|---|---|---|---|
 
 ### Cuáles se abren *(🟨 🟨)*
-### Qué necesita ④ Creatividad
+### Qué necesita Creatividad
 ### Dónde se registra
 
 ---
@@ -87,7 +87,7 @@
 
 ### A · El recorrido real — dónde se cae la gente
 ### B · Respuesta · C · Seguimiento · D · Closing
-### E · Qué opera ⑧ Community
+### E · Qué opera Community
 ### F · Qué se auto-revisa antes de encenderse
 
 ---

@@ -1,7 +1,7 @@
 ---
 name: cm-escalado
 description: >
-  Capa 3 de ⑧ Community Management — decide a quién y cómo pasa lo que ⑧ Community no resuelve solo: eventos,
+  Capa 3 de Community Management — decide a quién y cómo pasa lo que Community no resuelve solo: eventos,
   reservas, quejas, colaboraciones y cualquier pregunta cuya respuesta no está en la ficha. En
   🔷 Marketing escalar es darle al usuario el WhatsApp correcto del cliente; desde Pro, además se
   registra y se avisa al COO. Úsala después de cm-triage cuando una caja escala, o cuando pidan

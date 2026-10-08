@@ -1,6 +1,6 @@
 # Aprendizaje de diseño — <cliente> · ciclo <mes año>
 
-> Plantilla de ⑥A Diseño gráfico · `gd-loop`. **Corre el 20 de cada mes.**
+> Plantilla de Diseño gráfico · `gd-loop`. **Corre el 20 de cada mes.**
 
 ---
 
@@ -27,7 +27,7 @@
 
 ## D · Huecos del sistema visual
 
-| Pregunta devuelta a ②B Branding | Veces |
+| Pregunta devuelta a Branding | Veces |
 |---|---|
 
 ## E · El set del próximo ciclo

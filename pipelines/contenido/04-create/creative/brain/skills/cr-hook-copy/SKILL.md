@@ -19,9 +19,9 @@ exactas** lleva. Se decide acá para que el editor y el diseñador no las invent
 
 | | |
 |---|---|
-| **Consume** | El concepto de las **Capas 2-3** (la BIG IDEA y su arco) · el **objetivo del slot** y su **etapa** (TOFU / MOFU / BOFU / post-compra) · el **tono de voz** de ②B Branding, si existe · el **lenguaje literal del comprador** de ① Strategy |
+| **Consume** | El concepto de las **Capas 2-3** (la BIG IDEA y su arco) · el **objetivo del slot** y su **etapa** (TOFU / MOFU / BOFU / post-compra) · el **tono de voz** de Branding, si existe · el **lenguaje literal del comprador** de Strategy |
 | **Produce** | En el `ideas-<formato>.md` de cada pieza: las secciones **Hook**, **Guion** y **Copy** · en `plan-de-contenido.csv`, la columna **`concepto`** — una línea que dice qué es la pieza |
-| **No produce** | Layout, estética, escenas, encuadres ni duraciones (Capa 5) · hashtags y adaptación a plataforma (⑨ Posting) |
+| **No produce** | Layout, estética, escenas, encuadres ni duraciones (Capa 5) · hashtags y adaptación a plataforma (Posting) |
 
 El flujo del departamento y sus reglas viven en `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
 
@@ -38,7 +38,7 @@ El flujo del departamento y sus reglas viven en `pipelines/contenido/04-create/c
 | 3 | **Curiosity Gap** | Necesidad de cerrar | MOFU, confianza | 🛑 **El cierre se escribe en el mismo brief** |
 | 4 | **Question** | Autoselección | Segmenta: le habla al avatar | La pregunta usa el **lenguaje literal del comprador** |
 | 5 | **Pain / Frustration** | Reconocimiento | Frío y BOFU | El dolor **real** del avatar, nunca genérico |
-| 6 | **Bold Claim** | Provocación | Cuando hay dato o resultado | ⏸️ Con dato, precio o promesa → **aprobación de ②B Branding o ⑩ Ads** |
+| 6 | **Bold Claim** | Provocación | Cuando hay dato o resultado | ⏸️ Con dato, precio o promesa → **aprobación de Branding o Ads** |
 | 7 | **Story / Tease** | Arco abierto | Comunidad, marca personal | 🛑 **El cierre se escribe en el mismo brief** |
 
 **Cómo se elige la caja.** No por gusto: sale del **objetivo del slot** y de su **etapa**, más el
@@ -145,7 +145,7 @@ todas las piezas es la falla más común, la más barata de arreglar y la que m�
 7. **El guion va por tramo y atado al timing.** En estáticos, `N/A — formato estático`, nunca vacío.
 8. **El copy usa el lenguaje literal del comprador**, no jerga de marca. Si el comprador dice
    *"me da pena"*, la pieza dice *"me da pena"*.
-9. 🛑 **El hook y el copy pueden cambiar el ángulo; nunca la promesa.** La promesa es de ③ Marketing.
+9. 🛑 **El hook y el copy pueden cambiar el ángulo; nunca la promesa.** La promesa es de Marketing.
 10. 🛑 **Todo claim, precio o promesa va `⏸️ PENDIENTE APROBACIÓN`** con el nombre de quién valida —
     en el guion igual que en el copy. Creative no los cierra sola.
 

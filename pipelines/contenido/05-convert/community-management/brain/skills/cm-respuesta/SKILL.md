@@ -1,7 +1,7 @@
 ---
 name: cm-respuesta
 description: >
-  Capa 2 de ⑧ Community Management — escribe la respuesta de cada comentario o DM con los datos de
+  Capa 2 de Community Management — escribe la respuesta de cada comentario o DM con los datos de
   la ficha, la voz de la marca y un cierre que lleva a pedir, reservar o escribir. Persuasiva,
   inteligente y humana; nunca una respuesta que solo informa. Si el dato no está en la ficha, no lo
   inventa. Pasa todo por `humanizar.py` antes de entregarlo. Úsala cuando pidan "contestá esto",

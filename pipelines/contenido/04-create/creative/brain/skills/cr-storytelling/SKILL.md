@@ -1,7 +1,7 @@
 ---
 name: cr-storytelling
 description: >
-  Capa 3 de ④ Creatividad — arco narrativo. Convierte la BIG IDEA en una historia donde el cliente
+  Capa 3 de Creatividad — arco narrativo. Convierte la BIG IDEA en una historia donde el cliente
   es el héroe y la marca el guía: héroe, problema (externo / interno / filosófico), guía, plan de 3
   pasos, llamado, éxito y fracaso evitado, y lo distribuye en el formato del slot. Úsala cuando
   pidan "cómo lo contamos", "el arco de la pieza", "la historia", "bajá el concepto a guion",
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El bloque `## BIG IDEA · <nombre>` de `brief-del-ciclo.md` (Capa 2) · el avatar y el lenguaje literal del comprador del brief del ciclo · el **mapa de objeciones** y el **enemigo** de ③ Marketing · el **mecanismo único** y los RTB de ① Strategy |
+| **Consume** | El bloque `## BIG IDEA · <nombre>` de `brief-del-ciclo.md` (Capa 2) · el avatar y el lenguaje literal del comprador del brief del ciclo · el **mapa de objeciones** y el **enemigo** de Marketing · el **mecanismo único** y los RTB de Strategy |
 | **Produce** | En `brief-del-ciclo.md`: la línea **Arco** del bloque de BIG IDEA. Y, en el `ideas-<formato>.md` de cada pieza, dentro de su sección `## CR-007 · <concepto>`, el arco bajado a esa pieza — héroe, nivel de problema atacado, cómo entra la guía, plan, llamado, éxito, fracaso evitado y su distribución por tramo o slide |
 | **Llena del Excel** | Afina `concepto` de `plan-de-contenido.csv` — no crea filas nuevas |
 | **Alimenta** | Hook, guion y copy de la Capa 4 · la emoción y las escenas de la Capa 5 |
@@ -31,13 +31,13 @@ una pieza **se sienta**, no solo se vea.
 
 | # | Pieza | Cómo se aplica | De dónde sale |
 |---|---|---|---|
-| 1 | **Héroe** | Es el **cliente**, nombrado — nunca la marca. La pieza arranca desde su deseo | El avatar del brief (ingeniería inversa de ① Strategy) |
-| 2 | **Problema** | Externo (lo tangible) · **interno** (cómo lo hace sentir) · filosófico (por qué está mal) | Mapa de objeciones de ③ Marketing |
+| 1 | **Héroe** | Es el **cliente**, nombrado — nunca la marca. La pieza arranca desde su deseo | El avatar del brief (ingeniería inversa de Strategy) |
+| 2 | **Problema** | Externo (lo tangible) · **interno** (cómo lo hace sentir) · filosófico (por qué está mal) | Mapa de objeciones de Marketing |
 | 3 | **Guía** | Acá entra la marca: **empatía + autoridad**. Yoda, no Luke | Empatía = el insight · Autoridad = los RTB |
 | 4 | **Plan** | **3 pasos** simples que bajan el miedo a actuar | Derivados del **mecanismo único** |
 | 5 | **Llamado** | Directo (agendá, comprá) o transicional (descargá, guardá) | El objetivo del slot y la etapa |
 | 6 | **Éxito** | El después, **visible**. La transformación pintada | El después de la promesa |
-| 7 | **Fracaso evitado** | El costo de no hacer nada. Urgencia sin agresividad | El **enemigo** declarado por ③ Marketing |
+| 7 | **Fracaso evitado** | El costo de no hacer nada. Urgencia sin agresividad | El **enemigo** declarado por Marketing |
 
 ---
 
@@ -80,7 +80,7 @@ transicional en BOFU deja la venta sin pedir.
 5. **La marca aparece como guía, nunca antes del problema.** Si entra en el segundo 1, la pieza es
    un anuncio y se saltea.
 6. **El plan tiene 3 pasos.** Uno es una orden, cinco es un curso.
-7. **El fracaso evitado no se inventa.** Sale del enemigo real de ③ Marketing, no de un miedo
+7. **El fracaso evitado no se inventa.** Sale del enemigo real de Marketing, no de un miedo
    fabricado. Exagerarlo se lee como manipulación y quema la confianza.
 8. **El arco no cambia la promesa ni la BIG IDEA.** Si no entra en el arco, el problema es la idea
    —vuelve a Capa 2—, no el arco.
@@ -134,7 +134,7 @@ transicional en BOFU deja la venta sin pedir.
 - [ ] El plan tiene **3 pasos**, derivados del mecanismo único
 - [ ] El llamado corresponde a la etapa (directo en BOFU, transicional en TOFU)
 - [ ] El éxito está **pintado y visible**
-- [ ] El fracaso evitado sale del **enemigo real** de ③ Marketing, no de un miedo inventado
+- [ ] El fracaso evitado sale del **enemigo real** de Marketing, no de un miedo inventado
 - [ ] **1 transformación por pieza**
 - [ ] El arco **cabe** en el formato del slot, con su distribución declarada
 

@@ -1,7 +1,7 @@
 ---
 name: cm-ficha
 description: >
-  Capa 0 de ⑧ Community Management — antes de leer un solo mensaje, verifica que el cliente tenga
+  Capa 0 de Community Management — antes de leer un solo mensaje, verifica que el cliente tenga
   plan contratado, ficha `05-comunidad/respuestas.md` completa y menú o catálogo vigente, lee qué
   prende la escalera de su plan, y revisa si hay algo nuevo en la bandeja de Zernio. Si no hay nada
   nuevo, la corrida termina acá sin gastar más. Úsala al empezar cada corrida, o cuando pidan
@@ -21,16 +21,16 @@ description: >
 Se lee el plan y se anota **qué prende** según la tabla de `WORKFLOW.md` → «0 · El plan
 contratado». **Sin plan: BLOQUEADO.** No se asume Marketing «por mientras».
 
-**⬜ Tailor Made:** prende lo que declara **Su pipeline** → ⑧ Community *(«Básico» = 🔷 Marketing)*. Si ⑧ Community no
+**⬜ Tailor Made:** prende lo que declara **Su pipeline** → Community *(«Básico» = 🔷 Marketing)*. Si Community no
 está en su pipeline, no corre para ese cliente.
 
 ## 2 · La ficha — qué tiene que tener
 
 | Bloque de `respuestas.md` | Si falta |
 |---|---|
-| **Cuentas** que atiende ⑧ Community y su ID de Zernio | ⛔ Bloquea |
+| **Cuentas** que atiende Community y su ID de Zernio | ⛔ Bloquea |
 | **Modo** (borrador / activo) y **avisos** (correo) | ⛔ Bloquea |
-| **Voz** | ⛔ Bloquea. Si ②B Branding ya tiene guía, manda la guía |
+| **Voz** | ⛔ Bloquea. Si Branding ya tiene guía, manda la guía |
 | **Sedes:** horario, ubicación, WhatsApp, teléfono, cómo pedir | ⛔ Bloquea |
 | **Menú o catálogo** (link al archivo de `99-referencias/`) | ⛔ Bloquea preguntas de producto; lo demás corre |
 | **Promociones** con sus reglas | Se contesta «te confirmo» y se escala |

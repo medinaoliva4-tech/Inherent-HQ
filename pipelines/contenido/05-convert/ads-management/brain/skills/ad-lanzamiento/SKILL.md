@@ -1,7 +1,7 @@
 ---
 name: ad-lanzamiento
 description: >
-  Capa 3 de ⑩ Ads Management — lanza lo aprobado. Verifica una última vez el tracking, el
+  Capa 3 de Ads Management — lanza lo aprobado. Verifica una última vez el tracking, el
   presupuesto diario y el destino de cada anuncio, lanza con AdWhispr y registra qué quedó
   corriendo con su fecha. Es acción destructiva: gasta dinero del cliente y no se puede
   deshacer, así que solo corre con el GATE 1 aprobado. Úsala cuando pidan "lanzá", "ponelo a

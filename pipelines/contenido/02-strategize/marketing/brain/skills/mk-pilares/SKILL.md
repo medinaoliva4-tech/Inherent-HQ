@@ -1,7 +1,7 @@
 ---
 name: mk-pilares
 description: >
-  Capa 3 de ③ Marketing — define el sistema de contenido: los pilares del ciclo, qué función
+  Capa 3 de Marketing — define el sistema de contenido: los pilares del ciclo, qué función
   cumple cada uno y con qué peso entran en la mezcla. Un pilar no es un tema, es una promesa
   recurrente que la audiencia aprende a esperar. Reparte los slots entre pilares con porcentaje y
   verifica que la mezcla sirva al mensaje madre y no al gusto de nadie. Úsala cuando pidan "qué

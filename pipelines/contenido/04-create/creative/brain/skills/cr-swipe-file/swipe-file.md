@@ -6,7 +6,7 @@
 
 ---
 
-## 1.1 Heredado de la ingeniería inversa de ① Strategy *(si existe — punto de partida, no se re-cosecha)*
+## 1.1 Heredado de la ingeniería inversa de Strategy *(si existe — punto de partida, no se re-cosecha)*
 
 De `ingenieria-inversa.md` §1.3b (tabla 15×7) — o `⚠️ SIN DATOS — sin tabla 15×7`:
 

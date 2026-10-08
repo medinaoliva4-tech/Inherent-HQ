@@ -1,7 +1,7 @@
 # Guía de marca — <cliente>
 
-> Plantilla de ②B Branding. **Es la ley para ④ Creatividad, ⑥A Diseño gráfico,
-> ⑦ Video Editing, ⑨ Posting y ⑩ Ads.**
+> Plantilla de Branding. **Es la ley para Creatividad, Diseño gráfico,
+> Video Editing, Posting y Ads.**
 > Las specs ejecutables van en `sistema-visual.md`; acá va el entendimiento.
 
 ---
@@ -10,7 +10,7 @@
 *Capa 0 · `br-brief`*
 
 ### A · Contexto cargado
-| Bloque del brief de ① Strategy | Estado | Ruta |
+| Bloque del brief de Strategy | Estado | Ruta |
 |---|---|---|
 | 1 · Tipo de marca | | |
 | 2 · Audiencia objetivo | | |
@@ -21,8 +21,8 @@
 | 7 · Voz de marca | | |
 | 8 · Dónde vive | | |
 
-### B · Lo que ① Strategy decidió *(restricción)*
-### C · Lo que ②B Branding resuelve
+### B · Lo que Strategy decidió *(restricción)*
+### C · Lo que Branding resuelve
 ### D · El código saturado y hacia dónde vamos
 ### E · El techo de realidad
 ### F · Lo que ya existe

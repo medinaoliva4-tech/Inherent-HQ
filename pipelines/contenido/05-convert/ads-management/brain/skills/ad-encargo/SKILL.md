@@ -1,7 +1,7 @@
 ---
 name: ad-encargo
 description: >
-  Capa 0 de ⑩ Ads Management — fija el objetivo en una métrica, el presupuesto aprobado y qué se
+  Capa 0 de Ads Management — fija el objetivo en una métrica, el presupuesto aprobado y qué se
   está vendiendo, antes de tocar una cuenta. Verifica que exista acceso a las cuentas, que el
   tracking del plan esté puesto (en la línea Marketing, el pixel de Meta; en Accelerate y
   Compound, CAPI + GA4) y que el cliente pueda entregar lo que la pauta va a traer. Corre la
@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Las ofertas a pautar de ② Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · `calendario.csv` de ③ Marketing · las cuentas de ① Strategy |
+| **Consume** | Las ofertas a pautar de Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · `calendario.csv` de Marketing · las cuentas de Strategy |
 | **Produce** | La sección **§ El encargo** de `plan-de-pauta.md` |
 
 ## 1 · El objetivo va en una métrica
@@ -25,7 +25,7 @@ description: >
 | *«Que nos conozcan»* | *«5,000 personas nuevas alcanzadas, 3% al sitio»* |
 | *«Leads»* | *«30 conversaciones de WhatsApp a menos de Q40 cada una»* |
 
-🛑 **Un objetivo sin número no se puede optimizar ni evaluar.** Se devuelve a ② Growth.
+🛑 **Un objetivo sin número no se puede optimizar ni evaluar.** Se devuelve a Growth.
 
 ## 2 · El presupuesto
 
@@ -51,7 +51,7 @@ description: >
 
 > ⚠️ **Si la empresa es el estorbo, más demanda empeora el problema.**
 
-**Antes de lanzar se verifica con ② Growth que el cliente pueda atender y entregar el volumen
+**Antes de lanzar se verifica con Growth que el cliente pueda atender y entregar el volumen
 que el objetivo implica.** Si no puede, **se baja el objetivo o se para** — y se dice por qué.
 
 ## 5 · La auditoría de arranque
@@ -74,7 +74,7 @@ que el objetivo implica.** Si no puede, **se baja el objetivo o se para** — y 
 | Bloque | Qué lleva |
 |---|---|
 | **A · El objetivo** | En una métrica, con número y plazo |
-| **B · Qué se vende** | Las ofertas a pautar y su precio, de ② Growth |
+| **B · Qué se vende** | Las ofertas a pautar y su precio, de Growth |
 | **C · El presupuesto** | Total, diario, y qué pasa si se agota |
 | **D · Las cuentas** | Cuáles, con acceso verificado y quién lo dio |
 | **E · El tracking** | 🔷 pixel de Meta · 🟨 CAPI + GA4 — qué está puesto, qué falta |

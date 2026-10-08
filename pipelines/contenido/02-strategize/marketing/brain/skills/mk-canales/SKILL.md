@@ -1,7 +1,7 @@
 ---
 name: mk-canales
 description: >
-  Capa 4 de ③ Marketing — arma la ficha de cada canal del ciclo con su función única y, sobre
+  Capa 4 de Marketing — arma la ficha de cada canal del ciclo con su función única y, sobre
   todo, con qué NO se hace ahí. Dos canales con la misma función significan que sobra uno, así
   que acá se fuerza la decisión. Declara formato, cadencia, temperatura, la cuenta concreta y
   quién tiene el acceso. Un canal sin cuenta o sin alguien que lo opere no entra al plan. Úsala
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Sistema de contenido · `00-onboarding/comprension.md` §B y §D de ① Strategy · `LINKS.md` |
+| **Consume** | § Sistema de contenido · `00-onboarding/comprension.md` §B y §D de Strategy · `LINKS.md` |
 | **Produce** | `plan-por-canal.md` — una ficha por canal |
 
 ## 1 · La regla que define la capa
@@ -55,12 +55,12 @@ convierta en el basurero del ciclo.**
 
 ## 4 · Los canales que no son redes
 
-**El plan los contempla igual, y ⑨ Posting los rutea distinto.**
+**El plan los contempla igual, y Posting los rutea distinto.**
 
 | Ruta | Canales | Qué necesita |
 |---|---|---|
 | **Social** | Instagram · TikTok · YouTube · Facebook · Google Business | Archivo + copy + cuenta |
-| **Email** | Newsletter | El cuerpo escrito por ④ Creatividad, la lista y la herramienta |
+| **Email** | Newsletter | El cuerpo escrito por Creatividad, la lista y la herramienta |
 | **Manual** | WhatsApp · SMS · impresos | El texto o el archivo, la lista, y **quién lo opera** |
 
 🛑 **Un canal que no cae en ninguna de las tres rutas no entra.** Inventar la ruta en el momento
@@ -74,7 +74,7 @@ es cómo un canal termina cargado donde no va.
 |---|---|
 | La suma de cadencias × semanas | **Tiene que dar el total de slots del ciclo.** Si no, hay un error |
 | ¿El cliente puede sostenerla? | Una cadencia que depende de material que no existe no es cadencia |
-| ¿Dos piezas del mismo canal el mismo día? | Se separa. ⑨ Posting lo va a rebotar |
+| ¿Dos piezas del mismo canal el mismo día? | Se separa. Posting lo va a rebotar |
 
 ## 6 · Qué escribe
 

@@ -1,7 +1,7 @@
 ---
 name: gr-canales-grandes
 description: >
-  Capa 2 de ② Growth — el Pilar 2. En low ticket son las ventas grandes (eventos, mayoreo,
+  Capa 2 de Growth — el Pilar 2. En low ticket son las ventas grandes (eventos, mayoreo,
   corporativos, preventas); en high ticket son las cuentas grandes (retainers, contratos
   anuales, proyectos por fases). No corre en la linea Marketing; en Accelerate se abren y venden, en
   Compound se vuelven canal permanente. Antes de abrir uno verifica que la capacidad de entrega
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § La oferta · § El encargo · la capacidad de ① Strategy |
+| **Consume** | § La oferta · § El encargo · la capacidad de Strategy |
 | **Produce** | La sección **§ Canales grandes** de `motor-de-crecimiento.md` |
 
 ## 1 · Qué es, según la división
@@ -65,7 +65,7 @@ caro que no haberlo abierto.
 | **1 · La lista** | Objetivos concretos con nombre. Apify `crawler-google-places` ayuda a armarla |
 | **2 · El ángulo** | Por qué les sirve a **ellos**, no por qué queremos venderles |
 | **3 · La secuencia** | Primer contacto, seguimiento, propuesta. **Con fechas** |
-| **4 · El material** | Qué necesita ④ Creatividad producir para esto |
+| **4 · El material** | Qué necesita Creatividad producir para esto |
 | **5 · El seguimiento** | Dónde se registra. **Un canal grande sin registro se pierde** |
 
 ## 6 · Compound — canal permanente
@@ -82,7 +82,7 @@ white label, con su proceso documentado en los SOPs de empresa.
 | **A · El mapa** | Tabla: canal · tamaño · requisito · ciclo · quién decide |
 | **B · La verificación de capacidad** | Por canal, con el veredicto |
 | **C · Cuáles se abren** | 🟨 A y C — con lista, ángulo, secuencia y fechas |
-| **D · Qué necesita ④ Creatividad** | El material a producir |
+| **D · Qué necesita Creatividad** | El material a producir |
 | **E · Dónde se registra** | El seguimiento |
 
 ## 8 · Checklist

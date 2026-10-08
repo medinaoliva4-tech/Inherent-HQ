@@ -1,9 +1,9 @@
 ---
 name: br-voz
 description: >
-  Capa 2 de ②B Branding — define cómo suena la marca: el tono con sus ejes, los do's & don'ts
+  Capa 2 de Branding — define cómo suena la marca: el tono con sus ejes, los do's & don'ts
   con ejemplos reales del mismo mensaje bien y mal escrito, cómo se nombra la marca y qué
-  palabras nunca usa. Es lo que ④ Creatividad y ⑨ Posting consumen como ley, así que se escribe
+  palabras nunca usa. Es lo que Creatividad y Posting consumen como ley, así que se escribe
   con ejemplos y no con adjetivos. Úsala cuando pidan "el tono de voz", "cómo hablamos", "cómo
   se escribe el nombre", "qué palabras no usamos", "esto no suena a nosotros". Requiere el
   territorio definido.
@@ -13,10 +13,10 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Territorio y personalidad · bloque 7 del brief de ① Strategy |
+| **Consume** | § Territorio y personalidad · bloque 7 del brief de Strategy |
 | **Produce** | La sección **§ Voz** de `guia-de-marca.md` |
 
-> 🔑 **④ Creatividad y ⑨ Posting la usan como ley.** Si está escrita con adjetivos, no sirve:
+> 🔑 **Creatividad y Posting la usan como ley.** Si está escrita con adjetivos, no sirve:
 > *«cercano y profesional»* lo cumple cualquier texto.
 
 ## 1 · El tono se define con ejes, no con adjetivos
@@ -46,7 +46,7 @@ comentario, un CTA, y un error de la marca.
 
 ## 3 · Cómo se nombra la marca
 
-**⑨ Posting lo necesita literal.**
+**Posting lo necesita literal.**
 
 | | |
 |---|---|
@@ -63,15 +63,15 @@ comentario, un CTA, y un error de la marca.
 | **Prohibidas** | Las que la categoría gastó: *«innovador»*, *«líder»*, *«solución integral»*, *«360°»* |
 | **Claims que necesitan validación** | Todo lo que afirme un resultado, un número o una comparación |
 
-> ⚠️ **Un claim sin validar no sale.** ④ Creatividad lo marca `⏸️ PENDIENTE APROBACIÓN` y
-> **②B Branding lo valida antes de que ⑨ Posting lo publique.**
+> ⚠️ **Un claim sin validar no sale.** Creatividad lo marca `⏸️ PENDIENTE APROBACIÓN` y
+> **Branding lo valida antes de que Posting lo publique.**
 
 ## 5 · El tono NO cambia por canal
 
 **Cambia el formato, no la voz.** Un reel es más corto que un email, pero suena a lo mismo.
 
 > 🛑 **Si una marca suena distinta en TikTok que en su newsletter, no tiene voz: tiene dos
-> marcas.** Lo que sí cambia es el largo y la densidad — y eso lo resuelve ⑨ Posting.
+> marcas.** Lo que sí cambia es el largo y la densidad — y eso lo resuelve Posting.
 
 ## 6 · Qué escribe
 

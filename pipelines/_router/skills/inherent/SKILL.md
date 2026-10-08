@@ -41,7 +41,7 @@ Del prompt CHOCA con el workflow: [qué pide saltarse o hacer distinto · «nada
 ```
 
 🔑 **El `Plan:` se LEE, no se adivina:** sale de `clients/<cliente>/00-onboarding/plan-contratado.md`,
-donde lo anota ① Strategy. **Si el archivo no existe, va `⛔ falta`** — y el orquestador del
+donde lo anota Strategy. **Si el archivo no existe, va `⛔ falta`** — y el orquestador del
 departamento bloquea, porque el plan es el techo de todos.
 
 ⬜ **Un Tailor Made no se cuestiona: se sigue.** Su `plan-contratado.md` declara **qué incluye** y
@@ -61,17 +61,17 @@ cliente no empieza con `ENRUTAMIENTO`, se saltó el router.
 
 | Si el pedido es sobre… | Departamento | Se invoca |
 |---|---|---|
-| Comprensión, contexto, análisis, ingeniería inversa, la estrategia | ① Strategy | `context` → `analysis` → `reverse-engineering` → `methodology` *(según `pipelines/contenido/02-strategize/strategy/brain/WORKFLOW.md`)* |
-| Identidad, voz, paleta, tipografía, guía de marca, «¿esto es de marca?» | ②B Branding | `/branding` |
-| Oferta, precio **del cliente**, paquetes, canales grandes, upsells, conversión, números | ② Growth | `/growth` — 🔷 **ligero:** elige qué ofertas que ya existen se empujan · 🟨 **completo** · ⬜ lo que diga su pipeline |
-| Plan del ciclo, pilares, campañas, calendario, canales, mensaje | ③ Marketing | `/marketing` |
-| Ideas, conceptos, BIG IDEA, hooks, copy, shot list, swipe file, plan de contenido | ④ Creatividad | `/creatividad` |
-| Grabar, locaciones, talento, jornadas, call sheet, presupuesto de rodaje | ⑤ Producción | `/produccion` |
-| Estáticos, carruseles, stories, plantillas, fotos de producto | ⑥A Diseño gráfico | `/graphic-design` |
-| Reels, edición, derivadas, cortes | ⑦ Video Editing | `/video-editing` |
-| Captions, hashtags, fechas y horas, programar, archivo de carga | ⑨ Posting | `/posting` |
-| Pauta, presupuesto de ads, campañas pagas, CPA, ROAS, atribución | ⑩ Ads | `/ads` |
-| Comentarios, DMs, menciones, la bandeja, moderar | ⑧ Community | `/community` |
+| Comprensión, contexto, análisis, ingeniería inversa, la estrategia | Strategy | `context` → `analysis` → `reverse-engineering` → `methodology` *(según `pipelines/contenido/02-strategize/strategy/brain/WORKFLOW.md`)* |
+| Identidad, voz, paleta, tipografía, guía de marca, «¿esto es de marca?» | Branding | `/branding` |
+| Oferta, precio **del cliente**, paquetes, canales grandes, upsells, conversión, números | Growth | `/growth` — 🔷 **ligero:** elige qué ofertas que ya existen se empujan · 🟨 **completo** · ⬜ lo que diga su pipeline |
+| Plan del ciclo, pilares, campañas, calendario, canales, mensaje | Marketing | `/marketing` |
+| Ideas, conceptos, BIG IDEA, hooks, copy, shot list, swipe file, plan de contenido | Creatividad | `/creatividad` |
+| Grabar, locaciones, talento, jornadas, call sheet, presupuesto de rodaje | Producción | `/produccion` |
+| Estáticos, carruseles, stories, plantillas, fotos de producto | Diseño gráfico | `/graphic-design` |
+| Reels, edición, derivadas, cortes | Video Editing | `/video-editing` |
+| Captions, hashtags, fechas y horas, programar, archivo de carga | Posting | `/posting` |
+| Pauta, presupuesto de ads, campañas pagas, CPA, ROAS, atribución | Ads | `/ads` |
+| Comentarios, DMs, menciones, la bandeja, moderar | Community | `/community` |
 | Hablarle al cliente | 00 Account (Secretaria) | 🔴 **No desde acá** — vive en WhatsApp |
 
 **Si el pedido toca dos departamentos**, se enruta al que va **primero en el pipeline** y se

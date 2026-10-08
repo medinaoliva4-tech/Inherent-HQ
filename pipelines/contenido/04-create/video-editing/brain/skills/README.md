@@ -1,4 +1,4 @@
-# Las skills de ⑦ Video Editing — cuál, cuándo y en qué orden
+# Las skills de Video Editing — cuál, cuándo y en qué orden
 
 Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qué orden; acá está el
 detalle de cada herramienta.
@@ -24,7 +24,7 @@ detalle de cada herramienta.
 
 | # | Skill | Capa | Se dispara cuando… | Produce |
 |---|---|---|---|---|
-| 1 | **`ve-recepcion`** | 0 | *«¿llegó todo?»*, *«qué nos falta»*, *«calificá el material»* | Filas base de `entregas-video.md` · la selección si ⑤ Producción no la hizo |
+| 1 | **`ve-recepcion`** | 0 | *«¿llegó todo?»*, *«qué nos falta»*, *«calificá el material»* | Filas base de `entregas-video.md` · la selección si Producción no la hizo |
 | 2 | **`ve-armado`** | 1 | *«armá este reel»*, *«mostrame el guion»* | El guion visual aprobado + el corte principal |
 | 3 | **`ve-marca`** | 2 | *«ponele subtítulos»*, *«aplicá la marca»*, *«se ve azul»* | El corte de marca con QA medido, auto-revisado antes de derivar |
 | 4 | **`ve-derivadas`** | 3 | *«sacá las derivadas»*, *«variantes para pauta»* | Las 4 · 6 · 9 · 12 derivadas |
@@ -35,8 +35,8 @@ detalle de cada herramienta.
 
 ## Las dos reglas que no se rompen
 
-🛑 **El hook y el guion vienen literales de ④ Creatividad y no se cambian en edición.** Si el material no
-permite montarlos, se devuelve a ④ Creatividad.
+🛑 **El hook y el guion vienen literales de Creatividad y no se cambian en edición.** Si el material no
+permite montarlos, se devuelve a Creatividad.
 
 🛑 **No se deriva de un corte que no pasó su auto-revisión** (`ve-marca` §6-7). Un corte principal
 flojo produce 3 derivadas flojas.

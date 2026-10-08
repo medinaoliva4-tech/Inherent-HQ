@@ -1,7 +1,7 @@
 ---
 name: br-aplicacion
 description: >
-  Capa 5 de ②B Branding — baja el sistema a cada formato real donde la marca vive: reel, story,
+  Capa 5 de Branding — baja el sistema a cada formato real donde la marca vive: reel, story,
   carrusel, estático, email, impresos. Por formato define las medidas, las safe zones, dónde van
   los activos distintivos y un ejemplo de bien y mal. Es la capa que evita que la guía quede
   bonita y sin aplicar. Cierra la guía de marca. Úsala cuando pidan "cómo se ve en un reel",
@@ -66,11 +66,11 @@ description: >
 | Bloque | Qué lleva |
 |---|---|
 | **§ Resumen** | Tabla con formato, medidas, activos que van |
-| **§ Lo que rompe el sistema** | La lista de errores que ⑥A Diseño gráfico y ⑦ Video Editing tienen que evitar |
+| **§ Lo que rompe el sistema** | La lista de errores que Diseño gráfico y Video Editing tienen que evitar |
 
 ## 6 · La guía cerrada
 
-🛑 **Es lo que ④ Creatividad, ⑥A Diseño gráfico, ⑦ Video Editing, ⑨ Posting y ⑩ Ads van a usar como ley.** A partir de acá, una pieza que no la cumple
+🛑 **Es lo que Creatividad, Diseño gráfico, Video Editing, Posting y Ads van a usar como ley.** A partir de acá, una pieza que no la cumple
 se devuelve. Se auto-revisa con el checklist de §7 y sigue.
 
 ## 6.1 · El kit en el Drive del cliente
@@ -79,9 +79,9 @@ se devuelve. Se auto-revisa con el checklist de §7 y sigue.
 logos en todas sus versiones, íconos, texturas y fuentes.
 **El link del Drive va en `clients/<cliente>/02-marca/kit-de-redes/kit.md`**, junto al de Figma.
 
-🔑 **Es para ⑦ Video Editing:** el editor usa los assets de la marca sin abrir Figma, en
+🔑 **Es para Video Editing:** el editor usa los assets de la marca sin abrir Figma, en
 cualquier computadora. **Las plantillas no se suben:** se desarrollan en Figma y
-⑥A Diseño gráfico trabaja ahí.
+Diseño gráfico trabaja ahí.
 **Si el kit cambia en Figma, se vuelve a subir.**
 
 Sin acceso a Figma o al Drive: `BLOQUEADO — falta Figma. Instalala: ver INSTALAR.md § Figma + Figwright`

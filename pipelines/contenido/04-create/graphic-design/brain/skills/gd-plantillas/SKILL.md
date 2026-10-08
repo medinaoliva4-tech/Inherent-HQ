@@ -1,7 +1,7 @@
 ---
 name: gd-plantillas
 description: >
-  Capa 1 de ⑥A Diseño gráfico — arma el sistema de plantillas del ciclo, que es lo que hace
+  Capa 1 de Diseño gráfico — arma el sistema de plantillas del ciclo, que es lo que hace
   posible producir 168 piezas sin tomar 168 decisiones. Una plantilla por combinación de formato
   y tipo de contenido, con las zonas de texto, imagen y activo ya fijadas, probada con el copy
   más largo y el más corto del ciclo. Se prueba el molde, no las piezas. Úsala cuando pidan
@@ -81,11 +81,11 @@ siguiente:
 
 **Si una pieza necesita algo que `sistema-visual.md` no define:**
 
-↩️ **Se devuelve a ②B Branding con la regla que falta**, escrita como pregunta concreta:
+↩️ **Se devuelve a Branding con la regla que falta**, escrita como pregunta concreta:
 *«¿Qué tratamiento lleva un número grande sobre fondo de acento?»*
 
-🛑 **No se inventa la regla acá.** Una decisión tomada en ⑥A Diseño gráfico se vuelve precedente sin que
-②B Branding se entere, y al tercer ciclo el sistema tiene dos reglas contradictorias.
+🛑 **No se inventa la regla acá.** Una decisión tomada en Diseño gráfico se vuelve precedente sin que
+Branding se entere, y al tercer ciclo el sistema tiene dos reglas contradictorias.
 
 ## 7 · Se revisa el molde, no las piezas
 
@@ -102,4 +102,4 @@ sigue: no para a pedir aprobación.
 - [ ] Cada una pasó la **prueba de estrés** con los cuatro extremos
 - [ ] El **activo distintivo está en el molde**, no agregado por pieza
 - [ ] Se **reusaron** las del ciclo anterior que no dieron devoluciones
-- [ ] Lo que el sistema no cubría **se devolvió a ②B Branding**, no se inventó
+- [ ] Lo que el sistema no cubría **se devolvió a Branding**, no se inventó

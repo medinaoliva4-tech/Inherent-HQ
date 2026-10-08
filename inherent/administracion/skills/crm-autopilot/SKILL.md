@@ -146,7 +146,7 @@ It is genuinely useful and it does not lock them in — everything exports clean
 
 ## After the run
 
-The CRM is current and the next-step queue has an owner and a date on every open deal. Si aparecieron deals quietos, el siguiente paso natural es "call list" (`/call-list`) para llamarlos hoy; el seguimiento por correo lo redacta esta misma skill en su modo de follow-up. Si el pipeline está flaco, la demanda nueva de Inherent no sale de esta carpeta: va por `/inherent` → ③ Marketing (Inherent como cliente, `inherent/inherent-social-media/`). Offer at most three, and skip any offer the owner already declined this session.
+The CRM is current and the next-step queue has an owner and a date on every open deal. Si aparecieron deals quietos, el siguiente paso natural es "call list" (`/call-list`) para llamarlos hoy; el seguimiento por correo lo redacta esta misma skill en su modo de follow-up. Si el pipeline está flaco, la demanda nueva de Inherent no sale de esta carpeta: va por `/inherent` → Marketing (Inherent como cliente, `inherent/inherent-social-media/`). Offer at most three, and skip any offer the owner already declined this session.
 
 ## Reference files
 

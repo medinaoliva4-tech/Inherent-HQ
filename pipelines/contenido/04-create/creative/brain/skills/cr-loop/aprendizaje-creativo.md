@@ -2,8 +2,8 @@
 **Bloque medido:** [x] · **Fecha:** [fecha] · **Capa 7**
 **Excel de referencia:** `04-contenido/[AAAA-MM]/ideas/plan-de-contenido.csv`
 
-> Mide **patrones creativos**, no resultado de negocio. Revenue, share y awareness son de ③ Marketing
-> Capa 8; los dashboards son de ③ Marketing.
+> Mide **patrones creativos**, no resultado de negocio. Revenue, share y awareness son de Marketing
+> Capa 8; los dashboards son de Marketing.
 
 ---
 
@@ -71,7 +71,7 @@ abandonarla.
 
 *(lo que Creative detectó y no le corresponde arreglar)*
 
-| Qué se detectó | A qué capa de ③ Marketing le toca |
+| Qué se detectó | A qué capa de Marketing le toca |
 |---|---|
 | | |
 

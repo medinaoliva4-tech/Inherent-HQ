@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Plan** | ⬜ **Tailor Made** — acuerdo especial |
-| **Línea** | 🔷 Marketing, con la oferta trabajada por ② Growth *(ver «Su pipeline»)* |
+| **Línea** | 🔷 Marketing, con la oferta trabajada por Growth *(ver «Su pipeline»)* |
 | **Precio** | **Q2,500 al mes** |
 | **Cambio a precio de lista** | Sin fecha |
 | **Redes** | Instagram · TikTok · Facebook |
@@ -20,23 +20,23 @@
 
 | Paso | Qué hace |
 |---|---|
-| **① Strategy** | Comprensión y estrategia ligera |
-| **② Growth** | **Trabaja la oferta:** NAO vende experiencia; Akai, ofertas y combos. El objetivo es crecer sus ventas —oferta, experiencia, eventos— para crecer la cuenta |
-| **②B Branding** | El kit de NAO **todavía no existe**. Hasta que exista, ⑥A Diseño no corre para NAO |
-| **③ Marketing** | Campañas, calendario y brief del ciclo |
-| **④ Creatividad** | Las ideas del ciclo |
-| **⑤ Producción** | 3 h de grabación para NAO y Akai juntos, con el CEO |
-| **⑦ Video Editing** | 9 planificados *(editor de video)* + 4 derivados *(CEO)* |
-| **⑥A Diseño** | Estáticos, carruseles y stories con las plantillas del kit: **alto volumen, poco esfuerzo.** Los hace el operador |
-| **⑧ Community** | Básico |
-| **⑨ Posting** | Instagram · TikTok · Facebook, por Zernio |
-| **⑩ Ads** | Meta Ads, USD 320 al mes que pone el cliente |
+| **Strategy** | Comprensión y estrategia ligera |
+| **Growth** | **Trabaja la oferta:** NAO vende experiencia; Akai, ofertas y combos. El objetivo es crecer sus ventas —oferta, experiencia, eventos— para crecer la cuenta |
+| **Branding** | El kit de NAO **todavía no existe**. Hasta que exista, Diseño no corre para NAO |
+| **Marketing** | Campañas, calendario y brief del ciclo |
+| **Creatividad** | Las ideas del ciclo |
+| **Producción** | 3 h de grabación para NAO y Akai juntos, con el CEO |
+| **Video Editing** | 9 planificados *(editor de video)* + 4 derivados *(CEO)* |
+| **Diseño** | Estáticos, carruseles y stories con las plantillas del kit: **alto volumen, poco esfuerzo.** Los hace el operador |
+| **Community** | Básico |
+| **Posting** | Instagram · TikTok · Facebook, por Zernio |
+| **Ads** | Meta Ads, USD 320 al mes que pone el cliente |
 
 **No lleva Conversion OS, Operations OS ni Money OS.**
 
 ## El techo de video — NAO y Akai juntos
 
-Sale de las 3 h de grabación con la regla de los 20 minutos de ⑦ Video Editing.
+Sale de las 3 h de grabación con la regla de los 20 minutos de Video Editing.
 
 | | |
 |---|---|

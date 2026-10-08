@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ② Growth |
+| **Escribe aquí** | Growth |
 | **Se activa en** | 🟨 Accelerate y Compound |
 
 | Archivo o folder | Qué tiene |

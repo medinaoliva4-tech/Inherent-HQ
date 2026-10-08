@@ -1,6 +1,6 @@
 # Estrategia de contenido — <cliente> · ciclo <mes año>
 
-> Plantilla de ③ Marketing. Las secciones se llenan en el orden de las capas.
+> Plantilla de Marketing. Las secciones se llenan en el orden de las capas.
 > **Lo que no se sabe va como `⚠️ SIN DATOS`, nunca inventado.**
 
 ---
@@ -11,11 +11,11 @@
 ### A · Contexto cargado
 | Archivo | De | Ruta | Estado |
 |---|---|---|---|
-| | ① Strategy | | |
-| | ②B Branding *(si existe)* | | |
+| | Strategy | | |
+| | Branding *(si existe)* | | |
 
 ### B · El objetivo del ciclo
-*Literal de ① Strategy, con plazo y métrica.*
+*Literal de Strategy, con plazo y métrica.*
 
 ### C · Las MUST BE TRUE
 | Letra | Qué tiene que ser verdad |

@@ -42,12 +42,12 @@ Las piezas, no las opiniones sobre la marca.
 
 ### 🛑 Se investiga por plataforma, y la competencia es de Guatemala nada más
 
-**La fuente oficial es Apify**, la misma que usa ④ Creatividad, con **un actor por plataforma**.
+**La fuente oficial es Apify**, la misma que usa Creatividad, con **un actor por plataforma**.
 Las reglas completas —los 3 aprendizajes del actor de anuncios, los topes y el orden de trabajo—
 viven en **`cr-fuentes`**. Acá solo lo que cambia para Strategy.
 
 **Las plataformas son las del cliente:** las **Redes** de `00-onboarding/plan-contratado.md`. Si ya
-existe `plan-por-canal.md` de ③ Marketing, también sirve.
+existe `plan-por-canal.md` de Marketing, también sirve.
 
 | Plataforma | Actor |
 |---|---|
@@ -64,14 +64,14 @@ existe `plan-por-canal.md` de ③ Marketing, también sirve.
 > **Decisión del CEO · las dos capas.** El barrido de **competencia** y el de **referencias
 > ganadoras** son dos cosas distintas y **no se mezclan en el mismo archivo**.
 
-| | 🔍 **Competencia** — es la de Strategy | ⭐ **Referencias ganadoras** — es de ④ Creatividad |
+| | 🔍 **Competencia** — es la de Strategy | ⭐ **Referencias ganadoras** — es de Creatividad |
 |---|---|---|
 | **Para qué** | De qué hay que despegarse. Alimenta el posicionamiento | Qué estructura ya funciona. Alimenta el swipe file |
 | **Países** | **Solo Guatemala** (`country=GT`) | Países parecidos a Guatemala — la lista fija está en `cr-fuentes` |
 | **Cómo se busca** | **Por página de cada competidor**: `search_type=page` + `view_all_page_id=…` | Descubrir por keyword, después por página |
 
 🛑 **Un anuncio de México no es competencia.** Si no se le puede ganar el cliente en Guatemala, no
-entra a `ingenieria-inversa.md` — entra, si acaso, al swipe file de ④ Creatividad, y en su propia
+entra a `ingenieria-inversa.md` — entra, si acaso, al swipe file de Creatividad, y en su propia
 sección.
 
 🛑 **Primero se descubre, después se scrapea.** La búsqueda por keyword dice **qué páginas lideran
@@ -149,7 +149,7 @@ nicho y menciones previas de marca. Requiere cuenta de Meta Business y cuenta pr
 Instagram, y está en 18+ países — **verificar disponibilidad en Guatemala antes de contar con ella**.
 
 **Qué cuenta como "ganadora":** — los mismos criterios de `cr-swipe-file`, para que Strategy y
-④ Creatividad no midan con reglas distintas.
+Creatividad no midan con reglas distintas.
 - **Anuncio: 60-90+ días corriendo** → está pagando
 - **Orgánico: 2x o más** las vistas o interacciones **del promedio de esa cuenta**, nunca en
   números absolutos
@@ -190,7 +190,7 @@ sobre una casualidad.
 ## 6B · Salida
 
 **`clients/<cliente>/99-referencias/investigacion/ingenieria-inversa.md`** — los patrones observados con sus marcas
-🟢/🟡/⚪ y su fuente. **④ Creatividad lo lee para no re-mapear la categoría** en su swipe file.
+🟢/🟡/⚪ y su fuente. **Creatividad lo lee para no re-mapear la categoría** en su swipe file.
 
 ## 7 · Antes de cerrar
 - [ ] Los competidores están **verificados**, no listados de memoria

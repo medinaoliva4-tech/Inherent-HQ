@@ -152,7 +152,7 @@ una lista cerrada.
 ## Salida
 
 **`clients/<cliente>/00-onboarding/comprension.md`** — toda la data cruda de §A a §E, con su etiqueta de
-confianza por dato. **Es el archivo que ④ Creatividad, ⑤ Producción y ⑨ Posting leen** cuando
+confianza por dato. **Es el archivo que Creatividad, Producción y Posting leen** cuando
 necesitan la audiencia actual, la capacidad o las restricciones del cliente.
 
 ## Antes de cerrar

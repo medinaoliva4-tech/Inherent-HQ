@@ -1,6 +1,6 @@
 # Plan por canal — <cliente> · ciclo <mes año>
 
-> Plantilla de ③ Marketing, Capa 4 · `mk-canales`.
+> Plantilla de Marketing, Capa 4 · `mk-canales`.
 > **Cada canal tiene UNA función y un «qué NO se hace acá».**
 
 ---

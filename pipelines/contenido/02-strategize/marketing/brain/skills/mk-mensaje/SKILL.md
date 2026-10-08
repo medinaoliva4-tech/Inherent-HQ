@@ -1,8 +1,8 @@
 ---
 name: mk-mensaje
 description: >
-  Capa 2 de ③ Marketing — la jerarquía de mensaje del ciclo: qué se dice primero, qué segundo y
-  qué no se dice. Es la ley del ciclo y ④ Creatividad la copia tal cual, así que define el orden
+  Capa 2 de Marketing — la jerarquía de mensaje del ciclo: qué se dice primero, qué segundo y
+  qué no se dice. Es la ley del ciclo y Creatividad la copia tal cual, así que define el orden
   de prioridad, el mensaje por nivel de awareness y las objeciones que el ciclo responde. Úsala
   cuando pidan "qué decimos primero", "cuál es el mensaje del mes", "qué objeciones atacamos",
   "ordená los mensajes". Requiere la campaña definida.
@@ -12,10 +12,10 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Idea de campaña · posicionamiento de ① Strategy · tono de ②B Branding, si existe |
+| **Consume** | § Idea de campaña · posicionamiento de Strategy · tono de Branding, si existe |
 | **Produce** | La sección **§ Jerarquía de mensaje** de `estrategia-de-contenido.md` |
 
-> 🔑 **④ Creatividad la copia tal cual. Es la ley del ciclo.** Abreviarla es reescribirla.
+> 🔑 **Creatividad la copia tal cual. Es la ley del ciclo.** Abreviarla es reescribirla.
 
 ## 1 · Por qué existe
 
@@ -35,7 +35,7 @@ no suma: se siente como contenido suelto, no como una campaña.
 ## 3 · El mensaje por awareness
 
 **El mensaje madre no se dice igual a quien no sabe que tiene el problema que a quien ya nos
-conoce.** Acá se escribe cada versión — ④ Creatividad la usa para fijar el ángulo de cada pieza.
+conoce.** Acá se escribe cada versión — Creatividad la usa para fijar el ángulo de cada pieza.
 
 | `awareness` | Qué se le dice |
 |---|---|
@@ -50,13 +50,13 @@ conoce.** Acá se escribe cada versión — ④ Creatividad la usa para fijar el
 
 ## 4 · Las objeciones
 
-**El ciclo responde objeciones concretas, no genéricas.** Salen de ① Strategy —de lo que el
+**El ciclo responde objeciones concretas, no genéricas.** Salen de Strategy —de lo que el
 cliente dice que le dicen— no de la imaginación.
 
 | | |
 |---|---|
 | **Cuáles entran** | Las 2 o 3 que más frenan la venta |
-| **De dónde salen** | ① Strategy, con fuente |
+| **De dónde salen** | Strategy, con fuente |
 | **Sin fuente** | Va como `[dice el cliente, sin verificar]` o `⚠️ SIN DATOS` |
 
 ## 5 · Lo que NO se dice este ciclo
@@ -91,6 +91,6 @@ la jerarquía se auto-revisan acá, antes de que se arme un solo slot.
 - [ ] Hay **un** mensaje madre, no dos
 - [ ] Los soportes tienen prueba, no adjetivos
 - [ ] Las versiones por awareness cubren los niveles que el ciclo trabaja
-- [ ] Las objeciones salen de ① Strategy, **con fuente**
+- [ ] Las objeciones salen de Strategy, **con fuente**
 - [ ] **Lo que NO se dice** está escrito
 - [ ] Ningún mensaje promete algo fuera de «Capacidades reales»

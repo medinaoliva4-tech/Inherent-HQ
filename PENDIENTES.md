@@ -16,8 +16,8 @@
 | 4 | **¿Cuál de las tres auditorías cubre corporate structure?** | Hoy dice solo «la auditoría» |
 | 5 | **Reposición gratis en las garantías** | El costo «3 a 5 puntos de margen» se calculó con la tabla vieja: recalcular o descartar |
 | 6 | **Bloque «Lo básico vs. el valor único» de Marketing Pro** | `01-IDENTIDAD` lo tiene para Marketing, Accelerate y Compound, no para Pro |
-| 7 | **El margen de rodaje de cada plan** | Las horas contratadas son tiempo de cámara; ⑤ usa márgenes de referencia (60-90 / 30-45 / 45 min) mientras no se decida |
-| 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de ⑧ |
+| 7 | **El margen de rodaje de cada plan** | Las horas contratadas son tiempo de cámara; Producción usa márgenes de referencia (60-90 / 30-45 / 45 min) mientras no se decida |
+| 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de Community Management |
 
 ---
 
@@ -25,7 +25,7 @@
 
 | # | Qué | Por qué |
 |---|---|---|
-| 1 | **Herramienta o MCP para ⑥A Diseño y ⑦ Video Editing** | Hoy son 100% manuales: las horas del operador y del editor son el techo |
+| 1 | **Herramienta o MCP para Diseño y Video Editing** | Hoy son 100% manuales: las horas del operador y del editor son el techo |
 | 2 | **Operación automatizada** | Programar, publicar y reportar sin humano; el operador supervisa más cuentas |
 | 3 | **Pipeline de herramientas** | Plantillas y despliegue automatizado para que la tecnología de Growth quepa en el rubro Operador |
 | 4 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
@@ -42,16 +42,16 @@
 | # | Qué | Respalda |
 |---|---|---|
 | 1 | **Zernio:** publicar y responder con una cuenta real, y su precio con 15-20 cuentas. ✅ Conectado; leer cuentas, comentarios y DMs ya está probado, también desde el VPS | «Presencia todos los días» y community management |
-| 2 | **⑧ en vivo con NAO y Akai:** una semana en modo borrador, después envío activo. Corre con Claude Code y el plan de la empresa en el VPS; si el plan no alcanza, una API de IA | Community en los cuatro planes |
-| 3 | **⑨ Posting con Zernio en una cuenta real:** programar, publicar y reintentar las fallidas | La publicación de todos los planes |
-| 4 | **Scraping:** probar los actores que faltan. ✅ Cuenta, MCP y `apify/facebook-ads-scraper` ya están probados | Inteligencia de ①②③④ y las garantías |
-| 5 | **Pauta:** Meta, TikTok, Google Search y Performance Max | ⑩ Ads y «Que te encuentren en Google» |
+| 2 | **Community en vivo con NAO y Akai:** una semana en modo borrador, después envío activo. Corre con Claude Code y el plan de la empresa en el VPS; si el plan no alcanza, una API de IA | Community en los cuatro planes |
+| 3 | **Posting con Zernio en una cuenta real:** programar, publicar y reintentar las fallidas | La publicación de todos los planes |
+| 4 | **Scraping:** probar los actores que faltan. ✅ Cuenta, MCP y `apify/facebook-ads-scraper` ya están probados | Inteligencia de Strategy, Growth, Marketing y Creatividad y las garantías |
+| 5 | **Pauta:** Meta, TikTok, Google Search y Performance Max | Ads y «Que te encuentren en Google» |
 | 6 | **AdWhispr:** guardar la marca | Que `find_competitors` sirva sin preguntar cada vez |
 | 7 | **Plugin `claude-ads`** | Auditoría y monitoreo de cuentas |
 | 8 | **Automatización de mensajes y WhatsApp** | «Nadie se queda sin respuesta» |
 | 9 | **Herramienta a medida e IA propia** | Accelerate y Compound |
 | 10 | **Vetting de creadores con el scraper de Instagram** | Alianzas con creadores |
-| 11 | **`ffmpeg` local:** reencuadre y análisis de video | ⑦ y `cr-lectura-de-video` |
+| 11 | **`ffmpeg` local:** reencuadre y análisis de video | Video Editing y `cr-lectura-de-video` |
 | 12 | **Un mes completo al volumen prometido** *(86 / 145 / 145 / 204)* | Que el volumen sea capacidad probada |
 
 ### Las garantías — no se publican hasta cerrar los cuatro

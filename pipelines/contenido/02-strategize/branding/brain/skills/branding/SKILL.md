@@ -1,16 +1,16 @@
 ---
 name: branding
 description: >
-  Orquestador del departamento ②B Branding de Inherent. Es la puerta de entrada: lee el pedido,
+  Orquestador del departamento Branding de Inherent. Es la puerta de entrada: lee el pedido,
   verifica el pre-flight, decide qué capas correr y llama a las skills `br-*` en orden, con la
   auto-revisión de cada capa. Úsala SIEMPRE que el pedido tenga que ver con identidad, territorio de
   marca, personalidad, tono de voz, paleta, tipografía, sistema visual, activos distintivos,
   guía de marca, o validar si una pieza es de marca. Se dispara con "armá la marca de X",
   "cómo se ve esta marca", "el tono de voz", "qué colores", "¿esto es de marca?", "validá estas
-  piezas", "la guía de marca". Requiere la estrategia de ① Strategy: si no existe, BLOQUEA.
+  piezas", "la guía de marca". Requiere la estrategia de Strategy: si no existe, BLOQUEA.
 ---
 
-# ②B Branding — el orquestador
+# Branding — el orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
@@ -29,10 +29,10 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 
 | Input | De | Si falta |
 |---|---|---|
-| **El brief de branding** — los 8 bloques | ① Strategy · `clients/<cliente>/01-estrategia/` | 🛑 **BLOQUEADO** si la estrategia no existe |
-| El **código saturado** de la categoría | ① Strategy · `99-referencias/investigacion/ingenieria-inversa.md` § El mapa de saturación | 🛑 **BLOQUEADO** |
-| Qué puede sostener el cliente | ① Strategy | 🛑 **BLOQUEADO** |
-| Qué ya existe de marca | ① Strategy · `clients/<cliente>/02-marca/` | 🟡 Se sigue sin eso. **Si existe, vale y no se rehace** |
+| **El brief de branding** — los 8 bloques | Strategy · `clients/<cliente>/01-estrategia/` | 🛑 **BLOQUEADO** si la estrategia no existe |
+| El **código saturado** de la categoría | Strategy · `99-referencias/investigacion/ingenieria-inversa.md` § El mapa de saturación | 🛑 **BLOQUEADO** |
+| Qué puede sostener el cliente | Strategy | 🛑 **BLOQUEADO** |
+| Qué ya existe de marca | Strategy · `clients/<cliente>/02-marca/` | 🟡 Se sigue sin eso. **Si existe, vale y no se rehace** |
 | **El plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define la profundidad, y sus **Redes** los formatos |
 
 🛑 **Sin el código saturado no se puede oponer a nada**, y una marca que no se opone a nada no
@@ -64,7 +64,7 @@ publicada de Accelerate: *«escalar lo que ya funciona, sin perderlo»*.
 ## 4 · No para entre capas
 
 **Cada capa se auto-revisa con su checklist y sigue.** El control de calidad lo hace el CEO en
-persona. **El CEO solo para el flujo en ① Strategy y ⑩ Ads.** Precio, alcance y fechas se
+persona. **El CEO solo para el flujo en Strategy y Ads.** Precio, alcance y fechas se
 escalan al CEO; todo lo demás, al COO. Escalar avisa y sigue: no frena el flujo.
 
 ---

@@ -22,7 +22,7 @@ description: >
 - Una **ficha de referencia** por pieza leída, según la plantilla
   `.claude/skills/cr-lectura-de-video/ficha-de-referencia.md`, guardada en el swipe file del cliente.
 - Alimenta: `referencia_visual`, `hook`, `escenas`, `encuadres`, `duraciones` y `estética / mood`
-  de las piezas del ciclo, y el número de **setups distintos** que viaja a ⑤ Producción.
+  de las piezas del ciclo, y el número de **setups distintos** que viaja a Producción.
 
 ---
 
@@ -107,7 +107,7 @@ núcleos**. Una imagen en lugar de treinta y seis.
 
 🛑 **Por qué `0.12` y no `0.25`:** con `0.25` se pierden los cortes entre planos de luminancia
 parecida — **probado: en un video con 4 cortes, `0.25` detectó 3.** Un corte perdido es un plano que
-no se lee y un setup que ⑤ Producción no presupuesta.
+no se lee y un setup que Producción no presupuesta.
 
 ---
 
@@ -128,7 +128,7 @@ no se lee y un setup que ⑤ Producción no presupuesta.
 |---|---|
 | **Hook (0-3 s)** | ¿Qué se ve en el cuadro 1: cara, producto, texto, movimiento? ¿Hay texto en pantalla desde el cuadro 1 —o sea, el hook **se lee** en vez de escucharse? ¿Hay un corte dentro del hook? ¿Se entiende sin audio? |
 | **Cuerpo** (un frame por plano) | Ambientación (qué lugar es, qué hay en cuadro además del sujeto, qué se ve de fondo) · luz (dura o suave, de dónde viene, natural o armada) · encuadre (tamaño de plano, ángulo, fija o en mano) · paleta (si hay **un acento** o es un revoltijo) · rótulos (dónde vive el texto, qué peso, si respeta safe zones) |
-| **Ritmo** (de los cortes) | Duración media de plano — **1,2 s es vértigo; 4 s es calma** · ¿acelera o desacelera? · **cuántos setups distintos** (el dato que ⑤ Producción necesita para presupuestar) |
+| **Ritmo** (de los cortes) | Duración media de plano — **1,2 s es vértigo; 4 s es calma** · ¿acelera o desacelera? · **cuántos setups distintos** (el dato que Producción necesita para presupuestar) |
 | **Cierre** | Cómo remata, si hay CTA en pantalla, si cierra más claro o más oscuro que como abre |
 
 **El patrón se escribe como estructura, nunca como pieza:**
@@ -185,9 +185,9 @@ de la skill `cr-swipe-file`: señal `⏱️` de rendimiento, conteo de fuentes i
 
 ## Fronteras
 
-- 🛑 **No genera media.** Leer una referencia no es producir una pieza — eso es ⑤ Producción y ⑥A Diseño gráfico.
+- 🛑 **No genera media.** Leer una referencia no es producir una pieza — eso es Producción y Diseño gráfico.
 - 🛑 **No decide si la referencia sirve.** Eso lo decide el filtro de señal, no la calidad de la lectura.
-- 🛑 **No re-investiga la categoría.** Lo que la tabla 15×7 de ① Strategy ya cubre se cita; acá se
+- 🛑 **No re-investiga la categoría.** Lo que la tabla 15×7 de Strategy ya cubre se cita; acá se
   lee **el hueco**.
 - 🛑 **Nunca se copia la ejecución.** De la lectura sale el patrón, no la pieza.
 
@@ -203,7 +203,7 @@ Bloque **Capa 1** — los checks relativos a lectura de video.
 - [ ] Lo que no se pudo leer está declarado: `⚠️ SIN ARCHIVO` / `⚠️ SIN TRANSCRIPCIÓN`
 - [ ] 🛑 **Ningún plano descrito que no se vio, ningún audio descrito sin transcripción**
 - [ ] La **fuente de la transcripción** está nombrada (MCP · captions · OCR · whisper local) con su confianza
-- [ ] Las fichas con lectura de imagen traen **ritmo** (duración media de plano) y **setups distintos** — el segundo viaja a ⑤ Producción
+- [ ] Las fichas con lectura de imagen traen **ritmo** (duración media de plano) y **setups distintos** — el segundo viaja a Producción
 - [ ] El **hook está leído aparte**: cuadro 1, texto desde el arranque, corte dentro del hook, si se entiende en mute
 - [ ] El patrón está **descompuesto en los 6 elementos** (hook, ángulo, formato, estructura, prueba, CTA)
 - [ ] Cada referencia tiene su señal de rendimiento en escala `⏱️` (`⏱️60-90+d` / `⏱️30-60d` / `⏱️outlier` / `⏱️estable`), **sin mezclarla** con 🟢/🟡/⚪, que marcan patrón por conteo de fuentes

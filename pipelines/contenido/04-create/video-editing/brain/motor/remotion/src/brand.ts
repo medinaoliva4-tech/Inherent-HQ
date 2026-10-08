@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 
 /*
   TOKENS DE MARCA DEL CLIENTE — se llenan antes de armar el primer reel.
-  Fuente de verdad: `sistema-visual.md` de ②B Branding (§ Color, § Tipografía, § Movimiento).
+  Fuente de verdad: `sistema-visual.md` de Branding (§ Color, § Tipografía, § Movimiento).
   Si la guía vive en Figma, se leen con Figwright (get_styles, get_fonts, get_design_context)
   y los logos/elementos se exportan en SVG con save_screenshots (format: "SVG").
   Nunca se estiman valores a ojo desde una captura.

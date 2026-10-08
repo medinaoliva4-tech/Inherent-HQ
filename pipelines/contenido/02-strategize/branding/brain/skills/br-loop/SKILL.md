@@ -1,7 +1,7 @@
 ---
 name: br-loop
 description: >
-  Capa de cierre de ②B Branding — lee si la marca se está reconociendo o no. Mide qué activo
+  Capa de cierre de Branding — lee si la marca se está reconociendo o no. Mide qué activo
   apareció de verdad en las piezas, qué regla se devolvió más veces y qué parte de la guía nadie
   usó. Decide qué se simplifica, qué se refuerza y qué se agrega, con la regla de que un activo
   solo se cambia si no se reconoce, nunca porque el equipo se aburrió. Escribe
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Los veredictos de `br-guardian` del ciclo · métricas de ⑨ Posting y ⑩ Ads · `clients/<cliente>/04-contenido/aprendizaje-creativo.md` de ④ Creatividad |
+| **Consume** | Los veredictos de `br-guardian` del ciclo · métricas de Posting y Ads · `clients/<cliente>/04-contenido/aprendizaje-creativo.md` de Creatividad |
 | **Produce** | **`clients/<cliente>/02-marca/aprendizaje-de-branding.md`** — en la raíz del área, no dentro del mes |
 
 🛑 **Al cerrar el ciclo, el aprendizaje del ciclo anterior pasa a `_historico/<AAAA-MM>-aprendizaje-de-branding.md`.** El vigente siempre vive en la raíz del área.
@@ -60,7 +60,7 @@ equipo se cansa, la audiencia recién la está aprendiendo.
 | Una regla se incumple siempre | **Se arregla la regla** |
 | Una parte de la guía nadie la usó en 3 ciclos | **Sale** |
 | Falta una regla que el guardián no pudo citar | **Se agrega** |
-| La marca no se está reconociendo, con datos | 🔴 **Se escala al COO.** Puede ser el territorio, y eso es de ① Strategy |
+| La marca no se está reconociendo, con datos | 🔴 **Se escala al COO.** Puede ser el territorio, y eso es de Strategy |
 
 ## 4 · Qué escribe
 
@@ -72,7 +72,7 @@ equipo se cansa, la audiencia recién la está aprendiendo.
 | **B · Devoluciones por regla** | Qué regla, cuántas veces, diagnóstico |
 | **C · Lo que nadie usó** | Secciones de la guía sin uso, con cuántos ciclos lleva |
 | **D · Qué cambia** | Reglas que se reescriben, secciones que salen, reglas que se agregan |
-| **E · Lo que se devuelve a ① Strategy** | Si el problema es de territorio, no de ejecución |
+| **E · Lo que se devuelve a Strategy** | Si el problema es de territorio, no de ejecución |
 
 ## 5 · Checklist
 
@@ -80,4 +80,4 @@ equipo se cansa, la audiencia recién la está aprendiendo.
 - [ ] Las devoluciones están **agrupadas por regla**
 - [ ] Ningún activo se cambia por **aburrimiento**
 - [ ] Lo que nadie usó en 3 ciclos **sale**
-- [ ] Lo que es de territorio se devolvió a **① Strategy**
+- [ ] Lo que es de territorio se devolvió a **Strategy**

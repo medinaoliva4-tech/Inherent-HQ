@@ -1,4 +1,4 @@
-# Las skills de ⑥A Diseño gráfico — cuál, cuándo y en qué orden
+# Las skills de Diseño gráfico — cuál, cuándo y en qué orden
 
 Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qué orden; acá está el
 detalle de cada herramienta.
@@ -38,5 +38,5 @@ molde en la Capa 1, y las piezas son ejecución.
 
 ## Sin paradas internas
 
-**Cada skill se auto-revisa con su checklist y sigue.** ⑥A Diseño gráfico no publica ni le envía nada
-al cliente: publicar es de ⑨ Posting.
+**Cada skill se auto-revisa con su checklist y sigue.** Diseño gráfico no publica ni le envía nada
+al cliente: publicar es de Posting.

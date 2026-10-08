@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ③ Marketing |
+| **Escribe aquí** | Marketing |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |

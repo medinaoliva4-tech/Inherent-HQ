@@ -1,6 +1,6 @@
 # Aprendizaje de branding — <cliente> · ciclo <mes año>
 
-> Plantilla de ②B Branding · `br-loop`. **Corre el 20 de cada mes.**
+> Plantilla de Branding · `br-loop`. **Corre el 20 de cada mes.**
 > 🛑 **Un activo se cambia solo si no se reconoce. Nunca porque el equipo se aburrió.**
 
 ---
@@ -29,5 +29,5 @@
 | Secciones que salen | |
 | Reglas que se agregan | |
 
-## E · Lo que se devuelve a ① Strategy
+## E · Lo que se devuelve a Strategy
 *Solo si el problema es de territorio, no de ejecución.*

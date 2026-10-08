@@ -1,7 +1,7 @@
 ---
 name: growth
 description: >
-  Orquestador del departamento ② Growth de Inherent — el motor de crecimiento del negocio, no la
+  Orquestador del departamento Growth de Inherent — el motor de crecimiento del negocio, no la
   pauta. Es la puerta de entrada: lee el pedido, verifica el pre-flight, decide qué capas correr
   según la división y el plan contratado, y llama a las skills `gr-*` en orden. Corre en todos los
   planes: ligero en la línea Marketing (elige qué ofertas que ya existen se empujan), completo en
@@ -14,7 +14,7 @@ description: >
   división definida: si faltan, BLOQUEA.
 ---
 
-# ② Growth — el orquestador
+# Growth — el orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
@@ -26,15 +26,15 @@ description: >
 **Si no sabés qué skill usar, es esta.**
 
 🛑 **Growth no es pauta.** Si el pedido es sobre presupuesto, campañas o anuncios, es
-**⑩ Ads Management**.
+**Ads Management**.
 
 ## 0 · Lo primero: ¿a qué profundidad corre Growth en este plan?
 
-| La línea contratada | ② Growth |
+| La línea contratada | Growth |
 |---|---|
 | 🔷 **Marketing** · 🔷 **Marketing Pro** | 🟡 **Ligero** — elige **cuáles de las ofertas que ya existen** se empujan y con qué objetivo. Escribe `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` |
 | 🟨 **Accelerate** · 🟨 **Compound** | ✅ **Completo** — diseña la oferta y corre los pilares que el plan paga |
-| ⬜ **Tailor Made** | **Lo que diga su pipeline** en `plan-contratado.md`. Si ② Growth no está, no corre |
+| ⬜ **Tailor Made** | **Lo que diga su pipeline** en `plan-contratado.md`. Si Growth no está, no corre |
 
 🛑 **En 🔷 no se cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide,
 **es upsell a Accelerate, no trabajo a absorber.**
@@ -47,16 +47,16 @@ y a qué precio es el siguiente paso.»*
 ## 1 · Pre-flight
 
 ```
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · ② Growth: [🟡 ligero / ✅ completo / ⬜ según su pipeline]
+Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · Growth: [🟡 ligero / ✅ completo / ⬜ según su pipeline]
 ```
 
 | Input | De | Si falta |
 |---|---|---|
 | **El plan contratado** — la línea y, si es ⬜, su pipeline | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define la profundidad y qué pilares se activan |
-| Unit economics y cómo se compra | ① Strategy | 🛑 **BLOQUEADO** |
-| Objetivo, MUST BE TRUE y **la división** | ① Strategy | 🛑 **BLOQUEADO** |
-| Qué pilar está roto | ① Strategy | 🛑 **BLOQUEADO** |
-| Tono y cómo se dice | ②B Branding | 🟡 Se usa si existe |
+| Unit economics y cómo se compra | Strategy | 🛑 **BLOQUEADO** |
+| Objetivo, MUST BE TRUE y **la división** | Strategy | 🛑 **BLOQUEADO** |
+| Qué pilar está roto | Strategy | 🛑 **BLOQUEADO** |
+| Tono y cómo se dice | Branding | 🟡 Se usa si existe |
 
 🛑 **Sin unit economics no se toca la oferta.** Cambiar un precio sin saber el margen es jugar
 con el negocio de otro.

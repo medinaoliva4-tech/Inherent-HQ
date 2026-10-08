@@ -1,7 +1,7 @@
 ---
 name: ads
 description: >
-  Orquestador del departamento ⑩ Ads Management de Inherent. Es la puerta de entrada: lee el
+  Orquestador del departamento Ads Management de Inherent. Es la puerta de entrada: lee el
   pedido, verifica el pre-flight, decide qué capas correr y llama a las skills `ad-*` en orden,
   parando en los 2 gates. Se apoya en AdWhispr para ejecutar y en el plugin claude-ads para
   auditar, planear y monitorear. Úsala SIEMPRE que el pedido tenga que ver con pauta,
@@ -11,7 +11,7 @@ description: >
   destructiva: nada sale sin gate del CEO.
 ---
 
-# ⑩ Ads Management — el orquestador
+# Ads Management — el orquestador
 
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
@@ -22,7 +22,7 @@ description: >
 
 **Si no sabés qué skill usar, es esta.**
 
-🛑 **Si el pedido es sobre la oferta, el precio o los canales grandes, es ② Growth.**
+🛑 **Si el pedido es sobre la oferta, el precio o los canales grandes, es Growth.**
 
 ## 1 · 🔴 La regla que está antes de todo
 
@@ -39,10 +39,10 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 
 | Input | De | Si falta |
 |---|---|---|
-| Qué ofertas se pautan, su precio y el objetivo | ② Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 **BLOQUEADO** |
-| Qué piezas se pautan y con qué objetivo | ③ Marketing | 🛑 **BLOQUEADO** |
-| Los creativos **con variantes de hook** | ⑥A Diseño gráfico y ⑦ Video Editing | 🛑 **BLOQUEADO** |
-| Qué claims están **validados** | ②B Branding | 🟡 Se usa si existe — un claim `⏸️` no sale |
+| Qué ofertas se pautan, su precio y el objetivo | Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 **BLOQUEADO** |
+| Qué piezas se pautan y con qué objetivo | Marketing | 🛑 **BLOQUEADO** |
+| Los creativos **con variantes de hook** | Diseño gráfico y Video Editing | 🛑 **BLOQUEADO** |
+| Qué claims están **validados** | Branding | 🟡 Se usa si existe — un claim `⏸️` no sale |
 | Las cuentas publicitarias y **quién tiene el acceso** | `clients/<cliente>/00-onboarding/LINKS.md` | 🛑 **BLOQUEADO** |
 | **El presupuesto, aprobado por el cliente** | 00 Account (Secretaria) · el CEO | 🛑 **BLOQUEADO** |
 | **El plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define canales y variantes |

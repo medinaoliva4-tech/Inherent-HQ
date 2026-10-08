@@ -1,4 +1,4 @@
-# ④ Creatividad — cómo trabaja
+# Creatividad — cómo trabaja
 
 > **En una frase:** convierte el plan del ciclo en **ideas dirigidas**, listas para que otro las
 > ejecute sin adivinar nada. Creatividad **dirige**; Producción, Diseño y Posting **ejecutan**.
@@ -15,13 +15,13 @@ paso vive en las skills: `skills/README.md`.
 | Días | Qué corre | Entrega |
 |---|---|---|
 | **1 – 3** | Ideas del ciclo — capas 0-4 | — |
-| **2 – 3** | **Shot list** — `cr-arte-video` · cierra con `cr-adaptacion` | **El Excel del ciclo cerrado a más tardar el día 3** — ⑤ Producción coordina desde el 4 |
+| **2 – 3** | **Shot list** — `cr-arte-video` · cierra con `cr-adaptacion` | **El Excel del ciclo cerrado a más tardar el día 3** — Producción coordina desde el 4 |
 
 ---
 
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota Strategy al arrancar en
 `clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
@@ -35,10 +35,10 @@ paso vive en las skills: `skills/README.md`.
 | Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Contenidos a investigar** *(por plataforma del cliente — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
-| **BIG IDEAS del mes** *(una por campaña de ③ Marketing)* | **1** | **2** | **2** | **2** |
+| **BIG IDEAS del mes** *(una por campaña de Marketing)* | **1** | **2** | **2** | **2** |
 | **Conceptos del ciclo** *(videos planificados ÷ 3)* | 3 | 4 | 6 | 8 |
 | **Videos planificados** a idear *(20 min de grabación c/u)* | 9 | 12 | **18** | 24 |
-| **Videos derivados** *(mínimo 1:2 — los ejecuta ⑦ Video Editing)* | 4 | 6 | 9 | 12 |
+| **Videos derivados** *(mínimo 1:2 — los ejecuta Video Editing)* | 4 | 6 | 9 | 12 |
 | **Estáticos y carruseles** | 43 | 72 | **63** | 88 |
 | **Stories** | 30 | 55 | 55 | 80 |
 | **Filas de `plan-de-contenido.csv`** | **86** | **145** | **145** | **204** |
@@ -48,11 +48,11 @@ paso vive en las skills: `skills/README.md`.
 
 **Cómo se lee:**
 
-- 🔑 **Una campaña, una BIG IDEA.** El número sale de las campañas que encargó ③ Marketing
+- 🔑 **Una campaña, una BIG IDEA.** El número sale de las campañas que encargó Marketing
   (`pipelines/contenido/02-strategize/marketing/brain/WORKFLOW.md` → §0). **Dos campañas son dos ideas distintas, no una
   estirada en dos.**
 - **Cada pieza es una fila con su `id`**, también las derivadas y las stories. Las derivadas las
-  ejecuta ⑦ Video Editing, pero Creative las marca en la fila del video que las origina. Las stories
+  ejecuta Video Editing, pero Creative las marca en la fila del video que las origina. Las stories
   se pueden idear como **series repetibles** —un formato, muchas piezas— y cada una sigue siendo su
   fila.
 - ⚠️ **🟨 Accelerate no es «Pro con más piezas».** Entrega las **mismas 145**, pero con **50% más
@@ -62,10 +62,10 @@ paso vive en las skills: `skills/README.md`.
   en qué paquetes y a qué precio **solo se toca desde 🟨 Accelerate** (`inherent/03-OFERTA.md` →
   «🔒 Uso interno»). **Confundirlos es regalar el trabajo caro dentro del plan barato.**
 - **Las variantes de creativo se definen acá y se ejecutan afuera.** Creative declara en su entregable
-  **qué se varía** —gancho, texto en pantalla, formato—; ⑥A Diseño gráfico y ⑦ Video Editing las producen, y
-  ⑩ Ads las sube. 🛑 **Salen de material ya grabado: una variante nunca pide grabación extra.**
-- 🛑 **Si el calendario de ③ Marketing pide más piezas que el plan, no se idean de más:** se declara
-  la diferencia y se devuelve a ③ Marketing. Recortar es decisión de alcance, no de Creative.
+  **qué se varía** —gancho, texto en pantalla, formato—; Diseño gráfico y Video Editing las producen, y
+  Ads las sube. 🛑 **Salen de material ya grabado: una variante nunca pide grabación extra.**
+- 🛑 **Si el calendario de Marketing pide más piezas que el plan, no se idean de más:** se declara
+  la diferencia y se devuelve a Marketing. Recortar es decisión de alcance, no de Creative.
 - ⛔ **No hay segundo idioma en ningún plan.** No existe herramienta de doblaje — ver
   `pipelines/contenido/04-create/video-editing/brain/skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma».
 
@@ -76,8 +76,8 @@ secciones: **Qué incluye** y **Su pipeline** —qué departamentos corren, en q
 cada uno y a qué nivel—. **El departamento sigue ese pipeline** igual que un plan estándar: no lo
 bloquea por no ser un plan de lista ni lo cuestiona por precio.
 
-- **Lo que el pipeline declara para ④ Creatividad es el techo del ciclo.**
-- 🛑 **Si ④ Creatividad no está en su pipeline, no corre para ese cliente.**
+- **Lo que el pipeline declara para Creatividad es el techo del ciclo.**
+- 🛑 **Si Creatividad no está en su pipeline, no corre para ese cliente.**
 - **Cambia el pipeline, nunca el método:** la trazabilidad y las devoluciones son iguales en todos
   los planes.
 
@@ -94,7 +94,7 @@ El Excel, más un doc de dirección y un doc por formato. Nada más.
 | **`ideas-<formato>.md`** | El desarrollo de las piezas de un formato — una sección por pieza | Se lee **de a un formato**, para ejecutar todas las piezas de ese tipo juntas |
 
 **Un doc por cada valor de `formato`** que exista ese ciclo en el Excel — `formato` lo define
-③ Marketing, así que la lista no es fija: si el calendario trae Carrusel, Reel, Story y Newsletter,
+Marketing, así que la lista no es fija: si el calendario trae Carrusel, Reel, Story y Newsletter,
 salen `ideas-carrusel.md`, `ideas-reel.md`, `ideas-story.md` e `ideas-newsletter.md`. Un ciclo con un
 formato nuevo simplemente suma un doc; no hace falta tocar el método.
 
@@ -115,23 +115,23 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | Columna | Qué lleva | De dónde sale |
 |---|---|---|
 | `id` | `CR-001`, correlativo del ciclo | Creative |
-| `campana` | Nombre de la campaña — sale de `estrategia-de-contenido.md`, no del calendario | ③ Marketing |
+| `campana` | Nombre de la campaña — sale de `estrategia-de-contenido.md`, no del calendario | Marketing |
 | `fecha` | Día concreto | Creative (dentro de la semana del slot) |
-| `canal` · `formato` · `pilar` · `funcion` | Heredados sin cambio. `funcion` es `Hero`/`Series`/`Proof`/`Utility`/`Conversion`/`Community` | ③ Marketing |
+| `canal` · `formato` · `pilar` · `funcion` | Heredados sin cambio. `funcion` es `Hero`/`Series`/`Proof`/`Utility`/`Conversion`/`Community` | Marketing |
 | `concepto` | **Una línea.** Qué es la pieza | Creative |
 | `mezcla` | `70·probado` / `20·apuesta` / `10·propio` | Creative |
-| `traza` | La letra de la MUST BE TRUE que mueve | ① Strategy |
-| `material` | `ninguno` / `video` / `foto` — **qué material nuevo necesita de ⑤ Producción** | Creative |
+| `traza` | La letra de la MUST BE TRUE que mueve | Strategy |
+| `material` | `ninguno` / `video` / `foto` — **qué material nuevo necesita de Producción** | Creative |
 | `estado` | `listo` / `pendiente` / `⏸️ aprobación` | Creative |
 
 #### 🔑 `material` y el ruteo — son dos preguntas distintas
 
-**`material` dice qué le hace falta a ⑤ Producción. El `formato` dice quién arma la pieza.**
+**`material` dice qué le hace falta a Producción. El `formato` dice quién arma la pieza.**
 No se deducen uno del otro, y confundirlos es lo que hacía que una foto no se planificara nunca.
 
-| `material` | Cuándo | Qué necesita de ⑤ Producción |
+| `material` | Cuándo | Qué necesita de Producción |
 |---|---|---|
-| **`ninguno`** | Se arma con assets existentes, banco de ②B Branding o solo grafismo | Nada |
+| **`ninguno`** | Se arma con assets existentes, banco de Branding o solo grafismo | Nada |
 | **`video`** | La pieza necesita **metraje nuevo** | Entra al `plan-de-produccion.csv` |
 | **`foto`** | La pieza necesita una **imagen fija nueva** —producto, platillo, detalle— | Entra al `plan-de-fotos.csv` |
 
@@ -139,14 +139,14 @@ No se deducen uno del otro, y confundirlos es lo que hacía que una foto no se p
 
 | `formato` | Arma la pieza |
 |---|---|
-| `estatico` · `carrusel` · `story` | **⑥A Diseño gráfico** |
-| `reel` y demás formatos de video | **⑦ Video Editing** |
+| `estatico` · `carrusel` · `story` | **Diseño gráfico** |
+| `reel` y demás formatos de video | **Video Editing** |
 
-- 🛑 **Un estático con `material = foto` espera su foto antes de componerse.** ⑥A Diseño gráfico no
-  lo arranca hasta que ⑤ Producción entregue la imagen: componer con un placeholder es rehacer la pieza dos veces.
+- 🛑 **Un estático con `material = foto` espera su foto antes de componerse.** Diseño gráfico no
+  lo arranca hasta que Producción entregue la imagen: componer con un placeholder es rehacer la pieza dos veces.
 - 🛑 **Se decide por si el material existe**, no por presupuesto ni por pereza. Si la idea pide una
   toma que nadie tiene, no es `ninguno`.
-- **Una misma foto puede servir a varias piezas.** Se declara en la § Foto de cada una, y ⑤ Producción la agrupa
+- **Una misma foto puede servir a varias piezas.** Se declara en la § Foto de cada una, y Producción la agrupa
   una sola vez en `plan-de-fotos.csv`.
 
 ### Qué lleva `brief-del-ciclo.md`
@@ -181,35 +181,35 @@ Creative **no arranca de cero nunca**.
 
 | De | Qué recibe | ¿Bloqueante? |
 |---|---|---|
-| **③ Marketing** | **Las campañas y su brief** —idea de campaña, **pilares y su mix**, jerarquía de mensaje— en `estrategia-de-contenido.md` · **el calendario con los slots** en `calendario.csv` | 🛑 Sí — **lo único bloqueante** |
-| **③ Marketing** | `plan-por-canal.md` — la función de cada canal y qué NO se hace ahí | No — se usa si existe |
-| **① Strategy** | Audiencia y comportamiento · competencia · producto y precios · **capacidad real de producción** · `posicionamiento.md` (promesa, mecanismo, enemigo) · `ingenieria-inversa.md` (tabla 15×7, mapa de saturación, **objeciones de las reseñas de la competencia**) | No — se usa si existe |
-| **②B Branding** | Guía de marca · tono de voz · do's & don'ts · banco de assets | No — se usa si existe |
-| **⑩ Ads** | Qué creativo rinde en pauta · claims ya aprobados | No — reduce confianza |
+| **Marketing** | **Las campañas y su brief** —idea de campaña, **pilares y su mix**, jerarquía de mensaje— en `estrategia-de-contenido.md` · **el calendario con los slots** en `calendario.csv` | 🛑 Sí — **lo único bloqueante** |
+| **Marketing** | `plan-por-canal.md` — la función de cada canal y qué NO se hace ahí | No — se usa si existe |
+| **Strategy** | Audiencia y comportamiento · competencia · producto y precios · **capacidad real de producción** · `posicionamiento.md` (promesa, mecanismo, enemigo) · `ingenieria-inversa.md` (tabla 15×7, mapa de saturación, **objeciones de las reseñas de la competencia**) | No — se usa si existe |
+| **Branding** | Guía de marca · tono de voz · do's & don'ts · banco de assets | No — se usa si existe |
+| **Ads** | Qué creativo rinde en pauta · claims ya aprobados | No — reduce confianza |
 
-Si falta lo de ③ Marketing: **BLOQUEADO**, y se pide el archivo exacto. Si falta otro, se marca
+Si falta lo de Marketing: **BLOQUEADO**, y se pide el archivo exacto. Si falta otro, se marca
 `⚠️ SIN DATOS` y se sigue. **Nada se deduce de los otros.**
 
 > 📂 **De dónde sale cada input.** Todo vive en `clients/<cliente>/`:
 >
 > | Qué | Dónde | De quién |
 > |---|---|---|
-> | Audiencia actual, capacidad y restricciones | `00-onboarding/comprension.md` | ① Strategy · `context` |
-> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `01-estrategia/nucleo.md` | ① Strategy · `analysis` |
-> | Patrones de categoría y mapa de saturación | `99-referencias/investigacion/ingenieria-inversa.md` | ① Strategy · `reverse-engineering` |
-> | Posicionamiento, promesa y briefs por área | `01-estrategia/posicionamiento.md` | ① Strategy · `methodology` |
-> | La idea de campaña y los pilares con su mix | `03-marketing/AAAA-MM/estrategia-de-contenido.md` | ③ Marketing |
-> | La función de cada canal y qué NO se hace ahí | `03-marketing/AAAA-MM/plan-por-canal.md` | ③ Marketing |
-> | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | ③ Marketing |
+> | Audiencia actual, capacidad y restricciones | `00-onboarding/comprension.md` | Strategy · `context` |
+> | El `WIN`, el arquetipo y las `MUST BE TRUE` | `01-estrategia/nucleo.md` | Strategy · `analysis` |
+> | Patrones de categoría y mapa de saturación | `99-referencias/investigacion/ingenieria-inversa.md` | Strategy · `reverse-engineering` |
+> | Posicionamiento, promesa y briefs por área | `01-estrategia/posicionamiento.md` | Strategy · `methodology` |
+> | La idea de campaña y los pilares con su mix | `03-marketing/AAAA-MM/estrategia-de-contenido.md` | Marketing |
+> | La función de cada canal y qué NO se hace ahí | `03-marketing/AAAA-MM/plan-por-canal.md` | Marketing |
+> | Los slots del ciclo | `03-marketing/AAAA-MM/calendario.csv` | Marketing |
 >
-> 🛑 **Si falta un archivo de ③ Marketing, se marca `BLOQUEADO` con qué falta y a quién pedírselo.
+> 🛑 **Si falta un archivo de Marketing, se marca `BLOQUEADO` con qué falta y a quién pedírselo.
 > Los demás se usan si existen; el que falta va `⚠️ SIN DATOS`. Ninguno se deduce de los otros.**
 
-> 🗣️ **El lenguaje literal del comprador lo arma ④ Creatividad, no lo recibe.** Ver §2B.
+> 🗣️ **El lenguaje literal del comprador lo arma Creatividad, no lo recibe.** Ver §2B.
 
 ---
 
-## 2B · El lenguaje literal del comprador — lo arma ④ Creatividad
+## 2B · El lenguaje literal del comprador — lo arma Creatividad
 
 🔑 **No se recibe: se construye acá.** Es la materia prima del copy, y nadie aguas arriba la entrega
 ya hecha.
@@ -227,7 +227,7 @@ ya hecha.
 - 🟡 **No es bloqueante.** Si el cliente no comparte DMs, **se anota que faltan y se sigue** con lo
   público. Lo que no se hace es inventar la cita.
 - ⚠️ **No confundir con las objeciones de `ingenieria-inversa.md`:** esas salen de las reseñas **de la
-  competencia** y las trae ① Strategy. Estas son del **propio negocio**. **Las dos sirven, y no son
+  competencia** y las trae Strategy. Estas son del **propio negocio**. **Las dos sirven, y no son
   la misma.**
 
 ---
@@ -236,31 +236,31 @@ ya hecha.
 
 | No hace | De quién es |
 |---|---|
-| Investigar negocio, audiencia, competencia, mercado, precios | ① Strategy |
-| Decidir posicionamiento, promesa, territorio, enemigo, las 3 verdades, la tabla 15×7 | ① Strategy |
-| Crear o cambiar paleta, tipografía, logo, guidelines, tono de voz | ②B Branding |
-| Elegir campañas, canales, fechas, frecuencia, **los pilares y su mix** | ③ Marketing |
-| Conseguir locaciones, props, talento, equipo · presupuestar · agendar y rodar | ⑤ Producción |
-| Crear los elementos gráficos, componer en Figma, exportar la pieza | ⑥A Diseño gráfico |
-| Publicar, programar, hashtags, QA de plataforma | ⑨ Posting |
-| Segmentar, presupuestar y optimizar pauta | ⑩ Ads |
+| Investigar negocio, audiencia, competencia, mercado, precios | Strategy |
+| Decidir posicionamiento, promesa, territorio, enemigo, las 3 verdades, la tabla 15×7 | Strategy |
+| Crear o cambiar paleta, tipografía, logo, guidelines, tono de voz | Branding |
+| Elegir campañas, canales, fechas, frecuencia, **los pilares y su mix** | Marketing |
+| Conseguir locaciones, props, talento, equipo · presupuestar · agendar y rodar | Producción |
+| Crear los elementos gráficos, componer en Figma, exportar la pieza | Diseño gráfico |
+| Publicar, programar, hashtags, QA de plataforma | Posting |
+| Segmentar, presupuestar y optimizar pauta | Ads |
 
 ### Las tres líneas que más se pisan
 
 | Frontera | Creative hace | El otro hace |
 |---|---|---|
-| **⑤ Producción** | La **intención**: qué se ve, qué acción ocurre, qué tipo de lugar, cuánto dura cada escena | La **logística**: la locación concreta, permisos, props reales, casting, equipo, presupuesto, rodaje |
-| **⑥A Diseño gráfico** | **Pide por nombre** qué elementos gráficos lleva, del vocabulario cerrado de 4 familias | **Crea y aplica** esos elementos, decide composición y layout final |
-| **⑨ Posting** | Escribe **el mensaje**: hook, copy y caption, literales | **Adapta** a plataforma —hashtags, largo, formato— sin cambiar el mensaje |
+| **Producción** | La **intención**: qué se ve, qué acción ocurre, qué tipo de lugar, cuánto dura cada escena | La **logística**: la locación concreta, permisos, props reales, casting, equipo, presupuesto, rodaje |
+| **Diseño gráfico** | **Pide por nombre** qué elementos gráficos lleva, del vocabulario cerrado de 4 familias | **Crea y aplica** esos elementos, decide composición y layout final |
+| **Posting** | Escribe **el mensaje**: hook, copy y caption, literales | **Adapta** a plataforma —hashtags, largo, formato— sin cambiar el mensaje |
 
 ---
 
 ## 4 · Las reglas duras
 
-1. **Sin plan no hay idea.** Sin las campañas y el calendario de ③ Marketing, se **BLOQUEA**.
+1. **Sin plan no hay idea.** Sin las campañas y el calendario de Marketing, se **BLOQUEA**.
 2. **Toda fila traza a un slot y a una MUST BE TRUE.** Si no se puede trazar, se elimina.
 3. **Nunca cambia la promesa.** Si una idea necesita otra promesa, o la promesa está mal (y eso se
-   devuelve a ① Strategy) o la idea no es nuestra.
+   devuelve a Strategy) o la idea no es nuestra.
 4. **Patrón, no pieza.** Se modela la estructura, nunca se copia la ejecución.
 5. **Longevidad, no gusto.** Una referencia entra al swipe file porque lleva tiempo corriendo o es
    outlier contra su propia base. *"Me gusta"* no es evidencia.
@@ -271,7 +271,7 @@ ya hecha.
 8. **1 foco visual por pieza.** Cuando todo parece importante, nada resalta.
 9. **Toda pieza nace de una hipótesis escrita.** Sin hipótesis no hay aprendizaje.
 10. **La `fecha` es lo único que fija del calendario.** El día dentro de la semana del slot. La
-    semana, el canal, la campaña y la cadencia son de ③ Marketing.
+    semana, el canal, la campaña y la cadencia son de Marketing.
 11. **Todo cuelga de una campaña.** Ninguna fila suelta. El ciclo se lee y se revisa **por campaña**.
 12. **70 / 20 / 10.** Cada ciclo: **70 %** patrón probado afuera · **20 %** apuesta propia ·
     **10 %** re-explotación de lo nuestro que ganó. Se verifica sobre el total del ciclo, no por
@@ -279,7 +279,7 @@ ya hecha.
 13. **Dirige, no ejecuta.** El brief trae todo lo que el ejecutor necesita — y nada que le toque
     decidir a él. Si obliga a Producción o Diseño a adivinar, está incompleto.
 14. **Claims, precios y promesas no salen sin luz verde.** Se marcan `⏸️ PENDIENTE APROBACIÓN` y los
-    valida ②B Branding o ⑩ Ads.
+    valida Branding o Ads.
 
 ---
 
@@ -299,12 +299,12 @@ LOOP          Capa 7       ¿Qué patrón ganó?  → vuelve a Capa 1 y Capa 2
 ### Capa 0 · BRIEF — ¿qué pide exactamente?
 **Skill:** `cr-brief` · **Output:** sección de brief en `brief-del-ciclo.md`
 
-Cargar el encargo de ③ Marketing, y lo que exista de ① Strategy y ②B Branding → agrupar los slots del ciclo
+Cargar el encargo de Marketing, y lo que exista de Strategy y Branding → agrupar los slots del ciclo
 **por campaña** → traducir cada slot a etapa del funnel → fijar la `fecha` de cada uno → declarar el
 filtro de audiencia → declarar el reparto 70/20/10 previsto.
 
 > **El slot es un encargo.** Creative no agrega slots, no mueve fechas y no cambia canales. Si el
-> calendario pide más de lo que la capacidad aguanta, **se declara y se devuelve a ③ Marketing** — no se
+> calendario pide más de lo que la capacidad aguanta, **se declara y se devuelve a Marketing** — no se
 > recorta en silencio.
 
 ✅ **Auto-revisión con el QA de `cr-brief`, y sigue.** Antes de gastar tiempo ideando sobre una
@@ -323,7 +323,7 @@ su propia base (`⏱️outlier`) · landing vieja que sigue igual (`⏱️establ
 
 > 🛑 **Leer no es validar.** Una referencia bien leída sin señal de rendimiento es `⚪ ruido`.
 > 🛑 **Lo que no se pudo leer se declara.** Nunca se describe un plano que no se vio.
-> 🛑 **No se duplica a ① Strategy.** Lo que la tabla 15×7 ya cubre se cita, no se re-investiga.
+> 🛑 **No se duplica a Strategy.** Lo que la tabla 15×7 ya cubre se cita, no se re-investiga.
 
 **Cadencia:** refresco semanal.
 
@@ -429,14 +429,14 @@ swipe file actualizado con el ganador propio · 3 hipótesis para la próxima ro
 
 ```
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
-③ Marketing [✅/⬜] · ① Strategy [✅/⚠️] · ②B Branding [✅/⚠️] · ⑩ Ads [✅/⚠️]
+Marketing [✅/⬜] · Strategy [✅/⚠️] · Branding [✅/⚠️] · Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
 Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 
 **Se bloquea si:** no hay cliente · no existe su carpeta · faltan las campañas o el calendario de
-③ Marketing · el pedido pisa otro departamento.
+Marketing · el pedido pisa otro departamento.
 
 ### Modos de entrada
 
@@ -474,8 +474,8 @@ clients/<cliente>/
 
 **Al iniciar un cliente:**
 
-1. Verificar que existen las campañas y el calendario de ③ Marketing del ciclo. **Si no existen,
-   Creative no arranca** — se piden a ③ Marketing primero.
+1. Verificar que existen las campañas y el calendario de Marketing del ciclo. **Si no existen,
+   Creative no arranca** — se piden a Marketing primero.
 2. Usar **el nombre canónico** del folder del cliente: el mismo en Notion y en Drive. Si no coincide,
    la traza entre agentes se rompe.
 3. Copiar `brief-del-ciclo.md` de `brain/entregables/` — los `ideas-<formato>.md` se crean sobre la
@@ -495,13 +495,13 @@ El `aprendizaje-creativo.md` de un bloque anterior **se usa si existe**; no es r
 ## 7 · El handoff
 
 ```markdown
-## HANDOFF — Creative → ⑤ Producción / ⑥A Diseño gráfico
+## HANDOFF — Creative → Producción / Diseño gráfico
 - Cliente: · Bloque: · Fecha:
 - Entregables: plan-de-contenido.csv · brief-del-ciclo.md · ideas-<formato>.md (uno por formato: [lista])
 - Filas totales: [n] · por campaña: [desglose]
 - Reparto 70/20/10: [n / n / n] → [✅ cumple / ⚠️ desviado + por qué]
 - Filas por `material`: ninguno [n] · video [n] · foto [n]
-- Reparto por destino: ⑤ Producción [n] *(video + foto)* · ⑥A Diseño gráfico [n] *(estáticos)* · ⑦ Video Editing [n]
+- Reparto por destino: Producción [n] *(video + foto)* · Diseño gráfico [n] *(estáticos)* · Video Editing [n]
 - BIG IDEAS del bloque: [1 frase cada una]
 - MUST BE TRUE que se mueven: [letras]
 - Claims pendientes: [⏸️ lista + quién los valida]
@@ -521,20 +521,20 @@ escala; nunca se resuelve por cuenta propia.
 
 | Lo que detecta | Vuelve a | Qué hace |
 |---|---|---|
-| La cadencia no cabe en la capacidad de producción | ③ Marketing | Declara el exceso en filas concretas |
-| Un slot sin traza a MUST BE TRUE | ③ Marketing | No produce la fila. Devuelve el slot |
-| Dos canales con la misma función | ③ Marketing | Si dos hacen lo mismo, uno sobra |
-| Un canal con una función que el plan no le asigna | ③ Marketing | El calendario contradice el plan |
-| Campaña sin fechas de preparación suficientes | ③ Marketing | Devuelve con el mínimo de días que producción necesita |
-| Los pilares y su mix no cierran con la frecuencia | ③ Marketing | Declara la diferencia. **No reajusta el mix solo** |
-| Ninguna idea sobrevive el filtro D/N/R | ① Strategy | Puede ser que el territorio no sea distintivo |
-| La promesa no es escribible en el lenguaje del comprador | ① Strategy | Devuelve con las 3 objeciones que la contradicen |
-| El lenguaje literal del comprador está vacío o inventado | 🔁 **de ④ Creatividad, §2B** | Sin citas textuales el copy se escribe a ciegas — se vuelve a las reseñas, no se inventa |
-| Las guidelines contradicen lo que el concepto necesita | ②B Branding | Declara la contradicción. No la resuelve sola |
+| La cadencia no cabe en la capacidad de producción | Marketing | Declara el exceso en filas concretas |
+| Un slot sin traza a MUST BE TRUE | Marketing | No produce la fila. Devuelve el slot |
+| Dos canales con la misma función | Marketing | Si dos hacen lo mismo, uno sobra |
+| Un canal con una función que el plan no le asigna | Marketing | El calendario contradice el plan |
+| Campaña sin fechas de preparación suficientes | Marketing | Devuelve con el mínimo de días que producción necesita |
+| Los pilares y su mix no cierran con la frecuencia | Marketing | Declara la diferencia. **No reajusta el mix solo** |
+| Ninguna idea sobrevive el filtro D/N/R | Strategy | Puede ser que el territorio no sea distintivo |
+| La promesa no es escribible en el lenguaje del comprador | Strategy | Devuelve con las 3 objeciones que la contradicen |
+| El lenguaje literal del comprador está vacío o inventado | 🔁 **de Creatividad, §2B** | Sin citas textuales el copy se escribe a ciegas — se vuelve a las reseñas, no se inventa |
+| Las guidelines contradicen lo que el concepto necesita | Branding | Declara la contradicción. No la resuelve sola |
 
-### Las devoluciones que llegan de ⑤ Producción
+### Las devoluciones que llegan de Producción
 
-La otra dirección: cuando **⑤ Producción** devuelve una escena —con uno de sus 6 motivos, qué
+La otra dirección: cuando **Producción** devuelve una escena —con uno de sus 6 motivos, qué
 intención se rompería y dos alternativas (`pipelines/contenido/04-create/production/brain/WORKFLOW.md` §9)— Creative **responde**.
 No discute el motivo: si el motivo es uno de los 6 y viene con sus dos alternativas, la devolución es
 válida.
@@ -543,41 +543,41 @@ válida.
 
 | Respuesta | Qué significa |
 |---|---|
-| **Alternativa 1** | Se acepta la primera alternativa de ⑤ Producción, tal como vino |
+| **Alternativa 1** | Se acepta la primera alternativa de Producción, tal como vino |
 | **Alternativa 2** | Se acepta la segunda |
-| **Alternativa nueva** | Creative propone otra. ⑤ Producción la verifica de nuevo, y eso cuenta como **una vuelta más** |
-| **Se retira** | La escena sale del ciclo. Si con ella se cae la pieza entera, decide **③ Marketing**, no Creative |
+| **Alternativa nueva** | Creative propone otra. Producción la verifica de nuevo, y eso cuenta como **una vuelta más** |
+| **Se retira** | La escena sale del ciclo. Si con ella se cae la pieza entera, decide **Marketing**, no Creative |
 
 **Quién la resuelve, según el motivo:**
 
-| Motivo de ⑤ Producción | De quién es | Dónde se corrige |
+| Motivo de Producción | De quién es | Dónde se corrige |
 |---|---|---|
 | **1** Shot list roto · **2** Escena sin acción o sin lugar | Error de Creative | `cr-arte-video` (Capa 5). Se corrige sin tocar la idea |
 | **3** Imposibilidad física · **4** De calendario · **5** Desproporción de costo | Restricción real | `cr-arte-video` (Capa 5): se elige alternativa o se propone otra |
-| **6** Contradicción con ②B Branding | Conflicto entre dos departamentos | **No se resuelve acá**: se declara a ②B Branding, igual que la última fila de la tabla de arriba |
+| **6** Contradicción con Branding | Conflicto entre dos departamentos | **No se resuelve acá**: se declara a Branding, igual que la última fila de la tabla de arriba |
 
 **Qué capas vuelven a correr:**
 
 - **Si el cambio no toca la intención** —cambia el lugar, el encuadre o la duración, pero la emoción,
   el concepto y el objetivo son los mismos—: la fila corregida pasa de nuevo el QA de `cr-adaptacion`
-  y **el Excel del ciclo se vuelve a cerrar** antes de volver a ⑤ Producción.
+  y **el Excel del ciclo se vuelve a cerrar** antes de volver a Producción.
 - **Si el cambio rompe la intención**, ya es otra pieza: vuelve a **Capa 3** y corre 4 → 5 → 6, con
   la auto-revisión de cada capa, como cualquier concepto nuevo.
 
 **Los límites:**
 
-- ⏱️ **Plazo: 2 días hábiles** desde que ⑤ Producción registra la devolución, o la fecha que exija la
-  jornada si es anterior — la fecha límite la pone ⑤ Producción en la devolución. Si vence sin
-  respuesta, ⑤ Producción **no inventa**:
-  la escena queda `↩️ devuelta`, fuera de la jornada, y **③ Marketing** decide si la pieza se mueve o
+- ⏱️ **Plazo: 2 días hábiles** desde que Producción registra la devolución, o la fecha que exija la
+  jornada si es anterior — la fecha límite la pone Producción en la devolución. Si vence sin
+  respuesta, Producción **no inventa**:
+  la escena queda `↩️ devuelta`, fuera de la jornada, y **Marketing** decide si la pieza se mueve o
   se cae.
 - 🔁 **Máximo 2 vueltas por escena.** Si después de la segunda no hay acuerdo, deja de ser de los
-  agentes: lo deciden **el lead de ④ Creatividad y el de ⑤ Producción**.
+  agentes: lo deciden **el lead de Creatividad y el de Producción**.
 
 **Dónde queda escrito:** el cambio va en la sección `## CR-00N` de su `ideas-<formato>.md` y en su
 fila de `plan-de-contenido.csv` — son archivos de Creative, y solo Creative los edita. La respuesta
-—una de las 4, con fecha— se registra en la tabla **§ Escenas devueltas a ④ Creatividad** de
-`plan-de-rodaje.md`, que es de ⑤ Producción. Al cierre, `cr-loop` cuenta las devoluciones por motivo: el mismo motivo **dos ciclos
+—una de las 4, con fecha— se registra en la tabla **§ Escenas devueltas a Creatividad** de
+`plan-de-rodaje.md`, que es de Producción. Al cierre, `cr-loop` cuenta las devoluciones por motivo: el mismo motivo **dos ciclos
 seguidos** es un patrón de cómo escribe Creative, no un accidente de la escena.
 
 ---

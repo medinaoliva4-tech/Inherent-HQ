@@ -1,7 +1,7 @@
 ---
 name: ad-optimizacion
 description: >
-  Capa 4 de ⑩ Ads Management — lee pacing, fatiga y rendimiento, y decide qué se mueve. Usa el
+  Capa 4 de Ads Management — lee pacing, fatiga y rendimiento, y decide qué se mueve. Usa el
   monitor del plugin para detectar problemas y AdWhispr para ejecutar los cambios, con la regla
   de un cambio a la vez y nunca antes de que haya datos suficientes. Todo movimiento de
   presupuesto necesita gate. Úsala cuando pidan "no está rindiendo", "pausá esto", "subí el
@@ -33,7 +33,7 @@ description: >
 | **CPM sube + CTR baja** | **Fatiga de creativo** | Se rota a otra variante de hook |
 | **Gasta rápido, no convierte** | Público o destino | Se revisa el destino primero |
 | **No gasta** | Puja, público chico o rechazo | Se revisa la cuenta |
-| **Convierte caro** | Oferta o público | 🔴 Puede ser de ② Growth, no de acá |
+| **Convierte caro** | Oferta o público | 🔴 Puede ser de Growth, no de acá |
 | **Rechazo de política** | Un claim o el creativo | Se corrige y se reenvía |
 
 ## 3 · 🔴 Cuándo el problema no es de pauta
@@ -43,8 +43,8 @@ description: >
 
 | Señal | De quién es |
 |---|---|
-| Llega gente y no compra | **② Growth** — oferta o conversión |
-| Llega quien no es | **③ Marketing** — el público del slot |
+| Llega gente y no compra | **Growth** — oferta o conversión |
+| Llega quien no es | **Marketing** — el público del slot |
 | Llega poca gente y convierte bien | **De acá.** Se sube presupuesto |
 | Nadie ve el anuncio | **De acá.** Es entrega |
 
@@ -56,7 +56,7 @@ description: >
 | **2** | **Pausar lo que no rinde** | Con datos suficientes |
 | **3** | **Mover presupuesto** a lo que sí | 🔒 **Con gate** |
 | **4** | **Cambiar público** | Solo si el creativo ya se probó |
-| **5** | **Cambiar oferta** | 🔴 **No es de acá.** Va a ② Growth |
+| **5** | **Cambiar oferta** | 🔴 **No es de acá.** Va a Growth |
 
 ## 5 · 🚦 GATE 2 — todo movimiento de presupuesto
 

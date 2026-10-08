@@ -1,6 +1,6 @@
 # Núcleo — <cliente>
 
-> Plantilla de ① Strategy · el `WIN` lo escribe `methodology` (§A.1), las tres verdades `analysis`.
+> Plantilla de Strategy · el `WIN` lo escribe `methodology` (§A.1), las tres verdades `analysis`.
 > **Es el archivo más citado del repo:** de acá cuelga la traza de toda pieza que se produce.
 
 ---
@@ -37,7 +37,7 @@
 ## § MUST BE TRUE
 
 > Qué tendría que ser cierto para que el `WIN` pase. **Cada condición con su letra** — es la letra
-> que cada pieza traza en el `plan-de-contenido.csv` de ④ Creatividad.
+> que cada pieza traza en el `plan-de-contenido.csv` de Creatividad.
 
 | | Condición | Dónde está la marca HOY | Confianza |
 |---|---|---|---|

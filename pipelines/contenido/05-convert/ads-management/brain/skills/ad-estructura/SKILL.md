@@ -1,7 +1,7 @@
 ---
 name: ad-estructura
 description: >
-  Capa 1 de ⑩ Ads Management — arma la estructura de campañas y públicos: cuántas campañas, con
+  Capa 1 de Ads Management — arma la estructura de campañas y públicos: cuántas campañas, con
   qué objetivo cada una, qué públicos y con qué presupuesto. Usa el plan del plugin y la
   investigación de keywords y competencia de AdWhispr. La regla es pocas campañas con
   presupuesto suficiente para salir de aprendizaje, no muchas campañas sin datos. Úsala cuando
@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § El encargo · la temperatura y el awareness de `calendario.csv` de ③ Marketing |
+| **Consume** | § El encargo · la temperatura y el awareness de `calendario.csv` de Marketing |
 | **Produce** | La sección **§ La estructura** de `plan-de-pauta.md` |
 
 ## 1 · La regla del presupuesto repartido
@@ -27,7 +27,7 @@ description: >
 
 ## 2 · La estructura sale de la temperatura
 
-**③ Marketing ya clasificó cada pieza. Se usa esa clasificación, no otra.**
+**Marketing ya clasificó cada pieza. Se usa esa clasificación, no otra.**
 
 | Temperatura | Campaña | Objetivo típico |
 |---|---|---|
@@ -80,7 +80,7 @@ no sabe qué plan tiene el cliente.
 ## 7 · Checklist
 
 - [ ] **Pocas campañas con presupuesto suficiente**
-- [ ] La temperatura de cada campaña viene de **③ Marketing**
+- [ ] La temperatura de cada campaña viene de **Marketing**
 - [ ] Ninguna campaña de conversión apunta a **público frío**
 - [ ] Se empezó por los **públicos propios**
 - [ ] Google solo si el plan es **Accelerate o Compound**

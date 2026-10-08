@@ -1,7 +1,7 @@
 ---
 name: cr-loop
 description: >
-  Capa 7 de ④ Creatividad — el loop de aprendizaje. Lee las piezas ya publicadas del ciclo pieza por
+  Capa 7 de Creatividad — el loop de aprendizaje. Lee las piezas ya publicadas del ciclo pieza por
   pieza (nunca en agregado), le da veredicto a cada hipótesis, identifica los 3 patrones ganadores,
   evalúa la fatiga (CPM sube + CTR baja) y actualiza el swipe file y las hipótesis de la próxima
   ronda. Úsala cuando pidan "qué funcionó el mes pasado", "cerremos el ciclo", "revisemos las piezas
@@ -22,7 +22,7 @@ nombre, evidencia y una hipótesis nueva colgada de él.**
 |---|---|
 | **Consume** | Las filas ya publicadas de `plan-de-contenido.csv` (con su `funcion`, `mezcla`, `traza` y `concepto`) · la **hipótesis** y el **Objetivo del slot** de cada sección `## CR-007 · <concepto>`, en el `ideas-<formato>.md` que corresponda · las **métricas por pieza**, exportadas a `clients/<cliente>/99-referencias/recibido/` · el `swipe-file.md` vigente |
 | **Produce** | **`clients/<cliente>/04-contenido/aprendizaje-creativo.md`** — trabajo interno, no se entrega al cliente pero **sí se guarda** · y el **`clients/<cliente>/99-referencias/investigacion/swipe-file.md` actualizado** con los ganadores propios arriba |
-| **No produce** | Dashboards ni reporte de performance (③ Marketing) · piezas nuevas (eso es el ciclo siguiente, desde Capa 0) · ninguna conclusión estratégica |
+| **No produce** | Dashboards ni reporte de performance (Marketing) · piezas nuevas (eso es el ciclo siguiente, desde Capa 0) · ninguna conclusión estratégica |
 
 El flujo del departamento y sus reglas viven en `pipelines/contenido/04-create/creative/brain/WORKFLOW.md`.
 Cómo encadena con el resto: `pipelines/contenido/04-create/creative/brain/skills/README.md`.
@@ -50,7 +50,7 @@ test habría hecho falta. No se atribuye el resultado a la variable que más nos
 ## 7.2 · La métrica la manda el objetivo
 
 Se elige por el **Objetivo del slot** de cada pieza —derivado de la `funcion` que heredó de
-③ Marketing—, nunca por lo que da un número más lindo.
+Marketing—, nunca por lo que da un número más lindo.
 
 | Objetivo del slot | Métrica que lo juzga |
 |---|---|
@@ -110,27 +110,27 @@ Todo lo que se marca para refrescar sale **con fecha límite**, no con un *"pron
 **Y además, en el mismo archivo:** el **veredicto de cada hipótesis** del ciclo
 (`confirmada` / `refutada` / `⚠️ SIN DATOS`) · qué **patrón sube al tope de su skill** en la revisión
 trimestral · las **devoluciones aguas arriba** (lo que Creative detectó y no le toca arreglar) · las
-**devoluciones que llegaron de ⑤ Producción, contadas por motivo** — el mismo motivo dos ciclos
+**devoluciones que llegaron de Producción, contadas por motivo** — el mismo motivo dos ciclos
 seguidos es un patrón de cómo escribe Creative, y entra como hipótesis del ciclo siguiente.
 
 🛑 **Ninguna opción nueva se agrega a una taxonomía de skill sin evidencia de 3+ piezas.**
 
 ---
 
-## 7.6 · La frontera con ③ Marketing
+## 7.6 · La frontera con Marketing
 
 | Departamento | Su pregunta | Quién la responde |
 |---|---|---|
-| **④ Creatividad** — Capa 7 | *¿Qué **patrón creativo** ganó y qué entra al próximo brief?* | 🟢 Esta skill |
-| **③ Marketing** | *¿Se movió la **MUST BE TRUE**? ¿Compoundea?* | 🛑 **No es de Creative** |
-| **③ Marketing** | Los dashboards y el reporte de performance | 🛑 **No es de Creative** |
+| **Creatividad** — Capa 7 | *¿Qué **patrón creativo** ganó y qué entra al próximo brief?* | 🟢 Esta skill |
+| **Marketing** | *¿Se movió la **MUST BE TRUE**? ¿Compoundea?* | 🛑 **No es de Creative** |
+| **Marketing** | Los dashboards y el reporte de performance | 🛑 **No es de Creative** |
 
 Son **preguntas distintas sobre los mismos datos**, y ninguna reemplaza a otra.
 
 🛑 **Creative no responde la segunda: la devuelve.** Una pieza que rindió bien pero no movió nada
-estratégico se declara y **se devuelve a ③ Marketing** — desde acá no se declara victoria
+estratégico se declara y **se devuelve a Marketing** — desde acá no se declara victoria
 estratégica, y tampoco se declara derrota. Lo mismo al revés: un patrón que ganó sigue siendo un
-hallazgo válido aunque ③ Marketing todavía no vea el movimiento.
+hallazgo válido aunque Marketing todavía no vea el movimiento.
 
 ---
 
@@ -159,7 +159,7 @@ hallazgo válido aunque ③ Marketing todavía no vea el movimiento.
 | Repetir idéntico el creativo que ganó | Lo quema en semanas. **Se remixa** |
 | Abandonar el ganador al primer bajón | Se tira el único activo probado. Primero se verifica la señal doble |
 | Atribuir el resultado a una variable que no se aisló | Aprendizaje falso, que contamina los 3 ciclos siguientes |
-| Concluir que la estrategia funciona o no funciona | Esa pregunta es de ③ Marketing. **Se devuelve** |
+| Concluir que la estrategia funciona o no funciona | Esa pregunta es de Marketing. **Se devuelve** |
 
 ---
 
@@ -178,9 +178,9 @@ hallazgo válido aunque ③ Marketing todavía no vea el movimiento.
 - [ ] Está declarado **qué patrón sube al tope de qué skill** en la revisión trimestral
 - [ ] Hay **3 hipótesis nuevas**, cada una atada a un objetivo de slot y con qué la confirmaría
 - [ ] 🛑 Sin métricas: `⚠️ SIN DATOS` + **a quién pedírselas**. **Ningún ganador inventado**
-- [ ] **Ninguna conclusión estratégica emitida** — lo que le toca a ③ Marketing **está devuelto, no respondido**
+- [ ] **Ninguna conclusión estratégica emitida** — lo que le toca a Marketing **está devuelto, no respondido**
 - [ ] Las **devoluciones aguas arriba** están listadas: lo que Creative detectó y no le toca arreglar
-- [ ] Las **devoluciones de ⑤ Producción están contadas por motivo**, y todo motivo repetido dos ciclos seguidos está declarado como patrón
+- [ ] Las **devoluciones de Producción están contadas por motivo**, y todo motivo repetido dos ciclos seguidos está declarado como patrón
 - [ ] `aprendizaje-creativo.md` quedó **en `clients/<cliente>/04-contenido/`**, la raíz del área y no dentro del mes — es interno, no se entrega
 - [ ] El aprendizaje del ciclo anterior pasó a **`04-contenido/_historico/<AAAA-MM>-aprendizaje-creativo.md`**
 

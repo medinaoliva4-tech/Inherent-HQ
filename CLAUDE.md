@@ -95,7 +95,7 @@ Las fechas se ajustan cada mes al calendario real; los límites del 11 y el 20 s
 Ver `inherent/05-OPERACION.md` → «El calendario del ciclo».
 
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa y sigue,
-**②B Branding valida con `br-guardian`** y el COO hace el QA final.
+**Branding valida con `br-guardian`** y el COO hace el QA final.
 
 🗣️ **`pipelines/00-account/` es el único agente que le habla al cliente.** Vive en WhatsApp,
 siempre encendido, **habla como la secretaria de Inherent** y escala lo que no puede resolver:
@@ -284,7 +284,7 @@ Lo prohibido es cobrar contenido o pauta prometiendo facturación.
 🔑 **Los cuatro planes incluyen estrategia.** Cambia la profundidad, no la existencia.
 **Pero solo Growth toca la OFERTA.** Marketing trabaja el **mensaje** —cómo se cuenta lo que ya
 vende—; Growth trabaja **qué vende, en qué paquetes y a qué precio.**
-**En la línea Marketing, ② Growth corre ligero:** elige cuáles de las ofertas que ya existen se
+**En la línea Marketing, Growth corre ligero:** elige cuáles de las ofertas que ya existen se
 empujan, para que la pauta sepa qué pautar. No cambia la oferta.
 **Confundirlos es regalar el trabajo caro dentro del plan barato.**
 
@@ -356,11 +356,11 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
 - **Evidencia o etiqueta** — en el trabajo de cliente. Sin fuente va como `[dice el cliente, sin verificar]`
   o `⚠️ SIN DATOS`. Nunca inventar.
 - **Solo la info que entrega el usuario**, salvo que él habilite fuentes externas.
-- **El CEO solo bloquea en dos lugares:** **① Strategy** *(aprueba la estrategia antes de que pase a
-  los departamentos)* y **⑩ Ads** *(aprueba el plan y el presupuesto antes de lanzar, y cada cambio
+- **El CEO solo bloquea en dos lugares:** **Strategy** *(aprueba la estrategia antes de que pase a
+  los departamentos)* y **Ads** *(aprueba el plan y el presupuesto antes de lanzar, y cada cambio
   de presupuesto)*. **Lo demás fluye:** cada departamento se auto-revisa y sigue. El control de
   calidad lo hace el CEO en persona y no se registra. **Lo que está en el repo ya pasó por el CEO.**
 - **Escalar no es bloquear:** precio, alcance y fechas → el CEO · lo demás → el COO.
-- **Los departamentos se escriben con número y nombre:** «⑤ Producción», nunca «⑤» solo.
+- **Los departamentos se escriben siempre con su nombre:** «Producción», nunca con un número solo.
 - **Nada destructivo sin autorización:** no pautar sin el OK del CEO y no borrar sin autorización.
 - Formato de respuesta: headings, bullets, negritas. Lo accionable arriba. Sin párrafos largos.

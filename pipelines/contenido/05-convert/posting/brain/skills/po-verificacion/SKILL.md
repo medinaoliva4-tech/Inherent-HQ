@@ -1,7 +1,7 @@
 ---
 name: po-verificacion
 description: >
-  Capa 5 de ⑨ Posting — revisa en Zernio el estado de cada publicación del ciclo: programada,
+  Capa 5 de Posting — revisa en Zernio el estado de cada publicación del ciclo: programada,
   publicada o fallida. Lee cada `zernio_post_id` del registro con `posts_get`, cruza las fallidas con
   `posts_list_failed`, las reintenta con `posts_retry` y reporta lo que sigue fallando. Actualiza la
   columna `estado` de `calendario-de-publicacion.csv` y escribe la sección § Verificación de
@@ -48,8 +48,8 @@ después de las fechas del calendario, para saber qué se publicó y qué falló
 🛑 **Se reporta igual que una fallida:** una publicación que `posts_get` no encuentra, una que sigue
 `programada` después de su fecha, o una cuya cuenta o fecha no coinciden con el registro.
 
-**Se registra la URL de cada publicación publicada.** Es lo que después necesitan ④ Creatividad para
-su loop y ⑩ Ads para pautar sobre el orgánico.
+**Se registra la URL de cada publicación publicada.** Es lo que después necesitan Creatividad para
+su loop y Ads para pautar sobre el orgánico.
 
 ## 3 · Las fallidas
 
@@ -71,9 +71,9 @@ esta capa:** se escala al COO.
 
 | A quién | Qué |
 |---|---|
-| **④ Creatividad** (`cr-loop`) | Las URLs de lo publicado — sin ellas no puede leer el rendimiento pieza por pieza |
-| **⑩ Ads** | Las piezas marcadas para pauta, con su URL de post orgánico |
-| **⑧ Community** | Qué salió y cuándo, para el seguimiento de comentarios |
+| **Creatividad** (`cr-loop`) | Las URLs de lo publicado — sin ellas no puede leer el rendimiento pieza por pieza |
+| **Ads** | Las piezas marcadas para pauta, con su URL de post orgánico |
+| **Community** | Qué salió y cuándo, para el seguimiento de comentarios |
 | **El COO** | Lo que sigue fallando después del reintento |
 | **`po-loop`** | Lo que falló y lo que llegó tarde |
 
@@ -89,4 +89,4 @@ esta capa:** se escala al COO.
 - [ ] Las publicaciones que Zernio no encuentra, o que siguen `programada` después de su fecha, están reportadas
 - [ ] La **URL** de cada publicación publicada está registrada
 - [ ] 🛑 **Nada se bajó ni se borró desde acá** — se escaló al COO
-- [ ] Las URLs se pasaron a **④ Creatividad para su loop** y a **⑩ Ads** las marcadas para pauta
+- [ ] Las URLs se pasaron a **Creatividad para su loop** y a **Ads** las marcadas para pauta

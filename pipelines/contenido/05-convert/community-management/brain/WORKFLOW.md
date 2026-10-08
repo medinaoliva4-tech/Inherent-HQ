@@ -1,4 +1,4 @@
-# ⑧ Community Management — cómo trabaja
+# Community Management — cómo trabaja
 
 > **En una frase:** lee los comentarios y mensajes que entran a las redes del cliente, contesta lo
 > que la ficha permite contestar, **lleva cada conversación a un siguiente paso** —pedir, reservar
@@ -11,14 +11,14 @@ paso vive en las skills: `skills/README.md`.
 
 ## 📅 Cuándo corre
 
-**⑧ Community no vive en el ciclo del 1 al 20: corre todos los días.** Lo publicado desde el día 1 genera
+**Community no vive en el ciclo del 1 al 20: corre todos los días.** Lo publicado desde el día 1 genera
 conversación todos los días.
 
 | Qué | Cuándo | Skill |
 |---|---|---|
 | **La corrida** | Programada **cada 2 horas dentro del horario de atención del cliente**, o a mano con `/community` | `cm-ficha` → `cm-triage` → `cm-respuesta` → `cm-escalado` → `cm-envio` |
 | **El cierre de la semana** | Una vez por semana, desde una sesión normal | `cm-loop` |
-| **La revisión del 20** | Con el resto del pipeline | `cm-loop` entrega su lectura del mes a ① Strategy |
+| **La revisión del 20** | Con el resto del pipeline | `cm-loop` entrega su lectura del mes a Strategy |
 
 🔑 **Una corrida sin mensajes nuevos termina en el primer paso.** No se gasta nada en revisar una
 bandeja vacía.
@@ -30,17 +30,17 @@ bandeja vacía.
 **Lo primero de cada corrida: leer el plan del cliente** en
 `clients/<cliente>/00-onboarding/plan-contratado.md`.
 
-- 🛑 **Sin plan anotado, ⑧ Community no corre para ese cliente:** `BLOQUEADO — falta el plan contratado`.
+- 🛑 **Sin plan anotado, Community no corre para ese cliente:** `BLOQUEADO — falta el plan contratado`.
 - 🛑 **El plan es el techo.** Lo que el plan no incluye no se hace aunque sea fácil.
-- ⬜ **Tailor Made: manda Su pipeline** del `plan-contratado.md`, sin cuestionarlo. Si ⑧ Community no está,
+- ⬜ **Tailor Made: manda Su pipeline** del `plan-contratado.md`, sin cuestionarlo. Si Community no está,
   no corre para ese cliente; si está, prende el nivel que declara —**«Básico» es la columna
   🔷 Marketing**—.
 
-| Qué hace ⑧ Community | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+| Qué hace Community | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Contesta lo simple** *(horarios, ubicación, menú o catálogo, precios publicados, links)* | ✅ | ✅ | ✅ | ✅ |
 | **Pasa lo complejo al WhatsApp del cliente** | ✅ | ✅ | ✅ | ✅ |
-| **Redes que atiende** | Las **Redes** del `plan-contratado.md` *(o las del plan por canal de ③ Marketing, si existe)* | **Todas las del cliente, todos los días** | Todas | Todas |
+| **Redes que atiende** | Las **Redes** del `plan-contratado.md` *(o las del plan por canal de Marketing, si existe)* | **Todas las del cliente, todos los días** | Todas | Todas |
 | **Modera** *(oculta spam y abuso)* | — | ✅ | ✅ | ✅ |
 | **Seguimiento** *(quién preguntó qué, avisos al COO, `seguimiento/`)* | — | ✅ | ✅ | ✅ |
 | **Auto-DM por palabra clave y embudo de WhatsApp** | — | — | ✅ | ✅ |
@@ -52,7 +52,7 @@ bandeja vacía.
   cliente, y listo.** No se registra ni se avisa: eso es seguimiento, y empieza en Pro.
 - **Desde Pro, además se registra y se avisa al COO.**
 - **El auto-DM por palabra clave es una automatización de Zernio** que corre sola, sin la corrida.
-  Se arma solo en 🟨, cuando ③ Marketing o ④ Creatividad piden una palabra clave para una pieza.
+  Se arma solo en 🟨, cuando Marketing o Creatividad piden una palabra clave para una pieza.
 
 ---
 
@@ -65,13 +65,13 @@ bandeja vacía.
 | **2** | **`cm-respuesta`** | Escribe la respuesta con la ficha, la voz y **el cierre**. La pasa por `humanizar.py` | Si el dato no está en la ficha, no inventa: escala |
 | **3** | **`cm-escalado`** | Eventos, reservas, quejas y lo que no está en la ficha: a quién y cómo | — |
 | **4** | **`cm-envio`** | Decide qué sale solo, envía por Zernio, manda el reporte por Gmail | En modo borrador no envía nada |
-| **↻** | **`cm-loop`** | Semanal: pasa el seguimiento al repo, propone FAQ nuevas, preguntas que son ideas para ④ Creatividad | — |
+| **↻** | **`cm-loop`** | Semanal: pasa el seguimiento al repo, propone FAQ nuevas, preguntas que son ideas para Creatividad | — |
 
 ---
 
 ## 2 · Qué sale solo y qué se escala
 
-| Caja | Qué hace ⑧ Community | ¿Sale solo? |
+| Caja | Qué hace Community | ¿Sale solo? |
 |---|---|---|
 | 💬 **Apoyo** *(«qué rico», 👏, una etiqueta)* | Agradece corto, con la voz de la marca, y cierra | 🟢 Sí |
 | 🛍️ **Pregunta simple** *(menú, horario, ubicación, precio publicado, cómo pedir)* | Contesta **solo con lo que dice la ficha** y cierra | 🟢 Sí |
@@ -117,7 +117,7 @@ conversación.** Los números y los textos viven en la ficha.
 
 ## 4 · Las reglas de cada plataforma
 
-| Plataforma | Regla | Qué hace ⑧ Community |
+| Plataforma | Regla | Qué hace Community |
 |---|---|---|
 | **Instagram · comentarios** | Los links **no se pueden tocar** | Contesta corto en público y **manda el link por DM privado** |
 | **Instagram · DM privado a un comentario** | **Uno solo por comentario**, dentro de 7 días. A quien no sigue la cuenta, IG **rechaza botones** y el intento gasta el DM | El primer DM va **en texto plano**, con el link escrito |
@@ -145,9 +145,9 @@ conversación.** Los números y los textos viven en la ficha.
 
 | A quién | Qué | Cuándo |
 |---|---|---|
-| **④ Creatividad** | Las preguntas que se repiten: **son reels con el hook ya escrito** | `cm-loop`, semanal |
-| **③ Marketing** | Qué se pregunta por canal y qué objeciones aparecen | `cm-loop`, para el plan del ciclo |
-| **① Strategy** | La lectura del mes | La revisión del 20 |
+| **Creatividad** | Las preguntas que se repiten: **son reels con el hook ya escrito** | `cm-loop`, semanal |
+| **Marketing** | Qué se pregunta por canal y qué objeciones aparecen | `cm-loop`, para el plan del ciclo |
+| **Strategy** | La lectura del mes | La revisión del 20 |
 | **El cliente** | Quejas repetidas y lo que la ficha no cubre | Por el COO |
 
 ---

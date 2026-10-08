@@ -1,10 +1,10 @@
 ---
 name: po-loop
 description: >
-  Capa 6 de ⑨ Posting — cierra el ciclo con las cuatro lecturas: qué no llegó a tiempo y de dónde
+  Capa 6 de Posting — cierra el ciclo con las cuatro lecturas: qué no llegó a tiempo y de dónde
   venía, qué se devolvió y por qué, qué falló al publicar, y si el ciclo quedó programado a tiempo.
-  Devuelve como dato —no como reclamo— lo que es de ③ Marketing (fechas de preparación cortas) y de
-  ⑥A Diseño gráfico / ⑦ Video Editing (specs que fallan siempre). Escribe
+  Devuelve como dato —no como reclamo— lo que es de Marketing (fechas de preparación cortas) y de
+  Diseño gráfico / Video Editing (specs que fallan siempre). Escribe
   `aprendizaje-de-posting.md`. Úsala cuando pidan "qué se cayó este mes", "por qué llegó tarde",
   "cerrá el ciclo de posting", "qué falló en Zernio".
   Requiere el ciclo publicado y verificado.
@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `calendario-de-publicacion.csv` completo, con `estado` de todas las filas · la § Verificación de `publicaciones.md` · las fechas de preparación de ③ Marketing · cuándo quedó `programada` cada fila en Zernio |
+| **Consume** | `calendario-de-publicacion.csv` completo, con `estado` de todas las filas · la § Verificación de `publicaciones.md` · las fechas de preparación de Marketing · cuándo quedó `programada` cada fila en Zernio |
 | **Produce** | **`aprendizaje-de-posting.md`** — archivo de trabajo interno: no se entrega al cliente pero **sí se guarda**. Plantilla: `aprendizaje-de-posting.md`, al lado de esta skill |
 
 Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md`.
@@ -23,7 +23,7 @@ Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLO
 
 | # | Lectura | La pregunta | De dónde sale |
 |---|---|---|---|
-| **1** | **Llegó tarde** | ¿Qué piezas no estaban a tiempo, y de dónde venían? | Fecha de entrega real de ⑥A Diseño gráfico / ⑦ Video Editing vs. la `fecha` de la fila |
+| **1** | **Llegó tarde** | ¿Qué piezas no estaban a tiempo, y de dónde venían? | Fecha de entrega real de Diseño gráfico / Video Editing vs. la `fecha` de la fila |
 | **2** | **Se devolvió** | ¿Qué se devolvió, a quién y por cuál de los 5 motivos? | La tabla de devoluciones de `publicaciones.md` |
 | **3** | **Falló al publicar** | ¿Qué quedó `fallida` en Zernio, y qué se recuperó con el reintento? | La § Verificación |
 | **4** | **Programado a tiempo** | ¿El ciclo quedó programado a más tardar el día 19, y qué lo atrasó? | Cuándo quedó `programada` cada fila — Zernio (`posts_get`) |
@@ -32,19 +32,19 @@ Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLO
 
 ```
 | id_creativo | Se esperaba | Llegó     | Atraso | De quién venía |
-| CR-003      | 2026-10-02  | 2026-10-07| 5 días | ⑥A Diseño gráfico |
-| CR-009      | 2026-10-04  | nunca     | —      | ⑦ Video Editing   |
+| CR-003      | 2026-10-02  | 2026-10-07| 5 días | Diseño gráfico |
+| CR-009      | 2026-10-04  | nunca     | —      | Video Editing   |
 ```
 
 > 🛑 **Si el 30 % de las piezas llega tarde, el problema no está en Posting.** Está en las fechas de
-> preparación de ③ Marketing o en los tiempos de ⑥A Diseño gráfico y ⑦ Video Editing. Eso se
+> preparación de Marketing o en los tiempos de Diseño gráfico y Video Editing. Eso se
 > devuelve **como dato, no como reclamo**: con el número, no con la queja.
 
 | Patrón | A quién va |
 |---|---|
-| Siempre llega tarde el **mismo formato** | ⑥A Diseño gráfico o ⑦ Video Editing: ese formato lleva más tiempo del previsto |
-| Llega tarde **todo, parejo** | ③ Marketing: las fechas de preparación son cortas para el ciclo |
-| Llega tarde lo que **depende del cliente** | ① Strategy: el tiempo de respuesta declarado no es el real |
+| Siempre llega tarde el **mismo formato** | Diseño gráfico o Video Editing: ese formato lleva más tiempo del previsto |
+| Llega tarde **todo, parejo** | Marketing: las fechas de preparación son cortas para el ciclo |
+| Llega tarde lo que **depende del cliente** | Strategy: el tiempo de respuesta declarado no es el real |
 
 ## 3 · Lectura 2 — las devoluciones que se repiten
 
@@ -52,14 +52,14 @@ Una devolución aislada es ruido. **La misma devolución tres ciclos seguidos es
 
 ```
 | Motivo                        | Veces | A quién | ¿Se repite de ciclos anteriores? |
-| 2 · No cumple la spec (9:16)  | 4     | ⑦ Video Editing      | Sí — tercer ciclo                |
+| 2 · No cumple la spec (9:16)  | 4     | Video Editing      | Sí — tercer ciclo                |
 ```
 
 | Si se repite | Qué se propone |
 |---|---|
-| **Specs** que fallan siempre | Que ⑥A Diseño gráfico / ⑦ Video Editing fijen la spec **antes** de exportar. Se les pasa la tabla de aspectos |
-| **Falta de copy** en ④ Creatividad | Que ④ Creatividad verifique el copy literal antes de cerrar el Excel del ciclo |
-| **Claims** que llegan sin validar | Que ②B Branding los valide **antes** del cierre de ④ Creatividad, no en Posting |
+| **Specs** que fallan siempre | Que Diseño gráfico / Video Editing fijen la spec **antes** de exportar. Se les pasa la tabla de aspectos |
+| **Falta de copy** en Creatividad | Que Creatividad verifique el copy literal antes de cerrar el Excel del ciclo |
+| **Claims** que llegan sin validar | Que Branding los valide **antes** del cierre de Creatividad, no en Posting |
 
 🛑 **Se propone, no se impone.** Cada departamento decide sobre su propio proceso.
 

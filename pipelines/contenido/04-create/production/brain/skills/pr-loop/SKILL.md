@@ -1,10 +1,10 @@
 ---
 name: pr-loop
 description: >
-  Capa 7 de ⑤ Producción — cierra el ciclo con datos reales y no con impresiones. Hace las cuatro
+  Capa 7 de Producción — cierra el ciclo con datos reales y no con impresiones. Hace las cuatro
   lecturas: desvío de costo (`costo_estimado` vs `costo_real`), desvío de tiempo, material grabado
   que nadie usó y factor de consolidación real vs. previsto. Devuelve el material no usado a
-  ④ Creatividad como dato, propone a ① Strategy la corrección de la capacidad declarada y sube a
+  Creatividad como dato, propone a Strategy la corrección de la capacidad declarada y sube a
   las skills los tiempos y costos que ya son dato. Escribe
   `aprendizaje-de-produccion.md`. Úsala cuando pidan "cómo nos fue", "cerrá el ciclo", "cuánto nos
   pasamos de presupuesto", "qué grabamos que no se usó", "por qué llevó más jornadas", "qué hacemos
@@ -16,14 +16,14 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `presupuesto.csv` con **`costo_real` cargado en todas las filas** · `plan-de-produccion.csv` completo, con `costo_estimado`, `jornada` y `estado` · de `plan-de-rodaje.md`: los tiempos estimados del orden de tiro y el factor de consolidación previsto (la sección de cada jornada) y el manifiesto de entrega (§ La entrega) · **qué usó ⑥A Diseño gráfico y ⑦ Video Editing en la pieza final** · la capacidad declarada por ① Strategy |
+| **Consume** | `presupuesto.csv` con **`costo_real` cargado en todas las filas** · `plan-de-produccion.csv` completo, con `costo_estimado`, `jornada` y `estado` · de `plan-de-rodaje.md`: los tiempos estimados del orden de tiro y el factor de consolidación previsto (la sección de cada jornada) y el manifiesto de entrega (§ La entrega) · **qué usó Diseño gráfico y Video Editing en la pieza final** · la capacidad declarada por Strategy |
 | **Produce** | **`aprendizaje-de-produccion.md`** — archivo de trabajo interno: no se entrega al cliente pero **sí se guarda** en la carpeta del cliente. Plantilla: `aprendizaje-de-produccion.md`, al lado de esta skill |
 
 Contexto del departamento: `pipelines/contenido/04-create/production/brain/WORKFLOW.md`. Cómo encadena con el resto:
 `pipelines/contenido/04-create/production/brain/skills/README.md`.
 
 **Qué mide: ejecución.** No resultado creativo ni de negocio. Si una pieza no funcionó, eso lo lee
-④ Creatividad en su propia Capa 7, con métricas por pieza. Acá se lee **qué costó más, qué llevó más
+Creatividad en su propia Capa 7, con métricas por pieza. Acá se lee **qué costó más, qué llevó más
 y qué se grabó al vacío**.
 
 🛑 **Sin datos: `⚠️ SIN DATOS` + a quién pedírselos. Ningún desvío inventado.** Un modelo sin acceso
@@ -53,7 +53,7 @@ columna.
 |---|---|---|---|
 | **1** | **Desvío de costo** | ¿Qué ítems se pasaron, y cuánto? | `costo_estimado` vs **`costo_real`** de `presupuesto.csv`, por categoría y por jornada |
 | **2** | **Desvío de tiempo** | ¿Qué escenas llevaron más de lo estimado? | Los tiempos del orden de tiro (`plan-de-rodaje.md`, la sección de su jornada) vs. el real de la jornada |
-| **3** | **Material no usado** | ¿Qué se grabó y ⑥A Diseño gráfico o ⑦ Video Editing nunca usaron? | El manifiesto (`plan-de-rodaje.md` § La entrega) cruzado contra la pieza final |
+| **3** | **Material no usado** | ¿Qué se grabó y Diseño gráfico o Video Editing nunca usaron? | El manifiesto (`plan-de-rodaje.md` § La entrega) cruzado contra la pieza final |
 | **4** | **Consolidación** | ¿El factor fue el previsto? ¿Dónde se perdió? | Factor previsto (`plan-de-rodaje.md`, la sección de su jornada) vs. jornadas realmente usadas |
 
 Las cuatro se escriben **con número**, no con adjetivo. *"Nos pasamos un poco"* no es una lectura:
@@ -81,9 +81,9 @@ Escenas grabadas: [n]   ·   Escenas efectivamente usadas: [n]
 |---|---|
 | **Hasta ~15 %** | Normal. Es el costo de la cobertura que sí sirve |
 | **20-30 %** | Hay un patrón. Se nombra qué tipo de escena se repite en el descarte |
-| **> 30-40 %** | 🛑 El shot list está pidiendo más de lo que la pieza usa. **Se devuelve a ④ Creatividad** |
+| **> 30-40 %** | 🛑 El shot list está pidiendo más de lo que la pieza usa. **Se devuelve a Creatividad** |
 
-🛑 **Se devuelve a ④ Creatividad como DATO, no como reclamo.** Tres cosas, y ninguna es un juicio:
+🛑 **Se devuelve a Creatividad como DATO, no como reclamo.** Tres cosas, y ninguna es un juicio:
 
 | Qué lleva la devolución | Ejemplo |
 |---|---|
@@ -92,20 +92,20 @@ Escenas grabadas: [n]   ·   Escenas efectivamente usadas: [n]
 | **Qué se propone** | *"grabar una reacción por pieza en vez de por escena — ahorra ~1,5 h por jornada"* |
 
 ❌ *"Nos hicieron grabar un montón de cosas al vacío"*
-✅ *"El 38 % del material no usado son reacciones. Proponemos una por pieza. Decide ④ Creatividad."*
+✅ *"El 38 % del material no usado son reacciones. Proponemos una por pieza. Decide Creatividad."*
 
 > Esto **no es una devolución de las 6 de `WORKFLOW.md §9`**: no bloquea nada ni pide reescribir una
 > escena. Es un aprendizaje que entra al brief del ciclo siguiente.
 
 ---
 
-## 4 · Lo que vuelve a ① Strategy
+## 4 · Lo que vuelve a Strategy
 
-**La capacidad de producción declarada en ① Strategy es una estimación**, y nadie la corrige nunca. Producción
+**La capacidad de producción declarada en Strategy es una estimación**, y nadie la corrige nunca. Producción
 es el único departamento que sale del ciclo con el dato real: cuántas piezas entraron de verdad,
 cuántas jornadas hubo, cuánto costó cada pieza.
 
-| | Declarado en ① Strategy | Real este ciclo |
+| | Declarado en Strategy | Real este ciclo |
 |---|---|---|
 | Piezas producidas por ciclo | | |
 | Jornadas realmente disponibles | | |
@@ -113,7 +113,7 @@ cuántas jornadas hubo, cuánto costó cada pieza.
 
 🛑 **Es la única corrección que Producción hace sobre un documento de otro departamento, y se hace
 COMO PROPUESTA — nunca editando su archivo.** Se redacta el texto sugerido, se cita la fuente del
-dato y decide ① Strategy. Editar el archivo ajeno crea dos versiones de la verdad y en dos ciclos no coinciden.
+dato y decide Strategy. Editar el archivo ajeno crea dos versiones de la verdad y en dos ciclos no coinciden.
 
 ---
 
@@ -141,12 +141,12 @@ mejora sin que nadie lo decida.
 1. 🛑 **`costo_real` en todas las filas**, aunque coincida con el estimado.
 2. **Los desvíos se leen por ítem y por jornada**, nunca solo en total.
 3. **Todo desvío lleva su explicación escrita**, no solo el porcentaje.
-4. **El material no usado se devuelve a ④ Creatividad como dato**, con patrón y propuesta.
-5. **La corrección de capacidad va a ① Strategy como propuesta.** 🛑 **No se edita el archivo de otro
+4. **El material no usado se devuelve a Creatividad como dato**, con patrón y propuesta.
+5. **La corrección de capacidad va a Strategy como propuesta.** 🛑 **No se edita el archivo de otro
    departamento.**
 6. **Nada sube a las skills sin tres ciclos** en la misma dirección.
 7. 🛑 **Ningún desvío inventado.** Sin dato: `⚠️ SIN DATOS` + a quién pedírselo.
-8. **Esta capa no juzga la pieza.** Si rindió o no rindió es Capa 7 de ④ Creatividad.
+8. **Esta capa no juzga la pieza.** Si rindió o no rindió es Capa 7 de Creatividad.
 
 ---
 
@@ -157,14 +157,14 @@ mejora sin que nadie lo decida.
 - [ ] Los **3 ítems que más se pasaron** están nombrados, con su explicación escrita
 - [ ] **Contingencia consumida** declarada aparte, con qué la consumió
 - [ ] Desvío de tiempo calculado **por escena**, con explicación de las que se pasaron
-- [ ] **Material no usado identificado**, cruzado contra lo que ⑥A Diseño gráfico y ⑦ Video Editing usaron en la pieza final
+- [ ] **Material no usado identificado**, cruzado contra lo que Diseño gráfico y Video Editing usaron en la pieza final
 - [ ] El **% no usado y su costo** están en números, no en adjetivos
-- [ ] El material no usado se devuelve a ④ Creatividad **como dato, no como reclamo**, con **patrón y propuesta**
+- [ ] El material no usado se devuelve a Creatividad **como dato, no como reclamo**, con **patrón y propuesta**
 - [ ] Factor de consolidación **real vs. previsto**, con **dónde se perdió**
-- [ ] La **corrección de capacidad** para ① Strategy está redactada **como propuesta**, con la fuente del dato
+- [ ] La **corrección de capacidad** para Strategy está redactada **como propuesta**, con la fuente del dato
 - [ ] 🛑 **No se editó ningún archivo de otro departamento** — todo citado con su ruta
 - [ ] Está declarado **qué tiempo o costo sube a qué skill `pr-*`**, y con **cuántos ciclos** de evidencia
-- [ ] Ninguna conclusión sobre **rendimiento de la pieza** — eso es Capa 7 de ④ Creatividad
+- [ ] Ninguna conclusión sobre **rendimiento de la pieza** — eso es Capa 7 de Creatividad
 - [ ] Sin datos: `⚠️ SIN DATOS` + a quién pedírselos. **Ningún desvío inventado**
 - [ ] `aprendizaje-de-produccion.md` quedó **guardado en la carpeta del cliente** — es interno, no se entrega
 

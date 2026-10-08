@@ -126,7 +126,7 @@ Close with one line on what the pulse covered, then the single most relevant
 next step and at most two others nearby:
 
 - If cash or AR flagged red: "who owes me money" runs `invoice-chase`.
-- Si dominan las preguntas de marketing: el rendimiento de las redes y la pauta de Inherent no se lee aquí, va por `/inherent` → ③ Marketing y ⑩ Ads.
+- Si dominan las preguntas de marketing: el rendimiento de las redes y la pauta de Inherent no se lee aquí, va por `/inherent` → Marketing y Ads.
 - To make this recurring: "Monday brief" runs `/monday-brief` every week.
 
 Max three offers. Never repeat an offer the owner declined this session.

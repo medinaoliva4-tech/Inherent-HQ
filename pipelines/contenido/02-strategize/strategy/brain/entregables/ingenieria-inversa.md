@@ -1,8 +1,8 @@
 # Ingeniería inversa — <cliente>
 
-> Plantilla de ① Strategy, bloque 03 · `reverse-engineering`.
+> Plantilla de Strategy, bloque 03 · `reverse-engineering`.
 > 🛑 **Termina en patrón observado.** Si una línea dice «por lo tanto deberíamos…», se salió de su rol.
-> **④ Creatividad lo lee para NO re-mapear la categoría** en su swipe file.
+> **Creatividad lo lee para NO re-mapear la categoría** en su swipe file.
 
 ---
 
@@ -37,7 +37,7 @@
 
 ## § El mapa de saturación
 
-> Qué código ya está gastado en la categoría. **Es lo que ②B Branding usa para oponerse.**
+> Qué código ya está gastado en la categoría. **Es lo que Branding usa para oponerse.**
 
 | Código | Qué tan saturado | Quién lo usa |
 |---|---|---|

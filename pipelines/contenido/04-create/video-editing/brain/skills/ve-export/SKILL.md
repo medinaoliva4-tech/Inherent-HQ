@@ -1,8 +1,8 @@
 ---
 name: ve-export
 description: >
-  Capa 4 de ⑦ Video Editing — exporta cada pieza con las specs de su plataforma y la
-  nomenclatura que ⑨ Posting cruza, y arma el manifiesto que cierra el ciclo. Verifica aspecto,
+  Capa 4 de Video Editing — exporta cada pieza con las specs de su plataforma y la
+  nomenclatura que Posting cruza, y arma el manifiesto que cierra el ciclo. Verifica aspecto,
   duración, peso, audio y ausencia de watermark antes de entregar, porque lo que no cumple lo
   devuelve po-specs y vuelve acá igual, pero tarde. Publica la página donde el cliente aprueba
   o pide cambios. Úsala cuando pidan "exportá el paquete", "dejalo listo para
@@ -29,11 +29,11 @@ description: >
 
 | Parte | Ejemplo |
 |---|---|
-| `id_creativo` | `CR-007` — el del Excel de ④ Creatividad |
+| `id_creativo` | `CR-007` — el del Excel de Creatividad |
 | `variante` | `principal` · `hookB` · `corto` · `fragmento1` |
 | `plataforma` | `ig-reel` · `tiktok` · `yt-short` · `ig-story` |
 
-🛑 **⑨ Posting cruza por `id_creativo`.** Un archivo sin él **se devuelve sin abrirse**.
+🛑 **Posting cruza por `id_creativo`.** Un archivo sin él **se devuelve sin abrirse**.
 
 ## 2 · El QA técnico, pieza por pieza
 
@@ -42,17 +42,17 @@ description: >
 | **Aspecto** | El de la plataforma. Sin barras negras |
 | **Duración** | Dentro del máximo del formato |
 | **Peso** | Bajo el límite de la plataforma |
-| **Audio** | Existe, se entiende, sin saturar. **Nivel parejo entre piezas** (−20 LUFS). Si la música se pone en la app, la pieza va **sin audio** y se anota en el manifiesto para ⑨ Posting |
+| **Audio** | Existe, se entiende, sin saturar. **Nivel parejo entre piezas** (−20 LUFS). Si la música se pone en la app, la pieza va **sin audio** y se anota en el manifiesto para Posting |
 | **Safe zones** | El texto no queda bajo la UI. **Se verifica en el export, no en el proyecto** |
 | **Sin watermark** | De ninguna app de edición ni de generación |
-| **Primer frame** | No es negro. Es el frame que ④ Creatividad definió |
+| **Primer frame** | No es negro. Es el frame que Creatividad definió |
 
 🛑 **El watermark de una herramienta de IA en una pieza de cliente es un problema de marca, no
 un detalle.**
 
 ## 3 · Una pieza, un archivo por plataforma
 
-**No se entrega un master y que ⑨ Posting lo adapte.** Cada plataforma recibe su archivo exportado con
+**No se entrega un master y que Posting lo adapte.** Cada plataforma recibe su archivo exportado con
 sus specs.
 
 | Archivo | Para qué | Cómo |
@@ -68,11 +68,11 @@ dice «me gustaba más antes», tiene que existir el antes.
 
 ## 4 · El manifiesto — `entregas-video.md`
 
-**Cruza el Excel de ④ Creatividad fila por fila contra lo entregado.** Es lo que ⑨ Posting abre primero.
+**Cruza el Excel de Creatividad fila por fila contra lo entregado.** Es lo que Posting abre primero.
 
 | Columna | Qué lleva |
 |---|---|
-| `id_creativo` | El del Excel de ④ Creatividad |
+| `id_creativo` | El del Excel de Creatividad |
 | `variante` | `principal` o cuál |
 | `plataforma` | Dónde va |
 | `archivo` | **El link al Drive**, no el archivo copiado |
@@ -86,11 +86,11 @@ dice «me gustaba más antes», tiene que existir el antes.
 
 **Se escribe, no se omite.** Una tabla con pieza, motivo y de quién se espera.
 
-🛑 **Un ciclo que entrega 9 de 10 reels sin decir cuál falta obliga a ⑨ Posting a descubrirlo.**
+🛑 **Un ciclo que entrega 9 de 10 reels sin decir cuál falta obliga a Posting a descubrirlo.**
 
 ## 6 · Sin paradas — se auto-revisa y sigue
 
-**El paquete no para:** con el checklist de §8 completo entra a QA y después a ⑨ Posting.
+**El paquete no para:** con el checklist de §8 completo entra a QA y después a Posting.
 
 🛑 **La página del cliente (§7) sale con el checklist de §8 completo:** sin eso no se corre
 `vercel deploy --prod` ni se le manda el link. Es lo que ve el cliente.
@@ -103,7 +103,7 @@ versión.
 
 | | |
 |---|---|
-| **Qué muestra** | Cada video (el preview) con su caption — **el de ⑨ Posting**, no uno escrito acá — y al pie los datos fijos del cliente (sucursales, teléfonos, dónde hay delivery) |
+| **Qué muestra** | Cada video (el preview) con su caption — **el de Posting**, no uno escrito acá — y al pie los datos fijos del cliente (sucursales, teléfonos, dónde hay delivery) |
 | **Qué responde el cliente** | Calificación 1–5 · «aprobado» o «con cambios» · qué cambiar. Se guarda en un Blob **privado** |
 | **Dónde se leen las respuestas** | `/respuestas?k=<clave>`. La clave es una variable de entorno del proyecto de Vercel |
 | **Cómo se arma** | `data.json` (piezas, captions, pie) → `build.py data.json display.ttf sans.ttf <videos>` → `vercel deploy --prod`. Un proyecto de Vercel por cliente |
@@ -124,8 +124,8 @@ el cliente.** El link que se manda es solo el de la página.
 - [ ] **Ningún watermark**
 - [ ] El primer frame **no es negro**
 - [ ] El audio tiene **nivel parejo** entre piezas
-- [ ] `entregas-video.md` cruza el Excel de ④ Creatividad **fila por fila**
+- [ ] `entregas-video.md` cruza el Excel de Creatividad **fila por fila**
 - [ ] Lo que no salió está **escrito**, con responsable
 - [ ] Hay **master + preview < 30 MB** de cada pieza; las versiones anteriores quedaron archivadas
-- [ ] La página del cliente tiene **la versión actual** de cada video (`?v=`) y el caption de ⑨ Posting
+- [ ] La página del cliente tiene **la versión actual** de cada video (`?v=`) y el caption de Posting
 - [ ] La clave de respuestas **no** está en el repo ni en el link al cliente

@@ -1,7 +1,7 @@
-# ⑦ Video Editing — cómo trabaja
+# Video Editing — cómo trabaja
 
 > **En una frase:** convierte el material grabado en **las piezas finales listas para publicar**.
-> ④ Creatividad dirigió, ⑤ Producción rodó, **⑦ Video Editing ensambla y multiplica**.
+> Creatividad dirigió, Producción rodó, **Video Editing ensambla y multiplica**.
 >
 > **Quién ejecuta:** el **editor de video** (una persona) da las instrucciones y aprueba; **Claude Code
 > hace todo el trabajo** con el motor del departamento — `motor/README.md`. Probado de punta a punta
@@ -25,7 +25,7 @@ paso vive en las skills: `skills/README.md`.
 
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota Strategy al arrancar en
 `clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
@@ -54,9 +54,9 @@ paso vive en las skills: `skills/README.md`.
   el material lo permite **y** el operador tiene las horas.
 - ⚠️ **🟨 Accelerate monta 50% más video que 🔷 Pro** *(18 planificados contra 12)* con el mismo
   total de 145 piezas del plan. **Copiar el reparto de Pro es un error.**
-- 🔑 **Acá está la eficiencia del modelo:** ⑤ Producción cuesta horas humanas; ⑦ Video Editing multiplica ese
+- 🔑 **Acá está la eficiencia del modelo:** Producción cuesta horas humanas; Video Editing multiplica ese
   material **dentro del mismo monto de Producción.** Por eso el mínimo 1:2 es piso, no aspiración.
-- 🔑 **⑦ Video Editing edita con Claude Code y el motor (`motor/README.md`); el editor de video dirige y aprueba.**
+- 🔑 **Video Editing edita con Claude Code y el motor (`motor/README.md`); el editor de video dirige y aprueba.**
   El techo de capacidad es el material rodado y las horas de revisión del editor, no el plan.
 - 🛑 **Una derivada nunca pide grabación extra.** Sale de material ya rodado. Si para llegar al
   número haría falta volver a grabar, **el número está mal, no el rodaje.**
@@ -66,13 +66,13 @@ paso vive en las skills: `skills/README.md`.
 ### ⬜ Tailor Made — se sigue su pipeline
 
 Se define en el onboarding, en `plan-contratado.md`, con dos secciones: **Qué incluye** y **Su
-pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—. **⑦ Video Editing lee
+pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—. **Video Editing lee
 de ahí cuántos videos planificados, derivados y revisiones le tocan** y trabaja con esos números
 igual que con un plan estándar.
 
 - **El pipeline se sigue, no se cuestiona:** no se bloquea por no ser un plan de lista ni se
   discute por precio.
-- 🛑 **Si ⑦ Video Editing no está en su pipeline, no corre para ese cliente.**
+- 🛑 **Si Video Editing no está en su pipeline, no corre para ese cliente.**
 - **Cambia el volumen, nunca el método:** la trazabilidad, las devoluciones y la auto-revisión son
   iguales en todos los planes.
 - **Arriba de 🟨 Compound el techo es el material rodado**, no el plan: más derivadas de las que el
@@ -82,7 +82,7 @@ igual que con un plan estándar.
 
 ## 1 · Acá está la eficiencia del modelo
 
-**⑤ Producción cuesta horas humanas. ⑦ Video Editing multiplica ese material dentro del mismo costo fijo de Producción.**
+**Producción cuesta horas humanas. Video Editing multiplica ese material dentro del mismo costo fijo de Producción.**
 
 > 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
 
@@ -90,19 +90,19 @@ igual que con un plan estándar.
 
 ## 2 · La distinción que define el departamento
 
-**④ Creatividad decidió qué dice y cómo se ve. ⑦ Video Editing lo ejecuta — no lo reinterpreta.**
+**Creatividad decidió qué dice y cómo se ve. Video Editing lo ejecuta — no lo reinterpreta.**
 
-| ④ Creatividad entregó | ⑦ Video Editing ejecuta |
+| Creatividad entregó | Video Editing ejecuta |
 |---|---|
 | El hook, literal | Lo monta en el primer frame |
 | El guion, literal | Lo corta respetando HOOK-BODY-PAYOFF |
 | Las escenas con encuadre y duración | Las ensambla en ese orden |
-| El layout de texto | Lo aplica con las specs de ②B Branding |
+| El layout de texto | Lo aplica con las specs de Branding |
 
-🛑 **El hook se decidió en ④ Creatividad, no se cambia en edición.** Si el material no permite montarlo,
-**se devuelve a ④ Creatividad con el problema escrito** — no se improvisa otro.
+🛑 **El hook se decidió en Creatividad, no se cambia en edición.** Si el material no permite montarlo,
+**se devuelve a Creatividad con el problema escrito** — no se improvisa otro.
 
-🛑 **⑦ Video Editing no escribe copy, no inventa textos y no cambia el orden narrativo.**
+🛑 **Video Editing no escribe copy, no inventa textos y no cambia el orden narrativo.**
 
 ---
 
@@ -115,7 +115,7 @@ igual que con un plan estándar.
 | **`entregas-video.md`** | El manifiesto, en `clients/<cliente>/04-contenido/AAAA-MM/video/`: una fila por pieza, con el link al Drive y estado | — |
 | **`aprendizaje-de-video.md`** | Qué se devolvió, qué faltó, cuánto rindió cada grabación | — |
 
-> 🛑 **El `id_creativo` en el nombre no es opcional.** ⑨ Posting cruza por ese campo; un archivo
+> 🛑 **El `id_creativo` en el nombre no es opcional.** Posting cruza por ese campo; un archivo
 > sin él se devuelve sin abrirse.
 
 ---
@@ -123,18 +123,18 @@ igual que con un plan estándar.
 ## 4 · El flujo, de 0 a 100
 
 ```
-   0  RECEPCIÓN     qué llegó de ⑤ Producción, editable     → ve-recepcion
-        │           + SELECCIÓN con /watch si ⑤ Producción no marcó selects (§4 de la skill)
+   0  RECEPCIÓN     qué llegó de Producción, editable     → ve-recepcion
+        │           + SELECCIÓN con /watch si Producción no marcó selects (§4 de la skill)
         ▼
    1  ARMADO        guion visual → corte principal          → ve-armado
         │           (el operador confirma el layout sobre el fotograma real antes de renderizar)
         ▼
-   2  MARCA         § Movimiento de ②B Branding + QA medido → ve-marca
+   2  MARCA         § Movimiento de Branding + QA medido → ve-marca
         ▼           (auto-revisión del corte principal antes de derivar)
    3  DERIVADAS     multiplicar en variantes y formatos     → ve-derivadas
         ▼
    4  EXPORT        specs, nomenclatura, previews           → ve-export
-        ▼           → página de aprobación del CLIENTE (día 20) → QA → ⑨ Posting
+        ▼           → página de aprobación del CLIENTE (día 20) → QA → Posting
    ↻  LOOP          rondas de cambios, qué se devolvió,     → ve-loop
                     qué material sobró
 ```
@@ -185,10 +185,10 @@ igual que con un plan estándar.
 
 | De | Qué | Si falta |
 |---|---|---|
-| **④ Creatividad** | **El Excel del ciclo cerrado** — `plan-de-contenido.csv` + `ideas-<formato>.md` con hook, guion, copy literal, escenas y layout | 🛑 BLOQUEADO |
-| **⑤ Producción** | El material con **nomenclatura y selects**, y el manifiesto que cruza fila por fila | 🛑 BLOQUEADO sin material · ⚠️ **sin selects, se seleccionan acá** con `/watch` (`ve-recepcion` §4) y se registra para ⑤ Producción en el loop |
-| **②B Branding** | `sistema-visual.md` § Movimiento — subtítulos, entrada de texto, ritmo, cierre · los assets del kit en el Drive | 🟡 **Se usan si existen, no bloquean.** Sin § Movimiento, las entradas por defecto del motor (`ve-marca` §2) |
-| **③ Marketing** | `plan-por-canal.md` — a qué plataforma va cada pieza | 🟡 No bloqueante — se usan las **Redes** del `plan-contratado.md` |
+| **Creatividad** | **El Excel del ciclo cerrado** — `plan-de-contenido.csv` + `ideas-<formato>.md` con hook, guion, copy literal, escenas y layout | 🛑 BLOQUEADO |
+| **Producción** | El material con **nomenclatura y selects**, y el manifiesto que cruza fila por fila | 🛑 BLOQUEADO sin material · ⚠️ **sin selects, se seleccionan acá** con `/watch` (`ve-recepcion` §4) y se registra para Producción en el loop |
+| **Branding** | `sistema-visual.md` § Movimiento — subtítulos, entrada de texto, ritmo, cierre · los assets del kit en el Drive | 🟡 **Se usan si existen, no bloquean.** Sin § Movimiento, las entradas por defecto del motor (`ve-marca` §2) |
+| **Marketing** | `plan-por-canal.md` — a qué plataforma va cada pieza | 🟡 No bloqueante — se usan las **Redes** del `plan-contratado.md` |
 
 🛑 **Ningún archivo se copia: se cita su ruta.**
 
@@ -199,28 +199,28 @@ igual que con un plan estándar.
 | A | Qué |
 |---|---|
 | **QA** | El paquete completo, antes de que salga |
-| **⑨ Posting** | Los archivos finales con su `id_creativo` |
-| **⑩ Ads** | Las variantes que van a pauta |
+| **Posting** | Los archivos finales con su `id_creativo` |
+| **Ads** | Las variantes que van a pauta |
 
 ---
 
 ## 8 · Lo que este departamento NO hace
 
-- **No cambia el hook ni el guion.** Si no se puede montar, se devuelve a ④ Creatividad
-- **No escribe copy ni captions.** El copy es de ④ Creatividad, el caption es de ⑨ Posting. En el guion visual el
+- **No cambia el hook ni el guion.** Si no se puede montar, se devuelve a Creatividad
+- **No escribe copy ni captions.** El copy es de Creatividad, el caption es de Posting. En el guion visual el
   operador decide **posición, estilo y efecto** del texto; si cambia una **palabra**, es un cambio de
-  copy: se registra y se avisa a ④ Creatividad por escrito
-- **No decide a qué plataforma va** cada pieza. Eso es ③ Marketing
-- **No arregla una pieza que incumple la guía.** La devuelve ②B Branding y se corrige acá
-- **No publica.** Eso es ⑨ Posting
+  copy: se registra y se avisa a Creatividad por escrito
+- **No decide a qué plataforma va** cada pieza. Eso es Marketing
+- **No arregla una pieza que incumple la guía.** La devuelve Branding y se corrige acá
+- **No publica.** Eso es Posting
 
 ---
 
 ## 9 · Antes de entregar
 
-- [ ] Toda pieza con `material = video` del Excel de ④ Creatividad tiene su archivo, o su devolución escrita
+- [ ] Toda pieza con `material = video` del Excel de Creatividad tiene su archivo, o su devolución escrita
 - [ ] Cada archivo lleva su **`id_creativo`** en el nombre
-- [ ] El **hook está montado literal**, como lo escribió ④ Creatividad
+- [ ] El **hook está montado literal**, como lo escribió Creatividad
 - [ ] Toda pieza lleva **activo distintivo en el primer frame**
 - [ ] Los **subtítulos están dentro de la safe zone** del formato
 - [ ] El **cierre de marca** está en toda pieza de video

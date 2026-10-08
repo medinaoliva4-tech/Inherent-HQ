@@ -1,4 +1,4 @@
-# El motor de ⑦ Video Editing — las herramientas con las que Claude edita
+# El motor de Video Editing — las herramientas con las que Claude edita
 
 > **Quién hace qué:** el **editor de video** (una persona) da las instrucciones y aprueba; **Claude Code
 > ejecuta todo** con este kit. Probado de punta a punta en cliente real (AKAI, oct 2026: 123 clips
@@ -32,7 +32,7 @@ Vercel → **§ Node y Remotion**.
 
 ## El proyecto de edición — uno por cliente y rodaje
 
-**El material no vive en el repo** (lo dice ⑤ Producción). Se arma afuera, en la carpeta de trabajo del cliente:
+**El material no vive en el repo** (lo dice Producción). Se arma afuera, en la carpeta de trabajo del cliente:
 
 ```
 <proyecto>/
@@ -96,5 +96,5 @@ cd aprobacion/vercel && python3 build.py data.json display.ttf sans.ttf <carpeta
 ## Lo que el kit NO hace
 
 - ⛔ **No genera video, no escala calidad, no dobla.** Edita material real.
-- ⛔ **No publica.** Eso es ⑨ Posting.
+- ⛔ **No publica.** Eso es Posting.
 - ⚠️ **Reencuadre a otros formatos (1:1, 16:9) sin probar en cliente real.** El motor lo permite (cambiar `W`/`H`), no se ha entregado todavía.

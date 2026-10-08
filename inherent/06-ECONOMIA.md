@@ -424,9 +424,9 @@ todavía no es para ti»* vende el siguiente mejor que cualquier otra cosa.
 
 | Capacidad | Con qué | |
 |---|---|---|
-| Componer estáticos y carruseles sobre plantilla | ⑥A Diseño gráfico — operador de agentes | 👤 |
-| Editar y derivar video del material grabado | ⑦ Video Editing — editor de video | 👤 |
-| Fotos de producto | ⑤ Producción — la sesión de foto del mes | 👤 |
+| Componer estáticos y carruseles sobre plantilla | Diseño gráfico — operador de agentes | 👤 |
+| Editar y derivar video del material grabado | Video Editing — editor de video | 👤 |
+| Fotos de producto | Producción — la sesión de foto del mes | 👤 |
 | Reencuadrar para cada formato | `ffmpeg` local | ⬜ |
 | Análisis de video *(cortes, frames, texto en pantalla)* | `ffmpeg` local | ⬜ |
 | Programar y publicar | La herramienta de publicación *(ver los slots en `05-OPERACION.md`)* | ⬜ |
@@ -462,7 +462,7 @@ todavía no es para ti»* vende el siguiente mejor que cualquier otra cosa.
 | **Integrar con 9,000+ apps** *(CRM, WhatsApp, facturación)* | Zapier | ⬜ |
 | Documentación y entregables | Google Drive | ✅ |
 
-🔑 **Las 86 a 204 piezas salen de grabación (⑤ Producción), edición (⑦ Video Editing) y plantillas de diseño (⑥A Diseño gráfico) sobre
+🔑 **Las 86 a 204 piezas salen de grabación (Producción), edición (Video Editing) y plantillas de diseño (Diseño gráfico) sobre
 material propio.**
 
 ### 🕷️ El scraping — reglas de uso
@@ -523,7 +523,7 @@ hace falta plan pago.
 | **Solo datos públicos** | No se usan cuentas del cliente ni se guardan datos personales que no hagan falta |
 | **Si un actor falla** | Se busca otro en el store el mismo día. No se bloquea la entrega |
 | **Topes en los tres actores** | **Siempre** `resultsLimit` y `maxTotalChargeUsd`. Cobran por contenido: un run sin freno se come el tope del cliente |
-| **Volumen por ciclo** | **Por plataforma del cliente**, según el plan: 50 · 50 · 100 · 100. Las plataformas salen de `plan-por-canal.md` de ③ Marketing |
+| **Volumen por ciclo** | **Por plataforma del cliente**, según el plan: 50 · 50 · 100 · 100. Las plataformas salen de `plan-por-canal.md` de Marketing |
 | **Lectura profunda** | Se scrapean todos; **solo 10-15 pasan** a disección. Scrapear es barato, leer a fondo no |
 | **Las dos capas** | **Competencia solo Guatemala** (`country=GT`); **referencias ganadoras** de países parecidos, con la lista fija de `cr-fuentes`. **No se mezclan en el mismo archivo** |
 

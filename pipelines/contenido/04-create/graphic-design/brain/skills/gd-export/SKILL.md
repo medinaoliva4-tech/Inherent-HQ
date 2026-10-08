@@ -1,8 +1,8 @@
 ---
 name: gd-export
 description: >
-  Capa 4 de ⑥A Diseño gráfico — exporta cada pieza con las specs de su formato y la nomenclatura
-  que ⑨ Posting cruza, y arma el manifiesto del ciclo. Verifica medidas, peso, perfil de color y
+  Capa 4 de Diseño gráfico — exporta cada pieza con las specs de su formato y la nomenclatura
+  que Posting cruza, y arma el manifiesto del ciclo. Verifica medidas, peso, perfil de color y
   legibilidad en pantalla chica antes de entregar. Para impresos cambian las reglas: CMYK,
   márgenes de corte y resolución de impresión. Úsala cuando pidan "exportá el paquete", "dejalo
   listo para posting", "¿cumple las medidas?", "armá el manifiesto", "esto va a imprenta".
@@ -24,7 +24,7 @@ description: >
 
 **Para carruseles:** `<id_creativo>_carrusel_01.png`, `_02`, `_03`…
 
-🛑 **⑨ Posting cruza por `id_creativo`.** Un archivo sin él **se devuelve sin abrirse**.
+🛑 **Posting cruza por `id_creativo`.** Un archivo sin él **se devuelve sin abrirse**.
 🛑 **Las slides van numeradas con dos dígitos**, o se desordenan al cargar.
 
 ## 2 · El QA técnico, pieza por pieza
@@ -57,7 +57,7 @@ se descubre con el material ya impreso.
 
 | Columna | Qué lleva |
 |---|---|
-| `id_creativo` | El del Excel de ④ Creatividad |
+| `id_creativo` | El del Excel de Creatividad |
 | `formato` | Carrusel · estático · story · impreso |
 | `slides` | Cuántas, si aplica |
 | `archivo` | **El link al Drive**, no el archivo copiado |
@@ -73,8 +73,8 @@ se descubre con el material ya impreso.
 
 ## 6 · La entrega
 
-**Con el checklist de §7 completo, el paquete entra a QA y después a ⑨ Posting.** No para a pedir
-aprobación: ⑥A Diseño gráfico no publica ni le envía nada al cliente.
+**Con el checklist de §7 completo, el paquete entra a QA y después a Posting.** No para a pedir
+aprobación: Diseño gráfico no publica ni le envía nada al cliente.
 
 ## 7 · Checklist
 

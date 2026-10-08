@@ -1,8 +1,8 @@
 ---
 name: gr-encargo
 description: >
-  Capa 0 de ② Growth — identifica la división, lee el plan contratado y declara exactamente qué
-  pilares y sistemas se activan en este cliente. Carga los unit economics de ① Strategy, que
+  Capa 0 de Growth — identifica la división, lee el plan contratado y declara exactamente qué
+  pilares y sistemas se activan en este cliente. Carga los unit economics de Strategy, que
   son el piso de cualquier decisión de oferta o precio, y declara qué queda afuera y por qué.
   Úsala cuando pidan "arrancá growth de X", "qué podemos hacer con este plan", "es low o high
   ticket", "qué pilar está roto". Bloquea si falta la división, los unit economics o el plan.
@@ -12,12 +12,12 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Entregables de ① Strategy · `clients/<cliente>/00-onboarding/plan-contratado.md` · `clients/<cliente>/CLAUDE.md` · `inherent/03-OFERTA.md` |
+| **Consume** | Entregables de Strategy · `clients/<cliente>/00-onboarding/plan-contratado.md` · `clients/<cliente>/CLAUDE.md` · `inherent/03-OFERTA.md` |
 | **Produce** | La sección **§ El encargo** de `motor-de-crecimiento.md` |
 
 ## 1 · La división — no se elige acá
 
-**① Strategy la definió en el contexto.** Se copia, no se discute.
+**Strategy la definió en el contexto.** Se copia, no se discute.
 
 | 🔵 **LOW TICKET** | 🟣 **HIGH TICKET** |
 |---|---|
@@ -27,7 +27,7 @@ description: >
 > 🔑 **El eje es cómo se decide la compra, no quién compra.** Un colchón de $3,000 es B2C y high
 > ticket; un SaaS de $30/mes es B2B y low ticket.
 
-🛑 **Si ① Strategy no la definió, se devuelve.** Elegirla acá cambia los tres pilares.
+🛑 **Si Strategy no la definió, se devuelve.** Elegirla acá cambia los tres pilares.
 
 ## 2 · Los unit economics — el piso de todo
 
@@ -42,7 +42,7 @@ description: >
 
 | Si falta | Qué se hace |
 |---|---|
-| No hay costo por línea | `⚠️ SIN DATOS` · **no se cambia precio** · se pide a ① Strategy |
+| No hay costo por línea | `⚠️ SIN DATOS` · **no se cambia precio** · se pide a Strategy |
 | El cliente lo estima de memoria | `[dice el cliente, sin verificar]`. **Se usa con esa etiqueta** |
 
 ## 3 · Qué activa el plan
@@ -111,15 +111,15 @@ para responder sin prometer de más.
 
 | Bloque | Qué lleva |
 |---|---|
-| **A · La división** | Cuál, copiada de ① Strategy |
-| **B · El pilar roto** | Cuál es el cuello, según ① Strategy |
+| **A · La división** | Cuál, copiada de Strategy |
+| **B · El pilar roto** | Cuál es el cuello, según Strategy |
 | **C · Unit economics** | Precio, costo y margen por línea · CAC · frecuencia · capacidad |
 | **D · Qué activa el plan** | La tabla, con el caso de este cliente marcado |
 | **E · Qué queda afuera** | En lenguaje de cliente |
 
 ## 6 · Checklist
 
-- [ ] La división viene de **① Strategy**, no se eligió acá
+- [ ] La división viene de **Strategy**, no se eligió acá
 - [ ] Los unit economics están, o marcados `⚠️ SIN DATOS`
 - [ ] Está claro **qué pilares activa el plan**
 - [ ] Lo que queda afuera está **escrito en lenguaje de cliente**

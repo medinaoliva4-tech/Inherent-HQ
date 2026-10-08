@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ⑧ Community Management |
+| **Escribe aquí** | Community Management |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |

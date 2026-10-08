@@ -1,6 +1,6 @@
 # Posicionamiento — <cliente>
 
-> Plantilla de ① Strategy, bloque 04 · `methodology`.
+> Plantilla de Strategy, bloque 04 · `methodology`.
 > **Nivel MACRO:** cómo se va a lograr, no qué pieza se publica.
 > El `WIN` y el arquetipo viven en `nucleo.md`; acá cuelga todo lo demás.
 
@@ -58,9 +58,9 @@
 
 | Área | Qué le toca | ¿Entra en el plan? |
 |---|---|---|
-| **②B Branding** | Territorio, tono y activos distintivos | ✅ los 4 planes |
-| **③ Marketing** | Canales, calendario macro y el plan del ciclo | ✅ los 4 planes |
-| **④ Creatividad** | Posicionamiento, campaña y qué tipo de pieza hace falta | ✅ los 4 planes |
-| **② Growth** | Oferta, precio y objetivo | ✅ los 4 planes · 🔷 **ligero:** qué ofertas que ya existen se empujan |
+| **Branding** | Territorio, tono y activos distintivos | ✅ los 4 planes |
+| **Marketing** | Canales, calendario macro y el plan del ciclo | ✅ los 4 planes |
+| **Creatividad** | Posicionamiento, campaña y qué tipo de pieza hace falta | ✅ los 4 planes |
+| **Growth** | Oferta, precio y objetivo | ✅ los 4 planes · 🔷 **ligero:** qué ofertas que ya existen se empujan |
 
 ⬜ **Tailor Made:** entra lo que diga **Su pipeline** en `00-onboarding/plan-contratado.md`.

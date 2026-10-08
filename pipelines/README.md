@@ -42,7 +42,7 @@ todo** — recibe al cliente, lo mantiene al día y abre la sesión del agente q
 No espera al resto del pipeline.
 
 🔑 **El QA no es un agente aparte: cada departamento se auto-revisa y sigue**, y
-**②B Branding valida con `br-guardian`** antes de que nada se publique.
+**Branding valida con `br-guardian`** antes de que nada se publique.
 
 **La cadena de entrega completa está en `inherent/05-OPERACION.md`.**
 
@@ -62,7 +62,7 @@ día para producir · 🔴 **Día 20:** presentación al cliente. Cada `WORKFLOW
 🟨 Accelerate y 🟨 Compound.**
 
 🔑 **Primero se lee la LÍNEA, después el plan.** 🔷 Marketing promete atención · 🟨 Growth
-promete facturación. **En la línea Marketing, ② Growth corre ligero:** elige qué ofertas que ya
+promete facturación. **En la línea Marketing, Growth corre ligero:** elige qué ofertas que ya
 existen se empujan, sin cambiar la oferta.
 
 ⬜ **Un Tailor Made no se cuestiona:** su `plan-contratado.md` declara qué incluye y su pipeline, y
@@ -98,8 +98,8 @@ margen; uno que entrega de menos rompe la promesa publicada.
 > **cada workflow define su propia entrega.** Lo único igual para todos es cómo se cierra:
 > **cada departamento se auto-revisa y sigue.** Lo que está en el repo ya pasó por el CEO.
 >
-> 🚦 **El CEO solo para el flujo en dos puntos:** aprueba la estrategia de **① Strategy** antes de
-> que pase a los departamentos, y en **⑩ Ads** da el OK antes de lanzar *(plan + presupuesto)* y
+> 🚦 **El CEO solo para el flujo en dos puntos:** aprueba la estrategia de **Strategy** antes de
+> que pase a los departamentos, y en **Ads** da el OK antes de lanzar *(plan + presupuesto)* y
 > ante cualquier cambio de presupuesto.
 >
 > 📣 **Las escalaciones no son paradas — avisan y el flujo sigue:** precio, alcance y fechas →

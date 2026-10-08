@@ -42,7 +42,7 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 | **Profundidad de la estrategia** | Ligera | Ligera | **Completa** | **Completa + trimestral** |
 | **Revisión del 20** | Ligera | Ligera | Completa | Completa |
 | **Toca la OFERTA** *(qué vende, en qué paquetes, a qué precio)* | ⛔ Solo el mensaje | ⛔ Solo el mensaje | ✅ | ✅ |
-| **Brief de ② Growth al cerrar** | 🟡 Ligero | 🟡 Ligero | ✅ Completo | ✅ Completo |
+| **Brief de Growth al cerrar** | 🟡 Ligero | 🟡 Ligero | ✅ Completo | ✅ Completo |
 | **SOPs** | ⬜ | ⬜ | 🟡 De crecimiento | ✅ De toda la empresa |
 | **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
 | **Contenidos a investigar** *(por cada una de las **Redes** de `plan-contratado.md` — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
@@ -53,7 +53,7 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 - 🛑 **«Ligera» no es «incompleta».** En la línea 🔷 la estrategia existe entera: lo que no entra es
   **tocar la oferta**. Se trabaja el **mensaje** —cómo se cuenta lo que ya vende— y nada más.
   **Confundirlos es regalar el trabajo caro dentro del plan barato.**
-- 🟡 **En 🔷 Marketing y Pro el brief de ② Growth es ligero:** las ofertas que ya existen y el
+- 🟡 **En 🔷 Marketing y Pro el brief de Growth es ligero:** las ofertas que ya existen y el
   objetivo. Growth elige **cuáles se empujan**; no cambia qué se vende, en qué paquetes ni a qué
   precio (`pipelines/contenido/02-strategize/growth/brain/WORKFLOW.md` → §0). Si el negocio necesita tocar la oferta, **es
   upsell a 🟨 Accelerate y se levanta como excepción** — no se absorbe.
@@ -454,15 +454,15 @@ clients/<cliente>/
 
 🔑 **Los cuatro archivos tienen nombre porque otros departamentos los citan por ruta.** Las
 plantillas viven en `brain/entregables/` y se copian al abrir el folder (`contexto.md` se copia
-como `comprension.md`). **Si se les cambia el nombre, se rompen las referencias de ④ Creatividad,
-⑤ Producción y ⑨ Posting.**
+como `comprension.md`). **Si se les cambia el nombre, se rompen las referencias de Creatividad,
+Producción y Posting.**
 
 **`LINKS.md`** — lo externo **no se copia, se linkea**: Drive de fotos, de videos, de
 entregables, Figma, Notion, redes del cliente, analytics. Con una línea de qué hay en cada uno.
 
 **Y una fila por cuenta con quién tiene el acceso** — nombre de la persona, nunca la credencial.
 🛑 **Contraseñas, tokens y llaves NO van al repo, en ninguna forma** (`clients/README.md`).
-**Lo lee ⑨ Posting** para saber a quién pedirle que suba, y ⑩ Ads para las cuentas publicitarias.
+**Lo lee Posting** para saber a quién pedirle que suba, y Ads para las cuentas publicitarias.
 
 ```
 | Cuenta | @handle | Quién tiene el acceso |
@@ -579,7 +579,7 @@ estrategia. **No es un reporte: es el input del mes siguiente.**
 | Segmentación, presupuesto, optimización de campañas | Growth |
 | Construir la herramienta ni definir stack | Builder |
 | Grabar | Production |
-| Publicar | **⑨ Posting** |
-| Pautar | **⑩ Ads**, con el OK del CEO antes de lanzar |
+| Publicar | **Posting** |
+| Pautar | **Ads**, con el OK del CEO antes de lanzar |
 
 **Strategy decide el QUÉ y el POR QUÉ. Nunca el CÓMO.**

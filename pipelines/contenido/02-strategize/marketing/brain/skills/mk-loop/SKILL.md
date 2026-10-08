@@ -1,9 +1,9 @@
 ---
 name: mk-loop
 description: >
-  Capa 6 de ③ Marketing — el cierre del ciclo. Lee qué rindió por función, por pilar y por canal,
-  no por pieza, porque la pieza es de ④ Creatividad y acá se juzga el reparto. Decide qué pilar sube o baja
-  de peso, qué canal se sostiene o se corta y qué devuelve a ① Strategy cuando el que falló
+  Capa 6 de Marketing — el cierre del ciclo. Lee qué rindió por función, por pilar y por canal,
+  no por pieza, porque la pieza es de Creatividad y acá se juzga el reparto. Decide qué pilar sube o baja
+  de peso, qué canal se sostiene o se corta y qué devuelve a Strategy cuando el que falló
   fue el rumbo. Escribe `aprendizaje-de-marketing.md`. Úsala cuando pidan "qué rindió este mes",
   "cerrá el ciclo", "qué canal no sirve", "cambiamos los pilares", "la revisión del 20". Sin
   métricas por slot no inventa un ganador: marca SIN DATOS y dice a quién pedírselas.
@@ -13,20 +13,20 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `calendario.csv` del ciclo · métricas de ⑨ Posting y ⑩ Ads · `aprendizaje-creativo.md` de ④ Creatividad |
+| **Consume** | `calendario.csv` del ciclo · métricas de Posting y Ads · `aprendizaje-creativo.md` de Creatividad |
 | **Produce** | **`aprendizaje-de-marketing.md`** |
 
-> 🔑 **Corre el 20 de cada mes**, junto con la revisión de ① Strategy.
+> 🔑 **Corre el 20 de cada mes**, junto con la revisión de Strategy.
 
 ## 1 · Acá se juzga el reparto, no la pieza
 
-| ④ Creatividad juzga | ③ Marketing juzga |
+| Creatividad juzga | Marketing juzga |
 |---|---|
 | Qué hook ganó | Qué **función** rindió |
 | Qué concepto funcionó | Qué **pilar** vale su peso |
 | Qué pieza fatigó | Qué **canal** se sostiene |
 
-🛑 **Si el loop de Marketing habla de piezas, invadió a ④ Creatividad.**
+🛑 **Si el loop de Marketing habla de piezas, invadió a Creatividad.**
 
 ## 2 · Las cuatro lecturas
 
@@ -50,10 +50,10 @@ negocio no está creciendo: está exprimiendo.**
 | Un pilar rindió arriba de su peso | **Sube** el próximo ciclo |
 | Un pilar no movió nada en dos ciclos | **Sale** |
 | Un canal no cumplió su métrica en dos ciclos | 🔴 **Se propone cortarlo** — y se escala |
-| `Conversion` no cobró | Puede ser oferta, no contenido → **va a ① Strategy y a ② Growth** |
-| Nada rindió en frío | Puede ser el posicionamiento → **va a ① Strategy** |
+| `Conversion` no cobró | Puede ser oferta, no contenido → **va a Strategy y a Growth** |
+| Nada rindió en frío | Puede ser el posicionamiento → **va a Strategy** |
 
-> 🔑 **Lo que falló por rumbo se devuelve a ① Strategy como dato, no como reclamo.**
+> 🔑 **Lo que falló por rumbo se devuelve a Strategy como dato, no como reclamo.**
 
 ## 4 · ⚠️ Sin datos no hay ganador
 
@@ -75,7 +75,7 @@ lo note.
 | **A · Lo que se esperaba** | El objetivo del ciclo y las MUST BE TRUE que se movían |
 | **B · Las cuatro lecturas** | Función · pilar · canal · awareness |
 | **C · Qué cambia** | Pilares que suben, bajan o salen. Canales que se sostienen o se cortan |
-| **D · Lo que se devuelve** | Qué va a ① Strategy, qué a ② Growth, qué a ④ Creatividad |
+| **D · Lo que se devuelve** | Qué va a Strategy, qué a Growth, qué a Creatividad |
 | **E · Los huecos** | `⚠️ SIN DATOS`, con el responsable de cada uno |
 
 ## 6 · Checklist
@@ -84,5 +84,5 @@ lo note.
 - [ ] Cada canal se juzgó con **la métrica de su propia ficha**
 - [ ] Ningún ganador está declarado **sin datos**
 - [ ] Los huecos tienen **responsable con nombre**
-- [ ] Lo que falló por rumbo se devolvió a ① Strategy **como dato**
+- [ ] Lo que falló por rumbo se devolvió a Strategy **como dato**
 - [ ] Está escrito **qué cambia el próximo ciclo**

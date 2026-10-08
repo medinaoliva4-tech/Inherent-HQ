@@ -1,7 +1,7 @@
 ---
 name: cm-triage
 description: >
-  Capa 1 de ⑧ Community Management — clasifica cada comentario, DM y mención nuevo en una sola
+  Capa 1 de Community Management — clasifica cada comentario, DM y mención nuevo en una sola
   caja antes de escribir nada: apoyo, pregunta simple, evento, reserva, lo que todavía no existe,
   queja, colaboración, fuera de la ficha, o spam. La caja decide si sale solo, si escala o si se
   ignora. Úsala después de cm-ficha, o cuando peguen un mensaje y pregunten "¿qué es esto?",
@@ -41,4 +41,4 @@ pasa con él.
 Una tabla por cliente: `id`, red, tipo (comentario / DM / mención), usuario, texto, **caja**, y si
 es comentario, la publicación donde cayó.
 
-Las preguntas que **se repiten** se marcan aparte: son materia de `cm-loop` y de ④ Creatividad.
+Las preguntas que **se repiten** se marcan aparte: son materia de `cm-loop` y de Creatividad.

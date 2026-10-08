@@ -1,6 +1,6 @@
-# ⑩ Ads Management — cómo trabaja
+# Ads Management — cómo trabaja
 
-> **En una frase:** compra atención con dinero del cliente para que la oferta que ② Growth
+> **En una frase:** compra atención con dinero del cliente para que la oferta que Growth
 > trabajó llegue a quien la puede comprar. **Compra resultado, no alcance.**
 
 Este documento es todo lo que hay que saber para operar el departamento. El **cómo se hace** cada
@@ -10,7 +10,7 @@ paso vive en las skills: `skills/README.md`.
 
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
+**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota Strategy al arrancar en
 `clients/<cliente>/00-onboarding/plan-contratado.md`:
 🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
 
@@ -46,18 +46,18 @@ paso vive en las skills: `skills/README.md`.
   🛑 **El performance fee NO existe ahí:** requiere atribución limpia (CAPI + GA4), que es parte de
   Conversion OS y **solo entra desde 🟨 Accelerate.** Si alguien pide fee sobre un plan 🔷, **se
   levanta como excepción.**
-- **Las variantes salen de material ya producido.** ④ Creatividad declara qué se varía,
-  ⑥A Diseño gráfico y ⑦ Video Editing las montan, ⑩ Ads las sube. 🛑 **Una variante nunca pide
+- **Las variantes salen de material ya producido.** Creatividad declara qué se varía,
+  Diseño gráfico y Video Editing las montan, Ads las sube. 🛑 **Una variante nunca pide
   grabación extra**, y **no cuenta como publicación**: no entra al calendario orgánico del ciclo.
 
 ### ⬜ Tailor Made — se sigue su pipeline
 
 Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
 secciones: **Qué incluye** y **Su pipeline** —qué departamentos corren, en qué orden, qué entrega
-cada uno y a qué nivel—. **⑩ Ads sigue ese pipeline** *(canales, variantes, cadencia de
+cada uno y a qué nivel—. **Ads sigue ese pipeline** *(canales, variantes, cadencia de
 optimización)*: no lo bloquea por no ser un plan de lista ni lo cuestiona por precio.
 
-- 🛑 **Si ⑩ Ads no está en su pipeline, no corre para ese cliente.**
+- 🛑 **Si Ads no está en su pipeline, no corre para ese cliente.**
 - 🛑 **La atribución no se agrega como add-on de pauta:** sin Conversion OS en su pipeline no hay fee.
 - **El método es el mismo:** lo que cambia es el pipeline y qué se verifica. **El gate del CEO antes
   de gastar es igual en todos los planes** — pautar es acción destructiva en todos.
@@ -122,7 +122,7 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 |---|---|
 | **`plan-de-pauta.md`** | Objetivo, presupuesto, estructura, públicos y qué creativos van |
 | **`reporte-de-pauta.md`** | Qué corrió, qué rindió, qué se cambió y por qué |
-| **`aprendizaje-de-pauta.md`** | Qué ángulo ganó, qué fatigó, qué vuelve a ④ Creatividad y a ② Growth |
+| **`aprendizaje-de-pauta.md`** | Qué ángulo ganó, qué fatigó, qué vuelve a Creatividad y a Growth |
 
 ---
 
@@ -140,7 +140,7 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
    4  OPTIMIZACIÓN  pacing, fatiga, qué se mueve             → ad-optimizacion
         ▼           🚦 GATE 2 — el CEO aprueba todo cambio de presupuesto
    5  ATRIBUCIÓN    qué ventas vinieron de acá               → ad-atribucion
-   ↻  LOOP          qué ángulo ganó, qué vuelve a ④ Creatividad → ad-loop
+   ↻  LOOP          qué ángulo ganó, qué vuelve a Creatividad → ad-loop
 ```
 
 ---
@@ -149,22 +149,22 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 
 | De | Qué | Si falta |
 |---|---|---|
-| **② Growth** | Qué ofertas se pautan, su precio y el objetivo — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 BLOQUEADO |
-| **③ Marketing** | Qué piezas del ciclo se pautan y con qué objetivo | 🛑 BLOQUEADO |
-| **⑥A Diseño gráfico y ⑦ Video Editing** | Los creativos, **con sus variantes de hook** | 🛑 BLOQUEADO |
-| **②B Branding** | Qué claims están validados | 🟡 Se usa si existe — un claim `⏸️` no sale |
+| **Growth** | Qué ofertas se pautan, su precio y el objetivo — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 BLOQUEADO |
+| **Marketing** | Qué piezas del ciclo se pautan y con qué objetivo | 🛑 BLOQUEADO |
+| **Diseño gráfico y Video Editing** | Los creativos, **con sus variantes de hook** | 🛑 BLOQUEADO |
+| **Branding** | Qué claims están validados | 🟡 Se usa si existe — un claim `⏸️` no sale |
 | **`LINKS.md`** | Las cuentas publicitarias y **quién tiene el acceso** — la fuente única | 🛑 BLOQUEADO |
 
 ---
 
 ## 7 · Lo que este departamento NO hace
 
-- **No decide la oferta ni el precio.** Eso es ② Growth
-- **No produce creativos.** Pide variantes a ⑥A Diseño gráfico y ⑦ Video Editing
+- **No decide la oferta ni el precio.** Eso es Growth
+- **No produce creativos.** Pide variantes a Diseño gráfico y Video Editing
 - **No gasta sin gate.** Pautar es acción destructiva
 - **No promete LinkedIn Ads** hasta que esté probado
 - **No pone la inversión.** La pone el cliente, aparte
-- **No inventa claims.** Solo los que ②B Branding validó
+- **No inventa claims.** Solo los que Branding validó
 
 ---
 
@@ -173,7 +173,7 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 - [ ] El objetivo está escrito en **una métrica**, no en un deseo
 - [ ] El presupuesto está **aprobado por el cliente**
 - [ ] Las cuentas son del cliente y **hay acceso**
-- [ ] Los creativos llevan **claims validados** por ②B Branding
+- [ ] Los creativos llevan **claims validados** por Branding
 - [ ] Hay **variantes de hook** para testear, no un solo anuncio
 - [ ] El **tracking está puesto** antes de gastar el primer quetzal — 🔷 el pixel de Meta · 🟨 CAPI + GA4
 - [ ] **El CEO aprobó el GATE 1**

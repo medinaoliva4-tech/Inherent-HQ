@@ -1,7 +1,7 @@
 ---
 name: po-carga
 description: >
-  Capa 4 de ⑨ Posting — programa el ciclo en Zernio. Confirma cada cuenta con su `account_id`
+  Capa 4 de Posting — programa el ciclo en Zernio. Confirma cada cuenta con su `account_id`
   explícito (nunca la adivina), sube la media a Zernio y la valida, valida cada post y programa
   cada publicación a la fecha y hora del calendario. Registra el
   `zernio_post_id` y el estado de cada una en `calendario-de-publicacion.csv`, y deja listos los
@@ -14,7 +14,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | `calendario-de-publicacion.csv` con `caption_ok` y `specs_ok` en ✅, y `cuenta`, `fecha` y `hora` puestas · los captions y el alt text de `publicaciones.md` · los archivos finales en Drive · el **ID de Zernio** de cada cuenta, de `clients/<cliente>/00-onboarding/LINKS.md` *(o de `05-comunidad/respuestas.md`, si ⑧ Community ya lo anotó)* |
+| **Consume** | `calendario-de-publicacion.csv` con `caption_ok` y `specs_ok` en ✅, y `cuenta`, `fecha` y `hora` puestas · los captions y el alt text de `publicaciones.md` · los archivos finales en Drive · el **ID de Zernio** de cada cuenta, de `clients/<cliente>/00-onboarding/LINKS.md` *(o de `05-comunidad/respuestas.md`, si Community ya lo anotó)* |
 | **Produce** | Las publicaciones **programadas en Zernio** · en `calendario-de-publicacion.csv`, el **`zernio_post_id`** de cada una y su `estado` en `programada` · § Los envíos de email y § Los envíos manuales de `publicaciones.md`, con sus checklists |
 
 Contexto del departamento: `pipelines/contenido/05-convert/posting/brain/WORKFLOW.md`. Plantilla del registro:
@@ -68,7 +68,7 @@ y dónde se pega. *"Es por WhatsApp, lo resuelve el cliente"* no es un paquete.
 ### El checklist del impreso
 
 ```markdown
-- [ ] El archivo es el **export final de ⑥A Diseño gráfico**, no un borrador ni una captura
+- [ ] El archivo es el **export final de Diseño gráfico**, no un borrador ni una captura
 - [ ] Se lee **a la distancia real** a la que va a estar, y con la luz que hay ahí
 - [ ] 🛑 Tengo el permiso para intervenir el lugar: contrato de alquiler, municipal o el dueño del espacio
 - [ ] Está puesto donde dice el paquete, no donde quedaba cómodo
@@ -123,18 +123,18 @@ cuentas de varios clientes: la cuenta equivocada publica en el perfil de otro.
 
 ## 3 · La media — subida a Zernio y validada
 
-Los archivos finales viven en Drive, donde los dejaron ⑥A Diseño gráfico y ⑦ Video Editing. **Zernio
+Los archivos finales viven en Drive, donde los dejaron Diseño gráfico y Video Editing. **Zernio
 necesita una URL que pueda leer**, y la forma segura es subirlos a Zernio:
 
 | Paso | Herramienta | Qué se hace |
 |---|---|---|
-| 1 | — | Se ubica el archivo final en Drive — la ruta la dejó ⑥A Diseño gráfico o ⑦ Video Editing |
+| 1 | — | Se ubica el archivo final en Drive — la ruta la dejó Diseño gráfico o Video Editing |
 | 2 | **`media_generate_upload_link`** | Zernio da un link de subida. Quien opera los agentes lo abre y sube los archivos del ciclo |
 | 3 | **`media_check_upload_status`** | Devuelve las URLs de lo subido. 🛑 Si dice `pending` o `expired`, no se sigue |
 | 4 | **`validate_media`** | Por cada URL: que se pueda leer, su tipo y su peso contra el límite de cada plataforma |
 
 🛑 **Una URL que `validate_media` no puede leer, o que pasa el límite de su plataforma, no se
-programa.** Si es el peso, es una devolución a ⑦ Video Editing — motivo 2 —: no se comprime acá.
+programa.** Si es el peso, es una devolución a Video Editing — motivo 2 —: no se comprime acá.
 
 **Abrir por link un archivo de Drive cambia su acceso:** es una acción sobre los archivos del
 cliente. Se pide, no se decide solo — por eso la vía es la subida a Zernio.
@@ -147,7 +147,7 @@ cliente. Se pide, no se decide solo — por eso la vía es la subida a Zernio.
 | **`validate_post`** | Lo que haría fallar la publicación: media que falta en Instagram, TikTok o YouTube, límite de hashtags, requisitos del Reel de Facebook, caracteres. Se le pasa la plataforma con su `accountId`, el caption y la media con su alt text |
 
 🛑 **Un error de `validate_post` no se programa:** se corrige en su capa —el caption en `po-caption`,
-el archivo ↩️ a ⑥A Diseño gráfico / ⑦ Video Editing — y se vuelve a validar. Las advertencias
+el archivo ↩️ a Diseño gráfico / Video Editing — y se vuelve a validar. Las advertencias
 *(más del 90 % del límite)* se anotan.
 🛑 **Lo que Zernio no mide sigue siendo de las capas anteriores:** el hook antes del corte
 (`po-caption`) y las safe zones (`po-specs`).

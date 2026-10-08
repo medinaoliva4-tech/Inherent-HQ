@@ -2,7 +2,7 @@
   "name": "ve-motor",
   "version": "1.0.0",
   "private": true,
-  "description": "⑦ Video Editing — motor de reels (Remotion). Se copia al proyecto de edición de cada cliente.",
+  "description": "Video Editing — motor de reels (Remotion). Se copia al proyecto de edición de cada cliente.",
   "scripts": {
     "studio": "remotion studio",
     "render": "remotion render"

@@ -1,6 +1,6 @@
 # Aprendizaje de video — <cliente> · ciclo <mes año>
 
-> Plantilla de ⑦ Video Editing · `ve-loop`. **Corre el 20 de cada mes.**
+> Plantilla de Video Editing · `ve-loop`. **Corre el 20 de cada mes.**
 > Lo que se devuelve va **como dato, no como reclamo**.
 
 ---
@@ -9,19 +9,19 @@
 
 | | Esperado del plan | Real |
 |---|---|---|
-| Horas grabadas por ⑤ Producción | | |
+| Horas grabadas por Producción | | |
 | Piezas entregadas | | |
 | **Piezas por hora** | | |
 
-*Si bajó: ¿faltó cobertura de ⑤ Producción, o se derivó de menos acá?*
+*Si bajó: ¿faltó cobertura de Producción, o se derivó de menos acá?*
 
 ## B · Devoluciones
 
 | A | Motivo | Veces | Qué significa |
 |---|---|---|---|
-| ⑤ Producción | | | |
-| ④ Creatividad | | | |
-| ②B Branding | | | |
+| Producción | | | |
+| Creatividad | | | |
+| Branding | | | |
 
 ## C · Material grabado que nadie usó
 

@@ -1,7 +1,7 @@
 ---
 name: mk-calendario
 description: >
-  Capa 5 de ③ Marketing — arma `calendario.csv`, el encargo que recibe ④ Creatividad. Una fila
+  Capa 5 de Marketing — arma `calendario.csv`, el encargo que recibe Creatividad. Una fila
   por slot con las 11 columnas, en semanas y nunca en días, porque el día lo fija Creative.
   Verifica que todo slot trace a una MUST BE TRUE, que el total entre en el techo del plan
   contratado y que no aparezca ninguna de las cinco combinaciones prohibidas. Úsala cuando pidan
@@ -14,7 +14,7 @@ description: >
 | | |
 |---|---|
 | **Consume** | `plan-por-canal.md` · § Sistema de contenido · § Jerarquía de mensaje · las MUST BE TRUE |
-| **Produce** | **`calendario.csv`** — el encargo de ④ Creatividad |
+| **Produce** | **`calendario.csv`** — el encargo de Creatividad |
 
 > 🔑 **Este archivo es el entregable del departamento.** Todo lo anterior existe para poder
 > escribirlo bien.
@@ -30,7 +30,7 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 
 | Columna | Regla |
 |---|---|
-| `semana` | **Número, nunca un día.** `1` · `2` · `3` · `4`. El día lo pone ④ Creatividad |
+| `semana` | **Número, nunca un día.** `1` · `2` · `3` · `4`. El día lo pone Creatividad |
 | `funcion` | Solo los 6 valores. **La que su canal tiene asignada en `plan-por-canal.md`** |
 | `temperatura` | 4 valores, `Cliente` incluido |
 | `awareness` | 5 valores, **escritos literal** |
@@ -60,9 +60,9 @@ El gate barato va arriba.
 
 | Pregunta | De dónde sale la respuesta |
 |---|---|
-| 1 · Por qué querría verlo | `audiencia profunda` de ① Strategy · el deseo, no la demografía |
-| 2 · Qué posicionamiento refuerza | `posicionamiento` de ① Strategy |
-| 3 · Qué promesa demuestra | **`promesa` de ① Strategy — es input bloqueante de `mk-encargo`** |
+| 1 · Por qué querría verlo | `audiencia profunda` de Strategy · el deseo, no la demografía |
+| 2 · Qué posicionamiento refuerza | `posicionamiento` de Strategy |
+| 3 · Qué promesa demuestra | **`promesa` de Strategy — es input bloqueante de `mk-encargo`** |
 | 4 · Qué deseo activa | Se escribe acá, y es lo que alimenta `objetivo_del_slot` |
 | 5 · Qué siguiente acción | Lo da `funcion` + `temperatura` del slot |
 
@@ -71,7 +71,7 @@ es contenido de relleno aunque se vea bien.
 
 ### 🛑 Lo que NO es esta prueba
 
-**No evalúa si la idea es buena** — eso es ④ Creatividad con su filtro
+**No evalúa si la idea es buena** — eso es Creatividad con su filtro
 *Distinctiveness / Novelty / Relevance*. **Acá solo se verifica que el slot tenga trabajo
 de negocio asignado.**
 
@@ -79,7 +79,7 @@ de negocio asignado.**
 
 ## 2 · `objetivo_del_slot` — el campo que más se escribe mal
 
-**Es lo que ④ Creatividad usa para decidir el contenido concreto. Genérico, no sirve.**
+**Es lo que Creatividad usa para decidir el contenido concreto. Genérico, no sirve.**
 
 | ❌ | ✅ |
 |---|---|
@@ -94,7 +94,7 @@ de negocio asignado.**
 
 | Combinación | Por qué |
 |---|---|
-| `balance = Marca` + slot que pide CTA de conversión | ④ Creatividad deriva el CTA del balance. Se contradice |
+| `balance = Marca` + slot que pide CTA de conversión | Creatividad deriva el CTA del balance. Se contradice |
 | `funcion = Community` + `temperatura ≠ Cliente` | Community le habla a quien ya compró |
 | `awareness = Unaware` + `funcion = Conversion` | Le vende a quien no sabe que tiene el problema |
 | Dos canales con la misma `funcion` | Ya se resolvió en la Capa 4. Si reaparece, hay un error |
@@ -107,8 +107,8 @@ de negocio asignado.**
 | **Los `Hero` van en semana 1 o 2** | Necesitan tiempo para rendir dentro del ciclo |
 | **Los `Conversion` se concentran**, no se riegan | Una tanda convierte; uno suelto cada semana, no |
 | **Los `Series` van parejos** las 4 semanas | Son el hábito |
-| **Nada de rodaje en la semana 1** | ⑤ Producción necesita margen desde que sale el calendario |
-| **La estacionalidad manda** | Si ① Strategy declaró fechas duras, el calendario se acomoda a ellas |
+| **Nada de rodaje en la semana 1** | Producción necesita margen desde que sale el calendario |
+| **La estacionalidad manda** | Si Strategy declaró fechas duras, el calendario se acomoda a ellas |
 
 ## 5 · El cierre contra el techo
 
@@ -126,14 +126,14 @@ de negocio asignado.**
 
 | A | Qué hace con esto |
 |---|---|
-| **④ Creatividad** | Lo convierte en `plan-de-contenido.csv` — hereda `canal`, `formato`, `pilar`, `funcion` **sin cambio** y le agrega el día, el concepto y la mezcla |
-| **⑤ Producción** | Cuenta los slots con rodaje para dimensionar jornadas |
-| **⑨ Posting** | Sabe en qué cuenta va cada cosa |
+| **Creatividad** | Lo convierte en `plan-de-contenido.csv` — hereda `canal`, `formato`, `pilar`, `funcion` **sin cambio** y le agrega el día, el concepto y la mezcla |
+| **Producción** | Cuenta los slots con rodaje para dimensionar jornadas |
+| **Posting** | Sabe en qué cuenta va cada cosa |
 
 ## 7 · Checklist
 
-🛑 **Es lo que ④ Creatividad va a producir.** Corregirlo pieza por pieza después es imposible: por eso se
-auto-revisa entero, acá, y pasa directo a ④ Creatividad.
+🛑 **Es lo que Creatividad va a producir.** Corregirlo pieza por pieza después es imposible: por eso se
+auto-revisa entero, acá, y pasa directo a Creatividad.
 
 - [ ] Las **11 columnas** están completas en todas las filas
 - [ ] `semana` es un número, **nunca una fecha**

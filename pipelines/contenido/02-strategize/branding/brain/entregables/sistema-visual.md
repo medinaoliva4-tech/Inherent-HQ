@@ -1,6 +1,6 @@
 # Sistema visual — <cliente>
 
-> **El documento que abren ⑥A Diseño gráfico y ⑦ Video Editing para ejecutar.**
+> **El documento que abren Diseño gráfico y Video Editing para ejecutar.**
 > Todo acá son **valores**, no adjetivos. Si hace falta criterio, la regla está mal escrita.
 
 ---
@@ -56,7 +56,7 @@
 ---
 
 ## § Movimiento
-*Para ⑦ Video Editing*
+*Para Video Editing*
 
 | | |
 |---|---|
