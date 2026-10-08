@@ -91,8 +91,7 @@ declara el segundo como siguiente paso. **Nunca se corren dos departamentos mezc
 
 ### 🟡 La única forma de saltarse el método
 
-**Que el CEO lo autorice explícitamente en el pedido:** *«excepción aprobada por Allan: …»* o
-*«excepción aprobada por el CEO: …»* — valen las dos.
+**Que el CEO lo autorice explícitamente en el pedido:** *«excepción aprobada por el CEO: …»*.
 Se anota en el `ENRUTAMIENTO` como `EXCEPCIÓN: [qué] · aprobada por el CEO` y se respeta.
 **Sin esa frase, el workflow gana.**
 

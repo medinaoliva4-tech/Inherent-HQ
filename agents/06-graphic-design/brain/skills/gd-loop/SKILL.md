@@ -14,7 +14,9 @@ description: >
 | | |
 |---|---|
 | **Consume** | `entregas-diseno.md` · las devoluciones del ciclo · métricas de ⑨ Posting y ⑩ Ads |
-| **Produce** | **`aprendizaje-de-diseno.md`** |
+| **Produce** | **`clients/<cliente>/04-contenido/aprendizaje-de-diseno.md`** — en la raíz del área, no dentro del mes |
+
+🛑 **Al cerrar el ciclo, el aprendizaje del ciclo anterior pasa a `_historico/<AAAA-MM>-aprendizaje-de-diseno.md`.** El vigente siempre vive en la raíz del área.
 
 > 🔑 **Corre el 20 de cada mes.**
 

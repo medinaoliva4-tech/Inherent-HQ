@@ -13,8 +13,10 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | Los veredictos de `br-guardian` del ciclo · métricas de ⑨ Posting y ⑩ Ads · `aprendizaje-creativo.md` de ④ Creatividad |
-| **Produce** | **`aprendizaje-de-branding.md`** |
+| **Consume** | Los veredictos de `br-guardian` del ciclo · métricas de ⑨ Posting y ⑩ Ads · `clients/<cliente>/04-contenido/aprendizaje-creativo.md` de ④ Creatividad |
+| **Produce** | **`clients/<cliente>/02-marca/aprendizaje-de-branding.md`** — en la raíz del área, no dentro del mes |
+
+🛑 **Al cerrar el ciclo, el aprendizaje del ciclo anterior pasa a `_historico/<AAAA-MM>-aprendizaje-de-branding.md`.** El vigente siempre vive en la raíz del área.
 
 > 🔑 **Corre el 20 de cada mes.**
 

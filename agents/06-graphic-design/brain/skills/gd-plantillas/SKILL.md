@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § Agrupación del ciclo · `sistema-visual.md` · el copy de todas las piezas |
+| **Consume** | § Agrupación del ciclo · `clients/<cliente>/02-marca/sistema-visual.md` · el copy de todas las piezas |
 | **Produce** | Las **plantillas del ciclo** en `clients/<cliente>/02-marca/kit-de-redes/plantillas/` |
 
 > 🔑 **Esta capa decide si el ciclo entra en las horas que paga el plan.**

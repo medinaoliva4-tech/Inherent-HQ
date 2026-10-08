@@ -112,11 +112,10 @@
 
 | # | Qué |
 |---|---|
-| 1 | **`agents/`: pasar «Allan» a «el CEO»** — 54 archivos lo nombran como gate |
-| 2 | **`agents/`: quitar advertencias y estados** con el mismo criterio que `inherent/` |
-| 3 | **`agents/00-account/`: que hable como Nicole, la secretaria**, y escale al COO |
-| 4 | **Borrar las ramas viejas de GitHub:** solo quedan `main` y `rodrigo-medina` |
-| 5 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y trabajar sobre `main` |
-| 6 | **Onboarding de Akai, NAO y Cerantola:** los folders existen, vacíos, en `clients/` |
-| 7 | **El VPS es KVM 1, no KVM 2** | Lo dice mal `agents/04-creative/brain/skills/BARRIDO-NOCTURNO.md` |
-| 8 | **En el VPS, `~/inherent-hq` es un clon viejo sin acceso** | El que se usa es `~/inherent-hq-src`. Renombrar el viejo para que nadie lo use por error |
+| 1 | **`agents/`: quitar advertencias y estados** con el mismo criterio que `inherent/` |
+| 2 | **`agents/00-account/`: que hable como Nicole, la secretaria**, y escale al COO |
+| 3 | **Borrar las ramas viejas de GitHub:** solo quedan `main` y `rodrigo-medina` |
+| 4 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y trabajar sobre `main` |
+| 5 | **Onboarding de Akai, NAO y Cerantola:** los folders existen, vacíos, en `clients/` |
+| 6 | **El VPS es KVM 1, no KVM 2** | Lo dice mal `agents/04-creative/brain/skills/BARRIDO-NOCTURNO.md` |
+| 7 | **En el VPS, `~/inherent-hq` es un clon viejo sin acceso** | El que se usa es `~/inherent-hq-src`. Renombrar el viejo para que nadie lo use por error |

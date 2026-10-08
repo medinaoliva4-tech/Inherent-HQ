@@ -13,7 +13,9 @@ description: >
 | | |
 |---|---|
 | **Consume** | `reporte-de-pauta.md` · el registro de cambios · la atribución |
-| **Produce** | **`aprendizaje-de-pauta.md`** |
+| **Produce** | **`clients/<cliente>/06-pauta/aprendizaje-de-pauta.md`** — en la raíz del área, no dentro del mes |
+
+🛑 **Al cerrar el ciclo, el aprendizaje del ciclo anterior pasa a `_historico/<AAAA-MM>-aprendizaje-de-pauta.md`.** El vigente siempre vive en la raíz del área.
 
 > 🔑 **Corre el 20 de cada mes.**
 
