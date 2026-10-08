@@ -212,17 +212,19 @@ Si el número no está en ningún `clients/<cliente>/`, **es alguien nuevo** →
 
 | Si el cliente pide… | Abre |
 |---|---|
-| Replantear estrategia, ver resultados, cambiar rumbo | `01-strategy` |
-| Algo de identidad o marca | `01.2-branding` |
-| Oferta, precios al mercado, canales grandes | `02-growth` |
-| Plan de canales, calendario | `03-marketing` |
-| Ideas, ángulos, conceptos | `04-creative` |
-| Agendar o replanear grabación | `05-production` |
-| Piezas gráficas | `06-graphic-design` |
-| Reels y cortes | `07-video-editing` |
-| Comunidad, respuestas, recompra | `08-community-management` |
-| Publicar o reprogramar | `09-posting` |
-| Pauta | `10-ads-management` |
+| Replantear estrategia, ver resultados, cambiar rumbo | Strategy |
+| Algo de identidad o marca | Branding |
+| Oferta, precios al mercado, canales grandes | Growth |
+| Plan de canales, calendario | Marketing |
+| Ideas, ángulos, conceptos | Creatividad |
+| Agendar o replanear grabación | Producción |
+| Piezas gráficas | Diseño gráfico |
+| Reels y cortes | Video Editing |
+| Comunidad, respuestas, recompra | Community Management |
+| Publicar o reprogramar | Posting |
+| Pauta | Ads Management |
+| Qué está funcionando en su mercado | Research |
+| Cómo van sus cuentas contra sus metas | Performance |
 
 ⬜ **En Tailor Made, solo abre los departamentos de Su pipeline** (§0).
 

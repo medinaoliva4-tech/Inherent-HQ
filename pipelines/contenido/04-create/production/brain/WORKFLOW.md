@@ -9,6 +9,19 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 🎯 Su lugar en el pipeline
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 04 · Create |
+| **Propósito del paso** | Transformar datos y oportunidades en pilares, formatos, hooks, guiones y contenido |
+| **Su responsabilidad** | Planificar la producción y hacer que el material exista: fotos, videos y assets base |
+| **Artifact del equipo** | AI Creative Studio |
+| **Entregable al cliente** | `presupuesto.md` de rodaje, y entra en la presentación del día 20 |
+
+---
+
 ## 📅 Tu ventana en el ciclo
 
 > Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.

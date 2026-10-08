@@ -1,4 +1,4 @@
-# 07 · Video Editing
+# Video Editing
 
 **Convierte lo que Producción grabó en los reels terminados y todas sus derivadas.**
 Una grabación no es un reel: es un reel y todo lo que sale de él.

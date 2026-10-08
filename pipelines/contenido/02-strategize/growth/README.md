@@ -1,4 +1,4 @@
-# 02 · Growth
+# Growth
 
 **El motor de crecimiento del negocio — de dónde sale el dinero.**
 La oferta, los canales grandes y los upsells. **No es la pauta: la pauta es la etapa 10.**

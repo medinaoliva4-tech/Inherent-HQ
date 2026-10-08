@@ -23,7 +23,7 @@ descubre cuando producción no da abasto.
 
 | De | Qué se carga | Si falta |
 |---|---|---|
-| **Strategy** | Objetivo del ciclo con plazo y métrica · posicionamiento · **la PROMESA** · **la HISTORIA** *(héroe, enemigo, transformación)* · **las MUST BE TRUE con su letra** · el brief de marketing | 🛑 **BLOQUEADO** |
+| **Strategy** | Objetivo del ciclo con plazo y métrica **(el KR del trimestre en `roadmap-okrs.md`)** · posicionamiento · **la PROMESA** · **la HISTORIA** *(héroe, enemigo, transformación)* · **las MUST BE TRUE con su letra** · el brief de marketing | 🛑 **BLOQUEADO** |
 | **Strategy** | **El diagnóstico: qué síntoma tiene el cliente y qué causa se declaró** | 🛑 **BLOQUEADO** |
 | **Strategy** | Qué puede grabar el cliente y cada cuánto · qué cuentas existen y quién las opera · estacionalidad | 🛑 **BLOQUEADO** |
 | **Branding** | Tono, territorio, activos distintivos, do's & don'ts | 🟡 Se usan si existen. No bloquea |

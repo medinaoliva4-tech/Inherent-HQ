@@ -91,24 +91,44 @@ significa esto.** Concreto y reconocible, no "ser los mejores".
 > Va a `clients/<cliente>/01-estrategia/nucleo.md` junto con el arquetipo, y de él cuelgan las
 > `MUST BE TRUE` de `analysis`.
 
-### A.2 · Objetivos macro, por trimestre
+### A.2 · OKRs — Attention Growth y Revenue Growth
 
-Se divide el año en cuartos. Cada objetivo es **macro** — de ahí para abajo se reduce con la
-ingeniería inversa, pero acá se define grande:
+Se divide el año en cuartos. **Cada trimestre lleva dos objetivos relacionados, con métricas distintas:**
 
-| Tipo | Ejemplo |
+| Objetivo | Qué mide |
 |---|---|
-| **Venta** | Vender esta cantidad al mes |
-| **Categoría** | Ser el número uno de suplementos |
-| **Atención** | Ser el que más atención tiene — más seguidores, más conversación |
-| **Presencia** | Ser el que más eventos tiene. O **un solo evento, pero grande** |
+| **Attention Growth** | Alcance, distribución, reconocimiento, audiencia relevante y autoridad |
+| **Revenue Growth** | Leads, oportunidades comerciales, conversión, clientes e ingresos atribuibles |
 
+**Cómo se arma:**
+
+| Paso | Qué se hace |
+|---|---|
+| **1 · La presencia de hoy** | En qué punto está el cliente: sin seguidores, con pocos o con muchos, y qué construyó. Es la **línea base** y sale de `context`; sin ella va `⚠️ SIN DATOS` |
+| **2 · De la MUST BE TRUE al KR** | La `MUST BE TRUE` es la pregunta inicial: entender el deseo. Cada una se lleva a uno o más **KR**: lo que se mide para saber que ese deseo se está cumpliendo |
+| **3 · Ingeniería inversa** | De la meta que el cliente quiere generar hacia abajo: qué atención, cuántas visitas a la oferta, cuántos leads, hasta el slot. **Si el camino no cierra, se ajusta la meta** |
+| **4 · El KR declara** | Métrica · línea base · meta · plazo · la `MUST BE TRUE` de la que cuelga · quién lo mueve |
+
+🔑 **Los ingresos atribuibles se leen solo donde hay tracking que los respalde** *(`ad-atribucion`)*.
+Sin eso, el KR de Revenue se mide en leads y conversaciones, y lo que falta va `⚠️ SIN DATOS`.
+
+**Se escribe en `clients/<cliente>/01-estrategia/roadmap-okrs.md`:**
+
+```markdown
+## Q1
+### Objetivo 1 · Attention Growth — <una frase>
+| KR | Métrica | Línea base | Meta | Plazo | MUST BE TRUE | Lo mueve |
+|---|---|---|---|---|---|---|
+
+### Objetivo 2 · Revenue Growth — <una frase>
+| KR | Métrica | Línea base | Meta | Plazo | MUST BE TRUE | Lo mueve |
+|---|---|---|---|---|---|---|
 ```
-Q1 · objetivo · cómo se mide
-Q2 · objetivo · cómo se mide
-Q3 · objetivo · cómo se mide
-Q4 · objetivo · cómo se mide
-```
+
+*La forma de un OKR, con valores ilustrativos:* **Construir una audiencia relevante** → alcanzar N
+visualizaciones mensuales del ICP · incrementar X% las visitas cualificadas al perfil · generar N
+visitas a la oferta desde contenido. **Convertir atención en ingresos** → N leads cualificados al
+mes · X% de los leads en reuniones · N clientes nuevos al mes.
 
 ### A.3 · La prueba de realismo ← **obligatoria**
 
@@ -233,7 +253,24 @@ Quiénes son · Qué reciben · Qué se les vende primero
 
 ---
 
-# C · LOS BRIEFS POR ÁREA
+# C · EL BRIEF DEL NEGOCIO Y SUS ÁREAS
+
+> **Se arma un brief por negocio, no uno por área.** El negocio es uno: sus áreas leen **su sección**
+> de un mismo brief. Se construye con la skill `hormozi-brain`.
+
+```
+1 · Se ubica la ETAPA del negocio        (hormozi-brain · máximo 3 preguntas)
+2 · Se analiza el cliente y la competencia contra el material
+3 · Se responden las 3 preguntas         (MUST BE TRUE · UNFAIR · GO GET)
+4 · Se escribe el brief del negocio      → clients/<cliente>/01-estrategia/brief-del-negocio.md
+5 · De él salen las secciones por área   → los archivos que cada departamento cita por ruta
+```
+
+**Cada recomendación del brief lleva su pasaje literal y su referencia exacta.** Lo que el material
+recomienda y el plan no incluye se marca `FUERA DEL PLAN` y no entra.
+
+Las secciones que siguen (C.1 a C.6) son **las secciones del brief del negocio**, cada una con el
+nombre de archivo que su departamento ya cita.
 
 ## 🏠 Antes de escribir un brief: qué puede activar Inherent
 

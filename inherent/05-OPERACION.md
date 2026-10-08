@@ -94,46 +94,54 @@ coordina el COO; todo lo que se puede ejecutar lo ejecutan los agentes.
 
 ## 3 · El pipeline
 
+**El pipeline de contenido tiene seis pasos. Cada paso es un departamento y cada departamento
+tiene los agentes que trabajan su resultado.** El mapa completo está en
+`pipelines/contenido/README.md`.
+
 ```
-┌─ ONBOARDING ──────────── una vez, al activar la cuenta ──────────────┐
-│                                                                       │
-│   01 STRATEGY → 01.2 BRANDING → 02 GROWTH → 03 MARKETING              │
-│                                                                       │
+┌─ AL ACTIVAR LA CUENTA ───────────────────────────────────────────────┐
+│   01 UNDERSTAND → 02 STRATEGIZE                                       │
+│   Strategy · Branding · Growth · Marketing                            │
 └───────────────────────────────────────────────────────────────────────┘
                                    │
+┌─ EN CONTINUO ────────────────────┼───────────────────────────────────┐
+│   03 RESEARCH — la biblioteca de winners siempre al día               │
+└──────────────────────────────────┼───────────────────────────────────┘
                                    ▼
 ┌─ CICLO MENSUAL ───────── cada mes, del día 1 al 20 ──────────────────┐
-│                                                                       │
-│   04 CREATIVE → 05 PRODUCTION → 06 GRAPHIC DESIGN → 07 VIDEO EDITING  │
-│   → 08 COMMUNITY → 09 POSTING → 10 ADS                                │
+│   04 CREATE → 05 CONVERT                                              │
+│   Creative · Production · Graphic Design · Video Editing             │
+│   → Posting · Ads · Community                                         │
 │                                                                       │
 │   Cada departamento se auto-revisa antes de su gate.                  │
-│   Branding valida con br-guardian antes de que nada se publique.   │
-│                                                                       │
+│   Branding valida con br-guardian antes de que nada se publique.      │
 └───────────────────────────────────────────────────────────────────────┘
                                    │
                                    ▼
-                   ↻ REVISIÓN DEL 20 → entra al ciclo siguiente
+        06 OPTIMIZE — Performance lee las cuentas contra los KR
+        ↻ REVISIÓN DEL 20 → entra al ciclo siguiente
 ```
 
-| # | Etapa | Recibe | Entrega | Corre en |
+| Paso | Agente | Recibe | Entrega | Corre en |
 |---|---|---|---|---|
-| **00** | **Account** | El cliente | La relación diaria. **El único que le habla** | Todos |
-| **01** | **Strategy** | La información cruda del negocio | Comprensión del negocio + estrategia + un brief por área | Todos · ligera en 🔷 · completa en 🟨 |
-| **01.2** | **Branding** | La estrategia | Guía de marca: territorio, voz, sistema visual, activos | Todos |
-| **02** | **Growth** | La estrategia | Oferta, canales grandes, upsells, conversión y números | Solo 🟨 |
-| **03** | **Marketing** | Estrategia y marca | Plan del ciclo: campañas, pilares, canales y calendario de slots | Todos |
-| **04** | **Creative** | El plan del ciclo | Ideas listas para producir: hook, copy, escenas y layout | Todos |
-| **05** | **Production** | Las ideas aprobadas | Material grabado y fotografiado | Todos |
-| **06** | **Graphic Design** | Ideas, marca y material | Estáticos, carruseles y stories | Todos |
-| **07** | **Video Editing** | El material grabado | Reels y todas sus derivadas | Todos |
-| **08** | **Community** | Lo publicado y lo que entra | Comentarios y mensajes atendidos | Todos · básico en 🔷 Marketing |
-| **09** | **Posting** | Lo aprobado | Contenido programado o publicado | Todos |
-| **10** | **Ads** | Lo apto para pauta | Campañas activas y su reporte | Todos |
-| **↻** | **Strategy** | La analítica del mes | El ajuste de estrategia que entra al ciclo siguiente | Todos |
+| **Fuera del pipeline** | **Account** | El cliente | La relación diaria. **El único que le habla** | Todos |
+| **01 · 02** | **Strategy** | La información cruda del negocio | Comprensión + estrategia con OKRs + un brief por negocio | Todos · ligera en 🔷 · completa en 🟨 |
+| **02** *(valida en 04)* | **Branding** | La estrategia | Guía de marca: territorio, voz, sistema visual, activos | Todos |
+| **02 · 05** | **Growth** | La estrategia | Oferta, canales grandes, upsells, conversión y números | Solo 🟨 |
+| **02** | **Marketing** | Estrategia y marca | Plan del ciclo: campañas, pilares, canales y calendario de slots | Todos |
+| **03** | **Research** | La estrategia y las Redes del cliente | Biblioteca de winners, audiencia, competencia y tendencias | Todos |
+| **04** | **Creative** | El plan del ciclo y la biblioteca | Ideas listas para producir: hook, copy, escenas y layout | Todos |
+| **04** | **Production** | Las ideas aprobadas | Material grabado y fotografiado | Todos |
+| **04** | **Graphic Design** | Ideas, marca y material | Estáticos, carruseles y stories | Todos |
+| **04** | **Video Editing** | El material grabado | Reels y todas sus derivadas | Todos |
+| **05** | **Posting** | Lo aprobado | Contenido programado o publicado | Todos |
+| **05** | **Ads** | Lo apto para pauta | Campañas activas y su reporte | Todos |
+| **05** | **Community** | Lo publicado y lo que entra | Comentarios y mensajes atendidos | Todos · básico en 🔷 Marketing |
+| **06** | **Performance** | Las cuentas, los loops y los KR | La lectura contra los KR y los ajustes que propone al roadmap | Todos |
+| **↻** | **Strategy** | La lectura de Performance | El ajuste de estrategia que entra al ciclo siguiente | Todos |
 
-**El detalle de cada agente —sus acciones y qué entrega en cada plan— está en `pipelines/README.md`
-y en el `brain/WORKFLOW.md` de cada uno.**
+**El detalle de cada agente —sus acciones y qué entrega en cada plan— está en
+`pipelines/README.md` y en el `brain/WORKFLOW.md` de cada uno.**
 
 ### Las reglas del pipeline
 
@@ -398,12 +406,13 @@ agente que toca y trabaja sobre el folder del cliente.
 ```
 Una sesión por cliente
    │
-   ├── "corré el onboarding de <cliente>"      → 01 · 01.2 · 02 · 03
-   ├── "armá el mes de <cliente>"              → 04 · 05 · 06 · 07
-   ├── "atendé la comunidad de <cliente>"      → 08  🔒 gate
-   ├── "publicá lo aprobado de <cliente>"      → 09  🔒 gate
-   ├── "lanzá las campañas de <cliente>"       → 10  🔒 gate
-   └── "corré la revisión del 20 de <cliente>" → ↻
+   ├── "corré el onboarding de <cliente>"      → Strategy · Branding · Growth · Marketing
+   ├── "investigá el mercado de <cliente>"     → Research
+   ├── "armá el mes de <cliente>"              → Creative · Production · Graphic Design · Video Editing
+   ├── "atendé la comunidad de <cliente>"      → Community Management  🔒 gate
+   ├── "publicá lo aprobado de <cliente>"      → Posting  🔒 gate
+   ├── "lanzá las campañas de <cliente>"       → Ads Management  🔒 gate
+   └── "corré la revisión del 20 de <cliente>" → Performance · Strategy ↻
 ```
 
 ### Lo que exige de los agentes

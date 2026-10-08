@@ -8,6 +8,32 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 🎯 Su lugar en el pipeline
+
+### Paso 02 · Strategize
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 02 · Strategize |
+| **Propósito del paso** | Definir cómo crecer, atraer atención y convertir esa atención en ingresos |
+| **Su responsabilidad** | Definir cómo se posiciona y se reconoce la marca: territorio, voz y sistema visual |
+| **Artifact del equipo** | Interactive Growth Roadmap |
+| **Entregable al cliente** | Ninguno propio |
+
+### Paso 04 · Create
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 04 · Create |
+| **Propósito del paso** | Transformar datos y oportunidades en pilares, formatos, hooks, guiones y contenido |
+| **Su responsabilidad** | Validar con `br-guardian` que cada pieza sea de marca antes de que se publique |
+| **Artifact del equipo** | AI Creative Studio |
+| **Entregable al cliente** | Ninguno propio |
+
+---
+
 ## 📅 Tu ventana en el ciclo
 
 > Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.

@@ -8,6 +8,19 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 🎯 Su lugar en el pipeline
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 05 · Convert |
+| **Propósito del paso** | Distribuir el contenido y conectar la atención con un sistema de adquisición y ventas |
+| **Su responsabilidad** | Distribuir con dinero lo que ya funciona hacia un sistema de adquisición y ventas. Compra resultado, no alcance |
+| **Artifact del equipo** | Revenue Engine |
+| **Entregable al cliente** | Ninguno propio |
+
+---
+
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
 **Lo primero de cada ciclo: leer el plan del cliente.** Lo anota Strategy al arrancar en

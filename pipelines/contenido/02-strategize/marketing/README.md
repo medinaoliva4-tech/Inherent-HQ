@@ -1,4 +1,4 @@
-# 03 · Marketing
+# Marketing
 
 **Convierte la estrategia en el plan del ciclo.** Qué campaña, qué se dice, por qué
 canal, con qué función y en qué semana.

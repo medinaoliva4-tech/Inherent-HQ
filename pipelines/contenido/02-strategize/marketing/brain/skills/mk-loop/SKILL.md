@@ -28,7 +28,7 @@ description: >
 
 🛑 **Si el loop de Marketing habla de piezas, invadió a Creatividad.**
 
-## 2 · Las cuatro lecturas
+## 2 · Las cinco lecturas
 
 ### A · Por función
 ¿Los `Proof` movieron la objeción? ¿Los `Conversion` cobraron? ¿Los `Utility` trajeron gente nueva?
@@ -42,6 +42,9 @@ description: >
 ### D · Por awareness
 ¿El ciclo le habló al nivel correcto? Si todo rindió en `Most aware` y nada en `Unaware`, **el
 negocio no está creciendo: está exprimiendo.**
+
+### E · Por KR
+**¿El ciclo movió el KR que declaró?** Se lee contra la meta de `roadmap-okrs.md`, el de Attention y el de Revenue. Si el de Revenue no se mueve con la atención subiendo, **el problema no es de contenido**: va a Strategy y a Growth. Sin dato, `⚠️ SIN DATOS`.
 
 ## 3 · Qué se decide
 
@@ -73,7 +76,7 @@ lo note.
 | Bloque | Qué lleva |
 |---|---|
 | **A · Lo que se esperaba** | El objetivo del ciclo y las MUST BE TRUE que se movían |
-| **B · Las cuatro lecturas** | Función · pilar · canal · awareness |
+| **B · Las cinco lecturas** | Función · pilar · canal · awareness · KR |
 | **C · Qué cambia** | Pilares que suben, bajan o salen. Canales que se sostienen o se cortan |
 | **D · Lo que se devuelve** | Qué va a Strategy, qué a Growth, qué a Creatividad |
 | **E · Los huecos** | `⚠️ SIN DATOS`, con el responsable de cada uno |

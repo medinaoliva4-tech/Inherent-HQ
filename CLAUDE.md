@@ -1,6 +1,7 @@
 # Inherent HQ — Agentes
 
-Cada agente vive en `agents/<NN>-<área>/`, numerado en el orden en que corre el trabajo.
+El trabajo corre en **pipelines**. Cada paso del pipeline es un **departamento**, y cada departamento
+tiene los **agentes** que trabajan su resultado: `pipelines/<pipeline>/<NN-departamento>/<agente>/`.
 **Se opera directo desde Claude Code**, contra este repo — sin servidores ni hosting.
 
 ## Estructura
@@ -23,13 +24,19 @@ inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── inherent-social-media/ Inherent como cliente — nuestras propias redes, plan Marketing Pro
 └── administracion/        skills para administrar Inherent: caja, cobros, SAT, ventas, contratos
 
-agents/                    ← LOS AGENTES — uno por etapa del pipeline
-├── README.md              ← el roster y el estado de cada uno
-└── <NN>-<área>/           00-account · 01-strategy · 01.2-branding · 02-growth
-    ├── README.md          03-marketing · 04-creative · 05-production
-    └── brain/             06-graphic-design · 07-video-editing
-        ├── WORKFLOW.md    08-community-management · 09-posting · 10-ads-management
-        └── skills/<skill>/
+pipelines/                 ← LOS PIPELINES — quién lo hace
+├── README.md              ← cómo se compone cada paso
+├── 00-account/            la secretaria — vive antes y alrededor de todo
+├── _router/               /inherent — la puerta de entrada
+└── contenido/             EL PIPELINE DE CONTENIDO — seis pasos, cada uno un departamento
+    ├── README.md          ← los seis pasos, su propósito, su artifact y su entregable
+    ├── 01-understand/     Strategy (context)
+    ├── 02-strategize/     strategy · branding · growth · marketing
+    ├── 03-research/       research
+    ├── 04-create/         creative · production · graphic-design · video-editing
+    ├── 05-convert/        community-management · posting · ads-management
+    └── 06-optimize/       performance
+        └── <agente>/      README.md · brain/WORKFLOW.md · brain/skills/<skill>/
 
 clients/                   ← LOS CLIENTES
 ├── README.md              cómo se arma un folder de cliente
@@ -37,21 +44,25 @@ clients/                   ← LOS CLIENTES
 ```
 
 **Tres carpetas, tres preguntas:**
-`inherent/` **qué somos** · `agents/` **quién lo hace** · `clients/` **para quién**
+`inherent/` **qué somos** · `pipelines/` **quién lo hace** · `clients/` **para quién**
 
 ## Cómo se compone un agente
 
-Todo agente de Inherent tiene tres capas. **Esta es la definición base — vale para todos.**
+Todo agente de Inherent tiene tres capas, y el paso donde trabaja le pone una cuarta: el artifact.
+**Esta es la definición base — vale para todos.**
 
 ```
-PROPÓSITO   el panorama y la meta del agente. Su área.
+PROPÓSITO   el panorama y la meta del agente. La del paso del pipeline donde trabaja.
     │       Strategy: la estrategia. Creative: las ideas. Etc.
     ▼
 ACCIONES    lo que el agente PUEDE HACER. Las determinan los MCPs.
     │       La CALIDAD del MCP es la CALIDAD de la acción.
     ▼
 LÓGICA      CÓMO hace esas cosas. Son las skills.
-            El razonamiento y el método detrás de cada acción.
+    │       El razonamiento y el método detrás de cada acción.
+    ▼
+ARTIFACT    DÓNDE se ve el resultado. La herramienta visual del equipo.
+            Uno por paso del pipeline, compartido por sus agentes.
 ```
 
 1. **Un agente no puede hacer nada que su MCP no permita.** Si falta la acción, falta un MCP —
@@ -80,8 +91,15 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 
 ## Los agentes
 
-**`pipelines/README.md` tiene el roster completo:** las etapas en orden, qué MCP le da cada acción
-a cada agente, y **qué entrega cada uno según el plan contratado.**
+🏭 **El pipeline de contenido tiene seis pasos, y cada paso es un departamento:**
+**01 Understand · 02 Strategize · 03 Research · 04 Create · 05 Convert · 06 Optimize.**
+Cada paso tiene un propósito, un artifact para el equipo y un entregable para el cliente.
+**`pipelines/contenido/README.md` los define; el `README.md` de cada departamento dice qué le toca
+a cada agente en él.** Un agente puede estar en dos pasos *(Strategy, Growth, Branding)*.
+
+🔑 **Un pipeline sin crecimiento no sirve.** Strategize define cómo la atención se vuelve ingresos:
+el roadmap lleva dos objetivos —**Attention Growth** y **Revenue Growth**— y cada slot del
+calendario traza, por su `MUST BE TRUE`, a un KR.
 
 🔑 **Cada agente tiene su `brain/WORKFLOW.md` con sus capas, sus gates y sus entregables.**
 **El plan contratado es el techo de todos, no una sugerencia:** entregar de más rompe el margen,
@@ -315,6 +333,7 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 | Los planes, precios y cómo se activa cada uno | `inherent/03-OFERTA.md` |
 | Industrias, mercados o la red de mentores | `inherent/04-MERCADO.md` |
 | Los roles, el pipeline o el calendario | `inherent/05-OPERACION.md` |
+| Los seis pasos del pipeline de contenido y qué logra cada uno | `pipelines/contenido/README.md` |
 | 🔒 Costos, márgenes, capacidades MCP | `inherent/06-ECONOMIA.md` |
 | Copy, tono o el brief de la web | `inherent/07-COMUNICACION.md` |
 | Administrar Inherent: caja, cobros, impuestos, ventas | `inherent/administracion/` |
@@ -341,7 +360,7 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
 ## Reglas
 
 - **Español.** Los términos del método quedan en inglés: `WIN`, `MUST BE TRUE`, `UNFAIR`, `GO GET`, `MOVE`, `COMPOUND`.
-- **El repo es el manual, no el chat.** `CLAUDE.md`, `inherent/` y `agents/` solo reciben lo que
+- **El repo es el manual, no el chat.** `CLAUDE.md`, `inherent/` y `pipelines/` solo reciben lo que
   el CEO aprobó **en ese mismo turno**. Nada de lo conversado se sube solo.
   Lo que no está decidido **no entra: se pregunta.** Sin rastros de conversación: ni «por confirmar»,
   ni «pendiente», ni fechas de verificación, ni historia de cómo se llegó a la decisión.

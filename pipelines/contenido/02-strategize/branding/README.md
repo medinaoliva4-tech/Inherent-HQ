@@ -1,4 +1,4 @@
-# 01.2 · Branding
+# Branding
 
 **Convierte la dirección de Strategy en una marca que se puede ejecutar.**
 Va justo después de Strategy: con su data ya se puede armar la marca.

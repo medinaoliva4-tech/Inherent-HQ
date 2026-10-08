@@ -10,6 +10,19 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 🎯 Su lugar en el pipeline
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 05 · Convert |
+| **Propósito del paso** | Distribuir el contenido y conectar la atención con un sistema de adquisición y ventas |
+| **Su responsabilidad** | Distribuir: dejar lo aprobado programado y publicado donde está la audiencia del cliente |
+| **Artifact del equipo** | Revenue Engine |
+| **Entregable al cliente** | Ninguno propio |
+
+---
+
 ## 📅 Tu ventana en el ciclo
 
 > Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.

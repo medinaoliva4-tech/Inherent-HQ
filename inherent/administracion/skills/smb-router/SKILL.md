@@ -103,7 +103,7 @@ Pick the **single best match**, not a list of options. If two are close, pick th
 **Lo que no se construye aquí:**
 | Owner says something like... | Route to |
 |---|---|
-| "Esto lo hago cada semana" / "automatizalo" | Se propone al CEO (gate humano); si lo aprueba, se construye como skill o agente en `agents/` |
+| "Esto lo hago cada semana" / "automatizalo" | Se propone al CEO (gate humano); si lo aprueba, se construye como skill o agente en `pipelines/` |
 | "Cambiamos la marca" / "actualizá nuestra marca" | `/inherent` → Branding (la marca vive en `inherent/inherent-social-media/02-marca/`) |
 | "Cambiame cómo me das los reportes" | `smb-onboard` (actualiza `Output preference` en el contexto) |
 | "Conectá mi herramienta" / "mi herramienta no está" | Se conecta como MCP; un MCP declarado no es un MCP conectado (`CLAUDE.md`) |

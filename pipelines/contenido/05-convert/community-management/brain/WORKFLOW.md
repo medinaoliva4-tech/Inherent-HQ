@@ -9,6 +9,19 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 🎯 Su lugar en el pipeline
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 05 · Convert |
+| **Propósito del paso** | Distribuir el contenido y conectar la atención con un sistema de adquisición y ventas |
+| **Su responsabilidad** | Conectar la atención con la conversación: responder y llevar cada comentario o DM a un siguiente paso |
+| **Artifact del equipo** | Revenue Engine |
+| **Entregable al cliente** | Ninguno propio |
+
+---
+
 ## 📅 Cuándo corre
 
 **Community no vive en el ciclo del 1 al 20: corre todos los días.** Lo publicado desde el día 1 genera

@@ -1,4 +1,4 @@
-# 06 · Graphic Design
+# Graphic Design
 
 **Los estáticos, carruseles y stories del ciclo.** Es el grueso del volumen:
 **73 · 127 · 118 · 168 piezas al mes** según el plan —

@@ -10,7 +10,7 @@
 
 | # | Decisión | Contexto |
 |---|---|---|
-| 1 | **La métrica de crecimiento medible de la línea Marketing** | El slot ya está en `CLAUDE.md` y `03-OFERTA` |
+| 1 | **La métrica de crecimiento medible de la línea Marketing** | El slot ya está en `CLAUDE.md` y `03-OFERTA`. El pipeline propone: 🔷 mide **Attention Growth** y lee el KR de Revenue en leads y conversaciones; 🟨 suma ingresos atribuibles |
 | 2 | **¿Qué argumento vende el salto Pro → Accelerate?** | Con los costos nuevos es el salto de menor margen (61%); suma ~Q4,940 de utilidad |
 | 3 | **Especialistas por área** *(eventos, networking y PR, talent production, talent marketing)* | No tienen rubro en el costo fijo ni persona asignada |
 | 4 | **¿Cuál de las tres auditorías cubre corporate structure?** | Hoy dice solo «la auditoría» |
@@ -112,10 +112,53 @@
 
 | # | Qué |
 |---|---|
-| 1 | **`agents/`: quitar advertencias y estados** con el mismo criterio que `inherent/` |
+| 1 | **`pipelines/`: quitar advertencias y estados** con el mismo criterio que `inherent/` |
 | 2 | **`pipelines/00-account/`: que hable como Nicole, la secretaria**, y escale al COO |
 | 3 | **Borrar las ramas viejas de GitHub:** solo quedan `main` y `rodrigo-medina` |
 | 4 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y trabajar sobre `main` |
 | 5 | **Onboarding de Akai, NAO y Cerantola:** los folders existen, vacíos, en `clients/` |
 | 6 | **El VPS es KVM 1, no KVM 2** | Lo dice mal `pipelines/contenido/04-create/creative/brain/skills/BARRIDO-NOCTURNO.md` |
 | 7 | **En el VPS, `~/inherent-hq` es un clon viejo sin acceso** | El que se usa es `~/inherent-hq-src`. Renombrar el viejo para que nadie lo use por error |
+
+---
+
+## 🏭 9 · El pipeline de contenido
+
+> Lo que sigue sale de reorganizar el repo en pipelines y departamentos. Se prueba primero con
+> Inherent como cliente, en su propia rama.
+
+### ❓ Decisiones del CEO
+
+| # | Decisión | Contexto |
+|---|---|---|
+| 1 | **Entregables nuevos al cliente: ¿cuál recibe cada plan?** | Propuestos: **diagnóstico para validar** *(paso 01)* · **roadmap con OKRs** *(02)* · **ampliar la página de aprobación del cliente** *(04; hoy aprueba los videos)* a estáticos, carruseles y stories · **reporte de conversaciones y ventas** *(05)* · **informe del 20** *(06)*. Hoy existen `estrategia.md`, `presupuesto.md`, la reunión del día 1, la presentación del día 20 y la página de aprobación de videos. En 🔷 el reporte lee conversaciones y leads, no facturación |
+| 2 | **¿Quién es dueña de la cuota de contenidos a investigar: Research o `cr-fuentes`?** | Las dos la declaran hoy *(50 / 50 / 100 / 100 por Red)*, con los mismos actores de Apify, topes de gasto y países. O `cr-fuentes` pasa a consumir la biblioteca de Research, o se quedan las dos y se actualizan juntas |
+| 3 | **Solapes de Research con `cr-lectura-de-video` y `cr-swipe-file`** | Research enlaza la lectura a fondo y alimenta el swipe file; Creatividad sigue decidiendo qué entra. Crea una dependencia del paso 03 hacia el 04 |
+| 4 | **¿Performance corre en los cuatro planes?** | Quedó escrito así por defecto; no hay una definición de qué entrega Performance por plan |
+| 5 | **SEO** *(GEO, AI SEO, optimización de sitio)*: ¿skill de Ads Management o agente propio? | Hoy ningún agente ni MCP lo cubre |
+| 6 | **El conocimiento de la primera división** *(cómo conseguir clientes con leads garantizados: video orgánico, trial reels, pain points · marketing digital · campaign management: Google Ads, CAC · SEO)* | Se guarda literal, como `hormozi-brain`. **Faltan las fuentes** de cada tema |
+| 7 | **Pipeline de crecimiento** *(organización empresarial, finanzas y otras áreas)* | Hay que definirlo y después construirlo: pasos, departamentos y agentes |
+| 8 | **Estados de tendencia y niveles de intención de compra** de Research | Quedaron como propuesta: 🟢 Sube · 🟡 En pico · 🔴 Se quema · ⚪ Una sola lectura; intención Explorando · Comparando · Lista para pedir; proximidad Cerca · Adyacente · Lejos |
+
+### 🔨 Construir
+
+| # | Qué | Por qué |
+|---|---|---|
+| 1 | **Los seis artifacts del equipo:** Business Intelligence Profile · Interactive Growth Roadmap · Creative Intelligence Engine · AI Creative Studio · Revenue Engine · Growth Command Center | Cada paso necesita su herramienta visual |
+| 2 | **El cron de la biblioteca de winners** | Necesita el servidor del equipo y el MCP de Apify conectado; mientras tanto el refresco es manual |
+| 3 | **Ampliar la página de aprobación** *(`motor/aprobacion/vercel`)* para que cubra también estáticos, carruseles y stories | Que el cliente apruebe todo el ciclo en un solo lugar |
+| 4 | **`roadmap-okrs.md` y `brief-del-negocio.md` en los clientes que ya existen** y en `clients/_plantilla/01-estrategia/` | Strategy los escribe a partir de ahora; los folders de NAO, Akai y Cerantola no los tienen |
+| 5 | **Mover el cuerpo de `cr-fuentes` y `BARRIDO-NOCTURNO.md` a Research**, si se decide el punto 2 | Hoy el scraping vive en Creatividad |
+
+### 🧪 Probar
+
+| # | Qué | Respalda |
+|---|---|---|
+| 1 | **Autorizar el MCP de Apify** *(quedó desconectado)* y probar los actores de orgánico: Instagram, TikTok, YouTube, LinkedIn, Maps y Search | La biblioteca de winners |
+| 2 | **Los actores de comentarios** *(`apify/instagram-post-scraper`, `clockworks/tiktok-scraper`)* y las reseñas de Google Maps | La lectura de audiencia de Research |
+| 3 | **El cálculo de rendimiento relativo** *(métrica ÷ mediana de la cuenta, a igual antigüedad)* con datos reales | Qué es un winner |
+| 4 | **Trial reels:** si Zernio o Apify exponen su engagement y lo distinguen de un reel normal | La lectura de cuentas de Performance |
+| 5 | **Add-on de Analytics de Zernio:** crecimiento de seguidores y mejores horas lo requieren | Performance |
+| 6 | **`analytics_get_analytics` y AdWhispr `get_account_performance`** contra una cuenta real | Performance |
+| 7 | **Eden** *(outlier score, `eden_search_social_content`, `eden_analyze_creator`)* como herramienta de Research | Hoy no está en «Capacidades reales» |
+| 8 | **Correr el pipeline completo con Inherent** *(rama `claude/pipeline-contenido-inherent`)* | Que la estructura nueva funcione antes de llevarla a `main` |

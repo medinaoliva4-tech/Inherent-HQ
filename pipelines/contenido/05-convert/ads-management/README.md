@@ -1,4 +1,4 @@
-# 10 · Ads Management
+# Ads Management
 
 **Que la pauta compre resultado, no alcance.** Presupuesto, ángulos y optimización.
 

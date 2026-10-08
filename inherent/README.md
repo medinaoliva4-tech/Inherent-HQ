@@ -1,7 +1,7 @@
 # Inherent — la empresa
 
 > **Todo lo que Inherent es, vende y cobra.** Siete documentos, en orden de lectura.
-> Los agentes viven en `agents/`. Los clientes en `clients/`. **Acá vive la empresa.**
+> Los agentes viven en `pipelines/`. Los clientes en `clients/`. **Acá vive la empresa.**
 
 | # | Archivo | Responde | Qué tiene |
 |---|---|---|---|

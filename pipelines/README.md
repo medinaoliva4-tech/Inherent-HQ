@@ -1,50 +1,49 @@
-# Los agentes
+# Los pipelines
 
-**Un agente por etapa, en el orden en que corre el trabajo.** La carpeta lleva el número,
-así que el pipeline se lee de arriba abajo.
+**Un pipeline es el camino que recorre un negocio para crecer.**
+Cada **paso** del pipeline es un **departamento**, porque cada paso lleva muchas tareas.
+Cada departamento tiene los **agentes** que trabajan el resultado y el propósito de ese paso.
 
 ```
-agents/<NN>-<área>/
-├── README.md              qué hace, qué acciones tiene y QUÉ ENTREGA SEGÚN EL PLAN
-└── brain/
-    ├── WORKFLOW.md        cómo trabaja, de 0 a 100 — incluye cómo entrega
-    └── skills/
-        ├── README.md      cuándo y cómo usa cada skill
-        └── <skill>/SKILL.md
+pipelines/
+├── README.md
+├── 00-account/                 la secretaria — vive antes y alrededor de todo
+├── _router/                    /inherent — la puerta de entrada
+│
+└── contenido/                  🏭 EL PIPELINE DE CONTENIDO
+    ├── README.md
+    ├── 01-understand/          comprender el negocio
+    ├── 02-strategize/          strategy · branding · growth · marketing
+    ├── 03-research/            research
+    ├── 04-create/              creative · production · graphic-design · video-editing
+    ├── 05-convert/             community-management · posting · ads-management
+    └── 06-optimize/            performance
 ```
 
-> **`brain/` es el agente.** El `README.md` es la ficha; el `brain/` es el cerebro.
+> **El pipeline de contenido no es de ningún plan.** Dice qué tiene que lograr cada paso.
+> **El plan contratado fija cuánto volumen y qué profundidad** — es el techo de todos los agentes.
 
 ---
 
-## El pipeline
+## Cómo se compone cada paso
 
-| # | Agente | Qué produce | Estado |
-|---|---|---|---|
-| **00** | [**Account Manager**](00-account/) | La relación con el cliente. **El único que le habla** | ✅ **perfil listo** |
-| **01** | [**Strategy**](01-strategy/) | La estrategia y un brief por área | ✅ **construido** |
-| **01.2** | [Branding](01.2-branding/) | Identidad, voz y sistema visual | ✅ **construido** |
-| **02** | [Growth](02-growth/) | La oferta, los canales grandes y los upsells | ✅ **construido** |
-| **03** | [Marketing](03-marketing/) | El plan del ciclo y el calendario de slots | ✅ **construido** |
-| **04** | [Creative](04-creative/) | Los ángulos y las ideas | ✅ **construido** |
-| **05** | [Production](05-production/) | La grabación | ✅ **construido** |
-| **06** | [Graphic Design](06-graphic-design/) | Estáticos, carruseles y stories | ✅ **construido** |
-| **07** | [Video Editing](07-video-editing/) | Reels y sus derivadas | ✅ **construido** |
-| **08** | [Community Management](08-community-management/) | Respuesta, seguimiento y comunidad | ✅ **construido** |
-| **09** | [Posting](09-posting/) | Lo aprobado, publicado | ✅ **construido** |
-| **10** | [Ads Management](10-ads-management/) | La pauta corriendo | ✅ **construido** |
-| ↻ | [Strategy](01-strategy/) | La revisión del 20 | ✅ |
+```
+PROPÓSITO   qué tiene que lograr el paso. Es el mismo para todos los agentes del departamento
+    │
+    ▼
+LÓGICA      cómo lo logra cada agente. Son sus skills y su WORKFLOW
+    │
+    ▼
+ARTIFACT    la herramienta donde el equipo ve el resultado. Visual y comprensible
+```
 
-**Por qué Account Manager es 00:** no produce nada del pipeline. **Vive antes y alrededor de
-todo** — recibe al cliente, lo mantiene al día y abre la sesión del agente que toca.
+🔑 **Un agente puede estar en dos pasos:** en uno tiene una responsabilidad y en el otro, otra.
+Su carpeta vive en el paso donde trabaja más, y cada departamento dice qué le toca a cada agente
+en ese paso. Hoy son **Strategy** *(01 y 02)*, **Growth** *(02 y 05)* y **Branding** *(02 y 04)*.
 
-**Por qué Branding es 01.2:** con la data de Strategy **ya se puede armar la marca**.
-No espera al resto del pipeline.
+---
 
-🔑 **El QA no es un agente aparte: cada departamento se auto-revisa y sigue**, y
-**Branding valida con `br-guardian`** antes de que nada se publique.
-
-**La cadena de entrega completa está en `inherent/05-OPERACION.md`.**
+## Lo que aplica a todos los pasos
 
 🧭 **La puerta de entrada es `/inherent`** (`pipelines/_router/`): lee el pedido, imprime el
 `ENRUTAMIENTO` y lo pasa al orquestador que toca. **Si una respuesta de trabajo de cliente no
@@ -54,22 +53,19 @@ arranca con `ENRUTAMIENTO` o con el `PRE-FLIGHT` del orquestador, se saltó el m
 día para producir · 🔴 **Día 20:** presentación al cliente. Cada `WORKFLOW.md` abre con
 **«📅 Tu ventana en el ciclo»**. Calendario completo en `inherent/05-OPERACION.md`.
 
----
-
-## 🔑 Cada agente sabe qué entrega según el plan
-
-**Todas las fichas tienen la misma tabla: qué le toca en 🔷 Marketing, 🔷 Marketing Pro,
-🟨 Accelerate y 🟨 Compound.**
+🔑 **El QA no es un agente aparte: cada departamento se auto-revisa y sigue**, y
+**Branding valida con `br-guardian`** antes de que nada se publique.
 
 🔑 **Primero se lee la LÍNEA, después el plan.** 🔷 Marketing promete atención · 🟨 Growth
 promete facturación. **En la línea Marketing, Growth corre ligero:** elige qué ofertas que ya
-existen se empujan, sin cambiar la oferta.
-
-⬜ **Un Tailor Made no se cuestiona:** su `plan-contratado.md` declara qué incluye y su pipeline, y
-los agentes lo siguen.
+existen se empujan, sin cambiar la oferta. ⬜ **Un Tailor Made no se cuestiona:** su
+`plan-contratado.md` declara qué incluye y su pipeline, y los agentes lo siguen.
 
 **El plan contratado es el techo, no una sugerencia.** Un agente que entrega de más rompe el
 margen; uno que entrega de menos rompe la promesa publicada.
+
+**Por qué `00-account` va aparte:** no produce nada del pipeline. **Vive antes y alrededor de
+todo** — recibe al cliente, lo mantiene al día y abre la sesión del agente que toca.
 
 ---
 

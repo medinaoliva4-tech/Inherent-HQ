@@ -5,7 +5,7 @@ quién. **Se opera directo desde Claude Code**, contra este repo — sin servido
 
 ```
 inherent/    qué somos       la empresa: identidad, método, oferta, mercado, operación, economía
-agents/      quién lo hace   un agente por etapa del pipeline
+pipelines/   quién lo hace   un pipeline; cada paso es un departamento con sus agentes
 clients/     para quién      un folder por cliente
 ```
 
@@ -14,17 +14,20 @@ clients/     para quién      un folder por cliente
 ## Qué es un agente acá
 
 **No es un prompt.** Es una unidad de trabajo con tres capas, y las tres tienen que existir para
-que el agente sirva.
+que el agente sirva. El paso del pipeline donde trabaja le suma una cuarta: el artifact.
 
 ```
-PROPÓSITO   el panorama y la meta del agente. Su área.
+PROPÓSITO   el panorama y la meta del agente. La de su paso del pipeline.
     │       Strategy: la estrategia. Creative: las ideas.
     ▼
 ACCIONES    lo que el agente PUEDE HACER. Las determinan los MCPs.
     │       La CALIDAD del MCP es la CALIDAD de la acción.
     ▼
 LÓGICA      CÓMO hace esas cosas. Son las skills.
-            El razonamiento y el método detrás de cada acción.
+    │       El razonamiento y el método detrás de cada acción.
+    ▼
+ARTIFACT    DÓNDE se ve el resultado. La herramienta visual del equipo,
+            una por paso del pipeline.
 ```
 
 ### Las tres consecuencias
@@ -55,27 +58,22 @@ LÓGICA      CÓMO hace esas cosas. Son las skills.
 
 ---
 
-## El pipeline
+## El pipeline de contenido
 
-**Doce etapas, de la información cruda a la pieza publicada.** Cada agente es una etapa —
-el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno puede hacer en
-`pipelines/README.md`.
+**Seis pasos. Cada paso es un departamento, y cada departamento tiene sus agentes.** El mapa
+completo está en [`pipelines/contenido/README.md`](pipelines/contenido/README.md).
 
-| # | Agente | Qué produce | Estado |
-|---|---|---|---|
-| **00** | [**Account Manager**](pipelines/00-account/) | La relación con el cliente. **El único que le habla** | ✅ |
-| **01** | [**Strategy**](pipelines/contenido/02-strategize/strategy/) | La estrategia y un brief por área | ✅ |
-| **01.2** | [Branding](pipelines/contenido/02-strategize/branding/) | Identidad, voz y sistema visual | ✅ |
-| **02** | [Growth](pipelines/contenido/02-strategize/growth/) | La oferta, los canales grandes y los upsells | ✅ |
-| **03** | [Marketing](pipelines/contenido/02-strategize/marketing/) | El plan del ciclo y el calendario de slots | ✅ |
-| **04** | [Creative](pipelines/contenido/04-create/creative/) | Los ángulos y las ideas | ✅ |
-| **05** | [Production](pipelines/contenido/04-create/production/) | La grabación | ✅ |
-| **06** | [Graphic Design](pipelines/contenido/04-create/graphic-design/) | Estáticos, carruseles y stories | ✅ |
-| **07** | [Video Editing](pipelines/contenido/04-create/video-editing/) | Reels y sus derivadas | ✅ |
-| **08** | [Community](pipelines/contenido/05-convert/community-management/) | Respuesta, seguimiento y comunidad | ✅ |
-| **09** | [Posting](pipelines/contenido/05-convert/posting/) | Lo aprobado, publicado | ✅ |
-| **10** | [Ads Management](pipelines/contenido/05-convert/ads-management/) | La pauta corriendo | ✅ |
-| ↻ | [Strategy](pipelines/contenido/02-strategize/strategy/) | La revisión del 20 | ✅ |
+| Paso | Propósito | Agentes |
+|---|---|---|
+| **01 · Understand** | Comprender el negocio, sus clientes, sus objetivos y su situación actual | [Strategy](pipelines/contenido/02-strategize/strategy/) |
+| **02 · Strategize** | Definir cómo crecer, atraer atención y convertirla en ingresos | [Strategy](pipelines/contenido/02-strategize/strategy/) · [Branding](pipelines/contenido/02-strategize/branding/) · [Growth](pipelines/contenido/02-strategize/growth/) · [Marketing](pipelines/contenido/02-strategize/marketing/) |
+| **03 · Research** | Investigar audiencias, competidores, referentes, tendencias y contenido ganador | [Research](pipelines/contenido/03-research/research/) |
+| **04 · Create** | Transformar datos y oportunidades en pilares, formatos, hooks, guiones y contenido | [Creative](pipelines/contenido/04-create/creative/) · [Production](pipelines/contenido/04-create/production/) · [Graphic Design](pipelines/contenido/04-create/graphic-design/) · [Video Editing](pipelines/contenido/04-create/video-editing/) |
+| **05 · Convert** | Distribuir el contenido y conectar la atención con adquisición y ventas | [Posting](pipelines/contenido/05-convert/posting/) · [Ads Management](pipelines/contenido/05-convert/ads-management/) · [Community Management](pipelines/contenido/05-convert/community-management/) |
+| **06 · Optimize** | Medir resultados, aprender, encontrar nuevos ganadores y ajustar el roadmap | [Performance](pipelines/contenido/06-optimize/performance/) |
+
+[**Account Manager**](pipelines/00-account/) vive fuera del pipeline: es la relación con el cliente y
+**el único que le habla**.
 
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate, y
 **Branding valida con `br-guardian`** antes de que nada se publique.

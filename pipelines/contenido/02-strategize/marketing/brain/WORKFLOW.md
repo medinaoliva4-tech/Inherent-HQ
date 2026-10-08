@@ -8,6 +8,19 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 🎯 Su lugar en el pipeline
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 02 · Strategize |
+| **Propósito del paso** | Definir cómo crecer, atraer atención y convertir esa atención en ingresos |
+| **Su responsabilidad** | Hacer real la atención que se quiere atraer: el plan del ciclo —campaña, mensaje, pilares, canales y calendario—. Cada slot traza a un KR de Attention o de Revenue |
+| **Artifact del equipo** | Interactive Growth Roadmap |
+| **Entregable al cliente** | Ninguno propio: entra en la presentación del día 20, que entrega el ciclo completo |
+
+---
+
 ## 📅 Tu ventana en el ciclo
 
 > Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
@@ -143,6 +156,10 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 
 > 🛑 **Todo slot traza a una MUST BE TRUE.** Un slot sin `traza` es contenido porque sí, y
 > Creatividad lo devuelve.
+>
+> 🔑 **La cadena:** la `MUST BE TRUE` es el deseo; de ella cuelga un **KR** en
+> `01-estrategia/roadmap-okrs.md` —de Attention Growth o de Revenue Growth—. **El slot hereda el KR de
+> su `traza`**: así cada pieza sirve a un número, no solo a una idea.
 
 ### Las combinaciones que están prohibidas
 
@@ -203,7 +220,7 @@ Marketing. **Escalar no es parar:** precio, alcance y fechas → el CEO · lo de
 | De | Qué | Si falta |
 |---|---|---|
 | **Strategy** · `00-onboarding/` | La realidad del negocio, la capacidad declarada, las cuentas que existen | 🛑 BLOQUEADO |
-| **Strategy** · `01-estrategia/` | Objetivo del ciclo, posicionamiento, **las MUST BE TRUE**, el brief de marketing | 🛑 BLOQUEADO si la estrategia no existe |
+| **Strategy** · `01-estrategia/` | Objetivo del ciclo **como KR del trimestre** (`roadmap-okrs.md`), posicionamiento, **las MUST BE TRUE**, el brief de marketing | 🛑 BLOQUEADO si la estrategia no existe |
 | **Branding** | Tono, territorio, activos distintivos | 🟡 Se usan si existen. No bloquea |
 | **Ads** | Qué ángulos ya rindieron en pauta | 🟡 No bloqueante |
 
@@ -236,6 +253,7 @@ Marketing. **Escalar no es parar:** precio, alcance y fechas → el CEO · lo de
 ## 8 · Antes de cerrar el ciclo
 
 - [ ] La campaña es **una** *(dos si el ciclo lo justifica)*, y está escrita en una frase
+- [ ] La campaña declara **el KR que mueve**, y el ciclo mueve **al menos un KR de Revenue Growth** *(en 🔷, leads y conversaciones; ingresos atribuibles solo donde hay tracking)*
 - [ ] La **jerarquía de mensaje** está escrita y es la ley del ciclo
 - [ ] Cada canal tiene **una función única** y su *«qué NO se hace acá»*
 - [ ] Cada slot tiene `traza` a una MUST BE TRUE

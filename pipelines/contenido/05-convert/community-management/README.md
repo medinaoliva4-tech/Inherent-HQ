@@ -1,4 +1,4 @@
-# 08 · Community Management
+# Community Management
 
 **Atiende los comentarios y mensajes de las redes del cliente.** Corre en los cuatro planes; lo
 que cambia es la profundidad.

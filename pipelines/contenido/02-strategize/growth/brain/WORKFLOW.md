@@ -8,6 +8,32 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
+## 🎯 Su lugar en el pipeline
+
+### Paso 02 · Strategize
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 02 · Strategize |
+| **Propósito del paso** | Definir cómo crecer, atraer atención y convertir esa atención en ingresos |
+| **Su responsabilidad** | Definir cómo se va a monetizar: no solo la herramienta, sino cómo se crea el deseo y la oportunidad para monetizar (oferta, canales grandes, escalera de upsells), con la profundidad que el plan active |
+| **Artifact del equipo** | Interactive Growth Roadmap |
+| **Entregable al cliente** | `motor-de-crecimiento.md` *(🟨)* |
+
+### Paso 05 · Convert
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 05 · Convert |
+| **Propósito del paso** | Distribuir el contenido y conectar la atención con un sistema de adquisición y ventas |
+| **Su responsabilidad** | La conversión: que lo que ya llega se cobre, con lo que el plan active (`gr-conversion`) |
+| **Artifact del equipo** | Revenue Engine |
+| **Entregable al cliente** | Ninguno propio |
+
+---
+
 ## 0 · El plan contratado — cuánto y a qué profundidad
 
 **Lo primero de cada encargo: leer el plan del cliente.** Lo anota Strategy al arrancar en

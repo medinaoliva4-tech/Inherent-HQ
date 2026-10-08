@@ -30,14 +30,14 @@
 
 ## Apify
 
-**Para qué:** scraping de redes, Google Maps y la biblioteca de anuncios. Strategy, Growth, Creatividad y Ads.
+**Para qué:** scraping de redes, Google Maps y la biblioteca de anuncios. Strategy, Research, Growth, Creatividad y Ads.
 
 1. Ya está en `.mcp.json`. La primera vez pide **iniciar sesión con tu cuenta de Apify**.
 2. **Probar:** `/mcp` → `apify` conectado.
 
 ## Zernio
 
-**Para qué:** programar y publicar, y la bandeja de comentarios y mensajes. Community y Posting.
+**Para qué:** programar y publicar, y la bandeja de comentarios y mensajes, y las analíticas de las cuentas. Community, Posting y Performance.
 
 1. **claude.ai → Configuración → Conectores → Zernio**, con la cuenta de Inherent.
 2. **Dentro de Zernio**, las cuentas del cliente tienen que estar conectadas *(Instagram, TikTok,

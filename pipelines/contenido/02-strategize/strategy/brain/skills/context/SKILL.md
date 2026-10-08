@@ -18,6 +18,18 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 
 ---
 
+## Las preguntas: flexibles y sin sesgo
+
+> **Hacer preguntas tan buenas que el negocio hable de sí mismo.** No hay un guion fijo ni se lleva
+> una hipótesis para confirmar.
+
+**Primero, el negocio:** qué lo diferencia · cuál es la visión detrás · qué lo inspiró a crearlo ·
+qué negocios lo inspiraron. **Después, sus clientes:** el cliente ideal, sus objetivos y su
+situación actual. Cada respuesta abre la siguiente pregunta; lo que se obtiene es el material para
+el análisis, no una encuesta llena.
+
+---
+
 ## A.0 · EL PLAN CONTRATADO ← **el primer dato de todos**
 
 > **Antes de mirar el negocio hay que saber hasta dónde podemos llegar con él.**

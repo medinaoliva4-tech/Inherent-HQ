@@ -5,6 +5,32 @@
 
 ---
 
+## 🎯 Su lugar en el pipeline
+
+### Paso 01 · Understand
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 01 · Understand |
+| **Propósito del paso** | Comprender el negocio, sus clientes, sus objetivos y su situación actual |
+| **Su responsabilidad** | El bloque `context`: hacer preguntas relevantes y flexibles, sin sesgo, que cuenten el negocio a fondo, a sus clientes ideales, sus objetivos y su situación actual |
+| **Artifact del equipo** | Business Intelligence Profile |
+| **Entregable al cliente** | La reunión del día 1 |
+
+### Paso 02 · Strategize
+
+| | |
+|---|---|
+| **Pipeline** | Contenido |
+| **Departamento** | 02 · Strategize |
+| **Propósito del paso** | Definir cómo crecer, atraer atención y convertir esa atención en ingresos |
+| **Su responsabilidad** | Analizar, hacer la ingeniería inversa y armar la estrategia: los OKRs, el roadmap y un brief por negocio construido con el cerebro de Hormozi |
+| **Artifact del equipo** | Interactive Growth Roadmap |
+| **Entregable al cliente** | `estrategia.md` |
+
+---
+
 ## 📅 Tu ventana en el ciclo
 
 > Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
@@ -12,7 +38,7 @@
 | Días | Qué corre | Entrega |
 |---|---|---|
 | **1** | Reunión con el cliente *(el CEO)* — es el input del ciclo | — |
-| **1 – 3** | 🆕 Primer ciclo: los 4 bloques completos · ↻ Siguientes: **revisión**, no se rehace | Estrategia y briefs por área **a más tardar el día 3** |
+| **1 – 3** | 🆕 Primer ciclo: los 4 bloques completos · ↻ Siguientes: **revisión**, no se rehace | Estrategia y brief del negocio **a más tardar el día 3** |
 | **20** | Revisión del mes, junto con la presentación al cliente | Lo aprendido **entra al día 1 del ciclo siguiente** |
 
 ---
@@ -45,11 +71,13 @@ lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloquea
 | **Brief de Growth al cerrar** | 🟡 Ligero | 🟡 Ligero | ✅ Completo | ✅ Completo |
 | **SOPs** | ⬜ | ⬜ | 🟡 De crecimiento | ✅ De toda la empresa |
 | **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
-| **Contenidos a investigar** *(por cada una de las **Redes** de `plan-contratado.md` — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
 | **Piezas del ciclo que habilita** | **86** | **145** | **145** | **204** |
 
 **Cómo se lee:**
 
+- 🔎 **Los contenidos a investigar ya no son de Strategy:** su cuota por Red vive en Research
+  (`pipelines/contenido/03-research/research/brain/WORKFLOW.md` §0). Strategy ve lo macro y **cita
+  la ruta** de lo que Research deja en `99-referencias/investigacion/`.
 - 🛑 **«Ligera» no es «incompleta».** En la línea 🔷 la estrategia existe entera: lo que no entra es
   **tocar la oferta**. Se trabaja el **mensaje** —cómo se cuenta lo que ya vende— y nada más.
   **Confundirlos es regalar el trabajo caro dentro del plan barato.**
@@ -161,16 +189,16 @@ no en recomendación.
 Arma **la estrategia**. Tres partes:
 
 **A · LOS OBJETIVOS** — **el diagnóstico de nivel** *(¿dónde está trabado el negocio?)* ·
-qué significa ganar para esta empresa · objetivos **macro por trimestre** ·
+qué significa ganar para esta empresa · **OKRs por trimestre** *(Attention Growth y Revenue Growth, cada KR colgado de una `MUST BE TRUE`)* ·
 y la **prueba de realismo**: ¿no sobrecarga al equipo de la agencia ni al de la empresa? Se mide con
 cuánta gente hay y cuánto dinero hay para invertir. **Un objetivo que no pasa, se baja o se mueve.**
 
 **B · LA PLATAFORMA** — audiencia profunda · tensión cultural · posicionamiento · promesa ·
 historia (el cliente es el héroe) · personalidad · el fundador · comunidad inicial
 
-**C · LOS BRIEFS POR ÁREA** — Branding · Marketing · Creative · Growth · **Tecnología** ·
-**Sistemas**. Cada uno recibe **qué tiene que lograr y qué tomar en cuenta**, no cómo hacerlo.
-**Cuáles se arman depende del nivel contratado.**
+**C · EL BRIEF DEL NEGOCIO** — uno solo, armado con `hormozi-brain`. Sus secciones —Branding · Marketing ·
+Creative · Growth · **Tecnología** · **Sistemas**— dicen a cada área **qué tiene que lograr y qué tomar
+en cuenta**, no cómo hacerlo. **Cuáles se arman depende del nivel contratado.**
 
 > 🛑 **El nivel es MACRO.** Si la ingeniería inversa muestra que cierto contenido convierte, la
 > conclusión no es el formato: es **a quién hay que hablarle y cómo hay que sentirse** para que esa
@@ -447,12 +475,14 @@ clients/<cliente>/
 ├── 01-estrategia/
 │   ├── estrategia.md             ← el de arriba
 │   ├── nucleo.md                 ← el WIN, el arquetipo y las 3 verdades
-│   └── posicionamiento.md        ← bloque 04 · `methodology`
+│   ├── posicionamiento.md        ← bloque 04 · `methodology`
+│   ├── roadmap-okrs.md           ← bloque 04 · los OKRs: Attention Growth y Revenue Growth
+│   └── brief-del-negocio.md      ← bloque 04 · el brief único, con una sección por área
 └── 99-referencias/investigacion/
     └── ingenieria-inversa.md     ← bloque 03 · `reverse-engineering`
 ```
 
-🔑 **Los cuatro archivos tienen nombre porque otros departamentos los citan por ruta.** Las
+🔑 **Estos archivos tienen nombre porque otros departamentos los citan por ruta.** Las
 plantillas viven en `brain/entregables/` y se copian al abrir el folder (`contexto.md` se copia
 como `comprension.md`). **Si se les cambia el nombre, se rompen las referencias de Creatividad,
 Producción y Posting.**
@@ -528,25 +558,28 @@ espera su OK.
 
 ## 8 · CORRELACIÓN — dónde entra Strategy en el pipeline
 
-**`pipelines/README.md` tiene el pipeline completo.** Strategy abre la cadena y la cierra:
+**`pipelines/contenido/README.md` tiene el pipeline completo.** Strategy trabaja en dos pasos:
+**comprende** en `01-understand` y **decide** en `02-strategize`. Abre la cadena y la cierra:
 
 ```
-01 STRATEGY  ←  context + analysis + reverse-engineering + methodology
+01 UNDERSTAND   Strategy · context
+     │
+02 STRATEGIZE   Strategy · analysis + reverse-engineering + methodology
      │
    🔒 GATE DEL CEO  ←  aprueba la estrategia
      │
-     ├──→ 01.2 BRANDING    brief de branding     → 01.2-branding
-     ├──→ 02   GROWTH      brief de growth       → 02-growth
-     ├──→ 03   MARKETING   brief de marketing    → 03-marketing
-     ├──→ 04   CREATIVE    brief de creative     → 04-creative
-     ├──→ 🔧   TECNOLOGÍA  brief de tecnología   → 02-growth  (Accelerate y Compound)
-     └──→ 🔁   SISTEMAS    brief de sistemas     → el CEO     (solo Compound)
+     ├──→ Branding    sección de branding    → 02-strategize/branding
+     ├──→ Growth      sección de growth      → 02-strategize/growth
+     ├──→ Marketing   sección de marketing   → 02-strategize/marketing
+     ├──→ Creative    sección de creative    → 04-create/creative
+     ├──→ 🔧 Tecnología  sección de tecnología → Growth  (Accelerate y Compound)
+     └──→ 🔁 Sistemas    sección de sistemas   → el CEO  (solo Compound)
      │
      ▼
-   …05 producción · 06 diseño · 07 edición · 08 community · 09 posting · 10 ads…
-   …cada etapa se auto-revisa con su checklist y sigue…
+   …03 research en continuo · 04 create · 05 convert · cada paso se auto-revisa con su checklist y sigue…
      │
-↻ REVISIÓN DEL 20  ←  Strategy · skill analysis        vuelve al inicio
+06 OPTIMIZE  ←  Performance lee las cuentas contra los KR      vuelve al inicio
+↻ REVISIÓN DEL 20  ←  Strategy · skill analysis
 ```
 
 > **Branding va inmediatamente después.** Con la data de Strategy ya se puede armar la marca —

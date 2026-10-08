@@ -116,6 +116,7 @@ Se declara y se trabaja con lo que queda, pero se escribe que el aviso fue corto
 | **Nombre** | Corto, interno. Es la etiqueta de la columna `campana` del Excel de Creatividad |
 | **La frase** | Una línea. La que el equipo repite |
 | **MUST BE TRUE** | Cuál mueve, con su letra |
+| **KR que mueve** | La métrica del KR de `roadmap-okrs.md`, con su meta para este ciclo. Tiene que ser un KR de Revenue Growth, o la campaña declara cuál es el de Revenue que mueve el ciclo |
 | **En qué se nota** | El cambio observable al cierre del ciclo |
 | **Qué NO es** | El malentendido más probable, escrito antes de que pase |
 
@@ -135,5 +136,5 @@ Se declara y se trabaja con lo que queda, pero se escribe que el aviso fue corto
 - [ ] Hay **una** campaña *(dos solo si están justificadas por escrito)*
 - [ ] La frase se puede repetir de memoria
 - [ ] Traza a una MUST BE TRUE, con su letra
-- [ ] Está escrito **en qué se va a notar**
+- [ ] Está escrito **el KR que mueve** y **en qué se va a notar**
 - [ ] Está escrito **qué NO es**

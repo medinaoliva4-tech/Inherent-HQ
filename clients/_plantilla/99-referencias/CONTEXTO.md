@@ -9,5 +9,5 @@
 
 | Archivo o folder | Qué tiene |
 |---|---|
-| `investigacion/` | Competencia, ingeniería inversa, scraping y mercado |
+| `investigacion/` | Competencia, ingeniería inversa, scraping y mercado. **Research** deja aquí la audiencia, la competencia y los referentes, la biblioteca de winners, las tendencias y el registro de cada corrida |
 | `recibido/` | Lo que manda el cliente: documentos, briefs, data. Fotos y videos van a Drive |

@@ -61,18 +61,20 @@ cliente no empieza con `ENRUTAMIENTO`, se saltó el router.
 
 | Si el pedido es sobre… | Departamento | Se invoca |
 |---|---|---|
-| Comprensión, contexto, análisis, ingeniería inversa, la estrategia | Strategy | `context` → `analysis` → `reverse-engineering` → `methodology` *(según `pipelines/contenido/02-strategize/strategy/brain/WORKFLOW.md`)* |
-| Identidad, voz, paleta, tipografía, guía de marca, «¿esto es de marca?» | Branding | `/branding` |
-| Oferta, precio **del cliente**, paquetes, canales grandes, upsells, conversión, números | Growth | `/growth` — 🔷 **ligero:** elige qué ofertas que ya existen se empujan · 🟨 **completo** · ⬜ lo que diga su pipeline |
-| Plan del ciclo, pilares, campañas, calendario, canales, mensaje | Marketing | `/marketing` |
-| Ideas, conceptos, BIG IDEA, hooks, copy, shot list, swipe file, plan de contenido | Creatividad | `/creatividad` |
-| Grabar, locaciones, talento, jornadas, call sheet, presupuesto de rodaje | Producción | `/produccion` |
-| Estáticos, carruseles, stories, plantillas, fotos de producto | Diseño gráfico | `/graphic-design` |
-| Reels, edición, derivadas, cortes | Video Editing | `/video-editing` |
-| Captions, hashtags, fechas y horas, programar, archivo de carga | Posting | `/posting` |
-| Pauta, presupuesto de ads, campañas pagas, CPA, ROAS, atribución | Ads | `/ads` |
-| Comentarios, DMs, menciones, la bandeja, moderar | Community | `/community` |
-| Hablarle al cliente | 00 Account (Secretaria) | 🔴 **No desde acá** — vive en WhatsApp |
+| Comprensión, contexto, análisis, ingeniería inversa, la estrategia, los OKRs y el roadmap | 01 · 02 Strategy | `context` → `analysis` → `reverse-engineering` → `methodology` *(según `pipelines/contenido/02-strategize/strategy/brain/WORKFLOW.md`)* |
+| Identidad, voz, paleta, tipografía, guía de marca, «¿esto es de marca?» | 02 Branding | `/branding` |
+| Oferta, precio **del cliente**, paquetes, canales grandes, upsells, conversión, números | 02 · 05 Growth | `/growth` — 🔷 **ligero:** elige qué ofertas que ya existen se empujan · 🟨 **completo** · ⬜ lo que diga su pipeline |
+| Plan del ciclo, pilares, campañas, calendario, canales, mensaje | 02 Marketing | `/marketing` |
+| Investigar audiencia, competencia, referentes, tendencias, la biblioteca de winners, «qué está funcionando» | 03 Research | `/research` |
+| Ideas, conceptos, BIG IDEA, hooks, copy, shot list, swipe file, plan de contenido | 04 Creatividad | `/creatividad` |
+| Grabar, locaciones, talento, jornadas, call sheet, presupuesto de rodaje | 04 Producción | `/produccion` |
+| Estáticos, carruseles, stories, plantillas, fotos de producto | 04 Diseño gráfico | `/graphic-design` |
+| Reels, edición, derivadas, cortes | 04 Video Editing | `/video-editing` |
+| Captions, hashtags, fechas y horas, programar, archivo de carga | 05 Posting | `/posting` |
+| Pauta, presupuesto de ads, campañas pagas, CPA, ROAS, atribución | 05 Ads | `/ads` |
+| Comentarios, DMs, menciones, la bandeja, moderar | 05 Community | `/community` |
+| Cómo van las cuentas, los KR, el semáforo, trial reels, qué cambia del roadmap, la revisión del 20 | 06 Performance | `/performance` |
+| Hablarle al cliente | Account (Secretaria, fuera del pipeline) | 🔴 **No desde acá** — vive en WhatsApp |
 
 **Si el pedido toca dos departamentos**, se enruta al que va **primero en el pipeline** y se
 declara el segundo como siguiente paso. **Nunca se corren dos departamentos mezclados.**
