@@ -14,7 +14,7 @@ description: >
 | | |
 |---|---|
 | **Consume** | § Territorio y personalidad · § Voz · bloques 5 y 6 del brief de ① Strategy |
-| **Produce** | **`sistema-visual.md`** — el documento que abren ⑥A Diseño gráfico y ⑦ Video Editing para ejecutar |
+| **Produce** | **`clients/<cliente>/02-marca/sistema-visual.md`** — el documento que abren ⑥A Diseño gráfico y ⑦ Video Editing para ejecutar |
 
 > 🔑 **La prueba de esta capa:** ¿puede ⑥A Diseño gráfico producir 100 estáticos con esto, sin preguntar nada?
 > Si hace falta criterio en cada pieza, no es sistema.

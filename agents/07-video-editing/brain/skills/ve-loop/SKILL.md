@@ -15,7 +15,9 @@ description: >
 | | |
 |---|---|
 | **Consume** | `entregas-video.md` · las devoluciones del ciclo · el manifiesto de ⑤ Producción · métricas de ⑨ Posting y ⑩ Ads · `grading.json` · las notas del guion visual y las respuestas de la página del cliente |
-| **Produce** | **`aprendizaje-de-video.md`** |
+| **Produce** | **`clients/<cliente>/04-contenido/aprendizaje-de-video.md`** — en la raíz del área, no dentro del mes |
+
+🛑 **Al cerrar el ciclo, el aprendizaje del ciclo anterior pasa a `_historico/<AAAA-MM>-aprendizaje-de-video.md`.** El vigente siempre vive en la raíz del área.
 
 > 🔑 **Corre el 20 de cada mes.**
 
