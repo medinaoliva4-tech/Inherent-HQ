@@ -90,7 +90,7 @@
 
 | # | Qué |
 |---|---|
-| 1 | Mapear mentores para **Cafeterías** y **Clubes y comunidades** |
+| 1 | Mapear mentores para **Cafeterías**, **Clubes y comunidades**, **Clínicas privadas** y **Bienes raíces** |
 | 2 | Confirmar cuántas sesiones 1:1 incluye The Apparel Mentor *($39/mes)* |
 | 3 | Verificar que el mentor de Zesty Paws *(mascotas, $720)* corresponda a suplementos |
 | 4 | Recalcular el uso real del especialista y la membresía prorrateada con el rubro «auditoría con el mentor» |
