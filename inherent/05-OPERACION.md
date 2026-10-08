@@ -132,7 +132,7 @@ coordina el COO; todo lo que se puede ejecutar lo ejecutan los agentes.
 | **10** | **Ads** | Lo apto para pauta | Campañas activas y su reporte | Todos |
 | **↻** | **Strategy** | La analítica del mes | El ajuste de estrategia que entra al ciclo siguiente | Todos |
 
-**El detalle de cada agente —sus acciones y qué entrega en cada plan— está en `agents/README.md`
+**El detalle de cada agente —sus acciones y qué entrega en cada plan— está en `pipelines/README.md`
 y en el `brain/WORKFLOW.md` de cada uno.**
 
 ### Las reglas del pipeline

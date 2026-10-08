@@ -100,7 +100,7 @@ python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt pillo
 1. **Node 20 o más nuevo:** [nodejs.org](https://nodejs.org).
 2. **En cada proyecto:**
    ```
-   cp -R agents/07-video-editing/brain/motor/remotion <proyecto>/production/motion
+   cp -R pipelines/contenido/04-create/video-editing/brain/motor/remotion <proyecto>/production/motion
    cd <proyecto>/production/motion && npm install
    ```
 3. **Vercel** *(la página de aprobación del cliente)*: `npm i -g vercel` y `vercel login`.

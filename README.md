@@ -59,23 +59,23 @@ LÓGICA      CÓMO hace esas cosas. Son las skills.
 
 **Doce etapas, de la información cruda a la pieza publicada.** Cada agente es una etapa —
 el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno puede hacer en
-`agents/README.md`.
+`pipelines/README.md`.
 
 | # | Agente | Qué produce | Estado |
 |---|---|---|---|
-| **00** | [**Account Manager**](agents/00-account/) | La relación con el cliente. **El único que le habla** | ✅ |
-| **01** | [**Strategy**](agents/01-strategy/) | La estrategia y un brief por área | ✅ |
-| **01.2** | [Branding](agents/01.2-branding/) | Identidad, voz y sistema visual | ✅ |
-| **02** | [Growth](agents/02-growth/) | La oferta, los canales grandes y los upsells | ✅ |
-| **03** | [Marketing](agents/03-marketing/) | El plan del ciclo y el calendario de slots | ✅ |
-| **04** | [Creative](agents/04-creative/) | Los ángulos y las ideas | ✅ |
-| **05** | [Production](agents/05-production/) | La grabación | ✅ |
-| **06** | [Graphic Design](agents/06-graphic-design/) | Estáticos, carruseles y stories | ✅ |
-| **07** | [Video Editing](agents/07-video-editing/) | Reels y sus derivadas | ✅ |
-| **08** | [Community](agents/08-community-management/) | Respuesta, seguimiento y comunidad | ✅ |
-| **09** | [Posting](agents/09-posting/) | Lo aprobado, publicado | ✅ |
-| **10** | [Ads Management](agents/10-ads-management/) | La pauta corriendo | ✅ |
-| ↻ | [Strategy](agents/01-strategy/) | La revisión del 20 | ✅ |
+| **00** | [**Account Manager**](pipelines/00-account/) | La relación con el cliente. **El único que le habla** | ✅ |
+| **01** | [**Strategy**](pipelines/contenido/02-strategize/strategy/) | La estrategia y un brief por área | ✅ |
+| **01.2** | [Branding](pipelines/contenido/02-strategize/branding/) | Identidad, voz y sistema visual | ✅ |
+| **02** | [Growth](pipelines/contenido/02-strategize/growth/) | La oferta, los canales grandes y los upsells | ✅ |
+| **03** | [Marketing](pipelines/contenido/02-strategize/marketing/) | El plan del ciclo y el calendario de slots | ✅ |
+| **04** | [Creative](pipelines/contenido/04-create/creative/) | Los ángulos y las ideas | ✅ |
+| **05** | [Production](pipelines/contenido/04-create/production/) | La grabación | ✅ |
+| **06** | [Graphic Design](pipelines/contenido/04-create/graphic-design/) | Estáticos, carruseles y stories | ✅ |
+| **07** | [Video Editing](pipelines/contenido/04-create/video-editing/) | Reels y sus derivadas | ✅ |
+| **08** | [Community](pipelines/contenido/05-convert/community-management/) | Respuesta, seguimiento y comunidad | ✅ |
+| **09** | [Posting](pipelines/contenido/05-convert/posting/) | Lo aprobado, publicado | ✅ |
+| **10** | [Ads Management](pipelines/contenido/05-convert/ads-management/) | La pauta corriendo | ✅ |
+| ↻ | [Strategy](pipelines/contenido/02-strategize/strategy/) | La revisión del 20 | ✅ |
 
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate, y
 **②B Branding valida con `br-guardian`** antes de que nada se publique.

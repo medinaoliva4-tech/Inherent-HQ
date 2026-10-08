@@ -262,7 +262,7 @@ más gente: necesita que la misma gente venga más veces.
 
 🛑 **Acá el embudo invertido no es una técnica: es el negocio.**
 Comunidad → ventas → contenido → alcance parecido. **Es la industria donde la metodología se
-ve más literal.** Ver `agents/01-strategy/brain/skills/methodology/SKILL.md`.
+ve más literal.** Ver `pipelines/contenido/02-strategize/strategy/brain/skills/methodology/SKILL.md`.
 
 **Y es la única donde se le dice que no a un comprador.** Si el perfil no cabe, entra
 como excepción al CEO — no se cierra la venta por cerrarla.

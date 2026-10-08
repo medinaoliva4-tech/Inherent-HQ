@@ -80,7 +80,7 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 
 ## Los agentes
 
-**`agents/README.md` tiene el roster completo:** las etapas en orden, qué MCP le da cada acción
+**`pipelines/README.md` tiene el roster completo:** las etapas en orden, qué MCP le da cada acción
 a cada agente, y **qué entrega cada uno según el plan contratado.**
 
 🔑 **Cada agente tiene su `brain/WORKFLOW.md` con sus capas, sus gates y sus entregables.**
@@ -97,7 +97,7 @@ Ver `inherent/05-OPERACION.md` → «El calendario del ciclo».
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa y sigue,
 **②B Branding valida con `br-guardian`** y el COO hace el QA final.
 
-🗣️ **`agents/00-account/` es el único agente que le habla al cliente.** Vive en WhatsApp,
+🗣️ **`pipelines/00-account/` es el único agente que le habla al cliente.** Vive en WhatsApp,
 siempre encendido, **habla como la secretaria de Inherent** y escala lo que no puede resolver:
 **precio, alcance y fechas al CEO; lo demás al COO.** 🔒 **Nunca dice costos, márgenes, ni nada de otro cliente, ni compromete precio, fecha
 o alcance.** `inherent/06-ECONOMIA.md` no sale del repo.

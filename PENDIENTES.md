@@ -113,9 +113,9 @@
 | # | Qué |
 |---|---|
 | 1 | **`agents/`: quitar advertencias y estados** con el mismo criterio que `inherent/` |
-| 2 | **`agents/00-account/`: que hable como Nicole, la secretaria**, y escale al COO |
+| 2 | **`pipelines/00-account/`: que hable como Nicole, la secretaria**, y escale al COO |
 | 3 | **Borrar las ramas viejas de GitHub:** solo quedan `main` y `rodrigo-medina` |
 | 4 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y trabajar sobre `main` |
 | 5 | **Onboarding de Akai, NAO y Cerantola:** los folders existen, vacíos, en `clients/` |
-| 6 | **El VPS es KVM 1, no KVM 2** | Lo dice mal `agents/04-creative/brain/skills/BARRIDO-NOCTURNO.md` |
+| 6 | **El VPS es KVM 1, no KVM 2** | Lo dice mal `pipelines/contenido/04-create/creative/brain/skills/BARRIDO-NOCTURNO.md` |
 | 7 | **En el VPS, `~/inherent-hq` es un clon viejo sin acceso** | El que se usa es `~/inherent-hq-src`. Renombrar el viejo para que nadie lo use por error |
