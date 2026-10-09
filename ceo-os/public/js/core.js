@@ -47,6 +47,43 @@ export const teamList = async () => (await api('db/team')).items.filter((p) => p
 // Para guardar una persona: devuelve la foto de Google a su lugar (la de perfil va en `photo`).
 export const teamDoc = (p) => { const { google_picture, ...rest } = p; return { ...rest, picture: google_picture ?? rest.picture ?? null }; };
 // Recorta una imagen a un cuadrado chico (para fotos de perfil) y la devuelve como data URL JPEG.
+// Elegir cómo queda la foto: arrastrar para mover, deslizar (o pellizcar en el cel) para acercar. Devuelve null si cancela.
+export function cropImage(file, size = 256) {
+  return new Promise((ok, ko) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onerror = () => { URL.revokeObjectURL(url); ko(new Error('No pude leer esa imagen')); };
+    img.onload = () => {
+      const V = 260, base = V / Math.min(img.width, img.height); let z = 1, x = 0, y = 0;
+      const dlg = document.createElement('dialog'); dlg.className = 'dlg';
+      mount(dlg, html`<div class="in-dlg"><h3>Acomoda tu foto</h3><div class="crop"><canvas width="${V * 2}" height="${V * 2}"></canvas></div>
+        <div class="row" style="gap:10px;margin:14px 0 4px;flex-wrap:nowrap"><span class="mut">−</span><input type="range" min="1" max="4" step="0.01" value="1" style="flex:1"><span class="mut">+</span></div>
+        <div class="mut sm" style="text-align:center">Arrastra para mover · desliza o pellizca para acercar</div>
+        <div class="row" style="margin-top:14px"><button class="btn" data-ok>Guardar</button><button class="btn ghost" data-x>Cancelar</button></div></div>`);
+      document.body.append(dlg);
+      const cv = dlg.querySelector('canvas'), rg = dlg.querySelector('input[type=range]');
+      let fin = false; const done = (v) => { if (fin) return; fin = true; URL.revokeObjectURL(url); dlg.close(); dlg.remove(); ok(v); };
+      const clamp = () => { const s = base * z, mx = Math.max(0, (img.width * s - V) / 2), my = Math.max(0, (img.height * s - V) / 2); x = Math.min(mx, Math.max(-mx, x)); y = Math.min(my, Math.max(-my, y)); };
+      const draw = (ctx, W) => { const k = W / V, s = base * z * k; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, W); ctx.drawImage(img, W / 2 - (img.width * s) / 2 + x * k, W / 2 - (img.height * s) / 2 + y * k, img.width * s, img.height * s); };
+      const paint = () => { clamp(); draw(cv.getContext('2d'), V * 2); };
+      const zoom = (v) => { z = Math.min(4, Math.max(1, v)); rg.value = z; paint(); };
+      rg.oninput = () => zoom(+rg.value);
+      const pts = new Map(); let last = null, pinch = null;
+      cv.onpointerdown = (e) => { cv.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); last = { x: e.clientX, y: e.clientY }; pinch = null; };
+      cv.onpointermove = (e) => {
+        if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pts.size === 2) { const [a, b] = [...pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y); if (pinch) zoom((z * d) / pinch); pinch = d; return; }
+        x += e.clientX - last.x; y += e.clientY - last.y; last = { x: e.clientX, y: e.clientY }; paint();
+      };
+      cv.onpointerup = cv.onpointercancel = (e) => { pts.delete(e.pointerId); pinch = null; const r = [...pts.values()][0]; if (r) last = r; };
+      cv.onwheel = (e) => { e.preventDefault(); zoom(z - e.deltaY * 0.002); };
+      dlg.querySelector('[data-ok]').onclick = () => { const o = document.createElement('canvas'); o.width = o.height = size; draw(o.getContext('2d'), size); done(o.toDataURL('image/jpeg', 0.85)); };
+      dlg.querySelector('[data-x]').onclick = () => done(null);
+      dlg.addEventListener('close', () => done(null));
+      dlg.showModal(); paint();
+    };
+    img.src = url;
+  });
+}
 export function squareImage(file, size = 256) {
   return new Promise((ok, ko) => {
     const img = new Image(); const url = URL.createObjectURL(file);

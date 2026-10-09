@@ -1,5 +1,5 @@
 import { upcoming, meetingRows, isMine as meetIsMine } from '../meetings.js';
-import { LOGO, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor } from '../core.js';
+import { LOGO, lineChart, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
 import { newProject as wizProject, newTask as wizTask } from '../create.js';
 import { blockersOf, unlocksOf } from '../cycle.js';
@@ -325,11 +325,53 @@ export async function render(el, { me, sub, alive }) {
         <div class="span2">${box('Cuentas de pauta', 'Por cliente: abre su Ads Manager directo', slugs.length ? html`${slugs.map((sl) => { const a = accOf(sl).ads || {};
           return html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="adsplat">${ADS.map(([k, l, url]) => a[k] ? html`<a class="adsp" href="${url(a[k])}" target="_blank" rel="noopener noreferrer"><span class="ailogo sm">${LOGO[k]}</span>${l} ↗</a>` : html`<span class="adsp off"><span class="ailogo sm">${LOGO[k]}</span>${l}</span>`)}</div>
             ${a.budget ? html`<span class="mut sm">Q${Number(a.budget).toLocaleString('en-US')}/mes</span>` : ''}<button class="btn ghost xs" data-act="adsEdit" data-s="${sl}">Cuentas</button></div>`; })}` : html`<div class="mut sm">Sin clientes con proyecto activo.</div>`)}</div>
+        <div class="span2">${adsReport()}</div>
         ${box('Plan y presupuesto', 'Gate ⑩: el CEO aprueba antes de lanzar', gates.length ? html`${gates.slice(0, 8).map((t) => trow(t))}` : html`<div class="mut sm">Nada esperando.</div>`)}
         ${box('Mis tareas', '', myList(8))}
+        <div class="span2">${adsComp(slugs)}</div>
         ${checklist('ads')}${uploader('Entregar trabajo')}${sops('ads')}
       </div>`);
     hookUpload(b);
+    const cs = $('#compSel', b); if (cs) cs.onchange = () => { compSel = cs.value; comp = null; paint(); };
+    const ch = $('#adsch', b); if (ch && adsRep?.on) { const days = {}; adsRep.clients.forEach((c) => c.series.forEach((x) => (days[x.date] = (days[x.date] || 0) + x.spend))); const ks = Object.keys(days).sort(); if (ks.length > 1) lineChart(ch, ks.map((d) => fdate(d)), [{ name: 'Gasto', v: ks.map((d) => days[d]), c: '#171410', fill: true }], { fmt: (v) => 'Q' + Math.round(v).toLocaleString('en-US') }); else ch.remove(); }
+  }
+  // Cómo va la pauta (Windsor lee Meta, Google Ads y LinkedIn de las cuentas conectadas).
+  let adsRep, adsDays = 30, compSel = null, comp = null;
+  function adsReport() {
+    if (adsRep === undefined) { adsRep = null; api('ads/report?days=' + adsDays).then((r) => { adsRep = r; if (alive() && role === 'ads') paint(); }).catch((e) => { adsRep = { error: e.message }; if (alive()) paint(); }); }
+    const head = html`<div class="tabs mini" style="margin:0 0 10px">${[7, 30, 90].map((d) => html`<button class="${d === adsDays ? 'on' : ''}" data-act="adsDays" data-d="${d}">${d} días</button>`)}</div>`;
+    if (!adsRep) return box('Cómo va la pauta', 'Gasto y resultados reales', html`${head}<div class="mut sm">Cargando…</div>`);
+    if (adsRep.error) return box('Cómo va la pauta', '', html`<div class="warnbox">${adsRep.error}</div>`);
+    if (!adsRep.on) return box('Cómo va la pauta', 'Se lee de Windsor', html`<div class="mut sm">Falta <b>WINDSOR_API_KEY</b> en Vercel.</div>`);
+    const Qn = (v) => (v == null ? '—' : 'Q' + Math.round(v).toLocaleString('en-US'));
+    const cs = adsRep.clients.filter((c) => Object.keys(c.plats).length);
+    const errs = Object.entries(adsRep.errors || {});
+    return box('Cómo va la pauta', `Últimos ${adsRep.days} días · Meta, Google Ads y LinkedIn vía Windsor`, html`${head}
+      ${errs.length ? html`<div class="warnbox sm" style="margin-bottom:8px">${errs.map(([p, e]) => html`<div><b>${p}</b>: ${/no .*accounts? .*configured|not configured|401|403/i.test(e) ? 'conecta la cuenta en Windsor' : e}</div>`)}</div>` : ''}
+      ${cs.length ? html`<div class="chart" id="adsch" style="height:170px;margin-bottom:6px"></div>
+        <table class="wktable"><thead><tr><th>Cliente</th><th class="n">Gasto</th><th class="n">Conv.</th><th class="n">CPA</th><th class="n">ROAS</th><th>Plataformas</th></tr></thead><tbody>
+        ${cs.map((c) => { const pct = c.budget ? Math.round((c.total.spend / c.budget) * 100) : null;
+          return html`<tr><td><b style="font-weight:500">${c.name}</b>${pct != null ? html`<div class="ctlbar" style="margin:6px 0 0;width:120px"><i style="width:${Math.min(100, pct)}%;${pct > 100 ? 'background:#a3392a' : ''}"></i></div><div class="mut sm">${pct}% de ${Qn(c.budget)}</div>` : ''}</td>
+          <td class="n">${Qn(c.total.spend)}</td><td class="n">${c.total.conv || '—'}</td><td class="n">${Qn(c.total.cpa)}</td><td class="n">${c.total.roas ? c.total.roas + 'x' : '—'}</td>
+          <td>${Object.entries(c.plats).map(([k, p]) => html`<span class="adsp" title="CTR ${p.ctr ?? '—'}% · ${p.clicks} clics"><span class="ailogo sm">${LOGO[k]}</span>${p.found ? Qn(p.spend) : 'sin datos'}</span>`)}</td></tr>`; })}</tbody></table>`
+      : html`<div class="mut sm">Todavía no hay datos. Pon las cuentas de cada cliente arriba y conéctalas en Windsor.</div>`}`);
+  }
+  // Lo que anuncia la competencia en Meta (Apify · biblioteca de anuncios).
+  function adsComp(slugs) {
+    compSel ||= slugs[0] || null;
+    if (compSel && (!comp || comp.slug !== compSel)) { comp = { slug: compSel, loading: true }; api('ads/competitors/' + encodeURIComponent(compSel)).then((r) => { comp = { slug: compSel, ...r }; if (alive() && role === 'ads') paint(); }).catch((e) => { comp = { slug: compSel, error: e.message }; if (alive()) paint(); }); }
+    const running = comp?.run && !comp.items && !['FAILED', 'ABORTED', 'TIMED-OUT'].includes(comp.run.status);
+    return box('Anuncios de la competencia', 'Lo que tienen activo en Meta ahora · Apify', !compSel ? html`<div class="mut sm">Sin clientes.</div>` : html`
+      <div class="row" style="gap:8px;flex-wrap:wrap"><select class="in" id="compSel" style="width:auto">${slugs.map((x) => html`<option value="${x}" ${x === compSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select>
+        <textarea class="in" id="compList" rows="2" style="flex:1;min-width:220px" placeholder="Una por línea: página de Facebook (https://facebook.com/marca) o el nombre de la marca">${(comp?.competitors || []).join('\n')}</textarea>
+        <button class="btn" data-act="compRun" ${running ? raw('disabled') : ''}>${running ? 'Scrapeando…' : 'Buscar anuncios'}</button></div>
+      ${comp?.error ? html`<div class="warnbox sm" style="margin-top:8px">${comp.error}</div>` : ''}
+      ${running ? html`<div class="mut sm" style="margin-top:8px">Apify está leyendo la biblioteca de anuncios (1-3 min). <button class="sm linkish" data-act="compRefresh">Ver si ya terminó</button></div>` : ''}
+      ${comp?.items?.length ? html`<div class="adsgrid">${comp.items.slice(0, 24).map((a) => html`<a class="adcard" href="${a.id ? `https://www.facebook.com/ads/library/?id=${a.id}` : a.link || '#'}" target="_blank" rel="noopener noreferrer">
+          ${a.img ? html`<img src="${a.img}" alt="" loading="lazy" referrerpolicy="no-referrer">` : html`<div class="adnoimg">${a.video ? '▶' : 'Aa'}</div>`}
+          <div class="adbody"><b>${a.page}</b>${a.since ? html`<span class="mut sm"> · desde ${fdate(a.since)}</span>` : ''}<div class="sm">${(a.title ? a.title + ' — ' : '') + a.text.slice(0, 160)}</div>${a.cta ? html`<span class="chip sm2">${a.cta}</span>` : ''}</div></a>`)}</div>`
+        : comp?.items ? html`<div class="mut sm" style="margin-top:8px">No encontré anuncios activos de esas marcas.</div>` : ''}
+      <div class="mut sm" style="margin-top:10px">Google y LinkedIn: <a href="https://adstransparency.google.com/" target="_blank" rel="noopener noreferrer">Google Ads Transparency ↗</a> · <a href="https://www.linkedin.com/ad-library/" target="_blank" rel="noopener noreferrer">LinkedIn Ad Library ↗</a></div>`);
   }
   const ZONES = { ceo: ceoZone, coo: cooZone, video: videoZone, content: contentZone, finance: financeZone, ads: adsZone };
 
@@ -435,6 +477,12 @@ export async function render(el, { me, sub, alive }) {
     role: (t) => { role = t.dataset.r; tab = 'zona'; if (!asP) try { localStorage.setItem('work.role', role); } catch {} history.replaceState(null, '', `#/work/zona/${role}${asP ? '/' + who : ''}`); paint(); },
     tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', `#/work/${tab}/${role || '_'}${asP ? '/' + who : ''}`); paint(); },
     lane: (t) => { ceoLane = t.dataset.l; paint(); },
+    adsDays: (t) => { adsDays = +t.dataset.d; adsRep = undefined; paint(); },
+    compRefresh: () => { comp = null; paint(); },
+    compRun: async () => {
+      const list = $('#compList').value.split('\n').map((x) => x.trim()).filter(Boolean);
+      try { const r = await api('ads/competitors/' + encodeURIComponent(compSel), { method: 'POST', body: { list } }); comp = { slug: compSel, ...r }; toast('Buscando anuncios… 1-3 min'); paint(); } catch (e) { toast(e.message, true); }
+    },
     adsEdit: async (t) => {
       const sl = t.dataset.s, a = (accounts.find((x) => x.id === 'acc-' + sl) || {}).ads || {};
       const v = await ask(`Cuentas de pauta · ${sl.toUpperCase()}`, [{ k: 'meta', l: 'Meta · ID de la cuenta publicitaria (act_…)', v: a.meta || '' }, { k: 'google', l: 'Google Ads · ID de cliente (123-456-7890)', v: a.google || '' }, { k: 'linkedin', l: 'LinkedIn · ID de la cuenta de Campaign Manager', v: a.linkedin || '' }, { k: 'budget', l: 'Presupuesto mensual aprobado (Q)', t: 'number', v: a.budget || '' }]);

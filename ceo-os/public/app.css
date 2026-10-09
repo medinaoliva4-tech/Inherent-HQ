@@ -699,3 +699,11 @@ a.btn{text-decoration:none}
 .adsplat{display:flex;gap:6px;flex-wrap:wrap;flex:1}
 .adsp{display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 6px;border-radius:99px;border:1px solid var(--line);background:#fff;font-size:12.5px;color:inherit;text-decoration:none}
 .adsp.off{opacity:.45;background:transparent}
+
+.adsgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:12px}
+.adcard{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;color:inherit;text-decoration:none}
+.adcard img,.adnoimg{width:100%;aspect-ratio:1;object-fit:cover;background:#f1ece3}.adnoimg{display:grid;place-items:center;font-size:28px;color:var(--mut)}
+.adbody{padding:10px 12px;display:grid;gap:4px}.adbody b{font-weight:500;font-size:13.5px}
+
+.crop{width:260px;height:260px;margin:6px auto 0;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px #fff,0 10px 30px rgba(23,20,16,.18);touch-action:none}
+.crop canvas{width:260px;height:260px;display:block;cursor:grab;touch-action:none}.crop canvas:active{cursor:grabbing}
