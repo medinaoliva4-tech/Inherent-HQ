@@ -32,14 +32,17 @@ export async function render(el, { me, sub, alive }) {
     isCeo ? col('quotes').list().catch(() => []) : [],
   ]);
   const meP = team.find((p) => p.id === me.email || p.email === me.email);
-  const myRoles = (meP?.roles?.length ? meP.roles : me.roles?.length ? me.roles : isCeo ? ['ceo'] : me.role === 'coo' ? ['coo'] : []);
+  // «Ver como»: el CEO entra al Workspace de cualquier persona para revisar su trabajo.
+  const asP = isCeo && sub[2] ? team.find((p) => p.id === sub[2] || p.email === sub[2]) : null;
+  const who = asP ? asP.email || asP.id : me.email, whoP = asP || meP;
+  const myRoles = asP ? asP.roles || [] : (meP?.roles?.length ? meP.roles : me.roles?.length ? me.roles : isCeo ? ['ceo'] : me.role === 'coo' ? ['coo'] : []);
   const pref = (() => { try { return localStorage.getItem('work.role'); } catch { return null; } })();
-  let role = myRoles.includes(sub[1]) ? sub[1] : myRoles.includes(pref) ? pref : myRoles[0] || null;
+  let role = myRoles.includes(sub[1]) ? sub[1] : !asP && myRoles.includes(pref) ? pref : myRoles[0] || null;
   let tab = ['zona', 'kanban', 'pipes', 'equipo'].includes(sub[0]) ? sub[0] : 'zona';
   let kView = 'personal', pipeSel = 'contenido', personSel = null, ctab = 'ideas', clientSel = null, ceoLane = 'estrategia';
   let agenda = null, clientInfo = {}, posts = null;
   const T0 = today(), T1 = addDays(T0, 1), T7 = addDays(T0, 7);
-  const canCoord = isCeo || myRoles.includes('coo');
+  const canCoord = (isCeo && !asP) || myRoles.includes('coo');
 
   // ---------- personas y responsabilidad ----------
   const keyOf = (p) => p.email || p.id;
@@ -57,7 +60,7 @@ export async function render(el, { me, sub, alive }) {
   const lineOf = (p) => (p.line === 'growth' || /growth/i.test(p.kind || '') ? 'growth' : 'contenido');
   const pipeOf = (t) => { const p = proj(t.project_id); return p ? lineOf(p) : null; };
   const status = (t) => t.status || 'Por empezar';
-  const isMine = (t) => t.assignee === me.email || (meP && t.assignee === meP.id);
+  const isMine = (t) => t.assignee === who || (whoP && (t.assignee === whoP.id || (whoP.email && t.assignee === whoP.email)));
   const mine = () => tasks.filter(isMine);
   const open = (l) => l.filter((t) => status(t) !== 'Hecha');
   const clientOf = (t) => proj(t.project_id)?.client_slug || null;
@@ -71,11 +74,13 @@ export async function render(el, { me, sub, alive }) {
   function paint() {
     if (!alive()) return;
     const tabs = [['zona', role ? roleName(role).split(' · ')[0] : 'Mi trabajo'], ['kanban', 'Kanban'], ...(canCoord ? [['pipes', 'Pipelines'], ['equipo', 'Equipo']] : [])];
-    mount(el, html`<div class="wktop"><div><h1>Workspace</h1><p class="mut">${role ? roleName(role) : 'Tu trabajo, en orden'}</p></div><div class="sp"></div>
+    const viewSel = isCeo ? html`<select class="in sm" id="viewAs" style="width:auto"><option value="">👁 Mi Workspace</option>${team.filter((p) => p.active !== false && p.kind !== 'ia' && p.id !== me.email).map((p) => html`<option value="${p.email || p.id}" ${asP && (asP.email || asP.id) === (p.email || p.id) ? raw('selected') : ''}>Ver como ${p.name}</option>`)}</select>` : '';
+    mount(el, html`${asP ? html`<div class="asbar">👁 Estás viendo el Workspace de <b>${asP.name}</b> · lo que hagas aquí queda a su nombre <a href="#/work">Volver al mío</a></div>` : ''}<div class="wktop"><div><h1>${asP ? asP.name.split(' ')[0] : 'Workspace'}</h1><p class="mut">${role ? roleName(role) : asP ? 'Sin perfil de trabajo asignado' : 'Tu trabajo, en orden'}</p></div><div class="sp"></div>${viewSel}
         ${myRoles.length > 1 ? html`<div class="tabs" style="margin:0">${myRoles.map((r) => html`<button class="${r === role ? 'on' : ''}" data-act="role" data-r="${r}">${roleName(r).split(' · ')[0]}</button>`)}</div>` : ''}
         <button class="btn" data-act="newTask">+ Tarea</button></div>
       <div class="tabs" style="margin:0 0 14px">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
       <div id="wbody"></div>`);
+    const vs = $('#viewAs', el); if (vs) vs.onchange = () => { location.hash = vs.value ? `/work/zona/_/${vs.value}` : '/work'; };
     const b = $('#wbody', el);
     if (tab === 'zona') return (ZONES[role] || noRole)(b);
     ({ kanban, pipes, equipo })[tab](b);
@@ -87,7 +92,7 @@ export async function render(el, { me, sub, alive }) {
 
   // =================== piezas que comparten los perfiles ===================
   function checklist(r) {
-    const id = `${me.email}.${r}.${ymNow()}`, doc = checks.find((c) => c.id === id), done = doc?.done || [];
+    const id = `${who}.${r}.${ymNow()}`, doc = checks.find((c) => c.id === id), done = doc?.done || [];
     const items = CHECK[r] || [];
     return box(`Checklist · ${roleName(r).split(' · ')[0]}`, `Ciclo ${ymNow()}`, html`${items.map((t, i) => html`<label class="wkcheck"><input type="checkbox" data-act="ck" data-r="${r}" data-i="${i}" ${done.includes(i) ? raw('checked') : ''}><span>${t}</span></label>`)}`,
       html`<span class="sm">${done.length}/${items.length}</span><div class="wkprog" style="width:70px;margin:0 0 0 8px"><i style="width:${items.length ? (done.length / items.length) * 100 : 0}%"></i></div>`);
@@ -177,7 +182,7 @@ export async function render(el, { me, sub, alive }) {
 
   // =================== COO ===================
   function cooZone(b) {
-    const review = tasks.filter((t) => status(t) === 'En revisión' && (accOf(t) === me.email || (meP && accOf(t) === meP.id)));
+    const review = tasks.filter((t) => status(t) === 'En revisión' && (accOf(t) === who || (whoP && accOf(t) === whoP.id)));
     const noOwner = open(tasks).filter((t) => !t.assignee);
     const upcoming = projects.flatMap((p) => (p.phases || []).filter((x) => x.status !== 'done' && x.start && x.start <= addDays(T0, 10) && (x.end || x.start) >= T0).map((x) => ({ p, x }))).sort((a, z) => a.x.start.localeCompare(z.x.start));
     const load = people().map((p) => ({ p, n: open(tasks.filter((t) => t.assignee === keyOf(p))).length })).sort((a, z) => z.n - a.n);
@@ -289,14 +294,14 @@ Entrega: el plan de edición escena por escena (tiempo, toma, texto en pantalla,
   const ZONES = { ceo: ceoZone, coo: cooZone, video: videoZone, content: contentZone, finance: financeZone };
 
   // ---------- conexiones de las piezas ----------
-  function hookQuick(b) { const qi = $('#quick', b); if (qi) qi.onkeydown = async (e) => { if (e.key !== 'Enter' || !qi.value.trim()) return; if (await create({ title: qi.value.trim(), assignee: me.email, due: T0, status: 'Por empezar' })) paint(); }; }
+  function hookQuick(b) { const qi = $('#quick', b); if (qi) qi.onkeydown = async (e) => { if (e.key !== 'Enter' || !qi.value.trim()) return; if (await create({ title: qi.value.trim(), assignee: who, due: T0, status: 'Por empezar' })) paint(); }; }
   function hookClient(b) { const s = $('#clientSel', b); if (s) s.onchange = () => { clientSel = s.value; paint(); }; }
   function hookUpload(b) {
     const inp = $('#upIn', b), drop = $('#drop', b); if (!inp) return;
     const go = async (file) => {
       if (!file) return;
       let t = tasks.find((x) => x.id === $('#upTask', b).value);
-      if (!t) { const v = await ask('¿Qué estás entregando?', [{ k: 'title', l: 'Nombre de la entrega', v: file.name.replace(/\.[^.]+$/, ''), req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '— Interno'], ...projects.map((p) => [p.id, p.name])] }], 'Subir'); if (!v) return; t = await create({ ...v, assignee: me.email, status: 'En curso' }); if (!t) return; }
+      if (!t) { const v = await ask('¿Qué estás entregando?', [{ k: 'title', l: 'Nombre de la entrega', v: file.name.replace(/\.[^.]+$/, ''), req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '— Interno'], ...projects.map((p) => [p.id, p.name])] }], 'Subir'); if (!v) return; t = await create({ ...v, assignee: who, status: 'En curso' }); if (!t) return; }
       const bar = $('#upBar', b); bar.hidden = false;
       try {
         const f = await uploadToDrive(file, `${t.title} · ${file.name}`, (p) => { bar.firstElementChild.style.width = Math.round(p * 100) + '%'; });
@@ -351,7 +356,7 @@ Entrega: el plan de edición escena por escena (tiempo, toma, texto en pantalla,
       { k: 'title', l: 'Tarea', req: true },
       { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '— Interno'], ...projects.map((p) => [p.id, p.name])], v: pre.project_id || '', half: true },
       { k: 'dept', l: 'Departamento', t: 'select', opts: [['', '—'], ...DEPTS.map(([n, name]) => [`${n} ${name}`, `${n} ${name}`])], v: pre.dept || '', half: true },
-      { k: 'assignee', l: 'Responsable (lo hace)', t: 'select', opts: peopleOpts(), v: pre.assignee ?? me.email, half: true },
+      { k: 'assignee', l: 'Responsable (lo hace)', t: 'select', opts: peopleOpts(), v: pre.assignee ?? who, half: true },
       { k: 'accountable', l: 'Rinde cuentas (lo aprueba)', t: 'select', opts: [['', 'Su jefe directo'], ...peopleOpts().slice(1)], v: pre.accountable || '', half: true },
       { k: 'due', l: 'Vence', t: 'date', v: pre.due || '', half: true },
       { k: 'status', l: 'Estado', t: 'select', opts: COLS.map(([s, l]) => [s, l]), v: pre.status || 'Por empezar', half: true },
@@ -393,8 +398,8 @@ Entrega: el plan de edición escena por escena (tiempo, toma, texto en pantalla,
   }
 
   acts(el, {
-    role: (t) => { role = t.dataset.r; tab = 'zona'; try { localStorage.setItem('work.role', role); } catch {} history.replaceState(null, '', `#/work/zona/${role}`); paint(); },
-    tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', `#/work/${tab}${role ? '/' + role : ''}`); paint(); },
+    role: (t) => { role = t.dataset.r; tab = 'zona'; if (!asP) try { localStorage.setItem('work.role', role); } catch {} history.replaceState(null, '', `#/work/zona/${role}${asP ? '/' + who : ''}`); paint(); },
+    tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', `#/work/${tab}/${role || '_'}${asP ? '/' + who : ''}`); paint(); },
     lane: (t) => { ceoLane = t.dataset.l; paint(); },
     ctab: (t) => { ctab = t.dataset.c; paint(); },
     kv: (t) => { kView = t.dataset.v; kanban($('#wbody', el)); },
@@ -404,14 +409,14 @@ Entrega: el plan de edición escena por escena (tiempo, toma, texto en pantalla,
     approveQ: async (t, e) => { e.stopPropagation(); const x = tasks.find((y) => y.id === t.dataset.id); if (await save({ ...x, status: 'Hecha' })) { toast('Aprobado ✅'); paint(); } },
     tdone: async (cb) => { const t = tasks.find((x) => x.id === cb.dataset.id); if (!(await save({ ...t, status: cb.checked ? 'Hecha' : 'En curso' }))) cb.checked = !cb.checked; else setTimeout(paint, 250); },
     ck: async (cb) => {
-      const r = cb.dataset.r, i = +cb.dataset.i, id = `${me.email}.${r}.${ymNow()}`; const cur = checks.find((c) => c.id === id);
+      const r = cb.dataset.r, i = +cb.dataset.i, id = `${who}.${r}.${ymNow()}`; const cur = checks.find((c) => c.id === id);
       const done = cb.checked ? [...new Set([...(cur?.done || []), i])] : (cur?.done || []).filter((x) => x !== i);
       try { const res = cur ? await CK.save({ ...cur, done }) : await CK.create({ id, role: r, month: ymNow(), done }); checks = [...checks.filter((c) => c.id !== id), res]; paint(); } catch (e) { cb.checked = !cb.checked; toast(e.message, true); }
     },
     post: async (t) => { const p = posts?.find((x) => x.id === t.dataset.id) || content.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(p.profile, p); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); paint(); } },
     newPost: async () => { const pr = await ask('¿Para qué perfil?', [{ k: 'p', l: 'Perfil', t: 'select', opts: [['inherent', 'Inherent'], ['personal', 'Marca personal'], ...[...new Set(projects.map((p) => p.client_slug).filter(Boolean))].map((s) => [s, s.toUpperCase()])] }], 'Seguir'); if (!pr) return; const r = await editPost(pr.p, null); if (r) { posts = [...(posts || []), r]; paint(); } },
     newTask: () => newTask(),
-    colAdd: (t) => newTask({ status: t.dataset.s, assignee: kView === 'personal' ? me.email : '' }),
+    colAdd: (t) => newTask({ status: t.dataset.s, assignee: kView === 'personal' ? who : '' }),
     laneTask: (t) => newTask({ dept: t.dataset.d }),
     assignTo: () => newTask({ assignee: personSel }),
   });
