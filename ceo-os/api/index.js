@@ -163,17 +163,24 @@ on('GET', 'content/cfg', async (req, res) => {
 on('PUT', 'content/connect', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
   const b = body(req); if (!slugOk(b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
-  const url = String(b.postear_drive || '');
-  if (url && !/^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(url)) return res.status(400).json({ error: 'Pega el link de una carpeta de Google Drive' });
-  await db.upsert('sources', 'cfg-' + b.profile, { profile: b.profile, postear_drive: url }, u.email);
-  res.json({ ok: true, postear_drive: url });
+  const patch = { profile: b.profile };
+  if ('postear_drive' in b) {
+    const url = String(b.postear_drive || '');
+    if (url && !/^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(url)) return res.status(400).json({ error: 'Pega el link de una carpeta de Google Drive' });
+    patch.postear_drive = url;
+  }
+  if ('ig_account' in b) patch.ig_account = String(b.ig_account || '').replace(/^@/, '').toLowerCase().replace(/[^a-z0-9._]/g, '').slice(0, 40);
+  await db.upsert('sources', 'cfg-' + b.profile, patch, u.email);
+  res.json({ ok: true, ...patch });
 });
 // Analytics de Instagram con Windsor.ai (las cuentas se conectan en Windsor; aquí solo se leen).
 on('GET', 'analytics/instagram', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
   if (!content.windsorOn()) return res.json({ connected: false });
   const p = (await content.profiles()).find((x) => x.slug === req.query.profile); if (!p) return res.status(400).json({ error: 'Perfil inválido' });
-  const handles = (await content.profile(p)).own.filter((a) => a.red === 'instagram').map((a) => a.handle);
+  // La cuenta elegida en la app manda; si no hay, las de LINKS.md del repo.
+  const picked = (await content.cfg(p.slug)).ig_account;
+  const handles = picked ? [picked] : (await content.profile(p)).own.filter((a) => a.red === 'instagram').map((a) => a.handle);
   try { res.json({ connected: true, handles, ...(await content.instagram(handles, Number(req.query.days) || 30)) }); }
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });

@@ -35,7 +35,7 @@ export const AUTO_DEFAULT = new Set(['inherent', 'personal']);
 
 export async function cfg(slug) {
   const c = (await db.get('sources', 'cfg-' + slug)) || {};
-  return { hashtags: c.hashtags || [], accounts: c.accounts || [], videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), postear_drive: c.postear_drive || '', v: c.v || null };
+  return { hashtags: c.hashtags || [], accounts: c.accounts || [], videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), postear_drive: c.postear_drive || '', ig_account: c.ig_account || '', v: c.v || null };
 }
 // Normaliza lo que manda la app: hashtags sin #, cuentas como links o @handle, videos como links.
 export function cleanCfg(b) {
