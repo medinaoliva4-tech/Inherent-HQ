@@ -22,7 +22,8 @@ export async function render(el, { me, alive }) {
   let week = null, weekP = null;
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`content/week?profile=${p}`).catch(() => null))).then(([a, b]) => { week = a; weekP = b; if (alive()) paint(); });
   // Engagement en vivo de Windsor (lo mismo que Content → Analytics); el scrape semanal queda de respaldo.
-  let igI = null, igP = null;
+  let igI = null, igP = null, hProf = 'inherent', hView = 'top';
+  try { hProf = localStorage.getItem('home.prof') || 'inherent'; hView = localStorage.getItem('home.view') || 'top'; } catch {}
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`analytics/instagram?profile=${p}&days=30`).catch((e) => ({ error: e.message })))).then(([a, b]) => { igI = a; igP = b; if (alive()) paint(); });
   const loadAgenda = () => api(`google/calendar?from=${today()}&to=${today()}${calQ()}`).then((r) => { agenda = r.events; agErr = null; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
   loadAgenda();
@@ -42,7 +43,6 @@ export async function render(el, { me, alive }) {
   const open = leads.filter((l) => !['Ganado', 'Perdido'].includes(l.stage));
   const hot = open.filter((l) => (l.interest || 0) >= 4);
   const pipe = open.reduce((a, l) => a + (+l.value_usd || 0), 0);
-  const next = content.filter((c) => c.kind === 'post' && c.status !== 'Publicado').sort((a, b) => String(a.date || '9').localeCompare(String(b.date || '9'))).slice(0, 3);
   const mine = tasks.filter((t) => t.assignee === me.email && t.status !== 'Hecha').sort((a, b) => String(a.due || '9').localeCompare(String(b.due || '9')));
 
   // Para el equipo: el resumen de su trabajo (el detalle está en su Workspace).
@@ -80,10 +80,15 @@ export async function render(el, { me, alive }) {
           <div class="chead"><div class="ico">♡</div><h3>Engagement<br><span class="mut sm">Personal + Inherent</span></h3><a class="arrow" href="#/content">↗</a></div>
           ${(() => {
             // Por perfil: primero Windsor (en vivo, 30 días); si no trae, la foto del último scrape.
-            const pick = (ig, wk) => (ig?.matched && ig.er != null ? { er: ig.er, reach: ig.reach, days: ig.erDays, src: 'w' } : wk?.analytics?.at(-1)?.er != null ? { er: wk.analytics.at(-1).er, views: wk.analytics.at(-1).avgViews, src: 's' } : null);
+            const pick = (ig, wk) => (ig?.matched && ig.er != null ? { er: ig.er, prev: ig.erPrev, reach: ig.reach, days: ig.erDays, src: 'w' } : wk?.analytics?.at(-1)?.er != null ? { er: wk.analytics.at(-1).er, src: 's' } : null);
             const e1 = pick(igI, week), e2 = pick(igP, weekP);
-            if (e1 || e2) return html`<div class="split" style="margin-top:6px"><div><span class="lbl">Inherent</span><b style="font-size:34px;font-weight:500">${e1 ? e1.er + '%' : '—'}</b></div><div><span class="lbl">Personal</span><b style="font-size:34px;font-weight:500">${e2 ? e2.er + '%' : '—'}</b></div></div>
-              <div class="mut sm" style="margin-top:12px">${[e1, e2].some((x) => x?.src === 'w') ? `Instagram, últimos ${Math.max(e1?.days || 0, e2?.days || 0) || 30} días${e1?.reach || e2?.reach ? ` · alcance ${K((e1?.reach || 0) + (e2?.reach || 0))}` : ''}` : 'Engagement de la última semana'}</div>`;
+            // Cada número con su dirección: ↑ / ↓ contra el periodo anterior del mismo largo.
+            const trend = (e) => { if (!e || e.prev == null) return html`<span class="mut sm">sin periodo anterior para comparar</span>`; const d = Math.round((e.er - e.prev) * 10) / 10;
+              return d === 0 ? html`<span class="mut sm">= igual que los ${e.days} días anteriores</span>` : html`<span class="sm" style="color:${d > 0 ? '#3c6a1c' : '#a3392a'};font-weight:600">${d > 0 ? '↑' : '↓'} ${Math.abs(d)} pts</span><span class="mut sm"> vs ${e.days} días antes (${e.prev}%)</span>`; };
+            const col = (name, e) => html`<div style="flex:1;min-width:0"><span class="lbl">${name}</span><b style="font-size:34px;font-weight:500;display:block">${e ? e.er + '%' : '—'}</b><div style="line-height:1.3">${e ? trend(e) : ''}</div></div>`;
+            const ex = e1 || e2;
+            if (ex) return html`<div class="split" style="margin-top:6px;align-items:flex-start">${col('Inherent', e1)}${col('Personal', e2)}</div>
+              <div class="mut sm engwhat">${ex.er >= 1 ? html`<b>Qué significa:</b> en ${e1 ? 'Inherent' : 'Personal'}, de cada 100 personas que vieron tus posts, <b>${Math.round(ex.er)}</b> dieron like, comentaron, guardaron o compartieron. Más alto = el contenido conecta más.` : 'Es la parte de quienes vieron tus posts que interactuó (likes, comentarios, guardados, compartidos).'} ${ex.days && ex.src === 'w' ? `Últimos ${ex.days} días.` : ''}</div>`;
             if (igI === null && igP === null) return html`<p class="loading">Cargando…</p>`;
             // Sin datos: decir exactamente por qué, para saber qué arreglar.
             const why = [['Inherent', igI], ['Personal', igP]].map(([n, r]) => r?.error ? `${n}: ${/api key/i.test(r.error) ? 'la API key de Windsor no es válida (Vercel → WINDSOR_API_KEY)' : r.error.replace(/\{.*\}/, '').trim()}` : r?.connected === false ? 'Falta conectar Windsor (WINDSOR_API_KEY)' : r && !r.handles?.length ? `${n}: falta su cuenta de Instagram en Content → Fuentes` : r && !r.matched ? `${n}: Windsor no trae @${r.handles.join(', @')}${r.accounts?.length ? ` (trae: @${r.accounts.slice(0, 3).join(', @')})` : ''}` : '').filter(Boolean);
@@ -95,15 +100,21 @@ export async function render(el, { me, alive }) {
           <div class="mut sm">Todo lo que necesitas para entregar está en tu <a href="#/work" style="color:inherit">Workspace</a>: tus tareas, el material de cada cliente y dónde subir tu entrega.</div></div>` : ''}
         ${!can('content') ? '' : html`<div class="card">
           ${(() => {
-            // UNA sola vista de Content: los ganadores del nicho (scrape semanal); si aún no corre,
-            // tus mejores posts reales de Instagram (Windsor). Nunca los dos.
-            const niche = week?.result?.top || [];
-            const own = [[igI, 'inherent'], [igP, 'personal']].flatMap(([r]) => (r?.matched ? (r.top || []).map((x) => ({ url: x.url, thumb: x.thumb, handle: r.handles?.[0] || '', red: 'instagram', at: x.date, views: x.views, likes: x.likes, comments: x.comments, text: x.caption, eng: x.eng })) : [])).sort((x, z) => z.eng - x.eng);
-            const [title, sub, list] = niche.length ? ['Content esta semana', 'Lo que más rinde en tu nicho', niche] : ['Tu mejor contenido', 'Instagram, últimos 30 días', own];
-            return html`<div class="chead"><div class="ico">▶</div><h3>${title}<br><span class="mut sm">${sub}</span></h3><a class="arrow" href="#/content">↗</a></div>
-              ${week === null && igI === null ? html`<p class="loading">Cargando…</p>` : list.length ? html`<div class="grid homevids">${list.slice(0, 3).map(videoCard)}</div>`
-                : html`<div class="empty" style="margin-top:10px"><b>${week?.status === 'running' ? 'Apify está scrapeando…' : 'Sin videos todavía'}</b>${niche.length || own.length ? '' : 'El scrape del nicho corre cada lunes (Content → Fuentes). Tus posts salen de Windsor.'}</div>`}`; })()}
-          ${next.length ? html`<div class="lbl" style="margin-top:16px">Lo próximo por postear</div>${next.map((p) => html`<a class="agenda" href="#/content/postear/${p.profile}" style="text-decoration:none;color:inherit"><span class="t">${p.date ? fdate(p.date) : '—'}</span><span class="bar2" style="background:#c2735a"></span><div><b style="font-weight:500">${p.title}</b><div class="mut sm">${p.format || 'Pieza'} · ${p.status || 'Idea'}</div></div></a>`)}` : ''}
+            // UNA sola tarjeta de Content: eliges la cuenta (Inherent / Personal) y qué ver.
+            const ig = hProf === 'personal' ? igP : igI, wk = hProf === 'personal' ? weekP : week;
+            const own = ig?.matched ? (ig.top || []).map((x) => ({ url: x.url, thumb: x.thumb, handle: ig.handles?.[0] || '', red: 'instagram', at: x.date, views: x.views, likes: x.likes, comments: x.comments, text: x.caption })) : [];
+            const niche = wk?.result?.top || [];
+            const queue = content.filter((c) => c.kind === 'post' && c.profile === hProf && c.status !== 'Publicado').sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')));
+            const views = [['top', 'Mejor contenido'], ['next', `Por subir${queue.length ? ' · ' + queue.length : ''}`], ...(niche.length ? [['niche', 'Nicho']] : [])];
+            const v = views.some(([k]) => k === hView) ? hView : 'top';
+            const body = v === 'next' ? (queue.length ? html`${queue.slice(0, 5).map((p) => html`<a class="agenda" href="#/content/postear/${p.profile}" style="text-decoration:none;color:inherit"><span class="t">${p.date ? fdate(p.date) : '—'}</span><span class="bar2" style="background:#c2735a"></span><div><b style="font-weight:500">${p.title}</b><div class="mut sm">${p.format || 'Pieza'} · ${p.status || 'Idea'}</div></div></a>`)}`
+                : html`<div class="empty" style="margin-top:10px"><b>Nada por subir</b>Las piezas del planner de ${hProf === 'personal' ? 'tu marca personal' : 'Inherent'} aparecen aquí.</div>`)
+              : v === 'niche' ? html`<div class="grid homevids">${niche.slice(0, 3).map(videoCard)}</div>`
+              : ig === null ? html`<p class="loading">Cargando…</p>` : own.length ? html`<div class="grid homevids">${own.slice(0, 3).map(videoCard)}</div>`
+              : html`<div class="empty" style="margin-top:10px"><b>Sin posts todavía</b>${ig?.matched === false || !ig?.handles?.length ? `Conecta la cuenta de Instagram de ${hProf === 'personal' ? 'Personal' : 'Inherent'} en Content → Analytics.` : 'No hay posts en los últimos 30 días.'}</div>`;
+            return html`<div class="chead"><div class="ico">▶</div><h3>Content<br><span class="mut sm">${v === 'top' ? 'Tus posts con más interacción · 30 días' : v === 'next' ? 'Lo que sigue en el planner' : 'Lo que más rinde en tu nicho'}</span></h3><a class="arrow" href="#/content">↗</a></div>
+              <div class="row homesel"><div class="tabs mini">${[['inherent', 'Inherent'], ['personal', 'Personal']].map(([k, l]) => html`<button class="${k === hProf ? 'on' : ''}" data-act="hprof" data-k="${k}">${l}</button>`)}</div>
+                <div class="tabs mini">${views.map(([k, l]) => html`<button class="${k === v ? 'on' : ''}" data-act="hview" data-k="${k}">${l}</button>`)}</div></div>${body}`; })()}
         </div>`}
         <div class="card todo">
           <div class="chead"><div class="ico">✓</div><h3>Hoy</h3><span class="gbadge" style="margin-left:auto">${IC.cal} Google Calendar</span><button class="btn ghost" style="padding:8px 14px" data-act="addTask">+ Tarea</button></div>
@@ -122,6 +133,8 @@ export async function render(el, { me, alive }) {
       try { Object.assign(t, await col('tasks').save({ ...t, status: 'Hecha' })); toast('Tarea hecha ✅'); setTimeout(() => { mine.splice(mine.indexOf(t), 1); paint(); }, 500); }
       catch (e) { cb.checked = false; toast(e.message, true); }
     },
+    hprof: (b) => { hProf = b.dataset.k; try { localStorage.setItem('home.prof', hProf); } catch {} paint(); },
+    hview: (b) => { hView = b.dataset.k; try { localStorage.setItem('home.view', hView); } catch {} paint(); },
     addTask: async () => {
       const { newTask } = await import('../create.js'); const { teamList } = await import('../core.js');
       const t = await newTask({ team: await teamList(), me, projects: await col('projects').list(), pre: { assignee: me.email } });
