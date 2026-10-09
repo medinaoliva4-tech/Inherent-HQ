@@ -651,3 +651,19 @@ input[type=range]{accent-color:#5c6b22;cursor:grab}
   .nav{background:rgba(255,253,248,.82)}
   .aifoot .btn{flex:none}
 }
+
+/* ======================= Control: de lead a entrega ======================= */
+.ctlkpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.ctlk{padding:14px 16px}.ctlk .big{line-height:1.1;margin-top:4px}
+.ctlflow{grid-template-columns:repeat(5,minmax(230px,1fr))}
+.kcard.ctl{cursor:default}.kcard.ctl.click{cursor:pointer}
+.kcard .bad,.ctl .bad{color:#a3392a}
+.ctla{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ctlbar{height:6px;border-radius:99px;background:rgba(23,20,16,.08);overflow:hidden;margin:10px 0 6px}.ctlbar i{display:block;height:100%;background:#5c7a1a;border-radius:99px}
+.ctlrow{cursor:pointer}.ctlic{width:22px;text-align:center;flex:none}
+.ctltask{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.depbox{margin-top:12px;padding:10px 12px;border-radius:12px;background:#fbf3e4;font-size:13px;display:grid;gap:6px}
+.dep{display:inline-block;margin:2px 4px 0 0;padding:2px 8px;border-radius:99px;background:#fff;border:1px solid var(--line);font-size:12px}
+@media (max-width:1150px){.ctlkpis{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){.ctlkpis{grid-template-columns:1fr 1fr}.ctlflow{grid-template-columns:repeat(5,82vw)}}
+a.btn{text-decoration:none}

@@ -1,6 +1,6 @@
 // Crear cosas con preguntas, no con formularios. Lo usan Operations, Workspace y Clients.
 import { wizard, col, api, toast, roleName, today, fdate, html, raw, drawer, closeDrawer, $, $$, Q } from './core.js';
-import { DEPTS, deptsOfPlan, phasesFor, tasksFor, meetingsFor, holders, hoursAt, svcHours, svcCost, svcPrice, roleToWork, daysAt, includesAt } from './cycle.js';
+import { DEPTS, deptsOfPlan, phasesFor, tasksFor, customTasks, createLinked, meetingsFor, hoursAt, svcHours, svcCost, svcPrice, daysAt, includesAt } from './cycle.js';
 
 const cleanPlan = (s) => String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, '');
 
@@ -41,7 +41,7 @@ export async function newProject({ team, me, projects = [], tasks = [], pre = {}
       client: c ? c.slug.toUpperCase() : a.client === 'inherent' ? 'Inherent' : '', client_slug: c ? c.slug : a.client === 'inherent' ? 'inherent' : '', color: ['olive', 'terra', 'ink'][projects.length % 3],
       phases: phasesFor(kind, start), meetings: meetingsFor(kind, start), ...(items ? { services: items, price: items.reduce((x, i) => x + (i.price || 0), 0) || null } : {}), ...(pre.quote_id ? { quote_id: pre.quote_id } : {}), pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: depts.has(d) ? 'todo' : 'off' }])) });
     let made = [];
-    if (a.auto === 'si') for (const t of (items ? customTasks(p, items, team, me.email) : tasksFor(p, team, tasks, me.email))) made.push(await col('tasks').create({ checklist: [], comments: [], ...t }));
+    if (a.auto === 'si') made = await createLinked(items ? customTasks(p, items, team, me.email) : tasksFor(p, team, tasks, me.email), (t) => col('tasks').create(t));
     // Si el cliente todavía no tiene su Drive, se crea y se conecta (sin frenar si falla).
     if (c) { const acc = await col('accounts').get('acc-' + c.slug).catch(() => null); if (!acc?.drive) api('drive/client', { method: 'POST', body: { slug: c.slug, growth: kind === 'Growth' || /accelerate|compound/i.test(c.plan || '') } }).then(() => toast(`Drive de ${c.slug.toUpperCase()} creado y conectado 📁`)).catch(() => {}); }
     toast(`Proyecto creado ✅${made.length ? ` · ${made.length} tareas` : ''}`);
@@ -75,14 +75,6 @@ function levels(list, rates) {
     $('#drawer').addEventListener('click', function x(e) { if (e.target.closest('[data-act=close]')) { $('#drawer').removeEventListener('click', x); if (!done) resolve(null); } });
   });
 }
-// Una tarea por servicio y rol, con sus horas, para quien tiene ese perfil.
-function customTasks(p, items, team, meEmail) {
-  const who = holders(team, meEmail), coo = who('coo') || ''; const start = p.phases?.[0]?.start || today(), end = p.phases?.[p.phases.length - 1]?.end || start;
-  // Si el servicio dice cuánto tarda, la tarea vence ese día (días hábiles desde que arranca el proyecto).
-  const workdays = (n) => { const d = new Date(start + 'T12:00'); let k = 0; while (k < n) { d.setDate(d.getDate() + 1); if (d.getDay() % 6) k++; } return d.toISOString().slice(0, 10); };
-  return items.flatMap((i) => i.roles.map((r) => ({ title: `${i.name} · ${r.role} (${r.hours} h)`, project_id: p.id, dept: '', assignee: who(roleToWork(r.role)) || meEmail, accountable: coo, due: i.days ? workdays(i.days) : end, checklist: (i.includes || []).map((x) => ({ t: x, done: false })), hours: r.hours, level: i.level, status: 'Por empezar' })));
-}
-
 const SUGGEST = ['Reunión con el cliente', 'Guion del reel', 'Editar reel', 'Diseñar carrusel', 'Static ad', 'Programar publicaciones', 'Responder comunidad', 'Revisar entregas', 'Propuesta para cliente'];
 export async function newTask({ team, me, projects = [], pre = {} }) {
   const people = team.filter((p) => p.active !== false && p.kind !== 'ia');

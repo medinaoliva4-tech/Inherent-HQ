@@ -30,27 +30,75 @@ export function holders(team, meEmail) {
   const prod = () => { const p = team.find((x) => /producci|grabaci/i.test(x.title || '')); return p ? p.email || p.id : holder('content'); };
   return (role) => (role === 'prod' ? prod() : holder(role) || (role === 'ceo' ? meEmail : null));
 }
-// Las tareas que le faltan a un proyecto (no repite las que ya existen).
+// ---------- Dependencias: qué tiene que estar hecho antes ----------
+// En el ciclo: la estrategia manda, luego el plan, las ideas, producir, montar, programar, QA y presentar.
+const DEP = { '②': ['①'], '②B': ['①'], '③': ['①'], '④': ['③'], '⑤': ['④'], '⑥A': ['⑤'], '⑦': ['⑤'], '⑨': ['⑥A', '⑦'], '⑧': ['⑨'], '⑩': ['③'], QA: ['⑥A', '⑦', '⑨', '⑧'], PRES: ['QA'] };
+// Si un departamento no corre, se salta: se depende de lo que él dependía.
+const depsIn = (k, keys) => (DEP[k] || []).flatMap((d) => (keys.has(d) ? [d] : depsIn(d, keys)));
+
+// Las tareas que le faltan a un proyecto (no repite las que ya existen). Cada una trae `key` y `after`
+// (las keys de las que depende); `createLinked` las convierte en `depends_on` con los ids reales.
 export function tasksFor(p, team, existing, meEmail) {
   const who = holders(team, meEmail), coo = who('coo') || '';
   const s = p.phases?.[0]?.start || new Date().toISOString().slice(0, 10);
   const has = (re) => existing.some((t) => t.project_id === p.id && re.test(t.title + ' ' + (t.dept || '')));
   const out = [];
   if (p.kind === 'Growth' || p.line === 'growth') {
-    GROWTH_TASKS.forEach(([title, w, role]) => { if (!has(new RegExp('^' + title.split(':')[0]))) out.push({ title, project_id: p.id, dept: '② Growth', assignee: who(role) || '', accountable: role === 'ceo' ? '' : coo, due: addDays(s, w * 7 + 6), status: 'Por empezar', cycle: p.cycle || '' }); });
+    GROWTH_TASKS.forEach(([title, w, role], i) => { if (!has(new RegExp('^' + title.split(':')[0]))) out.push({ key: 'g' + i, after: i ? ['g' + (i - 1)] : [], title, project_id: p.id, dept: '② Growth', assignee: who(role) || '', accountable: role === 'ceo' ? '' : coo, due: addDays(s, w * 7 + 6), status: 'Por empezar', cycle: p.cycle || '' }); });
     return out;
   }
   for (const [n, name] of DEPTS) {
     if (p.pipeline?.[n]?.status === 'off' || !TASKS[n] || has(new RegExp(`(^|\\s)${n} `))) continue;
     const [title, day, role] = TASKS[n];
-    out.push({ title, project_id: p.id, dept: `${n} ${name}`, assignee: who(role) || '', accountable: role === 'ceo' ? '' : coo, due: addDays(s, day - 1), status: 'Por empezar', cycle: p.cycle || '' });
+    out.push({ key: n, title, project_id: p.id, dept: `${n} ${name}`, assignee: who(role) || '', accountable: role === 'ceo' ? '' : coo, due: addDays(s, day - 1), status: 'Por empezar', cycle: p.cycle || '' });
   }
   if (p.kind === 'Ciclo mensual') {
-    if (!has(/QA final/)) out.push({ title: 'QA final del ciclo', project_id: p.id, dept: '', assignee: coo, accountable: '', due: addDays(s, 18), status: 'Por empezar', cycle: p.cycle || '' });
-    if (!has(/Presentaci/)) out.push({ title: 'Presentación al cliente (día 20)', project_id: p.id, dept: '① Strategy', assignee: who('ceo') || meEmail, accountable: '', due: addDays(s, 19), status: 'Por empezar', cycle: p.cycle || '' });
+    if (!has(/QA final/)) out.push({ key: 'QA', title: 'QA final del ciclo', project_id: p.id, dept: '', assignee: coo, accountable: '', due: addDays(s, 18), status: 'Por empezar', cycle: p.cycle || '' });
+    if (!has(/Presentaci/)) out.push({ key: 'PRES', title: 'Presentación al cliente (día 20)', project_id: p.id, dept: '① Strategy', assignee: who('ceo') || meEmail, accountable: '', due: addDays(s, 19), status: 'Por empezar', cycle: p.cycle || '' });
   }
+  const keys = new Set(out.map((t) => t.key));
+  out.forEach((t) => (t.after = depsIn(t.key, keys)));
   return out;
 }
+
+// Proyecto custom (sale de una cotización): kickoff → por cada servicio, sus roles en orden
+// (estrategia → contenido/finanzas → producción → edición) → QA y entrega.
+const STAGE = { ceo: 0, content: 1, finance: 1, prod: 2, video: 3, coo: 4 };
+export function customTasks(p, items, team, meEmail) {
+  const who = holders(team, meEmail), coo = who('coo') || '', ceo = who('ceo') || meEmail;
+  const start = p.phases?.[0]?.start || new Date().toISOString().slice(0, 10), end = p.phases?.[p.phases.length - 1]?.end || start;
+  // Si el servicio dice cuánto tarda, la tarea vence ese día (días hábiles desde que arranca el proyecto).
+  const workdays = (n) => { const d = new Date(start + 'T12:00'); let k = 0; while (k < n) { d.setDate(d.getDate() + 1); if (d.getDay() % 6) k++; } return d.toISOString().slice(0, 10); };
+  const out = [{ key: 'kick', after: [], title: 'Kickoff con el cliente: alcance, fechas y material', project_id: p.id, dept: '', assignee: ceo, accountable: '', due: start, status: 'Por empezar' }];
+  items.forEach((i, si) => {
+    const rows = i.roles.map((r, ri) => ({ r, ri, st: STAGE[roleToWork(r.role)] ?? 1 }));
+    // Fechas en escalera: cada etapa vence cuando se acumulan sus horas dentro de lo que tarda el servicio.
+    const stages = [...new Set(rows.map((x) => x.st))].sort((a, z) => a - z), tot = rows.reduce((a, x) => a + (+x.r.hours || 0), 0) || 1;
+    const dueOf = (st) => { if (!i.days) return end; const h = rows.filter((x) => x.st <= st).reduce((a, x) => a + (+x.r.hours || 0), 0); return workdays(Math.max(1, Math.round((i.days * h) / tot))); };
+    rows.forEach(({ r, ri, st }) => {
+      const prev = rows.filter((x) => x.st < st); const top = Math.max(-1, ...prev.map((x) => x.st));
+      out.push({ key: `s${si}r${ri}`, after: top < 0 ? ['kick'] : prev.filter((x) => x.st === top).map((x) => `s${si}r${x.ri}`), title: `${i.name} · ${r.role} (${r.hours} h)`, project_id: p.id, dept: '', assignee: who(roleToWork(r.role)) || meEmail, accountable: coo, due: dueOf(st), checklist: (i.includes || []).map((x) => ({ t: x, done: false })), hours: r.hours, level: i.level, status: 'Por empezar' });
+    });
+  });
+  const last = out.map((t) => t.due).sort().at(-1); const qaDue = items.every((i) => i.days) && last ? (() => { const d = new Date(last + 'T12:00'); let k = 0; while (k < 2) { d.setDate(d.getDate() + 1); if (d.getDay() % 6) k++; } return d.toISOString().slice(0, 10); })() : end;
+  out.push({ key: 'qa', after: out.filter((t) => t.key !== 'kick').map((t) => t.key), title: 'QA y entrega al cliente', project_id: p.id, dept: '', assignee: coo || ceo, accountable: ceo === coo ? '' : ceo, due: qaDue, status: 'Por empezar' });
+  return out;
+}
+
+// Crea las tareas en orden y guarda de quién depende cada una (`depends_on` = ids).
+export async function createLinked(list, create) {
+  const ids = {}, made = [], left = [...list];
+  while (left.length) { // primero las que no esperan a nadie que falte crear
+    const i = Math.max(0, left.findIndex((t) => (t.after || []).every((k) => k in ids || !left.some((x) => x.key === k))));
+    const { key, after = [], ...t } = left.splice(i, 1)[0];
+    const doc = await create({ checklist: [], comments: [], visibility: 'all', ...t, depends_on: after.map((k) => ids[k]).filter(Boolean) });
+    if (key) ids[key] = doc.id; made.push(doc);
+  }
+  return made;
+}
+// Lo que frena una tarea: sus dependencias que todavía no están hechas.
+export const blockersOf = (t, tasks) => (t?.depends_on || []).map((id) => tasks.find((x) => x.id === id)).filter((x) => x && x.status !== 'Hecha');
+export const unlocksOf = (t, tasks) => tasks.filter((x) => (x.depends_on || []).includes(t.id));
 
 // ---------- Reuniones por tipo de proyecto ----------
 // Son las del plan: cuándo, quiénes, de qué se habla y qué se aprueba. Día = día desde que arranca.

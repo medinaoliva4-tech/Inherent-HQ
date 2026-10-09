@@ -26,7 +26,7 @@ export const meta = (base) => ({
   scopes_supported: [SCOPE],
   client_id_metadata_document_supported: true,
 });
-export const resourceMeta = (base) => ({ resource: `${base}/mcp`, authorization_servers: [base], bearer_methods_supported: ['header'], scopes_supported: [SCOPE], resource_name: 'Inherent OS' });
+export const resourceMeta = (base, root) => ({ resource: root ? base : `${base}/mcp`, authorization_servers: [base], bearer_methods_supported: ['header'], scopes_supported: [SCOPE], resource_name: 'Inherent OS' });
 
 // Solo https, o localhost para las apps de escritorio y terminal (Claude Code, Codex).
 const okRedirect = (u) => { try { const x = new URL(u); return x.protocol === 'https:' || (x.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(x.hostname)); } catch { return false; } };

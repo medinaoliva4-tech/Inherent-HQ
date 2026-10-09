@@ -7,6 +7,7 @@ import { userFor, areasFor } from './access.js';
 import { readFile, listDir } from './gh.js';
 import { parsePlanContratado } from './parse.js';
 import * as content from './content.js';
+import * as flow from './flow.js';
 import { phasesFor, meetingsFor, tasksFor, holders, roleToWork, DEPTS, hoursAt, svcHours, svcCost, svcPrice, includesAt, daysAt, addDays } from '../../public/js/cycle.js';
 
 export const tokenHash = (t) => crypto.createHash('sha256').update(String(t)).digest('hex');
@@ -131,22 +132,10 @@ async function call(u, name, a = {}) {
     const slug = String(a.cliente || ''); if (!slugOk(slug)) throw new Error('cliente inválido');
     const kind = ['Ciclo mensual', 'Proyecto', 'Growth', 'Custom'].includes(a.tipo) ? a.tipo : 'Proyecto';
     const start = /^\d{4}-\d{2}-\d{2}$/.test(a.inicio || '') ? a.inicio : T;
-    const [team, tasks, projects] = await Promise.all([teamOf(), db.list('tasks'), db.list('projects')]);
-    let items = null;
-    if (kind === 'Custom') {
-      const q = a.cotizacion_id && (await db.get('quotes', a.cotizacion_id)); if (!q) throw new Error('Para un proyecto Custom dime la cotizacion_id');
-      const services = await db.list('services');
-      items = (q.items || []).filter((i) => i.service_id).map((i) => { const s = services.find((x) => x.id === i.service_id); if (!s) return null; const lv = i.level || s.level || 5; return { id: s.id, name: s.name, level: lv, days: daysAt(s, lv), includes: includesAt(s, lv), hours: svcHours(s, lv) * (+i.qty || 1), roles: (s.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * (+i.qty || 1) })), price: (+i.price || 0) * (+i.qty || 1) }; }).filter(Boolean);
-    }
-    const label = slug === 'inherent' ? 'Inherent' : slug.toUpperCase();
-    const p = await db.create('projects', { name: String(a.nombre || `${label} · ${kind === 'Ciclo mensual' ? 'ciclo ' + start.slice(0, 7) : kind.toLowerCase()}`).slice(0, 120), kind, line: kind === 'Growth' ? 'growth' : 'contenido', cycle: kind === 'Ciclo mensual' ? start.slice(0, 7) : '', client: label, client_slug: slug, color: ['olive', 'terra', 'ink'][projects.length % 3],
-      phases: phasesFor(kind, start), meetings: meetingsFor(kind, start), ...(items ? { services: items, quote_id: a.cotizacion_id } : {}), pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: 'todo' }])) }, u.email);
-    let made;
-    if (items) { const who = holders(team, u.email), coo = who('coo') || ''; const end = p.phases.at(-1)?.end || start;
-      made = items.flatMap((i) => i.roles.map((r) => ({ title: `${i.name} · ${r.role} (${r.hours} h)`, project_id: p.id, dept: '', assignee: who(roleToWork(r.role)) || u.email, accountable: coo, due: i.days ? addDays(start, Math.round(i.days * 1.4)) : end, checklist: (i.includes || []).map((x) => ({ t: x, done: false })), status: 'Por empezar' }))); }
-    else made = tasksFor(p, team, tasks, u.email);
-    for (const t of made) await db.create('tasks', { checklist: [], comments: [], visibility: 'all', ...t }, u.email);
-    return { ok: true, id: p.id, nombre: p.name, fases: p.phases.map((f) => `${f.name} (${f.start} → ${f.end})`), reuniones: p.meetings.length, tareas: made.length, abrir: '/#/operations/pipe' };
+    const quote = a.cotizacion_id ? await db.get('quotes', a.cotizacion_id) : null;
+    if (kind === 'Custom' && !quote) throw new Error('Para un proyecto Custom dime la cotizacion_id');
+    const { project: p, tasks: made } = await flow.createProject(u, { slug, kind, start, quote, name: a.nombre });
+    return { ok: true, id: p.id, nombre: p.name, fases: p.phases.map((f) => `${f.name} (${f.start} → ${f.end})`), reuniones: p.meetings.length, tareas: made.length, con_dependencias: made.filter((t) => t.depends_on?.length).length, abrir: '/#/control' };
   }
   if (name === 'contenido_semana') {
     const slug = String(a.perfil || ''); if (!slugOk(slug)) throw new Error('perfil inválido');
