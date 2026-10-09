@@ -70,6 +70,7 @@ async function render() {
   const [area, ...rest] = location.hash.replace(/^#\/?/, '').split('/');
   const key = me.areas.includes(area) || (area === 'repo' && me.role === 'ceo') ? area : 'home';
   $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key));
+  $('.nav [data-go].on')?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); // en cel, la barra de abajo muestra la sección actual
   closeDrawer();
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
   const old = $('#main'); const main = old.cloneNode(false); old.replaceWith(main);

@@ -385,3 +385,57 @@ html{scroll-behavior:smooth}
 .mmd[data-done]{color:inherit;white-space:normal}.mmd svg{max-width:100%;height:auto}.mmd.err{color:#a3392a;font-size:13px;white-space:pre-wrap}
 .md pre.code{background:#171410;color:#f3efe6;border-radius:14px;padding:14px;overflow:auto;font-size:12.5px;margin:8px 0}
 .md li.task{list-style:none;margin-left:-20px}.md li.task input{width:15px;height:15px;accent-color:var(--ink);vertical-align:-2px;margin-right:4px}
+
+/* ======================= CELULAR ======================= */
+@media (max-width:760px){
+  html,body{font-size:15px;overflow-x:hidden}
+  .app{padding:14px 16px calc(96px + env(safe-area-inset-bottom))}
+  /* arriba: marca + avatar · abajo: barra de navegación fija que se desliza */
+  .top{margin-bottom:20px}
+  .word img{height:20px!important}
+  .nav{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:30;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;padding:6px;gap:2px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  .nav::-webkit-scrollbar{display:none}
+  .nav button{flex-direction:column;gap:3px;padding:8px 12px;font-size:10.5px;flex:none;scroll-snap-align:center;min-width:62px}
+  .nav svg{width:19px;height:19px}
+  .menu{position:fixed;right:12px;left:12px;top:70px;width:auto}
+  /* títulos */
+  .hello h1{font-size:30px;letter-spacing:-1px}
+  .hello p{font-size:26px;letter-spacing:-.8px;margin-bottom:18px}
+  .big{font-size:44px}.feat .big{font-size:38px}
+  .sec-title h2{font-size:20px}
+  /* rejillas: una columna (también las que tienen columnas escritas en línea) */
+  .grid,.g2,.g3,.g11,.g21{grid-template-columns:1fr!important;gap:12px}
+  .g4,.g5{grid-template-columns:1fr 1fr!important}
+  .g4 .big{font-size:34px}
+  .folders{grid-template-columns:1fr 1fr;gap:8px}
+  .card{padding:18px;border-radius:24px}
+  .row{flex-wrap:wrap}
+  .split{flex-wrap:wrap;gap:14px 22px}
+  /* pestañas y chips: se deslizan de lado en vez de romper la pantalla */
+  .tabs{display:flex;max-width:100%;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{flex:none;white-space:nowrap}
+  /* tablas: se deslizan dentro de su tarjeta */
+  .card:has(table),.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .card table{min-width:560px}
+  .kanban{grid-template-columns:repeat(5,78vw);scroll-snap-type:x mandatory}.kcol{scroll-snap-align:start}
+  /* panel lateral y diálogos: pantalla completa */
+  .drawer{left:8px;right:8px;top:8px;bottom:8px;width:auto;padding:20px;border-radius:26px}
+  .dlg{width:calc(100vw - 20px);max-height:calc(100dvh - 30px);overflow:auto}
+  .dlg .in-dlg{padding:20px}
+  .form .two{grid-template-columns:1fr}
+  .in{font-size:16px} /* evita el zoom de iOS al escribir */
+  /* calendario compacto */
+  .cal .dh{padding:6px 2px;font-size:10px;text-align:center}
+  .cal .d{min-height:64px;padding:3px;font-size:10px}
+  .cal .d .n{width:20px;height:20px;font-size:11px}
+  .cal .ev{font-size:9px;padding:1px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* organigrama: tarjetas más chicas que bajan de línea */
+  .org .lvl{flex-wrap:wrap;gap:10px}.org .lvl.wide::after,.org .lvl.wide .node::before{display:none}.org .lvl.wide .node{margin-top:14px}
+  .node{width:calc(50% - 6px);min-width:140px;padding:12px}
+  /* documento PDF y vista de documento */
+  .qview{padding:10px 0 40px}.qdoc{padding:24px 18px;font-size:12.5px}.qdoc .qh{flex-direction:column;gap:14px}.qdoc .qmeta{text-align:left}.qdoc .qto{grid-template-columns:1fr}.qdoc .qsum{width:100%}
+  .qview .qbar{flex-wrap:wrap}
+  #toast{bottom:calc(92px + env(safe-area-inset-bottom));max-width:calc(100vw - 32px);text-align:center}
+  .kv{grid-template-columns:100px 1fr}
+}
