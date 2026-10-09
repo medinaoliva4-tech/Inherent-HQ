@@ -379,9 +379,9 @@ export function openClaude(prompt) {
   navigator.clipboard?.writeText(prompt).catch(() => {});
   return fits;
 }
-export async function claudeJSON(title, prompt) {
+export async function claudeJSON(title, prompt, hint) {
   const fits = openClaude(prompt);
-  const v = await ask(title, [{ k: 'out', t: 'textarea', req: true, l: fits ? 'Se abrió tu Claude Code con todo listo: dale enviar. Cuando responda, copia su respuesta y pégala aquí.' : 'Se abrió tu Claude Code y el prompt quedó copiado: pégalo allá y envíalo. Cuando responda, copia su respuesta y pégala aquí.' }], 'Listo');
+  const v = await ask(title, [{ k: 'out', t: 'textarea', req: true, l: (fits ? '' : 'El prompt quedó copiado: pégalo en tu Claude. ') + (hint || (fits ? 'Se abrió tu Claude Code con todo listo: dale enviar. Cuando responda, copia su respuesta y pégala aquí.' : 'Cuando responda, copia su respuesta y pégala aquí.')) }], 'Listo');
   if (!v) return null;
   const m = String(v.out).match(/[[{][\s\S]*[\]}]/);
   try { return JSON.parse(m ? m[0] : v.out); } catch { toast('No pude leer la respuesta. Pídele a Claude que conteste solo con el JSON y vuelve a pegarla.', true); return null; }

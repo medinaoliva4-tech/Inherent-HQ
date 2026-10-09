@@ -35,7 +35,7 @@ export const AUTO_DEFAULT = new Set(['inherent', 'personal']);
 
 export async function cfg(slug) {
   const c = (await db.get('sources', 'cfg-' + slug)) || {};
-  return { hashtags: c.hashtags || [], accounts: (c.accounts || []).filter((a) => handleOf(a.handle)).map((a) => ({ ...a, kind: a.kind === 'referente' ? 'referente' : 'competencia' })), own: (c.own || []).filter((a) => handleOf(a.handle)), audience: c.audience || { general: '', nicho: '', exacto: '' }, videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), postear_drive: c.postear_drive || '', guiones_drive: c.guiones_drive || '', pillars: Array.isArray(c.pillars) ? c.pillars : [], ig_account: c.ig_account || '', v: c.v || null };
+  return { hashtags: c.hashtags || [], accounts: (c.accounts || []).filter((a) => handleOf(a.handle)).map((a) => ({ ...a, kind: a.kind === 'referente' ? 'referente' : 'competencia' })), own: (c.own || []).filter((a) => handleOf(a.handle)), audience: c.audience || { general: '', nicho: '', exacto: '' }, bullseye: c.bullseye || null, videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), postear_drive: c.postear_drive || '', guiones_drive: c.guiones_drive || '', pillars: Array.isArray(c.pillars) ? c.pillars : [], ig_account: c.ig_account || '', v: c.v || null };
 }
 // Una cuenta escrita como @handle o como link del perfil → solo el handle. Un link que no es de perfil (un video,
 // «explore») o basura (ej. «https» de un link mal leído) → vacío, y se descarta.
@@ -53,7 +53,20 @@ export function cleanCfg(b) {
   const t = (v) => String(v || '').trim().slice(0, 400);
   const audience = { general: t(b.audience?.general), nicho: t(b.audience?.nicho), exacto: t(b.audience?.exacto) };
   const videos = [...new Set((Array.isArray(b.videos) ? b.videos : []).map(String).filter((u) => /^https:\/\/(www\.)?(instagram\.com\/(p|reel|reels)\/|tiktok\.com\/@[^/]+\/video\/|vm\.tiktok\.com\/)/.test(u)))].slice(0, 20);
-  return { hashtags: tags, accounts, own, audience, videos, auto: Boolean(b.auto) };
+  return { hashtags: tags, accounts, own, audience, bullseye: cleanBullseye(b.bullseye), videos, auto: Boolean(b.auto) };
+}
+// La diana de audiencia (método Bullseye): el centro + 4 anillos, cada uno soltando UNA restricción;
+// la mezcla 3/1/1 de cada lote de 5 videos; de dónde se sacan temas y craft; y el registro de calibración.
+export function cleanBullseye(x) {
+  if (!x || typeof x !== 'object' || !Array.isArray(x.rings)) return null;
+  const t = (v, k = 300) => String(v ?? '').trim().slice(0, k);
+  const rings = x.rings.slice(0, 5).map((r) => ({ label: t(r?.label, 160), relaxed: t(r?.relaxed, 120), size: t(r?.size, 120), conversion: t(r?.conversion, 120), competition: t(r?.competition, 120),
+    search: (Array.isArray(r?.search) ? r.search : String(r?.search || '').split(/[,\n]/)).map((s) => t(s, 60)).filter(Boolean).slice(0, 4) }));
+  if (rings.length !== 5 || !rings[0].label) return null;
+  const mix = (Array.isArray(x.mix) ? x.mix : []).slice(0, 5).map((m, i) => ({ ring: [0, 0, 0, 1, 2][i], topic: t(m?.topic, 240) }));
+  const n = (v) => Math.max(0, Math.min(9999, Math.round(+v || 0)));
+  const calib = (Array.isArray(x.calib) ? x.calib : []).slice(-12).map((c) => ({ lote: t(c?.lote, 40), c0: n(c?.c0), c1: n(c?.c1), c2: n(c?.c2), decision: t(c?.decision, 200) }));
+  return { center: t(x.center, 400), buyer: t(x.buyer, 300), rings, mix, calib, at: t(x.at, 30) || new Date().toISOString() };
 }
 
 export async function profile(p) {
