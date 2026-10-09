@@ -1,5 +1,6 @@
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard } from '../core.js';
-import { hoursAt, svcHours, svcCost } from '../cycle.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList } from '../core.js';
+import { hoursAt, svcHours, svcCost, svcPrice } from '../cycle.js';
+import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
@@ -16,6 +17,7 @@ const tagChip = (t) => html`<span class="chip ${TAGS[t] ?? ''}" style="margin:2p
 
 export async function render(el, { me, sub, alive }) {
   const isCeo = me.role === 'ceo';
+  const canProject = me.areas.includes('operations');
   const L = col('leads'), S = col('services'), C = col('quotes'), R = col('rates');
   let [leads, services, quotes] = await Promise.all([L.list(), S.list(), C.list()]);
   let rates = null;
@@ -32,6 +34,9 @@ export async function render(el, { me, sub, alive }) {
   // Costo = horas de cada rol en el nivel del servicio (5 sencillo · 10 fuerte) × su costo por hora.
   const costOf = (s, lv) => svcCost(s, rates, lv);
   const hours = (s) => svcHours(s);
+  // Precio de un servicio en un nivel: el del catálogo escalado por horas, o el sugerido (costo × multiplicador).
+  const priceAt = (s, lv) => svcPrice(s, lv) ?? (() => { const c = costOf(s, lv); return c && !c.miss.length && c.cost ? Math.round((c.cost * (+s.markup || 2.2)) / 50) * 50 : null; })();
+  const lvName = (lv) => (lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
   const suggested = (s) => { const c = costOf(s); return c && !c.miss.length && c.cost ? Math.round((c.cost * (+s.markup || 2.2)) / 50) * 50 : null; };
 
   // ---------- layout ----------
@@ -296,11 +301,11 @@ export async function render(el, { me, sub, alive }) {
     tab = 'quotes';
     const draw = () => {
       const st = subtotal(doc), tt = total(doc);
-      const cost = isCeo && rates ? doc.items.reduce((a, i) => { const s = services.find((x) => x.id === i.service_id); const c = s ? costOf(s) : null; return a + (c && !c.miss.length ? c.cost * (+i.qty || 0) : 0); }, 0) : null;
+      const cost = isCeo && rates ? doc.items.reduce((a, i) => { const s = services.find((x) => x.id === i.service_id); const c = s ? costOf(s, i.level || s.level || 5) : null; return a + (c && !c.miss.length ? c.cost * (+i.qty || 0) : 0); }, 0) : null;
       mount(el, html`
         <div class="row" style="margin-bottom:22px"><button class="btn ghost" data-act="back">← Cotizaciones</button><div class="sp"></div>
           <select class="in" id="qstatus" style="width:auto">${Object.keys(QSTATUS).map((s) => html`<option ${s === doc.status ? raw('selected') : ''}>${s}</option>`)}</select>
-          <button class="btn ghost" data-act="pdf">Ver PDF</button><button class="btn" data-act="saveQ">Guardar</button></div>
+          <button class="btn ghost" data-act="pdf">Ver PDF</button>${doc.id && doc.items.some((i) => i.service_id) && canProject ? html`<button class="btn ghost" data-act="toProject">→ Crear proyecto</button>` : ''}<button class="btn" data-act="saveQ">Guardar</button></div>
         <div class="grid g2">
           <div class="card">
             <div class="chead"><div class="ico">✎</div><h3>${doc.number}<br><span class="mut sm">${fdateLong(doc.date)}</span></h3></div>
@@ -310,7 +315,11 @@ export async function render(el, { me, sub, alive }) {
             </form>
             <div class="sm mut" style="margin:18px 0 8px">Servicios</div>
             ${doc.items.map((it, i) => html`<div class="card glass" style="padding:12px 14px;margin-bottom:8px;border-radius:18px"><div class="row"><input class="in" data-i="${i}" data-f="name" value="${it.name}" style="font-weight:500"><button class="btn ghost" data-act="rmItem" data-i="${i}" style="padding:8px 12px">✕</button></div>
-              <div class="row" style="margin-top:8px"><input class="in" data-i="${i}" data-f="description" value="${it.description || ''}" placeholder="Descripción"><input class="in" style="max-width:80px" type="number" data-i="${i}" data-f="qty" value="${it.qty}"><span class="mut">×</span><input class="in" style="max-width:130px" type="number" data-i="${i}" data-f="price" value="${it.price ?? ''}" placeholder="Precio"></div></div>`)}
+              <div class="row" style="margin-top:8px"><input class="in" data-i="${i}" data-f="description" value="${it.description || ''}" placeholder="Descripción"><input class="in" style="max-width:80px" type="number" data-i="${i}" data-f="qty" value="${it.qty}"><span class="mut">×</span><input class="in" style="max-width:130px" type="number" data-i="${i}" data-f="price" value="${it.price ?? ''}" placeholder="Precio"></div>
+              ${(() => { const sv = services.find((x) => x.id === it.service_id); if (!sv || !(sv.tasks || []).length) return ''; const lv = it.level || sv.level || 5;
+                return html`<div class="qlv"><div class="row sm"><span>Nivel de entrega</span><div class="sp"></div><b style="font-weight:500" data-lvl="${i}">${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h</b></div>
+                  <input type="range" min="5" max="10" step="1" value="${lv}" data-qlv="${i}" style="width:100%">
+                  <div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div></div>`; })()}</div>`)}
             <div class="row" style="margin-top:10px"><select class="in" id="addSvc"><option value="">+ Agregar del catálogo…</option>
               ${plans ? html`<optgroup label="Planes (mensual)">${plans.plans.map((p) => html`<option value="plan:${p.id}">Plan ${p.name} — ${Q(p.precio)}</option>`)}</optgroup>` : ''}
               ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">✚ Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
@@ -337,10 +346,16 @@ export async function render(el, { me, sub, alive }) {
         }
         if (v.startsWith('plan:')) { const p = plans.plans.find((x) => x.id === v.slice(5)); doc.items.push({ name: `Plan ${p.name} — mensual`, description: p.promete || '', qty: 1, price: p.precio }); }
         else if (v === 'free') doc.items.push({ name: 'Servicio', description: '', qty: 1, price: null });
-        else if (v) { const s = services.find((x) => x.id === v); doc.items.push({ service_id: s.id, name: s.name, description: s.description || '', qty: 1, price: s.price ?? suggested(s) }); }
+        else if (v) { const s = services.find((x) => x.id === v); const lv = s.level || 5; doc.items.push({ service_id: s.id, name: s.name, description: s.description || '', qty: 1, level: lv, price: priceAt(s, lv) ?? s.price ?? null }); }
         draw();
       };
       $$('[data-f], #qdisc, #qvalid', el).forEach((inp) => inp.addEventListener('change', () => { sync(); draw(); }));
+      // Arrastrar el nivel: mientras se mueve solo cambian el texto y el precio; al soltar se recalcula todo.
+      $$('[data-qlv]', el).forEach((r) => {
+        const i = +r.dataset.qlv, it = doc.items[i], sv = services.find((x) => x.id === it.service_id);
+        r.addEventListener('input', () => { const lv = +r.value; const p = priceAt(sv, lv); $(`[data-lvl="${i}"]`, el).textContent = `${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h`; if (p != null) $(`[data-i="${i}"][data-f="price"]`, el).value = p; });
+        r.addEventListener('change', () => { sync(); it.level = +r.value; const p = priceAt(sv, it.level); if (p != null) it.price = p; draw(); });
+      });
     };
     const sync = () => {
       $$('[data-f]', el).forEach((inp) => { const it = doc.items[+inp.dataset.i]; const f = inp.dataset.f; it[f] = f === 'qty' || f === 'price' ? (inp.value === '' ? null : +inp.value) : inp.value; });
@@ -357,6 +372,14 @@ export async function render(el, { me, sub, alive }) {
         catch (e) { toast(e.message, true); }
       },
       pdf: () => { sync(); showPdf(doc); },
+      // De cotización a proyecto: los mismos servicios con su nivel, sus horas y sus tareas.
+      toProject: async () => {
+        sync();
+        const items = doc.items.filter((i) => i.service_id).map((i) => { const sv = services.find((x) => x.id === i.service_id); if (!sv) return null; const lv = i.level || sv.level || 5;
+          return { id: sv.id, name: sv.name, level: lv, hours: svcHours(sv, lv) * (+i.qty || 1), roles: (sv.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * (+i.qty || 1) })), price: (+i.price || 0) * (+i.qty || 1) }; }).filter(Boolean);
+        const r = await newProject({ team: await teamList(), me, projects: await col('projects').list(), tasks: [], pre: { kind: 'Custom', items, name: `${doc.client} · ${doc.number}`, quote_id: doc.id } });
+        if (r) { if (doc.status !== 'Aceptada') { doc.status = 'Aceptada'; try { const q = await C.save(doc); doc = JSON.parse(JSON.stringify(q)); quotes = quotes.map((x) => (x.id === q.id ? q : x)); } catch {} } toast('Proyecto creado desde la cotización ✅'); location.hash = '/operations/pipe'; }
+      },
       delQ: async () => { if (!(await confirmAsk(`¿Eliminar ${doc.number}?`))) return; await C.remove(doc.id); quotes = quotes.filter((x) => x.id !== doc.id); paint(); },
     };
     el.onclick = (e) => { const t = e.target.closest('[data-act]'); if (t && handlers[t.dataset.act]) { e.stopImmediatePropagation(); handlers[t.dataset.act](t, e); } };
@@ -374,7 +397,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="qto"><div><div class="lbl2">PARA</div><b style="font-weight:500;font-size:15px">${doc.client}</b>${doc.contact ? html`<div>${doc.contact}</div>` : ''}</div>
           <div><div class="lbl2">DE</div><b style="font-weight:500;font-size:15px">Inherent</b><div>inherentglobal.com</div></div></div>
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
-          <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b>${i.description ? html`<div style="color:#6b6257;font-size:12px">${i.description}</div>` : ''}</td><td class="n">${i.qty}</td><td class="n">${Q(i.price)}</td><td class="n">${Q((+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
+          <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b>${i.level ? html` <span style="color:#6b6257;font-size:11px">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div style="color:#6b6257;font-size:12px">${i.description}</div>` : ''}</td><td class="n">${i.qty}</td><td class="n">${Q(i.price)}</td><td class="n">${Q((+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
         <div class="qsum"><div><span>Subtotal</span><span>${Q(st)}</span></div>${doc.discount_pct ? html`<div><span>Descuento (${doc.discount_pct}%)</span><span>-${Q(st - tt)}</span></div>` : ''}<div class="tot"><span>Total</span><span>${Q(tt)}</span></div></div>
         ${doc.notes ? html`<div class="qnotes"><div class="lbl2">NOTAS Y CONDICIONES</div>${doc.notes.split('\n').map((l) => html`<div>${l}</div>`)}</div>` : ''}
         <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>
