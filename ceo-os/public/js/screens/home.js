@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ } from '../core.js';
+import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ , calQ, calAll, setCalAll } from '../core.js';
 import { videoCard } from './content.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -14,7 +14,7 @@ export async function render(el, { me, alive }) {
   let agenda = null, agErr = null;
   let week = null, weekP = null;
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`content/week?profile=${p}`).catch(() => null))).then(([a, b]) => { week = a; weekP = b; if (alive()) paint(); });
-  const loadAgenda = () => api(`google/calendar?from=${today()}&to=${today()}`).then((r) => { agenda = r.events; agErr = null; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
+  const loadAgenda = () => api(`google/calendar?from=${today()}&to=${today()}${calQ()}`).then((r) => { agenda = r.events; agErr = null; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
   loadAgenda();
   // La agenda se actualiza al volver a la pestaña y cada 2 minutos.
   const iv = setInterval(() => (alive() ? document.visibilityState === 'visible' && loadAgenda() : clearInterval(iv)), 120000);

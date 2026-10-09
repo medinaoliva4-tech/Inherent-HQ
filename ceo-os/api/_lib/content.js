@@ -1,5 +1,5 @@
 // Content: lo que dice el repo de cada perfil + un scrape semanal con Apify.
-//   cuentas propias → 00-onboarding/LINKS.md
+//   cuentas propias → 00-onboarding/LINKS.md y las que se agregan en la app
 //   competencia y referentes → los links de IG y TikTok en 99-referencias/investigacion/*.md
 //   guiones y plan → 04-contenido/<AAAA-MM>/…
 // Lo que se agrega en la app (hashtags del nicho, cuentas o videos sueltos) vive en la base:
@@ -35,19 +35,24 @@ export const AUTO_DEFAULT = new Set(['inherent', 'personal']);
 
 export async function cfg(slug) {
   const c = (await db.get('sources', 'cfg-' + slug)) || {};
-  return { hashtags: c.hashtags || [], accounts: c.accounts || [], videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), postear_drive: c.postear_drive || '', guiones_drive: c.guiones_drive || '', pillars: Array.isArray(c.pillars) ? c.pillars : [], ig_account: c.ig_account || '', v: c.v || null };
+  return { hashtags: c.hashtags || [], accounts: (c.accounts || []).map((a) => ({ ...a, kind: a.kind === 'referente' ? 'referente' : 'competencia' })), own: c.own || [], audience: c.audience || { general: '', nicho: '', exacto: '' }, videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), postear_drive: c.postear_drive || '', guiones_drive: c.guiones_drive || '', pillars: Array.isArray(c.pillars) ? c.pillars : [], ig_account: c.ig_account || '', v: c.v || null };
 }
 // Normaliza lo que manda la app: hashtags sin #, cuentas como links o @handle, videos como links.
 export function cleanCfg(b) {
   const tags = [...new Set((Array.isArray(b.hashtags) ? b.hashtags : String(b.hashtags || '').split(/[\s,]+/)).map((t) => String(t).replace(/^#/, '').toLowerCase().replace(/[^\p{L}\p{N}_]/gu, '')).filter(Boolean))].slice(0, 10);
-  const accounts = uniq((Array.isArray(b.accounts) ? b.accounts : []).map((a) => ({ red: a.red === 'tiktok' ? 'tiktok' : 'instagram', handle: String(a.handle || '').replace(/^@/, '').toLowerCase().replace(/[^a-z0-9._]/g, '') })).filter((a) => a.handle.length >= 2)).slice(0, 20);
+  const acc = (list, kinds) => uniq((Array.isArray(list) ? list : []).map((a) => ({ red: a.red === 'tiktok' ? 'tiktok' : 'instagram', handle: String(a.handle || '').replace(/^@/, '').toLowerCase().replace(/[^a-z0-9._]/g, ''), ...(kinds ? { kind: a.kind === 'referente' ? 'referente' : 'competencia' } : {}) })).filter((a) => a.handle.length >= 2));
+  const accounts = acc(b.accounts, true).slice(0, 30), own = acc(b.own, false).slice(0, 6);
+  const t = (v) => String(v || '').trim().slice(0, 400);
+  const audience = { general: t(b.audience?.general), nicho: t(b.audience?.nicho), exacto: t(b.audience?.exacto) };
   const videos = [...new Set((Array.isArray(b.videos) ? b.videos : []).map(String).filter((u) => /^https:\/\/(www\.)?(instagram\.com\/(p|reel|reels)\/|tiktok\.com\/@[^/]+\/video\/|vm\.tiktok\.com\/)/.test(u)))].slice(0, 20);
-  return { hashtags: tags, accounts, videos, auto: Boolean(b.auto) };
+  return { hashtags: tags, accounts, own, audience, videos, auto: Boolean(b.auto) };
 }
 
 export async function profile(p) {
-  const links = await readFile(`${p.root}/00-onboarding/LINKS.md`);
-  const own = links ? uniq(accountsIn(links.content)) : [];
+  // Las cuentas propias: las del onboarding (repo) y las que se agregan en la app.
+  const [links, c] = await Promise.all([readFile(`${p.root}/00-onboarding/LINKS.md`), cfg(p.slug)]);
+  const repoOwn = links ? uniq(accountsIn(links.content)) : [];
+  const own = uniq([...repoOwn.map((a) => ({ ...a, source: 'onboarding' })), ...c.own]);
   const ownKeys = new Set(own.map(key));
   const linkRows = links ? (tables(links.content)[0]?.rows || []).map((r) => ({ k: clean(r[0]), v: clean(r[1]).replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'), url: (String(r[1]).match(/\((https?:[^)\s]+)\)/) || [])[1] || null })).filter((r) => r.k && r.v && !/^(red|cuenta)$/i.test(r.k)) : [];
   const inv = listFiles(`${p.root}/99-referencias/investigacion`).filter((f) => /\.md$/i.test(f));
@@ -85,7 +90,7 @@ export async function sourcesOf(slug) {
   const p = (await profiles()).find((x) => x.slug === slug); if (!p) return null;
   const [full, c] = await Promise.all([profile(p), cfg(slug)]);
   const ownKeys = new Set(full.own.map(key));
-  return { own: full.own, accounts: uniq([...full.competitors, ...c.accounts]).filter((a) => !ownKeys.has(key(a))), hashtags: c.hashtags, videos: c.videos };
+  return { own: full.own, accounts: uniq([...full.competitors.map((a) => ({ ...a, kind: 'competencia' })), ...c.accounts]).filter((a) => !ownKeys.has(key(a))), hashtags: c.hashtags, videos: c.videos };
 }
 export async function startScrape(src) {
   const runs = [];
@@ -139,8 +144,13 @@ export async function settle(slug, who) {
     const isAdded = (x) => added.has(String(x.id)) || added.has(vid(x.url));
     const ranked = scored(all);
     const ownPosts = all.filter((x) => ownKeys.has(key(x)));
+    // De quién es cada post: referente, competencia o el nicho (hashtags).
+    const kindOf = new Map((doc.src?.accounts || []).map((a) => [key(a), a.kind || 'competencia']));
+    for (const x of all) x.kind = ownKeys.has(key(x)) ? 'propia' : kindOf.get(key(x)) || 'nicho';
+    const latest = (k) => all.filter((x) => x.kind === k).sort((a, b) => String(b.at).localeCompare(String(a.at))).slice(0, 12);
     const result = {
       week: doc.week,
+      refs: latest('referente'), comp: latest('competencia'),
       top: ranked.filter((x) => !ownKeys.has(key(x)) && !isAdded(x)).slice(0, 10),
       added: ranked.filter(isAdded),
       own: ownPosts.sort((a, b) => String(b.at).localeCompare(String(a.at))).slice(0, 30),
