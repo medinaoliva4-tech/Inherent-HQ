@@ -6,6 +6,7 @@ import { guard, guardAny, areasFor, COLLS, READ_ALSO, WRITE_ALSO, canWrite, user
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
 import * as zernio from './_lib/zernio.js';
+import * as mcp from './_lib/mcp.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -51,7 +52,7 @@ on('GET', 'auth/dev', async (req, res) => {
 on('GET', 'me', async (req, res) => {
   const u = await guard(req, res, undefined, { client: true }); if (!u) return;
   const t = await db.get('team', u.email);
-  res.json({ ...u, areas: areasFor(u.role, u.roles), google: t?.google || {} });
+  res.json({ ...u, areas: areasFor(u.role, u.roles), google: t?.google || {}, mcp: Boolean(t?.mcp_hash) });
 });
 // Cada quien cambia su propia foto (una imagen chica que el navegador ya recortó).
 on('PUT', 'me/photo', async (req, res) => {
@@ -520,6 +521,20 @@ on('GET', 'portal', async (req, res) => {
   }
   res.json(out);
 });
+
+// ---------- Conector de Claude / Codex (MCP): un link personal por persona ----------
+const appUrl = (req) => (process.env.APP_URL?.trim() || `https://${req.headers.host}`).replace(/\/$/, '');
+on('POST', 'me/mcp', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const t = await mcp.newToken(u.email);
+  res.json({ url: `${appUrl(req)}/api/mcp/${t}` });
+});
+on('DELETE', 'me/mcp', async (req, res) => { const u = await guard(req, res); if (!u) return; await mcp.revoke(u.email); res.json({ ok: true }); });
+on('POST', 'mcp/:token', async (req, res) => {
+  const r = await mcp.handle(req.params.token, body(req));
+  r.json ? res.status(r.status).json(r.json) : res.status(r.status).end();
+});
+on('GET', 'mcp/:token', async (req, res) => res.status(405).json({ error: 'Este link es para Claude o Codex (MCP por HTTP)' }));
 
 export default async function handler(req, res) {
   try {
