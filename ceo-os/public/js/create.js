@@ -5,19 +5,19 @@ import { DEPTS, deptsOfPlan, phasesFor, tasksFor, meetingsFor, holders, hoursAt,
 const cleanPlan = (s) => String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, '');
 
 // ---------- Proyecto ----------
-export async function newProject({ team, me, projects = [], tasks = [] }) {
+export async function newProject({ team, me, projects = [], tasks = [], pre = {} }) {
   let clients = [], services = [], rates = null;
   [clients, services, rates] = await Promise.all([api('repo/clients').then((r) => r.clients.filter((c) => c.hasPlan)).catch(() => []), col('services').list().catch(() => []), me.role === 'ceo' ? col('rates').get('default').catch(() => null) : null]);
   const mes = today().slice(0, 7);
   const a = await wizard('Nuevo proyecto', [
-    { k: 'kind', q: '¿Qué tipo de proyecto es?', type: 'cards', req: true, opts: [
+    { k: 'kind', q: '¿Qué tipo de proyecto es?', type: 'cards', req: true, v: pre.kind, show: () => !pre.kind, opts: [
       { v: 'Ciclo mensual', i: '🔁', l: 'Ciclo de contenido', d: 'Del día 1 al 20, con los departamentos del plan' },
       { v: 'Proyecto', i: '🧩', l: 'Proyecto por fases', d: 'Algo puntual: una web, un lanzamiento' },
       { v: 'Growth', i: '📈', l: 'Business Growth', d: 'Consultoría: ganar más y gastar menos' },
       { v: 'Custom', i: '🧱', l: 'Proyecto custom', d: 'Eliges los servicios del catálogo y qué tan fuerte va cada uno' }] },
     { k: 'client', q: '¿Para quién?', type: 'cards', req: true, opts: [...clients.map((c) => ({ v: c.slug, i: '🏷️', l: c.slug.toUpperCase(), d: cleanPlan(c.plan) })), { v: 'inherent', i: '🏠', l: 'Inherent', d: 'Nuestras propias redes' }, { v: '_', i: '⚙️', l: 'Interno', d: 'Sin cliente' }] },
     { k: 'start', q: '¿Cuándo arranca?', type: 'when', req: true, sub: (x) => (x.kind === 'Ciclo mensual' ? 'Es el día 1 del ciclo' : '') },
-    { k: 'svcs', q: '¿Qué servicios lleva?', sub: 'Del catálogo de Sales. En el siguiente paso eliges qué tan fuerte va cada uno.', type: 'multi', req: true, show: (x) => x.kind === 'Custom',
+    { k: 'svcs', q: '¿Qué servicios lleva?', sub: 'Del catálogo de Sales. En el siguiente paso eliges qué tan fuerte va cada uno.', type: 'multi', req: true, show: (x) => x.kind === 'Custom' && !pre.items,
       opts: () => services.map((sv) => ({ v: sv.id, l: sv.name, d: `${sv.category || ''} · ${svcHours(sv, 5)}–${svcHours(sv, 10)} h` })) },
     { k: 'depts', q: '¿Qué departamentos corren?', sub: 'Ya vienen marcados los de su plan contratado', type: 'multi', show: (x) => x.kind !== 'Growth' && x.kind !== 'Custom',
       opts: DEPTS.map(([n, name]) => ({ v: n, l: `${n} ${name}` })), v: (x) => deptsOfPlan(clients.find((c) => c.slug === x.client)) },
@@ -25,7 +25,7 @@ export async function newProject({ team, me, projects = [], tasks = [] }) {
       { v: 'si', i: '⚡', l: 'Sí, con responsables y fechas', d: 'Una por departamento, según el perfil de cada quien' },
       { v: 'no', i: '✋', l: 'No, las agrego yo' }] },
     { k: 'name', q: 'Último paso: ¿cómo se llama?', type: 'text', req: true, ph: 'Nombre del proyecto',
-      v: (x) => `${x.client === '_' ? 'Interno' : (x.client || '').toUpperCase()} · ${x.kind === 'Ciclo mensual' ? 'ciclo ' + (x.start || today()).slice(0, 7) : x.kind === 'Growth' ? 'Business Growth' : x.kind === 'Custom' ? 'custom' : 'proyecto'}` },
+      v: pre.name ? pre.name : (x) => `${x.client === '_' ? 'Interno' : (x.client || '').toUpperCase()} · ${x.kind === 'Ciclo mensual' ? 'ciclo ' + (x.start || today()).slice(0, 7) : x.kind === 'Growth' ? 'Business Growth' : x.kind === 'Custom' ? 'custom' : 'proyecto'}` },
   ]);
   if (!a) return null;
   const c = clients.find((x) => x.slug === a.client);
@@ -34,12 +34,12 @@ export async function newProject({ team, me, projects = [], tasks = [] }) {
   if (!a.name) a.name = `${(a.client || '').toUpperCase()} · ${kind}`;
   const depts = new Set(a.depts || DEPTS.map(([d]) => d));
   // Custom: qué tan fuerte va cada servicio (5 sencillo · 10 fuerte).
-  const items = kind === 'Custom' ? await levels(services.filter((sv) => a.svcs.includes(sv.id)), rates) : null;
+  const items = pre.items || (kind === 'Custom' ? await levels(services.filter((sv) => a.svcs.includes(sv.id)), rates) : null);
   if (kind === 'Custom' && !items) return null;
   try {
     const p = await col('projects').create({ name: a.name, kind, line: kind === 'Growth' ? 'growth' : 'contenido', cycle: kind === 'Ciclo mensual' ? start.slice(0, 7) : '',
       client: c ? c.slug.toUpperCase() : a.client === 'inherent' ? 'Inherent' : '', client_slug: c ? c.slug : a.client === 'inherent' ? 'inherent' : '', color: ['olive', 'terra', 'ink'][projects.length % 3],
-      phases: phasesFor(kind, start), meetings: meetingsFor(kind, start), ...(items ? { services: items, price: items.reduce((x, i) => x + (i.price || 0), 0) || null } : {}), pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: depts.has(d) ? 'todo' : 'off' }])) });
+      phases: phasesFor(kind, start), meetings: meetingsFor(kind, start), ...(items ? { services: items, price: items.reduce((x, i) => x + (i.price || 0), 0) || null } : {}), ...(pre.quote_id ? { quote_id: pre.quote_id } : {}), pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: depts.has(d) ? 'todo' : 'off' }])) });
     let made = [];
     if (a.auto === 'si') for (const t of (items ? customTasks(p, items, team, me.email) : tasksFor(p, team, tasks, me.email))) made.push(await col('tasks').create({ checklist: [], comments: [], ...t }));
     // Si el cliente todavía no tiene su Drive, se crea y se conecta (sin frenar si falla).
