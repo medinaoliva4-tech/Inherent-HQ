@@ -184,7 +184,7 @@ export async function scrape(slug, who) {
 export const windsorOn = () => Boolean(process.env.WINDSOR_API_KEY?.trim());
 // Dos lecturas: la cuenta día por día (alcance, vistas, seguidores) y cada post/reel con su watch time.
 const ACC_FIELDS = 'account_name,date,followers_count,reach,views';
-const MEDIA_FIELDS = 'account_name,date,timestamp,media_id,media_type,media_product_type,media_permalink,media_thumbnail_url,media_caption,media_reach,media_views,media_like_count,media_comments_count,media_saved,media_shares,media_engagement,media_reel_avg_watch_time,media_reel_total_watch_time';
+const MEDIA_FIELDS = 'account_name,date,timestamp,media_id,media_type,media_product_type,media_permalink,media_thumbnail_url,media_url,media_caption,media_reach,media_views,media_like_count,media_comments_count,media_saved,media_shares,media_engagement,media_reel_avg_watch_time,media_reel_total_watch_time';
 async function windsor(fields, preset) {
   const key = process.env.WINDSOR_API_KEY?.trim();
   const r = await fetch(`https://connectors.windsor.ai/instagram?api_key=${encodeURIComponent(key)}&date_preset=${preset}&fields=${fields}`);
@@ -208,7 +208,7 @@ export async function instagram(handles, days = 30, hint = '') {
     const likes = n(x.media_like_count), comments = n(x.media_comments_count), saves = n(x.media_saved), shares = n(x.media_shares);
     const reel = /reel|clips/i.test(`${x.media_product_type} ${x.media_type}`);
     return { id: x.media_id, date: String(x.timestamp || x.date).slice(0, 10), type: reel ? 'Reel' : /carousel/i.test(x.media_type) ? 'Carrusel' : /video/i.test(x.media_type) ? 'Video' : 'Foto', reel,
-      url: /^https:\/\/(www\.)?instagram\.com\//.test(x.media_permalink || '') ? x.media_permalink : null, thumb: /^https:\/\//.test(x.media_thumbnail_url || '') ? x.media_thumbnail_url : null,
+      url: /^https:\/\/(www\.)?instagram\.com\//.test(x.media_permalink || '') ? x.media_permalink : null, thumb: [x.media_thumbnail_url, reel || /video/i.test(x.media_type) ? '' : x.media_url].find((u) => /^https:\/\//.test(u || '')) || null, // fotos y carruseles: su imagen
       caption: String(x.media_caption || '').slice(0, 140), reach: n(x.media_reach), views: n(x.media_views), likes, comments, saves, shares, eng: n(x.media_engagement) || likes + comments + saves + shares,
       avg: Math.round(n(x.media_reel_avg_watch_time) / 100) / 10, total: Math.round(n(x.media_reel_total_watch_time) / 1000) };
   }).sort((a, z) => z.date.localeCompare(a.date));
@@ -233,5 +233,8 @@ export async function instagram(handles, days = 30, hint = '') {
     series, reels: reels.slice(0, 30),
     watch: { avg: withAvg.length ? Math.round((sum(withAvg, 'avg') / withAvg.length) * 10) / 10 : null, hours: Math.round(sum(reels, 'total') / 360) / 10, hookLost: withAvg.filter((x) => x.avg < 3).length, n: withAvg.length },
     top: [...recent].sort((a, z) => z.eng - a.eng).slice(0, 8),
+    // Lo mejor por tipo (Home: Reels | Estáticos). Si en el periodo no hubo de ese tipo, los últimos 90 días.
+    ...(() => { const best = (f) => { const r = recent.filter(f), l = r.length ? r : media.filter(f); return { items: [...l].sort((a, z) => z.eng - a.eng).slice(0, 6), days: r.length ? days : 90 }; };
+      const R = best((x) => x.reel || x.type === 'Video'), S = best((x) => !x.reel && x.type !== 'Video'); return { topReels: R.items, topReelsDays: R.days, topStatic: S.items, topStaticDays: S.days }; })(),
   };
 }
