@@ -1,3 +1,4 @@
+import { upcoming, meetingRows, isMine as meetIsMine } from '../meetings.js';
 import { html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
 import { newProject as wizProject, newTask as wizTask } from '../create.js';
@@ -67,6 +68,13 @@ export async function render(el, { me, sub, alive }) {
   const kpis = (list) => html`<div class="wkkpis">${list.map(([l, v, c, act]) => html`<div class="wkkpi" ${act ? raw(`data-act="${act}"`) : ''}><span class="lbl">${l}</span><b style="${c ? `color:${c}` : ''}">${v}</b></div>`)}</div>`;
   const box = (title, sub, body, right = '') => html`<div class="card wkbox"><div class="wkhead"><div><h3>${title}</h3>${sub ? html`<span class="mut sm">${sub}</span>` : ''}</div><div class="sp"></div>${right}</div>${body}</div>`;
 
+  // Las reuniones de los proyectos donde le toca estar a esta persona (próximos 30 días).
+  function myMeetings() {
+    const lim = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
+    const l = upcoming(projects).filter((m) => m.date <= lim && meetIsMine(m, team, who)).slice(0, 3);
+    return l.length ? html`<div style="margin-bottom:14px">${box('Mis próximas reuniones', 'Las de tus proyectos: quiénes van y de qué se habla', meetingRows(l, team, { ...me, email: who }, false))}</div>` : '';
+  }
+
   // ---------- pantalla ----------
   function paint() {
     if (!alive()) return;
@@ -76,7 +84,7 @@ export async function render(el, { me, sub, alive }) {
         ${myRoles.length > 1 ? html`<div class="tabs" style="margin:0">${myRoles.map((r) => html`<button class="${r === role ? 'on' : ''}" data-act="role" data-r="${r}">${roleName(r).split(' · ')[0]}</button>`)}</div>` : ''}
         ${canCoord ? html`<button class="btn ghost" data-act="newProject">+ Proyecto</button>` : ''}<button class="btn" data-act="newTask">+ Tarea</button></div>
       <div class="tabs" style="margin:0 0 14px">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
-      <div id="wbody"></div>`);
+      ${tab === 'zona' ? myMeetings() : ''}<div id="wbody"></div>`);
     const vs = $('#viewAs', el); if (vs) vs.onchange = () => { location.hash = vs.value ? `/work/zona/_/${vs.value}` : '/work'; };
     const b = $('#wbody', el);
     if (tab === 'zona') return (ZONES[role] || noRole)(b);
@@ -244,7 +252,7 @@ export async function render(el, { me, sub, alive }) {
     return box('Por cliente', 'Assets y prompts de cada marca', html`<select class="in" id="clientSel" style="margin-bottom:8px">${slugs.map((x) => html`<option value="${x}" ${x === clientSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select>
       ${!clientSel ? html`<div class="mut sm">Sin clientes con proyecto.</div>` : html`
       ${assets ? html`<a class="wkrow" href="${assets}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow"><b style="font-weight:500">Assets</b><span class="mut sm"> · logos, fotos, videos crudos</span></span><span class="mut">↗</span></a>` : html`<div class="wkrow"><span class="fi">${IC.drive}</span><span class="grow mut sm">Sin carpeta de assets. Se agrega en Clients → ${clientSel.toUpperCase()} → Editar datos.</span></div>`}
-      ${[['📝', 'Guiones', 'en Drive', guionesLink(clientSel)], ['🎬', 'Videos por postear', 'carpeta de Drive', driveOf(clientSel).postear_drive], ['📅', 'Calendario', 'Planner del mes', canContent ? `#/content/plan/${clientSel}` : null]].map(([i, t, sub, h]) => h
+      ${[['📝', 'Guiones', 'en Drive', guionesLink(clientSel)], ['🎬', 'Videos por postear', 'carpeta de Drive', driveOf(clientSel).postear_drive], ...(canContent ? [['📅', 'Calendario', 'Planner del mes', `#/content/plan/${clientSel}`]] : [])].map(([i, t, sub, h]) => h
         ? html`<a class="wkrow" href="${h}" ${/^https/.test(h) ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span style="width:22px;text-align:center">${i}</span><span class="grow">${t}<span class="mut sm"> · ${sub}</span></span><span class="mut">${/^https/.test(h) ? '↗' : '›'}</span></a>`
         : html`<div class="wkrow"><span style="width:22px;text-align:center">${i}</span><span class="grow mut sm">${t}: ${driveOf(clientSel).loading ? 'cargando…' : 'sin carpeta conectada. La conecta Content.'}</span></div>`)}
       <div class="lbl" style="color:var(--mut);margin:10px 0 6px">Prompts de ${clientSel.toUpperCase()}</div>

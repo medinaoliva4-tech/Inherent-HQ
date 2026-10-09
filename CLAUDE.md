@@ -41,6 +41,10 @@ clients/                   ← LOS CLIENTES
 **Tres carpetas, tres preguntas:**
 `inherent/` **qué somos** · `agents/` **quién lo hace** · `clients/` **para quién**
 
+🗂️ **Dónde vive cada cosa:** el repo guarda **cómo se hace el trabajo y los agentes**. El trabajo
+**se entrega en Inherent OS** *(el perfil de cada quien y el portal del cliente)*. El material de
+cada cliente *(guiones, videos por publicar, assets)* **vive en Google Drive**, conectado a Inherent OS.
+
 ## Cómo se compone un agente
 
 Todo agente de Inherent tiene tres capas. **Esta es la definición base — vale para todos.**

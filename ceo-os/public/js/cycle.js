@@ -51,3 +51,48 @@ export function tasksFor(p, team, existing, meEmail) {
   }
   return out;
 }
+
+// ---------- Reuniones por tipo de proyecto ----------
+// Son las del plan: cuándo, quiénes, de qué se habla y qué se aprueba. Día = día desde que arranca.
+// [reunión, día, quiénes, temas, qué se aprueba]
+export const WHO = { ceo: 'CEO', coo: 'COO', content: 'Content', video: 'Editor de video', finance: 'Finance', prod: 'Producción', especialista: 'Especialista', cliente: 'Cliente' };
+export const MEETINGS = {
+  'Ciclo mensual': [
+    ['Arranque del ciclo', 1, ['ceo', 'coo', 'cliente'], ['Resultados del mes pasado', 'Meta y foco del ciclo', 'Ofertas que se empujan', 'Fechas clave y lanzamientos'], 'La estrategia del ciclo'],
+    ['Plan y calendario', 3, ['ceo', 'content'], ['Pilares y campañas', 'Calendario y shot list', 'Qué se graba y dónde'], 'El plan del ciclo'],
+    ['Pre-producción', 5, ['coo', 'content', 'prod'], ['Locaciones y talento', 'Call sheet', 'Material del cliente que falta'], ''],
+    ['Revisión interna', 15, ['coo', 'content', 'video'], ['Piezas montadas', 'Cambios', 'Captions y programación'], 'Las piezas pasan a cambios'],
+    ['Presentación al cliente', 20, ['ceo', 'coo', 'cliente'], ['Piezas del mes', 'Calendario de publicación', 'Cambios finales'], 'Lo que se publica desde el día 1'],
+  ],
+  Growth: [
+    ['Arranque y diagnóstico', 1, ['ceo', 'finance', 'cliente'], ['Meta financiera', 'Números de hoy', 'Dónde está trabado el negocio'], ''],
+    ['Auditoría con el especialista', 8, ['ceo', 'especialista', 'cliente'], ['«¿Qué harías si fuera tu empresa?»', 'Hallazgos'], ''],
+    ['Presentación del plan', 15, ['ceo', 'finance', 'cliente'], ['Oferta y precio', 'Canales', 'Metas y cómo se miden'], 'El plan de crecimiento'],
+    ['Seguimiento de implementación', 22, ['coo', 'finance'], ['Avance de tareas', 'Bloqueos'], ''],
+    ['Revisión de resultados', 29, ['ceo', 'finance', 'cliente'], ['Metas contra lo real', 'Qué se ajusta'], 'Los ajustes del siguiente mes'],
+  ],
+  Proyecto: [
+    ['Kickoff', 1, ['ceo', 'coo', 'cliente'], ['Objetivo y alcance', 'Entregables y fechas', 'Quién decide del lado del cliente'], 'El alcance'],
+    ['Aprobación de la estrategia', 8, ['ceo', 'cliente'], ['La propuesta', 'Riesgos'], 'La estrategia'],
+    ['Revisión de avance', 15, ['coo', 'cliente'], ['Lo construido', 'Cambios'], ''],
+    ['Entrega', 22, ['ceo', 'coo', 'cliente'], ['Entrega final', 'Siguientes pasos'], 'La entrega'],
+  ],
+};
+MEETINGS.Custom = MEETINGS.Proyecto;
+export const meetingsFor = (kind, start) => (MEETINGS[kind] || []).map(([name, day, who, topics, approves]) => ({ name, date: addDays(start, day - 1), who, topics, approves, status: 'todo' }));
+
+// ---------- Servicios: nivel de entrega 5 (sencillo) a 10 (fuerte) ----------
+// Cada rol tiene sus horas en nivel 5 y en nivel 10; en medio se reparte parejo.
+export const LV = [5, 10];
+export const hoursAt = (t, lv = 5) => { const h5 = +t.hours || 0; const h10 = t.hours10 == null || t.hours10 === '' ? h5 * 2 : +t.hours10; return Math.round((h5 + ((h10 - h5) * (lv - 5)) / 5) * 2) / 2; };
+export const svcHours = (s, lv = s.level || 5) => (s.tasks || []).reduce((a, t) => a + hoursAt(t, lv), 0);
+export function svcCost(s, rates, lv = s.level || 5) {
+  if (!rates) return null;
+  const rate = (role) => rates.roles?.find((r) => r.role === role)?.rate ?? null; const miss = [];
+  const cost = (s.tasks || []).reduce((a, t) => { const r = rate(t.role); if (r == null) miss.push(t.role); return a + (r || 0) * hoursAt(t, lv); }, 0);
+  return { cost, miss };
+}
+// El precio guardado es el del nivel del servicio; en otro nivel sube o baja con las horas.
+export const svcPrice = (s, lv) => { const base = svcHours(s, s.level || 5); return s.price && base ? Math.round((s.price * svcHours(s, lv)) / base / 50) * 50 : null; };
+// El perfil de trabajo que suele cubrir cada rol del catálogo (para asignar las tareas del proyecto Custom).
+export const roleToWork = (r) => (/video|edici/i.test(r) ? 'video' : /producci|grabaci|foto/i.test(r) ? 'prod' : /financ|contab/i.test(r) ? 'finance' : /estrateg|ceo/i.test(r) ? 'ceo' : /conten|creativ|diseñ|community|copy|pauta|operador/i.test(r) ? 'content' : 'coo');

@@ -1,4 +1,5 @@
-import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initials, IC, $, docView, docHead, ask, confirmAsk , teamList } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initials, IC, $, docView, docHead, ask, confirmAsk , teamList, wizard } from '../core.js';
+import { upcoming, meetingRows, schedule, markDone } from '../meetings.js';
 import { loadPosts, postsBoard } from '../posts.js';
 
 // Clients: la página entera de cada cliente. El plan y los accesos salen del repo;
@@ -6,6 +7,33 @@ import { loadPosts, postsBoard } from '../posts.js';
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
 const RM = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Logrado', 'green'] };
 const COLORS = ['olive', 'terra', 'ink'];
+// El roadmap son METAS: qué queremos, cómo se mide, dónde estamos, el desglose de tareas y los checkpoints.
+// (Los hitos viejos se leen como metas sin métrica.)
+const HEALTH = { ok: ['En camino', 'green', '#5c6b22'], riesgo: ['En riesgo', 'amber', '#c29a2a'], off: ['Fuera de ruta', 'red', '#a3392a'] };
+const goalsOf = (a) => a?.goals || (a?.roadmap || []).map((x) => ({ goal: x.t, due: x.date || '', status: x.status || 'todo', note: x.note || '', metric: '', baseline: '', target: '', current: '', tasks: [], checks: [] }));
+const num = (v) => { const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, '')); return Number.isFinite(n) ? n : null; };
+const pctOf = (g) => { if (g.status === 'done') return 100; const b = num(g.baseline) ?? 0, t = num(g.target), c = num(g.current); if (t == null || c == null || t === b) return null; return Math.max(0, Math.min(100, Math.round(((c - b) / (t - b)) * 100))); };
+const healthOf = (g) => [...(g.checks || [])].reverse().find((c) => c.done)?.health || null;
+function checkpoints(from, to, every) {
+  const out = []; const d = new Date(from + 'T12:00'), end = new Date((to || from) + 'T12:00');
+  const step = () => (every === 'semanal' ? d.setDate(d.getDate() + 7) : every === 'quincenal' ? d.setDate(d.getDate() + 14) : d.setMonth(d.getMonth() + 1));
+  step(); while (d < end && out.length < 24) { out.push({ date: d.toISOString().slice(0, 10), done: false }); step(); }
+  out.push({ date: to || from, done: false, final: true }); return out;
+}
+async function goalWizard() {
+  const a = await wizard('Nueva meta del roadmap', [
+    { k: 'goal', q: '¿Cuál es la meta?', type: 'text', req: true, ph: 'Ej. Facturar Q120K al mes', chips: ['Facturar más al mes', 'Duplicar los leads', 'Lanzar la nueva oferta', 'Subir el ticket promedio'] },
+    { k: 'metric', q: '¿Cómo sabemos que se logró?', sub: 'La métrica que vamos a mirar', type: 'text', req: true, ph: 'Ej. Facturación mensual', chips: ['Facturación mensual', 'Leads por mes', 'Ventas cerradas', 'Ticket promedio', 'Seguidores', 'ROAS'] },
+    { k: 'baseline', q: '¿Dónde está hoy?', type: 'text', ph: 'Ej. Q80,000' },
+    { k: 'target', q: '¿A cuánto llegamos?', type: 'text', req: true, ph: 'Ej. Q120,000' },
+    { k: 'due', q: '¿Para cuándo?', type: 'date', req: true },
+    { k: 'tasks', q: 'El desglose: ¿qué hay que hacer?', sub: 'Una tarea por línea', type: 'textarea', ph: 'Nueva oferta con precio\nLanding y checkout\nCampaña de lanzamiento' },
+    { k: 'every', q: '¿Cada cuánto revisamos cómo va?', type: 'cards', req: true, opts: [{ v: 'semanal', i: '📍', l: 'Cada semana' }, { v: 'quincenal', i: '📍', l: 'Cada 15 días' }, { v: 'mensual', i: '📍', l: 'Cada mes' }] },
+  ], 'Agregar meta');
+  if (!a) return null;
+  return { goal: a.goal, metric: a.metric, baseline: a.baseline || '', target: a.target, current: a.baseline || '', due: a.due, status: 'now', note: '', every: a.every,
+    tasks: String(a.tasks || '').split('\n').map((t) => t.trim()).filter(Boolean).map((t) => ({ t, done: false })), checks: checkpoints(today(), a.due, a.every) };
+}
 const cleanPlan = (s) => String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, '');
 const iso = (d) => d.toISOString().slice(0, 10);
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
@@ -23,12 +51,12 @@ export async function render(el, { me, sub, alive }) {
   // ---------- Lista de clientes ----------
   function list() {
     mount(el, html`<div class="hello"><h1>Clients</h1><p>Cada cliente, <em>su página</em>.</p></div>
-      ${clients.length ? html`<div class="grid g3">${clients.map((c, i) => { const a = acct(c.slug); const rm = a?.roadmap || []; const done = rm.filter((x) => x.status === 'done').length; const ps = projects.filter((p) => p.client_slug === c.slug);
-        const next = rm.filter((x) => x.status !== 'done').sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')))[0];
+      ${clients.length ? html`<div class="grid g3">${clients.map((c, i) => { const a = acct(c.slug); const rm = goalsOf(a); const done = rm.filter((x) => x.status === 'done').length; const ps = projects.filter((p) => p.client_slug === c.slug);
+        const next = rm.filter((x) => x.status !== 'done').sort((x, z) => String(x.due || '9').localeCompare(String(z.due || '9')))[0];
         return html`<a class="card feat ${COLORS[i % 3]}" href="#/clients/${c.slug}" style="min-height:230px;text-decoration:none">
           <div class="chead"><div class="ico" style="font-size:13px;font-weight:700">${initials(a?.name || c.slug)}</div><h3>${a?.name || c.slug.toUpperCase()}<br><span class="lbl">${c.plan || 'Sin plan'}</span></h3><span class="arrow">↗</span></div>
           <div class="lbl">Roadmap</div><div class="big" style="font-size:46px">${done}<small>/${rm.length}</small></div>
-          <div class="foot"><span>${next ? 'Sigue: ' + next.t : rm.length ? 'Roadmap completo' : 'Sin roadmap todavía'}</span><span>${ps.length} proyecto${ps.length === 1 ? '' : 's'}</span></div></a>`; })}</div>`
+          <div class="foot"><span>${next ? 'Meta: ' + next.goal : rm.length ? 'Metas logradas' : 'Sin roadmap todavía'}</span><span>${ps.length} proyecto${ps.length === 1 ? '' : 's'}</span></div></a>`; })}</div>`
       : html`<div class="empty"><b>No encontré clientes en el repo</b>Cada cliente es un folder en clients/ con su 00-onboarding/plan-contratado.md.</div>`}
       ${onboarding.length ? html`<div class="sec-title"><h2>En onboarding</h2><span class="mut sm">Tienen folder en el repo pero todavía no su plan contratado</span></div><div class="grid g4">${onboarding.map((c) => html`<div class="card wkbox"><b style="font-weight:500">${c.slug.toUpperCase()}</b><div class="mut sm" style="margin-top:4px">Falta <code>00-onboarding/plan-contratado.md</code> (lo deja ① Strategy). Cuando exista, aparece arriba y se puede crear su ciclo.</div></div>`)}</div>` : ''}`);
   }
@@ -46,7 +74,7 @@ export async function render(el, { me, sub, alive }) {
     const saveAcc = async (next) => { try { const r = next.v ? await AC.save(next) : await AC.create(next); a = r; return r; } catch (e) { toast(e.message, true); return null; } };
 
     function paint() {
-      const rm = [...(a.roadmap || [])].map((x, i) => ({ ...x, i })).sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')));
+      const rm = goalsOf(a).map((x, i) => ({ ...x, i }));
       const done = rm.filter((x) => x.status === 'done').length;
       const arts = ps.flatMap((p) => DEPTS.map(([n, name]) => ({ p, n, name, art: p.pipeline?.[n]?.artifact })).filter((x) => x.art?.url));
       mount(el, html`
@@ -58,14 +86,13 @@ export async function render(el, { me, sub, alive }) {
             <div class="row" style="gap:8px"><button class="btn cream" data-act="pdf">↓ Roadmap PDF</button><button class="btn ghost" data-act="editAcc" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)">Editar datos</button></div></div>
           <div class="split" style="margin-top:26px"><div><span class="lbl">Roadmap</span><b>${done}/${rm.length}</b></div><div><span class="lbl">Proyectos</span><b>${ps.length}</b></div><div><span class="lbl">Tareas abiertas</span><b>${tk.filter((t) => t.status !== 'Hecha').length}</b></div><div><span class="lbl">Entregables</span><b>${arts.length}</b></div></div>
         </div>
-        <div class="row" style="gap:8px;flex-wrap:wrap;margin:18px 0 6px">${[['rm', 'Roadmap'], ['tl', 'Timeline'], ['tk', 'Tareas'], ['ct', 'Contenido'], ['ac', 'Accesos'], ['en', 'Entregables'], ['pl', 'Plan']].map(([k, l]) => html`<button class="chip" data-act="jump" data-k="${k}" style="padding:8px 14px">${l}</button>`)}</div>
+        <div class="row" style="gap:8px;flex-wrap:wrap;margin:18px 0 6px">${[['rm', 'Roadmap'], ['mt', 'Reuniones'], ['tl', 'Timeline'], ['tk', 'Tareas'], ['ct', 'Contenido'], ['ac', 'Accesos'], ['en', 'Entregables'], ['pl', 'Plan']].map(([k, l]) => html`<button class="chip" data-act="jump" data-k="${k}" style="padding:8px 14px">${l}</button>`)}</div>
 
-        <div class="sec-title" id="s-rm"><h2>Roadmap</h2><span class="mut sm">Los hitos grandes: a dónde vamos y cuándo</span></div>
-        <div class="card">
-          ${rm.length ? html`<div class="road">${rm.map((x) => html`<div class="step ${x.status}"><i></i><div style="flex:1"><div class="row" style="gap:8px"><b style="font-weight:500;font-size:16px">${x.t}</b><button class="chip ${RM[x.status]?.[1] || ''}" data-act="rmst" data-i="${x.i}" style="font-size:11px">${RM[x.status]?.[0] || 'Pendiente'}</button><div class="sp"></div><span class="mut sm">${x.date ? fdateLong(x.date) : 'Sin fecha'}</span><button class="sm mut" data-act="rmedit" data-i="${x.i}" title="Editar">✎</button><button class="sm mut" data-act="rmdel" data-i="${x.i}" title="Quitar">✕</button></div>${x.note ? html`<div class="mut sm" style="margin-top:4px">${x.note}</div>` : ''}</div></div>`)}</div>`
-            : html`<div class="mut sm">Todavía no hay hitos. Agrega el primero abajo.</div>`}
-          <div class="row" style="margin-top:14px;gap:6px"><input class="in" id="rmt" placeholder="Nuevo hito (ej. Lanzar la nueva oferta)"><input class="in" id="rmd" type="date" style="max-width:160px"><button class="btn" data-act="rmadd">+ Hito</button></div>
-        </div>
+        <div class="sec-title" id="s-rm"><h2>Roadmap</h2><span class="mut sm">Metas · cómo se miden · desglose · checkpoints</span><div class="sp"></div><button class="btn" data-act="gadd">+ Meta</button></div>
+        ${rm.length ? html`<div class="goals">${rm.map(goalCard)}</div>` : html`<div class="empty"><b>Sin metas todavía</b>Una meta trae cómo la medimos, dónde estamos, a dónde vamos, las tareas y cuándo revisamos.</div>`}
+
+        <div class="sec-title" id="s-mt"><h2>Reuniones</h2><span class="mut sm">Las de cada proyecto, con quiénes van y qué se aprueba</span></div>
+        <div class="card">${meetingRows(upcoming(ps), team, me, true)}</div>
 
         <div class="sec-title" id="s-tl"><h2>Timeline</h2><a href="#/operations/time">En Operations →</a></div>
         ${timeline()}
@@ -117,22 +144,58 @@ export async function render(el, { me, sub, alive }) {
       postsBoard(b, slug, posts, (l) => { posts = l; renderPosts(); });
     }
 
+    function goalCard(g) {
+      const pct = pctOf(g), h = healthOf(g), td = (g.tasks || []).filter((t) => t.done).length;
+      return html`<div class="card goal ${g.status}">
+        <div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500;font-size:17px">${g.goal}</b>
+          <button class="chip ${RM[g.status]?.[1] || ''}" data-act="gst" data-g="${g.i}" style="font-size:11px">${RM[g.status]?.[0] || 'Pendiente'}</button>
+          ${h ? html`<span class="chip ${HEALTH[h][1]}" style="font-size:11px">${HEALTH[h][0]}</span>` : ''}
+          <div class="sp"></div><span class="mut sm">${g.due ? 'Para el ' + fdateLong(g.due) : 'Sin fecha'}</span><button class="sm mut" data-act="gedit" data-g="${g.i}" title="Editar">✎</button><button class="sm mut" data-act="gdel" data-g="${g.i}" title="Quitar">✕</button></div>
+        ${g.metric ? html`<div class="gmetric"><span class="mut sm">📏 ${g.metric}</span><div class="row" style="gap:10px;margin-top:6px"><span class="sm">Hoy <b style="font-weight:500">${g.current || g.baseline || '—'}</b></span><div class="gbar"><i style="width:${pct ?? 0}%"></i></div><span class="sm">Meta <b style="font-weight:500">${g.target || '—'}</b></span><span class="sm mut" style="width:40px;text-align:right">${pct == null ? '' : pct + '%'}</span></div></div>` : html`<div class="mut sm" style="margin-top:6px">Sin métrica: ✎ para definir cómo se mide.</div>`}
+        ${g.note ? html`<div class="mut sm" style="margin-top:6px">${g.note}</div>` : ''}
+        <div class="gcols">
+          <div><div class="lbl" style="color:var(--mut)">Desglose · ${td}/${(g.tasks || []).length}</div>
+            ${(g.tasks || []).map((t, k) => html`<label class="check" style="padding:3px 0"><input type="checkbox" data-act="gtask" data-g="${g.i}" data-k="${k}" ${t.done ? raw('checked') : ''}> <span style="${t.done ? 'text-decoration:line-through;opacity:.5' : ''}">${t.t}</span></label>`)}
+            <button class="sm mut" data-act="gtadd" data-g="${g.i}" style="margin-top:4px">+ tarea</button></div>
+          <div><div class="lbl" style="color:var(--mut)">Checkpoints${g.every ? ' · ' + g.every : ''}</div>
+            <div class="gchecks">${(g.checks || []).map((c, k) => html`<button class="gck ${c.done ? 'done' : ''} ${c.date <= today() && !c.done ? 'due' : ''}" data-act="gcheck" data-g="${g.i}" data-k="${k}" title="${c.note || ''}" style="${c.done && c.health ? `border-color:${HEALTH[c.health][2]}` : ''}"><span class="d" style="${c.done && c.health ? `background:${HEALTH[c.health][2]}` : ''}"></span><span>${fdate(c.date)}${c.final ? ' · final' : ''}</span>${c.value ? html`<b>${c.value}</b>` : ''}</button>`)}${(g.checks || []).length ? '' : html`<span class="mut sm">Sin checkpoints.</span>`}</div>
+            <button class="sm mut" data-act="gckadd" data-g="${g.i}" style="margin-top:6px">+ checkpoint</button></div>
+        </div></div>`;
+    }
+    const saveGoals = async (goals) => { if (await saveAcc({ ...a, goals })) paint(); };
+    const G = () => JSON.parse(JSON.stringify(goalsOf(a)));
+
     function roadmapPdf() {
-      const rm = [...(a.roadmap || [])].sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')));
+      const rm = goalsOf(a);
       docView(html`${docHead('Roadmap', html`${a.name}<br>${fdateLong(today())}`)}
         <div class="qto"><div><div class="lbl2">CLIENTE</div><b style="font-weight:500;font-size:15px">${a.name}</b>${cleanPlan(info.plan) ? html`<div>${cleanPlan(info.plan)}</div>` : ''}</div>
-          <div><div class="lbl2">AVANCE</div><b style="font-weight:500;font-size:15px">${rm.filter((x) => x.status === 'done').length} de ${rm.length} hitos logrados</b></div></div>
-        <div class="road pdf">${rm.map((x) => html`<div class="step ${x.status}"><i></i><div style="flex:1"><div class="row"><b style="font-weight:500;font-size:15px">${x.t}</b><div class="sp"></div><span style="color:#6b6257;font-size:12px">${x.date ? fdateLong(x.date) : ''}</span></div><div style="font-size:11px;letter-spacing:1px;font-weight:700;color:${x.status === 'done' ? '#4f6b12' : x.status === 'now' ? '#7f9631' : '#8f877b'}">${(RM[x.status]?.[0] || 'Pendiente').toUpperCase()}</div>${x.note ? html`<div style="color:#4a433a;font-size:12.5px;margin-top:2px">${x.note}</div>` : ''}</div></div>`)}</div>
+          <div><div class="lbl2">AVANCE</div><b style="font-weight:500;font-size:15px">${rm.filter((x) => x.status === 'done').length} de ${rm.length} metas logradas</b></div></div>
+        ${rm.map((g) => { const pct = pctOf(g), h = healthOf(g); return html`<div class="pgoal"><div class="row"><b style="font-weight:500;font-size:15px">${g.goal}</b><div class="sp"></div><span style="color:#6b6257;font-size:12px">${g.due ? fdateLong(g.due) : ''}</span></div>
+          <div style="font-size:11px;letter-spacing:1px;font-weight:700;color:${g.status === 'done' ? '#4f6b12' : '#8f877b'}">${(RM[g.status]?.[0] || 'Pendiente').toUpperCase()}${h ? ' · ' + HEALTH[h][0].toUpperCase() : ''}</div>
+          ${g.metric ? html`<div style="font-size:12.5px;margin-top:6px"><b style="font-weight:500">Cómo se mide:</b> ${g.metric} · hoy ${g.current || g.baseline || '—'} → meta ${g.target || '—'}${pct == null ? '' : ` (${pct}%)`}</div>` : ''}
+          ${(g.tasks || []).length ? html`<div style="font-size:12.5px;margin-top:6px"><b style="font-weight:500">Desglose:</b> ${g.tasks.map((t) => (t.done ? '✓ ' : '○ ') + t.t).join(' · ')}</div>` : ''}
+          ${(g.checks || []).length ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Checkpoints:</b> ${g.checks.map((c) => `${fdate(c.date)}${c.done ? ` ✓${c.value ? ' ' + c.value : ''}` : ''}`).join(' · ')}</div>` : ''}
+          ${g.note ? html`<div style="color:#4a433a;font-size:12.5px;margin-top:4px">${g.note}</div>` : ''}</div>`; })}
         <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>`);
     }
 
     acts(el, {
       jump: (t) => $('#s-' + t.dataset.k, el)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
       pdf: roadmapPdf,
-      rmadd: async () => { const t = $('#rmt', el).value.trim(); if (!t) return toast('Escribe el hito', true); if (await saveAcc({ ...a, roadmap: [...(a.roadmap || []), { t, date: $('#rmd', el).value, status: 'todo' }] })) { toast('Hito agregado ✅'); paint(); } },
-      rmst: async (t) => { const rmx = JSON.parse(JSON.stringify(a.roadmap)); const x = rmx[+t.dataset.i]; x.status = { todo: 'now', now: 'done', done: 'todo' }[x.status] || 'now'; if (await saveAcc({ ...a, roadmap: rmx })) paint(); },
-      rmedit: async (t) => { const i = +t.dataset.i; const x = a.roadmap[i]; const v = await ask('Editar hito', [{ k: 't', l: 'Hito', v: x.t, req: true }, { k: 'date', l: 'Fecha', t: 'date', v: x.date, half: true }, { k: 'status', l: 'Estado', t: 'select', opts: Object.entries(RM).map(([k, [l]]) => [k, l]), v: x.status, half: true }, { k: 'note', l: 'Nota (sale en el PDF)', t: 'textarea', v: x.note }]); if (!v) return; const rmx = JSON.parse(JSON.stringify(a.roadmap)); rmx[i] = { ...x, ...v }; if (await saveAcc({ ...a, roadmap: rmx })) paint(); },
-      rmdel: async (t) => { if (!(await confirmAsk('¿Quitar este hito?'))) return; if (await saveAcc({ ...a, roadmap: a.roadmap.filter((_, i) => i !== +t.dataset.i) })) paint(); },
+      gadd: async () => { const g = await goalWizard(); if (g) { await saveGoals([...G(), g]); toast('Meta agregada ✅'); } },
+      gst: async (t) => { const g = G(); const x = g[+t.dataset.g]; x.status = { todo: 'now', now: 'done', done: 'todo' }[x.status] || 'now'; await saveGoals(g); },
+      gedit: async (t) => { const g = G(); const x = g[+t.dataset.g]; const v = await ask('Editar meta', [{ k: 'goal', l: 'Meta', v: x.goal, req: true }, { k: 'metric', l: 'Cómo se mide', v: x.metric }, { k: 'baseline', l: 'Al arrancar', v: x.baseline, half: true }, { k: 'current', l: 'Hoy', v: x.current, half: true }, { k: 'target', l: 'Meta', v: x.target, half: true }, { k: 'due', l: 'Para cuándo', t: 'date', v: x.due, half: true }, { k: 'note', l: 'Nota (sale en el PDF)', t: 'textarea', v: x.note }]); if (!v) return; g[+t.dataset.g] = { ...x, ...v }; await saveGoals(g); },
+      gdel: async (t) => { if (!(await confirmAsk('¿Quitar esta meta?'))) return; await saveGoals(G().filter((_, i) => i !== +t.dataset.g)); },
+      gtask: async (cb) => { const g = G(); g[+cb.dataset.g].tasks[+cb.dataset.k].done = cb.checked; await saveGoals(g); },
+      gtadd: async (t) => { const v = await ask('Nueva tarea de la meta', [{ k: 't', l: 'Tarea', req: true }]); if (!v) return; const g = G(); g[+t.dataset.g].tasks = [...(g[+t.dataset.g].tasks || []), { t: v.t, done: false }]; await saveGoals(g); },
+      gckadd: async (t) => { const v = await ask('Nuevo checkpoint', [{ k: 'date', l: 'Fecha', t: 'date', req: true }]); if (!v) return; const g = G(); const x = g[+t.dataset.g]; x.checks = [...(x.checks || []), { date: v.date, done: false }].sort((p, q) => p.date.localeCompare(q.date)); await saveGoals(g); },
+      gcheck: async (t) => {
+        const g = G(); const x = g[+t.dataset.g]; const c = x.checks[+t.dataset.k];
+        const v = await ask(`Checkpoint · ${fdate(c.date)}`, [{ k: 'value', l: `¿Cuánto va? (${x.metric || 'la métrica'})`, v: c.value || x.current, half: true }, { k: 'health', l: '¿Cómo vamos?', t: 'select', opts: Object.entries(HEALTH).map(([k, [l]]) => [k, l]), v: c.health || 'ok', half: true }, { k: 'note', l: 'Qué pasó y qué ajustamos', t: 'textarea', v: c.note }], 'Registrar');
+        if (!v) return; x.checks[+t.dataset.k] = { ...c, ...v, done: true }; if (v.value) x.current = v.value; await saveGoals(g);
+      },
+      mtsched: async (t) => { const p = projects.find((x) => x.id === t.dataset.p); const r = p && (await schedule(p, +t.dataset.i, team, me)); if (r) { Object.assign(p, r); paint(); } },
+      mtdone: async (t) => { const p = projects.find((x) => x.id === t.dataset.p); const r = p && (await markDone(p, +t.dataset.i)); if (r) { Object.assign(p, r); paint(); } },
       editAcc: async () => { const v = await ask('Datos del cliente', [{ k: 'name', l: 'Nombre', v: a.name, req: true }, { k: 'contact', l: 'Contacto', v: a.contact, half: true }, { k: 'phone', l: 'Teléfono / WhatsApp', v: a.phone, half: true }, { k: 'email', l: 'Correo', t: 'email', v: a.email }, { k: 'assets', l: 'Carpeta de assets en Drive (logos, fotos, videos crudos)', v: a.assets }, { k: 'notes', l: 'Notas', t: 'textarea', v: a.notes }]); if (v && v.assets && !/^https:\/\/drive\.google\.com\//.test(v.assets)) return toast('La carpeta de assets debe ser un link de Google Drive', true); if (v && (await saveAcc({ ...a, ...v }))) { toast('Guardado ✅'); paint(); } },
       acadd: async () => { const v = await ask('Nuevo acceso', [{ k: 'servicio', l: 'Cuenta o servicio', req: true }, { k: 'usuario', l: 'Usuario', half: true }, { k: 'donde', l: 'Dónde está la clave', half: true }]); if (!v) return; if (/contrase|password|clave:/i.test(v.usuario + ' ' + v.donde) && !(await confirmAsk('Parece que escribiste una contraseña. Aquí solo va DÓNDE está. ¿Guardar igual?'))) return; if (await saveAcc({ ...a, accesos: [...(a.accesos || []), v] })) paint(); },
       acdel: async (t) => { if (await saveAcc({ ...a, accesos: (a.accesos || []).filter((_, i) => i !== +t.dataset.i) })) paint(); },

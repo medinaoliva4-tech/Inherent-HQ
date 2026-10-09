@@ -2,7 +2,7 @@
 import * as db from './_lib/db.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
-import { guard, areasFor, COLLS, canWrite, userFor, domain } from './_lib/access.js';
+import { guard, guardAny, areasFor, COLLS, READ_ALSO, WRITE_ALSO, canWrite, userFor, domain } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
@@ -69,7 +69,7 @@ async function collGuard(req, res, write) {
   const coll = req.params.coll;
   const area = COLLS[coll];
   if (!area) { res.status(404).json({ error: 'Colección desconocida' }); return null; }
-  const u = await guard(req, res, area); if (!u) return null;
+  const u = await guardAny(req, res, [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])]); if (!u) return null;
   if (write && !canWrite(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO puede cambiar esto' }); return null; }
   return u;
 }
@@ -124,7 +124,7 @@ on('GET', 'repo/precios', async (req, res) => {
   res.json({ tipoCambio, plans: plans.map((p) => ({ id: p.id, name: p.name, precio: p.precio, precioUsd: p.precioUsd, volumen: p.volumen, promete: p.promete, hace: p.hace, incluye: p.incluye, ...(u.role === 'ceo' ? { costo: p.costo, margen: p.margen } : {}) })) });
 });
 on('GET', 'repo/clients', async (req, res) => {
-  const u = await guard(req, res, 'operations'); if (!u) return;
+  const u = await guardAny(req, res, ['operations', 'clients', 'library', 'work']); if (!u) return;
   const dirs = (await listDir('clients')).filter((d) => d.type === 'dir' && !d.name.startsWith('_'));
   const clients = await Promise.all(dirs.map(async (d) => {
     const f = await readFile(`clients/${d.name}/00-onboarding/plan-contratado.md`);
@@ -224,7 +224,7 @@ on('GET', 'cron/settle', async (req, res) => {
 
 // ---------- Clientes: su perfil del repo ----------
 on('GET', 'repo/client/:slug', async (req, res) => {
-  const u = await guard(req, res, 'clients'); if (!u) return;
+  const u = await guardAny(req, res, ['clients', 'work']); if (!u) return;
   const slug = req.params.slug; if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
   const [plan, links] = await Promise.all([readFile(`clients/${slug}/00-onboarding/plan-contratado.md`), readFile(`clients/${slug}/00-onboarding/LINKS.md`)]);
   if (!plan && !links) return res.status(404).json({ error: 'Ese cliente no está en el repo' });
@@ -379,8 +379,25 @@ on('POST', 'google/calendar', async (req, res) => {
   const start = time ? { dateTime: `${b.date}T${time}:00`, timeZone: TZ } : { date: b.date };
   const end = time ? { dateTime: new Date(new Date(`${b.date}T${time}:00Z`).getTime() + mins * 6e4).toISOString().slice(0, 19), timeZone: TZ }
     : { date: new Date(new Date(b.date + 'T12:00:00Z').getTime() + 864e5).toISOString().slice(0, 10) };
-  const e = await google.gapi(u.email, CAL, { method: 'POST', body: JSON.stringify({ summary, description: String(b.description || '').slice(0, 2000), start, end }) });
-  res.json({ id: e.id, link: e.htmlLink });
+  // calendar: 'inherent' = el calendario compartido de la empresa (lo elige el CEO); si no, el principal.
+  const calId = b.calendar === 'inherent' ? (await db.get('settings', 'calendar'))?.inherent || 'primary' : 'primary';
+  const attendees = [...new Set((Array.isArray(b.attendees) ? b.attendees : []).map((x) => String(x).toLowerCase().trim()).filter((x) => x.endsWith('@' + domain())))].slice(0, 30).map((email) => ({ email }));
+  const e = await google.gapi(u.email, `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events${attendees.length ? '?sendUpdates=all' : ''}`, { method: 'POST', body: JSON.stringify({ summary, description: String(b.description || '').slice(0, 2000), start, end, ...(attendees.length ? { attendees } : {}) }) });
+  res.json({ id: e.id, link: e.htmlLink, calendar: calId });
+});
+// Los calendarios donde la persona puede escribir (para elegir el de Inherent).
+on('GET', 'google/calendars', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const cl = await google.gapi(u.email, 'https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=writer&maxResults=100');
+  const cur = (await db.get('settings', 'calendar'))?.inherent || '';
+  res.json({ current: cur, calendars: (cl.items || []).map((c) => ({ id: c.id, name: c.summaryOverride || c.summary, primary: Boolean(c.primary), color: c.backgroundColor || null })) });
+});
+on('PUT', 'google/calendars', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO puede cambiar esto' });
+  const b = body(req); const id = String(b.id || '').slice(0, 200);
+  await db.upsert('settings', 'calendar', { inherent: id, name: String(b.name || '').slice(0, 100) }, u.email);
+  res.json({ ok: true });
 });
 
 // ---------- diagnóstico (CEO) ----------
