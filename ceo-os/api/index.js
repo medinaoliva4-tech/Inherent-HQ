@@ -113,7 +113,7 @@ on('GET', 'repo/clients', async (req, res) => {
 // ---------- diagnóstico (CEO) ----------
 on('GET', 'health', async (req, res) => {
   const u = await guard(req, res, 'finanzas'); if (!u) return;
-  const env = ['DATABASE_URL', 'SESSION_SECRET', 'APP_URL', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'ADMIN_EMAILS', 'GITHUB_TOKEN', 'GITHUB_REPO', 'GITHUB_BRANCH'];
+  const env = ['DATABASE_URL', 'POSTGRES_URL', 'SESSION_SECRET', 'APP_URL', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'ADMIN_EMAILS', 'GITHUB_TOKEN', 'GITHUB_REPO', 'GITHUB_BRANCH'];
   let repo = 'sin probar';
   try { repo = (await readFile('inherent/06-ECONOMIA.md')) ? 'ok' : 'no encuentra el archivo (token sin acceso al repo, o repo/rama incorrectos)'; } catch (e) { repo = e.message; }
   res.json({ env: Object.fromEntries(env.map((k) => [k, Boolean(process.env[k])])), repo, domain: domain() });

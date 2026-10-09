@@ -5,9 +5,10 @@ import crypto from 'node:crypto';
 let q;
 async function conn() {
   if (q) return q;
-  if (process.env.DATABASE_URL) {
+  const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  if (url) {
     const { neon } = await import('@neondatabase/serverless');
-    const sql = neon(process.env.DATABASE_URL);
+    const sql = neon(url);
     q = (text, params = []) => sql.query(text, params);
   } else if (process.env.LOCAL_DB && !process.env.VERCEL) {
     const mod = '@electric-sql/pglite';
