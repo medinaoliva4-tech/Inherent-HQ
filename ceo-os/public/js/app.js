@@ -13,19 +13,19 @@ const SCREENS = { home: 'home', finanzas: 'soon', sales: 'sales', operations: 's
 const root = $('#root');
 export let me = null;
 
-const ERR = { dominio: 'Esa cuenta no es @inherentglobal.com.', estado: 'El inicio de sesión expiró. Inténtalo otra vez.', inactivo: 'Tu cuenta está desactivada. Habla con el CEO.' };
+const ERR = { dominio: 'Esa cuenta no es @inherentglobal.com.', estado: 'El inicio de sesión expiró. Inténtalo otra vez.', inactivo: 'Tu cuenta está desactivada. Habla con el CEO.', google: 'Google no dejó terminar el inicio de sesión.', servidor: 'Falló al guardar tu sesión.' };
 
 async function loginView() {
   let st = { google: false, db: false, domain: 'inherentglobal.com' };
   try { st = await api('status'); } catch {}
-  const err = new URLSearchParams(location.search).get('error');
+  const qs = new URLSearchParams(location.search); const err = qs.get('error'), detail = qs.get('detail');
   const local = ['localhost', '127.0.0.1'].includes(location.hostname);
   mount(root, html`<div class="login">
     <div class="art"><div class="quote"><p>Operamos el crecimiento.<br><em>No pierdas años.</em></p></div></div>
     <div class="side">
-      <div class="row" style="gap:16px"><div style="width:46px">${emblem()}</div><div><div class="wm">Inherent</div><div style="font-size:11px;letter-spacing:4px;font-weight:700;opacity:.8;margin-top:6px">OPERATING SYSTEM</div></div></div>
+      <div class="row" style="gap:18px"><div style="width:52px">${emblem()}</div><div><img src="/brand/wordmark-light.svg" alt="Inherent" style="height:58px;display:block"><div style="font-size:11px;letter-spacing:4px;font-weight:700;opacity:.8;margin-top:10px">OPERATING SYSTEM</div></div></div>
       <p style="font-size:17px;opacity:.8;margin-top:18px;max-width:420px">Entra con tu cuenta de Google de Inherent.</p>
-      ${err ? html`<div class="warnbox">${ERR[err] || 'No se pudo iniciar sesión.'}</div>` : ''}
+      ${err ? html`<div class="warnbox">${ERR[err] || 'No se pudo iniciar sesión.'}${detail ? html`<div class="sm" style="margin-top:4px;opacity:.8">Detalle: ${detail}</div>` : ''}</div>` : ''}
       ${st.google ? html`<a class="gbtn" href="/api/auth/google" style="text-decoration:none">${IC.google} Continuar con Google</a>`
         : html`<div class="warnbox">El login con Google todavía no está configurado.</div>`}
       ${!st.db ? html`<div class="warnbox">La base de datos todavía no está conectada.</div>` : ''}
@@ -43,7 +43,7 @@ function shell() {
   const allowed = NAV.filter(([k]) => me.areas.includes(k));
   mount(root, html`<div class="app">
     <header class="top">
-      <div class="brand"><div class="emb">${emblem()}</div><div class="word">Inherent<sup>OS</sup></div></div>
+      <div class="brand"><div class="emb">${emblem()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
       <nav class="nav">${allowed.map(([k, l, d]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`)}</nav>
       <div class="sp"></div>
       <div class="avatar" id="avatar" title="${me.email}">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
