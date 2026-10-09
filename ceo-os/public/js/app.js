@@ -17,7 +17,11 @@ const root = $('#root');
 export let me = null;
 let renderGen = 0;
 
-const ERR = { dominio: 'No pudimos verificar esa cuenta de Google.', noaprobado: 'Esa cuenta todavía no tiene acceso. Pídele a Inherent que la apruebe.', estado: 'El inicio de sesión expiró. Inténtalo otra vez.', inactivo: 'Tu cuenta está desactivada. Habla con el CEO.', google: 'Google no dejó terminar el inicio de sesión.', servidor: 'Falló al guardar tu sesión.' };
+const ERR = { conector: 'No se pudo conectar la app.', dominio: 'No pudimos verificar esa cuenta de Google.', noaprobado: 'Esa cuenta todavía no tiene acceso. Pídele a Inherent que la apruebe.', estado: 'El inicio de sesión expiró. Inténtalo otra vez.', inactivo: 'Tu cuenta está desactivada. Habla con el CEO.', google: 'Google no dejó terminar el inicio de sesión.', servidor: 'Falló al guardar tu sesión.' };
+
+// Conectar una app (Claude, ChatGPT…): llega a `/?connect=<id>`; si no hay sesión, primero se entra con Google.
+{ const c = new URLSearchParams(location.search).get('connect'); if (c) { try { sessionStorage.setItem('connect', c); } catch {} history.replaceState(null, '', '/'); } }
+const pendingConnect = () => { try { return sessionStorage.getItem('connect'); } catch { return null; } };
 
 async function loginView() {
   let st = { google: false, db: false, domain: 'inherentglobal.com' };
@@ -28,7 +32,7 @@ async function loginView() {
     <div class="art"><div class="quote"><p>Operamos el crecimiento.<br><em>No pierdas años.</em></p></div></div>
     <div class="side">
       <div class="row" style="gap:18px"><div style="width:52px">${emblem()}</div><div><img src="/brand/wordmark-light.svg" alt="Inherent" style="height:58px;display:block"><div style="font-size:11px;letter-spacing:4px;font-weight:700;opacity:.8;margin-top:10px">OPERATING SYSTEM</div></div></div>
-      <p style="font-size:17px;opacity:.8;margin-top:18px;max-width:420px">Entra con tu cuenta de Google de Inherent.</p>
+      <p style="font-size:17px;opacity:.8;margin-top:18px;max-width:420px">${pendingConnect() ? 'Entra con tu Google para conectar Inherent OS con tu app.' : 'Entra con tu cuenta de Google de Inherent.'}</p>
       ${err ? html`<div class="warnbox">${ERR[err] || 'No se pudo iniciar sesión.'}${detail ? html`<div class="sm" style="margin-top:4px;opacity:.8">Detalle: ${detail}</div>` : ''}</div>` : ''}
       ${st.google ? html`<a class="gbtn" href="/api/auth/google" style="text-decoration:none">${IC.google} Continuar con Google</a>
         <a class="gbtn" href="/api/auth/google?portal=1" style="text-decoration:none;background:transparent;color:var(--cream);border:1px solid rgba(241,237,225,.3)">Soy cliente · entrar a mi portal</a>`
@@ -56,7 +60,7 @@ function shell() {
         <div class="who"><b>${me.name}</b><div class="mut sm">${me.title || me.role.toUpperCase()} · ${me.email}</div>
           <div class="row" style="gap:6px;margin-top:8px">${me.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${me.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}</div></div>
         ${me.role === 'ceo' ? html`<button data-go="setup">⚙ Arranque</button>` : ''}
-        ${me.role === 'client' ? '' : html`<button data-go="team">👤 Mi perfil</button><button id="aiconn" class="row" style="gap:8px"><span class="lg2" style="width:18px;height:18px">${LOGO.claude}</span>Claude / Codex</button>`}
+        ${me.role === 'client' ? '' : html`<button data-go="team">👤 Mi perfil</button><button id="aiconn" class="row" style="gap:8px"><span class="lg2" style="width:18px;height:18px">${LOGO.claude}</span>Claude · ChatGPT · Codex</button>`}
         <button id="logout">↩ Cerrar sesión</button>
       </div>
     </header>
@@ -94,4 +98,10 @@ window.addEventListener('hashchange', () => me && render());
 $('#veil').onclick = closeDrawer;
 events.addEventListener('logout', () => { if (me) { me = null; toast('Tu sesión expiró', true); loginView(); } });
 
-api('me').then((u) => { me = u; shell(); render(); }).catch(loginView);
+async function start(u) {
+  me = u;
+  const c = pendingConnect();
+  if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); return consentView(root, me, c, () => { shell(); render(); }); }
+  shell(); render();
+}
+api('me').then(start).catch(loginView);

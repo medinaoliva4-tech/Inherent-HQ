@@ -24,11 +24,14 @@ export async function revoke(email) {
   if (me?.mcp_hash) await db.vaultSet('mcp:' + me.mcp_hash, '');
   await db.upsert('team', email, { mcp_hash: null, mcp_at: null }, email);
 }
-async function userOfToken(t) {
-  if (!/^[\w-]{20,60}$/.test(String(t || ''))) return null;
-  const email = await db.vaultGet('mcp:' + tokenHash(t)); if (!email) return null;
+export async function userOf(email) {
+  if (!email) return null;
   const u = await userFor(email);
   return u.active && u.role !== 'client' ? { ...u, areas: areasFor(u.role, u.roles) } : null;
+}
+async function userOfToken(t) {
+  if (!/^[\w-]{20,60}$/.test(String(t || ''))) return null;
+  return userOf(await db.vaultGet('mcp:' + tokenHash(t)));
 }
 
 const slugOk = (s) => /^[\w-]{2,60}$/.test(String(s || ''));
@@ -167,7 +170,11 @@ async function call(u, name, a = {}) {
 
 // JSON-RPC del protocolo MCP (HTTP). Devuelve { status, json } para la ruta.
 export async function handle(token, m) {
-  const u = await userOfToken(token); if (!u) return { status: 401, json: { error: 'Link inválido o revocado. Genera uno nuevo en Team → Mi perfil.' } };
+  const u = await userOfToken(token); if (!u) return { status: 401, json: { error: 'Link inválido o revocado. Conecta de nuevo con https://<app>/mcp' } };
+  return run(u, m);
+}
+// Lo que responde el servidor MCP a una persona ya identificada (por OAuth o por el link viejo).
+export async function run(u, m) {
   if (!m || m.id === undefined) return { status: 202 };
   const ok = (result) => ({ status: 200, json: { jsonrpc: '2.0', id: m.id, result } });
   if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', version: '1.1.0' }, instructions: `Inherent OS de ${u.name} (${u.role}). Úsalo para ver pendientes, tareas, clientes y contenido, y para crear tareas, ideas, cotizaciones o proyectos. Fechas en formato AAAA-MM-DD; hoy es ${today()}. Precios en quetzales salvo que se diga otra moneda.` });
