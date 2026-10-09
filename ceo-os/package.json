@@ -3,11 +3,17 @@
   "private": true,
   "type": "module",
   "version": "0.1.0",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "user": "node scripts/make-user.mjs",
-    "code": "node scripts/dev-code.mjs",
-    "test": "node scripts/test-parse.mjs && node scripts/test-auth.mjs"
+    "test": "node scripts/test-parse.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8"
   }
 }

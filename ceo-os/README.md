@@ -1,77 +1,63 @@
-# CEO OS
+# Inherent OS (CEO OS v2)
 
-Web privada del equipo para operar Inherent. **El repo es la base de datos**: los costos salen de
-`inherent/06-ECONOMIA.md`, los clientes de `clients/*/00-onboarding/plan-contratado.md`, el CRM de
-`inherent/administracion/crm/*.csv`. Lo que no vive en el manual vive en `ceo-os/data/`.
-Cada cambio hecho desde la web es **un commit** en el repo.
+Web privada de Inherent: **Home · Finance · Sales · Operations · Content · Library · Team**.
+Se entra con **Google** y solo con cuentas **@inherentglobal.com**.
 
-| Área | Fase 1 | Quién entra |
+| Fase | Qué trae | Estado |
 |---|---|---|
-| 💰 Finanzas | ✅ planes, costos, simulador, roles, sueldos | 🔒 solo CEO |
-| 🤝 Sales | ✅ pipeline, contactos, catálogo, cotizador, propuesta | CEO · COO |
-| ⚙️ Operations | ✅ clientes y su pipeline *(proyectos, tareas y timeline: fase 2)* | CEO · COO · team |
-| 🧠 Conocimiento · 🎬 Content · 🎯 Strategy | 🚧 fase 2 | CEO · COO *(Conocimiento y Content también team)* |
+| 1 | Base, login con Google, Home, **Sales** (CRM, catálogo con costo por hora, cotizaciones con PDF) y **Team** (organigrama, perfiles y accesos) | ✅ |
+| 2 | Finance (revenue, costos, rentabilidad, pricing) y Operations (proyectos por fase, pipeline por cliente, tareas, Google Calendar) | 🚧 |
+| 3 | Library (SOPs, playbooks, videos y carpetas de Google Drive) | 🚧 |
+| 4 | Content (planner, guiones diarios con IA, winners scrape, analytics) | 🚧 |
+| 5 | Portal del cliente | 🚧 |
 
-## Probarlo local
+## De dónde salen los datos
 
-```
-cd ceo-os && npm run dev      # http://localhost:3000 — usuarios dev: ceo / coo / team
-npm test                      # corre el parser contra el manual real y avisa si una tabla cambió de formato
-```
-Local lee y escribe el filesystem del repo (`LOCAL_REPO`). **Nunca pongas `LOCAL_REPO` en Vercel.**
+- **Del repo, solo lectura:** la economía (`inherent/06-ECONOMIA.md`) y los clientes (`clients/*/00-onboarding/plan-contratado.md`).
+- **Todo lo demás:** base de datos Postgres propia (Neon, desde Vercel).
 
-## Desplegar en Vercel (privado, con login)
+## Accesos
 
-1. **Vercel → Add New Project →** importa este repo. **Root Directory: `ceo-os`**. Sin build.
-2. **GitHub token:** fine-grained PAT, solo este repo, permiso **Contents: Read and write**.
-3. **Variables de entorno** (Production):
-
-| Variable | Valor |
+| Rol | Ve |
 |---|---|
-| `GITHUB_TOKEN` | el PAT del paso 2 |
-| `GITHUB_REPO` | `medinaoliva4-tech/Inherent-HQ` |
-| `GITHUB_BRANCH` | `main` |
-| `SESSION_SECRET` | 32+ caracteres al azar *(`openssl rand -hex 32`)*. Si lo cambias, todas las sesiones mueren |
-| `AUTH_USERS` | JSON de usuarios, ver abajo |
+| `ceo` | Todo. Los `ADMIN_EMAILS` siempre son CEO |
+| `coo` | Todo menos Finance (y nunca costos ni márgenes) |
+| `team` | Home, Operations, Content, Library, Team |
 
-4. **Usuarios (2FA obligatorio).** Por cada persona corre:
+El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez queda como `team`.
+
+## Variables de entorno (Vercel → Production)
+
+| Variable | Qué es |
+|---|---|
+| `DATABASE_URL` | La pone Vercel sola al conectar Neon (Storage) |
+| `SESSION_SECRET` | 32+ caracteres al azar (`openssl rand -hex 32`) |
+| `APP_URL` | `https://inherent-work.vercel.app` |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Del cliente OAuth de Google Cloud |
+| `ADMIN_EMAILS` | Correos que siempre son CEO, separados por coma |
+| `ALLOWED_DOMAIN` | Opcional. Por defecto `inherentglobal.com` |
+| `GITHUB_TOKEN` · `GITHUB_REPO` · `GITHUB_BRANCH` | Para leer economía y clientes del repo |
+
+### Google (una vez)
+
+1. Google Cloud Console → proyecto nuevo → **APIs:** activa Google Calendar API y Google Drive API.
+2. **OAuth consent screen:** tipo **Internal** (solo tu Workspace).
+3. **Credentials → OAuth client ID → Web application.**
+   Redirect URI: `https://inherent-work.vercel.app/api/auth/callback`
+4. Copia el Client ID y el Secret a Vercel.
+
+## Seguridad
+
+- Login con Google, **solo dominio @inherentglobal.com** (se valida en el servidor con el `hd` y el correo verificado).
+- Sesión firmada, 12 h máximo y 2 h de inactividad, atada al navegador. Desactivar a alguien en Team lo saca al instante.
+- Permisos por rol **en el servidor**, anti-CSRF, CSP estricta sin scripts inline, HSTS.
+- Todo lo que se pinta en pantalla se escapa (no se puede inyectar HTML).
+- Los tokens de Google se guardan **cifrados** (AES-256-GCM).
+- Cada cambio queda en una bitácora (quién, qué, cuándo) y con versión: si dos personas editan lo mismo, no se pisa.
+
+## Local
+
 ```
-npm run user -- <usuario> <ceo|coo|team> "<Nombre>" "<contraseña de 12+ caracteres>"
+cd ceo-os && npm install && npm run dev   # http://localhost:3000 → «Entrar en modo prueba»
+npm test                                  # el parser contra el manual real
 ```
-Imprime el objeto para `AUTH_USERS` **y la clave 2FA**. La persona la agrega en su app de autenticación
-(1Password, Authy, Google Authenticator). La clave **solo se muestra esa vez; no la mandes por chat**.
-`AUTH_USERS` es un arreglo JSON con un objeto por persona.
-Roles: `ceo` (todo) · `coo` (todo menos Finanzas) · `team` (Operations, Conocimiento, Content).
-5. **Protección extra de Vercel:** Project → Settings → **Deployment Protection → Vercel Authentication (Standard)** para que los previews tampoco sean públicos.
-6. **Firewall (límite global de intentos):** Project → Firewall → regla de rate limit en `/api/login` y `/api/stepup` (p. ej. 10 por minuto por IP).
-7. **Link:** queda `https://<proyecto>.vercel.app`. Elige un nombre de proyecto que no revele nada de la empresa.
-
-## Seguridad — lo que ya está
-
-- **Contraseña + código 2FA (TOTP) en cada login.** Sin 2FA configurado la cuenta no entra. Un código no sirve dos veces.
-- **Finanzas pide un código 2FA fresco cada 10 min** (step-up), aunque la sesión siga viva.
-- Sesión: máximo 8 h, **30 min de inactividad**, cookie `HttpOnly` + `Secure` + `SameSite=Strict` y **atada al navegador** (robar la cookie no sirve en otro).
-- scrypt (N=2¹⁵) para contraseñas; el mismo error y la misma demora exista o no el usuario.
-- El permiso se aplica **en el servidor**: sin sesión 401, sin área 403.
-- **Anti-CSRF:** toda escritura exige header propio + mismo origen.
-- **CSP estricta** (solo scripts propios, sin inline), HSTS con preload, sin iframe, sin caché en `/api`, `noindex`.
-- 🔒 Costos y márgenes salen solo por `/api/economia` (solo CEO). `/api/catalogo` no lleva costos salvo al CEO. `/api/clients` esconde el costo de cuenta a no-CEO y el precio a `team`.
-- El manual **nunca se sirve crudo**: solo tablas parseadas. `/api/file` solo toca `ceo-os/data/**` y el CRM.
-- **Auditoría:** cada escritura es un commit que dice **quién** la hizo; logins y step-ups quedan en los logs de Vercel.
-- Escrituras con control de versión (sha): si otra persona cambió el archivo, 409 en vez de pisarlo.
-
-**Lo que NO cubre** *(por diseño serverless)*: el límite de intentos por IP vive por instancia; el global lo pone el Firewall de Vercel (paso 6). El PAT de GitHub da acceso al repo: guárdalo solo en Vercel, con permiso mínimo y expiración.
-
-## 💵 Nómina
-
-`ceo-os/data/finanzas/nomina.json`. El mes de cada persona = **suma de lo que cada cuenta paga a su rol × su % del rol**.
-- **Reparto por rol:** se define una vez (p. ej. Edición de video: A 60% · B 40%).
-- **Cuentas:** el monto por rol sale del manual para los planes de lista; en Tailor Made lo escribes tú.
-- **Reparto propio** por cuenta con el botón 👥 cuando una cuenta se desvía del reparto del rol.
-- Avisa lo que queda **sin asignar** (rol que no suma 100%) y lo que está **sin datos**.
-
-## Cómo se actualiza
-
-- **Cambias un precio o costo:** edita la tabla en `06-ECONOMIA.md`. El dashboard lo lee en vivo. Si cambias el *formato* de la tabla, `npm test` avisa.
-- **Cambias de herramienta o persona:** la tabla de slots de `05-OPERACION.md`.
-- Un deploy solo se dispara si cambia código; guardar datos no redeploya (`ignoreCommand`).

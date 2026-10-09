@@ -1,60 +1,86 @@
-import { $, h, api, events, toast } from './core.js';
+import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc } from './core.js';
 
-const AREAS = {
-  finanzas:     { icon: '💰', name: 'Finanzas',     mod: () => import('./finanzas.js') },
-  conocimiento: { icon: '🧠', name: 'Conocimiento', mod: () => import('./soon.js') },
-  content:      { icon: '🎬', name: 'Content',      mod: () => import('./soon.js') },
-  sales:        { icon: '🤝', name: 'Sales',        mod: () => import('./sales.js') },
-  strategy:     { icon: '🎯', name: 'Strategy',     mod: () => import('./soon.js') },
-  operations:   { icon: '⚙️', name: 'Operations',   mod: () => import('./operations.js') },
-};
-const root = $('#app');
-let me = null;
+const NAV = [
+  ['home', 'Home', 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
+  ['finanzas', 'Finance', 'M3 17l6-6 4 4 8-8M15 7h6v6'],
+  ['sales', 'Sales', 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0'],
+  ['operations', 'Operations', 'M4 6h16M4 12h10M4 18h7'],
+  ['content', 'Content', 'M5 4h14v16l-7-4-7 4z'],
+  ['library', 'Library', 'M4 4h6l2 2h8v14H4z'],
+  ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
+];
+const SCREENS = { home: 'home', finanzas: 'soon', sales: 'sales', operations: 'soon', content: 'soon', library: 'soon', team: 'team' };
+const root = $('#root');
+export let me = null;
 
-function loginView() {
-  const err = h('div', { class: 'bad sm' });
-  const form = h('form', { onsubmit: async (e) => {
-    e.preventDefault();
-    err.textContent = '';
-    try {
-      me = await api('/api/login', { method: 'POST', body: { user: form.user.value.trim().toLowerCase(), password: form.password.value, code: form.code.value.replace(/\D/g, '') } });
-      boot();
-    } catch (x) { err.textContent = x.message; }
-  } },
-    h('h2', {}, 'CEO ', h('span', { style: { color: 'var(--acc)' } }, 'OS')),
-    h('div', { class: 'mut sm' }, 'Inherent HQ · acceso del equipo'),
-    h('div', {}, h('label', {}, 'Usuario'), h('input', { name: 'user', autocomplete: 'username', required: true, autofocus: true })),
-    h('div', {}, h('label', {}, 'Contraseña'), h('input', { name: 'password', type: 'password', autocomplete: 'current-password', required: true })),
-    h('div', {}, h('label', {}, 'Código 2FA (app de autenticación)'), h('input', { name: 'code', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: 6, required: true })),
-    err, h('button', { class: 'btn' }, 'Entrar'));
-  root.replaceChildren(h('div', { class: 'login' }, form));
-}
+const ERR = { dominio: 'Esa cuenta no es @inherentglobal.com.', estado: 'El inicio de sesión expiró. Inténtalo otra vez.', inactivo: 'Tu cuenta está desactivada. Habla con el CEO.' };
 
-async function render() {
-  const area = location.hash.slice(2) || me.areas[0];
-  const key = me.areas.includes(area) ? area : me.areas[0];
-  const main = $('main');
-  main.replaceChildren(h('p', { class: 'mut' }, 'Cargando…'));
-  document.querySelectorAll('nav a[data-a]').forEach((a) => a.classList.toggle('on', a.dataset.a === key));
-  try {
-    const m = await AREAS[key].mod();
-    main.replaceChildren();
-    await m.render(main, { me, area: key, meta: AREAS[key] });
-  } catch (e) { main.replaceChildren(h('p', { class: 'bad' }, e.message)); }
+async function loginView() {
+  let st = { google: false, db: false, domain: 'inherentglobal.com' };
+  try { st = await api('status'); } catch {}
+  const err = new URLSearchParams(location.search).get('error');
+  const local = ['localhost', '127.0.0.1'].includes(location.hostname);
+  mount(root, html`<div class="login">
+    <div class="art"><div class="quote"><p>Operamos el crecimiento.<br><em>No pierdas años.</em></p></div></div>
+    <div class="side">
+      <div class="row" style="gap:16px"><div style="width:46px">${emblem()}</div><div><div class="wm">Inherent</div><div style="font-size:11px;letter-spacing:4px;font-weight:700;opacity:.8;margin-top:6px">OPERATING SYSTEM</div></div></div>
+      <p style="font-size:17px;opacity:.8;margin-top:18px;max-width:420px">Entra con tu cuenta de Google de Inherent.</p>
+      ${err ? html`<div class="warnbox">${ERR[err] || 'No se pudo iniciar sesión.'}</div>` : ''}
+      ${st.google ? html`<a class="gbtn" href="/api/auth/google" style="text-decoration:none">${IC.google} Continuar con Google</a>`
+        : html`<div class="warnbox">El login con Google todavía no está configurado.</div>`}
+      ${!st.db ? html`<div class="warnbox">La base de datos todavía no está conectada.</div>` : ''}
+      ${local ? html`<a class="gbtn" href="/api/auth/dev" style="text-decoration:none;background:transparent;color:var(--cream);border:1px solid rgba(241,237,225,.3)">Entrar en modo prueba (solo local)</a>` : ''}
+      <div class="sm" style="opacity:.6;text-align:center">Solo cuentas <b>@${st.domain}</b></div>
+      <div class="perm"><span class="sm" style="opacity:.7">Al entrar te pediremos permiso para:</span>
+        <div>${IC.cal} <span><b>Google Calendar</b> · ver y crear eventos de proyectos</span></div>
+        <div>${IC.drive} <span><b>Google Drive</b> · ver y crear archivos de la Library</span></div>
+      </div>
+    </div></div>`);
+  if (err) history.replaceState(null, '', '/');
 }
 
 function shell() {
-  const nav = h('nav', {},
-    h('h1', {}, 'CEO ', h('b', {}, 'OS')),
-    ...me.areas.map((k) => h('a', { 'data-a': k, onclick: () => (location.hash = '/' + k) }, h('span', {}, AREAS[k].icon), AREAS[k].name)),
-    h('div', { class: 'sp' }),
-    h('div', { class: 'who' }, `${me.name} · ${me.role.toUpperCase()}`),
-    h('a', { onclick: async () => { await api('/api/logout', { method: 'POST' }); me = null; loginView(); } }, '↩ Salir'));
-  root.replaceChildren(h('div', { class: 'shell' }, nav, h('main')));
+  const allowed = NAV.filter(([k]) => me.areas.includes(k));
+  mount(root, html`<div class="app">
+    <header class="top">
+      <div class="brand"><div class="emb">${emblem()}</div><div class="word">Inherent<sup>OS</sup></div></div>
+      <nav class="nav">${allowed.map(([k, l, d]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`)}</nav>
+      <div class="sp"></div>
+      <div class="avatar" id="avatar" title="${me.email}">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
+      <div class="menu" id="menu">
+        <div class="who"><b>${me.name}</b><div class="mut sm">${me.title || me.role.toUpperCase()} · ${me.email}</div>
+          <div class="row" style="gap:6px;margin-top:8px">${me.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${me.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}</div></div>
+        <button data-go="team">👤 Mi perfil</button>
+        <button id="logout">↩ Cerrar sesión</button>
+      </div>
+    </header>
+    <main id="main"></main>
+  </div>`);
+  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (b) location.hash = '/' + b.dataset.go; };
+  $('#avatar').onclick = (e) => { e.stopPropagation(); $('#menu').classList.toggle('on'); };
+  $('#menu').onclick = (e) => { const b = e.target.closest('[data-go]'); if (b) location.hash = '/' + b.dataset.go; };
+  document.addEventListener('click', () => $('#menu')?.classList.remove('on'));
+  $('#logout').onclick = async () => { await api('auth/logout', { method: 'POST' }).catch(() => {}); me = null; loginView(); };
 }
 
-function boot() { shell(); render(); }
-window.addEventListener('hashchange', () => me && render());
-events.addEventListener('logout', () => { me = null; toast('Sesión vencida', true); loginView(); });
+async function render() {
+  const [area, ...rest] = location.hash.replace(/^#\/?/, '').split('/');
+  const key = me.areas.includes(area) ? area : 'home';
+  $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key));
+  closeDrawer();
+  const main = $('#main');
+  mount(main, html`<p class="loading">Cargando…</p>`);
+  try {
+    const mod = await import(`./screens/${SCREENS[key]}.js`);
+    main.innerHTML = '';
+    await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)[1] });
+  } catch (e) {
+    mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
+  }
+}
 
-api('/api/me').then((u) => { me = u; boot(); }).catch(loginView);
+window.addEventListener('hashchange', () => me && render());
+$('#veil').onclick = closeDrawer;
+events.addEventListener('logout', () => { if (me) { me = null; toast('Tu sesión expiró', true); loginView(); } });
+
+api('me').then((u) => { me = u; shell(); render(); }).catch(loginView);

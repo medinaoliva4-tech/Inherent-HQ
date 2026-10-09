@@ -31,11 +31,9 @@
 | 4 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
 | 5 | **Match automático de mentores** | Strategy busca por industria, etapa y presupuesto en las plataformas de mentores. Falta el login |
 | 6 | **Cobro internacional** | Stripe, Wise o equivalente, con factura deducible para el cliente |
-| 7 | **CEO OS fase 2** (`ceo-os/`) | Conocimiento, Content, Strategy y, en Operations, proyectos, tareas y timeline del ciclo día 1–20 |
-| 8 | **CEO OS: cron de Apify** | La capacidad *(watchlists, actor, frecuencia)* va en fase 2; crear el schedule real y gastar crédito es decisión aparte |
-| 9 | **CEO OS: desplegar en Vercel** | Falta el PAT de GitHub, `AUTH_USERS` (con 2FA por persona) y `SESSION_SECRET`. Pasos en `ceo-os/README.md` |
-| 10 | **CEO OS: montos de Tailor Made en la nómina** | NAO + Akai declaran Q1,600 juntos, sin desglose por rubro: hay que escribirlo en la pestaña de cuentas. Hasta entonces sale `⚠️ SIN DATOS` |
-| 11 | **CEO OS: quién ocupa Especialista y las 2 auditorías** | Sin persona asignada no hay reparto *(ver decisiones #3 y #4)* |
+| 7 | **CEO OS v2 · fases 2-5** (`ceo-os/`) | Finance y Operations con Google Calendar · Library con Drive · Content con guiones diarios por IA · portal del cliente |
+| 8 | **CEO OS: desplegar** | Conectar la base de datos (Neon) en Vercel, crear el cliente OAuth de Google y cargar las variables. Pasos en `ceo-os/README.md` |
+| 9 | **CEO OS: costos por hora de cada rol** | Solo Producción tiene tarifa en el manual (Q150/h). Sin las demás no hay costo ni precio sugerido en el catálogo |
 
 ---
 

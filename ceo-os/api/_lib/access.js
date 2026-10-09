@@ -1,17 +1,37 @@
-import { getSession, issue, STEPUP_TTL } from './auth.js';
+// Quién entra a qué. El permiso se aplica aquí, en el servidor; la interfaz solo lo refleja.
+import * as session from './session.js';
+import * as db from './db.js';
 
-export const AREAS = ['finanzas', 'conocimiento', 'content', 'sales', 'strategy', 'operations'];
-
-// 🔒 finanzas es SOLO del CEO y no es configurable. El resto, por rol.
-const ROLES = {
-  ceo: AREAS,
-  coo: ['conocimiento', 'content', 'sales', 'strategy', 'operations'],
-  team: ['conocimiento', 'content', 'operations'],
+export const AREAS = ['home', 'finanzas', 'sales', 'operations', 'content', 'library', 'team'];
+const ROLE_AREAS = {
+  ceo: AREAS,                                                        // 🔒 todo
+  coo: AREAS.filter((a) => a !== 'finanzas'),                        // todo menos Finanzas
+  team: ['home', 'operations', 'content', 'library', 'team'],
 };
-export const areasFor = (role) => ROLES[role] || [];
-export const can = (role, area) => areasFor(role).includes(area);
+export const areasFor = (role) => ROLE_AREAS[role] || [];
 
-// Anti-CSRF: toda escritura exige el header propio (dispara preflight CORS, que no permitimos) y mismo origen.
+// Cada colección pertenece a un área. Algunas solo las escribe el CEO.
+export const COLLS = {
+  leads: 'sales', quotes: 'sales', services: 'sales',
+  rates: 'finanzas', finance: 'finanzas',
+  projects: 'operations', tasks: 'operations',
+  content: 'content', sources: 'content', analytics: 'content',
+  folders: 'library', docs: 'library',
+  team: 'team', settings: 'home',
+};
+const CEO_WRITE = new Set(['team', 'settings', 'rates', 'finance']);
+export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
+
+export const domain = () => (process.env.ALLOWED_DOMAIN || 'inherentglobal.com').toLowerCase();
+const admins = () => String(process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
+
+// El rol vive en la colección team. Los ADMIN_EMAILS son siempre CEO (nadie los puede bajar).
+export async function userFor(email) {
+  const u = await db.get('team', email);
+  const role = admins().includes(email) ? 'ceo' : u?.role || 'team';
+  return { email, name: u?.name || email.split('@')[0], picture: u?.picture || null, title: u?.title || '', role, active: u ? u.active !== false : true };
+}
+
 export function csrfOk(req) {
   if (req.method === 'GET' || req.method === 'HEAD') return true;
   if (req.headers['x-ceoos'] !== '1') return false;
@@ -20,16 +40,14 @@ export function csrfOk(req) {
   try { return new URL(o).host === req.headers.host; } catch { return false; }
 }
 
-// Devuelve la sesión, o responde 401/403 y devuelve null.
-export function guard(req, res, area) {
+// Devuelve el usuario, o responde 401/403 y devuelve null.
+export async function guard(req, res, area) {
   if (!csrfOk(req)) { res.status(403).json({ error: 'Origen no permitido' }); return null; }
-  let s = getSession(req);
+  const s = session.read(req);
   if (!s) { res.status(401).json({ error: 'No autenticado' }); return null; }
-  if (area && !can(s.role, area)) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
-  // Finanzas pide un código 2FA fresco (step-up) además de la sesión.
-  if (area === 'finanzas' && Math.floor(Date.now() / 1000) - (s.su || 0) > STEPUP_TTL) {
-    res.status(401).json({ error: 'Confirma tu código 2FA para entrar a Finanzas', code: 'STEPUP' }); return null;
-  }
-  s = issue(res, req, s); // sesión deslizante: renueva la inactividad
-  return s;
+  const u = await userFor(s.email);
+  if (!u.active || !u.email.endsWith('@' + domain())) { session.clear(res); res.status(401).json({ error: 'Cuenta sin acceso' }); return null; }
+  if (area && !areasFor(u.role).includes(area)) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
+  session.issue(req, res, s); // sesión deslizante
+  return u;
 }
