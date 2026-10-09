@@ -1,11 +1,12 @@
 import { recorder } from '../recorder.js';
-import { WORK_ROLES } from '../core.js';
+import { WORK_ROLES , wizard } from '../core.js';
 import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, $, folderSvg, TONES, embedUrl, IC, diagram, diagrams } from '../core.js';
 
 // Library: SOPs, playbooks, videos y notas que el equipo escribe aquí, en carpetas.
 // Una carpeta se puede conectar a una carpeta de Google Drive: se ve su contenido y se crean Docs ahí.
-const KINDS = ['SOP', 'Playbook', 'Diagrama', 'Video', 'Nota'];
-const KCOL = { SOP: '#4f7790', Playbook: '#7f9631', Diagrama: '#8a5fa8', Video: '#26201a', Nota: '#c2735a' };
+const KINDS = ['SOP', 'Playbook', 'Prompt', 'Diagrama', 'Video', 'Nota'];
+export const VTYPES = ['Reel', 'UGC / testimonio', 'Anuncio (Ads)', 'Derivado / corte', 'Story', 'YouTube / horizontal'];
+const KCOL = { SOP: '#4f7790', Playbook: '#7f9631', Prompt: '#b8583c', Diagrama: '#8a5fa8', Video: '#26201a', Nota: '#c2735a' };
 // El formato de cada tipo: lo que tiene que llevar. Se carga al crear el documento.
 const TPL = {
   SOP: (t) => `# SOP · ${t}
@@ -87,6 +88,19 @@ Las 3 ideas clave del video.
 
 `,
   Diagrama: () => DGM.flujo,
+  Prompt: (t, d = {}) => `Eres el editor de video de Inherent para ${d.client ? d.client.toUpperCase() : 'nuestras marcas'}. Tipo de video: ${d.vtype || '—'}.
+
+Marca: respeta su guía (paleta, tipografías, tono y activos distintivos). Assets en su Drive.
+Objetivo de la pieza: [pega aquí el objetivo o el brief]
+Formato: [9:16 / 16:9 / 1:1] · Duración: [segundos]
+
+Cómo debe quedar:
+- Hook en los primeros 2 segundos
+- [estructura: problema → giro → resultado]
+- Subtítulos quemados, cortes cada 1.5-2 s
+- Cierre con CTA: [CTA]
+
+Entrega: plan de edición escena por escena (tiempo, toma, texto en pantalla, audio) y lista de exports (orgánico y Ads).`,
 };
 const DGM = {
   flujo: `flowchart TD
@@ -148,16 +162,25 @@ export async function render(el, { sub, alive }) {
     try { const r = f ? await F.save({ ...f, ...v }) : await F.create(v); folders = f ? folders.map((x) => (x.id === r.id ? r : x)) : [...folders, r]; toast('Carpeta guardada ✅'); return r; } catch (e) { toast(e.message, true); return null; }
   }
   async function newDoc(folderId) {
-    const v = await ask('Nuevo documento', [
-      { k: 'title', l: 'Título', req: true },
-      { k: 'kind', l: 'Tipo', t: 'select', opts: KINDS.map((k) => [k, k]), half: true },
-      { k: 'folder_id', l: 'Carpeta', t: 'select', opts: [['', '— Sin carpeta'], ...folders.map((f) => [f.id, f.name])], v: folderId || '', half: true },
-      { k: 'url', l: 'Video o link (YouTube, Loom, Vimeo, Drive) — opcional' },
+    let clients = []; try { clients = (await api('repo/clients')).clients.filter((c) => c.hasPlan).map((c) => c.slug); } catch {}
+    const v = await wizard('Nuevo documento', [
+      { k: 'kind', q: '¿Qué vas a crear?', type: 'cards', req: true, opts: [
+        { v: 'SOP', i: '📋', l: 'SOP', d: 'Un proceso paso a paso' }, { v: 'Playbook', i: '🎯', l: 'Playbook', d: 'Una jugada para una situación' },
+        { v: 'Prompt', i: '✦', l: 'Prompt de video', d: 'Para una marca y un tipo de video' }, { v: 'Diagrama', i: '🔀', l: 'Diagrama', d: 'Flujo, mapa, organigrama' },
+        { v: 'Video', i: '🎬', l: 'Video', d: 'Link de YouTube, Loom o Drive' }, { v: 'Nota', i: '📝', l: 'Nota', d: 'Texto libre' }] },
+      { k: 'client', q: '¿Para qué marca?', type: 'cards', req: true, show: (a) => a.kind === 'Prompt', opts: [{ v: '_', i: '🌐', l: 'General', d: 'Sirve para todas' }, ...clients.map((c) => ({ v: c, i: '🏷️', l: c.toUpperCase() }))] },
+      { k: 'vtype', q: '¿Qué tipo de video?', type: 'cards', req: true, show: (a) => a.kind === 'Prompt', opts: VTYPES.map((x) => ({ v: x, l: x })) },
+      { k: 'url', q: 'Pega el link del video', type: 'text', req: true, show: (a) => a.kind === 'Video', ph: 'https://…' },
+      { k: 'title', q: '¿Cómo se llama?', type: 'text', req: true, v: (a) => (a.kind === 'Prompt' ? `${a.client === '_' ? 'General' : (a.client || '').toUpperCase()} · ${a.vtype}` : undefined), ph: 'Título' },
+      { k: 'folder_id', q: '¿En qué carpeta va?', type: 'cards', show: () => !folderId && folders.length > 0, v: '', opts: [{ v: '', i: '—', l: 'Sin carpeta' }, ...folders.map((f) => ({ v: f.id, i: '📁', l: f.name }))] },
     ], 'Crear');
     if (!v) return;
     if (v.url && !/^https:\/\//.test(v.url)) return toast('El link debe empezar con https://', true);
-    try { const r = await D.create({ ...v, body: (TPL[v.kind] || TPL.Nota)(v.title) }); location.hash = `/library/${r.folder_id || '_'}/${r.id}/edit`; } catch (e) { toast(e.message, true); }
+    const roles = v.kind === 'Prompt' ? ['video'] : [];
+    const extra = v.kind === 'Prompt' ? { client: v.client === '_' ? '' : v.client, vtype: v.vtype } : {};
+    try { const r = await D.create({ title: v.title, kind: v.kind, url: v.url || '', folder_id: folderId || v.folder_id || '', roles, ...extra, body: (TPL[v.kind] || TPL.Nota)(v.title, extra) }); location.hash = `/library/${r.folder_id || '_'}/${r.id}/edit`; } catch (e) { toast(e.message, true); }
   }
+
   // Grabar (como Loom) → sube a Drive → queda como documento de tipo Video.
   function record(folderId) {
     recorder({ onDone: async ({ title, link }) => {
@@ -240,7 +263,8 @@ export async function render(el, { sub, alive }) {
             : html`<div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#8f877b'};color:#fff">${d.kind || 'Doc'}</span><div class="sp"></div><span class="mut sm">${d._meta?.updated_at ? 'Actualizado ' + fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}${d._meta?.updated_by ? ' · ' + d._meta?.updated_by : ''}</span></div>
               <h1 style="font-size:42px;font-weight:500;letter-spacing:-1.3px;margin:14px 0 18px">${d.title}</h1>
               ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:16/9;border:0;border-radius:20px;margin-bottom:22px;background:#000" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>` : d.url ? html`<a class="artifact" href="${d.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-bottom:18px"><span class="fi">↗</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
-              ${!d.body ? html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>` : d.kind === 'Diagrama' ? diagram(d.body) : md(d.body)}`}
+              ${d.kind === 'Prompt' ? html`<div class="row" style="gap:8px;margin-bottom:10px"><span class="chip">${d.client ? d.client.toUpperCase() : 'General'}</span><span class="chip">${d.vtype || 'Video'}</span><div class="sp"></div><button class="btn" data-act="copyPrompt">Copiar prompt</button></div><pre class="repo-pre" id="ptext">${d.body || ''}</pre>`
+                : !d.body ? html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>` : d.kind === 'Diagrama' ? diagram(d.body) : md(d.body)}`}
         </div>`);
       const ta = $('#dbody', el); if (ta) { let t0; ta.oninput = () => { clearTimeout(t0); t0 = setTimeout(() => mount($('#dprev', el), prev(curKind(), ta.value)), d.kind === 'Diagrama' ? 400 : 120); }; }
       const ks = $('#dkind', el); if (ks) ks.onchange = () => { d = { ...d, kind: ks.value, body: ta.value }; paint(); };
@@ -249,6 +273,7 @@ export async function render(el, { sub, alive }) {
     acts(el, {
       dgm: async (t) => { const ta = $('#dbody', el); if (ta.value.trim() && !(await confirmAsk('¿Reemplazar el diagrama por la plantilla?'))) return; ta.value = DGM[t.dataset.k]; ta.oninput(); },
       fmt: async () => { const ta = $('#dbody', el); const k = curKind(); if (ta.value.trim() && !(await confirmAsk(`¿Reemplazar el texto por el formato de ${k}?`))) return; ta.value = (TPL[k] || TPL.Nota)($('#dtitle', el).value || d.title); ta.oninput(); },
+      copyPrompt: async () => { try { await navigator.clipboard.writeText(d.body || ''); toast('Prompt copiado ✅'); } catch { toast('No pude copiar: selecciona el texto', true); } },
       edit: () => { editing = true; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}/edit`); paint(); },
       cancel: () => { editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); paint(); },
       save: async () => {

@@ -1,3 +1,4 @@
+import { newProject as wizProject, newTask as wizTask } from '../create.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList } from '../core.js';
 
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
@@ -209,7 +210,7 @@ export async function render(el, { me, sub, alive }) {
   acts(el, {
     tab: (t) => { tab = t.dataset.t; if (tab === 'cal') events = null; history.replaceState(null, '', '#/operations/' + tab); paint(); },
     pick: (t, e) => { if (e.target.closest('[data-act=editProject]') || e.target.closest('a')) return; current = t.dataset.id; tab = 'pipe'; paint(); },
-    newProject: () => projectForm(null),
+    newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); current = r.project.id; tab = 'pipe'; paint(); } },
     editProject: (t, e) => { e.stopPropagation(); const p = projects.find((x) => x.id === t.dataset.id);
       drawer(html`<div class="row"><span class="chip">${p.kind}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><h2>${p.name}</h2><div class="mut">${p.client || 'Interno'}</div>
         <b class="sm" style="display:block;margin-top:18px">Fases</b>
@@ -233,8 +234,7 @@ export async function render(el, { me, sub, alive }) {
     dayall: (t) => { const d = +t.dataset.d; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><h2>${fdate(`${calMonth}-${String(d).padStart(2, '0')}`)}</h2><div style="margin-top:14px">${(dayMap[d] || []).map(evChip)}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)) }); },
     tf: (t) => { taskFilter = t.dataset.f; taskTab($('#obody', el)); },
     task: (t) => openTask(tasks.find((x) => x.id === t.dataset.id)),
-    newTask: async () => { const v = await ask('Nueva tarea', [{ k: 'title', l: 'Tarea', req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '—'], ...projects.map((p) => [p.id, p.name])], v: current || '' }, { k: 'dept', l: 'Departamento', t: 'select', opts: [['', '—'], ...DEPTS.map(([n, name]) => [`${n} ${name}`, `${n} ${name}`])] }, { k: 'assignee', l: 'Responsable', t: 'select', opts: [['', '—'], ...team.filter((p) => p.active !== false).map((p) => [p.email || p.id, p.name])], v: me.email, half: true }, { k: 'due', l: 'Vence', t: 'date', half: true }]);
-      if (!v) return; try { const r = await TK.create({ ...v, status: 'Por empezar', checklist: [], comments: [] }); tasks.push(r); toast('Tarea creada ✅'); paint(); } catch (e) { toast(e.message, true); } },
+    newTask: async () => { const r = await wizTask({ team, me, projects, pre: tab === 'pipe' && current ? { project_id: current } : {} }); if (r) { tasks.push(r); paint(); } },
   });
   // Se actualiza solo: cada minuto mientras está abierto y al volver a la pestaña del navegador.
   const tick = () => { if (!alive()) return stop(); if (tab === 'cal' && document.visibilityState === 'visible' && !document.querySelector('dialog[open]') && !$('#drawer')?.classList.contains('on')) { events = null; const b = $('#obody', el); if (b) cal(b); } };

@@ -61,7 +61,7 @@ export function recorder({ onDone }) {
     const bar = $('#recBar', v); bar.hidden = false; $('[data-r=save]', v).disabled = true;
     try {
       const ext = (blob.type || '').includes('mp4') ? 'mp4' : 'webm';
-      const f = await uploadToDrive(new File([blob], `${title}.${ext}`, { type: blob.type || 'video/webm' }), `${title}.${ext}`, (p) => { bar.firstElementChild.style.width = Math.round(p * 100) + '%'; });
+      const f = await uploadToDrive(new File([blob], `${title}.${ext}`, { type: blob.type || 'video/webm' }), `${title}.${ext}`, (p) => { bar.firstElementChild.style.width = Math.round(p * 100) + '%'; }, { client: 'Inherent', sub: 'Library' });
       close(); onDone?.({ title, link: f.link, id: f.id });
     } catch (e) { $('[data-r=save]', v).disabled = false; toast(e.message, true); }
   }

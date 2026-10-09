@@ -1,6 +1,6 @@
 // «Por postear»: los videos y piezas propias de un perfil, de la idea a publicado.
 // Se usa en Content y en la página de cada cliente. Vive en la colección content.
-import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl } from './core.js';
+import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard } from './core.js';
 
 export const PSTATUS = ['Idea', 'Grabado', 'Editado', 'Programado', 'Publicado'];
 const PCLS = { Idea: '', Grabado: 'amber', Editado: 'blue', Programado: 'lime', Publicado: 'green' };
@@ -9,6 +9,16 @@ const C = col('content');
 export const loadPosts = async (profile) => (await C.list()).filter((p) => p.profile === profile && p.kind === 'post');
 
 export async function editPost(profile, p) {
+  if (!p) { // nueva pieza: con preguntas
+    const a = await wizard('Nueva pieza', [
+      { k: 'format', q: '¿Qué formato?', type: 'cards', req: true, opts: [['Reel', '🎬'], ['TikTok', '🎵'], ['Carrusel', '🗂️'], ['Story', '⭕'], ['Estático', '🖼️'], ['YouTube', '▶️']].map(([v, i]) => ({ v, i, l: v })) },
+      { k: 'title', q: '¿Cuál es la idea?', type: 'text', req: true, ph: 'Ej. Detrás de cocina' },
+      { k: 'date', q: '¿Cuándo sale?', type: 'when' },
+      { k: 'status', q: '¿En qué va?', type: 'cards', req: true, opts: PSTATUS.map((v) => ({ v, l: v })) },
+    ], 'Agregar');
+    if (!a) return null;
+    try { return await C.create({ ...a, profile, kind: 'post' }); } catch (e) { toast(e.message, true); return null; }
+  }
   const v = await ask(p ? 'Editar pieza' : 'Nueva pieza por postear', [
     { k: 'title', l: 'Título', v: p?.title, req: true },
     { k: 'format', l: 'Formato', t: 'select', opts: ['Reel', 'TikTok', 'Carrusel', 'Story', 'Estático', 'YouTube'].map((x) => [x, x]), v: p?.format || 'Reel', half: true },

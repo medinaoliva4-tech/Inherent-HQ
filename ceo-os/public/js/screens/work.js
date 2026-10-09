@@ -1,5 +1,6 @@
 import { html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
+import { newProject as wizProject, newTask as wizTask } from '../create.js';
 
 // Workspace: cada persona trabaja desde el perfil (o los perfiles) que tiene asignados en Team.
 // Todos tienen su kanban personal, el de la empresa y sus tareas. Cada perfil agrega lo suyo:
@@ -16,17 +17,12 @@ const CHECK = {
   finance: ['Leer los números del cliente', 'Mapa del negocio: procesos y equipo', 'Proyecto para que ganen más', 'Proyecto para que gasten menos', 'Entregar el reporte y el plan'],
 };
 const COMMUNITY = ['Tono y voz de la marca', 'FAQ y respuestas frecuentes', 'Reglas de escalamiento', 'Plantillas de respuesta'];
-const VTPL = {
-  reel: ['Reel · marca + storytelling', 'Hook visual en los primeros 1-2 s. Arco: problema → giro → resultado. Cortes cada 1.5-2 s, texto en pantalla corto, subtítulos quemados. Cierre con CTA claro.'],
-  ugc: ['UGC · testimonio', 'Persona real a cámara, luz natural, tono conversacional. Abre con el resultado, luego el antes, luego cómo. B-roll del producto. Sin look de anuncio.'],
-  ads: ['Anuncio vertical · Ads', 'Hook en el primer segundo con el beneficio. 3 variantes de hook sobre el mismo cuerpo. Producto en pantalla antes del segundo 3. CTA y oferta al final. Safe zones de Meta.'],
-  corte: ['Derivado · corte corto', 'Toma el mejor momento del video largo (6-15 s). Un solo mensaje. Loop limpio al final.'],
-};
 const ymNow = () => today().slice(0, 7);
 
 export async function render(el, { me, sub, alive }) {
   const TK = col('tasks'), CK = col('checks');
   const isCeo = me.role === 'ceo';
+  let accounts = [], settings = null;
   let [tasks, projects, team, content, docs, checks, quotes] = await Promise.all([
     TK.list(), col('projects').list(), teamList(), col('content').list().catch(() => []), col('docs').list().catch(() => []), CK.list().catch(() => []),
     isCeo ? col('quotes').list().catch(() => []) : [],
@@ -39,6 +35,7 @@ export async function render(el, { me, sub, alive }) {
   const pref = (() => { try { return localStorage.getItem('work.role'); } catch { return null; } })();
   let role = myRoles.includes(sub[1]) ? sub[1] : !asP && myRoles.includes(pref) ? pref : myRoles[0] || null;
   let tab = ['zona', 'kanban', 'pipes', 'equipo'].includes(sub[0]) ? sub[0] : 'zona';
+  Promise.all([col('accounts').list().catch(() => []), col('settings').get('drive').catch(() => null)]).then(([a2, s2]) => { accounts = a2; settings = s2; if (alive() && tab === 'zona' && role === 'video') paint(); });
   let kView = 'personal', pipeSel = 'contenido', personSel = null, ctab = 'ideas', clientSel = null, ceoLane = 'estrategia';
   let agenda = null, clientInfo = {}, posts = null;
   const T0 = today(), T1 = addDays(T0, 1), T7 = addDays(T0, 7);
@@ -77,7 +74,7 @@ export async function render(el, { me, sub, alive }) {
     const viewSel = isCeo ? html`<select class="in sm" id="viewAs" style="width:auto"><option value="">👁 Mi Workspace</option>${team.filter((p) => p.active !== false && p.kind !== 'ia' && p.id !== me.email).map((p) => html`<option value="${p.email || p.id}" ${asP && (asP.email || asP.id) === (p.email || p.id) ? raw('selected') : ''}>Ver como ${p.name}</option>`)}</select>` : '';
     mount(el, html`${asP ? html`<div class="asbar">👁 Estás viendo el Workspace de <b>${asP.name}</b> · lo que hagas aquí queda a su nombre <a href="#/work">Volver al mío</a></div>` : ''}<div class="wktop"><div><h1>${asP ? asP.name.split(' ')[0] : 'Workspace'}</h1><p class="mut">${role ? roleName(role) : asP ? 'Sin perfil de trabajo asignado' : 'Tu trabajo, en orden'}</p></div><div class="sp"></div>${viewSel}
         ${myRoles.length > 1 ? html`<div class="tabs" style="margin:0">${myRoles.map((r) => html`<button class="${r === role ? 'on' : ''}" data-act="role" data-r="${r}">${roleName(r).split(' · ')[0]}</button>`)}</div>` : ''}
-        <button class="btn" data-act="newTask">+ Tarea</button></div>
+        ${canCoord ? html`<button class="btn ghost" data-act="newProject">+ Proyecto</button>` : ''}<button class="btn" data-act="newTask">+ Tarea</button></div>
       <div class="tabs" style="margin:0 0 14px">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
       <div id="wbody"></div>`);
     const vs = $('#viewAs', el); if (vs) vs.onchange = () => { location.hash = vs.value ? `/work/zona/_/${vs.value}` : '/work'; };
@@ -207,42 +204,41 @@ export async function render(el, { me, sub, alive }) {
     mount(b, html`${kpis([['Por producir', n('Por empezar')], ['En edición', n('En curso'), '#7f9631'], ['En revisión', n('En revisión'), '#b08a5f'], ['Ads pendientes', open(vids).filter((t) => /^⑩/.test(t.dept || '') || /\bad/i.test(t.title)).length, '#c2735a']])}
       <div class="wkgrid">
         <div class="span2">${box('Cola de producción', 'Tus videos y ads, por fecha de entrega', q.length ? html`<table class="wktable"><thead><tr><th>Pieza</th><th>Cliente</th><th>Tipo</th><th>Entrega</th><th>Estado</th></tr></thead><tbody>${q.slice(0, 8).map((t) => html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b></td><td class="mut">${proj(t.project_id)?.client || '—'}</td><td><span class="chip sm2 ${/^⑩/.test(t.dept || '') ? 'red' : ''}">${/^⑩/.test(t.dept || '') ? 'Ads' : 'Video'}</span></td><td>${dueChip(t.due, status(t)) || '—'}</td><td><span class="chip sm2">${status(t)}</span></td></tr>`)}</tbody></table>` : html`<div class="mut sm" style="padding:6px 0">Sin videos asignados. Cuando te asignen una tarea de ⑦ Video Editing o ⑩ Ads aparece aquí.</div>`)}</div>
-        ${agentBox(q)}
-        ${checklist('video')}
+        ${quick()}
+        ${clientKit()}
         ${uploader('Subir corte para revisión')}
-        ${material()}
+        ${checklist('video')}
         ${deliveries()}
-        ${sops('video')}
       </div>`);
-    hookUpload(b); hookAgent(b, q); hookClient(b);
+    hookUpload(b); hookClient(b);
   }
-  function agentBox(q) {
-    const recent = mine().flatMap((t) => (t.prompts || []).map((p) => ({ ...p, t }))).sort((a, z) => String(z.at).localeCompare(String(a.at))).slice(0, 3);
-    return box('Agente de video', 'Arma el prompt con la plantilla aprobada', html`<div class="form" style="gap:8px">
-      <select class="in" id="vtpl">${Object.entries(VTPL).map(([k, [l]]) => html`<option value="${k}">${l}</option>`)}</select>
-      <select class="in" id="vtask"><option value="">— Brief: elige la pieza</option>${q.map((t) => html`<option value="${t.id}">${t.title} · ${proj(t.project_id)?.client || 'Interno'}</option>`)}</select>
-      <div class="two"><select class="in" id="vfmt">${['Reel 9:16', 'Story 9:16', 'Horizontal 16:9', 'Cuadrado 1:1', 'Feed 4:5'].map((f) => html`<option>${f}</option>`)}</select><input class="in" id="vdur" placeholder="Duración (ej. 20 s)"></div>
-      <button class="btn" data-act="vprompt">✦ Preparar prompt</button></div>
-      ${recent.length ? html`<div class="lbl" style="color:var(--mut);margin-top:10px">Recientes</div>${recent.map((p) => html`<div class="wkrow" data-act="task" data-id="${p.t.id}"><span class="grow">${p.t.title}<span class="mut sm"> · ${VTPL[p.tpl]?.[0] || ''}</span></span><span class="mut sm">${fdate(String(p.at).slice(0, 10))}</span></div>`)}` : ''}`);
+  // Acceso rápido: SOPs y prompts generales (los crea el CEO en la Library, tipo «Prompt»).
+  function quick() {
+    const sopsV = docs.filter((d) => (d.roles || []).includes('video') && d.kind !== 'Prompt');
+    const gen = docs.filter((d) => d.kind === 'Prompt' && !d.client);
+    const link = (d) => html`<a class="wksop" href="#/library/${d.folder_id || '_'}/${d.id}"><span class="ftype" style="background:${d.kind === 'Prompt' ? '#b8583c' : '#4f7790'}">${d.kind === 'Prompt' ? '✦' : (d.kind || 'Doc').slice(0, 3).toUpperCase()}</span><span>${d.kind === 'Prompt' ? d.vtype || d.title : d.title}</span></a>`;
+    return box('Acceso rápido', 'SOPs y prompts generales', html`${sopsV.length ? html`<div class="lbl" style="color:var(--mut);margin:2px 0 6px">SOPs</div><div class="wksops">${sopsV.slice(0, 4).map(link)}</div>` : ''}
+      <div class="lbl" style="color:var(--mut);margin:10px 0 6px">Prompts generales</div>${gen.length ? html`<div class="wksops">${gen.slice(0, 6).map(link)}</div>` : html`<div class="mut sm">Todavía no hay. El CEO los crea en Library → + Documento → Prompt de video → General.</div>`}
+      ${settings?.root ? html`<a class="wkrow" href="${settings.root}" target="_blank" rel="noopener noreferrer" style="margin-top:6px"><span class="fi">${IC.drive}</span><span class="grow">Carpeta de entregas en Drive</span><span class="mut">↗</span></a>` : ''}`, html`<a class="sm mut" href="#/library">Library →</a>`);
   }
-  function hookAgent(b, q) {
-    $('[data-act=vprompt]', b)?.addEventListener('click', async () => {
-      const t = q.find((x) => x.id === $('#vtask', b).value); const [tn, guide] = VTPL[$('#vtpl', b).value];
-      const p = t && proj(t.project_id);
-      const text = `Eres el editor de video de Inherent. Plantilla: ${tn}.
-Cliente: ${p?.client || '—'}${p ? ` (proyecto «${p.name}»)` : ''}.
-Pieza: ${t ? t.title : '—'}.
-Objetivo y brief: ${t?.description || 'Usa el brief del ciclo en Content → Guiones.'}
-Formato: ${$('#vfmt', b).value}${$('#vdur', b).value ? ` · Duración: ${$('#vdur', b).value}` : ''}.
-Marca: respeta la guía de marca del cliente (02-marca): paleta, tipografías, tono y activos distintivos.
-Cómo debe quedar: ${guide}
-Entrega: el plan de edición escena por escena (tiempo, toma, texto en pantalla, audio) y la lista de exports (orgánico y Ads).`;
-      if (t) { const r = await save({ ...t, prompts: [...(t.prompts || []), { at: new Date().toISOString(), tpl: $('#vtpl', b).value }].slice(-10) }); if (r) Object.assign(t, r); }
-      drawer(html`<div class="row"><span class="chip">✦ Prompt listo</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><h2>${tn}</h2><div class="mut">${t ? t.title : 'Sin pieza'}</div>
-        <textarea class="in" id="ptxt" style="min-height:340px;margin-top:14px;font-family:ui-monospace,Menlo,monospace;font-size:13px">${text}</textarea>
-        <div class="row" style="margin-top:12px"><button class="btn" data-act="copy">Copiar</button><span class="mut sm">Pégalo en tu agente de video.</span></div>`,
-      { copy: async () => { try { await navigator.clipboard.writeText($('#ptxt').value); toast('Copiado ✅'); } catch { $('#ptxt').select(); document.execCommand('copy'); toast('Copiado ✅'); } } });
-    });
+  // Por cliente: sus assets en Drive y los prompts de esa marca por tipo de video.
+  function clientKit() {
+    const slugs = [...new Set(projects.map((p) => p.client_slug).filter(Boolean))];
+    clientSel ||= clientOf(open(mine())[0] || {}) || slugs[0] || null;
+    const info = clientSel && clientInfo[clientSel];
+    if (clientSel && !info) api(`repo/client/${encodeURIComponent(clientSel)}`).then((r) => { clientInfo[clientSel] = r; if (alive() && tab === 'zona') paint(); }).catch(() => { clientInfo[clientSel] = { links: [], months: [] }; });
+    const acc = accounts.find((x) => x.id === 'acc-' + clientSel) || {};
+    const assets = /^https:\/\//.test(acc.assets || '') ? acc.assets : info?.links?.find((l) => /drive/i.test(l.k) && /^https:\/\//.test(l.url || ''))?.url;
+    const prompts = docs.filter((d) => d.kind === 'Prompt' && d.client === clientSel);
+    const byType = {}; prompts.forEach((d) => (byType[d.vtype || 'Otro'] ||= []).push(d));
+    return box('Por cliente', 'Assets y prompts de cada marca', html`<select class="in" id="clientSel" style="margin-bottom:8px">${slugs.map((x) => html`<option value="${x}" ${x === clientSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select>
+      ${!clientSel ? html`<div class="mut sm">Sin clientes con proyecto.</div>` : html`
+      ${assets ? html`<a class="wkrow" href="${assets}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow"><b style="font-weight:500">Assets</b><span class="mut sm"> · logos, fotos, videos crudos</span></span><span class="mut">↗</span></a>` : html`<div class="wkrow"><span class="fi">${IC.drive}</span><span class="grow mut sm">Sin carpeta de assets. Se agrega en Clients → ${clientSel.toUpperCase()} → Editar datos.</span></div>`}
+      <a class="wkrow" href="#/content/plan/${clientSel}"><span style="width:22px;text-align:center">📅</span><span class="grow">Calendario<span class="mut sm"> · plan del mes</span></span><span class="mut">›</span></a>
+      <a class="wkrow" href="#/content/guiones/${clientSel}"><span style="width:22px;text-align:center">📝</span><span class="grow">Brief y guiones</span><span class="mut">›</span></a>
+      <div class="lbl" style="color:var(--mut);margin:10px 0 6px">Prompts de ${clientSel.toUpperCase()}</div>
+      ${prompts.length ? Object.entries(byType).map(([ty, l]) => html`<div class="wkrow"><span class="chip sm2">${ty}</span><span class="grow">${l.map((d, i) => html`${i ? ' · ' : ''}<a href="#/library/${d.folder_id || '_'}/${d.id}" style="color:inherit">${d.title}</a>`)}</span><button class="btn ghost xs" data-act="copyP" data-id="${l[0].id}">Copiar</button></div>`)
+        : html`<div class="mut sm">Sin prompts para esta marca. El CEO los crea en Library → Prompt de video.</div>`}`}`);
   }
 
   // =================== CONTENT ===================
@@ -304,7 +300,7 @@ Entrega: el plan de edición escena por escena (tiempo, toma, texto en pantalla,
       if (!t) { const v = await ask('¿Qué estás entregando?', [{ k: 'title', l: 'Nombre de la entrega', v: file.name.replace(/\.[^.]+$/, ''), req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '— Interno'], ...projects.map((p) => [p.id, p.name])] }], 'Subir'); if (!v) return; t = await create({ ...v, assignee: who, status: 'En curso' }); if (!t) return; }
       const bar = $('#upBar', b); bar.hidden = false;
       try {
-        const f = await uploadToDrive(file, `${t.title} · ${file.name}`, (p) => { bar.firstElementChild.style.width = Math.round(p * 100) + '%'; });
+        const f = await uploadToDrive(file, `${t.title} · ${file.name}`, (p) => { bar.firstElementChild.style.width = Math.round(p * 100) + '%'; }, { client: proj(t.project_id)?.client || 'Interno', sub: ymNow() });
         const r = await save({ ...t, link: f.link, status: 'En revisión', files: [...(t.files || []), { name: f.name, link: f.link, at: new Date().toISOString() }] });
         if (r) { toast(`Subido y enviado a revisión de ${nameOf(accOf(r)).split(' ')[0]} ✅`); paint(); }
       } catch (e) { bar.hidden = true; toast(e.message, true); }
@@ -351,18 +347,7 @@ Entrega: el plan de edición escena por escena (tiempo, toma, texto en pantalla,
   async function save(t) { try { const r = await TK.save(t); tasks = tasks.map((x) => (x.id === r.id ? r : x)); return r; } catch (e) { toast(e.message, true); return null; } }
   async function create(t) { try { const r = await TK.create({ checklist: [], comments: [], ...t }); tasks.push(r); toast('Tarea creada ✅'); return r; } catch (e) { toast(e.message, true); return null; } }
   const peopleOpts = () => [['', '—'], ...team.filter((p) => p.active !== false).map((p) => [keyOf(p), p.name + ((p.roles || []).length ? ' · ' + roleName(p.roles[0]).split(' · ')[0] : p.title ? ' · ' + p.title : '')])];
-  async function newTask(pre = {}) {
-    const v = await ask('Nueva tarea', [
-      { k: 'title', l: 'Tarea', req: true },
-      { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '— Interno'], ...projects.map((p) => [p.id, p.name])], v: pre.project_id || '', half: true },
-      { k: 'dept', l: 'Departamento', t: 'select', opts: [['', '—'], ...DEPTS.map(([n, name]) => [`${n} ${name}`, `${n} ${name}`])], v: pre.dept || '', half: true },
-      { k: 'assignee', l: 'Responsable (lo hace)', t: 'select', opts: peopleOpts(), v: pre.assignee ?? who, half: true },
-      { k: 'accountable', l: 'Rinde cuentas (lo aprueba)', t: 'select', opts: [['', 'Su jefe directo'], ...peopleOpts().slice(1)], v: pre.accountable || '', half: true },
-      { k: 'due', l: 'Vence', t: 'date', v: pre.due || '', half: true },
-      { k: 'status', l: 'Estado', t: 'select', opts: COLS.map(([s, l]) => [s, l]), v: pre.status || 'Por empezar', half: true },
-    ], 'Crear');
-    if (v && (await create(v))) paint();
-  }
+  async function newTask(pre = {}) { const r = await wizTask({ team, me: { ...me, email: who }, projects, pre }); if (r) { tasks.push(r); paint(); } }
   function openTask(t) {
     const draw = () => {
       const p = proj(t.project_id);
@@ -406,6 +391,7 @@ Entrega: el plan de edición escena por escena (tiempo, toma, texto en pantalla,
     pipe: (t) => { pipeSel = t.dataset.k; tab = 'pipes'; paint(); },
     person: (t) => { personSel = t.dataset.k; tab = 'equipo'; paint(); },
     task: (t, e) => { if (e.target.closest('input,button')) return; const x = tasks.find((y) => y.id === t.dataset.id); if (x) openTask(x); },
+    copyP: async (t) => { const d = docs.find((x) => x.id === t.dataset.id); try { await navigator.clipboard.writeText(d?.body || ''); toast('Prompt copiado ✅'); } catch { toast('No pude copiar', true); } },
     approveQ: async (t, e) => { e.stopPropagation(); const x = tasks.find((y) => y.id === t.dataset.id); if (await save({ ...x, status: 'Hecha' })) { toast('Aprobado ✅'); paint(); } },
     tdone: async (cb) => { const t = tasks.find((x) => x.id === cb.dataset.id); if (!(await save({ ...t, status: cb.checked ? 'Hecha' : 'En curso' }))) cb.checked = !cb.checked; else setTimeout(paint, 250); },
     ck: async (cb) => {
@@ -416,6 +402,7 @@ Entrega: el plan de edición escena por escena (tiempo, toma, texto en pantalla,
     post: async (t) => { const p = posts?.find((x) => x.id === t.dataset.id) || content.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(p.profile, p); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); paint(); } },
     newPost: async () => { const pr = await ask('¿Para qué perfil?', [{ k: 'p', l: 'Perfil', t: 'select', opts: [['inherent', 'Inherent'], ['personal', 'Marca personal'], ...[...new Set(projects.map((p) => p.client_slug).filter(Boolean))].map((s) => [s, s.toUpperCase()])] }], 'Seguir'); if (!pr) return; const r = await editPost(pr.p, null); if (r) { posts = [...(posts || []), r]; paint(); } },
     newTask: () => newTask(),
+    newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); paint(); } },
     colAdd: (t) => newTask({ status: t.dataset.s, assignee: kView === 'personal' ? who : '' }),
     laneTask: (t) => newTask({ dept: t.dataset.d }),
     assignTo: () => newTask({ assignee: personSel }),
