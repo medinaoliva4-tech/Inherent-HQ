@@ -10,7 +10,7 @@ export const SCOPES = [
   'https://www.googleapis.com/auth/drive',
 ];
 const cfg = () => {
-  const id = process.env.GOOGLE_CLIENT_ID, secret = process.env.GOOGLE_CLIENT_SECRET, app = process.env.APP_URL;
+  const id = process.env.GOOGLE_CLIENT_ID?.trim(), secret = process.env.GOOGLE_CLIENT_SECRET?.trim(), app = process.env.APP_URL?.trim();
   if (!id || !secret || !app) throw Object.assign(new Error('Falta configurar Google (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, APP_URL)'), { code: 'NO_GOOGLE' });
   return { id, secret, redirect: `${app.replace(/\/$/, '')}/api/auth/callback` };
 };
