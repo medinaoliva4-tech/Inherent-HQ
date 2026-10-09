@@ -10,25 +10,28 @@ export const SCOPES = [
   'https://www.googleapis.com/auth/calendar.calendarlist.readonly',
   'https://www.googleapis.com/auth/drive',
 ];
-const cfg = () => {
-  const id = process.env.GOOGLE_CLIENT_ID?.trim(), secret = process.env.GOOGLE_CLIENT_SECRET?.trim(), app = process.env.APP_URL?.trim();
+// portal = el login de los clientes y correos aprobados de afuera: solo nombre y correo (sin Drive ni Calendar).
+// Usa su propio cliente OAuth (tipo «Externo» en Google Cloud) si está configurado.
+const cfg = (portal = false) => {
+  const P = portal && process.env.GOOGLE_PORTAL_CLIENT_ID?.trim();
+  const id = (P ? process.env.GOOGLE_PORTAL_CLIENT_ID : process.env.GOOGLE_CLIENT_ID)?.trim(), secret = (P ? process.env.GOOGLE_PORTAL_CLIENT_SECRET : process.env.GOOGLE_CLIENT_SECRET)?.trim(), app = process.env.APP_URL?.trim();
   if (!id || !secret || !app) throw Object.assign(new Error('Falta configurar Google (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, APP_URL)'), { code: 'NO_GOOGLE' });
   return { id, secret, redirect: `${app.replace(/\/$/, '')}/api/auth/callback` };
 };
 export const configured = () => Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.APP_URL);
 
-export function authUrl(state) {
-  const c = cfg();
+export function authUrl(state, portal = false) {
+  const c = cfg(portal);
   const u = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-  Object.entries({
-    client_id: c.id, redirect_uri: c.redirect, response_type: 'code', scope: SCOPES.join(' '),
-    access_type: 'offline', include_granted_scopes: 'true', prompt: 'consent select_account', hd: domain(), state,
-  }).forEach(([k, v]) => u.searchParams.set(k, v));
+  Object.entries(portal
+    ? { client_id: c.id, redirect_uri: c.redirect, response_type: 'code', scope: 'openid email profile', prompt: 'select_account', state }
+    : { client_id: c.id, redirect_uri: c.redirect, response_type: 'code', scope: SCOPES.join(' '), access_type: 'offline', include_granted_scopes: 'true', prompt: 'consent select_account', hd: domain(), state },
+  ).forEach(([k, v]) => u.searchParams.set(k, v));
   return u.toString();
 }
 
-async function token(params) {
-  const c = cfg();
+async function token(params, portal = false) {
+  const c = cfg(portal);
   const r = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ client_id: c.id, client_secret: c.secret, ...params }),
@@ -39,17 +42,19 @@ async function token(params) {
 }
 
 // Canjea el código y valida la identidad con Google. Devuelve el perfil solo si es del dominio.
-export async function finishLogin(code) {
-  const c = cfg();
-  const t = await token({ code, redirect_uri: c.redirect, grant_type: 'authorization_code' });
+// Devuelve el perfil verificado por Google. `internal` = cuenta del dominio de Inherent;
+// las de afuera solo entran si el CEO las aprobó (eso se revisa en la ruta del callback).
+export async function finishLogin(code, portal = false) {
+  const c = cfg(portal);
+  const t = await token({ code, redirect_uri: c.redirect, grant_type: 'authorization_code' }, portal);
   const r = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(t.id_token));
   const info = await r.json();
   const email = String(info.email || '').toLowerCase();
-  const ok = r.ok && info.aud === c.id && ['accounts.google.com', 'https://accounts.google.com'].includes(info.iss)
-    && String(info.email_verified) === 'true' && info.hd === domain() && email.endsWith('@' + domain());
+  const ok = r.ok && info.aud === c.id && ['accounts.google.com', 'https://accounts.google.com'].includes(info.iss) && String(info.email_verified) === 'true' && email.includes('@');
   if (!ok) return null;
-  if (t.refresh_token) await db.vaultSet('google:' + email, seal(t.refresh_token));
-  return { email, name: info.name || email, picture: info.picture || null, scopes: String(t.scope || '').split(' ') };
+  const internal = info.hd === domain() && email.endsWith('@' + domain());
+  if (internal && !portal && t.refresh_token) await db.vaultSet('google:' + email, seal(t.refresh_token));
+  return { email, internal, name: info.name || email, picture: info.picture || null, scopes: String(t.scope || '').split(' ') };
 }
 
 const cache = new Map();

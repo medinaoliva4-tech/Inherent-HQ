@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initials, IC, $, docView, docHead, ask, confirmAsk , teamList, wizard } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initials, IC, $, docView, docHead, ask, confirmAsk , teamList, wizard, ICON } from '../core.js';
 import { upcoming, meetingRows, schedule, markDone } from '../meetings.js';
 import { fit, priceLabel, monthly, avatar, CADENCE } from '../mentors.js';
 import { loadPosts, postsBoard } from '../posts.js';
@@ -71,6 +71,7 @@ export async function render(el, { me, sub, alive }) {
     let posts = null;
     const ps = projects.filter((p) => p.client_slug === slug);
     const tk = tasks.filter((t) => ps.some((p) => p.id === t.project_id));
+    let portalPeople = me.role === 'client' ? [] : (await api('db/team').catch(() => ({ items: [] }))).items.filter((x) => x.role === 'client' && x.client_slug === slug);
     const isGrowth = () => /accelerate|compound/i.test(info?.plan || '') || ps.some((p) => p.line === 'growth');
     const person = (email) => team.find((t) => t.id === email || t.email === email);
     const saveAcc = async (next) => { try { const r = next.v ? await AC.save(next) : await AC.create(next); a = r; return r; } catch (e) { toast(e.message, true); return null; } };
@@ -92,6 +93,9 @@ export async function render(el, { me, sub, alive }) {
 
         ${a.drive ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin:8px 0 4px"><a class="connect on" href="${a.drive}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="lg">${IC.drive}</span>Drive de ${a.name}</a>${Object.entries(a.drive_dirs || {}).map(([k, u]) => html`<a class="chip" href="${u}" target="_blank" rel="noopener noreferrer" style="padding:7px 12px;text-decoration:none;color:inherit">📁 ${k.replace(/^\d+ /, '')}</a>`)}</div>`
           : html`<div class="connectcard" style="margin:8px 0 4px"><span class="lg big">${IC.drive}</span><div class="grow"><b style="font-weight:500">Crea el Drive de ${a.name}</b><div class="mut sm">Onboarding · Assets · Guiones · Crudo · Por postear · Entregables · Reportes${isGrowth() ? ' · Números y auditoría' : ''}. Quedan conectadas a Content y al Workspace.</div></div><button class="btn" data-act="mkdrive">Crear carpetas</button></div>`}
+
+        <div class="card" style="margin:10px 0 4px;padding:14px 16px"><div class="row" style="gap:10px;flex-wrap:wrap"><b class="ttl" style="font-size:16px">${ICON.user}Portal del cliente</b><span class="mut sm">Ve su avance, contenido, reuniones, metas y redes. Nada de costos ni notas internas.</span><div class="sp"></div><a class="btn ghost xs" href="#/portal/${slug}">👁 Ver su portal</a>${me.role === 'ceo' ? html`<button class="btn xs" data-act="portalAdd">+ Dar acceso</button>` : ''}</div>
+          ${portalPeople.length ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:10px">${portalPeople.map((x) => html`<span class="chip">${x.email}${me.role === 'ceo' ? html` <button class="sm mut" data-act="portalDel" data-id="${x.id}" style="margin-left:4px">✕</button>` : ''}</span>`)}</div>` : html`<div class="mut sm" style="margin-top:6px">Nadie tiene acceso todavía.</div>`}</div>
 
         <div class="sec-title" id="s-rm"><h2>Roadmap</h2><span class="mut sm">Metas · cómo se miden · desglose · checkpoints</span><div class="sp"></div><button class="btn" data-act="gadd">+ Meta</button></div>
         ${rm.length ? html`<div class="goals">${rm.map(goalCard)}</div>` : html`<div class="empty"><b>Sin metas todavía</b>Una meta trae cómo la medimos, dónde estamos, a dónde vamos, las tareas y cuándo revisamos.</div>`}
@@ -212,6 +216,13 @@ export async function render(el, { me, sub, alive }) {
         if (await saveAcc({ ...a, mentors: [...(a.mentors || []), { id: v.id, cadence: v.cadence, goal: v.goal === '' ? null : +v.goal, note: v.note }] })) { toast('Especialista agregado ✅'); paint(); }
       },
       esdel: async (t) => { if (!(await confirmAsk('¿Quitar este especialista del cliente?'))) return; if (await saveAcc({ ...a, mentors: a.mentors.filter((_, k) => k !== +t.dataset.k) })) paint(); },
+      portalAdd: async () => {
+        const v = await ask(`Acceso al portal de ${a.name}`, [{ k: 'email', l: 'Correo de Google de la persona del cliente', t: 'email', req: true }, { k: 'name', l: 'Nombre' }], 'Dar acceso');
+        if (!v) return; const email = v.email.trim().toLowerCase();
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return toast('Ese correo no es válido', true);
+        try { const r = await col('team').create({ id: email, email, name: v.name || email.split('@')[0], role: 'client', client_slug: slug, active: true }); portalPeople = [...portalPeople, r]; toast('Listo ✅ Ya puede entrar con Google en «Soy cliente»'); paint(); } catch (e) { toast(e.message, true); }
+      },
+      portalDel: async (t) => { if (!(await confirmAsk('¿Quitarle el acceso al portal?'))) return; try { await col('team').remove(t.dataset.id); portalPeople = portalPeople.filter((x) => x.id !== t.dataset.id); paint(); } catch (e) { toast(e.message, true); } },
       gadd: async () => { const g = await goalWizard(); if (g) { await saveGoals([...G(), g]); toast('Meta agregada ✅'); } },
       gst: async (t) => { const g = G(); const x = g[+t.dataset.g]; x.status = { todo: 'now', now: 'done', done: 'todo' }[x.status] || 'now'; await saveGoals(g); },
       gedit: async (t) => { const g = G(); const x = g[+t.dataset.g]; const v = await ask('Editar meta', [{ k: 'goal', l: 'Meta', v: x.goal, req: true }, { k: 'metric', l: 'Cómo se mide', v: x.metric }, { k: 'baseline', l: 'Al arrancar', v: x.baseline, half: true }, { k: 'current', l: 'Hoy', v: x.current, half: true }, { k: 'target', l: 'Meta', v: x.target, half: true }, { k: 'due', l: 'Para cuándo', t: 'date', v: x.due, half: true }, { k: 'note', l: 'Nota (sale en el PDF)', t: 'textarea', v: x.note }]); if (!v) return; g[+t.dataset.g] = { ...x, ...v }; await saveGoals(g); },

@@ -8,7 +8,9 @@ const ROLE_AREAS = {
   coo: AREAS.filter((a) => a !== 'finanzas'),                        // todo menos Finanzas
   // El equipo: su resumen, su Workspace, la Library y el Team. Content solo con el perfil «content».
   team: ['home', 'work', 'content', 'library', 'team'],
+  client: ['portal'],                                                // 🔒 el cliente: solo su portal
 };
+ROLE_AREAS.ceo = [...AREAS, 'portal']; ROLE_AREAS.coo = [...ROLE_AREAS.coo, 'portal']; // para ver el portal como lo ve el cliente
 // Content es para decidir: solo el CEO y quien tiene el perfil de trabajo «content».
 export const areasFor = (role, roles = []) => (ROLE_AREAS[role] || []).filter((a) => a !== 'content' || role === 'ceo' || roles.includes('content'));
 
@@ -35,7 +37,8 @@ const admins = () => String(process.env.ADMIN_EMAILS || '').toLowerCase().split(
 export async function userFor(email) {
   const u = await db.get('team', email);
   const role = admins().includes(email) ? 'ceo' : u?.role || 'team';
-  return { email, name: u?.name || email.split('@')[0], picture: u?.photo || u?.picture || null, title: u?.title || '', roles: Array.isArray(u?.roles) && u.roles.length ? u.roles : role === 'ceo' ? ['ceo'] : role === 'coo' ? ['coo'] : [], role, active: u ? u.active !== false : true };
+  // Un correo de afuera solo es «cliente» o lo que el CEO le dio; nunca hereda nada por default.
+  return { email, external: Boolean(u?.external), client_slug: u?.client_slug || '', name: u?.name || email.split('@')[0], picture: u?.photo || u?.picture || null, title: u?.title || '', roles: Array.isArray(u?.roles) && u.roles.length ? u.roles : role === 'ceo' ? ['ceo'] : role === 'coo' ? ['coo'] : [], role, active: u ? u.active !== false : true };
 }
 
 export function csrfOk(req) {
@@ -47,12 +50,14 @@ export function csrfOk(req) {
 }
 
 // Devuelve el usuario, o responde 401/403 y devuelve null.
-export async function guard(req, res, area) {
+// Los clientes (portal) solo pasan por rutas que lo permiten de forma explícita (opts.client).
+export async function guard(req, res, area, opts = {}) {
   if (!csrfOk(req)) { res.status(403).json({ error: 'Origen no permitido' }); return null; }
   const s = session.read(req);
   if (!s) { res.status(401).json({ error: 'No autenticado' }); return null; }
   const u = await userFor(s.email);
-  if (!u.active || !u.email.endsWith('@' + domain())) { session.clear(res); res.status(401).json({ error: 'Cuenta sin acceso' }); return null; }
+  if (!u.active || !(u.email.endsWith('@' + domain()) || u.external)) { session.clear(res); res.status(401).json({ error: 'Cuenta sin acceso' }); return null; }
+  if (u.role === 'client' && !opts.client) { res.status(403).json({ error: 'Sin acceso' }); return null; }
   if (area && !areasFor(u.role, u.roles).includes(area)) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
   session.issue(req, res, s); // sesión deslizante
   return u;

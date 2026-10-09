@@ -42,7 +42,8 @@ export async function api(path, opts = {}) {
 }
 // Colecciones de la base de datos
 // El equipo, con la foto que cada quien subió por encima de la de Google.
-export const teamList = async () => (await api('db/team')).items.map((p) => ({ ...p, google_picture: p.picture || null, picture: p.photo || p.picture || null }));
+// El equipo (sin los accesos de clientes al portal).
+export const teamList = async () => (await api('db/team')).items.filter((p) => p.role !== 'client').map((p) => ({ ...p, google_picture: p.picture || null, picture: p.photo || p.picture || null }));
 // Para guardar una persona: devuelve la foto de Google a su lugar (la de perfil va en `photo`).
 export const teamDoc = (p) => { const { google_picture, ...rest } = p; return { ...rest, picture: google_picture ?? rest.picture ?? null }; };
 // Recorta una imagen a un cuadrado chico (para fotos de perfil) y la devuelve como data URL JPEG.

@@ -50,6 +50,7 @@ El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez qu
 | `APIFY_TOKEN` | Para scrapear winners (Instagram y TikTok) |
 | `WINDSOR_API_KEY` | Analytics de Instagram de las cuentas propias. Las cuentas se conectan (login con Instagram) en windsor.ai; la app solo lee |
 | `ZERNIO_API_KEY` | Content → Bandeja: comentarios y DMs de las cuentas propias (llave con el grupo «messages»). Solo lectura |
+| `GOOGLE_PORTAL_CLIENT_ID` · `GOOGLE_PORTAL_CLIENT_SECRET` | El login del **portal del cliente** («Soy cliente»): un cliente OAuth de Google tipo **Externo**, solo con nombre y correo. Entra únicamente un correo que el CEO aprobó en Clients → Portal del cliente |
 | `CRON_SECRET` | Para el scrape semanal (Vercel Cron, lunes 13:00 UTC; cierre a las 16:00). Sin él, el cron no corre |
 | `GITHUB_TOKEN` | No hace falta. La app solo **lee** el repo: lo copia en cada build (`scripts/snapshot.mjs`). El repo guarda lo macro; el trabajo del día a día vive en la app |
 

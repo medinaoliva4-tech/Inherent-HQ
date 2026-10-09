@@ -14,9 +14,9 @@ const on = (method, pattern, fn) => routes.push({ method, re: new RegExp('^' + p
 
 // ---------- auth ----------
 on('GET', 'auth/google', async (req, res) => {
-  const state = google.newState();
-  session.addCookie(res, `ceoos_state=${session.sign({ state, exp: Date.now() + 10 * 60_000 })}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=600`);
-  res.writeHead(302, { Location: google.authUrl(state) }).end();
+  const state = google.newState(), portal = req.query.portal === '1';
+  session.addCookie(res, `ceoos_state=${session.sign({ state, portal, exp: Date.now() + 10 * 60_000 })}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=600`);
+  res.writeHead(302, { Location: google.authUrl(state, portal) }).end();
 });
 on('GET', 'auth/callback', async (req, res) => {
   const st = session.unsign(session.cookie(req, 'ceoos_state'));
@@ -25,10 +25,12 @@ on('GET', 'auth/callback', async (req, res) => {
   if (req.query.error) return back('google', req.query.error);
   if (!st || st.exp < Date.now() || st.state !== req.query.state || !req.query.code) return back('estado');
   let p;
-  try { p = await google.finishLogin(String(req.query.code)); }
+  try { p = await google.finishLogin(String(req.query.code), Boolean(st.portal)); }
   catch (e) { console.error('login google', e); return back('google', e.message); }
   if (!p) return back('dominio');
   try {
+    // Correos de afuera: solo los que el CEO aprobó (clientes del portal o colaboradores externos).
+    if (!p.internal) { const d = await db.get('team', p.email); if (!d?.external || d.active === false) return back('noaprobado'); }
     const u = await userFor(p.email);
     if (!u.active) return back('inactivo');
     await db.upsert('team', p.email, { email: p.email, name: p.name, picture: p.picture, google: { calendar: p.scopes.some((s) => s.includes('calendar')), drive: p.scopes.some((s) => s.includes('drive')) }, last_login: new Date().toISOString() }, p.email);
@@ -47,13 +49,13 @@ on('GET', 'auth/dev', async (req, res) => {
   res.writeHead(302, { Location: '/' }).end();
 });
 on('GET', 'me', async (req, res) => {
-  const u = await guard(req, res); if (!u) return;
+  const u = await guard(req, res, undefined, { client: true }); if (!u) return;
   const t = await db.get('team', u.email);
   res.json({ ...u, areas: areasFor(u.role, u.roles), google: t?.google || {} });
 });
 // Cada quien cambia su propia foto (una imagen chica que el navegador ya recortó).
 on('PUT', 'me/photo', async (req, res) => {
-  const u = await guard(req, res); if (!u) return;
+  const u = await guard(req, res, undefined, { client: true }); if (!u) return;
   const photo = String(body(req).photo || '');
   if (photo && (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(photo) || photo.length > 300_000)) return res.status(400).json({ error: 'La foto debe ser una imagen de menos de 200 KB' });
   await db.upsert('team', u.email, { photo: photo || null }, u.email);
@@ -87,9 +89,12 @@ on('GET', 'db/:coll/:id', async (req, res) => {
   const d = await db.get(req.params.coll, req.params.id);
   d && visible(u, req.params.coll, d) ? res.json(d) : res.status(404).json({ error: 'No existe' });
 });
+// Una persona con correo que no es del dominio queda como «aprobada de afuera» (puede entrar con Google).
+const markExternal = (coll, b, id) => { if (coll === 'team') { const e = String(b.email || id || '').toLowerCase(); if (e.includes('@') && !e.endsWith('@' + domain())) b.external = true; else delete b.external; if (b.role === 'client' && !b.client_slug) throw Object.assign(new Error('Falta el cliente del portal'), { status: 400 }); } return b; };
 on('POST', 'db/:coll', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
-  const b = body(req);
+  let b = body(req);
+  try { b = markExternal(req.params.coll, b, b.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
   try { res.json(await db.create(req.params.coll, b, u.email, id)); }
@@ -97,7 +102,8 @@ on('POST', 'db/:coll', async (req, res) => {
 });
 on('PUT', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
-  const b = body(req);
+  let b = body(req);
+  try { b = markExternal(req.params.coll, b, req.params.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
   if (req.params.coll === 'tasks' && !visible(u, 'tasks', await db.get('tasks', req.params.id))) return res.status(404).json({ error: 'No existe' });
   const d = await db.update(req.params.coll, req.params.id, b, Number(b.v), u.email);
@@ -464,6 +470,55 @@ on('GET', 'health', async (req, res) => {
   let repo = 'sin probar';
   try { repo = (await readFile('inherent/06-ECONOMIA.md')) ? 'ok' : 'no encuentra el archivo (token sin acceso al repo, o repo/rama incorrectos)'; } catch (e) { repo = e.message; }
   res.json({ env: Object.fromEntries(env.map((k) => [k, Boolean(process.env[k])])), repo, repoSource: repoSource(), domain: domain() });
+});
+
+// Tipo de cambio para cotizar en cualquier moneda (base: quetzales). Fuente pública sin llave.
+const fxCache = { at: 0, rates: null };
+on('GET', 'fx', async (req, res) => {
+  const u = await guard(req, res, 'sales'); if (!u) return;
+  const to = String(req.query.to || '').toUpperCase(); if (!/^[A-Z]{3}$/.test(to)) return res.status(400).json({ error: 'Moneda inválida' });
+  if (to === 'GTQ') return res.json({ to, rate: 1 });
+  if (!fxCache.rates || Date.now() - fxCache.at > 6 * 3600e3) {
+    const r = await fetch('https://open.er-api.com/v6/latest/GTQ').then((x) => x.json()).catch(() => null);
+    if (r?.rates) { fxCache.rates = r.rates; fxCache.at = Date.now(); }
+  }
+  const rate = fxCache.rates?.[to];
+  rate ? res.json({ to, rate, at: new Date(fxCache.at).toISOString() }) : res.status(502).json({ error: 'No pude traer el tipo de cambio. Escríbelo a mano.' });
+});
+
+// ---------- Portal del cliente ----------
+// Lo que ve un cliente de SU cuenta: estado de lo contratado, contenido por subir, calendario, reuniones,
+// metas, entregables y sus analytics. Nada de costos, horas, notas internas ni otros clientes.
+on('GET', 'portal', async (req, res) => {
+  const u = await guard(req, res, 'portal', { client: true }); if (!u) return;
+  const slug = u.role === 'client' ? u.client_slug : String(req.query.slug || '');
+  if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  const today = new Date().toISOString().slice(0, 10);
+  const [acc, projects, tasks, posts, f, p] = await Promise.all([db.get('accounts', 'acc-' + slug), db.list('projects'), db.list('tasks'), db.list('content'), readFile(`clients/${slug}/00-onboarding/plan-contratado.md`), content.profiles().then((l) => l.find((x) => x.slug === slug))]);
+  const ps = projects.filter((x) => x.client_slug === slug);
+  const pt = (pid) => tasks.filter((t) => t.project_id === pid && (t.visibility || 'all') === 'all');
+  const pct = (l) => (l.length ? Math.round((l.filter((t) => t.status === 'Hecha').length / l.length) * 100) : null);
+  const out = {
+    slug, name: acc?.name || slug.toUpperCase(), plan: f ? String(parsePlanContratado(f.content, 'team').plan || '').replace(/^[⬜🔷🟨]️?\s*/u, '') : '',
+    projects: ps.map((x) => {
+      const ts = pt(x.id);
+      return { name: x.name, kind: x.kind, phases: (x.phases || []).map(({ name, start, end, status }) => ({ name, start, end, status })), progress: pct(ts),
+        services: (x.services || []).map((sv) => { const st = ts.filter((t) => String(t.title).startsWith(sv.name + ' ·')); return { name: sv.name, level: sv.level, days: sv.days || null, includes: sv.includes || [], progress: pct(st), status: !st.length ? 'Por empezar' : st.every((t) => t.status === 'Hecha') ? 'Entregado' : st.some((t) => t.status === 'En revisión') ? 'En revisión' : st.some((t) => ['En curso', 'Hecha'].includes(t.status)) ? 'En curso' : 'Por empezar', due: st.map((t) => t.due).filter(Boolean).sort().at(-1) || null }; }) };
+    }),
+    meetings: ps.flatMap((x) => (x.meetings || []).filter((m) => (m.who || []).includes('cliente')).map((m) => ({ date: m.date, name: m.name, topics: m.topics || [], approves: m.approves || '', status: m.status || 'todo' }))).sort((a, z) => a.date.localeCompare(z.date)),
+    content: posts.filter((x) => x.kind === 'post' && x.profile === slug && x.date && x.date >= new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10)).map((x) => ({ title: x.title, format: x.format || 'Pieza', date: x.date, status: x.status || 'Idea', pillar: x.pillar || '' })).sort((a, z) => a.date.localeCompare(z.date)),
+    goals: (acc?.goals || []).map((g) => ({ goal: g.goal, metric: g.metric, baseline: g.baseline, current: g.current, target: g.target, due: g.due, status: g.status, checks: (g.checks || []).map(({ date, done, value }) => ({ date, done, value })) })),
+    delivered: ps.flatMap((x) => pt(x.id).filter((t) => t.status === 'Hecha').map((t) => ({ title: t.title.replace(/\s·\s[^·]+\(\d+(\.\d+)? h\)$/, ''), date: String(t._meta?.updated_at || '').slice(0, 10) }))).sort((a, z) => z.date.localeCompare(a.date)).slice(0, 20),
+    folder: acc?.drive_dirs?.['05 Entregables'] || null,
+    today,
+  };
+  // Analytics de Instagram (si el cliente tiene cuentas y Windsor está conectado).
+  if (p && content.windsorOn()) {
+    const handles = (await content.profile(p)).own.filter((a) => a.red === 'instagram').map((a) => a.handle);
+    const picked = (await content.cfg(slug)).ig_account; const hs = picked ? [picked] : handles;
+    if (hs.length) { try { const ig = await content.instagram(hs, 30); if (ig.matched) out.analytics = { handles: hs, followers: ig.followers, reach: ig.reach, views: ig.views, er: ig.er, posts: ig.posts, series: ig.series, top: ig.top.slice(0, 6).map(({ date, type, url, reach, likes, comments, saves }) => ({ date, type, url, reach, likes, comments, saves })) }; } catch {} }
+  }
+  res.json(out);
 });
 
 export default async function handler(req, res) {

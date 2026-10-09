@@ -389,7 +389,7 @@ html{scroll-behavior:smooth}
 /* ======================= CELULAR ======================= */
 @media (max-width:760px){
   html,body{font-size:15px;overflow-x:hidden}
-  .app{padding:14px 16px calc(96px + env(safe-area-inset-bottom))}
+  .app{padding:calc(14px + env(safe-area-inset-top)) 16px calc(96px + env(safe-area-inset-bottom))}
   /* arriba: marca + avatar · abajo: barra de navegación fija que se desliza */
   .top{margin-bottom:20px}
   .word img{height:20px!important}
@@ -607,3 +607,5 @@ body{background:transparent!important}
 .qlv{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.55)}.qlv input[type=range]{accent-color:#5c6b22}
 input[type=range]{accent-color:#5c6b22;cursor:grab}
 .qdoc td.n,.qdoc th.n{white-space:nowrap;padding-left:18px;vertical-align:top}
+.qprice{display:flex;align-items:center;justify-content:flex-end;max-width:160px;min-width:120px;background:#f4efe6;color:var(--ink);font-weight:500}
+.inmsg span{overflow-wrap:anywhere}.grid>*{min-width:0}

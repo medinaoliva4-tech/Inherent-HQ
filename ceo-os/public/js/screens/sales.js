@@ -198,7 +198,7 @@ export async function render(el, { me, sub, alive }) {
           <div style="text-align:right"><div class="mut sm">Precio</div><b style="font-size:24px;font-weight:500;letter-spacing:-.5px">${s.price ? Q(s.price) : sug ? html`<span class="mut" style="font-size:16px">sugerido ${Q(sug)}</span>` : '—'}</b></div></div></div>`; })}</div>`}`);
   }
 
-  async function editService(s) {
+  async function editService(s, after) {
     const roles = (rates?.roles || DEFAULT_ROLES.map(([role]) => ({ role }))).map((r) => r.role);
     let tasks = (s?.tasks || [{ role: roles[0], hours: 1 }]).map((t) => ({ ...t, hours10: t.hours10 ?? (+t.hours || 0) * 2 }));
     let level = s?.level || 5;
@@ -242,7 +242,7 @@ export async function render(el, { me, sub, alive }) {
           const f = Object.fromEntries(new FormData($('#sf')));
           if (!f.name) return toast('Falta el nombre', true);
           const doc = { ...(s || {}), ...f, tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2), price: $('#svprice').value === '' ? null : +$('#svprice').value };
-          try { const r = s ? await S.save(doc) : await S.create(doc); services = s ? services.map((x) => (x.id === r.id ? r : x)) : [...services, r]; toast('Guardado ✅'); closeDrawer(); paint(); }
+          try { const r = s ? await S.save(doc) : await S.create(doc); services = s ? services.map((x) => (x.id === r.id ? r : x)) : [...services, r]; toast('Guardado ✅'); closeDrawer(); after ? after(r) : paint(); }
           catch (e) { toast(e.message, true); }
         },
         delSvc: async () => { if (!(await confirmAsk(`¿Eliminar ${s.name}?`))) return; await S.remove(s.id); services = services.filter((x) => x.id !== s.id); closeDrawer(); paint(); },
@@ -294,12 +294,16 @@ export async function render(el, { me, sub, alive }) {
   }
 
   // ---------- Cotizaciones ----------
+  // La cotización guarda todo en quetzales y se muestra en su moneda (rate = 1 Q en esa moneda).
+  const CUR = (() => { try { return Intl.supportedValuesOf('currency'); } catch { return ['GTQ', 'USD', 'EUR', 'MXN']; } })();
+  const curName = (() => { try { const dn = new Intl.DisplayNames(['es'], { type: 'currency' }); return (c) => dn.of(c); } catch { return (c) => c; } })();
+  const money = (qq, n) => { const c = qq.currency || 'GTQ', r = c === 'GTQ' ? 1 : +qq.rate || 1; try { return new Intl.NumberFormat('es-GT', { style: 'currency', currency: c, maximumFractionDigits: c === 'GTQ' ? 0 : 2 }).format((+n || 0) * r); } catch { return Q(n); } };
   const subtotal = (qq) => (qq.items || []).reduce((a, i) => a + (+i.qty || 0) * (+i.price || 0), 0);
   const total = (qq) => subtotal(qq) * (1 - (+qq.discount_pct || 0) / 100);
   function quotesTab(body) {
     mount(body, !quotes.length ? html`<div class="empty"><b>Todavía no hay cotizaciones</b>Créala desde un lead del CRM o con «+ Nueva cotización».</div>`
       : html`<div class="card"><table><thead><tr><th>Número</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th class="n">Total</th></tr></thead><tbody>
-        ${quotes.slice().reverse().map((qq) => html`<tr class="click" data-act="quote" data-id="${qq.id}"><td><b style="font-weight:500">${qq.number}</b></td><td>${qq.client || '—'}</td><td class="mut">${fdate(qq.date)}</td><td><span class="chip ${QSTATUS[qq.status] || ''}">${qq.status || 'Borrador'}</span></td><td class="n"><b>${Q(total(qq))}</b></td></tr>`)}
+        ${quotes.slice().reverse().map((qq) => html`<tr class="click" data-act="quote" data-id="${qq.id}"><td><b style="font-weight:500">${qq.number}</b></td><td>${qq.client || '—'}</td><td class="mut">${fdate(qq.date)}</td><td><span class="chip ${QSTATUS[qq.status] || ''}">${qq.status || 'Borrador'}</span></td><td class="n"><b>${money(qq, total(qq))}</b></td></tr>`)}
       </tbody></table></div>`);
   }
 
@@ -317,6 +321,8 @@ export async function render(el, { me, sub, alive }) {
       const cost = isCeo && rates ? doc.items.reduce((a, i) => { const s = services.find((x) => x.id === i.service_id); const c = s ? costOf(s, i.level || s.level || 5) : null; return a + (c && !c.miss.length ? c.cost * (+i.qty || 0) : 0); }, 0) : null;
       mount(el, html`
         <div class="row" style="margin-bottom:22px"><button class="btn ghost" data-act="back">← Cotizaciones</button><div class="sp"></div>
+          <select class="in" id="qcur" style="width:auto;max-width:230px" title="Moneda">${CUR.map((c) => html`<option value="${c}" ${c === (doc.currency || 'GTQ') ? raw('selected') : ''}>${c} · ${curName(c)}</option>`)}</select>
+          ${doc.currency && doc.currency !== 'GTQ' ? html`<label class="sm mut row" style="gap:6px">1 Q =<input class="in" id="qrate" type="number" step="0.0001" value="${doc.rate || ''}" style="width:100px"></label>` : ''}
           <select class="in" id="qstatus" style="width:auto">${Object.keys(QSTATUS).map((s) => html`<option ${s === doc.status ? raw('selected') : ''}>${s}</option>`)}</select>
           <button class="btn ghost" data-act="pdf">Ver PDF</button>${doc.id && doc.items.some((i) => i.service_id) && canProject ? html`<button class="btn ghost" data-act="toProject">→ Crear proyecto</button>` : ''}<button class="btn" data-act="saveQ">Guardar</button></div>
         <div class="grid g2">
@@ -328,9 +334,10 @@ export async function render(el, { me, sub, alive }) {
             </form>
             <div class="sm mut" style="margin:18px 0 8px">Servicios</div>
             ${doc.items.map((it, i) => html`<div class="card glass" style="padding:12px 14px;margin-bottom:8px;border-radius:18px"><div class="row"><input class="in" data-i="${i}" data-f="name" value="${it.name}" style="font-weight:500"><button class="btn ghost" data-act="rmItem" data-i="${i}" style="padding:8px 12px">✕</button></div>
-              <div class="row" style="margin-top:8px"><input class="in" data-i="${i}" data-f="description" value="${it.description || ''}" placeholder="Descripción"><input class="in" style="max-width:80px" type="number" data-i="${i}" data-f="qty" value="${it.qty}"><span class="mut">×</span><input class="in" style="max-width:130px" type="number" data-i="${i}" data-f="price" value="${it.price ?? ''}" placeholder="Precio"></div>
+              <div class="row" style="margin-top:8px"><input class="in" data-i="${i}" data-f="description" value="${it.description || ''}" placeholder="Descripción"><input class="in" style="max-width:80px" type="number" data-i="${i}" data-f="qty" value="${it.qty}"><span class="mut">×</span>${it.service_id ? html`<span class="in qprice" data-pshow="${i}" title="Calculado por el nivel de entrega">${it.price != null ? money(doc, it.price) : '—'}</span>` : html`<input class="in" style="max-width:130px" type="number" data-i="${i}" data-f="price" value="${it.price ?? ''}" placeholder="Precio (Q)">`}</div>
               ${(() => { const sv = services.find((x) => x.id === it.service_id); if (!sv || !(sv.tasks || []).length) return ''; const lv = it.level || sv.level || 5;
-                return html`<div class="qlv"><div class="row sm"><span>Nivel de entrega</span><div class="sp"></div><b style="font-weight:500" data-lvl="${i}">${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h</b></div>
+                const miss = [priceAt(sv, lv) == null ? 'precio (o costos por hora)' : '', !String(sv.includes5 || '').trim() ? 'lo que incluye' : '', !sv.days5 ? 'días' : ''].filter(Boolean);
+                return html`${miss.length ? html`<div class="warnbox sm" style="margin-top:10px">A «${sv.name}» le falta en el catálogo: <b>${miss.join(', ')}</b>. Sin eso el nivel no cambia el precio ni lo que incluye. <button class="btn ghost xs" data-act="fixSvc" data-id="${sv.id}" style="margin-left:6px">Completar</button></div>` : ''}<div class="qlv"><div class="row sm"><span>Nivel de entrega</span><div class="sp"></div><b style="font-weight:500" data-lvl="${i}">${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h</b></div>
                   <input type="range" min="5" max="10" step="1" value="${lv}" data-qlv="${i}" style="width:100%">
                   <div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div>
                   ${includesAt(sv, lv).length || daysAt(sv, lv) ? html`<div class="sm" style="margin-top:8px" data-inc="${i}">${incHtml(sv, lv)}</div>` : ''}</div>`; })()}</div>`)}
@@ -343,9 +350,9 @@ export async function render(el, { me, sub, alive }) {
           </div>
           <div class="card feat olive" style="align-self:start">
             <div class="chead"><div class="ico">◎</div><h3>Total<br><span class="lbl">${doc.client || 'Sin cliente'}</span></h3></div>
-            <div class="big"><span class="cur">Q</span>${Math.round(tt).toLocaleString('en-US')}</div>
-            <div class="split"><div><span class="lbl">Subtotal</span><b>${Q(st)}</b></div>${quoteDays(doc) ? html`<div><span class="lbl">Tiempo</span><b>${quoteDays(doc)} días</b></div>` : ''}${doc.discount_pct ? html`<div><span class="lbl">Descuento</span><b>-${doc.discount_pct}%</b></div>` : ''}
-              ${cost != null ? html`<div><span class="lbl">🔒 Costo</span><b>${Q(cost)}</b></div><div><span class="lbl">🔒 Margen</span><b style="color:#f3ffc4">${tt ? Math.round(((tt - cost) / tt) * 100) + '%' : '—'}</b></div>` : ''}</div>
+            <div class="big" style="font-size:52px">${money(doc, tt)}</div>
+            <div class="split"><div><span class="lbl">Subtotal</span><b>${money(doc, st)}</b></div>${quoteDays(doc) ? html`<div><span class="lbl">Tiempo</span><b>${quoteDays(doc)} días</b></div>` : ''}${doc.discount_pct ? html`<div><span class="lbl">Descuento</span><b>-${doc.discount_pct}%</b></div>` : ''}
+              ${cost != null ? html`<div><span class="lbl">🔒 Costo</span><b>${money(doc, cost)}</b></div><div><span class="lbl">🔒 Margen</span><b style="color:#f3ffc4">${tt ? Math.round(((tt - cost) / tt) * 100) + '%' : '—'}</b></div>` : ''}</div>
             <div class="foot" style="margin-top:22px;opacity:1"><button class="btn cream" data-act="pdf">↓ Ver PDF</button>${qq ? html`<button class="btn ghost" data-act="delQ" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)">🗑</button>` : ''}</div>
           </div>
         </div>`);
@@ -363,17 +370,19 @@ export async function render(el, { me, sub, alive }) {
         else if (v) { const s = services.find((x) => x.id === v); const lv = s.level || 5; doc.items.push({ service_id: s.id, name: s.name, description: s.description || '', qty: 1, level: lv, price: priceAt(s, lv) ?? s.price ?? null }); }
         draw();
       };
-      $$('[data-f], #qdisc, #qvalid', el).forEach((inp) => inp.addEventListener('change', () => { sync(); draw(); }));
+      $$('[data-f], #qdisc, #qvalid, #qrate', el).forEach((inp) => inp.addEventListener('change', () => { sync(); draw(); }));
+      $('#qcur', el).onchange = async (e) => { sync(); doc.currency = e.target.value; if (doc.currency === 'GTQ') { doc.rate = 1; return draw(); } try { doc.rate = (await api('fx?to=' + doc.currency)).rate; toast(`1 Q = ${doc.rate} ${doc.currency}`); } catch (err) { doc.rate = doc.rate || null; toast(err.message, true); } draw(); };
       // Arrastrar el nivel: mientras se mueve solo cambian el texto y el precio; al soltar se recalcula todo.
       $$('[data-qlv]', el).forEach((r) => {
         const i = +r.dataset.qlv, it = doc.items[i], sv = services.find((x) => x.id === it.service_id);
-        r.addEventListener('input', () => { const lv = +r.value; const p = priceAt(sv, lv); $(`[data-lvl="${i}"]`, el).textContent = `${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h`; if (p != null) $(`[data-i="${i}"][data-f="price"]`, el).value = p; const inc = $(`[data-inc="${i}"]`, el); if (inc) mount(inc, incHtml(sv, lv)); });
+        r.addEventListener('input', () => { const lv = +r.value; const p = priceAt(sv, lv); $(`[data-lvl="${i}"]`, el).textContent = `${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h`; if (p != null) $(`[data-pshow="${i}"]`, el).textContent = money(doc, p); const inc = $(`[data-inc="${i}"]`, el); if (inc) mount(inc, incHtml(sv, lv)); });
         r.addEventListener('change', () => { sync(); it.level = +r.value; const p = priceAt(sv, it.level); if (p != null) it.price = p; draw(); });
       });
     };
     const sync = () => {
       $$('[data-f]', el).forEach((inp) => { const it = doc.items[+inp.dataset.i]; const f = inp.dataset.f; it[f] = f === 'qty' || f === 'price' ? (inp.value === '' ? null : +inp.value) : inp.value; });
       const f = $('#qf', el); if (f) Object.assign(doc, Object.fromEntries(new FormData(f)));
+      if ($('#qrate', el)) doc.rate = +$('#qrate', el).value || doc.rate;
       if ($('#qdisc', el)) { doc.discount_pct = +$('#qdisc', el).value || 0; doc.valid_days = +$('#qvalid', el).value || 15; doc.notes = $('#qnotes', el).value; doc.status = $('#qstatus', el).value; }
     };
     const handlers = {
@@ -386,6 +395,7 @@ export async function render(el, { me, sub, alive }) {
         catch (e) { toast(e.message, true); }
       },
       pdf: () => { sync(); showPdf(doc); },
+      fixSvc: (b) => { sync(); const sv = services.find((x) => x.id === b.dataset.id); if (sv) editService(sv, (r) => { doc.items.filter((i) => i.service_id === r.id).forEach((i) => { const p = priceAt(r, i.level || r.level || 5); if (p != null) i.price = p; }); draw(); }); },
       // De cotización a proyecto: los mismos servicios con su nivel, sus horas y sus tareas.
       toProject: async () => {
         sync();
@@ -411,8 +421,8 @@ export async function render(el, { me, sub, alive }) {
         <div class="qto"><div><div class="lbl2">PARA</div><b style="font-weight:500;font-size:15px">${doc.client}</b>${doc.contact ? html`<div>${doc.contact}</div>` : ''}</div>
           <div><div class="lbl2">DE</div><b style="font-weight:500;font-size:15px">Inherent</b><div>inherentglobal.com</div></div></div>
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
-          <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b>${i.level ? html` <span style="color:#6b6257;font-size:11px">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div style="color:#6b6257;font-size:12px">${i.description}</div>` : ''}${(() => { const sv = services.find((x) => x.id === i.service_id); if (!sv) return ''; const lv = i.level || sv.level || 5; const inc = includesAt(sv, lv), d = daysAt(sv, lv); return inc.length || d ? html`<div style="color:#4a433a;font-size:11.5px;margin-top:4px">${d ? html`<b style="font-weight:500">Entrega en ${d} días hábiles.</b> ` : ''}${inc.length ? 'Incluye: ' + inc.join(' · ') : ''}</div>` : ''; })()}</td><td class="n">${i.qty}</td><td class="n">${Q(i.price)}</td><td class="n">${Q((+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
-        <div class="qsum"><div><span>Subtotal</span><span>${Q(st)}</span></div>${doc.discount_pct ? html`<div><span>Descuento (${doc.discount_pct}%)</span><span>-${Q(st - tt)}</span></div>` : ''}<div class="tot"><span>Total</span><span>${Q(tt)}</span></div>${quoteDays(doc) ? html`<div><span>Tiempo estimado</span><span>${quoteDays(doc)} días hábiles</span></div>` : ''}</div>
+          <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b>${i.level ? html` <span style="color:#6b6257;font-size:11px">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div style="color:#6b6257;font-size:12px">${i.description}</div>` : ''}${(() => { const sv = services.find((x) => x.id === i.service_id); if (!sv) return ''; const lv = i.level || sv.level || 5; const inc = includesAt(sv, lv), d = daysAt(sv, lv); return inc.length || d ? html`<div style="color:#4a433a;font-size:11.5px;margin-top:4px">${d ? html`<b style="font-weight:500">Entrega en ${d} días hábiles.</b> ` : ''}${inc.length ? 'Incluye: ' + inc.join(' · ') : ''}</div>` : ''; })()}</td><td class="n">${i.qty}</td><td class="n">${money(doc, i.price)}</td><td class="n">${money(doc, (+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
+        <div class="qsum"><div><span>Subtotal</span><span>${money(doc, st)}</span></div>${doc.discount_pct ? html`<div><span>Descuento (${doc.discount_pct}%)</span><span>-${money(doc, st - tt)}</span></div>` : ''}<div class="tot"><span>Total</span><span>${money(doc, tt)}</span></div>${quoteDays(doc) ? html`<div><span>Tiempo estimado</span><span>${quoteDays(doc)} días hábiles</span></div>` : ''}</div>
         ${doc.notes ? html`<div class="qnotes"><div class="lbl2">NOTAS Y CONDICIONES</div>${doc.notes.split('\n').map((l) => html`<div>${l}</div>`)}</div>` : ''}
         <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>
       </div>`);
