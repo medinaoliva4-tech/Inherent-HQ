@@ -1,4 +1,4 @@
-import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip } from '../core.js';
+import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO } from '../core.js';
 import { loadPosts, postsBoard } from '../posts.js';
 
 // Content: lo que dice el repo de cada perfil (guiones, plan, cuentas) + el scrape semanal.
@@ -106,9 +106,9 @@ export async function render(el, { sub, alive }) {
     let top;
     if (ig.error) top = html`<div class="warnbox">${ig.error}</div>`;
     else if (!ig.connected) top = connectCard('instagram', 'Conecta Instagram para ver tus analytics', 'Haz login con tu cuenta de Instagram en Windsor.ai y aquí aparecen alcance, engagement y tus mejores posts.', 'igconnect', 'Conectar Instagram');
-    else if (!ig.handles.length) top = connectCard('instagram', 'Este perfil no tiene su Instagram registrado', `Agrega el link de su Instagram en ${data.profile.root}/00-onboarding/LINKS.md del repo.`, 'igconnect', 'Abrir Windsor');
-    else if (!ig.matched) top = connectCard('instagram', `Conecta ${own} en Windsor`, `Windsor está conectado${ig.accounts.length ? ` (ve ${ig.accounts.map((x) => '@' + x).join(', ')})` : ''}, pero falta esta cuenta.`, 'igconnect', 'Conectar Instagram');
-    else top = html`<div class="row" style="margin-bottom:10px">${connectChip('instagram', `${own} · conectado`, 'x', true)}<span class="mut sm" style="margin-left:8px">Últimos 30 días · vía Windsor.ai</span></div>
+    else if (!ig.matched) top = html`<div class="connectcard"><span class="lg big">${LOGO.instagram}</span><div class="grow"><b style="font-weight:500">¿Cuál es el Instagram de ${data.profile.name}?</b><div class="mut sm">${ig.accounts.length ? 'Estas son las cuentas que tienes conectadas en Windsor. Toca la de este perfil.' : 'Windsor está conectado pero todavía no ve ninguna cuenta de Instagram. Conéctala en Windsor y recarga.'}</div>
+        <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:10px">${ig.accounts.map((x) => html`<button class="connect" data-act="igpick" data-a="${x}"><span class="lg">${LOGO.instagram}</span>@${x}</button>`)}</div></div>${ig.accounts.length ? '' : html`<button class="btn" data-act="igconnect">Abrir Windsor</button>`}</div>`;
+    else top = html`<div class="row" style="margin-bottom:10px">${connectChip('instagram', `${ig.handles.map((h) => '@' + h).join(', ')} · conectado`, 'x', true)}<button class="sm mut" data-act="igchange" style="margin-left:8px">Cambiar cuenta</button><span class="mut sm" style="margin-left:8px">Últimos 30 días · vía Windsor.ai</span></div>
       <div class="wkkpis">${[['Seguidores', K(ig.followers)], ['Alcance', K(ig.reach)], ['Engagement', ig.er == null ? '—' : ig.er + '%'], ['Posts', ig.posts]].map(([l, v]) => html`<div class="wkkpi"><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
       ${ig.series.length > 1 ? html`<div class="card wkbox"><div class="wkhead"><h3>Alcance por día de publicación</h3></div><div class="chart" id="chIG"></div></div>` : ''}
       ${ig.top.length ? html`<div class="card wkbox" style="margin-top:12px"><div class="wkhead"><h3>Mejores posts</h3></div><table class="wktable"><thead><tr><th>Fecha</th><th>Tipo</th><th>Alcance</th><th>Likes</th><th>Comentarios</th><th>Engagement</th></tr></thead><tbody>${ig.top.map((x) => html`<tr><td>${fdate(x.date)}</td><td>${x.type || '—'}</td><td>${K(x.reach)}</td><td>${K(x.likes)}</td><td>${K(x.comments)}</td><td><b style="font-weight:500">${K(x.eng)}</b></td></tr>`)}</tbody></table></div>` : ''}`;
@@ -160,6 +160,8 @@ export async function render(el, { sub, alive }) {
 
   acts(el, {
     igconnect: () => window.open('https://onboard.windsor.ai/', '_blank', 'noopener'),
+    igpick: async (t) => { try { await api('content/connect', { method: 'PUT', body: { profile: slug, ig_account: t.dataset.a } }); toast(`@${t.dataset.a} conectado a ${data.profile.name} ✅`); ig = null; paint(); } catch (e) { toast(e.message, true); } },
+    igchange: async () => { try { await api('content/connect', { method: 'PUT', body: { profile: slug, ig_account: '' } }); ig = { ...ig, matched: false }; paint(); } catch (e) { toast(e.message, true); } },
     prof: (t) => { slug = t.dataset.s; clearTimeout(poll); go(); load(); },
     tab: (t) => { tab = t.dataset.t; go(); paint(); },
     file: (t) => { file = t.dataset.p; guiones($('#cbody', el)); },
