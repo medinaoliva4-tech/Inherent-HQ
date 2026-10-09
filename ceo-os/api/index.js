@@ -55,7 +55,7 @@ on('GET', 'auth/dev', async (req, res) => {
 on('GET', 'me', async (req, res) => {
   const u = await guard(req, res, undefined, { client: true }); if (!u) return;
   const t = await db.get('team', u.email);
-  res.json({ ...u, areas: areasFor(u.role, u.roles), google: t?.google || {}, mcp: Boolean(t?.mcp_hash) || Boolean(t?.mcp_grants?.length), mcp_apps: (t?.mcp_grants || []).map(({ g, name, at }) => ({ g, name, at })) });
+  res.json({ ...u, areas: areasFor(u.role, u.roles), google: t?.google || {}, birthday: t?.birthday || '', phone: t?.phone || '', bio: t?.bio || '', since: t?._meta?.created_at || '', mcp: Boolean(t?.mcp_hash) || Boolean(t?.mcp_grants?.length), mcp_apps: (t?.mcp_grants || []).map(({ g, name, at }) => ({ g, name, at })) });
 });
 // Cada quien cambia su propia foto (una imagen chica que el navegador ya recortó).
 on('PUT', 'me/photo', async (req, res) => {
@@ -63,6 +63,14 @@ on('PUT', 'me/photo', async (req, res) => {
   const photo = String(body(req).photo || '');
   if (photo && (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(photo) || photo.length > 300_000)) return res.status(400).json({ error: 'La foto debe ser una imagen de menos de 200 KB' });
   await db.upsert('team', u.email, { photo: photo || null }, u.email);
+  res.json({ ok: true });
+});
+// Mi perfil: cada quien edita su cumpleaños (día y mes, sin año), su teléfono y unas líneas sobre sí.
+on('PUT', 'me/profile', async (req, res) => {
+  const u = await guard(req, res, undefined, { client: true }); if (!u) return;
+  const b = body(req), bd = String(b.birthday || '');
+  if (bd && !/^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(bd)) return res.status(400).json({ error: 'Cumpleaños inválido' });
+  await db.upsert('team', u.email, { birthday: bd || null, phone: String(b.phone || '').slice(0, 30), bio: String(b.bio || '').slice(0, 600) }, u.email);
   res.json({ ok: true });
 });
 on('GET', 'status', async (req, res) => {

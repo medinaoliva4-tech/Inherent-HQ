@@ -1,4 +1,5 @@
-import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ , calQ, calAll, setCalAll } from '../core.js';
+import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ , calQ, calAll, setCalAll, teamList } from '../core.js';
+import { bdayText } from './me.js';
 import { videoCard } from './content.js';
 import { connectNotice, hookNotice } from '../connectai.js';
 
@@ -12,6 +13,11 @@ export async function render(el, { me, alive }) {
     can('finanzas') ? col('finance').list() : [], col('content').list().catch(() => []),
   ]);
   const first = (me.name || '').split(' ')[0];
+  // Cumpleaños del equipo: hoy y los próximos 7 días.
+  const people = me.role === 'client' ? [] : await teamList().catch(() => []);
+  const md = (d) => d.toISOString().slice(5, 10);
+  const soon = Array.from({ length: 8 }, (_, i) => md(new Date(Date.now() + i * 864e5)));
+  const bdays = people.filter((p) => p.active !== false && p.birthday && soon.includes(p.birthday)).sort((a, z) => soon.indexOf(a.birthday) - soon.indexOf(z.birthday));
   let agenda = null, agErr = null;
   let week = null, weekP = null;
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`content/week?profile=${p}`).catch(() => null))).then(([a, b]) => { week = a; weekP = b; if (alive()) paint(); });
@@ -47,6 +53,8 @@ export async function render(el, { me, alive }) {
   function paint() {
     mount(el, html`
       <div class="hello"><h1>${greet()}, ${first}.</h1><p>Esto es lo que pasa hoy en <em>Inherent</em>.</p></div>
+      ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const isToday = p.birthday === soon[0], mine = (p.email || p.id) === me.email;
+        return html`<span class="bdi ${isToday ? 'now' : ''}">${p.picture ? html`<img src="${p.picture}" alt="" referrerpolicy="no-referrer">` : ''}${isToday ? (mine ? html`🎉 <b>¡Feliz cumpleaños, ${first}!</b>` : html`🎂 <b>Hoy cumple ${p.name.split(' ')[0]}</b> · ¡felicítalo!`) : html`🎂 ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
       ${connectNotice(me)}
       ${me.role === 'ceo' && !tasks.length ? html`<a class="asbar" href="#/setup" style="display:flex">⚙ La app todavía está vacía: <b>haz el Arranque</b> (4 pasos) y queda lista con lo que ya dice el repo →</a>` : ''}
       <div class="grid g3">

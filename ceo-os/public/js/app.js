@@ -13,7 +13,7 @@ const NAV = [
   ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
   ['portal', 'Mi portal', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
 ];
-const SCREENS = { home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal' };
+const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal' };
 const root = $('#root');
 export let me = null;
 let renderGen = 0;
@@ -56,29 +56,20 @@ function shell() {
       <div class="brand"><div class="emb">${emblem()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
       <nav class="nav">${allowed.map(([k, l, d]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`)}</nav>
       <div class="sp"></div>
-      <div class="avatar" id="avatar" title="${me.email}">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
-      <div class="menu" id="menu">
-        <div class="who"><b>${me.name}</b><div class="mut sm">${me.title || me.role.toUpperCase()} · ${me.email}</div>
-          <div class="row" style="gap:6px;margin-top:8px">${me.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${me.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}</div></div>
-        ${me.role === 'ceo' ? html`<button data-go="setup">⚙ Arranque</button>` : ''}
-        ${me.role === 'client' ? '' : html`<button data-go="team">👤 Mi perfil</button><button id="aiconn" class="row" style="gap:8px"><span class="lg2" style="width:18px;height:18px">${LOGO.claude}</span>Claude · ChatGPT · Codex</button>`}
-        <button id="logout">↩ Cerrar sesión</button>
-      </div>
+      <div class="avatar" id="avatar" title="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
     <main id="main"></main>
   </div>`);
   $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (b) location.hash = '/' + b.dataset.go; };
-  $('#avatar').onclick = (e) => { e.stopPropagation(); $('#menu').classList.toggle('on'); };
-  $('#menu').onclick = (e) => { const b = e.target.closest('[data-go]'); if (b) location.hash = '/' + b.dataset.go; };
-  document.addEventListener('click', () => $('#menu')?.classList.remove('on'));
-  $('#aiconn')?.addEventListener('click', async () => { const { openConnect } = await import('./connectai.js'); openConnect(me); });
-  $('#logout').onclick = async () => { await api('auth/logout', { method: 'POST' }).catch(() => {}); me = null; loginView(); };
+  // Tocar tu foto abre tu perfil (foto, cumpleaños, conexiones, cerrar sesión).
+  $('#avatar').onclick = () => { location.hash = '/me'; };
 }
 
 async function render() {
   const [area, ...rest] = location.hash.replace(/^#\/?/, '').split('/');
-  const key = me.areas.includes(area) || (area === 'setup' && me.role === 'ceo') ? area : me.areas.includes('home') ? 'home' : me.areas[0];
+  const key = me.areas.includes(area) || area === 'me' || (area === 'setup' && me.role === 'ceo') ? area : me.areas.includes('home') ? 'home' : me.areas[0];
   $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key));
+  $('#avatar')?.classList.toggle('on', key === 'me');
   $('.nav [data-go].on')?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); // en cel, la barra de abajo muestra la sección actual
   closeDrawer();
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
@@ -89,7 +80,7 @@ async function render() {
   try {
     const mod = await import(`./screens/${SCREENS[key]}.js`);
     if (gen !== renderGen) return;
-    await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)?.[1] || 'Arranque', alive: () => gen === renderGen });
+    await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)?.[1] || (key === 'me' ? 'Mi perfil' : 'Arranque'), alive: () => gen === renderGen });
   } catch (e) {
     mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
   }

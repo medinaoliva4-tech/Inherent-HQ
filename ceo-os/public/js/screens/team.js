@@ -1,4 +1,5 @@
 import { html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, WORK_ROLES, roleName, $, teamDoc } from '../core.js';
+import { bdayText } from './me.js';
 
 const COLORS = ['#26201a', '#c2735a', '#4f7790', '#7f9631', '#b08a5f', '#6b5a45'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
@@ -46,7 +47,7 @@ export async function render(el, { me }) {
 
   function node(p) {
     const cls = p.kind === 'ia' ? 'ai' : !p.reports_to ? 'dark' : '';
-    return html`<div class="node ${cls}" data-act="open" data-id="${p.id}"><div style="display:flex;justify-content:center;margin-bottom:10px">${av(p)}</div><b>${p.name}</b><span class="mut sm">${p.title || KIND[p.kind] || ''}</span></div>`;
+    return html`<div class="node ${cls}" data-act="open" data-id="${p.id}"><div style="display:flex;justify-content:center;margin-bottom:10px">${av(p)}</div><b>${p.name}</b><span class="mut sm">${p.title || KIND[p.kind] || ''}</span>${p.birthday ? html`<span class="mut sm">🎂 ${bdayText(p.birthday)}</span>` : ''}</div>`;
   }
   function org() {
     if (!people.length) return html`<div class="empty"><b>Todavía no hay nadie</b>Cada persona aparece aquí cuando entra con Google por primera vez.</div>`;
@@ -117,6 +118,7 @@ export async function render(el, { me }) {
     drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
       <div style="margin-top:6px">${av(p, 84)}</div>
       <h2>${p.name}</h2><div class="mut">${p.title || KIND[p.kind] || ''}</div>
+      ${p.birthday || p.phone || p.bio ? html`<div class="sm" style="margin-top:10px;display:grid;gap:4px">${p.birthday ? html`<div>🎂 ${bdayText(p.birthday)}</div>` : ''}${p.phone ? html`<div>📱 ${p.phone}</div>` : ''}${p.bio ? html`<div class="mut">${p.bio}</div>` : ''}</div>` : ''}
       <div class="kv"><span>Tipo</span><b style="font-weight:500">${KIND[p.kind] || 'Persona'}</b>
         <span>Reporta a</span><b style="font-weight:500">${boss ? boss.name : '—'}</b>
         ${p.email ? html`<span>Correo</span><b style="font-weight:500">${p.email}</b>` : ''}
