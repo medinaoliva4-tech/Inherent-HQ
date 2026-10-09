@@ -1,7 +1,7 @@
 # Inherent HQ — Agentes
 
 Cada agente vive en `agents/<NN>-<área>/`, numerado en el orden en que corre el trabajo.
-**Se opera directo desde Claude Code**, contra este repo — sin servidores ni hosting. **Única excepción: `ceo-os/`**, la web privada del CEO en Vercel *(login + 2FA)*.
+**Se opera directo desde Claude Code**, contra este repo — sin servidores ni hosting. **Única excepción: `ceo-os/`**, la web privada de Inherent en Vercel *(login con Google)*.
 
 ## Estructura
 
