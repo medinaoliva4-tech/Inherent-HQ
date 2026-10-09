@@ -20,8 +20,13 @@ function verifyPassword(pw, stored) {
 
 // ---------- 2FA (TOTP, RFC 6238) ----------
 const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+// 20 bytes aleatorios (160 bits) en base32 = 32 caracteres exactos, el formato que aceptan todas las apps.
 export function newTotpSecret() {
-  return Array.from(crypto.randomBytes(20), (b) => B32[b % 32]).join('');
+  const bytes = crypto.randomBytes(20);
+  let bits = '', out = '';
+  for (const b of bytes) bits += b.toString(2).padStart(8, '0');
+  for (let i = 0; i < bits.length; i += 5) out += B32[parseInt(bits.slice(i, i + 5), 2)];
+  return out;
 }
 function b32decode(s) {
   let bits = '';

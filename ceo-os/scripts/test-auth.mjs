@@ -6,6 +6,7 @@ const sec = newTotpSecret(); const step = Math.floor(Date.now() / 30000);
 const ok2 = verifyTotp(sec, totpAt(sec, step), 'u');
 const ok3 = !verifyTotp(sec, totpAt(sec, step), 'u');        // replay rechazado
 const ok4 = !verifyTotp(sec, '000000', 'u2') || true;
+const ok6 = sec.length === 32 && /^[A-Z2-7]{32}$/.test(sec);   // formato válido para Google Authenticator
 const ok5 = !verifyTotp(sec, totpAt(sec, step + 5), 'u3');   // fuera de ventana
-console.log({ vectorRFC6238: ok1, validoUnaVez: ok2, replayRechazado: ok3, fueraDeVentana: ok5 });
-process.exit(ok1 && ok2 && ok3 && ok5 ? 0 : 1);
+console.log({ vectorRFC6238: ok1, validoUnaVez: ok2, replayRechazado: ok3, fueraDeVentana: ok5, claveBase32De32: ok6 });
+process.exit(ok1 && ok2 && ok3 && ok5 && ok6 ? 0 : 1);
