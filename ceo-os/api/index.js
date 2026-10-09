@@ -154,6 +154,30 @@ on('GET', 'content/week', async (req, res) => {
   const an = await db.get('sources', 'analytics-' + slug);
   res.json({ apify: content.apifyOn(), week: doc?.week || null, at: doc?.at || null, status: !doc?.runs?.length ? 'none' : doc.result ? 'done' : 'running', runs: (doc?.runs || []).map(({ red, status }) => ({ red, status })), result: doc?.result || null, analytics: an?.history || [], warn });
 });
+// Conexiones de un perfil: la carpeta de Drive de donde sale «Por postear».
+on('GET', 'content/cfg', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const slug = String(req.query.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  res.json(await content.cfg(slug));
+});
+on('PUT', 'content/connect', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const b = body(req); if (!slugOk(b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
+  const url = String(b.postear_drive || '');
+  if (url && !/^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(url)) return res.status(400).json({ error: 'Pega el link de una carpeta de Google Drive' });
+  await db.upsert('sources', 'cfg-' + b.profile, { profile: b.profile, postear_drive: url }, u.email);
+  res.json({ ok: true, postear_drive: url });
+});
+// Analytics de Instagram con Windsor.ai (las cuentas se conectan en Windsor; aquí solo se leen).
+on('GET', 'analytics/instagram', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  if (!content.windsorOn()) return res.json({ connected: false });
+  const p = (await content.profiles()).find((x) => x.slug === req.query.profile); if (!p) return res.status(400).json({ error: 'Perfil inválido' });
+  const handles = (await content.profile(p)).own.filter((a) => a.red === 'instagram').map((a) => a.handle);
+  try { res.json({ connected: true, handles, ...(await content.instagram(handles, Number(req.query.days) || 30)) }); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
 // Vercel Cron, una vez a la semana (lunes): scrapea los perfiles con «Scrape semanal».
 on('GET', 'cron/scrape', async (req, res) => {
   const secret = process.env.CRON_SECRET;

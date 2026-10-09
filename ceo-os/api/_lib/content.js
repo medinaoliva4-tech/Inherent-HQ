@@ -35,7 +35,7 @@ export const AUTO_DEFAULT = new Set(['inherent', 'personal']);
 
 export async function cfg(slug) {
   const c = (await db.get('sources', 'cfg-' + slug)) || {};
-  return { hashtags: c.hashtags || [], accounts: c.accounts || [], videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), v: c.v || null };
+  return { hashtags: c.hashtags || [], accounts: c.accounts || [], videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), postear_drive: c.postear_drive || '', v: c.v || null };
 }
 // Normaliza lo que manda la app: hashtags sin #, cuentas como links o @handle, videos como links.
 export function cleanCfg(b) {
@@ -168,4 +168,28 @@ export async function scrape(slug, who) {
   const doc = { profile: slug, week: isoWeek(new Date()), at: new Date().toISOString(), by: who, src, runs, result: null };
   await db.upsert('sources', 'scrape-' + slug, doc, who);
   return doc;
+}
+
+// ---------- Windsor.ai (analytics de Instagram de las cuentas propias) ----------
+export const windsorOn = () => Boolean(process.env.WINDSOR_API_KEY?.trim());
+const IG_FIELDS = 'date,user_name,account_id,followers_count,media_count,media_id,media_type,media_url,media_comments_count,media_like_count,media_impressions,media_reach,media_engagement';
+export async function instagram(handles, days = 30) {
+  const key = process.env.WINDSOR_API_KEY?.trim();
+  const preset = days <= 7 ? 'last_7d' : days <= 30 ? 'last_30d' : 'last_90d';
+  const r = await fetch(`https://connectors.windsor.ai/instagram?api_key=${encodeURIComponent(key)}&date_preset=${preset}&fields=${IG_FIELDS}`);
+  if (!r.ok) throw Object.assign(new Error(`Windsor ${r.status}: ${(await r.text()).slice(0, 140)}`), { status: 502 });
+  const j = await r.json(); const rows = Array.isArray(j) ? j : j.data || [];
+  const seen = [...new Set(rows.map((x) => String(x.user_name || '').toLowerCase()).filter(Boolean))];
+  const mine = rows.filter((x) => handles.includes(String(x.user_name || '').toLowerCase()));
+  const n = (v) => (Number.isFinite(+v) ? +v : 0);
+  const media = [...new Map(mine.filter((x) => x.media_id).map((x) => [x.media_id, x])).values()];
+  const sum = (f) => media.reduce((a, x) => a + n(x[f]), 0);
+  const reach = sum('media_reach'), likes = sum('media_like_count'), comments = sum('media_comments_count'), eng = sum('media_engagement') || likes + comments;
+  const followers = Math.max(0, ...mine.map((x) => n(x.followers_count)));
+  const byDay = {}; for (const x of media) { const d = String(x.date).slice(0, 10); (byDay[d] ||= { reach: 0, eng: 0, posts: 0 }); byDay[d].reach += n(x.media_reach); byDay[d].eng += n(x.media_engagement) || n(x.media_like_count) + n(x.media_comments_count); byDay[d].posts++; }
+  return {
+    accounts: seen, matched: mine.length > 0, followers, posts: media.length, reach, likes, comments, er: reach ? Math.round((eng / reach) * 1000) / 10 : null,
+    series: Object.entries(byDay).sort(([a], [z]) => a.localeCompare(z)).map(([date, v]) => ({ date, ...v })),
+    top: media.map((x) => ({ id: x.media_id, date: String(x.date).slice(0, 10), type: x.media_type, reach: n(x.media_reach), likes: n(x.media_like_count), comments: n(x.media_comments_count), eng: n(x.media_engagement) })).sort((a, z) => z.eng - a.eng).slice(0, 8),
+  };
 }
