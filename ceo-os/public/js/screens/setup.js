@@ -1,4 +1,4 @@
-import { CYCLE, DEPTS, addDays, tasksFor, phasesFor, deptsOfPlan } from '../cycle.js';
+import { CYCLE, DEPTS, addDays, tasksFor, phasesFor, deptsOfPlan, createLinked } from '../cycle.js';
 import { html, raw, mount, col, api, acts, toast, today, teamList, teamDoc, WORK_ROLES, roleName, $, $$, confirmAsk, ask } from '../core.js';
 
 // Arranque: deja la app lista en 4 pasos, con lo que ya dice el repo.
@@ -206,7 +206,7 @@ export async function render(el, { me, alive }) {
       const l = plannedTasks(); if (!l.length) return toast('No hay tareas nuevas que crear');
       if (!(await confirmAsk(`¿Crear ${l.length} tareas del ciclo ${mes}?`))) return;
       b.disabled = true;
-      try { for (const t of l) tasks.push(await TK.create({ checklist: [], comments: [], ...t })); toast(`${l.length} tareas creadas ✅`); done.tareas = true; paint(); }
+      try { for (const p of projects.filter((x) => x.cycle === mes)) tasks.push(...(await createLinked(tasksFor(p, team, tasks, me.email), (t) => TK.create(t)))); toast(`${l.length} tareas creadas ✅`); done.tareas = true; paint(); }
       catch (e) { toast(e.message, true); b.disabled = false; }
     },
     doDrive: async () => {

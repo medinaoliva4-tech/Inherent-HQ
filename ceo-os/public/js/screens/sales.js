@@ -391,7 +391,14 @@ export async function render(el, { me, sub, alive }) {
       saveQ: async () => {
         sync();
         if (!doc.client) return toast('Falta el cliente', true);
-        try { const r = doc.id ? await C.save(doc) : await C.create(doc); quotes = doc.id ? quotes.map((x) => (x.id === r.id ? r : x)) : [...quotes, r]; doc = JSON.parse(JSON.stringify(r)); toast('Cotización guardada ✅'); draw(); }
+        // Enviada, aprobada o rechazada no es solo una etiqueta: dispara el flujo (tarea de cobro, lead, Control).
+        const STEP = { Enviada: 'send', Aceptada: 'approve', Rechazada: 'reject' };
+        const prev = (doc.id && quotes.find((x) => x.id === doc.id)?.status) || 'Borrador', want = doc.status, go = STEP[want] && want !== prev;
+        if (go) doc.status = prev;
+        try { let r = doc.id ? await C.save(doc) : await C.create(doc);
+          if (go) { await api('flow/quote/' + r.id, { method: 'POST', body: { action: STEP[want] } }); r = await C.get(r.id); }
+          quotes = quotes.some((x) => x.id === r.id) ? quotes.map((x) => (x.id === r.id ? r : x)) : [...quotes, r]; doc = JSON.parse(JSON.stringify(r));
+          toast(go && want === 'Aceptada' ? 'Aprobada ✅ · se creó la tarea para subir el pago' : 'Cotización guardada ✅'); draw(); }
         catch (e) { toast(e.message, true); }
       },
       pdf: () => { sync(); showPdf(doc); },
@@ -444,4 +451,7 @@ export async function render(el, { me, sub, alive }) {
     quote: (b) => editQuote(quotes.find((x) => x.id === b.dataset.id)),
   });
   paint();
+  // Desde Control: #/sales/quotes/new/<lead> abre una cotización para ese lead; #/sales/quotes/<id> la abre.
+  if (sub[0] === 'quotes' && sub[1] === 'new') editQuote(null, leads.find((x) => x.id === sub[2]) || null);
+  else if (sub[0] === 'quotes' && sub[1]) { const qq = quotes.find((x) => x.id === sub[1]); if (qq) editQuote(qq); }
 }

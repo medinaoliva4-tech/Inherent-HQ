@@ -2,7 +2,7 @@
 import * as session from './session.js';
 import * as db from './db.js';
 
-export const AREAS = ['home', 'work', 'finanzas', 'sales', 'operations', 'clients', 'content', 'library', 'team'];
+export const AREAS = ['home', 'control', 'work', 'finanzas', 'sales', 'operations', 'clients', 'content', 'library', 'team'];
 const ROLE_AREAS = {
   ceo: AREAS,                                                        // 🔒 todo
   coo: AREAS.filter((a) => a !== 'finanzas'),                        // todo menos Finanzas

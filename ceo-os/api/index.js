@@ -8,6 +8,8 @@ import * as content from './_lib/content.js';
 import * as zernio from './_lib/zernio.js';
 import * as mcp from './_lib/mcp.js';
 import * as oauth from './_lib/oauth.js';
+import * as flow from './_lib/flow.js';
+import { blockersOf } from '../public/js/cycle.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -107,7 +109,16 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   let b = body(req);
   try { b = markExternal(req.params.coll, b, req.params.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
-  if (req.params.coll === 'tasks' && !visible(u, 'tasks', await db.get('tasks', req.params.id))) return res.status(404).json({ error: 'No existe' });
+  if (req.params.coll === 'tasks') {
+    const cur = await db.get('tasks', req.params.id);
+    if (!visible(u, 'tasks', cur)) return res.status(404).json({ error: 'No existe' });
+    // Una tarea con dependencias sin terminar no avanza (el CEO y el COO pueden forzarlo).
+    if (b.status && b.status !== 'Por empezar' && b.status !== cur?.status && !['ceo', 'coo'].includes(u.role)) {
+      const all = (b.depends_on || cur?.depends_on || []).length ? await db.list('tasks') : [];
+      const wait = blockersOf({ depends_on: b.depends_on || cur?.depends_on }, all);
+      if (wait.length) return res.status(423).json({ error: `Bloqueada: primero tiene que estar hecho «${wait.map((x) => x.title).join('», «')}»` });
+    }
+  }
   const d = await db.update(req.params.coll, req.params.id, b, Number(b.v), u.email);
   d ? res.json(d) : res.status(409).json({ error: 'Alguien más cambió esto. Recarga para ver la última versión.' });
 });
@@ -523,6 +534,19 @@ on('GET', 'portal', async (req, res) => {
   res.json(out);
 });
 
+// ---------- Flujo: lead → cotización → pago → proyecto ----------
+on('POST', 'flow/quote/:id', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const b = body(req);
+  try { res.json(await flow.step({ ...u, areas: areasFor(u.role, u.roles) }, req.params.id, String(b.action || ''), b)); }
+  catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
+});
+on('GET', 'flow/proof/:id', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const p = await flow.proof({ ...u, areas: areasFor(u.role, u.roles) }, req.params.id);
+  p ? res.json({ name: p.name, data: p.data }) : res.status(404).json({ error: 'No existe' });
+});
+
 // ---------- Conector MCP (Claude, ChatGPT, Claude Code, Codex) ----------
 // Como cualquier conector: se pega `https://<app>/mcp`, la app abre Inherent OS, la persona entra
 // con Google y da «Permitir» (OAuth). Claude actúa como esa persona y solo ve lo que su perfil permite.
@@ -531,7 +555,8 @@ const cors = (res) => { res.setHeader('Access-Control-Allow-Origin', '*'); res.s
 const formBody = (req) => { const b = body(req); if (Object.keys(b).length || typeof req.body !== 'string') return b; return Object.fromEntries(new URLSearchParams(req.body)); };
 for (const p of ['mcp', 'oauth/token', 'oauth/register', 'oauth/revoke', '.well-known/oauth-authorization-server', '.well-known/oauth-protected-resource', '.well-known/oauth-protected-resource/mcp', '.well-known/openid-configuration']) on('OPTIONS', p, async (req, res) => { cors(res); res.status(204).end(); });
 for (const p of ['', '/mcp']) {
-  on('GET', '.well-known/oauth-protected-resource' + p, async (req, res) => { cors(res); res.json(oauth.resourceMeta(appUrl(req))); });
+  // Sin sufijo = el conector se agregó con la raíz (https://<app>/); con /mcp = con https://<app>/mcp.
+  on('GET', '.well-known/oauth-protected-resource' + p, async (req, res) => { cors(res); res.json(oauth.resourceMeta(appUrl(req), !p)); });
   for (const w of ['oauth-authorization-server', 'openid-configuration']) on('GET', `.well-known/${w}${p}`, async (req, res) => { cors(res); res.json(oauth.meta(appUrl(req))); });
 }
 on('POST', 'oauth/register', async (req, res) => { cors(res); const r = await oauth.register(formBody(req)); res.status(r.status).json(r.json); });
@@ -568,7 +593,7 @@ on('POST', 'mcp', async (req, res) => {
   cors(res);
   const tok = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   const u = await mcp.userOf(await oauth.emailOf(tok));
-  if (!u) { res.setHeader('WWW-Authenticate', `Bearer resource_metadata="${appUrl(req)}/.well-known/oauth-protected-resource", scope="${oauth.SCOPE}"`); return res.status(401).json({ error: 'invalid_token', error_description: 'Conecta Inherent OS de nuevo' }); }
+  if (!u) { res.setHeader('WWW-Authenticate', `Bearer resource_metadata="${appUrl(req)}/.well-known/oauth-protected-resource${req.query.at === 'root' ? '' : '/mcp'}", scope="${oauth.SCOPE}"`); return res.status(401).json({ error: 'invalid_token', error_description: 'Conecta Inherent OS de nuevo' }); }
   const r = await mcp.run(u, body(req));
   r.json ? res.status(r.status).json(r.json) : res.status(r.status).end();
 });

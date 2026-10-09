@@ -4,6 +4,17 @@
   "outputDirectory": "public",
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept",
+          "value": ".*text/event-stream.*"
+        }
+      ],
+      "destination": "/api/index?route=mcp&at=root"
+    },
+    {
       "source": "/mcp",
       "destination": "/api/index?route=mcp"
     },

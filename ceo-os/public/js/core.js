@@ -84,6 +84,7 @@ export function ask(title, fields, okLabel = 'Guardar') {
     const input = (f) => f.t === 'checks' ? html`<div class="checks">${(f.opts || []).map(([v, l]) => html`<label class="check"><input type="checkbox" name="${f.k}" value="${v}" ${(f.v || []).includes(v) ? raw('checked') : ''}> ${l}</label>`)}</div>`
       : f.t === 'select' ? html`<select class="in" name="${f.k}">${(f.opts || []).map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return html`<option value="${v}" ${String(v) === String(f.v ?? '') ? raw('selected') : ''}>${l}</option>`; })}</select>`
       : f.t === 'textarea' ? html`<textarea class="in" name="${f.k}">${f.v ?? ''}</textarea>`
+      : f.t === 'file' ? html`<input class="in" name="${f.k}" type="file" accept="${f.accept || ''}">`
       : html`<input class="in" name="${f.k}" type="${f.t || 'text'}" value="${f.v ?? ''}" ${f.t === 'number' ? raw('step="any"') : ''}>`;
     const rows = []; let pend = [];
     fields.forEach((f) => { const cell = html`<div><label class="f">${f.l}${f.req ? ' *' : ''}</label>${input(f)}</div>`; if (f.half) { pend.push(cell); if (pend.length === 2) { rows.push(html`<div class="two">${pend}</div>`); pend = []; } } else { if (pend.length) { rows.push(html`<div class="two">${pend}</div>`); pend = []; } rows.push(cell); } });
@@ -95,7 +96,7 @@ export function ask(title, fields, okLabel = 'Guardar') {
     form.onsubmit = (e) => {
       e.preventDefault();
       const out = {};
-      for (const f of fields) { if (f.t === 'checks') { out[f.k] = [...form.querySelectorAll(`input[name="${f.k}"]:checked`)].map((x) => x.value); continue; } let v = form.elements[f.k].value.trim(); if (f.t === 'number') v = v === '' ? null : Number(v); out[f.k] = v; }
+      for (const f of fields) { if (f.t === 'file') { out[f.k] = form.elements[f.k].files[0] || null; continue; } if (f.t === 'checks') { out[f.k] = [...form.querySelectorAll(`input[name="${f.k}"]:checked`)].map((x) => x.value); continue; } let v = form.elements[f.k].value.trim(); if (f.t === 'number') v = v === '' ? null : Number(v); out[f.k] = v; }
       const miss = fields.find((f) => f.req && (out[f.k] === '' || out[f.k] == null));
       if (miss) return toast(`Falta: ${miss.l}`, true);
       resolve(out); dlg.close();

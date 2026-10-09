@@ -2,6 +2,8 @@ import { upcoming, meetingRows, isMine as meetIsMine } from '../meetings.js';
 import { html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
 import { newProject as wizProject, newTask as wizTask } from '../create.js';
+import { blockersOf, unlocksOf } from '../cycle.js';
+import { payDialog } from '../flowui.js';
 
 // Workspace: cada persona trabaja desde el perfil (o los perfiles) que tiene asignados en Team.
 // Todos tienen su kanban personal, el de la empresa y sus tareas. Cada perfil agrega lo suyo:
@@ -64,7 +66,7 @@ export async function render(el, { me, sub, alive }) {
   const clientOf = (t) => proj(t.project_id)?.client_slug || null;
   const dueChip = (d, st) => { if (!d || st === 'Hecha') return d ? html`<span class="mut sm">${fdate(d)}</span>` : '';
     return d < T0 ? html`<span class="chip red sm2">Atrasada</span>` : d === T0 ? html`<span class="chip red sm2">Hoy</span>` : d === T1 ? html`<span class="chip amber sm2">Mañana</span>` : html`<span class="mut sm">${fdate(d)}</span>`; };
-  const trow = (t, extra = '') => html`<div class="wkrow ${status(t) === 'Hecha' ? 'done' : ''}" data-act="task" data-id="${t.id}">${extra}${t.assignee ? av(t.assignee, 20) : ''}<span class="grow">${t.title}<span class="mut sm"> · ${proj(t.project_id)?.client || proj(t.project_id)?.name || 'Interno'}</span></span>${dueChip(t.due, status(t))}</div>`;
+  const trow = (t, extra = '') => html`<div class="wkrow ${status(t) === 'Hecha' ? 'done' : ''}" data-act="task" data-id="${t.id}">${extra}${t.assignee ? av(t.assignee, 20) : ''}<span class="grow">${status(t) !== 'Hecha' && blockersOf(t, tasks).length ? html`<span title="Espera a otra tarea">🔒 </span>` : ''}${t.title}<span class="mut sm"> · ${proj(t.project_id)?.client || proj(t.project_id)?.name || 'Interno'}</span></span>${dueChip(t.due, status(t))}</div>`;
   // Sin ruido: si todos los indicadores están en cero, no se muestran.
   const kpis = (list) => (list.every(([, v]) => !v) ? '' : html`<div class="wkkpis">${list.map(([l, v, c, act]) => html`<div class="wkkpi" ${act ? raw(`data-act="${act}"`) : ''}><span class="lbl">${l}</span><b style="${c ? `color:${c}` : ''}">${v}</b></div>`)}</div>`);
   const box = (title, sub, body, right = '') => html`<div class="card wkbox"><div class="wkhead"><div><h3 class="wkttl">${iconFor(title)}${title}</h3>${sub ? html`<span class="mut sm">${sub}</span>` : ''}</div><div class="sp"></div>${right}</div>${body}</div>`;
@@ -376,6 +378,10 @@ export async function render(el, { me, sub, alive }) {
         <input class="in" id="wtitle" value="${t.title}" style="font-size:22px;font-weight:500;letter-spacing:-.5px;margin-top:12px;border:0;padding:6px 0;background:transparent">
         <div class="mut sm">${p ? (p.client ? p.client + ' · ' : '') + p.name : 'Interno'}${pipeOf(t) ? ' · ' + PIPES[pipeOf(t)].name : ''}</div>
         <div class="chain" style="margin-top:10px">${chain(t).map((k, i) => html`${i ? html`<span class="mut">→</span>` : ''}<span class="row" style="gap:5px">${av(k, 22)}<span class="sm">${nameOf(k).split(' ')[0]}</span></span>`)}</div>
+        ${(() => { const w = blockersOf(t, tasks), u = unlocksOf(t, tasks).filter((x) => status(x) !== 'Hecha'); return w.length || u.length ? html`<div class="depbox">
+          ${w.length ? html`<div><b>🔒 Espera a:</b> ${w.map((x) => html`<span class="dep">${x.title} · ${nameOf(x.assignee).split(' ')[0]}${x.due ? ' · ' + fdate(x.due) : ''}</span>`)}</div>` : ''}
+          ${u.length ? html`<div class="mut"><b style="font-weight:500">Cuando la termines, destraba:</b> ${u.map((x) => html`<span class="dep">${x.title} · ${nameOf(x.assignee).split(' ')[0]}</span>`)}</div>` : ''}</div>` : ''; })()}
+        ${t.kind === 'pago' && t.quote_id && status(t) !== 'Hecha' ? html`<button class="btn" data-act="tpay" style="margin-top:12px">Subir pago${t.amount_due ? ` · ${t.currency || 'GTQ'} ${Number(t.amount_due).toLocaleString('en-US')}` : ''}</button>` : ''}
         <div class="form" style="margin-top:14px">
           <div class="two"><div><label class="f">Responsable</label><select class="in" id="was">${peopleOpts().map(([k, l]) => html`<option value="${k}" ${k === (t.assignee || '') ? raw('selected') : ''}>${l}</option>`)}</select></div>
             <div><label class="f">Rinde cuentas</label><select class="in" id="wacc">${[['', 'Su jefe directo'], ...peopleOpts().slice(1)].map(([k, l]) => html`<option value="${k}" ${k === (t.accountable || '') ? raw('selected') : ''}>${l}</option>`)}</select></div></div>
@@ -390,6 +396,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="row" style="margin-top:6px"><input class="in" id="wchk" placeholder="Nuevo paso…"><button class="btn ghost" data-act="addchk">+</button></div>
         <div class="row" style="margin-top:18px;flex-wrap:wrap;gap:8px"><button class="btn" data-act="wsave">Guardar</button>${!['En revisión', 'Hecha'].includes(status(t)) ? html`<button class="btn ghost" data-act="deliver">⇪ Entregar a revisión</button>` : ''}${status(t) === 'En revisión' && (accOf(t) === me.email || isCeo) ? html`<button class="btn ghost" data-act="approve">✓ Aprobar</button><button class="btn ghost" data-act="back">↩ Devolver</button>` : ''}<div class="sp"></div><button class="btn ghost" data-act="wdel">🗑</button></div>`,
       {
+        tpay: async () => { if (await payDialog({ quote_id: t.quote_id, client: (t.title.split('de ')[1] || '').split(' · ')[0], currency: t.currency, amount: t.amount_due })) { closeDrawer(); tasks = await col('tasks').list(); paint(); } },
         chk: async (cb) => { t = collect(); t.checklist[+cb.dataset.i].done = cb.checked; const r = await save(t); if (r) t = r; },
         addchk: async () => { const v = $('#wchk').value.trim(); if (!v) return; t = collect(); t.checklist = [...(t.checklist || []), { t: v, done: false }]; const r = await save(t); if (r) { t = r; draw(); } },
         wsave: async () => { if (await save(collect())) { toast('Guardado ✅'); closeDrawer(); paint(); } },

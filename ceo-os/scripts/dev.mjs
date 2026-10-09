@@ -21,9 +21,10 @@ http.createServer(async (req, res) => {
   for (const [k, v] of Object.entries(SEC)) res.setHeader(k, v);
   res.status = (c) => ((res.statusCode = c), res);
   res.json = (o) => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(o)); };
-  const route = u.pathname.startsWith('/api/') ? u.pathname.slice(5) : u.pathname === '/mcp' || u.pathname.startsWith('/.well-known/') ? u.pathname.slice(1) : null;
+  const atRoot = u.pathname === '/' && String(req.headers.accept || '').includes('text/event-stream'); // MCP en la raíz
+  const route = atRoot ? 'mcp' : u.pathname.startsWith('/api/') ? u.pathname.slice(5) : u.pathname === '/mcp' || u.pathname.startsWith('/.well-known/') ? u.pathname.slice(1) : null;
   if (route !== null) {
-    req.query = { ...Object.fromEntries(u.searchParams), route };
+    req.query = { ...Object.fromEntries(u.searchParams), route, ...(atRoot ? { at: 'root' } : {}) };
     const chunks = []; for await (const c of req) chunks.push(c);
     const raw = Buffer.concat(chunks).toString();
     try { req.body = raw ? JSON.parse(raw) : {}; } catch { req.body = String(req.headers['content-type'] || '').includes('urlencoded') ? Object.fromEntries(new URLSearchParams(raw)) : {}; }

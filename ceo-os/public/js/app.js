@@ -2,6 +2,7 @@ import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, i
 
 const NAV = [
   ['home', 'Home', 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
+  ['control', 'Control', 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6'],
   ['work', 'Workspace', 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z'],
   ['finanzas', 'Finance', 'M3 17l6-6 4 4 8-8M15 7h6v6'],
   ['sales', 'Sales', 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0'],
@@ -12,7 +13,7 @@ const NAV = [
   ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
   ['portal', 'Mi portal', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
 ];
-const SCREENS = { home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal' };
+const SCREENS = { home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal' };
 const root = $('#root');
 export let me = null;
 let renderGen = 0;
