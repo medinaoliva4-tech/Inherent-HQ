@@ -760,3 +760,10 @@ a.btn{text-decoration:none}
 
 .homesel{gap:8px;flex-wrap:wrap;margin:2px 0 12px}.homesel .tabs.mini{margin:0}
 .engwhat{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);line-height:1.45}
+
+/* Content · Referencias y Shot list */
+.refpil{margin-bottom:12px}
+.refurls{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px;margin-top:10px}.refurls .in{font-size:12.5px;padding:8px 10px}
+.bditem{border-top:1px solid var(--line);padding:10px 0;display:grid;gap:4px;font-size:13.5px;line-height:1.45}.bditem b{font-weight:600}
+.shottbl td{vertical-align:top}
+.mdbody h1,.mdbody h2,.mdbody h3{font-size:17px;font-weight:600;margin:14px 0 6px}.mdbody p,.mdbody li{font-size:14px;line-height:1.55}.mdbody table{font-size:13px}
