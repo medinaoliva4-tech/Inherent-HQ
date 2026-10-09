@@ -343,3 +343,10 @@ textarea.in{min-height:96px;resize:vertical}
 .tscroll select{min-width:140px}.tscroll td:first-child{min-width:150px}
 .bar{overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .cal{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+/* ---------- content: markdown del repo ---------- */
+.md{font-size:15px;line-height:1.6}.md h2,.md h3,.md h4,.md h5{font-weight:500;letter-spacing:-.4px;margin:18px 0 6px}.md h2{font-size:24px}.md h3{font-size:19px}.md h4,.md h5{font-size:16px}
+.md p{margin:6px 0}.md ul,.md ol{margin:6px 0 6px 22px}.md li{margin:3px 0}.md blockquote{border-left:3px solid var(--lime,#c9e265);padding:4px 12px;margin:8px 0;background:rgba(255,255,255,.45);border-radius:0 12px 12px 0}
+.md code{background:rgba(0,0,0,.06);padding:1px 6px;border-radius:6px;font-size:13px}.md hr{border:0;border-top:1px solid var(--line);margin:16px 0}.md a{color:inherit}.md table{margin:8px 0}
+.win{display:flex;flex-direction:column;gap:10px}.win .thumb{aspect-ratio:4/5;border-radius:18px;background:#d8d0c2 center/cover no-repeat;position:relative;overflow:hidden}
+.win .thumb b{position:absolute;left:10px;top:10px;background:var(--ink,#171410);color:#fff;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
+.win .cap{font-size:13px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}

@@ -4,6 +4,7 @@ import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
 import { guard, areasFor, COLLS, canWrite, userFor, domain } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
+import * as content from './_lib/content.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -115,6 +116,59 @@ on('GET', 'repo/clients', async (req, res) => {
   res.json({ clients });
 });
 
+
+// ---------- Content: lee el folder del perfil en el repo + Apify ----------
+on('GET', 'repo/content', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const list = await content.profiles();
+  const p = list.find((x) => x.slug === req.query.profile) || list[0];
+  res.json({ profiles: list.map(({ slug, name }) => ({ slug, name })), profile: await content.profile(p), apify: content.apifyOn() });
+});
+async function scrapeProfile(slug, who) {
+  const p = (await content.profiles()).find((x) => x.slug === slug); if (!p) return null;
+  const full = await content.profile(p);
+  const accounts = [...full.own.map((a) => ({ ...a, own: true })), ...full.competitors];
+  if (!accounts.length) throw Object.assign(new Error('Este perfil no tiene cuentas en el repo (LINKS.md o investigación)'), { status: 400 });
+  const runs = await content.startScrape(accounts);
+  const prev = await db.get('sources', 'scrape-' + slug);
+  const doc = { profile: slug, at: new Date().toISOString(), by: who, runs, auto: prev?.auto || false };
+  await db.upsert('sources', 'scrape-' + slug, doc, who);
+  return doc;
+}
+on('POST', 'content/scrape', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  try { res.json(await scrapeProfile(String(body(req).profile || ''), u.email)); }
+  catch (e) { if (e.status === 400) return res.status(400).json({ error: e.message }); throw e; }
+});
+on('POST', 'content/auto', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const b = body(req); const slug = String(b.profile || '');
+  if (!/^[\w-]{2,60}$/.test(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  await db.upsert('sources', 'scrape-' + slug, { profile: slug, auto: Boolean(b.auto) }, u.email);
+  res.json({ ok: true });
+});
+on('GET', 'content/winners', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const slug = String(req.query.profile || '');
+  const doc = await db.get('sources', 'scrape-' + slug);
+  if (!doc?.runs?.length) return res.json({ apify: content.apifyOn(), at: null, auto: doc?.auto || false, status: 'none', items: [] });
+  if (await content.refreshRuns(doc.runs)) await db.upsert('sources', 'scrape-' + slug, { runs: doc.runs }, u.email);
+  const pending = doc.runs.some((r) => !r.items && !['FAILED', 'ABORTED', 'TIMED-OUT'].includes(r.status));
+  res.json({ apify: content.apifyOn(), at: doc.at, auto: doc.auto || false, status: pending ? 'running' : 'done', runs: doc.runs.map(({ red, status, accounts }) => ({ red, status, accounts })), items: content.winners(doc.runs).slice(0, 120) });
+});
+// Vercel Cron: scrapea una vez al día los perfiles con «Scrape diario» activado.
+on('GET', 'cron/scrape', async (req, res) => {
+  const secret = process.env.CRON_SECRET;
+  if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).json({ error: 'No autorizado' });
+  if (!content.apifyOn()) return res.json({ skipped: 'sin APIFY_TOKEN' });
+  const done = [];
+  for (const p of await content.profiles()) {
+    const d = await db.get('sources', 'scrape-' + p.slug);
+    if (!d?.auto) continue;
+    try { await scrapeProfile(p.slug, 'cron'); done.push(p.slug); } catch (e) { console.error('cron scrape', p.slug, e.message); }
+  }
+  res.json({ done });
+});
 
 // ---------- Google Calendar (el calendario de cada persona) ----------
 const TZ = process.env.TIMEZONE || 'America/Guatemala';

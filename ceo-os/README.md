@@ -8,12 +8,16 @@ Se entra con **Google** y solo con cuentas **@inherentglobal.com**.
 | 1 | Base, login con Google, Home, **Sales** (CRM, catálogo con costo por hora, cotizaciones con PDF) y **Team** (organigrama, perfiles y accesos) | ✅ |
 | 2 | Finance (movimientos, costs, profitability, pricing, nómina por rol) y Operations (proyectos por fase, pipeline por cliente con entregables, tareas, Google Calendar, timeline) | ✅ |
 | 3 | Library (SOPs, playbooks, videos y carpetas de Google Drive) | 🚧 |
-| 4 | Content (planner, guiones diarios con IA, winners scrape, analytics) | 🚧 |
+| 4 | Content: guiones, planner y cuentas leídos del folder del perfil en el repo · winners con Apify (scrape diario opcional) | ✅ · analytics 🚧 |
 | 5 | Portal del cliente | 🚧 |
 
 ## De dónde salen los datos
 
 - **Del repo, solo lectura:** la economía (`inherent/06-ECONOMIA.md`) y los clientes (`clients/*/00-onboarding/plan-contratado.md`).
+- **Content, del folder de cada perfil** (`inherent/inherent-social-media/` o `clients/<cliente>/`):
+  cuentas propias de `00-onboarding/LINKS.md` · competencia y referentes de los links de IG/TikTok en
+  `99-referencias/investigacion/*.md` · guiones y plan de `04-contenido/<AAAA-MM>/`.
+  La app no escribe guiones: los escribe ④ Creatividad en Claude Code.
 - **Todo lo demás:** base de datos Postgres propia (Neon, desde Vercel).
 
 ## Accesos
@@ -36,6 +40,8 @@ El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez qu
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Del cliente OAuth de Google Cloud |
 | `ADMIN_EMAILS` | Correos que siempre son CEO, separados por coma |
 | `ALLOWED_DOMAIN` | Opcional. Por defecto `inherentglobal.com` |
+| `APIFY_TOKEN` | Para scrapear winners (Instagram y TikTok) |
+| `CRON_SECRET` | Para el scrape diario (Vercel Cron, 12:00 UTC). Sin él, el cron no corre |
 | `GITHUB_TOKEN` · `GITHUB_REPO` · `GITHUB_BRANCH` | Opcionales. Economía y clientes se copian del repo en cada build (`scripts/snapshot.mjs`); el token solo se usa si falta esa copia |
 
 ### Google (una vez)
