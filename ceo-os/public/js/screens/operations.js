@@ -1,4 +1,4 @@
-import { newProject as wizProject, newTask as wizTask } from '../create.js';
+import { newProject as wizProject, newTask as wizTask, VIS_OPTS, visLabel } from '../create.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList } from '../core.js';
 
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
@@ -145,7 +145,7 @@ export async function render(el, { me, sub, alive }) {
     list = [...list].sort((a, z) => (a.status === 'Hecha') - (z.status === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9')));
     return list.length ? html`<div class="card"><table><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead><tbody>
         ${list.map((t) => { const who = person(t.assignee); const late = t.due && t.due < today() && t.status !== 'Hecha';
-          return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}${t.dept ? ' · ' + t.dept : ''}</td>
+          return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${visLabel(t) ? html` <span class="mut sm">${visLabel(t)}</span>` : ''}${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}${t.dept ? ' · ' + t.dept : ''}</td>
             <td>${who ? html`<span class="av" style="background:${who.color || '#6b5a45'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="mut sm">—</span>`}</td>
             <td style="${late ? 'color:#a3392a;font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
       </tbody></table></div>` : html`<div class="empty"><b>Sin tareas aquí</b>${emptyMsg}</div>`;
@@ -161,6 +161,8 @@ export async function render(el, { me, sub, alive }) {
           <div class="two"><div><label class="f">Responsable</label><select class="in" id="tassignee"><option value="">—</option>${team.filter((p) => p.active !== false).map((p) => html`<option value="${p.email || p.id}" ${(p.email || p.id) === t.assignee ? raw('selected') : ''}>${p.name}</option>`)}</select></div>
             <div><label class="f">Vence</label><input class="in" id="tdue" type="date" value="${t.due || ''}"></div></div>
           <div><label class="f">Proyecto</label><select class="in" id="tproject"><option value="">—</option>${projects.map((p) => html`<option value="${p.id}" ${p.id === t.project_id ? raw('selected') : ''}>${p.name}</option>`)}</select></div>
+          <div><label class="f">¿Quién la puede ver?</label><select class="in" id="tvis">${VIS_OPTS.map((o) => html`<option value="${o.v}" ${o.v === (t.visibility || 'all') ? raw('selected') : ''}>${o.i} ${o.l} · ${o.d}</option>`)}</select>
+            <div id="tviewers" class="row" style="flex-wrap:wrap;gap:4px 14px;margin-top:6px" ${t.visibility === 'people' ? '' : raw('hidden')}>${team.filter((p) => p.active !== false && p.email && p.email !== me.email).map((p) => html`<label class="check" style="padding:2px 0"><input type="checkbox" class="tview" value="${p.email}" ${(t.viewers || []).includes(p.email) ? raw('checked') : ''}> ${p.name}</label>`)}</div></div>
           <div><label class="f">Descripción</label><textarea class="in" id="tdesc">${t.description || ''}</textarea></div>
           <div><label class="f">Link (Drive, doc, carpeta)</label><input class="in" id="tlink" value="${t.link || ''}" placeholder="https://drive.google.com/…"></div>
         </div>
@@ -180,8 +182,9 @@ export async function render(el, { me, sub, alive }) {
         tcal: async () => { try { const e = await api('google/calendar', { method: 'POST', body: { summary: `✓ ${t.title}`, date: t.due, description: `Tarea de ${pname(t.project_id)} · Inherent OS` } }); toast('Agendada en tu Google Calendar ✅'); events = null; if (e.link) window.open(e.link, '_blank', 'noopener'); } catch (e) { toast(e.message, true); } },
         tdel: async () => { if (!(await confirmAsk(`¿Eliminar «${t.title}»?`))) return; await TK.remove(t.id); tasks = tasks.filter((x) => x.id !== t.id); closeDrawer(); paint(); },
       });
+      $('#tvis').onchange = (e) => { $('#tviewers').hidden = e.target.value !== 'people'; };
     };
-    const collect = () => ({ ...t, title: $('#ttitle').value.trim() || t.title, status: $('#tstatus').value, assignee: $('#tassignee').value, due: $('#tdue').value, project_id: $('#tproject').value, description: $('#tdesc').value, link: $('#tlink').value.trim() });
+    const collect = () => ({ ...t, visibility: $('#tvis').value, viewers: $('#tvis').value === 'people' ? $$('.tview:checked').map((x) => x.value) : [], title: $('#ttitle').value.trim() || t.title, status: $('#tstatus').value, assignee: $('#tassignee').value, due: $('#tdue').value, project_id: $('#tproject').value, description: $('#tdesc').value, link: $('#tlink').value.trim() });
     draw();
   }
 

@@ -42,6 +42,8 @@ export async function newProject({ team, me, projects = [], tasks = [] }) {
 }
 
 // ---------- Tarea ----------
+export const VIS_OPTS = [{ v: 'all', i: '👥', l: 'Todos', d: 'El equipo completo' }, { v: 'private', i: '🔒', l: 'Solo yo', d: 'Y quien la hace' }, { v: 'people', i: '👀', l: 'Ciertas personas', d: 'Tú eliges quién' }];
+export const visLabel = (t) => (t.visibility === 'private' ? '🔒 Solo yo' : t.visibility === 'people' ? `👀 ${(t.viewers || []).length + 1}+ personas` : '');
 const SUGGEST = ['Reunión con el cliente', 'Guion del reel', 'Editar reel', 'Diseñar carrusel', 'Static ad', 'Programar publicaciones', 'Responder comunidad', 'Revisar entregas', 'Propuesta para cliente'];
 export async function newTask({ team, me, projects = [], pre = {} }) {
   const people = team.filter((p) => p.active !== false && p.kind !== 'ia');
@@ -54,10 +56,13 @@ export async function newTask({ team, me, projects = [], pre = {} }) {
     { k: 'dept', q: '¿De qué departamento?', type: 'cards', v: pre.dept, show: () => pre.dept === undefined,
       opts: [{ v: '', i: '—', l: 'Ninguno' }, ...DEPTS.map(([n, name]) => ({ v: `${n} ${name}`, l: `${n} ${name}` }))] },
     { k: 'due', q: '¿Para cuándo?', type: 'when', v: pre.due },
-  ]);
+    { k: 'visibility', q: '¿Quién la puede ver?', type: 'cards', req: true, v: pre.visibility || 'all', opts: VIS_OPTS },
+    { k: 'viewers', q: '¿Quiénes más la pueden ver?', sub: 'Tú y quien la hace ya la ven.', type: 'multi', req: true, show: (a) => a.visibility === 'people',
+      opts: (a) => people.filter((p) => ![me.email, a.assignee].includes(p.email || p.id)).map((p) => ({ v: p.email || p.id, l: p.name })) },
+  ], 'Crear tarea');
   if (!a) return null;
   try {
-    const t = await col('tasks').create({ checklist: [], comments: [], status: pre.status || 'Por empezar', accountable: pre.accountable || '', ...a, project_id: a.project_id === '_' ? '' : a.project_id, due: a.due || '' });
+    const t = await col('tasks').create({ checklist: [], comments: [], status: pre.status || 'Por empezar', accountable: pre.accountable || '', ...a, viewers: a.visibility === 'people' ? a.viewers || [] : [], project_id: a.project_id === '_' ? '' : a.project_id, due: a.due || '' });
     toast(`Tarea creada ✅${t.due ? ' · vence ' + fdate(t.due) : ''}`); return t;
   } catch (e) { toast(e.message, true); return null; }
 }

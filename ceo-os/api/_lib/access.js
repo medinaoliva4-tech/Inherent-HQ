@@ -8,7 +8,8 @@ const ROLE_AREAS = {
   coo: AREAS.filter((a) => a !== 'finanzas'),                        // todo menos Finanzas
   team: ['home', 'work', 'operations', 'clients', 'content', 'library', 'team'],
 };
-export const areasFor = (role) => ROLE_AREAS[role] || [];
+// Content es para decidir: solo el CEO y quien tiene el perfil de trabajo «content».
+export const areasFor = (role, roles = []) => (ROLE_AREAS[role] || []).filter((a) => a !== 'content' || role === 'ceo' || roles.includes('content'));
 
 // Cada colección pertenece a un área. Algunas solo las escribe el CEO.
 export const COLLS = {
@@ -47,7 +48,7 @@ export async function guard(req, res, area) {
   if (!s) { res.status(401).json({ error: 'No autenticado' }); return null; }
   const u = await userFor(s.email);
   if (!u.active || !u.email.endsWith('@' + domain())) { session.clear(res); res.status(401).json({ error: 'Cuenta sin acceso' }); return null; }
-  if (area && !areasFor(u.role).includes(area)) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
+  if (area && !areasFor(u.role, u.roles).includes(area)) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
   session.issue(req, res, s); // sesión deslizante
   return u;
 }

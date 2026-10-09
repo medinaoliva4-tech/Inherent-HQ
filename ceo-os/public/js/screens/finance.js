@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard } from '../core.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const CATS_IN = ['Plan mensual', 'Proyecto', 'Performance fee', 'Otro'];
@@ -13,8 +13,24 @@ export async function render(el, { sub }) {
   const F = col('finance'), P = col('payroll');
   // Todo en paralelo: una sola espera en vez de cinco seguidas.
   let ecoErr = null;
-  let [entries, services, rates, eco, clients, payroll] = await Promise.all([F.list(), col('services').list(), col('rates').get('default').catch(() => null),
-    api('repo/economia').catch((e) => { ecoErr = e.message; return null; }), api('repo/clients').then((r) => r.clients).catch(() => []), P.get('default').catch(() => null)]);
+  let [manual, services, rates, eco, clients, payroll, sheet] = await Promise.all([F.list(), col('services').list(), col('rates').get('default').catch(() => null),
+    api('repo/economia').catch((e) => { ecoErr = e.message; return null; }), api('repo/clients').then((r) => r.clients).catch(() => []), P.get('default').catch(() => null),
+    api('finance/sheet').catch((e) => ({ error: e.message }))]);
+  // Los movimientos salen de la hoja de Google Sheets; los que se agregan a mano aquí se suman.
+  const fromSheet = (sh) => {
+    if (!sh?.csv) return [];
+    const [head = [], ...rows] = csv(sh.csv);
+    const H = head.map((h) => String(h).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim());
+    const col_ = (k) => H.findIndex((h) => h.startsWith(k));
+    const [cF, cT, cC, cM, cK, cL] = ['fecha', 'tipo', 'concepto', 'monto', 'categ', 'cliente'].map(col_);
+    const day = (v) => { v = String(v || '').trim(); let m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (m) return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`; m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/); if (m) return `${m[3].length === 2 ? '20' + m[3] : m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`; return ''; };
+    return rows.map((r, i) => {
+      const raw_ = Number(String(r[cM] ?? '').replace(/[^\d.-]/g, '')); const t = String(r[cT] ?? '').toLowerCase();
+      const type = /ingres|entrad|cobr|venta|income/.test(t) ? 'ingreso' : /gast|salid|pag|egres|expense/.test(t) ? 'gasto' : raw_ < 0 ? 'gasto' : 'ingreso';
+      return { id: 'sheet-' + i, sheet: true, date: day(r[cF]), type, concept: String(r[cC] ?? '').trim() || '—', amount: Math.abs(raw_) || 0, category: String(r[cK] ?? '').trim(), client: String(r[cL] ?? '').trim().toUpperCase() };
+    }).filter((e) => e.date && e.amount);
+  };
+  let entries = [...manual, ...fromSheet(sheet)];
 
   let tab = ['mov', 'costs', 'profit', 'pricing', 'nomina'].includes(sub[0]) ? sub[0] : 'mov';
   const now = today().slice(0, 7);
@@ -44,12 +60,12 @@ export async function render(el, { sub }) {
       <div class="row" style="margin:24px 0 18px;flex-wrap:wrap">
         <div class="tabs" style="margin:0">${[['mov', 'Movimientos'], ['costs', 'Costs'], ['profit', 'Profitability'], ['pricing', 'Pricing'], ['nomina', 'Nómina']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
-        ${tab === 'mov' ? html`<button class="btn ghost" data-act="add" data-type="gasto">+ Gasto</button><button class="btn" data-act="add" data-type="ingreso">+ Ingreso</button>` : ''}
+        ${tab === 'mov' ? html`${connectChip('sheets', sheet?.url ? 'Google Sheet conectado' : 'Conectar Google Sheet', 'sheet', Boolean(sheet?.url))}${sheet?.url ? html`<button class="sm mut" data-act="sheetset" style="margin:0 6px">Cambiar</button>` : ''}<button class="btn ghost" data-act="add" data-type="gasto">+ Gasto</button><button class="btn" data-act="add" data-type="ingreso">+ Ingreso</button>` : ''}
       </div>
       <div id="fbody"></div>`);
     if ($('#chFin', el)) lineChart($('#chFin', el), months8.map(mLabel), [
       { name: 'Revenue', v: months8.map((m) => sum('ingreso', m)), c: '#171410', fill: true },
-      { name: 'Costo', v: months8.map((m) => sum('gasto', m)), c: '#c2735a', dash: true }]);
+      { name: 'Costo', v: months8.map((m) => sum('gasto', m)), c: '#c2735a', dash: true }], { fmt: Q });
     $('[data-act=month]', el).onchange = (e) => { month = e.target.value; paint(); };
     const b = $('#fbody', el);
     ({ mov, costs, profit, pricing, nomina })[tab](b);
@@ -58,9 +74,11 @@ export async function render(el, { sub }) {
   // ---------- Movimientos ----------
   function mov(b) {
     const list = entries.filter((e) => ym(e.date) === month).sort((x, y) => String(y.date).localeCompare(String(x.date)));
-    mount(b, !list.length ? html`<div class="empty"><b>Sin movimientos en ${mLabel(month)}</b>Registra un ingreso (lo que cobraste) o un gasto (lo que pagaste).</div>`
-      : html`<div class="card"><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Cliente</th><th>Categoría</th><th class="n">Monto</th></tr></thead><tbody>
-        ${list.map((e) => html`<tr class="click" data-act="edit" data-id="${e.id}"><td class="mut">${fdate(e.date)}</td><td><b style="font-weight:500">${e.concept}</b></td><td>${e.client || '—'}</td><td><span class="chip">${e.category || '—'}</span></td>
+    const note = sheet?.error ? html`<div class="warnbox" style="margin-bottom:12px">Google Sheet: ${sheet.error}</div>`
+      : !sheet?.url ? html`<div class="mut sm" style="margin-bottom:12px">💡 Conecta una hoja de Google Sheets y los movimientos salen de ahí (fecha · tipo · concepto · monto · categoría · cliente). Ya no hay que meterlos a mano.</div>` : '';
+    mount(b, !list.length ? html`${note}<div class="empty"><b>Sin movimientos en ${mLabel(month)}</b>${sheet?.url ? 'Agrega filas a tu hoja de Google Sheets y recarga.' : 'Conecta tu Google Sheet o registra un ingreso o gasto.'}</div>`
+      : html`${note}<div class="card"><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Cliente</th><th>Categoría</th><th class="n">Monto</th></tr></thead><tbody>
+        ${list.map((e) => html`<tr class="click" data-act="${e.sheet ? 'sheet' : 'edit'}" data-id="${e.id}"><td class="mut">${fdate(e.date)}</td><td><b style="font-weight:500">${e.concept}</b>${e.sheet ? html` <span class="mut sm">· Sheet</span>` : ''}</td><td>${e.client || '—'}</td><td><span class="chip">${e.category || '—'}</span></td>
           <td class="n"><b style="color:${e.type === 'ingreso' ? '#3c6a1c' : '#a3392a'}">${e.type === 'ingreso' ? '+' : '−'}${Q(e.amount)}</b></td></tr>`)}
       </tbody></table></div>`);
   }
@@ -76,7 +94,7 @@ export async function render(el, { sub }) {
     if (!v) return;
     try {
       const r = e ? await F.save({ ...e, ...v }) : await F.create({ ...v, type });
-      entries = e ? entries.map((x) => (x.id === r.id ? r : x)) : [...entries, r];
+      entries = e ? entries.map((x) => (x.id === r.id ? r : x)) : [...entries, r]; manual = entries.filter((x) => !x.sheet);
       month = ym(r.date); toast('Guardado ✅'); paint();
     } catch (err) { toast(err.message, true); }
   }
@@ -112,6 +130,7 @@ export async function render(el, { sub }) {
     const rubros = [...new Set(eco.plans.flatMap((p) => p.rubros.map((r) => r.label)))];
     mount(b, html`<div class="grid g4">${eco.plans.map((p, i) => html`<div class="card feat ${['olive', 'terra', 'ink', 'olive'][i]}"><div class="lbl">${p.name}</div><div class="big" style="font-size:40px;margin-top:8px">${Q(p.precio)}</div>${matrix(Math.round((p.margen / 100) * 34))}<div class="foot"><span>Costo ${Q(p.costo)} · ${p.volumen?.piezas ?? '—'} piezas</span><span style="font-weight:700;font-size:14px">${p.margen}% margen</span></div></div>`)}</div>
       <div class="sec-title"><h2>Costo por rubro</h2><span class="mut sm">Fijo por cuenta · del manual</span></div>
+      <div class="mut sm" style="margin:-6px 0 10px">✏️ <b>¿Cambiar estos costos?</b> Viven en el manual (<code>inherent/06-ECONOMIA.md</code>): pídeselo a Claude en Claude Code, se actualiza con tu OK y aquí se ve después de publicar. Los costos por hora de cada servicio se editan en Sales → Catálogo → Costos por hora.</div>
       <div class="card"><table><thead><tr><th>Rubro</th>${eco.plans.map((p) => html`<th class="n">${p.name}</th>`)}</tr></thead><tbody>
         ${rubros.map((r) => html`<tr><td>${r}</td>${eco.plans.map((p) => html`<td class="n">${Q(p.rubros.find((x) => x.label === r)?.monto || 0)}</td>`)}</tr>`)}
         <tr><td><b>Costo</b></td>${eco.plans.map((p) => html`<td class="n"><b>${Q(p.costo)}</b></td>`)}</tr>
@@ -208,16 +227,31 @@ export async function render(el, { sub }) {
     draw();
   }
 
+  async function connectSheet() {
+    const a = await wizard('Movimientos desde Google Sheets', [
+      { k: 'how', q: '¿De dónde salen tus movimientos?', type: 'cards', req: true, opts: [{ v: 'new', i: '✨', l: 'Crear una hoja nueva', d: 'Con las columnas listas, en tu Drive' }, { v: 'link', i: '🔗', l: 'Ya tengo una hoja', d: 'Pega el link' }] },
+      { k: 'url', q: 'Pega el link de la hoja', sub: 'Columnas: fecha · tipo (ingreso/gasto) · concepto · monto · categoría · cliente', type: 'text', req: true, ph: 'https://docs.google.com/spreadsheets/d/…', show: (x) => x.how === 'link', v: sheet?.url },
+    ], 'Conectar');
+    if (!a) return;
+    try {
+      const r = a.how === 'new' ? await api('finance/sheet', { method: 'POST' }) : await api('finance/sheet', { method: 'PUT', body: { url: a.url } });
+      if (a.how === 'new') window.open(r.url, '_blank', 'noopener');
+      sheet = await api('finance/sheet').catch((e) => ({ url: r.url, error: e.message }));
+      entries = [...manual, ...fromSheet(sheet)]; toast('Google Sheet conectado ✅'); paint();
+    } catch (e) { toast(e.message, true); }
+  }
   acts(el, {
     tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', '#/finanzas/' + tab); paint(); },
     add: (t) => editEntry(null, t.dataset.type),
+    sheet: async () => { if (sheet?.url) return window.open(sheet.url, '_blank', 'noopener'); connectSheet(); },
+    sheetset: () => connectSheet(),
     edit: async (t) => {
       const e = entries.find((x) => x.id === t.dataset.id);
       drawer(html`<div class="row"><span class="chip ${e.type === 'ingreso' ? 'green' : 'red'}">${e.type}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
         <h2>${e.concept}</h2><div class="big" style="font-size:44px;margin-top:10px">${Q(e.amount)}</div>
         <div class="kv"><span>Fecha</span><b style="font-weight:500">${fdate(e.date)}</b><span>Categoría</span><b style="font-weight:500">${e.category || '—'}</b><span>Cliente</span><b style="font-weight:500">${e.client || '—'}</b></div>
         <div class="row"><button class="btn" data-act="ed">Editar</button><button class="btn ghost" data-act="del">Eliminar</button></div>`,
-      { ed: () => { closeDrawer(); editEntry(e); }, del: async () => { if (!(await confirmAsk('¿Eliminar este movimiento?'))) return; await F.remove(e.id); entries = entries.filter((x) => x.id !== e.id); closeDrawer(); paint(); } });
+      { ed: () => { closeDrawer(); editEntry(e); }, del: async () => { if (!(await confirmAsk('¿Eliminar este movimiento?'))) return; await F.remove(e.id); entries = entries.filter((x) => x.id !== e.id); manual = entries.filter((x) => !x.sheet); closeDrawer(); paint(); } });
     },
   });
   paint();

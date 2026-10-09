@@ -111,6 +111,16 @@ export async function render(el, { me, sub, alive }) {
     return box('Entregas recientes', html`<span class="wkflow"><span>Tú</span>→<span>Revisión ${nameOf(cooKey).split(' ')[0]}</span>→<span>Portal del cliente</span></span>`,
       list.length ? html`${list.map((t) => html`<div class="wkrow" data-act="task" data-id="${t.id}"><span class="fi">${IC.drive}</span><span class="grow">${t.title}<span class="mut sm"> · ${proj(t.project_id)?.client || 'Interno'}</span></span><span class="chip ${status(t) === 'Hecha' ? 'green' : 'amber'} sm2">${status(t) === 'Hecha' ? 'Aprobado' : 'En revisión'}</span></div>`)}` : html`<div class="mut sm" style="padding:6px 0">Todavía no entregas nada.</div>`);
   }
+  // Las carpetas de Drive de cada perfil (guiones y piezas listas): las ve todo el equipo.
+  const cfgs = {};
+  function driveOf(slug) {
+    if (!slug) return {};
+    if (!cfgs[slug]) { cfgs[slug] = { loading: true }; api(`content/cfg?profile=${encodeURIComponent(slug)}`).then((c) => { cfgs[slug] = c; if (alive() && tab === 'zona') paint(); }).catch(() => { cfgs[slug] = {}; }); }
+    return cfgs[slug];
+  }
+  const canContent = me.areas.includes('content');
+  const guionesLink = (slug) => driveOf(slug).guiones_drive || (canContent ? `#/content/guiones/${slug}` : null);
+  const planLink = (slug) => (canContent ? `#/content/plan/${slug}` : driveOf(slug).postear_drive || null);
   function material() {
     const slugs = [...new Set(projects.map((p) => p.client_slug).filter(Boolean))];
     clientSel ||= clientOf(open(mine())[0] || {}) || slugs[0] || null;
@@ -118,9 +128,9 @@ export async function render(el, { me, sub, alive }) {
     if (clientSel && !info) api(`repo/client/${encodeURIComponent(clientSel)}`).then((r) => { clientInfo[clientSel] = r; if (alive() && tab === 'zona') paint(); }).catch(() => { clientInfo[clientSel] = { links: [], months: [] }; });
     const link = (re) => info?.links?.find((l) => re.test(l.k) && /^https:\/\//.test(l.url || ''))?.url;
     const items = info ? [
-      ['📅', 'Calendario vigente', 'Plan de contenido del mes', `#/content/plan/${clientSel}`],
+      ['📅', 'Calendario vigente', 'Planner del mes', planLink(clientSel) || `#/clients/${clientSel}`],
       ['🎨', 'Brand assets', 'Logos, paleta, tipografías', link(/figma|brand|marca/i) || link(/drive/i) || `#/clients/${clientSel}`],
-      ['📝', 'Brief y guiones', 'Lo que escribió ④ Creatividad', `#/content/guiones/${clientSel}`],
+      ['📝', 'Brief y guiones', 'En Drive', guionesLink(clientSel) || `#/clients/${clientSel}`],
       ['📁', 'Drive del cliente', 'Fotos, videos, material crudo', link(/drive/i) || `#/clients/${clientSel}`],
       ['📊', 'Plan y pauta', 'Lo que incluye su plan', `#/clients/${clientSel}`],
     ] : [];
@@ -234,8 +244,9 @@ export async function render(el, { me, sub, alive }) {
     return box('Por cliente', 'Assets y prompts de cada marca', html`<select class="in" id="clientSel" style="margin-bottom:8px">${slugs.map((x) => html`<option value="${x}" ${x === clientSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select>
       ${!clientSel ? html`<div class="mut sm">Sin clientes con proyecto.</div>` : html`
       ${assets ? html`<a class="wkrow" href="${assets}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow"><b style="font-weight:500">Assets</b><span class="mut sm"> · logos, fotos, videos crudos</span></span><span class="mut">↗</span></a>` : html`<div class="wkrow"><span class="fi">${IC.drive}</span><span class="grow mut sm">Sin carpeta de assets. Se agrega en Clients → ${clientSel.toUpperCase()} → Editar datos.</span></div>`}
-      <a class="wkrow" href="#/content/plan/${clientSel}"><span style="width:22px;text-align:center">📅</span><span class="grow">Calendario<span class="mut sm"> · plan del mes</span></span><span class="mut">›</span></a>
-      <a class="wkrow" href="#/content/guiones/${clientSel}"><span style="width:22px;text-align:center">📝</span><span class="grow">Brief y guiones</span><span class="mut">›</span></a>
+      ${[['📝', 'Guiones', 'en Drive', guionesLink(clientSel)], ['🎬', 'Videos por postear', 'carpeta de Drive', driveOf(clientSel).postear_drive], ['📅', 'Calendario', 'Planner del mes', canContent ? `#/content/plan/${clientSel}` : null]].map(([i, t, sub, h]) => h
+        ? html`<a class="wkrow" href="${h}" ${/^https/.test(h) ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span style="width:22px;text-align:center">${i}</span><span class="grow">${t}<span class="mut sm"> · ${sub}</span></span><span class="mut">${/^https/.test(h) ? '↗' : '›'}</span></a>`
+        : html`<div class="wkrow"><span style="width:22px;text-align:center">${i}</span><span class="grow mut sm">${t}: ${driveOf(clientSel).loading ? 'cargando…' : 'sin carpeta conectada. La conecta Content.'}</span></div>`)}
       <div class="lbl" style="color:var(--mut);margin:10px 0 6px">Prompts de ${clientSel.toUpperCase()}</div>
       ${prompts.length ? Object.entries(byType).map(([ty, l]) => html`<div class="wkrow"><span class="chip sm2">${ty}</span><span class="grow">${l.map((d, i) => html`${i ? ' · ' : ''}<a href="#/library/${d.folder_id || '_'}/${d.id}" style="color:inherit">${d.title}</a>`)}</span><button class="btn ghost xs" data-act="copyP" data-id="${l[0].id}">Copiar</button></div>`)
         : html`<div class="mut sm">Sin prompts para esta marca. El CEO los crea en Library → Prompt de video.</div>`}`}`);
