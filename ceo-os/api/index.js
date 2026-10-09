@@ -255,12 +255,27 @@ on('GET', 'google/calendar', async (req, res) => {
   const from = new Date(String(req.query.from || new Date().toISOString().slice(0, 10)) + 'T00:00:00Z');
   const to = new Date(String(req.query.to || new Date(Date.now() + 31 * 864e5).toISOString().slice(0, 10)) + 'T23:59:59Z');
   if (isNaN(from) || isNaN(to) || to - from > 100 * 864e5) return res.status(400).json({ error: 'Rango inválido' });
+  // Todos los calendarios que la persona tiene visibles en Google (no solo el principal).
+  let cals = [{ id: 'primary', color: null, name: 'Principal' }], allCals = true;
+  try {
+    const cl = await google.gapi(u.email, 'https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=reader&maxResults=50');
+    const sel = (cl.items || []).filter((c) => c.selected || c.primary).slice(0, 12);
+    if (sel.length) cals = sel.map((c) => ({ id: c.primary ? 'primary' : c.id, color: c.backgroundColor || null, name: c.summaryOverride || c.summary }));
+  } catch { allCals = false; } // sin el permiso nuevo: solo el principal hasta que vuelva a entrar
   const q = new URLSearchParams({ timeMin: from.toISOString(), timeMax: to.toISOString(), singleEvents: 'true', orderBy: 'startTime', maxResults: '250', timeZone: TZ });
-  const j = await google.gapi(u.email, `${CAL}?${q}`);
-  res.json({ events: (j.items || []).filter((e) => e.status !== 'cancelled').map((e) => ({
-    id: e.id, summary: e.summary || '(sin título)', start: e.start?.dateTime || e.start?.date, end: e.end?.dateTime || e.end?.date,
-    allDay: Boolean(e.start?.date), link: e.htmlLink, meet: e.hangoutLink || null, location: e.location || null,
-  })) });
+  const lists = await Promise.all(cals.map((c) => google.gapi(u.email, `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(c.id)}/events?${q}`).then((j) => ({ c, items: j.items || [] })).catch((e) => (c.id === 'primary' ? Promise.reject(e) : { c, items: [] }))));
+  const seen = new Set();
+  const events = lists.flatMap(({ c, items }) => items.filter((e) => e.status !== 'cancelled').map((e) => ({
+    id: e.id, cal: c.id, calName: c.name, color: c.color, summary: e.summary || '(sin título)', start: e.start?.dateTime || e.start?.date, end: e.end?.dateTime || e.end?.date,
+    allDay: Boolean(e.start?.date), link: e.htmlLink, meet: e.hangoutLink || null, location: e.location || null, description: String(e.description || '').slice(0, 1000),
+    editable: c.id === 'primary' && (!e.organizer || e.organizer.self), uid: e.iCalUID,
+  }))).filter((e) => (e.uid && seen.has(e.uid) ? false : (seen.add(e.uid), true))).sort((a, z) => String(a.start).localeCompare(String(z.start)));
+  res.json({ events, allCals, calendars: cals.map(({ name, color }) => ({ name, color })) });
+});
+on('DELETE', 'google/calendar/:id', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  await google.gapi(u.email, `${CAL}/${encodeURIComponent(req.params.id)}`, { method: 'DELETE' });
+  res.json({ ok: true });
 });
 on('POST', 'google/calendar', async (req, res) => {
   const u = await guard(req, res); if (!u) return;

@@ -21,11 +21,21 @@ const cfg = () => ({
   token: process.env.GITHUB_TOKEN?.trim(),
 });
 const enc = (p) => p.split('/').map(encodeURIComponent).join('/');
+// Error de GitHub con una explicación que se entiende (sale tal cual en la app).
+async function ghError(r, what) {
+  let msg = ''; try { msg = (await r.json()).message || ''; } catch {}
+  const human = r.status === 401 ? 'GitHub no aceptó el GITHUB_TOKEN: revisa que esté bien copiado (sin espacios) y vuelve a publicar en Vercel.'
+    : r.status === 403 ? 'El GITHUB_TOKEN no tiene permiso para escribir: en GitHub dale «Contents: Read and write» sobre Inherent-HQ.'
+    : r.status === 404 ? `GitHub no encuentra el repo ${cfg().repo} con ese token: en «Repository access» elige Inherent-HQ.`
+    : `GitHub ${r.status} ${what}`;
+  console.error('github', r.status, what, msg);
+  return Object.assign(new Error(human + (msg ? ` (GitHub: ${msg})` : '')), { code: 'GH', ghStatus: r.status });
+}
 
 async function gh(path, init = {}) {
   const { repo, token } = cfg();
-  if (!token) throw new Error('GITHUB_TOKEN no está configurado');
-  return fetch(`https://api.github.com/repos/${repo}/${path}`, {
+  if (!token) throw Object.assign(new Error('Falta GITHUB_TOKEN en Vercel para escribir en el repo'), { code: 'GH' });
+  return fetch(`https://api.github.com/repos/${repo}${path ? '/' + path : ''}`, {
     ...init,
     headers: {
       Authorization: `Bearer ${token}`,
@@ -75,7 +85,7 @@ export async function writeFile(path, content, sha, message) {
     }),
   });
   if (r.status === 409 || r.status === 422) return { conflict: true };
-  if (!r.ok) throw new Error(`GitHub ${r.status} escribiendo ${path}`);
+  if (!r.ok) throw await ghError(r, 'escribiendo ' + path);
   return { sha: (await r.json()).content.sha };
 }
 
@@ -104,9 +114,20 @@ export function listFiles(prefix) {
 export async function readLive(path) {
   if (LOCAL) { try { const c = fs.readFileSync(lp(path), 'utf8'); return { content: c, sha: sha1(c) }; } catch { return null; } }
   const r = await gh(`contents/${enc(path)}?ref=${encodeURIComponent(cfg().branch)}`);
-  if (r.status === 404) return null;
-  if (!r.ok) throw new Error(`GitHub ${r.status} leyendo ${path}`);
+  if (r.status === 404) { await assertRepo(); return null; }
+  if (!r.ok) throw await ghError(r, 'leyendo ' + path);
+  await assertRepo();
   const j = await r.json();
   return { content: Buffer.from(j.content || '', 'base64').toString('utf8'), sha: j.sha };
+}
+// Un 404 de un archivo es normal (todavía no existe); un 404 del repo es un token sin acceso.
+let repoOk = false;
+async function assertRepo() {
+  if (repoOk) return;
+  const r = await gh('');
+  if (!r.ok) throw await ghError(r, 'abriendo el repo');
+  const j = await r.json();
+  if (j.permissions && !j.permissions.push) throw Object.assign(new Error('El GITHUB_TOKEN puede leer el repo pero no escribir: en GitHub dale «Contents: Read and write».'), { code: 'GH', ghStatus: 403 });
+  repoOk = true;
 }
 export const canWriteRepo = () => Boolean(LOCAL || process.env.GITHUB_TOKEN?.trim());
