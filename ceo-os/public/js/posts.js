@@ -1,6 +1,6 @@
 // «Por postear»: los videos y piezas propias de un perfil, de la idea a publicado.
 // Se usa en Content y en la página de cada cliente. Vive en la colección content.
-import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard } from './core.js';
+import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard, api, connectChip, ask as askF } from './core.js';
 
 export const PSTATUS = ['Idea', 'Grabado', 'Editado', 'Programado', 'Publicado'];
 const PCLS = { Idea: '', Grabado: 'amber', Editado: 'blue', Programado: 'lime', Publicado: 'green' };
@@ -33,15 +33,34 @@ export async function editPost(profile, p) {
 }
 
 // Tablero por estado, con arrastrar y soltar. onChange(list) recibe la lista actualizada.
+// «Por postear» puede venir de una carpeta de Drive: cada video o imagen de la carpeta es una pieza.
+const conn = {};
+const FMT = (f) => (/video/.test(f.mime) ? 'Reel' : /image/.test(f.mime) ? 'Estático' : 'Pieza');
+async function syncDrive(profile, list) {
+  const folder = conn[profile]?.postear_drive; if (!folder) return [];
+  const r = await api(`google/drive?folder=${encodeURIComponent(folder)}`);
+  const have = new Set(list.map((p) => p.drive_id).filter(Boolean)); const made = [];
+  for (const f of r.files.filter((x) => /video|image/.test(x.mime) && !have.has(x.id))) made.push(await C.create({ kind: 'post', profile, title: f.name.replace(/\.[^.]+$/, ''), format: FMT(f), url: f.link, drive_id: f.id, status: 'Editado' }));
+  return made;
+}
 export function postsBoard(b, profile, list, onChange) {
+  if (!conn[profile]) { conn[profile] = { loading: true }; api(`content/cfg?profile=${encodeURIComponent(profile)}`).then((c) => { conn[profile] = c; if (b.isConnected) postsBoard(b, profile, list, onChange); if (c.postear_drive) syncDrive(profile, list).then((m) => m.length && (toast(`${m.length} pieza${m.length === 1 ? '' : 's'} nueva${m.length === 1 ? '' : 's'} desde Drive`), onChange([...list, ...m]))).catch((e) => toast(e.message, true)); }).catch(() => { conn[profile] = {}; }); }
+  const dr = conn[profile]?.postear_drive;
   const sorted = (s) => list.filter((p) => (p.status || 'Idea') === s).sort((a, z) => String(a.date || '9').localeCompare(String(z.date || '9')));
-  mount(b, html`<div class="row" style="margin-bottom:12px"><span class="mut sm">${list.length} piezas · arrastra para cambiar de estado</span><div class="sp"></div><button class="btn" data-pact="new">+ Pieza</button></div>
+  mount(b, html`<div class="row" style="margin-bottom:12px"><span class="mut sm">${list.length} piezas · arrastra para cambiar de estado</span><div class="sp"></div>${connectChip('drive', dr ? 'Drive conectado · actualizar' : 'Conectar con Drive', 'x', Boolean(dr), 'data-pact="drive"')}${dr ? html`<button class="sm mut" data-pact="driveset" style="margin:0 8px">Cambiar carpeta</button>` : ''}<button class="btn" data-pact="new">+ Pieza</button></div>
     <div class="kanban swap">${PSTATUS.map((s) => html`<div class="kcol" data-st="${s}"><h4><span>${s}</span><span class="mut">${sorted(s).length}</span></h4>
       ${sorted(s).map((p) => html`<div class="kcard" draggable="true" data-pact="open" data-id="${p.id}"><div class="row"><span class="chip ${PCLS[s]}" style="font-size:11px">${p.format || 'Pieza'}</span><div class="sp"></div><span class="mut sm">${p.date ? fdate(p.date) : ''}</span></div><b style="margin-top:8px">${p.title}</b>${p.caption ? html`<div class="mut sm" style="margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.caption}</div>` : ''}${p.url ? html`<div class="sm" style="margin-top:6px">🎬 Con video</div>` : ''}</div>`)}</div>`)}</div>`);
   const save = (r) => { if (!r) return; list = list.some((x) => x.id === r.id) ? list.map((x) => (x.id === r.id ? r : x)) : [...list, r]; onChange(list); };
   b.onclick = async (e) => {
     const t = e.target.closest('[data-pact]'); if (!t) return;
     if (t.dataset.pact === 'new') return save(await editPost(profile, null));
+    if (t.dataset.pact === 'drive' || t.dataset.pact === 'driveset') {
+      if (dr && t.dataset.pact === 'drive') { try { const m = await syncDrive(profile, list); toast(m.length ? `${m.length} pieza${m.length === 1 ? '' : 's'} nueva${m.length === 1 ? '' : 's'} desde Drive ✅` : 'Ya está al día con Drive'); if (m.length) onChange([...list, ...m]); } catch (err) { toast(err.message, true); } return; }
+      const v = await askF('Conectar «Por postear» con Drive', [{ k: 'url', l: 'Link de la carpeta de Drive con las piezas listas (videos e imágenes)', v: dr, req: true }], 'Conectar');
+      if (!v) return;
+      try { await api('content/connect', { method: 'PUT', body: { profile, postear_drive: v.url } }); conn[profile] = { ...conn[profile], postear_drive: v.url }; const m = await syncDrive(profile, list); toast(`Conectado ✅${m.length ? ` · ${m.length} piezas` : ''}`); onChange([...list, ...m]); } catch (err) { toast(err.message, true); }
+      return;
+    }
     const p = list.find((x) => x.id === t.dataset.id); if (p) openPost(p);
   };
   function openPost(p) {

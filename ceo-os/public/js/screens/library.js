@@ -1,5 +1,5 @@
 import { recorder } from '../recorder.js';
-import { WORK_ROLES , wizard } from '../core.js';
+import { WORK_ROLES, wizard, connectCard } from '../core.js';
 import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, $, folderSvg, TONES, embedUrl, IC, diagram, diagrams } from '../core.js';
 
 // Library: SOPs, playbooks, videos y notas que el equipo escribe aquí, en carpetas.
@@ -218,13 +218,14 @@ export async function render(el, { sub, alive }) {
         ${list.length ? html`<div class="grid g3">${list.map((d) => html`<div class="card" data-act="doc" data-id="${d.id}" style="cursor:pointer"><div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#8f877b'};color:#fff">${d.kind || 'Doc'}</span><div class="sp"></div>${d.url ? html`<span class="mut sm">▶ video</span>` : ''}</div><h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin-top:14px">${d.title}</h3><div class="mut sm" style="margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${String(d.body || '').replace(/[#*>`|-]/g, '').slice(0, 200) || 'Vacío'}</div></div>`)}</div>`
           : html`<div class="empty"><b>Sin documentos aquí</b>Crea un SOP, playbook o video con «+ Documento».</div>`}
         <div class="sec-title"><h2>Google Drive</h2>${f.drive ? html`<div class="row" style="gap:8px"><button class="btn ghost" data-act="gnew" style="padding:8px 14px">+ Google Doc</button><a class="btn ghost" href="${f.drive}" target="_blank" rel="noopener noreferrer" style="padding:8px 14px;text-decoration:none">${IC.drive} Abrir en Drive</a></div>` : ''}</div>
-        ${!f.drive ? html`<div class="empty"><b>Esta carpeta no está conectada a Drive</b>Dale «Editar» y pega el link de una carpeta de Google Drive para ver y crear archivos ahí.</div>`
+        ${!f.drive ? connectCard('drive', 'Conecta esta carpeta con Google Drive', 'Verás aquí sus archivos y podrás crear Docs, Sheets y Slides directo en ella.', 'connectDrive', 'Conectar con Drive')
           : drive === null ? html`<p class="loading">Leyendo tu Drive…</p>` : dErr ? html`<div class="warnbox">${dErr}</div>`
           : drive.files.length ? html`<div class="card"><table><thead><tr><th>Archivo</th><th>Dueño</th><th>Modificado</th></tr></thead><tbody>${drive.files.map((x) => { const [t, c] = MIME(x.mime); return html`<tr class="click" data-act="dfile" data-id="${x.id}"><td><span class="ftype" style="background:${c}">${t}</span><b style="font-weight:500">${x.name}</b></td><td class="mut">${x.owner || '—'}</td><td class="mut">${x.modified ? fdate(x.modified.slice(0, 10)) : ''}</td></tr>`; })}</tbody></table></div>`
           : html`<div class="empty"><b>La carpeta de Drive está vacía</b>Crea un Google Doc con el botón de arriba.</div>`}`);
     };
     const loadDrive = () => api(`google/drive?folder=${encodeURIComponent(f.drive)}`).then((r) => { drive = r; dErr = null; }).catch((e) => { drive = { files: [] }; dErr = e.message; }).then(() => alive() && paint());
     acts(el, {
+      connectDrive: async () => { const v = await ask('Conectar con Google Drive', [{ k: 'drive', l: 'Link de la carpeta de Drive', req: true }], 'Conectar'); if (!v) return; if (!driveOk(v.drive)) return toast('Pega el link de una carpeta de Drive (drive.google.com/drive/folders/…)', true); try { const r = await F.save({ ...f, drive: v.drive }); Object.assign(f, r); drive = null; paint(); loadDrive(); } catch (e) { toast(e.message, true); } },
       editFolder: async () => { const r = await newFolder(f); if (r) { Object.assign(f, r); drive = null; paint(); if (f.drive) loadDrive(); } },
       newDocHere: () => newDoc(id),
       recHere: () => record(id),

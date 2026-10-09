@@ -1,4 +1,4 @@
-import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask, today } from '../core.js';
+import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip } from '../core.js';
 import { loadPosts, postsBoard } from '../posts.js';
 
 // Content: lo que dice el repo de cada perfil (guiones, plan, cuentas) + el scrape semanal.
@@ -23,7 +23,7 @@ export async function render(el, { sub, alive }) {
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
-    slug = data.profile.slug; mes = data.profile.months[0]?.mes || null; file = null; week = null; posts = null;
+    slug = data.profile.slug; mes = data.profile.months[0]?.mes || null; file = null; week = null; posts = null; ig = null;
     try { localStorage.setItem('content.profile', slug); } catch {}
     paint();
   }
@@ -99,12 +99,29 @@ export async function render(el, { sub, alive }) {
   }
 
   // ---------- Analytics: las cuentas propias, semana a semana ----------
+  let ig = null;
   function analytics(b) {
-    if (needWeek(b, analytics)) return;
+    if (ig === null) { mount(b, html`<p class="loading">Cargando analytics…</p>`); api(`analytics/instagram?profile=${encodeURIComponent(slug)}`).then((r) => { ig = r; }).catch((e) => { ig = { error: e.message }; }).then(() => alive() && tab === 'analytics' && b.isConnected && analytics(b)); return; }
+    const own = data.profile.own.filter((a) => a.red === 'instagram').map((a) => '@' + a.handle).join(', ');
+    let top;
+    if (ig.error) top = html`<div class="warnbox">${ig.error}</div>`;
+    else if (!ig.connected) top = connectCard('instagram', 'Conecta Instagram para ver tus analytics', 'Haz login con tu cuenta de Instagram en Windsor.ai y aquí aparecen alcance, engagement y tus mejores posts.', 'igconnect', 'Conectar Instagram');
+    else if (!ig.handles.length) top = connectCard('instagram', 'Este perfil no tiene su Instagram registrado', `Agrega el link de su Instagram en ${data.profile.root}/00-onboarding/LINKS.md del repo.`, 'igconnect', 'Abrir Windsor');
+    else if (!ig.matched) top = connectCard('instagram', `Conecta ${own} en Windsor`, `Windsor está conectado${ig.accounts.length ? ` (ve ${ig.accounts.map((x) => '@' + x).join(', ')})` : ''}, pero falta esta cuenta.`, 'igconnect', 'Conectar Instagram');
+    else top = html`<div class="row" style="margin-bottom:10px">${connectChip('instagram', `${own} · conectado`, 'x', true)}<span class="mut sm" style="margin-left:8px">Últimos 30 días · vía Windsor.ai</span></div>
+      <div class="wkkpis">${[['Seguidores', K(ig.followers)], ['Alcance', K(ig.reach)], ['Engagement', ig.er == null ? '—' : ig.er + '%'], ['Posts', ig.posts]].map(([l, v]) => html`<div class="wkkpi"><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
+      ${ig.series.length > 1 ? html`<div class="card wkbox"><div class="wkhead"><h3>Alcance por día de publicación</h3></div><div class="chart" id="chIG"></div></div>` : ''}
+      ${ig.top.length ? html`<div class="card wkbox" style="margin-top:12px"><div class="wkhead"><h3>Mejores posts</h3></div><table class="wktable"><thead><tr><th>Fecha</th><th>Tipo</th><th>Alcance</th><th>Likes</th><th>Comentarios</th><th>Engagement</th></tr></thead><tbody>${ig.top.map((x) => html`<tr><td>${fdate(x.date)}</td><td>${x.type || '—'}</td><td>${K(x.reach)}</td><td>${K(x.likes)}</td><td>${K(x.comments)}</td><td><b style="font-weight:500">${K(x.eng)}</b></td></tr>`)}</tbody></table></div>` : ''}`;
+    mount(b, html`${top}<div id="anScrape" style="margin-top:16px"></div>`);
+    const ch = $('#chIG', b); if (ch) lineChart(ch, ig.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: ig.series.map((x) => x.reach), c: '#171410', fill: true }]);
+    scrapeAnalytics($('#anScrape', b));
+  }
+  function scrapeAnalytics(b) {
+    if (needWeek(b, scrapeAnalytics)) return;
     const h = week.analytics || [], last = h[h.length - 1], prev = h[h.length - 2];
     const delta = (k) => (last && prev && prev[k] ? Math.round(((last[k] - prev[k]) / prev[k]) * 100) : null);
     const own = week.result?.own || [];
-    if (!h.length) return mount(b, html`<div class="empty"><b>Sin datos todavía</b>Se llenan con el scrape semanal de las cuentas propias (las de <code>LINKS.md</code>).</div>`);
+    if (!h.length) return mount(b, html`<div class="mut sm">El scrape semanal (Apify) también guarda tus posts: aparecen aquí cuando corra.</div>`);
     const kpi = (lbl, v, d) => html`<div class="card"><div class="lbl">${lbl}</div><div class="big" style="font-size:44px">${v}</div><div class="sm ${d == null ? 'mut' : ''}" style="${d == null ? '' : d >= 0 ? 'color:#4f6b12' : 'color:#a3392a'}">${d == null ? 'vs semana anterior: —' : (d >= 0 ? '▲ ' : '▼ ') + Math.abs(d) + '% vs semana anterior'}</div></div>`;
     mount(b, html`<div class="grid g4">${kpi('Vistas promedio', K(last.avgViews), delta('avgViews'))}${kpi('Engagement', last.er == null ? '—' : last.er + '%', delta('er'))}${kpi('Likes', K(last.likes), delta('likes'))}${kpi('Posts leídos', last.posts, null)}</div>
       <div class="card" style="margin-top:16px"><div class="chead"><div class="ico">↗</div><h3>Vistas promedio por semana</h3></div><div class="chart" id="chA"></div></div>
@@ -142,6 +159,7 @@ export async function render(el, { sub, alive }) {
   }
 
   acts(el, {
+    igconnect: () => window.open('https://onboard.windsor.ai/', '_blank', 'noopener'),
     prof: (t) => { slug = t.dataset.s; clearTimeout(poll); go(); load(); },
     tab: (t) => { tab = t.dataset.t; go(); paint(); },
     file: (t) => { file = t.dataset.p; guiones($('#cbody', el)); },

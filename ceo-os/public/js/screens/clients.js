@@ -14,6 +14,7 @@ export async function render(el, { sub, alive }) {
   const AC = col('accounts');
   const [repo, accounts, projects, tasks, team] = await Promise.all([api('repo/clients').catch(() => ({ clients: [] })), AC.list(), col('projects').list(), col('tasks').list(), teamList()]);
   const clients = repo.clients.filter((c) => c.hasPlan).map((c) => ({ ...c, plan: cleanPlan(c.plan) }));
+  const onboarding = repo.clients.filter((c) => !c.hasPlan);
   const acct = (slug) => accounts.find((a) => a.id === 'acc-' + slug);
   const slug = sub[0];
   if (!slug) return list();
@@ -28,7 +29,8 @@ export async function render(el, { sub, alive }) {
           <div class="chead"><div class="ico" style="font-size:13px;font-weight:700">${initials(a?.name || c.slug)}</div><h3>${a?.name || c.slug.toUpperCase()}<br><span class="lbl">${c.plan || 'Sin plan'}</span></h3><span class="arrow">↗</span></div>
           <div class="lbl">Roadmap</div><div class="big" style="font-size:46px">${done}<small>/${rm.length}</small></div>
           <div class="foot"><span>${next ? 'Sigue: ' + next.t : rm.length ? 'Roadmap completo' : 'Sin roadmap todavía'}</span><span>${ps.length} proyecto${ps.length === 1 ? '' : 's'}</span></div></a>`; })}</div>`
-      : html`<div class="empty"><b>No encontré clientes en el repo</b>Cada cliente es un folder en clients/ con su 00-onboarding/plan-contratado.md.</div>`}`);
+      : html`<div class="empty"><b>No encontré clientes en el repo</b>Cada cliente es un folder en clients/ con su 00-onboarding/plan-contratado.md.</div>`}
+      ${onboarding.length ? html`<div class="sec-title"><h2>En onboarding</h2><span class="mut sm">Tienen folder en el repo pero todavía no su plan contratado</span></div><div class="grid g4">${onboarding.map((c) => html`<div class="card wkbox"><b style="font-weight:500">${c.slug.toUpperCase()}</b><div class="mut sm" style="margin-top:4px">Falta <code>00-onboarding/plan-contratado.md</code> (lo deja ① Strategy). Cuando exista, aparece arriba y se puede crear su ciclo.</div></div>`)}</div>` : ''}`);
   }
 
   // ---------- Página del cliente ----------

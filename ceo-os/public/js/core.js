@@ -301,3 +301,14 @@ export function wizard(title, steps, doneLabel = 'Crear') {
     document.body.append(v); paint();
   });
 }
+
+// ---------- «Conectar»: cada cosa que viene de afuera muestra el logo de su servicio ----------
+export const LOGO = {
+  drive: IC.drive,
+  instagram: raw('<svg viewBox="0 0 24 24"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".6" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#igg)"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.2" fill="#fff"/></svg>'),
+  tiktok: raw('<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#111"/><path d="M15.6 5.5c.5 1.6 1.7 2.7 3.3 2.9v2.4c-1.2 0-2.3-.4-3.3-1v4.6a4.4 4.4 0 1 1-3.8-4.4v2.5a1.9 1.9 0 1 0 1.3 1.9V5.5z" fill="#fff"/></svg>'),
+  windsor: raw('<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#1f2a44"/><path d="M5 8l2.5 8L10 9l2 7 2-7 2.5 7L19 8" fill="none" stroke="#7fd1ff" stroke-width="1.8" stroke-linejoin="round"/></svg>'),
+};
+// Un botón o tarjeta para conectar. `on` = ya conectado (muestra el nombre y «Cambiar»).
+export const connectChip = (logo, label, act, on, extra = '') => html`<button class="connect ${on ? 'on' : ''}" data-act="${act}" ${raw(extra)}><span class="lg">${LOGO[logo]}</span>${label}</button>`;
+export const connectCard = (logo, title, sub, act, btn = 'Conectar') => html`<div class="connectcard"><span class="lg big">${LOGO[logo]}</span><div class="grow"><b style="font-weight:500">${title}</b><div class="mut sm">${sub}</div></div><button class="btn" data-act="${act}">${btn}</button></div>`;

@@ -1,5 +1,5 @@
 import { CYCLE, DEPTS, addDays, tasksFor, phasesFor, deptsOfPlan } from '../cycle.js';
-import { html, raw, mount, col, api, acts, toast, today, teamList, teamDoc, WORK_ROLES, roleName, $, $$, confirmAsk } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, today, teamList, teamDoc, WORK_ROLES, roleName, $, $$, confirmAsk, ask } from '../core.js';
 
 // Arranque: deja la app lista en 4 pasos, con lo que ya dice el repo.
 // 1 Equipo (de la tabla de slots del manual) · 2 Clientes y ciclo · 3 Tareas del ciclo · 4 Library base.
@@ -128,12 +128,12 @@ export async function render(el, { me, alive }) {
     if (!alive()) return;
     const step = (n, key, title, sub, body, btn) => html`<div class="card wkbox setup ${done[key] ? 'ok' : ''}"><div class="wkhead"><span class="stepn">${done[key] ? '✓' : n}</span><div class="grow"><h3>${title}</h3><span class="mut sm">${sub}</span></div>${btn}</div>${body}</div>`;
     mount(el, html`<div class="wktop"><div><h1>Arranque</h1><p class="mut">Deja la app lista con lo que ya dice el repo. 5 pasos, en orden.</p></div></div>
-      ${step(1, 'team', 'Equipo y perfiles', 'Sale de la tabla de slots del manual. Pon el correo de cada quien para que pueda entrar con Google.', html`
+      ${step(1, 'team', 'Equipo y perfiles', 'Sale de la tabla de slots del manual. Con correo entra con Google; sin correo queda solo en el organigrama y la nómina.', html`
         <table class="wktable"><thead><tr><th>Persona</th><th>En el manual</th><th>Correo @inherentglobal.com</th><th>Perfiles de trabajo</th></tr></thead><tbody>
         ${rows.map((r, i) => html`<tr data-row="${i}"><td><b style="font-weight:500">${r.name}</b>${r.ia ? html`<span class="chip sm2" style="margin-left:6px">Agente IA</span>` : ''}</td><td class="mut sm">${r.title || '—'}</td>
           <td>${r.ia ? html`<span class="mut sm">No entra a la app</span>` : html`<input class="in sm" data-f="email" value="${r.email}" placeholder="nombre@inherentglobal.com" ${r.k === 'ceo' ? raw('disabled') : ''}>`}</td>
           <td>${r.ia ? '' : WORK_ROLES.map(([k, l]) => html`<label class="chip sm2" style="cursor:pointer;margin:2px"><input type="checkbox" data-f="role" value="${k}" ${r.roles.includes(k) ? raw('checked') : ''} style="margin-right:3px">${l.split(' · ')[0]}</label>`)}</td></tr>`)}</tbody></table>`,
-        html`<button class="btn xs" data-act="doTeam">${done.team ? 'Actualizar' : 'Guardar equipo'}</button>`)}
+        html`<button class="btn ghost xs" data-act="addRow">+ Persona</button><button class="btn xs" data-act="doTeam">${done.team ? 'Actualizar' : 'Guardar equipo'}</button>`)}
       ${step(2, 'ciclo', 'Clientes y ciclo del mes', `Crea el proyecto del ciclo ${mes} de cada cliente, con sus fases del día 1 al 20 y solo los departamentos de su plan.`, html`
         <div class="row" style="gap:10px;margin:6px 0"><span class="sm">Día 1 del ciclo:</span><input class="in sm" type="date" id="start" value="${start}" style="max-width:170px"></div>
         ${clients.map((c) => { const has = projects.some((p) => p.client_slug === c.slug && p.cycle === mes); return html`<label class="wkcheck"><input type="checkbox" data-client="${c.slug}" ${has ? raw('checked disabled') : raw('checked')}><span><b style="font-weight:500">${c.slug.toUpperCase()}</b><span class="mut sm"> · ${String(c.plan || '').replace(/^[⬜🔷🟨]️?\s*/u, '')}${has ? ' · ya creado' : ''}</span></span></label>`; })}`,
@@ -182,6 +182,10 @@ export async function render(el, { me, alive }) {
         }
         toast('Equipo listo ✅'); setTimeout(() => location.reload(), 600);
       } catch (e) { toast(e.message, true); b.disabled = false; }
+    },
+    addRow: async () => {
+      const v = await ask('Agregar persona', [{ k: 'name', l: 'Nombre', req: true }, { k: 'title', l: 'Qué hace', half: true }, { k: 'email', l: 'Correo (opcional)', t: 'email', half: true }, { k: 'roles', l: 'Perfiles de trabajo', t: 'checks', opts: WORK_ROLES }]);
+      if (!v) return; rows.push({ k: v.name.toLowerCase(), name: v.name, title: v.title, roles: v.roles, email: v.email || '', cur: null, ia: false, slots: [] }); paint();
     },
     doCycle: async (b) => {
       start = $('#start', el).value || start; b.disabled = true;

@@ -48,6 +48,7 @@ El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez qu
 | `ADMIN_EMAILS` | Correos que siempre son CEO, separados por coma |
 | `ALLOWED_DOMAIN` | Opcional. Por defecto `inherentglobal.com` |
 | `APIFY_TOKEN` | Para scrapear winners (Instagram y TikTok) |
+| `WINDSOR_API_KEY` | Analytics de Instagram de las cuentas propias. Las cuentas se conectan (login con Instagram) en windsor.ai; la app solo lee |
 | `CRON_SECRET` | Para el scrape semanal (Vercel Cron, lunes 13:00 UTC; cierre a las 16:00). Sin él, el cron no corre |
 | `GITHUB_TOKEN` | No hace falta. La app solo **lee** el repo: lo copia en cada build (`scripts/snapshot.mjs`). El repo guarda lo macro; el trabajo del día a día vive en la app |
 
