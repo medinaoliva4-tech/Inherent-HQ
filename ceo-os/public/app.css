@@ -606,3 +606,4 @@ body{background:transparent!important}
 .wkttl{display:flex;align-items:center;gap:7px}.wkttl .ic{color:#7f9631}
 .qlv{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.55)}.qlv input[type=range]{accent-color:#5c6b22}
 input[type=range]{accent-color:#5c6b22;cursor:grab}
+.qdoc td.n,.qdoc th.n{white-space:nowrap;padding-left:18px;vertical-align:top}

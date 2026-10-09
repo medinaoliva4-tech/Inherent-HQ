@@ -325,15 +325,17 @@ export const calQ = () => (calAll() ? '' : '&only=inherent');
 // ---------- Claude con la cuenta de cada persona (sus créditos, sin API) ----------
 // Abre claude.ai con el prompt listo (y lo deja copiado). Si se pide `json`, espera que la persona
 // pegue la respuesta y la devuelve ya leída.
+// Se abre en Claude Code (claude.ai/code) con el repo de Inherent, así tiene el manual a la mano.
+const CLAUDE_REPO = 'medinaoliva4-tech/Inherent-HQ';
 export function openClaude(prompt) {
-  const fits = prompt.length < 6000;
-  window.open(fits ? 'https://claude.ai/new?q=' + encodeURIComponent(prompt) : 'https://claude.ai/new', '_blank', 'noopener');
+  const fits = prompt.length < 5000;
+  window.open('https://claude.ai/code?' + new URLSearchParams({ ...(fits ? { prompt } : {}), repositories: CLAUDE_REPO }), '_blank', 'noopener');
   navigator.clipboard?.writeText(prompt).catch(() => {});
   return fits;
 }
 export async function claudeJSON(title, prompt) {
   const fits = openClaude(prompt);
-  const v = await ask(title, [{ k: 'out', t: 'textarea', req: true, l: fits ? 'Se abrió tu Claude con todo listo. Cuando responda, copia su respuesta y pégala aquí.' : 'Se abrió tu Claude y el prompt quedó copiado: pégalo allá. Cuando responda, copia su respuesta y pégala aquí.' }], 'Listo');
+  const v = await ask(title, [{ k: 'out', t: 'textarea', req: true, l: fits ? 'Se abrió tu Claude Code con todo listo: dale enviar. Cuando responda, copia su respuesta y pégala aquí.' : 'Se abrió tu Claude Code y el prompt quedó copiado: pégalo allá y envíalo. Cuando responda, copia su respuesta y pégala aquí.' }], 'Listo');
   if (!v) return null;
   const m = String(v.out).match(/[[{][\s\S]*[\]}]/);
   try { return JSON.parse(m ? m[0] : v.out); } catch { toast('No pude leer la respuesta. Pídele a Claude que conteste solo con el JSON y vuelve a pegarla.', true); return null; }
