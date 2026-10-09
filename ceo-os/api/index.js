@@ -1,12 +1,10 @@
 // Una sola función serverless para toda la API (vercel.json reescribe /api/* → aquí).
-import crypto from 'node:crypto';
 import * as db from './_lib/db.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
 import { guard, guardAny, areasFor, COLLS, READ_ALSO, WRITE_ALSO, canWrite, userFor, domain } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
-import * as ideas from './_lib/ideas.js';
 import * as zernio from './_lib/zernio.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
@@ -204,26 +202,27 @@ on('GET', 'analytics/instagram', async (req, res) => {
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
-// Ideas de reels y carruseles con Claude, a partir de lo que encontró el scraper.
+// Ideas de reels y carruseles: las genera cada persona en SU cuenta de Claude (sus créditos)
+// y las pega aquí. La app solo guarda y limpia lo que llega.
+const cleanIdeas = (list) => (Array.isArray(list) ? list : []).slice(0, 30).map((x, i) => ({
+  id: `${Date.now().toString(36)}-${i}`, format: /carrusel/i.test(x?.format) ? 'Carrusel' : 'Reel',
+  title: String(x?.title || '').slice(0, 200), hook: String(x?.hook || '').slice(0, 300), pillar: String(x?.pillar || '').slice(0, 60),
+  outline: (Array.isArray(x?.outline) ? x.outline : []).slice(0, 12).map((o) => String(o).slice(0, 300)), why: String(x?.why || '').slice(0, 400),
+  inspired_by: /^https:\/\/\S+$/.test(String(x?.inspired_by || '')) ? String(x.inspired_by).slice(0, 400) : '',
+})).filter((x) => x.title);
 on('GET', 'content/ideas', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
   const slug = String(req.query.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
   const d = await db.get('sources', 'ideas-' + slug);
-  res.json({ on: ideas.ideasOn(), at: d?.at || null, week: d?.week || null, ideas: d?.ideas || [] });
+  res.json({ at: d?.at || null, week: d?.week || null, ideas: d?.ideas || [] });
 });
-on('POST', 'content/ideas', async (req, res) => {
+on('PUT', 'content/ideas', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
-  const slug = String(body(req).profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
-  if (!ideas.ideasOn()) return res.status(503).json({ error: 'Falta ANTHROPIC_API_KEY en las variables de Vercel (Sensitive).' });
-  const p = (await content.profiles()).find((x) => x.slug === slug); if (!p) return res.status(400).json({ error: 'Perfil inválido' });
-  const [c, sc] = await Promise.all([content.cfg(slug), db.get('sources', 'scrape-' + slug)]);
-  const week = sc?.result || {};
-  if (!(week.top || []).length && !(week.refs || []).length) return res.status(400).json({ error: 'Primero corre el scrape de la semana (pestaña Semana): las ideas salen de lo que encuentra.' });
-  try {
-    const list = await ideas.generate({ name: p.name, pillars: c.pillars, audience: c.audience, week, own: week.own || [] });
-    await db.upsert('sources', 'ideas-' + slug, { profile: slug, at: new Date().toISOString(), week: week.week || null, ideas: list }, u.email);
-    res.json({ on: true, at: new Date().toISOString(), week: week.week || null, ideas: list });
-  } catch (e) { res.status(e.status && e.status < 600 ? (e.status >= 500 ? 502 : e.status) : 502).json({ error: e.message?.slice(0, 300) || 'Error con Claude' }); }
+  const b = body(req); const slug = String(b.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  const list = cleanIdeas(b.ideas); if (!list.length) return res.status(400).json({ error: 'No encontré ideas en lo que pegaste' });
+  const doc = { profile: slug, at: new Date().toISOString(), week: String(b.week || '').slice(0, 12) || null, ideas: list };
+  await db.upsert('sources', 'ideas-' + slug, doc, u.email);
+  res.json(doc);
 });
 // Bandeja de comunidad (Zernio): comentarios y DMs de las cuentas propias del perfil.
 on('GET', 'community/inbox', async (req, res) => {
@@ -466,85 +465,6 @@ on('GET', 'health', async (req, res) => {
   try { repo = (await readFile('inherent/06-ECONOMIA.md')) ? 'ok' : 'no encuentra el archivo (token sin acceso al repo, o repo/rama incorrectos)'; } catch (e) { repo = e.message; }
   res.json({ env: Object.fromEntries(env.map((k) => [k, Boolean(process.env[k])])), repo, repoSource: repoSource(), domain: domain() });
 });
-
-// ---------- MCP: para que Claude (Claude Code o claude.ai) lea Inherent OS y agregue tareas e ideas ----------
-// POST /api/mcp con «Authorization: Bearer <MCP_TOKEN>». Actúa como MCP_USER (o el primer ADMIN_EMAILS).
-const MCP_TOOLS = [
-  { name: 'resumen', description: 'Panorama de Inherent: clientes con su plan, proyectos activos, tareas abiertas por persona y las próximas reuniones.', inputSchema: { type: 'object', properties: {} } },
-  { name: 'tareas', description: 'Lista tareas. Filtros opcionales: persona (correo), estado, cliente (slug).', inputSchema: { type: 'object', properties: { persona: { type: 'string' }, estado: { type: 'string' }, cliente: { type: 'string' } } } },
-  { name: 'cliente', description: 'Todo lo de un cliente en Inherent OS: roadmap (metas, métricas, checkpoints), especialista, proyectos, reuniones, tareas y su Drive.', inputSchema: { type: 'object', properties: { slug: { type: 'string' } }, required: ['slug'] } },
-  { name: 'contenido_semana', description: 'Lo que encontró el scraper esta semana para un perfil: ganadores del nicho, lo último de referentes y competencia, y lo propio.', inputSchema: { type: 'object', properties: { perfil: { type: 'string', description: 'inherent, personal o el slug del cliente' } }, required: ['perfil'] } },
-  { name: 'planner', description: 'Las piezas del planner de un perfil (fecha, pilar, estado, si ya está en Drive) y sus pilares, fuentes y audiencia.', inputSchema: { type: 'object', properties: { perfil: { type: 'string' }, mes: { type: 'string', description: 'AAAA-MM (opcional)' } }, required: ['perfil'] } },
-  { name: 'crear_tarea', description: 'Crea una tarea en Inherent OS.', inputSchema: { type: 'object', properties: { titulo: { type: 'string' }, persona: { type: 'string', description: 'correo de quien la hace' }, vence: { type: 'string', description: 'AAAA-MM-DD' }, proyecto_id: { type: 'string' }, descripcion: { type: 'string' } }, required: ['titulo'] } },
-  { name: 'crear_idea', description: 'Agrega una idea de contenido al planner de un perfil (estado Idea).', inputSchema: { type: 'object', properties: { perfil: { type: 'string' }, titulo: { type: 'string' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'] }, pilar: { type: 'string' }, texto: { type: 'string', description: 'hook y guion o slides' }, fecha: { type: 'string', description: 'AAAA-MM-DD (opcional)' } }, required: ['perfil', 'titulo', 'formato'] } },
-];
-async function mcpCall(u, name, a = {}) {
-  const today = new Date().toISOString().slice(0, 10);
-  const pick = (t) => ({ id: t.id, titulo: t.title, estado: t.status || 'Por empezar', persona: t.assignee || '', vence: t.due || '', proyecto: t.project_id || '', depto: t.dept || '' });
-  if (name === 'resumen') {
-    const [projects, tasks, accounts] = await Promise.all([db.list('projects'), db.list('tasks'), db.list('accounts')]);
-    const dirs = (await listDir('clients')).filter((d) => d.type === 'dir' && !d.name.startsWith('_'));
-    const clients = await Promise.all(dirs.map(async (d) => { const f = await readFile(`clients/${d.name}/00-onboarding/plan-contratado.md`); return { slug: d.name, plan: f ? parsePlanContratado(f.content, 'coo').plan || '' : 'en onboarding' }; }));
-    const open = tasks.filter((t) => seesTask(u, t) && t.status !== 'Hecha');
-    const byPerson = {}; open.forEach((t) => { byPerson[t.assignee || 'sin asignar'] = (byPerson[t.assignee || 'sin asignar'] || 0) + 1; });
-    const meetings = projects.flatMap((p) => (p.meetings || []).filter((m) => m.status !== 'hecha' && m.date >= today).map((m) => ({ fecha: m.date, reunion: m.name, cliente: p.client || p.name, quienes: m.who, aprueba: m.approves || '' }))).sort((x, z) => x.fecha.localeCompare(z.fecha)).slice(0, 10);
-    return { clientes: clients, proyectos_activos: projects.filter((p) => (p.phases || []).some((x) => x.status !== 'done')).map((p) => ({ id: p.id, nombre: p.name, tipo: p.kind, cliente: p.client_slug || '', fase: (p.phases || []).find((x) => x.status !== 'done')?.name || '' })), tareas_abiertas: open.length, atrasadas: open.filter((t) => t.due && t.due < today).length, por_persona: byPerson, proximas_reuniones: meetings, cuentas_con_roadmap: accounts.filter((x) => (x.goals || []).length).length };
-  }
-  if (name === 'tareas') {
-    const [tasks, projects] = await Promise.all([db.list('tasks'), db.list('projects')]);
-    const pid = a.cliente ? new Set(projects.filter((p) => p.client_slug === a.cliente).map((p) => p.id)) : null;
-    return tasks.filter((t) => seesTask(u, t) && (!a.persona || t.assignee === a.persona) && (!a.estado || (t.status || 'Por empezar') === a.estado) && (!pid || pid.has(t.project_id))).slice(0, 200).map(pick);
-  }
-  if (name === 'cliente') {
-    const slug = String(a.slug || ''); if (!slugOk(slug)) throw new Error('slug inválido');
-    const [acc, projects, tasks, mentors, f] = await Promise.all([db.get('accounts', 'acc-' + slug), db.list('projects'), db.list('tasks'), db.list('mentors'), readFile(`clients/${slug}/00-onboarding/plan-contratado.md`)]);
-    const ps = projects.filter((p) => p.client_slug === slug);
-    return { slug, plan: f ? parsePlanContratado(f.content, 'coo').plan : 'en onboarding', drive: acc?.drive_dirs || null, roadmap: acc?.goals || acc?.roadmap || [], especialistas: (acc?.mentors || []).map((x) => ({ ...x, ...(mentors.find((m) => m.id === x.id) ? { nombre: mentors.find((m) => m.id === x.id).name, industria: mentors.find((m) => m.id === x.id).industry } : {}) })),
-      proyectos: ps.map((p) => ({ id: p.id, nombre: p.name, tipo: p.kind, fases: p.phases, reuniones: p.meetings || [], servicios: p.services || [] })), tareas: tasks.filter((t) => seesTask(u, t) && ps.some((p) => p.id === t.project_id)).map(pick) };
-  }
-  if (name === 'contenido_semana') {
-    const slug = String(a.perfil || ''); if (!slugOk(slug)) throw new Error('perfil inválido');
-    const d = await db.get('sources', 'scrape-' + slug); const r = d?.result;
-    if (!r) return { aviso: 'Este perfil todavía no tiene scrape. Se corre en Content → Lo que funciona.' };
-    const slim = (l = []) => l.map((x) => ({ cuenta: '@' + x.handle, red: x.red, tipo: x.kind, url: x.url, texto: x.text, vistas: x.views, likes: x.likes, comentarios: x.comments, veces_su_promedio: x.x, fecha: x.at }));
-    return { semana: r.week, ganadores: slim(r.top), referentes: slim(r.refs), competencia: slim(r.comp), propios: slim((r.own || []).slice(0, 10)) };
-  }
-  if (name === 'planner') {
-    const slug = String(a.perfil || ''); if (!slugOk(slug)) throw new Error('perfil inválido');
-    const [posts, c] = await Promise.all([db.list('content'), content.cfg(slug)]);
-    return { pilares: c.pillars, audiencia: c.audience, referentes: c.accounts.filter((x) => x.kind === 'referente').map((x) => '@' + x.handle), competencia: c.accounts.filter((x) => x.kind !== 'referente').map((x) => '@' + x.handle),
-      piezas: posts.filter((p) => p.kind === 'post' && p.profile === slug && (!a.mes || String(p.date || '').startsWith(a.mes))).map((p) => ({ titulo: p.title, formato: p.format, pilar: p.pillar || '', fecha: p.date || '', estado: p.status || 'Idea', en_drive: Boolean(p.drive_id || p.url), texto: p.caption || '' })) };
-  }
-  if (name === 'crear_tarea') {
-    if (!String(a.titulo || '').trim()) throw new Error('falta titulo');
-    const t = await db.create('tasks', { title: String(a.titulo).slice(0, 200), assignee: a.persona || u.email, due: /^\d{4}-\d{2}-\d{2}$/.test(a.vence || '') ? a.vence : '', project_id: a.proyecto_id || '', description: String(a.descripcion || '').slice(0, 4000), status: 'Por empezar', visibility: 'all', checklist: [], comments: [] }, u.email);
-    return { ok: true, id: t.id, titulo: t.title };
-  }
-  if (name === 'crear_idea') {
-    const slug = String(a.perfil || ''); if (!slugOk(slug) || !String(a.titulo || '').trim()) throw new Error('faltan perfil o titulo');
-    const p = await db.create('content', { kind: 'post', profile: slug, title: String(a.titulo).slice(0, 200), format: a.formato || 'Reel', pillar: a.pilar || '', caption: String(a.texto || '').slice(0, 4000), date: /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : '', status: 'Idea' }, u.email);
-    return { ok: true, id: p.id, titulo: p.title };
-  }
-  throw new Error('Herramienta desconocida: ' + name);
-}
-on('POST', 'mcp', async (req, res) => {
-  const tok = process.env.MCP_TOKEN?.trim();
-  const auth = String(req.headers.authorization || '');
-  if (!tok || auth.length !== tok.length + 7 || !crypto.timingSafeEqual(Buffer.from(auth), Buffer.from('Bearer ' + tok))) return res.status(401).json({ error: 'No autorizado' });
-  const email = (process.env.MCP_USER || String(process.env.ADMIN_EMAILS || '').split(',')[0] || '').trim().toLowerCase();
-  const u = await userFor(email);
-  const m = body(req); const reply = (result) => res.json({ jsonrpc: '2.0', id: m.id ?? null, result }); const err = (code, message) => res.json({ jsonrpc: '2.0', id: m.id ?? null, error: { code, message } });
-  if (!m || m.id === undefined) return res.status(202).end(); // notificaciones
-  if (m.method === 'initialize') return reply({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', version: '1.0.0' }, instructions: 'Inherent OS: la herramienta de operación de Inherent. Lee clientes, roadmap, tareas, reuniones y contenido; crea tareas e ideas. El manual (cómo se hace el trabajo) vive en el repo.' });
-  if (m.method === 'ping') return reply({});
-  if (m.method === 'tools/list') return reply({ tools: MCP_TOOLS });
-  if (m.method === 'tools/call') {
-    try { return reply({ content: [{ type: 'text', text: JSON.stringify(await mcpCall(u, m.params?.name, m.params?.arguments || {}), null, 1) }] }); }
-    catch (e) { return reply({ content: [{ type: 'text', text: e.message }], isError: true }); }
-  }
-  return err(-32601, 'Método no soportado');
-});
-on('GET', 'mcp', async (req, res) => res.status(405).json({ error: 'Usa POST (MCP por HTTP)' }));
 
 export default async function handler(req, res) {
   try {

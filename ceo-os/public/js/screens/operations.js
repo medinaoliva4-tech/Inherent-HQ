@@ -41,7 +41,7 @@ export async function render(el, { me, sub, alive }) {
           <div class="foot"><span>Fase: ${curPhase(p)}</span><span>${open} tareas abiertas</span></div></div>`; })}</div>`
       : html`<div class="empty"><b>Todavía no hay proyectos</b>Crea uno con «+ Proyecto». Si es un cliente del repo, su pipeline sale de su plan contratado.</div>`}
       <div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${[['pipe', 'Pipeline'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${[['pipe', 'Proyectos'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>${tab === 'tasks' ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
       </div>
       <div id="obody"></div>`);
@@ -49,18 +49,26 @@ export async function render(el, { me, sub, alive }) {
   }
 
   // ---------- Pipeline por cliente, con sus entregables ----------
+  // Cada departamento se mueve solo con sus tareas: nadie actualiza el pipeline a mano.
+  function deptState(p, n) {
+    const ts = tasks.filter((t) => t.project_id === p.id && new RegExp(`^${n}( |$)`).test(t.dept || ''));
+    if (!ts.length) return p.pipeline?.[n]?.status === 'off' ? { tasks: ts, label: 'No incluido', chip: '', cls: 'off' } : { tasks: ts, label: 'Sin tarea', chip: '', cls: '' };
+    if (ts.every((t) => t.status === 'Hecha')) return { tasks: ts, label: 'Entregado', chip: 'green', cls: 'done' };
+    if (ts.some((t) => t.status === 'En revisión')) return { tasks: ts, label: 'En revisión', chip: 'amber', cls: 'now' };
+    if (ts.some((t) => t.status === 'En curso')) return { tasks: ts, label: 'En curso', chip: 'lime', cls: 'now' };
+    return { tasks: ts, label: 'Pendiente', chip: '', cls: '' };
+  }
   function pipe(b) {
     const p = projects.find((x) => x.id === current);
     if (!p) return mount(b, html`<div class="empty"><b>Elige o crea un proyecto</b>El pipeline muestra cada departamento y su entregable.</div>`);
     mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">${projects.map((x) => html`<button class="chip ${x.id === current ? 'dark' : ''}" data-act="pick" data-id="${x.id}" style="padding:8px 14px;font-size:13px">${x.name}</button>`)}
-      <div class="sp"></div><span class="mut sm">Toca el estado para avanzarlo · lo que no está en el plan no corre</span></div>
-      <div class="pipe">${DEPTS.map(([n, name], i) => { const d = p.pipeline?.[n] || { status: 'todo' }; const [lbl, cls] = ST[d.status] || ST.todo;
-        return html`<div class="dept ${d.status === 'done' ? 'done' : d.status === 'now' ? 'now' : d.status === 'off' ? 'off' : ''}">
-          <div class="row"><span class="num">${n}</span><button class="chip ${cls}" style="margin-left:auto" data-act="cycle" data-d="${n}">${lbl}</button></div>
+      <div class="sp"></div><span class="mut sm">El estado sale solo de las tareas de cada departamento</span></div>
+      <div class="pipe">${DEPTS.map(([n, name], i) => { const d = deptState(p, n);
+        return html`<div class="dept ${d.cls}">
+          <div class="row"><span class="num">${n}</span><span class="chip ${d.chip}" style="margin-left:auto">${d.label}</span></div>
           <h4>${name}</h4>
-          ${d.artifact?.url ? html`<a class="artifact" href="${/^https?:\/\//.test(d.artifact.url) ? d.artifact.url : '#'}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="fi" style="background:#4f7790;color:#fff">${IC.drive}</span><div><b style="font-weight:500">${d.artifact.name || 'Entregable'}</b><div class="mut" style="font-size:11px">Abrir</div></div></a>
-            <button class="sm mut" data-act="artifact" data-d="${n}" style="margin-top:6px">Cambiar</button>`
-          : d.status === 'off' ? html`<div class="mut sm" style="margin-top:12px">No incluido</div>` : html`<button class="artifact" data-act="artifact" data-d="${n}" style="width:100%"><span class="fi">+</span><div><b style="font-weight:500">Agregar entregable</b><div class="mut" style="font-size:11px">Link de Drive o URL</div></div></button>`}
+          ${d.tasks.map((t) => html`<button class="artifact" data-act="task" data-id="${t.id}" style="width:100%;margin-top:6px"><span class="fi">${t.status === 'Hecha' ? '✓' : t.status === 'En revisión' ? '⏳' : '•'}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;font-size:12.5px">${t.title}</b><div class="mut" style="font-size:11px">${person(t.assignee)?.name || 'Sin responsable'}${t.due ? ' · ' + fdate(t.due) : ''}</div></div></button>`)}
+          ${d.tasks.some((t) => /^https?:\/\//.test(t.link || '')) ? html`<a class="sm mut" href="${d.tasks.find((t) => /^https?:\/\//.test(t.link || '')).link}" target="_blank" rel="noopener noreferrer" style="display:block;margin-top:6px">Ver entrega ↗</a>` : ''}
           ${i < DEPTS.length - 1 ? html`<span class="pipe-line"></span>` : ''}</div>`; })}</div>
       <div class="row" style="margin:22px 0 10px"><h3 style="font-weight:500;font-size:20px;letter-spacing:-.4px">Tareas de ${p.name}</h3><div class="sp"></div><button class="btn ghost" data-act="newTask">+ Tarea</button></div>
       ${taskTable(tasks.filter((t) => t.project_id === p.id), 'Este proyecto todavía no tiene tareas. Agrégalas con «+ Tarea»: cada una se abre, tiene responsable, fecha y checklist.')}`);
