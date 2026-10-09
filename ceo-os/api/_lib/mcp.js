@@ -146,7 +146,7 @@ async function call(u, name, a = {}) {
   if (name === 'planner') {
     const slug = String(a.perfil || ''); if (!slugOk(slug)) throw new Error('perfil inválido');
     const [posts, c] = await Promise.all([db.list('content'), content.cfg(slug)]);
-    return { pilares: c.pillars, audiencia: c.audience, referentes: c.accounts.filter((x) => x.kind === 'referente').map((x) => '@' + x.handle), competencia: c.accounts.filter((x) => x.kind !== 'referente').map((x) => '@' + x.handle),
+    return { pilares: c.pillars, audiencia: c.audience, diana: c.bullseye, referentes: c.accounts.filter((x) => x.kind === 'referente').map((x) => '@' + x.handle), competencia: c.accounts.filter((x) => x.kind !== 'referente').map((x) => '@' + x.handle),
       piezas: posts.filter((p) => p.kind === 'post' && p.profile === slug && (!a.mes || String(p.date || '').startsWith(a.mes))).map((p) => ({ titulo: p.title, formato: p.format, pilar: p.pillar || '', fecha: p.date || '', estado: p.status || 'Idea', en_drive: Boolean(p.drive_id || p.url) })) };
   }
   if (name === 'crear_idea') {

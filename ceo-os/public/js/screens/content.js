@@ -1,4 +1,5 @@
 import { html, raw, mount, api, toast, acts, drawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON } from '../core.js';
+import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
@@ -136,11 +137,11 @@ export async function render(el, { sub, alive }) {
   }
   const refVideos = () => { const v = {}; el.querySelectorAll('[data-ref]').forEach((i) => { const u = i.value.trim(); if (u) (v[i.dataset.ref] ||= []).push(u); }); return v; };
   function breakPrompt(p) {
-    const r = rf.result?.[p] || { refs: [], similar: [] }, list = [...r.refs.filter((x) => !x.missing), ...r.similar].slice(0, 10);
+    const r = rf.result?.[p] || { refs: [], similar: [] }, list = [...r.refs.filter((x) => !x.missing), ...r.similar].slice(0, 10), bxc = data.cfg.bullseye?.center || data.cfg.bullseye?.rings?.[0]?.label;
     return `Eres el director creativo de Inherent. Desglosa por qué funcionaron estos videos del pilar «${p}» de la marca «${data.profile.name}», para CURARLOS y ADAPTARLOS (nunca copiarlos).
 Abre cada link si puedes; si no puedes ver el video, deduce del texto y las métricas y marca "inferido": true.
 Por video: el hook (qué pasa o se dice en los primeros 3 segundos), qué retuvo a la gente, la estructura en beats, por qué funcionó, y cómo lo adaptaría ${data.profile.name} dentro de este pilar.
-
+${bxc ? `La adaptación le habla al CENTRO de la diana: ${bxc}. Del video se toma el craft (formato, hook, historia, edición), que sirve venga de donde venga; el tema se re-apunta a esa persona.\n` : ''}
 ${list.map((x) => `- ${x.url} · @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 220)}`).join('\n')}
 
 Contesta SOLO con este JSON, sin texto antes ni después:
@@ -291,13 +292,13 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   // ---------- Fuentes: tus cuentas, tu audiencia (de lo general a lo específico), referentes y competencia ----------
   function fuentes(b) {
     if (!week) loadWeek();
-    const p = data.profile, c = data.cfg, au = c.audience || {};
+    const p = data.profile, c = data.cfg;
     const accUrl = (a) => (a.red === 'tiktok' ? `https://www.tiktok.com/@${a.handle}` : `https://www.instagram.com/${a.handle}/`);
     const acc = (a, rm, list) => html`<div class="artifact" style="margin:6px 0"><span class="fi">${a.red === 'tiktok' ? '♪' : '◎'}</span><div style="flex:1"><a href="${accUrl(a)}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><b style="font-weight:500">@${a.handle}</b></a><div class="mut" style="font-size:11px">${RED[a.red]}${a.source ? ' · ' + a.source : ''}</div></div>${rm != null ? html`<button class="sm mut" data-act="rmAcc" data-l="${list}" data-i="${rm}">✕</button>` : ''}</div>`;
     const adder = (list, ph) => html`<div class="row" style="margin-top:8px"><select class="in" data-red="${list}" style="width:auto"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option></select><input class="in" data-new="${list}" placeholder="${ph}"><button class="btn ghost" data-act="addAcc" data-l="${list}">+</button></div>`;
     const group = (kind) => c.accounts.map((a, i) => ({ a, i })).filter((x) => x.a.kind === kind);
     const repoComp = p.competitors.filter((a) => !c.accounts.some((x) => x.handle === a.handle && x.red === a.red));
-    mount(b, html`
+    mount(b, html`<div id="bxHost" style="margin-bottom:16px"></div>
       <div class="cols2">
         <div>
           <div class="card"><h3 class="ttl">${ICON.user}Tus cuentas</h3>
@@ -306,6 +307,8 @@ Contesta SOLO con este JSON, sin texto antes ni después:
             ${(c.own || []).map((a, i) => acc(a, i, 'own'))}
             ${p.own.length || (c.own || []).length ? '' : html`<div class="mut sm">Todavía no hay cuentas: agrégalas aquí.</div>`}
             ${adder('own', '@cuenta de la marca')}</div>
+        </div>
+        <div>
           <div class="card"><h3 class="ttl">${ICON.star}Referentes</h3>
             <div class="mut sm" style="margin:4px 0 6px">De quién tomamos estilo y temas. No se copian: se leen.</div>
             ${group('referente').map(({ a, i }) => acc(a, i, 'accounts'))}${group('referente').length ? '' : html`<div class="mut sm">Ninguno todavía.</div>`}
@@ -315,13 +318,6 @@ Contesta SOLO con este JSON, sin texto antes ni después:
             ${repoComp.map((a) => acc({ ...a, source: 'onboarding' }))}
             ${group('competencia').map(({ a, i }) => acc(a, i, 'accounts'))}${repoComp.length || group('competencia').length ? '' : html`<div class="mut sm">Ninguna todavía.</div>`}
             ${adder('competencia', '@competidor')}</div>
-        </div>
-        <div>
-          <div class="card"><div class="row"><h3 class="ttl">${ICON.target}A quién le hablamos</h3><div class="sp"></div><button class="btn ghost xs" data-act="audAI">✦ Proponer con Claude</button></div>
-            <div class="mut sm" style="margin:4px 0 10px">De lo general al centro. Claude lo propone con tus cuentas, referentes y competencia; tú lo ajustas.</div>
-            <div class="bull"><div class="bring r1"><span>General</span></div><div class="bring r2"><span>Nicho</span></div><div class="bring r3"><span>Exacto</span></div></div>
-            ${[['general', 'General', 'Ej. Dueños de negocio en Guatemala, 28 a 45 años'], ['nicho', 'Nicho', 'Ej. Restaurantes que ya venden pero no crecen'], ['exacto', 'Exacto (la persona)', 'Ej. Chef dueño de 1 local, quiere abrir el segundo y no sabe por dónde']].map(([k, l, ph]) => html`<label class="f" style="margin-top:8px">${l}</label><textarea class="in" data-aud="${k}" placeholder="${ph}" style="min-height:58px">${au[k] || ''}</textarea>`)}
-            <button class="btn ghost" data-act="saveAud" style="margin-top:8px">Guardar audiencia</button></div>
         </div>
       </div>
       <div class="card" style="margin-top:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><h3 class="ttl">${ICON.radar}Scrape semanal</h3><div class="mut sm">Cada lunes, 10 posts por fuente, de Reels y TikTok: tus cuentas, referentes, competencia y los temas del nicho.</div></div><div class="sp"></div>
@@ -333,6 +329,15 @@ Contesta SOLO con este JSON, sin texto antes ni después:
         <div><b class="sm" style="font-weight:500">Videos puntuales</b>
           ${c.videos.map((u, i) => html`<div class="row sm" style="margin:6px 0"><a href="${u}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u}</a><button class="sm mut" data-act="rmVid" data-i="${i}">✕</button></div>`)}
           <div class="row" style="margin-top:8px"><input class="in" id="newVid" placeholder="https://www.instagram.com/reel/…"><button class="btn ghost" data-act="addVid">+</button></div></div></div></div>`);
+    bullseye($('#bxHost', b), { name: p.name, bx: c.bullseye, save: saveBx, prompt: () => bullseyePrompt({ name: p.name, pillars: (c.pillars || []).map((x) => x.name), own: p.own.map((a) => '@' + a.handle), refs: c.accounts.filter((x) => x.kind === 'referente').map((a) => '@' + a.handle), comp: [...p.competitors, ...c.accounts.filter((x) => x.kind !== 'referente')].map((a) => '@' + a.handle), posts: posts4(week?.result?.own, 5), bx: c.bullseye }) });
+  }
+  // Guarda la diana (y deja «audiencia» al día para lo que todavía la lee, como el MCP).
+  async function saveBx(bx) {
+    const audience = { exacto: bx.center || bx.rings[0]?.label || '', nicho: bx.rings[1]?.label || '', general: bx.rings[3]?.label || '' };
+    const r = await api('content/cfg', { method: 'PUT', body: { profile: slug, ...data.cfg, bullseye: bx, audience } });
+    data.cfg = { ...data.cfg, ...r };
+    if (!r.bullseye) throw new Error('A la diana le falta el centro o alguno de los 5 niveles');
+    return r.bullseye;
   }
   async function saveCfg(next) {
     try { data.cfg = { ...data.cfg, ...(await api('content/cfg', { method: 'PUT', body: { profile: slug, ...data.cfg, ...next } })) }; fuentes($('#cbody', el)); } catch (e) { toast(e.message, true); }
@@ -340,22 +345,6 @@ Contesta SOLO con este JSON, sin texto antes ni después:
 
   // Los prompts para la cuenta de Claude de cada persona (contestan solo JSON, que se pega de vuelta).
   const posts4 = (l = [], n) => (!l?.length ? '(todavía sin datos)' : '') + (l || []).slice(0, n).map((x) => `- @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''} · ${x.url}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 150)}`).join('\n') || '(nada)';
-  function audiencePrompt(r, c) {
-    return `Eres el estratega de Inherent. Define la audiencia de la marca «${data.profile.name}» como una diana: de lo general al centro.
-- general: el público amplio (país, edad, momento de vida, intereses).
-- nicho: el segmento que de verdad compra.
-- exacto: UNA persona concreta, con su situación y lo que quiere lograr.
-Cada uno en 1 o 2 frases, en español, sin adjetivos vacíos.
-
-Cuentas de la marca: ${data.profile.own.map((a) => '@' + a.handle).join(', ') || '—'}
-Referentes: ${c.accounts.filter((x) => x.kind === 'referente').map((a) => '@' + a.handle).join(', ') || '—'}
-Competencia: ${[...data.profile.competitors, ...c.accounts.filter((x) => x.kind !== 'referente')].map((a) => '@' + a.handle).join(', ') || '—'}
-Lo que publica la marca:
-${posts4(r.own, 5)}
-
-Contesta SOLO con este JSON: {"general":"","nicho":"","exacto":""}`;
-  }
-
   acts(el, {
     igconnect: () => window.open('https://onboard.windsor.ai/', '_blank', 'noopener'),
     igpick: async (t) => { try { await api('content/connect', { method: 'PUT', body: { profile: slug, ig_account: t.dataset.a } }); toast(`@${t.dataset.a} conectado a ${data.profile.name} ✅`); ig = null; paint(); } catch (e) { toast(e.message, true); } },
@@ -405,7 +394,6 @@ Contesta SOLO con este JSON: {"general":"","nicho":"","exacto":""}`;
       if (l === 'own') saveCfg({ own: [...(data.cfg.own || []), a] }); else saveCfg({ accounts: [...data.cfg.accounts, { ...a, kind: l }] });
     },
     rmAcc: (t) => (t.dataset.l === 'own' ? saveCfg({ own: data.cfg.own.filter((_, i) => i !== +t.dataset.i) }) : saveCfg({ accounts: data.cfg.accounts.filter((_, i) => i !== +t.dataset.i) })),
-    saveAud: () => { const audience = Object.fromEntries([...el.querySelectorAll('[data-aud]')].map((x) => [x.dataset.aud, x.value.trim()])); saveCfg({ audience }).then(() => toast('Audiencia guardada ✅')); },
     refSave: async () => { try { const r = await api('content/refs', { method: 'PUT', body: { profile: slug, videos: refVideos() } }); rf = { ...rf, videos: r.videos }; toast('Referencias guardadas ✅'); refsTab($('#cbody', el)); } catch (e) { toast(e.message, true); } },
     refScrape: async () => {
       try { await api('content/refs', { method: 'PUT', body: { profile: slug, videos: refVideos() } }); await api('content/refs/scrape', { method: 'POST', body: { profile: slug } }); toast('Apify arrancó: primero lee tus referencias y luego busca similares (unos minutos)'); rf = null; refsTab($('#cbody', el)); }
@@ -423,13 +411,6 @@ Contesta SOLO con este JSON: {"general":"","nicho":"","exacto":""}`;
         <div class="mdbody" style="margin-top:14px">${txt ? md(txt) : html`<div class="mut">No encontré la sección de ${r.id} en ideas-${r.formato.toLowerCase()}.md.</div>`}</div>`);
     },
     shotBrief: () => { const { m } = shotData(); const f = m?.files.find((x) => x.name === 'brief-del-ciclo.md'); if (f) drawer(html`<div class="row"><span class="chip">Brief del ciclo · ${m.mes}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><div class="mdbody" style="margin-top:14px">${md(f.content)}</div>`); },
-    audAI: async () => {
-      const r = week?.result || {}; const c = data.cfg;
-      const out = await claudeJSON('Audiencia con Claude', audiencePrompt(r, c));
-      if (!out) return;
-      const audience = { general: String(out.general || ''), nicho: String(out.nicho || ''), exacto: String(out.exacto || '') };
-      await saveCfg({ audience }); toast('Audiencia propuesta por Claude ✅ · ajústala si hace falta');
-    },
   });
   acts(el, { auto: (t) => saveCfg({ auto: t.checked }).then(() => toast(t.checked ? 'Se scrapea solo cada lunes ✅' : 'Scrape semanal apagado')) }, 'change');
   mount(el, html`<p class="loading">Leyendo el repo…</p>`);
