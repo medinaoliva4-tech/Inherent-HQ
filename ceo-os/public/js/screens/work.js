@@ -1,5 +1,5 @@
 import { upcoming, meetingRows, isMine as meetIsMine } from '../meetings.js';
-import { html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor } from '../core.js';
+import { LOGO, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
 import { newProject as wizProject, newTask as wizTask } from '../create.js';
 import { blockersOf, unlocksOf } from '../cycle.js';
@@ -17,6 +17,7 @@ const CHECK = {
   coo: ['Confirmar alcance, entregables y fechas del ciclo', 'Definir responsable y quién rinde cuentas por tarea', 'Armar dependencias del ciclo (qué espera a qué)', 'Revisar la carga del equipo y resolver bloqueos', 'Validar entregables contra su checklist (QA final)', 'Preparar la presentación del día 20', 'Cerrar el ciclo y documentar aprendizajes'],
   video: ['Abrir calendario y brief vigente del cliente', 'Confirmar formato, objetivo y fecha de entrega', 'Preparar el prompt con la plantilla aprobada', 'Generar el borrador con el agente de video', 'Revisar edición, audio, subtítulos y marca', 'Exportar versiones para orgánico y Ads', 'Subir los finales para QA del COO'],
   content: ['Idea aprobada: enfoque y objetivo', 'Hook y ángulo validados', 'Guion y copy con el tono de la marca', 'Formato y piezas por canal', 'Assets listos: diseño, copy y links', 'Matriz de publicaciones de la semana', 'Static ads del ciclo'],
+  ads: ['Brief y objetivo de la campaña (sale del plan ③)', 'Audiencias por plataforma: Meta, Google, LinkedIn', 'Creativos y copies aprobados por ②B Branding', 'Plan y presupuesto → aprobación del CEO (gate ⑩)', 'Píxel y conversiones verificadas', 'Lanzar y revisar a las 48 h', 'Reporte: gasto, CPA y ROAS'],
   finance: ['Leer los números del cliente', 'Mapa del negocio: procesos y equipo', 'Proyecto para que ganen más', 'Proyecto para que gasten menos', 'Entregar el reporte y el plan'],
 };
 const COMMUNITY = ['Tono y voz de la marca', 'FAQ y respuestas frecuentes', 'Reglas de escalamiento', 'Plantillas de respuesta'];
@@ -38,7 +39,7 @@ export async function render(el, { me, sub, alive }) {
   const pref = (() => { try { return localStorage.getItem('work.role'); } catch { return null; } })();
   let role = myRoles.includes(sub[1]) ? sub[1] : !asP && myRoles.includes(pref) ? pref : myRoles[0] || null;
   let tab = ['zona', 'kanban', 'pipes', 'equipo'].includes(sub[0]) ? sub[0] : 'zona';
-  Promise.all([col('accounts').list().catch(() => []), col('settings').get('drive').catch(() => null)]).then(([a2, s2]) => { accounts = a2; settings = s2; if (alive() && tab === 'zona' && role === 'video') paint(); });
+  Promise.all([col('accounts').list().catch(() => []), col('settings').get('drive').catch(() => null)]).then(([a2, s2]) => { accounts = a2; settings = s2; if (alive() && tab === 'zona' && ['video', 'ads'].includes(role)) paint(); });
   let kView = 'personal', pipeSel = 'contenido', personSel = null, ctab = 'ideas', clientSel = null, ceoLane = 'estrategia';
   let agenda = null, clientInfo = {}, posts = null;
   const T0 = today(), T1 = addDays(T0, 1), T7 = addDays(T0, 7);
@@ -310,7 +311,27 @@ export async function render(el, { me, sub, alive }) {
       </div>`);
     hookUpload(b);
   }
-  const ZONES = { ceo: ceoZone, coo: cooZone, video: videoZone, content: contentZone, finance: financeZone };
+  // =================== ADS MANAGEMENT · Meta, Google, LinkedIn ===================
+  // La pauta no se lanza sin el OK del CEO (plan y presupuesto, y cada cambio de presupuesto): gate ⑩.
+  const ADS = [['meta', 'Meta', (id) => `https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${id}`], ['google', 'Google Ads', (id) => `https://ads.google.com/aw/campaigns?__e=${id.replace(/-/g, '')}`], ['linkedin', 'LinkedIn', (id) => `https://www.linkedin.com/campaignmanager/accounts/${id}/campaigns`]];
+  function adsZone(b) {
+    const slugs = [...new Set(projects.filter((p) => p.client_slug && p.status !== 'cerrado').map((p) => p.client_slug))];
+    const adsT = tasks.filter((t) => /^⑩/.test(t.dept || '') || /\bads\b|pauta|campaña/i.test(t.title || ''));
+    const gates = adsT.filter((t) => status(t) !== 'Hecha');
+    const accOf = (sl) => accounts.find((x) => x.id === 'acc-' + sl) || {};
+    const withAds = slugs.filter((sl) => Object.values(accOf(sl).ads || {}).some(Boolean));
+    mount(b, html`${kpis([['Clientes con pauta', withAds.length], ['Planes por aprobar', gates.filter((t) => status(t) === 'En revisión').length, '#a3392a'], ['Mis tareas de Ads', open(mine()).filter((t) => adsT.includes(t)).length]])}
+      <div class="wkgrid">
+        <div class="span2">${box('Cuentas de pauta', 'Por cliente: abre su Ads Manager directo', slugs.length ? html`${slugs.map((sl) => { const a = accOf(sl).ads || {};
+          return html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="adsplat">${ADS.map(([k, l, url]) => a[k] ? html`<a class="adsp" href="${url(a[k])}" target="_blank" rel="noopener noreferrer"><span class="ailogo sm">${LOGO[k]}</span>${l} ↗</a>` : html`<span class="adsp off"><span class="ailogo sm">${LOGO[k]}</span>${l}</span>`)}</div>
+            ${a.budget ? html`<span class="mut sm">Q${Number(a.budget).toLocaleString('en-US')}/mes</span>` : ''}<button class="btn ghost xs" data-act="adsEdit" data-s="${sl}">Cuentas</button></div>`; })}` : html`<div class="mut sm">Sin clientes con proyecto activo.</div>`)}</div>
+        ${box('Plan y presupuesto', 'Gate ⑩: el CEO aprueba antes de lanzar', gates.length ? html`${gates.slice(0, 8).map((t) => trow(t))}` : html`<div class="mut sm">Nada esperando.</div>`)}
+        ${box('Mis tareas', '', myList(8))}
+        ${checklist('ads')}${uploader('Entregar trabajo')}${sops('ads')}
+      </div>`);
+    hookUpload(b);
+  }
+  const ZONES = { ceo: ceoZone, coo: cooZone, video: videoZone, content: contentZone, finance: financeZone, ads: adsZone };
 
   // ---------- conexiones de las piezas ----------
   function hookQuick(b) { const qi = $('#quick', b); if (qi) qi.onkeydown = async (e) => { if (e.key !== 'Enter' || !qi.value.trim()) return; if (await create({ title: qi.value.trim(), assignee: who, due: T0, status: 'Por empezar' })) paint(); }; }
@@ -414,6 +435,12 @@ export async function render(el, { me, sub, alive }) {
     role: (t) => { role = t.dataset.r; tab = 'zona'; if (!asP) try { localStorage.setItem('work.role', role); } catch {} history.replaceState(null, '', `#/work/zona/${role}${asP ? '/' + who : ''}`); paint(); },
     tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', `#/work/${tab}/${role || '_'}${asP ? '/' + who : ''}`); paint(); },
     lane: (t) => { ceoLane = t.dataset.l; paint(); },
+    adsEdit: async (t) => {
+      const sl = t.dataset.s, a = (accounts.find((x) => x.id === 'acc-' + sl) || {}).ads || {};
+      const v = await ask(`Cuentas de pauta · ${sl.toUpperCase()}`, [{ k: 'meta', l: 'Meta · ID de la cuenta publicitaria (act_…)', v: a.meta || '' }, { k: 'google', l: 'Google Ads · ID de cliente (123-456-7890)', v: a.google || '' }, { k: 'linkedin', l: 'LinkedIn · ID de la cuenta de Campaign Manager', v: a.linkedin || '' }, { k: 'budget', l: 'Presupuesto mensual aprobado (Q)', t: 'number', v: a.budget || '' }]);
+      if (!v) return;
+      try { const r = await api('ads/accounts/' + encodeURIComponent(sl), { method: 'PUT', body: v }); const i = accounts.findIndex((x) => x.id === 'acc-' + sl); if (i >= 0) accounts[i] = { ...accounts[i], ads: r.ads }; else accounts.push({ id: 'acc-' + sl, ads: r.ads }); toast('Guardado ✅'); paint(); } catch (e) { toast(e.message, true); }
+    },
     ctab: (t) => { ctab = t.dataset.c; paint(); },
     kv: (t) => { kView = t.dataset.v; kanban($('#wbody', el)); },
     pipe: (t) => { pipeSel = t.dataset.k; tab = 'pipes'; paint(); },

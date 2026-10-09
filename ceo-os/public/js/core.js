@@ -240,7 +240,7 @@ export async function diagrams(root = document) {
 export function diagram(src) { setTimeout(diagrams, 0); return html`<div class="mmd">${src}</div>`; }
 
 // Perfiles de trabajo: se asignan a las personas en Team. Una persona puede tener varios.
-export const WORK_ROLES = [['ceo', 'CEO'], ['coo', 'COO · Operaciones'], ['content', 'Content · Agent operator'], ['video', 'Video editor · Agent operator'], ['finance', 'Finance + Business mapping · clientes'], ['cobros', 'Finanzas de Inherent · cobros']];
+export const WORK_ROLES = [['ceo', 'CEO'], ['coo', 'COO · Operaciones'], ['content', 'Content · Agent operator'], ['video', 'Video editor · Agent operator'], ['finance', 'Finance + Business mapping · clientes'], ['cobros', 'Finanzas de Inherent · cobros'], ['ads', 'Ads management · Meta, Google, LinkedIn']];
 export const roleName = (k) => (WORK_ROLES.find(([x]) => x === k) || [k, k])[1];
 
 // ---------- Subir a Google Drive (directo del navegador a Google, con barra de avance) ----------
@@ -317,6 +317,9 @@ export const LOGO = {
   chatgpt: raw('<img src="/brand/ai/chatgpt.svg" alt="ChatGPT">'),
   codex: raw('<img src="/brand/ai/codex.svg" alt="Codex">'),
   claudecode: raw('<img src="/brand/ai/claudecode.svg" alt="Claude Code">'),
+  meta: raw('<img src="/brand/ads/meta.svg" alt="Meta">'),
+  google: raw('<img src="/brand/ads/google.svg" alt="Google Ads">'),
+  linkedin: raw('<img src="/brand/ads/linkedin.svg" alt="LinkedIn">'),
   windsor: raw('<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#1f2a44"/><path d="M5 8l2.5 8L10 9l2 7 2-7 2.5 7L19 8" fill="none" stroke="#7fd1ff" stroke-width="1.8" stroke-linejoin="round"/></svg>'),
 };
 // Un botón o tarjeta para conectar. `on` = ya conectado (muestra el nombre y «Cambiar»).

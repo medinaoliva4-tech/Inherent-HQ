@@ -559,6 +559,18 @@ on('POST', 'portal/invite', async (req, res) => {
   catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
 });
 
+// Las cuentas de pauta de cada cliente (Meta, Google Ads, LinkedIn). Las edita Ads, el CEO o el COO.
+on('PUT', 'ads/accounts/:slug', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  if (!(['ceo', 'coo'].includes(u.role) || (u.roles || []).includes('ads'))) return res.status(403).json({ error: 'Solo Ads, el CEO o el COO' });
+  const slug = req.params.slug; if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  const b = body(req), ok = (x) => !x || /^[\w-]{3,30}$/.test(String(x));
+  const ads = { meta: String(b.meta || '').trim().replace(/^act_/, ''), google: String(b.google || '').trim(), linkedin: String(b.linkedin || '').trim(), budget: Math.max(0, +b.budget || 0) || null, note: String(b.note || '').slice(0, 300) };
+  if (![ads.meta, ads.google, ads.linkedin].every(ok)) return res.status(400).json({ error: 'Usa solo el número de la cuenta' });
+  await db.upsert('accounts', 'acc-' + slug, { ads }, u.email);
+  res.json({ ok: true, ads });
+});
+
 // ---------- Flujo: lead → cotización → pago → proyecto ----------
 on('POST', 'flow/quote/:id', async (req, res) => {
   const u = await guard(req, res); if (!u) return;

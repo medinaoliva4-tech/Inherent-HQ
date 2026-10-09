@@ -70,7 +70,8 @@ async function render() {
   const key = me.areas.includes(area) || area === 'me' || (area === 'setup' && me.role === 'ceo') ? area : me.areas.includes('home') ? 'home' : me.areas[0];
   $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key));
   $('#avatar')?.classList.toggle('on', key === 'me');
-  $('.nav [data-go].on')?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); // en cel, la barra de abajo muestra la sección actual
+  // En cel, la barra de abajo se desliza hasta la sección actual (solo la barra: scrollIntoView movía toda la página en iOS).
+  { const nav = $('.nav'), on = $('.nav [data-go].on'); if (nav && on && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: on.offsetLeft - (nav.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' }); }
   closeDrawer();
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
   const old = $('#main'); const main = old.cloneNode(false); old.replaceWith(main);
