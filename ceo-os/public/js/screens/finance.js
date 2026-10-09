@@ -11,11 +11,10 @@ const SLOT_OF = { 'Grabación': 'Producción', 'Fotografía': 'Fotografía', 'Ed
 
 export async function render(el, { sub }) {
   const F = col('finance'), P = col('payroll');
-  let [entries, services, rates] = await Promise.all([F.list(), col('services').list(), col('rates').get('default').catch(() => null)]);
-  let eco = null, ecoErr = null, clients = [];
-  try { eco = await api('repo/economia'); } catch (e) { ecoErr = e.message; }
-  try { clients = (await api('repo/clients')).clients; } catch {}
-  let payroll = await P.get('default').catch(() => null);
+  // Todo en paralelo: una sola espera en vez de cinco seguidas.
+  let ecoErr = null;
+  let [entries, services, rates, eco, clients, payroll] = await Promise.all([F.list(), col('services').list(), col('rates').get('default').catch(() => null),
+    api('repo/economia').catch((e) => { ecoErr = e.message; return null; }), api('repo/clients').then((r) => r.clients).catch(() => []), P.get('default').catch(() => null)]);
 
   let tab = ['mov', 'costs', 'profit', 'pricing', 'nomina'].includes(sub[0]) ? sub[0] : 'mov';
   const now = today().slice(0, 7);

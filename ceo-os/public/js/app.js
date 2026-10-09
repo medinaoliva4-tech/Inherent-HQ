@@ -2,6 +2,7 @@ import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, i
 
 const NAV = [
   ['home', 'Home', 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
+  ['work', 'Workspace', 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z'],
   ['finanzas', 'Finance', 'M3 17l6-6 4 4 8-8M15 7h6v6'],
   ['sales', 'Sales', 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0'],
   ['operations', 'Operations', 'M4 6h16M4 12h10M4 18h7'],
@@ -10,7 +11,7 @@ const NAV = [
   ['library', 'Library', 'M4 4h6l2 2h8v14H4z'],
   ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
 ];
-const SCREENS = { home: 'home', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team', repo: 'repo' };
+const SCREENS = { home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team', repo: 'repo' };
 const root = $('#root');
 export let me = null;
 let renderGen = 0;
@@ -80,7 +81,6 @@ async function render() {
   try {
     const mod = await import(`./screens/${SCREENS[key]}.js`);
     if (gen !== renderGen) return;
-    main.innerHTML = '';
     await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)?.[1] || 'Al repo', alive: () => gen === renderGen });
   } catch (e) {
     mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
