@@ -12,11 +12,11 @@ const iso = (d) => d.toISOString().slice(0, 10);
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
 
 export async function render(el, { me, sub, alive }) {
-  const PR = col('projects'), TK = col('tasks');
-  let [projects, tasks, team] = await Promise.all([PR.list(), TK.list(), col('team').list()]);
+  const PR = col('projects'), TK = col('tasks'), AC = col('accounts');
+  let [projects, tasks, team, accounts] = await Promise.all([PR.list(), TK.list(), col('team').list(), AC.list().catch(() => [])]);
   let clients = [];
-  try { clients = (await api('repo/clients')).clients; } catch {}
-  let tab = ['pipe', 'cal', 'time', 'tasks'].includes(sub[0]) ? sub[0] : 'pipe';
+  try { clients = (await api('repo/clients')).clients.map((c) => ({ ...c, plan: String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '') })); } catch {}
+  let tab = ['pipe', 'clients', 'cal', 'time', 'tasks'].includes(sub[0]) ? sub[0] : 'pipe';
   let current = projects[0]?.id || null, taskFilter = 'all';
   let calMonth = today().slice(0, 7), events = null, evErr = null;
   const person = (email) => team.find((t) => t.id === email || t.email === email);
@@ -39,11 +39,11 @@ export async function render(el, { me, sub, alive }) {
           <div class="foot"><span>Fase: ${curPhase(p)}</span><span>${open} tareas abiertas</span></div></div>`; })}</div>`
       : html`<div class="empty"><b>Todavía no hay proyectos</b>Crea uno con «+ Proyecto». Si es un cliente del repo, su pipeline sale de su plan contratado.</div>`}
       <div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${[['pipe', 'Pipeline'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${[['pipe', 'Pipeline'], ['clients', 'Clientes'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>${tab === 'tasks' ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
       </div>
       <div id="obody"></div>`);
-    ({ pipe, cal, time, tasks: taskTab })[tab]($('#obody', el));
+    ({ pipe, clients: clientsTab, cal, time, tasks: taskTab })[tab]($('#obody', el));
   }
 
   // ---------- Pipeline por cliente, con sus entregables ----------
@@ -59,7 +59,9 @@ export async function render(el, { me, sub, alive }) {
           ${d.artifact?.url ? html`<a class="artifact" href="${/^https?:\/\//.test(d.artifact.url) ? d.artifact.url : '#'}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="fi" style="background:#4f7790;color:#fff">${IC.drive}</span><div><b style="font-weight:500">${d.artifact.name || 'Entregable'}</b><div class="mut" style="font-size:11px">Abrir</div></div></a>
             <button class="sm mut" data-act="artifact" data-d="${n}" style="margin-top:6px">Cambiar</button>`
           : d.status === 'off' ? html`<div class="mut sm" style="margin-top:12px">No incluido</div>` : html`<button class="artifact" data-act="artifact" data-d="${n}" style="width:100%"><span class="fi">+</span><div><b style="font-weight:500">Agregar entregable</b><div class="mut" style="font-size:11px">Link de Drive o URL</div></div></button>`}
-          ${i < DEPTS.length - 1 ? html`<span class="pipe-line"></span>` : ''}</div>`; })}</div>`);
+          ${i < DEPTS.length - 1 ? html`<span class="pipe-line"></span>` : ''}</div>`; })}</div>
+      <div class="row" style="margin:22px 0 10px"><h3 style="font-weight:500;font-size:20px;letter-spacing:-.4px">Tareas de ${p.name}</h3><div class="sp"></div><button class="btn ghost" data-act="newTask">+ Tarea</button></div>
+      ${taskTable(tasks.filter((t) => t.project_id === p.id), 'Este proyecto todavía no tiene tareas. Agrégalas con «+ Tarea»: cada una se abre, tiene responsable, fecha y checklist.')}`);
   }
 
   // ---------- Calendario (Google Calendar + tareas + fases) ----------
@@ -114,12 +116,66 @@ export async function render(el, { me, sub, alive }) {
         <button class="chip ${taskFilter === 'all' ? 'dark' : ''}" data-act="tf" data-f="all" style="padding:8px 14px">Todas</button>
         <button class="chip ${taskFilter === 'mine' ? 'dark' : ''}" data-act="tf" data-f="mine" style="padding:8px 14px">Mías</button>
         ${projects.map((p) => html`<button class="chip ${taskFilter === p.id ? 'dark' : ''}" data-act="tf" data-f="${p.id}" style="padding:8px 14px">${p.name}</button>`)}</div>
-      ${list.length ? html`<div class="card"><table><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead><tbody>
+      ${taskTable(list, 'Crea una con «+ Tarea».')}`);
+  }
+  function taskTable(list, emptyMsg) {
+    list = [...list].sort((a, z) => (a.status === 'Hecha') - (z.status === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9')));
+    return list.length ? html`<div class="card"><table><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead><tbody>
         ${list.map((t) => { const who = person(t.assignee); const late = t.due && t.due < today() && t.status !== 'Hecha';
-          return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}</td>
+          return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}${t.dept ? ' · ' + t.dept : ''}</td>
             <td>${who ? html`<span class="av" style="background:${who.color || '#6b5a45'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="mut sm">—</span>`}</td>
             <td style="${late ? 'color:#a3392a;font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
-      </tbody></table></div>` : html`<div class="empty"><b>Sin tareas aquí</b>Crea una con «+ Tarea».</div>`}`);
+      </tbody></table></div>` : html`<div class="empty"><b>Sin tareas aquí</b>${emptyMsg}</div>`;
+  }
+
+  // ---------- Clientes: perfil, roadmap y entregables ----------
+  const acct = (slug) => accounts.find((a) => a.id === 'acc-' + slug);
+  const RM = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Logrado', 'green'] };
+  function clientsTab(b) {
+    const list = clients.filter((c) => c.hasPlan);
+    if (!list.length) return mount(b, html`<div class="empty"><b>No encontré clientes en el repo</b>Cada cliente es un folder en clients/ con su 00-onboarding/plan-contratado.md.</div>`);
+    mount(b, html`<div class="grid g3">${list.map((c, i) => { const a = acct(c.slug); const rm = a?.roadmap || []; const done = rm.filter((x) => x.status === 'done').length; const ps = projects.filter((p) => p.client_slug === c.slug);
+      const next = rm.filter((x) => x.status !== 'done').sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')))[0];
+      return html`<div class="card feat ${COLORS[i % 3]}" style="min-height:220px;cursor:pointer" data-act="client" data-s="${c.slug}">
+        <div class="chead"><div class="ico" style="font-size:13px;font-weight:700">${initials(a?.name || c.slug)}</div><h3>${a?.name || c.slug.toUpperCase()}<br><span class="lbl">${c.plan || 'Sin plan'}</span></h3><span class="arrow">↗</span></div>
+        <div class="lbl">Roadmap</div><div class="big" style="font-size:46px">${done}<small>/${rm.length}</small></div>
+        <div class="foot"><span>${next ? 'Sigue: ' + next.t : rm.length ? 'Roadmap completo' : 'Sin roadmap todavía'}</span><span>${ps.length} proyecto${ps.length === 1 ? '' : 's'}</span></div></div>`; })}</div>`);
+  }
+  function openClient(slug) {
+    const c = clients.find((x) => x.slug === slug);
+    let a = acct(slug) || { id: 'acc-' + slug, slug, name: slug.toUpperCase(), contact: '', phone: '', notes: '', roadmap: [] };
+    const saveAcc = async (next) => {
+      try { const r = next.v ? await AC.save(next) : await AC.create(next); accounts = [...accounts.filter((x) => x.id !== r.id), r]; a = r; return r; } catch (e) { toast(e.message, true); return null; }
+    };
+    const draw = () => {
+      const ps = projects.filter((p) => p.client_slug === slug);
+      const arts = ps.flatMap((p) => DEPTS.map(([n, name]) => ({ p, n, name, art: p.pipeline?.[n]?.artifact })).filter((x) => x.art?.url));
+      const rm = [...(a.roadmap || [])].map((x, i) => ({ ...x, i })).sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')));
+      drawer(html`<div class="row"><span class="chip">${c?.plan || 'Cliente'}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+        <h2>${a.name}</h2><div class="mut">${a.contact || 'Sin contacto'}${a.phone ? ' · ' + a.phone : ''}</div>
+        <b class="sm" style="display:block;margin-top:20px">Roadmap</b>
+        <div class="mut sm">Los hitos grandes del cliente: a dónde vamos y cuándo.</div>
+        ${rm.length ? rm.map((x) => html`<div class="row" style="margin:8px 0;gap:8px"><button class="chip ${RM[x.status]?.[1] || ''}" data-act="rmst" data-i="${x.i}">${RM[x.status]?.[0] || 'Pendiente'}</button><b style="font-weight:500;flex:1">${x.t}</b><span class="mut sm">${x.date ? fdate(x.date) : ''}</span><button class="sm mut" data-act="rmdel" data-i="${x.i}" title="Quitar">✕</button></div>`) : html`<div class="mut sm" style="margin:8px 0">Todavía no hay hitos.</div>`}
+        <div class="row" style="margin-top:6px;gap:6px"><input class="in" id="rmt" placeholder="Nuevo hito (ej. Lanzar nueva oferta)"><input class="in" id="rmd" type="date" style="max-width:150px"><button class="btn ghost" data-act="rmadd">+</button></div>
+        <b class="sm" style="display:block;margin-top:20px">Proyectos</b>
+        ${ps.length ? ps.map((p) => html`<button class="artifact" data-act="goProject" data-id="${p.id}" style="width:100%;margin-top:6px"><span class="fi">◎</span><div style="text-align:left"><b style="font-weight:500">${p.name}</b><div class="mut" style="font-size:11px">${progress(p)}% · Fase: ${curPhase(p)}</div></div></button>`) : html`<div class="mut sm" style="margin:6px 0">Sin proyectos. Créalo con «+ Proyecto» y elige este cliente.</div>`}
+        <b class="sm" style="display:block;margin-top:20px">Entregables</b>
+        ${arts.length ? arts.map((x) => html`<a class="artifact" href="${/^https?:\/\//.test(x.art.url) ? x.art.url : '#'}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:6px"><span class="fi" style="background:#4f7790;color:#fff">${IC.drive}</span><div><b style="font-weight:500">${x.art.name || 'Entregable'}</b><div class="mut" style="font-size:11px">${x.n} ${x.name} · ${x.p.name}</div></div></a>`) : html`<div class="mut sm" style="margin:6px 0">Aparecen aquí cuando los agregas en el Pipeline.</div>`}
+        <b class="sm" style="display:block;margin-top:20px">Datos</b>
+        <div class="form" style="margin-top:8px"><div class="two"><div><label class="f">Nombre</label><input class="in" id="anm" value="${a.name}"></div><div><label class="f">Contacto</label><input class="in" id="act" value="${a.contact || ''}"></div></div>
+          <div><label class="f">Teléfono / WhatsApp</label><input class="in" id="aph" value="${a.phone || ''}"></div>
+          <div><label class="f">Notas</label><textarea class="in" id="ano">${a.notes || ''}</textarea></div></div>
+        <div class="row" style="margin-top:10px"><button class="btn" data-act="asave">Guardar</button></div>
+        ${c?.fields?.length ? html`<b class="sm" style="display:block;margin-top:20px">Plan contratado <span class="mut">(del repo)</span></b>${c.fields.map((f) => html`<div class="row" style="margin:6px 0;align-items:flex-start"><span class="mut sm" style="min-width:120px">${f.key}</span><span class="sm" style="flex:1">${f.value}</span></div>`)}` : ''}`,
+      {
+        rmadd: async () => { const t = $('#rmt').value.trim(); if (!t) return; if (await saveAcc({ ...a, roadmap: [...(a.roadmap || []), { t, date: $('#rmd').value, status: 'todo' }] })) { draw(); paint(); } },
+        rmst: async (el2) => { const rmx = JSON.parse(JSON.stringify(a.roadmap)); const x = rmx[+el2.dataset.i]; x.status = { todo: 'now', now: 'done', done: 'todo' }[x.status] || 'now'; if (await saveAcc({ ...a, roadmap: rmx })) { draw(); paint(); } },
+        rmdel: async (el2) => { const rmx = a.roadmap.filter((_, i) => i !== +el2.dataset.i); if (await saveAcc({ ...a, roadmap: rmx })) { draw(); paint(); } },
+        asave: async () => { if (await saveAcc({ ...a, name: $('#anm').value.trim() || a.name, contact: $('#act').value.trim(), phone: $('#aph').value.trim(), notes: $('#ano').value })) { toast('Guardado ✅'); draw(); paint(); } },
+        goProject: (el2) => { closeDrawer(); current = el2.dataset.id; tab = 'pipe'; history.replaceState(null, '', '#/operations/pipe'); paint(); },
+      });
+    };
+    draw();
   }
 
   function openTask(t) {
@@ -201,7 +257,8 @@ export async function render(el, { me, sub, alive }) {
       if (!v) return; try { await api('google/calendar', { method: 'POST', body: v }); toast('Evento creado en tu Google Calendar ✅'); events = null; cal($('#obody', el)); } catch (e) { toast(e.message, true); } },
     tf: (t) => { taskFilter = t.dataset.f; taskTab($('#obody', el)); },
     task: (t) => openTask(tasks.find((x) => x.id === t.dataset.id)),
-    newTask: async () => { const v = await ask('Nueva tarea', [{ k: 'title', l: 'Tarea', req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '—'], ...projects.map((p) => [p.id, p.name])], v: current || '' }, { k: 'assignee', l: 'Responsable', t: 'select', opts: [['', '—'], ...team.filter((p) => p.email).map((p) => [p.email, p.name])], v: me.email, half: true }, { k: 'due', l: 'Vence', t: 'date', half: true }]);
+    client: (t) => openClient(t.dataset.s),
+    newTask: async () => { const v = await ask('Nueva tarea', [{ k: 'title', l: 'Tarea', req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '—'], ...projects.map((p) => [p.id, p.name])], v: current || '' }, { k: 'dept', l: 'Departamento', t: 'select', opts: [['', '—'], ...DEPTS.map(([n, name]) => [`${n} ${name}`, `${n} ${name}`])] }, { k: 'assignee', l: 'Responsable', t: 'select', opts: [['', '—'], ...team.filter((p) => p.email).map((p) => [p.email, p.name])], v: me.email, half: true }, { k: 'due', l: 'Vence', t: 'date', half: true }]);
       if (!v) return; try { const r = await TK.create({ ...v, status: 'Por empezar', checklist: [], comments: [] }); tasks.push(r); toast('Tarea creada ✅'); paint(); } catch (e) { toast(e.message, true); } },
   });
   paint();

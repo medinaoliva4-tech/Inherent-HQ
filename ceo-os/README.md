@@ -36,7 +36,7 @@ El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez qu
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Del cliente OAuth de Google Cloud |
 | `ADMIN_EMAILS` | Correos que siempre son CEO, separados por coma |
 | `ALLOWED_DOMAIN` | Opcional. Por defecto `inherentglobal.com` |
-| `GITHUB_TOKEN` · `GITHUB_REPO` · `GITHUB_BRANCH` | Para leer economía y clientes del repo |
+| `GITHUB_TOKEN` · `GITHUB_REPO` · `GITHUB_BRANCH` | Opcionales. Economía y clientes se copian del repo en cada build (`scripts/snapshot.mjs`); el token solo se usa si falta esa copia |
 
 ### Google (una vez)
 
