@@ -1,4 +1,4 @@
-import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask } from '../core.js';
+import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask, toRepo, today } from '../core.js';
 import { loadPosts, postsBoard } from '../posts.js';
 
 // Content: lo que dice el repo de cada perfil (guiones, plan, cuentas) + el scrape semanal.
@@ -43,6 +43,8 @@ export async function render(el, { sub, alive }) {
         <div class="sp"></div>
         ${(tab === 'guiones' || tab === 'plan') && months().length ? html`<select class="in" id="mes" style="width:auto">${months().map((m) => html`<option value="${m.mes}" ${m.mes === mes ? raw('selected') : ''}>${m.mes}</option>`)}</select>` : ''}
         ${tab === 'semana' ? html`<button class="btn" data-act="scrape">Scrapear ahora</button>` : ''}
+        ${tab === 'postear' ? html`<button class="btn ghost" data-act="repoPosts">⇪ Al repo</button>` : ''}
+        ${tab === 'fuentes' ? html`<button class="btn ghost" data-act="repoComp">⇪ Competencia al repo</button>` : ''}
       </div>
       <div id="cbody" class="swap"></div>`);
     ({ semana, postear, guiones, plan, analytics, fuentes })[tab]($('#cbody', el));
@@ -144,6 +146,9 @@ export async function render(el, { sub, alive }) {
     prof: (t) => { slug = t.dataset.s; clearTimeout(poll); go(); load(); },
     tab: (t) => { tab = t.dataset.t; go(); paint(); },
     file: (t) => { file = t.dataset.p; guiones($('#cbody', el)); },
+    repoComp: () => toRepo('competencia', { slug }),
+    repoPosts: async () => { const ms = [...new Set((posts || []).map((x) => String(x.date || '').slice(0, 7)).filter(Boolean))].sort(); const def = ms.find((m) => m >= today().slice(0, 7)) || ms.at(-1) || today().slice(0, 7);
+      const v = await ask('¿Qué mes mandas al repo?', [{ k: 'mes', l: 'Mes', t: 'select', opts: (ms.length ? ms : [def]).map((m) => [m, m]), v: def }], 'Ver archivo'); if (v) toRepo('posts', { slug, mes: v.mes }); },
     scrape: async (t) => { t.disabled = true; try { await api('content/scrape', { method: 'POST', body: { profile: slug } }); toast('Scrape lanzado en Apify. Tarda unos minutos ✅'); week = null; paint(); } catch (e) { toast(e.message, true); } t.disabled = false; },
     addTag: () => { const v = $('#newTag', el).value; if (v.trim()) saveCfg({ hashtags: [...data.cfg.hashtags, ...v.split(/[\s,]+/)] }); },
     rmTag: (t) => saveCfg({ hashtags: data.cfg.hashtags.filter((_, i) => i !== +t.dataset.i) }),

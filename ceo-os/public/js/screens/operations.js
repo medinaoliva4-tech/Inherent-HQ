@@ -67,11 +67,11 @@ export async function render(el, { me, sub, alive }) {
   // ---------- Calendario (Google Calendar + tareas + fases) ----------
   async function loadEvents() {
     const [y, m] = calMonth.split('-').map(Number);
-    const from = iso(new Date(Date.UTC(y, m - 1, 1))), to = iso(new Date(Date.UTC(y, m, 0)));
+    const from = iso(new Date(Date.UTC(y, m - 1, 0))), to = iso(new Date(Date.UTC(y, m, 1)));
     try { events = (await api(`google/calendar?from=${from}&to=${to}`)).events; evErr = null; } catch (e) { events = []; evErr = e.message; }
   }
   function cal(b) {
-    if (events === null) { mount(b, html`<p class="loading">Cargando tu Google Calendar…</p>`); loadEvents().then(() => tab === 'cal' && alive() && b.isConnected && cal(b)); return; }
+    if (events === null) { if (!b.querySelector('.cal')) mount(b, html`<p class="loading">Cargando tu Google Calendar…</p>`); loadEvents().then(() => tab === 'cal' && alive() && b.isConnected && cal(b)); return; }
     const [y, m] = calMonth.split('-').map(Number);
     const first = new Date(y, m - 1, 1), days = new Date(y, m, 0).getDate(), lead = (first.getDay() + 6) % 7;
     const byDay = {};
@@ -84,7 +84,7 @@ export async function render(el, { me, sub, alive }) {
     mount(b, html`<div class="card">
       <div class="chead"><div class="ico">▦</div><h3>${first.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })}</h3>
         ${evErr ? html`<span class="chip amber" style="margin-left:12px">Google Calendar: ${evErr}</span>` : html`<span class="gbadge" style="margin-left:12px">${IC.cal} Sincronizado con Google Calendar</span>`}
-        <div class="sp"></div><button class="btn ghost" data-act="mprev" style="padding:8px 14px">‹</button><button class="btn ghost" data-act="mnext" style="padding:8px 14px">›</button><button class="btn" data-act="newEvent" style="padding:9px 16px">+ Evento</button></div>
+        <div class="sp"></div><button class="btn ghost" data-act="mrefresh" title="Actualizar" style="padding:8px 14px">↻</button><button class="btn ghost" data-act="mtoday" style="padding:8px 14px">Hoy</button><button class="btn ghost" data-act="mprev" style="padding:8px 14px">‹</button><button class="btn ghost" data-act="mnext" style="padding:8px 14px">›</button><button class="btn" data-act="newEvent" style="padding:9px 16px">+ Evento</button></div>
       <div class="cal">${['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d) => html`<div class="dh">${d}</div>`)}
         ${cells.map((d) => { const out = d < 1 || d > days; const isToday = !out && `${calMonth}-${String(d).padStart(2, '0')}` === today();
           return html`<div class="d ${out ? 'o' : ''} ${isToday ? 'today' : ''}"><span class="n">${out ? '' : d}</span>${out ? '' : (byDay[d] || []).slice(0, 4).map((it) => it.link ? html`<a class="ev ${it.c}" href="${it.link}" target="_blank" rel="noopener noreferrer" style="display:block;text-decoration:none">${it.t}</a>` : html`<div class="ev ${it.c}" ${it.task ? raw(`data-act="task" data-id="${it.task}"`) : ''}>${it.t}</div>`)}${!out && (byDay[d] || []).length > 4 ? html`<div class="mut sm">+${byDay[d].length - 4} más</div>` : ''}</div>`; })}
@@ -185,7 +185,7 @@ export async function render(el, { me, sub, alive }) {
   }
 
   acts(el, {
-    tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', '#/operations/' + tab); paint(); },
+    tab: (t) => { tab = t.dataset.t; if (tab === 'cal') events = null; history.replaceState(null, '', '#/operations/' + tab); paint(); },
     pick: (t, e) => { if (e.target.closest('[data-act=editProject]') || e.target.closest('a')) return; current = t.dataset.id; tab = 'pipe'; paint(); },
     newProject: () => projectForm(null),
     editProject: (t, e) => { e.stopPropagation(); const p = projects.find((x) => x.id === t.dataset.id);
@@ -201,6 +201,8 @@ export async function render(el, { me, sub, alive }) {
       const v = await ask(`Entregable de ${DEPTS.find(([n]) => n === t.dataset.d)[1]}`, [{ k: 'name', l: 'Nombre', v: d.artifact?.name, req: true }, { k: 'url', l: 'Link (Drive o URL)', v: d.artifact?.url, req: true }]);
       if (!v) return; if (!/^https?:\/\//.test(v.url)) return toast('El link debe empezar con https://', true);
       const r = await saveProject({ ...p, pipeline: { ...(p.pipeline || {}), [t.dataset.d]: { ...d, artifact: v } } }); if (r) pipe($('#obody', el)); },
+    mrefresh: () => { events = null; cal($('#obody', el)); },
+    mtoday: () => { calMonth = today().slice(0, 7); events = null; cal($('#obody', el)); },
     mprev: () => { const d = new Date(calMonth + '-15'); d.setMonth(d.getMonth() - 1); calMonth = d.toISOString().slice(0, 7); events = null; cal($('#obody', el)); },
     mnext: () => { const d = new Date(calMonth + '-15'); d.setMonth(d.getMonth() + 1); calMonth = d.toISOString().slice(0, 7); events = null; cal($('#obody', el)); },
     newEvent: async () => { const v = await ask('Nuevo evento en Google Calendar', [{ k: 'summary', l: 'Título', req: true }, { k: 'date', l: 'Fecha', t: 'date', v: today(), req: true, half: true }, { k: 'time', l: 'Hora (vacío = todo el día)', t: 'time', half: true }, { k: 'minutes', l: 'Duración (min)', t: 'number', v: 60 }]);
@@ -210,5 +212,10 @@ export async function render(el, { me, sub, alive }) {
     newTask: async () => { const v = await ask('Nueva tarea', [{ k: 'title', l: 'Tarea', req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '—'], ...projects.map((p) => [p.id, p.name])], v: current || '' }, { k: 'dept', l: 'Departamento', t: 'select', opts: [['', '—'], ...DEPTS.map(([n, name]) => [`${n} ${name}`, `${n} ${name}`])] }, { k: 'assignee', l: 'Responsable', t: 'select', opts: [['', '—'], ...team.filter((p) => p.email).map((p) => [p.email, p.name])], v: me.email, half: true }, { k: 'due', l: 'Vence', t: 'date', half: true }]);
       if (!v) return; try { const r = await TK.create({ ...v, status: 'Por empezar', checklist: [], comments: [] }); tasks.push(r); toast('Tarea creada ✅'); paint(); } catch (e) { toast(e.message, true); } },
   });
+  // Se actualiza solo: cada minuto mientras está abierto y al volver a la pestaña del navegador.
+  const tick = () => { if (!alive()) return stop(); if (tab === 'cal' && document.visibilityState === 'visible' && !document.querySelector('dialog[open]') && !$('#drawer')?.classList.contains('on')) { events = null; const b = $('#obody', el); if (b) cal(b); } };
+  const iv = setInterval(tick, 60000); const onVis = () => document.visibilityState === 'visible' && tick();
+  document.addEventListener('visibilitychange', onVis);
+  function stop() { clearInterval(iv); document.removeEventListener('visibilitychange', onVis); }
   paint();
 }

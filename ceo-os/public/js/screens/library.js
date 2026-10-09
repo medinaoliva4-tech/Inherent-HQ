@@ -1,9 +1,130 @@
-import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, $, folderSvg, TONES, embedUrl, IC } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, $, folderSvg, TONES, embedUrl, IC, toRepo, diagram, diagrams } from '../core.js';
 
 // Library: SOPs, playbooks, videos y notas que el equipo escribe aquí, en carpetas.
 // Una carpeta se puede conectar a una carpeta de Google Drive: se ve su contenido y se crean Docs ahí.
-const KINDS = ['SOP', 'Playbook', 'Video', 'Nota'];
-const KCOL = { SOP: '#4f7790', Playbook: '#7f9631', Video: '#26201a', Nota: '#c2735a' };
+const KINDS = ['SOP', 'Playbook', 'Diagrama', 'Video', 'Nota'];
+const KCOL = { SOP: '#4f7790', Playbook: '#7f9631', Diagrama: '#8a5fa8', Video: '#26201a', Nota: '#c2735a' };
+// El formato de cada tipo: lo que tiene que llevar. Se carga al crear el documento.
+const TPL = {
+  SOP: (t) => `# SOP · ${t}
+
+> **Para qué sirve:** el resultado que deja este proceso, en una frase.
+> **Dueño:** el rol responsable · **Cuándo se usa:** el disparador (día del ciclo, evento, pedido)
+> **Tiempo:** cuánto toma · **Herramientas:** las que se abren
+
+## Resultado esperado
+Cómo se ve "bien hecho". Si se puede medir, con el número.
+
+## Antes de empezar
+- [ ] Lo que tiene que existir antes (archivo, acceso, aprobación)
+- [ ] Lo que hay que leer
+
+## Pasos
+1. **Paso** — quién (rol) · dónde · cuánto tarda
+2. **Paso** — quién (rol) · dónde · cuánto tarda
+3. **Paso** — quién (rol) · dónde · cuánto tarda
+
+## Checklist de calidad
+- [ ] Revisión antes de entregar
+- [ ] Revisión antes de entregar
+
+## Errores comunes
+- **Error:** cómo se evita
+
+## Si algo falla
+Precio, alcance y fechas → el CEO · lo demás → el COO.
+`,
+  Playbook: (t) => `# Playbook · ${t}
+
+> **Objetivo:** qué se gana si se juega bien.
+> **Cuándo se usa:** las señales de que aplica · **Para quién:** el rol que lo corre
+
+## La situación
+Qué está pasando cuando hace falta esta jugada. Las señales concretas.
+
+## La jugada
+La estrategia en un párrafo: qué hacemos distinto y por qué funciona.
+
+## Paso a paso
+1. **Movimiento** — qué se hace · quién · en cuánto tiempo
+2. **Movimiento** — qué se hace · quién · en cuánto tiempo
+3. **Movimiento** — qué se hace · quién · en cuánto tiempo
+
+## Qué decir
+> "El guion o mensaje literal, entre comillas."
+
+## Objeciones y respuestas
+| Si dicen… | Respondemos… |
+|---|---|
+| "Objeción" | "Respuesta" |
+
+## Cómo sabemos que funcionó
+- La métrica y el número que buscamos
+
+## Si no funciona
+El plan B y cuándo se escala.
+`,
+  Video: (t) => `# ${t}
+
+> **Qué aprendes:** en una frase. · **Para:** el rol · **Duración:** minutos
+
+## Capítulos
+- 00:00 — Introducción
+- 00:00 — Tema
+
+## Resumen
+Las 3 ideas clave del video.
+
+## Para practicar
+- [ ] Lo que hay que hacer después de verlo
+
+## Recursos
+- [Link](https://)
+`,
+  Nota: (t) => `# ${t}
+
+`,
+  Diagrama: () => DGM.flujo,
+};
+const DGM = {
+  flujo: `flowchart TD
+  A[Llega el pedido] --> B{¿Está en el plan?}
+  B -- Sí --> C[Se ejecuta]
+  B -- No --> D[Se escala al CEO]
+  C --> E[QA del COO]
+  E --> F[Entrega al cliente]`,
+  secuencia: `sequenceDiagram
+  participant Cliente
+  participant Secretaria
+  participant COO
+  Cliente->>Secretaria: Pide un cambio
+  Secretaria->>COO: Escala
+  COO-->>Cliente: Respuesta con fecha`,
+  mapa: `mindmap
+  root((Inherent))
+    Marketing
+      Contenido
+      Pauta
+    Growth
+      Oferta
+      Conversión
+    Operaciones
+      SOPs
+      Calendario`,
+  tiempo: `timeline
+  title El ciclo del mes
+  Día 1 : Reunión
+  Días 1-3 : Plan
+  Días 6-11 : Producción
+  Días 12-15 : Montaje
+  Día 20 : Presentación`,
+  org: `flowchart TD
+  CEO --> COO
+  COO --> Producción
+  COO --> Edición
+  COO --> Operador`,
+};
+const DGN = { flujo: 'Flujo', secuencia: 'Secuencia', mapa: 'Mapa mental', tiempo: 'Línea de tiempo', org: 'Organigrama' };
 const MIME = (m) => (/folder/.test(m) ? ['DIR', '#6b6b66'] : /document/.test(m) ? ['DOC', '#4f7790'] : /spreadsheet/.test(m) ? ['XLS', '#3c8a4a'] : /presentation/.test(m) ? ['PPT', '#d08a2e'] : /pdf/.test(m) ? ['PDF', '#c8432f'] : /video/.test(m) ? ['MP4', '#26201a'] : /image/.test(m) ? ['IMG', '#8a5fa8'] : ['FILE', '#8f877b']);
 const driveOk = (u) => /^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(String(u || ''));
 
@@ -33,7 +154,7 @@ export async function render(el, { sub, alive }) {
     ], 'Crear');
     if (!v) return;
     if (v.url && !/^https:\/\//.test(v.url)) return toast('El link debe empezar con https://', true);
-    try { const r = await D.create({ ...v, body: '' }); location.hash = `/library/${r.folder_id || '_'}/${r.id}/edit`; } catch (e) { toast(e.message, true); }
+    try { const r = await D.create({ ...v, body: (TPL[v.kind] || TPL.Nota)(v.title) }); location.hash = `/library/${r.folder_id || '_'}/${r.id}/edit`; } catch (e) { toast(e.message, true); }
   }
   const docRow = (d) => html`<tr class="click" data-act="doc" data-id="${d.id}"><td><span class="ftype" style="background:${KCOL[d.kind] || '#8f877b'}">${(d.kind || 'Doc').slice(0, 4).toUpperCase()}</span><b style="font-weight:500">${d.title}</b></td><td class="mut">${folders.find((f) => f.id === d.folder_id)?.name || '—'}</td><td class="mut">${d._meta?.updated_at ? fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}</td><td class="mut sm">${d._meta?.updated_by || ''}</td></tr>`;
 
@@ -86,6 +207,9 @@ export async function render(el, { sub, alive }) {
     if (f.drive) loadDrive();
   }
 
+  // Vista previa: un diagrama se dibuja entero; lo demás es Markdown (que también dibuja bloques mermaid).
+  function prev(kind, body) { return kind === 'Diagrama' ? diagram(body) : md(body); }
+
   // ---------- Documento: leer y editar ----------
   async function docPage(id) {
     let d = docs.find((x) => x.id === id);
@@ -95,21 +219,27 @@ export async function render(el, { sub, alive }) {
     const paint = () => {
       const em = embedUrl(d.url);
       mount(el, html`<div class="row" style="margin-bottom:14px;gap:8px"><a class="btn ghost" href="${back}">← ${folders.find((f) => f.id === d.folder_id)?.name || 'Library'}</a><div class="sp"></div>
-          ${editing ? html`<button class="btn ghost" data-act="cancel">Cancelar</button><button class="btn" data-act="save">Guardar</button>` : html`<button class="btn ghost" data-act="del">🗑</button><button class="btn" data-act="edit">Editar</button>`}</div>
+          ${editing ? html`<button class="btn ghost" data-act="cancel">Cancelar</button><button class="btn" data-act="save">Guardar</button>` : html`<button class="btn ghost" data-act="del">🗑</button><button class="btn ghost" data-act="repo">⇪ Al repo</button><button class="btn" data-act="edit">Editar</button>`}</div>
         <div class="card" style="padding:34px;max-width:980px;margin:0 auto">
           ${editing ? html`<div class="row" style="gap:10px;flex-wrap:wrap"><select class="in" id="dkind" style="width:auto">${KINDS.map((k) => html`<option ${k === d.kind ? raw('selected') : ''}>${k}</option>`)}</select><select class="in" id="dfolder" style="width:auto"><option value="">— Sin carpeta</option>${folders.map((f) => html`<option value="${f.id}" ${f.id === d.folder_id ? raw('selected') : ''}>${f.name}</option>`)}</select></div>
               <input class="in" id="dtitle" value="${d.title}" style="font-size:34px;font-weight:500;letter-spacing:-1px;border:0;padding:10px 0;background:transparent;margin-top:8px">
               <input class="in" id="durl" value="${d.url || ''}" placeholder="Video o link (YouTube, Loom, Vimeo, Drive) — opcional" style="margin-bottom:12px">
-              <div class="grid g11" style="gap:14px"><textarea class="in" id="dbody" style="min-height:58vh;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;line-height:1.6" placeholder="# Título&#10;&#10;1. Primer paso&#10;2. Segundo paso&#10;&#10;> Nota importante">${d.body || ''}</textarea><div class="card glass" id="dprev" style="min-height:58vh;overflow:auto">${md(d.body || '')}</div></div>
-              <div class="mut sm" style="margin-top:8px">Escribe en Markdown: # títulos, - listas, **negritas**, > notas, [links](https://…). La vista previa se actualiza sola.</div>`
+              <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:10px">${d.kind === 'Diagrama' ? html`<span class="mut sm">Empieza con:</span>${Object.entries(DGN).map(([k, l]) => html`<button class="chip" data-act="dgm" data-k="${k}" style="padding:7px 12px">${l}</button>`)}` : html`<button class="chip" data-act="fmt" style="padding:7px 12px">↺ Insertar el formato de ${d.kind || 'Nota'}</button>`}</div>
+              <div class="grid g11" style="gap:14px"><textarea class="in" id="dbody" style="min-height:58vh;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;line-height:1.6" placeholder="# Título&#10;&#10;1. Primer paso&#10;2. Segundo paso&#10;&#10;> Nota importante">${d.body || ''}</textarea><div class="card glass" id="dprev" style="min-height:58vh;overflow:auto">${prev(d.kind, d.body || '')}</div></div>
+              <div class="mut sm" style="margin-top:8px">${d.kind === 'Diagrama' ? html`Escribe el diagrama en <a href="https://mermaid.js.org/intro/" target="_blank" rel="noopener noreferrer" style="color:inherit">Mermaid</a>: cada línea es una caja o una flecha (<code>A --> B</code>). La vista previa se actualiza sola.` : 'Escribe en Markdown: # títulos, - listas, - [ ] checklist, **negritas**, > notas, [links](https://…). Para un diagrama dentro del texto usa un bloque ```mermaid. La vista previa se actualiza sola.'}</div>`
             : html`<div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#8f877b'};color:#fff">${d.kind || 'Doc'}</span><div class="sp"></div><span class="mut sm">${d._meta?.updated_at ? 'Actualizado ' + fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}${d._meta?.updated_by ? ' · ' + d._meta?.updated_by : ''}</span></div>
               <h1 style="font-size:42px;font-weight:500;letter-spacing:-1.3px;margin:14px 0 18px">${d.title}</h1>
               ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:16/9;border:0;border-radius:20px;margin-bottom:22px;background:#000" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>` : d.url ? html`<a class="artifact" href="${d.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-bottom:18px"><span class="fi">↗</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
-              ${d.body ? md(d.body) : html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>`}`}
+              ${!d.body ? html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>` : d.kind === 'Diagrama' ? diagram(d.body) : md(d.body)}`}
         </div>`);
-      const ta = $('#dbody', el); if (ta) { let t0; ta.oninput = () => { clearTimeout(t0); t0 = setTimeout(() => mount($('#dprev', el), md(ta.value)), 120); }; }
+      const ta = $('#dbody', el); if (ta) { let t0; ta.oninput = () => { clearTimeout(t0); t0 = setTimeout(() => mount($('#dprev', el), prev(curKind(), ta.value)), d.kind === 'Diagrama' ? 400 : 120); }; }
+      const ks = $('#dkind', el); if (ks) ks.onchange = () => { d = { ...d, kind: ks.value, body: ta.value }; paint(); };
     };
+    const curKind = () => $('#dkind', el)?.value || d.kind;
     acts(el, {
+      dgm: async (t) => { const ta = $('#dbody', el); if (ta.value.trim() && !(await confirmAsk('¿Reemplazar el diagrama por la plantilla?'))) return; ta.value = DGM[t.dataset.k]; ta.oninput(); },
+      fmt: async () => { const ta = $('#dbody', el); const k = curKind(); if (ta.value.trim() && !(await confirmAsk(`¿Reemplazar el texto por el formato de ${k}?`))) return; ta.value = (TPL[k] || TPL.Nota)($('#dtitle', el).value || d.title); ta.oninput(); },
+      repo: () => toRepo('doc', { id: d.id }),
       edit: () => { editing = true; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}/edit`); paint(); },
       cancel: () => { editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); paint(); },
       save: async () => {

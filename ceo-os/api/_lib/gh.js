@@ -18,7 +18,7 @@ const sha1 = (c) => crypto.createHash('sha1').update(c).digest('hex');
 const cfg = () => ({
   repo: process.env.GITHUB_REPO || 'medinaoliva4-tech/Inherent-HQ',
   branch: process.env.GITHUB_BRANCH || 'main',
-  token: process.env.GITHUB_TOKEN,
+  token: process.env.GITHUB_TOKEN?.trim(),
 });
 const enc = (p) => p.split('/').map(encodeURIComponent).join('/');
 
@@ -99,3 +99,14 @@ export function listFiles(prefix) {
   }
   return snap() ? Object.keys(SNAP.files).filter((k) => k.startsWith(prefix + '/')) : [];
 }
+
+// Para escribir: lee el archivo VIVO (GitHub o disco), nunca la copia del build, para tener su sha real.
+export async function readLive(path) {
+  if (LOCAL) { try { const c = fs.readFileSync(lp(path), 'utf8'); return { content: c, sha: sha1(c) }; } catch { return null; } }
+  const r = await gh(`contents/${enc(path)}?ref=${encodeURIComponent(cfg().branch)}`);
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`GitHub ${r.status} leyendo ${path}`);
+  const j = await r.json();
+  return { content: Buffer.from(j.content || '', 'base64').toString('utf8'), sha: j.sha };
+}
+export const canWriteRepo = () => Boolean(LOCAL || process.env.GITHUB_TOKEN?.trim());

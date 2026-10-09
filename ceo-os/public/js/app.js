@@ -10,7 +10,7 @@ const NAV = [
   ['library', 'Library', 'M4 4h6l2 2h8v14H4z'],
   ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
 ];
-const SCREENS = { home: 'home', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team' };
+const SCREENS = { home: 'home', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team', repo: 'repo' };
 const root = $('#root');
 export let me = null;
 let renderGen = 0;
@@ -52,6 +52,7 @@ function shell() {
       <div class="menu" id="menu">
         <div class="who"><b>${me.name}</b><div class="mut sm">${me.title || me.role.toUpperCase()} · ${me.email}</div>
           <div class="row" style="gap:6px;margin-top:8px">${me.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${me.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}</div></div>
+        ${me.role === 'ceo' ? html`<button data-go="repo">⇪ Al repo <span class="chip" id="repoN" style="margin-left:6px;font-size:11px" hidden></span></button>` : ''}
         <button data-go="team">👤 Mi perfil</button>
         <button id="logout">↩ Cerrar sesión</button>
       </div>
@@ -67,7 +68,7 @@ function shell() {
 
 async function render() {
   const [area, ...rest] = location.hash.replace(/^#\/?/, '').split('/');
-  const key = me.areas.includes(area) ? area : 'home';
+  const key = me.areas.includes(area) || (area === 'repo' && me.role === 'ceo') ? area : 'home';
   $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key));
   closeDrawer();
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
@@ -79,7 +80,7 @@ async function render() {
     const mod = await import(`./screens/${SCREENS[key]}.js`);
     if (gen !== renderGen) return;
     main.innerHTML = '';
-    await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)[1], alive: () => gen === renderGen });
+    await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)?.[1] || 'Al repo', alive: () => gen === renderGen });
   } catch (e) {
     mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
   }
@@ -89,4 +90,9 @@ window.addEventListener('hashchange', () => me && render());
 $('#veil').onclick = closeDrawer;
 events.addEventListener('logout', () => { if (me) { me = null; toast('Tu sesión expiró', true); loginView(); } });
 
-api('me').then((u) => { me = u; shell(); render(); }).catch(loginView);
+// El CEO ve cuántas propuestas al repo esperan su OK.
+export async function repoBadge() {
+  if (me?.role !== 'ceo') return;
+  try { const r = await api('repo/queue'); const n = r.pending.length; const b = $('#repoN'); if (b) { b.textContent = n; b.hidden = !n; } $('#avatar')?.classList.toggle('dot', n > 0); } catch {}
+}
+api('me').then((u) => { me = u; shell(); render(); repoBadge(); }).catch(loginView);

@@ -14,7 +14,12 @@ export async function render(el, { me, alive }) {
   let agenda = null, agErr = null;
   let week = null, weekP = null;
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`content/week?profile=${p}`).catch(() => null))).then(([a, b]) => { week = a; weekP = b; if (alive()) paint(); });
-  api(`google/calendar?from=${today()}&to=${today()}`).then((r) => { agenda = r.events; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
+  const loadAgenda = () => api(`google/calendar?from=${today()}&to=${today()}`).then((r) => { agenda = r.events; agErr = null; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
+  loadAgenda();
+  // La agenda se actualiza al volver a la pestaña y cada 2 minutos.
+  const iv = setInterval(() => (alive() ? document.visibilityState === 'visible' && loadAgenda() : clearInterval(iv)), 120000);
+  const onVis = () => { if (!alive()) return document.removeEventListener('visibilitychange', onVis); if (document.visibilityState === 'visible') loadAgenda(); };
+  document.addEventListener('visibilitychange', onVis);
 
   // Revenue real: entradas de Finance tipo ingreso
   const ym = (d) => String(d || '').slice(0, 7);

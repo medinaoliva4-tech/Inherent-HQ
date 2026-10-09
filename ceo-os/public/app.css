@@ -379,3 +379,9 @@ html{scroll-behavior:smooth}
 .road .step.done>i{background:var(--ink)}.road .step.now>i{background:var(--lime);box-shadow:0 0 0 5px rgba(214,243,90,.35)}
 .road .step:not(:last-child)::before{content:"";position:absolute;left:7px;top:30px;bottom:-6px;width:2px;background:var(--line)}
 .road.pdf{margin-top:10px}.road.pdf .step{padding:14px 0;border-bottom:1px solid #e9e4d8}.road.pdf .step>i{background:#fff;border-color:#171410}.road.pdf .step.done>i{background:#171410}.road.pdf .step.now>i{background:#d6f35a;box-shadow:none}.road.pdf .step::before{display:none}
+.avatar{position:relative}.avatar.dot::after{content:"";position:absolute;right:-1px;top:-1px;width:12px;height:12px;border-radius:50%;background:#c2735a;border:2px solid var(--bg)}
+.repo-pre{white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.55;background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:16px;padding:14px;max-height:52vh;overflow:auto}
+.mmd{display:flex;justify-content:center;padding:18px;background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:18px;margin:10px 0;overflow:auto;white-space:pre;color:transparent;min-height:80px}
+.mmd[data-done]{color:inherit;white-space:normal}.mmd svg{max-width:100%;height:auto}.mmd.err{color:#a3392a;font-size:13px;white-space:pre-wrap}
+.md pre.code{background:#171410;color:#f3efe6;border-radius:14px;padding:14px;overflow:auto;font-size:12.5px;margin:8px 0}
+.md li.task{list-style:none;margin-left:-20px}.md li.task input{width:15px;height:15px;accent-color:var(--ink);vertical-align:-2px;margin-right:4px}
