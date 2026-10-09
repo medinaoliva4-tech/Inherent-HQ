@@ -1,7 +1,7 @@
 # Inherent HQ — Agentes
 
 Cada agente vive en `agents/<NN>-<área>/`, numerado en el orden en que corre el trabajo.
-**Se opera directo desde Claude Code**, contra este repo — sin servidores ni hosting.
+**Se opera directo desde Claude Code**, contra este repo — sin servidores ni hosting. **Única excepción: `ceo-os/`**, la web privada del CEO en Vercel *(login + 2FA)*.
 
 ## Estructura
 
@@ -30,6 +30,8 @@ agents/                    ← LOS AGENTES — uno por etapa del pipeline
     └── brain/             06-graphic-design · 07-video-editing
         ├── WORKFLOW.md    08-community-management · 09-posting · 10-ads-management
         └── skills/<skill>/
+
+ceo-os/                    ← LA HERRAMIENTA DEL CEO — web privada con login; el repo es su base de datos
 
 clients/                   ← LOS CLIENTES
 ├── README.md              cómo se arma un folder de cliente
@@ -318,6 +320,7 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 | 🔒 Costos, márgenes, capacidades MCP | `inherent/06-ECONOMIA.md` |
 | Copy, tono o el brief de la web | `inherent/07-COMUNICACION.md` |
 | Administrar Inherent: caja, cobros, impuestos, ventas | `inherent/administracion/` |
+| Ver y operar la empresa en una web *(finanzas, sales, operations…)* | `ceo-os/README.md` |
 | Qué instalar en una computadora nueva | `INSTALAR.md` |
 | Lo que falta decidir, construir o probar | `PENDIENTES.md` |
 
@@ -364,3 +367,9 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
 - **Los departamentos se escriben con número y nombre:** «⑤ Producción», nunca «⑤» solo.
 - **Nada destructivo sin autorización:** no pautar sin el OK del CEO y no borrar sin autorización.
 - Formato de respuesta: headings, bullets, negritas. Lo accionable arriba. Sin párrafos largos.
+- **Cómo le hablamos al CEO (TDAH):** mensajes mínimos y en lenguaje humano.
+  - **Primero lo que tiene que hacer**, en pasos cortos y numerados.
+  - **Una sola pregunta a la vez.**
+  - Sin jerga: si un término técnico es necesario, se explica en una frase.
+  - Sin muros de texto ni tablas largas. El detalle técnico solo si lo pide.
+  - De «tú», nunca de «vos».

@@ -17,7 +17,7 @@
 | 5 | **Reposición gratis en las garantías** | El costo «3 a 5 puntos de margen» se calculó con la tabla vieja: recalcular o descartar |
 | 6 | **Bloque «Lo básico vs. el valor único» de Marketing Pro** | `01-IDENTIDAD` lo tiene para Marketing, Accelerate y Compound, no para Pro |
 | 7 | **El margen de rodaje de cada plan** | Las horas contratadas son tiempo de cámara; ⑤ usa márgenes de referencia (60-90 / 30-45 / 45 min) mientras no se decida |
-| 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de ⑧ |
+| 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de ⑧. **`ceo-os/` va a Vercel (autorizado por el CEO):** la regla de CLAUDE.md ya lo contempla |
 
 ---
 
@@ -31,6 +31,11 @@
 | 4 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
 | 5 | **Match automático de mentores** | Strategy busca por industria, etapa y presupuesto en las plataformas de mentores. Falta el login |
 | 6 | **Cobro internacional** | Stripe, Wise o equivalente, con factura deducible para el cliente |
+| 7 | **CEO OS fase 2** (`ceo-os/`) | Conocimiento, Content, Strategy y, en Operations, proyectos, tareas y timeline del ciclo día 1–20 |
+| 8 | **CEO OS: cron de Apify** | La capacidad *(watchlists, actor, frecuencia)* va en fase 2; crear el schedule real y gastar crédito es decisión aparte |
+| 9 | **CEO OS: desplegar en Vercel** | Falta el PAT de GitHub, `AUTH_USERS` (con 2FA por persona) y `SESSION_SECRET`. Pasos en `ceo-os/README.md` |
+| 10 | **CEO OS: montos de Tailor Made en la nómina** | NAO + Akai declaran Q1,600 juntos, sin desglose por rubro: hay que escribirlo en la pestaña de cuentas. Hasta entonces sale `⚠️ SIN DATOS` |
+| 11 | **CEO OS: quién ocupa Especialista y las 2 auditorías** | Sin persona asignada no hay reparto *(ver decisiones #3 y #4)* |
 
 ---
 
