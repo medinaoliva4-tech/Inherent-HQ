@@ -1,25 +1,10 @@
+import { CYCLE, DEPTS, addDays, tasksFor, phasesFor, deptsOfPlan } from '../cycle.js';
 import { html, raw, mount, col, api, acts, toast, today, teamList, teamDoc, WORK_ROLES, roleName, $, $$, confirmAsk } from '../core.js';
 
 // Arranque: deja la app lista en 4 pasos, con lo que ya dice el repo.
 // 1 Equipo (de la tabla de slots del manual) · 2 Clientes y ciclo · 3 Tareas del ciclo · 4 Library base.
 const SLOT_ROLES = { CEO: ['ceo'], COO: ['coo'], 'Operador de agentes': ['content'], 'Editor de video': ['video'] };
 const SKIP = /^(IA|Scraping|Diseño|Publicaci)/i;
-const CYCLE = [['Reunión día 1', 1, 1], ['Plan', 1, 3], ['Calendario y shot list', 2, 3], ['Brand guidelines', 3, 6], ['Producción', 6, 11], ['Montaje', 12, 15], ['Cambios y programación', 16, 19], ['Presentación al cliente', 20, 20]];
-const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
-// Las tareas de cada ciclo, por departamento: [tarea, día del ciclo en que vence, perfil que la hace]
-const TASKS = {
-  '①': ['Reunión del día 1 y estrategia del ciclo', 3, 'ceo'],
-  '②': ['Elegir las ofertas que se empujan este ciclo', 3, 'ceo'],
-  '②B': ['Brand guidelines del ciclo', 6, 'content'],
-  '③': ['Plan del ciclo: pilares, campañas y calendario', 3, 'ceo'],
-  '④': ['Ideas, guiones y shot list', 3, 'content'],
-  '⑤': ['Producción: grabación y fotos (último día: 11)', 11, 'prod'],
-  '⑥A': ['Diseño: estáticos, carruseles y stories', 15, 'content'],
-  '⑦': ['Edición: reels y derivados', 15, 'video'],
-  '⑧': ['Community: ficha y respuestas al día', 19, 'content'],
-  '⑨': ['Posting: captions y programación', 19, 'content'],
-  '⑩': ['Ads: plan y presupuesto para aprobar', 19, 'ceo'],
-};
 const SOPS = [
   ['Operaciones', 'SOP', 'Activar el ciclo de contenido', ['coo', 'ceo'], `> **Para qué sirve:** que cada cliente tenga su ciclo del día 1 al 20 sin que nada se atore.
 > **Dueño:** COO · **Cuándo se usa:** el día 1 de cada mes · **Herramientas:** Inherent OS, Google Calendar
@@ -118,7 +103,7 @@ Diagnóstico → auditoría con el especialista → plan → implementación →
 export async function render(el, { me, alive }) {
   if (me.role !== 'ceo') return mount(el, html`<div class="empty"><b>Solo el CEO</b>El arranque lo hace el CEO.</div>`);
   const T = col('team'), PR = col('projects'), TK = col('tasks'), F = col('folders'), D = col('docs');
-  let [team, eco, repo, projects, tasks, folders, docs] = await Promise.all([teamList(), api('repo/economia').catch(() => ({ slots: [] })), api('repo/clients').catch(() => ({ clients: [] })), PR.list(), TK.list(), F.list(), D.list()]);
+  let [team, eco, repo, projects, tasks, folders, docs, driveCfg] = await Promise.all([teamList(), api('repo/economia').catch(() => ({ slots: [] })), api('repo/clients').catch(() => ({ clients: [] })), PR.list(), TK.list(), F.list(), D.list(), col('settings').get('drive').catch(() => null)]);
   const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s*\(.*\)/, '').trim();
   const meP = team.find((p) => p.id === me.email);
   // Personas del manual, juntando los roles de cada una.
@@ -137,12 +122,12 @@ export async function render(el, { me, alive }) {
   const clients = repo.clients.filter((c) => c.hasPlan);
   const mes = today().slice(0, 7);
   let start = `${mes}-01`;
-  const done = { team: team.length > 1 && rows.every((r) => r.ia || r.cur), ciclo: clients.length && clients.every((c) => projects.some((p) => p.client_slug === c.slug && p.cycle === mes)), tareas: tasks.some((t) => t.cycle === mes), lib: SOPS.every(([, , t]) => docs.some((d) => d.title === `${SOPS.find((s) => s[2] === t)[1]} · ${t}`)) };
+  const done = { drive: Boolean(driveCfg?.root), team: team.length > 1 && rows.every((r) => r.ia || r.cur), ciclo: clients.length && clients.every((c) => projects.some((p) => p.client_slug === c.slug && p.cycle === mes)), tareas: tasks.some((t) => t.cycle === mes), lib: SOPS.every(([, , t]) => docs.some((d) => d.title === `${SOPS.find((s) => s[2] === t)[1]} · ${t}`)) };
 
   function paint() {
     if (!alive()) return;
     const step = (n, key, title, sub, body, btn) => html`<div class="card wkbox setup ${done[key] ? 'ok' : ''}"><div class="wkhead"><span class="stepn">${done[key] ? '✓' : n}</span><div class="grow"><h3>${title}</h3><span class="mut sm">${sub}</span></div>${btn}</div>${body}</div>`;
-    mount(el, html`<div class="wktop"><div><h1>Arranque</h1><p class="mut">Deja la app lista con lo que ya dice el repo. 4 pasos, en orden.</p></div></div>
+    mount(el, html`<div class="wktop"><div><h1>Arranque</h1><p class="mut">Deja la app lista con lo que ya dice el repo. 5 pasos, en orden.</p></div></div>
       ${step(1, 'team', 'Equipo y perfiles', 'Sale de la tabla de slots del manual. Pon el correo de cada quien para que pueda entrar con Google.', html`
         <table class="wktable"><thead><tr><th>Persona</th><th>En el manual</th><th>Correo @inherentglobal.com</th><th>Perfiles de trabajo</th></tr></thead><tbody>
         ${rows.map((r, i) => html`<tr data-row="${i}"><td><b style="font-weight:500">${r.name}</b>${r.ia ? html`<span class="chip sm2" style="margin-left:6px">Agente IA</span>` : ''}</td><td class="mut sm">${r.title || '—'}</td>
@@ -157,25 +142,14 @@ export async function render(el, { me, alive }) {
         html`<button class="btn xs" data-act="doTasks">Crear tareas</button>`)}
       ${step(4, 'lib', 'Library base', 'Carpetas y SOPs de arranque, cada uno marcado para su perfil (salen en el Workspace de quien lo usa).', html`<div class="wksops">${SOPS.map(([f, k, t]) => html`<span class="wksop"><span class="ftype" style="background:${k === 'SOP' ? '#4f7790' : '#7f9631'}">${k.slice(0, 3).toUpperCase()}</span>${t}<span class="mut sm"> · ${f}</span></span>`)}</div>`,
         html`<button class="btn xs" data-act="doLib">Crear Library base</button>`)}
+      ${step(5, 'drive', 'Carpeta de entregas en Drive', 'Todo lo que el equipo suba (entregas y videos grabados) cae aquí, ordenado por cliente y mes. Nada se guarda en la web: solo el link.', html`
+        <ol class="sm" style="margin:6px 0 10px 18px;line-height:1.7"><li>En Google Drive crea una carpeta (ej. «Inherent · Entregas»), mejor en una unidad compartida.</li><li>Compártela como <b>Editor</b> con todo el equipo.</li><li>Pega aquí su link.</li></ol>
+        <input class="in" id="droot" value="${driveCfg?.root || ''}" placeholder="https://drive.google.com/drive/folders/…">`,
+        html`<button class="btn xs" data-act="doDrive">Guardar carpeta</button>`)}
       <div class="mut sm" style="margin-top:12px">Todo se puede editar después. Nada de esto toca el repo.</div>`);
   }
   const holder = (role) => { const p = team.find((x) => x.active !== false && (x.roles || []).includes(role)); return p ? p.email || p.id : null; };
-  const prodHolder = () => { const p = team.find((x) => /producci|grabaci/i.test(x.title || '')); return p ? p.email || p.id : holder('content'); };
-  function plannedTasks() {
-    const out = [];
-    for (const p of projects.filter((x) => x.cycle === mes)) {
-      const s = p.phases?.[0]?.start || start;
-      for (const [n] of DEPTS) {
-        if (p.pipeline?.[n]?.status === 'off' || !TASKS[n]) continue;
-        if (tasks.some((t) => t.project_id === p.id && t.dept?.startsWith(n + ' '))) continue;
-        const [title, day, role] = TASKS[n]; const who = role === 'prod' ? prodHolder() : holder(role);
-        out.push({ title, project_id: p.id, dept: `${n} ${DEPTS.find(([x]) => x === n)[1]}`, assignee: who || '', accountable: role === 'ceo' ? '' : holder('coo') || '', due: addDays(s, day - 1), status: 'Por empezar', cycle: mes });
-      }
-      if (!tasks.some((t) => t.project_id === p.id && /QA final/.test(t.title))) out.push({ title: 'QA final del ciclo', project_id: p.id, dept: '', assignee: holder('coo') || '', accountable: '', due: addDays(s, 18), status: 'Por empezar', cycle: mes });
-      if (!tasks.some((t) => t.project_id === p.id && /Presentaci/.test(t.title))) out.push({ title: 'Presentación al cliente (día 20)', project_id: p.id, dept: '① Strategy', assignee: holder('ceo') || me.email, accountable: '', due: addDays(s, 19), status: 'Por empezar', cycle: mes });
-    }
-    return out;
-  }
+  const plannedTasks = () => projects.filter((x) => x.cycle === mes).flatMap((p) => tasksFor(p, team, tasks, me.email));
   function preview() {
     const l = plannedTasks();
     if (!projects.some((x) => x.cycle === mes)) return 'Primero crea los ciclos (paso 2).';
@@ -215,10 +189,10 @@ export async function render(el, { me, alive }) {
         let n = 0;
         for (const cb of $$('[data-client]:not([disabled])', el)) {
           if (!cb.checked) continue; const c = clients.find((x) => x.slug === cb.dataset.client);
-          const inPlan = c.pipeline?.length ? new Set(c.pipeline.map((r) => (r.paso.match(/^[①-⑩][A-Z]?/) || [''])[0])) : null;
+          const inPlan = new Set(deptsOfPlan(c));
           const r = await PR.create({ name: `${c.slug.toUpperCase()} · ciclo ${mes}`, kind: 'Ciclo mensual', line: 'contenido', cycle: mes, client: c.slug.toUpperCase(), client_slug: c.slug, color: ['olive', 'terra', 'ink'][n % 3],
-            phases: CYCLE.map(([name, a, z], i) => ({ name, start: addDays(start, a - 1), end: addDays(start, z - 1), status: i === 0 ? 'now' : 'todo' })),
-            pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: inPlan && !inPlan.has(d) ? 'off' : 'todo' }])) });
+            phases: phasesFor('Ciclo mensual', start),
+            pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: inPlan.has(d) ? 'todo' : 'off' }])) });
           projects.push(r); n++;
         }
         toast(`${n} ciclo${n === 1 ? '' : 's'} creado${n === 1 ? '' : 's'} ✅`); done.ciclo = true; paint();
@@ -230,6 +204,11 @@ export async function render(el, { me, alive }) {
       b.disabled = true;
       try { for (const t of l) tasks.push(await TK.create({ checklist: [], comments: [], ...t })); toast(`${l.length} tareas creadas ✅`); done.tareas = true; paint(); }
       catch (e) { toast(e.message, true); b.disabled = false; }
+    },
+    doDrive: async () => {
+      const root = $('#droot', el).value.trim();
+      if (!/^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(root)) return toast('Pega el link de una carpeta de Drive (drive.google.com/drive/folders/…)', true);
+      try { const S = col('settings'); driveCfg = driveCfg ? await S.save({ ...driveCfg, root }) : await S.create({ id: 'drive', root }); done.drive = true; toast('Carpeta de entregas guardada ✅'); paint(); } catch (e) { toast(e.message, true); }
     },
     doLib: async (b) => {
       b.disabled = true;
@@ -246,4 +225,3 @@ export async function render(el, { me, alive }) {
   });
   paint();
 }
-function addDays(s, n) { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); }

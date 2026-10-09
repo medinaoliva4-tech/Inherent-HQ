@@ -89,10 +89,9 @@ export async function render(el, { me, alive }) {
       catch (e) { cb.checked = false; toast(e.message, true); }
     },
     addTask: async () => {
-      const v = await ask('Nueva tarea', [{ k: 'title', l: 'Tarea', req: true }, { k: 'due', l: 'Vence', t: 'date', half: true }]);
-      if (!v) return;
-      const t = await col('tasks').create({ ...v, assignee: me.email, status: 'Por empezar' });
-      tasks.push(t); mine.push(t); paint(); toast('Tarea creada ✅');
+      const { newTask } = await import('../create.js'); const { teamList } = await import('../core.js');
+      const t = await newTask({ team: await teamList(), me, projects: await col('projects').list(), pre: { assignee: me.email } });
+      if (t) { tasks.push(t); mine.push(t); paint(); }
     },
   }, 'click');
   paint();

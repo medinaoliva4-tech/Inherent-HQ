@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard } from '../core.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
@@ -146,16 +146,22 @@ export async function render(el, { me, sub, alive }) {
   }
 
   async function newLead() {
-    const v = await ask('Nuevo lead', [
-      { k: 'name', l: 'Empresa o marca', req: true },
-      { k: 'contact', l: 'Contacto', half: true }, { k: 'phone', l: 'WhatsApp', half: true },
-      { k: 'source', l: 'Fuente', t: 'select', opts: SOURCES, half: true }, { k: 'value_usd', l: 'Valor mensual (USD)', t: 'number', half: true },
-      { k: 'wants', l: 'Interesado en' },
-    ]);
+    const v = await wizard('Nuevo lead', [
+      { k: 'name', q: '¿Qué empresa o marca es?', type: 'text', req: true, ph: 'Nombre de la marca' },
+      { k: 'wants', q: '¿Qué le interesa?', type: 'cards', req: true, opts: [
+        { v: 'Marketing', i: '🔷', l: 'Marketing', d: 'Que lo conozcan' }, { v: 'Marketing Pro', i: '🔷', l: 'Marketing Pro', d: 'Presencia sostenida' },
+        { v: 'Accelerate', i: '🟨', l: 'Accelerate', d: 'Está estancado, quiere facturar' }, { v: 'Compound', i: '🟨', l: 'Compound', d: 'Escalar y sistematizar' },
+        { v: 'Proyecto puntual', i: '🧩', l: 'Proyecto puntual' }, { v: 'No sé todavía', i: '❔', l: 'No sé todavía' }] },
+      { k: 'interest', q: '¿Qué tan caliente está?', type: 'cards', req: true, opts: [['1', '🧊', 'Frío'], ['2', '🌤️', 'Tibio'], ['3', '🙂', 'Interesado'], ['4', '🔥', 'Caliente'], ['5', '🚀', 'Listo para cerrar']].map(([v, i, l]) => ({ v, i, l })) },
+      { k: 'source', q: '¿Cómo llegó?', type: 'cards', req: true, opts: SOURCES.map((x) => ({ v: Array.isArray(x) ? x[0] : x, l: Array.isArray(x) ? x[1] : x })) },
+      { k: 'contact', q: '¿Con quién hablamos?', sub: 'Nombre y WhatsApp (puedes dejarlo vacío)', type: 'text', ph: 'Nombre · +502 …' },
+    ], 'Crear lead');
     if (!v) return;
-    const l = await L.create({ ...v, stage: 'Nuevo', interest: 3, tags: [], activity: [{ at: new Date().toISOString(), who: me.name, text: 'Lead creado' }] });
+    const [contact, phone] = String(v.contact || '').split('·').map((x) => x.trim());
+    const l = await L.create({ name: v.name, wants: v.wants, source: v.source, contact: contact || '', phone: phone || '', stage: 'Nuevo', interest: +v.interest, tags: +v.interest >= 4 ? ['Interesado'] : [], activity: [{ at: new Date().toISOString(), who: me.name, text: 'Lead creado' }] });
     leads.push(l); paint(); openLead(l);
   }
+
 
   // ---------- Catálogo ----------
   function cat(body) {

@@ -239,8 +239,8 @@ export const WORK_ROLES = [['ceo', 'CEO'], ['coo', 'COO · Operaciones'], ['cont
 export const roleName = (k) => (WORK_ROLES.find(([x]) => x === k) || [k, k])[1];
 
 // ---------- Subir a Google Drive (directo del navegador a Google, con barra de avance) ----------
-export async function uploadToDrive(file, name, onProgress = () => {}, folder) {
-  const { url } = await api('google/upload', { method: 'POST', body: { name: name || file.name, mime: file.type || 'application/octet-stream', size: file.size, folder } });
+export async function uploadToDrive(file, name, onProgress = () => {}, where = {}) {
+  const { url } = await api('google/upload', { method: 'POST', body: { name: name || file.name, mime: file.type || 'application/octet-stream', size: file.size, ...(typeof where === 'string' ? { folder: where } : where) } });
   const up = await new Promise((ok, ko) => {
     const x = new XMLHttpRequest(); x.open('PUT', url);
     x.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
@@ -250,4 +250,54 @@ export async function uploadToDrive(file, name, onProgress = () => {}, folder) {
     x.send(file);
   });
   return api('google/upload/done', { method: 'POST', body: { id: up.id } });
+}
+
+// ---------- Asistente paso a paso: una pregunta por pantalla, con opciones para tocar ----------
+// steps: [{ k, q, sub, type: 'cards'|'multi'|'text'|'textarea'|'date'|'when', opts: [{ v, l, d, i }], v, req, show(a) }]
+// Devuelve las respuestas, o null si se cierra. Las tarjetas avanzan solas al elegir.
+export function wizard(title, steps, doneLabel = 'Crear') {
+  return new Promise((resolve) => {
+    const a = {}; steps.forEach((s) => { if (s.v !== undefined && typeof s.v !== 'function') a[s.k] = s.v; });
+    const v = document.createElement('div'); v.className = 'wiz';
+    let i = 0; const live = () => steps.filter((s) => !s.show || s.show(a));
+    const nextDay = (dow) => { const d = new Date(); d.setDate(d.getDate() + ((dow + 7 - d.getDay()) % 7 || 7)); return d.toISOString().slice(0, 10); };
+    const plus = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+    const month1 = () => { const d = new Date(); d.setMonth(d.getMonth() + 1, 1); return d.toISOString().slice(0, 10); };
+    const WHEN = [['Hoy', () => today()], ['Mañana', () => plus(1)], ['Viernes', () => nextDay(5)], ['En una semana', () => plus(7)], ['Día 1 del próximo mes', month1]];
+    const close = (out) => { v.remove(); document.removeEventListener('keydown', key); resolve(out); };
+    const key = (e) => { if (e.key === 'Escape') close(null); if (e.key === 'Enter' && !e.shiftKey && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); next(); } };
+    function next() {
+      const L = live(), s = L[i];
+      if (s && ['text', 'textarea', 'date'].includes(s.type)) a[s.k] = (v.querySelector('[data-in]')?.value || '').trim();
+      if (s && s.req && (a[s.k] == null || a[s.k] === '' || (Array.isArray(a[s.k]) && !a[s.k].length))) return toast('Elige o escribe una opción', true);
+      if (i < L.length - 1) { i++; paint(); } else close(a);
+    }
+    function paint() {
+      const L = live(); const s = L[i]; const last = i === L.length - 1;
+      if (a[s.k] === undefined && typeof s.v === 'function') a[s.k] = s.v(a); // valor por defecto que depende de respuestas anteriores
+      const val = a[s.k];
+      const opts = (typeof s.opts === 'function' ? s.opts(a) : s.opts) || [];
+      mount(v, html`<div class="wizbox"><div class="row"><span class="mut sm">${title}</span><div class="sp"></div><span class="wizdots">${L.map((_, j) => html`<i class="${j <= i ? 'on' : ''}"></i>`)}</span><button class="arrow light" data-w="x" style="margin-left:10px">✕</button></div>
+        <h2 class="wizq">${typeof s.q === 'function' ? s.q(a) : s.q}</h2>${s.sub ? html`<div class="mut" style="margin:-6px 0 14px">${typeof s.sub === 'function' ? s.sub(a) : s.sub}</div>` : ''}
+        ${s.type === 'cards' || s.type === 'multi' ? html`<div class="wizopts ${opts.length > 6 ? 'many' : ''}">${opts.map((o) => { const on = s.type === 'multi' ? (val || []).includes(o.v) : val === o.v; return html`<button class="wizopt ${on ? 'on' : ''}" data-w="opt" data-v="${o.v}">${o.i ? html`<span class="wi">${o.i}</span>` : ''}<b>${o.l}</b>${o.d ? html`<span class="mut sm">${o.d}</span>` : ''}${s.type === 'multi' ? html`<span class="wck">${on ? '✓' : ''}</span>` : ''}</button>`; })}</div>`
+          : s.type === 'when' ? html`<div class="wizopts">${WHEN.map(([l, f]) => html`<button class="wizopt ${val === f() ? 'on' : ''}" data-w="when" data-v="${f()}"><b>${l}</b><span class="mut sm">${fdate(f())}</span></button>`)}<label class="wizopt"><b>Otra fecha</b><input class="in" type="date" data-w="date" value="${val && !WHEN.some(([, f]) => f() === val) ? val : ''}"></label>${s.req ? '' : html`<button class="wizopt ${val === '' ? 'on' : ''}" data-w="when" data-v=""><b>Sin fecha</b></button>`}</div>`
+          : s.type === 'textarea' ? html`<textarea class="in" data-in placeholder="${s.ph || ''}" style="min-height:120px">${val || ''}</textarea>`
+          : html`<input class="in wizin" data-in type="${s.type === 'date' ? 'date' : 'text'}" placeholder="${s.ph || ''}" value="${val || ''}">${(s.chips || []).length ? html`<div class="row" style="flex-wrap:wrap;gap:6px;margin-top:10px">${(typeof s.chips === 'function' ? s.chips(a) : s.chips).map((c) => html`<button class="chip" data-w="chip" data-v="${c}" style="padding:7px 12px">${c}</button>`)}</div>` : ''}`}
+        <div class="row" style="margin-top:20px">${i ? html`<button class="btn ghost" data-w="back">← Atrás</button>` : ''}<div class="sp"></div>${s.type === 'cards' ? (s.req ? '' : html`<button class="btn ghost" data-w="next">${last ? doneLabel : 'Saltar →'}</button>`) : html`<button class="btn" data-w="next">${last ? doneLabel : 'Seguir →'}</button>`}</div></div>`);
+      v.querySelector('[data-in]')?.focus();
+    }
+    v.onclick = (e) => {
+      const t = e.target.closest('[data-w]'); if (!t) { if (e.target === v) close(null); return; }
+      const L = live(), s = L[i], w = t.dataset.w;
+      if (w === 'x') return close(null);
+      if (w === 'back') { i--; return paint(); }
+      if (w === 'next') return next();
+      if (w === 'opt') { if (s.type === 'multi') { const cur = new Set(a[s.k] || []); cur.has(t.dataset.v) ? cur.delete(t.dataset.v) : cur.add(t.dataset.v); a[s.k] = [...cur]; return paint(); } a[s.k] = t.dataset.v; s.after?.(a); return next(); } // tocar una opción avanza (y en el último paso, termina)
+      if (w === 'when') { a[s.k] = t.dataset.v; return next(); }
+      if (w === 'chip') { const inp = v.querySelector('[data-in]'); inp.value = t.dataset.v; inp.focus(); }
+    };
+    v.onchange = (e) => { if (e.target.dataset.w === 'date' && e.target.value) { a[live()[i].k] = e.target.value; next(); } };
+    document.addEventListener('keydown', key);
+    document.body.append(v); paint();
+  });
 }

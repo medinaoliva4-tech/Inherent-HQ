@@ -199,12 +199,28 @@ async function upFolder(u) {
   await db.upsert('team', u.email, { drive_folder: id }, u.email);
   return id;
 }
+// Si el CEO configuró la carpeta de entregas de la empresa (Arranque, paso 5), todo cae ahí:
+// <carpeta>/<CLIENTE>/<AAAA-MM o Library>/. Cada quien necesita acceso de editor a esa carpeta.
+async function childFolder(email, parent, name) {
+  const safe = String(name).replace(/'/g, "\\'");
+  const q = new URLSearchParams({ q: `name='${safe}' and '${parent}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`, fields: 'files(id)', pageSize: '1', supportsAllDrives: 'true', includeItemsFromAllDrives: 'true', corpora: 'allDrives' });
+  const f = (await google.gapi(email, `${DRIVE}?${q}`)).files?.[0];
+  return f ? f.id : (await google.gapi(email, `${DRIVE}?fields=id&supportsAllDrives=true`, { method: 'POST', body: JSON.stringify({ name, mimeType: 'application/vnd.google-apps.folder', parents: [parent] }) })).id;
+}
+async function companyFolder(u, client, sub) {
+  const root = driveId((await db.get('settings', 'drive'))?.root); if (!root) return null;
+  try {
+    let id = root;
+    for (const part of [String(client || 'Interno').toUpperCase().slice(0, 60), String(sub || new Date().toISOString().slice(0, 7)).slice(0, 40)]) id = await childFolder(u.email, id, part);
+    return id;
+  } catch (e) { throw Object.assign(new Error('No tienes acceso a la carpeta de entregas de Inherent en Drive. Pídele al CEO que te la comparta como editor.'), { code: 'NO_GOOGLE' }); }
+}
 on('POST', 'google/upload', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   const b = body(req);
   const name = String(b.name || '').replace(/[\\/]/g, '-').trim().slice(0, 180), mime = String(b.mime || 'application/octet-stream').slice(0, 100), size = Number(b.size);
   if (!name || !(size > 0) || size > 5e9) return res.status(400).json({ error: 'Archivo inválido (máximo 5 GB)' });
-  const parent = driveId(b.folder) || (await upFolder(u));
+  const parent = driveId(b.folder) || (await companyFolder(u, b.client, b.sub)) || (await upFolder(u));
   const origin = (process.env.APP_URL || '').trim().replace(/\/$/, '');
   const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id,name,mimeType,webViewLink', {
     method: 'POST',
