@@ -316,3 +316,8 @@ export const LOGO = {
 // Un botón o tarjeta para conectar. `on` = ya conectado (muestra el nombre y «Cambiar»).
 export const connectChip = (logo, label, act, on, extra = '') => html`<button class="connect ${on ? 'on' : ''}" data-act="${act}" ${raw(extra)}><span class="lg">${LOGO[logo]}</span>${label}</button>`;
 export const connectCard = (logo, title, sub, act, btn = 'Conectar') => html`<div class="connectcard"><span class="lg big">${LOGO[logo]}</span><div class="grow"><b style="font-weight:500">${title}</b><div class="mut sm">${sub}</div></div><button class="btn" data-act="${act}">${btn}</button></div>`;
+
+// Qué calendarios se ven: por defecto solo el de Inherent; «Todos» es opcional y se recuerda.
+export const calAll = () => { try { return localStorage.getItem('cal.all') === '1'; } catch { return false; } };
+export const setCalAll = (v) => { try { localStorage.setItem('cal.all', v ? '1' : '0'); } catch {} };
+export const calQ = () => (calAll() ? '' : '&only=inherent');

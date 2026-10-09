@@ -1,5 +1,5 @@
 import { newProject as wizProject, newTask as wizTask, VIS_OPTS, visLabel } from '../create.js';
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll } from '../core.js';
 
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
 const ST = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Entregado', 'green'], off: ['No aplica', ''] };
@@ -70,7 +70,7 @@ export async function render(el, { me, sub, alive }) {
   async function loadEvents() {
     const [y, m] = calMonth.split('-').map(Number);
     const from = iso(new Date(Date.UTC(y, m - 1, 0))), to = iso(new Date(Date.UTC(y, m, 1)));
-    try { const r = await api(`google/calendar?from=${from}&to=${to}`); events = r.events; calInfo = { allCals: r.allCals !== false, calendars: r.calendars || [] }; evErr = null; } catch (e) { events = []; evErr = e.message; }
+    try { const r = await api(`google/calendar?from=${from}&to=${to}${calQ()}`); events = r.events; calInfo = { allCals: r.allCals !== false, calendars: r.calendars || [] }; evErr = null; } catch (e) { events = []; evErr = e.message; }
   }
   const evChip = (it) => html`<div class="ev ${it.c}" ${it.task ? raw(`data-act="task" data-id="${it.task}"`) : it.ev != null ? raw(`data-act="ev" data-i="${it.ev}"`) : ''} ${it.color ? raw(`style="background:${it.color}33;border-left:3px solid ${it.color}"`) : ''}>${it.t}</div>`;
   let calInfo = { allCals: true, calendars: [] }, dayMap = {};
@@ -108,7 +108,7 @@ export async function render(el, { me, sub, alive }) {
     mount(b, html`<div class="card">
       <div class="chead"><div class="ico">▦</div><h3>${first.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })}</h3>
         ${evErr ? html`<span class="chip amber" style="margin-left:12px">Google Calendar: ${evErr}</span>` : html`<span class="gbadge" style="margin-left:12px">${IC.cal} ${calInfo.allCals ? `${calInfo.calendars.length} calendario${calInfo.calendars.length === 1 ? '' : 's'} de Google` : 'Solo tu calendario principal · sal y vuelve a entrar para ver todos'}</span>`}
-        <div class="sp"></div>${me.role === 'ceo' ? html`<button class="btn ghost" data-act="calpick" style="padding:8px 14px">Calendario de Inherent</button>` : ''}<button class="btn ghost" data-act="mrefresh" title="Actualizar" style="padding:8px 14px">↻</button><button class="btn ghost" data-act="mtoday" style="padding:8px 14px">Hoy</button><button class="btn ghost" data-act="mprev" style="padding:8px 14px">‹</button><button class="btn ghost" data-act="mnext" style="padding:8px 14px">›</button><button class="btn" data-act="newEvent" style="padding:9px 16px">+ Evento</button></div>
+        <div class="sp"></div><button class="chip ${calAll() ? '' : 'dark'}" data-act="calscope" style="padding:8px 12px">${calAll() ? 'Todos mis calendarios' : 'Solo Inherent'}</button>${me.role === 'ceo' ? html`<button class="btn ghost" data-act="calpick" style="padding:8px 14px">Calendario de Inherent</button>` : ''}<button class="btn ghost" data-act="mrefresh" title="Actualizar" style="padding:8px 14px">↻</button><button class="btn ghost" data-act="mtoday" style="padding:8px 14px">Hoy</button><button class="btn ghost" data-act="mprev" style="padding:8px 14px">‹</button><button class="btn ghost" data-act="mnext" style="padding:8px 14px">›</button><button class="btn" data-act="newEvent" style="padding:9px 16px">+ Evento</button></div>
       <div class="cal">${['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d) => html`<div class="dh">${d}</div>`)}
         ${cells.map((d) => { const out = d < 1 || d > days; const isToday = !out && `${calMonth}-${String(d).padStart(2, '0')}` === today();
           return html`<div class="d ${out ? 'o' : ''} ${isToday ? 'today' : ''}" ${out ? '' : raw(`data-act="day" data-d="${d}" title="Toca para crear un evento"`)}><span class="n">${out ? '' : d}</span>${out ? '' : (byDay[d] || []).slice(0, 4).map(evChip)}${!out && (byDay[d] || []).length > 4 ? html`<button class="mut sm" data-act="dayall" data-d="${d}">+${byDay[d].length - 4} más</button>` : ''}</div>`; })}
@@ -220,6 +220,7 @@ export async function render(el, { me, sub, alive }) {
   }
   acts(el, {
     calpick: calPick,
+    calscope: () => { setCalAll(!calAll()); events = null; const b = $('#obody', el); if (b) cal(b); },
     tab: (t) => { tab = t.dataset.t; if (tab === 'cal') events = null; history.replaceState(null, '', '#/operations/' + tab); paint(); },
     pick: (t, e) => { if (e.target.closest('[data-act=editProject]') || e.target.closest('a')) return; current = t.dataset.id; tab = 'pipe'; paint(); },
     newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); current = r.project.id; tab = 'pipe'; paint(); } },

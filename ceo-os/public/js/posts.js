@@ -19,14 +19,14 @@ export async function editPost(profile, p, pre = {}) {
   const pillars = pillarsOf(profile);
   if (!p) { // nueva pieza: con preguntas
     const a = await wizard('Nueva pieza', [
-      { k: 'format', q: '¿Qué formato?', type: 'cards', req: true, opts: [['Reel', '🎬'], ['TikTok', '🎵'], ['Carrusel', '🗂️'], ['Story', '⭕'], ['Estático', '🖼️'], ['YouTube', '▶️']].map(([v, i]) => ({ v, i, l: v })) },
-      { k: 'title', q: '¿Cuál es la idea?', type: 'text', req: true, ph: 'Ej. Detrás de cocina' },
+      { k: 'format', q: '¿Qué formato?', type: 'cards', req: true, v: pre.format, show: () => !pre.format, opts: [['Reel', '🎬'], ['TikTok', '🎵'], ['Carrusel', '🗂️'], ['Story', '⭕'], ['Estático', '🖼️'], ['YouTube', '▶️']].map(([v, i]) => ({ v, i, l: v })) },
+      { k: 'title', q: '¿Cuál es la idea?', type: 'text', req: true, ph: 'Ej. Detrás de cocina', v: pre.title },
       { k: 'pillar', q: '¿De qué pilar?', type: 'cards', show: () => pillars.length > 0, v: pre.pillar, opts: pillars.map((x) => ({ v: x.name, i: '●', l: x.name })) },
       { k: 'date', q: '¿Cuándo sale?', type: 'when', v: pre.date, show: () => !pre.date },
       { k: 'status', q: '¿En qué va?', type: 'cards', req: true, opts: PSTATUS.map((v) => ({ v, l: v })) },
     ], 'Agregar');
     if (!a) return null;
-    try { return await C.create({ ...a, profile, kind: 'post' }); } catch (e) { toast(e.message, true); return null; }
+    try { return await C.create({ ...a, ...(pre.caption ? { caption: pre.caption } : {}), profile, kind: 'post' }); } catch (e) { toast(e.message, true); return null; }
   }
   const v = await ask(p ? 'Editar pieza' : 'Nueva pieza por postear', [
     { k: 'title', l: 'Título', v: p?.title, req: true },

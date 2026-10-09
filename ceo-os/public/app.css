@@ -586,3 +586,13 @@ body{background:transparent!important}
 .mav{flex:none;border-radius:50%;background:#e6dfd2 center/cover;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#6b5a45}
 .mcard{margin-bottom:10px;padding:16px}
 .mcard[data-mact]{cursor:pointer}
+
+/* Ideas, bandeja y la diana de audiencias */
+.idea{margin-bottom:12px;padding:16px}
+.ihook{margin-top:6px;font-size:15px;line-height:1.35;background:#f7f3ec;border-radius:10px;padding:8px 10px}
+.inmsg{display:flex;flex-direction:column;gap:2px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.inmsg:last-child{border-bottom:0}.inmsg b{font-weight:500}
+.bull{position:relative;width:180px;height:180px;margin:4px auto 6px}
+.bring{position:absolute;border-radius:50%;display:flex;justify-content:center;align-items:flex-start;font-size:11px;color:#5d554a}
+.bring span{margin-top:8px}
+.bring.r1{inset:0;background:#efe9de}.bring.r2{inset:30px;background:#dfe5c6}.bring.r3{inset:62px;background:#5c6b22;color:#fff;align-items:center}.bring.r3 span{margin:0}

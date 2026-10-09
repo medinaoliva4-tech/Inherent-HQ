@@ -5,26 +5,27 @@ import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveSta
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
 const RED = { instagram: 'Instagram', tiktok: 'TikTok' };
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$/.test(String(u || '')) ? u : null);
-const TABS = [['semana', 'Semana'], ['postear', 'Por postear'], ['guiones', 'Guiones'], ['plan', 'Planner'], ['analytics', 'Analytics'], ['fuentes', 'Fuentes']];
+const TABS = [['ideas', 'Ideas'], ['semana', 'Lo que funciona'], ['plan', 'Planner'], ['guiones', 'Guiones'], ['postear', 'Por postear'], ['bandeja', 'Bandeja'], ['analytics', 'Analytics'], ['fuentes', 'Fuentes']];
+const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho', propia: 'Tuya' };
 
 export function videoCard(it) {
   const t = safeImg(it.thumb);
   return html`<a class="card win" href="${/^https:\/\//.test(it.url) ? it.url : '#'}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;padding:12px">
     <div class="thumb" ${t ? raw(`style="background-image:url('${t}')"`) : ''}><b>${it.x ? it.x + '×' : '▶'}</b></div>
-    <div class="row sm"><b style="font-weight:500">@${it.handle}</b><span class="mut">${RED[it.red]}</span><div class="sp"></div><span class="mut">${it.at ? fdate(it.at.slice(0, 10)) : ''}</span></div>
+    <div class="row sm"><b style="font-weight:500">@${it.handle}</b><span class="mut">${it.kind && KIND[it.kind] ? KIND[it.kind] : RED[it.red]}</span><div class="sp"></div><span class="mut">${it.at ? fdate(it.at.slice(0, 10)) : ''}</span></div>
     <div class="row sm" style="gap:12px">${it.views ? html`<span>▶ ${K(it.views)}</span>` : ''}<span>♥ ${K(it.likes)}</span><span>💬 ${K(it.comments)}</span></div>
     <div class="cap mut">${it.text}</div></a>`;
 }
 
 export async function render(el, { sub, alive }) {
   let slug = sub[1] || (() => { try { return localStorage.getItem('content.profile'); } catch { return null; } })() || 'inherent';
-  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'semana';
-  let data = null, week = null, posts = null, poll = null, ig = null;
+  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'ideas';
+  let data = null, week = null, posts = null, poll = null, ig = null, idea = null, inbox = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
-    slug = data.profile.slug; week = null; posts = null; ig = null; gstack = null; gfiles = null; gcur = null;
+    slug = data.profile.slug; week = null; posts = null; ig = null; idea = null; inbox = null; gstack = null; gfiles = null; gcur = null;
     try { localStorage.setItem('content.profile', slug); } catch {}
     paint();
   }
@@ -41,10 +42,11 @@ export async function render(el, { sub, alive }) {
         <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
         ${tab === 'semana' ? html`<button class="btn" data-act="scrape">Scrapear ahora</button>` : ''}
+        ${tab === 'ideas' ? html`<button class="btn" data-act="genIdeas">✦ Generar ideas</button>` : ''}
 
       </div>
       <div id="cbody" class="swap"></div>`);
-    ({ semana, postear, guiones, plan, analytics, fuentes })[tab]($('#cbody', el));
+    ({ ideas, semana, postear, guiones, plan, bandeja, analytics, fuentes })[tab]($('#cbody', el));
   }
 
   // ---------- Semana: top 10 del nicho + los videos que agregaste ----------
@@ -67,7 +69,45 @@ export async function render(el, { sub, alive }) {
     mount(b, html`${head}
       <div class="sec-title" style="margin-top:0"><h2>Top 10 del nicho</h2><span class="mut sm">Cuántas veces supera el promedio de <b>su propia cuenta</b></span></div>
       ${r.top.length ? html`<div class="grid g5">${r.top.map(videoCard)}</div>` : html`<div class="empty"><b>Sin videos esta semana</b>Agrega hashtags o cuentas en Fuentes.</div>`}
+      ${(r.refs || []).length ? html`<div class="sec-title"><h2>Lo último de tus referentes</h2><span class="mut sm">Para ver estilos y de qué están hablando</span></div><div class="grid g5">${r.refs.slice(0, 10).map(videoCard)}</div>` : ''}
+      ${(r.comp || []).length ? html`<div class="sec-title"><h2>Lo último de la competencia</h2></div><div class="grid g5">${r.comp.slice(0, 10).map(videoCard)}</div>` : ''}
       ${r.added.length ? html`<div class="sec-title"><h2>Los que agregaste</h2></div><div class="grid g5">${r.added.map(videoCard)}</div>` : ''}`);
+  }
+
+  // ---------- Ideas: reels y carruseles que propone Claude con lo que encontró el scraper ----------
+  function ideas(b) {
+    if (idea === null) { mount(b, html`<p class="loading">Cargando ideas…</p>`); api(`content/ideas?profile=${encodeURIComponent(slug)}`).then((r) => { idea = r; }).catch((e) => { idea = { error: e.message, ideas: [] }; }).then(() => alive() && tab === 'ideas' && b.isConnected && ideas(b)); return; }
+    if (idea.error) return mount(b, html`<div class="warnbox">${idea.error}</div>`);
+    const head = html`<div class="mut sm" style="margin-bottom:14px">Salen de <b>lo que funciona</b> esta semana (ganadores del nicho, referentes y competencia), tus <b>pilares</b> y tu <b>audiencia</b>.${idea.at ? ` Generadas el ${fdate(idea.at.slice(0, 10))}.` : ''}</div>`;
+    if (!idea.on) return mount(b, html`${head}<div class="warnbox">Para generar ideas falta conectar Claude: agrega <b>ANTHROPIC_API_KEY</b> en las variables de Vercel (Sensitive) y vuelve a publicar.</div>`);
+    if (!idea.ideas.length) return mount(b, html`${head}<div class="empty"><b>Todavía no hay ideas</b>Dale «✦ Generar ideas». Tarda cerca de un minuto.</div>`);
+    const colorOf = (n) => (data.cfg.pillars || []).find((x) => x.name === n)?.color || '#cfc7ba';
+    const card = (x) => html`<div class="card idea"><div class="row" style="gap:6px;flex-wrap:wrap"><span class="chip" style="gap:6px"><i style="width:9px;height:9px;border-radius:50%;background:${colorOf(x.pillar)};display:inline-block"></i>${x.pillar || 'Sin pilar'}</span><div class="sp"></div><button class="btn xs" data-act="ideaPlan" data-id="${x.id}">→ Planner</button></div>
+      <b style="font-weight:500;font-size:17px;display:block;margin-top:10px">${x.title}</b>
+      <div class="ihook">“${x.hook}”</div>
+      <ol class="sm" style="margin:8px 0 0 18px;padding:0">${(x.outline || []).map((o) => html`<li style="margin:3px 0">${o}</li>`)}</ol>
+      <div class="mut sm" style="margin-top:8px">💡 ${x.why}${x.inspired_by ? html` · <a href="${x.inspired_by}" target="_blank" rel="noopener noreferrer" style="color:inherit">ver el original ↗</a>` : ''}</div></div>`;
+    mount(b, html`${head}<div class="grid g2" style="align-items:start">
+      <div><div class="sec-title" style="margin-top:0"><h2>Reels</h2></div>${idea.ideas.filter((x) => x.format === 'Reel').map(card)}</div>
+      <div><div class="sec-title" style="margin-top:0"><h2>Carruseles</h2></div>${idea.ideas.filter((x) => x.format !== 'Reel').map(card)}</div></div>`);
+  }
+
+  // ---------- Bandeja: comentarios y mensajes de las cuentas propias (Zernio) ----------
+  function bandeja(b) {
+    if (inbox === null) { mount(b, html`<p class="loading">Leyendo la bandeja…</p>`); api(`community/inbox?profile=${encodeURIComponent(slug)}`).then((r) => { inbox = r; }).catch((e) => { inbox = { error: e.message }; }).then(() => alive() && tab === 'bandeja' && b.isConnected && bandeja(b)); return; }
+    if (inbox.error) return mount(b, html`<div class="warnbox">${inbox.error}</div>`);
+    if (!inbox.connected) return mount(b, html`<div class="warnbox">Para ver la bandeja falta conectar Zernio: agrega <b>ZERNIO_API_KEY</b> (con el grupo «messages» activo) en las variables de Vercel (Sensitive) y vuelve a publicar.</div>`);
+    if (inbox.noAccounts) return mount(b, html`<div class="empty"><b>Este perfil no tiene cuentas propias</b>Agrégalas en <a href="#/content/fuentes/${slug}" style="color:inherit">Fuentes</a>.</div>`);
+    if (!inbox.accounts) return mount(b, html`<div class="empty"><b>Zernio no tiene conectadas las cuentas de ${data.profile.name}</b>${inbox.handles.map((h) => '@' + h).join(', ')} · conéctalas en Zernio y recarga.</div>`);
+    const ago = (d) => (d ? fdate(String(d).slice(0, 10)) : '');
+    mount(b, html`<div class="mut sm" style="margin-bottom:12px">Solo lectura: se responde desde Zernio o con ⑧ Community. Puede tardar hasta 10 minutos en aparecer lo nuevo.</div>
+      <div class="grid g21" style="align-items:start">
+        <div><div class="sec-title" style="margin-top:0"><h2>Comentarios</h2><span class="mut sm">${inbox.comments.reduce((a, p) => a + p.comments.length, 0)}</span></div>
+          ${inbox.comments.length ? inbox.comments.map((p) => html`<div class="card" style="margin-bottom:10px;padding:14px"><a class="row" href="${p.url}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;gap:10px">${safeImg(p.picture) ? html`<span class="rthumb" style="background-image:url('${safeImg(p.picture)}')"></span>` : ''}<span class="sm" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.text || 'Post'}</span><span class="mut sm">${ago(p.at)} ↗</span></a>
+            ${p.comments.map((c) => html`<div class="inmsg"><b>@${c.from}</b><span>${c.text}</span><span class="mut sm">${ago(c.at)}${c.replies ? ` · ${c.replies} respuesta${c.replies === 1 ? '' : 's'}` : ' · sin responder'}</span></div>`)}</div>`) : html`<div class="mut sm">Sin comentarios recientes.</div>`}</div>
+        <div><div class="sec-title" style="margin-top:0"><h2>Mensajes directos</h2><span class="mut sm">${inbox.dms.length}</span></div>
+          <div class="card" style="padding:6px 14px">${inbox.dms.length ? inbox.dms.map((d) => html`<div class="inmsg"><b>${d.who}</b><span>${d.last}</span><span class="mut sm">${RED[d.platform] || d.platform} · ${ago(d.at)}</span></div>`) : html`<div class="mut sm" style="padding:8px 0">Sin conversaciones activas.</div>`}</div></div>
+      </div>`);
   }
 
   // ---------- Por postear ----------
@@ -114,6 +154,13 @@ export async function render(el, { sub, alive }) {
     }).catch((e) => mount(b, html`<div class="warnbox">${e.message}</div>`));
     return true;
   }
+  // Cómo se reparte el contenido entre pilares (lo que no tiene pilar va en gris).
+  function pillarDonut(pillars, list) {
+    const parts = [...pillars.map((x) => ({ c: x.color, n: list.filter((p) => p.pillar === x.name).length })), { c: '#e6dfd2', n: list.filter((p) => !pillars.some((x) => x.name === p.pillar)).length }].filter((x) => x.n);
+    const total = parts.reduce((a, x) => a + x.n, 0), R = 30, C = 2 * Math.PI * R; let off = 0;
+    const arcs = parts.map((x) => { const len = (x.n / total) * C; const a = `<circle r="${R}" cx="40" cy="40" fill="none" stroke="${x.c}" stroke-width="14" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 40 40)"/>`; off += len; return a; }).join('');
+    return raw(`<svg width="80" height="80" viewBox="0 0 80 80" aria-label="Reparto por pilar">${total ? arcs : `<circle r="${R}" cx="40" cy="40" fill="none" stroke="#ebe5da" stroke-width="14"/>`}<text x="40" y="44" text-anchor="middle" font-size="14" fill="#171410">${total}</text></svg>`);
+  }
   function plan(b) {
     if (needPosts(b, plan)) return;
     const pillars = data.cfg.pillars || [];
@@ -130,9 +177,10 @@ export async function render(el, { sub, alive }) {
     const chip = (p) => { const [i, l] = driveState(p); return html`<button class="ppost" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${p.title} · ${l}"><span class="pi">${i}</span><span class="pt">${p.title}</span></button>`; };
     const undated = posts.filter((p) => !p.date && p.status !== 'Publicado');
     mount(b, html`
-      <div class="card" style="padding:12px 14px;margin-bottom:12px"><div class="row" style="flex-wrap:wrap;gap:8px"><b class="sm" style="font-weight:500">Pilares</b>
-        ${pillars.length ? pillars.map((x) => html`<span class="chip" style="gap:6px"><i style="width:10px;height:10px;border-radius:50%;background:${x.color};display:inline-block"></i>${x.name}<span class="mut">${inRange.filter((p) => p.pillar === x.name).length}</span></span>`) : html`<span class="mut sm">Sin pilares todavía: defínelos para ver el balance del mes.</span>`}
-        <div class="sp"></div><button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div></div>
+      <div class="card" style="padding:14px;margin-bottom:12px"><div class="row" style="flex-wrap:wrap;gap:14px;align-items:center">${pillarDonut(pillars, inRange)}
+        <div style="flex:1;min-width:200px"><b class="sm" style="font-weight:500">Pilares · ${pview === 'mes' ? 'este mes' : 'esta semana'}</b>
+        <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${pillars.length ? pillars.map((x) => { const c = inRange.filter((p) => p.pillar === x.name).length; return html`<span class="chip" style="gap:6px"><i style="width:10px;height:10px;border-radius:50%;background:${x.color};display:inline-block"></i>${x.name}<span class="mut">${c}${inRange.length ? ` · ${Math.round((c / inRange.length) * 100)}%` : ''}</span></span>`; }) : html`<span class="mut sm">Sin pilares todavía: defínelos para ver cómo se reparte el contenido.</span>`}</div></div>
+        <button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div></div>
       <div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
         <button class="arrow light" data-act="pnav" data-d="-1">‹</button><b style="font-weight:500;min-width:150px;text-align:center">${title}</b><button class="arrow light" data-act="pnav" data-d="1">›</button>
         <button class="sm mut" data-act="ptoday">Hoy</button><div class="sp"></div>
@@ -186,30 +234,50 @@ export async function render(el, { sub, alive }) {
     lineChart($('#chA', b), h.map((x) => x.week.slice(5)), [{ name: 'Vistas', v: h.map((x) => x.avgViews), c: '#171410', fill: true }]);
   }
 
-  // ---------- Fuentes: cuentas del repo + lo que agregas aquí ----------
+  // ---------- Fuentes: tus cuentas, tu audiencia (de lo general a lo específico), referentes y competencia ----------
   function fuentes(b) {
-    const p = data.profile, c = data.cfg;
+    const p = data.profile, c = data.cfg, au = c.audience || {};
     const accUrl = (a) => (a.red === 'tiktok' ? `https://www.tiktok.com/@${a.handle}` : `https://www.instagram.com/${a.handle}/`);
-    const acc = (a, rm) => html`<div class="artifact" style="margin:6px 0"><span class="fi">${a.red === 'tiktok' ? '♪' : '◎'}</span><div style="flex:1"><a href="${accUrl(a)}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><b style="font-weight:500">@${a.handle}</b></a><div class="mut" style="font-size:11px">${RED[a.red]}${a.source ? ' · ' + a.source : ''}</div></div>${rm != null ? html`<button class="sm mut" data-act="rmAcc" data-i="${rm}">✕</button>` : ''}</div>`;
-    mount(b, html`<div class="card" style="margin-bottom:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><b style="font-weight:500">Scrape semanal</b><div class="mut sm">Cada lunes, 10 videos por fuente, de Reels y TikTok.</div></div><div class="sp"></div>
-        <label class="check" style="padding:0"><input type="checkbox" data-act="auto" ${c.auto ? raw('checked') : ''}> Activado</label></div></div>
+    const acc = (a, rm, list) => html`<div class="artifact" style="margin:6px 0"><span class="fi">${a.red === 'tiktok' ? '♪' : '◎'}</span><div style="flex:1"><a href="${accUrl(a)}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><b style="font-weight:500">@${a.handle}</b></a><div class="mut" style="font-size:11px">${RED[a.red]}${a.source ? ' · ' + a.source : ''}</div></div>${rm != null ? html`<button class="sm mut" data-act="rmAcc" data-l="${list}" data-i="${rm}">✕</button>` : ''}</div>`;
+    const adder = (list, ph) => html`<div class="row" style="margin-top:8px"><select class="in" data-red="${list}" style="width:auto"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option></select><input class="in" data-new="${list}" placeholder="${ph}"><button class="btn ghost" data-act="addAcc" data-l="${list}">+</button></div>`;
+    const group = (kind) => c.accounts.map((a, i) => ({ a, i })).filter((x) => x.a.kind === kind);
+    const repoComp = p.competitors.filter((a) => !c.accounts.some((x) => x.handle === a.handle && x.red === a.red));
+    mount(b, html`
       <div class="grid g2" style="align-items:start">
-      <div class="card"><h3 style="font-weight:500;font-size:20px">Tu nicho</h3>
-        <div class="mut sm" style="margin:4px 0 10px">Hashtags que definen el nicho (máx. 10). Se guardan en la app.</div>
-        <div class="row" style="flex-wrap:wrap;gap:6px">${c.hashtags.map((h, i) => html`<span class="chip">#${h} <button class="sm mut" data-act="rmTag" data-i="${i}" style="margin-left:4px">✕</button></span>`)}${c.hashtags.length ? '' : html`<span class="mut sm">Sin hashtags.</span>`}</div>
-        <div class="row" style="margin-top:10px"><input class="in" id="newTag" placeholder="ej. emprendimiento, marketingdigital"><button class="btn ghost" data-act="addTag">+</button></div>
-        <h3 style="font-weight:500;font-size:20px;margin-top:22px">Videos que quieres seguir</h3>
-        <div class="mut sm" style="margin:4px 0 10px">Links de reels o TikToks puntuales.</div>
-        ${c.videos.map((u, i) => html`<div class="row sm" style="margin:6px 0"><a href="${u}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u}</a><button class="sm mut" data-act="rmVid" data-i="${i}">✕</button></div>`)}
-        <div class="row" style="margin-top:10px"><input class="in" id="newVid" placeholder="https://www.instagram.com/reel/…"><button class="btn ghost" data-act="addVid">+</button></div></div>
-      <div class="card"><h3 style="font-weight:500;font-size:20px">Cuentas</h3>
-        <div class="mut sm" style="margin:4px 0 6px">Propias, de <code>${root()}/00-onboarding/LINKS.md</code></div>
-        ${p.own.length ? p.own.map((a) => acc(a)) : html`<div class="warnbox">${p.hasLinks ? 'LINKS.md no tiene links de Instagram ni TikTok.' : 'Este perfil no tiene LINKS.md en el repo.'}</div>`}
-        <div class="mut sm" style="margin:16px 0 6px">Competencia, de <code>99-referencias/investigacion/</code></div>
-        ${p.competitors.length ? p.competitors.map((a) => acc(a)) : html`<div class="mut sm">Ninguna en el repo todavía.</div>`}
-        <div class="mut sm" style="margin:16px 0 6px">Agregadas aquí</div>
-        ${c.accounts.map((a, i) => acc(a, i))}
-        <div class="row" style="margin-top:8px"><select class="in" id="newRed" style="width:auto"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option></select><input class="in" id="newAcc" placeholder="@cuenta"><button class="btn ghost" data-act="addAcc">+</button></div></div></div>`);
+        <div class="card"><h3 style="font-weight:500;font-size:20px">Tus cuentas</h3>
+          <div class="mut sm" style="margin:4px 0 6px">Las de la marca. De aquí salen Analytics, la Bandeja y «lo tuyo» en el scrape.</div>
+          ${p.own.filter((a) => a.source === 'onboarding').map((a) => acc(a))}
+          ${(c.own || []).map((a, i) => acc(a, i, 'own'))}
+          ${p.own.length ? '' : html`<div class="mut sm">Todavía no hay cuentas: agrégalas aquí.</div>`}
+          ${adder('own', '@cuenta de la marca')}</div>
+        <div class="card"><h3 style="font-weight:500;font-size:20px">A quién le hablamos</h3>
+          <div class="mut sm" style="margin:4px 0 10px">De lo general al centro. Las ideas apuntan al centro; el scraper usa los temas del nicho.</div>
+          <div class="bull">
+            <div class="bring r1"><span>General</span></div><div class="bring r2"><span>Nicho</span></div><div class="bring r3"><span>Exacto</span></div>
+          </div>
+          ${[['general', 'General', 'Ej. Dueños de negocio en Guatemala, 28 a 45 años'], ['nicho', 'Nicho', 'Ej. Restaurantes que ya venden pero no crecen'], ['exacto', 'Exacto (la persona)', 'Ej. Chef dueño de 1 local, quiere abrir el segundo y no sabe por dónde']].map(([k, l, ph]) => html`<label class="f" style="margin-top:8px">${l}</label><textarea class="in" data-aud="${k}" placeholder="${ph}" style="min-height:58px">${au[k] || ''}</textarea>`)}
+          <button class="btn ghost" data-act="saveAud" style="margin-top:8px">Guardar audiencia</button></div>
+      </div>
+      <div class="grid g2" style="align-items:start;margin-top:16px">
+        <div class="card"><h3 style="font-weight:500;font-size:20px">Referentes</h3>
+          <div class="mut sm" style="margin:4px 0 6px">Marcas o creadores de los que tomamos estilo y temas. No se copian: se leen.</div>
+          ${group('referente').map(({ a, i }) => acc(a, i, 'accounts'))}${group('referente').length ? '' : html`<div class="mut sm">Ninguno todavía.</div>`}
+          ${adder('referente', '@referente')}</div>
+        <div class="card"><h3 style="font-weight:500;font-size:20px">Competencia</h3>
+          <div class="mut sm" style="margin:4px 0 6px">Contra quién compite la marca. Las del onboarding vienen de la investigación de ① Strategy.</div>
+          ${repoComp.map((a) => acc({ ...a, source: 'onboarding' }))}
+          ${group('competencia').map(({ a, i }) => acc(a, i, 'accounts'))}${repoComp.length || group('competencia').length ? '' : html`<div class="mut sm">Ninguna todavía.</div>`}
+          ${adder('competencia', '@competidor')}</div>
+      </div>
+      <div class="card" style="margin-top:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><h3 style="font-weight:500;font-size:20px">Scrape semanal</h3><div class="mut sm">Cada lunes, 10 posts por fuente, de Reels y TikTok: tus cuentas, referentes, competencia y los temas del nicho.</div></div><div class="sp"></div>
+        <label class="check" style="padding:0"><input type="checkbox" data-act="auto" ${c.auto ? raw('checked') : ''}> Activado</label></div>
+        <div class="grid g2" style="margin-top:12px;align-items:start"><div>
+          <b class="sm" style="font-weight:500">Temas del nicho (hashtags, máx. 10)</b>
+          <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${c.hashtags.map((h, i) => html`<span class="chip">#${h} <button class="sm mut" data-act="rmTag" data-i="${i}" style="margin-left:4px">✕</button></span>`)}${c.hashtags.length ? '' : html`<span class="mut sm">Sin temas.</span>`}</div>
+          <div class="row" style="margin-top:8px"><input class="in" id="newTag" placeholder="ej. emprendimiento, marketingdigital"><button class="btn ghost" data-act="addTag">+</button></div></div>
+        <div><b class="sm" style="font-weight:500">Videos puntuales</b>
+          ${c.videos.map((u, i) => html`<div class="row sm" style="margin:6px 0"><a href="${u}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u}</a><button class="sm mut" data-act="rmVid" data-i="${i}">✕</button></div>`)}
+          <div class="row" style="margin-top:8px"><input class="in" id="newVid" placeholder="https://www.instagram.com/reel/…"><button class="btn ghost" data-act="addVid">+</button></div></div></div></div>`);
   }
   async function saveCfg(next) {
     try { data.cfg = { ...data.cfg, ...(await api('content/cfg', { method: 'PUT', body: { profile: slug, ...data.cfg, ...next } })) }; fuentes($('#cbody', el)); } catch (e) { toast(e.message, true); }
@@ -253,8 +321,16 @@ export async function render(el, { sub, alive }) {
     rmTag: (t) => saveCfg({ hashtags: data.cfg.hashtags.filter((_, i) => i !== +t.dataset.i) }),
     addVid: () => { const v = $('#newVid', el).value.trim(); if (!/^https:\/\/(www\.)?(instagram\.com\/(p|reel|reels)\/|tiktok\.com\/@[^/]+\/video\/|vm\.tiktok\.com\/)/.test(v)) return toast('Pega el link de un reel o de un TikTok', true); saveCfg({ videos: [...data.cfg.videos, v] }); },
     rmVid: (t) => saveCfg({ videos: data.cfg.videos.filter((_, i) => i !== +t.dataset.i) }),
-    addAcc: () => { const h = $('#newAcc', el).value.trim(); if (!h) return; const m = h.match(/(?:tiktok\.com\/@|instagram\.com\/)?@?([A-Za-z0-9._]{2,30})/); saveCfg({ accounts: [...data.cfg.accounts, { red: /tiktok/.test(h) ? 'tiktok' : $('#newRed', el).value, handle: m ? m[1] : h }] }); },
-    rmAcc: (t) => saveCfg({ accounts: data.cfg.accounts.filter((_, i) => i !== +t.dataset.i) }),
+    addAcc: (t) => {
+      const l = t.dataset.l, h = $(`[data-new="${l}"]`, el).value.trim(); if (!h) return;
+      const m = h.match(/(?:tiktok\.com\/@|instagram\.com\/)?@?([A-Za-z0-9._]{2,30})/); const a = { red: /tiktok/.test(h) ? 'tiktok' : $(`[data-red="${l}"]`, el).value, handle: m ? m[1] : h };
+      if ([...data.profile.own, ...(data.cfg.own || []), ...data.cfg.accounts].some((x) => x.red === a.red && x.handle === a.handle.toLowerCase())) return toast('Esa cuenta ya está', true);
+      if (l === 'own') saveCfg({ own: [...(data.cfg.own || []), a] }); else saveCfg({ accounts: [...data.cfg.accounts, { ...a, kind: l }] });
+    },
+    rmAcc: (t) => (t.dataset.l === 'own' ? saveCfg({ own: data.cfg.own.filter((_, i) => i !== +t.dataset.i) }) : saveCfg({ accounts: data.cfg.accounts.filter((_, i) => i !== +t.dataset.i) })),
+    saveAud: () => { const audience = Object.fromEntries([...el.querySelectorAll('[data-aud]')].map((x) => [x.dataset.aud, x.value.trim()])); saveCfg({ audience }).then(() => toast('Audiencia guardada ✅')); },
+    genIdeas: async (t) => { t.disabled = true; t.textContent = 'Pensando… (cerca de 1 min)'; try { idea = await api('content/ideas', { method: 'POST', body: { profile: slug } }); toast(`${idea.ideas.length} ideas nuevas ✅`); } catch (e) { toast(e.message, true); } t.disabled = false; t.textContent = '✦ Generar ideas'; if (tab === 'ideas') ideas($('#cbody', el)); },
+    ideaPlan: async (t) => { const x = idea.ideas.find((y) => y.id === t.dataset.id); if (!x) return; const r = await editPost(slug, null, { title: x.title, format: x.format, pillar: x.pillar, caption: `${x.hook}\n\n${(x.outline || []).map((o, i) => `${i + 1}. ${o}`).join('\n')}` }); if (r) { posts = posts ? [...posts, r] : null; toast('Idea al Planner ✅ · ponle fecha'); } },
   });
   acts(el, { auto: (t) => saveCfg({ auto: t.checked }).then(() => toast(t.checked ? 'Se scrapea solo cada lunes ✅' : 'Scrape semanal apagado')) }, 'change');
   mount(el, html`<p class="loading">Leyendo el repo…</p>`);

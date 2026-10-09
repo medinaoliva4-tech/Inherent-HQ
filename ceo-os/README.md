@@ -49,6 +49,9 @@ El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez qu
 | `ALLOWED_DOMAIN` | Opcional. Por defecto `inherentglobal.com` |
 | `APIFY_TOKEN` | Para scrapear winners (Instagram y TikTok) |
 | `WINDSOR_API_KEY` | Analytics de Instagram de las cuentas propias. Las cuentas se conectan (login con Instagram) en windsor.ai; la app solo lee |
+| `ANTHROPIC_API_KEY` | Content → Ideas: Claude propone reels y carruseles a partir del scrape, los pilares y la audiencia |
+| `ZERNIO_API_KEY` | Content → Bandeja: comentarios y DMs de las cuentas propias (llave con el grupo «messages»). Solo lectura |
+| `MCP_TOKEN` · `MCP_USER` | El conector para Claude: `POST /api/mcp` con `Authorization: Bearer <MCP_TOKEN>`. Lee clientes, tareas, roadmap y contenido; crea tareas e ideas. Actúa como `MCP_USER` (por defecto el primer `ADMIN_EMAILS`) |
 | `CRON_SECRET` | Para el scrape semanal (Vercel Cron, lunes 13:00 UTC; cierre a las 16:00). Sin él, el cron no corre |
 | `GITHUB_TOKEN` | No hace falta. La app solo **lee** el repo: lo copia en cada build (`scripts/snapshot.mjs`). El repo guarda lo macro; el trabajo del día a día vive en la app |
 
