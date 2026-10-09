@@ -3,7 +3,10 @@
 //   → ingreso en Finance + lead ganado + cliente + proyecto con responsables, fechas y dependencias.
 // Lo usan el panel de Control, Sales y el conector MCP. Todo pasa aquí, en el servidor.
 import * as db from './db.js';
-import { phasesFor, meetingsFor, tasksFor, customTasks, createLinked, holders, DEPTS, svcHours, hoursAt, includesAt, daysAt, addDays } from '../../public/js/cycle.js';
+import { phasesFor, meetingsFor, tasksFor, customTasks, createLinked, holders, DEPTS, svcHours, hoursAt, includesAt, daysAt, addDays, onboardingFor } from '../../public/js/cycle.js';
+import { domain } from './access.js';
+import * as google from './google.js';
+import * as mail from './mail.js';
 
 const today = () => new Date().toISOString().slice(0, 10);
 const now = () => new Date().toISOString();
@@ -37,7 +40,16 @@ export async function createProject(u, { slug, label, kind, start, quote, name }
 
 // ---------- Los pasos de una cotización ----------
 const ROLE_OK = (u) => u.role === 'ceo' || u.role === 'coo';
-export async function step(u, id, action, b = {}) {
+const EMAIL = /^[^@\s<>"]+@[^@\s<>"]+\.[^@\s<>"]+$/;
+// Da acceso al portal de un cliente (correo aprobado de afuera). Nunca le baja el rol a alguien del equipo.
+export async function portalAccess(u, slug, email, name) {
+  const cur = await db.get('team', email);
+  if (cur && cur.role && cur.role !== 'client') return false;
+  if (cur && cur.client_slug && cur.client_slug !== slug) return false;
+  await db.upsert('team', email, { email, name: String(name || email.split('@')[0]).slice(0, 80), role: 'client', client_slug: slug, external: !email.endsWith('@' + domain()), active: true, invited_by: u.email, invited_at: now() }, u.email);
+  return true;
+}
+export async function step(u, id, action, b = {}, base = '') {
   const q = await db.get('quotes', id); if (!q) throw Object.assign(new Error('La cotización no existe'), { status: 404 });
   const lead = q.lead_id ? await db.get('leads', q.lead_id) : null;
   const team = await teamOf(), who = holders(team, u.email);
@@ -53,8 +65,8 @@ export async function step(u, id, action, b = {}) {
   } else if (action === 'approve') {
     if (!sales) deny();
     if (q.status === 'Aceptada') return { ok: true };
-    // El cliente aprobó: alguien tiene que subir el pago. Va a quien lleva finanzas (o al CEO).
-    const t = payTask || await db.create('tasks', { title: `Subir el pago de ${q.client || 'cliente'} · ${q.number}`, description: `La cotización ${q.number} fue aprobada. Sube el comprobante y el monto en Control → «Subir pago».`, assignee: who('finance') || who('ceo') || u.email, accountable: who('ceo') || '', due: addDays(today(), 3), status: 'Por empezar', kind: 'pago', quote_id: id, amount_due: Math.round(inCur(q, quoteTotal(q)) * 100) / 100, currency: q.currency || 'GTQ', project_id: '', visibility: 'all', checklist: [], comments: [], assigned_at: now() }, u.email);
+    // El cliente aprobó: alguien tiene que subir el pago. Va a quien lleva los cobros de Inherent (o al CEO).
+    const t = payTask || await db.create('tasks', { title: `Subir el pago de ${q.client || 'cliente'} · ${q.number}`, description: `La cotización ${q.number} fue aprobada. Sube el comprobante y el monto en Control → «Subir pago».`, assignee: who('cobros') || who('ceo') || u.email, accountable: who('ceo') || '', due: addDays(today(), 3), status: 'Por empezar', kind: 'pago', quote_id: id, amount_due: Math.round(inCur(q, quoteTotal(q)) * 100) / 100, currency: q.currency || 'GTQ', project_id: '', visibility: 'all', checklist: [], comments: [], assigned_at: now() }, u.email);
     await put('quotes', id, { status: 'Aceptada', approved_at: now(), pay_task_id: t.id, activity: log(q, u.name, 'Aprobada por el cliente · falta el pago') }, u.email);
     await setLead('Propuesta', `Aprobó la cotización ${q.number} · falta el pago`);
   } else if (action === 'reject') {
@@ -96,8 +108,24 @@ export async function step(u, id, action, b = {}) {
     const { project, tasks } = await createProject(u, { slug, label, kind, start, quote: q, name: b.name || `${label} · ${q.number}` });
     await put('quotes', id, { client_slug: slug, project_id: project.id, payment: { ...q.payment, status: 'confirmado', confirmed_by: u.email, confirmed_at: now() }, activity: log(q, u.name, `Pago confirmado · proyecto creado con ${tasks.length} tareas`) }, u.email);
     if (payTask) await put('tasks', payTask.id, { status: 'Hecha' }, u.email);
-    console.log(JSON.stringify({ evt: 'flow_confirm', quote: q.number, project: project.id, tasks: tasks.length, by: u.email }));
-    return { ok: true, project_id: project.id, tasks: tasks.length, people: [...new Set(tasks.map((t) => t.assignee).filter(Boolean))].length };
+    // 4) el cliente: acceso a su portal, su onboarding (según lo que se le cotizó) y el correo de gracias
+    const services = await db.list('services');
+    const items = onboardingFor(kind, (q.items || []).map((i) => services.find((x) => x.id === i.service_id)).filter(Boolean));
+    const prev = (await db.get('accounts', 'acc-' + slug))?.onboarding?.items || [];
+    await put('accounts', 'acc-' + slug, { onboarding: { items: items.map((x) => prev.find((y) => y.t === x.t) || x), at: now(), from_quote: id, sender: u.email } }, u.email);
+    let welcome = null;
+    const to = String(b.email || '').trim().toLowerCase();
+    if (EMAIL.test(to)) {
+      await portalAccess(u, slug, to, q.contact || lead?.contact || label);
+      if (b.welcome !== false && b.welcome !== 'no') {
+        const kick = project.meetings?.[0]?.date;
+        const m = mail.welcome({ base, to, name: q.contact || lead?.contact || '', client: label, project: project.name, kickoff: kick ? new Date(kick + 'T12:00').toLocaleDateString('es-GT', { weekday: 'long', day: 'numeric', month: 'long' }) : '', items: items.map((x) => x.t), sender: u.name });
+        try { await google.sendMail(u.email, m); welcome = { sent: true, to }; }
+        catch (e) { welcome = { sent: false, to, compose: mail.composeUrl(m), why: e.message }; }
+      }
+    }
+    console.log(JSON.stringify({ evt: 'flow_confirm', quote: q.number, project: project.id, tasks: tasks.length, by: u.email, welcome: welcome?.sent }));
+    return { ok: true, project_id: project.id, tasks: tasks.length, people: [...new Set(tasks.map((t) => t.assignee).filter(Boolean))].length, welcome };
   } else deny('Paso desconocido');
   return { ok: true };
 }
@@ -109,3 +137,24 @@ export async function proof(u, id) {
   return u.areas.includes('sales') || u.role === 'ceo' || t?.assignee === u.email ? p : null;
 }
 export { inCur, toQ };
+
+// ---------- El onboarding desde el portal ----------
+export async function onboarding(slug) { return (await db.get('accounts', 'acc-' + slug))?.onboarding || null; }
+export async function saveOnboarding(u, slug, edits = []) {
+  const ob = await onboarding(slug); if (!ob) return null;
+  const items = ob.items.map((x, i) => { const e = edits[i]; return e ? { ...x, done: Boolean(e.done), note: String(e.note ?? x.note ?? '').slice(0, 1000) } : x; });
+  const done = items.every((x) => x.done);
+  await put('accounts', 'acc-' + slug, { onboarding: { ...ob, items, ...(done && !ob.done_at ? { done_at: now() } : {}), updated_by: u.email, updated_at: now() } }, u.email);
+  return { items, done };
+}
+export async function inviteTeammate(u, slug, b, base) {
+  const to = String(b.email || '').trim().toLowerCase(); if (!EMAIL.test(to)) throw Object.assign(new Error('Ese correo no es válido'), { status: 400 });
+  const mates = (await db.list('team')).filter((p) => p.role === 'client' && p.client_slug === slug);
+  if (mates.length >= 8 && !mates.some((p) => (p.email || p.id) === to)) throw Object.assign(new Error('Tu portal ya tiene 8 personas. Escríbenos para agregar más.'), { status: 400 });
+  if (!(await portalAccess(u, slug, to, b.name))) throw Object.assign(new Error('Ese correo no se puede agregar'), { status: 400 });
+  const acc = await db.get('accounts', 'acc-' + slug), ob = acc?.onboarding;
+  const m = mail.invite({ base, to, name: b.name || '', by: u.name, client: acc?.name || slug.toUpperCase(), items: (ob?.items || []).filter((x) => !x.done).map((x) => x.t) });
+  // Sale del Gmail de quien arrancó el proyecto en Inherent.
+  try { if (!ob?.sender) throw new Error('sin remitente'); await google.sendMail(ob.sender, { ...m, replyTo: u.email }); return { ok: true, mailed: true }; }
+  catch { return { ok: true, mailed: false, link: `${base}/api/auth/google?portal=1` }; }
+}

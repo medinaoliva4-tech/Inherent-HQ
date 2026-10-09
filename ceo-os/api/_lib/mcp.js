@@ -163,10 +163,10 @@ export async function handle(token, m) {
   return run(u, m);
 }
 // Lo que responde el servidor MCP a una persona ya identificada (por OAuth o por el link viejo).
-export async function run(u, m) {
+export async function run(u, m, base = '') {
   if (!m || m.id === undefined) return { status: 202 };
   const ok = (result) => ({ status: 200, json: { jsonrpc: '2.0', id: m.id, result } });
-  if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', version: '1.1.0' }, instructions: `Inherent OS de ${u.name} (${u.role}). Úsalo para ver pendientes, tareas, clientes y contenido, y para crear tareas, ideas, cotizaciones o proyectos. Fechas en formato AAAA-MM-DD; hoy es ${today()}. Precios en quetzales salvo que se diga otra moneda.` });
+  if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', title: 'Inherent OS', version: '1.2.0', ...(base ? { websiteUrl: base, icons: [{ src: `${base}/brand/icon-512.png`, mimeType: 'image/png', sizes: ['512x512'] }, { src: `${base}/brand/emblem-dark.svg`, mimeType: 'image/svg+xml', sizes: ['any'] }] } : {}) }, instructions: `Inherent OS de ${u.name} (${u.role}). Úsalo para ver pendientes, tareas, clientes y contenido, y para crear tareas, ideas, cotizaciones o proyectos. Fechas en formato AAAA-MM-DD; hoy es ${today()}. Precios en quetzales salvo que se diga otra moneda.` });
   if (m.method === 'ping') return ok({});
   if (m.method === 'tools/list') return ok({ tools: toolsFor(u) });
   if (m.method === 'tools/call') {

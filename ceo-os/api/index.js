@@ -37,7 +37,7 @@ on('GET', 'auth/callback', async (req, res) => {
     if (!p.internal) { const d = await db.get('team', p.email); if (!d?.external || d.active === false) return back('noaprobado'); }
     const u = await userFor(p.email);
     if (!u.active) return back('inactivo');
-    await db.upsert('team', p.email, { email: p.email, name: p.name, picture: p.picture, google: { calendar: p.scopes.some((s) => s.includes('calendar')), drive: p.scopes.some((s) => s.includes('drive')) }, last_login: new Date().toISOString() }, p.email);
+    await db.upsert('team', p.email, { email: p.email, name: p.name, picture: p.picture, google: { calendar: p.scopes.some((s) => s.includes('calendar')), drive: p.scopes.some((s) => s.includes('drive')), gmail: p.scopes.some((s) => s.includes('gmail.send')) }, last_login: new Date().toISOString() }, p.email);
     session.issue(req, res, { email: p.email });
   } catch (e) { console.error('login db', e); return back('servidor', e.code === 'NO_DB' ? 'base de datos' : e.message); }
   console.log(JSON.stringify({ evt: 'login', email: p.email }));
@@ -68,7 +68,7 @@ on('PUT', 'me/photo', async (req, res) => {
 on('GET', 'status', async (req, res) => {
   // Público y sin datos: solo dice qué falta configurar, para que el login lo explique.
   let dbok = false; try { dbok = await db.ping(); } catch {}
-  res.json({ google: google.configured(), db: dbok, repo: repoSource() !== 'none', domain: domain() });
+  res.json({ google: google.configured(), portal: Boolean(process.env.GOOGLE_PORTAL_CLIENT_ID?.trim() && process.env.GOOGLE_PORTAL_CLIENT_SECRET?.trim()), db: dbok, repo: repoSource() !== 'none', domain: domain() });
 });
 
 // ---------- documentos ----------
@@ -523,6 +523,8 @@ on('GET', 'portal', async (req, res) => {
     goals: (acc?.goals || []).map((g) => ({ goal: g.goal, metric: g.metric, baseline: g.baseline, current: g.current, target: g.target, due: g.due, status: g.status, checks: (g.checks || []).map(({ date, done, value }) => ({ date, done, value })) })),
     delivered: ps.flatMap((x) => pt(x.id).filter((t) => t.status === 'Hecha').map((t) => ({ title: t.title.replace(/\s·\s[^·]+\(\d+(\.\d+)? h\)$/, ''), date: String(t._meta?.updated_at || '').slice(0, 10) }))).sort((a, z) => z.date.localeCompare(a.date)).slice(0, 20),
     folder: acc?.drive_dirs?.['05 Entregables'] || null,
+    onboarding: acc?.onboarding ? { items: acc.onboarding.items.map(({ t, done, note }) => ({ t, done, note })), done_at: acc.onboarding.done_at || null } : null,
+    people: (await db.list('team')).filter((x) => x.role === 'client' && x.client_slug === slug && x.active !== false).map((x) => ({ email: x.email || x.id, name: x.name || '' })),
     today,
   };
   // Analytics de Instagram (si el cliente tiene cuentas y Windsor está conectado).
@@ -534,11 +536,26 @@ on('GET', 'portal', async (req, res) => {
   res.json(out);
 });
 
+// El cliente llena su onboarding e invita a alguien de su equipo (solo en su propio portal).
+const portalSlug = (u, req) => (u.role === 'client' ? u.client_slug : String(req.query.slug || body(req).slug || ''));
+on('PUT', 'portal/onboarding', async (req, res) => {
+  const u = await guard(req, res, 'portal', { client: true }); if (!u) return;
+  const slug = portalSlug(u, req); if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  const r = await flow.saveOnboarding(u, slug, Array.isArray(body(req).items) ? body(req).items.slice(0, 60) : []);
+  r ? res.json(r) : res.status(404).json({ error: 'Todavía no hay onboarding' });
+});
+on('POST', 'portal/invite', async (req, res) => {
+  const u = await guard(req, res, 'portal', { client: true }); if (!u) return;
+  const slug = portalSlug(u, req); if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  try { res.json(await flow.inviteTeammate(u, slug, body(req), appUrl(req))); }
+  catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
+});
+
 // ---------- Flujo: lead → cotización → pago → proyecto ----------
 on('POST', 'flow/quote/:id', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   const b = body(req);
-  try { res.json(await flow.step({ ...u, areas: areasFor(u.role, u.roles) }, req.params.id, String(b.action || ''), b)); }
+  try { res.json(await flow.step({ ...u, areas: areasFor(u.role, u.roles) }, req.params.id, String(b.action || ''), b, appUrl(req))); }
   catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
 });
 on('GET', 'flow/proof/:id', async (req, res) => {
@@ -594,7 +611,7 @@ on('POST', 'mcp', async (req, res) => {
   const tok = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   const u = await mcp.userOf(await oauth.emailOf(tok));
   if (!u) { res.setHeader('WWW-Authenticate', `Bearer resource_metadata="${appUrl(req)}/.well-known/oauth-protected-resource${req.query.at === 'root' ? '' : '/mcp'}", scope="${oauth.SCOPE}"`); return res.status(401).json({ error: 'invalid_token', error_description: 'Conecta Inherent OS de nuevo' }); }
-  const r = await mcp.run(u, body(req));
+  const r = await mcp.run(u, body(req), appUrl(req));
   r.json ? res.status(r.status).json(r.json) : res.status(r.status).end();
 });
 on('GET', 'mcp', async (req, res) => { cors(res); res.status(405).json({ error: 'Este es el servidor MCP de Inherent OS. Agrégalo como conector en Claude, ChatGPT o Codex.' }); });
