@@ -596,3 +596,11 @@ body{background:transparent!important}
 .bring{position:absolute;border-radius:50%;display:flex;justify-content:center;align-items:flex-start;font-size:11px;color:#5d554a}
 .bring span{margin-top:8px}
 .bring.r1{inset:0;background:#efe9de}.bring.r2{inset:30px;background:#dfe5c6}.bring.r3{inset:62px;background:#5c6b22;color:#fff;align-items:center}.bring.r3 span{margin:0}
+.ic{width:16px;height:16px;vertical-align:-2px;flex:none}
+.ttl{display:flex;align-items:center;gap:8px;font-weight:500;font-size:20px}
+.ttl .ic{width:18px;height:18px;color:#7f9631}
+/* Fuentes: dos columnas que se apilan sin dejar huecos */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.cols2>div{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:860px){.cols2{grid-template-columns:1fr}}
+.wkttl{display:flex;align-items:center;gap:7px}.wkttl .ic{color:#7f9631}

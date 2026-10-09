@@ -1,5 +1,5 @@
 import { recorder } from '../recorder.js';
-import { WORK_ROLES, wizard, connectCard } from '../core.js';
+import { WORK_ROLES, wizard, connectCard , openClaude, ICON } from '../core.js';
 import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, $, folderSvg, TONES, embedUrl, IC, diagram, diagrams } from '../core.js';
 
 // Library: SOPs, playbooks, videos y notas que el equipo escribe aquí, en carpetas.
@@ -144,7 +144,9 @@ const DGN = { flujo: 'Flujo', secuencia: 'Secuencia', mapa: 'Mapa mental', tiemp
 const MIME = (m) => (/folder/.test(m) ? ['DIR', '#6b6b66'] : /document/.test(m) ? ['DOC', '#4f7790'] : /spreadsheet/.test(m) ? ['XLS', '#3c8a4a'] : /presentation/.test(m) ? ['PPT', '#d08a2e'] : /pdf/.test(m) ? ['PDF', '#c8432f'] : /video/.test(m) ? ['MP4', '#26201a'] : /image/.test(m) ? ['IMG', '#8a5fa8'] : ['FILE', '#8f877b']);
 const driveOk = (u) => /^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(String(u || ''));
 
-export async function render(el, { sub, alive }) {
+export async function render(el, { me, sub, alive }) {
+  // Abrir prompts en Claude (con la cuenta de cada quien): Content, Editor de video y CEO.
+  const canClaude = me.role === 'ceo' || (me.roles || []).some((r) => r === 'content' || r === 'video');
   const F = col('folders'), D = col('docs');
   let [folders, docs] = await Promise.all([F.list(), D.list()]);
   let q = '';
@@ -264,7 +266,7 @@ export async function render(el, { sub, alive }) {
             : html`<div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#8f877b'};color:#fff">${d.kind || 'Doc'}</span><div class="sp"></div><span class="mut sm">${d._meta?.updated_at ? 'Actualizado ' + fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}${d._meta?.updated_by ? ' · ' + d._meta?.updated_by : ''}</span></div>
               <h1 style="font-size:42px;font-weight:500;letter-spacing:-1.3px;margin:14px 0 18px">${d.title}</h1>
               ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:16/9;border:0;border-radius:20px;margin-bottom:22px;background:#000" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>` : d.url ? html`<a class="artifact" href="${d.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-bottom:18px"><span class="fi">↗</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
-              ${d.kind === 'Prompt' ? html`<div class="row" style="gap:8px;margin-bottom:10px"><span class="chip">${d.client ? d.client.toUpperCase() : 'General'}</span><span class="chip">${d.vtype || 'Video'}</span><div class="sp"></div><button class="btn" data-act="copyPrompt">Copiar prompt</button></div><pre class="repo-pre" id="ptext">${d.body || ''}</pre>`
+              ${d.kind === 'Prompt' ? html`<div class="row" style="gap:8px;margin-bottom:10px"><span class="chip">${d.client ? d.client.toUpperCase() : 'General'}</span><span class="chip">${d.vtype || 'Video'}</span><div class="sp"></div><button class="btn ghost" data-act="copyPrompt">Copiar prompt</button>${canClaude ? html`<button class="btn" data-act="claudePrompt">${ICON.sparkle} Abrir en Claude</button>` : ''}</div><pre class="repo-pre" id="ptext">${d.body || ''}</pre>`
                 : !d.body ? html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>` : d.kind === 'Diagrama' ? diagram(d.body) : md(d.body)}`}
         </div>`);
       const ta = $('#dbody', el); if (ta) { let t0; ta.oninput = () => { clearTimeout(t0); t0 = setTimeout(() => mount($('#dprev', el), prev(curKind(), ta.value)), d.kind === 'Diagrama' ? 400 : 120); }; }
@@ -274,6 +276,7 @@ export async function render(el, { sub, alive }) {
     acts(el, {
       dgm: async (t) => { const ta = $('#dbody', el); if (ta.value.trim() && !(await confirmAsk('¿Reemplazar el diagrama por la plantilla?'))) return; ta.value = DGM[t.dataset.k]; ta.oninput(); },
       fmt: async () => { const ta = $('#dbody', el); const k = curKind(); if (ta.value.trim() && !(await confirmAsk(`¿Reemplazar el texto por el formato de ${k}?`))) return; ta.value = (TPL[k] || TPL.Nota)($('#dtitle', el).value || d.title); ta.oninput(); },
+      claudePrompt: () => openClaude(d.body || ''),
       copyPrompt: async () => { try { await navigator.clipboard.writeText(d.body || ''); toast('Prompt copiado ✅'); } catch { toast('No pude copiar: selecciona el texto', true); } },
       edit: () => { editing = true; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}/edit`); paint(); },
       cancel: () => { editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); paint(); },

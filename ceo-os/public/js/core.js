@@ -321,3 +321,47 @@ export const connectCard = (logo, title, sub, act, btn = 'Conectar') => html`<di
 export const calAll = () => { try { return localStorage.getItem('cal.all') === '1'; } catch { return false; } };
 export const setCalAll = (v) => { try { localStorage.setItem('cal.all', v ? '1' : '0'); } catch {} };
 export const calQ = () => (calAll() ? '' : '&only=inherent');
+
+// ---------- Claude con la cuenta de cada persona (sus créditos, sin API) ----------
+// Abre claude.ai con el prompt listo (y lo deja copiado). Si se pide `json`, espera que la persona
+// pegue la respuesta y la devuelve ya leída.
+export function openClaude(prompt) {
+  const fits = prompt.length < 6000;
+  window.open(fits ? 'https://claude.ai/new?q=' + encodeURIComponent(prompt) : 'https://claude.ai/new', '_blank', 'noopener');
+  navigator.clipboard?.writeText(prompt).catch(() => {});
+  return fits;
+}
+export async function claudeJSON(title, prompt) {
+  const fits = openClaude(prompt);
+  const v = await ask(title, [{ k: 'out', t: 'textarea', req: true, l: fits ? 'Se abrió tu Claude con todo listo. Cuando responda, copia su respuesta y pégala aquí.' : 'Se abrió tu Claude y el prompt quedó copiado: pégalo allá. Cuando responda, copia su respuesta y pégala aquí.' }], 'Listo');
+  if (!v) return null;
+  const m = String(v.out).match(/[[{][\s\S]*[\]}]/);
+  try { return JSON.parse(m ? m[0] : v.out); } catch { toast('No pude leer la respuesta. Pídele a Claude que conteste solo con el JSON y vuelve a pegarla.', true); return null; }
+}
+
+// Íconos de línea, minimalistas (16px, heredan el color del texto).
+const ic = (d) => raw(`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`);
+export const ICON = {
+  user: ic('<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 4-5 7-5s5.8 1.4 7 5"/>'),
+  target: ic('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2"/>'),
+  star: ic('<path d="M12 4l2.3 4.8 5.2.7-3.8 3.6.9 5.2L12 15.9 7.4 18.3l.9-5.2-3.8-3.6 5.2-.7z"/>'),
+  versus: ic('<path d="M5 5l6 6M11 5L5 11"/><path d="M13 13l6 6M19 13l-6 6"/>'),
+  radar: ic('<path d="M4 12a8 8 0 1 0 8-8"/><path d="M8 12a4 4 0 1 0 4-4"/><path d="M12 12l6-6"/>'),
+  bulb: ic('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>'),
+  inbox: ic('<path d="M4 13l2.5-7h11L20 13v5H4z"/><path d="M4 13h4.5l1 2h5l1-2H20"/>'),
+  play: ic('<rect x="4" y="5" width="16" height="14" rx="3"/><path d="M10.5 9.5v5l4-2.5z"/>'),
+  slides: ic('<rect x="7" y="5" width="12" height="14" rx="2"/><path d="M4 8v8"/>'),
+  sparkle: ic('<path d="M12 4v4M12 16v4M4 12h4M16 12h4M7 7l2 2M15 15l2 2M17 7l-2 2M9 15l-2 2"/>'),
+  check: ic('<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>'),
+  folder: ic('<path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/>'),
+  cal: ic('<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>'),
+  upload: ic('<path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"/><path d="M5 19h14"/>'),
+  book: ic('<path d="M5 5a2 2 0 0 1 2-2h11v16H7a2 2 0 0 0-2 2z"/><path d="M5 19V5"/>'),
+  list: ic('<path d="M9 7h11M9 12h11M9 17h11"/><circle cx="5" cy="7" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="17" r="1"/>'),
+  chart: ic('<path d="M4 19h16"/><path d="M7 16v-5M12 16V7M17 16v-8"/>'),
+  team: ic('<circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3.5 19c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4.5M15 15.2c2.4-.3 4.6 1 5.5 3.8"/>'),
+};
+// El ícono que le toca a una tarjeta por su título (para no repetir el mapeo en cada pantalla).
+export const iconFor = (t) => { const x = String(t || '').toLowerCase();
+  return /reuni/.test(x) ? ICON.team : /calend|agenda|hoy/.test(x) ? ICON.cal : /subir|entrega/.test(x) ? ICON.upload : /checklist/.test(x) ? ICON.check : /sop|library|plantilla|prompt|acceso r/.test(x) ? ICON.book
+    : /cliente|material|drive|asset/.test(x) ? ICON.folder : /cola|tarea|pendiente|plan|matriz/.test(x) ? ICON.list : /idea/.test(x) ? ICON.bulb : /diseñ|static/.test(x) ? ICON.slides : /equipo|team/.test(x) ? ICON.team : /número|finanz|revenue|métric/.test(x) ? ICON.chart : ICON.sparkle; };

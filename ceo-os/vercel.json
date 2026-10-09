@@ -58,8 +58,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "api/_data/**",
-      "maxDuration": 60
+      "includeFiles": "api/_data/**"
     }
   },
   "crons": [

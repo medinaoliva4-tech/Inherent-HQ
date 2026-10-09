@@ -1,4 +1,4 @@
-import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO } from '../core.js';
+import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON } from '../core.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
@@ -76,11 +76,11 @@ export async function render(el, { sub, alive }) {
 
   // ---------- Ideas: reels y carruseles que propone Claude con lo que encontró el scraper ----------
   function ideas(b) {
+    if (!week) loadWeek(); // para que «Generar ideas» abra Claude al instante
     if (idea === null) { mount(b, html`<p class="loading">Cargando ideas…</p>`); api(`content/ideas?profile=${encodeURIComponent(slug)}`).then((r) => { idea = r; }).catch((e) => { idea = { error: e.message, ideas: [] }; }).then(() => alive() && tab === 'ideas' && b.isConnected && ideas(b)); return; }
     if (idea.error) return mount(b, html`<div class="warnbox">${idea.error}</div>`);
     const head = html`<div class="mut sm" style="margin-bottom:14px">Salen de <b>lo que funciona</b> esta semana (ganadores del nicho, referentes y competencia), tus <b>pilares</b> y tu <b>audiencia</b>.${idea.at ? ` Generadas el ${fdate(idea.at.slice(0, 10))}.` : ''}</div>`;
-    if (!idea.on) return mount(b, html`${head}<div class="warnbox">Para generar ideas falta conectar Claude: agrega <b>ANTHROPIC_API_KEY</b> en las variables de Vercel (Sensitive) y vuelve a publicar.</div>`);
-    if (!idea.ideas.length) return mount(b, html`${head}<div class="empty"><b>Todavía no hay ideas</b>Dale «✦ Generar ideas». Tarda cerca de un minuto.</div>`);
+    if (!idea.ideas.length) return mount(b, html`${head}<div class="empty"><b>Todavía no hay ideas</b>Dale «✦ Generar ideas»: se abre tu Claude con todo listo (usa tu cuenta), y pegas aquí lo que conteste.</div>`);
     const colorOf = (n) => (data.cfg.pillars || []).find((x) => x.name === n)?.color || '#cfc7ba';
     const card = (x) => html`<div class="card idea"><div class="row" style="gap:6px;flex-wrap:wrap"><span class="chip" style="gap:6px"><i style="width:9px;height:9px;border-radius:50%;background:${colorOf(x.pillar)};display:inline-block"></i>${x.pillar || 'Sin pilar'}</span><div class="sp"></div><button class="btn xs" data-act="ideaPlan" data-id="${x.id}">→ Planner</button></div>
       <b style="font-weight:500;font-size:17px;display:block;margin-top:10px">${x.title}</b>
@@ -88,8 +88,8 @@ export async function render(el, { sub, alive }) {
       <ol class="sm" style="margin:8px 0 0 18px;padding:0">${(x.outline || []).map((o) => html`<li style="margin:3px 0">${o}</li>`)}</ol>
       <div class="mut sm" style="margin-top:8px">💡 ${x.why}${x.inspired_by ? html` · <a href="${x.inspired_by}" target="_blank" rel="noopener noreferrer" style="color:inherit">ver el original ↗</a>` : ''}</div></div>`;
     mount(b, html`${head}<div class="grid g2" style="align-items:start">
-      <div><div class="sec-title" style="margin-top:0"><h2>Reels</h2></div>${idea.ideas.filter((x) => x.format === 'Reel').map(card)}</div>
-      <div><div class="sec-title" style="margin-top:0"><h2>Carruseles</h2></div>${idea.ideas.filter((x) => x.format !== 'Reel').map(card)}</div></div>`);
+      <div><div class="sec-title" style="margin-top:0"><h2 class="ttl">${ICON.play}Reels</h2></div>${idea.ideas.filter((x) => x.format === 'Reel').map(card)}</div>
+      <div><div class="sec-title" style="margin-top:0"><h2 class="ttl">${ICON.slides}Carruseles</h2></div>${idea.ideas.filter((x) => x.format !== 'Reel').map(card)}</div></div>`);
   }
 
   // ---------- Bandeja: comentarios y mensajes de las cuentas propias (Zernio) ----------
@@ -102,10 +102,10 @@ export async function render(el, { sub, alive }) {
     const ago = (d) => (d ? fdate(String(d).slice(0, 10)) : '');
     mount(b, html`<div class="mut sm" style="margin-bottom:12px">Solo lectura: se responde desde Zernio o con ⑧ Community. Puede tardar hasta 10 minutos en aparecer lo nuevo.</div>
       <div class="grid g21" style="align-items:start">
-        <div><div class="sec-title" style="margin-top:0"><h2>Comentarios</h2><span class="mut sm">${inbox.comments.reduce((a, p) => a + p.comments.length, 0)}</span></div>
+        <div><div class="sec-title" style="margin-top:0"><h2 class="ttl">${ICON.inbox}Comentarios</h2><span class="mut sm">${inbox.comments.reduce((a, p) => a + p.comments.length, 0)}</span></div>
           ${inbox.comments.length ? inbox.comments.map((p) => html`<div class="card" style="margin-bottom:10px;padding:14px"><a class="row" href="${p.url}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;gap:10px">${safeImg(p.picture) ? html`<span class="rthumb" style="background-image:url('${safeImg(p.picture)}')"></span>` : ''}<span class="sm" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.text || 'Post'}</span><span class="mut sm">${ago(p.at)} ↗</span></a>
             ${p.comments.map((c) => html`<div class="inmsg"><b>@${c.from}</b><span>${c.text}</span><span class="mut sm">${ago(c.at)}${c.replies ? ` · ${c.replies} respuesta${c.replies === 1 ? '' : 's'}` : ' · sin responder'}</span></div>`)}</div>`) : html`<div class="mut sm">Sin comentarios recientes.</div>`}</div>
-        <div><div class="sec-title" style="margin-top:0"><h2>Mensajes directos</h2><span class="mut sm">${inbox.dms.length}</span></div>
+        <div><div class="sec-title" style="margin-top:0"><h2 class="ttl">${ICON.user}Mensajes directos</h2><span class="mut sm">${inbox.dms.length}</span></div>
           <div class="card" style="padding:6px 14px">${inbox.dms.length ? inbox.dms.map((d) => html`<div class="inmsg"><b>${d.who}</b><span>${d.last}</span><span class="mut sm">${RED[d.platform] || d.platform} · ${ago(d.at)}</span></div>`) : html`<div class="mut sm" style="padding:8px 0">Sin conversaciones activas.</div>`}</div></div>
       </div>`);
   }
@@ -236,6 +236,7 @@ export async function render(el, { sub, alive }) {
 
   // ---------- Fuentes: tus cuentas, tu audiencia (de lo general a lo específico), referentes y competencia ----------
   function fuentes(b) {
+    if (!week) loadWeek();
     const p = data.profile, c = data.cfg, au = c.audience || {};
     const accUrl = (a) => (a.red === 'tiktok' ? `https://www.tiktok.com/@${a.handle}` : `https://www.instagram.com/${a.handle}/`);
     const acc = (a, rm, list) => html`<div class="artifact" style="margin:6px 0"><span class="fi">${a.red === 'tiktok' ? '♪' : '◎'}</span><div style="flex:1"><a href="${accUrl(a)}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><b style="font-weight:500">@${a.handle}</b></a><div class="mut" style="font-size:11px">${RED[a.red]}${a.source ? ' · ' + a.source : ''}</div></div>${rm != null ? html`<button class="sm mut" data-act="rmAcc" data-l="${list}" data-i="${rm}">✕</button>` : ''}</div>`;
@@ -243,33 +244,33 @@ export async function render(el, { sub, alive }) {
     const group = (kind) => c.accounts.map((a, i) => ({ a, i })).filter((x) => x.a.kind === kind);
     const repoComp = p.competitors.filter((a) => !c.accounts.some((x) => x.handle === a.handle && x.red === a.red));
     mount(b, html`
-      <div class="grid g2" style="align-items:start">
-        <div class="card"><h3 style="font-weight:500;font-size:20px">Tus cuentas</h3>
-          <div class="mut sm" style="margin:4px 0 6px">Las de la marca. De aquí salen Analytics, la Bandeja y «lo tuyo» en el scrape.</div>
-          ${p.own.filter((a) => a.source === 'onboarding').map((a) => acc(a))}
-          ${(c.own || []).map((a, i) => acc(a, i, 'own'))}
-          ${p.own.length ? '' : html`<div class="mut sm">Todavía no hay cuentas: agrégalas aquí.</div>`}
-          ${adder('own', '@cuenta de la marca')}</div>
-        <div class="card"><h3 style="font-weight:500;font-size:20px">A quién le hablamos</h3>
-          <div class="mut sm" style="margin:4px 0 10px">De lo general al centro. Las ideas apuntan al centro; el scraper usa los temas del nicho.</div>
-          <div class="bull">
-            <div class="bring r1"><span>General</span></div><div class="bring r2"><span>Nicho</span></div><div class="bring r3"><span>Exacto</span></div>
-          </div>
-          ${[['general', 'General', 'Ej. Dueños de negocio en Guatemala, 28 a 45 años'], ['nicho', 'Nicho', 'Ej. Restaurantes que ya venden pero no crecen'], ['exacto', 'Exacto (la persona)', 'Ej. Chef dueño de 1 local, quiere abrir el segundo y no sabe por dónde']].map(([k, l, ph]) => html`<label class="f" style="margin-top:8px">${l}</label><textarea class="in" data-aud="${k}" placeholder="${ph}" style="min-height:58px">${au[k] || ''}</textarea>`)}
-          <button class="btn ghost" data-act="saveAud" style="margin-top:8px">Guardar audiencia</button></div>
+      <div class="cols2">
+        <div>
+          <div class="card"><h3 class="ttl">${ICON.user}Tus cuentas</h3>
+            <div class="mut sm" style="margin:4px 0 6px">Las de la marca. De aquí salen Analytics, la Bandeja y «lo tuyo» en el scrape.</div>
+            ${p.own.filter((a) => a.source === 'onboarding').map((a) => acc(a))}
+            ${(c.own || []).map((a, i) => acc(a, i, 'own'))}
+            ${p.own.length || (c.own || []).length ? '' : html`<div class="mut sm">Todavía no hay cuentas: agrégalas aquí.</div>`}
+            ${adder('own', '@cuenta de la marca')}</div>
+          <div class="card"><h3 class="ttl">${ICON.star}Referentes</h3>
+            <div class="mut sm" style="margin:4px 0 6px">De quién tomamos estilo y temas. No se copian: se leen.</div>
+            ${group('referente').map(({ a, i }) => acc(a, i, 'accounts'))}${group('referente').length ? '' : html`<div class="mut sm">Ninguno todavía.</div>`}
+            ${adder('referente', '@referente')}</div>
+          <div class="card"><h3 class="ttl">${ICON.versus}Competencia</h3>
+            <div class="mut sm" style="margin:4px 0 6px">Contra quién compite la marca. Las del onboarding vienen de la investigación de ① Strategy.</div>
+            ${repoComp.map((a) => acc({ ...a, source: 'onboarding' }))}
+            ${group('competencia').map(({ a, i }) => acc(a, i, 'accounts'))}${repoComp.length || group('competencia').length ? '' : html`<div class="mut sm">Ninguna todavía.</div>`}
+            ${adder('competencia', '@competidor')}</div>
+        </div>
+        <div>
+          <div class="card"><div class="row"><h3 class="ttl">${ICON.target}A quién le hablamos</h3><div class="sp"></div><button class="btn ghost xs" data-act="audAI">✦ Proponer con Claude</button></div>
+            <div class="mut sm" style="margin:4px 0 10px">De lo general al centro. Claude lo propone con tus cuentas, referentes y competencia; tú lo ajustas.</div>
+            <div class="bull"><div class="bring r1"><span>General</span></div><div class="bring r2"><span>Nicho</span></div><div class="bring r3"><span>Exacto</span></div></div>
+            ${[['general', 'General', 'Ej. Dueños de negocio en Guatemala, 28 a 45 años'], ['nicho', 'Nicho', 'Ej. Restaurantes que ya venden pero no crecen'], ['exacto', 'Exacto (la persona)', 'Ej. Chef dueño de 1 local, quiere abrir el segundo y no sabe por dónde']].map(([k, l, ph]) => html`<label class="f" style="margin-top:8px">${l}</label><textarea class="in" data-aud="${k}" placeholder="${ph}" style="min-height:58px">${au[k] || ''}</textarea>`)}
+            <button class="btn ghost" data-act="saveAud" style="margin-top:8px">Guardar audiencia</button></div>
+        </div>
       </div>
-      <div class="grid g2" style="align-items:start;margin-top:16px">
-        <div class="card"><h3 style="font-weight:500;font-size:20px">Referentes</h3>
-          <div class="mut sm" style="margin:4px 0 6px">Marcas o creadores de los que tomamos estilo y temas. No se copian: se leen.</div>
-          ${group('referente').map(({ a, i }) => acc(a, i, 'accounts'))}${group('referente').length ? '' : html`<div class="mut sm">Ninguno todavía.</div>`}
-          ${adder('referente', '@referente')}</div>
-        <div class="card"><h3 style="font-weight:500;font-size:20px">Competencia</h3>
-          <div class="mut sm" style="margin:4px 0 6px">Contra quién compite la marca. Las del onboarding vienen de la investigación de ① Strategy.</div>
-          ${repoComp.map((a) => acc({ ...a, source: 'onboarding' }))}
-          ${group('competencia').map(({ a, i }) => acc(a, i, 'accounts'))}${repoComp.length || group('competencia').length ? '' : html`<div class="mut sm">Ninguna todavía.</div>`}
-          ${adder('competencia', '@competidor')}</div>
-      </div>
-      <div class="card" style="margin-top:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><h3 style="font-weight:500;font-size:20px">Scrape semanal</h3><div class="mut sm">Cada lunes, 10 posts por fuente, de Reels y TikTok: tus cuentas, referentes, competencia y los temas del nicho.</div></div><div class="sp"></div>
+      <div class="card" style="margin-top:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><h3 class="ttl">${ICON.radar}Scrape semanal</h3><div class="mut sm">Cada lunes, 10 posts por fuente, de Reels y TikTok: tus cuentas, referentes, competencia y los temas del nicho.</div></div><div class="sp"></div>
         <label class="check" style="padding:0"><input type="checkbox" data-act="auto" ${c.auto ? raw('checked') : ''}> Activado</label></div>
         <div class="grid g2" style="margin-top:12px;align-items:start"><div>
           <b class="sm" style="font-weight:500">Temas del nicho (hashtags, máx. 10)</b>
@@ -281,6 +282,44 @@ export async function render(el, { sub, alive }) {
   }
   async function saveCfg(next) {
     try { data.cfg = { ...data.cfg, ...(await api('content/cfg', { method: 'PUT', body: { profile: slug, ...data.cfg, ...next } })) }; fuentes($('#cbody', el)); } catch (e) { toast(e.message, true); }
+  }
+
+  // Los prompts para la cuenta de Claude de cada persona (contestan solo JSON, que se pega de vuelta).
+  const posts4 = (l = [], n) => l.slice(0, n).map((x) => `- @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''} · ${x.url}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 220)}`).join('\n') || '(nada)';
+  function ideasPrompt(r) {
+    const c = data.cfg, au = c.audience || {};
+    return `Eres el estratega creativo de Inherent (growth operator en Guatemala). Propón 5 ideas de Reel y 5 de Carrusel para la marca «${data.profile.name}» que el equipo pueda producir esta semana.
+Reglas: los ganadores, referentes y competencia son inspiración de formato y tema, nunca se copian. Cada idea entra en un pilar y le habla a la audiencia del centro. Español de Guatemala, de «tú», concreto. Hook que se diga en 2 segundos. outline: escenas (Reel, 4 a 6) o texto de cada slide (Carrusel, 5 a 8). why: una frase con el patrón que la inspira. inspired_by: link del post que la inspira o "".
+
+Pilares: ${(c.pillars || []).map((x) => x.name).join(' · ') || '(sin definir: propón el más lógico)'}
+Audiencia: general: ${au.general || '—'} | nicho: ${au.nicho || '—'} | exacto: ${au.exacto || '—'}
+
+Ganadores del nicho:
+${posts4(r.top, 8)}
+
+Referentes:
+${posts4(r.refs, 6)}
+
+Competencia:
+${posts4(r.comp, 5)}
+
+Contesta SOLO con este JSON, sin texto antes ni después:
+{"ideas":[{"format":"Reel"|"Carrusel","title":"","hook":"","pillar":"","outline":[""],"why":"","inspired_by":""}]}`;
+  }
+  function audiencePrompt(r, c) {
+    return `Eres el estratega de Inherent. Define la audiencia de la marca «${data.profile.name}» como una diana: de lo general al centro.
+- general: el público amplio (país, edad, momento de vida, intereses).
+- nicho: el segmento que de verdad compra.
+- exacto: UNA persona concreta, con su situación y lo que quiere lograr.
+Cada uno en 1 o 2 frases, en español, sin adjetivos vacíos.
+
+Cuentas de la marca: ${data.profile.own.map((a) => '@' + a.handle).join(', ') || '—'}
+Referentes: ${c.accounts.filter((x) => x.kind === 'referente').map((a) => '@' + a.handle).join(', ') || '—'}
+Competencia: ${[...data.profile.competitors, ...c.accounts.filter((x) => x.kind !== 'referente')].map((a) => '@' + a.handle).join(', ') || '—'}
+Lo que publica la marca:
+${posts4(r.own, 5)}
+
+Contesta SOLO con este JSON: {"general":"","nicho":"","exacto":""}`;
   }
 
   acts(el, {
@@ -329,7 +368,21 @@ export async function render(el, { sub, alive }) {
     },
     rmAcc: (t) => (t.dataset.l === 'own' ? saveCfg({ own: data.cfg.own.filter((_, i) => i !== +t.dataset.i) }) : saveCfg({ accounts: data.cfg.accounts.filter((_, i) => i !== +t.dataset.i) })),
     saveAud: () => { const audience = Object.fromEntries([...el.querySelectorAll('[data-aud]')].map((x) => [x.dataset.aud, x.value.trim()])); saveCfg({ audience }).then(() => toast('Audiencia guardada ✅')); },
-    genIdeas: async (t) => { t.disabled = true; t.textContent = 'Pensando… (cerca de 1 min)'; try { idea = await api('content/ideas', { method: 'POST', body: { profile: slug } }); toast(`${idea.ideas.length} ideas nuevas ✅`); } catch (e) { toast(e.message, true); } t.disabled = false; t.textContent = '✦ Generar ideas'; if (tab === 'ideas') ideas($('#cbody', el)); },
+    genIdeas: async () => {
+      if (!week) { loadWeek(); return toast('Un momento: estoy leyendo lo de la semana. Vuelve a darle en 2 segundos.'); }
+      const r = week?.result || {};
+      if (!(r.top || []).length && !(r.refs || []).length) return toast('Primero corre el scrape en «Lo que funciona»: las ideas salen de lo que encuentra', true);
+      const out = await claudeJSON('Ideas de Claude', ideasPrompt(r));
+      if (!out) return;
+      try { idea = await api('content/ideas', { method: 'PUT', body: { profile: slug, week: r.week, ideas: out.ideas || out } }); toast(`${idea.ideas.length} ideas guardadas ✅`); if (tab === 'ideas') ideas($('#cbody', el)); } catch (e) { toast(e.message, true); }
+    },
+    audAI: async () => {
+      const r = week?.result || {}; const c = data.cfg;
+      const out = await claudeJSON('Audiencia con Claude', audiencePrompt(r, c));
+      if (!out) return;
+      const audience = { general: String(out.general || ''), nicho: String(out.nicho || ''), exacto: String(out.exacto || '') };
+      await saveCfg({ audience }); toast('Audiencia propuesta por Claude ✅ · ajústala si hace falta');
+    },
     ideaPlan: async (t) => { const x = idea.ideas.find((y) => y.id === t.dataset.id); if (!x) return; const r = await editPost(slug, null, { title: x.title, format: x.format, pillar: x.pillar, caption: `${x.hook}\n\n${(x.outline || []).map((o, i) => `${i + 1}. ${o}`).join('\n')}` }); if (r) { posts = posts ? [...posts, r] : null; toast('Idea al Planner ✅ · ponle fecha'); } },
   });
   acts(el, { auto: (t) => saveCfg({ auto: t.checked }).then(() => toast(t.checked ? 'Se scrapea solo cada lunes ✅' : 'Scrape semanal apagado')) }, 'change');
