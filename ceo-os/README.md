@@ -6,7 +6,7 @@ Se entra con **Google** y solo con cuentas **@inherentglobal.com**.
 | Fase | Qué trae | Estado |
 |---|---|---|
 | 1 | Base, login con Google, Home, **Sales** (CRM, catálogo con costo por hora, cotizaciones con PDF) y **Team** (organigrama, perfiles y accesos) | ✅ |
-| 2 | Finance (revenue, costos, rentabilidad, pricing) y Operations (proyectos por fase, pipeline por cliente, tareas, Google Calendar) | 🚧 |
+| 2 | Finance (movimientos, costs, profitability, pricing, nómina por rol) y Operations (proyectos por fase, pipeline por cliente con entregables, tareas, Google Calendar, timeline) | ✅ |
 | 3 | Library (SOPs, playbooks, videos y carpetas de Google Drive) | 🚧 |
 | 4 | Content (planner, guiones diarios con IA, winners scrape, analytics) | 🚧 |
 | 5 | Portal del cliente | 🚧 |

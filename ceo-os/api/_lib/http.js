@@ -4,6 +4,7 @@ export function body(req) {
 }
 export function fail(res, e) {
   if (e?.code === 'NO_DB' || e?.code === 'NO_GOOGLE' || e?.code === 'NO_GOOGLE_TOKEN') return res.status(503).json({ error: e.message, code: e.code });
+  if (e?.status === 401 || e?.status === 403) return res.status(e.status === 401 ? 503 : 403).json({ error: 'Google no dio acceso. Sal y vuelve a entrar con Google para dar permiso.', code: 'NO_GOOGLE_TOKEN' });
   console.error(e);
   res.status(500).json({ error: 'Error del servidor' });
 }

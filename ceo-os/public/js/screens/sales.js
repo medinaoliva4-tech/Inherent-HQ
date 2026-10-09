@@ -12,14 +12,14 @@ const QSTATUS = { Borrador: 'amber', Enviada: 'blue', Aceptada: 'green', Rechaza
 const score = (i) => html`<span class="score ${i >= 4 ? 'hot' : ''}">${[1, 2, 3, 4, 5].map((k) => html`<i class="${k <= (i || 0) ? 'on' : ''}"></i>`)}</span>`;
 const tagChip = (t) => html`<span class="chip ${TAGS[t] ?? ''}" style="margin:2px">${t}</span>`;
 
-export async function render(el, { me, sub }) {
+export async function render(el, { me, sub, alive }) {
   const isCeo = me.role === 'ceo';
   const L = col('leads'), S = col('services'), C = col('quotes'), R = col('rates');
   let [leads, services, quotes] = await Promise.all([L.list(), S.list(), C.list()]);
   let rates = null;
   if (isCeo) { rates = await R.get('default').catch(() => null); }
   let plans = null, plansErr = null;
-  api('repo/precios').then((r) => { plans = r; if (tab === 'cat') paint(); }).catch((e) => { plansErr = e.message; });
+  api('repo/precios').then((r) => { plans = r; if (tab === 'cat' && alive()) paint(); }).catch((e) => { plansErr = e.message; });
 
   let tab = ['crm', 'cat', 'quotes'].includes(sub[0]) ? sub[0] : 'crm';
   let crmView = 'list', q = '', tagF = '', catF = 'Todos';
