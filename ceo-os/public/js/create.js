@@ -42,6 +42,8 @@ export async function newProject({ team, me, projects = [], tasks = [] }) {
       phases: phasesFor(kind, start), meetings: meetingsFor(kind, start), ...(items ? { services: items, price: items.reduce((x, i) => x + (i.price || 0), 0) || null } : {}), pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: depts.has(d) ? 'todo' : 'off' }])) });
     let made = [];
     if (a.auto === 'si') for (const t of (items ? customTasks(p, items, team, me.email) : tasksFor(p, team, tasks, me.email))) made.push(await col('tasks').create({ checklist: [], comments: [], ...t }));
+    // Si el cliente todavía no tiene su Drive, se crea y se conecta (sin frenar si falla).
+    if (c) { const acc = await col('accounts').get('acc-' + c.slug).catch(() => null); if (!acc?.drive) api('drive/client', { method: 'POST', body: { slug: c.slug, growth: kind === 'Growth' || /accelerate|compound/i.test(c.plan || '') } }).then(() => toast(`Drive de ${c.slug.toUpperCase()} creado y conectado 📁`)).catch(() => {}); }
     toast(`Proyecto creado ✅${made.length ? ` · ${made.length} tareas` : ''}`);
     return { project: p, tasks: made };
   } catch (e) { toast(e.message, true); return null; }

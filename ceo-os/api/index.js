@@ -262,6 +262,27 @@ async function companyFolder(u, client, sub) {
     return id;
   } catch (e) { throw Object.assign(new Error('No tienes acceso a la carpeta de entregas de Inherent en Drive. Pídele al CEO que te la comparta como editor.'), { code: 'NO_GOOGLE' }); }
 }
+// El Drive de cada cliente (ver inherent/05-OPERACION.md → «El Drive de cada cliente»):
+// crea las carpetas dentro de la carpeta de entregas y las conecta a Content y a la cuenta del cliente.
+const CLIENT_DIRS = ['00 Onboarding', '01 Assets de marca', '02 Guiones', '03 Crudo (grabaciones)', '04 Por postear', '05 Entregables', '06 Reportes'];
+const folderUrl = (id) => `https://drive.google.com/drive/folders/${id}`;
+on('POST', 'drive/client', async (req, res) => {
+  const u = await guardAny(req, res, ['clients', 'operations']); if (!u) return;
+  const b = body(req); const slug = String(b.slug || ''); if (!/^[\w-]{2,60}$/.test(slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  const root = driveId((await db.get('settings', 'drive'))?.root);
+  if (!root) return res.status(400).json({ error: 'Primero define la carpeta de entregas de Inherent (Arranque → paso 5).' });
+  let top; const dirs = {};
+  try {
+    top = await childFolder(u.email, root, slug.toUpperCase());
+    for (const name of [...CLIENT_DIRS, ...(b.growth ? ['07 Números y auditoría'] : [])]) dirs[name] = await childFolder(u.email, top, name);
+  } catch { throw Object.assign(new Error('No tienes acceso de editor a la carpeta de entregas de Inherent en Drive.'), { code: 'NO_GOOGLE' }); }
+  const links = Object.fromEntries(Object.entries(dirs).map(([k, id]) => [k, folderUrl(id)]));
+  await db.upsert('sources', 'cfg-' + slug, { profile: slug, guiones_drive: links['02 Guiones'], postear_drive: links['04 Por postear'] }, u.email);
+  const acc = await db.get('accounts', 'acc-' + slug);
+  const patch = { drive: folderUrl(top), drive_dirs: links, assets: acc?.assets || links['01 Assets de marca'] };
+  await db.upsert('accounts', 'acc-' + slug, acc ? patch : { name: slug.toUpperCase(), roadmap: [], accesos: [], ...patch }, u.email);
+  res.json({ drive: folderUrl(top), dirs: links });
+});
 on('POST', 'google/upload', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   const b = body(req);
