@@ -707,3 +707,6 @@ a.btn{text-decoration:none}
 
 .crop{width:260px;height:260px;margin:6px auto 0;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px #fff,0 10px 30px rgba(23,20,16,.18);touch-action:none}
 .crop canvas{width:260px;height:260px;display:block;cursor:grab;touch-action:none}.crop canvas:active{cursor:grabbing}
+
+/* En el cel la sección nueva entra solo con fundido: el desliz hacia arriba se sentía como un brinco */
+@media (max-width:760px){#main.enter>*{animation-name:fade}}

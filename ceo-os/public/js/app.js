@@ -74,17 +74,21 @@ async function render() {
   { const nav = $('.nav'), on = $('.nav [data-go].on'); if (nav && on && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: on.offsetLeft - (nav.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' }); }
   closeDrawer();
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
-  const old = $('#main'); const main = old.cloneNode(false); old.replaceWith(main);
+  // Cambiar de sección sin saltos: arriba de una vez (sin animar el scroll) y la página no se encoge
+  // mientras carga la siguiente (antes «Cargando…» la hacía chiquita y el navegador brincaba).
+  const old = $('#main'), keep = old.offsetHeight;
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  const main = old.cloneNode(false); main.style.minHeight = keep + 'px'; old.replaceWith(main);
   main.classList.add('enter'); setTimeout(() => main.classList.remove('enter'), 900);
   const gen = ++renderGen;
-  mount(main, html`<p class="loading">Cargando…</p>`);
+  const slow = setTimeout(() => { if (gen === renderGen && !main.childElementCount) mount(main, html`<p class="loading">Cargando…</p>`); }, 250);
   try {
     const mod = await import(`./screens/${SCREENS[key]}.js`);
     if (gen !== renderGen) return;
     await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)?.[1] || (key === 'me' ? 'Mi perfil' : 'Arranque'), alive: () => gen === renderGen });
   } catch (e) {
     mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
-  }
+  } finally { clearTimeout(slow); if (gen === renderGen) main.style.minHeight = ''; }
 }
 
 window.addEventListener('hashchange', () => me && render());
