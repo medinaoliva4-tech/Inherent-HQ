@@ -537,3 +537,22 @@ body{background:transparent!important}
 .connect.on{background:#f3f7e6;border-color:#cfdc9b}.connect .lg svg{width:18px;height:18px;display:block}
 .connectcard{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:#fff;border:1px dashed rgba(23,20,16,.2);margin-bottom:12px}
 .connectcard .lg.big svg{width:40px;height:40px;display:block}
+
+/* Planner: calendario semana / mes */
+.pcal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.pdow{font-size:11px;color:var(--mut);text-align:center;padding:2px 0}
+.pday{background:#fff;border:1px solid var(--line);border-radius:12px;min-height:96px;padding:6px;display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:background .15s}
+.pday:hover{background:#faf7f1}
+.pcal.semana .pday{min-height:240px}
+.pday.out{opacity:.45}
+.pday.today{outline:2px solid var(--ink)}
+.pday .pn{font-size:11px;color:var(--mut)}
+.ppost{display:flex;align-items:center;gap:4px;text-align:left;font-size:11.5px;line-height:1.25;background:#f4efe6;border-radius:7px;border-left:4px solid #cfc7ba;padding:4px 6px;width:100%;min-width:0}
+.ppost .pt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ppost .pi{flex:none;font-size:10px}
+.rthumb{flex:none;width:30px;height:40px;border-radius:6px;background:#ebe5da center/cover;margin-right:8px}
+@media (max-width:760px){
+  .pcal{gap:3px}.pday{min-height:64px;padding:4px;border-radius:8px}.pcal.semana .pday{min-height:140px}
+  .ppost .pt{display:none}.ppost{justify-content:center;border-left-width:6px}
+  .gsplit{grid-template-columns:1fr!important}
+}

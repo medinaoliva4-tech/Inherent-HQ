@@ -8,12 +8,21 @@ const C = col('content');
 
 export const loadPosts = async (profile) => (await C.list()).filter((p) => p.profile === profile && p.kind === 'post');
 
-export async function editPost(profile, p) {
+// Los pilares de contenido de cada perfil (se definen en Content → Planner).
+export const pillarsOf = (profile) => conn[profile]?.pillars || [];
+export async function loadConn(profile) { if (!conn[profile] || conn[profile].loading) conn[profile] = await api(`content/cfg?profile=${encodeURIComponent(profile)}`).catch(() => ({})); return conn[profile]; }
+export function setConn(profile, patch) { conn[profile] = { ...(conn[profile] || {}), ...patch }; }
+// En Drive o por subir: lo que dice el Planner de cada pieza.
+export const driveState = (p) => (p.drive_id || /^https:\/\//.test(p.url || '') ? ['📁', 'En Drive'] : (p.status || 'Idea') === 'Idea' ? ['✎', 'Por grabar'] : ['⬆', 'Por subir']);
+
+export async function editPost(profile, p, pre = {}) {
+  const pillars = pillarsOf(profile);
   if (!p) { // nueva pieza: con preguntas
     const a = await wizard('Nueva pieza', [
       { k: 'format', q: '¿Qué formato?', type: 'cards', req: true, opts: [['Reel', '🎬'], ['TikTok', '🎵'], ['Carrusel', '🗂️'], ['Story', '⭕'], ['Estático', '🖼️'], ['YouTube', '▶️']].map(([v, i]) => ({ v, i, l: v })) },
       { k: 'title', q: '¿Cuál es la idea?', type: 'text', req: true, ph: 'Ej. Detrás de cocina' },
-      { k: 'date', q: '¿Cuándo sale?', type: 'when' },
+      { k: 'pillar', q: '¿De qué pilar?', type: 'cards', show: () => pillars.length > 0, v: pre.pillar, opts: pillars.map((x) => ({ v: x.name, i: '●', l: x.name })) },
+      { k: 'date', q: '¿Cuándo sale?', type: 'when', v: pre.date, show: () => !pre.date },
       { k: 'status', q: '¿En qué va?', type: 'cards', req: true, opts: PSTATUS.map((v) => ({ v, l: v })) },
     ], 'Agregar');
     if (!a) return null;
@@ -24,6 +33,7 @@ export async function editPost(profile, p) {
     { k: 'format', l: 'Formato', t: 'select', opts: ['Reel', 'TikTok', 'Carrusel', 'Story', 'Estático', 'YouTube'].map((x) => [x, x]), v: p?.format || 'Reel', half: true },
     { k: 'date', l: 'Fecha de publicación', t: 'date', v: p?.date, half: true },
     { k: 'status', l: 'Estado', t: 'select', opts: PSTATUS.map((x) => [x, x]), v: p?.status || 'Idea', half: true },
+    ...(pillars.length ? [{ k: 'pillar', l: 'Pilar', t: 'select', opts: [['', '—'], ...pillars.map((x) => [x.name, x.name])], v: p?.pillar || '', half: true }] : []),
     { k: 'url', l: 'Video o archivo (Drive)', v: p?.url, half: true },
     { k: 'caption', l: 'Caption', t: 'textarea', v: p?.caption },
   ], p ? 'Guardar' : 'Agregar');
@@ -36,7 +46,7 @@ export async function editPost(profile, p) {
 // «Por postear» puede venir de una carpeta de Drive: cada video o imagen de la carpeta es una pieza.
 const conn = {};
 const FMT = (f) => (/video/.test(f.mime) ? 'Reel' : /image/.test(f.mime) ? 'Estático' : 'Pieza');
-async function syncDrive(profile, list) {
+export async function syncDrive(profile, list) {
   const folder = conn[profile]?.postear_drive; if (!folder) return [];
   const r = await api(`google/drive?folder=${encodeURIComponent(folder)}`);
   const have = new Set(list.map((p) => p.drive_id).filter(Boolean)); const made = [];
@@ -49,7 +59,7 @@ export function postsBoard(b, profile, list, onChange) {
   const sorted = (s) => list.filter((p) => (p.status || 'Idea') === s).sort((a, z) => String(a.date || '9').localeCompare(String(z.date || '9')));
   mount(b, html`<div class="row" style="margin-bottom:12px"><span class="mut sm">${list.length} piezas · arrastra para cambiar de estado</span><div class="sp"></div>${connectChip('drive', dr ? 'Drive conectado · actualizar' : 'Conectar con Drive', 'x', Boolean(dr), 'data-pact="drive"')}${dr ? html`<button class="sm mut" data-pact="driveset" style="margin:0 8px">Cambiar carpeta</button>` : ''}<button class="btn" data-pact="new">+ Pieza</button></div>
     <div class="kanban swap">${PSTATUS.map((s) => html`<div class="kcol" data-st="${s}"><h4><span>${s}</span><span class="mut">${sorted(s).length}</span></h4>
-      ${sorted(s).map((p) => html`<div class="kcard" draggable="true" data-pact="open" data-id="${p.id}"><div class="row"><span class="chip ${PCLS[s]}" style="font-size:11px">${p.format || 'Pieza'}</span><div class="sp"></div><span class="mut sm">${p.date ? fdate(p.date) : ''}</span></div><b style="margin-top:8px">${p.title}</b>${p.caption ? html`<div class="mut sm" style="margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.caption}</div>` : ''}${p.url ? html`<div class="sm" style="margin-top:6px">🎬 Con video</div>` : ''}</div>`)}</div>`)}</div>`);
+      ${sorted(s).map((p) => html`<div class="kcard" draggable="true" data-pact="open" data-id="${p.id}"><div class="row"><span class="chip ${PCLS[s]}" style="font-size:11px">${p.format || 'Pieza'}</span><div class="sp"></div><span class="mut sm">${p.date ? fdate(p.date) : ''}</span></div><b style="margin-top:8px">${p.title}</b>${p.caption ? html`<div class="mut sm" style="margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.caption}</div>` : ''}<div class="sm mut" style="margin-top:6px">${driveState(p).join(' ')}${p.pillar ? ' · ' + p.pillar : ''}</div></div>`)}</div>`)}</div>`);
   const save = (r) => { if (!r) return; list = list.some((x) => x.id === r.id) ? list.map((x) => (x.id === r.id ? r : x)) : [...list, r]; onChange(list); };
   b.onclick = async (e) => {
     const t = e.target.closest('[data-pact]'); if (!t) return;

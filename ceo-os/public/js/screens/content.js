@@ -1,8 +1,8 @@
 import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO } from '../core.js';
-import { loadPosts, postsBoard } from '../posts.js';
+import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 
-// Content: lo que dice el repo de cada perfil (guiones, plan, cuentas) + el scrape semanal.
-// La app no inventa guiones: los escribe ④ Creatividad en Claude Code y aquí se ven.
+// Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
+// del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
 const RED = { instagram: 'Instagram', tiktok: 'TikTok' };
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$/.test(String(u || '')) ? u : null);
 const TABS = [['semana', 'Semana'], ['postear', 'Por postear'], ['guiones', 'Guiones'], ['plan', 'Planner'], ['analytics', 'Analytics'], ['fuentes', 'Fuentes']];
@@ -19,17 +19,16 @@ export function videoCard(it) {
 export async function render(el, { sub, alive }) {
   let slug = sub[1] || (() => { try { return localStorage.getItem('content.profile'); } catch { return null; } })() || 'inherent';
   let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'semana';
-  let data = null, mes = null, file = null, week = null, posts = null, poll = null;
+  let data = null, week = null, posts = null, poll = null, ig = null;
+  let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
-    slug = data.profile.slug; mes = data.profile.months[0]?.mes || null; file = null; week = null; posts = null; ig = null;
+    slug = data.profile.slug; week = null; posts = null; ig = null; gstack = null; gfiles = null; gcur = null;
     try { localStorage.setItem('content.profile', slug); } catch {}
     paint();
   }
   const root = () => data.profile.root;
-  const months = () => data.profile.months;
-  const filesOf = (pred) => (months().find((m) => m.mes === mes)?.files || []).filter(pred);
   const go = () => history.replaceState(null, '', `#/content/${tab}/${slug}`);
 
   function paint() {
@@ -41,13 +40,11 @@ export async function render(el, { sub, alive }) {
       <div class="row" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
         <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
-        ${(tab === 'guiones' || tab === 'plan') && months().length ? html`<select class="in" id="mes" style="width:auto">${months().map((m) => html`<option value="${m.mes}" ${m.mes === mes ? raw('selected') : ''}>${m.mes}</option>`)}</select>` : ''}
         ${tab === 'semana' ? html`<button class="btn" data-act="scrape">Scrapear ahora</button>` : ''}
 
       </div>
       <div id="cbody" class="swap"></div>`);
     ({ semana, postear, guiones, plan, analytics, fuentes })[tab]($('#cbody', el));
-    const sel = $('#mes', el); if (sel) sel.onchange = () => { mes = sel.value; file = null; paint(); };
   }
 
   // ---------- Semana: top 10 del nicho + los videos que agregaste ----------
@@ -79,41 +76,101 @@ export async function render(el, { sub, alive }) {
     postsBoard(b, slug, posts, (l) => { posts = l; postear(b); });
   }
 
-  // ---------- Guiones: 04-contenido/<mes>/ideas/*.md ----------
+  // ---------- Guiones: una carpeta de Google Drive por perfil ----------
+  // El repo tiene cómo se escribe un guion; los guiones de cada mes viven en Drive.
+  const PREV = { 'application/vnd.google-apps.document': 'document', 'application/vnd.google-apps.spreadsheet': 'spreadsheets', 'application/vnd.google-apps.presentation': 'presentation' };
+  const preview = (f) => (PREV[f.mime] ? `https://docs.google.com/${PREV[f.mime]}/d/${f.id}/preview` : `https://drive.google.com/file/d/${f.id}/preview`);
+  const isDir = (f) => f.mime === 'application/vnd.google-apps.folder';
   function guiones(b) {
-    const all = [...filesOf((f) => /\.md$/i.test(f.name) && f.area === 'ideas'), ...filesOf((f) => /\.md$/i.test(f.name) && f.area !== 'ideas')];
-    if (!all.length) return mount(b, html`<div class="empty"><b>Todavía no hay guiones en el repo</b>
-      Los escribe ④ Creatividad en <code>${root()}/04-contenido/AAAA-MM/ideas/</code>.<br>Pídelos en Claude Code con <code>/creatividad</code> y aparecen aquí después de publicar.</div>`);
-    const cur = all.find((f) => f.path === file) || all[0];
-    mount(b, html`<div class="grid" style="grid-template-columns:260px 1fr;gap:16px;align-items:start">
-      <div class="card" style="padding:12px">${all.map((f) => html`<button class="artifact" data-act="file" data-p="${f.path}" style="width:100%;margin:4px 0;${f.path === cur.path ? 'outline:2px solid var(--ink)' : ''}"><span class="fi">${f.area === 'ideas' ? '✎' : '▤'}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name.replace(/\.md$/, '')}</b><div class="mut" style="font-size:11px">${f.area}</div></div></button>`)}</div>
-      <div class="card swap" style="min-width:0"><div class="mut sm" style="margin-bottom:8px">${root()}/04-contenido/${mes}/${cur.path}</div>${md(cur.content)}</div></div>`);
+    const c = data.cfg;
+    if (!c.guiones_drive) return mount(b, connectCard('drive', 'Conecta la carpeta de guiones', `Los guiones de ${data.profile.name} viven en Google Drive. Pega el link de su carpeta y aquí los ves, los abres y creas nuevos.`, 'gconnect', 'Conectar Drive'));
+    gstack ||= [{ id: c.guiones_drive, name: 'Guiones' }];
+    const here = gstack[gstack.length - 1];
+    if (!gfiles) { mount(b, html`<p class="loading">Leyendo Drive…</p>`); api(`google/drive?folder=${encodeURIComponent(here.id)}`).then((r) => { gfiles = r.files; }).catch((e) => { gfiles = { error: e.message }; }).then(() => alive() && tab === 'guiones' && b.isConnected && guiones(b)); return; }
+    const bar = html`<div class="row" style="margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <span class="sm">${gstack.map((x, i) => html`${i ? ' › ' : ''}<button class="sm ${i === gstack.length - 1 ? '' : 'mut'}" data-act="gup" data-i="${i}" style="font-weight:500">${x.name}</button>`)}</span><div class="sp"></div>
+      ${connectChip('drive', 'Drive conectado', 'gopen', true)}<button class="sm mut" data-act="gconnect">Cambiar carpeta</button><button class="btn" data-act="gnew">+ Guion</button></div>`;
+    if (gfiles.error) return mount(b, html`${bar}<div class="warnbox">${gfiles.error}</div>`);
+    const docs = gfiles.filter((f) => !isDir(f)), dirs = gfiles.filter(isDir);
+    const cur = docs.find((f) => f.id === gcur) || docs[0];
+    mount(b, html`${bar}${!gfiles.length ? html`<div class="empty"><b>La carpeta está vacía</b>Crea el primer guion con «+ Guion» o súbelo a la carpeta en Drive.</div>` : html`<div class="grid gsplit" style="grid-template-columns:260px 1fr;gap:16px;align-items:start">
+      <div class="card" style="padding:12px">${dirs.map((f) => html`<button class="artifact" data-act="gdir" data-id="${f.id}" data-n="${f.name}" style="width:100%;margin:4px 0"><span class="fi">📁</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b></div></button>`)}
+        ${docs.map((f) => html`<button class="artifact" data-act="gfile" data-id="${f.id}" style="width:100%;margin:4px 0;${cur && f.id === cur.id ? 'outline:2px solid var(--ink)' : ''}"><span class="fi">✎</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b><div class="mut" style="font-size:11px">${f.modified ? fdate(f.modified.slice(0, 10)) : ''}${f.owner ? ' · ' + f.owner : ''}</div></div></button>`)}</div>
+      ${cur ? html`<div class="card swap" style="min-width:0;padding:10px"><div class="row" style="margin-bottom:8px"><b style="font-weight:500">${cur.name}</b><div class="sp"></div><a class="btn ghost xs" href="${cur.link}" target="_blank" rel="noopener noreferrer">Abrir en Drive ↗</a></div><iframe src="${preview(cur)}" style="width:100%;height:70vh;border:0;border-radius:12px;background:#fff" loading="lazy"></iframe></div>` : html`<div class="empty"><b>Elige una carpeta</b>Los guiones están adentro.</div>`}</div>`}`);
   }
 
-  // ---------- Planner: plan-de-contenido.csv ----------
+  // ---------- Planner: calendario semana / mes, con pilares y si cada pieza ya está en Drive ----------
+  const DOW = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  const PAL = ['#5c6b22', '#c2735a', '#4f7790', '#b08a5f', '#8a5a9c', '#2f7d6b', '#a3392a', '#171410'];
+  const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const monday = (d) => { const x = new Date(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
+  function needPosts(b, fn) {
+    if (posts) return false;
+    mount(b, html`<p class="loading">Cargando…</p>`);
+    Promise.all([loadPosts(slug), loadConn(slug)]).then(async ([l, c]) => {
+      posts = l;
+      if (c.postear_drive) { try { const m = await syncDrive(slug, l); if (m.length) { posts = [...l, ...m]; toast(`${m.length} pieza${m.length === 1 ? '' : 's'} nueva${m.length === 1 ? '' : 's'} desde Drive`); } } catch (e) { toast(e.message, true); } }
+      if (alive() && b.isConnected) fn(b);
+    }).catch((e) => mount(b, html`<div class="warnbox">${e.message}</div>`));
+    return true;
+  }
   function plan(b) {
-    const f = filesOf((x) => /plan-de-contenido\.csv$/i.test(x.name))[0];
-    if (!f) return mount(b, html`<div class="empty"><b>No hay plan de contenido este mes</b>Lo arma ④ Creatividad en <code>${root()}/04-contenido/${mes || 'AAAA-MM'}/ideas/plan-de-contenido.csv</code>.</div>`);
-    const [head, ...rows] = csv(f.content);
-    mount(b, html`<div class="card tscroll"><div class="mut sm" style="margin-bottom:8px">${rows.length} piezas · del repo</div><table><thead><tr>${head.map((h) => html`<th>${h}</th>`)}</tr></thead><tbody>${rows.map((r) => html`<tr>${head.map((_, i) => html`<td>${r[i] || ''}</td>`)}</tr>`)}</tbody></table></div>`);
+    if (needPosts(b, plan)) return;
+    const pillars = data.cfg.pillars || [];
+    const colorOf = (n) => pillars.find((x) => x.name === n)?.color || '#cfc7ba';
+    const a = new Date(pdate + 'T12:00');
+    const first = pview === 'mes' ? new Date(a.getFullYear(), a.getMonth(), 1, 12) : a;
+    const start = monday(first);
+    const n = pview === 'mes' ? Math.ceil((((first.getDay() + 6) % 7) + new Date(a.getFullYear(), a.getMonth() + 1, 0).getDate()) / 7) * 7 : 7;
+    const days = Array.from({ length: n }, (_, i) => { const d = new Date(start); d.setDate(d.getDate() + i); return d; });
+    const from = iso(days[0]), to = iso(days[days.length - 1]);
+    const inRange = posts.filter((p) => p.date && p.date >= from && p.date <= to);
+    const title = pview === 'mes' ? a.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' }).replace(/^./, (c) => c.toUpperCase()) : `${fdate(from)} – ${fdate(to)}`;
+    const T = today();
+    const chip = (p) => { const [i, l] = driveState(p); return html`<button class="ppost" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${p.title} · ${l}"><span class="pi">${i}</span><span class="pt">${p.title}</span></button>`; };
+    const undated = posts.filter((p) => !p.date && p.status !== 'Publicado');
+    mount(b, html`
+      <div class="card" style="padding:12px 14px;margin-bottom:12px"><div class="row" style="flex-wrap:wrap;gap:8px"><b class="sm" style="font-weight:500">Pilares</b>
+        ${pillars.length ? pillars.map((x) => html`<span class="chip" style="gap:6px"><i style="width:10px;height:10px;border-radius:50%;background:${x.color};display:inline-block"></i>${x.name}<span class="mut">${inRange.filter((p) => p.pillar === x.name).length}</span></span>`) : html`<span class="mut sm">Sin pilares todavía: defínelos para ver el balance del mes.</span>`}
+        <div class="sp"></div><button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div></div>
+      <div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <button class="arrow light" data-act="pnav" data-d="-1">‹</button><b style="font-weight:500;min-width:150px;text-align:center">${title}</b><button class="arrow light" data-act="pnav" data-d="1">›</button>
+        <button class="sm mut" data-act="ptoday">Hoy</button><div class="sp"></div>
+        <span class="mut sm">📁 en Drive · ⬆ por subir · ✎ por grabar</span>
+        <div class="tabs" style="margin:0">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => html`<button class="${pview === k ? 'on' : ''}" data-act="pview" data-v="${k}">${l}</button>`)}</div>
+        <button class="btn" data-act="pnew" data-d="">+ Pieza</button></div>
+      <div class="pcal ${pview}">${DOW.map((d) => html`<div class="pdow">${d}</div>`)}
+        ${days.map((d) => { const k = iso(d); const l = posts.filter((p) => p.date === k); return html`<div class="pday ${pview === 'mes' && d.getMonth() !== a.getMonth() ? 'out' : ''} ${k === T ? 'today' : ''}" data-act="pnew" data-d="${k}"><span class="pn">${d.getDate()}</span>${l.map(chip)}</div>`; })}</div>
+      ${undated.length ? html`<div class="sec-title"><h2>Sin fecha</h2><span class="mut sm">${undated.length}</span></div><div class="row" style="flex-wrap:wrap;gap:6px">${undated.map(chip)}</div>` : ''}`);
   }
 
-  // ---------- Analytics: las cuentas propias, semana a semana ----------
-  let ig = null;
+  // ---------- Analytics: Instagram vía Windsor.ai (cuenta + reels con watch time) ----------
   function analytics(b) {
     if (ig === null) { mount(b, html`<p class="loading">Cargando analytics…</p>`); api(`analytics/instagram?profile=${encodeURIComponent(slug)}`).then((r) => { ig = r; }).catch((e) => { ig = { error: e.message }; }).then(() => alive() && tab === 'analytics' && b.isConnected && analytics(b)); return; }
-    const own = data.profile.own.filter((a) => a.red === 'instagram').map((a) => '@' + a.handle).join(', ');
     let top;
-    if (ig.error) top = html`<div class="warnbox">${ig.error}</div>`;
-    else if (!ig.connected) top = connectCard('instagram', 'Conecta Instagram para ver tus analytics', 'Haz login con tu cuenta de Instagram en Windsor.ai y aquí aparecen alcance, engagement y tus mejores posts.', 'igconnect', 'Conectar Instagram');
-    else if (!ig.matched) top = html`<div class="connectcard"><span class="lg big">${LOGO.instagram}</span><div class="grow"><b style="font-weight:500">¿Cuál es el Instagram de ${data.profile.name}?</b><div class="mut sm">${ig.accounts.length ? 'Estas son las cuentas que tienes conectadas en Windsor. Toca la de este perfil.' : 'Windsor está conectado pero todavía no ve ninguna cuenta de Instagram. Conéctala en Windsor y recarga.'}</div>
+    if (ig.error) top = html`<div class="warnbox"><b>Windsor respondió con un error.</b> ${ig.error}</div>`;
+    else if (!ig.connected) top = connectCard('instagram', 'Conecta Instagram para ver tus analytics', 'Haz login con tu cuenta de Instagram en Windsor.ai y aquí aparecen alcance, vistas, watch time y tus mejores reels.', 'igconnect', 'Conectar Instagram');
+    else if (!ig.matched) top = html`<div class="connectcard"><span class="lg big">${LOGO.instagram}</span><div class="grow"><b style="font-weight:500">¿Cuál es el Instagram de ${data.profile.name}?</b><div class="mut sm">${ig.accounts.length ? 'Estas son las cuentas que Windsor tiene conectadas. Toca la de este perfil.' : 'Windsor respondió pero no trae ninguna cuenta de Instagram. En Windsor → Instagram, revisa que la cuenta esté conectada y con datos, y recarga.'}</div>
         <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:10px">${ig.accounts.map((x) => html`<button class="connect" data-act="igpick" data-a="${x}"><span class="lg">${LOGO.instagram}</span>@${x}</button>`)}</div></div>${ig.accounts.length ? '' : html`<button class="btn" data-act="igconnect">Abrir Windsor</button>`}</div>`;
-    else top = html`<div class="row" style="margin-bottom:10px">${connectChip('instagram', `${ig.handles.map((h) => '@' + h).join(', ')} · conectado`, 'x', true)}<button class="sm mut" data-act="igchange" style="margin-left:8px">Cambiar cuenta</button><span class="mut sm" style="margin-left:8px">Últimos 30 días · vía Windsor.ai</span></div>
-      <div class="wkkpis">${[['Seguidores', K(ig.followers)], ['Alcance', K(ig.reach)], ['Engagement', ig.er == null ? '—' : ig.er + '%'], ['Posts', ig.posts]].map(([l, v]) => html`<div class="wkkpi"><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
-      ${ig.series.length > 1 ? html`<div class="card wkbox"><div class="wkhead"><h3>Alcance por día de publicación</h3></div><div class="chart" id="chIG"></div></div>` : ''}
-      ${ig.top.length ? html`<div class="card wkbox" style="margin-top:12px"><div class="wkhead"><h3>Mejores posts</h3></div><table class="wktable"><thead><tr><th>Fecha</th><th>Tipo</th><th>Alcance</th><th>Likes</th><th>Comentarios</th><th>Engagement</th></tr></thead><tbody>${ig.top.map((x) => html`<tr><td>${fdate(x.date)}</td><td>${x.type || '—'}</td><td>${K(x.reach)}</td><td>${K(x.likes)}</td><td>${K(x.comments)}</td><td><b style="font-weight:500">${K(x.eng)}</b></td></tr>`)}</tbody></table></div>` : ''}`;
+    else {
+      const w = ig.watch || {};
+      const reels = ig.reels || [];
+      const maxAvg = Math.max(1, ...reels.map((x) => x.avg));
+      top = html`<div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">${connectChip('instagram', `${ig.handles.map((h) => '@' + h).join(', ')} · conectado`, 'x', true)}<button class="sm mut" data-act="igchange">Cambiar cuenta</button><span class="mut sm">Últimos ${ig.days || 30} días · vía Windsor.ai</span></div>
+      <div class="wkkpis">${[['Seguidores', ig.followers ? K(ig.followers) : '—'], ['Alcance', K(ig.reach)], ['Vistas', K(ig.views)], ['Engagement', ig.er == null ? '—' : ig.er + '%'], ['Watch time promedio', w.avg == null ? '—' : w.avg + ' s']].map(([l, v]) => html`<div class="wkkpi"><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
+      ${ig.series.length > 1 ? html`<div class="card wkbox"><div class="wkhead"><h3>Alcance y vistas por día</h3><span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#171410;display:inline-block"></i>Alcance</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #c2735a;display:inline-block"></i>Vistas</span></span></div><div class="chart" id="chIG"></div></div>` : ''}
+      <div class="card wkbox" style="margin-top:12px"><div class="wkhead"><div><h3>Reels · ¿hasta dónde los ven?</h3><span class="mut sm">Últimos 90 días · ${w.n || 0} reels con watch time · ${w.hours || 0} h vistas en total${w.hookLost ? html` · <b style="color:#a3392a">${w.hookLost} se pierden en el hook (&lt;3 s)</b>` : ''}</span></div></div>
+        ${reels.length ? html`<div class="tscroll"><table class="wktable"><thead><tr><th>Reel</th><th>Fecha</th><th class="n">Vistas</th><th class="n">Alcance</th><th style="min-width:150px">Watch time promedio</th><th class="n">Total</th><th class="n">♥</th><th class="n">Guardados</th><th class="n">Compartidos</th></tr></thead><tbody>
+          ${reels.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit" class="row">${safeImg(x.thumb) ? html`<span class="rthumb" style="background-image:url('${safeImg(x.thumb)}')"></span>` : ''}<span class="sm" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.caption || 'Ver reel'}</span></a>` : html`<span class="sm">${x.caption || '—'}</span>`}</td>
+            <td class="mut">${fdate(x.date)}</td><td class="n"><b style="font-weight:500">${K(x.views)}</b></td><td class="n">${K(x.reach)}</td>
+            <td>${x.avg ? html`<div class="row" style="gap:8px"><div style="flex:1;height:8px;border-radius:99px;background:#ebe5da"><div style="width:${Math.round((x.avg / maxAvg) * 100)}%;height:100%;border-radius:99px;background:${x.avg < 3 ? '#c2735a' : '#5c6b22'}"></div></div><span class="sm" style="width:44px;text-align:right">${x.avg} s</span></div>` : html`<span class="mut sm">—</span>`}</td>
+            <td class="n mut">${x.total ? (x.total >= 3600 ? Math.round(x.total / 360) / 10 + ' h' : Math.round(x.total / 60) + ' min') : '—'}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.saves)}</td><td class="n">${K(x.shares)}</td></tr>`)}</tbody></table></div>
+          <div class="mut sm" style="margin-top:10px">💡 Instagram no entrega por API el segundo exacto en que la gente deja de ver (esa curva solo está en la app). Lo más cercano es el <b>watch time promedio</b>: si está debajo de 3 s, se fueron en el hook.</div>`
+        : html`<div class="mut sm" style="padding:6px 0">Windsor no trae reels de esta cuenta en los últimos 90 días.</div>`}</div>
+      ${ig.top.length ? html`<div class="card wkbox" style="margin-top:12px"><div class="wkhead"><h3>Mejores posts del periodo</h3></div><div class="tscroll"><table class="wktable"><thead><tr><th>Fecha</th><th>Tipo</th><th class="n">Alcance</th><th class="n">Likes</th><th class="n">Comentarios</th><th class="n">Guardados</th><th class="n">Engagement</th></tr></thead><tbody>${ig.top.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit">${fdate(x.date)}</a>` : fdate(x.date)}</td><td>${x.type}</td><td class="n">${K(x.reach)}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.comments)}</td><td class="n">${K(x.saves)}</td><td class="n"><b style="font-weight:500">${K(x.eng)}</b></td></tr>`)}</tbody></table></div></div>` : ''}`;
+    }
     mount(b, html`${top}<div id="anScrape" style="margin-top:16px"></div>`);
-    const ch = $('#chIG', b); if (ch) lineChart(ch, ig.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: ig.series.map((x) => x.reach), c: '#171410', fill: true }]);
+    const ch = $('#chIG', b); if (ch) lineChart(ch, ig.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: ig.series.map((x) => x.reach), c: '#171410', fill: true }, { name: 'Vistas', v: ig.series.map((x) => x.views), c: '#c2735a', dash: true }]);
     scrapeAnalytics($('#anScrape', b));
   }
   function scrapeAnalytics(b) {
@@ -164,7 +221,33 @@ export async function render(el, { sub, alive }) {
     igchange: async () => { try { await api('content/connect', { method: 'PUT', body: { profile: slug, ig_account: '' } }); ig = { ...ig, matched: false }; paint(); } catch (e) { toast(e.message, true); } },
     prof: (t) => { slug = t.dataset.s; clearTimeout(poll); go(); load(); },
     tab: (t) => { tab = t.dataset.t; go(); paint(); },
-    file: (t) => { file = t.dataset.p; guiones($('#cbody', el)); },
+    gfile: (t) => { gcur = t.dataset.id; guiones($('#cbody', el)); },
+    gdir: (t) => { gstack.push({ id: t.dataset.id, name: t.dataset.n }); gfiles = null; gcur = null; guiones($('#cbody', el)); },
+    gup: (t) => { gstack = gstack.slice(0, +t.dataset.i + 1); gfiles = null; gcur = null; guiones($('#cbody', el)); },
+    gopen: () => window.open(gstack?.[gstack.length - 1]?.id?.startsWith('https') ? gstack[gstack.length - 1].id : `https://drive.google.com/drive/folders/${gstack?.[gstack.length - 1]?.id}`, '_blank', 'noopener'),
+    gconnect: async () => {
+      const v = await ask('Conectar la carpeta de guiones', [{ k: 'url', l: `Link de la carpeta de Google Drive con los guiones de ${data.profile.name}`, v: data.cfg.guiones_drive, req: true }], 'Conectar');
+      if (!v) return;
+      try { await api('content/connect', { method: 'PUT', body: { profile: slug, guiones_drive: v.url.trim() } }); data.cfg.guiones_drive = v.url.trim(); gstack = null; gfiles = null; toast('Carpeta de guiones conectada ✅'); paint(); } catch (e) { toast(e.message, true); }
+    },
+    gnew: async () => {
+      const v = await ask('Nuevo guion', [{ k: 'name', l: 'Nombre', v: `Guion · ${fdate(today())}`, req: true }], 'Crear en Drive');
+      if (!v) return;
+      try { const f = await api('google/drive', { method: 'POST', body: { type: 'doc', name: v.name, folder: gstack[gstack.length - 1].id } }); gfiles = null; gcur = f.id; toast('Guion creado en Drive ✅'); window.open(f.link, '_blank', 'noopener'); guiones($('#cbody', el)); } catch (e) { toast(e.message, true); }
+    },
+    pview: (t) => { pview = t.dataset.v; plan($('#cbody', el)); },
+    pnav: (t) => { const d = new Date(pdate + 'T12:00'); if (pview === 'mes') d.setMonth(d.getMonth() + +t.dataset.d, 1); else d.setDate(d.getDate() + 7 * +t.dataset.d); pdate = d.toISOString().slice(0, 10); plan($('#cbody', el)); },
+    ptoday: () => { pdate = today(); plan($('#cbody', el)); },
+    pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; const r = await editPost(slug, null, t.dataset.d ? { date: t.dataset.d } : {}); if (r) { posts = [...posts, r]; plan($('#cbody', el)); } },
+    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); plan($('#cbody', el)); } },
+    pillars: async () => {
+      const cur = data.cfg.pillars || [];
+      const v = await ask('Pilares de contenido', [{ k: 'list', l: 'Un pilar por línea (máx. 8). Ej.: Educa · Detrás de cámaras · Casos · Oferta', t: 'textarea', v: cur.map((x) => x.name).join('\n') }], 'Guardar');
+      if (!v) return;
+      const names = v.list.split('\n').map((x) => x.trim()).filter(Boolean).slice(0, 8);
+      const pillars = names.map((name, i) => ({ name, color: cur.find((x) => x.name === name)?.color || PAL[i % PAL.length] }));
+      try { const r = await api('content/connect', { method: 'PUT', body: { profile: slug, pillars } }); data.cfg.pillars = r.pillars; setConn(slug, { pillars: r.pillars }); toast('Pilares guardados ✅'); plan($('#cbody', el)); } catch (e) { toast(e.message, true); }
+    },
     scrape: async (t) => { t.disabled = true; try { await api('content/scrape', { method: 'POST', body: { profile: slug } }); toast('Scrape lanzado en Apify. Tarda unos minutos ✅'); week = null; paint(); } catch (e) { toast(e.message, true); } t.disabled = false; },
     addTag: () => { const v = $('#newTag', el).value; if (v.trim()) saveCfg({ hashtags: [...data.cfg.hashtags, ...v.split(/[\s,]+/)] }); },
     rmTag: (t) => saveCfg({ hashtags: data.cfg.hashtags.filter((_, i) => i !== +t.dataset.i) }),

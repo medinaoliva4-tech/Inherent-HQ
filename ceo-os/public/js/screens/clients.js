@@ -10,7 +10,7 @@ const cleanPlan = (s) => String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, '');
 const iso = (d) => d.toISOString().slice(0, 10);
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
 
-export async function render(el, { sub, alive }) {
+export async function render(el, { me, sub, alive }) {
   const AC = col('accounts');
   const [repo, accounts, projects, tasks, team] = await Promise.all([api('repo/clients').catch(() => ({ clients: [] })), AC.list(), col('projects').list(), col('tasks').list(), teamList()]);
   const clients = repo.clients.filter((c) => c.hasPlan).map((c) => ({ ...c, plan: cleanPlan(c.plan) }));
@@ -75,8 +75,7 @@ export async function render(el, { sub, alive }) {
           ${[...tk].sort((x, z) => (x.status === 'Hecha') - (z.status === 'Hecha') || String(x.due || '9').localeCompare(String(z.due || '9'))).map((t) => { const who = person(t.assignee); return html`<tr><td style="width:30px"><input type="checkbox" data-act="tdone" data-id="${t.id}" ${t.status === 'Hecha' ? raw('checked') : ''}></td><td><b style="font-weight:500;${t.status === 'Hecha' ? 'text-decoration:line-through;opacity:.5' : ''}">${t.title}</b>${t.dept ? html`<div class="mut sm">${t.dept}</div>` : ''}</td><td class="mut">${ps.find((p) => p.id === t.project_id)?.name || '—'}</td><td>${who ? html`<span class="av" style="background:${who.color || '#6b5a45'}" title="${who.name}">${initials(who.name)}</span>` : '—'}</td><td>${t.due ? fdate(t.due) : '—'}</td><td><span class="chip">${t.status || 'Por empezar'}</span></td></tr>`; })}</tbody></table></div>`
           : html`<div class="empty"><b>Sin tareas</b>Las tareas de los proyectos de este cliente aparecen aquí.</div>`}
 
-        <div class="sec-title" id="s-ct"><h2>Contenido</h2><a href="#/content/semana/${slug}">En Content →</a></div>
-        ${info.months.length ? html`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">${info.months.map((m) => html`<a class="chip" href="#/content/guiones/${slug}" style="padding:8px 14px;text-decoration:none;color:inherit">✎ ${m.mes} · ${m.files.length} archivo${m.files.length === 1 ? '' : 's'} en el repo</a>`)}</div>` : ''}
+        <div class="sec-title" id="s-ct"><h2>Contenido</h2>${me.areas.includes('content') ? html`<a href="#/content/plan/${slug}">Planner en Content →</a>` : ''}</div>
         <div id="posts"></div>
 
         <div class="sec-title" id="s-ac"><h2>Accesos</h2><span class="mut sm">🔒 Nunca contraseñas aquí: solo dónde están</span></div>
@@ -113,6 +112,7 @@ export async function render(el, { sub, alive }) {
 
     function renderPosts() {
       const b = $('#posts', el); if (!b) return;
+      if (!me.areas.includes('content')) return mount(b, html`<div class="mut sm">El contenido de ${slug.toUpperCase()} lo ven el CEO y Content. Lo tuyo está en tu Workspace.</div>`);
       if (!posts) { mount(b, html`<p class="loading">Cargando contenido…</p>`); loadPosts(slug).then((l) => { posts = l; if (alive()) renderPosts(); }).catch((e) => mount(b, html`<div class="warnbox">${e.message}</div>`)); return; }
       postsBoard(b, slug, posts, (l) => { posts = l; renderPosts(); });
     }

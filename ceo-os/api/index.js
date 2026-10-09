@@ -48,7 +48,7 @@ on('GET', 'auth/dev', async (req, res) => {
 on('GET', 'me', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   const t = await db.get('team', u.email);
-  res.json({ ...u, areas: areasFor(u.role), google: t?.google || {} });
+  res.json({ ...u, areas: areasFor(u.role, u.roles), google: t?.google || {} });
 });
 // Cada quien cambia su propia foto (una imagen chica que el navegador ya recortó).
 on('PUT', 'me/photo', async (req, res) => {
@@ -73,11 +73,18 @@ async function collGuard(req, res, write) {
   if (write && !canWrite(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO puede cambiar esto' }); return null; }
   return u;
 }
-on('GET', 'db/:coll', async (req, res) => { if (await collGuard(req, res)) res.json({ items: await db.list(req.params.coll) }); });
+// Tareas: «solo yo» la ven quien la creó y a quien se asignó; «ciertas personas» suma a las elegidas.
+const seesTask = (u, t) => {
+  const vis = t?.visibility || 'all'; if (vis === 'all') return true;
+  const mine = [t._meta?.created_by, t.assignee, ...(vis === 'people' ? [t.accountable, ...(Array.isArray(t.viewers) ? t.viewers : [])] : [])];
+  return mine.filter(Boolean).map((x) => String(x).toLowerCase()).includes(u.email);
+};
+const visible = (u, coll, d) => coll !== 'tasks' || seesTask(u, d);
+on('GET', 'db/:coll', async (req, res) => { const u = await collGuard(req, res); if (u) res.json({ items: (await db.list(req.params.coll)).filter((d) => visible(u, req.params.coll, d)) }); });
 on('GET', 'db/:coll/:id', async (req, res) => {
-  if (!(await collGuard(req, res))) return;
+  const u = await collGuard(req, res); if (!u) return;
   const d = await db.get(req.params.coll, req.params.id);
-  d ? res.json(d) : res.status(404).json({ error: 'No existe' });
+  d && visible(u, req.params.coll, d) ? res.json(d) : res.status(404).json({ error: 'No existe' });
 });
 on('POST', 'db/:coll', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
@@ -91,11 +98,13 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
   const b = body(req);
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
+  if (req.params.coll === 'tasks' && !visible(u, 'tasks', await db.get('tasks', req.params.id))) return res.status(404).json({ error: 'No existe' });
   const d = await db.update(req.params.coll, req.params.id, b, Number(b.v), u.email);
   d ? res.json(d) : res.status(409).json({ error: 'Alguien más cambió esto. Recarga para ver la última versión.' });
 });
 on('DELETE', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
+  if (req.params.coll === 'tasks' && !visible(u, 'tasks', await db.get('tasks', req.params.id))) return res.status(404).json({ error: 'No existe' });
   res.json({ ok: await db.remove(req.params.coll, req.params.id, u.email) });
 });
 
@@ -154,9 +163,10 @@ on('GET', 'content/week', async (req, res) => {
   const an = await db.get('sources', 'analytics-' + slug);
   res.json({ apify: content.apifyOn(), week: doc?.week || null, at: doc?.at || null, status: !doc?.runs?.length ? 'none' : doc.result ? 'done' : 'running', runs: (doc?.runs || []).map(({ red, status }) => ({ red, status })), result: doc?.result || null, analytics: an?.history || [], warn });
 });
-// Conexiones de un perfil: la carpeta de Drive de donde sale «Por postear».
+// Conexiones de un perfil: las carpetas de Drive (guiones y «Por postear») y los pilares.
+// Lo puede leer todo el equipo: el editor de video necesita llegar a los guiones y a la carpeta de entregas.
 on('GET', 'content/cfg', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
+  const u = await guard(req, res); if (!u) return;
   const slug = String(req.query.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
   res.json(await content.cfg(slug));
 });
@@ -169,6 +179,12 @@ on('PUT', 'content/connect', async (req, res) => {
     if (url && !/^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(url)) return res.status(400).json({ error: 'Pega el link de una carpeta de Google Drive' });
     patch.postear_drive = url;
   }
+  if ('guiones_drive' in b) {
+    const url = String(b.guiones_drive || '');
+    if (url && !/^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(url)) return res.status(400).json({ error: 'Pega el link de una carpeta de Google Drive' });
+    patch.guiones_drive = url;
+  }
+  if ('pillars' in b) patch.pillars = (Array.isArray(b.pillars) ? b.pillars : []).map((x) => ({ name: String(x?.name || '').trim().slice(0, 40), color: /^#[0-9a-f]{6}$/i.test(x?.color) ? x.color : '#8f877b' })).filter((x) => x.name).slice(0, 8);
   if ('ig_account' in b) patch.ig_account = String(b.ig_account || '').replace(/^@/, '').toLowerCase().replace(/[^a-z0-9._]/g, '').slice(0, 40);
   await db.upsert('sources', 'cfg-' + b.profile, patch, u.email);
   res.json({ ok: true, ...patch });
@@ -287,6 +303,40 @@ on('POST', 'google/drive', async (req, res) => {
   if (!name || !MIME[b.type]) return res.status(400).json({ error: 'Falta nombre o tipo' });
   const f = await google.gapi(u.email, `${DRIVE}?fields=id,name,webViewLink,mimeType&supportsAllDrives=true`, { method: 'POST', body: JSON.stringify({ name, mimeType: MIME[b.type], ...(parent ? { parents: [parent] } : {}) }) });
   res.json({ id: f.id, name: f.name, link: f.webViewLink, mime: f.mimeType });
+});
+
+// ---------- Finanzas: los movimientos salen de una hoja de Google Sheets ----------
+// Columnas: fecha · tipo (ingreso/gasto) · concepto · monto · categoría · cliente. La app solo la lee.
+const SHEET_HEAD = 'fecha,tipo,concepto,monto,categoria,cliente\n';
+const sheetId = (s) => (String(s || '').match(/\/spreadsheets\/d\/([-\w]{20,})/) || [])[1] || null;
+on('GET', 'finance/sheet', async (req, res) => {
+  const u = await guard(req, res, 'finanzas'); if (!u) return;
+  const url = (await db.get('settings', 'finance_sheet'))?.url || ''; const id = sheetId(url);
+  if (!id) return res.json({ url: '' });
+  const r = await fetch(`${DRIVE}/${id}/export?mimeType=text/csv&supportsAllDrives=true`, { headers: { Authorization: 'Bearer ' + (await google.accessToken(u.email)) } });
+  if (!r.ok) return res.json({ url, error: r.status === 404 ? 'No encuentro la hoja (¿la borraron o no te la compartieron?)' : `Google ${r.status}: no pude leer la hoja` });
+  res.json({ url, csv: (await r.text()).slice(0, 2_000_000) });
+});
+on('PUT', 'finance/sheet', async (req, res) => {
+  const u = await guard(req, res, 'finanzas'); if (!u) return;
+  if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO puede cambiar esto' });
+  const url = String(body(req).url || '').trim();
+  if (url && !sheetId(url)) return res.status(400).json({ error: 'Pega el link de una hoja de Google Sheets' });
+  await db.upsert('settings', 'finance_sheet', { url }, u.email);
+  res.json({ url });
+});
+on('POST', 'finance/sheet', async (req, res) => {
+  const u = await guard(req, res, 'finanzas'); if (!u) return;
+  if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO puede cambiar esto' });
+  const B = 'inh' + Date.now();
+  const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink&supportsAllDrives=true', {
+    method: 'POST', headers: { Authorization: 'Bearer ' + (await google.accessToken(u.email)), 'Content-Type': `multipart/related; boundary=${B}` },
+    body: `--${B}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name: 'Inherent · Movimientos', mimeType: 'application/vnd.google-apps.spreadsheet' })}\r\n--${B}\r\nContent-Type: text/csv\r\n\r\n${SHEET_HEAD}\r\n--${B}--`,
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(j.error?.message || `Drive ${r.status}`), { status: r.status === 401 || r.status === 403 ? r.status : undefined });
+  await db.upsert('settings', 'finance_sheet', { url: j.webViewLink }, u.email);
+  res.json({ url: j.webViewLink });
 });
 
 // ---------- Google Calendar (el calendario de cada persona) ----------

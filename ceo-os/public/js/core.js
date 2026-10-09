@@ -118,7 +118,8 @@ export const emblem = (dark) => raw(`<img src="/brand/${dark ? 'emblem-dark' : '
 export const matrix = (on) => raw(`<div class="matrix">${Array.from({ length: 68 }, (_, i) => `<i class="${(i % 34) < on && (i < 34 ? (i * 7) % 3 !== 0 : (i * 5) % 4 !== 1) ? 'on' : ''}"></i>`).join('')}</div>`);
 
 // ---------- gráfica de línea con tooltip ----------
-export function lineChart(el, labels, series) {
+// fmt: cómo se ve el número en el tooltip (por defecto 1.2K; Finance pasa Q).
+export function lineChart(el, labels, series, { fmt = K } = {}) {
   const W = 640, H = el.clientHeight || 210, P = { l: 8, r: 8, t: 18, b: 26 };
   const max = Math.max(1, ...series.flatMap((s) => s.v)) * 1.15;
   const x = (i) => P.l + (labels.length < 2 ? (W - P.l - P.r) / 2 : (i * (W - P.l - P.r)) / (labels.length - 1));
@@ -127,12 +128,14 @@ export function lineChart(el, labels, series) {
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="g${el.id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d6f35a" stop-opacity=".45"/><stop offset="1" stop-color="#d6f35a" stop-opacity="0"/></linearGradient></defs>`;
   [0.25, 0.5, 0.75].forEach((f) => s += `<line x1="0" x2="${W}" y1="${P.t + f * (H - P.t - P.b)}" y2="${P.t + f * (H - P.t - P.b)}" stroke="rgba(23,20,16,.06)"/>`);
   series.forEach((se) => { if (se.fill) s += `<path d="${path(se.v)} L${x(se.v.length - 1)},${H - P.b} L${x(0)},${H - P.b}Z" fill="url(#g${el.id})"/>`; s += `<path d="${path(se.v)}" fill="none" stroke="${se.c}" stroke-width="2" ${se.dash ? 'stroke-dasharray="4 5"' : ''} stroke-linecap="round"/>`; });
-  labels.forEach((m, i) => s += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="#8f877b">${esc(m)}</text>`);
+  const every = Math.max(1, Math.ceil(labels.length / 7)); // máx. ~7 etiquetas: con 30 días no se enciman
+  // Las etiquetas van en HTML, no dentro del SVG: el SVG se estira y deformaba las letras.
+  const xl = labels.map((m, i) => ((i % every && i !== labels.length - 1) ? '' : `<span style="position:absolute;bottom:4px;left:${(x(i) / W) * 100}%;transform:translateX(${i === 0 ? '0' : i === labels.length - 1 ? '-100%' : '-50%'});font-size:11px;color:#8f877b;white-space:nowrap">${esc(m)}</span>`)).join('');
   const last = series[0].v.length - 1;
-  s += `<line class="xh" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="#171410" stroke-dasharray="3 4" opacity="0"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="9" fill="#d6f35a" stroke="#fff" stroke-width="2"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="3" fill="#171410"/><rect width="${W}" height="${H}" fill="transparent"/></svg><div class="tip"></div>`;
+  s += `<line class="xh" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="#171410" stroke-dasharray="3 4" opacity="0"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="9" fill="#d6f35a" stroke="#fff" stroke-width="2"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="3" fill="#171410"/><rect width="${W}" height="${H}" fill="transparent"/></svg>${xl}<div class="tip"></div>`;
   el.innerHTML = s;
   const svg = $('svg', el), tip = $('.tip', el), xh = $('.xh', el);
-  svg.addEventListener('mousemove', (e) => { const r = svg.getBoundingClientRect(); const px = ((e.clientX - r.left) / r.width) * W; const i = Math.max(0, Math.min(labels.length - 1, Math.round(((px - P.l) / (W - P.l - P.r)) * (labels.length - 1)))); xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('opacity', '.35'); tip.style.left = (x(i) / W) * r.width + 'px'; tip.style.top = (y(series[0].v[i]) / H) * r.height + 'px'; tip.style.opacity = 1; tip.innerHTML = `${esc(labels[i])} · ` + series.map((se) => `${esc(se.name)} <b>${esc(Q(se.v[i]))}</b>`).join(' · '); });
+  svg.addEventListener('mousemove', (e) => { const r = svg.getBoundingClientRect(); const px = ((e.clientX - r.left) / r.width) * W; const i = Math.max(0, Math.min(labels.length - 1, Math.round(((px - P.l) / (W - P.l - P.r)) * (labels.length - 1)))); xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('opacity', '.35'); tip.style.left = (x(i) / W) * r.width + 'px'; tip.style.top = (y(series[0].v[i]) / H) * r.height + 'px'; tip.style.opacity = 1; tip.innerHTML = `${esc(labels[i])} · ` + series.map((se) => `${esc(se.name)} <b>${esc(fmt(se.v[i]))}</b>`).join(' · '); });
   svg.addEventListener('mouseleave', () => { tip.style.opacity = 0; xh.setAttribute('opacity', 0); });
 }
 
@@ -307,6 +310,7 @@ export const LOGO = {
   drive: IC.drive,
   instagram: raw('<svg viewBox="0 0 24 24"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".6" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#igg)"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.2" fill="#fff"/></svg>'),
   tiktok: raw('<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#111"/><path d="M15.6 5.5c.5 1.6 1.7 2.7 3.3 2.9v2.4c-1.2 0-2.3-.4-3.3-1v4.6a4.4 4.4 0 1 1-3.8-4.4v2.5a1.9 1.9 0 1 0 1.3 1.9V5.5z" fill="#fff"/></svg>'),
+  sheets: raw('<svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#0f9d58"/><path d="M15 2v5h5z" fill="#87ceac"/><rect x="7.5" y="10.5" width="9" height="7" rx=".6" fill="none" stroke="#fff" stroke-width="1.4"/><path d="M7.5 14h9M11 10.5v7" stroke="#fff" stroke-width="1.4"/></svg>'),
   windsor: raw('<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#1f2a44"/><path d="M5 8l2.5 8L10 9l2 7 2-7 2.5 7L19 8" fill="none" stroke="#7fd1ff" stroke-width="1.8" stroke-linejoin="round"/></svg>'),
 };
 // Un botón o tarjeta para conectar. `on` = ya conectado (muestra el nombre y «Cambiar»).
