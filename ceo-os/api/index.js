@@ -3,7 +3,7 @@ import * as db from './_lib/db.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
 import { guard, areasFor, COLLS, canWrite, userFor, domain } from './_lib/access.js';
-import { readFile, listDir } from './_lib/gh.js';
+import { readFile, listDir, repoSource } from './_lib/gh.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -52,7 +52,7 @@ on('GET', 'me', async (req, res) => {
 on('GET', 'status', async (req, res) => {
   // Público y sin datos: solo dice qué falta configurar, para que el login lo explique.
   let dbok = false; try { dbok = await db.ping(); } catch {}
-  res.json({ google: google.configured(), db: dbok, domain: domain() });
+  res.json({ google: google.configured(), db: dbok, repo: repoSource() !== 'none', domain: domain() });
 });
 
 // ---------- documentos ----------
@@ -94,7 +94,7 @@ on('DELETE', 'db/:coll/:id', async (req, res) => {
 on('GET', 'repo/economia', async (req, res) => {
   const u = await guard(req, res, 'finanzas'); if (!u) return;
   const [eco, op] = await Promise.all([readFile('inherent/06-ECONOMIA.md'), readFile('inherent/05-OPERACION.md')]);
-  if (!eco) return res.status(502).json({ error: 'No pude leer 06-ECONOMIA.md del repo. Revisa GITHUB_TOKEN y GITHUB_REPO.', code: 'NO_REPO' });
+  if (!eco) return res.status(502).json({ error: 'No pude leer 06-ECONOMIA.md del repo. Vuelve a publicar la app (el build copia el repo).', code: 'NO_REPO' });
   res.json({ ...parseEconomia(eco.content), ...(op ? parseOperacion(op.content) : { roles: [], slots: [] }) });
 });
 on('GET', 'repo/precios', async (req, res) => {
@@ -151,7 +151,7 @@ on('GET', 'health', async (req, res) => {
   const env = ['DATABASE_URL', 'POSTGRES_URL', 'SESSION_SECRET', 'APP_URL', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'ADMIN_EMAILS', 'GITHUB_TOKEN', 'GITHUB_REPO', 'GITHUB_BRANCH'];
   let repo = 'sin probar';
   try { repo = (await readFile('inherent/06-ECONOMIA.md')) ? 'ok' : 'no encuentra el archivo (token sin acceso al repo, o repo/rama incorrectos)'; } catch (e) { repo = e.message; }
-  res.json({ env: Object.fromEntries(env.map((k) => [k, Boolean(process.env[k])])), repo, domain: domain() });
+  res.json({ env: Object.fromEntries(env.map((k) => [k, Boolean(process.env[k])])), repo, repoSource: repoSource(), domain: domain() });
 });
 
 export default async function handler(req, res) {

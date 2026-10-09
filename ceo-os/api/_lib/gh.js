@@ -4,6 +4,15 @@ import fs from 'node:fs';
 import nodePath from 'node:path';
 import crypto from 'node:crypto';
 const LOCAL = process.env.LOCAL_REPO;
+// En Vercel se lee la copia que hace el build (scripts/snapshot.mjs).
+let SNAP;
+function snap() {
+  if (SNAP !== undefined) return SNAP;
+  try { SNAP = JSON.parse(fs.readFileSync(new URL('../_data/repo.json', import.meta.url), 'utf8')); } catch { SNAP = null; }
+  return SNAP;
+}
+const useSnap = () => !LOCAL && snap();
+export const repoSource = () => (LOCAL ? 'local' : snap() ? 'build' : process.env.GITHUB_TOKEN ? 'github' : 'none');
 const lp = (p) => nodePath.join(LOCAL, p);
 const sha1 = (c) => crypto.createHash('sha1').update(c).digest('hex');
 const cfg = () => ({
@@ -30,6 +39,7 @@ async function gh(path, init = {}) {
 
 export async function readFile(path) {
   if (LOCAL) { try { const c = fs.readFileSync(lp(path), 'utf8'); return { content: c, sha: sha1(c) }; } catch { return null; } }
+  if (useSnap()) { const c = SNAP.files[path]; return c == null ? null : { content: c, sha: sha1(c) }; }
   const r = await gh(`contents/${enc(path)}?ref=${encodeURIComponent(cfg().branch)}`);
   if (r.status === 404) return null;
   if (!r.ok) throw new Error(`GitHub ${r.status} leyendo ${path}`);
@@ -40,6 +50,7 @@ export async function readFile(path) {
 
 export async function listDir(path) {
   if (LOCAL) { try { return fs.readdirSync(lp(path), { withFileTypes: true }).map((d) => ({ name: d.name, path: path + '/' + d.name, type: d.isDirectory() ? 'dir' : 'file', size: 0 })); } catch { return []; } }
+  if (useSnap()) return (SNAP.dirs[path] || []).map((n) => ({ name: n, path: path + '/' + n, type: 'dir', size: 0 }));
   const r = await gh(`contents/${enc(path)}?ref=${encodeURIComponent(cfg().branch)}`);
   if (r.status === 404) return [];
   if (!r.ok) throw new Error(`GitHub ${r.status} listando ${path}`);

@@ -14,7 +14,7 @@ export const areasFor = (role) => ROLE_AREAS[role] || [];
 export const COLLS = {
   leads: 'sales', quotes: 'sales', services: 'sales',
   rates: 'finanzas', finance: 'finanzas', payroll: 'finanzas',
-  projects: 'operations', tasks: 'operations',
+  projects: 'operations', tasks: 'operations', accounts: 'operations',
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library',
   team: 'team', settings: 'home',

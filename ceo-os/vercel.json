@@ -1,6 +1,6 @@
 {
   "framework": null,
-  "buildCommand": null,
+  "buildCommand": "node scripts/snapshot.mjs",
   "outputDirectory": "public",
   "rewrites": [
     {
@@ -55,5 +55,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "api/_data/**"
+    }
+  }
 }
