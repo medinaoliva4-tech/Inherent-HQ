@@ -109,25 +109,3 @@ export function listFiles(prefix) {
   }
   return snap() ? Object.keys(SNAP.files).filter((k) => k.startsWith(prefix + '/')) : [];
 }
-
-// Para escribir: lee el archivo VIVO (GitHub o disco), nunca la copia del build, para tener su sha real.
-export async function readLive(path) {
-  if (LOCAL) { try { const c = fs.readFileSync(lp(path), 'utf8'); return { content: c, sha: sha1(c) }; } catch { return null; } }
-  const r = await gh(`contents/${enc(path)}?ref=${encodeURIComponent(cfg().branch)}`);
-  if (r.status === 404) { await assertRepo(); return null; }
-  if (!r.ok) throw await ghError(r, 'leyendo ' + path);
-  await assertRepo();
-  const j = await r.json();
-  return { content: Buffer.from(j.content || '', 'base64').toString('utf8'), sha: j.sha };
-}
-// Un 404 de un archivo es normal (todavía no existe); un 404 del repo es un token sin acceso.
-let repoOk = false;
-async function assertRepo() {
-  if (repoOk) return;
-  const r = await gh('');
-  if (!r.ok) throw await ghError(r, 'abriendo el repo');
-  const j = await r.json();
-  if (j.permissions && !j.permissions.push) throw Object.assign(new Error('El GITHUB_TOKEN puede leer el repo pero no escribir: en GitHub dale «Contents: Read and write».'), { code: 'GH', ghStatus: 403 });
-  repoOk = true;
-}
-export const canWriteRepo = () => Boolean(LOCAL || process.env.GITHUB_TOKEN?.trim());

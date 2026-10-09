@@ -473,3 +473,45 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
 .kcard.wk{cursor:pointer}.kcard.wk b{font-size:14.5px}
 .wkadd{width:100%;text-align:left;padding:10px 8px;border-radius:12px;color:var(--mut);font-size:13.5px}.wkadd:hover{background:rgba(255,255,255,.7);color:var(--ink)}
 @media (max-width:760px){.kanban.wkk{grid-template-columns:repeat(4,80vw)}}
+
+/* ---------- densidad: menos aire, misma estética ---------- */
+.app{padding-top:18px}.top{margin-bottom:22px}
+.hello h1{font-size:34px;letter-spacing:-1.1px}.hello p{font-size:30px;letter-spacing:-1px;margin-bottom:20px}
+.grid{gap:14px}.card{padding:18px;border-radius:24px}.big{font-size:48px}.feat .big{font-size:40px}.feat{min-height:180px}
+.sec-title{margin:24px 0 10px}.sec-title h2{font-size:20px}
+.tabs button{padding:7px 14px;font-size:13px}
+/* workspace */
+.wktop{display:flex;align-items:flex-end;gap:12px;margin-bottom:12px;flex-wrap:wrap}.wktop h1{font-size:30px;font-weight:500;letter-spacing:-1px;line-height:1.1}.wktop p{font-size:14px;margin-top:2px}
+.wkkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.wkkpi{background:rgba(255,253,248,.93);border:1px solid var(--stroke);border-radius:18px;padding:10px 14px;display:flex;flex-direction:column;box-shadow:0 8px 24px -16px rgba(52,44,36,.3)}
+.wkkpi .lbl{font-size:11.5px;color:var(--mut)}.wkkpi b{font-size:26px;font-weight:400;letter-spacing:-.8px;line-height:1.15}
+.wkgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}.wkgrid .span2{grid-column:span 2}.wkgrid>.span2>.card{height:100%}
+.wkbox{padding:14px 16px;border-radius:20px}.wkhead{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}.wkhead h3{font-size:15px;font-weight:500;letter-spacing:-.2px}
+.grow{flex:1;min-width:0}.wav{border-radius:50%;object-fit:cover;border:2px solid #fff;flex:none}
+.wkrow{padding:7px 2px;font-size:13.5px;gap:8px;text-decoration:none;color:inherit;cursor:pointer}.wkrow .grow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip.sm2{font-size:10.5px;padding:2px 8px}.btn.xs{padding:5px 11px;font-size:12.5px}
+.wkt{font-size:11.5px;font-weight:500;padding:3px 7px;border-radius:8px;background:#fff;border:1px solid var(--line);white-space:nowrap}
+.wkcheck{display:flex;gap:9px;align-items:flex-start;padding:6px 2px;font-size:13.5px;border-bottom:1px solid var(--line);cursor:pointer}.wkcheck:last-child{border:0}
+.wkcheck input{width:16px;height:16px;accent-color:#5c6b22;margin-top:1px;flex:none}.wkcheck input:checked+span{text-decoration:line-through;opacity:.5}
+.wkdec{padding:8px 10px;margin:5px 0;border-radius:12px;font-size:13.5px}
+.wkpipe{padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}.wkpipe:last-child{border:0}.wkpipe .wkprog{margin-top:6px}
+.wksops{display:grid;grid-template-columns:1fr 1fr;gap:6px}.wksop{display:flex;align-items:center;gap:6px;padding:8px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:12.5px;text-decoration:none;color:inherit;line-height:1.25}
+.wkup{background:linear-gradient(160deg,#f6ede4,#fbf8f2)}.wkdrop{border:1.5px dashed rgba(23,20,16,.2);border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}.wkdrop.over{border-color:var(--ink);background:#fff}
+.wkdrop .wkbar{width:100%}
+.wkflow{display:inline-flex;gap:6px;align-items:center;font-size:11.5px;color:var(--mut)}.wkflow span{background:#fff;border:1px solid var(--line);border-radius:99px;padding:1px 8px;color:var(--ink2)}
+.wktable{width:100%;font-size:13px}.wktable th{font-size:11px;padding:6px 4px}.wktable td{padding:8px 4px}
+.tabs.mini{padding:3px;margin:2px 0 8px}.tabs.mini button{padding:5px 11px;font-size:12px}
+.wkstage{display:grid;grid-template-columns:90px repeat(4,minmax(0,1fr));gap:6px;align-items:start;padding:6px 0;border-bottom:1px solid var(--line)}.wkstage.head span{font-size:11px;color:var(--mut)}.wkstage b{font-size:12.5px;font-weight:500;padding-top:6px}
+.wkpost{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 8px;margin-bottom:4px;font-size:12.5px;display:flex;flex-direction:column;cursor:pointer}
+.kcard.wk{padding:10px}.kanban.wkk .kcol{min-height:160px}
+@media (max-width:1150px){.wkgrid{grid-template-columns:1fr 1fr}.wkgrid .span2{grid-column:span 2}}
+@media (max-width:760px){.wkgrid{grid-template-columns:1fr}.wkgrid .span2{grid-column:auto}.wkkpis{grid-template-columns:1fr 1fr}.wkstage{grid-template-columns:70px repeat(4,140px);overflow-x:auto}}
+/* grabador tipo Loom */
+.rec{position:fixed;inset:0;z-index:45;background:rgba(23,20,16,.45);display:grid;place-items:center;padding:16px}
+.rec.min{inset:auto 16px 16px auto;background:none;padding:0}
+.recbox{width:min(520px,100%);background:#fbf9f4;border-radius:26px;padding:22px;box-shadow:0 40px 120px rgba(0,0,0,.3)}
+.recopts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.recopts button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:16px;border:1px solid var(--line);background:#fff;font-size:13px}
+.recopts button.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.recbar{display:flex;align-items:center;gap:10px;background:#171410;color:#fff;padding:10px 12px;border-radius:99px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.recbar .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}.recbar .btn:not(.ghost){background:#fff;color:#171410}
+.recdot{width:10px;height:10px;border-radius:50%;background:#e5484d;animation:pulse 1.2s infinite}

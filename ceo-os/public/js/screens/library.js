@@ -1,4 +1,6 @@
-import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, $, folderSvg, TONES, embedUrl, IC, toRepo, diagram, diagrams } from '../core.js';
+import { recorder } from '../recorder.js';
+import { WORK_ROLES } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, $, folderSvg, TONES, embedUrl, IC, diagram, diagrams } from '../core.js';
 
 // Library: SOPs, playbooks, videos y notas que el equipo escribe aquí, en carpetas.
 // Una carpeta se puede conectar a una carpeta de Google Drive: se ve su contenido y se crean Docs ahí.
@@ -156,6 +158,13 @@ export async function render(el, { sub, alive }) {
     if (v.url && !/^https:\/\//.test(v.url)) return toast('El link debe empezar con https://', true);
     try { const r = await D.create({ ...v, body: (TPL[v.kind] || TPL.Nota)(v.title) }); location.hash = `/library/${r.folder_id || '_'}/${r.id}/edit`; } catch (e) { toast(e.message, true); }
   }
+  // Grabar (como Loom) → sube a Drive → queda como documento de tipo Video.
+  function record(folderId) {
+    recorder({ onDone: async ({ title, link }) => {
+      try { const r = await D.create({ title, kind: 'Video', folder_id: folderId || '', url: link, body: `# ${title}\n\n> Grabado en Inherent OS. Drive tarda unos minutos en procesar el video.\n\n## Resumen\n\n` });
+        toast('Video guardado en la Library ✅'); location.hash = `/library/${r.folder_id || '_'}/${r.id}`; } catch (e) { toast(e.message, true); }
+    } });
+  }
   const docRow = (d) => html`<tr class="click" data-act="doc" data-id="${d.id}"><td><span class="ftype" style="background:${KCOL[d.kind] || '#8f877b'}">${(d.kind || 'Doc').slice(0, 4).toUpperCase()}</span><b style="font-weight:500">${d.title}</b></td><td class="mut">${folders.find((f) => f.id === d.folder_id)?.name || '—'}</td><td class="mut">${d._meta?.updated_at ? fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}</td><td class="mut sm">${d._meta?.updated_by || ''}</td></tr>`;
 
   // ---------- Inicio: carpetas + documentos recientes ----------
@@ -163,7 +172,7 @@ export async function render(el, { sub, alive }) {
     const ql = q.toLowerCase();
     const list = docs.filter((d) => !ql || (d.title + ' ' + (d.body || '')).toLowerCase().includes(ql)).sort((a, z) => String(z._meta?.updated_at || '').localeCompare(String(a._meta?.updated_at || '')));
     mount(el, html`<div class="hello"><h1>Library</h1><p>SOPs, playbooks y videos. <em>Todo en un lugar.</em></p></div>
-      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div><button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn" data-act="newDoc">+ Documento</button></div>
+      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div><button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">● Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
       ${folders.length ? html`<div class="folders">${folders.map((f) => html`<div class="folder" data-act="folder" data-id="${f.id}">${folderSvg({ drive: Boolean(f.drive), tone: f.tone, video: docs.some((d) => d.folder_id === f.id && d.kind === 'Video') })}<b>${f.name}</b><span class="mut sm">${docs.filter((d) => d.folder_id === f.id).length} documentos${f.drive ? ' · Drive' : ''}</span></div>`)}</div>`
         : html`<div class="empty"><b>Todavía no hay carpetas</b>Crea la primera: «Onboarding de cliente», «Producción», «Playbooks de venta»… y conéctala a una carpeta de Drive si quieres.</div>`}
       <div class="sec-title"><h2>${q ? 'Resultados' : 'Recientes'}</h2></div>
@@ -181,7 +190,7 @@ export async function render(el, { sub, alive }) {
       mount(el, html`<div class="row" style="margin-bottom:14px"><a class="btn ghost" href="#/library">← Library</a></div>
         <div class="row" style="gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:20px"><div style="width:110px">${folderSvg({ w: 110, drive: Boolean(f.drive), tone: f.tone })}</div>
           <div style="flex:1;min-width:240px"><h1 style="font-size:46px;font-weight:500;letter-spacing:-1.4px">${f.name}</h1>${f.desc ? html`<div class="mut">${f.desc}</div>` : ''}</div>
-          <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" data-act="editFolder">Editar</button><button class="btn" data-act="newDocHere">+ Documento</button></div></div>
+          <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" data-act="editFolder">Editar</button><button class="btn ghost" data-act="recHere">● Grabar video</button><button class="btn" data-act="newDocHere">+ Documento</button></div></div>
         <div class="sec-title" style="margin-top:0"><h2>Documentos</h2></div>
         ${list.length ? html`<div class="grid g3">${list.map((d) => html`<div class="card" data-act="doc" data-id="${d.id}" style="cursor:pointer"><div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#8f877b'};color:#fff">${d.kind || 'Doc'}</span><div class="sp"></div>${d.url ? html`<span class="mut sm">▶ video</span>` : ''}</div><h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin-top:14px">${d.title}</h3><div class="mut sm" style="margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${String(d.body || '').replace(/[#*>`|-]/g, '').slice(0, 200) || 'Vacío'}</div></div>`)}</div>`
           : html`<div class="empty"><b>Sin documentos aquí</b>Crea un SOP, playbook o video con «+ Documento».</div>`}
@@ -195,6 +204,7 @@ export async function render(el, { sub, alive }) {
     acts(el, {
       editFolder: async () => { const r = await newFolder(f); if (r) { Object.assign(f, r); drive = null; paint(); if (f.drive) loadDrive(); } },
       newDocHere: () => newDoc(id),
+      recHere: () => record(id),
       doc: (t) => { location.hash = `/library/${id}/${t.dataset.id}`; },
       gnew: async () => { const v = await ask('Nuevo archivo en Drive', [{ k: 'name', l: 'Nombre', req: true }, { k: 'type', l: 'Tipo', t: 'select', opts: [['doc', 'Google Doc'], ['sheet', 'Google Sheet'], ['slides', 'Google Slides'], ['folder', 'Carpeta']] }], 'Crear'); if (!v) return;
         try { const r = await api('google/drive', { method: 'POST', body: { ...v, folder: f.drive } }); toast('Creado en tu Drive ✅'); if (r.link) window.open(r.link, '_blank', 'noopener'); drive = null; paint(); loadDrive(); } catch (e) { toast(e.message, true); } },
@@ -219,9 +229,9 @@ export async function render(el, { sub, alive }) {
     const paint = () => {
       const em = embedUrl(d.url);
       mount(el, html`<div class="row" style="margin-bottom:14px;gap:8px"><a class="btn ghost" href="${back}">← ${folders.find((f) => f.id === d.folder_id)?.name || 'Library'}</a><div class="sp"></div>
-          ${editing ? html`<button class="btn ghost" data-act="cancel">Cancelar</button><button class="btn" data-act="save">Guardar</button>` : html`<button class="btn ghost" data-act="del">🗑</button><button class="btn ghost" data-act="repo">⇪ Al repo</button><button class="btn" data-act="edit">Editar</button>`}</div>
+          ${editing ? html`<button class="btn ghost" data-act="cancel">Cancelar</button><button class="btn" data-act="save">Guardar</button>` : html`<button class="btn ghost" data-act="del">🗑</button><button class="btn" data-act="edit">Editar</button>`}</div>
         <div class="card" style="padding:34px;max-width:980px;margin:0 auto">
-          ${editing ? html`<div class="row" style="gap:10px;flex-wrap:wrap"><select class="in" id="dkind" style="width:auto">${KINDS.map((k) => html`<option ${k === d.kind ? raw('selected') : ''}>${k}</option>`)}</select><select class="in" id="dfolder" style="width:auto"><option value="">— Sin carpeta</option>${folders.map((f) => html`<option value="${f.id}" ${f.id === d.folder_id ? raw('selected') : ''}>${f.name}</option>`)}</select></div>
+          ${editing ? html`<div class="row" style="gap:10px;flex-wrap:wrap"><select class="in" id="dkind" style="width:auto">${KINDS.map((k) => html`<option ${k === d.kind ? raw('selected') : ''}>${k}</option>`)}</select><span class="mut sm" style="margin-left:6px">Perfil:</span>${WORK_ROLES.map(([k, l]) => html`<label class="chip" style="cursor:pointer;padding:6px 10px"><input type="checkbox" class="drole" value="${k}" ${(d.roles || []).includes(k) ? raw('checked') : ''} style="margin-right:4px">${l.split(' · ')[0]}</label>`)}<select class="in" id="dfolder" style="width:auto"><option value="">— Sin carpeta</option>${folders.map((f) => html`<option value="${f.id}" ${f.id === d.folder_id ? raw('selected') : ''}>${f.name}</option>`)}</select></div>
               <input class="in" id="dtitle" value="${d.title}" style="font-size:34px;font-weight:500;letter-spacing:-1px;border:0;padding:10px 0;background:transparent;margin-top:8px">
               <input class="in" id="durl" value="${d.url || ''}" placeholder="Video o link (YouTube, Loom, Vimeo, Drive) — opcional" style="margin-bottom:12px">
               <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:10px">${d.kind === 'Diagrama' ? html`<span class="mut sm">Empieza con:</span>${Object.entries(DGN).map(([k, l]) => html`<button class="chip" data-act="dgm" data-k="${k}" style="padding:7px 12px">${l}</button>`)}` : html`<button class="chip" data-act="fmt" style="padding:7px 12px">↺ Insertar el formato de ${d.kind || 'Nota'}</button>`}</div>
@@ -239,12 +249,11 @@ export async function render(el, { sub, alive }) {
     acts(el, {
       dgm: async (t) => { const ta = $('#dbody', el); if (ta.value.trim() && !(await confirmAsk('¿Reemplazar el diagrama por la plantilla?'))) return; ta.value = DGM[t.dataset.k]; ta.oninput(); },
       fmt: async () => { const ta = $('#dbody', el); const k = curKind(); if (ta.value.trim() && !(await confirmAsk(`¿Reemplazar el texto por el formato de ${k}?`))) return; ta.value = (TPL[k] || TPL.Nota)($('#dtitle', el).value || d.title); ta.oninput(); },
-      repo: () => toRepo('doc', { id: d.id }),
       edit: () => { editing = true; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}/edit`); paint(); },
       cancel: () => { editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); paint(); },
       save: async () => {
         const url = $('#durl', el).value.trim(); if (url && !/^https:\/\//.test(url)) return toast('El link debe empezar con https://', true);
-        try { d = await D.save({ ...d, title: $('#dtitle', el).value.trim() || d.title, kind: $('#dkind', el).value, folder_id: $('#dfolder', el).value, url, body: $('#dbody', el).value }); editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); toast('Guardado ✅'); paint(); }
+        try { d = await D.save({ ...d, title: $('#dtitle', el).value.trim() || d.title, kind: $('#dkind', el).value, folder_id: $('#dfolder', el).value, url, body: $('#dbody', el).value, roles: [...el.querySelectorAll('.drole:checked')].map((x) => x.value) }); editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); toast('Guardado ✅'); paint(); }
         catch (e) { toast(e.message, true); }
       },
       del: async () => { if (!(await confirmAsk(`¿Eliminar «${d.title}»?`))) return; await D.remove(d.id); location.hash = back.slice(1); },
@@ -257,6 +266,7 @@ export async function render(el, { sub, alive }) {
     acts(el, {
       newFolder: async () => { if (await newFolder(null)) home(); },
       newDoc: () => newDoc(''),
+      rec: () => record(''),
       folder: (t) => { location.hash = `/library/${t.dataset.id}`; },
       doc: (t) => { const d = docs.find((x) => x.id === t.dataset.id); location.hash = `/library/${d.folder_id || '_'}/${d.id}`; },
     });

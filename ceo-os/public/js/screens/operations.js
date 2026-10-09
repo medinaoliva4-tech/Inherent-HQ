@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList } from '../core.js';
 
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
 const ST = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Entregado', 'green'], off: ['No aplica', ''] };
@@ -14,7 +14,7 @@ const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDat
 
 export async function render(el, { me, sub, alive }) {
   const PR = col('projects'), TK = col('tasks');
-  let [projects, tasks, team] = await Promise.all([PR.list(), TK.list(), col('team').list()]);
+  let [projects, tasks, team] = await Promise.all([PR.list(), TK.list(), teamList()]);
   let clients = [];
   try { clients = (await api('repo/clients')).clients.map((c) => ({ ...c, plan: String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '') })); } catch {}
   let tab = ['pipe', 'cal', 'time', 'tasks'].includes(sub[0]) ? sub[0] : 'pipe';

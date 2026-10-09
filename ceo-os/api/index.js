@@ -5,8 +5,6 @@ import * as google from './_lib/google.js';
 import { guard, areasFor, COLLS, canWrite, userFor, domain } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
-import * as sync from './_lib/sync.js';
-import { canWriteRepo } from './_lib/gh.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -51,6 +49,14 @@ on('GET', 'me', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   const t = await db.get('team', u.email);
   res.json({ ...u, areas: areasFor(u.role), google: t?.google || {} });
+});
+// Cada quien cambia su propia foto (una imagen chica que el navegador ya recortó).
+on('PUT', 'me/photo', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const photo = String(body(req).photo || '');
+  if (photo && (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(photo) || photo.length > 300_000)) return res.status(400).json({ error: 'La foto debe ser una imagen de menos de 200 KB' });
+  await db.upsert('team', u.email, { photo: photo || null }, u.email);
+  res.json({ ok: true });
 });
 on('GET', 'status', async (req, res) => {
   // Público y sin datos: solo dice qué falta configurar, para que el login lo explique.
@@ -180,54 +186,43 @@ on('GET', 'repo/client/:slug', async (req, res) => {
   res.json({ slug, ...p, links: prof.links, own: prof.own, months: prof.months.map((m) => ({ mes: m.mes, files: m.files.map((f) => ({ path: f.path, name: f.name, area: f.area })) })) });
 });
 
-// ---------- De la app al repo: el CEO escribe directo; el resto propone y el CEO aprueba ----------
-const SYNC_AREA = { roadmap: 'clients', accesos: 'clients', competencia: 'content', posts: 'content', doc: 'library' };
-const syncRef = (b) => ({ slug: String(b.ref?.slug || ''), mes: String(b.ref?.mes || ''), id: String(b.ref?.id || '') });
-on('POST', 'repo/preview', async (req, res) => {
-  const b = body(req); const area = SYNC_AREA[b.kind]; if (!area) return res.status(400).json({ error: 'Tipo desconocido' });
-  const u = await guard(req, res, area); if (!u) return;
-  try { const it = await sync.build(b.kind, syncRef(b)); res.json({ ...it, direct: u.role === 'ceo', ready: canWriteRepo() }); }
-  catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
-});
-on('POST', 'repo/sync', async (req, res) => {
-  const b = body(req); const area = SYNC_AREA[b.kind]; if (!area) return res.status(400).json({ error: 'Tipo desconocido' });
-  const u = await guard(req, res, area); if (!u) return;
-  const ref = syncRef(b);
-  try {
-    const it = await sync.build(b.kind, ref);
-    if (u.role === 'ceo') {
-      if (!canWriteRepo()) return res.status(503).json({ error: 'Falta GITHUB_TOKEN en Vercel para escribir en el repo', code: 'NO_REPO_WRITE' });
-      const r = await sync.commit(it);
-      console.log(JSON.stringify({ evt: 'repo-write', path: it.path, email: u.email }));
-      return res.json({ done: true, unchanged: Boolean(r.unchanged), path: it.path });
-    }
-    const q = await db.create('repoq', { kind: b.kind, ref, path: it.path, summary: it.summary, status: 'pending', by: u.email, by_name: u.name, at: new Date().toISOString() }, u.email);
-    res.json({ queued: true, id: q.id, path: it.path });
-  } catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
-});
-on('GET', 'repo/queue', async (req, res) => {
+// ---------- Google Drive (Library) ----------
+// Subir archivos (entregas, grabaciones): el navegador sube DIRECTO a Google con una sesión que
+// abre el servidor; así no hay límite de tamaño de Vercel y el token nunca sale del servidor.
+const UP_FOLDER = 'Inherent OS · Entregas';
+async function upFolder(u) {
+  const me = await db.get('team', u.email);
+  if (me?.drive_folder) return me.drive_folder;
+  const q = new URLSearchParams({ q: `name='${UP_FOLDER}' and mimeType='application/vnd.google-apps.folder' and trashed=false and 'root' in parents`, fields: 'files(id)', pageSize: '1' });
+  let id = (await google.gapi(u.email, `${DRIVE}?${q}`)).files?.[0]?.id;
+  if (!id) id = (await google.gapi(u.email, `${DRIVE}?fields=id`, { method: 'POST', body: JSON.stringify({ name: UP_FOLDER, mimeType: 'application/vnd.google-apps.folder' }) })).id;
+  await db.upsert('team', u.email, { drive_folder: id }, u.email);
+  return id;
+}
+on('POST', 'google/upload', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
-  const all = (await db.list('repoq')).sort((a, z) => String(z.at).localeCompare(String(a.at)));
-  if (u.role !== 'ceo') return res.json({ pending: all.filter((x) => x.status === 'pending' && x.by === u.email).length });
-  const pending = await Promise.all(all.filter((x) => x.status === 'pending').map(async (x) => { try { const it = await sync.build(x.kind, x.ref); return { ...x, content: it.content, path: it.path }; } catch (e) { return { ...x, error: e.message }; } }));
-  res.json({ ready: canWriteRepo(), pending, done: all.filter((x) => x.status !== 'pending').slice(0, 20) });
+  const b = body(req);
+  const name = String(b.name || '').replace(/[\\/]/g, '-').trim().slice(0, 180), mime = String(b.mime || 'application/octet-stream').slice(0, 100), size = Number(b.size);
+  if (!name || !(size > 0) || size > 5e9) return res.status(400).json({ error: 'Archivo inválido (máximo 5 GB)' });
+  const parent = driveId(b.folder) || (await upFolder(u));
+  const origin = (process.env.APP_URL || '').trim().replace(/\/$/, '');
+  const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id,name,mimeType,webViewLink', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + (await google.accessToken(u.email)), 'Content-Type': 'application/json; charset=UTF-8', 'X-Upload-Content-Type': mime, 'X-Upload-Content-Length': String(size), ...(origin ? { Origin: origin } : {}) },
+    body: JSON.stringify({ name, parents: [parent] }),
+  });
+  if (!r.ok || !r.headers.get('location')) { const t = await r.text(); throw Object.assign(new Error(`Drive ${r.status}: ${t.slice(0, 140)}`), { status: r.status === 401 || r.status === 403 ? r.status : undefined }); }
+  res.json({ url: r.headers.get('location') });
 });
-on('POST', 'repo/queue/:id', async (req, res) => {
-  const u = await guard(req, res, 'finanzas'); if (!u) return; // solo el CEO
-  const x = await db.get('repoq', req.params.id); if (!x || x.status !== 'pending') return res.status(404).json({ error: 'Esa propuesta ya no está pendiente' });
-  const action = body(req).action;
-  if (action === 'reject') { await db.update('repoq', x.id, { ...x, status: 'rejected', decided_at: new Date().toISOString() }, x.v, u.email); return res.json({ ok: true }); }
-  if (action !== 'approve') return res.status(400).json({ error: 'Acción inválida' });
-  if (!canWriteRepo()) return res.status(503).json({ error: 'Falta GITHUB_TOKEN en Vercel para escribir en el repo', code: 'NO_REPO_WRITE' });
-  try {
-    const it = await sync.build(x.kind, x.ref); const r = await sync.commit(it);
-    await db.update('repoq', x.id, { ...x, status: 'approved', path: it.path, decided_at: new Date().toISOString() }, x.v, u.email);
-    console.log(JSON.stringify({ evt: 'repo-write', path: it.path, email: u.email, proposed_by: x.by }));
-    res.json({ ok: true, unchanged: Boolean(r.unchanged), path: it.path });
-  } catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
+// Al terminar: lo pueden ver todos los de @dominio con el link, y se devuelve el link.
+on('POST', 'google/upload/done', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const id = driveId(body(req).id); if (!id) return res.status(400).json({ error: 'Falta el archivo' });
+  await google.gapi(u.email, `${DRIVE}/${id}/permissions?supportsAllDrives=true&sendNotificationEmail=false`, { method: 'POST', body: JSON.stringify({ type: 'domain', role: 'reader', domain: domain(), allowFileDiscovery: false }) }).catch(() => null);
+  const f = await google.gapi(u.email, `${DRIVE}/${id}?fields=id,name,mimeType,webViewLink,size&supportsAllDrives=true`);
+  res.json({ id: f.id, name: f.name, mime: f.mimeType, link: f.webViewLink, size: Number(f.size || 0) });
 });
 
-// ---------- Google Drive (Library) ----------
 const DRIVE = 'https://www.googleapis.com/drive/v3/files';
 const driveId = (s) => (String(s || '').match(/[-\w]{20,}/) || [])[0] || null;
 on('GET', 'google/drive', async (req, res) => {
@@ -307,7 +302,7 @@ export default async function handler(req, res) {
     req.query = { ...Object.fromEntries(url.searchParams), ...(req.query || {}) };
     for (const r of routes) {
       const m = r.method === req.method && r.re.exec(path);
-      if (m) { req.params = m.groups || {}; return await r.fn(req, res); }
+      if (m) { req.params = Object.fromEntries(Object.entries(m.groups || {}).map(([k, v]) => { try { return [k, decodeURIComponent(v)]; } catch { return [k, v]; } })); return await r.fn(req, res); }
     }
     res.status(404).json({ error: 'Ruta desconocida' });
   } catch (e) { fail(res, e); }

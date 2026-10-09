@@ -17,7 +17,7 @@ export const COLLS = {
   projects: 'operations', tasks: 'operations', accounts: 'clients',
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library',
-  team: 'team', settings: 'home',
+  team: 'team', settings: 'home', checks: 'work',
 };
 const CEO_WRITE = new Set(['team', 'settings', 'rates', 'finance', 'payroll']);
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
@@ -29,7 +29,7 @@ const admins = () => String(process.env.ADMIN_EMAILS || '').toLowerCase().split(
 export async function userFor(email) {
   const u = await db.get('team', email);
   const role = admins().includes(email) ? 'ceo' : u?.role || 'team';
-  return { email, name: u?.name || email.split('@')[0], picture: u?.picture || null, title: u?.title || '', role, active: u ? u.active !== false : true };
+  return { email, name: u?.name || email.split('@')[0], picture: u?.photo || u?.picture || null, title: u?.title || '', roles: Array.isArray(u?.roles) && u.roles.length ? u.roles : role === 'ceo' ? ['ceo'] : role === 'coo' ? ['coo'] : [], role, active: u ? u.active !== false : true };
 }
 
 export function csrfOk(req) {

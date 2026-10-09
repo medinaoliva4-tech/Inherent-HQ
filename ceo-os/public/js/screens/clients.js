@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initials, IC, $, docView, docHead, ask, confirmAsk, toRepo } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initials, IC, $, docView, docHead, ask, confirmAsk , teamList } from '../core.js';
 import { loadPosts, postsBoard } from '../posts.js';
 
 // Clients: la página entera de cada cliente. El plan y los accesos salen del repo;
@@ -12,7 +12,7 @@ const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDat
 
 export async function render(el, { sub, alive }) {
   const AC = col('accounts');
-  const [repo, accounts, projects, tasks, team] = await Promise.all([api('repo/clients').catch(() => ({ clients: [] })), AC.list(), col('projects').list(), col('tasks').list(), col('team').list()]);
+  const [repo, accounts, projects, tasks, team] = await Promise.all([api('repo/clients').catch(() => ({ clients: [] })), AC.list(), col('projects').list(), col('tasks').list(), teamList()]);
   const clients = repo.clients.filter((c) => c.hasPlan).map((c) => ({ ...c, plan: cleanPlan(c.plan) }));
   const acct = (slug) => accounts.find((a) => a.id === 'acc-' + slug);
   const slug = sub[0];
@@ -58,7 +58,7 @@ export async function render(el, { sub, alive }) {
         </div>
         <div class="row" style="gap:8px;flex-wrap:wrap;margin:18px 0 6px">${[['rm', 'Roadmap'], ['tl', 'Timeline'], ['tk', 'Tareas'], ['ct', 'Contenido'], ['ac', 'Accesos'], ['en', 'Entregables'], ['pl', 'Plan']].map(([k, l]) => html`<button class="chip" data-act="jump" data-k="${k}" style="padding:8px 14px">${l}</button>`)}</div>
 
-        <div class="sec-title" id="s-rm"><h2>Roadmap</h2><div class="row" style="gap:10px"><span class="mut sm">Los hitos grandes: a dónde vamos y cuándo</span><button class="btn ghost" data-act="repoRm" style="padding:8px 14px">⇪ Al repo</button></div></div>
+        <div class="sec-title" id="s-rm"><h2>Roadmap</h2><span class="mut sm">Los hitos grandes: a dónde vamos y cuándo</span></div>
         <div class="card">
           ${rm.length ? html`<div class="road">${rm.map((x) => html`<div class="step ${x.status}"><i></i><div style="flex:1"><div class="row" style="gap:8px"><b style="font-weight:500;font-size:16px">${x.t}</b><button class="chip ${RM[x.status]?.[1] || ''}" data-act="rmst" data-i="${x.i}" style="font-size:11px">${RM[x.status]?.[0] || 'Pendiente'}</button><div class="sp"></div><span class="mut sm">${x.date ? fdateLong(x.date) : 'Sin fecha'}</span><button class="sm mut" data-act="rmedit" data-i="${x.i}" title="Editar">✎</button><button class="sm mut" data-act="rmdel" data-i="${x.i}" title="Quitar">✕</button></div>${x.note ? html`<div class="mut sm" style="margin-top:4px">${x.note}</div>` : ''}</div></div>`)}</div>`
             : html`<div class="mut sm">Todavía no hay hitos. Agrega el primero abajo.</div>`}
@@ -77,7 +77,7 @@ export async function render(el, { sub, alive }) {
         ${info.months.length ? html`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">${info.months.map((m) => html`<a class="chip" href="#/content/guiones/${slug}" style="padding:8px 14px;text-decoration:none;color:inherit">✎ ${m.mes} · ${m.files.length} archivo${m.files.length === 1 ? '' : 's'} en el repo</a>`)}</div>` : ''}
         <div id="posts"></div>
 
-        <div class="sec-title" id="s-ac"><h2>Accesos</h2><div class="row" style="gap:10px"><span class="mut sm">🔒 Nunca contraseñas aquí: solo dónde están</span><button class="btn ghost" data-act="repoAc" style="padding:8px 14px">⇪ Al repo</button></div></div>
+        <div class="sec-title" id="s-ac"><h2>Accesos</h2><span class="mut sm">🔒 Nunca contraseñas aquí: solo dónde están</span></div>
         <div class="grid g11" style="align-items:start">
           <div class="card"><b style="font-weight:500">Del repo</b><div class="mut sm" style="margin-bottom:8px">clients/${slug}/00-onboarding/LINKS.md</div>
             ${info.links.length ? info.links.map((l) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><span class="mut" style="min-width:110px">${l.k}</span>${l.url && /^https:\/\//.test(l.url) ? html`<a href="${l.url}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1">${l.v}</a>` : html`<span style="flex:1">${l.v}</span>`}</div>`) : html`<div class="mut sm">Este cliente no tiene LINKS.md.</div>`}</div>
@@ -127,8 +127,6 @@ export async function render(el, { sub, alive }) {
     acts(el, {
       jump: (t) => $('#s-' + t.dataset.k, el)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
       pdf: roadmapPdf,
-      repoRm: () => toRepo('roadmap', { slug }),
-      repoAc: () => toRepo('accesos', { slug }),
       rmadd: async () => { const t = $('#rmt', el).value.trim(); if (!t) return toast('Escribe el hito', true); if (await saveAcc({ ...a, roadmap: [...(a.roadmap || []), { t, date: $('#rmd', el).value, status: 'todo' }] })) { toast('Hito agregado ✅'); paint(); } },
       rmst: async (t) => { const rmx = JSON.parse(JSON.stringify(a.roadmap)); const x = rmx[+t.dataset.i]; x.status = { todo: 'now', now: 'done', done: 'todo' }[x.status] || 'now'; if (await saveAcc({ ...a, roadmap: rmx })) paint(); },
       rmedit: async (t) => { const i = +t.dataset.i; const x = a.roadmap[i]; const v = await ask('Editar hito', [{ k: 't', l: 'Hito', v: x.t, req: true }, { k: 'date', l: 'Fecha', t: 'date', v: x.date, half: true }, { k: 'status', l: 'Estado', t: 'select', opts: Object.entries(RM).map(([k, [l]]) => [k, l]), v: x.status, half: true }, { k: 'note', l: 'Nota (sale en el PDF)', t: 'textarea', v: x.note }]); if (!v) return; const rmx = JSON.parse(JSON.stringify(a.roadmap)); rmx[i] = { ...x, ...v }; if (await saveAcc({ ...a, roadmap: rmx })) paint(); },

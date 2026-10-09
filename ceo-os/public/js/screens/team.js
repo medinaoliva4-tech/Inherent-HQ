@@ -1,4 +1,4 @@
-import { html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk } from '../core.js';
+import { html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, WORK_ROLES, roleName, $, teamDoc } from '../core.js';
 
 const COLORS = ['#26201a', '#c2735a', '#4f7790', '#7f9631', '#b08a5f', '#6b5a45'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
@@ -6,7 +6,7 @@ const ROLE = { ceo: 'CEO · acceso total', coo: 'COO · todo menos Finance', tea
 const T = col('team');
 
 export async function render(el, { me }) {
-  let people = (await T.list()).filter((p) => p.active !== false || me.role === 'ceo');
+  let people = (await teamList()).filter((p) => p.active !== false || me.role === 'ceo');
   const isCeo = me.role === 'ceo';
   let view = 'org';
   // Quién ocupa cada rol según el manual (tabla de slots de 05-OPERACION.md) y la nómina, y que no
@@ -83,6 +83,7 @@ export async function render(el, { me }) {
       { k: 'title', l: 'Puesto', v: p?.title, half: true },
       { k: 'kind', l: 'Tipo', t: 'select', opts: Object.entries(KIND), v: p?.kind || 'persona', half: true },
       { k: 'role', l: 'Acceso a la app', t: 'select', opts: Object.entries(ROLE), v: p?.role || 'team' },
+      { k: 'roles', l: 'Perfiles de trabajo (su Workspace)', t: 'checks', opts: WORK_ROLES, v: p?.roles || [] },
       { k: 'reports_to', l: 'Reporta a', t: 'select', opts: [['', '— nadie (arriba del organigrama)']].concat(people.filter((x) => x.id !== p?.id).map((x) => [x.id, x.name])), v: p?.reports_to || '' },
       { k: 'phone', l: 'Teléfono', v: p?.phone, half: true },
       { k: 'color', l: 'Color', t: 'select', opts: COLORS.map((c, i) => [c, ['Café', 'Terracota', 'Azul', 'Oliva', 'Dorado', 'Tierra'][i]]), v: p?.color || COLORS[0], half: true },
@@ -91,7 +92,7 @@ export async function render(el, { me }) {
     if (!v) return;
     try {
       if (p) {
-        const saved = await T.save({ ...p, ...v, active: v.active !== 'false' });
+        const saved = { ...(await T.save(teamDoc({ ...p, ...v, active: v.active !== 'false' }))) }; saved.google_picture = saved.picture; saved.picture = saved.photo || saved.picture;
         people = people.map((x) => (x.id === saved.id ? saved : x));
       } else {
         const id = v.email ? v.email.toLowerCase() : undefined;
@@ -102,6 +103,15 @@ export async function render(el, { me }) {
     } catch (e) { toast(e.message, true); }
   }
 
+  async function setPhoto(p, photo) {
+    try {
+      if (p.id === me.email) await api('me/photo', { method: 'PUT', body: { photo } });
+      else { const r = await T.save(teamDoc({ ...p, photo })); Object.assign(p, r); }
+      p.photo = photo; p.picture = photo || p.google_picture || null;
+      toast(photo ? 'Foto actualizada ✅' : 'Foto quitada'); people = people.map((x) => (x.id === p.id ? p : x)); paint(); open(p);
+      if (p.id === me.email) { const a = $('#avatar'); if (a && photo) a.innerHTML = `<img src="${photo}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
+    } catch (e) { toast(e.message, true); }
+  }
   function open(p) {
     const boss = byId(p.reports_to);
     drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
@@ -112,10 +122,13 @@ export async function render(el, { me }) {
         ${p.email ? html`<span>Correo</span><b style="font-weight:500">${p.email}</b>` : ''}
         ${p.phone ? html`<span>Teléfono</span><b style="font-weight:500">${p.phone}</b>` : ''}
         ${p.email ? html`<span>Acceso</span><b style="font-weight:500">${ROLE[p.role || 'team']}</b>` : ''}
+        <span>Perfiles</span><b style="font-weight:500">${(p.roles || []).length ? p.roles.map(roleName).join(' · ') : '—'}</b>
         ${p.email ? html`<span>Google</span><span class="row" style="color:var(--ink)">${p.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${p.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}${!p.google ? 'Aún no entra' : ''}</span>` : ''}
       </div>
+      ${p.id === me.email || isCeo ? html`<div class="row" style="margin-bottom:10px"><label class="btn ghost" style="cursor:pointer">📷 ${p.photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="photoIn" hidden></label>${p.photo ? html`<button class="btn ghost" data-act="nophoto">Quitar foto</button>` : ''}</div>` : ''}
       ${isCeo ? html`<div class="row"><button class="btn" data-act="edit">Editar perfil</button>${p.id !== me.email ? html`<button class="btn ghost" data-act="del">Quitar</button>` : ''}</div>` : ''}`,
-    { edit: () => edit(p), del: async () => { if (!(await confirmAsk(`¿Quitar a ${p.name} del equipo?`))) return; await T.remove(p.id); people = people.filter((x) => x.id !== p.id); closeDrawer(); paint(); } });
+    { nophoto: () => setPhoto(p, null), edit: () => edit(p), del: async () => { if (!(await confirmAsk(`¿Quitar a ${p.name} del equipo?`))) return; await T.remove(p.id); people = people.filter((x) => x.id !== p.id); closeDrawer(); paint(); } });
+    const pi = $('#photoIn'); if (pi) pi.onchange = async () => { if (pi.files[0]) try { await setPhoto(p, await squareImage(pi.files[0])); } catch (err) { toast(err.message, true); } };
   }
 
   acts(el, { view: (b) => { view = b.dataset.v; paint(); }, add: () => edit(null), open: (b) => open(byId(b.dataset.id)), import: importMissing });
