@@ -757,3 +757,6 @@ a.btn{text-decoration:none}
   .card.feat .big{font-size:34px!important}
   .card.feat .foot{margin-top:10px}
 }
+
+.homesel{gap:8px;flex-wrap:wrap;margin:2px 0 12px}.homesel .tabs.mini{margin:0}
+.engwhat{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);line-height:1.45}

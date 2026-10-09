@@ -222,7 +222,13 @@ export async function instagram(handles, days = 30, hint = '') {
     followers: Math.max(0, ...mineA.map((x) => n(x.followers_count))),
     reach: series.length ? sum(series, 'reach') : sum(recent, 'reach'), views: series.length ? sum(series, 'views') : sum(recent, 'views'),
     // Engagement de lo publicado en el periodo; si no hubo posts, el de los últimos 90 días (y se dice).
-    posts: recent.length, ...(() => { const base = sum(recent, 'reach') ? recent : media; return { er: sum(base, 'reach') ? Math.round((sum(base, 'eng') / sum(base, 'reach')) * 1000) / 10 : null, erDays: base === recent ? days : 90 }; })(),
+    // + el del periodo anterior del mismo largo, para saber si sube o baja.
+    posts: recent.length, ...(() => {
+      const erOf = (l) => (sum(l, 'reach') ? Math.round((sum(l, 'eng') / sum(l, 'reach')) * 1000) / 10 : null);
+      const base = sum(recent, 'reach') ? recent : media, prevSince = new Date(Date.now() - 2 * days * 864e5).toISOString().slice(0, 10);
+      const prev = base === recent ? media.filter((x) => x.date >= prevSince && x.date < since) : [];
+      return { er: erOf(base), erDays: base === recent ? days : 90, erPrev: erOf(prev), postsPrev: prev.length, eng: sum(base, 'eng'), engReach: sum(base, 'reach') };
+    })(),
     handles,
     series, reels: reels.slice(0, 30),
     watch: { avg: withAvg.length ? Math.round((sum(withAvg, 'avg') / withAvg.length) * 10) / 10 : null, hours: Math.round(sum(reels, 'total') / 360) / 10, hookLost: withAvg.filter((x) => x.avg < 3).length, n: withAvg.length },
