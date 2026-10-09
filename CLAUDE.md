@@ -31,6 +31,8 @@ agents/                    ← LOS AGENTES — uno por etapa del pipeline
         ├── WORKFLOW.md    08-community-management · 09-posting · 10-ads-management
         └── skills/<skill>/
 
+ceo-os/                    ← LA HERRAMIENTA DEL CEO — web privada con login; el repo es su base de datos
+
 clients/                   ← LOS CLIENTES
 ├── README.md              cómo se arma un folder de cliente
 └── <cliente>/             todo lo del cliente — su CLAUDE.md es el router
@@ -318,6 +320,7 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 | 🔒 Costos, márgenes, capacidades MCP | `inherent/06-ECONOMIA.md` |
 | Copy, tono o el brief de la web | `inherent/07-COMUNICACION.md` |
 | Administrar Inherent: caja, cobros, impuestos, ventas | `inherent/administracion/` |
+| Ver y operar la empresa en una web *(finanzas, sales, operations…)* | `ceo-os/README.md` |
 | Qué instalar en una computadora nueva | `INSTALAR.md` |
 | Lo que falta decidir, construir o probar | `PENDIENTES.md` |
 
