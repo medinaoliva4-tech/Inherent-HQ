@@ -1,28 +1,31 @@
 // Crear cosas con preguntas, no con formularios. Lo usan Operations, Workspace y Clients.
-import { wizard, col, api, toast, roleName, today, fdate } from './core.js';
-import { DEPTS, deptsOfPlan, phasesFor, tasksFor } from './cycle.js';
+import { wizard, col, api, toast, roleName, today, fdate, html, raw, drawer, closeDrawer, $, $$, Q } from './core.js';
+import { DEPTS, deptsOfPlan, phasesFor, tasksFor, meetingsFor, holders, hoursAt, svcHours, svcCost, svcPrice, roleToWork } from './cycle.js';
 
 const cleanPlan = (s) => String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, '');
 
 // ---------- Proyecto ----------
 export async function newProject({ team, me, projects = [], tasks = [] }) {
-  let clients = [];
-  try { clients = (await api('repo/clients')).clients.filter((c) => c.hasPlan); } catch {}
+  let clients = [], services = [], rates = null;
+  [clients, services, rates] = await Promise.all([api('repo/clients').then((r) => r.clients.filter((c) => c.hasPlan)).catch(() => []), col('services').list().catch(() => []), me.role === 'ceo' ? col('rates').get('default').catch(() => null) : null]);
   const mes = today().slice(0, 7);
   const a = await wizard('Nuevo proyecto', [
     { k: 'kind', q: '¿Qué tipo de proyecto es?', type: 'cards', req: true, opts: [
       { v: 'Ciclo mensual', i: '🔁', l: 'Ciclo de contenido', d: 'Del día 1 al 20, con los departamentos del plan' },
       { v: 'Proyecto', i: '🧩', l: 'Proyecto por fases', d: 'Algo puntual: una web, un lanzamiento' },
-      { v: 'Growth', i: '📈', l: 'Business Growth', d: 'Consultoría: ganar más y gastar menos' }] },
+      { v: 'Growth', i: '📈', l: 'Business Growth', d: 'Consultoría: ganar más y gastar menos' },
+      { v: 'Custom', i: '🧱', l: 'Proyecto custom', d: 'Eliges los servicios del catálogo y qué tan fuerte va cada uno' }] },
     { k: 'client', q: '¿Para quién?', type: 'cards', req: true, opts: [...clients.map((c) => ({ v: c.slug, i: '🏷️', l: c.slug.toUpperCase(), d: cleanPlan(c.plan) })), { v: 'inherent', i: '🏠', l: 'Inherent', d: 'Nuestras propias redes' }, { v: '_', i: '⚙️', l: 'Interno', d: 'Sin cliente' }] },
     { k: 'start', q: '¿Cuándo arranca?', type: 'when', req: true, sub: (x) => (x.kind === 'Ciclo mensual' ? 'Es el día 1 del ciclo' : '') },
-    { k: 'depts', q: '¿Qué departamentos corren?', sub: 'Ya vienen marcados los de su plan contratado', type: 'multi', show: (x) => x.kind !== 'Growth',
+    { k: 'svcs', q: '¿Qué servicios lleva?', sub: 'Del catálogo de Sales. En el siguiente paso eliges qué tan fuerte va cada uno.', type: 'multi', req: true, show: (x) => x.kind === 'Custom',
+      opts: () => services.map((sv) => ({ v: sv.id, l: sv.name, d: `${sv.category || ''} · ${svcHours(sv, 5)}–${svcHours(sv, 10)} h` })) },
+    { k: 'depts', q: '¿Qué departamentos corren?', sub: 'Ya vienen marcados los de su plan contratado', type: 'multi', show: (x) => x.kind !== 'Growth' && x.kind !== 'Custom',
       opts: DEPTS.map(([n, name]) => ({ v: n, l: `${n} ${name}` })), v: (x) => deptsOfPlan(clients.find((c) => c.slug === x.client)) },
     { k: 'auto', q: '¿Creo las tareas por ti?', type: 'cards', req: true, opts: [
       { v: 'si', i: '⚡', l: 'Sí, con responsables y fechas', d: 'Una por departamento, según el perfil de cada quien' },
       { v: 'no', i: '✋', l: 'No, las agrego yo' }] },
     { k: 'name', q: 'Último paso: ¿cómo se llama?', type: 'text', req: true, ph: 'Nombre del proyecto',
-      v: (x) => `${x.client === '_' ? 'Interno' : (x.client || '').toUpperCase()} · ${x.kind === 'Ciclo mensual' ? 'ciclo ' + (x.start || today()).slice(0, 7) : x.kind === 'Growth' ? 'Business Growth' : 'proyecto'}` },
+      v: (x) => `${x.client === '_' ? 'Interno' : (x.client || '').toUpperCase()} · ${x.kind === 'Ciclo mensual' ? 'ciclo ' + (x.start || today()).slice(0, 7) : x.kind === 'Growth' ? 'Business Growth' : x.kind === 'Custom' ? 'custom' : 'proyecto'}` },
   ]);
   if (!a) return null;
   const c = clients.find((x) => x.slug === a.client);
@@ -30,12 +33,15 @@ export async function newProject({ team, me, projects = [], tasks = [] }) {
   // el nombre por defecto se arma con las respuestas anteriores
   if (!a.name) a.name = `${(a.client || '').toUpperCase()} · ${kind}`;
   const depts = new Set(a.depts || DEPTS.map(([d]) => d));
+  // Custom: qué tan fuerte va cada servicio (5 sencillo · 10 fuerte).
+  const items = kind === 'Custom' ? await levels(services.filter((sv) => a.svcs.includes(sv.id)), rates) : null;
+  if (kind === 'Custom' && !items) return null;
   try {
     const p = await col('projects').create({ name: a.name, kind, line: kind === 'Growth' ? 'growth' : 'contenido', cycle: kind === 'Ciclo mensual' ? start.slice(0, 7) : '',
       client: c ? c.slug.toUpperCase() : a.client === 'inherent' ? 'Inherent' : '', client_slug: c ? c.slug : a.client === 'inherent' ? 'inherent' : '', color: ['olive', 'terra', 'ink'][projects.length % 3],
-      phases: phasesFor(kind, start), pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: depts.has(d) ? 'todo' : 'off' }])) });
+      phases: phasesFor(kind, start), meetings: meetingsFor(kind, start), ...(items ? { services: items, price: items.reduce((x, i) => x + (i.price || 0), 0) || null } : {}), pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: depts.has(d) ? 'todo' : 'off' }])) });
     let made = [];
-    if (a.auto === 'si') for (const t of tasksFor(p, team, tasks, me.email)) made.push(await col('tasks').create({ checklist: [], comments: [], ...t }));
+    if (a.auto === 'si') for (const t of (items ? customTasks(p, items, team, me.email) : tasksFor(p, team, tasks, me.email))) made.push(await col('tasks').create({ checklist: [], comments: [], ...t }));
     toast(`Proyecto creado ✅${made.length ? ` · ${made.length} tareas` : ''}`);
     return { project: p, tasks: made };
   } catch (e) { toast(e.message, true); return null; }
@@ -44,6 +50,35 @@ export async function newProject({ team, me, projects = [], tasks = [] }) {
 // ---------- Tarea ----------
 export const VIS_OPTS = [{ v: 'all', i: '👥', l: 'Todos', d: 'El equipo completo' }, { v: 'private', i: '🔒', l: 'Solo yo', d: 'Y quien la hace' }, { v: 'people', i: '👀', l: 'Ciertas personas', d: 'Tú eliges quién' }];
 export const visLabel = (t) => (t.visibility === 'private' ? '🔒 Solo yo' : t.visibility === 'people' ? `👀 ${(t.viewers || []).length + 1}+ personas` : '');
+// Proyecto custom: un control 5–10 por servicio; se ven las horas, el costo (CEO) y el precio.
+function levels(list, rates) {
+  return new Promise((resolve) => {
+    const lv = Object.fromEntries(list.map((sv) => [sv.id, sv.level || 5]));
+    const row = (sv) => { const l = lv[sv.id], c = svcCost(sv, rates, l), pr = svcPrice(sv, l);
+      return html`<div class="lvrow"><div class="row"><b style="font-weight:500">${sv.name}</b><div class="sp"></div><span class="chip ${l >= 8 ? 'dark' : ''}">${l <= 6 ? 'Sencillo' : l >= 9 ? 'Fuerte' : 'Medio'} · ${l}</span></div>
+        <input type="range" min="5" max="10" step="1" value="${l}" data-lv="${sv.id}" style="width:100%;margin:8px 0">
+        <div class="row sm mut"><span>${svcHours(sv, l)} h · ${(sv.tasks || []).map((t) => `${t.role} ${hoursAt(t, l)} h`).join(' · ')}</span><div class="sp"></div>${c ? html`<span>Costo ${c.miss.length ? '⚠️' : Q(c.cost)}</span>` : ''}${pr ? html`<span style="margin-left:10px">Precio ${Q(pr)}</span>` : ''}</div></div>`; };
+    const draw = () => {
+      drawer(html`<div class="row"><span class="chip">Proyecto custom</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+        <h2>¿Qué tan fuerte va cada servicio?</h2><div class="mut sm">5 = entrega sencilla · 10 = entrega fuerte. Las horas de cada rol salen del catálogo.</div>
+        <div style="margin-top:14px">${list.map(row)}</div>
+        <div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><span class="mut sm">Total</span><div class="sp"></div><b style="font-weight:500">${list.reduce((x, sv) => x + svcHours(sv, lv[sv.id]), 0)} h${rates ? ' · costo ' + Q(list.reduce((x, sv) => x + (svcCost(sv, rates, lv[sv.id])?.cost || 0), 0)) : ''}${list.some((sv) => sv.price) ? ' · precio ' + Q(list.reduce((x, sv) => x + (svcPrice(sv, lv[sv.id]) || 0), 0)) : ''}</b></div></div>
+        <div class="row" style="margin-top:16px"><button class="btn" data-act="ok">Crear proyecto</button></div>`, {
+        ok: () => { done = true; closeDrawer(); resolve(list.map((sv) => ({ id: sv.id, name: sv.name, level: lv[sv.id], hours: svcHours(sv, lv[sv.id]), roles: (sv.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv[sv.id]) })), price: svcPrice(sv, lv[sv.id]) }))); },
+      });
+      $$('[data-lv]', $('#drawer')).forEach((r) => r.addEventListener('input', () => { lv[r.dataset.lv] = +r.value; const y = $('#drawer').scrollTop; draw(); $('#drawer').scrollTop = y; }));
+    };
+    let done = false; draw();
+    const veil = $('#veil'); const off = () => { veil.removeEventListener('click', off); if (!done) resolve(null); }; veil.addEventListener('click', off);
+    $('#drawer').addEventListener('click', function x(e) { if (e.target.closest('[data-act=close]')) { $('#drawer').removeEventListener('click', x); if (!done) resolve(null); } });
+  });
+}
+// Una tarea por servicio y rol, con sus horas, para quien tiene ese perfil.
+function customTasks(p, items, team, meEmail) {
+  const who = holders(team, meEmail), coo = who('coo') || ''; const start = p.phases?.[0]?.start || today(), end = p.phases?.[p.phases.length - 1]?.end || start;
+  return items.flatMap((i) => i.roles.map((r) => ({ title: `${i.name} · ${r.role} (${r.hours} h)`, project_id: p.id, dept: '', assignee: who(roleToWork(r.role)) || meEmail, accountable: coo, due: end, hours: r.hours, level: i.level, status: 'Por empezar' })));
+}
+
 const SUGGEST = ['Reunión con el cliente', 'Guion del reel', 'Editar reel', 'Diseñar carrusel', 'Static ad', 'Programar publicaciones', 'Responder comunidad', 'Revisar entregas', 'Propuesta para cliente'];
 export async function newTask({ team, me, projects = [], pre = {} }) {
   const people = team.filter((p) => p.active !== false && p.kind !== 'ia');

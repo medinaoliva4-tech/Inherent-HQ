@@ -6,7 +6,8 @@ export const AREAS = ['home', 'work', 'finanzas', 'sales', 'operations', 'client
 const ROLE_AREAS = {
   ceo: AREAS,                                                        // 🔒 todo
   coo: AREAS.filter((a) => a !== 'finanzas'),                        // todo menos Finanzas
-  team: ['home', 'work', 'operations', 'clients', 'content', 'library', 'team'],
+  // El equipo: su resumen, su Workspace, la Library y el Team. Content solo con el perfil «content».
+  team: ['home', 'work', 'content', 'library', 'team'],
 };
 // Content es para decidir: solo el CEO y quien tiene el perfil de trabajo «content».
 export const areasFor = (role, roles = []) => (ROLE_AREAS[role] || []).filter((a) => a !== 'content' || role === 'ceo' || roles.includes('content'));
@@ -20,6 +21,10 @@ export const COLLS = {
   folders: 'library', docs: 'library',
   team: 'team', settings: 'home', checks: 'work',
 };
+// Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
+// (sus tareas, los proyectos y las cuentas de sus clientes). Las tareas también las escribe: ahí entrega.
+export const READ_ALSO = { tasks: ['work'], projects: ['work'], accounts: ['work'] };
+export const WRITE_ALSO = { tasks: ['work'] };
 const CEO_WRITE = new Set(['team', 'settings', 'rates', 'finance', 'payroll']);
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
 
@@ -50,5 +55,12 @@ export async function guard(req, res, area) {
   if (!u.active || !u.email.endsWith('@' + domain())) { session.clear(res); res.status(401).json({ error: 'Cuenta sin acceso' }); return null; }
   if (area && !areasFor(u.role, u.roles).includes(area)) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
   session.issue(req, res, s); // sesión deslizante
+  return u;
+}
+
+// Para rutas que sirven a más de un área (ej. la ficha del cliente: Clients y el Workspace).
+export async function guardAny(req, res, areas) {
+  const u = await guard(req, res); if (!u) return null;
+  if (!areasFor(u.role, u.roles).some((a) => areas.includes(a))) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
   return u;
 }

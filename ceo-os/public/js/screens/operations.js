@@ -101,13 +101,14 @@ export async function render(el, { me, sub, alive }) {
       for (let d = s0, n = 0; d <= e0 && n < 40; d = addDays(d, 1), n++) add(d, { t: (e.allDay || d !== s0 ? '' : String(e.start).slice(11, 16) + ' ') + e.summary, c: 'e1', ev: i, color: /^#[0-9a-f]{6}$/i.test(e.color || '') ? e.color : null }); });
     tasks.filter((t) => t.due && t.status !== 'Hecha').forEach((t) => add(t.due, { t: '✓ ' + t.title, c: 'e3', task: t.id }));
     projects.forEach((p) => (p.phases || []).forEach((ph) => ph.start && add(ph.start, { t: `${ph.name} · ${p.name}`, c: 'e2' })));
+    projects.forEach((p) => (p.meetings || []).forEach((m) => m.status !== 'hecha' && !m.link && add(m.date, { t: `👥 ${m.name} · ${p.client || p.name}`, c: 'e2' })));
     dayMap = byDay;
     const cells = [];
     for (let i = 0; i < 42; i++) { const d = i - lead + 1; if (i >= 35 && d > days) break; cells.push(d); }
     mount(b, html`<div class="card">
       <div class="chead"><div class="ico">▦</div><h3>${first.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })}</h3>
         ${evErr ? html`<span class="chip amber" style="margin-left:12px">Google Calendar: ${evErr}</span>` : html`<span class="gbadge" style="margin-left:12px">${IC.cal} ${calInfo.allCals ? `${calInfo.calendars.length} calendario${calInfo.calendars.length === 1 ? '' : 's'} de Google` : 'Solo tu calendario principal · sal y vuelve a entrar para ver todos'}</span>`}
-        <div class="sp"></div><button class="btn ghost" data-act="mrefresh" title="Actualizar" style="padding:8px 14px">↻</button><button class="btn ghost" data-act="mtoday" style="padding:8px 14px">Hoy</button><button class="btn ghost" data-act="mprev" style="padding:8px 14px">‹</button><button class="btn ghost" data-act="mnext" style="padding:8px 14px">›</button><button class="btn" data-act="newEvent" style="padding:9px 16px">+ Evento</button></div>
+        <div class="sp"></div>${me.role === 'ceo' ? html`<button class="btn ghost" data-act="calpick" style="padding:8px 14px">Calendario de Inherent</button>` : ''}<button class="btn ghost" data-act="mrefresh" title="Actualizar" style="padding:8px 14px">↻</button><button class="btn ghost" data-act="mtoday" style="padding:8px 14px">Hoy</button><button class="btn ghost" data-act="mprev" style="padding:8px 14px">‹</button><button class="btn ghost" data-act="mnext" style="padding:8px 14px">›</button><button class="btn" data-act="newEvent" style="padding:9px 16px">+ Evento</button></div>
       <div class="cal">${['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d) => html`<div class="dh">${d}</div>`)}
         ${cells.map((d) => { const out = d < 1 || d > days; const isToday = !out && `${calMonth}-${String(d).padStart(2, '0')}` === today();
           return html`<div class="d ${out ? 'o' : ''} ${isToday ? 'today' : ''}" ${out ? '' : raw(`data-act="day" data-d="${d}" title="Toca para crear un evento"`)}><span class="n">${out ? '' : d}</span>${out ? '' : (byDay[d] || []).slice(0, 4).map(evChip)}${!out && (byDay[d] || []).length > 4 ? html`<button class="mut sm" data-act="dayall" data-d="${d}">+${byDay[d].length - 4} más</button>` : ''}</div>`; })}
@@ -210,7 +211,15 @@ export async function render(el, { me, sub, alive }) {
     catch (e) { toast(e.message, true); }
   }
 
+  // El calendario compartido de la empresa: ahí caen las reuniones de los proyectos.
+  async function calPick() {
+    let r; try { r = await api('google/calendars'); } catch (e) { return toast(e.message, true); }
+    const v = await ask('Calendario de Inherent', [{ k: 'id', l: 'Las reuniones de los proyectos se agendan aquí, con invitación a quienes van', t: 'select', opts: r.calendars.map((c) => [c.id, c.name + (c.primary ? ' (tu principal)' : '')]), v: r.current || r.calendars.find((c) => /inherent/i.test(c.name))?.id || '' }], 'Guardar');
+    if (!v) return;
+    try { await api('google/calendars', { method: 'PUT', body: { id: v.id, name: r.calendars.find((c) => c.id === v.id)?.name } }); toast('Listo ✅ Compártelo en Google Calendar con el equipo («hacer cambios en eventos») para que también puedan agendar.'); } catch (e) { toast(e.message, true); }
+  }
   acts(el, {
+    calpick: calPick,
     tab: (t) => { tab = t.dataset.t; if (tab === 'cal') events = null; history.replaceState(null, '', '#/operations/' + tab); paint(); },
     pick: (t, e) => { if (e.target.closest('[data-act=editProject]') || e.target.closest('a')) return; current = t.dataset.id; tab = 'pipe'; paint(); },
     newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); current = r.project.id; tab = 'pipe'; paint(); } },

@@ -1,4 +1,5 @@
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard } from '../core.js';
+import { hoursAt, svcHours, svcCost } from '../cycle.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
@@ -26,13 +27,9 @@ export async function render(el, { me, sub, alive }) {
 
   // ---------- costos (solo CEO) ----------
   const rateOf = (role) => rates?.roles?.find((r) => r.role === role)?.rate ?? null;
-  const costOf = (s) => {
-    if (!rates) return null;
-    let miss = [];
-    const c = (s.tasks || []).reduce((a, t) => { const r = rateOf(t.role); if (r == null) miss.push(t.role); return a + (r || 0) * (+t.hours || 0); }, 0);
-    return { cost: c, miss };
-  };
-  const hours = (s) => (s.tasks || []).reduce((a, t) => a + (+t.hours || 0), 0);
+  // Costo = horas de cada rol en el nivel del servicio (5 sencillo · 10 fuerte) × su costo por hora.
+  const costOf = (s, lv) => svcCost(s, rates, lv);
+  const hours = (s) => svcHours(s);
   const suggested = (s) => { const c = costOf(s); return c && !c.miss.length && c.cost ? Math.round((c.cost * (+s.markup || 2.2)) / 50) * 50 : null; };
 
   // ---------- layout ----------
@@ -176,18 +173,19 @@ export async function render(el, { me, sub, alive }) {
       ${isCeo && rates && (rates.roles || []).some((r) => r.rate == null) ? html`<div class="warnbox" style="margin-bottom:14px">⚠️ Faltan costos por hora de: ${(rates.roles || []).filter((r) => r.rate == null).map((r) => r.role).join(', ')}. Sin eso no hay costo ni precio sugerido.</div>` : ''}
       ${!services.length ? html`<div class="empty"><b>Todavía no hay servicios</b>Crea uno con «+ Nuevo servicio», o carga ejemplos para editarlos.<div style="margin-top:14px"><button class="btn ghost" data-act="seed">Cargar 9 ejemplos para editar</button></div></div>`
       : html`<div class="grid g3">${list.map((s) => { const c = costOf(s); const sug = suggested(s); return html`<div class="card" style="cursor:pointer" data-act="service" data-id="${s.id}">
-        <div class="row"><span class="chip ${CATC[s.category] ?? ''}">${s.category || 'Sin categoría'}</span><div class="sp"></div><span class="mut sm">${hours(s)} h · ${s.unit || 'proyecto'}</span></div>
+        <div class="row"><span class="chip ${CATC[s.category] ?? ''}">${s.category || 'Sin categoría'}</span><div class="sp"></div><span class="mut sm">Nivel ${s.level || 5} · ${hours(s)} h · ${s.unit || 'proyecto'}</span></div>
         <h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin:14px 0 4px">${s.name}</h3><div class="mut sm">${s.description || ''}</div>
-        ${c ? html`<div style="margin:14px 0">${(s.tasks || []).map((t) => html`<div class="row sm" style="padding:3px 0"><span>${t.role}</span><span class="mut">${t.hours} h × ${rateOf(t.role) == null ? '⚠️' : Q(rateOf(t.role))}</span><div class="sp"></div><span>${rateOf(t.role) == null ? '—' : Q(rateOf(t.role) * t.hours)}</span></div>`)}</div>` : html`<div style="height:14px"></div>`}
+        ${c ? html`<div style="margin:14px 0">${(s.tasks || []).map((t) => html`<div class="row sm" style="padding:3px 0"><span>${t.role}</span><span class="mut">${hoursAt(t, s.level || 5)} h × ${rateOf(t.role) == null ? '⚠️' : Q(rateOf(t.role))}</span><div class="sp"></div><span>${rateOf(t.role) == null ? '—' : Q(rateOf(t.role) * hoursAt(t, s.level || 5))}</span></div>`)}</div>` : html`<div style="height:14px"></div>`}
         <div class="row" style="border-top:1px solid var(--line);padding-top:12px">${c ? html`<div><div class="mut sm">Costo</div><b style="font-weight:500">${c.miss.length ? '⚠️ incompleto' : Q(c.cost)}</b></div>` : ''}<div class="sp"></div>
           <div style="text-align:right"><div class="mut sm">Precio</div><b style="font-size:24px;font-weight:500;letter-spacing:-.5px">${s.price ? Q(s.price) : sug ? html`<span class="mut" style="font-size:16px">sugerido ${Q(sug)}</span>` : '—'}</b></div></div></div>`; })}</div>`}`);
   }
 
   async function editService(s) {
     const roles = (rates?.roles || DEFAULT_ROLES.map(([role]) => ({ role }))).map((r) => r.role);
-    let tasks = (s?.tasks || [{ role: roles[0], hours: 1 }]).map((t) => ({ ...t }));
+    let tasks = (s?.tasks || [{ role: roles[0], hours: 1 }]).map((t) => ({ ...t, hours10: t.hours10 ?? (+t.hours || 0) * 2 }));
+    let level = s?.level || 5;
     const draw = () => {
-      const cur = { ...(s || {}), tasks, markup: +($('#svmk')?.value || s?.markup || 2.2) };
+      const cur = { ...(s || {}), tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2) };
       const c = costOf(cur), sug = suggested(cur);
       drawer(html`<div class="row"><span class="chip">Servicio</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
         <h2>${s ? 'Editar servicio' : 'Nuevo servicio'}</h2>
@@ -197,8 +195,11 @@ export async function render(el, { me, sub, alive }) {
             <div><label class="f">Se cobra por</label><select class="in" name="unit">${['proyecto', 'mes', 'pieza', 'hora', 'jornada'].map((u) => html`<option ${u === (s?.unit || 'proyecto') ? raw('selected') : ''}>${u}</option>`)}</select></div></div>
           <div><label class="f">Descripción (sale en la cotización)</label><input class="in" name="description" value="${s?.description || ''}"></div>
         </form>
-        <div class="sm mut" style="margin:18px 0 8px">Horas por rol</div>
-        ${tasks.map((t, i) => html`<div class="row" style="margin-bottom:8px"><select class="in" data-i="${i}" data-f="role">${[...new Set([...roles, t.role])].map((r) => html`<option ${r === t.role ? raw('selected') : ''}>${r}</option>`)}</select><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours" value="${t.hours}"><span class="mut sm" style="width:30px">h</span><button class="btn ghost" data-act="rmTask" data-i="${i}" style="padding:8px 12px">✕</button></div>`)}
+        <div class="row sm mut" style="margin:18px 0 8px"><span style="flex:1">Horas por rol</span><span style="width:90px;text-align:center">Sencillo · 5</span><span style="width:90px;text-align:center">Fuerte · 10</span><span style="width:44px"></span></div>
+        ${tasks.map((t, i) => html`<div class="row" style="margin-bottom:8px"><select class="in" data-i="${i}" data-f="role">${[...new Set([...roles, t.role])].map((r) => html`<option ${r === t.role ? raw('selected') : ''}>${r}</option>`)}</select><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours" value="${t.hours}"><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours10" value="${t.hours10}"><button class="btn ghost" data-act="rmTask" data-i="${i}" style="padding:8px 12px">✕</button></div>`)}
+        <div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><b style="font-weight:500">Nivel de entrega</b><div class="sp"></div><span class="chip ${level >= 8 ? 'dark' : ''}">${level <= 6 ? 'Sencillo' : level >= 9 ? 'Fuerte' : 'Medio'} · ${level}</span></div>
+          <input type="range" min="5" max="10" step="1" value="${level}" id="svlv" style="width:100%;margin:10px 0 4px">
+          <div class="mut sm">En este nivel: ${tasks.map((t) => `${t.role} ${hoursAt(t, level)} h`).join(' · ')} = <b>${svcHours(cur, level)} h</b>. El precio de abajo es el de este nivel; en un proyecto custom sube o baja con las horas.</div></div>
         <button class="btn ghost" data-act="addTask" style="padding:8px 14px">+ Rol</button>
         ${isCeo ? html`<div class="card glass" style="margin-top:18px;padding:16px"><div class="row"><div><div class="mut sm">Costo</div><b style="font-weight:500">${c ? (c.miss.length ? `⚠️ falta costo/h de ${c.miss.join(', ')}` : Q(c.cost)) : '—'}</b></div><div class="sp"></div>
           <div><label class="f">Multiplicador</label><input class="in" id="svmk" type="number" step="0.1" value="${cur.markup}" style="width:90px"></div>
@@ -213,7 +214,7 @@ export async function render(el, { me, sub, alive }) {
           sync();
           const f = Object.fromEntries(new FormData($('#sf')));
           if (!f.name) return toast('Falta el nombre', true);
-          const doc = { ...(s || {}), ...f, tasks, markup: +($('#svmk')?.value || s?.markup || 2.2), price: $('#svprice').value === '' ? null : +$('#svprice').value };
+          const doc = { ...(s || {}), ...f, tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2), price: $('#svprice').value === '' ? null : +$('#svprice').value };
           try { const r = s ? await S.save(doc) : await S.create(doc); services = s ? services.map((x) => (x.id === r.id ? r : x)) : [...services, r]; toast('Guardado ✅'); closeDrawer(); paint(); }
           catch (e) { toast(e.message, true); }
         },
@@ -221,8 +222,9 @@ export async function render(el, { me, sub, alive }) {
       });
       $$('[data-f]', $('#drawer')).forEach((inp) => inp.addEventListener('change', () => { sync(); draw(); }));
       $('#svmk')?.addEventListener('change', draw);
+      $('#svlv').addEventListener('input', (e) => { sync(); level = +e.target.value; const y = $('#drawer').scrollTop; draw(); $('#drawer').scrollTop = y; });
     };
-    const sync = () => $$('[data-f]', $('#drawer')).forEach((inp) => { tasks[+inp.dataset.i][inp.dataset.f] = inp.dataset.f === 'hours' ? +inp.value : inp.value; });
+    const sync = () => $$('[data-f]', $('#drawer')).forEach((inp) => { tasks[+inp.dataset.i][inp.dataset.f] = inp.dataset.f === 'role' ? inp.value : +inp.value; });
     draw();
   }
 

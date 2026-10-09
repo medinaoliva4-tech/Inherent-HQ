@@ -13,7 +13,7 @@ process.env.DEV_LOGIN = '1';
 process.env.SESSION_SECRET ||= 'dev-only-secret-dev-only-secret-0123456789';
 process.env.ADMIN_EMAILS ||= 'ceo@inherentglobal.com';
 const SEC = Object.fromEntries(JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8')).headers[0].headers.map((h) => [h.key, h.value]));
-const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png': 'image/png', '.txt': 'text/plain' };
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png': 'image/png', '.txt': 'text/plain', '.webmanifest': 'application/manifest+json' };
 const api = (await import(pathToFileURL(path.join(root, 'api/index.js')).href)).default;
 
 http.createServer(async (req, res) => {
