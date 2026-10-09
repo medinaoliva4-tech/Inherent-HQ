@@ -79,7 +79,9 @@ export async function renderNomina(box, { plans, rubroNames, slots }) {
     document.body.append(dlg); dlg.addEventListener('close', () => dlg.remove()); paint(); dlg.showModal();
   }
 
-  function paint() {
+  // Los handlers llaman paint() (diferido): repintar en pleno evento change/blur rompe el DOM que lo disparó.
+  const paint = () => setTimeout(draw, 0);
+  function draw() {
     const { pay, det, pool, sin, falta } = compute();
     const total = Object.values(pay).reduce((a, b) => a + b, 0);
     const poolTot = Object.values(pool).reduce((a, b) => a + b, 0);
@@ -153,5 +155,5 @@ export async function renderNomina(box, { plans, rubroNames, slots }) {
     return f;
   }
 
-  box.append(live); paint();
+  box.append(live); draw();
 }
