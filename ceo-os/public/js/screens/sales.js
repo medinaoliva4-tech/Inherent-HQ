@@ -1,5 +1,6 @@
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard } from '../core.js';
 import { hoursAt, svcHours, svcCost } from '../cycle.js';
+import { mentorsTab, editMentor } from '../mentors.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
@@ -22,7 +23,8 @@ export async function render(el, { me, sub, alive }) {
   let plans = null, plansErr = null;
   api('repo/precios').then((r) => { plans = r; if (tab === 'cat' && alive()) paint(); }).catch((e) => { plansErr = e.message; });
 
-  let tab = ['crm', 'cat', 'quotes'].includes(sub[0]) ? sub[0] : 'crm';
+  let tab = ['crm', 'cat', 'esp', 'quotes'].includes(sub[0]) ? sub[0] : 'crm';
+  let mentors = null, mInd = 'Todas';
   let crmView = 'list', q = '', tagF = '', catF = 'Todos';
 
   // ---------- costos (solo CEO) ----------
@@ -40,16 +42,24 @@ export async function render(el, { me, sub, alive }) {
         <div class="tabs" style="margin:0">
           <button class="${tab === 'crm' ? 'on' : ''}" data-act="tab" data-t="crm">CRM</button>
           <button class="${tab === 'cat' ? 'on' : ''}" data-act="tab" data-t="cat">Catálogo de servicios</button>
+          <button class="${tab === 'esp' ? 'on' : ''}" data-act="tab" data-t="esp">Especialistas</button>
           <button class="${tab === 'quotes' ? 'on' : ''}" data-act="tab" data-t="quotes">Cotizaciones</button>
         </div>
         <div class="sp"></div>
         ${tab === 'crm' ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
         ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'quotes' ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
+        ${tab === 'esp' && isCeo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
       <div id="body"></div>`);
     const body = $('#body', el);
-    ({ crm, cat, quotes: quotesTab })[tab](body);
+    ({ crm, cat, esp, quotes: quotesTab })[tab](body);
+  }
+
+  // ---------- Especialistas por industria ----------
+  function esp(body) {
+    if (!mentors) { mount(body, html`<p class="loading">Cargando…</p>`); col('mentors').list().then((l) => { mentors = l; if (alive() && tab === 'esp') esp(body); }).catch((e) => mount(body, html`<div class="warnbox">${e.message}</div>`)); return; }
+    mentorsTab(body, { list: mentors, isCeo, ind: mInd, onInd: (v) => { mInd = v; esp(body); }, onChange: (l) => { mentors = l; esp(body); } });
   }
 
   // ---------- CRM ----------
@@ -383,6 +393,7 @@ export async function render(el, { me, sub, alive }) {
     newLead, newService: () => editService(null), rates: editRates, seed,
     service: (b) => editService(services.find((s) => s.id === b.dataset.id)),
     newQuote: () => editQuote(null, null),
+    newMentor: async () => { const r = await editMentor(null, [...new Set((mentors || []).map((m) => m.industry))]); if (r && !r.deleted) { mentors = [...(mentors || []), r]; paint(); } },
     quote: (b) => editQuote(quotes.find((x) => x.id === b.dataset.id)),
   });
   paint();

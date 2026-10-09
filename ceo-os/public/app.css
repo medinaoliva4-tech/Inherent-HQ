@@ -581,3 +581,8 @@ body{background:transparent!important}
 .pgoal{border-top:1px solid #e6dfd2;padding:12px 0}
 @media (max-width:760px){.gcols{grid-template-columns:1fr}}
 .lvrow{padding:12px 0;border-bottom:1px solid var(--line)}
+
+/* Especialistas */
+.mav{flex:none;border-radius:50%;background:#e6dfd2 center/cover;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#6b5a45}
+.mcard{margin-bottom:10px;padding:16px}
+.mcard[data-mact]{cursor:pointer}

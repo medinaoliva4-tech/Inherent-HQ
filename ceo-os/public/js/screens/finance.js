@@ -1,4 +1,5 @@
 import { hoursAt } from '../cycle.js';
+import { fit, priceLabel, monthly } from '../mentors.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard } from '../core.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -109,7 +110,20 @@ export async function render(el, { sub }) {
       : html`<div class="card"><table><thead><tr><th>Servicio</th><th>Equipo</th><th class="n">Horas</th><th class="n">Costo / h</th><th class="n">Total</th><th class="n">Precio</th><th class="n">Margen</th></tr></thead><tbody>
         ${services.map((s) => { const h = (s.tasks || []).reduce((a, t) => a + hoursAt(t, s.level || 5), 0); const miss = (s.tasks || []).some((t) => rateOf(t.role) == null); const c = (s.tasks || []).reduce((a, t) => a + (rateOf(t.role) || 0) * hoursAt(t, s.level || 5), 0);
           return html`<tr><td><b style="font-weight:500">${s.name}</b><div class="mut sm">${s.category || ''} · nivel ${s.level || 5}</div></td><td>${(s.tasks || []).map((t) => html`<span class="chip" style="margin:2px">${t.role} · ${hoursAt(t, s.level || 5)}h</span>`)}</td><td class="n">${h} h</td><td class="n">${h && !miss ? Q(c / h) : '—'}</td><td class="n"><b>${miss ? '⚠️' : Q(c)}</b></td><td class="n">${s.price ? Q(s.price) : '—'}</td><td class="n">${s.price && !miss ? Math.round(((s.price - c) / s.price) * 100) + '%' : '—'}</td></tr>`; })}
-      </tbody></table></div>`}`);
+      </tbody></table></div>`}<div id="espCost"></div>`);
+    espCosts($('#espCost', b));
+  }
+
+  // Los especialistas asignados a cada cliente: cuánto cuestan al mes y si van como add-on.
+  async function espCosts(box) {
+    const [accs, ms] = await Promise.all([col('accounts').list().catch(() => []), col('mentors').list().catch(() => [])]);
+    const rows = accs.flatMap((a) => (a.mentors || []).map((x) => ({ a, x, m: ms.find((y) => y.id === x.id) }))).filter((r) => r.m);
+    if (!box.isConnected) return;
+    mount(box, html`<div class="sec-title"><h2>Especialistas por cliente</h2><span class="mut sm">USD · las membresías son de Inherent y no se cargan por cliente</span></div>
+      ${rows.length ? html`<div class="card"><table><thead><tr><th>Cliente</th><th>Especialista</th><th>Precio</th><th>Cadencia</th><th class="n">≈ al mes</th><th>Dónde cae</th></tr></thead><tbody>
+        ${rows.map(({ a, x, m }) => { const [f, c] = fit(m); return html`<tr><td><b style="font-weight:500">${a.name}</b></td><td>${m.name}<div class="mut sm">${m.industry}</div></td><td>${priceLabel(m)}</td><td class="mut">${x.cadence}</td><td class="n"><b>${monthly(m, x.cadence) ? '$' + monthly(m, x.cadence) : '—'}</b></td><td><span class="chip ${c}" style="font-size:11px">${f}</span></td></tr>`; })}
+        <tr><td colspan="4"><b>Total</b></td><td class="n"><b>$${rows.reduce((t, r) => t + monthly(r.m, r.x.cadence), 0)}</b></td><td></td></tr></tbody></table></div>`
+      : html`<div class="mut sm">Ningún cliente tiene especialista asignado. Se asigna en Clients → el cliente → Especialista.</div>`}`);
   }
 
   // ---------- Profitability ----------
