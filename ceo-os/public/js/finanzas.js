@@ -1,8 +1,7 @@
-import { h, svg, api, Q, toast, readJSON, saveJSON, PALETTE } from './core.js';
+import { h, svg, api, Q, toast, PALETTE } from './core.js';
+import { renderNomina } from './nomina.js';
 
 const SLOT_OF = { 'Grabación': 'Producción', 'Fotografía': 'Fotografía', 'Edición de video': 'Editor de video', 'Operador de agentes': 'Operador de agentes' };
-const SUELDOS = 'ceo-os/data/finanzas/sueldos.json';
-const ESCENARIOS = 'ceo-os/data/finanzas/escenarios.json';
 
 export async function render(el) {
   const eco = await api('/api/economia');
@@ -15,8 +14,7 @@ export async function render(el) {
   const rubroNames = [...new Set(plans.flatMap((p) => p.rubros.map((r) => r.label)))];
   const color = (label) => PALETTE[rubroNames.indexOf(label) % PALETTE.length];
   const live = h('div');
-  const sueldosBox = h('div');
-  let sueldos = { data: { items: [] }, sha: null };
+  const nominaBox = h('div');
 
   const model = () => {
     let ing = 0, cost = 0, scrap = 0, n = 0;
@@ -41,7 +39,6 @@ export async function render(el) {
         kpi('Utilidad de cuentas', Q(m.utilCuentas), `${m.margen.toFixed(0)}% de margen`, 'ok'),
         kpi('Utilidad tras piso', Q(m.neta), `piso ${Q(m.fijo)}`, m.neta >= 0 ? 'ok' : 'bad')),
       h('p', { class: 'sm mut' }, `Piso = CEO ${Q(st.ceo)} + IA ${Q(st.ia)} + scraping ${Q(m.scrap)}. Modelo editable, no la realidad de clientes.`));
-    paintSueldos(m);
   }
 
   function kpi(t, v, s, cls) {
@@ -57,40 +54,6 @@ export async function render(el) {
         h('div', { style: { textAlign: 'center', fontSize: '22px' } }, val),
         h('button', { class: 'btn sec fit', onclick: () => set(1) }, '+')),
       h('div', { class: 'sm mut' }, `${Q(p.utilidad)} utilidad c/u`));
-  }
-
-  function paintSueldos(m) {
-    const items = sueldos.data.items;
-    const pagado = {};
-    for (const s of items) pagado[s.rubro] = (pagado[s.rubro] || 0) + (+s.monto || 0);
-    const inp = (k, i, type = 'text') => h('input', { type, value: items[i][k], onchange: (e) => { items[i][k] = type === 'number' ? +e.target.value : e.target.value; paintSueldos(model()); } });
-    const nuevo = { rol: '', persona: '', rubro: rubroNames[0], monto: '' };
-    const sel = (i) => { const s = h('select', { onchange: (e) => { items[i].rubro = e.target.value; paintSueldos(model()); } }, [...rubroNames, 'Utilidad (CEO/COO)'].map((r) => h('option', { value: r, selected: r === items[i].rubro }, r))); return s; };
-    const total = items.reduce((a, s) => a + (+s.monto || 0), 0);
-    sueldosBox.replaceChildren(
-      !items.length ? h('p', { class: 'warn' }, '⚠️ SIN DATOS — el repo no tiene sueldos. Agrega el primero abajo.') : null,
-      h('table', {},
-        h('thead', {}, h('tr', {}, ['Rol / persona', 'Rubro', 'Q / mes', 'Nota', ''].map((t, i) => h('th', { class: i === 2 ? 'n' : '' }, t)))),
-        h('tbody', {}, items.map((s, i) => h('tr', {},
-          h('td', {}, inp('rol', i)), h('td', {}, sel(i)), h('td', { class: 'n' }, inp('monto', i, 'number')), h('td', {}, inp('nota', i)),
-          h('td', {}, h('button', { class: 'btn danger sm', onclick: () => { items.splice(i, 1); paintSueldos(model()); } }, '✕'))))),
-        h('tfoot', {}, h('tr', { class: 'tot' }, h('td', {}, 'Total pagado'), h('td'), h('td', { class: 'n' }, Q(total)), h('td'), h('td')))),
-      h('div', { class: 'row noprint', style: { marginTop: '10px' } },
-        h('button', { class: 'btn sec fit', onclick: () => { items.push({ ...nuevo }); paintSueldos(model()); } }, '+ Agregar fila'),
-        h('button', { class: 'btn fit', onclick: async () => {
-          try { const r = await saveJSON(SUELDOS, sueldos.data, sueldos.sha, 'sueldos'); sueldos.sha = r.sha; toast('Guardado en el repo ✅'); }
-          catch (e) { toast(e.message, true); }
-        } }, 'Guardar en el repo')),
-      h('h3', {}, 'Presupuesto vs pagado (con el escenario del simulador)'),
-      h('table', {},
-        h('thead', {}, h('tr', {}, ['Rubro', 'Presupuesto', 'Pagado', 'Diferencia'].map((t, i) => h('th', { class: i ? 'n' : '' }, t)))),
-        h('tbody', {}, rubroNames.filter((r) => m.rubros[r]).map((r) => {
-          const d = m.rubros[r] - (pagado[r] || 0);
-          return h('tr', {}, h('td', {}, h('i', { style: { background: color(r), display: 'inline-block', width: '10px', height: '10px', borderRadius: '3px', marginRight: '8px' } }), r),
-            h('td', { class: 'n' }, Q(m.rubros[r])), h('td', { class: 'n' }, Q(pagado[r] || 0)),
-            h('td', { class: 'n ' + (d < 0 ? 'bad' : 'ok') }, (d >= 0 ? '+' : '') + Q(d)));
-        }))),
-      h('p', { class: 'sm mut' }, '🔑 Un rubro en rojo = pagas más de lo que el plan le asigna: eso no se absorbe, se cotiza extra o sube de plan.'));
   }
 
   // --- barras de costo apiladas (SVG) ---
@@ -133,8 +96,8 @@ export async function render(el) {
         h('td', { class: 'mut' }, slots.find((s) => s.slot.startsWith(SLOT_OF[r] || '§'))?.hoy || '—')))))),
     roles.length ? h('details', { class: 'card', style: { marginTop: '12px' } }, h('summary', {}, 'Los roles y cómo cobra cada uno (05-OPERACION)'),
       h('table', {}, h('tbody', {}, roles.map((r) => h('tr', {}, h('td', {}, h('b', {}, r.rol)), h('td', { class: 'mut' }, r.hace), h('td', {}, r.cobra)))))) : null,
-    h('h3', {}, '💵 Sueldos y pagos'), h('div', { class: 'card' }, sueldosBox));
+    h('h3', {}, '💵 Nómina — lo que le pagamos a cada persona'), nominaBox);
 
-  try { sueldos = await readJSON(SUELDOS, { items: [] }); } catch (e) { toast(e.message, true); }
   paint();
+  try { await renderNomina(nominaBox, { plans, rubroNames, slots }); } catch (e) { nominaBox.append(h('p', { class: 'bad' }, e.message)); toast(e.message, true); }
 }

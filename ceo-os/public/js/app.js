@@ -17,7 +17,7 @@ function loginView() {
     e.preventDefault();
     err.textContent = '';
     try {
-      me = await api('/api/login', { method: 'POST', body: { user: form.user.value.trim().toLowerCase(), password: form.password.value } });
+      me = await api('/api/login', { method: 'POST', body: { user: form.user.value.trim().toLowerCase(), password: form.password.value, code: form.code.value.replace(/\D/g, '') } });
       boot();
     } catch (x) { err.textContent = x.message; }
   } },
@@ -25,6 +25,7 @@ function loginView() {
     h('div', { class: 'mut sm' }, 'Inherent HQ · acceso del equipo'),
     h('div', {}, h('label', {}, 'Usuario'), h('input', { name: 'user', autocomplete: 'username', required: true, autofocus: true })),
     h('div', {}, h('label', {}, 'Contraseña'), h('input', { name: 'password', type: 'password', autocomplete: 'current-password', required: true })),
+    h('div', {}, h('label', {}, 'Código 2FA (app de autenticación)'), h('input', { name: 'code', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: 6, required: true })),
     err, h('button', { class: 'btn' }, 'Entrar'));
   root.replaceChildren(h('div', { class: 'login' }, form));
 }

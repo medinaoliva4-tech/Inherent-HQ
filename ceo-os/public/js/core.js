@@ -33,15 +33,35 @@ export function toast(msg, err) {
 }
 
 export const events = new EventTarget();
+
+// Pide el código 2FA de 6 dígitos (para entrar a Finanzas). Devuelve null si cancelan.
+export function askCode() {
+  return new Promise((resolve) => {
+    const dlg = h('dialog', { class: 'dlg' });
+    const input = h('input', { inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: 6, placeholder: '000000', style: { fontSize: '24px', textAlign: 'center', letterSpacing: '8px' } });
+    const done = (v) => { dlg.close(); dlg.remove(); resolve(v); };
+    dlg.append(h('form', { class: 'grid', onsubmit: (e) => { e.preventDefault(); done(input.value.replace(/\D/g, '')); } },
+      h('h3', { style: { margin: 0 } }, '🔐 Confirma tu identidad'),
+      h('p', { class: 'sub', style: { margin: 0 } }, 'Finanzas pide un código fresco de tu app de autenticación.'),
+      input, h('div', { class: 'row' }, h('button', { class: 'btn' }, 'Confirmar'), h('button', { class: 'btn sec', type: 'button', onclick: () => done(null) }, 'Cancelar'))));
+    document.body.append(dlg); dlg.addEventListener('cancel', () => done(null)); dlg.showModal(); input.focus();
+  });
+}
 export async function api(path, opts = {}) {
   const r = await fetch(path, {
     credentials: 'same-origin',
     ...opts,
-    headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
+    headers: { 'Content-Type': 'application/json', 'X-CEOOS': '1', ...(opts.headers || {}) },
     body: opts.body ? JSON.stringify(opts.body) : undefined,
   });
   const j = await r.json().catch(() => ({}));
   if (r.status === 401 && path !== '/api/login' && path !== '/api/me') events.dispatchEvent(new Event('logout'));
+  if (r.status === 401 && j.code === 'STEPUP' && !opts._retried) {
+    const code = await askCode();
+    if (!code) throw Object.assign(new Error('Cancelado'), { status: 401 });
+    await api('/api/stepup', { method: 'POST', body: { code } });
+    return api(path, { ...opts, body: opts.body, _retried: true });
+  }
   if (!r.ok) throw Object.assign(new Error(j.error || `Error ${r.status}`), { status: r.status });
   return j;
 }

@@ -15,7 +15,7 @@ async function loadCSV(path, head) {
 }
 
 function modal(title, fields, onSave) {
-  const dlg = h('dialog', { style: { background: 'var(--panel)', color: 'var(--tx)', border: '1px solid var(--line)', borderRadius: '14px', padding: '20px', width: 'min(520px,94vw)' } });
+  const dlg = h('dialog', { class: 'dlg' });
   const f = h('form', { method: 'dialog', class: 'grid', onsubmit: async (e) => {
     e.preventDefault();
     const v = Object.fromEntries(fields.map((x) => [x.k, f.elements[x.k].value.trim()]));

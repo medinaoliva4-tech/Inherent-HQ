@@ -31,25 +31,44 @@ Local lee y escribe el filesystem del repo (`LOCAL_REPO`). **Nunca pongas `LOCAL
 | `GITHUB_TOKEN` | el PAT del paso 2 |
 | `GITHUB_REPO` | `medinaoliva4-tech/Inherent-HQ` |
 | `GITHUB_BRANCH` | `main` |
-| `SESSION_SECRET` | 32+ caracteres al azar *(`openssl rand -hex 32`)* |
+| `SESSION_SECRET` | 32+ caracteres al azar *(`openssl rand -hex 32`)*. Si lo cambias, todas las sesiones mueren |
 | `AUTH_USERS` | JSON de usuarios, ver abajo |
 
-4. **Usuarios.** Genera el hash de cada contraseña: `npm run hash -- "contraseña-de-10+"`, y arma:
-```json
-[{"user":"ceo","name":"…","role":"ceo","hash":"scrypt:…"},
- {"user":"coo","name":"…","role":"coo","hash":"scrypt:…"}]
+4. **Usuarios (2FA obligatorio).** Por cada persona corre:
 ```
+npm run user -- <usuario> <ceo|coo|team> "<Nombre>" "<contraseña de 12+ caracteres>"
+```
+Imprime el objeto para `AUTH_USERS` **y la clave 2FA**. La persona la agrega en su app de autenticación
+(1Password, Authy, Google Authenticator). La clave **solo se muestra esa vez; no la mandes por chat**.
+`AUTH_USERS` es un arreglo JSON con un objeto por persona.
 Roles: `ceo` (todo) · `coo` (todo menos Finanzas) · `team` (Operations, Conocimiento, Content).
-5. **Dominio:** Project → Settings → Domains. Sin login no se ve nada; no expongas Finanzas en un link público.
+5. **Protección extra de Vercel:** Project → Settings → **Deployment Protection → Vercel Authentication (Standard)** para que los previews tampoco sean públicos.
+6. **Firewall (límite global de intentos):** Project → Firewall → regla de rate limit en `/api/login` y `/api/stepup` (p. ej. 10 por minuto por IP).
+7. **Link:** queda `https://<proyecto>.vercel.app`. Elige un nombre de proyecto que no revele nada de la empresa.
 
 ## Seguridad — lo que ya está
 
-- Login con scrypt, cookie `HttpOnly`+`Secure`+`SameSite=Strict`, 12 h, freno de 5 intentos/15 min.
-- El permiso se aplica **en el servidor**, no en la UI: sin sesión → 401, sin área → 403.
-- 🔒 Costos y márgenes salen solo por `/api/economia` (solo CEO). `/api/catalogo` (Sales) no lleva costos salvo al CEO. `/api/clients` esconde el costo de cuenta a no-CEO y el precio a `team`.
+- **Contraseña + código 2FA (TOTP) en cada login.** Sin 2FA configurado la cuenta no entra. Un código no sirve dos veces.
+- **Finanzas pide un código 2FA fresco cada 10 min** (step-up), aunque la sesión siga viva.
+- Sesión: máximo 8 h, **30 min de inactividad**, cookie `HttpOnly` + `Secure` + `SameSite=Strict` y **atada al navegador** (robar la cookie no sirve en otro).
+- scrypt (N=2¹⁵) para contraseñas; el mismo error y la misma demora exista o no el usuario.
+- El permiso se aplica **en el servidor**: sin sesión 401, sin área 403.
+- **Anti-CSRF:** toda escritura exige header propio + mismo origen.
+- **CSP estricta** (solo scripts propios, sin inline), HSTS con preload, sin iframe, sin caché en `/api`, `noindex`.
+- 🔒 Costos y márgenes salen solo por `/api/economia` (solo CEO). `/api/catalogo` no lleva costos salvo al CEO. `/api/clients` esconde el costo de cuenta a no-CEO y el precio a `team`.
 - El manual **nunca se sirve crudo**: solo tablas parseadas. `/api/file` solo toca `ceo-os/data/**` y el CRM.
-- Escrituras con control de versión (sha): si otra persona cambió el archivo, da 409 en vez de pisarlo.
-- `noindex`, sin iframe, sin caché en `/api`.
+- **Auditoría:** cada escritura es un commit que dice **quién** la hizo; logins y step-ups quedan en los logs de Vercel.
+- Escrituras con control de versión (sha): si otra persona cambió el archivo, 409 en vez de pisarlo.
+
+**Lo que NO cubre** *(por diseño serverless)*: el límite de intentos por IP vive por instancia; el global lo pone el Firewall de Vercel (paso 6). El PAT de GitHub da acceso al repo: guárdalo solo en Vercel, con permiso mínimo y expiración.
+
+## 💵 Nómina
+
+`ceo-os/data/finanzas/nomina.json`. El mes de cada persona = **suma de lo que cada cuenta paga a su rol × su % del rol**.
+- **Reparto por rol:** se define una vez (p. ej. Edición de video: A 60% · B 40%).
+- **Cuentas:** el monto por rol sale del manual para los planes de lista; en Tailor Made lo escribes tú.
+- **Reparto propio** por cuenta con el botón 👥 cuando una cuenta se desvía del reparto del rol.
+- Avisa lo que queda **sin asignar** (rol que no suma 100%) y lo que está **sin datos**.
 
 ## Cómo se actualiza
 

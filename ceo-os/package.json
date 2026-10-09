@@ -6,7 +6,8 @@
   "engines": { "node": ">=20" },
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "hash": "node scripts/hash-password.mjs",
-    "test": "node scripts/test-parse.mjs"
+    "user": "node scripts/make-user.mjs",
+    "code": "node scripts/dev-code.mjs",
+    "test": "node scripts/test-parse.mjs && node scripts/test-auth.mjs"
   }
 }
