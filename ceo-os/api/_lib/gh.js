@@ -89,3 +89,13 @@ export async function deleteFile(path, sha, message) {
   if (!r.ok) throw new Error(`GitHub ${r.status} borrando ${path}`);
   return { ok: true };
 }
+
+// Todos los archivos bajo una carpeta (recursivo). Desde la copia del build o, en local, del disco.
+export function listFiles(prefix) {
+  if (LOCAL) {
+    const out = [];
+    const walk = (p) => { let ents = []; try { ents = fs.readdirSync(lp(p), { withFileTypes: true }); } catch {} for (const e of ents) { const q = p + '/' + e.name; e.isDirectory() ? walk(q) : out.push(q); } };
+    walk(prefix); return out;
+  }
+  return snap() ? Object.keys(SNAP.files).filter((k) => k.startsWith(prefix + '/')) : [];
+}

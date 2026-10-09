@@ -9,7 +9,7 @@ const NAV = [
   ['library', 'Library', 'M4 4h6l2 2h8v14H4z'],
   ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
 ];
-const SCREENS = { home: 'home', finanzas: 'finance', sales: 'sales', operations: 'operations', content: 'soon', library: 'soon', team: 'team' };
+const SCREENS = { home: 'home', finanzas: 'finance', sales: 'sales', operations: 'operations', content: 'content', library: 'soon', team: 'team' };
 const root = $('#root');
 export let me = null;
 let renderGen = 0;
