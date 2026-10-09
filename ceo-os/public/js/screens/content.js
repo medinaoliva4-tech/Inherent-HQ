@@ -50,7 +50,11 @@ export async function render(el, { sub, alive }) {
   }
 
   // ---------- Semana: top 10 del nicho + los videos que agregaste ----------
+  // Los mejores posts propios (Windsor), precargados: «Generar ideas» abre Claude sin esperar (si espera, el navegador bloquea la ventana).
+  let ownIG = null, ownFor = null;
+  const loadOwn = () => { if (ownFor === slug) return; ownFor = slug; ownIG = null; api(`analytics/instagram?profile=${encodeURIComponent(slug)}`).then((r) => { if (ownFor === slug) ownIG = r; }).catch(() => {}); };
   async function loadWeek() {
+    loadOwn();
     try { week = await api(`content/week?profile=${encodeURIComponent(slug)}`); } catch (e) { week = { status: 'error', warn: e.message, analytics: [] }; }
     clearTimeout(poll);
     if (week.status === 'running') poll = setTimeout(() => { if (alive() && (tab === 'semana' || tab === 'analytics')) { week = null; paint(); } }, 20000);
@@ -79,7 +83,7 @@ export async function render(el, { sub, alive }) {
     if (!week) loadWeek(); // para que «Generar ideas» abra Claude al instante
     if (idea === null) { mount(b, html`<p class="loading">Cargando ideas…</p>`); api(`content/ideas?profile=${encodeURIComponent(slug)}`).then((r) => { idea = r; }).catch((e) => { idea = { error: e.message, ideas: [] }; }).then(() => alive() && tab === 'ideas' && b.isConnected && ideas(b)); return; }
     if (idea.error) return mount(b, html`<div class="warnbox">${idea.error}</div>`);
-    const head = html`<div class="mut sm" style="margin-bottom:14px">Salen de <b>lo que funciona</b> esta semana (ganadores del nicho, referentes y competencia), tus <b>pilares</b> y tu <b>audiencia</b>.${idea.at ? ` Generadas el ${fdate(idea.at.slice(0, 10))}.` : ''}</div>`;
+    const head = html`<div class="mut sm" style="margin-bottom:14px">Salen de <b>tus mejores posts</b>, <b>lo que funciona</b> en el nicho (si ya corrió el scrape), tus <b>pilares</b> y tu <b>audiencia</b>.${idea.at ? ` Generadas el ${fdate(idea.at.slice(0, 10))}.` : ''}</div>`;
     if (!idea.ideas.length) return mount(b, html`${head}<div class="empty"><b>Todavía no hay ideas</b>Dale «✦ Generar ideas»: se abre tu Claude con todo listo (usa tu cuenta), y pegas aquí lo que conteste.</div>`);
     const colorOf = (n) => (data.cfg.pillars || []).find((x) => x.name === n)?.color || '#cfc7ba';
     const card = (x) => html`<div class="card idea"><div class="row" style="gap:6px;flex-wrap:wrap"><span class="chip" style="gap:6px"><i style="width:9px;height:9px;border-radius:50%;background:${colorOf(x.pillar)};display:inline-block"></i>${x.pillar || 'Sin pilar'}</span><div class="sp"></div><button class="btn xs" data-act="ideaPlan" data-id="${x.id}">→ Planner</button></div>
@@ -285,14 +289,17 @@ export async function render(el, { sub, alive }) {
   }
 
   // Los prompts para la cuenta de Claude de cada persona (contestan solo JSON, que se pega de vuelta).
-  const posts4 = (l = [], n) => l.slice(0, n).map((x) => `- @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''} · ${x.url}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 150)}`).join('\n') || '(nada)';
-  function ideasPrompt(r) {
+  const posts4 = (l = [], n) => (!l?.length ? '(todavía sin datos)' : '') + (l || []).slice(0, n).map((x) => `- @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''} · ${x.url}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 150)}`).join('\n') || '(nada)';
+  function ideasPrompt(r, own = []) {
     const c = data.cfg, au = c.audience || {};
     return `Eres el estratega creativo de Inherent (growth operator en Guatemala). Propón 5 ideas de Reel y 5 de Carrusel para la marca «${data.profile.name}» que el equipo pueda producir esta semana.
 Reglas: los ganadores, referentes y competencia son inspiración de formato y tema, nunca se copian. Cada idea entra en un pilar y le habla a la audiencia del centro. Español de Guatemala, de «tú», concreto. Hook que se diga en 2 segundos. outline: escenas (Reel, 4 a 6) o texto de cada slide (Carrusel, 5 a 8). why: una frase con el patrón que la inspira. inspired_by: link del post que la inspira o "".
 
 Pilares: ${(c.pillars || []).map((x) => x.name).join(' · ') || '(sin definir: propón el más lógico)'}
 Audiencia: general: ${au.general || '—'} | nicho: ${au.nicho || '—'} | exacto: ${au.exacto || '—'}
+
+Lo que mejor le funcionó a esta marca (sus propios posts, por interacción):
+${posts4(own, 6)}
 
 Ganadores del nicho:
 ${posts4(r.top, 7)}
@@ -371,8 +378,10 @@ Contesta SOLO con este JSON: {"general":"","nicho":"","exacto":""}`;
     genIdeas: async () => {
       if (!week) { loadWeek(); return toast('Un momento: estoy leyendo lo de la semana. Vuelve a darle en 2 segundos.'); }
       const r = week?.result || {};
-      if (!(r.top || []).length && !(r.refs || []).length) return toast('Primero corre el scrape en «Lo que funciona»: las ideas salen de lo que encuentra', true);
-      const out = await claudeJSON('Ideas de Claude', ideasPrompt(r));
+      // Sin scrape igual se puede: usa los mejores posts propios (Windsor), los pilares y la audiencia.
+      const ig = ownFor === slug ? ownIG : null;
+      const own = ig?.matched ? [...(ig.topReels || []), ...(ig.topStatic || [])].sort((a, z) => z.eng - a.eng).map((x) => ({ handle: ig.handles?.[0] || '', views: x.views, likes: x.likes, url: x.url, text: `${x.type}: ${x.caption}` })) : [];
+      const out = await claudeJSON('Ideas de Claude', ideasPrompt(r, own));
       if (!out) return;
       try { idea = await api('content/ideas', { method: 'PUT', body: { profile: slug, week: r.week, ideas: out.ideas || out } }); toast(`${idea.ideas.length} ideas guardadas ✅`); if (tab === 'ideas') ideas($('#cbody', el)); } catch (e) { toast(e.message, true); }
     },
