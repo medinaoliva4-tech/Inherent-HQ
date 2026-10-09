@@ -1,7 +1,7 @@
 // Control: el panel del CEO y el COO. Todo lo que entra, de lead a entrega, conectado:
 // lead → cotización → aprobada → pago → confirmado → proyecto con responsables, fechas y dependencias.
 // Cada tarjeta trae su siguiente paso. Abajo, lo que necesita atención hoy (bloqueos, atrasos, revisiones).
-import { html, mount, col, api, toast, acts, ask, drawer, fdate, today, teamList, Q } from '../core.js';
+import { html, mount, col, api, toast, acts, ask, confirmAsk, drawer, fdate, today, teamList, Q } from '../core.js';
 import { blockersOf, unlocksOf, addDays } from '../cycle.js';
 import { payDialog, openProof } from '../flowui.js';
 
@@ -17,9 +17,9 @@ const nextWorkday = () => { const d = new Date(); do d.setDate(d.getDate() + 1);
 
 export async function render(el, { me }) {
   const ceoish = me.role === 'ceo' || me.role === 'coo';
-  let leads, quotes, projects, tasks, team;
+  let leads, quotes, projects, tasks, team, accounts;
   async function load() {
-    [leads, quotes, projects, tasks, team] = await Promise.all([col('leads').list(), col('quotes').list(), col('projects').list(), col('tasks').list(), teamList()]);
+    [leads, quotes, projects, tasks, team, accounts] = await Promise.all([col('leads').list(), col('quotes').list(), col('projects').list(), col('tasks').list(), teamList(), col('accounts').list().catch(() => [])]);
   }
   await load();
   const T = today();
@@ -78,6 +78,8 @@ export async function render(el, { me }) {
     }
     for (const q of quotes) if (q.status === 'Enviada' && q.sent_at && q.sent_at.slice(0, 10) <= addDays(T, -5)) out.push({ tone: 'amber', ic: '📨', t: `${q.client} no ha respondido la ${q.number}`, s: `Enviada el ${fdate(q.sent_at.slice(0, 10))} · dale seguimiento`, href: `#/sales/quotes/${q.id}`, w: 3 });
     for (const l of leads) if (OPEN_LEAD.includes(l.stage || 'Nuevo') && l.next_date && l.next_date < T) out.push({ tone: 'amber', ic: '📞', t: `Seguimiento a ${l.name}`, s: `${l.next_step || 'Pendiente'} · era el ${fdate(l.next_date)}`, href: '#/sales/crm', w: 4 });
+    for (const a of accounts) { const ob = a.onboarding; if (!ob?.items?.length || ob.done_at) continue; const n = ob.items.filter((x) => x.done).length;
+      if (ob.at && ob.at.slice(0, 10) <= addDays(T, -2)) out.push({ tone: 'amber', ic: '👋', t: `${a.name} no ha terminado su onboarding`, s: `${n}/${ob.items.length} listos · desde el ${fdate(ob.at.slice(0, 10))}`, href: `#/portal/${a.slug || a.id.replace(/^acc-/, '')}`, w: 3 }); }
     return out.sort((a, z) => a.w - z.w);
   }
 
@@ -131,10 +133,17 @@ export async function render(el, { me }) {
       const v = await ask(`Confirmar el pago y arrancar · ${q.client}`, [
         { k: 'kind', l: 'Tipo de proyecto', t: 'select', v: hasSvc ? 'Custom' : 'Proyecto', opts: [['Custom', 'Custom · los servicios de la cotización'], ['Ciclo mensual', 'Ciclo de contenido'], ['Proyecto', 'Proyecto por fases'], ['Growth', 'Business Growth']] },
         { k: 'start', l: 'Arranca', t: 'date', v: nextWorkday(), req: true, half: true },
+        { k: 'email', l: 'Correo del cliente (le da acceso a su portal)', t: 'email', v: q.email || leads.find((l) => l.id === q.lead_id)?.email || '' },
+        { k: 'welcome', l: 'Correo de bienvenida', t: 'select', v: 'si', opts: [['si', 'Sí: gracias + su portal + su onboarding'], ['no', 'No mandar correo']] },
         { k: 'slug', l: 'Nombre corto del cliente', v: q.client_slug || String(q.client || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''), req: true, half: true }], 'Confirmar y arrancar ⚡');
       if (!v) return;
+      const st = await api('status').catch(() => ({}));
+      if (v.email && !st.portal) toast('Ojo: el cliente podrá entrar a su portal cuando termines el cliente de Google del portal', true);
       const r = await step(q.id, 'confirm', v);
-      if (r?.project_id) { toast(`Arrancó ⚡ ${r.tasks} tareas para ${r.people} personas, con fechas y dependencias`); openProject(r.project_id); }
+      if (r?.project_id) {
+        toast(`Arrancó ⚡ ${r.tasks} tareas para ${r.people} personas${r.welcome?.sent ? ` · correo enviado a ${r.welcome.to}` : ''}`); openProject(r.project_id);
+        if (r.welcome && !r.welcome.sent && (await confirmAsk('No pude mandarlo desde tu Gmail (sal y vuelve a entrar para dar el permiso). ¿Lo abro en Gmail ya escrito?'))) window.open(r.welcome.compose, '_blank', 'noopener');
+      }
     },
     proof: (b) => openProof(b.dataset.id),
     proj: (b) => (b.dataset.id ? openProject(b.dataset.id) : b.dataset.href && (location.hash = b.dataset.href)),

@@ -9,6 +9,7 @@ export const SCOPES = [
   'https://www.googleapis.com/auth/calendar.events',
   'https://www.googleapis.com/auth/calendar.calendarlist.readonly',
   'https://www.googleapis.com/auth/drive',
+  'https://www.googleapis.com/auth/gmail.send', // para mandar desde tu correo (bienvenida al cliente)
 ];
 // portal = el login de los clientes y correos aprobados de afuera: solo nombre y correo (sin Drive ni Calendar).
 // Usa su propio cliente OAuth (tipo «Externo» en Google Cloud) si está configurado.
@@ -76,3 +77,17 @@ export async function gapi(email, url, init = {}) {
 }
 
 export const newState = () => crypto.randomBytes(18).toString('base64url');
+
+// Manda un correo desde el Gmail de la persona (con su permiso gmail.send). Texto + HTML, en UTF-8.
+const b64 = (x) => Buffer.from(x, 'utf8').toString('base64');
+export async function sendMail(from, { to, subject, text, html, replyTo }) {
+  const bound = 'inh' + crypto.randomBytes(8).toString('hex');
+  const mime = [
+    `To: ${to}`, `Subject: =?UTF-8?B?${b64(subject)}?=`, 'MIME-Version: 1.0', ...(replyTo ? [`Reply-To: ${replyTo}`] : []),
+    `Content-Type: multipart/alternative; boundary="${bound}"`, '',
+    `--${bound}`, 'Content-Type: text/plain; charset=UTF-8', 'Content-Transfer-Encoding: base64', '', b64(text),
+    `--${bound}`, 'Content-Type: text/html; charset=UTF-8', 'Content-Transfer-Encoding: base64', '', b64(html),
+    `--${bound}--`, '',
+  ].join('\r\n');
+  return gapi(from, 'https://gmail.googleapis.com/gmail/v1/users/me/messages/send', { method: 'POST', body: JSON.stringify({ raw: Buffer.from(mime).toString('base64url') }) });
+}

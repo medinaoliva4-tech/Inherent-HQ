@@ -667,3 +667,10 @@ input[type=range]{accent-color:#5c6b22;cursor:grab}
 @media (max-width:1150px){.ctlkpis{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:760px){.ctlkpis{grid-template-columns:1fr 1fr}.ctlflow{grid-template-columns:repeat(5,82vw)}}
 a.btn{text-decoration:none}
+
+/* Onboarding del cliente (portal) */
+.onb{margin-bottom:14px;border:1px solid #e3d6bd;background:#fffaf0}.onb.ok{background:#f6f9ee;border-color:#d5e2b8}
+.onbi{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.onbi .check{margin:0}.onbi .in{padding:8px 10px;font-size:13px}
+.onbteam{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+@media (max-width:760px){.onbi{grid-template-columns:1fr;gap:6px}}

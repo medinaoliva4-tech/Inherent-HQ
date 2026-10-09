@@ -152,3 +152,16 @@ export function includesAt(s, lv = s.level || 5) {
 }
 // Cuánto tarda (días hábiles): de los días en nivel 5 a los de nivel 10.
 export const daysAt = (s, lv = s.level || 5) => { const d5 = +s.days5 || 0, d10 = +s.days10 || d5; return d5 ? Math.round(d5 + ((d10 - d5) * (lv - 5)) / 5) : null; };
+
+// ---------- Onboarding del cliente: lo que necesitamos de él, según lo que contrató ----------
+// Cada servicio del catálogo dice qué necesita (campo «onboarding»); los tipos de proyecto traen lo básico.
+export const ONBOARDING = {
+  'Ciclo mensual': ['Acceso a tus redes: agrega a Inherent como admin en Meta Business Suite y TikTok', 'Tu logo, tipografías y manual de marca (o lo que tengas)', 'Fotos y videos de tu producto o servicio', 'Quién aprueba el contenido de tu lado', 'Días y horarios para grabar'],
+  Growth: ['Ventas de los últimos 12 meses, por mes y por línea', 'Tus costos fijos y variables (o tu estado de resultados)', 'Acceso de lectura a tu contabilidad o punto de venta', 'Tus precios y paquetes de hoy', 'Quién decide de tu lado'],
+  Proyecto: ['Quién decide de tu lado', 'Lo que ya tienes: referencias, materiales y accesos'],
+};
+export function onboardingFor(kind, services = []) {
+  const fromSvc = services.flatMap((s) => lines(s.onboarding));
+  const base = kind === 'Custom' ? (fromSvc.length ? fromSvc : ['Quién decide de tu lado']) : [...(ONBOARDING[kind] || []), ...fromSvc];
+  return [...new Set(base)].map((t) => ({ t, done: false, note: '' }));
+}

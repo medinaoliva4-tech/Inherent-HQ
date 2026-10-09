@@ -1,6 +1,6 @@
 // El portal del cliente: cómo va lo que contrató, su contenido, su calendario, sus reuniones,
 // sus metas, lo entregado y sus redes. Todo sale de /api/portal (el servidor decide qué se ve).
-import { html, mount, api, fdate, fdateLong, K, $, lineChart, ICON } from '../core.js';
+import { html, raw, mount, api, toast, fdate, fdateLong, K, $, $$, lineChart, ICON } from '../core.js';
 
 const ST = { 'Entregado': 'green', 'En revisión': 'amber', 'En curso': 'lime', 'Por empezar': '' };
 const PS = { Idea: 'Idea', Grabado: 'En producción', Editado: 'En producción', Programado: 'Programado', Publicado: 'Publicado' };
@@ -21,6 +21,15 @@ export async function render(el, { me, sub, alive }) {
   mount(el, html`
     ${me.role !== 'client' ? html`<div class="asbar">👁 Así ve ${d.name} su portal <a href="#/clients/${d.slug}">Volver al cliente</a></div>` : ''}
     <div class="hello"><h1>${d.name}</h1><p>${d.plan ? html`Tu plan: <em>${d.plan}</em>` : 'Tu proyecto con Inherent'}</p></div>
+    ${d.onboarding ? (() => { const ob = d.onboarding, n = ob.items.filter((x) => x.done).length, all = n === ob.items.length;
+      return html`<div class="card onb ${all ? 'ok' : ''}" id="onb"><div class="row" style="gap:10px;flex-wrap:wrap"><b style="font-weight:500;font-size:18px">${all ? '✅ Onboarding completo' : '👋 Tu onboarding'}</b><div class="sp"></div><span class="sm mut">${n}/${ob.items.length} listos</span></div>
+        <div class="mut sm" style="margin-top:4px">${all ? '¡Gracias! Con esto el equipo ya tiene todo para avanzar.' : 'Lo que necesitamos de ti para arrancar. Marca lo que ya hiciste y deja un link o comentario si hace falta.'}</div>
+        <div class="gbar" style="margin:10px 0"><i style="width:${Math.round((n / (ob.items.length || 1)) * 100)}%"></i></div>
+        ${ob.items.map((x, i) => html`<div class="onbi"><label class="check"><input type="checkbox" data-i="${i}" ${x.done ? raw('checked') : ''}> <span>${x.t}</span></label><input class="in sm" data-n="${i}" value="${x.note || ''}" placeholder="Link o comentario (opcional)"></div>`)}
+        <div class="row" style="margin-top:10px"><button class="btn" data-ob="save">Guardar</button></div>
+        <div class="onbteam"><b style="font-weight:500">¿Alguien de tu equipo ve esto?</b><div class="mut sm">Invítalo: entra con su Google y ve este mismo portal.</div>
+          ${d.people.length ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:8px">${d.people.map((p) => html`<span class="chip">${p.name || p.email} · ${p.email}</span>`)}</div>` : ''}
+          <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><input class="in" id="invn" placeholder="Nombre" style="max-width:180px"><input class="in" id="inve" type="email" placeholder="correo@suempresa.com" style="max-width:260px"><button class="btn ghost" data-ob="invite">Invitar a alguien de mi equipo</button></div></div></div>`; })() : ''}
     <div class="wkkpis">${[['Avance', progress == null ? '—' : progress + '%'], ['Próxima reunión', nextMeet ? fdate(nextMeet.date) : '—'], ['Por publicar', upcoming.length], ['Entregado', d.delivered.length]].map(([l, v]) => html`<div class="wkkpi"><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
 
     ${d.projects.length ? html`<div class="sec-title"><h2 class="ttl">${ICON.list}Lo que contrataste</h2></div>
@@ -48,5 +57,16 @@ export async function render(el, { me, sub, alive }) {
 
     <div class="sec-title"><h2 class="ttl">${ICON.folder}Entregado</h2>${d.folder ? html`<a class="sm" href="${d.folder}" target="_blank" rel="noopener noreferrer">Tu carpeta de entregables ↗</a>` : ''}</div>
     <div class="card">${d.delivered.length ? d.delivered.map((x) => html`<div class="wkrow"><span style="width:22px;text-align:center">✓</span><span class="grow">${x.title}</span><span class="mut sm">${x.date ? fdate(x.date) : ''}</span></div>`) : html`<div class="mut sm">Aquí aparece lo que vamos entregando.</div>`}</div>`);
+  const q = slug ? `?slug=${encodeURIComponent(slug)}` : '';
+  $('#onb', el)?.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-ob]'); if (!b) return;
+    if (b.dataset.ob === 'save') {
+      const items = d.onboarding.items.map((x, i) => ({ done: $(`[data-i="${i}"]`, el).checked, note: $(`[data-n="${i}"]`, el).value.trim() }));
+      try { const r = await api('portal/onboarding' + q, { method: 'PUT', body: { items } }); toast(r.done ? '¡Onboarding completo! Gracias 🙌' : 'Guardado ✅'); render(el, { me, sub, alive }); } catch (err) { toast(err.message, true); }
+    } else {
+      const email = $('#inve', el).value.trim(), name = $('#invn', el).value.trim(); if (!email) return toast('Escribe su correo', true);
+      try { const r = await api('portal/invite' + q, { method: 'POST', body: { email, name } }); toast(r.mailed ? `Listo: le llegó un correo a ${email} ✉️` : `Listo: ${email} ya tiene acceso. Dile que entre a ${location.origin} con su Google.`); render(el, { me, sub, alive }); } catch (err) { toast(err.message, true); }
+    }
+  });
   const ch = $('#pch', el); if (ch) lineChart(ch, d.analytics.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: d.analytics.series.map((x) => x.reach), c: '#171410', fill: true }]);
 }
