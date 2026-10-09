@@ -35,12 +35,20 @@ export const AUTO_DEFAULT = new Set(['inherent', 'personal']);
 
 export async function cfg(slug) {
   const c = (await db.get('sources', 'cfg-' + slug)) || {};
-  return { hashtags: c.hashtags || [], accounts: (c.accounts || []).map((a) => ({ ...a, kind: a.kind === 'referente' ? 'referente' : 'competencia' })), own: c.own || [], audience: c.audience || { general: '', nicho: '', exacto: '' }, videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), postear_drive: c.postear_drive || '', guiones_drive: c.guiones_drive || '', pillars: Array.isArray(c.pillars) ? c.pillars : [], ig_account: c.ig_account || '', v: c.v || null };
+  return { hashtags: c.hashtags || [], accounts: (c.accounts || []).filter((a) => handleOf(a.handle)).map((a) => ({ ...a, kind: a.kind === 'referente' ? 'referente' : 'competencia' })), own: (c.own || []).filter((a) => handleOf(a.handle)), audience: c.audience || { general: '', nicho: '', exacto: '' }, videos: c.videos || [], auto: c.auto ?? AUTO_DEFAULT.has(slug), postear_drive: c.postear_drive || '', guiones_drive: c.guiones_drive || '', pillars: Array.isArray(c.pillars) ? c.pillars : [], ig_account: c.ig_account || '', v: c.v || null };
+}
+// Una cuenta escrita como @handle o como link del perfil → solo el handle. Un link que no es de perfil (un video,
+// «explore») o basura (ej. «https» de un link mal leído) → vacío, y se descarta.
+const NOT_HANDLE = new Set(['https', 'http', 'www', 'p', 'reel', 'reels', 'explore', 'stories', 'tv', 'video', 'instagram', 'tiktok']);
+export function handleOf(x) {
+  const u = String(x || '').trim(), m = u.match(/(?:tiktok\.com\/@|instagram\.com\/)([A-Za-z0-9._]{2,30})/i) || u.match(/^@?([A-Za-z0-9._]{2,30})$/);
+  const h = m ? m[1].toLowerCase() : '';
+  return NOT_HANDLE.has(h) ? '' : h;
 }
 // Normaliza lo que manda la app: hashtags sin #, cuentas como links o @handle, videos como links.
 export function cleanCfg(b) {
   const tags = [...new Set((Array.isArray(b.hashtags) ? b.hashtags : String(b.hashtags || '').split(/[\s,]+/)).map((t) => String(t).replace(/^#/, '').toLowerCase().replace(/[^\p{L}\p{N}_]/gu, '')).filter(Boolean))].slice(0, 10);
-  const acc = (list, kinds) => uniq((Array.isArray(list) ? list : []).map((a) => ({ red: a.red === 'tiktok' ? 'tiktok' : 'instagram', handle: String(a.handle || '').replace(/^@/, '').toLowerCase().replace(/[^a-z0-9._]/g, ''), ...(kinds ? { kind: a.kind === 'referente' ? 'referente' : 'competencia' } : {}) })).filter((a) => a.handle.length >= 2));
+  const acc = (list, kinds) => uniq((Array.isArray(list) ? list : []).map((a) => ({ red: a.red === 'tiktok' ? 'tiktok' : 'instagram', handle: handleOf(a.handle), ...(kinds ? { kind: a.kind === 'referente' ? 'referente' : 'competencia' } : {}) })).filter((a) => a.handle.length >= 2));
   const accounts = acc(b.accounts, true).slice(0, 30), own = acc(b.own, false).slice(0, 6);
   const t = (v) => String(v || '').trim().slice(0, 400);
   const audience = { general: t(b.audience?.general), nicho: t(b.audience?.nicho), exacto: t(b.audience?.exacto) };

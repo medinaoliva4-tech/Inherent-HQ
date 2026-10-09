@@ -10,6 +10,7 @@ import * as mcp from './_lib/mcp.js';
 import * as oauth from './_lib/oauth.js';
 import * as flow from './_lib/flow.js';
 import * as ads from './_lib/ads.js';
+import * as refs from './_lib/refs.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
@@ -192,6 +193,31 @@ on('GET', 'content/week', async (req, res) => {
   const an = await db.get('sources', 'analytics-' + slug);
   res.json({ apify: content.apifyOn(), week: doc?.week || null, at: doc?.at || null, status: !doc?.runs?.length ? 'none' : doc.result ? 'done' : 'running', runs: (doc?.runs || []).map(({ red, status }) => ({ red, status })), result: doc?.result || null, analytics: an?.history || [], warn });
 });
+// Referencias por pilar: videos que pega el equipo → Apify busca similares → se desglosan con Claude.
+on('GET', 'content/refs', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const slug = String(req.query.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  let doc = await refs.get(slug), warn = null;
+  if (doc.runs?.length && !doc.result && refs.on()) { try { doc = await refs.settle(slug, u.email); } catch (e) { warn = e.message; } }
+  res.json({ apify: refs.on(), videos: doc.videos || {}, breakdown: doc.breakdown || {}, result: doc.result || null, status: !doc.runs ? 'none' : doc.result ? 'done' : 'running', phase: doc.phase || 0, at: doc.at || null, warn });
+});
+on('PUT', 'content/refs', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const b = body(req); if (!slugOk(b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
+  const d = await refs.saveVideos(b.profile, b.videos, u.email); res.json({ videos: d.videos });
+});
+on('POST', 'content/refs/scrape', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const slug = String(body(req).profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  try { await refs.start(slug, u.email); res.json({ ok: true }); }
+  catch (e) { if (e.status || e.code) return res.status(e.status || 503).json({ error: e.message }); throw e; }
+});
+on('PUT', 'content/refs/breakdown', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const b = body(req); if (!slugOk(b.profile) || !b.pillar) return res.status(400).json({ error: 'Falta el perfil o el pilar' });
+  const d = await refs.saveBreakdown(b.profile, b.pillar, b.items, u.email); res.json({ breakdown: d.breakdown });
+});
+
 // Conexiones de un perfil: las carpetas de Drive (guiones y «Por postear») y los pilares.
 // Lo puede leer todo el equipo: el editor de video necesita llegar a los guiones y a la carpeta de entregas.
 on('GET', 'content/cfg', async (req, res) => {

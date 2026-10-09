@@ -1,11 +1,11 @@
-import { html, raw, mount, api, toast, acts, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON } from '../core.js';
+import { html, raw, mount, api, toast, acts, drawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON } from '../core.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
 const RED = { instagram: 'Instagram', tiktok: 'TikTok' };
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$/.test(String(u || '')) ? u : null);
-const TABS = [['ideas', 'Ideas'], ['semana', 'Lo que funciona'], ['plan', 'Planner'], ['guiones', 'Guiones'], ['postear', 'Por postear'], ['bandeja', 'Bandeja'], ['analytics', 'Analytics'], ['fuentes', 'Fuentes']];
+const TABS = [['shot', 'Shot list'], ['refs', 'Referencias'], ['plan', 'Planner'], ['guiones', 'Guiones'], ['postear', 'Por postear'], ['bandeja', 'Bandeja'], ['analytics', 'Analytics'], ['fuentes', 'Fuentes']];
 const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho', propia: 'Tuya' };
 
 export function videoCard(it) {
@@ -19,13 +19,13 @@ export function videoCard(it) {
 
 export async function render(el, { sub, alive }) {
   let slug = sub[1] || (() => { try { return localStorage.getItem('content.profile'); } catch { return null; } })() || 'inherent';
-  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'ideas';
-  let data = null, week = null, posts = null, poll = null, ig = null, idea = null, inbox = null;
+  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'shot';
+  let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
-    slug = data.profile.slug; week = null; posts = null; ig = null; idea = null; inbox = null; gstack = null; gfiles = null; gcur = null;
+    slug = data.profile.slug; week = null; posts = null; ig = null; inbox = null; rf = null; shotMes = null; gstack = null; gfiles = null; gcur = null;
     try { localStorage.setItem('content.profile', slug); } catch {}
     paint();
   }
@@ -42,19 +42,15 @@ export async function render(el, { sub, alive }) {
         <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
         ${tab === 'semana' ? html`<button class="btn" data-act="scrape">Scrapear ahora</button>` : ''}
-        ${tab === 'ideas' ? html`<button class="btn" data-act="genIdeas">✦ Generar ideas</button>` : ''}
+        ${tab === 'refs' ? html`<button class="btn" data-act="refScrape">Buscar similares</button>` : ''}
 
       </div>
       <div id="cbody" class="swap"></div>`);
-    ({ ideas, semana, postear, guiones, plan, bandeja, analytics, fuentes })[tab]($('#cbody', el));
+    ({ shot, refs: refsTab, semana, postear, guiones, plan, bandeja, analytics, fuentes })[tab]($('#cbody', el));
   }
 
   // ---------- Semana: top 10 del nicho + los videos que agregaste ----------
-  // Los mejores posts propios (Windsor), precargados: «Generar ideas» abre Claude sin esperar (si espera, el navegador bloquea la ventana).
-  let ownIG = null, ownFor = null;
-  const loadOwn = () => { if (ownFor === slug) return; ownFor = slug; ownIG = null; api(`analytics/instagram?profile=${encodeURIComponent(slug)}`).then((r) => { if (ownFor === slug) ownIG = r; }).catch(() => {}); };
   async function loadWeek() {
-    loadOwn();
     try { week = await api(`content/week?profile=${encodeURIComponent(slug)}`); } catch (e) { week = { status: 'error', warn: e.message, analytics: [] }; }
     clearTimeout(poll);
     if (week.status === 'running') poll = setTimeout(() => { if (alive() && (tab === 'semana' || tab === 'analytics')) { week = null; paint(); } }, 20000);
@@ -79,24 +75,78 @@ export async function render(el, { sub, alive }) {
   }
 
   // ---------- Ideas: reels y carruseles que propone Claude con lo que encontró el scraper ----------
-  function ideas(b) {
-    if (!week) loadWeek(); // para que «Generar ideas» abra Claude al instante
-    if (idea === null) { mount(b, html`<p class="loading">Cargando ideas…</p>`); api(`content/ideas?profile=${encodeURIComponent(slug)}`).then((r) => { idea = r; }).catch((e) => { idea = { error: e.message, ideas: [] }; }).then(() => alive() && tab === 'ideas' && b.isConnected && ideas(b)); return; }
-    if (idea.error) return mount(b, html`<div class="warnbox">${idea.error}</div>`);
-    const head = html`<div class="mut sm" style="margin-bottom:14px">Salen de <b>tus mejores posts</b>, <b>lo que funciona</b> en el nicho (si ya corrió el scrape), tus <b>pilares</b> y tu <b>audiencia</b>.${idea.at ? ` Generadas el ${fdate(idea.at.slice(0, 10))}.` : ''}</div>`;
-    if (!idea.ideas.length) return mount(b, html`${head}<div class="empty"><b>Todavía no hay ideas</b>Dale «✦ Generar ideas»: se abre tu Claude con todo listo (usa tu cuenta), y pegas aquí lo que conteste.</div>`);
-    const colorOf = (n) => (data.cfg.pillars || []).find((x) => x.name === n)?.color || '#cfc7ba';
-    const card = (x) => html`<div class="card idea"><div class="row" style="gap:6px;flex-wrap:wrap"><span class="chip" style="gap:6px"><i style="width:9px;height:9px;border-radius:50%;background:${colorOf(x.pillar)};display:inline-block"></i>${x.pillar || 'Sin pilar'}</span><div class="sp"></div><button class="btn xs" data-act="ideaPlan" data-id="${x.id}">→ Planner</button></div>
-      <b style="font-weight:500;font-size:17px;display:block;margin-top:10px">${x.title}</b>
-      <div class="ihook">“${x.hook}”</div>
-      <ol class="sm" style="margin:8px 0 0 18px;padding:0">${(x.outline || []).map((o) => html`<li style="margin:3px 0">${o}</li>`)}</ol>
-      <div class="mut sm" style="margin-top:8px">💡 ${x.why}${x.inspired_by ? html` · <a href="${x.inspired_by}" target="_blank" rel="noopener noreferrer" style="color:inherit">ver el original ↗</a>` : ''}</div></div>`;
-    mount(b, html`${head}<div class="grid g2" style="align-items:start">
-      <div><div class="sec-title" style="margin-top:0"><h2 class="ttl">${ICON.play}Reels</h2></div>${idea.ideas.filter((x) => x.format === 'Reel').map(card)}</div>
-      <div><div class="sec-title" style="margin-top:0"><h2 class="ttl">${ICON.slides}Carruseles</h2></div>${idea.ideas.filter((x) => x.format !== 'Reel').map(card)}</div></div>`);
+  // ---------- Shot list: lo que entregó ④ Creatividad en el repo (plan-de-contenido.csv + ideas-<formato>.md) ----------
+  // Para llegar a un video hay trabajo antes (estrategia, brief, BIG IDEA): aquí solo se despliega lo que ya está en el repo.
+  function shotData() {
+    const ms = (data.profile.months || []).filter((m) => m.files.some((f) => f.name === 'plan-de-contenido.csv'));
+    const m = ms.find((x) => x.mes === shotMes) || ms[0];
+    if (!m) return { ms, m: null, rows: [] };
+    const f = m.files.find((x) => x.name === 'plan-de-contenido.csv');
+    // Las 13 columnas del método; si un CSV viejo trae otros nombres (idea, titulo…), se leen igual.
+    const [head, ...body] = csv(f.content); const H = head.map((h) => h.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+    const ALIAS = { concepto: ['concepto', 'idea', 'titulo', 'title'], campana: ['campana', 'campaign'] };
+    const val = (r, k) => { for (const a of ALIAS[k] || [k]) { const i = H.indexOf(a); if (i >= 0 && r[i]) return r[i].trim(); } return ''; };
+    const rows = body.filter((r) => r.some(Boolean)).map((r, i) => { const o = Object.fromEntries(['id', 'campana', 'fecha', 'canal', 'formato', 'pilar', 'funcion', 'concepto', 'mezcla', 'traza', 'material', 'estado', 'trial'].map((k) => [k, val(r, k)])); o.id ||= `#${i + 1}`; return o; });
+    return { ms, m, rows };
+  }
+  // La sección de una pieza en su ideas-<formato>.md: desde la línea con su id hasta la siguiente pieza.
+  function pieceText(m, row) {
+    const slugF = (x) => x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const f = m.files.find((x) => x.name === `ideas-${slugF(row.formato)}.md`) || m.files.find((x) => /^ideas-.*\.md$/.test(x.name) && x.content.includes(row.id));
+    if (!f) return null;
+    const L = f.content.split('\n'), i = L.findIndex((l) => /^#{1,4}\s/.test(l) && l.includes(row.id)); if (i < 0) return null;
+    const lvl = L[i].match(/^#+/)[0].length; let j = i + 1; while (j < L.length && !(new RegExp(`^#{1,${lvl}}\\s`).test(L[j]))) j++;
+    return L.slice(i, j).join('\n');
+  }
+  function shot(b) {
+    const { ms, m, rows } = shotData();
+    if (!m) return mount(b, html`<div class="empty"><b>Todavía no hay shot list de ${data.profile.name}</b>Lo entrega ④ Creatividad en el repo: <code>04-contenido/AAAA-MM/ideas/plan-de-contenido.csv</code> y un <code>ideas-&lt;formato&gt;.md</code> por formato. Antes van la estrategia, el brief y las BIG IDEAS del ciclo.</div>`);
+    const brief = m.files.find((x) => x.name === 'brief-del-ciclo.md');
+    const pend = rows.filter((r) => r.estado && r.estado !== 'listo').length, mat = (k) => rows.filter((r) => r.material === k).length;
+    mount(b, html`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        ${ms.length > 1 ? html`<select class="in" id="shotMes" style="width:auto">${ms.map((x) => html`<option ${x.mes === m.mes ? raw('selected') : ''}>${x.mes}</option>`)}</select>` : html`<span class="chip dark">${m.mes}</span>`}
+        <span class="chip">${rows.length} piezas</span>${mat('video') ? html`<span class="chip">🎬 ${mat('video')} por grabar</span>` : ''}${mat('foto') ? html`<span class="chip">📷 ${mat('foto')} fotos</span>` : ''}${pend ? html`<span class="chip amber">${pend} pendientes</span>` : ''}
+        <div class="sp"></div>${brief ? html`<button class="btn ghost xs" data-act="shotBrief">Brief del ciclo</button>` : ''}</div>
+      <div class="card tscroll"><table class="wktable shottbl"><thead><tr><th>Id</th><th>Fecha</th><th>Formato</th><th>Pilar</th><th>Concepto</th><th>Material</th><th>Estado</th></tr></thead><tbody>
+        ${rows.map((r) => html`<tr class="click" data-act="shotOpen" data-id="${r.id}"><td class="mut">${r.id}</td><td>${r.fecha ? fdate(r.fecha) : '—'}</td><td>${r.formato}</td><td>${r.pilar}</td><td style="min-width:220px">${r.concepto}</td><td>${{ video: '🎬 video', foto: '📷 foto', ninguno: '—' }[r.material] || r.material}</td><td><span class="chip ${r.estado === 'listo' ? 'green' : r.estado ? 'amber' : ''} sm2">${r.estado || '—'}</span></td></tr>`)}
+      </tbody></table></div>`);
+    const sm = $('#shotMes', b); if (sm) sm.onchange = () => { shotMes = sm.value; shot(b); };
   }
 
-  // ---------- Bandeja: comentarios y mensajes de las cuentas propias (Zernio) ----------
+  // ---------- Referencias por pilar: 5 videos por pilar → similares (Apify) → desglose con Claude ----------
+  function refsTab(b) {
+    if (rf === null) { mount(b, html`<p class="loading">Cargando referencias…</p>`); api(`content/refs?profile=${encodeURIComponent(slug)}`).then((r) => { rf = r; }).catch((e) => { rf = { error: e.message }; }).finally(() => alive() && tab === 'refs' && refsTab(b)); return; }
+    if (rf.error) return mount(b, html`<div class="warnbox">${rf.error}</div>`);
+    clearTimeout(rfPoll); if (rf.status === 'running') rfPoll = setTimeout(() => { if (alive() && tab === 'refs') { rf = null; refsTab($('#cbody', el)); } }, 15000);
+    const pillars = (data.cfg.pillars || []).map((x) => x.name).filter(Boolean);
+    if (!pillars.length) return mount(b, html`<div class="empty"><b>Primero los pilares</b>Defínelos en Planner. Luego aquí pegas hasta 5 videos de referencia por pilar.</div>`);
+    const res = rf.result || {};
+    mount(b, html`<div class="mut sm" style="margin-bottom:12px">Por pilar, pega hasta <b>5 videos</b> que te sirvan de referencia (Reels o TikToks). Apify busca lo que más rindió de <b>esos mismos creadores</b> y de <b>sus hashtags</b>, comparado con lo normal de cada cuenta. Después lo desglosas con Claude: hook, retención, estructura y cómo adaptarlo.</div>
+      ${rf.status === 'running' ? html`<div class="warnbox sm" style="margin-bottom:12px">Apify está trabajando (${rf.phase === 1 ? 'leyendo tus referencias' : 'buscando similares'}). Esto se actualiza solo.</div>` : ''}${rf.warn ? html`<div class="warnbox sm">${rf.warn}</div>` : ''}${!rf.apify ? html`<div class="warnbox sm">Falta APIFY_TOKEN en Vercel.</div>` : ''}
+      ${pillars.map((p) => { const urls = rf.videos?.[p] || [], r = res[p], bd = rf.breakdown?.[p];
+        return html`<div class="card refpil"><div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500;font-size:17px">${p}</b><span class="mut sm">${urls.length}/5 referencias</span><div class="sp"></div>
+            ${r && (r.refs.length || r.similar.length) ? html`<button class="btn xs" data-act="refBreak" data-p="${p}">✦ Desglosar con Claude</button>` : ''}</div>
+          <div class="refurls">${[0, 1, 2, 3, 4].map((i) => html`<input class="in" data-ref="${p}" value="${urls[i] || ''}" placeholder="Link de un Reel o TikTok">`)}</div>
+          ${r ? html`${r.owners?.length || r.tags?.length ? html`<div class="mut sm" style="margin:10px 0 6px">Se buscó en: ${r.owners.map((h) => '@' + h).join(', ')}${r.tags.length ? ' · #' + r.tags.join(' #') : ''}</div>` : ''}
+            ${r.similar.length ? html`<div class="lbl" style="margin-top:6px">Similares que funcionaron</div><div class="grid homevids">${r.similar.map(videoCard)}</div>` : html`<div class="mut sm">No salieron similares todavía.</div>`}` : ''}
+          ${bd?.items?.length ? html`<div class="lbl" style="margin-top:14px">Desglose · ${fdate(bd.at.slice(0, 10))}</div>${bd.items.map((x) => html`<div class="bditem"><a href="${/^https:\/\//.test(x.url) ? x.url : '#'}" target="_blank" rel="noopener noreferrer" class="sm">${x.url.replace(/^https:\/\/(www\.)?/, '').slice(0, 60)} ↗</a>${x.inferido ? html` <span class="chip amber sm2">inferido</span>` : ''}
+              <div><b>Hook</b> ${x.hook}</div><div><b>Retención</b> ${x.retencion}</div>${x.estructura.length ? html`<div><b>Estructura</b> ${x.estructura.join(' → ')}</div>` : ''}<div><b>Por qué funcionó</b> ${x.por_que}</div><div><b>Cómo adaptarlo</b> ${x.adaptacion}</div></div>`)}` : ''}
+        </div>`; })}
+      <div class="row" style="margin-top:12px"><button class="btn ghost" data-act="refSave">Guardar referencias</button></div>`);
+  }
+  const refVideos = () => { const v = {}; el.querySelectorAll('[data-ref]').forEach((i) => { const u = i.value.trim(); if (u) (v[i.dataset.ref] ||= []).push(u); }); return v; };
+  function breakPrompt(p) {
+    const r = rf.result?.[p] || { refs: [], similar: [] }, list = [...r.refs.filter((x) => !x.missing), ...r.similar].slice(0, 10);
+    return `Eres el director creativo de Inherent. Desglosa por qué funcionaron estos videos del pilar «${p}» de la marca «${data.profile.name}», para CURARLOS y ADAPTARLOS (nunca copiarlos).
+Abre cada link si puedes; si no puedes ver el video, deduce del texto y las métricas y marca "inferido": true.
+Por video: el hook (qué pasa o se dice en los primeros 3 segundos), qué retuvo a la gente, la estructura en beats, por qué funcionó, y cómo lo adaptaría ${data.profile.name} dentro de este pilar.
+
+${list.map((x) => `- ${x.url} · @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 220)}`).join('\n')}
+
+Contesta SOLO con este JSON, sin texto antes ni después:
+{"videos":[{"url":"","hook":"","retencion":"","estructura":[""],"por_que_funciono":"","adaptacion":"","inferido":false}]}`;
+  }
+
   function bandeja(b) {
     if (inbox === null) { mount(b, html`<p class="loading">Leyendo la bandeja…</p>`); api(`community/inbox?profile=${encodeURIComponent(slug)}`).then((r) => { inbox = r; }).catch((e) => { inbox = { error: e.message }; }).then(() => alive() && tab === 'bandeja' && b.isConnected && bandeja(b)); return; }
     if (inbox.error) return mount(b, html`<div class="warnbox">${inbox.error}</div>`);
@@ -290,29 +340,6 @@ export async function render(el, { sub, alive }) {
 
   // Los prompts para la cuenta de Claude de cada persona (contestan solo JSON, que se pega de vuelta).
   const posts4 = (l = [], n) => (!l?.length ? '(todavía sin datos)' : '') + (l || []).slice(0, n).map((x) => `- @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''} · ${x.url}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 150)}`).join('\n') || '(nada)';
-  function ideasPrompt(r, own = []) {
-    const c = data.cfg, au = c.audience || {};
-    return `Eres el estratega creativo de Inherent (growth operator en Guatemala). Propón 5 ideas de Reel y 5 de Carrusel para la marca «${data.profile.name}» que el equipo pueda producir esta semana.
-Reglas: los ganadores, referentes y competencia son inspiración de formato y tema, nunca se copian. Cada idea entra en un pilar y le habla a la audiencia del centro. Español de Guatemala, de «tú», concreto. Hook que se diga en 2 segundos. outline: escenas (Reel, 4 a 6) o texto de cada slide (Carrusel, 5 a 8). why: una frase con el patrón que la inspira. inspired_by: link del post que la inspira o "".
-
-Pilares: ${(c.pillars || []).map((x) => x.name).join(' · ') || '(sin definir: propón el más lógico)'}
-Audiencia: general: ${au.general || '—'} | nicho: ${au.nicho || '—'} | exacto: ${au.exacto || '—'}
-
-Lo que mejor le funcionó a esta marca (sus propios posts, por interacción):
-${posts4(own, 6)}
-
-Ganadores del nicho:
-${posts4(r.top, 7)}
-
-Referentes:
-${posts4(r.refs, 5)}
-
-Competencia:
-${posts4(r.comp, 4)}
-
-Contesta SOLO con este JSON, sin texto antes ni después:
-{"ideas":[{"format":"Reel"|"Carrusel","title":"","hook":"","pillar":"","outline":[""],"why":"","inspired_by":""}]}`;
-  }
   function audiencePrompt(r, c) {
     return `Eres el estratega de Inherent. Define la audiencia de la marca «${data.profile.name}» como una diana: de lo general al centro.
 - general: el público amplio (país, edad, momento de vida, intereses).
@@ -369,22 +396,33 @@ Contesta SOLO con este JSON: {"general":"","nicho":"","exacto":""}`;
     rmVid: (t) => saveCfg({ videos: data.cfg.videos.filter((_, i) => i !== +t.dataset.i) }),
     addAcc: (t) => {
       const l = t.dataset.l, h = $(`[data-new="${l}"]`, el).value.trim(); if (!h) return;
-      const m = h.match(/(?:tiktok\.com\/@|instagram\.com\/)?@?([A-Za-z0-9._]{2,30})/); const a = { red: /tiktok/.test(h) ? 'tiktok' : $(`[data-red="${l}"]`, el).value, handle: m ? m[1] : h };
+      // Solo perfiles: un link de video no es una cuenta (los videos van en Referencias).
+      if (/instagram\.com\/(p|reel|reels)\/|tiktok\.com\/@[^/]+\/video\//.test(h)) return toast('Ese link es de un video. Pega el perfil (instagram.com/cuenta) o ponlo en Referencias', true);
+      const m = h.match(/(?:tiktok\.com\/@|instagram\.com\/)([A-Za-z0-9._]{2,30})/i) || h.match(/^@?([A-Za-z0-9._]{2,30})$/);
+      if (!m || ['https', 'http', 'www', 'explore'].includes(m[1].toLowerCase())) return toast('No entendí esa cuenta. Escribe @cuenta o pega el link del perfil', true);
+      const a = { red: /tiktok/.test(h) ? 'tiktok' : $(`[data-red="${l}"]`, el).value, handle: m[1].toLowerCase() };
       if ([...data.profile.own, ...(data.cfg.own || []), ...data.cfg.accounts].some((x) => x.red === a.red && x.handle === a.handle.toLowerCase())) return toast('Esa cuenta ya está', true);
       if (l === 'own') saveCfg({ own: [...(data.cfg.own || []), a] }); else saveCfg({ accounts: [...data.cfg.accounts, { ...a, kind: l }] });
     },
     rmAcc: (t) => (t.dataset.l === 'own' ? saveCfg({ own: data.cfg.own.filter((_, i) => i !== +t.dataset.i) }) : saveCfg({ accounts: data.cfg.accounts.filter((_, i) => i !== +t.dataset.i) })),
     saveAud: () => { const audience = Object.fromEntries([...el.querySelectorAll('[data-aud]')].map((x) => [x.dataset.aud, x.value.trim()])); saveCfg({ audience }).then(() => toast('Audiencia guardada ✅')); },
-    genIdeas: async () => {
-      if (!week) { loadWeek(); return toast('Un momento: estoy leyendo lo de la semana. Vuelve a darle en 2 segundos.'); }
-      const r = week?.result || {};
-      // Sin scrape igual se puede: usa los mejores posts propios (Windsor), los pilares y la audiencia.
-      const ig = ownFor === slug ? ownIG : null;
-      const own = ig?.matched ? [...(ig.topReels || []), ...(ig.topStatic || [])].sort((a, z) => z.eng - a.eng).map((x) => ({ handle: ig.handles?.[0] || '', views: x.views, likes: x.likes, url: x.url, text: `${x.type}: ${x.caption}` })) : [];
-      const out = await claudeJSON('Ideas de Claude', ideasPrompt(r, own));
-      if (!out) return;
-      try { idea = await api('content/ideas', { method: 'PUT', body: { profile: slug, week: r.week, ideas: out.ideas || out } }); toast(`${idea.ideas.length} ideas guardadas ✅`); if (tab === 'ideas') ideas($('#cbody', el)); } catch (e) { toast(e.message, true); }
+    refSave: async () => { try { const r = await api('content/refs', { method: 'PUT', body: { profile: slug, videos: refVideos() } }); rf = { ...rf, videos: r.videos }; toast('Referencias guardadas ✅'); refsTab($('#cbody', el)); } catch (e) { toast(e.message, true); } },
+    refScrape: async () => {
+      try { await api('content/refs', { method: 'PUT', body: { profile: slug, videos: refVideos() } }); await api('content/refs/scrape', { method: 'POST', body: { profile: slug } }); toast('Apify arrancó: primero lee tus referencias y luego busca similares (unos minutos)'); rf = null; refsTab($('#cbody', el)); }
+      catch (e) { toast(e.message, true); }
     },
+    refBreak: async (t) => {
+      const p = t.dataset.p, out = await claudeJSON(`Desglose · ${p}`, breakPrompt(p)); if (!out) return;
+      try { const r = await api('content/refs/breakdown', { method: 'PUT', body: { profile: slug, pillar: p, items: out.videos || out } }); rf = { ...rf, breakdown: r.breakdown }; toast('Desglose guardado ✅'); refsTab($('#cbody', el)); } catch (e) { toast(e.message, true); }
+    },
+    shotOpen: (t) => {
+      const { m, rows } = shotData(), r = rows.find((x) => x.id === t.dataset.id); if (!r) return;
+      const txt = pieceText(m, r);
+      drawer(html`<div class="row"><span class="chip">${r.formato}</span><span class="chip">${r.pilar}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+        <h2>${r.id} · ${r.concepto}</h2><div class="mut sm">${[r.fecha && fdate(r.fecha), r.canal, r.campana, r.funcion, r.material && 'material: ' + r.material].filter(Boolean).join(' · ')}</div>
+        <div class="mdbody" style="margin-top:14px">${txt ? md(txt) : html`<div class="mut">No encontré la sección de ${r.id} en ideas-${r.formato.toLowerCase()}.md.</div>`}</div>`);
+    },
+    shotBrief: () => { const { m } = shotData(); const f = m?.files.find((x) => x.name === 'brief-del-ciclo.md'); if (f) drawer(html`<div class="row"><span class="chip">Brief del ciclo · ${m.mes}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><div class="mdbody" style="margin-top:14px">${md(f.content)}</div>`); },
     audAI: async () => {
       const r = week?.result || {}; const c = data.cfg;
       const out = await claudeJSON('Audiencia con Claude', audiencePrompt(r, c));
@@ -392,7 +430,6 @@ Contesta SOLO con este JSON: {"general":"","nicho":"","exacto":""}`;
       const audience = { general: String(out.general || ''), nicho: String(out.nicho || ''), exacto: String(out.exacto || '') };
       await saveCfg({ audience }); toast('Audiencia propuesta por Claude ✅ · ajústala si hace falta');
     },
-    ideaPlan: async (t) => { const x = idea.ideas.find((y) => y.id === t.dataset.id); if (!x) return; const r = await editPost(slug, null, { title: x.title, format: x.format, pillar: x.pillar, caption: `${x.hook}\n\n${(x.outline || []).map((o, i) => `${i + 1}. ${o}`).join('\n')}` }); if (r) { posts = posts ? [...posts, r] : null; toast('Idea al Planner ✅ · ponle fecha'); } },
   });
   acts(el, { auto: (t) => saveCfg({ auto: t.checked }).then(() => toast(t.checked ? 'Se scrapea solo cada lunes ✅' : 'Scrape semanal apagado')) }, 'change');
   mount(el, html`<p class="loading">Leyendo el repo…</p>`);
