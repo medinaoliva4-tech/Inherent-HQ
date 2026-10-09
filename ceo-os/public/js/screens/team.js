@@ -126,6 +126,7 @@ export async function render(el, { me }) {
         ${p.email ? html`<span>Google</span><span class="row" style="color:var(--ink)">${p.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${p.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}${!p.google ? 'Aún no entra' : ''}</span>` : ''}
       </div>
       ${p.id === me.email || isCeo ? html`<div class="row" style="margin-bottom:10px"><label class="btn ghost" style="cursor:pointer">📷 ${p.photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="photoIn" hidden></label>${p.photo ? html`<button class="btn ghost" data-act="nophoto">Quitar foto</button>` : ''}</div>` : ''}
+      ${isCeo && p.id !== me.email && p.kind !== 'ia' ? html`<a class="btn ghost" href="#/work/zona/_/${p.email || p.id}" style="margin-bottom:10px;text-decoration:none">👁 Ver su Workspace</a>` : ''}
       ${isCeo ? html`<div class="row"><button class="btn" data-act="edit">Editar perfil</button>${p.id !== me.email ? html`<button class="btn ghost" data-act="del">Quitar</button>` : ''}</div>` : ''}`,
     { nophoto: () => setPhoto(p, null), edit: () => edit(p), del: async () => { if (!(await confirmAsk(`¿Quitar a ${p.name} del equipo?`))) return; await T.remove(p.id); people = people.filter((x) => x.id !== p.id); closeDrawer(); paint(); } });
     const pi = $('#photoIn'); if (pi) pi.onchange = async () => { if (pi.files[0]) try { await setPhoto(p, await squareImage(pi.files[0])); } catch (err) { toast(err.message, true); } };

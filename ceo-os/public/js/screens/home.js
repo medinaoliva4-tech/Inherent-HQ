@@ -38,6 +38,7 @@ export async function render(el, { me, alive }) {
   function paint() {
     mount(el, html`
       <div class="hello"><h1>${greet()}, ${first}.</h1><p>Esto es lo que pasa hoy en <em>Inherent</em>.</p></div>
+      ${me.role === 'ceo' && !tasks.length ? html`<a class="asbar" href="#/setup" style="display:flex">⚙ La app todavía está vacía: <b>haz el Arranque</b> (4 pasos) y queda lista con lo que ya dice el repo →</a>` : ''}
       <div class="grid g3">
         ${can('finanzas') ? html`<div class="card feat olive">
           <div class="chead"><div class="ico">${IC.ring(78)}<span style="font-size:15px">◎</span></div><h3>Revenue<br><span class="lbl">${MONTHS[now.getMonth()]} ${now.getFullYear()}</span></h3><a class="arrow" href="#/finanzas">↗</a></div>
