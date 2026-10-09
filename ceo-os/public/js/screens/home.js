@@ -22,7 +22,7 @@ export async function render(el, { me, alive }) {
   let week = null, weekP = null;
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`content/week?profile=${p}`).catch(() => null))).then(([a, b]) => { week = a; weekP = b; if (alive()) paint(); });
   // Engagement en vivo de Windsor (lo mismo que Content → Analytics); el scrape semanal queda de respaldo.
-  let igI = null, igP = null, hProf = 'inherent', hView = 'top';
+  let igI = null, igP = null, hProf = 'inherent', hView = 'top', hType = null;
   try { hProf = localStorage.getItem('home.prof') || 'inherent'; hView = localStorage.getItem('home.view') || 'top'; } catch {}
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`analytics/instagram?profile=${p}&days=30`).catch((e) => ({ error: e.message })))).then(([a, b]) => { igI = a; igP = b; if (alive()) paint(); });
   const loadAgenda = () => api(`google/calendar?from=${today()}&to=${today()}${calQ()}`).then((r) => { agenda = r.events; agErr = null; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
@@ -102,7 +102,11 @@ export async function render(el, { me, alive }) {
           ${(() => {
             // UNA sola tarjeta de Content: eliges la cuenta (Inherent / Personal) y qué ver.
             const ig = hProf === 'personal' ? igP : igI, wk = hProf === 'personal' ? weekP : week;
-            const own = ig?.matched ? (ig.top || []).map((x) => ({ url: x.url, thumb: x.thumb, handle: ig.handles?.[0] || '', red: 'instagram', at: x.date, views: x.views, likes: x.likes, comments: x.comments, text: x.caption })) : [];
+            // Reels | Estáticos (fotos y carruseles): por defecto el que tenga posts.
+            const reels = ig?.topReels || [], stat = ig?.topStatic || [];
+            const type = hType ? hType : reels.length >= stat.length && reels.length ? 'reels' : stat.length ? 'static' : 'reels';
+            const pickT = type === 'reels' ? reels : stat, tDays = type === 'reels' ? ig?.topReelsDays : ig?.topStaticDays;
+            const own = ig?.matched ? pickT.map((x) => ({ url: x.url, thumb: x.thumb, handle: ig.handles?.[0] || '', red: 'instagram', at: x.date, views: x.views, likes: x.likes, comments: x.comments, text: x.caption, icon: x.reel || x.type === 'Video' ? '▶' : x.type === 'Carrusel' ? '❏' : '◻' })) : [];
             const niche = wk?.result?.top || [];
             const queue = content.filter((c) => c.kind === 'post' && c.profile === hProf && c.status !== 'Publicado').sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')));
             const views = [['top', 'Mejor contenido'], ['next', `Por subir${queue.length ? ' · ' + queue.length : ''}`], ...(niche.length ? [['niche', 'Nicho']] : [])];
@@ -111,10 +115,11 @@ export async function render(el, { me, alive }) {
                 : html`<div class="empty" style="margin-top:10px"><b>Nada por subir</b>Las piezas del planner de ${hProf === 'personal' ? 'tu marca personal' : 'Inherent'} aparecen aquí.</div>`)
               : v === 'niche' ? html`<div class="grid homevids">${niche.slice(0, 3).map(videoCard)}</div>`
               : ig === null ? html`<p class="loading">Cargando…</p>` : own.length ? html`<div class="grid homevids">${own.slice(0, 3).map(videoCard)}</div>`
-              : html`<div class="empty" style="margin-top:10px"><b>Sin posts todavía</b>${ig?.matched === false || !ig?.handles?.length ? `Conecta la cuenta de Instagram de ${hProf === 'personal' ? 'Personal' : 'Inherent'} en Content → Analytics.` : 'No hay posts en los últimos 30 días.'}</div>`;
-            return html`<div class="chead"><div class="ico">▶</div><h3>Content<br><span class="mut sm">${v === 'top' ? 'Tus posts con más interacción · 30 días' : v === 'next' ? 'Lo que sigue en el planner' : 'Lo que más rinde en tu nicho'}</span></h3><a class="arrow" href="#/content">↗</a></div>
+              : html`<div class="empty" style="margin-top:10px"><b>Sin posts todavía</b>${ig?.matched === false || !ig?.handles?.length ? `Conecta la cuenta de Instagram de ${hProf === 'personal' ? 'Personal' : 'Inherent'} en Content → Analytics.` : `No hay ${type === 'reels' ? 'reels' : 'fotos ni carruseles'} en los últimos 90 días.`}</div>`;
+            return html`<div class="chead"><div class="ico">▶</div><h3>Content<br><span class="mut sm">${v === 'top' ? `Tus ${type === 'reels' ? 'reels' : 'fotos y carruseles'} con más interacción · ${tDays || 30} días` : v === 'next' ? 'Lo que sigue en el planner' : 'Lo que más rinde en tu nicho'}</span></h3><a class="arrow" href="#/content">↗</a></div>
               <div class="row homesel"><div class="tabs mini">${[['inherent', 'Inherent'], ['personal', 'Personal']].map(([k, l]) => html`<button class="${k === hProf ? 'on' : ''}" data-act="hprof" data-k="${k}">${l}</button>`)}</div>
-                <div class="tabs mini">${views.map(([k, l]) => html`<button class="${k === v ? 'on' : ''}" data-act="hview" data-k="${k}">${l}</button>`)}</div></div>${body}`; })()}
+                <div class="tabs mini">${views.map(([k, l]) => html`<button class="${k === v ? 'on' : ''}" data-act="hview" data-k="${k}">${l}</button>`)}</div>
+                ${v === 'top' && ig?.matched ? html`<div class="tabs mini">${[['reels', `Reels${reels.length ? ' · ' + reels.length : ''}`], ['static', `Estáticos${stat.length ? ' · ' + stat.length : ''}`]].map(([k, l]) => html`<button class="${k === type ? 'on' : ''}" data-act="htype" data-k="${k}">${l}</button>`)}</div>` : ''}</div>${body}`; })()}
         </div>`}
         <div class="card todo">
           <div class="chead"><div class="ico">✓</div><h3>Hoy</h3><span class="gbadge" style="margin-left:auto">${IC.cal} Google Calendar</span><button class="btn ghost" style="padding:8px 14px" data-act="addTask">+ Tarea</button></div>
@@ -133,7 +138,8 @@ export async function render(el, { me, alive }) {
       try { Object.assign(t, await col('tasks').save({ ...t, status: 'Hecha' })); toast('Tarea hecha ✅'); setTimeout(() => { mine.splice(mine.indexOf(t), 1); paint(); }, 500); }
       catch (e) { cb.checked = false; toast(e.message, true); }
     },
-    hprof: (b) => { hProf = b.dataset.k; try { localStorage.setItem('home.prof', hProf); } catch {} paint(); },
+    hprof: (b) => { hProf = b.dataset.k; hType = null; try { localStorage.setItem('home.prof', hProf); } catch {} paint(); },
+    htype: (b) => { hType = b.dataset.k; paint(); },
     hview: (b) => { hView = b.dataset.k; try { localStorage.setItem('home.view', hView); } catch {} paint(); },
     addTask: async () => {
       const { newTask } = await import('../create.js'); const { teamList } = await import('../core.js');
