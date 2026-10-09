@@ -288,7 +288,12 @@ on('GET', 'repo/client/:slug', async (req, res) => {
   const u = await guardAny(req, res, ['clients', 'work']); if (!u) return;
   const slug = req.params.slug; if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
   const [plan, links] = await Promise.all([readFile(`clients/${slug}/00-onboarding/plan-contratado.md`), readFile(`clients/${slug}/00-onboarding/LINKS.md`)]);
-  if (!plan && !links) return res.status(404).json({ error: 'Ese cliente no está en el repo' });
+  if (!plan && !links) {
+    // Cliente que entró por el flujo de pago: vive en la app (su ficha) aunque no tenga folder en el repo.
+    const acc = await db.get('accounts', 'acc-' + slug);
+    if (!acc) return res.status(404).json({ error: 'Ese cliente no está en el repo ni en la app' });
+    return res.json({ slug, plan: '', fields: [], pipeline: [], links: [], own: [], months: [], app: true });
+  }
   const p = plan ? parsePlanContratado(plan.content, u.role) : { plan: '', fields: [], pipeline: [] };
   const prof = await content.profile({ slug, name: slug.toUpperCase(), root: `clients/${slug}` });
   res.json({ slug, ...p, links: prof.links, own: prof.own, months: prof.months.map((m) => ({ mes: m.mes, files: m.files.map((f) => ({ path: f.path, name: f.name, area: f.area })) })) });

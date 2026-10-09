@@ -43,6 +43,9 @@ export async function render(el, { me, sub, alive }) {
   const AC = col('accounts');
   const [repo, accounts, projects, tasks, team, mentors] = await Promise.all([api('repo/clients').catch(() => ({ clients: [] })), AC.list(), col('projects').list(), col('tasks').list(), teamList(), col('mentors').list().catch(() => [])]);
   const clients = repo.clients.filter((c) => c.hasPlan).map((c) => ({ ...c, plan: cleanPlan(c.plan) }));
+  // Los que entraron por un pago (Control) viven en la app aunque todavía no tengan folder en el repo.
+  const inRepo = new Set(repo.clients.map((c) => c.slug));
+  for (const a of accounts) { const sl = a.slug || String(a.id).replace(/^acc-/, ''); if (a.from_quote && !inRepo.has(sl)) clients.push({ slug: sl, hasPlan: false, plan: 'Desde cotización', app: true }); }
   const onboarding = repo.clients.filter((c) => !c.hasPlan);
   const acct = (slug) => accounts.find((a) => a.id === 'acc-' + slug);
   const slug = sub[0];
@@ -84,7 +87,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="row" style="margin-bottom:14px"><a class="btn ghost" href="#/clients">← Clients</a></div>
         <div class="card feat olive" style="min-height:auto;padding:30px">
           <div class="row" style="flex-wrap:wrap;gap:14px;align-items:flex-start"><div class="ico" style="width:64px;height:64px;font-size:20px;font-weight:700">${initials(a.name)}</div>
-            <div style="flex:1;min-width:240px"><div class="lbl">${cleanPlan(info.plan) || 'Sin plan'}</div><h1 style="font-size:52px;font-weight:500;letter-spacing:-1.6px;line-height:1.05">${a.name}</h1>
+            <div style="flex:1;min-width:240px"><div class="lbl">${cleanPlan(info.plan) || (info.app ? 'Desde cotización' : 'Sin plan')}</div><h1 style="font-size:52px;font-weight:500;letter-spacing:-1.6px;line-height:1.05">${a.name}</h1>
               <div style="opacity:.85;margin-top:6px">${[a.contact, a.phone, a.email].filter(Boolean).join(' · ') || 'Sin contacto'}</div></div>
             <div class="row" style="gap:8px"><button class="btn cream" data-act="pdf">↓ Roadmap PDF</button><button class="btn ghost" data-act="editAcc" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)">Editar datos</button></div></div>
           <div class="split" style="margin-top:26px"><div><span class="lbl">Roadmap</span><b>${done}/${rm.length}</b></div><div><span class="lbl">Proyectos</span><b>${ps.length}</b></div><div><span class="lbl">Tareas abiertas</span><b>${tk.filter((t) => t.status !== 'Hecha').length}</b></div><div><span class="lbl">Entregables</span><b>${arts.length}</b></div></div>

@@ -75,14 +75,14 @@ export async function render(el, { me, sub, alive }) {
   // Las reuniones de los proyectos donde le toca estar a esta persona (próximos 30 días).
   function myMeetings() {
     const lim = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
-    const l = upcoming(projects).filter((m) => m.date <= lim && meetIsMine(m, team, who)).slice(0, 3);
+    const l = upcoming(projects).filter((m) => m.date <= lim && meetIsMine(m, team, who)).slice(0, matchMedia('(max-width:760px)').matches ? 1 : 3); // en el cel solo la próxima
     return l.length ? html`<div style="margin-bottom:14px">${box('Mis próximas reuniones', 'Las de tus proyectos: quiénes van y de qué se habla', meetingRows(l, team, { ...me, email: who }, false))}</div>` : '';
   }
 
   // ---------- pantalla ----------
   function paint() {
     if (!alive()) return;
-    const tabs = [['zona', role ? roleName(role).split(' · ')[0] : 'Mi trabajo'], ['kanban', 'Kanban'], ...(canCoord ? [['pipes', 'Pipelines'], ['equipo', 'Equipo']] : [])];
+    const tabs = [['zona', myRoles.length > 1 ? 'Resumen' : role ? roleName(role).split(' · ')[0] : 'Mi trabajo'], ['kanban', 'Kanban'], ...(canCoord ? [['pipes', 'Pipelines'], ['equipo', 'Equipo']] : [])];
     const viewSel = isCeo ? html`<select class="in sm" id="viewAs" style="width:auto"><option value="">👁 Mi Workspace</option>${team.filter((p) => p.active !== false && p.kind !== 'ia' && p.id !== me.email).map((p) => html`<option value="${p.email || p.id}" ${asP && (asP.email || asP.id) === (p.email || p.id) ? raw('selected') : ''}>Ver como ${p.name}</option>`)}</select>` : '';
     mount(el, html`${asP ? html`<div class="asbar">👁 Estás viendo el Workspace de <b>${asP.name}</b> · lo que hagas aquí queda a su nombre <a href="#/work">Volver al mío</a></div>` : ''}<div class="wktop"><div><h1>${asP ? asP.name.split(' ')[0] : 'Workspace'}</h1><p class="mut">${role ? roleName(role) : asP ? 'Sin perfil de trabajo asignado' : 'Tu trabajo, en orden'}</p></div><div class="sp"></div>${viewSel}
         ${myRoles.length > 1 ? html`<div class="tabs" style="margin:0">${myRoles.map((r) => html`<button class="${r === role ? 'on' : ''}" data-act="role" data-r="${r}">${roleName(r).split(' · ')[0]}</button>`)}</div>` : ''}

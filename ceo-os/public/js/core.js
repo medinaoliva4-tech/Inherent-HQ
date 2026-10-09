@@ -167,9 +167,9 @@ export function lineChart(el, labels, series, { fmt = K } = {}) {
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="g${el.id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d6f35a" stop-opacity=".45"/><stop offset="1" stop-color="#d6f35a" stop-opacity="0"/></linearGradient></defs>`;
   [0.25, 0.5, 0.75].forEach((f) => s += `<line x1="0" x2="${W}" y1="${P.t + f * (H - P.t - P.b)}" y2="${P.t + f * (H - P.t - P.b)}" stroke="rgba(23,20,16,.06)"/>`);
   series.forEach((se) => { if (se.fill) s += `<path d="${path(se.v)} L${x(se.v.length - 1)},${H - P.b} L${x(0)},${H - P.b}Z" fill="url(#g${el.id})"/>`; s += `<path d="${path(se.v)}" fill="none" stroke="${se.c}" stroke-width="2" ${se.dash ? 'stroke-dasharray="4 5"' : ''} stroke-linecap="round"/>`; });
-  const every = Math.max(1, Math.ceil(labels.length / 7)); // máx. ~7 etiquetas: con 30 días no se enciman
+  const every = Math.max(1, Math.ceil(labels.length / (el.clientWidth < 500 ? 4 : 7))); // máx. ~7 etiquetas (4 en el cel): no se enciman
   // Las etiquetas van en HTML, no dentro del SVG: el SVG se estira y deformaba las letras.
-  const xl = labels.map((m, i) => ((i % every && i !== labels.length - 1) ? '' : `<span style="position:absolute;bottom:4px;left:${(x(i) / W) * 100}%;transform:translateX(${i === 0 ? '0' : i === labels.length - 1 ? '-100%' : '-50%'});font-size:11px;color:#8f877b;white-space:nowrap">${esc(m)}</span>`)).join('');
+  const xl = labels.map((m, i) => (((i % every || labels.length - 1 - i < every) && i !== labels.length - 1) ? '' : `<span style="position:absolute;bottom:4px;left:${(x(i) / W) * 100}%;transform:translateX(${i === 0 ? '0' : i === labels.length - 1 ? '-100%' : '-50%'});font-size:11px;color:#8f877b;white-space:nowrap">${esc(m)}</span>`)).join('');
   const last = series[0].v.length - 1;
   s += `<line class="xh" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="#171410" stroke-dasharray="3 4" opacity="0"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="9" fill="#d6f35a" stroke="#fff" stroke-width="2"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="3" fill="#171410"/><rect width="${W}" height="${H}" fill="transparent"/></svg>${xl}<div class="tip"></div>`;
   el.innerHTML = s;

@@ -77,7 +77,7 @@ async function render() {
   // Cambiar de sección sin saltos: arriba de una vez (sin animar el scroll) y la página no se encoge
   // mientras carga la siguiente (antes «Cargando…» la hacía chiquita y el navegador brincaba).
   const old = $('#main'), keep = old.offsetHeight;
-  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); $('.app')?.scrollTo({ top: 0, left: 0, behavior: 'instant' }); // en el cel el que se desliza es .app
   const main = old.cloneNode(false); main.style.minHeight = keep + 'px'; old.replaceWith(main);
   main.classList.add('enter'); setTimeout(() => main.classList.remove('enter'), 900);
   const gen = ++renderGen;

@@ -713,3 +713,47 @@ a.btn{text-decoration:none}
 
 .homevids{grid-template-columns:repeat(3,1fr)!important;gap:12px}
 @media (max-width:760px){.homevids{grid-template-columns:1fr 1fr!important}.homevids>*:nth-child(3){display:none}}
+
+/* ======================= iPhone: la barra de abajo inmóvil SIEMPRE =======================
+   La página ya no se desliza como documento (eso movía la barra en iOS, sobre todo en páginas cortas):
+   el documento queda quieto del alto de la pantalla y lo que se desliza es solo el contenido (.app). */
+@media (max-width:760px){
+  html:has(.app),body:has(.app){height:100%;overflow:hidden;overscroll-behavior:none}
+  .app{position:fixed;inset:0;max-width:none;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+}
+
+/* ======================= Auditoría iPhone: menos ruido, más aire ======================= */
+@media (max-width:760px){
+  /* títulos: el subtítulo ya no ocupa media pantalla */
+  .hello h1{font-size:28px}.hello p{font-size:19px;letter-spacing:-.4px;line-height:1.25;margin-bottom:14px}
+  .wktop h1{font-size:26px}
+  .sec-title{flex-wrap:wrap;row-gap:2px;margin:22px 0 10px}.sec-title>span{flex-basis:100%}
+  /* tarjetas grandes: sin decoración de puntos y más bajas */
+  .matrix{display:none}
+  .card.feat{min-height:0}.big,.feat .big{font-size:34px}
+  .g4>.card{padding:14px}.g4 .big{font-size:26px}.g4 .lbl{font-size:11.5px}
+  /* números arriba de cada pantalla: compactos, 3 por fila */
+  .ctlkpis{grid-template-columns:repeat(3,1fr);gap:8px}.ctlk{padding:10px 12px;border-radius:18px}.ctlk .big{font-size:24px!important}.ctlk .mut.sm{font-size:11px;line-height:1.2;min-height:2.4em}
+  .wkkpis{grid-template-columns:repeat(3,1fr);gap:8px}.wkkpi{padding:9px 11px;border-radius:16px}.wkkpi b{font-size:22px}.wkkpi .lbl{font-size:10.5px;line-height:1.2}
+  /* filas de atención y listas: el texto baja de línea en vez de cortarse */
+  .ctlrow .grow{white-space:normal}.ctlrow{align-items:flex-start}
+  /* Workspace: controles en menos espacio */
+  .wktop{gap:8px}.wktop .btn{padding:9px 14px;font-size:13px}.wktop select.in{padding:8px 10px;font-size:14px}
+  /* Ads: plataformas en una fila debajo del cliente */
+  .adsrow>b{width:100%}.adsplat{flex:1 1 100%}
+  /* tablas: letra y aire a la medida del cel */
+  .card table{font-size:13px}.card th,.card td{padding:10px 8px}
+}
+@media (max-width:760px){
+  /* Workspace: título + «ver como» arriba · perfiles en una fila · botones a lo ancho */
+  .wktop{align-items:center}.wktop>.sp{display:none}.wktop>div:first-child{flex:1 1 auto;min-width:0}
+  .wktop>#viewAs{order:1;flex:0 1 auto;max-width:48%}
+  .wktop>.tabs{order:2;flex:1 1 100%;display:flex}.wktop>.tabs button{flex:1}
+  .wktop>.btn{order:3;flex:1 1 0}
+}
+@media (max-width:760px){
+  /* tarjetas grandes de color (clientes, proyectos): la mitad de alto */
+  a.card.feat,.card.feat{min-height:0!important}
+  .card.feat .big{font-size:34px!important}
+  .card.feat .foot{margin-top:10px}
+}
