@@ -5,11 +5,12 @@ const NAV = [
   ['finanzas', 'Finance', 'M3 17l6-6 4 4 8-8M15 7h6v6'],
   ['sales', 'Sales', 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0'],
   ['operations', 'Operations', 'M4 6h16M4 12h10M4 18h7'],
+  ['clients', 'Clients', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
   ['content', 'Content', 'M5 4h14v16l-7-4-7 4z'],
   ['library', 'Library', 'M4 4h6l2 2h8v14H4z'],
   ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
 ];
-const SCREENS = { home: 'home', finanzas: 'finance', sales: 'sales', operations: 'operations', content: 'content', library: 'soon', team: 'team' };
+const SCREENS = { home: 'home', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team' };
 const root = $('#root');
 export let me = null;
 let renderGen = 0;
@@ -71,6 +72,7 @@ async function render() {
   closeDrawer();
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
   const old = $('#main'); const main = old.cloneNode(false); old.replaceWith(main);
+  main.classList.add('enter'); setTimeout(() => main.classList.remove('enter'), 900);
   const gen = ++renderGen;
   mount(main, html`<p class="loading">Cargando…</p>`);
   try {

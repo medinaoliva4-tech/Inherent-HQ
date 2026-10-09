@@ -350,3 +350,32 @@ textarea.in{min-height:96px;resize:vertical}
 .win{display:flex;flex-direction:column;gap:10px}.win .thumb{aspect-ratio:4/5;border-radius:18px;background:#d8d0c2 center/cover no-repeat;position:relative;overflow:hidden}
 .win .thumb b{position:absolute;left:10px;top:10px;background:var(--ink,#171410);color:#fff;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
 .win .cap{font-size:13px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* ---------- movimiento: suave, corto, y nada si la persona pide menos movimiento ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:no-preference){
+  #main.enter>*{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+  #main.enter>*:nth-child(2){animation-delay:.05s}#main.enter>*:nth-child(3){animation-delay:.1s}#main.enter>*:nth-child(4){animation-delay:.15s}#main.enter>*:nth-child(5){animation-delay:.2s}#main.enter>*:nth-child(n+6){animation-delay:.24s}
+  .card,.btn,.chip,.artifact,.folder,.arrow,.tabs button,.nav [data-go],.ev,tr.click{transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,background-color .2s ease,color .2s ease,opacity .2s ease,outline-color .2s ease}
+  .btn:active,.chip:active,.tabs button:active,.artifact:active,.arrow:active,.nav [data-go]:active,.folder:active{transform:scale(.96)}
+  .card[data-act]:hover,a.card:hover,.card.lift:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgba(23,20,16,.12)}
+  .artifact:hover{transform:translateY(-2px)}
+  .dlg[open]{animation:pop .3s cubic-bezier(.2,.8,.2,1)}
+  .dlg[open]::backdrop{animation:fade .3s ease}
+  .qview{animation:fade .25s ease}.qview .qdoc{animation:pop .35s cubic-bezier(.2,.8,.2,1)}
+  #toast{transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s ease}
+  .loading{animation:pulse 1.4s ease-in-out infinite}
+  .swap{animation:fade .28s ease}
+}
+.g5{grid-template-columns:repeat(5,1fr)}
+@media (max-width:1150px){.g5{grid-template-columns:repeat(3,1fr)}}@media (max-width:700px){.g5{grid-template-columns:1fr 1fr}}
+/* roadmap: línea vertical con hitos */
+.road{position:relative}
+.road .step{display:flex;gap:16px;padding:12px 0;position:relative}
+.road .step>i{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink);background:var(--bg);flex:none;margin-top:3px;position:relative;z-index:1}
+.road .step.done>i{background:var(--ink)}.road .step.now>i{background:var(--lime);box-shadow:0 0 0 5px rgba(214,243,90,.35)}
+.road .step:not(:last-child)::before{content:"";position:absolute;left:7px;top:30px;bottom:-6px;width:2px;background:var(--line)}
+.road.pdf{margin-top:10px}.road.pdf .step{padding:14px 0;border-bottom:1px solid #e9e4d8}.road.pdf .step>i{background:#fff;border-color:#171410}.road.pdf .step.done>i{background:#171410}.road.pdf .step.now>i{background:#d6f35a;box-shadow:none}.road.pdf .step::before{display:none}

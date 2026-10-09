@@ -160,3 +160,34 @@ export function csv(text) {
   if (cur || row.length) { row.push(cur); rows.push(row); }
   return rows.filter((r) => r.some((c) => c.trim()));
 }
+
+// ---------- Carpetas (el diseño del prototipo) ----------
+const DRV = '<g transform="translate(3.5 4.5) scale(.15)"><path d="M6.6 66.85l3.85 6.65c.8 1.4 1.950 2.5 3.3 3.3L27.5 53H0c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="M43.65 25L29.9 1.2c-1.35.8-2.5 1.9-3.3 3.3L1.2 48.5A9.06 9.06 0 000 53h27.5z" fill="#00ac47"/><path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.750 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 11.5z" fill="#ea4335"/><path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="M59.8 53H27.5L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="M73.4 26.5L60.7 4.5c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25 59.8 53h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></g>';
+const INH = '<g transform="translate(5.5 4) scale(.034)"><path d="M134.936 1.5C208.296 1.50026 268.37 78.4372 268.37 174.189C268.37 269.941 208.296 346.878 134.936 346.878C61.5752 346.878 1.50017 269.942 1.5 174.189C1.5 78.4371 61.5751 1.5 134.936 1.5Z" stroke="#171410" stroke-width="22" fill="none"/><path d="M123.247 51.0248L75.5173 50.7031L75.3556 65.3753C130.487 87.0898 126.667 260.476 72.9892 280.123L72.7834 298.797L120.514 299.119L123.247 51.0248Z" fill="#171410"/><path d="M148.517 51.195L196.247 51.5166L196.085 66.1888C140.483 87.1571 140.482 260.569 193.719 280.937L193.513 299.61L145.783 299.289L148.517 51.195Z" fill="#171410"/></g>';
+const VID = '<path d="M7 5l8 5-8 5z" fill="#171410"/>';
+const badge = (x, inner) => `<g transform="translate(${x} 66)"><circle r="10" cx="10" cy="10" fill="#fff"/>${inner}</g>`;
+const TONE = { gris: ['#4c4c48', '#6b6b66'], oliva: ['#4f5b22', '#7f9631'], terra: ['#7a3a28', '#b8583c'], cafe: ['#3b2f22', '#6b5a45'], azul: ['#2e4756', '#4f7790'] };
+export function folderSvg({ w = 120, papers = true, drive = false, video = false, tone = 'gris' } = {}) {
+  const [back, front] = TONE[tone] || TONE.gris;
+  const b = [badge(10, drive ? DRV : video ? VID : INH)].concat(drive && video ? [badge(26, VID)] : []).join('');
+  return raw(`<svg viewBox="0 0 120 92" width="${w}"><path d="M8 10a8 8 0 0 1 8-8h26l8 8h54a8 8 0 0 1 8 8v58H8z" fill="${back}"/>${papers ? '<g class="sheet"><rect x="26" y="8" width="58" height="50" rx="5" fill="#fbfaf6" transform="rotate(-6 55 33)"/><rect x="44" y="12" width="56" height="50" rx="5" fill="#fff" transform="rotate(5 72 37)"/></g>' : ''}<path d="M4 34a8 8 0 0 1 8-8h96a8 8 0 0 1 8 8v42a12 12 0 0 1-12 12H16A12 12 0 0 1 4 76z" fill="${front}"/><path d="M4 50a8 8 0 0 1 8-8h96a8 8 0 0 1 8 8v26a12 12 0 0 1-12 12H16A12 12 0 0 1 4 76z" fill="rgba(0,0,0,.08)"/><path d="M12 30h96" stroke="rgba(255,255,255,.22)" stroke-width="2" stroke-linecap="round"/>${b}</svg>`);
+}
+export const TONES = Object.keys(TONE);
+
+// ---------- Documento imprimible (cotización, roadmap): se descarga como PDF desde el navegador ----------
+export function docView(inner) {
+  const v = document.createElement('div'); v.className = 'qview';
+  mount(v, html`<div class="qbar"><button class="btn" data-x="print">↓ Descargar PDF</button><button class="btn ghost" data-x="close">Cerrar</button><div class="sp"></div><span class="sm" style="color:var(--cream);align-self:center">En el diálogo elige «Guardar como PDF»</span></div><div class="qdoc">${inner}</div>`);
+  document.body.append(v);
+  v.onclick = (e) => { const x = e.target.closest('[data-x]')?.dataset.x; if (x === 'print') window.print(); if (x === 'close' || e.target === v) v.remove(); };
+}
+export const docHead = (title, meta) => html`<div class="qh"><div class="qlogo"><img src="/brand/emblem-dark.svg" alt=""><div><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:26px;width:auto;display:block"><div class="go" style="margin-top:6px">GROWTH OPERATOR</div></div></div><div class="qmeta"><b>${title}</b>${meta}</div></div>`;
+export const embedUrl = (u) => {
+  const s = String(u || ''); let m;
+  if ((m = s.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{6,})/))) return `https://www.youtube.com/embed/${m[1]}`;
+  if ((m = s.match(/vimeo\.com\/(\d+)/))) return `https://player.vimeo.com/video/${m[1]}`;
+  if ((m = s.match(/loom\.com\/share\/(\w+)/))) return `https://www.loom.com/embed/${m[1]}`;
+  if ((m = s.match(/drive\.google\.com\/file\/d\/([-\w]+)/))) return `https://drive.google.com/file/d/${m[1]}/preview`;
+  if ((m = s.match(/docs\.google\.com\/(document|spreadsheets|presentation)\/d\/([-\w]+)/))) return `https://docs.google.com/${m[1]}/d/${m[2]}/preview`;
+  return null;
+};

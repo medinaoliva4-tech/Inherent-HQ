@@ -1,4 +1,5 @@
-import { html, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, lineChart, $ } from '../core.js';
+import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ } from '../core.js';
+import { videoCard } from './content.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 19 ? 'Good afternoon' : 'Good evening'; };
@@ -11,6 +12,8 @@ export async function render(el, { me, alive }) {
   ]);
   const first = (me.name || '').split(' ')[0];
   let agenda = null, agErr = null;
+  let week = null, weekP = null;
+  if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`content/week?profile=${p}`).catch(() => null))).then(([a, b]) => { week = a; weekP = b; if (alive()) paint(); });
   api(`google/calendar?from=${today()}&to=${today()}`).then((r) => { agenda = r.events; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
 
   // Revenue real: entradas de Finance tipo ingreso
@@ -24,6 +27,7 @@ export async function render(el, { me, alive }) {
   const open = leads.filter((l) => !['Ganado', 'Perdido'].includes(l.stage));
   const hot = open.filter((l) => (l.interest || 0) >= 4);
   const pipe = open.reduce((a, l) => a + (+l.value_usd || 0), 0);
+  const next = content.filter((c) => c.kind === 'post' && c.status !== 'Publicado').sort((a, b) => String(a.date || '9').localeCompare(String(b.date || '9'))).slice(0, 3);
   const mine = tasks.filter((t) => t.assignee === me.email && t.status !== 'Hecha').sort((a, b) => String(a.due || '9').localeCompare(String(b.due || '9')));
 
   function paint() {
@@ -46,15 +50,18 @@ export async function render(el, { me, alive }) {
         </div>` : ''}
         <div class="card">
           <div class="chead"><div class="ico">♡</div><h3>Engagement<br><span class="mut sm">Personal + Inherent</span></h3><a class="arrow" href="#/content">↗</a></div>
-          <div class="big">—</div>
-          <div class="mut sm" style="margin-top:14px">Se llena con las métricas de Content (fase 4).</div>
+          ${(() => { const e1 = week?.analytics?.at(-1), e2 = weekP?.analytics?.at(-1);
+            return e1 || e2 ? html`<div class="split" style="margin-top:6px"><div><span class="lbl">Inherent</span><b style="font-size:34px;font-weight:500">${e1?.er ?? '—'}${e1?.er != null ? '%' : ''}</b></div><div><span class="lbl">Personal</span><b style="font-size:34px;font-weight:500">${e2?.er ?? '—'}${e2?.er != null ? '%' : ''}</b></div></div><div class="mut sm" style="margin-top:12px">Engagement de la última semana · vistas promedio ${K(e1?.avgViews || e2?.avgViews || 0)}</div>`
+              : html`<div class="big">—</div><div class="mut sm" style="margin-top:14px">Se llena con el scrape semanal de tus cuentas.</div>`; })()}
         </div>
       </div>
       <div class="grid g2" style="margin-top:18px">
-        ${can('finanzas') ? html`<div class="card">
-          <div class="chead"><div class="ico">↗</div><h3>Revenue · últimos 8 meses</h3><span class="chip" style="margin-left:auto">Quetzales</span></div>
-          ${revSeries.some(Boolean) ? html`<div class="chart" id="chHome"></div>` : html`<div class="empty" style="margin-top:20px"><b>Sin ingresos registrados</b>La gráfica aparece cuando cargues ingresos en Finance.</div>`}
-        </div>` : html`<div></div>`}
+        <div class="card">
+          <div class="chead"><div class="ico">▶</div><h3>Content esta semana<br><span class="mut sm">Lo que más rinde en tu nicho</span></h3><a class="arrow" href="#/content">↗</a></div>
+          ${!can('content') ? '' : week === null ? html`<p class="loading">Cargando…</p>` : week?.result?.top?.length ? html`<div class="grid" style="grid-template-columns:repeat(3,1fr);gap:12px">${week.result.top.slice(0, 3).map(videoCard)}</div>`
+            : html`<div class="empty" style="margin-top:10px"><b>${week?.status === 'running' ? 'Apify está scrapeando…' : 'Sin semana todavía'}</b>El scrape corre cada lunes. Configura el nicho en Content → Fuentes.</div>`}
+          ${next.length ? html`<div class="lbl" style="margin-top:16px">Lo próximo por postear</div>${next.map((p) => html`<a class="agenda" href="#/content/postear/${p.profile}" style="text-decoration:none;color:inherit"><span class="t">${p.date ? fdate(p.date) : '—'}</span><span class="bar2" style="background:#c2735a"></span><div><b style="font-weight:500">${p.title}</b><div class="mut sm">${p.format || 'Pieza'} · ${p.status || 'Idea'}</div></div></a>`)}` : ''}
+        </div>
         <div class="card todo">
           <div class="chead"><div class="ico">✓</div><h3>Hoy</h3><span class="gbadge" style="margin-left:auto">${IC.cal} Google Calendar</span><button class="btn ghost" style="padding:8px 14px" data-act="addTask">+ Tarea</button></div>
           ${agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm" style="margin-bottom:8px">Calendar: ${agErr}</div>`
@@ -65,10 +72,8 @@ export async function render(el, { me, alive }) {
         </div>
       </div>
       <div class="sec-title"><h2>Content</h2><a href="#/content">Ver todo →</a></div>
-      ${content.length ? html`<div class="grid g4">${content.slice(-4).reverse().map((c, i) => html`<div class="card"><div class="thumb t${(i % 4) + 1}"><span class="chip tag">${c.format || 'Pieza'}</span><div class="play">▶</div></div><b style="font-weight:500">${c.title}</b></div>`)}</div>`
-        : html`<div class="empty"><b>Aún no hay contenido</b>Los guiones e ideas de Content aparecen aquí (fase 4).</div>`}`);
-    const ch = $('#chHome', el);
-    if (ch) lineChart(ch, months.map((m) => MONTHS[+m.slice(5) - 1]), [{ name: 'Revenue', v: revSeries, c: '#171410', fill: true }]);
+      ${week?.result?.top?.length > 3 ? html`<div class="grid g5">${week.result.top.slice(3, 8).map(videoCard)}</div>`
+        : html`<div class="empty"><b>Aún no hay videos</b>Los winners de la semana aparecen aquí.</div>`}`);
   }
 
   acts(el, {

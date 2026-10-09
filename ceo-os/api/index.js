@@ -117,57 +117,85 @@ on('GET', 'repo/clients', async (req, res) => {
 });
 
 
-// ---------- Content: lee el folder del perfil en el repo + Apify ----------
+// ---------- Content: lee el folder del perfil en el repo + scrape semanal con Apify ----------
+const slugOk = (s) => /^[\w-]{2,60}$/.test(String(s || ''));
 on('GET', 'repo/content', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
   const list = await content.profiles();
   const p = list.find((x) => x.slug === req.query.profile) || list[0];
-  res.json({ profiles: list.map(({ slug, name }) => ({ slug, name })), profile: await content.profile(p), apify: content.apifyOn() });
+  res.json({ profiles: list.map(({ slug, name }) => ({ slug, name })), profile: await content.profile(p), cfg: await content.cfg(p.slug), apify: content.apifyOn() });
 });
-async function scrapeProfile(slug, who) {
-  const p = (await content.profiles()).find((x) => x.slug === slug); if (!p) return null;
-  const full = await content.profile(p);
-  const accounts = [...full.own.map((a) => ({ ...a, own: true })), ...full.competitors];
-  if (!accounts.length) throw Object.assign(new Error('Este perfil no tiene cuentas en el repo (LINKS.md o investigación)'), { status: 400 });
-  const runs = await content.startScrape(accounts);
-  const prev = await db.get('sources', 'scrape-' + slug);
-  const doc = { profile: slug, at: new Date().toISOString(), by: who, runs, auto: prev?.auto || false };
-  await db.upsert('sources', 'scrape-' + slug, doc, who);
-  return doc;
-}
+on('PUT', 'content/cfg', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const b = body(req); if (!slugOk(b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
+  const c = content.cleanCfg(b);
+  await db.upsert('sources', 'cfg-' + b.profile, { profile: b.profile, ...c }, u.email);
+  res.json(c);
+});
 on('POST', 'content/scrape', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
-  try { res.json(await scrapeProfile(String(body(req).profile || ''), u.email)); }
+  const slug = String(body(req).profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  try { const d = await content.scrape(slug, u.email); res.json({ week: d.week, at: d.at }); }
   catch (e) { if (e.status === 400) return res.status(400).json({ error: e.message }); throw e; }
 });
-on('POST', 'content/auto', async (req, res) => {
+on('GET', 'content/week', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
-  const b = body(req); const slug = String(b.profile || '');
-  if (!/^[\w-]{2,60}$/.test(slug)) return res.status(400).json({ error: 'Perfil inválido' });
-  await db.upsert('sources', 'scrape-' + slug, { profile: slug, auto: Boolean(b.auto) }, u.email);
-  res.json({ ok: true });
+  const slug = String(req.query.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  let doc = await db.get('sources', 'scrape-' + slug), warn = null;
+  if (doc?.runs?.length && !doc.result && content.apifyOn()) { try { doc = await content.settle(slug, u.email); } catch (e) { warn = e.message; } }
+  const an = await db.get('sources', 'analytics-' + slug);
+  res.json({ apify: content.apifyOn(), week: doc?.week || null, at: doc?.at || null, status: !doc?.runs?.length ? 'none' : doc.result ? 'done' : 'running', runs: (doc?.runs || []).map(({ red, status }) => ({ red, status })), result: doc?.result || null, analytics: an?.history || [], warn });
 });
-on('GET', 'content/winners', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
-  const slug = String(req.query.profile || '');
-  const doc = await db.get('sources', 'scrape-' + slug);
-  if (!doc?.runs?.length) return res.json({ apify: content.apifyOn(), at: null, auto: doc?.auto || false, status: 'none', items: [] });
-  if (await content.refreshRuns(doc.runs)) await db.upsert('sources', 'scrape-' + slug, { runs: doc.runs }, u.email);
-  const pending = doc.runs.some((r) => !r.items && !['FAILED', 'ABORTED', 'TIMED-OUT'].includes(r.status));
-  res.json({ apify: content.apifyOn(), at: doc.at, auto: doc.auto || false, status: pending ? 'running' : 'done', runs: doc.runs.map(({ red, status, accounts }) => ({ red, status, accounts })), items: content.winners(doc.runs).slice(0, 120) });
-});
-// Vercel Cron: scrapea una vez al día los perfiles con «Scrape diario» activado.
+// Vercel Cron, una vez a la semana (lunes): scrapea los perfiles con «Scrape semanal».
 on('GET', 'cron/scrape', async (req, res) => {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).json({ error: 'No autorizado' });
   if (!content.apifyOn()) return res.json({ skipped: 'sin APIFY_TOKEN' });
   const done = [];
   for (const p of await content.profiles()) {
-    const d = await db.get('sources', 'scrape-' + p.slug);
-    if (!d?.auto) continue;
-    try { await scrapeProfile(p.slug, 'cron'); done.push(p.slug); } catch (e) { console.error('cron scrape', p.slug, e.message); }
+    if (!(await content.cfg(p.slug)).auto) continue;
+    try { await content.scrape(p.slug, 'cron'); done.push(p.slug); } catch (e) { console.error('cron scrape', p.slug, e.message); }
   }
   res.json({ done });
+});
+// Cada lunes también cierra lo que quedó corriendo (por si nadie abrió Content).
+on('GET', 'cron/settle', async (req, res) => {
+  const secret = process.env.CRON_SECRET;
+  if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).json({ error: 'No autorizado' });
+  const done = [];
+  for (const p of await content.profiles()) { try { const d = await content.settle(p.slug, 'cron'); if (d?.result) done.push(p.slug); } catch {} }
+  res.json({ done });
+});
+
+// ---------- Clientes: su perfil del repo ----------
+on('GET', 'repo/client/:slug', async (req, res) => {
+  const u = await guard(req, res, 'clients'); if (!u) return;
+  const slug = req.params.slug; if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  const [plan, links] = await Promise.all([readFile(`clients/${slug}/00-onboarding/plan-contratado.md`), readFile(`clients/${slug}/00-onboarding/LINKS.md`)]);
+  if (!plan && !links) return res.status(404).json({ error: 'Ese cliente no está en el repo' });
+  const p = plan ? parsePlanContratado(plan.content, u.role) : { plan: '', fields: [], pipeline: [] };
+  const prof = await content.profile({ slug, name: slug.toUpperCase(), root: `clients/${slug}` });
+  res.json({ slug, ...p, links: prof.links, own: prof.own, months: prof.months.map((m) => ({ mes: m.mes, files: m.files.map((f) => ({ path: f.path, name: f.name, area: f.area })) })) });
+});
+
+// ---------- Google Drive (Library) ----------
+const DRIVE = 'https://www.googleapis.com/drive/v3/files';
+const driveId = (s) => (String(s || '').match(/[-\w]{20,}/) || [])[0] || null;
+on('GET', 'google/drive', async (req, res) => {
+  const u = await guard(req, res, 'library'); if (!u) return;
+  const id = driveId(req.query.folder); if (!id) return res.status(400).json({ error: 'Falta la carpeta de Drive' });
+  const q = new URLSearchParams({ q: `'${id}' in parents and trashed=false`, fields: 'files(id,name,mimeType,webViewLink,iconLink,modifiedTime,owners(displayName),thumbnailLink)', orderBy: 'folder,modifiedTime desc', pageSize: '100', supportsAllDrives: 'true', includeItemsFromAllDrives: 'true' });
+  const [list, meta] = await Promise.all([google.gapi(u.email, `${DRIVE}?${q}`), google.gapi(u.email, `${DRIVE}/${id}?fields=id,name,webViewLink&supportsAllDrives=true`).catch(() => null)]);
+  res.json({ folder: meta, files: (list.files || []).map((f) => ({ id: f.id, name: f.name, mime: f.mimeType, link: f.webViewLink, modified: f.modifiedTime, owner: f.owners?.[0]?.displayName || null })) });
+});
+on('POST', 'google/drive', async (req, res) => {
+  const u = await guard(req, res, 'library'); if (!u) return;
+  const b = body(req); const parent = driveId(b.folder);
+  const MIME = { doc: 'application/vnd.google-apps.document', sheet: 'application/vnd.google-apps.spreadsheet', slides: 'application/vnd.google-apps.presentation', folder: 'application/vnd.google-apps.folder' };
+  const name = String(b.name || '').trim().slice(0, 200);
+  if (!name || !MIME[b.type]) return res.status(400).json({ error: 'Falta nombre o tipo' });
+  const f = await google.gapi(u.email, `${DRIVE}?fields=id,name,webViewLink,mimeType&supportsAllDrives=true`, { method: 'POST', body: JSON.stringify({ name, mimeType: MIME[b.type], ...(parent ? { parents: [parent] } : {}) }) });
+  res.json({ id: f.id, name: f.name, link: f.webViewLink, mime: f.mimeType });
 });
 
 // ---------- Google Calendar (el calendario de cada persona) ----------

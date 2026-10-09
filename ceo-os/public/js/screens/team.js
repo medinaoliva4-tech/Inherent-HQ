@@ -1,4 +1,4 @@
-import { html, mount, col, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk } from '../core.js';
+import { html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk } from '../core.js';
 
 const COLORS = ['#26201a', '#c2735a', '#4f7790', '#7f9631', '#b08a5f', '#6b5a45'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
@@ -9,6 +9,36 @@ export async function render(el, { me }) {
   let people = (await T.list()).filter((p) => p.active !== false || me.role === 'ceo');
   const isCeo = me.role === 'ceo';
   let view = 'org';
+  // Quién ocupa cada rol según el manual (tabla de slots de 05-OPERACION.md) y la nómina, y que no
+  // está todavía en el organigrama. Las herramientas (IA, scraping, Zernio, Figma) no son personas.
+  const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s*\(.*\)/, '').trim();
+  let missing = [];
+  async function findMissing() {
+    if (!isCeo) return;
+    const byName = new Map();
+    const add = (name, role, kind = 'persona') => { const k = norm(name); if (!k) return; const x = byName.get(k) || byName.set(k, { name: name.replace(/\s*\(.*\)/, '').trim(), roles: [], kind }).get(k); if (!x.roles.includes(role)) x.roles.push(role); if (kind === 'ia') x.kind = 'ia'; };
+    try {
+      const eco = await api('repo/economia');
+      for (const s of eco.slots || []) {
+        if (/^(CEO|IA|Scraping|Diseño|Publicaci)/i.test(s.slot)) continue;
+        const ia = /agente/i.test(s.hoy); add(s.hoy.split(/\s+—\s+/)[0], s.slot, ia ? 'ia' : 'persona');
+      }
+    } catch {}
+    try { const pay = await col('payroll').get('default'); for (const pp of pay.personas || []) { const roles = Object.entries(pay.reparto || {}).filter(([, sp]) => sp.some((x) => x.p === pp.id && +x.pct > 0)).map(([r]) => r); if (!roles.length) add(pp.nombre, 'Nómina'); else roles.forEach((r) => add(pp.nombre, r)); } } catch {}
+    missing = [...byName.values()].filter((x) => !people.some((p) => norm(p.name) === norm(x.name) || norm(p.name).split(' ')[0] === norm(x.name)));
+  }
+  async function importMissing() {
+    const coo = missing.find((x) => x.roles.includes('COO')) || null;
+    const order = [...missing].sort((a, b) => (b === coo) - (a === coo));
+    let cooId = people.find((p) => /\bCOO\b/.test(p.title || ''))?.id || null;
+    try {
+      for (const x of order) {
+        const r = await T.create({ name: x.name, title: x.roles.join(' · '), kind: x.kind, role: 'team', active: true, reports_to: x === coo ? me.email : cooId || me.email, color: COLORS[(people.length + 1) % COLORS.length] });
+        people.push(r); if (x === coo) cooId = r.id;
+      }
+      toast(`${order.length} ${order.length === 1 ? 'persona agregada' : 'personas agregadas'} al organigrama ✅`); missing = []; paint();
+    } catch (e) { toast(e.message, true); }
+  }
   const byId = (id) => people.find((p) => p.id === id);
   const av = (p, size = 56) => p.picture
     ? html`<img src="${p.picture}" referrerpolicy="no-referrer" alt="" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.12)">`
@@ -42,6 +72,7 @@ export async function render(el, { me }) {
       <div class="tabs" style="margin:0"><button class="${view === 'org' ? 'on' : ''}" data-act="view" data-v="org">Organigrama</button><button class="${view === 'people' ? 'on' : ''}" data-act="view" data-v="people">Perfiles</button></div>
       ${isCeo ? html`<button class="btn" data-act="add" style="margin-left:10px">+ Agregar</button>` : ''}
     </div>
+    ${missing.length ? html`<div class="warnbox" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px"><span style="flex:1">${missing.length === 1 ? '1 persona' : missing.length + ' personas'} del manual y la nómina no ${missing.length === 1 ? 'está' : 'están'} en el organigrama: <b>${missing.map((x) => x.name + ' (' + x.roles.join(', ') + ')').join(' · ')}</b></span><button class="btn" data-act="import">Agregarlas</button></div>` : ''}
     ${view === 'org' ? html`<div class="card" style="padding:34px 22px">${org()}</div>` : cards()}`);
   }
 
@@ -87,6 +118,7 @@ export async function render(el, { me }) {
     { edit: () => edit(p), del: async () => { if (!(await confirmAsk(`¿Quitar a ${p.name} del equipo?`))) return; await T.remove(p.id); people = people.filter((x) => x.id !== p.id); closeDrawer(); paint(); } });
   }
 
-  acts(el, { view: (b) => { view = b.dataset.v; paint(); }, add: () => edit(null), open: (b) => open(byId(b.dataset.id)) });
+  acts(el, { view: (b) => { view = b.dataset.v; paint(); }, add: () => edit(null), open: (b) => open(byId(b.dataset.id)), import: importMissing });
   paint();
+  findMissing().then(() => missing.length && paint());
 }
