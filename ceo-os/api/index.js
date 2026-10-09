@@ -115,6 +115,36 @@ on('GET', 'repo/clients', async (req, res) => {
   res.json({ clients });
 });
 
+
+// ---------- Google Calendar (el calendario de cada persona) ----------
+const TZ = process.env.TIMEZONE || 'America/Guatemala';
+const CAL = 'https://www.googleapis.com/calendar/v3/calendars/primary/events';
+on('GET', 'google/calendar', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const from = new Date(String(req.query.from || new Date().toISOString().slice(0, 10)) + 'T00:00:00Z');
+  const to = new Date(String(req.query.to || new Date(Date.now() + 31 * 864e5).toISOString().slice(0, 10)) + 'T23:59:59Z');
+  if (isNaN(from) || isNaN(to) || to - from > 100 * 864e5) return res.status(400).json({ error: 'Rango inválido' });
+  const q = new URLSearchParams({ timeMin: from.toISOString(), timeMax: to.toISOString(), singleEvents: 'true', orderBy: 'startTime', maxResults: '250', timeZone: TZ });
+  const j = await google.gapi(u.email, `${CAL}?${q}`);
+  res.json({ events: (j.items || []).filter((e) => e.status !== 'cancelled').map((e) => ({
+    id: e.id, summary: e.summary || '(sin título)', start: e.start?.dateTime || e.start?.date, end: e.end?.dateTime || e.end?.date,
+    allDay: Boolean(e.start?.date), link: e.htmlLink, meet: e.hangoutLink || null, location: e.location || null,
+  })) });
+});
+on('POST', 'google/calendar', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const b = body(req);
+  const summary = String(b.summary || '').slice(0, 200);
+  if (!summary || !/^\d{4}-\d{2}-\d{2}$/.test(String(b.date))) return res.status(400).json({ error: 'Falta título o fecha' });
+  const time = /^\d{2}:\d{2}$/.test(String(b.time || '')) ? b.time : null;
+  const mins = Math.min(Math.max(+b.minutes || 60, 15), 720);
+  const start = time ? { dateTime: `${b.date}T${time}:00`, timeZone: TZ } : { date: b.date };
+  const end = time ? { dateTime: new Date(new Date(`${b.date}T${time}:00Z`).getTime() + mins * 6e4).toISOString().slice(0, 19), timeZone: TZ }
+    : { date: new Date(new Date(b.date + 'T12:00:00Z').getTime() + 864e5).toISOString().slice(0, 10) };
+  const e = await google.gapi(u.email, CAL, { method: 'POST', body: JSON.stringify({ summary, description: String(b.description || '').slice(0, 2000), start, end }) });
+  res.json({ id: e.id, link: e.htmlLink });
+});
+
 // ---------- diagnóstico (CEO) ----------
 on('GET', 'health', async (req, res) => {
   const u = await guard(req, res, 'finanzas'); if (!u) return;

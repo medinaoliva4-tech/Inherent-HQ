@@ -13,13 +13,13 @@ export const areasFor = (role) => ROLE_AREAS[role] || [];
 // Cada colección pertenece a un área. Algunas solo las escribe el CEO.
 export const COLLS = {
   leads: 'sales', quotes: 'sales', services: 'sales',
-  rates: 'finanzas', finance: 'finanzas',
+  rates: 'finanzas', finance: 'finanzas', payroll: 'finanzas',
   projects: 'operations', tasks: 'operations',
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library',
   team: 'team', settings: 'home',
 };
-const CEO_WRITE = new Set(['team', 'settings', 'rates', 'finance']);
+const CEO_WRITE = new Set(['team', 'settings', 'rates', 'finance', 'payroll']);
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
 
 export const domain = () => (process.env.ALLOWED_DOMAIN || 'inherentglobal.com').toLowerCase();

@@ -3,13 +3,15 @@ import { html, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matri
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 19 ? 'Good afternoon' : 'Good evening'; };
 
-export async function render(el, { me }) {
+export async function render(el, { me, alive }) {
   const can = (a) => me.areas.includes(a);
   const [leads, tasks, finance, content] = await Promise.all([
     can('sales') ? col('leads').list() : [], col('tasks').list(),
     can('finanzas') ? col('finance').list() : [], col('content').list().catch(() => []),
   ]);
   const first = (me.name || '').split(' ')[0];
+  let agenda = null, agErr = null;
+  api(`google/calendar?from=${today()}&to=${today()}`).then((r) => { agenda = r.events; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
 
   // Revenue real: entradas de Finance tipo ingreso
   const ym = (d) => String(d || '').slice(0, 7);
@@ -54,7 +56,10 @@ export async function render(el, { me }) {
           ${revSeries.some(Boolean) ? html`<div class="chart" id="chHome"></div>` : html`<div class="empty" style="margin-top:20px"><b>Sin ingresos registrados</b>La gráfica aparece cuando cargues ingresos en Finance.</div>`}
         </div>` : html`<div></div>`}
         <div class="card todo">
-          <div class="chead"><div class="ico">✓</div><h3>Mis tareas</h3><button class="btn ghost" style="margin-left:auto;padding:8px 14px" data-act="addTask">+ Tarea</button></div>
+          <div class="chead"><div class="ico">✓</div><h3>Hoy</h3><span class="gbadge" style="margin-left:auto">${IC.cal} Google Calendar</span><button class="btn ghost" style="padding:8px 14px" data-act="addTask">+ Tarea</button></div>
+          ${agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm" style="margin-bottom:8px">Calendar: ${agErr}</div>`
+            : agenda.length ? agenda.slice(0, 3).map((e) => html`<a class="agenda" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="t">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="bar2" style="background:#7f9631"></span><div><b style="font-weight:500">${e.summary}</b>${e.meet ? html`<div class="mut sm">Google Meet</div>` : e.location ? html`<div class="mut sm">${e.location}</div>` : ''}</div></a>`)
+            : html`<div class="mut sm" style="margin-bottom:8px">Sin eventos hoy en tu calendario.</div>`}
           ${mine.length ? html`<ul>${mine.slice(0, 6).map((t) => html`<li><input type="checkbox" data-act="done" data-id="${t.id}"><span>${t.title}</span><span class="who mut sm">${t.due ? fdate(t.due) : ''}</span></li>`)}</ul>`
             : html`<div class="empty" style="margin-top:8px"><b>Nada pendiente</b>Tus tareas de Operations aparecen aquí.</div>`}
         </div>

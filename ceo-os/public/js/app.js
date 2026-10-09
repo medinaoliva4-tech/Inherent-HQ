@@ -9,9 +9,10 @@ const NAV = [
   ['library', 'Library', 'M4 4h6l2 2h8v14H4z'],
   ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
 ];
-const SCREENS = { home: 'home', finanzas: 'soon', sales: 'sales', operations: 'soon', content: 'soon', library: 'soon', team: 'team' };
+const SCREENS = { home: 'home', finanzas: 'finance', sales: 'sales', operations: 'operations', content: 'soon', library: 'soon', team: 'team' };
 const root = $('#root');
 export let me = null;
+let renderGen = 0;
 
 const ERR = { dominio: 'Esa cuenta no es @inherentglobal.com.', estado: 'El inicio de sesión expiró. Inténtalo otra vez.', inactivo: 'Tu cuenta está desactivada. Habla con el CEO.', google: 'Google no dejó terminar el inicio de sesión.', servidor: 'Falló al guardar tu sesión.' };
 
@@ -68,12 +69,15 @@ async function render() {
   const key = me.areas.includes(area) ? area : 'home';
   $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key));
   closeDrawer();
-  const main = $('#main');
+  // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
+  const old = $('#main'); const main = old.cloneNode(false); old.replaceWith(main);
+  const gen = ++renderGen;
   mount(main, html`<p class="loading">Cargando…</p>`);
   try {
     const mod = await import(`./screens/${SCREENS[key]}.js`);
+    if (gen !== renderGen) return;
     main.innerHTML = '';
-    await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)[1] });
+    await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)[1], alive: () => gen === renderGen });
   } catch (e) {
     mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
   }
