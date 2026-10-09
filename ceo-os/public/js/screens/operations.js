@@ -8,6 +8,7 @@ const COLORS = ['olive', 'terra', 'ink'];
 // El ciclo de contenido del manual (CLAUDE.md): días del mes
 const CYCLE = [['Reunión día 1', 1, 1], ['Plan', 1, 3], ['Calendario y shot list', 2, 3], ['Brand guidelines', 3, 6], ['Producción', 6, 11], ['Montaje', 12, 15], ['Cambios y programación', 16, 19], ['Presentación al cliente', 20, 20]];
 const PROJECT_PHASES = ['Descubrimiento', 'Estrategia', 'Build', 'Entrega'];
+const GROWTH_PHASES = ['Diagnóstico', 'Auditoría con el especialista', 'Plan', 'Implementación', 'Revisión'];
 const iso = (d) => d.toISOString().slice(0, 10);
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
 
@@ -156,7 +157,7 @@ export async function render(el, { me, sub, alive }) {
         <input class="in" id="ttitle" value="${t.title}" style="font-size:24px;font-weight:500;letter-spacing:-.6px;margin-top:16px;border:0;padding:6px 0;background:transparent">
         <div class="mut">${pname(t.project_id)}</div>
         <div class="form" style="margin-top:16px">
-          <div class="two"><div><label class="f">Responsable</label><select class="in" id="tassignee"><option value="">—</option>${team.filter((p) => p.email).map((p) => html`<option value="${p.email}" ${p.email === t.assignee ? raw('selected') : ''}>${p.name}</option>`)}</select></div>
+          <div class="two"><div><label class="f">Responsable</label><select class="in" id="tassignee"><option value="">—</option>${team.filter((p) => p.active !== false).map((p) => html`<option value="${p.email || p.id}" ${(p.email || p.id) === t.assignee ? raw('selected') : ''}>${p.name}</option>`)}</select></div>
             <div><label class="f">Vence</label><input class="in" id="tdue" type="date" value="${t.due || ''}"></div></div>
           <div><label class="f">Proyecto</label><select class="in" id="tproject"><option value="">—</option>${projects.map((p) => html`<option value="${p.id}" ${p.id === t.project_id ? raw('selected') : ''}>${p.name}</option>`)}</select></div>
           <div><label class="f">Descripción</label><textarea class="in" id="tdesc">${t.description || ''}</textarea></div>
@@ -187,7 +188,7 @@ export async function render(el, { me, sub, alive }) {
     const clientOpts = [['', '— Sin cliente / interno'], ...clients.filter((c) => c.hasPlan).map((c) => [c.slug, c.slug.toUpperCase() + ' (del repo)'])];
     const v = await ask(p ? 'Editar proyecto' : 'Nuevo proyecto', [
       { k: 'name', l: 'Nombre', v: p?.name, req: true },
-      ...(p ? [] : [{ k: 'kind', l: 'Tipo', t: 'select', opts: [['Ciclo mensual', 'Ciclo mensual (días 1 al 20)'], ['Proyecto', 'Proyecto por fases']], half: true }, { k: 'start', l: 'Inicio', t: 'date', v: today().slice(0, 8) + '01', half: true }]),
+      ...(p ? [] : [{ k: 'kind', l: 'Tipo', t: 'select', opts: [['Ciclo mensual', 'Contenido · ciclo mensual (días 1 al 20)'], ['Proyecto', 'Contenido · proyecto por fases'], ['Growth', 'Business Growth · consultoría']], half: true }, { k: 'start', l: 'Inicio', t: 'date', v: today().slice(0, 8) + '01', half: true }]),
       { k: 'client', l: 'Cliente', t: 'select', opts: clientOpts, v: p?.client_slug || '' },
       { k: 'color', l: 'Color', t: 'select', opts: [['olive', 'Oliva'], ['terra', 'Terracota'], ['ink', 'Café']], v: p?.color || 'olive' },
     ]);
@@ -197,11 +198,11 @@ export async function render(el, { me, sub, alive }) {
     const start = v.start || today();
     const phases = v.kind === 'Ciclo mensual'
       ? CYCLE.map(([name, a, z], i) => ({ name, start: addDays(start, a - 1), end: addDays(start, z - 1), status: i === 0 ? 'now' : 'todo' }))
-      : PROJECT_PHASES.map((name, i) => ({ name, start: addDays(start, i * 7), end: addDays(start, i * 7 + 6), status: i === 0 ? 'now' : 'todo' }));
+      : (v.kind === 'Growth' ? GROWTH_PHASES : PROJECT_PHASES).map((name, i) => ({ name, start: addDays(start, i * 7), end: addDays(start, i * 7 + 6), status: i === 0 ? 'now' : 'todo' }));
     // El pipeline sale del plan contratado: lo que no está en su plan, no corre.
     const inPlan = c?.pipeline?.length ? new Set(c.pipeline.map((r) => (r.paso.match(/^[①-⑩][A-Z]?/) || [''])[0])) : null;
     const pipeline = Object.fromEntries(DEPTS.map(([n]) => [n, { status: inPlan && !inPlan.has(n) ? 'off' : 'todo' }]));
-    try { const r = await PR.create({ name: v.name, kind: v.kind, client: c ? c.slug.toUpperCase() : '', client_slug: v.client, color: v.color, phases, pipeline }); projects.push(r); current = r.id; toast('Proyecto creado ✅'); paint(); }
+    try { const r = await PR.create({ name: v.name, kind: v.kind, line: v.kind === 'Growth' ? 'growth' : 'contenido', client: c ? c.slug.toUpperCase() : '', client_slug: v.client, color: v.color, phases, pipeline }); projects.push(r); current = r.id; toast('Proyecto creado ✅'); paint(); }
     catch (e) { toast(e.message, true); }
   }
 
@@ -232,7 +233,7 @@ export async function render(el, { me, sub, alive }) {
     dayall: (t) => { const d = +t.dataset.d; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><h2>${fdate(`${calMonth}-${String(d).padStart(2, '0')}`)}</h2><div style="margin-top:14px">${(dayMap[d] || []).map(evChip)}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)) }); },
     tf: (t) => { taskFilter = t.dataset.f; taskTab($('#obody', el)); },
     task: (t) => openTask(tasks.find((x) => x.id === t.dataset.id)),
-    newTask: async () => { const v = await ask('Nueva tarea', [{ k: 'title', l: 'Tarea', req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '—'], ...projects.map((p) => [p.id, p.name])], v: current || '' }, { k: 'dept', l: 'Departamento', t: 'select', opts: [['', '—'], ...DEPTS.map(([n, name]) => [`${n} ${name}`, `${n} ${name}`])] }, { k: 'assignee', l: 'Responsable', t: 'select', opts: [['', '—'], ...team.filter((p) => p.email).map((p) => [p.email, p.name])], v: me.email, half: true }, { k: 'due', l: 'Vence', t: 'date', half: true }]);
+    newTask: async () => { const v = await ask('Nueva tarea', [{ k: 'title', l: 'Tarea', req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '—'], ...projects.map((p) => [p.id, p.name])], v: current || '' }, { k: 'dept', l: 'Departamento', t: 'select', opts: [['', '—'], ...DEPTS.map(([n, name]) => [`${n} ${name}`, `${n} ${name}`])] }, { k: 'assignee', l: 'Responsable', t: 'select', opts: [['', '—'], ...team.filter((p) => p.active !== false).map((p) => [p.email || p.id, p.name])], v: me.email, half: true }, { k: 'due', l: 'Vence', t: 'date', half: true }]);
       if (!v) return; try { const r = await TK.create({ ...v, status: 'Por empezar', checklist: [], comments: [] }); tasks.push(r); toast('Tarea creada ✅'); paint(); } catch (e) { toast(e.message, true); } },
   });
   // Se actualiza solo: cada minuto mientras está abierto y al volver a la pestaña del navegador.
