@@ -86,7 +86,7 @@ export async function render(el, { me, alive }) {
               <div class="mut sm" style="margin-top:12px">${[e1, e2].some((x) => x?.src === 'w') ? `Instagram, últimos ${Math.max(e1?.days || 0, e2?.days || 0) || 30} días${e1?.reach || e2?.reach ? ` · alcance ${K((e1?.reach || 0) + (e2?.reach || 0))}` : ''}` : 'Engagement de la última semana'}</div>`;
             if (igI === null && igP === null) return html`<p class="loading">Cargando…</p>`;
             // Sin datos: decir exactamente por qué, para saber qué arreglar.
-            const why = [['Inherent', igI], ['Personal', igP]].map(([n, r]) => r?.error ? `${n}: ${r.error}` : r?.connected === false ? 'Falta conectar Windsor (WINDSOR_API_KEY)' : r && !r.handles?.length ? `${n}: falta su cuenta de Instagram en Content → Fuentes` : r && !r.matched ? `${n}: Windsor no trae @${r.handles.join(', @')}${r.accounts?.length ? ` (trae: @${r.accounts.slice(0, 3).join(', @')})` : ''}` : '').filter(Boolean);
+            const why = [['Inherent', igI], ['Personal', igP]].map(([n, r]) => r?.error ? `${n}: ${/api key/i.test(r.error) ? 'la API key de Windsor no es válida (Vercel → WINDSOR_API_KEY)' : r.error.replace(/\{.*\}/, '').trim()}` : r?.connected === false ? 'Falta conectar Windsor (WINDSOR_API_KEY)' : r && !r.handles?.length ? `${n}: falta su cuenta de Instagram en Content → Fuentes` : r && !r.matched ? `${n}: Windsor no trae @${r.handles.join(', @')}${r.accounts?.length ? ` (trae: @${r.accounts.slice(0, 3).join(', @')})` : ''}` : '').filter(Boolean);
             return html`<div class="big">—</div><div class="mut sm" style="margin-top:14px">${why.length ? why.map((w) => html`<div>${w}</div>`) : 'Todavía sin datos.'}</div>`; })()}
         </div>`}
       </div>
@@ -94,9 +94,15 @@ export async function render(el, { me, alive }) {
         ${!can('content') ? html`<div class="card"><div class="chead"><div class="ico">▤</div><h3>Library<br><span class="mut sm">SOPs, prompts y plantillas de tu perfil</span></h3><a class="arrow" href="#/library">↗</a></div>
           <div class="mut sm">Todo lo que necesitas para entregar está en tu <a href="#/work" style="color:inherit">Workspace</a>: tus tareas, el material de cada cliente y dónde subir tu entrega.</div></div>` : ''}
         ${!can('content') ? '' : html`<div class="card">
-          <div class="chead"><div class="ico">▶</div><h3>Content esta semana<br><span class="mut sm">Lo que más rinde en tu nicho</span></h3><a class="arrow" href="#/content">↗</a></div>
-          ${!can('content') ? '' : week === null ? html`<p class="loading">Cargando…</p>` : week?.result?.top?.length ? html`<div class="grid" style="grid-template-columns:repeat(3,1fr);gap:12px">${week.result.top.slice(0, 3).map(videoCard)}</div>`
-            : html`<div class="empty" style="margin-top:10px"><b>${week?.status === 'running' ? 'Apify está scrapeando…' : 'Sin semana todavía'}</b>El scrape corre cada lunes. Configura el nicho en Content → Fuentes.</div>`}
+          ${(() => {
+            // UNA sola vista de Content: los ganadores del nicho (scrape semanal); si aún no corre,
+            // tus mejores posts reales de Instagram (Windsor). Nunca los dos.
+            const niche = week?.result?.top || [];
+            const own = [[igI, 'inherent'], [igP, 'personal']].flatMap(([r]) => (r?.matched ? (r.top || []).map((x) => ({ url: x.url, thumb: x.thumb, handle: r.handles?.[0] || '', red: 'instagram', at: x.date, views: x.views, likes: x.likes, comments: x.comments, text: x.caption, eng: x.eng })) : [])).sort((x, z) => z.eng - x.eng);
+            const [title, sub, list] = niche.length ? ['Content esta semana', 'Lo que más rinde en tu nicho', niche] : ['Tu mejor contenido', 'Instagram, últimos 30 días', own];
+            return html`<div class="chead"><div class="ico">▶</div><h3>${title}<br><span class="mut sm">${sub}</span></h3><a class="arrow" href="#/content">↗</a></div>
+              ${week === null && igI === null ? html`<p class="loading">Cargando…</p>` : list.length ? html`<div class="grid homevids">${list.slice(0, 3).map(videoCard)}</div>`
+                : html`<div class="empty" style="margin-top:10px"><b>${week?.status === 'running' ? 'Apify está scrapeando…' : 'Sin videos todavía'}</b>${niche.length || own.length ? '' : 'El scrape del nicho corre cada lunes (Content → Fuentes). Tus posts salen de Windsor.'}</div>`}`; })()}
           ${next.length ? html`<div class="lbl" style="margin-top:16px">Lo próximo por postear</div>${next.map((p) => html`<a class="agenda" href="#/content/postear/${p.profile}" style="text-decoration:none;color:inherit"><span class="t">${p.date ? fdate(p.date) : '—'}</span><span class="bar2" style="background:#c2735a"></span><div><b style="font-weight:500">${p.title}</b><div class="mut sm">${p.format || 'Pieza'} · ${p.status || 'Idea'}</div></div></a>`)}` : ''}
         </div>`}
         <div class="card todo">
@@ -107,10 +113,7 @@ export async function render(el, { me, alive }) {
           ${mine.length ? html`<ul>${mine.slice(0, 6).map((t) => html`<li><input type="checkbox" data-act="done" data-id="${t.id}"><span>${t.title}</span><span class="who mut sm">${t.due ? fdate(t.due) : ''}</span></li>`)}</ul>`
             : html`<div class="empty" style="margin-top:8px"><b>Nada pendiente</b>Tus tareas aparecen aquí.</div>`}
         </div>
-      </div>
-      ${!can('content') ? '' : html`<div class="sec-title"><h2>Content</h2><a href="#/content">Ver todo →</a></div>
-      ${week?.result?.top?.length > 3 ? html`<div class="grid g5">${week.result.top.slice(3, 8).map(videoCard)}</div>`
-        : html`<div class="empty"><b>Aún no hay videos</b>Los winners de la semana aparecen aquí.</div>`}`}`);
+      </div>`);
   }
 
   acts(el, {
