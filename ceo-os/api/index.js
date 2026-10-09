@@ -226,7 +226,7 @@ on('GET', 'analytics/instagram', async (req, res) => {
   // La cuenta elegida en la app manda; si no hay, las de LINKS.md del repo.
   const picked = (await content.cfg(p.slug)).ig_account;
   const handles = picked ? [picked] : (await content.profile(p)).own.filter((a) => a.red === 'instagram').map((a) => a.handle);
-  try { res.json({ connected: true, handles, ...(await content.instagram(handles, Number(req.query.days) || 30)) }); }
+  try { res.json({ connected: true, handles, ...(await content.instagram(handles, Number(req.query.days) || 30, p.slug === 'personal' ? '' : p.slug)) }); }
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 

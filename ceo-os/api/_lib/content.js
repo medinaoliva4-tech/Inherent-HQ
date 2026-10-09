@@ -192,11 +192,13 @@ async function windsor(fields, preset) {
   const j = await r.json(); return Array.isArray(j) ? j : j.data || [];
 }
 const nameOf = (x) => String(x.account_name || x.username || x.user_name || '').replace(/^@/, '').toLowerCase();
-export async function instagram(handles, days = 30) {
+export async function instagram(handles, days = 30, hint = '') {
   const preset = days <= 7 ? 'last_7d' : days <= 30 ? 'last_30d' : 'last_90d';
   // Los reels de 90 días: si el perfil no publicó este mes, igual hay qué ver.
   const [acc, med] = await Promise.all([windsor(ACC_FIELDS, preset).catch(() => windsor('account_name,date,followers_count', preset)), windsor(MEDIA_FIELDS, 'last_90d').catch(() => [])]);
   const seen = [...new Set([...acc, ...med].map(nameOf).filter(Boolean))].sort();
+  // Sin cuenta configurada, se reconoce por el nombre del perfil (ej. «inherent» → @inherent.corp).
+  if (!handles.length && hint) handles = seen.filter((h) => h.replace(/[^a-z0-9]/g, '').includes(hint.replace(/[^a-z0-9]/g, ''))).slice(0, 1);
   const isMine = (x) => handles.includes(nameOf(x)) || (seen.length === 1 && handles.length && !nameOf(x));
   const mineA = acc.filter(isMine), mineM = med.filter(isMine);
   const n = (v) => (Number.isFinite(+v) ? +v : 0);
@@ -219,7 +221,9 @@ export async function instagram(handles, days = 30) {
     accounts: seen, matched: mineA.length + mineM.length > 0, days,
     followers: Math.max(0, ...mineA.map((x) => n(x.followers_count))),
     reach: series.length ? sum(series, 'reach') : sum(recent, 'reach'), views: series.length ? sum(series, 'views') : sum(recent, 'views'),
-    posts: recent.length, er: sum(recent, 'reach') ? Math.round((sum(recent, 'eng') / sum(recent, 'reach')) * 1000) / 10 : null,
+    // Engagement de lo publicado en el periodo; si no hubo posts, el de los últimos 90 días (y se dice).
+    posts: recent.length, ...(() => { const base = sum(recent, 'reach') ? recent : media; return { er: sum(base, 'reach') ? Math.round((sum(base, 'eng') / sum(base, 'reach')) * 1000) / 10 : null, erDays: base === recent ? days : 90 }; })(),
+    handles,
     series, reels: reels.slice(0, 30),
     watch: { avg: withAvg.length ? Math.round((sum(withAvg, 'avg') / withAvg.length) * 10) / 10 : null, hours: Math.round(sum(reels, 'total') / 360) / 10, hookLost: withAvg.filter((x) => x.avg < 3).length, n: withAvg.length },
     top: [...recent].sort((a, z) => z.eng - a.eng).slice(0, 8),

@@ -21,6 +21,9 @@ export async function render(el, { me, alive }) {
   let agenda = null, agErr = null;
   let week = null, weekP = null;
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`content/week?profile=${p}`).catch(() => null))).then(([a, b]) => { week = a; weekP = b; if (alive()) paint(); });
+  // Engagement en vivo de Windsor (lo mismo que Content → Analytics); el scrape semanal queda de respaldo.
+  let igI = null, igP = null;
+  if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`analytics/instagram?profile=${p}&days=30`).catch((e) => ({ error: e.message })))).then(([a, b]) => { igI = a; igP = b; if (alive()) paint(); });
   const loadAgenda = () => api(`google/calendar?from=${today()}&to=${today()}${calQ()}`).then((r) => { agenda = r.events; agErr = null; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
   loadAgenda();
   // La agenda se actualiza al volver a la pestaña y cada 2 minutos.
@@ -75,9 +78,16 @@ export async function render(el, { me, alive }) {
         ${!can('content') ? summary() : ''}
         ${!can('content') ? '' : html`<div class="card">
           <div class="chead"><div class="ico">♡</div><h3>Engagement<br><span class="mut sm">Personal + Inherent</span></h3><a class="arrow" href="#/content">↗</a></div>
-          ${(() => { const e1 = week?.analytics?.at(-1), e2 = weekP?.analytics?.at(-1);
-            return e1 || e2 ? html`<div class="split" style="margin-top:6px"><div><span class="lbl">Inherent</span><b style="font-size:34px;font-weight:500">${e1?.er ?? '—'}${e1?.er != null ? '%' : ''}</b></div><div><span class="lbl">Personal</span><b style="font-size:34px;font-weight:500">${e2?.er ?? '—'}${e2?.er != null ? '%' : ''}</b></div></div><div class="mut sm" style="margin-top:12px">Engagement de la última semana · vistas promedio ${K(e1?.avgViews || e2?.avgViews || 0)}</div>`
-              : html`<div class="big">—</div><div class="mut sm" style="margin-top:14px">Se llena con el scrape semanal de tus cuentas.</div>`; })()}
+          ${(() => {
+            // Por perfil: primero Windsor (en vivo, 30 días); si no trae, la foto del último scrape.
+            const pick = (ig, wk) => (ig?.matched && ig.er != null ? { er: ig.er, reach: ig.reach, days: ig.erDays, src: 'w' } : wk?.analytics?.at(-1)?.er != null ? { er: wk.analytics.at(-1).er, views: wk.analytics.at(-1).avgViews, src: 's' } : null);
+            const e1 = pick(igI, week), e2 = pick(igP, weekP);
+            if (e1 || e2) return html`<div class="split" style="margin-top:6px"><div><span class="lbl">Inherent</span><b style="font-size:34px;font-weight:500">${e1 ? e1.er + '%' : '—'}</b></div><div><span class="lbl">Personal</span><b style="font-size:34px;font-weight:500">${e2 ? e2.er + '%' : '—'}</b></div></div>
+              <div class="mut sm" style="margin-top:12px">${[e1, e2].some((x) => x?.src === 'w') ? `Instagram, últimos ${Math.max(e1?.days || 0, e2?.days || 0) || 30} días${e1?.reach || e2?.reach ? ` · alcance ${K((e1?.reach || 0) + (e2?.reach || 0))}` : ''}` : 'Engagement de la última semana'}</div>`;
+            if (igI === null && igP === null) return html`<p class="loading">Cargando…</p>`;
+            // Sin datos: decir exactamente por qué, para saber qué arreglar.
+            const why = [['Inherent', igI], ['Personal', igP]].map(([n, r]) => r?.error ? `${n}: ${r.error}` : r?.connected === false ? 'Falta conectar Windsor (WINDSOR_API_KEY)' : r && !r.handles?.length ? `${n}: falta su cuenta de Instagram en Content → Fuentes` : r && !r.matched ? `${n}: Windsor no trae @${r.handles.join(', @')}${r.accounts?.length ? ` (trae: @${r.accounts.slice(0, 3).join(', @')})` : ''}` : '').filter(Boolean);
+            return html`<div class="big">—</div><div class="mut sm" style="margin-top:14px">${why.length ? why.map((w) => html`<div>${w}</div>`) : 'Todavía sin datos.'}</div>`; })()}
         </div>`}
       </div>
       <div class="grid g2" style="margin-top:18px">
