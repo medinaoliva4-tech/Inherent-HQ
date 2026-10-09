@@ -2,11 +2,11 @@
 import * as session from './session.js';
 import * as db from './db.js';
 
-export const AREAS = ['home', 'finanzas', 'sales', 'operations', 'content', 'library', 'team'];
+export const AREAS = ['home', 'finanzas', 'sales', 'operations', 'clients', 'content', 'library', 'team'];
 const ROLE_AREAS = {
   ceo: AREAS,                                                        // 🔒 todo
   coo: AREAS.filter((a) => a !== 'finanzas'),                        // todo menos Finanzas
-  team: ['home', 'operations', 'content', 'library', 'team'],
+  team: ['home', 'operations', 'clients', 'content', 'library', 'team'],
 };
 export const areasFor = (role) => ROLE_AREAS[role] || [];
 
@@ -14,7 +14,7 @@ export const areasFor = (role) => ROLE_AREAS[role] || [];
 export const COLLS = {
   leads: 'sales', quotes: 'sales', services: 'sales',
   rates: 'finanzas', finance: 'finanzas', payroll: 'finanzas',
-  projects: 'operations', tasks: 'operations', accounts: 'operations',
+  projects: 'operations', tasks: 'operations', accounts: 'clients',
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library',
   team: 'team', settings: 'home',
