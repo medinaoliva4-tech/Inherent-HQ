@@ -131,11 +131,13 @@ function inline(s) {
     .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s"]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
 }
 export function md(text) {
-  const out = []; let list = null, table = null;
-  const flush = () => { if (list) { out.push(`<${list.t}>${list.items.map((i) => `<li>${inline(i)}</li>`).join('')}</${list.t}>`); list = null; }
+  const out = []; let list = null, table = null, fence = null;
+  const flush = () => { if (list) { out.push(`<${list.t}>${list.items.map((i) => { const c = /^\[( |x|X)\]\s+(.*)/.exec(i); return c ? `<li class="task"><input type="checkbox" disabled${c[1] === ' ' ? '' : ' checked'}> ${inline(c[2])}</li>` : `<li>${inline(i)}</li>`; }).join('')}</${list.t}>`); list = null; }
     if (table) { const [h, ...rows] = table; out.push(`<div class="tscroll"><table><thead><tr>${h.map((c) => `<th>${inline(c)}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`); table = null; } };
   for (const line of String(text).split('\n')) {
     let m;
+    if (fence) { if (/^\s*```\s*$/.test(line)) { out.push(fence.lang === 'mermaid' ? `<div class="mmd">${esc(fence.code.join('\n'))}</div>` : `<pre class="code">${esc(fence.code.join('\n'))}</pre>`); fence = null; } else fence.code.push(line); continue; }
+    if ((m = /^\s*```\s*(\w*)/.exec(line))) { flush(); fence = { lang: m[1].toLowerCase(), code: [] }; continue; }
     if (/^\s*\|/.test(line)) { const cells = line.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim()); if (cells.every((c) => /^:?-{2,}:?$/.test(c))) continue; if (list) flush(); (table ||= []).push(cells); continue; }
     if (table) flush();
     if ((m = /^(#{1,4})\s+(.*)/.exec(line))) { flush(); const n = Math.min(m[1].length + 1, 5); out.push(`<h${n}>${inline(m[2])}</h${n}>`); }
@@ -146,7 +148,9 @@ export function md(text) {
     else if (line.trim()) { flush(); out.push(`<p>${inline(line)}</p>`); }
     else flush();
   }
+  if (fence) out.push(`<pre class="code">${esc(fence.code.join('\n'))}</pre>`);
   flush();
+  if (out.some((x) => x.startsWith('<div class="mmd">'))) setTimeout(diagrams, 0);
   return raw(`<div class="md">${out.join('')}</div>`);
 }
 export function csv(text) {
@@ -191,3 +195,39 @@ export const embedUrl = (u) => {
   if ((m = s.match(/docs\.google\.com\/(document|spreadsheets|presentation)\/d\/([-\w]+)/))) return `https://docs.google.com/${m[1]}/d/${m[2]}/preview`;
   return null;
 };
+
+// ---------- Al repo: muestra exactamente qué archivo se escribe y lo manda (CEO) o lo propone (equipo) ----------
+export async function toRepo(kind, ref) {
+  let it; try { it = await api('repo/preview', { method: 'POST', body: { kind, ref } }); } catch (e) { return toast(e.message, true); }
+  drawer(html`<div class="row"><span class="chip">${it.direct ? 'Se guarda en el repo' : 'Propuesta para el CEO'}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+    <h2>${it.summary}</h2><div class="mut sm" style="margin:6px 0 14px"><code>${it.path}</code></div>
+    ${it.direct && !it.ready ? html`<div class="warnbox" style="margin-bottom:12px">Falta <b>GITHUB_TOKEN</b> en Vercel para poder escribir en el repo.</div>` : ''}
+    <div class="repo-pre">${it.content}</div>
+    <div class="row" style="margin-top:16px"><button class="btn" data-act="send">${it.direct ? '⇪ Guardar en el repo' : '⇪ Enviar al CEO'}</button><button class="btn ghost" data-act="close">Cancelar</button></div>
+    <div class="mut sm" style="margin-top:10px">${it.direct ? 'Se hace un commit en main y la app se actualiza sola en ~1 minuto.' : 'El CEO lo revisa y lo aprueba antes de que entre al repo.'}</div>`,
+  { send: async (b) => { b.disabled = true; try { const r = await api('repo/sync', { method: 'POST', body: { kind, ref } }); closeDrawer(); toast(r.queued ? 'Enviado al CEO para aprobar ✅' : r.unchanged ? 'El repo ya estaba igual ✅' : 'Guardado en el repo ✅ · se ve en ~1 min'); } catch (e) { b.disabled = false; toast(e.message, true); } } });
+}
+
+// ---------- Diagramas (Mermaid, servido desde /vendor, modo estricto: sin HTML ni scripts) ----------
+let mermaidP = null;
+function loadMermaid() {
+  return (mermaidP ||= new Promise((ok, ko) => {
+    const sc = document.createElement('script'); sc.src = '/vendor/mermaid-11.12.0.min.js';
+    sc.onload = () => { window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'base', fontFamily: '42dot Sans, system-ui, sans-serif',
+      themeVariables: { primaryColor: '#fbfaf6', primaryBorderColor: '#171410', primaryTextColor: '#171410', lineColor: '#6b5a45', secondaryColor: '#e3f07e', tertiaryColor: '#f0ece3', fontSize: '15px' } }); ok(window.mermaid); };
+    sc.onerror = () => { mermaidP = null; ko(new Error('No cargó el motor de diagramas')); };
+    document.head.append(sc);
+  }));
+}
+let mmdN = 0;
+export async function diagrams(root = document) {
+  const els = [...root.querySelectorAll('.mmd:not([data-done])')]; if (!els.length) return;
+  let m; try { m = await loadMermaid(); } catch (e) { els.forEach((el) => { el.dataset.done = '1'; el.classList.add('err'); }); return; }
+  for (const el of els) {
+    if (el.dataset.done) continue; el.dataset.done = '1';
+    const src = el.textContent;
+    try { const { svg } = await m.render('mmd' + ++mmdN, src); el.innerHTML = svg; }
+    catch (e) { el.classList.add('err'); el.textContent = 'El diagrama tiene un error: ' + String(e.message || e).split('\n')[0]; }
+  }
+}
+export function diagram(src) { setTimeout(diagrams, 0); return html`<div class="mmd">${src}</div>`; }

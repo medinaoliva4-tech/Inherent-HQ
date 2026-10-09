@@ -5,6 +5,8 @@ import * as google from './_lib/google.js';
 import { guard, areasFor, COLLS, canWrite, userFor, domain } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
+import * as sync from './_lib/sync.js';
+import { canWriteRepo } from './_lib/gh.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -176,6 +178,53 @@ on('GET', 'repo/client/:slug', async (req, res) => {
   const p = plan ? parsePlanContratado(plan.content, u.role) : { plan: '', fields: [], pipeline: [] };
   const prof = await content.profile({ slug, name: slug.toUpperCase(), root: `clients/${slug}` });
   res.json({ slug, ...p, links: prof.links, own: prof.own, months: prof.months.map((m) => ({ mes: m.mes, files: m.files.map((f) => ({ path: f.path, name: f.name, area: f.area })) })) });
+});
+
+// ---------- De la app al repo: el CEO escribe directo; el resto propone y el CEO aprueba ----------
+const SYNC_AREA = { roadmap: 'clients', accesos: 'clients', competencia: 'content', posts: 'content', doc: 'library' };
+const syncRef = (b) => ({ slug: String(b.ref?.slug || ''), mes: String(b.ref?.mes || ''), id: String(b.ref?.id || '') });
+on('POST', 'repo/preview', async (req, res) => {
+  const b = body(req); const area = SYNC_AREA[b.kind]; if (!area) return res.status(400).json({ error: 'Tipo desconocido' });
+  const u = await guard(req, res, area); if (!u) return;
+  try { const it = await sync.build(b.kind, syncRef(b)); res.json({ ...it, direct: u.role === 'ceo', ready: canWriteRepo() }); }
+  catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
+});
+on('POST', 'repo/sync', async (req, res) => {
+  const b = body(req); const area = SYNC_AREA[b.kind]; if (!area) return res.status(400).json({ error: 'Tipo desconocido' });
+  const u = await guard(req, res, area); if (!u) return;
+  const ref = syncRef(b);
+  try {
+    const it = await sync.build(b.kind, ref);
+    if (u.role === 'ceo') {
+      if (!canWriteRepo()) return res.status(503).json({ error: 'Falta GITHUB_TOKEN en Vercel para escribir en el repo', code: 'NO_REPO_WRITE' });
+      const r = await sync.commit(it);
+      console.log(JSON.stringify({ evt: 'repo-write', path: it.path, email: u.email }));
+      return res.json({ done: true, unchanged: Boolean(r.unchanged), path: it.path });
+    }
+    const q = await db.create('repoq', { kind: b.kind, ref, path: it.path, summary: it.summary, status: 'pending', by: u.email, by_name: u.name, at: new Date().toISOString() }, u.email);
+    res.json({ queued: true, id: q.id, path: it.path });
+  } catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
+});
+on('GET', 'repo/queue', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const all = (await db.list('repoq')).sort((a, z) => String(z.at).localeCompare(String(a.at)));
+  if (u.role !== 'ceo') return res.json({ pending: all.filter((x) => x.status === 'pending' && x.by === u.email).length });
+  const pending = await Promise.all(all.filter((x) => x.status === 'pending').map(async (x) => { try { const it = await sync.build(x.kind, x.ref); return { ...x, content: it.content, path: it.path }; } catch (e) { return { ...x, error: e.message }; } }));
+  res.json({ ready: canWriteRepo(), pending, done: all.filter((x) => x.status !== 'pending').slice(0, 20) });
+});
+on('POST', 'repo/queue/:id', async (req, res) => {
+  const u = await guard(req, res, 'finanzas'); if (!u) return; // solo el CEO
+  const x = await db.get('repoq', req.params.id); if (!x || x.status !== 'pending') return res.status(404).json({ error: 'Esa propuesta ya no está pendiente' });
+  const action = body(req).action;
+  if (action === 'reject') { await db.update('repoq', x.id, { ...x, status: 'rejected', decided_at: new Date().toISOString() }, x.v, u.email); return res.json({ ok: true }); }
+  if (action !== 'approve') return res.status(400).json({ error: 'Acción inválida' });
+  if (!canWriteRepo()) return res.status(503).json({ error: 'Falta GITHUB_TOKEN en Vercel para escribir en el repo', code: 'NO_REPO_WRITE' });
+  try {
+    const it = await sync.build(x.kind, x.ref); const r = await sync.commit(it);
+    await db.update('repoq', x.id, { ...x, status: 'approved', path: it.path, decided_at: new Date().toISOString() }, x.v, u.email);
+    console.log(JSON.stringify({ evt: 'repo-write', path: it.path, email: u.email, proposed_by: x.by }));
+    res.json({ ok: true, unchanged: Boolean(r.unchanged), path: it.path });
+  } catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
 });
 
 // ---------- Google Drive (Library) ----------
