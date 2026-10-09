@@ -1,7 +1,7 @@
 ---
 name: po-loop
 description: >
-  Capa 6 de ⑨ Posting — cierra el ciclo con las cuatro lecturas: qué no llegó a tiempo y de dónde
+  Capa 6 de ⑨ Posting — cierra el ciclo con las cinco lecturas: qué no llegó a tiempo y de dónde
   venía, qué se devolvió y por qué, qué falló al publicar, y si el ciclo quedó programado a tiempo.
   Devuelve como dato —no como reclamo— lo que es de ③ Marketing (fechas de preparación cortas) y de
   ⑥A Diseño gráfico / ⑦ Video Editing (specs que fallan siempre). Escribe
@@ -19,7 +19,7 @@ description: >
 
 Contexto del departamento: `agents/09-posting/brain/WORKFLOW.md`.
 
-## 1 · Las cuatro lecturas
+## 1 · Las cinco lecturas
 
 | # | Lectura | La pregunta | De dónde sale |
 |---|---|---|---|
@@ -83,6 +83,18 @@ existe, el problema no es el proceso: es que ese chequeo se saltó, y eso tambi�
 🛑 **El ciclo queda programado a más tardar el día 19.** Si se programó tarde porque las capas
 anteriores llegaron tarde, la causa va a la Lectura 1 — con el número.
 
+## 5b · Lectura 5 — qué trial reel pasó
+
+```
+| id     | Hook (caja)  | ¿Pasó a seguidores? | Alcance a no seguidores |
+| CR-007 | Bold Claim   | ✅                  | 12,400                  |
+| CR-008 | Curiosity    | ❌                  | 3,100                   |
+```
+
+El estado y el alcance salen de Zernio *(`posts_get` y las analíticas de la cuenta)*. Si no los da:
+`⚠️ SIN DATOS`. **El hook que pasó vuelve a ④ Creatividad como dato** para su cierre del ciclo, y a
+⑩ Ads como candidato a pauta.
+
 ## 6 · Lo que sube a las skills
 
 | Si pasa esto | Va a |
@@ -99,7 +111,7 @@ que nadie lo note.
 
 ## Control de calidad de la Capa 6
 
-- [ ] Las **cuatro lecturas** están hechas — ninguna se omitió
+- [ ] Las **cinco lecturas** están hechas — ninguna se omitió
 - [ ] Lo que llegó tarde tiene **de quién venía** y cuántos días
 - [ ] Los patrones de atraso están atribuidos al **departamento correcto**, con el número
 - [ ] 🛑 **Todo lo que vuelve a otro departamento va como dato, no como reclamo**

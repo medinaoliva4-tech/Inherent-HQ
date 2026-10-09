@@ -2,7 +2,7 @@
 name: cr-adaptacion
 description: >
   Capa 6 del método de Creatividad — multiplica un concepto en una fila por canal y ensambla el
-  entregable final del ciclo: `plan-de-contenido.csv` (12 columnas) + un `ideas-<formato>.md` por
+  entregable final del ciclo: `plan-de-contenido.csv` (13 columnas) + un `ideas-<formato>.md` por
   cada formato del ciclo (una sección por pieza). Adapta a lo que premia cada plataforma —TikTok, Reels, Shorts, carrusel, story, estático—
   con sus specs, verifica que toda fila trace a una MUST BE TRUE y que el reparto 70/20/10 cierre
   sobre el total del ciclo. Úsala cuando pidan "adaptalo a los otros canales", "armá el Excel",
@@ -22,7 +22,7 @@ description: >
 - El método completo del departamento: `agents/04-creative/brain/WORKFLOW.md`.
 
 **Qué produce** — los entregables del ciclo, completos: **el Excel del ciclo**.
-- **`plan-de-contenido.csv`** — una fila por pieza, 12 columnas, sin celdas vacías.
+- **`plan-de-contenido.csv`** — una fila por pieza, 13 columnas, sin celdas vacías.
 - **Un `ideas-<formato>.md` por cada valor de `formato`** que tenga slot este ciclo — una sección por
   pieza, titulada `## CR-007 · <concepto>`, agrupadas por formato: todos los carruseles juntos, todos
   los TikToks juntos, y así. Si el ciclo trae un formato sin doc todavía, esta capa lo crea.
@@ -75,10 +75,10 @@ existe para Creative — agregarlo es pisar a ③ Marketing.
 
 ---
 
-## 3 · Llenar `plan-de-contenido.csv` — las 12 columnas
+## 3 · Llenar `plan-de-contenido.csv` — las 13 columnas
 
 ```
-id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · material · estado
+id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · material · estado · trial
 ```
 
 | Columna | Qué lleva | De dónde sale |
@@ -95,6 +95,7 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | `traza` | La letra de la MUST BE TRUE que mueve | ① Strategy |
 | `material` | `ninguno` / `video` / `foto` — **qué material nuevo necesita de ⑤ Producción** | Creative |
 | `estado` | `listo` / `pendiente` / `⏸️ aprobación` | Creative |
+| `trial` | `sí` / `no`. Solo Reels de Instagram: `sí` sale primero a quien no sigue la cuenta *(trial reel)* y ⑨ Posting lo programa así | Creative |
 
 🛑 **Lo heredado se copia, no se reescribe.** Si un `canal` o una `funcion` te incomodan, se devuelve
 el slot a ③ Marketing; no se corrige en la celda.
@@ -215,7 +216,7 @@ Ninguna capa se entrega sin pasar su bloque completo.
 - [ ] **Ningún par de canales comparte `funcion`**, y ningún canal tiene una función que el plan por canal de ③ Marketing no le asigne, si existe — si pasó, **devuelto a ③ Marketing**
 - [ ] El **"qué NO se hace acá"** de cada canal está respetado en todas sus filas, si existe `plan-por-canal.md`
 - [ ] El total de filas **cabe en la capacidad de producción real**
-- [ ] Las **12 columnas** están completas en cada fila del `plan-de-contenido.csv`
+- [ ] Las **13 columnas** están completas en cada fila del `plan-de-contenido.csv`
 - [ ] **Toda fila tiene `campana`**, y el ciclo se puede leer y revisar campaña por campaña
 - [ ] **Cada `id` del CSV tiene su sección `## CR-00X · <concepto>` en el `ideas-<formato>.md` que corresponde a su columna `formato`** — y ninguna sección queda huérfana ni duplicada en dos docs
 - [ ] **Toda fila tiene `mezcla`**, y el reparto del ciclo cierra en **70/20/10 ±10 puntos** (u 80/20 si es el primer ciclo), o la desviación está declarada con su motivo

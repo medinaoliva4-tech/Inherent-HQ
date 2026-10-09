@@ -140,12 +140,12 @@ lead de ④ Creatividad y el de ⑤ Producción. Detalle en `WORKFLOW.md` §8.
 
 | Archivo | Qué es | Cómo se lee |
 |---|---|---|
-| **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, **12 columnas** | **De arriba abajo**, para revisar el ciclo completo |
+| **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, **13 columnas** | **De arriba abajo**, para revisar el ciclo completo |
 | **`brief-del-ciclo.md`** | El brief (Capa 0) y las BIG IDEAS (Capas 2-3) | **Una vez, entero** — antes de mirar una sola pieza |
 | **`ideas-<formato>.md`** | El desarrollo. Una sección por pieza, `## CR-007 · <concepto>`, agrupadas por `formato` | **De a un formato**, para ejecutar todas sus piezas juntas |
 
 ```
-id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · material · estado
+id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · material · estado · trial
 ```
 
 **El puente es el `id` + la columna `formato`.** Ves `CR-007` en el Excel con `formato = Carrusel`,
@@ -217,7 +217,7 @@ mezcla** con 🟢/🟡/⚪) · ⚠️ SIN DATOS · ⏸️ PENDIENTE APROBACIÓN 
 - [ ] El **PRE-FLIGHT** está emitido con **PASS o BLOQUEADO**, y cada skill corrió **con el output de la anterior**, sin faltantes improvisados
 - [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, en lo que declara **su pipeline**
 - [ ] Existen **exactamente los entregables esperados** —`plan-de-contenido.csv`, `brief-del-ciclo.md` y un `ideas-<formato>.md` por cada formato del ciclo— y **todo `id` del CSV tiene su sección `## CR-00N · <concepto>` en el doc de su formato, y al revés**: el puente no se rompe
-- [ ] Las **12 columnas** están completas en cada fila, y **toda fila cuelga de una `campana`**: el ciclo se puede revisar campaña por campaña
+- [ ] Las **13 columnas** están completas en cada fila, y **toda fila cuelga de una `campana`**: el ciclo se puede revisar campaña por campaña
 - [ ] 🛑 **Toda fila tiene `traza`** a una MUST BE TRUE —las que no, **eliminadas**— y **toda pieza su hipótesis escrita**, con qué la confirmaría
 - [ ] El reparto **70/20/10 cierra ±10 puntos** sobre el total del ciclo — o la desviación está declarada con su motivo (y el **primer ciclo** se declaró como **80/20**)
 - [ ] Brief, conceptos, Excel y doc **no se contradicen** entre sí

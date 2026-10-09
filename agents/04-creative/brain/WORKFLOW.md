@@ -89,7 +89,7 @@ El Excel, más un doc de dirección y un doc por formato. Nada más.
 
 | Archivo | Qué es | Para qué se usa |
 |---|---|---|
-| **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, 12 columnas | Se lee **de arriba abajo** para revisar el ciclo completo |
+| **`plan-de-contenido.csv`** | La estructura. Una fila por pieza, 13 columnas | Se lee **de arriba abajo** para revisar el ciclo completo |
 | **`brief-del-ciclo.md`** | La dirección: el brief y las BIG IDEAS del ciclo | Se lee **una vez**, entero — antes de mirar una sola pieza |
 | **`ideas-<formato>.md`** | El desarrollo de las piezas de un formato — una sección por pieza | Se lee **de a un formato**, para ejecutar todas las piezas de ese tipo juntas |
 
@@ -106,10 +106,10 @@ Diseño, Video Editing y Posting para arrancar.
 dice en cuál doc buscarlo, y ahí buscás `CR-007`. Funciona en Excel, en Sheets y en Drive, sin
 fórmulas que se rompan.
 
-### Las 12 columnas del Excel
+### Las 13 columnas del Excel
 
 ```
-id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · material · estado
+id · campana · fecha · canal · formato · pilar · funcion · concepto · mezcla · traza · material · estado · trial
 ```
 
 | Columna | Qué lleva | De dónde sale |
@@ -123,6 +123,7 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | `traza` | La letra de la MUST BE TRUE que mueve | ① Strategy |
 | `material` | `ninguno` / `video` / `foto` — **qué material nuevo necesita de ⑤ Producción** | Creative |
 | `estado` | `listo` / `pendiente` / `⏸️ aprobación` | Creative |
+| `trial` | `sí` / `no`. Solo Reels de Instagram: `sí` sale primero a quien no sigue la cuenta *(trial reel)* y ⑨ Posting lo programa así | Creative |
 
 #### 🔑 `material` y el ruteo — son dos preguntas distintas
 
@@ -461,7 +462,7 @@ dice de quién es, y ningún agente toca los archivos de otro.
 ```
 clients/<cliente>/
 ├── 04-contenido/AAAA-MM/ideas/
-│   ├── plan-de-contenido.csv    # ← ENTREGABLE · la estructura, 12 columnas
+│   ├── plan-de-contenido.csv    # ← ENTREGABLE · la estructura, 13 columnas
 │   ├── brief-del-ciclo.md       # ← ENTREGABLE · el brief y las BIG IDEAS del ciclo
 │   ├── ideas-tiktok.md          # ← ENTREGABLE · uno por formato con slot este ciclo
 │   ├── ideas-carrusel.md        # ← ENTREGABLE

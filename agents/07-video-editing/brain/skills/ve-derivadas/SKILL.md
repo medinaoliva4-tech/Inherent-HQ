@@ -39,6 +39,10 @@ description: >
 | **Qué cambia** | Solo los primeros 3 segundos |
 | **Qué NO cambia** | El cuerpo, el CTA y la traza a la MUST BE TRUE |
 
+🎬 **Las variantes de hook de un Reel de Instagram son las candidatas a trial reel.** Salen a quien no
+sigue la cuenta y la que rinde pasa sola a los seguidores. Se marcan con `trial = sí` en la fila de
+④ Creatividad y ⑨ Posting las programa así.
+
 🛑 **Una variante que cambia el mensaje no es una variante: es otra pieza**, y ④ Creatividad la tiene que
 dirigir.
 

@@ -174,6 +174,12 @@ Cada fila de la ruta social en `listo` se crea en Zernio:
 2. 🛑 **El alt text y el tipo de publicación van en la llamada:** el alt text de cada imagen y si es
    Reel, story o feed. La forma simple no los recibe: se usa la completa.
 3. 🛑 **Nunca `publish_now`.**
+4. 🎬 **Trial reels:** una fila con `trial = sí` en el Excel de ④ Creatividad *(Reel de Instagram)* se
+   programa con `platformSpecificData.trialParams.graduationStrategy`:
+   - **`SS_PERFORMANCE` por defecto:** sale solo a quien no sigue la cuenta y **pasa sola a los
+     seguidores si rinde.**
+   - **`MANUAL`** solo si la fila lo pide: se queda como prueba hasta que alguien la pasa.
+   - En el registro, la columna `formato` lleva `reel-trial`.
 
 **Después de cada creación:** `posts_get` con el ID que devolvió Zernio — se confirma que quedó
 programada, en la cuenta y a la fecha y hora del calendario. Si quedó corrida, se corrige con
