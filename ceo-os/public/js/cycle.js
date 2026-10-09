@@ -15,7 +15,7 @@ export const TASKS = {
   '⑦': ['Edición: reels y derivados', 15, 'video'],
   '⑧': ['Community: ficha y respuestas al día', 19, 'content'],
   '⑨': ['Posting: captions y programación', 19, 'content'],
-  '⑩': ['Ads: plan y presupuesto para aprobar', 19, 'ceo'],
+  '⑩': ['Ads: plan y presupuesto para aprobar', 19, 'ads'],
 };
 export const GROWTH_TASKS = [['Diagnóstico: números y mapa del negocio', 0, 'finance'], ['Auditoría con el especialista', 1, 'finance'], ['Plan: ganar más y gastar menos', 2, 'finance'], ['Implementación', 3, 'finance'], ['Revisión de resultados', 4, 'ceo']];
 export const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
@@ -28,7 +28,8 @@ export function phasesFor(kind, start) {
 export function holders(team, meEmail) {
   const holder = (role) => { const p = team.find((x) => x.active !== false && (x.roles || []).includes(role)); return p ? p.email || p.id : null; };
   const prod = () => { const p = team.find((x) => /producci|grabaci/i.test(x.title || '')); return p ? p.email || p.id : holder('content'); };
-  return (role) => (role === 'prod' ? prod() : holder(role) || (role === 'ceo' ? meEmail : null));
+  // Sin alguien de Ads, la pauta la lleva el CEO.
+  return (role) => (role === 'prod' ? prod() : holder(role) || (role === 'ads' ? holder('ceo') || meEmail : role === 'ceo' ? meEmail : null));
 }
 // ---------- Dependencias: qué tiene que estar hecho antes ----------
 // En el ciclo: la estrategia manda, luego el plan, las ideas, producir, montar, programar, QA y presentar.
@@ -50,7 +51,7 @@ export function tasksFor(p, team, existing, meEmail) {
   for (const [n, name] of DEPTS) {
     if (p.pipeline?.[n]?.status === 'off' || !TASKS[n] || has(new RegExp(`(^|\\s)${n} `))) continue;
     const [title, day, role] = TASKS[n];
-    out.push({ key: n, title, project_id: p.id, dept: `${n} ${name}`, assignee: who(role) || '', accountable: role === 'ceo' ? '' : coo, due: addDays(s, day - 1), status: 'Por empezar', cycle: p.cycle || '' });
+    out.push({ key: n, title, project_id: p.id, dept: `${n} ${name}`, assignee: who(role) || '', accountable: role === 'ceo' ? '' : role === 'ads' ? who('ceo') || '' : coo, due: addDays(s, day - 1), status: 'Por empezar', cycle: p.cycle || '' });
   }
   if (p.kind === 'Ciclo mensual') {
     if (!has(/QA final/)) out.push({ key: 'QA', title: 'QA final del ciclo', project_id: p.id, dept: '', assignee: coo, accountable: '', due: addDays(s, 18), status: 'Por empezar', cycle: p.cycle || '' });
@@ -63,7 +64,7 @@ export function tasksFor(p, team, existing, meEmail) {
 
 // Proyecto custom (sale de una cotización): kickoff → por cada servicio, sus roles en orden
 // (estrategia → contenido/finanzas → producción → edición) → QA y entrega.
-const STAGE = { ceo: 0, content: 1, finance: 1, prod: 2, video: 3, coo: 4 };
+const STAGE = { ceo: 0, content: 1, finance: 1, prod: 2, video: 3, ads: 3, coo: 4 };
 export function customTasks(p, items, team, meEmail) {
   const who = holders(team, meEmail), coo = who('coo') || '', ceo = who('ceo') || meEmail;
   const start = p.phases?.[0]?.start || new Date().toISOString().slice(0, 10), end = p.phases?.[p.phases.length - 1]?.end || start;
@@ -103,7 +104,7 @@ export const unlocksOf = (t, tasks) => tasks.filter((x) => (x.depends_on || []).
 // ---------- Reuniones por tipo de proyecto ----------
 // Son las del plan: cuándo, quiénes, de qué se habla y qué se aprueba. Día = día desde que arranca.
 // [reunión, día, quiénes, temas, qué se aprueba]
-export const WHO = { ceo: 'CEO', coo: 'COO', content: 'Content', video: 'Editor de video', finance: 'Finance', prod: 'Producción', especialista: 'Especialista', cliente: 'Cliente' };
+export const WHO = { ceo: 'CEO', coo: 'COO', ads: 'Ads', content: 'Content', video: 'Editor de video', finance: 'Finance', prod: 'Producción', especialista: 'Especialista', cliente: 'Cliente' };
 export const MEETINGS = {
   'Ciclo mensual': [
     ['Arranque del ciclo', 1, ['ceo', 'coo', 'cliente'], ['Resultados del mes pasado', 'Meta y foco del ciclo', 'Ofertas que se empujan', 'Fechas clave y lanzamientos'], 'La estrategia del ciclo'],
@@ -143,7 +144,7 @@ export function svcCost(s, rates, lv = s.level || 5) {
 // El precio guardado es el del nivel del servicio; en otro nivel sube o baja con las horas.
 export const svcPrice = (s, lv) => { const base = svcHours(s, s.level || 5); return s.price && base ? Math.round((s.price * svcHours(s, lv)) / base / 50) * 50 : null; };
 // El perfil de trabajo que suele cubrir cada rol del catálogo (para asignar las tareas del proyecto Custom).
-export const roleToWork = (r) => (/video|edici/i.test(r) ? 'video' : /producci|grabaci|foto/i.test(r) ? 'prod' : /financ|contab/i.test(r) ? 'finance' : /estrateg|ceo/i.test(r) ? 'ceo' : /conten|creativ|diseñ|community|copy|pauta|operador/i.test(r) ? 'content' : 'coo');
+export const roleToWork = (r) => (/pauta|\bads\b|anuncio|campaña/i.test(r) ? 'ads' : /video|edici/i.test(r) ? 'video' : /producci|grabaci|foto/i.test(r) ? 'prod' : /financ|contab/i.test(r) ? 'finance' : /estrateg|ceo/i.test(r) ? 'ceo' : /conten|creativ|diseñ|community|copy|operador/i.test(r) ? 'content' : 'coo');
 // Qué incluye un servicio en cada nivel: lo del sencillo siempre, y lo del fuerte se va sumando al subir.
 const lines = (t) => String(t || '').split('\n').map((x) => x.replace(/^[-•·\s]+/, '').trim()).filter(Boolean);
 export function includesAt(s, lv = s.level || 5) {
