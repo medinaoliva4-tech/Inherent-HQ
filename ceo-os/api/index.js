@@ -19,14 +19,19 @@ on('GET', 'auth/google', async (req, res) => {
 on('GET', 'auth/callback', async (req, res) => {
   const st = session.unsign(session.cookie(req, 'ceoos_state'));
   session.addCookie(res, 'ceoos_state=; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=0');
-  const back = (err) => res.writeHead(302, { Location: '/' + (err ? '?error=' + err : '') }).end();
+  const back = (err, detail) => res.writeHead(302, { Location: '/' + (err ? `?error=${err}${detail ? '&detail=' + encodeURIComponent(String(detail).slice(0, 160)) : ''}` : '') }).end();
+  if (req.query.error) return back('google', req.query.error);
   if (!st || st.exp < Date.now() || st.state !== req.query.state || !req.query.code) return back('estado');
-  const p = await google.finishLogin(String(req.query.code));
+  let p;
+  try { p = await google.finishLogin(String(req.query.code)); }
+  catch (e) { console.error('login google', e); return back('google', e.message); }
   if (!p) return back('dominio');
-  const u = await userFor(p.email);
-  if (!u.active) return back('inactivo');
-  await db.upsert('team', p.email, { email: p.email, name: p.name, picture: p.picture, google: { calendar: p.scopes.some((s) => s.includes('calendar')), drive: p.scopes.some((s) => s.includes('drive')) }, last_login: new Date().toISOString() }, p.email);
-  session.issue(req, res, { email: p.email });
+  try {
+    const u = await userFor(p.email);
+    if (!u.active) return back('inactivo');
+    await db.upsert('team', p.email, { email: p.email, name: p.name, picture: p.picture, google: { calendar: p.scopes.some((s) => s.includes('calendar')), drive: p.scopes.some((s) => s.includes('drive')) }, last_login: new Date().toISOString() }, p.email);
+    session.issue(req, res, { email: p.email });
+  } catch (e) { console.error('login db', e); return back('servidor', e.code === 'NO_DB' ? 'base de datos' : e.message); }
   console.log(JSON.stringify({ evt: 'login', email: p.email }));
   back();
 });
