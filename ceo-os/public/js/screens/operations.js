@@ -68,7 +68,25 @@ export async function render(el, { me, sub, alive }) {
   async function loadEvents() {
     const [y, m] = calMonth.split('-').map(Number);
     const from = iso(new Date(Date.UTC(y, m - 1, 0))), to = iso(new Date(Date.UTC(y, m, 1)));
-    try { events = (await api(`google/calendar?from=${from}&to=${to}`)).events; evErr = null; } catch (e) { events = []; evErr = e.message; }
+    try { const r = await api(`google/calendar?from=${from}&to=${to}`); events = r.events; calInfo = { allCals: r.allCals !== false, calendars: r.calendars || [] }; evErr = null; } catch (e) { events = []; evErr = e.message; }
+  }
+  const evChip = (it) => html`<div class="ev ${it.c}" ${it.task ? raw(`data-act="task" data-id="${it.task}"`) : it.ev != null ? raw(`data-act="ev" data-i="${it.ev}"`) : ''} ${it.color ? raw(`style="background:${it.color}33;border-left:3px solid ${it.color}"`) : ''}>${it.t}</div>`;
+  let calInfo = { allCals: true, calendars: [] }, dayMap = {};
+  function openEvent(e) {
+    const when = e.allDay ? fdate(String(e.start).slice(0, 10)) + (String(e.end).slice(0, 10) > addDays(String(e.start).slice(0, 10), 1) ? ' – ' + fdate(addDays(String(e.end).slice(0, 10), -1)) : ' · todo el día')
+      : `${fdate(String(e.start).slice(0, 10))} · ${String(e.start).slice(11, 16)} – ${String(e.end).slice(11, 16)}`;
+    drawer(html`<div class="row"><span class="gbadge">${IC.cal} ${e.calName || 'Google Calendar'}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+      <h2>${e.summary}</h2><div class="mut">${when}</div>
+      ${e.location ? html`<div style="margin-top:12px">📍 ${e.location}</div>` : ''}
+      ${e.description ? html`<p class="sm" style="margin-top:12px;white-space:pre-wrap">${e.description}</p>` : ''}
+      <div class="row" style="margin-top:20px;gap:8px">${e.meet && /^https:\/\//.test(e.meet) ? html`<a class="btn" href="${e.meet}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Entrar a Meet</a>` : ''}
+        ${/^https:\/\//.test(e.link || '') ? html`<a class="btn ghost" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Abrir en Google ↗</a>` : ''}
+        <div class="sp"></div>${e.editable ? html`<button class="btn ghost" data-act="evdel">🗑</button>` : ''}</div>`,
+    { evdel: async () => { if (!(await confirmAsk(`¿Borrar «${e.summary}» de tu Google Calendar?`))) return; try { await api(`google/calendar/${encodeURIComponent(e.id)}`, { method: 'DELETE' }); closeDrawer(); toast('Evento borrado'); events = null; cal($('#obody', el)); } catch (err) { toast(err.message, true); } } });
+  }
+  async function newEvent(date) {
+    const v = await ask('Nuevo evento en Google Calendar', [{ k: 'summary', l: 'Título', req: true }, { k: 'date', l: 'Fecha', t: 'date', v: date || today(), req: true, half: true }, { k: 'time', l: 'Hora (vacío = todo el día)', t: 'time', half: true }, { k: 'minutes', l: 'Duración (min)', t: 'number', v: 60, half: true }, { k: 'description', l: 'Notas', half: true }]);
+    if (!v) return; try { await api('google/calendar', { method: 'POST', body: v }); toast('Evento creado en tu Google Calendar ✅'); events = null; cal($('#obody', el)); } catch (e) { toast(e.message, true); }
   }
   function cal(b) {
     if (events === null) { if (!b.querySelector('.cal')) mount(b, html`<p class="loading">Cargando tu Google Calendar…</p>`); loadEvents().then(() => tab === 'cal' && alive() && b.isConnected && cal(b)); return; }
@@ -76,18 +94,21 @@ export async function render(el, { me, sub, alive }) {
     const first = new Date(y, m - 1, 1), days = new Date(y, m, 0).getDate(), lead = (first.getDay() + 6) % 7;
     const byDay = {};
     const add = (date, item) => { if (date && date.slice(0, 7) === calMonth) (byDay[+date.slice(8, 10)] ||= []).push(item); };
-    events.forEach((e) => add(String(e.start).slice(0, 10), { t: (e.allDay ? '' : String(e.start).slice(11, 16) + ' ') + e.summary, c: 'e1', link: e.link }));
+    // Los eventos de varios días aparecen en cada día; cada calendario con su color de Google.
+    events.forEach((e, i) => { const s0 = String(e.start).slice(0, 10), e0 = e.allDay ? addDays(String(e.end).slice(0, 10), -1) : String(e.end || e.start).slice(0, 10);
+      for (let d = s0, n = 0; d <= e0 && n < 40; d = addDays(d, 1), n++) add(d, { t: (e.allDay || d !== s0 ? '' : String(e.start).slice(11, 16) + ' ') + e.summary, c: 'e1', ev: i, color: /^#[0-9a-f]{6}$/i.test(e.color || '') ? e.color : null }); });
     tasks.filter((t) => t.due && t.status !== 'Hecha').forEach((t) => add(t.due, { t: '✓ ' + t.title, c: 'e3', task: t.id }));
     projects.forEach((p) => (p.phases || []).forEach((ph) => ph.start && add(ph.start, { t: `${ph.name} · ${p.name}`, c: 'e2' })));
+    dayMap = byDay;
     const cells = [];
     for (let i = 0; i < 42; i++) { const d = i - lead + 1; if (i >= 35 && d > days) break; cells.push(d); }
     mount(b, html`<div class="card">
       <div class="chead"><div class="ico">▦</div><h3>${first.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })}</h3>
-        ${evErr ? html`<span class="chip amber" style="margin-left:12px">Google Calendar: ${evErr}</span>` : html`<span class="gbadge" style="margin-left:12px">${IC.cal} Sincronizado con Google Calendar</span>`}
+        ${evErr ? html`<span class="chip amber" style="margin-left:12px">Google Calendar: ${evErr}</span>` : html`<span class="gbadge" style="margin-left:12px">${IC.cal} ${calInfo.allCals ? `${calInfo.calendars.length} calendario${calInfo.calendars.length === 1 ? '' : 's'} de Google` : 'Solo tu calendario principal · sal y vuelve a entrar para ver todos'}</span>`}
         <div class="sp"></div><button class="btn ghost" data-act="mrefresh" title="Actualizar" style="padding:8px 14px">↻</button><button class="btn ghost" data-act="mtoday" style="padding:8px 14px">Hoy</button><button class="btn ghost" data-act="mprev" style="padding:8px 14px">‹</button><button class="btn ghost" data-act="mnext" style="padding:8px 14px">›</button><button class="btn" data-act="newEvent" style="padding:9px 16px">+ Evento</button></div>
       <div class="cal">${['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d) => html`<div class="dh">${d}</div>`)}
         ${cells.map((d) => { const out = d < 1 || d > days; const isToday = !out && `${calMonth}-${String(d).padStart(2, '0')}` === today();
-          return html`<div class="d ${out ? 'o' : ''} ${isToday ? 'today' : ''}"><span class="n">${out ? '' : d}</span>${out ? '' : (byDay[d] || []).slice(0, 4).map((it) => it.link ? html`<a class="ev ${it.c}" href="${it.link}" target="_blank" rel="noopener noreferrer" style="display:block;text-decoration:none">${it.t}</a>` : html`<div class="ev ${it.c}" ${it.task ? raw(`data-act="task" data-id="${it.task}"`) : ''}>${it.t}</div>`)}${!out && (byDay[d] || []).length > 4 ? html`<div class="mut sm">+${byDay[d].length - 4} más</div>` : ''}</div>`; })}
+          return html`<div class="d ${out ? 'o' : ''} ${isToday ? 'today' : ''}" ${out ? '' : raw(`data-act="day" data-d="${d}" title="Toca para crear un evento"`)}><span class="n">${out ? '' : d}</span>${out ? '' : (byDay[d] || []).slice(0, 4).map(evChip)}${!out && (byDay[d] || []).length > 4 ? html`<button class="mut sm" data-act="dayall" data-d="${d}">+${byDay[d].length - 4} más</button>` : ''}</div>`; })}
       </div>
       <div class="row sm mut" style="gap:16px;margin-top:12px"><span class="row" style="gap:6px"><i class="ev e1" style="width:12px;height:12px;padding:0;margin:0"></i>Google Calendar</span><span class="row" style="gap:6px"><i class="ev e3" style="width:12px;height:12px;padding:0;margin:0"></i>Tareas</span><span class="row" style="gap:6px"><i class="ev e2" style="width:12px;height:12px;padding:0;margin:0"></i>Fases de proyecto</span></div></div>`);
   }
@@ -205,8 +226,10 @@ export async function render(el, { me, sub, alive }) {
     mtoday: () => { calMonth = today().slice(0, 7); events = null; cal($('#obody', el)); },
     mprev: () => { const d = new Date(calMonth + '-15'); d.setMonth(d.getMonth() - 1); calMonth = d.toISOString().slice(0, 7); events = null; cal($('#obody', el)); },
     mnext: () => { const d = new Date(calMonth + '-15'); d.setMonth(d.getMonth() + 1); calMonth = d.toISOString().slice(0, 7); events = null; cal($('#obody', el)); },
-    newEvent: async () => { const v = await ask('Nuevo evento en Google Calendar', [{ k: 'summary', l: 'Título', req: true }, { k: 'date', l: 'Fecha', t: 'date', v: today(), req: true, half: true }, { k: 'time', l: 'Hora (vacío = todo el día)', t: 'time', half: true }, { k: 'minutes', l: 'Duración (min)', t: 'number', v: 60 }]);
-      if (!v) return; try { await api('google/calendar', { method: 'POST', body: v }); toast('Evento creado en tu Google Calendar ✅'); events = null; cal($('#obody', el)); } catch (e) { toast(e.message, true); } },
+    newEvent: () => newEvent(),
+    day: (t) => newEvent(`${calMonth}-${String(t.dataset.d).padStart(2, '0')}`),
+    ev: (t, e) => { e.stopPropagation(); openEvent(events[+t.dataset.i]); },
+    dayall: (t) => { const d = +t.dataset.d; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><h2>${fdate(`${calMonth}-${String(d).padStart(2, '0')}`)}</h2><div style="margin-top:14px">${(dayMap[d] || []).map(evChip)}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)) }); },
     tf: (t) => { taskFilter = t.dataset.f; taskTab($('#obody', el)); },
     task: (t) => openTask(tasks.find((x) => x.id === t.dataset.id)),
     newTask: async () => { const v = await ask('Nueva tarea', [{ k: 'title', l: 'Tarea', req: true }, { k: 'project_id', l: 'Proyecto', t: 'select', opts: [['', '—'], ...projects.map((p) => [p.id, p.name])], v: current || '' }, { k: 'dept', l: 'Departamento', t: 'select', opts: [['', '—'], ...DEPTS.map(([n, name]) => [`${n} ${name}`, `${n} ${name}`])] }, { k: 'assignee', l: 'Responsable', t: 'select', opts: [['', '—'], ...team.filter((p) => p.email).map((p) => [p.email, p.name])], v: me.email, half: true }, { k: 'due', l: 'Vence', t: 'date', half: true }]);

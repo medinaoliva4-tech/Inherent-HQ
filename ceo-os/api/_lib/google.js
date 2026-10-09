@@ -7,6 +7,7 @@ import { domain } from './access.js';
 export const SCOPES = [
   'openid', 'email', 'profile',
   'https://www.googleapis.com/auth/calendar.events',
+  'https://www.googleapis.com/auth/calendar.calendarlist.readonly',
   'https://www.googleapis.com/auth/drive',
 ];
 const cfg = () => {
