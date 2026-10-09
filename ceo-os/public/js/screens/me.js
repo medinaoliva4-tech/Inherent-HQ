@@ -1,5 +1,5 @@
 // Mi perfil: se abre al tocar tu foto. Tu foto, tu cumpleaños, cómo te contactan, tus conexiones y salir.
-import { html, raw, mount, api, toast, squareImage, initials, roleName, IC, LOGO, $ } from '../core.js';
+import { html, raw, mount, api, toast, cropImage, initials, roleName, IC, LOGO, $ } from '../core.js';
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 export const bdayText = (bd) => (bd ? `${+bd.slice(3)} de ${MESES[+bd.slice(0, 2) - 1]}` : '');
@@ -45,7 +45,7 @@ export async function render(el, { me }) {
 
   el.addEventListener('change', async (e) => {
     if (e.target.id !== 'ppic' || !e.target.files[0]) return;
-    try { const photo = await squareImage(e.target.files[0]); await api('me/photo', { method: 'PUT', body: { photo } }); me.picture = photo; toast('Foto actualizada ✅'); paint(); refreshAvatar(me); }
+    try { const photo = await cropImage(e.target.files[0]); e.target.value = ''; if (!photo) return; await api('me/photo', { method: 'PUT', body: { photo } }); me.picture = photo; toast('Foto actualizada ✅'); paint(); refreshAvatar(me); }
     catch (err) { toast(err.message, true); }
   });
   el.addEventListener('click', async (e) => {

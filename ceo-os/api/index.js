@@ -9,6 +9,7 @@ import * as zernio from './_lib/zernio.js';
 import * as mcp from './_lib/mcp.js';
 import * as oauth from './_lib/oauth.js';
 import * as flow from './_lib/flow.js';
+import * as ads from './_lib/ads.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
@@ -569,6 +570,24 @@ on('PUT', 'ads/accounts/:slug', async (req, res) => {
   if (![ads.meta, ads.google, ads.linkedin].every(ok)) return res.status(400).json({ error: 'Usa solo el número de la cuenta' });
   await db.upsert('accounts', 'acc-' + slug, { ads }, u.email);
   res.json({ ok: true, ads });
+});
+
+// El tablero de pauta (Windsor) y los anuncios de la competencia (Apify).
+const adsGuard = async (req, res) => { const u = await guard(req, res); if (!u) return null; if (['ceo', 'coo'].includes(u.role) || (u.roles || []).includes('ads')) return u; res.status(403).json({ error: 'Solo Ads, el CEO o el COO' }); return null; };
+on('GET', 'ads/report', async (req, res) => {
+  const u = await adsGuard(req, res); if (!u) return;
+  try { res.json({ ...(await ads.report(Math.min(90, Math.max(7, +req.query.days || 30)))), apify: ads.apifyOn() }); }
+  catch (e) { res.status(502).json({ error: e.message }); }
+});
+on('GET', 'ads/competitors/:slug', async (req, res) => {
+  const u = await adsGuard(req, res); if (!u) return; if (!slugOk(req.params.slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  try { res.json((await ads.competitors(req.params.slug, u.email)) || { competitors: [], items: null }); } catch (e) { res.status(502).json({ error: e.message }); }
+});
+on('POST', 'ads/competitors/:slug', async (req, res) => {
+  const u = await adsGuard(req, res); if (!u) return; if (!slugOk(req.params.slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  const list = Array.isArray(body(req).list) ? body(req).list : [];
+  try { res.json(await ads.scrapeCompetitors(req.params.slug, list, u.email)); }
+  catch (e) { if (e.status || e.code) return res.status(e.status || 503).json({ error: e.message }); res.status(502).json({ error: e.message }); }
 });
 
 // ---------- Flujo: lead → cotización → pago → proyecto ----------
