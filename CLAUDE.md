@@ -44,6 +44,8 @@ clients/                   ← LOS CLIENTES
 🗂️ **Dónde vive cada cosa:** el repo guarda **cómo se hace el trabajo y los agentes**. El trabajo
 **se entrega en Inherent OS** *(el perfil de cada quien y el portal del cliente)*. El material de
 cada cliente *(guiones, videos por publicar, assets)* **vive en Google Drive**, conectado a Inherent OS.
+Idealmente, **el folder del cliente en el repo llega hasta el onboarding** *(lo establecido y la
+estrategia)*; **lo de operar** *(planner, ideas, tareas, entregas, métricas)* **vive en Inherent OS.**
 
 ## Cómo se compone un agente
 
