@@ -1,5 +1,6 @@
 import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ , calQ, calAll, setCalAll } from '../core.js';
 import { videoCard } from './content.js';
+import { connectNotice, hookNotice } from '../connectai.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 19 ? 'Good afternoon' : 'Good evening'; };
@@ -46,6 +47,7 @@ export async function render(el, { me, alive }) {
   function paint() {
     mount(el, html`
       <div class="hello"><h1>${greet()}, ${first}.</h1><p>Esto es lo que pasa hoy en <em>Inherent</em>.</p></div>
+      ${connectNotice(me)}
       ${me.role === 'ceo' && !tasks.length ? html`<a class="asbar" href="#/setup" style="display:flex">⚙ La app todavía está vacía: <b>haz el Arranque</b> (4 pasos) y queda lista con lo que ya dice el repo →</a>` : ''}
       <div class="grid g3">
         ${can('finanzas') ? html`<div class="card feat olive">
@@ -105,5 +107,6 @@ export async function render(el, { me, alive }) {
       if (t) { tasks.push(t); mine.push(t); paint(); }
     },
   }, 'click');
+  hookNotice(el, me, () => alive() && paint());
   paint();
 }

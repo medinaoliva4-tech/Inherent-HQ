@@ -1,4 +1,4 @@
-import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc } from './core.js';
+import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO } from './core.js';
 
 const NAV = [
   ['home', 'Home', 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
@@ -56,7 +56,7 @@ function shell() {
         <div class="who"><b>${me.name}</b><div class="mut sm">${me.title || me.role.toUpperCase()} · ${me.email}</div>
           <div class="row" style="gap:6px;margin-top:8px">${me.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${me.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}</div></div>
         ${me.role === 'ceo' ? html`<button data-go="setup">⚙ Arranque</button>` : ''}
-        ${me.role === 'client' ? '' : html`<button data-go="team">👤 Mi perfil</button>`}
+        ${me.role === 'client' ? '' : html`<button data-go="team">👤 Mi perfil</button><button id="aiconn" class="row" style="gap:8px"><span class="lg2" style="width:18px;height:18px">${LOGO.claude}</span>Claude / Codex</button>`}
         <button id="logout">↩ Cerrar sesión</button>
       </div>
     </header>
@@ -66,6 +66,7 @@ function shell() {
   $('#avatar').onclick = (e) => { e.stopPropagation(); $('#menu').classList.toggle('on'); };
   $('#menu').onclick = (e) => { const b = e.target.closest('[data-go]'); if (b) location.hash = '/' + b.dataset.go; };
   document.addEventListener('click', () => $('#menu')?.classList.remove('on'));
+  $('#aiconn')?.addEventListener('click', async () => { const { openConnect } = await import('./connectai.js'); openConnect(me); });
   $('#logout').onclick = async () => { await api('auth/logout', { method: 'POST' }).catch(() => {}); me = null; loginView(); };
 }
 
