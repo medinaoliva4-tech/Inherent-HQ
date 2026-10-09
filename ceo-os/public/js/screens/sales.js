@@ -1,5 +1,5 @@
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList } from '../core.js';
-import { hoursAt, svcHours, svcCost, svcPrice } from '../cycle.js';
+import { hoursAt, svcHours, svcCost, svcPrice, includesAt, daysAt } from '../cycle.js';
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 
@@ -36,6 +36,9 @@ export async function render(el, { me, sub, alive }) {
   const hours = (s) => svcHours(s);
   // Precio de un servicio en un nivel: el del catálogo escalado por horas, o el sugerido (costo × multiplicador).
   const priceAt = (s, lv) => svcPrice(s, lv) ?? (() => { const c = costOf(s, lv); return c && !c.miss.length && c.cost ? Math.round((c.cost * (+s.markup || 2.2)) / 50) * 50 : null; })();
+  // Lo que incluye y cuánto tarda un servicio en un nivel (para la cotización y su PDF).
+  const incHtml = (sv, lv) => html`${daysAt(sv, lv) ? html`<div><b style="font-weight:500">⏱ ${daysAt(sv, lv)} días hábiles</b></div>` : ''}${includesAt(sv, lv).length ? html`<ul style="margin:4px 0 0 18px;padding:0">${includesAt(sv, lv).map((x) => html`<li>${x}</li>`)}</ul>` : ''}`;
+  const quoteDays = (doc) => Math.max(0, ...doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id); return sv ? daysAt(sv, i.level || sv.level || 5) || 0 : 0; }));
   const lvName = (lv) => (lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
   const suggested = (s) => { const c = costOf(s); return c && !c.miss.length && c.cost ? Math.round((c.cost * (+s.markup || 2.2)) / 50) * 50 : null; };
 
@@ -199,22 +202,31 @@ export async function render(el, { me, sub, alive }) {
     const roles = (rates?.roles || DEFAULT_ROLES.map(([role]) => ({ role }))).map((r) => r.role);
     let tasks = (s?.tasks || [{ role: roles[0], hours: 1 }]).map((t) => ({ ...t, hours10: t.hours10 ?? (+t.hours || 0) * 2 }));
     let level = s?.level || 5;
+    // Lo que va escrito en el formulario (para que la vista previa del nivel use lo último).
+    const curForm = () => { const f = $('#sf'); return f ? Object.fromEntries(new FormData(f)) : {}; };
+    // La vista previa del nivel (horas, días y qué incluye). Se actualiza sola mientras escribes.
+    const prev = (fv) => { const cur = { ...fv, tasks, level }; return html`<div class="mut sm">En este nivel: ${tasks.map((t) => `${t.role} ${hoursAt(t, level)} h`).join(' · ')} = <b>${svcHours(cur, level)} h</b>${daysAt(fv, level) ? html` · tarda <b>${daysAt(fv, level)} días hábiles</b>` : ''}. El precio de abajo es el de este nivel.</div>
+          ${includesAt(fv, level).length ? html`<div class="sm" style="margin-top:8px"><b style="font-weight:500">Incluye en este nivel:</b><ul style="margin:4px 0 0 18px;padding:0">${includesAt(fv, level).map((x) => html`<li>${x}</li>`)}</ul></div>` : ''}`; };
     const draw = () => {
+      const keep = curForm(); const fv = { ...(s || {}), ...keep };
       const cur = { ...(s || {}), tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2) };
       const c = costOf(cur), sug = suggested(cur);
       drawer(html`<div class="row"><span class="chip">Servicio</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
         <h2>${s ? 'Editar servicio' : 'Nuevo servicio'}</h2>
         <form class="form" id="sf" style="margin-top:14px">
-          <div><label class="f">Nombre *</label><input class="in" name="name" value="${s?.name || ''}"></div>
-          <div class="two"><div><label class="f">Categoría</label><select class="in" name="category">${[...new Set([...CATS, s?.category].filter(Boolean))].map((c2) => html`<option ${c2 === s?.category ? raw('selected') : ''}>${c2}</option>`)}</select></div>
-            <div><label class="f">Se cobra por</label><select class="in" name="unit">${['proyecto', 'mes', 'pieza', 'hora', 'jornada'].map((u) => html`<option ${u === (s?.unit || 'proyecto') ? raw('selected') : ''}>${u}</option>`)}</select></div></div>
-          <div><label class="f">Descripción (sale en la cotización)</label><input class="in" name="description" value="${s?.description || ''}"></div>
+          <div><label class="f">Nombre *</label><input class="in" name="name" value="${fv.name || ''}"></div>
+          <div class="two"><div><label class="f">Categoría</label><select class="in" name="category">${[...new Set([...CATS, fv.category].filter(Boolean))].map((c2) => html`<option ${c2 === fv.category ? raw('selected') : ''}>${c2}</option>`)}</select></div>
+            <div><label class="f">Se cobra por</label><select class="in" name="unit">${['proyecto', 'mes', 'pieza', 'hora', 'jornada'].map((u) => html`<option ${u === (fv.unit || 'proyecto') ? raw('selected') : ''}>${u}</option>`)}</select></div></div>
+          <div><label class="f">Descripción (sale en la cotización)</label><input class="in" name="description" value="${fv.description || ''}"></div>
+          <div class="two"><div><label class="f">Incluye en sencillo (5) · uno por línea</label><textarea class="in" name="includes5" placeholder="Landing de 1 sección&#10;Formulario de contacto&#10;1 ronda de cambios">${fv.includes5 || ''}</textarea></div>
+            <div><label class="f">Se suma al subir a fuerte (10)</label><textarea class="in" name="includes10" placeholder="Copy con investigación&#10;Pruebas A/B&#10;Integración con CRM">${fv.includes10 || ''}</textarea></div></div>
+          <div class="two"><div><label class="f">Tarda en sencillo (días hábiles)</label><input class="in" name="days5" type="number" value="${fv.days5 ?? ''}"></div><div><label class="f">Tarda en fuerte (días hábiles)</label><input class="in" name="days10" type="number" value="${fv.days10 ?? ''}"></div></div>
         </form>
         <div class="row sm mut" style="margin:18px 0 8px"><span style="flex:1">Horas por rol</span><span style="width:90px;text-align:center">Sencillo · 5</span><span style="width:90px;text-align:center">Fuerte · 10</span><span style="width:44px"></span></div>
         ${tasks.map((t, i) => html`<div class="row" style="margin-bottom:8px"><select class="in" data-i="${i}" data-f="role">${[...new Set([...roles, t.role])].map((r) => html`<option ${r === t.role ? raw('selected') : ''}>${r}</option>`)}</select><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours" value="${t.hours}"><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours10" value="${t.hours10}"><button class="btn ghost" data-act="rmTask" data-i="${i}" style="padding:8px 12px">✕</button></div>`)}
         <div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><b style="font-weight:500">Nivel de entrega</b><div class="sp"></div><span class="chip ${level >= 8 ? 'dark' : ''}">${level <= 6 ? 'Sencillo' : level >= 9 ? 'Fuerte' : 'Medio'} · ${level}</span></div>
           <input type="range" min="5" max="10" step="1" value="${level}" id="svlv" style="width:100%;margin:10px 0 4px">
-          <div class="mut sm">En este nivel: ${tasks.map((t) => `${t.role} ${hoursAt(t, level)} h`).join(' · ')} = <b>${svcHours(cur, level)} h</b>. El precio de abajo es el de este nivel; en un proyecto custom sube o baja con las horas.</div></div>
+          <div id="svprev">${prev(fv)}</div></div>
         <button class="btn ghost" data-act="addTask" style="padding:8px 14px">+ Rol</button>
         ${isCeo ? html`<div class="card glass" style="margin-top:18px;padding:16px"><div class="row"><div><div class="mut sm">Costo</div><b style="font-weight:500">${c ? (c.miss.length ? `⚠️ falta costo/h de ${c.miss.join(', ')}` : Q(c.cost)) : '—'}</b></div><div class="sp"></div>
           <div><label class="f">Multiplicador</label><input class="in" id="svmk" type="number" step="0.1" value="${cur.markup}" style="width:90px"></div>
@@ -237,6 +249,7 @@ export async function render(el, { me, sub, alive }) {
       });
       $$('[data-f]', $('#drawer')).forEach((inp) => inp.addEventListener('change', () => { sync(); draw(); }));
       $('#svmk')?.addEventListener('change', draw);
+      $$('#sf [name=includes5], #sf [name=includes10], #sf [name=days5], #sf [name=days10]').forEach((x) => x.addEventListener('input', () => mount($('#svprev'), prev({ ...(s || {}), ...curForm() }))));
       $('#svlv').addEventListener('input', (e) => { sync(); level = +e.target.value; const y = $('#drawer').scrollTop; draw(); $('#drawer').scrollTop = y; });
     };
     const sync = () => $$('[data-f]', $('#drawer')).forEach((inp) => { tasks[+inp.dataset.i][inp.dataset.f] = inp.dataset.f === 'role' ? inp.value : +inp.value; });
@@ -319,7 +332,8 @@ export async function render(el, { me, sub, alive }) {
               ${(() => { const sv = services.find((x) => x.id === it.service_id); if (!sv || !(sv.tasks || []).length) return ''; const lv = it.level || sv.level || 5;
                 return html`<div class="qlv"><div class="row sm"><span>Nivel de entrega</span><div class="sp"></div><b style="font-weight:500" data-lvl="${i}">${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h</b></div>
                   <input type="range" min="5" max="10" step="1" value="${lv}" data-qlv="${i}" style="width:100%">
-                  <div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div></div>`; })()}</div>`)}
+                  <div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div>
+                  ${includesAt(sv, lv).length || daysAt(sv, lv) ? html`<div class="sm" style="margin-top:8px" data-inc="${i}">${incHtml(sv, lv)}</div>` : ''}</div>`; })()}</div>`)}
             <div class="row" style="margin-top:10px"><select class="in" id="addSvc"><option value="">+ Agregar del catálogo…</option>
               ${plans ? html`<optgroup label="Planes (mensual)">${plans.plans.map((p) => html`<option value="plan:${p.id}">Plan ${p.name} — ${Q(p.precio)}</option>`)}</optgroup>` : ''}
               ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">✚ Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
@@ -330,7 +344,7 @@ export async function render(el, { me, sub, alive }) {
           <div class="card feat olive" style="align-self:start">
             <div class="chead"><div class="ico">◎</div><h3>Total<br><span class="lbl">${doc.client || 'Sin cliente'}</span></h3></div>
             <div class="big"><span class="cur">Q</span>${Math.round(tt).toLocaleString('en-US')}</div>
-            <div class="split"><div><span class="lbl">Subtotal</span><b>${Q(st)}</b></div>${doc.discount_pct ? html`<div><span class="lbl">Descuento</span><b>-${doc.discount_pct}%</b></div>` : ''}
+            <div class="split"><div><span class="lbl">Subtotal</span><b>${Q(st)}</b></div>${quoteDays(doc) ? html`<div><span class="lbl">Tiempo</span><b>${quoteDays(doc)} días</b></div>` : ''}${doc.discount_pct ? html`<div><span class="lbl">Descuento</span><b>-${doc.discount_pct}%</b></div>` : ''}
               ${cost != null ? html`<div><span class="lbl">🔒 Costo</span><b>${Q(cost)}</b></div><div><span class="lbl">🔒 Margen</span><b style="color:#f3ffc4">${tt ? Math.round(((tt - cost) / tt) * 100) + '%' : '—'}</b></div>` : ''}</div>
             <div class="foot" style="margin-top:22px;opacity:1"><button class="btn cream" data-act="pdf">↓ Ver PDF</button>${qq ? html`<button class="btn ghost" data-act="delQ" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)">🗑</button>` : ''}</div>
           </div>
@@ -353,7 +367,7 @@ export async function render(el, { me, sub, alive }) {
       // Arrastrar el nivel: mientras se mueve solo cambian el texto y el precio; al soltar se recalcula todo.
       $$('[data-qlv]', el).forEach((r) => {
         const i = +r.dataset.qlv, it = doc.items[i], sv = services.find((x) => x.id === it.service_id);
-        r.addEventListener('input', () => { const lv = +r.value; const p = priceAt(sv, lv); $(`[data-lvl="${i}"]`, el).textContent = `${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h`; if (p != null) $(`[data-i="${i}"][data-f="price"]`, el).value = p; });
+        r.addEventListener('input', () => { const lv = +r.value; const p = priceAt(sv, lv); $(`[data-lvl="${i}"]`, el).textContent = `${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h`; if (p != null) $(`[data-i="${i}"][data-f="price"]`, el).value = p; const inc = $(`[data-inc="${i}"]`, el); if (inc) mount(inc, incHtml(sv, lv)); });
         r.addEventListener('change', () => { sync(); it.level = +r.value; const p = priceAt(sv, it.level); if (p != null) it.price = p; draw(); });
       });
     };
@@ -376,7 +390,7 @@ export async function render(el, { me, sub, alive }) {
       toProject: async () => {
         sync();
         const items = doc.items.filter((i) => i.service_id).map((i) => { const sv = services.find((x) => x.id === i.service_id); if (!sv) return null; const lv = i.level || sv.level || 5;
-          return { id: sv.id, name: sv.name, level: lv, hours: svcHours(sv, lv) * (+i.qty || 1), roles: (sv.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * (+i.qty || 1) })), price: (+i.price || 0) * (+i.qty || 1) }; }).filter(Boolean);
+          return { id: sv.id, name: sv.name, level: lv, days: daysAt(sv, lv) || null, includes: includesAt(sv, lv), hours: svcHours(sv, lv) * (+i.qty || 1), roles: (sv.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * (+i.qty || 1) })), price: (+i.price || 0) * (+i.qty || 1) }; }).filter(Boolean);
         const r = await newProject({ team: await teamList(), me, projects: await col('projects').list(), tasks: [], pre: { kind: 'Custom', items, name: `${doc.client} · ${doc.number}`, quote_id: doc.id } });
         if (r) { if (doc.status !== 'Aceptada') { doc.status = 'Aceptada'; try { const q = await C.save(doc); doc = JSON.parse(JSON.stringify(q)); quotes = quotes.map((x) => (x.id === q.id ? q : x)); } catch {} } toast('Proyecto creado desde la cotización ✅'); location.hash = '/operations/pipe'; }
       },
@@ -397,8 +411,8 @@ export async function render(el, { me, sub, alive }) {
         <div class="qto"><div><div class="lbl2">PARA</div><b style="font-weight:500;font-size:15px">${doc.client}</b>${doc.contact ? html`<div>${doc.contact}</div>` : ''}</div>
           <div><div class="lbl2">DE</div><b style="font-weight:500;font-size:15px">Inherent</b><div>inherentglobal.com</div></div></div>
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
-          <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b>${i.level ? html` <span style="color:#6b6257;font-size:11px">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div style="color:#6b6257;font-size:12px">${i.description}</div>` : ''}</td><td class="n">${i.qty}</td><td class="n">${Q(i.price)}</td><td class="n">${Q((+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
-        <div class="qsum"><div><span>Subtotal</span><span>${Q(st)}</span></div>${doc.discount_pct ? html`<div><span>Descuento (${doc.discount_pct}%)</span><span>-${Q(st - tt)}</span></div>` : ''}<div class="tot"><span>Total</span><span>${Q(tt)}</span></div></div>
+          <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b>${i.level ? html` <span style="color:#6b6257;font-size:11px">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div style="color:#6b6257;font-size:12px">${i.description}</div>` : ''}${(() => { const sv = services.find((x) => x.id === i.service_id); if (!sv) return ''; const lv = i.level || sv.level || 5; const inc = includesAt(sv, lv), d = daysAt(sv, lv); return inc.length || d ? html`<div style="color:#4a433a;font-size:11.5px;margin-top:4px">${d ? html`<b style="font-weight:500">Entrega en ${d} días hábiles.</b> ` : ''}${inc.length ? 'Incluye: ' + inc.join(' · ') : ''}</div>` : ''; })()}</td><td class="n">${i.qty}</td><td class="n">${Q(i.price)}</td><td class="n">${Q((+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
+        <div class="qsum"><div><span>Subtotal</span><span>${Q(st)}</span></div>${doc.discount_pct ? html`<div><span>Descuento (${doc.discount_pct}%)</span><span>-${Q(st - tt)}</span></div>` : ''}<div class="tot"><span>Total</span><span>${Q(tt)}</span></div>${quoteDays(doc) ? html`<div><span>Tiempo estimado</span><span>${quoteDays(doc)} días hábiles</span></div>` : ''}</div>
         ${doc.notes ? html`<div class="qnotes"><div class="lbl2">NOTAS Y CONDICIONES</div>${doc.notes.split('\n').map((l) => html`<div>${l}</div>`)}</div>` : ''}
         <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>
       </div>`);

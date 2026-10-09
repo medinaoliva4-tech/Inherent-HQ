@@ -285,7 +285,7 @@ export async function render(el, { sub, alive }) {
   }
 
   // Los prompts para la cuenta de Claude de cada persona (contestan solo JSON, que se pega de vuelta).
-  const posts4 = (l = [], n) => l.slice(0, n).map((x) => `- @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''} · ${x.url}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 220)}`).join('\n') || '(nada)';
+  const posts4 = (l = [], n) => l.slice(0, n).map((x) => `- @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''} · ${x.url}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 150)}`).join('\n') || '(nada)';
   function ideasPrompt(r) {
     const c = data.cfg, au = c.audience || {};
     return `Eres el estratega creativo de Inherent (growth operator en Guatemala). Propón 5 ideas de Reel y 5 de Carrusel para la marca «${data.profile.name}» que el equipo pueda producir esta semana.
@@ -295,13 +295,13 @@ Pilares: ${(c.pillars || []).map((x) => x.name).join(' · ') || '(sin definir: p
 Audiencia: general: ${au.general || '—'} | nicho: ${au.nicho || '—'} | exacto: ${au.exacto || '—'}
 
 Ganadores del nicho:
-${posts4(r.top, 8)}
+${posts4(r.top, 7)}
 
 Referentes:
-${posts4(r.refs, 6)}
+${posts4(r.refs, 5)}
 
 Competencia:
-${posts4(r.comp, 5)}
+${posts4(r.comp, 4)}
 
 Contesta SOLO con este JSON, sin texto antes ni después:
 {"ideas":[{"format":"Reel"|"Carrusel","title":"","hook":"","pillar":"","outline":[""],"why":"","inspired_by":""}]}`;

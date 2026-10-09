@@ -96,3 +96,11 @@ export function svcCost(s, rates, lv = s.level || 5) {
 export const svcPrice = (s, lv) => { const base = svcHours(s, s.level || 5); return s.price && base ? Math.round((s.price * svcHours(s, lv)) / base / 50) * 50 : null; };
 // El perfil de trabajo que suele cubrir cada rol del catálogo (para asignar las tareas del proyecto Custom).
 export const roleToWork = (r) => (/video|edici/i.test(r) ? 'video' : /producci|grabaci|foto/i.test(r) ? 'prod' : /financ|contab/i.test(r) ? 'finance' : /estrateg|ceo/i.test(r) ? 'ceo' : /conten|creativ|diseñ|community|copy|pauta|operador/i.test(r) ? 'content' : 'coo');
+// Qué incluye un servicio en cada nivel: lo del sencillo siempre, y lo del fuerte se va sumando al subir.
+const lines = (t) => String(t || '').split('\n').map((x) => x.replace(/^[-•·\s]+/, '').trim()).filter(Boolean);
+export function includesAt(s, lv = s.level || 5) {
+  const base = lines(s.includes5), extra = lines(s.includes10);
+  return [...base, ...extra.slice(0, Math.round(((lv - 5) / 5) * extra.length))];
+}
+// Cuánto tarda (días hábiles): de los días en nivel 5 a los de nivel 10.
+export const daysAt = (s, lv = s.level || 5) => { const d5 = +s.days5 || 0, d10 = +s.days10 || d5; return d5 ? Math.round(d5 + ((d10 - d5) * (lv - 5)) / 5) : null; };

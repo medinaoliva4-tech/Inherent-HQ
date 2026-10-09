@@ -1,6 +1,6 @@
 // Crear cosas con preguntas, no con formularios. Lo usan Operations, Workspace y Clients.
 import { wizard, col, api, toast, roleName, today, fdate, html, raw, drawer, closeDrawer, $, $$, Q } from './core.js';
-import { DEPTS, deptsOfPlan, phasesFor, tasksFor, meetingsFor, holders, hoursAt, svcHours, svcCost, svcPrice, roleToWork } from './cycle.js';
+import { DEPTS, deptsOfPlan, phasesFor, tasksFor, meetingsFor, holders, hoursAt, svcHours, svcCost, svcPrice, roleToWork, daysAt, includesAt } from './cycle.js';
 
 const cleanPlan = (s) => String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, '');
 
@@ -59,14 +59,14 @@ function levels(list, rates) {
     const row = (sv) => { const l = lv[sv.id], c = svcCost(sv, rates, l), pr = svcPrice(sv, l);
       return html`<div class="lvrow"><div class="row"><b style="font-weight:500">${sv.name}</b><div class="sp"></div><span class="chip ${l >= 8 ? 'dark' : ''}">${l <= 6 ? 'Sencillo' : l >= 9 ? 'Fuerte' : 'Medio'} · ${l}</span></div>
         <input type="range" min="5" max="10" step="1" value="${l}" data-lv="${sv.id}" style="width:100%;margin:8px 0">
-        <div class="row sm mut"><span>${svcHours(sv, l)} h · ${(sv.tasks || []).map((t) => `${t.role} ${hoursAt(t, l)} h`).join(' · ')}</span><div class="sp"></div>${c ? html`<span>Costo ${c.miss.length ? '⚠️' : Q(c.cost)}</span>` : ''}${pr ? html`<span style="margin-left:10px">Precio ${Q(pr)}</span>` : ''}</div></div>`; };
+        <div class="row sm mut"><span>${svcHours(sv, l)} h${daysAt(sv, l) ? ` · ${daysAt(sv, l)} días` : ''} · ${(sv.tasks || []).map((t) => `${t.role} ${hoursAt(t, l)} h`).join(' · ')}</span><div class="sp"></div>${c ? html`<span>Costo ${c.miss.length ? '⚠️' : Q(c.cost)}</span>` : ''}${pr ? html`<span style="margin-left:10px">Precio ${Q(pr)}</span>` : ''}</div></div>`; };
     const draw = () => {
       drawer(html`<div class="row"><span class="chip">Proyecto custom</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
         <h2>¿Qué tan fuerte va cada servicio?</h2><div class="mut sm">5 = entrega sencilla · 10 = entrega fuerte. Las horas de cada rol salen del catálogo.</div>
         <div style="margin-top:14px">${list.map(row)}</div>
         <div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><span class="mut sm">Total</span><div class="sp"></div><b style="font-weight:500">${list.reduce((x, sv) => x + svcHours(sv, lv[sv.id]), 0)} h${rates ? ' · costo ' + Q(list.reduce((x, sv) => x + (svcCost(sv, rates, lv[sv.id])?.cost || 0), 0)) : ''}${list.some((sv) => sv.price) ? ' · precio ' + Q(list.reduce((x, sv) => x + (svcPrice(sv, lv[sv.id]) || 0), 0)) : ''}</b></div></div>
         <div class="row" style="margin-top:16px"><button class="btn" data-act="ok">Crear proyecto</button></div>`, {
-        ok: () => { done = true; closeDrawer(); resolve(list.map((sv) => ({ id: sv.id, name: sv.name, level: lv[sv.id], hours: svcHours(sv, lv[sv.id]), roles: (sv.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv[sv.id]) })), price: svcPrice(sv, lv[sv.id]) }))); },
+        ok: () => { done = true; closeDrawer(); resolve(list.map((sv) => ({ id: sv.id, name: sv.name, level: lv[sv.id], days: daysAt(sv, lv[sv.id]), includes: includesAt(sv, lv[sv.id]), hours: svcHours(sv, lv[sv.id]), roles: (sv.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv[sv.id]) })), price: svcPrice(sv, lv[sv.id]) }))); },
       });
       $$('[data-lv]', $('#drawer')).forEach((r) => r.addEventListener('input', () => { lv[r.dataset.lv] = +r.value; const y = $('#drawer').scrollTop; draw(); $('#drawer').scrollTop = y; }));
     };
@@ -78,7 +78,9 @@ function levels(list, rates) {
 // Una tarea por servicio y rol, con sus horas, para quien tiene ese perfil.
 function customTasks(p, items, team, meEmail) {
   const who = holders(team, meEmail), coo = who('coo') || ''; const start = p.phases?.[0]?.start || today(), end = p.phases?.[p.phases.length - 1]?.end || start;
-  return items.flatMap((i) => i.roles.map((r) => ({ title: `${i.name} · ${r.role} (${r.hours} h)`, project_id: p.id, dept: '', assignee: who(roleToWork(r.role)) || meEmail, accountable: coo, due: end, hours: r.hours, level: i.level, status: 'Por empezar' })));
+  // Si el servicio dice cuánto tarda, la tarea vence ese día (días hábiles desde que arranca el proyecto).
+  const workdays = (n) => { const d = new Date(start + 'T12:00'); let k = 0; while (k < n) { d.setDate(d.getDate() + 1); if (d.getDay() % 6) k++; } return d.toISOString().slice(0, 10); };
+  return items.flatMap((i) => i.roles.map((r) => ({ title: `${i.name} · ${r.role} (${r.hours} h)`, project_id: p.id, dept: '', assignee: who(roleToWork(r.role)) || meEmail, accountable: coo, due: i.days ? workdays(i.days) : end, checklist: (i.includes || []).map((x) => ({ t: x, done: false })), hours: r.hours, level: i.level, status: 'Por empezar' })));
 }
 
 const SUGGEST = ['Reunión con el cliente', 'Guion del reel', 'Editar reel', 'Diseñar carrusel', 'Static ad', 'Programar publicaciones', 'Responder comunidad', 'Revisar entregas', 'Propuesta para cliente'];
