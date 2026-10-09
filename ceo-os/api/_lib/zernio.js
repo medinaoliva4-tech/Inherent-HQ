@@ -21,7 +21,7 @@ export async function inbox(handles) {
     const c = await z(`/inbox/comments/${encodeURIComponent(p.id)}?accountId=${encodeURIComponent(p.accountId)}&limit=10`).catch(() => ({ comments: [] }));
     return { id: p.id, platform: p.platform, account: p.accountUsername, text: String(p.content || '').slice(0, 140), url: p.permalink, picture: p.picture || null, at: p.createdTime, count: p.commentCount,
       comments: (c.comments || []).filter((x) => !x.from?.isOwner).map((x) => ({ id: x.id, text: String(x.message || '').slice(0, 500), from: x.from?.username || x.from?.name || '', at: x.createdTime, replies: x.replyCount || 0, url: x.url })) };
-  }));
+  })).then((l) => l.filter((t) => t.comments.length));
   const conv = await z('/inbox/conversations?status=active&limit=30').catch(() => ({ data: [] }));
   const dms = (conv.data || []).filter((c) => ids.has(c.accountId)).map((c) => ({ id: c.id, platform: c.platform, who: c.participantName || '', last: String(c.lastMessage || '').slice(0, 300), at: c.updatedTime }));
   return { accounts: [...ids].length, comments: threads, dms };
