@@ -21,11 +21,12 @@ http.createServer(async (req, res) => {
   for (const [k, v] of Object.entries(SEC)) res.setHeader(k, v);
   res.status = (c) => ((res.statusCode = c), res);
   res.json = (o) => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(o)); };
-  if (u.pathname.startsWith('/api/')) {
-    req.query = { ...Object.fromEntries(u.searchParams), route: u.pathname.slice(5) };
+  const route = u.pathname.startsWith('/api/') ? u.pathname.slice(5) : u.pathname === '/mcp' || u.pathname.startsWith('/.well-known/') ? u.pathname.slice(1) : null;
+  if (route !== null) {
+    req.query = { ...Object.fromEntries(u.searchParams), route };
     const chunks = []; for await (const c of req) chunks.push(c);
     const raw = Buffer.concat(chunks).toString();
-    try { req.body = raw ? JSON.parse(raw) : {}; } catch { req.body = {}; }
+    try { req.body = raw ? JSON.parse(raw) : {}; } catch { req.body = String(req.headers['content-type'] || '').includes('urlencoded') ? Object.fromEntries(new URLSearchParams(raw)) : {}; }
     return api(req, res);
   }
   let p = path.join(root, 'public', u.pathname === '/' ? 'index.html' : u.pathname);

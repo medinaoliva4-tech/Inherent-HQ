@@ -312,8 +312,10 @@ export const LOGO = {
   instagram: raw('<svg viewBox="0 0 24 24"><defs><linearGradient id="igg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".6" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#igg)"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.2" fill="#fff"/></svg>'),
   tiktok: raw('<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#111"/><path d="M15.6 5.5c.5 1.6 1.7 2.7 3.3 2.9v2.4c-1.2 0-2.3-.4-3.3-1v4.6a4.4 4.4 0 1 1-3.8-4.4v2.5a1.9 1.9 0 1 0 1.3 1.9V5.5z" fill="#fff"/></svg>'),
   sheets: raw('<svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#0f9d58"/><path d="M15 2v5h5z" fill="#87ceac"/><rect x="7.5" y="10.5" width="9" height="7" rx=".6" fill="none" stroke="#fff" stroke-width="1.4"/><path d="M7.5 14h9M11 10.5v7" stroke="#fff" stroke-width="1.4"/></svg>'),
-  claude: raw('<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#d97757"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14M7.1 7.1l9.8 9.8M16.9 7.1l-9.8 9.8"/></g></svg>'),
-  codex: raw('<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#111"/><path d="M8.5 9.5L11 12l-2.5 2.5M12.5 15h3.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'),
+  claude: raw('<img src="/brand/ai/claude.svg" alt="Claude">'),
+  chatgpt: raw('<img src="/brand/ai/chatgpt.svg" alt="ChatGPT">'),
+  codex: raw('<img src="/brand/ai/codex.svg" alt="Codex">'),
+  claudecode: raw('<img src="/brand/ai/claudecode.svg" alt="Claude Code">'),
   windsor: raw('<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#1f2a44"/><path d="M5 8l2.5 8L10 9l2 7 2-7 2.5 7L19 8" fill="none" stroke="#7fd1ff" stroke-width="1.8" stroke-linejoin="round"/></svg>'),
 };
 // Un botón o tarjeta para conectar. `on` = ya conectado (muestra el nombre y «Cambiar»).

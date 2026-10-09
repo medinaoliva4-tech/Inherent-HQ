@@ -7,6 +7,7 @@ import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
 import * as zernio from './_lib/zernio.js';
 import * as mcp from './_lib/mcp.js';
+import * as oauth from './_lib/oauth.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -52,7 +53,7 @@ on('GET', 'auth/dev', async (req, res) => {
 on('GET', 'me', async (req, res) => {
   const u = await guard(req, res, undefined, { client: true }); if (!u) return;
   const t = await db.get('team', u.email);
-  res.json({ ...u, areas: areasFor(u.role, u.roles), google: t?.google || {}, mcp: Boolean(t?.mcp_hash) });
+  res.json({ ...u, areas: areasFor(u.role, u.roles), google: t?.google || {}, mcp: Boolean(t?.mcp_hash) || Boolean(t?.mcp_grants?.length), mcp_apps: (t?.mcp_grants || []).map(({ g, name, at }) => ({ g, name, at })) });
 });
 // Cada quien cambia su propia foto (una imagen chica que el navegador ya recortó).
 on('PUT', 'me/photo', async (req, res) => {
@@ -522,14 +523,57 @@ on('GET', 'portal', async (req, res) => {
   res.json(out);
 });
 
-// ---------- Conector de Claude / Codex (MCP): un link personal por persona ----------
+// ---------- Conector MCP (Claude, ChatGPT, Claude Code, Codex) ----------
+// Como cualquier conector: se pega `https://<app>/mcp`, la app abre Inherent OS, la persona entra
+// con Google y da «Permitir» (OAuth). Claude actúa como esa persona y solo ve lo que su perfil permite.
 const appUrl = (req) => (process.env.APP_URL?.trim() || `https://${req.headers.host}`).replace(/\/$/, '');
-on('POST', 'me/mcp', async (req, res) => {
-  const u = await guard(req, res); if (!u) return;
-  const t = await mcp.newToken(u.email);
-  res.json({ url: `${appUrl(req)}/api/mcp/${t}` });
+const cors = (res) => { res.setHeader('Access-Control-Allow-Origin', '*'); res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Mcp-Protocol-Version, Mcp-Session-Id'); res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); res.setHeader('Access-Control-Expose-Headers', 'WWW-Authenticate'); };
+const formBody = (req) => { const b = body(req); if (Object.keys(b).length || typeof req.body !== 'string') return b; return Object.fromEntries(new URLSearchParams(req.body)); };
+for (const p of ['mcp', 'oauth/token', 'oauth/register', 'oauth/revoke', '.well-known/oauth-authorization-server', '.well-known/oauth-protected-resource', '.well-known/oauth-protected-resource/mcp', '.well-known/openid-configuration']) on('OPTIONS', p, async (req, res) => { cors(res); res.status(204).end(); });
+for (const p of ['', '/mcp']) {
+  on('GET', '.well-known/oauth-protected-resource' + p, async (req, res) => { cors(res); res.json(oauth.resourceMeta(appUrl(req))); });
+  for (const w of ['oauth-authorization-server', 'openid-configuration']) on('GET', `.well-known/${w}${p}`, async (req, res) => { cors(res); res.json(oauth.meta(appUrl(req))); });
+}
+on('POST', 'oauth/register', async (req, res) => { cors(res); const r = await oauth.register(formBody(req)); res.status(r.status).json(r.json); });
+on('GET', 'oauth/authorize', async (req, res) => {
+  const r = await oauth.authorize(req.query);
+  const to = r.redirect || (r.id ? `/?connect=${r.id}` : `/?error=conector&detail=${encodeURIComponent(r.error)}`);
+  res.writeHead(302, { Location: to }).end();
 });
-on('DELETE', 'me/mcp', async (req, res) => { const u = await guard(req, res); if (!u) return; await mcp.revoke(u.email); res.json({ ok: true }); });
+on('POST', 'oauth/token', async (req, res) => { cors(res); const r = await oauth.token(formBody(req)); res.status(r.status).json(r.json); });
+on('POST', 'oauth/revoke', async (req, res) => { cors(res); await oauth.revokeToken(formBody(req).token); res.status(200).end(); });
+// La pantalla de «Permitir» (en la app) pregunta qué app es y luego decide.
+on('GET', 'oauth/request', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const r = await oauth.request(req.query.id);
+  if (!r) return res.status(404).json({ error: 'La solicitud venció. Vuelve a conectar desde la app.' });
+  res.json({ client_name: r.client_name, host: new URL(r.redirect_uri).host });
+});
+on('POST', 'oauth/decide', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const b = body(req);
+  const to = await oauth.decide(b.id, u.email, b.allow === true);
+  if (!to) return res.status(404).json({ error: 'La solicitud venció. Vuelve a conectar desde la app.' });
+  console.log(JSON.stringify({ evt: 'mcp_connect', email: u.email, allow: b.allow === true }));
+  res.json({ redirect: to });
+});
+on('DELETE', 'me/mcp', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const g = req.query.g ? String(req.query.g) : null;
+  await oauth.revokeAll(u.email, g);
+  if (!g) await mcp.revoke(u.email); // también el link viejo, si existía
+  res.json({ ok: true });
+});
+on('POST', 'mcp', async (req, res) => {
+  cors(res);
+  const tok = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+  const u = await mcp.userOf(await oauth.emailOf(tok));
+  if (!u) { res.setHeader('WWW-Authenticate', `Bearer resource_metadata="${appUrl(req)}/.well-known/oauth-protected-resource", scope="${oauth.SCOPE}"`); return res.status(401).json({ error: 'invalid_token', error_description: 'Conecta Inherent OS de nuevo' }); }
+  const r = await mcp.run(u, body(req));
+  r.json ? res.status(r.status).json(r.json) : res.status(r.status).end();
+});
+on('GET', 'mcp', async (req, res) => { cors(res); res.status(405).json({ error: 'Este es el servidor MCP de Inherent OS. Agrégalo como conector en Claude, ChatGPT o Codex.' }); });
+// Links personales viejos (/api/mcp/<token>): siguen sirviendo hasta que la persona desconecte.
 on('POST', 'mcp/:token', async (req, res) => {
   const r = await mcp.handle(req.params.token, body(req));
   r.json ? res.status(r.status).json(r.json) : res.status(r.status).end();
