@@ -1,5 +1,6 @@
 import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initials, IC, $, docView, docHead, ask, confirmAsk , teamList, wizard } from '../core.js';
 import { upcoming, meetingRows, schedule, markDone } from '../meetings.js';
+import { fit, priceLabel, monthly, avatar, CADENCE } from '../mentors.js';
 import { loadPosts, postsBoard } from '../posts.js';
 
 // Clients: la página entera de cada cliente. El plan y los accesos salen del repo;
@@ -40,7 +41,7 @@ const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDat
 
 export async function render(el, { me, sub, alive }) {
   const AC = col('accounts');
-  const [repo, accounts, projects, tasks, team] = await Promise.all([api('repo/clients').catch(() => ({ clients: [] })), AC.list(), col('projects').list(), col('tasks').list(), teamList()]);
+  const [repo, accounts, projects, tasks, team, mentors] = await Promise.all([api('repo/clients').catch(() => ({ clients: [] })), AC.list(), col('projects').list(), col('tasks').list(), teamList(), col('mentors').list().catch(() => [])]);
   const clients = repo.clients.filter((c) => c.hasPlan).map((c) => ({ ...c, plan: cleanPlan(c.plan) }));
   const onboarding = repo.clients.filter((c) => !c.hasPlan);
   const acct = (slug) => accounts.find((a) => a.id === 'acc-' + slug);
@@ -87,13 +88,20 @@ export async function render(el, { me, sub, alive }) {
             <div class="row" style="gap:8px"><button class="btn cream" data-act="pdf">↓ Roadmap PDF</button><button class="btn ghost" data-act="editAcc" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)">Editar datos</button></div></div>
           <div class="split" style="margin-top:26px"><div><span class="lbl">Roadmap</span><b>${done}/${rm.length}</b></div><div><span class="lbl">Proyectos</span><b>${ps.length}</b></div><div><span class="lbl">Tareas abiertas</span><b>${tk.filter((t) => t.status !== 'Hecha').length}</b></div><div><span class="lbl">Entregables</span><b>${arts.length}</b></div></div>
         </div>
-        <div class="row" style="gap:8px;flex-wrap:wrap;margin:18px 0 6px">${[['rm', 'Roadmap'], ['mt', 'Reuniones'], ['tl', 'Timeline'], ['tk', 'Tareas'], ['ct', 'Contenido'], ['ac', 'Accesos'], ['en', 'Entregables'], ['pl', 'Plan']].map(([k, l]) => html`<button class="chip" data-act="jump" data-k="${k}" style="padding:8px 14px">${l}</button>`)}</div>
+        <div class="row" style="gap:8px;flex-wrap:wrap;margin:18px 0 6px">${[['rm', 'Roadmap'], ['es', 'Especialista'], ['mt', 'Reuniones'], ['tl', 'Timeline'], ['tk', 'Tareas'], ['ct', 'Contenido'], ['ac', 'Accesos'], ['en', 'Entregables'], ['pl', 'Plan']].map(([k, l]) => html`<button class="chip" data-act="jump" data-k="${k}" style="padding:8px 14px">${l}</button>`)}</div>
 
         ${a.drive ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin:8px 0 4px"><a class="connect on" href="${a.drive}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="lg">${IC.drive}</span>Drive de ${a.name}</a>${Object.entries(a.drive_dirs || {}).map(([k, u]) => html`<a class="chip" href="${u}" target="_blank" rel="noopener noreferrer" style="padding:7px 12px;text-decoration:none;color:inherit">📁 ${k.replace(/^\d+ /, '')}</a>`)}</div>`
           : html`<div class="connectcard" style="margin:8px 0 4px"><span class="lg big">${IC.drive}</span><div class="grow"><b style="font-weight:500">Crea el Drive de ${a.name}</b><div class="mut sm">Onboarding · Assets · Guiones · Crudo · Por postear · Entregables · Reportes${isGrowth() ? ' · Números y auditoría' : ''}. Quedan conectadas a Content y al Workspace.</div></div><button class="btn" data-act="mkdrive">Crear carpetas</button></div>`}
 
         <div class="sec-title" id="s-rm"><h2>Roadmap</h2><span class="mut sm">Metas · cómo se miden · desglose · checkpoints</span><div class="sp"></div><button class="btn" data-act="gadd">+ Meta</button></div>
         ${rm.length ? html`<div class="goals">${rm.map(goalCard)}</div>` : html`<div class="empty"><b>Sin metas todavía</b>Una meta trae cómo la medimos, dónde estamos, a dónde vamos, las tareas y cuándo revisamos.</div>`}
+
+        <div class="sec-title" id="s-es"><h2>Especialista</h2><span class="mut sm">${isGrowth() ? 'Incluido en su plan Growth, dentro del techo por sesión' : 'Su plan no lo incluye: va como add-on facturado'}</span><div class="sp"></div><button class="btn ghost" data-act="esadd">+ Especialista</button></div>
+        ${(a.mentors || []).length ? html`<div class="grid g3">${a.mentors.map((x, k) => { const m = mentors.find((y) => y.id === x.id); if (!m) return ''; const [f, c] = isGrowth() ? fit(m) : ['Add-on facturado al cliente', 'red']; const g = goalsOf(a)[x.goal];
+          return html`<div class="card mcard"><div class="row" style="gap:10px">${avatar(m)}<div style="min-width:0;flex:1"><b style="font-weight:500">${m.name}</b><div class="mut sm">${m.industry} · ${m.platform || ''}</div></div><button class="sm mut" data-act="esdel" data-k="${k}">✕</button></div>
+            <div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap"><b style="font-weight:500">${priceLabel(m)}</b><span class="mut sm">· ${CADENCE.find(([v]) => v === x.cadence)?.[1] || ''}</span>${monthly(m, x.cadence) ? html`<span class="mut sm">≈ $${monthly(m, x.cadence)}/mes</span>` : ''}</div>
+            <span class="chip ${c}" style="font-size:11px;margin-top:8px">${f}</span>${g ? html`<div class="sm" style="margin-top:8px">🎯 Para la meta: <b style="font-weight:500">${g.goal}</b></div>` : ''}${x.note ? html`<div class="mut sm" style="margin-top:4px">${x.note}</div>` : ''}</div>`; })}</div>`
+          : html`<div class="mut sm">Sin especialista. ${mentors.length ? 'Agrégalo con «+ Especialista» y ligalo a una meta del roadmap.' : 'Primero carga la red en Sales → Especialistas.'}</div>`}
 
         <div class="sec-title" id="s-mt"><h2>Reuniones</h2><span class="mut sm">Las de cada proyecto, con quiénes van y qué se aprueba</span></div>
         <div class="card">${meetingRows(upcoming(ps), team, me, true)}</div>
@@ -157,6 +165,7 @@ export async function render(el, { me, sub, alive }) {
           <div class="sp"></div><span class="mut sm">${g.due ? 'Para el ' + fdateLong(g.due) : 'Sin fecha'}</span><button class="sm mut" data-act="gedit" data-g="${g.i}" title="Editar">✎</button><button class="sm mut" data-act="gdel" data-g="${g.i}" title="Quitar">✕</button></div>
         ${g.metric ? html`<div class="gmetric"><span class="mut sm">📏 ${g.metric}</span><div class="row" style="gap:10px;margin-top:6px"><span class="sm">Hoy <b style="font-weight:500">${g.current || g.baseline || '—'}</b></span><div class="gbar"><i style="width:${pct ?? 0}%"></i></div><span class="sm">Meta <b style="font-weight:500">${g.target || '—'}</b></span><span class="sm mut" style="width:40px;text-align:right">${pct == null ? '' : pct + '%'}</span></div></div>` : html`<div class="mut sm" style="margin-top:6px">Sin métrica: ✎ para definir cómo se mide.</div>`}
         ${g.note ? html`<div class="mut sm" style="margin-top:6px">${g.note}</div>` : ''}
+        ${(a.mentors || []).filter((x) => x.goal === g.i).map((x) => { const m = mentors.find((y) => y.id === x.id); return m ? html`<div class="row sm" style="gap:8px;margin-top:8px">${avatar(m, 24)}<span>Con <b style="font-weight:500">${m.name}</b> · ${m.industry} · ${priceLabel(m)}</span></div>` : ''; })}
         <div class="gcols">
           <div><div class="lbl" style="color:var(--mut)">Desglose · ${td}/${(g.tasks || []).length}</div>
             ${(g.tasks || []).map((t, k) => html`<label class="check" style="padding:3px 0"><input type="checkbox" data-act="gtask" data-g="${g.i}" data-k="${k}" ${t.done ? raw('checked') : ''}> <span style="${t.done ? 'text-decoration:line-through;opacity:.5' : ''}">${t.t}</span></label>`)}
@@ -179,6 +188,7 @@ export async function render(el, { me, sub, alive }) {
           ${g.metric ? html`<div style="font-size:12.5px;margin-top:6px"><b style="font-weight:500">Cómo se mide:</b> ${g.metric} · hoy ${g.current || g.baseline || '—'} → meta ${g.target || '—'}${pct == null ? '' : ` (${pct}%)`}</div>` : ''}
           ${(g.tasks || []).length ? html`<div style="font-size:12.5px;margin-top:6px"><b style="font-weight:500">Desglose:</b> ${g.tasks.map((t) => (t.done ? '✓ ' : '○ ') + t.t).join(' · ')}</div>` : ''}
           ${(g.checks || []).length ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Checkpoints:</b> ${g.checks.map((c) => `${fdate(c.date)}${c.done ? ` ✓${c.value ? ' ' + c.value : ''}` : ''}`).join(' · ')}</div>` : ''}
+          ${(a.mentors || []).filter((x) => x.goal === rm.indexOf(g)).map((x) => { const m = mentors.find((y) => y.id === x.id); return m ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Especialista:</b> ${m.name} · ${m.industry}</div>` : ''; })}
           ${g.note ? html`<div style="color:#4a433a;font-size:12.5px;margin-top:4px">${g.note}</div>` : ''}</div>`; })}
         <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>`);
     }
@@ -187,6 +197,21 @@ export async function render(el, { me, sub, alive }) {
       jump: (t) => $('#s-' + t.dataset.k, el)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
       pdf: roadmapPdf,
       mkdrive: async (t) => { t.disabled = true; t.textContent = 'Creando…'; try { const r = await api('drive/client', { method: 'POST', body: { slug, growth: isGrowth() } }); const fresh = await AC.get(a.id).catch(() => null); a = { ...(fresh || a), drive: r.drive, drive_dirs: r.dirs, assets: (fresh || a).assets || r.dirs['01 Assets de marca'] }; toast('Drive creado y conectado ✅'); paint(); } catch (e) { toast(e.message, true); t.disabled = false; t.textContent = 'Crear carpetas'; } },
+      esadd: async () => {
+        if (!mentors.length) return toast('Primero carga la red en Sales → Especialistas', true);
+        const goals = goalsOf(a);
+        const v = await ask('Agregar especialista', [
+          { k: 'id', l: 'Especialista', t: 'select', req: true, opts: [...mentors].sort((x, z) => (x.industry + x.price).localeCompare(z.industry + z.price)).map((m) => [m.id, `${m.industry} · ${m.name} · ${priceLabel(m)}`]) },
+          { k: 'cadence', l: 'Cada cuánto', t: 'select', opts: CADENCE, v: /compound/i.test(info?.plan || '') ? 'mensual' : 'trimestral', half: true },
+          { k: 'goal', l: 'Para qué meta del roadmap', t: 'select', opts: [['', '— Ninguna'], ...goals.map((g, i) => [String(i), g.goal])], half: true },
+          { k: 'note', l: 'Para qué lo traemos', t: 'textarea' },
+        ], 'Agregar');
+        if (!v) return;
+        const m = mentors.find((x) => x.id === v.id);
+        if (m && fit(m)[1] === 'red' && isGrowth() && !(await confirmAsk(`${m.name} pasa el techo por sesión del plan: va como add-on facturado al cliente. ¿Agregarlo igual?`))) return;
+        if (await saveAcc({ ...a, mentors: [...(a.mentors || []), { id: v.id, cadence: v.cadence, goal: v.goal === '' ? null : +v.goal, note: v.note }] })) { toast('Especialista agregado ✅'); paint(); }
+      },
+      esdel: async (t) => { if (!(await confirmAsk('¿Quitar este especialista del cliente?'))) return; if (await saveAcc({ ...a, mentors: a.mentors.filter((_, k) => k !== +t.dataset.k) })) paint(); },
       gadd: async () => { const g = await goalWizard(); if (g) { await saveGoals([...G(), g]); toast('Meta agregada ✅'); } },
       gst: async (t) => { const g = G(); const x = g[+t.dataset.g]; x.status = { todo: 'now', now: 'done', done: 'todo' }[x.status] || 'now'; await saveGoals(g); },
       gedit: async (t) => { const g = G(); const x = g[+t.dataset.g]; const v = await ask('Editar meta', [{ k: 'goal', l: 'Meta', v: x.goal, req: true }, { k: 'metric', l: 'Cómo se mide', v: x.metric }, { k: 'baseline', l: 'Al arrancar', v: x.baseline, half: true }, { k: 'current', l: 'Hoy', v: x.current, half: true }, { k: 'target', l: 'Meta', v: x.target, half: true }, { k: 'due', l: 'Para cuándo', t: 'date', v: x.due, half: true }, { k: 'note', l: 'Nota (sale en el PDF)', t: 'textarea', v: x.note }]); if (!v) return; g[+t.dataset.g] = { ...x, ...v }; await saveGoals(g); },
