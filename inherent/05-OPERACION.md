@@ -366,6 +366,24 @@ EQUIPO terminado  →  agentes se auto-revisan  →  br-guardian valida
 🔒 **La secretaria nunca dice costos, márgenes ni nada de otro cliente, ni compromete precio,
 fecha o alcance.** Eso lo decide el CEO.
 
+### El Drive de cada cliente
+
+**El material de cada cliente vive en Google Drive**, dentro de la carpeta de entregas de Inherent.
+**Inherent OS crea las carpetas y las conecta**: los guiones, lo que va por postear y los assets
+se ven desde la app.
+
+```
+CLIENTE/
+├── 00 Onboarding
+├── 01 Assets de marca          → los assets del cliente en Inherent OS
+├── 02 Guiones                  → Content · Guiones
+├── 03 Crudo (grabaciones)
+├── 04 Por postear              → Content · Por postear y Planner
+├── 05 Entregables
+├── 06 Reportes
+└── 07 Números y auditoría      🟨 solo la línea Growth
+```
+
 ### El ritmo del mes
 
 | Cuándo | Qué corre | Rol |
