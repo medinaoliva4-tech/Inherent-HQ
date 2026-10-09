@@ -710,3 +710,6 @@ a.btn{text-decoration:none}
 
 /* En el cel la sección nueva entra solo con fundido: el desliz hacia arriba se sentía como un brinco */
 @media (max-width:760px){#main.enter>*{animation-name:fade}}
+
+.homevids{grid-template-columns:repeat(3,1fr)!important;gap:12px}
+@media (max-width:760px){.homevids{grid-template-columns:1fr 1fr!important}.homevids>*:nth-child(3){display:none}}
