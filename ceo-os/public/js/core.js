@@ -41,6 +41,19 @@ export async function api(path, opts = {}) {
   return j;
 }
 // Colecciones de la base de datos
+// El equipo, con la foto que cada quien subió por encima de la de Google.
+export const teamList = async () => (await api('db/team')).items.map((p) => ({ ...p, google_picture: p.picture || null, picture: p.photo || p.picture || null }));
+// Para guardar una persona: devuelve la foto de Google a su lugar (la de perfil va en `photo`).
+export const teamDoc = (p) => { const { google_picture, ...rest } = p; return { ...rest, picture: google_picture ?? rest.picture ?? null }; };
+// Recorta una imagen a un cuadrado chico (para fotos de perfil) y la devuelve como data URL JPEG.
+export function squareImage(file, size = 256) {
+  return new Promise((ok, ko) => {
+    const img = new Image(); const url = URL.createObjectURL(file);
+    img.onload = () => { const c = document.createElement('canvas'); c.width = c.height = size; const s = Math.min(img.width, img.height);
+      c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size); URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', 0.85)); };
+    img.onerror = () => { URL.revokeObjectURL(url); ko(new Error('No pude leer esa imagen')); }; img.src = url;
+  });
+}
 export const col = (name) => ({
   list: async () => (await api('db/' + name)).items,
   get: (id) => api(`db/${name}/${encodeURIComponent(id)}`),
@@ -67,7 +80,8 @@ export function closeDrawer() { $('#drawer').classList.remove('on'); $('#veil').
 export function ask(title, fields, okLabel = 'Guardar') {
   return new Promise((resolve) => {
     const dlg = document.createElement('dialog'); dlg.className = 'dlg';
-    const input = (f) => f.t === 'select' ? html`<select class="in" name="${f.k}">${(f.opts || []).map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return html`<option value="${v}" ${String(v) === String(f.v ?? '') ? raw('selected') : ''}>${l}</option>`; })}</select>`
+    const input = (f) => f.t === 'checks' ? html`<div class="checks">${(f.opts || []).map(([v, l]) => html`<label class="check"><input type="checkbox" name="${f.k}" value="${v}" ${(f.v || []).includes(v) ? raw('checked') : ''}> ${l}</label>`)}</div>`
+      : f.t === 'select' ? html`<select class="in" name="${f.k}">${(f.opts || []).map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return html`<option value="${v}" ${String(v) === String(f.v ?? '') ? raw('selected') : ''}>${l}</option>`; })}</select>`
       : f.t === 'textarea' ? html`<textarea class="in" name="${f.k}">${f.v ?? ''}</textarea>`
       : html`<input class="in" name="${f.k}" type="${f.t || 'text'}" value="${f.v ?? ''}" ${f.t === 'number' ? raw('step="any"') : ''}>`;
     const rows = []; let pend = [];
@@ -80,7 +94,7 @@ export function ask(title, fields, okLabel = 'Guardar') {
     form.onsubmit = (e) => {
       e.preventDefault();
       const out = {};
-      for (const f of fields) { let v = form.elements[f.k].value.trim(); if (f.t === 'number') v = v === '' ? null : Number(v); out[f.k] = v; }
+      for (const f of fields) { if (f.t === 'checks') { out[f.k] = [...form.querySelectorAll(`input[name="${f.k}"]:checked`)].map((x) => x.value); continue; } let v = form.elements[f.k].value.trim(); if (f.t === 'number') v = v === '' ? null : Number(v); out[f.k] = v; }
       const miss = fields.find((f) => f.req && (out[f.k] === '' || out[f.k] == null));
       if (miss) return toast(`Falta: ${miss.l}`, true);
       resolve(out); dlg.close();
@@ -196,18 +210,6 @@ export const embedUrl = (u) => {
   return null;
 };
 
-// ---------- Al repo: muestra exactamente qué archivo se escribe y lo manda (CEO) o lo propone (equipo) ----------
-export async function toRepo(kind, ref) {
-  let it; try { it = await api('repo/preview', { method: 'POST', body: { kind, ref } }); } catch (e) { return toast(e.message, true); }
-  drawer(html`<div class="row"><span class="chip">${it.direct ? 'Se guarda en el repo' : 'Propuesta para el CEO'}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
-    <h2>${it.summary}</h2><div class="mut sm" style="margin:6px 0 14px"><code>${it.path}</code></div>
-    ${it.direct && !it.ready ? html`<div class="warnbox" style="margin-bottom:12px">Falta <b>GITHUB_TOKEN</b> en Vercel para poder escribir en el repo.</div>` : ''}
-    <div class="repo-pre">${it.content}</div>
-    <div class="row" style="margin-top:16px"><button class="btn" data-act="send">${it.direct ? '⇪ Guardar en el repo' : '⇪ Enviar al CEO'}</button><button class="btn ghost" data-act="close">Cancelar</button></div>
-    <div class="mut sm" style="margin-top:10px">${it.direct ? 'Se hace un commit en main y la app se actualiza sola en ~1 minuto.' : 'El CEO lo revisa y lo aprueba antes de que entre al repo.'}</div>`,
-  { send: async (b) => { b.disabled = true; try { const r = await api('repo/sync', { method: 'POST', body: { kind, ref } }); closeDrawer(); toast(r.queued ? 'Enviado al CEO para aprobar ✅' : r.unchanged ? 'El repo ya estaba igual ✅' : 'Guardado en el repo ✅ · se ve en ~1 min'); } catch (e) { b.disabled = false; toast(e.message, true); } } });
-}
-
 // ---------- Diagramas (Mermaid, servido desde /vendor, modo estricto: sin HTML ni scripts) ----------
 let mermaidP = null;
 function loadMermaid() {
@@ -231,3 +233,21 @@ export async function diagrams(root = document) {
   }
 }
 export function diagram(src) { setTimeout(diagrams, 0); return html`<div class="mmd">${src}</div>`; }
+
+// Perfiles de trabajo: se asignan a las personas en Team. Una persona puede tener varios.
+export const WORK_ROLES = [['ceo', 'CEO'], ['coo', 'COO · Operaciones'], ['content', 'Content · Agent operator'], ['video', 'Video editor · Agent operator'], ['finance', 'Finance + Business mapping']];
+export const roleName = (k) => (WORK_ROLES.find(([x]) => x === k) || [k, k])[1];
+
+// ---------- Subir a Google Drive (directo del navegador a Google, con barra de avance) ----------
+export async function uploadToDrive(file, name, onProgress = () => {}, folder) {
+  const { url } = await api('google/upload', { method: 'POST', body: { name: name || file.name, mime: file.type || 'application/octet-stream', size: file.size, folder } });
+  const up = await new Promise((ok, ko) => {
+    const x = new XMLHttpRequest(); x.open('PUT', url);
+    x.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+    x.upload.onprogress = (e) => e.lengthComputable && onProgress(e.loaded / e.total);
+    x.onload = () => (x.status < 300 ? ok(JSON.parse(x.responseText || '{}')) : ko(new Error(`Drive ${x.status}`)));
+    x.onerror = () => ko(new Error('Se cortó la subida. Revisa tu internet.'));
+    x.send(file);
+  });
+  return api('google/upload/done', { method: 'POST', body: { id: up.id } });
+}

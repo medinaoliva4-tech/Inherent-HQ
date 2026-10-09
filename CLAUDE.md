@@ -21,7 +21,6 @@ inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── 06-ECONOMIA.md         🔒 cuánto cuesta y cuánto queda
 ├── 07-COMUNICACION.md     cómo lo decimos — brief de web
 ├── inherent-social-media/ Inherent como cliente — nuestras propias redes, plan Marketing Pro
-├── biblioteca/            SOPs y playbooks del equipo — se escriben en CEO OS (Library)
 └── administracion/        skills para administrar Inherent: caja, cobros, SAT, ventas, contratos
 
 agents/                    ← LOS AGENTES — uno por etapa del pipeline
@@ -320,7 +319,6 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 | Los roles, el pipeline o el calendario | `inherent/05-OPERACION.md` |
 | 🔒 Costos, márgenes, capacidades MCP | `inherent/06-ECONOMIA.md` |
 | Copy, tono o el brief de la web | `inherent/07-COMUNICACION.md` |
-| Un SOP, playbook o guía del equipo | `inherent/biblioteca/` |
 | Administrar Inherent: caja, cobros, impuestos, ventas | `inherent/administracion/` |
 | Ver y operar la empresa en una web *(finanzas, sales, operations…)* | `ceo-os/README.md` |
 | Qué instalar en una computadora nueva | `INSTALAR.md` |

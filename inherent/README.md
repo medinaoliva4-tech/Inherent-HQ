@@ -14,7 +14,6 @@
 | **07** | [`07-COMUNICACION.md`](07-COMUNICACION.md) | **¿Cómo lo decimos?** | El brief de la web: qué sentir, qué decir, el tono y la tabla de traducción |
 | 🏠 | [`inherent-social-media/`](inherent-social-media/) | **¿Y nuestras redes?** | Inherent como cliente: el mismo pipeline, plan Marketing Pro, lo operan el CEO y el COO |
 | 💼 | [`administracion/`](administracion/) | **¿Cómo administramos Inherent?** | Caja, cobros, cierre de mes, impuestos SAT, ventas, contratos y contratación |
-| 📚 | [`biblioteca/`](biblioteca/) | **¿Cómo lo hacemos?** | SOPs, playbooks y guías del equipo. Se escriben en CEO OS → Library y entran con el OK del CEO |
 
 ---
 

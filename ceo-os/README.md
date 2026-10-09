@@ -20,21 +20,12 @@ Se entra con **Google** y solo con cuentas **@inherentglobal.com**.
   La app no escribe guiones: los escribe ④ Creatividad en Claude Code.
 - **Todo lo demás:** base de datos Postgres propia (Neon, desde Vercel).
 
-## De la app al repo
+## Workspace por perfiles
 
-Los botones **⇪ Al repo** muestran el archivo exacto antes de escribirlo. El CEO guarda directo
-(commit en `main`); el resto del equipo **propone** y el CEO aprueba en **Al repo** (menú del avatar).
-Solo se escriben estas rutas, armadas desde la base, nunca texto libre del navegador:
-
-| Desde | Archivo |
-|---|---|
-| Clients → Roadmap | `<perfil>/01-estrategia/roadmap.md` |
-| Clients → Accesos | La sección `ceo-os:accesos` de `<perfil>/00-onboarding/LINKS.md` |
-| Content → Fuentes | `<perfil>/99-referencias/investigacion/competencia.md` |
-| Content → Por postear | `<perfil>/04-contenido/<AAAA-MM>/publicacion/por-postear.md` |
-| Library | `inherent/biblioteca/<carpeta>/<documento>.md` |
-
-Finanzas, nómina, leads y contraseñas nunca salen de la base.
+Cada persona tiene uno o varios **perfiles de trabajo** (Team → su perfil): CEO, COO, Content,
+Video editor, Finance + Business mapping. Su Workspace muestra lo de cada perfil: checklist del ciclo,
+SOPs de la Library marcados para ese perfil, subir trabajo a revisión (a su Google Drive) y el
+material del cliente. Todos tienen kanban personal y de la empresa.
 
 ## Accesos
 
@@ -58,7 +49,7 @@ El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez qu
 | `ALLOWED_DOMAIN` | Opcional. Por defecto `inherentglobal.com` |
 | `APIFY_TOKEN` | Para scrapear winners (Instagram y TikTok) |
 | `CRON_SECRET` | Para el scrape semanal (Vercel Cron, lunes 13:00 UTC; cierre a las 16:00). Sin él, el cron no corre |
-| `GITHUB_TOKEN` | Para escribir en el repo desde la app (botones «⇪ Al repo»). Token *fine-grained* solo de este repo, con **Contents: Read and write**. Leer no lo necesita: el build copia el repo (`scripts/snapshot.mjs`) |
+| `GITHUB_TOKEN` | No hace falta. La app solo **lee** el repo: lo copia en cada build (`scripts/snapshot.mjs`). El repo guarda lo macro; el trabajo del día a día vive en la app |
 
 ### Google (una vez)
 
