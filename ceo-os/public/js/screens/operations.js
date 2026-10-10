@@ -37,7 +37,7 @@ export async function render(el, { me, sub, alive }) {
         return html`<div class="card feat ${p.color || COLORS[i % 3]}" style="min-height:230px;cursor:pointer" data-act="pick" data-id="${p.id}">
           <div class="chead"><div class="ico">${IC.ring(Math.max(4, Math.round(pct * 1.17)))}<span style="font-size:15px">◎</span></div><h3>${p.name}<br><span class="lbl">${p.kind}${p.client ? ' · ' + p.client : ''}</span></h3>${p.client_slug ? html`<a class="arrow" href="#/clients/${p.client_slug}" title="Página del cliente" style="margin-right:6px">↗</a>` : ''}<button class="arrow" data-act="editProject" data-id="${p.id}" title="Editar">✎</button></div>
           <div class="lbl">Avance</div><div class="big" style="font-size:46px">${pct}<small>%</small></div>
-          <div class="phases">${(p.phases || []).map((x) => html`<i title="${x.name}" style="background:${x.status === 'done' ? 'rgba(255,255,255,.95)' : x.status === 'now' ? 'var(--lime)' : 'rgba(255,255,255,.25)'}"></i>`)}</div>
+          <div class="phases">${(p.phases || []).map((x) => html`<i title="${x.name}" style="background:${x.status === 'done' ? 'rgba(253,250,243,.95)' : x.status === 'now' ? 'var(--lime)' : 'rgba(253,250,243,.25)'}"></i>`)}</div>
           <div class="foot"><span>Fase: ${curPhase(p)}</span><span>${open} tareas abiertas</span></div></div>`; })}</div>`
       : html`<div class="empty"><b>Todavía no hay proyectos</b>Crea uno con «+ Proyecto». Si es un cliente del repo, su pipeline sale de su plan contratado.</div>`}
       <div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
@@ -155,8 +155,8 @@ export async function render(el, { me, sub, alive }) {
     return list.length ? html`<div class="card"><table><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead><tbody>
         ${list.map((t) => { const who = person(t.assignee); const late = t.due && t.due < today() && t.status !== 'Hecha';
           return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${visLabel(t) ? html` <span class="mut sm">${visLabel(t)}</span>` : ''}${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}${t.dept ? ' · ' + t.dept : ''}</td>
-            <td>${who ? html`<span class="av" style="background:${who.color || '#6b5a45'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="mut sm">—</span>`}</td>
-            <td style="${late ? 'color:#a3392a;font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
+            <td>${who ? html`<span class="av" style="background:${who.color || '#735741'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="mut sm">—</span>`}</td>
+            <td style="${late ? 'color:#654c38;font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
       </tbody></table></div>` : html`<div class="empty"><b>Sin tareas aquí</b>${emptyMsg}</div>`;
   }
 
@@ -175,7 +175,7 @@ export async function render(el, { me, sub, alive }) {
           <div><label class="f">Descripción</label><textarea class="in" id="tdesc">${t.description || ''}</textarea></div>
           <div><label class="f">Link (Drive, doc, carpeta)</label><input class="in" id="tlink" value="${t.link || ''}" placeholder="https://drive.google.com/…"></div>
         </div>
-        ${t.link && /^https?:\/\//.test(t.link) ? html`<a class="artifact" href="${t.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:10px"><span class="fi" style="background:#4f7790;color:#fff">${IC.drive}</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
+        ${t.link && /^https?:\/\//.test(t.link) ? html`<a class="artifact" href="${t.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:10px"><span class="fi" style="background:#87684e;color:#fdfaf3">${IC.drive}</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
         <b class="sm" style="display:block;margin-top:18px">Checklist</b>
         ${(t.checklist || []).map((c, i) => html`<label class="check"><input type="checkbox" data-act="chk" data-i="${i}" ${c.done ? raw('checked') : ''}> ${c.t}</label>`)}
         <div class="row" style="margin-top:6px"><input class="in" id="newchk" placeholder="Nuevo paso…"><button class="btn ghost" data-act="addchk">+</button></div>

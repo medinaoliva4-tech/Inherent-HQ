@@ -52,7 +52,7 @@ export async function render(el, { me }) {
     const b = e.target.closest('[data-p]'); if (!b) return;
     const a = b.dataset.p;
     if (a === 'save') {
-      const d = $('#bdd', el).value, m = $('#bdm', el).value;
+      const d = $('#e9dfd2', el).value, m = $('#bdm', el).value;
       if (Boolean(d) !== Boolean(m)) return toast('Elige día y mes', true);
       const v = { birthday: d && m ? `${m}-${d}` : '', phone: $('#pphone', el).value.trim(), bio: $('#pbio', el).value.trim() };
       try { await api('me/profile', { method: 'PUT', body: v }); Object.assign(me, v); toast('Perfil guardado ✅'); paint(); } catch (err) { toast(err.message, true); }

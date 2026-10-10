@@ -43,7 +43,7 @@ export async function render(el, { me, sub, alive }) {
 
     <div class="grid g2" style="align-items:start;margin-top:4px">
       <div><div class="sec-title"><h2 class="ttl">${ICON.cal}Tu contenido</h2><span class="mut sm">Lo que viene y lo último</span></div>
-        <div class="card">${d.content.length ? d.content.map((x) => html`<div class="wkrow"><span class="wkt" style="background:${x.date >= d.today ? '#e9efd2' : '#f1ece3'}">${fdate(x.date)}</span><span class="grow">${x.title}<span class="mut sm"> · ${x.format}${x.pillar ? ' · ' + x.pillar : ''}</span></span><span class="chip ${x.status === 'Publicado' ? 'green' : x.status === 'Programado' ? 'lime' : ''}" style="font-size:11px">${PS[x.status] || x.status}</span></div>`) : html`<div class="mut sm">Todavía no hay contenido en el calendario.</div>`}</div></div>
+        <div class="card">${d.content.length ? d.content.map((x) => html`<div class="wkrow"><span class="wkt" style="background:${x.date >= d.today ? '#f4ede3' : '#f4eee4'}">${fdate(x.date)}</span><span class="grow">${x.title}<span class="mut sm"> · ${x.format}${x.pillar ? ' · ' + x.pillar : ''}</span></span><span class="chip ${x.status === 'Publicado' ? 'green' : x.status === 'Programado' ? 'lime' : ''}" style="font-size:11px">${PS[x.status] || x.status}</span></div>`) : html`<div class="mut sm">Todavía no hay contenido en el calendario.</div>`}</div></div>
       <div><div class="sec-title"><h2 class="ttl">${ICON.team}Reuniones</h2></div>
         <div class="card">${d.meetings.length ? d.meetings.map((m) => html`<div class="meet"><div class="mdate"><b>${fdate(m.date).split(' ')[0]}</b><span>${fdate(m.date).split(' ').slice(1).join(' ')}</span></div><div class="grow" style="min-width:0"><div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500">${m.name}</b>${m.status === 'hecha' ? html`<span class="chip green" style="font-size:11px">Hecha</span>` : ''}</div>${m.approves ? html`<div class="sm" style="margin-top:4px">✔ Aprobamos: ${m.approves}</div>` : ''}<div class="sm" style="margin-top:4px">${m.topics.map((t) => html`<span class="mtopic">${t}</span>`)}</div></div></div>`) : html`<div class="mut sm">Sin reuniones agendadas.</div>`}</div></div>
     </div>
@@ -68,5 +68,5 @@ export async function render(el, { me, sub, alive }) {
       try { const r = await api('portal/invite' + q, { method: 'POST', body: { email, name } }); toast(r.mailed ? `Listo: le llegó un correo a ${email} ✉️` : `Listo: ${email} ya tiene acceso. Dile que entre a ${location.origin} con su Google.`); render(el, { me, sub, alive }); } catch (err) { toast(err.message, true); }
     }
   });
-  const ch = $('#pch', el); if (ch) lineChart(ch, d.analytics.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: d.analytics.series.map((x) => x.reach), c: '#171410', fill: true }]);
+  const ch = $('#pch', el); if (ch) lineChart(ch, d.analytics.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: d.analytics.series.map((x) => x.reach), c: '#2c1f16', fill: true }]);
 }

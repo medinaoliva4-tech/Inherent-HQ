@@ -6,11 +6,11 @@ import { blockersOf, unlocksOf, addDays } from '../cycle.js';
 import { payDialog, openProof } from '../flowui.js';
 
 const STEPS = [
-  ['lead', 'Leads', 'Por cotizar', '#a39a8c'],
-  ['quote', 'Cotización', 'Esperando al cliente', '#7f9631'],
-  ['pay', 'Aprobada', 'Falta el pago', '#d08a2e'],
-  ['check', 'Pago subido', 'Por confirmar', '#b08a5f'],
-  ['run', 'En marcha', 'Proyectos', '#4f6b12'],
+  ['lead', 'Leads', 'Por cotizar', '#b29c87'],
+  ['quote', 'Cotización', 'Esperando al cliente', '#a18770'],
+  ['pay', 'Aprobada', 'Falta el pago', '#aa917b'],
+  ['check', 'Pago subido', 'Por confirmar', '#a68d77'],
+  ['run', 'En marcha', 'Proyectos', '#755943'],
 ];
 const OPEN_LEAD = ['Nuevo', 'Contactado', 'Propuesta'];
 const nextWorkday = () => { const d = new Date(); do d.setDate(d.getDate() + 1); while (!(d.getDay() % 6)); return d.toISOString().slice(0, 10); };
@@ -85,7 +85,7 @@ export async function render(el, { me }) {
 
   function paint() {
     const L = lanes(), att = attention();
-    const kp = [['Leads por cotizar', L.lead.length], ['Esperando al cliente', L.quote.length], ['Falta el pago', L.pay.length, L.pay.length ? '#d08a2e' : ''], ['Pagos por confirmar', L.check.length, L.check.length ? '#a3392a' : ''], ['Proyectos en marcha', L.run.length], ['Necesita atención', att.length, att.length ? '#a3392a' : '']];
+    const kp = [['Leads por cotizar', L.lead.length], ['Esperando al cliente', L.quote.length], ['Falta el pago', L.pay.length, L.pay.length ? '#aa917b' : ''], ['Pagos por confirmar', L.check.length, L.check.length ? '#654c38' : ''], ['Proyectos en marcha', L.run.length], ['Necesita atención', att.length, att.length ? '#654c38' : '']];
     mount(el, html`<div class="hello"><h1>Control</h1><p class="mut">Todo lo que entra, de lead a entrega.</p></div>
       <div class="ctlkpis">${kp.map(([l, n, c]) => html`<div class="card ctlk"><div class="mut sm">${l}</div><div class="big" style="font-size:38px;${c ? `color:${c}` : ''}">${n}</div></div>`)}</div>
       <div class="sec-title" style="margin-top:18px"><h2>El flujo</h2><span class="mut sm">Cada tarjeta trae su siguiente paso</span></div>
@@ -112,7 +112,7 @@ export async function render(el, { me }) {
       <div style="margin-top:16px">${l.map((t) => { const [i, c] = st(t), w = blockersOf(t, tasks), u = unlocksOf(t, tasks);
         return html`<div class="ctltask"><span class="chip ${c} sm2">${i}</span><div class="grow"><div>${t.title}</div>
           <div class="sm mut">${nameOf(t.assignee)} · ${t.due ? fdate(t.due) : 'sin fecha'} · ${t.status || 'Por empezar'}</div>
-          ${w.length ? html`<div class="sm" style="color:#86570e">Espera a: ${w.map((x) => x.title).join(' · ')}</div>` : ''}
+          ${w.length ? html`<div class="sm" style="color:#725741">Espera a: ${w.map((x) => x.title).join(' · ')}</div>` : ''}
           ${u.length && t.status !== 'Hecha' ? html`<div class="sm mut">Destraba: ${u.map((x) => x.title.slice(0, 40)).join(' · ')}</div>` : ''}</div></div>`; })}</div>
       <div class="row" style="margin-top:16px"><a class="btn ghost" href="#/operations/pipe">Abrir en Operations</a></div>`);
   }

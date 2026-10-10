@@ -1,7 +1,7 @@
 import { html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, cropImage, WORK_ROLES, roleName, $, teamDoc } from '../core.js';
 import { bdayText } from './me.js';
 
-const COLORS = ['#26201a', '#c2735a', '#4f7790', '#7f9631', '#b08a5f', '#6b5a45'];
+const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
 const ROLE = { ceo: 'CEO · acceso total', coo: 'COO · todo menos Finance', team: 'Equipo · Operations, Content, Library' };
 const T = col('team');
@@ -42,7 +42,7 @@ export async function render(el, { me }) {
   }
   const byId = (id) => people.find((p) => p.id === id);
   const av = (p, size = 56) => p.picture
-    ? html`<img src="${p.picture}" referrerpolicy="no-referrer" alt="" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.12)">`
+    ? html`<img src="${p.picture}" referrerpolicy="no-referrer" alt="" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;border:3px solid #fdfaf3;box-shadow:0 6px 16px rgba(26,18,12,.12)">`
     : html`<div class="bigav" style="width:${size}px;height:${size}px;background:${p.color || COLORS[0]}">${initials(p.name)}</div>`;
 
   function node(p) {

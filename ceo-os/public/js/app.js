@@ -1,4 +1,4 @@
-import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO } from './core.js';
+import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO, infoTips } from './core.js';
 
 const NAV = [
   ['home', 'Home', 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
@@ -36,10 +36,10 @@ async function loginView() {
       <p style="font-size:17px;opacity:.8;margin-top:18px;max-width:420px">${pendingConnect() ? 'Entra con tu Google para conectar Inherent OS con tu app.' : 'Entra con tu cuenta de Google de Inherent.'}</p>
       ${err ? html`<div class="warnbox">${ERR[err] || 'No se pudo iniciar sesión.'}${detail ? html`<div class="sm" style="margin-top:4px;opacity:.8">Detalle: ${detail}</div>` : ''}</div>` : ''}
       ${st.google ? html`<a class="gbtn" href="/api/auth/google" style="text-decoration:none">${IC.google} Continuar con Google</a>
-        <a class="gbtn" href="/api/auth/google?portal=1" style="text-decoration:none;background:transparent;color:var(--cream);border:1px solid rgba(241,237,225,.3)">Soy cliente · entrar a mi portal</a>`
+        <a class="gbtn" href="/api/auth/google?portal=1" style="text-decoration:none;background:transparent;color:var(--cream);border:1px solid rgba(244,238,229,.3)">Soy cliente · entrar a mi portal</a>`
         : html`<div class="warnbox">El login con Google todavía no está configurado.</div>`}
       ${!st.db ? html`<div class="warnbox">La base de datos todavía no está conectada.</div>` : ''}
-      ${local ? html`<a class="gbtn" href="/api/auth/dev" style="text-decoration:none;background:transparent;color:var(--cream);border:1px solid rgba(241,237,225,.3)">Entrar en modo prueba (solo local)</a>` : ''}
+      ${local ? html`<a class="gbtn" href="/api/auth/dev" style="text-decoration:none;background:transparent;color:var(--cream);border:1px solid rgba(244,238,229,.3)">Entrar en modo prueba (solo local)</a>` : ''}
       <div class="sm" style="opacity:.6;text-align:center">Equipo: cuentas <b>@${st.domain}</b> · Clientes: el correo que Inherent aprobó</div>
       <div class="perm"><span class="sm" style="opacity:.7">Al entrar te pediremos permiso para:</span>
         <div>${IC.cal} <span><b>Google Calendar</b> · ver y crear eventos de proyectos</span></div>
@@ -102,3 +102,5 @@ async function start(u) {
   shell(); render();
 }
 api('me').then(start).catch(loginView);
+// La «i» de información se pone sola en cada título que se pinta.
+{ let q = false; new MutationObserver(() => { if (q) return; q = true; requestAnimationFrame(() => { q = false; infoTips(root); }); }).observe(root, { childList: true, subtree: true }); }

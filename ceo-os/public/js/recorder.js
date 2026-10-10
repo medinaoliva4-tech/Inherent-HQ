@@ -51,7 +51,7 @@ export function recorder({ onDone }) {
     v.classList.remove('min');
     const url = URL.createObjectURL(blob);
     mount(v, html`<div class="recbox"><div class="row"><b style="font-size:18px;font-weight:500">Tu video</b><div class="sp"></div><button class="arrow light" data-r="x">✕</button></div>
-      <video src="${url}" controls playsinline style="width:100%;border-radius:16px;margin:12px 0;background:#000;max-height:46vh"></video>
+      <video src="${url}" controls playsinline style="width:100%;border-radius:16px;margin:12px 0;background:#1a120c;max-height:46vh"></video>
       <input class="in" id="recTitle" placeholder="Título (ej. Cómo entregar el ciclo)" style="margin-bottom:8px">
       <div class="wkbar" id="recBar" hidden><i style="width:0%"></i></div>
       <div class="row" style="margin-top:10px"><button class="btn" data-r="save">⇪ Guardar en la Library</button><button class="btn ghost" data-r="redo">Grabar otra vez</button><div class="sp"></div><span class="mut sm">${(blob.size / 1e6).toFixed(1)} MB</span></div></div>`);

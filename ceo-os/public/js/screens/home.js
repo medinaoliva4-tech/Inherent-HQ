@@ -84,7 +84,7 @@ export async function render(el, { me, alive }) {
             const e1 = pick(igI, week), e2 = pick(igP, weekP);
             // Cada número con su dirección: ↑ / ↓ contra el periodo anterior del mismo largo.
             const trend = (e) => { if (!e || e.prev == null) return html`<span class="mut sm">sin periodo anterior para comparar</span>`; const d = Math.round((e.er - e.prev) * 10) / 10;
-              return d === 0 ? html`<span class="mut sm">= igual que los ${e.days} días anteriores</span>` : html`<span class="sm" style="color:${d > 0 ? '#3c6a1c' : '#a3392a'};font-weight:600">${d > 0 ? '↑' : '↓'} ${Math.abs(d)} pts</span><span class="mut sm"> vs ${e.days} días antes (${e.prev}%)</span>`; };
+              return d === 0 ? html`<span class="mut sm">= igual que los ${e.days} días anteriores</span>` : html`<span class="sm" style="color:${d > 0 ? '#715640' : '#654c38'};font-weight:600">${d > 0 ? '↑' : '↓'} ${Math.abs(d)} pts</span><span class="mut sm"> vs ${e.days} días antes (${e.prev}%)</span>`; };
             const col = (name, e) => html`<div style="flex:1;min-width:0"><span class="lbl">${name}</span><b style="font-size:34px;font-weight:500;display:block">${e ? e.er + '%' : '—'}</b><div style="line-height:1.3">${e ? trend(e) : ''}</div></div>`;
             const ex = e1 || e2;
             if (ex) return html`<div class="split" style="margin-top:6px;align-items:flex-start">${col('Inherent', e1)}${col('Personal', e2)}</div>
@@ -111,7 +111,7 @@ export async function render(el, { me, alive }) {
             const queue = content.filter((c) => c.kind === 'post' && c.profile === hProf && c.status !== 'Publicado').sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')));
             const views = [['top', 'Mejor contenido'], ['next', `Por subir${queue.length ? ' · ' + queue.length : ''}`], ...(niche.length ? [['niche', 'Nicho']] : [])];
             const v = views.some(([k]) => k === hView) ? hView : 'top';
-            const body = v === 'next' ? (queue.length ? html`${queue.slice(0, 5).map((p) => html`<a class="agenda" href="#/content/postear/${p.profile}" style="text-decoration:none;color:inherit"><span class="t">${p.date ? fdate(p.date) : '—'}</span><span class="bar2" style="background:#c2735a"></span><div><b style="font-weight:500">${p.title}</b><div class="mut sm">${p.format || 'Pieza'} · ${p.status || 'Idea'}</div></div></a>`)}`
+            const body = v === 'next' ? (queue.length ? html`${queue.slice(0, 5).map((p) => html`<a class="agenda" href="#/content/postear/${p.profile}" style="text-decoration:none;color:inherit"><span class="t">${p.date ? fdate(p.date) : '—'}</span><span class="bar2" style="background:#997d65"></span><div><b style="font-weight:500">${p.title}</b><div class="mut sm">${p.format || 'Pieza'} · ${p.status || 'Idea'}</div></div></a>`)}`
                 : html`<div class="empty" style="margin-top:10px"><b>Nada por subir</b>Las piezas del planner de ${hProf === 'personal' ? 'tu marca personal' : 'Inherent'} aparecen aquí.</div>`)
               : v === 'niche' ? html`<div class="grid homevids">${niche.slice(0, 3).map(videoCard)}</div>`
               : ig === null ? html`<p class="loading">Cargando…</p>` : own.length ? html`<div class="grid homevids">${own.slice(0, 3).map(videoCard)}</div>`
@@ -124,7 +124,7 @@ export async function render(el, { me, alive }) {
         <div class="card todo">
           <div class="chead"><div class="ico">✓</div><h3>Hoy</h3><span class="gbadge" style="margin-left:auto">${IC.cal} Google Calendar</span><button class="btn ghost" style="padding:8px 14px" data-act="addTask">+ Tarea</button></div>
           ${agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm" style="margin-bottom:8px">Calendar: ${agErr}</div>`
-            : agenda.length ? agenda.slice(0, 3).map((e) => html`<a class="agenda" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="t">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="bar2" style="background:#7f9631"></span><div><b style="font-weight:500">${e.summary}</b>${e.meet ? html`<div class="mut sm">Google Meet</div>` : e.location ? html`<div class="mut sm">${e.location}</div>` : ''}</div></a>`)
+            : agenda.length ? agenda.slice(0, 3).map((e) => html`<a class="agenda" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="t">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="bar2" style="background:#a18770"></span><div><b style="font-weight:500">${e.summary}</b>${e.meet ? html`<div class="mut sm">Google Meet</div>` : e.location ? html`<div class="mut sm">${e.location}</div>` : ''}</div></a>`)
             : html`<div class="mut sm" style="margin-bottom:8px">Sin eventos hoy en tu calendario.</div>`}
           ${mine.length ? html`<ul>${mine.slice(0, 6).map((t) => html`<li><input type="checkbox" data-act="done" data-id="${t.id}"><span>${t.title}</span><span class="who mut sm">${t.due ? fdate(t.due) : ''}</span></li>`)}</ul>`
             : html`<div class="empty" style="margin-top:8px"><b>Nada pendiente</b>Tus tareas aparecen aquí.</div>`}

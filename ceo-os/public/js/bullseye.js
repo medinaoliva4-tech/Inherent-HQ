@@ -3,9 +3,9 @@
 // al algoritmo a quién mostrarle el video, y él expande el alcance. Se arma conversando con el Claude de cada quien.
 import { html, raw, mount, toast, drawer, closeDrawer, ask, claudeJSON } from './core.js';
 
-const COL = ['#EF4444', '#F97316', '#F59E0B', '#38BDF8', '#1E3A5F'];
+const COL = ['#7f6149', '#a0856e', '#beaa96', '#bda895', '#4c3829'];
 const NAME = ['Centro', 'Anillo 1', 'Anillo 2', 'Anillo 3', 'Anillo 4'];
-const JOB = [['Conversión', '#EF4444'], ['Alcance con conversión', '#F59E0B'], ['Alcance', '#38BDF8']];
+const JOB = [['Conversión', '#7f6149'], ['Alcance con conversión', '#beaa96'], ['Alcance', '#bda895']];
 const R = [30, 60, 90, 120, 150], C = 170; // radios del centro hacia afuera, en un lienzo de 340
 let MODE = 'diana', SEL = 0;
 
@@ -14,15 +14,15 @@ const short = (s, k = 22) => (s.length > k ? s.slice(0, k - 1) + '…' : s);
 function board(bx, mode) {
   const rings = [...bx.rings.keys()].reverse().map((i) => {
     const dim = mode === 'fuentes' && i > 1, sel = mode === 'diana' && i === SEL;
-    return raw(`<circle class="bx-ring" style="animation-delay:${0.15 + i * 0.12}s" cx="${C}" cy="${C}" r="${R[i]}" fill="${COL[i]}" opacity="${dim ? 0.28 : 1}" stroke="${sel ? '#fff' : '#0F172A'}" stroke-width="${sel ? 3 : 1.5}" data-act="bxRing" data-i="${i}"/>`);
+    return raw(`<circle class="bx-ring" style="animation-delay:${0.15 + i * 0.12}s" cx="${C}" cy="${C}" r="${R[i]}" fill="${COL[i]}" opacity="${dim ? 0.28 : 1}" stroke="${sel ? '#fdfaf3' : '#2e2017'}" stroke-width="${sel ? 3 : 1.5}" data-act="bxRing" data-i="${i}"/>`);
   });
   const nums = [1, 2, 3, 4].map((i) => raw(`<text x="${C}" y="${C - (R[i] + R[i - 1]) / 2 + 4}" text-anchor="middle" class="bx-n">${i}</text>`));
   let extra = '';
   if (mode === 'mix') {
     const at = [[0, -12], [-11, 8], [11, 8], [-32, 32], [53, 53]]; // 3 al centro, 1 al anillo 1, 1 al anillo 2
-    extra = at.map(([x, y], i) => { const j = [0, 0, 0, 1, 2][i]; return `<g class="bx-dart" style="animation-delay:${0.5 + i * 0.1}s"><circle cx="${C + x}" cy="${C + y}" r="10" fill="${JOB[j][1]}" stroke="#fff" stroke-width="2"/><text x="${C + x}" y="${C + y + 3.5}" text-anchor="middle" class="bx-v">V${i + 1}</text></g>`; }).join('');
+    extra = at.map(([x, y], i) => { const j = [0, 0, 0, 1, 2][i]; return `<g class="bx-dart" style="animation-delay:${0.5 + i * 0.1}s"><circle cx="${C + x}" cy="${C + y}" r="10" fill="${JOB[j][1]}" stroke="#fdfaf3" stroke-width="2"/><text x="${C + x}" y="${C + y + 3.5}" text-anchor="middle" class="bx-v">V${i + 1}</text></g>`; }).join('');
   } else if (mode === 'fuentes') {
-    extra = `<circle cx="${C}" cy="${C}" r="${R[1] + 2}" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="5 4"/>
+    extra = `<circle cx="${C}" cy="${C}" r="${R[1] + 2}" fill="none" stroke="#fdfaf3" stroke-width="2" stroke-dasharray="5 4"/>
       <text x="${C}" y="${C + R[1] + 16}" text-anchor="middle" class="bx-zone">TEMAS DE AQUÍ</text>
       <path id="bxArc" d="M ${C - 160} ${C} A 160 160 0 0 1 ${C + 160} ${C}" fill="none"/>
       <text class="bx-arc"><textPath href="#bxArc" startOffset="50%" text-anchor="middle">FORMATOS · HOOKS · HISTORIAS · EDICIÓN — DE DONDE SEA</textPath></text>`;
@@ -36,8 +36,8 @@ function panel(bx, mode) {
     return html`<div class="bx-list">${bx.rings.map((x, i) => html`<button class="bx-row ${i === SEL ? 'on' : ''}" data-act="bxRing" data-i="${i}"><i style="background:${COL[i]}"></i><span class="grow"><b>${NAME[i]}</b> ${short(x.label, 70)}</span>${i ? html`<span class="bx-tag">suelta ${x.relaxed || '—'}</span>` : ''}</button>`)}</div>
       <div class="bx-detail"><div class="bx-k">${NAME[SEL]}${SEL ? ' · suelta ' + (r.relaxed || '—') : ''}</div><div class="bx-big">${r.label}</div>
         <div class="bx-facts"><div><span>Tamaño</span>${r.size || '—'}</div><div><span>Cercanía a comprar</span>${r.conversion || '—'}</div><div><span>Competencia</span>${r.competition || '—'}</div></div>
-        <div class="bx-strip"><span>Audiencia</span><em><b style="width:${w[SEL]}%;background:#38BDF8"></b></em></div>
-        <div class="bx-strip"><span>Conversión</span><em><b style="width:${w[4 - SEL]}%;background:#EF4444"></b></em></div></div>`;
+        <div class="bx-strip"><span>Audiencia</span><em><b style="width:${w[SEL]}%;background:#bda895"></b></em></div>
+        <div class="bx-strip"><span>Conversión</span><em><b style="width:${w[4 - SEL]}%;background:#7f6149"></b></em></div></div>`;
   }
   if (mode === 'mix') {
     const L = bx.calib || [], per = [3, 1, 1], tot = [0, 1, 2].map((i) => L.reduce((s, c) => s + c['c' + i], 0));
@@ -47,11 +47,11 @@ function panel(bx, mode) {
       <div class="bx-mut sm">Por cada 5 videos: 3 al centro, 1 al anillo 1, 1 al anillo 2. Nunca más afuera: los anillos 3 y 4 te los da el algoritmo cuando ya te ganaste el centro.</div>
       <div class="bx-k" style="margin-top:14px">Calibración · conversiones por anillo (seguidores, DMs, leads, ventas)</div>
       ${L.length ? html`<div class="bx-cal"><div class="bx-cal-h"><span>Lote</span><span>🎯</span><span>A1</span><span>A2</span><span>Decisión</span></div>${L.map((c) => html`<div><span>${c.lote}</span><span>${c.c0}</span><span>${c.c1}</span><span>${c.c2}</span><span>${c.decision || '—'}</span></div>`)}</div>` : ''}
-      <div class="bx-mut sm">${L.length >= 2 ? html`Por video, convierte más <b style="color:#fff">${NAME[best].toLowerCase()}</b>: inclina los próximos lotes hacia ahí.` : 'Corre el 3/1/1 en 2 o 3 lotes de 10 videos; luego anota qué anillo trajo conversiones y la mezcla se inclina hacia ese.'}</div>
+      <div class="bx-mut sm">${L.length >= 2 ? html`Por video, convierte más <b style="color:#fdfaf3">${NAME[best].toLowerCase()}</b>: inclina los próximos lotes hacia ahí.` : 'Corre el 3/1/1 en 2 o 3 lotes de 10 videos; luego anota qué anillo trajo conversiones y la mezcla se inclina hacia ese.'}</div>
       <button class="btn ghost xs bx-btn" data-act="bxLote">+ Anotar lote</button>`;
   }
   const q = (s) => encodeURIComponent(s);
-  return html`<div class="bx-mut sm" style="margin-bottom:10px"><b style="color:#fff">Los temas</b> salen del centro y el anillo 1 (el 2, a veces): si no hay nadie en tu centro, es tu oportunidad — toma el tema de un creador del anillo 1 y re-apúntalo a tu centro. <b style="color:#fff">El craft</b> (formato, hook, historia, edición) se toma de donde sea.</div>
+  return html`<div class="bx-mut sm" style="margin-bottom:10px"><b style="color:#fdfaf3">Los temas</b> salen del centro y el anillo 1 (el 2, a veces): si no hay nadie en tu centro, es tu oportunidad — toma el tema de un creador del anillo 1 y re-apúntalo a tu centro. <b style="color:#fdfaf3">El craft</b> (formato, hook, historia, edición) se toma de donde sea.</div>
     ${bx.rings.map((r, i) => html`<div class="bx-src"><div class="row" style="gap:8px"><i style="background:${COL[i]}"></i><b class="grow">${NAME[i]} · ${short(r.label, 48)}</b><span class="bx-tag">${i < 2 ? 'temas' : i === 2 ? 'temas a veces · craft' : 'craft'}</span></div>
       <div class="bx-chips">${r.search.length ? r.search.map((s) => html`<span class="bx-chip">${s}<a href="https://www.tiktok.com/search?q=${q(s)}" target="_blank" rel="noopener noreferrer">TikTok ↗</a><a href="https://www.instagram.com/explore/search/keyword/?q=${q(s)}" target="_blank" rel="noopener noreferrer">IG ↗</a></span>`) : html`<span class="bx-mut sm">Sin búsquedas.</span>`}</div></div>`)}`;
 }

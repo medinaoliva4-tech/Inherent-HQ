@@ -63,7 +63,7 @@ export function cropImage(file, size = 256) {
       const cv = dlg.querySelector('canvas'), rg = dlg.querySelector('input[type=range]');
       let fin = false; const done = (v) => { if (fin) return; fin = true; URL.revokeObjectURL(url); dlg.close(); dlg.remove(); ok(v); };
       const clamp = () => { const s = base * z, mx = Math.max(0, (img.width * s - V) / 2), my = Math.max(0, (img.height * s - V) / 2); x = Math.min(mx, Math.max(-mx, x)); y = Math.min(my, Math.max(-my, y)); };
-      const draw = (ctx, W) => { const k = W / V, s = base * z * k; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, W); ctx.drawImage(img, W / 2 - (img.width * s) / 2 + x * k, W / 2 - (img.height * s) / 2 + y * k, img.width * s, img.height * s); };
+      const draw = (ctx, W) => { const k = W / V, s = base * z * k; ctx.fillStyle = '#fdfaf3'; ctx.fillRect(0, 0, W, W); ctx.drawImage(img, W / 2 - (img.width * s) / 2 + x * k, W / 2 - (img.height * s) / 2 + y * k, img.width * s, img.height * s); };
       const paint = () => { clamp(); draw(cv.getContext('2d'), V * 2); };
       const zoom = (v) => { z = Math.min(4, Math.max(1, v)); rg.value = z; paint(); };
       rg.oninput = () => zoom(+rg.value);
@@ -165,13 +165,13 @@ export function lineChart(el, labels, series, { fmt = K } = {}) {
   const y = (v) => P.t + (1 - v / max) * (H - P.t - P.b);
   const path = (v) => v.map((n, i) => { if (!i) return `M${x(0)},${y(n)}`; const cx = (x(i - 1) + x(i)) / 2; return `C${cx},${y(v[i - 1])} ${cx},${y(n)} ${x(i)},${y(n)}`; }).join(' ');
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="g${el.id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d6f35a" stop-opacity=".45"/><stop offset="1" stop-color="#d6f35a" stop-opacity="0"/></linearGradient></defs>`;
-  [0.25, 0.5, 0.75].forEach((f) => s += `<line x1="0" x2="${W}" y1="${P.t + f * (H - P.t - P.b)}" y2="${P.t + f * (H - P.t - P.b)}" stroke="rgba(23,20,16,.06)"/>`);
+  [0.25, 0.5, 0.75].forEach((f) => s += `<line x1="0" x2="${W}" y1="${P.t + f * (H - P.t - P.b)}" y2="${P.t + f * (H - P.t - P.b)}" stroke="rgba(44,31,22,.06)"/>`);
   series.forEach((se) => { if (se.fill) s += `<path d="${path(se.v)} L${x(se.v.length - 1)},${H - P.b} L${x(0)},${H - P.b}Z" fill="url(#g${el.id})"/>`; s += `<path d="${path(se.v)}" fill="none" stroke="${se.c}" stroke-width="2" ${se.dash ? 'stroke-dasharray="4 5"' : ''} stroke-linecap="round"/>`; });
   const every = Math.max(1, Math.ceil(labels.length / (el.clientWidth < 500 ? 4 : 7))); // máx. ~7 etiquetas (4 en el cel): no se enciman
   // Las etiquetas van en HTML, no dentro del SVG: el SVG se estira y deformaba las letras.
-  const xl = labels.map((m, i) => (((i % every || labels.length - 1 - i < every) && i !== labels.length - 1) ? '' : `<span style="position:absolute;bottom:4px;left:${(x(i) / W) * 100}%;transform:translateX(${i === 0 ? '0' : i === labels.length - 1 ? '-100%' : '-50%'});font-size:11px;color:#8f877b;white-space:nowrap">${esc(m)}</span>`)).join('');
+  const xl = labels.map((m, i) => (((i % every || labels.length - 1 - i < every) && i !== labels.length - 1) ? '' : `<span style="position:absolute;bottom:4px;left:${(x(i) / W) * 100}%;transform:translateX(${i === 0 ? '0' : i === labels.length - 1 ? '-100%' : '-50%'});font-size:11px;color:#9f846d;white-space:nowrap">${esc(m)}</span>`)).join('');
   const last = series[0].v.length - 1;
-  s += `<line class="xh" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="#171410" stroke-dasharray="3 4" opacity="0"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="9" fill="#d6f35a" stroke="#fff" stroke-width="2"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="3" fill="#171410"/><rect width="${W}" height="${H}" fill="transparent"/></svg>${xl}<div class="tip"></div>`;
+  s += `<line class="xh" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="#2c1f16" stroke-dasharray="3 4" opacity="0"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="9" fill="#efe7dc" stroke="#fdfaf3" stroke-width="2"/><circle cx="${x(last)}" cy="${y(series[0].v[last])}" r="3" fill="#2c1f16"/><rect width="${W}" height="${H}" fill="transparent"/></svg>${xl}<div class="tip"></div>`;
   el.innerHTML = s;
   const svg = $('svg', el), tip = $('.tip', el), xh = $('.xh', el);
   svg.addEventListener('mousemove', (e) => { const r = svg.getBoundingClientRect(); const px = ((e.clientX - r.left) / r.width) * W; const i = Math.max(0, Math.min(labels.length - 1, Math.round(((px - P.l) / (W - P.l - P.r)) * (labels.length - 1)))); xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('opacity', '.35'); tip.style.left = (x(i) / W) * r.width + 'px'; tip.style.top = (y(series[0].v[i]) / H) * r.height + 'px'; tip.style.opacity = 1; tip.innerHTML = `${esc(labels[i])} · ` + series.map((se) => `${esc(se.name)} <b>${esc(fmt(se.v[i]))}</b>`).join(' · '); });
@@ -223,10 +223,10 @@ export function csv(text) {
 
 // ---------- Carpetas (el diseño del prototipo) ----------
 const DRV = '<g transform="translate(3.5 4.5) scale(.15)"><path d="M6.6 66.85l3.85 6.65c.8 1.4 1.950 2.5 3.3 3.3L27.5 53H0c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="M43.65 25L29.9 1.2c-1.35.8-2.5 1.9-3.3 3.3L1.2 48.5A9.06 9.06 0 000 53h27.5z" fill="#00ac47"/><path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.750 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 11.5z" fill="#ea4335"/><path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="M59.8 53H27.5L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="M73.4 26.5L60.7 4.5c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25 59.8 53h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></g>';
-const INH = '<g transform="translate(5.5 4) scale(.034)"><path d="M134.936 1.5C208.296 1.50026 268.37 78.4372 268.37 174.189C268.37 269.941 208.296 346.878 134.936 346.878C61.5752 346.878 1.50017 269.942 1.5 174.189C1.5 78.4371 61.5751 1.5 134.936 1.5Z" stroke="#171410" stroke-width="22" fill="none"/><path d="M123.247 51.0248L75.5173 50.7031L75.3556 65.3753C130.487 87.0898 126.667 260.476 72.9892 280.123L72.7834 298.797L120.514 299.119L123.247 51.0248Z" fill="#171410"/><path d="M148.517 51.195L196.247 51.5166L196.085 66.1888C140.483 87.1571 140.482 260.569 193.719 280.937L193.513 299.61L145.783 299.289L148.517 51.195Z" fill="#171410"/></g>';
-const VID = '<path d="M7 5l8 5-8 5z" fill="#171410"/>';
-const badge = (x, inner) => `<g transform="translate(${x} 66)"><circle r="10" cx="10" cy="10" fill="#fff"/>${inner}</g>`;
-const TONE = { gris: ['#4c4c48', '#6b6b66'], oliva: ['#4f5b22', '#7f9631'], terra: ['#7a3a28', '#b8583c'], cafe: ['#3b2f22', '#6b5a45'], azul: ['#2e4756', '#4f7790'] };
+const INH = '<g transform="translate(5.5 4) scale(.034)"><path d="M134.936 1.5C208.296 1.50026 268.37 78.4372 268.37 174.189C268.37 269.941 208.296 346.878 134.936 346.878C61.5752 346.878 1.50017 269.942 1.5 174.189C1.5 78.4371 61.5751 1.5 134.936 1.5Z" stroke="#2c1f16" stroke-width="22" fill="none"/><path d="M123.247 51.0248L75.5173 50.7031L75.3556 65.3753C130.487 87.0898 126.667 260.476 72.9892 280.123L72.7834 298.797L120.514 299.119L123.247 51.0248Z" fill="#2c1f16"/><path d="M148.517 51.195L196.247 51.5166L196.085 66.1888C140.483 87.1571 140.482 260.569 193.719 280.937L193.513 299.61L145.783 299.289L148.517 51.195Z" fill="#2c1f16"/></g>';
+const VID = '<path d="M7 5l8 5-8 5z" fill="#2c1f16"/>';
+const badge = (x, inner) => `<g transform="translate(${x} 66)"><circle r="10" cx="10" cy="10" fill="#fdfaf3"/>${inner}</g>`;
+const TONE = { gris: ['#624936', '#82634b'], oliva: ['#6b513c', '#a18770'], terra: ['#5c4533', '#81634b'], cafe: ['#463325', '#735741'], azul: ['#584231', '#87684e'] };
 export function folderSvg({ w = 120, papers = true, drive = false, video = false, tone = 'gris' } = {}) {
   const [back, front] = TONE[tone] || TONE.gris;
   const b = [badge(10, drive ? DRV : video ? VID : INH)].concat(drive && video ? [badge(26, VID)] : []).join('');
@@ -258,7 +258,7 @@ function loadMermaid() {
   return (mermaidP ||= new Promise((ok, ko) => {
     const sc = document.createElement('script'); sc.src = '/vendor/mermaid-11.12.0.min.js';
     sc.onload = () => { window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'base', fontFamily: '42dot Sans, system-ui, sans-serif',
-      themeVariables: { primaryColor: '#fbfaf6', primaryBorderColor: '#171410', primaryTextColor: '#171410', lineColor: '#6b5a45', secondaryColor: '#e3f07e', tertiaryColor: '#f0ece3', fontSize: '15px' } }); ok(window.mermaid); };
+      themeVariables: { primaryColor: '#fbf7ef', primaryBorderColor: '#2c1f16', primaryTextColor: '#2c1f16', lineColor: '#735741', secondaryColor: '#f0e9de', tertiaryColor: '#f4eee4', fontSize: '15px' } }); ok(window.mermaid); };
     sc.onerror = () => { mermaidP = null; ko(new Error('No cargó el motor de diagramas')); };
     document.head.append(sc);
   }));
@@ -413,3 +413,93 @@ export const ICON = {
 export const iconFor = (t) => { const x = String(t || '').toLowerCase();
   return /reuni/.test(x) ? ICON.team : /calend|agenda|hoy/.test(x) ? ICON.cal : /subir|entrega/.test(x) ? ICON.upload : /checklist/.test(x) ? ICON.check : /sop|library|plantilla|prompt|acceso r/.test(x) ? ICON.book
     : /cliente|material|drive|asset/.test(x) ? ICON.folder : /cola|tarea|pendiente|plan|matriz/.test(x) ? ICON.list : /idea/.test(x) ? ICON.bulb : /diseñ|static/.test(x) ? ICON.slides : /equipo|team/.test(x) ? ICON.team : /número|finanz|revenue|métric/.test(x) ? ICON.chart : ICON.sparkle; };
+
+// ---------- ⓘ: qué es cada sección ----------
+// Junto a cada título conocido aparece un circulito con «i»; al pasar el mouse o tocarlo explica para qué sirve.
+const INFO = [
+  [/^hoy$/i, 'Tu día: tu agenda de Google Calendar y tus tareas abiertas. Marca la casilla cuando termines.'],
+  [/^home$/i, 'El resumen del día: lo que entra, lo que se mueve y lo que tienes pendiente.'],
+  [/^revenue$/i, 'Lo que se facturó este mes, sacado de los ingresos de Finance.'],
+  [/^leads$/i, 'Los prospectos abiertos en Sales. 🔥 = interés alto.'],
+  [/^engagement$/i, 'De cada 100 personas que vieron tus posts, cuántas interactuaron (like, comentario, guardado, compartido). La flecha compara con el periodo anterior.'],
+  [/^content$/i, 'Lo que se produce y se publica de cada perfil: shot list, planner, guiones, por postear, referencias y métricas.'],
+  [/^mi trabajo$/i, 'Tus tareas abiertas de la semana. El detalle está en tu Workspace.'],
+  [/^control$/i, 'El panel del CEO y el COO: todo lo que entra, de lead a proyecto, y lo que necesita atención hoy.'],
+  [/^el flujo$/i, 'Cada columna es un paso: lead → cotización → aprobada → pago → confirmado. Cada tarjeta trae su siguiente paso.'],
+  [/^necesita atención$/i, 'Lo que está atrasado, bloqueado o esperando una decisión. Lo urgente va primero.'],
+  [/^workspace$/i, 'Tu lugar de trabajo: tus tareas, tu kanban y lo propio de tu perfil.'],
+  [/^mis tareas de hoy/i, 'Lo que vence hoy o mañana. Escribe abajo y Enter para agregar una tarea rápida.'],
+  [/^mis tareas$/i, 'Todo lo que tienes abierto, de lo más urgente a lo que puede esperar.'],
+  [/^cola de decisiones/i, 'Lo que espera tu OK: la estrategia (① Strategy), el plan y presupuesto de pauta (⑩ Ads) y lo que te rinde cuentas.'],
+  [/^agenda y contenido/i, 'Tus reuniones de hoy y lo que se publica en los próximos 7 días.'],
+  [/^pipelines/i, 'Cómo van las tareas de cada línea (Contenido y Business Growth): quién lo hace y quién rinde cuentas.'],
+  [/^accountability/i, 'Cuántas tareas del mes lleva cada persona. El punto se pone rojo si tiene atrasadas.'],
+  [/^lo tuyo como ceo/i, 'Tus carriles como CEO: estrategia, clientes y los gates de pauta.'],
+  [/^entregas por revisar/i, 'Lo que te entregaron y espera tu visto bueno. ✓ lo aprueba.'],
+  [/^próximos controles/i, 'Las fases de los proyectos que arrancan o están en curso en los próximos 10 días.'],
+  [/^carga del equipo/i, 'Cuántas tareas abiertas tiene cada persona, para repartir mejor.'],
+  [/^entregas recientes/i, 'Lo último que entregaste y si ya lo aprobaron.'],
+  [/^mis sops/i, 'Los documentos de la Library marcados para tu perfil.'],
+  [/^acceso rápido/i, 'SOPs y prompts generales que usas seguido.'],
+  [/^por cliente/i, 'Los assets, guiones, videos y prompts de cada marca, en un solo lugar.'],
+  [/^cola de producción/i, 'Tus videos y ads ordenados por fecha de entrega.'],
+  [/^plan de contenido por cliente/i, 'Las piezas de cada perfil según su etapa: idea, guion, edición y lista para publicar.'],
+  [/^matriz de publicaciones/i, 'Qué sale, cuándo, en qué formato y con qué CTA.'],
+  [/^diseño y static/i, 'Tus tareas de ⑥A Diseño gráfico y static ads.'],
+  [/^material del cliente/i, 'Lo que el cliente nos dio: links, assets y lo del repo.'],
+  [/^mis proyectos/i, 'Tus proyectos de Business Growth y en qué fase va cada uno.'],
+  [/^cuentas de pauta/i, 'Las cuentas de Meta, Google Ads y LinkedIn de cada cliente. Desde aquí abres su Ads Manager.'],
+  [/^cómo va la pauta/i, 'Gasto, conversiones, CPA y ROAS reales de cada cliente, leídos de Windsor.'],
+  [/^plan y presupuesto/i, 'Gate ⑩: el CEO aprueba el plan y el presupuesto antes de lanzar cualquier campaña.'],
+  [/^anuncios de la competencia/i, 'Los anuncios que la competencia tiene activos en Meta, leídos de la biblioteca de anuncios con Apify.'],
+  [/^mis próximas reuniones/i, 'Las reuniones de tus proyectos en los próximos 30 días: quién va y de qué se habla.'],
+  [/^tus cuentas/i, 'Las cuentas de la marca. De aquí salen Analytics, la Bandeja y «lo tuyo» en el scrape.'],
+  [/^referentes/i, 'Cuentas de las que tomamos estilo y temas. No se copian: se leen.'],
+  [/^competencia/i, 'Contra quién compite la marca. Las del onboarding vienen de ① Strategy.'],
+  [/^scrape semanal/i, 'Cada lunes Apify lee 10 posts por fuente (tus cuentas, referentes, competencia y hashtags) para ver qué está funcionando.'],
+  [/la diana de/i, 'A quién le habla el contenido: una persona exacta al centro y 4 anillos más amplios. 3 videos de cada 5 van al centro.'],
+  [/^top 10 del nicho/i, 'Los posts que más rindieron en tu nicho esta semana, contra el promedio de cada cuenta.'],
+  [/^lo último de/i, 'Lo más reciente que publicaron, para estar al día.'],
+  [/^vistas promedio/i, 'Cuántas vistas tuvo en promedio cada post, semana por semana.'],
+  [/^tus últimos posts/i, 'Lo último que publicaste, con sus números.'],
+  [/^mejores posts/i, 'Tus posts con más interacción en el periodo.'],
+  [/^alcance/i, 'A cuántas personas llegaste cada día.'],
+  [/^reels · /i, 'Hasta qué punto del video llega la gente antes de irse.'],
+  [/^sales$/i, 'Leads, cotizaciones y servicios: todo lo que entra antes de ser cliente.'],
+  [/^servicios$/i, 'El catálogo de lo que vendemos, con su precio.'],
+  [/^planes$/i, 'Los planes de Inherent y lo que incluye cada uno.'],
+  [/^finance$/i, 'Caja, ingresos, gastos y nómina de Inherent.'],
+  [/^revenue vs/i, 'Lo que entró contra lo que costó, mes a mes.'],
+  [/^costo/i, 'Lo que cuesta cada plan por rubro. Solo lo ve el CEO.'],
+  [/^reparto por rol/i, 'Cuánto se le paga a cada rol por cuenta, según el plan.'],
+  [/^el mes de cada persona/i, 'Lo que le toca cobrar a cada persona este mes, según sus cuentas.'],
+  [/^¿qué tan fuerte/i, 'Cuánto aporta cada servicio a la facturación.'],
+  [/^clients$/i, 'Cada cliente: su plan, sus accesos, su roadmap y su portal.'],
+  [/^plan contratado/i, 'Lo que el cliente compró: el techo de lo que se entrega.'],
+  [/^roadmap/i, 'Las fases del cliente y en cuál va.'],
+  [/^accesos/i, 'Las cuentas y contraseñas que el cliente nos compartió.'],
+  [/^en onboarding/i, 'Clientes que todavía están terminando su onboarding.'],
+  [/^entregables/i, 'Lo que se le entregó al cliente y su estado.'],
+  [/^operations$/i, 'Los proyectos por fase, su calendario y su timeline.'],
+  [/^timeline/i, 'Las fases de cada proyecto en el tiempo.'],
+  [/^tareas$/i, 'Todas las tareas, con responsable y fecha.'],
+  [/^library$/i, 'SOPs, plantillas, prompts y documentos del equipo.'],
+  [/^documentos/i, 'Los documentos de esta carpeta.'],
+  [/^team$/i, 'Quién es quién, qué perfil de trabajo tiene y a quién le reporta.'],
+  [/^especialista/i, 'La red de mentores por industria que hace la auditoría de la línea Growth.'],
+  [/^tus conexiones/i, 'Los permisos de Google que tiene la app y tu IA conectada.'],
+];
+const tipFor = (t) => INFO.find(([re]) => re.test(t.trim()))?.[1];
+export function infoTips(root) {
+  for (const h of root.querySelectorAll('h1,h2,h3:not([data-tipped])')) {
+    if (h.dataset.tipped || h.closest('dialog,.login,.nav')) continue;
+    h.dataset.tipped = '1';
+    const br0 = h.querySelector('br'), nodes = [...h.childNodes];
+    const tip = tipFor(br0 ? nodes.slice(0, nodes.indexOf(br0)).map((n) => n.textContent).join('') : h.textContent); if (!tip) continue;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'itip'; b.dataset.tip = tip; b.setAttribute('aria-label', tip); b.textContent = 'i';
+    // Dentro de un título con salto de línea (ej. «Revenue<br>…») va después de la primera palabra.
+    const br = h.querySelector('br'); br ? h.insertBefore(b, br) : h.appendChild(b);
+  }
+}
+// Tocar la «i» no abre la tarjeta que la contiene.
+document.addEventListener('click', (e) => { const b = e.target.closest?.('.itip'); if (b) { e.stopPropagation(); e.preventDefault(); b.focus(); } }, true);
