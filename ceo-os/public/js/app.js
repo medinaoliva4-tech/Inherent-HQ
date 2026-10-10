@@ -1,18 +1,22 @@
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO } from './core.js';
 
+// Arriba solo lo del día a día. Lo demás vive en «Más»: sigue ahí, pero no compite por atención.
 const NAV = [
-  ['home', 'Home', 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
+  ['home', 'Hoy', 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
   ['control', 'Control', 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6'],
   ['work', 'Workspace', 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z'],
-  ['finanzas', 'Finance', 'M3 17l6-6 4 4 8-8M15 7h6v6'],
-  ['sales', 'Sales', 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0'],
-  ['operations', 'Operations', 'M4 6h16M4 12h10M4 18h7'],
-  ['clients', 'Clients', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
   ['content', 'Content', 'M5 4h14v16l-7-4-7 4z'],
-  ['library', 'Library', 'M4 4h6l2 2h8v14H4z'],
-  ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
   ['portal', 'Mi portal', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
 ];
+const MORE = [
+  ['clients', 'Clients', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6', 'Cada cliente: su plan, sus accesos y su portal'],
+  ['sales', 'Sales', 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0', 'Leads, cotizaciones y servicios'],
+  ['finanzas', 'Finance', 'M3 17l6-6 4 4 8-8M15 7h6v6', 'Caja, cobros y números'],
+  ['operations', 'Operations', 'M4 6h16M4 12h10M4 18h7', 'Proyectos y su timeline'],
+  ['library', 'Library', 'M4 4h6l2 2h8v14H4z', 'SOPs, plantillas y prompts'],
+  ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9', 'Quién es quién y qué perfil tiene'],
+];
+const DOTS = 'M5 12h.01M12 12h.01M19 12h.01';
 const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal' };
 const root = $('#root');
 export let me = null;
@@ -51,16 +55,22 @@ async function loginView() {
 
 function shell() {
   const allowed = NAV.filter(([k]) => me.areas.includes(k) && (k !== 'portal' || me.role === 'client'));
+  const more = MORE.filter(([k]) => me.areas.includes(k));
   mount(root, html`<div class="app">
     <header class="top">
       <div class="brand"><div class="emb">${emblem()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
-      <nav class="nav">${allowed.map(([k, l, d]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`)}</nav>
+      <nav class="nav">${allowed.map(([k, l, d]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`)}${more.length ? html`<button data-more><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="${DOTS}"/></svg>Más</button>` : ''}</nav>
+      ${more.length ? html`<div class="moremenu" id="moremenu" hidden>${more.map(([k, l, d, sub]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span><b>${l}</b><small>${sub}</small></span></button>`)}</div>` : ''}
       <div class="sp"></div>
       <div class="avatar" id="avatar" title="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
     <main id="main"></main>
   </div>`);
-  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (b) location.hash = '/' + b.dataset.go; };
+  const menu = $('#moremenu');
+  const toggleMore = (v) => { if (menu) menu.hidden = !v; };
+  $('.nav').onclick = (e) => { if (e.target.closest('[data-more]')) return toggleMore(menu?.hidden); const b = e.target.closest('[data-go]'); if (b) { toggleMore(false); location.hash = '/' + b.dataset.go; } };
+  if (menu) menu.onclick = (e) => { const b = e.target.closest('[data-go]'); if (b) { toggleMore(false); location.hash = '/' + b.dataset.go; } };
+  document.addEventListener('click', (e) => { if (menu && !menu.hidden && !e.target.closest('#moremenu,[data-more]')) toggleMore(false); });
   // Tocar tu foto abre tu perfil (foto, cumpleaños, conexiones, cerrar sesión).
   $('#avatar').onclick = () => { location.hash = '/me'; };
 }
@@ -68,7 +78,8 @@ function shell() {
 async function render() {
   const [area, ...rest] = location.hash.replace(/^#\/?/, '').split('/');
   const key = me.areas.includes(area) || area === 'me' || (area === 'setup' && me.role === 'ceo') ? area : me.areas.includes('home') ? 'home' : me.areas[0];
-  $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key));
+  $$('.nav [data-go],#moremenu [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key));
+  $('.nav [data-more]')?.classList.toggle('on', MORE.some(([k]) => k === key));
   $('#avatar')?.classList.toggle('on', key === 'me');
   // En cel, la barra de abajo se desliza hasta la sección actual (solo la barra: scrollIntoView movía toda la página en iOS).
   { const nav = $('.nav'), on = $('.nav [data-go].on'); if (nav && on && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: on.offsetLeft - (nav.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' }); }
@@ -85,7 +96,7 @@ async function render() {
   try {
     const mod = await import(`./screens/${SCREENS[key]}.js`);
     if (gen !== renderGen) return;
-    await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)?.[1] || (key === 'me' ? 'Mi perfil' : 'Arranque'), alive: () => gen === renderGen });
+    await mod.render(main, { me, area: key, sub: rest, label: [...NAV, ...MORE].find((n) => n[0] === key)?.[1] || (key === 'me' ? 'Mi perfil' : 'Arranque'), alive: () => gen === renderGen });
   } catch (e) {
     mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
   } finally { clearTimeout(slow); if (gen === renderGen) main.style.minHeight = ''; }

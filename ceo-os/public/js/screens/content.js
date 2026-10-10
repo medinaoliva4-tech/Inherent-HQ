@@ -6,7 +6,10 @@ import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveSta
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
 const RED = { instagram: 'Instagram', tiktok: 'TikTok' };
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$/.test(String(u || '')) ? u : null);
-const TABS = [['shot', 'Shot list'], ['refs', 'Referencias'], ['plan', 'Planner'], ['guiones', 'Guiones'], ['postear', 'Por postear'], ['bandeja', 'Bandeja'], ['analytics', 'Analytics'], ['fuentes', 'Fuentes']];
+// Producción primero (lo que hay que hacer, aprobar y publicar en fecha); la investigación y las métricas, aparte.
+const MAIN = [['shot', 'Shot list'], ['plan', 'Planner'], ['guiones', 'Guiones'], ['postear', 'Por postear']];
+const TOOLS = [['refs', 'Referencias'], ['fuentes', 'Fuentes'], ['analytics', 'Analytics'], ['bandeja', 'Bandeja']];
+const TABS = [...MAIN, ...TOOLS];
 const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho', propia: 'Tuya' };
 
 export function videoCard(it) {
@@ -37,10 +40,11 @@ export async function render(el, { sub, alive }) {
     if (!alive()) return;
     const p = data.profile;
     mount(el, html`
-      <div class="hello"><h1>Content</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
+      <div class="hello"><h1>Content</h1><p>Lo que hay que producir, aprobar y publicar en <em>${p.name}</em>.</p></div>
       <div class="row" style="margin-bottom:16px;gap:8px;flex-wrap:wrap">${data.profiles.map((x) => html`<button class="chip ${x.slug === slug ? 'dark' : ''}" data-act="prof" data-s="${x.slug}" style="padding:9px 16px;font-size:13px">${x.name}</button>`)}</div>
       <div class="row" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
-        <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${MAIN.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs tools" style="margin:0"><span class="tlbl">Herramientas</span>${TOOLS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
         ${tab === 'semana' ? html`<button class="btn" data-act="scrape">Scrapear ahora</button>` : ''}
         ${tab === 'refs' ? html`<button class="btn" data-act="refScrape">Buscar similares</button>` : ''}

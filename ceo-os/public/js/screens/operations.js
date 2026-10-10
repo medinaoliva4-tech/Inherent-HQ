@@ -18,20 +18,20 @@ export async function render(el, { me, sub, alive }) {
   let [projects, tasks, team] = await Promise.all([PR.list(), TK.list(), teamList()]);
   let clients = [];
   try { clients = (await api('repo/clients')).clients.map((c) => ({ ...c, plan: String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '') })); } catch {}
-  let tab = ['pipe', 'cal', 'time', 'tasks'].includes(sub[0]) ? sub[0] : 'pipe';
+  let tab = ['pipe', 'time'].includes(sub[0]) ? sub[0] : 'pipe';
   let current = projects[0]?.id || null, taskFilter = 'all';
   let calMonth = today().slice(0, 7), events = null, evErr = null;
   const person = (email) => team.find((t) => t.id === email || t.email === email);
   const pname = (id) => projects.find((p) => p.id === id)?.name || '—';
   const progress = (p) => { const ph = p.phases || []; return ph.length ? Math.round((ph.filter((x) => x.status === 'done').length / ph.length) * 100) : 0; };
-  const curPhase = (p) => (p.phases || []).find((x) => x.status !== 'done')?.name || 'Terminado';
+  const curPhase = (p) => (!(p.phases || []).length ? 'Sin fases' : p.phases.find((x) => x.status !== 'done')?.name || 'Terminado');
 
   async function saveProject(p) { try { const r = await PR.save(p); projects = projects.map((x) => (x.id === r.id ? r : x)); return r; } catch (e) { toast(e.message, true); return null; } }
   async function saveTask(t) { try { const r = await TK.save(t); tasks = tasks.map((x) => (x.id === r.id ? r : x)); return r; } catch (e) { toast(e.message, true); return null; } }
 
   function paint() {
     mount(el, html`
-      <div class="hello"><h1>Operations</h1><p>Proyectos por fase, <em>tiempos</em> y tareas.</p></div>
+      <div class="hello"><h1>Operations</h1><p>Proyectos por fase y sus <em>tiempos</em>.</p></div>
       <div class="row" style="margin-bottom:14px"><div class="sp"></div><button class="btn" data-act="newProject">+ Proyecto</button></div>
       ${projects.length ? html`<div class="grid g3">${projects.map((p, i) => { const pct = progress(p); const open = tasks.filter((t) => t.project_id === p.id && t.status !== 'Hecha').length;
         return html`<div class="card feat ${p.color || COLORS[i % 3]}" style="min-height:230px;cursor:pointer" data-act="pick" data-id="${p.id}">
@@ -41,7 +41,7 @@ export async function render(el, { me, sub, alive }) {
           <div class="foot"><span>Fase: ${curPhase(p)}</span><span>${open} tareas abiertas</span></div></div>`; })}</div>`
       : html`<div class="empty"><b>Todavía no hay proyectos</b>Crea uno con «+ Proyecto». Si es un cliente del repo, su pipeline sale de su plan contratado.</div>`}
       <div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${[['pipe', 'Proyectos'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${[['pipe', 'Proyectos'], ['time', 'Timeline']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>${tab === 'tasks' ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
       </div>
       <div id="obody"></div>`);
