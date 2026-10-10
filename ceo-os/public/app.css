@@ -389,11 +389,11 @@ html{scroll-behavior:smooth}
 /* ======================= CELULAR ======================= */
 @media (max-width:760px){
   html,body{font-size:15px;overflow-x:clip}
-  .app{padding:calc(14px + env(safe-area-inset-top)) 16px calc(96px + env(safe-area-inset-bottom))}
+  .app{padding:calc(14px + env(safe-area-inset-top)) 16px calc(76px + env(safe-area-inset-bottom))}
   /* arriba: marca + avatar · abajo: barra de navegación fija que se desliza */
   .top{margin-bottom:20px}
   .word img{height:20px!important}
-  .nav{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:30;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;padding:6px;gap:2px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  .nav{position:fixed;left:10px;right:10px;bottom:max(8px, calc(env(safe-area-inset-bottom) - 12px));z-index:30;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;padding:6px;gap:2px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
   .nav::-webkit-scrollbar{display:none}
   .nav button{flex-direction:column;gap:3px;padding:8px 12px;font-size:10.5px;flex:none;scroll-snap-align:center;min-width:62px}
   .nav svg{width:19px;height:19px}
@@ -436,7 +436,7 @@ html{scroll-behavior:smooth}
   /* documento PDF y vista de documento */
   .qview{padding:10px 0 40px}.qdoc{padding:24px 18px;font-size:12.5px}.qdoc .qh{flex-direction:column;gap:14px}.qdoc .qmeta{text-align:left}.qdoc .qto{grid-template-columns:1fr}.qdoc .qsum{width:100%}
   .qview .qbar{flex-wrap:wrap}
-  #toast{bottom:calc(92px + env(safe-area-inset-bottom));max-width:calc(100vw - 32px);text-align:center}
+  #toast{bottom:calc(70px + env(safe-area-inset-bottom));max-width:calc(100vw - 32px);text-align:center}
   .kv{grid-template-columns:100px 1fr}
 }
 
@@ -813,7 +813,7 @@ a.btn{text-decoration:none}
 .moremenu svg{width:18px;height:18px;flex:none;color:var(--ink2)}
 .moremenu b{display:block;font-weight:600;font-size:14px}.moremenu small{display:block;color:var(--mut);font-size:12px}
 @media (max-width:760px){
-  .moremenu{position:fixed;top:auto;left:10px;right:10px;width:auto;bottom:calc(84px + env(safe-area-inset-bottom))}
+  .moremenu{position:fixed;top:auto;left:10px;right:10px;width:auto;bottom:calc(62px + env(safe-area-inset-bottom))}
   .nav{justify-content:space-between}.nav button{flex:1;min-width:0;padding:8px 4px}
 }
 /* Hoy: listas accionables */
