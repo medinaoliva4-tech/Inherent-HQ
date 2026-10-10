@@ -6,7 +6,7 @@ import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer
 // Una carpeta se puede conectar a una carpeta de Google Drive: se ve su contenido y se crean Docs ahí.
 const KINDS = ['SOP', 'Playbook', 'Prompt', 'Diagrama', 'Video', 'Nota'];
 export const VTYPES = ['Reel', 'UGC / testimonio', 'Anuncio (Ads)', 'Derivado / corte', 'Story', 'YouTube / horizontal'];
-const KCOL = { SOP: '#4f7790', Playbook: '#7f9631', Prompt: '#b8583c', Diagrama: '#8a5fa8', Video: '#26201a', Nota: '#c2735a' };
+const KCOL = { SOP: '#87684e', Playbook: '#a18770', Prompt: '#81634b', Diagrama: '#84664d', Video: '#36271b', Nota: '#997d65' };
 // El formato de cada tipo: lo que tiene que llevar. Se carga al crear el documento.
 const TPL = {
   SOP: (t) => `# SOP · ${t}
@@ -141,7 +141,7 @@ const DGM = {
   COO --> Operador`,
 };
 const DGN = { flujo: 'Flujo', secuencia: 'Secuencia', mapa: 'Mapa mental', tiempo: 'Línea de tiempo', org: 'Organigrama' };
-const MIME = (m) => (/folder/.test(m) ? ['DIR', '#6b6b66'] : /document/.test(m) ? ['DOC', '#4f7790'] : /spreadsheet/.test(m) ? ['XLS', '#3c8a4a'] : /presentation/.test(m) ? ['PPT', '#d08a2e'] : /pdf/.test(m) ? ['PDF', '#c8432f'] : /video/.test(m) ? ['MP4', '#26201a'] : /image/.test(m) ? ['IMG', '#8a5fa8'] : ['FILE', '#8f877b']);
+const MIME = (m) => (/folder/.test(m) ? ['DIR', '#82634b'] : /document/.test(m) ? ['DOC', '#87684e'] : /spreadsheet/.test(m) ? ['XLS', '#8c6d53'] : /presentation/.test(m) ? ['PPT', '#aa917b'] : /pdf/.test(m) ? ['PDF', '#745842'] : /video/.test(m) ? ['MP4', '#36271b'] : /image/.test(m) ? ['IMG', '#84664d'] : ['FILE', '#9f846d']);
 const driveOk = (u) => /^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(String(u || ''));
 
 export async function render(el, { me, sub, alive }) {
@@ -190,7 +190,7 @@ export async function render(el, { me, sub, alive }) {
         toast('Video guardado en la Library ✅'); location.hash = `/library/${r.folder_id || '_'}/${r.id}`; } catch (e) { toast(e.message, true); }
     } });
   }
-  const docRow = (d) => html`<tr class="click" data-act="doc" data-id="${d.id}"><td><span class="ftype" style="background:${KCOL[d.kind] || '#8f877b'}">${(d.kind || 'Doc').slice(0, 4).toUpperCase()}</span><b style="font-weight:500">${d.title}</b></td><td class="mut">${folders.find((f) => f.id === d.folder_id)?.name || '—'}</td><td class="mut">${d._meta?.updated_at ? fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}</td><td class="mut sm">${d._meta?.updated_by || ''}</td></tr>`;
+  const docRow = (d) => html`<tr class="click" data-act="doc" data-id="${d.id}"><td><span class="ftype" style="background:${KCOL[d.kind] || '#9f846d'}">${(d.kind || 'Doc').slice(0, 4).toUpperCase()}</span><b style="font-weight:500">${d.title}</b></td><td class="mut">${folders.find((f) => f.id === d.folder_id)?.name || '—'}</td><td class="mut">${d._meta?.updated_at ? fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}</td><td class="mut sm">${d._meta?.updated_by || ''}</td></tr>`;
 
   // ---------- Inicio: carpetas + documentos recientes ----------
   function home() {
@@ -217,7 +217,7 @@ export async function render(el, { me, sub, alive }) {
           <div style="flex:1;min-width:240px"><h1 style="font-size:46px;font-weight:500;letter-spacing:-1.4px">${f.name}</h1>${f.desc ? html`<div class="mut">${f.desc}</div>` : ''}</div>
           <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" data-act="editFolder">Editar</button><button class="btn ghost" data-act="recHere">● Grabar video</button><button class="btn" data-act="newDocHere">+ Documento</button></div></div>
         <div class="sec-title" style="margin-top:0"><h2>Documentos</h2></div>
-        ${list.length ? html`<div class="grid g3">${list.map((d) => html`<div class="card" data-act="doc" data-id="${d.id}" style="cursor:pointer"><div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#8f877b'};color:#fff">${d.kind || 'Doc'}</span><div class="sp"></div>${d.url ? html`<span class="mut sm">▶ video</span>` : ''}</div><h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin-top:14px">${d.title}</h3><div class="mut sm" style="margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${String(d.body || '').replace(/[#*>`|-]/g, '').slice(0, 200) || 'Vacío'}</div></div>`)}</div>`
+        ${list.length ? html`<div class="grid g3">${list.map((d) => html`<div class="card" data-act="doc" data-id="${d.id}" style="cursor:pointer"><div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#9f846d'};color:#fdfaf3">${d.kind || 'Doc'}</span><div class="sp"></div>${d.url ? html`<span class="mut sm">▶ video</span>` : ''}</div><h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin-top:14px">${d.title}</h3><div class="mut sm" style="margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${String(d.body || '').replace(/[#*>`|-]/g, '').slice(0, 200) || 'Vacío'}</div></div>`)}</div>`
           : html`<div class="empty"><b>Sin documentos aquí</b>Crea un SOP, playbook o video con «+ Documento».</div>`}
         <div class="sec-title"><h2>Google Drive</h2>${f.drive ? html`<div class="row" style="gap:8px"><button class="btn ghost" data-act="gnew" style="padding:8px 14px">+ Google Doc</button><a class="btn ghost" href="${f.drive}" target="_blank" rel="noopener noreferrer" style="padding:8px 14px;text-decoration:none">${IC.drive} Abrir en Drive</a></div>` : ''}</div>
         ${!f.drive ? connectCard('drive', 'Conecta esta carpeta con Google Drive', 'Verás aquí sus archivos y podrás crear Docs, Sheets y Slides directo en ella.', 'connectDrive', 'Conectar con Drive')
@@ -236,7 +236,7 @@ export async function render(el, { me, sub, alive }) {
         try { const r = await api('google/drive', { method: 'POST', body: { ...v, folder: f.drive } }); toast('Creado en tu Drive ✅'); if (r.link) window.open(r.link, '_blank', 'noopener'); drive = null; paint(); loadDrive(); } catch (e) { toast(e.message, true); } },
       dfile: (t) => { const x = drive.files.find((y) => y.id === t.dataset.id); const em = /folder/.test(x.mime) ? null : `https://drive.google.com/file/d/${x.id}/preview`;
         drawer(html`<div class="row"><span class="ftype" style="background:${MIME(x.mime)[1]}">${MIME(x.mime)[0]}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><h2>${x.name}</h2><div class="mut">${x.owner || ''}${x.modified ? ' · ' + fdate(x.modified.slice(0, 10)) : ''}</div>
-          ${em ? html`<iframe src="${em}" style="width:100%;height:58vh;border:0;border-radius:18px;margin-top:16px;background:#fff" loading="lazy"></iframe>` : ''}
+          ${em ? html`<iframe src="${em}" style="width:100%;height:58vh;border:0;border-radius:18px;margin-top:16px;background:#fdfaf3" loading="lazy"></iframe>` : ''}
           <a class="btn" href="${x.link}" target="_blank" rel="noopener noreferrer" style="margin-top:16px;text-decoration:none;display:inline-flex">Abrir en Drive ↗</a>`); },
     });
     paint();
@@ -263,9 +263,9 @@ export async function render(el, { me, sub, alive }) {
               <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:10px">${d.kind === 'Diagrama' ? html`<span class="mut sm">Empieza con:</span>${Object.entries(DGN).map(([k, l]) => html`<button class="chip" data-act="dgm" data-k="${k}" style="padding:7px 12px">${l}</button>`)}` : html`<button class="chip" data-act="fmt" style="padding:7px 12px">↺ Insertar el formato de ${d.kind || 'Nota'}</button>`}</div>
               <div class="grid g11" style="gap:14px"><textarea class="in" id="dbody" style="min-height:58vh;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;line-height:1.6" placeholder="# Título&#10;&#10;1. Primer paso&#10;2. Segundo paso&#10;&#10;> Nota importante">${d.body || ''}</textarea><div class="card glass" id="dprev" style="min-height:58vh;overflow:auto">${prev(d.kind, d.body || '')}</div></div>
               <div class="mut sm" style="margin-top:8px">${d.kind === 'Diagrama' ? html`Escribe el diagrama en <a href="https://mermaid.js.org/intro/" target="_blank" rel="noopener noreferrer" style="color:inherit">Mermaid</a>: cada línea es una caja o una flecha (<code>A --> B</code>). La vista previa se actualiza sola.` : 'Escribe en Markdown: # títulos, - listas, - [ ] checklist, **negritas**, > notas, [links](https://…). Para un diagrama dentro del texto usa un bloque ```mermaid. La vista previa se actualiza sola.'}</div>`
-            : html`<div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#8f877b'};color:#fff">${d.kind || 'Doc'}</span><div class="sp"></div><span class="mut sm">${d._meta?.updated_at ? 'Actualizado ' + fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}${d._meta?.updated_by ? ' · ' + d._meta?.updated_by : ''}</span></div>
+            : html`<div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#9f846d'};color:#fdfaf3">${d.kind || 'Doc'}</span><div class="sp"></div><span class="mut sm">${d._meta?.updated_at ? 'Actualizado ' + fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}${d._meta?.updated_by ? ' · ' + d._meta?.updated_by : ''}</span></div>
               <h1 style="font-size:42px;font-weight:500;letter-spacing:-1.3px;margin:14px 0 18px">${d.title}</h1>
-              ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:16/9;border:0;border-radius:20px;margin-bottom:22px;background:#000" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>` : d.url ? html`<a class="artifact" href="${d.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-bottom:18px"><span class="fi">↗</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
+              ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:16/9;border:0;border-radius:20px;margin-bottom:22px;background:#1a120c" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>` : d.url ? html`<a class="artifact" href="${d.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-bottom:18px"><span class="fi">↗</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
               ${d.kind === 'Prompt' ? html`<div class="row" style="gap:8px;margin-bottom:10px"><span class="chip">${d.client ? d.client.toUpperCase() : 'General'}</span><span class="chip">${d.vtype || 'Video'}</span><div class="sp"></div><button class="btn ghost" data-act="copyPrompt">Copiar prompt</button>${canClaude ? html`<button class="btn" data-act="claudePrompt">${ICON.sparkle} Abrir en Claude</button>` : ''}</div><pre class="repo-pre" id="ptext">${d.body || ''}</pre>`
                 : !d.body ? html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>` : d.kind === 'Diagrama' ? diagram(d.body) : md(d.body)}`}
         </div>`);

@@ -6,10 +6,7 @@ import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveSta
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
 const RED = { instagram: 'Instagram', tiktok: 'TikTok' };
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$/.test(String(u || '')) ? u : null);
-// Producción primero (lo que hay que hacer, aprobar y publicar en fecha); la investigación y las métricas, aparte.
-const MAIN = [['shot', 'Shot list'], ['plan', 'Planner'], ['guiones', 'Guiones'], ['postear', 'Por postear']];
-const TOOLS = [['refs', 'Referencias'], ['fuentes', 'Fuentes'], ['analytics', 'Analytics'], ['bandeja', 'Bandeja']];
-const TABS = [...MAIN, ...TOOLS];
+const TABS = [['shot', 'Shot list'], ['refs', 'Referencias'], ['plan', 'Planner'], ['guiones', 'Guiones'], ['postear', 'Por postear'], ['bandeja', 'Bandeja'], ['analytics', 'Analytics'], ['fuentes', 'Fuentes']];
 const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho', propia: 'Tuya' };
 
 export function videoCard(it) {
@@ -40,11 +37,10 @@ export async function render(el, { sub, alive }) {
     if (!alive()) return;
     const p = data.profile;
     mount(el, html`
-      <div class="hello"><h1>Content</h1><p>Lo que hay que producir, aprobar y publicar en <em>${p.name}</em>.</p></div>
+      <div class="hello"><h1>Content</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
       <div class="row" style="margin-bottom:16px;gap:8px;flex-wrap:wrap">${data.profiles.map((x) => html`<button class="chip ${x.slug === slug ? 'dark' : ''}" data-act="prof" data-s="${x.slug}" style="padding:9px 16px;font-size:13px">${x.name}</button>`)}</div>
       <div class="row" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
-        <div class="tabs" style="margin:0">${MAIN.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
-        <div class="tabs tools" style="margin:0"><span class="tlbl">Herramientas</span>${TOOLS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
         ${tab === 'semana' ? html`<button class="btn" data-act="scrape">Scrapear ahora</button>` : ''}
         ${tab === 'refs' ? html`<button class="btn" data-act="refScrape">Buscar similares</button>` : ''}
@@ -195,12 +191,12 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     mount(b, html`${bar}${!gfiles.length ? html`<div class="empty"><b>La carpeta está vacía</b>Crea el primer guion con «+ Guion» o súbelo a la carpeta en Drive.</div>` : html`<div class="grid gsplit" style="grid-template-columns:260px 1fr;gap:16px;align-items:start">
       <div class="card" style="padding:12px">${dirs.map((f) => html`<button class="artifact" data-act="gdir" data-id="${f.id}" data-n="${f.name}" style="width:100%;margin:4px 0"><span class="fi">📁</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b></div></button>`)}
         ${docs.map((f) => html`<button class="artifact" data-act="gfile" data-id="${f.id}" style="width:100%;margin:4px 0;${cur && f.id === cur.id ? 'outline:2px solid var(--ink)' : ''}"><span class="fi">✎</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b><div class="mut" style="font-size:11px">${f.modified ? fdate(f.modified.slice(0, 10)) : ''}${f.owner ? ' · ' + f.owner : ''}</div></div></button>`)}</div>
-      ${cur ? html`<div class="card swap" style="min-width:0;padding:10px"><div class="row" style="margin-bottom:8px"><b style="font-weight:500">${cur.name}</b><div class="sp"></div><a class="btn ghost xs" href="${cur.link}" target="_blank" rel="noopener noreferrer">Abrir en Drive ↗</a></div><iframe src="${preview(cur)}" style="width:100%;height:70vh;border:0;border-radius:12px;background:#fff" loading="lazy"></iframe></div>` : html`<div class="empty"><b>Elige una carpeta</b>Los guiones están adentro.</div>`}</div>`}`);
+      ${cur ? html`<div class="card swap" style="min-width:0;padding:10px"><div class="row" style="margin-bottom:8px"><b style="font-weight:500">${cur.name}</b><div class="sp"></div><a class="btn ghost xs" href="${cur.link}" target="_blank" rel="noopener noreferrer">Abrir en Drive ↗</a></div><iframe src="${preview(cur)}" style="width:100%;height:70vh;border:0;border-radius:12px;background:#fdfaf3" loading="lazy"></iframe></div>` : html`<div class="empty"><b>Elige una carpeta</b>Los guiones están adentro.</div>`}</div>`}`);
   }
 
   // ---------- Planner: calendario semana / mes, con pilares y si cada pieza ya está en Drive ----------
   const DOW = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-  const PAL = ['#5c6b22', '#c2735a', '#4f7790', '#b08a5f', '#8a5a9c', '#2f7d6b', '#a3392a', '#171410'];
+  const PAL = ['#795c45', '#997d65', '#87684e', '#a68d77', '#80624a', '#82644b', '#654c38', '#2c1f16'];
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const monday = (d) => { const x = new Date(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
   function needPosts(b, fn) {
@@ -215,15 +211,15 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   }
   // Cómo se reparte el contenido entre pilares (lo que no tiene pilar va en gris).
   function pillarDonut(pillars, list) {
-    const parts = [...pillars.map((x) => ({ c: x.color, n: list.filter((p) => p.pillar === x.name).length })), { c: '#e6dfd2', n: list.filter((p) => !pillars.some((x) => x.name === p.pillar)).length }].filter((x) => x.n);
+    const parts = [...pillars.map((x) => ({ c: x.color, n: list.filter((p) => p.pillar === x.name).length })), { c: '#eee6da', n: list.filter((p) => !pillars.some((x) => x.name === p.pillar)).length }].filter((x) => x.n);
     const total = parts.reduce((a, x) => a + x.n, 0), R = 30, C = 2 * Math.PI * R; let off = 0;
     const arcs = parts.map((x) => { const len = (x.n / total) * C; const a = `<circle r="${R}" cx="40" cy="40" fill="none" stroke="${x.c}" stroke-width="14" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 40 40)"/>`; off += len; return a; }).join('');
-    return raw(`<svg width="80" height="80" viewBox="0 0 80 80" aria-label="Reparto por pilar">${total ? arcs : `<circle r="${R}" cx="40" cy="40" fill="none" stroke="#ebe5da" stroke-width="14"/>`}<text x="40" y="44" text-anchor="middle" font-size="14" fill="#171410">${total}</text></svg>`);
+    return raw(`<svg width="80" height="80" viewBox="0 0 80 80" aria-label="Reparto por pilar">${total ? arcs : `<circle r="${R}" cx="40" cy="40" fill="none" stroke="#f0e9de" stroke-width="14"/>`}<text x="40" y="44" text-anchor="middle" font-size="14" fill="#2c1f16">${total}</text></svg>`);
   }
   function plan(b) {
     if (needPosts(b, plan)) return;
     const pillars = data.cfg.pillars || [];
-    const colorOf = (n) => pillars.find((x) => x.name === n)?.color || '#cfc7ba';
+    const colorOf = (n) => pillars.find((x) => x.name === n)?.color || '#e0d4c4';
     const a = new Date(pdate + 'T12:00');
     const first = pview === 'mes' ? new Date(a.getFullYear(), a.getMonth(), 1, 12) : a;
     const start = monday(first);
@@ -265,19 +261,19 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       const maxAvg = Math.max(1, ...reels.map((x) => x.avg));
       top = html`<div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">${connectChip('instagram', `${ig.handles.map((h) => '@' + h).join(', ')} · conectado`, 'x', true)}<button class="sm mut" data-act="igchange">Cambiar cuenta</button><span class="mut sm">Últimos ${ig.days || 30} días · vía Windsor.ai</span></div>
       <div class="wkkpis">${[['Seguidores', ig.followers ? K(ig.followers) : '—'], ['Alcance', K(ig.reach)], ['Vistas', K(ig.views)], ['Engagement', ig.er == null ? '—' : ig.er + '%'], ['Watch time promedio', w.avg == null ? '—' : w.avg + ' s']].map(([l, v]) => html`<div class="wkkpi"><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
-      ${ig.series.length > 1 ? html`<div class="card wkbox"><div class="wkhead"><h3>Alcance y vistas por día</h3><span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#171410;display:inline-block"></i>Alcance</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #c2735a;display:inline-block"></i>Vistas</span></span></div><div class="chart" id="chIG"></div></div>` : ''}
-      <div class="card wkbox" style="margin-top:12px"><div class="wkhead"><div><h3>Reels · ¿hasta dónde los ven?</h3><span class="mut sm">Últimos 90 días · ${w.n || 0} reels con watch time · ${w.hours || 0} h vistas en total${w.hookLost ? html` · <b style="color:#a3392a">${w.hookLost} se pierden en el hook (&lt;3 s)</b>` : ''}</span></div></div>
+      ${ig.series.length > 1 ? html`<div class="card wkbox"><div class="wkhead"><h3>Alcance y vistas por día</h3><span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#2c1f16;display:inline-block"></i>Alcance</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #997d65;display:inline-block"></i>Vistas</span></span></div><div class="chart" id="chIG"></div></div>` : ''}
+      <div class="card wkbox" style="margin-top:12px"><div class="wkhead"><div><h3>Reels · ¿hasta dónde los ven?</h3><span class="mut sm">Últimos 90 días · ${w.n || 0} reels con watch time · ${w.hours || 0} h vistas en total${w.hookLost ? html` · <b style="color:#654c38">${w.hookLost} se pierden en el hook (&lt;3 s)</b>` : ''}</span></div></div>
         ${reels.length ? html`<div class="tscroll"><table class="wktable"><thead><tr><th>Reel</th><th>Fecha</th><th class="n">Vistas</th><th class="n">Alcance</th><th style="min-width:150px">Watch time promedio</th><th class="n">Total</th><th class="n">♥</th><th class="n">Guardados</th><th class="n">Compartidos</th></tr></thead><tbody>
           ${reels.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit" class="row">${safeImg(x.thumb) ? html`<span class="rthumb" style="background-image:url('${safeImg(x.thumb)}')"></span>` : ''}<span class="sm" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.caption || 'Ver reel'}</span></a>` : html`<span class="sm">${x.caption || '—'}</span>`}</td>
             <td class="mut">${fdate(x.date)}</td><td class="n"><b style="font-weight:500">${K(x.views)}</b></td><td class="n">${K(x.reach)}</td>
-            <td>${x.avg ? html`<div class="row" style="gap:8px"><div style="flex:1;height:8px;border-radius:99px;background:#ebe5da"><div style="width:${Math.round((x.avg / maxAvg) * 100)}%;height:100%;border-radius:99px;background:${x.avg < 3 ? '#c2735a' : '#5c6b22'}"></div></div><span class="sm" style="width:44px;text-align:right">${x.avg} s</span></div>` : html`<span class="mut sm">—</span>`}</td>
+            <td>${x.avg ? html`<div class="row" style="gap:8px"><div style="flex:1;height:8px;border-radius:99px;background:#f0e9de"><div style="width:${Math.round((x.avg / maxAvg) * 100)}%;height:100%;border-radius:99px;background:${x.avg < 3 ? '#997d65' : '#795c45'}"></div></div><span class="sm" style="width:44px;text-align:right">${x.avg} s</span></div>` : html`<span class="mut sm">—</span>`}</td>
             <td class="n mut">${x.total ? (x.total >= 3600 ? Math.round(x.total / 360) / 10 + ' h' : Math.round(x.total / 60) + ' min') : '—'}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.saves)}</td><td class="n">${K(x.shares)}</td></tr>`)}</tbody></table></div>
           <div class="mut sm" style="margin-top:10px">💡 Instagram no entrega por API el segundo exacto en que la gente deja de ver (esa curva solo está en la app). Lo más cercano es el <b>watch time promedio</b>: si está debajo de 3 s, se fueron en el hook.</div>`
         : html`<div class="mut sm" style="padding:6px 0">Windsor no trae reels de esta cuenta en los últimos 90 días.</div>`}</div>
       ${ig.top.length ? html`<div class="card wkbox" style="margin-top:12px"><div class="wkhead"><h3>Mejores posts del periodo</h3></div><div class="tscroll"><table class="wktable"><thead><tr><th>Fecha</th><th>Tipo</th><th class="n">Alcance</th><th class="n">Likes</th><th class="n">Comentarios</th><th class="n">Guardados</th><th class="n">Engagement</th></tr></thead><tbody>${ig.top.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit">${fdate(x.date)}</a>` : fdate(x.date)}</td><td>${x.type}</td><td class="n">${K(x.reach)}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.comments)}</td><td class="n">${K(x.saves)}</td><td class="n"><b style="font-weight:500">${K(x.eng)}</b></td></tr>`)}</tbody></table></div></div>` : ''}`;
     }
     mount(b, html`${top}<div id="anScrape" style="margin-top:16px"></div>`);
-    const ch = $('#chIG', b); if (ch) lineChart(ch, ig.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: ig.series.map((x) => x.reach), c: '#171410', fill: true }, { name: 'Vistas', v: ig.series.map((x) => x.views), c: '#c2735a', dash: true }]);
+    const ch = $('#chIG', b); if (ch) lineChart(ch, ig.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: ig.series.map((x) => x.reach), c: '#2c1f16', fill: true }, { name: 'Vistas', v: ig.series.map((x) => x.views), c: '#997d65', dash: true }]);
     scrapeAnalytics($('#anScrape', b));
   }
   function scrapeAnalytics(b) {
@@ -286,11 +282,11 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const delta = (k) => (last && prev && prev[k] ? Math.round(((last[k] - prev[k]) / prev[k]) * 100) : null);
     const own = week.result?.own || [];
     if (!h.length) return mount(b, html`<div class="mut sm">El scrape semanal (Apify) también guarda tus posts: aparecen aquí cuando corra.</div>`);
-    const kpi = (lbl, v, d) => html`<div class="card"><div class="lbl">${lbl}</div><div class="big" style="font-size:44px">${v}</div><div class="sm ${d == null ? 'mut' : ''}" style="${d == null ? '' : d >= 0 ? 'color:#4f6b12' : 'color:#a3392a'}">${d == null ? 'vs semana anterior: —' : (d >= 0 ? '▲ ' : '▼ ') + Math.abs(d) + '% vs semana anterior'}</div></div>`;
+    const kpi = (lbl, v, d) => html`<div class="card"><div class="lbl">${lbl}</div><div class="big" style="font-size:44px">${v}</div><div class="sm ${d == null ? 'mut' : ''}" style="${d == null ? '' : d >= 0 ? 'color:#755943' : 'color:#654c38'}">${d == null ? 'vs semana anterior: —' : (d >= 0 ? '▲ ' : '▼ ') + Math.abs(d) + '% vs semana anterior'}</div></div>`;
     mount(b, html`<div class="grid g4">${kpi('Vistas promedio', K(last.avgViews), delta('avgViews'))}${kpi('Engagement', last.er == null ? '—' : last.er + '%', delta('er'))}${kpi('Likes', K(last.likes), delta('likes'))}${kpi('Posts leídos', last.posts, null)}</div>
       <div class="card" style="margin-top:16px"><div class="chead"><div class="ico">↗</div><h3>Vistas promedio por semana</h3></div><div class="chart" id="chA"></div></div>
       ${own.length ? html`<div class="sec-title"><h2>Tus últimos posts</h2></div><div class="grid g5">${own.slice(0, 10).map(videoCard)}</div>` : ''}`);
-    lineChart($('#chA', b), h.map((x) => x.week.slice(5)), [{ name: 'Vistas', v: h.map((x) => x.avgViews), c: '#171410', fill: true }]);
+    lineChart($('#chA', b), h.map((x) => x.week.slice(5)), [{ name: 'Vistas', v: h.map((x) => x.avgViews), c: '#2c1f16', fill: true }]);
   }
 
   // ---------- Fuentes: tus cuentas, tu audiencia (de lo general a lo específico), referentes y competencia ----------

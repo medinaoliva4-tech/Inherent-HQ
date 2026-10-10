@@ -18,30 +18,30 @@ export async function render(el, { me, sub, alive }) {
   let [projects, tasks, team] = await Promise.all([PR.list(), TK.list(), teamList()]);
   let clients = [];
   try { clients = (await api('repo/clients')).clients.map((c) => ({ ...c, plan: String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '') })); } catch {}
-  let tab = ['pipe', 'time'].includes(sub[0]) ? sub[0] : 'pipe';
+  let tab = ['pipe', 'cal', 'time', 'tasks'].includes(sub[0]) ? sub[0] : 'pipe';
   let current = projects[0]?.id || null, taskFilter = 'all';
   let calMonth = today().slice(0, 7), events = null, evErr = null;
   const person = (email) => team.find((t) => t.id === email || t.email === email);
   const pname = (id) => projects.find((p) => p.id === id)?.name || '—';
   const progress = (p) => { const ph = p.phases || []; return ph.length ? Math.round((ph.filter((x) => x.status === 'done').length / ph.length) * 100) : 0; };
-  const curPhase = (p) => (!(p.phases || []).length ? 'Sin fases' : p.phases.find((x) => x.status !== 'done')?.name || 'Terminado');
+  const curPhase = (p) => (p.phases || []).find((x) => x.status !== 'done')?.name || 'Terminado';
 
   async function saveProject(p) { try { const r = await PR.save(p); projects = projects.map((x) => (x.id === r.id ? r : x)); return r; } catch (e) { toast(e.message, true); return null; } }
   async function saveTask(t) { try { const r = await TK.save(t); tasks = tasks.map((x) => (x.id === r.id ? r : x)); return r; } catch (e) { toast(e.message, true); return null; } }
 
   function paint() {
     mount(el, html`
-      <div class="hello"><h1>Operations</h1><p>Proyectos por fase y sus <em>tiempos</em>.</p></div>
+      <div class="hello"><h1>Operations</h1><p>Proyectos por fase, <em>tiempos</em> y tareas.</p></div>
       <div class="row" style="margin-bottom:14px"><div class="sp"></div><button class="btn" data-act="newProject">+ Proyecto</button></div>
       ${projects.length ? html`<div class="grid g3">${projects.map((p, i) => { const pct = progress(p); const open = tasks.filter((t) => t.project_id === p.id && t.status !== 'Hecha').length;
         return html`<div class="card feat ${p.color || COLORS[i % 3]}" style="min-height:230px;cursor:pointer" data-act="pick" data-id="${p.id}">
           <div class="chead"><div class="ico">${IC.ring(Math.max(4, Math.round(pct * 1.17)))}<span style="font-size:15px">◎</span></div><h3>${p.name}<br><span class="lbl">${p.kind}${p.client ? ' · ' + p.client : ''}</span></h3>${p.client_slug ? html`<a class="arrow" href="#/clients/${p.client_slug}" title="Página del cliente" style="margin-right:6px">↗</a>` : ''}<button class="arrow" data-act="editProject" data-id="${p.id}" title="Editar">✎</button></div>
           <div class="lbl">Avance</div><div class="big" style="font-size:46px">${pct}<small>%</small></div>
-          <div class="phases">${(p.phases || []).map((x) => html`<i title="${x.name}" style="background:${x.status === 'done' ? 'rgba(255,255,255,.95)' : x.status === 'now' ? 'var(--lime)' : 'rgba(255,255,255,.25)'}"></i>`)}</div>
+          <div class="phases">${(p.phases || []).map((x) => html`<i title="${x.name}" style="background:${x.status === 'done' ? 'rgba(253,250,243,.95)' : x.status === 'now' ? 'var(--lime)' : 'rgba(253,250,243,.25)'}"></i>`)}</div>
           <div class="foot"><span>Fase: ${curPhase(p)}</span><span>${open} tareas abiertas</span></div></div>`; })}</div>`
       : html`<div class="empty"><b>Todavía no hay proyectos</b>Crea uno con «+ Proyecto». Si es un cliente del repo, su pipeline sale de su plan contratado.</div>`}
       <div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${[['pipe', 'Proyectos'], ['time', 'Timeline']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${[['pipe', 'Proyectos'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>${tab === 'tasks' ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
       </div>
       <div id="obody"></div>`);
@@ -155,8 +155,8 @@ export async function render(el, { me, sub, alive }) {
     return list.length ? html`<div class="card"><table><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead><tbody>
         ${list.map((t) => { const who = person(t.assignee); const late = t.due && t.due < today() && t.status !== 'Hecha';
           return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${visLabel(t) ? html` <span class="mut sm">${visLabel(t)}</span>` : ''}${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}${t.dept ? ' · ' + t.dept : ''}</td>
-            <td>${who ? html`<span class="av" style="background:${who.color || '#6b5a45'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="mut sm">—</span>`}</td>
-            <td style="${late ? 'color:#a3392a;font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
+            <td>${who ? html`<span class="av" style="background:${who.color || '#735741'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="mut sm">—</span>`}</td>
+            <td style="${late ? 'color:#654c38;font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
       </tbody></table></div>` : html`<div class="empty"><b>Sin tareas aquí</b>${emptyMsg}</div>`;
   }
 
@@ -175,7 +175,7 @@ export async function render(el, { me, sub, alive }) {
           <div><label class="f">Descripción</label><textarea class="in" id="tdesc">${t.description || ''}</textarea></div>
           <div><label class="f">Link (Drive, doc, carpeta)</label><input class="in" id="tlink" value="${t.link || ''}" placeholder="https://drive.google.com/…"></div>
         </div>
-        ${t.link && /^https?:\/\//.test(t.link) ? html`<a class="artifact" href="${t.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:10px"><span class="fi" style="background:#4f7790;color:#fff">${IC.drive}</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
+        ${t.link && /^https?:\/\//.test(t.link) ? html`<a class="artifact" href="${t.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:10px"><span class="fi" style="background:#87684e;color:#fdfaf3">${IC.drive}</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
         <b class="sm" style="display:block;margin-top:18px">Checklist</b>
         ${(t.checklist || []).map((c, i) => html`<label class="check"><input type="checkbox" data-act="chk" data-i="${i}" ${c.done ? raw('checked') : ''}> ${c.t}</label>`)}
         <div class="row" style="margin-top:6px"><input class="in" id="newchk" placeholder="Nuevo paso…"><button class="btn ghost" data-act="addchk">+</button></div>

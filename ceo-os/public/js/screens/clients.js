@@ -10,7 +10,7 @@ const RM = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Logrado
 const COLORS = ['olive', 'terra', 'ink'];
 // El roadmap son METAS: qué queremos, cómo se mide, dónde estamos, el desglose de tareas y los checkpoints.
 // (Los hitos viejos se leen como metas sin métrica.)
-const HEALTH = { ok: ['En camino', 'green', '#5c6b22'], riesgo: ['En riesgo', 'amber', '#c29a2a'], off: ['Fuera de ruta', 'red', '#a3392a'] };
+const HEALTH = { ok: ['En camino', 'green', '#795c45'], riesgo: ['En riesgo', 'amber', '#b29b86'], off: ['Fuera de ruta', 'red', '#654c38'] };
 const goalsOf = (a) => a?.goals || (a?.roadmap || []).map((x) => ({ goal: x.t, due: x.date || '', status: x.status || 'todo', note: x.note || '', metric: '', baseline: '', target: '', current: '', tasks: [], checks: [] }));
 const num = (v) => { const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, '')); return Number.isFinite(n) ? n : null; };
 const pctOf = (g) => { if (g.status === 'done') return 100; const b = num(g.baseline) ?? 0, t = num(g.target), c = num(g.current); if (t == null || c == null || t === b) return null; return Math.max(0, Math.min(100, Math.round(((c - b) / (t - b)) * 100))); };
@@ -89,7 +89,7 @@ export async function render(el, { me, sub, alive }) {
           <div class="row" style="flex-wrap:wrap;gap:14px;align-items:flex-start"><div class="ico" style="width:64px;height:64px;font-size:20px;font-weight:700">${initials(a.name)}</div>
             <div style="flex:1;min-width:240px"><div class="lbl">${cleanPlan(info.plan) || (info.app ? 'Desde cotización' : 'Sin plan')}</div><h1 style="font-size:52px;font-weight:500;letter-spacing:-1.6px;line-height:1.05">${a.name}</h1>
               <div style="opacity:.85;margin-top:6px">${[a.contact, a.phone, a.email].filter(Boolean).join(' · ') || 'Sin contacto'}</div></div>
-            <div class="row" style="gap:8px"><button class="btn cream" data-act="pdf">↓ Roadmap PDF</button><button class="btn ghost" data-act="editAcc" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)">Editar datos</button></div></div>
+            <div class="row" style="gap:8px"><button class="btn cream" data-act="pdf">↓ Roadmap PDF</button><button class="btn ghost" data-act="editAcc" style="background:transparent;color:#fdfaf3;border-color:rgba(253,250,243,.4)">Editar datos</button></div></div>
           <div class="split" style="margin-top:26px"><div><span class="lbl">Roadmap</span><b>${done}/${rm.length}</b></div><div><span class="lbl">Proyectos</span><b>${ps.length}</b></div><div><span class="lbl">Tareas abiertas</span><b>${tk.filter((t) => t.status !== 'Hecha').length}</b></div><div><span class="lbl">Entregables</span><b>${arts.length}</b></div></div>
         </div>
         <div class="row" style="gap:8px;flex-wrap:wrap;margin:18px 0 6px">${[['rm', 'Roadmap'], ['es', 'Especialista'], ['mt', 'Reuniones'], ['tl', 'Timeline'], ['tk', 'Tareas'], ['ct', 'Contenido'], ['ac', 'Accesos'], ['en', 'Entregables'], ['pl', 'Plan']].map(([k, l]) => html`<button class="chip" data-act="jump" data-k="${k}" style="padding:8px 14px">${l}</button>`)}</div>
@@ -116,9 +116,9 @@ export async function render(el, { me, sub, alive }) {
         <div class="sec-title" id="s-tl"><h2>Timeline</h2><a href="#/operations/time">En Operations →</a></div>
         ${timeline()}
 
-        <div class="sec-title" id="s-tk"><h2>Tareas</h2><a href="#/control">En Control →</a></div>
+        <div class="sec-title" id="s-tk"><h2>Tareas</h2><a href="#/operations/tasks">En Operations →</a></div>
         ${tk.length ? html`<div class="card"><table><thead><tr><th></th><th>Tarea</th><th>Proyecto</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead><tbody>
-          ${[...tk].sort((x, z) => (x.status === 'Hecha') - (z.status === 'Hecha') || String(x.due || '9').localeCompare(String(z.due || '9'))).map((t) => { const who = person(t.assignee); return html`<tr><td style="width:30px"><input type="checkbox" data-act="tdone" data-id="${t.id}" ${t.status === 'Hecha' ? raw('checked') : ''}></td><td><b style="font-weight:500;${t.status === 'Hecha' ? 'text-decoration:line-through;opacity:.5' : ''}">${t.title}</b>${t.dept ? html`<div class="mut sm">${t.dept}</div>` : ''}</td><td class="mut">${ps.find((p) => p.id === t.project_id)?.name || '—'}</td><td>${who ? html`<span class="av" style="background:${who.color || '#6b5a45'}" title="${who.name}">${initials(who.name)}</span>` : '—'}</td><td>${t.due ? fdate(t.due) : '—'}</td><td><span class="chip">${t.status || 'Por empezar'}</span></td></tr>`; })}</tbody></table></div>`
+          ${[...tk].sort((x, z) => (x.status === 'Hecha') - (z.status === 'Hecha') || String(x.due || '9').localeCompare(String(z.due || '9'))).map((t) => { const who = person(t.assignee); return html`<tr><td style="width:30px"><input type="checkbox" data-act="tdone" data-id="${t.id}" ${t.status === 'Hecha' ? raw('checked') : ''}></td><td><b style="font-weight:500;${t.status === 'Hecha' ? 'text-decoration:line-through;opacity:.5' : ''}">${t.title}</b>${t.dept ? html`<div class="mut sm">${t.dept}</div>` : ''}</td><td class="mut">${ps.find((p) => p.id === t.project_id)?.name || '—'}</td><td>${who ? html`<span class="av" style="background:${who.color || '#735741'}" title="${who.name}">${initials(who.name)}</span>` : '—'}</td><td>${t.due ? fdate(t.due) : '—'}</td><td><span class="chip">${t.status || 'Por empezar'}</span></td></tr>`; })}</tbody></table></div>`
           : html`<div class="empty"><b>Sin tareas</b>Las tareas de los proyectos de este cliente aparecen aquí.</div>`}
 
         <div class="sec-title" id="s-ct"><h2>Contenido</h2>${me.areas.includes('content') ? html`<a href="#/content/plan/${slug}">Planner en Content →</a>` : ''}</div>
@@ -134,7 +134,7 @@ export async function render(el, { me, sub, alive }) {
         </div>
 
         <div class="sec-title" id="s-en"><h2>Entregables</h2></div>
-        ${arts.length ? html`<div class="grid g3">${arts.map((x) => html`<a class="artifact" href="${/^https?:\/\//.test(x.art.url) ? x.art.url : '#'}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="fi" style="background:#4f7790;color:#fff">${IC.drive}</span><div><b style="font-weight:500">${x.art.name || 'Entregable'}</b><div class="mut" style="font-size:11px">${x.n} ${x.name} · ${x.p.name}</div></div></a>`)}</div>`
+        ${arts.length ? html`<div class="grid g3">${arts.map((x) => html`<a class="artifact" href="${/^https?:\/\//.test(x.art.url) ? x.art.url : '#'}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="fi" style="background:#87684e;color:#fdfaf3">${IC.drive}</span><div><b style="font-weight:500">${x.art.name || 'Entregable'}</b><div class="mut" style="font-size:11px">${x.n} ${x.name} · ${x.p.name}</div></div></a>`)}</div>`
           : html`<div class="empty"><b>Sin entregables todavía</b>Se agregan en Operations → Pipeline, en cada departamento.</div>`}
 
         <div class="sec-title" id="s-pl"><h2>Plan contratado</h2><span class="mut sm">Del repo</span></div>
@@ -190,13 +190,13 @@ export async function render(el, { me, sub, alive }) {
       docView(html`${docHead('Roadmap', html`${a.name}<br>${fdateLong(today())}`)}
         <div class="qto"><div><div class="lbl2">CLIENTE</div><b style="font-weight:500;font-size:15px">${a.name}</b>${cleanPlan(info.plan) ? html`<div>${cleanPlan(info.plan)}</div>` : ''}</div>
           <div><div class="lbl2">AVANCE</div><b style="font-weight:500;font-size:15px">${rm.filter((x) => x.status === 'done').length} de ${rm.length} metas logradas</b></div></div>
-        ${rm.map((g) => { const pct = pctOf(g), h = healthOf(g); return html`<div class="pgoal"><div class="row"><b style="font-weight:500;font-size:15px">${g.goal}</b><div class="sp"></div><span style="color:#6b6257;font-size:12px">${g.due ? fdateLong(g.due) : ''}</span></div>
-          <div style="font-size:11px;letter-spacing:1px;font-weight:700;color:${g.status === 'done' ? '#4f6b12' : '#8f877b'}">${(RM[g.status]?.[0] || 'Pendiente').toUpperCase()}${h ? ' · ' + HEALTH[h][0].toUpperCase() : ''}</div>
+        ${rm.map((g) => { const pct = pctOf(g), h = healthOf(g); return html`<div class="pgoal"><div class="row"><b style="font-weight:500;font-size:15px">${g.goal}</b><div class="sp"></div><span style="color:#7a5d46;font-size:12px">${g.due ? fdateLong(g.due) : ''}</span></div>
+          <div style="font-size:11px;letter-spacing:1px;font-weight:700;color:${g.status === 'done' ? '#755943' : '#9f846d'}">${(RM[g.status]?.[0] || 'Pendiente').toUpperCase()}${h ? ' · ' + HEALTH[h][0].toUpperCase() : ''}</div>
           ${g.metric ? html`<div style="font-size:12.5px;margin-top:6px"><b style="font-weight:500">Cómo se mide:</b> ${g.metric} · hoy ${g.current || g.baseline || '—'} → meta ${g.target || '—'}${pct == null ? '' : ` (${pct}%)`}</div>` : ''}
           ${(g.tasks || []).length ? html`<div style="font-size:12.5px;margin-top:6px"><b style="font-weight:500">Desglose:</b> ${g.tasks.map((t) => (t.done ? '✓ ' : '○ ') + t.t).join(' · ')}</div>` : ''}
           ${(g.checks || []).length ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Checkpoints:</b> ${g.checks.map((c) => `${fdate(c.date)}${c.done ? ` ✓${c.value ? ' ' + c.value : ''}` : ''}`).join(' · ')}</div>` : ''}
           ${(a.mentors || []).filter((x) => x.goal === rm.indexOf(g)).map((x) => { const m = mentors.find((y) => y.id === x.id); return m ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Especialista:</b> ${m.name} · ${m.industry}</div>` : ''; })}
-          ${g.note ? html`<div style="color:#4a433a;font-size:12.5px;margin-top:4px">${g.note}</div>` : ''}</div>`; })}
+          ${g.note ? html`<div style="color:#5a4331;font-size:12.5px;margin-top:4px">${g.note}</div>` : ''}</div>`; })}
         <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>`);
     }
 

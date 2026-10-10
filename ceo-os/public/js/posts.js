@@ -77,7 +77,7 @@ export function postsBoard(b, profile, list, onChange) {
     const em = embedUrl(p.url);
     drawer(html`<div class="row"><span class="chip ${PCLS[p.status || 'Idea']}">${p.status || 'Idea'}</span><span class="chip">${p.format || 'Pieza'}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
       <h2>${p.title}</h2><div class="mut">${p.date ? 'Sale el ' + fdate(p.date) : 'Sin fecha'}</div>
-      ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:9/12;border:0;border-radius:18px;margin-top:16px;background:#000" allow="autoplay; fullscreen" loading="lazy"></iframe>` : p.url ? html`<a class="artifact" href="${p.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:14px"><span class="fi">▶</span><div><b style="font-weight:500">Abrir video</b></div></a>` : ''}
+      ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:9/12;border:0;border-radius:18px;margin-top:16px;background:#1a120c" allow="autoplay; fullscreen" loading="lazy"></iframe>` : p.url ? html`<a class="artifact" href="${p.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:14px"><span class="fi">▶</span><div><b style="font-weight:500">Abrir video</b></div></a>` : ''}
       ${p.caption ? html`<b class="sm" style="display:block;margin-top:18px">Caption</b><p style="white-space:pre-wrap;margin-top:6px">${p.caption}</p>` : ''}
       <b class="sm" style="display:block;margin-top:18px">Mover a</b>
       <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">${PSTATUS.map((s) => html`<button class="chip ${s === (p.status || 'Idea') ? 'dark' : ''}" data-act="st" data-s="${s}" style="padding:8px 12px">${s}</button>`)}</div>

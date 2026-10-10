@@ -47,7 +47,7 @@ export async function render(el, { sub }) {
       <div class="grid g21">
         <div class="card">
           <div class="chead"><div class="ico">↗</div><h3>Revenue vs. costo · 8 meses</h3><div class="sp"></div>
-            <span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#171410;display:inline-block"></i>Revenue</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #c2735a;display:inline-block"></i>Costo</span></span></div>
+            <span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#2c1f16;display:inline-block"></i>Revenue</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #997d65;display:inline-block"></i>Costo</span></span></div>
           ${entries.length ? html`<div class="chart" id="chFin" style="height:240px"></div>` : html`<div class="empty" style="margin-top:20px"><b>Sin movimientos todavía</b>Registra ingresos y gastos en «Movimientos» y aquí aparece la gráfica.</div>`}
         </div>
         <div class="card feat ink">
@@ -56,7 +56,7 @@ export async function render(el, { sub }) {
           <div class="split" style="margin-top:18px"><div><span class="lbl">Gross</span><b>${Q(rev - cost)}</b></div><div><span class="lbl">Cost</span><b>${Q(cost)}</b></div><div><span class="lbl">Margen</span><b style="color:var(--lime)">${rev ? Math.round(((rev - cost) / rev) * 100) + '%' : '—'}</b></div></div>
           ${matrix(rev ? Math.max(2, Math.round(((rev - cost) / rev) * 34)) : 0)}
           <div class="foot"><span>${entries.filter((e) => ym(e.date) === month).length} movimientos</span>
-            <select class="in" data-act="month" style="width:auto;padding:6px 10px;background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.25)">${months8.slice().reverse().map((m) => html`<option value="${m}" ${m === month ? raw('selected') : ''}>${mLabel(m)}</option>`)}</select></div>
+            <select class="in" data-act="month" style="width:auto;padding:6px 10px;background:rgba(253,250,243,.12);color:#fdfaf3;border-color:rgba(253,250,243,.25)">${months8.slice().reverse().map((m) => html`<option value="${m}" ${m === month ? raw('selected') : ''}>${mLabel(m)}</option>`)}</select></div>
         </div>
       </div>
       <div class="row" style="margin:24px 0 18px;flex-wrap:wrap">
@@ -66,8 +66,8 @@ export async function render(el, { sub }) {
       </div>
       <div id="fbody"></div>`);
     if ($('#chFin', el)) lineChart($('#chFin', el), months8.map(mLabel), [
-      { name: 'Revenue', v: months8.map((m) => sum('ingreso', m)), c: '#171410', fill: true },
-      { name: 'Costo', v: months8.map((m) => sum('gasto', m)), c: '#c2735a', dash: true }], { fmt: Q });
+      { name: 'Revenue', v: months8.map((m) => sum('ingreso', m)), c: '#2c1f16', fill: true },
+      { name: 'Costo', v: months8.map((m) => sum('gasto', m)), c: '#997d65', dash: true }], { fmt: Q });
     $('[data-act=month]', el).onchange = (e) => { month = e.target.value; paint(); };
     const b = $('#fbody', el);
     ({ mov, costs, profit, pricing, nomina })[tab](b);
@@ -81,7 +81,7 @@ export async function render(el, { sub }) {
     mount(b, !list.length ? html`${note}<div class="empty"><b>Sin movimientos en ${mLabel(month)}</b>${sheet?.url ? 'Agrega filas a tu hoja de Google Sheets y recarga.' : 'Conecta tu Google Sheet o registra un ingreso o gasto.'}</div>`
       : html`${note}<div class="card"><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Cliente</th><th>Categoría</th><th class="n">Monto</th></tr></thead><tbody>
         ${list.map((e) => html`<tr class="click" data-act="${e.sheet ? 'sheet' : 'edit'}" data-id="${e.id}"><td class="mut">${fdate(e.date)}</td><td><b style="font-weight:500">${e.concept}</b>${e.sheet ? html` <span class="mut sm">· Sheet</span>` : ''}</td><td>${e.client || '—'}</td><td><span class="chip">${e.category || '—'}</span></td>
-          <td class="n"><b style="color:${e.type === 'ingreso' ? '#3c6a1c' : '#a3392a'}">${e.type === 'ingreso' ? '+' : '−'}${Q(e.amount)}</b></td></tr>`)}
+          <td class="n"><b style="color:${e.type === 'ingreso' ? '#715640' : '#654c38'}">${e.type === 'ingreso' ? '+' : '−'}${Q(e.amount)}</b></td></tr>`)}
       </tbody></table></div>`);
   }
   async function editEntry(e, type) {
@@ -133,7 +133,7 @@ export async function render(el, { sub }) {
     const rows = Object.entries(byClient).sort((a, z) => z[1].i - a[1].i);
     mount(b, html`
       ${rows.length ? html`<div class="card"><table><thead><tr><th>Cliente</th><th class="n">Ingreso</th><th class="n">Costo</th><th class="n">Utilidad</th><th style="width:30%">Margen</th></tr></thead><tbody>
-        ${rows.map(([n, { i, c }]) => { const m = i ? Math.round(((i - c) / i) * 100) : null; return html`<tr><td><b style="font-weight:500">${n}</b></td><td class="n">${Q(i)}</td><td class="n">${Q(c)}</td><td class="n"><b>${Q(i - c)}</b></td><td>${m == null ? html`<span class="mut sm">solo gastos</span>` : html`<div class="row"><div style="flex:1;height:8px;border-radius:99px;background:#ebe5da"><div style="width:${Math.max(0, Math.min(100, m))}%;height:100%;border-radius:99px;background:${m >= 70 ? '#171410' : m >= 55 ? '#7f9631' : '#c2735a'}"></div></div><span class="sm" style="width:40px;text-align:right">${m}%</span></div>`}</td></tr>`; })}
+        ${rows.map(([n, { i, c }]) => { const m = i ? Math.round(((i - c) / i) * 100) : null; return html`<tr><td><b style="font-weight:500">${n}</b></td><td class="n">${Q(i)}</td><td class="n">${Q(c)}</td><td class="n"><b>${Q(i - c)}</b></td><td>${m == null ? html`<span class="mut sm">solo gastos</span>` : html`<div class="row"><div style="flex:1;height:8px;border-radius:99px;background:#f0e9de"><div style="width:${Math.max(0, Math.min(100, m))}%;height:100%;border-radius:99px;background:${m >= 70 ? '#2c1f16' : m >= 55 ? '#a18770' : '#997d65'}"></div></div><span class="sm" style="width:40px;text-align:right">${m}%</span></div>`}</td></tr>`; })}
       </tbody></table></div>` : html`<div class="empty"><b>Sin datos en ${mLabel(month)}</b>Asigna el cliente a cada ingreso y gasto para ver qué tan rentable es cada uno.</div>`}
       ${clients.some((c) => c.costo != null) ? html`<div class="sec-title"><h2>Costo fijo declarado por cuenta</h2><span class="mut sm">De clients/*/plan-contratado.md</span></div>
         <div class="card"><table><thead><tr><th>Cliente</th><th>Plan</th><th class="n">Precio</th><th class="n">🔒 Costo</th></tr></thead><tbody>${clients.filter((c) => c.hasPlan).map((c) => html`<tr><td><b style="font-weight:500">${c.slug.toUpperCase()}</b></td><td class="mut">${c.plan}</td><td class="n">${Q(c.precio)}</td><td class="n">${c.costo != null ? Q(c.costo) : '—'}</td></tr>`)}</tbody></table></div>` : ''}`);
@@ -195,8 +195,8 @@ export async function render(el, { sub }) {
         <div class="grid g4">
           <div class="card glass"><span class="mut sm">Nómina del mes</span><div class="big" style="font-size:40px">${Q(total)}</div></div>
           <div class="card glass"><span class="mut sm">Pool de rubros</span><div class="big" style="font-size:40px">${Q(poolT)}</div></div>
-          <div class="card glass"><span class="mut sm">Roles sin repartir al 100%</span><div class="big" style="font-size:40px;color:${sin.length ? '#86570e' : 'inherit'}">${sin.length}</div></div>
-          <div class="card glass"><span class="mut sm">Montos sin datos</span><div class="big" style="font-size:40px;color:${falta.length ? '#a3392a' : 'inherit'}">${falta.length}</div></div>
+          <div class="card glass"><span class="mut sm">Roles sin repartir al 100%</span><div class="big" style="font-size:40px;color:${sin.length ? '#725741' : 'inherit'}">${sin.length}</div></div>
+          <div class="card glass"><span class="mut sm">Montos sin datos</span><div class="big" style="font-size:40px;color:${falta.length ? '#654c38' : 'inherit'}">${falta.length}</div></div>
         </div>
         <div class="sec-title"><h2>El mes de cada persona</h2><button class="btn ghost" data-act="addP" style="margin-left:auto">+ Persona</button></div>
         <div class="grid g3">${d.personas.map((p) => html`<div class="card"><div class="row"><b style="font-weight:500;font-size:16px">${p.nombre}</b><div class="sp"></div><button class="btn ghost" data-act="rmP" data-id="${p.id}" style="padding:6px 10px">✕</button></div>
