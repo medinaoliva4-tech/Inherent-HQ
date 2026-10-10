@@ -97,16 +97,6 @@ const seesTask = (u, t) => {
   return mine.filter(Boolean).map((x) => String(x).toLowerCase()).includes(u.email);
 };
 const visible = (u, coll, d) => coll !== 'tasks' || seesTask(u, d);
-// Gate ⑩: el plan y el presupuesto de una campaña los aprueba el CEO antes de lanzar. Si alguien más cambia el
-// presupuesto de una campaña ya aprobada, vuelve a «Por aprobar».
-const LIVE = ['Aprobada', 'Corriendo', 'Pausada'];
-function campaignGate(u, b, cur) {
-  if (u.role === 'ceo') return null;
-  const was = cur?.status || 'Planificada', to = b.status || was;
-  if (LIVE.includes(to) && !LIVE.includes(was)) return 'Solo el CEO aprueba el plan y el presupuesto de una campaña (gate ⑩)';
-  if (cur && LIVE.includes(was) && b.budget != null && Number(b.budget) !== Number(cur.budget)) b.status = 'Por aprobar';
-  return null;
-}
 on('GET', 'db/:coll', async (req, res) => { const u = await collGuard(req, res); if (u) res.json({ items: (await db.list(req.params.coll)).filter((d) => visible(u, req.params.coll, d)) }); });
 on('GET', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res); if (!u) return;
@@ -120,7 +110,6 @@ on('POST', 'db/:coll', async (req, res) => {
   let b = body(req);
   try { b = markExternal(req.params.coll, b, b.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
-  if (req.params.coll === 'campaigns') { const no = campaignGate(u, b, null); if (no) return res.status(403).json({ error: no }); }
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
   try { res.json(await db.create(req.params.coll, b, u.email, id)); }
   catch (e) { if (/duplicate|unique/i.test(e.message)) return res.status(409).json({ error: 'Ya existe' }); throw e; }
@@ -140,7 +129,6 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
       if (wait.length) return res.status(423).json({ error: `Bloqueada: primero tiene que estar hecho «${wait.map((x) => x.title).join('», «')}»` });
     }
   }
-  if (req.params.coll === 'campaigns') { const no = campaignGate(u, b, await db.get('campaigns', req.params.id)); if (no) return res.status(403).json({ error: no }); }
   const d = await db.update(req.params.coll, req.params.id, b, Number(b.v), u.email);
   d ? res.json(d) : res.status(409).json({ error: 'Alguien más cambió esto. Recarga para ver la última versión.' });
 });

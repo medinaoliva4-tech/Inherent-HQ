@@ -116,7 +116,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="sec-title" id="s-tl"><h2>Timeline</h2><a href="#/operations/time">En Operations →</a></div>
         ${timeline()}
 
-        <div class="sec-title" id="s-tk"><h2>Tareas</h2><a href="#/control">En Control →</a></div>
+        <div class="sec-title" id="s-tk"><h2>Tareas</h2><a href="#/operations/tasks">En Operations →</a></div>
         ${tk.length ? html`<div class="card"><table><thead><tr><th></th><th>Tarea</th><th>Proyecto</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead><tbody>
           ${[...tk].sort((x, z) => (x.status === 'Hecha') - (z.status === 'Hecha') || String(x.due || '9').localeCompare(String(z.due || '9'))).map((t) => { const who = person(t.assignee); return html`<tr><td style="width:30px"><input type="checkbox" data-act="tdone" data-id="${t.id}" ${t.status === 'Hecha' ? raw('checked') : ''}></td><td><b style="font-weight:500;${t.status === 'Hecha' ? 'text-decoration:line-through;opacity:.5' : ''}">${t.title}</b>${t.dept ? html`<div class="mut sm">${t.dept}</div>` : ''}</td><td class="mut">${ps.find((p) => p.id === t.project_id)?.name || '—'}</td><td>${who ? html`<span class="av" style="background:${who.color || '#6b5a45'}" title="${who.name}">${initials(who.name)}</span>` : '—'}</td><td>${t.due ? fdate(t.due) : '—'}</td><td><span class="chip">${t.status || 'Por empezar'}</span></td></tr>`; })}</tbody></table></div>`
           : html`<div class="empty"><b>Sin tareas</b>Las tareas de los proyectos de este cliente aparecen aquí.</div>`}

@@ -1,7 +1,7 @@
-// Control: el panel del CEO y el COO para supervisar las entregas.
-// «Entregas»: cada compromiso con fecha, responsable, proyecto y su próximo paso, por estado.
-// «Ventas»: lo que entra, de lead a proyecto (lead → cotización → aprobada → pago → confirmado → arranca).
-import { html, raw, mount, col, api, toast, acts, ask, confirmAsk, drawer, fdate, today, teamList, Q, initials } from '../core.js';
+// Control: el panel del CEO y el COO. Todo lo que entra, de lead a entrega, conectado:
+// lead → cotización → aprobada → pago → confirmado → proyecto con responsables, fechas y dependencias.
+// Cada tarjeta trae su siguiente paso. Abajo, lo que necesita atención hoy (bloqueos, atrasos, revisiones).
+import { html, mount, col, api, toast, acts, ask, confirmAsk, drawer, fdate, today, teamList, Q } from '../core.js';
 import { blockersOf, unlocksOf, addDays } from '../cycle.js';
 import { payDialog, openProof } from '../flowui.js';
 
@@ -15,8 +15,7 @@ const STEPS = [
 const OPEN_LEAD = ['Nuevo', 'Contactado', 'Propuesta'];
 const nextWorkday = () => { const d = new Date(); do d.setDate(d.getDate() + 1); while (!(d.getDay() % 6)); return d.toISOString().slice(0, 10); };
 
-export async function render(el, { me, sub: path = [] }) {
-  let view = path[0] === 'ventas' ? 'ventas' : 'entregas', fProj = '', fWho = '';
+export async function render(el, { me }) {
   const ceoish = me.role === 'ceo' || me.role === 'coo';
   let leads, quotes, projects, tasks, team, accounts;
   async function load() {
@@ -84,49 +83,10 @@ export async function render(el, { me, sub: path = [] }) {
     return out.sort((a, z) => a.w - z.w);
   }
 
-  const head = () => html`<div class="hello"><h1>Control</h1><p class="mut">${view === 'ventas' ? 'Lo que entra, de lead a proyecto.' : 'Qué se tiene que entregar, quién, para cuándo y qué falta.'}</p></div>
-    <div class="tabs" style="margin:0 0 16px">${[['entregas', 'Entregas'], ['ventas', 'Ventas → arranque']].map(([k, l]) => html`<button class="${view === k ? 'on' : ''}" data-act="view" data-v="${k}">${l}</button>`)}</div>`;
-  function paint() { return view === 'ventas' ? paintVentas() : paintEntregas(); }
-
-  // ---------- Entregas: el tablero de compromisos ----------
-  const BOARD = [['todo', 'Por empezar', '#a39a8c'], ['doing', 'En curso', '#7f9631'], ['review', 'En revisión', '#b08a5f'], ['blocked', 'Bloqueado', '#d08a2e'], ['done', 'Entregado', '#4f6b12']];
-  const laneOf = (t) => { const s = t.status || 'Por empezar'; if (s === 'Hecha') return 'done'; if (blockersOf(t, tasks).length) return 'blocked'; return s === 'En revisión' ? 'review' : s === 'En curso' ? 'doing' : 'todo'; };
-  const person = (k) => team.find((p) => p.email === k || p.id === k);
-  const av = (k) => { const p = person(k); return p?.picture ? html`<img class="hav" src="${p.picture}" alt="" referrerpolicy="no-referrer">` : html`<span class="hav">${initials(p?.name || k || '?')}</span>`; };
-  const nextStep = (t, lane) => { if (lane === 'blocked') return `Espera a «${blockersOf(t, tasks)[0].title.slice(0, 50)}»`; if (lane === 'review') return t.accountable ? `La revisa ${nameOf(t.accountable)}` : 'La revisa el COO';
-    if (lane === 'done') return t._meta?.updated_at ? `Entregado ${fdate(t._meta.updated_at.slice(0, 10))}` : 'Entregado'; const u = unlocksOf(t, tasks); return u.length ? `Al terminar destraba «${u[0].title.slice(0, 44)}»` : lane === 'doing' ? 'Terminar y mandar a revisión' : 'Arrancar'; };
-  const dueChip = (t, lane) => (!t.due || lane === 'done' ? '' : t.due < T ? html`<span class="chip red sm2">Venció ${fdate(t.due)}</span>` : t.due === T ? html`<span class="chip red sm2">Hoy</span>` : html`<span class="mut sm">${fdate(t.due)}</span>`);
-  function paintEntregas() {
-    const D14 = addDays(T, -14);
-    const list = tasks.filter((t) => (!fProj || t.project_id === fProj) && (!fWho || t.assignee === fWho));
-    const by = Object.fromEntries(BOARD.map(([k]) => [k, []]));
-    for (const t of list) { const l = laneOf(t); if (l === 'done' && String(t._meta?.updated_at || '').slice(0, 10) < D14) continue; by[l].push(t); }
-    for (const k in by) by[k].sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
-    const late = list.filter((t) => isLate(t)).length;
-    const live = projects.filter((p) => p.status !== 'cerrado' && pTasks(p).some((t) => t.status !== 'Hecha'));
-    const ppl = [...new Set(tasks.map((t) => t.assignee).filter(Boolean))];
-    const tcard = (t, lane) => html`<div class="kcard dcard ${isLate(t) && lane !== 'done' ? 'late' : ''}" data-act="proj" data-id="${t.project_id || ''}">
-      <b>${t.title}</b><div class="mut sm">${projects.find((p) => p.id === t.project_id)?.client || projects.find((p) => p.id === t.project_id)?.name || 'Interno'}</div>
-      <div class="dnext sm">→ ${nextStep(t, lane)}</div>
-      <div class="row" style="gap:6px;margin-top:8px">${av(t.assignee)}<span class="sm">${nameOf(t.assignee)}</span><div class="sp"></div>${dueChip(t, lane)}</div>
-      ${lane === 'review' && ceoish ? html`<div class="ctla"><button class="btn xs" data-act="approve" data-id="${t.id}">Aprobar ✓</button><button class="btn ghost xs" data-act="giveback" data-id="${t.id}">Devolver</button></div>` : ''}</div>`;
-    mount(el, html`${head()}
-      <div class="hcounts">${[['Atrasado', late, 'red'], ['Bloqueado', by.blocked.length, 'amber'], ['Por revisar', by.review.length, ''], ['Entregado (14 días)', by.done.length, '']].map(([l, n, c]) => html`<div class="hcount ${n && c ? c : ''}"><b>${n}</b><span>${l}</span></div>`)}</div>
-      <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px"><select class="in" id="fProj" style="width:auto"><option value="">Todos los proyectos</option>${live.map((p) => html`<option value="${p.id}" ${p.id === fProj ? raw('selected') : ''}>${p.client || p.name}${p.client ? ' · ' + p.name : ''}</option>`)}</select>
-        <select class="in" id="fWho" style="width:auto"><option value="">Todo el equipo</option>${ppl.map((k) => html`<option value="${k}" ${k === fWho ? raw('selected') : ''}>${nameOf(k)}</option>`)}</select></div>
-      <div class="kanban dboard">${BOARD.map(([k, name, c]) => html`<div class="kcol"><h4><span class="row" style="gap:8px"><i class="dot" style="background:${c}"></i>${name}</span><span class="mut">${by[k].length}</span></h4>
-        ${by[k].length ? by[k].slice(0, 40).map((t) => tcard(t, k)) : html`<div class="mut sm" style="padding:10px 6px">—</div>`}</div>`)}</div>
-      ${live.length ? html`<div class="sec-title" style="margin-top:22px"><h2>Proyectos en marcha</h2><span class="mut sm">Tócalo para ver sus tareas en orden</span></div>
-        <div class="card">${live.map((p) => { const g = progress(p); return html`<div class="wkrow ctlrow" data-act="proj" data-id="${p.id}"><span class="grow"><b style="font-weight:500">${p.client || p.name}</b><span class="mut sm"> · ${p.name}${g.next ? ' · sigue: ' + g.next.title.slice(0, 40) + ' (' + fdate(g.next.due) + ')' : ''}</span></span><div class="ctlbar" style="width:90px;margin:0"><i style="width:${g.pct}%"></i></div><span class="sm" style="width:44px;text-align:right">${g.d}/${g.n}</span>${g.late ? html`<span class="chip red sm2">${g.late}</span>` : ''}</div>`; })}</div>` : ''}`);
-    const fp = el.querySelector('#fProj'), fw = el.querySelector('#fWho');
-    if (fp) fp.onchange = () => { fProj = fp.value; paint(); };
-    if (fw) fw.onchange = () => { fWho = fw.value; paint(); };
-  }
-
-  function paintVentas() {
+  function paint() {
     const L = lanes(), att = attention();
     const kp = [['Leads por cotizar', L.lead.length], ['Esperando al cliente', L.quote.length], ['Falta el pago', L.pay.length, L.pay.length ? '#d08a2e' : ''], ['Pagos por confirmar', L.check.length, L.check.length ? '#a3392a' : ''], ['Proyectos en marcha', L.run.length], ['Necesita atención', att.length, att.length ? '#a3392a' : '']];
-    mount(el, html`${head()}
+    mount(el, html`<div class="hello"><h1>Control</h1><p class="mut">Todo lo que entra, de lead a entrega.</p></div>
       <div class="ctlkpis">${kp.map(([l, n, c]) => html`<div class="card ctlk"><div class="mut sm">${l}</div><div class="big" style="font-size:38px;${c ? `color:${c}` : ''}">${n}</div></div>`)}</div>
       <div class="sec-title" style="margin-top:18px"><h2>El flujo</h2><span class="mut sm">Cada tarjeta trae su siguiente paso</span></div>
       <div class="kanban ctlflow">${STEPS.map(([k, name, hint, c]) => html`<div class="kcol"><h4><span class="row" style="gap:8px"><i class="dot" style="background:${c}"></i>${name}</span><span class="mut">${L[k].length}</span></h4>
@@ -154,7 +114,7 @@ export async function render(el, { me, sub: path = [] }) {
           <div class="sm mut">${nameOf(t.assignee)} · ${t.due ? fdate(t.due) : 'sin fecha'} · ${t.status || 'Por empezar'}</div>
           ${w.length ? html`<div class="sm" style="color:#86570e">Espera a: ${w.map((x) => x.title).join(' · ')}</div>` : ''}
           ${u.length && t.status !== 'Hecha' ? html`<div class="sm mut">Destraba: ${u.map((x) => x.title.slice(0, 40)).join(' · ')}</div>` : ''}</div></div>`; })}</div>
-      <div class="row" style="margin-top:16px"><a class="btn ghost" href="#/work/kanban">Abrir en Workspace</a></div>`);
+      <div class="row" style="margin-top:16px"><a class="btn ghost" href="#/operations/pipe">Abrir en Operations</a></div>`);
   }
 
   acts(el, {
@@ -186,10 +146,6 @@ export async function render(el, { me, sub: path = [] }) {
       }
     },
     proof: (b) => openProof(b.dataset.id),
-    view: (b) => { view = b.dataset.v; history.replaceState(null, '', '#/control' + (view === 'ventas' ? '/ventas' : '')); paint(); },
-    approve: async (b, e) => { e?.stopPropagation(); const t = tasks.find((x) => x.id === b.dataset.id); try { await col('tasks').save({ ...t, status: 'Hecha' }); toast('Aprobado ✅'); refresh(); } catch (err) { toast(err.message, true); } },
-    giveback: async (b, e) => { e?.stopPropagation(); const t = tasks.find((x) => x.id === b.dataset.id); const v = await ask('¿Qué le falta?', [{ k: 'note', l: 'Lo que tiene que cambiar', t: 'textarea', req: true }], 'Devolver'); if (!v) return;
-      try { await col('tasks').save({ ...t, status: 'En curso', notes: [t.notes, `Devuelto ${fdate(T)}: ${v.note}`].filter(Boolean).join('\n') }); toast('Devuelto con tu nota'); refresh(); } catch (err) { toast(err.message, true); } },
     proj: (b) => (b.dataset.id ? openProject(b.dataset.id) : b.dataset.href && (location.hash = b.dataset.href)),
     go: (b) => b.dataset.href && (location.hash = b.dataset.href),
   });
