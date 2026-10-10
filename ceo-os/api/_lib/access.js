@@ -21,7 +21,7 @@ export const COLLS = {
   projects: 'operations', tasks: 'operations', accounts: 'clients',
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library',
-  team: 'team', settings: 'home', checks: 'work',
+  team: 'team', settings: 'home', checks: 'work', campaigns: 'work',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
 // (sus tareas, los proyectos y las cuentas de sus clientes). Las tareas también las escribe: ahí entrega.
