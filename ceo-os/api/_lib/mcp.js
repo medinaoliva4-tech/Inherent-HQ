@@ -8,7 +8,7 @@ import { readFile, listDir } from './gh.js';
 import { parsePlanContratado } from './parse.js';
 import * as content from './content.js';
 import * as flow from './flow.js';
-import { phasesFor, meetingsFor, tasksFor, holders, roleToWork, DEPTS, hoursAt, svcHours, svcCost, svcPrice, includesAt, daysAt, addDays } from '../../public/js/cycle.js';
+import { phasesFor, meetingsFor, tasksFor, holders, roleToWork, DEPTS, hoursAt, svcHours, svcCost, svcPrice, svcAuto, growthText, includesAt, daysAt, addDays } from '../../public/js/cycle.js';
 
 export const tokenHash = (t) => crypto.createHash('sha256').update(String(t)).digest('hex');
 export async function newToken(email) {
@@ -39,7 +39,9 @@ const slugOk = (s) => /^[\w-]{2,60}$/.test(String(s || ''));
 const today = () => new Date().toISOString().slice(0, 10);
 const seesTask = (u, t) => { const vis = t?.visibility || 'all'; if (vis === 'all') return true; return [t._meta?.created_by, t.assignee, ...(vis === 'people' ? [t.accountable, ...(t.viewers || [])] : [])].filter(Boolean).map((x) => String(x).toLowerCase()).includes(u.email); };
 const pick = (t, ps = []) => ({ id: t.id, titulo: t.title, estado: t.status || 'Por empezar', persona: t.assignee || '', vence: t.due || '', proyecto: ps.find((p) => p.id === t.project_id)?.name || '', depto: t.dept || '' });
-const priceAt = (s, lv, rates) => svcPrice(s, lv) ?? (() => { const c = svcCost(s, rates, lv); return c && !c.miss.length && c.cost ? Math.round((c.cost * (+s.markup || 2.2)) / 50) * 50 : null; })();
+// El mismo precio que la app: automático (horas × costo/h × multiplicador × complejidad) salvo que tenga precio fijo.
+const priceAt = (s, lv, rates) => (!s.price_fixed && !(s.price && !s.prices) ? svcAuto(s, rates, lv) : null) ?? svcPrice(s, lv);
+const growthOf = (s) => (s.growth_type ? { type: s.growth_type, pct: +s.growth_pct || 10, how: s.growth_how || '' } : null);
 const teamOf = async () => (await db.list('team')).filter((p) => p.role !== 'client' && p.active !== false).map((p) => ({ ...p, email: p.email || p.id }));
 
 // [nombre, área que hace falta (null = todos), descripción, esquema]
@@ -109,7 +111,7 @@ async function call(u, name, a = {}) {
   }
   if (name === 'catalogo') {
     const [services, rates] = await Promise.all([db.list('services'), db.get('rates', 'default')]);
-    return services.map((s) => ({ id: s.id, nombre: s.name, categoria: s.category || '', unidad: s.unit || 'proyecto', niveles: [5, 8, 10].map((lv) => ({ nivel: lv, precio_q: priceAt(s, lv, rates), horas: svcHours(s, lv), dias: daysAt(s, lv), incluye: includesAt(s, lv), ...(u.role === 'ceo' ? { costo_q: svcCost(s, rates, lv)?.cost ?? null } : {}) })) }));
+    return services.map((s) => ({ id: s.id, nombre: s.name, categoria: s.category || '', unidad: s.unit || 'proyecto', fee_por_crecimiento: growthText(growthOf(s)) || null, niveles: [5, 8, 10].map((lv) => ({ nivel: lv, precio_q: priceAt(s, lv, rates), horas: svcHours(s, lv), dias: daysAt(s, lv), incluye: includesAt(s, lv), ...(u.role === 'ceo' ? { costo_q: svcCost(s, rates, lv)?.cost ?? null } : {}) })) }));
   }
   if (name === 'crear_cotizacion') {
     const [services, rates, quotes] = await Promise.all([db.list('services'), db.get('rates', 'default'), db.list('quotes')]);
@@ -119,7 +121,7 @@ async function call(u, name, a = {}) {
       if (!s) { faltan.push(x.servicio); continue; }
       const lv = Math.max(5, Math.min(10, Math.round(+x.nivel || s.level || 5))); const price = priceAt(s, lv, rates);
       if (price == null) faltan.push(`${s.name} (no tiene precio en el catálogo)`);
-      items.push({ service_id: s.id, name: s.name, description: s.description || '', qty: Math.max(1, +x.cantidad || 1), level: lv, price });
+      items.push({ service_id: s.id, name: s.name, description: s.description || '', qty: Math.max(1, +x.cantidad || 1), level: lv, price, ...(growthOf(s) ? { growth: growthOf(s) } : {}) });
     }
     if (!items.length) throw new Error('No encontré esos servicios en el catálogo' + (faltan.length ? ': ' + faltan.join(', ') : ''));
     const y = new Date().getFullYear(); const number = `COT-${y}-${String(quotes.filter((q) => String(q.number || '').startsWith(`COT-${y}-`)).length + 1).padStart(3, '0')}`;

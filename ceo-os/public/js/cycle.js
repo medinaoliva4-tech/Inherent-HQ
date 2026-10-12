@@ -141,8 +141,19 @@ export function svcCost(s, rates, lv = s.level || 5) {
   const cost = (s.tasks || []).reduce((a, t) => { const r = rate(t.role); if (r == null) miss.push(t.role); return a + (r || 0) * hoursAt(t, lv); }, 0);
   return { cost, miss };
 }
-// El precio guardado es el del nivel del servicio; en otro nivel sube o baja con las horas.
-export const svcPrice = (s, lv) => { const base = svcHours(s, s.level || 5); return s.price && base ? Math.round((s.price * svcHours(s, lv)) / base / 50) * 50 : null; };
+// La complejidad encarece la hora: ×1 en nivel 5 y ×cx10 (1.5 por default) en nivel 10, parejo en medio.
+export const cxAt = (rates, lv = 5) => { const k = +rates?.cx10 || 1.5; return Math.round((1 + ((k - 1) * (lv - 5)) / 5) * 100) / 100; };
+const r50 = (n) => Math.round(n / 50) * 50;
+// Precio automático: horas del experto × costo por hora × multiplicador × complejidad del nivel.
+export function svcAuto(s, rates, lv = s.level || 5) { const c = svcCost(s, rates, lv); return c && !c.miss.length && c.cost ? r50(c.cost * (+s.markup || 2.2) * cxAt(rates, lv)) : null; }
+// Los precios de los 6 niveles, para que el equipo (que no ve costos) también los vea.
+export const pricesOf = (s, rates) => { const o = {}; for (let lv = 5; lv <= 10; lv++) { const p = svcAuto(s, rates, lv); if (p == null) return null; o[lv] = p; } return o; };
+// El precio de un servicio en un nivel: fijo (si se escribió uno, escala con las horas), o el automático guardado.
+export const svcPrice = (s, lv = s.level || 5) => { const base = svcHours(s, s.level || 5), fixed = s.price_fixed ?? (s.prices ? null : s.price);
+  if (fixed) return base ? r50((fixed * svcHours(s, lv)) / base) : +fixed; return s.prices?.[lv] ?? null; };
+// Qué crecimiento causa un servicio y sobre qué se cobra su %.
+export const GROWTH = { Ventas: 'las ventas nuevas atribuidas', Leads: 'las ventas que vengan de los leads generados', 'Ticket promedio': 'el aumento del ticket promedio', Recompra: 'las ventas de recompra atribuidas', Conversión: 'las ventas extra por mejor conversión', 'Ahorro de costos': 'el ahorro mensual que genere' };
+export const growthText = (g) => (g?.type && +g.pct ? `${+g.pct}% de ${GROWTH[g.type] || g.type.toLowerCase()}` : '');
 // El perfil de trabajo que suele cubrir cada rol del catálogo (para asignar las tareas del proyecto Custom).
 export const roleToWork = (r) => (/pauta|\bads\b|anuncio|campaña/i.test(r) ? 'ads' : /video|edici/i.test(r) ? 'video' : /producci|grabaci|foto/i.test(r) ? 'prod' : /financ|contab/i.test(r) ? 'finance' : /estrateg|ceo/i.test(r) ? 'ceo' : /conten|creativ|diseñ|community|copy|operador/i.test(r) ? 'content' : 'coo');
 // Qué incluye un servicio en cada nivel: lo del sencillo siempre, y lo del fuerte se va sumando al subir.

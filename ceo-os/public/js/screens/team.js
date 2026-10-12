@@ -10,7 +10,7 @@ export async function render(el, { me }) {
   let people = (await teamList()).filter((p) => p.active !== false || me.role === 'ceo');
   const isCeo = me.role === 'ceo';
   let view = 'org';
-  // Quién ocupa cada rol según el manual (tabla de slots de 05-OPERACION.md) y la nómina, y que no
+  // Quién ocupa cada rol según el manual (tabla de slots de 05-OPERACION.md) y los pagos por servicio, y que no
   // está todavía en el organigrama. Las herramientas (IA, scraping, Zernio, Figma) no son personas.
   const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s*\(.*\)/, '').trim();
   let missing = [];
