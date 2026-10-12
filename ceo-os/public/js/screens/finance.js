@@ -4,7 +4,7 @@ import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, conf
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const CATS_IN = ['Plan mensual', 'Proyecto', 'Performance fee', 'Otro'];
-const CATS_OUT = ['Nómina', 'Herramientas / IA', 'Producción', 'Pauta', 'Oficina', 'Impuestos', 'Otro'];
+const CATS_OUT = ['Pagos por servicio', 'Herramientas / IA', 'Producción', 'Pauta', 'Oficina', 'Impuestos', 'Otro'];
 const ym = (d) => String(d || '').slice(0, 7);
 const mLabel = (m) => `${MONTHS[+m.slice(5) - 1]} ${m.slice(2, 4)}`;
 const slug = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -60,7 +60,7 @@ export async function render(el, { sub }) {
         </div>
       </div>
       <div class="row" style="margin:24px 0 18px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${[['mov', 'Movimientos'], ['costs', 'Costs'], ['profit', 'Profitability'], ['pricing', 'Pricing'], ['nomina', 'Nómina']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${[['mov', 'Movimientos'], ['costs', 'Costs'], ['profit', 'Profitability'], ['pricing', 'Pricing'], ['nomina', 'Pagos por servicio']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
         ${tab === 'mov' ? html`${connectChip('sheets', sheet?.url ? 'Google Sheet conectado' : 'Conectar Google Sheet', 'sheet', Boolean(sheet?.url))}${sheet?.url ? html`<button class="sm mut" data-act="sheetset" style="margin:0 6px">Cambiar</button>` : ''}<button class="btn ghost" data-act="add" data-type="gasto">+ Gasto</button><button class="btn" data-act="add" data-type="ingreso">+ Ingreso</button>` : ''}
       </div>
@@ -153,9 +153,9 @@ export async function render(el, { sub }) {
       </tbody></table></div>`);
   }
 
-  // ---------- Nómina: el mes de cada persona = Σ (lo que cada cuenta paga a su rol × su % del rol) ----------
+  // ---------- Pagos por servicio (no hay nómina): el mes de cada persona = Σ (lo que cada cuenta paga a su rol × su % del rol) ----------
   function nomina(b) {
-    if (!eco) return mount(b, html`<div class="warnbox">La nómina usa los rubros del manual y no pude leerlo: ${ecoErr || 'sin datos'}</div>`);
+    if (!eco) return mount(b, html`<div class="warnbox">Los pagos por servicio usan los rubros del manual y no pude leerlo: ${ecoErr || 'sin datos'}</div>`);
     const plans = eco.plans;
     const rubros = [...new Set(plans.flatMap((p) => p.rubros.map((r) => r.label)))].filter((r) => !/buffer/i.test(r));
     let d = payroll ? JSON.parse(JSON.stringify(payroll)) : null;
@@ -193,14 +193,14 @@ export async function render(el, { sub }) {
       mount(b, html`
         ${seeded ? html`<div class="warnbox" style="margin-bottom:14px">Borrador sembrado del manual (ocupantes de cada rol) y de los clientes del repo. Revísalo y dale «Guardar».</div>` : ''}
         <div class="grid g4">
-          <div class="card glass"><span class="mut sm">Nómina del mes</span><div class="big" style="font-size:40px">${Q(total)}</div></div>
+          <div class="card glass"><span class="mut sm">Pagos del mes</span><div class="big" style="font-size:40px">${Q(total)}</div></div>
           <div class="card glass"><span class="mut sm">Pool de rubros</span><div class="big" style="font-size:40px">${Q(poolT)}</div></div>
           <div class="card glass"><span class="mut sm">Roles sin repartir al 100%</span><div class="big" style="font-size:40px;color:${sin.length ? '#725741' : 'inherit'}">${sin.length}</div></div>
           <div class="card glass"><span class="mut sm">Montos sin datos</span><div class="big" style="font-size:40px;color:${falta.length ? '#654c38' : 'inherit'}">${falta.length}</div></div>
         </div>
         <div class="sec-title"><h2>El mes de cada persona</h2><button class="btn ghost" data-act="addP" style="margin-left:auto">+ Persona</button></div>
         <div class="grid g3">${d.personas.map((p) => html`<div class="card"><div class="row"><b style="font-weight:500;font-size:16px">${p.nombre}</b><div class="sp"></div><button class="btn ghost" data-act="rmP" data-id="${p.id}" style="padding:6px 10px">✕</button></div>
-          <div class="big" style="font-size:40px;margin-top:6px">${Q(pay[p.id])}</div><div class="mut sm">${total ? Math.round((pay[p.id] / total) * 100) : 0}% de la nómina</div>
+          <div class="big" style="font-size:40px;margin-top:6px">${Q(pay[p.id])}</div><div class="mut sm">${total ? Math.round((pay[p.id] / total) * 100) : 0}% de los pagos del mes</div>
           <div class="chips">${Object.entries(d.reparto).filter(([, v]) => v.some((s) => s.p === p.id)).map(([r, v]) => html`<span class="chip">${r} ${v.find((s) => s.p === p.id).pct}%</span>`)}</div>
           ${det[p.id].length ? html`<details style="margin-top:10px"><summary class="sm mut">De dónde sale</summary><table><tbody>${det[p.id].map((x) => html`<tr><td class="sm">${x.c}</td><td class="sm mut">${x.r}</td><td class="n sm">${Q(x.q)}</td></tr>`)}</tbody></table></details>` : ''}</div>`)}</div>
         <div class="sec-title"><h2>Reparto por rol</h2><span class="mut sm">% del rubro entre personas · se define una vez</span></div>
@@ -216,7 +216,7 @@ export async function render(el, { sub }) {
             <td><button class="btn ghost" data-act="rmC" data-i="${ci}" style="padding:6px 10px">✕</button></td></tr>`)}
         </tbody></table></div>
         ${falta.length ? html`<div class="warnbox" style="margin-top:12px">⚠️ SIN DATOS — falta el monto: ${falta.slice(0, 8).join(' · ')}${falta.length > 8 ? ' …' : ''}</div>` : ''}
-        <div class="row" style="margin-top:16px"><button class="btn" data-act="saveN">Guardar nómina</button></div>`);
+        <div class="row" style="margin-top:16px"><button class="btn" data-act="saveN">Guardar pagos</button></div>`);
       $$('[data-f]', b).forEach((inp) => inp.addEventListener('change', () => {
         const f = inp.dataset.f;
         if (f === 'p' || f === 'pct') { const s = d.reparto[inp.dataset.r][+inp.dataset.i]; s[f] = f === 'pct' ? +inp.value : inp.value; }
@@ -235,7 +235,7 @@ export async function render(el, { sub }) {
       if (a === 'addC') { const v = await ask('Agregar cuenta', [{ k: 'nombre', l: 'Cliente(s)', req: true }, { k: 'planId', l: 'Plan', t: 'select', opts: [...plans.map((p) => [p.id, p.name]), ['tailor', 'TAILOR MADE']] }]); if (v) { d.cuentas.push({ id: slug(v.nombre), nombre: v.nombre, planId: v.planId, montos: {} }); draw(); } }
       if (a === 'rmC') { d.cuentas.splice(+t.dataset.i, 1); draw(); }
       if (a === 'saveN') {
-        try { payroll = payroll ? await P.save({ ...payroll, ...d }) : await P.create({ id: 'default', ...d }); seeded = false; d = JSON.parse(JSON.stringify(payroll)); toast('Nómina guardada ✅'); draw(); }
+        try { payroll = payroll ? await P.save({ ...payroll, ...d }) : await P.create({ id: 'default', ...d }); seeded = false; d = JSON.parse(JSON.stringify(payroll)); toast('Pagos guardados ✅'); draw(); }
         catch (err) { toast(err.message, true); }
       }
     };

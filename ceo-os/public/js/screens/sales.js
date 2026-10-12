@@ -1,5 +1,5 @@
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList } from '../core.js';
-import { hoursAt, svcHours, svcCost, svcPrice, includesAt, daysAt } from '../cycle.js';
+import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, cxAt, GROWTH, growthText, includesAt, daysAt } from '../cycle.js';
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 
@@ -34,13 +34,19 @@ export async function render(el, { me, sub, alive }) {
   // Costo = horas de cada rol en el nivel del servicio (5 sencillo · 10 fuerte) × su costo por hora.
   const costOf = (s, lv) => svcCost(s, rates, lv);
   const hours = (s) => svcHours(s);
-  // Precio de un servicio en un nivel: el del catálogo escalado por horas, o el sugerido (costo × multiplicador).
-  const priceAt = (s, lv) => svcPrice(s, lv) ?? (() => { const c = costOf(s, lv); return c && !c.miss.length && c.cost ? Math.round((c.cost * (+s.markup || 2.2)) / 50) * 50 : null; })();
+  // Precio de un servicio en un nivel: el automático (horas × costo/h × multiplicador × complejidad) o, si se fijó uno, ese.
+  const priceAt = (s, lv) => (isCeo && rates && !s.price_fixed && !(s.price && !s.prices) ? svcAuto(s, rates, lv) : null) ?? svcPrice(s, lv);
+  let cardLv = {};
   // Lo que incluye y cuánto tarda un servicio en un nivel (para la cotización y su PDF).
   const incHtml = (sv, lv) => html`${daysAt(sv, lv) ? html`<div><b style="font-weight:500">⏱ ${daysAt(sv, lv)} días hábiles</b></div>` : ''}${includesAt(sv, lv).length ? html`<ul style="margin:4px 0 0 18px;padding:0">${includesAt(sv, lv).map((x) => html`<li>${x}</li>`)}</ul>` : ''}`;
   const quoteDays = (doc) => Math.max(0, ...doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id); return sv ? daysAt(sv, i.level || sv.level || 5) || 0 : 0; }));
   const lvName = (lv) => (lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
-  const suggested = (s) => { const c = costOf(s); return c && !c.miss.length && c.cost ? Math.round((c.cost * (+s.markup || 2.2)) / 50) * 50 : null; };
+  const suggested = (s, lv = s.level || 5) => (isCeo && rates ? svcAuto(s, rates, lv) : null);
+  // La tarjeta del catálogo en un nivel: precio, horas, días y qué incluye (cambia con el slider de afuera).
+  const cardBody = (s, lv) => { const p = priceAt(s, lv), d = daysAt(s, lv), inc = includesAt(s, lv);
+    return html`<div class="row sm"><b style="font-weight:500">${lvName(lv)} · ${lv}</b><span class="mut">&nbsp;· ${svcHours(s, lv)} h${d ? ` · ${d} días` : ''}</span><div class="sp"></div><b style="font-size:22px;font-weight:500;letter-spacing:-.5px">${p ? Q(p) : '—'}</b></div>
+      ${inc.length ? html`<ul class="svinc">${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}
+      ${(() => { const c = costOf(s, lv); return c ? html`<div class="mut sm" style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px">🔒 Costo ${c.miss.length ? '⚠️ incompleto' : Q(c.cost)} · hora ×${cxAt(rates, lv)} por complejidad</div>` : ''; })()}`; };
 
   // ---------- layout ----------
   function paint() {
@@ -186,16 +192,17 @@ export async function render(el, { me, sub, alive }) {
       ${plans ? html`<div class="sec-title" style="margin-top:0"><h2>Planes</h2><span class="mut sm">Del manual de Inherent · precio mensual</span></div>
         <div class="grid g4" style="margin-bottom:8px">${plans.plans.map((p, i) => html`<div class="card feat ${['olive', 'terra', 'ink', 'olive'][i]}" style="min-height:170px"><div class="lbl">${p.name}</div><div class="big" style="font-size:38px;margin-top:8px">${Q(p.precio)}</div><div class="foot"><span>${p.volumen?.piezas ?? '—'} piezas · ${USD(p.precioUsd)}</span>${isCeo && p.margen != null ? html`<span style="font-weight:700">${p.margen}% margen</span>` : ''}</div></div>`)}</div>`
         : plansErr ? html`<div class="warnbox" style="margin-bottom:14px">No pude leer los planes del repo: ${plansErr}</div>` : ''}
-      <div class="sec-title"><h2>Servicios</h2><span class="mut sm">Costo = horas × costo por hora${isCeo ? '' : ' (solo lo ve el CEO)'}</span></div>
+      <div class="sec-title"><h2>Servicios</h2><span class="mut sm">Mueve el nivel de entrega de cada uno para ver su precio y lo que incluye</span></div>
       <div class="row" style="margin-bottom:14px;gap:8px;flex-wrap:wrap">${cats.map((c) => html`<button class="chip ${catF === c ? 'dark' : ''}" data-act="catF" data-c="${c}" style="padding:8px 14px;font-size:13px">${c}</button>`)}</div>
       ${isCeo && rates && (rates.roles || []).some((r) => r.rate == null) ? html`<div class="warnbox" style="margin-bottom:14px">⚠️ Faltan costos por hora de: ${(rates.roles || []).filter((r) => r.rate == null).map((r) => r.role).join(', ')}. Sin eso no hay costo ni precio sugerido.</div>` : ''}
       ${!services.length ? html`<div class="empty"><b>Todavía no hay servicios</b>Crea uno con «+ Nuevo servicio», o carga ejemplos para editarlos.<div style="margin-top:14px"><button class="btn ghost" data-act="seed">Cargar 9 ejemplos para editar</button></div></div>`
-      : html`<div class="grid g3">${list.map((s) => { const c = costOf(s); const sug = suggested(s); return html`<div class="card" style="cursor:pointer" data-act="service" data-id="${s.id}">
-        <div class="row"><span class="chip ${CATC[s.category] ?? ''}">${s.category || 'Sin categoría'}</span><div class="sp"></div><span class="mut sm">Nivel ${s.level || 5} · ${hours(s)} h · ${s.unit || 'proyecto'}</span></div>
-        <h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin:14px 0 4px">${s.name}</h3><div class="mut sm">${s.description || ''}</div>
-        ${c ? html`<div style="margin:14px 0">${(s.tasks || []).map((t) => html`<div class="row sm" style="padding:3px 0"><span>${t.role}</span><span class="mut">${hoursAt(t, s.level || 5)} h × ${rateOf(t.role) == null ? '⚠️' : Q(rateOf(t.role))}</span><div class="sp"></div><span>${rateOf(t.role) == null ? '—' : Q(rateOf(t.role) * hoursAt(t, s.level || 5))}</span></div>`)}</div>` : html`<div style="height:14px"></div>`}
-        <div class="row" style="border-top:1px solid var(--line);padding-top:12px">${c ? html`<div><div class="mut sm">Costo</div><b style="font-weight:500">${c.miss.length ? '⚠️ incompleto' : Q(c.cost)}</b></div>` : ''}<div class="sp"></div>
-          <div style="text-align:right"><div class="mut sm">Precio</div><b style="font-size:24px;font-weight:500;letter-spacing:-.5px">${s.price ? Q(s.price) : sug ? html`<span class="mut" style="font-size:16px">sugerido ${Q(sug)}</span>` : '—'}</b></div></div></div>`; })}</div>`}`);
+      : html`<div class="grid g3">${list.map((s) => { const lv = cardLv[s.id] || s.level || 5, g = growthText({ type: s.growth_type, pct: s.growth_pct }); return html`<div class="card svcard" style="cursor:pointer" data-act="service" data-id="${s.id}">
+        <div class="row"><span class="chip ${CATC[s.category] ?? ''}">${s.category || 'Sin categoría'}</span><div class="sp"></div><span class="mut sm">${s.unit || 'proyecto'}${s.price_fixed ? ' · precio fijo' : ''}</span></div>
+        <h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin:12px 0 4px">${s.name}</h3><div class="mut sm">${s.description || ''}</div>
+        ${g ? html`<div class="sm svgrow">📈 + ${g}</div>` : ''}
+        <div class="svlv" data-stop><input type="range" min="5" max="10" step="1" value="${lv}" data-cardlv="${s.id}" aria-label="Nivel de entrega"><div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div></div>
+        <div data-cardbody="${s.id}">${cardBody(s, lv)}</div>
+</div>`; })}</div>`}`);
   }
 
   async function editService(s, after) {
@@ -210,7 +217,7 @@ export async function render(el, { me, sub, alive }) {
     const draw = () => {
       const keep = curForm(); const fv = { ...(s || {}), ...keep };
       const cur = { ...(s || {}), tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2) };
-      const c = costOf(cur), sug = suggested(cur);
+      const c = costOf(cur, level), sug = suggested(cur, level);
       drawer(html`<div class="row"><span class="chip">Servicio</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
         <h2>${s ? 'Editar servicio' : 'Nuevo servicio'}</h2>
         <form class="form" id="sf" style="margin-top:14px">
@@ -222,6 +229,9 @@ export async function render(el, { me, sub, alive }) {
             <div><label class="f">Se suma al subir a fuerte (10)</label><textarea class="in" name="includes10" placeholder="Copy con investigación&#10;Pruebas A/B&#10;Integración con CRM">${fv.includes10 || ''}</textarea></div></div>
           <div class="two"><div><label class="f">Tarda en sencillo (días hábiles)</label><input class="in" name="days5" type="number" value="${fv.days5 ?? ''}"></div><div><label class="f">Tarda en fuerte (días hábiles)</label><input class="in" name="days10" type="number" value="${fv.days10 ?? ''}"></div></div>
           <div><label class="f">Qué necesitamos del cliente para arrancar · uno por línea <span class="mut">(su onboarding en el portal)</span></label><textarea class="in" name="onboarding" placeholder="Acceso al dominio y hosting&#10;Logo y manual de marca&#10;Quién aprueba de su lado">${fv.onboarding || ''}</textarea></div>
+          <div class="two"><div><label class="f">¿Genera crecimiento directo? Qué tipo</label><select class="in" name="growth_type"><option value="">No · solo se cobra el precio</option>${Object.keys(GROWTH).map((k) => html`<option ${k === fv.growth_type ? raw('selected') : ''}>${k}</option>`)}</select></div>
+            <div><label class="f">% del crecimiento que se cobra</label><input class="in" name="growth_pct" type="number" step="0.5" value="${fv.growth_pct ?? 10}"></div></div>
+          <div><label class="f">Cómo genera ese crecimiento <span class="mut">(sale en la cotización)</span></label><input class="in" name="growth_how" value="${fv.growth_how || ''}" placeholder="Ej. el agente responde y agenda 24/7: más leads atendidos = más ventas"></div>
         </form>
         <div class="row sm mut" style="margin:18px 0 8px"><span style="flex:1">Horas por rol</span><span style="width:90px;text-align:center">Sencillo · 5</span><span style="width:90px;text-align:center">Fuerte · 10</span><span style="width:44px"></span></div>
         ${tasks.map((t, i) => html`<div class="row" style="margin-bottom:8px"><select class="in" data-i="${i}" data-f="role">${[...new Set([...roles, t.role])].map((r) => html`<option ${r === t.role ? raw('selected') : ''}>${r}</option>`)}</select><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours" value="${t.hours}"><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours10" value="${t.hours10}"><button class="btn ghost" data-act="rmTask" data-i="${i}" style="padding:8px 12px">✕</button></div>`)}
@@ -229,20 +239,24 @@ export async function render(el, { me, sub, alive }) {
           <input type="range" min="5" max="10" step="1" value="${level}" id="svlv" style="width:100%;margin:10px 0 4px">
           <div id="svprev">${prev(fv)}</div></div>
         <button class="btn ghost" data-act="addTask" style="padding:8px 14px">+ Rol</button>
-        ${isCeo ? html`<div class="card glass" style="margin-top:18px;padding:16px"><div class="row"><div><div class="mut sm">Costo</div><b style="font-weight:500">${c ? (c.miss.length ? `⚠️ falta costo/h de ${c.miss.join(', ')}` : Q(c.cost)) : '—'}</b></div><div class="sp"></div>
+        ${isCeo ? html`<div class="card glass" style="margin-top:18px;padding:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><div class="mut sm">Costo en este nivel</div><b style="font-weight:500">${c ? (c.miss.length ? `⚠️ falta costo/h de ${c.miss.join(', ')}` : Q(c.cost)) : '—'}</b></div>
+          <div><div class="mut sm">Complejidad</div><b style="font-weight:500">hora ×${cxAt(rates, level)}</b></div><div class="sp"></div>
           <div><label class="f">Multiplicador</label><input class="in" id="svmk" type="number" step="0.1" value="${cur.markup}" style="width:90px"></div>
-          <div style="text-align:right;margin-left:14px"><div class="mut sm">Sugerido</div><b style="font-weight:500">${sug ? Q(sug) : '—'}</b></div></div></div>` : ''}
-        <div style="margin-top:14px"><label class="f">Precio de venta (Q)</label><input class="in" id="svprice" type="number" value="${s?.price ?? ''}" placeholder="${sug ? 'Sugerido: ' + sug : ''}"></div>
-        <div class="row" style="margin-top:18px"><button class="btn" data-act="saveSvc">Guardar</button>${sug ? html`<button class="btn ghost" data-act="useSug">Usar sugerido</button>` : ''}<div class="sp"></div>${s ? html`<button class="btn ghost" data-act="delSvc">🗑</button>` : ''}</div>`,
+          <div style="text-align:right"><div class="mut sm">Precio automático</div><b style="font-size:22px;font-weight:500">${sug ? Q(sug) : '—'}</b></div></div>
+          <div class="mut sm" style="margin-top:8px">= horas del experto × costo por hora × multiplicador × complejidad. Se recalcula solo si cambian las horas o los costos.</div></div>` : ''}
+        <div style="margin-top:14px"><label class="f">Precio fijo (opcional · déjalo vacío para que sea automático)</label><input class="in" id="svprice" type="number" value="${s?.price_fixed ?? (s?.price && !s?.prices ? s.price : '')}" placeholder="${sug ? 'Automático: ' + sug : ''}"></div>
+        <div class="row" style="margin-top:18px"><button class="btn" data-act="saveSvc">Guardar</button><div class="sp"></div>${s ? html`<button class="btn ghost" data-act="delSvc">🗑</button>` : ''}</div>`,
       {
         addTask: () => { sync(); tasks.push({ role: roles[0], hours: 1 }); draw(); },
         rmTask: (b) => { sync(); tasks.splice(+b.dataset.i, 1); draw(); },
-        useSug: () => { $('#svprice').value = sug; },
         saveSvc: async () => {
           sync();
           const f = Object.fromEntries(new FormData($('#sf')));
           if (!f.name) return toast('Falta el nombre', true);
-          const doc = { ...(s || {}), ...f, tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2), price: $('#svprice').value === '' ? null : +$('#svprice').value };
+          const fixed = $('#svprice').value === '' ? null : +$('#svprice').value;
+          const doc = { ...(s || {}), ...f, growth_pct: f.growth_type ? +f.growth_pct || 0 : null, tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2), price_fixed: fixed };
+          if (isCeo && rates) doc.prices = pricesOf(doc, rates);
+          doc.price = fixed ?? doc.prices?.[level] ?? s?.price ?? null;
           try { const r = s ? await S.save(doc) : await S.create(doc); services = s ? services.map((x) => (x.id === r.id ? r : x)) : [...services, r]; toast('Guardado ✅'); closeDrawer(); after ? after(r) : paint(); }
           catch (e) { toast(e.message, true); }
         },
@@ -263,6 +277,8 @@ export async function render(el, { me, sub, alive }) {
       <h2>Costos por hora</h2><p class="mut sm" style="margin-top:6px">Lo que le cuesta a Inherent una hora de cada rol. Con esto se calcula el costo de cada servicio.</p>
       <div style="margin-top:18px">${roles.map((r, i) => html`<div class="row" style="margin-bottom:8px"><input class="in" data-i="${i}" data-f="role" value="${r.role}"><span class="mut">Q</span><input class="in" style="max-width:110px" type="number" data-i="${i}" data-f="rate" value="${r.rate ?? ''}" placeholder="⚠️"><span class="mut sm">/h</span><button class="btn ghost" data-act="rm" data-i="${i}" style="padding:8px 12px">✕</button></div>`)}</div>
       <button class="btn ghost" data-act="add" style="padding:8px 14px">+ Rol</button>
+      <div class="card glass" style="margin-top:18px;padding:14px"><b style="font-weight:500">Complejidad</b><p class="mut sm" style="margin:4px 0 10px">Una hora de trabajo fuerte (nivel 10) vale más que una sencilla (nivel 5). En medio sube parejo.</p>
+        <div class="row" style="gap:8px"><span class="sm">La hora en nivel 10 vale</span><span class="mut">×</span><input class="in" id="cx10" type="number" step="0.05" min="1" value="${rates?.cx10 ?? 1.5}" style="max-width:90px"><span class="mut sm">la del nivel 5</span></div></div>
       <div class="row" style="margin-top:18px"><button class="btn" data-act="saveRates">Guardar</button></div>`,
     {
       add: () => { sync(); roles.push({ role: '', rate: null }); draw(); },
@@ -270,7 +286,13 @@ export async function render(el, { me, sub, alive }) {
       saveRates: async () => {
         sync();
         const clean = roles.filter((r) => r.role.trim()).map((r) => ({ role: r.role.trim(), rate: r.rate === '' || r.rate == null || isNaN(r.rate) ? null : +r.rate }));
-        try { rates = rates ? await R.save({ ...rates, roles: clean }) : await R.create({ id: 'default', roles: clean }); toast('Costos guardados ✅'); closeDrawer(); paint(); }
+        const cx10 = Math.max(1, +$('#cx10').value || 1.5);
+        try { rates = rates ? await R.save({ ...rates, roles: clean, cx10 }) : await R.create({ id: 'default', roles: clean, cx10 });
+          // Los precios automáticos se recalculan con los costos nuevos (los de precio fijo no se tocan).
+          let n = 0;
+          for (const sv of services) { if (sv.price_fixed || (sv.price && !sv.prices)) continue; const prices = pricesOf(sv, rates); if (JSON.stringify(prices) === JSON.stringify(sv.prices || null)) continue;
+            try { const r = await S.save({ ...sv, prices, price: prices?.[sv.level || 5] ?? sv.price }); services = services.map((x) => (x.id === r.id ? r : x)); n++; } catch {} }
+          toast(`Costos guardados ✅${n ? ` · ${n} precio${n === 1 ? '' : 's'} recalculado${n === 1 ? '' : 's'}` : ''}`); closeDrawer(); paint(); }
         catch (e) { toast(e.message, true); }
       },
     });
@@ -314,10 +336,15 @@ export async function render(el, { me, sub, alive }) {
     return `COT-${y}-${String(n).padStart(3, '0')}`;
   }
 
+  // El % del crecimiento que genera un servicio (si genera crecimiento directo).
+  const growthOf = (sv) => (sv?.growth_type ? { type: sv.growth_type, pct: +sv.growth_pct || 10, how: sv.growth_how || '' } : null);
+  const fees = (doc) => doc.items.filter((i) => i.growth?.type && +i.growth.pct);
   function editQuote(qq, lead) {
     let doc = qq ? JSON.parse(JSON.stringify(qq)) : { number: nextNumber(), date: today(), valid_days: 15, status: 'Borrador', discount_pct: 0, items: [], notes: '', lead_id: lead?.id || '', client: lead?.name || '', contact: lead?.contact || '', email: lead?.email || '' };
     tab = 'quotes';
     const draw = () => {
+      // Un servicio que genera crecimiento lleva su % solo (a menos que se haya quitado a mano).
+      doc.items.forEach((i) => { if (i.growth === undefined) { const g = growthOf(services.find((x) => x.id === i.service_id)); if (g) i.growth = g; } });
       const st = subtotal(doc), tt = total(doc);
       const cost = isCeo && rates ? doc.items.reduce((a, i) => { const s = services.find((x) => x.id === i.service_id); const c = s ? costOf(s, i.level || s.level || 5) : null; return a + (c && !c.miss.length ? c.cost * (+i.qty || 0) : 0); }, 0) : null;
       mount(el, html`
@@ -341,7 +368,8 @@ export async function render(el, { me, sub, alive }) {
                 return html`${miss.length ? html`<div class="warnbox sm" style="margin-top:10px">A «${sv.name}» le falta en el catálogo: <b>${miss.join(', ')}</b>. Sin eso el nivel no cambia el precio ni lo que incluye. <button class="btn ghost xs" data-act="fixSvc" data-id="${sv.id}" style="margin-left:6px">Completar</button></div>` : ''}<div class="qlv"><div class="row sm"><span>Nivel de entrega</span><div class="sp"></div><b style="font-weight:500" data-lvl="${i}">${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h</b></div>
                   <input type="range" min="5" max="10" step="1" value="${lv}" data-qlv="${i}" style="width:100%">
                   <div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div>
-                  ${includesAt(sv, lv).length || daysAt(sv, lv) ? html`<div class="sm" style="margin-top:8px" data-inc="${i}">${incHtml(sv, lv)}</div>` : ''}</div>`; })()}</div>`)}
+                  ${includesAt(sv, lv).length || daysAt(sv, lv) ? html`<div class="sm" style="margin-top:8px" data-inc="${i}">${incHtml(sv, lv)}</div>` : ''}</div>`; })()}
+              ${it.growth ? html`<div class="qgrow"><span>📈 + fee por crecimiento</span><input class="in" type="number" step="0.5" data-i="${i}" data-f="growth_pct" value="${it.growth.pct}"><span class="mut">% de ${GROWTH[it.growth.type] || it.growth.type}</span><button class="btn ghost xs" data-act="rmGrowth" data-i="${i}" title="Quitar el fee">✕</button></div>` : ''}</div>`)}
             <div class="row" style="margin-top:10px"><select class="in" id="addSvc"><option value="">+ Agregar del catálogo…</option>
               ${plans ? html`<optgroup label="Planes (mensual)">${plans.plans.map((p) => html`<option value="plan:${p.id}">Plan ${p.name} — ${Q(p.precio)}</option>`)}</optgroup>` : ''}
               ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">✚ Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
@@ -354,6 +382,7 @@ export async function render(el, { me, sub, alive }) {
             <div class="big" style="font-size:52px">${money(doc, tt)}</div>
             <div class="split"><div><span class="lbl">Subtotal</span><b>${money(doc, st)}</b></div>${quoteDays(doc) ? html`<div><span class="lbl">Tiempo</span><b>${quoteDays(doc)} días</b></div>` : ''}${doc.discount_pct ? html`<div><span class="lbl">Descuento</span><b>-${doc.discount_pct}%</b></div>` : ''}
               ${cost != null ? html`<div><span class="lbl">🔒 Costo</span><b>${money(doc, cost)}</b></div><div><span class="lbl">🔒 Margen</span><b style="color:#faf6ee">${tt ? Math.round(((tt - cost) / tt) * 100) + '%' : '—'}</b></div>` : ''}</div>
+            ${fees(doc).length ? html`<div class="qfees"><span class="lbl">+ Fee por crecimiento (variable, se suma cada mes)</span>${fees(doc).map((i) => html`<div>📈 ${growthText(i.growth)} <span style="opacity:.7">· ${i.name}</span></div>`)}</div>` : ''}
             <div class="foot" style="margin-top:22px;opacity:1"><button class="btn cream" data-act="pdf">↓ Ver PDF</button>${qq ? html`<button class="btn ghost" data-act="delQ" style="background:transparent;color:#fdfaf3;border-color:rgba(253,250,243,.4)">🗑</button>` : ''}</div>
           </div>
         </div>`);
@@ -368,7 +397,7 @@ export async function render(el, { me, sub, alive }) {
         }
         if (v.startsWith('plan:')) { const p = plans.plans.find((x) => x.id === v.slice(5)); doc.items.push({ name: `Plan ${p.name} — mensual`, description: p.promete || '', qty: 1, price: p.precio }); }
         else if (v === 'free') doc.items.push({ name: 'Servicio', description: '', qty: 1, price: null });
-        else if (v) { const s = services.find((x) => x.id === v); const lv = s.level || 5; doc.items.push({ service_id: s.id, name: s.name, description: s.description || '', qty: 1, level: lv, price: priceAt(s, lv) ?? s.price ?? null }); }
+        else if (v) { const s = services.find((x) => x.id === v); const lv = s.level || 5; doc.items.push({ service_id: s.id, name: s.name, description: s.description || '', qty: 1, level: lv, price: priceAt(s, lv) ?? s.price ?? null, ...(growthOf(s) ? { growth: growthOf(s) } : {}) }); }
         draw();
       };
       $$('[data-f], #qdisc, #qvalid, #qrate', el).forEach((inp) => inp.addEventListener('change', () => { sync(); draw(); }));
@@ -381,7 +410,7 @@ export async function render(el, { me, sub, alive }) {
       });
     };
     const sync = () => {
-      $$('[data-f]', el).forEach((inp) => { const it = doc.items[+inp.dataset.i]; const f = inp.dataset.f; it[f] = f === 'qty' || f === 'price' ? (inp.value === '' ? null : +inp.value) : inp.value; });
+      $$('[data-f]', el).forEach((inp) => { const it = doc.items[+inp.dataset.i]; const f = inp.dataset.f; if (f === 'growth_pct') { if (it.growth) it.growth.pct = +inp.value || 0; return; } it[f] = f === 'qty' || f === 'price' ? (inp.value === '' ? null : +inp.value) : inp.value; });
       const f = $('#qf', el); if (f) Object.assign(doc, Object.fromEntries(new FormData(f)));
       if ($('#qrate', el)) doc.rate = +$('#qrate', el).value || doc.rate;
       if ($('#qdisc', el)) { doc.discount_pct = +$('#qdisc', el).value || 0; doc.valid_days = +$('#qvalid', el).value || 15; doc.notes = $('#qnotes', el).value; doc.status = $('#qstatus', el).value; }
@@ -389,6 +418,7 @@ export async function render(el, { me, sub, alive }) {
     const handlers = {
       back: () => { location.hash = '/sales/quotes'; paint(); },
       rmItem: (b) => { sync(); doc.items.splice(+b.dataset.i, 1); draw(); },
+      rmGrowth: (b) => { sync(); doc.items[+b.dataset.i].growth = null; draw(); },
       saveQ: async () => {
         sync();
         if (!doc.client) return toast('Falta el cliente', true);
@@ -431,6 +461,7 @@ export async function render(el, { me, sub, alive }) {
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
           <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b>${i.level ? html` <span style="color:#7a5d46;font-size:11px">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div style="color:#7a5d46;font-size:12px">${i.description}</div>` : ''}${(() => { const sv = services.find((x) => x.id === i.service_id); if (!sv) return ''; const lv = i.level || sv.level || 5; const inc = includesAt(sv, lv), d = daysAt(sv, lv); return inc.length || d ? html`<div style="color:#5a4331;font-size:11.5px;margin-top:4px">${d ? html`<b style="font-weight:500">Entrega en ${d} días hábiles.</b> ` : ''}${inc.length ? 'Incluye: ' + inc.join(' · ') : ''}</div>` : ''; })()}</td><td class="n">${i.qty}</td><td class="n">${money(doc, i.price)}</td><td class="n">${money(doc, (+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
         <div class="qsum"><div><span>Subtotal</span><span>${money(doc, st)}</span></div>${doc.discount_pct ? html`<div><span>Descuento (${doc.discount_pct}%)</span><span>-${money(doc, st - tt)}</span></div>` : ''}<div class="tot"><span>Total</span><span>${money(doc, tt)}</span></div>${quoteDays(doc) ? html`<div><span>Tiempo estimado</span><span>${quoteDays(doc)} días hábiles</span></div>` : ''}</div>
+        ${fees(doc).length ? html`<div class="qnotes"><div class="lbl2">FEE POR CRECIMIENTO · VARIABLE</div>${fees(doc).map((i) => html`<div><b style="font-weight:500">${i.name}:</b> ${growthText(i.growth)}${i.growth.how ? html` <span style="color:#7a5d46">— ${i.growth.how}</span>` : ''}</div>`)}<div style="color:#7a5d46;font-size:11.5px;margin-top:6px">Se calcula cada mes sobre el crecimiento medido y atribuible a este servicio. Sin atribución clara, no se cobra.</div></div>` : ''}
         ${doc.notes ? html`<div class="qnotes"><div class="lbl2">NOTAS Y CONDICIONES</div>${doc.notes.split('\n').map((l) => html`<div>${l}</div>`)}</div>` : ''}
         <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>
       </div>`);
@@ -446,11 +477,14 @@ export async function render(el, { me, sub, alive }) {
     catF: (b) => { catF = b.dataset.c; paint(); },
     lead: (b) => openLead(leads.find((l) => l.id === b.dataset.id)),
     newLead, newService: () => editService(null), rates: editRates, seed,
-    service: (b) => editService(services.find((s) => s.id === b.dataset.id)),
+    service: (b, e) => { if (e?.target.closest('[data-stop]')) return; editService(services.find((s) => s.id === b.dataset.id)); },
     newQuote: () => editQuote(null, null),
     newMentor: async () => { const r = await editMentor(null, [...new Set((mentors || []).map((m) => m.industry))]); if (r && !r.deleted) { mentors = [...(mentors || []), r]; paint(); } },
     quote: (b) => editQuote(quotes.find((x) => x.id === b.dataset.id)),
   });
+  // El nivel de entrega desde afuera: el precio, las horas y lo que incluye cambian mientras arrastras.
+  el.addEventListener('input', (e) => { const r = e.target.closest?.('[data-cardlv]'); if (!r) return; const sv = services.find((x) => x.id === r.dataset.cardlv); if (!sv) return;
+    cardLv[sv.id] = +r.value; const box = el.querySelector(`[data-cardbody="${sv.id}"]`); if (box) mount(box, cardBody(sv, +r.value)); });
   paint();
   // Desde Control: #/sales/quotes/new/<lead> abre una cotización para ese lead; #/sales/quotes/<id> la abre.
   if (sub[0] === 'quotes' && sub[1] === 'new') editQuote(null, leads.find((x) => x.id === sub[2]) || null);

@@ -832,3 +832,10 @@ h1 .itip{width:18px;height:18px;font-size:11px;vertical-align:.45em}
   .wkkpi,.ctlk{border-bottom:1px solid var(--line)}
 }
 @media (max-width:760px){.itip:hover::after,.itip:focus::after{position:fixed;left:16px;right:16px;top:auto;bottom:calc(84px + env(safe-area-inset-bottom));width:auto;max-width:none;font-size:13.5px;padding:12px 14px}}
+
+/* Catálogo: el nivel desde afuera · crecimiento */
+.svlv{margin:12px 0 6px}.svlv input{width:100%}
+.svinc{margin:6px 0 0 18px;padding:0;font-size:13px;color:var(--ink2)}
+.svgrow{margin-top:8px;color:var(--ink2)}
+.qgrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:13px}.qgrow .in{max-width:72px;padding:6px 10px}
+.qfees{margin-top:14px;font-size:13px;line-height:1.5}.qfees .lbl{display:block;margin-bottom:4px}

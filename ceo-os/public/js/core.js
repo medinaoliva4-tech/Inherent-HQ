@@ -472,7 +472,7 @@ const INFO = [
   [/^revenue vs/i, 'Lo que entró contra lo que costó, mes a mes.'],
   [/^costo/i, 'Lo que cuesta cada plan por rubro. Solo lo ve el CEO.'],
   [/^reparto por rol/i, 'Cuánto se le paga a cada rol por cuenta, según el plan.'],
-  [/^el mes de cada persona/i, 'Lo que le toca cobrar a cada persona este mes, según sus cuentas.'],
+  [/^el mes de cada persona/i, 'Lo que le toca cobrar a cada persona este mes por los servicios y cuentas que atiende. No hay nómina fija: se paga por servicio.'],
   [/^¿qué tan fuerte/i, 'Cuánto aporta cada servicio a la facturación.'],
   [/^clients$/i, 'Cada cliente: su plan, sus accesos, su roadmap y su portal.'],
   [/^plan contratado/i, 'Lo que el cliente compró: el techo de lo que se entrega.'],
