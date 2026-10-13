@@ -3,7 +3,7 @@ import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, marginOf, GROW
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 import { packagesTab } from '../paquetes.js';
-import { bundlesSection } from '../armados.js';
+import { createBundles } from '../armados.js';
 import { agregarNuevos, NUEVOS } from '../servicios-nuevos.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
@@ -78,12 +78,13 @@ export async function render(el, { me, sub, alive }) {
     ({ crm, cat, esp, quotes: quotesTab, pkg: pkgTab })[tab](body);
   }
 
-  // ---------- Paquetes: arriba los armados con servicios y especialistas; abajo los 109 de base ----------
+  // ---------- Paquetes: una sola lista — los propios (servicios y especialistas) y los de cada industria ----------
   function pkgTab(b) {
     const onQuote = (pre) => editQuote({ number: nextNumber(), date: today(), valid_days: 15, status: 'Borrador', discount_pct: 0, notes: '', lead_id: '', client: '', contact: '', email: '', ...pre }, null);
-    mount(b, html`<div id="bun"></div><div class="sec-title"><h2>Paquetes base</h2><span class="mut sm">Los 109 por industria, con su cálculo propio · se pasarán a servicios</span></div><div id="oldpk"></div>`);
-    fetch('/data/paquetes.json').then((r) => r.json()).then((d) => d.ind.map((i) => i.n)).catch(() => []).then((industries) => bundlesSection($('#bun', b), { services, rates, industries, onQuote }));
-    packagesTab($('#oldpk', b), { onQuote });
+    mount(b, html`<p class="loading">Cargando paquetes…</p>`);
+    fetch('/data/paquetes.json').then((r) => r.json()).then((d) => d.ind.map((i) => i.n)).catch(() => [])
+      .then((industries) => createBundles({ services, rates, industries, onQuote })).catch(() => null)
+      .then((bun) => packagesTab(b, { onQuote, bun }));
   }
 
   // ---------- Especialistas por industria ----------

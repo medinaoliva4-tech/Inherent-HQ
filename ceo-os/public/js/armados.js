@@ -10,8 +10,9 @@ const num = (v, d = 0) => { const n = parseFloat(v); return isNaN(n) ? d : n; };
 const uid = () => Math.random().toString(36).slice(2, 9);
 const lvName = (lv) => (lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
 
-export async function bundlesSection(body, { services, rates, industries = [], onQuote }) {
-  mount(body, html`<p class="loading">Cargando paquetes armados…</p>`);
+// Devuelve las piezas para que Paquetes muestre los armados en su misma lista y edite los servicios de cada paquete.
+export async function createBundles({ services, rates, industries = [], onQuote }) {
+  let onDone = () => {};
   let [bundles, mentors] = await Promise.all([B.list(), col('mentors').list().catch(() => [])]);
   // Tipo de cambio: los especialistas cobran en dólares; el paquete se cotiza en quetzales.
   let qPerUsd = 7.7, fxOk = false;
@@ -37,20 +38,10 @@ export async function bundlesSection(body, { services, rates, industries = [], o
     return { ls, price, cost, hours: ls.reduce((a, x) => a + x.hours, 0), mg: price ? Math.round((1 - cost / price) * 100) : null };
   }
 
-  // ---------- lista ----------
-  function paint() {
-    mount(body, html`<div class="sec-title" style="margin-top:0"><h2>Paquetes armados</h2><span class="mut sm">Servicios del catálogo y especialistas · cada línea con su precio · margen ${Math.round(margin * 100)}%</span><div class="sp"></div><button class="btn" data-bact="new">+ Paquete</button></div>
-      ${bundles.length ? html`<div class="grid g3" style="margin-bottom:24px">${bundles.map((b) => { const t = totals(b), nS = (b.lines || []).filter((l) => l.type !== 'mentor').length, nM = (b.lines || []).length - nS; return html`<div class="card svcard" style="cursor:pointer" data-bact="open" data-id="${b.id}">
-          <div class="row"><span class="chip">${b.industry || 'Sin industria'}</span><div class="sp"></div><span class="mut sm">${nS} servicio${nS === 1 ? '' : 's'}${nM ? ` · ${nM} especialista${nM === 1 ? '' : 's'}` : ''}</span></div>
-          <h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin:12px 0 4px">${b.name}</h3><div class="mut sm">${b.desc || ''}</div>
-          <div class="row" style="margin-top:12px"><span class="mut sm">${t.hours} h</span><div class="sp"></div><b style="font-size:22px;font-weight:500;letter-spacing:-.5px">${Q(t.price)}</b></div>
-          <div class="mut sm" style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px">${ico('lock', 13)} Costo ${Q(t.cost)}${t.mg != null ? ` · Margen ${t.mg}%` : ''}</div></div>`; })}</div>`
-        : html`<div class="empty" style="margin-bottom:24px"><b>Todavía no hay paquetes armados</b>Crea uno con «+ Paquete»: eliges servicios del catálogo y especialistas, y cada uno sale con su precio.</div>`}`);
-  }
-
   // ---------- editor ----------
   function edit(orig) {
-    const b = orig ? JSON.parse(JSON.stringify(orig)) : { name: '', industry: '', desc: '', lines: [], phases: [] };
+    const b = orig?.id ? JSON.parse(JSON.stringify(orig)) : { name: '', industry: '', desc: '', lines: [], phases: [], ...(orig || {}) };
+    if (!orig?.id) orig = null;
     b.lines = b.lines || []; b.phases = b.phases || [];
     const svcOpts = (sel) => html`<option value="">Elige un servicio…</option>${services.map((s) => html`<option value="${s.id}" ${s.id === sel ? raw('selected') : ''}>${s.name}</option>`)}`;
     const mOpts = (sel) => html`<option value="">Elige un especialista…</option>${mentors.map((m) => html`<option value="${m.id}" ${m.id === sel ? raw('selected') : ''}>${m.name} · ${m.industry || ''} · ${m.price ? USD(m.price) : 'sin precio'}</option>`)}`;
@@ -90,11 +81,11 @@ export async function bundlesSection(body, { services, rates, industries = [], o
         save: async () => {
           if (!b.name.trim()) return toast('Falta el nombre', true);
           const doc = { ...b, name: b.name.trim(), lines: b.lines.filter((l) => l.service_id || l.mentor_id) };
-          try { const r = orig ? await B.save(doc) : await B.create(doc); bundles = orig ? bundles.map((x) => (x.id === r.id ? r : x)) : [...bundles, r]; toast('Paquete guardado'); closeDrawer(); paint(); }
+          try { const r = orig ? await B.save(doc) : await B.create(doc); bundles = orig ? bundles.map((x) => (x.id === r.id ? r : x)) : [...bundles, r]; toast('Paquete guardado'); closeDrawer(); onDone(r); }
           catch (e) { toast(e.message, true); }
         },
         quote: () => { const tt = totals(b); if (!tt.ls.some((x) => x.ok)) return toast('Agrega al menos un servicio', true); closeDrawer(); onQuote(quoteOf(b, tt)); },
-        del: async () => { if (!(await confirmAsk(`¿Eliminar el paquete «${orig.name}»?`))) return; try { await B.remove(orig.id); bundles = bundles.filter((x) => x.id !== orig.id); closeDrawer(); paint(); } catch (e) { toast(e.message, true); } },
+        del: async () => { if (!(await confirmAsk(`¿Eliminar el paquete «${orig.name}»?`))) return; try { await B.remove(orig.id); bundles = bundles.filter((x) => x.id !== orig.id); closeDrawer(); onDone(null); } catch (e) { toast(e.message, true); } },
       });
       const d = $('#drawer'); d.scrollTop = keep;
       // Lo escrito se guarda en el paquete al momento (así nunca se lee un formulario viejo).
@@ -117,7 +108,18 @@ export async function bundlesSection(body, { services, rates, industries = [], o
     return { items, intro: b.desc || '', notes: plan.length ? `Plan de trabajo (${b.name}):\n${plan.map((x) => '• ' + x).join('\n')}` : '' };
   }
 
-  // Los botones de la lista usan data-bact (no data-act) para no chocar con las acciones de Sales.
-  body.addEventListener('click', (e) => { const t = e.target.closest('[data-bact]'); if (!t || !body.contains(t)) return; if (t.dataset.bact === 'new') edit(null); else if (t.dataset.bact === 'open') edit(bundles.find((b) => b.id === t.dataset.id)); });
-  paint();
+  // Tarjeta «Servicios» (solo lectura) para el detalle del paquete.
+  function servicesCard(b, pkg) {
+    const t = totals(b || { lines: [] });
+    return html`<div class="card" style="margin-top:16px"><div class="row" style="flex-wrap:wrap;gap:10px"><div><h3>Servicios</h3><div class="mut sm">Lo que se entrega, del catálogo, cada uno con su precio.</div></div><div class="sp"></div><button class="btn ghost" data-pk="bedit" data-id="${b?.id || ''}" data-pkg="${pkg || ''}">${ico('edit', 15)} ${t.ls.length ? 'Editar servicios' : '+ Agregar servicios'}</button></div>
+      ${t.ls.length ? html`<div style="margin-top:10px">${t.ls.map((x) => html`<div class="row" style="padding:9px 0;border-top:1px solid var(--line);gap:10px"><div class="grow"><b style="font-weight:500">${x.name}</b><div class="mut sm">${x.sub}</div></div><b style="font-weight:500">${x.price ? Q(x.price) : '—'}</b></div>`)}
+        <div class="row" style="padding-top:10px;border-top:1px solid var(--line)"><span class="mut sm">${ico('lock', 13)} Costo ${Q(t.cost)}${t.mg != null ? ` · Margen ${t.mg}%` : ''} · ${t.hours} h</span><div class="sp"></div><b style="font-size:20px;font-weight:500">${Q(t.price)}</b></div></div>`
+        : html`<div class="mut sm" style="margin-top:10px">Todavía no tiene servicios del catálogo.</div>`}</div>`;
+  }
+
+  return {
+    get list() { return bundles; }, totals, servicesCard, margin,
+    edit: (orig, done) => { onDone = done || (() => {}); edit(orig); },
+    quote: (b) => onQuote(quoteOf(b, totals(b))),
+  };
 }
