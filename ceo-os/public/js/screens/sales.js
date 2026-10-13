@@ -545,6 +545,8 @@ export async function render(el, { me, sub, alive }) {
     if (btn) { btn.disabled = false; btn.innerHTML = label; }
   }
 
+  // Ícono de cada cosa que entregamos, según de qué trata.
+  const icOf = (t) => { const x = String(t || '').toLowerCase(); return /financ|inversi|costo|ganancia|dashboard|anal[ií]tica|medici/.test(x) ? 'bars' : /oferta|precio|paquete/.test(x) ? 'tag' : /agente|\bia\b|inteligencia/.test(x) ? 'bolt' : /automatiz|proceso/.test(x) ? 'gear' : /whatsapp|contacto|mensaje|pedido|crm|seguimiento/.test(x) ? 'chat' : /email|correo/.test(x) ? 'mail' : /web|sitio|página|landing|google|seo/.test(x) ? 'monitor' : /instagram|redes|presencia|contenido|publica|campañ/.test(x) ? 'megaphone' : /video|reel|rodaje|ugc/.test(x) ? 'video' : /foto/.test(x) ? 'camera' : /pauta|anuncio|meta|prospecci/.test(x) ? 'target' : /retenci|recompra/.test(x) ? 'repeat' : /expansi|sucursal|mercado/.test(x) ? 'globe' : /estructura empresarial|equipo|quién hace/.test(x) ? 'users' : /lanzamiento/.test(x) ? 'rocket' : 'check'; };
   function showPdf(doc) {
     const valid = new Date(doc.date + 'T12:00'); valid.setDate(valid.getDate() + (+doc.valid_days || 15));
     const st = subtotal(doc), tt = total(doc);
@@ -558,7 +560,6 @@ export async function render(el, { me, sub, alive }) {
         ${(() => { const lines = String(doc.intro || '').split('\n').map((l) => l.trim()).filter(Boolean), whys = doc.items.filter((i) => (i.why || []).length);
           // El texto se arma por secciones (títulos en MAYÚSCULAS): lo que recibes en tarjetas con ícono, el crecimiento resaltado.
           const secs = [{ h: '', ls: [] }]; lines.forEach((l) => { if (l.length > 6 && l === l.toUpperCase() && /[A-ZÁÉÍÓÚ]/.test(l)) secs.push({ h: l, ls: [] }); else secs.at(-1).ls.push(l); });
-          const icOf = (t) => { const x = t.toLowerCase(); return /financ|inversi|costo|precio|ganancia/.test(x) ? 'bars' : /whatsapp|contacto|mensaje|pedido|crm/.test(x) ? 'chat' : /web|sitio|página|landing|google/.test(x) ? 'monitor' : /instagram|redes|presencia|contenido|publica/.test(x) ? 'megaphone' : /video|foto/.test(x) ? 'camera' : /pauta|anuncio/.test(x) ? 'target' : 'check'; };
           const strip = (l) => l.replace(/^(\d+[.)]|[-•])\s*/, '');
           const split2 = (l) => { const t = strip(l), m = t.match(/^([^.:]{3,80})[.:]\s+(.*)$/); return m ? [m[1], m[2]] : [t, '']; };
           const vSec = (sc) => { const h = sc.h.toLowerCase();
@@ -569,7 +570,7 @@ export async function render(el, { me, sub, alive }) {
           return lines.length ? html`<div class="qsec"><div class="lbl2">LO QUE VAMOS A LOGRAR EN TU NEGOCIO</div>${secs.map(vSec)}</div>` : ''; })()}
         <div class="qsec qent"><div class="lbl2">QUÉ ENTREGAMOS Y CÓMO TE AYUDA</div><div class="qgets qsvc">${doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id), lv = i.level || sv?.level || 5, inc = i.includes?.length ? i.includes : sv ? includesAt(sv, lv) : [], d = sv ? daysAt(sv, lv) : 0;
           // Tarjeta por servicio con su texto completo (nunca cortado); si no cabe, la hoja se reduce entera.
-          return html`<div class="qget qs"><div><b>${i.name}</b><div class="qsm">${i.level ? `Entrega ${lvName(i.level).toLowerCase()}` : ''}${d ? `${i.level ? ' · ' : ''}${d} días hábiles` : ''}</div>${(sv?.edge || i.edge) ? html`<div class="qedge">${ico('spark', 12)} ${sv?.edge || i.edge}</div>` : i.description ? html`<div>${i.description}</div>` : ''}${inc.length ? html`<ul>${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}${(i.why || []).length ? html`<div class="qsm" style="margin-top:4px">Se mide: ${i.why.map((w) => String(w).replace(/\s—\s*se mide con:.*$/i, '')).join(' · ')}</div>` : ''}</div></div>`; })}</div></div>
+          return html`<div class="qget qs"><span class="qgi">${ico(icOf(i.name + ' ' + (sv?.category || '')), 18)}</span><div><b>${i.name}</b><div class="qsm">${i.level ? `Entrega ${lvName(i.level).toLowerCase()}` : ''}${d ? `${i.level ? ' · ' : ''}${d} días hábiles` : ''}</div>${(sv?.edge || i.edge) ? html`<div class="qedge">${ico('spark', 12)} ${sv?.edge || i.edge}</div>` : i.description ? html`<div>${i.description}</div>` : ''}${inc.length ? html`<ul>${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}${(i.why || []).length ? html`<div class="qsm" style="margin-top:4px">Se mide: ${i.why.map((w) => String(w).replace(/\s—\s*se mide con:.*$/i, '')).join(' · ')}</div>` : ''}</div></div>`; })}</div></div>
         <div class="lbl2 qinv" style="margin-top:22px">INVERSIÓN</div>
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
           <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b></td><td class="n">${i.qty}</td><td class="n">${money(doc, i.price)}</td><td class="n">${money(doc, (+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
