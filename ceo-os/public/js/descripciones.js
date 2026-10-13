@@ -1,8 +1,10 @@
+import { pricesOf } from './cycle.js';
+
 // Qué incluye cada servicio, escrito para un cliente que no es técnico.
 // `b` = lo que incluye en sencillo (5) · `a` = lo que se suma al subir a fuerte (10). Una línea por punto.
 // `cat` solo se usa si el servicio todavía no existe en el catálogo.
 export const DESCRIPCIONES = [
-  { name: 'Agente de WhatsApp con IA', cat: 'IA y automatización',
+  { name: 'Agente de WhatsApp con IA', cat: 'IA y automatización', h: {Estrategia:4,'Dev / Tech':18,Operador:6},
     b: ['Un asistente en el WhatsApp de tu negocio que contesta 24/7, incluso de noche y fines de semana.',
       'Respuestas a las preguntas que más te hacen: horarios, ubicación, precios, formas de pago.',
       'Comparte información de tus productos o servicios, con fotos y enlaces si los tienes.',
@@ -17,7 +19,7 @@ export const DESCRIPCIONES = [
       'Da seguimiento a quien dejó de contestar, sin que tú tengas que acordarte.',
       'Maneja dudas y objeciones, y pasa los casos difíciles a tu equipo con un resumen de lo conversado.',
       'Ajustes durante el primer mes con base en las conversaciones reales.'] },
-  { name: 'IA entrenada con la marca', cat: 'IA y automatización',
+  { name: 'IA entrenada con la marca', cat: 'IA y automatización', h: {Estrategia:3,'Dev / Tech':12},
     b: ['Un asistente de inteligencia artificial para tu equipo, al que le puedes preguntar como a un compañero.',
       'Conoce tu empresa: quiénes son, qué venden y a quién.',
       'Sabe tus productos o servicios, precios y condiciones.',
@@ -31,7 +33,7 @@ export const DESCRIPCIONES = [
       'Guías de ayuda para que cada área del equipo lo use mejor (ventas, atención, administración).',
       'Respuestas especializadas por área, para que cada persona reciba ayuda útil para su trabajo.',
       'Capacitación al equipo para que lo usen desde el primer día.'] },
-  { name: 'CRM ligero + automatizaciones', cat: 'CRM y ventas',
+  { name: 'CRM ligero + automatizaciones', cat: 'CRM y ventas', h: {Estrategia:3,'Dev / Tech':14,Operador:4},
     b: ['Un lugar único donde se guardan todos tus contactos y oportunidades de venta.',
       'Tablero visual para ver en qué etapa va cada cliente potencial.',
       'Formulario para que los interesados te dejen sus datos.',
@@ -46,7 +48,7 @@ export const DESCRIPCIONES = [
       'Avisos cuando un cliente lleva días sin respuesta o está listo para comprar.',
       'Reportes de cuántos contactos llegan, cuántos se cierran y cuánto vendes.',
       'Las etapas cambian solas según lo que hace el cliente.'] },
-  { name: 'Landing de conversión', cat: 'Landing y conversión',
+  { name: 'Landing de conversión', cat: 'Landing y conversión', h: {Diseño:10,'Dev / Tech':12},
     b: ['Una página web de una sola oferta, pensada para que el visitante te contacte.',
       'Diseño limpio con tus colores y tu logo, que se ve bien en celular y computadora.',
       'Explica qué ofreces y qué gana el cliente.',
@@ -60,7 +62,7 @@ export const DESCRIPCIONES = [
       'Medición: sabrás cuánta gente entra, qué toca y cuántos te contactan.',
       'Preparada para volver a mostrar tus anuncios a quien visitó la página pero no compró.',
       'Una segunda versión de la página para probar cuál convierte más.'] },
-  { name: 'Estrategia de lanzamiento', cat: 'Marketing y publicidad',
+  { name: 'Estrategia de lanzamiento', cat: 'Marketing y publicidad', h: {Estrategia:10,Operador:6},
     b: ['Definimos qué vas a vender y con qué oferta.',
       'Escribimos el mensaje principal: cómo explicar tu oferta en pocas palabras.',
       'Calendario de contenido para 30 días: qué publicar y cuándo.',
@@ -74,7 +76,7 @@ export const DESCRIPCIONES = [
       'Recorrido del cliente: desde que te conoce hasta que compra.',
       'Seguimiento a cada persona que se interesa.',
       'Medimos resultados cada semana y ajustamos lo que no funciona.'] },
-  { name: 'Pauta Meta · setup + 1 mes', cat: 'Marketing y publicidad',
+  { name: 'Pauta Meta · setup + 1 mes', cat: 'Marketing y publicidad', h: {Estrategia:4,Pauta:10,Diseño:6},
     b: ['Creamos y configuramos tu cuenta de anuncios en Facebook e Instagram.',
       'Armamos las campañas con un objetivo claro: mensajes, visitas o ventas.',
       'Elegimos a quién le mostramos tus anuncios: zona, edad e intereses.',
@@ -88,7 +90,7 @@ export const DESCRIPCIONES = [
       'Revisamos y optimizamos cada semana, no solo al final.',
       'Conectamos los anuncios a tu WhatsApp o a tu agenda de clientes.',
       'Te explicamos cada decisión que tomamos y por qué.'] },
-  { name: 'Jornada de rodaje (4 h)', cat: 'Producción de video',
+  { name: 'Jornada de rodaje (4 h)', cat: 'Producción de video', h: {Producción:4,Operador:2},
     b: ['Cuatro horas de grabación con un equipo profesional en tu local o donde acordemos.',
       'Lista de tomas preparada antes del día, para aprovechar bien el tiempo.',
       'Guion sencillo de cada video.',
@@ -101,7 +103,7 @@ export const DESCRIPCIONES = [
       'Testimonios de clientes o de tu equipo.',
       'Material de sobra para publicar durante varias semanas sin volver a grabar.',
       'Una persona dirigiendo en el set para que todos se vean naturales.'] },
-  { name: 'Paquete de 8 reels editados', cat: 'Producción de video',
+  { name: 'Paquete de 8 reels editados', cat: 'Producción de video', h: {Edición:12,Operador:3},
     b: ['Edición de 8 videos verticales para Instagram, TikTok y Facebook.',
       'Cortes limpios para que el video se mantenga ágil.',
       'Subtítulos para que se entienda aunque no tengan sonido.',
@@ -115,7 +117,7 @@ export const DESCRIPCIONES = [
       'Versiones adaptadas para usar como anuncio pagado.',
       'Más de una versión del mismo video para ver cuál funciona mejor.',
       'Ajustes para que más gente lo vea completo.'] },
-  { name: 'Sesión de fotos de producto', cat: 'Fotografía',
+  { name: 'Sesión de fotos de producto', cat: 'Fotografía', h: {Fotografía:3,Diseño:4},
     b: ['Sesión de fotos de hasta 30 productos o composiciones.',
       'Fondo y luz cuidados para que el producto se vea bien.',
       'Corrección de color para que se vea como es en la vida real.',
@@ -128,7 +130,7 @@ export const DESCRIPCIONES = [
       'Fotos pensadas para tienda en línea, con fondo blanco y varios ángulos.',
       'Fotos para anuncios y para redes, en distintos tamaños.',
       'Material para armar tu catálogo.'] },
-  { name: 'Embudo de ventas por WhatsApp', cat: 'CRM y ventas',
+  { name: 'Embudo de ventas por WhatsApp', cat: 'CRM y ventas', h: {Estrategia:5,'Dev / Tech':8,Operador:3},
     b: ['Diseñamos el camino que sigue el cliente: ve tu anuncio o formulario y termina escribiéndote por WhatsApp.',
       'Mensaje de bienvenida cuando alguien te escribe.',
       'Preguntas iniciales para saber qué busca y qué tan interesado está.',
@@ -141,7 +143,7 @@ export const DESCRIPCIONES = [
       'Seguimiento a quien se quedó a medias.',
       'Recuperación de interesados que dejaron de responder.',
       'Todo conectado a tu agenda de clientes para que no se pierda ninguno.'] },
-  { name: 'Seguimiento automático de leads', cat: 'CRM y ventas',
+  { name: 'Seguimiento automático de leads', cat: 'CRM y ventas', h: {Estrategia:2,'Dev / Tech':8,Operador:2},
     b: ['Lista de personas que pidieron información y todavía no compran.',
       'Recordatorios para que tu equipo los vuelva a contactar a tiempo.',
       'Mensajes ya escritos para retomar la conversación.',
@@ -153,7 +155,7 @@ export const DESCRIPCIONES = [
       'El sistema se da cuenta de quién abrió o respondió, y ajusta lo siguiente que envía.',
       'Aviso a tu equipo cuando alguien está listo para hablar con una persona.',
       'Revisión mensual para mejorar los mensajes.'] },
-  { name: 'Conversion API y tracking avanzado', cat: 'Analítica y medición',
+  { name: 'Conversion API y tracking avanzado', cat: 'Analítica y medición', h: {Estrategia:1,'Dev / Tech':8,Pauta:3},
     b: ['Configuramos lo necesario para saber qué pasa después de que alguien ve tu anuncio o tu página.',
       'Medimos las acciones principales: formularios llenados, mensajes y llamadas.',
       'Comprobamos que cada acción se registre bien.',
@@ -165,7 +167,7 @@ export const DESCRIPCIONES = [
       'Seguimiento de ventas reales, no solo de visitas.',
       'Conexión con tu agenda de clientes o tu tienda en línea.',
       'Con esto sabes cuánto te cuesta conseguir un cliente de verdad.'] },
-  { name: 'UGC y videos tipo testimonio', cat: 'UGC y contenido mensual',
+  { name: 'UGC y videos tipo testimonio', cat: 'UGC y contenido mensual', h: {Estrategia:2,Producción:4,Edición:8,Operador:2},
     b: ['Videos naturales, como si los hubiera grabado un cliente real.',
       'Testimonios, demostraciones o experiencias de uso.',
       'Guion corto con las ideas clave de cada video.',
@@ -177,7 +179,7 @@ export const DESCRIPCIONES = [
       'Versiones listas para usarse como anuncio pagado.',
       'Permiso por escrito para usar los videos en anuncios y redes.',
       'Más videos por mes, con variedad de personas y estilos.'] },
-  { name: 'Sistema mensual de contenido corto', cat: 'UGC y contenido mensual',
+  { name: 'Sistema mensual de contenido corto', cat: 'UGC y contenido mensual', h: {Estrategia:4,Producción:4,Edición:10,Diseño:4,Operador:4},
     b: ['Plan mensual de qué publicar en tus redes.',
       'Ideas de videos cortos y publicaciones cada mes.',
       'Guiones listos para grabar.',
@@ -190,7 +192,7 @@ export const DESCRIPCIONES = [
       'Anuncios para dar más alcance a lo que mejor funciona.',
       'Análisis mensual de qué gustó y qué no.',
       'Ajustes cada mes para mejorar el mes siguiente.'] },
-  { name: 'Optimización de landing y pruebas A/B', cat: 'Landing y conversión',
+  { name: 'Optimización de landing y pruebas A/B', cat: 'Landing y conversión', h: {Estrategia:3,Diseño:4,'Dev / Tech':5},
     b: ['Revisamos tu página y te decimos qué no funciona.',
       'Mejoramos los textos para que se entiendan mejor.',
       'Ordenamos la página para que lo importante se vea primero.',
@@ -203,7 +205,7 @@ export const DESCRIPCIONES = [
       'Mapas de calor: colores que muestran qué parte de la página llama más la atención.',
       'Mejoras continuas cada mes con lo que vamos aprendiendo.',
       'Reporte de cuánto subió la cantidad de contactos.'] },
-  { name: 'Email marketing y automatizaciones', cat: 'Email marketing',
+  { name: 'Email marketing y automatizaciones', cat: 'Email marketing', h: {Estrategia:3,Diseño:4,'Dev / Tech':4,Operador:3},
     b: ['Configuración de tu herramienta de correos.',
       'Diseño de la plantilla con tu marca.',
       'Correo de bienvenida para quien se suscribe o compra.',
@@ -216,7 +218,7 @@ export const DESCRIPCIONES = [
       'Calendario de campañas durante el mes.',
       'Pruebas de asuntos y textos para ver cuáles se abren más.',
       'Reporte mensual de cuántos abrieron, hicieron clic y compraron.'] },
-  { name: 'Google Business Profile + SEO local', cat: 'SEO local',
+  { name: 'Google Business Profile + SEO local', cat: 'SEO local', h: {Estrategia:3,Operador:7},
     b: ['Creamos o arreglamos tu perfil de Google, el que aparece en Google Maps cuando te buscan.',
       'Información correcta: dirección, horario, teléfono y página web.',
       'Descripción de tu negocio y lista de servicios o productos.',
@@ -229,7 +231,7 @@ export const DESCRIPCIONES = [
       'Páginas de tu sitio web pensadas para cada zona donde quieres vender.',
       'Seguimiento de en qué lugar apareces en Google cada mes.',
       'Reporte de cuántas llamadas, visitas y mensajes llegaron desde Google.'] },
-  { name: 'Dashboard mensual de marketing', cat: 'Analítica y medición',
+  { name: 'Dashboard mensual de marketing', cat: 'Analítica y medición', h: {Estrategia:2,'Dev / Tech':8,Operador:2},
     b: ['Un reporte mensual claro, sin términos raros.',
       'Cuánto se invirtió en anuncios.',
       'A cuántas personas llegaste.',
@@ -242,7 +244,7 @@ export const DESCRIPCIONES = [
       'Comparación contra el mes anterior.',
       'Recomendaciones de qué hacer a continuación.',
       'Reunión mensual para explicártelo.'] },
-  { name: 'Biblioteca de conocimiento para IA', cat: 'IA y automatización',
+  { name: 'Biblioteca de conocimiento para IA', cat: 'IA y automatización', h: {Estrategia:4,'Dev / Tech':3,Operador:8},
     b: ['Juntamos y ordenamos la información de tu empresa en un solo lugar.',
       'Qué haces, a quién le vendes y qué te diferencia.',
       'Tus servicios y precios.',
@@ -266,22 +268,33 @@ const key = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLo
 // Un texto de una sola línea es el que puse yo antes (o está vacío): se reemplaza. Uno de varias líneas lo escribiste tú: no se toca.
 const reemplazable = (t) => !String(t || '').trim().includes('\n');
 
-// Carga las descripciones al catálogo. No toca precios, horas ni descripciones cortas.
+// Horas de un servicio en el catálogo: nivel 5 las de aquí, nivel 10 el doble (se editan después en Sales).
+const tareas = (h) => Object.entries(h).map(([role, hours]) => ({ role, hours, hours10: hours * 2 }));
+
+// Carga las descripciones al catálogo. No toca precios ni horas de lo que ya existe, ni descripciones cortas.
+// Los servicios nuevos nacen con sus horas (y precio, si pasas los costos por hora).
 // Devuelve { creados, actualizados, omitidos } y el catálogo resultante.
-export async function cargarDescripciones(S, services) {
+export async function cargarDescripciones(S, services, rates = null) {
   const out = [...services], r = { creados: 0, actualizados: 0, omitidos: [] };
   for (const d of DESCRIPCIONES) {
     const b = d.b.join('\n'), a = d.a.join('\n');
     const sv = out.find((x) => key(x.name) === key(d.name));
     if (!sv) {
-      out.push(await S.create({ category: d.cat, name: d.name, description: '', unit: 'proyecto', markup: 2.2, price: null, tasks: [], includes5: b, includes10: a }));
+      const nuevo = { category: d.cat, name: d.name, description: '', unit: 'proyecto', markup: 2.2, price: null, level: 5, tasks: tareas(d.h), includes5: b, includes10: a };
+      const prices = rates ? pricesOf(nuevo, rates) : null;
+      out.push(await S.create({ ...nuevo, ...(prices ? { prices, price: prices[5] } : {}) }));
       r.creados++; continue;
     }
     const doc = { ...sv };
     if (CATS_VIEJAS.includes(sv.category) || !sv.category) doc.category = d.cat; // solo cambia las categorías de antes; una que tú elegiste se respeta
     if (reemplazable(sv.includes5)) doc.includes5 = b; else r.omitidos.push(`${sv.name} (nivel 5)`);
     if (reemplazable(sv.includes10)) doc.includes10 = a; else r.omitidos.push(`${sv.name} (nivel 10)`);
-    if (doc.includes5 === sv.includes5 && doc.includes10 === sv.includes10 && doc.category === sv.category) continue;
+    if (!(sv.tasks || []).length) { // un servicio que quedó sin horas las recibe; si ya tiene, no se toca
+      doc.tasks = tareas(d.h); doc.level = sv.level || 5;
+      const prices = rates && !sv.price_fixed ? pricesOf(doc, rates) : null;
+      if (prices) { doc.prices = prices; doc.price = prices[doc.level]; }
+    }
+    if (doc.includes5 === sv.includes5 && doc.includes10 === sv.includes10 && doc.category === sv.category && doc.tasks === sv.tasks) continue;
     const saved = await S.save(doc);
     out[out.indexOf(sv)] = saved; r.actualizados++;
   }
