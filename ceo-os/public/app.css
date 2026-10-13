@@ -900,3 +900,9 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 .qdoc.qpdf{background:#fff!important;box-sizing:border-box!important;width:612px!important;max-width:none!important;margin:0!important;padding:8px 32px!important;box-shadow:none!important;border-radius:0!important;animation:none!important}
 /* PDF descargable: cada sección en su propia página (logros · qué entregamos · inversión y pasos) */
 .qdoc.qpdf .qent,.qdoc.qpdf .qinv{break-before:page;page-break-before:always;margin-top:0!important}
+/* Hojas del PDF (612 px = ancho carta): sin el diseño de celular, aunque se dibujen angostas */
+.qdoc.qpdf{font-size:12.5px!important;padding:6px 34px 10px!important}
+.qdoc.qpdf .qh{flex-direction:row!important;gap:0!important}.qdoc.qpdf .qmeta{text-align:right!important}
+.qdoc.qpdf .qto{grid-template-columns:1fr 1fr!important}.qdoc.qpdf .qsum{width:260px!important}
+.qdoc.qpdf .qgets{grid-template-columns:1fr 1fr!important}
+.qdoc.qpdf .qent,.qdoc.qpdf .qinv{margin-top:0!important}

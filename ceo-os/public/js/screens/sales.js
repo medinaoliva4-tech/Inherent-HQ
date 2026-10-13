@@ -487,13 +487,14 @@ export async function render(el, { me, sub, alive }) {
 
   // Descarga directa del PDF (sin el diálogo de imprimir), con nombre «Inherent cotización - Marca - fecha».
   // Ninguna tarjeta o bloque queda partido entre dos páginas.
-  const loadH2p = () => window.html2pdf ? Promise.resolve() : new Promise((ok, ko) => { const sc = document.createElement('script'); sc.src = '/vendor/html2pdf.bundle.min.js'; sc.onload = ok; sc.onerror = () => ko(new Error('No pude cargar el generador de PDF')); document.head.appendChild(sc); });
+  const loadJs = (src) => new Promise((ok, ko) => { const sc = document.createElement('script'); sc.src = src; sc.onload = ok; sc.onerror = () => ko(new Error('No pude cargar el generador de PDF')); document.head.appendChild(sc); });
+  const loadH2p = async () => { if (!window.html2canvas) await loadJs('/vendor/html2canvas.min.js'); if (!window.jspdf) await loadJs('/vendor/jspdf.umd.min.js'); };
   async function downloadPdf(v, doc, btn) {
     const label = btn?.innerHTML; if (btn) { btn.disabled = true; btn.textContent = 'Generando PDF…'; }
     try {
       await loadH2p();
       const src = $('.qdoc', v), box = document.createElement('div'), clone = src.cloneNode(true);
-      box.style.cssText = 'position:absolute;left:0;top:0;width:612px;background:#fff;z-index:-1;pointer-events:none'; clone.classList.add('qpdf'); box.appendChild(clone); document.body.appendChild(box);
+      box.style.cssText = 'position:fixed;left:0;top:0;width:612px;background:#fff;z-index:-1;pointer-events:none'; clone.classList.add('qpdf'); box.appendChild(clone); document.body.appendChild(box);
       // Los logos SVG se pasan a imagen antes de convertir (el generador no dibuja SVG solo).
       await Promise.all([...clone.querySelectorAll('img')].filter((im) => /\.svg/.test(im.src)).map((im) => new Promise((ok) => {
         const w = im.getBoundingClientRect().width || 120, h = im.getBoundingClientRect().height || 40, i2 = new Image();
@@ -501,12 +502,22 @@ export async function render(el, { me, sub, alive }) {
         i2.onerror = ok; i2.src = im.src; })));
       const safe = (t) => String(t || '').replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
       const name = `Inherent cotización - ${safe(doc.client) || 'Cliente'} - ${doc.date || today()}.pdf`;
-      // Hoja carta real: el generador la mide en 612 px de ancho, así que la cotización se dibuja a ese ancho (tamaño real) y cada sección empieza en su propia página.
-      const blob = window.html2pdf().set({ margin: [10, 0, 12, 0], filename: name, image: { type: 'jpeg', quality: 0.95 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff', windowWidth: Math.max(innerWidth, 1100), useCORS: true, scrollX: 0, scrollY: 0 },
-        jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'], before: ['.qent', '.qinv'], avoid: ['.qget', '.qgrow', '.qgr', '.qwhy', '.qsum', 'tr', 'thead', '.qto', '.qh', '.qsec > p', '.qsec li', '.qnot', '.lbl2', 'ol', 'table'] } }).from(clone).outputPdf('blob');
-      const pdf = await blob, a = document.createElement('a'); a.href = URL.createObjectURL(pdf); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      // Una hoja carta por sección (principal · qué entregamos · inversión). Cada sección se dibuja sola, a 612 px
+      // (el ancho de la hoja), en la esquina de la pantalla; si es más alta que la hoja, se reduce para caber, centrada.
+      const kids = [...clone.children], iEnt = kids.findIndex((k) => k.classList.contains('qent')), iInv = kids.findIndex((k) => k.classList.contains('qinv'));
+      const cuts = [0, iEnt, iInv, kids.length].filter((x, i, a) => x >= 0 && (i === 0 || x > a[i - 1]));
+      const W = 612, PW = 612, PH = 792, M = 24, sy = scrollY, sx = scrollX, pdf = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter', orientation: 'portrait' });
+      clone.remove(); scrollTo(0, 0);
+      try {
+        for (let i = 0; i < cuts.length - 1; i++) {
+          const pg = document.createElement('div'); pg.className = 'qdoc qpdf'; kids.slice(cuts[i], cuts[i + 1]).forEach((k) => pg.appendChild(k)); box.replaceChildren(pg);
+          const cv = await window.html2canvas(pg, { scale: 2.5, backgroundColor: '#ffffff', width: W, windowWidth: W, useCORS: true, x: 0, y: 0, scrollX: 0, scrollY: 0, logging: false });
+          const k = Math.min(PW / cv.width, (PH - 2 * M) / cv.height), dw = cv.width * k, dh = cv.height * k;
+          if (i) pdf.addPage('letter', 'portrait');
+          pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', (PW - dw) / 2, M, dw, dh);
+        }
+      } finally { scrollTo(sx, sy); }
+      const out = pdf.output('blob'), a = document.createElement('a'); a.href = URL.createObjectURL(out); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
       box.remove();
     } catch (e) { toast(e.message || 'No se pudo generar el PDF', true); }
     if (btn) { btn.disabled = false; btn.innerHTML = label; }
