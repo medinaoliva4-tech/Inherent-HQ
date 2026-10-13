@@ -6,7 +6,8 @@ import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveSta
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
 const RED = { instagram: 'Instagram', tiktok: 'TikTok' };
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$/.test(String(u || '')) ? u : null);
-const TABS = [['shot', 'Shot list'], ['refs', 'Referencias'], ['plan', 'Planner'], ['guiones', 'Guiones'], ['postear', 'Por postear'], ['bandeja', 'Bandeja'], ['analytics', 'Analytics'], ['fuentes', 'Fuentes']];
+// Por ahora solo Analytics está visible; el resto del código sigue aquí y vuelve al agregar su pestaña a esta lista.
+const TABS = [['analytics', 'Analytics']];
 const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho', propia: 'Tuya' };
 
 export function videoCard(it) {
@@ -20,7 +21,7 @@ export function videoCard(it) {
 
 export async function render(el, { sub, alive }) {
   let slug = sub[1] || (() => { try { return localStorage.getItem('content.profile'); } catch { return null; } })() || 'inherent';
-  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'shot';
+  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'analytics';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
 
