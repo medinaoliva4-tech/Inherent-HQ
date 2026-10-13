@@ -78,11 +78,15 @@ export function customTasks(p, items, team, meEmail) {
     const dueOf = (st) => { if (!i.days) return end; const h = rows.filter((x) => x.st <= st).reduce((a, x) => a + (+x.r.hours || 0), 0); return workdays(Math.max(1, Math.round((i.days * h) / tot))); };
     rows.forEach(({ r, ri, st }) => {
       const prev = rows.filter((x) => x.st < st); const top = Math.max(-1, ...prev.map((x) => x.st));
-      out.push({ key: `s${si}r${ri}`, after: top < 0 ? ['kick'] : prev.filter((x) => x.st === top).map((x) => `s${si}r${x.ri}`), title: `${i.name} · ${r.role} (${r.hours} h)`, project_id: p.id, dept: '', assignee: who(roleToWork(r.role)) || meEmail, accountable: coo, due: dueOf(st), checklist: (i.includes || []).map((x) => ({ t: x, done: false })), hours: r.hours, level: i.level, status: 'Por empezar' });
+      out.push({ key: `s${si}r${ri}`, after: top < 0 ? ['kick'] : prev.filter((x) => x.st === top).map((x) => `s${si}r${x.ri}`), title: `${i.name} · ${r.role} (${r.hours} h)`, service_id: i.id, service: i.name, project_id: p.id, dept: '', assignee: who(roleToWork(r.role)) || meEmail, accountable: coo, due: dueOf(st), checklist: (i.includes || []).map((x) => ({ t: x, done: false })), hours: r.hours, level: i.level, status: 'Por empezar' });
     });
   });
   const last = out.map((t) => t.due).sort().at(-1); const qaDue = items.every((i) => i.days) && last ? (() => { const d = new Date(last + 'T12:00'); let k = 0; while (k < 2) { d.setDate(d.getDate() + 1); if (d.getDay() % 6) k++; } return d.toISOString().slice(0, 10); })() : end;
-  out.push({ key: 'qa', after: out.filter((t) => t.key !== 'kick').map((t) => t.key), title: 'QA y entrega al cliente', project_id: p.id, dept: '', assignee: coo || ceo, accountable: ceo === coo ? '' : ceo, due: qaDue, status: 'Por empezar' });
+  // Cierre: el COO revisa lo entregado, lo ve con el CEO y se entrega al cliente.
+  const plus = (iso, n) => { const d = new Date(iso + 'T12:00'); let k = 0; while (k < n) { d.setDate(d.getDate() + 1); if (d.getDay() % 6) k++; } return d.toISOString().slice(0, 10); };
+  out.push({ key: 'qa', after: out.filter((t) => t.key !== 'kick').map((t) => t.key), title: 'QA del COO: revisar los entregables', description: 'Revisa cada entregable contra su checklist y su SOP. Si algo falta, regrésalo a quien lo hizo.', project_id: p.id, dept: '', assignee: coo || ceo, accountable: ceo === coo ? '' : ceo, due: qaDue, status: 'Por empezar' });
+  out.push({ key: 'meet', after: ['qa'], title: 'Reunión COO + CEO: revisar antes de entregar', description: 'El COO agenda la reunión y presenta lo entregado. El CEO da el visto bueno.', project_id: p.id, dept: '', assignee: coo || ceo, accountable: ceo === coo ? '' : ceo, due: plus(qaDue, 1), status: 'Por empezar' });
+  out.push({ key: 'deliver', after: ['meet'], title: 'Entregar al cliente', description: 'Entrega lo aprobado al cliente y deja constancia en su portal.', project_id: p.id, dept: '', assignee: coo || ceo, accountable: ceo === coo ? '' : ceo, due: plus(qaDue, 2), status: 'Por empezar' });
   return out;
 }
 
