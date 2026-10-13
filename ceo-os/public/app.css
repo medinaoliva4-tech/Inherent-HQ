@@ -839,13 +839,3 @@ h1 .itip{width:18px;height:18px;font-size:11px;vertical-align:.45em}
 .svgrow{margin-top:8px;color:var(--ink2)}
 .qgrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:13px}.qgrow .in{max-width:72px;padding:6px 10px}
 .qfees{margin-top:14px;font-size:13px;line-height:1.5}.qfees .lbl{display:block;margin-bottom:4px}
-
-/* Cotización: primero qué provoca en su negocio, luego qué recibe, luego el precio y los pasos */
-.qdoc .qsec{margin:24px 0 0}.qdoc .qsec p{margin:6px 0;font-size:13.5px}.qdoc .qsec ol{margin:6px 0 0 18px;padding:0}.qdoc .qsec ol li{margin:4px 0}
-.qdoc .qwhy{margin:10px 0 0;padding-top:10px;border-top:1px solid #e6dccd}.qdoc .qwhy ul{margin:4px 0 0 18px;padding:0}.qdoc .qwhy li{margin:2px 0;color:#3f2f22}.qdoc .qd{color:#7a5d46;font-size:12px;margin-top:2px}.qdoc .qlv{color:#7a5d46;font-size:11px}
-/* Paquetes (Sales) */
-.pk{display:grid;grid-template-columns:290px minmax(0,1fr);gap:18px;align-items:start}.pklist{position:sticky;top:12px;max-height:calc(100vh - 40px);overflow:auto}
-.pkitem{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:left;border:0;background:none;padding:8px 9px;border-radius:12px;cursor:pointer;color:inherit;font:inherit}.pkitem:hover{background:var(--soft,rgba(0,0,0,.05))}.pkitem.on{background:var(--ink,#2c1f16);color:var(--cream,#fdfaf3)}.pkitem small{opacity:.75;white-space:nowrap}
-.pkph{border:1px solid var(--line);border-radius:16px;margin-top:10px}.pkph>summary{list-style:none;display:flex;gap:10px;align-items:center;padding:12px;cursor:pointer;flex-wrap:wrap}.pkph>summary::-webkit-details-marker{display:none}.pkph .no{width:26px;height:26px;border-radius:50%;background:var(--soft,#eee);display:grid;place-items:center;font-size:12px}
-.pkbody{padding:0 14px 14px;display:grid;gap:10px}.pkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}.pktab .n{text-align:right}.pkrow{cursor:pointer}
-@media(max-width:860px){.pk{grid-template-columns:minmax(0,1fr)}.pklist{position:static;max-height:260px}}
