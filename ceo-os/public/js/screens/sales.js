@@ -250,6 +250,7 @@ export async function render(el, { me, sub, alive }) {
           <div class="two"><div><label class="f">Categoría</label><select class="in" name="category">${[...new Set([...CATS, fv.category].filter(Boolean))].map((c2) => html`<option ${c2 === fv.category ? raw('selected') : ''}>${c2}</option>`)}</select></div>
             <div><label class="f">Se cobra por</label><select class="in" name="unit">${['proyecto', 'mes', 'pieza', 'hora', 'jornada'].map((u) => html`<option ${u === (fv.unit || 'proyecto') ? raw('selected') : ''}>${u}</option>`)}</select></div></div>
           <div><label class="f">Descripción (sale en la cotización)</label><input class="in" name="description" value="${fv.description || ''}"></div>
+          <div><label class="f">Lo que nos hace distintos (una línea, sale en el PDF)</label><input class="in" name="edge" maxlength="110" placeholder="Ej.: Estructura armada por un equipo financiero, no por una plantilla." value="${fv.edge || ''}"></div>
           <div class="two"><div><label class="f">Incluye en sencillo (5) · uno por línea</label><textarea class="in" name="includes5" placeholder="Landing de 1 sección&#10;Formulario de contacto&#10;1 ronda de cambios">${fv.includes5 || ''}</textarea></div>
             <div><label class="f">Se suma al subir a fuerte (10)</label><textarea class="in" name="includes10" placeholder="Copy con investigación&#10;Pruebas A/B&#10;Integración con CRM">${fv.includes10 || ''}</textarea></div></div>
           <div class="two"><div><label class="f">Tarda en sencillo (días hábiles)</label><input class="in" name="days5" type="number" value="${fv.days5 ?? ''}"></div><div><label class="f">Tarda en fuerte (días hábiles)</label><input class="in" name="days10" type="number" value="${fv.days10 ?? ''}"></div></div>
@@ -502,45 +503,52 @@ export async function render(el, { me, sub, alive }) {
         i2.onerror = ok; i2.src = im.src; })));
       const safe = (t) => String(t || '').replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
       const name = `Inherent cotización - ${safe(doc.client) || 'Cliente'} - ${doc.date || today()}.pdf`;
-      // Todo va al mismo ancho (el de la hoja carta, 612 px). El documento se corta en bloques que no se parten
-      // (encabezado, cada tarjeta o grupo, cada servicio, la tabla, el total…); un título siempre va pegado al bloque
-      // que lo sigue. Los bloques se acomodan uno debajo de otro y se pasa de hoja solo cuando el siguiente no cabe.
-      const blocks = []; let pend = null;
-      const push = (els, cls) => { if (pend) { els = [...pend.els, ...els]; cls = pend.cls || cls; pend = null; } blocks.push({ els, cls }); };
-      [...clone.children].forEach((k) => {
-        if (k.classList.contains('qsec')) [...k.children].forEach((c) => {
-          if (c.classList.contains('lbl2') && !pend) pend = { els: [c], cls: k.className };
-          // Las tarjetas de «Lo que recibes» van de dos en dos, para que una fila quepa donde no cabe la cuadrícula entera.
-          else if (c.classList.contains('qgets')) { const cards = [...c.children]; for (let j = 0; j < cards.length; j += 2) { const row = document.createElement('div'); row.className = 'qgets'; row.style.marginBottom = '10px'; cards.slice(j, j + 2).forEach((x) => row.appendChild(x)); push([row], k.className); } }
-          else push([c], k.className);
-        });
-        else if (k.classList.contains('lbl2')) pend = { els: [k], cls: '' };
-        else push([k], '');
-      });
-      if (pend) push([], '');
-      const W = 612, PW = 612, PH = 792, M = 22, sy = scrollY, sx = scrollX, pdf = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter', orientation: 'portrait' });
+      // Hojas por sección: principal · qué entregamos · inversión (junto a «qué entregamos» si cabe). Cada sección se dibuja completa en una
+      // hoja carta al mismo ancho; si no cabe, se dibuja más ancha (letra relativamente más chica) y se reduce a la
+      // hoja, hasta que quepa. Solo si una sección es enorme se reparte en varias hojas, sin partir tarjetas.
+      const kids = [...clone.children], iEnt = kids.findIndex((k) => k.classList.contains('qent')), iInv = kids.findIndex((k) => k.classList.contains('qinv'));
+      const cuts = [0, iEnt, iInv, kids.length].filter((x, i, a) => x >= 0 && (i === 0 || x > a[i - 1]));
+      const PW = 612, PH = 792, M = 22, AV = PH - 2 * M, sy = scrollY, sx = scrollX, pdf = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter', orientation: 'portrait' });
       clone.remove(); scrollTo(0, 0);
-      const shots = [];
+      const shot = (pg, W) => window.html2canvas(pg, { scale: 2.5 * 612 / W + 0.5, backgroundColor: '#ffffff', width: W, windowWidth: W, useCORS: true, x: 0, y: 0, scrollX: 0, scrollY: 0, logging: false });
+      const mk = (els, W, cls = '') => { const pg = document.createElement('div'); pg.className = 'qdoc qpdf'; pg.style.setProperty('--pw', W + 'px'); box.style.width = W + 'px'; let host = pg;
+        if (cls) { host = document.createElement('div'); host.className = cls; host.style.marginTop = '0'; pg.appendChild(host); } els.forEach((e) => host.appendChild(e)); box.replaceChildren(pg); return pg; };
+      let first = true; const page = () => { if (!first) pdf.addPage('letter', 'portrait'); first = false; };
       try {
-        for (const bl of blocks) {
-          const pg = document.createElement('div'); pg.className = 'qdoc qpdf'; let host = pg;
-          if (bl.cls) { host = document.createElement('div'); host.className = bl.cls; host.style.marginTop = '0'; pg.appendChild(host); }
-          bl.els.forEach((e) => host.appendChild(e)); box.replaceChildren(pg);
-          shots.push(await window.html2canvas(pg, { scale: 2.5, backgroundColor: '#ffffff', width: W, windowWidth: W, useCORS: true, x: 0, y: 0, scrollX: 0, scrollY: 0, logging: false }));
+        const fit = async (els, widths) => { for (const W of widths) { const pg = mk(els, W);
+          if (pg.offsetHeight * PW / W <= AV) { const cv = await shot(pg, W), dh = cv.height * PW / cv.width; page(); pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, M, PW, dh); return true; } } return false; };
+        const ALL = [612, 660, 710, 770, 830, 900], groups = cuts.slice(0, -1).map((c, g) => kids.slice(c, cuts[g + 1]));
+        // La inversión va en la misma hoja que «Qué entregamos» si cabe casi a tamaño normal; si no, baja a la siguiente.
+        const both = iEnt >= 0 && iInv > iEnt && groups.length === 3;
+        for (let g = 0; g < groups.length; g++) {
+          const els = groups[g];
+          if (both && g === 1 && await fit([...groups[1], ...groups[2]], [612, 660, 710])) break;
+          if (await fit(els, ALL)) continue;
+          // Sección enorme: por bloques (cada título pegado a lo que sigue; tarjetas de dos en dos) al ancho más chico.
+          const W = 900, blocks = []; let pend = null;
+          const push = (e, cls) => { if (pend) { e = [...pend.e, ...e]; cls = pend.cls || cls; pend = null; } blocks.push({ e, cls }); };
+          els.forEach((k) => {
+            if (k.classList.contains('qsec')) [...k.children].forEach((c) => {
+              if (c.classList.contains('lbl2') && !pend) pend = { e: [c], cls: k.className };
+              else if (c.classList.contains('qgets')) { const cards = [...c.children]; for (let j = 0; j < cards.length; j += 2) { const row = document.createElement('div'); row.className = c.className; row.style.marginBottom = '10px'; cards.slice(j, j + 2).forEach((x) => row.appendChild(x)); push([row], k.className); } }
+              else push([c], k.className);
+            });
+            else if (k.classList.contains('lbl2')) pend = { e: [k], cls: '' };
+            else push([k], '');
+          });
+          if (pend) push([], '');
+          let y = PH; 
+          for (const bl of blocks) { const cv = await shot(mk(bl.e, W, bl.cls), W), dh = cv.height * PW / cv.width; if (y + dh > PH - M) { page(); y = M; } pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, y, PW, dh); y += dh; }
         }
       } finally { scrollTo(sx, sy); }
-      const AV = PH - 2 * M; let y = M;
-      shots.forEach((cv, i) => {
-        const k = Math.min(PW / cv.width, AV / cv.height), dw = cv.width * k, dh = cv.height * k;
-        if (i && y + dh > PH - M) { pdf.addPage('letter', 'portrait'); y = M; }
-        pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', (PW - dw) / 2, y, dw, dh); y += dh;
-      });
       const out = pdf.output('blob'), a = document.createElement('a'); a.href = URL.createObjectURL(out); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
       box.remove();
     } catch (e) { toast(e.message || 'No se pudo generar el PDF', true); }
     if (btn) { btn.disabled = false; btn.innerHTML = label; }
   }
 
+  // Ícono de cada cosa que entregamos, según de qué trata.
+  const icOf = (t) => { const x = String(t || '').toLowerCase(); return /financ|inversi|costo|ganancia|dashboard|anal[ií]tica|medici/.test(x) ? 'bars' : /oferta|precio|paquete/.test(x) ? 'tag' : /agente|\bia\b|inteligencia/.test(x) ? 'bolt' : /automatiz|proceso/.test(x) ? 'gear' : /whatsapp|contacto|mensaje|pedido|crm|seguimiento/.test(x) ? 'chat' : /email|correo/.test(x) ? 'mail' : /web|sitio|página|landing|google|seo/.test(x) ? 'monitor' : /instagram|redes|presencia|contenido|publica|campañ/.test(x) ? 'megaphone' : /video|reel|rodaje|ugc/.test(x) ? 'video' : /foto/.test(x) ? 'camera' : /pauta|anuncio|meta|prospecci/.test(x) ? 'target' : /retenci|recompra/.test(x) ? 'repeat' : /expansi|sucursal|mercado/.test(x) ? 'globe' : /estructura empresarial|equipo|quién hace/.test(x) ? 'users' : /lanzamiento/.test(x) ? 'rocket' : 'check'; };
   function showPdf(doc) {
     const valid = new Date(doc.date + 'T12:00'); valid.setDate(valid.getDate() + (+doc.valid_days || 15));
     const st = subtotal(doc), tt = total(doc);
@@ -554,21 +562,17 @@ export async function render(el, { me, sub, alive }) {
         ${(() => { const lines = String(doc.intro || '').split('\n').map((l) => l.trim()).filter(Boolean), whys = doc.items.filter((i) => (i.why || []).length);
           // El texto se arma por secciones (títulos en MAYÚSCULAS): lo que recibes en tarjetas con ícono, el crecimiento resaltado.
           const secs = [{ h: '', ls: [] }]; lines.forEach((l) => { if (l.length > 6 && l === l.toUpperCase() && /[A-ZÁÉÍÓÚ]/.test(l)) secs.push({ h: l, ls: [] }); else secs.at(-1).ls.push(l); });
-          const icOf = (t) => { const x = t.toLowerCase(); return /financ|inversi|costo|precio|ganancia/.test(x) ? 'bars' : /whatsapp|contacto|mensaje|pedido|crm/.test(x) ? 'chat' : /web|sitio|página|landing|google/.test(x) ? 'monitor' : /instagram|redes|presencia|contenido|publica/.test(x) ? 'megaphone' : /video|foto/.test(x) ? 'camera' : /pauta|anuncio/.test(x) ? 'target' : 'check'; };
           const strip = (l) => l.replace(/^(\d+[.)]|[-•])\s*/, '');
-          // Límites de texto del PDF (para que todo quepa en 3 hojas): se corta en la primera frase completa que quepa.
-          const short = (t, n) => { t = String(t || '').trim(); if (t.length <= n) return t; const c = t.slice(0, n), k = Math.max(c.lastIndexOf('. '), c.lastIndexOf('; ')); return k > n * 0.5 ? c.slice(0, k + 1) : c.replace(/[\s,;:(]+\S*$/, '') + '…'; };
           const split2 = (l) => { const t = strip(l), m = t.match(/^([^.:]{3,80})[.:]\s+(.*)$/); return m ? [m[1], m[2]] : [t, '']; };
           const vSec = (sc) => { const h = sc.h.toLowerCase();
-            if (/recib|incluye(?!.*no)|entregamos/.test(h) && !/no incluye/.test(h)) return html`<div class="lbl2" style="margin-top:14px">${sc.h}</div><div class="qgets">${sc.ls.map((l) => { const [t, d] = split2(l); return html`<div class="qget"><span class="qgi">${ico(icOf(t + ' ' + d), 18)}</span><div><b>${t}</b>${d ? html`<div>${short(d, 130)}</div>` : ''}</div></div>`; })}</div>`;
-            if (/crecimiento|lograr|resultado/.test(h)) return html`<div class="qgrow"><div class="lbl2">${sc.h}</div>${sc.ls.map((l) => { const [t, d] = split2(l); return html`<div class="qgr"><span class="qgi up">${ico('trend', 16)}</span><div>${d ? html`<b>${t}.</b> ${short(d, 110)}` : short(t, 140)}</div></div>`; })}</div>`;
+            if (/recib|incluye(?!.*no)|entregamos/.test(h) && !/no incluye/.test(h)) return html`<div class="lbl2" style="margin-top:14px">${sc.h}</div><div class="qgets">${sc.ls.map((l) => { const [t, d] = split2(l); return html`<div class="qget"><span class="qgi">${ico(icOf(t + ' ' + d), 18)}</span><div><b>${t}</b>${d ? html`<div>${d}</div>` : ''}</div></div>`; })}</div>`;
+            if (/crecimiento|lograr|resultado/.test(h)) return html`<div class="qgrow"><div class="lbl2">${sc.h}</div>${sc.ls.map((l) => { const [t, d] = split2(l); return html`<div class="qgr"><span class="qgi up">${ico('trend', 16)}</span><div>${d ? html`<b>${t}.</b> ${d}` : t}</div></div>`; })}</div>`;
             if (/no incluye/.test(h)) return html`<div class="lbl2" style="margin-top:14px">${sc.h}</div><div class="qnot">${sc.ls.map((l) => html`<div>${ico('x', 12)} ${strip(l)}</div>`)}</div>`;
             return html`${sc.h ? html`<div class="lbl2" style="margin-top:14px">${sc.h}</div>` : ''}${sc.ls.map((l) => html`<p>${l}</p>`)}`; };
           return lines.length ? html`<div class="qsec"><div class="lbl2">LO QUE VAMOS A LOGRAR EN TU NEGOCIO</div>${secs.map(vSec)}</div>` : ''; })()}
         <div class="qsec qent"><div class="lbl2">QUÉ ENTREGAMOS Y CÓMO TE AYUDA</div><div class="qgets qsvc">${doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id), lv = i.level || sv?.level || 5, inc = i.includes?.length ? i.includes : sv ? includesAt(sv, lv) : [], d = sv ? daysAt(sv, lv) : 0;
-          // Tarjeta corta por servicio: lo esencial y hasta 3 entregables (el resto se resume).
-          const cut = (t, n) => { t = String(t || '').trim(); if (t.length <= n) return t; const c = t.slice(0, n), k = c.lastIndexOf('. '); return k > n * 0.5 ? c.slice(0, k + 1) : c.replace(/[\s,;:(]+\S*$/, '') + '…'; };
-          return html`<div class="qget qs"><div><b>${i.name}</b><div class="qsm">${i.level ? `Entrega ${lvName(i.level).toLowerCase()}` : ''}${d ? `${i.level ? ' · ' : ''}${d} días hábiles` : ''}</div>${i.description ? html`<div>${cut(i.description, 120)}</div>` : ''}${inc.length ? html`<ul>${inc.slice(0, 3).map((x) => html`<li>${cut(x, 70)}</li>`)}${inc.length > 3 ? html`<li>y ${inc.length - 3} más</li>` : ''}</ul>` : ''}${(i.why || []).length ? html`<div class="qsm" style="margin-top:4px">Se mide: ${i.why.map((w) => cut(String(w).replace(/\s—\s*se mide con:.*$/i, ''), 60)).join(' · ')}</div>` : ''}</div></div>`; })}</div></div>
+          // Tarjeta por servicio con su texto completo (nunca cortado); si no cabe, la hoja se reduce entera.
+          return html`<div class="qget qs"><span class="qgi">${ico(icOf(i.name + ' ' + (sv?.category || '')), 18)}</span><div><b>${i.name}</b><div class="qsm">${i.level ? `Entrega ${lvName(i.level).toLowerCase()}` : ''}${d ? `${i.level ? ' · ' : ''}${d} días hábiles` : ''}</div>${(sv?.edge || i.edge) ? html`<div class="qedge">${ico('spark', 12)} ${sv?.edge || i.edge}</div>` : i.description ? html`<div>${i.description}</div>` : ''}${inc.length ? html`<ul>${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}${(i.why || []).length ? html`<div class="qsm" style="margin-top:4px">Se mide: ${i.why.map((w) => String(w).replace(/\s—\s*se mide con:.*$/i, '')).join(' · ')}</div>` : ''}</div></div>`; })}</div></div>
         <div class="lbl2 qinv" style="margin-top:22px">INVERSIÓN</div>
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
           <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b></td><td class="n">${i.qty}</td><td class="n">${money(doc, i.price)}</td><td class="n">${money(doc, (+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
