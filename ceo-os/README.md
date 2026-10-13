@@ -65,7 +65,7 @@ El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez qu
 ## Seguridad
 
 - Login con Google, **solo dominio @inherentglobal.com** (se valida en el servidor con el `hd` y el correo verificado).
-- Sesión firmada, 12 h máximo y 2 h de inactividad, atada al navegador. Desactivar a alguien en Team lo saca al instante.
+- Sesión firmada, 30 días máximo y 14 días de inactividad, atada al navegador. Desactivar a alguien en Team lo saca al instante.
 - Permisos por rol **en el servidor**, anti-CSRF, CSP estricta sin scripts inline, HSTS.
 - Todo lo que se pinta en pantalla se escapa (no se puede inyectar HTML).
 - Los tokens de Google se guardan **cifrados** (AES-256-GCM).
