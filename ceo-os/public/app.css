@@ -910,3 +910,8 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 .qdoc.qpdf .qsec ol li{margin:2px 0!important}.qdoc.qpdf .qwhy{margin-bottom:8px!important}
 /* Bloques del PDF: sin relleno vertical extra, para que se peguen uno con otro */
 .qdoc.qpdf{padding-top:3px!important;padding-bottom:3px!important}.qdoc.qpdf>*{margin-top:0!important}
+/* PDF: viñetas dibujadas a mano (el generador no pinta las de la lista) */
+.qdoc.qpdf ul{list-style:none!important;padding-left:16px!important;margin:4px 0 0!important}
+.qdoc.qpdf ul li{position:relative;margin:2px 0}
+.qdoc.qpdf ul li::before{content:'•';position:absolute;left:-12px;top:0;color:#9f846d}
+.qdoc.qpdf .qgets{margin-top:0!important}
