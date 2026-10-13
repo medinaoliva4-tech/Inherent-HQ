@@ -897,7 +897,7 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
   .qdoc .qget,.qdoc .qgrow,.qdoc .qgr,.qdoc .qsum,.qdoc table{break-inside:avoid}
 }
 /* La copia que se convierte en PDF descargable: sin sombra ni bordes redondeados */
-.qdoc.qpdf{background:#fff!important;box-sizing:border-box!important;width:612px!important;max-width:none!important;margin:0!important;padding:8px 32px!important;box-shadow:none!important;border-radius:0!important;animation:none!important}
+.qdoc.qpdf{background:#fff!important;box-sizing:border-box!important;width:var(--pw,612px)!important;max-width:none!important;margin:0!important;padding:8px 32px!important;box-shadow:none!important;border-radius:0!important;animation:none!important}
 /* PDF descargable: cada sección en su propia página (logros · qué entregamos · inversión y pasos) */
 .qdoc.qpdf .qent,.qdoc.qpdf .qinv{break-before:page;page-break-before:always;margin-top:0!important}
 /* Hojas del PDF (612 px = ancho carta): sin el diseño de celular, aunque se dibujen angostas */
@@ -919,3 +919,5 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 .qdoc .qsvc .qget{display:block}.qdoc .qsvc .qget b{font-size:13px}
 .qdoc .qsm{font-size:11px;color:#9f846d;margin:1px 0 4px}
 .qdoc .qsvc ul{margin:4px 0 0 16px;padding:0}.qdoc .qsvc li{margin:1px 0}
+/* Lo que nos hace distintos, en cada servicio del PDF */
+.qdoc .qedge{display:flex;gap:5px;align-items:flex-start;font-weight:500;color:#6b6a3c;margin:2px 0 4px;line-height:1.35}
