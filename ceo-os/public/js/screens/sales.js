@@ -208,7 +208,7 @@ export async function render(el, { me, sub, alive }) {
         ${g ? html`<div class="sm svgrow">📈 + ${g}</div>` : ''}
         <div class="svlv" data-stop><input type="range" min="5" max="10" step="1" value="${lv}" data-cardlv="${s.id}" aria-label="Nivel de entrega"><div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div></div>
         <div data-cardbody="${s.id}">${cardBody(s, lv)}</div>
-        ${sopOf(s) ? html`<a class="sm" data-stop href="#/library/${sopOf(s).folder_id || '_'}/${sopOf(s).id}" style="display:inline-block;margin-top:10px">📋 Ver el SOP de este servicio →</a>` : ''}
+        ${sopOf(s) ? html`<a class="sm" data-stop href="#/library/${sopOf(s).folder_id || '_'}/${sopOf(s).id}" style="display:inline-block;margin-top:10px;color:#87684e;font-weight:500">📋 Ver el SOP de este servicio →</a>` : ''}
 </div>`; })}</div>`}`);
   }
 

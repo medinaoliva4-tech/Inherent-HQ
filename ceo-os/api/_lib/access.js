@@ -2,10 +2,10 @@
 import * as session from './session.js';
 import * as db from './db.js';
 
-export const AREAS = ['home', 'control', 'work', 'finanzas', 'sales', 'operations', 'clients', 'content', 'library', 'team'];
+export const AREAS = ['home', 'control', 'work', 'finanzas', 'sales', 'operations', 'roadmap', 'clients', 'content', 'library', 'team'];
 const ROLE_AREAS = {
   ceo: AREAS,                                                        // 🔒 todo
-  coo: AREAS.filter((a) => a !== 'finanzas'),                        // todo menos Finanzas
+  coo: AREAS.filter((a) => a !== 'finanzas' && a !== 'roadmap'),     // todo menos Finanzas y el Roadmap del CEO
   // El equipo: su resumen, su Workspace, la Library y el Team. Content solo con el perfil «content».
   team: ['home', 'work', 'content', 'library', 'team'],
   client: ['portal'],                                                // 🔒 el cliente: solo su portal
@@ -20,7 +20,7 @@ export const COLLS = {
   rates: 'finanzas', packages: 'finanzas', finance: 'finanzas', payroll: 'finanzas',
   projects: 'operations', tasks: 'operations', accounts: 'clients',
   content: 'content', sources: 'content', analytics: 'content',
-  folders: 'library', docs: 'library',
+  folders: 'library', docs: 'library', roadmap: 'roadmap',
   team: 'team', settings: 'home', checks: 'work',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
