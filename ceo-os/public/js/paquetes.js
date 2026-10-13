@@ -1,6 +1,6 @@
 // Sales → Paquetes: los 108 paquetes por industria con sus fases, horas por rol, tarifas editables, margen y % de crecimiento.
 // Solo el CEO (lleva costos). Los ajustes viven en la colección `packages` (id «default»). «Cotizar» arma una cotización con el formato nuevo.
-import { html, raw, mount, col, toast, Q, $, $$, ico } from './core.js';
+import { html, raw, mount, col, toast, Q, $, $$, ico, openClaude } from './core.js';
 
 const CX = { S: 'Sencillo', M: 'Medio', X: 'Fuerte' };
 const DEF = () => ({
@@ -13,7 +13,7 @@ const rnd = (x, s) => (s > 0 ? Math.round(x / s) * s : Math.round(x));
 const N = (n, d = 1) => (Math.round(n * 10 ** d) / 10 ** d).toLocaleString('en-US');
 const num = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
 
-export async function packagesTab(body, { onQuote }) {
+export async function packagesTab(body, { onQuote, bun }) {
   mount(body, html`<div class="mut">Cargando paquetes…</div>`);
   const [data, saved] = await Promise.all([fetch('/data/paquetes.json').then((r) => r.json()), col('packages').get('default').catch(() => null)]);
   const P = data.p, IND = Object.fromEntries(data.ind.map((i) => [i.id, i.n])), PB = Object.fromEntries(P.map((p) => [p.id, p]));
@@ -53,6 +53,7 @@ export async function packagesTab(body, { onQuote }) {
         <div class="foot" style="margin-top:18px;opacity:1"><button class="btn cream" data-pk="quote">Cotizar este paquete →</button>${e.edited ? html`<button class="btn ghost" data-pk="reset" style="background:transparent;color:#fdfaf3;border-color:rgba(253,250,243,.4)">Volver a lo original</button>` : ''}</div>
       </div>
 
+      ${bun ? bun.servicesCard(linked(p.id), p.id) : ''}
       <div class="card" style="margin-top:16px"><div class="row" style="flex-wrap:wrap;gap:10px"><div><h3>Cómo se desarrolla</h3><div class="mut sm">${e.ph.length} fases. Cambia horas y texto; el precio se mueve solo.</div></div><div class="sp"></div>
         <label class="sm mut">Complejidad <select class="in" style="width:auto" data-pk-in="cx">${Object.entries(CX).map(([k, l]) => html`<option value="${k}" ${k === e.cx ? raw('selected') : ''}>${l} ×${S.cx[k]}</option>`)}</select></label>
         <label class="sm mut">Mentor (sesiones) <input class="in" style="width:70px" type="number" min="0" data-pk-in="mt" value="${e.mt}"></label></div>
@@ -67,7 +68,7 @@ export async function packagesTab(body, { onQuote }) {
         <div class="card"><h3>Qué recibe el cliente</h3><ul class="svinc">${p.inc.map((x) => html`<li><b style="font-weight:500">${x[0]}</b> — ${x[1]}<div class="mut sm">Se mide: ${x[2]}</div></li>`)}</ul>${p.opt.length ? html`<div class="sm"><b style="font-weight:500">Opcional:</b> ${p.opt.join(' · ')}</div>` : ''}<div class="sm mut" style="margin-top:6px"><b style="font-weight:500">No incluye:</b> ${p.ex.join(' · ')}</div></div>
         ${p.med ? html`<div class="card"><h3>Medición y pauta que incluye</h3><div class="mut sm" style="margin-bottom:6px">Qué se mide, en lenguaje simple.</div><ul class="svinc">${p.med.map((x) => html`<li><b style="font-weight:500">${x[0]}</b> — ${x[1]}</li>`)}</ul></div>` : html`<div class="card"><h3>Con qué se entrega</h3><div class="chips" style="margin-top:8px">${p.mods.map((m) => html`<span class="chip">${m}</span> `)}</div></div>`}</div>
 
-      <div class="card" style="margin-top:16px"><h3>Descripción para el cliente</h3><div class="mut sm" style="margin-bottom:8px">Editable. Sale en la cotización antes del precio: qué recibe y cómo se traduce en crecimiento.</div><textarea class="in" style="min-height:${p.custom ? 340 : 110}px" data-pk-in="desc" placeholder="Qué recibe el cliente y qué crecimiento busca.">${e.desc}</textarea></div>
+      <div class="card" style="margin-top:16px"><div class="row"><h3>Descripción para el cliente</h3><div class="sp"></div><button class="btn ghost xs" data-pk="claude">${ico('spark', 14)} Crear con Claude</button></div><div class="mut sm" style="margin-bottom:8px">Editable. Sale en la cotización antes del precio: qué recibe y cómo se traduce en crecimiento.</div><textarea class="in" style="min-height:${p.custom ? 340 : 110}px" data-pk-in="desc" placeholder="Qué recibe el cliente y qué crecimiento busca.">${e.desc}</textarea></div>
 
       <div class="card" style="margin-top:16px"><h3>Precio de venta y otros costos</h3><div class="mut sm" style="margin-bottom:8px">Con precio fijo, el margen se calcula sobre ese precio. En 0, el precio sale de las horas.</div>
         <div class="pkgrid"><label class="sm mut">Precio fijo (Q)<input class="in" type="number" min="0" step="50" data-pk-in="fixed" value="${e.fixed || 0}"></label><label class="sm mut">Otros costos (Q)<input class="in" type="number" min="0" step="10" data-pk-in="otros" value="${e.otros || 0}"></label><label class="sm mut">En dólares (US$1 = Q7.70)<input class="in" disabled value="${N(c.price / 7.7, 0)}"></label></div></div>
@@ -86,12 +87,24 @@ export async function packagesTab(body, { onQuote }) {
           <div><div class="sm mut" style="margin-bottom:6px">Horas de operación al mes</div><div class="pkgrid">${S.roles.map((r) => html`<label class="sm mut">${r.n}<input class="in" type="number" min="0" step="0.5" data-pk-m="${r.id}" value="${+(e.mo[r.id] || 0)}"></label>`)}</div><div class="sm" style="margin-top:8px">Operación mensual: <b style="font-weight:500">${c.monthly ? Q(c.monthly) : '—'}</b></div></div></div></div>`;
   }
 
+  const own = () => (bun?.list || []).filter((b) => !b.pkg && (!F.q.trim() || b.name.toLowerCase().includes(F.q.trim().toLowerCase())));
+  const linked = (id) => (bun?.list || []).find((b) => b.pkg === id);
+  function vBundle(b) {
+    const t = bun.totals(b);
+    return html`<div class="card feat olive"><div class="row" style="align-items:flex-start;gap:16px;flex-wrap:wrap"><div class="grow" style="min-width:240px"><div class="lbl">${b.industry || 'Sin industria'} · Paquete propio</div><h2 style="margin:4px 0 6px;font-size:26px;font-weight:500">${b.name}</h2><div style="opacity:.8">${b.desc || ''}</div></div>
+        <div style="text-align:right"><div class="lbl">Precio del paquete</div><div class="big" style="font-size:46px">${Q(t.price)}</div></div></div>
+      <div class="foot" style="margin-top:18px;opacity:1"><button class="btn cream" data-pk="bquote" data-id="${b.id}">Cotizar este paquete →</button></div></div>
+      ${bun.servicesCard(b)}
+      ${(b.phases || []).filter((f) => f.n).length ? html`<div class="card" style="margin-top:16px"><h3>Cómo se desarrolla</h3>${b.phases.filter((f) => f.n).map((f) => html`<div class="row" style="padding:9px 0;border-top:1px solid var(--line)"><b style="font-weight:500">${f.n}</b><div class="sp"></div><span class="mut sm">${f.w ? `Semanas ${f.w}` : ''}</span></div>`)}</div>` : ''}`;
+  }
   function vPk() {
-    const list = items(), p = PB[SEL] || list[0];
+    const list = items(), mine = own(), bsel = SEL.startsWith('b:') ? mine.find((b) => 'b:' + b.id === SEL) : null, p = bsel ? null : PB[SEL] || list[0];
     return html`<div class="pk">
       <aside class="card pklist"><div style="display:grid;gap:8px"><select class="in" data-pk-f="ind"><option value="">Todas las industrias</option>${data.ind.map((i) => html`<option value="${i.id}" ${F.ind === i.id ? raw('selected') : ''}>${i.n}</option>`)}</select><input class="in" type="search" placeholder="Buscar paquete" data-pk-f="q" value="${F.q}"><label class="sm mut"><input type="checkbox" data-pk-f="std" ${F.std ? raw('checked') : ''}> Solo prioritarios ${ico('star', 13)}</label></div>
-        <div style="margin-top:10px">${list.map((x) => html`<button class="pkitem ${x.id === p.id ? 'on' : ''}" data-pk="sel" data-id="${x.id}"><span>${x.n}${x.st === 'standard' ? ico('star', 13) : ''}</span><small>${Q(calc(x).price)}</small></button>`)}</div></aside>
-      <section>${vDetail(p, calc(p))}</section></div>`;
+        ${bun ? html`<button class="btn" style="width:100%;margin-top:10px" data-pk="bnew">+ Paquete</button>` : ''}
+        ${mine.length ? html`<div class="mut sm" style="margin:12px 0 4px">Tus paquetes</div>${mine.map((b) => html`<button class="pkitem ${'b:' + b.id === SEL ? 'on' : ''}" data-pk="sel" data-id="b:${b.id}"><span>${b.name}</span><small>${Q(bun.totals(b).price)}</small></button>`)}<div class="mut sm" style="margin:12px 0 4px">Por industria</div>` : ''}
+        <div style="margin-top:10px">${list.map((x) => html`<button class="pkitem ${x.id === p?.id ? 'on' : ''}" data-pk="sel" data-id="${x.id}"><span>${x.n}${x.st === 'standard' ? ico('star', 13) : ''}</span><small>${Q(calc(x).price)}</small></button>`)}</div></aside>
+      <section>${bsel ? vBundle(bsel) : vDetail(p, calc(p))}</section></div>`;
   }
   function vEq() {
     return html`<div class="card"><div class="row"><div><h3>Equipo y tarifas por hora</h3><div class="mut sm">Costo/h es lo que le pagas a la persona. Dirección no cuesta: se valora para que el precio refleje tu tiempo.</div></div><div class="sp"></div><button class="btn" data-pk="addrole">+ Agregar rol</button></div>
@@ -114,6 +127,10 @@ export async function packagesTab(body, { onQuote }) {
 
   body.onclick = (e) => {
     const t = e.target.closest('[data-pk]'); if (!t) return; const a = t.dataset.pk;
+    if (a === 'bnew') { bun.edit(null, (r) => { if (r) SEL = 'b:' + r.id; paint(); }); return; }
+    if (a === 'bedit') { const b = (bun.list || []).find((x) => x.id === t.dataset.id) || (t.dataset.pkg ? { name: PB[t.dataset.pkg].n, industry: IND[PB[t.dataset.pkg].ind], pkg: t.dataset.pkg } : null); bun.edit(b, (r) => { if (r === null && SEL.startsWith('b:')) SEL = 'bm-arranque'; paint(); }); return; }
+    if (a === 'bquote') { bun.quote(bun.list.find((x) => x.id === t.dataset.id)); return; }
+    if (a === 'claude') { const p = PB[SEL], b = linked(SEL); openClaude(`Escribe la descripción para el cliente del paquete «${p.n}» (${IND[p.ind]}) de Inherent. Español, de «tú», lenguaje simple, sin jerga, 4 a 6 líneas: qué recibe y cómo se traduce en crecimiento. Háblale de lo que desea, no de servicios.\n\nQué es: ${p.d}\nQué recibe: ${p.inc.map((x) => x[0]).join('; ')}${b ? `\nServicios: ${b.lines.length ? bun.totals(b).ls.map((x) => x.name).join('; ') : ''}` : ''}`); toast('Prompt copiado. Pega el texto aquí cuando esté listo.'); return; }
     if (a === 'sub') { sub = t.dataset.s; paint(); } else if (a === 'sel') { SEL = t.dataset.id; paint(); scrollTo(0, 0); } else if (a === 'go') { SEL = t.dataset.id; sub = 'pk'; paint(); scrollTo(0, 0); }
     else if (a === 'addph') { ownPh().push({ k: 'construccion', n: 'Nueva fase', w: '1', t: 'Describe qué se hace.', r: '', a: '', h: {} }); save(); paint(); }
     else if (a === 'delph') { const ph = ownPh(); if (ph.length > 1) { ph.splice(+t.dataset.i, 1); save(); paint(); } }
