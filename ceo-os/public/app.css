@@ -874,3 +874,14 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 .ctlic .lni,.fi .lni{vertical-align:middle}
 .chip .lni,.btn .lni,.lbl .lni{vertical-align:-2px}
 .btn .lni{margin-right:2px}
+/* PDF de cotización: lo que recibes en tarjetas con ícono y el crecimiento resaltado */
+.qdoc .qgets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.qdoc .qget{display:flex;gap:10px;align-items:flex-start;background:#f6efe3;border:1px solid #e7dccb;border-radius:14px;padding:12px;font-size:12.5px;line-height:1.45;break-inside:avoid}
+.qdoc .qget b{display:block;font-weight:600;font-size:13px;margin-bottom:2px;color:#2c1f16}
+.qdoc .qgi{flex:0 0 32px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#2c1f16;color:#fdfaf3}
+.qdoc .qgi.up{flex-basis:26px;width:26px;height:26px;background:#6b6a3c}
+.qdoc .qgrow{margin-top:16px;background:linear-gradient(135deg,#eef0dc,#f6efe3);border:1px solid #d9dcb8;border-radius:16px;padding:14px 16px;break-inside:avoid}
+.qdoc .qgr{display:flex;gap:10px;align-items:flex-start;margin:8px 0;font-size:13px;line-height:1.45}
+.qdoc .qgr b{font-weight:600}
+.qdoc .qnot{font-size:12px;color:#7a6a5a}.qdoc .qnot div{margin:4px 0;display:flex;gap:6px;align-items:flex-start}
+@media (max-width:640px){.qdoc .qgets{grid-template-columns:1fr}}

@@ -46,7 +46,9 @@ export async function render(el, { me, sub, alive }) {
   let cardLv = {};
   // Lo que incluye y cuánto tarda un servicio en un nivel (para la cotización y su PDF).
   const incHtml = (sv, lv) => html`${daysAt(sv, lv) ? html`<div><b style="font-weight:500">${ico('clock')} ${daysAt(sv, lv)} días hábiles</b></div>` : ''}${includesAt(sv, lv).length ? html`<ul style="margin:4px 0 0 18px;padding:0">${includesAt(sv, lv).map((x) => html`<li>${x}</li>`)}</ul>` : ''}`;
-  const quoteDays = (doc) => Math.max(0, ...doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id); return sv ? daysAt(sv, i.level || sv.level || 5) || 0 : 0; }));
+  const autoDays = (doc) => Math.max(0, ...doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id); return sv ? daysAt(sv, i.level || sv.level || 5) || 0 : 0; }));
+  // El tiempo total se puede escribir a mano (hay servicios que no se hacen en paralelo); si no, sale del servicio más largo.
+  const quoteDays = (doc) => (+doc.days > 0 ? +doc.days : autoDays(doc));
   const lvName = (lv) => (lv <= 4 ? 'Básico' : lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
   const suggested = (s, lv = s.level || 5) => (isCeo && rates ? svcAuto(s, rates, lv) : null);
   // La tarjeta del catálogo en un nivel: precio, horas, días y qué incluye (cambia con el slider de afuera).
@@ -407,6 +409,7 @@ export async function render(el, { me, sub, alive }) {
               ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
             ${!services.length ? html`<div class="mut sm" style="margin-top:8px">Tu catálogo está vacío. Crea servicios aquí mismo o en «Catálogo de servicios».</div>` : ''}
             <div class="two" style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="f">Descuento %</label><input class="in" id="qdisc" type="number" value="${doc.discount_pct || 0}"></div><div><label class="f">Válida por (días)</label><input class="in" id="qvalid" type="number" value="${doc.valid_days || 15}"></div></div>
+            <div style="margin-top:12px"><label class="f">Tiempo total (días hábiles)</label><input class="in" id="qdays" type="number" min="0" value="${+doc.days > 0 ? doc.days : ''}" placeholder="${autoDays(doc) ? `${autoDays(doc)} si todo va en paralelo` : 'Escribe los días'}"><div class="mut sm" style="margin-top:4px">Si hay servicios que van uno después de otro, escribe el total real.</div></div>
             <div style="margin-top:12px"><label class="f">Lo que esto va a provocar en su negocio (sale ANTES del precio)</label><textarea class="in" id="qintro" style="min-height:120px" placeholder="Cómo se traduce en crecimiento lo que vamos a implementar.">${doc.intro || ''}</textarea></div>
             <div style="margin-top:12px"><label class="f">Siguientes pasos (uno por línea; si lo dejas vacío salen los de siempre)</label><textarea class="in" id="qnext">${doc.next || ''}</textarea></div>
             <div style="margin-top:12px"><label class="f">Notas y condiciones (salen en el PDF)</label><textarea class="in" id="qnotes">${doc.notes || ''}</textarea></div>
@@ -449,7 +452,7 @@ export async function render(el, { me, sub, alive }) {
       $$('[data-f]', el).forEach((inp) => { const it = doc.items[+inp.dataset.i]; const f = inp.dataset.f; if (f === 'growth_pct') { if (it.growth) it.growth.pct = +inp.value || 0; return; } it[f] = f === 'qty' || f === 'price' ? (inp.value === '' ? null : +inp.value) : inp.value; });
       const f = $('#qf', el); if (f) Object.assign(doc, Object.fromEntries(new FormData(f)));
       if ($('#qrate', el)) doc.rate = +$('#qrate', el).value || doc.rate;
-      if ($('#qdisc', el)) { doc.discount_pct = +$('#qdisc', el).value || 0; doc.valid_days = +$('#qvalid', el).value || 15; doc.notes = $('#qnotes', el).value; doc.intro = $('#qintro', el)?.value || ''; doc.next = $('#qnext', el)?.value || ''; doc.status = $('#qstatus', el).value; }
+      if ($('#qdisc', el)) { doc.discount_pct = +$('#qdisc', el).value || 0; doc.valid_days = +$('#qvalid', el).value || 15; doc.days = +($('#qdays', el)?.value || 0) || null; doc.notes = $('#qnotes', el).value; doc.intro = $('#qintro', el)?.value || ''; doc.next = $('#qnext', el)?.value || ''; doc.status = $('#qstatus', el).value; }
     };
     const handlers = {
       back: () => { location.hash = '/sales/quotes'; paint(); },
@@ -503,7 +506,17 @@ export async function render(el, { me, sub, alive }) {
         <div class="qto"><div><div class="lbl2">PARA</div><b style="font-weight:500;font-size:15px">${doc.client}</b>${doc.contact ? html`<div>${doc.contact}</div>` : ''}</div>
           <div><div class="lbl2">DE</div><b style="font-weight:500;font-size:15px">Inherent</b><div>inherentglobal.com</div></div></div>
         ${(() => { const lines = String(doc.intro || '').split('\n').map((l) => l.trim()).filter(Boolean), whys = doc.items.filter((i) => (i.why || []).length);
-          return lines.length || whys.length ? html`<div class="qsec"><div class="lbl2">LO QUE VAMOS A LOGRAR EN TU NEGOCIO</div>${lines.map((l) => html`<p>${l}</p>`)}${whys.map((i) => html`<div class="qwhy"><b>${i.name}</b><ul>${i.why.map((w) => html`<li>${w}</li>`)}</ul></div>`)}</div>` : ''; })()}
+          // El texto se arma por secciones (títulos en MAYÚSCULAS): lo que recibes en tarjetas con ícono, el crecimiento resaltado.
+          const secs = [{ h: '', ls: [] }]; lines.forEach((l) => { if (l.length > 6 && l === l.toUpperCase() && /[A-ZÁÉÍÓÚ]/.test(l)) secs.push({ h: l, ls: [] }); else secs.at(-1).ls.push(l); });
+          const icOf = (t) => { const x = t.toLowerCase(); return /financ|inversi|costo|precio|ganancia/.test(x) ? 'bars' : /whatsapp|contacto|mensaje|pedido|crm/.test(x) ? 'chat' : /web|sitio|página|landing|google/.test(x) ? 'monitor' : /instagram|redes|presencia|contenido|publica/.test(x) ? 'megaphone' : /video|foto/.test(x) ? 'camera' : /pauta|anuncio/.test(x) ? 'target' : 'check'; };
+          const strip = (l) => l.replace(/^(\d+[.)]|[-•])\s*/, '');
+          const split2 = (l) => { const t = strip(l), m = t.match(/^([^.:]{3,80})[.:]\s+(.*)$/); return m ? [m[1], m[2]] : [t, '']; };
+          const vSec = (sc) => { const h = sc.h.toLowerCase();
+            if (/recib|incluye(?!.*no)|entregamos/.test(h) && !/no incluye/.test(h)) return html`<div class="lbl2" style="margin-top:14px">${sc.h}</div><div class="qgets">${sc.ls.map((l) => { const [t, d] = split2(l); return html`<div class="qget"><span class="qgi">${ico(icOf(t + ' ' + d), 18)}</span><div><b>${t}</b>${d ? html`<div>${d}</div>` : ''}</div></div>`; })}</div>`;
+            if (/crecimiento|lograr|resultado/.test(h)) return html`<div class="qgrow"><div class="lbl2">${sc.h}</div>${sc.ls.map((l) => { const [t, d] = split2(l); return html`<div class="qgr"><span class="qgi up">${ico('trend', 16)}</span><div>${d ? html`<b>${t}.</b> ${d}` : t}</div></div>`; })}</div>`;
+            if (/no incluye/.test(h)) return html`<div class="lbl2" style="margin-top:14px">${sc.h}</div><div class="qnot">${sc.ls.map((l) => html`<div>${ico('x', 12)} ${strip(l)}</div>`)}</div>`;
+            return html`${sc.h ? html`<div class="lbl2" style="margin-top:14px">${sc.h}</div>` : ''}${sc.ls.map((l) => html`<p>${l}</p>`)}`; };
+          return lines.length || whys.length ? html`<div class="qsec"><div class="lbl2">LO QUE VAMOS A LOGRAR EN TU NEGOCIO</div>${secs.map(vSec)}${whys.map((i) => html`<div class="qwhy"><b>${i.name}</b><ul>${i.why.map((w) => html`<li>${w}</li>`)}</ul></div>`)}</div>` : ''; })()}
         <div class="qsec"><div class="lbl2">QUÉ ENTREGAMOS Y CÓMO TE AYUDA</div>${doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id), lv = i.level || sv?.level || 5, inc = i.includes?.length ? i.includes : sv ? includesAt(sv, lv) : [], d = sv ? daysAt(sv, lv) : 0;
           return html`<div class="qwhy"><b>${i.name}</b>${i.level ? html` <span class="qlv">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div class="qd">${i.description}</div>` : ''}${d ? html`<div class="qd"><b style="font-weight:500">Entrega en ${d} días hábiles.</b></div>` : ''}${inc.length ? html`<ul>${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}</div>`; })}</div>
         <div class="lbl2" style="margin-top:22px">INVERSIÓN</div>
