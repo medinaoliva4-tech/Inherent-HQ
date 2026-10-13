@@ -7,13 +7,14 @@ const NAV = [
   ['finanzas', 'Finance', 'M3 17l6-6 4 4 8-8M15 7h6v6'],
   ['sales', 'Sales', 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0'],
   ['operations', 'Operations', 'M4 6h16M4 12h10M4 18h7'],
+  ['roadmap', 'Roadmap', 'M4 19V5M4 19h16M8 15l4-5 3 3 5-7'],
   ['clients', 'Clients', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
   ['content', 'Content', 'M5 4h14v16l-7-4-7 4z'],
   ['library', 'Library', 'M4 4h6l2 2h8v14H4z'],
   ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
   ['portal', 'Mi portal', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
 ];
-const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal' };
+const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal' };
 const root = $('#root');
 export let me = null;
 let renderGen = 0;
