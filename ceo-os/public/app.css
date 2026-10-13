@@ -885,3 +885,14 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 .qdoc .qgr b{font-weight:600}
 .qdoc .qnot{font-size:12px;color:#7a6a5a}.qdoc .qnot div{margin:4px 0;display:flex;gap:6px;align-items:flex-start}
 @media (max-width:640px){.qdoc .qgets{grid-template-columns:1fr}}
+/* PDF: se descarga igual que se ve en pantalla (colores, fondos y columnas; sin el diseño de celular) */
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  @page{size:letter;margin:0}
+  .qview{padding:0!important}
+  .qdoc{width:auto!important;padding:16mm 17mm!important;font-size:13.5px!important;border-radius:0!important;box-shadow:none!important}
+  .qdoc .qh{flex-direction:row!important;gap:0!important}.qdoc .qmeta{text-align:right!important}
+  .qdoc .qto{grid-template-columns:1fr 1fr!important}.qdoc .qsum{width:280px!important}
+  .qdoc .qgets{grid-template-columns:1fr 1fr!important}
+  .qdoc .qget,.qdoc .qgrow,.qdoc .qgr,.qdoc .qsum,.qdoc table{break-inside:avoid}
+}
