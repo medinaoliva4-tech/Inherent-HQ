@@ -23,7 +23,13 @@ export async function packagesTab(body, { onQuote, bun }) {
 
   const ov = (id) => S.ov[id] || (S.ov[id] = {});
   const eff = (p) => { const o = S.ov[p.id] || {}; return { ...p, ph: o.ph || p.ph, cx: o.cx || p.cx, mt: o.mt ?? p.mt, mo: o.mo || p.mo || {}, pct: o.pct ?? S.sc.pct, fixed: +(o.fixed ?? p.fixed ?? 0) || 0, otros: +(o.otros ?? p.otros ?? 0) || 0, desc: o.desc ?? p.dsc ?? '', edited: !!(o.ph || o.cx || o.mt != null || o.mo || o.pct != null || o.fixed != null || o.otros != null || o.desc != null) }; };
+  // Si el paquete ya tiene sus servicios, el precio, el costo y las horas salen de ellos (con «Precio fijo» todavía manda).
   function calc(p) {
+    const c = calc0(p), b = linked(p.id); if (!b || !(b.lines || []).length) return c;
+    const t = bun.totals(b), price = c.e.fixed > 0 ? c.e.fixed : t.price, direct = t.cost + c.e.otros, margin = price - direct;
+    return { ...c, svc: t, price, direct, ovh: 0, margin, pct: price ? (margin / price) * 100 : 0, hours: t.hours, eph: t.hours ? price / t.hours : 0 };
+  }
+  function calc0(p) {
     const e = eff(p), hr = {};
     e.ph.forEach((f) => Object.entries(f.h || {}).forEach(([r, v]) => (hr[r] = (hr[r] || 0) + (+v || 0))));
     let cost = 0, dirV = 0; const by = {};
@@ -73,9 +79,12 @@ export async function packagesTab(body, { onQuote, bun }) {
       <div class="card" style="margin-top:16px"><h3>Precio de venta y otros costos</h3><div class="mut sm" style="margin-bottom:8px">Con precio fijo, el margen se calcula sobre ese precio. En 0, el precio sale de las horas.</div>
         <div class="pkgrid"><label class="sm mut">Precio fijo (Q)<input class="in" type="number" min="0" step="50" data-pk-in="fixed" value="${e.fixed || 0}"></label><label class="sm mut">Otros costos (Q)<input class="in" type="number" min="0" step="10" data-pk-in="otros" value="${e.otros || 0}"></label><label class="sm mut">En dólares (US$1 = Q7.70)<input class="in" disabled value="${N(c.price / 7.7, 0)}"></label></div></div>
 
-      <div class="card" style="margin-top:16px"><h3>De dónde sale el precio</h3>
+      ${c.svc ? (() => { const by = {}; c.svc.ls.forEach((x) => (x.roles || []).forEach((r) => { by[r.role] = (by[r.role] || 0) + r.hours; })); const rate = (n) => bun.rates?.roles?.find((r) => r.role === n)?.rate ?? 0, mg = bun.margin;
+        return html`<div class="card" style="margin-top:16px"><h3>De dónde sale el precio</h3><div class="mut sm">De los servicios del paquete: horas por rol × costo por hora, con margen ${Math.round(mg * 100)}%.</div>
+        <div class="tw" style="margin-top:10px"><table class="pktab"><thead><tr><th>Rol</th><th class="n">Horas</th><th class="n">Costo/h</th><th class="n">Costo</th><th class="n">Cobro</th></tr></thead><tbody>${Object.entries(by).map(([r, h]) => html`<tr><td>${r}</td><td class="n">${N(h)}</td><td class="n">${Q(rate(r))}</td><td class="n">${Q(h * rate(r))}</td><td class="n">${Q((h * rate(r)) / (1 - mg))}</td></tr>`)}${c.svc.ls.filter((x) => !x.roles?.length && x.cost).map((x) => html`<tr><td>${x.name}</td><td class="n">—</td><td class="n">—</td><td class="n">${Q(x.cost)}</td><td class="n">${Q(x.price)}</td></tr>`)}${e.otros ? html`<tr><td>Otros costos</td><td class="n">—</td><td class="n">—</td><td class="n">${Q(e.otros)}</td><td class="n">—</td></tr>` : ''}</tbody></table></div>
+        <div class="mut sm" style="margin-top:10px">Precio = suma de los servicios ${Q(c.svc.price)}${e.fixed > 0 ? ` · usas precio fijo ${Q(e.fixed)}` : ''} · Margen = precio − costo directo</div></div>`; })() : html`<div class="card" style="margin-top:16px"><h3>De dónde sale el precio</h3>
         <div class="tw" style="margin-top:10px"><table class="pktab"><thead><tr><th>Rol</th><th class="n">Horas</th><th class="n">Costo/h</th><th class="n">Costo</th><th class="n">Cobro</th></tr></thead><tbody>${roleRows}${e.otros ? html`<tr><td>Otros costos</td><td class="n">—</td><td class="n">—</td><td class="n">${Q(e.otros)}</td><td class="n">${Q(e.otros)}</td></tr>` : ''}${c.ment ? html`<tr><td>Mentor (${e.mt} ses.)</td><td class="n">—</td><td class="n">${Q(S.mentor)}</td><td class="n">${Q(c.ment)}</td><td class="n">${Q(c.ment)}</td></tr>` : ''}<tr><td><b>Total</b></td><td class="n"><b>${N(c.hours)}</b></td><td></td><td class="n"><b>${Q(c.direct)}</b></td><td class="n"><b>${Q(c.price)}</b></td></tr></tbody></table></div>
-        <div class="mut sm" style="margin-top:10px">Precio = (costo del equipo ${Q(c.cost)} × markup ${S.markup} + dirección ${Q(c.dirV)}) × complejidad ${c.cxm} + mentor ${Q(c.ment)} · Margen = precio − costo directo − overhead ${S.ovh}%</div></div>
+        <div class="mut sm" style="margin-top:10px">Precio = (costo del equipo ${Q(c.cost)} × markup ${S.markup} + dirección ${Q(c.dirV)}) × complejidad ${c.cxm} + mentor ${Q(c.ment)} · Margen = precio − costo directo − overhead ${S.ovh}%</div></div>`}
 
       <div class="card" style="margin-top:16px"><h3>¿Se justifica? Lo que el cliente gana</h3><div class="mut sm" style="margin-bottom:8px">Cambia el escenario del cliente. Los números son de ejemplo.</div>
         <div class="pkgrid"><label class="sm mut">Venta mensual actual (Q)<input class="in" type="number" step="1000" data-pk-sc="base" value="${S.sc.base}"></label><label class="sm mut">Crecimiento esperado (%)<input class="in" type="number" data-pk-sc="gr" value="${S.sc.gr}"></label><label class="sm mut">Margen del cliente (%)<input class="in" type="number" data-pk-sc="marg" value="${S.sc.marg}"></label><label class="sm mut">Meses de cobro del %<input class="in" type="number" data-pk-sc="months" value="${S.sc.months}"></label></div>
@@ -102,6 +111,7 @@ export async function packagesTab(body, { onQuote, bun }) {
     return html`<div class="pk">
       <aside class="card pklist"><div style="display:grid;gap:8px"><select class="in" data-pk-f="ind"><option value="">Todas las industrias</option>${data.ind.map((i) => html`<option value="${i.id}" ${F.ind === i.id ? raw('selected') : ''}>${i.n}</option>`)}</select><input class="in" type="search" placeholder="Buscar paquete" data-pk-f="q" value="${F.q}"><label class="sm mut"><input type="checkbox" data-pk-f="std" ${F.std ? raw('checked') : ''}> Solo prioritarios ${ico('star', 13)}</label></div>
         ${bun ? html`<button class="btn" style="width:100%;margin-top:10px" data-pk="bnew">+ Paquete</button>` : ''}
+        ${bun && P.some((x) => !linked(x.id)) ? html`<button class="btn ghost" style="width:100%;margin-top:8px" data-pk="bimport">Agregar servicios a los paquetes (${P.filter((x) => !linked(x.id)).length})</button>` : ''}
         ${mine.length ? html`<div class="mut sm" style="margin:12px 0 4px">Tus paquetes</div>${mine.map((b) => html`<button class="pkitem ${'b:' + b.id === SEL ? 'on' : ''}" data-pk="sel" data-id="b:${b.id}"><span>${b.name}</span><small>${Q(bun.totals(b).price)}</small></button>`)}<div class="mut sm" style="margin:12px 0 4px">Por industria</div>` : ''}
         <div style="margin-top:10px">${list.map((x) => html`<button class="pkitem ${x.id === p?.id ? 'on' : ''}" data-pk="sel" data-id="${x.id}"><span>${x.n}${x.st === 'standard' ? ico('star', 13) : ''}</span><small>${Q(calc(x).price)}</small></button>`)}</div></aside>
       <section>${bsel ? vBundle(bsel) : vDetail(p, calc(p))}</section></div>`;
@@ -127,6 +137,7 @@ export async function packagesTab(body, { onQuote, bun }) {
 
   body.onclick = (e) => {
     const t = e.target.closest('[data-pk]'); if (!t) return; const a = t.dataset.pk;
+    if (a === 'bimport') { t.disabled = true; t.textContent = 'Agregando…'; fetch('/data/paquetes-servicios.json').then((r) => r.json()).then((m) => bun.importAll(P, IND, m)).then((r) => { toast(`Listo: ${r.made} paquetes con sus servicios${r.miss.length ? ` · no encontré en el catálogo: ${r.miss.join(', ')}` : ''}`); paint(); }).catch((e) => { toast(e.message, true); paint(); }); return; }
     if (a === 'bnew') { bun.edit(null, (r) => { if (r) SEL = 'b:' + r.id; paint(); }); return; }
     if (a === 'bedit') { const b = (bun.list || []).find((x) => x.id === t.dataset.id) || (t.dataset.pkg ? { name: PB[t.dataset.pkg].n, industry: IND[PB[t.dataset.pkg].ind], pkg: t.dataset.pkg } : null); bun.edit(b, (r) => { if (r === null && SEL.startsWith('b:')) SEL = 'bm-arranque'; paint(); }); return; }
     if (a === 'bquote') { bun.quote(bun.list.find((x) => x.id === t.dataset.id)); return; }
@@ -137,6 +148,7 @@ export async function packagesTab(body, { onQuote, bun }) {
     else if (a === 'reset') { delete S.ov[SEL]; save(); paint(); }
     else if (a === 'addrole') { S.roles.push({ id: 'r' + Date.now().toString(36), n: 'Nuevo rol', c: 150 }); save(); paint(); }
     else if (a === 'delrole') { S.roles = S.roles.filter((r) => r.id !== t.dataset.id); save(); paint(); }
+    else if (a === 'quote' && linked(SEL)?.lines?.length) { const b = linked(SEL); bun.quote({ ...b, desc: eff(PB[SEL]).desc || b.desc }); }
     else if (a === 'quote') { const p = PB[SEL], c = calc(p), e = c.e; const dsc = String(e.desc || ''), gm = dsc.match(/LO QUE ESTO SE TRADUCE EN CRECIMIENTO\n([\s\S]*?)(?:\n\n[A-ZÁÉÍÓÚ ]{8,}\n|$)/), nm = dsc.match(/LO QUE NO INCLUYE\n([\s\S]*)$/), clean = (t) => t.split('\n').map((l) => l.replace(/^[-•]\s*/, '').trim()).filter(Boolean).join('\n');
     onQuote({ items: [{ name: p.n, description: p.prom || p.d, qty: 1, price: c.price, why: p.ou.map((o) => `${o[0]} — se mide con: ${o[1]}`), includes: [...p.inc.map((x) => `${x[0]}: ${x[1]}`), ...(p.med ? ['Medición de pauta: ' + p.med.map((x) => x[0]).join(', ')] : [])] }, ...(c.monthly ? [{ name: p.n + ' · operación mensual', description: 'Se cobra cada mes.', qty: 1, price: c.monthly, why: [], includes: [] }] : [])], intro: gm ? clean(gm[1]) : dsc, notes: nm ? 'No incluye:\n' + clean(nm[1]) : '' }); }
   };
