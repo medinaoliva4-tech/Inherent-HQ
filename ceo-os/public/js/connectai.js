@@ -1,7 +1,7 @@
 // Conectar Inherent OS a la IA de cada persona (Claude, ChatGPT, Claude Code, Codex), como cualquier
 // conector MCP: se pega `https://<app>/mcp`, la app abre Inherent OS, la persona entra con Google y da «Permitir».
 // Con eso, desde un chat: «¿qué tengo pendiente hoy?», «arma una cotización para NAO», «crea el proyecto».
-import { html, mount, api, toast, drawer, closeDrawer, LOGO, emblem } from './core.js';
+import { html, mount, api, toast, drawer, closeDrawer, LOGO, emblem, ico } from './core.js';
 
 export const dismissed = () => { try { return localStorage.getItem('ai.connect.off') === '1'; } catch { return false; } };
 export const dismiss = () => { try { localStorage.setItem('ai.connect.off', '1'); } catch {} };
@@ -10,7 +10,7 @@ const tiles = (ks = ['claude', 'chatgpt', 'claudecode', 'codex']) => html`<div c
 
 // La «noti»: texto arriba, logos abajo, mientras la persona no haya conectado ninguna app.
 export const connectNotice = (me) => (me.mcp || dismissed() || me.role === 'client' ? '' : html`<div class="ainoti">
-  <button class="aix" data-ai="off" title="Ahora no" aria-label="Cerrar">✕</button>
+  <button class="aix" data-ai="off" title="Ahora no" aria-label="Cerrar">${ico('x', 16)}</button>
   <b>Habla con Inherent OS desde tu IA</b>
   <div class="mut sm">Pregúntale tus pendientes, pídele una cotización o que arme un proyecto, desde un chat.</div>
   <div class="aifoot">${tiles()}<button class="btn" data-ai="open">Conectar</button></div></div>`);
@@ -34,7 +34,7 @@ export function openConnect(me, after) {
       steps: html`<ol class="sm aisteps"><li>Pega esto en tu terminal, una sola vez:</li></ol><pre class="aicode">codex mcp add inherent-os --url ${url} && codex mcp login inherent-os</pre><ol class="sm aisteps" start="2"><li>Se abre el navegador: ${allow}.</li></ol>` },
   };
   const apps = () => me.mcp_apps || [];
-  const draw = () => drawer(html`<div class="row">${tiles()}<div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+  const draw = () => drawer(html`<div class="row">${tiles()}<div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
     <h2>Conecta tu IA</h2>
     <p class="mut">Como cualquier conector: pegas esta URL y la app te pide entrar con tu Google. Actúa como <b>tú</b> y solo ve y hace lo que tu perfil permite.</p>
     <div class="aiurl"><code>${url}</code><button class="btn xs" data-act="copy">Copiar</button></div>
@@ -43,9 +43,9 @@ export function openConnect(me, after) {
     ${apps().length || me.mcp ? html`<div style="margin-top:26px"><div class="sm mut" style="margin-bottom:8px">Conectadas</div>
       ${apps().map((x) => html`<div class="row aiconn"><span class="grow">${x.name}<span class="mut sm"> · ${String(x.at || '').slice(0, 10)}</span></span><button class="btn ghost xs" data-act="cut" data-g="${x.g}">Desconectar</button></div>`)}
       <button class="btn ghost xs" data-act="cut" style="margin-top:8px">Desconectar todo</button></div>` : ''}`, {
-    copy: () => copy(url, 'URL copiada ✅'),
+    copy: () => copy(url, 'URL copiada'),
     tab: (t) => { tab = t.dataset.t; draw(); },
-    go: () => { const a = APPS[tab]; if (a.open) window.open(a.open, '_blank', 'noopener'); copy(a.cmd || url, a.open ? 'URL copiada ✅ · pégala en la app' : 'Copiado ✅ · pégalo en tu terminal'); },
+    go: () => { const a = APPS[tab]; if (a.open) window.open(a.open, '_blank', 'noopener'); copy(a.cmd || url, a.open ? 'URL copiada · pégala en la app' : 'Copiado · pégalo en tu terminal'); },
     cut: async (t) => {
       try {
         await api('me/mcp' + (t.dataset.g ? `?g=${encodeURIComponent(t.dataset.g)}` : ''), { method: 'DELETE' });

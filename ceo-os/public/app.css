@@ -866,3 +866,10 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 html[data-vt=tab]::view-transition-old(vt-body){animation:vtOut .14s ease both}
 html[data-vt=tab]::view-transition-new(vt-body){animation:vtIn .34s cubic-bezier(.2,.8,.2,1) both}
 @media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+
+/* Íconos de línea (sin emojis): .lni = line icon */
+.lni{flex:none;vertical-align:-3px}
+.wizopt .wi .lni{width:22px;height:22px}
+.ctlic .lni,.fi .lni{vertical-align:middle}
+.chip .lni,.btn .lni,.lbl .lni{vertical-align:-2px}
+.btn .lni{margin-right:2px}

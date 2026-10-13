@@ -1,4 +1,4 @@
-import { html, raw, mount, api, toast, acts, drawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON, swap } from '../core.js';
+import { html, raw, mount, api, toast, acts, drawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON, swap, ico } from '../core.js';
 import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 
@@ -13,9 +13,9 @@ const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho
 export function videoCard(it) {
   const t = safeImg(it.thumb);
   return html`<a class="card win" href="${/^https:\/\//.test(it.url) ? it.url : '#'}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;padding:12px">
-    <div class="thumb" ${t ? raw(`style="background-image:url('${t}')"`) : ''}><b>${it.x ? it.x + '×' : it.icon || '▶'}</b></div>
+    <div class="thumb" ${t ? raw(`style="background-image:url('${t}')"`) : ''}><b>${it.x ? it.x + '×' : it.icon || ico('play', 13)}</b></div>
     <div class="row sm"><b style="font-weight:500">@${it.handle}</b><span class="mut">${it.kind && KIND[it.kind] ? KIND[it.kind] : RED[it.red]}</span><div class="sp"></div><span class="mut">${it.at ? fdate(it.at.slice(0, 10)) : ''}</span></div>
-    <div class="row sm" style="gap:12px">${it.views ? html`<span>▶ ${K(it.views)}</span>` : ''}<span>♥ ${K(it.likes)}</span><span>💬 ${K(it.comments)}</span></div>
+    <div class="row sm" style="gap:12px">${it.views ? html`<span>${ico('play', 13)} ${K(it.views)}</span>` : ''}<span>${ico('heart')} ${K(it.likes)}</span><span>${ico('chat')} ${K(it.comments)}</span></div>
     <div class="cap mut">${it.text}</div></a>`;
 }
 
@@ -107,10 +107,10 @@ export async function render(el, { sub, alive }) {
     const pend = rows.filter((r) => r.estado && r.estado !== 'listo').length, mat = (k) => rows.filter((r) => r.material === k).length;
     mount(b, html`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">
         ${ms.length > 1 ? html`<select class="in" id="shotMes" style="width:auto">${ms.map((x) => html`<option ${x.mes === m.mes ? raw('selected') : ''}>${x.mes}</option>`)}</select>` : html`<span class="chip dark">${m.mes}</span>`}
-        <span class="chip">${rows.length} piezas</span>${mat('video') ? html`<span class="chip">🎬 ${mat('video')} por grabar</span>` : ''}${mat('foto') ? html`<span class="chip">📷 ${mat('foto')} fotos</span>` : ''}${pend ? html`<span class="chip amber">${pend} pendientes</span>` : ''}
+        <span class="chip">${rows.length} piezas</span>${mat('video') ? html`<span class="chip">${ico('video')} ${mat('video')} por grabar</span>` : ''}${mat('foto') ? html`<span class="chip">${ico('camera')} ${mat('foto')} fotos</span>` : ''}${pend ? html`<span class="chip amber">${pend} pendientes</span>` : ''}
         <div class="sp"></div>${brief ? html`<button class="btn ghost xs" data-act="shotBrief">Brief del ciclo</button>` : ''}</div>
       <div class="card tscroll"><table class="wktable shottbl"><thead><tr><th>Id</th><th>Fecha</th><th>Formato</th><th>Pilar</th><th>Concepto</th><th>Material</th><th>Estado</th></tr></thead><tbody>
-        ${rows.map((r) => html`<tr class="click" data-act="shotOpen" data-id="${r.id}"><td class="mut">${r.id}</td><td>${r.fecha ? fdate(r.fecha) : '—'}</td><td>${r.formato}</td><td>${r.pilar}</td><td style="min-width:220px">${r.concepto}</td><td>${{ video: '🎬 video', foto: '📷 foto', ninguno: '—' }[r.material] || r.material}</td><td><span class="chip ${r.estado === 'listo' ? 'green' : r.estado ? 'amber' : ''} sm2">${r.estado || '—'}</span></td></tr>`)}
+        ${rows.map((r) => html`<tr class="click" data-act="shotOpen" data-id="${r.id}"><td class="mut">${r.id}</td><td>${r.fecha ? fdate(r.fecha) : '—'}</td><td>${r.formato}</td><td>${r.pilar}</td><td style="min-width:220px">${r.concepto}</td><td>${{ video: html`${ico('video', 14)} video`, foto: html`${ico('camera', 14)} foto`, ninguno: '—' }[r.material] || r.material}</td><td><span class="chip ${r.estado === 'listo' ? 'green' : r.estado ? 'amber' : ''} sm2">${r.estado || '—'}</span></td></tr>`)}
       </tbody></table></div>`);
     const sm = $('#shotMes', b); if (sm) sm.onchange = () => { shotMes = sm.value; shot(b); };
   }
@@ -127,7 +127,7 @@ export async function render(el, { sub, alive }) {
       ${rf.status === 'running' ? html`<div class="warnbox sm" style="margin-bottom:12px">Apify está trabajando (${rf.phase === 1 ? 'leyendo tus referencias' : 'buscando similares'}). Esto se actualiza solo.</div>` : ''}${rf.warn ? html`<div class="warnbox sm">${rf.warn}</div>` : ''}${!rf.apify ? html`<div class="warnbox sm">Falta APIFY_TOKEN en Vercel.</div>` : ''}
       ${pillars.map((p) => { const urls = rf.videos?.[p] || [], r = res[p], bd = rf.breakdown?.[p];
         return html`<div class="card refpil"><div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500;font-size:17px">${p}</b><span class="mut sm">${urls.length}/5 referencias</span><div class="sp"></div>
-            ${r && (r.refs.length || r.similar.length) ? html`<button class="btn xs" data-act="refBreak" data-p="${p}">✦ Desglosar con Claude</button>` : ''}</div>
+            ${r && (r.refs.length || r.similar.length) ? html`<button class="btn xs" data-act="refBreak" data-p="${p}">${ico('spark')} Desglosar con Claude</button>` : ''}</div>
           <div class="refurls">${[0, 1, 2, 3, 4].map((i) => html`<input class="in" data-ref="${p}" value="${urls[i] || ''}" placeholder="Link de un Reel o TikTok">`)}</div>
           ${r ? html`${r.owners?.length || r.tags?.length ? html`<div class="mut sm" style="margin:10px 0 6px">Se buscó en: ${r.owners.map((h) => '@' + h).join(', ')}${r.tags.length ? ' · #' + r.tags.join(' #') : ''}</div>` : ''}
             ${r.similar.length ? html`<div class="lbl" style="margin-top:6px">Similares que funcionaron</div><div class="grid homevids">${r.similar.map(videoCard)}</div>` : html`<div class="mut sm">No salieron similares todavía.</div>`}` : ''}
@@ -190,8 +190,8 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const docs = gfiles.filter((f) => !isDir(f)), dirs = gfiles.filter(isDir);
     const cur = docs.find((f) => f.id === gcur) || docs[0];
     mount(b, html`${bar}${!gfiles.length ? html`<div class="empty"><b>La carpeta está vacía</b>Crea el primer guion con «+ Guion» o súbelo a la carpeta en Drive.</div>` : html`<div class="grid gsplit" style="grid-template-columns:260px 1fr;gap:16px;align-items:start">
-      <div class="card" style="padding:12px">${dirs.map((f) => html`<button class="artifact" data-act="gdir" data-id="${f.id}" data-n="${f.name}" style="width:100%;margin:4px 0"><span class="fi">📁</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b></div></button>`)}
-        ${docs.map((f) => html`<button class="artifact" data-act="gfile" data-id="${f.id}" style="width:100%;margin:4px 0;${cur && f.id === cur.id ? 'outline:2px solid var(--ink)' : ''}"><span class="fi">✎</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b><div class="mut" style="font-size:11px">${f.modified ? fdate(f.modified.slice(0, 10)) : ''}${f.owner ? ' · ' + f.owner : ''}</div></div></button>`)}</div>
+      <div class="card" style="padding:12px">${dirs.map((f) => html`<button class="artifact" data-act="gdir" data-id="${f.id}" data-n="${f.name}" style="width:100%;margin:4px 0"><span class="fi">${ico('folder')}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b></div></button>`)}
+        ${docs.map((f) => html`<button class="artifact" data-act="gfile" data-id="${f.id}" style="width:100%;margin:4px 0;${cur && f.id === cur.id ? 'outline:2px solid var(--ink)' : ''}"><span class="fi">${ico('edit')}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b><div class="mut" style="font-size:11px">${f.modified ? fdate(f.modified.slice(0, 10)) : ''}${f.owner ? ' · ' + f.owner : ''}</div></div></button>`)}</div>
       ${cur ? html`<div class="card swap" style="min-width:0;padding:10px"><div class="row" style="margin-bottom:8px"><b style="font-weight:500">${cur.name}</b><div class="sp"></div><a class="btn ghost xs" href="${cur.link}" target="_blank" rel="noopener noreferrer">Abrir en Drive ↗</a></div><iframe src="${preview(cur)}" style="width:100%;height:70vh;border:0;border-radius:12px;background:#fdfaf3" loading="lazy"></iframe></div>` : html`<div class="empty"><b>Elige una carpeta</b>Los guiones están adentro.</div>`}</div>`}`);
   }
 
@@ -240,7 +240,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       <div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
         <button class="arrow light" data-act="pnav" data-d="-1">‹</button><b style="font-weight:500;min-width:150px;text-align:center">${title}</b><button class="arrow light" data-act="pnav" data-d="1">›</button>
         <button class="sm mut" data-act="ptoday">Hoy</button><div class="sp"></div>
-        <span class="mut sm">📁 en Drive · ⬆ por subir · ✎ por grabar</span>
+        <span class="mut sm">${ico('folder')} en Drive · ⬆ por subir · ${ico('edit')} por grabar</span>
         <div class="tabs" style="margin:0">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => html`<button class="${pview === k ? 'on' : ''}" data-act="pview" data-v="${k}">${l}</button>`)}</div>
         <button class="btn" data-act="pnew" data-d="">+ Pieza</button></div>
       <div class="pcal ${pview}">${DOW.map((d) => html`<div class="pdow">${d}</div>`)}
@@ -264,12 +264,12 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       <div class="wkkpis">${[['Seguidores', ig.followers ? K(ig.followers) : '—'], ['Alcance', K(ig.reach)], ['Vistas', K(ig.views)], ['Engagement', ig.er == null ? '—' : ig.er + '%'], ['Watch time promedio', w.avg == null ? '—' : w.avg + ' s']].map(([l, v]) => html`<div class="wkkpi"><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
       ${ig.series.length > 1 ? html`<div class="card wkbox"><div class="wkhead"><h3>Alcance y vistas por día</h3><span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#2c1f16;display:inline-block"></i>Alcance</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #997d65;display:inline-block"></i>Vistas</span></span></div><div class="chart" id="chIG"></div></div>` : ''}
       <div class="card wkbox" style="margin-top:12px"><div class="wkhead"><div><h3>Reels · ¿hasta dónde los ven?</h3><span class="mut sm">Últimos 90 días · ${w.n || 0} reels con watch time · ${w.hours || 0} h vistas en total${w.hookLost ? html` · <b style="color:#654c38">${w.hookLost} se pierden en el hook (&lt;3 s)</b>` : ''}</span></div></div>
-        ${reels.length ? html`<div class="tscroll"><table class="wktable"><thead><tr><th>Reel</th><th>Fecha</th><th class="n">Vistas</th><th class="n">Alcance</th><th style="min-width:150px">Watch time promedio</th><th class="n">Total</th><th class="n">♥</th><th class="n">Guardados</th><th class="n">Compartidos</th></tr></thead><tbody>
+        ${reels.length ? html`<div class="tscroll"><table class="wktable"><thead><tr><th>Reel</th><th>Fecha</th><th class="n">Vistas</th><th class="n">Alcance</th><th style="min-width:150px">Watch time promedio</th><th class="n">Total</th><th class="n">${ico('heart')}</th><th class="n">Guardados</th><th class="n">Compartidos</th></tr></thead><tbody>
           ${reels.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit" class="row">${safeImg(x.thumb) ? html`<span class="rthumb" style="background-image:url('${safeImg(x.thumb)}')"></span>` : ''}<span class="sm" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.caption || 'Ver reel'}</span></a>` : html`<span class="sm">${x.caption || '—'}</span>`}</td>
             <td class="mut">${fdate(x.date)}</td><td class="n"><b style="font-weight:500">${K(x.views)}</b></td><td class="n">${K(x.reach)}</td>
             <td>${x.avg ? html`<div class="row" style="gap:8px"><div style="flex:1;height:8px;border-radius:99px;background:#f0e9de"><div style="width:${Math.round((x.avg / maxAvg) * 100)}%;height:100%;border-radius:99px;background:${x.avg < 3 ? '#997d65' : '#795c45'}"></div></div><span class="sm" style="width:44px;text-align:right">${x.avg} s</span></div>` : html`<span class="mut sm">—</span>`}</td>
             <td class="n mut">${x.total ? (x.total >= 3600 ? Math.round(x.total / 360) / 10 + ' h' : Math.round(x.total / 60) + ' min') : '—'}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.saves)}</td><td class="n">${K(x.shares)}</td></tr>`)}</tbody></table></div>
-          <div class="mut sm" style="margin-top:10px">💡 Instagram no entrega por API el segundo exacto en que la gente deja de ver (esa curva solo está en la app). Lo más cercano es el <b>watch time promedio</b>: si está debajo de 3 s, se fueron en el hook.</div>`
+          <div class="mut sm" style="margin-top:10px">${ico('bulb')} Instagram no entrega por API el segundo exacto en que la gente deja de ver (esa curva solo está en la app). Lo más cercano es el <b>watch time promedio</b>: si está debajo de 3 s, se fueron en el hook.</div>`
         : html`<div class="mut sm" style="padding:6px 0">Windsor no trae reels de esta cuenta en los últimos 90 días.</div>`}</div>
       ${ig.top.length ? html`<div class="card wkbox" style="margin-top:12px"><div class="wkhead"><h3>Mejores posts del periodo</h3></div><div class="tscroll"><table class="wktable"><thead><tr><th>Fecha</th><th>Tipo</th><th class="n">Alcance</th><th class="n">Likes</th><th class="n">Comentarios</th><th class="n">Guardados</th><th class="n">Engagement</th></tr></thead><tbody>${ig.top.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit">${fdate(x.date)}</a>` : fdate(x.date)}</td><td>${x.type}</td><td class="n">${K(x.reach)}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.comments)}</td><td class="n">${K(x.saves)}</td><td class="n"><b style="font-weight:500">${K(x.eng)}</b></td></tr>`)}</tbody></table></div></div>` : ''}`;
     }
@@ -295,7 +295,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     if (!week) loadWeek();
     const p = data.profile, c = data.cfg;
     const accUrl = (a) => (a.red === 'tiktok' ? `https://www.tiktok.com/@${a.handle}` : `https://www.instagram.com/${a.handle}/`);
-    const acc = (a, rm, list) => html`<div class="artifact" style="margin:6px 0"><span class="fi">${a.red === 'tiktok' ? '♪' : '◎'}</span><div style="flex:1"><a href="${accUrl(a)}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><b style="font-weight:500">@${a.handle}</b></a><div class="mut" style="font-size:11px">${RED[a.red]}${a.source ? ' · ' + a.source : ''}</div></div>${rm != null ? html`<button class="sm mut" data-act="rmAcc" data-l="${list}" data-i="${rm}">✕</button>` : ''}</div>`;
+    const acc = (a, rm, list) => html`<div class="artifact" style="margin:6px 0"><span class="fi">${a.red === 'tiktok' ? ico('music') : ico('target')}</span><div style="flex:1"><a href="${accUrl(a)}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><b style="font-weight:500">@${a.handle}</b></a><div class="mut" style="font-size:11px">${RED[a.red]}${a.source ? ' · ' + a.source : ''}</div></div>${rm != null ? html`<button class="sm mut" data-act="rmAcc" data-l="${list}" data-i="${rm}">${ico('x', 16)}</button>` : ''}</div>`;
     const adder = (list, ph) => html`<div class="row" style="margin-top:8px"><select class="in" data-red="${list}" style="width:auto"><option value="instagram">Instagram</option><option value="tiktok">TikTok</option></select><input class="in" data-new="${list}" placeholder="${ph}"><button class="btn ghost" data-act="addAcc" data-l="${list}">+</button></div>`;
     const group = (kind) => c.accounts.map((a, i) => ({ a, i })).filter((x) => x.a.kind === kind);
     const repoComp = p.competitors.filter((a) => !c.accounts.some((x) => x.handle === a.handle && x.red === a.red));
@@ -325,10 +325,10 @@ Contesta SOLO con este JSON, sin texto antes ni después:
         <label class="check" style="padding:0"><input type="checkbox" data-act="auto" ${c.auto ? raw('checked') : ''}> Activado</label></div>
         <div class="grid g2" style="margin-top:12px;align-items:start"><div>
           <b class="sm" style="font-weight:500">Temas del nicho (hashtags, máx. 10)</b>
-          <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${c.hashtags.map((h, i) => html`<span class="chip">#${h} <button class="sm mut" data-act="rmTag" data-i="${i}" style="margin-left:4px">✕</button></span>`)}${c.hashtags.length ? '' : html`<span class="mut sm">Sin temas.</span>`}</div>
+          <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${c.hashtags.map((h, i) => html`<span class="chip">#${h} <button class="sm mut" data-act="rmTag" data-i="${i}" style="margin-left:4px">${ico('x', 16)}</button></span>`)}${c.hashtags.length ? '' : html`<span class="mut sm">Sin temas.</span>`}</div>
           <div class="row" style="margin-top:8px"><input class="in" id="newTag" placeholder="ej. emprendimiento, marketingdigital"><button class="btn ghost" data-act="addTag">+</button></div></div>
         <div><b class="sm" style="font-weight:500">Videos puntuales</b>
-          ${c.videos.map((u, i) => html`<div class="row sm" style="margin:6px 0"><a href="${u}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u}</a><button class="sm mut" data-act="rmVid" data-i="${i}">✕</button></div>`)}
+          ${c.videos.map((u, i) => html`<div class="row sm" style="margin:6px 0"><a href="${u}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u}</a><button class="sm mut" data-act="rmVid" data-i="${i}">${ico('x', 16)}</button></div>`)}
           <div class="row" style="margin-top:8px"><input class="in" id="newVid" placeholder="https://www.instagram.com/reel/…"><button class="btn ghost" data-act="addVid">+</button></div></div></div></div>`);
     bullseye($('#bxHost', b), { name: p.name, bx: c.bullseye, save: saveBx, prompt: () => bullseyePrompt({ name: p.name, pillars: (c.pillars || []).map((x) => x.name), own: p.own.map((a) => '@' + a.handle), refs: c.accounts.filter((x) => x.kind === 'referente').map((a) => '@' + a.handle), comp: [...p.competitors, ...c.accounts.filter((x) => x.kind !== 'referente')].map((a) => '@' + a.handle), posts: posts4(week?.result?.own, 5), bx: c.bullseye }) });
   }
@@ -348,7 +348,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   const posts4 = (l = [], n) => (!l?.length ? '(todavía sin datos)' : '') + (l || []).slice(0, n).map((x) => `- @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''} · ${x.url}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 150)}`).join('\n') || '(nada)';
   acts(el, {
     igconnect: () => window.open('https://onboard.windsor.ai/', '_blank', 'noopener'),
-    igpick: async (t) => { try { await api('content/connect', { method: 'PUT', body: { profile: slug, ig_account: t.dataset.a } }); toast(`@${t.dataset.a} conectado a ${data.profile.name} ✅`); ig = null; paint(); } catch (e) { toast(e.message, true); } },
+    igpick: async (t) => { try { await api('content/connect', { method: 'PUT', body: { profile: slug, ig_account: t.dataset.a } }); toast(`@${t.dataset.a} conectado a ${data.profile.name}`); ig = null; paint(); } catch (e) { toast(e.message, true); } },
     igchange: async () => { try { await api('content/connect', { method: 'PUT', body: { profile: slug, ig_account: '' } }); ig = { ...ig, matched: false }; paint(); } catch (e) { toast(e.message, true); } },
     prof: (t) => { slug = t.dataset.s; clearTimeout(poll); go(); load(); },
     tab: (t) => { tab = t.dataset.t; go(); swap(el, paint); },
@@ -359,12 +359,12 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     gconnect: async () => {
       const v = await ask('Conectar la carpeta de guiones', [{ k: 'url', l: `Link de la carpeta de Google Drive con los guiones de ${data.profile.name}`, v: data.cfg.guiones_drive, req: true }], 'Conectar');
       if (!v) return;
-      try { await api('content/connect', { method: 'PUT', body: { profile: slug, guiones_drive: v.url.trim() } }); data.cfg.guiones_drive = v.url.trim(); gstack = null; gfiles = null; toast('Carpeta de guiones conectada ✅'); paint(); } catch (e) { toast(e.message, true); }
+      try { await api('content/connect', { method: 'PUT', body: { profile: slug, guiones_drive: v.url.trim() } }); data.cfg.guiones_drive = v.url.trim(); gstack = null; gfiles = null; toast('Carpeta de guiones conectada'); paint(); } catch (e) { toast(e.message, true); }
     },
     gnew: async () => {
       const v = await ask('Nuevo guion', [{ k: 'name', l: 'Nombre', v: `Guion · ${fdate(today())}`, req: true }], 'Crear en Drive');
       if (!v) return;
-      try { const f = await api('google/drive', { method: 'POST', body: { type: 'doc', name: v.name, folder: gstack[gstack.length - 1].id } }); gfiles = null; gcur = f.id; toast('Guion creado en Drive ✅'); window.open(f.link, '_blank', 'noopener'); guiones($('#cbody', el)); } catch (e) { toast(e.message, true); }
+      try { const f = await api('google/drive', { method: 'POST', body: { type: 'doc', name: v.name, folder: gstack[gstack.length - 1].id } }); gfiles = null; gcur = f.id; toast('Guion creado en Drive'); window.open(f.link, '_blank', 'noopener'); guiones($('#cbody', el)); } catch (e) { toast(e.message, true); }
     },
     pview: (t) => { pview = t.dataset.v; plan($('#cbody', el)); },
     pnav: (t) => { const d = new Date(pdate + 'T12:00'); if (pview === 'mes') d.setMonth(d.getMonth() + +t.dataset.d, 1); else d.setDate(d.getDate() + 7 * +t.dataset.d); pdate = d.toISOString().slice(0, 10); plan($('#cbody', el)); },
@@ -377,9 +377,9 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       if (!v) return;
       const names = v.list.split('\n').map((x) => x.trim()).filter(Boolean).slice(0, 8);
       const pillars = names.map((name, i) => ({ name, color: cur.find((x) => x.name === name)?.color || PAL[i % PAL.length] }));
-      try { const r = await api('content/connect', { method: 'PUT', body: { profile: slug, pillars } }); data.cfg.pillars = r.pillars; setConn(slug, { pillars: r.pillars }); toast('Pilares guardados ✅'); plan($('#cbody', el)); } catch (e) { toast(e.message, true); }
+      try { const r = await api('content/connect', { method: 'PUT', body: { profile: slug, pillars } }); data.cfg.pillars = r.pillars; setConn(slug, { pillars: r.pillars }); toast('Pilares guardados'); plan($('#cbody', el)); } catch (e) { toast(e.message, true); }
     },
-    scrape: async (t) => { t.disabled = true; try { await api('content/scrape', { method: 'POST', body: { profile: slug } }); toast('Scrape lanzado en Apify. Tarda unos minutos ✅'); week = null; paint(); } catch (e) { toast(e.message, true); } t.disabled = false; },
+    scrape: async (t) => { t.disabled = true; try { await api('content/scrape', { method: 'POST', body: { profile: slug } }); toast('Scrape lanzado en Apify. Tarda unos minutos'); week = null; paint(); } catch (e) { toast(e.message, true); } t.disabled = false; },
     addTag: () => { const v = $('#newTag', el).value; if (v.trim()) saveCfg({ hashtags: [...data.cfg.hashtags, ...v.split(/[\s,]+/)] }); },
     rmTag: (t) => saveCfg({ hashtags: data.cfg.hashtags.filter((_, i) => i !== +t.dataset.i) }),
     addVid: () => { const v = $('#newVid', el).value.trim(); if (!/^https:\/\/(www\.)?(instagram\.com\/(p|reel|reels)\/|tiktok\.com\/@[^/]+\/video\/|vm\.tiktok\.com\/)/.test(v)) return toast('Pega el link de un reel o de un TikTok', true); saveCfg({ videos: [...data.cfg.videos, v] }); },
@@ -395,25 +395,25 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       if (l === 'own') saveCfg({ own: [...(data.cfg.own || []), a] }); else saveCfg({ accounts: [...data.cfg.accounts, { ...a, kind: l }] });
     },
     rmAcc: (t) => (t.dataset.l === 'own' ? saveCfg({ own: data.cfg.own.filter((_, i) => i !== +t.dataset.i) }) : saveCfg({ accounts: data.cfg.accounts.filter((_, i) => i !== +t.dataset.i) })),
-    refSave: async () => { try { const r = await api('content/refs', { method: 'PUT', body: { profile: slug, videos: refVideos() } }); rf = { ...rf, videos: r.videos }; toast('Referencias guardadas ✅'); refsTab($('#cbody', el)); } catch (e) { toast(e.message, true); } },
+    refSave: async () => { try { const r = await api('content/refs', { method: 'PUT', body: { profile: slug, videos: refVideos() } }); rf = { ...rf, videos: r.videos }; toast('Referencias guardadas'); refsTab($('#cbody', el)); } catch (e) { toast(e.message, true); } },
     refScrape: async () => {
       try { await api('content/refs', { method: 'PUT', body: { profile: slug, videos: refVideos() } }); await api('content/refs/scrape', { method: 'POST', body: { profile: slug } }); toast('Apify arrancó: primero lee tus referencias y luego busca similares (unos minutos)'); rf = null; refsTab($('#cbody', el)); }
       catch (e) { toast(e.message, true); }
     },
     refBreak: async (t) => {
       const p = t.dataset.p, out = await claudeJSON(`Desglose · ${p}`, breakPrompt(p)); if (!out) return;
-      try { const r = await api('content/refs/breakdown', { method: 'PUT', body: { profile: slug, pillar: p, items: out.videos || out } }); rf = { ...rf, breakdown: r.breakdown }; toast('Desglose guardado ✅'); refsTab($('#cbody', el)); } catch (e) { toast(e.message, true); }
+      try { const r = await api('content/refs/breakdown', { method: 'PUT', body: { profile: slug, pillar: p, items: out.videos || out } }); rf = { ...rf, breakdown: r.breakdown }; toast('Desglose guardado'); refsTab($('#cbody', el)); } catch (e) { toast(e.message, true); }
     },
     shotOpen: (t) => {
       const { m, rows } = shotData(), r = rows.find((x) => x.id === t.dataset.id); if (!r) return;
       const txt = pieceText(m, r);
-      drawer(html`<div class="row"><span class="chip">${r.formato}</span><span class="chip">${r.pilar}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+      drawer(html`<div class="row"><span class="chip">${r.formato}</span><span class="chip">${r.pilar}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
         <h2>${r.id} · ${r.concepto}</h2><div class="mut sm">${[r.fecha && fdate(r.fecha), r.canal, r.campana, r.funcion, r.material && 'material: ' + r.material].filter(Boolean).join(' · ')}</div>
         <div class="mdbody" style="margin-top:14px">${txt ? md(txt) : html`<div class="mut">No encontré la sección de ${r.id} en ideas-${r.formato.toLowerCase()}.md.</div>`}</div>`);
     },
-    shotBrief: () => { const { m } = shotData(); const f = m?.files.find((x) => x.name === 'brief-del-ciclo.md'); if (f) drawer(html`<div class="row"><span class="chip">Brief del ciclo · ${m.mes}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><div class="mdbody" style="margin-top:14px">${md(f.content)}</div>`); },
+    shotBrief: () => { const { m } = shotData(); const f = m?.files.find((x) => x.name === 'brief-del-ciclo.md'); if (f) drawer(html`<div class="row"><span class="chip">Brief del ciclo · ${m.mes}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><div class="mdbody" style="margin-top:14px">${md(f.content)}</div>`); },
   });
-  acts(el, { auto: (t) => saveCfg({ auto: t.checked }).then(() => toast(t.checked ? 'Se scrapea solo cada lunes ✅' : 'Scrape semanal apagado')) }, 'change');
+  acts(el, { auto: (t) => saveCfg({ auto: t.checked }).then(() => toast(t.checked ? 'Se scrapea solo cada lunes' : 'Scrape semanal apagado')) }, 'change');
   mount(el, html`<p class="loading">Leyendo el repo…</p>`);
   load();
 }

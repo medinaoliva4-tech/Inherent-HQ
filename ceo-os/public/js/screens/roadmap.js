@@ -27,8 +27,8 @@ export async function render(el, { me, alive }) {
       <div style="flex:1;min-width:180px"><div style="${t.done ? 'text-decoration:line-through;opacity:.55' : ''}">${t.title}</div>
         <div class="sm ${late ? '' : 'mut'}" style="${late ? 'color:#b3402f' : ''}">${t.date ? html`${ico('cal', 14)} ${fdate(t.date)}${hhmm(t.time) ? ' · ' + t.time : ''}${t.minutes ? ' · ' + t.minutes + ' min' : ''}${late ? ' · atrasada' : ''}` : 'Sin fecha'}</div></div>
       <div class="row" style="gap:6px">
-        ${t.event_link ? html`<a class="btn ghost xs" href="${t.event_link}" target="_blank" rel="noopener noreferrer">${IC.cal} ${ico('check', 14)} En tu calendario</a>`
-          : html`<button class="btn xs" data-act="cal" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" ${t.date ? '' : raw('disabled title="Ponle fecha primero"')}>${IC.cal} Agregar a mi calendario</button>`}
+        ${t.event_link ? html`<a class="btn ghost xs" href="${t.event_link}" target="_blank" rel="noopener noreferrer">${ico('check', 14)} En tu calendario</a>`
+          : html`<button class="btn xs" data-act="cal" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" ${t.date ? '' : raw('disabled title="Ponle fecha primero"')}>${ico('cal', 14)} Agregar a mi calendario</button>`}
         <button class="btn ghost xs" data-act="editTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}">Editar</button>
         <button class="btn ghost xs" data-act="delTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Quitar">${ico('trash', 15)}</button>
       </div></div>`;

@@ -1,5 +1,5 @@
 import { newProject as wizProject, newTask as wizTask, VIS_OPTS, visLabel } from '../create.js';
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap, ico } from '../core.js';
 
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
 const ST = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Entregado', 'green'], off: ['No aplica', ''] };
@@ -35,7 +35,7 @@ export async function render(el, { me, sub, alive }) {
       <div class="row" style="margin-bottom:14px"><div class="sp"></div><button class="btn" data-act="newProject">+ Proyecto</button></div>
       ${projects.length ? html`<div class="grid g3">${projects.map((p, i) => { const pct = progress(p); const open = tasks.filter((t) => t.project_id === p.id && t.status !== 'Hecha').length;
         return html`<div class="card feat ${p.color || COLORS[i % 3]}" style="min-height:230px;cursor:pointer" data-act="pick" data-id="${p.id}">
-          <div class="chead"><div class="ico">${IC.ring(Math.max(4, Math.round(pct * 1.17)))}<span style="font-size:15px">◎</span></div><h3>${p.name}<br><span class="lbl">${p.kind}${p.client ? ' · ' + p.client : ''}</span></h3>${p.client_slug ? html`<a class="arrow" href="#/clients/${p.client_slug}" title="Página del cliente" style="margin-right:6px">↗</a>` : ''}<button class="arrow" data-act="editProject" data-id="${p.id}" title="Editar">✎</button></div>
+          <div class="chead"><div class="ico">${IC.ring(Math.max(4, Math.round(pct * 1.17)))}<span style="font-size:15px">${ico('target', 16)}</span></div><h3>${p.name}<br><span class="lbl">${p.kind}${p.client ? ' · ' + p.client : ''}</span></h3>${p.client_slug ? html`<a class="arrow" href="#/clients/${p.client_slug}" title="Página del cliente" style="margin-right:6px">↗</a>` : ''}<button class="arrow" data-act="editProject" data-id="${p.id}" title="Editar">${ico('edit')}</button></div>
           <div class="lbl">Avance</div><div class="big" style="font-size:46px">${pct}<small>%</small></div>
           <div class="phases">${(p.phases || []).map((x) => html`<i title="${x.name}" style="background:${x.status === 'done' ? 'rgba(253,250,243,.95)' : x.status === 'now' ? 'var(--lime)' : 'rgba(253,250,243,.25)'}"></i>`)}</div>
           <div class="foot"><span>Fase: ${curPhase(p)}</span><span>${open} tareas abiertas</span></div></div>`; })}</div>`
@@ -67,7 +67,7 @@ export async function render(el, { me, sub, alive }) {
         return html`<div class="dept ${d.cls}">
           <div class="row"><span class="num">${n}</span><span class="chip ${d.chip}" style="margin-left:auto">${d.label}</span></div>
           <h4>${name}</h4>
-          ${d.tasks.map((t) => html`<button class="artifact" data-act="task" data-id="${t.id}" style="width:100%;margin-top:6px"><span class="fi">${t.status === 'Hecha' ? '✓' : t.status === 'En revisión' ? '⏳' : '•'}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;font-size:12.5px">${t.title}</b><div class="mut" style="font-size:11px">${person(t.assignee)?.name || 'Sin responsable'}${t.due ? ' · ' + fdate(t.due) : ''}</div></div></button>`)}
+          ${d.tasks.map((t) => html`<button class="artifact" data-act="task" data-id="${t.id}" style="width:100%;margin-top:6px"><span class="fi">${t.status === 'Hecha' ? ico('check', 13) : t.status === 'En revisión' ? ico('clock') : '•'}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;font-size:12.5px">${t.title}</b><div class="mut" style="font-size:11px">${person(t.assignee)?.name || 'Sin responsable'}${t.due ? ' · ' + fdate(t.due) : ''}</div></div></button>`)}
           ${d.tasks.some((t) => /^https?:\/\//.test(t.link || '')) ? html`<a class="sm mut" href="${d.tasks.find((t) => /^https?:\/\//.test(t.link || '')).link}" target="_blank" rel="noopener noreferrer" style="display:block;margin-top:6px">Ver entrega ↗</a>` : ''}
           ${i < DEPTS.length - 1 ? html`<span class="pipe-line"></span>` : ''}</div>`; })}</div>
       <div class="row" style="margin:22px 0 10px"><h3 style="font-weight:500;font-size:20px;letter-spacing:-.4px">Tareas de ${p.name}</h3><div class="sp"></div><button class="btn ghost" data-act="newTask">+ Tarea</button></div>
@@ -85,18 +85,18 @@ export async function render(el, { me, sub, alive }) {
   function openEvent(e) {
     const when = e.allDay ? fdate(String(e.start).slice(0, 10)) + (String(e.end).slice(0, 10) > addDays(String(e.start).slice(0, 10), 1) ? ' – ' + fdate(addDays(String(e.end).slice(0, 10), -1)) : ' · todo el día')
       : `${fdate(String(e.start).slice(0, 10))} · ${String(e.start).slice(11, 16)} – ${String(e.end).slice(11, 16)}`;
-    drawer(html`<div class="row"><span class="gbadge">${IC.cal} ${e.calName || 'Google Calendar'}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+    drawer(html`<div class="row"><span class="gbadge">${IC.cal} ${e.calName || 'Google Calendar'}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <h2>${e.summary}</h2><div class="mut">${when}</div>
-      ${e.location ? html`<div style="margin-top:12px">📍 ${e.location}</div>` : ''}
+      ${e.location ? html`<div style="margin-top:12px">${ico('pin')} ${e.location}</div>` : ''}
       ${e.description ? html`<p class="sm" style="margin-top:12px;white-space:pre-wrap">${e.description}</p>` : ''}
       <div class="row" style="margin-top:20px;gap:8px">${e.meet && /^https:\/\//.test(e.meet) ? html`<a class="btn" href="${e.meet}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Entrar a Meet</a>` : ''}
         ${/^https:\/\//.test(e.link || '') ? html`<a class="btn ghost" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Abrir en Google ↗</a>` : ''}
-        <div class="sp"></div>${e.editable ? html`<button class="btn ghost" data-act="evdel">🗑</button>` : ''}</div>`,
+        <div class="sp"></div>${e.editable ? html`<button class="btn ghost" data-act="evdel">${ico('trash')}</button>` : ''}</div>`,
     { evdel: async () => { if (!(await confirmAsk(`¿Borrar «${e.summary}» de tu Google Calendar?`))) return; try { await api(`google/calendar/${encodeURIComponent(e.id)}`, { method: 'DELETE' }); closeDrawer(); toast('Evento borrado'); events = null; cal($('#obody', el)); } catch (err) { toast(err.message, true); } } });
   }
   async function newEvent(date) {
     const v = await ask('Nuevo evento en Google Calendar', [{ k: 'summary', l: 'Título', req: true }, { k: 'date', l: 'Fecha', t: 'date', v: date || today(), req: true, half: true }, { k: 'time', l: 'Hora (vacío = todo el día)', t: 'time', half: true }, { k: 'minutes', l: 'Duración (min)', t: 'number', v: 60, half: true }, { k: 'description', l: 'Notas', half: true }]);
-    if (!v) return; try { await api('google/calendar', { method: 'POST', body: v }); toast('Evento creado en tu Google Calendar ✅'); events = null; cal($('#obody', el)); } catch (e) { toast(e.message, true); }
+    if (!v) return; try { await api('google/calendar', { method: 'POST', body: v }); toast('Evento creado en tu Google Calendar'); events = null; cal($('#obody', el)); } catch (e) { toast(e.message, true); }
   }
   function cal(b) {
     if (events === null) { if (!b.querySelector('.cal')) mount(b, html`<p class="loading">Cargando tu Google Calendar…</p>`); loadEvents().then(() => tab === 'cal' && alive() && b.isConnected && cal(b)); return; }
@@ -109,12 +109,12 @@ export async function render(el, { me, sub, alive }) {
       for (let d = s0, n = 0; d <= e0 && n < 40; d = addDays(d, 1), n++) add(d, { t: (e.allDay || d !== s0 ? '' : String(e.start).slice(11, 16) + ' ') + e.summary, c: 'e1', ev: i, color: /^#[0-9a-f]{6}$/i.test(e.color || '') ? e.color : null }); });
     tasks.filter((t) => t.due && t.status !== 'Hecha').forEach((t) => add(t.due, { t: '✓ ' + t.title, c: 'e3', task: t.id }));
     projects.forEach((p) => (p.phases || []).forEach((ph) => ph.start && add(ph.start, { t: `${ph.name} · ${p.name}`, c: 'e2' })));
-    projects.forEach((p) => (p.meetings || []).forEach((m) => m.status !== 'hecha' && !m.link && add(m.date, { t: `👥 ${m.name} · ${p.client || p.name}`, c: 'e2' })));
+    projects.forEach((p) => (p.meetings || []).forEach((m) => m.status !== 'hecha' && !m.link && add(m.date, { t: `${ico('users')} ${m.name} · ${p.client || p.name}`, c: 'e2' })));
     dayMap = byDay;
     const cells = [];
     for (let i = 0; i < 42; i++) { const d = i - lead + 1; if (i >= 35 && d > days) break; cells.push(d); }
     mount(b, html`<div class="card">
-      <div class="chead"><div class="ico">▦</div><h3>${first.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })}</h3>
+      <div class="chead"><div class="ico">${ico('grid')}</div><h3>${first.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })}</h3>
         ${evErr ? html`<span class="chip amber" style="margin-left:12px">Google Calendar: ${evErr}</span>` : html`<span class="gbadge" style="margin-left:12px">${IC.cal} ${calInfo.allCals ? `${calInfo.calendars.length} calendario${calInfo.calendars.length === 1 ? '' : 's'} de Google` : 'Solo tu calendario principal · sal y vuelve a entrar para ver todos'}</span>`}
         <div class="sp"></div><button class="chip ${calAll() ? '' : 'dark'}" data-act="calscope" style="padding:8px 12px">${calAll() ? 'Todos mis calendarios' : 'Solo Inherent'}</button>${me.role === 'ceo' ? html`<button class="btn ghost" data-act="calpick" style="padding:8px 14px">Calendario de Inherent</button>` : ''}<button class="btn ghost" data-act="mrefresh" title="Actualizar" style="padding:8px 14px">↻</button><button class="btn ghost" data-act="mtoday" style="padding:8px 14px">Hoy</button><button class="btn ghost" data-act="mprev" style="padding:8px 14px">‹</button><button class="btn ghost" data-act="mnext" style="padding:8px 14px">›</button><button class="btn" data-act="newEvent" style="padding:9px 16px">+ Evento</button></div>
       <div class="cal">${['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d) => html`<div class="dh">${d}</div>`)}
@@ -163,7 +163,7 @@ export async function render(el, { me, sub, alive }) {
   function openTask(t) {
     const draw = () => {
       const who = person(t.assignee);
-      drawer(html`<div class="row"><select class="in" id="tstatus" style="width:auto">${Object.keys(TSTATUS).map((s) => html`<option ${s === (t.status || 'Por empezar') ? raw('selected') : ''}>${s}</option>`)}</select><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+      drawer(html`<div class="row"><select class="in" id="tstatus" style="width:auto">${Object.keys(TSTATUS).map((s) => html`<option ${s === (t.status || 'Por empezar') ? raw('selected') : ''}>${s}</option>`)}</select><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
         <input class="in" id="ttitle" value="${t.title}" style="font-size:24px;font-weight:500;letter-spacing:-.6px;margin-top:16px;border:0;padding:6px 0;background:transparent">
         <div class="mut">${pname(t.project_id)}</div>
         <div class="form" style="margin-top:16px">
@@ -182,13 +182,13 @@ export async function render(el, { me, sub, alive }) {
         <b class="sm" style="display:block;margin-top:18px">Comentarios</b>
         ${(t.comments || []).map((c) => html`<div class="comment"><span class="av">${initials(c.who)}</span><p><span class="mut sm">${c.who} · ${fdate(c.at.slice(0, 10))}</span><br>${c.text}</p></div>`)}
         <div class="row" style="margin-top:6px"><input class="in" id="newcom" placeholder="Escribe un comentario…"><button class="btn ghost" data-act="addcom">Enviar</button></div>
-        <div class="row" style="margin-top:20px;flex-wrap:wrap"><button class="btn" data-act="tsave">Guardar</button>${t.due ? html`<button class="btn ghost" data-act="tcal">${IC.cal} Agendar en Calendar</button>` : ''}<div class="sp"></div><button class="btn ghost" data-act="tdel">🗑</button></div>`,
+        <div class="row" style="margin-top:20px;flex-wrap:wrap"><button class="btn" data-act="tsave">Guardar</button>${t.due ? html`<button class="btn ghost" data-act="tcal">${IC.cal} Agendar en Calendar</button>` : ''}<div class="sp"></div><button class="btn ghost" data-act="tdel">${ico('trash')}</button></div>`,
       {
         chk: async (cbx) => { t.checklist[+cbx.dataset.i].done = cbx.checked; const r = await saveTask(collect()); if (r) t = r; },
         addchk: async () => { const v = $('#newchk').value.trim(); if (!v) return; t = collect(); t.checklist = [...(t.checklist || []), { t: v, done: false }]; const r = await saveTask(t); if (r) { t = r; draw(); } },
         addcom: async () => { const v = $('#newcom').value.trim(); if (!v) return; t = collect(); t.comments = [...(t.comments || []), { who: me.name, at: new Date().toISOString(), text: v }]; const r = await saveTask(t); if (r) { t = r; draw(); } },
-        tsave: async () => { const r = await saveTask(collect()); if (r) { toast('Guardado ✅'); closeDrawer(); paint(); } },
-        tcal: async () => { try { const e = await api('google/calendar', { method: 'POST', body: { summary: `✓ ${t.title}`, date: t.due, description: `Tarea de ${pname(t.project_id)} · Inherent OS` } }); toast('Agendada en tu Google Calendar ✅'); events = null; if (e.link) window.open(e.link, '_blank', 'noopener'); } catch (e) { toast(e.message, true); } },
+        tsave: async () => { const r = await saveTask(collect()); if (r) { toast('Guardado'); closeDrawer(); paint(); } },
+        tcal: async () => { try { const e = await api('google/calendar', { method: 'POST', body: { summary: `${ico('check', 14)} ${t.title}`, date: t.due, description: `Tarea de ${pname(t.project_id)} · Inherent OS` } }); toast('Agendada en tu Google Calendar'); events = null; if (e.link) window.open(e.link, '_blank', 'noopener'); } catch (e) { toast(e.message, true); } },
         tdel: async () => { if (!(await confirmAsk(`¿Eliminar «${t.title}»?`))) return; await TK.remove(t.id); tasks = tasks.filter((x) => x.id !== t.id); closeDrawer(); paint(); },
       });
       $('#tvis').onchange = (e) => { $('#tviewers').hidden = e.target.value !== 'people'; };
@@ -215,7 +215,7 @@ export async function render(el, { me, sub, alive }) {
     // El pipeline sale del plan contratado: lo que no está en su plan, no corre.
     const inPlan = c?.pipeline?.length ? new Set(c.pipeline.map((r) => (r.paso.match(/^[①-⑩][A-Z]?/) || [''])[0])) : null;
     const pipeline = Object.fromEntries(DEPTS.map(([n]) => [n, { status: inPlan && !inPlan.has(n) ? 'off' : 'todo' }]));
-    try { const r = await PR.create({ name: v.name, kind: v.kind, line: v.kind === 'Growth' ? 'growth' : 'contenido', client: c ? c.slug.toUpperCase() : '', client_slug: v.client, color: v.color, phases, pipeline }); projects.push(r); current = r.id; toast('Proyecto creado ✅'); paint(); }
+    try { const r = await PR.create({ name: v.name, kind: v.kind, line: v.kind === 'Growth' ? 'growth' : 'contenido', client: c ? c.slug.toUpperCase() : '', client_slug: v.client, color: v.color, phases, pipeline }); projects.push(r); current = r.id; toast('Proyecto creado'); paint(); }
     catch (e) { toast(e.message, true); }
   }
 
@@ -224,7 +224,7 @@ export async function render(el, { me, sub, alive }) {
     let r; try { r = await api('google/calendars'); } catch (e) { return toast(e.message, true); }
     const v = await ask('Calendario de Inherent', [{ k: 'id', l: 'Las reuniones de los proyectos se agendan aquí, con invitación a quienes van', t: 'select', opts: r.calendars.map((c) => [c.id, c.name + (c.primary ? ' (tu principal)' : '')]), v: r.current || r.calendars.find((c) => /inherent/i.test(c.name))?.id || '' }], 'Guardar');
     if (!v) return;
-    try { await api('google/calendars', { method: 'PUT', body: { id: v.id, name: r.calendars.find((c) => c.id === v.id)?.name } }); toast('Listo ✅ Compártelo en Google Calendar con el equipo («hacer cambios en eventos») para que también puedan agendar.'); } catch (e) { toast(e.message, true); }
+    try { await api('google/calendars', { method: 'PUT', body: { id: v.id, name: r.calendars.find((c) => c.id === v.id)?.name } }); toast('Listo Compártelo en Google Calendar con el equipo («hacer cambios en eventos») para que también puedan agendar.'); } catch (e) { toast(e.message, true); }
   }
   acts(el, {
     calpick: calPick,
@@ -233,11 +233,11 @@ export async function render(el, { me, sub, alive }) {
     pick: (t, e) => { if (e.target.closest('[data-act=editProject]') || e.target.closest('a')) return; current = t.dataset.id; tab = 'pipe'; paint(); },
     newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); current = r.project.id; tab = 'pipe'; paint(); } },
     editProject: (t, e) => { e.stopPropagation(); const p = projects.find((x) => x.id === t.dataset.id);
-      drawer(html`<div class="row"><span class="chip">${p.kind}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><h2>${p.name}</h2><div class="mut">${p.client || 'Interno'}</div>
+      drawer(html`<div class="row"><span class="chip">${p.kind}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${p.name}</h2><div class="mut">${p.client || 'Interno'}</div>
         <b class="sm" style="display:block;margin-top:18px">Fases</b>
         ${(p.phases || []).map((x, i) => html`<div class="row" style="margin:8px 0"><select class="in" style="width:auto" data-ph="${i}" data-f="status">${[['todo', 'Pendiente'], ['now', 'En curso'], ['done', 'Hecha']].map(([v, l]) => html`<option value="${v}" ${v === x.status ? raw('selected') : ''}>${l}</option>`)}</select><b style="font-weight:500;flex:1">${x.name}</b><input class="in" type="date" style="max-width:150px" data-ph="${i}" data-f="start" value="${x.start || ''}"><input class="in" type="date" style="max-width:150px" data-ph="${i}" data-f="end" value="${x.end || ''}"></div>`)}
-        <div class="row" style="margin-top:16px"><button class="btn" data-act="savePh">Guardar fases</button><button class="btn ghost" data-act="edMeta">Nombre y cliente</button><div class="sp"></div><button class="btn ghost" data-act="delP">🗑</button></div>`,
-      { savePh: async () => { const ph = JSON.parse(JSON.stringify(p.phases || [])); $$('[data-ph]', $('#drawer')).forEach((inp) => { ph[+inp.dataset.ph][inp.dataset.f] = inp.value; }); const r = await saveProject({ ...p, phases: ph }); if (r) { toast('Fases guardadas ✅'); closeDrawer(); paint(); } },
+        <div class="row" style="margin-top:16px"><button class="btn" data-act="savePh">Guardar fases</button><button class="btn ghost" data-act="edMeta">Nombre y cliente</button><div class="sp"></div><button class="btn ghost" data-act="delP">${ico('trash')}</button></div>`,
+      { savePh: async () => { const ph = JSON.parse(JSON.stringify(p.phases || [])); $$('[data-ph]', $('#drawer')).forEach((inp) => { ph[+inp.dataset.ph][inp.dataset.f] = inp.value; }); const r = await saveProject({ ...p, phases: ph }); if (r) { toast('Fases guardadas'); closeDrawer(); paint(); } },
         edMeta: () => { closeDrawer(); projectForm(p); },
         delP: async () => { if (!(await confirmAsk(`¿Eliminar el proyecto ${p.name}? Sus tareas quedan sin proyecto.`))) return; await PR.remove(p.id); projects = projects.filter((x) => x.id !== p.id); current = projects[0]?.id || null; closeDrawer(); paint(); } }); },
     cycle: async (t) => { const p = projects.find((x) => x.id === current); const d = p.pipeline?.[t.dataset.d] || { status: 'todo' }; const r = await saveProject({ ...p, pipeline: { ...(p.pipeline || {}), [t.dataset.d]: { ...d, status: NEXT[d.status] || 'now' } } }); if (r) pipe($('#obody', el)); },
@@ -252,7 +252,7 @@ export async function render(el, { me, sub, alive }) {
     newEvent: () => newEvent(),
     day: (t) => newEvent(`${calMonth}-${String(t.dataset.d).padStart(2, '0')}`),
     ev: (t, e) => { e.stopPropagation(); openEvent(events[+t.dataset.i]); },
-    dayall: (t) => { const d = +t.dataset.d; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><h2>${fdate(`${calMonth}-${String(d).padStart(2, '0')}`)}</h2><div style="margin-top:14px">${(dayMap[d] || []).map(evChip)}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)) }); },
+    dayall: (t) => { const d = +t.dataset.d; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${fdate(`${calMonth}-${String(d).padStart(2, '0')}`)}</h2><div style="margin-top:14px">${(dayMap[d] || []).map(evChip)}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)) }); },
     tf: (t) => { taskFilter = t.dataset.f; taskTab($('#obody', el)); },
     task: (t) => openTask(tasks.find((x) => x.id === t.dataset.id)),
     newTask: async () => { const r = await wizTask({ team, me, projects, pre: tab === 'pipe' && current ? { project_id: current } : {} }); if (r) { tasks.push(r); paint(); } },

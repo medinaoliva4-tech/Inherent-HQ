@@ -1,6 +1,6 @@
 // «Por postear»: los videos y piezas propias de un perfil, de la idea a publicado.
 // Se usa en Content y en la página de cada cliente. Vive en la colección content.
-import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard, api, connectChip, ask as askF } from './core.js';
+import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard, api, connectChip, ask as askF, ico } from './core.js';
 
 export const PSTATUS = ['Idea', 'Grabado', 'Editado', 'Programado', 'Publicado'];
 const PCLS = { Idea: '', Grabado: 'amber', Editado: 'blue', Programado: 'lime', Publicado: 'green' };
@@ -13,15 +13,15 @@ export const pillarsOf = (profile) => conn[profile]?.pillars || [];
 export async function loadConn(profile) { if (!conn[profile] || conn[profile].loading) conn[profile] = await api(`content/cfg?profile=${encodeURIComponent(profile)}`).catch(() => ({})); return conn[profile]; }
 export function setConn(profile, patch) { conn[profile] = { ...(conn[profile] || {}), ...patch }; }
 // En Drive o por subir: lo que dice el Planner de cada pieza.
-export const driveState = (p) => (p.drive_id || /^https:\/\//.test(p.url || '') ? ['📁', 'En Drive'] : (p.status || 'Idea') === 'Idea' ? ['✎', 'Por grabar'] : ['⬆', 'Por subir']);
+export const driveState = (p) => (p.drive_id || /^https:\/\//.test(p.url || '') ? [ico('folder', 14), 'En Drive'] : (p.status || 'Idea') === 'Idea' ? [ico('edit', 14), 'Por grabar'] : [ico('upload', 14), 'Por subir']);
 
 export async function editPost(profile, p, pre = {}) {
   const pillars = pillarsOf(profile);
   if (!p) { // nueva pieza: con preguntas
     const a = await wizard('Nueva pieza', [
-      { k: 'format', q: '¿Qué formato?', type: 'cards', req: true, v: pre.format, show: () => !pre.format, opts: [['Reel', '🎬'], ['TikTok', '🎵'], ['Carrusel', '🗂️'], ['Story', '⭕'], ['Estático', '🖼️'], ['YouTube', '▶️']].map(([v, i]) => ({ v, i, l: v })) },
+      { k: 'format', q: '¿Qué formato?', type: 'cards', req: true, v: pre.format, show: () => !pre.format, opts: [['Reel', ico('video')], ['TikTok', ico('music')], ['Carrusel', ico('folder')], ['Story', ico('circle')], ['Estático', ico('image')], ['YouTube', ico('play', 13)]].map(([v, i]) => ({ v, i, l: v })) },
       { k: 'title', q: '¿Cuál es la idea?', type: 'text', req: true, ph: 'Ej. Detrás de cocina', v: pre.title },
-      { k: 'pillar', q: '¿De qué pilar?', type: 'cards', show: () => pillars.length > 0, v: pre.pillar, opts: pillars.map((x) => ({ v: x.name, i: '●', l: x.name })) },
+      { k: 'pillar', q: '¿De qué pilar?', type: 'cards', show: () => pillars.length > 0, v: pre.pillar, opts: pillars.map((x) => ({ v: x.name, i: ico('dot', 12), l: x.name })) },
       { k: 'date', q: '¿Cuándo sale?', type: 'when', v: pre.date, show: () => !pre.date },
       { k: 'status', q: '¿En qué va?', type: 'cards', req: true, opts: PSTATUS.map((v) => ({ v, l: v })) },
     ], 'Agregar');
@@ -65,23 +65,23 @@ export function postsBoard(b, profile, list, onChange) {
     const t = e.target.closest('[data-pact]'); if (!t) return;
     if (t.dataset.pact === 'new') return save(await editPost(profile, null));
     if (t.dataset.pact === 'drive' || t.dataset.pact === 'driveset') {
-      if (dr && t.dataset.pact === 'drive') { try { const m = await syncDrive(profile, list); toast(m.length ? `${m.length} pieza${m.length === 1 ? '' : 's'} nueva${m.length === 1 ? '' : 's'} desde Drive ✅` : 'Ya está al día con Drive'); if (m.length) onChange([...list, ...m]); } catch (err) { toast(err.message, true); } return; }
+      if (dr && t.dataset.pact === 'drive') { try { const m = await syncDrive(profile, list); toast(m.length ? `${m.length} pieza${m.length === 1 ? '' : 's'} nueva${m.length === 1 ? '' : 's'} desde Drive` : 'Ya está al día con Drive'); if (m.length) onChange([...list, ...m]); } catch (err) { toast(err.message, true); } return; }
       const v = await askF('Conectar «Por postear» con Drive', [{ k: 'url', l: 'Link de la carpeta de Drive con las piezas listas (videos e imágenes)', v: dr, req: true }], 'Conectar');
       if (!v) return;
-      try { await api('content/connect', { method: 'PUT', body: { profile, postear_drive: v.url } }); conn[profile] = { ...conn[profile], postear_drive: v.url }; const m = await syncDrive(profile, list); toast(`Conectado ✅${m.length ? ` · ${m.length} piezas` : ''}`); onChange([...list, ...m]); } catch (err) { toast(err.message, true); }
+      try { await api('content/connect', { method: 'PUT', body: { profile, postear_drive: v.url } }); conn[profile] = { ...conn[profile], postear_drive: v.url }; const m = await syncDrive(profile, list); toast(`Conectado${m.length ? ` · ${m.length} piezas` : ''}`); onChange([...list, ...m]); } catch (err) { toast(err.message, true); }
       return;
     }
     const p = list.find((x) => x.id === t.dataset.id); if (p) openPost(p);
   };
   function openPost(p) {
     const em = embedUrl(p.url);
-    drawer(html`<div class="row"><span class="chip ${PCLS[p.status || 'Idea']}">${p.status || 'Idea'}</span><span class="chip">${p.format || 'Pieza'}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+    drawer(html`<div class="row"><span class="chip ${PCLS[p.status || 'Idea']}">${p.status || 'Idea'}</span><span class="chip">${p.format || 'Pieza'}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <h2>${p.title}</h2><div class="mut">${p.date ? 'Sale el ' + fdate(p.date) : 'Sin fecha'}</div>
-      ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:9/12;border:0;border-radius:18px;margin-top:16px;background:#1a120c" allow="autoplay; fullscreen" loading="lazy"></iframe>` : p.url ? html`<a class="artifact" href="${p.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:14px"><span class="fi">▶</span><div><b style="font-weight:500">Abrir video</b></div></a>` : ''}
+      ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:9/12;border:0;border-radius:18px;margin-top:16px;background:#1a120c" allow="autoplay; fullscreen" loading="lazy"></iframe>` : p.url ? html`<a class="artifact" href="${p.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:14px"><span class="fi">${ico('play', 13)}</span><div><b style="font-weight:500">Abrir video</b></div></a>` : ''}
       ${p.caption ? html`<b class="sm" style="display:block;margin-top:18px">Caption</b><p style="white-space:pre-wrap;margin-top:6px">${p.caption}</p>` : ''}
       <b class="sm" style="display:block;margin-top:18px">Mover a</b>
       <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">${PSTATUS.map((s) => html`<button class="chip ${s === (p.status || 'Idea') ? 'dark' : ''}" data-act="st" data-s="${s}" style="padding:8px 12px">${s}</button>`)}</div>
-      <div class="row" style="margin-top:22px"><button class="btn" data-act="edit">Editar</button><div class="sp"></div><button class="btn ghost" data-act="del">🗑</button></div>`, {
+      <div class="row" style="margin-top:22px"><button class="btn" data-act="edit">Editar</button><div class="sp"></div><button class="btn ghost" data-act="del">${ico('trash')}</button></div>`, {
       st: async (t) => { try { const r = await C.save({ ...p, status: t.dataset.s }); save(r); openPost(r); } catch (err) { toast(err.message, true); } },
       edit: async () => { closeDrawer(); save(await editPost(profile, p)); },
       del: async () => { if (!(await confirmAsk(`¿Eliminar «${p.title}»?`))) return; await C.remove(p.id); closeDrawer(); list = list.filter((x) => x.id !== p.id); onChange(list); },

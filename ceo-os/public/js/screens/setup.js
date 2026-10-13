@@ -1,5 +1,5 @@
 import { CYCLE, DEPTS, addDays, tasksFor, phasesFor, deptsOfPlan, createLinked } from '../cycle.js';
-import { html, raw, mount, col, api, acts, toast, today, teamList, teamDoc, WORK_ROLES, roleName, $, $$, confirmAsk, ask } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, today, teamList, teamDoc, WORK_ROLES, roleName, $, $$, confirmAsk, ask, ico } from '../core.js';
 
 // Arranque: deja la app lista en 4 pasos, con lo que ya dice el repo.
 // 1 Equipo (de la tabla de slots del manual) · 2 Clientes y ciclo · 3 Tareas del ciclo · 4 Library base.
@@ -126,7 +126,7 @@ export async function render(el, { me, alive }) {
 
   function paint() {
     if (!alive()) return;
-    const step = (n, key, title, sub, body, btn) => html`<div class="card wkbox setup ${done[key] ? 'ok' : ''}"><div class="wkhead"><span class="stepn">${done[key] ? '✓' : n}</span><div class="grow"><h3>${title}</h3><span class="mut sm">${sub}</span></div>${btn}</div>${body}</div>`;
+    const step = (n, key, title, sub, body, btn) => html`<div class="card wkbox setup ${done[key] ? 'ok' : ''}"><div class="wkhead"><span class="stepn">${done[key] ? ico('check', 14) : n}</span><div class="grow"><h3>${title}</h3><span class="mut sm">${sub}</span></div>${btn}</div>${body}</div>`;
     mount(el, html`<div class="wktop"><div><h1>Arranque</h1><p class="mut">Deja la app lista con lo que ya dice el repo. 5 pasos, en orden.</p></div></div>
       ${step(1, 'team', 'Equipo y perfiles', 'Sale de la tabla de slots del manual. Con correo entra con Google; sin correo queda solo en el organigrama y la nómina.', html`
         <table class="wktable"><thead><tr><th>Persona</th><th>En el manual</th><th>Correo @inherentglobal.com</th><th>Perfiles de trabajo</th></tr></thead><tbody>
@@ -136,7 +136,7 @@ export async function render(el, { me, alive }) {
         html`<button class="btn ghost xs" data-act="addRow">+ Persona</button><button class="btn xs" data-act="doTeam">${done.team ? 'Actualizar' : 'Guardar equipo'}</button>`)}
       ${step(2, 'ciclo', 'Clientes y ciclo del mes', `Crea el proyecto del ciclo ${mes} de cada cliente, con sus fases del día 1 al 20 y solo los departamentos de su plan.`, html`
         <div class="row" style="gap:10px;margin:6px 0"><span class="sm">Día 1 del ciclo:</span><input class="in sm" type="date" id="start" value="${start}" style="max-width:170px"></div>
-        ${clients.map((c) => { const has = projects.some((p) => p.client_slug === c.slug && p.cycle === mes); return html`<label class="wkcheck"><input type="checkbox" data-client="${c.slug}" ${has ? raw('checked disabled') : raw('checked')}><span><b style="font-weight:500">${c.slug.toUpperCase()}</b><span class="mut sm"> · ${String(c.plan || '').replace(/^[⬜🔷🟨]️?\s*/u, '')}${has ? ' · ya creado' : ''}</span></span></label>`; })}`,
+        ${clients.map((c) => { const has = projects.some((p) => p.client_slug === c.slug && p.cycle === mes); return html`<label class="wkcheck"><input type="checkbox" data-client="${c.slug}" ${has ? raw('checked disabled') : raw('checked')}><span><b style="font-weight:500">${c.slug.toUpperCase()}</b><span class="mut sm"> · ${String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '')}${has ? ' · ya creado' : ''}</span></span></label>`; })}`,
         html`<button class="btn xs" data-act="doCycle">Crear ciclos</button>`)}
       ${step(3, 'tareas', 'Tareas del ciclo', 'Una tarea por departamento de cada cliente, con responsable según su perfil, quién rinde cuentas y fecha según el calendario del ciclo.', html`<div class="mut sm" id="prev3">${preview()}</div>`,
         html`<button class="btn xs" data-act="doTasks">Crear tareas</button>`)}
@@ -180,7 +180,7 @@ export async function render(el, { me, alive }) {
           const boss = roles.includes('coo') ? me.email : holder('coo') || me.email;
           r.cur = await T.create({ ...data, ...(email ? { id: email, email } : {}), reports_to: boss }); team.push(r.cur);
         }
-        toast('Equipo listo ✅'); setTimeout(() => location.reload(), 600);
+        toast('Equipo listo'); setTimeout(() => location.reload(), 600);
       } catch (e) { toast(e.message, true); b.disabled = false; }
     },
     addRow: async () => {
@@ -199,20 +199,20 @@ export async function render(el, { me, alive }) {
             pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: inPlan.has(d) ? 'todo' : 'off' }])) });
           projects.push(r); n++;
         }
-        toast(`${n} ciclo${n === 1 ? '' : 's'} creado${n === 1 ? '' : 's'} ✅`); done.ciclo = true; paint();
+        toast(`${n} ciclo${n === 1 ? '' : 's'} creado${n === 1 ? '' : 's'}`); done.ciclo = true; paint();
       } catch (e) { toast(e.message, true); b.disabled = false; }
     },
     doTasks: async (b) => {
       const l = plannedTasks(); if (!l.length) return toast('No hay tareas nuevas que crear');
       if (!(await confirmAsk(`¿Crear ${l.length} tareas del ciclo ${mes}?`))) return;
       b.disabled = true;
-      try { for (const p of projects.filter((x) => x.cycle === mes)) tasks.push(...(await createLinked(tasksFor(p, team, tasks, me.email), (t) => TK.create(t)))); toast(`${l.length} tareas creadas ✅`); done.tareas = true; paint(); }
+      try { for (const p of projects.filter((x) => x.cycle === mes)) tasks.push(...(await createLinked(tasksFor(p, team, tasks, me.email), (t) => TK.create(t)))); toast(`${l.length} tareas creadas`); done.tareas = true; paint(); }
       catch (e) { toast(e.message, true); b.disabled = false; }
     },
     doDrive: async () => {
       const root = $('#droot', el).value.trim();
       if (!/^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders\/[-\w]{20,}/.test(root)) return toast('Pega el link de una carpeta de Drive (drive.google.com/drive/folders/…)', true);
-      try { const S = col('settings'); driveCfg = driveCfg ? await S.save({ ...driveCfg, root }) : await S.create({ id: 'drive', root }); done.drive = true; toast('Carpeta de entregas guardada ✅'); paint(); } catch (e) { toast(e.message, true); }
+      try { const S = col('settings'); driveCfg = driveCfg ? await S.save({ ...driveCfg, root }) : await S.create({ id: 'drive', root }); done.drive = true; toast('Carpeta de entregas guardada'); paint(); } catch (e) { toast(e.message, true); }
     },
     doLib: async (b) => {
       b.disabled = true;
@@ -223,7 +223,7 @@ export async function render(el, { me, alive }) {
           let f = folders.find((x) => x.name === fname); if (!f) { f = await F.create({ name: fname, tone: { Operaciones: 'cafe', Contenido: 'oliva', Video: 'gris', 'Business Growth': 'terra' }[fname] || 'gris' }); folders.push(f); }
           docs.push(await D.create({ title: full, kind, folder_id: f.id, roles, body: `# ${full}\n\n${body}\n` })); n++;
         }
-        toast(n ? `${n} documentos creados ✅` : 'La Library base ya estaba'); done.lib = true; paint();
+        toast(n ? `${n} documentos creados` : 'La Library base ya estaba'); done.lib = true; paint();
       } catch (e) { toast(e.message, true); b.disabled = false; }
     },
   });
