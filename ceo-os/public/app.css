@@ -897,4 +897,4 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
   .qdoc .qget,.qdoc .qgrow,.qdoc .qgr,.qdoc .qsum,.qdoc table{break-inside:avoid}
 }
 /* La copia que se convierte en PDF descargable: sin sombra ni bordes redondeados */
-.qdoc.qpdf{background:#fff!important;width:800px!important;margin:0!important;padding:28px 56px!important;box-shadow:none!important;border-radius:0!important;animation:none!important}
+.qdoc.qpdf{background:#fff!important;box-sizing:border-box!important;width:800px!important;max-width:none!important;margin:0!important;padding:16px 56px!important;box-shadow:none!important;border-radius:0!important;animation:none!important}
