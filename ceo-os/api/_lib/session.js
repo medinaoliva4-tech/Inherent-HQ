@@ -1,8 +1,8 @@
 // Sesión: cookie firmada (HMAC), atada al navegador, con vida máxima e inactividad.
 import crypto from 'node:crypto';
 
-export const ABS_TTL = 12 * 60 * 60; // 12 h
-export const IDLE_TTL = 2 * 60 * 60; // 2 h sin actividad
+export const ABS_TTL = 30 * 24 * 60 * 60; // 30 días desde el login
+export const IDLE_TTL = 14 * 24 * 60 * 60; // 14 días sin actividad
 const now = () => Math.floor(Date.now() / 1000);
 
 function secret() {
