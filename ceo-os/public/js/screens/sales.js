@@ -3,13 +3,15 @@ import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, marginOf, GROW
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 import { packagesTab } from '../paquetes.js';
+import { bundlesSection } from '../armados.js';
+import { agregarNuevos, NUEVOS } from '../servicios-nuevos.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
 const TAGS = { 'High ticket': 'dark', 'No contestó': 'red', 'Interesado': 'green', 'Cotizando': 'amber', 'Propuesta enviada': 'blue', 'Referido': 'lime', 'Frío': '' };
 const SOURCES = ['WhatsApp', 'Instagram', 'Web', 'Referido', 'Evento', 'LinkedIn', 'Otro'];
-const CATS = ['IA y automatización', 'CRM y ventas', 'Landing y conversión', 'Marketing y publicidad', 'Producción de video', 'Fotografía', 'Email marketing', 'SEO local', 'Analítica y medición', 'UGC y contenido mensual'];
-const CATC = { 'IA y automatización': 'lime', 'CRM y ventas': 'blue', 'Landing y conversión': 'green', 'Marketing y publicidad': 'amber', 'Producción de video': 'red', Fotografía: 'dark', 'Email marketing': 'blue', 'SEO local': 'green', 'Analítica y medición': 'lime', 'UGC y contenido mensual': 'amber' };
+const CATS = ['IA y automatización', 'CRM y ventas', 'Landing y conversión', 'Marketing y publicidad', 'Producción de video', 'Fotografía', 'Email marketing', 'SEO local', 'Analítica y medición', 'UGC y contenido mensual', 'Operación y estructura'];
+const CATC = { 'IA y automatización': 'lime', 'CRM y ventas': 'blue', 'Landing y conversión': 'green', 'Marketing y publicidad': 'amber', 'Producción de video': 'red', Fotografía: 'dark', 'Email marketing': 'blue', 'SEO local': 'green', 'Analítica y medición': 'lime', 'UGC y contenido mensual': 'amber', 'Operación y estructura': 'dark' };
 const DEFAULT_ROLES = [['Estrategia', null], ['Producción', 150], ['Fotografía', null], ['Edición', null], ['Diseño', null], ['Dev / Tech', null], ['Operador', null], ['Pauta', null]];
 const QSTATUS = { Borrador: 'amber', Enviada: 'blue', Aceptada: 'green', Rechazada: 'red' };
 
@@ -67,13 +69,21 @@ export async function render(el, { me, sub, alive }) {
         </div>
         <div class="sp"></div>
         ${tab === 'crm' ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
-        ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
+        ${tab === 'cat' ? html`${isCeo ? html`${NUEVOS.some((d) => !services.some((x) => x.name === d.name)) ? html`<button class="btn ghost" data-act="addNew">Agregar servicios nuevos</button>` : ''}<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'quotes' ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
         ${tab === 'esp' && isCeo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
       <div id="body"></div>`);
     const body = $('#body', el);
-    ({ crm, cat, esp, quotes: quotesTab, pkg: (b) => packagesTab(b, { onQuote: (pre) => editQuote({ number: nextNumber(), date: today(), valid_days: 15, status: 'Borrador', discount_pct: 0, notes: '', lead_id: '', client: '', contact: '', email: '', ...pre }, null) }) })[tab](body);
+    ({ crm, cat, esp, quotes: quotesTab, pkg: pkgTab })[tab](body);
+  }
+
+  // ---------- Paquetes: arriba los armados con servicios y especialistas; abajo los 109 de base ----------
+  function pkgTab(b) {
+    const onQuote = (pre) => editQuote({ number: nextNumber(), date: today(), valid_days: 15, status: 'Borrador', discount_pct: 0, notes: '', lead_id: '', client: '', contact: '', email: '', ...pre }, null);
+    mount(b, html`<div id="bun"></div><div class="sec-title"><h2>Paquetes base</h2><span class="mut sm">Los 109 por industria, con su cálculo propio · se pasarán a servicios</span></div><div id="oldpk"></div>`);
+    fetch('/data/paquetes.json').then((r) => r.json()).then((d) => d.ind.map((i) => i.n)).catch(() => []).then((industries) => bundlesSection($('#bun', b), { services, rates, industries, onQuote }));
+    packagesTab($('#oldpk', b), { onQuote });
   }
 
   // ---------- Especialistas por industria ----------
@@ -322,6 +332,12 @@ export async function render(el, { me, sub, alive }) {
     toast('9 ejemplos cargados. Ajusta horas y precios'); paint();
   }
 
+  async function addNew() {
+    const faltan = NUEVOS.filter((d) => !services.some((x) => x.name === d.name)).length;
+    if (!(await confirmAsk(`¿Agregar ${faltan} servicios nuevos al catálogo? Los que ya existan no se tocan.`))) return;
+    try { const r = await agregarNuevos(S, services, rates); services = r.services; toast(`Listo · ${r.creados} servicios agregados`); paint(); } catch (e) { toast(e.message, true); paint(); }
+  }
+
   // ---------- Cotizaciones ----------
   // La cotización guarda todo en quetzales y se muestra en su moneda (rate = 1 Q en esa moneda).
   const CUR = (() => { try { return Intl.supportedValuesOf('currency'); } catch { return ['GTQ', 'USD', 'EUR', 'MXN']; } })();
@@ -352,7 +368,7 @@ export async function render(el, { me, sub, alive }) {
       // Un servicio que genera crecimiento lleva su % solo (a menos que se haya quitado a mano).
       doc.items.forEach((i) => { if (i.growth === undefined) { const g = growthOf(services.find((x) => x.id === i.service_id)); if (g) i.growth = g; } });
       const st = subtotal(doc), tt = total(doc);
-      const cost = isCeo && rates ? doc.items.reduce((a, i) => { const s = services.find((x) => x.id === i.service_id); const c = s ? costOf(s, i.level || s.level || 5) : null; return a + (c && !c.miss.length ? c.cost * (+i.qty || 0) : 0); }, 0) : null;
+      const cost = isCeo && rates ? doc.items.reduce((a, i) => { const s = services.find((x) => x.id === i.service_id); const c = s ? costOf(s, i.level || s.level || 5) : null; return a + (c && !c.miss.length ? c.cost * (+i.qty || 0) : (+i.cost || 0) * (+i.qty || 0)); }, 0) : null;
       mount(el, html`
         <div class="row" style="margin-bottom:22px"><button class="btn ghost" data-act="back">← Cotizaciones</button><div class="sp"></div>
           <select class="in" id="qcur" style="width:auto;max-width:230px" title="Moneda">${CUR.map((c) => html`<option value="${c}" ${c === (doc.currency || 'GTQ') ? raw('selected') : ''}>${c} · ${curName(c)}</option>`)}</select>
@@ -490,7 +506,7 @@ export async function render(el, { me, sub, alive }) {
     tagF: (b) => { tagF = b.dataset.t; paint(); },
     catF: (b) => { catF = b.dataset.c; paint(); },
     lead: (b) => openLead(leads.find((l) => l.id === b.dataset.id)),
-    newLead, newService: () => editService(null), rates: editRates, seed,
+    newLead, newService: () => editService(null), rates: editRates, seed, addNew,
     service: (b, e) => { if (e?.target.closest('[data-stop]')) return; editService(services.find((s) => s.id === b.dataset.id)); },
     newQuote: () => editQuote(null, null),
     newMentor: async () => { const r = await editMentor(null, [...new Set((mentors || []).map((m) => m.industry))]); if (r && !r.deleted) { mentors = [...(mentors || []), r]; paint(); } },
