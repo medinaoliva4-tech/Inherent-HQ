@@ -906,3 +906,5 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 .qdoc.qpdf .qto{grid-template-columns:1fr 1fr!important}.qdoc.qpdf .qsum{width:260px!important}
 .qdoc.qpdf .qgets{grid-template-columns:1fr 1fr!important}
 .qdoc.qpdf .qent,.qdoc.qpdf .qinv{margin-top:0!important}
+.qdoc.qpdf .qsec{margin-top:12px!important}.qdoc.qpdf .qsum{margin-top:8px!important}.qdoc.qpdf .qsum>div{padding:5px 0!important}
+.qdoc.qpdf .qsec ol li{margin:2px 0!important}.qdoc.qpdf .qwhy{margin-bottom:8px!important}

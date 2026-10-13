@@ -502,21 +502,33 @@ export async function render(el, { me, sub, alive }) {
         i2.onerror = ok; i2.src = im.src; })));
       const safe = (t) => String(t || '').replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
       const name = `Inherent cotización - ${safe(doc.client) || 'Cliente'} - ${doc.date || today()}.pdf`;
-      // Una hoja carta por sección (principal · qué entregamos · inversión). Cada sección se dibuja sola, a 612 px
-      // (el ancho de la hoja), en la esquina de la pantalla; si es más alta que la hoja, se reduce para caber, centrada.
+      // Secciones (principal · qué entregamos · inversión): ninguna se parte. Se acomodan una debajo de otra y solo
+      // se pasa a otra hoja cuando la siguiente no cabe completa; así no quedan hojas medio vacías. Cada sección se
+      // dibuja sola a 612 px (el ancho de la hoja carta); si una sola es más alta que la hoja, se reduce y se centra.
       const kids = [...clone.children], iEnt = kids.findIndex((k) => k.classList.contains('qent')), iInv = kids.findIndex((k) => k.classList.contains('qinv'));
-      const cuts = [0, iEnt, iInv, kids.length].filter((x, i, a) => x >= 0 && (i === 0 || x > a[i - 1]));
-      const W = 612, PW = 612, PH = 792, M = 24, sy = scrollY, sx = scrollX, pdf = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter', orientation: 'portrait' });
+      const iSum = kids.findIndex((k) => k.classList.contains('qsum'));
+      // Bloques: principal · qué entregamos · inversión con su total · y cada parte final (pasos, notas, pie) por separado.
+      const cuts = [...new Set([0, iEnt, iInv, iSum >= 0 ? iSum + 1 : -1, ...kids.map((_, i) => (iSum >= 0 && i > iSum ? i : -1)), kids.length])].filter((x) => x >= 0).sort((a, b) => a - b);
+      const W = 612, PW = 612, PH = 792, M = 22, GAP = 0, sy = scrollY, sx = scrollX, pdf = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter', orientation: 'portrait' });
       clone.remove(); scrollTo(0, 0);
+      const shots = [];
       try {
         for (let i = 0; i < cuts.length - 1; i++) {
           const pg = document.createElement('div'); pg.className = 'qdoc qpdf'; kids.slice(cuts[i], cuts[i + 1]).forEach((k) => pg.appendChild(k)); box.replaceChildren(pg);
-          const cv = await window.html2canvas(pg, { scale: 2.5, backgroundColor: '#ffffff', width: W, windowWidth: W, useCORS: true, x: 0, y: 0, scrollX: 0, scrollY: 0, logging: false });
-          const k = Math.min(PW / cv.width, (PH - 2 * M) / cv.height), dw = cv.width * k, dh = cv.height * k;
-          if (i) pdf.addPage('letter', 'portrait');
-          pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', (PW - dw) / 2, M, dw, dh);
+          shots.push(await window.html2canvas(pg, { scale: 2.5, backgroundColor: '#ffffff', width: W, windowWidth: W, useCORS: true, x: 0, y: 0, scrollX: 0, scrollY: 0, logging: false }));
         }
       } finally { scrollTo(sx, sy); }
+      // Acomodo: se llenan hojas sin partir bloques. Si la última hoja quedaría casi vacía, esa parte se sube a la
+      // hoja anterior y esa hoja se reduce un poco para que todo quepa (así nunca parece que se acabó antes de tiempo).
+      const AV = PH - 2 * M, hs = shots.map((cv) => Math.min(PW / cv.width, AV / cv.height) * cv.height), pages = [[]];
+      let used = 0; shots.forEach((cv, i) => { if (pages.at(-1).length && used + hs[i] > AV) { pages.push([]); used = 0; } pages.at(-1).push(i); used += hs[i]; });
+      const tot = (p) => p.reduce((a, i) => a + hs[i], 0);
+      if (pages.length > 1 && tot(pages.at(-1)) < AV * 0.4) { const last = pages.pop(); pages.at(-1).push(...last); }
+      pages.forEach((p, n) => {
+        if (n) pdf.addPage('letter', 'portrait');
+        const f = Math.min(1, AV / tot(p)); let y = M;
+        p.forEach((i) => { const cv = shots[i], dh = hs[i] * f, dw = (cv.width * hs[i] / cv.height) * f; pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', (PW - dw) / 2, y, dw, dh); y += dh; });
+      });
       const out = pdf.output('blob'), a = document.createElement('a'); a.href = URL.createObjectURL(out); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
       box.remove();
     } catch (e) { toast(e.message || 'No se pudo generar el PDF', true); }
@@ -544,9 +556,9 @@ export async function render(el, { me, sub, alive }) {
             if (/crecimiento|lograr|resultado/.test(h)) return html`<div class="qgrow"><div class="lbl2">${sc.h}</div>${sc.ls.map((l) => { const [t, d] = split2(l); return html`<div class="qgr"><span class="qgi up">${ico('trend', 16)}</span><div>${d ? html`<b>${t}.</b> ${d}` : t}</div></div>`; })}</div>`;
             if (/no incluye/.test(h)) return html`<div class="lbl2" style="margin-top:14px">${sc.h}</div><div class="qnot">${sc.ls.map((l) => html`<div>${ico('x', 12)} ${strip(l)}</div>`)}</div>`;
             return html`${sc.h ? html`<div class="lbl2" style="margin-top:14px">${sc.h}</div>` : ''}${sc.ls.map((l) => html`<p>${l}</p>`)}`; };
-          return lines.length || whys.length ? html`<div class="qsec"><div class="lbl2">LO QUE VAMOS A LOGRAR EN TU NEGOCIO</div>${secs.map(vSec)}${whys.map((i) => html`<div class="qwhy"><b>${i.name}</b><ul>${i.why.map((w) => html`<li>${w}</li>`)}</ul></div>`)}</div>` : ''; })()}
+          return lines.length ? html`<div class="qsec"><div class="lbl2">LO QUE VAMOS A LOGRAR EN TU NEGOCIO</div>${secs.map(vSec)}</div>` : ''; })()}
         <div class="qsec qent"><div class="lbl2">QUÉ ENTREGAMOS Y CÓMO TE AYUDA</div>${doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id), lv = i.level || sv?.level || 5, inc = i.includes?.length ? i.includes : sv ? includesAt(sv, lv) : [], d = sv ? daysAt(sv, lv) : 0;
-          return html`<div class="qwhy"><b>${i.name}</b>${i.level ? html` <span class="qlv">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div class="qd">${i.description}</div>` : ''}${d ? html`<div class="qd"><b style="font-weight:500">Entrega en ${d} días hábiles.</b></div>` : ''}${inc.length ? html`<ul>${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}</div>`; })}</div>
+          return html`<div class="qwhy"><b>${i.name}</b>${i.level ? html` <span class="qlv">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div class="qd">${i.description}</div>` : ''}${d ? html`<div class="qd"><b style="font-weight:500">Entrega en ${d} días hábiles.</b></div>` : ''}${inc.length ? html`<ul>${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}${(i.why || []).length ? html`<div class="qd" style="margin-top:6px"><b style="font-weight:500">Cómo se mide:</b></div><ul>${i.why.map((w) => html`<li>${w}</li>`)}</ul>` : ''}</div>`; })}</div>
         <div class="lbl2 qinv" style="margin-top:22px">INVERSIÓN</div>
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
           <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b></td><td class="n">${i.qty}</td><td class="n">${money(doc, i.price)}</td><td class="n">${money(doc, (+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
