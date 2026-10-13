@@ -111,7 +111,6 @@ export async function packagesTab(body, { onQuote, bun }) {
     return html`<div class="pk">
       <aside class="card pklist"><div style="display:grid;gap:8px"><select class="in" data-pk-f="ind"><option value="">Todas las industrias</option>${data.ind.map((i) => html`<option value="${i.id}" ${F.ind === i.id ? raw('selected') : ''}>${i.n}</option>`)}</select><input class="in" type="search" placeholder="Buscar paquete" data-pk-f="q" value="${F.q}"><label class="sm mut"><input type="checkbox" data-pk-f="std" ${F.std ? raw('checked') : ''}> Solo prioritarios ${ico('star', 13)}</label></div>
         ${bun ? html`<button class="btn" style="width:100%;margin-top:10px" data-pk="bnew">+ Paquete</button>` : ''}
-        ${bun && P.some((x) => !linked(x.id)) ? html`<button class="btn ghost" style="width:100%;margin-top:8px" data-pk="bimport">Agregar servicios a los paquetes (${P.filter((x) => !linked(x.id)).length})</button>` : ''}
         ${mine.length ? html`<div class="mut sm" style="margin:12px 0 4px">Tus paquetes</div>${mine.map((b) => html`<button class="pkitem ${'b:' + b.id === SEL ? 'on' : ''}" data-pk="sel" data-id="b:${b.id}"><span>${b.name}</span><small>${Q(bun.totals(b).price)}</small></button>`)}<div class="mut sm" style="margin:12px 0 4px">Por industria</div>` : ''}
         <div style="margin-top:10px">${list.map((x) => html`<button class="pkitem ${x.id === p?.id ? 'on' : ''}" data-pk="sel" data-id="${x.id}"><span>${x.n}${x.st === 'standard' ? ico('star', 13) : ''}</span><small>${Q(calc(x).price)}</small></button>`)}</div></aside>
       <section>${bsel ? vBundle(bsel) : vDetail(p, calc(p))}</section></div>`;
@@ -137,7 +136,6 @@ export async function packagesTab(body, { onQuote, bun }) {
 
   body.onclick = (e) => {
     const t = e.target.closest('[data-pk]'); if (!t) return; const a = t.dataset.pk;
-    if (a === 'bimport') { t.disabled = true; t.textContent = 'Agregando…'; fetch('/data/paquetes-servicios.json').then((r) => r.json()).then((m) => bun.importAll(P, IND, m)).then((r) => { toast(`Listo: ${r.made} paquetes con sus servicios${r.miss.length ? ` · no encontré en el catálogo: ${r.miss.join(', ')}` : ''}`); paint(); }).catch((e) => { toast(e.message, true); paint(); }); return; }
     if (a === 'bnew') { bun.edit(null, (r) => { if (r) SEL = 'b:' + r.id; paint(); }); return; }
     if (a === 'bedit') { const b = (bun.list || []).find((x) => x.id === t.dataset.id) || (t.dataset.pkg ? { name: PB[t.dataset.pkg].n, industry: IND[PB[t.dataset.pkg].ind], pkg: t.dataset.pkg } : null); bun.edit(b, (r) => { if (r === null && SEL.startsWith('b:')) SEL = 'bm-arranque'; paint(); }); return; }
     if (a === 'bquote') { bun.quote(bun.list.find((x) => x.id === t.dataset.id)); return; }

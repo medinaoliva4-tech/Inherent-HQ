@@ -117,7 +117,10 @@ export function drawer(content, map = {}) {
 export const canTransition = () => typeof document.startViewTransition === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
 // Pestañas: se cambia el contenido y solo el cuerpo entra con un fundido corto (sin fotos ni estiramientos).
 export function swap(el, update) {
-  update();
+  // La página no salta: se guarda la altura y el scroll mientras la pestaña nueva carga.
+  const y = scrollY; el.style.minHeight = el.offsetHeight + 'px';
+  update(); scrollTo(0, y);
+  clearTimeout(el._swapT); el._swapT = setTimeout(() => { el.style.minHeight = ''; }, 1500);
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const b = el.querySelector('#body,#fbody,#obody,#wbody,#cbody'); if (!b) return;
   b.classList.remove('tabin'); void b.offsetWidth; b.classList.add('tabin');
