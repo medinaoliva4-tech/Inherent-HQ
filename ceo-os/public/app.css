@@ -926,3 +926,6 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 /* «Qué entregamos»: ícono y texto, sin tarjeta */
 .qdoc .qsvc .qget.qs{display:flex;gap:12px;background:none!important;border:0!important;padding:4px 0!important;border-radius:0}
 .qdoc .qsvc .qget.qs .qgi{background:#6b6a3c}
+/* «Qué entregamos»: un servicio por línea */
+.qdoc .qgets.qsvc{grid-template-columns:1fr!important;gap:6px!important}
+.qdoc .qsvc .qget.qs{border-bottom:1px solid #eee4d6!important;padding:8px 0 10px!important}

@@ -503,7 +503,7 @@ export async function render(el, { me, sub, alive }) {
         i2.onerror = ok; i2.src = im.src; })));
       const safe = (t) => String(t || '').replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
       const name = `Inherent cotización - ${safe(doc.client) || 'Cliente'} - ${doc.date || today()}.pdf`;
-      // Tres hojas, una por sección: principal · qué entregamos · inversión. Cada sección se dibuja completa en una
+      // Hojas por sección: principal · qué entregamos · inversión (junto a «qué entregamos» si cabe). Cada sección se dibuja completa en una
       // hoja carta al mismo ancho; si no cabe, se dibuja más ancha (letra relativamente más chica) y se reduce a la
       // hoja, hasta que quepa. Solo si una sección es enorme se reparte en varias hojas, sin partir tarjetas.
       const kids = [...clone.children], iEnt = kids.findIndex((k) => k.classList.contains('qent')), iInv = kids.findIndex((k) => k.classList.contains('qinv'));
@@ -515,13 +515,15 @@ export async function render(el, { me, sub, alive }) {
         if (cls) { host = document.createElement('div'); host.className = cls; host.style.marginTop = '0'; pg.appendChild(host); } els.forEach((e) => host.appendChild(e)); box.replaceChildren(pg); return pg; };
       let first = true; const page = () => { if (!first) pdf.addPage('letter', 'portrait'); first = false; };
       try {
-        for (let g = 0; g < cuts.length - 1; g++) {
-          const els = kids.slice(cuts[g], cuts[g + 1]); let done = false;
-          for (const W of [612, 660, 710, 770, 830, 900]) {
-            const pg = mk(els, W);
-            if (pg.offsetHeight * PW / W <= AV) { const cv = await shot(pg, W), dh = cv.height * PW / cv.width; page(); pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, M, PW, dh); done = true; break; }
-          }
-          if (done) continue;
+        const fit = async (els, widths) => { for (const W of widths) { const pg = mk(els, W);
+          if (pg.offsetHeight * PW / W <= AV) { const cv = await shot(pg, W), dh = cv.height * PW / cv.width; page(); pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, M, PW, dh); return true; } } return false; };
+        const ALL = [612, 660, 710, 770, 830, 900], groups = cuts.slice(0, -1).map((c, g) => kids.slice(c, cuts[g + 1]));
+        // La inversión va en la misma hoja que «Qué entregamos» si cabe casi a tamaño normal; si no, baja a la siguiente.
+        const both = iEnt >= 0 && iInv > iEnt && groups.length === 3;
+        for (let g = 0; g < groups.length; g++) {
+          const els = groups[g];
+          if (both && g === 1 && await fit([...groups[1], ...groups[2]], [612, 660, 710])) break;
+          if (await fit(els, ALL)) continue;
           // Sección enorme: por bloques (cada título pegado a lo que sigue; tarjetas de dos en dos) al ancho más chico.
           const W = 900, blocks = []; let pend = null;
           const push = (e, cls) => { if (pend) { e = [...pend.e, ...e]; cls = pend.cls || cls; pend = null; } blocks.push({ e, cls }); };
