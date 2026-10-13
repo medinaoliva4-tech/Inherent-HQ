@@ -9,8 +9,8 @@ const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
 const TAGS = { 'High ticket': 'dark', 'No contestó': 'red', 'Interesado': 'green', 'Cotizando': 'amber', 'Propuesta enviada': 'blue', 'Referido': 'lime', 'Frío': '' };
 const SOURCES = ['WhatsApp', 'Instagram', 'Web', 'Referido', 'Evento', 'LinkedIn', 'Otro'];
-const CATS = ['IA', 'Tech', 'Marketing', 'Producción', 'Branding', 'Consultoría'];
-const CATC = { IA: 'lime', Tech: 'blue', Marketing: 'amber', Producción: 'red', Branding: 'green', Consultoría: 'dark' };
+const CATS = ['IA y automatización', 'CRM y ventas', 'Landing y conversión', 'Marketing y publicidad', 'Producción de video', 'Fotografía', 'Email marketing', 'SEO local', 'Analítica y medición', 'UGC y contenido mensual'];
+const CATC = { 'IA y automatización': 'lime', 'CRM y ventas': 'blue', 'Landing y conversión': 'green', 'Marketing y publicidad': 'amber', 'Producción de video': 'red', Fotografía: 'dark', 'Email marketing': 'blue', 'SEO local': 'green', 'Analítica y medición': 'lime', 'UGC y contenido mensual': 'amber' };
 const DEFAULT_ROLES = [['Estrategia', null], ['Producción', 150], ['Fotografía', null], ['Edición', null], ['Diseño', null], ['Dev / Tech', null], ['Operador', null], ['Pauta', null]];
 const QSTATUS = { Borrador: 'amber', Enviada: 'blue', Aceptada: 'green', Rechazada: 'red' };
 
