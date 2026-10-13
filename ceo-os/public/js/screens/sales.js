@@ -25,6 +25,10 @@ export async function render(el, { me, sub, alive }) {
   let rates = null;
   if (isCeo) { rates = await R.get('default').catch(() => null); }
   let plans = null, plansErr = null;
+  // Los SOPs de la Library: cada tarjeta del catálogo enlaza al de su servicio (si no tienes acceso a la Library, no se muestra).
+  let sops = {};
+  col('docs').list().then((l) => { sops = Object.fromEntries(l.filter((d) => d.kind === 'SOP' && /^SOP · /.test(d.title)).map((d) => [d.title.slice(6).trim().toLowerCase(), d])); if (tab === 'cat' && alive()) paint(); }).catch(() => {});
+  const sopOf = (s) => sops[String(s.name || '').trim().toLowerCase()];
   api('repo/precios').then((r) => { plans = r; if (tab === 'cat' && alive()) paint(); }).catch((e) => { plansErr = e.message; });
 
   let tab = ['crm', 'cat', 'esp', 'quotes', ...(isCeo ? ['pkg'] : [])].includes(sub[0]) ? sub[0] : 'crm';
@@ -205,6 +209,7 @@ export async function render(el, { me, sub, alive }) {
         ${g ? html`<div class="sm svgrow">📈 + ${g}</div>` : ''}
         <div class="svlv" data-stop><input type="range" min="5" max="10" step="1" value="${lv}" data-cardlv="${s.id}" aria-label="Nivel de entrega"><div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div></div>
         <div data-cardbody="${s.id}">${cardBody(s, lv)}</div>
+        ${sopOf(s) ? html`<a class="sm" data-stop href="#/library/${sopOf(s).folder_id || '_'}/${sopOf(s).id}" style="display:inline-block;margin-top:10px">📋 Ver el SOP de este servicio →</a>` : ''}
 </div>`; })}</div>`}`);
   }
 
