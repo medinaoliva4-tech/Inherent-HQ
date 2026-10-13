@@ -93,9 +93,9 @@ tbody tr.click{cursor:pointer;transition:.15s}tbody tr.click:hover{background:rg
 .feat::after{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;background-image:var(--grain);mix-blend-mode:overlay;opacity:.55;pointer-events:none}
 .feat>*{position:relative;z-index:1}
 .feat.olive{background:#553f2e}
-.feat.olive::before{background:radial-gradient(55% 60% at 78% 88%,#f0e9de 0%,transparent 70%),radial-gradient(60% 70% at 20% 20%,#433023 0%,transparent 75%),radial-gradient(70% 70% at 60% 55%,#a18770 0%,transparent 80%),#634a37}
+.feat.olive::before{background:radial-gradient(50% 55% at 80% 90%,#b79f87 0%,transparent 65%),radial-gradient(60% 70% at 20% 20%,#433023 0%,transparent 75%),radial-gradient(70% 70% at 60% 55%,#a18770 0%,transparent 80%),#634a37}
 .feat.terra{background:#5e4634}
-.feat.terra::before{background:radial-gradient(55% 60% at 80% 90%,#e9e0d3 0%,transparent 70%),radial-gradient(60% 70% at 15% 15%,#4a3628 0%,transparent 75%),radial-gradient(70% 70% at 55% 55%,#997d65 0%,transparent 80%),#745842}
+.feat.terra::before{background:radial-gradient(50% 55% at 80% 90%,#ad9179 0%,transparent 65%),radial-gradient(60% 70% at 15% 15%,#4a3628 0%,transparent 75%),radial-gradient(70% 70% at 55% 55%,#997d65 0%,transparent 80%),#745842}
 .feat.ink{background:#2c1f16}
 .feat.ink::before{background:radial-gradient(55% 60% at 85% 95%,#93755c 0%,transparent 70%),radial-gradient(70% 70% at 20% 10%,#271c13 0%,transparent 75%),radial-gradient(70% 70% at 60% 60%,#463325 0%,transparent 80%),#322319}
 .feat .ico{background:transparent;border:0;color:#fdfaf3;position:relative}
