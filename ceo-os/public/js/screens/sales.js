@@ -493,7 +493,7 @@ export async function render(el, { me, sub, alive }) {
     try {
       await loadH2p();
       const src = $('.qdoc', v), box = document.createElement('div'), clone = src.cloneNode(true);
-      box.style.cssText = 'position:absolute;left:0;top:0;width:800px;background:#fff;z-index:-1;pointer-events:none'; clone.classList.add('qpdf'); box.appendChild(clone); document.body.appendChild(box);
+      box.style.cssText = 'position:absolute;left:0;top:0;width:612px;background:#fff;z-index:-1;pointer-events:none'; clone.classList.add('qpdf'); box.appendChild(clone); document.body.appendChild(box);
       // Los logos SVG se pasan a imagen antes de convertir (el generador no dibuja SVG solo).
       await Promise.all([...clone.querySelectorAll('img')].filter((im) => /\.svg/.test(im.src)).map((im) => new Promise((ok) => {
         const w = im.getBoundingClientRect().width || 120, h = im.getBoundingClientRect().height || 40, i2 = new Image();
@@ -501,11 +501,11 @@ export async function render(el, { me, sub, alive }) {
         i2.onerror = ok; i2.src = im.src; })));
       const safe = (t) => String(t || '').replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
       const name = `Inherent cotización - ${safe(doc.client) || 'Cliente'} - ${doc.date || today()}.pdf`;
-      // Hoja carta real: el generador la mide en 612 px de ancho, así que su caja se ensancha a 800 px y la imagen se reduce a la hoja.
+      // Hoja carta real: el generador la mide en 612 px de ancho, así que la cotización se dibuja a ese ancho (tamaño real) y cada sección empieza en su propia página.
       const blob = window.html2pdf().set({ margin: [10, 0, 12, 0], filename: name, image: { type: 'jpeg', quality: 0.95 },
         html2canvas: { scale: 2, backgroundColor: '#ffffff', windowWidth: Math.max(innerWidth, 1100), useCORS: true, scrollX: 0, scrollY: 0 },
         jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'], avoid: ['.qget', '.qgrow', '.qgr', '.qwhy', '.qsum', 'tr', 'thead', '.qto', '.qh', '.qsec > p', '.qsec li', '.qnot', '.lbl2', 'ol', 'table'] } }).from(clone).toContainer().then(function () { this.prop.container.style.width = '800px'; }).toCanvas().toPdf().outputPdf('blob');
+        pagebreak: { mode: ['css', 'legacy'], before: ['.qent', '.qinv'], avoid: ['.qget', '.qgrow', '.qgr', '.qwhy', '.qsum', 'tr', 'thead', '.qto', '.qh', '.qsec > p', '.qsec li', '.qnot', '.lbl2', 'ol', 'table'] } }).from(clone).outputPdf('blob');
       const pdf = await blob, a = document.createElement('a'); a.href = URL.createObjectURL(pdf); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
       box.remove();
     } catch (e) { toast(e.message || 'No se pudo generar el PDF', true); }
@@ -534,9 +534,9 @@ export async function render(el, { me, sub, alive }) {
             if (/no incluye/.test(h)) return html`<div class="lbl2" style="margin-top:14px">${sc.h}</div><div class="qnot">${sc.ls.map((l) => html`<div>${ico('x', 12)} ${strip(l)}</div>`)}</div>`;
             return html`${sc.h ? html`<div class="lbl2" style="margin-top:14px">${sc.h}</div>` : ''}${sc.ls.map((l) => html`<p>${l}</p>`)}`; };
           return lines.length || whys.length ? html`<div class="qsec"><div class="lbl2">LO QUE VAMOS A LOGRAR EN TU NEGOCIO</div>${secs.map(vSec)}${whys.map((i) => html`<div class="qwhy"><b>${i.name}</b><ul>${i.why.map((w) => html`<li>${w}</li>`)}</ul></div>`)}</div>` : ''; })()}
-        <div class="qsec"><div class="lbl2">QUÉ ENTREGAMOS Y CÓMO TE AYUDA</div>${doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id), lv = i.level || sv?.level || 5, inc = i.includes?.length ? i.includes : sv ? includesAt(sv, lv) : [], d = sv ? daysAt(sv, lv) : 0;
+        <div class="qsec qent"><div class="lbl2">QUÉ ENTREGAMOS Y CÓMO TE AYUDA</div>${doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id), lv = i.level || sv?.level || 5, inc = i.includes?.length ? i.includes : sv ? includesAt(sv, lv) : [], d = sv ? daysAt(sv, lv) : 0;
           return html`<div class="qwhy"><b>${i.name}</b>${i.level ? html` <span class="qlv">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div class="qd">${i.description}</div>` : ''}${d ? html`<div class="qd"><b style="font-weight:500">Entrega en ${d} días hábiles.</b></div>` : ''}${inc.length ? html`<ul>${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}</div>`; })}</div>
-        <div class="lbl2" style="margin-top:22px">INVERSIÓN</div>
+        <div class="lbl2 qinv" style="margin-top:22px">INVERSIÓN</div>
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
           <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b></td><td class="n">${i.qty}</td><td class="n">${money(doc, i.price)}</td><td class="n">${money(doc, (+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
         <div class="qsum"><div><span>Subtotal</span><span>${money(doc, st)}</span></div>${doc.discount_pct ? html`<div><span>Descuento (${doc.discount_pct}%)</span><span>-${money(doc, st - tt)}</span></div>` : ''}<div class="tot"><span>Total</span><span>${money(doc, tt)}</span></div>${quoteDays(doc) ? html`<div><span>Tiempo estimado</span><span>${quoteDays(doc)} días hábiles</span></div>` : ''}</div>
