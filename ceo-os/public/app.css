@@ -929,3 +929,21 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 /* «Qué entregamos»: un servicio por línea */
 .qdoc .qgets.qsvc{grid-template-columns:1fr!important;gap:6px!important}
 .qdoc .qsvc .qget.qs{border-bottom:1px solid #eee4d6!important;padding:8px 0 10px!important}
+
+/* ===================== Modo noche =====================
+   Se invierte la luz de toda la app conservando el tono cálido (invertir + girar el color 180°), y se
+   vuelve a invertir lo que debe verse tal cual: fotos, videos, logos de color y el documento de cotización. */
+.themebtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--stroke);color:var(--ink2);backdrop-filter:blur(18px);flex:none}
+.themebtn:hover{color:var(--ink)}
+html[data-theme="dark"]{filter:invert(.92) hue-rotate(180deg);background:#f1eadf}
+html[data-theme="dark"] img:not([src*="/brand/"]),html[data-theme="dark"] video,html[data-theme="dark"] iframe,html[data-theme="dark"] canvas,
+html[data-theme="dark"] .thumb,html[data-theme="dark"] .qdoc,html[data-theme="dark"] [style*="background-image"]{filter:invert(1) hue-rotate(180deg)}
+html[data-theme="dark"] .qdoc img{filter:none}
+html[data-theme="dark"] *{box-shadow:none!important}
+html[data-theme="dark"] body::after{opacity:.04}
+@media print{html[data-theme="dark"]{filter:none}html[data-theme="dark"] .qdoc{filter:none}}
+/* Las tarjetas destacadas conservan su color oscuro original */
+html[data-theme="dark"] .feat{filter:invert(1) hue-rotate(180deg)}
+html[data-theme="dark"] .feat img:not([src*="/brand/"]){filter:none}
+/* Espacio para el botón de modo noche en la barra de arriba */
+.nav{gap:2px}.nav button{padding:10px 12px}.themebtn{width:40px;height:40px}
