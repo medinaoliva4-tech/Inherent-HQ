@@ -495,11 +495,37 @@ export async function render(el, { me, sub, alive }) {
     draw();
   }
 
+  // Descarga directa del PDF (sin el diálogo de imprimir), con nombre «Inherent cotización - Marca - fecha».
+  // Ninguna tarjeta o bloque queda partido entre dos páginas.
+  const loadH2p = () => window.html2pdf ? Promise.resolve() : new Promise((ok, ko) => { const sc = document.createElement('script'); sc.src = '/vendor/html2pdf.bundle.min.js'; sc.onload = ok; sc.onerror = () => ko(new Error('No pude cargar el generador de PDF')); document.head.appendChild(sc); });
+  async function downloadPdf(v, doc, btn) {
+    const label = btn?.innerHTML; if (btn) { btn.disabled = true; btn.textContent = 'Generando PDF…'; }
+    try {
+      await loadH2p();
+      const src = $('.qdoc', v), box = document.createElement('div'), clone = src.cloneNode(true);
+      box.style.cssText = 'position:fixed;left:-10000px;top:0;width:800px;background:#fff'; clone.classList.add('qpdf'); box.appendChild(clone); document.body.appendChild(box);
+      // Los logos SVG se pasan a imagen antes de convertir (el generador no dibuja SVG solo).
+      await Promise.all([...clone.querySelectorAll('img')].filter((im) => /\.svg/.test(im.src)).map((im) => new Promise((ok) => {
+        const w = im.getBoundingClientRect().width || 120, h = im.getBoundingClientRect().height || 40, i2 = new Image();
+        i2.onload = () => { const c = document.createElement('canvas'); c.width = w * 3; c.height = h * 3; c.getContext('2d').drawImage(i2, 0, 0, c.width, c.height); im.style.width = w + 'px'; im.style.height = h + 'px'; im.src = c.toDataURL('image/png'); ok(); };
+        i2.onerror = ok; i2.src = im.src; })));
+      const safe = (t) => String(t || '').replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
+      const name = `Inherent cotización - ${safe(doc.client) || 'Cliente'} - ${doc.date || today()}.pdf`;
+      const blob = window.html2pdf().set({ margin: [10, 0, 12, 0], filename: name, image: { type: 'jpeg', quality: 0.95 },
+        html2canvas: { scale: 2, backgroundColor: '#ffffff', windowWidth: 1100, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'], avoid: ['.qget', '.qgrow', '.qgr', '.qwhy', '.qsum', 'tr', 'thead', '.qto', '.qh', '.qsec > p', '.qsec li', '.qnot', '.lbl2', 'ol', 'table'] } }).from(clone).outputPdf('blob');
+      const pdf = await blob, a = document.createElement('a'); a.href = URL.createObjectURL(pdf); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      box.remove();
+    } catch (e) { toast(e.message || 'No se pudo generar el PDF', true); }
+    if (btn) { btn.disabled = false; btn.innerHTML = label; }
+  }
+
   function showPdf(doc) {
     const valid = new Date(doc.date + 'T12:00'); valid.setDate(valid.getDate() + (+doc.valid_days || 15));
     const st = subtotal(doc), tt = total(doc);
     const v = document.createElement('div'); v.className = 'qview';
-    mount(v, html`<div class="qbar"><button class="btn" data-x="print">↓ Descargar PDF</button><button class="btn ghost" data-x="close">Cerrar</button><div class="sp"></div><span class="sm" style="color:var(--cream);align-self:center">En el diálogo elige «Guardar como PDF»</span></div>
+    mount(v, html`<div class="qbar"><button class="btn" data-x="print">↓ Descargar PDF</button><button class="btn ghost" data-x="close">Cerrar</button><div class="sp"></div><span class="sm" style="color:var(--cream);align-self:center;display:none">En el diálogo elige «Guardar como PDF»</span></div>
       <div class="qdoc">
         <div class="qh"><div class="qlogo"><img src="/brand/emblem-dark.svg" alt=""><div><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:26px;width:auto;display:block"><div class="go" style="margin-top:6px">GROWTH OPERATOR</div></div></div>
           <div class="qmeta"><b>Cotización</b>${doc.number}<br>${fdateLong(doc.date)}<br>Válida hasta el ${fdateLong(valid.toISOString().slice(0, 10))}</div></div>
@@ -529,7 +555,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>
       </div>`);
     document.body.append(v);
-    v.onclick = (e) => { const x = e.target.closest('[data-x]')?.dataset.x; if (x === 'print') window.print(); if (x === 'close' || e.target === v) v.remove(); };
+    v.onclick = (e) => { const x = e.target.closest('[data-x]')?.dataset.x; if (x === 'print') downloadPdf(v, doc, e.target.closest('[data-x]')); if (x === 'close' || e.target === v) v.remove(); };
   }
 
   // ---------- acciones ----------
