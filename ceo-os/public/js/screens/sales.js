@@ -68,7 +68,7 @@ export async function render(el, { me, sub, alive }) {
         </div>
         <div class="sp"></div>
         ${tab === 'crm' ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
-        ${tab === 'cat' ? html`${isCeo ? html`${services.some((x) => !x.lv3) ? html`<button class="btn ghost" data-act="addLv3">Actualizar servicios (nivel 3)</button>` : ''}<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
+        ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'quotes' ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
         ${tab === 'esp' && isCeo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
@@ -337,24 +337,6 @@ export async function render(el, { me, sub, alive }) {
     toast('9 ejemplos cargados. Ajusta horas y precios'); paint();
   }
 
-  // Botón temporal: arma el nivel 3 (básico) en cada servicio. No toca categorías ni los niveles 5 a 10.
-  async function addLv3() {
-    const todo = services.filter((x) => !x.lv3);
-    if (!(await confirmAsk(`¿Armar el nivel 3 en ${todo.length} servicios? Los niveles 5 a 10 y las categorías no cambian.`))) return;
-    let n = 0;
-    try {
-      for (const sv of todo) {
-        const base = String(sv.includes5 || '').split('\n').map((x) => x.trim()).filter(Boolean);
-        const doc = { ...sv, lv3: true, tasks: (sv.tasks || []).map((t) => ({ ...t, hours3: t.hours3 ?? Math.max(0.5, Math.round((+t.hours || 0) * 0.6 * 2) / 2) })),
-          includes3: sv.includes3 || base.slice(0, Math.max(2, Math.ceil(base.length * 0.6))).join('\n'), days3: sv.days3 || (+sv.days5 ? Math.max(1, Math.round(+sv.days5 * 0.6)) : null) };
-        if (rates && sv.prices && !sv.price_fixed) { const p = pricesOf(doc, rates); if (p) doc.prices = { ...sv.prices, 3: p[3], 4: p[4] }; }
-        const r = await S.save(doc); services = services.map((x) => (x.id === r.id ? r : x)); n++;
-      }
-      toast(`Listo · nivel 3 en ${n} servicios`);
-    } catch (e) { toast(e.message, true); }
-    paint();
-  }
-
   // ---------- Cotizaciones ----------
   // La cotización guarda todo en quetzales y se muestra en su moneda (rate = 1 Q en esa moneda).
   const CUR = (() => { try { return Intl.supportedValuesOf('currency'); } catch { return ['GTQ', 'USD', 'EUR', 'MXN']; } })();
@@ -533,7 +515,7 @@ export async function render(el, { me, sub, alive }) {
     tagF: (b) => { tagF = b.dataset.t; paint(); },
     catF: (b) => { catF = b.dataset.c; paint(); },
     lead: (b) => openLead(leads.find((l) => l.id === b.dataset.id)),
-    newLead, newService: () => editService(null), rates: editRates, seed, addLv3,
+    newLead, newService: () => editService(null), rates: editRates, seed,
     service: (b, e) => { if (e?.target.closest('[data-stop]')) return; editService(services.find((s) => s.id === b.dataset.id)); },
     newQuote: () => editQuote(null, null),
     newMentor: async () => { const r = await editMentor(null, [...new Set((mentors || []).map((m) => m.industry))]); if (r && !r.deleted) { mentors = [...(mentors || []), r]; paint(); } },
