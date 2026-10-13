@@ -141,11 +141,11 @@ export function svcCost(s, rates, lv = s.level || 5) {
   const cost = (s.tasks || []).reduce((a, t) => { const r = rate(t.role); if (r == null) miss.push(t.role); return a + (r || 0) * hoursAt(t, lv); }, 0);
   return { cost, miss };
 }
-// La complejidad encarece la hora: ×1 en nivel 5 y ×cx10 (1.5 por default) en nivel 10, parejo en medio.
-export const cxAt = (rates, lv = 5) => { const k = +rates?.cx10 || 1.5; return Math.round((1 + ((k - 1) * (lv - 5)) / 5) * 100) / 100; };
+// Margen objetivo (en %): el precio sale del costo, así todos los servicios y niveles dejan el mismo margen.
+export const marginOf = (rates) => { const m = +rates?.margin; return m >= 1 && m <= 95 ? m : 75; };
 const r50 = (n) => Math.round(n / 50) * 50;
 // Precio automático: horas del experto × costo por hora × multiplicador × complejidad del nivel.
-export function svcAuto(s, rates, lv = s.level || 5) { const c = svcCost(s, rates, lv); return c && !c.miss.length && c.cost ? r50(c.cost * (+s.markup || 2.2) * cxAt(rates, lv)) : null; }
+export function svcAuto(s, rates, lv = s.level || 5) { const c = svcCost(s, rates, lv); return c && !c.miss.length && c.cost ? r50(c.cost / (1 - marginOf(rates) / 100)) : null; }
 // Los precios de los 6 niveles, para que el equipo (que no ve costos) también los vea.
 export const pricesOf = (s, rates) => { const o = {}; for (let lv = 5; lv <= 10; lv++) { const p = svcAuto(s, rates, lv); if (p == null) return null; o[lv] = p; } return o; };
 // El precio de un servicio en un nivel: fijo (si se escribió uno, escala con las horas), o el automático guardado.

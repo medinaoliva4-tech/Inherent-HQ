@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, ask, toast, acts, confirmAsk, fdate, today, IC } from '../core.js';
+import { html, raw, mount, col, api, ask, toast, acts, confirmAsk, fdate, today, IC, ico } from '../core.js';
 
 // Roadmap: los pasos grandes (megaproyectos). Cada uno agrupa proyectos y cada proyecto tiene tareas con fecha y hora,
 // que se pueden mandar al calendario de quien lo usa. Todo vive en un solo documento por megaproyecto.
@@ -25,32 +25,32 @@ export async function render(el, { me, alive }) {
     return html`<div class="rmtask ${t.done ? 'done' : ''}" style="display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap">
       <input type="checkbox" ${t.done ? raw('checked') : ''} data-act="doneTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Hecha">
       <div style="flex:1;min-width:180px"><div style="${t.done ? 'text-decoration:line-through;opacity:.55' : ''}">${t.title}</div>
-        <div class="sm ${late ? '' : 'mut'}" style="${late ? 'color:#b3402f' : ''}">${t.date ? html`📅 ${fdate(t.date)}${hhmm(t.time) ? ' · ' + t.time : ''}${t.minutes ? ' · ' + t.minutes + ' min' : ''}${late ? ' · atrasada' : ''}` : 'Sin fecha'}</div></div>
+        <div class="sm ${late ? '' : 'mut'}" style="${late ? 'color:#b3402f' : ''}">${t.date ? html`${ico('cal', 14)} ${fdate(t.date)}${hhmm(t.time) ? ' · ' + t.time : ''}${t.minutes ? ' · ' + t.minutes + ' min' : ''}${late ? ' · atrasada' : ''}` : 'Sin fecha'}</div></div>
       <div class="row" style="gap:6px">
-        ${t.event_link ? html`<a class="btn ghost xs" href="${t.event_link}" target="_blank" rel="noopener noreferrer">${IC.cal} En tu calendario ✓</a>`
+        ${t.event_link ? html`<a class="btn ghost xs" href="${t.event_link}" target="_blank" rel="noopener noreferrer">${IC.cal} ${ico('check', 14)} En tu calendario</a>`
           : html`<button class="btn xs" data-act="cal" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" ${t.date ? '' : raw('disabled title="Ponle fecha primero"')}>${IC.cal} Agregar a mi calendario</button>`}
         <button class="btn ghost xs" data-act="editTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}">Editar</button>
-        <button class="btn ghost xs" data-act="delTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Quitar">🗑</button>
+        <button class="btn ghost xs" data-act="delTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Quitar">${ico('trash', 15)}</button>
       </div></div>`;
   };
   const projectBlock = (m, p) => {
     const ts = [...(p.tasks || [])].sort((a, z) => stamp(a).localeCompare(stamp(z)));
     const lk = projects.find((x) => x.id === p.project_id);
     return html`<div style="margin-top:16px">
-      <div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500">${p.name}</b>${lk ? html`<a class="chip" href="#/operations" style="font-size:11px;text-decoration:none">🔗 ${lk.name}</a>` : ''}<div class="sp"></div>
+      <div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500">${p.name}</b>${lk ? html`<a class="chip" href="#/operations" style="font-size:11px;text-decoration:none">${ico('link', 13)} ${lk.name}</a>` : ''}<div class="sp"></div>
         <button class="btn ghost xs" data-act="addTask" data-m="${m.id}" data-p="${p.id}">+ Tarea</button>
         <button class="btn ghost xs" data-act="editProject" data-m="${m.id}" data-p="${p.id}">Editar</button>
-        <button class="btn ghost xs" data-act="delProject" data-m="${m.id}" data-p="${p.id}" aria-label="Quitar proyecto">🗑</button></div>
+        <button class="btn ghost xs" data-act="delProject" data-m="${m.id}" data-p="${p.id}" aria-label="Quitar proyecto">${ico('trash', 15)}</button></div>
       ${ts.length ? ts.map((t) => taskRow(m, p, t)) : html`<div class="mut sm" style="padding:8px 0">Sin tareas todavía.</div>`}</div>`;
   };
   const megaCard = (m) => {
     const { done, total } = progress(m), pct = total ? Math.round((done / total) * 100) : 0, shut = closed.has(m.id);
     return html`<div class="card" style="margin-bottom:16px">
       <div class="row" style="gap:10px;flex-wrap:wrap;align-items:flex-start">
-        <div style="flex:1;min-width:220px;cursor:pointer" data-act="toggle" data-m="${m.id}"><div class="row" style="gap:8px;flex-wrap:wrap"><span class="mut">${shut ? '▸' : '▾'}</span><h3 style="font-size:20px;font-weight:500;letter-spacing:-.4px;margin:0">${m.name}</h3><span class="chip ${STATUS[m.status] || ''}">${m.status || 'Activo'}</span></div>
+        <div style="flex:1;min-width:220px;cursor:pointer" data-act="toggle" data-m="${m.id}"><div class="row" style="gap:8px;flex-wrap:wrap"><span class="mut">${ico(shut ? 'right' : 'down', 16)}</span><h3 style="font-size:20px;font-weight:500;letter-spacing:-.4px;margin:0">${m.name}</h3><span class="chip ${STATUS[m.status] || ''}">${m.status || 'Activo'}</span></div>
           ${m.why ? html`<div class="mut sm" style="margin-top:4px">${m.why}</div>` : ''}
           <div class="mut sm" style="margin-top:4px">${m.start || m.end ? `${m.start ? fdate(m.start) : '…'} → ${m.end ? fdate(m.end) : '…'} · ` : ''}${(m.projects || []).length} proyecto${(m.projects || []).length === 1 ? '' : 's'} · ${done}/${total} tareas</div></div>
-        <div class="row" style="gap:6px"><button class="btn xs" data-act="addProject" data-m="${m.id}">+ Proyecto</button><button class="btn ghost xs" data-act="editMega" data-m="${m.id}">Editar</button><button class="btn ghost xs" data-act="delMega" data-m="${m.id}" aria-label="Quitar megaproyecto">🗑</button></div></div>
+        <div class="row" style="gap:6px"><button class="btn xs" data-act="addProject" data-m="${m.id}">+ Proyecto</button><button class="btn ghost xs" data-act="editMega" data-m="${m.id}">Editar</button><button class="btn ghost xs" data-act="delMega" data-m="${m.id}" aria-label="Quitar megaproyecto">${ico('trash', 15)}</button></div></div>
       <div style="height:6px;border-radius:6px;background:var(--line);margin-top:12px;overflow:hidden"><div style="height:100%;width:${pct}%;background:#87684e"></div></div>
       ${shut ? '' : ((m.projects || []).length ? (m.projects || []).map((p) => projectBlock(m, p)) : html`<div class="mut sm" style="margin-top:14px">Agrega los proyectos que forman este paso con «+ Proyecto».</div>`)}</div>`;
   };
@@ -84,7 +84,7 @@ export async function render(el, { me, alive }) {
     toggle: (b) => { const id = b.dataset.m; closed.has(id) ? closed.delete(id) : closed.add(id); paint(); },
     newMega: async () => {
       const v = await megaForm(null); if (!v) return;
-      try { const r = await R.create({ name: v.name, why: v.why || '', start: v.start || '', end: v.end || '', status: v.status || 'Activo', projects: [] }); megas = [...megas, r]; paint(); toast('Megaproyecto creado ✅'); } catch (e) { toast(e.message, true); }
+      try { const r = await R.create({ name: v.name, why: v.why || '', start: v.start || '', end: v.end || '', status: v.status || 'Activo', projects: [] }); megas = [...megas, r]; paint(); toast('Megaproyecto creado'); } catch (e) { toast(e.message, true); }
     },
     editMega: async (b) => { const m = megas.find((x) => x.id === b.dataset.m), v = await megaForm(m); if (!v) return; if (await save({ ...m, name: v.name, why: v.why || '', start: v.start || '', end: v.end || '', status: v.status || 'Activo' })) paint(); },
     delMega: async (b) => {
@@ -111,7 +111,7 @@ export async function render(el, { me, alive }) {
       const { m, p, t } = find(b.dataset.m, b.dataset.p, b.dataset.t); b.disabled = true;
       try {
         const e = await api('google/calendar', { method: 'POST', body: { summary: `${m.name} · ${t.title}`, date: t.date, time: hhmm(t.time) || '09:00', minutes: t.minutes || 60, description: `Roadmap › ${m.name} › ${p.name}\n\nInherent OS` } });
-        if (await save({ ...m, projects: m.projects.map((x) => (x.id === p.id ? { ...x, tasks: x.tasks.map((y) => (y.id === t.id ? { ...y, event_link: e.link || '#' } : y)) } : x)) })) { paint(); toast('Agregada a tu calendario ✅'); }
+        if (await save({ ...m, projects: m.projects.map((x) => (x.id === p.id ? { ...x, tasks: x.tasks.map((y) => (y.id === t.id ? { ...y, event_link: e.link || '#' } : y)) } : x)) })) { paint(); toast('Agregada a tu calendario'); }
       } catch (err) { b.disabled = false; toast(err.message, true); }
     },
   });

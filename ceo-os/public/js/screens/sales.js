@@ -1,5 +1,5 @@
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList, swap } from '../core.js';
-import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, cxAt, GROWTH, growthText, includesAt, daysAt } from '../cycle.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList, swap, ico } from '../core.js';
+import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, marginOf, GROWTH, growthText, includesAt, daysAt } from '../cycle.js';
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 import { packagesTab } from '../paquetes.js';
@@ -51,7 +51,7 @@ export async function render(el, { me, sub, alive }) {
   const cardBody = (s, lv) => { const p = priceAt(s, lv), d = daysAt(s, lv), inc = includesAt(s, lv);
     return html`<div class="row sm"><b style="font-weight:500">${lvName(lv)} · ${lv}</b><span class="mut">&nbsp;· ${svcHours(s, lv)} h${d ? ` · ${d} días` : ''}</span><div class="sp"></div><b style="font-size:22px;font-weight:500;letter-spacing:-.5px">${p ? Q(p) : '—'}</b></div>
       ${inc.length ? html`<ul class="svinc">${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}
-      ${(() => { const c = costOf(s, lv); return c ? html`<div class="mut sm" style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px">🔒 Costo ${c.miss.length ? '⚠️ incompleto' : Q(c.cost)} · hora ×${cxAt(rates, lv)} por complejidad</div>` : ''; })()}`; };
+      ${(() => { const c = costOf(s, lv); if (!c) return ''; const mg = p && !c.miss.length ? Math.round((1 - c.cost / p) * 100) : null; return html`<div class="mut sm" style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px">${ico('lock', 13)} Costo ${c.miss.length ? 'incompleto' : Q(c.cost)}${mg != null ? ` · Margen ${mg}%` : ''}</div>`; })()}`; };
 
   // ---------- layout ----------
   function paint() {
@@ -126,7 +126,7 @@ export async function render(el, { me, sub, alive }) {
   }
 
   async function saveLead(l) {
-    try { const s = await L.save(l); leads = leads.map((x) => (x.id === s.id ? s : x)); toast('Guardado ✅'); return s; }
+    try { const s = await L.save(l); leads = leads.map((x) => (x.id === s.id ? s : x)); toast('Guardado'); return s; }
     catch (e) { toast(e.message, true); return null; }
   }
 
@@ -149,7 +149,7 @@ export async function render(el, { me, sub, alive }) {
           <div><label class="f">Correo</label><input class="in" name="email" type="email" value="${l.email || ''}"></div></div>
         <div><label class="f">Notas</label><textarea class="in" name="notes">${l.notes || ''}</textarea></div>
       </form>
-      <div class="row" style="margin:16px 0"><button class="btn" data-act="save">Guardar</button><button class="btn ghost" data-act="quote">Crear cotización</button><div class="sp"></div><button class="btn ghost" data-act="del" title="Eliminar">🗑</button></div>
+      <div class="row" style="margin:16px 0"><button class="btn" data-act="save">Guardar</button><button class="btn ghost" data-act="quote">Crear cotización</button><div class="sp"></div><button class="btn ghost" data-act="del" title="Eliminar">${ico('trash', 16)}</button></div>
       <b class="sm">Historial</b>
       <div class="row" style="margin:8px 0"><input class="in" id="note" placeholder="Registrar llamada, mensaje o nota…"><button class="btn ghost" data-act="note">Agregar</button></div>
       ${(l.activity || []).slice().reverse().map((a) => html`<div class="comment"><span class="av">${(a.who || '?')[0]}</span><p><span class="mut sm">${fdate(a.at.slice(0, 10))} · ${a.who}</span><br>${a.text}</p></div>`)}`,
@@ -200,15 +200,15 @@ export async function render(el, { me, sub, alive }) {
         : plansErr ? html`<div class="warnbox" style="margin-bottom:14px">No pude leer los planes del repo: ${plansErr}</div>` : ''}
       <div class="sec-title"><h2>Servicios</h2><span class="mut sm">Mueve el nivel de entrega de cada uno para ver su precio y lo que incluye</span></div>
       <div class="row" style="margin-bottom:14px;gap:8px;flex-wrap:wrap">${cats.map((c) => html`<button class="chip ${catF === c ? 'dark' : ''}" data-act="catF" data-c="${c}" style="padding:8px 14px;font-size:13px">${c}</button>`)}</div>
-      ${isCeo && rates && (rates.roles || []).some((r) => r.rate == null) ? html`<div class="warnbox" style="margin-bottom:14px">⚠️ Faltan costos por hora de: ${(rates.roles || []).filter((r) => r.rate == null).map((r) => r.role).join(', ')}. Sin eso no hay costo ni precio sugerido.</div>` : ''}
+      ${isCeo && rates && (rates.roles || []).some((r) => r.rate == null) ? html`<div class="warnbox" style="margin-bottom:14px">${ico('alert')} Faltan costos por hora de: ${(rates.roles || []).filter((r) => r.rate == null).map((r) => r.role).join(', ')}. Sin eso no hay costo ni precio sugerido.</div>` : ''}
       ${!services.length ? html`<div class="empty"><b>Todavía no hay servicios</b>Crea uno con «+ Nuevo servicio», o carga ejemplos para editarlos.<div style="margin-top:14px"><button class="btn ghost" data-act="seed">Cargar 9 ejemplos para editar</button></div></div>`
       : html`<div class="grid g3">${list.map((s) => { const lv = cardLv[s.id] || s.level || 5, g = growthText({ type: s.growth_type, pct: s.growth_pct }); return html`<div class="card svcard" style="cursor:pointer" data-act="service" data-id="${s.id}">
         <div class="row"><span class="chip ${CATC[s.category] ?? ''}">${s.category || 'Sin categoría'}</span><div class="sp"></div><span class="mut sm">${s.unit || 'proyecto'}${s.price_fixed ? ' · precio fijo' : ''}</span></div>
         <h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin:12px 0 4px">${s.name}</h3><div class="mut sm">${s.description || ''}</div>
-        ${g ? html`<div class="sm svgrow">📈 + ${g}</div>` : ''}
+        ${g ? html`<div class="sm svgrow">${ico('trend', 14)} + ${g}</div>` : ''}
         <div class="svlv" data-stop><input type="range" min="5" max="10" step="1" value="${lv}" data-cardlv="${s.id}" aria-label="Nivel de entrega"><div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div></div>
         <div data-cardbody="${s.id}">${cardBody(s, lv)}</div>
-        ${sopOf(s) ? html`<a class="sm" data-stop href="#/library/${sopOf(s).folder_id || '_'}/${sopOf(s).id}" style="display:inline-block;margin-top:10px;color:#87684e;font-weight:500">📋 Ver el SOP de este servicio →</a>` : ''}
+        ${sopOf(s) ? html`<a class="sm" data-stop href="#/library/${sopOf(s).folder_id || '_'}/${sopOf(s).id}" style="display:inline-block;margin-top:10px;color:#87684e;font-weight:500">${ico('doc', 15)} Ver el SOP de este servicio ${ico('right', 14)}</a>` : ''}
 </div>`; })}</div>`}`);
   }
 
@@ -224,7 +224,7 @@ export async function render(el, { me, sub, alive }) {
     let fresh = true; // la primera vez no se lee el formulario: lo que queda montado es el de la tarjeta anterior
     const draw = () => {
       const keep = fresh ? {} : curForm(); fresh = false; const fv = { ...(s || {}), ...keep };
-      const cur = { ...(s || {}), tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2) };
+      const cur = { ...(s || {}), tasks, level };
       const c = costOf(cur, level), sug = suggested(cur, level);
       drawer(html`<div class="row"><span class="chip">Servicio</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
         <h2>${s ? 'Editar servicio' : 'Nuevo servicio'}</h2>
@@ -247,13 +247,12 @@ export async function render(el, { me, sub, alive }) {
           <input type="range" min="5" max="10" step="1" value="${level}" id="svlv" style="width:100%;margin:10px 0 4px">
           <div id="svprev">${prev(fv)}</div></div>
         <button class="btn ghost" data-act="addTask" style="padding:8px 14px">+ Rol</button>
-        ${isCeo ? html`<div class="card glass" style="margin-top:18px;padding:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><div class="mut sm">Costo en este nivel</div><b style="font-weight:500">${c ? (c.miss.length ? `⚠️ falta costo/h de ${c.miss.join(', ')}` : Q(c.cost)) : '—'}</b></div>
-          <div><div class="mut sm">Complejidad</div><b style="font-weight:500">hora ×${cxAt(rates, level)}</b></div><div class="sp"></div>
-          <div><label class="f">Multiplicador</label><input class="in" id="svmk" type="number" step="0.1" value="${cur.markup}" style="width:90px"></div>
+        ${isCeo ? html`<div class="card glass" style="margin-top:18px;padding:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><div class="mut sm">Costo en este nivel</div><b style="font-weight:500">${c ? (c.miss.length ? `falta costo/h de ${c.miss.join(', ')}` : Q(c.cost)) : '—'}</b></div>
+          <div><div class="mut sm">Margen objetivo</div><b style="font-weight:500">${marginOf(rates)}%</b></div><div class="sp"></div>
           <div style="text-align:right"><div class="mut sm">Precio automático</div><b style="font-size:22px;font-weight:500">${sug ? Q(sug) : '—'}</b></div></div>
-          <div class="mut sm" style="margin-top:8px">= horas del experto × costo por hora × multiplicador × complejidad. Se recalcula solo si cambian las horas o los costos.</div></div>` : ''}
+          <div class="mut sm" style="margin-top:8px">= costo ÷ (1 − margen). El margen se cambia en «Costos por hora» y es el mismo para todos los servicios.</div></div>` : ''}
         <div style="margin-top:14px"><label class="f">Precio fijo (opcional · déjalo vacío para que sea automático)</label><input class="in" id="svprice" type="number" value="${s?.price_fixed ?? (s?.price && !s?.prices ? s.price : '')}" placeholder="${sug ? 'Automático: ' + sug : ''}"></div>
-        <div class="row" style="margin-top:18px"><button class="btn" data-act="saveSvc">Guardar</button><div class="sp"></div>${s ? html`<button class="btn ghost" data-act="delSvc">🗑</button>` : ''}</div>`,
+        <div class="row" style="margin-top:18px"><button class="btn" data-act="saveSvc">Guardar</button><div class="sp"></div>${s ? html`<button class="btn ghost" data-act="delSvc" aria-label="Eliminar">${ico('trash', 16)}</button>` : ''}</div>`,
       {
         addTask: () => { sync(); tasks.push({ role: roles[0], hours: 1 }); draw(); },
         rmTask: (b) => { sync(); tasks.splice(+b.dataset.i, 1); draw(); },
@@ -262,16 +261,15 @@ export async function render(el, { me, sub, alive }) {
           const f = Object.fromEntries(new FormData($('#sf')));
           if (!f.name) return toast('Falta el nombre', true);
           const fixed = $('#svprice').value === '' ? null : +$('#svprice').value;
-          const doc = { ...(s || {}), ...f, growth_pct: f.growth_type ? +f.growth_pct || 0 : null, tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2), price_fixed: fixed };
+          const doc = { ...(s || {}), ...f, growth_pct: f.growth_type ? +f.growth_pct || 0 : null, tasks, level, price_fixed: fixed };
           if (isCeo && rates) doc.prices = pricesOf(doc, rates);
           doc.price = fixed ?? doc.prices?.[level] ?? s?.price ?? null;
-          try { const r = s ? await S.save(doc) : await S.create(doc); services = s ? services.map((x) => (x.id === r.id ? r : x)) : [...services, r]; toast('Guardado ✅'); closeDrawer(); after ? after(r) : paint(); }
+          try { const r = s ? await S.save(doc) : await S.create(doc); services = s ? services.map((x) => (x.id === r.id ? r : x)) : [...services, r]; toast('Guardado'); closeDrawer(); after ? after(r) : paint(); }
           catch (e) { toast(e.message, true); }
         },
         delSvc: async () => { if (!(await confirmAsk(`¿Eliminar ${s.name}?`))) return; await S.remove(s.id); services = services.filter((x) => x.id !== s.id); closeDrawer(); paint(); },
       });
       $$('[data-f]', $('#drawer')).forEach((inp) => inp.addEventListener('change', () => { sync(); draw(); }));
-      $('#svmk')?.addEventListener('change', draw);
       $$('#sf [name=includes5], #sf [name=includes10], #sf [name=days5], #sf [name=days10]').forEach((x) => x.addEventListener('input', () => mount($('#svprev'), prev({ ...(s || {}), ...curForm() }))));
       $('#svlv').addEventListener('input', (e) => { sync(); level = +e.target.value; const y = $('#drawer').scrollTop; draw(); $('#drawer').scrollTop = y; });
     };
@@ -281,12 +279,12 @@ export async function render(el, { me, sub, alive }) {
 
   async function editRates() {
     let roles = (rates?.roles || DEFAULT_ROLES.map(([role, rate]) => ({ role, rate }))).map((r) => ({ ...r }));
-    const draw = () => drawer(html`<div class="row"><span class="chip dark">🔒 Solo CEO</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+    const draw = () => drawer(html`<div class="row"><span class="chip dark">${ico('lock', 13)} Solo CEO</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
       <h2>Costos por hora</h2><p class="mut sm" style="margin-top:6px">Lo que le cuesta a Inherent una hora de cada rol. Con esto se calcula el costo de cada servicio.</p>
-      <div style="margin-top:18px">${roles.map((r, i) => html`<div class="row" style="margin-bottom:8px"><input class="in" data-i="${i}" data-f="role" value="${r.role}"><span class="mut">Q</span><input class="in" style="max-width:110px" type="number" data-i="${i}" data-f="rate" value="${r.rate ?? ''}" placeholder="⚠️"><span class="mut sm">/h</span><button class="btn ghost" data-act="rm" data-i="${i}" style="padding:8px 12px">✕</button></div>`)}</div>
+      <div style="margin-top:18px">${roles.map((r, i) => html`<div class="row" style="margin-bottom:8px"><input class="in" data-i="${i}" data-f="role" value="${r.role}"><span class="mut">Q</span><input class="in" style="max-width:110px" type="number" data-i="${i}" data-f="rate" value="${r.rate ?? ''}" placeholder="falta"><span class="mut sm">/h</span><button class="btn ghost" data-act="rm" data-i="${i}" style="padding:8px 12px">✕</button></div>`)}</div>
       <button class="btn ghost" data-act="add" style="padding:8px 14px">+ Rol</button>
-      <div class="card glass" style="margin-top:18px;padding:14px"><b style="font-weight:500">Complejidad</b><p class="mut sm" style="margin:4px 0 10px">Una hora de trabajo fuerte (nivel 10) vale más que una sencilla (nivel 5). En medio sube parejo.</p>
-        <div class="row" style="gap:8px"><span class="sm">La hora en nivel 10 vale</span><span class="mut">×</span><input class="in" id="cx10" type="number" step="0.05" min="1" value="${rates?.cx10 ?? 1.5}" style="max-width:90px"><span class="mut sm">la del nivel 5</span></div></div>
+      <div class="card glass" style="margin-top:18px;padding:14px"><b style="font-weight:500">Margen</b><p class="mut sm" style="margin:4px 0 10px">El precio de todos los servicios sale del costo para dejar este margen: precio = costo ÷ (1 − margen). El rango permitido es de 70 a 80%.</p>
+        <div class="row" style="gap:8px"><span class="sm">Margen</span><input class="in" id="margin" type="number" step="1" min="1" max="95" value="${marginOf(rates)}" style="max-width:90px"><span class="mut">%</span></div></div>
       <div class="row" style="margin-top:18px"><button class="btn" data-act="saveRates">Guardar</button></div>`,
     {
       add: () => { sync(); roles.push({ role: '', rate: null }); draw(); },
@@ -294,13 +292,13 @@ export async function render(el, { me, sub, alive }) {
       saveRates: async () => {
         sync();
         const clean = roles.filter((r) => r.role.trim()).map((r) => ({ role: r.role.trim(), rate: r.rate === '' || r.rate == null || isNaN(r.rate) ? null : +r.rate }));
-        const cx10 = Math.max(1, +$('#cx10').value || 1.5);
-        try { rates = rates ? await R.save({ ...rates, roles: clean, cx10 }) : await R.create({ id: 'default', roles: clean, cx10 });
+        const margin = Math.min(95, Math.max(1, +$('#margin').value || 75));
+        try { rates = rates ? await R.save({ ...rates, roles: clean, margin }) : await R.create({ id: 'default', roles: clean, margin });
           // Los precios automáticos se recalculan con los costos nuevos (los de precio fijo no se tocan).
           let n = 0;
           for (const sv of services) { if (sv.price_fixed || (sv.price && !sv.prices)) continue; const prices = pricesOf(sv, rates); if (JSON.stringify(prices) === JSON.stringify(sv.prices || null)) continue;
             try { const r = await S.save({ ...sv, prices, price: prices?.[sv.level || 5] ?? sv.price }); services = services.map((x) => (x.id === r.id ? r : x)); n++; } catch {} }
-          toast(`Costos guardados ✅${n ? ` · ${n} precio${n === 1 ? '' : 's'} recalculado${n === 1 ? '' : 's'}` : ''}`); closeDrawer(); paint(); }
+          toast(`Costos guardados${n ? ` · ${n} precio${n === 1 ? '' : 's'} recalculado${n === 1 ? '' : 's'}` : ''}`); closeDrawer(); paint(); }
         catch (e) { toast(e.message, true); }
       },
     });
@@ -321,7 +319,7 @@ export async function render(el, { me, sub, alive }) {
       ['Producción', 'Sesión de fotos de producto', '30 fotos editadas', [['Fotografía', 3], ['Diseño', 4]]],
     ];
     for (const [category, name, description, t] of EX) services.push(await S.create({ category, name, description, unit: 'proyecto', markup: 2.2, price: null, example: true, tasks: t.map(([role, hours]) => ({ role, hours })) }));
-    toast('9 ejemplos cargados. Ajusta horas y precios ✅'); paint();
+    toast('9 ejemplos cargados. Ajusta horas y precios'); paint();
   }
 
   // ---------- Cotizaciones ----------
@@ -377,7 +375,7 @@ export async function render(el, { me, sub, alive }) {
                   <input type="range" min="5" max="10" step="1" value="${lv}" data-qlv="${i}" style="width:100%">
                   <div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div>
                   ${includesAt(sv, lv).length || daysAt(sv, lv) ? html`<div class="sm" style="margin-top:8px" data-inc="${i}">${incHtml(sv, lv)}</div>` : ''}</div>`; })()}
-              ${it.growth ? html`<div class="qgrow"><span>📈 + fee por crecimiento</span><input class="in" type="number" step="0.5" data-i="${i}" data-f="growth_pct" value="${it.growth.pct}"><span class="mut">% de ${GROWTH[it.growth.type] || it.growth.type}</span><button class="btn ghost xs" data-act="rmGrowth" data-i="${i}" title="Quitar el fee">✕</button></div>` : ''}</div>`)}
+              ${it.growth ? html`<div class="qgrow"><span>${ico('trend', 14)} + fee por crecimiento</span><input class="in" type="number" step="0.5" data-i="${i}" data-f="growth_pct" value="${it.growth.pct}"><span class="mut">% de ${GROWTH[it.growth.type] || it.growth.type}</span><button class="btn ghost xs" data-act="rmGrowth" data-i="${i}" title="Quitar el fee">✕</button></div>` : ''}</div>`)}
             <div class="row" style="margin-top:10px"><select class="in" id="addSvc"><option value="">+ Agregar del catálogo…</option>
               ${plans ? html`<optgroup label="Planes (mensual)">${plans.plans.map((p) => html`<option value="plan:${p.id}">Plan ${p.name} — ${Q(p.precio)}</option>`)}</optgroup>` : ''}
               ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">✚ Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
@@ -391,9 +389,9 @@ export async function render(el, { me, sub, alive }) {
             <div class="chead"><div class="ico">◎</div><h3>Total<br><span class="lbl">${doc.client || 'Sin cliente'}</span></h3></div>
             <div class="big" style="font-size:52px">${money(doc, tt)}</div>
             <div class="split"><div><span class="lbl">Subtotal</span><b>${money(doc, st)}</b></div>${quoteDays(doc) ? html`<div><span class="lbl">Tiempo</span><b>${quoteDays(doc)} días</b></div>` : ''}${doc.discount_pct ? html`<div><span class="lbl">Descuento</span><b>-${doc.discount_pct}%</b></div>` : ''}
-              ${cost != null ? html`<div><span class="lbl">🔒 Costo</span><b>${money(doc, cost)}</b></div><div><span class="lbl">🔒 Margen</span><b style="color:#faf6ee">${tt ? Math.round(((tt - cost) / tt) * 100) + '%' : '—'}</b></div>` : ''}</div>
-            ${fees(doc).length ? html`<div class="qfees"><span class="lbl">+ Fee por crecimiento (variable, se suma cada mes)</span>${fees(doc).map((i) => html`<div>📈 ${growthText(i.growth)} <span style="opacity:.7">· ${i.name}</span></div>`)}</div>` : ''}
-            <div class="foot" style="margin-top:22px;opacity:1"><button class="btn cream" data-act="pdf">↓ Ver PDF</button>${qq ? html`<button class="btn ghost" data-act="delQ" style="background:transparent;color:#fdfaf3;border-color:rgba(253,250,243,.4)">🗑</button>` : ''}</div>
+              ${cost != null ? (() => { const mg = tt ? Math.round(((tt - cost) / tt) * 100) : null; return html`<div><span class="lbl">${ico('lock', 12)} Costo</span><b>${money(doc, cost)}</b></div><div><span class="lbl">${ico('lock', 12)} Margen</span><b style="color:#faf6ee">${mg != null ? mg + '%' : '—'}</b>${mg != null && mg < 70 ? html`<span class="lbl" style="display:block;margin-top:4px">${ico('alert', 12)} Bajo el mínimo de 70%</span>` : ''}</div>`; })() : ''}</div>
+            ${fees(doc).length ? html`<div class="qfees"><span class="lbl">+ Fee por crecimiento (variable, se suma cada mes)</span>${fees(doc).map((i) => html`<div>${ico('trend', 14)} ${growthText(i.growth)} <span style="opacity:.7">· ${i.name}</span></div>`)}</div>` : ''}
+            <div class="foot" style="margin-top:22px;opacity:1"><button class="btn cream" data-act="pdf">↓ Ver PDF</button>${qq ? html`<button class="btn ghost" data-act="delQ" style="background:transparent;color:#fdfaf3;border-color:rgba(253,250,243,.4)">${ico('trash', 16)}</button>` : ''}</div>
           </div>
         </div>`);
       $('#addSvc', el).onchange = async (e) => {
@@ -401,7 +399,7 @@ export async function render(el, { me, sub, alive }) {
         if (v === 'new') {
           const n = await ask('Nuevo servicio', [{ k: 'name', l: 'Nombre', req: true }, { k: 'category', l: 'Categoría', t: 'select', opts: CATS.map((c) => [c, c]), half: true }, { k: 'unit', l: 'Se cobra por', t: 'select', opts: [['proyecto', 'Proyecto'], ['mes', 'Mes'], ['pieza', 'Pieza'], ['hora', 'Hora']], half: true }, { k: 'price', l: 'Precio (Q)', t: 'number', req: true }, { k: 'description', l: 'Descripción (sale en la cotización)', t: 'textarea' }]);
           if (!n) return draw();
-          try { const r = await S.create({ ...n, price: +n.price || 0, tasks: [] }); services.push(r); doc.items.push({ service_id: r.id, name: r.name, description: r.description || '', qty: 1, price: r.price }); toast('Servicio creado y agregado ✅ · Sus horas se editan en el Catálogo'); }
+          try { const r = await S.create({ ...n, price: +n.price || 0, tasks: [] }); services.push(r); doc.items.push({ service_id: r.id, name: r.name, description: r.description || '', qty: 1, price: r.price }); toast('Servicio creado y agregado · Sus horas se editan en el Catálogo'); }
           catch (err) { toast(err.message, true); }
           return draw();
         }
@@ -439,7 +437,7 @@ export async function render(el, { me, sub, alive }) {
         try { let r = doc.id ? await C.save(doc) : await C.create(doc);
           if (go) { await api('flow/quote/' + r.id, { method: 'POST', body: { action: STEP[want] } }); r = await C.get(r.id); }
           quotes = quotes.some((x) => x.id === r.id) ? quotes.map((x) => (x.id === r.id ? r : x)) : [...quotes, r]; doc = JSON.parse(JSON.stringify(r));
-          toast(go && want === 'Aceptada' ? 'Aprobada ✅ · se creó la tarea para subir el pago' : 'Cotización guardada ✅'); draw(); }
+          toast(go && want === 'Aceptada' ? 'Aprobada · se creó la tarea para subir el pago' : 'Cotización guardada'); draw(); }
         catch (e) { toast(e.message, true); }
       },
       pdf: () => { sync(); showPdf(doc); },
@@ -450,7 +448,7 @@ export async function render(el, { me, sub, alive }) {
         const items = doc.items.filter((i) => i.service_id).map((i) => { const sv = services.find((x) => x.id === i.service_id); if (!sv) return null; const lv = i.level || sv.level || 5;
           return { id: sv.id, name: sv.name, level: lv, days: daysAt(sv, lv) || null, includes: includesAt(sv, lv), hours: svcHours(sv, lv) * (+i.qty || 1), roles: (sv.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * (+i.qty || 1) })), price: (+i.price || 0) * (+i.qty || 1) }; }).filter(Boolean);
         const r = await newProject({ team: await teamList(), me, projects: await col('projects').list(), tasks: [], pre: { kind: 'Custom', items, name: `${doc.client} · ${doc.number}`, quote_id: doc.id } });
-        if (r) { if (doc.status !== 'Aceptada') { doc.status = 'Aceptada'; try { const q = await C.save(doc); doc = JSON.parse(JSON.stringify(q)); quotes = quotes.map((x) => (x.id === q.id ? q : x)); } catch {} } toast('Proyecto creado desde la cotización ✅'); location.hash = '/operations/pipe'; }
+        if (r) { if (doc.status !== 'Aceptada') { doc.status = 'Aceptada'; try { const q = await C.save(doc); doc = JSON.parse(JSON.stringify(q)); quotes = quotes.map((x) => (x.id === q.id ? q : x)); } catch {} } toast('Proyecto creado desde la cotización'); location.hash = '/operations/pipe'; }
       },
       delQ: async () => { if (!(await confirmAsk(`¿Eliminar ${doc.number}?`))) return; await C.remove(doc.id); quotes = quotes.filter((x) => x.id !== doc.id); paint(); },
     };
