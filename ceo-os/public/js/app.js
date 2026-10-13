@@ -16,6 +16,10 @@ const NAV = [
 ];
 const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal' };
 const root = $('#root');
+const SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>';
+const MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+const setTheme = (dark) => { if (dark) document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme; };
+try { setTheme(localStorage.getItem('theme') === 'dark'); } catch {}
 export let me = null;
 let renderGen = 0;
 
@@ -57,6 +61,7 @@ function shell() {
       <div class="brand"><div class="emb">${emblem()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
       <nav class="nav">${allowed.map(([k, l, d]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`)}</nav>
       <div class="sp"></div>
+      <button class="themebtn" id="themebtn" title="Modo noche" aria-label="Cambiar modo día / noche">${raw(document.documentElement.dataset.theme === 'dark' ? SUN : MOON)}</button>
       <div class="avatar" id="avatar" title="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
     <main id="main"></main>
@@ -64,6 +69,8 @@ function shell() {
   $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (b) location.hash = '/' + b.dataset.go; };
   // Tocar tu foto abre tu perfil (foto, cumpleaños, conexiones, cerrar sesión).
   $('#avatar').onclick = () => { location.hash = '/me'; };
+  // Modo noche: se guarda en este navegador.
+  $('#themebtn').onclick = () => { const dark = document.documentElement.dataset.theme !== 'dark'; setTheme(dark); try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {} $('#themebtn').innerHTML = dark ? SUN : MOON; };
 }
 
 async function render() {
