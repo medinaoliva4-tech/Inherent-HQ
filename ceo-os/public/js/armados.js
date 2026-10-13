@@ -134,23 +134,8 @@ export async function createBundles({ services, rates, industries = [], onQuote 
         : html`<div class="mut sm" style="margin-top:10px">Todavía no tiene servicios del catálogo.</div>`}</div>`;
   }
 
-  // Carga única (botón temporal): a cada paquete por industria le crea sus servicios según lo que promete.
-  // Lo que ningún servicio del catálogo cubre entra como «servicio propio» sin horas, para que se las pongas.
-  async function importAll(P, IND, map) {
-    const key = (x) => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '');
-    const byName = Object.fromEntries(services.map((s) => [key(s.name), s])); let made = 0, miss = new Set();
-    for (const p of P) {
-      if (bundles.some((b) => b.pkg === p.id) || !map[p.id]) continue;
-      const m = map[p.id], lines = [];
-      for (const x of m.s) { const s = byName[key(x.n)]; if (s) lines.push({ id: uid(), type: 'service', service_id: s.id, level: 5, qty: 1, covers: x.i }); else { miss.add(x.n); lines.push({ id: uid(), type: 'custom', name: x.n, roles: [], covers: x.i }); } }
-      m.u.forEach((n) => lines.push({ id: uid(), type: 'custom', name: n, roles: [], covers: [n] }));
-      bundles.push(await B.create({ name: p.n, industry: IND[p.ind] || '', pkg: p.id, desc: '', lines, phases: [] })); made++;
-    }
-    return { made, miss: [...miss] };
-  }
-
   return {
-    get list() { return bundles; }, importAll, rates, totals, servicesCard, margin,
+    get list() { return bundles; }, rates, totals, servicesCard, margin,
     edit: (orig, done) => { onDone = done || (() => {}); edit(orig); },
     quote: (b) => onQuote(quoteOf(b, totals(b))),
   };
