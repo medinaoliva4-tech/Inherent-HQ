@@ -501,11 +501,11 @@ export async function render(el, { me, sub, alive }) {
         i2.onerror = ok; i2.src = im.src; })));
       const safe = (t) => String(t || '').replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
       const name = `Inherent cotización - ${safe(doc.client) || 'Cliente'} - ${doc.date || today()}.pdf`;
-      // Hoja con proporción carta y 800 px de ancho útil (el generador mide la hoja en puntos: 282.2 mm = 800 px).
-      const blob = window.html2pdf().set({ margin: [13, 0, 16, 0], filename: name, image: { type: 'jpeg', quality: 0.95 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff', windowWidth: 1100, useCORS: true, scrollX: 0, scrollY: 0, x: 0, y: 0 },
-        jsPDF: { unit: 'mm', format: [282.2, 365.2], orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'], avoid: ['.qget', '.qgrow', '.qgr', '.qwhy', '.qsum', 'tr', 'thead', '.qto', '.qh', '.qsec > p', '.qsec li', '.qnot', '.lbl2', 'ol', 'table'] } }).from(clone).outputPdf('blob');
+      // Hoja carta real: el generador la mide en 612 px de ancho, así que su caja se ensancha a 800 px y la imagen se reduce a la hoja.
+      const blob = window.html2pdf().set({ margin: [10, 0, 12, 0], filename: name, image: { type: 'jpeg', quality: 0.95 },
+        html2canvas: { scale: 2, backgroundColor: '#ffffff', windowWidth: Math.max(innerWidth, 1100), useCORS: true, scrollX: 0, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'], avoid: ['.qget', '.qgrow', '.qgr', '.qwhy', '.qsum', 'tr', 'thead', '.qto', '.qh', '.qsec > p', '.qsec li', '.qnot', '.lbl2', 'ol', 'table'] } }).from(clone).toContainer().then(function () { this.prop.container.style.width = '800px'; }).toCanvas().toPdf().outputPdf('blob');
       const pdf = await blob, a = document.createElement('a'); a.href = URL.createObjectURL(pdf); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
       box.remove();
     } catch (e) { toast(e.message || 'No se pudo generar el PDF', true); }
