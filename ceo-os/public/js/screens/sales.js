@@ -3,7 +3,7 @@ import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, cxAt, GROWTH, 
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 import { packagesTab } from '../paquetes.js';
-import { repararCatalogo } from '../reparar-catalogo.js';
+import { ajustarWhatsApp } from '../ajuste-whatsapp.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
@@ -68,7 +68,7 @@ export async function render(el, { me, sub, alive }) {
         </div>
         <div class="sp"></div>
         ${tab === 'crm' ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
-        ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="repair">Restaurar catálogo</button><button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
+        ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="repair">Ajustar Agente de WhatsApp</button><button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'quotes' ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
         ${tab === 'esp' && isCeo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
@@ -326,11 +326,9 @@ export async function render(el, { me, sub, alive }) {
   }
 
   async function repair() {
-    if (!(await confirmAsk('¿Restaurar el catálogo? Devuelve el nombre, las horas y el texto de los servicios que se mezclaron, y da horas a los nuevos. No toca precios fijos ni lo que ya está bien.'))) return;
-    try {
-      const r = await repararCatalogo(S, services, rates); services = r.services;
-      toast(`Listo ✅ · ${r.restaurados} servicios restaurados${r.faltan.length ? ` · no encontré: ${r.faltan.join(', ')}` : ''}`); paint();
-    } catch (e) { toast(e.message, true); paint(); }
+    if (!(await confirmAsk('¿Dejar el Agente de WhatsApp con 6 h en nivel 5 y 18 h en nivel 10? Solo cambia ese servicio.'))) return;
+    try { const r = await ajustarWhatsApp(S, services, rates); services = r.services; toast('Listo ✅ · Agente de WhatsApp ajustado'); paint(); }
+    catch (e) { toast(e.message, true); paint(); }
   }
 
   // ---------- Cotizaciones ----------
