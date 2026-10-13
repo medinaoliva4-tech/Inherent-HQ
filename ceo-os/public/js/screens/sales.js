@@ -508,7 +508,12 @@ export async function render(el, { me, sub, alive }) {
       const blocks = []; let pend = null;
       const push = (els, cls) => { if (pend) { els = [...pend.els, ...els]; cls = pend.cls || cls; pend = null; } blocks.push({ els, cls }); };
       [...clone.children].forEach((k) => {
-        if (k.classList.contains('qsec')) [...k.children].forEach((c) => { if (c.classList.contains('lbl2') && !pend) pend = { els: [c], cls: k.className }; else push([c], k.className); });
+        if (k.classList.contains('qsec')) [...k.children].forEach((c) => {
+          if (c.classList.contains('lbl2') && !pend) pend = { els: [c], cls: k.className };
+          // Las tarjetas de «Lo que recibes» van de dos en dos, para que una fila quepa donde no cabe la cuadrícula entera.
+          else if (c.classList.contains('qgets')) { const cards = [...c.children]; for (let j = 0; j < cards.length; j += 2) { const row = document.createElement('div'); row.className = 'qgets'; row.style.marginBottom = '10px'; cards.slice(j, j + 2).forEach((x) => row.appendChild(x)); push([row], k.className); } }
+          else push([c], k.className);
+        });
         else if (k.classList.contains('lbl2')) pend = { els: [k], cls: '' };
         else push([k], '');
       });
