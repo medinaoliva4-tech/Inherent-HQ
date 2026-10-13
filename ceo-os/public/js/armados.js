@@ -8,7 +8,7 @@ const B = col('bundles');
 const r50 = (n) => Math.round(n / 50) * 50;
 const num = (v, d = 0) => { const n = parseFloat(v); return isNaN(n) ? d : n; };
 const uid = () => Math.random().toString(36).slice(2, 9);
-const lvName = (lv) => (lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
+const lvName = (lv) => (lv <= 4 ? 'Básico' : lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
 
 // Devuelve las piezas para que Paquetes muestre los armados en su misma lista y edite los servicios de cada paquete.
 export async function createBundles({ services, rates, industries = [], onQuote }) {
@@ -35,7 +35,7 @@ export async function createBundles({ services, rates, industries = [], onQuote 
       const usd = num(l.usd, num(m?.price)) * num(l.qty, 1), cost = usd * qPerUsd;
       return { name: m ? `Especialista: ${m.name}` : 'Especialista', sub: m ? `${m.industry || ''} · ${num(l.qty, 1)} ${m.unit === 'mes' ? 'mes(es)' : 'sesión(es)'} · ${USD(usd)}` : 'Elige un especialista', cost, price: cost ? r50(cost / (1 - margin)) : 0, hours: 0, ok: Boolean(m), roles: [] };
     }
-    const s = svc(l.service_id), lv = Math.max(5, Math.min(10, Math.round(num(l.level, 5)))), qty = Math.max(1, num(l.qty, 1));
+    const s = svc(l.service_id), lv = Math.max(3, Math.min(10, Math.round(num(l.level, 5)))), qty = Math.max(1, num(l.qty, 1));
     if (!s) return { name: 'Servicio', sub: 'Elige un servicio del catálogo', cost: 0, price: 0, hours: 0, ok: false, roles: [] };
     const c = rates ? svcCost(s, rates, lv) : null, p = svcPriceAt(s, lv);
     return { name: s.name, sub: `${lvName(lv)} · nivel ${lv}${qty > 1 ? ` · ×${qty}` : ''} · ${svcHours(s, lv) * qty} h`, cost: c && !c.miss.length ? c.cost * qty : 0, price: (p || 0) * qty, hours: svcHours(s, lv) * qty, ok: p != null, roles: (s.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * qty })), miss: c?.miss?.length ? c.miss : null };
@@ -71,7 +71,7 @@ export async function createBundles({ services, rates, industries = [], onQuote 
           <div class="row" style="gap:8px">${l.type === 'mentor' ? html`<select class="in" data-li="${i}" data-lf="mentor_id">${mOpts(l.mentor_id)}</select>` : html`<select class="in" data-li="${i}" data-lf="service_id">${svcOpts(l.service_id)}</select>`}<button class="btn ghost xs" data-act="rmLine" data-i="${i}" aria-label="Quitar">${ico('trash', 15)}</button></div>
           <div class="row" style="gap:10px;margin-top:8px;flex-wrap:wrap">${l.type === 'mentor'
             ? html`<label class="sm mut">Sesiones<input class="in" style="max-width:80px" type="number" min="1" data-li="${i}" data-lf="qty" value="${l.qty || 1}"></label><label class="sm mut">USD por sesión<input class="in" style="max-width:100px" type="number" step="1" data-li="${i}" data-lf="usd" value="${l.usd ?? ''}" placeholder="del especialista"></label>`
-            : html`<label class="sm mut" style="flex:1;min-width:160px">Nivel ${num(l.level, 5)} · ${lvName(num(l.level, 5))}<input type="range" min="5" max="10" step="1" style="width:100%" data-li="${i}" data-lf="level" value="${l.level || 5}"></label><label class="sm mut">Cantidad<input class="in" style="max-width:80px" type="number" min="1" data-li="${i}" data-lf="qty" value="${l.qty || 1}"></label>`}
+            : html`<label class="sm mut" style="flex:1;min-width:160px">Nivel ${num(l.level, 5)} · ${lvName(num(l.level, 5))}<input type="range" min="3" max="10" step="1" style="width:100%" data-li="${i}" data-lf="level" value="${l.level || 5}"></label><label class="sm mut">Cantidad<input class="in" style="max-width:80px" type="number" min="1" data-li="${i}" data-lf="qty" value="${l.qty || 1}"></label>`}
             <div class="sp"></div><div style="text-align:right"><b style="font-weight:500">${x.price ? Q(x.price) : '—'}</b><div class="mut sm">${x.sub}</div></div></div>
           ${x.miss ? html`<div class="mut sm" style="margin-top:6px">${ico('alert', 13)} Falta costo por hora de: ${x.miss.join(', ')}</div>` : ''}</div>`; })}
         <div class="row" style="gap:8px;margin-top:6px"><button class="btn ghost" data-act="addSvc">+ Servicio</button><button class="btn ghost" data-act="addMentor">+ Especialista</button><button class="btn ghost" data-act="addCustom">+ Servicio propio</button></div>

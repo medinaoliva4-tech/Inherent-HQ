@@ -58,7 +58,7 @@ function levels(list, rates) {
     const lv = Object.fromEntries(list.map((sv) => [sv.id, sv.level || 5]));
     const row = (sv) => { const l = lv[sv.id], c = svcCost(sv, rates, l), pr = svcPrice(sv, l);
       return html`<div class="lvrow"><div class="row"><b style="font-weight:500">${sv.name}</b><div class="sp"></div><span class="chip ${l >= 8 ? 'dark' : ''}">${l <= 6 ? 'Sencillo' : l >= 9 ? 'Fuerte' : 'Medio'} · ${l}</span></div>
-        <input type="range" min="5" max="10" step="1" value="${l}" data-lv="${sv.id}" style="width:100%;margin:8px 0">
+        <input type="range" min="3" max="10" step="1" value="${l}" data-lv="${sv.id}" style="width:100%;margin:8px 0">
         <div class="row sm mut"><span>${svcHours(sv, l)} h${daysAt(sv, l) ? ` · ${daysAt(sv, l)} días` : ''} · ${(sv.tasks || []).map((t) => `${t.role} ${hoursAt(t, l)} h`).join(' · ')}</span><div class="sp"></div>${c ? html`<span>Costo ${c.miss.length ? ico('alert') : Q(c.cost)}</span>` : ''}${pr ? html`<span style="margin-left:10px">Precio ${Q(pr)}</span>` : ''}</div></div>`; };
     const draw = () => {
       drawer(html`<div class="row"><span class="chip">Proyecto custom</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>

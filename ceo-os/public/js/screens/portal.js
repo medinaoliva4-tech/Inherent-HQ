@@ -4,7 +4,7 @@ import { html, raw, mount, api, toast, fdate, fdateLong, K, $, $$, lineChart, IC
 
 const ST = { 'Entregado': 'green', 'En revisión': 'amber', 'En curso': 'lime', 'Por empezar': '' };
 const PS = { Idea: 'Idea', Grabado: 'En producción', Editado: 'En producción', Programado: 'Programado', Publicado: 'Publicado' };
-const lvName = (lv) => (!lv ? '' : lv <= 6 ? 'Entrega sencilla' : lv >= 9 ? 'Entrega fuerte' : 'Entrega media');
+const lvName = (lv) => (!lv ? '' : lv <= 4 ? 'Entrega básica' : lv <= 6 ? 'Entrega sencilla' : lv >= 9 ? 'Entrega fuerte' : 'Entrega media');
 const bar = (p) => html`<div class="gbar"><i style="width:${p ?? 0}%"></i></div>`;
 
 export async function render(el, { me, sub, alive }) {
