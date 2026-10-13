@@ -137,7 +137,9 @@ export const meetingsFor = (kind, start) => (MEETINGS[kind] || []).map(([name, d
 // ---------- Servicios: nivel de entrega 5 (sencillo) a 10 (fuerte) ----------
 // Cada rol tiene sus horas en nivel 5 y en nivel 10; en medio se reparte parejo.
 export const LV = [5, 10];
-export const hoursAt = (t, lv = 5) => { const h5 = +t.hours || 0; const h10 = t.hours10 == null || t.hours10 === '' ? h5 * 2 : +t.hours10; return Math.round((h5 + ((h10 - h5) * (lv - 5)) / 5) * 2) / 2; };
+// Nivel 3 (básico): menos que el sencillo. Si no tiene horas propias, usa el 60% del nivel 5.
+const h3Of = (t) => (t.hours3 == null || t.hours3 === '' ? Math.max(0.5, Math.round((+t.hours || 0) * 0.6 * 2) / 2) : +t.hours3);
+export const hoursAt = (t, lv = 5) => { const h5 = +t.hours || 0; if (lv < 5) { const h3 = h3Of(t); return Math.round((h3 + ((h5 - h3) * (lv - 3)) / 2) * 2) / 2; } const h10 = t.hours10 == null || t.hours10 === '' ? h5 * 2 : +t.hours10; return Math.round((h5 + ((h10 - h5) * (lv - 5)) / 5) * 2) / 2; };
 export const svcHours = (s, lv = s.level || 5) => (s.tasks || []).reduce((a, t) => a + hoursAt(t, lv), 0);
 export function svcCost(s, rates, lv = s.level || 5) {
   if (!rates) return null;
@@ -150,8 +152,8 @@ export const marginOf = (rates) => { const m = +rates?.margin; return m >= 1 && 
 const r50 = (n) => Math.round(n / 50) * 50;
 // Precio automático: horas del experto × costo por hora × multiplicador × complejidad del nivel.
 export function svcAuto(s, rates, lv = s.level || 5) { const c = svcCost(s, rates, lv); return c && !c.miss.length && c.cost ? r50(c.cost / (1 - marginOf(rates) / 100)) : null; }
-// Los precios de los 6 niveles, para que el equipo (que no ve costos) también los vea.
-export const pricesOf = (s, rates) => { const o = {}; for (let lv = 5; lv <= 10; lv++) { const p = svcAuto(s, rates, lv); if (p == null) return null; o[lv] = p; } return o; };
+// Los precios de los 8 niveles (3 a 10), para que el equipo (que no ve costos) también los vea.
+export const pricesOf = (s, rates) => { const o = {}; for (let lv = 3; lv <= 10; lv++) { const p = svcAuto(s, rates, lv); if (p == null) return null; o[lv] = p; } return o; };
 // El precio de un servicio en un nivel: fijo (si se escribió uno, escala con las horas), o el automático guardado.
 export const svcPrice = (s, lv = s.level || 5) => { const base = svcHours(s, s.level || 5), fixed = s.price_fixed ?? (s.prices ? null : s.price);
   if (fixed) return base ? r50((fixed * svcHours(s, lv)) / base) : +fixed; return s.prices?.[lv] ?? null; };
@@ -164,10 +166,11 @@ export const roleToWork = (r) => (/pauta|\bads\b|anuncio|campaña/i.test(r) ? 'a
 const lines = (t) => String(t || '').split('\n').map((x) => x.replace(/^[-•·\s]+/, '').trim()).filter(Boolean);
 export function includesAt(s, lv = s.level || 5) {
   const base = lines(s.includes5), extra = lines(s.includes10);
+  if (lv < 5) { const b3 = lines(s.includes3); return b3.length ? b3 : base.slice(0, Math.max(2, Math.ceil(base.length * 0.6))); }
   return [...base, ...extra.slice(0, Math.round(((lv - 5) / 5) * extra.length))];
 }
 // Cuánto tarda (días hábiles): de los días en nivel 5 a los de nivel 10.
-export const daysAt = (s, lv = s.level || 5) => { const d5 = +s.days5 || 0, d10 = +s.days10 || d5; return d5 ? Math.round(d5 + ((d10 - d5) * (lv - 5)) / 5) : null; };
+export const daysAt = (s, lv = s.level || 5) => { const d5 = +s.days5 || 0, d10 = +s.days10 || d5; if (lv < 5) return d5 ? (+s.days3 || Math.max(1, Math.round(d5 * 0.6))) : null; return d5 ? Math.round(d5 + ((d10 - d5) * (lv - 5)) / 5) : null; };
 
 // ---------- Onboarding del cliente: lo que necesitamos de él, según lo que contrató ----------
 // Cada servicio del catálogo dice qué necesita (campo «onboarding»); los tipos de proyecto traen lo básico.

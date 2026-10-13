@@ -53,7 +53,7 @@ const TOOLS = [
   ['clientes', 'operations', 'Los clientes de Inherent con su plan.', {}],
   ['cliente', 'clients', 'Todo de un cliente: roadmap (metas y checkpoints), proyectos, reuniones y tareas.', { slug: { type: 'string' } }, ['slug']],
   ['resumen', 'operations', 'Panorama: proyectos activos, tareas abiertas por persona y próximas reuniones.', {}],
-  ['catalogo', 'sales', 'Los servicios que vendemos: qué incluyen y cuánto tardan y cuestan en nivel 5 (sencillo), 8 y 10 (fuerte).', {}],
+  ['catalogo', 'sales', 'Los servicios que vendemos: qué incluyen y cuánto tardan y cuestan en nivel 3 (básico), 5 (sencillo), 8 y 10 (fuerte).', {}],
   ['crear_cotizacion', 'sales', 'Arma una cotización con servicios del catálogo y su nivel de entrega (5 sencillo a 10 fuerte). El precio lo calcula la app.', { cliente: { type: 'string' }, contacto: { type: 'string' }, servicios: { type: 'array', items: { type: 'object', properties: { servicio: { type: 'string', description: 'nombre o id del catálogo' }, nivel: { type: 'number' }, cantidad: { type: 'number' } }, required: ['servicio'] } }, moneda: { type: 'string', description: 'código ISO, ej. GTQ o USD' }, notas: { type: 'string' } }, ['cliente', 'servicios']],
   ['crear_proyecto', 'operations', 'Crea un proyecto con sus fases, reuniones y tareas. Tipo: Ciclo mensual, Proyecto, Growth o Custom (Custom sale de una cotización).', { cliente: { type: 'string', description: 'slug del cliente, o inherent' }, tipo: { type: 'string', enum: ['Ciclo mensual', 'Proyecto', 'Growth', 'Custom'] }, inicio: { type: 'string', description: 'AAAA-MM-DD' }, cotizacion_id: { type: 'string' }, nombre: { type: 'string' } }, ['cliente', 'tipo']],
   ['contenido_semana', 'content', 'Lo que encontró el scraper para un perfil: ganadores del nicho, referentes, competencia y lo propio.', { perfil: { type: 'string' } }, ['perfil']],
@@ -111,7 +111,7 @@ async function call(u, name, a = {}) {
   }
   if (name === 'catalogo') {
     const [services, rates] = await Promise.all([db.list('services'), db.get('rates', 'default')]);
-    return services.map((s) => ({ id: s.id, nombre: s.name, categoria: s.category || '', unidad: s.unit || 'proyecto', fee_por_crecimiento: growthText(growthOf(s)) || null, niveles: [5, 8, 10].map((lv) => ({ nivel: lv, precio_q: priceAt(s, lv, rates), horas: svcHours(s, lv), dias: daysAt(s, lv), incluye: includesAt(s, lv), ...(u.role === 'ceo' ? { costo_q: svcCost(s, rates, lv)?.cost ?? null } : {}) })) }));
+    return services.map((s) => ({ id: s.id, nombre: s.name, categoria: s.category || '', unidad: s.unit || 'proyecto', fee_por_crecimiento: growthText(growthOf(s)) || null, niveles: [3, 5, 8, 10].map((lv) => ({ nivel: lv, precio_q: priceAt(s, lv, rates), horas: svcHours(s, lv), dias: daysAt(s, lv), incluye: includesAt(s, lv), ...(u.role === 'ceo' ? { costo_q: svcCost(s, rates, lv)?.cost ?? null } : {}) })) }));
   }
   if (name === 'crear_cotizacion') {
     const [services, rates, quotes] = await Promise.all([db.list('services'), db.get('rates', 'default'), db.list('quotes')]);
@@ -119,7 +119,7 @@ async function call(u, name, a = {}) {
     for (const x of Array.isArray(a.servicios) ? a.servicios : []) {
       const k = String(x.servicio || '').toLowerCase(); const s = services.find((y) => y.id === x.servicio) || services.find((y) => y.name.toLowerCase() === k) || services.find((y) => y.name.toLowerCase().includes(k));
       if (!s) { faltan.push(x.servicio); continue; }
-      const lv = Math.max(5, Math.min(10, Math.round(+x.nivel || s.level || 5))); const price = priceAt(s, lv, rates);
+      const lv = Math.max(3, Math.min(10, Math.round(+x.nivel || s.level || 5))); const price = priceAt(s, lv, rates);
       if (price == null) faltan.push(`${s.name} (no tiene precio en el catálogo)`);
       items.push({ service_id: s.id, name: s.name, description: s.description || '', qty: Math.max(1, +x.cantidad || 1), level: lv, price, ...(growthOf(s) ? { growth: growthOf(s) } : {}) });
     }

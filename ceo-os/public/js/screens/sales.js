@@ -4,7 +4,6 @@ import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 import { packagesTab } from '../paquetes.js';
 import { createBundles } from '../armados.js';
-import { agregarNuevos, NUEVOS } from '../servicios-nuevos.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
@@ -47,7 +46,7 @@ export async function render(el, { me, sub, alive }) {
   // Lo que incluye y cuánto tarda un servicio en un nivel (para la cotización y su PDF).
   const incHtml = (sv, lv) => html`${daysAt(sv, lv) ? html`<div><b style="font-weight:500">${ico('clock')} ${daysAt(sv, lv)} días hábiles</b></div>` : ''}${includesAt(sv, lv).length ? html`<ul style="margin:4px 0 0 18px;padding:0">${includesAt(sv, lv).map((x) => html`<li>${x}</li>`)}</ul>` : ''}`;
   const quoteDays = (doc) => Math.max(0, ...doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id); return sv ? daysAt(sv, i.level || sv.level || 5) || 0 : 0; }));
-  const lvName = (lv) => (lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
+  const lvName = (lv) => (lv <= 4 ? 'Básico' : lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
   const suggested = (s, lv = s.level || 5) => (isCeo && rates ? svcAuto(s, rates, lv) : null);
   // La tarjeta del catálogo en un nivel: precio, horas, días y qué incluye (cambia con el slider de afuera).
   const cardBody = (s, lv) => { const p = priceAt(s, lv), d = daysAt(s, lv), inc = includesAt(s, lv);
@@ -69,7 +68,7 @@ export async function render(el, { me, sub, alive }) {
         </div>
         <div class="sp"></div>
         ${tab === 'crm' ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
-        ${tab === 'cat' ? html`${isCeo ? html`${NUEVOS.some((d) => !services.some((x) => x.name === d.name)) ? html`<button class="btn ghost" data-act="addNew">Agregar servicios nuevos</button>` : ''}<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
+        ${tab === 'cat' ? html`${isCeo ? html`${services.some((x) => !x.lv3) ? html`<button class="btn ghost" data-act="addLv3">Actualizar servicios (nivel 3)</button>` : ''}<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'quotes' ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
         ${tab === 'esp' && isCeo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
@@ -217,7 +216,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="row"><span class="chip ${CATC[s.category] ?? ''}">${s.category || 'Sin categoría'}</span><div class="sp"></div><span class="mut sm">${s.unit || 'proyecto'}${s.price_fixed ? ' · precio fijo' : ''}</span></div>
         <h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin:12px 0 4px">${s.name}</h3><div class="mut sm">${s.description || ''}</div>
         ${g ? html`<div class="sm svgrow">${ico('trend', 14)} + ${g}</div>` : ''}
-        <div class="svlv" data-stop><input type="range" min="5" max="10" step="1" value="${lv}" data-cardlv="${s.id}" aria-label="Nivel de entrega"><div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div></div>
+        <div class="svlv" data-stop><input type="range" min="3" max="10" step="1" value="${lv}" data-cardlv="${s.id}" aria-label="Nivel de entrega"><div class="row mut" style="font-size:11px"><span>3 · básico</span><div class="sp"></div><span>10 · fuerte</span></div></div>
         <div data-cardbody="${s.id}">${cardBody(s, lv)}</div>
         ${sopOf(s) ? html`<a class="sm" data-stop href="#/library/${sopOf(s).folder_id || '_'}/${sopOf(s).id}" style="display:inline-block;margin-top:10px;color:#87684e;font-weight:500">${ico('doc', 15)} Ver el SOP de este servicio ${ico('right', 14)}</a>` : ''}
 </div>`; })}</div>`}`);
@@ -255,7 +254,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="row sm mut" style="margin:18px 0 8px"><span style="flex:1">Horas por rol</span><span style="width:90px;text-align:center">Sencillo · 5</span><span style="width:90px;text-align:center">Fuerte · 10</span><span style="width:44px"></span></div>
         ${tasks.map((t, i) => html`<div class="row" style="margin-bottom:8px"><select class="in" data-i="${i}" data-f="role">${[...new Set([...roles, t.role])].map((r) => html`<option ${r === t.role ? raw('selected') : ''}>${r}</option>`)}</select><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours" value="${t.hours}"><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours10" value="${t.hours10}"><button class="btn ghost" data-act="rmTask" data-i="${i}" style="padding:8px 12px">${ico('x', 16)}</button></div>`)}
         <div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><b style="font-weight:500">Nivel de entrega</b><div class="sp"></div><span class="chip ${level >= 8 ? 'dark' : ''}">${level <= 6 ? 'Sencillo' : level >= 9 ? 'Fuerte' : 'Medio'} · ${level}</span></div>
-          <input type="range" min="5" max="10" step="1" value="${level}" id="svlv" style="width:100%;margin:10px 0 4px">
+          <input type="range" min="3" max="10" step="1" value="${level}" id="svlv" style="width:100%;margin:10px 0 4px">
           <div id="svprev">${prev(fv)}</div></div>
         <button class="btn ghost" data-act="addTask" style="padding:8px 14px">+ Rol</button>
         ${isCeo ? html`<div class="card glass" style="margin-top:18px;padding:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><div class="mut sm">Costo en este nivel</div><b style="font-weight:500">${c ? (c.miss.length ? `falta costo/h de ${c.miss.join(', ')}` : Q(c.cost)) : '—'}</b></div>
@@ -333,10 +332,22 @@ export async function render(el, { me, sub, alive }) {
     toast('9 ejemplos cargados. Ajusta horas y precios'); paint();
   }
 
-  async function addNew() {
-    const faltan = NUEVOS.filter((d) => !services.some((x) => x.name === d.name)).length;
-    if (!(await confirmAsk(`¿Agregar ${faltan} servicios nuevos al catálogo? Los que ya existan no se tocan.`))) return;
-    try { const r = await agregarNuevos(S, services, rates); services = r.services; toast(`Listo · ${r.creados} servicios agregados`); paint(); } catch (e) { toast(e.message, true); paint(); }
+  // Botón temporal: arma el nivel 3 (básico) en cada servicio. No toca categorías ni los niveles 5 a 10.
+  async function addLv3() {
+    const todo = services.filter((x) => !x.lv3);
+    if (!(await confirmAsk(`¿Armar el nivel 3 en ${todo.length} servicios? Los niveles 5 a 10 y las categorías no cambian.`))) return;
+    let n = 0;
+    try {
+      for (const sv of todo) {
+        const base = String(sv.includes5 || '').split('\n').map((x) => x.trim()).filter(Boolean);
+        const doc = { ...sv, lv3: true, tasks: (sv.tasks || []).map((t) => ({ ...t, hours3: t.hours3 ?? Math.max(0.5, Math.round((+t.hours || 0) * 0.6 * 2) / 2) })),
+          includes3: sv.includes3 || base.slice(0, Math.max(2, Math.ceil(base.length * 0.6))).join('\n'), days3: sv.days3 || (+sv.days5 ? Math.max(1, Math.round(+sv.days5 * 0.6)) : null) };
+        if (rates && sv.prices && !sv.price_fixed) { const p = pricesOf(doc, rates); if (p) doc.prices = { ...sv.prices, 3: p[3], 4: p[4] }; }
+        const r = await S.save(doc); services = services.map((x) => (x.id === r.id ? r : x)); n++;
+      }
+      toast(`Listo · nivel 3 en ${n} servicios`);
+    } catch (e) { toast(e.message, true); }
+    paint();
   }
 
   // ---------- Cotizaciones ----------
@@ -389,8 +400,8 @@ export async function render(el, { me, sub, alive }) {
               ${(() => { const sv = services.find((x) => x.id === it.service_id); if (!sv || !(sv.tasks || []).length) return ''; const lv = it.level || sv.level || 5;
                 const miss = [priceAt(sv, lv) == null ? 'precio (o costos por hora)' : '', !String(sv.includes5 || '').trim() ? 'lo que incluye' : '', !sv.days5 ? 'días' : ''].filter(Boolean);
                 return html`${miss.length ? html`<div class="warnbox sm" style="margin-top:10px">A «${sv.name}» le falta en el catálogo: <b>${miss.join(', ')}</b>. Sin eso el nivel no cambia el precio ni lo que incluye. <button class="btn ghost xs" data-act="fixSvc" data-id="${sv.id}" style="margin-left:6px">Completar</button></div>` : ''}<div class="qlv"><div class="row sm"><span>Nivel de entrega</span><div class="sp"></div><b style="font-weight:500" data-lvl="${i}">${lvName(lv)} · ${lv} · ${svcHours(sv, lv)} h</b></div>
-                  <input type="range" min="5" max="10" step="1" value="${lv}" data-qlv="${i}" style="width:100%">
-                  <div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div>
+                  <input type="range" min="3" max="10" step="1" value="${lv}" data-qlv="${i}" style="width:100%">
+                  <div class="row mut" style="font-size:11px"><span>3 · básico</span><div class="sp"></div><span>10 · fuerte</span></div>
                   ${includesAt(sv, lv).length || daysAt(sv, lv) ? html`<div class="sm" style="margin-top:8px" data-inc="${i}">${incHtml(sv, lv)}</div>` : ''}</div>`; })()}
               ${it.growth ? html`<div class="qgrow"><span>${ico('trend', 14)} + fee por crecimiento</span><input class="in" type="number" step="0.5" data-i="${i}" data-f="growth_pct" value="${it.growth.pct}"><span class="mut">% de ${GROWTH[it.growth.type] || it.growth.type}</span><button class="btn ghost xs" data-act="rmGrowth" data-i="${i}" title="Quitar el fee"></button></div>` : ''}</div>`)}
             <div class="row" style="margin-top:10px"><select class="in" id="addSvc"><option value="">+ Agregar del catálogo…</option>
@@ -517,7 +528,7 @@ export async function render(el, { me, sub, alive }) {
     tagF: (b) => { tagF = b.dataset.t; paint(); },
     catF: (b) => { catF = b.dataset.c; paint(); },
     lead: (b) => openLead(leads.find((l) => l.id === b.dataset.id)),
-    newLead, newService: () => editService(null), rates: editRates, seed, addNew,
+    newLead, newService: () => editService(null), rates: editRates, seed, addLv3,
     service: (b, e) => { if (e?.target.closest('[data-stop]')) return; editService(services.find((s) => s.id === b.dataset.id)); },
     newQuote: () => editQuote(null, null),
     newMentor: async () => { const r = await editMentor(null, [...new Set((mentors || []).map((m) => m.industry))]); if (r && !r.deleted) { mentors = [...(mentors || []), r]; paint(); } },
