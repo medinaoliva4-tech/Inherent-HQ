@@ -1,4 +1,4 @@
-import { html, raw, mount, api, toast, acts, drawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON } from '../core.js';
+import { html, raw, mount, api, toast, acts, drawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON, swap } from '../core.js';
 import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 
@@ -351,7 +351,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     igpick: async (t) => { try { await api('content/connect', { method: 'PUT', body: { profile: slug, ig_account: t.dataset.a } }); toast(`@${t.dataset.a} conectado a ${data.profile.name} ✅`); ig = null; paint(); } catch (e) { toast(e.message, true); } },
     igchange: async () => { try { await api('content/connect', { method: 'PUT', body: { profile: slug, ig_account: '' } }); ig = { ...ig, matched: false }; paint(); } catch (e) { toast(e.message, true); } },
     prof: (t) => { slug = t.dataset.s; clearTimeout(poll); go(); load(); },
-    tab: (t) => { tab = t.dataset.t; go(); paint(); },
+    tab: (t) => { tab = t.dataset.t; go(); swap(el, paint); },
     gfile: (t) => { gcur = t.dataset.id; guiones($('#cbody', el)); },
     gdir: (t) => { gstack.push({ id: t.dataset.id, name: t.dataset.n }); gfiles = null; gcur = null; guiones($('#cbody', el)); },
     gup: (t) => { gstack = gstack.slice(0, +t.dataset.i + 1); gfiles = null; gcur = null; guiones($('#cbody', el)); },

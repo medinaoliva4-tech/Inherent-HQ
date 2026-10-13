@@ -112,6 +112,17 @@ export function drawer(content, map = {}) {
   d.classList.add('on'); $('#veil').classList.add('on');
   return d;
 }
+// Cambio suave (View Transitions: Chrome, Edge y Safari 18+; sin soporte, cambia directo).
+// Al cambiar de pestaña quedan quietos el título y las pestañas; solo se anima lo de abajo.
+export const canTransition = () => typeof document.startViewTransition === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+const VT_NAMES = [['.hello', 'vt-head'], ['.tabs', 'vt-tabs'], ['#body,#fbody,#obody,#wbody,#cbody', 'vt-body']];
+const vtName = (el) => VT_NAMES.forEach(([sel, n]) => { const x = el.querySelector(sel); if (x) x.style.viewTransitionName = n; });
+export function swap(el, update) {
+  if (!canTransition()) return update();
+  const root = document.documentElement; root.dataset.vt = 'tab'; vtName(el);
+  const t = document.startViewTransition(() => { update(); vtName(el); });
+  t.finished.finally(() => { delete root.dataset.vt; });
+}
 export function closeDrawer() { $('#drawer').classList.remove('on'); $('#veil').classList.remove('on'); }
 
 // fields: [{k, l, t:'text'|'number'|'date'|'select'|'textarea'|'email', opts:[], v, req, half}]
@@ -151,6 +162,17 @@ export const IC = {
   cal: raw('<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="19" rx="4" fill="#fff" stroke="#4285F4" stroke-width="1.6"/><rect x="2" y="3" width="20" height="6" rx="3" fill="#4285F4"/><text x="12" y="19" text-anchor="middle" font-size="9" font-weight="700" fill="#1a73e8" font-family="Arial">31</text></svg>'),
   ring: (d = 78) => raw(`<svg class="ring" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18.5" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/><circle cx="20" cy="20" r="18.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-dasharray="${d} 117" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>`),
 };
+// Íconos de línea (sin emojis): toman el color del texto. Uso: ${ico('lock')} o ${ico('cal', 18)}.
+const ICO = {
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  cal: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  down: '<path d="M6 9l6 6 6-6"/>', right: '<path d="M9 6l6 6-6 6"/>', check: '<path d="M5 12l5 5 9-10"/>',
+  doc: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+  alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.5v.5"/>', trend: '<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
+};
+export const ico = (n, s = 15) => raw(`<svg class="ico" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;flex:none">${ICO[n] || ''}</svg>`);
 export const emblem = (dark) => raw(`<img src="/brand/${dark ? 'emblem-dark' : 'emblem'}.svg" alt="Inherent" style="width:100%;display:block">`);
 
 // Matriz de puntos de las tarjetas (on = cuántas columnas encendidas de 34)
