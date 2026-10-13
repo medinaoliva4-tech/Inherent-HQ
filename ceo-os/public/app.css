@@ -921,3 +921,5 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 .qdoc .qsvc ul{margin:4px 0 0 16px;padding:0}.qdoc .qsvc li{margin:1px 0}
 /* Lo que nos hace distintos, en cada servicio del PDF */
 .qdoc .qedge{display:flex;gap:5px;align-items:flex-start;font-weight:500;color:#6b6a3c;margin:2px 0 4px;line-height:1.35}
+/* Una tarjeta sola (o la última si son impares) ocupa todo el ancho */
+.qdoc .qgets>.qget:last-child:nth-child(odd){grid-column:1/-1}
