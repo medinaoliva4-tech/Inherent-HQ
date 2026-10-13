@@ -3,7 +3,6 @@ import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, cxAt, GROWTH, 
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 import { packagesTab } from '../paquetes.js';
-import { ajustarHoras } from '../ajuste-horas.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
@@ -68,7 +67,7 @@ export async function render(el, { me, sub, alive }) {
         </div>
         <div class="sp"></div>
         ${tab === 'crm' ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
-        ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="repair">Volver horas a la versión anterior</button><button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
+        ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'quotes' ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
         ${tab === 'esp' && isCeo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
@@ -325,12 +324,6 @@ export async function render(el, { me, sub, alive }) {
     toast('9 ejemplos cargados. Ajusta horas y precios ✅'); paint();
   }
 
-  async function repair() {
-    if (!(await confirmAsk('¿Devolver las horas de Agente de WhatsApp (6 y 18 h), Landing de conversión (5 y 44 h) y Sistema mensual de contenido corto (6 y 16 h) a como estaban? Solo cambia las horas de esos tres.'))) return;
-    try { const r = await ajustarHoras(S, services, rates); services = r.services; toast(`Listo ✅ · ${r.n} servicios ajustados${r.faltan.length ? ` · no encontré ${r.faltan.length}` : ''}`); paint(); }
-    catch (e) { toast(e.message, true); paint(); }
-  }
-
   // ---------- Cotizaciones ----------
   // La cotización guarda todo en quetzales y se muestra en su moneda (rate = 1 Q en esa moneda).
   const CUR = (() => { try { return Intl.supportedValuesOf('currency'); } catch { return ['GTQ', 'USD', 'EUR', 'MXN']; } })();
@@ -499,7 +492,7 @@ export async function render(el, { me, sub, alive }) {
     tagF: (b) => { tagF = b.dataset.t; paint(); },
     catF: (b) => { catF = b.dataset.c; paint(); },
     lead: (b) => openLead(leads.find((l) => l.id === b.dataset.id)),
-    newLead, newService: () => editService(null), rates: editRates, seed, repair,
+    newLead, newService: () => editService(null), rates: editRates, seed,
     service: (b, e) => { if (e?.target.closest('[data-stop]')) return; editService(services.find((s) => s.id === b.dataset.id)); },
     newQuote: () => editQuote(null, null),
     newMentor: async () => { const r = await editMentor(null, [...new Set((mentors || []).map((m) => m.industry))]); if (r && !r.deleted) { mentors = [...(mentors || []), r]; paint(); } },
