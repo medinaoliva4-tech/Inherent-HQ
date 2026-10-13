@@ -915,3 +915,7 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 .qdoc.qpdf ul li{position:relative;margin:2px 0}
 .qdoc.qpdf ul li::before{content:'•';position:absolute;left:-12px;top:0;color:#9f846d}
 .qdoc.qpdf .qgets{margin-top:0!important}
+/* Servicios en tarjetas compactas (PDF y vista) */
+.qdoc .qsvc .qget{display:block}.qdoc .qsvc .qget b{font-size:13px}
+.qdoc .qsm{font-size:11px;color:#9f846d;margin:1px 0 4px}
+.qdoc .qsvc ul{margin:4px 0 0 16px;padding:0}.qdoc .qsvc li{margin:1px 0}
