@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initials, IC, $, docView, docHead, ask, confirmAsk , teamList, wizard, ICON } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initials, IC, $, docView, docHead, ask, confirmAsk , teamList, wizard, ICON, ico } from '../core.js';
 import { upcoming, meetingRows, schedule, markDone } from '../meetings.js';
 import { fit, priceLabel, monthly, avatar, CADENCE } from '../mentors.js';
 import { loadPosts, postsBoard } from '../posts.js';
@@ -29,7 +29,7 @@ async function goalWizard() {
     { k: 'target', q: '¿A cuánto llegamos?', type: 'text', req: true, ph: 'Ej. Q120,000' },
     { k: 'due', q: '¿Para cuándo?', type: 'date', req: true },
     { k: 'tasks', q: 'El desglose: ¿qué hay que hacer?', sub: 'Una tarea por línea', type: 'textarea', ph: 'Nueva oferta con precio\nLanding y checkout\nCampaña de lanzamiento' },
-    { k: 'every', q: '¿Cada cuánto revisamos cómo va?', type: 'cards', req: true, opts: [{ v: 'semanal', i: '📍', l: 'Cada semana' }, { v: 'quincenal', i: '📍', l: 'Cada 15 días' }, { v: 'mensual', i: '📍', l: 'Cada mes' }] },
+    { k: 'every', q: '¿Cada cuánto revisamos cómo va?', type: 'cards', req: true, opts: [{ v: 'semanal', i: ico('pin'), l: 'Cada semana' }, { v: 'quincenal', i: ico('pin'), l: 'Cada 15 días' }, { v: 'mensual', i: ico('pin'), l: 'Cada mes' }] },
   ], 'Agregar meta');
   if (!a) return null;
   return { goal: a.goal, metric: a.metric, baseline: a.baseline || '', target: a.target, current: a.baseline || '', due: a.due, status: 'now', note: '', every: a.every,
@@ -94,20 +94,20 @@ export async function render(el, { me, sub, alive }) {
         </div>
         <div class="row" style="gap:8px;flex-wrap:wrap;margin:18px 0 6px">${[['rm', 'Roadmap'], ['es', 'Especialista'], ['mt', 'Reuniones'], ['tl', 'Timeline'], ['tk', 'Tareas'], ['ct', 'Contenido'], ['ac', 'Accesos'], ['en', 'Entregables'], ['pl', 'Plan']].map(([k, l]) => html`<button class="chip" data-act="jump" data-k="${k}" style="padding:8px 14px">${l}</button>`)}</div>
 
-        ${a.drive ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin:8px 0 4px"><a class="connect on" href="${a.drive}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="lg">${IC.drive}</span>Drive de ${a.name}</a>${Object.entries(a.drive_dirs || {}).map(([k, u]) => html`<a class="chip" href="${u}" target="_blank" rel="noopener noreferrer" style="padding:7px 12px;text-decoration:none;color:inherit">📁 ${k.replace(/^\d+ /, '')}</a>`)}</div>`
+        ${a.drive ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin:8px 0 4px"><a class="connect on" href="${a.drive}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="lg">${IC.drive}</span>Drive de ${a.name}</a>${Object.entries(a.drive_dirs || {}).map(([k, u]) => html`<a class="chip" href="${u}" target="_blank" rel="noopener noreferrer" style="padding:7px 12px;text-decoration:none;color:inherit">${ico('folder')} ${k.replace(/^\d+ /, '')}</a>`)}</div>`
           : html`<div class="connectcard" style="margin:8px 0 4px"><span class="lg big">${IC.drive}</span><div class="grow"><b style="font-weight:500">Crea el Drive de ${a.name}</b><div class="mut sm">Onboarding · Assets · Guiones · Crudo · Por postear · Entregables · Reportes${isGrowth() ? ' · Números y auditoría' : ''}. Quedan conectadas a Content y al Workspace.</div></div><button class="btn" data-act="mkdrive">Crear carpetas</button></div>`}
 
-        <div class="card" style="margin:10px 0 4px;padding:14px 16px"><div class="row" style="gap:10px;flex-wrap:wrap"><b class="ttl" style="font-size:16px">${ICON.user}Portal del cliente</b><span class="mut sm">Ve su avance, contenido, reuniones, metas y redes. Nada de costos ni notas internas.</span><div class="sp"></div><a class="btn ghost xs" href="#/portal/${slug}">👁 Ver su portal</a>${me.role === 'ceo' ? html`<button class="btn xs" data-act="portalAdd">+ Dar acceso</button>` : ''}</div>
-          ${portalPeople.length ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:10px">${portalPeople.map((x) => html`<span class="chip">${x.email}${me.role === 'ceo' ? html` <button class="sm mut" data-act="portalDel" data-id="${x.id}" style="margin-left:4px">✕</button>` : ''}</span>`)}</div>` : html`<div class="mut sm" style="margin-top:6px">Nadie tiene acceso todavía.</div>`}</div>
+        <div class="card" style="margin:10px 0 4px;padding:14px 16px"><div class="row" style="gap:10px;flex-wrap:wrap"><b class="ttl" style="font-size:16px">${ICON.user}Portal del cliente</b><span class="mut sm">Ve su avance, contenido, reuniones, metas y redes. Nada de costos ni notas internas.</span><div class="sp"></div><a class="btn ghost xs" href="#/portal/${slug}">${ico('eye')} Ver su portal</a>${me.role === 'ceo' ? html`<button class="btn xs" data-act="portalAdd">+ Dar acceso</button>` : ''}</div>
+          ${portalPeople.length ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:10px">${portalPeople.map((x) => html`<span class="chip">${x.email}${me.role === 'ceo' ? html` <button class="sm mut" data-act="portalDel" data-id="${x.id}" style="margin-left:4px">${ico('x', 16)}</button>` : ''}</span>`)}</div>` : html`<div class="mut sm" style="margin-top:6px">Nadie tiene acceso todavía.</div>`}</div>
 
         <div class="sec-title" id="s-rm"><h2>Roadmap</h2><span class="mut sm">Metas · cómo se miden · desglose · checkpoints</span><div class="sp"></div><button class="btn" data-act="gadd">+ Meta</button></div>
         ${rm.length ? html`<div class="goals">${rm.map(goalCard)}</div>` : html`<div class="empty"><b>Sin metas todavía</b>Una meta trae cómo la medimos, dónde estamos, a dónde vamos, las tareas y cuándo revisamos.</div>`}
 
         <div class="sec-title" id="s-es"><h2>Especialista</h2><span class="mut sm">${isGrowth() ? 'Incluido en su plan Growth, dentro del techo por sesión' : 'Su plan no lo incluye: va como add-on facturado'}</span><div class="sp"></div><button class="btn ghost" data-act="esadd">+ Especialista</button></div>
         ${(a.mentors || []).length ? html`<div class="grid g3">${a.mentors.map((x, k) => { const m = mentors.find((y) => y.id === x.id); if (!m) return ''; const [f, c] = isGrowth() ? fit(m) : ['Add-on facturado al cliente', 'red']; const g = goalsOf(a)[x.goal];
-          return html`<div class="card mcard"><div class="row" style="gap:10px">${avatar(m)}<div style="min-width:0;flex:1"><b style="font-weight:500">${m.name}</b><div class="mut sm">${m.industry} · ${m.platform || ''}</div></div><button class="sm mut" data-act="esdel" data-k="${k}">✕</button></div>
+          return html`<div class="card mcard"><div class="row" style="gap:10px">${avatar(m)}<div style="min-width:0;flex:1"><b style="font-weight:500">${m.name}</b><div class="mut sm">${m.industry} · ${m.platform || ''}</div></div><button class="sm mut" data-act="esdel" data-k="${k}">${ico('x', 16)}</button></div>
             <div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap"><b style="font-weight:500">${priceLabel(m)}</b><span class="mut sm">· ${CADENCE.find(([v]) => v === x.cadence)?.[1] || ''}</span>${monthly(m, x.cadence) ? html`<span class="mut sm">≈ $${monthly(m, x.cadence)}/mes</span>` : ''}</div>
-            <span class="chip ${c}" style="font-size:11px;margin-top:8px">${f}</span>${g ? html`<div class="sm" style="margin-top:8px">🎯 Para la meta: <b style="font-weight:500">${g.goal}</b></div>` : ''}${x.note ? html`<div class="mut sm" style="margin-top:4px">${x.note}</div>` : ''}</div>`; })}</div>`
+            <span class="chip ${c}" style="font-size:11px;margin-top:8px">${f}</span>${g ? html`<div class="sm" style="margin-top:8px">${ico('target', 16)} Para la meta: <b style="font-weight:500">${g.goal}</b></div>` : ''}${x.note ? html`<div class="mut sm" style="margin-top:4px">${x.note}</div>` : ''}</div>`; })}</div>`
           : html`<div class="mut sm">Sin especialista. ${mentors.length ? 'Agrégalo con «+ Especialista» y ligalo a una meta del roadmap.' : 'Primero carga la red en Sales → Especialistas.'}</div>`}
 
         <div class="sec-title" id="s-mt"><h2>Reuniones</h2><span class="mut sm">Las de cada proyecto, con quiénes van y qué se aprueba</span></div>
@@ -124,12 +124,12 @@ export async function render(el, { me, sub, alive }) {
         <div class="sec-title" id="s-ct"><h2>Contenido</h2>${me.areas.includes('content') ? html`<a href="#/content/plan/${slug}">Planner en Content →</a>` : ''}</div>
         <div id="posts"></div>
 
-        <div class="sec-title" id="s-ac"><h2>Accesos</h2><span class="mut sm">🔒 Nunca contraseñas aquí: solo dónde están</span></div>
+        <div class="sec-title" id="s-ac"><h2>Accesos</h2><span class="mut sm">${ico('lock')} Nunca contraseñas aquí: solo dónde están</span></div>
         <div class="grid g11" style="align-items:start">
           <div class="card"><b style="font-weight:500">Del repo</b><div class="mut sm" style="margin-bottom:8px">clients/${slug}/00-onboarding/LINKS.md</div>
             ${info.links.length ? info.links.map((l) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><span class="mut" style="min-width:110px">${l.k}</span>${l.url && /^https:\/\//.test(l.url) ? html`<a href="${l.url}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1">${l.v}</a>` : html`<span style="flex:1">${l.v}</span>`}</div>`) : html`<div class="mut sm">Este cliente no tiene LINKS.md.</div>`}</div>
           <div class="card"><b style="font-weight:500">Accesos del equipo</b><div class="mut sm" style="margin-bottom:8px">Qué cuenta, qué usuario y dónde está la clave (ej. «Bitwarden · carpeta NAO»)</div>
-            ${(a.accesos || []).map((x, i) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><b style="font-weight:500;min-width:110px">${x.servicio}</b><span style="flex:1">${x.usuario || '—'}<span class="mut"> · ${x.donde || '—'}</span></span><button class="sm mut" data-act="acdel" data-i="${i}">✕</button></div>`)}
+            ${(a.accesos || []).map((x, i) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><b style="font-weight:500;min-width:110px">${x.servicio}</b><span style="flex:1">${x.usuario || '—'}<span class="mut"> · ${x.donde || '—'}</span></span><button class="sm mut" data-act="acdel" data-i="${i}">${ico('x', 16)}</button></div>`)}
             <button class="btn ghost" data-act="acadd" style="margin-top:10px">+ Acceso</button></div>
         </div>
 
@@ -169,8 +169,8 @@ export async function render(el, { me, sub, alive }) {
         <div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500;font-size:17px">${g.goal}</b>
           <button class="chip ${RM[g.status]?.[1] || ''}" data-act="gst" data-g="${g.i}" style="font-size:11px">${RM[g.status]?.[0] || 'Pendiente'}</button>
           ${h ? html`<span class="chip ${HEALTH[h][1]}" style="font-size:11px">${HEALTH[h][0]}</span>` : ''}
-          <div class="sp"></div><span class="mut sm">${g.due ? 'Para el ' + fdateLong(g.due) : 'Sin fecha'}</span><button class="sm mut" data-act="gedit" data-g="${g.i}" title="Editar">✎</button><button class="sm mut" data-act="gdel" data-g="${g.i}" title="Quitar">✕</button></div>
-        ${g.metric ? html`<div class="gmetric"><span class="mut sm">📏 ${g.metric}</span><div class="row" style="gap:10px;margin-top:6px"><span class="sm">Hoy <b style="font-weight:500">${g.current || g.baseline || '—'}</b></span><div class="gbar"><i style="width:${pct ?? 0}%"></i></div><span class="sm">Meta <b style="font-weight:500">${g.target || '—'}</b></span><span class="sm mut" style="width:40px;text-align:right">${pct == null ? '' : pct + '%'}</span></div></div>` : html`<div class="mut sm" style="margin-top:6px">Sin métrica: ✎ para definir cómo se mide.</div>`}
+          <div class="sp"></div><span class="mut sm">${g.due ? 'Para el ' + fdateLong(g.due) : 'Sin fecha'}</span><button class="sm mut" data-act="gedit" data-g="${g.i}" title="Editar">${ico('edit')}</button><button class="sm mut" data-act="gdel" data-g="${g.i}" title="Quitar">${ico('x', 16)}</button></div>
+        ${g.metric ? html`<div class="gmetric"><span class="mut sm">${ico('ruler')} ${g.metric}</span><div class="row" style="gap:10px;margin-top:6px"><span class="sm">Hoy <b style="font-weight:500">${g.current || g.baseline || '—'}</b></span><div class="gbar"><i style="width:${pct ?? 0}%"></i></div><span class="sm">Meta <b style="font-weight:500">${g.target || '—'}</b></span><span class="sm mut" style="width:40px;text-align:right">${pct == null ? '' : pct + '%'}</span></div></div>` : html`<div class="mut sm" style="margin-top:6px">Sin métrica: ${ico('edit')} para definir cómo se mide.</div>`}
         ${g.note ? html`<div class="mut sm" style="margin-top:6px">${g.note}</div>` : ''}
         ${(a.mentors || []).filter((x) => x.goal === g.i).map((x) => { const m = mentors.find((y) => y.id === x.id); return m ? html`<div class="row sm" style="gap:8px;margin-top:8px">${avatar(m, 24)}<span>Con <b style="font-weight:500">${m.name}</b> · ${m.industry} · ${priceLabel(m)}</span></div>` : ''; })}
         <div class="gcols">
@@ -203,7 +203,7 @@ export async function render(el, { me, sub, alive }) {
     acts(el, {
       jump: (t) => $('#s-' + t.dataset.k, el)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
       pdf: roadmapPdf,
-      mkdrive: async (t) => { t.disabled = true; t.textContent = 'Creando…'; try { const r = await api('drive/client', { method: 'POST', body: { slug, growth: isGrowth() } }); const fresh = await AC.get(a.id).catch(() => null); a = { ...(fresh || a), drive: r.drive, drive_dirs: r.dirs, assets: (fresh || a).assets || r.dirs['01 Assets de marca'] }; toast('Drive creado y conectado ✅'); paint(); } catch (e) { toast(e.message, true); t.disabled = false; t.textContent = 'Crear carpetas'; } },
+      mkdrive: async (t) => { t.disabled = true; t.textContent = 'Creando…'; try { const r = await api('drive/client', { method: 'POST', body: { slug, growth: isGrowth() } }); const fresh = await AC.get(a.id).catch(() => null); a = { ...(fresh || a), drive: r.drive, drive_dirs: r.dirs, assets: (fresh || a).assets || r.dirs['01 Assets de marca'] }; toast('Drive creado y conectado'); paint(); } catch (e) { toast(e.message, true); t.disabled = false; t.textContent = 'Crear carpetas'; } },
       esadd: async () => {
         if (!mentors.length) return toast('Primero carga la red en Sales → Especialistas', true);
         const goals = goalsOf(a);
@@ -216,17 +216,17 @@ export async function render(el, { me, sub, alive }) {
         if (!v) return;
         const m = mentors.find((x) => x.id === v.id);
         if (m && fit(m)[1] === 'red' && isGrowth() && !(await confirmAsk(`${m.name} pasa el techo por sesión del plan: va como add-on facturado al cliente. ¿Agregarlo igual?`))) return;
-        if (await saveAcc({ ...a, mentors: [...(a.mentors || []), { id: v.id, cadence: v.cadence, goal: v.goal === '' ? null : +v.goal, note: v.note }] })) { toast('Especialista agregado ✅'); paint(); }
+        if (await saveAcc({ ...a, mentors: [...(a.mentors || []), { id: v.id, cadence: v.cadence, goal: v.goal === '' ? null : +v.goal, note: v.note }] })) { toast('Especialista agregado'); paint(); }
       },
       esdel: async (t) => { if (!(await confirmAsk('¿Quitar este especialista del cliente?'))) return; if (await saveAcc({ ...a, mentors: a.mentors.filter((_, k) => k !== +t.dataset.k) })) paint(); },
       portalAdd: async () => {
         const v = await ask(`Acceso al portal de ${a.name}`, [{ k: 'email', l: 'Correo de Google de la persona del cliente', t: 'email', req: true }, { k: 'name', l: 'Nombre' }], 'Dar acceso');
         if (!v) return; const email = v.email.trim().toLowerCase();
         if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return toast('Ese correo no es válido', true);
-        try { const r = await col('team').create({ id: email, email, name: v.name || email.split('@')[0], role: 'client', client_slug: slug, active: true }); portalPeople = [...portalPeople, r]; toast('Listo ✅ Ya puede entrar con Google en «Soy cliente»'); paint(); } catch (e) { toast(e.message, true); }
+        try { const r = await col('team').create({ id: email, email, name: v.name || email.split('@')[0], role: 'client', client_slug: slug, active: true }); portalPeople = [...portalPeople, r]; toast('Listo Ya puede entrar con Google en «Soy cliente»'); paint(); } catch (e) { toast(e.message, true); }
       },
       portalDel: async (t) => { if (!(await confirmAsk('¿Quitarle el acceso al portal?'))) return; try { await col('team').remove(t.dataset.id); portalPeople = portalPeople.filter((x) => x.id !== t.dataset.id); paint(); } catch (e) { toast(e.message, true); } },
-      gadd: async () => { const g = await goalWizard(); if (g) { await saveGoals([...G(), g]); toast('Meta agregada ✅'); } },
+      gadd: async () => { const g = await goalWizard(); if (g) { await saveGoals([...G(), g]); toast('Meta agregada'); } },
       gst: async (t) => { const g = G(); const x = g[+t.dataset.g]; x.status = { todo: 'now', now: 'done', done: 'todo' }[x.status] || 'now'; await saveGoals(g); },
       gedit: async (t) => { const g = G(); const x = g[+t.dataset.g]; const v = await ask('Editar meta', [{ k: 'goal', l: 'Meta', v: x.goal, req: true }, { k: 'metric', l: 'Cómo se mide', v: x.metric }, { k: 'baseline', l: 'Al arrancar', v: x.baseline, half: true }, { k: 'current', l: 'Hoy', v: x.current, half: true }, { k: 'target', l: 'Meta', v: x.target, half: true }, { k: 'due', l: 'Para cuándo', t: 'date', v: x.due, half: true }, { k: 'note', l: 'Nota (sale en el PDF)', t: 'textarea', v: x.note }]); if (!v) return; g[+t.dataset.g] = { ...x, ...v }; await saveGoals(g); },
       gdel: async (t) => { if (!(await confirmAsk('¿Quitar esta meta?'))) return; await saveGoals(G().filter((_, i) => i !== +t.dataset.g)); },
@@ -240,7 +240,7 @@ export async function render(el, { me, sub, alive }) {
       },
       mtsched: async (t) => { const p = projects.find((x) => x.id === t.dataset.p); const r = p && (await schedule(p, +t.dataset.i, team, me)); if (r) { Object.assign(p, r); paint(); } },
       mtdone: async (t) => { const p = projects.find((x) => x.id === t.dataset.p); const r = p && (await markDone(p, +t.dataset.i)); if (r) { Object.assign(p, r); paint(); } },
-      editAcc: async () => { const v = await ask('Datos del cliente', [{ k: 'name', l: 'Nombre', v: a.name, req: true }, { k: 'contact', l: 'Contacto', v: a.contact, half: true }, { k: 'phone', l: 'Teléfono / WhatsApp', v: a.phone, half: true }, { k: 'email', l: 'Correo', t: 'email', v: a.email }, { k: 'assets', l: 'Carpeta de assets en Drive (logos, fotos, videos crudos)', v: a.assets }, { k: 'notes', l: 'Notas', t: 'textarea', v: a.notes }]); if (v && v.assets && !/^https:\/\/drive\.google\.com\//.test(v.assets)) return toast('La carpeta de assets debe ser un link de Google Drive', true); if (v && (await saveAcc({ ...a, ...v }))) { toast('Guardado ✅'); paint(); } },
+      editAcc: async () => { const v = await ask('Datos del cliente', [{ k: 'name', l: 'Nombre', v: a.name, req: true }, { k: 'contact', l: 'Contacto', v: a.contact, half: true }, { k: 'phone', l: 'Teléfono / WhatsApp', v: a.phone, half: true }, { k: 'email', l: 'Correo', t: 'email', v: a.email }, { k: 'assets', l: 'Carpeta de assets en Drive (logos, fotos, videos crudos)', v: a.assets }, { k: 'notes', l: 'Notas', t: 'textarea', v: a.notes }]); if (v && v.assets && !/^https:\/\/drive\.google\.com\//.test(v.assets)) return toast('La carpeta de assets debe ser un link de Google Drive', true); if (v && (await saveAcc({ ...a, ...v }))) { toast('Guardado'); paint(); } },
       acadd: async () => { const v = await ask('Nuevo acceso', [{ k: 'servicio', l: 'Cuenta o servicio', req: true }, { k: 'usuario', l: 'Usuario', half: true }, { k: 'donde', l: 'Dónde está la clave', half: true }]); if (!v) return; if (/contrase|password|clave:/i.test(v.usuario + ' ' + v.donde) && !(await confirmAsk('Parece que escribiste una contraseña. Aquí solo va DÓNDE está. ¿Guardar igual?'))) return; if (await saveAcc({ ...a, accesos: [...(a.accesos || []), v] })) paint(); },
       acdel: async (t) => { if (await saveAcc({ ...a, accesos: (a.accesos || []).filter((_, i) => i !== +t.dataset.i) })) paint(); },
       tdone: async (cb) => { const t = tasks.find((x) => x.id === cb.dataset.id); try { Object.assign(t, await col('tasks').save({ ...t, status: cb.checked ? 'Hecha' : 'En curso' })); paint(); } catch (e) { cb.checked = !cb.checked; toast(e.message, true); } },

@@ -1,6 +1,6 @@
 // La red de especialistas por industria: quién es, cuánto cuesta, por qué ese precio y en qué plan cabe.
 // La política (techo por sesión, membresía anual de Inherent) está en inherent/04-MERCADO.md.
-import { html, raw, mount, col, drawer, closeDrawer, toast, confirmAsk, $, squareImage, initials } from './core.js';
+import { html, raw, mount, col, drawer, closeDrawer, toast, confirmAsk, $, squareImage, initials, ico } from './core.js';
 
 export const TIERS = [['low', 'Económico'], ['medio', 'Medio'], ['premium', 'Premium']];
 export const UNITS = [['sesion', 'por sesión'], ['mes', 'membresía al mes'], ['gratis', 'gratis'], ['cotizacion', 'cotización']];
@@ -49,7 +49,7 @@ export function mentorsTab(body, { list, isCeo, onChange, ind = 'Todas', onInd }
   const inds = [...new Set(list.map((m) => m.industry).filter(Boolean))].sort();
   const shown = list.filter((m) => ind === 'Todas' || m.industry === ind);
   mount(body, html`
-    <div class="mut sm" style="margin-bottom:12px">La red de especialistas de la línea 🟨 Growth: gente que ya creció una marca en esa industria. Techo por sesión: <b>$144 en Accelerate · $180 en Compound</b>; arriba de eso va como add-on facturado al cliente.</div>
+    <div class="mut sm" style="margin-bottom:12px">La red de especialistas de la línea ${ico('square')} Growth: gente que ya creció una marca en esa industria. Techo por sesión: <b>$144 en Accelerate · $180 en Compound</b>; arriba de eso va como add-on facturado al cliente.</div>
     <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:14px">${['Todas', ...inds].map((x) => html`<button class="chip ${x === ind ? 'dark' : ''}" data-mact="ind" data-v="${x}" style="padding:7px 13px">${x}</button>`)}</div>
     ${!list.length ? html`<div class="empty"><b>Todavía no hay especialistas</b>${isCeo ? html`Carga el mapa del manual para empezar, o agrega uno.<div style="margin-top:14px"><button class="btn ghost" data-mact="seed">Cargar el mapa del manual (${SEED.length})</button></div>` : 'El CEO los agrega aquí.'}</div>`
       : [...new Set(shown.map((m) => m.industry))].sort().map((i) => html`<div class="sec-title"><h2>${i}</h2></div>
@@ -58,13 +58,13 @@ export function mentorsTab(body, { list, isCeo, onChange, ind = 'Todas', onInd }
             <div class="row" style="gap:10px">${avatar(m)}<div style="min-width:0"><b style="font-weight:500">${m.name}</b><div class="mut sm">${m.platform || ''}</div></div></div>
             <div class="big" style="font-size:26px;margin:10px 0 4px">${priceLabel(m)}</div>
             <span class="chip ${c}" style="font-size:11px">${f}</span>
-            ${m.why ? html`<div class="sm" style="margin-top:8px">💡 ${m.why}</div>` : ''}
+            ${m.why ? html`<div class="sm" style="margin-top:8px">${ico('bulb')} ${m.why}</div>` : ''}
             ${/^https:\/\//.test(m.link || '') ? html`<a class="sm mut" href="${m.link}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px">Ver perfil ↗</a>` : ''}
           </div>`; })}</div>`)}</div>`)}`);
   body.onclick = async (e) => {
     const t = e.target.closest('[data-mact]'); if (!t || e.target.closest('a')) return;
     if (t.dataset.mact === 'ind') return onInd(t.dataset.v);
-    if (t.dataset.mact === 'seed') { t.disabled = true; const made = []; for (const [industry, tier, name, platform, price, unit, minutes, why] of SEED) made.push(await M.create({ industry, tier, name, platform, price, unit, minutes, why, link: '', photo: null })); toast(`${made.length} especialistas cargados ✅`); return onChange([...list, ...made]); }
+    if (t.dataset.mact === 'seed') { t.disabled = true; const made = []; for (const [industry, tier, name, platform, price, unit, minutes, why] of SEED) made.push(await M.create({ industry, tier, name, platform, price, unit, minutes, why, link: '', photo: null })); toast(`${made.length} especialistas cargados ${ico('check', 14)}`); return onChange([...list, ...made]); }
     if (t.dataset.mact === 'edit') { const r = await editMentor(list.find((m) => m.id === t.dataset.id), inds); if (r) onChange(r.deleted ? list.filter((m) => m.id !== r.id) : list.map((m) => (m.id === r.id ? r : m))); }
   };
 }
@@ -74,9 +74,9 @@ export function editMentor(m, inds = []) {
     let photo = m?.photo || null; let done = false;
     const end = (v) => { if (!done) { done = true; resolve(v); } };
     const draw = () => {
-      drawer(html`<div class="row"><span class="chip">Especialista</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+      drawer(html`<div class="row"><span class="chip">Especialista</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
         <h2>${m ? m.name : 'Nuevo especialista'}</h2>
-        <div class="row" style="gap:12px;margin:14px 0">${avatar({ name: $('#mf [name=name]')?.value || m?.name || '?', photo }, 64)}<label class="btn ghost" style="cursor:pointer">📷 ${photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="mphoto" hidden></label>${photo ? html`<button class="btn ghost" data-act="nophoto">Quitar</button>` : ''}</div>
+        <div class="row" style="gap:12px;margin:14px 0">${avatar({ name: $('#mf [name=name]')?.value || m?.name || '?', photo }, 64)}<label class="btn ghost" style="cursor:pointer">${ico('camera')} ${photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="mphoto" hidden></label>${photo ? html`<button class="btn ghost" data-act="nophoto">Quitar</button>` : ''}</div>
         <form class="form" id="mf">
           <div><label class="f">Nombre *</label><input class="in" name="name" value="${m?.name || ''}"></div>
           <div class="two"><div><label class="f">Industria *</label><input class="in" name="industry" list="minds" value="${m?.industry || ''}"><datalist id="minds">${inds.map((i) => html`<option value="${i}">`)}</datalist></div>
@@ -88,14 +88,14 @@ export function editMentor(m, inds = []) {
           <div><label class="f">¿Por qué ese precio? (qué lo hace más caro o más barato)</label><textarea class="in" name="why">${m?.why || ''}</textarea></div>
           <div><label class="f">Link del perfil</label><input class="in" name="link" value="${m?.link || ''}" placeholder="https://…"></div>
         </form>
-        <div class="row" style="margin-top:16px"><button class="btn" data-act="msave">Guardar</button><div class="sp"></div>${m ? html`<button class="btn ghost" data-act="mdel">🗑</button>` : ''}</div>`, {
+        <div class="row" style="margin-top:16px"><button class="btn" data-act="msave">Guardar</button><div class="sp"></div>${m ? html`<button class="btn ghost" data-act="mdel">${ico('trash')}</button>` : ''}</div>`, {
         nophoto: () => { photo = null; draw(); },
         msave: async () => {
           const f = Object.fromEntries(new FormData($('#mf')));
           if (!f.name.trim() || !f.industry.trim()) return toast('Falta nombre o industria', true);
           if (f.link && !/^https:\/\//.test(f.link)) return toast('El link debe empezar con https://', true);
           const doc = { ...(m || {}), ...f, name: f.name.trim(), industry: f.industry.trim(), price: +f.price || 0, minutes: +f.minutes || 30, photo };
-          try { const r = m ? await M.save(doc) : await M.create(doc); closeDrawer(); toast('Guardado ✅'); end(r); } catch (e) { toast(e.message, true); }
+          try { const r = m ? await M.save(doc) : await M.create(doc); closeDrawer(); toast('Guardado'); end(r); } catch (e) { toast(e.message, true); }
         },
         mdel: async () => { if (!(await confirmAsk(`¿Quitar a ${m.name}?`))) return; await M.remove(m.id); closeDrawer(); end({ id: m.id, deleted: true }); },
       });

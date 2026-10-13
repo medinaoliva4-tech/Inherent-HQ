@@ -43,7 +43,7 @@ export async function render(el, { me, sub, alive }) {
   const priceAt = (s, lv) => (isCeo && rates && !s.price_fixed && !(s.price && !s.prices) ? svcAuto(s, rates, lv) : null) ?? svcPrice(s, lv);
   let cardLv = {};
   // Lo que incluye y cuánto tarda un servicio en un nivel (para la cotización y su PDF).
-  const incHtml = (sv, lv) => html`${daysAt(sv, lv) ? html`<div><b style="font-weight:500">⏱ ${daysAt(sv, lv)} días hábiles</b></div>` : ''}${includesAt(sv, lv).length ? html`<ul style="margin:4px 0 0 18px;padding:0">${includesAt(sv, lv).map((x) => html`<li>${x}</li>`)}</ul>` : ''}`;
+  const incHtml = (sv, lv) => html`${daysAt(sv, lv) ? html`<div><b style="font-weight:500">${ico('clock')} ${daysAt(sv, lv)} días hábiles</b></div>` : ''}${includesAt(sv, lv).length ? html`<ul style="margin:4px 0 0 18px;padding:0">${includesAt(sv, lv).map((x) => html`<li>${x}</li>`)}</ul>` : ''}`;
   const quoteDays = (doc) => Math.max(0, ...doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id); return sv ? daysAt(sv, i.level || sv.level || 5) || 0 : 0; }));
   const lvName = (lv) => (lv <= 6 ? 'Sencillo' : lv >= 9 ? 'Fuerte' : 'Medio');
   const suggested = (s, lv = s.level || 5) => (isCeo && rates ? svcAuto(s, rates, lv) : null);
@@ -90,7 +90,7 @@ export async function render(el, { me, sub, alive }) {
     const late = (l) => l.next_date && l.next_date < today() && OPEN.includes(l.stage || 'Nuevo');
     mount(body, html`
       <div class="grid g4" style="margin-bottom:18px">
-        <div class="card glass"><span class="mut sm">Calientes 🔥</span><div class="big" style="font-size:42px">${open.filter((l) => (l.interest || 0) >= 4).length}</div></div>
+        <div class="card glass"><span class="mut sm">Calientes ${ico('flame')}</span><div class="big" style="font-size:42px">${open.filter((l) => (l.interest || 0) >= 4).length}</div></div>
         <div class="card glass"><span class="mut sm">High ticket</span><div class="big" style="font-size:42px">${open.filter((l) => (l.tags || []).includes('High ticket')).length}</div></div>
         <div class="card glass"><span class="mut sm">No contestaron</span><div class="big" style="font-size:42px">${open.filter((l) => (l.tags || []).includes('No contestó')).length}</div></div>
         <div class="card glass"><span class="mut sm">Pipeline abierto / mes</span><div class="big" style="font-size:42px">${USD(open.reduce((a, l) => a + (+l.value_usd || 0), 0))}</div></div>
@@ -133,7 +133,7 @@ export async function render(el, { me, sub, alive }) {
   function openLead(l) {
     let tags = [...(l.tags || [])], interest = l.interest || 0;
     const all = [...new Set([...Object.keys(TAGS), ...tags])];
-    const d = drawer(html`<div class="row"><span class="chip">${l.source || 'Sin fuente'}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+    const d = drawer(html`<div class="row"><span class="chip">${l.source || 'Sin fuente'}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <h2>${l.name}</h2><div class="mut">${[l.contact, l.company].filter(Boolean).join(' · ')}</div>
       <div style="margin:18px 0 6px" class="sm mut">Interés</div>
       <div class="scorein" id="sc">${[1, 2, 3, 4, 5].map((n) => html`<button data-act="score" data-n="${n}" class="${n <= interest ? 'on' : ''}" title="${n}"></button>`)}</div>
@@ -176,10 +176,10 @@ export async function render(el, { me, sub, alive }) {
     const v = await wizard('Nuevo lead', [
       { k: 'name', q: '¿Qué empresa o marca es?', type: 'text', req: true, ph: 'Nombre de la marca' },
       { k: 'wants', q: '¿Qué le interesa?', type: 'cards', req: true, opts: [
-        { v: 'Marketing', i: '🔷', l: 'Marketing', d: 'Que lo conozcan' }, { v: 'Marketing Pro', i: '🔷', l: 'Marketing Pro', d: 'Presencia sostenida' },
-        { v: 'Accelerate', i: '🟨', l: 'Accelerate', d: 'Está estancado, quiere facturar' }, { v: 'Compound', i: '🟨', l: 'Compound', d: 'Escalar y sistematizar' },
-        { v: 'Proyecto puntual', i: '🧩', l: 'Proyecto puntual' }, { v: 'No sé todavía', i: '❔', l: 'No sé todavía' }] },
-      { k: 'interest', q: '¿Qué tan caliente está?', type: 'cards', req: true, opts: [['1', '🧊', 'Frío'], ['2', '🌤️', 'Tibio'], ['3', '🙂', 'Interesado'], ['4', '🔥', 'Caliente'], ['5', '🚀', 'Listo para cerrar']].map(([v, i, l]) => ({ v, i, l })) },
+        { v: 'Marketing', i: ico('diamond'), l: 'Marketing', d: 'Que lo conozcan' }, { v: 'Marketing Pro', i: ico('diamond'), l: 'Marketing Pro', d: 'Presencia sostenida' },
+        { v: 'Accelerate', i: ico('square'), l: 'Accelerate', d: 'Está estancado, quiere facturar' }, { v: 'Compound', i: ico('square'), l: 'Compound', d: 'Escalar y sistematizar' },
+        { v: 'Proyecto puntual', i: ico('puzzle'), l: 'Proyecto puntual' }, { v: 'No sé todavía', i: ico('help'), l: 'No sé todavía' }] },
+      { k: 'interest', q: '¿Qué tan caliente está?', type: 'cards', req: true, opts: [['1', ico('snow'), 'Frío'], ['2', ico('sun'), 'Tibio'], ['3', ico('smile'), 'Interesado'], ['4', ico('flame'), 'Caliente'], ['5', ico('rocket'), 'Listo para cerrar']].map(([v, i, l]) => ({ v, i, l })) },
       { k: 'source', q: '¿Cómo llegó?', type: 'cards', req: true, opts: SOURCES.map((x) => ({ v: Array.isArray(x) ? x[0] : x, l: Array.isArray(x) ? x[1] : x })) },
       { k: 'contact', q: '¿Con quién hablamos?', sub: 'Nombre y WhatsApp (puedes dejarlo vacío)', type: 'text', ph: 'Nombre · +502 …' },
     ], 'Crear lead');
@@ -226,7 +226,7 @@ export async function render(el, { me, sub, alive }) {
       const keep = fresh ? {} : curForm(); fresh = false; const fv = { ...(s || {}), ...keep };
       const cur = { ...(s || {}), tasks, level };
       const c = costOf(cur, level), sug = suggested(cur, level);
-      drawer(html`<div class="row"><span class="chip">Servicio</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+      drawer(html`<div class="row"><span class="chip">Servicio</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
         <h2>${s ? 'Editar servicio' : 'Nuevo servicio'}</h2>
         <form class="form" id="sf" style="margin-top:14px">
           <div><label class="f">Nombre *</label><input class="in" name="name" value="${fv.name || ''}"></div>
@@ -242,7 +242,7 @@ export async function render(el, { me, sub, alive }) {
           <div><label class="f">Cómo genera ese crecimiento <span class="mut">(sale en la cotización)</span></label><input class="in" name="growth_how" value="${fv.growth_how || ''}" placeholder="Ej. el agente responde y agenda 24/7: más leads atendidos = más ventas"></div>
         </form>
         <div class="row sm mut" style="margin:18px 0 8px"><span style="flex:1">Horas por rol</span><span style="width:90px;text-align:center">Sencillo · 5</span><span style="width:90px;text-align:center">Fuerte · 10</span><span style="width:44px"></span></div>
-        ${tasks.map((t, i) => html`<div class="row" style="margin-bottom:8px"><select class="in" data-i="${i}" data-f="role">${[...new Set([...roles, t.role])].map((r) => html`<option ${r === t.role ? raw('selected') : ''}>${r}</option>`)}</select><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours" value="${t.hours}"><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours10" value="${t.hours10}"><button class="btn ghost" data-act="rmTask" data-i="${i}" style="padding:8px 12px">✕</button></div>`)}
+        ${tasks.map((t, i) => html`<div class="row" style="margin-bottom:8px"><select class="in" data-i="${i}" data-f="role">${[...new Set([...roles, t.role])].map((r) => html`<option ${r === t.role ? raw('selected') : ''}>${r}</option>`)}</select><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours" value="${t.hours}"><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours10" value="${t.hours10}"><button class="btn ghost" data-act="rmTask" data-i="${i}" style="padding:8px 12px">${ico('x', 16)}</button></div>`)}
         <div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><b style="font-weight:500">Nivel de entrega</b><div class="sp"></div><span class="chip ${level >= 8 ? 'dark' : ''}">${level <= 6 ? 'Sencillo' : level >= 9 ? 'Fuerte' : 'Medio'} · ${level}</span></div>
           <input type="range" min="5" max="10" step="1" value="${level}" id="svlv" style="width:100%;margin:10px 0 4px">
           <div id="svprev">${prev(fv)}</div></div>
@@ -279,9 +279,9 @@ export async function render(el, { me, sub, alive }) {
 
   async function editRates() {
     let roles = (rates?.roles || DEFAULT_ROLES.map(([role, rate]) => ({ role, rate }))).map((r) => ({ ...r }));
-    const draw = () => drawer(html`<div class="row"><span class="chip dark">${ico('lock', 13)} Solo CEO</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+    const draw = () => drawer(html`<div class="row"><span class="chip dark">${ico('lock', 13)} Solo CEO</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <h2>Costos por hora</h2><p class="mut sm" style="margin-top:6px">Lo que le cuesta a Inherent una hora de cada rol. Con esto se calcula el costo de cada servicio.</p>
-      <div style="margin-top:18px">${roles.map((r, i) => html`<div class="row" style="margin-bottom:8px"><input class="in" data-i="${i}" data-f="role" value="${r.role}"><span class="mut">Q</span><input class="in" style="max-width:110px" type="number" data-i="${i}" data-f="rate" value="${r.rate ?? ''}" placeholder="falta"><span class="mut sm">/h</span><button class="btn ghost" data-act="rm" data-i="${i}" style="padding:8px 12px">✕</button></div>`)}</div>
+      <div style="margin-top:18px">${roles.map((r, i) => html`<div class="row" style="margin-bottom:8px"><input class="in" data-i="${i}" data-f="role" value="${r.role}"><span class="mut">Q</span><input class="in" style="max-width:110px" type="number" data-i="${i}" data-f="rate" value="${r.rate ?? ''}" placeholder="falta"><span class="mut sm">/h</span><button class="btn ghost" data-act="rm" data-i="${i}" style="padding:8px 12px">${ico('x', 16)}</button></div>`)}</div>
       <button class="btn ghost" data-act="add" style="padding:8px 14px">+ Rol</button>
       <div class="card glass" style="margin-top:18px;padding:14px"><b style="font-weight:500">Margen</b><p class="mut sm" style="margin:4px 0 10px">El precio de todos los servicios sale del costo para dejar este margen: precio = costo ÷ (1 − margen). El rango permitido es de 70 a 80%.</p>
         <div class="row" style="gap:8px"><span class="sm">Margen</span><input class="in" id="margin" type="number" step="1" min="1" max="95" value="${marginOf(rates)}" style="max-width:90px"><span class="mut">%</span></div></div>
@@ -361,13 +361,13 @@ export async function render(el, { me, sub, alive }) {
           <button class="btn ghost" data-act="pdf">Ver PDF</button>${doc.id && doc.items.some((i) => i.service_id) && canProject ? html`<button class="btn ghost" data-act="toProject">→ Crear proyecto</button>` : ''}<button class="btn" data-act="saveQ">Guardar</button></div>
         <div class="grid g2">
           <div class="card">
-            <div class="chead"><div class="ico">✎</div><h3>${doc.number}<br><span class="mut sm">${fdateLong(doc.date)}</span></h3></div>
+            <div class="chead"><div class="ico">${ico('edit')}</div><h3>${doc.number}<br><span class="mut sm">${fdateLong(doc.date)}</span></h3></div>
             <form class="form" id="qf">
               <div class="two"><div><label class="f">Cliente</label><input class="in" name="client" list="leadlist" value="${doc.client}"></div><div><label class="f">Contacto</label><input class="in" name="contact" value="${doc.contact || ''}"></div></div>
               <datalist id="leadlist">${leads.map((l) => html`<option value="${l.name}">`)}</datalist>
             </form>
             <div class="sm mut" style="margin:18px 0 8px">Servicios</div>
-            ${doc.items.map((it, i) => html`<div class="card glass" style="padding:12px 14px;margin-bottom:8px;border-radius:18px"><div class="row"><input class="in" data-i="${i}" data-f="name" value="${it.name}" style="font-weight:500"><button class="btn ghost" data-act="rmItem" data-i="${i}" style="padding:8px 12px">✕</button></div>
+            ${doc.items.map((it, i) => html`<div class="card glass" style="padding:12px 14px;margin-bottom:8px;border-radius:18px"><div class="row"><input class="in" data-i="${i}" data-f="name" value="${it.name}" style="font-weight:500"><button class="btn ghost" data-act="rmItem" data-i="${i}" style="padding:8px 12px"></button></div>
               <div class="row" style="margin-top:8px"><input class="in" data-i="${i}" data-f="description" value="${it.description || ''}" placeholder="Descripción"><input class="in" style="max-width:80px" type="number" data-i="${i}" data-f="qty" value="${it.qty}"><span class="mut">×</span>${it.service_id ? html`<span class="in qprice" data-pshow="${i}" title="Calculado por el nivel de entrega">${it.price != null ? money(doc, it.price) : '—'}</span>` : html`<input class="in" style="max-width:130px" type="number" data-i="${i}" data-f="price" value="${it.price ?? ''}" placeholder="Precio (Q)">`}</div>
               ${(() => { const sv = services.find((x) => x.id === it.service_id); if (!sv || !(sv.tasks || []).length) return ''; const lv = it.level || sv.level || 5;
                 const miss = [priceAt(sv, lv) == null ? 'precio (o costos por hora)' : '', !String(sv.includes5 || '').trim() ? 'lo que incluye' : '', !sv.days5 ? 'días' : ''].filter(Boolean);
@@ -375,10 +375,10 @@ export async function render(el, { me, sub, alive }) {
                   <input type="range" min="5" max="10" step="1" value="${lv}" data-qlv="${i}" style="width:100%">
                   <div class="row mut" style="font-size:11px"><span>5 · sencillo</span><div class="sp"></div><span>10 · fuerte</span></div>
                   ${includesAt(sv, lv).length || daysAt(sv, lv) ? html`<div class="sm" style="margin-top:8px" data-inc="${i}">${incHtml(sv, lv)}</div>` : ''}</div>`; })()}
-              ${it.growth ? html`<div class="qgrow"><span>${ico('trend', 14)} + fee por crecimiento</span><input class="in" type="number" step="0.5" data-i="${i}" data-f="growth_pct" value="${it.growth.pct}"><span class="mut">% de ${GROWTH[it.growth.type] || it.growth.type}</span><button class="btn ghost xs" data-act="rmGrowth" data-i="${i}" title="Quitar el fee">✕</button></div>` : ''}</div>`)}
+              ${it.growth ? html`<div class="qgrow"><span>${ico('trend', 14)} + fee por crecimiento</span><input class="in" type="number" step="0.5" data-i="${i}" data-f="growth_pct" value="${it.growth.pct}"><span class="mut">% de ${GROWTH[it.growth.type] || it.growth.type}</span><button class="btn ghost xs" data-act="rmGrowth" data-i="${i}" title="Quitar el fee"></button></div>` : ''}</div>`)}
             <div class="row" style="margin-top:10px"><select class="in" id="addSvc"><option value="">+ Agregar del catálogo…</option>
               ${plans ? html`<optgroup label="Planes (mensual)">${plans.plans.map((p) => html`<option value="plan:${p.id}">Plan ${p.name} — ${Q(p.precio)}</option>`)}</optgroup>` : ''}
-              ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">✚ Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
+              ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
             ${!services.length ? html`<div class="mut sm" style="margin-top:8px">Tu catálogo está vacío. Crea servicios aquí mismo o en «Catálogo de servicios».</div>` : ''}
             <div class="two" style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="f">Descuento %</label><input class="in" id="qdisc" type="number" value="${doc.discount_pct || 0}"></div><div><label class="f">Válida por (días)</label><input class="in" id="qvalid" type="number" value="${doc.valid_days || 15}"></div></div>
             <div style="margin-top:12px"><label class="f">Lo que esto va a provocar en su negocio (sale ANTES del precio)</label><textarea class="in" id="qintro" style="min-height:120px" placeholder="Cómo se traduce en crecimiento lo que vamos a implementar.">${doc.intro || ''}</textarea></div>
@@ -386,7 +386,7 @@ export async function render(el, { me, sub, alive }) {
             <div style="margin-top:12px"><label class="f">Notas y condiciones (salen en el PDF)</label><textarea class="in" id="qnotes">${doc.notes || ''}</textarea></div>
           </div>
           <div class="card feat olive" style="align-self:start">
-            <div class="chead"><div class="ico">◎</div><h3>Total<br><span class="lbl">${doc.client || 'Sin cliente'}</span></h3></div>
+            <div class="chead"><div class="ico">${ico('target', 16)}</div><h3>Total<br><span class="lbl">${doc.client || 'Sin cliente'}</span></h3></div>
             <div class="big" style="font-size:52px">${money(doc, tt)}</div>
             <div class="split"><div><span class="lbl">Subtotal</span><b>${money(doc, st)}</b></div>${quoteDays(doc) ? html`<div><span class="lbl">Tiempo</span><b>${quoteDays(doc)} días</b></div>` : ''}${doc.discount_pct ? html`<div><span class="lbl">Descuento</span><b>-${doc.discount_pct}%</b></div>` : ''}
               ${cost != null ? (() => { const mg = tt ? Math.round(((tt - cost) / tt) * 100) : null; return html`<div><span class="lbl">${ico('lock', 12)} Costo</span><b>${money(doc, cost)}</b></div><div><span class="lbl">${ico('lock', 12)} Margen</span><b style="color:#faf6ee">${mg != null ? mg + '%' : '—'}</b>${mg != null && mg < 70 ? html`<span class="lbl" style="display:block;margin-top:4px">${ico('alert', 12)} Bajo el mínimo de 70%</span>` : ''}</div>`; })() : ''}</div>

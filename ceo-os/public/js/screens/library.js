@@ -1,5 +1,5 @@
 import { recorder } from '../recorder.js';
-import { WORK_ROLES, wizard, connectCard , openClaude, ICON } from '../core.js';
+import { WORK_ROLES, wizard, connectCard , openClaude, ICON, ico } from '../core.js';
 import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, $, folderSvg, TONES, embedUrl, IC, diagram, diagrams } from '../core.js';
 
 // Library: SOPs, playbooks, videos y notas que el equipo escribe aquí, en carpetas.
@@ -161,20 +161,20 @@ export async function render(el, { me, sub, alive }) {
     ]);
     if (!v) return null;
     if (v.drive && !driveOk(v.drive)) { toast('Pega el link de una carpeta de Drive (drive.google.com/drive/folders/…)', true); return null; }
-    try { const r = f ? await F.save({ ...f, ...v }) : await F.create(v); folders = f ? folders.map((x) => (x.id === r.id ? r : x)) : [...folders, r]; toast('Carpeta guardada ✅'); return r; } catch (e) { toast(e.message, true); return null; }
+    try { const r = f ? await F.save({ ...f, ...v }) : await F.create(v); folders = f ? folders.map((x) => (x.id === r.id ? r : x)) : [...folders, r]; toast('Carpeta guardada'); return r; } catch (e) { toast(e.message, true); return null; }
   }
   async function newDoc(folderId) {
     let clients = []; try { clients = (await api('repo/clients')).clients.filter((c) => c.hasPlan).map((c) => c.slug); } catch {}
     const v = await wizard('Nuevo documento', [
       { k: 'kind', q: '¿Qué vas a crear?', type: 'cards', req: true, opts: [
-        { v: 'SOP', i: '📋', l: 'SOP', d: 'Un proceso paso a paso' }, { v: 'Playbook', i: '🎯', l: 'Playbook', d: 'Una jugada para una situación' },
-        { v: 'Prompt', i: '✦', l: 'Prompt de video', d: 'Para una marca y un tipo de video' }, { v: 'Diagrama', i: '🔀', l: 'Diagrama', d: 'Flujo, mapa, organigrama' },
-        { v: 'Video', i: '🎬', l: 'Video', d: 'Link de YouTube, Loom o Drive' }, { v: 'Nota', i: '📝', l: 'Nota', d: 'Texto libre' }] },
-      { k: 'client', q: '¿Para qué marca?', type: 'cards', req: true, show: (a) => a.kind === 'Prompt', opts: [{ v: '_', i: '🌐', l: 'General', d: 'Sirve para todas' }, ...clients.map((c) => ({ v: c, i: '🏷️', l: c.toUpperCase() }))] },
+        { v: 'SOP', i: ico('clipboard'), l: 'SOP', d: 'Un proceso paso a paso' }, { v: 'Playbook', i: ico('target', 16), l: 'Playbook', d: 'Una jugada para una situación' },
+        { v: 'Prompt', i: ico('spark'), l: 'Prompt de video', d: 'Para una marca y un tipo de video' }, { v: 'Diagrama', i: ico('shuffle'), l: 'Diagrama', d: 'Flujo, mapa, organigrama' },
+        { v: 'Video', i: ico('video'), l: 'Video', d: 'Link de YouTube, Loom o Drive' }, { v: 'Nota', i: ico('doc'), l: 'Nota', d: 'Texto libre' }] },
+      { k: 'client', q: '¿Para qué marca?', type: 'cards', req: true, show: (a) => a.kind === 'Prompt', opts: [{ v: '_', i: ico('globe'), l: 'General', d: 'Sirve para todas' }, ...clients.map((c) => ({ v: c, i: ico('tag'), l: c.toUpperCase() }))] },
       { k: 'vtype', q: '¿Qué tipo de video?', type: 'cards', req: true, show: (a) => a.kind === 'Prompt', opts: VTYPES.map((x) => ({ v: x, l: x })) },
       { k: 'url', q: 'Pega el link del video', type: 'text', req: true, show: (a) => a.kind === 'Video', ph: 'https://…' },
       { k: 'title', q: '¿Cómo se llama?', type: 'text', req: true, v: (a) => (a.kind === 'Prompt' ? `${a.client === '_' ? 'General' : (a.client || '').toUpperCase()} · ${a.vtype}` : undefined), ph: 'Título' },
-      { k: 'folder_id', q: '¿En qué carpeta va?', type: 'cards', show: () => !folderId && folders.length > 0, v: '', opts: [{ v: '', i: '—', l: 'Sin carpeta' }, ...folders.map((f) => ({ v: f.id, i: '📁', l: f.name }))] },
+      { k: 'folder_id', q: '¿En qué carpeta va?', type: 'cards', show: () => !folderId && folders.length > 0, v: '', opts: [{ v: '', i: '—', l: 'Sin carpeta' }, ...folders.map((f) => ({ v: f.id, i: ico('folder'), l: f.name }))] },
     ], 'Crear');
     if (!v) return;
     if (v.url && !/^https:\/\//.test(v.url)) return toast('El link debe empezar con https://', true);
@@ -187,7 +187,7 @@ export async function render(el, { me, sub, alive }) {
   function record(folderId) {
     recorder({ onDone: async ({ title, link }) => {
       try { const r = await D.create({ title, kind: 'Video', folder_id: folderId || '', url: link, body: `# ${title}\n\n> Grabado en Inherent OS. Drive tarda unos minutos en procesar el video.\n\n## Resumen\n\n` });
-        toast('Video guardado en la Library ✅'); location.hash = `/library/${r.folder_id || '_'}/${r.id}`; } catch (e) { toast(e.message, true); }
+        toast('Video guardado en la Library'); location.hash = `/library/${r.folder_id || '_'}/${r.id}`; } catch (e) { toast(e.message, true); }
     } });
   }
   const docRow = (d) => html`<tr class="click" data-act="doc" data-id="${d.id}"><td><span class="ftype" style="background:${KCOL[d.kind] || '#9f846d'}">${(d.kind || 'Doc').slice(0, 4).toUpperCase()}</span><b style="font-weight:500">${d.title}</b></td><td class="mut">${folders.find((f) => f.id === d.folder_id)?.name || '—'}</td><td class="mut">${d._meta?.updated_at ? fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}</td><td class="mut sm">${d._meta?.updated_by || ''}</td></tr>`;
@@ -197,7 +197,7 @@ export async function render(el, { me, sub, alive }) {
     const ql = q.toLowerCase();
     const list = docs.filter((d) => !ql || (d.title + ' ' + (d.body || '')).toLowerCase().includes(ql)).sort((a, z) => String(z._meta?.updated_at || '').localeCompare(String(a._meta?.updated_at || '')));
     mount(el, html`<div class="hello"><h1>Library</h1><p>SOPs, playbooks y videos. <em>Todo en un lugar.</em></p></div>
-      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div><button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">● Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
+      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div><button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
       ${folders.length ? html`<div class="folders">${folders.map((f) => html`<div class="folder" data-act="folder" data-id="${f.id}">${folderSvg({ drive: Boolean(f.drive), tone: f.tone, video: docs.some((d) => d.folder_id === f.id && d.kind === 'Video') })}<b>${f.name}</b><span class="mut sm">${docs.filter((d) => d.folder_id === f.id).length} documentos${f.drive ? ' · Drive' : ''}</span></div>`)}</div>`
         : html`<div class="empty"><b>Todavía no hay carpetas</b>Crea la primera: «Onboarding de cliente», «Producción», «Playbooks de venta»… y conéctala a una carpeta de Drive si quieres.</div>`}
       <div class="sec-title"><h2>${q ? 'Resultados' : 'Recientes'}</h2></div>
@@ -215,9 +215,9 @@ export async function render(el, { me, sub, alive }) {
       mount(el, html`<div class="row" style="margin-bottom:14px"><a class="btn ghost" href="#/library">← Library</a></div>
         <div class="row" style="gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:20px"><div style="width:110px">${folderSvg({ w: 110, drive: Boolean(f.drive), tone: f.tone })}</div>
           <div style="flex:1;min-width:240px"><h1 style="font-size:46px;font-weight:500;letter-spacing:-1.4px">${f.name}</h1>${f.desc ? html`<div class="mut">${f.desc}</div>` : ''}</div>
-          <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" data-act="editFolder">Editar</button><button class="btn ghost" data-act="recHere">● Grabar video</button><button class="btn" data-act="newDocHere">+ Documento</button></div></div>
+          <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" data-act="editFolder">Editar</button><button class="btn ghost" data-act="recHere">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDocHere">+ Documento</button></div></div>
         <div class="sec-title" style="margin-top:0"><h2>Documentos</h2></div>
-        ${list.length ? html`<div class="grid g3">${list.map((d) => html`<div class="card" data-act="doc" data-id="${d.id}" style="cursor:pointer"><div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#9f846d'};color:#fdfaf3">${d.kind || 'Doc'}</span><div class="sp"></div>${d.url ? html`<span class="mut sm">▶ video</span>` : ''}</div><h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin-top:14px">${d.title}</h3><div class="mut sm" style="margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${String(d.body || '').replace(/[#*>`|-]/g, '').slice(0, 200) || 'Vacío'}</div></div>`)}</div>`
+        ${list.length ? html`<div class="grid g3">${list.map((d) => html`<div class="card" data-act="doc" data-id="${d.id}" style="cursor:pointer"><div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#9f846d'};color:#fdfaf3">${d.kind || 'Doc'}</span><div class="sp"></div>${d.url ? html`<span class="mut sm">${ico('play', 13)} video</span>` : ''}</div><h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin-top:14px">${d.title}</h3><div class="mut sm" style="margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${String(d.body || '').replace(/[#*>`|-]/g, '').slice(0, 200) || 'Vacío'}</div></div>`)}</div>`
           : html`<div class="empty"><b>Sin documentos aquí</b>Crea un SOP, playbook o video con «+ Documento».</div>`}
         <div class="sec-title"><h2>Google Drive</h2>${f.drive ? html`<div class="row" style="gap:8px"><button class="btn ghost" data-act="gnew" style="padding:8px 14px">+ Google Doc</button><a class="btn ghost" href="${f.drive}" target="_blank" rel="noopener noreferrer" style="padding:8px 14px;text-decoration:none">${IC.drive} Abrir en Drive</a></div>` : ''}</div>
         ${!f.drive ? connectCard('drive', 'Conecta esta carpeta con Google Drive', 'Verás aquí sus archivos y podrás crear Docs, Sheets y Slides directo en ella.', 'connectDrive', 'Conectar con Drive')
@@ -233,9 +233,9 @@ export async function render(el, { me, sub, alive }) {
       recHere: () => record(id),
       doc: (t) => { location.hash = `/library/${id}/${t.dataset.id}`; },
       gnew: async () => { const v = await ask('Nuevo archivo en Drive', [{ k: 'name', l: 'Nombre', req: true }, { k: 'type', l: 'Tipo', t: 'select', opts: [['doc', 'Google Doc'], ['sheet', 'Google Sheet'], ['slides', 'Google Slides'], ['folder', 'Carpeta']] }], 'Crear'); if (!v) return;
-        try { const r = await api('google/drive', { method: 'POST', body: { ...v, folder: f.drive } }); toast('Creado en tu Drive ✅'); if (r.link) window.open(r.link, '_blank', 'noopener'); drive = null; paint(); loadDrive(); } catch (e) { toast(e.message, true); } },
+        try { const r = await api('google/drive', { method: 'POST', body: { ...v, folder: f.drive } }); toast('Creado en tu Drive'); if (r.link) window.open(r.link, '_blank', 'noopener'); drive = null; paint(); loadDrive(); } catch (e) { toast(e.message, true); } },
       dfile: (t) => { const x = drive.files.find((y) => y.id === t.dataset.id); const em = /folder/.test(x.mime) ? null : `https://drive.google.com/file/d/${x.id}/preview`;
-        drawer(html`<div class="row"><span class="ftype" style="background:${MIME(x.mime)[1]}">${MIME(x.mime)[0]}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div><h2>${x.name}</h2><div class="mut">${x.owner || ''}${x.modified ? ' · ' + fdate(x.modified.slice(0, 10)) : ''}</div>
+        drawer(html`<div class="row"><span class="ftype" style="background:${MIME(x.mime)[1]}">${MIME(x.mime)[0]}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${x.name}</h2><div class="mut">${x.owner || ''}${x.modified ? ' · ' + fdate(x.modified.slice(0, 10)) : ''}</div>
           ${em ? html`<iframe src="${em}" style="width:100%;height:58vh;border:0;border-radius:18px;margin-top:16px;background:#fdfaf3" loading="lazy"></iframe>` : ''}
           <a class="btn" href="${x.link}" target="_blank" rel="noopener noreferrer" style="margin-top:16px;text-decoration:none;display:inline-flex">Abrir en Drive ↗</a>`); },
     });
@@ -255,7 +255,7 @@ export async function render(el, { me, sub, alive }) {
     const paint = () => {
       const em = embedUrl(d.url);
       mount(el, html`<div class="row" style="margin-bottom:14px;gap:8px"><a class="btn ghost" href="${back}">← ${folders.find((f) => f.id === d.folder_id)?.name || 'Library'}</a><div class="sp"></div>
-          ${editing ? html`<button class="btn ghost" data-act="cancel">Cancelar</button><button class="btn" data-act="save">Guardar</button>` : html`<button class="btn ghost" data-act="del">🗑</button><button class="btn" data-act="edit">Editar</button>`}</div>
+          ${editing ? html`<button class="btn ghost" data-act="cancel">Cancelar</button><button class="btn" data-act="save">Guardar</button>` : html`<button class="btn ghost" data-act="del">${ico('trash')}</button><button class="btn" data-act="edit">Editar</button>`}</div>
         <div class="card" style="padding:34px;max-width:980px;margin:0 auto">
           ${editing ? html`<div class="row" style="gap:10px;flex-wrap:wrap"><select class="in" id="dkind" style="width:auto">${KINDS.map((k) => html`<option ${k === d.kind ? raw('selected') : ''}>${k}</option>`)}</select><span class="mut sm" style="margin-left:6px">Perfil:</span>${WORK_ROLES.map(([k, l]) => html`<label class="chip" style="cursor:pointer;padding:6px 10px"><input type="checkbox" class="drole" value="${k}" ${(d.roles || []).includes(k) ? raw('checked') : ''} style="margin-right:4px">${l.split(' · ')[0]}</label>`)}<select class="in" id="dfolder" style="width:auto"><option value="">— Sin carpeta</option>${folders.map((f) => html`<option value="${f.id}" ${f.id === d.folder_id ? raw('selected') : ''}>${f.name}</option>`)}</select></div>
               <input class="in" id="dtitle" value="${d.title}" style="font-size:34px;font-weight:500;letter-spacing:-1px;border:0;padding:10px 0;background:transparent;margin-top:8px">
@@ -277,12 +277,12 @@ export async function render(el, { me, sub, alive }) {
       dgm: async (t) => { const ta = $('#dbody', el); if (ta.value.trim() && !(await confirmAsk('¿Reemplazar el diagrama por la plantilla?'))) return; ta.value = DGM[t.dataset.k]; ta.oninput(); },
       fmt: async () => { const ta = $('#dbody', el); const k = curKind(); if (ta.value.trim() && !(await confirmAsk(`¿Reemplazar el texto por el formato de ${k}?`))) return; ta.value = (TPL[k] || TPL.Nota)($('#dtitle', el).value || d.title); ta.oninput(); },
       claudePrompt: () => openClaude(d.body || ''),
-      copyPrompt: async () => { try { await navigator.clipboard.writeText(d.body || ''); toast('Prompt copiado ✅'); } catch { toast('No pude copiar: selecciona el texto', true); } },
+      copyPrompt: async () => { try { await navigator.clipboard.writeText(d.body || ''); toast('Prompt copiado'); } catch { toast('No pude copiar: selecciona el texto', true); } },
       edit: () => { editing = true; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}/edit`); paint(); },
       cancel: () => { editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); paint(); },
       save: async () => {
         const url = $('#durl', el).value.trim(); if (url && !/^https:\/\//.test(url)) return toast('El link debe empezar con https://', true);
-        try { d = await D.save({ ...d, title: $('#dtitle', el).value.trim() || d.title, kind: $('#dkind', el).value, folder_id: $('#dfolder', el).value, url, body: $('#dbody', el).value, roles: [...el.querySelectorAll('.drole:checked')].map((x) => x.value) }); editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); toast('Guardado ✅'); paint(); }
+        try { d = await D.save({ ...d, title: $('#dtitle', el).value.trim() || d.title, kind: $('#dkind', el).value, folder_id: $('#dfolder', el).value, url, body: $('#dbody', el).value, roles: [...el.querySelectorAll('.drole:checked')].map((x) => x.value) }); editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); toast('Guardado'); paint(); }
         catch (e) { toast(e.message, true); }
       },
       del: async () => { if (!(await confirmAsk(`¿Eliminar «${d.title}»?`))) return; await D.remove(d.id); location.hash = back.slice(1); },

@@ -14,7 +14,7 @@ export async function payDialog({ quote_id, client, currency = 'GTQ', amount }) 
   if (v.proof) { if (v.proof.size > 2_000_000) { toast('El comprobante pesa más de 2 MB', true); return null; } proof = await fileToData(v.proof); }
   try { await api('flow/quote/' + quote_id, { method: 'POST', body: { action: 'payment', amount: v.amount, date: v.date, method: v.method, ref: v.ref, proof, proof_name: v.proof?.name } }); }
   catch (e) { toast(e.message, true); return null; }
-  toast('Pago subido ✅ · falta que lo confirme el CEO o el COO');
+  toast('Pago subido · falta que lo confirme el CEO o el COO');
   return true;
 }
 // Abre un comprobante guardado (imagen o PDF) en otra pestaña.

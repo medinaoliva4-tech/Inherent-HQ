@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ , calQ, calAll, setCalAll, teamList } from '../core.js';
+import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ , calQ, calAll, setCalAll, teamList, ico } from '../core.js';
 import { bdayText } from './me.js';
 import { videoCard } from './content.js';
 import { connectNotice, hookNotice } from '../connectai.js';
@@ -48,7 +48,7 @@ export async function render(el, { me, alive }) {
   // Para el equipo: el resumen de su trabajo (el detalle está en su Workspace).
   function summary() {
     const late = mine.filter((t) => t.due && t.due < today()).length, rev = tasks.filter((t) => t.assignee === me.email && t.status === 'En revisión').length;
-    return html`<div class="card feat olive"><div class="chead"><div class="ico">✓</div><h3>Mi trabajo<br><span class="lbl">Lo tuyo esta semana</span></h3><a class="arrow" href="#/work">↗</a></div>
+    return html`<div class="card feat olive"><div class="chead"><div class="ico">${ico('check', 14)}</div><h3>Mi trabajo<br><span class="lbl">Lo tuyo esta semana</span></h3><a class="arrow" href="#/work">↗</a></div>
       <div class="lbl">Pendientes</div><div class="big">${mine.length}${late ? html`<small> · ${late} atrasada${late === 1 ? '' : 's'}</small>` : ''}</div>
       ${matrix(Math.min(34, mine.length * 3))}
       <div class="foot"><span>${rev} en revisión</span><span>Abrir mi Workspace →</span></div></div>`;
@@ -57,27 +57,27 @@ export async function render(el, { me, alive }) {
     mount(el, html`
       <div class="hello"><h1>${greet()}, ${first}.</h1><p>Esto es lo que pasa hoy en <em>Inherent</em>.</p></div>
       ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const isToday = p.birthday === soon[0], mine = (p.email || p.id) === me.email;
-        return html`<span class="bdi ${isToday ? 'now' : ''}">${p.picture ? html`<img src="${p.picture}" alt="" referrerpolicy="no-referrer">` : ''}${isToday ? (mine ? html`🎉 <b>¡Feliz cumpleaños, ${first}!</b>` : html`🎂 <b>Hoy cumple ${p.name.split(' ')[0]}</b> · ¡felicítalo!`) : html`🎂 ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
+        return html`<span class="bdi ${isToday ? 'now' : ''}">${p.picture ? html`<img src="${p.picture}" alt="" referrerpolicy="no-referrer">` : ''}${isToday ? (mine ? html`${ico('spark')} <b>¡Feliz cumpleaños, ${first}!</b>` : html`${ico('cake')} <b>Hoy cumple ${p.name.split(' ')[0]}</b> · ¡felicítalo!`) : html`${ico('cake')} ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
       ${connectNotice(me)}
-      ${me.role === 'ceo' && !tasks.length ? html`<a class="asbar" href="#/setup" style="display:flex">⚙ La app todavía está vacía: <b>haz el Arranque</b> (4 pasos) y queda lista con lo que ya dice el repo →</a>` : ''}
+      ${me.role === 'ceo' && !tasks.length ? html`<a class="asbar" href="#/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> (4 pasos) y queda lista con lo que ya dice el repo →</a>` : ''}
       <div class="grid g3">
         ${can('finanzas') ? html`<div class="card feat olive">
-          <div class="chead"><div class="ico">${IC.ring(78)}<span style="font-size:15px">◎</span></div><h3>Revenue<br><span class="lbl">${MONTHS[now.getMonth()]} ${now.getFullYear()}</span></h3><a class="arrow" href="#/finanzas">↗</a></div>
+          <div class="chead"><div class="ico">${IC.ring(78)}<span style="font-size:15px">${ico('target', 16)}</span></div><h3>Revenue<br><span class="lbl">${MONTHS[now.getMonth()]} ${now.getFullYear()}</span></h3><a class="arrow" href="#/finanzas">↗</a></div>
           <div class="lbl">Facturado este mes</div>
           <div class="big">${revNow ? html`<span class="cur">Q</span>${K(revNow)}` : '—'}</div>
           ${matrix(revNow ? Math.min(34, Math.round((revNow / Math.max(...revSeries, 1)) * 34)) : 0)}
           <div class="foot"><span>${revNow ? `Gross ${Q(revNow - costNow)} · Cost ${Q(costNow)}` : 'Se llena con los ingresos de Finance'}</span></div>
         </div>` : ''}
         ${can('sales') ? html`<div class="card feat terra">
-          <div class="chead"><div class="ico">${IC.ring(46)}<span style="font-size:15px">☺</span></div><h3>Leads<br><span class="lbl">Pipeline abierto</span></h3><a class="arrow" href="#/sales">↗</a></div>
+          <div class="chead"><div class="ico">${IC.ring(46)}<span style="font-size:15px">${ico('smile')}</span></div><h3>Leads<br><span class="lbl">Pipeline abierto</span></h3><a class="arrow" href="#/sales">↗</a></div>
           <div class="lbl">Leads activos</div>
-          <div class="big">${open.length}<small> · ${hot.length} 🔥</small></div>
+          <div class="big">${open.length}<small> · ${hot.length} ${ico('flame')}</small></div>
           ${matrix(Math.min(34, open.length * 2))}
           <div class="foot"><span>Pipeline ${USD(pipe)} / mes</span><span>${leads.filter((l) => l.stage === 'Ganado').length} ganados</span></div>
         </div>` : ''}
         ${!can('content') ? summary() : ''}
         ${!can('content') ? '' : html`<div class="card">
-          <div class="chead"><div class="ico">♡</div><h3>Engagement<br><span class="mut sm">Personal + Inherent</span></h3><a class="arrow" href="#/content">↗</a></div>
+          <div class="chead"><div class="ico">${ico('heart')}</div><h3>Engagement<br><span class="mut sm">Personal + Inherent</span></h3><a class="arrow" href="#/content">↗</a></div>
           ${(() => {
             // Por perfil: primero Windsor (en vivo, 30 días); si no trae, la foto del último scrape.
             const pick = (ig, wk) => (ig?.matched && ig.er != null ? { er: ig.er, prev: ig.erPrev, reach: ig.reach, days: ig.erDays, src: 'w' } : wk?.analytics?.at(-1)?.er != null ? { er: wk.analytics.at(-1).er, src: 's' } : null);
@@ -96,7 +96,7 @@ export async function render(el, { me, alive }) {
         </div>`}
       </div>
       <div class="grid g2" style="margin-top:18px">
-        ${!can('content') ? html`<div class="card"><div class="chead"><div class="ico">▤</div><h3>Library<br><span class="mut sm">SOPs, prompts y plantillas de tu perfil</span></h3><a class="arrow" href="#/library">↗</a></div>
+        ${!can('content') ? html`<div class="card"><div class="chead"><div class="ico">${ico('list')}</div><h3>Library<br><span class="mut sm">SOPs, prompts y plantillas de tu perfil</span></h3><a class="arrow" href="#/library">↗</a></div>
           <div class="mut sm">Todo lo que necesitas para entregar está en tu <a href="#/work" style="color:inherit">Workspace</a>: tus tareas, el material de cada cliente y dónde subir tu entrega.</div></div>` : ''}
         ${!can('content') ? '' : html`<div class="card">
           ${(() => {
@@ -106,7 +106,7 @@ export async function render(el, { me, alive }) {
             const reels = ig?.topReels || [], stat = ig?.topStatic || [];
             const type = hType ? hType : reels.length >= stat.length && reels.length ? 'reels' : stat.length ? 'static' : 'reels';
             const pickT = type === 'reels' ? reels : stat, tDays = type === 'reels' ? ig?.topReelsDays : ig?.topStaticDays;
-            const own = ig?.matched ? pickT.map((x) => ({ url: x.url, thumb: x.thumb, handle: ig.handles?.[0] || '', red: 'instagram', at: x.date, views: x.views, likes: x.likes, comments: x.comments, text: x.caption, icon: x.reel || x.type === 'Video' ? '▶' : x.type === 'Carrusel' ? '❏' : '◻' })) : [];
+            const own = ig?.matched ? pickT.map((x) => ({ url: x.url, thumb: x.thumb, handle: ig.handles?.[0] || '', red: 'instagram', at: x.date, views: x.views, likes: x.likes, comments: x.comments, text: x.caption, icon: x.reel || x.type === 'Video' ? ico('play', 13) : x.type === 'Carrusel' ? ico('copy') : ico('image') })) : [];
             const niche = wk?.result?.top || [];
             const queue = content.filter((c) => c.kind === 'post' && c.profile === hProf && c.status !== 'Publicado').sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')));
             const views = [['top', 'Mejor contenido'], ['next', `Por subir${queue.length ? ' · ' + queue.length : ''}`], ...(niche.length ? [['niche', 'Nicho']] : [])];
@@ -116,13 +116,13 @@ export async function render(el, { me, alive }) {
               : v === 'niche' ? html`<div class="grid homevids">${niche.slice(0, 3).map(videoCard)}</div>`
               : ig === null ? html`<p class="loading">Cargando…</p>` : own.length ? html`<div class="grid homevids">${own.slice(0, 3).map(videoCard)}</div>`
               : html`<div class="empty" style="margin-top:10px"><b>Sin posts todavía</b>${ig?.matched === false || !ig?.handles?.length ? `Conecta la cuenta de Instagram de ${hProf === 'personal' ? 'Personal' : 'Inherent'} en Content → Analytics.` : `No hay ${type === 'reels' ? 'reels' : 'fotos ni carruseles'} en los últimos 90 días.`}</div>`;
-            return html`<div class="chead"><div class="ico">▶</div><h3>Content<br><span class="mut sm">${v === 'top' ? `Tus ${type === 'reels' ? 'reels' : 'fotos y carruseles'} con más interacción · ${tDays || 30} días` : v === 'next' ? 'Lo que sigue en el planner' : 'Lo que más rinde en tu nicho'}</span></h3><a class="arrow" href="#/content">↗</a></div>
+            return html`<div class="chead"><div class="ico">${ico('play', 13)}</div><h3>Content<br><span class="mut sm">${v === 'top' ? `Tus ${type === 'reels' ? 'reels' : 'fotos y carruseles'} con más interacción · ${tDays || 30} días` : v === 'next' ? 'Lo que sigue en el planner' : 'Lo que más rinde en tu nicho'}</span></h3><a class="arrow" href="#/content">↗</a></div>
               <div class="row homesel"><div class="tabs mini">${[['inherent', 'Inherent'], ['personal', 'Personal']].map(([k, l]) => html`<button class="${k === hProf ? 'on' : ''}" data-act="hprof" data-k="${k}">${l}</button>`)}</div>
                 <div class="tabs mini">${views.map(([k, l]) => html`<button class="${k === v ? 'on' : ''}" data-act="hview" data-k="${k}">${l}</button>`)}</div>
                 ${v === 'top' && ig?.matched ? html`<div class="tabs mini">${[['reels', `Reels${reels.length ? ' · ' + reels.length : ''}`], ['static', `Estáticos${stat.length ? ' · ' + stat.length : ''}`]].map(([k, l]) => html`<button class="${k === type ? 'on' : ''}" data-act="htype" data-k="${k}">${l}</button>`)}</div>` : ''}</div>${body}`; })()}
         </div>`}
         <div class="card todo">
-          <div class="chead"><div class="ico">✓</div><h3>Hoy</h3><span class="gbadge" style="margin-left:auto">${IC.cal} Google Calendar</span><button class="btn ghost" style="padding:8px 14px" data-act="addTask">+ Tarea</button></div>
+          <div class="chead"><div class="ico">${ico('check', 14)}</div><h3>Hoy</h3><span class="gbadge" style="margin-left:auto">${IC.cal} Google Calendar</span><button class="btn ghost" style="padding:8px 14px" data-act="addTask">+ Tarea</button></div>
           ${agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm" style="margin-bottom:8px">Calendar: ${agErr}</div>`
             : agenda.length ? agenda.slice(0, 3).map((e) => html`<a class="agenda" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="t">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="bar2" style="background:#a18770"></span><div><b style="font-weight:500">${e.summary}</b>${e.meet ? html`<div class="mut sm">Google Meet</div>` : e.location ? html`<div class="mut sm">${e.location}</div>` : ''}</div></a>`)
             : html`<div class="mut sm" style="margin-bottom:8px">Sin eventos hoy en tu calendario.</div>`}
@@ -135,7 +135,7 @@ export async function render(el, { me, alive }) {
   acts(el, {
     done: async (cb) => {
       const t = tasks.find((x) => x.id === cb.dataset.id);
-      try { Object.assign(t, await col('tasks').save({ ...t, status: 'Hecha' })); toast('Tarea hecha ✅'); setTimeout(() => { mine.splice(mine.indexOf(t), 1); paint(); }, 500); }
+      try { Object.assign(t, await col('tasks').save({ ...t, status: 'Hecha' })); toast('Tarea hecha'); setTimeout(() => { mine.splice(mine.indexOf(t), 1); paint(); }, 500); }
       catch (e) { cb.checked = false; toast(e.message, true); }
     },
     hprof: (b) => { hProf = b.dataset.k; hType = null; try { localStorage.setItem('home.prof', hProf); } catch {} paint(); },

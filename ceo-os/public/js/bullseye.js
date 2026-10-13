@@ -1,7 +1,7 @@
 // La diana de audiencia (método Bullseye: Define · Acierta · Expande). Vive en Content → Fuentes.
 // El centro es UNA persona hiper-específica; cada anillo suelta UNA restricción. Apuntar al centro le enseña
 // al algoritmo a quién mostrarle el video, y él expande el alcance. Se arma conversando con el Claude de cada quien.
-import { html, raw, mount, toast, drawer, closeDrawer, ask, claudeJSON } from './core.js';
+import { html, raw, mount, toast, drawer, closeDrawer, ask, claudeJSON, ico } from './core.js';
 
 const COL = ['#7f6149', '#a0856e', '#beaa96', '#bda895', '#4c3829'];
 const NAME = ['Centro', 'Anillo 1', 'Anillo 2', 'Anillo 3', 'Anillo 4'];
@@ -26,7 +26,7 @@ function board(bx, mode) {
       <text x="${C}" y="${C + R[1] + 16}" text-anchor="middle" class="bx-zone">TEMAS DE AQUÍ</text>
       <path id="bxArc" d="M ${C - 160} ${C} A 160 160 0 0 1 ${C + 160} ${C}" fill="none"/>
       <text class="bx-arc"><textPath href="#bxArc" startOffset="50%" text-anchor="middle">FORMATOS · HOOKS · HISTORIAS · EDICIÓN — DE DONDE SEA</textPath></text>`;
-  } else extra = `<text x="${C}" y="${C + 6}" text-anchor="middle" style="font-size:18px">🎯</text>`;
+  } else extra = `<text x="${C}" y="${C + 6}" text-anchor="middle" style="font-size:18px"></text>`;
   return html`<svg class="bx-svg" viewBox="0 0 340 340" role="img" aria-label="La diana de audiencia">${rings}${nums}${raw(extra)}</svg>`;
 }
 
@@ -46,7 +46,7 @@ function panel(bx, mode) {
       <div class="bx-mix">${bx.mix.map((m, i) => html`<div class="bx-card" style="border-color:${JOB[m.ring][1]}"><div class="bx-k">V${i + 1} · ${NAME[m.ring]} · ${JOB[m.ring][0]}</div><div>${m.topic || html`<span class="bx-mut">Sin tema todavía</span>`}</div></div>`)}</div>
       <div class="bx-mut sm">Por cada 5 videos: 3 al centro, 1 al anillo 1, 1 al anillo 2. Nunca más afuera: los anillos 3 y 4 te los da el algoritmo cuando ya te ganaste el centro.</div>
       <div class="bx-k" style="margin-top:14px">Calibración · conversiones por anillo (seguidores, DMs, leads, ventas)</div>
-      ${L.length ? html`<div class="bx-cal"><div class="bx-cal-h"><span>Lote</span><span>🎯</span><span>A1</span><span>A2</span><span>Decisión</span></div>${L.map((c) => html`<div><span>${c.lote}</span><span>${c.c0}</span><span>${c.c1}</span><span>${c.c2}</span><span>${c.decision || '—'}</span></div>`)}</div>` : ''}
+      ${L.length ? html`<div class="bx-cal"><div class="bx-cal-h"><span>Lote</span><span>${ico('target', 16)}</span><span>A1</span><span>A2</span><span>Decisión</span></div>${L.map((c) => html`<div><span>${c.lote}</span><span>${c.c0}</span><span>${c.c1}</span><span>${c.c2}</span><span>${c.decision || '—'}</span></div>`)}</div>` : ''}
       <div class="bx-mut sm">${L.length >= 2 ? html`Por video, convierte más <b style="color:#fdfaf3">${NAME[best].toLowerCase()}</b>: inclina los próximos lotes hacia ahí.` : 'Corre el 3/1/1 en 2 o 3 lotes de 10 videos; luego anota qué anillo trajo conversiones y la mezcla se inclina hacia ese.'}</div>
       <button class="btn ghost xs bx-btn" data-act="bxLote">+ Anotar lote</button>`;
   }
@@ -60,11 +60,11 @@ function panel(bx, mode) {
 export function bullseye(host, { name, bx, save, prompt }) {
   const paint = () => {
     if (!bx) {
-      return mount(host, html`<div class="card bx"><div class="row" style="flex-wrap:wrap;gap:10px"><h3 class="bx-t">🎯 La diana de ${name}</h3><div class="sp"></div><button class="btn xs bx-cta" data-act="bxAI">✦ Armarla con Claude</button><button class="btn ghost xs bx-btn" data-act="bxEdit">Escribirla yo</button></div>
+      return mount(host, html`<div class="card bx"><div class="row" style="flex-wrap:wrap;gap:10px"><h3 class="bx-t">${ico('target', 16)} La diana de ${name}</h3><div class="sp"></div><button class="btn xs bx-cta" data-act="bxAI">${ico('spark')} Armarla con Claude</button><button class="btn ghost xs bx-btn" data-act="bxEdit">Escribirla yo</button></div>
         <div class="bx-steps"><div><b>1 · Define</b>Una persona exacta, no «emprendedores».</div><div><b>2 · Acierta</b>Cada video le habla a esa persona.</div><div><b>3 · Expande</b>El algoritmo aprende a quién mostrarlo y abre el alcance solo.</div></div>
         <div class="bx-mut sm">Apunta más chico para crecer más grande. Claude te hace unas preguntas, una a la vez, y arma el centro, los 4 anillos, la mezcla 3/1/1 y dónde buscar inspiración.</div></div>`);
     }
-    mount(host, html`<div class="card bx"><div class="row" style="flex-wrap:wrap;gap:10px"><h3 class="bx-t">🎯 La diana de ${name}</h3><div class="sp"></div><button class="btn ghost xs bx-btn" data-act="bxAI">✦ Rehacer con Claude</button><button class="btn ghost xs bx-btn" data-act="bxEdit">Editar</button></div>
+    mount(host, html`<div class="card bx"><div class="row" style="flex-wrap:wrap;gap:10px"><h3 class="bx-t">${ico('target', 16)} La diana de ${name}</h3><div class="sp"></div><button class="btn ghost xs bx-btn" data-act="bxAI">${ico('spark')} Rehacer con Claude</button><button class="btn ghost xs bx-btn" data-act="bxEdit">Editar</button></div>
       <div class="bx-center">${bx.center || bx.rings[0].label}</div>${bx.buyer ? html`<div class="bx-mut sm">Quien paga: ${bx.buyer}</div>` : ''}
       <div class="bx-seg">${[['diana', 'La diana'], ['mix', 'Mezcla 3/1/1'], ['fuentes', 'De dónde inspirarse']].map(([k, l]) => html`<button class="${MODE === k ? 'on' : ''}" data-act="bxMode" data-m="${k}">${l}</button>`)}</div>
       <div class="bx-grid"><div>${board(bx, MODE)}</div><div style="min-width:0">${panel(bx, MODE)}</div></div></div>`);
@@ -80,10 +80,10 @@ export function bullseye(host, { name, bx, save, prompt }) {
       const out = await claudeJSON('La diana con Claude', prompt(), 'Se abrió tu Claude con todo listo: dale enviar y contesta sus preguntas (una a la vez). Al final te da un JSON: cópialo y pégalo aquí.');
       if (!out) return;
       if (!Array.isArray(out.rings) || out.rings.length < 5) return toast('A esa respuesta le faltan los 5 niveles. Pídele a Claude el JSON final completo.', true);
-      if (await commit({ ...out, calib: bx?.calib || [], at: new Date().toISOString() })) { MODE = 'diana'; SEL = 0; toast('Diana guardada ✅ · ajústala si hace falta'); }
+      if (await commit({ ...out, calib: bx?.calib || [], at: new Date().toISOString() })) { MODE = 'diana'; SEL = 0; toast('Diana guardada · ajústala si hace falta'); }
     } else if (a === 'bxLote') {
       const v = await ask('Anotar un lote', [{ k: 'lote', l: 'Lote', v: `Lote ${(bx.calib || []).length + 1}`, req: true }, { k: 'c0', l: 'Conversiones del centro', t: 'number', v: 0, half: true }, { k: 'c1', l: 'Del anillo 1', t: 'number', v: 0, half: true }, { k: 'c2', l: 'Del anillo 2', t: 'number', v: 0 }, { k: 'decision', l: 'Qué decidimos', t: 'textarea' }], 'Anotar');
-      if (v && (await commit({ ...bx, calib: [...(bx.calib || []), v] }))) toast('Lote anotado ✅');
+      if (v && (await commit({ ...bx, calib: [...(bx.calib || []), v] }))) toast('Lote anotado');
     }
   };
   paint();
@@ -93,7 +93,7 @@ export function bullseye(host, { name, bx, save, prompt }) {
 function edit(bx, commit) {
   const b = bx || { center: '', buyer: '', rings: NAME.map(() => ({ label: '', relaxed: '', size: '', conversion: '', competition: '', search: [] })), mix: [0, 0, 0, 1, 2].map((ring) => ({ ring, topic: '' })), calib: [] };
   const f = (k, l, v, ph = '', area) => html`<div><label class="f">${l}</label>${area ? html`<textarea class="in" data-bk="${k}" placeholder="${ph}" style="min-height:56px">${v || ''}</textarea>` : html`<input class="in" data-bk="${k}" value="${v || ''}" placeholder="${ph}">`}</div>`;
-  const d = drawer(html`<div class="row"><h2 style="margin:0">Editar la diana</h2><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+  const d = drawer(html`<div class="row"><h2 style="margin:0">Editar la diana</h2><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
     <div class="form" style="margin-top:12px">
       ${f('center', 'El centro, en una frase', b.center, '[persona específica] que [situación] y batalla con [problema]', true)}
       ${f('buyer', 'Quien paga (solo si no es quien ve)', b.buyer)}
@@ -109,7 +109,7 @@ function edit(bx, commit) {
         rings: b.rings.map((_, i) => ({ label: v(`r${i}.label`), relaxed: v(`r${i}.relaxed`), size: v(`r${i}.size`), conversion: v(`r${i}.conversion`), competition: v(`r${i}.competition`), search: v(`r${i}.search`).split(',').map((s) => s.trim()).filter(Boolean) })),
         mix: b.mix.map((_, i) => ({ topic: v(`m${i}`) })) };
       if (!next.rings[0].label) return toast('Escribe al menos la audiencia del centro', true);
-      if (await commit(next)) { closeDrawer(); toast('Diana guardada ✅'); }
+      if (await commit(next)) { closeDrawer(); toast('Diana guardada'); }
     },
   });
 }

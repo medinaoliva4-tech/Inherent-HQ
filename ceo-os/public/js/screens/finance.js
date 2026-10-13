@@ -1,6 +1,6 @@
 import { hoursAt } from '../cycle.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico } from '../core.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const CATS_IN = ['Plan mensual', 'Proyecto', 'Performance fee', 'Otro'];
@@ -51,7 +51,7 @@ export async function render(el, { sub }) {
           ${entries.length ? html`<div class="chart" id="chFin" style="height:240px"></div>` : html`<div class="empty" style="margin-top:20px"><b>Sin movimientos todavía</b>Registra ingresos y gastos en «Movimientos» y aquí aparece la gráfica.</div>`}
         </div>
         <div class="card feat ink">
-          <div class="chead"><div class="ico">${IC.ring(78)}<span style="font-size:15px">◎</span></div><h3>Revenue<br><span class="lbl">${mLabel(month)}</span></h3></div>
+          <div class="chead"><div class="ico">${IC.ring(78)}<span style="font-size:15px">${ico('target', 16)}</span></div><h3>Revenue<br><span class="lbl">${mLabel(month)}</span></h3></div>
           <div class="big">${rev ? html`<span class="cur">Q</span>${K(rev)}` : '—'}</div>
           <div class="split" style="margin-top:18px"><div><span class="lbl">Gross</span><b>${Q(rev - cost)}</b></div><div><span class="lbl">Cost</span><b>${Q(cost)}</b></div><div><span class="lbl">Margen</span><b style="color:var(--lime)">${rev ? Math.round(((rev - cost) / rev) * 100) + '%' : '—'}</b></div></div>
           ${matrix(rev ? Math.max(2, Math.round(((rev - cost) / rev) * 34)) : 0)}
@@ -77,7 +77,7 @@ export async function render(el, { sub }) {
   function mov(b) {
     const list = entries.filter((e) => ym(e.date) === month).sort((x, y) => String(y.date).localeCompare(String(x.date)));
     const note = sheet?.error ? html`<div class="warnbox" style="margin-bottom:12px">Google Sheet: ${sheet.error}</div>`
-      : !sheet?.url ? html`<div class="mut sm" style="margin-bottom:12px">💡 Conecta una hoja de Google Sheets y los movimientos salen de ahí (fecha · tipo · concepto · monto · categoría · cliente). Ya no hay que meterlos a mano.</div>` : '';
+      : !sheet?.url ? html`<div class="mut sm" style="margin-bottom:12px">${ico('bulb')} Conecta una hoja de Google Sheets y los movimientos salen de ahí (fecha · tipo · concepto · monto · categoría · cliente). Ya no hay que meterlos a mano.</div>` : '';
     mount(b, !list.length ? html`${note}<div class="empty"><b>Sin movimientos en ${mLabel(month)}</b>${sheet?.url ? 'Agrega filas a tu hoja de Google Sheets y recarga.' : 'Conecta tu Google Sheet o registra un ingreso o gasto.'}</div>`
       : html`${note}<div class="card"><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Cliente</th><th>Categoría</th><th class="n">Monto</th></tr></thead><tbody>
         ${list.map((e) => html`<tr class="click" data-act="${e.sheet ? 'sheet' : 'edit'}" data-id="${e.id}"><td class="mut">${fdate(e.date)}</td><td><b style="font-weight:500">${e.concept}</b>${e.sheet ? html` <span class="mut sm">· Sheet</span>` : ''}</td><td>${e.client || '—'}</td><td><span class="chip">${e.category || '—'}</span></td>
@@ -97,7 +97,7 @@ export async function render(el, { sub }) {
     try {
       const r = e ? await F.save({ ...e, ...v }) : await F.create({ ...v, type });
       entries = e ? entries.map((x) => (x.id === r.id ? r : x)) : [...entries, r]; manual = entries.filter((x) => !x.sheet);
-      month = ym(r.date); toast('Guardado ✅'); paint();
+      month = ym(r.date); toast('Guardado'); paint();
     } catch (err) { toast(err.message, true); }
   }
 
@@ -109,7 +109,7 @@ export async function render(el, { sub }) {
       ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Los servicios del catálogo de Sales aparecen aquí con su costo.</div>`
       : html`<div class="card"><table><thead><tr><th>Servicio</th><th>Equipo</th><th class="n">Horas</th><th class="n">Costo / h</th><th class="n">Total</th><th class="n">Precio</th><th class="n">Margen</th></tr></thead><tbody>
         ${services.map((s) => { const h = (s.tasks || []).reduce((a, t) => a + hoursAt(t, s.level || 5), 0); const miss = (s.tasks || []).some((t) => rateOf(t.role) == null); const c = (s.tasks || []).reduce((a, t) => a + (rateOf(t.role) || 0) * hoursAt(t, s.level || 5), 0);
-          return html`<tr><td><b style="font-weight:500">${s.name}</b><div class="mut sm">${s.category || ''} · nivel ${s.level || 5}</div></td><td>${(s.tasks || []).map((t) => html`<span class="chip" style="margin:2px">${t.role} · ${hoursAt(t, s.level || 5)}h</span>`)}</td><td class="n">${h} h</td><td class="n">${h && !miss ? Q(c / h) : '—'}</td><td class="n"><b>${miss ? '⚠️' : Q(c)}</b></td><td class="n">${s.price ? Q(s.price) : '—'}</td><td class="n">${s.price && !miss ? Math.round(((s.price - c) / s.price) * 100) + '%' : '—'}</td></tr>`; })}
+          return html`<tr><td><b style="font-weight:500">${s.name}</b><div class="mut sm">${s.category || ''} · nivel ${s.level || 5}</div></td><td>${(s.tasks || []).map((t) => html`<span class="chip" style="margin:2px">${t.role} · ${hoursAt(t, s.level || 5)}h</span>`)}</td><td class="n">${h} h</td><td class="n">${h && !miss ? Q(c / h) : '—'}</td><td class="n"><b>${miss ? ico('alert') : Q(c)}</b></td><td class="n">${s.price ? Q(s.price) : '—'}</td><td class="n">${s.price && !miss ? Math.round(((s.price - c) / s.price) * 100) + '%' : '—'}</td></tr>`; })}
       </tbody></table></div>`}<div id="espCost"></div>`);
     espCosts($('#espCost', b));
   }
@@ -136,7 +136,7 @@ export async function render(el, { sub }) {
         ${rows.map(([n, { i, c }]) => { const m = i ? Math.round(((i - c) / i) * 100) : null; return html`<tr><td><b style="font-weight:500">${n}</b></td><td class="n">${Q(i)}</td><td class="n">${Q(c)}</td><td class="n"><b>${Q(i - c)}</b></td><td>${m == null ? html`<span class="mut sm">solo gastos</span>` : html`<div class="row"><div style="flex:1;height:8px;border-radius:99px;background:#f0e9de"><div style="width:${Math.max(0, Math.min(100, m))}%;height:100%;border-radius:99px;background:${m >= 70 ? '#2c1f16' : m >= 55 ? '#a18770' : '#997d65'}"></div></div><span class="sm" style="width:40px;text-align:right">${m}%</span></div>`}</td></tr>`; })}
       </tbody></table></div>` : html`<div class="empty"><b>Sin datos en ${mLabel(month)}</b>Asigna el cliente a cada ingreso y gasto para ver qué tan rentable es cada uno.</div>`}
       ${clients.some((c) => c.costo != null) ? html`<div class="sec-title"><h2>Costo fijo declarado por cuenta</h2><span class="mut sm">De clients/*/plan-contratado.md</span></div>
-        <div class="card"><table><thead><tr><th>Cliente</th><th>Plan</th><th class="n">Precio</th><th class="n">🔒 Costo</th></tr></thead><tbody>${clients.filter((c) => c.hasPlan).map((c) => html`<tr><td><b style="font-weight:500">${c.slug.toUpperCase()}</b></td><td class="mut">${c.plan}</td><td class="n">${Q(c.precio)}</td><td class="n">${c.costo != null ? Q(c.costo) : '—'}</td></tr>`)}</tbody></table></div>` : ''}`);
+        <div class="card"><table><thead><tr><th>Cliente</th><th>Plan</th><th class="n">Precio</th><th class="n">${ico('lock')} Costo</th></tr></thead><tbody>${clients.filter((c) => c.hasPlan).map((c) => html`<tr><td><b style="font-weight:500">${c.slug.toUpperCase()}</b></td><td class="mut">${c.plan}</td><td class="n">${Q(c.precio)}</td><td class="n">${c.costo != null ? Q(c.costo) : '—'}</td></tr>`)}</tbody></table></div>` : ''}`);
   }
 
   // ---------- Pricing (del manual) ----------
@@ -145,7 +145,7 @@ export async function render(el, { sub }) {
     const rubros = [...new Set(eco.plans.flatMap((p) => p.rubros.map((r) => r.label)))];
     mount(b, html`<div class="grid g4">${eco.plans.map((p, i) => html`<div class="card feat ${['olive', 'terra', 'ink', 'olive'][i]}"><div class="lbl">${p.name}</div><div class="big" style="font-size:40px;margin-top:8px">${Q(p.precio)}</div>${matrix(Math.round((p.margen / 100) * 34))}<div class="foot"><span>Costo ${Q(p.costo)} · ${p.volumen?.piezas ?? '—'} piezas</span><span style="font-weight:700;font-size:14px">${p.margen}% margen</span></div></div>`)}</div>
       <div class="sec-title"><h2>Costo por rubro</h2><span class="mut sm">Fijo por cuenta · del manual</span></div>
-      <div class="mut sm" style="margin:-6px 0 10px">✏️ <b>¿Cambiar estos costos?</b> Viven en el manual (<code>inherent/06-ECONOMIA.md</code>): pídeselo a Claude en Claude Code, se actualiza con tu OK y aquí se ve después de publicar. Los costos por hora de cada servicio se editan en Sales → Catálogo → Costos por hora.</div>
+      <div class="mut sm" style="margin:-6px 0 10px">${ico('edit')} <b>¿Cambiar estos costos?</b> Viven en el manual (<code>inherent/06-ECONOMIA.md</code>): pídeselo a Claude en Claude Code, se actualiza con tu OK y aquí se ve después de publicar. Los costos por hora de cada servicio se editan en Sales → Catálogo → Costos por hora.</div>
       <div class="card"><table><thead><tr><th>Rubro</th>${eco.plans.map((p) => html`<th class="n">${p.name}</th>`)}</tr></thead><tbody>
         ${rubros.map((r) => html`<tr><td>${r}</td>${eco.plans.map((p) => html`<td class="n">${Q(p.rubros.find((x) => x.label === r)?.monto || 0)}</td>`)}</tr>`)}
         <tr><td><b>Costo</b></td>${eco.plans.map((p) => html`<td class="n"><b>${Q(p.costo)}</b></td>`)}</tr>
@@ -199,23 +199,23 @@ export async function render(el, { sub }) {
           <div class="card glass"><span class="mut sm">Montos sin datos</span><div class="big" style="font-size:40px;color:${falta.length ? '#654c38' : 'inherit'}">${falta.length}</div></div>
         </div>
         <div class="sec-title"><h2>El mes de cada persona</h2><button class="btn ghost" data-act="addP" style="margin-left:auto">+ Persona</button></div>
-        <div class="grid g3">${d.personas.map((p) => html`<div class="card"><div class="row"><b style="font-weight:500;font-size:16px">${p.nombre}</b><div class="sp"></div><button class="btn ghost" data-act="rmP" data-id="${p.id}" style="padding:6px 10px">✕</button></div>
+        <div class="grid g3">${d.personas.map((p) => html`<div class="card"><div class="row"><b style="font-weight:500;font-size:16px">${p.nombre}</b><div class="sp"></div><button class="btn ghost" data-act="rmP" data-id="${p.id}" style="padding:6px 10px">${ico('x', 16)}</button></div>
           <div class="big" style="font-size:40px;margin-top:6px">${Q(pay[p.id])}</div><div class="mut sm">${total ? Math.round((pay[p.id] / total) * 100) : 0}% de los pagos del mes</div>
           <div class="chips">${Object.entries(d.reparto).filter(([, v]) => v.some((s) => s.p === p.id)).map(([r, v]) => html`<span class="chip">${r} ${v.find((s) => s.p === p.id).pct}%</span>`)}</div>
           ${det[p.id].length ? html`<details style="margin-top:10px"><summary class="sm mut">De dónde sale</summary><table><tbody>${det[p.id].map((x) => html`<tr><td class="sm">${x.c}</td><td class="sm mut">${x.r}</td><td class="n sm">${Q(x.q)}</td></tr>`)}</tbody></table></details>` : ''}</div>`)}</div>
         <div class="sec-title"><h2>Reparto por rol</h2><span class="mut sm">% del rubro entre personas · se define una vez</span></div>
         <div class="grid g3">${rubros.map((r) => { const sp = d.reparto[r] || []; const tot = sp.reduce((a, s) => a + (+s.pct || 0), 0); return html`<div class="card"><div class="row"><b style="font-weight:500">${r}</b><div class="sp"></div><span class="chip ${!sp.length ? '' : Math.abs(tot - 100) < 0.01 ? 'green' : 'amber'}">${sp.length ? tot + '%' : 'sin nadie'}</span></div>
           <div class="mut sm" style="margin:4px 0 10px">pool ${Q(pool[r] || 0)}</div>
-          ${sp.map((s, i) => html`<div class="row" style="margin-bottom:6px"><select class="in" data-r="${r}" data-i="${i}" data-f="p">${d.personas.map((p) => html`<option value="${p.id}" ${p.id === s.p ? raw('selected') : ''}>${p.nombre}</option>`)}</select><input class="in" type="number" style="max-width:80px" data-r="${r}" data-i="${i}" data-f="pct" value="${s.pct}"><span class="mut">%</span><button class="btn ghost" data-act="rmS" data-r="${r}" data-i="${i}" style="padding:6px 10px">✕</button></div>`)}
+          ${sp.map((s, i) => html`<div class="row" style="margin-bottom:6px"><select class="in" data-r="${r}" data-i="${i}" data-f="p">${d.personas.map((p) => html`<option value="${p.id}" ${p.id === s.p ? raw('selected') : ''}>${p.nombre}</option>`)}</select><input class="in" type="number" style="max-width:80px" data-r="${r}" data-i="${i}" data-f="pct" value="${s.pct}"><span class="mut">%</span><button class="btn ghost" data-act="rmS" data-r="${r}" data-i="${i}" style="padding:6px 10px">${ico('x', 16)}</button></div>`)}
           <button class="btn ghost" data-act="addS" data-r="${r}" style="padding:6px 12px">+ Persona</button></div>`; })}</div>
         <div class="sec-title"><h2>Cuentas</h2><span class="mut sm">Lo que cada cuenta paga a cada rol. Gris = del manual; Tailor Made: escríbelo tú</span><button class="btn ghost" data-act="addC" style="margin-left:auto">+ Cuenta</button></div>
         <div class="card tscroll"><table><thead><tr><th>Cuenta</th><th>Plan</th>${rubros.map((r) => html`<th class="n">${r.replace(/\s*\(.*\)/, '')}</th>`)}<th></th></tr></thead><tbody>
-          ${d.cuentas.map((c, ci) => html`<tr><td><b style="font-weight:500">${c.nombre}</b>${c.costoDeclarado != null ? html`<div class="mut sm">🔒 declarado ${Q(c.costoDeclarado)}</div>` : ''}</td>
+          ${d.cuentas.map((c, ci) => html`<tr><td><b style="font-weight:500">${c.nombre}</b>${c.costoDeclarado != null ? html`<div class="mut sm">${ico('lock')} declarado ${Q(c.costoDeclarado)}</div>` : ''}</td>
             <td><select class="in" data-c="${ci}" data-f="plan">${[...plans.map((p) => [p.id, p.name]), ['tailor', 'TAILOR MADE']].map(([v, l]) => html`<option value="${v}" ${v === c.planId ? raw('selected') : ''}>${l}</option>`)}</select></td>
             ${rubros.map((r) => { const pm = plans.find((p) => p.id === c.planId)?.rubros.find((x) => x.label === r)?.monto; return html`<td class="n"><input class="in mini" type="number" data-c="${ci}" data-r="${r}" data-f="monto" value="${c.montos?.[r] ?? ''}" placeholder="${pm ?? 'Q'}"></td>`; })}
-            <td><button class="btn ghost" data-act="rmC" data-i="${ci}" style="padding:6px 10px">✕</button></td></tr>`)}
+            <td><button class="btn ghost" data-act="rmC" data-i="${ci}" style="padding:6px 10px">${ico('x', 16)}</button></td></tr>`)}
         </tbody></table></div>
-        ${falta.length ? html`<div class="warnbox" style="margin-top:12px">⚠️ SIN DATOS — falta el monto: ${falta.slice(0, 8).join(' · ')}${falta.length > 8 ? ' …' : ''}</div>` : ''}
+        ${falta.length ? html`<div class="warnbox" style="margin-top:12px">${ico('alert')} SIN DATOS — falta el monto: ${falta.slice(0, 8).join(' · ')}${falta.length > 8 ? ' …' : ''}</div>` : ''}
         <div class="row" style="margin-top:16px"><button class="btn" data-act="saveN">Guardar pagos</button></div>`);
       $$('[data-f]', b).forEach((inp) => inp.addEventListener('change', () => {
         const f = inp.dataset.f;
@@ -235,7 +235,7 @@ export async function render(el, { sub }) {
       if (a === 'addC') { const v = await ask('Agregar cuenta', [{ k: 'nombre', l: 'Cliente(s)', req: true }, { k: 'planId', l: 'Plan', t: 'select', opts: [...plans.map((p) => [p.id, p.name]), ['tailor', 'TAILOR MADE']] }]); if (v) { d.cuentas.push({ id: slug(v.nombre), nombre: v.nombre, planId: v.planId, montos: {} }); draw(); } }
       if (a === 'rmC') { d.cuentas.splice(+t.dataset.i, 1); draw(); }
       if (a === 'saveN') {
-        try { payroll = payroll ? await P.save({ ...payroll, ...d }) : await P.create({ id: 'default', ...d }); seeded = false; d = JSON.parse(JSON.stringify(payroll)); toast('Pagos guardados ✅'); draw(); }
+        try { payroll = payroll ? await P.save({ ...payroll, ...d }) : await P.create({ id: 'default', ...d }); seeded = false; d = JSON.parse(JSON.stringify(payroll)); toast('Pagos guardados'); draw(); }
         catch (err) { toast(err.message, true); }
       }
     };
@@ -244,7 +244,7 @@ export async function render(el, { sub }) {
 
   async function connectSheet() {
     const a = await wizard('Movimientos desde Google Sheets', [
-      { k: 'how', q: '¿De dónde salen tus movimientos?', type: 'cards', req: true, opts: [{ v: 'new', i: '✨', l: 'Crear una hoja nueva', d: 'Con las columnas listas, en tu Drive' }, { v: 'link', i: '🔗', l: 'Ya tengo una hoja', d: 'Pega el link' }] },
+      { k: 'how', q: '¿De dónde salen tus movimientos?', type: 'cards', req: true, opts: [{ v: 'new', i: ico('spark'), l: 'Crear una hoja nueva', d: 'Con las columnas listas, en tu Drive' }, { v: 'link', i: ico('link'), l: 'Ya tengo una hoja', d: 'Pega el link' }] },
       { k: 'url', q: 'Pega el link de la hoja', sub: 'Columnas: fecha · tipo (ingreso/gasto) · concepto · monto · categoría · cliente', type: 'text', req: true, ph: 'https://docs.google.com/spreadsheets/d/…', show: (x) => x.how === 'link', v: sheet?.url },
     ], 'Conectar');
     if (!a) return;
@@ -252,7 +252,7 @@ export async function render(el, { sub }) {
       const r = a.how === 'new' ? await api('finance/sheet', { method: 'POST' }) : await api('finance/sheet', { method: 'PUT', body: { url: a.url } });
       if (a.how === 'new') window.open(r.url, '_blank', 'noopener');
       sheet = await api('finance/sheet').catch((e) => ({ url: r.url, error: e.message }));
-      entries = [...manual, ...fromSheet(sheet)]; toast('Google Sheet conectado ✅'); paint();
+      entries = [...manual, ...fromSheet(sheet)]; toast('Google Sheet conectado'); paint();
     } catch (e) { toast(e.message, true); }
   }
   acts(el, {
@@ -262,7 +262,7 @@ export async function render(el, { sub }) {
     sheetset: () => connectSheet(),
     edit: async (t) => {
       const e = entries.find((x) => x.id === t.dataset.id);
-      drawer(html`<div class="row"><span class="chip ${e.type === 'ingreso' ? 'green' : 'red'}">${e.type}</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+      drawer(html`<div class="row"><span class="chip ${e.type === 'ingreso' ? 'green' : 'red'}">${e.type}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
         <h2>${e.concept}</h2><div class="big" style="font-size:44px;margin-top:10px">${Q(e.amount)}</div>
         <div class="kv"><span>Fecha</span><b style="font-weight:500">${fdate(e.date)}</b><span>Categoría</span><b style="font-weight:500">${e.category || '—'}</b><span>Cliente</span><b style="font-weight:500">${e.client || '—'}</b></div>
         <div class="row"><button class="btn" data-act="ed">Editar</button><button class="btn ghost" data-act="del">Eliminar</button></div>`,

@@ -4,11 +4,11 @@ import * as db from './db.js';
 
 export const AREAS = ['home', 'control', 'work', 'finanzas', 'sales', 'operations', 'roadmap', 'clients', 'content', 'library', 'team'];
 const ROLE_AREAS = {
-  ceo: AREAS,                                                        // 🔒 todo
+  ceo: AREAS,                                                        // todo
   coo: AREAS.filter((a) => a !== 'finanzas' && a !== 'roadmap'),     // todo menos Finanzas y el Roadmap del CEO
   // El equipo: su resumen, su Workspace, la Library y el Team. Content solo con el perfil «content».
   team: ['home', 'work', 'content', 'library', 'team'],
-  client: ['portal'],                                                // 🔒 el cliente: solo su portal
+  client: ['portal'],                                                // el cliente: solo su portal
 };
 ROLE_AREAS.ceo = [...AREAS, 'portal']; ROLE_AREAS.coo = [...ROLE_AREAS.coo, 'portal']; // para ver el portal como lo ve el cliente
 // Content es para decidir: solo el CEO y quien tiene el perfil de trabajo «content».

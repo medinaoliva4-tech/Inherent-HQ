@@ -1,4 +1,4 @@
-import { html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, cropImage, WORK_ROLES, roleName, $, teamDoc } from '../core.js';
+import { html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, cropImage, WORK_ROLES, roleName, $, teamDoc, ico } from '../core.js';
 import { bdayText } from './me.js';
 
 const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'];
@@ -37,7 +37,7 @@ export async function render(el, { me }) {
         const r = await T.create({ name: x.name, title: x.roles.join(' · '), kind: x.kind, role: 'team', active: true, reports_to: x === coo ? me.email : cooId || me.email, color: COLORS[(people.length + 1) % COLORS.length] });
         people.push(r); if (x === coo) cooId = r.id;
       }
-      toast(`${order.length} ${order.length === 1 ? 'persona agregada' : 'personas agregadas'} al organigrama ✅`); missing = []; paint();
+      toast(`${order.length} ${order.length === 1 ? 'persona agregada' : 'personas agregadas'} al organigrama`); missing = []; paint();
     } catch (e) { toast(e.message, true); }
   }
   const byId = (id) => people.find((p) => p.id === id);
@@ -47,7 +47,7 @@ export async function render(el, { me }) {
 
   function node(p) {
     const cls = p.kind === 'ia' ? 'ai' : !p.reports_to ? 'dark' : '';
-    return html`<div class="node ${cls}" data-act="open" data-id="${p.id}"><div style="display:flex;justify-content:center;margin-bottom:10px">${av(p)}</div><b>${p.name}</b><span class="mut sm">${p.title || KIND[p.kind] || ''}</span>${p.birthday ? html`<span class="mut sm">🎂 ${bdayText(p.birthday)}</span>` : ''}</div>`;
+    return html`<div class="node ${cls}" data-act="open" data-id="${p.id}"><div style="display:flex;justify-content:center;margin-bottom:10px">${av(p)}</div><b>${p.name}</b><span class="mut sm">${p.title || KIND[p.kind] || ''}</span>${p.birthday ? html`<span class="mut sm">${ico('cake')} ${bdayText(p.birthday)}</span>` : ''}</div>`;
   }
   function org() {
     if (!people.length) return html`<div class="empty"><b>Todavía no hay nadie</b>Cada persona aparece aquí cuando entra con Google por primera vez.</div>`;
@@ -100,7 +100,7 @@ export async function render(el, { me }) {
         delete v.email;
         people.push(await T.create({ ...v, ...(id ? { id, email: id } : {}), active: true }));
       }
-      toast('Guardado ✅'); closeDrawer(); paint();
+      toast('Guardado'); closeDrawer(); paint();
     } catch (e) { toast(e.message, true); }
   }
 
@@ -109,16 +109,16 @@ export async function render(el, { me }) {
       if (p.id === me.email) await api('me/photo', { method: 'PUT', body: { photo } });
       else { const r = await T.save(teamDoc({ ...p, photo })); Object.assign(p, r); }
       p.photo = photo; p.picture = photo || p.google_picture || null;
-      toast(photo ? 'Foto actualizada ✅' : 'Foto quitada'); people = people.map((x) => (x.id === p.id ? p : x)); paint(); open(p);
+      toast(photo ? 'Foto actualizada' : 'Foto quitada'); people = people.map((x) => (x.id === p.id ? p : x)); paint(); open(p);
       if (p.id === me.email) { const a = $('#avatar'); if (a && photo) a.innerHTML = `<img src="${photo}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
     } catch (e) { toast(e.message, true); }
   }
   function open(p) {
     const boss = byId(p.reports_to);
-    drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
+    drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <div style="margin-top:6px">${av(p, 84)}</div>
       <h2>${p.name}</h2><div class="mut">${p.title || KIND[p.kind] || ''}</div>
-      ${p.birthday || p.phone || p.bio ? html`<div class="sm" style="margin-top:10px;display:grid;gap:4px">${p.birthday ? html`<div>🎂 ${bdayText(p.birthday)}</div>` : ''}${p.phone ? html`<div>📱 ${p.phone}</div>` : ''}${p.bio ? html`<div class="mut">${p.bio}</div>` : ''}</div>` : ''}
+      ${p.birthday || p.phone || p.bio ? html`<div class="sm" style="margin-top:10px;display:grid;gap:4px">${p.birthday ? html`<div>${ico('cake')} ${bdayText(p.birthday)}</div>` : ''}${p.phone ? html`<div>${ico('mobile')} ${p.phone}</div>` : ''}${p.bio ? html`<div class="mut">${p.bio}</div>` : ''}</div>` : ''}
       <div class="kv"><span>Tipo</span><b style="font-weight:500">${KIND[p.kind] || 'Persona'}</b>
         <span>Reporta a</span><b style="font-weight:500">${boss ? boss.name : '—'}</b>
         ${p.email ? html`<span>Correo</span><b style="font-weight:500">${p.email}</b>` : ''}
@@ -127,8 +127,8 @@ export async function render(el, { me }) {
         <span>Perfiles</span><b style="font-weight:500">${(p.roles || []).length ? p.roles.map(roleName).join(' · ') : '—'}</b>
         ${p.email ? html`<span>Google</span><span class="row" style="color:var(--ink)">${p.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${p.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}${!p.google ? 'Aún no entra' : ''}</span>` : ''}
       </div>
-      ${p.id === me.email || isCeo ? html`<div class="row" style="margin-bottom:10px"><label class="btn ghost" style="cursor:pointer">📷 ${p.photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="photoIn" hidden></label>${p.photo ? html`<button class="btn ghost" data-act="nophoto">Quitar foto</button>` : ''}</div>` : ''}
-      ${isCeo && p.id !== me.email && p.kind !== 'ia' ? html`<a class="btn ghost" href="#/work/zona/_/${p.email || p.id}" style="margin-bottom:10px;text-decoration:none">👁 Ver su Workspace</a>` : ''}
+      ${p.id === me.email || isCeo ? html`<div class="row" style="margin-bottom:10px"><label class="btn ghost" style="cursor:pointer">${ico('camera')} ${p.photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="photoIn" hidden></label>${p.photo ? html`<button class="btn ghost" data-act="nophoto">Quitar foto</button>` : ''}</div>` : ''}
+      ${isCeo && p.id !== me.email && p.kind !== 'ia' ? html`<a class="btn ghost" href="#/work/zona/_/${p.email || p.id}" style="margin-bottom:10px;text-decoration:none">${ico('eye')} Ver su Workspace</a>` : ''}
       ${isCeo ? html`<div class="row"><button class="btn" data-act="edit">Editar perfil</button>${p.id !== me.email ? html`<button class="btn ghost" data-act="del">Quitar</button>` : ''}</div>` : ''}`,
     { nophoto: () => setPhoto(p, null), edit: () => edit(p), del: async () => { if (!(await confirmAsk(`¿Quitar a ${p.name} del equipo?`))) return; await T.remove(p.id); people = people.filter((x) => x.id !== p.id); closeDrawer(); paint(); } });
     const pi = $('#photoIn'); if (pi) pi.onchange = async () => { if (pi.files[0]) try { const ph = await cropImage(pi.files[0]); pi.value = ''; if (ph) await setPhoto(p, ph); } catch (err) { toast(err.message, true); } };

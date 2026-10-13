@@ -1,6 +1,6 @@
 // Sales → Paquetes: los 108 paquetes por industria con sus fases, horas por rol, tarifas editables, margen y % de crecimiento.
 // Solo el CEO (lleva costos). Los ajustes viven en la colección `packages` (id «default»). «Cotizar» arma una cotización con el formato nuevo.
-import { html, raw, mount, col, toast, Q, $, $$ } from './core.js';
+import { html, raw, mount, col, toast, Q, $, $$, ico } from './core.js';
 
 const CX = { S: 'Sencillo', M: 'Medio', X: 'Fuerte' };
 const DEF = () => ({
@@ -89,8 +89,8 @@ export async function packagesTab(body, { onQuote }) {
   function vPk() {
     const list = items(), p = PB[SEL] || list[0];
     return html`<div class="pk">
-      <aside class="card pklist"><div style="display:grid;gap:8px"><select class="in" data-pk-f="ind"><option value="">Todas las industrias</option>${data.ind.map((i) => html`<option value="${i.id}" ${F.ind === i.id ? raw('selected') : ''}>${i.n}</option>`)}</select><input class="in" type="search" placeholder="Buscar paquete" data-pk-f="q" value="${F.q}"><label class="sm mut"><input type="checkbox" data-pk-f="std" ${F.std ? raw('checked') : ''}> Solo prioritarios ★</label></div>
-        <div style="margin-top:10px">${list.map((x) => html`<button class="pkitem ${x.id === p.id ? 'on' : ''}" data-pk="sel" data-id="${x.id}"><span>${x.n}${x.st === 'standard' ? ' ★' : ''}</span><small>${Q(calc(x).price)}</small></button>`)}</div></aside>
+      <aside class="card pklist"><div style="display:grid;gap:8px"><select class="in" data-pk-f="ind"><option value="">Todas las industrias</option>${data.ind.map((i) => html`<option value="${i.id}" ${F.ind === i.id ? raw('selected') : ''}>${i.n}</option>`)}</select><input class="in" type="search" placeholder="Buscar paquete" data-pk-f="q" value="${F.q}"><label class="sm mut"><input type="checkbox" data-pk-f="std" ${F.std ? raw('checked') : ''}> Solo prioritarios ${ico('star', 13)}</label></div>
+        <div style="margin-top:10px">${list.map((x) => html`<button class="pkitem ${x.id === p.id ? 'on' : ''}" data-pk="sel" data-id="${x.id}"><span>${x.n}${x.st === 'standard' ? ico('star', 13) : ''}</span><small>${Q(calc(x).price)}</small></button>`)}</div></aside>
       <section>${vDetail(p, calc(p))}</section></div>`;
   }
   function vEq() {
@@ -103,7 +103,7 @@ export async function packagesTab(body, { onQuote }) {
   function vRs() {
     const rows = P.map((p) => ({ p, c: calc(p) })).filter((x) => (!F.ind || x.p.ind === F.ind) && (!F.std || x.p.st === 'standard')).sort((a, b) => b.c.price - a.c.price);
     return html`<div class="card"><div class="row" style="flex-wrap:wrap"><h3>Los ${rows.length} paquetes</h3><div class="sp"></div><select class="in" style="width:auto" data-pk-f="ind"><option value="">Todas las industrias</option>${data.ind.map((i) => html`<option value="${i.id}" ${F.ind === i.id ? raw('selected') : ''}>${i.n}</option>`)}</select></div>
-      <div class="tw" style="margin-top:12px"><table class="pktab"><thead><tr><th>Industria</th><th>Paquete</th><th class="n">Precio</th><th class="n">Margen</th><th class="n">Horas</th><th class="n">Operación/mes</th></tr></thead><tbody>${rows.map(({ p, c }) => html`<tr class="pkrow" data-pk="go" data-id="${p.id}"><td>${IND[p.ind]}</td><td><b style="font-weight:500">${p.n}</b>${p.st === 'standard' ? ' ★' : ''}</td><td class="n">${Q(c.price)}</td><td class="n">${N(c.pct, 0)}%</td><td class="n">${N(c.hours)}</td><td class="n">${c.monthly ? Q(c.monthly) : '—'}</td></tr>`)}</tbody></table></div></div>`;
+      <div class="tw" style="margin-top:12px"><table class="pktab"><thead><tr><th>Industria</th><th>Paquete</th><th class="n">Precio</th><th class="n">Margen</th><th class="n">Horas</th><th class="n">Operación/mes</th></tr></thead><tbody>${rows.map(({ p, c }) => html`<tr class="pkrow" data-pk="go" data-id="${p.id}"><td>${IND[p.ind]}</td><td><b style="font-weight:500">${p.n}</b>${p.st === 'standard' ? ico('star', 13) : ''}</td><td class="n">${Q(c.price)}</td><td class="n">${N(c.pct, 0)}%</td><td class="n">${N(c.hours)}</td><td class="n">${c.monthly ? Q(c.monthly) : '—'}</td></tr>`)}</tbody></table></div></div>`;
   }
   function paint() {
     const y = scrollY;
