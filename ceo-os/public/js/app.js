@@ -1,4 +1,4 @@
-import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO, infoTips } from './core.js';
+import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO, infoTips, canTransition } from './core.js';
 
 const NAV = [
   ['home', 'Home', 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
@@ -78,18 +78,28 @@ async function render() {
   // Cambiar de sección sin saltos: arriba de una vez (sin animar el scroll) y la página no se encoge
   // mientras carga la siguiente (antes «Cargando…» la hacía chiquita y el navegador brincaba).
   const old = $('#main'), keep = old.offsetHeight;
-  window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); $('.app')?.scrollTo({ top: 0, left: 0, behavior: 'instant' }); // en el cel el que se desliza es .app
-  const main = old.cloneNode(false); main.style.minHeight = keep + 'px'; old.replaceWith(main);
-  main.classList.add('enter'); setTimeout(() => main.classList.remove('enter'), 900);
-  const gen = ++renderGen;
-  const slow = setTimeout(() => { if (gen === renderGen && !main.childElementCount) mount(main, html`<p class="loading">Cargando…</p>`); }, 250);
-  try {
-    const mod = await import(`./screens/${SCREENS[key]}.js`);
-    if (gen !== renderGen) return;
-    await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)?.[1] || (key === 'me' ? 'Mi perfil' : 'Arranque'), alive: () => gen === renderGen });
-  } catch (e) {
-    mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
-  } finally { clearTimeout(slow); if (gen === renderGen) main.style.minHeight = ''; }
+  const main = old.cloneNode(false); main.style.minHeight = keep + 'px';
+  const gen = ++renderGen, vt = canTransition();
+  const apply = async () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); $('.app')?.scrollTo({ top: 0, left: 0, behavior: 'instant' }); // en el cel el que se desliza es .app
+    old.replaceWith(main);
+    if (!vt) { main.classList.add('enter'); setTimeout(() => main.classList.remove('enter'), 900); }
+    const slow = setTimeout(() => { if (gen === renderGen && !main.childElementCount) mount(main, html`<p class="loading">Cargando…</p>`); }, 250);
+    try {
+      const mod = await import(`./screens/${SCREENS[key]}.js`);
+      if (gen !== renderGen) return;
+      await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)?.[1] || (key === 'me' ? 'Mi perfil' : 'Arranque'), alive: () => gen === renderGen });
+    } catch (e) {
+      mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
+    } finally { clearTimeout(slow); if (gen === renderGen) main.style.minHeight = ''; }
+  };
+  // Con transiciones, la pantalla vieja se queda a la vista hasta que la nueva está lista y entonces cambia suave.
+  if (vt) {
+    const root = document.documentElement; root.dataset.vt = 'nav';
+    const t = document.startViewTransition(apply);
+    t.finished.finally(() => { if (root.dataset.vt === 'nav') delete root.dataset.vt; });
+    await t.updateCallbackDone.catch(() => {});
+  } else await apply();
 }
 
 window.addEventListener('hashchange', () => me && render());

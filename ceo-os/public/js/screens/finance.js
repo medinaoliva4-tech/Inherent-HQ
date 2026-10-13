@@ -1,6 +1,6 @@
 import { hoursAt } from '../cycle.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap } from '../core.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const CATS_IN = ['Plan mensual', 'Proyecto', 'Performance fee', 'Otro'];
@@ -256,7 +256,7 @@ export async function render(el, { sub }) {
     } catch (e) { toast(e.message, true); }
   }
   acts(el, {
-    tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', '#/finanzas/' + tab); paint(); },
+    tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', '#/finanzas/' + tab); swap(el, paint); },
     add: (t) => editEntry(null, t.dataset.type),
     sheet: async () => { if (sheet?.url) return window.open(sheet.url, '_blank', 'noopener'); connectSheet(); },
     sheetset: () => connectSheet(),

@@ -852,3 +852,17 @@ h1 .itip{width:18px;height:18px;font-size:11px;vertical-align:.45em}
 .pkph{border:1px solid var(--line);border-radius:16px;margin-top:10px}.pkph>summary{list-style:none;display:flex;gap:10px;align-items:center;padding:12px;cursor:pointer;flex-wrap:wrap}.pkph>summary::-webkit-details-marker{display:none}.pkph .no{width:26px;height:26px;border-radius:50%;background:var(--soft,#eee);display:grid;place-items:center;font-size:12px}
 .pkbody{padding:0 14px 14px;display:grid;gap:10px}.pkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}.pktab .n{text-align:right}.pkrow{cursor:pointer}
 @media(max-width:860px){.pk{grid-template-columns:minmax(0,1fr)}.pklist{position:static;max-height:260px}}
+
+/* Cambios suaves (View Transitions): lo que cambia es lo de abajo; el menú y el título quedan quietos. */
+#main{view-transition-name:vt-main}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-group(vt-main),::view-transition-group(vt-head),::view-transition-group(vt-tabs),::view-transition-group(vt-body){animation-duration:.34s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+@keyframes vtIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes vtOut{to{opacity:0}}
+/* de una sección a otra: sale lo anterior y entra lo nuevo desde abajo */
+html[data-vt=nav]::view-transition-old(vt-main){animation:vtOut .16s ease both}
+html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier(.2,.8,.2,1) both}
+/* de una pestaña a otra: solo se anima el cuerpo */
+html[data-vt=tab]::view-transition-old(vt-body){animation:vtOut .14s ease both}
+html[data-vt=tab]::view-transition-new(vt-body){animation:vtIn .34s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}

@@ -112,6 +112,17 @@ export function drawer(content, map = {}) {
   d.classList.add('on'); $('#veil').classList.add('on');
   return d;
 }
+// Cambio suave (View Transitions: Chrome, Edge y Safari 18+; sin soporte, cambia directo).
+// Al cambiar de pestaña quedan quietos el título y las pestañas; solo se anima lo de abajo.
+export const canTransition = () => typeof document.startViewTransition === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+const VT_NAMES = [['.hello', 'vt-head'], ['.tabs', 'vt-tabs'], ['#body,#fbody,#obody,#wbody,#cbody', 'vt-body']];
+const vtName = (el) => VT_NAMES.forEach(([sel, n]) => { const x = el.querySelector(sel); if (x) x.style.viewTransitionName = n; });
+export function swap(el, update) {
+  if (!canTransition()) return update();
+  const root = document.documentElement; root.dataset.vt = 'tab'; vtName(el);
+  const t = document.startViewTransition(() => { update(); vtName(el); });
+  t.finished.finally(() => { delete root.dataset.vt; });
+}
 export function closeDrawer() { $('#drawer').classList.remove('on'); $('#veil').classList.remove('on'); }
 
 // fields: [{k, l, t:'text'|'number'|'date'|'select'|'textarea'|'email', opts:[], v, req, half}]

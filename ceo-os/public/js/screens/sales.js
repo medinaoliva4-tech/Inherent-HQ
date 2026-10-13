@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList, swap } from '../core.js';
 import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, cxAt, GROWTH, growthText, includesAt, daysAt } from '../cycle.js';
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
@@ -487,7 +487,7 @@ export async function render(el, { me, sub, alive }) {
 
   // ---------- acciones ----------
   acts(el, {
-    tab: (b) => { tab = b.dataset.t; location.hash = '/sales/' + tab; },
+    tab: (b) => { tab = b.dataset.t; history.replaceState(null, '', '#/sales/' + tab); swap(el, paint); },
     crmView: (b) => { crmView = b.dataset.v; paint(); },
     tagF: (b) => { tagF = b.dataset.t; paint(); },
     catF: (b) => { catF = b.dataset.c; paint(); },

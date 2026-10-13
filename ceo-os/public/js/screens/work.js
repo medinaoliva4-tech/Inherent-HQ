@@ -1,5 +1,5 @@
 import { upcoming, meetingRows, isMine as meetIsMine } from '../meetings.js';
-import { LOGO, lineChart, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor } from '../core.js';
+import { LOGO, lineChart, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor, swap } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
 import { newProject as wizProject, newTask as wizTask } from '../create.js';
 import { blockersOf, unlocksOf } from '../cycle.js';
@@ -475,7 +475,7 @@ export async function render(el, { me, sub, alive }) {
 
   acts(el, {
     role: (t) => { role = t.dataset.r; tab = 'zona'; if (!asP) try { localStorage.setItem('work.role', role); } catch {} history.replaceState(null, '', `#/work/zona/${role}${asP ? '/' + who : ''}`); paint(); },
-    tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', `#/work/${tab}/${role || '_'}${asP ? '/' + who : ''}`); paint(); },
+    tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', `#/work/${tab}/${role || '_'}${asP ? '/' + who : ''}`); swap(el, paint); },
     lane: (t) => { ceoLane = t.dataset.l; paint(); },
     adsDays: (t) => { adsDays = +t.dataset.d; adsRep = undefined; paint(); },
     compRefresh: () => { comp = null; paint(); },
@@ -489,7 +489,7 @@ export async function render(el, { me, sub, alive }) {
       if (!v) return;
       try { const r = await api('ads/accounts/' + encodeURIComponent(sl), { method: 'PUT', body: v }); const i = accounts.findIndex((x) => x.id === 'acc-' + sl); if (i >= 0) accounts[i] = { ...accounts[i], ads: r.ads }; else accounts.push({ id: 'acc-' + sl, ads: r.ads }); toast('Guardado ✅'); paint(); } catch (e) { toast(e.message, true); }
     },
-    ctab: (t) => { ctab = t.dataset.c; paint(); },
+    ctab: (t) => { ctab = t.dataset.c; swap(el, paint); },
     kv: (t) => { kView = t.dataset.v; kanban($('#wbody', el)); },
     pipe: (t) => { pipeSel = t.dataset.k; tab = 'pipes'; paint(); },
     person: (t) => { personSel = t.dataset.k; tab = 'equipo'; paint(); },

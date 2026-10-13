@@ -1,5 +1,5 @@
 import { newProject as wizProject, newTask as wizTask, VIS_OPTS, visLabel } from '../create.js';
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap } from '../core.js';
 
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
 const ST = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Entregado', 'green'], off: ['No aplica', ''] };
@@ -229,7 +229,7 @@ export async function render(el, { me, sub, alive }) {
   acts(el, {
     calpick: calPick,
     calscope: () => { setCalAll(!calAll()); events = null; const b = $('#obody', el); if (b) cal(b); },
-    tab: (t) => { tab = t.dataset.t; if (tab === 'cal') events = null; history.replaceState(null, '', '#/operations/' + tab); paint(); },
+    tab: (t) => { tab = t.dataset.t; if (tab === 'cal') events = null; history.replaceState(null, '', '#/operations/' + tab); swap(el, paint); },
     pick: (t, e) => { if (e.target.closest('[data-act=editProject]') || e.target.closest('a')) return; current = t.dataset.id; tab = 'pipe'; paint(); },
     newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); current = r.project.id; tab = 'pipe'; paint(); } },
     editProject: (t, e) => { e.stopPropagation(); const p = projects.find((x) => x.id === t.dataset.id);
