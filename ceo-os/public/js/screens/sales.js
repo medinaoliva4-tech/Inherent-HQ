@@ -2,6 +2,7 @@ import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, conf
 import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, cxAt, GROWTH, growthText, includesAt, daysAt } from '../cycle.js';
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
+import { packagesTab } from '../paquetes.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
@@ -25,7 +26,7 @@ export async function render(el, { me, sub, alive }) {
   let plans = null, plansErr = null;
   api('repo/precios').then((r) => { plans = r; if (tab === 'cat' && alive()) paint(); }).catch((e) => { plansErr = e.message; });
 
-  let tab = ['crm', 'cat', 'esp', 'quotes'].includes(sub[0]) ? sub[0] : 'crm';
+  let tab = ['crm', 'cat', 'esp', 'quotes', ...(isCeo ? ['pkg'] : [])].includes(sub[0]) ? sub[0] : 'crm';
   let mentors = null, mInd = 'Todas';
   let crmView = 'list', q = '', tagF = '', catF = 'Todos';
 
@@ -58,6 +59,7 @@ export async function render(el, { me, sub, alive }) {
           <button class="${tab === 'cat' ? 'on' : ''}" data-act="tab" data-t="cat">Catálogo de servicios</button>
           <button class="${tab === 'esp' ? 'on' : ''}" data-act="tab" data-t="esp">Especialistas</button>
           <button class="${tab === 'quotes' ? 'on' : ''}" data-act="tab" data-t="quotes">Cotizaciones</button>
+          ${isCeo ? html`<button class="${tab === 'pkg' ? 'on' : ''}" data-act="tab" data-t="pkg">Paquetes</button>` : ''}
         </div>
         <div class="sp"></div>
         ${tab === 'crm' ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
@@ -67,7 +69,7 @@ export async function render(el, { me, sub, alive }) {
       </div>
       <div id="body"></div>`);
     const body = $('#body', el);
-    ({ crm, cat, esp, quotes: quotesTab })[tab](body);
+    ({ crm, cat, esp, quotes: quotesTab, pkg: (b) => packagesTab(b, { onQuote: (pre) => editQuote({ number: nextNumber(), date: today(), valid_days: 15, status: 'Borrador', discount_pct: 0, notes: '', lead_id: '', client: '', contact: '', email: '', ...pre }, null) }) })[tab](body);
   }
 
   // ---------- Especialistas por industria ----------
@@ -375,6 +377,8 @@ export async function render(el, { me, sub, alive }) {
               ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">✚ Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
             ${!services.length ? html`<div class="mut sm" style="margin-top:8px">Tu catálogo está vacío. Crea servicios aquí mismo o en «Catálogo de servicios».</div>` : ''}
             <div class="two" style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="f">Descuento %</label><input class="in" id="qdisc" type="number" value="${doc.discount_pct || 0}"></div><div><label class="f">Válida por (días)</label><input class="in" id="qvalid" type="number" value="${doc.valid_days || 15}"></div></div>
+            <div style="margin-top:12px"><label class="f">Lo que esto va a provocar en su negocio (sale ANTES del precio)</label><textarea class="in" id="qintro" style="min-height:120px" placeholder="Cómo se traduce en crecimiento lo que vamos a implementar.">${doc.intro || ''}</textarea></div>
+            <div style="margin-top:12px"><label class="f">Siguientes pasos (uno por línea; si lo dejas vacío salen los de siempre)</label><textarea class="in" id="qnext">${doc.next || ''}</textarea></div>
             <div style="margin-top:12px"><label class="f">Notas y condiciones (salen en el PDF)</label><textarea class="in" id="qnotes">${doc.notes || ''}</textarea></div>
           </div>
           <div class="card feat olive" style="align-self:start">
@@ -413,7 +417,7 @@ export async function render(el, { me, sub, alive }) {
       $$('[data-f]', el).forEach((inp) => { const it = doc.items[+inp.dataset.i]; const f = inp.dataset.f; if (f === 'growth_pct') { if (it.growth) it.growth.pct = +inp.value || 0; return; } it[f] = f === 'qty' || f === 'price' ? (inp.value === '' ? null : +inp.value) : inp.value; });
       const f = $('#qf', el); if (f) Object.assign(doc, Object.fromEntries(new FormData(f)));
       if ($('#qrate', el)) doc.rate = +$('#qrate', el).value || doc.rate;
-      if ($('#qdisc', el)) { doc.discount_pct = +$('#qdisc', el).value || 0; doc.valid_days = +$('#qvalid', el).value || 15; doc.notes = $('#qnotes', el).value; doc.status = $('#qstatus', el).value; }
+      if ($('#qdisc', el)) { doc.discount_pct = +$('#qdisc', el).value || 0; doc.valid_days = +$('#qvalid', el).value || 15; doc.notes = $('#qnotes', el).value; doc.intro = $('#qintro', el)?.value || ''; doc.next = $('#qnext', el)?.value || ''; doc.status = $('#qstatus', el).value; }
     };
     const handlers = {
       back: () => { location.hash = '/sales/quotes'; paint(); },
@@ -458,10 +462,16 @@ export async function render(el, { me, sub, alive }) {
           <div class="qmeta"><b>Cotización</b>${doc.number}<br>${fdateLong(doc.date)}<br>Válida hasta el ${fdateLong(valid.toISOString().slice(0, 10))}</div></div>
         <div class="qto"><div><div class="lbl2">PARA</div><b style="font-weight:500;font-size:15px">${doc.client}</b>${doc.contact ? html`<div>${doc.contact}</div>` : ''}</div>
           <div><div class="lbl2">DE</div><b style="font-weight:500;font-size:15px">Inherent</b><div>inherentglobal.com</div></div></div>
+        ${(() => { const lines = String(doc.intro || '').split('\n').map((l) => l.trim()).filter(Boolean), whys = doc.items.filter((i) => (i.why || []).length);
+          return lines.length || whys.length ? html`<div class="qsec"><div class="lbl2">LO QUE VAMOS A LOGRAR EN TU NEGOCIO</div>${lines.map((l) => html`<p>${l}</p>`)}${whys.map((i) => html`<div class="qwhy"><b>${i.name}</b><ul>${i.why.map((w) => html`<li>${w}</li>`)}</ul></div>`)}</div>` : ''; })()}
+        <div class="qsec"><div class="lbl2">QUÉ ENTREGAMOS Y CÓMO TE AYUDA</div>${doc.items.map((i) => { const sv = services.find((x) => x.id === i.service_id), lv = i.level || sv?.level || 5, inc = i.includes?.length ? i.includes : sv ? includesAt(sv, lv) : [], d = sv ? daysAt(sv, lv) : 0;
+          return html`<div class="qwhy"><b>${i.name}</b>${i.level ? html` <span class="qlv">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div class="qd">${i.description}</div>` : ''}${d ? html`<div class="qd"><b style="font-weight:500">Entrega en ${d} días hábiles.</b></div>` : ''}${inc.length ? html`<ul>${inc.map((x) => html`<li>${x}</li>`)}</ul>` : ''}</div>`; })}</div>
+        <div class="lbl2" style="margin-top:22px">INVERSIÓN</div>
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
-          <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b>${i.level ? html` <span style="color:#7a5d46;font-size:11px">· entrega ${lvName(i.level).toLowerCase()}</span>` : ''}${i.description ? html`<div style="color:#7a5d46;font-size:12px">${i.description}</div>` : ''}${(() => { const sv = services.find((x) => x.id === i.service_id); if (!sv) return ''; const lv = i.level || sv.level || 5; const inc = includesAt(sv, lv), d = daysAt(sv, lv); return inc.length || d ? html`<div style="color:#5a4331;font-size:11.5px;margin-top:4px">${d ? html`<b style="font-weight:500">Entrega en ${d} días hábiles.</b> ` : ''}${inc.length ? 'Incluye: ' + inc.join(' · ') : ''}</div>` : ''; })()}</td><td class="n">${i.qty}</td><td class="n">${money(doc, i.price)}</td><td class="n">${money(doc, (+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
+          <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b></td><td class="n">${i.qty}</td><td class="n">${money(doc, i.price)}</td><td class="n">${money(doc, (+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
         <div class="qsum"><div><span>Subtotal</span><span>${money(doc, st)}</span></div>${doc.discount_pct ? html`<div><span>Descuento (${doc.discount_pct}%)</span><span>-${money(doc, st - tt)}</span></div>` : ''}<div class="tot"><span>Total</span><span>${money(doc, tt)}</span></div>${quoteDays(doc) ? html`<div><span>Tiempo estimado</span><span>${quoteDays(doc)} días hábiles</span></div>` : ''}</div>
         ${fees(doc).length ? html`<div class="qnotes"><div class="lbl2">FEE POR CRECIMIENTO · VARIABLE</div>${fees(doc).map((i) => html`<div><b style="font-weight:500">${i.name}:</b> ${growthText(i.growth)}${i.growth.how ? html` <span style="color:#7a5d46">— ${i.growth.how}</span>` : ''}</div>`)}<div style="color:#7a5d46;font-size:11.5px;margin-top:6px">Se calcula cada mes sobre el crecimiento medido y atribuible a este servicio. Sin atribución clara, no se cobra.</div></div>` : ''}
+        <div class="qsec"><div class="lbl2">SIGUIENTES PASOS</div><ol>${(String(doc.next || '').split('\n').map((l) => l.trim()).filter(Boolean).length ? String(doc.next).split('\n').map((l) => l.trim()).filter(Boolean) : ['Confirmas esta propuesta y el alcance.', 'Hacemos una llamada de arranque para tomar tus datos y accesos.', 'Coordinamos el primer pago y firmamos.', 'Empezamos y te mostramos avances en cada entrega.']).map((l) => html`<li>${l}</li>`)}</ol></div>
         ${doc.notes ? html`<div class="qnotes"><div class="lbl2">NOTAS Y CONDICIONES</div>${doc.notes.split('\n').map((l) => html`<div>${l}</div>`)}</div>` : ''}
         <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>
       </div>`);
