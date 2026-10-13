@@ -856,15 +856,16 @@ h1 .itip{width:18px;height:18px;font-size:11px;vertical-align:.45em}
 /* Cambios suaves (View Transitions): lo que cambia es lo de abajo; el menú y el título quedan quietos. */
 #main{view-transition-name:vt-main}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
-::view-transition-group(vt-main),::view-transition-group(vt-head),::view-transition-group(vt-tabs),::view-transition-group(vt-body){animation-duration:.34s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+::view-transition-group(vt-main){animation:none}
 @keyframes vtIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes vtOut{to{opacity:0}}
-/* de una sección a otra: sale lo anterior y entra lo nuevo desde abajo */
+/* de una sección a otra: sale lo anterior y entra lo nuevo desde abajo (sin estirar) */
 html[data-vt=nav]::view-transition-old(vt-main){animation:vtOut .16s ease both}
 html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier(.2,.8,.2,1) both}
-/* de una pestaña a otra: solo se anima el cuerpo */
-html[data-vt=tab]::view-transition-old(vt-body){animation:vtOut .14s ease both}
-html[data-vt=tab]::view-transition-new(vt-body){animation:vtIn .34s cubic-bezier(.2,.8,.2,1) both}
+::view-transition-old(vt-main),::view-transition-new(vt-main){height:auto;object-fit:none;object-position:top}
+/* de una pestaña a otra: el cuerpo entra con un fundido corto */
+.tabin{animation:tabIn .3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes tabIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
 
 /* Íconos de línea (sin emojis): .lni = line icon */

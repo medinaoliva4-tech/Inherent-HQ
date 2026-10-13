@@ -115,13 +115,12 @@ export function drawer(content, map = {}) {
 // Cambio suave (View Transitions: Chrome, Edge y Safari 18+; sin soporte, cambia directo).
 // Al cambiar de pestaña quedan quietos el título y las pestañas; solo se anima lo de abajo.
 export const canTransition = () => typeof document.startViewTransition === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
-const VT_NAMES = [['.hello', 'vt-head'], ['.tabs', 'vt-tabs'], ['#body,#fbody,#obody,#wbody,#cbody', 'vt-body']];
-const vtName = (el) => VT_NAMES.forEach(([sel, n]) => { const x = el.querySelector(sel); if (x) x.style.viewTransitionName = n; });
+// Pestañas: se cambia el contenido y solo el cuerpo entra con un fundido corto (sin fotos ni estiramientos).
 export function swap(el, update) {
-  if (!canTransition()) return update();
-  const root = document.documentElement; root.dataset.vt = 'tab'; vtName(el);
-  const t = document.startViewTransition(() => { update(); vtName(el); });
-  t.finished.finally(() => { delete root.dataset.vt; });
+  update();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const b = el.querySelector('#body,#fbody,#obody,#wbody,#cbody'); if (!b) return;
+  b.classList.remove('tabin'); void b.offsetWidth; b.classList.add('tabin');
 }
 export function closeDrawer() { $('#drawer').classList.remove('on'); $('#veil').classList.remove('on'); }
 
