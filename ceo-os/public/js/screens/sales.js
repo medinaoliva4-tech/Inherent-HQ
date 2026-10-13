@@ -176,8 +176,8 @@ export async function render(el, { me, sub, alive }) {
     const v = await wizard('Nuevo lead', [
       { k: 'name', q: '¿Qué empresa o marca es?', type: 'text', req: true, ph: 'Nombre de la marca' },
       { k: 'wants', q: '¿Qué le interesa?', type: 'cards', req: true, opts: [
-        { v: 'Marketing', i: ico('diamond'), l: 'Marketing', d: 'Que lo conozcan' }, { v: 'Marketing Pro', i: ico('diamond'), l: 'Marketing Pro', d: 'Presencia sostenida' },
-        { v: 'Accelerate', i: ico('square'), l: 'Accelerate', d: 'Está estancado, quiere facturar' }, { v: 'Compound', i: ico('square'), l: 'Compound', d: 'Escalar y sistematizar' },
+        { v: 'Marketing', i: ico('megaphone'), l: 'Marketing', d: 'Que lo conozcan' }, { v: 'Marketing Pro', i: ico('megaphone'), l: 'Marketing Pro', d: 'Presencia sostenida' },
+        { v: 'Accelerate', i: ico('stairs'), l: 'Accelerate', d: 'Está estancado, quiere facturar' }, { v: 'Compound', i: ico('stairs'), l: 'Compound', d: 'Escalar y sistematizar' },
         { v: 'Proyecto puntual', i: ico('puzzle'), l: 'Proyecto puntual' }, { v: 'No sé todavía', i: ico('help'), l: 'No sé todavía' }] },
       { k: 'interest', q: '¿Qué tan caliente está?', type: 'cards', req: true, opts: [['1', ico('snow'), 'Frío'], ['2', ico('sun'), 'Tibio'], ['3', ico('smile'), 'Interesado'], ['4', ico('flame'), 'Caliente'], ['5', ico('rocket'), 'Listo para cerrar']].map(([v, i, l]) => ({ v, i, l })) },
       { k: 'source', q: '¿Cómo llegó?', type: 'cards', req: true, opts: SOURCES.map((x) => ({ v: Array.isArray(x) ? x[0] : x, l: Array.isArray(x) ? x[1] : x })) },

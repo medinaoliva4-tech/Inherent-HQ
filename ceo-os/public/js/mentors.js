@@ -49,7 +49,7 @@ export function mentorsTab(body, { list, isCeo, onChange, ind = 'Todas', onInd }
   const inds = [...new Set(list.map((m) => m.industry).filter(Boolean))].sort();
   const shown = list.filter((m) => ind === 'Todas' || m.industry === ind);
   mount(body, html`
-    <div class="mut sm" style="margin-bottom:12px">La red de especialistas de la línea ${ico('square')} Growth: gente que ya creció una marca en esa industria. Techo por sesión: <b>$144 en Accelerate · $180 en Compound</b>; arriba de eso va como add-on facturado al cliente.</div>
+    <div class="mut sm" style="margin-bottom:12px">La red de especialistas de la línea ${ico('stairs')} Growth: gente que ya creció una marca en esa industria. Techo por sesión: <b>$144 en Accelerate · $180 en Compound</b>; arriba de eso va como add-on facturado al cliente.</div>
     <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:14px">${['Todas', ...inds].map((x) => html`<button class="chip ${x === ind ? 'dark' : ''}" data-mact="ind" data-v="${x}" style="padding:7px 13px">${x}</button>`)}</div>
     ${!list.length ? html`<div class="empty"><b>Todavía no hay especialistas</b>${isCeo ? html`Carga el mapa del manual para empezar, o agrega uno.<div style="margin-top:14px"><button class="btn ghost" data-mact="seed">Cargar el mapa del manual (${SEED.length})</button></div>` : 'El CEO los agrega aquí.'}</div>`
       : [...new Set(shown.map((m) => m.industry))].sort().map((i) => html`<div class="sec-title"><h2>${i}</h2></div>
