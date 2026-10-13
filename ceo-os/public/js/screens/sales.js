@@ -320,9 +320,9 @@ export async function render(el, { me, sub, alive }) {
   }
 
   async function descs() {
-    if (!(await confirmAsk('¿Cargar las descripciones de los 19 servicios? Actualiza los que ya existen y crea los que faltan. No cambia precios ni horas, ni pisa lo que ya escribiste.'))) return;
+    if (!(await confirmAsk('¿Cargar las descripciones de los 19 servicios? Actualiza los que ya existen y crea los que faltan, con sus horas. No cambia precios ni horas de los que ya las tienen, ni pisa lo que ya escribiste.'))) return;
     try {
-      const r = await cargarDescripciones(S, services); services = r.services;
+      const r = await cargarDescripciones(S, services, rates); services = r.services;
       toast(`Listo ✅ · ${r.actualizados} actualizados · ${r.creados} nuevos${r.omitidos.length ? ` · ${r.omitidos.length} ya tenían texto y no se tocaron` : ''}`); paint();
     } catch (e) { toast(e.message, true); paint(); }
   }
