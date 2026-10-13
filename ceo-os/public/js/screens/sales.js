@@ -295,8 +295,9 @@ export async function render(el, { me, sub, alive }) {
   async function editRates() {
     let roles = (rates?.roles || DEFAULT_ROLES.map(([role, rate]) => ({ role, rate }))).map((r) => ({ ...r }));
     const draw = () => drawer(html`<div class="row"><span class="chip dark">${ico('lock', 13)} Solo CEO</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
-      <h2>Costos por hora</h2><p class="mut sm" style="margin-top:6px">Lo que le cuesta a Inherent una hora de cada rol. Con esto se calcula el costo de cada servicio.</p>
-      <div style="margin-top:18px">${roles.map((r, i) => html`<div class="row" style="margin-bottom:8px"><input class="in" data-i="${i}" data-f="role" value="${r.role}"><span class="mut">Q</span><input class="in" style="max-width:110px" type="number" data-i="${i}" data-f="rate" value="${r.rate ?? ''}" placeholder="falta"><span class="mut sm">/h</span><button class="btn ghost" data-act="rm" data-i="${i}" style="padding:8px 12px">${ico('x', 16)}</button></div>`)}</div>
+      <h2>Costos por hora</h2><p class="mut sm" style="margin-top:6px">Lo que le cuesta a Inherent una hora de cada rol, según el nivel del servicio. Los niveles de en medio se calculan solos. Si dejas vacío el 3 o el 10, se usa el del nivel 5.</p>
+      <div class="row mut sm" style="margin-top:14px;gap:8px"><span style="flex:1">Rol</span><span style="width:84px;text-align:center">Nivel 3 (Q)</span><span style="width:84px;text-align:center">Nivel 5 (Q)</span><span style="width:84px;text-align:center">Nivel 10 (Q)</span><span style="width:44px"></span></div>
+      <div style="margin-top:8px">${roles.map((r, i) => html`<div class="row" style="margin-bottom:8px;gap:8px"><input class="in" data-i="${i}" data-f="role" value="${r.role}"><span class="mut">Q</span><input class="in" style="max-width:84px" type="number" data-i="${i}" data-f="rate3" value="${r.rate3 ?? ''}" placeholder="= nivel 5" title="Nivel 3"><input class="in" style="max-width:84px" type="number" data-i="${i}" data-f="rate" value="${r.rate ?? ''}" placeholder="falta" title="Nivel 5"><input class="in" style="max-width:84px" type="number" data-i="${i}" data-f="rate10" value="${r.rate10 ?? ''}" placeholder="= nivel 5" title="Nivel 10"><button class="btn ghost" data-act="rm" data-i="${i}" style="padding:8px 12px">${ico('x', 16)}</button></div>`)}</div>
       <button class="btn ghost" data-act="add" style="padding:8px 14px">+ Rol</button>
       <div class="card glass" style="margin-top:18px;padding:14px"><b style="font-weight:500">Margen</b><p class="mut sm" style="margin:4px 0 10px">El precio de todos los servicios sale del costo para dejar este margen: precio = costo ÷ (1 − margen). El rango permitido es de 70 a 80%.</p>
         <div class="row" style="gap:8px"><span class="sm">Margen</span><input class="in" id="margin" type="number" step="1" min="1" max="95" value="${marginOf(rates)}" style="max-width:90px"><span class="mut">%</span></div></div>
@@ -306,7 +307,7 @@ export async function render(el, { me, sub, alive }) {
       rm: (b) => { sync(); roles.splice(+b.dataset.i, 1); draw(); },
       saveRates: async () => {
         sync();
-        const clean = roles.filter((r) => r.role.trim()).map((r) => ({ role: r.role.trim(), rate: r.rate === '' || r.rate == null || isNaN(r.rate) ? null : +r.rate }));
+        const clean = roles.filter((r) => r.role.trim()).map((r) => { const n = (v) => (v === '' || v == null || isNaN(v) ? null : +v); return { role: r.role.trim(), rate: n(r.rate), rate3: n(r.rate3), rate10: n(r.rate10) }; });
         const margin = Math.min(95, Math.max(1, +$('#margin').value || 75));
         try { rates = rates ? await R.save({ ...rates, roles: clean, margin }) : await R.create({ id: 'default', roles: clean, margin });
           // Los precios automáticos se recalculan con los costos nuevos (los de precio fijo no se tocan).
@@ -317,7 +318,7 @@ export async function render(el, { me, sub, alive }) {
         catch (e) { toast(e.message, true); }
       },
     });
-    const sync = () => $$('[data-f]', $('#drawer')).forEach((inp) => { roles[+inp.dataset.i][inp.dataset.f] = inp.dataset.f === 'rate' ? (inp.value === '' ? null : +inp.value) : inp.value; });
+    const sync = () => $$('[data-f]', $('#drawer')).forEach((inp) => { roles[+inp.dataset.i][inp.dataset.f] = inp.dataset.f === 'role' ? inp.value : inp.value === '' ? null : +inp.value; });
     draw();
   }
 

@@ -2,7 +2,7 @@
 // (cada uno con su nivel y cantidad) y, si aplica, especialistas. Su precio es la suma de sus líneas, con el
 // mismo margen del catálogo, y la cotización muestra cuánto vale cada cosa. Solo el CEO (lleva costos).
 import { html, raw, mount, col, api, drawer, closeDrawer, toast, confirmAsk, Q, USD, $, $$, ico } from './core.js';
-import { svcCost, svcHours, svcPrice, svcAuto, marginOf, includesAt, hoursAt } from './cycle.js';
+import { svcCost, svcHours, svcPrice, svcAuto, marginOf, includesAt, hoursAt, rateAt } from './cycle.js';
 
 const B = col('bundles');
 const r50 = (n) => Math.round(n / 50) * 50;
@@ -28,7 +28,7 @@ export async function createBundles({ services, rates, industries = [], onQuote 
     if (l.type === 'custom') {
       const roles = (l.roles || []).filter((r) => r.role && +r.hours > 0), c = rates ? svcCost({ tasks: roles.map((r) => ({ role: r.role, hours: +r.hours, hours10: +r.hours })) }, rates, 5) : null;
       const cost = c ? c.cost : 0, hours = roles.reduce((a, r) => a + +r.hours, 0);
-      return { name: l.name || 'Servicio propio', sub: `Servicio propio · ${hours} h${hours ? '' : ' · ponle horas'}`, cost, price: cost ? r50(cost / (1 - margin)) : 0, hours, ok: Boolean(l.name && cost), roles: roles.map((r) => ({ role: r.role, hours: +r.hours })), miss: c?.miss?.length ? c.miss : null };
+      return { name: l.name || 'Servicio propio', sub: `Servicio propio · ${hours} h${hours ? '' : ' · ponle horas'}`, cost, price: cost ? r50(cost / (1 - margin)) : 0, hours, ok: Boolean(l.name && cost), roles: roles.map((r) => ({ role: r.role, hours: +r.hours, cost: (rateAt(rates, r.role, 5) || 0) * +r.hours })), miss: c?.miss?.length ? c.miss : null };
     }
     if (l.type === 'mentor') {
       const m = mentors.find((x) => x.id === l.mentor_id);
@@ -38,7 +38,7 @@ export async function createBundles({ services, rates, industries = [], onQuote 
     const s = svc(l.service_id), lv = Math.max(3, Math.min(10, Math.round(num(l.level, 5)))), qty = Math.max(1, num(l.qty, 1));
     if (!s) return { name: 'Servicio', sub: 'Elige un servicio del catálogo', cost: 0, price: 0, hours: 0, ok: false, roles: [] };
     const c = rates ? svcCost(s, rates, lv) : null, p = svcPriceAt(s, lv);
-    return { name: s.name, sub: `${lvName(lv)} · nivel ${lv}${qty > 1 ? ` · ×${qty}` : ''} · ${svcHours(s, lv) * qty} h`, cost: c && !c.miss.length ? c.cost * qty : 0, price: (p || 0) * qty, hours: svcHours(s, lv) * qty, ok: p != null, roles: (s.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * qty })), miss: c?.miss?.length ? c.miss : null };
+    return { name: s.name, sub: `${lvName(lv)} · nivel ${lv}${qty > 1 ? ` · ×${qty}` : ''} · ${svcHours(s, lv) * qty} h`, cost: c && !c.miss.length ? c.cost * qty : 0, price: (p || 0) * qty, hours: svcHours(s, lv) * qty, ok: p != null, roles: (s.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * qty, cost: (rateAt(rates, t.role, lv) || 0) * hoursAt(t, lv) * qty })), miss: c?.miss?.length ? c.miss : null };
   }
   function totals(b) {
     const ls = (b.lines || []).map(line), price = ls.reduce((a, x) => a + x.price, 0), cost = ls.reduce((a, x) => a + x.cost, 0);

@@ -141,9 +141,15 @@ export const LV = [5, 10];
 const h3Of = (t) => (t.hours3 == null || t.hours3 === '' ? Math.max(0.5, Math.round((+t.hours || 0) * 0.6 * 2) / 2) : +t.hours3);
 export const hoursAt = (t, lv = 5) => { const h5 = +t.hours || 0; if (lv < 5) { const h3 = h3Of(t); return Math.round((h3 + ((h5 - h3) * (lv - 3)) / 2) * 2) / 2; } const h10 = t.hours10 == null || t.hours10 === '' ? h5 * 2 : +t.hours10; return Math.round((h5 + ((h10 - h5) * (lv - 5)) / 5) * 2) / 2; };
 export const svcHours = (s, lv = s.level || 5) => (s.tasks || []).reduce((a, t) => a + hoursAt(t, lv), 0);
+// Costo por hora de un rol según el nivel: «rate» es el del nivel 5; rate3 y rate10 son opcionales (si faltan, igual al 5).
+export function rateAt(rates, role, lv = 5) {
+  const r = rates?.roles?.find((x) => x.role === role); if (!r || r.rate == null) return null;
+  const r5 = +r.rate, r3 = r.rate3 == null || r.rate3 === '' ? r5 : +r.rate3, r10 = r.rate10 == null || r.rate10 === '' ? r5 : +r.rate10;
+  return lv < 5 ? r3 + ((r5 - r3) * (lv - 3)) / 2 : r5 + ((r10 - r5) * (lv - 5)) / 5;
+}
 export function svcCost(s, rates, lv = s.level || 5) {
   if (!rates) return null;
-  const rate = (role) => rates.roles?.find((r) => r.role === role)?.rate ?? null; const miss = [];
+  const rate = (role) => rateAt(rates, role, lv); const miss = [];
   const cost = (s.tasks || []).reduce((a, t) => { const r = rate(t.role); if (r == null) miss.push(t.role); return a + (r || 0) * hoursAt(t, lv); }, 0);
   return { cost, miss };
 }

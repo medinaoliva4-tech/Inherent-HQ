@@ -1,4 +1,4 @@
-import { hoursAt } from '../cycle.js';
+import { hoursAt, rateAt } from '../cycle.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico } from '../core.js';
 
@@ -108,7 +108,7 @@ export async function render(el, { sub }) {
       ${!rates ? html`<div class="warnbox" style="margin-bottom:14px">Define los costos por hora en Sales → Catálogo → Costos por hora.</div>` : ''}
       ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Los servicios del catálogo de Sales aparecen aquí con su costo.</div>`
       : html`<div class="card"><table><thead><tr><th>Servicio</th><th>Equipo</th><th class="n">Horas</th><th class="n">Costo / h</th><th class="n">Total</th><th class="n">Precio</th><th class="n">Margen</th></tr></thead><tbody>
-        ${services.map((s) => { const h = (s.tasks || []).reduce((a, t) => a + hoursAt(t, s.level || 5), 0); const miss = (s.tasks || []).some((t) => rateOf(t.role) == null); const c = (s.tasks || []).reduce((a, t) => a + (rateOf(t.role) || 0) * hoursAt(t, s.level || 5), 0);
+        ${services.map((s) => { const h = (s.tasks || []).reduce((a, t) => a + hoursAt(t, s.level || 5), 0); const miss = (s.tasks || []).some((t) => rateOf(t.role) == null); const c = (s.tasks || []).reduce((a, t) => a + (rateAt(rates, t.role, s.level || 5) || 0) * hoursAt(t, s.level || 5), 0);
           return html`<tr><td><b style="font-weight:500">${s.name}</b><div class="mut sm">${s.category || ''} · nivel ${s.level || 5}</div></td><td>${(s.tasks || []).map((t) => html`<span class="chip" style="margin:2px">${t.role} · ${hoursAt(t, s.level || 5)}h</span>`)}</td><td class="n">${h} h</td><td class="n">${h && !miss ? Q(c / h) : '—'}</td><td class="n"><b>${miss ? ico('alert') : Q(c)}</b></td><td class="n">${s.price ? Q(s.price) : '—'}</td><td class="n">${s.price && !miss ? Math.round(((s.price - c) / s.price) * 100) + '%' : '—'}</td></tr>`; })}
       </tbody></table></div>`}<div id="espCost"></div>`);
     espCosts($('#espCost', b));
