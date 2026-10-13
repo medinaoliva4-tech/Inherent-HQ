@@ -332,10 +332,7 @@ textarea.in{min-height:96px;resize:vertical}
 @media print{
   body::before,body::after,.app,.drawer,.veil,#toast,.qbar,.login{display:none!important}
   html,body{background:#fdfaf3}
-  html,body,#root{height:auto!important;min-height:0!important;overflow:visible!important}
-  .qview{position:static;background:none;padding:0;backdrop-filter:none;overflow:visible!important;height:auto!important;animation:none!important}
-  .qdoc{animation:none!important}
-  .qdoc .qwhy,.qdoc .qsec>p,.qdoc tr{break-inside:avoid}
+  .qview{position:static;background:none;padding:0;backdrop-filter:none}
   .qdoc{box-shadow:none;width:auto;padding:0;border-radius:0}
   @page{size:letter;margin:18mm}
 }
