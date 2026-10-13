@@ -3,6 +3,7 @@ import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, cxAt, GROWTH, 
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 import { packagesTab } from '../paquetes.js';
+import { repararCatalogo } from '../reparar-catalogo.js';
 
 const STAGES = ['Nuevo', 'Contactado', 'Propuesta', 'Ganado', 'Perdido'];
 const OPEN = ['Nuevo', 'Contactado', 'Propuesta'];
@@ -67,7 +68,7 @@ export async function render(el, { me, sub, alive }) {
         </div>
         <div class="sp"></div>
         ${tab === 'crm' ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
-        ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
+        ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="repair">Restaurar catálogo</button><button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'quotes' ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
         ${tab === 'esp' && isCeo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
@@ -221,8 +222,9 @@ export async function render(el, { me, sub, alive }) {
     // La vista previa del nivel (horas, días y qué incluye). Se actualiza sola mientras escribes.
     const prev = (fv) => { const cur = { ...fv, tasks, level }; return html`<div class="mut sm">En este nivel: ${tasks.map((t) => `${t.role} ${hoursAt(t, level)} h`).join(' · ')} = <b>${svcHours(cur, level)} h</b>${daysAt(fv, level) ? html` · tarda <b>${daysAt(fv, level)} días hábiles</b>` : ''}. El precio de abajo es el de este nivel.</div>
           ${includesAt(fv, level).length ? html`<div class="sm" style="margin-top:8px"><b style="font-weight:500">Incluye en este nivel:</b><ul style="margin:4px 0 0 18px;padding:0">${includesAt(fv, level).map((x) => html`<li>${x}</li>`)}</ul></div>` : ''}`; };
+    let fresh = true; // la primera vez no se lee el formulario: lo que queda montado es el de la tarjeta anterior
     const draw = () => {
-      const keep = curForm(); const fv = { ...(s || {}), ...keep };
+      const keep = fresh ? {} : curForm(); fresh = false; const fv = { ...(s || {}), ...keep };
       const cur = { ...(s || {}), tasks, level, markup: +($('#svmk')?.value || s?.markup || 2.2) };
       const c = costOf(cur, level), sug = suggested(cur, level);
       drawer(html`<div class="row"><span class="chip">Servicio</span><div class="sp"></div><button class="arrow light" data-act="close">✕</button></div>
@@ -321,6 +323,14 @@ export async function render(el, { me, sub, alive }) {
     ];
     for (const [category, name, description, t] of EX) services.push(await S.create({ category, name, description, unit: 'proyecto', markup: 2.2, price: null, example: true, tasks: t.map(([role, hours]) => ({ role, hours })) }));
     toast('9 ejemplos cargados. Ajusta horas y precios ✅'); paint();
+  }
+
+  async function repair() {
+    if (!(await confirmAsk('¿Restaurar el catálogo? Devuelve el nombre, las horas y el texto de los servicios que se mezclaron, y da horas a los nuevos. No toca precios fijos ni lo que ya está bien.'))) return;
+    try {
+      const r = await repararCatalogo(S, services, rates); services = r.services;
+      toast(`Listo ✅ · ${r.restaurados} servicios restaurados${r.faltan.length ? ` · no encontré: ${r.faltan.join(', ')}` : ''}`); paint();
+    } catch (e) { toast(e.message, true); paint(); }
   }
 
   // ---------- Cotizaciones ----------
@@ -491,7 +501,7 @@ export async function render(el, { me, sub, alive }) {
     tagF: (b) => { tagF = b.dataset.t; paint(); },
     catF: (b) => { catF = b.dataset.c; paint(); },
     lead: (b) => openLead(leads.find((l) => l.id === b.dataset.id)),
-    newLead, newService: () => editService(null), rates: editRates, seed,
+    newLead, newService: () => editService(null), rates: editRates, seed, repair,
     service: (b, e) => { if (e?.target.closest('[data-stop]')) return; editService(services.find((s) => s.id === b.dataset.id)); },
     newQuote: () => editQuote(null, null),
     newMentor: async () => { const r = await editMentor(null, [...new Set((mentors || []).map((m) => m.industry))]); if (r && !r.deleted) { mentors = [...(mentors || []), r]; paint(); } },
