@@ -380,7 +380,7 @@ export async function render(el, { me, sub, alive }) {
           <div class="card">
             <div class="chead"><div class="ico">${ico('edit')}</div><h3>${doc.number}<br><span class="mut sm">${fdateLong(doc.date)}</span></h3></div>
             <form class="form" id="qf">
-              <div class="two"><div><label class="f">Cliente</label><input class="in" name="client" list="leadlist" value="${doc.client}"></div><div><label class="f">Contacto</label><input class="in" name="contact" value="${doc.contact || ''}"></div></div>
+              <div class="two"><div><label class="f">Cliente</label><input class="in" name="client" list="leadlist" placeholder="Elige del CRM o escribe uno nuevo" value="${doc.client}"></div><div><label class="f">Contacto</label><input class="in" name="contact" value="${doc.contact || ''}"></div></div>
               <datalist id="leadlist">${leads.map((l) => html`<option value="${l.name}">`)}</datalist>
             </form>
             <div class="sm mut" style="margin:18px 0 8px">Servicios</div>
@@ -427,6 +427,8 @@ export async function render(el, { me, sub, alive }) {
       };
       $$('[data-f], #qdisc, #qvalid, #qrate', el).forEach((inp) => inp.addEventListener('change', () => { sync(); draw(); }));
       $('#qcur', el).onchange = async (e) => { sync(); doc.currency = e.target.value; if (doc.currency === 'GTQ') { doc.rate = 1; return draw(); } try { doc.rate = (await api('fx?to=' + doc.currency)).rate; toast(`1 Q = ${doc.rate} ${doc.currency}`); } catch (err) { doc.rate = doc.rate || null; toast(err.message, true); } draw(); };
+      // Al elegir un lead del CRM se llenan su contacto y su correo.
+      $('[name=client]', el)?.addEventListener('change', (ev) => { const l = leads.find((x) => x.name.trim().toLowerCase() === ev.target.value.trim().toLowerCase()); if (!l) return; doc.lead_id = l.id; const c = $('[name=contact]', el); if (c && !c.value) c.value = l.contact || ''; if (!doc.email) doc.email = l.email || ''; });
       // Arrastrar el nivel: mientras se mueve solo cambian el texto y el precio; al soltar se recalcula todo.
       $$('[data-qlv]', el).forEach((r) => {
         const i = +r.dataset.qlv, it = doc.items[i], sv = services.find((x) => x.id === it.service_id);
@@ -447,6 +449,14 @@ export async function render(el, { me, sub, alive }) {
       saveQ: async () => {
         sync();
         if (!doc.client) return toast('Falta el cliente', true);
+        // El cliente sale del CRM: si ya es lead se enlaza; si es nuevo, se crea en el CRM. Así en Control pasa de interesado a cotizado.
+        try {
+          const key = (x) => String(x || '').trim().toLowerCase();
+          let ld = leads.find((l) => l.id === doc.lead_id && key(l.name) === key(doc.client)) || leads.find((l) => key(l.name) === key(doc.client));
+          if (!ld) { ld = await L.create({ name: doc.client.trim(), contact: doc.contact || '', email: doc.email || '', stage: 'Propuesta', tags: [], activity: [] }); leads.push(ld); }
+          else if (['Nuevo', 'Contactado'].includes(ld.stage || 'Nuevo')) { const r = await L.save({ ...ld, stage: 'Propuesta' }); leads = leads.map((x) => (x.id === r.id ? r : x)); }
+          doc.lead_id = ld.id; if (!doc.contact) doc.contact = ld.contact || ''; if (!doc.email) doc.email = ld.email || '';
+        } catch (e) { return toast(e.message, true); }
         // Enviada, aprobada o rechazada no es solo una etiqueta: dispara el flujo (tarea de cobro, lead, Control).
         const STEP = { Enviada: 'send', Aceptada: 'approve', Rechazada: 'reject' };
         const prev = (doc.id && quotes.find((x) => x.id === doc.id)?.status) || 'Borrador', want = doc.status, go = STEP[want] && want !== prev;
