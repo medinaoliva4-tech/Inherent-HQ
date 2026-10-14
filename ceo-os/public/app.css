@@ -952,3 +952,5 @@ html[data-theme="dark"] .feat .big small{color:rgba(44,31,22,.65)}
 html[data-theme="dark"] .feat .matrix i{background:rgba(44,31,22,.3)}html[data-theme="dark"] .feat .matrix i.on{background:rgba(44,31,22,.9)}
 /* Espacio para el botón de modo noche en la barra de arriba */
 .nav{gap:2px}.nav button{padding:10px 12px}.themebtn{width:40px;height:40px}
+/* Al cambiar de pestaña la página no se corre de lado: el espacio de la barra de scroll queda siempre reservado */
+html{scrollbar-gutter:stable;overflow-y:scroll}
