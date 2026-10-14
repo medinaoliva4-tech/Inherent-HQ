@@ -114,7 +114,8 @@ export function drawer(content, map = {}) {
 }
 // Cambio suave (View Transitions: Chrome, Edge y Safari 18+; sin soporte, cambia directo).
 // Al cambiar de pestaña quedan quietos el título y las pestañas; solo se anima lo de abajo.
-export const canTransition = () => typeof document.startViewTransition === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+// En modo noche no se usa la transición entre secciones: el navegador la dibuja sin el filtro oscuro y se ve un destello claro.
+export const canTransition = () => typeof document.startViewTransition === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches && document.documentElement.dataset.theme !== 'dark';
 // Pestañas: se cambia el contenido y solo el cuerpo entra con un fundido corto (sin fotos ni estiramientos).
 export function swap(el, update) {
   // La página no salta: se guarda la altura y el scroll mientras la pestaña nueva carga.
