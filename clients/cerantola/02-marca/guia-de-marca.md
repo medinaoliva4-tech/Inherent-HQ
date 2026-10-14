@@ -107,7 +107,20 @@ marca no vive en la obra: vive ahí.
 ### D · El enemigo
 *En lenguaje de persona. No es un competidor.*
 
-**El «ya casi».** *«Que la semana de la apertura alguien te diga "ya casi".»*
+**Lo que combatimos:**
+
+| Lo que combatimos | Cómo lo vive el cliente |
+|---|---|
+| **La fecha que se mueve** | Aperturas que se aplazan mientras la renta se sigue pagando |
+| **El espacio que no está a la altura de la marca** | Acabados que no corresponden al estándar que la marca exige |
+| **La sucursal que no se parece a la primera** | Cada ciudad y cada país con un resultado distinto |
+| **El render que no se cumple** | Lo que se construyó no es lo que se aprobó |
+| **Muchos proveedores y ningún responsable** | Diseño, obra, mobiliario y logística, cada uno por su lado |
+| **El costo que crece después de firmar** | Presupuestos que cambian a mitad del proyecto |
+| **La frontera que detiene la obra** | Material retenido en aduana y trámites que frenan el calendario |
+| **El espacio que envejece antes de tiempo** | Se ve bien el día de la apertura y se deteriora en meses |
+
+**Cerantola existe para que ninguno de estos temas llegue al día de la apertura.**
 
 ### E · La idea madre
 **Espacios que tu gente ama. Entregados como los firmaste.**
