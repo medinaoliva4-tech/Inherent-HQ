@@ -6,8 +6,8 @@
 
 ## Dónde está la marca hoy
 
-**Si alguna vez entraste a un Samsung, un Starbucks, un Pandora o un Tommy Hilfiger en
-Latinoamérica, es posible que ya hayas estado dentro de un espacio de Cerantola.**
+**Si alguna vez entró a un Samsung, un Starbucks, un Pandora o un Tommy Hilfiger en
+Latinoamérica, es posible que ya haya estado dentro de un espacio de Cerantola.**
 
 Desde 1998, más de 40 de las marcas más exigentes del mundo nos confían el lugar donde sus
 clientes las conocen, en 14 países. Hacemos tiendas, restaurantes, cafés, oficinas y casas de lujo,
@@ -19,8 +19,7 @@ Las marcas que compran proyectos grandes no ven todavía a quien podría constru
 
 ## A dónde vamos
 
-**Construir los lugares a los que la gente quiere volver. En todo el continente, al estándar de
-las mejores marcas del mundo, y hechos desde Latinoamérica.**
+**Construimos los lugares a los que la gente quiere volver.**
 
 Más concreto: más proyectos grandes, con clientes que pagan más y con contratos que se repiten.
 Hoteles que renuevan, desarrolladores que necesitan cientos de cocinas, cadenas que abren y

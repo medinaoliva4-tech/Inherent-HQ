@@ -26,7 +26,7 @@ comercial se vea y se lea al nivel de los referentes.
 | **B.1 · Audiencia profunda** | Ver § Las audiencias |
 | **B.2 · Tensión cultural** | Todos temen perder el control: del tiempo, del costo y de que todo salga igual |
 | **B.3 · Posicionamiento** | El socio que construye y equipa todo el espacio, de la obra gris a la última pieza, en todo el continente |
-| **B.4 · Promesa** | **Espacios que tu gente ama. Entregados como los firmaste.** |
+| **B.4 · Promesa** | **Espacios que su gente ama. Entregados en tiempo y forma.** |
 | **B.5 · Historia** | El héroe es el cliente que abre sus puertas y ve a su gente feliz adentro. Cerantola es quien lo hizo posible |
 | **B.6 · Personalidad** | Seguro, preciso, práctico y cercano. Escala de multinacional con trato de persona |
 | **B.7 · El fundador** | ⚠️ SIN DATOS |
@@ -40,9 +40,9 @@ comercial se vea y se lea al nivel de los referentes.
 
 | Audiencia | Lo que sueña | Cómo se lo decimos *(borrador)* | Lo que lo respalda |
 |---|---|---|---|
-| **Restaurantes y cafés** | Que la gente llegue, se quede, tome fotos, vuelva y lo recomiende | *«El lugar donde tu gente quiere estar.»* | Un local modelo que se repite idéntico |
-| **Marcas de retail** | Que entren, se queden y compren. Verse igual de grande en cada ciudad | *«Tu marca, igual de imponente en cada ciudad.»* | Una sola tienda en 14 países |
-| **Hotelería** | Huéspedes que fotografían la habitación, dejan 5 estrellas y regresan | *«Habitaciones que tus huéspedes recuerdan.»* | Renovar sin perder noches vendidas |
+| **Restaurantes y cafés** | Que la gente llegue, se quede, tome fotos, vuelva y lo recomiende | *«El lugar donde su gente quiere estar.»* | Un local modelo que se repite idéntico |
+| **Marcas de retail** | Que entren, se queden y compren. Verse igual de grande en cada ciudad | *«Su marca, igual de imponente en cada ciudad.»* | Una sola tienda en 14 países |
+| **Hotelería** | Huéspedes que fotografían la habitación, dejan 5 estrellas y regresan | *«Habitaciones que sus huéspedes recuerdan.»* | Renovar sin perder noches vendidas |
 | **Desarrolladores** | Vender rápido y a mejor precio | *«La cocina que cierra la venta.»* | Precio cerrado por unidad y respaldo de Oppein |
 | **Cadenas con muchas tiendas** | Remodelar 50 tiendas y que todas se vean como la primera | *«Cada tienda, como la primera.»* | Un solo socio para todo el programa |
 
@@ -75,7 +75,7 @@ comercial se vea y se lea al nivel de los referentes.
 |---|---|---|
 | **1** | **Tipo de marca** | **Premium institucional, con lujo sobrio.** Compran comités, con proyectos caros, y confían en la empresa y en las pruebas |
 | **2** | **Audiencia objetivo** | Las cinco de § Las audiencias, cada una con su deseo |
-| **3** | **Posicionamiento** | **Territorio:** la precisión del taller con el alcance de una multinacional · **Enemigo:** cinco proveedores, cinco excusas · **Idea madre:** *«Espacios que tu gente ama. Entregados como los firmaste.»* |
+| **3** | **Posicionamiento** | **Territorio:** la precisión del taller con el alcance de una multinacional · **Enemigo:** cinco proveedores, cinco excusas · **Idea madre:** *«Espacios que su gente ama. Entregados en tiempo y forma.»* |
 | **4** | **Código saturado** | `99-referencias/investigacion/ingenieria-inversa.md` § El mapa de saturación |
 | **5** | **Dirección visual** | Video al inicio · espacios terminados y con vida · detalle de acabados · paleta de materiales *(piedra, madera, concreto, negro)* · números de escala grandes |
 | **6** | **Referencias** | **idX:** video al inicio y *«concept through completion»* · **Foliot:** menú por mercado y por espacio, pruebas concretas · **Sobha:** la sensación de lujo, no su forma de hablar · **ITAB:** casos de éxito contados como historia |

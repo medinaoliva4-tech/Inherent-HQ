@@ -25,7 +25,7 @@
 
 ### B · Lo que ① Strategy decidió *(restricción)*
 - **Tipo de marca:** premium institucional, con lujo sobrio.
-- **Idea madre:** *«Espacios que tu gente ama. Entregados como los firmaste.»*
+- **Idea madre:** *«Espacios que su gente ama. Entregados en tiempo y forma.»*
 - **Enemigo:** cinco proveedores, cinco excusas.
 - **Territorio:** la precisión del taller con el alcance de una multinacional.
 - **Una sola marca madre** con sus líneas: Retail · Restaurants · Hospitality · Residential ·
@@ -123,7 +123,7 @@ marca no vive en la obra: vive ahí.
 **Cerantola existe para que ninguno de estos temas llegue al día de la apertura.**
 
 ### E · La idea madre
-**Espacios que tu gente ama. Entregados como los firmaste.**
+**Espacios que su gente ama. Entregados en tiempo y forma.**
 
 La apertura es el momento en que se cumplen las dos mitades.
 
@@ -142,8 +142,8 @@ La apertura es el momento en que se cumplen las dos mitades.
 Nadie en la categoría la usa. Se confirma en la Capa 3, con el sistema visual armado.
 
 ### La frase de referencia para la voz
-> **«Si alguna vez entraste a un Samsung, un Starbucks, un Pandora o un Tommy Hilfiger en
-> Latinoamérica, es posible que ya hayas estado dentro de un espacio de Cerantola.»**
+> **«Si alguna vez entró a un Samsung, un Starbucks, un Pandora o un Tommy Hilfiger en
+> Latinoamérica, es posible que ya haya estado dentro de un espacio de Cerantola.»**
 
 Es la que mejor suena a la marca. La Capa 2 parte de aquí.
 
@@ -152,24 +152,70 @@ Es la que mejor suena a la marca. La Capa 2 parte de aquí.
 ## § Voz
 *Capa 2 · `br-voz`*
 
+**Primero en inglés.** En español: **profesional mexicano, de usted.** Así le habla un socio serio
+a un director o a un dueño. Sin modismos locales y sin trato de amigo.
+
 ### A · Los ejes
 | Eje | ← | → | Dónde estamos |
 |---|---|---|---|
-| Formalidad | Coloquial | Formal | |
-| Energía | Calmo | Enérgico | |
-| Humor | Serio | Divertido | |
-| Cercanía | Distante | Íntimo | |
+| Formalidad | Coloquial | Formal | **Formal, pero humana** |
+| Energía | Calmo | Enérgico | **Calmo** *(extremo)* |
+| Humor | Serio | Divertido | **Serio** *(extremo)* |
+| Cercanía | Distante | Íntimo | **Cercana, de anfitrión** |
 
 ### B · Do's & don'ts
-| ❌ Así no | ✅ Así sí | Por qué |
-|---|---|---|
+| Momento | ❌ Así no | ✅ Así sí | Por qué |
+|---|---|---|---|
+| **Presentarnos** | «Somos una empresa líder en soluciones integrales con más de 25 años de experiencia.» | «Si alguna vez entró a un Samsung, un Starbucks o un Pandora en Latinoamérica, es posible que ya haya estado dentro de un espacio de Cerantola.» | Empieza en la experiencia del lector y prueba con marcas que ya conoce |
+| **Vender** | «Ofrecemos diseño, construcción, mobiliario y logística con la mejor calidad.» | «Un solo contrato. El día de la apertura, su espacio está listo, en tiempo y forma, conforme a lo aprobado.» | Deseo y certeza en vez de una lista |
+| **Una mala noticia** | «Debido a factores externos, el proyecto podría sufrir retrasos.» | «El mármol llegará cuatro días después de lo previsto. Ajustamos la secuencia de obra y la fecha de apertura se mantiene: 15 de marzo.» | Dato, solución y fecha. Sin excusas |
+| **Responder un comentario** | «¡Gracias! 🙌 Escríbenos al DM para más info.» | «Gracias. Esa barra se fabricó en nuestro taller y se instaló en tres noches, sin cerrar el restaurante.» | Anfitrión y con dato. Sin emojis |
+| **Llamado a la acción** | «¡Cotiza ya sin compromiso!» | «Cuéntenos qué va a abrir y en qué fecha.» | Habla de su proyecto, no de nuestra venta |
+| **Un error nuestro** | «Lamentamos los inconvenientes ocasionados.» | «Hubo un error en el tono de la madera. Lo corregimos esta semana, sin costo y sin mover su fecha de apertura.» | Lo admite, lo resuelve y cuida la fecha |
+
+*Los datos de los ejemplos son ilustrativos. No se publican sin validar.*
+
+**La visión, con esta voz:** **Construimos los lugares a los que la gente quiere volver.**
 
 ### C · Cómo se nombra la marca
+| | |
+|---|---|
+| **Cómo se escribe** | **Cerantola**, con mayúscula inicial en el texto. El logo sigue en minúsculas |
+| **Cómo NO se escribe** | CERANTOLA · Cerantola Displays · Cerántola |
+| **Con artículo o sin** | Sin artículo: «Cerantola diseña…», nunca «la Cerantola» |
+| **En primera persona** | Plural: «hacemos», «nuestro taller» |
+
 ### D · Palabras propias
+apertura · abrir · entregar · en tiempo y forma · conforme a lo aprobado · a la altura · taller ·
+acabado · su gente · un solo contrato
+
+*En inglés:* opening · open · deliver · as approved · on time · finish · workshop · your people ·
+one contract
+
 ### E · Palabras prohibidas
+| Palabra | Por qué |
+|---|---|
+| líder · innovador · world-class · de primera | Las usa toda la categoría y no prueban nada |
+| soluciones integrales · 360° | Es una lista disfrazada |
+| calidad *(sin un dato al lado)* | Todos la prometen |
+| sin compromiso · ¡cotiza ya! | Suena a vendedor, no a anfitrión |
+| displays · muebles *(como identidad)* | Nos encogen a una parte de lo que hacemos |
+
 ### F · Claims
 | Claim | Estado | Fuente |
 |---|---|---|
+| Desde 1998 · más de 25 años | ✅ Validado | `[presentación 2026]` |
+| Más de 40 marcas · las marcas cliente de la lista | ✅ Validado | `[presentación 2026]` `[web]` |
+| 14 países | ✅ Validado | `[dice el CEO]` |
+| 90% fabricado en casa | ✅ Validado | `[web]` |
+| Representantes exclusivos de Linyu en Latinoamérica | ✅ Validado | `[presentación 2026]` |
+| «Sin aranceles» | ⏸️ Pendiente — confirmar por país, sobre todo Canadá | — |
+| Tiempos de entrega | ⏸️ Pendiente | — |
+| Los detalles de Samsung Puerto Rico | ⏸️ Pendiente | — |
+| Las cifras de Suntop y Oppein | ⏸️ Son de ellos: siempre se atribuyen | Sus sitios web |
+
+### La regla de los canales
+**La voz no cambia por canal.** Solo cambian el largo y el formato.
 
 ---
 

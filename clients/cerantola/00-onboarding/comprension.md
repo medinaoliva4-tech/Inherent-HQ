@@ -18,8 +18,8 @@
 
 ### Lo que han logrado
 
-> **Si alguna vez entraste a un Samsung, un Starbucks, un Pandora o un Tommy Hilfiger en
-> Latinoamérica, es posible que ya hayas estado dentro de un espacio de Cerantola.**
+> **Si alguna vez entró a un Samsung, un Starbucks, un Pandora o un Tommy Hilfiger en
+> Latinoamérica, es posible que ya haya estado dentro de un espacio de Cerantola.**
 >
 > Desde 1998, más de 40 de las marcas más exigentes del mundo nos confían el lugar donde sus
 > clientes las conocen. Lo hacemos en 14 países, de Nueva York a Buenos Aires.
@@ -74,7 +74,7 @@ nosotros)* · datos en vez de adjetivos · escala · una historia que crece de l
 
 | | |
 |---|---|
-| **Visión** *(borrador de ① Strategy)* | **Construir los lugares a los que la gente quiere volver. En todo el continente, al estándar de las mejores marcas del mundo, y hechos desde Latinoamérica.** |
+| **Visión** | **Construimos los lugares a los que la gente quiere volver.** |
 | **Hacia dónde quieren crecer** | Llave en mano completo, de la obra gris a la última pieza. Construir edificios sin dejar lo que hacen. Marcas que paguen más, proyectos más grandes y contratos que se repitan: hoteles, cocinas de apartamentos y cadenas con muchas tiendas `[dice el CEO]` |
 | **Identidad actual** | Logo en minúsculas. Presentación 2026 oscura, con acento cobre. La web no tiene una dirección clara `[dice el CEO]` |
 | **Diferenciación que creen tener** | Un solo contrato de principio a fin · 90% en casa · cero aranceles `[dice el cliente, sin verificar]` |
