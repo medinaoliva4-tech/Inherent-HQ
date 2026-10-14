@@ -75,14 +75,61 @@
 *Capa 1 · `br-territorio`*
 
 ### A · El código saturado
-### B · Hacia dónde vamos
+Muros de logos, renders, fotos de obra con casco, listas de servicios y palabras como «calidad» o
+«soluciones integrales». **Todas muestran el proceso. Nadie muestra el resultado vivo.**
+
+**Lo que ya existe y se respeta:** negro y blanco con acento cobre · tipografía geométrica
+*(Avant Garde)* · el logo en minúsculas · esquinas rectas · el círculo como elemento gráfico ·
+en la presentación 2026, la sans ancha con serif itálica.
+
+### B · Hacia dónde vamos — el territorio: **«La apertura»**
+**El momento en que se encienden las luces y entra la primera persona.**
+
+Todo lo que hace Cerantola *(obra, muebles, logística, permisos)* existe para ese instante. La
+marca no vive en la obra: vive ahí.
+
+| Por qué | |
+|---|---|
+| **Es de nadie más** | La categoría muestra el proceso |
+| **Une todas las líneas** | Una tienda, un restaurante, un hotel y un edificio tienen su apertura |
+| **Nace para video** | La cuenta regresiva, las luces que se encienden, las puertas que se abren |
+| **Lleva la promesa adentro** | Abrimos el día que dijimos |
+
 ### C · La personalidad
 | Rasgo | Pero no |
 |---|---|
+| **Anfitriona:** piensa en la gente que va a entrar | Vendedora |
+| **Obsesiva con el detalle** | Quisquillosa |
+| **Puntual:** cumple antes de prometer | Rígida |
+| **Callada:** deja que el espacio hable | Fría |
+| **Latinoamericana de talla mundial** | «Lo mejor de la región» |
+
 ### D · El enemigo
 *En lenguaje de persona. No es un competidor.*
+
+**El «ya casi».** *«Que la semana de la apertura alguien te diga "ya casi".»*
+
 ### E · La idea madre
+**Espacios que tu gente ama. Entregados como los firmaste.**
+
+La apertura es el momento en que se cumplen las dos mitades.
+
 ### F · El robo de adyacencia
+| De dónde | Qué se toma exactamente |
+|---|---|
+| **Estrenos de teatro y desfiles** | El backstage y la revelación: cuenta regresiva, telón, luces. Así se cuentan los casos: antes, y luego el estreno |
+| **Hoteles de lujo** *(estilo Aman)* | El espacio vivido: calma, luz natural, una persona disfrutándolo |
+| **Relojería fina** | El macro del detalle como prueba de precisión |
+
+### La prueba del logo tapado
+**La toma firma:** las luces encendiéndose o las puertas abriéndose sobre un espacio terminado.
+Nadie en la categoría la usa. Se confirma en la Capa 3, con el sistema visual armado.
+
+### La frase de referencia para la voz
+> **«Si alguna vez entraste a un Samsung, un Starbucks, un Pandora o un Tommy Hilfiger en
+> Latinoamérica, es posible que ya hayas estado dentro de un espacio de Cerantola.»**
+
+Es la que mejor suena a la marca. La Capa 2 parte de aquí.
 
 ---
 
