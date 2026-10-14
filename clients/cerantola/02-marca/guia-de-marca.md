@@ -115,11 +115,14 @@ marca no vive en la obra: vive ahí.
 La apertura es el momento en que se cumplen las dos mitades.
 
 ### F · El robo de adyacencia
-| De dónde | Qué se toma exactamente |
-|---|---|
-| **Estrenos de teatro y desfiles** | El backstage y la revelación: cuenta regresiva, telón, luces. Así se cuentan los casos: antes, y luego el estreno |
-| **Hoteles de lujo** *(estilo Aman)* | El espacio vivido: calma, luz natural, una persona disfrutándolo |
-| **Relojería fina** | El macro del detalle como prueba de precisión |
+| De dónde | Qué se toma exactamente | Dónde se usa |
+|---|---|---|
+| **Hoteles de lujo** *(Aman, Four Seasons)* | El espacio vivido: luz natural, calma, una persona disfrutándolo. Y el servicio que se adelanta a lo que necesitas | El estilo fotográfico y el tono de anfitrión |
+| **Relojería fina** *(Patek Philippe, Rolex)* | El macro del detalle, la precisión como orgullo y el tiempo exacto como promesa | Las fotos de acabados y el rasgo «puntual» |
+| **Presentaciones de autos de lujo** | **El develado:** la tela que cae y el objeto aparece | Cómo se revela cada caso: el antes, y luego el espacio terminado |
+| **Casas de moda de lujo** *(Hermès, Loewe)* | El oficio mostrado como arte: las manos del artesano y el taller | Mostrar nuestro taller y el 90% hecho en casa |
+| **Revistas de arquitectura** | La composición limpia, el aire, y cada foto con su dato: ciudad, año, metros cuadrados | El layout de los casos y de la presentación |
+| **Créditos de cine** | Nombrar a quién hizo cada cosa, con orden y respeto | El cierre de cada caso: quién participó |
 
 ### La prueba del logo tapado
 **La toma firma:** las luces encendiéndose o las puertas abriéndose sobre un espacio terminado.
