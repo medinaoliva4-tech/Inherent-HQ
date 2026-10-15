@@ -16,6 +16,7 @@ const CONTEXTO = `## Lo que ya sabemos
 3. Las preguntas con ⭐ son las que no se pueden quedar sin respuesta.
 4. **Lo ideal** es para ti, no se lee en voz alta: dice hacia dónde guiarlo y con qué servicio.
 5. Si no sabe algo, escribe \`⚠️ SIN DATOS\`.
+6. Al terminar, aprieta **Pedir diagnóstico** arriba: Claude te devuelve lo fuerte, las brechas, lo que falta saber y qué le recomendamos.
 `;
 
 const MARCA = `> **Para:** el CEO de Cerantola · **Objetivo:** entender su visión, su criterio y su mercado para construir el posicionamiento, el contenido de autoridad y la dirección comercial.
@@ -375,7 +376,7 @@ ${CONTEXTO}
 
 export const CERANTOLA = {
   folder: { name: 'Cerantola', tone: 'oliva', desc: 'Onboarding de Cerantola: entrevistas y contexto.' },
-  seed: 4, // sube cuando cambian las entrevistas: el botón las vuelve a cargar
+  seed: 5, // sube cuando cambian las entrevistas: el botón las vuelve a cargar
   docs: [
     { title: 'Entrevista 1 — Marketing: visión, mercado y autoridad', kind: 'Entrevista', body: MARCA },
     { title: 'Entrevista 2 — La empresa por dentro', kind: 'Entrevista', body: EMPRESA },
