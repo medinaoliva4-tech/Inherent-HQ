@@ -2,12 +2,13 @@
 // Formato de Entrevista: cada pregunta numerada lleva su caja de respuesta; «   > Lo ideal:» debajo es la guía para el CEO.
 const CONTEXTO = `## Lo que ya sabemos
 
-- **Empresa:** Cerantola, S.A. — fabricante de mobiliario en madera, metal y plástico. [fuente: https://delrisco.pe/informe/E0000911134002855/cerantola-sa]
-- **Planta:** Santa Lucía Milpas Altas, Sacatepéquez. [fuente: https://www.emis.com/php/company-profile/GT/Cerantola_Sociedad_Anonima_en_22773671.html]
-- **Showroom:** Design Center, Diagonal 6 12-42, zona 10. [fuente: https://es.panjiva.com/Cerantola-Sociedad-Anonima/41452729]
-- **Exporta:** registros de más de 4,500 envíos a unos 100 compradores. [fuente: https://www.volza.com/company-profile/cerantola-s.a.-10119747/]
-- **Ojo:** existe una Cerantola italiana de sillas de oficina (cerantola.com). ⚠️ SIN DATOS — no sabemos si tienen relación.
-- **Plan contratado:** ⚠️ SIN DATOS — se define al cerrar el onboarding.
+- **Qué hacen:** espacios comerciales llave en mano desde 1998: tiendas, restaurantes, cafés, hoteles, oficinas, residencial y construcción, **bajo un solo contrato**. \`[presentación 2026]\`
+- **Dónde:** 14 países, con oficinas en Nueva York, Dallas, México y Miami. El 90% se fabrica en casa. \`[dice el CEO]\` \`[web]\`
+- **Quiénes ya confiaron:** más de 40 marcas globales: Samsung, Starbucks, Pandora, Tommy Hilfiger, EY, PepsiCo, Hoteles Misión. \`[presentación 2026]\`
+- **Partners:** representantes exclusivos de Linyu en Latinoamérica · respaldados por Suntop y Oppein. \`[presentación 2026]\`
+- **Dónde está trabado:** en cómo los ven. Pueden mucho más de lo que muestran.
+- **Plan contratado:** ⬜ Tailor Made · línea 🟨 Growth.
+- **La estrategia ya decidida** está en el documento «Brief — Cerantola» de este folder.
 
 ## Cómo usarlo
 
@@ -34,8 +35,8 @@ ${CONTEXTO}
    > Lo ideal: una sola idea, no una lista. Si dice cinco cosas, hay que elegir una.
 3. ¿Qué percepción del mercado quieres cambiar? (ej.: «lo hecho en Guatemala es de menor calidad», «lo importado es mejor»)
    > Lo ideal: esa percepción es el enemigo del mensaje. → ②B Branding (territorio).
-4. ¿Qué hace la industria del mueble que te parece incorrecto o que podría hacerse mejor?
-5. ¿Sobre qué temas debería Cerantola tener opinión propia, aunque no todos estén de acuerdo? (ej.: oficinas, trabajo híbrido, muebles desechables)
+4. ¿Qué hace su industria (diseño, construcción y equipamiento de espacios comerciales) que te parece incorrecto o que podría hacerse mejor?
+5. ¿Sobre qué temas debería Cerantola tener opinión propia, aunque no todos estén de acuerdo? (ej.: cinco proveedores para un solo proyecto, tiendas que salen distintas en cada país, renovar sin cerrar)
    > Lo ideal: una postura propia diferencia más que un catálogo. Es la base del contenido de autoridad.
 6. ¿Qué tendría que pasar para que Cerantola sea una marca reconocida y respetada en su mercado?
 
@@ -48,7 +49,7 @@ ${CONTEXTO}
    > Lo ideal: uno o dos segmentos para ganar primero. Hablarle a todos es no hablarle a nadie.
 4. ¿Qué oportunidad ves que la competencia todavía no está aprovechando?
    > Lo ideal: ahí suele estar el GO GET de la estrategia: lo que hay que ir a buscar.
-5. ¿Qué tendencias del diseño y del mobiliario importan de verdad a sus clientes, y cuáles son solo ruido?
+5. ¿Qué tendencias del diseño de espacios comerciales importan de verdad a sus clientes, y cuáles son solo ruido?
 6. ¿Qué tendría que entender una empresa para darse cuenta de que necesita a Cerantola?
    > Lo ideal: eso que tiene que entender es el mensaje educativo del contenido.
 
@@ -59,7 +60,7 @@ ${CONTEXTO}
 2. ¿Qué hace que un espacio de trabajo o comercial esté verdaderamente bien resuelto?
 3. ¿Cuáles son los errores más comunes que cometen las empresas al amueblar sus espacios?
    > Lo ideal: cada error es una pieza de contenido que educa y genera confianza.
-4. ¿Qué has aprendido de fabricar muebles que la mayoría de las personas no sabe?
+4. ¿Qué has aprendido de construir y equipar espacios en 14 países que la mayoría de las personas no sabe?
 5. ¿Qué prácticas de la industria te parecen anticuadas? ¿Qué debería reemplazarlas?
 6. ¿Qué principios nunca sacrificarías, aunque te cueste una venta?
    > Lo ideal: valores con un ejemplo real. Un valor sin prueba no sirve para comunicar.
@@ -76,7 +77,7 @@ ${CONTEXTO}
    > Lo ideal: cada opinión con un caso real. Sin caso, es solo opinión.
 6. ¿Qué conversación te gustaría provocar entre arquitectos, diseñadores y empresarios?
 7. ¿Qué conocimiento tiene Cerantola que todavía no está comunicando? (la planta, el proceso, la exportación)
-   > Lo ideal: ver cómo se hace un mueble vende más que la foto del mueble. → Jornada de rodaje (incluida desde Marketing Pro).
+   > Lo ideal: ver cómo se construye un espacio y cómo se vive terminado vende más que la foto del producto. → Jornada de rodaje (incluida desde Marketing Pro).
 8. ¿En qué temas quieren educar al mercado y en cuáles quieren ser reconocidos como expertos?
 
 ## 5 · Dirección comercial
@@ -101,7 +102,7 @@ ${CONTEXTO}
 2. ¿Qué resultados, procesos o proyectos merecen mostrarse en público?
 3. ¿Qué pruebas necesita ver el mercado para confiar en ustedes? (proyectos, clientes conocidos, años, exportación, garantía)
    > Lo ideal: cada promesa con su prueba. Sin prueba, la promesa no se publica.
-4. ¿Cómo evitan parecer un fabricante más con un catálogo de muebles?
+4. ¿Cómo evitan parecer un fabricante de exhibidores o un proveedor más?
    > Lo ideal: hacer lo opuesto a lo que hace toda la categoría (foto de producto en fondo blanco, «calidad y diseño»).
 5. ¿Qué de su forma de trabajar es difícil de copiar?
 6. ¿Qué tipo de afirmaciones o estilo de marketing nunca representarían a Cerantola?
@@ -156,7 +157,7 @@ ${CONTEXTO}
    > Lo ideal: una línea estándar que se venda sin diseñar desde cero cada vez. Escala más rápido que lo hecho a la medida.
 3. ⭐ ¿Cuál es el ticket promedio por pedido? ¿Y el pedido más grande del último año?
 4. ¿Qué incluye la venta? (diseño, entrega, instalación, garantía)
-   > Lo ideal: paquetes claros (por ejemplo: mobiliario + instalación + mantenimiento) en vez de cotizar todo suelto. → Oferta, precios y paquetes (línea Growth).
+   > Lo ideal: paquetes claros (por ejemplo: diseño + obra + mobiliario + instalación) en vez de cotizar todo suelto. → Oferta, precios y paquetes (línea Growth).
 5. ¿Qué producto o servicio quisieras vender más y hoy no se vende?
 
 ## 3 · Cómo se vende
@@ -253,7 +254,7 @@ ${CONTEXTO}
 2. En una frase: ¿quiénes son, qué ofrecen, a quién y cómo agregan valor?
    > Lo ideal: esa frase es la misión (el presente). Si le cuesta decirla, hay que escribirla.
 3. ⭐ ¿Hacia dónde van? ¿En qué quieren ser referentes en 10 años?
-   > Lo ideal: la visión es un horizonte concreto. Ej.: «ser la primera opción de mobiliario corporativo en Centroamérica».
+   > Lo ideal: la visión es un horizonte concreto. Ej.: «ser la marca con la que sueñan trabajar las marcas, los hoteles y los desarrolladores de las Américas».
 4. Nombra 3 valores y cómo se viven en el día a día. (ej.: «Puntualidad: entregamos en la fecha que prometimos»)
    > Lo ideal: cada valor con su conducta concreta. Un valor que se cumple siempre se vuelve diferenciador.
 5. ¿Qué decisión reciente tomaron por un valor, aunque les costara?
@@ -276,7 +277,7 @@ ${CONTEXTO}
 
 ## 12 · El entorno
 
-1. ⭐ En su mercado, ¿la industria del mueble está creciendo, estancada o bajando?
+1. ⭐ En su mercado, ¿la industria de espacios comerciales (retail, restaurantes, hotelería) está creciendo, estancada o bajando?
    > Lo ideal: si la industria crece y mantienen su parte, crecen con ella. Si cae, hay que ganar participación o abrir mercado.
 2. ¿Qué porcentaje del mercado creen que tienen, más o menos?
 3. ⭐ ¿Cuáles son sus 3 fortalezas?
@@ -315,7 +316,7 @@ ${CONTEXTO}
 2. ¿Qué producto nuevo o mejora les piden los clientes y todavía no tienen?
 3. ¿Qué proceso interno podría hacerse mucho más rápido?
    > Lo ideal: acortar ciclos. Zara pasó de diseñar y vender en meses a hacerlo en semanas.
-4. ¿Podrían ganar dinero de otra forma con lo que ya tienen? (rentar mobiliario · mantenimiento · diseño de espacios)
+4. ¿Podrían ganar dinero de otra forma con lo que ya tienen? (mantenimiento · programas de remodelación · contratos marco con cadenas)
    > Lo ideal: un modelo nuevo puede generar ingresos sin más planta. → Oferta, precios y paquetes (línea Growth).
 5. Del 1 al 10, ¿qué tan fácil es comprarles? ¿Qué le molesta al cliente del proceso?
    > Lo ideal: experiencia = emoción + facilidad + detalle. Cada fricción que se quita sube la venta.
@@ -455,12 +456,118 @@ ${CONTEXTO}
 - [ ] La lista de usuarios: puesto y qué debe ver cada uno
 `;
 
+const BRIEF = `> **Qué es:** la estrategia corta y el brief de Cerantola que armó ① Strategy. Sale de \`clients/cerantola/\` (comprensión, núcleo, posicionamiento e ingeniería inversa).
+> **Fuentes:** \`[dice el CEO]\` · \`[presentación 2026]\` · \`[web]\` · \`[portafolio México]\`.
+
+## En una frase
+
+**Construimos los lugares a los que la gente quiere volver.**
+
+> Si alguna vez entró a un Samsung, un Starbucks, un Pandora o un Tommy Hilfiger en Latinoamérica, es posible que ya haya estado dentro de un espacio de Cerantola.
+
+## Dónde está la marca hoy
+
+- **Desde 1998**, más de 40 de las marcas más exigentes del mundo, en **14 países**.
+- Hacen tiendas, restaurantes, cafés, oficinas, casas de lujo y edificios completos (Samsung Puerto Rico).
+- **Un solo contrato:** obra civil, diseño de interiores, mobiliario, planos y permisos, logística internacional e instalación.
+- **El 90% se fabrica en casa.** Logística propia, sin aranceles entre México, Latinoamérica y EE. UU.
+- **El problema no es lo que pueden hacer. Es lo que muestran:** fotos de celular, una web sin dirección y una lista de servicios. Hoy se ven como un fabricante de exhibidores.
+
+## El WIN
+
+**Ser la marca con la que sueñan trabajar las marcas, los hoteles y los desarrolladores de las Américas cuando necesitan un espacio llave en mano.**
+
+- **Arquetipo:** servicio B2B de ticket alto, con línea de construcción.
+- **Cómo compran:** por comité, con decisión larga. **La confianza vive en la prueba.**
+- **Qué limita el crecimiento:** cómo los ven, no su capacidad.
+
+## Los clientes potenciales
+
+> **Primero lo que sueña el cliente. Lo técnico va abajo, como respaldo.** La prioridad son los proyectos grandes. Retail ya tiene la puerta abierta y se usa como prueba para abrir los demás.
+
+| Audiencia | Lo que sueña | Cómo se lo decimos *(borrador)* | Le duele | Lo que lo respalda |
+|---|---|---|---|---|
+| **Restaurantes y cafés** | Que la gente llegue, se quede, tome fotos, vuelva y lo recomiende | «El lugar donde su gente quiere estar.» | Sobrecostos del 30 al 40%, permisos que atrasan, cada local distinto | Un local modelo que se repite idéntico |
+| **Marcas de retail** | Que entren, se queden y compren. Verse igual de grande en cada ciudad | «Su marca, igual de imponente en cada ciudad.» | Que la tienda salga distinta en cada país, aduanas, coordinar proveedores | Una sola tienda en 14 países |
+| **Hotelería** | Huéspedes que fotografían la habitación, dejan 5 estrellas y regresan | «Habitaciones que sus huéspedes recuerdan.» | Entregas que se atrasan, el estándar de la cadena, renovar sin cerrar | Renovar sin perder noches vendidas |
+| **Desarrolladores** | Vender rápido y a mejor precio | «La cocina que cierra la venta.» | Suministros atrasados, instaladores escasos, precios que suben | Precio cerrado por unidad y respaldo de Oppein |
+| **Cadenas con muchas tiendas** | Remodelar 50 tiendas y que todas se vean como la primera | «Cada tienda, como la primera.» | Coordinar muchos proveedores en muchos lugares | Un solo socio para todo el programa |
+
+**Demanda:** retail se **captura** (ya hay apertura) · hotelería, desarrolladores y construcción se **crean**.
+
+## Quiénes ya confiaron
+
+- **Tecnología y hogar:** Samsung · Sony · LG · Nintendo · Whirlpool · Hyundai, entre otros.
+- **Moda y lujo:** Tommy Hilfiger · Calvin Klein · Levi's · Adidas · Pandora · BOSS · Salvatore Ferragamo · Armani Exchange.
+- **Restaurantes y cafés:** Starbucks · Krispy Kreme · Burger King · Hard Rock Cafe · Red Lobster · Akai · NAO.
+- **Corporativo:** EY · PepsiCo · Nestlé · Bayer · Banco Promerica.
+- **Hotelería y construcción:** Hoteles Misión · Mota-Engil · Quadratto.
+
+## El posicionamiento
+
+- **Posición:** el socio que construye y equipa todo el espacio, de la obra gris a la última pieza, en todo el continente.
+- **Promesa:** **Espacios que su gente ama. Entregados en tiempo y forma.**
+- **Enemigo:** cinco proveedores, cinco excusas.
+- **Tensión cultural:** todos temen perder el control del tiempo, del costo y de que todo salga igual.
+- **Personalidad:** seguro, preciso, práctico y cercano. Escala de multinacional con trato de persona.
+
+## Qué los hace distintos
+
+- Un solo contrato, de la obra gris a la última pieza.
+- 14 países, con logística propia y sin aranceles.
+- El 90% lo fabrican ellos.
+- Equipo propio de obra pesada en México.
+- Representantes exclusivos de Linyu en Latinoamérica. Respaldados por Suntop y Oppein.
+
+## Lo que tiene que ser verdad
+
+1. **Verse al nivel de idX e ITAB.** Hoy: fotos de celular, web en dominio de prueba.
+2. **Hablar del deseo de cada cliente**, no del proceso. Hoy: habla de servicios.
+3. **Probar con casos de éxito.** Hoy: hay marcas y fotos, pero no historias.
+4. **Estar donde se decide la compra.** Hoy: solo referidos.
+
+## Qué NO vamos a hacer
+
+- Competir por precio con talleres baratos.
+- Usar el muro de logos como mensaje principal.
+- Llamarnos «muebles» o «displays».
+- Prometer lo que no podemos probar.
+
+## Qué vamos a hacer
+
+1. **Una sola marca** con sus líneas: Retail · Restaurants · Hospitality · Residential · Offices · Construction.
+2. **Hablar del deseo de cada cliente.** Lo técnico va como respaldo.
+3. **Casos de éxito contados como historia**, empezando por las tiendas que se pueden grabar en Guatemala: Samsung, Pandora, Starbucks, Krispy Kreme, Regios, Akai y NAO.
+4. **Siempre video**, no solo fotos.
+5. **La experiencia de todo el equipo**, sumada en cifras.
+6. **Un estilo fotográfico propio** que lleve todas las fotos al mismo nivel.
+
+## El brief de ②B Branding
+
+- **Tipo de marca:** premium institucional, con lujo sobrio.
+- **Territorio:** la precisión del taller con el alcance de una multinacional.
+- **Dirección visual:** video al inicio · espacios terminados y con vida · detalle de acabados · paleta de materiales (piedra, madera, concreto, negro) · números de escala grandes.
+- **Referencias:** idX · Foliot · Sobha · ITAB.
+- **Voz:** segura, precisa, práctica y humana. Frases cortas con datos. Primero en inglés, español para Latinoamérica.
+- **Dónde vive:** la presentación comercial y la web. Las redes salen de la estrategia de canales.
+
+## Lo que falta saber
+
+- ⚠️ SIN DATOS — facturación y ticket promedio.
+- ⚠️ SIN DATOS — la gente clave, sus años y sus proyectos.
+- ⚠️ SIN DATOS — datos de resultado de cada caso.
+- ⚠️ SIN DATOS — cómo se mide el WIN y en qué plazo: se fija con la estrategia de canales.
+
+**Las entrevistas de este folder llenan estos huecos.**
+`;
+
 export const CERANTOLA = {
   folder: { name: 'Cerantola', tone: 'oliva', desc: 'Onboarding de Cerantola: entrevistas y contexto.' },
-  seed: 6, // sube cuando cambian las entrevistas: el botón las vuelve a cargar
+  seed: 7, // sube cuando cambian las entrevistas: el botón las vuelve a cargar
   docs: [
-    { title: 'Entrevista 1 — Marketing: visión, mercado y autoridad', kind: 'Entrevista', body: MARCA },
-    { title: 'Entrevista 2 — La empresa por dentro', kind: 'Entrevista', body: EMPRESA, append: true },
-    { title: 'Entrevista 3 — Su sistema operativo', kind: 'Entrevista', body: SISTEMA },
+    { title: 'Entrevista 1 — Marketing: visión, mercado y autoridad', kind: 'Entrevista', body: MARCA, sameFrom: 4 },
+    { title: 'Entrevista 2 — La empresa por dentro', kind: 'Entrevista', body: EMPRESA, sameFrom: 1 },
+    { title: 'Entrevista 3 — Su sistema operativo', kind: 'Entrevista', body: SISTEMA, sameFrom: 1 },
+    { title: 'Brief — Cerantola', kind: 'Nota', body: BRIEF },
   ],
 };
