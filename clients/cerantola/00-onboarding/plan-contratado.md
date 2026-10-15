@@ -5,7 +5,7 @@
 | **Plan** | ⬜ **Tailor Made** |
 | **Línea** | 🟨 Growth *(la meta es más proyectos, más grandes y que se repitan)* |
 | **Precio** | ⚠️ SIN DATOS — lo define el CEO |
-| **Redes** | ⚠️ Se definen en la estrategia de canales. Por ahora: **la presentación comercial y la web** |
+| **Redes** | Instagram · LinkedIn · Facebook · **Google** *(perfil de Google Maps)* · web · presentación comercial. Qué hace cada una se define en la estrategia de canales |
 | **Pauta** | No entra por ahora |
 
 ## Qué incluye
