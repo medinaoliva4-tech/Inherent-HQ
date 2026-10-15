@@ -1,12 +1,12 @@
 import { recorder } from '../recorder.js';
 import { WORK_ROLES, wizard, connectCard , openClaude, ICON, ico } from '../core.js';
-import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, $, folderSvg, TONES, embedUrl, IC, diagram, diagrams } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, inline, $, folderSvg, TONES, embedUrl, IC, diagram, diagrams } from '../core.js';
 
 // Library: SOPs, playbooks, videos y notas que el equipo escribe aquí, en carpetas.
 // Una carpeta se puede conectar a una carpeta de Google Drive: se ve su contenido y se crean Docs ahí.
-const KINDS = ['SOP', 'Playbook', 'Prompt', 'Diagrama', 'Video', 'Nota'];
+const KINDS = ['SOP', 'Playbook', 'Entrevista', 'Prompt', 'Diagrama', 'Video', 'Nota'];
 export const VTYPES = ['Reel', 'UGC / testimonio', 'Anuncio (Ads)', 'Derivado / corte', 'Story', 'YouTube / horizontal'];
-const KCOL = { SOP: '#87684e', Playbook: '#a18770', Prompt: '#81634b', Diagrama: '#84664d', Video: '#36271b', Nota: '#997d65' };
+const KCOL = { SOP: '#87684e', Playbook: '#a18770', Prompt: '#81634b', Diagrama: '#84664d', Video: '#36271b', Nota: '#997d65', Entrevista: '#6b513c' };
 // El formato de cada tipo: lo que tiene que llevar. Se carga al crear el documento.
 const TPL = {
   SOP: (t) => `# SOP · ${t}
@@ -83,6 +83,19 @@ Las 3 ideas clave del video.
 
 ## Recursos
 - [Link](https://)
+`,
+  Entrevista: () => `> **Para:** a quién se entrevista · **Objetivo:** qué tenemos que saber al terminar.
+
+## 1 · Tema
+
+1. ⭐ Pregunta que no se puede quedar sin respuesta
+   > Lo ideal: cómo debería estar esto y con qué servicio lo resolvemos.
+2. Pregunta solo para conocer (sin «Lo ideal»)
+
+## 2 · Otro tema
+
+1. Pregunta
+   > Lo ideal: hacia dónde guiarlo.
 `,
   Nota: (t) => `# ${t}
 
@@ -167,7 +180,7 @@ export async function render(el, { me, sub, alive }) {
     let clients = []; try { clients = (await api('repo/clients')).clients.filter((c) => c.hasPlan).map((c) => c.slug); } catch {}
     const v = await wizard('Nuevo documento', [
       { k: 'kind', q: '¿Qué vas a crear?', type: 'cards', req: true, opts: [
-        { v: 'SOP', i: ico('clipboard'), l: 'SOP', d: 'Un proceso paso a paso' }, { v: 'Playbook', i: ico('target', 16), l: 'Playbook', d: 'Una jugada para una situación' },
+        { v: 'SOP', i: ico('clipboard'), l: 'SOP', d: 'Un proceso paso a paso' }, { v: 'Playbook', i: ico('target', 16), l: 'Playbook', d: 'Una jugada para una situación' }, { v: 'Entrevista', i: ico('chat'), l: 'Entrevista', d: 'Preguntas con espacio para responder' },
         { v: 'Prompt', i: ico('spark'), l: 'Prompt de video', d: 'Para una marca y un tipo de video' }, { v: 'Diagrama', i: ico('shuffle'), l: 'Diagrama', d: 'Flujo, mapa, organigrama' },
         { v: 'Video', i: ico('video'), l: 'Video', d: 'Link de YouTube, Loom o Drive' }, { v: 'Nota', i: ico('doc'), l: 'Nota', d: 'Texto libre' }] },
       { k: 'client', q: '¿Para qué marca?', type: 'cards', req: true, show: (a) => a.kind === 'Prompt', opts: [{ v: '_', i: ico('globe'), l: 'General', d: 'Sirve para todas' }, ...clients.map((c) => ({ v: c, i: ico('tag'), l: c.toUpperCase() }))] },
@@ -197,7 +210,7 @@ export async function render(el, { me, sub, alive }) {
     const ql = q.toLowerCase();
     const list = docs.filter((d) => !ql || (d.title + ' ' + (d.body || '')).toLowerCase().includes(ql)).sort((a, z) => String(z._meta?.updated_at || '').localeCompare(String(a._meta?.updated_at || '')));
     mount(el, html`<div class="hello"><h1>Library</h1><p>SOPs, playbooks y videos. <em>Todo en un lugar.</em></p></div>
-      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div>${me.role === 'ceo' && !docs.some((d) => d.title.startsWith('Entrevista 3') && folders.find((f) => f.id === d.folder_id)?.name === 'Cerantola') ? html`<button class="btn" data-act="seedCerantola">Cargar folder de Cerantola</button>` : ''}<button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
+      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div>${me.role === 'ceo' && !docs.some((d) => d.title.startsWith('Entrevista 3') && d.kind === 'Entrevista' && folders.find((f) => f.id === d.folder_id)?.name === 'Cerantola') ? html`<button class="btn" data-act="seedCerantola">Cargar folder de Cerantola</button>` : ''}<button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
       ${folders.length ? html`<div class="folders">${folders.map((f) => html`<div class="folder" data-act="folder" data-id="${f.id}">${folderSvg({ drive: Boolean(f.drive), tone: f.tone, video: docs.some((d) => d.folder_id === f.id && d.kind === 'Video') })}<b>${f.name}</b><span class="mut sm">${docs.filter((d) => d.folder_id === f.id).length} documentos${f.drive ? ' · Drive' : ''}</span></div>`)}</div>`
         : html`<div class="empty"><b>Todavía no hay carpetas</b>Crea la primera: «Onboarding de cliente», «Producción», «Playbooks de venta»… y conéctala a una carpeta de Drive si quieres.</div>`}
       <div class="sec-title"><h2>${q ? 'Resultados' : 'Recientes'}</h2></div>
@@ -244,7 +257,30 @@ export async function render(el, { me, sub, alive }) {
   }
 
   // Vista previa: un diagrama se dibuja entero; lo demás es Markdown (que también dibuja bloques mermaid).
-  function prev(kind, body) { return kind === 'Diagrama' ? diagram(body) : md(body); }
+  function prev(kind, body) { return kind === 'Diagrama' ? diagram(body) : kind === 'Entrevista' ? interview(body, {}, false).view : md(body); }
+
+  // Entrevista: en los temas numerados («## 1 · Tema») cada pregunta («1. …») lleva su caja de respuesta, que se guarda sola en el documento.
+  // «   > Lo ideal: …» debajo de la pregunta es la guía para quien entrevista: hacia dónde guiarlo y con qué servicio.
+  function interview(body, answers = {}, live = true) {
+    const out = []; let buf = [], sec = 0, cur = null, total = 0, done = 0;
+    const flushMd = () => { if (buf.length) { out.push(md(buf.join('\n'))); buf = []; } };
+    const flushQ = () => { if (!cur) return; const a = answers[cur.k] || ''; total++; if (a.trim()) done++;
+      out.push(html`<div class="iq"><div class="iq-q"><span class="iq-n">${cur.n}</span><div>${raw(inline(cur.q))}</div></div>
+        <textarea class="in iq-a" data-k="${cur.k}" rows="2" placeholder="${live ? 'Su respuesta…' : 'Aquí va la respuesta'}" ${live ? '' : raw('disabled')}>${a}</textarea>
+        ${cur.ideal.length ? html`<div class="iq-ideal"><span>Lo ideal</span>${raw(cur.ideal.map(inline).join('<br>'))}</div>` : ''}</div>`); cur = null; };
+    for (const line of String(body).split('\n')) {
+      let m;
+      if (cur && (m = /^\s+>\s*(?:\*\*)?lo ideal:?(?:\*\*)?:?\s*(.*)/i.exec(line))) { cur.ideal.push(m[1]); continue; }
+      if (cur && /^\s+>\s?/.test(line)) { cur.ideal.push(line.replace(/^\s+>\s?/, '')); continue; }
+      if (sec && (m = /^(\d+)[.)]\s+(.*)/.exec(line))) { flushQ(); flushMd(); cur = { n: m[1], q: m[2], k: `${sec}.${m[1]}`, ideal: [] }; continue; }
+      if (cur && !line.trim()) continue;
+      flushQ();
+      if ((m = /^##\s+(?:(\d+)\s*·)?/.exec(line))) sec = m[1] || 0; // solo los temas numerados («## 1 · Tema») llevan preguntas
+      buf.push(line);
+    }
+    flushQ(); flushMd();
+    return { view: html`<div class="iview">${out}</div>`, total, done };
+  }
 
   // ---------- Documento: leer y editar ----------
   async function docPage(id) {
@@ -262,23 +298,44 @@ export async function render(el, { me, sub, alive }) {
               <input class="in" id="durl" value="${d.url || ''}" placeholder="Video o link (YouTube, Loom, Vimeo, Drive) — opcional" style="margin-bottom:12px">
               <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:10px">${d.kind === 'Diagrama' ? html`<span class="mut sm">Empieza con:</span>${Object.entries(DGN).map(([k, l]) => html`<button class="chip" data-act="dgm" data-k="${k}" style="padding:7px 12px">${l}</button>`)}` : html`<button class="chip" data-act="fmt" style="padding:7px 12px">↺ Insertar el formato de ${d.kind || 'Nota'}</button>`}</div>
               <div class="grid g11" style="gap:14px"><textarea class="in" id="dbody" style="min-height:58vh;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;line-height:1.6" placeholder="# Título&#10;&#10;1. Primer paso&#10;2. Segundo paso&#10;&#10;> Nota importante">${d.body || ''}</textarea><div class="card glass" id="dprev" style="min-height:58vh;overflow:auto">${prev(d.kind, d.body || '')}</div></div>
-              <div class="mut sm" style="margin-top:8px">${d.kind === 'Diagrama' ? html`Escribe el diagrama en <a href="https://mermaid.js.org/intro/" target="_blank" rel="noopener noreferrer" style="color:inherit">Mermaid</a>: cada línea es una caja o una flecha (<code>A --> B</code>). La vista previa se actualiza sola.` : 'Escribe en Markdown: # títulos, - listas, - [ ] checklist, **negritas**, > notas, [links](https://…). Para un diagrama dentro del texto usa un bloque ```mermaid. La vista previa se actualiza sola.'}</div>`
+              <div class="mut sm" style="margin-top:8px">${d.kind === 'Diagrama' ? html`Escribe el diagrama en <a href="https://mermaid.js.org/intro/" target="_blank" rel="noopener noreferrer" style="color:inherit">Mermaid</a>: cada línea es una caja o una flecha (<code>A --> B</code>). La vista previa se actualiza sola.` : d.kind === 'Entrevista' ? 'Los temas van numerados (## 1 · Tema). Dentro, cada pregunta numerada (1. …) lleva su caja de respuesta. Debajo, con sangría, «   > Lo ideal: …» es la guía para quien entrevista.' : 'Escribe en Markdown: # títulos, - listas, - [ ] checklist, **negritas**, > notas, [links](https://…). Para un diagrama dentro del texto usa un bloque ```mermaid. La vista previa se actualiza sola.'}</div>`
             : html`<div class="row"><span class="chip" style="background:${KCOL[d.kind] || '#9f846d'};color:#fdfaf3">${d.kind || 'Doc'}</span><div class="sp"></div><span class="mut sm">${d._meta?.updated_at ? 'Actualizado ' + fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}${d._meta?.updated_by ? ' · ' + d._meta?.updated_by : ''}</span></div>
               <h1 style="font-size:42px;font-weight:500;letter-spacing:-1.3px;margin:14px 0 18px">${d.title}</h1>
               ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:16/9;border:0;border-radius:20px;margin-bottom:22px;background:#1a120c" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>` : d.url ? html`<a class="artifact" href="${d.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-bottom:18px"><span class="fi">↗</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
               ${d.kind === 'Prompt' ? html`<div class="row" style="gap:8px;margin-bottom:10px"><span class="chip">${d.client ? d.client.toUpperCase() : 'General'}</span><span class="chip">${d.vtype || 'Video'}</span><div class="sp"></div><button class="btn ghost" data-act="copyPrompt">Copiar prompt</button>${canClaude ? html`<button class="btn" data-act="claudePrompt">${ICON.sparkle} Abrir en Claude</button>` : ''}</div><pre class="repo-pre" id="ptext">${d.body || ''}</pre>`
-                : !d.body ? html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>` : d.kind === 'Diagrama' ? diagram(d.body) : md(d.body)}`}
+                : !d.body ? html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>` : d.kind === 'Diagrama' ? diagram(d.body)
+                : d.kind === 'Entrevista' ? (() => { const iv = interview(d.body, d.answers || {}); return html`<div class="iq-bar"><span id="iqcount">${iv.done} de ${iv.total} respondidas</span><span id="iqsave" class="mut"></span></div>${iv.view}`; })() : md(d.body)}`}
         </div>`);
       const ta = $('#dbody', el); if (ta) { let t0; ta.oninput = () => { clearTimeout(t0); t0 = setTimeout(() => mount($('#dprev', el), prev(curKind(), ta.value)), d.kind === 'Diagrama' ? 400 : 120); }; }
       const ks = $('#dkind', el); if (ks) ks.onchange = () => { d = { ...d, kind: ks.value, body: ta.value }; paint(); };
+      if (!editing && d.kind === 'Entrevista') wireAnswers();
     };
+    // Las respuestas se guardan solas: un rato después de escribir, o al salir de la caja.
+    let pend = {}, tSave = null, chain = Promise.resolve();
+    const fit = (t) => { t.style.height = 'auto'; t.style.height = t.scrollHeight + 2 + 'px'; };
+    const stat = (s, bad) => { const x = $('#iqsave', el); if (x) { x.textContent = s; x.style.color = bad ? '#b4532a' : ''; } };
+    const count = () => { const all = [...el.querySelectorAll('.iq-a')]; const c = $('#iqcount', el); if (c) c.textContent = `${all.filter((t) => t.value.trim()).length} de ${all.length} respondidas`; };
+    const put = (add) => D.save({ ...d, answers: { ...(d.answers || {}), ...add } });
+    const flush = () => { clearTimeout(tSave); chain = chain.then(async () => {
+      const add = pend; pend = {}; if (!Object.keys(add).length) return; stat('Guardando…');
+      try { try { d = await put(add); } catch { d = await D.get(d.id); d = await put(add); } // si alguien más guardó, se toma su versión y se suma la respuesta
+        docs = docs.map((x) => (x.id === d.id ? d : x)); stat('Guardado'); }
+      catch (e) { pend = { ...add, ...pend }; stat('No se guardó: revisa tu conexión', true); }
+    }); return chain; };
+    function wireAnswers() {
+      el.querySelectorAll('.iq-a').forEach((t) => { fit(t);
+        t.oninput = () => { fit(t); pend[t.dataset.k] = t.value; count(); stat('Sin guardar'); clearTimeout(tSave); tSave = setTimeout(flush, 800); };
+        t.onblur = () => { if (Object.keys(pend).length) flush(); };
+      });
+    }
+    addEventListener('hashchange', () => { if (Object.keys(pend).length) flush(); }, { once: true });
     const curKind = () => $('#dkind', el)?.value || d.kind;
     acts(el, {
       dgm: async (t) => { const ta = $('#dbody', el); if (ta.value.trim() && !(await confirmAsk('¿Reemplazar el diagrama por la plantilla?'))) return; ta.value = DGM[t.dataset.k]; ta.oninput(); },
       fmt: async () => { const ta = $('#dbody', el); const k = curKind(); if (ta.value.trim() && !(await confirmAsk(`¿Reemplazar el texto por el formato de ${k}?`))) return; ta.value = (TPL[k] || TPL.Nota)($('#dtitle', el).value || d.title); ta.oninput(); },
       claudePrompt: () => openClaude(d.body || ''),
       copyPrompt: async () => { try { await navigator.clipboard.writeText(d.body || ''); toast('Prompt copiado'); } catch { toast('No pude copiar: selecciona el texto', true); } },
-      edit: () => { editing = true; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}/edit`); paint(); },
+      edit: async () => { await flush(); editing = true; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}/edit`); paint(); },
       cancel: () => { editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); paint(); },
       save: async () => {
         const url = $('#durl', el).value.trim(); if (url && !/^https:\/\//.test(url)) return toast('El link debe empezar con https://', true);
@@ -297,10 +354,12 @@ export async function render(el, { me, sub, alive }) {
       // Temporal: carga el folder de Cerantola con sus dos entrevistas. Se quita después de usarlo.
       seedCerantola: async (t) => {
         t.disabled = true;
-        // Si el folder ya existe, solo agrega las entrevistas que le falten.
+        // Si el folder ya existe, agrega las entrevistas que falten y pasa las viejas al formato con respuestas.
         try { const { CERANTOLA } = await import('./library-cerantola.js');
           let f = folders.find((x) => x.name === CERANTOLA.folder.name); if (!f) { f = await F.create(CERANTOLA.folder); folders = [...folders, f]; }
-          for (const d of CERANTOLA.docs) if (!docs.some((x) => x.folder_id === f.id && x.title === d.title)) docs = [...docs, await D.create({ ...d, url: '', roles: [], folder_id: f.id })];
+          for (const d of CERANTOLA.docs) { const old = docs.find((x) => x.folder_id === f.id && x.title === d.title);
+            if (!old) docs = [...docs, await D.create({ ...d, url: '', roles: [], folder_id: f.id })];
+            else if (old.kind !== 'Entrevista') { const r = await D.save({ ...old, kind: d.kind, body: d.body }); docs = docs.map((x) => (x.id === r.id ? r : x)); } }
           toast('Folder de Cerantola listo'); location.hash = `/library/${f.id}`; } catch (e) { t.disabled = false; toast(e.message, true); }
       },
       newDoc: () => newDoc(''),

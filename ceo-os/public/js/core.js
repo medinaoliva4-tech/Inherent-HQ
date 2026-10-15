@@ -256,7 +256,7 @@ export function lineChart(el, labels, series, { fmt = K } = {}) {
 }
 
 // ---------- Markdown del repo → HTML seguro (se escapa TODO primero) ----------
-function inline(s) {
+export function inline(s) {
   return esc(s)
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
