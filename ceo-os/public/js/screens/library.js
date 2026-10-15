@@ -210,7 +210,7 @@ export async function render(el, { me, sub, alive }) {
     const ql = q.toLowerCase();
     const list = docs.filter((d) => !ql || (d.title + ' ' + (d.body || '')).toLowerCase().includes(ql)).sort((a, z) => String(z._meta?.updated_at || '').localeCompare(String(a._meta?.updated_at || '')));
     mount(el, html`<div class="hello"><h1>Library</h1><p>SOPs, playbooks y videos. <em>Todo en un lugar.</em></p></div>
-      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div>${me.role === 'ceo' && !docs.some((d) => d.title.startsWith('Entrevista 1') && d.seed >= 4 && folders.find((f) => f.id === d.folder_id)?.name === 'Cerantola') ? html`<button class="btn" data-act="seedCerantola">Cargar folder de Cerantola</button>` : ''}<button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
+      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div>${me.role === 'ceo' && !docs.some((d) => d.title.startsWith('Entrevista 1') && d.seed >= 5 && folders.find((f) => f.id === d.folder_id)?.name === 'Cerantola') ? html`<button class="btn" data-act="seedCerantola">Cargar folder de Cerantola</button>` : ''}<button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
       ${folders.length ? html`<div class="folders">${folders.map((f) => html`<div class="folder" data-act="folder" data-id="${f.id}">${folderSvg({ drive: Boolean(f.drive), tone: f.tone, video: docs.some((d) => d.folder_id === f.id && d.kind === 'Video') })}<b>${f.name}</b><span class="mut sm">${docs.filter((d) => d.folder_id === f.id).length} documentos${f.drive ? ' · Drive' : ''}</span></div>`)}</div>`
         : html`<div class="empty"><b>Todavía no hay carpetas</b>Crea la primera: «Onboarding de cliente», «Producción», «Playbooks de venta»… y conéctala a una carpeta de Drive si quieres.</div>`}
       <div class="sec-title"><h2>${q ? 'Resultados' : 'Recientes'}</h2></div>
@@ -259,12 +259,55 @@ export async function render(el, { me, sub, alive }) {
   // Vista previa: un diagrama se dibuja entero; lo demás es Markdown (que también dibuja bloques mermaid).
   function prev(kind, body) { return kind === 'Diagrama' ? diagram(body) : kind === 'Entrevista' ? interview(body, {}, false).view : md(body); }
 
+  // El prompt del diagnóstico: cada pregunta con su respuesta y «Lo ideal», y el formato que debe devolver Claude.
+  function diagPrompt(d, items, client) {
+    let qa = '', last = null;
+    for (const it of items) {
+      if (it.head !== last) { qa += `\n## ${it.head}\n`; last = it.head; }
+      const a = String((d.answers || {})[it.k] || '').trim();
+      qa += `\n- Pregunta: ${it.q.replace(/⭐\s*/, '')}\n  Respuesta: ${a || '(sin respuesta)'}${it.ideal.length ? `\n  Lo ideal: ${it.ideal.join(' ')}` : ''}\n`;
+    }
+    return `Eres el estratega de Inherent. Antes de escribir, lee del repo: CLAUDE.md, inherent/03-OFERTA.md (los planes y qué incluye cada uno) e inherent/02-METODO.md. Si tienes el MCP de Inherent, consulta el catálogo de servicios.
+
+Esta es la entrevista «${d.title}» al CEO de ${client || 'el cliente'}. Debajo de cada pregunta está su respuesta y «Lo ideal» (cómo debería estar).
+
+Haz el diagnóstico de esta entrevista. En español, de «tú», sin jerga y en Markdown, con estas secciones exactas:
+
+### En una frase
+El diagnóstico en una sola frase.
+
+### Lo que está fuerte
+Máximo 5 puntos, cada uno con la respuesta que lo prueba.
+
+### Las brechas
+Tabla: Tema | Hoy (lo que respondió) | Lo ideal | Gravedad (alta, media o baja). Ordenada de la más grave a la menos grave.
+
+### Lo que falta saber
+Las preguntas sin respuesta o con respuesta vaga, y cómo conseguir el dato.
+
+### Qué le recomendamos
+De 3 a 5 acciones en orden de prioridad. Cada una con el servicio o el plan de Inherent que la resuelve.
+
+### El plan que le corresponde
+Qué plan de Inherent encaja y por qué. Si algo cae fuera de ese plan, dilo como extra.
+
+Reglas:
+- Usa solo lo que dicen las respuestas. Lo que afirma el cliente va como [dice el cliente, sin verificar].
+- Si falta un dato, escribe ⚠️ SIN DATOS. No inventes números.
+- No prometas precio, fecha ni alcance: eso lo decide el CEO de Inherent.
+- Responde SOLO con el diagnóstico, sin introducción ni cierre.
+
+---
+# ${d.title}
+${qa}`;
+  }
+
   // Entrevista: en los temas numerados («## 1 · Tema») cada pregunta («1. …») lleva su caja de respuesta, que se guarda sola en el documento.
   // «   > Lo ideal: …» debajo de la pregunta es la guía para quien entrevista: hacia dónde guiarlo y con qué servicio.
   function interview(body, answers = {}, live = true) {
-    const out = []; let buf = [], sec = 0, cur = null, total = 0, done = 0;
+    const out = [], items = []; let buf = [], sec = 0, head = '', cur = null, total = 0, done = 0;
     const flushMd = () => { if (buf.length) { out.push(md(buf.join('\n'))); buf = []; } };
-    const flushQ = () => { if (!cur) return; const a = answers[cur.k] || ''; total++; if (a.trim()) done++;
+    const flushQ = () => { if (!cur) return; const a = answers[cur.k] || ''; total++; if (a.trim()) done++; items.push({ ...cur, head });
       out.push(html`<div class="iq"><div class="iq-q"><span class="iq-n">${cur.n}</span><div>${raw(inline(cur.q))}</div></div>
         <textarea class="in iq-a" data-k="${cur.k}" rows="2" placeholder="${live ? 'Su respuesta…' : 'Aquí va la respuesta'}" ${live ? '' : raw('disabled')}>${a}</textarea>
         ${cur.ideal.length ? html`<div class="iq-ideal"><span>Lo ideal</span>${raw(cur.ideal.map(inline).join('<br>'))}</div>` : ''}</div>`); cur = null; };
@@ -275,11 +318,11 @@ export async function render(el, { me, sub, alive }) {
       if (sec && (m = /^(\d+)[.)]\s+(.*)/.exec(line))) { flushQ(); flushMd(); cur = { n: m[1], q: m[2], k: `${sec}.${m[1]}`, ideal: [] }; continue; }
       if (cur && !line.trim()) continue;
       flushQ();
-      if ((m = /^##\s+(?:(\d+)\s*·)?/.exec(line))) sec = m[1] || 0; // solo los temas numerados («## 1 · Tema») llevan preguntas
+      if ((m = /^##\s+(?:(\d+)\s*·)?\s*(.*)/.exec(line))) { sec = m[1] || 0; head = m[2]; } // solo los temas numerados («## 1 · Tema») llevan preguntas
       buf.push(line);
     }
     flushQ(); flushMd();
-    return { view: html`<div class="iview">${out}</div>`, total, done };
+    return { view: html`<div class="iview">${out}</div>`, items, total, done };
   }
 
   // ---------- Documento: leer y editar ----------
@@ -304,7 +347,8 @@ export async function render(el, { me, sub, alive }) {
               ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:16/9;border:0;border-radius:20px;margin-bottom:22px;background:#1a120c" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>` : d.url ? html`<a class="artifact" href="${d.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-bottom:18px"><span class="fi">↗</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
               ${d.kind === 'Prompt' ? html`<div class="row" style="gap:8px;margin-bottom:10px"><span class="chip">${d.client ? d.client.toUpperCase() : 'General'}</span><span class="chip">${d.vtype || 'Video'}</span><div class="sp"></div><button class="btn ghost" data-act="copyPrompt">Copiar prompt</button>${canClaude ? html`<button class="btn" data-act="claudePrompt">${ICON.sparkle} Abrir en Claude</button>` : ''}</div><pre class="repo-pre" id="ptext">${d.body || ''}</pre>`
                 : !d.body ? html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>` : d.kind === 'Diagrama' ? diagram(d.body)
-                : d.kind === 'Entrevista' ? (() => { const iv = interview(d.body, d.answers || {}); return html`<div class="iq-bar"><span id="iqcount">${iv.done} de ${iv.total} respondidas</span><span id="iqsave" class="mut"></span></div>${iv.view}`; })() : md(d.body)}`}
+                : d.kind === 'Entrevista' ? (() => { const iv = interview(d.body, d.answers || {}); return html`<div class="iq-bar"><span id="iqcount">${iv.done} de ${iv.total} respondidas</span><span class="sp"></span><span id="iqsave" class="mut"></span><button class="btn" data-act="diag">${ICON.sparkle} ${d.diagnosis ? 'Rehacer diagnóstico' : 'Pedir diagnóstico'}</button></div>
+                  ${d.diagnosis ? html`<details class="iq-diag" open><summary><b>Diagnóstico</b><span class="mut sm">${d.diagnosis_at ? fdate(d.diagnosis_at) : ''}</span></summary>${md(d.diagnosis)}</details>` : ''}${iv.view}`; })() : md(d.body)}`}
         </div>`);
       const ta = $('#dbody', el); if (ta) { let t0; ta.oninput = () => { clearTimeout(t0); t0 = setTimeout(() => mount($('#dprev', el), prev(curKind(), ta.value)), d.kind === 'Diagrama' ? 400 : 120); }; }
       const ks = $('#dkind', el); if (ks) ks.onchange = () => { d = { ...d, kind: ks.value, body: ta.value }; paint(); };
@@ -334,6 +378,15 @@ export async function render(el, { me, sub, alive }) {
       dgm: async (t) => { const ta = $('#dbody', el); if (ta.value.trim() && !(await confirmAsk('¿Reemplazar el diagrama por la plantilla?'))) return; ta.value = DGM[t.dataset.k]; ta.oninput(); },
       fmt: async () => { const ta = $('#dbody', el); const k = curKind(); if (ta.value.trim() && !(await confirmAsk(`¿Reemplazar el texto por el formato de ${k}?`))) return; ta.value = (TPL[k] || TPL.Nota)($('#dtitle', el).value || d.title); ta.oninput(); },
       claudePrompt: () => openClaude(d.body || ''),
+      diag: async () => {
+        await flush();
+        const iv = interview(d.body, d.answers || {});
+        if (iv.done < iv.total * 0.3 && !(await confirmAsk(`Solo hay ${iv.done} de ${iv.total} respondidas. ¿Pedir el diagnóstico igual?`))) return;
+        const fits = openClaude(diagPrompt(d, iv.items, folders.find((f) => f.id === d.folder_id)?.name || ''));
+        const v = await ask('Diagnóstico con Claude', [{ k: 'out', t: 'textarea', req: true, l: (fits ? 'Se abrió tu Claude con todo listo: dale enviar.' : 'Se abrió tu Claude y el prompt quedó copiado: pégalo y dale enviar.') + ' Cuando responda, copia el diagnóstico y pégalo aquí.' }], 'Guardar diagnóstico');
+        if (!v) return;
+        try { d = await D.save({ ...d, diagnosis: String(v.out).trim(), diagnosis_at: new Date().toISOString().slice(0, 10) }); docs = docs.map((x) => (x.id === d.id ? d : x)); toast('Diagnóstico guardado'); paint(); } catch (e) { toast(e.message, true); }
+      },
       copyPrompt: async () => { try { await navigator.clipboard.writeText(d.body || ''); toast('Prompt copiado'); } catch { toast('No pude copiar: selecciona el texto', true); } },
       edit: async () => { await flush(); editing = true; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}/edit`); paint(); },
       cancel: () => { editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); paint(); },

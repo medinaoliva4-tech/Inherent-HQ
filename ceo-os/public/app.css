@@ -965,3 +965,8 @@ html{scrollbar-gutter:stable;overflow-y:scroll}
 .iq-ideal span{display:block;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:#87684e;margin-bottom:3px}
 @media print{.iq-bar{display:none}.iq{break-inside:avoid}}
 .iview .md,.iq-ideal{overflow-wrap:break-word}
+.iq-bar{align-items:center}.iq-bar .btn{padding:7px 14px;font-size:12.5px}
+.iq-diag{margin:6px 0 22px;padding:18px 22px;border-radius:20px;background:rgba(253,250,243,.8);border:1px solid var(--line);box-shadow:var(--shadow)}
+.iq-diag summary{display:flex;align-items:baseline;gap:10px;cursor:pointer;font-size:17px;list-style:none}
+.iq-diag summary::-webkit-details-marker{display:none}
+.iq-diag[open] summary{margin-bottom:8px}
