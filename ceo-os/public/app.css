@@ -970,3 +970,4 @@ html{scrollbar-gutter:stable;overflow-y:scroll}
 .iq-diag summary{display:flex;align-items:baseline;gap:10px;cursor:pointer;font-size:17px;list-style:none}
 .iq-diag summary::-webkit-details-marker{display:none}
 .iq-diag[open] summary{margin-bottom:8px}
+.dsteps{display:grid;gap:16px}.dsteps>div{display:flex;gap:12px;align-items:flex-start}.dsteps .btn{display:flex;width:max-content}.dsteps b{font-weight:500}

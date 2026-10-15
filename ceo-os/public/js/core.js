@@ -452,8 +452,8 @@ export const calQ = () => (calAll() ? '' : '&only=inherent');
 const CLAUDE_REPO = 'medinaoliva4-tech/Inherent-HQ';
 export function openClaude(prompt) {
   const fits = prompt.length < 5000;
+  navigator.clipboard?.writeText(prompt).catch(() => {}); // antes de abrir: con la pestaña nueva al frente el navegador ya no deja copiar
   window.open('https://claude.ai/code?' + new URLSearchParams({ ...(fits ? { prompt } : {}), repositories: CLAUDE_REPO }), '_blank', 'noopener');
-  navigator.clipboard?.writeText(prompt).catch(() => {});
   return fits;
 }
 export async function claudeJSON(title, prompt, hint) {
