@@ -1,4 +1,5 @@
 import { recorder } from '../recorder.js';
+import { ENTREVISTA } from './library-entrevista.js';
 import { WORK_ROLES, wizard, connectCard , openClaude, ICON, ico } from '../core.js';
 import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer, closeDrawer, md, inline, $, folderSvg, TONES, embedUrl, IC, diagram, diagrams } from '../core.js';
 
@@ -84,19 +85,7 @@ Las 3 ideas clave del video.
 ## Recursos
 - [Link](https://)
 `,
-  Entrevista: () => `> **Para:** a quién se entrevista · **Objetivo:** qué tenemos que saber al terminar.
-
-## 1 · Tema
-
-1. ⭐ Pregunta que no se puede quedar sin respuesta
-   > Lo ideal: cómo debería estar esto y con qué servicio lo resolvemos.
-2. Pregunta solo para conocer (sin «Lo ideal»)
-
-## 2 · Otro tema
-
-1. Pregunta
-   > Lo ideal: hacia dónde guiarlo.
-`,
+  Entrevista: (t, d = {}) => ENTREVISTA(d.brand),
   Nota: (t) => `# ${t}
 
 `,
@@ -186,14 +175,15 @@ export async function render(el, { me, sub, alive }) {
       { k: 'client', q: '¿Para qué marca?', type: 'cards', req: true, show: (a) => a.kind === 'Prompt', opts: [{ v: '_', i: ico('globe'), l: 'General', d: 'Sirve para todas' }, ...clients.map((c) => ({ v: c, i: ico('tag'), l: c.toUpperCase() }))] },
       { k: 'vtype', q: '¿Qué tipo de video?', type: 'cards', req: true, show: (a) => a.kind === 'Prompt', opts: VTYPES.map((x) => ({ v: x, l: x })) },
       { k: 'url', q: 'Pega el link del video', type: 'text', req: true, show: (a) => a.kind === 'Video', ph: 'https://…' },
-      { k: 'title', q: '¿Cómo se llama?', type: 'text', req: true, v: (a) => (a.kind === 'Prompt' ? `${a.client === '_' ? 'General' : (a.client || '').toUpperCase()} · ${a.vtype}` : undefined), ph: 'Título' },
+      { k: 'brand', q: '¿A qué marca vas a entrevistar?', type: 'text', req: true, show: (a) => a.kind === 'Entrevista', ph: 'Nombre de la marca' },
+      { k: 'title', q: '¿Cómo se llama?', type: 'text', req: true, v: (a) => (a.kind === 'Prompt' ? `${a.client === '_' ? 'General' : (a.client || '').toUpperCase()} · ${a.vtype}` : a.kind === 'Entrevista' ? `Entrevista — Marketing · ${a.brand}` : undefined), ph: 'Título' },
       { k: 'folder_id', q: '¿En qué carpeta va?', type: 'cards', show: () => !folderId && folders.length > 0, v: '', opts: [{ v: '', i: '—', l: 'Sin carpeta' }, ...folders.map((f) => ({ v: f.id, i: ico('folder'), l: f.name }))] },
     ], 'Crear');
     if (!v) return;
     if (v.url && !/^https:\/\//.test(v.url)) return toast('El link debe empezar con https://', true);
     const roles = v.kind === 'Prompt' ? ['video'] : [];
     const extra = v.kind === 'Prompt' ? { client: v.client === '_' ? '' : v.client, vtype: v.vtype } : {};
-    try { const r = await D.create({ title: v.title, kind: v.kind, url: v.url || '', folder_id: folderId || v.folder_id || '', roles, ...extra, body: (TPL[v.kind] || TPL.Nota)(v.title, extra) }); location.hash = `/library/${r.folder_id || '_'}/${r.id}/edit`; } catch (e) { toast(e.message, true); }
+    try { const r = await D.create({ title: v.title, kind: v.kind, url: v.url || '', folder_id: folderId || v.folder_id || '', roles, ...extra, body: (TPL[v.kind] || TPL.Nota)(v.title, { ...extra, brand: (v.brand || '').trim() || undefined }) }); location.hash = `/library/${r.folder_id || '_'}/${r.id}/edit`; } catch (e) { toast(e.message, true); }
   }
 
   // Grabar (como Loom) → sube a Drive → queda como documento de tipo Video.
