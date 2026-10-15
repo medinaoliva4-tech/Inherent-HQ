@@ -4,7 +4,18 @@
 > Todo acá son **valores**, no adjetivos. Si hace falta criterio, la regla está mal escrita.
 > El entendimiento vive en `guia-de-marca.md`. El diseño, en la página **«Cerantola»** del Figma
 > de branding *(link en `00-onboarding/LINKS.md`)*.
-> Los valores salen de la presentación comercial 2026 de Cerantola.
+> Los valores salen de los referentes visuales que eligió el CEO. De Cerantola quedan el naranja y el logo.
+
+---
+
+## § De dónde sale
+
+| Referente | Qué se toma |
+|---|---|
+| **Rockwell Group** | La foto a sangre, de noche y con vida. Sin bandas ni texto encima: solo el logo |
+| **HBA** | La calma, el aire y las etiquetas chicas |
+| **idX** | El formato de noticia: titulares grandes y las cifras al frente |
+| **Foliot** | Tipografía enorme, sectores claros y la marca en cada pieza |
 
 ---
 
@@ -12,43 +23,73 @@
 
 | Rol | Nombre | Hex | Dónde se usa | Dónde NO |
 |---|---|---|---|---|
-| **Base** *(80% de las piezas)* | Negro cálido | `#0A0806` | Fondos | — |
-| **Tinta** | Crema | `#E8DFD0` | Todo el texto | — |
-| **Acento** *(uno solo)* | **Naranja Cerantola** | `#C4702A` | Cifras clave · sobretítulos · la línea corta · el círculo · el botón | Fondos grandes · texto largo · texto sobre crema |
-| **Apoyo** | Tierra oscura | `#1E1A14` | Bloques secundarios | Texto |
-| **Apoyo** | Gris piedra | `#8A8178` | Texto secundario y créditos | Títulos |
+| **Principal** | **Negro mate** | `#262523` | Fondos de casi todas las piezas | — |
+| **Contraste** | Negro | `#000000` | Fotos de noche · fondos de video | Texto |
+| **Tinta** | Blanco | `#FFFFFF` | Texto sobre negro · fondo de noticias y cifras | — |
+| **Acento** *(uno solo)* | **Naranja Cerantola** | `#C4702A` | Cifras · el botón · un detalle por pieza | Fondos grandes · texto largo |
+| **Apoyo** | Gris | `#6C757D` | Etiquetas y texto secundario **sobre blanco** | Texto chico sobre negro mate |
 
-**El cobre no entra como color aparte:** el naranja hace ese trabajo.
+**Sobre negro mate, el texto secundario va en blanco al 60%,** no en gris.
 
 **Contraste verificado:**
 
 | | Contraste | |
 |---|---|---|
-| Crema sobre negro cálido | 15.1 | ✅ |
-| Crema sobre tierra oscura | 13.1 | ✅ |
-| Naranja sobre negro cálido | 5.4 | ✅ |
-| Gris piedra sobre negro cálido | 5.2 | ✅ |
-| Naranja sobre crema | 2.8 | ❌ nunca como texto |
+| Blanco sobre negro mate | 15.3 | ✅ |
+| Negro mate sobre blanco | 15.3 | ✅ |
+| Gris sobre blanco | 4.7 | ✅ |
+| Naranja sobre negro mate | 4.2 | ✅ cifras y títulos grandes |
+| Blanco sobre naranja | 3.7 | ✅ solo el botón y el logo |
+| Gris sobre negro mate | 3.3 | ❌ nunca en texto chico |
 
 ---
 
 ## § Tipografía
 
-**Dos familias, gratuitas, en Google Fonts.** Sustituyen a Roc Grotesk *(de pago)* y a Satoshi de la
-presentación 2026.
+**Dos familias, gratuitas, en Google Fonts. Sin serif.**
 
-| Nivel | Fuente | Peso | Tamaño *(pieza de 1080 px)* | Dónde se usa |
-|---|---|---|---|---|
-| **Título** | Archivo, ancho **Expanded** *(wdth 125)*, mayúsculas | Regular 400 | 64–96 px · interlineado 1.05 | Una idea por pieza |
-| **Sobretítulo** | Archivo Expanded, mayúsculas, tracking +20% | Medium 500 | 18–22 px · **naranja** | Encima del título |
-| **Dato / número** | Archivo Expanded | Regular 400 | 120–200 px · **naranja** | 14 · 90% · +25 |
-| **Cuerpo** | Archivo, ancho normal *(wdth 100)* | Light 300 | 24–28 px · interlineado 1.5 | Texto corrido |
-| **Frase editorial** | Cormorant Garamond *Itálica* | Light 300 | 36–48 px · crema | **Máximo una por pieza** |
+| Familia | Para qué | Pesos |
+|---|---|---|
+| **Inter Tight** | Títulos y cifras | Medium 500 · SemiBold 600 |
+| **Inter** | Texto, etiquetas y botones | Light 300 · Regular 400 · Medium 500 |
+
+### La escala
+*Tamaño en px / interlineado · espaciado entre letras*
+
+| Nivel | Fuente | Tamaño | Espaciado |
+|---|---|---|---|
+| **Display** | Inter Tight Medium | 120 / 90% | −3.5% |
+| **Título 1** | Inter Tight Medium | 88 / 95% | −3.5% |
+| **Título 2** | Inter Tight Medium | 56 / 100% | −3% |
+| **Título 3** | Inter Tight Medium | 32 / 110% | −2% |
+| **Cifra** | Inter Tight Medium, **naranja** | 72 / 100% | −3% |
+| **Texto** | Inter Light | 18–22 / 150% | 0 |
+| **Etiqueta** | Inter Medium, mayúsculas | 13 / 130% | +12% |
+| **Botón** | Inter Medium | 15 / 100% | 0 |
+
+### Las combinaciones
+| | Combinación |
+|---|---|
+| **01 · Titular + texto** | Inter Tight Medium 56 + Inter Light 18 |
+| **02 · Etiqueta + titular** | Inter Medium 13 en mayúsculas + Inter Tight Medium 44 |
+| **03 · Cifra + etiqueta** | Inter Tight Medium 72 en naranja + Inter Regular 15 |
+| **04 · Menú + botón** | Inter Medium 15 · botón blanco sobre naranja, esquinas rectas |
 
 - **La Avant Garde de la web** queda solo en el logo.
-- **Alternativa web-safe:** Arial para Archivo · Georgia Italic para Cormorant.
+- **Alternativa web-safe:** Arial.
 
 ---
+
+## § Logo
+
+**El de la web** *(cerantola.webflow.io)*. Los archivos están en `logos/`.
+
+| Versión | Archivo | Dónde |
+|---|---|---|
+| **Blanco sobre negro mate** *(el principal)* | `logo-blanco.svg` | Casi todas las piezas |
+| Negro mate sobre blanco | `logo-negro-mate.svg` | Noticias y documentos |
+| Naranja sobre negro mate | `logo-naranja.svg` | Un acento, nunca junto a otra cifra naranja |
+| Blanco sobre naranja | `logo-blanco.svg` | Solo en bloques naranja chicos |
 
 ## § Composición
 
@@ -59,7 +100,7 @@ presentación 2026.
 | **Safe zones** | Reel y story: nada en el 14% de arriba, el 22% de abajo ni el 12% derecho · Post: márgenes de 7% |
 | **Jerarquía** | 1° la imagen · 2° el título · 3° el dato · 4° el cuerpo |
 | **Densidad** | Mínimo 50% de espacio vacío |
-| **Formas** | Esquinas rectas siempre *(0 px)* · línea fina de 1 px · **un círculo como máximo** por pieza, de 1 px, en crema o naranja |
+| **Formas** | Esquinas rectas siempre *(0 px)* · línea fina de 1 px · **un círculo como máximo** por pieza, de 1 px, en blanco o naranja |
 
 ---
 
@@ -94,15 +135,16 @@ presentación 2026.
 |---|---|
 | **Cómo entra el texto** | Fundido y sube 8 px en 0.4 s. Siempre igual |
 | **Ritmo** | Planos sostenidos de 2 a 4 s. Cámara lenta *(dolly o gimbal)*. Sin cortes rápidos |
-| **Subtítulos** | Archivo, ancho normal, Regular, 40 px, crema, centrados, dentro de la safe zone |
-| **El cierre** | La toma firma *(luces que se encienden o puerta que se abre)* → negro → logo crema con la línea naranja, 2 s |
+| **Subtítulos** | Inter Regular, 40 px, blanco, centrados, dentro de la safe zone |
+| **El cierre** | La toma firma *(luces que se encienden o puerta que se abre)* → negro mate → logo blanco, 2 s |
 
 ---
 
 ## § Qué está prohibido
 
 - Dos acentos.
-- El naranja en fondos grandes o como texto sobre crema.
+- El naranja en fondos grandes o en texto largo.
+- El gris en texto chico sobre negro mate.
 - Degradados.
 - Esquinas redondeadas.
 - Emojis.
