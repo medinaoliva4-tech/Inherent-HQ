@@ -133,7 +133,7 @@ ${CONTEXTO}
 `;
 
 const EMPRESA = `> **Para:** el CEO de Cerantola · **Objetivo:** entender cómo funciona la máquina: qué vende, cómo lo produce, con quién, cuánto deja y dónde se traba.
-> **Alimenta:** ① Strategy (contexto) · ② Growth · Operations OS · Money OS.
+> **Alimenta:** ① Strategy (contexto) · ② Growth · Operations OS · Money OS. Incluye el marco del curso: Business Model Canvas, FODA, matriz BCG, estrategias de Porter, plazos y objetivos, e innovación.
 
 ${CONTEXTO}
 ---
@@ -246,7 +246,86 @@ ${CONTEXTO}
 4. ¿Qué han intentado para crecer y no funcionó?
 5. ¿Qué harías si tuvieras más tiempo?
 
+## 10 · Misión, visión y valores
+
+1. ⭐ ¿Tienen misión, visión y valores escritos? ¿Dónde están? Léelos tal cual.
+   > Lo ideal: escritos, cortos y usados para decidir. Si existen pero nadie los usa, son decoración.
+2. En una frase: ¿quiénes son, qué ofrecen, a quién y cómo agregan valor?
+   > Lo ideal: esa frase es la misión (el presente). Si le cuesta decirla, hay que escribirla.
+3. ⭐ ¿Hacia dónde van? ¿En qué quieren ser referentes en 10 años?
+   > Lo ideal: la visión es un horizonte concreto. Ej.: «ser la primera opción de mobiliario corporativo en Centroamérica».
+4. Nombra 3 valores y cómo se viven en el día a día. (ej.: «Puntualidad: entregamos en la fecha que prometimos»)
+   > Lo ideal: cada valor con su conducta concreta. Un valor que se cumple siempre se vuelve diferenciador.
+5. ¿Qué decisión reciente tomaron por un valor, aunque les costara?
+
+## 11 · El modelo de negocio
+
+1. ⭐ ¿Cómo crean valor, cómo lo entregan y cómo lo cobran?
+   > Lo ideal: poder explicarlo en 3 líneas: crea, entrega y captura. Es la base del Business Model Canvas.
+2. ¿Qué tipo de cliente compra cada producto? ¿Cada producto tiene su propio cliente?
+   > Lo ideal: un segmento claro por producto. Para crecer se suman segmentos, y eso pide producto nuevo.
+3. ¿Por qué los eligen? Elige las 2 principales: diseño · durabilidad · a la medida · precio · tiempo de entrega · marca · servicio.
+4. ¿Cómo mantienen la relación con el cliente después de la venta? (atención personal · visitas · mantenimiento · nada)
+   > Lo ideal: una relación que genere recompra y referidos, no solo una venta.
+5. ¿Cómo entran los ingresos? (venta por proyecto · venta de catálogo · mantenimiento · renta · exportación)
+   > Lo ideal: al menos una fuente recurrente (mantenimiento, contratos marco) además de la venta por proyecto.
+6. ¿Sin qué recursos no funciona el negocio? (la planta · maquinaria · maestros clave · la marca · capital)
+7. ¿Qué socios o alianzas hacen que el modelo funcione? (proveedores · arquitectos · distribuidores)
+8. ¿El negocio compite por costo bajo o por valor?
+   > Lo ideal: una sola respuesta. Querer ser el más barato y el más valioso a la vez no funciona.
+
+## 12 · El entorno
+
+1. ⭐ En su mercado, ¿la industria del mueble está creciendo, estancada o bajando?
+   > Lo ideal: si la industria crece y mantienen su parte, crecen con ella. Si cae, hay que ganar participación o abrir mercado.
+2. ¿Qué porcentaje del mercado creen que tienen, más o menos?
+3. ⭐ ¿Cuáles son sus 3 fortalezas?
+4. ¿Sus 3 debilidades?
+5. ¿Qué 3 oportunidades ven afuera?
+6. ¿Qué 3 amenazas les preocupan? (importados · costo de materia prima · competencia · economía)
+   > Lo ideal: el FODA cruza lo de adentro con lo de afuera. Las fortalezas que aprovechan una oportunidad son la estrategia.
+7. De sus productos, ¿cuál es el estrella (crece y vende mucho), cuál la vaca (vende mucho pero ya no crece), cuál la interrogante (crece pero vende poco) y cuál el perro (ni crece ni vende)?
+   > Lo ideal: la matriz BCG dice dónde invertir. La vaca financia a la estrella y a la interrogante; el perro se corrige o se deja.
+
+## 13 · La estrategia para competir
+
+1. ⭐ ¿Cómo quieren ganar: siendo los más baratos, siendo únicos o siendo los mejores para un segmento?
+   > Lo ideal: una sola estrategia de Porter: liderazgo en costos, diferenciación o enfoque. Mezclarlas es quedarse en medio.
+2. ¿En qué son más fuertes: en eficiencia de la operación, en innovar producto o en la cercanía con el cliente?
+   > Lo ideal: los líderes eligen una: excelencia operativa, innovación o intimidad con el cliente. Lo hecho a la medida y la postventa apuntan a intimidad con el cliente.
+3. ¿Qué tan estandarizados están sus procesos? ¿Podrían repetirse en otra planta o en otro país?
+4. ¿Qué segmento del mercado eligieron como prioridad?
+
+## 14 · Plazos y objetivos
+
+1. ⭐ ¿Qué quieren lograr en 1 a 2 años? (ventas, productos nuevos, tendencias)
+2. ¿Y en 3 a 5 años? (maquinaria, tecnología, capacitación del equipo)
+3. ¿Y en 6 a 10 años? (nuevos mercados, nuevas plantas, diversificar)
+4. ⭐ Dime un objetivo con esta fórmula: verbo + qué + de cuánto a cuánto + fecha. (ej.: «Aumentar las ventas de $1M a $1.5M para el 31/12/2027»)
+   > Lo ideal: objetivos realistas y retadores, con número y fecha. Sin número no se puede medir.
+5. ¿Cuánto tardan en recuperar una inversión grande, como una máquina?
+   > Lo ideal: saber el periodo de recuperación antes de invertir. Define si es una inversión de mediano o largo plazo.
+6. ¿Quién fija los objetivos: tú, una junta directiva o los socios?
+7. ¿Cada cuánto revisan si se están cumpliendo?
+
+## 15 · Innovación
+
+1. ⭐ ¿Qué fue lo último que innovaron? ¿Fue en producto, en proceso, en el modelo de negocio o en la experiencia del cliente?
+   > Lo ideal: innovar en las 4 dimensiones, no solo en producto. A veces el salto más grande está en el proceso o en la experiencia.
+2. ¿Qué producto nuevo o mejora les piden los clientes y todavía no tienen?
+3. ¿Qué proceso interno podría hacerse mucho más rápido?
+   > Lo ideal: acortar ciclos. Zara pasó de diseñar y vender en meses a hacerlo en semanas.
+4. ¿Podrían ganar dinero de otra forma con lo que ya tienen? (rentar mobiliario · mantenimiento · diseño de espacios)
+   > Lo ideal: un modelo nuevo puede generar ingresos sin más planta. → Oferta, precios y paquetes (línea Growth).
+5. Del 1 al 10, ¿qué tan fácil es comprarles? ¿Qué le molesta al cliente del proceso?
+   > Lo ideal: experiencia = emoción + facilidad + detalle. Cada fricción que se quita sube la venta.
+6. ¿Cómo se enteran de lo que hacen los mejores? (ferias · viajes · revistas · benchmark)
+   > Lo ideal: copiar de los mejores y ajustarlo al negocio. Ferias y benchmark cada año.
+7. ¿Han pensado en traer a un experto externo para innovar en algo puntual?
+   > Lo ideal: subcontratar la innovación cuesta menos que armar el equipo. Probar primero con un producto mínimo (MVP) antes de invertir en grande.
+
 ---
+
 
 ## Documentos a pedir
 
@@ -257,6 +336,8 @@ ${CONTEXTO}
 - [ ] Lista de proveedores principales
 - [ ] Estado de resultados del último año
 - [ ] Cualquier proceso escrito que ya exista
+- [ ] Misión, visión y valores, si están escritos
+- [ ] El plan estratégico o los objetivos del año, si existen
 `;
 
 const SISTEMA = `> **Para:** el CEO de Cerantola · **Objetivo:** saber todo lo necesario para armarles su propio sistema operativo: una sola web donde vean ventas, pedidos, producción, compras, finanzas y equipo.
@@ -376,10 +457,10 @@ ${CONTEXTO}
 
 export const CERANTOLA = {
   folder: { name: 'Cerantola', tone: 'oliva', desc: 'Onboarding de Cerantola: entrevistas y contexto.' },
-  seed: 5, // sube cuando cambian las entrevistas: el botón las vuelve a cargar
+  seed: 6, // sube cuando cambian las entrevistas: el botón las vuelve a cargar
   docs: [
     { title: 'Entrevista 1 — Marketing: visión, mercado y autoridad', kind: 'Entrevista', body: MARCA },
-    { title: 'Entrevista 2 — La empresa por dentro', kind: 'Entrevista', body: EMPRESA },
+    { title: 'Entrevista 2 — La empresa por dentro', kind: 'Entrevista', body: EMPRESA, append: true },
     { title: 'Entrevista 3 — Su sistema operativo', kind: 'Entrevista', body: SISTEMA },
   ],
 };
