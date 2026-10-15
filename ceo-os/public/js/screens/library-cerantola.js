@@ -11,124 +11,164 @@ const CONTEXTO = `## Lo que ya sabemos
 
 ## Cómo usarlo
 
-1. Graba la llamada. Dura 60 a 75 minutos.
+1. Graba la llamada. Cada entrevista dura entre 60 y 90 minutos.
 2. Escribe su respuesta en la caja debajo de cada pregunta. Se guarda sola.
 3. Las preguntas con ⭐ son las que no se pueden quedar sin respuesta.
 4. **Lo ideal** es para ti, no se lee en voz alta: dice hacia dónde guiarlo y con qué servicio.
 5. Si no sabe algo, escribe \`⚠️ SIN DATOS\`.
 `;
 
-const MARCA = `> **Para:** el CEO de Cerantola · **Objetivo:** entender cómo se ve, cómo habla y cómo atrae clientes hoy.
-> **Alimenta:** ① Strategy (contexto) · ②B Branding · ③ Marketing · ⑩ Ads.
+const MARCA = `> **Para:** el CEO de Cerantola · **Objetivo:** tener la base para la estrategia: a quién le hablamos, cómo compra, contra quién competimos, qué posición tomamos y en qué medios.
+> **Alimenta:** ① Strategy (contexto → WIN, MUST BE TRUE, UNFAIR, GO GET) · ②B Branding · ③ Marketing · ⑩ Ads.
 
 ${CONTEXTO}
 ---
 
-## 1 · La marca y hacia dónde va
+## 1 · La ambición
 
-1. ⭐ ¿Cómo explicas Cerantola en una frase a alguien que no la conoce?
-   > Lo ideal: una frase que diga qué hacen, para quién y qué los hace distintos. Si le cuesta decirla, el mensaje está por construir. → ③ Marketing (mensaje) y ②B Branding (voz).
-2. ⭐ ¿Qué tiene que pasar en 12 meses para que digas «valió la pena»?
-   > Lo ideal: una meta con número (ventas, cuentas nuevas, mercados). Si es «que nos conozcan», es línea Marketing; si es «vender más», es línea Growth.
-3. ¿Por qué existe Cerantola? ¿Cómo empezó?
-4. ¿Qué es lo que más orgullo te da de lo que hacen?
-   > Lo ideal: eso que lo enorgullece casi siempre es el ángulo del contenido. Anótalo literal.
-5. ¿Qué no quieren ser nunca?
+1. ⭐ En 3 años, ¿en qué quieres que Cerantola sea el número uno, y para quién?
+   > Lo ideal: una ambición concreta y con dueño. Por ejemplo: «la primera opción de los arquitectos de oficinas corporativas en Centroamérica». Esto es el WIN de la estrategia.
+2. ⭐ ¿Qué número tiene que pasar en 12 meses para que digas «valió la pena»? (ventas, cuentas nuevas, un mercado nuevo)
+   > Lo ideal: una sola métrica principal. Desde ella se hace la ingeniería inversa hasta la pieza de contenido.
+3. Si Cerantola cerrara mañana, ¿quién lo lamentaría de verdad y por qué?
+   > Lo ideal: la respuesta revela el valor real de la marca, no el que dice el folleto. Anótalo literal.
+4. ¿Qué te frustra más de cómo se ve o se percibe Cerantola hoy?
 
-## 2 · Identidad
+## 2 · La historia
 
-1. ⭐ ¿Tienen logo, colores y tipografías definidas? ¿Hay manual de marca?
-   > Lo ideal: un sistema de marca con colores, tipografías, plantillas y reglas por formato, que cualquiera del equipo pueda aplicar sin preguntar. → ②B Branding, incluido en todos los planes.
-2. ¿Quién hizo la identidad y hace cuánto?
-3. ¿Qué te gusta y qué no de cómo se ve la marca hoy?
-4. ¿Cómo se escribe el nombre? ¿Llevan apellido, slogan o tagline?
-5. ¿Tienen relación con Cerantola de Italia? ¿Hay alguien con quien se confundan?
-   > Lo ideal: que al buscar «Cerantola Guatemala» no haya duda de quiénes son. Si se confunden, hay que trabajar Google y el perfil de empresa. → Google Business Profile + SEO local.
-6. ¿Qué tres palabras quieres que la gente asocie con Cerantola?
-7. ¿Qué marcas de muebles o diseño admiras, aquí o afuera? ¿Por qué?
+1. ⭐ ¿Cómo empezó Cerantola? Cuéntamelo como se lo contarías a un amigo.
+   > Lo ideal: buscar el momento de origen, el obstáculo y la decisión que los definió. Es la columna del storytelling.
+2. ¿Cuál ha sido el momento más difícil de la empresa y cómo salieron de ahí?
+3. ¿Qué decisión tomaron que otros fabricantes no se atreverían a tomar?
+   > Lo ideal: ahí suele estar la diferencia real. Si existe, es candidata a UNFAIR.
+4. ¿Qué no negocian nunca, aunque les cueste una venta? Dame un ejemplo real.
+   > Lo ideal: valores con prueba. Un valor sin ejemplo no sirve para comunicar.
 
-## 3 · El cliente
+## 3 · El cliente ideal
 
-1. ⭐ ¿Quién les compra hoy? Corporativos, arquitectos, hoteles, hogar, exportación… ¿en qué proporción?
-   > Lo ideal: saber qué tipo de cliente deja más y enfocar todo ahí. Si la compra es por proyecto y la decide un comité, es venta de ticket alto: el juego es precisión, no volumen.
-2. ⭐ ¿Quién decide la compra y quién solo influye? (dueño, arquitecto, compras, diseñador)
-   > Lo ideal: un mensaje para cada uno. Al arquitecto se le habla de diseño y especificación; a compras, de tiempos y garantía.
-3. ¿Por qué los eligen a ustedes y no a otro?
-4. ¿Por qué los descartan? ¿Qué objeciones escuchan más?
-   > Lo ideal: cada objeción tiene su pieza de contenido que la responde antes de que la digan.
-5. ¿Cómo los encuentra la gente hoy? (recomendación, showroom, redes, licitaciones, Google)
-   > Lo ideal: que no dependa solo de recomendación. Al menos un canal que traiga prospectos todos los meses sin que nadie salga a buscarlos.
-6. ¿Qué cliente quisieras tener 10 veces más?
-7. ¿Contra quién compiten? Nombres concretos.
+1. ⭐ ¿Quiénes han sido tus tres mejores clientes de la historia y por qué fueron los mejores?
+   > Lo ideal: de aquí sale el ICP. Buscar el patrón: tipo de empresa, tamaño, ticket, facilidad de cierre, recompra y referidos.
+2. ⭐ ¿Y los peores? ¿Qué tenían en común?
+   > Lo ideal: el cliente que NO queremos. Filtrarlo ahorra tiempo de ventas y protege el margen.
+3. ⭐ De estos grupos, ¿cuál deja más dinero, cuál crece más y cuál es más fácil de cerrar? Corporativos, arquitectos y diseñadores, hoteles y restaurantes, residencial premium, gobierno, exportación.
+   > Lo ideal: elegir uno o dos segmentos para ganar primero. Hablarle a todos es no hablarle a nadie.
+4. En una venta típica, ¿quién paga, quién especifica, quién usa el mueble y quién puede frenar la compra?
+   > Lo ideal: mapear el comité de compra. Al que paga se le habla de inversión y tiempos; al arquitecto, de diseño y ficha técnica; al usuario, de comodidad.
+5. ⭐ ¿Qué pasa en la vida de ese cliente justo antes de buscarlos? (oficina nueva, mudanza, apertura, remodelación, crecimiento del equipo)
+   > Lo ideal: el disparador de compra. El contenido y la pauta se activan alrededor de ese momento, no al azar.
+6. Cuando te compran, ¿qué están resolviendo de verdad? No el mueble: lo que hay detrás.
+   > Lo ideal: no compran sillas, compran una oficina que retiene talento o una imagen que impresiona a sus clientes. Ese es el mensaje.
+7. ¿Qué les molestaba de su proveedor anterior?
+   > Lo ideal: cada molestia es un argumento de venta y un tema de contenido.
+8. ¿Con qué palabras te describen tus clientes cuando te recomiendan?
+   > Lo ideal: escribirlo textual. Las palabras del cliente venden mejor que las de la marca.
 
-## 4 · Redes sociales
+## 4 · Cómo compran
 
-1. ⭐ ¿Qué cuentas tienen? (Instagram, Facebook, LinkedIn, TikTok, Pinterest, YouTube)
-   > Lo ideal para un fabricante que vende a empresas y arquitectos: Instagram como vitrina, LinkedIn para decisores y Pinterest para que los especifiquen.
-2. ¿Quién las maneja hoy y cada cuánto publican?
-   > Lo ideal: publicar todos los días con un plan mensual, sin que nadie de Cerantola tenga que pensar qué subir. → plan Marketing (86 piezas) o Marketing Pro (145).
-3. ¿Qué publicación les ha funcionado mejor? ¿Les ha llegado un cliente por redes?
-4. ⭐ ¿Qué material tenemos para grabar? Planta, proceso, proyectos instalados, showroom, equipo.
-   > Lo ideal: una jornada de rodaje al mes en planta y en proyectos instalados. Ver cómo se hace un mueble vende más que la foto del mueble. → Jornada de rodaje (incluida desde Marketing Pro).
-5. ¿Quién puede salir en cámara? ¿Tú?
-   > Lo ideal: el dueño o alguien de planta contando el oficio. La cara genera confianza en ticket alto.
-6. ¿Hay proyectos o clientes que no se pueden mostrar?
-7. ¿Tienen fotos profesionales de producto y de proyectos terminados?
-   > Lo ideal: un banco de fotos de producto y de espacios terminados que sirva para redes, web y catálogo. → Sesión de fotos de producto.
+1. ⭐ Desde el primer contacto hasta la firma, ¿qué pasos hay, cuánto tarda y quién entra en cada uno?
+   > Lo ideal: conocer el recorrido para poner una pieza de contenido o un seguimiento en cada paso.
+2. ¿Dónde se informa el cliente antes de llamarlos? (Google, Instagram, Pinterest, LinkedIn, ferias, una recomendación)
+3. ⭐ ¿Qué necesita ver alguien para confiar en ustedes? (muestras, visita a planta, proyectos, referencias)
+   > Lo ideal: si la confianza nace al visitar la planta, la estrategia es llevar gente a la planta. Ahí vive la confianza.
+4. ¿En qué momento se pierden más ventas? ¿Por qué?
+5. ¿A quién le creen tus clientes? (arquitectos reconocidos, revistas, gremios, otros empresarios)
+   > Lo ideal: esas voces son los aliados y medios a conquistar.
 
-## 5 · Sitio web
+## 5 · La demanda
 
-1. ⭐ ¿Tienen web? ¿Quién la hizo, en qué plataforma y quién tiene los accesos?
-   > Lo ideal: que Cerantola sea dueño del dominio y de los accesos, no el proveedor que la hizo.
-2. ⭐ ¿Qué debería lograr la web? (pedir cotización, mostrar catálogo, atraer exportación, reclutar)
-   > Lo ideal: una página que convierta visitas en solicitudes de cotización, con catálogo y proyectos como prueba. → Landing de conversión.
-3. ¿Llegan cotizaciones o mensajes por la web hoy? ¿Cuántas al mes?
-4. ¿Tienen Google Analytics, Search Console o Google Business?
-   > Lo ideal: saber de dónde viene cada solicitud. Sin medición no se sabe qué funciona. → Conversion API y tracking avanzado · Dashboard mensual de marketing.
-5. ¿Quién controla el dominio y el correo de la empresa?
-6. ¿Necesita estar en inglés para exportación?
+1. ⭐ ¿La gente ya busca lo que ustedes hacen, o primero hay que convencerla de que lo necesita?
+   > Lo ideal: si ya lo buscan, se captura (Google, búsqueda, catálogo). Si no, se crea (contenido, educación, autoridad). Define dónde va el esfuerzo.
+2. ¿Cuántas consultas llegan solas al mes y de dónde vienen?
+3. ¿Qué meses o eventos disparan la demanda? (cierre de presupuestos, ferias, inicio de año)
 
-## 6 · Correo y outreach
+## 6 · La competencia
 
-1. ⭐ ¿Tienen una base de contactos? ¿Cuántos y de dónde salieron?
-   > Lo ideal: una sola lista ordenada, con la etapa de cada contacto (nuevo, contactado, cotizado, ganado). → CRM ligero + automatizaciones.
-2. ¿Dónde viven esos contactos? (Excel, CRM, el teléfono de alguien)
-   > Lo ideal: que los contactos sean de la empresa, no del vendedor. Si se va alguien, la lista se queda.
-3. ⭐ ¿A quién quisieras escribirle primero? (arquitectos, desarrolladoras, hoteles, corporativos, compradores de afuera)
-   > Lo ideal: una lista de empresas con nombre del decisor y una secuencia de correos y LinkedIn con seguimiento. → Prospección B2B y cuentas clave.
-4. ¿Han mandado correos masivos o newsletter? ¿Qué pasó?
-5. ¿Qué ofrecerías en un primer correo? (catálogo, visita al showroom, visita a planta, muestra)
-   > Lo ideal: una invitación concreta y fácil de aceptar, como una visita a planta. Pedir una cotización en el primer correo no funciona.
-6. ¿Quién responde cuando alguien contesta?
-   > Lo ideal: una persona con nombre y un tiempo de respuesta menor a 24 horas.
-7. ¿Usan WhatsApp Business para vender?
-   > Lo ideal: catálogo en WhatsApp y respuestas rápidas para lo que siempre preguntan. → WhatsApp para negocios + Catálogo.
+1. ⭐ ¿Contra quién compiten? Nombres. ¿Por qué alguien los elegiría a ellos?
+2. ¿Qué más compite por el mismo dinero? (importar de China, el carpintero local, tiendas de oficina, marcas internacionales)
+   > Lo ideal: la competencia real no es solo el otro fabricante. Hay que saber contra qué alternativa decide el cliente.
+3. ⭐ ¿Qué hacen todos los de la industria igual al comunicarse?
+   > Lo ideal: ese es el código saturado de la categoría (foto de producto en fondo blanco, «calidad y diseño»). Hacer lo opuesto es como se destaca.
+4. Frente a la competencia, ¿son más caros, iguales o más baratos? ¿Por qué?
+   > Lo ideal: si son más caros, el mensaje tiene que justificar el precio antes de que lo vean.
 
-## 7 · Pauta
+## 7 · El posicionamiento
 
-1. ¿Han pautado? ¿Dónde, cuánto y qué resultado tuvo?
-2. ⭐ ¿Cuánto podrían invertir al mes en pauta? (no va incluido en el plan)
-   > Lo ideal: un presupuesto fijo mensual, aparte del plan, que alcance para salir de aprendizaje. Sin presupuesto no hay pauta.
-3. ¿Quién tiene acceso a las cuentas de anuncios?
+1. ⭐ Si tuvieras 10 segundos con el arquitecto más importante del país, ¿qué le dirías?
+   > Lo ideal: la propuesta en una frase. Si sale larga o genérica, hay que construirla.
+2. ⭐ ¿Qué pueden decir ustedes que ningún competidor puede decir sin mentir?
+   > Lo ideal: la ventaja injusta, el UNFAIR. Candidatos: fábrica propia, estándar de exportación, años de experiencia, hacerlo a la medida, tiempos de entrega.
+3. ⭐ ¿Qué pruebas tienen? Números, clientes conocidos, proyectos emblemáticos, premios, certificaciones.
+   > Lo ideal: cada promesa con su prueba. Sin prueba, la promesa no se publica.
+4. ¿Por qué UNA cosa quieres que te conozcan?
+5. ¿Contra qué está Cerantola? (muebles desechables, oficinas sin alma, lo importado que no dura)
+   > Lo ideal: un enemigo claro le da filo al mensaje. → ②B Branding (territorio).
+6. Fabricar en Guatemala, ¿es motivo de orgullo o el cliente lo ve como desventaja?
+   > Lo ideal: si exportan, «hecho en Guatemala con estándar internacional» puede ser un argumento muy fuerte. Hay que validarlo.
 
-## 8 · Cómo trabajamos juntos
+## 8 · La oferta, vista desde el mensaje
 
-1. ⭐ ¿Quién aprueba el contenido y en cuánto tiempo responde?
-   > Lo ideal: una sola persona que aprueba, con respuesta en 48 horas. Si aprueban tres, el ciclo se atrasa.
-2. ¿Hay algo que no quieren hacer o decir nunca?
-3. ¿Hay fechas importantes este año? (ferias, lanzamientos, aniversario)
+1. ⭐ ¿Cuál es su producto héroe, el que mejor representa a la marca?
+   > Lo ideal: un producto que protagonice la comunicación. Una marca se recuerda por una cosa, no por un catálogo.
+2. ¿Cuál es el primer pedido pequeño con el que un cliente nuevo los prueba?
+   > Lo ideal: una puerta de entrada fácil de comprar, que abra la relación para el proyecto grande.
+3. ¿Qué ofrecen que casi nadie sabe que ofrecen?
+4. ¿Qué garantía dan? ¿Podrían dar una más fuerte?
+   > Lo ideal: una garantía audaz baja el riesgo de comprar y vende sola. Cambiar la oferta es línea Growth.
+
+## 9 · La personalidad
+
+1. ⭐ Si Cerantola fuera una persona, ¿cómo sería? ¿Cómo habla, cómo se viste, qué le importa?
+   > Lo ideal: rasgos concretos, no adjetivos genéricos. → ②B Branding (voz).
+2. ¿Tres palabras que quieres que la gente asocie con Cerantola? ¿Y tres que nunca?
+3. ¿Qué te gusta y qué no de cómo se ve la marca hoy? ¿Hay manual de marca?
+4. ¿Qué marcas admiras, de cualquier industria, por cómo comunican?
+5. ¿Tienen relación con Cerantola de Italia? ¿Los confunden?
+
+## 10 · Las historias para contar
+
+1. ⭐ ¿Qué historias solo ustedes pueden contar? (la planta, los artesanos, un proyecto difícil, la exportación)
+   > Lo ideal: el contenido más fuerte es el que la competencia no puede copiar. Ver cómo se hace un mueble vende más que la foto del mueble.
+2. ¿En qué temas son expertos y podrían enseñar? (ergonomía, diseño de oficinas, materiales, sostenibilidad)
+   > Lo ideal: enseñar construye autoridad con arquitectos y compradores. Es contenido que se guarda y se comparte.
+3. ⭐ ¿Quién puede ser la cara de la marca? ¿Tú, un maestro de planta, un diseñador?
+   > Lo ideal: una cara real genera confianza en ticket alto. Una persona se sigue; un logo no.
+4. ¿Qué material ya existe? (fotos, videos, proyectos terminados) ¿Qué no se puede mostrar?
+   > Lo ideal: una jornada de rodaje al mes en planta y en proyectos instalados. → Jornada de rodaje (incluida desde Marketing Pro).
+
+## 11 · Los medios
+
+1. ⭐ ¿Dónde pasa el tiempo su cliente ideal? (LinkedIn, Instagram, Pinterest, Google, ferias, revistas de diseño, gremios)
+   > Lo ideal: pocos canales bien hechos. Para este cliente: LinkedIn para quien paga, Instagram y Pinterest para quien especifica, Google para quien ya busca.
+2. ¿Qué han probado para atraer clientes y qué resultó? (redes, pauta, ferias, correos, showroom)
+3. ¿Han salido en medios o ganado premios? ¿Tienen relación con revistas o gremios?
+   > Lo ideal: medios ganados y premios dan autoridad que la pauta no compra.
+4. ¿Con quién podrían aliarse? (desarrolladoras, inmobiliarias, coworkings, despachos de arquitectura)
+   > Lo ideal: una alianza con quien ya tiene a tu cliente vale más que mil seguidores.
+5. ⭐ Si mañana pudiéramos escribirle a 100 decisores, ¿a quién le escribirías primero?
+   > Lo ideal: una lista con nombre del decisor y una secuencia de correo y LinkedIn con seguimiento. → Prospección B2B y cuentas clave.
+6. ⭐ ¿Cuánto podrían invertir al mes en pauta? (va aparte del plan)
+   > Lo ideal: un presupuesto fijo que alcance para aprender. Sin presupuesto no hay pauta.
+7. ¿Qué tiene que lograr su página web? (pedir cotización, mostrar proyectos, atraer exportación)
+   > Lo ideal: que convierta visitas en solicitudes de cotización, con proyectos como prueba. → Landing de conversión.
+
+## 12 · Cómo sabremos que funciona
+
+1. ⭐ En 90 días, ¿qué tendría que ver para decir «esto va bien»?
+   > Lo ideal: acordar el indicador desde el día uno. Lo que no se acuerda, después se discute.
+2. ¿Quién aprueba el contenido y en cuánto tiempo responde?
+   > Lo ideal: una sola persona, con respuesta en 48 horas.
+3. ¿Qué no quieren hacer o decir nunca?
+4. ¿Qué fechas importantes vienen este año? (ferias, lanzamientos, aniversario)
 
 ---
 
-## Accesos y documentos a pedir
+## Para pedir al final
 
-- [ ] Logo en alta (vector) y manual de marca si existe
-- [ ] Accesos a redes (como colaborador en Meta Business)
-- [ ] Acceso a la web, al dominio y a Analytics
-- [ ] Fotos y videos que ya tengan (link de Drive)
-- [ ] Catálogo actual (PDF o link)
-- [ ] Base de contactos (aunque esté desordenada)
+- [ ] Fotos y videos que ya tengan, de producto, planta y proyectos (link de Drive)
+- [ ] Catálogo actual y manual de marca si existe
 - [ ] Lista de 3 a 5 competidores y 3 marcas que admiran
+- [ ] Contactos de 3 clientes felices que acepten una llamada corta
+- [ ] Accesos a redes, web y cuentas de anuncios
 `;
 
 const EMPRESA = `> **Para:** el CEO de Cerantola · **Objetivo:** entender cómo funciona la máquina: qué vende, cómo lo produce, con quién, cuánto deja y dónde se traba.
@@ -375,8 +415,9 @@ ${CONTEXTO}
 
 export const CERANTOLA = {
   folder: { name: 'Cerantola', tone: 'oliva', desc: 'Onboarding de Cerantola: entrevistas y contexto.' },
+  seed: 2, // sube cuando cambian las entrevistas: el botón las vuelve a cargar
   docs: [
-    { title: 'Entrevista 1 — Marca, redes, web y correo', kind: 'Entrevista', body: MARCA },
+    { title: 'Entrevista 1 — Marca, mercado y estrategia', kind: 'Entrevista', body: MARCA },
     { title: 'Entrevista 2 — La empresa por dentro', kind: 'Entrevista', body: EMPRESA },
     { title: 'Entrevista 3 — Su sistema operativo', kind: 'Entrevista', body: SISTEMA },
   ],
