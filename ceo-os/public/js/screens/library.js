@@ -368,14 +368,28 @@ ${qa}`;
       dgm: async (t) => { const ta = $('#dbody', el); if (ta.value.trim() && !(await confirmAsk('¿Reemplazar el diagrama por la plantilla?'))) return; ta.value = DGM[t.dataset.k]; ta.oninput(); },
       fmt: async () => { const ta = $('#dbody', el); const k = curKind(); if (ta.value.trim() && !(await confirmAsk(`¿Reemplazar el texto por el formato de ${k}?`))) return; ta.value = (TPL[k] || TPL.Nota)($('#dtitle', el).value || d.title); ta.oninput(); },
       claudePrompt: () => openClaude(d.body || ''),
+      // Diagnóstico: primero se copia el pedido (con la pestaña activa, si no el navegador no deja copiar), después se abre Claude.
       diag: async () => {
         await flush();
         const iv = interview(d.body, d.answers || {});
         if (iv.done < iv.total * 0.3 && !(await confirmAsk(`Solo hay ${iv.done} de ${iv.total} respondidas. ¿Pedir el diagnóstico igual?`))) return;
-        const fits = openClaude(diagPrompt(d, iv.items, folders.find((f) => f.id === d.folder_id)?.name || ''));
-        const v = await ask('Diagnóstico con Claude', [{ k: 'out', t: 'textarea', req: true, l: (fits ? 'Se abrió tu Claude con todo listo: dale enviar.' : 'Se abrió tu Claude y el prompt quedó copiado: pégalo y dale enviar.') + ' Cuando responda, copia el diagnóstico y pégalo aquí.' }], 'Guardar diagnóstico');
-        if (!v) return;
-        try { d = await D.save({ ...d, diagnosis: String(v.out).trim(), diagnosis_at: new Date().toISOString().slice(0, 10) }); docs = docs.map((x) => (x.id === d.id ? d : x)); toast('Diagnóstico guardado'); paint(); } catch (e) { toast(e.message, true); }
+        const prompt = diagPrompt(d, iv.items, folders.find((f) => f.id === d.folder_id)?.name || '');
+        const copy = async () => { try { await navigator.clipboard.writeText(prompt); } catch { const ta = $('#dprompt'); ta.select(); document.execCommand('copy'); } };
+        drawer(html`<div class="row"><b style="font-size:20px;font-weight:500">Diagnóstico con Claude</b><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+          <p class="mut" style="margin:6px 0 16px">${iv.done} de ${iv.total} respondidas van en el pedido, con su pregunta y «Lo ideal».</p>
+          <div class="dsteps">
+            <div><span class="iq-n">1</span><div><b>Copia el pedido</b><button class="btn" data-act="dcopy" style="margin-top:8px">Copiar el pedido</button></div></div>
+            <div><span class="iq-n">2</span><div><b>Abre Claude, pega y dale enviar</b><button class="btn ghost" data-act="dopen" style="margin-top:8px">${ICON.sparkle} Abrir Claude</button></div></div>
+            <div><span class="iq-n">3</span><div style="flex:1"><b>Pega aquí lo que responde</b><textarea class="in" id="dout" placeholder="Pega el diagnóstico completo…" style="min-height:180px;margin-top:8px"></textarea><button class="btn" data-act="dsave" style="margin-top:8px">Guardar diagnóstico</button></div></div>
+          </div>
+          <details style="margin-top:14px"><summary class="mut sm" style="cursor:pointer">Ver el pedido</summary><textarea class="in" id="dprompt" readonly style="min-height:200px;margin-top:8px;font-size:12px">${prompt}</textarea></details>`, {
+          dcopy: async (t) => { await copy(); t.textContent = 'Copiado ✓'; toast('Pedido copiado'); },
+          dopen: async () => { await copy(); openClaude(prompt); },
+          dsave: async () => {
+            const out = $('#dout').value.trim(); if (!out) return toast('Pega primero lo que respondió Claude', true);
+            try { d = await D.save({ ...d, diagnosis: out, diagnosis_at: new Date().toISOString().slice(0, 10) }); docs = docs.map((x) => (x.id === d.id ? d : x)); closeDrawer(); toast('Diagnóstico guardado'); paint(); } catch (e) { toast(e.message, true); }
+          },
+        });
       },
       copyPrompt: async () => { try { await navigator.clipboard.writeText(d.body || ''); toast('Prompt copiado'); } catch { toast('No pude copiar: selecciona el texto', true); } },
       edit: async () => { await flush(); editing = true; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}/edit`); paint(); },
