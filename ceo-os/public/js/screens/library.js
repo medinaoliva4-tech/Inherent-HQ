@@ -197,7 +197,7 @@ export async function render(el, { me, sub, alive }) {
     const ql = q.toLowerCase();
     const list = docs.filter((d) => !ql || (d.title + ' ' + (d.body || '')).toLowerCase().includes(ql)).sort((a, z) => String(z._meta?.updated_at || '').localeCompare(String(a._meta?.updated_at || '')));
     mount(el, html`<div class="hello"><h1>Library</h1><p>SOPs, playbooks y videos. <em>Todo en un lugar.</em></p></div>
-      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div>${me.role === 'ceo' && !folders.some((f) => f.name === 'Cerantola') ? html`<button class="btn" data-act="seedCerantola">Cargar folder de Cerantola</button>` : ''}<button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
+      <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div>${me.role === 'ceo' && !docs.some((d) => d.title.startsWith('Entrevista 3') && folders.find((f) => f.id === d.folder_id)?.name === 'Cerantola') ? html`<button class="btn" data-act="seedCerantola">Cargar folder de Cerantola</button>` : ''}<button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
       ${folders.length ? html`<div class="folders">${folders.map((f) => html`<div class="folder" data-act="folder" data-id="${f.id}">${folderSvg({ drive: Boolean(f.drive), tone: f.tone, video: docs.some((d) => d.folder_id === f.id && d.kind === 'Video') })}<b>${f.name}</b><span class="mut sm">${docs.filter((d) => d.folder_id === f.id).length} documentos${f.drive ? ' · Drive' : ''}</span></div>`)}</div>`
         : html`<div class="empty"><b>Todavía no hay carpetas</b>Crea la primera: «Onboarding de cliente», «Producción», «Playbooks de venta»… y conéctala a una carpeta de Drive si quieres.</div>`}
       <div class="sec-title"><h2>${q ? 'Resultados' : 'Recientes'}</h2></div>
@@ -297,8 +297,10 @@ export async function render(el, { me, sub, alive }) {
       // Temporal: carga el folder de Cerantola con sus dos entrevistas. Se quita después de usarlo.
       seedCerantola: async (t) => {
         t.disabled = true;
-        try { const { CERANTOLA } = await import('./library-cerantola.js'); const f = await F.create(CERANTOLA.folder); folders = [...folders, f];
-          for (const d of CERANTOLA.docs) docs = [...docs, await D.create({ ...d, url: '', roles: [], folder_id: f.id })];
+        // Si el folder ya existe, solo agrega las entrevistas que le falten.
+        try { const { CERANTOLA } = await import('./library-cerantola.js');
+          let f = folders.find((x) => x.name === CERANTOLA.folder.name); if (!f) { f = await F.create(CERANTOLA.folder); folders = [...folders, f]; }
+          for (const d of CERANTOLA.docs) if (!docs.some((x) => x.folder_id === f.id && x.title === d.title)) docs = [...docs, await D.create({ ...d, url: '', roles: [], folder_id: f.id })];
           toast('Folder de Cerantola listo'); location.hash = `/library/${f.id}`; } catch (e) { t.disabled = false; toast(e.message, true); }
       },
       newDoc: () => newDoc(''),

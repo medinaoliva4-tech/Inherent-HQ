@@ -204,10 +204,102 @@ ${CONTEXTO}
 - [ ] Cualquier proceso escrito que ya exista
 `;
 
+const SISTEMA = `> **Para:** el CEO de Cerantola · **Objetivo:** saber todo lo necesario para armarles su propio sistema operativo: una sola web donde vean ventas, pedidos, producción, compras, finanzas y equipo.
+> **Alimenta:** ② Growth (\`gr-herramienta\`) · Operador. Las herramientas a medida entran en 🟨 Accelerate y Compound.
+
+${CONTEXTO}
+---
+
+## 1 · Para qué lo quieren
+
+1. ⭐ ¿Qué quieres poder ver en una pantalla cada mañana sin preguntarle a nadie?
+2. ⭐ ¿Qué preguntas le haces a tu equipo cada semana? (esas son las pantallas)
+3. ¿Qué decisión tomas hoy a ciegas por no tener el dato a mano?
+4. ¿Qué te ahorraría más tiempo a ti? ¿Y a tu equipo?
+5. Si solo pudieras tener una pantalla, ¿cuál sería?
+
+## 2 · Quién lo usa
+
+1. ⭐ ¿Quiénes lo usarían? Nombre del puesto y cuántas personas.
+2. ¿Qué debe ver cada uno y qué no? (ej.: ventas no ve costos, planta no ve finanzas)
+3. ¿La gente de planta tiene computadora o solo celular?
+4. ¿Usan correo de Google o de Microsoft? (define cómo entra cada uno)
+5. ¿Clientes o proveedores deberían ver algo? (estado de su pedido, órdenes de compra)
+
+## 3 · Lo que usan hoy
+
+1. ⭐ ¿Qué programas usan hoy? Excel, sistema contable, ERP, WhatsApp, Drive, papel…
+2. ¿Qué sistema usan para facturar? (FEL de la SAT)
+3. ¿Qué de eso funciona bien y no quieren cambiar?
+4. ¿Qué de eso odian?
+5. ¿Quién administra cada herramienta y quién tiene las contraseñas?
+
+## 4 · Ventas y clientes
+
+1. ⭐ ¿Dónde está hoy la lista de clientes y prospectos?
+2. ¿Cómo se hace una cotización? ¿Quién la arma y con qué plantilla?
+3. ¿Qué etapas tiene una venta? (prospecto → cotizado → anticipo → en producción → entregado)
+4. ¿Cómo dan seguimiento a una cotización que no contestan?
+5. ¿Qué números de ventas quieres ver? (cotizado, cerrado, por vendedor, por línea)
+
+## 5 · Pedidos y producción
+
+1. ⭐ ¿Qué estados tiene un pedido desde que se firma hasta que se instala?
+2. ⭐ Hoy, ¿cómo sabes en qué va un pedido y si va a llegar a tiempo?
+3. ¿Usan órdenes de trabajo para planta? ¿Cómo se ven?
+4. ¿Cómo se reparte el trabajo entre áreas de la planta? (corte, ensamble, tapicería, pintura, empaque)
+5. ¿Qué alerta te gustaría recibir? (pedido atrasado, material faltante)
+
+## 6 · Inventario y compras
+
+1. ⭐ ¿Llevan inventario de materia prima y producto terminado? ¿Dónde?
+2. ¿Cómo se decide qué comprar y cuándo?
+3. ¿Usan órdenes de compra? ¿Quién las aprueba?
+4. ¿Qué datos guardan de cada proveedor? (precios, tiempos, contactos)
+
+## 7 · Finanzas
+
+1. ⭐ ¿Qué números quieres ver y cada cuánto? (ventas, margen, caja, cuentas por cobrar)
+2. ¿De dónde sale hoy cada número? ¿Quién lo arma?
+3. ¿Quieres ver el margen por pedido o por línea?
+4. ¿Qué no debe ver nadie más que tú?
+
+## 8 · Equipo y tareas
+
+1. ¿Cómo se asignan hoy las tareas y cómo sabes que se hicieron?
+2. ¿Quieres llevar asistencia, horas o metas por persona?
+3. ¿Hay reuniones fijas? ¿Qué se revisa en cada una?
+
+## 9 · Conocimiento
+
+1. ¿Hay procesos escritos, fichas técnicas o manuales?
+2. ¿Dónde viven las fotos, planos y catálogos?
+3. ¿Qué sabe solo una persona y se perdería si se va?
+
+## 10 · Datos y prioridades
+
+1. ⭐ ¿Qué datos ya tienen guardados que podamos cargar? (Excel, sistema contable)
+2. ¿Hay información que no puede salir de la empresa?
+3. ⭐ Ordena del 1 al 5 qué quieres primero: ventas · pedidos y producción · compras e inventario · finanzas · equipo.
+4. ¿Para cuándo lo necesitas funcionando?
+
+---
+
+## Documentos a pedir
+
+- [ ] Una cotización real
+- [ ] Una orden de trabajo o de producción real
+- [ ] Los Excel que usan hoy para ventas, pedidos, inventario o finanzas
+- [ ] Un reporte que reciba el CEO hoy, si existe
+- [ ] La lista de herramientas con quién administra cada una
+- [ ] La lista de usuarios: puesto y qué debe ver cada uno
+`;
+
 export const CERANTOLA = {
   folder: { name: 'Cerantola', tone: 'oliva', desc: 'Onboarding de Cerantola: entrevistas y contexto.' },
   docs: [
     { title: 'Entrevista 1 — Marca, redes, web y correo', kind: 'Nota', body: MARCA },
     { title: 'Entrevista 2 — La empresa por dentro', kind: 'Nota', body: EMPRESA },
+    { title: 'Entrevista 3 — Su sistema operativo', kind: 'Nota', body: SISTEMA },
   ],
 };
