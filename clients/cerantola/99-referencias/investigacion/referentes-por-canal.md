@@ -69,14 +69,14 @@
 
 ### Cerantola hoy
 - **No tiene perfil en Google Maps en Guatemala.**
-- **Al buscar «Cerantola» aparece [Cerantola S.p.A.](https://maps.firecrawl.dev/place/0x47792864905a4a91%3A0xd29981a13306a6de)**,
+- **Al buscar «Cerantola» aparece [Cerantola S.p.A.](https://www.google.com/maps/place/?q=place_id:ChIJkUpakGQoeUcR3qYGM6GBmdI)**,
   una fábrica de muebles en Italia *(4.2 ★ · 75 reseñas)*. **Es otra empresa.**
 
 ### Los referentes
 | | Referente | Cifras | Qué se toma |
 |---|---|---|---|
-| **Funciona** | [Sordo Madaleno](https://maps.firecrawl.dev/place/0x85d201a3aaaaaaab%3A0x7d54792d4e9f83ae) | 4.5 ★ · 229 reseñas | El que más presencia tiene en Google |
-| **Se alinea** | [Foliot](https://maps.firecrawl.dev/place/0x4ccf2c882211261b%3A0x396089e54ff98fce) | 4.4 ★ · 86 reseñas *(Canadá)* · 4.4 ★ · 50 *(Las Vegas)* | **Un perfil por cada fábrica:** prueba que el taller existe |
+| **Funciona** | [Sordo Madaleno](https://www.google.com/maps/place/?q=place_id:ChIJq6qqqqMB0oURroOfTi15VH0) | 4.5 ★ · 229 reseñas | El que más presencia tiene en Google |
+| **Se alinea** | [Foliot](https://www.google.com/maps/place/?q=place_id:ChIJGyYRIogsz0wRzo_5T-WJYDk) | 4.4 ★ · 86 reseñas *(Canadá)* · 4.4 ★ · 50 *(Las Vegas)* | **Un perfil por cada fábrica:** prueba que el taller existe |
 
 **Otros:** Gensler 4.6 ★ · 26 · Rockwell Group 4.5 ★ · 24 · Shawmut 4.3 ★ · 13 · idX sin reseñas ·
 Studio HBA 5 ★ · 7.

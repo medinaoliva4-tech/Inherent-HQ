@@ -5,7 +5,7 @@
 | Qué | Link | Qué hay ahí |
 |---|---|---|
 | **Figma de branding** | [inherent — brand world](https://www.figma.com/design/ksQTN8T8spztwMXWxekmGq/inherent---brand-world?node-id=340-2) | **Se trabaja solo en la página «Cerantola»** |
-| **Pinterest — estilo fotográfico** | ⚠️ Por crear | Tablero «Cerantola · Estilo fotográfico» con 3 secciones: luz · encuadre · vida |
+| **Pinterest — moodboard** | [CERANTOLA](https://www.pinterest.com/ineherente/cerantola/) | Referencias visuales para afinar el estilo *(11 pines)* |
 | **Web actual** | [cerantola.webflow.io](https://cerantola.webflow.io/) | Dominio de prueba. ⚠️ **No tienen dominio propio todavía** |
 | **Correo** | `@cerantoladisplays.com` | El dominio del correo |
 | **Presentación comercial 2026** | ⚠️ Subir al Drive | «Restaurants & Retail Work». Clientes, cifras y la representación de Linyu |
