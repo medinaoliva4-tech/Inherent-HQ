@@ -270,19 +270,25 @@ Contesta SOLO con este JSON, sin texto antes ni después:
 
   // ---------- Research: los videos que funcionaron, como galería (el scrape + lo que sube Claude con el conector) ----------
   // Cada video puede traer «por qué funcionó» y una plantilla para la marca: los dos los escribe Claude y los sube con guardar_research.
+  // Research muestra SOLO lo que sube Claude con el conector de Inherent (guardar_research). El scrape semanal no entra aquí.
   function needResearch(b, fn) {
-    if (week && rs) return false;
+    if (rs) return false;
     mount(b, html`<p class="loading">Cargando research…</p>`);
-    Promise.all([week ? null : loadWeek(), rs ? null : C.list().then((l) => { rs = l.filter((x) => x.kind === 'research' && x.profile === slug); }).catch(() => { rs = []; })])
-      .then(() => alive() && b.isConnected && fn(b));
+    C.list().then((l) => { rs = l.filter((x) => x.kind === 'research' && x.profile === slug); }).catch(() => { rs = []; }).then(() => alive() && b.isConnected && fn(b));
     return true;
   }
   function researchItems() {
-    const r = week?.result || {}, map = new Map();
-    const add = (it, tipo) => { if (!it?.url) return; const k = rkey(it.url); const clean = Object.fromEntries(Object.entries(it).filter(([, v]) => v != null && v !== '')); map.set(k, { ...(map.get(k) || {}), ...clean, tipo: clean.tipo || map.get(k)?.tipo || tipo, key: k }); };
-    (r.top || []).forEach((x) => add(x, 'nicho')); (r.refs || []).forEach((x) => add(x, 'referente')); (r.comp || []).forEach((x) => add(x, 'competencia')); (r.added || []).forEach((x) => add(x, 'agregado'));
-    (rs || []).forEach((x) => add(x, 'agregado')); // lo del conector va al final: trae el análisis y la plantilla
-    return [...map.values()].sort((a, z) => (z.x || 0) - (a.x || 0) || (z.views || 0) - (a.views || 0));
+    return (rs || []).filter((x) => x.url).map((x) => ({ ...x, tipo: x.tipo || 'agregado', key: rkey(x.url) }))
+      .sort((a, z) => (z.x || 0) - (a.x || 0) || (z.views || 0) - (a.views || 0));
+  }
+  // La fuente: cuántos subió el conector, cuándo y quién. Desde aquí se copia la instrucción para Claude o se vacía.
+  const mcpPrompt = () => `Sube a Research del OS de Inherent lo que encontraste, con el conector de Inherent (guardar_research), perfil «${slug}». Cada post lleva url, formato (reel, carrusel o estatico), métricas, miniatura, imagenes si es carrusel, tipo (nicho, referente, competencia o propia), por_que_funciono (hook, retencion, estructura, por_que, adaptacion) y sus etiquetas: pilar, resonancia (alta, media o baja), habla (no, voz o si) y estilo. No inventes métricas y solo urls https.`;
+  function sourceBox(all) {
+    const ts = (x) => String(x._meta?.updated_at || x._meta?.created_at || ''), last = all.map(ts).filter((x) => !isNaN(Date.parse(x))).sort().pop();
+    const who = all.find((x) => ts(x) === last)?._meta?.updated_by || all.find((x) => ts(x) === last)?._meta?.created_by;
+    return html`<div class="rsource"><span class="fi">${ico('bolt', 16)}</span><div style="flex:1;min-width:200px"><b style="font-weight:500">Fuente: conector de Claude</b>
+        <div class="mut sm">${all.length ? `${all.length} post${all.length === 1 ? '' : 's'} subido${all.length === 1 ? '' : 's'} con guardar_research${last ? ' · ' : ''}${last ? `último ${fdate(new Date(last).toISOString().slice(0, 10))}` : ''}${who ? ` por ${who}` : ''}` : 'Todavía no se ha subido nada. Claude lo sube con guardar_research.'}</div></div>
+      <button class="btn ghost xs" data-act="rprompt">Copiar instrucción para Claude</button><button class="btn ghost xs" data-act="rreload">Actualizar</button>${all.length ? html`<button class="btn ghost xs" data-act="rclear">Vaciar</button>` : ''}</div>`;
   }
   const rmatch = (x, k) => k === 'todos' || (k === 'analisis' ? Boolean(x.why) : x.tipo === k);
   const fmatch = (x, k) => k === 'todo' || (k === 'plantilla' ? Boolean(x.plantilla) : fmtOf(x) === k);
@@ -305,7 +311,8 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     mount(b, html`<div class="rtiles">${RFMT.map(([k, l, i]) => html`<button class="rtile ${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}"><i>${ico(i, 22)}</i><span>${l}</span></button>`)}</div>
       <div class="rkstats">${[[all.length, 'Formatos'], [all.filter((x) => resOf(x) === 'alta').length, 'Resonancia alta'], [all.filter((x) => x.talk === 'no').length, 'Sin hablar'], [all.filter((x) => x.tested).length, 'Probados']].map(([n, l]) => html`<div><b>${n}</b><span>${l}</span></div>`)}</div>
       <div class="row" style="gap:10px;flex-wrap:wrap;margin:16px 0 12px"><div class="tabs" style="margin:0">${[['biblioteca', 'Biblioteca'], ['semana', `Mi semana · ${all.filter((x) => x.week === W).length}`]].map(([k, l]) => html`<button class="${rview === k ? 'on' : ''}" data-act="rview" data-v="${k}">${l}</button>`)}</div>
-        <div class="sp"></div><span class="mut sm">${week?.at ? `Scrape del ${fdate(week.at.slice(0, 10))}` : 'Sin scrape todavía'} · ${(rs || []).length} del conector</span><button class="btn ghost xs" data-act="rreload">Actualizar</button></div>
+</div>
+      ${sourceBox(all)}
       <div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:10px"><input class="in" id="rq" placeholder="Buscar: cuenta, tema, hook, estilo…" value="${rq}" style="flex:1;min-width:220px"><select class="in" id="rsort" style="width:auto">${SORTS.map(([k, l]) => html`<option value="${k}" ${rsort === k ? raw('selected') : ''}>${l}</option>`)}</select></div>
       <div class="rfilters">
         <div class="rfrow"><span class="lbl">Fuente</span><div class="rfopts">${RKIND.map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}">${l}</button>`)}</div></div>
@@ -315,8 +322,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
         ${frow('Tipo', 'style', STYLES.map((x) => [x, x]))}
       </div>
       <div class="mut sm" style="margin:10px 0 12px;font-family:ui-monospace,Menlo,monospace">${list.length} de ${base.length} formatos${rview === 'semana' ? ` · semana ${W.slice(-2)}` : ''}</div>
-      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : 'Nada con esos filtros'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : 'Quita algún filtro o agrega un link con «+».'}</div>`}
-      <button class="rfab" data-act="radd" title="Agregar un link">${ico('plus', 26)}</button>`);
+      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : all.length ? 'Nada con esos filtros' : 'Research está vacío'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : all.length ? 'Quita algún filtro.' : 'Se llena cuando Claude sube posts con el conector. Copia la instrucción de arriba y pégasela.'}</div>`}`);
     const qi = $('#rq', b); qi.oninput = () => { rq = qi.value; const pos = qi.selectionStart; research(b); const n = $('#rq', b); n.focus(); n.setSelectionRange(pos, pos); };
     $('#rsort', b).onchange = (e) => { rsort = e.target.value; research(b); };
   }
@@ -328,18 +334,6 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const r = cur ? await C.save({ ...cur, ...patch }) : await C.create({ id, kind: 'research', profile: slug, ...keep, ...patch });
     rs = [...(rs || []).filter((x) => x.id !== r.id), r];
     return r;
-  }
-  async function raddLink() {
-    const v = await ask('Agregar a Research', [
-      { k: 'url', l: 'Link del reel, carrusel o post (Instagram o TikTok)', req: true },
-      { k: 'format', l: 'Formato', t: 'select', opts: [['reel', 'Reel o video'], ['carrusel', 'Carrusel'], ['estatico', 'Estático']], half: true },
-      { k: 'tipo', l: 'De dónde viene', t: 'select', opts: [['referente', 'Referente'], ['competencia', 'Competencia'], ['nicho', 'Ganador del nicho'], ['agregado', 'Otro']], half: true },
-    ], 'Agregar');
-    if (!v) return;
-    const url = v.url.trim(); if (!/^https:\/\/(www\.)?(instagram\.com|tiktok\.com|vm\.tiktok\.com)\//.test(url)) return toast('Pega un link de Instagram o TikTok', true);
-    const h = (url.match(/tiktok\.com\/@([\w.]+)/) || [])[1] || '';
-    try { const r = await C.create({ kind: 'research', profile: slug, url, red: /tiktok/.test(url) ? 'tiktok' : 'instagram', handle: h.toLowerCase(), format: v.format, tipo: v.tipo }); rs = [...(rs || []), r]; toast('Agregado a Research'); research($('#cbody', el)); }
-    catch (e) { toast(e.message, true); }
   }
   const vidLine = (it) => [it.url, `@${it.handle || '—'}`, RED[it.red] || it.red, it.views && `${it.views} vistas`, it.likes && `${it.likes} likes`, it.x && `${it.x}× su promedio`].filter(Boolean).join(' · ');
   const whyText = (w) => [w.hook && `Hook: ${w.hook}`, w.retencion && `Qué retuvo: ${w.retencion}`, w.estructura?.length && `Estructura: ${w.estructura.join(' → ')}`, w.por_que && `Por qué funcionó: ${w.por_que}`].filter(Boolean).join('\n');
@@ -380,7 +374,7 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
         <div class="rv-foot"><div class="rv-acc"><span class="rv-av">${(it.handle || '?')[0].toUpperCase()}</span><div><b>@${it.handle || '—'}</b><div class="sm">${[RED[it.red] || it.red, { reel: 'Reel', carrusel: 'Carrusel', estatico: 'Estático' }[f], RKL[it.tipo]].filter(Boolean).join(' · ')}</div></div></div>
           <button class="rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button></div>
       </div>
-      <div class="rv-actions"><button class="rv-plus" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 22)}</button><button data-v="why" title="Por qué funcionó">${ico('bars', 20)}</button>${/^https:\/\//.test(it.url) ? html`<a href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original">${ico('globe', 20)}</a>` : ''}</div>
+      <div class="rv-actions"><button class="rv-plus" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 22)}</button><button data-v="why" title="Por qué funcionó">${ico('bars', 20)}</button>${/^https:\/\//.test(it.url) ? html`<a href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original">${ico('globe', 20)}</a>` : ''}<button data-v="del" title="Quitar de Research">${ico('trash', 20)}</button></div>
       <div class="rv-info">
         ${kpis.length || it.x ? html`<div class="rkpis">${kpis.map(([l, x]) => html`<div><span class="lbl">${l}</span><b>${K(x)}</b></div>`)}${it.x ? html`<div><span class="lbl">Vs su promedio</span><b>${it.x}×</b></div>` : ''}</div>` : ''}
         ${it.text ? html`<div class="mut sm" style="margin-top:12px">${String(it.text).slice(0, 400)}</div>` : ''}
@@ -409,6 +403,7 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
         tg.classList.toggle('dark', on); tg.textContent = tg.dataset.v === 'week' ? (on ? '✓ En mi semana' : '+ A mi semana') : on ? '✓ Probado' : 'Marcar como probado'; return; }
       const a = e.target.closest('[data-v]')?.dataset.v; if (!a) return;
       if (a === 'close') close();
+      if (a === 'del') { if (!(await confirmAsk('¿Quitar este post de Research?'))) return; try { await C.remove(it.id); rs = (rs || []).filter((x) => x.id !== it.id); close(); toast('Quitado de Research'); research($('#cbody', el)); } catch (er) { toast(er.message, true); } return; }
       if (a === 'use') { openClaude(usePrompt(it)); toast('Se abrió Claude Code con todo listo: dale enviar'); }
       if (a === 'ask') { openClaude(whyPrompt(it)); toast('Se abrió Claude Code: dale enviar. Cuando termine, toca «Actualizar»'); }
       if (a === 'why') $('#rvwhy', v)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -597,8 +592,12 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     rfmt: (t) => { rfmt = t.dataset.k; research($('#cbody', el)); },
     rview: (t) => { rview = t.dataset.v; research($('#cbody', el)); },
     rsel: (t) => { rsel[t.dataset.k] = rsel[t.dataset.k] === t.dataset.v ? '' : t.dataset.v; research($('#cbody', el)); },
-    radd: () => raddLink(),
-    rreload: () => { rs = null; week = null; research($('#cbody', el)); },
+    rreload: () => { rs = null; research($('#cbody', el)); },
+    rprompt: async () => { try { await navigator.clipboard.writeText(mcpPrompt()); toast('Instrucción copiada: pégasela a Claude'); } catch { toast(mcpPrompt()); } },
+    rclear: async () => {
+      if (!(await confirmAsk(`¿Vaciar Research de ${data.profile.name}? Se borran los ${(rs || []).length} posts subidos, con su análisis y su plantilla.`))) return;
+      try { for (const x of rs || []) await C.remove(x.id); rs = []; toast('Research vacío'); research($('#cbody', el)); } catch (e) { toast(e.message, true); }
+    },
     ropen: (t) => ropen(t.dataset.k),
     pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; const r = await editPost(slug, null, t.dataset.d ? { date: t.dataset.d } : {}); if (r) { posts = [...posts, r]; recal(); } },
     pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
