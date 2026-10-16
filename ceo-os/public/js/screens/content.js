@@ -10,7 +10,10 @@ const safeImg = (u) => (/^https:\/\/[^\s'"()]+$/.test(String(u || '')) ? u : nul
 const TABS = [['analytics', 'Analytics'], ['research', 'Research'], ['calendario', 'Calendario']];
 const C = col('content');
 // Research: de dónde viene cada video.
-const RKIND = [['todos', 'Todos'], ['nicho', 'Ganadores del nicho'], ['referente', 'Referentes'], ['competencia', 'Competencia'], ['analisis', 'Con análisis']];
+const RKIND = [['todos', 'Todas las fuentes'], ['nicho', 'Ganadores del nicho'], ['referente', 'Referentes'], ['competencia', 'Competencia'], ['analisis', 'Con análisis']];
+// Como en Edits: arriba se elige qué tipo de contenido se ve.
+const RFMT = [['todo', 'Todo', 'grid'], ['reel', 'Reels', 'video'], ['carrusel', 'Carruseles', 'layers'], ['estatico', 'Estáticos', 'image'], ['plantilla', 'Plantillas', 'copy']];
+const fmtOf = (it) => it.format || (it.video === false ? 'estatico' : 'reel');
 const RKL = { nicho: 'Ganador del nicho', referente: 'Referente', competencia: 'Competencia', propia: 'Tuyo', agregado: 'Agregado' };
 const rkey = (u) => String(u || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
 const embedOf = (u) => { let m; if ((m = String(u).match(/instagram\.com\/(?:p|reel|reels|tv)\/([\w-]+)/))) return `https://www.instagram.com/p/${m[1]}/embed`; if ((m = String(u).match(/tiktok\.com\/@[^/]+\/video\/(\d+)/))) return `https://www.tiktok.com/embed/v2/${m[1]}`; return null; };
@@ -31,7 +34,7 @@ export async function render(el, { sub, alive }) {
   let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'analytics';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
-  let rs = null, rfilter = 'todos', cview = 'publicacion', shoots = null;
+  let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
@@ -273,16 +276,32 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     return [...map.values()].sort((a, z) => (z.x || 0) - (a.x || 0) || (z.views || 0) - (a.views || 0));
   }
   const rmatch = (x, k) => k === 'todos' || (k === 'analisis' ? Boolean(x.why) : x.tipo === k);
-  const rcard = (it) => { const t = safeImg(it.thumb); return html`<button class="rcard" data-act="ropen" data-k="${it.key}" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>
-      <span class="rbadge">${it.plantilla ? 'Plantilla' : it.x ? it.x + '×' : RKL[it.tipo] || 'Video'}</span>${it.why ? html`<span class="rwhy" title="Tiene análisis">${ico('bulb', 13)}</span>` : ''}
-      ${t ? '' : html`<span class="rnothumb">${ico('play', 18)}</span>`}
+  const fmatch = (x, k) => k === 'todo' || (k === 'plantilla' ? Boolean(x.plantilla) : fmtOf(x) === k);
+  const rcard = (it) => { const t = safeImg(it.thumb), f = fmtOf(it); return html`<button class="rcard" data-act="ropen" data-k="${it.key}" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>
+      <span class="rbadge">${it.plantilla ? 'Plantilla' : it.x ? it.x + '×' : RKL[it.tipo] || 'Video'}</span>
+      <span class="ricons">${f !== 'reel' ? html`<i title="${f === 'carrusel' ? 'Carrusel' : 'Estático'}">${ico(f === 'carrusel' ? 'layers' : 'image', 13)}</i>` : ''}${it.why ? html`<i title="Tiene análisis">${ico('bulb', 13)}</i>` : ''}</span>
+      ${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 20)}</span>`}
       <span class="rfoot"><b>@${it.handle || '—'}</b><span>${it.views ? html`${ico('play', 12)} ${K(it.views)}` : it.likes ? html`${ico('heart')} ${K(it.likes)}` : ''}</span></span></button>`; };
   function research(b) {
     if (needResearch(b, research)) return;
-    const all = researchItems(), list = all.filter((x) => rmatch(x, rfilter));
-    mount(b, html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:14px">${RKIND.map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}" style="padding:8px 14px">${l} <span style="opacity:.6;margin-left:4px">${all.filter((x) => rmatch(x, k)).length}</span></button>`)}
+    const all = researchItems(), byFmt = all.filter((x) => fmatch(x, rfmt)), list = byFmt.filter((x) => rmatch(x, rfilter));
+    mount(b, html`<div class="rtiles">${RFMT.map(([k, l, i]) => html`<button class="rtile ${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}"><i>${ico(i, 22)}</i><span>${l}</span></button>`)}</div>
+      <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:14px">${RKIND.map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}" style="padding:7px 13px">${l} <span style="opacity:.6;margin-left:4px">${byFmt.filter((x) => rmatch(x, k)).length}</span></button>`)}
         <div class="sp"></div><span class="mut sm">${week?.at ? `Scrape del ${fdate(week.at.slice(0, 10))}` : 'Sin scrape todavía'} · ${(rs || []).length} del conector</span><button class="btn ghost xs" data-act="rreload">Actualizar</button></div>
-      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>Todavía no hay videos aquí</b>Llegan del scrape semanal y de lo que sube Claude con el conector de Inherent.</div>`}`);
+      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>Nada aquí todavía</b>Llega del scrape semanal y de lo que sube Claude con el conector de Inherent. También puedes agregar un link con «+».</div>`}
+      <button class="rfab" data-act="radd" title="Agregar un link">${ico('plus', 26)}</button>`);
+  }
+  async function raddLink() {
+    const v = await ask('Agregar a Research', [
+      { k: 'url', l: 'Link del reel, carrusel o post (Instagram o TikTok)', req: true },
+      { k: 'format', l: 'Formato', t: 'select', opts: [['reel', 'Reel o video'], ['carrusel', 'Carrusel'], ['estatico', 'Estático']], half: true },
+      { k: 'tipo', l: 'De dónde viene', t: 'select', opts: [['referente', 'Referente'], ['competencia', 'Competencia'], ['nicho', 'Ganador del nicho'], ['agregado', 'Otro']], half: true },
+    ], 'Agregar');
+    if (!v) return;
+    const url = v.url.trim(); if (!/^https:\/\/(www\.)?(instagram\.com|tiktok\.com|vm\.tiktok\.com)\//.test(url)) return toast('Pega un link de Instagram o TikTok', true);
+    const h = (url.match(/tiktok\.com\/@([\w.]+)/) || [])[1] || '';
+    try { const r = await C.create({ kind: 'research', profile: slug, url, red: /tiktok/.test(url) ? 'tiktok' : 'instagram', handle: h.toLowerCase(), format: v.format, tipo: v.tipo }); rs = [...(rs || []), r]; toast('Agregado a Research'); research($('#cbody', el)); }
+    catch (e) { toast(e.message, true); }
   }
   const vidLine = (it) => [it.url, `@${it.handle || '—'}`, RED[it.red] || it.red, it.views && `${it.views} vistas`, it.likes && `${it.likes} likes`, it.x && `${it.x}× su promedio`].filter(Boolean).join(' · ');
   const whyText = (w) => [w.hook && `Hook: ${w.hook}`, w.retencion && `Qué retuvo: ${w.retencion}`, w.estructura?.length && `Estructura: ${w.estructura.join(' → ')}`, w.por_que && `Por qué funcionó: ${w.por_que}`].filter(Boolean).join('\n');
@@ -308,24 +327,46 @@ ${it.text ? `Texto del post: ${String(it.text).replace(/\s+/g, ' ').slice(0, 300
 Devuelve: el hook (lo que pasa o se dice en los primeros 3 segundos), qué retuvo a la gente, la estructura en beats, por qué funcionó y cómo lo adaptaría ${p.name} (su estrategia está en ${root()}/01-estrategia/).
 Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}», el url del video, sus métricas y por_que_funciono {hook, retencion, estructura, por_que, adaptacion, inferido}.`;
   }
+  // El detalle, como en Edits: el video en grande, la cuenta y «Usar plantilla» abajo, las acciones al lado.
   function ropen(k) {
     const it = researchItems().find((x) => x.key === k); if (!it) return;
-    const w = it.why || {}, em = embedOf(it.url), t = safeImg(it.thumb);
-    const kpis = [['Vistas', it.views], ['Likes', it.likes], ['Comentarios', it.comments], ['Compartidos', it.shares]].filter(([, v]) => v != null);
-    drawer(html`<div class="row"><span class="chip">${RED[it.red] || it.red || 'Video'}</span><span class="chip">${RKL[it.tipo] || 'Agregado'}</span>${it.at ? html`<span class="mut sm" style="margin-left:6px">${fdate(String(it.at).slice(0, 10))}</span>` : ''}<div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
-      <h2 style="margin-top:10px">@${it.handle || '—'}</h2>
-      <div class="rplayer">${em ? html`<iframe src="${em}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>` : t ? html`<div class="rposter" style="background-image:url('${t}')"></div>` : html`<div class="rposter"></div>`}</div>
-      ${kpis.length || it.x ? html`<div class="rkpis">${kpis.map(([l, v]) => html`<div><span class="lbl">${l}</span><b>${K(v)}</b></div>`)}${it.x ? html`<div><span class="lbl">Vs su promedio</span><b>${it.x}×</b></div>` : ''}</div>` : ''}
-      ${it.text ? html`<div class="mut sm" style="margin-top:12px">${String(it.text).slice(0, 400)}</div>` : ''}
-      <div class="row" style="gap:8px;flex-wrap:wrap;margin:16px 0 4px"><button class="btn" data-act="ruse">${ICON.sparkle} Usar plantilla</button>${it.why ? '' : html`<button class="btn ghost" data-act="rwhy">Por qué funcionó</button>`}${/^https:\/\//.test(it.url) ? html`<a class="btn ghost" href="${it.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Abrir ↗</a>` : ''}</div>
-      ${it.why ? html`<div class="rwhybox"><h3>Por qué funcionó${w.inferido ? html` <span class="chip amber sm2">inferido</span>` : ''}</h3>
-        ${w.hook ? html`<p><b>Hook</b> ${w.hook}</p>` : ''}${w.retencion ? html`<p><b>Qué retuvo</b> ${w.retencion}</p>` : ''}
-        ${w.estructura?.length ? html`<p><b>Estructura</b></p><ol>${w.estructura.map((x) => html`<li>${x}</li>`)}</ol>` : ''}
-        ${w.por_que ? html`<p><b>Por qué funcionó</b> ${w.por_que}</p>` : ''}${w.adaptacion ? html`<p><b>Cómo adaptarlo</b> ${w.adaptacion}</p>` : ''}</div>` : ''}
-      ${it.plantilla ? html`<div class="rwhybox"><h3>Plantilla para ${data.profile.name}</h3>${md(it.plantilla)}</div>` : ''}`, {
-      ruse: () => { openClaude(usePrompt(it)); toast('Se abrió Claude Code con todo listo: dale enviar'); },
-      rwhy: () => { openClaude(whyPrompt(it)); toast('Se abrió Claude Code: dale enviar. Cuando termine, toca «Actualizar»'); },
-    });
+    const w = it.why || {}, em = embedOf(it.url), t = safeImg(it.thumb), f = fmtOf(it), slides = (it.slides || []).map(safeImg).filter(Boolean);
+    const kpis = [['Vistas', it.views], ['Likes', it.likes], ['Comentarios', it.comments], ['Compartidos', it.shares]].filter(([, v]) => v != null && v !== 0);
+    document.querySelector('.rview')?.remove();
+    const v = document.createElement('div'); v.className = 'rview';
+    mount(v, html`<div class="rv-col">
+        <div class="rv-media">${em ? html`<iframe src="${em}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`
+          : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
+          : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}></div>`}
+          <button class="rv-back" data-v="close" title="Cerrar">${ico('x', 18)}</button></div>
+        <div class="rv-foot"><div class="rv-acc"><span class="rv-av">${(it.handle || '?')[0].toUpperCase()}</span><div><b>@${it.handle || '—'}</b><div class="sm">${[RED[it.red] || it.red, { reel: 'Reel', carrusel: 'Carrusel', estatico: 'Estático' }[f], RKL[it.tipo]].filter(Boolean).join(' · ')}</div></div></div>
+          <button class="rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button></div>
+      </div>
+      <div class="rv-actions"><button class="rv-plus" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 22)}</button><button data-v="why" title="Por qué funcionó">${ico('bars', 20)}</button>${/^https:\/\//.test(it.url) ? html`<a href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original">${ico('globe', 20)}</a>` : ''}</div>
+      <div class="rv-info">
+        ${kpis.length || it.x ? html`<div class="rkpis">${kpis.map(([l, x]) => html`<div><span class="lbl">${l}</span><b>${K(x)}</b></div>`)}${it.x ? html`<div><span class="lbl">Vs su promedio</span><b>${it.x}×</b></div>` : ''}</div>` : ''}
+        ${it.text ? html`<div class="mut sm" style="margin-top:12px">${String(it.text).slice(0, 400)}</div>` : ''}
+        <div class="rwhybox" id="rvwhy"><h3>Por qué funcionó${w.inferido ? html` <span class="chip amber sm2">inferido</span>` : ''}</h3>
+          ${it.why ? html`${w.hook ? html`<p><b>Hook</b> ${w.hook}</p>` : ''}${w.retencion ? html`<p><b>Qué retuvo</b> ${w.retencion}</p>` : ''}${w.estructura?.length ? html`<p><b>Estructura</b></p><ol>${w.estructura.map((x) => html`<li>${x}</li>`)}</ol>` : ''}${w.por_que ? html`<p><b>Por qué funcionó</b> ${w.por_que}</p>` : ''}${w.adaptacion ? html`<p><b>Cómo adaptarlo</b> ${w.adaptacion}</p>` : ''}`
+            : html`<p class="mut">Todavía sin análisis. Claude lo desglosa y lo sube aquí.</p><button class="btn xs" data-v="ask">Pedir el análisis a Claude</button>`}</div>
+        ${it.plantilla ? html`<div class="rwhybox"><h3>Plantilla para ${data.profile.name}</h3>${md(it.plantilla)}</div>` : ''}
+      </div>`);
+    document.body.appendChild(v);
+    const close = () => { v.remove(); removeEventListener('keydown', esc); }, esc = (e) => { if (e.key === 'Escape') close(); };
+    addEventListener('keydown', esc); addEventListener('hashchange', close, { once: true });
+    v.onclick = async (e) => {
+      if (e.target === v) return close();
+      const a = e.target.closest('[data-v]')?.dataset.v; if (!a) return;
+      if (a === 'close') close();
+      if (a === 'use') { openClaude(usePrompt(it)); toast('Se abrió Claude Code con todo listo: dale enviar'); }
+      if (a === 'ask') { openClaude(whyPrompt(it)); toast('Se abrió Claude Code: dale enviar. Cuando termine, toca «Actualizar»'); }
+      if (a === 'why') $('#rvwhy', v)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (a === 'plan') {
+        const x = await ask('Agendar en Publicación', [{ k: 'title', l: 'Idea', v: `Basado en @${it.handle || 'referencia'}`, req: true }, { k: 'date', l: 'Fecha', t: 'date', v: today(), req: true, half: true }, { k: 'format', l: 'Formato', t: 'select', opts: ['Reel', 'Carrusel', 'Estático', 'TikTok', 'Story'], v: f === 'carrusel' ? 'Carrusel' : f === 'estatico' ? 'Estático' : 'Reel', half: true }], 'Agendar');
+        if (!x) return;
+        try { await C.create({ kind: 'post', profile: slug, title: x.title, date: x.date, format: x.format, status: 'Idea', caption: `Referencia: ${it.url}` }); posts = null; toast('Agendado en Calendario → Publicación'); } catch (er) { toast(er.message, true); }
+      }
+    };
   }
 
   // ---------- Calendario: Publicación (las piezas del Planner) y Grabación (qué se graba cada día) ----------
@@ -502,6 +543,8 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     snew: (t, e) => { if (e?.target?.closest('.ppost')) return; editShoot(null, t.dataset.d); },
     sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },
     rfilter: (t) => { rfilter = t.dataset.k; research($('#cbody', el)); },
+    rfmt: (t) => { rfmt = t.dataset.k; research($('#cbody', el)); },
+    radd: () => raddLink(),
     rreload: () => { rs = null; week = null; research($('#cbody', el)); },
     ropen: (t) => ropen(t.dataset.k),
     pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; const r = await editPost(slug, null, t.dataset.d ? { date: t.dataset.d } : {}); if (r) { posts = [...posts, r]; recal(); } },

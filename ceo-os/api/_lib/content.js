@@ -130,8 +130,8 @@ export async function startScrape(src) {
 
 const n = (v) => (Number.isFinite(+v) ? +v : 0);
 function normalize(red, it) {
-  if (red === 'instagram') return { red, id: it.shortCode || it.id, handle: String(it.ownerUsername || '').toLowerCase(), url: it.url, text: String(it.caption || '').slice(0, 400), views: n(it.videoViewCount || it.videoPlayCount), likes: n(it.likesCount), comments: n(it.commentsCount), at: it.timestamp || null, video: it.type === 'Video' || it.productType === 'clips', thumb: it.displayUrl || null };
-  return { red, id: it.id, handle: String(it.authorMeta?.name || '').toLowerCase(), url: it.webVideoUrl, text: String(it.text || '').slice(0, 400), views: n(it.playCount), likes: n(it.diggCount), comments: n(it.commentCount), shares: n(it.shareCount), at: it.createTimeISO || null, video: true, thumb: it.videoMeta?.coverUrl || null };
+  if (red === 'instagram') return { red, id: it.shortCode || it.id, handle: String(it.ownerUsername || '').toLowerCase(), url: it.url, text: String(it.caption || '').slice(0, 400), views: n(it.videoViewCount || it.videoPlayCount), likes: n(it.likesCount), comments: n(it.commentsCount), at: it.timestamp || null, video: it.type === 'Video' || it.productType === 'clips', format: it.type === 'Sidecar' ? 'carrusel' : it.type === 'Image' ? 'estatico' : 'reel', slides: it.type === 'Sidecar' ? (it.images || []).filter((u) => /^https:\/\//.test(u)).slice(0, 20) : undefined, thumb: it.displayUrl || null };
+  return { red, id: it.id, handle: String(it.authorMeta?.name || '').toLowerCase(), url: it.webVideoUrl, text: String(it.text || '').slice(0, 400), views: n(it.playCount), likes: n(it.diggCount), comments: n(it.commentCount), shares: n(it.shareCount), at: it.createTimeISO || null, video: true, format: 'reel', thumb: it.videoMeta?.coverUrl || null };
 }
 // Ganador = rinde muy por encima de lo normal DE ESA CUENTA (no del índice general).
 function scored(items) {
