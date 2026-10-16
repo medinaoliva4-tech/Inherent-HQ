@@ -1059,3 +1059,4 @@ html{scrollbar-gutter:stable;overflow-y:scroll}
 .rfilt>summary::-webkit-details-marker{display:none}.rfilt>summary b{background:var(--ink);color:var(--cream);border-radius:99px;padding:1px 8px;font-size:12px}
 .rfilt[open]>summary{background:var(--ink);color:var(--cream)}.rfilt .rfilters{margin-top:10px}
 .rv-ext{color:var(--cream);text-decoration:none;white-space:nowrap}
+.rv-poster>img{width:100%;height:100%;object-fit:cover;display:block}

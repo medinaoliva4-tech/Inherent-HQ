@@ -224,11 +224,27 @@ on('GET', 'content/video', async (req, res) => {
   const m = String(req.query.url || '').match(/^https:\/\/(?:www\.)?instagram\.com\/(?:p|reel|reels|tv)\/([\w-]{5,40})/);
   if (!m) return res.status(400).json({ error: 'Solo reels de Instagram' });
   try {
-    const r = await fetch(`https://www.instagram.com/p/${m[1]}/embed/captioned/`, { headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141 Safari/537.36' }, signal: AbortSignal.timeout(8000) });
+    const r = await fetch(`https://www.instagram.com/p/${m[1]}/embed/captioned/`, { headers: { 'user-agent': 'Mozilla/5.0 (Macintosh) Chrome/141', accept: '*/*' }, signal: AbortSignal.timeout(8000) });
     const t = await r.text(), v = t.match(/video_url\\*"\s*:\s*\\*"(https:[^"]+?)\\*"/);
     const src = v ? v[1].replace(/\\+\//g, '/').replace(/\\+u0026/g, '&').replace(/\\+/g, '') : '';
     res.json({ src: /^https:\/\/[\w.-]+\.(cdninstagram\.com|fbcdn\.net)\//.test(src) ? src : '' });
   } catch { res.json({ src: '' }); }
+});
+// Respaldo: si el navegador no puede bajar el video directo del CDN, el OS lo pasa en pedazos (Range) de hasta 3 MB.
+on('GET', 'content/stream', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const src = String(req.query.u || '');
+  if (!/^https:\/\/[\w.-]+\.(cdninstagram\.com|fbcdn\.net)\/[^\s]+$/.test(src)) return res.status(400).json({ error: 'Link inválido' });
+  const m = String(req.headers.range || 'bytes=0-').match(/bytes=(\d+)-(\d*)/), a = m ? +m[1] : 0, b = Math.min(m && m[2] ? +m[2] : Infinity, a + 3_000_000 - 1);
+  try {
+    const r = await fetch(src, { headers: { range: `bytes=${a}-${b}`, 'user-agent': 'Mozilla/5.0 (Macintosh) Chrome/141' }, signal: AbortSignal.timeout(20000) });
+    if (!r.ok) return res.status(502).json({ error: 'Instagram no lo entregó' });
+    const buf = Buffer.from(await r.arrayBuffer());
+    res.setHeader('Content-Type', r.headers.get('content-type') || 'video/mp4'); res.setHeader('Accept-Ranges', 'bytes'); res.setHeader('Cache-Control', 'private, max-age=3600');
+    const cr = r.headers.get('content-range'); if (cr) res.setHeader('Content-Range', cr);
+    res.setHeader('Content-Length', String(buf.length));
+    res.status(r.status === 206 ? 206 : 200).end(buf);
+  } catch { res.status(502).json({ error: 'Instagram no lo entregó' }); }
 });
 // Las imágenes de Research que guardó el conector (las del CDN de Instagram caducan en días).
 on('GET', 'media/:id', async (req, res) => {

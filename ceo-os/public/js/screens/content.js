@@ -380,7 +380,7 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     document.querySelector('.rview')?.remove();
     const v = document.createElement('div'); v.className = 'rview';
     mount(v, html`<div class="rv-col">
-        <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}><span class="rv-load">Cargando video…</span></div>`
+        <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster">${t ? html`<img src="${t}" alt="">` : ''}<span class="rv-load">Cargando video…</span></div>`
           : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
           : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}></div>`}
           <button class="rv-back" data-v="close" title="Cerrar">${ico('x', 18)}</button></div>
@@ -426,7 +426,9 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
       fetch('/api/content/video?' + new URLSearchParams({ url: it.url })).then((r) => (r.ok ? r.json() : {})).then(({ src }) => {
         const p = box.querySelector('.rv-poster'); if (!p) return; if (!src) return fallback();
         const vd = document.createElement('video'); Object.assign(vd, { src, controls: true, autoplay: true, muted: true, loop: true, playsInline: true }); if (t) vd.poster = t;
-        vd.setAttribute('referrerpolicy', 'no-referrer'); vd.onerror = fallback; p.replaceWith(vd);
+        vd.setAttribute('referrerpolicy', 'no-referrer');
+        let viaOS = false; vd.onerror = () => { if (viaOS) { vd.replaceWith(p); return fallback(); } viaOS = true; vd.src = '/api/content/stream?' + new URLSearchParams({ u: src }); vd.play?.().catch(() => {}); };
+        p.replaceWith(vd);
       }).catch(fallback);
     }
     const close = () => { v.remove(); removeEventListener('keydown', esc); }, esc = (e) => { if (e.key === 'Escape') close(); };
