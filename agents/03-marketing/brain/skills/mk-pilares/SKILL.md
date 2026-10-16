@@ -62,6 +62,9 @@ repetición para que la audiencia lo aprenda.
 
 🛑 **Un ciclo todo `Conversion` quema la audiencia. Un ciclo sin `Conversion` no cobra.**
 
+> 🔑 **El mix de etapas y los «client-getting videos» no son pilares ni funciones.** Son una lectura
+> encima de ellos *(§ 6B)*: no cambian cuántos pilares hay ni su peso.
+
 ## 5 · El reparto
 
 **Se reparte el total de slots del ciclo entre los pilares, en porcentaje, y tiene que cerrar
@@ -84,6 +87,23 @@ en 100%.**
 | **B · El reparto** | Tabla con pilar, %, slots que le tocan. **Cierra en 100%** |
 | **C · El mix de funciones** | Cuántos slots por función. Se verifica contra las reglas de arriba |
 | **D · Lo que se descartó** | Pilares que se consideraron y no entraron, con el motivo |
+| **E · El mix de etapas y la captura** | *Opcional.* Ver § 6B |
+
+### 6B · El mix de etapas y la captura — opcional
+
+**Si se usa, se escribe acá y baja a las columnas opcionales `etapa` y `captura` de `mk-calendario`.**
+
+| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
+|---|---|---|---|---|
+| **Mix de arranque `TOF` · `MOF` · `BOF`** | 50 · 30 · 20 | 50 · 30 · 20 | 50 · 30 · 20 | 50 · 30 · 20 |
+| **Client-getting** *(% de los slots de video corto)* | 20% | 25% | 30% | 30% |
+| **A dónde apunta su llamada a la acción** | `directo` | `directo` | Receta de `gr-captura` | Receta de `gr-captura` |
+
+- **El mix de arranque se ajusta con datos** de `aprendizaje-de-marketing.md`.
+- **El `BOF` y `Conversion` se leen juntos:** `Conversion` sigue entre 10% y 25%.
+- **Cada pilar declara qué parte de sus slots son client-getting.** Un pilar entero de client-getting es un anuncio, no un pilar.
+- 🔷 **En la línea Marketing la llamada a la acción es `directo`:** el DM o WhatsApp del cliente, que ⑧ Community atiende.
+  La receta de captura es de 🟨 *(② Growth `gr-captura`)*.
 
 ## 7 · Bloqueos
 
@@ -103,3 +123,4 @@ en 100%.**
 - [ ] Ningún pilar arriba del 40% ni abajo del 10%
 - [ ] `Conversion` está entre 10% y 25%
 - [ ] Lo descartado está escrito
+- [ ] Si se usó el mix de etapas: `BOF` y `Conversion` no se contradicen, y el client-getting **no pasa** del % del plan

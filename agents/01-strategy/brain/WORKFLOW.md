@@ -116,6 +116,9 @@ arranca sin el anterior.
    04 METODOLOGÍA           la estrategia armada
         │
         ▼
+   04B BRIEF DE COMUNICACIÓN   qué decimos y cómo — una página por ciclo
+        │
+        ▼
    05 ENTREGA               el documento y el folder del cliente
         │
         ▼
@@ -175,6 +178,17 @@ historia (el cliente es el héroe) · personalidad · el fundador · comunidad i
 > 🛑 **El nivel es MACRO.** Si la ingeniería inversa muestra que cierto contenido convierte, la
 > conclusión no es el formato: es **a quién hay que hablarle y cómo hay que sentirse** para que esa
 > audiencia nos desee. Se entregan **las acciones que hay que hacer**, no piezas.
+
+### 04B · BRIEF DE COMUNICACIÓN → skill `brief-de-comunicacion`
+Una página por cliente y por ciclo, **antes** de planear el contenido: **qué se vende, a quién, qué
+queremos que haga y sienta, y cómo se comunica** *(palabras, visual e ideas creativas)*. De ahí
+sale **qué inspiración y qué contexto buscar** *(`cr-fuentes`)*. Aplica pocos principios de
+persuasión: `skills/brief-de-comunicacion/references/psicologia-de-venta.md`.
+Sirve igual para un cliente que para Inherent como cliente cero.
+
+🛑 **Es el gate de ③ Marketing:** sin `brief-de-comunicacion-AAAA-MM.md` no se arma el calendario.
+En el primer ciclo entra en el paquete del gate del CEO; en los siguientes se actualiza en la
+revisión de los días 1-3 y sigue.
 
 ### 05 · ENTREGA
 Arma los dos entregables. **El formato está en §7.** Cierra con **el gate del CEO**
@@ -447,7 +461,8 @@ clients/<cliente>/
 ├── 01-estrategia/
 │   ├── estrategia.md             ← el de arriba
 │   ├── nucleo.md                 ← el WIN, el arquetipo y las 3 verdades
-│   └── posicionamiento.md        ← bloque 04 · `methodology`
+│   ├── posicionamiento.md        ← bloque 04 · `methodology`
+│   └── brief-de-comunicacion-AAAA-MM.md  ← bloque 04B · `brief-de-comunicacion` (uno por ciclo)
 └── 99-referencias/investigacion/
     └── ingenieria-inversa.md     ← bloque 03 · `reverse-engineering`
 ```
@@ -490,6 +505,7 @@ Al cerrar, una línea por destino con qué le toca a cada uno:
 Branding   → territorio, tono y activos distintivos
 Marketing  → canales, calendario macro y el plan del ciclo
 Creative   → posicionamiento, campaña y qué tipo de pieza hace falta
+Comunicación → brief-de-comunicacion-AAAA-MM.md, que ③ Marketing lee primero
 Growth     → oferta, precio y objetivo
 ```
 
@@ -505,6 +521,7 @@ Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 A
 - [ ] Las renuncias están escritas, no implícitas
 - [ ] Lo externo está en `LINKS.md`, no copiado
 - [ ] Los huecos abiertos están nombrados, no disimulados
+- [ ] 🛑 **El `brief-de-comunicacion-AAAA-MM.md` del ciclo existe** y pasa su QA — sin él ③ Marketing no arranca
 - [ ] 🛑 **El plan quedó anotado en `clients/<cliente>/00-onboarding/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
 - [ ] Nada promete lo que el **plan contratado** no cubre — ver `inherent/06-ECONOMIA.md`
 - [ ] Si es ⬜ Tailor Made, `plan-contratado.md` tiene **Qué incluye** y **Su pipeline** (§0)

@@ -19,6 +19,9 @@ description: >
 > 🔑 **④ Creatividad y ⑨ Posting la usan como ley.** Si está escrita con adjetivos, no sirve:
 > *«cercano y profesional»* lo cumple cualquier texto.
 
+> 📚 **Persuasión en las palabras:** los principios están en
+> `agents/01-strategy/brain/skills/brief-de-comunicacion/references/psicologia-de-venta.md`.
+
 ## 1 · El tono se define con ejes, no con adjetivos
 
 **Cada eje es una línea entre dos extremos, y la marca se ubica en un punto.**

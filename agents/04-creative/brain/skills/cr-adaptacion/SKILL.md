@@ -95,7 +95,7 @@ id · campana · fecha · canal · formato · pilar · funcion · concepto · me
 | `traza` | La letra de la MUST BE TRUE que mueve | ① Strategy |
 | `material` | `ninguno` / `video` / `foto` — **qué material nuevo necesita de ⑤ Producción** | Creative |
 | `estado` | `listo` / `pendiente` / `⏸️ aprobación` | Creative |
-| `trial` | `sí` / `no`. Solo Reels de Instagram: `sí` sale primero a quien no sigue la cuenta *(trial reel)* y ⑨ Posting lo programa así | Creative |
+| `trial` | `sí` / `no`. Solo Reels de Instagram. **`sí` en todo Reel de formato no probado** *(§ 3B)*: sale primero a quien no sigue la cuenta *(trial reel)* y ⑨ Posting lo programa así | Creative |
 
 🛑 **Lo heredado se copia, no se reescribe.** Si un `canal` o una `funcion` te incomodan, se devuelve
 el slot a ③ Marketing; no se corrige en la celda.
@@ -107,6 +107,29 @@ fila contra el slot `Hero` del que salió. El `goal_del_arte` (`alcance` · `mem
 no en el Excel**.
 
 🛑 **Ninguna celda vacía.** Si falta un dato, la fila es `pendiente` y se declara qué falta.
+
+---
+
+## 3B · Trial reels — regla fija, todos los ciclos
+
+🎬 **Todo Reel de Instagram de formato no probado sale primero como trial.** No es una opción: es
+la columna `trial = sí`. Sirve para ganar seguidores e interesados sin arriesgar la cuenta de quien
+ya nos sigue.
+
+| | Regla |
+|---|---|
+| **Qué es «formato no probado»** | El formato *(tipo de pieza)* o la caja de hook que **esa cuenta** no tiene leída con resultado. **Sin dato = no probado** |
+| **Qué es «probado»** | Ya pasó a seguidores como trial, o rindió publicado normal, **con la lectura de `po-loop` o `cr-loop` que lo muestra** |
+| **Primer ciclo del cliente** | Sin historial todo Reel es no probado: sale como trial |
+| **Cuando todos los formatos ya están probados** | El trial es una **variante de hook** de un Reel probado *(`ve-derivadas`)*. **Ningún ciclo con Reels queda sin trial** |
+| **Cuántas piezas son** | **Las mismas del plan.** Un trial no es una pieza extra: es el Reel del slot, publicado primero a quien no sigue la cuenta |
+| **El ganador** | Pasa a los seguidores y se publica normal *(⑨ lo programa con `SS_PERFORMANCE`)*, y se marca como **candidato a pauta** para ⑩ Ads |
+| **El que no pasa** | No se republica tal cual. Lo aprendido vuelve a Creatividad en `cr-loop` |
+| **Dónde aplica** | **Solo Reels de Instagram.** TikTok y Shorts no tienen trial: ahí `trial = no` |
+
+🔑 **El hook de la variante es lo que se prueba.** El cuerpo y la traza no cambian.
+🎯 **Un client-getting video** *(slot con `captura`, de `mk-calendario`)* **de formato no probado también sale
+como trial:** el trial llega justo a quien todavía no nos conoce.
 
 ---
 
@@ -128,6 +151,9 @@ Cada sección lleva: **Objetivo del slot** · **Emoción** · **Hook** · **Guio
 > 🛑 **El hook, el guion y el copy van literales, entre comillas.** *"un hook de curiosidad"* no es
 > un entregable; el texto exacto sí.
 
+- Si el slot trae **`etapa`** o **`captura`** *(columnas opcionales de `mk-calendario`)*, se anotan en **Objetivo del slot** y
+  **la llamada a la acción de la pieza apunta a esa receta**: la palabra, el recurso o el siguiente paso, literales. La
+  receta la fijó ② Growth; acá no se inventa. En 🔷 `captura = directo`: el CTA es escribir al DM o WhatsApp del cliente.
 - `guion` = lo que se **dice**. Si el formato no lleva voz: `N/A — formato estático`. Nunca vacío.
 - `copy` = lo que se **ve**. Con jerarquía explícita: título > subtítulo > CTA.
 - `escenas`, `encuadres` y `duraciones` llevan **el mismo número de ítems y el mismo orden**
@@ -219,6 +245,8 @@ Ninguna capa se entrega sin pasar su bloque completo.
 - [ ] Las **13 columnas** están completas en cada fila del `plan-de-contenido.csv`
 - [ ] **Toda fila tiene `campana`**, y el ciclo se puede leer y revisar campaña por campaña
 - [ ] **Cada `id` del CSV tiene su sección `## CR-00X · <concepto>` en el `ideas-<formato>.md` que corresponde a su columna `formato`** — y ninguna sección queda huérfana ni duplicada en dos docs
+- [ ] 🎬 **Todo Reel de Instagram de formato no probado** tiene `trial = sí`; ningún ciclo con Reels queda sin trial; TikTok y Shorts llevan `trial = no`
+- [ ] Si el slot trae `captura`, **la llamada a la acción apunta a esa receta** y nombra qué se entrega
 - [ ] **Toda fila tiene `mezcla`**, y el reparto del ciclo cierra en **70/20/10 ±10 puntos** (u 80/20 si es el primer ciclo), o la desviación está declarada con su motivo
 - [ ] Cada sección declara su **emoción** — una sola, en lenguaje del comprador
 - [ ] **Hook, guion y copy literales, entre comillas.** En estáticos, `guion: N/A — formato estático`, nunca vacío

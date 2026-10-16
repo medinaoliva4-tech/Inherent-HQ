@@ -18,12 +18,13 @@ detalle de cada herramienta.
 🛑 **Growth no es pauta.** Si el pedido es sobre presupuesto, campañas o anuncios, es
 **⑩ Ads Management**.
 
-## Las 8 capas
+## Las 9 capas
 
 | # | Skill | Capa | Plan | Produce |
 |---|---|---|---|---|
 | 1 | **`gr-encargo`** | 0 | Todos | § El encargo — división, unit economics, qué activa el plan |
 | 2 | **`gr-oferta`** | 1 | Todos — 🔷 ligero | 🔷 `07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta · **🔴 se escala al CEO** *(antes de llevarla al cliente)* |
+| — | **`gr-captura`** | 1B | 🟨 A y C | § Captura — el objetivo de leads y la receta *(comenta-y-te-mando · quiz · lead magnet · VSL · low ticket · outbound)* |
 | 3 | **`gr-canales-grandes`** | 2 | ⛔ Marketing · 🟨 A y C | § Canales grandes |
 | 4 | **`gr-upsells`** | 3 | 🟨 A y C | § La escalera |
 | 5 | **`gr-conversion`** | 4 | 🟨 A y C | § Conversión |

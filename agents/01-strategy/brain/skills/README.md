@@ -4,7 +4,7 @@ Los 4 bloques del workflow son **pasos y además skills**. Se corren en orden; c
 invocar suelto si ya existe el anterior.
 
 ```
-context → analysis → reverse-engineering → methodology → entrega
+context → analysis → reverse-engineering → methodology → brief-de-comunicacion → entrega
 ```
 
 | # | Skill | Qué hace | Input que necesita |
@@ -13,6 +13,7 @@ context → analysis → reverse-engineering → methodology → entrega
 | **02** | `analysis` | Las 3 preguntas fijas: qué tiene que ser verdad · qué tienen a su ventaja · qué hay que ir a buscar. De ahí salen los pasos | `context` |
 | **03** | `reverse-engineering` | Saca de la media real los patrones que explican por qué funciona. **Termina en patrón, no en recomendación** | `analysis` |
 | **04** | `methodology` | Arma la estrategia: posicionamiento, ICP, identidad y branding, historia, comunicación, canales, monetización y medición | los tres anteriores |
+| **04B** | `brief-de-comunicacion` | Una página por cliente y ciclo: qué se vende, a quién, qué queremos que haga y sienta, cómo se comunica y qué inspiración buscar. **Es el gate de ③ Marketing.** Trae `references/psicologia-de-venta.md` | `methodology` |
 
 > **La entrega no es una skill.** Cada agente entrega distinto, así que su formato vive en el
 > workflow del agente — acá, en `../WORKFLOW.md` §7.

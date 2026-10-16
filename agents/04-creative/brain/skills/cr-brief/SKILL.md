@@ -30,6 +30,7 @@ que se puede idear sin adivinar. Nada de lo que escribís acá es una decisión 
 | Las campañas y su brief · sistema de contenido · pilares y su mix · jerarquía de mensaje — `estrategia-de-contenido.md` | ③ Marketing | 🛑 Sí |
 | Calendario con los slots del ciclo — `calendario.csv` | ③ Marketing | 🛑 Sí |
 | Plan por canal — **función única y "qué NO se hace acá"** — `plan-por-canal.md` | ③ Marketing | No — se usa si existe |
+| **Brief de comunicación** del ciclo — `brief-de-comunicacion-AAAA-MM.md`: qué se vende, a quién, qué hacer y sentir, cómo se comunica y qué buscar | ① Strategy | No — llega por ③ Marketing, que no planea sin él; se cita en el bloque B |
 | Posicionamiento (promesa, mecanismo, enemigo, objeciones) | ① Strategy | No — se usa si existe |
 | Ingeniería inversa (tabla 15×7, mapa de saturación, lenguaje literal del comprador) — `ingenieria-inversa.md` | ① Strategy | No — se usa si existe |
 | Núcleo: audiencia, competencia, producto y **capacidad real de producción** | ① Strategy | No — se usa si existe |

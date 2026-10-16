@@ -70,6 +70,28 @@ por campaña.
 quetzales y a la cultura local antes de usarlo. Copiar el creativo de un competidor es un problema
 legal y además nos mete en su código visual — justo lo contrario de lo que ②B Branding construyó.
 
+## 4B · El ranking de formatos de anuncio
+
+**Qué formato se pauta primero.** Es el criterio para elegir entre las piezas que ya existen.
+
+| Nivel | Formatos | Qué se hace |
+|---|---|---|
+| **S** | **Fundador a cámara** · **reels estáticos** | Primera opción de cada campaña |
+| **A** | **Imágenes** · **carruseles** · **anuncios hechos con IA** | Segunda opción y complemento |
+| **B** | **Testimonios** · **orgánicos usados como anuncio** · **creadores pagados** | Solo si ya existen; no se produce nada nuevo para ellos |
+| **C** | **Memes** · **webinars largos** · **podcasts** · **videos de marca** | No se pautan de entrada. Entran si `ad-loop` muestra que en esa cuenta rinden |
+| **F** | **Cualquier cosa sin subtítulos ni edición** | 🛑 **No sale.** Se devuelve a ⑦ Video Editing o ⑥A Diseño gráfico |
+
+> ⚠️ **El ranking es un punto de partida, no un dato de nuestras cuentas.** Sale de una referencia
+> externa `[sin verificar en cuentas de Inherent]`. **Lo que `ad-loop` mide en la cuenta del cliente
+> manda sobre la tabla.**
+
+- 🛑 **El techo manda:** pautar un nivel S no autoriza pedir grabación extra. **Se elige entre material que ya existe**;
+  si falta un fundador a cámara, se le pide a ④ Creatividad para el próximo ciclo.
+- **Los anuncios hechos con IA pasan por lo mismo:** claims validados por ②B Branding y la guía de marca.
+- 🎬 **Los trial reels que ganaron** *(pasaron a seguidores)* **son los primeros candidatos a pauta**: ya probaron el hook con quien no nos conoce. Salen marcados de ⑨ Posting.
+- **Cada pieza lleva su nivel** en la tabla de § Los creativos.
+
 ## 5 · Qué pieza va a qué campaña
 
 | Temperatura | Qué pieza |
@@ -93,7 +115,7 @@ legal y además nos mete en su código visual — justo lo contrario de lo que �
 
 | Bloque | Qué lleva |
 |---|---|
-| **A · Qué piezas van** | `id_creativo` · campaña · temperatura |
+| **A · Qué piezas van** | `id_creativo` · campaña · temperatura · **nivel del ranking** *(S · A · B · C)* |
 | **B · Las variantes** | Cuántas por campaña, con su hook |
 | **C · Claims** | Cuáles se usan, y quién los validó |
 | **D · Qué se pidió a ⑦ Video Editing** | Si hizo falta más |
@@ -101,6 +123,7 @@ legal y además nos mete en su código visual — justo lo contrario de lo que �
 ## 8 · Checklist
 
 - [ ] **Mínimo 3 variantes de hook** por campaña
+- [ ] Cada pieza tiene su **nivel del ranking**; **ninguna sin subtítulos ni edición** *(F)* y ninguna **C** sin dato propio que la respalde
 - [ ] Las variantes cambian **solo los primeros 3 segundos**
 - [ ] **Todo claim está validado por ②B Branding**
 - [ ] Ninguna pieza clonó el **creativo** de un competidor

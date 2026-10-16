@@ -76,6 +76,25 @@ al programar. Si no se le pasa, Zernio usa la del perfil —o UTC—, y todo el 
 | **Story y feed el mismo día** | Está bien — son formatos distintos. Se verifica que la story no adelante el feed sin querer |
 | **Pieza de pauta y orgánica iguales** | Se marca cuál es cuál. ⑩ Ads necesita saberlo |
 
+## 4B · Trial reels — salen primero a quien no sigue la cuenta
+
+🎬 **Una fila con `trial = sí` es un Reel de Instagram de formato no probado** *(regla de ④ `cr-adaptacion` § 3B)*.
+**Todo trial se programa como trial:** nunca se publica normal «para ahorrar un paso».
+
+| Chequeo | Regla |
+|---|---|
+| **Fecha y hora** | Las de cualquier otra fila. El trial **no cambia el día**: decidió ④ Creatividad |
+| **Cuenta** | Solo **Instagram**. Un `trial = sí` en otro canal se devuelve a ④ Creatividad |
+| **Un Reel de formato no probado con `trial = no`** | 🛑 **No se programa.** Se devuelve a ④ Creatividad; no se corrige en la celda |
+| **Cómo se programa** | `po-carga` lo hace con `trialParams`: **`SS_PERFORMANCE` por defecto**, `MANUAL` solo si la fila lo pide |
+| **El ganador** | Pasa a los seguidores y se publica normal. Se marca **candidato a pauta** para ⑩ Ads |
+| **Cuántos hay** | Los de ④; no se agregan ni se quitan acá. Cuentan como **el Reel del slot**, no como pieza extra |
+
+> ⚠️ **El dato de hora de la cuenta viene de su audiencia actual**, no necesariamente de quien no la
+> sigue. Se usa la misma hora y **se declara** que el dato no es de ese público.
+
+Quién gana, cuándo pasó y cuánto alcanzó a no seguidores se lee después, en `po-loop` *(Lectura 5)*.
+
 ## 5 · El resumen del ciclo
 
 Se cierra con el resumen, arriba de `publicaciones.md`: es lo que el COO lee en el QA final, junto
@@ -85,6 +104,7 @@ con los textos cuenta por cuenta y fecha por fecha.
 - Publicaciones listas: [n] · pendientes: [n] · no salen: [n]
 - Cuentas usadas: [lista]
 - Hora con dato: [n] · ⚠️ SIN DATOS: [n] · supuesto declarado: [n]
+- Trial reels: [n] programados como trial · candidatos a pauta al pasar a seguidores: [se llena en `po-loop`]
 - Zona horaria: [x]
 - Claims ⏸️ que no entran: [lista]
 ```
@@ -104,4 +124,5 @@ programar significa rehacer cada publicación en Zernio.
 - [ ] La **zona horaria** está declarada arriba del documento
 - [ ] **Nada se pisa**: ninguna cuenta con dos piezas a la misma hora
 - [ ] Las piezas que van a pauta están **marcadas** para ⑩ Ads
+- [ ] 🎬 **Todo `trial = sí` está programado como trial**, solo en Instagram, y **ningún Reel de formato no probado** salió con `trial = no`
 - [ ] El **resumen del ciclo** está arriba de `publicaciones.md`
