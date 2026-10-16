@@ -14,6 +14,14 @@ const RKIND = [['todos', 'Todas las fuentes'], ['nicho', 'Ganadores del nicho'],
 // Como en Edits: arriba se elige qué tipo de contenido se ve.
 const RFMT = [['todo', 'Todo', 'grid'], ['reel', 'Reels', 'video'], ['carrusel', 'Carruseles', 'layers'], ['estatico', 'Estáticos', 'image'], ['plantilla', 'Plantillas', 'copy']];
 const fmtOf = (it) => it.format || (it.video === false ? 'estatico' : 'reel');
+// La biblioteca de formatos: resonancia, si hay que hablar y el tipo de formato. Las pone Claude (conector) o el equipo.
+const STYLES = ['montaje', 'talking head', 'una toma', 'day in the life', 'voz en off + b-roll', 'meme + montaje', 'lista/tutorial', 'antes-después', 'POV', 'otro'];
+const TALK = [['no', 'no'], ['voz', 'voz en off'], ['si', 'sí']];
+const resOf = (it) => it.resonance || (it.x >= 3 ? 'alta' : it.x >= 1.5 ? 'media' : it.x ? 'baja' : '');
+const RESN = { alta: 3, media: 2, baja: 1 };
+const isoWeek = (d = new Date()) => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return `${t.getUTCFullYear()}-W${String(Math.ceil(((t - y) / 864e5 + 1) / 7)).padStart(2, '0')}`; };
+// El mismo id que usa el conector para un post de Research (así no se duplica).
+async function rsid(profile, url) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${profile}|${String(url).replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase()}`)); return 'rs-' + [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('').slice(0, 20); }
 const RKL = { nicho: 'Ganador del nicho', referente: 'Referente', competencia: 'Competencia', propia: 'Tuyo', agregado: 'Agregado' };
 const rkey = (u) => String(u || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
 const embedOf = (u) => { let m; if ((m = String(u).match(/instagram\.com\/(?:p|reel|reels|tv)\/([\w-]+)/))) return `https://www.instagram.com/p/${m[1]}/embed`; if ((m = String(u).match(/tiktok\.com\/@[^/]+\/video\/(\d+)/))) return `https://www.tiktok.com/embed/v2/${m[1]}`; return null; };
@@ -35,6 +43,7 @@ export async function render(el, { sub, alive }) {
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
   let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
+  let rview = 'biblioteca', rq = '', rsort = 'res', rsel = { pilar: '', res: '', talk: '', style: '' };
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
@@ -279,17 +288,46 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   const fmatch = (x, k) => k === 'todo' || (k === 'plantilla' ? Boolean(x.plantilla) : fmtOf(x) === k);
   const rcard = (it) => { const t = safeImg(it.thumb), f = fmtOf(it); return html`<button class="rcard" data-act="ropen" data-k="${it.key}" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>
       <span class="rbadge">${it.plantilla ? 'Plantilla' : it.x ? it.x + '×' : RKL[it.tipo] || 'Video'}</span>
-      <span class="ricons">${f !== 'reel' ? html`<i title="${f === 'carrusel' ? 'Carrusel' : 'Estático'}">${ico(f === 'carrusel' ? 'layers' : 'image', 13)}</i>` : ''}${it.why ? html`<i title="Tiene análisis">${ico('bulb', 13)}</i>` : ''}</span>
+      <span class="ricons">${it.tested ? html`<i title="Probado">${ico('check', 13)}</i>` : ''}${f !== 'reel' ? html`<i title="${f === 'carrusel' ? 'Carrusel' : 'Estático'}">${ico(f === 'carrusel' ? 'layers' : 'image', 13)}</i>` : ''}${it.why ? html`<i title="Tiene análisis">${ico('bulb', 13)}</i>` : ''}</span>
       ${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 20)}</span>`}
       <span class="rfoot"><b>@${it.handle || '—'}</b><span>${it.views ? html`${ico('play', 12)} ${K(it.views)}` : it.likes ? html`${ico('heart')} ${K(it.likes)}` : ''}</span></span></button>`; };
+  const rsearch = (x, q) => !q || [x.handle, x.text, x.style, x.pillar, x.why?.hook, x.why?.por_que, x.why?.adaptacion].join(' ').toLowerCase().includes(q);
+  const SORTS = [['res', 'Resonancia primero'], ['x', 'Más veces su promedio'], ['views', 'Más vistas'], ['recent', 'Más recientes']];
+  const rsorter = { res: (a, z) => (RESN[resOf(z)] || 0) - (RESN[resOf(a)] || 0) || (z.x || 0) - (a.x || 0), x: (a, z) => (z.x || 0) - (a.x || 0), views: (a, z) => (z.views || 0) - (a.views || 0), recent: (a, z) => String(z.at || '').localeCompare(String(a.at || '')) };
   function research(b) {
     if (needResearch(b, research)) return;
-    const all = researchItems(), byFmt = all.filter((x) => fmatch(x, rfmt)), list = byFmt.filter((x) => rmatch(x, rfilter));
+    const W = isoWeek(), q = rq.trim().toLowerCase();
+    const all = researchItems(), base = rview === 'semana' ? all.filter((x) => x.week === W) : all;
+    const sel = (x) => fmatch(x, rfmt) && rmatch(x, rfilter) && (!rsel.pilar || x.pillar === rsel.pilar) && (!rsel.res || resOf(x) === rsel.res) && (!rsel.talk || x.talk === rsel.talk) && (!rsel.style || x.style === rsel.style) && rsearch(x, q);
+    const list = base.filter(sel).sort(rsorter[rsort]);
+    const pillars = (data.cfg.pillars || []).map((x) => x.name).filter(Boolean);
+    const frow = (lbl, k, opts) => html`<div class="rfrow"><span class="lbl">${lbl}</span><div class="rfopts">${opts.map(([v, l]) => html`<button class="chip ${rsel[k] === v ? 'dark' : ''}" data-act="rsel" data-k="${k}" data-v="${v}">${l}</button>`)}</div></div>`;
     mount(b, html`<div class="rtiles">${RFMT.map(([k, l, i]) => html`<button class="rtile ${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}"><i>${ico(i, 22)}</i><span>${l}</span></button>`)}</div>
-      <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:14px">${RKIND.map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}" style="padding:7px 13px">${l} <span style="opacity:.6;margin-left:4px">${byFmt.filter((x) => rmatch(x, k)).length}</span></button>`)}
+      <div class="rkstats">${[[all.length, 'Formatos'], [all.filter((x) => resOf(x) === 'alta').length, 'Resonancia alta'], [all.filter((x) => x.talk === 'no').length, 'Sin hablar'], [all.filter((x) => x.tested).length, 'Probados']].map(([n, l]) => html`<div><b>${n}</b><span>${l}</span></div>`)}</div>
+      <div class="row" style="gap:10px;flex-wrap:wrap;margin:16px 0 12px"><div class="tabs" style="margin:0">${[['biblioteca', 'Biblioteca'], ['semana', `Mi semana · ${all.filter((x) => x.week === W).length}`]].map(([k, l]) => html`<button class="${rview === k ? 'on' : ''}" data-act="rview" data-v="${k}">${l}</button>`)}</div>
         <div class="sp"></div><span class="mut sm">${week?.at ? `Scrape del ${fdate(week.at.slice(0, 10))}` : 'Sin scrape todavía'} · ${(rs || []).length} del conector</span><button class="btn ghost xs" data-act="rreload">Actualizar</button></div>
-      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>Nada aquí todavía</b>Llega del scrape semanal y de lo que sube Claude con el conector de Inherent. También puedes agregar un link con «+».</div>`}
+      <div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:10px"><input class="in" id="rq" placeholder="Buscar: cuenta, tema, hook, estilo…" value="${rq}" style="flex:1;min-width:220px"><select class="in" id="rsort" style="width:auto">${SORTS.map(([k, l]) => html`<option value="${k}" ${rsort === k ? raw('selected') : ''}>${l}</option>`)}</select></div>
+      <div class="rfilters">
+        <div class="rfrow"><span class="lbl">Fuente</span><div class="rfopts">${RKIND.map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}">${l}</button>`)}</div></div>
+        ${pillars.length ? frow('Pilar', 'pilar', pillars.map((x) => [x, x])) : ''}
+        ${frow('Resonancia', 'res', [['alta', 'alta'], ['media', 'media'], ['baja', 'baja']])}
+        ${frow('¿Hablas?', 'talk', TALK)}
+        ${frow('Tipo', 'style', STYLES.map((x) => [x, x]))}
+      </div>
+      <div class="mut sm" style="margin:10px 0 12px;font-family:ui-monospace,Menlo,monospace">${list.length} de ${base.length} formatos${rview === 'semana' ? ` · semana ${W.slice(-2)}` : ''}</div>
+      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : 'Nada con esos filtros'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : 'Quita algún filtro o agrega un link con «+».'}</div>`}
       <button class="rfab" data-act="radd" title="Agregar un link">${ico('plus', 26)}</button>`);
+    const qi = $('#rq', b); qi.oninput = () => { rq = qi.value; const pos = qi.selectionStart; research(b); const n = $('#rq', b); n.focus(); n.setSelectionRange(pos, pos); };
+    $('#rsort', b).onchange = (e) => { rsort = e.target.value; research(b); };
+  }
+  // Guarda etiquetas de un post de Research: si solo venía del scrape, se crea con el mismo id que usa el conector.
+  async function rsave(it, patch) {
+    const id = await rsid(slug, it.url);
+    const cur = (rs || []).find((x) => x.id === id) || (await C.get(id).catch(() => null));
+    const keep = Object.fromEntries(['url', 'red', 'handle', 'thumb', 'views', 'likes', 'comments', 'shares', 'x', 'at', 'text', 'tipo', 'format', 'slides'].filter((k) => it[k] != null && it[k] !== '').map((k) => [k, it[k]]));
+    const r = cur ? await C.save({ ...cur, ...patch }) : await C.create({ id, kind: 'research', profile: slug, ...keep, ...patch });
+    rs = [...(rs || []).filter((x) => x.id !== r.id), r];
+    return r;
   }
   async function raddLink() {
     const v = await ask('Agregar a Research', [
@@ -346,6 +384,14 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
       <div class="rv-info">
         ${kpis.length || it.x ? html`<div class="rkpis">${kpis.map(([l, x]) => html`<div><span class="lbl">${l}</span><b>${K(x)}</b></div>`)}${it.x ? html`<div><span class="lbl">Vs su promedio</span><b>${it.x}×</b></div>` : ''}</div>` : ''}
         ${it.text ? html`<div class="mut sm" style="margin-top:12px">${String(it.text).slice(0, 400)}</div>` : ''}
+        <div class="rtags">
+          <div class="row" style="gap:8px;flex-wrap:wrap"><button class="chip ${it.week === isoWeek() ? 'dark' : ''}" data-v="week">${it.week === isoWeek() ? '✓ En mi semana' : '+ A mi semana'}</button><button class="chip ${it.tested ? 'dark' : ''}" data-v="tested">${it.tested ? '✓ Probado' : 'Marcar como probado'}</button></div>
+          <div class="grid g2" style="gap:8px;margin-top:10px">
+            <label class="sm">Resonancia<select class="in" data-tag="resonance"><option value="">${resOf(it) ? `auto: ${resOf(it)}` : '—'}</option>${['alta', 'media', 'baja'].map((x) => html`<option ${it.resonance === x ? raw('selected') : ''}>${x}</option>`)}</select></label>
+            <label class="sm">¿Hablas?<select class="in" data-tag="talk"><option value="">—</option>${TALK.map(([v, l]) => html`<option value="${v}" ${it.talk === v ? raw('selected') : ''}>${l}</option>`)}</select></label>
+            <label class="sm">Tipo<select class="in" data-tag="style"><option value="">—</option>${STYLES.map((x) => html`<option ${it.style === x ? raw('selected') : ''}>${x}</option>`)}</select></label>
+            ${(data.cfg.pillars || []).length ? html`<label class="sm">Pilar<select class="in" data-tag="pillar"><option value="">—</option>${data.cfg.pillars.map((x) => html`<option ${it.pillar === x.name ? raw('selected') : ''}>${x.name}</option>`)}</select></label>` : ''}
+          </div></div>
         <div class="rwhybox" id="rvwhy"><h3>Por qué funcionó${w.inferido ? html` <span class="chip amber sm2">inferido</span>` : ''}</h3>
           ${it.why ? html`${w.hook ? html`<p><b>Hook</b> ${w.hook}</p>` : ''}${w.retencion ? html`<p><b>Qué retuvo</b> ${w.retencion}</p>` : ''}${w.estructura?.length ? html`<p><b>Estructura</b></p><ol>${w.estructura.map((x) => html`<li>${x}</li>`)}</ol>` : ''}${w.por_que ? html`<p><b>Por qué funcionó</b> ${w.por_que}</p>` : ''}${w.adaptacion ? html`<p><b>Cómo adaptarlo</b> ${w.adaptacion}</p>` : ''}`
             : html`<p class="mut">Todavía sin análisis. Claude lo desglosa y lo sube aquí.</p><button class="btn xs" data-v="ask">Pedir el análisis a Claude</button>`}</div>
@@ -354,8 +400,13 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     document.body.appendChild(v);
     const close = () => { v.remove(); removeEventListener('keydown', esc); }, esc = (e) => { if (e.key === 'Escape') close(); };
     addEventListener('keydown', esc); addEventListener('hashchange', close, { once: true });
+    const tag = async (patch, msg) => { try { Object.assign(it, await rsave(it, patch)); toast(msg); research($('#cbody', el)); } catch (er) { toast(er.message, true); } };
+    v.querySelectorAll('[data-tag]').forEach((sl) => { sl.onchange = () => tag({ [sl.dataset.tag]: sl.value }, 'Etiqueta guardada'); });
     v.onclick = async (e) => {
       if (e.target === v) return close();
+      const tg = e.target.closest('[data-v="week"],[data-v="tested"]');
+      if (tg) { const on = tg.dataset.v === 'week' ? it.week !== isoWeek() : !it.tested; await tag(tg.dataset.v === 'week' ? { week: on ? isoWeek() : '' } : { tested: on }, tg.dataset.v === 'week' ? (on ? 'Agregado a tu semana' : 'Quitado de tu semana') : on ? 'Marcado como probado' : 'Quitado de probados');
+        tg.classList.toggle('dark', on); tg.textContent = tg.dataset.v === 'week' ? (on ? '✓ En mi semana' : '+ A mi semana') : on ? '✓ Probado' : 'Marcar como probado'; return; }
       const a = e.target.closest('[data-v]')?.dataset.v; if (!a) return;
       if (a === 'close') close();
       if (a === 'use') { openClaude(usePrompt(it)); toast('Se abrió Claude Code con todo listo: dale enviar'); }
@@ -544,6 +595,8 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },
     rfilter: (t) => { rfilter = t.dataset.k; research($('#cbody', el)); },
     rfmt: (t) => { rfmt = t.dataset.k; research($('#cbody', el)); },
+    rview: (t) => { rview = t.dataset.v; research($('#cbody', el)); },
+    rsel: (t) => { rsel[t.dataset.k] = rsel[t.dataset.k] === t.dataset.v ? '' : t.dataset.v; research($('#cbody', el)); },
     radd: () => raddLink(),
     rreload: () => { rs = null; week = null; research($('#cbody', el)); },
     ropen: (t) => ropen(t.dataset.k),
