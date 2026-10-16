@@ -218,6 +218,18 @@ on('PUT', 'content/refs/breakdown', async (req, res) => {
   const d = await refs.saveBreakdown(b.profile, b.pillar, b.items, u.email); res.json({ breakdown: d.breakdown });
 });
 
+// El link directo de un reel de Instagram para verlo dentro del OS (sale del embed público; caduca, por eso se pide al abrir).
+on('GET', 'content/video', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const m = String(req.query.url || '').match(/^https:\/\/(?:www\.)?instagram\.com\/(?:p|reel|reels|tv)\/([\w-]{5,40})/);
+  if (!m) return res.status(400).json({ error: 'Solo reels de Instagram' });
+  try {
+    const r = await fetch(`https://www.instagram.com/p/${m[1]}/embed/captioned/`, { headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141 Safari/537.36' }, signal: AbortSignal.timeout(8000) });
+    const t = await r.text(), v = t.match(/video_url\\*"\s*:\s*\\*"(https:[^"]+?)\\*"/);
+    const src = v ? v[1].replace(/\\+\//g, '/').replace(/\\+u0026/g, '&').replace(/\\+/g, '') : '';
+    res.json({ src: /^https:\/\/[\w.-]+\.(cdninstagram\.com|fbcdn\.net)\//.test(src) ? src : '' });
+  } catch { res.json({ src: '' }); }
+});
 // Las imágenes de Research que guardó el conector (las del CDN de Instagram caducan en días).
 on('GET', 'media/:id', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;

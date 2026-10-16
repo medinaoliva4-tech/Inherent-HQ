@@ -348,12 +348,12 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const p = data.profile, r = root();
     return `/inherent ④ Creatividad · ${p.name}: convierte este video de referencia en una plantilla terminada para la marca.
 
-Video: ${vidLine(it)}
-${it.text ? `Texto del post: ${String(it.text).replace(/\s+/g, ' ').slice(0, 300)}\n` : ''}${it.why ? whyText(it.why) + '\n' : ''}
-1. Lee ${r}/CLAUDE.md y el brand kit de la marca: ${r}/02-marca/ (kit de redes, sistema visual, guía de marca) y los links a Figma y Drive en ${r}/00-onboarding/LINKS.md. Si el brand kit no está ahí, búscalo en el repo o en su Drive y dime dónde quedó.
-2. Del video toma solo el craft: formato, hook, ritmo, estructura y edición. El tema se adapta a la estrategia de la marca (${r}/01-estrategia/).
-3. Entrega la plantilla lista para producir: hook (texto y visual), guion por escena con tiempos, tomas (encuadre y acción), textos en pantalla, música y ritmo, edición, y qué assets de la marca usa (fondos, logos, tipografías, colores en hex).
-4. Súbela al OS con el conector de Inherent: guardar_research con perfil «${slug}», el url del video y la plantilla en «plantilla».`;
+Video: ${it.url}${it.title ? ` («${it.title}»)` : ''}
+1. Lee el post completo con el conector de Inherent: leer_research, perfil «${slug}», ese url (trae métricas, hook, tu versión, receta, clips y por qué funcionó).
+2. Lee ${r}/CLAUDE.md y el brand kit: ${r}/02-marca/ y los links de Figma y Drive en ${r}/00-onboarding/LINKS.md. Si no está ahí, búscalo y dime dónde quedó.
+3. Del video toma solo el craft (formato, hook, ritmo, estructura, edición); el tema sale de la estrategia (${r}/01-estrategia/).
+4. Entrega la plantilla con estas secciones, en Markdown: ## Hook (texto y visual) · ## Guion por escena (tiempos) · ## Tomas · ## Texto en pantalla · ## Música y ritmo · ## Edición · ## Assets de la marca (fondos, logos, tipografías, hex).
+5. Súbela con guardar_research: perfil «${slug}», ese url y la plantilla en «plantilla».`;
   }
   function whyPrompt(it) {
     const p = data.profile;
@@ -374,11 +374,11 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     // «adaptacion»: el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) va a Análisis.
     const ad = String(w.adaptacion || '').trim(), cut = ad.search(/\n\s*\n|\n(?=\s*(#|[-*•]|\d+[.)]|\*\*))/), mine = cut > 0 ? ad.slice(0, cut).trim() : ad, analysis = cut > 0 ? ad.slice(cut).trim() : '';
     const allR = researchItems(), styleOpts = distinct(allR, (x) => x.style), pillarOpts = [...new Set([...(data.cfg.pillars || []).map((x) => x.name), ...distinct(allR, (x) => x.pillar)])].filter(Boolean);
-    const receta = it.receta || [], clips = it.clips || [], hasRec = analysis || receta.length || clips.length || w.estructura?.length || w.retencion || w.por_que || it.text;
+    const receta = it.receta || [], clips = it.clips || [];
     document.querySelector('.rview')?.remove();
     const v = document.createElement('div'); v.className = 'rview';
     mount(v, html`<div class="rv-col">
-        <div class="rv-media">${em ? html`<iframe src="${em}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`
+        <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}><span class="rv-load">Cargando video…</span></div>`
           : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
           : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}></div>`}
           <button class="rv-back" data-v="close" title="Cerrar">${ico('x', 18)}</button></div>
@@ -393,17 +393,21 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
         ${w.hook ? html`<div class="rfc-sec"><span class="lbl">Hook</span><p>${w.hook}</p></div>` : ''}
         ${mine ? html`<div class="rfc-sec"><span class="lbl">Tu versión</span><div class="rfc-md">${md(mine)}</div></div>` : ''}
         ${!it.why ? html`<div class="rfc-sec"><p class="mut">Todavía sin análisis. Claude lo desglosa y lo sube aquí.</p><button class="btn xs" data-v="ask">Pedir el análisis a Claude</button></div>` : ''}
-        ${hasRec ? html`<details class="rfc-more" id="rvwhy"><summary>Receta, clips y estructura</summary>
-          ${analysis ? html`<div class="rfc-sec"><span class="lbl">Análisis</span><div class="rfc-md">${md(analysis)}</div></div>` : ''}
+        ${receta.length || clips.length ? html`<details class="rfc-more" open><summary>Cómo se hace</summary>
           ${receta.length ? html`<div class="rfc-sec"><span class="lbl">Receta</span><ol>${receta.map((x) => html`<li>${x}</li>`)}</ol></div>` : ''}
           ${clips.length ? html`<div class="rfc-sec"><span class="lbl">Clips</span><ul class="rfc-clips">${clips.map((c) => html`<li>${c.t ? html`<b>${c.t}</b>` : ''}<span>${c.que}</span></li>`)}</ul></div>` : ''}
+        </details>` : ''}
+        ${w.estructura?.length || w.retencion || w.por_que ? html`<details class="rfc-more" id="rvwhy"><summary>Por qué funciona</summary>
           ${w.estructura?.length ? html`<div class="rfc-sec"><span class="lbl">Estructura</span><ol>${w.estructura.map((x) => html`<li>${x}</li>`)}</ol></div>` : ''}
           ${w.retencion ? html`<div class="rfc-sec"><span class="lbl">Qué retuvo</span><p>${w.retencion}</p></div>` : ''}
           ${w.por_que ? html`<div class="rfc-sec"><span class="lbl">Por qué funcionó${w.inferido ? ' · inferido' : ''}</span><p>${w.por_que}</p></div>` : ''}
-          ${it.text ? html`<div class="rfc-sec"><span class="lbl">Texto del post</span><p class="mut">${String(it.text).slice(0, 600)}</p></div>` : ''}
         </details>` : ''}
+        ${analysis || it.text ? html`<details class="rfc-more"><summary>Análisis</summary>
+          ${analysis ? html`<div class="rfc-sec"><div class="rfc-md">${md(analysis)}</div></div>` : ''}
+          ${it.text ? html`<div class="rfc-sec"><span class="lbl">Texto del post</span><p class="mut">${String(it.text).slice(0, 800)}</p></div>` : ''}
+        </details>` : ''}
+        ${it.plantilla ? html`<details class="rfc-more rfc-tpl" open><summary>Plantilla para ${data.profile.name}</summary><div class="rfc-md">${md(it.plantilla)}</div></details>` : ''}
         <div class="rfc-foot">${/^https:\/\//.test(it.url) ? html`<a href="${it.url}" target="_blank" rel="noopener noreferrer">Ver original @${it.handle || '—'} ↗</a>` : html`<span></span>`}<button class="rfc-btn ${it.tested ? 'on' : ''}" data-v="tested">${it.tested ? '✓ Probado' : 'Marcar probado'}</button></div>
-        ${it.plantilla ? html`<div class="rwhybox"><h3>Plantilla para ${data.profile.name}</h3>${md(it.plantilla)}</div>` : ''}
         <details class="rfc-edit"><summary>Etiquetas</summary>
           <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><button class="chip ${it.week === isoWeek() ? 'dark' : ''}" data-v="week">${it.week === isoWeek() ? '✓ En mi semana' : '+ A mi semana'}</button></div>
           <div class="grid g2 rtags" style="gap:8px;margin-top:10px;border:0;padding:0">
@@ -414,6 +418,15 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
           </div></details>
       </div>`);
     document.body.appendChild(v);
+    // El video se ve aquí mismo: el servidor saca el link directo del reel (caduca, por eso se pide al abrir). Si no se puede, queda el reproductor de Instagram.
+    if (f === 'reel' && em) {
+      const box = $('#rvmedia', v), fallback = () => { const p = box.querySelector('.rv-poster'); if (p) p.outerHTML = `<iframe src="${em}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; };
+      fetch('/api/content/video?' + new URLSearchParams({ url: it.url })).then((r) => (r.ok ? r.json() : {})).then(({ src }) => {
+        const p = box.querySelector('.rv-poster'); if (!p) return; if (!src) return fallback();
+        const vd = document.createElement('video'); Object.assign(vd, { src, controls: true, autoplay: true, muted: true, loop: true, playsInline: true }); if (t) vd.poster = t;
+        vd.setAttribute('referrerpolicy', 'no-referrer'); vd.onerror = fallback; p.replaceWith(vd);
+      }).catch(fallback);
+    }
     const close = () => { v.remove(); removeEventListener('keydown', esc); }, esc = (e) => { if (e.key === 'Escape') close(); };
     addEventListener('keydown', esc); addEventListener('hashchange', close, { once: true });
     const tag = async (patch, msg) => { try { Object.assign(it, await rsave(it, patch)); toast(msg); research($('#cbody', el)); } catch (er) { toast(er.message, true); } };
