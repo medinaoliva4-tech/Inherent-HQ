@@ -1052,3 +1052,6 @@ html{scrollbar-gutter:stable;overflow-y:scroll}
 .rfc-btn.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
 .rfc-edit{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}.rfc-edit summary{color:var(--mut);font-size:13.5px}
 .rv-info .rfc-sec ol,.rv-info .rfc-md ul,.rv-info .rfc-md ol{padding-left:0;margin-left:18px}
+.rv-media video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+.rv-poster{position:relative}.rv-load{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(44,31,22,.7);color:var(--cream);font-size:13px;padding:6px 12px;border-radius:99px}
+.rfc-more+.rfc-more{margin-top:10px}.rfc-tpl .rfc-md h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:500;margin:14px 0 4px}
