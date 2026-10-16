@@ -31,15 +31,14 @@ export async function render(el, { me, sub, alive }) {
 
   function paint() {
     mount(el, html`
-      <div class="hello"><h1>Operations</h1><p>Proyectos por fase, <em>tiempos</em> y tareas.</p></div>
-      <div class="row" style="margin-bottom:14px"><div class="sp"></div><button class="btn" data-act="newProject">+ Proyecto</button></div>
+      <div class="hello row"><div><h1>Operations</h1><p>Proyectos por fase, <em>tiempos</em> y tareas.</p></div><div class="sp"></div><button class="btn" data-act="newProject">+ Proyecto</button></div>
       ${projects.length ? html`<div class="grid g3">${projects.map((p, i) => { const pct = progress(p); const open = tasks.filter((t) => t.project_id === p.id && t.status !== 'Hecha').length;
         return html`<div class="card feat ${p.color || COLORS[i % 3]}" style="min-height:230px;cursor:pointer" data-act="pick" data-id="${p.id}">
           <div class="chead"><div class="ico">${IC.ring(Math.max(4, Math.round(pct * 1.17)))}<span style="font-size:15px">${ico('target', 16)}</span></div><h3>${p.name}<br><span class="lbl">${p.kind}${p.client ? ' · ' + p.client : ''}</span></h3>${p.client_slug ? html`<a class="arrow" href="#/clients/${p.client_slug}" title="Página del cliente" style="margin-right:6px">↗</a>` : ''}<button class="arrow" data-act="editProject" data-id="${p.id}" title="Editar">${ico('edit')}</button></div>
           <div class="lbl">Avance</div><div class="big" style="font-size:46px">${pct}<small>%</small></div>
           <div class="phases">${(p.phases || []).map((x) => html`<i title="${x.name}" style="background:${x.status === 'done' ? 'rgba(253,250,243,.95)' : x.status === 'now' ? 'var(--lime)' : 'rgba(253,250,243,.25)'}"></i>`)}</div>
           <div class="foot"><span>Fase: ${curPhase(p)}</span><span>${open} tareas abiertas</span></div></div>`; })}</div>`
-      : html`<div class="empty"><b>Todavía no hay proyectos</b>Crea uno con «+ Proyecto». Si es un cliente del repo, su pipeline sale de su plan contratado.</div>`}
+      : html`<div class="empty"><b>Todavía no hay proyectos</b>Si es un cliente con plan, su pipeline se arma solo según lo contratado.<div><button class="btn" data-act="newProject">+ Proyecto</button></div></div>`}
       <div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
         <div class="tabs" style="margin:0">${[['pipe', 'Proyectos'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>${tab === 'tasks' ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
@@ -62,7 +61,7 @@ export async function render(el, { me, sub, alive }) {
     const p = projects.find((x) => x.id === current);
     if (!p) return mount(b, html`<div class="empty"><b>Elige o crea un proyecto</b>El pipeline muestra cada departamento y su entregable.</div>`);
     mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">${projects.map((x) => html`<button class="chip ${x.id === current ? 'dark' : ''}" data-act="pick" data-id="${x.id}" style="padding:8px 14px;font-size:13px">${x.name}</button>`)}
-      <div class="sp"></div><span class="mut sm">El estado sale solo de las tareas de cada departamento</span></div>
+      <div class="sp"></div><span class="mut sm">Se actualiza solo con las tareas de cada departamento</span></div>
       <div class="pipe">${DEPTS.map(([n, name], i) => { const d = deptState(p, n);
         return html`<div class="dept ${d.cls}">
           <div class="row"><span class="num">${n}</span><span class="chip ${d.chip}" style="margin-left:auto">${d.label}</span></div>
@@ -198,7 +197,7 @@ export async function render(el, { me, sub, alive }) {
   }
 
   async function projectForm(p) {
-    const clientOpts = [['', '— Sin cliente / interno'], ...clients.filter((c) => c.hasPlan).map((c) => [c.slug, c.slug.toUpperCase() + ' (del repo)'])];
+    const clientOpts = [['', '— Sin cliente / interno'], ...clients.filter((c) => c.hasPlan).map((c) => [c.slug, c.slug.toUpperCase()])];
     const v = await ask(p ? 'Editar proyecto' : 'Nuevo proyecto', [
       { k: 'name', l: 'Nombre', v: p?.name, req: true },
       ...(p ? [] : [{ k: 'kind', l: 'Tipo', t: 'select', opts: [['Ciclo mensual', 'Contenido · ciclo mensual (días 1 al 20)'], ['Proyecto', 'Contenido · proyecto por fases'], ['Growth', 'Business Growth · consultoría']], half: true }, { k: 'start', l: 'Inicio', t: 'date', v: today().slice(0, 8) + '01', half: true }]),

@@ -60,7 +60,7 @@ export async function render(el, { sub }) {
         </div>
       </div>
       <div class="row" style="margin:24px 0 18px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${[['mov', 'Movimientos'], ['costs', 'Costs'], ['profit', 'Profitability'], ['pricing', 'Pricing'], ['nomina', 'Pagos por servicio']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${[['mov', 'Movimientos'], ['costs', 'Costos'], ['profit', 'Rentabilidad'], ['pricing', 'Precios'], ['nomina', 'Pagos por servicio']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
         ${tab === 'mov' ? html`${connectChip('sheets', sheet?.url ? 'Google Sheet conectado' : 'Conectar Google Sheet', 'sheet', Boolean(sheet?.url))}${sheet?.url ? html`<button class="sm mut" data-act="sheetset" style="margin:0 6px">Cambiar</button>` : ''}<button class="btn ghost" data-act="add" data-type="gasto">+ Gasto</button><button class="btn" data-act="add" data-type="ingreso">+ Ingreso</button>` : ''}
       </div>
@@ -77,7 +77,7 @@ export async function render(el, { sub }) {
   function mov(b) {
     const list = entries.filter((e) => ym(e.date) === month).sort((x, y) => String(y.date).localeCompare(String(x.date)));
     const note = sheet?.error ? html`<div class="warnbox" style="margin-bottom:12px">Google Sheet: ${sheet.error}</div>`
-      : !sheet?.url ? html`<div class="mut sm" style="margin-bottom:12px">${ico('bulb')} Conecta una hoja de Google Sheets y los movimientos salen de ahí (fecha · tipo · concepto · monto · categoría · cliente). Ya no hay que meterlos a mano.</div>` : '';
+      : !sheet?.url ? html`<div class="mut sm" style="margin-bottom:12px">${ico('bulb')} Conecta tu Google Sheet (arriba) y los movimientos entran solos. Columnas: fecha, tipo, concepto, monto, categoría y cliente.</div>` : '';
     mount(b, !list.length ? html`${note}<div class="empty"><b>Sin movimientos en ${mLabel(month)}</b>${sheet?.url ? 'Agrega filas a tu hoja de Google Sheets y recarga.' : 'Conecta tu Google Sheet o registra un ingreso o gasto.'}</div>`
       : html`${note}<div class="card"><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Cliente</th><th>Categoría</th><th class="n">Monto</th></tr></thead><tbody>
         ${list.map((e) => html`<tr class="click" data-act="${e.sheet ? 'sheet' : 'edit'}" data-id="${e.id}"><td class="mut">${fdate(e.date)}</td><td><b style="font-weight:500">${e.concept}</b>${e.sheet ? html` <span class="mut sm">· Sheet</span>` : ''}</td><td>${e.client || '—'}</td><td><span class="chip">${e.category || '—'}</span></td>

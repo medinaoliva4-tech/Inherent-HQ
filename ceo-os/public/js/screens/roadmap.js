@@ -30,36 +30,35 @@ export async function render(el, { me, alive }) {
         ${t.event_link ? html`<a class="btn ghost xs" href="${t.event_link}" target="_blank" rel="noopener noreferrer">${ico('check', 14)} En tu calendario</a>`
           : html`<button class="btn xs" data-act="cal" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" ${t.date ? '' : raw('disabled title="Ponle fecha primero"')}>${ico('cal', 14)} Agregar a mi calendario</button>`}
         <button class="btn ghost xs" data-act="editTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}">Editar</button>
-        <button class="btn ghost xs" data-act="delTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Quitar">${ico('trash', 15)}</button>
+        <button class="btn ghost xs" data-act="delTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Quitar tarea" title="Quitar tarea">${ico('trash', 15)}</button>
       </div></div>`;
   };
   const projectBlock = (m, p) => {
     const ts = [...(p.tasks || [])].sort((a, z) => stamp(a).localeCompare(stamp(z)));
     const lk = projects.find((x) => x.id === p.project_id);
     return html`<div style="margin-top:16px">
-      <div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500">${p.name}</b>${lk ? html`<a class="chip" href="#/operations" style="font-size:11px;text-decoration:none">${ico('link', 13)} ${lk.name}</a>` : ''}<div class="sp"></div>
+      <div class="row rmproj" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500">${p.name}</b>${lk ? html`<a class="chip" href="#/operations" style="font-size:11px;text-decoration:none">${ico('link', 13)} ${lk.name}</a>` : ''}<div class="sp"></div>
         <button class="btn ghost xs" data-act="addTask" data-m="${m.id}" data-p="${p.id}">+ Tarea</button>
         <button class="btn ghost xs" data-act="editProject" data-m="${m.id}" data-p="${p.id}">Editar</button>
-        <button class="btn ghost xs" data-act="delProject" data-m="${m.id}" data-p="${p.id}" aria-label="Quitar proyecto">${ico('trash', 15)}</button></div>
+        <button class="btn ghost xs" data-act="delProject" data-m="${m.id}" data-p="${p.id}" aria-label="Quitar proyecto" title="Quitar proyecto">${ico('trash', 15)}</button></div>
       ${ts.length ? ts.map((t) => taskRow(m, p, t)) : html`<div class="mut sm" style="padding:8px 0">Sin tareas todavía.</div>`}</div>`;
   };
   const megaCard = (m) => {
     const { done, total } = progress(m), pct = total ? Math.round((done / total) * 100) : 0, shut = closed.has(m.id);
-    return html`<div class="card" style="margin-bottom:16px">
+    return html`<div class="card rmcard" style="margin-bottom:16px">
       <div class="row" style="gap:10px;flex-wrap:wrap;align-items:flex-start">
         <div style="flex:1;min-width:220px;cursor:pointer" data-act="toggle" data-m="${m.id}"><div class="row" style="gap:8px;flex-wrap:wrap"><span class="mut">${ico(shut ? 'right' : 'down', 16)}</span><h3 style="font-size:20px;font-weight:500;letter-spacing:-.4px;margin:0">${m.name}</h3><span class="chip ${STATUS[m.status] || ''}">${m.status || 'Activo'}</span></div>
           ${m.why ? html`<div class="mut sm" style="margin-top:4px">${m.why}</div>` : ''}
           <div class="mut sm" style="margin-top:4px">${m.start || m.end ? `${m.start ? fdate(m.start) : '…'} → ${m.end ? fdate(m.end) : '…'} · ` : ''}${(m.projects || []).length} proyecto${(m.projects || []).length === 1 ? '' : 's'} · ${done}/${total} tareas</div></div>
-        <div class="row" style="gap:6px"><button class="btn xs" data-act="addProject" data-m="${m.id}">+ Proyecto</button><button class="btn ghost xs" data-act="editMega" data-m="${m.id}">Editar</button><button class="btn ghost xs" data-act="delMega" data-m="${m.id}" aria-label="Quitar megaproyecto">${ico('trash', 15)}</button></div></div>
+        <div class="row" style="gap:6px"><button class="btn xs" data-act="addProject" data-m="${m.id}">+ Proyecto</button><button class="btn ghost xs" data-act="editMega" data-m="${m.id}">Editar</button><button class="btn ghost xs" data-act="delMega" data-m="${m.id}" aria-label="Quitar megaproyecto" title="Quitar megaproyecto">${ico('trash', 15)}</button></div></div>
       <div style="height:6px;border-radius:6px;background:var(--line);margin-top:12px;overflow:hidden"><div style="height:100%;width:${pct}%;background:#87684e"></div></div>
       ${shut ? '' : ((m.projects || []).length ? (m.projects || []).map((p) => projectBlock(m, p)) : html`<div class="mut sm" style="margin-top:14px">Agrega los proyectos que forman este paso con «+ Proyecto».</div>`)}</div>`;
   };
   function paint() {
     const order = { Activo: 0, Pausado: 1, Hecho: 2 };
     const list = [...megas].sort((a, z) => (order[a.status || 'Activo'] ?? 0) - (order[z.status || 'Activo'] ?? 0) || String(a.start || '9999').localeCompare(String(z.start || '9999')));
-    mount(el, html`<div class="hello"><h1>Roadmap</h1><p>Los pasos grandes, con sus proyectos y <em>tareas con fecha y hora</em>.</p></div>
-      <div class="row" style="margin-bottom:18px"><div class="sp"></div><button class="btn" data-act="newMega">+ Megaproyecto</button></div>
-      ${list.length ? list.map(megaCard) : html`<div class="empty"><b>Todavía no hay megaproyectos</b>Crea el primero con «+ Megaproyecto». Dentro van sus proyectos y las tareas con fecha y hora.</div>`}`);
+    mount(el, html`<div class="hello row"><div><h1>Roadmap</h1><p>Los pasos grandes, con sus proyectos y <em>tareas con fecha y hora</em>.</p></div><div class="sp"></div><button class="btn" data-act="newMega">+ Megaproyecto</button></div>
+      ${list.length ? list.map(megaCard) : html`<div class="empty"><b>Todavía no hay megaproyectos</b>Dentro de cada uno van sus proyectos y las tareas con fecha y hora.<div><button class="btn" data-act="newMega">+ Megaproyecto</button></div></div>`}`);
   }
 
   // ---------- formularios ----------
