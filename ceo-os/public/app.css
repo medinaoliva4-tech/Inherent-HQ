@@ -971,3 +971,24 @@ html{scrollbar-gutter:stable;overflow-y:scroll}
 .iq-diag summary::-webkit-details-marker{display:none}
 .iq-diag[open] summary{margin-bottom:8px}
 .dsteps{display:grid;gap:16px}.dsteps>div{display:flex;gap:12px;align-items:flex-start}.dsteps .btn{display:flex;width:max-content}.dsteps b{font-weight:500}
+/* Content · Research: la galería de videos (como Edits) y el detalle de cada uno */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:12px}
+.rcard{position:relative;display:block;aspect-ratio:9/16;border-radius:22px;background:#d9cdbd center/cover no-repeat;overflow:hidden;text-align:left;color:#fdfaf3;isolation:isolate;transition:transform .2s ease,box-shadow .2s ease;cursor:pointer}
+.rcard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,18,12,.28) 0%,transparent 28%,transparent 58%,rgba(26,18,12,.62) 100%);z-index:0;pointer-events:none}
+.rcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.rbadge{position:absolute;left:10px;top:10px;z-index:1;background:rgba(44,31,22,.72);backdrop-filter:blur(8px);border-radius:99px;padding:5px 11px;font-size:12.5px;font-weight:600}
+.rwhy{position:absolute;right:10px;top:10px;z-index:1;width:26px;height:26px;border-radius:50%;background:rgba(253,250,243,.92);color:#2c1f16;display:grid;place-items:center}
+.rnothumb{position:absolute;inset:0;display:grid;place-items:center;color:#2c1f16;opacity:.5;z-index:1}
+.rfoot{position:absolute;left:12px;right:12px;bottom:10px;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12.5px}
+.rfoot b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rfoot span{display:inline-flex;align-items:center;gap:4px;flex:none}
+.rplayer{margin:14px 0;border-radius:20px;overflow:hidden;background:#1a120c}
+.rplayer iframe{width:100%;height:min(72vh,640px);border:0;display:block;background:#fdfaf3}
+.rposter{aspect-ratio:9/16;max-height:62vh;margin:0 auto;background:#d9cdbd center/cover no-repeat}
+.rkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.rkpis>div{background:#fdfaf3;border:1px solid var(--line);border-radius:14px;padding:10px 12px}.rkpis b{display:block;font-size:20px;font-weight:500;margin-top:2px}
+.rwhybox{margin-top:14px;padding:16px 18px;border-radius:18px;background:rgba(161,135,112,.1);border-left:3px solid #a18770;font-size:14px;line-height:1.55}
+.rwhybox h3{font-size:16px;font-weight:500;margin-bottom:8px}.rwhybox p{margin:6px 0}.rwhybox ol{margin:4px 0 8px 20px}
+/* Calendario de grabación: la hora en vez del ícono, y lo grabado se atenúa */
+.ppost.shoot{border-left-color:#2c1f16}.ppost.shoot.done{opacity:.55}.ppost.shoot .pi{font-size:10.5px;font-weight:600}
+@media (max-width:760px){.rgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.rcard{border-radius:18px}}

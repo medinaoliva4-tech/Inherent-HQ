@@ -88,6 +88,10 @@ const TOOLS = [
   ['leer_documento', 'library', 'Lee un documento de la Library: su contenido y, si es entrevista, sus respuestas y su diagnóstico.', { id: { type: 'string' } }, ['id']],
   ['subir_documento', 'library', `Sube a la Library un documento de texto: un SOP, un playbook, una entrevista, una nota. El contenido va en Markdown; también acepta texto plano, CSV, JSON o HTML (se guarda tal cual en un bloque). Si la carpeta no existe, se crea. Con id, reemplaza ese documento. Una entrevista lleva temas numerados («## 1 · Tema»), preguntas numeradas («1. …») y, debajo, «   > Lo ideal: …»; sus respuestas van en «respuestas» con la llave «tema.pregunta» (ej. {"1.2": "…"}).`, { titulo: { type: 'string' }, contenido: { type: 'string' }, tipo: { type: 'string', enum: KINDS }, carpeta: { type: 'string', description: 'nombre o id; si no existe se crea' }, formato: { type: 'string', enum: ['md', 'txt', 'csv', 'json', 'html'] }, id: { type: 'string', description: 'para reemplazar un documento que ya existe' }, respuestas: { type: 'object', description: 'solo entrevistas: {"tema.pregunta": "respuesta"}' }, diagnostico: { type: 'string', description: 'solo entrevistas, en Markdown' } }, ['titulo', 'contenido']],
   ['subir_archivo', 'library', 'Sube un archivo de cualquier formato (PDF, Word, Excel, PowerPoint, imagen, audio…) al Google Drive de la carpeta de la Library, y lo deja enlazado como documento en esa carpeta. Va en base64, de hasta 3 MB. Para texto (SOP, entrevista, nota) usa subir_documento.', { nombre: { type: 'string', description: 'nombre del archivo con extensión, ej. entrevista.pdf' }, base64: { type: 'string' }, carpeta: { type: 'string', description: 'nombre o id; si no existe se crea' }, titulo: { type: 'string' }, tipo: { type: 'string', enum: KINDS } }, ['nombre', 'base64']],
+  ['research', 'content', 'Los videos de Research de un perfil: los que guardó el conector (con su análisis y su plantilla). Filtro opcional: tipo.', { perfil: { type: 'string' }, tipo: { type: 'string', enum: ['nicho', 'referente', 'competencia', 'propia', 'agregado'] } }, ['perfil']],
+  ['guardar_research', 'content', 'Guarda videos en Research de un perfil (Content → Research). Si el video ya está (mismo url), lo actualiza. Cada video puede llevar sus métricas, «por qué funcionó» y una plantilla para la marca (en Markdown). Hasta 60 por llamada.', { perfil: { type: 'string', description: 'slug del perfil (la marca)' }, videos: { type: 'array', items: { type: 'object', properties: { url: { type: 'string' }, red: { type: 'string', enum: ['instagram', 'tiktok', 'youtube', 'otra'] }, cuenta: { type: 'string', description: 'sin @' }, tipo: { type: 'string', enum: ['nicho', 'referente', 'competencia', 'propia', 'agregado'], description: 'nicho = ganador del nicho' }, miniatura: { type: 'string', description: 'url https de la imagen' }, vistas: { type: 'number' }, likes: { type: 'number' }, comentarios: { type: 'number' }, compartidos: { type: 'number' }, veces_promedio: { type: 'number', description: 'cuántas veces superó el promedio de su cuenta' }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, texto: { type: 'string' }, por_que_funciono: { type: 'object', properties: { hook: { type: 'string' }, retencion: { type: 'string' }, estructura: { type: 'array', items: { type: 'string' } }, por_que: { type: 'string' }, adaptacion: { type: 'string' }, inferido: { type: 'boolean' } } }, plantilla: { type: 'string', description: 'la plantilla terminada para la marca, en Markdown' } }, required: ['url'] } } }, ['perfil', 'videos']],
+  ['calendario', 'content', 'Los calendarios de un perfil en un mes: publicación (qué sale y cuándo) y grabación (qué se graba cada día).', { perfil: { type: 'string' }, mes: { type: 'string', description: 'AAAA-MM; por defecto el actual' } }, ['perfil']],
+  ['agendar', 'content', 'Agenda en el calendario de un perfil: una grabación (qué se graba, cuándo y dónde) o una publicación (una pieza con su fecha).', { perfil: { type: 'string' }, calendario: { type: 'string', enum: ['grabacion', 'publicacion'] }, titulo: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, hora: { type: 'string', description: 'HH:MM, solo grabación' }, lugar: { type: 'string' }, quien: { type: 'string' }, piezas: { type: 'string', description: 'solo grabación: piezas y tomas, una por línea' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'], description: 'solo publicación' }, pilar: { type: 'string' }, notas: { type: 'string' } }, ['perfil', 'calendario', 'titulo', 'fecha']],
   ['crear_idea', 'content', 'Agrega una idea al planner de un perfil.', { perfil: { type: 'string' }, titulo: { type: 'string' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'] }, pilar: { type: 'string' }, texto: { type: 'string' }, fecha: { type: 'string' } }, ['perfil', 'titulo', 'formato']],
 ];
 const toolsFor = (u) => TOOLS.filter(([, a]) => !a || u.areas.includes(a)).map(([name, , description, properties, required]) => ({ name, description, inputSchema: { type: 'object', properties, ...(required ? { required } : {}) } }));
@@ -231,6 +235,50 @@ async function call(u, name, a = {}) {
     const d = await db.create('docs', { title, kind: KINDS.includes(a.tipo) ? a.tipo : 'Nota', url: j.webViewLink, roles: [], folder_id: f?.id || '', body: `> Archivo en Drive: [${file}](${j.webViewLink})\n` }, u.email);
     return { ok: true, id: d.id, titulo: title, archivo: file, drive: j.webViewLink, carpeta: f?.name || 'sin carpeta', abrir: `/#/library/${d.folder_id || '_'}/${d.id}` };
   }
+  if (name === 'research') {
+    const slug = String(a.perfil || ''); if (!slugOk(slug)) throw new Error('perfil inválido');
+    return (await db.list('content')).filter((x) => x.kind === 'research' && x.profile === slug && (!a.tipo || x.tipo === a.tipo)).slice(0, 200)
+      .map((x) => ({ url: x.url, red: x.red || '', cuenta: x.handle || '', tipo: x.tipo || '', vistas: x.views ?? null, veces_promedio: x.x ?? null, con_analisis: Boolean(x.why), con_plantilla: Boolean(x.plantilla) }));
+  }
+  if (name === 'guardar_research') {
+    const slug = String(a.perfil || ''); if (!slugOk(slug)) throw new Error('perfil inválido');
+    const list = Array.isArray(a.videos) ? a.videos.slice(0, 60) : []; if (!list.length) throw new Error('Faltan los videos');
+    const num = (v) => (Number.isFinite(+v) && v !== '' && v != null ? +v : undefined);
+    const https = (v) => (/^https:\/\/[^\s'"()]+$/.test(String(v || '')) ? String(v) : undefined);
+    const nuevos = [], actualizados = [], malos = [];
+    for (const v of list) {
+      const url = https(v.url); if (!url) { malos.push(v.url || '(sin url)'); continue; }
+      const red = v.red || (/tiktok\.com/.test(url) ? 'tiktok' : /instagram\.com/.test(url) ? 'instagram' : /youtu/.test(url) ? 'youtube' : 'otra');
+      const w = v.por_que_funciono && typeof v.por_que_funciono === 'object' ? v.por_que_funciono : null;
+      const doc = { kind: 'research', profile: slug, url, red, handle: String(v.cuenta || '').replace(/^@/, '').toLowerCase().slice(0, 60) || undefined, tipo: ['nicho', 'referente', 'competencia', 'propia', 'agregado'].includes(v.tipo) ? v.tipo : undefined,
+        thumb: https(v.miniatura), views: num(v.vistas), likes: num(v.likes), comments: num(v.comentarios), shares: num(v.compartidos), x: num(v.veces_promedio), at: /^\d{4}-\d{2}-\d{2}/.test(v.fecha || '') ? String(v.fecha).slice(0, 10) : undefined, text: v.texto ? String(v.texto).slice(0, 600) : undefined,
+        why: w ? { hook: String(w.hook || '').slice(0, 600), retencion: String(w.retencion || '').slice(0, 600), estructura: (Array.isArray(w.estructura) ? w.estructura : []).map((x) => String(x).slice(0, 200)).slice(0, 12), por_que: String(w.por_que || '').slice(0, 1200), adaptacion: String(w.adaptacion || '').slice(0, 1200), inferido: Boolean(w.inferido) } : undefined,
+        ...(v.plantilla ? { plantilla: String(v.plantilla).slice(0, 40_000), plantilla_at: T } : {}) };
+      const id = 'rs-' + crypto.createHash('sha256').update(slug + '|' + url.replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase()).digest('hex').slice(0, 20);
+      const had = await db.get('content', id);
+      await db.upsert('content', id, Object.fromEntries(Object.entries(doc).filter(([, x]) => x !== undefined)), u.email);
+      (had ? actualizados : nuevos).push(url);
+    }
+    return { ok: true, nuevos: nuevos.length, actualizados: actualizados.length, ...(malos.length ? { sin_url_valida: malos } : {}), abrir: `/#/content/research/${slug}` };
+  }
+  if (name === 'calendario') {
+    const slug = String(a.perfil || ''); if (!slugOk(slug)) throw new Error('perfil inválido');
+    const mes = /^\d{4}-\d{2}$/.test(a.mes || '') ? a.mes : T.slice(0, 7);
+    const all = (await db.list('content')).filter((x) => x.profile === slug && String(x.date || '').startsWith(mes)).sort((x, z) => String(x.date).localeCompare(String(z.date)));
+    return { mes, publicacion: all.filter((x) => x.kind === 'post').map((x) => ({ fecha: x.date, titulo: x.title, formato: x.format || '', pilar: x.pillar || '', estado: x.status || 'Idea' })),
+      grabacion: all.filter((x) => x.kind === 'shoot').map((x) => ({ fecha: x.date, hora: x.time || '', titulo: x.title, lugar: x.place || '', quien: x.crew || '', piezas: x.pieces || '', estado: x.status || 'Por grabar' })) };
+  }
+  if (name === 'agendar') {
+    const slug = String(a.perfil || ''); if (!slugOk(slug)) throw new Error('perfil inválido');
+    const title = String(a.titulo || '').trim().slice(0, 200), date = /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : null;
+    if (!title || !date) throw new Error('Faltan el título o la fecha (AAAA-MM-DD)');
+    if (a.calendario === 'grabacion') {
+      const r = await db.create('content', { kind: 'shoot', profile: slug, title, date, time: /^\d{1,2}:\d{2}$/.test(a.hora || '') ? a.hora.padStart(5, '0') : '', place: String(a.lugar || '').slice(0, 200), crew: String(a.quien || '').slice(0, 200), pieces: String(a.piezas || '').slice(0, 4000), notes: String(a.notas || '').slice(0, 4000), status: 'Por grabar' }, u.email);
+      return { ok: true, id: r.id, calendario: 'grabación', fecha: date, titulo: title, abrir: `/#/content/calendario/${slug}` };
+    }
+    const r = await db.create('content', { kind: 'post', profile: slug, title, format: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'].includes(a.formato) ? a.formato : 'Reel', pillar: String(a.pilar || ''), caption: String(a.notas || '').slice(0, 4000), date, status: 'Idea' }, u.email);
+    return { ok: true, id: r.id, calendario: 'publicación', fecha: date, titulo: title, abrir: `/#/content/calendario/${slug}` };
+  }
   if (name === 'crear_idea') {
     const slug = String(a.perfil || ''); if (!slugOk(slug) || !String(a.titulo || '').trim()) throw new Error('Faltan perfil o título');
     const p = await db.create('content', { kind: 'post', profile: slug, title: String(a.titulo).slice(0, 200), format: a.formato || 'Reel', pillar: a.pilar || '', caption: String(a.texto || '').slice(0, 4000), date: /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : '', status: 'Idea' }, u.email);
@@ -248,7 +296,7 @@ export async function handle(token, m) {
 export async function run(u, m, base = '') {
   if (!m || m.id === undefined) return { status: 202 };
   const ok = (result) => ({ status: 200, json: { jsonrpc: '2.0', id: m.id, result } });
-  if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', title: 'Inherent OS', version: '1.3.0', ...(base ? { websiteUrl: base, icons: [{ src: `${base}/brand/icon-512.png`, mimeType: 'image/png', sizes: ['512x512'] }, { src: `${base}/brand/emblem-dark.svg`, mimeType: 'image/svg+xml', sizes: ['any'] }] } : {}) }, instructions: `Inherent OS de ${u.name} (${u.role}). Úsalo para ver pendientes, tareas, clientes y contenido; para crear tareas, ideas, cotizaciones o proyectos; y para subir a la Library documentos (SOPs, entrevistas, notas) y archivos de cualquier formato. Fechas en formato AAAA-MM-DD; hoy es ${today()}. Precios en quetzales salvo que se diga otra moneda.` });
+  if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', title: 'Inherent OS', version: '1.3.0', ...(base ? { websiteUrl: base, icons: [{ src: `${base}/brand/icon-512.png`, mimeType: 'image/png', sizes: ['512x512'] }, { src: `${base}/brand/emblem-dark.svg`, mimeType: 'image/svg+xml', sizes: ['any'] }] } : {}) }, instructions: `Inherent OS de ${u.name} (${u.role}). Úsalo para ver pendientes, tareas, clientes y contenido; para crear tareas, ideas, cotizaciones o proyectos; para guardar videos en Research y agendar grabaciones y publicaciones; y para subir a la Library documentos (SOPs, entrevistas, notas) y archivos de cualquier formato. Fechas en formato AAAA-MM-DD; hoy es ${today()}. Precios en quetzales salvo que se diga otra moneda.` });
   if (m.method === 'ping') return ok({});
   if (m.method === 'tools/list') return ok({ tools: toolsFor(u) });
   if (m.method === 'tools/call') {
