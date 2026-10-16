@@ -8,6 +8,7 @@ import { readFile, listDir } from './gh.js';
 import { parsePlanContratado } from './parse.js';
 import * as content from './content.js';
 import * as flow from './flow.js';
+import * as google from './google.js';
 import { phasesFor, meetingsFor, tasksFor, holders, roleToWork, DEPTS, hoursAt, svcHours, svcCost, svcPrice, svcAuto, growthText, includesAt, daysAt, addDays } from '../../public/js/cycle.js';
 
 export const tokenHash = (t) => crypto.createHash('sha256').update(String(t)).digest('hex');
@@ -44,6 +45,31 @@ const priceAt = (s, lv, rates) => (!s.price_fixed && !(s.price && !s.prices) ? s
 const growthOf = (s) => (s.growth_type ? { type: s.growth_type, pct: +s.growth_pct || 10, how: s.growth_how || '' } : null);
 const teamOf = async () => (await db.list('team')).filter((p) => p.role !== 'client' && p.active !== false).map((p) => ({ ...p, email: p.email || p.id }));
 
+// Library: los tipos de documento (los mismos de la pantalla) y los formatos de archivo más comunes.
+const KINDS = ['SOP', 'Playbook', 'Entrevista', 'Prompt', 'Diagrama', 'Video', 'Nota'];
+const MIMES = { pdf: 'application/pdf', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ppt: 'application/vnd.ms-powerpoint', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', csv: 'text/csv', txt: 'text/plain', md: 'text/markdown', json: 'application/json', html: 'text/html', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml', mp3: 'audio/mpeg', m4a: 'audio/mp4', wav: 'audio/wav', mp4: 'video/mp4', mov: 'video/quicktime', zip: 'application/zip' };
+const DRIVE = 'https://www.googleapis.com/drive/v3/files';
+const driveId = (s) => (String(s || '').match(/[-\w]{20,}/) || [])[0] || null;
+// La carpeta de la Library por nombre (sin importar mayúsculas) o id; si no existe y se pide, se crea.
+async function libFolder(u, ref, make) {
+  const k = String(ref || '').trim(); if (!k) return null;
+  const all = await db.list('folders');
+  const f = all.find((x) => x.id === k) || all.find((x) => String(x.name || '').toLowerCase() === k.toLowerCase());
+  if (f || !make) return f || null;
+  return db.create('folders', { name: k.slice(0, 80), tone: 'gris', desc: '' }, u.email);
+}
+// Sin carpeta de Drive conectada, el archivo cae en la carpeta de entregas de la persona (la misma de la app).
+async function myDriveFolder(u) {
+  const me = await db.get('team', u.email); if (me?.drive_folder) return me.drive_folder;
+  const name = 'Inherent OS · Entregas';
+  const q = new URLSearchParams({ q: `name='${name}' and mimeType='application/vnd.google-apps.folder' and trashed=false and 'root' in parents`, fields: 'files(id)', pageSize: '1' });
+  let id = (await google.gapi(u.email, `${DRIVE}?${q}`)).files?.[0]?.id;
+  if (!id) id = (await google.gapi(u.email, `${DRIVE}?fields=id`, { method: 'POST', body: JSON.stringify({ name, mimeType: 'application/vnd.google-apps.folder' }) })).id;
+  await db.upsert('team', u.email, { drive_folder: id }, u.email);
+  return id;
+}
+const fence = (fmt, text) => (fmt && fmt !== 'md' ? '```' + fmt + '\n' + text + '\n```\n' : text);
+
 // [nombre, área que hace falta (null = todos), descripción, esquema]
 const TOOLS = [
   ['mis_pendientes', null, 'Lo que tengo que hacer: tareas atrasadas, de hoy y de la semana, y mis próximas reuniones.', {}],
@@ -58,6 +84,10 @@ const TOOLS = [
   ['crear_proyecto', 'operations', 'Crea un proyecto con sus fases, reuniones y tareas. Tipo: Ciclo mensual, Proyecto, Growth o Custom (Custom sale de una cotización).', { cliente: { type: 'string', description: 'slug del cliente, o inherent' }, tipo: { type: 'string', enum: ['Ciclo mensual', 'Proyecto', 'Growth', 'Custom'] }, inicio: { type: 'string', description: 'AAAA-MM-DD' }, cotizacion_id: { type: 'string' }, nombre: { type: 'string' } }, ['cliente', 'tipo']],
   ['contenido_semana', 'content', 'Lo que encontró el scraper para un perfil: ganadores del nicho, referentes, competencia y lo propio.', { perfil: { type: 'string' } }, ['perfil']],
   ['planner', 'content', 'El planner de un perfil: piezas con fecha, pilar y estado; pilares, audiencia, referentes y competencia.', { perfil: { type: 'string' }, mes: { type: 'string', description: 'AAAA-MM' } }, ['perfil']],
+  ['library', 'library', 'La Library: carpetas y documentos (SOPs, playbooks, entrevistas, notas, archivos). Filtros opcionales: carpeta (nombre o id) y buscar (texto).', { carpeta: { type: 'string' }, buscar: { type: 'string' } }],
+  ['leer_documento', 'library', 'Lee un documento de la Library: su contenido y, si es entrevista, sus respuestas y su diagnóstico.', { id: { type: 'string' } }, ['id']],
+  ['subir_documento', 'library', `Sube a la Library un documento de texto: un SOP, un playbook, una entrevista, una nota. El contenido va en Markdown; también acepta texto plano, CSV, JSON o HTML (se guarda tal cual en un bloque). Si la carpeta no existe, se crea. Con id, reemplaza ese documento. Una entrevista lleva temas numerados («## 1 · Tema»), preguntas numeradas («1. …») y, debajo, «   > Lo ideal: …»; sus respuestas van en «respuestas» con la llave «tema.pregunta» (ej. {"1.2": "…"}).`, { titulo: { type: 'string' }, contenido: { type: 'string' }, tipo: { type: 'string', enum: KINDS }, carpeta: { type: 'string', description: 'nombre o id; si no existe se crea' }, formato: { type: 'string', enum: ['md', 'txt', 'csv', 'json', 'html'] }, id: { type: 'string', description: 'para reemplazar un documento que ya existe' }, respuestas: { type: 'object', description: 'solo entrevistas: {"tema.pregunta": "respuesta"}' }, diagnostico: { type: 'string', description: 'solo entrevistas, en Markdown' } }, ['titulo', 'contenido']],
+  ['subir_archivo', 'library', 'Sube un archivo de cualquier formato (PDF, Word, Excel, PowerPoint, imagen, audio…) al Google Drive de la carpeta de la Library, y lo deja enlazado como documento en esa carpeta. Va en base64, de hasta 3 MB. Para texto (SOP, entrevista, nota) usa subir_documento.', { nombre: { type: 'string', description: 'nombre del archivo con extensión, ej. entrevista.pdf' }, base64: { type: 'string' }, carpeta: { type: 'string', description: 'nombre o id; si no existe se crea' }, titulo: { type: 'string' }, tipo: { type: 'string', enum: KINDS } }, ['nombre', 'base64']],
   ['crear_idea', 'content', 'Agrega una idea al planner de un perfil.', { perfil: { type: 'string' }, titulo: { type: 'string' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'] }, pilar: { type: 'string' }, texto: { type: 'string' }, fecha: { type: 'string' } }, ['perfil', 'titulo', 'formato']],
 ];
 const toolsFor = (u) => TOOLS.filter(([, a]) => !a || u.areas.includes(a)).map(([name, , description, properties, required]) => ({ name, description, inputSchema: { type: 'object', properties, ...(required ? { required } : {}) } }));
@@ -151,6 +181,56 @@ async function call(u, name, a = {}) {
     return { pilares: c.pillars, audiencia: c.audience, diana: c.bullseye, referentes: c.accounts.filter((x) => x.kind === 'referente').map((x) => '@' + x.handle), competencia: c.accounts.filter((x) => x.kind !== 'referente').map((x) => '@' + x.handle),
       piezas: posts.filter((p) => p.kind === 'post' && p.profile === slug && (!a.mes || String(p.date || '').startsWith(a.mes))).map((p) => ({ titulo: p.title, formato: p.format, pilar: p.pillar || '', fecha: p.date || '', estado: p.status || 'Idea', en_drive: Boolean(p.drive_id || p.url) })) };
   }
+  if (name === 'library') {
+    const [folders, docs] = await Promise.all([db.list('folders'), db.list('docs')]);
+    const f = a.carpeta ? await libFolder(u, a.carpeta, false) : null; if (a.carpeta && !f) throw new Error('No encontré esa carpeta');
+    const q = String(a.buscar || '').toLowerCase();
+    const list = docs.filter((d) => (!f || d.folder_id === f.id) && (!q || `${d.title} ${d.body || ''}`.toLowerCase().includes(q)));
+    return { carpetas: folders.map((x) => ({ id: x.id, nombre: x.name, documentos: docs.filter((d) => d.folder_id === x.id).length, drive: x.drive || null })),
+      documentos: list.slice(0, 100).map((d) => ({ id: d.id, titulo: d.title, tipo: d.kind || 'Nota', carpeta: folders.find((x) => x.id === d.folder_id)?.name || '', actualizado: d._meta?.updated_at ? new Date(d._meta.updated_at).toISOString().slice(0, 10) : '', ...(d.url ? { link: d.url } : {}) })) };
+  }
+  if (name === 'leer_documento') {
+    const d = await db.get('docs', String(a.id || '')); if (!d) throw new Error('No encontré ese documento');
+    return { id: d.id, titulo: d.title, tipo: d.kind || 'Nota', link: d.url || null, contenido: d.body || '', ...(d.kind === 'Entrevista' ? { respuestas: d.answers || {}, diagnostico: d.diagnosis || null } : {}), abrir: `/#/library/${d.folder_id || '_'}/${d.id}` };
+  }
+  if (name === 'subir_documento') {
+    const title = String(a.titulo || '').trim().slice(0, 200), text = String(a.contenido || '');
+    if (!title || !text.trim()) throw new Error('Faltan el título o el contenido');
+    if (text.length > 300_000) throw new Error('El contenido es muy largo (máximo 300 mil caracteres). Divídelo en varios documentos');
+    const kind = KINDS.includes(a.tipo) ? a.tipo : 'Nota';
+    const body = fence(['txt', 'csv', 'json', 'html'].includes(a.formato) ? a.formato : 'md', text);
+    const extra = { ...(a.respuestas && typeof a.respuestas === 'object' ? { answers: Object.fromEntries(Object.entries(a.respuestas).filter(([k]) => /^\d+\.\d+$/.test(k)).map(([k, v]) => [k, String(v).slice(0, 8000)])) } : {}), ...(a.diagnostico ? { diagnosis: String(a.diagnostico).slice(0, 60_000), diagnosis_at: T } : {}) };
+    if (a.id) {
+      const d = await db.get('docs', String(a.id)); if (!d) throw new Error('No encontré ese documento');
+      const f = a.carpeta ? await libFolder(u, a.carpeta, true) : null;
+      const r = await db.update('docs', d.id, { ...d, title, kind, body, ...(f ? { folder_id: f.id } : {}), ...extra, answers: { ...(d.answers || {}), ...(extra.answers || {}) } }, d.v, u.email);
+      if (!r) throw new Error('Alguien lo cambió justo ahora; intenta de nuevo');
+      return { ok: true, id: r.id, titulo: r.title, reemplazado: true, abrir: `/#/library/${r.folder_id || '_'}/${r.id}` };
+    }
+    const f = await libFolder(u, a.carpeta, true);
+    const d = await db.create('docs', { title, kind, url: '', roles: [], folder_id: f?.id || '', body, ...extra }, u.email);
+    return { ok: true, id: d.id, titulo: d.title, tipo: kind, carpeta: f?.name || 'sin carpeta', abrir: `/#/library/${d.folder_id || '_'}/${d.id}` };
+  }
+  if (name === 'subir_archivo') {
+    const file = String(a.nombre || '').replace(/[\\/]/g, '-').trim().slice(0, 180); if (!file) throw new Error('Falta el nombre del archivo');
+    const b64 = String(a.base64 || '').replace(/^data:[^,]*,/, '').replace(/\s/g, '');
+    if (!b64 || !/^[A-Za-z0-9+/=]+$/.test(b64)) throw new Error('El archivo no viene en base64');
+    const buf = Buffer.from(b64, 'base64'); if (!buf.length) throw new Error('El archivo está vacío');
+    if (buf.length > 3 * 1024 * 1024) throw new Error('El archivo pesa más de 3 MB. Súbelo desde la Library de la app, que no tiene ese límite');
+    const mime = MIMES[(file.split('.').pop() || '').toLowerCase()] || 'application/octet-stream';
+    let token; try { token = await google.accessToken(u.email); } catch { throw new Error('Para subir archivos conecta tu Google Drive en la app (Team → Mi perfil)'); }
+    const f = await libFolder(u, a.carpeta, true);
+    const parent = driveId(f?.drive) || (await myDriveFolder(u));
+    const bound = 'inh' + crypto.randomBytes(8).toString('hex');
+    const payload = Buffer.concat([Buffer.from(`--${bound}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name: file, parents: [parent] })}\r\n--${bound}\r\nContent-Type: ${mime}\r\n\r\n`), buf, Buffer.from(`\r\n--${bound}--`)]);
+    const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink', { method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': `multipart/related; boundary=${bound}` }, body: payload });
+    const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(`Drive no aceptó el archivo: ${j.error?.message || r.status}`);
+    // Como en la app: lo ve cualquiera del dominio que tenga el link.
+    await google.gapi(u.email, `${DRIVE}/${j.id}/permissions?supportsAllDrives=true&sendNotificationEmail=false`, { method: 'POST', body: JSON.stringify({ type: 'domain', role: 'reader', domain: u.email.split('@')[1], allowFileDiscovery: false }) }).catch(() => null);
+    const title = String(a.titulo || file.replace(/\.[^.]+$/, '')).trim().slice(0, 200);
+    const d = await db.create('docs', { title, kind: KINDS.includes(a.tipo) ? a.tipo : 'Nota', url: j.webViewLink, roles: [], folder_id: f?.id || '', body: `> Archivo en Drive: [${file}](${j.webViewLink})\n` }, u.email);
+    return { ok: true, id: d.id, titulo: title, archivo: file, drive: j.webViewLink, carpeta: f?.name || 'sin carpeta', abrir: `/#/library/${d.folder_id || '_'}/${d.id}` };
+  }
   if (name === 'crear_idea') {
     const slug = String(a.perfil || ''); if (!slugOk(slug) || !String(a.titulo || '').trim()) throw new Error('Faltan perfil o título');
     const p = await db.create('content', { kind: 'post', profile: slug, title: String(a.titulo).slice(0, 200), format: a.formato || 'Reel', pillar: a.pilar || '', caption: String(a.texto || '').slice(0, 4000), date: /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : '', status: 'Idea' }, u.email);
@@ -168,7 +248,7 @@ export async function handle(token, m) {
 export async function run(u, m, base = '') {
   if (!m || m.id === undefined) return { status: 202 };
   const ok = (result) => ({ status: 200, json: { jsonrpc: '2.0', id: m.id, result } });
-  if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', title: 'Inherent OS', version: '1.2.0', ...(base ? { websiteUrl: base, icons: [{ src: `${base}/brand/icon-512.png`, mimeType: 'image/png', sizes: ['512x512'] }, { src: `${base}/brand/emblem-dark.svg`, mimeType: 'image/svg+xml', sizes: ['any'] }] } : {}) }, instructions: `Inherent OS de ${u.name} (${u.role}). Úsalo para ver pendientes, tareas, clientes y contenido, y para crear tareas, ideas, cotizaciones o proyectos. Fechas en formato AAAA-MM-DD; hoy es ${today()}. Precios en quetzales salvo que se diga otra moneda.` });
+  if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', title: 'Inherent OS', version: '1.3.0', ...(base ? { websiteUrl: base, icons: [{ src: `${base}/brand/icon-512.png`, mimeType: 'image/png', sizes: ['512x512'] }, { src: `${base}/brand/emblem-dark.svg`, mimeType: 'image/svg+xml', sizes: ['any'] }] } : {}) }, instructions: `Inherent OS de ${u.name} (${u.role}). Úsalo para ver pendientes, tareas, clientes y contenido; para crear tareas, ideas, cotizaciones o proyectos; y para subir a la Library documentos (SOPs, entrevistas, notas) y archivos de cualquier formato. Fechas en formato AAAA-MM-DD; hoy es ${today()}. Precios en quetzales salvo que se diga otra moneda.` });
   if (m.method === 'ping') return ok({});
   if (m.method === 'tools/list') return ok({ tools: toolsFor(u) });
   if (m.method === 'tools/call') {
