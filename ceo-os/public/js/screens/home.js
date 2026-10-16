@@ -91,8 +91,9 @@ export async function render(el, { me, alive }) {
               <div class="mut sm engwhat">${ex.er >= 1 ? html`<b>Qué significa:</b> en ${e1 ? 'Inherent' : 'Personal'}, de cada 100 personas que vieron tus posts, <b>${Math.round(ex.er)}</b> dieron like, comentaron, guardaron o compartieron. Más alto = el contenido conecta más.` : 'Es la parte de quienes vieron tus posts que interactuó (likes, comentarios, guardados, compartidos).'} ${ex.days && ex.src === 'w' ? `Últimos ${ex.days} días.` : ''}</div>`;
             if (igI === null && igP === null) return html`<p class="loading">Cargando…</p>`;
             // Sin datos: decir exactamente por qué, para saber qué arreglar.
-            const why = [['Inherent', igI], ['Personal', igP]].map(([n, r]) => r?.error ? `${n}: ${/api key/i.test(r.error) ? 'la API key de Windsor no es válida (Vercel → WINDSOR_API_KEY)' : r.error.replace(/\{.*\}/, '').trim()}` : r?.connected === false ? 'Falta conectar Windsor (WINDSOR_API_KEY)' : r && !r.handles?.length ? `${n}: falta su cuenta de Instagram en Content → Fuentes` : r && !r.matched ? `${n}: Windsor no trae @${r.handles.join(', @')}${r.accounts?.length ? ` (trae: @${r.accounts.slice(0, 3).join(', @')})` : ''}` : '').filter(Boolean);
-            return html`<div class="big">—</div><div class="mut sm" style="margin-top:14px">${why.length ? why.map((w) => html`<div>${w}</div>`) : 'Todavía sin datos.'}</div>`; })()}
+            // Sin datos: una sola razón, en humano, con a dónde ir. (Lo técnico queda en Content → Analytics.)
+            const why = [...new Set([['Inherent', igI], ['Personal', igP]].map(([n, r]) => r?.error ? 'No pude leer Instagram ahora. Inténtalo en un momento.' : r?.connected === false ? 'Instagram todavía no está conectado.' : r && !r.handles?.length ? `${n}: falta su cuenta de Instagram.` : r && !r.matched ? `${n}: su cuenta de Instagram no aparece entre las conectadas.` : '').filter(Boolean))];
+            return html`<div class="big">—</div><div class="mut sm" style="margin-top:14px">${why.length ? why.map((w) => html`<div>${w}</div>`) : 'Todavía sin datos.'}${why.length ? html`<a class="btn ghost xs" href="#/content/analytics" style="margin-top:10px">Conectar en Content → Analytics</a>` : ''}</div>`; })()}
         </div>`}
       </div>
       <div class="grid g2" style="margin-top:18px">
@@ -123,7 +124,7 @@ export async function render(el, { me, alive }) {
         </div>`}
         <div class="card todo">
           <div class="chead"><div class="ico">${ico('check', 14)}</div><h3>Hoy</h3><span class="gbadge" style="margin-left:auto">${IC.cal} Google Calendar</span><button class="btn ghost" style="padding:8px 14px" data-act="addTask">+ Tarea</button></div>
-          ${agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm" style="margin-bottom:8px">Calendar: ${agErr}</div>`
+          ${agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm" style="margin-bottom:8px">No pude leer tu Google Calendar. <button class="sm linkish" data-act="agRetry" style="margin-top:0">Reintentar</button></div>`
             : agenda.length ? agenda.slice(0, 3).map((e) => html`<a class="agenda" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="t">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="bar2" style="background:#a18770"></span><div><b style="font-weight:500">${e.summary}</b>${e.meet ? html`<div class="mut sm">Google Meet</div>` : e.location ? html`<div class="mut sm">${e.location}</div>` : ''}</div></a>`)
             : html`<div class="mut sm" style="margin-bottom:8px">Sin eventos hoy en tu calendario.</div>`}
           ${mine.length ? html`<ul>${mine.slice(0, 6).map((t) => html`<li><input type="checkbox" data-act="done" data-id="${t.id}"><span>${t.title}</span><span class="who mut sm">${t.due ? fdate(t.due) : ''}</span></li>`)}</ul>`
@@ -138,6 +139,7 @@ export async function render(el, { me, alive }) {
       try { Object.assign(t, await col('tasks').save({ ...t, status: 'Hecha' })); toast('Tarea hecha'); setTimeout(() => { mine.splice(mine.indexOf(t), 1); paint(); }, 500); }
       catch (e) { cb.checked = false; toast(e.message, true); }
     },
+    agRetry: () => { agenda = null; agErr = null; paint(); loadAgenda(); },
     hprof: (b) => { hProf = b.dataset.k; hType = null; try { localStorage.setItem('home.prof', hProf); } catch {} paint(); },
     htype: (b) => { hType = b.dataset.k; paint(); },
     hview: (b) => { hView = b.dataset.k; try { localStorage.setItem('home.view', hView); } catch {} paint(); },

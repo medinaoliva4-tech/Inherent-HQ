@@ -342,7 +342,7 @@ export async function render(el, { me, sub, alive }) {
     const head = html`<div class="tabs mini" style="margin:0 0 10px">${[7, 30, 90].map((d) => html`<button class="${d === adsDays ? 'on' : ''}" data-act="adsDays" data-d="${d}">${d} días</button>`)}</div>`;
     if (!adsRep) return box('Cómo va la pauta', 'Gasto y resultados reales', html`${head}<div class="mut sm">Cargando…</div>`);
     if (adsRep.error) return box('Cómo va la pauta', '', html`<div class="warnbox">${adsRep.error}</div>`);
-    if (!adsRep.on) return box('Cómo va la pauta', 'Se lee de Windsor', html`<div class="mut sm">Falta <b>WINDSOR_API_KEY</b> en Vercel.</div>`);
+    if (!adsRep.on) return box('Cómo va la pauta', 'Se lee de Windsor', html`<div class="mut sm">Las cuentas de pauta todavía no están conectadas al OS. Pídeselo a quien administra la app.</div>`);
     const Qn = (v) => (v == null ? '—' : 'Q' + Math.round(v).toLocaleString('en-US'));
     const cs = adsRep.clients.filter((c) => Object.keys(c.plats).length);
     const errs = Object.entries(adsRep.errors || {});

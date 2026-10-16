@@ -29,17 +29,27 @@ export const initials = (n) => String(n || '?').split(/\s+/).filter(Boolean).sli
 
 // ---------- API ----------
 export const events = new EventTarget();
+// Los errores llegan en lenguaje humano: sin conexión, sin acceso, falló el servidor. El detalle técnico va en `detail`.
+export const HUMAN = { net: 'Sin conexión. Revisa tu internet e inténtalo de nuevo.', server: 'Algo falló de nuestro lado. Inténtalo otra vez en un momento.', denied: 'No tienes acceso a esto.', gone: 'Eso ya no existe.', generic: 'No se pudo completar. Inténtalo de nuevo.' };
 export async function api(path, opts = {}) {
-  const r = await fetch('/api/' + path, {
-    method: opts.method || 'GET', credentials: 'same-origin',
-    headers: { 'Content-Type': 'application/json', 'X-CEOOS': '1' },
-    body: opts.body ? JSON.stringify(opts.body) : undefined,
-  });
+  let r;
+  try {
+    r = await fetch('/api/' + path, {
+      method: opts.method || 'GET', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'X-CEOOS': '1' },
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    });
+  } catch (e) { throw Object.assign(new Error(HUMAN.net), { status: 0, detail: e.message }); }
   const j = await r.json().catch(() => ({}));
   if (r.status === 401 && path !== 'me') events.dispatchEvent(new Event('logout'));
-  if (!r.ok) throw Object.assign(new Error(j.error || `Error ${r.status}`), { status: r.status, code: j.code });
+  if (!r.ok) {
+    const msg = r.status >= 500 ? HUMAN.server : j.error || (r.status === 403 ? HUMAN.denied : r.status === 404 ? HUMAN.gone : HUMAN.generic);
+    throw Object.assign(new Error(msg), { status: r.status, code: j.code, detail: j.error || `HTTP ${r.status}` });
+  }
   return j;
 }
+// Para mostrar un error sin asustar: el mensaje humano arriba y el detalle técnico plegado.
+export const techDetail = (e) => (e?.detail && e.detail !== e.message ? html`<details class="tech"><summary>Detalle técnico</summary><code>${e.detail}</code></details>` : '');
 // Colecciones de la base de datos
 // El equipo, con la foto que cada quien subió por encima de la de Google.
 // El equipo (sin los accesos de clientes al portal).
@@ -127,6 +137,8 @@ export function swap(el, update) {
   b.classList.remove('tabin'); void b.offsetWidth; b.classList.add('tabin');
 }
 export function closeDrawer() { $('#drawer').classList.remove('on'); $('#veil').classList.remove('on'); }
+// Esc cierra el panel lateral (si no hay un diálogo abierto encima).
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#drawer')?.classList.contains('on') && !document.querySelector('dialog[open]')) closeDrawer(); });
 
 // fields: [{k, l, t:'text'|'number'|'date'|'select'|'textarea'|'email', opts:[], v, req, half}]
 export function ask(title, fields, okLabel = 'Guardar') {
@@ -526,14 +538,14 @@ const INFO = [
   [/^material del cliente/i, 'Lo que el cliente nos dio: links, assets y lo del repo.'],
   [/^mis proyectos/i, 'Tus proyectos de Business Growth y en qué fase va cada uno.'],
   [/^cuentas de pauta/i, 'Las cuentas de Meta, Google Ads y LinkedIn de cada cliente. Desde aquí abres su Ads Manager.'],
-  [/^cómo va la pauta/i, 'Gasto, conversiones, CPA y ROAS reales de cada cliente, leídos de Windsor.'],
+  [/^cómo va la pauta/i, 'Gasto, conversiones, CPA y ROAS reales de cada cliente, leídos de sus cuentas de pauta conectadas.'],
   [/^plan y presupuesto/i, 'Gate ⑩: el CEO aprueba el plan y el presupuesto antes de lanzar cualquier campaña.'],
-  [/^anuncios de la competencia/i, 'Los anuncios que la competencia tiene activos en Meta, leídos de la biblioteca de anuncios con Apify.'],
+  [/^anuncios de la competencia/i, 'Los anuncios que la competencia tiene activos en Meta, leídos de su biblioteca de anuncios.'],
   [/^mis próximas reuniones/i, 'Las reuniones de tus proyectos en los próximos 30 días: quién va y de qué se habla.'],
-  [/^tus cuentas/i, 'Las cuentas de la marca. De aquí salen Analytics, la Bandeja y «lo tuyo» en el scrape.'],
+  [/^tus cuentas/i, 'Las cuentas de la marca. De aquí salen Analytics, la Bandeja y «lo tuyo» en la lectura semanal.'],
   [/^referentes/i, 'Cuentas de las que tomamos estilo y temas. No se copian: se leen.'],
   [/^competencia/i, 'Contra quién compite la marca. Las del onboarding vienen de ① Strategy.'],
-  [/^scrape semanal/i, 'Cada lunes Apify lee 10 posts por fuente (tus cuentas, referentes, competencia y hashtags) para ver qué está funcionando.'],
+  [/^scrape semanal/i, 'Cada lunes se leen 10 posts por fuente (tus cuentas, referentes, competencia y hashtags) para ver qué está funcionando.'],
   [/la diana de/i, 'A quién le habla el contenido: una persona exacta al centro y 4 anillos más amplios. 3 videos de cada 5 van al centro.'],
   [/^top 10 del nicho/i, 'Los posts que más rindieron en tu nicho esta semana, contra el promedio de cada cuenta.'],
   [/^lo último de/i, 'Lo más reciente que publicaron, para estar al día.'],
