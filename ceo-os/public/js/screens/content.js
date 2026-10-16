@@ -1,4 +1,4 @@
-import { html, raw, mount, api, toast, acts, drawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON, swap, ico } from '../core.js';
+import { html, raw, mount, api, toast, acts, drawer, closeDrawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON, swap, ico, col, confirmAsk } from '../core.js';
 import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 
@@ -6,8 +6,18 @@ import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveSta
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
 const RED = { instagram: 'Instagram', tiktok: 'TikTok' };
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$/.test(String(u || '')) ? u : null);
-// Por ahora solo Analytics está visible; el resto del código sigue aquí y vuelve al agregar su pestaña a esta lista.
-const TABS = [['analytics', 'Analytics']];
+// Las pestañas visibles; el resto del código sigue aquí y vuelve al agregar su pestaña a esta lista.
+const TABS = [['analytics', 'Analytics'], ['research', 'Research'], ['calendario', 'Calendario']];
+const C = col('content');
+// Research: de dónde viene cada video.
+const RKIND = [['todos', 'Todas las fuentes'], ['nicho', 'Ganadores del nicho'], ['referente', 'Referentes'], ['competencia', 'Competencia'], ['analisis', 'Con análisis']];
+// Como en Edits: arriba se elige qué tipo de contenido se ve.
+const RFMT = [['todo', 'Todo', 'grid'], ['reel', 'Reels', 'video'], ['carrusel', 'Carruseles', 'layers'], ['estatico', 'Estáticos', 'image'], ['plantilla', 'Plantillas', 'copy']];
+const fmtOf = (it) => it.format || (it.video === false ? 'estatico' : 'reel');
+const RKL = { nicho: 'Ganador del nicho', referente: 'Referente', competencia: 'Competencia', propia: 'Tuyo', agregado: 'Agregado' };
+const rkey = (u) => String(u || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
+const embedOf = (u) => { let m; if ((m = String(u).match(/instagram\.com\/(?:p|reel|reels|tv)\/([\w-]+)/))) return `https://www.instagram.com/p/${m[1]}/embed`; if ((m = String(u).match(/tiktok\.com\/@[^/]+\/video\/(\d+)/))) return `https://www.tiktok.com/embed/v2/${m[1]}`; return null; };
+const SHOOT = ['Por grabar', 'Grabado', 'Cancelado'];
 const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho', propia: 'Tuya' };
 
 export function videoCard(it) {
@@ -24,10 +34,11 @@ export async function render(el, { sub, alive }) {
   let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'analytics';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
+  let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
-    slug = data.profile.slug; week = null; posts = null; ig = null; inbox = null; rf = null; shotMes = null; gstack = null; gfiles = null; gcur = null;
+    slug = data.profile.slug; week = null; posts = null; rs = null; shoots = null; ig = null; inbox = null; rf = null; shotMes = null; gstack = null; gfiles = null; gcur = null;
     try { localStorage.setItem('content.profile', slug); } catch {}
     paint();
   }
@@ -48,7 +59,7 @@ export async function render(el, { sub, alive }) {
 
       </div>
       <div id="cbody" class="swap"></div>`);
-    ({ shot, refs: refsTab, semana, postear, guiones, plan, bandeja, analytics, fuentes })[tab]($('#cbody', el));
+    ({ shot, refs: refsTab, semana, postear, guiones, plan, bandeja, analytics, fuentes, research, calendario })[tab]($('#cbody', el));
   }
 
   // ---------- Semana: top 10 del nicho + los videos que agregaste ----------
@@ -248,6 +259,165 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       ${undated.length ? html`<div class="sec-title"><h2>Sin fecha</h2><span class="mut sm">${undated.length}</span></div><div class="row" style="flex-wrap:wrap;gap:6px">${undated.map(chip)}</div>` : ''}`);
   }
 
+  // ---------- Research: los videos que funcionaron, como galería (el scrape + lo que sube Claude con el conector) ----------
+  // Cada video puede traer «por qué funcionó» y una plantilla para la marca: los dos los escribe Claude y los sube con guardar_research.
+  function needResearch(b, fn) {
+    if (week && rs) return false;
+    mount(b, html`<p class="loading">Cargando research…</p>`);
+    Promise.all([week ? null : loadWeek(), rs ? null : C.list().then((l) => { rs = l.filter((x) => x.kind === 'research' && x.profile === slug); }).catch(() => { rs = []; })])
+      .then(() => alive() && b.isConnected && fn(b));
+    return true;
+  }
+  function researchItems() {
+    const r = week?.result || {}, map = new Map();
+    const add = (it, tipo) => { if (!it?.url) return; const k = rkey(it.url); const clean = Object.fromEntries(Object.entries(it).filter(([, v]) => v != null && v !== '')); map.set(k, { ...(map.get(k) || {}), ...clean, tipo: clean.tipo || map.get(k)?.tipo || tipo, key: k }); };
+    (r.top || []).forEach((x) => add(x, 'nicho')); (r.refs || []).forEach((x) => add(x, 'referente')); (r.comp || []).forEach((x) => add(x, 'competencia')); (r.added || []).forEach((x) => add(x, 'agregado'));
+    (rs || []).forEach((x) => add(x, 'agregado')); // lo del conector va al final: trae el análisis y la plantilla
+    return [...map.values()].sort((a, z) => (z.x || 0) - (a.x || 0) || (z.views || 0) - (a.views || 0));
+  }
+  const rmatch = (x, k) => k === 'todos' || (k === 'analisis' ? Boolean(x.why) : x.tipo === k);
+  const fmatch = (x, k) => k === 'todo' || (k === 'plantilla' ? Boolean(x.plantilla) : fmtOf(x) === k);
+  const rcard = (it) => { const t = safeImg(it.thumb), f = fmtOf(it); return html`<button class="rcard" data-act="ropen" data-k="${it.key}" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>
+      <span class="rbadge">${it.plantilla ? 'Plantilla' : it.x ? it.x + '×' : RKL[it.tipo] || 'Video'}</span>
+      <span class="ricons">${f !== 'reel' ? html`<i title="${f === 'carrusel' ? 'Carrusel' : 'Estático'}">${ico(f === 'carrusel' ? 'layers' : 'image', 13)}</i>` : ''}${it.why ? html`<i title="Tiene análisis">${ico('bulb', 13)}</i>` : ''}</span>
+      ${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 20)}</span>`}
+      <span class="rfoot"><b>@${it.handle || '—'}</b><span>${it.views ? html`${ico('play', 12)} ${K(it.views)}` : it.likes ? html`${ico('heart')} ${K(it.likes)}` : ''}</span></span></button>`; };
+  function research(b) {
+    if (needResearch(b, research)) return;
+    const all = researchItems(), byFmt = all.filter((x) => fmatch(x, rfmt)), list = byFmt.filter((x) => rmatch(x, rfilter));
+    mount(b, html`<div class="rtiles">${RFMT.map(([k, l, i]) => html`<button class="rtile ${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}"><i>${ico(i, 22)}</i><span>${l}</span></button>`)}</div>
+      <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:14px">${RKIND.map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}" style="padding:7px 13px">${l} <span style="opacity:.6;margin-left:4px">${byFmt.filter((x) => rmatch(x, k)).length}</span></button>`)}
+        <div class="sp"></div><span class="mut sm">${week?.at ? `Scrape del ${fdate(week.at.slice(0, 10))}` : 'Sin scrape todavía'} · ${(rs || []).length} del conector</span><button class="btn ghost xs" data-act="rreload">Actualizar</button></div>
+      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>Nada aquí todavía</b>Llega del scrape semanal y de lo que sube Claude con el conector de Inherent. También puedes agregar un link con «+».</div>`}
+      <button class="rfab" data-act="radd" title="Agregar un link">${ico('plus', 26)}</button>`);
+  }
+  async function raddLink() {
+    const v = await ask('Agregar a Research', [
+      { k: 'url', l: 'Link del reel, carrusel o post (Instagram o TikTok)', req: true },
+      { k: 'format', l: 'Formato', t: 'select', opts: [['reel', 'Reel o video'], ['carrusel', 'Carrusel'], ['estatico', 'Estático']], half: true },
+      { k: 'tipo', l: 'De dónde viene', t: 'select', opts: [['referente', 'Referente'], ['competencia', 'Competencia'], ['nicho', 'Ganador del nicho'], ['agregado', 'Otro']], half: true },
+    ], 'Agregar');
+    if (!v) return;
+    const url = v.url.trim(); if (!/^https:\/\/(www\.)?(instagram\.com|tiktok\.com|vm\.tiktok\.com)\//.test(url)) return toast('Pega un link de Instagram o TikTok', true);
+    const h = (url.match(/tiktok\.com\/@([\w.]+)/) || [])[1] || '';
+    try { const r = await C.create({ kind: 'research', profile: slug, url, red: /tiktok/.test(url) ? 'tiktok' : 'instagram', handle: h.toLowerCase(), format: v.format, tipo: v.tipo }); rs = [...(rs || []), r]; toast('Agregado a Research'); research($('#cbody', el)); }
+    catch (e) { toast(e.message, true); }
+  }
+  const vidLine = (it) => [it.url, `@${it.handle || '—'}`, RED[it.red] || it.red, it.views && `${it.views} vistas`, it.likes && `${it.likes} likes`, it.x && `${it.x}× su promedio`].filter(Boolean).join(' · ');
+  const whyText = (w) => [w.hook && `Hook: ${w.hook}`, w.retencion && `Qué retuvo: ${w.retencion}`, w.estructura?.length && `Estructura: ${w.estructura.join(' → ')}`, w.por_que && `Por qué funcionó: ${w.por_que}`].filter(Boolean).join('\n');
+  // «Usar plantilla»: abre Claude Code en la nube con todo listo. Lee el brand kit de la marca y entrega el video como plantilla terminada.
+  function usePrompt(it) {
+    const p = data.profile, r = root();
+    return `/inherent ④ Creatividad · ${p.name}: convierte este video de referencia en una plantilla terminada para la marca.
+
+Video: ${vidLine(it)}
+${it.text ? `Texto del post: ${String(it.text).replace(/\s+/g, ' ').slice(0, 300)}\n` : ''}${it.why ? whyText(it.why) + '\n' : ''}
+1. Lee ${r}/CLAUDE.md y el brand kit de la marca: ${r}/02-marca/ (kit de redes, sistema visual, guía de marca) y los links a Figma y Drive en ${r}/00-onboarding/LINKS.md. Si el brand kit no está ahí, búscalo en el repo o en su Drive y dime dónde quedó.
+2. Del video toma solo el craft: formato, hook, ritmo, estructura y edición. El tema se adapta a la estrategia de la marca (${r}/01-estrategia/).
+3. Entrega la plantilla lista para producir: hook (texto y visual), guion por escena con tiempos, tomas (encuadre y acción), textos en pantalla, música y ritmo, edición, y qué assets de la marca usa (fondos, logos, tipografías, colores en hex).
+4. Súbela al OS con el conector de Inherent: guardar_research con perfil «${slug}», el url del video y la plantilla en «plantilla».`;
+  }
+  function whyPrompt(it) {
+    const p = data.profile;
+    return `/inherent ④ Creatividad · ${p.name}: desglosa por qué funcionó este video.
+
+Video: ${vidLine(it)}
+${it.text ? `Texto del post: ${String(it.text).replace(/\s+/g, ' ').slice(0, 300)}\n` : ''}
+Ábrelo si puedes. Si no puedes verlo, deduce del texto y las métricas y márcalo como inferido.
+Devuelve: el hook (lo que pasa o se dice en los primeros 3 segundos), qué retuvo a la gente, la estructura en beats, por qué funcionó y cómo lo adaptaría ${p.name} (su estrategia está en ${root()}/01-estrategia/).
+Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}», el url del video, sus métricas y por_que_funciono {hook, retencion, estructura, por_que, adaptacion, inferido}.`;
+  }
+  // El detalle, como en Edits: el video en grande, la cuenta y «Usar plantilla» abajo, las acciones al lado.
+  function ropen(k) {
+    const it = researchItems().find((x) => x.key === k); if (!it) return;
+    const w = it.why || {}, em = embedOf(it.url), t = safeImg(it.thumb), f = fmtOf(it), slides = (it.slides || []).map(safeImg).filter(Boolean);
+    const kpis = [['Vistas', it.views], ['Likes', it.likes], ['Comentarios', it.comments], ['Compartidos', it.shares]].filter(([, v]) => v != null && v !== 0);
+    document.querySelector('.rview')?.remove();
+    const v = document.createElement('div'); v.className = 'rview';
+    mount(v, html`<div class="rv-col">
+        <div class="rv-media">${em ? html`<iframe src="${em}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`
+          : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
+          : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}></div>`}
+          <button class="rv-back" data-v="close" title="Cerrar">${ico('x', 18)}</button></div>
+        <div class="rv-foot"><div class="rv-acc"><span class="rv-av">${(it.handle || '?')[0].toUpperCase()}</span><div><b>@${it.handle || '—'}</b><div class="sm">${[RED[it.red] || it.red, { reel: 'Reel', carrusel: 'Carrusel', estatico: 'Estático' }[f], RKL[it.tipo]].filter(Boolean).join(' · ')}</div></div></div>
+          <button class="rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button></div>
+      </div>
+      <div class="rv-actions"><button class="rv-plus" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 22)}</button><button data-v="why" title="Por qué funcionó">${ico('bars', 20)}</button>${/^https:\/\//.test(it.url) ? html`<a href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original">${ico('globe', 20)}</a>` : ''}</div>
+      <div class="rv-info">
+        ${kpis.length || it.x ? html`<div class="rkpis">${kpis.map(([l, x]) => html`<div><span class="lbl">${l}</span><b>${K(x)}</b></div>`)}${it.x ? html`<div><span class="lbl">Vs su promedio</span><b>${it.x}×</b></div>` : ''}</div>` : ''}
+        ${it.text ? html`<div class="mut sm" style="margin-top:12px">${String(it.text).slice(0, 400)}</div>` : ''}
+        <div class="rwhybox" id="rvwhy"><h3>Por qué funcionó${w.inferido ? html` <span class="chip amber sm2">inferido</span>` : ''}</h3>
+          ${it.why ? html`${w.hook ? html`<p><b>Hook</b> ${w.hook}</p>` : ''}${w.retencion ? html`<p><b>Qué retuvo</b> ${w.retencion}</p>` : ''}${w.estructura?.length ? html`<p><b>Estructura</b></p><ol>${w.estructura.map((x) => html`<li>${x}</li>`)}</ol>` : ''}${w.por_que ? html`<p><b>Por qué funcionó</b> ${w.por_que}</p>` : ''}${w.adaptacion ? html`<p><b>Cómo adaptarlo</b> ${w.adaptacion}</p>` : ''}`
+            : html`<p class="mut">Todavía sin análisis. Claude lo desglosa y lo sube aquí.</p><button class="btn xs" data-v="ask">Pedir el análisis a Claude</button>`}</div>
+        ${it.plantilla ? html`<div class="rwhybox"><h3>Plantilla para ${data.profile.name}</h3>${md(it.plantilla)}</div>` : ''}
+      </div>`);
+    document.body.appendChild(v);
+    const close = () => { v.remove(); removeEventListener('keydown', esc); }, esc = (e) => { if (e.key === 'Escape') close(); };
+    addEventListener('keydown', esc); addEventListener('hashchange', close, { once: true });
+    v.onclick = async (e) => {
+      if (e.target === v) return close();
+      const a = e.target.closest('[data-v]')?.dataset.v; if (!a) return;
+      if (a === 'close') close();
+      if (a === 'use') { openClaude(usePrompt(it)); toast('Se abrió Claude Code con todo listo: dale enviar'); }
+      if (a === 'ask') { openClaude(whyPrompt(it)); toast('Se abrió Claude Code: dale enviar. Cuando termine, toca «Actualizar»'); }
+      if (a === 'why') $('#rvwhy', v)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (a === 'plan') {
+        const x = await ask('Agendar en Publicación', [{ k: 'title', l: 'Idea', v: `Basado en @${it.handle || 'referencia'}`, req: true }, { k: 'date', l: 'Fecha', t: 'date', v: today(), req: true, half: true }, { k: 'format', l: 'Formato', t: 'select', opts: ['Reel', 'Carrusel', 'Estático', 'TikTok', 'Story'], v: f === 'carrusel' ? 'Carrusel' : f === 'estatico' ? 'Estático' : 'Reel', half: true }], 'Agendar');
+        if (!x) return;
+        try { await C.create({ kind: 'post', profile: slug, title: x.title, date: x.date, format: x.format, status: 'Idea', caption: `Referencia: ${it.url}` }); posts = null; toast('Agendado en Calendario → Publicación'); } catch (er) { toast(er.message, true); }
+      }
+    };
+  }
+
+  // ---------- Calendario: Publicación (las piezas del Planner) y Grabación (qué se graba cada día) ----------
+  const recal = () => (tab === 'calendario' ? calendario($('#cbody', el)) : plan($('#cbody', el)));
+  function calendario(b) {
+    mount(b, html`<div class="tabs" style="margin:0 0 14px">${[['publicacion', 'Publicación'], ['grabacion', 'Grabación']].map(([k, l]) => html`<button class="${cview === k ? 'on' : ''}" data-act="cview" data-v="${k}">${l}</button>`)}</div><div id="calb"></div>`);
+    (cview === 'grabacion' ? grabacion : plan)($('#calb', b));
+  }
+  function calRange() {
+    const a = new Date(pdate + 'T12:00');
+    const first = pview === 'mes' ? new Date(a.getFullYear(), a.getMonth(), 1, 12) : a;
+    const start = monday(first);
+    const n = pview === 'mes' ? Math.ceil((((first.getDay() + 6) % 7) + new Date(a.getFullYear(), a.getMonth() + 1, 0).getDate()) / 7) * 7 : 7;
+    const days = Array.from({ length: n }, (_, i) => { const d = new Date(start); d.setDate(d.getDate() + i); return d; });
+    const from = iso(days[0]), to = iso(days[days.length - 1]);
+    return { a, days, from, to, title: pview === 'mes' ? a.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' }).replace(/^./, (c) => c.toUpperCase()) : `${fdate(from)} – ${fdate(to)}` };
+  }
+  function grabacion(b) {
+    if (shoots === null) { mount(b, html`<p class="loading">Cargando grabaciones…</p>`); C.list().then((l) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug); }).catch((e) => { shoots = []; toast(e.message, true); }).then(() => alive() && b.isConnected && grabacion(b)); return; }
+    const { a, days, from, to, title } = calRange(), T = today();
+    const inRange = shoots.filter((x) => x.date >= from && x.date <= to && x.status !== 'Cancelado');
+    const chip = (x) => html`<button class="ppost shoot ${x.status === 'Grabado' ? 'done' : ''}" data-act="sedit" data-id="${x.id}" title="${x.title}${x.place ? ' · ' + x.place : ''}"><span class="pi">${x.time || ico('video', 13)}</span><span class="pt">${x.title}</span></button>`;
+    mount(b, html`<div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <button class="arrow light" data-act="pnav" data-d="-1">‹</button><b style="font-weight:500;min-width:150px;text-align:center">${title}</b><button class="arrow light" data-act="pnav" data-d="1">›</button>
+        <button class="sm mut" data-act="ptoday">Hoy</button><div class="sp"></div>
+        <span class="mut sm">${inRange.length} grabaci${inRange.length === 1 ? 'ón' : 'ones'} ${pview === 'mes' ? 'este mes' : 'esta semana'}</span>
+        <div class="tabs" style="margin:0">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => html`<button class="${pview === k ? 'on' : ''}" data-act="pview" data-v="${k}">${l}</button>`)}</div>
+        <button class="btn" data-act="snew" data-d="">+ Grabación</button></div>
+      <div class="pcal ${pview}">${DOW.map((d) => html`<div class="pdow">${d}</div>`)}
+        ${days.map((d) => { const k = iso(d); const l = shoots.filter((x) => x.date === k).sort((x, z) => String(x.time || '').localeCompare(String(z.time || ''))); return html`<div class="pday ${pview === 'mes' && d.getMonth() !== a.getMonth() ? 'out' : ''} ${k === T ? 'today' : ''}" data-act="snew" data-d="${k}"><span class="pn">${d.getDate()}</span>${l.map(chip)}</div>`; })}</div>`);
+  }
+  async function editShoot(x, date) {
+    const v = await ask(x ? 'Grabación' : 'Nueva grabación', [
+      { k: 'title', l: '¿Qué se graba?', v: x?.title, req: true },
+      { k: 'date', l: 'Fecha', t: 'date', v: x?.date || date || today(), req: true, half: true },
+      { k: 'time', l: 'Hora', t: 'time', v: x?.time, half: true },
+      { k: 'place', l: 'Lugar', v: x?.place, half: true },
+      { k: 'crew', l: 'Quién graba', v: x?.crew, half: true },
+      { k: 'pieces', l: 'Piezas y tomas (una por línea)', t: 'textarea', v: x?.pieces },
+      { k: 'notes', l: 'Notas', t: 'textarea', v: x?.notes },
+      ...(x ? [{ k: 'status', l: 'Estado', t: 'select', opts: [...SHOOT, ['__del', 'Eliminar esta grabación']], v: x.status || SHOOT[0] }] : []),
+    ], x ? 'Guardar' : 'Agendar');
+    if (!v) return;
+    try {
+      if (v.status === '__del') { if (!(await confirmAsk(`¿Eliminar «${x.title}»?`))) return; await C.remove(x.id); shoots = shoots.filter((y) => y.id !== x.id); toast('Grabación eliminada'); }
+      else if (x) { const r = await C.save({ ...x, ...v }); shoots = shoots.map((y) => (y.id === r.id ? r : y)); toast('Guardado'); }
+      else { const r = await C.create({ kind: 'shoot', profile: slug, status: SHOOT[0], ...v }); shoots = [...shoots, r]; toast('Grabación agendada'); }
+      recal();
+    } catch (e) { toast(e.message, true); }
+  }
+
   // ---------- Analytics: Instagram vía Windsor.ai (cuenta + reels con watch time) ----------
   function analytics(b) {
     if (ig === null) { mount(b, html`<p class="loading">Cargando analytics…</p>`); api(`analytics/instagram?profile=${encodeURIComponent(slug)}`).then((r) => { ig = r; }).catch((e) => { ig = { error: e.message }; }).then(() => alive() && tab === 'analytics' && b.isConnected && analytics(b)); return; }
@@ -366,18 +536,26 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       if (!v) return;
       try { const f = await api('google/drive', { method: 'POST', body: { type: 'doc', name: v.name, folder: gstack[gstack.length - 1].id } }); gfiles = null; gcur = f.id; toast('Guion creado en Drive'); window.open(f.link, '_blank', 'noopener'); guiones($('#cbody', el)); } catch (e) { toast(e.message, true); }
     },
-    pview: (t) => { pview = t.dataset.v; plan($('#cbody', el)); },
-    pnav: (t) => { const d = new Date(pdate + 'T12:00'); if (pview === 'mes') d.setMonth(d.getMonth() + +t.dataset.d, 1); else d.setDate(d.getDate() + 7 * +t.dataset.d); pdate = d.toISOString().slice(0, 10); plan($('#cbody', el)); },
-    ptoday: () => { pdate = today(); plan($('#cbody', el)); },
-    pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; const r = await editPost(slug, null, t.dataset.d ? { date: t.dataset.d } : {}); if (r) { posts = [...posts, r]; plan($('#cbody', el)); } },
-    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); plan($('#cbody', el)); } },
+    pview: (t) => { pview = t.dataset.v; recal(); },
+    pnav: (t) => { const d = new Date(pdate + 'T12:00'); if (pview === 'mes') d.setMonth(d.getMonth() + +t.dataset.d, 1); else d.setDate(d.getDate() + 7 * +t.dataset.d); pdate = d.toISOString().slice(0, 10); recal(); },
+    ptoday: () => { pdate = today(); recal(); },
+    cview: (t) => { cview = t.dataset.v; recal(); },
+    snew: (t, e) => { if (e?.target?.closest('.ppost')) return; editShoot(null, t.dataset.d); },
+    sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },
+    rfilter: (t) => { rfilter = t.dataset.k; research($('#cbody', el)); },
+    rfmt: (t) => { rfmt = t.dataset.k; research($('#cbody', el)); },
+    radd: () => raddLink(),
+    rreload: () => { rs = null; week = null; research($('#cbody', el)); },
+    ropen: (t) => ropen(t.dataset.k),
+    pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; const r = await editPost(slug, null, t.dataset.d ? { date: t.dataset.d } : {}); if (r) { posts = [...posts, r]; recal(); } },
+    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
     pillars: async () => {
       const cur = data.cfg.pillars || [];
       const v = await ask('Pilares de contenido', [{ k: 'list', l: 'Un pilar por línea (máx. 8). Ej.: Educa · Detrás de cámaras · Casos · Oferta', t: 'textarea', v: cur.map((x) => x.name).join('\n') }], 'Guardar');
       if (!v) return;
       const names = v.list.split('\n').map((x) => x.trim()).filter(Boolean).slice(0, 8);
       const pillars = names.map((name, i) => ({ name, color: cur.find((x) => x.name === name)?.color || PAL[i % PAL.length] }));
-      try { const r = await api('content/connect', { method: 'PUT', body: { profile: slug, pillars } }); data.cfg.pillars = r.pillars; setConn(slug, { pillars: r.pillars }); toast('Pilares guardados'); plan($('#cbody', el)); } catch (e) { toast(e.message, true); }
+      try { const r = await api('content/connect', { method: 'PUT', body: { profile: slug, pillars } }); data.cfg.pillars = r.pillars; setConn(slug, { pillars: r.pillars }); toast('Pilares guardados'); recal(); } catch (e) { toast(e.message, true); }
     },
     scrape: async (t) => { t.disabled = true; try { await api('content/scrape', { method: 'POST', body: { profile: slug } }); toast('Scrape lanzado en Apify. Tarda unos minutos'); week = null; paint(); } catch (e) { toast(e.message, true); } t.disabled = false; },
     addTag: () => { const v = $('#newTag', el).value; if (v.trim()) saveCfg({ hashtags: [...data.cfg.hashtags, ...v.split(/[\s,]+/)] }); },
