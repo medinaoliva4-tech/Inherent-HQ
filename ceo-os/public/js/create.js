@@ -1,36 +1,48 @@
 // Crear cosas con preguntas, no con formularios. Lo usan Operations, Workspace y Clients.
 import { wizard, col, api, toast, roleName, today, fdate, html, raw, drawer, closeDrawer, $, $$, Q, ico } from './core.js';
 import { TIPOS, TIPO_DESC } from './tasktype.js';
+import { loadRecipes } from './recetas.js';
 import { DEPTS, deptsOfPlan, phasesFor, tasksFor, customTasks, createLinked, meetingsFor, hoursAt, svcHours, svcCost, svcPrice, daysAt, includesAt } from './cycle.js';
 
 const cleanPlan = (s) => String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, '');
 
 // ---------- Proyecto ----------
 export async function newProject({ team, me, projects = [], tasks = [], pre = {} }) {
-  let clients = [], services = [], rates = null;
-  [clients, services, rates] = await Promise.all([api('repo/clients').then((r) => r.clients.filter((c) => c.hasPlan)).catch(() => []), col('services').list().catch(() => []), me.role === 'ceo' ? col('rates').get('default').catch(() => null) : null]);
+  let clients = [], services = [], rates = null, R = null, bundles = [];
+  [clients, services, rates, R, bundles] = await Promise.all([api('repo/clients').then((r) => r.clients.filter((c) => c.hasPlan)).catch(() => []), col('services').list().catch(() => []), me.role === 'ceo' ? col('rates').get('default').catch(() => null) : null, loadRecipes(), api('flow/bundles').then((r) => r.bundles).catch(() => [])]);
   const mes = today().slice(0, 7);
   const a = await wizard('Nuevo proyecto', [
     { k: 'kind', q: '¿Qué tipo de proyecto es?', type: 'cards', req: true, v: pre.kind, show: () => !pre.kind, opts: [
       { v: 'Ciclo mensual', i: ico('repeat'), l: 'Ciclo de contenido', d: 'Del día 1 al 20, con los departamentos del plan' },
       { v: 'Proyecto', i: ico('puzzle'), l: 'Proyecto por fases', d: 'Algo puntual: una web, un lanzamiento' },
       { v: 'Growth', i: ico('trend'), l: 'Business Growth', d: 'Consultoría: ganar más y gastar menos' },
-      { v: 'Custom', i: ico('layers'), l: 'Proyecto custom', d: 'Eliges los servicios del catálogo y qué tan fuerte va cada uno' }] },
-    { k: 'client', q: '¿Para quién?', type: 'cards', req: true, opts: [...clients.map((c) => ({ v: c.slug, i: ico('tag'), l: c.slug.toUpperCase(), d: cleanPlan(c.plan) })), { v: 'inherent', i: ico('home'), l: 'Inherent', d: 'Nuestras propias redes' }, { v: '_', i: ico('gear'), l: 'Interno', d: 'Sin cliente' }] },
+      { v: 'Custom', i: ico('layers'), l: 'Proyecto custom', d: 'Eliges los servicios del catálogo y qué tan fuerte va cada uno' },
+      ...(bundles.length ? [{ v: 'Paquete', i: ico('stairs'), l: 'Activar un paquete', d: 'Un paquete armado: sus tareas salen de las recetas de sus servicios' }] : [])] },
+    { k: 'bundle', q: '¿Qué paquete activas?', sub: 'Cada servicio trae sus tareas, con responsable, revisor, fecha, SOP y dependencias.', type: 'cards', req: true, show: (x) => x.kind === 'Paquete',
+      opts: bundles.map((b) => ({ v: b.id, i: ico('layers'), l: b.name, d: `${b.servicios.length} ${b.servicios.length === 1 ? 'servicio' : 'servicios'}${b.industry ? ' · ' + b.industry : ''}` })) },
+    { k: 'client', q: '¿Para quién?', type: 'cards', req: true, opts: (x) => [...clients.map((c) => ({ v: c.slug, i: ico('tag'), l: c.slug.toUpperCase(), d: cleanPlan(c.plan) })), { v: 'inherent', i: ico('home'), l: 'Inherent', d: 'Nuestras propias redes' }, ...(x.kind === 'Paquete' ? [] : [{ v: '_', i: ico('gear'), l: 'Interno', d: 'Sin cliente' }])] },
     { k: 'start', q: '¿Cuándo arranca?', type: 'when', req: true, sub: (x) => (x.kind === 'Ciclo mensual' ? 'Es el día 1 del ciclo' : '') },
     { k: 'svcs', q: '¿Qué servicios lleva?', sub: 'Del catálogo de Sales. En el siguiente paso eliges qué tan fuerte va cada uno.', type: 'multi', req: true, show: (x) => x.kind === 'Custom' && !pre.items,
       opts: () => services.map((sv) => ({ v: sv.id, l: sv.name, d: `${sv.category || ''} · ${svcHours(sv, 5)}–${svcHours(sv, 10)} h` })) },
-    { k: 'depts', q: '¿Qué departamentos corren?', sub: 'Ya vienen marcados los de su plan contratado', type: 'multi', show: (x) => x.kind !== 'Growth' && x.kind !== 'Custom',
+    { k: 'depts', q: '¿Qué departamentos corren?', sub: 'Ya vienen marcados los de su plan contratado', type: 'multi', show: (x) => !['Growth', 'Custom', 'Paquete'].includes(x.kind),
       opts: DEPTS.map(([n, name]) => ({ v: n, l: `${n} ${name}` })), v: (x) => deptsOfPlan(clients.find((c) => c.slug === x.client)) },
-    { k: 'auto', q: '¿Creo las tareas por ti?', type: 'cards', req: true, opts: [
+    { k: 'auto', q: '¿Creo las tareas por ti?', type: 'cards', req: true, show: (x) => x.kind !== 'Paquete', opts: [
       { v: 'si', i: ico('bolt'), l: 'Sí, con responsables y fechas', d: 'Una por departamento, según el perfil de cada quien' },
       { v: 'no', i: ico('hand'), l: 'No, las agrego yo' }] },
     { k: 'name', q: 'Último paso: ¿cómo se llama?', type: 'text', req: true, ph: 'Nombre del proyecto',
-      v: pre.name ? pre.name : (x) => `${x.client === '_' ? 'Interno' : (x.client || '').toUpperCase()} · ${x.kind === 'Ciclo mensual' ? 'ciclo ' + (x.start || today()).slice(0, 7) : x.kind === 'Growth' ? 'Business Growth' : x.kind === 'Custom' ? 'custom' : 'proyecto'}` },
+      v: pre.name ? pre.name : (x) => `${x.client === '_' ? 'Interno' : (x.client || '').toUpperCase()} · ${x.kind === 'Paquete' ? bundles.find((b) => b.id === x.bundle)?.name || 'paquete' : x.kind === 'Ciclo mensual' ? 'ciclo ' + (x.start || today()).slice(0, 7) : x.kind === 'Growth' ? 'Business Growth' : x.kind === 'Custom' ? 'custom' : 'proyecto'}` },
   ]);
   if (!a) return null;
   const c = clients.find((x) => x.slug === a.client);
   const kind = a.kind, start = a.start || today();
+  // Un paquete se activa en el servidor: arma el proyecto con las tareas de las recetas de sus servicios.
+  if (kind === 'Paquete') {
+    try {
+      const r = await api('flow/activate', { method: 'POST', body: { bundle_id: a.bundle, slug: a.client, label: c ? c.slug.toUpperCase() : a.client === 'inherent' ? 'Inherent' : '', start, name: a.name } });
+      toast(`Paquete activado · ${r.tasks.length} tareas`);
+      return { project: r.projects[0], tasks: r.tasks };
+    } catch (e) { toast(e.message, true); return null; }
+  }
   // el nombre por defecto se arma con las respuestas anteriores
   if (!a.name) a.name = `${(a.client || '').toUpperCase()} · ${kind}`;
   const depts = new Set(a.depts || DEPTS.map(([d]) => d));
@@ -40,9 +52,14 @@ export async function newProject({ team, me, projects = [], tasks = [], pre = {}
   try {
     const p = await col('projects').create({ name: a.name, kind, line: kind === 'Growth' ? 'growth' : 'contenido', cycle: kind === 'Ciclo mensual' ? start.slice(0, 7) : '',
       client: c ? c.slug.toUpperCase() : a.client === 'inherent' ? 'Inherent' : '', client_slug: c ? c.slug : a.client === 'inherent' ? 'inherent' : '', color: ['olive', 'terra', 'ink'][projects.length % 3],
-      phases: phasesFor(kind, start), meetings: meetingsFor(kind, start), ...(items ? { services: items, price: items.reduce((x, i) => x + (i.price || 0), 0) || null } : {}), ...(pre.quote_id ? { quote_id: pre.quote_id } : {}), pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: depts.has(d) ? 'todo' : 'off' }])) });
+      phases: phasesFor(kind, start), meetings: meetingsFor(kind, start, R), ...(items ? { services: items, price: items.reduce((x, i) => x + (i.price || 0), 0) || null } : {}), ...(pre.quote_id ? { quote_id: pre.quote_id } : {}), pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: depts.has(d) ? 'todo' : 'off' }])) });
     let made = [];
-    if (a.auto === 'si') made = await createLinked(items ? customTasks(p, items, team, me.email) : tasksFor(p, team, tasks, me.email), (t) => col('tasks').create(t));
+    if (a.auto === 'si') {
+      made = await createLinked(items ? customTasks(p, items, team, me.email, R) : tasksFor(p, team, tasks, me.email, R), (t) => col('tasks').create(t));
+      // Quién cubre cada rol en este proyecto (se cambia en un solo lugar, en el proyecto).
+      const roles_map = {}; for (const t of made) if (t.role && t.assignee && !roles_map[t.role]) roles_map[t.role] = t.assignee;
+      if (Object.keys(roles_map).length) Object.assign(p, await col('projects').save({ ...p, roles_map }));
+    }
     // Si el cliente todavía no tiene su Drive, se crea y se conecta (sin frenar si falla).
     if (c) { const acc = await col('accounts').get('acc-' + c.slug).catch(() => null); if (!acc?.drive) api('drive/client', { method: 'POST', body: { slug: c.slug, growth: kind === 'Growth' || /accelerate|compound/i.test(c.plan || '') } }).then(() => toast(`Drive de ${c.slug.toUpperCase()} creado y conectado`)).catch(() => {}); }
     toast(`Proyecto creado${made.length ? ` · ${made.length} tareas` : ''}`);

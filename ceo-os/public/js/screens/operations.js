@@ -1,6 +1,7 @@
 import { newProject as wizProject, newTask as wizTask, VIS_OPTS, visLabel } from '../create.js';
+import { RECIPE_ROLES } from '../recipes.js';
 import { tipoSopFields, bindSop, readTipoSop, sopLink, tipoChips, tipoMatch, tipoBadge } from '../tasktype.js';
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap, ico } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap, ico, isSummary, canEdit, roChip } from '../core.js';
 
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
 const ST = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Entregado', 'green'], off: ['No aplica', ''] };
@@ -19,6 +20,8 @@ export async function render(el, { me, sub, alive }) {
   let [projects, tasks, team, docs] = await Promise.all([PR.list(), TK.list(), teamList(), col('docs').list().catch(() => [])]);
   let clients = [];
   try { clients = (await api('repo/clients')).clients.map((c) => ({ ...c, plan: String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '') })); } catch {}
+  // Vista por rol: «resumen» = los proyectos con su avance y las tareas atrasadas o en revisión; sin pipeline, calendario ni timeline.
+  const resumen = isSummary(me, 'operations'), edit = canEdit(me, 'operations');
   let tab = ['pipe', 'cal', 'time', 'tasks'].includes(sub[0]) ? sub[0] : 'pipe';
   let current = projects[0]?.id || null, taskFilter = 'all', tipoF = 'todos';
   let calMonth = today().slice(0, 7), events = null, evErr = null;
@@ -32,20 +35,28 @@ export async function render(el, { me, sub, alive }) {
 
   function paint() {
     mount(el, html`
-      <div class="hello row"><div><h1>Operations</h1><p>Proyectos por fase, <em>tiempos</em> y tareas.</p></div><div class="sp"></div><button class="btn" data-act="newProject">+ Proyecto</button></div>
+      <div class="hello row"><div><h1>Proyectos</h1><p>Por fase, con <em>tiempos</em> y tareas.</p></div><div class="sp"></div>${roChip(me, 'operations')}${edit && projects.length ? html`<button class="btn" data-act="newProject">+ Proyecto</button>` : ''}</div>
       ${projects.length ? html`<div class="grid g3">${projects.map((p, i) => { const pct = progress(p); const open = tasks.filter((t) => t.project_id === p.id && t.status !== 'Hecha').length;
         return html`<div class="card feat ${p.color || COLORS[i % 3]}" style="min-height:230px;cursor:pointer" data-act="pick" data-id="${p.id}">
-          <div class="chead"><div class="ico">${IC.ring(Math.max(4, Math.round(pct * 1.17)))}<span style="font-size:15px">${ico('target', 16)}</span></div><h3>${p.name}<br><span class="lbl">${p.kind}${p.client ? ' · ' + p.client : ''}</span></h3>${p.client_slug ? html`<a class="arrow" href="#/clients/${p.client_slug}" title="Página del cliente" style="margin-right:6px">↗</a>` : ''}<button class="arrow" data-act="editProject" data-id="${p.id}" title="Editar">${ico('edit')}</button></div>
+          <div class="chead"><div class="ico">${IC.ring(Math.max(4, Math.round(pct * 1.17)))}<span style="font-size:15px">${ico('target', 16)}</span></div><h3>${p.name}<br><span class="lbl">${p.kind}${p.client ? ' · ' + p.client : ''}</span></h3>${p.client_slug ? html`<a class="arrow" href="#/clients/${p.client_slug}" title="Página del cliente" style="margin-right:6px">↗</a>` : ''}${edit ? html`<button class="arrow" data-act="editProject" data-id="${p.id}" title="Editar">${ico('edit')}</button>` : ''}</div>
           <div class="lbl">Avance</div><div class="big" style="font-size:46px">${pct}<small>%</small></div>
           <div class="phases">${(p.phases || []).map((x) => html`<i title="${x.name}" style="background:${x.status === 'done' ? 'rgba(253,250,243,.95)' : x.status === 'now' ? 'var(--lime)' : 'rgba(253,250,243,.25)'}"></i>`)}</div>
           <div class="foot"><span>Fase: ${curPhase(p)}</span><span>${open} tareas abiertas</span></div></div>`; })}</div>`
-      : html`<div class="empty"><b>Todavía no hay proyectos</b>Si es un cliente con plan, su pipeline se arma solo según lo contratado.<div><button class="btn" data-act="newProject">+ Proyecto</button></div></div>`}
-      <div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
+      : html`<div class="empty"><b>Todavía no hay proyectos</b>Si es un cliente con plan, su pipeline se arma solo según lo contratado.${edit ? html`<div><button class="btn" data-act="newProject">+ Proyecto</button></div>` : ''}</div>`}
+      ${!projects.length && !tasks.length ? '' : resumen ? html`<div class="sec-title" style="margin-top:22px"><h2>Necesita atención</h2><span class="mut sm">Atrasadas y en revisión</span></div><div id="obody"></div>` : html`<div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
         <div class="tabs" style="margin:0">${[['pipe', 'Proyectos'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
-        <div class="sp"></div>${tab === 'tasks' ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
+        <div class="sp"></div>${tab === 'tasks' && edit ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
       </div>
-      <div id="obody"></div>`);
+      <div id="obody"></div>`}`);
+    if (!$('#obody', el)) return; // vacío: solo el botón de crear el primero
+    if (resumen) return attention($('#obody', el));
     ({ pipe, cal, time, tasks: taskTab })[tab]($('#obody', el));
+  }
+  // El resumen: solo lo que requiere acción, por proyecto.
+  function attention(b) {
+    const T = today();
+    const list = tasks.filter((t) => t.status !== 'Hecha' && ((t.due && t.due < T) || t.status === 'En revisión')).sort((x, z) => String(x.due || '9').localeCompare(String(z.due || '9')));
+    mount(b, list.length ? html`<div class="card">${list.slice(0, 40).map((t) => html`<div class="wkrow" data-act="task" data-id="${t.id}"><span class="grow">${t.title}<span class="mut sm"> · ${pname(t.project_id)} · ${person(t.assignee)?.name || 'Sin responsable'}</span></span>${t.status === 'En revisión' ? html`<span class="chip amber sm2">En revisión</span>` : html`<span class="chip red sm2">Venció ${fdate(t.due)}</span>`}</div>`)}</div>` : html`<div class="card"><div class="mut">Todo en orden ${ico('check', 14)}</div></div>`);
   }
 
   // ---------- Pipeline por cliente, con sus entregables ----------
@@ -58,6 +69,28 @@ export async function render(el, { me, sub, alive }) {
     if (ts.some((t) => t.status === 'En curso')) return { tasks: ts, label: 'En curso', chip: 'lime', cls: 'now' };
     return { tasks: ts, label: 'Pendiente', chip: '', cls: '' };
   }
+  // Quién cubre cada rol en este proyecto, en un solo lugar: al cambiarlo se reasignan las tareas abiertas de ese rol.
+  function roleTable(p) {
+    const ts = tasks.filter((t) => t.project_id === p.id && t.role);
+    const roles = [...new Set([...Object.keys(p.roles_map || {}), ...ts.map((t) => t.role)])].sort((a, z) => RECIPE_ROLES.findIndex(([k]) => k === a) - RECIPE_ROLES.findIndex(([k]) => k === z));
+    if (!roles.length) return '';
+    const crew = team.filter((x) => x.active !== false && x.kind !== 'ia' && String(x.email || x.id).includes('@'));
+    const cur = (r) => p.roles_map?.[r] || ts.find((t) => t.role === r && t.assignee)?.assignee || '';
+    return html`<div class="card" style="margin-top:22px;padding:18px 20px"><h3 style="font-weight:500;font-size:18px;letter-spacing:-.3px;margin:0 0 2px">Quién cubre cada rol</h3><div class="mut sm" style="margin-bottom:12px">${edit ? 'Cambia a alguien y sus tareas abiertas de ese rol pasan a la persona nueva (queda en el historial de cada tarea).' : 'Las personas que cubren cada rol de este proyecto.'}</div>
+      <div class="rolemap">${roles.map((r) => { const open = ts.filter((t) => t.role === r && t.status !== 'Hecha').length, c = cur(r);
+        return html`<b style="font-weight:500">${RECIPE_ROLES.find(([k]) => k === r)?.[1] || r}</b>
+          ${edit ? html`<select class="in" data-rolesel="${r}" data-pid="${p.id}"><option value="">— sin asignar</option>${crew.map((x) => html`<option value="${x.email || x.id}" ${(x.email || x.id) === c ? raw('selected') : ''}>${x.name}</option>`)}</select>` : html`<span>${person(c)?.name || '—'}</span>`}
+          <span class="chip sm2">${open} ${open === 1 ? 'abierta' : 'abiertas'}</span>`; })}</div></div>`;
+  }
+  async function changeRole(pid, role, email) {
+    if (!email) { toast('Elige a alguien del equipo', true); return paint(); }
+    try {
+      const r = await api('flow/role', { method: 'POST', body: { project_id: pid, role, email } });
+      toast(r.tareas ? `${r.tareas} ${r.tareas === 1 ? 'tarea reasignada' : 'tareas reasignadas'}` : 'Guardado');
+      [projects, tasks] = await Promise.all([PR.list(), TK.list()]); paint();
+    } catch (e) { toast(e.message, true); paint(); }
+  }
+  el.addEventListener('change', (e) => { const s = e.target.closest('[data-rolesel]'); if (s) changeRole(s.dataset.pid, s.dataset.rolesel, s.value); });
   function pipe(b) {
     const p = projects.find((x) => x.id === current);
     if (!p) return mount(b, html`<div class="empty"><b>Elige o crea un proyecto</b>El pipeline muestra cada departamento y su entregable.</div>`);
@@ -70,6 +103,7 @@ export async function render(el, { me, sub, alive }) {
           ${d.tasks.map((t) => html`<button class="artifact" data-act="task" data-id="${t.id}" style="width:100%;margin-top:6px"><span class="fi">${t.status === 'Hecha' ? ico('check', 13) : t.status === 'En revisión' ? ico('clock') : '•'}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;font-size:12.5px">${t.title}</b><div class="mut" style="font-size:11px">${person(t.assignee)?.name || 'Sin responsable'}${t.due ? ' · ' + fdate(t.due) : ''}</div></div></button>`)}
           ${d.tasks.some((t) => /^https?:\/\//.test(t.link || '')) ? html`<a class="sm mut" href="${d.tasks.find((t) => /^https?:\/\//.test(t.link || '')).link}" target="_blank" rel="noopener noreferrer" style="display:block;margin-top:6px">Ver entrega ↗</a>` : ''}
           ${i < DEPTS.length - 1 ? html`<span class="pipe-line"></span>` : ''}</div>`; })}</div>
+      ${roleTable(p)}
       <div class="row" style="margin:22px 0 10px"><h3 style="font-weight:500;font-size:20px;letter-spacing:-.4px">Tareas de ${p.name}</h3><div class="sp"></div><button class="btn ghost" data-act="newTask">+ Tarea</button></div>
       ${taskTable(tasks.filter((t) => t.project_id === p.id), 'Este proyecto todavía no tiene tareas. Agrégalas con «+ Tarea»: cada una se abre, tiene responsable, fecha y checklist.')}`);
   }

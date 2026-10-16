@@ -1,6 +1,6 @@
 import { html, raw, mount, col, api, ask, toast, acts, confirmAsk, fdate, today, IC, ico } from '../core.js';
 
-// Roadmap: los pasos grandes (megaproyectos). Cada uno agrupa proyectos y cada proyecto tiene tareas con fecha y hora,
+// Metas (antes Roadmap, hoy dentro de Resultados): los pasos grandes (megaproyectos). Cada uno agrupa proyectos y cada proyecto tiene tareas con fecha y hora,
 // que se pueden mandar al calendario de quien lo usa. Todo vive en un solo documento por megaproyecto.
 const STATUS = { Activo: 'lime', Pausado: 'amber', Hecho: 'green' };
 const uid = () => Math.random().toString(36).slice(2, 10);
@@ -50,19 +50,19 @@ export async function render(el, { me, alive }) {
         <div style="flex:1;min-width:220px;cursor:pointer" data-act="toggle" data-m="${m.id}"><div class="row" style="gap:8px;flex-wrap:wrap"><span class="mut">${ico(shut ? 'right' : 'down', 16)}</span><h3 style="font-size:20px;font-weight:500;letter-spacing:-.4px;margin:0">${m.name}</h3><span class="chip ${STATUS[m.status] || ''}">${m.status || 'Activo'}</span></div>
           ${m.why ? html`<div class="mut sm" style="margin-top:4px">${m.why}</div>` : ''}
           <div class="mut sm" style="margin-top:4px">${m.start || m.end ? `${m.start ? fdate(m.start) : '…'} → ${m.end ? fdate(m.end) : '…'} · ` : ''}${(m.projects || []).length} proyecto${(m.projects || []).length === 1 ? '' : 's'} · ${done}/${total} tareas</div></div>
-        <div class="row" style="gap:6px"><button class="btn xs" data-act="addProject" data-m="${m.id}">+ Proyecto</button><button class="btn ghost xs" data-act="editMega" data-m="${m.id}">Editar</button><button class="btn ghost xs" data-act="delMega" data-m="${m.id}" aria-label="Quitar megaproyecto" title="Quitar megaproyecto">${ico('trash', 15)}</button></div></div>
+        <div class="row" style="gap:6px"><button class="btn xs" data-act="addProject" data-m="${m.id}">+ Proyecto</button><button class="btn ghost xs" data-act="editMega" data-m="${m.id}">Editar</button><button class="btn ghost xs" data-act="delMega" data-m="${m.id}" aria-label="Quitar meta" title="Quitar meta">${ico('trash', 15)}</button></div></div>
       <div style="height:6px;border-radius:6px;background:var(--line);margin-top:12px;overflow:hidden"><div style="height:100%;width:${pct}%;background:#87684e"></div></div>
       ${shut ? '' : ((m.projects || []).length ? (m.projects || []).map((p) => projectBlock(m, p)) : html`<div class="mut sm" style="margin-top:14px">Agrega los proyectos que forman este paso con «+ Proyecto».</div>`)}</div>`;
   };
   function paint() {
     const order = { Activo: 0, Pausado: 1, Hecho: 2 };
     const list = [...megas].sort((a, z) => (order[a.status || 'Activo'] ?? 0) - (order[z.status || 'Activo'] ?? 0) || String(a.start || '9999').localeCompare(String(z.start || '9999')));
-    mount(el, html`<div class="hello row"><div><h1>Roadmap</h1><p>Los pasos grandes, con sus proyectos y <em>tareas con fecha y hora</em>.</p></div><div class="sp"></div><button class="btn" data-act="newMega">+ Megaproyecto</button></div>
-      ${list.length ? list.map(megaCard) : html`<div class="empty"><b>Todavía no hay megaproyectos</b>Dentro de cada uno van sus proyectos y las tareas con fecha y hora.<div><button class="btn" data-act="newMega">+ Megaproyecto</button></div></div>`}`);
+    mount(el, html`<div class="hello row"><div><h1>Metas</h1><p>Los pasos grandes de Inherent, con sus proyectos y <em>tareas con fecha y hora</em>.</p></div><div class="sp"></div>${list.length ? html`<button class="btn" data-act="newMega">+ Meta</button>` : ''}</div>
+      ${list.length ? list.map(megaCard) : html`<div class="empty"><b>Todavía no hay metas</b>Cada meta es un paso grande de Inherent: dentro van sus proyectos y las tareas con fecha y hora.<div><button class="btn" data-act="newMega">+ Meta</button></div></div>`}`);
   }
 
   // ---------- formularios ----------
-  const megaForm = (m) => ask(m ? 'Editar megaproyecto' : 'Nuevo megaproyecto', [
+  const megaForm = (m) => ask(m ? 'Editar meta' : 'Nueva meta', [
     { k: 'name', l: 'Nombre', v: m?.name, req: true },
     { k: 'why', l: 'Para qué es (el resultado grande)', t: 'textarea', v: m?.why },
     { k: 'start', l: 'Empieza', t: 'date', v: m?.start, half: true }, { k: 'end', l: 'Termina', t: 'date', v: m?.end, half: true },
@@ -70,7 +70,7 @@ export async function render(el, { me, alive }) {
   ], m ? 'Guardar' : 'Crear');
   const projectForm = (p) => ask(p ? 'Editar proyecto' : 'Nuevo proyecto', [
     { k: 'name', l: 'Nombre', v: p?.name, req: true },
-    { k: 'project_id', l: 'Enlazar con un proyecto de Operations (opcional)', t: 'select', opts: [['', '— Ninguno —'], ...projects.map((x) => [x.id, x.name])], v: p?.project_id || '' },
+    { k: 'project_id', l: 'Enlazar con un proyecto de Operaciones (opcional)', t: 'select', opts: [['', '— Ninguno —'], ...projects.map((x) => [x.id, x.name])], v: p?.project_id || '' },
   ], p ? 'Guardar' : 'Agregar');
   const taskForm = (t) => ask(t ? 'Editar tarea' : 'Nueva tarea', [
     { k: 'title', l: 'Qué hay que hacer', v: t?.title, req: true },
@@ -83,7 +83,7 @@ export async function render(el, { me, alive }) {
     toggle: (b) => { const id = b.dataset.m; closed.has(id) ? closed.delete(id) : closed.add(id); paint(); },
     newMega: async () => {
       const v = await megaForm(null); if (!v) return;
-      try { const r = await R.create({ name: v.name, why: v.why || '', start: v.start || '', end: v.end || '', status: v.status || 'Activo', projects: [] }); megas = [...megas, r]; paint(); toast('Megaproyecto creado'); } catch (e) { toast(e.message, true); }
+      try { const r = await R.create({ name: v.name, why: v.why || '', start: v.start || '', end: v.end || '', status: v.status || 'Activo', projects: [] }); megas = [...megas, r]; paint(); toast('Meta creada'); } catch (e) { toast(e.message, true); }
     },
     editMega: async (b) => { const m = megas.find((x) => x.id === b.dataset.m), v = await megaForm(m); if (!v) return; if (await save({ ...m, name: v.name, why: v.why || '', start: v.start || '', end: v.end || '', status: v.status || 'Activo' })) paint(); },
     delMega: async (b) => {

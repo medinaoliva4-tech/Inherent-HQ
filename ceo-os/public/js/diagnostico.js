@@ -71,6 +71,7 @@ function paint() {
         <div><label class="f" for="company">Tu negocio</label><input class="in" id="company" name="company" autocomplete="organization" placeholder="Nombre de la marca o empresa" value="${esc(a.company || '')}"></div>
         <div><label class="f" for="phone">WhatsApp</label><input class="in" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+502 5555 5555" value="${esc(a.phone || '')}" required></div>
         <div><label class="f" for="email">Correo</label><input class="in" id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.com" value="${esc(a.email || '')}"></div>
+        <div aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;height:0;overflow:hidden"><label for="_hp">Deja este campo vacío</label><input id="_hp" name="_hp" type="text" tabindex="-1" autocomplete="off" value=""></div>
       </form><div class="err" id="err"></div></section>`;
     nextl.textContent = 'Ver mi resultado'; next.disabled = false;
     $('#cf').onsubmit = (e) => { e.preventDefault(); go(step + 1); };
@@ -91,7 +92,7 @@ function paint() {
 }
 function go(n) {
   if (n === Q.length + 1) { // validar el contacto
-    const f = $('#cf'); const v = Object.fromEntries(new FormData(f)); Object.assign(a, { name: v.name.trim(), company: v.company.trim(), phone: v.phone.trim(), email: v.email.trim() });
+    const f = $('#cf'); const v = Object.fromEntries(new FormData(f)); Object.assign(a, { name: v.name.trim(), company: v.company.trim(), phone: v.phone.trim(), email: v.email.trim(), _hp: String(v._hp || '') });
     const digits = a.phone.replace(/\D/g, '');
     const bad = !a.name ? 'Dinos tu nombre.' : digits.length < 8 ? 'Escribe un WhatsApp con código de país, ej. +502 5555 5555.' : a.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a.email) ? 'Ese correo no se ve bien.' : '';
     if (bad) { $('#err').textContent = bad; return; }
@@ -111,7 +112,7 @@ async function send(score, plan) {
     if (!key) { const r = await fetch(`${API}/api/intake/quiz`).then((x) => x.json()).catch(() => ({})); key = r.key || ''; }
     if (!key) throw new Error('sin fuente');
     const answers = Object.fromEntries(Q.map((q) => [q.k, Array.isArray(a[q.k]) ? a[q.k].map((v) => label(q, v)) : label(q, a[q.k])]));
-    const r = await fetch(`${API}/api/intake/${encodeURIComponent(key)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: a.name, company: a.company, phone: a.phone, email: a.email, answers, score, plan, origen: location.href.split('?')[0] }) });
+    const r = await fetch(`${API}/api/intake/${encodeURIComponent(key)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: a.name, company: a.company, phone: a.phone, email: a.email, _hp: a._hp || '', answers, score, plan, origen: location.href.split('?')[0] }) });
     if (!r.ok) throw new Error('no entró');
     out.textContent = 'Listo. Tus respuestas ya están con el equipo.';
   } catch {

@@ -1,6 +1,6 @@
 import { hoursAt, rateAt } from '../cycle.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico, isSummary, canEdit, roChip } from '../core.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const CATS_IN = ['Plan mensual', 'Proyecto', 'Performance fee', 'Otro'];
@@ -11,12 +11,15 @@ const slug = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,
 const planIdOf = (t = '') => (/tailor/i.test(t) ? 'tailor' : /pro\b/i.test(t) ? 'pro' : /accelerate/i.test(t) ? 'accelerate' : /compound/i.test(t) ? 'compound' : /marketing/i.test(t) ? 'marketing' : 'tailor');
 const SLOT_OF = { 'Grabación': 'Producción', 'Fotografía': 'Fotografía', 'Edición de video': 'Editor de video', 'Operador de agentes': 'Operador de agentes' };
 
-export async function render(el, { sub }) {
+export async function render(el, { me, sub }) {
   const F = col('finance'), P = col('payroll');
+  // Vista por rol: para quien no es CEO, Finance llega hasta «resumen»: los movimientos del mes (ingresos y gastos),
+  // sin costos, rentabilidad, precios ni pagos. Esos datos el servidor tampoco los entrega: ni se piden.
+  const resumen = isSummary(me, 'finanzas') || me?.role !== 'ceo', edit = canEdit(me, 'finanzas') && me?.role === 'ceo';
   // Todo en paralelo: una sola espera en vez de cinco seguidas.
   let ecoErr = null;
-  let [manual, services, rates, eco, clients, payroll, sheet] = await Promise.all([F.list(), col('services').list(), col('rates').get('default').catch(() => null),
-    api('repo/economia').catch((e) => { ecoErr = e.message; return null; }), api('repo/clients').then((r) => r.clients).catch(() => []), P.get('default').catch(() => null),
+  let [manual, services, rates, eco, clients, payroll, sheet] = await Promise.all([F.list(), resumen ? [] : col('services').list(), resumen ? null : col('rates').get('default').catch(() => null),
+    resumen ? null : api('repo/economia').catch((e) => { ecoErr = e.message; return null; }), resumen ? [] : api('repo/clients').then((r) => r.clients).catch(() => []), resumen ? null : P.get('default').catch(() => null),
     api('finance/sheet').catch((e) => ({ error: e.message }))]);
   // Los movimientos salen de la hoja de Google Sheets; los que se agregan a mano aquí se suman.
   const fromSheet = (sh) => {
@@ -34,7 +37,8 @@ export async function render(el, { sub }) {
   };
   let entries = [...manual, ...fromSheet(sheet)];
 
-  let tab = ['mov', 'costs', 'profit', 'pricing', 'nomina'].includes(sub[0]) ? sub[0] : 'mov';
+  const TABS = resumen ? [['mov', 'Movimientos']] : [['mov', 'Movimientos'], ['costs', 'Costos'], ['profit', 'Rentabilidad'], ['pricing', 'Precios'], ['nomina', 'Pagos por servicio']];
+  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'mov';
   const now = today().slice(0, 7);
   let month = now;
   const months8 = Array.from({ length: 8 }, (_, i) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 7 + i); return d.toISOString().slice(0, 7); });
@@ -43,7 +47,7 @@ export async function render(el, { sub }) {
   function paint() {
     const rev = sum('ingreso', month), cost = sum('gasto', month);
     mount(el, html`
-      <div class="hello"><h1>Finance</h1><p>Cuánto entra, cuánto cuesta, <em>cuánto queda</em>.</p></div>
+      <div class="hello row" style="align-items:flex-end"><div><h1>Finanzas</h1><p>Cuánto entra, cuánto cuesta, <em>cuánto queda</em>.</p></div><div class="sp"></div>${roChip(me, 'finanzas')}</div>
       <div class="grid g21">
         <div class="card">
           <div class="chead"><div class="ico">↗</div><h3>Revenue vs. costo · 8 meses</h3><div class="sp"></div>
@@ -60,9 +64,9 @@ export async function render(el, { sub }) {
         </div>
       </div>
       <div class="row" style="margin:24px 0 18px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${[['mov', 'Movimientos'], ['costs', 'Costos'], ['profit', 'Rentabilidad'], ['pricing', 'Precios'], ['nomina', 'Pagos por servicio']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
-        ${tab === 'mov' ? html`${connectChip('sheets', sheet?.url ? 'Google Sheet conectado' : 'Conectar Google Sheet', 'sheet', Boolean(sheet?.url))}${sheet?.url ? html`<button class="sm mut" data-act="sheetset" style="margin:0 6px">Cambiar</button>` : ''}<button class="btn ghost" data-act="add" data-type="gasto">+ Gasto</button><button class="btn" data-act="add" data-type="ingreso">+ Ingreso</button>` : ''}
+        ${tab === 'mov' && edit ? html`${connectChip('sheets', sheet?.url ? 'Google Sheet conectado' : 'Conectar Google Sheet', 'sheet', Boolean(sheet?.url))}${sheet?.url ? html`<button class="sm mut" data-act="sheetset" style="margin:0 6px">Cambiar</button>` : ''}<button class="btn ghost" data-act="add" data-type="gasto">+ Gasto</button><button class="btn" data-act="add" data-type="ingreso">+ Ingreso</button>` : ''}
       </div>
       <div id="fbody"></div>`);
     if ($('#chFin', el)) lineChart($('#chFin', el), months8.map(mLabel), [
@@ -77,7 +81,7 @@ export async function render(el, { sub }) {
   function mov(b) {
     const list = entries.filter((e) => ym(e.date) === month).sort((x, y) => String(y.date).localeCompare(String(x.date)));
     const note = sheet?.error ? html`<div class="warnbox" style="margin-bottom:12px">Google Sheet: ${sheet.error}</div>`
-      : !sheet?.url ? html`<div class="mut sm" style="margin-bottom:12px">${ico('bulb')} Conecta tu Google Sheet (arriba) y los movimientos entran solos. Columnas: fecha, tipo, concepto, monto, categoría y cliente.</div>` : '';
+      : !sheet?.url && edit ? html`<div class="mut sm" style="margin-bottom:12px">${ico('bulb')} Conecta tu Google Sheet (arriba) y los movimientos entran solos. Columnas: fecha, tipo, concepto, monto, categoría y cliente.</div>` : '';
     mount(b, !list.length ? html`${note}<div class="empty"><b>Sin movimientos en ${mLabel(month)}</b>${sheet?.url ? 'Agrega filas a tu hoja de Google Sheets y recarga.' : 'Conecta tu Google Sheet o registra un ingreso o gasto.'}</div>`
       : html`${note}<div class="card"><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Cliente</th><th>Categoría</th><th class="n">Monto</th></tr></thead><tbody>
         ${list.map((e) => html`<tr class="click" data-act="${e.sheet ? 'sheet' : 'edit'}" data-id="${e.id}"><td class="mut">${fdate(e.date)}</td><td><b style="font-weight:500">${e.concept}</b>${e.sheet ? html` <span class="mut sm">· Sheet</span>` : ''}</td><td>${e.client || '—'}</td><td><span class="chip">${e.category || '—'}</span></td>
@@ -105,7 +109,7 @@ export async function render(el, { sub }) {
   function costs(b) {
     const rateOf = (role) => rates?.roles?.find((r) => r.role === role)?.rate;
     mount(b, html`
-      ${!rates ? html`<div class="warnbox" style="margin-bottom:14px">Define los costos por hora en Sales → Catálogo → Costos por hora.</div>` : ''}
+      ${!rates ? html`<div class="warnbox" style="margin-bottom:14px">Define los costos por hora en Comercial → Catálogo → Costos por hora.</div>` : ''}
       ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Los servicios del catálogo de Sales aparecen aquí con su costo.</div>`
       : html`<div class="card"><table><thead><tr><th>Servicio</th><th>Equipo</th><th class="n">Horas</th><th class="n">Costo / h</th><th class="n">Total</th><th class="n">Precio</th><th class="n">Margen</th></tr></thead><tbody>
         ${services.map((s) => { const h = (s.tasks || []).reduce((a, t) => a + hoursAt(t, s.level || 5), 0); const miss = (s.tasks || []).some((t) => rateOf(t.role) == null); const c = (s.tasks || []).reduce((a, t) => a + (rateAt(rates, t.role, s.level || 5) || 0) * hoursAt(t, s.level || 5), 0);
@@ -123,7 +127,7 @@ export async function render(el, { sub }) {
       ${rows.length ? html`<div class="card"><table><thead><tr><th>Cliente</th><th>Especialista</th><th>Precio</th><th>Cadencia</th><th class="n">≈ al mes</th><th>Dónde cae</th></tr></thead><tbody>
         ${rows.map(({ a, x, m }) => { const [f, c] = fit(m); return html`<tr><td><b style="font-weight:500">${a.name}</b></td><td>${m.name}<div class="mut sm">${m.industry}</div></td><td>${priceLabel(m)}</td><td class="mut">${x.cadence}</td><td class="n"><b>${monthly(m, x.cadence) ? '$' + monthly(m, x.cadence) : '—'}</b></td><td><span class="chip ${c}" style="font-size:11px">${f}</span></td></tr>`; })}
         <tr><td colspan="4"><b>Total</b></td><td class="n"><b>$${rows.reduce((t, r) => t + monthly(r.m, r.x.cadence), 0)}</b></td><td></td></tr></tbody></table></div>`
-      : html`<div class="mut sm">Ningún cliente tiene especialista asignado. Se asigna en Clients → el cliente → Especialista.</div>`}`);
+      : html`<div class="mut sm">Ningún cliente tiene especialista asignado. Se asigna en Clientes → el cliente → Especialista.</div>`}`);
   }
 
   // ---------- Profitability ----------
@@ -145,7 +149,7 @@ export async function render(el, { sub }) {
     const rubros = [...new Set(eco.plans.flatMap((p) => p.rubros.map((r) => r.label)))];
     mount(b, html`<div class="grid g4">${eco.plans.map((p, i) => html`<div class="card feat ${['olive', 'terra', 'ink', 'olive'][i]}"><div class="lbl">${p.name}</div><div class="big" style="font-size:40px;margin-top:8px">${Q(p.precio)}</div>${matrix(Math.round((p.margen / 100) * 34))}<div class="foot"><span>Costo ${Q(p.costo)} · ${p.volumen?.piezas ?? '—'} piezas</span><span style="font-weight:700;font-size:14px">${p.margen}% margen</span></div></div>`)}</div>
       <div class="sec-title"><h2>Costo por rubro</h2><span class="mut sm">Fijo por cuenta · del manual</span></div>
-      <div class="mut sm" style="margin:-6px 0 10px">${ico('edit')} <b>¿Cambiar estos costos?</b> Viven en el manual (<code>inherent/06-ECONOMIA.md</code>): pídeselo a Claude en Claude Code, se actualiza con tu OK y aquí se ve después de publicar. Los costos por hora de cada servicio se editan en Sales → Catálogo → Costos por hora.</div>
+      <div class="mut sm" style="margin:-6px 0 10px">${ico('edit')} <b>¿Cambiar estos costos?</b> Viven en el manual (<code>inherent/06-ECONOMIA.md</code>): pídeselo a Claude en Claude Code, se actualiza con tu OK y aquí se ve después de publicar. Los costos por hora de cada servicio se editan en Comercial → Catálogo → Costos por hora.</div>
       <div class="card"><table><thead><tr><th>Rubro</th>${eco.plans.map((p) => html`<th class="n">${p.name}</th>`)}</tr></thead><tbody>
         ${rubros.map((r) => html`<tr><td>${r}</td>${eco.plans.map((p) => html`<td class="n">${Q(p.rubros.find((x) => x.label === r)?.monto || 0)}</td>`)}</tr>`)}
         <tr><td><b>Costo</b></td>${eco.plans.map((p) => html`<td class="n"><b>${Q(p.costo)}</b></td>`)}</tr>
@@ -265,7 +269,7 @@ export async function render(el, { sub }) {
       drawer(html`<div class="row"><span class="chip ${e.type === 'ingreso' ? 'green' : 'red'}">${e.type}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
         <h2>${e.concept}</h2><div class="big" style="font-size:44px;margin-top:10px">${Q(e.amount)}</div>
         <div class="kv"><span>Fecha</span><b style="font-weight:500">${fdate(e.date)}</b><span>Categoría</span><b style="font-weight:500">${e.category || '—'}</b><span>Cliente</span><b style="font-weight:500">${e.client || '—'}</b></div>
-        <div class="row"><button class="btn" data-act="ed">Editar</button><button class="btn ghost" data-act="del">Eliminar</button></div>`,
+        ${edit ? html`<div class="row"><button class="btn" data-act="ed">Editar</button><button class="btn ghost" data-act="del">Eliminar</button></div>` : ''}`,
       { ed: () => { closeDrawer(); editEntry(e); }, del: async () => { if (!(await confirmAsk('¿Eliminar este movimiento?'))) return; await F.remove(e.id); entries = entries.filter((x) => x.id !== e.id); manual = entries.filter((x) => !x.sheet); closeDrawer(); paint(); } });
     },
   });

@@ -1,21 +1,32 @@
-import { applyViews } from './roleviews.js';
+import { applyViews, GROUPS, groupOf } from './roleviews.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO, infoTips, canTransition } from './core.js';
 
-const NAV = [
-  ['home', 'Home', 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],
-  ['control', 'Control', 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6'],
-  ['work', 'Workspace', 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z'],
-  ['finanzas', 'Finance', 'M3 17l6-6 4 4 8-8M15 7h6v6'],
-  ['sales', 'Sales', 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0'],
-  ['operations', 'Operations', 'M4 6h16M4 12h10M4 18h7'],
-  ['roadmap', 'Roadmap', 'M4 19V5M4 19h16M8 15l4-5 3 3 5-7'],
-  ['clients', 'Clients', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
-  ['content', 'Content', 'M5 4h14v16l-7-4-7 4z'],
-  ['library', 'Library', 'M4 4h6l2 2h8v14H4z'],
-  ['team', 'Team', 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9'],
-  ['portal', 'Mi portal', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
-];
-const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal' };
+// La barra: 8 secciones. Cada una agrupa pantallas (sus pestañas de arriba); la sección aparece si el perfil ve al menos una.
+// Las rutas de siempre (#/work, #/content, #/sales…) siguen siendo las de cada pantalla; #/<sección> lleva a la primera que ve.
+const ICONS = {
+  inicio: 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
+  clientes: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6',
+  comercial: 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0',
+  operaciones: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
+  resultados: 'M4 19V5M4 19h16M8 15l4-5 3 3 5-7',
+  finanzas: 'M3 17l6-6 4 4 8-8M15 7h6v6',
+  conocimiento: 'M4 4h6l2 2h8v14H4z',
+  administracion: 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9',
+  portal: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6',
+};
+// Las pestañas de cada sección: [ruta, nombre, área que hace falta, solo CEO].
+const TABS = {
+  inicio: [['home', 'Hoy', 'home'], ['control', 'Control', 'control']],
+  clientes: [['clients', 'Clientes', 'clients']],
+  comercial: [['sales', 'Comercial', 'sales']],
+  operaciones: [['operations', 'Proyectos', 'operations'], ['work', 'Workspace', 'work'], ['content', 'Contenido', 'content']],
+  resultados: [['resultados', 'Indicadores', 'resultados'], ['roadmap', 'Metas', 'roadmap']],
+  finanzas: [['finanzas', 'Finanzas', 'finanzas']],
+  conocimiento: [['library', 'Library', 'library']],
+  administracion: [['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'team', true], ['team/recetas', 'Recetas', 'team', true], ['setup', 'Arranque', null, true]],
+};
+const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results' };
+const LABEL = { home: 'Inicio', control: 'Control', work: 'Workspace', finanzas: 'Finanzas', sales: 'Comercial', operations: 'Proyectos', roadmap: 'Metas', clients: 'Clientes', content: 'Contenido', library: 'Conocimiento', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Resultados', me: 'Mi perfil' };
 const root = $('#root');
 const SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>';
 const MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
@@ -55,10 +66,25 @@ async function loginView() {
   if (err) history.replaceState(null, '', '/');
 }
 
-const navItems = () => NAV.filter(([k]) => me.areas.includes(k) && (k !== 'portal' || me.role === 'client'));
-const navHtml = () => html`${navItems().map(([k, l, d]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`)}`;
+const tabOk = ([, , area, ceo]) => (!ceo || me.role === 'ceo') && (!area || me.areas.includes(area));
+const tabsOf = (g) => (TABS[g] || []).filter(tabOk);
+const navItems = () => (me.role === 'client' ? [['portal', 'Mi portal']] : GROUPS.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l]));
+const navHtml = () => html`${navItems().map(([k, l]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${ICONS[k]}"/></svg>${l}</button>`)}`;
+const hashNow = () => location.hash.replace(/^#\/?/, '');
+// La sección de una ruta: la de su pantalla (setup va con Administración; el portal visto por el equipo, con Clientes).
+const groupFor = (area) => (area === 'setup' ? 'administracion' : area === 'portal' ? (me.role === 'client' ? 'portal' : 'clientes') : groupOf(area));
+// La pestaña activa: la ruta más larga que calza con la actual (team/vistas antes que team).
+const tabFor = (g, path) => tabsOf(g).filter(([r]) => path === r || path.startsWith(r + '/')).sort((a, z) => z[0].length - a[0].length)[0];
+function paintSub(key) {
+  const sub = $('#subnav'); if (!sub) return;
+  const g = groupFor(key), list = g ? tabsOf(g) : [], h = hashNow(), on = g && tabFor(g, h.split('/')[0] === key ? h : key);
+  // Una sola pantalla en la sección: sin pestañas (no hace falta elegir).
+  if (list.length < 2) { sub.hidden = true; sub.innerHTML = ''; return; }
+  sub.hidden = false;
+  mount(sub, html`<div class="tabs" role="tablist">${list.map((t) => html`<button role="tab" class="${on === t ? 'on' : ''}" data-sub="${t[0]}">${t[1]}</button>`)}</div>`);
+}
 // Vistas por rol: las secciones ocultas no aparecen en la barra.
-const markNav = () => { const a = location.hash.replace(/^#\/?/, '').split('/')[0]; const key = me.areas.includes(a) ? a : me.areas.includes('home') ? 'home' : me.areas[0]; $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key)); };
+const markNav = () => { const a = hashNow().split('/')[0]; const key = me.areas.includes(a) || a === 'setup' ? a : me.areas.includes(me.start) ? me.start : me.areas.includes('home') ? 'home' : me.areas[0]; const g = groupFor(key); $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === g)); paintSub(key); };
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); mount($('.nav'), navHtml()); markNav(); if (!me.areas.includes(location.hash.replace(/^#\/?/, '').split('/')[0]) && !['me', 'setup'].includes(location.hash.replace(/^#\/?/, '').split('/')[0])) render(); });
 
 function shell() {
@@ -70,9 +96,12 @@ function shell() {
       <button class="themebtn" id="themebtn" title="Modo noche" aria-label="Cambiar modo día / noche">${raw(document.documentElement.dataset.theme === 'dark' ? SUN : MOON)}</button>
       <div class="avatar" id="avatar" title="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
+    <div id="subnav" class="subnav" hidden></div>
     <main id="main"></main>
   </div>`);
-  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (b) location.hash = '/' + b.dataset.go; };
+  // Tocar una sección abre su primera pantalla visible (o el portal, para el cliente).
+  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (!b) return; const g = b.dataset.go; location.hash = '/' + (g === 'portal' ? 'portal' : tabsOf(g)[0]?.[0] || g); };
+  $('#subnav').onclick = (e) => { const b = e.target.closest('[data-sub]'); if (b) location.hash = '/' + b.dataset.sub; };
   // Tocar tu foto abre tu perfil (foto, cumpleaños, conexiones, cerrar sesión).
   $('#avatar').onclick = () => { location.hash = '/me'; };
   // Modo noche: se guarda en este navegador.
@@ -80,9 +109,16 @@ function shell() {
 }
 
 async function render() {
-  const [area, ...rest] = location.hash.replace(/^#\/?/, '').split('/');
-  const key = me.areas.includes(area) || area === 'me' || (area === 'setup' && me.role === 'ceo') ? area : me.areas.includes('home') ? 'home' : me.areas[0];
-  $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key));
+  let [area, ...rest] = hashNow().split('/');
+  // #/<sección> (ej. #/operaciones) lleva a su primera pantalla visible; las rutas de cada pantalla siguen igual.
+  if (TABS[area] && !SCREENS[area]) { const t = tabsOf(area)[0]; if (t) { history.replaceState(null, '', '#/' + t[0]); [area, ...rest] = t[0].split('/'); } }
+  // Sin sección (o una que no ve): cada perfil abre donde el CEO decidió, por defecto en su cola de hoy.
+  const key = me.areas.includes(area) || area === 'me' || (area === 'setup' && me.role === 'ceo') ? area : me.areas.includes(me.start) ? me.start : me.areas.includes('home') ? 'home' : me.areas[0];
+  // Una ruta que este perfil no ve: la dirección cambia a donde de verdad abrió (así la barra y las pestañas no mienten).
+  if (area && key !== area) { history.replaceState(null, '', '#/' + key); rest = []; }
+  const g = groupFor(key);
+  $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === g));
+  paintSub(key);
   $('#avatar')?.classList.toggle('on', key === 'me');
   // En cel, la barra de abajo se desliza hasta la sección actual (solo la barra: scrollIntoView movía toda la página en iOS).
   { const nav = $('.nav'), on = $('.nav [data-go].on'); if (nav && on && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: on.offsetLeft - (nav.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' }); }
@@ -101,7 +137,7 @@ async function render() {
     try {
       const mod = await import(`./screens/${SCREENS[key]}.js`);
       if (gen !== renderGen) return;
-      await mod.render(main, { me, area: key, sub: rest, label: NAV.find((n) => n[0] === key)?.[1] || (key === 'me' ? 'Mi perfil' : 'Arranque'), alive: () => gen === renderGen });
+      await mod.render(main, { me, area: key, sub: rest, label: LABEL[key] || key, alive: () => gen === renderGen });
     } catch (e) {
       mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
     } finally { clearTimeout(slow); if (gen === renderGen) main.style.minHeight = ''; }
@@ -121,10 +157,13 @@ events.addEventListener('logout', () => { if (me) { me = null; toast('Tu sesión
 
 async function start(u) {
   me = u;
-  if (me.role !== 'client') { let doc = null; try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); }
+  // El servidor ya manda areas, views, scope y start aplicados; la matriz se guarda para recalcular en vivo si el CEO la cambia.
+  if (me.role !== 'client') { let doc = null; try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); if (!location.hash.replace(/^#\/?/, '') && me.start && me.areas.includes(me.start)) history.replaceState(null, '', '#/' + me.start); }
   const c = pendingConnect();
   if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); return consentView(root, me, c, () => { shell(); render(); }); }
   shell(); render();
+  // Las responsabilidades recurrentes (recetas internas encendidas) dejan su tarea al abrir la app, una vez al día. El cron diario hace lo mismo.
+  if (['ceo', 'coo'].includes(me.role)) { try { const d = new Date().toISOString().slice(0, 10); if (localStorage.getItem('rec.run') !== d) api('recipes/run', { method: 'POST', body: {} }).then(() => { try { localStorage.setItem('rec.run', d); } catch {} }).catch(() => {}); } catch {} }
 }
 api('me').then(start).catch(loginView);
 // La «i» de información se pone sola en cada título que se pinta.

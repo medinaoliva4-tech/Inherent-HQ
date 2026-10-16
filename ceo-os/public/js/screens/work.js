@@ -4,6 +4,7 @@ import { editPost, loadPosts, PSTATUS } from '../posts.js';
 import { tipoSopFields, bindSop, readTipoSop, sopLink, tipoChips, tipoMatch, tipoBadge } from '../tasktype.js';
 import { newProject as wizProject, newTask as wizTask } from '../create.js';
 import { blockersOf, unlocksOf } from '../cycle.js';
+import { recipesWith, checksFor } from '../recipes.js';
 import { payDialog } from '../flowui.js';
 
 // Workspace: cada persona trabaja desde el perfil (o los perfiles) que tiene asignados en Team.
@@ -13,14 +14,7 @@ const COLS = [['Por empezar', 'Por hacer', '#b29c87'], ['En curso', 'En progreso
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
 const PIPES = { contenido: { name: 'Contenido', sub: 'Marketing · producción y entrega', bar: '#795c45' }, growth: { name: 'Business Growth', sub: 'Consultoría que opera', bar: '#81634b' } };
 const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'];
-// El checklist del ciclo de cada perfil (se marca por mes).
-const CHECK = {
-  coo: ['Confirmar alcance, entregables y fechas del ciclo', 'Definir responsable y quién rinde cuentas por tarea', 'Armar dependencias del ciclo (qué espera a qué)', 'Revisar la carga del equipo y resolver bloqueos', 'Validar entregables contra su checklist (QA final)', 'Preparar la presentación del día 20', 'Cerrar el ciclo y documentar aprendizajes'],
-  video: ['Abrir calendario y brief vigente del cliente', 'Confirmar formato, objetivo y fecha de entrega', 'Preparar el prompt con la plantilla aprobada', 'Generar el borrador con el agente de video', 'Revisar edición, audio, subtítulos y marca', 'Exportar versiones para orgánico y Ads', 'Subir los finales para QA del COO'],
-  content: ['Idea aprobada: enfoque y objetivo', 'Hook y ángulo validados', 'Guion y copy con el tono de la marca', 'Formato y piezas por canal', 'Assets listos: diseño, copy y links', 'Matriz de publicaciones de la semana', 'Static ads del ciclo'],
-  ads: ['Brief y objetivo de la campaña (sale del plan ③)', 'Audiencias por plataforma: Meta, Google, LinkedIn', 'Creativos y copies aprobados por ②B Branding', 'Plan y presupuesto → aprobación del CEO (gate ⑩)', 'Píxel y conversiones verificadas', 'Lanzar y revisar a las 48 h', 'Reporte: gasto, CPA y ROAS'],
-  finance: ['Leer los números del cliente', 'Mapa del negocio: procesos y equipo', 'Proyecto para que ganen más', 'Proyecto para que gasten menos', 'Entregar el reporte y el plan'],
-};
+// El checklist del ciclo de cada perfil (se marca por mes) sale de la receta del Ciclo mensual (Administración → Recetas).
 const COMMUNITY = ['Tono y voz de la marca', 'FAQ y respuestas frecuentes', 'Reglas de escalamiento', 'Plantillas de respuesta'];
 const ymNow = () => today().slice(0, 7);
 
@@ -28,10 +22,11 @@ export async function render(el, { me, sub, alive }) {
   const TK = col('tasks'), CK = col('checks');
   const isCeo = me.role === 'ceo';
   let accounts = [], settings = null;
-  let [tasks, projects, team, content, docs, checks, quotes] = await Promise.all([
+  let [tasks, projects, team, content, docs, checks, quotes, recipeDocs] = await Promise.all([
     TK.list(), col('projects').list(), teamList(), col('content').list().catch(() => []), col('docs').list().catch(() => []), CK.list().catch(() => []),
-    isCeo ? col('quotes').list().catch(() => []) : [],
+    isCeo ? col('quotes').list().catch(() => []) : [], col('recipes').list().catch(() => []),
   ]);
+  const R = recipesWith(recipeDocs);
   const meP = team.find((p) => p.id === me.email || p.email === me.email);
   // «Ver como»: el CEO entra al Workspace de cualquier persona para revisar su trabajo.
   const asP = isCeo && sub[2] ? team.find((p) => p.id === sub[2] || p.email === sub[2]) : null;
@@ -103,7 +98,7 @@ export async function render(el, { me, sub, alive }) {
   // =================== piezas que comparten los perfiles ===================
   function checklist(r) {
     const id = `${who}.${r}.${ymNow()}`, doc = checks.find((c) => c.id === id), done = doc?.done || [];
-    const items = CHECK[r] || [];
+    const items = checksFor(R, r);
     return box(`Checklist · ${roleName(r).split(' · ')[0]}`, `Ciclo ${ymNow()}`, html`${items.map((t, i) => html`<label class="wkcheck"><input type="checkbox" data-act="ck" data-r="${r}" data-i="${i}" ${done.includes(i) ? raw('checked') : ''}><span>${t}</span></label>`)}`,
       html`<span class="sm">${done.length}/${items.length}</span><div class="wkprog" style="width:70px;margin:0 0 0 8px"><i style="width:${items.length ? (done.length / items.length) * 100 : 0}%"></i></div>`);
   }
@@ -257,7 +252,7 @@ export async function render(el, { me, sub, alive }) {
     const byType = {}; prompts.forEach((d) => (byType[d.vtype || 'Otro'] ||= []).push(d));
     return box('Por cliente', 'Assets y prompts de cada marca', html`<select class="in" id="clientSel" style="margin-bottom:8px">${slugs.map((x) => html`<option value="${x}" ${x === clientSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select>
       ${!clientSel ? html`<div class="mut sm">Sin clientes con proyecto.</div>` : html`
-      ${assets ? html`<a class="wkrow" href="${assets}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow"><b style="font-weight:500">Assets</b><span class="mut sm"> · logos, fotos, videos crudos</span></span><span class="mut">↗</span></a>` : html`<div class="wkrow"><span class="fi">${IC.drive}</span><span class="grow mut sm">Sin carpeta de assets. Se agrega en Clients → ${clientSel.toUpperCase()} → Editar datos.</span></div>`}
+      ${assets ? html`<a class="wkrow" href="${assets}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow"><b style="font-weight:500">Assets</b><span class="mut sm"> · logos, fotos, videos crudos</span></span><span class="mut">↗</span></a>` : html`<div class="wkrow"><span class="fi">${IC.drive}</span><span class="grow mut sm">Sin carpeta de assets. Se agrega en Clientes → ${clientSel.toUpperCase()} → Editar datos.</span></div>`}
       ${[[ico('doc'), 'Guiones', 'en Drive', guionesLink(clientSel)], [ico('video'), 'Videos por postear', 'carpeta de Drive', driveOf(clientSel).postear_drive], ...(canContent ? [[ico('cal'), 'Calendario', 'Planner del mes', `#/content/plan/${clientSel}`]] : [])].map(([i, t, sub, h]) => h
         ? html`<a class="wkrow" href="${h}" ${/^https/.test(h) ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span style="width:22px;text-align:center">${i}</span><span class="grow">${t}<span class="mut sm"> · ${sub}</span></span><span class="mut">${/^https/.test(h) ? '↗' : '›'}</span></a>`
         : html`<div class="wkrow"><span style="width:22px;text-align:center">${i}</span><span class="grow mut sm">${t}: ${driveOf(clientSel).loading ? 'cargando…' : 'sin carpeta conectada. La conecta Content.'}</span></div>`)}
@@ -306,7 +301,7 @@ export async function render(el, { me, sub, alive }) {
     const gp = projects.filter((p) => lineOf(p) === 'growth');
     mount(b, html`${kpis([['Proyectos', gp.length], ['Mis tareas abiertas', open(mine()).length], ['En revisión', mine().filter((t) => status(t) === 'En revisión').length, '#a68d77']])}
       <div class="wkgrid">
-        <div class="span2">${box('Mis proyectos', 'Business Growth: que ganen más y gasten menos', gp.length ? html`${gp.map((p) => { const ph = p.phases || []; const d = ph.filter((x) => x.status === 'done').length; return html`<a class="wkrow" href="${p.client_slug ? '#/clients/' + p.client_slug : '#/operations/pipe'}"><span class="grow"><b style="font-weight:500">${p.name}</b><span class="mut sm"> · ${ph.find((x) => x.status !== 'done')?.name || 'Terminado'}</span></span><div class="wkprog" style="width:120px;margin:0"><i style="width:${ph.length ? (d / ph.length) * 100 : 0}%;background:#81634b"></i></div><span class="sm">${d}/${ph.length}</span></a>`; })}` : html`<div class="mut sm" style="padding:6px 0">Sin proyectos de Business Growth. Se crean en Operations → «+ Proyecto» → Business Growth.</div>`)}</div>
+        <div class="span2">${box('Mis proyectos', 'Business Growth: que ganen más y gasten menos', gp.length ? html`${gp.map((p) => { const ph = p.phases || []; const d = ph.filter((x) => x.status === 'done').length; return html`<a class="wkrow" href="${p.client_slug ? '#/clients/' + p.client_slug : '#/operations/pipe'}"><span class="grow"><b style="font-weight:500">${p.name}</b><span class="mut sm"> · ${ph.find((x) => x.status !== 'done')?.name || 'Terminado'}</span></span><div class="wkprog" style="width:120px;margin:0"><i style="width:${ph.length ? (d / ph.length) * 100 : 0}%;background:#81634b"></i></div><span class="sm">${d}/${ph.length}</span></a>`; })}` : html`<div class="mut sm" style="padding:6px 0">Sin proyectos de Business Growth. Se crean en Operaciones → Proyectos → «+ Proyecto» → Business Growth.</div>`)}</div>
         ${box('Mis tareas', '', myList(8))}
         ${checklist('finance')}${uploader('Entregar trabajo')}${sops('finance')}
       </div>`);

@@ -1,4 +1,4 @@
-// Sales → Paquetes: los 108 paquetes por industria con sus fases, horas por rol, tarifas editables, margen y % de crecimiento.
+// Comercial → Paquetes: los 108 paquetes por industria con sus fases, horas por rol, tarifas editables, margen y % de crecimiento.
 // Solo el CEO (lleva costos). Los ajustes viven en la colección `packages` (id «default»). «Cotizar» arma una cotización con el formato nuevo.
 import { html, raw, mount, col, toast, Q, $, $$, ico, openClaude } from './core.js';
 

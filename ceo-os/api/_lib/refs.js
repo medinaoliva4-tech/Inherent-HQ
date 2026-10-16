@@ -1,4 +1,4 @@
-// Referencias por pilar (Content → Referencias). En vez de buscar por tema (demasiado general):
+// Referencias por pilar (Contenido → Referencias). En vez de buscar por tema (demasiado general):
 //   1) por cada pilar, el equipo pega hasta 5 videos que le sirven de referencia;
 //   2) Apify lee esos videos (quién los hizo y con qué hashtags);
 //   3) luego busca lo más reciente de esos mismos creadores y de esos hashtags;

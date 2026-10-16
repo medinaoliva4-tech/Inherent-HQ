@@ -1,7 +1,7 @@
 // Control: el panel del CEO y el COO. Todo lo que entra, de lead a entrega, conectado:
 // lead → cotización → aprobada → pago → confirmado → proyecto con responsables, fechas y dependencias.
 // Cada tarjeta trae su siguiente paso. Abajo, lo que necesita atención hoy (bloqueos, atrasos, revisiones).
-import { html, mount, col, api, toast, acts, ask, confirmAsk, drawer, fdate, today, teamList, Q, ico } from '../core.js';
+import { html, mount, col, api, toast, acts, ask, confirmAsk, drawer, fdate, today, teamList, Q, ico, isSummary, roChip } from '../core.js';
 import { blockersOf, unlocksOf, addDays } from '../cycle.js';
 import { payDialog, openProof } from '../flowui.js';
 
@@ -17,6 +17,8 @@ const nextWorkday = () => { const d = new Date(); do d.setDate(d.getDate() + 1);
 
 export async function render(el, { me }) {
   const ceoish = me.role === 'ceo' || me.role === 'coo';
+  // Vista por rol: en «resumen» solo los indicadores y lo que necesita atención; el embudo con sus acciones es de «completo».
+  const resumen = isSummary(me, 'control');
   let leads, quotes, projects, tasks, team, accounts;
   async function load() {
     [leads, quotes, projects, tasks, team, accounts] = await Promise.all([col('leads').list(), col('quotes').list(), col('projects').list(), col('tasks').list(), teamList(), col('accounts').list().catch(() => [])]);
@@ -86,11 +88,11 @@ export async function render(el, { me }) {
   function paint() {
     const L = lanes(), att = attention();
     const kp = [['Leads por cotizar', L.lead.length], ['Esperando al cliente', L.quote.length], ['Falta el pago', L.pay.length, L.pay.length ? '#aa917b' : ''], ['Pagos por confirmar', L.check.length, L.check.length ? '#654c38' : ''], ['Proyectos en marcha', L.run.length], ['Necesita atención', att.length, att.length ? '#654c38' : '']];
-    mount(el, html`<div class="hello"><h1>Control</h1><p class="mut">Todo lo que entra, de lead a entrega.</p></div>
+    mount(el, html`<div class="hello row" style="align-items:flex-end"><div><h1>Control</h1><p class="mut">Todo lo que entra, de lead a entrega.</p></div><div class="sp"></div>${roChip(me, 'control')}</div>
       <div class="ctlkpis">${kp.map(([l, n, c]) => html`<div class="card ctlk"><div class="mut sm">${l}</div><div class="big" style="font-size:38px;${c ? `color:${c}` : ''}">${n}</div></div>`)}</div>
-      <div class="sec-title" style="margin-top:18px"><h2>El flujo</h2><span class="mut sm">Cada tarjeta trae su siguiente paso</span></div>
+      ${resumen ? '' : html`<div class="sec-title" style="margin-top:18px"><h2>El flujo</h2><span class="mut sm">Cada tarjeta trae su siguiente paso</span></div>
       <div class="kanban ctlflow">${STEPS.map(([k, name, hint, c]) => html`<div class="kcol"><h4><span class="row" style="gap:8px"><i class="dot" style="background:${c}"></i>${name}</span><span class="mut">${L[k].length}</span></h4>
-        <div class="mut sm" style="margin:-6px 6px 10px">${hint}</div>${L[k].length ? L[k].map(card[k]) : html`<div class="mut sm" style="padding:10px 6px">—</div>`}</div>`)}</div>
+        <div class="mut sm" style="margin:-6px 6px 10px">${hint}</div>${L[k].length ? L[k].map(card[k]) : html`<div class="mut sm" style="padding:10px 6px">—</div>`}</div>`)}</div>`}
       <div class="sec-title" style="margin-top:22px"><h2>Necesita atención</h2><span class="mut sm">Bloqueos, atrasos y lo que espera una decisión</span></div>
       <div class="card">${att.length ? att.slice(0, 30).map((a) => html`<div class="wkrow ctlrow" data-href="${a.href || ''}" data-act="${a.id ? 'proj' : 'go'}" data-id="${a.id || ''}"><span class="ctlic">${a.ic}</span><span class="grow">${a.t}<span class="mut sm"> · ${a.s}</span></span><span class="chip ${a.tone} sm2">${a.tone === 'red' ? 'Urgente' : 'Hoy'}</span></div>`) : html`<div class="mut">Todo en orden ${ico('check', 14)}</div>`}</div>`);
   }
@@ -114,7 +116,7 @@ export async function render(el, { me }) {
           <div class="sm mut">${nameOf(t.assignee)} · ${t.due ? fdate(t.due) : 'sin fecha'} · ${t.status || 'Por empezar'}</div>
           ${w.length ? html`<div class="sm" style="color:#725741">Espera a: ${w.map((x) => x.title).join(' · ')}</div>` : ''}
           ${u.length && t.status !== 'Hecha' ? html`<div class="sm mut">Destraba: ${u.map((x) => x.title.slice(0, 40)).join(' · ')}</div>` : ''}</div></div>`; })}</div>
-      <div class="row" style="margin-top:16px"><a class="btn ghost" href="#/operations/pipe">Abrir en Operations</a></div>`);
+      <div class="row" style="margin-top:16px"><a class="btn ghost" href="#/operations/pipe">Abrir en Proyectos</a></div>`);
   }
 
   acts(el, {

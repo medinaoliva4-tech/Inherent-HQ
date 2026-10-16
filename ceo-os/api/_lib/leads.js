@@ -133,6 +133,6 @@ export async function intake(src, payload, who = 'intake') {
 export async function logSource(src, item, who = 'intake') {
   const cur = (await db.get('lead_sources', src.id)) || src;
   const log = [{ at: new Date().toISOString(), ...item }, ...(Array.isArray(cur.log) ? cur.log : [])].slice(0, 50);
-  const n = { ok: (cur.n?.ok || 0) + (item.ok ? 1 : 0), fail: (cur.n?.fail || 0) + (item.ok ? 0 : 1), last_at: new Date().toISOString() };
+  const n = { ok: (cur.n?.ok || 0) + (item.ok ? 1 : 0), fail: (cur.n?.fail || 0) + (item.ok || item.spam ? 0 : 1), spam: (cur.n?.spam || 0) + (item.spam ? 1 : 0), last_at: new Date().toISOString() };
   await db.upsert('lead_sources', src.id, { log, n }, who);
 }

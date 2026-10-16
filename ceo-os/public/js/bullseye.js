@@ -1,4 +1,4 @@
-// La diana de audiencia (método Bullseye: Define · Acierta · Expande). Vive en Content → Fuentes.
+// La diana de audiencia (método Bullseye: Define · Acierta · Expande). Vive en Contenido → Fuentes.
 // El centro es UNA persona hiper-específica; cada anillo suelta UNA restricción. Apuntar al centro le enseña
 // al algoritmo a quién mostrarle el video, y él expande el alcance. Se arma conversando con el Claude de cada quien.
 import { html, raw, mount, toast, drawer, closeDrawer, ask, claudeJSON, ico } from './core.js';

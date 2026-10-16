@@ -1,15 +1,19 @@
-// El conector de Claude (MCP) de Inherent OS. Cada persona tiene SU link (Team → Mi perfil →
+// El conector de Claude (MCP) de Inherent OS. Cada persona tiene SU link (Mi perfil (tu foto arriba) →
 // «Conectar con Claude»): Claude actúa como esa persona y solo ve y hace lo que su perfil permite.
 // Es para consultas y cosas puntuales (pendientes, una cotización, armar un proyecto), no trabajo pesado.
 import crypto from 'node:crypto';
 import * as db from './db.js';
-import { userFor, areasFor } from './access.js';
+import { userFor, effective, viewsDoc, scoper, inScope, levelOf } from './access.js';
 import { readFile, listDir } from './gh.js';
 import { parsePlanContratado } from './parse.js';
 import * as content from './content.js';
 import * as flow from './flow.js';
 import * as google from './google.js';
 import * as leads from './leads.js';
+import * as recipes from './recipes.js';
+import * as recurring from './recurring.js';
+import * as results from './results.js';
+import { repeatText, RECIPE_TYPES, KINDS as RECIPE_KINDS, RECIPE_ROLES } from '../../public/js/recipes.js';
 import { phasesFor, meetingsFor, tasksFor, holders, roleToWork, DEPTS, hoursAt, svcHours, svcCost, svcPrice, svcAuto, growthText, includesAt, daysAt, addDays } from '../../public/js/cycle.js';
 
 // Los 5 niveles de Research (los tres últimos nombres, nicho/referente/agregado, son los viejos y se siguen aceptando).
@@ -29,10 +33,11 @@ export async function revoke(email) {
   if (me?.mcp_hash) await db.vaultSet('mcp:' + me.mcp_hash, '');
   await db.upsert('team', email, { mcp_hash: null, mcp_at: null }, email);
 }
+// La misma regla que la app: areas, views (profundidad), scope (alcance) y start ya vienen aplicados.
 export async function userOf(email) {
   if (!email) return null;
-  const u = await userFor(email);
-  return u.active && u.role !== 'client' ? { ...u, areas: areasFor(u.role, u.roles) } : null;
+  const u = effective(await userFor(email), await viewsDoc());
+  return u.active && u.role !== 'client' ? u : null;
 }
 async function userOfToken(t) {
   if (!/^[\w-]{20,60}$/.test(String(t || ''))) return null;
@@ -62,9 +67,14 @@ async function perfiles() {
   if (!profCache || Date.now() - profCache.at > 300_000) profCache = { at: Date.now(), list: await content.profiles() };
   return profCache.list;
 }
-async function perfilOk(slug) {
-  const list = await perfiles(), s = String(slug || '');
-  if (!list.some((x) => x.slug === s)) throw new Error(`Perfil «${s}» no existe. Los válidos: ${list.map((x) => x.slug).join(', ')}`);
+// Los perfiles que ve esta persona: la marca personal solo el CEO; los clientes, según su alcance.
+async function perfilesDe(u) {
+  const sc = await scoper(u);
+  return (await perfiles()).filter((x) => (x.slug !== 'personal' || u.role === 'ceo') && (!sc || x.slug === 'inherent' || sc.client(x.slug)));
+}
+async function perfilOk(slug, u) {
+  const list = u ? await perfilesDe(u) : await perfiles(), s = String(slug || '');
+  if (!list.some((x) => x.slug === s)) throw new Error(`Perfil «${s}» no existe o no está entre los tuyos. Los válidos: ${list.map((x) => x.slug).join(', ')}`);
   return s;
 }
 // Guarda una imagen en la base (las del CDN de Instagram caducan en días). Devuelve la ruta propia, o null si no se pudo.
@@ -120,8 +130,8 @@ const TOOLS = [
   ['crear_lead', 'sales', 'Crea un lead en el CRM. Si ya existe uno con el mismo WhatsApp, correo o cuenta de IG, no lo duplica: le agrega la actividad y te devuelve el que ya estaba. Un lead abierto necesita siguiente paso y fecha (si no los mandas, queda «Responder y calificar» para hoy).', { nombre: { type: 'string', description: 'empresa o marca' }, contacto: { type: 'string', description: 'con quién hablamos' }, telefono: { type: 'string', description: 'WhatsApp' }, correo: { type: 'string' }, cuenta_ig: { type: 'string' }, fuente: { type: 'string', description: 'de dónde llegó: WhatsApp, Instagram, Web, Referido, Evento, LinkedIn, o el nombre de una fuente' }, interesado_en: { type: 'string' }, interes: { type: 'number', description: '1 frío a 5 listo para cerrar' }, etapa: { type: 'string', enum: leads.STAGES }, siguiente_paso: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD del siguiente paso' }, notas: { type: 'string' }, responsable: { type: 'string', description: 'rol; por defecto ventas' } }, ['nombre']],
   ['actualizar_lead', 'sales', 'Mueve un lead de etapa o cambia su siguiente paso, fecha, notas, interés, valor mensual o responsable (rol). Para pasarlo a Perdido es obligatorio el motivo: precio, tiempo, no era el momento, se fue con otro, otro. Todo cambio queda en el historial.', { id: { type: 'string' }, etapa: { type: 'string', enum: leads.STAGES }, siguiente_paso: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, notas: { type: 'string', description: 'reemplaza las notas' }, motivo_perdida: { type: 'string', enum: leads.LOST }, interes: { type: 'number' }, valor_usd: { type: 'number', description: 'valor mensual en USD' }, responsable: { type: 'string', description: 'rol' }, interesado_en: { type: 'string' } }, ['id']],
   ['registrar_actividad', 'sales', 'Anota en el historial de un lead lo que pasó: una llamada, un mensaje, una reunión. El historial solo se agrega, nunca se borra.', { id: { type: 'string' }, texto: { type: 'string' } }, ['id', 'texto']],
-  ['importar_prospectos', 'sales', 'Mete un lote de prospectos (hasta 100, de scraping o de una lista) a la bandeja de Prospectos del CRM. Entran como Prospecto saliente, sin contar como lead hasta que respondan. No duplica por WhatsApp, correo o cuenta de IG. «fuente» es el nombre de una fuente de Sales → Fuentes (o un nombre libre, ej. «Apify · restaurantes zona 10»).', { fuente: { type: 'string' }, prospectos: { type: 'array', items: { type: 'object', properties: { nombre: { type: 'string' }, cuenta_ig: { type: 'string' }, telefono: { type: 'string' }, correo: { type: 'string' }, contacto: { type: 'string' }, ciudad: { type: 'string' }, industria: { type: 'string' }, url: { type: 'string' }, notas: { type: 'string' } } } } }, ['prospectos']],
-  ['crear_proyecto', 'operations', 'Crea un proyecto con sus fases, reuniones y tareas. Tipo: Ciclo mensual, Proyecto, Growth o Custom (Custom sale de una cotización).', { cliente: { type: 'string', description: 'slug del cliente, o inherent' }, tipo: { type: 'string', enum: ['Ciclo mensual', 'Proyecto', 'Growth', 'Custom'] }, inicio: { type: 'string', description: 'AAAA-MM-DD' }, cotizacion_id: { type: 'string' }, nombre: { type: 'string' } }, ['cliente', 'tipo']],
+  ['importar_prospectos', 'sales', 'Mete un lote de prospectos (hasta 100, de scraping o de una lista) a la bandeja de Prospectos del CRM. Entran como Prospecto saliente, sin contar como lead hasta que respondan. No duplica por WhatsApp, correo o cuenta de IG. «fuente» es el nombre de una fuente de Comercial → Fuentes (o un nombre libre, ej. «Apify · restaurantes zona 10»).', { fuente: { type: 'string' }, prospectos: { type: 'array', items: { type: 'object', properties: { nombre: { type: 'string' }, cuenta_ig: { type: 'string' }, telefono: { type: 'string' }, correo: { type: 'string' }, contacto: { type: 'string' }, ciudad: { type: 'string' }, industria: { type: 'string' }, url: { type: 'string' }, notas: { type: 'string' } } } } }, ['prospectos']],
+  ['crear_proyecto', 'operations', 'Crea un proyecto con sus fases, reuniones y tareas; todo sale de las recetas (ver recetas). Tipo: Ciclo mensual, Proyecto, Growth o Custom (Custom sale de una cotización; para un paquete o el plan contratado usa activar_paquete).', { cliente: { type: 'string', description: 'slug del cliente, o inherent' }, tipo: { type: 'string', enum: ['Ciclo mensual', 'Proyecto', 'Growth', 'Custom'] }, inicio: { type: 'string', description: 'AAAA-MM-DD' }, cotizacion_id: { type: 'string' }, nombre: { type: 'string' } }, ['cliente', 'tipo']],
   ['contenido_semana', 'content', 'Lo que encontró el scraper para un perfil: ganadores del nicho, referentes, competencia y lo propio.', { perfil: { type: 'string' } }, ['perfil']],
   ['planner', 'content', 'El planner de un perfil: piezas con fecha, pilar y estado; pilares, audiencia, referentes y competencia.', { perfil: { type: 'string' }, mes: { type: 'string', description: 'AAAA-MM' } }, ['perfil']],
   ['library', 'library', 'La Library: carpetas y documentos (SOPs, playbooks, entrevistas, notas, archivos). Filtros opcionales: carpeta (nombre o id) y buscar (texto).', { carpeta: { type: 'string' }, buscar: { type: 'string' } }],
@@ -132,46 +142,66 @@ const TOOLS = [
   ['actualizar_perfil', 'content', 'Cambia la audiencia, los pilares, los referentes o la competencia de un perfil. Solo cambia los campos que mandes; lo demás queda igual. Referentes y competencia reemplazan su lista completa.', { perfil: { type: 'string' }, audiencia: { type: 'object', properties: { general: { type: 'string' }, nicho: { type: 'string' }, exacto: { type: 'string' } } }, pilares: { type: 'array', items: { type: 'string' }, description: 'hasta 8' }, referentes: { type: 'array', items: { type: 'string' }, description: '@cuenta o link del perfil' }, competencia: { type: 'array', items: { type: 'string' } } }, ['perfil']],
   ['leer_research', 'content', 'Un post de Research completo: métricas, etiquetas, hook, tu versión, receta, clips, por qué funcionó y la plantilla si ya tiene.', { perfil: { type: 'string' }, url: { type: 'string' } }, ['perfil', 'url']],
   ['listar_research', 'content', 'Lo que ya está en Research de un perfil: url, título, formato, etiquetas y si tiene análisis, para verificar y no duplicar. Filtro opcional: tipo (nivel: competencia, referente-similar, referente-aspiracional, referente-crecimiento, propia).', { perfil: { type: 'string' }, tipo: { type: 'string', enum: RESEARCH_TIPOS } }, ['perfil']],
-  ['guardar_research', 'content', 'Guarda reels, carruseles y posts estáticos en Research de un perfil (Content → Research). Manda una lista en «posts» (hasta 40 por llamada). Si el url ya está, lo actualiza. El servidor descarga y guarda la miniatura y las láminas (las del CDN caducan). Los filtros de Research se arman solos con los tags que mandes.', { perfil: { type: 'string', description: 'slug del perfil; ver perfiles()' }, posts: { type: 'array', items: { type: 'object', properties: { url: { type: 'string' }, formato: { type: 'string', enum: ['reel', 'carrusel', 'estatico'] }, creador: { type: 'string', description: '@cuenta' }, red: { type: 'string', enum: ['instagram', 'tiktok', 'youtube', 'otra'] }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, titulo: { type: 'string', description: 'nombre corto del formato' }, tipo: { type: 'string', enum: RESEARCH_TIPOS, description: 'nivel de la investigación: competencia (local) · referente-similar (mercados parecidos al del cliente) · referente-aspiracional · referente-crecimiento (crecimiento/engagement) · propia' }, metricas: { type: 'object', properties: { vistas: { type: 'number' }, likes: { type: 'number' }, comentarios: { type: 'number' }, compartidos: { type: 'number' }, duracion_s: { type: 'number' }, multiplicador: { type: 'number', description: 'veces su mediana' }, engagement_pct: { type: 'number' } } }, miniatura: { type: 'string', description: 'url https; el servidor la descarga y la guarda' }, slides: { type: 'array', items: { type: 'string' }, description: 'carruseles: urls https de cada lámina, en orden; se guardan' }, caption: { type: 'string' }, por_que_funciono: { type: 'object', properties: { hook: { type: 'string' }, retencion: { type: 'string' }, estructura: { description: 'texto o lista de beats' }, por_que: { type: 'string' }, adaptacion: { type: 'string', description: 'Tu versión para la marca. Markdown: el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) va a Análisis' }, inferido: { type: 'boolean' } } }, tags: { type: 'array', items: { type: 'string' }, description: 'pilar, tipo de formato, «resonancia alta|media|baja», «sin hablar|voz en off|hablando a cámara» y lo que sirva para filtrar' }, dificultad: { type: 'number', description: '1 a 5' }, tiempo_grabacion: { type: 'string', description: 'ej. «15 min»' }, receta: { type: 'array', items: { type: 'string' } }, clips: { type: 'array', items: { type: 'object', properties: { tiempo: { type: 'string' }, que: { type: 'string' } } } }, plantilla: { type: 'string', description: 'plantilla terminada para la marca, en Markdown' }, probado: { type: 'boolean' } }, required: ['url'] } } }, ['perfil', 'posts']],
+  ['guardar_research', 'content', 'Guarda reels, carruseles y posts estáticos en Research de un perfil (Contenido → Research). Manda una lista en «posts» (hasta 40 por llamada). Si el url ya está, lo actualiza. El servidor descarga y guarda la miniatura y las láminas (las del CDN caducan). Los filtros de Research se arman solos con los tags que mandes.', { perfil: { type: 'string', description: 'slug del perfil; ver perfiles()' }, posts: { type: 'array', items: { type: 'object', properties: { url: { type: 'string' }, formato: { type: 'string', enum: ['reel', 'carrusel', 'estatico'] }, creador: { type: 'string', description: '@cuenta' }, red: { type: 'string', enum: ['instagram', 'tiktok', 'youtube', 'otra'] }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, titulo: { type: 'string', description: 'nombre corto del formato' }, tipo: { type: 'string', enum: RESEARCH_TIPOS, description: 'nivel de la investigación: competencia (local) · referente-similar (mercados parecidos al del cliente) · referente-aspiracional · referente-crecimiento (crecimiento/engagement) · propia' }, metricas: { type: 'object', properties: { vistas: { type: 'number' }, likes: { type: 'number' }, comentarios: { type: 'number' }, compartidos: { type: 'number' }, duracion_s: { type: 'number' }, multiplicador: { type: 'number', description: 'veces su mediana' }, engagement_pct: { type: 'number' } } }, miniatura: { type: 'string', description: 'url https; el servidor la descarga y la guarda' }, slides: { type: 'array', items: { type: 'string' }, description: 'carruseles: urls https de cada lámina, en orden; se guardan' }, caption: { type: 'string' }, por_que_funciono: { type: 'object', properties: { hook: { type: 'string' }, retencion: { type: 'string' }, estructura: { description: 'texto o lista de beats' }, por_que: { type: 'string' }, adaptacion: { type: 'string', description: 'Tu versión para la marca. Markdown: el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) va a Análisis' }, inferido: { type: 'boolean' } } }, tags: { type: 'array', items: { type: 'string' }, description: 'pilar, tipo de formato, «resonancia alta|media|baja», «sin hablar|voz en off|hablando a cámara» y lo que sirva para filtrar' }, dificultad: { type: 'number', description: '1 a 5' }, tiempo_grabacion: { type: 'string', description: 'ej. «15 min»' }, receta: { type: 'array', items: { type: 'string' } }, clips: { type: 'array', items: { type: 'object', properties: { tiempo: { type: 'string' }, que: { type: 'string' } } } }, plantilla: { type: 'string', description: 'plantilla terminada para la marca, en Markdown' }, probado: { type: 'boolean' } }, required: ['url'] } } }, ['perfil', 'posts']],
   ['borrar_research', 'content', 'Quita posts de Research de un perfil: los urls que digas, o todo con todo=true.', { perfil: { type: 'string' }, urls: { type: 'array', items: { type: 'string' } }, todo: { type: 'boolean' } }, ['perfil']],
   ['calendario', 'content', 'Los calendarios de un perfil en un mes: publicación (qué sale y cuándo) y grabación (qué se graba cada día).', { perfil: { type: 'string' }, mes: { type: 'string', description: 'AAAA-MM; por defecto el actual' } }, ['perfil']],
   ['agendar', 'content', 'Agenda en el calendario de un perfil: una grabación (qué se graba, cuándo y dónde) o una publicación (una pieza con su fecha).', { perfil: { type: 'string' }, calendario: { type: 'string', enum: ['grabacion', 'publicacion'] }, titulo: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, hora: { type: 'string', description: 'HH:MM, solo grabación' }, lugar: { type: 'string' }, quien: { type: 'string' }, piezas: { type: 'string', description: 'solo grabación: piezas y tomas, una por línea' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'], description: 'solo publicación' }, pilar: { type: 'string' }, notas: { type: 'string' } }, ['perfil', 'calendario', 'titulo', 'fecha']],
   ['actualizar_idea', 'content', 'Cambia una idea o pieza del planner: título, fecha, formato, pilar, texto, estado o hasta de perfil (para moverla al correcto). Los ids salen de planner.', { id: { type: 'string' }, perfil: { type: 'string', description: 'muévela a este perfil' }, titulo: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD, o vacío para quitarla' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'] }, pilar: { type: 'string' }, texto: { type: 'string' }, estado: { type: 'string' } }, ['id']],
   ['borrar_idea', 'content', 'Borra ideas o piezas del planner por id (los ids salen de planner). Acepta varias.', { ids: { type: 'array', items: { type: 'string' } } }, ['ids']],
   ['crear_idea', 'content', 'Agrega una idea al planner de un perfil.', { perfil: { type: 'string' }, titulo: { type: 'string' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'] }, pilar: { type: 'string' }, texto: { type: 'string' }, fecha: { type: 'string' } }, ['perfil', 'titulo', 'formato']],
+  ['recetas', 'operations', 'Las recetas con las que se arma el trabajo: ciclo mensual, Business Growth, proyecto, custom, las de cada servicio y las responsabilidades recurrentes de Inherent. Sin id las lista; con id trae la receta completa: tareas (perfil, quién revisa, día, horas, SOP, tipo y de qué dependen), reuniones y lo que se pide al cliente.', { id: { type: 'string' } }],
+  ['guardar_receta', 'operations', 'SOLO EL CEO. Crea o cambia una receta. Manda la receta completa en «receta»; con «id» cambia esa (el id de una de siempre la reemplaza; sin id crea una nueva). Con restablecer=true y un id vuelve a la receta de siempre (o borra una propia). Tipos: proyecto (kind: Ciclo mensual, Growth, Proyecto, Custom), servicio (service_id del catálogo: sus tareas salen al activar un paquete o una cotización) e interna (repeat: semanal con dow 1-7, mensual con from y to, anual con month y day; genera tareas tipo Interna; en el título «{mes}» se cambia por el mes). En tasks, «day» es el día del ciclo (unit dia) o los días hábiles desde que arranca (unit habil); «after» son las key de las tareas que van antes.', { id: { type: 'string' }, restablecer: { type: 'boolean' }, receta: { type: 'object', properties: {
+    name: { type: 'string' }, type: { type: 'string', enum: RECIPE_TYPES.map(([k]) => k) }, kind: { type: 'string', enum: RECIPE_KINDS }, service_id: { type: 'string' }, active: { type: 'boolean' }, unit: { type: 'string', enum: ['dia', 'habil'] }, note: { type: 'string' },
+    repeat: { type: 'object', properties: { freq: { type: 'string', enum: ['semanal', 'mensual', 'anual'] }, dow: { type: 'number' }, from: { type: 'number' }, to: { type: 'number' }, month: { type: 'number' }, day: { type: 'number' } } },
+    tasks: { type: 'array', items: { type: 'object', properties: { key: { type: 'string' }, title: { type: 'string' }, role: { type: 'string', enum: RECIPE_ROLES.map(([k]) => k) }, reviewer: { type: 'string', description: 'perfil que revisa, o vacío' }, day: { type: 'number' }, hours: { type: 'number' }, sop: { type: 'string', description: 'id de un SOP de la Library o link https' }, tipo: { type: 'string', enum: TASK_TIPOS }, after: { type: 'array', items: { type: 'string' } }, desc: { type: 'string' }, dept: { type: 'string', description: 'código del departamento, ej. ④' } }, required: ['title', 'role'] } },
+    meetings: { type: 'array', items: { type: 'object', properties: { name: { type: 'string' }, day: { type: 'number' }, who: { type: 'array', items: { type: 'string' } }, topics: { type: 'array', items: { type: 'string' } }, approves: { type: 'string' } }, required: ['name', 'day'] } },
+    ask: { type: 'array', items: { type: 'string' }, description: 'lo que se le pide al cliente' } }, required: ['name', 'type'] } }],
+  ['resultados', 'resultados', 'Los números reales de Inherent: leads y cierre por fuente, tiempo de respuesta, valor del pipeline por etapa, motivos de pérdida, entregas a tiempo, ingresos del mes y las metas de cada cliente (meta vs. real). Solo trae los bloques de las secciones que tu perfil ve. Lo que no tiene dato viene en null con de dónde saldrá; nunca es cero. Con «cliente» (slug) suma sus redes de Instagram de 30 días (Windsor).', { dias: { type: 'number', enum: [30, 90, 365], description: 'periodo de leads y entregas; por defecto 90' }, cliente: { type: 'string', description: 'slug del cliente para traer sus redes' } }],
+  ['paquetes', 'operations', 'Los paquetes armados (servicios con su nivel), sin costos. Sus ids sirven para activar_paquete.', {}],
+  ['activar_paquete', 'operations', 'Activa un paquete (paquete_id) o el plan contratado del cliente (plan=true): arma el proyecto con las tareas de las recetas de sus servicios, cada una con dueño por perfil, revisor, fecha, SOP, tipo Delivery y dependencias. El plan arma el ciclo mensual con los departamentos de su pipeline (y Business Growth en Accelerate y Compound). Respeta el alcance de tu perfil.', { cliente: { type: 'string', description: 'slug del cliente, o inherent' }, paquete_id: { type: 'string' }, plan: { type: 'boolean' }, inicio: { type: 'string', description: 'AAAA-MM-DD' }, nombre: { type: 'string' } }, ['cliente']],
+  ['asignar_rol', 'operations', 'Cambia quién cubre un rol en un proyecto y reasigna las tareas abiertas de ese rol (queda en el historial de cada tarea y del proyecto). Sin persona, muestra la tabla de roles del proyecto.', { proyecto_id: { type: 'string' }, rol: { type: 'string', enum: RECIPE_ROLES.map(([k]) => k) }, persona: { type: 'string', description: 'correo' } }, ['proyecto_id']],
+  ['generar_recurrentes', 'operations', 'SOLO CEO O COO. Deja creadas las tareas de las responsabilidades recurrentes (recetas internas activas) que ya toca hacer. No duplica: se puede correr las veces que sea.', {}],
 ];
-const toolsFor = (u) => TOOLS.filter(([, a]) => !a || u.areas.includes(a)).map(([name, , description, properties, required]) => ({ name, description, inputSchema: { type: 'object', properties, ...(required ? { required } : {}) } }));
+// Las herramientas que cambian algo: hace falta nivel «edita» en su área (la matriz del CEO). Las demás, con ver basta.
+const WRITE = new Set(['crear_tarea', 'actualizar_tarea', 'crear_cotizacion', 'crear_lead', 'actualizar_lead', 'registrar_actividad', 'importar_prospectos', 'crear_proyecto', 'subir_documento', 'subir_archivo', 'actualizar_perfil', 'guardar_research', 'borrar_research', 'agendar', 'actualizar_idea', 'borrar_idea', 'crear_idea', 'guardar_receta', 'activar_paquete', 'asignar_rol', 'generar_recurrentes']);
+// Sin views (pruebas que pasan el usuario a mano), el área visible alcanza, como antes.
+const mayWrite = (u, name, area) => !WRITE.has(name) || !area || !u.views || levelOf(u, area) === 'edita';
+const toolsFor = (u) => TOOLS.filter(([name, a]) => (!a || u.areas.includes(a)) && mayWrite(u, name, a)).map(([name, , description, properties, required]) => ({ name, description, inputSchema: { type: 'object', properties, ...(required ? { required } : {}) } }));
 
 async function call(u, name, a = {}) {
   if (name === 'research') name = 'listar_research'; // el nombre viejo
   const tool = TOOLS.find((t) => t[0] === name); if (!tool) throw new Error('Herramienta desconocida');
   if (tool[1] && !u.areas.includes(tool[1])) throw new Error('Tu perfil no tiene acceso a esto');
+  if (!mayWrite(u, name, tool[1])) throw new Error('Tu perfil solo puede ver esto, no cambiarlo');
   const T = today();
+  const sc = await scoper(u); // el alcance: null = todo
+  const inS = (coll, d) => inScope(sc, coll, d);
   if (name === 'mis_pendientes') {
     const [tasks, projects, team] = await Promise.all([db.list('tasks'), db.list('projects'), teamOf()]);
     const mine = tasks.filter((t) => t.assignee === u.email && t.status !== 'Hecha' && seesTask(u, t));
-    const wk = addDays(T, 7); const who = holders(team, u.email);
-    const meetings = projects.flatMap((p) => (p.meetings || []).filter((m) => m.status !== 'hecha' && m.date >= T && m.date <= wk && (m.who || []).some((r) => who(r) === u.email)).map((m) => ({ fecha: m.date, reunion: m.name, cliente: p.client || p.name, temas: m.topics, aprueba: m.approves || '' })));
+    const wk = addDays(T, 7);
+    const meetings = projects.flatMap((p) => { const who = holders(team, u.email, p.roles_map); return (p.meetings || []).filter((m) => m.status !== 'hecha' && m.date >= T && m.date <= wk && (m.who || []).some((r) => who(r) === u.email)).map((m) => ({ fecha: m.date, reunion: m.name, cliente: p.client || p.name, temas: m.topics, aprueba: m.approves || '' })); });
     return { hoy: T, atrasadas: mine.filter((t) => t.due && t.due < T).map((t) => pick(t, projects)), hoy_vencen: mine.filter((t) => t.due === T).map((t) => pick(t, projects)), esta_semana: mine.filter((t) => t.due > T && t.due <= wk).map((t) => pick(t, projects)), sin_fecha: mine.filter((t) => !t.due).map((t) => pick(t, projects)), en_revision_esperando_mi_ok: tasks.filter((t) => t.accountable === u.email && t.status === 'En revisión' && seesTask(u, t)).map((t) => pick(t, projects)), reuniones: meetings };
   }
   if (name === 'tareas') {
     const [tasks, projects] = await Promise.all([db.list('tasks'), db.list('projects')]);
     const pid = a.cliente ? new Set(projects.filter((p) => p.client_slug === a.cliente).map((p) => p.id)) : null;
-    return tasks.filter((t) => seesTask(u, t) && (!a.persona || t.assignee === a.persona) && (!a.estado || (t.status || 'Por empezar') === a.estado) && (!pid || pid.has(t.project_id)) && (!a.tipo || t.tipo === a.tipo)).slice(0, 150).map((t) => pick(t, projects));
+    return tasks.filter((t) => seesTask(u, t) && inS('tasks', t) && (!a.persona || t.assignee === a.persona) && (!a.estado || (t.status || 'Por empezar') === a.estado) && (!pid || pid.has(t.project_id)) && (!a.tipo || t.tipo === a.tipo)).slice(0, 150).map((t) => pick(t, projects));
   }
   if (name === 'crear_tarea') {
     if (!String(a.titulo || '').trim()) throw new Error('Falta el título');
     if (a.tipo && !TASK_TIPOS.includes(a.tipo)) throw new Error('tipo: Delivery, Comercial, Interna o Personal');
+    if (a.proyecto_id) { const pr = await db.get('projects', String(a.proyecto_id)); if (pr && !inS('projects', pr)) throw new Error('Ese proyecto no está entre los tuyos'); }
     let sop = '';
     if (a.sop) { sop = sopOk(a.sop); if (!sop) throw new Error('sop: manda el id de un documento de la Library o un link https'); if (!/^https?:/i.test(sop) && !(await db.get('docs', sop))) throw new Error('Ese SOP no está en la Library (revisa el id con library())'); }
     const t = await db.create('tasks', { ...(a.tipo ? { tipo: a.tipo } : {}), ...(sop ? { sop } : {}), title: String(a.titulo).slice(0, 200), assignee: a.tipo === 'Personal' ? u.email : a.persona || u.email, due: /^\d{4}-\d{2}-\d{2}$/.test(a.vence || '') ? a.vence : '', project_id: a.proyecto_id || '', description: String(a.descripcion || '').slice(0, 4000), status: 'Por empezar', visibility: 'all', checklist: [], comments: [] }, u.email);
     return { ok: true, id: t.id, titulo: t.title, para: t.assignee, tipo: t.tipo || '', sop: t.sop || '' };
   }
   if (name === 'actualizar_tarea') {
-    const t = await db.get('tasks', String(a.id || '')); if (!t || !seesTask(u, t)) throw new Error('No encontré esa tarea');
+    const t = await db.get('tasks', String(a.id || '')); if (!t || !seesTask(u, t) || !inS('tasks', t)) throw new Error('No encontré esa tarea');
     if (![t.assignee, t.accountable, t._meta?.created_by].includes(u.email) && !['ceo', 'coo'].includes(u.role)) throw new Error('Solo quien la hace, quien la revisa o el COO/CEO la pueden cambiar');
     const patch = { ...t };
-    if (a.estado) patch.status = a.estado;
+    if (a.estado) { patch.status = a.estado; results.stampDone(t, patch); } // el día en que quedó «Hecha»
     if (a.persona) { const to = String(a.persona).trim().toLowerCase(), team = await teamOf(); if (!team.some((p) => p.email.toLowerCase() === to)) throw new Error(`«${a.persona}» no está en el equipo. Usa el correo de la persona.`); patch.assignee = to; }
     if (/^\d{4}-\d{2}-\d{2}$/.test(a.vence || '')) patch.due = a.vence;
     if (a.tipo) { if (!TASK_TIPOS.includes(a.tipo)) throw new Error('tipo: Delivery, Comercial, Interna o Personal'); patch.tipo = a.tipo; }
@@ -180,18 +210,34 @@ async function call(u, name, a = {}) {
     const r = await db.update('tasks', t.id, patch, t.v, u.email); if (!r) throw new Error('Alguien la cambió justo ahora; intenta de nuevo');
     return { ok: true, id: r.id, estado: r.status, vence: r.due || '', persona: r.assignee || '', tipo: r.tipo || '', sop: r.sop || '' };
   }
+  if (name === 'resultados') {
+    const r = await results.compute(u, { dias: a.dias });
+    if (a.cliente) {
+      const slug = String(a.cliente); if (!slugOk(slug) || slug === 'personal') throw new Error('cliente inválido');
+      if (!u.areas.includes('clients')) throw new Error('Tu perfil no ve Clientes');
+      if (sc && !sc.client(slug)) throw new Error('Ese cliente no está entre los tuyos');
+      r.redes = { cliente: slug, ...(await results.redes(slug)) };
+    }
+    const vacio = 'sin datos todavía';
+    if (r.comercial && !r.comercial.leads) r.comercial.nota = `${vacio}: salen de los leads del CRM (Comercial) que entren en el periodo`;
+    if (r.comercial && r.comercial.respuesta.mediana_horas == null) r.comercial.respuesta.nota = `${vacio}: se mide del alta de cada lead entrante a su primera acción en el historial`;
+    if (r.entregas && !r.entregas.medidas) r.entregas.nota = `${vacio}: se mide con las tareas marcadas «Hecha» que tienen fecha límite (desde que guardan su día de entrega)`;
+    if (r.finanzas && r.finanzas.ingresos_q == null) r.finanzas.nota = `${vacio}: salen de los movimientos de ingreso del mes en Finanzas (hoja de Google o a mano)`;
+    return r;
+  }
   if (name === 'clientes') {
-    const dirs = (await listDir('clients')).filter((d) => d.type === 'dir' && !d.name.startsWith('_'));
+    const dirs = (await listDir('clients')).filter((d) => d.type === 'dir' && !d.name.startsWith('_') && (!sc || sc.client(d.name)));
     return Promise.all(dirs.map(async (d) => { const f = await readFile(`clients/${d.name}/00-onboarding/plan-contratado.md`); return { slug: d.name, plan: f ? parsePlanContratado(f.content, 'team').plan || '' : 'en onboarding' }; }));
   }
   if (name === 'cliente') {
     const slug = String(a.slug || ''); if (!slugOk(slug)) throw new Error('slug inválido');
+    if (sc && !sc.client(slug)) throw new Error('Ese cliente no está entre los tuyos');
     const [acc, projects, tasks] = await Promise.all([db.get('accounts', 'acc-' + slug), db.list('projects'), db.list('tasks')]);
-    const ps = projects.filter((p) => p.client_slug === slug);
-    return { slug, roadmap: acc?.goals || acc?.roadmap || [], drive: acc?.drive_dirs || null, proyectos: ps.map((p) => ({ id: p.id, nombre: p.name, tipo: p.kind, fases: p.phases, reuniones: p.meetings || [], servicios: (p.services || []).map(({ name, level, days, includes }) => ({ name, level, days, includes })) })), tareas: tasks.filter((t) => seesTask(u, t) && ps.some((p) => p.id === t.project_id)).map((t) => pick(t, ps)) };
+    const ps = projects.filter((p) => p.client_slug === slug && inS('projects', p));
+    return { slug, roadmap: acc?.goals || acc?.roadmap || [], drive: acc?.drive_dirs || null, proyectos: ps.map((p) => ({ id: p.id, nombre: p.name, tipo: p.kind, roles: p.roles_map || {}, fases: p.phases, reuniones: p.meetings || [], servicios: (p.services || []).map(({ name, level, days, includes }) => ({ name, level, days, includes })) })), tareas: tasks.filter((t) => seesTask(u, t) && inS('tasks', t) && ps.some((p) => p.id === t.project_id)).map((t) => pick(t, ps)) };
   }
   if (name === 'resumen') {
-    const [projects, tasks] = await Promise.all([db.list('projects'), db.list('tasks')]);
+    const [projects, tasks] = await Promise.all([db.list('projects').then((l) => l.filter((p) => inS('projects', p))), db.list('tasks').then((l) => l.filter((t) => inS('tasks', t)))]);
     const open = tasks.filter((t) => seesTask(u, t) && t.status !== 'Hecha'); const by = {}; open.forEach((t) => { by[t.assignee || 'sin asignar'] = (by[t.assignee || 'sin asignar'] || 0) + 1; });
     return { proyectos_activos: projects.filter((p) => (p.phases || []).some((x) => x.status !== 'done')).map((p) => ({ id: p.id, nombre: p.name, tipo: p.kind, cliente: p.client_slug || '' })), tareas_abiertas: open.length, atrasadas: open.filter((t) => t.due && t.due < T).length, por_persona: by,
       proximas_reuniones: projects.flatMap((p) => (p.meetings || []).filter((m) => m.status !== 'hecha' && m.date >= T).map((m) => ({ fecha: m.date, reunion: m.name, cliente: p.client || p.name, quienes: m.who }))).sort((x, z) => x.fecha.localeCompare(z.fecha)).slice(0, 10) };
@@ -218,7 +264,7 @@ async function call(u, name, a = {}) {
     return { ok: true, id: q.id, numero: number, total_q: total, moneda: cur, ...(cur !== 'GTQ' ? { aviso: 'Abre la cotización en la app para fijar el tipo de cambio.' } : {}), servicios: items.map((i) => ({ servicio: i.name, nivel: i.level, cantidad: i.qty, precio_q: i.price })), ...(faltan.length ? { revisar: faltan } : {}), abrir: '/#/sales/quotes' };
   }
   if (name === 'leads') {
-    const all = await db.list('leads'), q = String(a.buscar || '').toLowerCase();
+    const all = (await db.list('leads')).filter((l) => inS('leads', l)), q = String(a.buscar || '').toLowerCase();
     const list = all.filter((l) => (!a.etapa || (l.stage || 'Nuevo') === a.etapa) && (!a.fuente || String(l.source || '').toLowerCase().includes(String(a.fuente).toLowerCase())) && (!a.vencidos || (leads.OPEN.includes(l.stage || 'Nuevo') && l.next_date && l.next_date < T)) && (!q || [l.name, l.contact, l.company, l.wants, l.notes, l.phone, l.email, l.ig].join(' ').toLowerCase().includes(q)));
     const late = (l) => leads.OPEN.includes(l.stage || 'Nuevo') && l.next_date && l.next_date < T;
     return list.sort((x, z) => (late(z) - late(x)) || String(x.next_date || '9').localeCompare(String(z.next_date || '9'))).slice(0, 200).map((l) => ({ id: l.id, nombre: l.name, contacto: l.contact || '', empresa: l.company || '', etapa: l.stage || 'Nuevo', fuente: l.source || '', responsable: l.owner_role || leads.DEFAULT_ROLE, interes: l.interest || 0, interesado_en: l.wants || '', valor_usd: l.value_usd ?? null, siguiente_paso: l.next_step || '', fecha: l.next_date || '', vencido: Boolean(late(l)), telefono: l.phone || '', correo: l.email || '', ig: l.ig ? '@' + l.ig : '', ...(l.stage === 'Perdido' ? { motivo_perdida: l.lost_reason || '' } : {}), ...(l.plan ? { plan_sugerido: l.plan, puntaje: l.score ?? null } : {}), ultimo: (l.activity || []).at(-1)?.text || '' }));
@@ -229,7 +275,7 @@ async function call(u, name, a = {}) {
     return { ok: true, id: l.id, nombre: l.name, etapa: l.stage, ...(duplicate ? { duplicado: true, aviso: 'Ya existía un lead con ese WhatsApp, correo o cuenta: se le agregó la actividad.' } : {}), siguiente_paso: l.next_step || '', fecha: l.next_date || '', abrir: '/#/sales/crm' };
   }
   if (name === 'actualizar_lead' || name === 'registrar_actividad') {
-    const l = await db.get('leads', String(a.id || '')); if (!l) throw new Error('No encontré ese lead (los ids salen de leads)');
+    const l = await db.get('leads', String(a.id || '')); if (!l || !inS('leads', l)) throw new Error('No encontré ese lead (los ids salen de leads)');
     const patch = { ...l }, notes = [];
     if (name === 'registrar_actividad') { if (!String(a.texto || '').trim()) throw new Error('Falta el texto'); notes.push(String(a.texto)); }
     else {
@@ -267,6 +313,7 @@ async function call(u, name, a = {}) {
   }
   if (name === 'crear_proyecto') {
     const slug = String(a.cliente || ''); if (!slugOk(slug)) throw new Error('cliente inválido');
+    if (sc && slug !== 'inherent' && !sc.client(slug)) throw new Error('Ese cliente no está entre los tuyos');
     const kind = ['Ciclo mensual', 'Proyecto', 'Growth', 'Custom'].includes(a.tipo) ? a.tipo : 'Proyecto';
     const start = /^\d{4}-\d{2}-\d{2}$/.test(a.inicio || '') ? a.inicio : T;
     const quote = a.cotizacion_id ? await db.get('quotes', a.cotizacion_id) : null;
@@ -274,14 +321,44 @@ async function call(u, name, a = {}) {
     const { project: p, tasks: made } = await flow.createProject(u, { slug, kind, start, quote, name: a.nombre });
     return { ok: true, id: p.id, nombre: p.name, fases: p.phases.map((f) => `${f.name} (${f.start} → ${f.end})`), reuniones: p.meetings.length, tareas: made.length, con_dependencias: made.filter((t) => t.depends_on?.length).length, abrir: '/#/control' };
   }
+  if (name === 'recetas') {
+    const [R, services] = await Promise.all([recipes.load(), db.list('services')]);
+    if (a.id) { const r = R.find((x) => x.id === a.id); if (!r) throw new Error('No encontré esa receta (los ids salen de recetas)'); return r; }
+    return R.map((r) => ({ id: r.id, nombre: r.name, tipo: r.type, ...(r.kind ? { proyecto: r.kind } : {}), ...(r.service_id ? { servicio: services.find((s) => s.id === r.service_id)?.name || r.service_id } : {}), ...(r.repeat ? { frecuencia: repeatText(r.repeat) } : {}), activa: r.active !== false, tareas: (r.tasks || []).length, reuniones: (r.meetings || []).length, editada: Boolean(r.edited) }));
+  }
+  if (name === 'guardar_receta') {
+    if (u.role !== 'ceo') throw new Error('Solo el CEO edita las recetas');
+    if (a.restablecer) { if (!a.id) throw new Error('Dime el id de la receta'); return { ok: true, restablecida: await recipes.reset(u, a.id) }; }
+    if (!a.receta || typeof a.receta !== 'object') throw new Error('Manda la receta completa en «receta»');
+    const d = await recipes.save(u, { ...a.receta, id: a.id || a.receta.id });
+    return { ok: true, id: d.id, nombre: d.name, tipo: d.type, tareas: (d.tasks || []).length, abrir: '/#/team' };
+  }
+  if (name === 'paquetes') return flow.bundleList();
+  if (name === 'activar_paquete') {
+    const slug = flow.slugify(a.cliente); if (!slugOk(slug)) throw new Error('cliente inválido');
+    if (sc && slug !== 'inherent' && !sc.client(slug)) throw new Error('Ese cliente no está entre los tuyos');
+    if (!a.paquete_id && !a.plan) throw new Error('Dime qué activar: paquete_id (ver paquetes) o plan=true');
+    let r; try { r = await flow.activate(u, { bundle_id: a.paquete_id, plan: Boolean(a.plan) && !a.paquete_id, slug, start: a.inicio, name: a.nombre }); } catch (e) { throw new Error(e.message); }
+    return { ok: true, proyectos: r.projects.map((p) => ({ id: p.id, nombre: p.name, tipo: p.kind })), tareas: r.tasks.length, con_dependencias: r.tasks.filter((t) => t.depends_on?.length).length, con_sop: r.tasks.filter((t) => t.sop).length, sin_dueno: r.tasks.filter((t) => !t.assignee).length, ...(r.plan ? { plan: r.plan } : {}), abrir: '/#/operations' };
+  }
+  if (name === 'asignar_rol') {
+    const p = await db.get('projects', String(a.proyecto_id || '')); if (!p || !inS('projects', p)) throw new Error('No encontré ese proyecto (los ids salen de resumen o cliente)');
+    if (!a.persona) return { proyecto: p.name, roles: p.roles_map || {}, nota: 'Manda rol y persona para cambiar quién cubre un rol.' };
+    if (!a.rol) throw new Error('Dime el rol');
+    try { return await flow.setRole(u, { project_id: p.id, role: a.rol, email: a.persona }); } catch (e) { throw new Error(e.message); }
+  }
+  if (name === 'generar_recurrentes') {
+    if (!['ceo', 'coo'].includes(u.role)) throw new Error('Solo el CEO o el COO generan lo recurrente');
+    return recurring.run(u.email);
+  }
   if (name === 'contenido_semana') {
-    const slug = await perfilOk(a.perfil);
+    const slug = await perfilOk(a.perfil, u);
     const r = (await db.get('sources', 'scrape-' + slug))?.result; if (!r) return { aviso: 'Este perfil todavía no tiene scrape.' };
     const slim = (l = []) => l.map((x) => ({ cuenta: '@' + x.handle, tipo: x.kind, url: x.url, texto: x.text, vistas: x.views, likes: x.likes, veces_su_promedio: x.x, fecha: x.at }));
     return { semana: r.week, ganadores: slim(r.top), referentes: slim(r.refs), competencia: slim(r.comp), propios: slim((r.own || []).slice(0, 10)) };
   }
   if (name === 'planner') {
-    const slug = await perfilOk(a.perfil);
+    const slug = await perfilOk(a.perfil, u);
     const [posts, c] = await Promise.all([db.list('content'), content.cfg(slug)]);
     return { pilares: c.pillars, audiencia: c.audience, diana: c.bullseye, referentes: c.accounts.filter((x) => x.kind === 'referente').map((x) => '@' + x.handle), competencia: c.accounts.filter((x) => x.kind !== 'referente').map((x) => '@' + x.handle),
       piezas: posts.filter((p) => p.kind === 'post' && p.profile === slug && (!a.mes || String(p.date || '').startsWith(a.mes))).map((p) => ({ id: p.id, titulo: p.title, formato: p.format, pilar: p.pillar || '', fecha: p.date || '', estado: p.status || 'Idea', en_drive: Boolean(p.drive_id || p.url) })) };
@@ -323,7 +400,7 @@ async function call(u, name, a = {}) {
     const buf = Buffer.from(b64, 'base64'); if (!buf.length) throw new Error('El archivo está vacío');
     if (buf.length > 3 * 1024 * 1024) throw new Error('El archivo pesa más de 3 MB. Súbelo desde la Library de la app, que no tiene ese límite');
     const mime = MIMES[(file.split('.').pop() || '').toLowerCase()] || 'application/octet-stream';
-    let token; try { token = await google.accessToken(u.email); } catch { throw new Error('Para subir archivos conecta tu Google Drive en la app (Team → Mi perfil)'); }
+    let token; try { token = await google.accessToken(u.email); } catch { throw new Error('Para subir archivos conecta tu Google Drive en la app (Mi perfil: tu foto arriba)'); }
     const f = await libFolder(u, a.carpeta, true);
     const parent = driveId(f?.drive) || (await myDriveFolder(u));
     const bound = 'inh' + crypto.randomBytes(8).toString('hex');
@@ -336,9 +413,9 @@ async function call(u, name, a = {}) {
     const d = await db.create('docs', { title, kind: KINDS.includes(a.tipo) ? a.tipo : 'Nota', url: j.webViewLink, roles: [], folder_id: f?.id || '', body: `> Archivo en Drive: [${file}](${j.webViewLink})\n` }, u.email);
     return { ok: true, id: d.id, titulo: title, archivo: file, drive: j.webViewLink, carpeta: f?.name || 'sin carpeta', abrir: `/#/library/${d.folder_id || '_'}/${d.id}` };
   }
-  if (name === 'perfiles') return (await perfiles()).map(({ slug, name: nombre }) => ({ perfil: slug, nombre }));
+  if (name === 'perfiles') return (await perfilesDe(u)).map(({ slug, name: nombre }) => ({ perfil: slug, nombre }));
   if (name === 'actualizar_perfil') {
-    const slug = await perfilOk(a.perfil);
+    const slug = await perfilOk(a.perfil, u);
     const cur = (await db.get('sources', 'cfg-' + slug)) || {}, patch = { profile: slug }, t = (v) => String(v || '').trim().slice(0, 400);
     if (a.audiencia && typeof a.audiencia === 'object') patch.audience = { ...(cur.audience || { general: '', nicho: '', exacto: '' }), ...Object.fromEntries(['general', 'nicho', 'exacto'].filter((k) => k in a.audiencia).map((k) => [k, t(a.audiencia[k])])) };
     if (Array.isArray(a.pilares)) { const old = new Map((cur.pillars || []).map((x) => [x.name.toLowerCase(), x.color])); patch.pillars = [...new Set(a.pilares.map((x) => String(x || '').trim().slice(0, 40)).filter(Boolean))].slice(0, 8).map((name, i) => ({ name, color: old.get(name.toLowerCase()) || PILLAR_COLORS[i % PILLAR_COLORS.length] })); }
@@ -354,17 +431,17 @@ async function call(u, name, a = {}) {
     return { ok: true, perfil: slug, cambiado: Object.keys(patch).filter((k) => k !== 'profile').map((k) => ({ audience: 'audiencia', pillars: 'pilares', accounts: 'referentes/competencia' }[k])), audiencia: c.audience, pilares: c.pillars.map((x) => x.name), referentes: c.accounts.filter((x) => x.kind === 'referente').map((x) => '@' + x.handle), competencia: c.accounts.filter((x) => x.kind !== 'referente').map((x) => '@' + x.handle) };
   }
   if (name === 'leer_research') {
-    const slug = await perfilOk(a.perfil), k = (x) => String(x || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
+    const slug = await perfilOk(a.perfil, u), k = (x) => String(x || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
     const x = (await db.list('content')).find((d) => d.kind === 'research' && d.profile === slug && k(d.url) === k(a.url)); if (!x) throw new Error('Ese url no está en Research de ese perfil');
     return { url: x.url, titulo: x.title || '', creador: x.handle ? '@' + x.handle : '', formato: x.format || '', fecha: x.at || '', metricas: { vistas: x.views ?? null, likes: x.likes ?? null, comentarios: x.comments ?? null, duracion_s: x.dur ?? null, multiplicador: x.x ?? null, engagement_pct: x.er ?? null }, pilar: x.pillar || '', estilo: x.style || '', habla: x.talk || '', resonancia: x.resonance || '', tags: x.tags || [], dificultad: x.diff ?? null, tiempo_grabacion: x.rec || '', caption: x.text || '', receta: x.receta || [], clips: (x.clips || []).map((c) => ({ tiempo: c.t, que: c.que })), por_que_funciono: x.why || null, plantilla: x.plantilla || '' };
   }
   if (name === 'listar_research') {
-    const slug = await perfilOk(a.perfil);
+    const slug = await perfilOk(a.perfil, u);
     return (await db.list('content')).filter((x) => x.kind === 'research' && x.profile === slug && (!a.tipo || x.tipo === a.tipo)).slice(0, 400)
       .map((x) => ({ url: x.url, titulo: x.title || '', creador: x.handle ? '@' + x.handle : '', formato: x.format || '', tipo: x.tipo || '', tags: [x.pillar, x.style, x.resonance && 'resonancia ' + x.resonance, { no: 'sin hablar', voz: 'voz en off', si: 'hablando a cámara' }[x.talk], ...(x.tags || [])].filter(Boolean), vistas: x.views ?? null, multiplicador: x.x ?? null, con_analisis: Boolean(x.why), con_plantilla: Boolean(x.plantilla), miniatura_guardada: isLocal(x.thumb), subido: x._meta?.updated_at || x._meta?.created_at }));
   }
   if (name === 'guardar_research') {
-    const slug = await perfilOk(a.perfil);
+    const slug = await perfilOk(a.perfil, u);
     const list = (Array.isArray(a.posts) ? a.posts : Array.isArray(a.videos) ? a.videos : []).slice(0, 40); if (!list.length) throw new Error('Faltan los posts');
     const num = (v) => (v !== '' && v != null && Number.isFinite(+v) ? +v : undefined);
     const https = (v) => (/^https:\/\/[^\s'"()]+$/.test(String(v || '')) ? String(v) : undefined);
@@ -415,7 +492,7 @@ async function call(u, name, a = {}) {
     return { ok: true, perfil: slug, nuevos: nuevos.length, actualizados: actualizados.length, ...(sinImg ? { imagenes_sin_guardar: sinImg, aviso: 'Algunas imágenes no se pudieron descargar; vuelve a mandar esos posts con su miniatura para reintentar.' } : {}), ...(malos.length ? { sin_url_valida: malos } : {}), abrir: `/#/content/research/${slug}` };
   }
   if (name === 'borrar_research') {
-    const slug = await perfilOk(a.perfil);
+    const slug = await perfilOk(a.perfil, u);
     const k = (x) => String(x || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
     const want = new Set((Array.isArray(a.urls) ? a.urls : []).map(k));
     if (!a.todo && !want.size) throw new Error('Dime los urls a quitar, o todo=true');
@@ -424,14 +501,14 @@ async function call(u, name, a = {}) {
     return { ok: true, quitados: list.length, abrir: `/#/content/research/${slug}` };
   }
   if (name === 'calendario') {
-    const slug = await perfilOk(a.perfil);
+    const slug = await perfilOk(a.perfil, u);
     const mes = /^\d{4}-\d{2}$/.test(a.mes || '') ? a.mes : T.slice(0, 7);
     const all = (await db.list('content')).filter((x) => x.profile === slug && String(x.date || '').startsWith(mes)).sort((x, z) => String(x.date).localeCompare(String(z.date)));
     return { mes, publicacion: all.filter((x) => x.kind === 'post').map((x) => ({ fecha: x.date, titulo: x.title, formato: x.format || '', pilar: x.pillar || '', estado: x.status || 'Idea' })),
       grabacion: all.filter((x) => x.kind === 'shoot').map((x) => ({ fecha: x.date, hora: x.time || '', titulo: x.title, lugar: x.place || '', quien: x.crew || '', piezas: x.pieces || '', estado: x.status || 'Por grabar' })) };
   }
   if (name === 'agendar') {
-    const slug = await perfilOk(a.perfil);
+    const slug = await perfilOk(a.perfil, u);
     const title = String(a.titulo || '').trim().slice(0, 200), date = /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : null;
     if (!title || !date) throw new Error('Faltan el título o la fecha (AAAA-MM-DD)');
     if (a.calendario === 'grabacion') {
@@ -443,12 +520,12 @@ async function call(u, name, a = {}) {
   }
   if (name === 'actualizar_idea' || name === 'borrar_idea') {
     const ids = name === 'borrar_idea' ? (Array.isArray(a.ids) ? a.ids : [a.ids]).map(String).filter(Boolean).slice(0, 100) : [String(a.id || '')];
-    const out = [], faltan = [];
+    const out = [], faltan = [], mios = new Set((await perfilesDe(u)).map((x) => x.slug)); // la marca personal y los clientes fuera de tu alcance no existen para ti
     for (const id of ids) {
-      const p = await db.get('content', id); if (!p || p.kind !== 'post') { faltan.push(id); continue; }
+      const p = await db.get('content', id); if (!p || p.kind !== 'post' || !mios.has(p.profile)) { faltan.push(id); continue; }
       if (name === 'borrar_idea') { await db.remove('content', id, u.email); out.push(id); continue; }
       const patch = { ...p };
-      if (a.perfil) patch.profile = await perfilOk(a.perfil);
+      if (a.perfil) patch.profile = await perfilOk(a.perfil, u);
       if (a.titulo) patch.title = String(a.titulo).slice(0, 200);
       if ('fecha' in a) patch.date = /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : '';
       if (['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'].includes(a.formato)) patch.format = a.formato;
@@ -462,7 +539,7 @@ async function call(u, name, a = {}) {
     return { ok: true, borradas: out.length, ...(faltan.length ? { no_encontradas: faltan } : {}) };
   }
   if (name === 'crear_idea') {
-    const slug = await perfilOk(a.perfil); if (!String(a.titulo || '').trim()) throw new Error('Falta el título');
+    const slug = await perfilOk(a.perfil, u); if (!String(a.titulo || '').trim()) throw new Error('Falta el título');
     const p = await db.create('content', { kind: 'post', profile: slug, title: String(a.titulo).slice(0, 200), format: a.formato || 'Reel', pillar: a.pilar || '', caption: String(a.texto || '').slice(0, 4000), date: /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : '', status: 'Idea' }, u.email);
     return { ok: true, id: p.id, titulo: p.title };
   }
@@ -478,7 +555,7 @@ export async function handle(token, m) {
 export async function run(u, m, base = '') {
   if (!m || m.id === undefined) return { status: 202 };
   const ok = (result) => ({ status: 200, json: { jsonrpc: '2.0', id: m.id, result } });
-  if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', title: 'Inherent OS', version: '1.6.0', ...(base ? { websiteUrl: base, icons: [{ src: `${base}/brand/icon-512.png`, mimeType: 'image/png', sizes: ['512x512'] }, { src: `${base}/brand/emblem-dark.svg`, mimeType: 'image/svg+xml', sizes: ['any'] }] } : {}) }, instructions: `Inherent OS de ${u.name} (${u.role}). Úsalo para ver pendientes, tareas, clientes, el CRM y contenido; para crear tareas, ideas, cotizaciones o proyectos; para crear y mover leads, anotar su historial e importar prospectos; para guardar videos en Research y agendar grabaciones y publicaciones; y para subir a la Library documentos (SOPs, entrevistas, notas) y archivos de cualquier formato. Antes de guardar contenido, confirma el perfil con perfiles(). Fechas en formato AAAA-MM-DD; hoy es ${today()}. Precios en quetzales salvo que se diga otra moneda.` });
+  if (m.method === 'initialize') return ok({ protocolVersion: m.params?.protocolVersion || '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'inherent-os', title: 'Inherent OS', version: '1.6.0', ...(base ? { websiteUrl: base, icons: [{ src: `${base}/brand/icon-512.png`, mimeType: 'image/png', sizes: ['512x512'] }, { src: `${base}/brand/emblem-dark.svg`, mimeType: 'image/svg+xml', sizes: ['any'] }] } : {}) }, instructions: `Inherent OS de ${u.name} (${u.role}${u.scope && u.scope !== 'todos' ? `, alcance: ${u.scope === 'propio' ? 'solo lo suyo' : 'solo sus clientes'}` : ''}). Solo ve y cambia lo que su perfil permite (lo decide el CEO en Administración → Vistas por rol). Úsalo para ver pendientes, tareas, clientes, el CRM y contenido; para crear tareas, ideas, cotizaciones o proyectos; para crear y mover leads, anotar su historial e importar prospectos; para ver los resultados (leads por fuente, entregas a tiempo, ingresos del mes, metas de clientes); para guardar videos en Research y agendar grabaciones y publicaciones; y para subir a la Library documentos (SOPs, entrevistas, notas) y archivos de cualquier formato. Antes de guardar contenido, confirma el perfil con perfiles(). Fechas en formato AAAA-MM-DD; hoy es ${today()}. Precios en quetzales salvo que se diga otra moneda.` });
   if (m.method === 'ping') return ok({});
   if (m.method === 'tools/list') return ok({ tools: toolsFor(u) });
   if (m.method === 'tools/call') {

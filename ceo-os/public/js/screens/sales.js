@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList, swap, ico, WORK_ROLES, roleName } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList, swap, ico, WORK_ROLES, roleName, isSummary, canEdit, roChip } from '../core.js';
 import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, marginOf, GROWTH, growthText, includesAt, daysAt } from '../cycle.js';
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
@@ -23,8 +23,11 @@ const tagChip = (t) => html`<span class="chip ${TAGS[t] ?? ''}" style="margin:2p
 export async function render(el, { me, sub, alive }) {
   const isCeo = me.role === 'ceo';
   const canProject = me.areas.includes('operations');
+  // Vista por rol: «resumen» = los indicadores del CRM y los seguimientos vencidos; sin catálogo, precios ni cotizaciones.
+  // «completo» lo ve todo sin cambiar nada; «edita» crea y mueve leads, servicios y cotizaciones.
+  const resumen = isSummary(me, 'sales'), edit = canEdit(me, 'sales');
   const L = col('leads'), S = col('services'), C = col('quotes'), R = col('rates'), SRC = col('lead_sources');
-  let [leads, services, quotes] = await Promise.all([L.list(), S.list(), C.list()]);
+  let [leads, services, quotes] = await Promise.all([L.list(), resumen ? [] : S.list(), resumen ? [] : C.list()]);
   let rates = null;
   if (isCeo) { rates = await R.get('default').catch(() => null); }
   let plans = null, plansErr = null;
@@ -32,9 +35,9 @@ export async function render(el, { me, sub, alive }) {
   let sops = {};
   col('docs').list().then((l) => { sops = Object.fromEntries(l.filter((d) => d.kind === 'SOP' && /^SOP · /.test(d.title)).map((d) => [d.title.slice(6).trim().toLowerCase(), d])); if (tab === 'cat' && alive()) paint(); }).catch(() => {});
   const sopOf = (s) => sops[String(s.name || '').trim().toLowerCase()];
-  api('repo/precios').then((r) => { plans = r; if (tab === 'cat' && alive()) paint(); }).catch((e) => { plansErr = e.message; });
+  if (!resumen) api('repo/precios').then((r) => { plans = r; if (tab === 'cat' && alive()) paint(); }).catch((e) => { plansErr = e.message; });
 
-  let tab = ['crm', 'cat', 'esp', 'quotes', 'src', ...(isCeo ? ['pkg'] : [])].includes(sub[0]) ? sub[0] : 'crm';
+  let tab = (resumen ? ['crm'] : ['crm', 'cat', 'esp', 'quotes', 'src', ...(isCeo ? ['pkg'] : [])]).includes(sub[0]) ? sub[0] : 'crm';
   let mentors = null, mInd = 'Todas';
   let crmView = 'list', q = '', tagF = '', catF = 'Todos', svQ = '';
 
@@ -62,26 +65,46 @@ export async function render(el, { me, sub, alive }) {
   // ---------- layout ----------
   function paint() {
     mount(el, html`
-      <div class="hello"><h1>Sales</h1><p>Cada lead, calificado y con <em>su siguiente paso</em>.</p></div>
+      <div class="hello row" style="align-items:flex-end"><div><h1>Comercial</h1><p>Cada lead, calificado y con <em>su siguiente paso</em>.</p></div><div class="sp"></div>${roChip(me, 'sales')}</div>
       <div class="row" style="margin-bottom:18px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">
+        ${resumen ? '' : html`<div class="tabs" style="margin:0">
           <button class="${tab === 'crm' ? 'on' : ''}" data-act="tab" data-t="crm">CRM</button>
           <button class="${tab === 'cat' ? 'on' : ''}" data-act="tab" data-t="cat">Catálogo de servicios</button>
           <button class="${tab === 'esp' ? 'on' : ''}" data-act="tab" data-t="esp">Especialistas</button>
           <button class="${tab === 'quotes' ? 'on' : ''}" data-act="tab" data-t="quotes">Cotizaciones</button>
           <button class="${tab === 'src' ? 'on' : ''}" data-act="tab" data-t="src">Fuentes</button>
           ${isCeo ? html`<button class="${tab === 'pkg' ? 'on' : ''}" data-act="tab" data-t="pkg">Paquetes</button>` : ''}
-        </div>
+        </div>`}
         <div class="sp"></div>
-        ${tab === 'crm' ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
-        ${tab === 'cat' ? html`${isCeo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
-        ${tab === 'quotes' ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
+        ${tab === 'crm' && edit ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
+        ${tab === 'cat' && edit ? html`${isCeo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
+        ${tab === 'quotes' && edit ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
         ${tab === 'esp' && isCeo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
         ${tab === 'src' && isCeo ? html`<button class="btn" data-act="newSrc">+ Fuente</button>` : ''}
       </div>
       <div id="body"></div>`);
     const body = $('#body', el);
+    if (resumen) return crmResumen(body);
     ({ crm, cat, esp, quotes: quotesTab, pkg: pkgTab, src: srcTab })[tab](body);
+  }
+  // ---------- El resumen del CRM: los indicadores y lo que requiere acción (vencidos y lo de hoy) ----------
+  function crmResumen(body) {
+    const T = today();
+    const pipe = leads.filter((l) => (l.stage || 'Nuevo') !== 'Prospecto'), open = pipe.filter((l) => OPEN.includes(l.stage || 'Nuevo'));
+    const pros = leads.filter((l) => l.stage === 'Prospecto' && !l.archived);
+    const late = open.filter(isLate).sort(byUrgency), hoy = open.filter((l) => l.next_date === T);
+    const row = (l, chip) => html`<div class="wkrow" data-act="lead" data-id="${l.id}"><span class="grow"><b style="font-weight:500">${l.name}</b><span class="mut sm"> · ${l.next_step || 'Sin siguiente paso'} · ${roleLabel(l.owner_role)}</span></span>${chip}</div>`;
+    mount(body, html`
+      <div class="grid g4" style="margin-bottom:18px">
+        <div class="card glass"><span class="mut sm">Leads abiertos</span><div class="big" style="font-size:42px">${open.length}</div></div>
+        <div class="card glass"><span class="mut sm">Calientes ${ico('flame')}</span><div class="big" style="font-size:42px">${open.filter((l) => (l.interest || 0) >= 4).length}</div></div>
+        <div class="card glass"><span class="mut sm">Seguimiento vencido</span><div class="big" style="font-size:42px${late.length ? ';color:#654c38' : ''}">${late.length}</div></div>
+        <div class="card glass"><span class="mut sm">Prospectos por contactar</span><div class="big" style="font-size:42px">${pros.length}</div></div>
+      </div>
+      <div class="sec-title"><h2>Seguimiento vencido</h2><span class="mut sm">Lo primero que hay que mover</span></div>
+      <div class="card">${late.length ? late.slice(0, 30).map((l) => row(l, html`<span class="chip red sm2">Venció ${fdate(l.next_date)}</span>`)) : html`<div class="mut">Nada vencido ${ico('check', 14)}</div>`}</div>
+      <div class="sec-title" style="margin-top:22px"><h2>Para hoy</h2></div>
+      <div class="card">${hoy.length ? hoy.map((l) => row(l, html`<span class="chip amber sm2">${l.stage || 'Nuevo'}</span>`)) : html`<div class="mut">Sin seguimientos para hoy</div>`}</div>`);
   }
 
   // ---------- Paquetes: una sola lista — los propios (servicios y especialistas) y los de cada industria ----------

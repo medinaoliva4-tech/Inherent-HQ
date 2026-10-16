@@ -1,16 +1,18 @@
-import { SECTIONS, SUMMARY, LEVELS } from '../roleviews.js';
-import { events, html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, cropImage, WORK_ROLES, roleName, $, teamDoc, ico } from '../core.js';
+import { SECTIONS, GROUPS, SUMMARY, LEVELS, LEVEL_HELP, SCOPES, SCOPE_HELP, STARTS, baseAreas } from '../roleviews.js';
+import { events, html, raw, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, cropImage, WORK_ROLES, roleName, $, teamDoc, ico } from '../core.js';
 import { bdayText } from './me.js';
+import { recetasPanel } from '../recetas.js';
 
 const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
-const ROLE = { ceo: 'CEO · acceso total', coo: 'COO · todo menos Finance', team: 'Equipo · Operations, Content, Library' };
+const ROLE = { ceo: 'CEO · acceso total', coo: 'COO · todo menos Finanzas', team: 'Equipo · Workspace, Contenido, Conocimiento' };
 const T = col('team'), RV = col('settings');
 
-export async function render(el, { me }) {
+export async function render(el, { me, sub = [] }) {
   let people = (await teamList()).filter((p) => p.active !== false || me.role === 'ceo');
   const isCeo = me.role === 'ceo';
-  let view = 'org';
+  // Organigrama y Perfiles son pestañas de aquí; Vistas por rol y Recetas son pestañas de Administración (#/team/vistas, #/team/recetas).
+  let view = ['people', 'vistas', 'recetas'].includes(sub[0]) && (isCeo || sub[0] === 'people') ? sub[0] : 'org';
   // Quién ocupa cada rol según el manual (tabla de slots de 05-OPERACION.md) y los pagos por servicio, y que no
   // está todavía en el organigrama. Las herramientas (IA, scraping, Zernio, Figma) no son personas.
   const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s*\(.*\)/, '').trim();
@@ -68,37 +70,56 @@ export async function render(el, { me }) {
         ${p.active === false ? html`<span class="chip red">Desactivado</span>` : ''}
       </div></div>`)}</div>`;
   }
-  // ---------- Vistas por rol: qué sección ve cada perfil de trabajo, y qué tan a fondo ----------
+  // ---------- Vistas por rol: qué sección ve cada perfil de trabajo, qué tan a fondo, qué datos y dónde abre ----------
+  // Se aplica en el servidor (API y conector de Claude), no solo en la pantalla. El CEO siempre ve y edita todo.
   let rv = null, rvRole = 'content', rvLoaded = false;
   const rvCfg = () => (rv?.views || {})[rvRole];
-  const rvLevel = (sec) => rvCfg()?.[sec] || 'completo';
+  // Lo de siempre para un perfil: lo que ve su rol de acceso sin configurar (el COO sus áreas; los demás, las del equipo).
+  const rvBase = (sec) => (baseAreas(rvRole === 'coo' ? 'coo' : 'team', [rvRole]).includes(sec) ? 'edita' : 'oculto');
+  const rvLevel = (sec) => (rvCfg()?.[sec] in LEVEL_HELP ? rvCfg()[sec] : rvBase(sec));
+  const rvScope = () => (rv?.scope || {})[rvRole] || 'todos';
+  const rvStart = () => (rv?.start || {})[rvRole] || (rvRole === 'coo' ? 'control' : 'work');
   const rvShort = (k) => roleName(k).split(' · ')[0];
+  // Lo que la matriz no cambia: Finance se queda en resumen para quien no es CEO; Team siempre se ve al menos en resumen.
+  const rvFixed = (sec, v) => (sec === 'finanzas' && (v === 'completo' || v === 'edita')) || (sec === 'team' && v === 'oculto');
   function vistas() {
     if (!rvLoaded) { RV.get('role_views').then((d) => { rv = d; }).catch(() => { rv = null; }).then(() => { rvLoaded = true; if (view === 'vistas') paint(); }); return html`<p class="loading">Cargando…</p>`; }
     const holders = people.filter((p) => (p.roles || []).includes(rvRole) && p.active !== false);
+    const touched = Boolean(rvCfg()) || Boolean((rv?.scope || {})[rvRole]) || Boolean((rv?.start || {})[rvRole]);
     return html`<div class="card" style="padding:22px">
-      <div class="mut sm" style="max-width:640px">Elige un perfil de trabajo y decide qué secciones ve y qué tan a fondo. Se guarda al tocar. Un perfil sin configurar ve todo, como hoy. Si una persona tiene varios perfiles, ve lo máximo que le da cualquiera.</div>
-      <div class="row" style="gap:8px;flex-wrap:wrap;margin:16px 0">${WORK_ROLES.map(([k]) => html`<button class="chip ${rvRole === k ? 'dark' : ''}" data-act="rvrole" data-r="${k}" style="padding:8px 14px">${rvShort(k)}${(rv?.views || {})[k] ? ' ●' : ''}</button>`)}</div>
-      <div class="row sm" style="margin-bottom:6px"><b style="font-weight:500">${roleName(rvRole)}</b><span class="mut">${holders.length ? ' · lo tienen: ' + holders.map((x) => x.name.split(' ')[0]).join(', ') : ' · nadie lo tiene todavía'}</span><div class="sp"></div>${rvCfg() ? html`<button class="btn ghost xs" data-act="rvreset">Restablecer (ve todo)</button>` : html`<span class="mut sm">Sin configurar · ve todo</span>`}</div>
-      ${SECTIONS.map(([k, l]) => html`<div class="row" style="gap:12px;flex-wrap:wrap;padding:11px 0;border-top:1px solid var(--line)"><div style="flex:1;min-width:150px"><b style="font-weight:500">${l}</b>${SUMMARY[k] ? html`<div class="mut sm">Resumen: ${SUMMARY[k]}</div>` : ''}</div>
-        <div class="tabs mini" style="margin:0">${LEVELS.filter(([v]) => v !== 'resumen' || SUMMARY[k]).map(([v, lb]) => html`<button class="${rvLevel(k) === v ? 'on' : ''}" data-act="rvset" data-s="${k}" data-l="${v}" ${k === 'team' && v === 'oculto' && rvRole === 'ceo' ? 'disabled' : ''}>${lb}</button>`)}</div></div>`)}
+      <div class="mut sm" style="max-width:680px">Elige un perfil de trabajo y decide <b>qué ve</b>, <b>qué tan a fondo</b>, <b>de qué clientes</b> y <b>dónde abre</b>. Se guarda al tocar y se aplica en el servidor: lo oculto no sale ni por la app ni por el conector de Claude. Un perfil sin configurar sigue como hoy. Si una persona tiene varios perfiles, gana el más amplio. Tú, como CEO, siempre ves y editas todo.</div>
+      <div class="row" style="gap:8px;flex-wrap:wrap;margin:16px 0">${WORK_ROLES.filter(([k]) => k !== 'ceo').map(([k]) => html`<button class="chip ${rvRole === k ? 'dark' : ''}" data-act="rvrole" data-r="${k}" style="padding:8px 14px">${rvShort(k)}${(rv?.views || {})[k] || (rv?.scope || {})[k] || (rv?.start || {})[k] ? ' ●' : ''}</button>`)}</div>
+      <div class="row sm" style="margin-bottom:6px"><b style="font-weight:500">${roleName(rvRole)}</b><span class="mut">${holders.length ? ' · lo tienen: ' + holders.map((x) => x.name.split(' ')[0]).join(', ') : ' · nadie lo tiene todavía'}</span><div class="sp"></div>${touched ? html`<button class="btn ghost xs" data-act="rvreset">Restablecer (como hoy)</button>` : html`<span class="mut sm">Sin configurar · como hoy</span>`}</div>
+      <div class="grid g11" style="gap:12px;margin:10px 0 6px">
+        <div class="card" style="padding:14px 16px"><b style="font-weight:500">Qué datos ve</b><div class="mut sm" style="margin:2px 0 8px">${SCOPE_HELP[rvScope()]}</div>
+          <div class="tabs mini" style="margin:0">${SCOPES.map(([v, lb]) => html`<button class="${rvScope() === v ? 'on' : ''}" data-act="rvscope" data-v="${v}">${lb}</button>`)}</div></div>
+        <div class="card" style="padding:14px 16px"><b style="font-weight:500">Dónde abre al entrar</b><div class="mut sm" style="margin:2px 0 8px">El «para qué»: cada perfil abre en lo que tiene que hacer, no en un tablero general.</div>
+          <select class="in" data-act="rvstart" style="width:auto">${STARTS.map(([v, lb]) => html`<option value="${v}" ${rvStart() === v ? raw('selected') : ''}>${lb}</option>`)}</select></div>
+      </div>
+      <div class="row sm mut" style="gap:14px;flex-wrap:wrap;margin:14px 0 4px">${LEVELS.map(([v, lb]) => html`<span><b style="font-weight:500">${lb}</b>: ${LEVEL_HELP[v]}</span>`)}</div>
+      ${GROUPS.map(([g, gl, list]) => html`${list.length > 1 ? html`<div class="lbl" style="margin:18px 0 2px">${gl}</div>` : ''}${SECTIONS.filter(([k]) => list.includes(k)).map(([k, l]) => html`<div class="row" style="gap:12px;flex-wrap:wrap;padding:11px 0;border-top:1px solid var(--line)"><div style="flex:1;min-width:150px"><b style="font-weight:500">${l}</b>${rvCfg()?.[k] in LEVEL_HELP ? '' : html` <span class="mut sm">· como hoy</span>`}${SUMMARY[k] ? html`<div class="mut sm">Resumen: ${SUMMARY[k]}</div>` : ''}${k === 'finanzas' ? html`<div class="mut sm">Costos, márgenes, tarifas y pagos son solo del CEO: para los demás, Finanzas llega hasta resumen.</div>` : k === 'team' ? html`<div class="mut sm">Siempre se ve (quién es quién); cambiar personas y esta matriz es solo tuyo.</div>` : k === 'resultados' ? html`<div class="mut sm">Cada bloque (Comercial, entregas, Finanzas, clientes) sale solo si también ve esa sección.</div>` : ''}</div>
+        <div class="tabs mini" style="margin:0">${LEVELS.filter(([v]) => v !== 'resumen' || SUMMARY[k]).map(([v, lb]) => html`<button class="${rvLevel(k) === v ? 'on' : ''}" data-act="rvset" data-s="${k}" data-l="${v}" ${rvFixed(k, v) ? 'disabled' : ''}>${lb}</button>`)}</div></div>`)}`)}
     </div>`;
   }
-  async function rvSave(views) {
+  async function rvSave(patch) {
     try {
-      const doc = { ...(rv || {}), id: 'role_views', views };
+      const doc = { ...(rv || {}), id: 'role_views', views: rv?.views || {}, scope: rv?.scope || {}, start: rv?.start || {}, ...patch };
       const r = rv?.v != null ? await RV.save(doc) : await RV.create(doc);
       rv = r; paint(); events.dispatchEvent(new CustomEvent('roleviews', { detail: r })); toast('Guardado');
     } catch (e) { toast(e.message, true); if (/cambió|Recarga/i.test(e.message)) { rvLoaded = false; rv = null; paint(); } }
   }
   function paint() {
-    mount(el, html`<div class="row" style="align-items:flex-end;margin-bottom:24px">
-      <div class="hello"><h1>Team</h1><p style="margin:0">Quién hace qué en <em>Inherent</em>.</p></div><div class="sp"></div>
-      <div class="tabs" style="margin:0"><button class="${view === 'org' ? 'on' : ''}" data-act="view" data-v="org">Organigrama</button><button class="${view === 'people' ? 'on' : ''}" data-act="view" data-v="people">Perfiles</button>${isCeo ? html`<button class="${view === 'vistas' ? 'on' : ''}" data-act="view" data-v="vistas">Vistas por rol</button>` : ''}</div>
-      ${isCeo ? html`<button class="btn" data-act="add" style="margin-left:10px">+ Agregar</button>` : ''}
+    const admin = view === 'vistas' || view === 'recetas';
+    const TITLE = { vistas: ['Vistas por rol', 'Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.'], recetas: ['Recetas', 'Cómo se arma el trabajo: <em>tareas, dueños y fechas</em>.'] };
+    mount(el, html`<div class="row" style="align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <div class="hello"><h1>${admin ? TITLE[view][0] : 'Equipo'}</h1><p style="margin:0">${admin ? raw(TITLE[view][1]) : html`Quién hace qué en <em>Inherent</em>.`}</p></div><div class="sp"></div>
+      ${admin ? '' : html`<div class="tabs" style="margin:0"><button class="${view === 'org' ? 'on' : ''}" data-act="view" data-v="org">Organigrama</button><button class="${view === 'people' ? 'on' : ''}" data-act="view" data-v="people">Perfiles</button></div>
+      ${isCeo ? html`<button class="btn" data-act="add">+ Agregar</button>` : ''}`}
     </div>
-    ${missing.length ? html`<div class="warnbox" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px"><span style="flex:1">${missing.length === 1 ? '1 persona' : missing.length + ' personas'} del manual y la nómina no ${missing.length === 1 ? 'está' : 'están'} en el organigrama: <b>${missing.map((x) => x.name + ' (' + x.roles.join(', ') + ')').join(' · ')}</b></span><button class="btn" data-act="import">Agregarlas</button></div>` : ''}
-    ${view === 'org' ? html`<div class="card" style="padding:34px 22px">${org()}</div>` : view === 'vistas' && isCeo ? vistas() : cards()}`);
+    ${missing.length && !admin ? html`<div class="warnbox" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px"><span style="flex:1">${missing.length === 1 ? '1 persona' : missing.length + ' personas'} del manual y la nómina no ${missing.length === 1 ? 'está' : 'están'} en el organigrama: <b>${missing.map((x) => x.name + ' (' + x.roles.join(', ') + ')').join(' · ')}</b></span><button class="btn" data-act="import">Agregarlas</button></div>` : ''}
+    ${view === 'org' ? html`<div class="card" style="padding:34px 22px">${org()}</div>` : view === 'vistas' && isCeo ? vistas() : view === 'recetas' && isCeo ? html`<div id="rcbody"></div>` : cards()}`);
+    if (view === 'recetas' && isCeo) recetasPanel($('#rcbody', el));
+    const st = $('[data-act=rvstart]', el); if (st) st.onchange = () => rvSave({ start: { ...(rv?.start || {}), [rvRole]: st.value } });
   }
 
   async function edit(p) {
@@ -160,9 +181,11 @@ export async function render(el, { me }) {
 
   acts(el, {
     rvrole: (b) => { rvRole = b.dataset.r; paint(); },
-    rvset: (b) => { const base = Object.fromEntries(SECTIONS.map(([k]) => [k, rvLevel(k)])); rvSave({ ...(rv?.views || {}), [rvRole]: { ...base, [b.dataset.s]: b.dataset.l } }); },
-    rvreset: () => { const v = { ...(rv?.views || {}) }; delete v[rvRole]; rvSave(v); },
-    view: (b) => { view = b.dataset.v; paint(); }, add: () => edit(null), open: (b) => open(byId(b.dataset.id)), import: importMissing });
+    // Al tocar una sección, el perfil queda configurado con todo lo que se ve en pantalla (lo demás como hoy).
+    rvset: (b) => { const base = Object.fromEntries(SECTIONS.map(([k]) => [k, rvLevel(k)])); rvSave({ views: { ...(rv?.views || {}), [rvRole]: { ...base, [b.dataset.s]: b.dataset.l } } }); },
+    rvscope: (b) => rvSave({ scope: { ...(rv?.scope || {}), [rvRole]: b.dataset.v } }),
+    rvreset: () => { const v = { ...(rv?.views || {}) }, sc = { ...(rv?.scope || {}) }, st = { ...(rv?.start || {}) }; delete v[rvRole]; delete sc[rvRole]; delete st[rvRole]; rvSave({ views: v, scope: sc, start: st }); },
+    view: (b) => { view = b.dataset.v; history.replaceState(null, '', view === 'org' ? '#/team' : '#/team/' + view); paint(); }, add: () => edit(null), open: (b) => open(byId(b.dataset.id)), import: importMissing });
   paint();
   findMissing().then(() => missing.length && paint());
 }

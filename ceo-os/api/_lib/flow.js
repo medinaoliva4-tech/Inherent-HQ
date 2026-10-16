@@ -3,8 +3,11 @@
 //   → ingreso en Finance + lead ganado + cliente + proyecto con responsables, fechas y dependencias.
 // Lo usan el panel de Control, Sales y el conector MCP. Todo pasa aquí, en el servidor.
 import * as db from './db.js';
-import { phasesFor, meetingsFor, tasksFor, customTasks, createLinked, holders, DEPTS, svcHours, hoursAt, includesAt, daysAt, addDays, onboardingFor } from '../../public/js/cycle.js';
-import { domain } from './access.js';
+import { phasesFor, meetingsFor, tasksFor, customTasks, createLinked, holders, DEPTS, deptsOfPlan, svcHours, hoursAt, includesAt, daysAt, addDays, onboardingFor } from '../../public/js/cycle.js';
+import * as recipes from './recipes.js';
+import { readFile } from './gh.js';
+import { parsePlanContratado } from './parse.js';
+import { domain, edits, levelOf } from './access.js';
 import * as google from './google.js';
 import * as mail from './mail.js';
 
@@ -20,22 +23,100 @@ const put = (coll, id, data, who) => db.upsert(coll, id, data, who);
 const log = (doc, who, text) => [...(doc.activity || []), { at: now(), who, text }].slice(-60);
 
 // ---------- Proyecto con tareas enlazadas (lo usan el flujo y el MCP) ----------
-export async function createProject(u, { slug, label, kind, start, quote, name }) {
-  const [team, tasks] = await Promise.all([teamOf(), db.list('tasks')]);
+// Las tareas, reuniones y el onboarding salen de las recetas (Administración → Recetas). Una cotización o un paquete (`bundle`)
+// se vuelve un proyecto Custom: arranque → las tareas de la receta de cada servicio → QA, reunión y entrega.
+const clamp = (n) => Math.max(3, Math.min(10, Math.round(+n || 5)));
+// Los renglones de un paquete (servicios del catálogo con su nivel, servicios propios y especialistas), en el mismo formato que una cotización.
+async function bundleItems(bundle, services) {
+  const mentors = (bundle.lines || []).some((l) => l.type === 'mentor') ? await db.list('mentors') : [];
+  return (bundle.lines || []).map((l, i) => {
+    if (l.type === 'custom') { const roles = (l.roles || []).filter((r) => r.role && +r.hours > 0).map((r) => ({ role: r.role, hours: +r.hours })); return roles.length ? { id: `bundle-${l.id || i}`, name: l.name || 'Servicio propio', level: 5, days: null, includes: [], hours: roles.reduce((a, r) => a + r.hours, 0), roles, price: 0 } : null; }
+    if (l.type === 'mentor') { const m = mentors.find((x) => x.id === l.mentor_id); return { id: `bundle-${l.id || i}`, name: `Especialista: ${m?.name || 'por definir'}`, level: 5, days: null, includes: [`${Math.max(1, +l.qty || 1)} ${m?.unit === 'mes' ? 'mes(es)' : 'sesión(es)'}`], hours: 0, roles: [{ role: 'COO · coordinar la sesión', hours: 0 }], price: 0 }; }
+    const s = services.find((x) => x.id === l.service_id); if (!s) return null;
+    const lv = clamp(l.level || s.level), n = Math.max(1, +l.qty || 1);
+    return { id: s.id, name: s.name, level: lv, days: daysAt(s, lv), includes: includesAt(s, lv), hours: svcHours(s, lv) * n, roles: (s.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * n })), price: 0 };
+  }).filter(Boolean);
+}
+export async function createProject(u, { slug, label, kind, start, quote, name, bundle, depts, extra = {} }) {
+  const [team, tasks, R] = await Promise.all([teamOf(), db.list('tasks'), recipes.load()]);
   let items = null;
   if (kind === 'Custom') {
-    if (!quote) throw new Error('Un proyecto Custom sale de una cotización');
     const services = await db.list('services');
-    items = (quote.items || []).filter((i) => i.service_id).map((i) => { const s = services.find((x) => x.id === i.service_id); if (!s) return null; const lv = i.level || s.level || 5, n = +i.qty || 1;
-      return { id: s.id, name: s.name, level: lv, days: daysAt(s, lv), includes: includesAt(s, lv), hours: svcHours(s, lv) * n, roles: (s.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * n })), price: (+i.price || 0) * n }; }).filter(Boolean);
-    if (!items.length) throw new Error('La cotización no tiene servicios del catálogo');
+    if (bundle) { items = await bundleItems(bundle, services); if (!items.length) throw new Error('El paquete no tiene servicios para armar el proyecto'); }
+    else {
+      if (!quote) throw new Error('Un proyecto Custom sale de una cotización o de un paquete');
+      items = (quote.items || []).filter((i) => i.service_id).map((i) => { const s = services.find((x) => x.id === i.service_id); if (!s) return null; const lv = i.level || s.level || 5, n = +i.qty || 1;
+        return { id: s.id, name: s.name, level: lv, days: daysAt(s, lv), includes: includesAt(s, lv), hours: svcHours(s, lv) * n, roles: (s.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * n })), price: (+i.price || 0) * n }; }).filter(Boolean);
+      if (!items.length) throw new Error('La cotización no tiene servicios del catálogo');
+    }
   }
   const lab = label || (slug === 'inherent' ? 'Inherent' : slug.toUpperCase());
   const p = await db.create('projects', { name: String(name || `${lab} · ${kind === 'Ciclo mensual' ? 'ciclo ' + start.slice(0, 7) : kind.toLowerCase()}`).slice(0, 120), kind, line: kind === 'Growth' ? 'growth' : 'contenido', cycle: kind === 'Ciclo mensual' ? start.slice(0, 7) : '', client: lab, client_slug: slug,
-    phases: phasesFor(kind, start), meetings: meetingsFor(kind, start), ...(items ? { services: items, price: items.reduce((a, i) => a + (i.price || 0), 0) || null } : {}), ...(quote ? { quote_id: quote.id, lead_id: quote.lead_id || '' } : {}),
-    pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: 'todo' }])), status: 'activo' }, u.email);
-  const made = await createLinked(items ? customTasks(p, items, team, u.email) : tasksFor(p, team, tasks, u.email), (t) => db.create('tasks', { ...t, assigned_at: now() }, u.email));
+    phases: phasesFor(kind, start), meetings: meetingsFor(kind, start, R), ...(items ? { services: items, price: items.reduce((a, i) => a + (i.price || 0), 0) || null } : {}), ...(quote ? { quote_id: quote.id, lead_id: quote.lead_id || '' } : {}), ...(bundle ? { bundle_id: bundle.id, bundle_name: bundle.name || '' } : {}), ...extra,
+    pipeline: Object.fromEntries(DEPTS.map(([d]) => [d, { status: !depts || depts.includes(d) ? 'todo' : 'off' }])), status: 'activo' }, u.email);
+  const made = await createLinked(items ? customTasks(p, items, team, u.email, R) : tasksFor(p, team, tasks, u.email, R), (t) => db.create('tasks', { ...t, assigned_at: now() }, u.email));
+  // La tabla «quién cubre cada rol» del proyecto: queda con lo que se asignó, y se cambia en un solo lugar (setRole).
+  const roles_map = {}; for (const t of made) if (t.role && t.assignee && !roles_map[t.role]) roles_map[t.role] = t.assignee;
+  if (Object.keys(roles_map).length) { Object.assign(p, await put('projects', p.id, { roles_map }, u.email)); }
   return { project: p, tasks: made };
+}
+
+// ---------- Activar un paquete o un plan ----------
+// Paquete (bundle) → un proyecto con las tareas de las recetas de sus servicios, cada una con su ficha completa
+// (dueño por perfil, revisor, fecha, SOP, tipo Delivery y dependencias). Plan contratado → el ciclo mensual con los
+// departamentos de su pipeline (y, en Accelerate y Compound, también Business Growth).
+// El onboarding del cliente suma lo que piden las recetas y los servicios, sin repetir lo que ya tenía.
+async function addOnboarding(u, slug, kind, services, R, from) {
+  const acc = await db.get('accounts', 'acc-' + slug); if (!acc) return 0;
+  const prev = acc.onboarding?.items || [], add = onboardingFor(kind, services, R).filter((x) => !prev.some((y) => y.t === x.t));
+  if (add.length) await put('accounts', 'acc-' + slug, { onboarding: { ...(acc.onboarding || {}), items: [...prev, ...add], updated_at: now(), updated_by: u.email, ...(from ? { from } : {}) } }, u.email);
+  return add.length;
+}
+export async function bundleList() {
+  const [bundles, services] = await Promise.all([db.list('bundles'), db.list('services')]);
+  return bundles.map((b) => ({ id: b.id, name: b.name || 'Paquete', industry: b.industry || '', desc: b.desc || '', servicios: (b.lines || []).map((l) => (l.type === 'custom' ? { nombre: l.name || 'Servicio propio', propio: true } : l.type === 'mentor' ? { nombre: 'Especialista', especialista: true } : { nombre: services.find((s) => s.id === l.service_id)?.name || 'Servicio', nivel: clamp(l.level), cantidad: Math.max(1, +l.qty || 1) })) }));
+}
+export async function activate(u, { bundle_id, plan, slug, label, start, name }) {
+  slug = slugify(slug); if (slug.length < 2) throw Object.assign(new Error('Falta el cliente'), { status: 400 });
+  const st = /^\d{4}-\d{2}-\d{2}$/.test(start || '') ? start : today(), R = await recipes.load(), lab = String(label || (slug === 'inherent' ? 'Inherent' : slug.toUpperCase())).slice(0, 60);
+  if (bundle_id) {
+    const bundle = await db.get('bundles', String(bundle_id)); if (!bundle) throw Object.assign(new Error('Ese paquete no existe (los ids salen de paquetes)'), { status: 404 });
+    const r = await createProject(u, { slug, label: lab, kind: 'Custom', start: st, bundle, name: name || `${lab} · ${bundle.name || 'paquete'}` });
+    const services = await db.list('services');
+    const onb = await addOnboarding(u, slug, 'Custom', (bundle.lines || []).map((l) => services.find((x) => x.id === l.service_id)).filter(Boolean), R, `bundle:${bundle.id}`);
+    console.log(JSON.stringify({ evt: 'flow_activate', bundle: bundle.id, project: r.project.id, tasks: r.tasks.length, by: u.email }));
+    return { ok: true, projects: [r.project], tasks: r.tasks, onboarding: onb };
+  }
+  if (plan) {
+    const f = await readFile(`clients/${slug}/00-onboarding/plan-contratado.md`); if (!f) throw Object.assign(new Error('Ese cliente no tiene plan contratado en el repo'), { status: 404 });
+    const c = parsePlanContratado(f.content, 'ceo'), cyc = st.slice(0, 7);
+    const dup = (await db.list('projects')).find((p) => p.client_slug === slug && p.kind === 'Ciclo mensual' && p.cycle === cyc);
+    if (dup) throw Object.assign(new Error(`${lab} ya tiene el ciclo ${cyc}: ${dup.name}`), { status: 409 });
+    const made = [await createProject(u, { slug, label: lab, kind: 'Ciclo mensual', start: st, depts: deptsOfPlan(c), name: name || undefined })];
+    // Línea Growth (🟨) o plan Accelerate / Compound: además del ciclo, corre Business Growth.
+    const linea = (c.fields || []).find((f) => /^l[ií]nea$/i.test(f.key))?.value || '';
+    if (/accelerate|compound/i.test(c.plan || '') || /^🟨/u.test(linea)) made.push(await createProject(u, { slug, label: lab, kind: 'Growth', start: st }));
+    const onb = await addOnboarding(u, slug, 'Ciclo mensual', [], R, 'plan');
+    console.log(JSON.stringify({ evt: 'flow_activate', plan: c.plan, projects: made.map((m) => m.project.id), by: u.email }));
+    return { ok: true, plan: c.plan || '', projects: made.map((m) => m.project), tasks: made.flatMap((m) => m.tasks), onboarding: onb };
+  }
+  throw Object.assign(new Error('Dime qué activar: un paquete (paquete_id) o el plan contratado del cliente'), { status: 400 });
+}
+
+// ---------- Rol → persona, por proyecto ----------
+// Cambia quién cubre un rol en el proyecto y reasigna sus tareas abiertas de ese rol (con historial en cada tarea y en el proyecto).
+export async function setRole(u, { project_id, role, email }) {
+  const p = await db.get('projects', String(project_id || '')); if (!p) throw Object.assign(new Error('El proyecto no existe'), { status: 404 });
+  role = String(role || ''); if (!/^[a-z][\w-]{0,29}$/.test(role)) throw Object.assign(new Error('Rol inválido'), { status: 400 });
+  const to = String(email || '').trim().toLowerCase(), team = await teamOf();
+  const person = team.find((x) => x.email.toLowerCase() === to); if (!person) throw Object.assign(new Error('Esa persona no está en el equipo. Usa su correo.'), { status: 400 });
+  const prevMap = p.roles_map?.[role] || '';
+  const tasks = (await db.list('tasks')).filter((t) => t.project_id === p.id && t.role === role && t.status !== 'Hecha' && String(t.assignee || '').toLowerCase() !== to);
+  const nameOf = (e) => team.find((x) => x.email.toLowerCase() === String(e || '').toLowerCase())?.name || e || 'nadie';
+  for (const t of tasks) await put('tasks', t.id, { assignee: person.email, assigned_at: now(), comments: [...(t.comments || []), { at: now(), who: u.name, text: `Reasignada: ${nameOf(t.assignee)} → ${person.name} (cambió quién cubre «${role}» en el proyecto)` }] }, u.email);
+  await put('projects', p.id, { roles_map: { ...(p.roles_map || {}), [role]: person.email }, activity: log(p, u.name, `Rol «${role}»: ${nameOf(prevMap)} → ${person.name} · ${tasks.length} ${tasks.length === 1 ? 'tarea reasignada' : 'tareas reasignadas'}`) }, u.email);
+  console.log(JSON.stringify({ evt: 'flow_role', project: p.id, role, to: person.email, tasks: tasks.length, by: u.email }));
+  return { ok: true, role, persona: person.email, tareas: tasks.length, ids: tasks.map((t) => t.id) };
 }
 
 // ---------- Los pasos de una cotización ----------
@@ -53,7 +134,7 @@ export async function step(u, id, action, b = {}, base = '') {
   const q = await db.get('quotes', id); if (!q) throw Object.assign(new Error('La cotización no existe'), { status: 404 });
   const lead = q.lead_id ? await db.get('leads', q.lead_id) : null;
   const team = await teamOf(), who = holders(team, u.email);
-  const sales = u.areas.includes('sales');
+  const sales = u.areas.includes('sales') && edits(u, 'sales'); // cambiar una cotización pide nivel «edita» en Comercial
   const payTask = q.pay_task_id ? await db.get('tasks', q.pay_task_id) : null;
   const deny = (m = 'Tu perfil no puede hacer este paso') => { throw Object.assign(new Error(m), { status: 403 }); };
   const setLead = async (stage, text) => { if (lead) await put('leads', lead.id, { stage, activity: log(lead, u.name, text) }, u.email); };
@@ -72,7 +153,7 @@ export async function step(u, id, action, b = {}, base = '') {
   } else if (action === 'reject') {
     if (!sales) deny();
     await put('quotes', id, { status: 'Rechazada', activity: log(q, u.name, 'Rechazada' + (b.note ? `: ${String(b.note).slice(0, 200)}` : '')) }, u.email);
-    if (payTask && payTask.status !== 'Hecha') await put('tasks', payTask.id, { status: 'Hecha', description: (payTask.description || '') + '\n(Cotización rechazada)' }, u.email);
+    if (payTask && payTask.status !== 'Hecha') await put('tasks', payTask.id, { status: 'Hecha', done_at: new Date().toISOString().slice(0, 10), description: (payTask.description || '') + '\n(Cotización rechazada)' }, u.email);
     await setLead('Perdido', `Rechazó la cotización ${q.number}`);
   } else if (action === 'payment') {
     if (!(sales || payTask?.assignee === u.email)) deny();
@@ -107,10 +188,10 @@ export async function step(u, id, action, b = {}, base = '') {
     // 3) arranca el proyecto: fases, reuniones y tareas con responsables, fechas y dependencias
     const { project, tasks } = await createProject(u, { slug, label, kind, start, quote: q, name: b.name || `${label} · ${q.number}` });
     await put('quotes', id, { client_slug: slug, project_id: project.id, payment: { ...q.payment, status: 'confirmado', confirmed_by: u.email, confirmed_at: now() }, activity: log(q, u.name, `Pago confirmado · proyecto creado con ${tasks.length} tareas`) }, u.email);
-    if (payTask) await put('tasks', payTask.id, { status: 'Hecha' }, u.email);
+    if (payTask) await put('tasks', payTask.id, { status: 'Hecha', ...(payTask.status === 'Hecha' && payTask.done_at ? {} : { done_at: new Date().toISOString().slice(0, 10) }) }, u.email);
     // 4) el cliente: acceso a su portal, su onboarding (según lo que se le cotizó) y el correo de gracias
     const services = await db.list('services');
-    const items = onboardingFor(kind, (q.items || []).map((i) => services.find((x) => x.id === i.service_id)).filter(Boolean));
+    const items = onboardingFor(kind, (q.items || []).map((i) => services.find((x) => x.id === i.service_id)).filter(Boolean), await recipes.load());
     const prev = (await db.get('accounts', 'acc-' + slug))?.onboarding?.items || [];
     await put('accounts', 'acc-' + slug, { onboarding: { items: items.map((x) => prev.find((y) => y.t === x.t) || x), at: now(), from_quote: id, sender: u.email } }, u.email);
     let welcome = null;
@@ -134,7 +215,7 @@ export async function proof(u, id) {
   const p = await db.get('proofs', id); if (!p) return null;
   const q = await db.get('quotes', p.quote_id);
   const t = q?.pay_task_id ? await db.get('tasks', q.pay_task_id) : null;
-  return u.areas.includes('sales') || u.role === 'ceo' || t?.assignee === u.email ? p : null;
+  return (u.areas.includes('sales') && levelOf(u, 'sales') !== 'resumen') || u.role === 'ceo' || t?.assignee === u.email ? p : null; // en «resumen» no hay cotizaciones ni pagos
 }
 export { inCur, toQ };
 

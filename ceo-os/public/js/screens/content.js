@@ -69,7 +69,7 @@ export async function render(el, { me, sub, alive }) {
     if (!alive()) return;
     const p = data.profile;
     mount(el, html`
-      <div class="hello"><h1>Content</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
+      <div class="hello"><h1>Contenido</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
       <div class="row" style="margin-bottom:16px;gap:8px;flex-wrap:wrap">${data.profiles.map((x) => html`<button class="chip ${x.slug === slug ? 'dark' : ''}" data-act="prof" data-s="${x.slug}" style="padding:9px 16px;font-size:13px">${x.name}</button>`)}</div>
       <div class="row" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
         <div class="tabs" style="margin:0">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
