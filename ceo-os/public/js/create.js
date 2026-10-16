@@ -1,5 +1,6 @@
 // Crear cosas con preguntas, no con formularios. Lo usan Operations, Workspace y Clients.
 import { wizard, col, api, toast, roleName, today, fdate, html, raw, drawer, closeDrawer, $, $$, Q, ico } from './core.js';
+import { TIPOS, TIPO_DESC } from './tasktype.js';
 import { DEPTS, deptsOfPlan, phasesFor, tasksFor, customTasks, createLinked, meetingsFor, hoursAt, svcHours, svcCost, svcPrice, daysAt, includesAt } from './cycle.js';
 
 const cleanPlan = (s) => String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, '');
@@ -86,6 +87,8 @@ export async function newTask({ team, me, projects = [], pre = {} }) {
       opts: people.map((p) => ({ v: p.email || p.id, i: p.picture ? ico('smile') : ico('user'), l: (p.email || p.id) === me.email ? `${p.name} (yo)` : p.name, d: (p.roles || []).map((r) => roleName(r).split(' · ')[0]).join(', ') || p.title || '' })) },
     { k: 'dept', q: '¿De qué departamento?', type: 'cards', v: pre.dept, show: () => pre.dept === undefined,
       opts: [{ v: '', i: '—', l: 'Ninguno' }, ...DEPTS.map(([n, name]) => ({ v: `${n} ${name}`, l: `${n} ${name}` }))] },
+    { k: 'tipo', q: '¿De qué tipo es?', sub: 'Personal solo la ves tú.', type: 'cards', v: pre.tipo, show: () => pre.tipo === undefined,
+      opts: [{ v: '', i: '—', l: 'Sin tipo' }, ...TIPOS.map(([k, l]) => ({ v: k, i: ico({ Delivery: 'rocket', Comercial: 'megaphone', Interna: 'gear', Personal: 'lock' }[k]), l, d: TIPO_DESC[k] }))] },
     { k: 'due', q: '¿Para cuándo?', type: 'when', v: pre.due },
     { k: 'visibility', q: '¿Quién la puede ver?', type: 'cards', req: true, v: pre.visibility || 'all', opts: VIS_OPTS },
     { k: 'viewers', q: '¿Quiénes más la pueden ver?', sub: 'Tú y quien la hace ya la ven.', type: 'multi', req: true, show: (a) => a.visibility === 'people',

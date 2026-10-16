@@ -1,3 +1,4 @@
+import { applyViews } from './roleviews.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO, infoTips, canTransition } from './core.js';
 
 const NAV = [
@@ -54,12 +55,17 @@ async function loginView() {
   if (err) history.replaceState(null, '', '/');
 }
 
+const navItems = () => NAV.filter(([k]) => me.areas.includes(k) && (k !== 'portal' || me.role === 'client'));
+const navHtml = () => html`${navItems().map(([k, l, d]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`)}`;
+// Vistas por rol: las secciones ocultas no aparecen en la barra.
+const markNav = () => { const a = location.hash.replace(/^#\/?/, '').split('/')[0]; const key = me.areas.includes(a) ? a : me.areas.includes('home') ? 'home' : me.areas[0]; $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === key)); };
+events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); mount($('.nav'), navHtml()); markNav(); if (!me.areas.includes(location.hash.replace(/^#\/?/, '').split('/')[0]) && !['me', 'setup'].includes(location.hash.replace(/^#\/?/, '').split('/')[0])) render(); });
+
 function shell() {
-  const allowed = NAV.filter(([k]) => me.areas.includes(k) && (k !== 'portal' || me.role === 'client'));
   mount(root, html`<div class="app">
     <header class="top">
       <div class="brand"><div class="emb">${emblem()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
-      <nav class="nav">${allowed.map(([k, l, d]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`)}</nav>
+      <nav class="nav">${navHtml()}</nav>
       <div class="sp"></div>
       <button class="themebtn" id="themebtn" title="Modo noche" aria-label="Cambiar modo día / noche">${raw(document.documentElement.dataset.theme === 'dark' ? SUN : MOON)}</button>
       <div class="avatar" id="avatar" title="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
@@ -115,6 +121,7 @@ events.addEventListener('logout', () => { if (me) { me = null; toast('Tu sesión
 
 async function start(u) {
   me = u;
+  if (me.role !== 'client') { let doc = null; try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); }
   const c = pendingConnect();
   if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); return consentView(root, me, c, () => { shell(); render(); }); }
   shell(); render();

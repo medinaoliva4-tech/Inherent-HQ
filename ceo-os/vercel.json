@@ -23,6 +23,10 @@
       "destination": "/api/index?route=.well-known/:path*"
     },
     {
+      "source": "/diagnostico",
+      "destination": "/diagnostico.html"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/index?route=:path*"
     }
@@ -71,6 +75,15 @@
         {
           "key": "Cache-Control",
           "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/diagnostico(.html)?",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow"
         }
       ]
     }

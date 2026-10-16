@@ -40,7 +40,7 @@ export async function render(el, { me, alive }) {
   const exp = (m) => finance.filter((f) => f.type === 'gasto' && ym(f.date) === m).reduce((a, f) => a + (+f.amount || 0), 0);
   const revNow = inc(thisM), costNow = exp(thisM), revSeries = months.map(inc);
 
-  const open = leads.filter((l) => !['Ganado', 'Perdido'].includes(l.stage));
+  const open = leads.filter((l) => !['Prospecto', 'Ganado', 'Perdido'].includes(l.stage));
   const hot = open.filter((l) => (l.interest || 0) >= 4);
   const pipe = open.reduce((a, l) => a + (+l.value_usd || 0), 0);
   const mine = tasks.filter((t) => t.assignee === me.email && t.status !== 'Hecha').sort((a, b) => String(a.due || '9').localeCompare(String(b.due || '9')));

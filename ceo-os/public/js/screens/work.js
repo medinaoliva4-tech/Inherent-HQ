@@ -1,6 +1,7 @@
 import { upcoming, meetingRows, isMine as meetIsMine } from '../meetings.js';
 import { LOGO, lineChart, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor, swap, ico } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
+import { tipoSopFields, bindSop, readTipoSop, sopLink, tipoChips, tipoMatch, tipoBadge } from '../tasktype.js';
 import { newProject as wizProject, newTask as wizTask } from '../create.js';
 import { blockersOf, unlocksOf } from '../cycle.js';
 import { payDialog } from '../flowui.js';
@@ -40,7 +41,7 @@ export async function render(el, { me, sub, alive }) {
   let role = myRoles.includes(sub[1]) ? sub[1] : !asP && myRoles.includes(pref) ? pref : myRoles[0] || null;
   let tab = ['zona', 'kanban', 'pipes', 'equipo'].includes(sub[0]) ? sub[0] : 'zona';
   Promise.all([col('accounts').list().catch(() => []), col('settings').get('drive').catch(() => null)]).then(([a2, s2]) => { accounts = a2; settings = s2; if (alive() && tab === 'zona' && ['video', 'ads'].includes(role)) paint(); });
-  let kView = 'personal', pipeSel = 'contenido', personSel = null, ctab = 'ideas', clientSel = null, ceoLane = 'estrategia';
+  let tipoF = 'todos', kView = 'personal', pipeSel = 'contenido', personSel = null, ctab = 'ideas', clientSel = null, ceoLane = 'estrategia';
   let agenda = null, clientInfo = {}, posts = null;
   const T0 = today(), T1 = addDays(T0, 1), T7 = addDays(T0, 7);
   const canCoord = (isCeo && !asP) || myRoles.includes('coo');
@@ -399,11 +400,11 @@ export async function render(el, { me, sub, alive }) {
 
   // =================== KANBAN · PIPELINES · EQUIPO ===================
   const card = (t) => { const p = proj(t.project_id);
-    return html`<div class="kcard wk" draggable="true" data-act="task" data-id="${t.id}"><b>${t.title}</b><div class="mut sm">${p ? (p.client || p.name) : 'Interno'}${t.dept ? ' · ' + t.dept.split(' ')[0] : ''}</div>
+    return html`<div class="kcard wk" draggable="true" data-act="task" data-id="${t.id}"><b>${t.title}</b><div class="mut sm">${p ? (p.client || p.name) : 'Interno'}${t.dept ? ' · ' + t.dept.split(' ')[0] : ''}${tipoBadge(t)}</div>
       <div class="row" style="margin-top:8px;gap:6px">${t.assignee ? av(t.assignee, 20) : ''}<span class="sm">${t.assignee ? nameOf(t.assignee).split(' ')[0] : '—'}</span><div class="sp"></div>${dueChip(t.due, status(t))}</div></div>`; };
   function kanban(b) {
-    const base = kView === 'personal' ? mine() : tasks;
-    mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px"><div class="tabs mini" style="margin:0"><button class="${kView === 'personal' ? 'on' : ''}" data-act="kv" data-v="personal">Personal</button><button class="${kView === 'empresa' ? 'on' : ''}" data-act="kv" data-v="empresa">Empresa</button></div><span class="mut sm">${open(base).length} abiertas · arrastra para mover</span></div>
+    const base = (kView === 'personal' ? mine() : tasks).filter((t) => tipoMatch(t, tipoF));
+    mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px"><div class="tabs mini" style="margin:0"><button class="${kView === 'personal' ? 'on' : ''}" data-act="kv" data-v="personal">Personal</button><button class="${kView === 'empresa' ? 'on' : ''}" data-act="kv" data-v="empresa">Empresa</button></div><span class="mut sm">${open(base).length} abiertas · arrastra para mover</span><div class="sp"></div>${tipoChips(tipoF, 'tipof', kView === 'personal' ? mine() : tasks)}</div>
       <div class="kanban wkk">${COLS.map(([s, l, c]) => { const list = base.filter((t) => status(t) === s).sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
         return html`<div class="kcol" data-st="${s}"><h4><span class="row" style="gap:8px"><i class="dot" style="background:${c}"></i>${l}</span><span class="mut">${list.length}</span></h4>${(s === 'Hecha' ? list.slice(-10) : list).map(card)}<button class="wkadd" data-act="colAdd" data-s="${s}">+ Añadir tarea</button></div>`; })}</div>`);
     $$('.kcard', b).forEach((c) => c.addEventListener('dragstart', (e) => e.dataTransfer.setData('id', c.dataset.id)));
@@ -414,10 +415,11 @@ export async function render(el, { me, sub, alive }) {
     });
   }
   function pipes(b) {
-    const list = tasks.filter((t) => pipeOf(t) === pipeSel).sort((a, z) => (status(a) === 'Hecha') - (status(z) === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9')));
+    const list = tasks.filter((t) => pipeOf(t) === pipeSel && tipoMatch(t, tipoF)).sort((a, z) => (status(a) === 'Hecha') - (status(z) === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9')));
     mount(b, html`<div class="grid g11" style="margin-bottom:12px">${Object.keys(PIPES).map((k) => html`<div class="card wkbox" style="${k === pipeSel ? 'outline:2px solid var(--ink)' : ''}">${pipeMini(k)}</div>`)}</div>
+      <div style="margin-bottom:10px">${tipoChips(tipoF, 'tipof', tasks.filter((t) => pipeOf(t) === pipeSel))}</div>
       ${list.length ? html`<div class="card wkbox"><table class="wktable"><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable → rinde cuentas</th><th>Estado</th><th>Vence</th></tr></thead><tbody>
-        ${list.map((t) => html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${t.dept ? html`<span class="mut sm"> · ${t.dept}</span>` : ''}</td><td class="mut">${proj(t.project_id)?.name || '—'}</td><td><span class="chain">${chain(t).map((k, i) => html`${i ? html`<span class="mut">→</span>` : ''}${av(k, 22)}`)}</span></td><td><span class="chip sm2">${status(t)}</span></td><td>${dueChip(t.due, status(t)) || '—'}</td></tr>`)}</tbody></table></div>`
+        ${list.map((t) => html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${t.dept ? html`<span class="mut sm"> · ${t.dept}</span>` : ''}${tipoBadge(t)}</td><td class="mut">${proj(t.project_id)?.name || '—'}</td><td><span class="chain">${chain(t).map((k, i) => html`${i ? html`<span class="mut">→</span>` : ''}${av(k, 22)}`)}</span></td><td><span class="chip sm2">${status(t)}</span></td><td>${dueChip(t.due, status(t)) || '—'}</td></tr>`)}</tbody></table></div>`
         : html`<div class="empty"><b>Sin tareas en ${PIPES[pipeSel].name}</b>Las tareas de sus proyectos aparecen aquí.</div>`}`);
   }
   function equipo(b) {
@@ -450,11 +452,13 @@ export async function render(el, { me, sub, alive }) {
             <div><label class="f">Rinde cuentas</label><select class="in" id="wacc">${[['', 'Su jefe directo'], ...peopleOpts().slice(1)].map(([k, l]) => html`<option value="${k}" ${k === (t.accountable || '') ? raw('selected') : ''}>${l}</option>`)}</select></div></div>
           <div class="two"><div><label class="f">Vence</label><input class="in" id="wdue" type="date" value="${t.due || ''}"></div>
             <div><label class="f">Proyecto</label><select class="in" id="wproj"><option value="">— Interno</option>${projects.map((x) => html`<option value="${x.id}" ${x.id === t.project_id ? raw('selected') : ''}>${x.name}</option>`)}</select></div></div>
+          ${tipoSopFields(t, docs, 'w')}
           <div><label class="f">Descripción / brief</label><textarea class="in" id="wdesc">${t.description || ''}</textarea></div>
           <div><label class="f">Entrega (link)</label><input class="in" id="wlink" value="${t.link || ''}" placeholder="https://drive.google.com/…"></div>
         </div>
         ${(t.files || []).length ? html`<div class="lbl" style="color:var(--mut);margin-top:10px">Archivos</div>${t.files.map((f) => html`<a class="wkrow" href="${/^https:\/\//.test(f.link) ? f.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow">${f.name}</span><span class="mut sm">${fdate(String(f.at).slice(0, 10))}</span></a>`)}` : ''}
-        ${(() => { const sop = t.service && docs.find((d) => d.kind === 'SOP' && d.title.slice(6).trim().toLowerCase() === t.service.trim().toLowerCase()); return sop ? html`<a class="sm" href="#/library/${sop.folder_id || '_'}/${sop.id}" style="display:inline-block;margin-top:14px;color:#87684e;font-weight:500">${ico('doc', 15)} Ver el SOP de este servicio ${ico('right', 13)}</a>` : ''; })()}
+        ${sopLink(t, docs)}
+        ${(() => { const sop = !t.sop && t.service && docs.find((d) => d.kind === 'SOP' && d.title.slice(6).trim().toLowerCase() === t.service.trim().toLowerCase()); return sop ? html`<a class="sm" href="#/library/${sop.folder_id || '_'}/${sop.id}" style="display:inline-block;margin-top:14px;color:#87684e;font-weight:500">${ico('doc', 15)} Ver el SOP de este servicio ${ico('right', 13)}</a>` : ''; })()}
         <b class="sm" style="display:block;margin-top:14px">${t.service ? 'Entregable (checklist)' : 'Checklist'}</b>
         ${(t.checklist || []).map((c, i) => html`<label class="check"><input type="checkbox" data-act="chk" data-i="${i}" ${c.done ? raw('checked') : ''}> ${c.t}</label>`)}
         <div class="row" style="margin-top:6px"><input class="in" id="wchk" placeholder="Nuevo paso…"><button class="btn ghost" data-act="addchk">+</button></div>
@@ -469,8 +473,9 @@ export async function render(el, { me, sub, alive }) {
         back: async () => { const v = await ask('¿Qué hay que cambiar?', [{ k: 'note', l: 'Comentario para quien lo hizo', t: 'textarea', req: true }], 'Devolver'); if (!v) return; const c = collect(); if (await save({ ...c, status: 'En curso', comments: [...(c.comments || []), { who: me.name, at: new Date().toISOString(), text: '↩ ' + v.note }] })) { toast('Devuelto con comentario'); closeDrawer(); paint(); } },
         wdel: async () => { if (!(await confirmAsk(`¿Eliminar «${t.title}»?`))) return; await TK.remove(t.id); tasks = tasks.filter((x) => x.id !== t.id); closeDrawer(); paint(); },
       });
+      bindSop('w');
     };
-    const collect = () => ({ ...t, title: $('#wtitle').value.trim() || t.title, status: $('#wst').value, assignee: $('#was').value, accountable: $('#wacc').value, due: $('#wdue').value, project_id: $('#wproj').value, description: $('#wdesc').value, link: $('#wlink').value.trim() });
+    const collect = () => ({ ...t, ...readTipoSop('w'), title: $('#wtitle').value.trim() || t.title, status: $('#wst').value, assignee: $('#was').value, accountable: $('#wacc').value, due: $('#wdue').value, project_id: $('#wproj').value, description: $('#wdesc').value, link: $('#wlink').value.trim() });
     draw();
   }
 
@@ -492,6 +497,7 @@ export async function render(el, { me, sub, alive }) {
     },
     ctab: (t) => { ctab = t.dataset.c; swap(el, paint); },
     kv: (t) => { kView = t.dataset.v; kanban($('#wbody', el)); },
+    tipof: (t) => { tipoF = t.dataset.tp; tab === 'pipes' ? pipes($('#wbody', el)) : kanban($('#wbody', el)); },
     pipe: (t) => { pipeSel = t.dataset.k; tab = 'pipes'; paint(); },
     person: (t) => { personSel = t.dataset.k; tab = 'equipo'; paint(); },
     task: (t, e) => { if (e.target.closest('input,button')) return; const x = tasks.find((y) => y.id === t.dataset.id); if (x) openTask(x); },

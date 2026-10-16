@@ -1,4 +1,5 @@
 import { newProject as wizProject, newTask as wizTask, VIS_OPTS, visLabel } from '../create.js';
+import { tipoSopFields, bindSop, readTipoSop, sopLink, tipoChips, tipoMatch, tipoBadge } from '../tasktype.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap, ico } from '../core.js';
 
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
@@ -15,11 +16,11 @@ const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDat
 
 export async function render(el, { me, sub, alive }) {
   const PR = col('projects'), TK = col('tasks');
-  let [projects, tasks, team] = await Promise.all([PR.list(), TK.list(), teamList()]);
+  let [projects, tasks, team, docs] = await Promise.all([PR.list(), TK.list(), teamList(), col('docs').list().catch(() => [])]);
   let clients = [];
   try { clients = (await api('repo/clients')).clients.map((c) => ({ ...c, plan: String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '') })); } catch {}
   let tab = ['pipe', 'cal', 'time', 'tasks'].includes(sub[0]) ? sub[0] : 'pipe';
-  let current = projects[0]?.id || null, taskFilter = 'all';
+  let current = projects[0]?.id || null, taskFilter = 'all', tipoF = 'todos';
   let calMonth = today().slice(0, 7), events = null, evErr = null;
   const person = (email) => team.find((t) => t.id === email || t.email === email);
   const pname = (id) => projects.find((p) => p.id === id)?.name || '—';
@@ -141,19 +142,20 @@ export async function render(el, { me, sub, alive }) {
 
   // ---------- Tareas ----------
   function taskTab(b) {
-    const list = tasks.filter((t) => taskFilter === 'all' || (taskFilter === 'mine' ? t.assignee === me.email : t.project_id === taskFilter))
+    const list = tasks.filter((t) => (taskFilter === 'all' || (taskFilter === 'mine' ? t.assignee === me.email : t.project_id === taskFilter)) && tipoMatch(t, tipoF))
       .sort((a, z) => (a.status === 'Hecha') - (z.status === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9')));
     mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">
         <button class="chip ${taskFilter === 'all' ? 'dark' : ''}" data-act="tf" data-f="all" style="padding:8px 14px">Todas</button>
         <button class="chip ${taskFilter === 'mine' ? 'dark' : ''}" data-act="tf" data-f="mine" style="padding:8px 14px">Mías</button>
         ${projects.map((p) => html`<button class="chip ${taskFilter === p.id ? 'dark' : ''}" data-act="tf" data-f="${p.id}" style="padding:8px 14px">${p.name}</button>`)}</div>
+      <div style="margin-bottom:12px">${tipoChips(tipoF, 'tipof', tasks)}</div>
       ${taskTable(list, 'Crea una con «+ Tarea».')}`);
   }
   function taskTable(list, emptyMsg) {
     list = [...list].sort((a, z) => (a.status === 'Hecha') - (z.status === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9')));
     return list.length ? html`<div class="card"><table><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead><tbody>
         ${list.map((t) => { const who = person(t.assignee); const late = t.due && t.due < today() && t.status !== 'Hecha';
-          return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${visLabel(t) ? html` <span class="mut sm">${visLabel(t)}</span>` : ''}${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}${t.dept ? ' · ' + t.dept : ''}</td>
+          return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${tipoBadge(t)}${visLabel(t) ? html` <span class="mut sm">${visLabel(t)}</span>` : ''}${t.sop ? html` <span class="mut sm" title="Tiene SOP">${ico('doc', 13)}</span>` : ''}${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}${t.dept ? ' · ' + t.dept : ''}</td>
             <td>${who ? html`<span class="av" style="background:${who.color || '#735741'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="mut sm">—</span>`}</td>
             <td style="${late ? 'color:#654c38;font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
       </tbody></table></div>` : html`<div class="empty"><b>Sin tareas aquí</b>${emptyMsg}</div>`;
@@ -169,11 +171,13 @@ export async function render(el, { me, sub, alive }) {
           <div class="two"><div><label class="f">Responsable</label><select class="in" id="tassignee"><option value="">—</option>${team.filter((p) => p.active !== false).map((p) => html`<option value="${p.email || p.id}" ${(p.email || p.id) === t.assignee ? raw('selected') : ''}>${p.name}</option>`)}</select></div>
             <div><label class="f">Vence</label><input class="in" id="tdue" type="date" value="${t.due || ''}"></div></div>
           <div><label class="f">Proyecto</label><select class="in" id="tproject"><option value="">—</option>${projects.map((p) => html`<option value="${p.id}" ${p.id === t.project_id ? raw('selected') : ''}>${p.name}</option>`)}</select></div>
+          ${tipoSopFields(t, docs, 't')}
           <div><label class="f">¿Quién la puede ver?</label><select class="in" id="tvis">${VIS_OPTS.map((o) => html`<option value="${o.v}" ${o.v === (t.visibility || 'all') ? raw('selected') : ''}>${o.i} ${o.l} · ${o.d}</option>`)}</select>
             <div id="tviewers" class="row" style="flex-wrap:wrap;gap:4px 14px;margin-top:6px" ${t.visibility === 'people' ? '' : raw('hidden')}>${team.filter((p) => p.active !== false && p.email && p.email !== me.email).map((p) => html`<label class="check" style="padding:2px 0"><input type="checkbox" class="tview" value="${p.email}" ${(t.viewers || []).includes(p.email) ? raw('checked') : ''}> ${p.name}</label>`)}</div></div>
           <div><label class="f">Descripción</label><textarea class="in" id="tdesc">${t.description || ''}</textarea></div>
           <div><label class="f">Link (Drive, doc, carpeta)</label><input class="in" id="tlink" value="${t.link || ''}" placeholder="https://drive.google.com/…"></div>
         </div>
+        ${sopLink(t, docs)}
         ${t.link && /^https?:\/\//.test(t.link) ? html`<a class="artifact" href="${t.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:10px"><span class="fi" style="background:#87684e;color:#fdfaf3">${IC.drive}</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
         <b class="sm" style="display:block;margin-top:18px">Checklist</b>
         ${(t.checklist || []).map((c, i) => html`<label class="check"><input type="checkbox" data-act="chk" data-i="${i}" ${c.done ? raw('checked') : ''}> ${c.t}</label>`)}
@@ -191,8 +195,9 @@ export async function render(el, { me, sub, alive }) {
         tdel: async () => { if (!(await confirmAsk(`¿Eliminar «${t.title}»?`))) return; await TK.remove(t.id); tasks = tasks.filter((x) => x.id !== t.id); closeDrawer(); paint(); },
       });
       $('#tvis').onchange = (e) => { $('#tviewers').hidden = e.target.value !== 'people'; };
+      bindSop('t');
     };
-    const collect = () => ({ ...t, visibility: $('#tvis').value, viewers: $('#tvis').value === 'people' ? $$('.tview:checked').map((x) => x.value) : [], title: $('#ttitle').value.trim() || t.title, status: $('#tstatus').value, assignee: $('#tassignee').value, due: $('#tdue').value, project_id: $('#tproject').value, description: $('#tdesc').value, link: $('#tlink').value.trim() });
+    const collect = () => ({ ...t, ...readTipoSop('t'), visibility: $('#tvis').value, viewers: $('#tvis').value === 'people' ? $$('.tview:checked').map((x) => x.value) : [], title: $('#ttitle').value.trim() || t.title, status: $('#tstatus').value, assignee: $('#tassignee').value, due: $('#tdue').value, project_id: $('#tproject').value, description: $('#tdesc').value, link: $('#tlink').value.trim() });
     draw();
   }
 
@@ -252,6 +257,7 @@ export async function render(el, { me, sub, alive }) {
     day: (t) => newEvent(`${calMonth}-${String(t.dataset.d).padStart(2, '0')}`),
     ev: (t, e) => { e.stopPropagation(); openEvent(events[+t.dataset.i]); },
     dayall: (t) => { const d = +t.dataset.d; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${fdate(`${calMonth}-${String(d).padStart(2, '0')}`)}</h2><div style="margin-top:14px">${(dayMap[d] || []).map(evChip)}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)) }); },
+    tipof: (t) => { tipoF = t.dataset.tp; taskTab($('#obody', el)); },
     tf: (t) => { taskFilter = t.dataset.f; taskTab($('#obody', el)); },
     task: (t) => openTask(tasks.find((x) => x.id === t.dataset.id)),
     newTask: async () => { const r = await wizTask({ team, me, projects, pre: tab === 'pipe' && current ? { project_id: current } : {} }); if (r) { tasks.push(r); paint(); } },

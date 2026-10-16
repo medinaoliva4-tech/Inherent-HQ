@@ -366,7 +366,7 @@ export async function diagrams(root = document) {
 export function diagram(src) { setTimeout(diagrams, 0); return html`<div class="mmd">${src}</div>`; }
 
 // Perfiles de trabajo: se asignan a las personas en Team. Una persona puede tener varios.
-export const WORK_ROLES = [['ceo', 'CEO'], ['coo', 'COO · Operaciones'], ['content', 'Content · Agent operator'], ['video', 'Video editor · Agent operator'], ['finance', 'Finance + Business mapping · clientes'], ['cobros', 'Finanzas de Inherent · cobros'], ['ads', 'Ads management · Meta, Google, LinkedIn']];
+export const WORK_ROLES = [['ceo', 'CEO'], ['coo', 'COO · Operaciones'], ['content', 'Content · Agent operator'], ['video', 'Video editor · Agent operator'], ['finance', 'Finance + Business mapping · clientes'], ['cobros', 'Finanzas de Inherent · cobros'], ['ads', 'Ads management · Meta, Google, LinkedIn'], ['ventas', 'Ventas · CRM y seguimiento']];
 export const roleName = (k) => (WORK_ROLES.find(([x]) => x === k) || [k, k])[1];
 
 // ---------- Subir a Google Drive (directo del navegador a Google, con barra de avance) ----------

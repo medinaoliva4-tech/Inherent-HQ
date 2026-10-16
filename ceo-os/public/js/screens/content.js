@@ -10,7 +10,11 @@ const safeImg = (u) => (/^https:\/\/[^\s'"()]+$|^\/api\/media\/img-[a-f0-9]{24}$
 const TABS = [['analytics', 'Analytics'], ['research', 'Research'], ['calendario', 'Calendario']];
 const C = col('content');
 // Research: de dónde viene cada video.
-const RKIND = [['todos', 'Todas las fuentes'], ['nicho', 'Ganadores del nicho'], ['referente', 'Referentes'], ['competencia', 'Competencia'], ['analisis', 'Con análisis']];
+// Los 5 niveles de la investigación (5 posts por nivel). Los nombres viejos (nicho, referente, agregado) se siguen viendo con su nombre.
+const RLEVELS = [['competencia', 'Competencia local', 'Competencia'], ['referente-similar', 'Referente · mercado parecido', 'Mercado parecido'], ['referente-aspiracional', 'Referente aspiracional', 'Aspiracional'], ['referente-crecimiento', 'Referente de crecimiento', 'Crecimiento'], ['propia', 'Lo propio', 'Lo propio']];
+const RLEGACY = [['nicho', 'Ganadores del nicho'], ['referente', 'Referentes'], ['agregado', 'Agregados']];
+const RPERLEVEL = 5;
+const rkinds = (all) => [['todos', 'Todas las fuentes'], ...RLEVELS.map(([k, l]) => [k, l]), ...RLEGACY.filter(([k]) => all.some((x) => x.tipo === k)), ['analisis', 'Con análisis']];
 // Como en Edits: arriba se elige qué tipo de contenido se ve.
 const RFMT = [['todo', 'Todo', 'grid'], ['reel', 'Reels', 'video'], ['carrusel', 'Carruseles', 'layers'], ['estatico', 'Estáticos', 'image'], ['plantilla', 'Plantillas', 'copy']];
 const fmtOf = (it) => it.format || (it.video === false ? 'estatico' : 'reel');
@@ -26,11 +30,11 @@ const rtitle = (it) => it.title || String(it.text || '').split('\n')[0].slice(0,
 const isoWeek = (d = new Date()) => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return `${t.getUTCFullYear()}-W${String(Math.ceil(((t - y) / 864e5 + 1) / 7)).padStart(2, '0')}`; };
 // El mismo id que usa el conector para un post de Research (así no se duplica).
 async function rsid(profile, url) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${profile}|${String(url).replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase()}`)); return 'rs-' + [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('').slice(0, 20); }
-const RKL = { nicho: 'Ganador del nicho', referente: 'Referente', competencia: 'Competencia', propia: 'Tuyo', agregado: 'Agregado' };
+const RKL = { nicho: 'Ganador del nicho', referente: 'Referente', competencia: 'Competencia', 'referente-similar': 'Referente similar', 'referente-aspiracional': 'Aspiracional', 'referente-crecimiento': 'Crecimiento', propia: 'Lo propio', agregado: 'Agregado' };
 const rkey = (u) => String(u || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
 const embedOf = (u) => { let m; if ((m = String(u).match(/instagram\.com\/(?:p|reel|reels|tv)\/([\w-]+)/))) return `https://www.instagram.com/p/${m[1]}/embed`; if ((m = String(u).match(/tiktok\.com\/@[^/]+\/video\/(\d+)/))) return `https://www.tiktok.com/embed/v2/${m[1]}`; return null; };
 const SHOOT = ['Por grabar', 'Grabado', 'Cancelado'];
-const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho', propia: 'Tuya' };
+const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho', propia: 'Tuya', 'referente-similar': 'Referente similar', 'referente-aspiracional': 'Aspiracional', 'referente-crecimiento': 'Crecimiento' };
 
 export function videoCard(it) {
   const t = safeImg(it.thumb);
@@ -41,9 +45,12 @@ export function videoCard(it) {
     <div class="cap mut">${it.text}</div></a>`;
 }
 
-export async function render(el, { sub, alive }) {
+export async function render(el, { me, sub, alive }) {
   let slug = sub[1] || (() => { try { return localStorage.getItem('content.profile'); } catch { return null; } })() || 'inherent';
-  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'analytics';
+  // Vista por rol: en «resumen» solo se ve el rendimiento (Analytics), sin Research ni Calendario.
+  const resumen = me?.views?.content === 'resumen';
+  const tabs = resumen ? TABS.filter(([k]) => k === 'analytics') : TABS;
+  let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : 'analytics';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
   let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
@@ -65,7 +72,7 @@ export async function render(el, { sub, alive }) {
       <div class="hello"><h1>Content</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
       <div class="row" style="margin-bottom:16px;gap:8px;flex-wrap:wrap">${data.profiles.map((x) => html`<button class="chip ${x.slug === slug ? 'dark' : ''}" data-act="prof" data-s="${x.slug}" style="padding:9px 16px;font-size:13px">${x.name}</button>`)}</div>
       <div class="row" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
-        <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
         ${tab === 'semana' ? html`<button class="btn" data-act="scrape">Scrapear ahora</button>` : ''}
         ${tab === 'refs' ? html`<button class="btn" data-act="refScrape">Buscar similares</button>` : ''}
@@ -286,13 +293,14 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       .sort((a, z) => (z.x || 0) - (a.x || 0) || (z.views || 0) - (a.views || 0));
   }
   // La fuente: cuántos subió el conector, cuándo y quién. Desde aquí se copia la instrucción para Claude o se vacía.
-  const mcpPrompt = () => `Sube a Research del OS de Inherent lo que encontraste, con el conector de Inherent. Primero llama perfiles() para confirmar el perfil: es «${slug}». Luego guardar_research con perfil «${slug}» y una lista en «posts» (hasta 40 por llamada). Cada post: url, formato (reel, carrusel o estatico), creador, fecha, titulo (nombre corto del formato), metricas {vistas, likes, comentarios, duracion_s, multiplicador (vs su mediana), engagement_pct}, miniatura, slides si es carrusel, caption, por_que_funciono {hook, retencion, estructura, por_que, adaptacion}, dificultad (1 a 5), tiempo_grabacion, receta y clips si los tienes, y tags: el pilar, el tipo de formato, «resonancia alta|media|baja», «sin hablar|voz en off|hablando a cámara» y lo que sirva para filtrar. En adaptacion, el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) se muestra en Análisis. Antes de subir, revisa con listar_research para no duplicar. No inventes métricas y solo urls https.`;
+  const mcpPrompt = () => `Sube a Research del OS de Inherent lo que encontraste, con el conector de Inherent. Primero llama perfiles() para confirmar el perfil: es «${slug}». Luego guardar_research con perfil «${slug}» y una lista en «posts» (hasta 40 por llamada). Investiga en 5 niveles y pon el nivel en «tipo» de cada post: competencia (competencia local), referente-similar (referentes en mercados parecidos al de la marca), referente-aspiracional, referente-crecimiento (los que más crecen o más engagement tienen) y propia (lo de la marca). 5 posts por nivel; los países salen del mercado de la marca, no de una lista fija; se refresca cada mes. Cada post: url, formato (reel, carrusel o estatico), tipo, creador, fecha, titulo (nombre corto del formato), metricas {vistas, likes, comentarios, duracion_s, multiplicador (vs su mediana), engagement_pct}, miniatura, slides si es carrusel, caption, por_que_funciono {hook, retencion, estructura, por_que, adaptacion}, dificultad (1 a 5), tiempo_grabacion, receta y clips si los tienes, y tags: el pilar, el tipo de formato, «resonancia alta|media|baja», «sin hablar|voz en off|hablando a cámara» y lo que sirva para filtrar. En adaptacion, el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) se muestra en Análisis. Antes de subir, revisa con listar_research para no duplicar. No inventes métricas y solo urls https.`;
   function sourceBox(all) {
     const ts = (x) => String(x._meta?.updated_at || x._meta?.created_at || ''), last = all.map(ts).filter((x) => !isNaN(Date.parse(x))).sort().pop();
     const who = all.find((x) => ts(x) === last)?._meta?.updated_by || all.find((x) => ts(x) === last)?._meta?.created_by;
     return html`<div class="rsource"><span class="fi">${ico('bolt', 16)}</span><div style="flex:1;min-width:200px"><b style="font-weight:500">Fuente: conector de Claude</b>
         <div class="mut sm">${all.length ? `${all.length} post${all.length === 1 ? '' : 's'} subido${all.length === 1 ? '' : 's'} con guardar_research${last ? ' · ' : ''}${last ? `último ${fdate(new Date(last).toISOString().slice(0, 10))}` : ''}${who ? ` por ${who}` : ''}` : 'Todavía no se ha subido nada. Claude lo sube con guardar_research.'}</div></div>
-      <button class="btn ghost xs" data-act="rprompt">Copiar instrucción para Claude</button><button class="btn ghost xs" data-act="rreload">Actualizar</button>${all.length ? html`<button class="btn ghost xs" data-act="rclear">Vaciar</button>` : ''}</div>`;
+      <button class="btn ghost xs" data-act="rprompt">Copiar instrucción para Claude</button><button class="btn ghost xs" data-act="rreload">Actualizar</button>${all.length ? html`<button class="btn ghost xs" data-act="rclear">Vaciar</button>` : ''}
+      <div class="rlevels sm mut" style="flex-basis:100%;display:flex;gap:6px 14px;flex-wrap:wrap">${RLEVELS.map(([k, l, sh]) => { const n = all.filter((x) => x.tipo === k).length; return html`<span title="${l}: ${n} de ${RPERLEVEL}" style="${n >= RPERLEVEL ? 'color:var(--ink)' : ''}">${sh} <b style="font-weight:500">${n}/${RPERLEVEL}</b></span>`; })}</div></div>`;
   }
   const rmatch = (x, k) => k === 'todos' || (k === 'analisis' ? Boolean(x.why) : x.tipo === k);
   const fmatch = (x, k) => k === 'todo' || (k === 'plantilla' ? Boolean(x.plantilla) : fmtOf(x) === k);
@@ -320,7 +328,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       <div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:10px"><input class="in" id="rq" placeholder="Buscar: cuenta, tema, hook, estilo…" value="${rq}" style="flex:1;min-width:220px"><select class="in" id="rsort" style="width:auto">${SORTS.map(([k, l]) => html`<option value="${k}" ${rsort === k ? raw('selected') : ''}>${l}</option>`)}</select></div>
       <details class="rfilt" ${rfOpen ? raw('open') : ''}><summary>${ico('bars', 15)} Filtrar${(n => n ? html` <b>${n}</b>` : '')([rfilter !== 'todos', ...Object.values(rsel)].filter(Boolean).length)}</summary>
       <div class="rfilters">
-        <div class="rfrow"><span class="lbl">Fuente</span><div class="rfopts">${RKIND.map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}">${l}</button>`)}</div></div>
+        <div class="rfrow"><span class="lbl">Fuente</span><div class="rfopts">${rkinds(all).map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}">${l}</button>`)}</div></div>
         ${pillars.length ? frow('Pilar', 'pilar', pillars.map((x) => [x, x])) : ''}
         ${present.res.length ? frow('Resonancia', 'res', present.res.map((x) => [x, x])) : ''}
         ${present.talk.length ? frow('¿Hablas?', 'talk', present.talk) : ''}

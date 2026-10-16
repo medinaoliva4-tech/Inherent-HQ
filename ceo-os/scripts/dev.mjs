@@ -30,7 +30,8 @@ http.createServer(async (req, res) => {
     try { req.body = raw ? JSON.parse(raw) : {}; } catch { req.body = String(req.headers['content-type'] || '').includes('urlencoded') ? Object.fromEntries(new URLSearchParams(raw)) : {}; }
     return api(req, res);
   }
-  let p = path.join(root, 'public', u.pathname === '/' ? 'index.html' : u.pathname);
+  // /diagnostico es la página pública del quiz (en Vercel lo hace el rewrite de vercel.json).
+  let p = path.join(root, 'public', u.pathname === '/' ? 'index.html' : u.pathname === '/diagnostico' ? 'diagnostico.html' : u.pathname);
   if (!p.startsWith(path.join(root, 'public')) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) p = path.join(root, 'public', 'index.html');
   res.setHeader('Content-Type', MIME[path.extname(p)] || 'application/octet-stream'); res.end(fs.readFileSync(p));
 }).listen(3000, () => console.log('CEO OS dev → http://localhost:3000'));

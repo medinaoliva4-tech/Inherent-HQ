@@ -33,9 +33,34 @@ material del cliente. Todos tienen kanban personal y de la empresa.
 |---|---|
 | `ceo` | Todo. Los `ADMIN_EMAILS` siempre son CEO |
 | `coo` | Todo menos Finance (y nunca costos ni márgenes) |
-| `team` | Home, Operations, Content, Library, Team |
+| `team` | Home, Operations, Content, Library, Team. Con el perfil de trabajo **Ventas**, también Sales (el CRM) |
 
 El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez queda como `team`.
+
+**Vistas por rol:** en **Team → Vistas por rol** el CEO elige, por perfil de trabajo, qué secciones ve y qué tan a fondo
+(*Oculto · Resumen · Completo*; Resumen existe en Content: solo rendimiento). Se guarda en `settings` (id `role_views`).
+Sin configurar, todo se ve completo. Hoy se aplica en la interfaz (barra y Content), no en el servidor.
+
+**Tareas:** cada una tiene **tipo** (Delivery, Comercial, Interna, Personal; Personal solo la ve quien la creó) y **SOP**
+(un documento de la Library o un link). **Research** tiene 5 niveles: competencia, referente-similar, referente-aspiracional,
+referente-crecimiento y propia.
+
+## Leads: el CRM, las fuentes y el quiz
+
+- **Etapas:** Prospecto → Nuevo → Contactado → Reunión → Propuesta → Ganado / Perdido (con motivo: precio, tiempo,
+  no era el momento, se fue con otro, otro). Los **Prospectos** (lo scrapeado o importado, saliente) viven en su
+  bandeja aparte y pasan al pipeline cuando responden.
+- **Candados, en el servidor:** un lead abierto no se guarda sin siguiente paso y fecha · el historial solo se
+  agrega · el responsable es un rol (por defecto `ventas`) · nadie se duplica por WhatsApp, correo o cuenta de IG.
+- **Fuentes (Sales → Fuentes, las crea el CEO):** una puerta por fuente con su clave. Tipo (formulario, quiz,
+  mensajes, anuncios, scraping, importar, manual), mapeo de campos, etapa de entrada, rol y dirección. Cada una
+  muestra su link de entrada, se pausa, y guarda el registro de lo que llegó y lo que falló (últimos 50).
+  La puerta es `POST /api/intake/<clave>` (JSON o formulario, sin sesión, CORS abierto, máximo 20 KB).
+- **Quiz público `/diagnostico`:** siete preguntas, contacto, puntaje y plan sugerido; manda todo a la fuente
+  tipo quiz (`?k=<clave>` o, sin clave, la fuente marcada como principal). Para servirlo desde la web
+  (`inherentglobal.com/diagnostico`) se agrega un rewrite en el proyecto de la web hacia
+  `https://<app>/diagnostico` y se pone la URL del OS en el `<meta name="os-api">` de `public/diagnostico.html`.
+- **Por el conector:** `leads`, `crear_lead`, `actualizar_lead`, `registrar_actividad` e `importar_prospectos`.
 
 ## Variables de entorno (Vercel → Production)
 

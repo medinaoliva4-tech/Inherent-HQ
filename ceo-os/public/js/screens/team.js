@@ -1,10 +1,11 @@
-import { html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, cropImage, WORK_ROLES, roleName, $, teamDoc, ico } from '../core.js';
+import { SECTIONS, SUMMARY, LEVELS } from '../roleviews.js';
+import { events, html, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, cropImage, WORK_ROLES, roleName, $, teamDoc, ico } from '../core.js';
 import { bdayText } from './me.js';
 
 const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
 const ROLE = { ceo: 'CEO · acceso total', coo: 'COO · todo menos Finance', team: 'Equipo · Operations, Content, Library' };
-const T = col('team');
+const T = col('team'), RV = col('settings');
 
 export async function render(el, { me }) {
   let people = (await teamList()).filter((p) => p.active !== false || me.role === 'ceo');
@@ -67,14 +68,37 @@ export async function render(el, { me }) {
         ${p.active === false ? html`<span class="chip red">Desactivado</span>` : ''}
       </div></div>`)}</div>`;
   }
+  // ---------- Vistas por rol: qué sección ve cada perfil de trabajo, y qué tan a fondo ----------
+  let rv = null, rvRole = 'content', rvLoaded = false;
+  const rvCfg = () => (rv?.views || {})[rvRole];
+  const rvLevel = (sec) => rvCfg()?.[sec] || 'completo';
+  const rvShort = (k) => roleName(k).split(' · ')[0];
+  function vistas() {
+    if (!rvLoaded) { RV.get('role_views').then((d) => { rv = d; }).catch(() => { rv = null; }).then(() => { rvLoaded = true; if (view === 'vistas') paint(); }); return html`<p class="loading">Cargando…</p>`; }
+    const holders = people.filter((p) => (p.roles || []).includes(rvRole) && p.active !== false);
+    return html`<div class="card" style="padding:22px">
+      <div class="mut sm" style="max-width:640px">Elige un perfil de trabajo y decide qué secciones ve y qué tan a fondo. Se guarda al tocar. Un perfil sin configurar ve todo, como hoy. Si una persona tiene varios perfiles, ve lo máximo que le da cualquiera.</div>
+      <div class="row" style="gap:8px;flex-wrap:wrap;margin:16px 0">${WORK_ROLES.map(([k]) => html`<button class="chip ${rvRole === k ? 'dark' : ''}" data-act="rvrole" data-r="${k}" style="padding:8px 14px">${rvShort(k)}${(rv?.views || {})[k] ? ' ●' : ''}</button>`)}</div>
+      <div class="row sm" style="margin-bottom:6px"><b style="font-weight:500">${roleName(rvRole)}</b><span class="mut">${holders.length ? ' · lo tienen: ' + holders.map((x) => x.name.split(' ')[0]).join(', ') : ' · nadie lo tiene todavía'}</span><div class="sp"></div>${rvCfg() ? html`<button class="btn ghost xs" data-act="rvreset">Restablecer (ve todo)</button>` : html`<span class="mut sm">Sin configurar · ve todo</span>`}</div>
+      ${SECTIONS.map(([k, l]) => html`<div class="row" style="gap:12px;flex-wrap:wrap;padding:11px 0;border-top:1px solid var(--line)"><div style="flex:1;min-width:150px"><b style="font-weight:500">${l}</b>${SUMMARY[k] ? html`<div class="mut sm">Resumen: ${SUMMARY[k]}</div>` : ''}</div>
+        <div class="tabs mini" style="margin:0">${LEVELS.filter(([v]) => v !== 'resumen' || SUMMARY[k]).map(([v, lb]) => html`<button class="${rvLevel(k) === v ? 'on' : ''}" data-act="rvset" data-s="${k}" data-l="${v}" ${k === 'team' && v === 'oculto' && rvRole === 'ceo' ? 'disabled' : ''}>${lb}</button>`)}</div></div>`)}
+    </div>`;
+  }
+  async function rvSave(views) {
+    try {
+      const doc = { ...(rv || {}), id: 'role_views', views };
+      const r = rv?.v != null ? await RV.save(doc) : await RV.create(doc);
+      rv = r; paint(); events.dispatchEvent(new CustomEvent('roleviews', { detail: r })); toast('Guardado');
+    } catch (e) { toast(e.message, true); if (/cambió|Recarga/i.test(e.message)) { rvLoaded = false; rv = null; paint(); } }
+  }
   function paint() {
     mount(el, html`<div class="row" style="align-items:flex-end;margin-bottom:24px">
       <div class="hello"><h1>Team</h1><p style="margin:0">Quién hace qué en <em>Inherent</em>.</p></div><div class="sp"></div>
-      <div class="tabs" style="margin:0"><button class="${view === 'org' ? 'on' : ''}" data-act="view" data-v="org">Organigrama</button><button class="${view === 'people' ? 'on' : ''}" data-act="view" data-v="people">Perfiles</button></div>
+      <div class="tabs" style="margin:0"><button class="${view === 'org' ? 'on' : ''}" data-act="view" data-v="org">Organigrama</button><button class="${view === 'people' ? 'on' : ''}" data-act="view" data-v="people">Perfiles</button>${isCeo ? html`<button class="${view === 'vistas' ? 'on' : ''}" data-act="view" data-v="vistas">Vistas por rol</button>` : ''}</div>
       ${isCeo ? html`<button class="btn" data-act="add" style="margin-left:10px">+ Agregar</button>` : ''}
     </div>
     ${missing.length ? html`<div class="warnbox" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px"><span style="flex:1">${missing.length === 1 ? '1 persona' : missing.length + ' personas'} del manual y la nómina no ${missing.length === 1 ? 'está' : 'están'} en el organigrama: <b>${missing.map((x) => x.name + ' (' + x.roles.join(', ') + ')').join(' · ')}</b></span><button class="btn" data-act="import">Agregarlas</button></div>` : ''}
-    ${view === 'org' ? html`<div class="card" style="padding:34px 22px">${org()}</div>` : cards()}`);
+    ${view === 'org' ? html`<div class="card" style="padding:34px 22px">${org()}</div>` : view === 'vistas' && isCeo ? vistas() : cards()}`);
   }
 
   async function edit(p) {
@@ -134,7 +158,11 @@ export async function render(el, { me }) {
     const pi = $('#photoIn'); if (pi) pi.onchange = async () => { if (pi.files[0]) try { const ph = await cropImage(pi.files[0]); pi.value = ''; if (ph) await setPhoto(p, ph); } catch (err) { toast(err.message, true); } };
   }
 
-  acts(el, { view: (b) => { view = b.dataset.v; paint(); }, add: () => edit(null), open: (b) => open(byId(b.dataset.id)), import: importMissing });
+  acts(el, {
+    rvrole: (b) => { rvRole = b.dataset.r; paint(); },
+    rvset: (b) => { const base = Object.fromEntries(SECTIONS.map(([k]) => [k, rvLevel(k)])); rvSave({ ...(rv?.views || {}), [rvRole]: { ...base, [b.dataset.s]: b.dataset.l } }); },
+    rvreset: () => { const v = { ...(rv?.views || {}) }; delete v[rvRole]; rvSave(v); },
+    view: (b) => { view = b.dataset.v; paint(); }, add: () => edit(null), open: (b) => open(byId(b.dataset.id)), import: importMissing });
   paint();
   findMissing().then(() => missing.length && paint());
 }

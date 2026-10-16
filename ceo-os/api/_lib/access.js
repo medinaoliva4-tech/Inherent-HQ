@@ -12,11 +12,12 @@ const ROLE_AREAS = {
 };
 ROLE_AREAS.ceo = [...AREAS, 'portal']; ROLE_AREAS.coo = [...ROLE_AREAS.coo, 'portal']; // para ver el portal como lo ve el cliente
 // Content es para decidir: solo el CEO y quien tiene el perfil de trabajo «content».
-export const areasFor = (role, roles = []) => (ROLE_AREAS[role] || []).filter((a) => a !== 'content' || role === 'ceo' || roles.includes('content'));
+// Sales entra también con el perfil de trabajo «ventas» (el CRM lo opera un rol, no una persona).
+export const areasFor = (role, roles = []) => [...(ROLE_AREAS[role] || []), ...(role === 'team' && roles.includes('ventas') ? ['sales'] : [])].filter((a) => a !== 'content' || role === 'ceo' || roles.includes('content'));
 
 // Cada colección pertenece a un área. Algunas solo las escribe el CEO.
 export const COLLS = {
-  leads: 'sales', quotes: 'sales', services: 'sales', mentors: 'sales',
+  leads: 'sales', lead_sources: 'sales', quotes: 'sales', services: 'sales', mentors: 'sales',
   rates: 'finanzas', packages: 'finanzas', bundles: 'finanzas', finance: 'finanzas', payroll: 'finanzas',
   projects: 'operations', tasks: 'operations', accounts: 'clients',
   content: 'content', sources: 'content', analytics: 'content',
@@ -27,7 +28,7 @@ export const COLLS = {
 // (sus tareas, los proyectos y las cuentas de sus clientes). Las tareas también las escribe: ahí entrega.
 export const READ_ALSO = { tasks: ['work'], projects: ['work'], accounts: ['work'] };
 export const WRITE_ALSO = { tasks: ['work'] };
-const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors']);
+const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors', 'lead_sources']);
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
 
 export const domain = () => (process.env.ALLOWED_DOMAIN || 'inherentglobal.com').toLowerCase();

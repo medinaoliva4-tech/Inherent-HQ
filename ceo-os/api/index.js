@@ -11,6 +11,7 @@ import * as oauth from './_lib/oauth.js';
 import * as flow from './_lib/flow.js';
 import * as ads from './_lib/ads.js';
 import * as refs from './_lib/refs.js';
+import * as leads from './_lib/leads.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
@@ -91,12 +92,23 @@ async function collGuard(req, res, write) {
   return u;
 }
 // Tareas: «solo yo» la ven quien la creó y a quien se asignó; «ciertas personas» suma a las elegidas.
+// Una tarea «Personal» la ve solo quien la creó (aunque su visibilidad diga «todos»).
 const seesTask = (u, t) => {
+  if (t?.tipo === 'Personal') return String(t._meta?.created_by || t.assignee || '').toLowerCase() === u.email;
   const vis = t?.visibility || 'all'; if (vis === 'all') return true;
   const mine = [t._meta?.created_by, t.assignee, ...(vis === 'people' ? [t.accountable, ...(Array.isArray(t.viewers) ? t.viewers : [])] : [])];
   return mine.filter(Boolean).map((x) => String(x).toLowerCase()).includes(u.email);
 };
 const visible = (u, coll, d) => coll !== 'tasks' || seesTask(u, d);
+// El tipo de una tarea es uno de cuatro; el SOP es el id de un doc de la Library o un link https.
+const TASK_TIPOS = ['Delivery', 'Comercial', 'Interna', 'Personal'];
+const cleanTask = (b) => {
+  const o = { ...b };
+  if (!TASK_TIPOS.includes(o.tipo)) delete o.tipo;
+  const sop = String(o.sop || '').trim();
+  if (!sop || (!/^https?:\/\/\S+$/i.test(sop) && !/^[\w.@+-]{1,120}$/.test(sop))) delete o.sop; else o.sop = sop.slice(0, 500);
+  return o;
+};
 on('GET', 'db/:coll', async (req, res) => { const u = await collGuard(req, res); if (u) res.json({ items: (await db.list(req.params.coll)).filter((d) => visible(u, req.params.coll, d)) }); });
 on('GET', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res); if (!u) return;
@@ -110,6 +122,14 @@ on('POST', 'db/:coll', async (req, res) => {
   let b = body(req);
   try { b = markExternal(req.params.coll, b, b.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
+  if (req.params.coll === 'leads') {
+    // El CRM: candado de siguiente paso, historial que solo se agrega y nada duplicado por WhatsApp, correo o IG.
+    b = leads.normalize(b); b.activity = leads.mergeActivity([], b.activity);
+    const bad = leads.check(b); if (bad) return res.status(400).json({ error: bad });
+    const dup = leads.findDup(await db.list('leads'), b); if (dup) return res.status(409).json({ error: `Ya existe un lead con ese WhatsApp, correo o cuenta: ${dup.name}`, id: dup.id });
+  }
+  if (req.params.coll === 'lead_sources') b = leads.cleanSource(b);
+  if (req.params.coll === 'tasks') b = cleanTask(b);
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
   try { res.json(await db.create(req.params.coll, b, u.email, id)); }
   catch (e) { if (/duplicate|unique/i.test(e.message)) return res.status(409).json({ error: 'Ya existe' }); throw e; }
@@ -119,7 +139,14 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   let b = body(req);
   try { b = markExternal(req.params.coll, b, req.params.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
+  if (req.params.coll === 'leads') {
+    const cur = await db.get('leads', req.params.id); if (!cur) return res.status(404).json({ error: 'No existe' });
+    b = leads.normalize(b); b.activity = leads.mergeActivity(cur.activity, b.activity);
+    const bad = leads.check(b); if (bad) return res.status(400).json({ error: bad });
+  }
+  if (req.params.coll === 'lead_sources') { const cur = await db.get('lead_sources', req.params.id); b = { ...leads.cleanSource({ ...cur, ...b, key: cur?.key || b.key }), log: cur?.log || [], n: cur?.n || null, v: b.v }; }
   if (req.params.coll === 'tasks') {
+    b = cleanTask(b);
     const cur = await db.get('tasks', req.params.id);
     if (!visible(u, 'tasks', cur)) return res.status(404).json({ error: 'No existe' });
     // Una tarea con dependencias sin terminar no avanza (el CEO y el COO pueden forzarlo).
@@ -585,7 +612,7 @@ on('GET', 'portal', async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
   const [acc, projects, tasks, posts, f, p] = await Promise.all([db.get('accounts', 'acc-' + slug), db.list('projects'), db.list('tasks'), db.list('content'), readFile(`clients/${slug}/00-onboarding/plan-contratado.md`), content.profiles().then((l) => l.find((x) => x.slug === slug))]);
   const ps = projects.filter((x) => x.client_slug === slug);
-  const pt = (pid) => tasks.filter((t) => t.project_id === pid && (t.visibility || 'all') === 'all');
+  const pt = (pid) => tasks.filter((t) => t.project_id === pid && (t.visibility || 'all') === 'all' && t.tipo !== 'Personal');
   const pct = (l) => (l.length ? Math.round((l.filter((t) => t.status === 'Hecha').length / l.length) * 100) : null);
   const out = {
     slug, name: acc?.name || slug.toUpperCase(), plan: f ? String(parsePlanContratado(f.content, 'team').plan || '').replace(/^[⬜🔷🟨]️?\s*/u, '') : '',
@@ -727,6 +754,34 @@ on('POST', 'mcp/:token', async (req, res) => {
   r.json ? res.status(r.status).json(r.json) : res.status(r.status).end();
 });
 on('GET', 'mcp/:token', async (req, res) => res.status(405).json({ error: 'Este link es para Claude o Codex (MCP por HTTP)' }));
+
+// ---------- Entrada pública de leads: una sola puerta, una clave por fuente ----------
+// Sin sesión: la clave de la fuente (Sales → Fuentes) es lo que autoriza. CORS abierto para que
+// formularios, el quiz, Zapier o la web puedan mandar. Cuerpo chico, sin duplicados, y todo queda en el registro de la fuente.
+const keyOk = (k) => /^[\w-]{16,80}$/.test(String(k || ''));
+on('OPTIONS', 'intake/:key', async (req, res) => { cors(res); res.status(204).end(); });
+on('OPTIONS', 'intake/quiz', async (req, res) => { cors(res); res.status(204).end(); });
+// La clave de la fuente del quiz público (/diagnostico): la principal de tipo quiz, o la primera activa.
+on('GET', 'intake/quiz', async (req, res) => { cors(res); const sq = await leads.quizSource(); res.json({ key: sq?.key || null }); });
+on('GET', 'intake/:key', async (req, res) => { cors(res); res.status(405).json({ error: 'Esta puerta recibe POST con los datos del lead (JSON o formulario).' }); });
+on('POST', 'intake/:key', async (req, res) => {
+  cors(res);
+  if (!keyOk(req.params.key)) return res.status(404).json({ error: 'Fuente desconocida' });
+  const raw = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || {});
+  if (raw.length > 20_000) return res.status(413).json({ error: 'Demasiado grande (máximo 20 KB)' });
+  const src = await leads.sourceByKey(req.params.key);
+  if (!src) return res.status(404).json({ error: 'Fuente desconocida o pausada' });
+  const b = formBody(req);
+  try {
+    const r = await leads.intake(src, b);
+    await leads.logSource(src, { ok: true, name: r.lead.name, lead_id: r.lead.id, duplicate: r.duplicate });
+    res.json({ ok: true, id: r.lead.id, duplicate: r.duplicate });
+  } catch (e) {
+    if (!e.status) console.error('intake', e);
+    await leads.logSource(src, { ok: false, error: e.status ? e.message : 'Error del servidor', raw: JSON.stringify(b).slice(0, 300) }).catch(() => {});
+    res.status(e.status || 500).json({ error: e.status ? e.message : 'Error del servidor' });
+  }
+});
 
 export default async function handler(req, res) {
   try {

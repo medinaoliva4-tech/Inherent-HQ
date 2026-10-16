@@ -12,7 +12,7 @@ const STEPS = [
   ['check', 'Pago subido', 'Por confirmar', '#a68d77'],
   ['run', 'En marcha', 'Proyectos', '#755943'],
 ];
-const OPEN_LEAD = ['Nuevo', 'Contactado', 'Propuesta'];
+const OPEN_LEAD = ['Nuevo', 'Contactado', 'Reunión', 'Propuesta'];
 const nextWorkday = () => { const d = new Date(); do d.setDate(d.getDate() + 1); while (!(d.getDay() % 6)); return d.toISOString().slice(0, 10); };
 
 export async function render(el, { me }) {
