@@ -47,7 +47,7 @@ export async function render(el, { sub, alive }) {
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
   let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
-  let rview = 'biblioteca', rq = '', rsort = 'res', rsel = { pilar: '', res: '', talk: '', style: '', tag: '' };
+  let rfOpen = false, rview = 'biblioteca', rq = '', rsort = 'res', rsel = { pilar: '', res: '', talk: '', style: '', tag: '' };
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
@@ -314,11 +314,11 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const RL = ['alta', 'media', 'baja'], present = { res: RL.filter((r) => all.some((x) => resOf(x) === r)), talk: TALK.filter(([v]) => all.some((x) => x.talk === v)), style: distinct(all, (x) => x.style), tag: distinct(all, (x) => x.tags).slice(0, 24) };
     const frow = (lbl, k, opts) => html`<div class="rfrow"><span class="lbl">${lbl}</span><div class="rfopts">${opts.map(([v, l]) => html`<button class="chip ${rsel[k] === v ? 'dark' : ''}" data-act="rsel" data-k="${k}" data-v="${v}">${l}</button>`)}</div></div>`;
     mount(b, html`<div class="rtiles">${RFMT.map(([k, l, i]) => html`<button class="rtile ${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}"><i>${ico(i, 22)}</i><span>${l}</span></button>`)}</div>
-      <div class="rkstats">${[[all.length, 'Formatos'], [all.filter((x) => resOf(x) === 'alta').length, 'Resonancia alta'], [all.filter((x) => x.talk === 'no').length, 'Sin hablar'], [all.filter((x) => x.tested).length, 'Probados']].map(([n, l]) => html`<div><b>${n}</b><span>${l}</span></div>`)}</div>
       <div class="row" style="gap:10px;flex-wrap:wrap;margin:16px 0 12px"><div class="tabs" style="margin:0">${[['biblioteca', 'Biblioteca'], ['semana', `Mi semana · ${all.filter((x) => x.week === W).length}`]].map(([k, l]) => html`<button class="${rview === k ? 'on' : ''}" data-act="rview" data-v="${k}">${l}</button>`)}</div>
 </div>
       ${sourceBox(all)}
       <div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:10px"><input class="in" id="rq" placeholder="Buscar: cuenta, tema, hook, estilo…" value="${rq}" style="flex:1;min-width:220px"><select class="in" id="rsort" style="width:auto">${SORTS.map(([k, l]) => html`<option value="${k}" ${rsort === k ? raw('selected') : ''}>${l}</option>`)}</select></div>
+      <details class="rfilt" ${rfOpen ? raw('open') : ''}><summary>${ico('bars', 15)} Filtrar${(n => n ? html` <b>${n}</b>` : '')([rfilter !== 'todos', ...Object.values(rsel)].filter(Boolean).length)}</summary>
       <div class="rfilters">
         <div class="rfrow"><span class="lbl">Fuente</span><div class="rfopts">${RKIND.map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}">${l}</button>`)}</div></div>
         ${pillars.length ? frow('Pilar', 'pilar', pillars.map((x) => [x, x])) : ''}
@@ -327,9 +327,11 @@ Contesta SOLO con este JSON, sin texto antes ni después:
         ${present.style.length ? frow('Tipo', 'style', present.style.map((x) => [x, x])) : ''}
         ${present.tag.length ? frow('Etiquetas', 'tag', present.tag.map((x) => [x, x])) : ''}
       </div>
+      </details>
       <div class="mut sm" style="margin:10px 0 12px;font-family:ui-monospace,Menlo,monospace">${list.length} de ${base.length} formatos${rview === 'semana' ? ` · semana ${W.slice(-2)}` : ''}</div>
       ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : all.length ? 'Nada con esos filtros' : 'Research está vacío'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : all.length ? 'Quita algún filtro.' : 'Se llena cuando Claude sube posts con el conector. Copia la instrucción de arriba y pégasela.'}</div>`}`);
     const qi = $('#rq', b); qi.oninput = () => { rq = qi.value; const pos = qi.selectionStart; research(b); const n = $('#rq', b); n.focus(); n.setSelectionRange(pos, pos); };
+    const fd = $('.rfilt', b); if (fd) fd.ontoggle = () => { rfOpen = fd.open; };
     $('#rsort', b).onchange = (e) => { rsort = e.target.value; research(b); };
   }
   // Guarda etiquetas de un post de Research: si solo venía del scrape, se crea con el mismo id que usa el conector.
@@ -418,9 +420,9 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
           </div></details>
       </div>`);
     document.body.appendChild(v);
-    // El video se ve aquí mismo: el servidor saca el link directo del reel (caduca, por eso se pide al abrir). Si no se puede, queda el reproductor de Instagram.
+    // El video se ve aquí mismo: el servidor saca el link directo del reel (caduca, por eso se pide al abrir). Si Instagram no lo deja, queda la miniatura con el link al original.
     if (f === 'reel' && em) {
-      const box = $('#rvmedia', v), fallback = () => { const p = box.querySelector('.rv-poster'); if (p) p.outerHTML = `<iframe src="${em}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; };
+      const box = $('#rvmedia', v), fallback = () => { const l = box.querySelector('.rv-load'); if (l) l.outerHTML = `<a class="rv-load rv-ext" href="${it.url}" target="_blank" rel="noopener noreferrer">Instagram no deja verlo aquí · Abrir ↗</a>`; };
       fetch('/api/content/video?' + new URLSearchParams({ url: it.url })).then((r) => (r.ok ? r.json() : {})).then(({ src }) => {
         const p = box.querySelector('.rv-poster'); if (!p) return; if (!src) return fallback();
         const vd = document.createElement('video'); Object.assign(vd, { src, controls: true, autoplay: true, muted: true, loop: true, playsInline: true }); if (t) vd.poster = t;
