@@ -218,6 +218,14 @@ on('PUT', 'content/refs/breakdown', async (req, res) => {
   const d = await refs.saveBreakdown(b.profile, b.pillar, b.items, u.email); res.json({ breakdown: d.breakdown });
 });
 
+// Las imágenes de Research que guardó el conector (las del CDN de Instagram caducan en días).
+on('GET', 'media/:id', async (req, res) => {
+  const u = await guard(req, res, 'content'); if (!u) return;
+  const m = /^img-[a-f0-9]{24}$/.test(req.params.id) ? await db.get('media', req.params.id) : null;
+  if (!m?.b64) return res.status(404).json({ error: 'No existe' });
+  res.setHeader('Content-Type', m.mime || 'image/jpeg'); res.setHeader('Cache-Control', 'private, max-age=31536000, immutable');
+  res.status(200).end(Buffer.from(m.b64, 'base64'));
+});
 // Conexiones de un perfil: las carpetas de Drive (guiones y «Por postear») y los pilares.
 // Lo puede leer todo el equipo: el editor de video necesita llegar a los guiones y a la carpeta de entregas.
 on('GET', 'content/cfg', async (req, res) => {

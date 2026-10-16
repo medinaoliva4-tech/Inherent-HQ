@@ -5,7 +5,7 @@ import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveSta
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
 const RED = { instagram: 'Instagram', tiktok: 'TikTok' };
-const safeImg = (u) => (/^https:\/\/[^\s'"()]+$/.test(String(u || '')) ? u : null);
+const safeImg = (u) => (/^https:\/\/[^\s'"()]+$|^\/api\/media\/img-[a-f0-9]{24}$/.test(String(u || '')) ? u : null);
 // Las pestañas visibles; el resto del código sigue aquí y vuelve al agregar su pestaña a esta lista.
 const TABS = [['analytics', 'Analytics'], ['research', 'Research'], ['calendario', 'Calendario']];
 const C = col('content');
@@ -15,8 +15,9 @@ const RKIND = [['todos', 'Todas las fuentes'], ['nicho', 'Ganadores del nicho'],
 const RFMT = [['todo', 'Todo', 'grid'], ['reel', 'Reels', 'video'], ['carrusel', 'Carruseles', 'layers'], ['estatico', 'Estáticos', 'image'], ['plantilla', 'Plantillas', 'copy']];
 const fmtOf = (it) => it.format || (it.video === false ? 'estatico' : 'reel');
 // La biblioteca de formatos: resonancia, si hay que hablar y el tipo de formato. Las pone Claude (conector) o el equipo.
-const STYLES = ['montaje', 'talking head', 'una toma', 'day in the life', 'voz en off + b-roll', 'meme + montaje', 'lista/tutorial', 'antes-después', 'POV', 'otro'];
-const TALK = [['no', 'no'], ['voz', 'voz en off'], ['si', 'sí']];
+// Los filtros de Research no son fijos: salen de lo que Claude subió de cada marca (sus pilares, sus tipos, sus etiquetas).
+const distinct = (list, f) => { const n = new Map(); for (const x of list) for (const v of [].concat(f(x) || [])) if (v) n.set(v, (n.get(v) || 0) + 1); return [...n].sort((a, z) => z[1] - a[1]).map(([v]) => v); };
+const TALK = [['no', 'sin hablar'], ['voz', 'voz en off'], ['si', 'hablando a cámara']];
 const resOf = (it) => it.resonance || (it.x >= 3 ? 'alta' : it.x >= 1.5 ? 'media' : it.x ? 'baja' : '');
 const RESN = { alta: 3, media: 2, baja: 1 };
 const TALKL = { no: 'sin hablar', voz: 'voz en off', si: 'hablando a cámara' };
@@ -46,7 +47,7 @@ export async function render(el, { sub, alive }) {
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
   let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
-  let rview = 'biblioteca', rq = '', rsort = 'res', rsel = { pilar: '', res: '', talk: '', style: '' };
+  let rview = 'biblioteca', rq = '', rsort = 'res', rsel = { pilar: '', res: '', talk: '', style: '', tag: '' };
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
@@ -285,7 +286,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       .sort((a, z) => (z.x || 0) - (a.x || 0) || (z.views || 0) - (a.views || 0));
   }
   // La fuente: cuántos subió el conector, cuándo y quién. Desde aquí se copia la instrucción para Claude o se vacía.
-  const mcpPrompt = () => `Sube a Research del OS de Inherent lo que encontraste, con el conector de Inherent (guardar_research), perfil «${slug}». Cada post lleva url, formato (reel, carrusel o estatico), métricas, miniatura, imagenes si es carrusel, tipo (nicho, referente, competencia o propia), por_que_funciono (hook, retencion, estructura, por_que, adaptacion) y sus etiquetas: pilar, resonancia (alta, media o baja), habla (no, voz o si) y estilo. Para la ficha: titulo (nombre corto del formato), veces_promedio (vs su mediana), duracion, dificultad (1 a 5), tiempo_grabacion, y el desglose: receta (pasos), clips (tiempo y qué pasa) y estructura. En por_que_funciono, «adaptacion» es «Tu versión» para la marca. No inventes métricas y solo urls https.`;
+  const mcpPrompt = () => `Sube a Research del OS de Inherent lo que encontraste, con el conector de Inherent. Primero llama perfiles() para confirmar el perfil: es «${slug}». Luego guardar_research con perfil «${slug}» y una lista en «posts» (hasta 40 por llamada). Cada post: url, formato (reel, carrusel o estatico), creador, fecha, titulo (nombre corto del formato), metricas {vistas, likes, comentarios, duracion_s, multiplicador (vs su mediana), engagement_pct}, miniatura, slides si es carrusel, caption, por_que_funciono {hook, retencion, estructura, por_que, adaptacion}, dificultad (1 a 5), tiempo_grabacion, receta y clips si los tienes, y tags: el pilar, el tipo de formato, «resonancia alta|media|baja», «sin hablar|voz en off|hablando a cámara» y lo que sirva para filtrar. En adaptacion, el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) se muestra en Análisis. Antes de subir, revisa con listar_research para no duplicar. No inventes métricas y solo urls https.`;
   function sourceBox(all) {
     const ts = (x) => String(x._meta?.updated_at || x._meta?.created_at || ''), last = all.map(ts).filter((x) => !isNaN(Date.parse(x))).sort().pop();
     const who = all.find((x) => ts(x) === last)?._meta?.updated_by || all.find((x) => ts(x) === last)?._meta?.created_by;
@@ -300,16 +301,17 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       <span class="ricons">${it.tested ? html`<i title="Probado">${ico('check', 13)}</i>` : ''}${f !== 'reel' ? html`<i title="${f === 'carrusel' ? 'Carrusel' : 'Estático'}">${ico(f === 'carrusel' ? 'layers' : 'image', 13)}</i>` : ''}${it.why ? html`<i title="Tiene análisis">${ico('bulb', 13)}</i>` : ''}</span>
       ${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 20)}</span>`}
       <span class="rfoot"><b>@${it.handle || '—'}</b><span>${it.views ? html`${ico('play', 12)} ${K(it.views)}` : it.likes ? html`${ico('heart')} ${K(it.likes)}` : ''}</span></span></button>`; };
-  const rsearch = (x, q) => !q || [x.title, x.handle, x.text, x.style, x.pillar, x.why?.hook, x.why?.por_que, x.why?.adaptacion].join(' ').toLowerCase().includes(q);
+  const rsearch = (x, q) => !q || [x.title, x.handle, x.text, x.style, ...(x.tags || []), x.pillar, x.why?.hook, x.why?.por_que, x.why?.adaptacion].join(' ').toLowerCase().includes(q);
   const SORTS = [['res', 'Resonancia primero'], ['x', 'Más veces su promedio'], ['views', 'Más vistas'], ['recent', 'Más recientes']];
   const rsorter = { res: (a, z) => (RESN[resOf(z)] || 0) - (RESN[resOf(a)] || 0) || (z.x || 0) - (a.x || 0), x: (a, z) => (z.x || 0) - (a.x || 0), views: (a, z) => (z.views || 0) - (a.views || 0), recent: (a, z) => String(z.at || '').localeCompare(String(a.at || '')) };
   function research(b) {
     if (needResearch(b, research)) return;
     const W = isoWeek(), q = rq.trim().toLowerCase();
     const all = researchItems(), base = rview === 'semana' ? all.filter((x) => x.week === W) : all;
-    const sel = (x) => fmatch(x, rfmt) && rmatch(x, rfilter) && (!rsel.pilar || x.pillar === rsel.pilar) && (!rsel.res || resOf(x) === rsel.res) && (!rsel.talk || x.talk === rsel.talk) && (!rsel.style || x.style === rsel.style) && rsearch(x, q);
+    const sel = (x) => fmatch(x, rfmt) && rmatch(x, rfilter) && (!rsel.pilar || x.pillar === rsel.pilar) && (!rsel.res || resOf(x) === rsel.res) && (!rsel.talk || x.talk === rsel.talk) && (!rsel.style || x.style === rsel.style) && (!rsel.tag || (x.tags || []).includes(rsel.tag)) && rsearch(x, q);
     const list = base.filter(sel).sort(rsorter[rsort]);
-    const pillars = (data.cfg.pillars || []).map((x) => x.name).filter(Boolean);
+    const pillars = [...new Set([...(data.cfg.pillars || []).map((x) => x.name), ...distinct(all, (x) => x.pillar)])].filter(Boolean);
+    const RL = ['alta', 'media', 'baja'], present = { res: RL.filter((r) => all.some((x) => resOf(x) === r)), talk: TALK.filter(([v]) => all.some((x) => x.talk === v)), style: distinct(all, (x) => x.style), tag: distinct(all, (x) => x.tags).slice(0, 24) };
     const frow = (lbl, k, opts) => html`<div class="rfrow"><span class="lbl">${lbl}</span><div class="rfopts">${opts.map(([v, l]) => html`<button class="chip ${rsel[k] === v ? 'dark' : ''}" data-act="rsel" data-k="${k}" data-v="${v}">${l}</button>`)}</div></div>`;
     mount(b, html`<div class="rtiles">${RFMT.map(([k, l, i]) => html`<button class="rtile ${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}"><i>${ico(i, 22)}</i><span>${l}</span></button>`)}</div>
       <div class="rkstats">${[[all.length, 'Formatos'], [all.filter((x) => resOf(x) === 'alta').length, 'Resonancia alta'], [all.filter((x) => x.talk === 'no').length, 'Sin hablar'], [all.filter((x) => x.tested).length, 'Probados']].map(([n, l]) => html`<div><b>${n}</b><span>${l}</span></div>`)}</div>
@@ -320,9 +322,10 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       <div class="rfilters">
         <div class="rfrow"><span class="lbl">Fuente</span><div class="rfopts">${RKIND.map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}">${l}</button>`)}</div></div>
         ${pillars.length ? frow('Pilar', 'pilar', pillars.map((x) => [x, x])) : ''}
-        ${frow('Resonancia', 'res', [['alta', 'alta'], ['media', 'media'], ['baja', 'baja']])}
-        ${frow('¿Hablas?', 'talk', TALK)}
-        ${frow('Tipo', 'style', STYLES.map((x) => [x, x]))}
+        ${present.res.length ? frow('Resonancia', 'res', present.res.map((x) => [x, x])) : ''}
+        ${present.talk.length ? frow('¿Hablas?', 'talk', present.talk) : ''}
+        ${present.style.length ? frow('Tipo', 'style', present.style.map((x) => [x, x])) : ''}
+        ${present.tag.length ? frow('Etiquetas', 'tag', present.tag.map((x) => [x, x])) : ''}
       </div>
       <div class="mut sm" style="margin:10px 0 12px;font-family:ui-monospace,Menlo,monospace">${list.length} de ${base.length} formatos${rview === 'semana' ? ` · semana ${W.slice(-2)}` : ''}</div>
       ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : all.length ? 'Nada con esos filtros' : 'Research está vacío'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : all.length ? 'Quita algún filtro.' : 'Se llena cuando Claude sube posts con el conector. Copia la instrucción de arriba y pégasela.'}</div>`}`);
@@ -360,15 +363,18 @@ Video: ${vidLine(it)}
 ${it.text ? `Texto del post: ${String(it.text).replace(/\s+/g, ' ').slice(0, 300)}\n` : ''}
 Ábrelo si puedes. Si no puedes verlo, deduce del texto y las métricas y márcalo como inferido.
 Devuelve: el hook (lo que pasa o se dice en los primeros 3 segundos), qué retuvo a la gente, la estructura en beats, por qué funcionó y cómo lo adaptaría ${p.name} (su estrategia está en ${root()}/01-estrategia/).
-Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}», el url del video, sus métricas, titulo, duracion, dificultad (1 a 5), tiempo_grabacion, receta (pasos), clips (tiempo y qué pasa) y por_que_funciono {hook, retencion, estructura, por_que, adaptacion (tu versión para la marca), inferido}.`;
+Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}» y en «posts» este post: url, titulo, metricas {vistas, likes, comentarios, duracion_s, multiplicador}, dificultad (1 a 5), tiempo_grabacion, receta, clips {tiempo, que}, tags y por_que_funciono {hook, retencion, estructura, por_que, adaptacion (el primer párrafo es tu versión para la marca), inferido}.`;
   }
   // El detalle, como en Edits: el video en grande, la cuenta y «Usar plantilla» abajo, las acciones al lado.
   function ropen(k) {
     const it = researchItems().find((x) => x.key === k); if (!it) return;
     const w = it.why || {}, em = embedOf(it.url), t = safeImg(it.thumb), f = fmtOf(it), slides = (it.slides || []).map(safeImg).filter(Boolean);
-    const stats = [it.views && [K(it.views), 'Vistas'], !it.views && it.likes && [K(it.likes), 'Likes'], it.x && [`×${it.x}`, 'Su mediana'], it.dur && [mss(it.dur), 'Duración'], it.diff && [`${it.diff}/5`, 'Dificultad']].filter(Boolean);
-    const chips = [it.pillar && [it.pillar, 'on'], it.style && [it.style], it.talk && [TALKL[it.talk]], it.rec && [`${it.rec} grabando`]].filter(Boolean);
-    const receta = it.receta || [], clips = it.clips || [], hasRec = receta.length || clips.length || w.estructura?.length || w.retencion || w.por_que || it.text;
+    const stats = [it.views && [K(it.views), 'Vistas'], !it.views && it.likes && [K(it.likes), 'Likes'], it.x && [`×${it.x}`, 'Su mediana'], it.dur && [mss(it.dur), 'Duración'], it.diff && [`${it.diff}/5`, 'Dificultad'], it.er && !it.diff && [`${it.er}%`, 'Engagement']].filter(Boolean);
+    const chips = [it.pillar && [it.pillar, 'on'], it.style && [it.style], it.talk && [TALKL[it.talk]], it.rec && [`${it.rec} grabando`], ...(it.tags || []).map((x) => [x])].filter(Boolean);
+    // «adaptacion»: el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) va a Análisis.
+    const ad = String(w.adaptacion || '').trim(), cut = ad.search(/\n\s*\n|\n(?=\s*(#|[-*•]|\d+[.)]|\*\*))/), mine = cut > 0 ? ad.slice(0, cut).trim() : ad, analysis = cut > 0 ? ad.slice(cut).trim() : '';
+    const allR = researchItems(), styleOpts = distinct(allR, (x) => x.style), pillarOpts = [...new Set([...(data.cfg.pillars || []).map((x) => x.name), ...distinct(allR, (x) => x.pillar)])].filter(Boolean);
+    const receta = it.receta || [], clips = it.clips || [], hasRec = analysis || receta.length || clips.length || w.estructura?.length || w.retencion || w.por_que || it.text;
     document.querySelector('.rview')?.remove();
     const v = document.createElement('div'); v.className = 'rview';
     mount(v, html`<div class="rv-col">
@@ -385,9 +391,10 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
         ${stats.length ? html`<div class="rfc-stats">${stats.map(([v2, l]) => html`<div><b>${v2}</b><span>${l}</span></div>`)}</div>` : ''}
         ${chips.length ? html`<div class="rfc-chips">${chips.map(([l, c]) => html`<span class="${c || ''}">${l}</span>`)}</div>` : ''}
         ${w.hook ? html`<div class="rfc-sec"><span class="lbl">Hook</span><p>${w.hook}</p></div>` : ''}
-        ${w.adaptacion ? html`<div class="rfc-sec"><span class="lbl">Tu versión</span><p>${w.adaptacion}</p></div>` : ''}
+        ${mine ? html`<div class="rfc-sec"><span class="lbl">Tu versión</span><div class="rfc-md">${md(mine)}</div></div>` : ''}
         ${!it.why ? html`<div class="rfc-sec"><p class="mut">Todavía sin análisis. Claude lo desglosa y lo sube aquí.</p><button class="btn xs" data-v="ask">Pedir el análisis a Claude</button></div>` : ''}
         ${hasRec ? html`<details class="rfc-more" id="rvwhy"><summary>Receta, clips y estructura</summary>
+          ${analysis ? html`<div class="rfc-sec"><span class="lbl">Análisis</span><div class="rfc-md">${md(analysis)}</div></div>` : ''}
           ${receta.length ? html`<div class="rfc-sec"><span class="lbl">Receta</span><ol>${receta.map((x) => html`<li>${x}</li>`)}</ol></div>` : ''}
           ${clips.length ? html`<div class="rfc-sec"><span class="lbl">Clips</span><ul class="rfc-clips">${clips.map((c) => html`<li>${c.t ? html`<b>${c.t}</b>` : ''}<span>${c.que}</span></li>`)}</ul></div>` : ''}
           ${w.estructura?.length ? html`<div class="rfc-sec"><span class="lbl">Estructura</span><ol>${w.estructura.map((x) => html`<li>${x}</li>`)}</ol></div>` : ''}
@@ -402,15 +409,15 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
           <div class="grid g2 rtags" style="gap:8px;margin-top:10px;border:0;padding:0">
             <label class="sm">Resonancia<select class="in" data-tag="resonance"><option value="">${resOf(it) ? `auto: ${resOf(it)}` : '—'}</option>${['alta', 'media', 'baja'].map((x) => html`<option ${it.resonance === x ? raw('selected') : ''}>${x}</option>`)}</select></label>
             <label class="sm">¿Hablas?<select class="in" data-tag="talk"><option value="">—</option>${TALK.map(([v2, l]) => html`<option value="${v2}" ${it.talk === v2 ? raw('selected') : ''}>${l}</option>`)}</select></label>
-            <label class="sm">Tipo<select class="in" data-tag="style"><option value="">—</option>${STYLES.map((x) => html`<option ${it.style === x ? raw('selected') : ''}>${x}</option>`)}</select></label>
-            ${(data.cfg.pillars || []).length ? html`<label class="sm">Pilar<select class="in" data-tag="pillar"><option value="">—</option>${data.cfg.pillars.map((x) => html`<option ${it.pillar === x.name ? raw('selected') : ''}>${x.name}</option>`)}</select></label>` : ''}
+            <label class="sm">Tipo<input class="in" data-tag="style" list="rv-styles" value="${it.style || ''}" placeholder="—"><datalist id="rv-styles">${styleOpts.map((x) => html`<option value="${x}">`)}</datalist></label>
+            <label class="sm">Pilar<input class="in" data-tag="pillar" list="rv-pillars" value="${it.pillar || ''}" placeholder="—"><datalist id="rv-pillars">${pillarOpts.map((x) => html`<option value="${x}">`)}</datalist></label>
           </div></details>
       </div>`);
     document.body.appendChild(v);
     const close = () => { v.remove(); removeEventListener('keydown', esc); }, esc = (e) => { if (e.key === 'Escape') close(); };
     addEventListener('keydown', esc); addEventListener('hashchange', close, { once: true });
     const tag = async (patch, msg) => { try { Object.assign(it, await rsave(it, patch)); toast(msg); research($('#cbody', el)); } catch (er) { toast(er.message, true); } };
-    v.querySelectorAll('[data-tag]').forEach((sl) => { sl.onchange = () => tag({ [sl.dataset.tag]: sl.value }, 'Etiqueta guardada'); });
+    v.querySelectorAll('[data-tag]').forEach((sl) => { sl.onchange = () => tag({ [sl.dataset.tag]: sl.value.trim().slice(0, 80) }, 'Etiqueta guardada'); });
     v.onclick = async (e) => {
       if (e.target === v) return close();
       const tg = e.target.closest('[data-v="week"],[data-v="tested"]');
