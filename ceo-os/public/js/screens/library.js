@@ -199,7 +199,7 @@ export async function render(el, { me, sub, alive }) {
   function home() {
     const ql = q.toLowerCase();
     const list = docs.filter((d) => !ql || (d.title + ' ' + (d.body || '')).toLowerCase().includes(ql)).sort((a, z) => String(z._meta?.updated_at || '').localeCompare(String(a._meta?.updated_at || '')));
-    mount(el, html`<div class="hello"><h1>Library</h1><p>SOPs, playbooks y videos. <em>Todo en un lugar.</em></p></div>
+    mount(el, html`<div class="hello"><h1>Conocimiento</h1><p>SOPs, playbooks y videos. <em>Todo en un lugar.</em></p></div>
       <div class="row" style="margin-bottom:18px;gap:8px;flex-wrap:wrap"><input class="in" id="q" placeholder="Buscar en la library…" value="${q}" style="max-width:340px"><div class="sp"></div><button class="btn ghost" data-act="newFolder">+ Carpeta</button><button class="btn ghost" data-act="rec">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDoc">+ Documento</button></div>
       ${folders.length ? html`<div class="folders">${folders.map((f) => html`<div class="folder" data-act="folder" data-id="${f.id}">${folderSvg({ drive: Boolean(f.drive), tone: f.tone, video: docs.some((d) => d.folder_id === f.id && d.kind === 'Video') })}<b>${f.name}</b><span class="mut sm">${docs.filter((d) => d.folder_id === f.id).length} documentos${f.drive ? ' · Drive' : ''}</span></div>`)}</div>`
         : html`<div class="empty"><b>Todavía no hay carpetas</b>Crea la primera: «Onboarding de cliente», «Producción», «Playbooks de venta»… y conéctala a una carpeta de Drive si quieres.</div>`}
@@ -211,11 +211,11 @@ export async function render(el, { me, sub, alive }) {
   // ---------- Carpeta: sus documentos + su Drive ----------
   async function folderPage(id) {
     const f = folders.find((x) => x.id === id);
-    if (!f) return mount(el, html`<a class="btn ghost" href="#/library">← Library</a><div class="empty" style="margin-top:16px"><b>Esa carpeta no existe</b></div>`);
+    if (!f) return mount(el, html`<a class="btn ghost" href="#/library">← Conocimiento</a><div class="empty" style="margin-top:16px"><b>Esa carpeta no existe</b></div>`);
     let drive = null, dErr = null;
     const paint = () => {
       const list = docs.filter((d) => d.folder_id === id);
-      mount(el, html`<div class="row" style="margin-bottom:14px"><a class="btn ghost" href="#/library">← Library</a></div>
+      mount(el, html`<div class="row" style="margin-bottom:14px"><a class="btn ghost" href="#/library">← Conocimiento</a></div>
         <div class="row" style="gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:20px"><div style="width:110px">${folderSvg({ w: 110, drive: Boolean(f.drive), tone: f.tone })}</div>
           <div style="flex:1;min-width:240px"><h1 style="font-size:46px;font-weight:500;letter-spacing:-1.4px">${f.name}</h1>${f.desc ? html`<div class="mut">${f.desc}</div>` : ''}</div>
           <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" data-act="editFolder">Editar</button><button class="btn ghost" data-act="recHere">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDocHere">+ Documento</button></div></div>
@@ -318,7 +318,7 @@ ${qa}`;
   // ---------- Documento: leer y editar ----------
   async function docPage(id) {
     let d = docs.find((x) => x.id === id);
-    if (!d) return mount(el, html`<a class="btn ghost" href="#/library">← Library</a><div class="empty" style="margin-top:16px"><b>Ese documento no existe</b></div>`);
+    if (!d) return mount(el, html`<a class="btn ghost" href="#/library">← Conocimiento</a><div class="empty" style="margin-top:16px"><b>Ese documento no existe</b></div>`);
     let editing = sub[2] === 'edit';
     const back = d.folder_id ? `#/library/${d.folder_id}` : '#/library';
     const paint = () => {

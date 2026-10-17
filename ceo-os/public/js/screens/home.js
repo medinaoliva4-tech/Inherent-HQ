@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ , calQ, calAll, setCalAll, teamList, ico } from '../core.js';
+import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ , calQ, calAll, setCalAll, teamList, ico, isSummary } from '../core.js';
 import { bdayText } from './me.js';
 import { videoCard } from './content.js';
 import { connectNotice, hookNotice } from '../connectai.js';
@@ -7,7 +7,9 @@ const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', '
 const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 19 ? 'Good afternoon' : 'Good evening'; };
 
 export async function render(el, { me, alive }) {
-  const can = (a) => me.areas.includes(a);
+  // Vista por rol: en «resumen» Home es tu agenda de hoy y tus tareas; sin revenue, leads ni engagement.
+  const resumen = isSummary(me, 'home');
+  const can = (a) => !resumen && me.areas.includes(a);
   const [leads, tasks, finance, content] = await Promise.all([
     can('sales') ? col('leads').list() : [], col('tasks').list(),
     can('finanzas') ? col('finance').list() : [], col('content').list().catch(() => []),
@@ -21,7 +23,7 @@ export async function render(el, { me, alive }) {
   let agenda = null, agErr = null;
   let week = null, weekP = null;
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`content/week?profile=${p}`).catch(() => null))).then(([a, b]) => { week = a; weekP = b; if (alive()) paint(); });
-  // Engagement en vivo de Windsor (lo mismo que Content → Analytics); el scrape semanal queda de respaldo.
+  // Engagement en vivo de Windsor (lo mismo que Contenido → Analytics); el scrape semanal queda de respaldo.
   let igI = null, igP = null, hProf = 'inherent', hView = 'top', hType = null;
   try { hProf = localStorage.getItem('home.prof') || 'inherent'; hView = localStorage.getItem('home.view') || 'top'; } catch {}
   if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`analytics/instagram?profile=${p}&days=30`).catch((e) => ({ error: e.message })))).then(([a, b]) => { igI = a; igP = b; if (alive()) paint(); });
@@ -40,7 +42,7 @@ export async function render(el, { me, alive }) {
   const exp = (m) => finance.filter((f) => f.type === 'gasto' && ym(f.date) === m).reduce((a, f) => a + (+f.amount || 0), 0);
   const revNow = inc(thisM), costNow = exp(thisM), revSeries = months.map(inc);
 
-  const open = leads.filter((l) => !['Ganado', 'Perdido'].includes(l.stage));
+  const open = leads.filter((l) => !['Prospecto', 'Ganado', 'Perdido'].includes(l.stage));
   const hot = open.filter((l) => (l.interest || 0) >= 4);
   const pipe = open.reduce((a, l) => a + (+l.value_usd || 0), 0);
   const mine = tasks.filter((t) => t.assignee === me.email && t.status !== 'Hecha').sort((a, b) => String(a.due || '9').localeCompare(String(b.due || '9')));
@@ -66,14 +68,14 @@ export async function render(el, { me, alive }) {
           <div class="lbl">Facturado este mes</div>
           <div class="big">${revNow ? html`<span class="cur">Q</span>${K(revNow)}` : '—'}</div>
           ${matrix(revNow ? Math.min(34, Math.round((revNow / Math.max(...revSeries, 1)) * 34)) : 0)}
-          <div class="foot"><span>${revNow ? `Gross ${Q(revNow - costNow)} · Cost ${Q(costNow)}` : 'Se llena con los ingresos de Finance'}</span></div>
+          <div class="foot"><span>${revNow ? `Gross ${Q(revNow - costNow)} · Cost ${Q(costNow)}` : 'Se llena con los ingresos de Finanzas'}</span></div>
         </div>` : ''}
         ${can('sales') ? html`<div class="card feat terra">
           <div class="chead"><div class="ico">${IC.ring(46)}<span style="font-size:15px">${ico('smile')}</span></div><h3>Leads<br><span class="lbl">Pipeline abierto</span></h3><a class="arrow" href="#/sales">↗</a></div>
           <div class="lbl">Leads activos</div>
           <div class="big">${open.length}<small> · ${hot.length} ${ico('flame')}</small></div>
           ${matrix(Math.min(34, open.length * 2))}
-          <div class="foot"><span>Pipeline ${USD(pipe)} / mes</span><span>${leads.filter((l) => l.stage === 'Ganado').length} ganados</span></div>
+          <div class="foot"><span>Pipeline ${USD(pipe)} / mes</span><span>${((n) => `${n} ${n === 1 ? 'ganado' : 'ganados'}`)(leads.filter((l) => l.stage === 'Ganado').length)}</span></div>
         </div>` : ''}
         ${!can('content') ? summary() : ''}
         ${!can('content') ? '' : html`<div class="card">
@@ -91,9 +93,9 @@ export async function render(el, { me, alive }) {
               <div class="mut sm engwhat">${ex.er >= 1 ? html`<b>Qué significa:</b> en ${e1 ? 'Inherent' : 'Personal'}, de cada 100 personas que vieron tus posts, <b>${Math.round(ex.er)}</b> dieron like, comentaron, guardaron o compartieron. Más alto = el contenido conecta más.` : 'Es la parte de quienes vieron tus posts que interactuó (likes, comentarios, guardados, compartidos).'} ${ex.days && ex.src === 'w' ? `Últimos ${ex.days} días.` : ''}</div>`;
             if (igI === null && igP === null) return html`<p class="loading">Cargando…</p>`;
             // Sin datos: decir exactamente por qué, para saber qué arreglar.
-            // Sin datos: una sola razón, en humano, con a dónde ir. (Lo técnico queda en Content → Analytics.)
+            // Sin datos: una sola razón, en humano, con a dónde ir. (Lo técnico queda en Contenido → Analytics.)
             const why = [...new Set([['Inherent', igI], ['Personal', igP]].map(([n, r]) => r?.error ? 'No pude leer Instagram ahora. Inténtalo en un momento.' : r?.connected === false ? 'Instagram todavía no está conectado.' : r && !r.handles?.length ? `${n}: falta su cuenta de Instagram.` : r && !r.matched ? `${n}: su cuenta de Instagram no aparece entre las conectadas.` : '').filter(Boolean))];
-            return html`<div class="big">—</div><div class="mut sm" style="margin-top:14px">${why.length ? why.map((w) => html`<div>${w}</div>`) : 'Todavía sin datos.'}${why.length ? html`<a class="btn ghost xs" href="#/content/analytics" style="margin-top:10px">Conectar en Content → Analytics</a>` : ''}</div>`; })()}
+            return html`<div class="big">—</div><div class="mut sm" style="margin-top:14px">${why.length ? why.map((w) => html`<div>${w}</div>`) : 'Todavía sin datos.'}${why.length ? html`<a class="btn ghost xs" href="#/content/analytics" style="margin-top:10px">Conectar en Contenido → Analytics</a>` : ''}</div>`; })()}
         </div>`}
       </div>
       <div class="grid g2" style="margin-top:18px">
@@ -116,8 +118,8 @@ export async function render(el, { me, alive }) {
                 : html`<div class="empty" style="margin-top:10px"><b>Nada por subir</b>Las piezas del planner de ${hProf === 'personal' ? 'tu marca personal' : 'Inherent'} aparecen aquí.</div>`)
               : v === 'niche' ? html`<div class="grid homevids">${niche.slice(0, 3).map(videoCard)}</div>`
               : ig === null ? html`<p class="loading">Cargando…</p>` : own.length ? html`<div class="grid homevids">${own.slice(0, 3).map(videoCard)}</div>`
-              : html`<div class="empty" style="margin-top:10px"><b>Sin posts todavía</b>${ig?.matched === false || !ig?.handles?.length ? `Conecta la cuenta de Instagram de ${hProf === 'personal' ? 'Personal' : 'Inherent'} en Content → Analytics.` : `No hay ${type === 'reels' ? 'reels' : 'fotos ni carruseles'} en los últimos 90 días.`}</div>`;
-            return html`<div class="chead"><div class="ico">${ico('play', 13)}</div><h3>Content<br><span class="mut sm">${v === 'top' ? `Tus ${type === 'reels' ? 'reels' : 'fotos y carruseles'} con más interacción · ${tDays || 30} días` : v === 'next' ? 'Lo que sigue en el planner' : 'Lo que más rinde en tu nicho'}</span></h3><a class="arrow" href="#/content">↗</a></div>
+              : html`<div class="empty" style="margin-top:10px"><b>Sin posts todavía</b>${ig?.matched === false || !ig?.handles?.length ? `Conecta la cuenta de Instagram de ${hProf === 'personal' ? 'Personal' : 'Inherent'} en Contenido → Analytics.` : `No hay ${type === 'reels' ? 'reels' : 'fotos ni carruseles'} en los últimos 90 días.`}</div>`;
+            return html`<div class="chead"><div class="ico">${ico('play', 13)}</div><h3>Contenido<br><span class="mut sm">${v === 'top' ? `Tus ${type === 'reels' ? 'reels' : 'fotos y carruseles'} con más interacción · ${tDays || 30} días` : v === 'next' ? 'Lo que sigue en el planner' : 'Lo que más rinde en tu nicho'}</span></h3><a class="arrow" href="#/content">↗</a></div>
               <div class="row homesel"><div class="tabs mini">${[['inherent', 'Inherent'], ['personal', 'Personal']].map(([k, l]) => html`<button class="${k === hProf ? 'on' : ''}" data-act="hprof" data-k="${k}">${l}</button>`)}</div>
                 <div class="tabs mini">${views.map(([k, l]) => html`<button class="${k === v ? 'on' : ''}" data-act="hview" data-k="${k}">${l}</button>`)}</div>
                 ${v === 'top' && ig?.matched ? html`<div class="tabs mini">${[['reels', `Reels${reels.length ? ' · ' + reels.length : ''}`], ['static', `Estáticos${stat.length ? ' · ' + stat.length : ''}`]].map(([k, l]) => html`<button class="${k === type ? 'on' : ''}" data-act="htype" data-k="${k}">${l}</button>`)}</div>` : ''}</div>${body}`; })()}

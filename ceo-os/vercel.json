@@ -23,6 +23,10 @@
       "destination": "/api/index?route=.well-known/:path*"
     },
     {
+      "source": "/diagnostico",
+      "destination": "/diagnostico.html"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/index?route=:path*"
     }
@@ -73,6 +77,15 @@
           "value": "no-store"
         }
       ]
+    },
+    {
+      "source": "/diagnostico(.html)?",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow"
+        }
+      ]
     }
   ],
   "functions": {
@@ -88,6 +101,10 @@
     {
       "path": "/api/cron/settle",
       "schedule": "0 16 * * 1"
+    },
+    {
+      "path": "/api/cron/recurrentes",
+      "schedule": "0 12 * * *"
     }
   ]
 }

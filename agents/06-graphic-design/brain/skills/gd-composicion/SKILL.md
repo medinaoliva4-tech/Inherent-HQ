@@ -19,6 +19,8 @@ description: >
 > 🔑 **Esta capa es ejecución, no diseño.** Si una pieza pide una decisión nueva, **la plantilla
 > está mal** — se vuelve a la Capa 1.
 
+> 📚 **Persuasión en lo visual:** `agents/01-strategy/brain/skills/brief-de-comunicacion/references/psicologia-de-venta.md`.
+
 ## 1 · Se produce por formato, no por fecha
 
 **Todos los carruseles juntos, todos los estáticos juntos, todas las stories juntas.** Es lo que

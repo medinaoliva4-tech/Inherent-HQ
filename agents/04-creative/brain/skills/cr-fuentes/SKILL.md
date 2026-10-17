@@ -2,10 +2,10 @@
 name: cr-fuentes
 description: >
   Capa 1 de ④ Creatividad — la skill que CONSIGUE los anuncios. Decide de dónde salen las
-  referencias: la investigación se hace **por plataforma**, en las que usa el cliente según las
+  referencias: la investigación se hace **en 5 niveles** y **por plataforma**, en las que usa el cliente según las
   Redes de su plan contratado, con tres actores de Apify —anuncios, Instagram y TikTok— y volumen fijado
   por el plan contratado. Define qué da y qué no da cada fuente, los topes de gasto, en qué países
-  se busca según sea competencia o referencia ganadora, y cuáles pasan a lectura profunda; extrae
+  se busca —salen del mercado de cada cliente—, y cuáles pasan a lectura profunda; extrae
   id, anunciante, copy, plataformas y fecha de inicio, y calcula la antigüedad. Úsala cuando pidan
   "buscá los anuncios de esta marca", "qué está corriendo la competencia", "de dónde saco
   referencias", "cuántos contenidos investigamos", "de qué países sacamos referencias", "qué
@@ -17,8 +17,8 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | El hueco calculado en `cr-swipe-file` (qué formato, canal o tipo de hook falta) · los competidores del cliente de ① Strategy · los canales con slot del calendario de ③ Marketing |
-| **Produce** | El listado crudo de anuncios: **id de biblioteca · anunciante · copy · plataformas · fecha de inicio · antigüedad calculada · link · URL del creativo**, ordenado por antigüedad · y el registro de fuentes usadas, no disponibles y consumo |
+| **Consume** | **El bloque 6 «Qué buscar» del brief de comunicación** (`brief-de-comunicacion-AAAA-MM.md`, ① Strategy) · el mercado del cliente *(`clients/<cliente>/00-onboarding/comprension.md` e `inherent/04-MERCADO.md`)* · El hueco calculado en `cr-swipe-file` (qué formato, canal o tipo de hook falta) · los competidores del cliente de ① Strategy · los canales con slot del calendario de ③ Marketing |
+| **Produce** | El listado crudo de anuncios: **id de biblioteca · anunciante · copy · plataformas · fecha de inicio · antigüedad calculada · link · URL del creativo**, ordenado por antigüedad · **los 5 niveles con 5 cuentas cada uno** *(25 por cliente)*, subidos a Research del OS · y el registro de fuentes usadas, no disponibles y consumo |
 
 Contexto del departamento: `agents/04-creative/brain/WORKFLOW.md`.
 
@@ -122,9 +122,9 @@ lo que haya ahí.
 |---|---|---|---|---|
 | **Contenidos a investigar, por plataforma** | **50** | **50** | **100** | **100** |
 
-**Se parte por la mitad:** **50 % competencia** *(Guatemala)* · **50 % referencias ganadoras**
-*(los países de la lista)*. En un cliente de 🔷 Marketing con tres plataformas son 150 contenidos:
-25 de competencia y 25 de referencias en cada una.
+**Se reparte en partes iguales entre los 5 niveles** *(ver abajo)*: con 50 por plataforma son
+**10 por nivel**; con 100, **20 por nivel**. En un cliente de 🔷 Marketing con tres plataformas son
+150 contenidos: 10 por nivel en cada plataforma.
 
 ### Los 3 aprendizajes de la prueba
 
@@ -145,38 +145,59 @@ lo que haya ahí.
 
 🛑 **No al revés.** Scrapear por keyword y quedarse ahí mezcla marcas y no deja medir a nadie.
 
-## 🛑 Las dos capas — competencia e inspiración no se mezclan
+## 🛑 Los 5 niveles de investigación
 
-> **Decisión del CEO.** Son dos barridos distintos, con países distintos, para departamentos
-> distintos. **Van en archivos o secciones separadas** — nunca en la misma lista.
+> **Decisión del CEO.** La investigación tiene cinco niveles, **5 cuentas por nivel: 25 por
+> cliente.** Lo que se busca en cada uno lo dicta el bloque 6 del brief de comunicación. **Los
+> niveles no se mezclan en una misma lista.**
 
-| | 🔍 **Competencia** | ⭐ **Referencias ganadoras** |
-|---|---|---|
-| **Para qué** | Saber de qué hay que despegarse | Encontrar qué estructura ya funciona |
-| **Quién la usa** | ① Strategy — ingeniería inversa y posicionamiento | ④ Creatividad — el swipe file |
-| **Países** | **Solo Guatemala** (`country=GT`) | La lista fija de países parecidos ↓ |
-| **Cómo se busca** | Por página de cada competidor | Descubrir por keyword, después por página |
-| **Qué sale de ahí** | El código saturado de la categoría | Estructura y ángulo para **adaptar** |
+| # | Nivel | Qué es | Para qué sirve | Quién lo usa |
+|---|---|---|---|---|
+| **1** | **Competencia local** | Quienes le venden a la misma gente, **en el mercado del cliente** | Saber de qué despegarse: el código saturado de la categoría | ① Strategy |
+| **2** | **Referente en mercados parecidos** | Quien ya gana en la misma categoría, **en mercados con poder adquisitivo y cultura comparables** a los del cliente | Estructura y ángulo que ya funcionan en un público como el nuestro | ④ Creatividad |
+| **3** | **Referente aspiracional** | El mejor del mundo en la categoría, **en el mercado al que el cliente quiere llegar** | Elevar el estándar: lo que haremos cuando crezcamos | ④ Creatividad · ②B Branding |
+| **4** | **Referente de crecimiento y engagement** | Cuentas que **crecen o enganchan más rápido que su categoría**, sean o no de la misma | Mecánicas de crecimiento: formatos, frecuencia, hooks que retienen | ④ Creatividad · ⑨ Posting |
+| **5** | **Lo propio** | Las propias cuentas del cliente | Lo que ya le funciona a él, contra su propia mediana | ① Strategy · ④ Creatividad |
 
-### Los países de la capa de referencias
+### 🛑 Los países salen del mercado de cada cliente
 
-**Parecidos a Guatemala en lo económico, lo cultural y lo demográfico.** La lista es fija:
+**No hay lista fija.** Se deciden por cliente, leyendo **dónde vende** *(`comprension.md`)* y en qué
+fase está su mercado *(`inherent/04-MERCADO.md` → «La secuencia»)*.
 
-| Orden | Países | Cuándo |
-|---|---|---|
-| **1 · Primero** | 🇸🇻 El Salvador · 🇭🇳 Honduras | Siempre. Es el vecindario real |
-| **2 · Después** | 🇲🇽 México · 🇨🇴 Colombia · 🇵🇪 Perú · 🇪🇨 Ecuador · 🇩🇴 República Dominicana | Cuando los dos primeros no llenan el hueco |
-| **3 · Solo premium** | 🇨🇷 Costa Rica · 🇵🇦 Panamá | **Solo** en clientes premium o de ticket alto |
+| Nivel | Cómo se eligen los países |
+|---|---|
+| **1 · Competencia local** | **El mercado donde el cliente vende hoy** *(el código de país de ese mercado)*. Se barre **por página de cada competidor** |
+| **2 · Mercados parecidos** | **De 2 a 4 países** parecidos al del cliente en **poder adquisitivo, cultura, idioma y madurez del canal**. Un cliente de ticket bajo no toma referencias de un mercado de ticket alto: la pieza se ve bien y no vende |
+| **3 · Aspiracional** | **El mercado objetivo del cliente** *(el siguiente de su secuencia)* o, si la mejor práctica de la categoría vive en otro, ese |
+| **4 · Crecimiento** | **Sin país fijo**; se prefiere el idioma del cliente y se declara el país de cada cuenta |
+| **5 · Lo propio** | No aplica país: son sus cuentas |
 
-🛑 **Costa Rica y Panamá no entran en un cliente de ticket bajo.** Su poder adquisitivo y su código
-de categoría son otros: la referencia se ve bien y no vende acá.
+**Los países elegidos y el motivo se escriben en el registro.** Si el cliente abre un mercado nuevo,
+los niveles 2 y 3 se rehacen para ese mercado.
+
+🛑 **Cada nivel va en su sección o archivo.** Competencia *(nivel 1)* alimenta a ① Strategy;
+los niveles 2 a 5 alimentan a ④ Creatividad. **Nunca en la misma lista.**
+
+### Cuántas cuentas y cuántos contenidos
+
+**5 cuentas por nivel.** De cada cuenta se leen sus contenidos hasta completar el cupo del nivel
+(10 o 20 por plataforma, según el plan). Una cuenta que no publica en una plataforma del cliente
+se sustituye por otra del mismo nivel.
+
+### 🔄 Se refresca cada mes
+
+- **Completa al arrancar al cliente**, y **cada mes en los días 1-3 del ciclo**, antes de que
+  ④ Creatividad arme las ideas.
+- En el refresco se **conservan las cuentas que siguen vigentes**, se **reemplazan las que
+  dejaron de rendir** y se **lee de nuevo solo lo reciente**. Lo ya leído no se vuelve a pedir:
+  su ficha es la caché.
 
 ### Qué es «ganador» — cambia según sea pauta u orgánico
 
 | Tipo | Criterio | Por qué |
 |---|---|---|
 | **Anuncio** *(Meta Ad Library)* | **60-90+ días corriendo** | Las marcas matan rápido a los perdedores: un ad viejo es un ad que paga |
-| **Orgánico** *(Instagram · TikTok)* | **2x o más** las vistas o interacciones **del promedio de esa cuenta** | Un número absoluto no dice nada. 2x contra su propia base sí |
+| **Orgánico** *(Instagram · TikTok)* | **2x o más** las vistas o interacciones **del promedio de esa cuenta** *(se guarda como `multiplicador`)* | Un número absoluto no dice nada. 2x contra su propia base sí |
 
 🛑 **Son los mismos criterios de `cr-swipe-file`**, para que nadie mida con dos reglas.
 
@@ -194,6 +215,29 @@ en diseccionar las mejores, no en pasar 150 piezas por el mismo molde.
 🛑 **Se adapta, nunca se copia el creativo.** Lo que cruza la frontera es **la estructura y el
 ángulo**, pasados a quetzales y a la cultura local. Copiar la pieza nos mete en el código visual de
 otro — lo contrario de lo que ②B Branding construyó.
+
+## 📤 El resultado se sube a Research del OS
+
+**Cada contenido que pasa el filtro de ganador se guarda con `guardar_research`** *(conector de
+Inherent OS)*, en el perfil del cliente. **Primero `perfiles()` para confirmar el perfil**, y
+**`listar_research` para no duplicar** *(si el `url` ya está, se actualiza)*.
+
+| Nivel | `tipo` |
+|---|---|
+| 1 · Competencia local | `competencia` |
+| 2 · Mercados parecidos | `referente-similar` |
+| 3 · Aspiracional | `referente-aspiracional` |
+| 4 · Crecimiento y engagement | `referente-crecimiento` |
+| 5 · Lo propio | `propia` |
+
+| Campo | Qué lleva |
+|---|---|
+| `creador`, `red`, `formato`, `url`, `fecha` | De la fuente |
+| `metricas` | Vistas, likes, comentarios y **`multiplicador`** *(veces su mediana)* |
+| `tags` | **`nivel-1`…`nivel-5`**, el **país**, el pilar, la etapa del embudo *(si se usa)* y «resonancia alta\|media\|baja» |
+| `por_que_funciono` | Solo en los 10-15 que pasaron a lectura profunda |
+
+🛑 **Se suben los ganadores, no todo lo scrapeado.** El resto queda en el registro de la corrida.
 
 ## 🟡 El modo manual es legítimo y se declara
 
@@ -242,7 +286,9 @@ Todo relevamiento cierra con:
 ```
 - Fuentes usadas: [lista] · no disponibles: [lista] → evidencia faltante: [qué]
 - Plataformas investigadas: [lista, de las Redes del `plan-contratado.md`] · plan del cliente: [plan]
-- Contenidos por plataforma: [n] de [50 / 100] · competencia [n] · referencias [n]
+- Países por nivel: nivel 1 [país] · nivel 2 [países] · nivel 3 [país] · nivel 4 [países] · motivo: [mercado del cliente]
+- Contenidos por plataforma: [n] de [50 / 100] · por nivel: [n·n·n·n·n] · cuentas por nivel: [5·5·5·5·5]
+- Subidos a Research (`guardar_research`): [n] · duplicados evitados: [n]
 - Pasaron a lectura profunda: [n] de 10-15
 - Gasto de la corrida: US$[n] · tope de seguridad: US$5/mes
 - Modo: automatizado / MCP / 🟡 manual
@@ -251,7 +297,7 @@ Todo relevamiento cierra con:
 ```
 
 **Por qué importa:** la longevidad de un ad se mide **al momento de la consulta**. Un relevamiento
-sin fecha es un relevamiento muerto. Refresco **semanal**.
+sin fecha es un relevamiento muerto. Refresco **mensual**, en los días 1-3 del ciclo.
 
 ## QA — Capa 1
 
@@ -264,15 +310,18 @@ Lo que le toca a las fuentes. El bloque completo de la capa lo cierra `cr-swipe-
 - [ ] Para orgánico: **la base del creador se midió** antes de declarar un outlier
 - [ ] Ninguna referencia se pidió dos veces — se buscó su ficha antes de volver a consultar
 - [ ] Se investigaron **solo las plataformas del cliente**, según las **Redes** del `plan-contratado.md` *(o `plan-por-canal.md` de ③ Marketing, si existe)*
-- [ ] El **volumen por plataforma** es el del plan contratado *(50 / 50 / 100 / 100)*, **mitad y mitad**
+- [ ] El **volumen por plataforma** es el del plan contratado *(50 / 50 / 100 / 100)*, **repartido en partes iguales entre los 5 niveles**
+- [ ] Hay **5 cuentas por nivel** *(25 por cliente)* y la búsqueda siguió el **bloque 6 del brief de comunicación**
 - [ ] Los **techos** se respetaron: 50 por búsqueda · 25 por marca · US$5/mes de tope de seguridad
 - [ ] Toda corrida de Apify llevó **`resultsLimit`** y **`maxTotalChargeUsd`** — en los tres actores
 - [ ] Los anuncios se filtraron por **60-90+ días**; el orgánico por **2x el promedio de su cuenta**
 - [ ] Solo **10-15 contenidos** pasaron a lectura profunda; el resto quedó listado con su señal
 - [ ] El copy se leyó de **`snapshot.cards[].body`**, no solo del cuerpo del anuncio
-- [ ] La competencia se barrió **solo con `country=GT`** y **por página** (`search_type=page`)
-- [ ] Las referencias ganadoras salieron de la **lista fija de países**, y 🇨🇷/🇵🇦 solo si el cliente es premium o de ticket alto
-- [ ] **Competencia y referencias quedaron en secciones o archivos separados** — no en la misma lista
+- [ ] La competencia local se barrió **con el país del mercado del cliente** y **por página** (`search_type=page`)
+- [ ] Los **países de los niveles 2 y 3 salieron del mercado del cliente** y quedaron escritos con su motivo — no de una lista fija
+- [ ] **Cada nivel quedó en su sección o archivo**; la competencia no se mezcló con las referencias
+- [ ] Los ganadores se subieron a Research con **`guardar_research`**, con el `tipo` de su nivel, tras `listar_research`
+- [ ] La investigación se **refrescó este mes** (días 1-3 del ciclo)
 - [ ] La metadata se pidió **completa en una sola llamada**
 - [ ] Máximo **3 búsquedas infructuosas** por objetivo; después se pidió un nombre, handle o link
 - [ ] Ningún error ni timeout se reportó como cero; ningún cero se describió como *"no existe"*

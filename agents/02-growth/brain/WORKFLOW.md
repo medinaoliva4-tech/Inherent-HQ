@@ -28,6 +28,7 @@ paso vive en las skills: `skills/README.md`.
 | **Pilar 2 · Canales grandes** | ⬜ | ⬜ | ✅ Abrir y vender | ✅ Canal permanente |
 | **Pilar 3 · Upsells** | ⬜ | ⬜ | ✅ Diseñar y lanzar | ✅ Operando solo |
 | **Conversion OS** | ⬜ | ⬜ | ✅ Que nadie se pierda · closing | ✅ + referidos y comunidad |
+| **Captura de leads** *(Capa 1B)* | ⬜ | ⬜ | ✅ Una receta principal | ✅ Principal + apoyo |
 | **Operations OS** | ⬜ | ⬜ | 🟡 SOPs **de crecimiento** | ✅ SOPs **de empresa** |
 | **Money OS** | ⬜ | ⬜ | ⬜ | ✅ Margen por línea · CAC · LTV |
 | **Herramienta a medida** | ⬜ | ⬜ | **1 por trimestre** | **1 por mes** |
@@ -42,6 +43,9 @@ paso vive en las skills: `skills/README.md`.
   a 🟨 Accelerate, no trabajo a absorber.
 - **Lo que sí corre en la línea 🔷 es el MENSAJE, y lo llevan ③ Marketing con ②B Branding.**
   Mensaje = cómo se cuenta lo que ya vende. Oferta = qué vende, en qué paquetes y por cuánto.
+- 🔷 **Los slots de «client-getting» sí existen en la línea Marketing** *(③ Marketing los marca)*,
+  pero su llamada a la acción apunta a `directo`: el DM o el WhatsApp del cliente, que ⑧ Community
+  atiende. **Armar la receta de captura es de 🟨.**
 - ⚠️ **🟨 Accelerate y 🟨 Compound entregan los mismos tres pilares.** Lo que cambia es el verbo:
   Accelerate **ejecuta**, Compound **sistematiza**. **Venderlo como «más pilares» es venderlo mal.**
 - 🛑 **El especialista es exclusivo de la línea 🟨.** Meterlo en un plan 🔷 rompe el margen de ese
@@ -121,7 +125,7 @@ de 🟨. Si el cliente lo pide, es upsell a 🟨 Accelerate, no trabajo a absorb
 |---|---|---|
 | **`motor-de-crecimiento.md`** | La oferta trabajada, el mapa o la apertura de canales grandes, la escalera de upsells y el sistema de conversión | El cliente · ③ Marketing · ⑩ Ads |
 | **`ofertas-a-empujar.md`** — 🔷 | Cuáles de las ofertas que ya existen se empujan este ciclo y con qué objetivo. Vive en `clients/<cliente>/07-oferta-y-ventas/` | ③ Marketing · ⑩ Ads |
-| **`aprendizaje-de-growth.md`** | Qué pilar movió el número, qué canal cerró, qué upsell se compró | ② Growth y ① Strategy |
+| **`aprendizaje-de-growth.md`** | Qué pilar movió el número, qué receta de captura trajo leads, qué canal cerró, qué upsell se compró | ② Growth y ① Strategy |
 
 ---
 
@@ -133,6 +137,8 @@ de 🟨. Si el cliente lo pide, es upsell a 🟨 Accelerate, no trabajo a absorb
    1  OFERTA        🔷 ligero — qué ofertas se empujan       → gr-oferta
         ▼           🟨 Pilar 1 — qué se vende y a qué precio
         ▼           🔴 🟨 la oferta nueva se escala al CEO — no para
+  1B  CAPTURA       🟨 objetivo de leads y la receta         → gr-captura
+        ▼
    2  CANALES       Pilar 2 — mapear o abrir                 → gr-canales-grandes
         ▼
    3  UPSELLS       Pilar 3 — 🟨 A y C solamente                 → gr-upsells
@@ -165,7 +171,9 @@ nada que escalar: no se toca el precio y no sale al cliente.
 |---|---|---|
 | Leer ofertas y precios de la competencia | Firecrawl `firecrawl_scrape` | ✅ |
 | Ver qué vende y cómo lo vende la categoría | AdWhispr `find_competitors` · `get_brand_ads` | ✅ |
-| Negocios, reseñas y contactos de una zona | Apify `crawler-google-places` | 🟡 |
+| Negocios, reseñas y contactos de una zona *(outbound)* | Apify `compass/crawler-google-places` | 🟡 |
+| Quién habla del problema en LinkedIn *(outbound)* | Apify `harvestapi/linkedin-post-search` | 🟡 |
+| Comenta-y-te-mando: palabra clave → DM | Zernio `comment_automations_*` | ⬜ |
 | Qué busca la gente antes de comprar | Apify `google-search-scraper` | 🟡 |
 | Automatizar seguimiento y recompra | Zapier → ManyChat / WhatsApp Business | ⬜ |
 | Construir landing, panel o CRM a medida | Claude *(código)* + Vercel | ⬜ |
@@ -188,9 +196,9 @@ nada que escalar: no se toca el precio y no sale al cliente.
 
 | A | Qué le toca |
 |---|---|
-| **③ Marketing** | Qué oferta se comunica este ciclo y con qué prioridad |
-| **④ Creatividad** | La oferta, el precio y el objetivo — para los ángulos |
-| **⑧ Community** | El sistema de seguimiento y recompra, para operarlo |
+| **③ Marketing** | Qué oferta se comunica este ciclo y con qué prioridad · 🟨 qué receta de captura toca, para marcar los slots |
+| **④ Creatividad** | La oferta, el precio y el objetivo — para los ángulos · la palabra, el recurso y la llamada a la acción de cada pieza de captura |
+| **⑧ Community** | El sistema de seguimiento y recompra, para operarlo · la automatización de comenta-y-te-mando y el registro de leads |
 | **⑩ Ads** | Qué se vende, a qué precio y cuál es el objetivo de la pauta — en 🔷, en `ofertas-a-empujar.md` |
 | **00 Account** | Lo que se le puede contar al cliente |
 
@@ -212,6 +220,7 @@ nada que escalar: no se toca el precio y no sale al cliente.
 - [ ] La **división** está identificada, de ① Strategy
 - [ ] Solo se activaron **los pilares que el plan paga**
 - [ ] 🟨 La oferta tiene **precio**, y lo aprobó el cliente · 🔷 **no se tocó** qué se vende, sus paquetes ni su precio
+- [ ] 🟨 La captura tiene **una receta principal** y un objetivo de leads **interno**: no se prometió al cliente
 - [ ] Cada movimiento traza a una **MUST BE TRUE**
 - [ ] Nada promete algo fuera de «Capacidades reales»
 - [ ] 🟨 La oferta nueva **se escaló al CEO** antes de llegar al cliente

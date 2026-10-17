@@ -366,7 +366,10 @@ export async function diagrams(root = document) {
 export function diagram(src) { setTimeout(diagrams, 0); return html`<div class="mmd">${src}</div>`; }
 
 // Perfiles de trabajo: se asignan a las personas en Team. Una persona puede tener varios.
-export const WORK_ROLES = [['ceo', 'CEO'], ['coo', 'COO · Operaciones'], ['content', 'Content · Agent operator'], ['video', 'Video editor · Agent operator'], ['finance', 'Finance + Business mapping · clientes'], ['cobros', 'Finanzas de Inherent · cobros'], ['ads', 'Ads management · Meta, Google, LinkedIn']];
+// Vistas por rol: cuando el perfil solo puede ver una sección, la pantalla lo dice (el servidor lo aplica de todos modos).
+export { canEdit, isSummary } from './roleviews.js';
+export const roChip = (me, area) => (!me?.views || me.views[area] === 'edita' ? '' : html`<span class="chip" title="Tu perfil ve esta sección pero no la cambia. Lo decide el CEO en Administración → Vistas por rol.">${me.views[area] === 'resumen' ? 'Resumen' : 'Solo lectura'}</span>`);
+export const WORK_ROLES = [['ceo', 'CEO'], ['coo', 'COO · Operaciones'], ['content', 'Content · Agent operator'], ['video', 'Video editor · Agent operator'], ['finance', 'Finance + Business mapping · clientes'], ['cobros', 'Finanzas de Inherent · cobros'], ['ads', 'Ads management · Meta, Google, LinkedIn'], ['ventas', 'Ventas · CRM y seguimiento']];
 export const roleName = (k) => (WORK_ROLES.find(([x]) => x === k) || [k, k])[1];
 
 // ---------- Subir a Google Drive (directo del navegador a Google, con barra de avance) ----------
@@ -508,7 +511,7 @@ export const iconFor = (t) => { const x = String(t || '').toLowerCase();
 const INFO = [
   [/^hoy$/i, 'Tu día: tu agenda de Google Calendar y tus tareas abiertas. Marca la casilla cuando termines.'],
   [/^home$/i, 'El resumen del día: lo que entra, lo que se mueve y lo que tienes pendiente.'],
-  [/^revenue$/i, 'Lo que se facturó este mes, sacado de los ingresos de Finance.'],
+  [/^revenue$/i, 'Lo que se facturó este mes, sacado de los ingresos de Finanzas.'],
   [/^leads$/i, 'Los prospectos abiertos en Sales. = interés alto.'],
   [/^engagement$/i, 'De cada 100 personas que vieron tus posts, cuántas interactuaron (like, comentario, guardado, compartido). La flecha compara con el periodo anterior.'],
   [/^content$/i, 'Lo que se produce y se publica de cada perfil: shot list, planner, guiones, por postear, referencias y métricas.'],

@@ -62,6 +62,26 @@
 
 ---
 
+## § Captura
+*Capa 1B · `gr-captura`* — 🟨 🟨 · **la meta de leads es interna, no se promete**
+
+| | |
+|---|---|
+| **Objetivo** | *[N] leads al mes por [receta], de los cuales [M] llegan a reunión* — o `⚠️ SIN DATOS` |
+| **Receta principal** | *Y por qué esa: la naturaleza del negocio* |
+| **Receta de apoyo** | *Solo si la principal ya dio datos* |
+
+### Qué se produce y quién lo hace
+### Cómo entra el lead al CRM
+| Fuente | Etapa | Siguiente paso |
+|---|---|---|
+
+### Qué se mide
+| Receta | Leads/mes | % a reunión | % cierre |
+|---|---|---|---|
+
+---
+
 ## § Canales grandes
 *Capa 2 · `gr-canales-grandes`* — 🔷 **solo el mapa**
 

@@ -8,7 +8,7 @@ const C = col('content');
 
 export const loadPosts = async (profile) => (await C.list()).filter((p) => p.profile === profile && p.kind === 'post');
 
-// Los pilares de contenido de cada perfil (se definen en Content → Planner).
+// Los pilares de contenido de cada perfil (se definen en Contenido → Planner).
 export const pillarsOf = (profile) => conn[profile]?.pillars || [];
 export async function loadConn(profile) { if (!conn[profile] || conn[profile].loading) conn[profile] = await api(`content/cfg?profile=${encodeURIComponent(profile)}`).catch(() => ({})); return conn[profile]; }
 export function setConn(profile, patch) { conn[profile] = { ...(conn[profile] || {}), ...patch }; }

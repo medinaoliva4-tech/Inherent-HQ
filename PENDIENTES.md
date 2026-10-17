@@ -18,6 +18,8 @@
 | 6 | **Bloque «Lo básico vs. el valor único» de Marketing Pro** | `01-IDENTIDAD` lo tiene para Marketing, Accelerate y Compound, no para Pro |
 | 7 | **El margen de rodaje de cada plan** | Las horas contratadas son tiempo de cámara; ⑤ usa márgenes de referencia (60-90 / 30-45 / 45 min) mientras no se decida |
 | 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de ⑧. **`ceo-os/` va a Vercel (autorizado por el CEO):** la regla de CLAUDE.md ya lo contempla |
+| 8 | **La garantía de leads como promesa comercial** | Hoy es **meta interna**: ② `gr-captura` fija un objetivo de leads por mes y lo mide, pero no se promete al cliente ni va en una propuesta. Decidir si se vuelve garantía, con qué número y con qué condiciones, cuando haya datos de varios ciclos |
+| 9 | **La recompensa de referidos** | Para quien refiere *(cliente o tercero)*. Sin esto no se puede construir el sistema de referidos *(Construir #13)* |
 
 ---
 
@@ -37,6 +39,7 @@
 | 10 | **Cerantola: pasar lo básico a Figma** | Colores, fuentes y logos de `clients/cerantola/02-marca/sistema-visual.md` a la página «Cerantola». Lo complejo de la marca se diseña ahí |
 | 11 | **Cerantola: mejorar con IA las fotos del PDF** | Vienen en baja resolución. Se retocan con Higgsfield según las reglas de § Imagen |
 | 12 | **Cerantola: crear su perfil de Google Maps** | No existe, y al buscar «Cerantola» aparece Cerantola S.p.A. de Italia. Con su nombre, fotos de proyectos y reseñas de clientes. Ver `clients/cerantola/99-referencias/investigacion/referentes-por-canal.md` § Google |
+| 13 | **Sistema de referidos** *(para después)* | Para Inherent y como servicio, con plataformas externas. Falta decidir la recompensa *(Decisiones #9)*. Hoy no existe ni como skill ni como receta de ② Growth |
 
 ---
 
@@ -59,6 +62,7 @@
 | 10 | **Vetting de creadores con el scraper de Instagram** | Alianzas con creadores |
 | 11 | **`ffmpeg` local:** reencuadre y análisis de video | ⑦ y `cr-lectura-de-video` |
 | 12 | **Un mes completo al volumen prometido** *(86 / 145 / 145 / 204)* | Que el volumen sea capacidad probada |
+| 13 | **Captura de leads:** comenta-y-te-mando con Zernio `comment_automations_*` y prospección con Apify *(Maps y LinkedIn)* contra una cuenta real | ② `gr-captura` y el auto-DM de ⑧ |
 
 ### Las garantías — no se publican hasta cerrar los cuatro
 

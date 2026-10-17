@@ -2,7 +2,7 @@
 import * as db from './_lib/db.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
-import { guard, guardAny, areasFor, COLLS, READ_ALSO, WRITE_ALSO, canWrite, userFor, domain } from './_lib/access.js';
+import { guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
 import * as zernio from './_lib/zernio.js';
@@ -11,6 +11,10 @@ import * as oauth from './_lib/oauth.js';
 import * as flow from './_lib/flow.js';
 import * as ads from './_lib/ads.js';
 import * as refs from './_lib/refs.js';
+import * as leads from './_lib/leads.js';
+import * as recipes from './_lib/recipes.js';
+import * as recurring from './_lib/recurring.js';
+import * as results from './_lib/results.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
@@ -57,7 +61,8 @@ on('GET', 'auth/dev', async (req, res) => {
 on('GET', 'me', async (req, res) => {
   const u = await guard(req, res, undefined, { client: true }); if (!u) return;
   const t = await db.get('team', u.email);
-  res.json({ ...u, areas: areasFor(u.role, u.roles), google: t?.google || {}, birthday: t?.birthday || '', phone: t?.phone || '', bio: t?.bio || '', since: t?._meta?.created_at || '', mcp: Boolean(t?.mcp_hash) || Boolean(t?.mcp_grants?.length), mcp_apps: (t?.mcp_grants || []).map(({ g, name, at }) => ({ g, name, at })) });
+  // areas, views (profundidad por sección), scope (alcance de datos) y start (dónde abre) ya vienen aplicados por el servidor.
+  res.json({ ...u, google: t?.google || {}, birthday: t?.birthday || '', phone: t?.phone || '', bio: t?.bio || '', since: t?._meta?.created_at || '', mcp: Boolean(t?.mcp_hash) || Boolean(t?.mcp_grants?.length), mcp_apps: (t?.mcp_grants || []).map(({ g, name, at }) => ({ g, name, at })) });
 });
 // Cada quien cambia su propia foto (una imagen chica que el navegador ya recortó).
 on('PUT', 'me/photo', async (req, res) => {
@@ -82,26 +87,56 @@ on('GET', 'status', async (req, res) => {
 });
 
 // ---------- documentos ----------
+// La matriz del CEO manda: lo oculto no se entrega (403), «completo» solo lee, «edita» escribe.
+// Costos, tarifas y pagos (rates, packages, bundles, payroll) solo los lee el CEO, siempre.
+// settings lo lee cualquiera del equipo (ahí viven la matriz, el calendario de empresa y la carpeta de entregas).
 async function collGuard(req, res, write) {
   const coll = req.params.coll;
   const area = COLLS[coll];
   if (!area) { res.status(404).json({ error: 'Colección desconocida' }); return null; }
-  const u = await guardAny(req, res, [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])]); if (!u) return null;
+  const any = coll === 'settings' && !write ? null : [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])];
+  const u = any ? await guardAny(req, res, any, { write }) : await guard(req, res); if (!u) return null;
+  if (!canRead(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO ve esto' }); return null; }
   if (write && !canWrite(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO puede cambiar esto' }); return null; }
   return u;
 }
 // Tareas: «solo yo» la ven quien la creó y a quien se asignó; «ciertas personas» suma a las elegidas.
+// Una tarea «Personal» la ve solo quien la creó (aunque su visibilidad diga «todos»).
 const seesTask = (u, t) => {
+  if (t?.tipo === 'Personal') return String(t._meta?.created_by || t.assignee || '').toLowerCase() === u.email;
   const vis = t?.visibility || 'all'; if (vis === 'all') return true;
   const mine = [t._meta?.created_by, t.assignee, ...(vis === 'people' ? [t.accountable, ...(Array.isArray(t.viewers) ? t.viewers : [])] : [])];
   return mine.filter(Boolean).map((x) => String(x).toLowerCase()).includes(u.email);
 };
-const visible = (u, coll, d) => coll !== 'tasks' || seesTask(u, d);
-on('GET', 'db/:coll', async (req, res) => { const u = await collGuard(req, res); if (u) res.json({ items: (await db.list(req.params.coll)).filter((d) => visible(u, req.params.coll, d)) }); });
+// La marca personal del CEO es privada: su contenido (Research, planner, calendario, conexiones) solo lo ve él.
+const personalOk = (u, slug) => slug !== 'personal' || u.role === 'ceo';
+// Los docs de «sources» (scrape-, refs-, ads-, ideas-…<perfil>) no siempre traen el campo profile: el perfil sale también del id.
+const profOf = (coll, d) => (coll === 'sources' ? d?.profile || String(d?.id || '').replace(/^(cfg|scrape|analytics|ideas|refs|ads)-/, '') : d?.profile);
+// El link de la hoja de Finanzas solo lo lee quien ve Finanzas.
+const visible = (u, coll, d) => (coll !== 'tasks' || seesTask(u, d)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'settings' || d?.id !== 'finance_sheet' || u.areas.includes('finanzas'));
+// El alcance (todos · asignados · propio) filtra proyectos, tareas, cuentas de clientes y leads.
+const scopeOf = (u, coll) => (SCOPED.includes(coll) || ['content', 'sources'].includes(coll) ? scoper(u) : null);
+// Content y sources llevan el perfil (un cliente, inherent o personal): con alcance «asignados» o «propio» solo entran los de sus clientes.
+const profInScope = (sc, coll, d) => { if (!sc || !['content', 'sources'].includes(coll)) return true; const p = profOf(coll, d); return !p || p === 'inherent' || sc.client(p); };
+// El tipo de una tarea es uno de cuatro; el SOP es el id de un doc de la Library o un link https.
+const TASK_TIPOS = ['Delivery', 'Comercial', 'Interna', 'Personal'];
+const cleanTask = (b) => {
+  const o = { ...b };
+  if (!TASK_TIPOS.includes(o.tipo)) delete o.tipo;
+  const sop = String(o.sop || '').trim();
+  if (!sop || (!/^https?:\/\/\S+$/i.test(sop) && !/^[\w.@+-]{1,120}$/.test(sop))) delete o.sop; else o.sop = sop.slice(0, 500);
+  return o;
+};
+on('GET', 'db/:coll', async (req, res) => {
+  const u = await collGuard(req, res); if (!u) return;
+  const coll = req.params.coll, sc = await scopeOf(u, coll);
+  res.json({ items: (await db.list(coll)).filter((d) => visible(u, coll, d) && inScope(sc, coll, d) && profInScope(sc, coll, d)) });
+});
 on('GET', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res); if (!u) return;
   const d = await db.get(req.params.coll, req.params.id);
-  d && visible(u, req.params.coll, d) ? res.json(d) : res.status(404).json({ error: 'No existe' });
+  const sc = d ? await scopeOf(u, req.params.coll) : null;
+  d && visible(u, req.params.coll, d) && inScope(sc, req.params.coll, d) && profInScope(sc, req.params.coll, d) ? res.json(d) : res.status(404).json({ error: 'No existe' });
 });
 // Una persona con correo que no es del dominio queda como «aprobada de afuera» (puede entrar con Google).
 const markExternal = (coll, b, id) => { if (coll === 'team') { const e = String(b.email || id || '').toLowerCase(); if (e.includes('@') && !e.endsWith('@' + domain())) b.external = true; else delete b.external; if (b.role === 'client' && !b.client_slug) throw Object.assign(new Error('Falta el cliente del portal'), { status: 400 }); } return b; };
@@ -110,7 +145,18 @@ on('POST', 'db/:coll', async (req, res) => {
   let b = body(req);
   try { b = markExternal(req.params.coll, b, b.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
+  if (req.params.coll === 'leads') {
+    // El CRM: candado de siguiente paso, historial que solo se agrega y nada duplicado por WhatsApp, correo o IG.
+    b = leads.normalize(b); b.activity = leads.mergeActivity([], b.activity);
+    const bad = leads.check(b); if (bad) return res.status(400).json({ error: bad });
+    const dup = leads.findDup(await db.list('leads'), b); if (dup) return res.status(409).json({ error: `Ya existe un lead con ese WhatsApp, correo o cuenta: ${dup.name}`, id: dup.id });
+  }
+  if (req.params.coll === 'lead_sources') b = leads.cleanSource(b);
+  if (req.params.coll === 'tasks') b = results.stampDone(null, cleanTask(b));
+  if (req.params.coll === 'recipes') { try { b = { ...recipes.cleanRecipe(b), id: b.id }; } catch (e) { return res.status(400).json({ error: e.message }); } }
+  if (['content', 'sources'].includes(req.params.coll) && !personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' });
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
+  if (req.params.coll === 'settings' && (id === 'role_views' || b.id === 'role_views')) forgetViews();
   try { res.json(await db.create(req.params.coll, b, u.email, id)); }
   catch (e) { if (/duplicate|unique/i.test(e.message)) return res.status(409).json({ error: 'Ya existe' }); throw e; }
 });
@@ -119,9 +165,21 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   let b = body(req);
   try { b = markExternal(req.params.coll, b, req.params.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
+  // Fuera del alcance de la persona (o de la marca personal) no se cambia: para ella no existe.
+  if (SCOPED.includes(req.params.coll) || ['content', 'sources'].includes(req.params.coll)) { const cur = await db.get(req.params.coll, req.params.id); if (cur && (!inScope(await scopeOf(u, req.params.coll), req.params.coll, cur) || !visible(u, req.params.coll, cur))) return res.status(404).json({ error: 'No existe' }); if (!personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' }); }
+  if (req.params.coll === 'settings' && req.params.id === 'role_views') forgetViews();
+  if (req.params.coll === 'leads') {
+    const cur = await db.get('leads', req.params.id); if (!cur) return res.status(404).json({ error: 'No existe' });
+    b = leads.normalize(b); b.activity = leads.mergeActivity(cur.activity, b.activity);
+    const bad = leads.check(b); if (bad) return res.status(400).json({ error: bad });
+  }
+  if (req.params.coll === 'recipes') { try { b = { ...recipes.cleanRecipe(b), v: b.v }; } catch (e) { return res.status(400).json({ error: e.message }); } }
+  if (req.params.coll === 'lead_sources') { const cur = await db.get('lead_sources', req.params.id); b = { ...leads.cleanSource({ ...cur, ...b, key: cur?.key || b.key }), log: cur?.log || [], n: cur?.n || null, v: b.v }; }
   if (req.params.coll === 'tasks') {
+    b = cleanTask(b);
     const cur = await db.get('tasks', req.params.id);
     if (!visible(u, 'tasks', cur)) return res.status(404).json({ error: 'No existe' });
+    b = results.stampDone(cur, b); // el día en que quedó «Hecha»: así se mide si se entregó a tiempo
     // Una tarea con dependencias sin terminar no avanza (el CEO y el COO pueden forzarlo).
     if (b.status && b.status !== 'Por empezar' && b.status !== cur?.status && !['ceo', 'coo'].includes(u.role)) {
       const all = (b.depends_on || cur?.depends_on || []).length ? await db.list('tasks') : [];
@@ -134,13 +192,17 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
 });
 on('DELETE', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
-  if (req.params.coll === 'tasks' && !visible(u, 'tasks', await db.get('tasks', req.params.id))) return res.status(404).json({ error: 'No existe' });
+  const cur = await db.get(req.params.coll, req.params.id);
+  if (cur && (!visible(u, req.params.coll, cur) || !inScope(await scopeOf(u, req.params.coll), req.params.coll, cur))) return res.status(404).json({ error: 'No existe' });
+  if (req.params.coll === 'settings' && req.params.id === 'role_views') forgetViews();
   res.json({ ok: await db.remove(req.params.coll, req.params.id, u.email) });
 });
 
 // ---------- del repo: solo economía y clientes ----------
 on('GET', 'repo/economia', async (req, res) => {
+  // Costos y márgenes por plan: solo el CEO, aunque Finance se vea en resumen.
   const u = await guard(req, res, 'finanzas'); if (!u) return;
+  if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO ve los costos' });
   const [eco, op] = await Promise.all([readFile('inherent/06-ECONOMIA.md'), readFile('inherent/05-OPERACION.md')]);
   if (!eco) return res.status(502).json({ error: 'No pude leer 06-ECONOMIA.md del repo. Vuelve a publicar la app (el build copia el repo).', code: 'NO_REPO' });
   res.json({ ...parseEconomia(eco.content), ...(op ? parseOperacion(op.content) : { roles: [], slots: [] }) });
@@ -155,7 +217,8 @@ on('GET', 'repo/precios', async (req, res) => {
 });
 on('GET', 'repo/clients', async (req, res) => {
   const u = await guardAny(req, res, ['operations', 'clients', 'library', 'work']); if (!u) return;
-  const dirs = (await listDir('clients')).filter((d) => d.type === 'dir' && !d.name.startsWith('_'));
+  const sc = await scoper(u);
+  const dirs = (await listDir('clients')).filter((d) => d.type === 'dir' && !d.name.startsWith('_') && (!sc || sc.client(d.name)));
   const clients = await Promise.all(dirs.map(async (d) => {
     const f = await readFile(`clients/${d.name}/00-onboarding/plan-contratado.md`);
     return f ? { slug: d.name, hasPlan: true, ...parsePlanContratado(f.content, u.role) } : { slug: d.name, hasPlan: false };
@@ -166,28 +229,35 @@ on('GET', 'repo/clients', async (req, res) => {
 
 // ---------- Content: lee el folder del perfil en el repo + scrape semanal con Apify ----------
 const slugOk = (s) => /^[\w-]{2,60}$/.test(String(s || ''));
+// Los perfiles de Content que ve una persona: la marca personal solo el CEO; los clientes, según su alcance.
+async function profilesFor(u) {
+  const sc = await scoper(u);
+  return (await content.profiles()).filter((p) => personalOk(u, p.slug) && (!sc || p.slug === 'inherent' || sc.client(p.slug)));
+}
+const profGuard = (u, slug) => personalOk(u, slug);
 on('GET', 'repo/content', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
-  const list = await content.profiles();
+  const list = await profilesFor(u);
+  if (!list.length) return res.status(403).json({ error: 'No tienes perfiles de Content asignados' });
   const p = list.find((x) => x.slug === req.query.profile) || list[0];
   res.json({ profiles: list.map(({ slug, name }) => ({ slug, name })), profile: await content.profile(p), cfg: await content.cfg(p.slug), apify: content.apifyOn() });
 });
 on('PUT', 'content/cfg', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
-  const b = body(req); if (!slugOk(b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
+  const u = await guard(req, res, 'content', { write: true }); if (!u) return;
+  const b = body(req); if (!slugOk(b.profile) || !profGuard(u, b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
   const c = content.cleanCfg(b);
   await db.upsert('sources', 'cfg-' + b.profile, { profile: b.profile, ...c }, u.email);
   res.json(c);
 });
 on('POST', 'content/scrape', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
-  const slug = String(body(req).profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  const u = await guard(req, res, 'content', { write: true }); if (!u) return;
+  const slug = String(body(req).profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   try { const d = await content.scrape(slug, u.email); res.json({ week: d.week, at: d.at }); }
   catch (e) { if (e.status === 400) return res.status(400).json({ error: e.message }); throw e; }
 });
 on('GET', 'content/week', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
-  const slug = String(req.query.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  const slug = String(req.query.profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   let doc = await db.get('sources', 'scrape-' + slug), warn = null;
   if (doc?.runs?.length && !doc.result && content.apifyOn()) { try { doc = await content.settle(slug, u.email); } catch (e) { warn = e.message; } }
   const an = await db.get('sources', 'analytics-' + slug);
@@ -196,25 +266,25 @@ on('GET', 'content/week', async (req, res) => {
 // Referencias por pilar: videos que pega el equipo → Apify busca similares → se desglosan con Claude.
 on('GET', 'content/refs', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
-  const slug = String(req.query.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  const slug = String(req.query.profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   let doc = await refs.get(slug), warn = null;
   if (doc.runs?.length && !doc.result && refs.on()) { try { doc = await refs.settle(slug, u.email); } catch (e) { warn = e.message; } }
   res.json({ apify: refs.on(), videos: doc.videos || {}, breakdown: doc.breakdown || {}, result: doc.result || null, status: !doc.runs ? 'none' : doc.result ? 'done' : 'running', phase: doc.phase || 0, at: doc.at || null, warn });
 });
 on('PUT', 'content/refs', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
-  const b = body(req); if (!slugOk(b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
+  const u = await guard(req, res, 'content', { write: true }); if (!u) return;
+  const b = body(req); if (!slugOk(b.profile) || !profGuard(u, b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
   const d = await refs.saveVideos(b.profile, b.videos, u.email); res.json({ videos: d.videos });
 });
 on('POST', 'content/refs/scrape', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
-  const slug = String(body(req).profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  const u = await guard(req, res, 'content', { write: true }); if (!u) return;
+  const slug = String(body(req).profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   try { await refs.start(slug, u.email); res.json({ ok: true }); }
   catch (e) { if (e.status || e.code) return res.status(e.status || 503).json({ error: e.message }); throw e; }
 });
 on('PUT', 'content/refs/breakdown', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
-  const b = body(req); if (!slugOk(b.profile) || !b.pillar) return res.status(400).json({ error: 'Falta el perfil o el pilar' });
+  const u = await guard(req, res, 'content', { write: true }); if (!u) return;
+  const b = body(req); if (!slugOk(b.profile) || !profGuard(u, b.profile) || !b.pillar) return res.status(400).json({ error: 'Falta el perfil o el pilar' });
   const d = await refs.saveBreakdown(b.profile, b.pillar, b.items, u.email); res.json({ breakdown: d.breakdown });
 });
 
@@ -258,12 +328,12 @@ on('GET', 'media/:id', async (req, res) => {
 // Lo puede leer todo el equipo: el editor de video necesita llegar a los guiones y a la carpeta de entregas.
 on('GET', 'content/cfg', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
-  const slug = String(req.query.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  const slug = String(req.query.profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   res.json(await content.cfg(slug));
 });
 on('PUT', 'content/connect', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
-  const b = body(req); if (!slugOk(b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
+  const u = await guard(req, res, 'content', { write: true }); if (!u) return;
+  const b = body(req); if (!slugOk(b.profile) || !profGuard(u, b.profile)) return res.status(400).json({ error: 'Perfil inválido' });
   const patch = { profile: b.profile };
   if ('postear_drive' in b) {
     const url = String(b.postear_drive || '');
@@ -284,7 +354,7 @@ on('PUT', 'content/connect', async (req, res) => {
 on('GET', 'analytics/instagram', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
   if (!content.windsorOn()) return res.json({ connected: false });
-  const p = (await content.profiles()).find((x) => x.slug === req.query.profile); if (!p) return res.status(400).json({ error: 'Perfil inválido' });
+  const p = (await profilesFor(u)).find((x) => x.slug === req.query.profile); if (!p) return res.status(400).json({ error: 'Perfil inválido' });
   // La cuenta elegida en la app manda; si no hay, las de LINKS.md del repo.
   const picked = (await content.cfg(p.slug)).ig_account;
   const handles = picked ? [picked] : (await content.profile(p)).own.filter((a) => a.red === 'instagram').map((a) => a.handle);
@@ -302,13 +372,13 @@ const cleanIdeas = (list) => (Array.isArray(list) ? list : []).slice(0, 30).map(
 })).filter((x) => x.title);
 on('GET', 'content/ideas', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
-  const slug = String(req.query.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  const slug = String(req.query.profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   const d = await db.get('sources', 'ideas-' + slug);
   res.json({ at: d?.at || null, week: d?.week || null, ideas: d?.ideas || [] });
 });
 on('PUT', 'content/ideas', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
-  const b = body(req); const slug = String(b.profile || ''); if (!slugOk(slug)) return res.status(400).json({ error: 'Perfil inválido' });
+  const u = await guard(req, res, 'content', { write: true }); if (!u) return;
+  const b = body(req); const slug = String(b.profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   const list = cleanIdeas(b.ideas); if (!list.length) return res.status(400).json({ error: 'No encontré ideas en lo que pegaste' });
   const doc = { profile: slug, at: new Date().toISOString(), week: String(b.week || '').slice(0, 12) || null, ideas: list };
   await db.upsert('sources', 'ideas-' + slug, doc, u.email);
@@ -318,7 +388,7 @@ on('PUT', 'content/ideas', async (req, res) => {
 on('GET', 'community/inbox', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
   if (!zernio.zernioOn()) return res.json({ connected: false });
-  const p = (await content.profiles()).find((x) => x.slug === req.query.profile); if (!p) return res.status(400).json({ error: 'Perfil inválido' });
+  const p = (await profilesFor(u)).find((x) => x.slug === req.query.profile); if (!p) return res.status(400).json({ error: 'Perfil inválido' });
   const handles = (await content.profile(p)).own.map((a) => a.handle);
   if (!handles.length) return res.json({ connected: true, noAccounts: true });
   try { res.json({ connected: true, handles, ...(await zernio.inbox(handles)) }); } catch (e) { res.status(502).json({ error: e.message }); }
@@ -345,10 +415,18 @@ on('GET', 'cron/settle', async (req, res) => {
   res.json({ done });
 });
 
+// Cada día deja lista la tarea de cada responsabilidad recurrente que ya toca (recetas internas activas).
+on('GET', 'cron/recurrentes', async (req, res) => {
+  const secret = process.env.CRON_SECRET;
+  if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).json({ error: 'No autorizado' });
+  const r = await recurring.run('sistema'); res.json({ creadas: r.creadas });
+});
+
 // ---------- Clientes: su perfil del repo ----------
 on('GET', 'repo/client/:slug', async (req, res) => {
   const u = await guardAny(req, res, ['clients', 'work']); if (!u) return;
   const slug = req.params.slug; if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  { const sc = await scoper(u); if (sc && !sc.client(slug)) return res.status(404).json({ error: 'Ese cliente no está entre los tuyos' }); }
   const [plan, links] = await Promise.all([readFile(`clients/${slug}/00-onboarding/plan-contratado.md`), readFile(`clients/${slug}/00-onboarding/LINKS.md`)]);
   if (!plan && !links) {
     // Cliente que entró por el flujo de pago: vive en la app (su ficha) aunque no tenga folder en el repo.
@@ -395,7 +473,7 @@ async function companyFolder(u, client, sub) {
 const CLIENT_DIRS = ['00 Onboarding', '01 Assets de marca', '02 Guiones', '03 Crudo (grabaciones)', '04 Por postear', '05 Entregables', '06 Reportes'];
 const folderUrl = (id) => `https://drive.google.com/drive/folders/${id}`;
 on('POST', 'drive/client', async (req, res) => {
-  const u = await guardAny(req, res, ['clients', 'operations']); if (!u) return;
+  const u = await guardAny(req, res, ['clients', 'operations'], { write: true }); if (!u) return;
   const b = body(req); const slug = String(b.slug || ''); if (!/^[\w-]{2,60}$/.test(slug)) return res.status(400).json({ error: 'Cliente inválido' });
   const root = driveId((await db.get('settings', 'drive'))?.root);
   if (!root) return res.status(400).json({ error: 'Primero define la carpeta de entregas de Inherent (Arranque → paso 5).' });
@@ -445,7 +523,7 @@ on('GET', 'google/drive', async (req, res) => {
   res.json({ folder: meta, files: (list.files || []).map((f) => ({ id: f.id, name: f.name, mime: f.mimeType, link: f.webViewLink, modified: f.modifiedTime, owner: f.owners?.[0]?.displayName || null })) });
 });
 on('POST', 'google/drive', async (req, res) => {
-  const u = await guard(req, res, 'library'); if (!u) return;
+  const u = await guard(req, res, 'library', { write: true }); if (!u) return;
   const b = body(req); const parent = driveId(b.folder);
   const MIME = { doc: 'application/vnd.google-apps.document', sheet: 'application/vnd.google-apps.spreadsheet', slides: 'application/vnd.google-apps.presentation', folder: 'application/vnd.google-apps.folder' };
   const name = String(b.name || '').trim().slice(0, 200);
@@ -467,7 +545,7 @@ on('GET', 'finance/sheet', async (req, res) => {
   res.json({ url, csv: (await r.text()).slice(0, 2_000_000) });
 });
 on('PUT', 'finance/sheet', async (req, res) => {
-  const u = await guard(req, res, 'finanzas'); if (!u) return;
+  const u = await guard(req, res, 'finanzas', { write: true }); if (!u) return;
   if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO puede cambiar esto' });
   const url = String(body(req).url || '').trim();
   if (url && !sheetId(url)) return res.status(400).json({ error: 'Pega el link de una hoja de Google Sheets' });
@@ -475,7 +553,7 @@ on('PUT', 'finance/sheet', async (req, res) => {
   res.json({ url });
 });
 on('POST', 'finance/sheet', async (req, res) => {
-  const u = await guard(req, res, 'finanzas'); if (!u) return;
+  const u = await guard(req, res, 'finanzas', { write: true }); if (!u) return;
   if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO puede cambiar esto' });
   const B = 'inh' + Date.now();
   const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink&supportsAllDrives=true', {
@@ -555,6 +633,7 @@ on('PUT', 'google/calendars', async (req, res) => {
 // ---------- diagnóstico (CEO) ----------
 on('GET', 'health', async (req, res) => {
   const u = await guard(req, res, 'finanzas'); if (!u) return;
+  if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO' });
   const env = ['DATABASE_URL', 'POSTGRES_URL', 'SESSION_SECRET', 'APP_URL', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'ADMIN_EMAILS', 'GITHUB_TOKEN', 'GITHUB_REPO', 'GITHUB_BRANCH'];
   let repo = 'sin probar';
   try { repo = (await readFile('inherent/06-ECONOMIA.md')) ? 'ok' : 'no encuentra el archivo (token sin acceso al repo, o repo/rama incorrectos)'; } catch (e) { repo = e.message; }
@@ -585,7 +664,7 @@ on('GET', 'portal', async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
   const [acc, projects, tasks, posts, f, p] = await Promise.all([db.get('accounts', 'acc-' + slug), db.list('projects'), db.list('tasks'), db.list('content'), readFile(`clients/${slug}/00-onboarding/plan-contratado.md`), content.profiles().then((l) => l.find((x) => x.slug === slug))]);
   const ps = projects.filter((x) => x.client_slug === slug);
-  const pt = (pid) => tasks.filter((t) => t.project_id === pid && (t.visibility || 'all') === 'all');
+  const pt = (pid) => tasks.filter((t) => t.project_id === pid && (t.visibility || 'all') === 'all' && t.tipo !== 'Personal');
   const pct = (l) => (l.length ? Math.round((l.filter((t) => t.status === 'Hecha').length / l.length) * 100) : null);
   const out = {
     slug, name: acc?.name || slug.toUpperCase(), plan: f ? String(parsePlanContratado(f.content, 'team').plan || '').replace(/^[⬜🔷🟨]️?\s*/u, '') : '',
@@ -597,7 +676,7 @@ on('GET', 'portal', async (req, res) => {
     meetings: ps.flatMap((x) => (x.meetings || []).filter((m) => (m.who || []).includes('cliente')).map((m) => ({ date: m.date, name: m.name, topics: m.topics || [], approves: m.approves || '', status: m.status || 'todo' }))).sort((a, z) => a.date.localeCompare(z.date)),
     content: posts.filter((x) => x.kind === 'post' && x.profile === slug && x.date && x.date >= new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10)).map((x) => ({ title: x.title, format: x.format || 'Pieza', date: x.date, status: x.status || 'Idea', pillar: x.pillar || '' })).sort((a, z) => a.date.localeCompare(z.date)),
     goals: (acc?.goals || []).map((g) => ({ goal: g.goal, metric: g.metric, baseline: g.baseline, current: g.current, target: g.target, due: g.due, status: g.status, checks: (g.checks || []).map(({ date, done, value }) => ({ date, done, value })) })),
-    delivered: ps.flatMap((x) => pt(x.id).filter((t) => t.status === 'Hecha').map((t) => ({ title: t.title.replace(/\s·\s[^·]+\(\d+(\.\d+)? h\)$/, ''), date: String(t._meta?.updated_at || '').slice(0, 10) }))).sort((a, z) => z.date.localeCompare(a.date)).slice(0, 20),
+    delivered: ps.flatMap((x) => pt(x.id).filter((t) => t.status === 'Hecha').map((t) => ({ title: t.title.replace(/\s·\s[^·]+\(\d+(\.\d+)? h\)$/, ''), date: t.done_at || String(t._meta?.updated_at || '').slice(0, 10) }))).sort((a, z) => z.date.localeCompare(a.date)).slice(0, 20),
     folder: acc?.drive_dirs?.['05 Entregables'] || null,
     onboarding: acc?.onboarding ? { items: acc.onboarding.items.map(({ t, done, note }) => ({ t, done, note })), done_at: acc.onboarding.done_at || null } : null,
     people: (await db.list('team')).filter((x) => x.role === 'client' && x.client_slug === slug && x.active !== false).map((x) => ({ email: x.email || x.id, name: x.name || '' })),
@@ -657,16 +736,55 @@ on('POST', 'ads/competitors/:slug', async (req, res) => {
   catch (e) { if (e.status || e.code) return res.status(e.status || 503).json({ error: e.message }); res.status(502).json({ error: e.message }); }
 });
 
+// ---------- Resultados: los números reales de Inherent y de cada cliente ----------
+// Cada bloque sale solo si la persona ve su sección de origen; lo que no tiene dato va vacío, nunca en cero.
+on('GET', 'results', async (req, res) => {
+  const u = await guard(req, res, 'resultados'); if (!u) return;
+  res.json(await results.compute(u, { dias: +req.query.dias || 90 }));
+});
+// Las redes de un cliente (Instagram por Windsor): aparte, porque tarda.
+on('GET', 'results/redes/:slug', async (req, res) => {
+  const u = await guard(req, res, 'resultados'); if (!u) return;
+  const slug = req.params.slug; if (!slugOk(slug) || slug === 'personal') return res.status(400).json({ error: 'Cliente inválido' });
+  if (!u.areas.includes('clients')) return res.status(403).json({ error: 'Sin acceso a esta área' });
+  const sc = await scoper(u); if (sc && !sc.client(slug)) return res.status(404).json({ error: 'No existe' });
+  try { res.json(await results.redes(slug)); } catch (e) { res.status(502).json({ error: e.message }); }
+});
+
 // ---------- Flujo: lead → cotización → pago → proyecto ----------
 on('POST', 'flow/quote/:id', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   const b = body(req);
-  try { res.json(await flow.step({ ...u, areas: areasFor(u.role, u.roles) }, req.params.id, String(b.action || ''), b, appUrl(req))); }
+  try { res.json(await flow.step(u, req.params.id, String(b.action || ''), b, appUrl(req))); }
   catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
+});
+// Paquete o plan → proyecto con las tareas de las recetas; rol → persona por proyecto; lo recurrente.
+// Quien cambia proyectos necesita nivel «edita» en Operations; el alcance (clientes asignados) se respeta.
+const fail4 = (res, e) => { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; };
+on('GET', 'flow/bundles', async (req, res) => {
+  const u = await guardAny(req, res, ['operations', 'sales']); if (!u) return;
+  res.json({ bundles: await flow.bundleList() });
+});
+on('POST', 'flow/activate', async (req, res) => {
+  const u = await guard(req, res, 'operations', { write: true }); if (!u) return;
+  const b = body(req), slug = flow.slugify(b.slug);
+  const sc = await scoper(u); if (sc && slug !== 'inherent' && !sc.client(slug)) return res.status(403).json({ error: 'Ese cliente no está entre los tuyos' });
+  try { res.json(await flow.activate(u, { bundle_id: b.bundle_id, plan: b.plan === true || b.plan === 'si', slug, label: b.label, start: b.start, name: b.name })); } catch (e) { fail4(res, e); }
+});
+on('POST', 'flow/role', async (req, res) => {
+  const u = await guard(req, res, 'operations', { write: true }); if (!u) return;
+  const b = body(req), p = await db.get('projects', String(b.project_id || ''));
+  if (p && !inScope(await scoper(u), 'projects', p)) return res.status(404).json({ error: 'El proyecto no existe' });
+  try { res.json(await flow.setRole(u, b)); } catch (e) { fail4(res, e); }
+});
+on('POST', 'recipes/run', async (req, res) => {
+  const u = await guard(req, res, 'operations', { write: true }); if (!u) return;
+  if (!['ceo', 'coo'].includes(u.role)) return res.status(403).json({ error: 'Solo el CEO o el COO generan lo recurrente' });
+  res.json(await recurring.run(u.email));
 });
 on('GET', 'flow/proof/:id', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
-  const p = await flow.proof({ ...u, areas: areasFor(u.role, u.roles) }, req.params.id);
+  const p = await flow.proof(u, req.params.id);
   p ? res.json({ name: p.name, data: p.data }) : res.status(404).json({ error: 'No existe' });
 });
 
@@ -727,6 +845,50 @@ on('POST', 'mcp/:token', async (req, res) => {
   r.json ? res.status(r.status).json(r.json) : res.status(r.status).end();
 });
 on('GET', 'mcp/:token', async (req, res) => res.status(405).json({ error: 'Este link es para Claude o Codex (MCP por HTTP)' }));
+
+// ---------- Entrada pública de leads: una sola puerta, una clave por fuente ----------
+// Sin sesión: la clave de la fuente (Comercial → Fuentes) es lo que autoriza. CORS abierto para que
+// formularios, el quiz, Zapier o la web puedan mandar. Cuerpo chico, sin duplicados, y todo queda en el registro de la fuente.
+const keyOk = (k) => /^[\w-]{16,80}$/.test(String(k || ''));
+// Dos defensas simples para la puerta pública: un honeypot (un campo oculto llamado «_hp» que solo llenan los bots;
+// el quiz ya lo trae, y un formulario externo lo agrega igual) y un límite por IP y clave (12 envíos cada
+// 10 minutos, en memoria: alcanza para formularios y el quiz en Vercel; cada instancia cuenta lo suyo).
+const HONEY = ['_hp', 'hp', 'fax'];
+const isBot = (b) => HONEY.some((k) => String(b?.[k] || '').trim());
+const ipOf = (req) => String(req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || '').split(',')[0].trim() || 'sin-ip';
+const RATE = { max: 12, window: 10 * 60_000, hits: new Map() };
+export function rateOk(ip, key, now = Date.now()) {
+  if (RATE.hits.size > 5000) for (const [k, v] of RATE.hits) if (now - v.at > RATE.window) RATE.hits.delete(k);
+  const k = ip + '|' + key, h = RATE.hits.get(k);
+  if (!h || now - h.at > RATE.window) { RATE.hits.set(k, { at: now, n: 1 }); return true; }
+  h.n++; return h.n <= RATE.max;
+}
+on('OPTIONS', 'intake/:key', async (req, res) => { cors(res); res.status(204).end(); });
+on('OPTIONS', 'intake/quiz', async (req, res) => { cors(res); res.status(204).end(); });
+// La clave de la fuente del quiz público (/diagnostico): la principal de tipo quiz, o la primera activa.
+on('GET', 'intake/quiz', async (req, res) => { cors(res); const sq = await leads.quizSource(); res.json({ key: sq?.key || null }); });
+on('GET', 'intake/:key', async (req, res) => { cors(res); res.status(405).json({ error: 'Esta puerta recibe POST con los datos del lead (JSON o formulario).' }); });
+on('POST', 'intake/:key', async (req, res) => {
+  cors(res);
+  if (!keyOk(req.params.key)) return res.status(404).json({ error: 'Fuente desconocida' });
+  const raw = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || {});
+  if (raw.length > 20_000) return res.status(413).json({ error: 'Demasiado grande (máximo 20 KB)' });
+  const src = await leads.sourceByKey(req.params.key);
+  if (!src) return res.status(404).json({ error: 'Fuente desconocida o pausada' });
+  if (!rateOk(ipOf(req), req.params.key)) return res.status(429).json({ error: 'Demasiados envíos. Inténtalo en unos minutos.' });
+  const b = formBody(req);
+  // Un bot llenó el campo oculto: se le dice que sí y no se guarda nada (queda en el registro de la fuente, sin contar como fallo).
+  if (isBot(b)) { await leads.logSource(src, { ok: false, spam: true, error: 'Descartado: parece un bot (honeypot)' }).catch(() => {}); return res.json({ ok: true, id: null }); }
+  try {
+    const r = await leads.intake(src, b);
+    await leads.logSource(src, { ok: true, name: r.lead.name, lead_id: r.lead.id, duplicate: r.duplicate });
+    res.json({ ok: true, id: r.lead.id, duplicate: r.duplicate });
+  } catch (e) {
+    if (!e.status) console.error('intake', e);
+    await leads.logSource(src, { ok: false, error: e.status ? e.message : 'Error del servidor', raw: JSON.stringify(b).slice(0, 300) }).catch(() => {});
+    res.status(e.status || 500).json({ error: e.status ? e.message : 'Error del servidor' });
+  }
+});
 
 export default async function handler(req, res) {
   try {

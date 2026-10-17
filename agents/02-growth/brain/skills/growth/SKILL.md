@@ -7,10 +7,11 @@ description: >
   planes: ligero en la línea Marketing (elige qué ofertas que ya existen se empujan), completo en
   Accelerate y Compound. No para: la oferta nueva se escala al CEO antes de llevarla al cliente.
   Úsala SIEMPRE que el pedido tenga que ver con la oferta, el precio, qué oferta se empuja, canales
-  grandes (eventos, mayoreo, corporativos, cuentas grandes), upsells, recompra, conversión,
-  closing, herramientas a medida o los números del negocio. Se dispara con "mejorá la oferta de
-  X", "qué oferta empujamos este mes", "cómo subimos el ticket", "qué canales grandes hay", "se
-  nos pierden los leads", "cuánto nos deja cada producto". Requiere que la estrategia exista y la
+  grandes (eventos, mayoreo, corporativos, cuentas grandes), captura de leads (comenta-y-te-mando,
+  quiz, lead magnet, VSL, low ticket, outbound), upsells, recompra, conversión, closing,
+  herramientas a medida o los números del negocio. Se dispara con "mejorá la oferta de X", "qué
+  oferta empujamos este mes", "cómo conseguimos leads", "cómo subimos el ticket", "qué canales
+  grandes hay", "se nos pierden los leads", "cuánto nos deja cada producto". Requiere que la estrategia exista y la
   división definida: si faltan, BLOQUEA.
 ---
 
@@ -42,6 +43,9 @@ description: >
 **Al cliente se le dice:** *«Tu plan trabaja que te vean y te entiendan. Rediseñar qué vendes
 y a qué precio es el siguiente paso.»*
 
+🔷 **Los slots de «client-getting» de ③ Marketing apuntan a `directo`** *(el DM o el WhatsApp del
+cliente, que ⑧ Community atiende)*. **Las recetas de captura son de 🟨.**
+
 ---
 
 ## 1 · Pre-flight
@@ -66,6 +70,7 @@ con el negocio de otro.
 | | 🔷 Marketing / Pro | 🟨 Accelerate | 🟨 Compound |
 |---|---|---|---|
 | `gr-oferta` | 🟡 **Ligero** — qué ofertas se empujan | ✅ | ✅ |
+| `gr-captura` | ⛔ | ✅ | ✅ |
 | `gr-canales-grandes` | ⛔ | ✅ | ✅ |
 | `gr-upsells` | ⛔ | ✅ | ✅ |
 | `gr-conversion` | ⛔ | ✅ | ✅ |
@@ -83,6 +88,7 @@ con el negocio de otro.
 |---|---|
 | *«armá el motor de X»*, onboarding | **Las que el plan activa, en orden** |
 | *«la oferta»*, *«el precio»*, *«el empaque»*, *«qué oferta empujamos»* | `gr-oferta` |
+| *«cómo conseguimos leads»*, *«comenta y te mando»*, *«un quiz»*, *«un lead magnet»*, *«una VSL»*, *«prospectar»*, *«outbound»* | `gr-captura` |
 | *«eventos»*, *«mayoreo»*, *«corporativos»*, *«cuentas grandes»* | `gr-canales-grandes` |
 | *«subir el ticket»*, *«combos»*, *«membresías»*, *«recompra»* | `gr-upsells` |
 | *«se nos pierden los leads»*, *«que sepan cerrar»* | `gr-conversion` |
@@ -105,5 +111,6 @@ que escalar: elegir qué ofertas se empujan no cambia el precio ni sale al clien
 
 - [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
 - [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **sigue su pipeline**
+- [ ] 🟨 La captura tiene **una receta principal** y su objetivo de leads es **interno**: no se prometió al cliente
 - [ ] 🔷 Si el plan es Marketing o Marketing Pro, corrió **ligero**: no se tocó qué se vende, sus paquetes ni su precio
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla

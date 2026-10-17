@@ -24,7 +24,7 @@ paso vive en las skills: `skills/README.md`.
 | Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
 |---|---|---|---|---|
 | **Meta y TikTok** | ✅ | ✅ | ✅ | ✅ |
-| **Google Search y Performance Max** | ⬜ | ✅ | ✅ | ✅ |
+| **Google Search y Performance Max** | ⬜ | ✅ Solo búsqueda | ✅ Canal completo | ✅ Canal completo |
 | **Variantes de creativo por campaña** | hasta **20** | hasta **30** | hasta **35** | hasta **50** |
 | **Optimización** | Mensual | Mensual | Por ángulo, continua | Continua + presupuesto sistematizado |
 | **Experimentos controlados** | ⬜ | ⬜ | 🟡 | ✅ |
@@ -42,6 +42,9 @@ paso vive en las skills: `skills/README.md`.
   no se lanza, por más que el plan incluya el canal.
 - ⚠️ **«Que te encuentren en Google» entra desde 🔷 Marketing Pro**, y es **pauta de búsqueda**, no
   posicionamiento orgánico, ni auditoría técnica, ni link building.
+- 🟨 **En Accelerate y Compound Google Ads es un canal de la estructura** *(Search y Performance Max)*
+  con **el mismo gate del CEO**: entra en el GATE 1 y su presupuesto, que sale del total aprobado,
+  solo se mueve con el GATE 2.
 - 🔷 **En la línea Marketing, antes de gastar basta el pixel de Meta instalado.**
   🛑 **El performance fee NO existe ahí:** requiere atribución limpia (CAPI + GA4), que es parte de
   Conversion OS y **solo entra desde 🟨 Accelerate.** Si alguien pide fee sobre un plan 🔷, **se

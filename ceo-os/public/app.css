@@ -1076,3 +1076,21 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .rmcard .rmproj [data-act="delProject"],.rmcard .rmtask [data-act="delTask"]{opacity:0;transition:opacity .15s}
 .rmcard .rmproj:is(:hover,:focus-within) [data-act="delProject"],.rmcard .rmtask:is(:hover,:focus-within) [data-act="delTask"]{opacity:1}
 @media (hover:none){.rmcard .rmproj [data-act="delProject"],.rmcard .rmtask [data-act="delTask"]{opacity:1}}
+/* Recetas (Team → Recetas): cada tarea y cada reunión es una tarjeta; los campos cortos van en rejilla */
+.rtask{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:10px;background:rgba(255,255,255,.35)}
+.rgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0}
+.rdep{cursor:pointer;gap:7px;user-select:none}.rdep input{width:14px;height:14px;accent-color:#795c45;margin:0}
+.rcrow:hover{background:rgba(44,31,22,.03)}
+.rolemap{display:grid;grid-template-columns:minmax(120px,170px) 1fr auto;gap:8px 12px;align-items:center}.rolemap .chip{justify-self:start}
+@media (max-width:760px){.rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.rolemap{grid-template-columns:1fr}}
+
+/* Las 8 secciones: las pestañas de la sección (ej. Operaciones → Proyectos · Workspace · Contenido) van arriba de la pantalla. */
+.subnav{margin:-8px 0 18px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.subnav[hidden]{display:none}
+.subnav::-webkit-scrollbar{display:none}
+.subnav .tabs{margin:0}
+.subnav .tabs button{flex:none;white-space:nowrap}
+@media (max-width:760px){.subnav{margin:-6px 0 14px}}
+/* Resultados: filas de indicadores de 4 y de 3. */
+.ctlkpis.res4{grid-template-columns:repeat(4,minmax(0,1fr))}.ctlkpis.res3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:760px){.ctlkpis.res4,.ctlkpis.res3{grid-template-columns:repeat(2,minmax(0,1fr))}}

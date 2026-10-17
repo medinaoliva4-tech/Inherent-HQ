@@ -204,6 +204,7 @@ El CEO solo frena el flujo en ① Strategy y en ⑩ Ads — ninguna de las dos p
 |---|---|---|
 | **① Strategy** · `00-onboarding/` | La realidad del negocio, la capacidad declarada, las cuentas que existen | 🛑 BLOQUEADO |
 | **① Strategy** · `01-estrategia/` | Objetivo del ciclo, posicionamiento, **las MUST BE TRUE**, el brief de marketing | 🛑 BLOQUEADO si la estrategia no existe |
+| **① Strategy** · `01-estrategia/` | **El brief de comunicación del ciclo** — `brief-de-comunicacion-AAAA-MM.md`: qué se vende, a quién, qué hacer y sentir, cómo se comunica | 🛑 BLOQUEADO: `BLOQUEADO — falta el brief de comunicación`. **Sin él no se planea** |
 | **②B Branding** | Tono, territorio, activos distintivos | 🟡 Se usan si existen. No bloquea |
 | **⑩ Ads** | Qué ángulos ya rindieron en pauta | 🟡 No bloqueante |
 

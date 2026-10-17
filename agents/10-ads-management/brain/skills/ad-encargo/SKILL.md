@@ -46,6 +46,16 @@ description: >
 | ¿Tenemos acceso de operación? | 🛑 Se pide. Se registra **quién nos lo dio** |
 | ¿El método de pago es del cliente? | 🛑 **Nunca se pauta con tarjeta nuestra** |
 | ¿Está el tracking del plan? 🔷 **el pixel de Meta** · 🟨 **CAPI + GA4** | 🔴 **Se resuelve antes de gastar el primer quetzal** |
+| 🟨 **Si va Google Ads:** ¿hay cuenta de Google Ads del cliente y su conversión medida? | 🛑 **No se corre Google.** Sin conversión, Google optimiza a ciegas |
+
+### Google Ads en 🟨 Accelerate y Compound
+
+**Google Ads es un canal más del plan de pauta, con las mismas reglas:**
+
+- **Su presupuesto sale del total aprobado**, no se suma aparte. Se declara cuánto va a Google y cuánto a Meta y TikTok.
+- **Pasa por los mismos gates del CEO:** el **GATE 1** antes de lanzar y el **GATE 2** en todo movimiento de presupuesto.
+- **El objetivo se escribe en la métrica que Google puede contar:** una conversión medida, no «tráfico».
+- 🔷 **En Marketing Pro solo entra la pauta de búsqueda** de la promesa publicada *(ver `ad-estructura` § 4)*.
 
 ## 4 · 🔴 ¿Puede entregar lo que la pauta va a traer?
 
@@ -77,7 +87,7 @@ que el objetivo implica.** Si no puede, **se baja el objetivo o se para** — y 
 | **B · Qué se vende** | Las ofertas a pautar y su precio, de ② Growth |
 | **C · El presupuesto** | Total, diario, y qué pasa si se agota |
 | **D · Las cuentas** | Cuáles, con acceso verificado y quién lo dio |
-| **E · El tracking** | 🔷 pixel de Meta · 🟨 CAPI + GA4 — qué está puesto, qué falta |
+| **E · El tracking** | 🔷 pixel de Meta · 🟨 CAPI + GA4 *(y la conversión de Google, si va Google Ads)* — qué está puesto, qué falta |
 | **F · La capacidad** | ¿Puede entregar lo que esto trae? |
 | **G · La auditoría** | Qué dice el estado de la cuenta |
 
@@ -88,4 +98,5 @@ que el objetivo implica.** Si no puede, **se baja el objetivo o se para** — y 
 - [ ] Las cuentas son del cliente y **hay acceso verificado**
 - [ ] El **método de pago es del cliente**
 - [ ] El **tracking del plan está puesto** antes de gastar — 🔷 pixel de Meta · 🟨 CAPI + GA4
+- [ ] 🟨 Si va Google Ads: **cuenta del cliente, conversión medida y su parte del presupuesto declarada**
 - [ ] Se verificó que el cliente **puede entregar** el volumen

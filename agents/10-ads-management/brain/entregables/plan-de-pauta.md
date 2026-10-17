@@ -42,7 +42,7 @@
 
 ## § Los creativos
 
-| `id_creativo` | Campaña | Temperatura | Variantes de hook | Claims validados |
-|---|---|---|---|---|
+| `id_creativo` | Campaña | Temperatura | Nivel *(S·A·B·C)* | Variantes de hook | Claims validados |
+|---|---|---|---|---|---|
 
 *Mínimo 3 variantes por campaña. Todo claim validado por ②B Branding.*

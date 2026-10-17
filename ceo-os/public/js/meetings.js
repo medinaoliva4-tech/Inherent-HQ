@@ -1,4 +1,4 @@
-// Reuniones de cada proyecto: salen de su tipo (ver cycle.js → MEETINGS) y se agendan en el
+// Reuniones de cada proyecto: salen de la receta de su tipo (ver recipes.js) y se agendan en el
 // calendario de Inherent con invitación a quienes tienen que estar.
 import { html, raw, col, api, ask, toast, fdate, IC, ico } from './core.js';
 import { WHO, holders } from './cycle.js';
@@ -7,8 +7,8 @@ const ST = { todo: ['Por agendar', ''], agendada: ['Agendada', 'blue'], hecha: [
 export const upcoming = (projects, from = new Date().toISOString().slice(0, 10)) => projects.flatMap((p) => (p.meetings || []).map((m, i) => ({ ...m, i, p }))).filter((m) => m.status !== 'hecha' && m.date >= from).sort((a, z) => a.date.localeCompare(z.date));
 
 // Quiénes son, en personas del equipo (el cliente y el especialista van aparte).
-export function people(m, team, meEmail) {
-  const who = holders(team, meEmail);
+export function people(m, team, meEmail, p = m.p) {
+  const who = holders(team, meEmail, p?.roles_map);
   return (m.who || []).map((r) => ({ role: r, label: WHO[r] || r, email: ['cliente', 'especialista'].includes(r) ? null : who(r) })).map((x) => ({ ...x, name: x.email ? team.find((t) => (t.email || t.id) === x.email)?.name || x.email : null }));
 }
 export const isMine = (m, team, meEmail) => people(m, team, meEmail).some((x) => x.email === meEmail);
@@ -29,7 +29,7 @@ export async function schedule(p, i, team, me) {
   const m = p.meetings[i];
   const v = await ask(`Agendar: ${m.name}`, [{ k: 'date', l: 'Fecha', t: 'date', v: m.date, req: true, half: true }, { k: 'time', l: 'Hora', v: '10:00', half: true }, { k: 'minutes', l: 'Duración (min)', t: 'number', v: 60, half: true }], 'Agendar e invitar');
   if (!v) return null;
-  const ps = people(m, team, me.email);
+  const ps = people(m, team, me.email, p);
   const description = `${p.name}\n\nQuiénes: ${ps.map((x) => x.name || x.label).join(', ')}\nTemas:\n${(m.topics || []).map((t) => '• ' + t).join('\n')}${m.approves ? `\n\nSe aprueba: ${m.approves}` : ''}\n\nInherent OS`;
   try {
     const e = await api('google/calendar', { method: 'POST', body: { summary: `${p.client || 'Inherent'} · ${m.name}`, date: v.date, time: v.time, minutes: v.minutes, description, calendar: 'inherent', attendees: ps.map((x) => x.email).filter(Boolean) } });

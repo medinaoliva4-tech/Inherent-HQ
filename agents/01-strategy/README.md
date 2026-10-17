@@ -25,14 +25,16 @@ plan contratado.
 
 ## Lógica — sus skills
 
-`context` → `analysis` → `reverse-engineering` → `methodology`
+`context` → `analysis` → `reverse-engineering` → `methodology` → `brief-de-comunicacion`
 
 **El proceso completo está en `brain/WORKFLOW.md`. Es la única fuente de cómo trabaja** —
 incluida la entrega, que no es una skill: está en su §7.
 
 ## Entrega
 La estrategia, la plataforma de marca y **un brief por área**: Branding, Marketing, Creative,
-Growth, Tecnología y Sistemas.
+Growth, Tecnología y Sistemas. **Y cada ciclo, el brief de comunicación** *(una página: qué se
+vende, a quién, qué queremos que haga y sienta, cómo se comunica y qué inspiración buscar)* —
+③ Marketing no planea sin él.
 
 ## Qué entrega según el plan
 

@@ -49,15 +49,25 @@ description: >
 
 > 🔑 **Se empieza por los propios.** Son los que mejor convierten y los que menos cuestan.
 
-## 4 · Google — solo desde 🔷 Marketing Pro
+## 4 · Google — qué entra según el plan
+
+| Plan | Qué entra |
+|---|---|
+| 🔷 **Marketing** | ⛔ |
+| 🔷 **Marketing Pro** | **Pauta de búsqueda** — lo que respalda la promesa publicada *«que te encuentren en Google»* |
+| 🟨 **Accelerate** · 🟨 **Compound** | **Google Ads como canal de la estructura:** Search y Performance Max, con keywords propias y de la competencia |
 
 | Tipo | Con qué |
 |---|---|
 | **Search** | AdWhispr `launch_search_campaign` |
 | **Performance Max** | AdWhispr `launch_pmax_campaign` |
+| **Keywords** | AdWhispr `research_keywords` · `research_competitor_keywords` |
 
-⚠️ **Es lo que respalda la promesa publicada *«que te encuentren en Google»*** — pauta de
-búsqueda, **nunca SEO técnico ni posicionamiento orgánico**.
+🟨 **En Accelerate y Compound Google corre con el mismo gate del CEO que Meta y TikTok:** su campaña
+entra en el **GATE 1** y todo cambio de su presupuesto en el **GATE 2**. **Su presupuesto sale del
+total aprobado**, no se suma aparte.
+
+⚠️ **Es pauta de búsqueda, nunca SEO técnico ni posicionamiento orgánico.**
 
 ## 5 · El plan del plugin
 
@@ -83,5 +93,5 @@ no sabe qué plan tiene el cliente.
 - [ ] La temperatura de cada campaña viene de **③ Marketing**
 - [ ] Ninguna campaña de conversión apunta a **público frío**
 - [ ] Se empezó por los **públicos propios**
-- [ ] Google solo si el plan es **Accelerate o Compound**
+- [ ] Google según el plan: 🔷 Pro solo **búsqueda** · 🟨 Search y PMax, **dentro del presupuesto aprobado** y con sus gates
 - [ ] El reparto suma **el presupuesto aprobado**, ni un quetzal más

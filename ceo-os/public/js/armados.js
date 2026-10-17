@@ -1,4 +1,4 @@
-// Sales → Paquetes: paquetes armados con lo que ya existe. Un paquete es una lista de servicios del catálogo
+// Comercial → Paquetes: paquetes armados con lo que ya existe. Un paquete es una lista de servicios del catálogo
 // (cada uno con su nivel y cantidad) y, si aplica, especialistas. Su precio es la suma de sus líneas, con el
 // mismo margen del catálogo, y la cotización muestra cuánto vale cada cosa. Solo el CEO (lleva costos).
 import { html, raw, mount, col, api, drawer, closeDrawer, toast, confirmAsk, Q, USD, $, $$, ico } from './core.js';

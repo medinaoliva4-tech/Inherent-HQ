@@ -28,4 +28,6 @@
 |---|---|
 | **Atribuido** *(base del fee)* | |
 | **Fee 10%** | |
+| **CAC pagado** *(solo clientes atribuidos)* | *Gasto real ÷ clientes nuevos atribuidos. Período y fuente declarados* |
+| **CAC mezclado** *(todos los nuevos)* | *Con cero clientes nuevos: no existe* |
 | ⚠️ Si no se pudo medir | Por qué, y a quién se le pide |

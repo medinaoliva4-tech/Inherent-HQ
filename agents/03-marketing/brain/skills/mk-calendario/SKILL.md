@@ -4,7 +4,9 @@ description: >
   Capa 5 de ③ Marketing — arma `calendario.csv`, el encargo que recibe ④ Creatividad. Una fila
   por slot con las 11 columnas, en semanas y nunca en días, porque el día lo fija Creative.
   Verifica que todo slot trace a una MUST BE TRUE, que el total entre en el techo del plan
-  contratado y que no aparezca ninguna de las cinco combinaciones prohibidas. Úsala cuando pidan
+  contratado y que no aparezca ninguna de las cinco combinaciones prohibidas. Puede llevar dos
+  columnas opcionales: la etapa del embudo (TOF, MOF, BOF) y la receta de captura de los
+  «client-getting videos». Úsala cuando pidan
   "armá el calendario", "cuántas piezas y cuándo", "el encargo para creatividad", "distribuí los
   slots". Requiere el plan por canal.
 ---
@@ -24,6 +26,7 @@ description: >
 ```
 id_slot · semana · canal · formato · pilar · funcion · temperatura
          · awareness · balance · objetivo_del_slot · traza
+         [· etapa · captura]        ← opcionales, al final (§ 1B)
 ```
 
 **Las reglas duras:**
@@ -37,6 +40,65 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 | `balance` | `Marca` o `Activación` |
 | `objetivo_del_slot` | **Específico.** *«Responder la objeción del precio»*, no *«generar awareness»* |
 | `traza` | **La letra de una MUST BE TRUE.** Sin esto el slot no existe |
+
+---
+
+## 1B · Dos columnas opcionales — `etapa` y `captura`
+
+**No son obligatorias.** Un calendario sin ellas es válido y sigue siendo de 11 columnas. Cuando se
+usan, van **al final** y se llenan con estas reglas.
+
+### `etapa` — dónde está la pieza en el embudo
+
+| Valor | Qué busca | Equivale a |
+|---|---|---|
+| **`TOF`** | Que alguien **te conozca** | `Frío` · `TOFU` de ④ `cr-brief` |
+| **`MOF`** | Que **confíe** | `Tibio` · `MOFU` |
+| **`BOF`** | Que **compre o escriba** | `Caliente` · `BOFU` |
+| *(vacío)* | ④ Creatividad la deriva de la `funcion`, como hoy | — |
+
+🛑 **Nunca contradice a `temperatura` ni a `funcion`:**
+
+| `funcion` | `etapa` permitida |
+|---|---|
+| `Hero` | `TOF` |
+| `Series` | `TOF` o `MOF` |
+| `Utility` · `Proof` | `MOF` |
+| `Conversion` | `BOF` |
+| `Community` | **vacía** — le habla a quien ya compró, y eso no es embudo |
+
+**El mix sugerido de arranque es 50% `TOF` · 30% `MOF` · 20% `BOF`**, igual en los cuatro planes, y
+**se ajusta con los datos** de `aprendizaje-de-marketing.md`. El 20% de `BOF` cabe dentro del rango
+de `Conversion` de `mk-pilares` (10%-25%).
+
+### `captura` — los «client-getting videos»
+
+**Un client-getting video es un slot de video corto** *(Reel, TikTok, Short)* **que pide una acción
+concreta a cambio de la cual el interesado deja su contacto.** No es un pilar ni una función: cruza
+`Utility`, `Proof` y `Conversion`.
+
+| Plan | `captura` admite | % de los slots de video corto del ciclo |
+|---|---|---|
+| 🔷 **Marketing** | `directo` | **20%** |
+| 🔷 **Marketing Pro** | `directo` | **25%** |
+| 🟨 **Accelerate** | La receta de `gr-captura` | **30%** |
+| 🟨 **Compound** | La receta de `gr-captura` | **30%** |
+
+| Valor | Qué es |
+|---|---|
+| **`directo`** | Escribir al DM o al WhatsApp del cliente. ⑧ Community lo atiende. **Es el único valor en 🔷** |
+| **`comenta-y-te-mando`** · **`lead-magnet`** | El recurso se entrega por mensaje o formulario. Van en `TOF` o `MOF` |
+| **`quiz`** · **`vsl`** · **`low-ticket`** | Piden más decisión. Van en `MOF` o `BOF` |
+| *(vacío)* | La pieza no pide contacto |
+
+**Reglas de la columna:**
+
+- 🛑 **Solo con `balance = Activación`** y `funcion ≠ Community`. Una pieza que pide contacto no es de marca pura.
+- **La receta la fija ② Growth** en `§ Captura` de `motor-de-crecimiento.md` *(🟨)*. ③ Marketing no inventa recetas.
+  `outbound` no aparece acá: no es una pieza.
+- **`objetivo_del_slot` nombra lo que se entrega:** *«Que comenten GUÍA para recibir la lista de precios»*, no *«captar leads»*.
+- **No agrega piezas:** el client-getting es una categoría **dentro** del techo de slots del plan.
+- **El llamado sigue a la etapa** *(`cr-storytelling`)*: no se pide una venta directa en `TOF`.
 
 ---
 
@@ -100,6 +162,9 @@ de negocio asignado.**
 | Dos canales con la misma `funcion` | Ya se resolvió en la Capa 4. Si reaparece, hay un error |
 | `funcion` que el canal no tiene asignada | `plan-por-canal.md` es ley |
 
+> Con las columnas opcionales llenas, además: `etapa` que contradice a `funcion` *(§ 1B)* · `captura` con
+> `balance = Marca` o con `funcion = Community`. Se verifican igual, fila por fila.
+
 ## 4 · La distribución por semana
 
 | Regla | Por qué |
@@ -126,7 +191,8 @@ de negocio asignado.**
 
 | A | Qué hace con esto |
 |---|---|
-| **④ Creatividad** | Lo convierte en `plan-de-contenido.csv` — hereda `canal`, `formato`, `pilar`, `funcion` **sin cambio** y le agrega el día, el concepto y la mezcla |
+| **④ Creatividad** | Lo convierte en `plan-de-contenido.csv` — hereda `canal`, `formato`, `pilar`, `funcion` **sin cambio** y le agrega el día, el concepto y la mezcla. `etapa` y `captura` pasan a la sección de la pieza: la llamada a la acción apunta a esa receta |
+| **⑧ Community** | Los slots con `comenta-y-te-mando` le piden la palabra y la automatización |
 | **⑤ Producción** | Cuenta los slots con rodaje para dimensionar jornadas |
 | **⑨ Posting** | Sabe en qué cuenta va cada cosa |
 
@@ -135,7 +201,9 @@ de negocio asignado.**
 🛑 **Es lo que ④ Creatividad va a producir.** Corregirlo pieza por pieza después es imposible: por eso se
 auto-revisa entero, acá, y pasa directo a ④ Creatividad.
 
-- [ ] Las **11 columnas** están completas en todas las filas
+- [ ] Las **11 columnas** están completas en todas las filas *(`etapa` y `captura` son opcionales)*
+- [ ] Si hay `etapa`: **no contradice** a `funcion`, y el mix se comparó con **50/30/20** *(o se declaró por qué se aparta)*
+- [ ] Si hay `captura`: solo con `balance = Activación`, nombra **qué se entrega** y el % de client-getting **no pasa** del que corresponde al plan
 - [ ] `semana` es un número, **nunca una fecha**
 - [ ] **Todo slot traza** a una MUST BE TRUE con su letra
 - [ ] Ningún `objetivo_del_slot` es genérico

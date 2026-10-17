@@ -25,7 +25,7 @@ Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qu�
 | 3 | **`ad-creativos`** | 2 | *«qué anuncios corremos»* | § Los creativos · **🚦 GATE 1** |
 | 4 | **`ad-lanzamiento`** | 3 | *«lanzá»* 🔒 | Las campañas corriendo |
 | 5 | **`ad-optimizacion`** | 4 | *«no está rindiendo»*, *«pausá»* 🔒 | Los cambios · **🚦 GATE 2** |
-| 6 | **`ad-atribucion`** | 5 | *«cuánto vendimos por pauta»* | § Atribución — habilita el fee |
+| 6 | **`ad-atribucion`** | 5 | *«cuánto vendimos por pauta»* | § Atribución — habilita el fee · el CAC |
 | 7 | **`ad-loop`** | 6 | La revisión del 20 | `aprendizaje-de-pauta.md` |
 
 ---
@@ -48,3 +48,5 @@ Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qu�
 |---|---|---|
 | **GATE 1** | `ad-creativos` | El plan y **el presupuesto** |
 | **GATE 2** | Cada cambio | **Todo movimiento de presupuesto** |
+
+🟨 **Google Ads en Accelerate y Compound pasa por los mismos dos gates** y su presupuesto sale del total aprobado.

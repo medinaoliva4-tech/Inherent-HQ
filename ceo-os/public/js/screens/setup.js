@@ -1,4 +1,5 @@
 import { CYCLE, DEPTS, addDays, tasksFor, phasesFor, deptsOfPlan, createLinked } from '../cycle.js';
+import { loadRecipes } from '../recetas.js';
 import { html, raw, mount, col, api, acts, toast, today, teamList, teamDoc, WORK_ROLES, roleName, $, $$, confirmAsk, ask, ico } from '../core.js';
 
 // Arranque: deja la app lista en 4 pasos, con lo que ya dice el repo.
@@ -103,7 +104,7 @@ Diagnóstico → auditoría con el especialista → plan → implementación →
 export async function render(el, { me, alive }) {
   if (me.role !== 'ceo') return mount(el, html`<div class="empty"><b>Solo el CEO</b>El arranque lo hace el CEO.</div>`);
   const T = col('team'), PR = col('projects'), TK = col('tasks'), F = col('folders'), D = col('docs');
-  let [team, eco, repo, projects, tasks, folders, docs, driveCfg] = await Promise.all([teamList(), api('repo/economia').catch(() => ({ slots: [] })), api('repo/clients').catch(() => ({ clients: [] })), PR.list(), TK.list(), F.list(), D.list(), col('settings').get('drive').catch(() => null)]);
+  let [team, eco, repo, projects, tasks, folders, docs, driveCfg, R] = await Promise.all([teamList(), api('repo/economia').catch(() => ({ slots: [] })), api('repo/clients').catch(() => ({ clients: [] })), PR.list(), TK.list(), F.list(), D.list(), col('settings').get('drive').catch(() => null), loadRecipes()]);
   const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s*\(.*\)/, '').trim();
   const meP = team.find((p) => p.id === me.email);
   // Personas del manual, juntando los roles de cada una.
@@ -149,7 +150,7 @@ export async function render(el, { me, alive }) {
       <div class="mut sm" style="margin-top:12px">Todo se puede editar después. Nada de esto toca el repo.</div>`);
   }
   const holder = (role) => { const p = team.find((x) => x.active !== false && (x.roles || []).includes(role)); return p ? p.email || p.id : null; };
-  const plannedTasks = () => projects.filter((x) => x.cycle === mes).flatMap((p) => tasksFor(p, team, tasks, me.email));
+  const plannedTasks = () => projects.filter((x) => x.cycle === mes).flatMap((p) => tasksFor(p, team, tasks, me.email, R));
   function preview() {
     const l = plannedTasks();
     if (!projects.some((x) => x.cycle === mes)) return 'Primero crea los ciclos (paso 2).';
@@ -206,7 +207,7 @@ export async function render(el, { me, alive }) {
       const l = plannedTasks(); if (!l.length) return toast('No hay tareas nuevas que crear');
       if (!(await confirmAsk(`¿Crear ${l.length} tareas del ciclo ${mes}?`))) return;
       b.disabled = true;
-      try { for (const p of projects.filter((x) => x.cycle === mes)) tasks.push(...(await createLinked(tasksFor(p, team, tasks, me.email), (t) => TK.create(t)))); toast(`${l.length} tareas creadas`); done.tareas = true; paint(); }
+      try { for (const p of projects.filter((x) => x.cycle === mes)) tasks.push(...(await createLinked(tasksFor(p, team, tasks, me.email, R), (t) => TK.create(t)))); toast(`${l.length} tareas creadas`); done.tareas = true; paint(); }
       catch (e) { toast(e.message, true); b.disabled = false; }
     },
     doDrive: async () => {
