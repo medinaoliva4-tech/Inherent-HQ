@@ -38,7 +38,8 @@ export async function render(el, { me, sub, alive }) {
   const sopOf = (s) => sops[String(s.name || '').trim().toLowerCase()];
   if (!resumen) api('repo/precios').then((r) => { plans = r; if (tab === 'cat' && alive()) paint(); }).catch((e) => { plansErr = e.message; });
 
-  let tab = (resumen ? ['crm'] : ['crm', 'cat', 'esp', 'quotes', 'src', ...(isCeo ? ['pkg'] : [])]).includes(sub[0]) ? sub[0] : 'crm';
+  // Fuentes (con las claves de cada puerta de intake) y Paquetes: solo el CEO; el servidor tampoco los entrega a nadie más.
+  let tab = (resumen ? ['crm'] : ['crm', 'cat', 'esp', 'quotes', ...(isCeo ? ['src', 'pkg'] : [])]).includes(sub[0]) ? sub[0] : 'crm';
   let mentors = null, mInd = 'Todas';
   let crmView = 'list', q = '', tagF = '', catF = 'Todos', svQ = '';
 
@@ -73,8 +74,7 @@ export async function render(el, { me, sub, alive }) {
           <button class="${tab === 'cat' ? 'on' : ''}" data-act="tab" data-t="cat">Catálogo de servicios</button>
           <button class="${tab === 'esp' ? 'on' : ''}" data-act="tab" data-t="esp">Especialistas</button>
           <button class="${tab === 'quotes' ? 'on' : ''}" data-act="tab" data-t="quotes">Cotizaciones</button>
-          <button class="${tab === 'src' ? 'on' : ''}" data-act="tab" data-t="src">Fuentes</button>
-          ${isCeo ? html`<button class="${tab === 'pkg' ? 'on' : ''}" data-act="tab" data-t="pkg">Paquetes</button>` : ''}
+          ${isCeo ? html`<button class="${tab === 'src' ? 'on' : ''}" data-act="tab" data-t="src">Fuentes</button><button class="${tab === 'pkg' ? 'on' : ''}" data-act="tab" data-t="pkg">Paquetes</button>` : ''}
         </div>`}
         <div class="sp"></div>
         ${tab === 'crm' && edit ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}

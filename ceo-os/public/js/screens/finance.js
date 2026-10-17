@@ -1,4 +1,5 @@
-import { hoursAt, rateAt } from '../cycle.js';
+import { svcHours, svcCost, svcPrice, svcAuto } from '../cycle.js';
+import { byScope, proposal, targetMargin, LEVELS, PRICING_ID } from '../finscope.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico, isSummary, canEdit, roChip } from '../core.js';
 
@@ -18,9 +19,12 @@ export async function render(el, { me, sub }) {
   const resumen = isSummary(me, 'finanzas') || me?.role !== 'ceo', edit = canEdit(me, 'finanzas') && me?.role === 'ceo';
   // Todo en paralelo: una sola espera en vez de cinco seguidas.
   let ecoErr = null;
-  let [manual, services, rates, eco, clients, payroll, sheet] = await Promise.all([F.list(), resumen ? [] : col('services').list(), resumen ? null : col('rates').get('default').catch(() => null),
+  let [manual, services, rates, eco, clients, payroll, sheet, projects, quotes, accounts, pricingDoc] = await Promise.all([F.list(), resumen ? [] : col('services').list(), resumen ? null : col('rates').get('default').catch(() => null),
     resumen ? null : api('repo/economia').then((r) => (r?.plans?.length ? r : (ecoErr = r?.error || 'El manual ya no trae costos por plan: el precio se arma por alcance', null))).catch((e) => { ecoErr = e.message; return null; }), resumen ? [] : api('repo/clients').then((r) => r.clients).catch(() => []), resumen ? null : P.get('default').catch(() => null),
-    api('finance/sheet').catch((e) => ({ error: e.message }))]);
+    api('finance/sheet').catch((e) => ({ error: e.message })),
+    // Por alcance: los proyectos y cotizaciones de cada cliente (sus módulos) y el margen objetivo de las propuestas.
+    resumen ? [] : col('projects').list().catch(() => []), resumen ? [] : col('quotes').list().catch(() => []), resumen ? [] : col('accounts').list().catch(() => []),
+    resumen ? null : col('settings').get(PRICING_ID).catch(() => null)]);
   // Los movimientos salen de la hoja de Google Sheets; los que se agregan a mano aquí se suman.
   const fromSheet = (sh) => {
     if (!sh?.csv) return [];
@@ -105,15 +109,16 @@ export async function render(el, { me, sub }) {
     } catch (err) { toast(err.message, true); }
   }
 
-  // ---------- Costs (Hours | Team | Service | Total) ----------
+  // ---------- Costos: cada servicio del catálogo en sus 4 complejidades (horas por rol × costo por hora) ----------
   function costs(b) {
-    const rateOf = (role) => rates?.roles?.find((r) => r.role === role)?.rate;
+    const cell = (sv, lv) => { const c = svcCost(sv, rates, lv), h = svcHours(sv, lv);
+      return html`<td class="n">${!(sv.tasks || []).length ? html`<span class="mut sm">sin horas</span>` : !c ? '—' : c.miss.length ? html`<span title="Faltan costos por hora: ${c.miss.join(', ')}">${ico('alert')} ${Q(c.cost)}</span>` : html`<b style="font-weight:500">${Q(c.cost)}</b>`}<div class="mut sm">${h} h</div></td>`; };
     mount(b, html`
-      ${!rates ? html`<div class="warnbox" style="margin-bottom:14px">Define los costos por hora en Comercial → Catálogo → Costos por hora.</div>` : ''}
-      ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Los servicios del catálogo de Sales aparecen aquí con su costo.</div>`
-      : html`<div class="card"><table><thead><tr><th>Servicio</th><th>Equipo</th><th class="n">Horas</th><th class="n">Costo / h</th><th class="n">Total</th><th class="n">Precio</th><th class="n">Margen</th></tr></thead><tbody>
-        ${services.map((s) => { const h = (s.tasks || []).reduce((a, t) => a + hoursAt(t, s.level || 5), 0); const miss = (s.tasks || []).some((t) => rateOf(t.role) == null); const c = (s.tasks || []).reduce((a, t) => a + (rateAt(rates, t.role, s.level || 5) || 0) * hoursAt(t, s.level || 5), 0);
-          return html`<tr><td><b style="font-weight:500">${s.name}</b><div class="mut sm">${s.category || ''} · nivel ${s.level || 5}</div></td><td>${(s.tasks || []).map((t) => html`<span class="chip" style="margin:2px">${t.role} · ${hoursAt(t, s.level || 5)}h</span>`)}</td><td class="n">${h} h</td><td class="n">${h && !miss ? Q(c / h) : '—'}</td><td class="n"><b>${miss ? ico('alert') : Q(c)}</b></td><td class="n">${s.price ? Q(s.price) : '—'}</td><td class="n">${s.price && !miss ? Math.round(((s.price - c) / s.price) * 100) + '%' : '—'}</td></tr>`; })}
+      <div class="mut sm" style="margin-bottom:12px">${ico('lock')} Lo que cuesta entregar cada módulo según su complejidad. Las horas por rol salen del catálogo (Comercial → Catálogo) y el costo por hora de «Costos por hora». El costo de cada cliente es la suma de sus módulos: ver «Rentabilidad».</div>
+      ${!rates ? html`<div class="warnbox" style="margin-bottom:14px">Sin costos por hora todavía: el costo de cada módulo vendrá de Comercial → Catálogo → Costos por hora.</div>` : ''}
+      ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Los módulos del catálogo de Comercial aparecen aquí con su costo en cada complejidad.</div>`
+      : html`<div class="card tscroll"><table><thead><tr><th>Servicio</th><th>Equipo</th>${LEVELS.map((lv) => html`<th class="n">Complejidad ${lv}</th>`)}<th class="n">Precio (5)</th></tr></thead><tbody>
+        ${services.map((sv) => html`<tr><td><b style="font-weight:500">${sv.name}</b><div class="mut sm">${sv.category || ''} · por ${sv.unit || 'proyecto'}</div></td><td>${(sv.tasks || []).map((t) => html`<span class="chip" style="margin:2px">${t.role}</span>`)}</td>${LEVELS.map((lv) => cell(sv, lv))}<td class="n">${(() => { const pr = svcAuto(sv, rates, 5) ?? svcPrice(sv, 5); return pr ? Q(pr) : '—'; })()}</td></tr>`)}
       </tbody></table></div>`}<div id="espCost"></div>`);
     espCosts($('#espCost', b));
   }
@@ -130,31 +135,71 @@ export async function render(el, { me, sub }) {
       : html`<div class="mut sm">Ningún cliente tiene especialista asignado. Se asigna en Clientes → el cliente → Especialista.</div>`}`);
   }
 
-  // ---------- Profitability ----------
+  // ---------- Rentabilidad por alcance: por cliente, costo de sus módulos vs. lo cotizado o cobrado ----------
   function profit(b) {
-    const byClient = {};
-    entries.filter((e) => ym(e.date) === month).forEach((e) => { const k = e.client || 'Sin cliente (general)'; byClient[k] ||= { i: 0, c: 0 }; byClient[k][e.type === 'ingreso' ? 'i' : 'c'] += +e.amount || 0; });
-    const rows = Object.entries(byClient).sort((a, z) => z[1].i - a[1].i);
+    const r = byScope({ month, services, rates, projects, quotes, accounts, entries }), t = r.totals;
+    const money = (v) => (v == null ? html`<span class="mut">—</span>` : Q(v));
+    const kpi = [['Ingreso', t.income == null ? '—' : Q(t.income)], ['Costo de módulos', t.cost == null ? '—' : Q(t.cost)], ['Margen', t.margin == null ? '—' : Q(t.margin)], ['Margen %', t.pct == null ? '—' : t.pct + '%']];
     mount(b, html`
-      ${rows.length ? html`<div class="card"><table><thead><tr><th>Cliente</th><th class="n">Ingreso</th><th class="n">Costo</th><th class="n">Utilidad</th><th style="width:30%">Margen</th></tr></thead><tbody>
-        ${rows.map(([n, { i, c }]) => { const m = i ? Math.round(((i - c) / i) * 100) : null; return html`<tr><td><b style="font-weight:500">${n}</b></td><td class="n">${Q(i)}</td><td class="n">${Q(c)}</td><td class="n"><b>${Q(i - c)}</b></td><td>${m == null ? html`<span class="mut sm">solo gastos</span>` : html`<div class="row"><div style="flex:1;height:8px;border-radius:99px;background:#f0e9de"><div style="width:${Math.max(0, Math.min(100, m))}%;height:100%;border-radius:99px;background:${m >= 70 ? '#2c1f16' : m >= 55 ? '#a18770' : '#997d65'}"></div></div><span class="sm" style="width:40px;text-align:right">${m}%</span></div>`}</td></tr>`; })}
-      </tbody></table></div>` : html`<div class="empty"><b>Sin datos en ${mLabel(month)}</b>Asigna el cliente a cada ingreso y gasto para ver qué tan rentable es cada uno.</div>`}
-      ${clients.some((c) => c.costo != null) ? html`<div class="sec-title"><h2>Costo fijo declarado por cuenta</h2><span class="mut sm">De clients/*/plan-contratado.md</span></div>
-        <div class="card"><table><thead><tr><th>Cliente</th><th>Plan</th><th class="n">Precio</th><th class="n">${ico('lock')} Costo</th></tr></thead><tbody>${clients.filter((c) => c.hasPlan).map((c) => html`<tr><td><b style="font-weight:500">${c.slug.toUpperCase()}</b></td><td class="mut">${c.plan}</td><td class="n">${Q(c.precio)}</td><td class="n">${c.costo != null ? Q(c.costo) : '—'}</td></tr>`)}</tbody></table></div>` : ''}`);
+      <div class="mut sm" style="margin-bottom:12px">${ico('lock')} <b>${mLabel(month)}</b> · Costo = la suma de los módulos de cada cliente (servicio × complejidad del catálogo). Ingreso = lo cobrado en movimientos con ese cliente o, si no hay, lo cotizado y aceptado. Los módulos por mes caen cada mes activo; los demás, el mes en que arranca el proyecto.</div>
+      <div class="grid g4" style="margin-bottom:16px">${kpi.map(([l, v]) => html`<div class="card glass"><span class="mut sm">${l}</span><div class="big" style="font-size:38px">${v}</div></div>`)}</div>
+      ${r.rows.length ? html`<div class="card tscroll"><table><thead><tr><th>Cliente</th><th>Módulos</th><th class="n">Costo</th><th class="n">Cotizado</th><th class="n">Cobrado</th><th class="n">Margen</th><th style="width:22%">%</th></tr></thead><tbody>
+        ${r.rows.map((x) => html`<tr class="click" data-act="scope" data-k="${x.slug}"><td><b style="font-weight:500">${x.name}</b>${x.need.length ? html`<div class="mut sm">${ico('alert')} ${x.need.length === 1 ? 'Falta un dato' : `Faltan ${x.need.length} datos`}</div>` : ''}</td>
+          <td>${x.modules.length ? html`<span class="chip">${x.modules.length} módulo${x.modules.length === 1 ? '' : 's'}</span>` : html`<span class="mut sm">sin módulos</span>`}</td>
+          <td class="n">${x.cost == null ? html`<span class="mut">—</span>` : html`${x.partial ? ico('alert') : ''} ${Q(x.cost)}`}</td><td class="n">${money(x.quoted)}</td><td class="n">${money(x.received)}</td>
+          <td class="n"><b>${money(x.margin)}</b></td>
+          <td>${x.pct == null ? html`<span class="mut sm">${x.income == null ? 'sin ingreso' : 'sin costo'}</span>` : html`<div class="row"><div style="flex:1;height:8px;border-radius:99px;background:#f0e9de"><div style="width:${Math.max(0, Math.min(100, x.pct))}%;height:100%;border-radius:99px;background:${x.pct >= 70 ? '#2c1f16' : x.pct >= 55 ? '#a18770' : '#997d65'}"></div></div><span class="sm" style="width:40px;text-align:right">${x.pct}%</span></div>`}</td></tr>`)}
+        <tr><td colspan="2"><b>Total del mes</b></td><td class="n"><b>${money(t.cost)}</b></td><td class="n"><b>${money(t.quoted)}</b></td><td class="n"><b>${money(t.received)}</b></td><td class="n"><b>${money(t.margin)}</b></td><td>${t.pct == null ? '' : html`<b>${t.pct}%</b>`}</td></tr>
+      </tbody></table></div>
+      ${t.unassigned ? html`<div class="mut sm" style="margin-top:8px">${ico('bulb')} ${Q(t.unassigned)} de ingresos del mes no tienen cliente: asígnalo en «Movimientos» para que cuente en su fila.</div>` : ''}`
+      : html`<div class="empty"><b>Sin datos de alcance en ${mLabel(month)}</b>Aparecen aquí los clientes con proyectos o cotizaciones aceptadas (sus módulos del catálogo) y los ingresos con cliente en «Movimientos».</div>`}
+      ${clients.some((c) => c.costo != null) ? html`<div class="sec-title"><h2>Costo declarado en la ficha</h2><span class="mut sm">De clients/*/plan-contratado.md</span></div>
+        <div class="card"><table><thead><tr><th>Cliente</th><th>Alcance</th><th class="n">Precio</th><th class="n">${ico('lock')} Costo</th></tr></thead><tbody>${clients.filter((c) => c.hasPlan).map((c) => html`<tr><td><b style="font-weight:500">${c.slug.toUpperCase()}</b></td><td class="mut">${c.plan}</td><td class="n">${c.precio != null ? Q(c.precio) : '—'}</td><td class="n">${c.costo != null ? Q(c.costo) : '—'}</td></tr>`)}</tbody></table></div>` : ''}`);
+    b.onclick = (e) => { const tr = e.target.closest('[data-act=scope]'); if (!tr) return; const x = r.rows.find((y) => y.slug === tr.dataset.k); if (x) scopeDrawer(x); };
+  }
+  function scopeDrawer(x) {
+    drawer(html`<div class="row"><span class="chip dark">${mLabel(month)}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+      <h2>${x.name}</h2>
+      <div class="kv"><span>Costo</span><b style="font-weight:500">${x.cost == null ? '—' : Q(x.cost)}${x.partial ? ' (incompleto)' : ''}</b><span>Ingreso</span><b style="font-weight:500">${x.income == null ? '—' : `${Q(x.income)} · ${x.incomeFrom === 'movimientos' ? 'cobrado' : 'cotizado'}`}</b><span>Margen</span><b style="font-weight:500">${x.margin == null ? '—' : `${Q(x.margin)}${x.pct != null ? ` · ${x.pct}%` : ''}`}</b>${x.spent != null ? html`<span>Gastos con su nombre</span><b style="font-weight:500">${Q(x.spent)}</b>` : ''}</div>
+      ${x.modules.length ? html`<table><thead><tr><th>Módulo</th><th class="n">Nivel</th><th class="n">Costo</th><th class="n">Precio</th></tr></thead><tbody>${x.modules.map((m) => html`<tr><td>${m.name}${m.qty > 1 ? ` ×${m.qty}` : ''}<div class="mut sm">${m.from} · por ${m.unit}</div>${m.why ? html`<div class="mut sm">${m.why}</div>` : ''}</td><td class="n">${m.level}</td><td class="n">${m.cost == null ? '—' : html`${m.miss.length ? ico('alert') : ''} ${Q(m.cost)}`}</td><td class="n">${m.price == null ? '—' : Q(m.price)}</td></tr>`)}</tbody></table>` : ''}
+      ${x.need.length ? html`<div class="warnbox" style="margin-top:12px">${x.need.map((n) => html`<div class="sm">${n}</div>`)}</div>` : ''}`);
   }
 
-  // ---------- Pricing (del manual) ----------
+  // ---------- Precios: una propuesta = los módulos elegidos; precio sugerido = costo ÷ (1 − margen objetivo) ----------
+  let prop = [];
   function pricing(b) {
-    if (!eco) return mount(b, html`<div class="warnbox">No pude leer la economía del repo: ${ecoErr || 'sin datos'}</div>`);
-    const rubros = [...new Set(eco.plans.flatMap((p) => p.rubros.map((r) => r.label)))];
-    mount(b, html`<div class="grid g4">${eco.plans.map((p, i) => html`<div class="card feat ${['olive', 'terra', 'ink', 'olive'][i]}"><div class="lbl">${p.name}</div><div class="big" style="font-size:40px;margin-top:8px">${Q(p.precio)}</div>${matrix(Math.round((p.margen / 100) * 34))}<div class="foot"><span>Costo ${Q(p.costo)} · ${p.volumen?.piezas ?? '—'} piezas</span><span style="font-weight:700;font-size:14px">${p.margen}% margen</span></div></div>`)}</div>
-      <div class="sec-title"><h2>Costo por rubro</h2><span class="mut sm">Fijo por cuenta · del manual</span></div>
-      <div class="mut sm" style="margin:-6px 0 10px">${ico('edit')} <b>¿Cambiar estos costos?</b> Viven en el manual (<code>inherent/06-ECONOMIA.md</code>): pídeselo a Claude en Claude Code, se actualiza con tu OK y aquí se ve después de publicar. Los costos por hora de cada servicio se editan en Comercial → Catálogo → Costos por hora.</div>
-      <div class="card"><table><thead><tr><th>Rubro</th>${eco.plans.map((p) => html`<th class="n">${p.name}</th>`)}</tr></thead><tbody>
-        ${rubros.map((r) => html`<tr><td>${r}</td>${eco.plans.map((p) => html`<td class="n">${Q(p.rubros.find((x) => x.label === r)?.monto || 0)}</td>`)}</tr>`)}
-        <tr><td><b>Costo</b></td>${eco.plans.map((p) => html`<td class="n"><b>${Q(p.costo)}</b></td>`)}</tr>
-        <tr><td><b>Utilidad</b></td>${eco.plans.map((p) => html`<td class="n"><b>${Q(p.utilidad)}</b></td>`)}</tr>
-      </tbody></table></div>`);
+    const m = targetMargin(pricingDoc, rates);
+    if (!prop.length && services.length) prop = [{ sid: services[0].id, lv: 5, qty: 1 }];
+    const r = proposal(prop, services, rates, m);
+    const catalogPrice = r.rows.reduce((a, x) => { const sv = services.find((y) => y.id === x.sid); const p = sv ? svcAuto(sv, rates, x.lv) ?? svcPrice(sv, x.lv) : null; return p == null || a == null ? null : a + p * x.qty; }, 0);
+    mount(b, html`
+      <div class="mut sm" style="margin-bottom:12px">${ico('lock')} Arma una propuesta con los módulos del catálogo. Su costo es la suma de cada servicio en su complejidad; el precio sugerido deja el margen objetivo.</div>
+      ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Primero carga el catálogo en Comercial → Catálogo de servicios.</div>` : html`
+      <div class="grid g21">
+        <div class="card"><div class="row" style="margin-bottom:10px"><b class="ttl" style="font-size:16px">Módulos de la propuesta</b><div class="sp"></div><button class="btn ghost xs" data-pact="add">+ Módulo</button></div>
+          <table><thead><tr><th>Servicio</th><th>Complejidad</th><th class="n">Cantidad</th><th class="n">Horas</th><th class="n">Costo</th><th></th></tr></thead><tbody>
+          ${r.rows.map((x, i) => html`<tr><td><select class="in" data-i="${i}" data-f="sid">${services.map((sv) => html`<option value="${sv.id}" ${sv.id === x.sid ? raw('selected') : ''}>${sv.name}</option>`)}</select><div class="mut sm">por ${x.unit}${x.why ? ' · ' + x.why : ''}</div></td>
+            <td><select class="in" data-i="${i}" data-f="lv">${LEVELS.map((lv) => html`<option value="${lv}" ${lv === +x.lv ? raw('selected') : ''}>${lv}</option>`)}</select></td>
+            <td class="n"><input class="in mini" type="number" min="1" data-i="${i}" data-f="qty" value="${x.qty}"></td><td class="n">${x.hours == null ? '—' : x.hours + ' h'}</td>
+            <td class="n">${x.cost == null ? '—' : html`${x.miss.length ? html`<span title="Faltan costos por hora: ${x.miss.join(', ')}">${ico('alert')}</span>` : ''} ${Q(x.cost)}`}</td><td><button class="btn ghost" data-pact="rm" data-i="${i}" style="padding:6px 10px">${ico('x', 16)}</button></td></tr>`)}
+          </tbody></table></div>
+        <div class="card feat ink"><div class="lbl">Precio sugerido</div><div class="big" style="font-size:44px;margin-top:6px">${r.price == null ? '—' : Q(r.price)}</div>
+          <div class="split" style="margin-top:16px"><div><span class="lbl">Costo</span><b>${r.cost == null ? '—' : Q(r.cost)}</b></div><div><span class="lbl">Margen objetivo</span><b>${m}%</b></div><div><span class="lbl">Catálogo</span><b>${catalogPrice ? Q(catalogPrice) : '—'}</b></div></div>
+          ${!r.complete && r.rows.length ? html`<div class="sm" style="margin-top:12px;opacity:.85">${ico('alert')} Sin precio sugerido: ${!rates ? 'faltan los costos por hora (Comercial → Catálogo → Costos por hora)' : 'a un módulo le faltan horas o costos por hora'}.</div>` : ''}
+          ${catalogPrice && r.cost ? html`<div class="sm" style="margin-top:8px;opacity:.85">Al precio del catálogo el margen sería ${Math.round((1 - r.cost / catalogPrice) * 100)}%.</div>` : ''}
+          ${edit ? html`<div class="row" style="margin-top:16px;gap:8px"><input class="in mini" type="number" min="1" max="95" id="pmargin" value="${m}" style="max-width:90px"><span>%</span><button class="btn cream xs" data-pact="margin">Guardar margen objetivo</button></div>` : ''}</div>
+      </div>`}`);
+    $$('[data-f]', b).forEach((inp) => inp.addEventListener('change', () => { const x = prop[+inp.dataset.i]; x[inp.dataset.f] = inp.dataset.f === 'sid' ? inp.value : Math.max(1, +inp.value || 1); pricing(b); }));
+    b.onclick = async (e) => {
+      const t = e.target.closest('[data-pact]'); if (!t) return;
+      if (t.dataset.pact === 'add') { prop.push({ sid: services[0].id, lv: 5, qty: 1 }); pricing(b); }
+      if (t.dataset.pact === 'rm') { prop.splice(+t.dataset.i, 1); pricing(b); }
+      if (t.dataset.pact === 'margin') {
+        const v = +$('#pmargin', b).value; if (!(v >= 1 && v <= 95)) return toast('El margen objetivo va de 1% a 95%', true);
+        try { pricingDoc = pricingDoc ? await col('settings').save({ ...pricingDoc, margin: v }) : await col('settings').create({ id: PRICING_ID, margin: v }); toast('Margen objetivo guardado'); pricing(b); }
+        catch (err) { toast(err.message, true); }
+      }
+    };
   }
 
   // ---------- Pagos por servicio (no hay nómina): el mes de cada persona = Σ (lo que cada cuenta paga a su rol × su % del rol) ----------

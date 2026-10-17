@@ -51,6 +51,8 @@ export async function render(el, { me, sub, alive }) {
   const acct = (slug) => accounts.find((a) => a.id === 'acc-' + slug);
   // Vista por rol: «resumen» = la lista con su plan, sus metas y sus tareas; sin accesos, Drive, portal ni entregables.
   const resumen = isSummary(me, 'clients'), edit = canEdit(me, 'clients');
+  // Los accesos los administran el CEO, el COO y quien edita Clientes; el servidor solo se los manda a ellos y a quien eligieron.
+  const managesAcc = me.role === 'ceo' || me.role === 'coo' || edit;
   const slug = sub[0];
   if (!slug) return list();
   return page(slug);
@@ -132,8 +134,10 @@ export async function render(el, { me, sub, alive }) {
           <div class="card"><b style="font-weight:500">Del repo</b><div class="mut sm" style="margin-bottom:8px">clients/${slug}/00-onboarding/LINKS.md</div>
             ${info.links.length ? info.links.map((l) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><span class="mut" style="min-width:110px">${l.k}</span>${l.url && /^https:\/\//.test(l.url) ? html`<a href="${l.url}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1">${l.v}</a>` : html`<span style="flex:1">${l.v}</span>`}</div>`) : html`<div class="mut sm">Este cliente no tiene LINKS.md.</div>`}</div>
           <div class="card"><b style="font-weight:500">Accesos del equipo</b><div class="mut sm" style="margin-bottom:8px">Qué cuenta, qué usuario y dónde está la clave (ej. «Bitwarden · carpeta NAO»)</div>
-            ${(a.accesos || []).map((x, i) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><b style="font-weight:500;min-width:110px">${x.servicio}</b><span style="flex:1">${x.usuario || '—'}<span class="mut"> · ${x.donde || '—'}</span></span><button class="sm mut" data-act="acdel" data-i="${i}">${ico('x', 16)}</button></div>`)}
-            ${edit ? html`<button class="btn ghost" data-act="acadd" style="margin-top:10px">+ Acceso</button>` : ''}</div>
+            ${!managesAcc && !('accesos' in a) ? html`<div class="mut sm">${ico('lock')} Solo los ven el CEO, el COO, quien edita Clientes y las personas que ellos elijan.</div>`
+            : html`${(a.accesos || []).map((x, i) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><b style="font-weight:500;min-width:110px">${x.servicio}</b><span style="flex:1">${x.usuario || '—'}<span class="mut"> · ${x.donde || '—'}</span></span>${edit ? html`<button class="sm mut" data-act="acdel" data-i="${i}">${ico('x', 16)}</button>` : ''}</div>`)}
+            ${edit ? html`<button class="btn ghost" data-act="acadd" style="margin-top:10px">+ Acceso</button>` : ''}
+            ${managesAcc ? html`<div class="mut sm" style="margin-top:12px">${ico('eye', 14)} También los ven: ${(a.accesos_to || []).length ? (a.accesos_to || []).map((e) => html`<span class="chip" style="margin:2px">${person(e)?.name || e}${edit ? html` <button class="sm mut" data-act="acwdel" data-e="${e}">${ico('x', 14)}</button>` : ''}</span>`) : 'nadie más'}${edit ? html` <button class="btn ghost xs" data-act="acwadd">+ Persona</button>` : ''}</div>` : ''}`}</div>
         </div>
 
         <div class="sec-title" id="s-en"><h2>Entregables</h2></div>
@@ -246,6 +250,9 @@ export async function render(el, { me, sub, alive }) {
       editAcc: async () => { const v = await ask('Datos del cliente', [{ k: 'name', l: 'Nombre', v: a.name, req: true }, { k: 'contact', l: 'Contacto', v: a.contact, half: true }, { k: 'phone', l: 'Teléfono / WhatsApp', v: a.phone, half: true }, { k: 'email', l: 'Correo', t: 'email', v: a.email }, { k: 'assets', l: 'Carpeta de assets en Drive (logos, fotos, videos crudos)', v: a.assets }, { k: 'notes', l: 'Notas', t: 'textarea', v: a.notes }]); if (v && v.assets && !/^https:\/\/drive\.google\.com\//.test(v.assets)) return toast('La carpeta de assets debe ser un link de Google Drive', true); if (v && (await saveAcc({ ...a, ...v }))) { toast('Guardado'); paint(); } },
       acadd: async () => { const v = await ask('Nuevo acceso', [{ k: 'servicio', l: 'Cuenta o servicio', req: true }, { k: 'usuario', l: 'Usuario', half: true }, { k: 'donde', l: 'Dónde está la clave', half: true }]); if (!v) return; if (/contrase|password|clave:/i.test(v.usuario + ' ' + v.donde) && !(await confirmAsk('Parece que escribiste una contraseña. Aquí solo va DÓNDE está. ¿Guardar igual?'))) return; if (await saveAcc({ ...a, accesos: [...(a.accesos || []), v] })) paint(); },
       acdel: async (t) => { if (await saveAcc({ ...a, accesos: (a.accesos || []).filter((_, i) => i !== +t.dataset.i) })) paint(); },
+      // Quién más ve los accesos de este cliente (además del CEO, el COO y quien edita Clientes). Solo si el cliente está en su alcance.
+      acwadd: async () => { const opts = team.filter((p) => !(a.accesos_to || []).includes(p.email || p.id)).map((p) => [p.email || p.id, p.name || p.email || p.id]); if (!opts.length) return toast('No hay más personas en el equipo'); const v = await ask('¿Quién más ve los accesos?', [{ k: 'e', l: 'Persona', t: 'select', opts, req: true }]); if (!v) return; if (await saveAcc({ ...a, accesos_to: [...(a.accesos_to || []), v.e] })) paint(); },
+      acwdel: async (t) => { if (await saveAcc({ ...a, accesos_to: (a.accesos_to || []).filter((e) => e !== t.dataset.e) })) paint(); },
       tdone: async (cb) => { const t = tasks.find((x) => x.id === cb.dataset.id); try { Object.assign(t, await col('tasks').save({ ...t, status: cb.checked ? 'Hecha' : 'En curso' })); paint(); } catch (e) { cb.checked = !cb.checked; toast(e.message, true); } },
     });
     paint();

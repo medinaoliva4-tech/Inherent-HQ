@@ -50,6 +50,7 @@
 | **El boost** | Existir con una marca deseable | Crear demanda y presentarse mejor | Conectar marca, ventas y sistemas |
 | **Para quién** | Marca nueva, reposicionamiento u oferta poco clara | Marca con oferta que necesita crear demanda y mejorar cómo se presenta y promociona | Empresa que necesita conectar marca y marketing con ventas, experiencia de cliente y sistemas comerciales |
 | **Somos** | Quien crea la marca | Tu equipo de marca y demanda | Tu socio de crecimiento |
+| **Baseline** *(interno)* | $1,200 · Q9,240 por proyecto | $2,400 · Q18,480 al mes | $4,200 · Q32,340 al mes |
 
 ## 🧱 Brand Foundation — «creamos la marca cool»
 
