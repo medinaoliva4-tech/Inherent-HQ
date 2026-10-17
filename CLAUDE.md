@@ -239,7 +239,16 @@ primero, aunque la venta fácil sea más pauta.
 
 **El precio se arma por volumen y complejidad:** más canales, más producción, más ubicaciones,
 más integración o más responsabilidad de ejecución. **Los niveles no traen un número fijo de
-piezas ni un precio fijo en el manual.**
+piezas.** Cada nivel tiene un **baseline**: el precio de entrada desde el que se cotiza, en
+escalones. **Brand Foundation es el más barato.**
+
+| Nivel | Baseline | En quetzales | Cómo se cobra |
+|---|---|---|---|
+| 🧱 **Brand Foundation** | **$1,200** | Q9,240 | Por proyecto |
+| 📈 **Brand Growth** | **$2,400** | Q18,480 | Al mes |
+| 🤝 **Growth Partnership** | **$4,200** | Q32,340 | Al mes |
+
+*(USD a Q7.70.)* El baseline es **interno**: el piso para cotizar, nunca un precio en la web.
 
 🔑 **La web no muestra precio.** Un precio solo, sin contexto, se compara con lo más barato. La
 web **vende lo que la marca puede ganar** y lleva a **«Hablemos»**. **Al primer contacto se

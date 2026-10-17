@@ -168,8 +168,19 @@ Piso mensual         Q3,900 + scraping
 
 ## 4 · El precio se arma por alcance
 
-**No hay una tabla de precios por plan.** Cada propuesta se cotiza con tres cosas: el **nivel**,
-las **áreas** que necesita y el **volumen y la complejidad** de cada una.
+**Cada nivel tiene un baseline**, en escalones: el precio de entrada desde el que se cotiza.
+Cada propuesta sube desde ahí con tres cosas: el **nivel**, las **áreas** que necesita y el
+**volumen y la complejidad** de cada una.
+
+| Nivel | Baseline | En quetzales | Cómo se cobra |
+|---|---|---|---|
+| 🧱 **Brand Foundation** | **$1,200** | Q9,240 | Por proyecto |
+| 📈 **Brand Growth** | **$2,400** | Q18,480 | Al mes |
+| 🤝 **Growth Partnership** | **$4,200** | Q32,340 | Al mes |
+
+🔑 **Brand Foundation es el más barato:** es la puerta de entrada. 🔒 **El baseline es interno:**
+la web no muestra precio. El costo de cada cliente lo calcula Finanzas en Inherent OS con los
+módulos de su ficha y el catálogo.
 
 ### Las áreas — el catálogo interno
 

@@ -144,7 +144,8 @@
 
 | # | Qué definir | Contexto |
 |---|---|---|
-| 1 | **Precio base y factores de cada nivel** *(Brand Foundation · Brand Growth · Growth Partnership)* | El precio «desde» de la web y los factores que lo suben: canales, producción, ubicaciones, integración, responsabilidad de ejecución |
+| 1 | **Factores de cada nivel** *(el baseline ya está: $1,200 · $2,400 · $4,200)* | Cuánto suma cada factor sobre el baseline: canales, producción, ubicaciones, integración, responsabilidad de ejecución. Qué volumen incluye cada baseline |
+| 1b | **Catálogo** | Falta un servicio de identidad visual, verbal y dirección creativa con su costo. Y cuánto cuesta un servicio que se repite cada mes |
 | 2 | **Precio base y factores de cada área** *(las 12 del catálogo)* | Sirve para armar propuestas con solo las áreas necesarias |
 | 3 | **Factores de alcance por mercado** *(Guatemala, México, Miami)* | Reemplazan la tabla de precios por plan de `04-MERCADO.md` |
 | 4 | **Costo por rubro y por rol** | Grabación, fotografía, edición, operador, herramientas / IA, especialista, auditorías y buffer: montos reales para fichas de los 3 niveles. Incluye si la tarifa de fotografía sigue en Q300 por sesión |
