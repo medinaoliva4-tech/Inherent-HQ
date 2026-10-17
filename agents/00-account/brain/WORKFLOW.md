@@ -16,6 +16,7 @@ en el onboarding y lo anota ① Strategy en `clients/<cliente>/00-onboarding/pla
 *(la ficha de oferta: nivel, áreas, volumen, revisiones y qué queda fuera)*. Los tres niveles:
 **Brand Foundation** · **Brand Growth** · **Growth Partnership**.
 
+- ⏱️ **Al primer contacto se responde en un minuto.** La web no muestra precio y lleva a «Hablemos»: quien escribe recibe respuesta casi al instante, y la conversación entiende su caso y lo que está en juego. **El precio no lo da este agente: lo escala al CEO.**
 - 🛑 **Sin ficha anotada, no se responde nada de alcance:** `BLOQUEADO — falta la ficha de oferta`.
 - 🛑 **El alcance contratado es el techo, no una sugerencia.** Prometer de más rompe el margen;
   prometer de menos rompe la promesa hecha en la propuesta.

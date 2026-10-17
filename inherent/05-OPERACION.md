@@ -132,7 +132,14 @@ coordina el COO; todo lo que se puede ejecutar lo ejecutan los agentes.
 | **10** | **Ads** | Lo apto para pauta | Campañas activas y su reporte | Según los canales con publicidad de la ficha |
 | **↻** | **Strategy** | La analítica del mes | El ajuste de estrategia que entra al ciclo siguiente | Brand Growth · Growth Partnership |
 
-**Qué corre en cada nivel:**
+**El pipeline se arma por cliente.** El diagrama de arriba es el **mapa completo**; ningún
+cliente corre todo. **Cada cliente tiene su propio pipeline**, compuesto con los módulos que su
+ficha de oferta incluye *(las áreas están productizadas, así que cada módulo ya trae su
+resultado, entregables, volumen, revisiones y SOP)*. Se ajusta cuando cambia lo que el cliente
+necesita: se agrega, se quita o se reordena un módulo **sin cambiar de nivel**, mientras no
+pase el techo del nivel.
+
+**El techo por nivel — lo que puede entrar, no lo que siempre corre:**
 
 | Nivel | Departamentos |
 |---|---|
@@ -148,6 +155,8 @@ coordina el COO; todo lo que se puede ejecutar lo ejecutan los agentes.
 | Regla | Qué dice |
 |---|---|
 | **Sin input no hay etapa** | Ninguna etapa arranca sin el entregable de la anterior. Si falta, se vuelve — no se improvisa |
+| **El pipeline es del cliente** | Se arma con los módulos de su ficha. Los niveles ponen el techo; no hay un pipeline único |
+| **Primer contacto: un minuto** | A quien escribe por «Hablemos» se le responde en un minuto; el precio se da en la conversación, con el caso entendido y lo que está en juego a la vista |
 | **La ficha manda** | El alcance de la ficha de oferta del cliente es techo duro. Se lee `06-ECONOMIA.md` antes de producir. Sin ficha, se bloquea al cliente |
 | **Sin acción no hay promesa** | Lo que no está en «Capacidades reales» de `06-ECONOMIA.md` no se hace |
 | **Gate humano** | Publicar, pautar, enviar al cliente y borrar **siempre** pasan por el gate del rol que dice la sección 5 |

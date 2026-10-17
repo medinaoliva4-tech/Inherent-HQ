@@ -249,8 +249,8 @@ oferta, canal y prácticas · introducciones o apoyo si se acuerda.
 
 🔑 **El precio se arma por volumen y complejidad:** más canales, más producción, más ubicaciones,
 más integración o más responsabilidad de ejecución. **El manual no fija un número de piezas ni un
-precio por nivel.** La web muestra un precio inicial como **«desde»**, sin prometer el mismo
-trabajo a negocios distintos.
+precio por nivel.** **La web no muestra precio:** muestra lo que la marca puede ganar y
+lleva a «Hablemos». El precio se da en la conversación, con el alcance delante.
 
 ---
 
@@ -290,7 +290,7 @@ responsabilidades se definen por proyecto y por cliente, en la ficha de oferta.
 > 🔒 **Regla dura:** el repo no puede prometer **menos**, **más** ni **distinto** que lo publicado.
 > Si algo interno contradice una línea publicada, **gana la web** y se corrige el repo.
 > Si una línea publicada no tiene capacidad detrás, **se arregla la capacidad — no se borra la línea.**
-> **El precio inicial va como «desde».**
+> **La web no lleva precio; lleva «Hablemos».**
 
 ---
 
@@ -523,6 +523,10 @@ todavía no funcionó**; Money porque **sin transacciones el margen por línea e
 **Meterlo antes es cobrar por algo que no se puede usar.** Detalle en `02-METODO.md`.
 
 ## Qué departamentos corren por nivel
+
+> 🔑 **Los niveles son límites, no pipelines.** La tabla dice qué **puede** entrar en cada
+> nivel. **El pipeline de cada cliente se arma con los módulos de su ficha** y se ajusta cuando
+> cambia lo que necesita; no hay un pipeline único.
 
 | Nivel | Núcleo | Según la ficha |
 |---|---|---|

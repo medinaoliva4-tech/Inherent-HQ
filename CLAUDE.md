@@ -239,8 +239,17 @@ primero, aunque la venta fácil sea más pauta.
 
 **El precio se arma por volumen y complejidad:** más canales, más producción, más ubicaciones,
 más integración o más responsabilidad de ejecución. **Los niveles no traen un número fijo de
-piezas ni un precio fijo en el manual.** El precio inicial en la web va como **«desde»**, sin
-prometer el mismo trabajo a negocios distintos.
+piezas ni un precio fijo en el manual.**
+
+🔑 **La web no muestra precio.** Un precio solo, sin contexto, se compara con lo más barato. La
+web **vende lo que la marca puede ganar** y lleva a **«Hablemos»**. **Al primer contacto se
+responde en un minuto**; en la conversación se entiende el caso, se ve lo que está en juego y
+**entonces** se da el precio, con el alcance delante.
+
+🔑 **Los niveles son límites, no pipelines.** Ponen el techo de lo que puede entrar. **El
+pipeline se arma por cliente**, con los módulos que su ficha incluye *(los servicios ya están
+productizados)*. **No existe un solo pipeline:** existe uno por cliente, ajustable cuando
+cambia lo que necesita.
 
 **La industria no cambia el precio por sí sola:** cambia las tareas, los conocimientos y los
 canales; la inversión se ajusta por volumen y complejidad.

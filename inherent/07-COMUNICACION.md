@@ -189,7 +189,7 @@ alcance acordado.)*
 2  ¿EN CUÁL ESTÁS?      los cuatro momentos — el visitante se auto-selecciona
 3  CÓMO LO HACEMOS      los cuatro sistemas, en lenguaje humano
 4  LOS ESPECIALISTAS    el diferenciador más fuerte
-5  LOS NIVELES          tres, con precio «desde» visible
+5  LOS NIVELES          tres, SIN precio — cada uno termina en «Hablemos»
 6  INDUSTRIAS           que se vea su caso
 7  LO QUE SÍ Y LO QUE NO  los límites, escritos
 8  FILOSOFÍA            el manifiesto
@@ -208,7 +208,7 @@ We build cool brands—and the growth systems behind them.
 Un solo equipo para tu marca, tu contenido, tu publicidad
 y los sistemas que las hacen crecer.
 
-[ Ver en cuál estoy ]    [ Agenda 30 min ]
+[ Ver en cuál estoy ]    [ Hablemos ]
 ```
 
 **Debajo, hasta tres señales de prueba, solo con casos reales y medidos de `clients/`, con su
@@ -277,13 +277,13 @@ una marca como la tuya. Y responde una sola pregunta:
 
 ### Cómo se muestran
 
-**Tres tarjetas, una por nivel, en el orden en que una marca los necesita.** Cada una lleva su
-precio **«desde»**, escrito como «desde», nunca como precio cerrado.
+**Tres tarjetas, una por nivel, en el orden en que una marca los necesita.** **Ninguna lleva precio.** Cada
+una termina en lo que la marca gana y en **«Hablemos»**.
 
 | Por qué funciona | |
 |---|---|
 | **Tres opciones se comparan sin paralizar** | Un orden claro: crear la marca, hacerla crecer, integrarla con ventas y sistemas |
-| **El «desde» no promete el mismo trabajo a negocios distintos** | El precio final lo fija el alcance de la propuesta |
+| **Sin precio, la comparación es por lo que ganas** | Un precio suelto se compara con lo más barato; sin él, se compara el valor. El precio se da en la conversación, con el alcance delante |
 | **Deja la subida de nivel abierta** | Quien entra por Brand Foundation ya sabe que existen los otros dos |
 
 **Debajo de las tarjetas, una línea que las une:**
@@ -292,7 +292,7 @@ precio **«desde»**, escrito como «desde», nunca como precio cerrado.
 
 ---
 
-### BRAND FOUNDATION · desde — *Creamos la marca cool*
+### BRAND FOUNDATION — *Creamos la marca cool*
 > *«Quiero que mi marca se vea y se sienta como la imagino, y que se entienda qué vendo.»*
 
 **Un proyecto con inicio y cierre.** Para marca nueva, reposicionamiento u oferta poco clara.
@@ -314,7 +314,7 @@ como módulos.*
 
 ---
 
-### BRAND GROWTH · desde — *Hacemos más cool la marca que ya está*
+### BRAND GROWTH — *Hacemos más cool la marca que ya está*
 > *«Ya tengo oferta. Quiero crear demanda y presentarme y promocionarme mejor, sin quedarme sin qué publicar.»*
 
 **Una colaboración mensual.**
@@ -334,7 +334,7 @@ como módulos.*
 
 ---
 
-### GROWTH PARTNERSHIP · desde — *Nos metemos full*
+### GROWTH PARTNERSHIP — *Nos metemos full*
 > *«Ya funciona, pero llegué a un techo y todo pasa por mí. Quiero que marca, marketing y ventas trabajen juntos.»*
 
 **Una colaboración integrada.** Aquí no venimos solo a que te conozcan más: venimos a conectar tu
@@ -381,7 +381,7 @@ Ver `03-OFERTA.md` → «Para la llamada».
 **TAILOR MADE** — *Para lo que no cabe en un molde.* Multi-locación, regulatorio, integraciones
 o proyectos por hito. **Precio según alcance.**
 
-> 🔑 **Precios siempre en USD, siempre como «desde».** **Nunca decir «Guatemala» como alcance.**
+> 🔑 **La web no muestra precios.** Cuando se dan en la conversación, van en USD. **Nunca decir «Guatemala» como alcance.**
 > **Nunca mostrar costos, márgenes ni cantidad de piezas en la web.**
 
 ---
@@ -440,8 +440,13 @@ Cuéntanos sobre tu empresa.
 Dos minutos. Te devolvemos un diagnóstico honesto:
 qué optimizar primero para que el resto rinda.
 
-[ Empezar ]
+[ Empezar ]    [ Hablemos ]
 ```
+
+🔑 **«Hablemos» promete una sola cosa: respuesta en un minuto.** Quien escribe recibe
+respuesta casi al instante, y la conversación hace lo que una tarjeta de precio no puede:
+entender el caso, mostrar lo que está en juego y envolver a la persona en lo que puede ganar.
+Cuando llega el precio, ya se ve el valor.
 
 **Lo que pregunta:** industria · momento del negocio · **dónde se siente trabado** · cuándo
 quiere empezar.

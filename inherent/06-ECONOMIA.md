@@ -52,8 +52,8 @@ proveedor y otro alcance.
 **No competimos por precio alto. Competimos entregando mucho valor, claramente delimitado, a un
 precio que el mercado ya acepta.**
 
-🔑 **El precio inicial que se muestra en la web es un «desde».** Nunca promete el mismo trabajo a
-negocios distintos: el precio final lo fija el alcance de la ficha.
+🔑 **La web no muestra precio.** El precio se da en la conversación, cuando ya se entendió el
+caso y se ve lo que está en juego. El precio final lo fija el alcance de la ficha.
 
 🔑 **La industria no cambia el precio por sí sola.** Un restaurante, una tienda en Instagram, un
 negocio B2B y un e-commerce cambian las tareas, los conocimientos y los canales; la inversión se
@@ -534,8 +534,7 @@ precio de lista en el manual: el precio sale del volumen y la complejidad.
 | **Precio** | **Desde**, según el alcance | **Desde**, según el alcance | **Desde**, según el alcance |
 | **Performance fee** | — | — | Con atribución limpia |
 
-🔑 **El «desde» no promete el mismo trabajo a negocios distintos.** El precio final sale del
-alcance de la propuesta.
+🔑 **El precio sale del alcance de la propuesta**, nunca de una tarjeta de la web.
 
 **Y `TAILOR MADE`** — multi-locación, regulatorio, integraciones o proyectos por hito. *Precio
 según alcance.*

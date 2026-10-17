@@ -238,7 +238,7 @@ Sin MCP no hay acción, y sin acción no hay promesa.
 
 **Los niveles no traen un número fijo de piezas ni un precio fijo en el manual.** El precio se
 arma por **volumen y complejidad**: más canales, más producción, más ubicaciones, más
-integración o más responsabilidad de ejecución. La web muestra un precio inicial como **«desde»**.
+integración o más responsabilidad de ejecución. **La web no muestra precio:** lleva a «Hablemos» y el precio se da en la conversación, con el alcance delante.
 
 **La industria no cambia el precio por sí sola:** cambia las tareas, los conocimientos y los
 canales. Un restaurante, una tienda de Instagram, un B2B y un e-commerce reciben propuestas

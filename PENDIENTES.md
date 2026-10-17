@@ -131,6 +131,13 @@
 
 ---
 
+## 🌐 Web «Hablemos» y respuesta en un minuto
+
+- La web **no muestra precio**; lleva a «Hablemos». Hay que quitar los precios «desde» de las tarjetas en el repo de la web y poner el botón «Hablemos» en el hero, en cada nivel y en el diagnóstico.
+- «Respuesta en un minuto»: hoy no hay una línea de WhatsApp dedicada conectada con Claude que conteste y cree el lead en el CRM. Hasta que exista, la promesa no se publica.
+- Quién contesta fuera de horario y qué dice la primera respuesta.
+- Guion de la primera conversación: entender el caso, mostrar lo que está en juego y dar el precio con el alcance delante.
+
 ## 🧩 Definir para los 3 niveles
 
 > **El manual ya no lleva números por plan.** Cada punto de esta lista se decide con el CEO y, cuando se cierra, entra al manual (`inherent/06-ECONOMIA.md`, `03-OFERTA.md`). **No se inventan cifras:** las del esquema anterior están arriba solo como referencia.

@@ -62,7 +62,11 @@ día para producir · 🔴 **Día 20:** presentación al cliente. Cada `WORKFLOW
 Growth Partnership.** El detalle de volumen, formatos, canales y revisiones sale de la **ficha de
 oferta del cliente** *(`clients/<cliente>/00-onboarding/plan-contratado.md`)*, no de este manual.
 
-🔑 **Qué departamentos corren por nivel:**
+🔑 **El pipeline se arma por cliente.** La tabla siguiente es el **techo de cada nivel**, no un
+pipeline fijo: cada cliente corre los módulos que su ficha incluye, y se ajusta cuando cambia lo
+que necesita.
+
+🔑 **Qué departamentos pueden correr por nivel:**
 
 | Nivel | Departamentos |
 |---|---|

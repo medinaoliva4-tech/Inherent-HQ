@@ -85,7 +85,7 @@ function paint() {
     <p class="lead">Por lo que nos contaste, hoy a tu negocio le encaja:</p>
     <div class="result"><div class="arc">${esc(arc)}</div><div class="plan">${esc(plan)}</div><p>${esc(txt)}</p>
       <div class="meter"><i id="meter"></i></div><div class="tiny">Qué tan listo está tu negocio para crecer: <b style="color:var(--cream)">${score}/100</b></div></div>
-    <p class="lead" id="thanks">Te escribimos por WhatsApp para contarte cómo se ve esto en tu empresa, con tus números y tu mercado. El alcance se define en una propuesta y el precio parte «desde», según volumen y complejidad; no es un precio fijo ni un resultado garantizado.</p>
+    <p class="lead" id="thanks">Te escribimos por WhatsApp para contarte cómo se ve esto en tu empresa, con tus números y tu mercado. Respondemos en un minuto. El alcance se define contigo en la conversación; esto es una orientación, no una promesa de resultados.</p>
     <p class="tiny" id="sent">Guardando tus respuestas…</p>
     <a class="btn outline" href="https://inherentglobal.com" style="margin-top:18px">Volver a inherentglobal.com</a></section>`;
   requestAnimationFrame(() => { $('#meter').style.width = score + '%'; });
