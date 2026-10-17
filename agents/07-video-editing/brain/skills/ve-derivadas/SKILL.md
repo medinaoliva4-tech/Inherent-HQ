@@ -14,7 +14,7 @@ description: >
 | | |
 |---|---|
 | **Consume** | El corte principal **auto-revisado** (`ve-marca` §8) · `plan-de-contenido.csv` · `plan-por-canal.md` *(si no existe, las **Redes** del `plan-contratado.md`)* |
-| **Produce** | Las **4 · 6 · 9 · 12** piezas derivadas del ciclo *(mínimo 1:2 — ver §0 del `WORKFLOW.md`)* |
+| **Produce** | Las piezas derivadas del ciclo *(mínimo 1:2 — ver §0 del `WORKFLOW.md`)* |
 
 > 🔑 **Acá está el margen del modelo.** ⑤ Producción cuesta horas humanas; cada derivada cuesta
 > Q0. **Entregar menos derivadas no ahorra: desperdicia grabación pagada.**
@@ -59,7 +59,7 @@ dirigir.
 
 ## 4 · El reparto del techo
 
-**Las derivadas del plan se reparten donde más rinden, no parejo.**
+**Las derivadas de la ficha se reparten donde más rinden, no parejo.**
 
 | Prioridad | Dónde |
 |---|---|
@@ -89,5 +89,5 @@ dirigir.
 - [ ] Ninguna variante cambia el mensaje ni la traza
 - [ ] Cada reencuadre **se miró**, no solo se procesó
 - [ ] El texto se reposicionó según la safe zone del nuevo formato
-- [ ] El total **entra en el techo** del plan
+- [ ] El total **entra en el techo** de la ficha
 - [ ] Lo que no se alcanzó a derivar está **declarado**

@@ -1,12 +1,12 @@
 ---
 name: gr-numeros
 description: >
-  Capa 6 de ② Growth — el Money OS, solo en Compound. Calcula qué producto deja y cuál quita,
+  Capa 6 de ② Growth — el Money OS, solo en Growth Partnership y si la ficha incluye el área de Finanzas vinculadas al crecimiento. Calcula qué producto deja y cuál quita,
   cuánto se puede pagar por un cliente y cuánto deja cada uno con el tiempo, y revisa precios y
-  estructura para que quede más. Entra solo en Compound porque sin suficientes transacciones el
+  estructura para que quede más. Entra solo ahí porque sin suficientes transacciones el
   margen por línea es teoría. Lo entrega el CEO con Strategy, no un CFO contratado. Úsala cuando
   pidan "cuánto nos deja cada producto", "cuánto podemos pagar por un cliente", "dónde estamos
-  perdiendo plata", "los números claros". Requiere Compound y datos reales de transacciones.
+  perdiendo plata", "los números claros". Requiere Growth Partnership, que la ficha lo incluya y datos reales de transacciones.
 ---
 
 # Capa 6 · Números — el Money OS
@@ -16,12 +16,12 @@ description: >
 | **Consume** | Transacciones reales del cliente · unit economics de ① Strategy · atribución de ⑩ Ads |
 | **Produce** | La sección **§ Los números** de `motor-de-crecimiento.md` |
 
-## 1 · ⬜ Solo en Compound
+## 1 · ⬜ Solo en Growth Partnership, si la ficha lo incluye
 
 🛑 **Sin transacciones suficientes, el margen por línea es teoría.**
 
-> 🔑 **Es promesa publicada:** *«Tus números claros: qué producto te deja y cuál te quita.»*
-> ⚠️ **No se promete un CFO.** Lo entrega **Money OS con el CEO y Strategy.**
+> 🔑 **Es un área de la ficha** *(Finanzas vinculadas al crecimiento)*: precios, ofertas y paquetes; margen por producto si el cliente da costos confiables; CAC y valor de cliente cuando hay datos.
+> ⚠️ **No se promete un CFO ni contabilidad, impuestos, auditoría, nómina, estados oficiales o asesoría legal o fiscal.** Lo entrega **Money OS con el CEO y Strategy.**
 
 ## 2 · Las cuatro preguntas
 
@@ -97,7 +97,7 @@ Ver `inherent/06-ECONOMIA.md` — **ese archivo no sale del repo.**
 
 ## 9 · Checklist
 
-- [ ] El plan es **Compound**
+- [ ] El alcance es **Growth Partnership** y la ficha incluye el área
 - [ ] Los datos son **reales**, con período y fuente declarados
 - [ ] El margen por línea incluye el **costo de entregar**
 - [ ] **LTV ÷ CAC** está calculado, o marcado sin datos

@@ -94,18 +94,11 @@ montaje. Ningún tiempo se escribe de memoria.
 
 ## 5 · El techo
 
-**Se verifica contra el plan contratado antes de empezar:**
+**Se verifica contra el alcance contratado antes de empezar.** La ficha de oferta
+(`plan-contratado.md`) declara las horas de grabación, los videos planificados *(20 min c/u)* y
+las revisiones. De ahí salen los derivados: **mínimo 1:2** sobre los planificados, **tope 1:1**.
 
-| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| Horas de grabación | 3h | 4h | 6h | 8h |
-| Videos planificados *(20 min c/u)* | 9 | 12 | 18 | 24 |
-| Derivados — **mínimo** *(1:2)* | 4 | 6 | 9 | 12 |
-| **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
-| *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
-| **Total** | **10** | **16** | **20** | **24** |
-
-⬜ **Tailor Made:** el techo son los videos planificados y derivados que declara **Su pipeline** en
+**Alcance a medida:** el techo son los videos planificados y derivados que declara **Su pipeline** en
 `plan-contratado.md`.
 
 🛑 **Si el Excel pide más, se declara y se devuelve a ③ Marketing.** No se edita de más.
@@ -126,4 +119,4 @@ montaje. Ningún tiempo se escribe de memoria.
 - [ ] Ninguna pieza con claim `⏸️` entró al ciclo
 - [ ] Si no hubo selects de ⑤ Producción: **todos** los clips se calificaron con `/watch`, con tiempos exactos, y existe `post-production-list.md`
 - [ ] Los descartados tienen **motivo** y las tomas repetidas apuntan a la mejor
-- [ ] El total **entra en el techo** del plan contratado
+- [ ] El total **entra en el techo** del alcance contratado

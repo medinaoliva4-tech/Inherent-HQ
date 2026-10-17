@@ -3,8 +3,8 @@ name: gr-canales-grandes
 description: >
   Capa 2 de ② Growth — el Pilar 2. En low ticket son las ventas grandes (eventos, mayoreo,
   corporativos, preventas); en high ticket son las cuentas grandes (retainers, contratos
-  anuales, proyectos por fases). No corre en la linea Marketing; en Accelerate se abren y venden, en
-  Compound se vuelven canal permanente. Antes de abrir uno verifica que la capacidad de entrega
+  anuales, proyectos por fases). No corre en Brand Foundation ni en Brand Growth; en Growth Partnership se abren y venden, y
+  según la ficha se vuelven canal permanente. Antes de abrir uno verifica que la capacidad de entrega
   lo aguante. Úsala cuando pidan "qué ventas grandes podríamos hacer", "eventos", "mayoreo",
   "corporativos", "cuentas grandes", "contratos anuales". Requiere § La oferta.
 ---
@@ -23,18 +23,18 @@ description: >
 | Eventos · ferias · activaciones | Retainers |
 | Mayoreo · distribuidores | Contratos anuales |
 | Corporativos · regalos empresariales | Proyectos por fases |
-| Preventas · lanzamientos | Acuerdos marco · licitaciones · white label *(Compound)* |
+| Preventas · lanzamientos | Acuerdos marco · licitaciones · white label *(canal permanente)* |
 
-## 2 · El verbo lo da el plan
+## 2 · El verbo lo da la ficha
 
-| 🔷 **Marketing / Pro — NO CORRE** | 🟨 **Accelerate — ABRIR Y VENDER** | 🟨 **Compound — CANAL PERMANENTE** |
+| **Foundation / Brand Growth — NO CORRE** | **Growth Partnership — ABRIR Y VENDER** | **Growth Partnership — CANAL PERMANENTE** *(si la ficha lo pide)* |
 |---|---|---|
 | ⛔ No se mapea ni se abre | Se ejecutan | Opera solo |
 | | Con proceso y seguimiento | Con acuerdos marco |
 
-🛑 **En la línea Marketing esta capa no corre.** Abrir un canal grande necesita material de
-ventas, outreach y seguimiento — **eso es Conversion OS, que la línea Marketing no incluye.**
-**Si el cliente lo pide, es upsell a Accelerate.**
+🛑 **En Brand Foundation y Brand Growth esta capa no corre.** Abrir un canal grande necesita material de
+ventas, outreach y seguimiento — **eso es Conversion OS, que esos niveles no incluyen.**
+**Si el cliente lo pide, es la profundidad de Growth Partnership.**
 
 ## 3 · El mapa — cada canal lleva cuatro datos
 
@@ -58,7 +58,7 @@ ventas, outreach y seguimiento — **eso es Conversion OS, que la línea Marketi
 🛑 **Abrir un canal grande que el cliente no puede entregar le rompe la reputación** — y es más
 caro que no haberlo abierto.
 
-## 5 · Abrir — solo 🟨 Accelerate y Compound
+## 5 · Abrir — solo Growth Partnership
 
 | Paso | Qué se hace |
 |---|---|
@@ -68,10 +68,10 @@ caro que no haberlo abierto.
 | **4 · El material** | Qué necesita ④ Creatividad producir para esto |
 | **5 · El seguimiento** | Dónde se registra. **Un canal grande sin registro se pierde** |
 
-## 6 · Compound — canal permanente
+## 6 · Canal permanente — cuando la ficha lo pide
 
 **Deja de ser una campaña y pasa a ser una entrada estable:** acuerdos marco, licitaciones,
-white label, con su proceso documentado en los SOPs de empresa.
+white label, con su proceso documentado en los SOPs de las áreas contratadas.
 
 ## 7 · Qué escribe
 
@@ -81,14 +81,14 @@ white label, con su proceso documentado en los SOPs de empresa.
 |---|---|
 | **A · El mapa** | Tabla: canal · tamaño · requisito · ciclo · quién decide |
 | **B · La verificación de capacidad** | Por canal, con el veredicto |
-| **C · Cuáles se abren** | 🟨 A y C — con lista, ángulo, secuencia y fechas |
+| **C · Cuáles se abren** | Growth Partnership — con lista, ángulo, secuencia y fechas |
 | **D · Qué necesita ④ Creatividad** | El material a producir |
 | **E · Dónde se registra** | El seguimiento |
 
 ## 8 · Checklist
 
-- [ ] El plan es **Accelerate o Compound** — en la línea Marketing esta capa no corre
+- [ ] El alcance es **Growth Partnership** — en Brand Foundation y Brand Growth esta capa no corre
 - [ ] Cada canal del mapa tiene **los cuatro datos**
 - [ ] **Ningún canal se abre sin verificar la capacidad de entrega**
-- [ ] El verbo corresponde al plan — **abrir y vender** o **canal permanente**
+- [ ] El verbo corresponde a la ficha — **abrir y vender** o **canal permanente**
 - [ ] Lo que se abre tiene **secuencia con fechas** y dónde se registra

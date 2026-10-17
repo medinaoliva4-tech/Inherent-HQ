@@ -20,51 +20,55 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
-## 0 · El plan contratado — cuánto y a qué profundidad
+## 0 · El alcance contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
-`clients/<cliente>/00-onboarding/plan-contratado.md`:
-🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+**Lo primero de cada ciclo: leer la ficha de oferta del cliente.** La anota ① Strategy al arrancar en
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(nivel, áreas, volumen, revisiones y qué queda fuera)*:
+**Brand Foundation** · **Brand Growth** · **Growth Partnership** · ⬜ **a la medida**.
 
-- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
-  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
-  «01.2 · BRANDING». La profundidad, de `inherent/03-OFERTA.md` → «🔒 Uso interno».
+- 🛑 **Sin ficha anotada, el departamento no arranca:** `BLOQUEADO — falta el alcance contratado`.
+- 🛑 **El alcance contratado es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md`).
+- Los volúmenes y los costos salen de la ficha y de `inherent/06-ECONOMIA.md`; el rol, de
+  `inherent/05-OPERACION.md` → «01.2 · BRANDING». La profundidad, de `inherent/03-OFERTA.md`.
   **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
 
-| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **El peso del departamento** | ✅ **Acá se construye la marca** | Se extiende | Se evoluciona | Se sistematiza |
-| **Identidad, voz y sistema visual** | ✅ Completo | + formatos nuevos | Se mantiene y se extiende | Se documenta para que lo use cualquiera |
-| **Activos distintivos** | ✅ 3 a 5 | + activos para pauta | + activos para pauta | + guía operable por terceros |
-| **Autoridad** *(high ticket)* | ⬜ | 🟡 Empaquetada | ✅ Construida | ✅ **Del sistema, no del fundador** |
-| **Revisiones por pieza** *(`br-guardian`)* | **1** | 2 | 2 | 3 |
-| **Piezas que valida por ciclo** | **86** | **145** | **145** | **204** |
+| Qué cambia | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **El peso del departamento** | ✅ **Acá se crea la identidad completa** *(es el núcleo del proyecto)* | Se mantiene y se extiende a los canales contratados | Se extiende y se documenta para que lo use quien ejecute |
+| **Identidad, voz y sistema visual** | ✅ Completo: identidad verbal *(tono, mensajes clave, guía de lenguaje)* e identidad visual **según el alcance acordado** | Lo que ya existe vale y no se rehace: se aplica a nuevos formatos | Se documenta para que lo use cualquiera, incluido el equipo del cliente |
+| **Activos distintivos** | ✅ 3 a 5 | 3 a 5; + activos para pauta si la ficha incluye ⑩ Ads | + guía operable por terceros |
+| **Autoridad** *(high ticket)* | ⬜ | 🟡 Empaquetada | ✅ **Del sistema, no del fundador** |
+| **Revisiones por pieza** *(`br-guardian`)* | Las de la ficha *(conceptos, rondas y aplicaciones se definen por proyecto)* | Las de la ficha | Las de la ficha |
+| **Piezas que valida por ciclo** | Ejemplos de aplicación del proyecto | **Las del volumen de la ficha** | **Las del volumen de la ficha** |
 
 **Cómo se lee:**
 
-- 🔑 **La marca se construye en 🔷 Marketing, el plan más barato, y se construye entera.** Rehacerla
-  en 🟨 Accelerate contradice la promesa publicada: *«escalar lo que ya funciona, sin perderlo»*.
-  **Lo que sube con el plan no es la marca: es cuánto se extiende y cuánto se documenta.**
-- ⚠️ **②B Branding trabaja la VOZ y el sistema visual en los cuatro planes.** Qué se vende y a
-  qué precio es de ② Growth y **solo entra desde 🟨 Accelerate.**
-- **`br-guardian` corre todos los ciclos, en los cuatro planes.** Lo que cambia es cuántas vueltas
-  de devolución paga el plan: **con 1 revisión, la primera devolución es la única.**
-- 🛑 **Si llegan más piezas que el techo del plan, las de más no se validan:** se escalan al CEO.
+- 🔑 **La marca se crea entera en Brand Foundation.** Rehacerla en Brand Growth o en Growth Partnership contradice la
+  promesa: *«hacer más cool la marca que ya está»*. **Lo que sube con el nivel no es la marca: es
+  cuánto se extiende y cuánto se documenta.**
+- 🛑 **Si el cliente llega a Brand Growth sin guía de marca**, el departamento no la inventa dentro del
+  ciclo mensual: se escala al CEO para correrla como Brand Foundation o como módulo de Marca y
+  posicionamiento.
+- ⚠️ **②B Branding trabaja la VOZ y el sistema visual en los tres niveles.** Qué se vende y a
+  qué precio es de ② Growth *(en Foundation, de la estrategia de ① Strategy)* y **solo entra con su profundidad
+  completa en Growth Partnership.**
+- **`br-guardian` corre todos los ciclos de Brand Growth y Growth Partnership.** Lo que cambia es cuántas vueltas
+  de devolución paga la ficha: **con 1 revisión, la primera devolución es la única.**
+- 🛑 **Si llegan más piezas que el volumen de la ficha, las de más no se validan:** se escalan al CEO.
   Validar de más es trabajo que nadie pagó.
 
-### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+### ⬜ A la medida — cuando el cliente elige áreas o módulos sueltos
 
 Se define en el onboarding, en `plan-contratado.md`, con dos secciones: **Qué incluye** y **Su
 pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—.
 **②B Branding hace lo que su pipeline le asigna.**
 
-- **No se bloquea por no ser un plan de lista ni se cuestiona por precio.**
+- **No se bloquea por no ser un paquete de lista ni se cuestiona por precio.**
 - **Si ②B Branding no está en su pipeline, no corre para ese cliente.**
 - **El método es el mismo; cambia el pipeline.** Cómo se hace cada capa no cambia: cambia qué capas
   corren y qué se verifica.
-- **Arriba de 🟨 Compound no se agrega marca, se agrega aplicación:** más formatos y más documentación,
+- **En Growth Partnership no se agrega marca, se agrega aplicación:** más formatos y más documentación,
   no una identidad nueva.
 
 ---
@@ -162,7 +166,7 @@ CEO; todo lo demás, al COO. Escalar avisa y sigue: no frena el flujo.
 | **El 20 de cada mes** | `br-loop` |
 | **Ciclos siguientes** | **La marca se evoluciona, no se rehace** |
 
-> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
+> 📐 **Cuánto y a qué profundidad según el alcance contratado: §0.** Una sola tabla, y está allá.
 
 ---
 
@@ -172,7 +176,7 @@ CEO; todo lo demás, al COO. Escalar avisa y sigue: no frena el flujo.
 |---|---|---|
 | **① Strategy** | El **brief de branding** — los 8 bloques, leídos de `clients/<cliente>/01-estrategia/` y del mapa de saturación de `99-referencias/investigacion/ingenieria-inversa.md` | 🛑 BLOQUEADO si la estrategia no existe |
 | **① Strategy** | Qué puede sostener el cliente: con qué graba, quién lo opera, qué ya existe | 🛑 BLOQUEADO |
-| **El plan contratado** | Las **Redes** del cliente: de ahí salen los formatos de `br-aplicacion` | Ver §0 |
+| **El alcance contratado** | Las **Redes** del cliente: de ahí salen los formatos de `br-aplicacion` | Ver §0 |
 | **④ Creatividad** | Las piezas del ciclo, para validarlas | Solo para `br-guardian` |
 
 ---

@@ -19,7 +19,7 @@ description: >
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
 > `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se
 > dice cuál, se ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* o
-> que el pipeline del plan ⬜ Tailor Made del cliente lo declare.
+> que el pipeline del alcance a medida del cliente lo declare.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 | | |
@@ -48,7 +48,7 @@ calendario, y si piden otra fecha, se escala al CEO.
 PRE-FLIGHT — Cliente: [x] · Capa: [0-6] · Ciclo: [x]
 ④ Creatividad: Excel del ciclo cerrado [✅/⬜] · filas del ciclo: [n] → social [n] · email [n] · manual [n] · SIN RUTA [n]
 ⑥A Diseño gráfico entregó: [n/n] · ⑦ Video Editing entregó: [n/n] · ⚠️ SIN ARCHIVO: [n]
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · publicaciones del ciclo: [n] de [techo del plan]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida] · publicaciones del ciclo: [n] de [techo de la ficha]
 ① Strategy: cuentas y accesos [✅/⬜] · cuentas con ID de Zernio [n/n] · Zernio conectado [✅/⬜] · herramienta de email [✅/⬜]
 ②B Branding [✅ / — no bloquea] · claims pendientes: [n]
 → PASS | BLOQUEADO: [qué falta exactamente]
@@ -64,7 +64,7 @@ Zernio, se devuelven a ③ Marketing.
 | Situación | Qué se responde |
 |---|---|
 | No se nombró el cliente | `BLOQUEADO — ¿de qué cliente?` |
-| ⬜ Tailor Made y Posting **no está en su pipeline** | No corre para ese cliente. Se dice |
+| Alcance a medida y Posting **no está en su pipeline** | No corre para ese cliente. Se dice |
 | Falta **el Excel del ciclo cerrado** de ④ Creatividad | `BLOQUEADO` — se pide la ruta exacta |
 | **No sabemos quién tiene el acceso** a las cuentas | `BLOQUEADO` — está en `clients/<cliente>/00-onboarding/LINKS.md` |
 | Zernio no está conectado *(Capas 4 y 5)* | `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio` |
@@ -166,7 +166,7 @@ con las filas programadas, las que no salen y las marcadas para pauta, que van a
 ## Control de calidad del orquestador
 
 - [ ] Se declaró el **pre-flight** antes de producir nada
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **se siguió su pipeline**
+- [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es a medida, **se siguió su pipeline**
 - [ ] El cliente está identificado y su carpeta existe, con el **nombre canónico** del repo
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
 - [ ] 🛑 **`po-specs` corrió antes que `po-carga`**

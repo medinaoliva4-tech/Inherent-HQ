@@ -8,7 +8,7 @@ description: >
   promesa al cliente. Sirve igual para Inherent (cliente cero) y para los clientes. Úsala cuando
   pidan "cómo conseguimos leads", "cómo captamos", "qué le ponemos de llamada a la acción", "una
   palabra para comentar", "un quiz", "un lead magnet", "prospectar", "outbound", "la captura del
-  mes". Requiere Accelerate o Compound y la oferta de `gr-oferta`.
+  mes". Requiere Growth Partnership y la oferta de `gr-oferta`.
 ---
 
 # Capa 1B · Captura — que la atención se vuelva un lead
@@ -21,16 +21,16 @@ description: >
 > 🔑 **El contenido trae atención. La captura la convierte en alguien con nombre y un siguiente
 > paso.** Sin captura, el contenido se mide en vistas y nadie sabe a quién llamar.
 
-## 1 · ⛔ No entra en la línea Marketing
+## 1 · ⛔ No entra en Brand Foundation ni en Brand Growth
 
-🛑 **El auto-DM por palabra clave, el embudo y el seguimiento son de 🟨** *(`agents/08-community-management/brain/WORKFLOW.md`)*.
-Armarlos en 🔷 es cobrar por algo que el plan no paga.
+🛑 **El auto-DM por palabra clave, el embudo y el seguimiento son de Growth Partnership** *(`agents/08-community-management/brain/WORKFLOW.md`)*.
+Armarlos en Brand Growth es cobrar por algo que el alcance no incluye.
 
-**En 🔷 los slots de «client-getting» existen** *(ver `mk-calendario`)*, pero su llamada a la acción
+**En Brand Growth los slots de «client-getting» existen** *(ver `mk-calendario`)*, pero su llamada a la acción
 apunta a `directo`: escribir al DM o al WhatsApp del cliente, que ⑧ Community atiende. **No se elige
 receta.**
 
-**Al cliente se le dice así:** *«Tu plan trabaja que te vean y te escriban. Armar el mecanismo que
+**Al cliente se le dice así:** *«Tu alcance trabaja que te vean y te escriban. Armar el mecanismo que
 convierte esa atención en clientes es el siguiente paso.»*
 
 ## 2 · El objetivo — uno solo y sencillo
@@ -159,7 +159,7 @@ el resto.
 |---|---|
 | **Cuándo sirve** | La oferta necesita explicación, el precio pide confianza, hay casos que lo prueben, alguien que lo diga a cámara y tráfico que mandarle *(orgánico o pauta)* |
 | **Qué se produce** | **El guion** *(problema → mecanismo → prueba → oferta → una sola acción)* · el **video** · la **página** con un solo botón *(agendar o escribir)* |
-| **De dónde sale** | Grabación de ⑤ Producción y edición de ⑦ Video Editing, **dentro del monto fijo del plan.** Es una pieza del ciclo, no un extra; si no cabe, se cotiza |
+| **De dónde sale** | Grabación de ⑤ Producción y edición de ⑦ Video Editing, **dentro del volumen de la ficha.** Es una pieza del ciclo, no un extra; si no cabe, se cotiza |
 | **Cómo entra el lead** | El formulario o la agenda de la página crean el lead con fuente `vsl` |
 | **Qué se mide** | Reproducciones · % que ve hasta el final · clics al botón · agendados · cierre |
 
@@ -239,7 +239,7 @@ oferta nueva, se escala al CEO:** es comprometer precio.
 
 ## 10 · Checklist
 
-- [ ] El plan es **Accelerate o Compound**
+- [ ] El alcance es **Growth Partnership**
 - [ ] El objetivo es **una frase** y su número sale de datos reales, o va `⚠️ SIN DATOS`
 - [ ] **La meta no se prometió al cliente**
 - [ ] La receta se eligió por la **naturaleza del negocio**, y es **una principal** *(más una de apoyo con datos)*

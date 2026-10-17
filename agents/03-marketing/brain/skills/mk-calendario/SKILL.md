@@ -3,7 +3,7 @@ name: mk-calendario
 description: >
   Capa 5 de ③ Marketing — arma `calendario.csv`, el encargo que recibe ④ Creatividad. Una fila
   por slot con las 11 columnas, en semanas y nunca en días, porque el día lo fija Creative.
-  Verifica que todo slot trace a una MUST BE TRUE, que el total entre en el techo del plan
+  Verifica que todo slot trace a una MUST BE TRUE, que el total entre en el techo del alcance
   contratado y que no aparezca ninguna de las cinco combinaciones prohibidas. Puede llevar dos
   columnas opcionales: la etapa del embudo (TOF, MOF, BOF) y la receta de captura de los
   «client-getting videos». Úsala cuando pidan
@@ -67,7 +67,7 @@ usan, van **al final** y se llenan con estas reglas.
 | `Conversion` | `BOF` |
 | `Community` | **vacía** — le habla a quien ya compró, y eso no es embudo |
 
-**El mix sugerido de arranque es 50% `TOF` · 30% `MOF` · 20% `BOF`**, igual en los cuatro planes, y
+**El mix sugerido de arranque es 50% `TOF` · 30% `MOF` · 20% `BOF`**, igual en todos los niveles, y
 **se ajusta con los datos** de `aprendizaje-de-marketing.md`. El 20% de `BOF` cabe dentro del rango
 de `Conversion` de `mk-pilares` (10%-25%).
 
@@ -77,16 +77,14 @@ de `Conversion` de `mk-pilares` (10%-25%).
 concreta a cambio de la cual el interesado deja su contacto.** No es un pilar ni una función: cruza
 `Utility`, `Proof` y `Conversion`.
 
-| Plan | `captura` admite | % de los slots de video corto del ciclo |
+| Nivel | `captura` admite | % de los slots de video corto del ciclo |
 |---|---|---|
-| 🔷 **Marketing** | `directo` | **20%** |
-| 🔷 **Marketing Pro** | `directo` | **25%** |
-| 🟨 **Accelerate** | La receta de `gr-captura` | **30%** |
-| 🟨 **Compound** | La receta de `gr-captura` | **30%** |
+| **Brand Growth** | `directo` | El que fije la ficha |
+| **Growth Partnership** | La receta de `gr-captura` | El que fije la ficha |
 
 | Valor | Qué es |
 |---|---|
-| **`directo`** | Escribir al DM o al WhatsApp del cliente. ⑧ Community lo atiende. **Es el único valor en 🔷** |
+| **`directo`** | Escribir al DM o al WhatsApp del cliente. ⑧ Community lo atiende. **Es el único valor en Brand Growth** |
 | **`comenta-y-te-mando`** · **`lead-magnet`** | El recurso se entrega por mensaje o formulario. Van en `TOF` o `MOF` |
 | **`quiz`** · **`vsl`** · **`low-ticket`** | Piden más decisión. Van en `MOF` o `BOF` |
 | *(vacío)* | La pieza no pide contacto |
@@ -94,10 +92,10 @@ concreta a cambio de la cual el interesado deja su contacto.** No es un pilar ni
 **Reglas de la columna:**
 
 - 🛑 **Solo con `balance = Activación`** y `funcion ≠ Community`. Una pieza que pide contacto no es de marca pura.
-- **La receta la fija ② Growth** en `§ Captura` de `motor-de-crecimiento.md` *(🟨)*. ③ Marketing no inventa recetas.
+- **La receta la fija ② Growth** en `§ Captura` de `motor-de-crecimiento.md` *(Growth Partnership)*. ③ Marketing no inventa recetas.
   `outbound` no aparece acá: no es una pieza.
 - **`objetivo_del_slot` nombra lo que se entrega:** *«Que comenten GUÍA para recibir la lista de precios»*, no *«captar leads»*.
-- **No agrega piezas:** el client-getting es una categoría **dentro** del techo de slots del plan.
+- **No agrega piezas:** el client-getting es una categoría **dentro** del techo de slots de la ficha.
 - **El llamado sigue a la etapa** *(`cr-storytelling`)*: no se pide una venta directa en `TOF`.
 
 ---
@@ -179,8 +177,8 @@ de negocio asignado.**
 
 **Antes de cerrar se verifica contra § El encargo:**
 
-- [ ] Total de slots = el techo del plan contratado
-- [ ] Slots con rodaje ≤ los reels que el plan incluye
+- [ ] Total de slots = el techo del alcance contratado
+- [ ] Slots con rodaje ≤ los reels que la ficha incluye
 - [ ] Estáticos y carruseles ≤ el techo
 - [ ] Stories ≤ el techo
 - [ ] El reparto por pilar coincide con los % de la Capa 3
@@ -203,13 +201,13 @@ auto-revisa entero, acá, y pasa directo a ④ Creatividad.
 
 - [ ] Las **11 columnas** están completas en todas las filas *(`etapa` y `captura` son opcionales)*
 - [ ] Si hay `etapa`: **no contradice** a `funcion`, y el mix se comparó con **50/30/20** *(o se declaró por qué se aparta)*
-- [ ] Si hay `captura`: solo con `balance = Activación`, nombra **qué se entrega** y el % de client-getting **no pasa** del que corresponde al plan
+- [ ] Si hay `captura`: solo con `balance = Activación`, nombra **qué se entrega** y el % de client-getting **no pasa** del que fija la ficha
 - [ ] `semana` es un número, **nunca una fecha**
 - [ ] **Todo slot traza** a una MUST BE TRUE con su letra
 - [ ] Ningún `objetivo_del_slot` es genérico
 - [ ] Ninguna de las **cinco combinaciones prohibidas** aparece
 - [ ] Cada `funcion` coincide con la que `plan-por-canal.md` le asigna a ese canal
-- [ ] El total **entra en el techo** del plan contratado
+- [ ] El total **entra en el techo** del alcance contratado
 - [ ] Lo que se recortó está **escrito**
 - [ ] **Cada slot pasó las 5 preguntas de la prueba de alineación**
 - [ ] **Ningún slot quedó sin responder la 3** *(qué parte de la promesa demuestra)*

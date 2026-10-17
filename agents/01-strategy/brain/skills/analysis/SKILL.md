@@ -103,12 +103,14 @@ que es justo el error que la metodología prohíbe.
 ⚠️ **Y por eso el diagnóstico decide el ORDEN de los briefs**, no solo su contenido:
 el área que arregla el cuello va primero y con más profundidad.
 
-### 🛑 El cruce con el plan contratado
+### 🛑 El cruce con el alcance contratado
 
-| Si el cuello está en… | Y el plan es… | Entonces |
+| Si el cuello está en… | Y el alcance es… | Entonces |
 |---|---|---|
-| Oferta · conversión · retención | 🔷 **Marketing / Pro** | 🔴 **Se declara que el plan NO cubre el cuello.** Se escala al CEO y se propone subir a Accelerate |
-| Distribución · contenido · mensaje | cualquiera | ✅ Se trabaja dentro del plan |
+| Oferta | **Brand Growth** | 🔴 **Se declara que el alcance NO cubre el cuello.** Se escala al CEO y se propone un proyecto de Brand Foundation o la profundidad de Growth Partnership |
+| Conversión · ventas · retención | **Brand Growth** | 🔴 **Se declara que el alcance NO cubre el cuello.** Se escala al CEO y se propone Growth Partnership |
+| Oferta · conversión · retención | **Brand Foundation** | 🟡 La oferta se trabaja en el proyecto; conversión y retención quedan en la lista de próximos trabajos |
+| Distribución · contenido · mensaje | cualquiera | ✅ Se trabaja dentro del alcance |
 
 **Entregar contenido sobre un cuello de oferta es cobrar por amplificar una fuga.**
 Se dice, no se calla.
@@ -128,7 +130,7 @@ condición mueve cada una. **Es de ahí que los demás departamentos trazan sus 
 - [ ] Cada cosa por buscar mueve una condición — ninguna suelta
 - [ ] Los pasos se pueden trazar hasta una condición de la pregunta 1
 - [ ] **El síntoma del cliente está traducido a causa**, y la causa dice qué área va primero
-- [ ] **Si el cuello cae fuera del plan contratado, está declarado** — no se entrega igual
+- [ ] **Si el cuello cae fuera del alcance contratado, está declarado** — no se entrega igual
 
 ## Handoff
 → `reverse-engineering`. Ya sabemos qué buscar; ahora vamos a ver qué está funcionando de verdad.

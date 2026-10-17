@@ -6,17 +6,17 @@
 
 ---
 
-## § A.0 · El plan contratado
+## § A.0 · El alcance contratado
 
 > **El primer dato de todos.** Define hasta dónde se puede llegar. Ver `../../WORKFLOW.md` §0.
 
 | | |
 |---|---|
-| **Línea** | 🔷 Marketing *(atención)* · 🟨 Growth *(facturación)* |
-| **Plan** | 🔷 Marketing · 🔷 Mkt Pro · 🟨 Accelerate · 🟨 Compound · ⬜ Tailor Made |
+| **Nivel** | Brand Foundation · Brand Growth · Growth Partnership · ⬜ a la medida |
+| **Áreas contratadas** | Las del catálogo que entran, y las que quedan fuera |
 | **Desde cuándo** | |
-| **Performance fee** | Incluido / opcional / ⛔ no aplica *(línea 🔷)* |
-| **Marcas o cuentas** | 1 paquete = 1 marca. Si hay más, son add-on |
+| **Performance fee** | Incluido / ⛔ no aplica *(solo Growth Partnership y con atribución limpia)* |
+| **Marcas o cuentas** | 1 ficha = 1 marca. Si hay más, se cotizan aparte |
 
 ---
 
@@ -42,7 +42,7 @@
 | **Margen** | |
 | **Capacidad de entrega** | |
 | **Punto de equilibrio** | |
-| **Ad spend del cliente** | 🛑 Nunca está incluido en el paquete |
+| **Ad spend del cliente** | 🛑 Nunca está incluido en el alcance |
 | **Mercado donde vende** | 🇬🇹 · 🇲🇽 · 🇺🇸 · otro |
 | **Dónde está trabado** | |
 | **División** | 🔵 Low ticket · 🟣 High ticket |

@@ -25,7 +25,7 @@ pasa con él.
 | 😠 **Queja** | Mala experiencia, pedido equivocado, demora, trato | `cm-respuesta` + `cm-escalado` · 🔴 |
 | 🤝 **Colaboración** | Influencer, prensa, proveedor, alianza, empleo | `cm-escalado` · 🔴 |
 | ❓ **Fuera de la ficha** | Pregunta razonable cuya respuesta no está en la ficha | `cm-escalado` · 🔴 |
-| 🚫 **Spam · hater** | Promoción ajena, link sospechoso, insulto, bait, bots | ⚫ Nada. Ocultar si es abuso *(Pro+)* |
+| 🚫 **Spam · hater** | Promoción ajena, link sospechoso, insulto, bait, bots | ⚫ Nada. Ocultar si es abuso *(con seguimiento)* |
 
 ## 2 · Reglas
 

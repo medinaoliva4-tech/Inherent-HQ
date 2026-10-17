@@ -47,15 +47,15 @@ convierta en el basurero del ciclo.**
 |---|---|---|
 | **1** | ¿Existe la cuenta? | **No entra.** No se inventa un canal |
 | **2** | ¿Hay alguien con las claves? | **No entra.** Sin acceso no hay publicación |
-| **3** | ¿El plan contratado lo cubre? | **No entra.** Ver el techo de § El encargo |
+| **3** | ¿El alcance contratado lo cubre? | **No entra.** Ver el techo de § El encargo |
 
 > ⚠️ **«Que te encuentren en Google» es pauta de búsqueda y contenido guiado por keywords** —
 > nunca posicionamiento orgánico, auditoría técnica ni link building.
-> Y **entra desde 🔷 Marketing Pro** — no en 🔷 Marketing.
+> Y **entra solo si la ficha de oferta incluye ese canal** *(Google, alianzas u otros)*.
 
 ## 4 · Los canales que no son redes
 
-**El plan los contempla igual, y ⑨ Posting los rutea distinto.**
+**La ficha los contempla igual, y ⑨ Posting los rutea distinto.**
 
 | Ruta | Canales | Qué necesita |
 |---|---|---|
@@ -93,7 +93,7 @@ es cómo un canal termina cargado donde no va.
 | Dos canales con la misma función | 🛑 **Se decide: uno cambia de función o sale** |
 | Un canal sin cuenta o sin acceso | **No entra.** Se escribe en descartados |
 | La suma de cadencias no da el total de slots | Se rehace. Hay un error de aritmética |
-| El cliente pide un canal fuera del plan contratado | 🔴 **Se escala al CEO.** Es add-on, no favor |
+| El cliente pide un canal fuera del alcance contratado | 🔴 **Se escala al CEO.** Es add-on, no favor |
 
 ## 8 · Checklist
 

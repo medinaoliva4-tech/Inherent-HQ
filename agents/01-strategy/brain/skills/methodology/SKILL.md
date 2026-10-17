@@ -60,15 +60,15 @@ Lo primero. Todo lo demás existe para cumplirlos.
 
 > **El nivel no lo decide la venta. Lo decide dónde está trabado el negocio.**
 
-| Si el cuello es… | Plan | El boost |
+| Si el cuello es… | Nivel | El boost |
 |---|---|---|
-| **No lo conocen** — hay producto, no hay demanda | 🔷 **MARKETING** | Existir |
-| **Lo conocen y quiere sostenerlo** — hay demanda, falta constancia | 🔷 **MARKETING PRO** | Sostener presencia en serio |
-| **Está estancado** — ya vende y no sabe cómo crecer sin romperlo | 🟨 **ACCELERATE** | Escalar lo que ya funciona |
-| **Todo depende del fundador** — crece pero no se sostiene solo | 🟨 **COMPOUND** | Que crezca sin él |
+| **Marca nueva, reposicionamiento u oferta poco clara** — no hay una marca ni una oferta que se pueda empujar | **BRAND FOUNDATION** | Crear la marca cool |
+| **Hay oferta, falta demanda y falta presentarla mejor** — la marca existe y no se elige lo suficiente | **BRAND GROWTH** | Hacer más cool la marca que ya está |
+| **Ya vende y el cuello está entre marca, ventas, experiencia de cliente y sistemas comerciales** — crecer sin romperlo | **GROWTH PARTNERSHIP** | Conectar marca y marketing con el resto del negocio |
 
-🔑 **Antes del plan, la LÍNEA.** 🔷 Marketing promete **atención** · 🟨 Growth promete
-**facturación**. **Los pilares solo corren en la línea Growth.**
+🔑 **Antes del nivel, el alcance.** Foundation es un **proyecto** con inicio y cierre; Brand Growth y
+Growth Partnership son **colaboraciones** continuas. **Los pilares corren con su profundidad completa
+solo en Growth Partnership;** en Brand Growth, ② Growth corre ligero.
 
 **Y antes: ¿es low o high ticket?** Lo define cómo se decide la compra, no quién compra.
 Eso determina **cuáles son sus 3 pilares** → ver `inherent/02-METODO.md`.
@@ -76,11 +76,15 @@ Eso determina **cuáles son sus 3 pilares** → ver `inherent/02-METODO.md`.
 **Esto define tres cosas de una vez:**
 1. **A qué profundidad se activan los 3 pilares** — mapea · ejecuta · sistematiza *(`inherent/03-OFERTA.md`)*
 2. Qué briefs se arman *(ver C)*
-3. **Cuál es el techo de los objetivos** — no se puede prometer lo que el nivel no cubre
+3. **Cuál es el techo de los objetivos** — no se puede prometer lo que el alcance no cubre
 
-⚠️ **Si el cliente contrató un nivel que no ataca su cuello, se dice.**
-Vender Compound a quien no tiene demanda es autonomía sobre una máquina rota.
-**El agente propone; el CEO decide si se ajusta el paquete o el objetivo.**
+⚠️ **Si el cliente contrató un alcance que no ataca su cuello, se dice.**
+Vender Growth Partnership a quien no tiene oferta ni demanda es sistematizar una máquina rota.
+**El agente propone; el CEO decide si se ajusta el alcance o el objetivo.**
+
+> 🏗️ **En Brand Foundation esta estrategia ES el entregable del proyecto** *(diagnóstico, audiencia,
+> posicionamiento, estructura de oferta, plan a 90 días)*. El gate del CEO no cambia — ver
+> `brain/WORKFLOW.md` → §0.
 
 ### A.1 · ¿Qué significa ganar para ESTA empresa? — el `WIN`
 
@@ -121,27 +125,27 @@ Se mide con dos datos, y salen del bloque `context`:
 |---|---|
 | **Cuántas personas hay** — en la empresa y en la agencia | La capacidad de ejecución |
 | **Cuánto dinero tienen para invertir** | La capacidad de compra de alcance y producción |
-| **Qué paquete contrataron** | El techo duro de piezas, pauta y revisiones → `inherent/06-ECONOMIA.md` |
-| **Cuánto ad spend ponen** | Nunca viene en el paquete. Sin esto, la estrategia no puede apoyarse en paid |
+| **Qué alcance contrataron** | El techo duro de formatos, volumen, pauta y revisiones: la ficha de oferta → `inherent/06-ECONOMIA.md` |
+| **Cuánto ad spend ponen** | Nunca viene en el alcance. Sin esto, la estrategia no puede apoyarse en paid |
 
-**El paquete es el límite que ya está firmado:**
+**La ficha de oferta es el límite que ya está firmado.** Antes de proponer un objetivo se lee de
+`plan-contratado.md`:
 
-| | 🔷 **Marketing** Q7,315 | 🔷 **Pro** Q11,165 | 🟨 **Accelerate** Q19,250 | 🟨 **Compound** Q32,340 |
-|---|---|---|---|---|
-| Piezas/mes | **86** | **145** | **145** | **204** |
-| Horas de producción | 3h · 1 sesión | 4h · 2 sesiones | 6h · 2 sesiones | 8h · 3 sesiones |
-| Canales de pauta | Meta · TikTok | + Google Search · PMax | + los que apliquen | + los que apliquen |
-| Variantes de creativo | hasta 20 | hasta 30 | hasta 35 | hasta 50 |
-| **Oferta y precio** | ❌ *solo el mensaje* | ❌ *solo el mensaje* | ✅ | ✅ |
-| Sistemas activos | ⬜ Ninguno | ⬜ Ninguno | Growth · Conversion · Operations *(parcial)* | **Los cuatro** |
-| Conversión y tecnología | ❌ | ❌ | ✅ | ✅ |
-| Retención y autonomía del cliente | ❌ | ❌ | Parcial | ✅ |
-| **Meta de crecimiento a 12 m** | 1.3x | 1.45x | 1.7x | 2x |
-| Objetivo del plan | Acelerar la máquina que hay | Rediseñar la máquina | Que la máquina se sostenga sola |
+- **Nivel y áreas contratadas** — y cuáles quedan fuera
+- **Volumen** — formatos, cantidades, rodajes y revisiones definidos
+- **Horas y sesiones de producción**
+- **Canales de pauta** incluidos *(el presupuesto de anuncios nunca viene en el alcance)*
+- **Variantes de creativo** que la ficha permite probar
+- **Si toca la oferta** — sí en Brand Foundation y en Growth Partnership; en Brand Growth, solo el mensaje
+- **Si entran conversión, tecnología, retención y sistemas** — solo en Growth Partnership, según lo acordado
+
+La meta no sale de una tabla: sale del `WIN`, de la ingeniería inversa y de los datos que el cliente
+comparte.
 
 > **Un objetivo que exige rediseñar la oferta, el embudo, la operación o la tecnología es
-> imposible sobre la línea 🔷 Marketing — por contrato, no por ambición.**
-> Se baja el objetivo, o **se propone subir a Accelerate.**
+> imposible sobre Brand Growth — por alcance, no por ambición.**
+> Se baja el objetivo, o **se propone otro alcance** *(Brand Foundation si falta la oferta, Growth
+> Partnership si el cuello está en ventas, experiencia o sistemas)*.
 
 > ⚠️ **El video de grabación es el único techo que no escala.** Depende de las horas de producción
 > y de cuánto pueda grabar el cliente. Todo lo demás escala con agentes.
@@ -282,7 +286,7 @@ Cada bloque con **decisión + puntos a resolver**. Ver `brand-brief.md` en esta 
   `modelos / talento` · `producción` · `pauta`
 - Qué se prueba primero con la comunidad chica antes de escalar
 
-🔷 **En la línea Marketing, ligero:** las ofertas que ya existen y el objetivo del ciclo. Growth
+**En Brand Growth, ligero:** las ofertas que ya existen y el objetivo del ciclo. Growth
 elige cuáles se empujan — **no toca qué se vende, en qué paquetes ni a qué precio.**
 
 ### C.4 · Brief de CREATIVE
@@ -290,9 +294,9 @@ elige cuáles se empujan — **no toca qué se vende, en qué paquetes ni a qué
 - La intersección obligatoria: `lo que la audiencia quiere consumir` + `el posicionamiento` + `la promesa`
 - Qué territorios narrativos se abren desde la historia
 
-### C.5 · Brief de TECNOLOGÍA 🔧 *(Accelerate y Compound)*
+### C.5 · Brief de TECNOLOGÍA 🔧 *(Growth Partnership, si la ficha incluye el área)*
 
-> **El paquete promete una herramienta a medida. Alguien tiene que decidir CUÁL — y esa es una
+> **Cuando la ficha incluye tecnología, alguien tiene que decidir qué herramienta. Alguien tiene que decidir CUÁL — y esa es una
 > decisión de estrategia, no de programación.**
 
 - **Qué fricción hay que matar** — el punto donde el negocio pierde plata o tiempo hoy
@@ -307,10 +311,10 @@ elige cuáles se empujan — **no toca qué se vende, en qué paquetes ni a qué
 ⚠️ **Si no se identifica una fricción real, no se construye nada.** Una herramienta que nadie usa
 es peor que ninguna: consume el presupuesto del trimestre y no mueve un número.
 
-### C.6 · Brief de SISTEMAS 🔁 *(solo Compound)*
+### C.6 · Brief de SISTEMAS 🔁 *(Growth Partnership, si la ficha incluye el área)*
 
-> **Compound promete que el crecimiento deje de comprarse cada mes.** Estas tres decisiones son
-> las que lo hacen posible.
+> **Growth Partnership busca que el crecimiento deje de comprarse cada mes.** Estas tres decisiones
+> son las que lo hacen posible.
 
 | | Qué decide Strategy |
 |---|---|
@@ -329,14 +333,13 @@ PREGUNTAS ABIERTAS   lo que Strategy no resuelve
 RESTRICCIONES        presupuesto, tiempo, lo que el cliente ya dijo que no
 ```
 
-> **Los briefs que se arman dependen del nivel contratado** — ver A.0.
-> 🔷 Marketing: Branding · Marketing · Creative · Growth *(ligero)*
-> 🔷 Marketing Pro: + Producción
-> 🟨 Accelerate: **Growth completo** · + Tecnología
-> 🟨 Compound: + Sistemas
-> ⬜ Tailor Made: los de los departamentos de **Su pipeline**
+> **Los briefs que se arman dependen del alcance contratado** — ver A.0.
+> Brand Foundation: Branding · Creative *(dirección creativa y aplicaciones)* · lista priorizada de próximos trabajos
+> Brand Growth: Branding · Marketing · Creative · Growth *(ligero)* · Producción según la ficha
+> Growth Partnership: **Growth completo** · + Tecnología · + Sistemas, según la ficha
+> ⬜ A la medida: los de los departamentos de **Su pipeline**
 >
-> ⚠️ **En la línea Marketing el brief de Growth es ligero** *(C.3)*. Strategy entrega
+> ⚠️ **En Brand Growth el brief de Growth es ligero** *(C.3)*. Strategy entrega
 > posicionamiento y mensaje — **no toca qué se vende ni a qué precio.**
 
 ---

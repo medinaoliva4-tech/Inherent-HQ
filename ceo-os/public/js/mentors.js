@@ -30,16 +30,16 @@ const SEED = [
   ['Suplementos', 'premium', 'Fundador de Zesty Paws', 'MentorPass', 720, 'sesion', 30, 'Fundó y vendió una marca grande de suplementos'],
   ['Servicios profesionales', 'low', 'MicroMentor', 'MicroMentor', 0, 'gratis', 0, 'Orientación general'],
   ['Servicios profesionales', 'medio', 'GrowthMentor', 'GrowthMentor', 50, 'mes', 0, '$50-85/mes; algunos mentores cobran aparte'],
-  ['Servicios profesionales', 'premium', 'GLG · Guidepoint', 'GLG', 0, 'cotizacion', 0, 'Expertos por hora: $700-1,500+/h. Fuera del techo de cualquier plan'],
+  ['Servicios profesionales', 'premium', 'GLG · Guidepoint', 'GLG', 0, 'cotizacion', 0, 'Expertos por hora: $700-1,500+/h. Fuera del techo de cualquier nivel'],
 ];
 
 export const priceLabel = (m) => (m.unit === 'gratis' ? 'Gratis' : m.unit === 'cotizacion' ? 'Cotización' : m.unit === 'mes' ? `$${m.price}/mes` : `$${m.price} / ${m.minutes || 30} min`);
-// En qué plan cabe, según la política del manual (techo $144 Accelerate · $180 Compound).
+// Qué cubre, según la política del manual: los especialistas son de Growth Partnership; hasta $180 por sesión se absorbe en el alcance acordado, arriba va aparte.
 export function fit(m) {
   if (m.unit === 'gratis') return ['Gratis', 'green'];
   if (m.unit === 'mes') return ['Membresía anual de Inherent', 'blue'];
   if (m.unit === 'cotizacion') return ['Add-on facturado al cliente', 'red'];
-  return +m.price <= 144 ? ['Cabe en Accelerate y Compound', 'green'] : +m.price <= 180 ? ['Cabe en Compound', 'lime'] : ['Add-on facturado al cliente', 'red'];
+  return +m.price <= 180 ? ['Cabe en Growth Partnership', 'green'] : ['Add-on facturado al cliente', 'red'];
 }
 // Costo al mes de un especialista asignado a un cliente (USD). Las membresías son de Inherent: no se cargan por cliente.
 export const monthly = (m, cadence) => (m?.unit !== 'sesion' ? 0 : cadence === 'mensual' ? +m.price : cadence === 'trimestral' ? Math.round(+m.price / 3) : 0);
@@ -49,7 +49,7 @@ export function mentorsTab(body, { list, isCeo, onChange, ind = 'Todas', onInd }
   const inds = [...new Set(list.map((m) => m.industry).filter(Boolean))].sort();
   const shown = list.filter((m) => ind === 'Todas' || m.industry === ind);
   mount(body, html`
-    <div class="mut sm" style="margin-bottom:12px">La red de especialistas de la línea ${ico('stairs')} Growth: gente que ya creció una marca en esa industria. Techo por sesión: <b>$144 en Accelerate · $180 en Compound</b>; arriba de eso va como add-on facturado al cliente.</div>
+    <div class="mut sm" style="margin-bottom:12px">La red de especialistas de ${ico('stairs')} Growth Partnership: gente que ya creció una marca en esa industria. En cada propuesta se define quién, cuántas horas y qué entrega. Techo por sesión: <b>$180</b>; arriba de eso va como add-on facturado al cliente.</div>
     <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:14px">${['Todas', ...inds].map((x) => html`<button class="chip ${x === ind ? 'dark' : ''}" data-mact="ind" data-v="${x}" style="padding:7px 13px">${x}</button>`)}</div>
     ${!list.length ? html`<div class="empty"><b>Todavía no hay especialistas</b>${isCeo ? html`Carga el mapa del manual para empezar, o agrega uno.<div style="margin-top:14px"><button class="btn ghost" data-mact="seed">Cargar el mapa del manual (${SEED.length})</button></div>` : 'El CEO los agrega aquí.'}</div>`
       : [...new Set(shown.map((m) => m.industry))].sort().map((i) => html`<div class="sec-title"><h2>${i}</h2></div>

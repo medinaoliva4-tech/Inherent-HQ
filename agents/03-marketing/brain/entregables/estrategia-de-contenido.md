@@ -24,7 +24,7 @@
 | B | |
 
 ### D · El techo
-**Plan contratado:** 🔷 Marketing / 🔷 Marketing Pro / 🟨 Accelerate / 🟨 Compound
+**Alcance contratado:** Brand Growth / Growth Partnership / ⬜ a la medida
 | | Techo | Reparto |
 |---|---|---|
 | Total de slots | | |

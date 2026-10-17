@@ -37,7 +37,7 @@ su foto de ⑤ Producción antes de componerse.** Las de `material = video` van 
 | **Todas las stories juntas** | Mismo formato, misma safe zone |
 
 🛑 **Producir en orden de calendario obliga a cambiar de molde en cada pieza.** Es la diferencia
-entre 168 piezas y 168 decisiones.
+entre un ciclo de piezas y una decisión por pieza.
 
 ## 3 · El cruce, fila por fila
 
@@ -54,15 +54,9 @@ entre 168 piezas y 168 decisiones.
 
 ## 4 · El techo
 
-| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| Estáticos y carruseles | 43 | 72 | 63 | 88 |
-| Stories | 30 | 55 | 55 | 80 |
-| **Total de ⑥A Diseño gráfico** | **73** | **127** | **118** | **168** |
-| Revisiones por pieza | 1 | 2 | 2 | 3 |
-
-⬜ **Tailor Made:** el techo son los estáticos, carruseles y stories que declara **Su pipeline** en
-`plan-contratado.md`.
+**El techo es el que dice la ficha de oferta** (`plan-contratado.md`): estáticos y carruseles,
+stories y revisiones por pieza. **Alcance a medida:** el techo son los estáticos, carruseles y
+stories que declara **Su pipeline**.
 
 🛑 **Si el Excel pide más, se declara y se devuelve a ③ Marketing.**
 
@@ -81,4 +75,4 @@ entre 168 piezas y 168 decisiones.
 - [ ] Cada fila se cruzó — **sin muestreo**
 - [ ] Ninguna pieza entró con copy **descrito** en vez de escrito
 - [ ] Ninguna pieza con claim `⏸️` entró
-- [ ] El total **entra en el techo** del plan
+- [ ] El total **entra en el techo** de la ficha

@@ -1,7 +1,7 @@
 # Motor de crecimiento — <cliente>
 
-> Plantilla de ② Growth. **Solo se llenan las secciones que el plan contratado activa.**
-> 🔷 **En la línea Marketing, qué ofertas se empujan va en `ofertas-a-empujar.md`**, no en § La oferta.
+> Plantilla de ② Growth. **Solo se llenan las secciones que el alcance contratado activa.**
+> **En Brand Growth, qué ofertas se empujan va en `ofertas-a-empujar.md`**, no en § La oferta.
 > 🔒 **Nunca se mencionan los costos ni los márgenes de Inherent.**
 
 ---
@@ -13,7 +13,7 @@
 |---|---|
 | **División** | 🔵 Low ticket / 🟣 High ticket — *de ① Strategy* |
 | **El pilar roto** | |
-| **Plan contratado** | 🔷 Marketing / 🔷 Marketing Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made |
+| **Alcance contratado** | Brand Foundation / Brand Growth / Growth Partnership / ⬜ a la medida |
 
 ### Unit economics
 | Línea | Precio | Costo | Margen | Frecuencia |
@@ -24,7 +24,7 @@
 | **CAC actual** | |
 | **Capacidad de entrega** | ⚠️ *Si es el cuello, se declara acá* |
 
-### Qué activa el plan
+### Qué activa el alcance
 | | Activo |
 |---|---|
 | Pilar 1 · Oferta | |
@@ -39,7 +39,7 @@
 ---
 
 ## § La oferta
-*Capa 1 · `gr-oferta` · 🟨 · **🔴 se escala al CEO antes de llevarla al cliente***
+*Capa 1 · `gr-oferta` · Growth Partnership · **🔴 se escala al CEO antes de llevarla al cliente***
 
 ### A · Qué se vende hoy
 ### B · Los cuatro ángulos
@@ -63,7 +63,7 @@
 ---
 
 ## § Captura
-*Capa 1B · `gr-captura`* — 🟨 🟨 · **la meta de leads es interna, no se promete**
+*Capa 1B · `gr-captura`* — Growth Partnership · **la meta de leads es interna, no se promete**
 
 | | |
 |---|---|
@@ -83,19 +83,19 @@
 ---
 
 ## § Canales grandes
-*Capa 2 · `gr-canales-grandes`* — 🔷 **solo el mapa**
+*Capa 2 · `gr-canales-grandes`* — **solo el mapa** *(Growth Partnership abre y vende)*
 
 | Canal | Tamaño | Requisito | Ciclo | Quién decide | ¿Capacidad OK? |
 |---|---|---|---|---|---|
 
-### Cuáles se abren *(🟨 🟨)*
+### Cuáles se abren *(Growth Partnership)*
 ### Qué necesita ④ Creatividad
 ### Dónde se registra
 
 ---
 
 ## § La escalera
-*Capa 3 · `gr-upsells`* — 🟨 🟨
+*Capa 3 · `gr-upsells`* — Growth Partnership
 
 | Escalón | Qué | **Cuándo** | Cómo se entera | Margen |
 |---|---|---|---|---|
@@ -103,7 +103,7 @@
 ---
 
 ## § Conversión
-*Capa 4 · `gr-conversion`* — 🟨 🟨
+*Capa 4 · `gr-conversion`* — Growth Partnership
 
 ### A · El recorrido real — dónde se cae la gente
 ### B · Respuesta · C · Seguimiento · D · Closing
@@ -113,7 +113,7 @@
 ---
 
 ## § Herramientas
-*Capa 5 · `gr-herramienta`* — 🟨 1/trim · 🟨 1/mes
+*Capa 5 · `gr-herramienta`* — Growth Partnership, según la ficha
 
 | | |
 |---|---|
@@ -126,7 +126,7 @@
 ---
 
 ## § Los números
-*Capa 6 · `gr-numeros`* — 🟨 **solamente**
+*Capa 6 · `gr-numeros`* — Growth Partnership, si la ficha lo incluye
 
 **Período y fuente:** ___
 

@@ -16,7 +16,7 @@ description: >
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
 > `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se dice cuál, se
 > ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* — o que el
-> pipeline de un ⬜ Tailor Made ya lo declare en `plan-contratado.md`.
+> pipeline de un alcance ⬜ a la medida ya lo declare en `plan-contratado.md`.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 **Si no sabés qué skill usar, es esta.**
@@ -24,7 +24,7 @@ description: >
 ## 1 · Pre-flight
 
 ```
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas que valida este ciclo: [n] de [techo del plan]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / ⬜ a la medida] · piezas que valida este ciclo: [n] de [volumen de la ficha]
 ```
 
 | Input | De | Si falta |
@@ -33,7 +33,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | El **código saturado** de la categoría | ① Strategy · `99-referencias/investigacion/ingenieria-inversa.md` § El mapa de saturación | 🛑 **BLOQUEADO** |
 | Qué puede sostener el cliente | ① Strategy | 🛑 **BLOQUEADO** |
 | Qué ya existe de marca | ① Strategy · `clients/<cliente>/02-marca/` | 🟡 Se sigue sin eso. **Si existe, vale y no se rehace** |
-| **El plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define la profundidad, y sus **Redes** los formatos |
+| **El alcance contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define la profundidad, y sus **Redes** los formatos |
 
 🛑 **Sin el código saturado no se puede oponer a nada**, y una marca que no se opone a nada no
 se distingue de nada.
@@ -59,7 +59,7 @@ se distingue de nada.
 | **Los demás** | Solo `br-guardian` y `br-loop` |
 
 🛑 **La marca se evoluciona, no se rehace.** Rehacerla cada ciclo contradice la promesa
-publicada de Accelerate: *«escalar lo que ya funciona, sin perderlo»*.
+publicada de Brand Growth: *«hacer más cool la marca que ya está»*. **En Brand Foundation sí corren las capas 0 a 5 completas:** ahí se crea la identidad.
 
 ## 4 · No para entre capas
 
@@ -71,6 +71,6 @@ escalan al CEO; todo lo demás, al COO. Escalar avisa y sigue: no frena el flujo
 
 ## Control de calidad del orquestador
 
-- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **se sigue Su pipeline**
+- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Nivel:`** completa
+- [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ a la medida, **se sigue Su pipeline**
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla

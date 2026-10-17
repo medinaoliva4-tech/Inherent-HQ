@@ -20,7 +20,7 @@ export async function render(el, { me, sub, alive }) {
   const n = (num) => (num == null ? '—' : num);
   mount(el, html`
     ${me.role !== 'client' ? html`<div class="asbar">${ico('eye')} Así ve ${d.name} su portal <a href="#/clients/${d.slug}">Volver al cliente</a></div>` : ''}
-    <div class="hello"><h1>${d.name}</h1><p>${d.plan ? html`Tu plan: <em>${d.plan}</em>` : 'Tu proyecto con Inherent'}</p></div>
+    <div class="hello"><h1>${d.name}</h1><p>${d.plan ? html`Tu nivel: <em>${d.plan}</em>` : 'Tu proyecto con Inherent'}</p></div>
     ${d.onboarding ? (() => { const ob = d.onboarding, n = ob.items.filter((x) => x.done).length, all = n === ob.items.length;
       return html`<div class="card onb ${all ? 'ok' : ''}" id="onb"><div class="row" style="gap:10px;flex-wrap:wrap"><b style="font-weight:500;font-size:18px">${all ? html`${ico('check')} Onboarding completo` : html`${ico('smile')} Tu onboarding`}</b><div class="sp"></div><span class="sm mut">${n}/${ob.items.length} listos</span></div>
         <div class="mut sm" style="margin-top:4px">${all ? '¡Gracias! Con esto el equipo ya tiene todo para avanzar.' : 'Lo que necesitamos de ti para arrancar. Marca lo que ya hiciste y deja un link o comentario si hace falta.'}</div>

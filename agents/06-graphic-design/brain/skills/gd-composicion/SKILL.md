@@ -71,7 +71,7 @@ las stories de la mayoría de las marcas no se reconocen.
 - [ ] ¿Los activos que el formato exige?
 - [ ] **Logo tapado: ¿se reconoce la marca?**
 
-> 🔑 **Auto-revisarse acá es más barato que que lo devuelva `br-guardian` con 168 piezas hechas.**
+> 🔑 **Auto-revisarse acá es más barato que que lo devuelva `br-guardian` con todas las piezas hechas.**
 
 ## 7 · Checklist
 

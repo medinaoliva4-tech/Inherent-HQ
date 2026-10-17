@@ -30,14 +30,10 @@ description: >
 
 ## 2 · Cuántos
 
-| Plan | Pilares |
-|---|---|
-| 🔷 **Marketing** | **3** |
-| 🔷 **Marketing Pro** | **3-4** |
-| 🟨 **Accelerate** | **3-4** |
-| 🟨 **Compound** | **4-5** |
+**La ficha fija cuántos**, dentro de **3 a 5** *(con 6 o más se agrupan: §7)*. Se elige el menor
+número que sostenga el mensaje.
 
-🛑 **Más pilares que esos no es más variedad: es menos reconocimiento.** Cada pilar necesita
+🛑 **Más pilares que los que el volumen de la ficha sostiene no es más variedad: es menos reconocimiento.** Cada pilar necesita
 repetición para que la audiencia lo aprenda.
 
 ## 3 · Cada pilar declara cuatro cosas
@@ -75,7 +71,7 @@ en 100%.**
 | **Ningún pilar arriba del 40%** | Si uno pesa más, los demás no existen |
 | **Ningún pilar abajo del 10%** | Menos de eso no alcanza para que se reconozca |
 | **`Conversion` entre 10% y 25%** | Menos no cobra, más quema |
-| **`Community` solo si hay clientes que atender** | En 🔷 Marketing normalmente es 0% |
+| **`Community` solo si hay clientes que atender** | En Brand Growth sin clientes que atender normalmente es 0% |
 
 ## 6 · Qué escribe
 
@@ -93,17 +89,17 @@ en 100%.**
 
 **Si se usa, se escribe acá y baja a las columnas opcionales `etapa` y `captura` de `mk-calendario`.**
 
-| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| **Mix de arranque `TOF` · `MOF` · `BOF`** | 50 · 30 · 20 | 50 · 30 · 20 | 50 · 30 · 20 | 50 · 30 · 20 |
-| **Client-getting** *(% de los slots de video corto)* | 20% | 25% | 30% | 30% |
-| **A dónde apunta su llamada a la acción** | `directo` | `directo` | Receta de `gr-captura` | Receta de `gr-captura` |
+| | Brand Growth | Growth Partnership |
+|---|---|---|
+| **Mix de arranque `TOF` · `MOF` · `BOF`** | 50 · 30 · 20 | 50 · 30 · 20 |
+| **Client-getting** *(% de los slots de video corto)* | El que fije la ficha | El que fije la ficha |
+| **A dónde apunta su llamada a la acción** | `directo` | Receta de `gr-captura` |
 
 - **El mix de arranque se ajusta con datos** de `aprendizaje-de-marketing.md`.
 - **El `BOF` y `Conversion` se leen juntos:** `Conversion` sigue entre 10% y 25%.
 - **Cada pilar declara qué parte de sus slots son client-getting.** Un pilar entero de client-getting es un anuncio, no un pilar.
-- 🔷 **En la línea Marketing la llamada a la acción es `directo`:** el DM o WhatsApp del cliente, que ⑧ Community atiende.
-  La receta de captura es de 🟨 *(② Growth `gr-captura`)*.
+- **En Brand Growth la llamada a la acción es `directo`:** el DM o WhatsApp del cliente, que ⑧ Community atiende cuando la ficha lo incluye.
+  La receta de captura es de Growth Partnership *(② Growth `gr-captura`)*.
 
 ## 7 · Bloqueos
 
@@ -117,10 +113,10 @@ en 100%.**
 ## 8 · Checklist
 
 - [ ] Cada pilar es una **promesa**, no un tema
-- [ ] La cantidad entra en el rango del plan contratado
+- [ ] La cantidad entra en el rango de la ficha
 - [ ] Cada pilar sostiene **un soporte del mensaje**
 - [ ] El reparto cierra en **100%**
 - [ ] Ningún pilar arriba del 40% ni abajo del 10%
 - [ ] `Conversion` está entre 10% y 25%
 - [ ] Lo descartado está escrito
-- [ ] Si se usó el mix de etapas: `BOF` y `Conversion` no se contradicen, y el client-getting **no pasa** del % del plan
+- [ ] Si se usó el mix de etapas: `BOF` y `Conversion` no se contradicen, y el client-getting **no pasa** del % de la ficha

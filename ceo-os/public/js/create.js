@@ -1,6 +1,7 @@
 // Crear cosas con preguntas, no con formularios. Lo usan Operations, Workspace y Clients.
 import { wizard, col, api, toast, roleName, today, fdate, html, raw, drawer, closeDrawer, $, $$, Q, ico } from './core.js';
 import { TIPOS, TIPO_DESC } from './tasktype.js';
+import { isPartnership } from './levels.js';
 import { loadRecipes } from './recetas.js';
 import { DEPTS, deptsOfPlan, phasesFor, tasksFor, customTasks, createLinked, meetingsFor, hoursAt, svcHours, svcCost, svcPrice, daysAt, includesAt } from './cycle.js';
 
@@ -61,7 +62,7 @@ export async function newProject({ team, me, projects = [], tasks = [], pre = {}
       if (Object.keys(roles_map).length) Object.assign(p, await col('projects').save({ ...p, roles_map }));
     }
     // Si el cliente todavía no tiene su Drive, se crea y se conecta (sin frenar si falla).
-    if (c) { const acc = await col('accounts').get('acc-' + c.slug).catch(() => null); if (!acc?.drive) api('drive/client', { method: 'POST', body: { slug: c.slug, growth: kind === 'Growth' || /accelerate|compound/i.test(c.plan || '') } }).then(() => toast(`Drive de ${c.slug.toUpperCase()} creado y conectado`)).catch(() => {}); }
+    if (c) { const acc = await col('accounts').get('acc-' + c.slug).catch(() => null); if (!acc?.drive) api('drive/client', { method: 'POST', body: { slug: c.slug, growth: kind === 'Growth' || isPartnership(c.plan) } }).then(() => toast(`Drive de ${c.slug.toUpperCase()} creado y conectado`)).catch(() => {}); }
     toast(`Proyecto creado${made.length ? ` · ${made.length} tareas` : ''}`);
     return { project: p, tasks: made };
   } catch (e) { toast(e.message, true); return null; }

@@ -27,7 +27,7 @@ detalle de cada herramienta.
 | 1 | **`ve-recepcion`** | 0 | *«¿llegó todo?»*, *«qué nos falta»*, *«calificá el material»* | Filas base de `entregas-video.md` · la selección si ⑤ Producción no la hizo |
 | 2 | **`ve-armado`** | 1 | *«armá este reel»*, *«mostrame el guion»* | El guion visual aprobado + el corte principal |
 | 3 | **`ve-marca`** | 2 | *«ponele subtítulos»*, *«aplicá la marca»*, *«se ve azul»* | El corte de marca con QA medido, auto-revisado antes de derivar |
-| 4 | **`ve-derivadas`** | 3 | *«sacá las derivadas»*, *«variantes para pauta»* | Las 4 · 6 · 9 · 12 derivadas |
+| 4 | **`ve-derivadas`** | 3 | *«sacá las derivadas»*, *«variantes para pauta»* | Las derivadas del ciclo (mín. 1:2) |
 | 5 | **`ve-export`** | 4 | *«exportá el paquete»*, *«el link para el cliente»* | Archivos finales + manifiesto · página del cliente |
 | 6 | **`ve-loop`** | 5 | La revisión del 20 | `aprendizaje-de-video.md` · rondas de cambios → reglas |
 

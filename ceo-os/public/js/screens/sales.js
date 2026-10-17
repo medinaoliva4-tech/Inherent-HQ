@@ -2,6 +2,7 @@ import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, conf
 import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, marginOf, GROWTH, growthText, includesAt, daysAt } from '../cycle.js';
 import { newProject } from '../create.js';
 import { mentorsTab, editMentor } from '../mentors.js';
+import { LEVELS, levelName } from '../levels.js';
 import { packagesTab } from '../paquetes.js';
 import { createBundles } from '../armados.js';
 
@@ -160,7 +161,7 @@ export async function render(el, { me, sub, alive }) {
         ${filtered.map((l) => html`<tr class="click" data-act="lead" data-id="${l.id}"><td><b style="font-weight:500">${l.name}</b><div class="mut sm">${[l.contact, l.company].filter(Boolean).join(' · ')}</div>${(l.tags || []).length ? html`<div>${(l.tags || []).map(tagChip)}</div>` : ''}</td><td>${score(l.interest)}</td><td><span class="chip ${STAGEC[l.stage] ?? ''}">${l.stage || 'Nuevo'}</span>${l.stage === 'Perdido' && l.lost_reason ? html`<div class="mut sm">${l.lost_reason}</div>` : ''}</td><td class="sm">${l.source || '—'}</td><td class="sm">${roleLabel(l.owner_role)}</td><td class="n">${l.value_usd ? USD(l.value_usd) : '—'}</td><td class="sm" style="${isLate(l) ? 'color:#654c38;font-weight:700' : ''}">${OPEN.includes(l.stage || 'Nuevo') ? html`${l.next_step || '—'}${l.next_date ? html`<div class="mut">${isLate(l) ? 'Venció el ' : ''}${fdate(l.next_date)}</div>` : ''}` : html`<span class="mut">—</span>`}</td></tr>`)}
         </tbody></table></div>`
       : html`<div class="kanban" style="grid-template-columns:repeat(${BOARD.length},minmax(210px,1fr))">${BOARD.map((s) => { const ls = filtered.filter((l) => (l.stage || 'Nuevo') === s); return html`<div class="kcol" data-stage="${s}"><h4><span>${s}</span><span class="mut">${ls.length}</span></h4>
-          ${ls.map((l) => html`<div class="kcard" draggable="true" data-act="lead" data-id="${l.id}"><b>${l.name}</b><div class="mut sm">${l.wants || l.source || ''}</div>${OPEN.includes(s) ? html`<div class="sm" style="margin-top:6px;${isLate(l) ? 'color:#654c38;font-weight:700' : ''}">${l.next_step || 'Sin siguiente paso'}${l.next_date ? ` · ${fdate(l.next_date)}` : ''}</div>` : s === 'Perdido' && l.lost_reason ? html`<div class="mut sm" style="margin-top:6px">${l.lost_reason}</div>` : ''}<div class="row" style="margin-top:8px">${score(l.interest)}<div class="sp"></div><span class="sm">${l.value_usd ? USD(l.value_usd) : ''}</span></div></div>`)}</div>`; })}</div>`}`);
+          ${ls.map((l) => html`<div class="kcard" draggable="true" data-act="lead" data-id="${l.id}"><b>${l.name}</b><div class="mut sm">${levelName(l.wants) || l.source || ''}</div>${OPEN.includes(s) ? html`<div class="sm" style="margin-top:6px;${isLate(l) ? 'color:#654c38;font-weight:700' : ''}">${l.next_step || 'Sin siguiente paso'}${l.next_date ? ` · ${fdate(l.next_date)}` : ''}</div>` : s === 'Perdido' && l.lost_reason ? html`<div class="mut sm" style="margin-top:6px">${l.lost_reason}</div>` : ''}<div class="row" style="margin-top:8px">${score(l.interest)}<div class="sp"></div><span class="sm">${l.value_usd ? USD(l.value_usd) : ''}</span></div></div>`)}</div>`; })}</div>`}`);
     const qi = $('#q', body);
     qi.oninput = () => { q = qi.value.toLowerCase(); const pos = qi.selectionStart; crm(body); const n = $('#q', body); n.focus(); n.setSelectionRange(pos, pos); };
     // drag & drop entre etapas: a Perdido pide el motivo; a una etapa abierta exige siguiente paso y fecha.
@@ -205,7 +206,7 @@ export async function render(el, { me, sub, alive }) {
     const stage0 = l.stage || 'Nuevo';
     const d = drawer(html`<div class="row"><span class="chip">${l.source || 'Sin fuente'}</span>${l.direction === 'out' ? html`<span class="chip">Saliente</span>` : ''}<div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <h2>${l.name}</h2><div class="mut">${[l.contact, l.company, l.ig && '@' + l.ig].filter(Boolean).join(' · ')}</div>
-      ${l.plan || l.answers ? html`<div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><b style="font-weight:500">Diagnóstico</b><div class="sp"></div>${l.plan ? html`<span class="chip dark">${l.plan}</span>` : ''}${l.score != null ? html`<span class="chip">${l.score}/100</span>` : ''}</div>
+      ${l.plan || l.answers ? html`<div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><b style="font-weight:500">Diagnóstico</b><div class="sp"></div>${l.plan ? html`<span class="chip dark">${levelName(l.plan)}</span>` : ''}${l.score != null ? html`<span class="chip">${l.score}/100</span>` : ''}</div>
         ${l.answers && typeof l.answers === 'object' ? html`<div class="sm" style="margin-top:8px">${Object.entries(l.answers).map(([k, v]) => html`<div><span class="mut">${k}:</span> ${Array.isArray(v) ? v.join(', ') : typeof v === 'object' ? JSON.stringify(v) : v}</div>`)}</div>` : ''}</div>` : ''}
       <div style="margin:18px 0 6px" class="sm mut">Interés</div>
       <div class="scorein" id="sc">${[1, 2, 3, 4, 5].map((n) => html`<button data-act="score" data-n="${n}" class="${n <= interest ? 'on' : ''}" title="${n}"></button>`)}</div>
@@ -260,8 +261,8 @@ export async function render(el, { me, sub, alive }) {
     const v = await wizard('Nuevo lead', [
       { k: 'name', q: '¿Qué empresa o marca es?', type: 'text', req: true, ph: 'Nombre de la marca' },
       { k: 'wants', q: '¿Qué le interesa?', type: 'cards', req: true, opts: [
-        { v: 'Marketing', i: ico('megaphone'), l: 'Marketing', d: 'Que lo conozcan' }, { v: 'Marketing Pro', i: ico('megaphone'), l: 'Marketing Pro', d: 'Presencia sostenida' },
-        { v: 'Accelerate', i: ico('stairs'), l: 'Accelerate', d: 'Está estancado, quiere facturar' }, { v: 'Compound', i: ico('stairs'), l: 'Compound', d: 'Escalar y sistematizar' },
+        { v: 'Brand Foundation', i: ico('puzzle'), l: 'Brand Foundation', d: 'Crear o reposicionar la marca' }, { v: 'Brand Growth', i: ico('megaphone'), l: 'Brand Growth', d: 'Más demanda para la marca que ya está' },
+        { v: 'Growth Partnership', i: ico('stairs'), l: 'Growth Partnership', d: 'Conectar marca, ventas y sistemas' },
         { v: 'Proyecto puntual', i: ico('puzzle'), l: 'Proyecto puntual' }, { v: 'No sé todavía', i: ico('help'), l: 'No sé todavía' }] },
       { k: 'interest', q: '¿Qué tan caliente está?', type: 'cards', req: true, opts: [['1', ico('snow'), 'Frío'], ['2', ico('sun'), 'Tibio'], ['3', ico('smile'), 'Interesado'], ['4', ico('flame'), 'Caliente'], ['5', ico('rocket'), 'Listo para cerrar']].map(([v, i, l]) => ({ v, i, l })) },
       { k: 'source', q: '¿Cómo llegó?', type: 'cards', req: true, opts: SOURCES.map((x) => ({ v: x, l: x })) },
@@ -346,9 +347,8 @@ export async function render(el, { me, sub, alive }) {
     const cats = ['Todos', ...new Set([...CATS, ...services.map((s) => s.category).filter(Boolean)])];
     const list = services.filter((s) => catF === 'Todos' || s.category === catF);
     mount(body, html`
-      ${plans ? html`<div class="sec-title" style="margin-top:0"><h2>Planes</h2><span class="mut sm">Del manual de Inherent · precio mensual</span></div>
-        <div class="grid g4" style="margin-bottom:8px">${plans.plans.map((p, i) => html`<div class="card feat ${['olive', 'terra', 'ink', 'olive'][i]}" style="min-height:170px"><div class="lbl">${p.name}</div><div class="big" style="font-size:38px;margin-top:8px">${Q(p.precio)}</div><div class="foot"><span>${p.volumen?.piezas ?? '—'} piezas · ${USD(p.precioUsd)}</span>${isCeo && p.margen != null ? html`<span style="font-weight:700">${p.margen}% margen</span>` : ''}</div></div>`)}</div>`
-        : plansErr ? html`<div class="warnbox" style="margin-bottom:14px">No pude leer los planes del repo: ${plansErr}</div>` : ''}
+      <div class="sec-title" style="margin-top:0"><h2>Niveles</h2><span class="mut sm">El precio se arma por volumen y complejidad · el alcance exacto se define en cada propuesta</span></div>
+        <div class="grid g3" style="margin-bottom:8px">${LEVELS.map((l, i) => html`<div class="card feat ${['olive', 'terra', 'ink'][i]}" style="min-height:170px"><div class="lbl">${l.name}</div><div style="font-size:15px;margin-top:8px">${l.tag}</div><div class="foot"><span>${l.how}</span></div></div>`)}</div>
       <div class="sec-title"><h2>Servicios</h2><span class="mut sm">Mueve el nivel de entrega de cada uno para ver su precio y lo que incluye</span></div>
       <input class="in" type="search" id="svq" placeholder="Buscar servicio: nombre, categoría o lo que incluye" value="${svQ}" style="margin-bottom:12px">
       <div class="row" style="margin-bottom:14px;gap:8px;flex-wrap:wrap">${cats.map((c) => html`<button class="chip ${catF === c ? 'dark' : ''}" data-act="catF" data-c="${c}" style="padding:8px 14px;font-size:13px">${c}</button>`)}</div>
@@ -532,7 +532,7 @@ export async function render(el, { me, sub, alive }) {
                   ${includesAt(sv, lv).length || daysAt(sv, lv) ? html`<div class="sm" style="margin-top:8px" data-inc="${i}">${incHtml(sv, lv)}</div>` : ''}</div>`; })()}
               ${it.growth ? html`<div class="qgrow"><span>${ico('trend', 14)} + fee por crecimiento</span><input class="in" type="number" step="0.5" data-i="${i}" data-f="growth_pct" value="${it.growth.pct}"><span class="mut">% de ${GROWTH[it.growth.type] || it.growth.type}</span><button class="btn ghost xs" data-act="rmGrowth" data-i="${i}" title="Quitar el fee"></button></div>` : ''}</div>`)}
             <div class="row" style="margin-top:10px"><select class="in" id="addSvc"><option value="">+ Agregar del catálogo…</option>
-              ${plans ? html`<optgroup label="Planes (mensual)">${plans.plans.map((p) => html`<option value="plan:${p.id}">Plan ${p.name} — ${Q(p.precio)}</option>`)}</optgroup>` : ''}
+              ${plans?.plans?.length ? html`<optgroup label="Niveles anteriores (mensual)">${plans.plans.map((p) => html`<option value="plan:${p.id}">${levelName(p.name)} — ${Q(p.precio)}</option>`)}</optgroup>` : ''}
               ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
             ${!services.length ? html`<div class="mut sm" style="margin-top:8px">Tu catálogo está vacío. Crea servicios aquí mismo o en «Catálogo de servicios».</div>` : ''}
             <div class="two" style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="f">Descuento %</label><input class="in" id="qdisc" type="number" value="${doc.discount_pct || 0}"></div><div><label class="f">Válida por (días)</label><input class="in" id="qvalid" type="number" value="${doc.valid_days || 15}"></div></div>
@@ -559,7 +559,7 @@ export async function render(el, { me, sub, alive }) {
           catch (err) { toast(err.message, true); }
           return draw();
         }
-        if (v.startsWith('plan:')) { const p = plans.plans.find((x) => x.id === v.slice(5)); doc.items.push({ name: `Plan ${p.name} — mensual`, description: p.promete || '', qty: 1, price: p.precio }); }
+        if (v.startsWith('plan:')) { const p = plans.plans.find((x) => x.id === v.slice(5)); doc.items.push({ name: `${levelName(p.name)} — mensual`, description: p.promete || '', qty: 1, price: p.precio }); }
         else if (v === 'free') doc.items.push({ name: 'Servicio', description: '', qty: 1, price: null });
         else if (v) { const s = services.find((x) => x.id === v); const lv = s.level || 5; doc.items.push({ service_id: s.id, name: s.name, description: s.description || '', qty: 1, level: lv, price: priceAt(s, lv) ?? s.price ?? null, ...(growthOf(s) ? { growth: growthOf(s) } : {}) }); }
         draw();

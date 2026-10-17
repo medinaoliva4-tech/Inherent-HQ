@@ -49,4 +49,4 @@ Una skill es **cómo se hace un paso**. El `WORKFLOW.md` dice qué pasa y en qu�
 | **GATE 1** | `ad-creativos` | El plan y **el presupuesto** |
 | **GATE 2** | Cada cambio | **Todo movimiento de presupuesto** |
 
-🟨 **Google Ads en Accelerate y Compound pasa por los mismos dos gates** y su presupuesto sale del total aprobado.
+**Google Ads, cuando es canal de la ficha, pasa por los mismos dos gates** y su presupuesto sale del total aprobado.

@@ -1,29 +1,29 @@
 ---
 name: gr-herramienta
 description: >
-  Capa 5 de ② Growth — la herramienta a medida que el plan incluye: una por trimestre en
-  Accelerate, una por mes en Compound. Elige qué construir por el cuello que destraba, no por lo
+  Capa 5 de ② Growth — la herramienta a medida que la ficha de oferta incluye (área Tecnología, datos y
+  automatización): la cantidad y la cadencia las fija la ficha. Elige qué construir por el cuello que destraba, no por lo
   que sería lindo tener, y la construye con Claude, Vercel, Zapier o Inherent OS. Una
   herramienta que nadie usa en dos semanas se declara muerta y se aprende de eso. Úsala cuando
   pidan "necesitamos un CRM", "un panel", "una landing que convierta", "automatizá esto", "qué
-  herramienta hacemos este trimestre". Requiere Accelerate o Compound.
+  herramienta hacemos este trimestre". Requiere Growth Partnership.
 ---
 
-# Capa 5 · Herramienta — la que el plan incluye
+# Capa 5 · Herramienta — la que la ficha incluye
 
 | | |
 |---|---|
 | **Consume** | § Conversión · § La escalera · la operación real de ① Strategy |
 | **Produce** | La herramienta + la sección **§ Herramientas** de `motor-de-crecimiento.md` |
 
-## 1 · Cuántas, según el plan
+## 1 · Cuántas, según la ficha
 
-| 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| ⬜ No incluye | ⬜ No incluye | **1 por trimestre** | **1 por mes** |
+| Brand Foundation | Brand Growth | Growth Partnership |
+|---|---|---|
+| ⬜ No incluye | ⬜ No incluye | **Las que la ficha declare**, con su cadencia |
 
-🛑 **Es promesa publicada.** *«Herramientas hechas para ti, una nueva cada trimestre»* ·
-*«Tu operación más liviana: una herramienta nueva cada mes»*.
+🛑 **La ficha dice cuántas.** Licencias, software a medida, integraciones complejas y mantenimiento
+continuo van aparte. Si la ficha no lo dice, no se promete.
 
 ## 2 · Qué se construye: el cuello, no el deseo
 
@@ -46,7 +46,7 @@ que nadie va a usar.
 | Sitio, landing o app | Claude *(código)* + Vercel | ⬜ |
 | Conectar con lo que ya usa | Zapier *(9,000+ apps)* | ⬜ |
 | Guardar registros | Inherent OS | ⬜ |
-| IA propia del cliente | **Build propio** — Vercel + Claude API *(🟨 solamente)* | ⬜ |
+| IA propia del cliente | **Build propio** — Vercel + Claude API *(solo Growth Partnership)* | ⬜ |
 
 ## 4 · Las tres reglas de construcción
 
@@ -91,7 +91,7 @@ que nadie va a usar.
 
 ## 8 · Checklist
 
-- [ ] El plan es **Accelerate o Compound**
+- [ ] El alcance es **Growth Partnership** y la ficha dice cuántas herramientas
 - [ ] Sale de un **cuello con evidencia**, no de una idea
 - [ ] **Resuelve una cosa**
 - [ ] **Vive donde ya trabajan**

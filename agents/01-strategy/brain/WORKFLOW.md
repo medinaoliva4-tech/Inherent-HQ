@@ -7,6 +7,8 @@
 
 ## 📅 Tu ventana en el ciclo
 
+> En **Brand Foundation** no hay ciclo recurrente: los 4 bloques completos corren una vez y el proyecto cierra con la estrategia (§0).
+
 > Calendario completo: `inherent/05-OPERACION.md` → «📅 El calendario del ciclo». 🔴 **Día 11:** último día para producir · 🔴 **Día 20:** presentación al cliente.
 
 | Días | Qué corre | Entrega |
@@ -17,62 +19,85 @@
 
 ---
 
-## 0 · El plan contratado — lo primero que se anota
+## 0 · El alcance contratado — lo primero que se anota
 
-🔑 **Strategy no lee el plan: lo ANOTA.** Es el único departamento que lo origina; los otros once
+🔑 **Strategy no lee el alcance: lo ANOTA.** Es el único departamento que lo origina; los otros once
 lo leen de ahí. **Si acá no queda escrito, once departamentos arrancan bloqueados.**
 
 **Dónde se anota:** `clients/<cliente>/00-onboarding/plan-contratado.md`, al abrir el folder del cliente
-(§7 → «El folder — para los demás agentes»).
-🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
-**Y antes que eso: qué LÍNEA es.** 🔷 Marketing promete atención · 🟨 Growth promete facturación.
+(§7 → «El folder — para los demás agentes»). El archivo conserva su nombre, pero **describe la ficha
+de oferta del cliente:** el **nivel** *(Brand Foundation · Brand Growth · Growth Partnership)*, las
+**áreas** contratadas, el **volumen**, las **revisiones** y **qué queda fuera**.
+**No todos los clientes compran todas las áreas:** en cada propuesta se seleccionan solo las necesarias.
 
-- 🛑 **Sin plan anotado, Strategy no cierra ni pasa a ningún departamento:**
-  `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo, no una sugerencia.** Prometer de más rompe el margen; prometer de menos
-  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
+- 🛑 **Sin ficha anotada, Strategy no cierra ni pasa a ningún departamento:**
+  `BLOQUEADO — falta el alcance contratado`.
+- 🛑 **El alcance contratado es el techo, no una sugerencia.** Prometer de más rompe el margen;
+  prometer de menos rompe la promesa publicada (`inherent/03-OFERTA.md`).
 - 🔒 **Va en `00-onboarding/`, nunca en `01-estrategia/estrategia.md`:** ese documento se le manda al cliente y no lleva
   ruido interno (§7).
-- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y la profundidad de
+- Los volúmenes y los costos salen de la ficha y de `inherent/06-ECONOMIA.md`; la profundidad, de
   `inherent/05-OPERACION.md` → «ONBOARDING». **Si cambian allá, cambian acá** — esta tabla no manda
   sobre ellos.
 
-| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Profundidad de la estrategia** | Ligera | Ligera | **Completa** | **Completa + trimestral** |
-| **Revisión del 20** | Ligera | Ligera | Completa | Completa |
-| **Toca la OFERTA** *(qué vende, en qué paquetes, a qué precio)* | ⛔ Solo el mensaje | ⛔ Solo el mensaje | ✅ | ✅ |
-| **Brief de ② Growth al cerrar** | 🟡 Ligero | 🟡 Ligero | ✅ Completo | ✅ Completo |
-| **SOPs** | ⬜ | ⬜ | 🟡 De crecimiento | ✅ De toda la empresa |
-| **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
-| **Contenidos a investigar** *(por cada una de las **Redes** de `plan-contratado.md` — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
-| **Piezas del ciclo que habilita** | **86** | **145** | **145** | **204** |
+| Qué cambia | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Naturaleza** | Proyecto con inicio y cierre: **la estrategia ES el proyecto** | Colaboración mensual: ciclo del día 1 al 20 | Colaboración integrada: ciclo del día 1 al 20 |
+| **Profundidad de la estrategia** | **Completa** *(es el entregable)* | Posicionamiento y mensaje, con revisión mensual de resultados y prioridades | **Completa** + diagnóstico del recorrido *(conoce → compra → vuelve)* |
+| **Revisión del 20** | n/a *(el proyecto cierra con su entrega)* | Ligera | Completa |
+| **Toca la OFERTA** *(qué vende, en qué paquetes, a qué precio)* | ✅ *(estructura de oferta, propuesta de valor y mensajes)* | ⛔ Solo el mensaje | ✅ |
+| **Brief de ② Growth al cerrar** | ⬜ No corre ② Growth *(la oferta sale en la estrategia)* | 🟡 Ligero | ✅ Completo |
+| **SOPs** | ⬜ | ⬜ | 🟡 Los de las áreas contratadas *(procesos de marketing, ventas y atención)* |
+| **Finanzas vinculadas al crecimiento** *(Money OS)* | ⬜ | ⬜ | Según la ficha |
+| **Contenidos a investigar** *(por cada una de las **Redes** de `plan-contratado.md` — mitad competencia GT, mitad referencias)* | Los que fije la ficha | Los que fije la ficha | Los que fije la ficha |
+| **Volumen del ciclo que habilita** | ⬜ Sin ejecución continua | **El de la ficha** *(formatos, cantidades, rodajes y revisiones definidos)* | **El de la ficha** |
 
 **Cómo se lee:**
 
-- 🛑 **«Ligera» no es «incompleta».** En la línea 🔷 la estrategia existe entera: lo que no entra es
+- 🛑 **«Ligera» no es «incompleta».** En Brand Growth la estrategia existe entera: lo que no entra es
   **tocar la oferta**. Se trabaja el **mensaje** —cómo se cuenta lo que ya vende— y nada más.
-  **Confundirlos es regalar el trabajo caro dentro del plan barato.**
-- 🟡 **En 🔷 Marketing y Pro el brief de ② Growth es ligero:** las ofertas que ya existen y el
+  **Confundirlos es regalar el trabajo caro dentro del alcance barato.**
+- 🟡 **En Brand Growth el brief de ② Growth es ligero:** las ofertas que ya existen y el
   objetivo. Growth elige **cuáles se empujan**; no cambia qué se vende, en qué paquetes ni a qué
-  precio (`agents/02-growth/brain/WORKFLOW.md` → §0). Si el negocio necesita tocar la oferta, **es
-  upsell a 🟨 Accelerate y se levanta como excepción** — no se absorbe.
-- ⚠️ **La línea 🔷 Marketing NO promete % de crecimiento.** El porcentaje no sale del contenido,
+  precio (`agents/02-growth/brain/WORKFLOW.md` → §0). Si el negocio necesita tocar la oferta, **se
+  levanta como excepción** *(es la profundidad de Growth Partnership o un proyecto de Brand
+  Foundation)* — no se absorbe.
+- ⚠️ **Brand Growth NO promete % de crecimiento.** El porcentaje no sale del contenido,
   sale de la oferta y la conversión. **Prometerlo ahí es vender algo que no controlamos.**
-- **La ingeniería inversa se corre en los cuatro planes.** Lo que cambia es hasta dónde llega: en
-  🔷 cierra en alcance y piezas; en 🟨 cierra en facturación porque hay atribución que lo sostenga.
+  En ningún nivel se promete un resultado garantizado: se promete un camino, un sistema y medición.
+- **La ingeniería inversa se corre en los tres niveles.** Lo que cambia es hasta dónde llega: en
+  Foundation cierra en el plan de 90 días; en Brand Growth cierra en alcance y volumen del ciclo; en
+  Growth Partnership cierra en facturación porque hay atribución que lo sostenga.
 
-### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+### 🏗️ Brand Foundation — la estrategia ES el proyecto
 
-El CEO lo define en el onboarding, con su precio, y Strategy lo anota en `plan-contratado.md` con
+Foundation no tiene ejecución continua: **el entregable es la estrategia misma.** Corren los **cuatro
+bloques completos** (§2) y la estrategia cierra con:
+
+- **Diagnóstico** de marca, oferta, audiencia y canales actuales
+- **Audiencia prioritaria** y el problema que resuelve
+- **Posicionamiento** y diferenciadores
+- **Estructura de oferta** *(productos o servicios, propuesta de valor, mensajes)*
+- **Plan de lanzamiento o de crecimiento a 90 días**
+- **Lista priorizada de próximos trabajos**, con responsables y métricas
+
+**El gate del CEO no cambia:** sin su OK (§7 → «5 · 🔒 El gate del CEO») la estrategia no pasa a ②B
+Branding ni a ④ Creatividad, y no se manda al cliente. Con el OK, **②B Branding crea la identidad
+completa** *(verbal y visual, según el alcance acordado)* y **④ Creatividad entrega la dirección
+creativa y los ejemplos de aplicación.** La ejecución continua *(contenido, campañas, canales)* **no
+va en Foundation:** se cotiza como Brand Growth o como módulos.
+
+### ⬜ Alcance a la medida — cuando el cliente elige áreas o módulos sueltos
+
+El CEO lo define en el onboarding, con su ficha de oferta, y Strategy lo anota en `plan-contratado.md` con
 dos secciones:
 
 | Sección | Qué lleva |
 |---|---|
-| **Qué incluye** | Lo que se entrega, en las mismas unidades de la tabla de arriba |
+| **Qué incluye** | Lo que se entrega, en las mismas unidades de la ficha |
 | **Su pipeline** | Qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel |
 
-- **Los departamentos siguen ese pipeline.** No se bloquea por no ser un plan de lista ni se
+- **Los departamentos siguen ese pipeline.** No se bloquea por no ser un paquete de lista ni se
   cuestiona por precio.
 - **Un departamento que no está en su pipeline no corre para ese cliente.**
 - **El método es el mismo; cambia el pipeline.** Cómo se hace cada cosa no cambia: cambia qué corre
@@ -128,8 +153,8 @@ arranca sin el anterior.
 ### 01 · CONTEXTO → skill `context`
 Junta toda la data necesaria para que la estrategia tenga un piso fuerte.
 
-**Lo primero: el plan contratado.** 🔷 Marketing · 🔷 Marketing Pro · 🟨 Accelerate · 🟨 Compound · ⬜ Tailor Made.
-**Y antes que eso: qué LÍNEA es.** 🔷 Marketing promete atención · 🟨 Growth promete facturación.
+**Lo primero: el alcance contratado.** Brand Foundation · Brand Growth · Growth Partnership · ⬜ a la medida.
+**Y antes que eso: qué NIVEL es** *(proyecto de marca, colaboración mensual o colaboración integrada)*.
 **Define qué se le va a trabajar y hasta qué punto** — y por lo tanto qué briefs se arman al final.
 **Sin este dato la estrategia promete lo que no se puede entregar.**
 
@@ -173,7 +198,7 @@ historia (el cliente es el héroe) · personalidad · el fundador · comunidad i
 
 **C · LOS BRIEFS POR ÁREA** — Branding · Marketing · Creative · Growth · **Tecnología** ·
 **Sistemas**. Cada uno recibe **qué tiene que lograr y qué tomar en cuenta**, no cómo hacerlo.
-**Cuáles se arman depende del nivel contratado.**
+**Cuáles se arman depende del alcance contratado.**
 
 > 🛑 **El nivel es MACRO.** Si la ingeniería inversa muestra que cierto contenido convierte, la
 > conclusión no es el formato: es **a quién hay que hablarle y cómo hay que sentirse** para que esa
@@ -455,7 +480,7 @@ lo que falta se dice, no se disimula.
 clients/<cliente>/
 ├── CLAUDE.md                     ← el router
 ├── 00-onboarding/
-│   ├── plan-contratado.md        ← §0 · el techo de todos
+│   ├── plan-contratado.md        ← §0 · la ficha de oferta: el techo de todos
 │   ├── comprension.md            ← bloque 01 · `context`
 │   └── LINKS.md                  ← todo lo que vive afuera
 ├── 01-estrategia/
@@ -514,7 +539,7 @@ Growth     → oferta, precio y objetivo
 ### 4 · Antes de entregar
 
 ```
-Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made]
+Cliente: [clients/<cliente>/]  ·  Nivel: [Brand Foundation / Brand Growth / Growth Partnership / ⬜ a la medida]
 ```
 
 - [ ] `estrategia.md` se entiende **sin haber leído el método**
@@ -522,9 +547,9 @@ Cliente: [clients/<cliente>/]  ·  Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 A
 - [ ] Lo externo está en `LINKS.md`, no copiado
 - [ ] Los huecos abiertos están nombrados, no disimulados
 - [ ] 🛑 **El `brief-de-comunicacion-AAAA-MM.md` del ciclo existe** y pasa su QA — sin él ③ Marketing no arranca
-- [ ] 🛑 **El plan quedó anotado en `clients/<cliente>/00-onboarding/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
-- [ ] Nada promete lo que el **plan contratado** no cubre — ver `inherent/06-ECONOMIA.md`
-- [ ] Si es ⬜ Tailor Made, `plan-contratado.md` tiene **Qué incluye** y **Su pipeline** (§0)
+- [ ] 🛑 **El alcance quedó anotado en `clients/<cliente>/00-onboarding/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
+- [ ] Nada promete lo que el **alcance contratado** no cubre — ver `inherent/06-ECONOMIA.md`
+- [ ] Si es ⬜ a la medida, `plan-contratado.md` tiene **Qué incluye** y **Su pipeline** (§0)
 
 ---
 
@@ -556,8 +581,8 @@ espera su OK.
      ├──→ 02   GROWTH      brief de growth       → 02-growth
      ├──→ 03   MARKETING   brief de marketing    → 03-marketing
      ├──→ 04   CREATIVE    brief de creative     → 04-creative
-     ├──→ 🔧   TECNOLOGÍA  brief de tecnología   → 02-growth  (Accelerate y Compound)
-     └──→ 🔁   SISTEMAS    brief de sistemas     → el CEO     (solo Compound)
+     ├──→ 🔧   TECNOLOGÍA  brief de tecnología   → 02-growth  (Growth Partnership, si la ficha lo incluye)
+     └──→ 🔁   SISTEMAS    brief de sistemas     → el CEO     (Growth Partnership, si la ficha lo incluye)
      │
      ▼
    …05 producción · 06 diseño · 07 edición · 08 community · 09 posting · 10 ads…
@@ -577,8 +602,8 @@ espera su OK.
 | **Marketing** | Campañas, mensajes, canales y nivel de conversión a alcanzar |
 | **Creative** | Posicionamiento, promesa y qué tiene que lograr el contenido |
 | **Growth** | Monetización, funnel, ángulos de pauta y reparto de inversión |
-| **Tecnología** | Qué fricción matar y con qué herramienta *(Accelerate y Compound)* |
-| **Sistemas** | Motor de demanda, estado del fulfillment y puestos a cubrir *(Compound)* |
+| **Tecnología** | Qué fricción matar y con qué herramienta *(Growth Partnership, si la ficha lo incluye)* |
+| **Sistemas** | Motor de demanda, estado del fulfillment y puestos a cubrir *(Growth Partnership, si la ficha lo incluye)* |
 
 ### El regreso
 

@@ -61,8 +61,8 @@ record or ask.
 
 ## Amounts
 
-- **Quetzales con `Q`, el resto con su código ISO.** `Q7,315.00` o
-  `GTQ 7,315.00` —la `Q` no la usa ninguna otra moneda, así que no es ambigua y
+- **Quetzales con `Q`, el resto con su código ISO.** `Q10,000.00` o
+  `GTQ 10,000.00` —la `Q` no la usa ninguna otra moneda, así que no es ambigua y
   es la forma del resto del repo—; `USD 950.00`, `EUR 120.00`. Nunca un `$`,
   `£` o `€` suelto: un `$` suelto es ambiguo entre varias monedas. Separador de
   miles con coma y decimales con punto, como en Guatemala.

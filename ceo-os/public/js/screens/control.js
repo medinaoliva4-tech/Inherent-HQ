@@ -3,6 +3,7 @@
 // Cada tarjeta trae su siguiente paso. Abajo, lo que necesita atención hoy (bloqueos, atrasos, revisiones).
 import { html, mount, col, api, toast, acts, ask, confirmAsk, drawer, fdate, today, teamList, Q, ico, isSummary, roChip } from '../core.js';
 import { blockersOf, unlocksOf, addDays } from '../cycle.js';
+import { levelName } from '../levels.js';
 import { payDialog, openProof } from '../flowui.js';
 
 const STEPS = [
@@ -45,7 +46,7 @@ export async function render(el, { me }) {
   const progress = (p) => { const l = pTasks(p), d = l.filter((t) => t.status === 'Hecha').length; return { n: l.length, d, pct: l.length ? Math.round((d / l.length) * 100) : 0, late: l.filter(isLate).length, blocked: l.filter((t) => t.status !== 'Hecha' && blockersOf(t, tasks).length).length, next: l.filter((t) => t.status !== 'Hecha' && t.due).sort((a, z) => a.due.localeCompare(z.due))[0] }; };
 
   const card = {
-    lead: (l) => html`<div class="kcard ctl"><b>${l.name}</b><div class="mut sm">${l.wants || l.company || '—'}</div>
+    lead: (l) => html`<div class="kcard ctl"><b>${l.name}</b><div class="mut sm">${levelName(l.wants) || l.company || '—'}</div>
       ${l.next_date ? html`<div class="sm ${l.next_date < T ? 'bad' : 'mut'}">${l.next_step || 'Seguimiento'} · ${fdate(l.next_date)}</div>` : ''}
       <div class="ctla"><a class="btn xs" href="#/sales/quotes/new/${l.id}">Cotizar →</a></div></div>`,
     quote: (q) => html`<div class="kcard ctl"><b>${q.client || '—'}</b><div class="mut sm">${q.number} · ${money(q, sub(q))}</div>

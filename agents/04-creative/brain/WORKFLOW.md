@@ -19,32 +19,28 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
-## 0 · El plan contratado — cuánto y a qué profundidad
+## 0 · El alcance contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
-`clients/<cliente>/00-onboarding/plan-contratado.md`:
-🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+**Lo primero de cada ciclo: leer la ficha de oferta del cliente.** Lo anota ① Strategy al arrancar en
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(nivel, áreas, volumen, revisiones y qué queda
+fuera)*. Los niveles: **Brand Foundation** · **Brand Growth** · **Growth Partnership** · alcance a medida.
 
-- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
-  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
-  «El desglose por tarea». La profundidad, de `inherent/03-OFERTA.md` → «🔒 Uso interno».
-  **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+- 🛑 **Sin ficha anotada, el departamento no arranca:** `BLOQUEADO — falta la ficha de oferta`.
+- 🛑 **El alcance contratado es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar
+  de menos rompe la promesa de la propuesta.
+- **Los números salen de la ficha**, no de este manual: piezas, formatos, duración, días de grabación,
+  revisiones y canales. La profundidad por nivel, de `inherent/03-OFERTA.md`.
+  **Si cambia la ficha, cambia el ciclo** — este documento no manda sobre ella.
 
-| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Contenidos a investigar** *(por plataforma del cliente — mitad competencia GT, mitad referencias)* | **50** | **50** | **100** | **100** |
-| **BIG IDEAS del mes** *(una por campaña de ③ Marketing)* | **1** | **2** | **2** | **2** |
-| **Conceptos del ciclo** *(videos planificados ÷ 3)* | 3 | 4 | 6 | 8 |
-| **Videos planificados** a idear *(20 min de grabación c/u)* | 9 | 12 | **18** | 24 |
-| **Videos derivados** *(mínimo 1:2 — los ejecuta ⑦ Video Editing)* | 4 | 6 | 9 | 12 |
-| **Estáticos y carruseles** | 43 | 72 | **63** | 88 |
-| **Stories** | 30 | 55 | 55 | 80 |
-| **Filas de `plan-de-contenido.csv`** | **86** | **145** | **145** | **204** |
-| **Variantes de creativo por campaña** | hasta 20 | hasta 30 | hasta 35 | hasta 50 |
-| **Revisiones por pieza** | **1** | 2 | 2 | 3 |
-| **Qué empuja el contenido** | El **mensaje** — cómo se cuenta lo que ya vende | Igual, con más volumen | + **oferta rediseñada**, canales grandes, subir el ticket, contenido guiado por keywords | + **recompra, referidos y comunidad** |
+| Qué cambia | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Qué hace ④ Creatividad** | **Dirección creativa y ejemplos de aplicación** de la marca: conceptos y piezas de muestra, no producción continua | **El ciclo de contenido** del volumen que dice la ficha: BIG IDEAS, hooks, copy, shot list y el Excel | Igual que Brand Growth, **conectado a ventas, atención y recompra** cuando la ficha lo incluye |
+| **Contenidos a investigar** *(por plataforma del cliente)* | Los que pida el ejemplo de aplicación | Los que fije la ficha *(mitad competencia, mitad referencias)* | Los que fije la ficha |
+| **BIG IDEAS del ciclo** *(una por campaña de ③ Marketing)* | Las de los ejemplos de aplicación | Una por campaña del ciclo | Una por campaña del ciclo |
+| **Piezas, mezcla de formatos y stories** | Las de los ejemplos acordados | **Las de la ficha** — formatos, cantidades y rodajes definidos | **Las de la ficha** |
+| **Variantes de creativo por campaña** | — | Según la ficha y los canales de pauta contratados | Según la ficha y los canales de pauta contratados |
+| **Revisiones por pieza** | Las rondas de la ficha | Las de la ficha | Las de la ficha |
+| **Qué empuja el contenido** | La identidad y el posicionamiento ya definidos | El **mensaje** y las pruebas de creatividades, mensajes y audiencias | + lo que la ficha agregue: oferta, conversión, recompra, referidos y comunidad |
 
 **Cómo se lee:**
 
@@ -55,31 +51,31 @@ paso vive en las skills: `skills/README.md`.
   ejecuta ⑦ Video Editing, pero Creative las marca en la fila del video que las origina. Las stories
   se pueden idear como **series repetibles** —un formato, muchas piezas— y cada una sigue siendo su
   fila.
-- ⚠️ **🟨 Accelerate no es «Pro con más piezas».** Entrega las **mismas 145**, pero con **50% más
-  video** *(18 planificados contra 12)* y **menos estáticos** *(63 contra 72)*. La mezcla cambia a
-  propósito: **copiar la fila de Pro es un error.**
-- 🛑 **En la línea 🔷 Marketing, Creative trabaja el MENSAJE, nunca la OFERTA.** Qué vende el cliente,
-  en qué paquetes y a qué precio **solo se toca desde 🟨 Accelerate** (`inherent/03-OFERTA.md` →
-  «🔒 Uso interno»). **Confundirlos es regalar el trabajo caro dentro del plan barato.**
+- **Las filas de `plan-de-contenido.csv` son exactamente las piezas de la ficha.** Ni una más, ni una
+  menos: la mezcla de formatos la fija la ficha y se respeta tal cual.
+- 🛑 **Creative trabaja el MENSAJE; la OFERTA solo si la ficha incluye el área de estrategia y oferta**
+  *(en Growth Partnership o en un módulo contratado)*. Qué vende el cliente, en qué paquetes y a qué
+  precio no se toca fuera de ese alcance. **Confundirlos es regalar trabajo caro dentro de un alcance
+  menor.**
 - **Las variantes de creativo se definen acá y se ejecutan afuera.** Creative declara en su entregable
   **qué se varía** —gancho, texto en pantalla, formato—; ⑥A Diseño gráfico y ⑦ Video Editing las producen, y
   ⑩ Ads las sube. 🛑 **Salen de material ya grabado: una variante nunca pide grabación extra.**
-- 🛑 **Si el calendario de ③ Marketing pide más piezas que el plan, no se idean de más:** se declara
+- 🛑 **Si el calendario de ③ Marketing pide más piezas que la ficha, no se idean de más:** se declara
   la diferencia y se devuelve a ③ Marketing. Recortar es decisión de alcance, no de Creative.
-- ⛔ **No hay segundo idioma en ningún plan.** No existe herramienta de doblaje — ver
+- ⛔ **No hay segundo idioma salvo que la ficha lo declare.** No existe herramienta de doblaje — ver
   `agents/07-video-editing/brain/skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma».
 
-### ⬜ Tailor Made — se sigue su pipeline
+### Alcance a medida — se sigue su pipeline
 
 Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
 secciones: **Qué incluye** y **Su pipeline** —qué departamentos corren, en qué orden, qué entrega
-cada uno y a qué nivel—. **El departamento sigue ese pipeline** igual que un plan estándar: no lo
-bloquea por no ser un plan de lista ni lo cuestiona por precio.
+cada uno y a qué nivel—. **El departamento sigue ese pipeline** igual que una ficha estándar: no lo
+bloquea por ser a medida ni lo cuestiona por precio.
 
 - **Lo que el pipeline declara para ④ Creatividad es el techo del ciclo.**
 - 🛑 **Si ④ Creatividad no está en su pipeline, no corre para ese cliente.**
 - **Cambia el pipeline, nunca el método:** la trazabilidad y las devoluciones son iguales en todos
-  los planes.
+  los niveles.
 
 ---
 
@@ -258,7 +254,7 @@ ya hecha.
 
 ## 4 · Las reglas duras
 
-1. **Sin plan no hay idea.** Sin las campañas y el calendario de ③ Marketing, se **BLOQUEA**.
+1. **Sin plan de ciclo no hay idea.** Sin las campañas y el calendario de ③ Marketing, se **BLOQUEA**.
 2. **Toda fila traza a un slot y a una MUST BE TRUE.** Si no se puede trazar, se elimina.
 3. **Nunca cambia la promesa.** Si una idea necesita otra promesa, o la promesa está mal (y eso se
    devuelve a ① Strategy) o la idea no es nuestra.
@@ -432,7 +428,7 @@ swipe file actualizado con el ganador propio · 3 hipótesis para la próxima ro
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
 ③ Marketing [✅/⬜] · ① Strategy [✅/⚠️] · ②B Branding [✅/⚠️] · ⑩ Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida] · piezas del ciclo: [n] de [techo de la ficha]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
 

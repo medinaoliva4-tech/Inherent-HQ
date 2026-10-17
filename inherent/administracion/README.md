@@ -30,7 +30,7 @@ elige la skill.
 | | `close-month` | Cerrar el mes y armar el paquete para el contador |
 | | `report-builder` · `report-pack` | Reportes y reportes recurrentes |
 | 🏛️ **Impuestos (SAT)** | `tax-prep` · `tax-season-organizer` | La declaración mensual de Pequeño Contribuyente, el paquete anual del contador y la alerta del tope del régimen |
-| 📈 **Ventas** | `lead-triage` · `call-list` · `crm-autopilot` · `proposal-builder` | Prospectos, a quién llamar, el CRM y las propuestas de nuestros planes |
+| 📈 **Ventas** | `lead-triage` · `call-list` · `crm-autopilot` · `proposal-builder` | Prospectos, a quién llamar, el CRM y las propuestas de nuestros niveles |
 | 📄 **Operación** | `contract-review` · `inbox-manager` | Contratos y correo |
 | 👥 **Equipo** | `job-post-builder` · `hiring-screener` | Publicar puestos y filtrar candidatos |
 | 🧭 **Resumen** | `monday-brief` · `business-pulse` | El negocio en una página |

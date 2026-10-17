@@ -6,7 +6,7 @@ description: >
   los activos distintivos y un ejemplo de bien y mal. Es la capa que evita que la guía quede
   bonita y sin aplicar. Cierra la guía de marca. Úsala cuando pidan "cómo se ve en un reel",
   "cómo se arma un carrusel", "las medidas de cada formato", "bajá la guía a los formatos".
-  Requiere los activos distintivos. Los formatos salen de las Redes del plan contratado.
+  Requiere los activos distintivos. Los formatos salen de las Redes de la ficha de oferta.
 ---
 
 # Capa 5 · Aplicación — cómo se ve en cada formato real

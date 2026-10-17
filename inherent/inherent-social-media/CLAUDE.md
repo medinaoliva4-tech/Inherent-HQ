@@ -8,14 +8,14 @@
 |---|---|
 | **Cliente** | Inherent — nuestras propias redes |
 | **Lo operan** | CEO y COO |
-| **Plan** | Ver `00-onboarding/plan-contratado.md` |
+| **Nivel y alcance** | Ver `00-onboarding/plan-contratado.md` *(la ficha de alcance)* |
 | **Drive del cliente** | Ver `00-onboarding/LINKS.md` |
 
 ## Las áreas activas
 
 | Folder | Qué tiene | Activo |
 |---|---|---|
-| `00-onboarding/` | Comprensión, plan contratado y accesos | ✅ |
+| `00-onboarding/` | Comprensión, ficha de alcance y accesos | ✅ |
 | `01-estrategia/` | Estrategia, reuniones, revisiones del 20 y reportes | ✅ |
 | `02-marca/` | Kit de redes y voz | ✅ |
 | `03-marketing/` | El plan de cada ciclo, por mes | ✅ |
@@ -25,4 +25,4 @@
 | `07-oferta-y-ventas/` | Las ofertas que se empujan cada ciclo | ✅ Solo `ofertas-a-empujar.md` |
 | `99-referencias/` | Investigación y lo que manda el cliente | ✅ |
 
-**Plan Marketing Pro:** de la línea Growth solo lleva `07-oferta-y-ventas/ofertas-a-empujar.md`.
+**Nivel Brand Growth:** de ② Growth solo lleva `07-oferta-y-ventas/ofertas-a-empujar.md`.

@@ -2,7 +2,7 @@
 name: gd-plantillas
 description: >
   Capa 1 de ⑥A Diseño gráfico — arma el sistema de plantillas del ciclo, que es lo que hace
-  posible producir 168 piezas sin tomar 168 decisiones. Una plantilla por combinación de formato
+  posible producir el volumen del ciclo sin tomar una decisión por pieza. Una plantilla por combinación de formato
   y tipo de contenido, con las zonas de texto, imagen y activo ya fijadas, probada con el copy
   más largo y el más corto del ciclo. Se prueba el molde, no las piezas. Úsala cuando pidan
   "las plantillas del mes", "el molde", "cómo vamos a producir tanto", "esto no escala".
@@ -16,7 +16,7 @@ description: >
 | **Consume** | § Agrupación del ciclo · `clients/<cliente>/02-marca/sistema-visual.md` · el copy de todas las piezas |
 | **Produce** | Las **plantillas del ciclo** en `clients/<cliente>/02-marca/kit-de-redes/plantillas/` |
 
-> 🔑 **Esta capa decide si el ciclo entra en las horas que paga el plan.**
+> 🔑 **Esta capa decide si el ciclo entra en las horas de la ficha.**
 
 ## 1 · Qué es una plantilla acá
 
