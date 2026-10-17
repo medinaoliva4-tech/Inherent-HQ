@@ -112,9 +112,17 @@ o alcance.** `inherent/06-ECONOMIA.md` no sale del repo.
 
 ## La identidad
 
-# GROWTH OPERATOR
+# GROWTH PARTNER
 
-**No somos agencia ni consultoría. Operamos el crecimiento.**
+**We build cool brands—and the growth systems behind them.**
+Construimos marcas interesantes, creativas y deseables. **Lideramos el frente de crecimiento**
+*(estrategia, identidad, marketing, experiencia digital, medición)* y **entramos al backend
+cuando hace falta** *(procesos, CRM y automatizaciones, roles, métricas)*.
+
+🎯 **La pregunta filtro:** ¿este trabajo hace la marca **más deseable, más fácil de elegir o más
+capaz de convertir** esa demanda en ingresos? Con quién encajamos: `inherent/01-IDENTIDAD.md`.
+
+**No somos agencia ni consultoría.**
 La agencia hace piezas. La consultoría hace diagnósticos. **Nosotros hacemos que el negocio
 crezca, y nos quedamos adentro hasta que pasa.**
 

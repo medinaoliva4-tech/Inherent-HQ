@@ -47,7 +47,7 @@ async function loginView() {
   const qs = new URLSearchParams(location.search); const err = qs.get('error'), detail = qs.get('detail');
   const local = ['localhost', '127.0.0.1'].includes(location.hostname);
   mount(root, html`<div class="login">
-    <div class="art"><div class="quote"><p>Operamos el crecimiento.<br><em>No pierdas años.</em></p></div></div>
+    <div class="art"><div class="quote"><p>We build cool brands—<br><em>and the growth systems behind them.</em></p></div></div>
     <div class="side">
       <div class="row" style="gap:18px"><div style="width:52px">${emblem()}</div><div><img src="/brand/wordmark-light.svg" alt="Inherent" style="height:58px;display:block"><div style="font-size:11px;letter-spacing:4px;font-weight:700;opacity:.8;margin-top:10px">OPERATING SYSTEM</div></div></div>
       <p style="font-size:17px;opacity:.8;margin-top:18px;max-width:420px">${pendingConnect() ? 'Entra con tu Google para conectar Inherent OS con tu app.' : 'Entra con tu cuenta de Google de Inherent.'}</p>

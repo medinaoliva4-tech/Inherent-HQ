@@ -94,7 +94,7 @@ Instagram y siente que están en otra liga.
 
 ## La categoría
 
-> ## Growth Operator
+> ## Growth Partner
 
 **No somos agencia. No somos consultoría.**
 

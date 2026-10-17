@@ -20,7 +20,7 @@
 ## El modelo, en una pantalla
 
 ```
-IDENTIDAD     Growth Operator — no agencia, no consultoría
+IDENTIDAD     Growth Partner — cool brands + los sistemas de crecimiento detrás
                     │
 MÉTODO        GROWTH OS       de dónde sale el crecimiento
               CONVERSION OS   que se cobre

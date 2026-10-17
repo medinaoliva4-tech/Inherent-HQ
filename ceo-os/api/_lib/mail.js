@@ -7,7 +7,7 @@ const shell = (base, inner) => `<div style="background:#ebe6dc;padding:28px 12px
 <div style="max-width:560px;margin:0 auto;background:#fffdf8;border-radius:22px;padding:30px">
 <img src="${base}/brand/icon-192.png" alt="Inherent" width="44" height="44" style="border-radius:12px;display:block">
 ${inner}
-<p style="font-size:12px;color:#8f877b;margin-top:26px">Inherent · Operamos el crecimiento.</p></div></div>`;
+<p style="font-size:12px;color:#8f877b;margin-top:26px">Inherent · We build cool brands—and the growth systems behind them.</p></div></div>`;
 const btn = (href, label) => `<p style="margin:22px 0"><a href="${href}" style="background:#171410;color:#f1ede1;text-decoration:none;padding:13px 22px;border-radius:99px;font-size:15px;display:inline-block">${label}</a></p>`;
 const list = (items) => `<ul style="padding-left:18px;margin:8px 0;line-height:1.6">${items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
 

@@ -6,9 +6,38 @@
 
 ## Qué somos
 
-# GROWTH OPERATOR
+# GROWTH PARTNER
 
-**No somos una agencia. No somos una consultoría. Operamos el crecimiento.**
+> ## We build cool brands—and the growth systems behind them.
+> **Construimos marcas interesantes, creativas y deseables, con un punto de vista claro y un camino real a la venta.**
+
+### El frente de crecimiento — lo lideramos
+- **Estrategia de marca**, posicionamiento y oferta
+- **Identidad**, dirección creativa y contenido
+- **Marketing**, campañas, ads, PR, afiliados y eventos
+- **Experiencia digital** y tecnología que apoya la venta
+- **Medición** del desempeño y optimización comercial
+
+### El backend — entramos cuando hace falta para que ese crecimiento funcione
+- Procesos de marketing, ventas y atención al cliente
+- Automatizaciones, CRM y herramientas
+- Roles, responsabilidades y coordinación del equipo
+- Métricas, seguimiento y ritmo de trabajo
+
+### La pregunta filtro
+> **¿Este trabajo hace que la marca sea más deseable, más fácil de elegir o más capaz de
+> convertir esa demanda en ingresos?** Si no hace ninguna de las tres, no se hace.
+
+### Con quién encajamos
+- Quieren **crear, reposicionar o escalar** una marca con personalidad.
+- Tienen una oferta que **ya funciona, o están dispuestos a validarla**.
+- Buscan **crecimiento comercial**, no solo «verse mejor».
+- Dan **acceso a la información** relevante y deciden con agilidad.
+- Aceptan **colaborar con especialistas** y ejecutar su parte.
+
+### No somos agencia ni consultoría
+
+**No somos una agencia. No somos una consultoría. Somos tu Growth Partner.**
 
 | | La agencia | La consultoría | **Inherent** |
 |---|---|---|---|
@@ -17,7 +46,7 @@
 | Dónde termina | En el post | En la recomendación | **En la venta** |
 | Qué deja | Contenido | Un PDF | **Un sistema que sigue corriendo** |
 
-> **La agencia hace piezas. La consultoría hace diagnósticos. El Growth Operator hace que el
+> **La agencia hace piezas. La consultoría hace diagnósticos. El Growth Partner hace que el
 > negocio crezca, y se queda adentro hasta que pasa.**
 
 ---
@@ -73,7 +102,7 @@ oferta, y la pauta no salva una experiencia rota.
 | **4** | **Tecnología** | **Herramientas hechas a la medida** que facilitan trabajo y entrega — websites, CRM, sistemas agénticos |
 | **5** | **ADS** | **Anuncios en las plataformas relevantes** a la marca, adquiriendo demanda |
 
-> **El equipo 4 es el que nadie más tiene.** Es lo que separa un Growth Operator de una agencia
+> **El equipo 4 es el que nadie más tiene.** Es lo que separa un Growth Partner de una agencia
 > con buen contenido.
 
 ---

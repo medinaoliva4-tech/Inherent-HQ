@@ -330,7 +330,7 @@ export function docView(inner) {
   document.body.append(v);
   v.onclick = (e) => { const x = e.target.closest('[data-x]')?.dataset.x; if (x === 'print') window.print(); if (x === 'close' || e.target === v) v.remove(); };
 }
-export const docHead = (title, meta) => html`<div class="qh"><div class="qlogo"><img src="/brand/emblem-dark.svg" alt=""><div><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:26px;width:auto;display:block"><div class="go" style="margin-top:6px">GROWTH OPERATOR</div></div></div><div class="qmeta"><b>${title}</b>${meta}</div></div>`;
+export const docHead = (title, meta) => html`<div class="qh"><div class="qlogo"><img src="/brand/emblem-dark.svg" alt=""><div><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:26px;width:auto;display:block"><div class="go" style="margin-top:6px">GROWTH PARTNER</div></div></div><div class="qmeta"><b>${title}</b>${meta}</div></div>`;
 export const embedUrl = (u) => {
   const s = String(u || ''); let m;
   if ((m = s.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{6,})/))) return `https://www.youtube.com/embed/${m[1]}`;

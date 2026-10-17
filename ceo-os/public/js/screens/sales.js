@@ -693,7 +693,7 @@ export async function render(el, { me, sub, alive }) {
     const v = document.createElement('div'); v.className = 'qview';
     mount(v, html`<div class="qbar"><button class="btn" data-x="print">↓ Descargar PDF</button><button class="btn ghost" data-x="close">Cerrar</button><div class="sp"></div><span class="sm" style="color:var(--cream);align-self:center;display:none">En el diálogo elige «Guardar como PDF»</span></div>
       <div class="qdoc">
-        <div class="qh"><div class="qlogo"><img src="/brand/emblem-dark.svg" alt=""><div><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:26px;width:auto;display:block"><div class="go" style="margin-top:6px">GROWTH OPERATOR</div></div></div>
+        <div class="qh"><div class="qlogo"><img src="/brand/emblem-dark.svg" alt=""><div><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:26px;width:auto;display:block"><div class="go" style="margin-top:6px">GROWTH PARTNER</div></div></div>
           <div class="qmeta"><b>Cotización</b>${doc.number}<br>${fdateLong(doc.date)}<br>Válida hasta el ${fdateLong(valid.toISOString().slice(0, 10))}</div></div>
         <div class="qto"><div><div class="lbl2">PARA</div><b style="font-weight:500;font-size:15px">${doc.client}</b>${doc.contact ? html`<div>${doc.contact}</div>` : ''}</div>
           <div><div class="lbl2">DE</div><b style="font-weight:500;font-size:15px">Inherent</b><div>inherentglobal.com</div></div></div>
@@ -718,7 +718,7 @@ export async function render(el, { me, sub, alive }) {
         ${fees(doc).length ? html`<div class="qnotes"><div class="lbl2">FEE POR CRECIMIENTO · VARIABLE</div>${fees(doc).map((i) => html`<div><b style="font-weight:500">${i.name}:</b> ${growthText(i.growth)}${i.growth.how ? html` <span style="color:#7a5d46">— ${i.growth.how}</span>` : ''}</div>`)}<div style="color:#7a5d46;font-size:11.5px;margin-top:6px">Se calcula cada mes sobre el crecimiento medido y atribuible a este servicio. Sin atribución clara, no se cobra.</div></div>` : ''}
         <div class="qsec"><div class="lbl2">SIGUIENTES PASOS</div><ol>${(String(doc.next || '').split('\n').map((l) => l.trim()).filter(Boolean).length ? String(doc.next).split('\n').map((l) => l.trim()).filter(Boolean) : ['Confirmas esta propuesta y el alcance.', 'Hacemos una llamada de arranque para tomar tus datos y accesos.', 'Coordinamos el primer pago y firmamos.', 'Empezamos y te mostramos avances en cada entrega.']).map((l) => html`<li>${l}</li>`)}</ol></div>
         ${doc.notes && !(/no incluye/i.test(doc.intro || '') && /^\s*no incluye/i.test(doc.notes)) ? html`<div class="qnotes"><div class="lbl2">NOTAS Y CONDICIONES</div>${doc.notes.split('\n').map((l) => html`<div>${l}</div>`)}</div>` : ''}
-        <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>
+        <div class="qfoot"><span>Inherent · Growth Partner</span><span>inherentglobal.com</span></div>
       </div>`);
     document.body.append(v);
     v.onclick = (e) => { const x = e.target.closest('[data-x]')?.dataset.x; if (x === 'print') downloadPdf(v, doc, e.target.closest('[data-x]')); if (x === 'close' || e.target === v) v.remove(); };

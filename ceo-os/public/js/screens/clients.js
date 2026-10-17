@@ -199,7 +199,7 @@ export async function render(el, { me, sub, alive }) {
           ${(g.checks || []).length ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Checkpoints:</b> ${g.checks.map((c) => `${fdate(c.date)}${c.done ? ` ✓${c.value ? ' ' + c.value : ''}` : ''}`).join(' · ')}</div>` : ''}
           ${(a.mentors || []).filter((x) => x.goal === rm.indexOf(g)).map((x) => { const m = mentors.find((y) => y.id === x.id); return m ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Especialista:</b> ${m.name} · ${m.industry}</div>` : ''; })}
           ${g.note ? html`<div style="color:#5a4331;font-size:12.5px;margin-top:4px">${g.note}</div>` : ''}</div>`; })}
-        <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>`);
+        <div class="qfoot"><span>Inherent · Growth Partner</span><span>inherentglobal.com</span></div>`);
     }
 
     acts(el, {
