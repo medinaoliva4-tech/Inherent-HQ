@@ -167,13 +167,18 @@ const TOOLS = [
 const WRITE = new Set(['crear_tarea', 'actualizar_tarea', 'crear_cotizacion', 'crear_lead', 'actualizar_lead', 'registrar_actividad', 'importar_prospectos', 'crear_proyecto', 'subir_documento', 'subir_archivo', 'actualizar_perfil', 'guardar_research', 'borrar_research', 'agendar', 'actualizar_idea', 'borrar_idea', 'crear_idea', 'guardar_receta', 'activar_paquete', 'asignar_rol', 'generar_recurrentes']);
 // Sin views (pruebas que pasan el usuario a mano), el área visible alcanza, como antes.
 const mayWrite = (u, name, area) => !WRITE.has(name) || !area || !u.views || levelOf(u, area) === 'edita';
-const toolsFor = (u) => TOOLS.filter(([name, a]) => (!a || u.areas.includes(a)) && mayWrite(u, name, a)).map(([name, , description, properties, required]) => ({ name, description, inputSchema: { type: 'object', properties, ...(required ? { required } : {}) } }));
+// «Resumen» también aquí: lo que la pantalla no muestra en resumen, el conector no lo entrega
+// (Comercial: sin catálogo ni precios; Contenido: solo rendimiento, sin Research, planner ni calendario).
+const SUMMARY_HIDES = { sales: ['catalogo'], content: ['contenido_semana', 'planner', 'calendario', 'listar_research', 'leer_research'] };
+const hiddenBySummary = (u, name) => u.role !== 'ceo' && Boolean(u.views) && Object.entries(SUMMARY_HIDES).some(([area, l]) => l.includes(name) && levelOf(u, area) === 'resumen');
+const toolsFor = (u) => TOOLS.filter(([name, a]) => (!a || u.areas.includes(a)) && mayWrite(u, name, a) && !hiddenBySummary(u, name)).map(([name, , description, properties, required]) => ({ name, description, inputSchema: { type: 'object', properties, ...(required ? { required } : {}) } }));
 
 async function call(u, name, a = {}) {
   if (name === 'research') name = 'listar_research'; // el nombre viejo
   const tool = TOOLS.find((t) => t[0] === name); if (!tool) throw new Error('Herramienta desconocida');
   if (tool[1] && !u.areas.includes(tool[1])) throw new Error('Tu perfil no tiene acceso a esto');
   if (!mayWrite(u, name, tool[1])) throw new Error('Tu perfil solo puede ver esto, no cambiarlo');
+  if (hiddenBySummary(u, name)) throw new Error('Tu perfil ve esta sección en «resumen»: esto no entra');
   const T = today();
   const sc = await scoper(u); // el alcance: null = todo
   const inS = (coll, d) => inScope(sc, coll, d);
@@ -235,7 +240,8 @@ async function call(u, name, a = {}) {
     if (sc && !sc.client(slug)) throw new Error('Ese cliente no está entre los tuyos');
     const [acc, projects, tasks] = await Promise.all([db.get('accounts', 'acc-' + slug), db.list('projects'), db.list('tasks')]);
     const ps = projects.filter((p) => p.client_slug === slug && inS('projects', p));
-    return { slug, roadmap: acc?.goals || acc?.roadmap || [], drive: acc?.drive_dirs || null, proyectos: ps.map((p) => ({ id: p.id, nombre: p.name, tipo: p.kind, roles: p.roles_map || {}, fases: p.phases, reuniones: p.meetings || [], servicios: (p.services || []).map(({ name, level, days, includes }) => ({ name, level, days, includes })) })), tareas: tasks.filter((t) => seesTask(u, t) && inS('tasks', t) && ps.some((p) => p.id === t.project_id)).map((t) => pick(t, ps)) };
+    // Nunca los accesos del cliente (usuarios y dónde están las claves); el Drive no entra en «resumen».
+    return { slug, roadmap: acc?.goals || acc?.roadmap || [], drive: levelOf(u, 'clients') === 'resumen' ? null : acc?.drive_dirs || null, proyectos: ps.map((p) => ({ id: p.id, nombre: p.name, tipo: p.kind, roles: p.roles_map || {}, fases: p.phases, reuniones: p.meetings || [], servicios: (p.services || []).map(({ name, level, days, includes }) => ({ name, level, days, includes })) })), tareas: tasks.filter((t) => seesTask(u, t) && inS('tasks', t) && ps.some((p) => p.id === t.project_id)).map((t) => pick(t, ps)) };
   }
   if (name === 'resumen') {
     const [projects, tasks] = await Promise.all([db.list('projects').then((l) => l.filter((p) => inS('projects', p))), db.list('tasks').then((l) => l.filter((t) => inS('tasks', t)))]);
@@ -318,6 +324,7 @@ async function call(u, name, a = {}) {
     const kind = ['Ciclo mensual', 'Proyecto', 'Growth', 'Custom'].includes(a.tipo) ? a.tipo : 'Proyecto';
     const start = /^\d{4}-\d{2}-\d{2}$/.test(a.inicio || '') ? a.inicio : T;
     const quote = a.cotizacion_id ? await db.get('quotes', a.cotizacion_id) : null;
+    if (quote && !inS('quotes', quote)) throw new Error('Esa cotización no está entre las tuyas');
     if (kind === 'Custom' && !quote) throw new Error('Para un proyecto Custom dime la cotizacion_id');
     const { project: p, tasks: made } = await flow.createProject(u, { slug, kind, start, quote, name: a.nombre });
     return { ok: true, id: p.id, nombre: p.name, fases: p.phases.map((f) => `${f.name} (${f.start} → ${f.end})`), reuniones: p.meetings.length, tareas: made.length, con_dependencias: made.filter((t) => t.depends_on?.length).length, abrir: '/#/control' };

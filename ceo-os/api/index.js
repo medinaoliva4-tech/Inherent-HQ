@@ -2,7 +2,7 @@
 import * as db from './_lib/db.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
-import { guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain } from './_lib/access.js';
+import { guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
 import * as zernio from './_lib/zernio.js';
@@ -114,7 +114,8 @@ const personalOk = (u, slug) => slug !== 'personal' || u.role === 'ceo';
 // Los docs de «sources» (scrape-, refs-, ads-, ideas-…<perfil>) no siempre traen el campo profile: el perfil sale también del id.
 const profOf = (coll, d) => (coll === 'sources' ? d?.profile || String(d?.id || '').replace(/^(cfg|scrape|analytics|ideas|refs|ads)-/, '') : d?.profile);
 // El link de la hoja de Finanzas solo lo lee quien ve Finanzas.
-const visible = (u, coll, d) => (coll !== 'tasks' || seesTask(u, d)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'settings' || d?.id !== 'finance_sheet' || u.areas.includes('finanzas'));
+// El margen objetivo de las propuestas (settings «pricing», Finanzas → Precios) es costo/margen: solo el CEO.
+const visible = (u, coll, d) => (coll !== 'tasks' || seesTask(u, d)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'settings' || ((d?.id !== 'finance_sheet' || u.areas.includes('finanzas')) && (d?.id !== 'pricing' || u.role === 'ceo')));
 // El alcance (todos · asignados · propio) filtra proyectos, tareas, cuentas de clientes y leads.
 const scopeOf = (u, coll) => (SCOPED.includes(coll) || ['content', 'sources'].includes(coll) ? scoper(u) : null);
 // Content y sources llevan el perfil (un cliente, inherent o personal): con alcance «asignados» o «propio» solo entran los de sus clientes.
@@ -128,17 +129,42 @@ const cleanTask = (b) => {
   if (!sop || (!/^https?:\/\/\S+$/i.test(sop) && !/^[\w.@+-]{1,120}$/.test(sop))) delete o.sop; else o.sop = sop.slice(0, 500);
   return o;
 };
+// Lo que sale de un doc según quién lo pide: «resumen» recorta o no entrega (summaryOf) y los accesos de un cliente
+// solo llegan a quien los puede ver. null = para esa persona no existe.
+const shape = (u, coll, d, sc, sum = summaryOf(u, coll)) => {
+  if (!d) return null;
+  if (sum) { d = sum(d); if (!d) return null; }
+  return coll === 'accounts' ? stripAccesos(u, d, sc) : d;
+};
 on('GET', 'db/:coll', async (req, res) => {
   const u = await collGuard(req, res); if (!u) return;
-  const coll = req.params.coll, sc = await scopeOf(u, coll);
-  res.json({ items: (await db.list(coll)).filter((d) => visible(u, coll, d) && inScope(sc, coll, d) && profInScope(sc, coll, d)) });
+  const coll = req.params.coll, sc = await scopeOf(u, coll), sum = summaryOf(u, coll);
+  res.json({ items: (await db.list(coll)).filter((d) => visible(u, coll, d) && inScope(sc, coll, d) && profInScope(sc, coll, d)).map((d) => shape(u, coll, d, sc, sum)).filter(Boolean) });
 });
 on('GET', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res); if (!u) return;
   const d = await db.get(req.params.coll, req.params.id);
   const sc = d ? await scopeOf(u, req.params.coll) : null;
-  d && visible(u, req.params.coll, d) && inScope(sc, req.params.coll, d) && profInScope(sc, req.params.coll, d) ? res.json(d) : res.status(404).json({ error: 'No existe' });
+  const out = d && visible(u, req.params.coll, d) && inScope(sc, req.params.coll, d) && profInScope(sc, req.params.coll, d) ? shape(u, req.params.coll, d, sc) : null;
+  out ? res.json(out) : res.status(404).json({ error: 'No existe' });
 });
+// Una tarea solo cae en un proyecto del alcance de quien la crea o la mueve; una cotización, en un lead de su alcance.
+async function outOfScope(u, coll, b, cur) {
+  if (coll === 'tasks' && b.project_id && b.project_id !== cur?.project_id) { const p = await db.get('projects', String(b.project_id)); if (p && !inScope(await scoper(u), 'projects', p)) return 'Ese proyecto no está entre los tuyos'; }
+  if (coll === 'quotes' && b.lead_id && b.lead_id !== cur?.lead_id) { const l = await db.get('leads', String(b.lead_id)); if (l && !inScope(await scoper(u), 'leads', l)) return 'Ese lead no está entre los tuyos'; }
+  return null;
+}
+// Los accesos del cliente al guardar: el PUT reemplaza el doc completo, así que lo que la persona no puede ver
+// (o no mandó) se conserva tal cual estaba. La lista de quién más los ve solo la cambia quien los administra.
+const cleanEmails = (l) => [...new Set((Array.isArray(l) ? l : []).map((x) => String(x || '').trim().toLowerCase()).filter((x) => /^[^@\s]+@[^@\s]+$/.test(x)))].slice(0, 30);
+function keepAccesos(u, b, cur) {
+  const keep = (k, may) => { if (may && k in b) return; if (cur && k in cur) b[k] = cur[k]; else delete b[k]; };
+  keep('accesos', cur ? seesAccesos(u, cur) : managesAccesos(u));
+  keep('accesos_to', managesAccesos(u));
+  if (Array.isArray(b.accesos)) b.accesos = b.accesos.slice(0, 80).map((x) => ({ servicio: String(x?.servicio || '').slice(0, 120), usuario: String(x?.usuario || '').slice(0, 200), donde: String(x?.donde || '').slice(0, 300) })).filter((x) => x.servicio);
+  if ('accesos_to' in b && !(cur && b.accesos_to === cur.accesos_to)) b.accesos_to = cleanEmails(b.accesos_to);
+  return b;
+}
 // Una persona con correo que no es del dominio queda como «aprobada de afuera» (puede entrar con Google).
 const markExternal = (coll, b, id) => { if (coll === 'team') { const e = String(b.email || id || '').toLowerCase(); if (e.includes('@') && !e.endsWith('@' + domain())) b.external = true; else delete b.external; if (b.role === 'client' && !b.client_slug) throw Object.assign(new Error('Falta el cliente del portal'), { status: 400 }); } return b; };
 on('POST', 'db/:coll', async (req, res) => {
@@ -153,12 +179,14 @@ on('POST', 'db/:coll', async (req, res) => {
     const dup = leads.findDup(await db.list('leads'), b); if (dup) return res.status(409).json({ error: `Ya existe un lead con ese WhatsApp, correo o cuenta: ${dup.name}`, id: dup.id });
   }
   if (req.params.coll === 'lead_sources') b = leads.cleanSource(b);
+  { const why = await outOfScope(u, req.params.coll, b, null); if (why) return res.status(403).json({ error: why }); }
+  if (req.params.coll === 'accounts') b = keepAccesos(u, b, null);
   if (req.params.coll === 'tasks') b = results.stampDone(null, cleanTask(b));
   if (req.params.coll === 'recipes') { try { b = { ...recipes.cleanRecipe(b), id: b.id }; } catch (e) { return res.status(400).json({ error: e.message }); } }
   if (['content', 'sources'].includes(req.params.coll) && !personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' });
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
   if (req.params.coll === 'settings' && (id === 'role_views' || b.id === 'role_views')) forgetViews();
-  try { res.json(await db.create(req.params.coll, b, u.email, id)); }
+  try { res.json(shape(u, req.params.coll, await db.create(req.params.coll, b, u.email, id), null, null)); }
   catch (e) { if (/duplicate|unique/i.test(e.message)) return res.status(409).json({ error: 'Ya existe' }); throw e; }
 });
 on('PUT', 'db/:coll/:id', async (req, res) => {
@@ -169,6 +197,8 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   // Fuera del alcance de la persona (o de la marca personal) no se cambia: para ella no existe.
   if (SCOPED.includes(req.params.coll) || ['content', 'sources'].includes(req.params.coll)) { const cur = await db.get(req.params.coll, req.params.id); if (cur && (!inScope(await scopeOf(u, req.params.coll), req.params.coll, cur) || !visible(u, req.params.coll, cur))) return res.status(404).json({ error: 'No existe' }); if (!personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' }); }
   if (req.params.coll === 'settings' && req.params.id === 'role_views') forgetViews();
+  if (['tasks', 'quotes'].includes(req.params.coll)) { const why = await outOfScope(u, req.params.coll, b, await db.get(req.params.coll, req.params.id)); if (why) return res.status(403).json({ error: why }); }
+  if (req.params.coll === 'accounts') b = keepAccesos(u, b, await db.get('accounts', req.params.id));
   if (req.params.coll === 'leads') {
     const cur = await db.get('leads', req.params.id); if (!cur) return res.status(404).json({ error: 'No existe' });
     b = leads.normalize(b); b.activity = leads.mergeActivity(cur.activity, b.activity);
@@ -189,7 +219,7 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
     }
   }
   const d = await db.update(req.params.coll, req.params.id, b, Number(b.v), u.email);
-  d ? res.json(d) : res.status(409).json({ error: 'Alguien más cambió esto. Recarga para ver la última versión.' });
+  d ? res.json(shape(u, req.params.coll, d, await scopeOf(u, req.params.coll), null)) : res.status(409).json({ error: 'Alguien más cambió esto. Recarga para ver la última versión.' });
 });
 on('DELETE', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
@@ -211,6 +241,7 @@ on('GET', 'repo/economia', async (req, res) => {
 on('GET', 'repo/precios', async (req, res) => {
   // Para Sales: precios y volumen, sin costos (salvo al CEO).
   const u = await guard(req, res, 'sales'); if (!u) return;
+  if (summaryOf(u, 'services')) return res.status(403).json({ error: 'Tu vista de Comercial es «resumen»: sin catálogo ni precios' });
   const eco = await readFile('inherent/06-ECONOMIA.md');
   if (!eco) return res.status(502).json({ error: 'No pude leer los planes del repo', code: 'NO_REPO' });
   const { plans = [], tipoCambio = null } = parseEconomia(eco.content);
@@ -236,6 +267,8 @@ async function profilesFor(u) {
   return (await content.profiles()).filter((p) => personalOk(u, p.slug) && (!sc || p.slug === 'inherent' || sc.client(p.slug)));
 }
 const profGuard = (u, slug) => personalOk(u, slug);
+// Contenido en «resumen» solo ve el rendimiento (Analytics): Research, la semana, referencias e ideas no se entregan.
+const contentFull = (u, res) => { if (u.role === 'ceo' || !u.views || u.views.content !== 'resumen') return true; res.status(403).json({ error: 'Tu vista de Contenido es «resumen»: solo el rendimiento' }); return false; };
 on('GET', 'repo/content', async (req, res) => {
   const u = await guard(req, res, 'content'); if (!u) return;
   const list = await profilesFor(u);
@@ -257,7 +290,7 @@ on('POST', 'content/scrape', async (req, res) => {
   catch (e) { if (e.status === 400) return res.status(400).json({ error: e.message }); throw e; }
 });
 on('GET', 'content/week', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
+  const u = await guard(req, res, 'content'); if (!u) return; if (!contentFull(u, res)) return;
   const slug = String(req.query.profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   let doc = await db.get('sources', 'scrape-' + slug), warn = null;
   if (doc?.runs?.length && !doc.result && content.apifyOn()) { try { doc = await content.settle(slug, u.email); } catch (e) { warn = e.message; } }
@@ -266,7 +299,7 @@ on('GET', 'content/week', async (req, res) => {
 });
 // Referencias por pilar: videos que pega el equipo → Apify busca similares → se desglosan con Claude.
 on('GET', 'content/refs', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
+  const u = await guard(req, res, 'content'); if (!u) return; if (!contentFull(u, res)) return;
   const slug = String(req.query.profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   let doc = await refs.get(slug), warn = null;
   if (doc.runs?.length && !doc.result && refs.on()) { try { doc = await refs.settle(slug, u.email); } catch (e) { warn = e.message; } }
@@ -372,7 +405,7 @@ const cleanIdeas = (list) => (Array.isArray(list) ? list : []).slice(0, 30).map(
   inspired_by: /^https:\/\/\S+$/.test(String(x?.inspired_by || '')) ? String(x.inspired_by).slice(0, 400) : '',
 })).filter((x) => x.title);
 on('GET', 'content/ideas', async (req, res) => {
-  const u = await guard(req, res, 'content'); if (!u) return;
+  const u = await guard(req, res, 'content'); if (!u) return; if (!contentFull(u, res)) return;
   const slug = String(req.query.profile || ''); if (!slugOk(slug) || !profGuard(u, slug)) return res.status(400).json({ error: 'Perfil inválido' });
   const d = await db.get('sources', 'ideas-' + slug);
   res.json({ at: d?.at || null, week: d?.week || null, ideas: d?.ideas || [] });
@@ -756,6 +789,8 @@ on('GET', 'results/redes/:slug', async (req, res) => {
 on('POST', 'flow/quote/:id', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   const b = body(req);
+  // Fuera del alcance (o con Comercial en «resumen» y sin ser quien sube el pago) la cotización no existe para la persona.
+  { const q = await db.get('quotes', req.params.id); if (q && !inScope(await scoper(u), 'quotes', q)) return res.status(404).json({ error: 'La cotización no existe' }); }
   try { res.json(await flow.step(u, req.params.id, String(b.action || ''), b, appUrl(req))); }
   catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
 });
@@ -785,7 +820,8 @@ on('POST', 'recipes/run', async (req, res) => {
 });
 on('GET', 'flow/proof/:id', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
-  const p = await flow.proof(u, req.params.id);
+  let p = await flow.proof(u, req.params.id);
+  if (p) { const q = await db.get('quotes', p.quote_id); if (q && !inScope(await scoper(u), 'quotes', q)) p = null; }
   p ? res.json({ name: p.name, data: p.data }) : res.status(404).json({ error: 'No existe' });
 });
 

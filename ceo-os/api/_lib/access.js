@@ -24,11 +24,12 @@ export const READ_ALSO = { tasks: ['work'], projects: ['work'], accounts: ['work
 export const WRITE_ALSO = { tasks: ['work'] };
 const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors', 'lead_sources', 'recipes']);
 // Costos, márgenes, tarifas y pagos: solo el CEO los lee, siempre, diga lo que diga la matriz.
-export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll']);
+// lead_sources lleva las claves de las puertas de intake: también solo el CEO.
+export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lead_sources']);
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
 export const canRead = (role, coll) => !CEO_READ.has(coll) || role === 'ceo';
 // Las colecciones que filtra el alcance (todos · asignados · propio).
-export const SCOPED = ['projects', 'tasks', 'accounts', 'leads'];
+export const SCOPED = ['projects', 'tasks', 'accounts', 'leads', 'quotes'];
 
 export const domain = () => (process.env.ALLOWED_DOMAIN || 'inherentglobal.com').toLowerCase();
 const admins = () => String(process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
@@ -98,20 +99,58 @@ export async function guardAny(req, res, areas, opts = {}) {
 const lc = (x) => String(x || '').toLowerCase();
 export async function scoper(u, pre = {}) {
   if (!u || u.role === 'ceo' || !u.scope || u.scope === 'todos') return null;
-  const [tasks, projects] = await Promise.all([pre.tasks || db.list('tasks'), pre.projects || db.list('projects')]);
+  const [tasks, projects, leads] = await Promise.all([pre.tasks || db.list('tasks'), pre.projects || db.list('projects'), pre.leads || db.list('leads')]);
   const me = lc(u.email), own = u.scope === 'propio';
   const mineT = (t) => [t.assignee, t.accountable, t._meta?.created_by, ...(Array.isArray(t.viewers) ? t.viewers : [])].some((x) => lc(x) === me);
   const pids = new Set(tasks.filter(mineT).map((t) => t.project_id).filter(Boolean));
   for (const p of projects) if ((Array.isArray(p.people) ? p.people : []).some((x) => lc(x) === me)) pids.add(p.id);
   const slugs = new Set(projects.filter((p) => pids.has(p.id)).map((p) => p.client_slug).filter(Boolean));
   const roles = u.roles || [];
+  const leadOk = (l) => lc(l._meta?.created_by) === me || (!own && roles.includes(l.owner_role || 'ventas'));
+  const lids = new Set(leads.filter(leadOk).map((l) => l.id));
+  const payQ = new Set(tasks.filter((t) => t.quote_id && lc(t.assignee) === me).map((t) => t.quote_id)); // a quien le toca subir el pago
   return {
     scope: u.scope, pids, slugs,
     projects: (p) => pids.has(p.id),
     tasks: (t) => mineT(t) || (!own && Boolean(t.project_id) && pids.has(t.project_id)),
     accounts: (a) => slugs.has(lc(a.slug || String(a.id).replace(/^acc-/, ''))),
-    leads: (l) => lc(l._meta?.created_by) === me || (!own && roles.includes(l.owner_role || 'ventas')),
+    leads: leadOk,
+    // Una cotización entra igual que su lead: la que creó, la de un lead suyo o (con «asignados») la de uno de sus clientes.
+    quotes: (q) => lc(q._meta?.created_by) === me || payQ.has(q.id) || (Boolean(q.lead_id) && lids.has(q.lead_id)) || (!own && Boolean(q.client_slug) && slugs.has(lc(q.client_slug))),
     client: (slug) => slugs.has(lc(slug)),
   };
 }
 export const inScope = (sc, coll, d) => !sc || typeof sc[coll] !== 'function' || !d || sc[coll](d);
+
+// ---------- Los accesos de cada cliente (usuarios y dónde están las claves) ----------
+// Los ven el CEO, el COO y quien edita Clientes; además, quien el CEO/COO puso en la lista del cliente (accesos_to)
+// siempre que ese cliente esté en su alcance. Nunca salen por la API ni por el conector a nadie más.
+export const managesAccesos = (u) => u?.role === 'ceo' || u?.role === 'coo' || edits(u, 'clients');
+export function seesAccesos(u, acc, sc) {
+  if (managesAccesos(u)) return true;
+  const to = (Array.isArray(acc?.accesos_to) ? acc.accesos_to : []).map(lc);
+  return to.includes(lc(u?.email)) && (!sc || sc.accounts(acc));
+}
+export function stripAccesos(u, acc, sc) {
+  if (!acc || seesAccesos(u, acc, sc)) return acc;
+  const { accesos, accesos_to, ...rest } = acc; return rest;
+}
+
+// ---------- «Resumen» también en el servidor ----------
+// Lo que la pantalla no muestra en resumen tampoco se entrega (ver SUMMARY en roleviews.js):
+//   Comercial en resumen → sin catálogo, precios, especialistas ni cotizaciones. Si además ve Control, recibe las
+//   cotizaciones solo con lo que piden sus indicadores (número, cliente, estado y fechas; sin renglones ni montos).
+//   Contenido en resumen → sin Research ni calendario (content) y, de sources, solo analytics y la configuración.
+// Devuelve null (no cambia nada) o una función doc → doc | null.
+const QUOTE_LITE = ['id', 'v', 'number', 'client', 'client_slug', 'lead_id', 'status', 'date', 'sent_at', 'approved_at', 'pay_task_id', 'project_id', '_meta'];
+export function summaryOf(u, coll) {
+  if (!u || u.role === 'ceo' || !u.views) return null;
+  const sales = levelOf(u, 'sales') === 'resumen', cont = levelOf(u, 'content') === 'resumen';
+  if (coll === 'quotes' && sales) return sees(u, 'control') ? (q) => ({ ...Object.fromEntries(QUOTE_LITE.filter((k) => k in q).map((k) => [k, q[k]])), ...(q.payment ? { payment: { status: q.payment.status } } : {}) }) : () => null;
+  if (coll === 'services' && sales) return () => null;
+  // Los especialistas asignados se ven en la página del cliente: con Clientes completo o edita, sí llegan.
+  if (coll === 'mentors' && sales) return ['completo', 'edita'].includes(levelOf(u, 'clients')) ? null : () => null;
+  if (coll === 'content' && cont) return () => null;
+  if (coll === 'sources' && cont) return (d) => (/^(analytics|cfg)-/.test(String(d.id || '')) ? d : null);
+  return null;
+}
