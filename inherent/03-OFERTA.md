@@ -1,257 +1,371 @@
 # Oferta — Qué vendemos
 
-> **Dos líneas, cuatro planes.** Qué promete cada uno, qué entrega y qué lo respalda.
+> **Tres niveles, doce áreas, una ficha.** Qué es cada nivel, qué áreas caen en cada uno, qué se
+> cotiza aparte y qué respalda cada línea publicada.
 
 **Contenido:**
-- Las dos líneas — el eje
-- Los cuatro planes, lado a lado
-- Las cuatro tarjetas · texto de web
-- El múltiplo
+- Los tres niveles — el eje
+- Los tres niveles, lado a lado
+- La ficha de oferta
+- Las 12 áreas — el catálogo
+- Qué área cae en qué nivel
+- Qué se cotiza aparte
+- Ejemplos por industria
+- Lo que NO se promete
+- Las tres tarjetas · texto de web
 - Qué respalda cada línea publicada
-- 🛡️ Las garantías
-- 🔒 Uso interno — cómo se activa la metodología por plan
-- Cómo se habla de esto · cómo se mueve un cliente entre planes
+- 🛡️ Los compromisos y sus condiciones
+- 🔒 Uso interno — cómo se activa la metodología por nivel
+- Cómo se habla de esto · cómo se mueve un cliente entre niveles
 
 ---
 
-# Las dos líneas
+# Los tres niveles
 
 > **Somos un acelerador de marcas.**
-> Cada plan no es «más de lo mismo con más volumen». **Cada plan es un boost distinto**, porque
+> Cada nivel no es «más de lo mismo con más volumen». **Cada nivel es un boost distinto**, porque
 > el freno es distinto en cada etapa.
 
 **Un emprendedor no contrata sistemas. Contrata a alguien que cuide lo que construyó.**
 **No industrializamos empresas. Les damos alma, propósito — y facturación.**
 
-## El eje: qué promete cada línea
+**Un solo sistema de tres niveles de profundidad, en el orden en que una marca los necesita.**
 
 ```
-🔷 MARKETING   promete ATENCIÓN      compite con agencias
-               Que te vean, te entiendan y te quieran.
-
-🟨 GROWTH      promete FACTURACIÓN   compite con consultoría y CMO fraccional
-               Que eso se convierta en dinero, y que no dependa de ti.
+1 · BRAND FOUNDATION    «creamos la marca cool»                   proyecto
+2 · BRAND GROWTH        «hacemos más cool la marca que ya está»    colaboración mensual
+3 · GROWTH PARTNERSHIP  «nos metemos full»                         colaboración integrada
 ```
 
-| | 🔷 **Línea Marketing** | 🟨 **Línea Growth** |
+**No todos los clientes compran todas las áreas.** En cada propuesta se seleccionan solo las
+áreas necesarias, y el alcance queda escrito en la ficha de oferta.
+
+---
+
+# Los tres niveles, lado a lado
+
+| | 🧱 **BRAND FOUNDATION** | 📈 **BRAND GROWTH** | 🤝 **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Formato** | Proyecto con inicio y cierre | Colaboración mensual | Colaboración integrada |
+| **El boost** | Existir con una marca deseable | Crear demanda y presentarse mejor | Conectar marca, ventas y sistemas |
+| **Para quién** | Marca nueva, reposicionamiento u oferta poco clara | Marca con oferta que necesita crear demanda y mejorar cómo se presenta y promociona | Empresa que necesita conectar marca y marketing con ventas, experiencia de cliente y sistemas comerciales |
+| **Somos** | Quien crea la marca | Tu equipo de marca y demanda | Tu socio de crecimiento |
+
+## 🧱 Brand Foundation — «creamos la marca cool»
+
+**Proyecto con inicio y cierre.** Al cierre el cliente recibe:
+
+1. **Diagnóstico** de marca, oferta, audiencia y canales actuales
+2. **Audiencia prioritaria** y el problema que resuelve
+3. **Posicionamiento** y diferenciadores
+4. **Estructura de oferta** — productos o servicios, propuesta de valor y mensajes
+5. **Identidad verbal** — tono, mensajes clave y guía de lenguaje
+6. **Identidad visual** según el alcance acordado
+7. **Dirección creativa** y ejemplos de aplicación
+8. **Plan de lanzamiento o de crecimiento a 90 días**
+9. **Lista priorizada de próximos trabajos**, con responsables y métricas
+
+🔑 **La ejecución continua** *(contenido, campañas, canales)* **no va aquí:** se cotiza como
+Brand Growth o como módulos.
+
+## 📈 Brand Growth — «hacemos más cool la marca que ya está»
+
+**Colaboración mensual.** Incluye:
+
+1. **Reunión de planificación mensual**
+2. **Plan de campañas y contenido** del periodo
+3. **Producción de contenido** dentro del volumen acordado *(formatos, cantidades, rodajes y
+   revisiones definidos en la ficha)*
+4. **Gestión de los canales contratados**
+5. **Configuración y gestión de campañas publicitarias** en los canales incluidos
+6. **Pruebas** de mensajes, creatividades, ofertas y audiencias
+7. **Seguimiento de métricas** y recomendaciones
+8. **Revisión mensual** de resultados y prioridades
+
+**Aparte:** pauta, producción especial, talento, locaciones y costos de terceros.
+
+## 🤝 Growth Partnership — «nos metemos full»
+
+**Colaboración integrada.** Incluye **todo Brand Growth**, más:
+
+1. **Diagnóstico del recorrido** — conoce → compra → vuelve
+2. **Priorización conjunta** de los problemas de crecimiento
+3. **Coordinación de especialistas** y dependencias
+4. **Diseño y mejora de procesos** de marketing, ventas y atención
+5. **CRM y automatizaciones comerciales**, si se acuerda
+6. **Capacitación** del equipo del cliente
+7. **Revisión de indicadores comerciales**
+8. **Seguimiento de implementación**, con responsables y fechas
+
+🛑 **Growth Partnership NO equivale a hacerse cargo de toda la empresa.** Sociedad financiera,
+RR.HH. generalista, administración diaria y operaciones ajenas al crecimiento de marca son otro
+proveedor y otro alcance.
+
+---
+
+# La ficha de oferta
+
+**Cada oferta —paquete o módulo— se escribe con la misma ficha.** Es lo que el cliente firma, lo
+que los agentes leen y **el techo de lo que se entrega**. Vive en el folder del cliente
+(`00-onboarding/plan-contratado.md` conserva su nombre y describe nivel, áreas, volumen,
+revisiones y qué queda fuera).
+
+| Campo | Qué dice |
+|---|---|
+| **Resultado que busca** | Qué quiere lograr el cliente con esto |
+| **Entregables exactos** | Qué recibe, pieza por pieza o documento por documento |
+| **Frecuencia y volumen** | Cuántos, cada cuánto |
+| **Rondas de revisión** | Cuántas por entregable |
+| **Qué debe aportar el cliente** | Accesos, materiales, decisiones, tiempos de respuesta |
+| **Qué queda fuera** | Escrito, no sobreentendido |
+| **Duración mínima o plazo** | Cuánto dura el compromiso |
+| **Responsable de Inherent y del cliente** | Un rol de cada lado, por área |
+| **Métricas que se revisan** | Con qué se mide si funciona |
+| **Precio base y factores que lo aumentan** | El precio se arma por volumen y complejidad |
+
+🔑 **Sin ficha, los agentes BLOQUEAN a ese cliente.** Entregar de más rompe el margen; entregar
+de menos rompe la promesa.
+
+---
+
+# Las 12 áreas — el catálogo
+
+**Catálogo interno.** En cada propuesta se eligen solo las áreas necesarias.
+
+### 1 · Estrategia y dirección de crecimiento
+Diagnóstico de marca, oferta, marketing y proceso comercial · objetivo prioritario · audiencias ·
+propuesta de valor y arquitectura de oferta · hipótesis y plan de pruebas · plan de 90 días con
+acciones, responsables y métricas · revisión mensual o trimestral según el nivel.
+🛑 **No incluye:** plan estratégico de toda la empresa, valoración, reestructuración corporativa
+ni consultoría general ilimitada.
+
+### 2 · Marca y posicionamiento
+Investigación de audiencia, categoría y competidores · posicionamiento · personalidad, tono y
+mensajes · naming *(solo en un proyecto específico)* · identidad visual *(logo, tipografía, color,
+recursos)* · guía de marca · adaptación a los canales acordados.
+**Se define por proyecto:** conceptos, rondas, piezas finales y aplicaciones.
+
+### 3 · Dirección creativa y contenido
+Pilares y formatos · calendario editorial · conceptos y campañas · guiones, copies y dirección de
+arte · producción y edición de foto y video · adaptaciones por formato y canal · programación y
+publicación si se contrata · reporte de desempeño.
+**Se cotiza y se limita:** piezas, duración, días de grabación, locaciones, modelos, viajes,
+revisiones y canales.
+
+### 4 · Marketing y canales de demanda
+Elección de canales · plan de campañas · calendario de lanzamientos, promociones y temporadas ·
+SEO, email y redes **solo si están en el alcance** · landing pages según complejidad · pruebas de
+mensajes, ofertas y CTA · reporte de tráfico, leads y conversiones.
+
+### 5 · Publicidad pagada
+Revisión de cuentas y configuración inicial · estructura de campañas y audiencias · anuncios y
+variantes · lanzamiento, optimización y pruebas · tracking y conversiones · reporte.
+**Aparte:** el presupuesto de anuncios, la producción y las herramientas.
+🛑 **Nunca promesa de resultados:** no controlamos precio, inventario, capacidad de atención ni
+cierre del cliente. **Pautar sigue exigiendo el OK del CEO.**
+
+### 6 · PR, afiliados, creadores y eventos *(módulos)*
+**PR:** narrativa, lista de medios, pitch, materiales y outreach. **Creadores y afiliados:**
+estrategia, selección, briefs, negociación y seguimiento. **Eventos:** concepto, objetivo
+comercial, plan de promoción, proveedores y medición.
+**Aparte:** pagos a medios y creadores, producción, espacio, viajes y producto enviado.
+🛑 **No se promete cobertura editorial ni asistencia.**
+
+### 7 · Ventas y conversión
+Mapa del proceso comercial · etapas del pipeline y criterios · guiones de contacto y seguimiento ·
+plantillas de WhatsApp, correo y llamada · recomendaciones de cotización, reservas y pedidos ·
+CRM básico si hay tecnología · capacitación · medición de leads, velocidad de respuesta y
+conversión *(si el cliente comparte datos)*.
+🔑 **Se explicita si Inherent diseña, capacita o también cierra ventas:** son alcances y precios
+distintos.
+
+### 8 · Atención al cliente, retención y comunidad
+Mapa de puntos de contacto · respuestas frecuentes y tono · protocolos de respuesta y escalamiento ·
+sistema de reseñas, referidos y recompra · automatizaciones postventa · medición.
+🛑 **La atención diaria NO va incluida por defecto:** requiere volumen, horarios, responsables y
+cobertura definidos.
+
+### 9 · Tecnología, datos y automatización
+Revisión de herramientas · recomendación de CRM, formularios, analítica y comunicación ·
+configuración de herramientas existentes · automatizaciones · integraciones sencillas ·
+documentación y capacitación · tablero de indicadores.
+**Aparte:** licencias, software a medida, integraciones complejas y mantenimiento continuo.
+
+### 10 · Operación y organización comercial
+Mapa de procesos de marketing y ventas · responsables y aprobaciones · SOPs de los procesos de las
+áreas contratadas · reuniones de seguimiento y tablero · cuellos de botella · recomendaciones de roles.
+🛑 **No incluye:** SOPs de toda la empresa ni gerencia diaria de empleados.
+
+### 11 · Finanzas vinculadas al crecimiento
+Precios, ofertas y paquetes · margen por producto *(si el cliente da costos confiables)* · CAC y
+valor de cliente *(cuando haya datos)* · rentabilidad de campañas y canales · tablero básico ·
+qué ofertas y canales priorizar.
+🛑 **Fuera:** contabilidad, impuestos, auditoría, nómina, estados oficiales, asesoría legal o fiscal.
+
+### 12 · Experto de industria
+Revisión de contexto y supuestos · una sesión de asesoría o revisión de estrategia · comentarios de
+oferta, canal y prácticas · introducciones o apoyo si se acuerda.
+🔑 **Se especifica quién, cuántas horas y qué entrega.** Nunca «acceso a expertos» indefinido.
+
+---
+
+# Qué área cae en qué nivel
+
+**Es una guía de default, ajustable por propuesta.**
+
+| Área | 🧱 Foundation | 📈 Growth | 🤝 Partnership |
+|---|---|---|---|
+| **1 · Estrategia y dirección** | ✅ Diagnóstico, audiencia, oferta y plan a 90 días | ✅ En la profundidad del seguimiento mensual | ✅ |
+| **2 · Marca y posicionamiento** | ✅ Núcleo del proyecto | ✅ En la profundidad del seguimiento mensual | ✅ |
+| **3 · Dirección creativa y contenido** | Parte: dirección creativa y ejemplos de aplicación | ✅ | ✅ |
+| **4 · Marketing y canales de demanda** | ⬜ | ✅ | ✅ |
+| **5 · Publicidad pagada** | ⬜ | ✅ | ✅ |
+| **6 · PR, afiliados, creadores y eventos** | ⬜ | Como módulo | Como módulo |
+| **7 · Ventas y conversión** | ⬜ | ⬜ | ✅ |
+| **8 · Atención, retención y comunidad** | ⬜ | ⬜ | ✅ Según acuerdo |
+| **9 · Tecnología, datos y automatización** | ⬜ | ⬜ | ✅ Según acuerdo |
+| **10 · Operación y organización comercial** | ⬜ | ⬜ | ✅ |
+| **11 · Finanzas vinculadas al crecimiento** | ⬜ | ⬜ | ✅ Según acuerdo |
+| **12 · Experto de industria** | ⬜ | ⬜ | ✅ Según acuerdo |
+
+🔑 **Partnership = todo Growth + las áreas 7 a 12 según acuerdo, y coordina a los especialistas.**
+
+---
+
+# Qué se cotiza aparte
+
+**Costos de terceros — siempre aparte, nunca absorbidos:**
+
+- **Pauta** *(el presupuesto de anuncios es del cliente)*
+- **Producción especial**
+- **Talento**
+- **Locaciones**
+- **Viajes**
+- **Licencias** y software
+- **Mentores o expertos sobre $180 la sesión**
+- Pagos a medios, creadores y proveedores de eventos · producto enviado · espacio
+
+**Y por alcance:** si una cuenta consume más de lo contratado, se cotiza extra o sube de nivel.
+
+🔑 **El precio se arma por volumen y complejidad:** más canales, más producción, más ubicaciones,
+más integración o más responsabilidad de ejecución. **El manual no fija un número de piezas ni un
+precio por nivel.** **La web no muestra precio:** muestra lo que la marca puede ganar y
+lleva a «Hablemos». El precio se da en la conversación, con el alcance delante.
+
+---
+
+# Ejemplos por industria
+
+**La industria no cambia el precio por sí sola.** Cambia las tareas, los conocimientos y los
+canales; la inversión se ajusta por volumen y complejidad.
+
+| Industria | Qué se trabaja | Qué sube el alcance |
 |---|---|---|
-| **Qué promete** | Atención y demanda | **Facturación** |
-| **Qué toca** | Marca, mensaje, contenido, pauta | + **oferta, precio, conversión, canales, operación** |
-| **Contra quién compite** | Agencias de marketing | Consultoría · CMO fraccional |
-| **Crecimiento** | Apunta a crecimiento medible | ✅ **Promete % de crecimiento** |
-| **Sistemas operativos activos** | ⬜ Ninguno | ✅ Growth · Conversion · Operations · Money |
-
-🔷 **La línea Marketing apunta a un crecimiento medible:** *(métrica — slot)*
-
-El mismo +25% de crecimiento llega **al mes 11 en Marketing y al mes 5 en Compound**:
-no es más esfuerzo, es que Growth toca la cadena completa.
-
-**Lo que no se vende es una capa suelta disfrazada de crecimiento.** La línea Marketing vende
-atención **y lo dice en la tarjeta.** El cliente sabe qué compró.
+| **Tienda de Instagram** | Marca, contenido de producto, campañas, seguimiento por WhatsApp | Más productos, grabación frecuente, inventario cambiante, atención diaria, pagos y envíos |
+| **Restaurante** | Campañas locales, contenido en el local, reservas y delivery | Varias sucursales, producción frecuente, horarios, menú amplio, promociones |
+| **B2B** | Posicionamiento, contenido experto, leads y pipeline | Ciclos largos, varios decisores, CRM complejo, eventos |
+| **E-commerce de consumo** | Oferta, contenido de producto, anuncios, conversión | Catálogo, mercados, tienda, logística, afiliados, pruebas intensivas |
 
 ---
 
-# Los cuatro planes, lado a lado
+# Lo que NO se promete
 
-| | 🔷 **MARKETING** | 🔷 **MARKETING PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Precio / mes** | **$950** | **$1,450** | **$2,500** | **$4,200** |
-| **Para quién** | El que está arrancando | El establecido que solo quiere marketing | El que necesita más de lo que ya le funcionó | El que necesita que todo corra sin él |
-| **El boost** | Existir | Sostener presencia en serio | **Escalar sin romperlo** | **Que crezca sin ti** |
-| **Meta a 12 meses** | **1.3x** | **1.45x** | **1.7x** | **2x** |
-| | | | | |
-| **Piezas / mes** *(mínimo)* | **86** | **145** | **145** | **204** |
-| **Videos** *(mínimo — tope)* | **13 — 18** | **18 — 24** | **27 — 36** | **36 — 48** |
-| Estáticos y carruseles | 43 | 72 | 63 | 88 |
-| Stories | 30 | 55 | 55 | 80 |
-| Horas de grabación | **3 h** | 4 h | 6 h | 8 h |
-| Revisiones por pieza | 1 | 2 | 2 | 3 |
-| | | | | |
-| Marca e identidad | ✅ | ✅ | ✅ | ✅ |
-| Mensaje y ángulos | ✅ | ✅ | ✅ | ✅ |
-| Campañas | Meta · TikTok | + Google | + los que apliquen | + los que apliquen |
-| Alianzas con creadores | ⬜ | ✅ | ✅ | ✅ |
-| Community management | ✅ **Básico** | ✅ Todos los días | ✅ + WhatsApp a medida | ✅ + WhatsApp a medida |
-| | | | | |
-| **Tu oferta y tu precio** | ⬜ | ⬜ | ✅ **Rediseñados** | ✅ Sistematizados |
-| **Ventas grandes** | ⬜ | ⬜ | ✅ **Abiertas** | ✅ Canal permanente |
-| **Subir el ticket** | ⬜ | ⬜ | ✅ | ✅ Automatizado |
-| **Que nadie se pierda** | ⬜ | ⬜ | ✅ | ✅ |
-| **SOPs** | ⬜ | ⬜ | **De crecimiento** | **De empresa** |
-| Herramientas a tu medida | ⬜ | ⬜ | 1 / trimestre | **1 / mes** |
-| Estructura corporativa | ⬜ | ⬜ | ⬜ | ✅ |
-| Tus números y márgenes | ⬜ | ⬜ | ⬜ | ✅ |
-| Tu propia IA | ⬜ | ⬜ | ⬜ | ✅ |
-| **Especialista de tu industria** | ⬜ | ⬜ | **Trimestral** | **Mensual** |
-| | | | | |
-| **Somos** | Tu equipo de marketing | Tu equipo creativo completo | **Tu acelerador** | **Tu socio operador** |
+🛑 **No se garantiza el crecimiento ni se asume toda la empresa.** El título *Brand Growth
+Partner* no implica garantizar todo el crecimiento ni hacerse cargo de cada función del negocio.
+**Se promete un camino, un sistema y medición — no un resultado garantizado.** El alcance y las
+responsabilidades se definen por proyecto y por cliente, en la ficha de oferta.
 
-**Y `TAILOR MADE`** — multi-locación, regulatorio, integraciones, proyectos por hito.
-Precio según alcance.
-
-### 🔑 La regla de los 20 minutos
-
-Un video planificado se graba en **20 minutos — si se graba por SETUP y no por pieza.** Cada uno
-deja 5-7 escenas; las de apoyo se recombinan en derivados.
-
-- **El rango es honestidad, no flojera:** material muy scripted no se recombina y cae al
-  **mínimo (1 derivado por cada 2 planificados)**; material suelto llega al **tope (1:1)**.
-- **Se promete el MÍNIMO.** El tope es techo, no promesa: se entrega solo si el material lo permite.
-
-### 🔑 Marketing Pro y Accelerate entregan las mismas 145 piezas
-
-**A propósito.** El salto de $1,450 a $2,500 **no compra más contenido — compra sistemas**:
-tu oferta rediseñada, los canales grandes abiertos, el seguimiento que no se pierde, los SOPs
-y el especialista de tu industria.
-
-**Venderlo como «más piezas» es venderlo mal**, y el cliente lo nota.
-
-### La etapa no es mérito, es realidad
-
-**Lo que puedes pagar dice en qué etapa estás.** Y la etapa dice qué necesitas.
-
-Un negocio que arranca **no necesita SOPs para un equipo de cincuenta personas.** Necesita que lo
-conozcan. **Darle eso hoy sería cobrarle por algo que no va a usar.**
+| ❌ No se promete | Por qué |
+|---|---|
+| **Un resultado de ventas garantizado** | No controlamos precio, inventario, capacidad de atención ni cierre del cliente |
+| **Un número de seguidores** | Es la métrica que menos correlaciona con negocio |
+| **Un múltiplo del negocio** *(«10x»)* | El múltiplo es meta, no resultado |
+| **Cobertura editorial ni asistencia a eventos** | Dependen de terceros |
+| **Hacerse cargo de la empresa** | Sociedad financiera, RR.HH. generalista, administración diaria y operaciones ajenas al crecimiento de marca son otro proveedor |
 
 ---
 
-> # 🌐 LAS CUATRO TARJETAS · TEXTO DE WEB
+> # 🌐 LAS TRES TARJETAS · TEXTO DE WEB
 >
-> **Esto es lo que va publicado, palabra por palabra.**
->
-> 🔒 **Regla dura:** el repo no puede prometer **menos**, **más** ni **distinto** que esto.
-> Si algo interno contradice una línea de acá, **gana la web** y se corrige el repo.
-> Si una línea de acá no tiene capacidad detrás, **se arregla la capacidad — no se borra la línea.**
+> 🔒 **Regla dura:** el repo no puede prometer **menos**, **más** ni **distinto** que lo publicado.
+> Si algo interno contradice una línea publicada, **gana la web** y se corrige el repo.
+> Si una línea publicada no tiene capacidad detrás, **se arregla la capacidad — no se borra la línea.**
+> **La web no lleva precio; lleva «Hablemos».**
 
 ---
 
-## 🔷 MARKETING · $950 / mes
-### *Para el negocio que está arrancando*
+## 🧱 BRAND FOUNDATION
+### *Creamos la marca cool*
 
-> *«Quiero que mi marca se vea como la imagino y que la gente sepa que existo.»*
+> *«Quiero que mi marca se vea como la imagino y que quede claro qué vendo y a quién.»*
 
 | # | Lo que dice la tarjeta |
 |---|---|
-| 1 | **Tu marca construida en serio: identidad, voz y una forma de verse que te dé orgullo** |
-| 2 | **Tu mensaje claro, para que quien te lea te entienda y te quiera** |
-| 3 | **Presencia todos los días: 86 piezas al mes, hechas por gente talentosa** |
-| 4 | **Campañas donde está tu gente, en Meta y TikTok** |
-| 5 | **Respuesta a tus comentarios y mensajes** |
-| 6 | **Un reporte al mes de qué funcionó y qué sigue** |
+| 1 | **Un diagnóstico de tu marca, tu oferta, tu audiencia y tus canales** |
+| 2 | **Posicionamiento claro: por qué te eligen a ti** |
+| 3 | **Tu oferta estructurada: qué vendes, con qué propuesta de valor y qué mensajes** |
+| 4 | **Identidad verbal y visual que te dé orgullo** |
+| 5 | **Dirección creativa con ejemplos de cómo se aplica** |
+| 6 | **Un plan de 90 días y una lista priorizada de próximos trabajos** |
 
-> **Dejas de ser invisible.**
-> **Apuntamos a 1.3x tu facturación en 12 meses.**
+> **Sales con una marca que se entiende, se ve bien y sabe qué sigue.**
 
 ---
 
-## 🔷 MARKETING PRO · $1,450 / mes
-### *Para el negocio establecido que solo quiere marketing*
+## 📈 BRAND GROWTH
+### *Hacemos más cool la marca que ya está*
 
-> *«Ya me conocen. Quiero sostener presencia en serio y no quedarme sin qué publicar.»*
+> *«Ya tengo qué vender. Quiero que más gente me conozca y que mi marca se vea y se mueva mejor.»*
 
 | # | Lo que dice la tarjeta |
 |---|---|
-| 1 | **Todo lo de Marketing** |
-| 2 | **145 piezas al mes, con el doble de video** |
-| 3 | **Campañas en Meta, TikTok y Google** |
-| 4 | **Alianzas con creadores y marcas que ya tienen a tu audiencia** |
-| 5 | **Alguien cuidando tus comentarios y mensajes todos los días** |
-| 6 | **Dos revisiones por pieza** |
+| 1 | **Una reunión de planificación cada mes** |
+| 2 | **Plan de campañas y de contenido del periodo** |
+| 3 | **Contenido producido, hecho por gente talentosa, dentro del volumen que acordamos** |
+| 4 | **Tus canales gestionados y tus campañas configuradas y cuidadas** |
+| 5 | **Pruebas de mensajes, creatividades, ofertas y audiencias** |
+| 6 | **Métricas seguidas y una revisión mensual de qué funcionó y qué sigue** |
 
 > **Tu marca deja de depender de que a alguien se le ocurra qué subir.**
-> **Apuntamos a 1.45x tu facturación en 12 meses.**
 
 ---
 
-## 🟨 ACCELERATE · $2,500 / mes
-### *Para el negocio que necesita más de lo que ya le funcionó*
+## 🤝 GROWTH PARTNERSHIP
+### *Nos metemos full*
 
-> *«Ya funciona, pero llegué a un techo y no quiero romper lo que me sirve.»*
+> *«Quiero que marca, marketing y ventas trabajen como uno solo, y que esto crezca sin que yo esté en todo.»*
 
-**Aquí no venimos a que te conozcan más. Venimos a que vendas más.**
+**Aquí no venimos a que te conozcan más. Venimos a que tu recorrido de cliente funcione.**
 
 | # | Lo que dice la tarjeta |
 |---|---|
-| 1 | **Todo lo de Marketing Pro** |
-| 2 | **Tu oferta y tu precio rediseñados: qué vendes, en qué paquetes y por cuánto** |
-| 3 | **Abrimos los canales grandes: eventos, mayoreo y corporativos** |
-| 4 | **Subimos tu ticket: combos, versiones, membresías y recompra** |
-| 5 | **Nadie que te escribe se queda sin respuesta** |
-| 6 | **Que te encuentren en Google y que tu equipo sepa cerrar** |
-| 7 | **Encontramos qué te funciona de verdad y lo volvemos repetible** |
-| 8 | **Herramientas hechas para ti, una nueva cada trimestre** |
-| 9 | **Un especialista de tu industria cada trimestre** |
+| 1 | **Todo lo de Brand Growth** |
+| 2 | **Diagnóstico de tu recorrido: conoce, compra, vuelve** |
+| 3 | **Procesos de marketing, ventas y atención, diseñados o mejorados** |
+| 4 | **CRM y automatizaciones comerciales, si lo acordamos** |
+| 5 | **Capacitación para tu equipo** |
+| 6 | **Indicadores comerciales revisados y seguimiento con responsables y fechas** |
+| 7 | **Especialistas coordinados, incluido un experto de tu industria si lo acordamos** |
 
 > **Lo que te funcionaba una vez ahora se repite, y ya no depende de que estés tú.**
-> **Apuntamos a 1.7x tu facturación en 12 meses.**
-
----
-
-## 🟨 COMPOUND · $4,200 / mes
-### *Para el negocio que necesita que todo corra sin él*
-
-> *«Quiero que esto crezca sin que yo esté en todo, y que al final del mes quede dinero.»*
-
-**El freno ya no es el mercado: eres tú, tu equipo y tus números.**
-
-| # | Lo que dice la tarjeta |
-|---|---|
-| 1 | **Todo lo de Accelerate, al máximo: 204 piezas al mes** |
-| 2 | **Tu operación más liviana: una herramienta nueva cada mes** |
-| 3 | **Estructura corporativa: organigrama, qué puestos necesitas y quién decide qué** |
-| 4 | **SOPs de toda la empresa: cómo funciona cada área y cómo entra alguien nuevo, sin depender de ti** |
-| 5 | **Tus números claros: qué producto te deja y cuál te quita** |
-| 6 | **Que el crecimiento se sostenga solo: referidos, comunidad y recompra** |
-| 7 | **Tu propia IA, entrenada con tu marca y tus datos** |
-| 8 | **Un especialista de tu industria cada mes** |
-
-> **Te puedes ir una semana y la empresa factura igual, y cierra el mes mejor.**
-> **Apuntamos a 2x tu facturación en 12 meses.**
-
----
-
-# 📈 El múltiplo — cómo se dice y cómo se sostiene
-
-El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → «El múltiplo».
-
-| | Toca | **Techo a 12 meses** | En «x» |
-|---|---|---|---|
-| 🔷 **MARKETING** | atención | +30% | **1.3x** |
-| 🔷 **MARKETING PRO** | atención + volumen | +45% | **1.45x** |
-| 🟨 **ACCELERATE** | oferta + conversión + canales | +70% | **1.7x** |
-| 🟨 **COMPOUND** | todo + que corra sin el dueño | +100% | **2x** |
-
-**En la web va solo el «x». El resto es conversación de llamada.**
-
-## Para la llamada — desde qué facturación tiene sentido cada plan
-
-| | Cuesta / mes | **Se paga solo con** | Factura al menos |
-|---|---|---|---|
-| **MARKETING** | Q7,315 | Q24,383 de venta nueva | **Q98,000** |
-| **MARKETING PRO** | Q11,165 | Q37,217 | **Q149,000** |
-| **ACCELERATE** | Q19,250 | Q64,167 | **Q257,000** |
-| **COMPOUND** | Q32,340 | Q107,800 | **Q431,000** |
-
-*Supuesto: margen del cliente 30%, el plan se paga con 25% de crecimiento.*
-
-> 🔑 **Decirle a un cliente «este plan todavía no es para ti» vende el siguiente mejor que
-> cualquier argumento.** Y es la regla de la etapa aplicada en vivo.
 
 ---
 
 # 💬 Community management — la escalera
 
-**Los cuatro planes atienden comentarios y mensajes. Cambia la profundidad.**
+**Atender comentarios y mensajes depende de lo que diga la ficha.** La atención diaria no va
+incluida por defecto.
 
-| | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| **Responder comentarios y mensajes** | ✅ **Básico:** una IA contesta lo simple *(horarios, ubicación, precios publicados, links)* | ✅ **Todos los días**, todas las redes | ✅ | ✅ |
-| **Pasar al interesado al WhatsApp del cliente** | ✅ | ✅ | ✅ | ✅ |
-| **Moderar y dar seguimiento** *(quién preguntó y qué)* | — | ✅ | ✅ | ✅ |
-| **Auto-DM por palabra clave y embudo de WhatsApp** | — | — | ✅ | ✅ |
-| **Agente de WhatsApp a medida** *(entrenado con la marca: responde, califica, agenda)* | — | — | ✅ | ✅ |
+| | 🧱 Foundation | 📈 Growth | 🤝 Partnership |
+|---|---|---|---|
+| **Protocolos y tono de respuesta** *(área 8)* | ✅ Si el alcance lo incluye | ✅ | ✅ |
+| **Responder comentarios y mensajes** | Según la ficha | ✅ Lo que la ficha defina: canales, horarios y cobertura | ✅ |
+| **Pasar al interesado al WhatsApp del cliente** | — | ✅ | ✅ |
+| **Moderar y dar seguimiento** *(quién preguntó y qué)* | — | Según la ficha | ✅ |
+| **Auto-DM por palabra clave y embudo de WhatsApp** | — | — | ✅ Según acuerdo |
+| **Agente de WhatsApp a medida** *(entrenado con la marca: responde, califica, agenda)* | — | — | ✅ Según acuerdo |
 
-🔑 **Lo simple se contesta en todos los planes. Lo complejo sube por la escalera.**
+🔑 **Lo simple se contesta con la ficha. Lo complejo sube con el nivel.**
 
 ---
 
@@ -261,63 +375,53 @@ El múltiplo es el modelo, no un resultado prometido. Ver `06-ECONOMIA.md` → �
 > Las herramientas se nombran por su función; cuál es la actual está en la tabla de slots de
 > `05-OPERACION.md`. Lo que cada una puede hacer hoy está en `06-ECONOMIA.md` → «Capacidades reales».
 
-## 🔷 Marketing
+## 🧱 Brand Foundation
 
 | Línea publicada | Con qué se entrega |
 |---|---|
-| Tu marca construida en serio | ②B Branding |
-| Tu mensaje claro | ③ Marketing · `mk-mensaje` + ②B Branding `br-voz` |
-| Presencia todos los días — **86 piezas** | ④ Creatividad · ⑥A Diseño gráfico · ⑦ Video Editing + ⑨ Posting · herramienta de publicación |
-| Campañas en Meta y TikTok | ⑩ Ads Management · herramienta de pauta |
-| Respuesta a tus comentarios y mensajes | ⑧ Community Management — nivel básico: la bandeja de mensajes + una IA que contesta lo simple. Lo complejo se pasa al WhatsApp del cliente |
-| Reporte al mes | ③ Marketing `mk-loop` + ⑩ Ads `ad-loop` |
+| Diagnóstico de marca, oferta, audiencia y canales | ① Strategy · `context` + `analysis` |
+| Posicionamiento | ① Strategy `methodology` + ②B Branding `br-territorio` |
+| Oferta estructurada | ① Strategy `methodology` · el CEO aprueba la estrategia |
+| Identidad verbal y visual | ②B Branding · `br-voz` · `br-sistema` · `br-activos` |
+| Dirección creativa y ejemplos de aplicación | ②B Branding `br-aplicacion` + ④ Creatividad |
+| Plan de 90 días y próximos trabajos | ① Strategy |
 
-## 🔷 Marketing Pro — *todo lo de Marketing, más:*
-
-| Línea publicada | Con qué se entrega |
-|---|---|
-| 145 piezas, doble de video | ⑤ Producción 4 h + ⑦ Video Editing |
-| Campañas de Google | ⑩ Ads Management · herramienta de pauta *(búsqueda y Performance Max)* |
-| Alianzas con creadores | Herramienta de scraping · vetting por engagement real |
-| Comentarios y mensajes todos los días | ⑧ Community Management — el operador de agentes hace el setup mensual del agente con la info del cliente, y queda corriendo. Todas las redes, con moderación y seguimiento de quién preguntó |
-| Dos revisiones por pieza | ⑥A Diseño gráfico `gd-composicion` + ②B Branding `br-guardian` → QA final del COO |
-
-## 🟨 Accelerate — *todo lo de Marketing Pro, más:*
+## 📈 Brand Growth
 
 | Línea publicada | Con qué se entrega |
 |---|---|
-| Tu oferta y tu precio rediseñados | ② Growth · `gr-oferta` · **Pilar 1 ejecutando** |
-| Abrimos los canales grandes | ② Growth · `gr-canales-grandes` · **Pilar 2 ejecutando** |
-| Subimos tu ticket | ② Growth · `gr-upsells` · **Pilar 3** |
-| Nadie se queda sin respuesta | ② Growth `gr-conversion` + auto-DM por palabra clave, embudo de WhatsApp y **agente de WhatsApp a medida**, entrenado con la marca: responde, califica y agenda |
-| Que te encuentren en Google | Pauta de búsqueda + contenido guiado por keywords |
-| Que tu equipo sepa cerrar | Guiones y entrenamiento de closing — **Conversion OS** · el CEO |
-| Lo volvemos repetible | **SOPs de crecimiento** — la auditoría levanta, el CEO y el COO coordinan, el COO implementa con agentes |
-| Una herramienta cada trimestre | ② Growth `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
-| Especialista cada trimestre | Red de mentores — el mentor de la industria hace la auditoría · rubro Especialista · techo **$144** por sesión |
+| Reunión mensual y plan de campañas y contenido | ③ Marketing · `mk-calendario` · `mk-campana` |
+| Contenido producido | ④ Creatividad · ⑤ Producción · ⑥A Diseño gráfico · ⑦ Video Editing, según la ficha |
+| Canales gestionados y publicación | ⑨ Posting · herramienta de publicación |
+| Campañas configuradas y gestionadas | ⑩ Ads Management · herramienta de pauta · gate del CEO |
+| Pruebas de mensajes y creatividades | ③ Marketing + ④ Creatividad `cr-loop` + ⑩ Ads `ad-loop` |
+| Métricas y revisión mensual | ③ Marketing `mk-loop` + ⑩ Ads `ad-loop` |
+| Atención de comentarios y mensajes *(si la ficha lo incluye)* | ⑧ Community Management · la bandeja de mensajes y la ficha de respuestas del cliente |
+| Alianzas con creadores *(módulo)* | Herramienta de scraping · vetting por engagement real |
 
-## 🟨 Compound — *todo lo de Accelerate, más:*
+## 🤝 Growth Partnership — *todo lo de Brand Growth, más:*
 
 | Línea publicada | Con qué se entrega |
 |---|---|
-| 204 piezas | ⑤ Producción 8 h + ⑥A Diseño gráfico + ⑦ Video Editing |
-| Una herramienta cada **mes** | ② Growth `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
-| Estructura corporativa | La cubre la auditoría · el CEO y el COO coordinan lo que sale de ahí |
-| SOPs de toda la empresa | **Operations OS completo** — la auditoría levanta, el CEO y el COO coordinan, el COO implementa con agentes *(documentación y entrenamiento)* |
-| Tus números claros | ② Growth `gr-numeros` · **Money OS** — el CEO con Strategy |
-| Crecimiento que se sostiene solo | ⑧ Community Management + automatización |
-| Tu propia IA | Construida sobre el folder del cliente — el CEO define el alcance, el operador de agentes la construye *(rubro Operador)* |
-| Especialista mensual | Red de mentores — el mentor de la industria hace la auditoría · rubro Especialista · techo **$180** por sesión |
+| Diagnóstico del recorrido | ② Growth · `gr-encargo` · `gr-conversion` |
+| Oferta, canales grandes y subir el ticket | ② Growth · `gr-oferta` · `gr-canales-grandes` · `gr-upsells` |
+| Procesos de marketing, ventas y atención | **Operations OS** de las áreas contratadas — el especialista audita, el CEO y el COO coordinan, el COO implementa con agentes |
+| CRM y automatizaciones comerciales | ② Growth `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye |
+| Capacitación del equipo | **Conversion OS** · guiones y entrenamiento — el CEO |
+| Indicadores comerciales | ② Growth `gr-numeros` · **Money OS** — el CEO con Strategy |
+| Experto de industria | Red de mentores — rubro Especialista · quién, horas y entrega especificados |
 
-> 🔑 **«Tus números claros» no es un CFO contratado.** Lo entrega **Money OS** con el CEO y
-> Strategy. **No se promete una persona — se promete el número.**
+> 🔑 **«Finanzas vinculadas al crecimiento» no es un CFO contratado.** Lo entrega **Money OS**
+> con el CEO y Strategy. **No se promete una persona — se promete el análisis.**
 
 ---
 
-# 🛡️ Las garantías — qué se compromete y con qué se sostiene
+# 🛡️ Los compromisos — qué se compromete y con qué se sostiene
 
 > **El principio:** no se garantiza un resultado que no controlamos.
-> **Se garantiza lo que la ingeniería inversa vuelve CALCULABLE y el volumen vuelve REPETIBLE.**
+> **Se compromete lo que la ingeniería inversa vuelve CALCULABLE y el volumen vuelve REPETIBLE,
+> y solo con las condiciones verificadas.** Es un compromiso de camino y de proceso, no una
+> garantía de crecimiento.
 
 ## La cadena que lo hace posible
 
@@ -331,24 +435,17 @@ Meta financiera
 ```
 
 **Cada división es una tasa.** Si se conocen las tasas, el resultado deja de ser esperanza y
-pasa a ser aritmética. **Lo que es aritmética se puede comprometer.**
-**Sin las tasas medidas del cliente, la garantía es una apuesta — y no se compromete.**
+pasa a ser aritmética. **Sin las tasas medidas del cliente, no se compromete.**
 
 ---
 
-## 🛡️ GARANTÍA 1 · Que el contenido funcione
+## 🛡️ COMPROMISO 1 · Que el contenido funcione *(Brand Growth y Partnership)*
 
-### Cómo se enuncia
 > **Si a mitad de ciclo el contenido no está llegando al umbral, el resto del ciclo se
 > reemplaza por lo que sí está funcionando — sin costo adicional.**
 
-### El umbral, definido
-**`la mediana de engagement de la propia cuenta en los últimos 90 días`**
-
-**Nunca un número absoluto.** Un post con 10,000 vistas no dice nada sin su base.
-**Un outlier solo existe contra su propia mediana.**
-
-### El mecanismo
+**El umbral:** `la mediana de engagement de la propia cuenta en los últimos 90 días`.
+**Nunca un número absoluto.** Un outlier solo existe contra su propia mediana.
 
 | Paso | Qué pasa | Con qué |
 |---|---|---|
@@ -357,190 +454,98 @@ pasa a ser aritmética. **Lo que es aritmética se puede comprometer.**
 | **3 · La revisión del 20** | Se lee pieza por pieza contra el umbral | Herramienta de scraping · posts de la cuenta |
 | **4 · La redirección** | Lo que queda del ciclo **se reemplaza por variantes del patrón que ganó** | ④ Creatividad `cr-loop` → ③ Marketing `mk-calendario` |
 
-### 🔑 Por qué esta garantía cuesta Q0
+🔑 **No se reponen piezas: se redirige el volumen que todavía no se produjo.** Al día 20 queda
+~1/3 del ciclo sin producir; esas piezas ya están dentro del alcance contratado.
+🛑 **Una cuenta sin 90 días de historia** no tiene línea base: se vende sin este compromiso y se dice.
 
-**No se reponen piezas: se redirige el volumen que todavía no se produjo.**
-Al día 20 queda ~1/3 del ciclo sin producir. **Esas piezas ya están presupuestadas** — lo
-único que cambia es **qué** se produce con ellas.
+## 🛡️ COMPROMISO 2 · Alcance *(con presupuesto de pauta)*
 
-**Una garantía de «reposición gratis» costaría margen.** Esta cuesta cero, y solo es posible
-porque tenemos volumen y una revisión a mitad de ciclo.
+> **X personas nuevas alcanzadas dentro del público definido, al mes — a un CPM declarado.**
 
-### Qué la rompe
-🛑 **Una cuenta sin 90 días de historia.** Sin línea base no hay umbral, y sin umbral no hay
-garantía. **Se vende sin esta garantía y se dice.**
+**El alcance no se espera: se compra.** `presupuesto ÷ CPM × 1,000`. El CPM real de la categoría
+sale de la biblioteca de anuncios; la compra la ejecuta ⑩ Ads Management.
+> *«X personas a un CPM de hasta Q__. Si la plataforma sube más de 25%, se ajusta el número o el
+> presupuesto — y se avisa antes, no después.»*
 
----
+**Engagement:** se expresa como **rango** del benchmark de la categoría, nunca como número.
+🛑 **Sin presupuesto de pauta aprobado por escrito no hay compromiso de alcance.** La inversión
+publicitaria **nunca** está incluida — es del cliente, aparte.
 
-## 🛡️ GARANTÍA 2 · Alcance
+## 🛡️ COMPROMISO 3 · Ventas atribuidas *(solo Growth Partnership)*
 
-### Cómo se enuncia
-> **X personas nuevas alcanzadas dentro del público definido, al mes.**
-
-### 🔑 El alcance no se espera: se compra
-
-**Es la única de las tres que es una compra, no un resultado.** Con presupuesto, el alcance
-es aritmética: `presupuesto ÷ CPM × 1,000`.
-
-| Lo que hace falta | Con qué |
-|---|---|
-| **El CPM real de la categoría** *(no el promedio global)* | Herramienta de scraping · biblioteca de anuncios con detalle → **reach y demografía de los ads de la competencia** |
-| Ejecutar la compra | ⑩ Ads Management · herramienta de pauta |
-| Que el público sea el correcto | ⑩ Ads `ad-estructura` |
-
-### La cláusula que protege el margen
-**El compromiso se escribe a un CPM declarado.**
-> *«X personas a un CPM de hasta Q__. Si la plataforma sube más de 25%, se ajusta el número
-> o el presupuesto — y se avisa antes, no después.»*
-
-### Engagement — se compromete como RANGO, no como número
-**No se compra.** Se predice con el benchmark de la categoría y se expresa así:
-> *«entre X% y Y%, que es el rango de tu categoría medido este trimestre.»*
-
-### Qué la rompe
-🛑 **Sin presupuesto de pauta no hay garantía de alcance.** La inversión publicitaria
-**nunca** está incluida — es del cliente, aparte.
-
----
-
-## 🛡️ GARANTÍA 3 · Ventas
-
-### Cómo se enuncia
 > **Ventas atribuidas a nuestro trabajo, con un piso declarado.**
 
-### 🔑 El performance fee ES la garantía
+**El performance fee es el modelo:** 10% de las ventas atribuidas. Si no hay ventas atribuidas,
+no hay fee. **Solo existe en Growth Partnership y solo con atribución limpia.**
 
-**No hace falta inventar una penalidad: ya está en el modelo.**
-Cobramos **10% de las ventas atribuidas**. Si no hay ventas, **no hay fee.**
-
-| | |
+| Palanca | Quién |
 |---|---|
-| **Quien lo paga** | El cliente, solo sobre lo que **efectivamente vendió** |
-| **Nuestro riesgo** | Ingreso, no costo. **Una garantía que no puede hundir el margen** |
-| **Qué alinea** | Ganamos de hacerles dinero, literalmente |
+| **La oferta** — qué se vende y a qué precio | ② Growth `gr-oferta` |
+| **La conversión** — que lo que llega se cobre | ② Growth `gr-conversion` |
+| **La atribución** — saber cuál venta fue nuestra | ⑩ Ads `ad-atribucion` |
 
-### Por qué solo existe en la línea 🟨 Growth
-
-**Para comprometer ventas hay que controlar las tres palancas:**
-
-| Palanca | Quién | Entra desde |
-|---|---|---|
-| **La oferta** — qué se vende y a qué precio | ② Growth `gr-oferta` | 🟨 Accelerate |
-| **La conversión** — que lo que llega se cobre | ② Growth `gr-conversion` | 🟨 Accelerate |
-| **La atribución** — saber cuál venta fue nuestra | ⑩ Ads `ad-atribucion` | 🟨 Accelerate |
-
-🛑 **La línea 🔷 Marketing no toca ninguna de las tres.** Por eso **no promete ventas** —
-y por eso tampoco tiene performance fee. **Es la misma razón.**
-
-### Qué la rompe
-🛑 **Atribución instalada DESPUÉS del primer gasto.** Lo que no se midió desde el día 1
-no es atribuible, y lo que no es atribuible no se cobra ni se promete.
+🛑 **Brand Foundation y Brand Growth no controlan las tres palancas:** no comprometen ventas y no
+tienen performance fee. 🛑 **Atribución instalada DESPUÉS del primer gasto** = no se cobra ni se promete.
 
 ---
 
-# 📊 La escalera de garantías = la escalera de precios
+# 🚦 El pre-flight del compromiso — las tres condiciones
 
-| Plan | Garantiza |
-|---|---|
-| 🔷 **MARKETING** | Volumen y proceso · **que el contenido funcione** |
-| 🔷 **MARKETING PRO** | + **alcance** *(con presupuesto de pauta)* |
-| 🟨 **ACCELERATE** | + **ventas atribuidas** con piso declarado |
-| 🟨 **COMPOUND** | + que se sostenga **sin el dueño** |
-
-> 🔑 **Esto es lo que justifica el salto de precio mejor que cualquier lista de entregables.**
-> **No compra más piezas: compra una promesa más grande.**
-
----
-
-# 🚦 El pre-flight de la garantía — las tres condiciones
-
-**Antes de comprometer nada, las tres se verifican. Si falta una, se vende SIN esa garantía
-y se dice en la propuesta.**
+**Antes de comprometer nada, las tres se verifican. Si falta una, se vende SIN ese compromiso y
+se dice en la propuesta.**
 
 | # | Condición | Si falta |
 |---|---|---|
-| **1** | **90 días de historia de la cuenta** | ⛔ Sin garantía de contenido. Se ofrece medirla el primer mes y comprometerla desde el segundo |
-| **2** | **Presupuesto de pauta aprobado por escrito** | ⛔ Sin garantía de alcance |
-| **3** | **Atribución instalada antes del primer gasto** | ⛔ Sin garantía de ventas ni performance fee |
-
-**Una garantía sin su condición verificada no es una garantía: es una deuda.**
+| **1** | **90 días de historia de la cuenta** | ⛔ Sin compromiso de contenido. Se mide el primer mes y se compromete desde el segundo |
+| **2** | **Presupuesto de pauta aprobado por escrito** | ⛔ Sin compromiso de alcance |
+| **3** | **Atribución instalada antes del primer gasto** | ⛔ Sin compromiso de ventas ni performance fee |
 
 ---
 
-# Lo que NUNCA se garantiza
-
-| | Por qué |
-|---|---|
-| ❌ **Un número de seguidores** | Es la métrica que menos correlaciona con negocio |
-| ❌ **Un múltiplo del negocio** *(«10x»)* | El múltiplo es meta, no resultado |
-| ❌ **Ventas en la línea 🔷 Marketing** | No tocamos oferta, conversión ni atribución |
-
----
-
-# 🔒 Uso interno — cómo se activa la metodología por plan
+# 🔒 Uso interno — cómo se activa la metodología por nivel
 
 > **Los pilares no cambian. Son nuestra metodología.**
-> **Lo que cambia es el verbo:** Growth **ejecuta** en Accelerate y **sistematiza** en Compound.
-> **La línea Marketing no activa pilares** — ejecuta atención.
+> **Lo que cambia es el verbo:** Foundation **sienta la base** · Growth **ejecuta atención y
+> demanda** · Partnership **integra los cuatro sistemas.**
 
 ## Los sistemas operativos
 
-| | 🔷 **MARKETING** | 🔷 **MARKETING PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Ejecución de marketing** | ✅ | ✅ Mayor volumen | ✅ | ✅ Máximo |
-| **Growth OS** | ⬜ | ⬜ | **Los 3 pilares, ejecutando** | Los 3, sistematizados |
-| **Conversion OS** | ⬜ | ⬜ | ✅ Completo | ✅ |
-| **Operations OS** | ⬜ | ⬜ | **SOPs de crecimiento** | ✅ **SOPs de empresa** |
-| **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
-
-🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra en la
-línea Marketing porque **antes no hay nada que perder**; Operations porque **no se puede
-documentar un proceso que todavía no funcionó**; Money porque **sin transacciones el margen por
-línea es teoría.** **Meterlo antes es cobrar por algo que no se puede usar.**
-
-## Los pilares · Low Ticket
-
-| Pilar | 🔷 **Marketing / Pro** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
+| | 🧱 **FOUNDATION** | 📈 **GROWTH** | 🤝 **PARTNERSHIP** |
 |---|---|---|---|
-| **1 · Better your Offer** | ⬜ *Solo el mensaje, no la oferta* | **Escalarla** — más ángulos y canales sin romper lo que ya vende | **Sistematizarla** — que se replique en nuevas sedes o líneas |
-| **2 · Big sales** | ⬜ | **Abrir y vender** uno o dos | **Volverlos canal permanente**, con proceso y equipo |
-| **3 · Upsells** | ⬜ | **Diseñar y lanzar** | **Sistema operando solo** |
+| **Growth OS** | Sienta la base: audiencia, posicionamiento, oferta | Ejecuta atención y demanda | Los 3 pilares, integrados |
+| **Conversion OS** | ⬜ | Lo de los canales contratados | ✅ Completo |
+| **Operations OS** | ⬜ | ⬜ | Procesos y SOPs de las áreas contratadas |
+| **Money OS** | ⬜ | ⬜ | Finanzas vinculadas al crecimiento |
 
-## Los pilares · High Ticket
+🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra antes
+porque **no hay nada que perder**; Operations porque **no se puede documentar un proceso que
+todavía no funcionó**; Money porque **sin transacciones el margen por línea es teoría.**
+**Meterlo antes es cobrar por algo que no se puede usar.** Detalle en `02-METODO.md`.
 
-| Pilar | 🔷 **Marketing / Pro** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|
-| **1 · Better your Offer** | ⬜ *Solo el mensaje, no el empaque* | **Empaquetar y construir autoridad** sobre esa oferta | **Que la autoridad sea del sistema**, no solo del fundador |
-| **2 · Cuentas grandes** | ⬜ | **Diseñar y cerrar** retainers y contratos anuales | **Acuerdos marco · licitaciones · white label** |
-| **3 · Expansión** | ⬜ | **Cross-sell y renovación** | **Programa de referidos y expansión sistemático** |
+## Qué departamentos corren por nivel
 
-> 🔑 **La diferencia entre «mensaje» y «oferta».**
-> **Mensaje** es cómo se cuenta lo que ya vendes — eso lo hace la línea Marketing.
-> **Oferta** es qué vendes, en qué paquetes y a qué precio — eso solo lo toca Growth.
-> **Confundirlos es regalar el trabajo caro dentro del plan barato.**
+> 🔑 **Los niveles son límites, no pipelines.** La tabla dice qué **puede** entrar en cada
+> nivel. **El pipeline de cada cliente se arma con los módulos de su ficha** y se ajusta cuando
+> cambia lo que necesita; no hay un pipeline único.
 
-### 🔑 La diferencia de SOPs entre Accelerate y Compound
-
-| | Qué documenta | Para qué |
+| Nivel | Núcleo | Según la ficha |
 |---|---|---|
-| **Accelerate** | **Cómo repetimos lo que ya funciona** — el proceso de venta que sí cierra, la campaña que sí rindió | **Para poder hacerlo diez veces** |
-| **Compound** | **Cómo funciona la empresa sin el fundador** — decisiones, criterios, puestos, entrega | **Para que no dependa de él** |
+| 🧱 **Foundation** | ① Strategy · ②B Branding | ④ Creatividad para dirección creativa y aplicaciones |
+| 📈 **Growth** | ③ Marketing · ④ Creatividad | ⑤ Producción · ⑥A Diseño gráfico · ⑦ Video Editing · ⑨ Posting · ⑩ Ads — según los canales contratados |
+| 🤝 **Partnership** | Todo Growth + ② Growth | ⑧ Community Management · especialista · experto de industria |
 
-**No es el mismo trabajo. Uno escala lo que funciona; el otro libera al dueño.**
+## Mensaje y oferta
 
-### Capacidades y mentores
+> 🔑 **Mensaje** es cómo se cuenta lo que ya vendes — lo trabaja Brand Growth.
+> **Oferta** es qué vendes, en qué paquetes y a qué precio — se trabaja en Foundation y en
+> Partnership. **Confundirlos es regalar el trabajo caro dentro del nivel barato.**
 
-| | 🔷 Marketing | 🔷 Marketing Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| **Capacidades** | Marketing · Creative · Branding | + Production | + Tech · Consulting | **Las seis** |
-| **Mentor** | ⬜ | ⬜ | 1/trimestre · techo **$144** | **1/mes** · techo **$180** |
+## Experto de industria
 
-**El mentor es el diferenciador de la línea Growth.** No entra en Marketing: ahí no hay
-estrategia que acompañar, y meterlo rompe el margen del plan barato.
-
-🔑 **Arriba del techo, el mentor va como add-on facturado al cliente, con margen.** No se absorbe
-nunca. **Y la membresía de comunidad se paga anual y es de Inherent** — sirve a todos los clientes
-de esa industria. Ver `04-MERCADO.md`.
+**Es exclusivo de Growth Partnership.** Se especifica **quién, cuántas horas y qué entrega.**
+Arriba de **$180 la sesión** va como add-on facturado al cliente, con margen: no se absorbe nunca.
+**La membresía de comunidad se paga anual y es de Inherent** — sirve a todos los clientes de esa
+industria. Ver `04-MERCADO.md`.
 
 ---
 
@@ -552,26 +557,26 @@ de esa industria. Ver `04-MERCADO.md`.
 | "Implementación de CRM" | **"Nadie que te escriba se queda sin respuesta"** |
 | "Documentación de SOPs" | **"Lo que te funcionó una vez, ahora se repite"** |
 | "Análisis de unit economics" | **"Sabes cuál producto te deja y cuál te quita"** |
-| "86 piezas de contenido al mes" | **"Presencia todos los días, hecha por gente talentosa"** |
+| "Paquete de piezas de contenido al mes" | **"Presencia todos los días, hecha por gente talentosa"** |
 | "Optimización de estructura corporativa" | **"Ahorras donde se puede ahorrar"** |
 | "Estrategia de comunidad" | **"Gente que te sigue porque le importas"** |
 | "Rediseño de pricing" | **"Qué vendes, en qué paquetes y por cuánto"** |
+| "Te garantizamos el crecimiento" | **"Te damos un camino, un sistema y cómo medirlo"** |
 
 **Se le habla al emprendedor de lo que desea, no de lo que la industria dice que necesita.**
 **Los sistemas son cómo lo cumplimos. No qué le vendemos.**
 
 ---
 
-# 🔄 Cómo se mueve un cliente entre planes
+# 🔄 Cómo se mueve un cliente entre niveles
 
 | Movimiento | Qué lo dispara |
 |---|---|
-| **Marketing → Marketing Pro** | Se quedó sin volumen o quiere video en serio. **Sigue sin necesitar sistemas.** |
-| **Marketing Pro → Accelerate** | **Hay tráfico y no se cobra.** Llegan mensajes, se pierden; la oferta no cierra. |
-| **Accelerate → Compound** | Funciona, pero todo pasa por el dueño. |
+| **Foundation → Brand Growth** | La marca está definida y hace falta ejecutar: contenido, campañas, canales. **La lista priorizada del cierre dice por dónde empezar.** |
+| **Brand Growth → Growth Partnership** | **Hay tráfico y no se cobra.** Llegan mensajes y se pierden; hace falta conectar marca con ventas, atención y sistemas comerciales. |
+| **Foundation → Growth Partnership** | La empresa ya vende y necesita el recorrido completo desde el arranque. |
 
 🔑 **El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
-Ver `06-ECONOMIA.md` → «La estrategia de bundle».
 
-**El salto de Marketing Pro a Accelerate se vende con el diagnóstico, no con el catálogo:**
-*«estás pagando por atención que no se está cobrando.»*
+**El salto a Growth Partnership se vende con el diagnóstico, no con el catálogo:**
+*«estás generando atención que no se está cobrando.»*

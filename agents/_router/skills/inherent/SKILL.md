@@ -24,7 +24,7 @@ description: >
 |---|---|
 | **Trabajo para un cliente** *(ideas, estrategia, piezas, pauta…)* | Se enruta. Seguí con el paso 2 |
 | **Mantenimiento del repo** *(cambiar precios, reglas, docs, una skill, el CLAUDE.md)* | No se enruta. Se imprime `ENRUTAMIENTO → MANTENIMIENTO` y se trabaja directo sobre el repo |
-| **Una pregunta sobre la empresa** *(«¿cuánto cuesta Pro?», «¿qué incluye Accelerate?»)* | No se enruta. Se responde desde `inherent/` |
+| **Una pregunta sobre la empresa** *(«¿qué incluye Brand Growth?», «¿qué cambia en Growth Partnership?»)* | No se enruta. Se responde desde `inherent/` |
 
 ---
 
@@ -33,18 +33,18 @@ description: >
 ```
 ENRUTAMIENTO
 Pedido: [el pedido en una línea, con las palabras del usuario]
-Cliente: [clients/<cliente>/ · ⛔ falta]  ·  Plan: [🔷 Mkt / 🔷 Pro / 🟨 Accel / 🟨 Comp / ⬜ Tailor Made · ⛔ falta]
+Cliente: [clients/<cliente>/ · ⛔ falta]  ·  Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida · ⛔ falta]
 Departamento: [n · nombre]  →  Orquestador: [/skill]
 Del prompt entra como INPUT: [datos, fechas, piezas, ideas, referencias que trae el usuario]
 Del prompt CHOCA con el workflow: [qué pide saltarse o hacer distinto · «nada»]
 → PASA A [/skill] | BLOQUEADO: [qué falta]
 ```
 
-🔑 **El `Plan:` se LEE, no se adivina:** sale de `clients/<cliente>/00-onboarding/plan-contratado.md`,
+🔑 **El `Nivel:` se LEE, no se adivina:** sale de la ficha de oferta, `clients/<cliente>/00-onboarding/plan-contratado.md`,
 donde lo anota ① Strategy. **Si el archivo no existe, va `⛔ falta`** — y el orquestador del
-departamento bloquea, porque el plan es el techo de todos.
+departamento bloquea, porque el alcance contratado es el techo de todos.
 
-⬜ **Un Tailor Made no se cuestiona: se sigue.** Su `plan-contratado.md` declara **qué incluye** y
+⬜ **Un alcance a medida no se cuestiona: se sigue.** Su `plan-contratado.md` declara **qué incluye** y
 **su pipeline** —qué departamentos corren, en qué orden y a qué nivel—. Se enruta según ese
 pipeline. **Un departamento que no está en su pipeline no corre para ese cliente.**
 
@@ -63,7 +63,7 @@ cliente no empieza con `ENRUTAMIENTO`, se saltó el router.
 |---|---|---|
 | Comprensión, contexto, análisis, ingeniería inversa, la estrategia | ① Strategy | `context` → `analysis` → `reverse-engineering` → `methodology` *(según `agents/01-strategy/brain/WORKFLOW.md`)* |
 | Identidad, voz, paleta, tipografía, guía de marca, «¿esto es de marca?» | ②B Branding | `/branding` |
-| Oferta, precio **del cliente**, paquetes, canales grandes, upsells, conversión, números | ② Growth | `/growth` — 🔷 **ligero:** elige qué ofertas que ya existen se empujan · 🟨 **completo** · ⬜ lo que diga su pipeline |
+| Oferta, precio **del cliente**, paquetes, canales grandes, upsells, conversión, números | ② Growth | `/growth` — en **Brand Growth** corre **ligero:** elige qué ofertas que ya existen se empujan · en **Growth Partnership** corre **completo** · a medida: lo que diga su pipeline |
 | Plan del ciclo, pilares, campañas, calendario, canales, mensaje | ③ Marketing | `/marketing` |
 | Ideas, conceptos, BIG IDEA, hooks, copy, shot list, swipe file, plan de contenido | ④ Creatividad | `/creatividad` |
 | Grabar, locaciones, talento, jornadas, call sheet, presupuesto de rodaje | ⑤ Producción | `/produccion` |
@@ -87,7 +87,7 @@ declara el segundo como siguiente paso. **Nunca se corren dos departamentos mezc
 | **Una preferencia que cabe en el método** *(«que sea divertido», «priorizá TikTok»)* | ✅ Entra como **restricción** del brief |
 | **Un atajo** *(«no hagas el brief», «dame directo 10 hooks», «saltate el gate»)* | 🛑 **Choque.** Se dice cuál capa o gate se salta, se ofrece correrla, y **se sigue el workflow** |
 | **Un formato distinto al entregable** | 🛑 **Choque.** El entregable es el del `WORKFLOW.md`. Se puede **agregar** un resumen, no reemplazar |
-| **Algo que el plan del cliente no incluye** | 🛑 **Se bloquea.** El plan es el techo. Ver `inherent/06-ECONOMIA.md` |
+| **Algo que la ficha de oferta del cliente no incluye** | 🛑 **Se bloquea.** El alcance contratado es el techo. Ver `inherent/06-ECONOMIA.md` |
 
 ### 🟡 La única forma de saltarse el método
 

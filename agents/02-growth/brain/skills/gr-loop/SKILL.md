@@ -40,12 +40,12 @@ corrección es opuesta.**
 | Preguntan y no compran | **Conversión.** Es de acá |
 
 🛑 **Cambiar la oferta cuando el problema era la pauta destruye lo que funcionaba.** Es el error
-que más caro sale, y es exactamente lo que Accelerate promete evitar: *«escalar lo que ya
-funciona, sin perderlo»*.
+que más caro sale, y es exactamente lo que se promete evitar: *«hacer más cool la marca que ya está»*, sin
+perder lo que funcionaba.
 
 ## 3 · El performance fee
 
-**Acá se mide lo que lo habilita.**
+**Acá se mide lo que lo habilita** *(solo en Growth Partnership y con atribución limpia)*.
 
 | | |
 |---|---|
@@ -61,7 +61,7 @@ funciona, sin perderlo»*.
 | Un canal grande no avanzó en dos ciclos | Se cierra o se cambia el ángulo |
 | Un escalón de la escalera no se compró nunca | **Sale** |
 | El tiempo de respuesta no bajó | 🔴 La automatización no se encendió o no funciona |
-| El margen de una línea está negativo | 🔴 Se escala a `gr-numeros` *(🟨)* o al CEO |
+| El margen de una línea está negativo | 🔴 Se escala a `gr-numeros` *(Growth Partnership)* o al CEO |
 
 ## 5 · ⚠️ Sin datos no se concluye
 

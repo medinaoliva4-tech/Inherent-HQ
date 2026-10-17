@@ -20,7 +20,7 @@ description: >
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
 > `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se dice
 > cuál, se ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* o que
-> el pipeline del ⬜ Tailor Made del cliente ya lo declare.
+> el pipeline del alcance a medida del cliente ya lo declare.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 > **En una frase:** ④ Creatividad **dirige**; Producción **hace que exista**. Creatividad entrega la
@@ -47,7 +47,7 @@ archivo exacto**. 🛑 **Nunca se duplica un archivo de otro departamento: se ci
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Campañas: [nombres]
 ④ Creatividad: Excel del ciclo cerrado [✅/⬜] · material=video: [n] · material=foto: [n] · escenas totales: [n]
 ③ Marketing fechas de preparación [✅/⬜] · ②B Branding [✅/⚠️] · ① Strategy capacidad y presupuesto [✅/⚠️]
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · horas: [n] · sesiones: [n] · videos planificados: [n]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida] · horas: [n] · sesiones: [n] · videos planificados: [n]
 Techo: días posibles [n] · capacidad [n piezas] · presupuesto de referencia [monto / ⚠️ SIN DATOS]
 Skills a correr: [x] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
@@ -223,7 +223,7 @@ caduca. **Convenciones:** 🟢 confirmado · 🟡 gestionando · 🔴 en riesgo 
 **Checks transversales del handoff. Ninguno se omite en silencio, y el ciclo no se libera sin este bloque completo.**
 
 - [ ] El **PRE-FLIGHT** está emitido con **PASS o BLOQUEADO**, y cada skill corrió **con el output de la anterior**, sin faltantes improvisados
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, en lo que declara **su pipeline**
+- [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es a medida, en lo que declara **su pipeline**
 - [ ] 🛑 **El Excel del ciclo de ④ Creatividad está cerrado**, y solo se tomaron las filas con **`material = video`** o **`material = foto`**
 - [ ] 🛑 **Toda fila con `material = foto` tiene su foto planificada** en `plan-de-fotos.csv` — y si no entró en la hora, su plan B está decidido y escrito *(frame del rodaje, o a ③ Marketing como alcance)*
 - [ ] El **pedido al cliente** está redactado en `presupuesto.md` con fecha y responsable, listo para que se lo haga llegar 00 Account (Secretaria)

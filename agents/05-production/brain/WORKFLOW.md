@@ -27,76 +27,69 @@ banco o derivados.
 
 ---
 
-## 0 · El plan contratado — cuánto y a qué profundidad
+## 0 · El alcance contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
-`clients/<cliente>/00-onboarding/plan-contratado.md`:
-🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+**Lo primero de cada ciclo: leer la ficha de oferta del cliente.** Lo anota ① Strategy al arrancar en
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(nivel, áreas, volumen, revisiones y qué queda
+fuera)*. Los niveles: **Brand Foundation** · **Brand Growth** · **Growth Partnership** · alcance a medida.
 
-- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
-  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
-  «El desglose por tarea». **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+- 🛑 **Sin ficha anotada, el departamento no arranca:** `BLOQUEADO — falta la ficha de oferta`.
+- 🛑 **El alcance contratado es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar
+  de menos rompe la promesa de la propuesta.
+- Los números salen de la **ficha**: horas y días de grabación, sesiones, formatos, cantidades,
+  locaciones. **Si cambia la ficha, cambia el ciclo** — este documento no manda sobre ella.
 
-| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Horas de grabación** | **3 h** | **4 h** | **6 h** | **8 h** |
-| **Sesiones (jornadas) por mes** | **1** | **2** | **2** | **3** |
-| **Sesión de fotógrafo** | 1 h | 1 h | 1 h | 1 h |
-| **Videos planificados** a capturar *(20 min c/u)* | 9 | 12 | **18** | 24 |
-| **Material base** para estáticos y carruseles | para 43 | para 72 | para 63 | para 88 |
+| Qué cambia | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Qué hace ⑤ Producción** | Solo lo que la ficha pida para los ejemplos de aplicación de la marca | **Rodajes del volumen acordado:** formatos, cantidades, días de grabación y revisiones que dice la ficha | Igual que Brand Growth, más lo que la ficha agregue para ventas, atención o tecnología |
+| **Horas de grabación y sesiones por mes** | Las de la ficha | **Las de la ficha** | **Las de la ficha** |
+| **Sesión de fotógrafo** | Si la ficha la incluye | Si la ficha la incluye | Si la ficha la incluye |
+| **Videos planificados** a capturar *(20 min c/u)* | Los de los ejemplos acordados | Los que cierran las horas de la ficha | Los que cierran las horas de la ficha |
+| **Material base** para estáticos y carruseles | Para los ejemplos acordados | Para las piezas que fija la ficha | Para las piezas que fija la ficha |
 
 **Cómo se lee:**
 
-- **Las horas y sesiones del plan son el techo de realidad de la Capa 0.** Si la capacidad que
+- **Las horas y sesiones de la ficha son el techo de realidad de la Capa 0.** Si la capacidad que
   declara el cliente es menor, **manda la menor.** Lo que no entre es **decisión de alcance**: va a
   ③ Marketing con números, no se devuelve a ④ Creatividad.
 - 🔑 **La regla de los 20 minutos.** Un video planificado se graba en 20 minutos **si se graba por
   SETUP y no por pieza.** Cada uno deja 5-7 escenas, y las de apoyo se recombinan en derivados.
   **Agrupar por setup no es una optimización: es lo que hace que las horas alcancen.**
-- ⚠️ **🟨 Accelerate es la jornada más apretada.** Captura **50% más video que Pro** *(18 contra 12)*
-  en las **mismas 2 sesiones**. La consolidación de la Capa 2 ahí no es opcional.
+- ⚠️ **Cuando la ficha pide mucho video en pocas sesiones, la jornada es apretada.** La consolidación de
+  la Capa 2 ahí no es opcional.
 
 #### Los márgenes de rodaje — referencia
 
-**Las horas contratadas son exactamente el tiempo de cámara, sin un minuto de margen.** A 20 minutos
-por video planificado, los cuatro planes dan justo:
-
-| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| Videos × 20 min | 9 × 20 = **3 h** | 12 × 20 = **4 h** | 18 × 20 = **6 h** | 24 × 20 = **8 h** |
-| Horas contratadas | 3 h | 4 h | 6 h | 8 h |
-| **Margen que queda** | **0** | **0** | **0** | **0** |
+**Las horas de la ficha son exactamente el tiempo de cámara, sin un minuto de margen**, salvo que la
+ficha declare otra cosa. A 20 minutos por video planificado, las horas alcanzan justo para los videos
+planificados.
 
 Los márgenes de la Capa 5 —**montaje inicial 60-90 min · cambio de setup de luz 30-45 min · cambio
-de locación 60 min + traslado · desmontaje 45 min**— son **referencia**, no bloqueo. **No caben en
-ninguna de las cuatro columnas**, y en 🔷 Marketing se comen la jornada entera antes de grabar la
+de locación 60 min + traslado · desmontaje 45 min**— son **referencia**, no bloqueo. **No caben dentro
+de las horas de cámara**, y en una ficha de pocas horas se comen la jornada entera antes de grabar la
 primera toma.
 
 🛑 **Por eso se declaran los márgenes que se usan como ajuste marcado en `plan-de-rodaje.md` — nunca
 en silencio, y nunca asumiendo que el día alcanza.**
 
-#### Lo que el plan NO cubre
+#### Lo que el alcance NO cubre
 
-- 🛑 **Nunca graba el cliente.** Las horas de grabación son el piso de costo de cada plan
-  (`inherent/06-ECONOMIA.md` → «📦 El volumen»).
-- **Modelos, props y locaciones son costo del cliente, aparte** (`inherent/06-ECONOMIA.md` → «⛔ Lo
-  que nunca está incluido»). `presupuesto.md` separa siempre **lo que cubre el plan** de **lo que
-  paga el cliente**.
-- **Una locación adicional es add-on, no parte del plan** (`inherent/06-ECONOMIA.md` → «Extras»).
+- 🛑 **Nunca graba el cliente.** Las horas de grabación son las de la ficha.
+- **Modelos, props, talento, locaciones y viajes son costo de terceros, aparte** (`inherent/06-ECONOMIA.md`).
+  `presupuesto.md` separa siempre **lo que cubre el alcance** de **lo que paga el cliente**.
+- **Una locación adicional y la producción especial son extra, no parte del alcance** (`inherent/06-ECONOMIA.md`).
 
-### ⬜ Tailor Made — se sigue su pipeline
+### Alcance a medida — se sigue su pipeline
 
 Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
 secciones: **Qué incluye** y **Su pipeline** —qué departamentos corren, en qué orden, qué entrega
-cada uno y a qué nivel—. **El departamento sigue ese pipeline** igual que un plan estándar: no lo
-bloquea por no ser un plan de lista ni lo cuestiona por precio.
+cada uno y a qué nivel—. **El departamento sigue ese pipeline** igual que una ficha estándar: no lo
+bloquea por ser a medida ni lo cuestiona por precio.
 
 - **Lo que el pipeline declara para ⑤ Producción —horas, sesiones, videos— es el techo del ciclo.**
 - 🛑 **Si ⑤ Producción no está en su pipeline, no corre para ese cliente.**
 - **Cambia el pipeline, nunca el método:** la trazabilidad y las devoluciones son iguales en todos
-  los planes.
+  los niveles.
 
 ---
 
@@ -205,7 +198,7 @@ doc no muestra desglose por campaña: muestra el total.** El desglose aparece so
 > acá.** Si no está en `plan-de-fotos.csv`, nadie la va a tomar — y ⑥A Diseño gráfico se queda
 > esperando una imagen que nunca se planificó.
 
-**La hora de fotógrafo existe en los cuatro planes** *(§ 0)*. Esta sección es lo que la convierte en
+**La hora de fotógrafo existe cuando la ficha la incluye** *(§ 0)*. Esta sección es lo que la convierte en
 trabajo planificado en vez de una hora que aparece en el contrato y en ningún día.
 
 ### Las 11 columnas de `plan-de-fotos.csv`
@@ -589,7 +582,7 @@ estimado que falló tres ciclos seguidos deja de ser estimación y pasa a ser da
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Campañas: [nombres]
 ④ Creatividad: Excel del ciclo cerrado [✅/⬜] · filas material=video: [n] · material=foto: [n]
 ③ Marketing fechas de preparación [✅/⬜] · ②B Branding [✅/⚠️] · ① Strategy capacidad y presupuesto [✅/⚠️]
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · horas: [n] · sesiones: [n] · videos planificados: [n]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida] · horas: [n] · sesiones: [n] · videos planificados: [n]
 Techo: días posibles [n] · capacidad [n piezas] · presupuesto de referencia [monto / ⚠️ SIN DATOS]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```

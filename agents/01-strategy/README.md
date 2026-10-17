@@ -5,7 +5,7 @@
 ## Propósito
 **Ingeniería inversa desde la meta financiera hasta la pieza.** Incluye mejorar la oferta y el
 posicionamiento. Decide qué se activa de las seis capacidades y con qué profundidad, según el
-plan contratado.
+alcance contratado (la ficha de oferta).
 
 ## Acciones — lo que puede hacer
 
@@ -36,24 +36,23 @@ Growth, Tecnología y Sistemas. **Y cada ciclo, el brief de comunicación** *(un
 vende, a quién, qué queremos que haga y sienta, cómo se comunica y qué inspiración buscar)* —
 ③ Marketing no planea sin él.
 
-## Qué entrega según el plan
+## Qué entrega según el nivel
 
-> **El plan contratado es el techo.** Nunca se promete arriba de esta tabla —
-> ver `inherent/06-ECONOMIA.md`.
+> **El alcance contratado (la ficha de oferta del cliente) es el techo.** Nunca se promete arriba
+> de la ficha — ver `inherent/06-ECONOMIA.md`.
 
-| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Qué promete el plan** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
-| **Verbo** | ⛔ *los pilares no corren* · Growth ligero | ⛔ *los pilares no corren* · Growth ligero | **Ejecuta** | **Sistematiza** |
-| **Pilar 1 · Oferta** | ⬜ *solo el mensaje* | ⬜ *solo el mensaje* | Escalarla / autoridad | Sistematizarla |
-| **Pilar 2 · Canales grandes** | ⬜ | ⬜ | Abrir y vender | Canal permanente |
-| **Pilar 3 · Upsells / Expansión** | ⬜ | ⬜ | Diseñar y lanzar | Sistema operando solo |
-| **Sistemas activados** | ⬜ Ninguno | ⬜ Ninguno | Growth · Conversion · Operations *(SOPs de crecimiento)* | **Los cuatro** · SOPs de empresa · Money OS |
-| **Briefs que entrega** | Branding · Marketing · Creative · Growth *(ligero)* | + Producción | Growth completo · + Tecnología | + Sistemas · estructura corporativa |
-| **Revisión del 20** | ✅ | ✅ | ✅ | ✅ |
+| | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Qué es** | Proyecto con inicio y cierre: **la estrategia ES el proyecto** | Colaboración mensual | Colaboración integrada |
+| **Qué hace Strategy** | Diagnóstico · audiencia prioritaria · posicionamiento · estructura de oferta · plan a 90 días | Posicionamiento y mensaje; revisión mensual de resultados y prioridades | Todo lo de Growth + diagnóstico del recorrido y priorización conjunta de problemas de crecimiento |
+| **② Growth** | ⬜ No corre como departamento *(la oferta se trabaja dentro del proyecto)* | **Ligero:** elige cuáles de las ofertas que ya existen se empujan | **Profundidad completa:** oferta, canales grandes, upsells, conversión |
+| **Briefs que entrega** | Branding · Creative *(dirección creativa y aplicaciones)* · lista priorizada de próximos trabajos | Branding · Marketing · Creative · Growth *(ligero)* · Producción según la ficha | Growth completo · Tecnología · Sistemas según la ficha |
+| **Revisión del 20** | n/a *(el proyecto cierra con su entrega)* | ✅ | ✅ |
 
-🔑 **En la línea Marketing, Strategy entrega posicionamiento y mensaje — no toca la oferta.**
-Qué vende, en qué paquetes y a qué precio **solo se trabaja desde Accelerate.**
+🔑 **En Brand Growth, Strategy entrega posicionamiento y mensaje — no rediseña la oferta.**
+Qué vende, en qué paquetes y a qué precio se trabaja **dentro de Brand Foundation** *(el proyecto
+donde se construye)* **y en la profundidad completa de Growth Partnership.**
+🔑 **No todos los clientes compran todas las áreas:** la ficha de oferta dice cuáles corren.
 
 ---
 

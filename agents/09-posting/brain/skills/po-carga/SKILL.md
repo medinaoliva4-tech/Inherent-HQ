@@ -189,7 +189,7 @@ programada, en la cuenta y a la fecha y hora del calendario. Si quedó corrida, 
 lee su estado con `posts_get`.
 
 **Una story que Zernio no puede programar** va a la lista aparte para subir a mano, con su fecha y su
-hora (`WORKFLOW.md` §0). Sigue siendo una pieza entregada del plan.
+hora (`WORKFLOW.md` §0). Sigue siendo una pieza entregada de la ficha.
 
 ## 6 · El registro — `calendario-de-publicacion.csv`
 

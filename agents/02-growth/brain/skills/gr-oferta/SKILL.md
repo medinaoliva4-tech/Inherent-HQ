@@ -2,12 +2,12 @@
 name: gr-oferta
 description: >
   Capa 1 de ② Growth — el Pilar 1, Better your Offer. Trabaja qué se vende, cómo se empaqueta y
-  a qué precio, con la profundidad que el plan paga: en la línea Marketing corre ligero —elige
-  cuáles de las ofertas que ya existen se empujan y con qué objetivo, sin cambiarlas—, se escala
-  en Accelerate y se sistematiza en Compound. Compara contra lo que la categoría ofrece y cobra, y
+  a qué precio, con la profundidad que el alcance incluye: en Brand Growth corre ligero —elige
+  cuáles de las ofertas que ya existen se empujan y con qué objetivo, sin cambiarlas—; en Growth
+  Partnership se escala y se sistematiza. Compara contra lo que la categoría ofrece y cobra, y
   nunca cambia un precio sin el cliente, porque es su negocio. Úsala cuando pidan "mejorá la
   oferta", "qué oferta empujamos este mes", "cómo lo empaquetamos", "cuánto deberíamos cobrar",
-  "la gente dice que es caro", "qué vendemos exactamente". En Accelerate y Compound la oferta
+  "la gente dice que es caro", "qué vendemos exactamente". En Growth Partnership la oferta
   nueva se escala al CEO antes de llevarla al cliente: es comprometer precio, no una parada.
 ---
 
@@ -16,24 +16,28 @@ description: >
 | | |
 |---|---|
 | **Consume** | § El encargo · lo que la categoría ofrece y cobra |
-| **Produce** | 🔷 **`clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md`** · 🟨 la sección **§ La oferta** de `motor-de-crecimiento.md` |
+| **Produce** | Brand Growth: **`clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md`** · Growth Partnership: la sección **§ La oferta** de `motor-de-crecimiento.md` |
 
-## 1 · La profundidad la da el plan
+## 1 · La profundidad la da el alcance
 
-| 🔷 **Marketing / Pro — LIGERO** | 🟨 **Accelerate — escalarla** | 🟨 **Compound — sistematizarla** |
+| **Brand Growth — LIGERO** | **Growth Partnership — escalarla** | **Growth Partnership — sistematizarla** *(si la ficha lo pide)* |
 |---|---|---|
 | La oferta llega como está: se elige cuáles se empujan y con qué objetivo | Que la misma oferta soporte más volumen sin romperse | Que se pueda explicar, cotizar y entregar sin el fundador |
 | | *High ticket:* empaquetar y construir autoridad | *High ticket:* autoridad del sistema |
 
+> En **Brand Foundation** esta capa no corre como departamento: la estructura de oferta *(productos o
+> servicios, propuesta de valor, mensajes)* sale de la estrategia de ① Strategy, y los cuatro ángulos
+> de §2 son su método de referencia.
+
 > 🔑 **La diferencia entre MENSAJE y OFERTA — es la línea que separa los dos productos.**
 > **Mensaje** = cómo se cuenta lo que ya vende → lo hace ③ Marketing con ②B Branding, en los
-> cuatro planes.
-> **Oferta** = qué vende, en qué paquetes y a qué precio → **solo acá, desde Accelerate.**
-> **Confundirlos regala el trabajo caro dentro del plan barato.**
+> tres niveles.
+> **Oferta** = qué vende, en qué paquetes y a qué precio → **solo en Brand Foundation y en la profundidad completa de Growth Partnership.**
+> **Confundirlos regala el trabajo caro dentro del alcance barato.**
 
-## 1b · 🔷 Ligero — qué ofertas se empujan este ciclo
+## 1b · Ligero (Brand Growth) — qué ofertas se empujan este ciclo
 
-**En la línea Marketing no se trabaja la oferta: se elige entre lo que ya se vende.**
+**En Brand Growth no se trabaja la oferta: se elige entre lo que ya se vende.**
 
 | Paso | Qué se hace |
 |---|---|
@@ -42,8 +46,8 @@ description: >
 | **3 · Con qué objetivo** | Uno por oferta, **en una métrica** — es lo que ⑩ Ads pauta |
 | **4 · Cuáles no, y por qué** | En una línea cada una |
 
-🛑 **No se cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide, es upsell
-a 🟨 Accelerate. **En modo ligero no corren los ángulos, la investigación ni el precio (§2 a §4),
+🛑 **No se cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide, es la profundidad
+de Growth Partnership o un proyecto de Brand Foundation. **En modo ligero no corren los ángulos, la investigación ni el precio (§2 a §4),
 y no hay nada que escalar:** no se toca el precio y no sale al cliente.
 
 **Escribe `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md`** — plantilla en
@@ -107,7 +111,7 @@ solo por precio.
 | **E · El precio** | Propuesta · por qué · impacto en margen · riesgo |
 | **F · Cómo se dice** | En lenguaje de cliente, con el tono de ②B Branding |
 
-## 7 · 🔴 La oferta nueva se escala al CEO — 🟨
+## 7 · 🔴 La oferta nueva se escala al CEO — Growth Partnership
 
 **Llevarle al cliente una oferta o un precio nuevo es comprometer precio: se escala al CEO antes de
 llevarla.** No es una parada: Growth sigue con las capas que vienen. Después, **el cliente decide.**
@@ -116,11 +120,11 @@ llevarla.** No es una parada: Growth sigue con las capas que vienen. Después, *
 
 ## 8 · Checklist
 
-- [ ] La profundidad corresponde al **plan contratado**
-- [ ] 🔷 **No se tocó** qué se vende, sus paquetes ni su precio · cada oferta empujada tiene **objetivo en una métrica**
-- [ ] 🟨 Los **cuatro ángulos** están trabajados
-- [ ] 🟨 La investigación de categoría tiene **fuente**
-- [ ] 🟨 El precio viene con **razonamiento, margen y riesgo**
-- [ ] 🟨 Sin costo por línea, **no se propuso precio**
+- [ ] La profundidad corresponde al **alcance contratado**
+- [ ] Brand Growth: **no se tocó** qué se vende, sus paquetes ni su precio · cada oferta empujada tiene **objetivo en una métrica**
+- [ ] Growth Partnership: los **cuatro ángulos** están trabajados
+- [ ] Growth Partnership: la investigación de categoría tiene **fuente**
+- [ ] Growth Partnership: el precio viene con **razonamiento, margen y riesgo**
+- [ ] Growth Partnership: sin costo por línea, **no se propuso precio**
 - [ ] Nada promete algo fuera de «Capacidades reales»
-- [ ] 🟨 La oferta nueva **se escaló al CEO** antes de llegar al cliente
+- [ ] Growth Partnership: la oferta nueva **se escaló al CEO** antes de llegar al cliente

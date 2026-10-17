@@ -5,7 +5,7 @@ así que el pipeline se lee de arriba abajo.
 
 ```
 agents/<NN>-<área>/
-├── README.md              qué hace, qué acciones tiene y QUÉ ENTREGA SEGÚN EL PLAN
+├── README.md              qué hace, qué acciones tiene y QUÉ ENTREGA SEGÚN EL NIVEL
 └── brain/
     ├── WORKFLOW.md        cómo trabaja, de 0 a 100 — incluye cómo entrega
     └── skills/
@@ -56,20 +56,33 @@ día para producir · 🔴 **Día 20:** presentación al cliente. Cada `WORKFLOW
 
 ---
 
-## 🔑 Cada agente sabe qué entrega según el plan
+## 🔑 Cada agente sabe qué entrega según el nivel
 
-**Todas las fichas tienen la misma tabla: qué le toca en 🔷 Marketing, 🔷 Marketing Pro,
-🟨 Accelerate y 🟨 Compound.**
+**Todas las fichas tienen la misma tabla: qué le toca en Brand Foundation, Brand Growth y
+Growth Partnership.** El detalle de volumen, formatos, canales y revisiones sale de la **ficha de
+oferta del cliente** *(`clients/<cliente>/00-onboarding/plan-contratado.md`)*, no de este manual.
 
-🔑 **Primero se lee la LÍNEA, después el plan.** 🔷 Marketing promete atención · 🟨 Growth
-promete facturación. **En la línea Marketing, ② Growth corre ligero:** elige qué ofertas que ya
-existen se empujan, sin cambiar la oferta.
+🔑 **El pipeline se arma por cliente.** La tabla siguiente es el **techo de cada nivel**, no un
+pipeline fijo: cada cliente corre los módulos que su ficha incluye, y se ajusta cuando cambia lo
+que necesita.
 
-⬜ **Un Tailor Made no se cuestiona:** su `plan-contratado.md` declara qué incluye y su pipeline, y
-los agentes lo siguen.
+🔑 **Qué departamentos pueden correr por nivel:**
 
-**El plan contratado es el techo, no una sugerencia.** Un agente que entrega de más rompe el
-margen; uno que entrega de menos rompe la promesa publicada.
+| Nivel | Departamentos |
+|---|---|
+| **Brand Foundation** | ① Strategy y ②B Branding como núcleo · ④ Creatividad para la dirección creativa y los ejemplos de aplicación |
+| **Brand Growth** | ③ Marketing · ④ Creatividad · ⑤ Producción · ⑥A Diseño gráfico · ⑦ Video Editing · ⑨ Posting · ⑩ Ads — según los canales contratados |
+| **Growth Partnership** | Todo Brand Growth, más ② Growth · ⑧ Community Management y el especialista |
+
+**Las escaleras por nivel:** cada departamento escala lo que hace según el nivel y según lo que
+diga la ficha. **Un departamento que la ficha no incluye no corre para ese cliente.**
+
+⬜ **Un alcance a medida no se cuestiona:** su `plan-contratado.md` declara qué incluye y su
+pipeline, y los agentes lo siguen.
+
+**El alcance contratado (la ficha de oferta) es el techo, no una sugerencia.** Un agente que
+entrega de más rompe el margen; uno que entrega de menos rompe la promesa de la propuesta. **Sin
+ficha, el agente bloquea ese cliente.**
 
 ---
 
@@ -85,7 +98,7 @@ margen; uno que entrega de menos rompe la promesa publicada.
 
 ## Cómo se construye uno
 
-1. **`README.md` del área** — propósito, las acciones con su MCP, **qué entrega según el plan**, y qué falta.
+1. **`README.md` del área** — propósito, las acciones con su MCP, **qué entrega según el nivel**, y qué falta.
 2. **`brain/WORKFLOW.md`** — el proceso de 0 a 100, con su auto-revisión, sus gates y sus escalaciones
    marcados, y una sección de **lo que este agente NO hace**.
 3. **`brain/skills/README.md`** — cuándo se invoca cada skill dentro del workflow.

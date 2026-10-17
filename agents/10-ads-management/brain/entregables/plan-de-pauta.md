@@ -9,7 +9,7 @@
 | | |
 |---|---|
 | **Objetivo** | *En una métrica, con número y plazo* |
-| **Qué se vende** | De ② Growth — 🔷 `ofertas-a-empujar.md` · 🟨 § La oferta |
+| **Qué se vende** | De ② Growth — Brand Growth: `ofertas-a-empujar.md` · Growth Partnership: § La oferta |
 | **Presupuesto total** | |
 | **Diario** | |
 | **Si se agota antes** | |
@@ -21,7 +21,7 @@
 ### Atribución y capacidad
 | | |
 |---|---|
-| **Qué está puesto** | 🔷 Pixel de Meta · 🟨 CAPI + GA4 |
+| **Qué está puesto** | El que pide la ficha · Growth Partnership: CAPI + GA4 |
 | **Qué falta** | |
 | **¿Puede entregar el volumen?** | ⚠️ |
 

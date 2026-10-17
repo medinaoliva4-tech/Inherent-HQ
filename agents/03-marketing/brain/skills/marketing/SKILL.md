@@ -16,7 +16,7 @@ description: >
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
 > `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se dice cuál, se
 > ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* — o que el
-> pipeline de un ⬜ Tailor Made ya lo declare en `plan-contratado.md`.
+> pipeline de un alcance ⬜ a la medida ya lo declare en `plan-contratado.md`.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 **Si no sabés qué skill usar, es esta.**
@@ -24,7 +24,7 @@ description: >
 ## 1 · Pre-flight — se verifica antes de todo
 
 ```
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · slots: [n] de [techo del plan] · campañas: [n] de [techo]
+Nivel: [Brand Growth / Growth Partnership / ⬜ a la medida] · slots: [n] de [techo de la ficha] · campañas: [n] de [techo]
 ```
 
 | Input | De | Si falta |
@@ -34,7 +34,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | Capacidad declarada y cuentas que existen | ① Strategy | 🛑 **BLOQUEADO** |
 | Tono, territorio, activos distintivos | ②B Branding | 🟡 Se usan si existen. No bloquea |
 | Qué ofertas se empujan este ciclo | ② Growth · `07-oferta-y-ventas/ofertas-a-empujar.md` | 🟡 Se usa si existe. No bloquea |
-| **El plan contratado del cliente** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
+| **El alcance contratado del cliente** *(la ficha)* | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo |
 | Qué ángulos rindieron en pauta | ⑩ Ads | 🟡 Se sigue sin eso |
 
 🛑 **Sin estrategia no hay plan.** Lo que está en `clients/<cliente>/01-estrategia/` es la
@@ -67,6 +67,6 @@ control de calidad lo hace el CEO en persona. El CEO solo frena el flujo en ① 
 
 ## Control de calidad del orquestador
 
-- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **se sigue Su pipeline**
+- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Nivel:`** completa
+- [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ a la medida, **se sigue Su pipeline**
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla

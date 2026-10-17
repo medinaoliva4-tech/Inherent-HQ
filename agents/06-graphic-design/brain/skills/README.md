@@ -31,7 +31,7 @@ detalle de cada herramienta.
 
 ## La regla que hace viable el departamento
 
-🛑 **168 piezas no se diseñan una por una.** Se arma el sistema de plantillas, se prueba el
+🛑 **Las piezas de un ciclo no se diseñan una por una.** Se arma el sistema de plantillas, se prueba el
 molde en la Capa 1, y las piezas son ejecución.
 
 **Si una pieza pide una decisión nueva en la Capa 3, la plantilla está mal.**

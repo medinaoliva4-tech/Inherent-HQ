@@ -31,11 +31,10 @@ sabe qué falló.
 
 ## 2 · El techo de variantes
 
-| 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|
-| hasta **20** | hasta **30** | hasta **35** | hasta **50** |
+**El techo de variantes por campaña es el que fija la ficha de oferta.** Si la ficha no lo fija,
+se declara y se escala al CEO; no se inventa el número.
 
-🛑 **Si hacen falta más, se pide a ⑦ Video Editing dentro del techo** — no se pauta con menos de 3
+🛑 **Si hacen falta más, se pide a ⑦ Video Editing dentro del techo de la ficha** — no se pauta con menos de 3
 por campaña.
 
 ## 3 · 🔴 Todo claim va validado
@@ -128,5 +127,5 @@ legal y además nos mete en su código visual — justo lo contrario de lo que �
 - [ ] **Todo claim está validado por ②B Branding**
 - [ ] Ninguna pieza clonó el **creativo** de un competidor
 - [ ] Cada pieza va a la campaña de **su temperatura**
-- [ ] El total está dentro del **techo del plan**
+- [ ] El total está dentro del **techo de la ficha**
 - [ ] **El CEO aprobó el GATE 1**

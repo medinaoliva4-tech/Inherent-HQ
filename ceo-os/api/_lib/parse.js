@@ -24,6 +24,7 @@ export function tables(md) {
 }
 
 const findRow = (t, label) => t.rows.find((r) => clean(r[0]).toLowerCase().startsWith(label.toLowerCase()));
+// Ids de los planes del esquema anterior: solo para leer tablas de costos viejas; el manual de hoy habla de niveles (public/js/levels.js).
 const PLAN_IDS = ['marketing', 'pro', 'accelerate', 'compound'];
 
 export function parseEconomia(md) {

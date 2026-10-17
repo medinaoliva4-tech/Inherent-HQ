@@ -1,11 +1,11 @@
 ---
 name: gr-encargo
 description: >
-  Capa 0 de ② Growth — identifica la división, lee el plan contratado y declara exactamente qué
+  Capa 0 de ② Growth — identifica la división, lee el alcance contratado y declara exactamente qué
   pilares y sistemas se activan en este cliente. Carga los unit economics de ① Strategy, que
   son el piso de cualquier decisión de oferta o precio, y declara qué queda afuera y por qué.
-  Úsala cuando pidan "arrancá growth de X", "qué podemos hacer con este plan", "es low o high
-  ticket", "qué pilar está roto". Bloquea si falta la división, los unit economics o el plan.
+  Úsala cuando pidan "arrancá growth de X", "qué podemos hacer con este alcance", "es low o high
+  ticket", "qué pilar está roto". Bloquea si falta la división, los unit economics o la ficha de alcance.
 ---
 
 # Capa 0 · Encargo — qué se activa y qué no
@@ -45,65 +45,57 @@ description: >
 | No hay costo por línea | `⚠️ SIN DATOS` · **no se cambia precio** · se pide a ① Strategy |
 | El cliente lo estima de memoria | `[dice el cliente, sin verificar]`. **Se usa con esa etiqueta** |
 
-## 3 · Qué activa el plan
+## 3 · Qué activa el alcance
 
 **Se copia del WORKFLOW y se escribe cuál es el caso de este cliente.**
 
-| | 🔷 Marketing / Pro | 🟨 Accelerate | 🟨 Compound |
+| | Brand Foundation | Brand Growth | Growth Partnership |
 |---|---|---|---|
-| Pilar 1 · Oferta | 🟡 **Ligero** — qué ofertas se empujan | ✅ | ✅ |
-| Pilar 2 · Canales grandes | ⛔ | ✅ | ✅ |
-| Pilar 3 · Upsells | ⛔ | ✅ | ✅ |
-| Conversion OS | ⛔ | ✅ | ✅ |
-| Herramienta | ⛔ | 1/trimestre | 1/mes |
-| Money OS | ⛔ | ⬜ | ✅ |
+| Pilar 1 · Oferta | ⬜ *(sale en ① Strategy)* | 🟡 **Ligero** — qué ofertas se empujan | ✅ |
+| Pilar 2 · Canales grandes | ⬜ | ⛔ | ✅ |
+| Pilar 3 · Upsells | ⬜ | ⛔ | ✅ |
+| Conversion OS | ⬜ | ⛔ | ✅ |
+| Herramienta | ⬜ | ⛔ | Según la ficha |
+| Money OS | ⬜ | ⛔ | Según la ficha |
 
-🔷 **Sobre un plan de la línea Marketing, Growth corre ligero:** solo se elige qué ofertas que ya
+**En Brand Growth, Growth corre ligero:** solo se elige qué ofertas que ya
 existen se empujan (`gr-oferta`). **No se cambia qué se vende, en qué paquetes ni a qué precio.**
-⬜ **Tailor Made:** se copia lo que declara su pipeline en `plan-contratado.md`.
+⬜ **A la medida:** se copia lo que declara su pipeline en `plan-contratado.md`.
 
 ---
 
-## 3b · 🔴 ¿El cliente califica para su plan?
+## 3b · 🔴 ¿El cliente puede pagar su alcance con el resultado del alcance?
 
-**Se cruza la facturación del cliente contra el piso desde el que su plan tiene sentido.**
+**Se cruza la facturación del cliente contra el precio base de su ficha y los factores que lo
+aumentan** *(más canales, más producción, más ubicaciones, más integración o más responsabilidad
+de ejecución)*. El precio se arma por volumen y complejidad, no por industria.
 
-| Plan | Factura al menos |
-|---|---|
-| 🔷 Marketing | **Q98,000** / mes |
-| 🔷 Marketing Pro | **Q149,000** |
-| 🟨 Accelerate | **Q257,000** |
-| 🟨 Compound | **Q431,000** |
-
-*Supuesto: margen del cliente 30%, el plan se paga con 25% de crecimiento.
-Ver `inherent/03-OFERTA.md` → «Desde qué facturación tiene sentido cada plan».*
-
-### Si factura menos que el piso
+### Si la facturación no sostiene el alcance
 
 🔴 **Se declara en el encargo y se escala al CEO.** No se calla.
 
 | Qué se escribe | Ejemplo |
 |---|---|
-| El número real contra el piso | *«Factura Q21,600/mes. El piso de Accelerate es Q257,000.»* |
-| Qué significa | *«El plan cuesta casi lo que factura. No se va a pagar solo.»* |
-| La recomendación | *«Bajar a Marketing Pro, o declarar que el cliente acepta el riesgo.»* |
+| El número real contra el precio del alcance | *«Factura [X]/mes. El precio base de la ficha es [Y].»* |
+| Qué significa | *«El alcance cuesta casi lo que factura. No se va a pagar solo.»* |
+| La recomendación | *«Reducir el alcance a las áreas necesarias, o declarar que el cliente acepta el riesgo.»* |
 
 ⚠️ **No se bloquea el trabajo** — el cliente ya firmó. **Se bloquea el silencio.**
-**Un cliente que no puede pagar el plan con el resultado del plan se va a ir**, y es mejor
+**Un cliente que no puede pagar el alcance con el resultado del alcance se va a ir**, y es mejor
 saberlo el mes 1 que el mes 6.
 
 ## 4 · Qué queda afuera — y se dice
 
-🛑 **Lo que el plan no activa se escribe, no se omite.** Es lo que el account manager necesita
+🛑 **Lo que el alcance no activa se escribe, no se omite.** Es lo que el account manager necesita
 para responder sin prometer de más.
 
 **Y se escribe en lenguaje de cliente:**
 
 | ❌ Interno | ✅ Al cliente |
 |---|---|
-| *«Pilar 3 no se activa en la línea Marketing»* | *«Los upsells los trabajamos cuando ya haya gente comprando una vez»* |
-| *«Growth no rediseña la oferta en tu plan»* | *«Tu plan trabaja que te vean y te entiendan. Rediseñar qué vendes y a qué precio es el siguiente paso»* |
-| *«Money OS es Compound»* | *«El análisis de margen por producto entra cuando haya suficientes transacciones para que el dato sea real»* |
+| *«Pilar 3 no se activa en Brand Growth»* | *«Los upsells los trabajamos cuando ya haya gente comprando una vez»* |
+| *«Growth no rediseña la oferta en tu alcance»* | *«Tu alcance trabaja que te vean y te entiendan. Rediseñar qué vendes y a qué precio es el siguiente paso»* |
+| *«Money OS es de Growth Partnership»* | *«El análisis de margen por producto entra cuando haya suficientes transacciones para que el dato sea real»* |
 
 ## 5 · Qué escribe
 
@@ -114,13 +106,13 @@ para responder sin prometer de más.
 | **A · La división** | Cuál, copiada de ① Strategy |
 | **B · El pilar roto** | Cuál es el cuello, según ① Strategy |
 | **C · Unit economics** | Precio, costo y margen por línea · CAC · frecuencia · capacidad |
-| **D · Qué activa el plan** | La tabla, con el caso de este cliente marcado |
+| **D · Qué activa el alcance** | La tabla, con el caso de este cliente marcado |
 | **E · Qué queda afuera** | En lenguaje de cliente |
 
 ## 6 · Checklist
 
 - [ ] La división viene de **① Strategy**, no se eligió acá
 - [ ] Los unit economics están, o marcados `⚠️ SIN DATOS`
-- [ ] Está claro **qué pilares activa el plan**
+- [ ] Está claro **qué pilares activa el alcance**
 - [ ] Lo que queda afuera está **escrito en lenguaje de cliente**
 - [ ] Si la capacidad de entrega es el cuello, **está declarado arriba de todo**

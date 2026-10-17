@@ -35,7 +35,7 @@
 
 ## § El cierre
 
-| | Techo del plan | Entregado |
+| | Techo de la ficha | Entregado |
 |---|---|---|
 | Estáticos y carruseles | | |
 | Stories | | |

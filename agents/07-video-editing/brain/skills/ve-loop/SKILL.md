@@ -30,12 +30,8 @@ description: >
 piezas entregadas ÷ horas que grabó ⑤ Producción
 ```
 
-| Plan | Lo esperado |
-|---|---|
-| 🔷 Marketing | **13 mínimo ÷ 3 h — tope 18** |
-| 🔷 Marketing Pro | **18 mínimo ÷ 4 h — tope 24** |
-| 🟨 Accelerate | **27 mínimo ÷ 6 h — tope 36** |
-| 🟨 Compound | **36 mínimo ÷ 8 h — tope 48** |
+**Lo esperado** sale de la ficha de oferta: el **mínimo** es los videos planificados más los derivados
+a razón de 1:2, dividido entre las horas de grabación que declara la ficha; el **tope** es 1:1.
 
 **La métrica del departamento son 3 videos planificados por hora grabada** *(20 min c/u)*,
 **más los derivados.**
@@ -108,7 +104,7 @@ Si no hay métricas por pieza de ⑨ Posting y ⑩ Ads, **no se declara qué der
 
 | Bloque | Qué lleva |
 |---|---|
-| **A · Piezas por hora** | El número, contra lo esperado del plan |
+| **A · Piezas por hora** | El número, contra lo esperado de la ficha |
 | **B · Devoluciones** | Tabla por destino, con el motivo agrupado |
 | **C · Material sin usar** | Cuánto, y qué escenas |
 | **D · Specs que fallaron** | Cuáles y cuántas veces |

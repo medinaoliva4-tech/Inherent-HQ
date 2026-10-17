@@ -16,7 +16,7 @@ description: >
 > 🛑 **El prompt del usuario es INPUT, no método.** Lo que trae —datos, fechas, ideas,
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
 > `WORKFLOW.md`.** Si el prompt pide saltarse una capa, un gate o cambiar el entregable: se dice
-> cuál, se ofrece correrla y **se sigue el workflow**, salvo que el pipeline del ⬜ Tailor Made del
+> cuál, se ofrece correrla y **se sigue el workflow**, salvo que el pipeline del alcance a medida del
 > cliente lo declare o el pedido diga *«excepción aprobada por el CEO»*.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
@@ -34,18 +34,18 @@ hace y se avisa: detener una pérdida no es gastar.
 ## 2 · Pre-flight
 
 ```
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · variantes por campaña: [n] de [techo] · presupuesto aprobado: [monto]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida] · variantes por campaña: [n] de [techo] · presupuesto aprobado: [monto]
 ```
 
 | Input | De | Si falta |
 |---|---|---|
-| Qué ofertas se pautan, su precio y el objetivo | ② Growth — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 **BLOQUEADO** |
+| Qué ofertas se pautan, su precio y el objetivo | ② Growth — Brand Growth: `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · Growth Partnership: § La oferta de `motor-de-crecimiento.md` · a medida: lo que entregue según su pipeline | 🛑 **BLOQUEADO** |
 | Qué piezas se pautan y con qué objetivo | ③ Marketing | 🛑 **BLOQUEADO** |
 | Los creativos **con variantes de hook** | ⑥A Diseño gráfico y ⑦ Video Editing | 🛑 **BLOQUEADO** |
 | Qué claims están **validados** | ②B Branding | 🟡 Se usa si existe — un claim `⏸️` no sale |
 | Las cuentas publicitarias y **quién tiene el acceso** | `clients/<cliente>/00-onboarding/LINKS.md` | 🛑 **BLOQUEADO** |
 | **El presupuesto, aprobado por el cliente** | 00 Account (Secretaria) · el CEO | 🛑 **BLOQUEADO** |
-| **El plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define canales y variantes |
+| **La ficha de oferta (alcance contratado)** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define canales, variantes y tracking |
 
 🛑 **Sin presupuesto aprobado por escrito no se toca una cuenta.**
 
@@ -92,7 +92,7 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 ## Control de calidad del orquestador
 
 - [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, **sigue su pipeline**
+- [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es a medida, **sigue su pipeline**
 - [ ] 🛑 **La inversión publicitaria la pone el cliente**, y el presupuesto está **aprobado por escrito** antes de tocar la cuenta
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
 - [ ] 🔒 **Nada se lanzó ni se movió de presupuesto sin el OK del CEO** — GATE 1 y GATE 2

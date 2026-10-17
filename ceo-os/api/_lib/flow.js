@@ -3,6 +3,7 @@
 //   → ingreso en Finance + lead ganado + cliente + proyecto con responsables, fechas y dependencias.
 // Lo usan el panel de Control, Sales y el conector MCP. Todo pasa aquí, en el servidor.
 import * as db from './db.js';
+import { isPartnership } from '../../public/js/levels.js';
 import { phasesFor, meetingsFor, tasksFor, customTasks, createLinked, holders, DEPTS, deptsOfPlan, svcHours, hoursAt, includesAt, daysAt, addDays, onboardingFor } from '../../public/js/cycle.js';
 import * as recipes from './recipes.js';
 import { readFile } from './gh.js';
@@ -64,7 +65,7 @@ export async function createProject(u, { slug, label, kind, start, quote, name, 
 // ---------- Activar un paquete o un plan ----------
 // Paquete (bundle) → un proyecto con las tareas de las recetas de sus servicios, cada una con su ficha completa
 // (dueño por perfil, revisor, fecha, SOP, tipo Delivery y dependencias). Plan contratado → el ciclo mensual con los
-// departamentos de su pipeline (y, en Accelerate y Compound, también Business Growth).
+// departamentos de su pipeline (y, en Growth Partnership, también Business Growth).
 // El onboarding del cliente suma lo que piden las recetas y los servicios, sin repetir lo que ya tenía.
 async function addOnboarding(u, slug, kind, services, R, from) {
   const acc = await db.get('accounts', 'acc-' + slug); if (!acc) return 0;
@@ -88,19 +89,19 @@ export async function activate(u, { bundle_id, plan, slug, label, start, name })
     return { ok: true, projects: [r.project], tasks: r.tasks, onboarding: onb };
   }
   if (plan) {
-    const f = await readFile(`clients/${slug}/00-onboarding/plan-contratado.md`); if (!f) throw Object.assign(new Error('Ese cliente no tiene plan contratado en el repo'), { status: 404 });
+    const f = await readFile(`clients/${slug}/00-onboarding/plan-contratado.md`); if (!f) throw Object.assign(new Error('Ese cliente no tiene alcance contratado (ficha de oferta) en el repo'), { status: 404 });
     const c = parsePlanContratado(f.content, 'ceo'), cyc = st.slice(0, 7);
     const dup = (await db.list('projects')).find((p) => p.client_slug === slug && p.kind === 'Ciclo mensual' && p.cycle === cyc);
     if (dup) throw Object.assign(new Error(`${lab} ya tiene el ciclo ${cyc}: ${dup.name}`), { status: 409 });
     const made = [await createProject(u, { slug, label: lab, kind: 'Ciclo mensual', start: st, depts: deptsOfPlan(c), name: name || undefined })];
-    // Línea Growth (🟨) o plan Accelerate / Compound: además del ciclo, corre Business Growth.
+    // Nivel Growth Partnership (o los planes anteriores Accelerate / Compound, o la línea 🟨): además del ciclo, corre Business Growth.
     const linea = (c.fields || []).find((f) => /^l[ií]nea$/i.test(f.key))?.value || '';
-    if (/accelerate|compound/i.test(c.plan || '') || /^🟨/u.test(linea)) made.push(await createProject(u, { slug, label: lab, kind: 'Growth', start: st }));
+    if (isPartnership(c.plan, linea)) made.push(await createProject(u, { slug, label: lab, kind: 'Growth', start: st }));
     const onb = await addOnboarding(u, slug, 'Ciclo mensual', [], R, 'plan');
     console.log(JSON.stringify({ evt: 'flow_activate', plan: c.plan, projects: made.map((m) => m.project.id), by: u.email }));
     return { ok: true, plan: c.plan || '', projects: made.map((m) => m.project), tasks: made.flatMap((m) => m.tasks), onboarding: onb };
   }
-  throw Object.assign(new Error('Dime qué activar: un paquete (paquete_id) o el plan contratado del cliente'), { status: 400 });
+  throw Object.assign(new Error('Dime qué activar: un paquete (paquete_id) o el alcance contratado del cliente'), { status: 400 });
 }
 
 // ---------- Rol → persona, por proyecto ----------

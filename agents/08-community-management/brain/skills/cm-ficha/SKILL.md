@@ -2,11 +2,11 @@
 name: cm-ficha
 description: >
   Capa 0 de ⑧ Community Management — antes de leer un solo mensaje, verifica que el cliente tenga
-  plan contratado, ficha `05-comunidad/respuestas.md` completa y menú o catálogo vigente, lee qué
+  ficha de oferta, ficha `05-comunidad/respuestas.md` completa y menú o catálogo vigente, lee qué
   prende la escalera de su plan, y revisa si hay algo nuevo en la bandeja de Zernio. Si no hay nada
   nuevo, la corrida termina acá sin gastar más. Úsala al empezar cada corrida, o cuando pidan
   "¿está lista la ficha de X?", "¿qué le falta a community de X?", "¿hay mensajes nuevos?".
-  Bloquea el cliente si falta el plan o la ficha.
+  Bloquea el cliente si falta la ficha de oferta o la ficha de respuestas.
 ---
 
 # cm-ficha — Capa 0
@@ -16,12 +16,12 @@ description: >
 | **Lee** | `clients/<cliente>/00-onboarding/plan-contratado.md` · `05-comunidad/respuestas.md` · `99-referencias/` · Zernio |
 | **Produce** | El PRE-FLIGHT del cliente · la lista de comentarios, DMs y menciones nuevos |
 
-## 1 · El plan
+## 1 · El alcance
 
-Se lee el plan y se anota **qué prende** según la tabla de `WORKFLOW.md` → «0 · El plan
-contratado». **Sin plan: BLOQUEADO.** No se asume Marketing «por mientras».
+Se lee la ficha de oferta y se anota **qué prende** según la tabla de `WORKFLOW.md` → «0 · El alcance
+contratado». **Sin ficha: BLOQUEADO.** No se asume la escalera base «por mientras».
 
-**⬜ Tailor Made:** prende lo que declara **Su pipeline** → ⑧ Community *(«Básico» = 🔷 Marketing)*. Si ⑧ Community no
+**Alcance a medida:** prende lo que declara **Su pipeline** → ⑧ Community *(«Básico» = la escalera base)*. Si ⑧ Community no
 está en su pipeline, no corre para ese cliente.
 
 ## 2 · La ficha — qué tiene que tener

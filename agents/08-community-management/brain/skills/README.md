@@ -44,7 +44,7 @@ pasa, en qué orden y con qué reglas; acá está el detalle de cada herramienta
 | Menciones | `mentions_list_inbox_mentions` · `mentions_reply_to_mention` |
 | Conversaciones (DMs) | `messages_list_inbox_conversations` |
 | Responder un DM | `messages_send_inbox_message` |
-| Auto-DM por palabra clave *(🟨)* | `comment_automations_*` |
+| Auto-DM por palabra clave *(si la ficha lo incluye)* | `comment_automations_*` |
 
 Lo que no está en la lista se busca con `search_tools`. **Toda herramienta que escribe pasa por
 `cm-envio`.**

@@ -258,14 +258,14 @@ Eso cambia la conversación. Un restaurante no crece igual que una clínica. Los
 importan, las métricas que mienten, dónde vive la confianza y qué compra realmente la gente —
 todo eso lo sabe quien ya lo vivió, no quien lo leyó.
 
-**El mentor de la industria hace la auditoría** de la línea Growth.
+**El experto de industria hace la auditoría** de Growth Partnership.
 
 ### Las reglas que lo hacen rentable
 
 | | |
 |---|---|
-| **1** | **El mentor es exclusivo de la línea Growth.** En la línea Marketing no existe |
-| **2** | **Trimestral en Accelerate, mensual en Compound** |
+| **1** | **El experto de industria es exclusivo de Growth Partnership.** En Foundation y Growth no existe |
+| **2** | **Se especifica quién, cuántas horas y qué entrega.** Nunca «acceso a expertos» indefinido |
 | **3** | **La membresía se paga anual y es de Inherent** — sirve a todos los clientes de esa industria |
 | **4** | **Arriba de $180 la sesión va como add-on facturado al cliente.** Nunca se absorbe |
 
@@ -325,27 +325,64 @@ sistema.**
 
 ---
 
-# Qué entra en cada nivel
+# Cómo se activan los sistemas en cada nivel
 
-| | 🔷 **MARKETING** $950 | 🔷 **MKT PRO** $1,450 | 🟨 **ACCELERATE** $2,500 | 🟨 **COMPOUND** $4,200 |
-|---|---|---|---|---|
-| **Qué promete** | Atención | Atención sostenida | **Facturación** | **Facturación sin el dueño** |
-| **Diagnóstico** | ✅ | ✅ | ✅ Profundo | ✅ + trimestral |
-| **Growth OS** | ⬜ | ⬜ | **Los 3 pilares, ejecutando** | **Los 3, sistematizados** |
-| **Conversion OS** | ⬜ | ⬜ | ✅ | ✅ |
-| **Operations OS** | ⬜ | ⬜ | Parcial *(SOPs de crecimiento)* | ✅ Completo *(SOPs de empresa)* |
-| **Money OS** | ⬜ | ⬜ | ⬜ | ✅ |
-| | | | | |
-| **Capacidades** | Marketing · Creative · Branding · Production | Las mismas, con mayor volumen | + Tech · Consulting | **Las seis, a fondo** |
-| **Especialistas** | ⬜ | ⬜ | Mentor de industria, trimestral | **Mentor mensual + toda la red** |
-| **Somos** | Tu equipo de marketing | Tu equipo creativo completo | Tu operating partner | **Tu socio operador** |
+**Tres niveles, en el orden en que una marca los necesita.** El verbo cambia con la profundidad:
+**Foundation sienta la base · Growth ejecuta atención y demanda · Partnership integra los cuatro
+sistemas.** Los pilares no cambian: son la metodología.
 
-**Por qué la línea Marketing no lleva los sistemas:** un negocio que arranca no tiene un problema
-de capacidad — tiene un problema de existencia. Meterse en sus finanzas hoy sería cobrarle por
-algo que todavía no necesita.
+| | 🧱 **BRAND FOUNDATION** | 📈 **BRAND GROWTH** | 🤝 **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Qué es** | Proyecto, con inicio y cierre | Colaboración mensual | Colaboración integrada |
+| **Qué busca** | Crear la marca *(nueva, reposicionada o con oferta poco clara)* | Crear demanda y mejorar cómo se presenta y se promociona | Conectar marca y marketing con ventas, experiencia de cliente y sistemas comerciales |
+| **Diagnóstico** | ✅ De marca, oferta, audiencia y canales | ✅ Seguimiento mensual | ✅ + del recorrido *(conoce → compra → vuelve)* |
+| **Growth OS** | **Sienta la base:** audiencia, posicionamiento y estructura de oferta | **Ejecuta atención y demanda:** mensaje, contenido, campañas y pruebas | **Los 3 pilares, integrados** con ventas y atención |
+| **Conversion OS** | ⬜ | Lo que cae en los canales contratados *(landing, CTA, seguimiento de leads)* | ✅ **Completo:** respuesta, seguimiento, camino de compra y atribución |
+| **Operations OS** | ⬜ | ⬜ | **Procesos y SOPs de las áreas contratadas** |
+| **Money OS** | ⬜ | ⬜ | **Finanzas vinculadas al crecimiento** *(si el cliente comparte costos confiables)* |
+| | | | |
+| **Capacidades** | Branding · Marketing · Creative *(dirección y ejemplos de aplicación)* | + Production · Marketing de canales · pauta | + Tech · Consulting |
+| **Especialistas** | ⬜ | ⬜ | Experto de industria *(quién, horas y entrega)* |
+| **Somos** | Quien crea la marca | Tu equipo de marca y demanda | Tu socio de crecimiento |
 
-**Por qué Compound cuesta más:** tocamos tu equipo y tus números. Eso no lo carga una
-herramienta — lo carga una cabeza.
+## Por qué entra cada sistema donde entra
+
+🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.**
+
+- **Foundation no activa Conversion, Operations ni Money:** una marca que se está creando o
+  reposicionando todavía no tiene un camino de compra que mejorar, procesos que documentar ni
+  transacciones que medir. **Antes hay que definir qué se vende y a quién.** Lo que sí hace es
+  **sentar la base** que los demás van a usar: diagnóstico, posicionamiento y oferta.
+- **Growth ejecuta atención y demanda:** hay oferta, falta que la vean, la entiendan y la
+  elijan. **No activa Operations ni Money:** no se puede documentar un proceso que todavía no
+  funcionó, y sin transacciones el margen por línea es teoría. Lo que cae de Conversion es lo
+  que viven los canales contratados.
+- **Partnership integra los cuatro:** hay una empresa que ya vende y necesita que marca,
+  marketing, ventas y atención trabajen como un solo recorrido. **Entra Operations** sobre las
+  áreas contratadas *(no sobre toda la empresa)* y **entra Money** cuando el cliente aporta
+  costos confiables.
+
+**Meter un sistema antes es cobrar por algo que no se puede usar.**
+
+## Los pilares por nivel
+
+| Pilar *(Low Ticket / High Ticket)* | 🧱 **Foundation** | 📈 **Growth** | 🤝 **Partnership** |
+|---|---|---|---|
+| **1 · Better your Offer** | **Sienta la base:** audiencia prioritaria, posicionamiento, estructura de oferta y mensajes | **Comunica la oferta** en los canales contratados y la prueba | **La integra** con ventas y atención, y la mejora con datos |
+| **2 · Big sales / Cuentas grandes** | ⬜ *Se nombran como próximo trabajo* | Módulos puntuales *(PR, creadores, eventos)* | **Se diseñan y se abren** con el recorrido comercial |
+| **3 · Upsells / Expansión** | ⬜ *Se nombran como próximo trabajo* | ⬜ | **Se diseñan y se miden** |
+
+> 🔑 **La diferencia entre «mensaje» y «oferta».**
+> **Mensaje** es cómo se cuenta lo que ya vendes — eso lo trabaja Brand Growth.
+> **Oferta** es qué vendes, en qué paquetes y a qué precio — eso se trabaja en Foundation y en
+> Partnership. **Confundirlos es regalar el trabajo caro dentro del nivel barato.**
+
+## Lo que NO se asume
+
+**Los niveles no hacen a Inherent responsable de toda la empresa.** Sociedad financiera, RR.HH.
+generalista, administración diaria y operaciones ajenas al crecimiento de marca son otro
+proveedor y otro alcance. **Se promete un camino, un sistema y medición — no un resultado
+garantizado.**
 
 ---
 
@@ -359,7 +396,7 @@ La tabla completa está en `07-COMUNICACION.md`.
 | "Incluye SOPs y documentación" | **"Te puedes ir una semana y la empresa factura igual"** |
 | "Análisis de unit economics" | **"Sabes cuál producto te deja y cuál te quita"** |
 | "Implementación de CRM" | **"Ningún interesado se enfría por olvido"** |
-| "86 piezas de contenido al mes" | **"La gente que te importa sabe que existes"** |
+| "Paquete de piezas de contenido al mes" | **"La gente que te importa sabe que existes"** |
 | "Auditoría de fulfillment" | **"Crecer deja de dar miedo"** |
 | "Estrategia de expansión de cuenta" | **"Creces sin buscar clientes nuevos todo el tiempo"** |
 

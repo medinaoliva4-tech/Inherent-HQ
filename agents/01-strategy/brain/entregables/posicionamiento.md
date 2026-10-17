@@ -23,7 +23,7 @@
 |---|---|
 | **Qué exige del cliente** | |
 | **Qué exige de nosotros** | |
-| **Entra en el plan contratado** | ✅ / 🛑 **no — escalado al CEO** |
+| **Entra en el alcance contratado** | ✅ / 🛑 **no — escalado al CEO** |
 
 ---
 
@@ -56,11 +56,11 @@
 
 > Qué se le pasa a cada departamento al cerrar. Ver `../../WORKFLOW.md` §7.
 
-| Área | Qué le toca | ¿Entra en el plan? |
+| Área | Qué le toca | ¿Entra en el alcance? |
 |---|---|---|
-| **②B Branding** | Territorio, tono y activos distintivos | ✅ los 4 planes |
-| **③ Marketing** | Canales, calendario macro y el plan del ciclo | ✅ los 4 planes |
-| **④ Creatividad** | Posicionamiento, campaña y qué tipo de pieza hace falta | ✅ los 4 planes |
-| **② Growth** | Oferta, precio y objetivo | ✅ los 4 planes · 🔷 **ligero:** qué ofertas que ya existen se empujan |
+| **②B Branding** | Territorio, tono y activos distintivos | ✅ según la ficha |
+| **③ Marketing** | Canales, calendario macro y el plan del ciclo | ✅ según la ficha |
+| **④ Creatividad** | Posicionamiento, campaña y qué tipo de pieza hace falta | ✅ según la ficha |
+| **② Growth** | Oferta, precio y objetivo | ✅ Growth Partnership *(completo)* · **ligero en Brand Growth:** qué ofertas que ya existen se empujan · en Brand Foundation la oferta sale en esta estrategia |
 
-⬜ **Tailor Made:** entra lo que diga **Su pipeline** en `00-onboarding/plan-contratado.md`.
+⬜ **A la medida:** entra lo que diga **Su pipeline** en `00-onboarding/plan-contratado.md`.

@@ -7,7 +7,7 @@
 
 ## A · Piezas por hora grabada
 
-| | Esperado del plan | Real |
+| | Esperado de la ficha | Real |
 |---|---|---|
 | Horas grabadas por ⑤ Producción | | |
 | Piezas entregadas | | |

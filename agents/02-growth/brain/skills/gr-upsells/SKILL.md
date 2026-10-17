@@ -3,10 +3,10 @@ name: gr-upsells
 description: >
   Capa 3 de ② Growth — el Pilar 3. En low ticket son upsells, combos, versiones, membresías y
   recompra; en high ticket es expansión de cuenta, cross-sell y renovación. No se activa en
-  la línea Marketing porque no se le puede vender más a quien todavía no compró una vez. Diseña la escalera
+  Foundation ni en Brand Growth porque no se le puede vender más a quien todavía no compró una vez. Diseña la escalera
   con el momento exacto en que se ofrece cada escalón. Úsala cuando pidan "cómo subimos el
   ticket", "combos", "membresías", "que vuelvan a comprar", "qué más le vendemos", "renovación".
-  Requiere Accelerate o Compound.
+  Requiere Growth Partnership.
 ---
 
 # Capa 3 · Upsells — el Pilar 3
@@ -16,12 +16,12 @@ description: >
 | **Consume** | § La oferta · frecuencia de recompra y unit economics de ① Strategy |
 | **Produce** | La sección **§ La escalera** de `motor-de-crecimiento.md` |
 
-## 1 · ⬜ No se activa en la línea Marketing
+## 1 · ⬜ No se activa en Brand Foundation ni en Brand Growth
 
 🛑 **No se le puede vender más a quien todavía no compró una vez.**
 
 **Al cliente se le dice así:** *«Los upsells los trabajamos cuando ya haya gente comprando una
-vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede usar.**
+vez.»* **Prometerlos en Brand Foundation o Brand Growth es cobrar por algo que no se puede usar.**
 
 ## 2 · Qué es, según la división
 
@@ -65,7 +65,7 @@ vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede
 | **Con qué** | Lo que se consiguió. **Sin resultados, la renovación es un favor** |
 | **Quién** | 00 Account Manager, con el material de acá |
 
-## 6 · Compound — operando solo
+## 6 · Operando solo — cuando la ficha lo pide
 
 **La escalera deja de ser una campaña y pasa a dispararse sola:** ⑧ Community la automatiza con
 `create_auto_dm_automation` y Zapier, y los referidos y la comunidad la alimentan.
@@ -83,7 +83,7 @@ vez.»* **Prometerlos en 🔷 Marketing o Pro es cobrar por algo que no se puede
 
 ## 8 · Checklist
 
-- [ ] El plan es **Accelerate o Compound**
+- [ ] El alcance es **Growth Partnership**
 - [ ] La escalera está diseñada **por momento**, no por producto
 - [ ] Los momentos salen de la **frecuencia real** de ① Strategy, o van `⚠️ SIN DATOS`
 - [ ] Cada escalón tiene sus **cuatro datos**, margen incluido

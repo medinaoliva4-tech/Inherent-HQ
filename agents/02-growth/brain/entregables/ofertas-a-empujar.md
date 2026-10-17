@@ -1,6 +1,6 @@
 # Ofertas a empujar — <cliente> · ciclo <mes año>
 
-> Plantilla de ② Growth · `gr-oferta` en modo **ligero** — 🔷 Marketing y Marketing Pro · ⬜ Tailor Made si su pipeline lo pide.
+> Plantilla de ② Growth · `gr-oferta` en modo **ligero** — Brand Growth · ⬜ a la medida si su pipeline lo pide.
 > Vive en `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md`. **La leen ③ Marketing y ⑩ Ads.**
 > 🛑 **Solo se elige entre lo que ya se vende.** No cambia qué se vende, en qué paquetes ni a qué precio.
 > 🔒 **Nunca se mencionan los costos ni los márgenes de Inherent.**

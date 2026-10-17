@@ -1,7 +1,7 @@
 # Operación — Cómo lo entregamos
 
 > **Quién hace qué, en qué orden y en qué fecha.** Los roles, el pipeline, el calendario del
-> ciclo y lo que cuesta cada rol por plan.
+> ciclo y cómo se costea cada rol por rubro.
 >
 > **`03-OFERTA.md` dice QUÉ se promete. Este archivo dice CÓMO se entrega.**
 
@@ -31,7 +31,7 @@
 | **Fotografía** | La sesión de fotos del ciclo | Rubro **Fotografía** |
 | **Producción** | Graba | Rubro **Grabación** |
 | **Secretaria** *(WhatsApp)* | El agente `00-account`. Atiende al cliente todos los días y escala lo que no puede resolver | Rubro **Herramientas / IA** |
-| **Especialista** | El mentor de la industria hace la auditoría. Hay tres: **negocio, números (conta) y SOPs (admin)** | Rubros **Especialista** y **Auditoría** — solo Growth |
+| **Especialista** | El mentor de la industria hace la auditoría. Hay tres: **negocio, números (conta) y SOPs (admin)** | Rubros **Especialista** y **Auditoría** — solo Growth Partnership |
 
 ### Cómo crece el equipo
 
@@ -119,28 +119,45 @@ coordina el COO; todo lo que se puede ejecutar lo ejecutan los agentes.
 | # | Etapa | Recibe | Entrega | Corre en |
 |---|---|---|---|---|
 | **00** | **Account** | El cliente | La relación diaria. **El único que le habla** | Todos |
-| **01** | **Strategy** | La información cruda del negocio | Comprensión del negocio + estrategia + un brief por área | Todos · ligera en 🔷 · completa en 🟨 |
+| **01** | **Strategy** | La información cruda del negocio | Comprensión del negocio + estrategia + un brief por área | Todos · la profundidad la fija el nivel y la ficha |
 | **01.2** | **Branding** | La estrategia | Guía de marca: territorio, voz, sistema visual, activos | Todos |
-| **02** | **Growth** | La estrategia | Oferta, canales grandes, upsells, conversión y números | Solo 🟨 |
-| **03** | **Marketing** | Estrategia y marca | Plan del ciclo: campañas, pilares, canales y calendario de slots | Todos |
-| **04** | **Creative** | El plan del ciclo | Ideas listas para producir: hook, copy, escenas y layout | Todos |
-| **05** | **Production** | Las ideas aprobadas | Material grabado y fotografiado | Todos |
-| **06** | **Graphic Design** | Ideas, marca y material | Estáticos, carruseles y stories | Todos |
-| **07** | **Video Editing** | El material grabado | Reels y todas sus derivadas | Todos |
-| **08** | **Community** | Lo publicado y lo que entra | Comentarios y mensajes atendidos | Todos · básico en 🔷 Marketing |
-| **09** | **Posting** | Lo aprobado | Contenido programado o publicado | Todos |
-| **10** | **Ads** | Lo apto para pauta | Campañas activas y su reporte | Todos |
-| **↻** | **Strategy** | La analítica del mes | El ajuste de estrategia que entra al ciclo siguiente | Todos |
+| **02** | **Growth** | La estrategia | Oferta, canales grandes, upsells, conversión y números | Growth Partnership · ligero en Brand Growth *(elige qué ofertas empujar)* |
+| **03** | **Marketing** | Estrategia y marca | Plan del ciclo: campañas, pilares, canales y calendario de slots | Brand Growth · Growth Partnership |
+| **04** | **Creative** | El plan del ciclo, o la estrategia y la marca en Brand Foundation | Ideas listas para producir: hook, copy, escenas y layout; en Brand Foundation, dirección creativa y ejemplos de aplicación | Todos |
+| **05** | **Production** | Las ideas aprobadas | Material grabado y fotografiado | Brand Growth · Growth Partnership, según la ficha |
+| **06** | **Graphic Design** | Ideas, marca y material | Estáticos, carruseles y stories | Brand Growth · Growth Partnership, según la ficha |
+| **07** | **Video Editing** | El material grabado | Reels y todas sus derivadas | Brand Growth · Growth Partnership, según la ficha |
+| **08** | **Community** | Lo publicado y lo que entra | Comentarios y mensajes atendidos | Growth Partnership · Brand Growth si la ficha incluye gestión de comunidad |
+| **09** | **Posting** | Lo aprobado | Contenido programado o publicado | Brand Growth · Growth Partnership, según los canales de la ficha |
+| **10** | **Ads** | Lo apto para pauta | Campañas activas y su reporte | Según los canales con publicidad de la ficha |
+| **↻** | **Strategy** | La analítica del mes | El ajuste de estrategia que entra al ciclo siguiente | Brand Growth · Growth Partnership |
 
-**El detalle de cada agente —sus acciones y qué entrega en cada plan— está en `agents/README.md`
-y en el `brain/WORKFLOW.md` de cada uno.**
+**El pipeline se arma por cliente.** El diagrama de arriba es el **mapa completo**; ningún
+cliente corre todo. **Cada cliente tiene su propio pipeline**, compuesto con los módulos que su
+ficha de oferta incluye *(las áreas están productizadas, así que cada módulo ya trae su
+resultado, entregables, volumen, revisiones y SOP)*. Se ajusta cuando cambia lo que el cliente
+necesita: se agrega, se quita o se reordena un módulo **sin cambiar de nivel**, mientras no
+pase el techo del nivel.
+
+**El techo por nivel — lo que puede entrar, no lo que siempre corre:**
+
+| Nivel | Departamentos |
+|---|---|
+| **Brand Foundation** | ① Strategy y ②B Branding como núcleo; ④ Creatividad para la dirección creativa y los ejemplos de aplicación. Es un proyecto con inicio y cierre: corre el onboarding y entrega al cierre; **no tiene ciclo mensual**. La ejecución continua se cotiza como Brand Growth o como módulos |
+| **Brand Growth** | ③ Marketing, ④ Creatividad, ⑤ Producción, ⑥A Diseño gráfico, ⑦ Video Editing, ⑨ Posting y ⑩ Ads, según los canales contratados en la ficha |
+| **Growth Partnership** | Todo Brand Growth, además ② Growth, ⑧ Community y el especialista |
+
+**El detalle de cada agente —sus acciones y qué entrega según la ficha de alcance— está en
+`agents/README.md` y en el `brain/WORKFLOW.md` de cada uno.**
 
 ### Las reglas del pipeline
 
 | Regla | Qué dice |
 |---|---|
 | **Sin input no hay etapa** | Ninguna etapa arranca sin el entregable de la anterior. Si falta, se vuelve — no se improvisa |
-| **El plan manda** | El volumen del plan es techo duro. Se lee `06-ECONOMIA.md` antes de producir |
+| **El pipeline es del cliente** | Se arma con los módulos de su ficha. Los niveles ponen el techo; no hay un pipeline único |
+| **Primer contacto: un minuto** | A quien escribe por «Hablemos» se le responde en un minuto; el precio se da en la conversación, con el caso entendido y lo que está en juego a la vista |
+| **La ficha manda** | El alcance de la ficha de oferta del cliente es techo duro. Se lee `06-ECONOMIA.md` antes de producir. Sin ficha, se bloquea al cliente |
 | **Sin acción no hay promesa** | Lo que no está en «Capacidades reales» de `06-ECONOMIA.md` no se hace |
 | **Gate humano** | Publicar, pautar, enviar al cliente y borrar **siempre** pasan por el gate del rol que dice la sección 5 |
 | **Un cliente por sesión** | Nunca se mezclan dos clientes |
@@ -163,7 +180,7 @@ y en el `brain/WORKFLOW.md` de cada uno.**
 | **11** | **ÚLTIMO DÍA PARA PRODUCIR** | Producción | ⑤ Producción `pr-entrega` |
 | **12 – 15** | **Montar el contenido** | Editor de video · Operador | ⑦ Video Editing · ⑥A Diseño gráfico |
 | **16 – 19** | **Cambios, QA y programación** | Operador + agentes · **COO hace el QA final** | ②B Branding `br-guardian` · ⑨ Posting |
-| **20** | **PRESENTACIÓN AL CLIENTE** | **COO** en 🔷 · **CEO** en 🟨 | — |
+| **20** | **PRESENTACIÓN AL CLIENTE** | **COO** en Brand Growth · **CEO** en Growth Partnership | — |
 
 ```
 DÍA   1    2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18   19   20
@@ -203,13 +220,14 @@ DÍA   1    2    3    4    5    6    7    8    9    10   11   12   13   14   15 
 | Días 6-20 | Igual | Igual |
 
 🔑 **La marca se construye una vez y se mantiene.** Si se rehiciera cada mes, no cabría en el
-costo fijo del plan.
+costo fijo de la ficha.
 
 ---
 
 ## 5 · Quién hace qué
 
-> 🔷 = línea Marketing *(Marketing y Pro)* · 🟨 = línea Growth *(Accelerate y Compound)*
+> **BG** = Brand Growth · **GP** = Growth Partnership · **Todos** = los niveles que corren ciclo, según la ficha.
+> Brand Foundation es un proyecto: corre ① Strategy, ②B Branding y ④ Creatividad.
 
 ### Cliente
 
@@ -217,8 +235,8 @@ costo fijo del plan.
 |---|---|---|
 | **Reunión del día 1** | **CEO** | Todos |
 | **Comunicación diaria** | **Secretaria** → escala al **COO**. Al CEO solo le llega precio, alcance o estrategia | Todos |
-| **Presentar las piezas del día 20** | **COO** en 🔷 · **CEO** en 🟨 | Todos |
-| **Sesión de dirección** | **CEO** | 🟨 Accelerate mensual · Compound quincenal |
+| **Presentar las piezas del día 20** | **COO** en BG · **CEO** en GP | BG · GP |
+| **Sesión de dirección** | **CEO** | GP — la cadencia la fija la ficha |
 
 ### Estrategia
 
@@ -227,17 +245,17 @@ costo fijo del plan.
 | Estrategia inicial y revisión del 20 | Agentes ① Strategy → **CEO aprueba** | Todos |
 | Ajuste de la estrategia | **CEO** | Todos |
 | **Aprobar ideas y calendario** | **CEO** | Todos |
-| Replanteo trimestral | **CEO** | 🟨 Compound |
+| Replanteo trimestral | **CEO** | GP |
 
 ### Oferta y conversión
 
 | Tarea | Rol | Dónde |
 |---|---|---|
-| Rediseño de oferta, paquetes y precio | ② Growth + **CEO** | 🟨 |
-| Abrir canales grandes | ② Growth + **CEO** | 🟨 |
-| Upsells y escalera de ticket | ② Growth · Operador | 🟨 |
-| Embudos, auto-DM, atribución y pruebas A/B | Agentes · Operador | 🟨 |
-| Entrenamiento de closing | **CEO** | 🟨 |
+| Rediseño de oferta, paquetes y precio | ② Growth + **CEO** | GP |
+| Abrir canales grandes | ② Growth + **CEO** | GP |
+| Upsells y escalera de ticket | ② Growth · Operador | GP |
+| Embudos, auto-DM, atribución y pruebas A/B | Agentes · Operador | GP |
+| Entrenamiento de closing | **CEO** | GP |
 
 ### Producción y contenido
 
@@ -256,86 +274,85 @@ costo fijo del plan.
 | Tarea | Rol | Dónde |
 |---|---|---|
 | Programar y publicar | **Operador** con ⑨ Posting | Todos |
-| **Comentarios y mensajes** | **Operador:** una vez al mes configura el agente con la información del cliente, y el agente queda atendiendo. Escalera en `03-OFERTA.md` → «Community management» | Todos |
-| **Agente de WhatsApp a medida** | **CEO** define el alcance → **Operador** lo construye | 🟨 |
-| Pauta | **Operador** con ⑩ Ads · **CEO** aprueba plan y presupuesto | Todos |
+| **Comentarios y mensajes** | **Operador:** una vez al mes configura el agente con la información del cliente, y el agente queda atendiendo. Escalera en `03-OFERTA.md` → «Community management» | GP · BG si la ficha lo incluye |
+| **Agente de WhatsApp a medida** | **CEO** define el alcance → **Operador** lo construye | GP |
+| Pauta | **Operador** con ⑩ Ads · **CEO** aprueba plan y presupuesto | BG · GP |
 
 ### Tecnología
 
 | Tarea | Rol | Dónde |
 |---|---|---|
-| **Herramienta a medida** | **CEO** define el alcance → **Operador** la construye | 🟨 Accelerate 1 al trimestre · Compound 1 al mes |
-| **IA propia del cliente** | **CEO** define el alcance → **Operador** la construye | 🟨 Compound |
-| Landings, microsites y automatización de procesos | Agentes · Operador | 🟨 |
+| **Herramienta a medida** | **CEO** define el alcance → **Operador** la construye | GP — las que fije la ficha |
+| **IA propia del cliente** | **CEO** define el alcance → **Operador** la construye | GP, si la ficha la incluye |
+| Landings, microsites y automatización de procesos | Agentes · Operador | GP |
 
 ### Operación y auditoría
 
 | Tarea | Rol | Dónde |
 |---|---|---|
-| **Auditoría** *(negocio, números y SOPs)* | **Especialista** | 🟨 Accelerate trimestral · Compound mensual |
-| Decidir qué se implementa de la auditoría | **CEO + COO** | 🟨 |
-| SOPs de crecimiento, mapa de experiencia y LTV, documentación y entrenamiento | **COO** con agentes | 🟨 |
-| SOPs de empresa · Money OS | **CEO** | 🟨 Compound |
-| Corporate structure | **Especialista** *(auditoría)* | 🟨 Compound |
+| **Auditoría** *(negocio, números y SOPs)* | **Especialista** | GP — la cadencia la fija la ficha |
+| Decidir qué se implementa de la auditoría | **CEO + COO** | GP |
+| SOPs de crecimiento, mapa de experiencia y LTV, documentación y entrenamiento | **COO** con agentes | GP |
+| SOPs de los procesos de las áreas contratadas · finanzas vinculadas al crecimiento | **CEO** | GP, si la ficha lo incluye |
+| Corporate structure | **Especialista** *(auditoría)* | GP, si la ficha lo incluye |
 
 ### Medición
 
 | Tarea | Rol | Dónde |
 |---|---|---|
 | Reporte mensual | Agentes · Operador | Todos |
-| Dashboard en vivo | Agentes · Operador | 🟨 |
+| Dashboard en vivo | Agentes · Operador | GP |
 
 ---
 
 ## 6 · Lo que cuesta cada rol
 
-> **Cada cuenta paga un monto fijo a cada rubro, según su plan.** No es estimación: **es el
-> techo.** El detalle económico completo está en `06-ECONOMIA.md`.
+> **Cada cuenta paga un monto fijo a cada rubro, según su ficha de oferta.** No es estimación:
+> **es el techo.** El detalle económico completo está en `06-ECONOMIA.md`.
 
-| Rubro | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| **Grabación** | Q450 *(3 h · Q150/h)* | Q560 *(4 h · Q140/h)* | Q780 *(6 h · Q130/h)* | Q960 *(8 h · Q120/h)* |
-| **Fotografía** | Q300 *(1 h)* | Q300 *(1 h)* | Q300 *(1 h)* | Q300 *(1 h)* |
-| **Edición de video** | Q200 | Q500 | Q700 | Q1,000 |
-| **Operador de agentes** | Q350 | Q550 | Q900 | Q1,400 |
-| **Herramientas / IA** | Q150 | Q200 | Q300 | Q500 |
-| **Especialista** *(auditoría con el mentor)* | — | — | Q1,000 | Q2,000 |
-| **Auditoría conta** | — | — | Q600 | Q900 |
-| **Auditoría admin** *(SOPs)* | — | — | Q600 | Q900 |
-| **Buffer** | Q215 | Q445 | Q520 | Q840 |
-| **COSTO** | **Q1,665** | **Q2,555** | **Q5,700** | **Q8,800** |
+**Los montos de cada rubro salen de la ficha del cliente, por volumen y complejidad.** No hay una
+tabla de montos por nivel en el manual.
 
-### Lo que entrega cada rol, por plan
+| Rubro | Rol que cobra | Qué paga |
+|---|---|---|
+| **Grabación** | Producción | Las horas de grabación de la ficha. **La tarifa por hora baja cuando suben las horas** |
+| **Fotografía** | Fotografía | La sesión de fotos del ciclo: **Q300 por sesión de 1 h** |
+| **Edición de video** | Editor de video | Los videos planificados y sus derivados |
+| **Operador de agentes** | Operador | Estáticos, carruseles, stories, programación y herramienta a medida |
+| **Herramientas / IA** | — | El aporte de la cuenta a la IA, el scraping y las tools |
+| **Especialista** *(auditoría con el mentor)* | Especialista | Solo Growth Partnership |
+| **Auditoría conta** | Especialista | Solo si la ficha la incluye |
+| **Auditoría admin** *(SOPs)* | Especialista | Solo si la ficha la incluye |
+| **Buffer** | — | El colchón para imprevistos |
 
-| Rol | 🔷 Marketing | 🔷 Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| **Producción** | 1 sesión · 3 h | 2 sesiones · 4 h | 2 sesiones · 6 h | 3 sesiones · 8 h |
-| **Fotografía** | 1 sesión | 1 sesión | 1 sesión | 1 sesión |
-| **Editor de video** | 9 planificados + 4 derivados | 12 + 6 | 18 + 9 | 24 + 12 |
-| **Operador** *(estáticos y carruseles)* | 43 | 72 | 63 | 88 |
-| **Operador** *(stories y recortes)* | 30 | 55 | 55 | 80 |
+### Lo que entrega cada rol
+
+**Lo que entrega cada rol es lo que dice la ficha:** sesiones y horas de grabación, sesión de
+fotos, videos planificados y derivados, estáticos y carruseles, stories y recortes. **Ni más, ni
+menos.**
 
 ### Las reglas del costo
 
 | Regla | Qué dice |
 |---|---|
-| **El costo es fijo por plan y por rubro** | No se estima, no se promedia, no se pasa. **No cambia con el número de clientes** |
+| **El costo es fijo por ficha y por rubro** | No se estima, no se promedia, no se pasa. **No cambia con el número de clientes** |
 | **La tarifa baja con las horas** | A más horas por cuenta, menor tarifa por hora — más volumen para la persona |
 | **La producción no se baja recortando horas** | Si el monto no alcanza, **se cambia la mezcla** *(más derivados, contenido crudo del cliente)* **o se cotiza extra** |
-| **Una cuenta que consume más** | Se cotiza extra o sube de plan. **Nunca se absorbe** |
+| **Una cuenta que consume más** | Se cotiza extra o se amplía el alcance. **Nunca se absorbe** |
+| **Costos de terceros** | Pauta, producción especial, talento, locaciones, viajes, licencias: **siempre aparte** |
 | **CEO y COO no son rubro** | Cobran de la utilidad. Sus horas son capacidad |
 | **El buffer es el colchón** | Cubre los imprevistos: regrabar, una revisión extra, una pieza que se cae |
 
 ### El acuerdo con cada persona
 
-> **Se firma una vez, con los montos por plan escritos. No se renegocia en cada cliente nuevo.**
+> **Se firma una vez, con los montos por rubro escritos. No se renegocia en cada cliente nuevo.**
 
 | Cláusula | Qué dice |
 |---|---|
-| **Monto por cuenta** | El de su rubro, según el plan de cada cuenta. **Es fijo** |
-| **Qué incluye** | Lo que el plan promete de ese rubro — ni más, ni menos |
-| **Si una cuenta pide más** | Se cotiza extra al cliente o se sube de plan |
-| **Revisión** | Solo si cambia la tabla de costos del plan. **No por volumen** |
+| **Monto por cuenta** | El de su rubro, según la ficha de cada cuenta. **Es fijo** |
+| **Qué incluye** | Lo que la ficha promete de ese rubro — ni más, ni menos |
+| **Si una cuenta pide más** | Se cotiza extra al cliente o se amplía el alcance |
+| **Revisión** | Solo si cambia la tabla de costos por rubro. **No por volumen** |
 
 ---
 
@@ -349,7 +366,7 @@ EQUIPO terminado  →  agentes se auto-revisan  →  br-guardian valida
                                                          │
                          ┌───────────────────────────────┴───────────────┐
                          ▼                                               ▼
-              🔷 línea Marketing                               🟨 línea Growth
+              Brand Growth                                     Growth Partnership
               el COO presenta el día 20                        el CEO presenta el día 20
                          └───────────────────────────────┬───────────────┘
                                                          ▼
@@ -359,7 +376,7 @@ EQUIPO terminado  →  agentes se auto-revisan  →  br-guardian valida
 | Canal | Para qué | Quién |
 |---|---|---|
 | **Reunión del día 1** | Arrancar el ciclo y decidir | CEO |
-| **Presentación del día 20** | Entregar el ciclo completo | COO en 🔷 · CEO en 🟨 |
+| **Presentación del día 20** | Entregar el ciclo completo | COO en Brand Growth · CEO en Growth Partnership |
 | **WhatsApp** | Todo lo del día a día | Secretaria → COO |
 | **Group chat interno** | Donde el COO deja lo armado para el CEO | COO |
 
@@ -381,7 +398,7 @@ CLIENTE/
 ├── 04 Por postear              → Content · Por postear y Planner
 ├── 05 Entregables
 ├── 06 Reportes
-└── 07 Números y auditoría      🟨 solo la línea Growth
+└── 07 Números y auditoría      solo Growth Partnership
 ```
 
 ### El ritmo del mes
@@ -392,8 +409,8 @@ CLIENTE/
 | **Semanal** | Radar de competencia · revisión de pauta · cola de piezas | Operador |
 | **Días 1-20** | El ciclo de contenido | Todos |
 | **Día 20** | Presentación y revisión del mes | CEO · COO |
-| **Mensual** | Money OS — números del mes | CEO *(Compound)* |
-| **Trimestral** | Replanteo de estrategia y revisión de precio | CEO *(Compound)* |
+| **Mensual** | Números del mes | CEO *(Growth Partnership, si la ficha lo incluye)* |
+| **Trimestral** | Replanteo de estrategia y revisión de precio | CEO *(Growth Partnership)* |
 
 ### La revisión del 20 cruza los cuatro sistemas
 

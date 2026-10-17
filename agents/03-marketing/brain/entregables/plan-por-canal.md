@@ -26,7 +26,7 @@
 | Canal | Función | Cadencia | Slots del ciclo |
 |---|---|---|---|
 | | | | |
-| **Total** | | | **= techo del plan** |
+| **Total** | | | **= techo de la ficha** |
 
 ## § Verificación de funciones
 *Ninguna `funcion` se repite entre canales.*
@@ -38,4 +38,4 @@
 
 | Canal | Se cayó por |
 |---|---|
-| | ¿Existe la cuenta? / ¿Hay acceso? / ¿El plan lo cubre? |
+| | ¿Existe la cuenta? / ¿Hay acceso? / ¿El alcance lo cubre? |

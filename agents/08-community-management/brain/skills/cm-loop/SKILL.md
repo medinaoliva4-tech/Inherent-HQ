@@ -14,7 +14,7 @@ description: >
 | | |
 |---|---|
 | **Lee** | Los reportes de la semana en Gmail (asunto `⑧ Community · [cliente]`) · `05-comunidad/respuestas.md` · `seguimiento/` |
-| **Produce** | `05-comunidad/seguimiento/<AAAA-MM>.md` *(Pro+)* · FAQ nuevas propuestas · ideas para ④ Creatividad · la lectura del mes |
+| **Produce** | `05-comunidad/seguimiento/<AAAA-MM>.md` *(con seguimiento)* · FAQ nuevas propuestas · ideas para ④ Creatividad · la lectura del mes |
 
 🛑 **Todo lo que se escribe en el repo se presenta antes**, con el OK del CEO en el mismo turno.
 
@@ -27,7 +27,7 @@ description: >
 | **Lo que se queja la gente** | Quejas por tema | Al cliente, por el COO |
 | **Lo que quiere saber más gente** | Preguntas con muchos likes o repetidas | **④ Creatividad: un reel que responde, con el hook ya escrito** |
 
-## 2 · El seguimiento *(Pro en adelante)*
+## 2 · El seguimiento *(con seguimiento)*
 
 `seguimiento/<AAAA-MM>.md`, una fila por conversación que importó:
 

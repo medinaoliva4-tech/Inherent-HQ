@@ -122,7 +122,7 @@ ya nos sigue.
 | **Qué es «probado»** | Ya pasó a seguidores como trial, o rindió publicado normal, **con la lectura de `po-loop` o `cr-loop` que lo muestra** |
 | **Primer ciclo del cliente** | Sin historial todo Reel es no probado: sale como trial |
 | **Cuando todos los formatos ya están probados** | El trial es una **variante de hook** de un Reel probado *(`ve-derivadas`)*. **Ningún ciclo con Reels queda sin trial** |
-| **Cuántas piezas son** | **Las mismas del plan.** Un trial no es una pieza extra: es el Reel del slot, publicado primero a quien no sigue la cuenta |
+| **Cuántas piezas son** | **Las mismas de la ficha.** Un trial no es una pieza extra: es el Reel del slot, publicado primero a quien no sigue la cuenta |
 | **El ganador** | Pasa a los seguidores y se publica normal *(⑨ lo programa con `SS_PERFORMANCE`)*, y se marca como **candidato a pauta** para ⑩ Ads |
 | **El que no pasa** | No se republica tal cual. Lo aprendido vuelve a Creatividad en `cr-loop` |
 | **Dónde aplica** | **Solo Reels de Instagram.** TikTok y Shorts no tienen trial: ahí `trial = no` |
@@ -153,7 +153,7 @@ Cada sección lleva: **Objetivo del slot** · **Emoción** · **Hook** · **Guio
 
 - Si el slot trae **`etapa`** o **`captura`** *(columnas opcionales de `mk-calendario`)*, se anotan en **Objetivo del slot** y
   **la llamada a la acción de la pieza apunta a esa receta**: la palabra, el recurso o el siguiente paso, literales. La
-  receta la fijó ② Growth; acá no se inventa. En 🔷 `captura = directo`: el CTA es escribir al DM o WhatsApp del cliente.
+  receta la fijó ② Growth; acá no se inventa. Cuando `captura = directo`: el CTA es escribir al DM o WhatsApp del cliente.
 - `guion` = lo que se **dice**. Si el formato no lleva voz: `N/A — formato estático`. Nunca vacío.
 - `copy` = lo que se **ve**. Con jerarquía explícita: título > subtítulo > CTA.
 - `escenas`, `encuadres` y `duraciones` llevan **el mismo número de ítems y el mismo orden**

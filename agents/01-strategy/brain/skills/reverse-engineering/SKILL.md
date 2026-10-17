@@ -57,8 +57,8 @@ existe `plan-por-canal.md` de ③ Marketing, también sirve.
 
 🛑 **Toda corrida lleva `resultsLimit` y `maxTotalChargeUsd`.**
 
-**Cuántos:** el volumen por plataforma lo fija el plan contratado — **50** en 🔷 Marketing y Pro,
-**100** en 🟨 Accelerate y Compound. **Mitad competencia, mitad referencias.** La tabla está en la
+**Cuántos:** el volumen por plataforma lo fija la ficha de oferta (`plan-contratado.md`).
+**Mitad competencia, mitad referencias.** La tabla está en la
 §0 de `agents/01-strategy/brain/WORKFLOW.md`.
 
 > **Decisión del CEO · las dos capas.** El barrido de **competencia** y el de **referencias

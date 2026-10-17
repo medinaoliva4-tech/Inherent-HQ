@@ -3,12 +3,12 @@ name: community
 description: >
   Orquestador del departamento ⑧ Community Management de Inherent. Es la puerta de entrada: lee el
   pedido, verifica el pre-flight de cada cliente, y corre las skills `cm-*` en orden — ficha,
-  triage, respuesta con cierre, escalado y envío — según la escalera del plan contratado.
+  triage, respuesta con cierre, escalado y envío — según la escalera de la ficha de oferta.
   Úsala SIEMPRE que el pedido tenga que ver con comentarios, mensajes directos, DMs, menciones,
   responder a seguidores, moderar, ocultar spam, la bandeja de Zernio o el reporte de community. Se
   dispara con "contestá los comentarios de X", "revisá la bandeja", "qué preguntó la gente",
   "corré community", "hay mensajes nuevos", "qué le respondemos a esta persona". También es la
-  corrida programada. Requiere el plan contratado y la ficha `05-comunidad/respuestas.md` del
+  corrida programada. Requiere la ficha de oferta y la ficha `05-comunidad/respuestas.md` del
   cliente: si faltan, BLOQUEA ese cliente.
 ---
 
@@ -42,7 +42,7 @@ sigue.
 
 ```
 PRE-FLIGHT ⑧ Community — Cliente: [x] · Modo: [a mano / programada] · Envío: [borrador / activo]
-Plan: [🔷 Mkt / 🔷 Pro / 🟨 Accel / 🟨 Comp / ⬜ Tailor Made: nivel de Su pipeline] → prende: [simple · WhatsApp · moderación · seguimiento · auto-DM]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida: lo que declara la ficha] → prende: [simple · WhatsApp · moderación · seguimiento · auto-DM]
 Ficha respuestas.md [✅/⛔] · menú o catálogo [✅/⛔] · cuentas en Zernio [n] · avisos a: [correo]
 Bandeja: comentarios nuevos [n] · DMs nuevos [n] · menciones [n]
 → PASS | SIN NADA NUEVO (termina) | BLOQUEADO: [qué falta]
@@ -52,8 +52,8 @@ Bandeja: comentarios nuevos [n] · DMs nuevos [n] · menciones [n]
 
 | Situación | Qué se responde |
 |---|---|
-| No existe `plan-contratado.md` | `BLOQUEADO — falta el plan contratado` |
-| ⬜ Tailor Made sin ⑧ Community en Su pipeline | ⑧ Community no corre para ese cliente |
+| No existe `plan-contratado.md` | `BLOQUEADO — falta la ficha de oferta` |
+| Alcance a medida sin ⑧ Community en Su pipeline | ⑧ Community no corre para ese cliente |
 | Zernio no está conectado | `BLOQUEADO — falta Zernio. Instalala: ver INSTALAR.md § Zernio` |
 | Gmail no está conectado | `BLOQUEADO — falta Gmail. Instalala: ver INSTALAR.md § Gmail` |
 | No existe `05-comunidad/respuestas.md` | `BLOQUEADO — falta la ficha.` Se ofrece armarla con la plantilla y presentarla |

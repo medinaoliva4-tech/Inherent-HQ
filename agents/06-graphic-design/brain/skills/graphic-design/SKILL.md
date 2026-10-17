@@ -17,7 +17,7 @@ description: >
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
 > `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se dice cuál, se
 > ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* o que el
-> pipeline del ⬜ Tailor Made del cliente ya lo declare.
+> pipeline del alcance a medida del cliente ya lo declare.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 **Si no sabés qué skill usar, es esta.**
@@ -25,18 +25,18 @@ description: >
 ## 1 · Pre-flight
 
 ```
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida] · piezas del ciclo: [n] de [techo de la ficha]
 ```
 
 | Input | De | Si falta |
 |---|---|---|
 | **El Excel del ciclo cerrado** — `plan-de-contenido.csv` + `ideas-<formato>.md` con el **copy literal** y el layout | ④ Creatividad | 🛑 **BLOQUEADO** |
 | **`sistema-visual.md`** — la guía de marca | ②B Branding | 🛑 **BLOQUEADO** |
-| `plan-por-canal.md` | ③ Marketing | 🟡 No bloquea — se usan las **Redes** del `plan-contratado.md` |
-| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo *(en ⬜ Tailor Made, lo que declara **Su pipeline**; si ⑥A Diseño gráfico no está ahí, no corre)* |
+| `plan-por-canal.md` | ③ Marketing | 🟡 No bloquea — se usan los **canales** del `plan-contratado.md` |
+| La **ficha de oferta (alcance contratado)** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo *(en un alcance a medida, lo que declara **Su pipeline**; si ⑥A Diseño gráfico no está ahí, no corre)* |
 
 🛑 **Sin `sistema-visual.md` no se compone nada.** La guía existe para traducir el posicionamiento
-a algo gráfico: diseñar sin ella produce 168 piezas que no se parecen entre sí ni dicen lo que el
+a algo gráfico: diseñar sin ella produce piezas que no se parecen entre sí ni dicen lo que el
 posicionamiento decidió, y eso es peor que no publicar.
 
 ## 2 · Qué capa corre según el pedido
@@ -53,11 +53,11 @@ posicionamiento decidió, y eso es peor que no publicar.
 
 ## 3 · La regla que hace viable el departamento
 
-🛑 **168 piezas no se diseñan una por una.**
+🛑 **Las piezas de un ciclo no se diseñan una por una.**
 
 **Se arma el sistema de plantillas en la Capa 1, se prueba el molde con la prueba de estrés, y las
 piezas son ejecución.** Si para cada pieza hace falta una decisión de diseño, el ciclo no entra en las
-horas que paga el plan.
+horas de la ficha.
 
 ## 4 · Dónde para
 
@@ -68,8 +68,8 @@ publica ni le envía nada al cliente: publicar es de ⑨ Posting.
 
 ## Control de calidad del orquestador
 
-- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, en lo que declara **su pipeline**
-- [ ] ⚠️ Si el plan es 🟨 Accelerate, se respetaron los **63 estáticos** — menos que 🔷 Pro, **a propósito**
+- [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Nivel:`** completa
+- [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es a medida, en lo que declara **su pipeline**
+- [ ] ⚠️ Se respetó la **mezcla de formatos de la ficha** tal cual, aunque lleve menos estáticos que otro cliente
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
 - [ ] Cada capa pasó su **checklist de auto-revisión**

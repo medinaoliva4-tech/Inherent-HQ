@@ -23,26 +23,25 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
-## 0 · El plan contratado — cuánto y a qué profundidad
+## 0 · El alcance contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
-`clients/<cliente>/00-onboarding/plan-contratado.md`:
-🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+**Lo primero de cada ciclo: leer la ficha de oferta del cliente.** Lo anota ① Strategy al arrancar en
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(nivel, áreas, volumen, revisiones y qué queda
+fuera)*. Los niveles: **Brand Foundation** · **Brand Growth** · **Growth Partnership** · alcance a medida.
 
-- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
-  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
-  «El desglose por tarea». **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+- 🛑 **Sin ficha anotada, el departamento no arranca:** `BLOQUEADO — falta la ficha de oferta`.
+- 🛑 **El alcance contratado es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar
+  de menos rompe la promesa de la propuesta.
+- Los números salen de la **ficha**: videos planificados, derivados, formatos, duración y revisiones.
+  **Si cambia la ficha, cambia el ciclo** — este documento no manda sobre ella.
 
-| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Videos planificados** *(20 min c/u)* | **9** | **12** | **18** | **24** |
-| **Derivados — mínimo** *(1:2)* | **4** | **6** | **9** | **12** |
-| **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
-| *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
-| *TOTAL videos — tope* | *18* | *24* | *36* | *48* |
-| **Revisiones por pieza** | **1** | 2 | 2 | 3 |
+| Qué cambia | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Qué hace ⑦ Video Editing** | Solo lo que la ficha pida para los ejemplos de aplicación de la marca | **Los videos del volumen acordado** y sus derivadas, con las revisiones de la ficha | Igual que Brand Growth, más lo que la ficha agregue para ventas, atención o comunidad |
+| **Videos planificados** *(20 min c/u)* | Los de los ejemplos acordados | **Los de la ficha** | **Los de la ficha** |
+| **Derivados — mínimo** *(1 por cada 2 planificados)* | — | **Mínimo 1:2 sobre los planificados de la ficha** | **Mínimo 1:2 sobre los planificados de la ficha** |
+| *Derivados — tope (1:1)* | — | *Techo, no promesa* | *Techo, no promesa* |
+| **Revisiones por pieza** | Las rondas de la ficha | Las de la ficha | Las de la ficha |
 
 **Cómo se lee:**
 
@@ -52,30 +51,30 @@ paso vive en las skills: `skills/README.md`.
   reusan y cae al **mínimo (1 derivado por cada 2 planificados)**. Si salió suelto llega al
   **tope (1:1)**. ⚠️ **Se promete el MÍNIMO. El tope es techo, no promesa** — y solo se entrega si
   el material lo permite **y** el operador tiene las horas.
-- ⚠️ **🟨 Accelerate monta 50% más video que 🔷 Pro** *(18 planificados contra 12)* con el mismo
-  total de 145 piezas del plan. **Copiar el reparto de Pro es un error.**
+- ⚠️ **La mezcla de la ficha manda.** Si la ficha lleva más video que otro cliente con las mismas
+  piezas en total, se monta ese video: **copiar el reparto de otro cliente es un error.**
 - 🔑 **Acá está la eficiencia del modelo:** ⑤ Producción cuesta horas humanas; ⑦ Video Editing multiplica ese
   material **dentro del mismo monto de Producción.** Por eso el mínimo 1:2 es piso, no aspiración.
 - 🔑 **⑦ Video Editing edita con Claude Code y el motor (`motor/README.md`); el editor de video dirige y aprueba.**
-  El techo de capacidad es el material rodado y las horas de revisión del editor, no el plan.
+  El techo de capacidad es el material rodado y las horas de revisión del editor, no la ficha.
 - 🛑 **Una derivada nunca pide grabación extra.** Sale de material ya rodado. Si para llegar al
   número haría falta volver a grabar, **el número está mal, no el rodaje.**
-- ⛔ **No hay segundo idioma en ningún plan.** No existe herramienta de doblaje — ver
+- ⛔ **No hay segundo idioma salvo que la ficha lo declare.** No existe herramienta de doblaje — ver
   `skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma».
 
-### ⬜ Tailor Made — se sigue su pipeline
+### Alcance a medida — se sigue su pipeline
 
 Se define en el onboarding, en `plan-contratado.md`, con dos secciones: **Qué incluye** y **Su
 pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—. **⑦ Video Editing lee
 de ahí cuántos videos planificados, derivados y revisiones le tocan** y trabaja con esos números
-igual que con un plan estándar.
+igual que con una ficha estándar.
 
-- **El pipeline se sigue, no se cuestiona:** no se bloquea por no ser un plan de lista ni se
+- **El pipeline se sigue, no se cuestiona:** no se bloquea por ser a medida ni se
   discute por precio.
 - 🛑 **Si ⑦ Video Editing no está en su pipeline, no corre para ese cliente.**
 - **Cambia el volumen, nunca el método:** la trazabilidad, las devoluciones y la auto-revisión son
-  iguales en todos los planes.
-- **Arriba de 🟨 Compound el techo es el material rodado**, no el plan: más derivadas de las que el
+  iguales en todos los niveles.
+- **Cuando sube el volumen, el techo es el material rodado**, no la ficha: más derivadas de las que el
   rodaje aguanta es volumen que no existe.
 
 ---
@@ -84,7 +83,7 @@ igual que con un plan estándar.
 
 **⑤ Producción cuesta horas humanas. ⑦ Video Editing multiplica ese material dentro del mismo costo fijo de Producción.**
 
-> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
+> 📐 **Cuánto y a qué profundidad según el alcance contratado: §0.** Una sola tabla, y está allá.
 
 ---
 
@@ -224,6 +223,6 @@ igual que con un plan estándar.
 - [ ] Toda pieza lleva **activo distintivo en el primer frame**
 - [ ] Los **subtítulos están dentro de la safe zone** del formato
 - [ ] El **cierre de marca** está en toda pieza de video
-- [ ] El total de piezas **entra en el techo del plan contratado** *(en ⬜ Tailor Made, el de su pipeline)*
+- [ ] El total de piezas **entra en el techo del alcance contratado** *(en un alcance a medida, el de su pipeline)*
 - [ ] Cada pieza pasó el **QA medido** de `ve-marca` §6: hoja de revisión, temblor y color
 - [ ] Hay **master + preview** de cada pieza, y las versiones anteriores quedaron archivadas

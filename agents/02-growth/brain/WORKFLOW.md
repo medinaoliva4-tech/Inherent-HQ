@@ -8,52 +8,56 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
-## 0 · El plan contratado — cuánto y a qué profundidad
+## 0 · El alcance contratado — cuánto y a qué profundidad
 
-**Lo primero de cada encargo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
-`clients/<cliente>/00-onboarding/plan-contratado.md`:
-🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+**Lo primero de cada encargo: leer la ficha de oferta del cliente.** La anota ① Strategy al arrancar en
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(nivel, áreas, volumen, revisiones y qué queda fuera)*:
+**Brand Foundation** · **Brand Growth** · **Growth Partnership** · ⬜ **a la medida**.
 
-- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
-  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y la profundidad de
-  `inherent/03-OFERTA.md` → «🔒 Uso interno» y `inherent/02-METODO.md`.
+- 🛑 **Sin ficha anotada, el departamento no arranca:** `BLOQUEADO — falta el alcance contratado`.
+- 🛑 **El alcance contratado es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md`).
+- Los volúmenes y los costos salen de la ficha y de `inherent/06-ECONOMIA.md`; la profundidad, de
+  `inherent/03-OFERTA.md` y `inherent/02-METODO.md`.
   **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
 
-| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Verbo** | 🟡 **Ligero** | 🟡 **Ligero** | **Ejecuta** | **Sistematiza** |
-| **Pilar 1 · Oferta** | 🟡 Elige qué ofertas se empujan | 🟡 Elige qué ofertas se empujan | ✅ Escalarla / autoridad | ✅ Sistematizarla |
-| **Pilar 2 · Canales grandes** | ⬜ | ⬜ | ✅ Abrir y vender | ✅ Canal permanente |
-| **Pilar 3 · Upsells** | ⬜ | ⬜ | ✅ Diseñar y lanzar | ✅ Operando solo |
-| **Conversion OS** | ⬜ | ⬜ | ✅ Que nadie se pierda · closing | ✅ + referidos y comunidad |
-| **Captura de leads** *(Capa 1B)* | ⬜ | ⬜ | ✅ Una receta principal | ✅ Principal + apoyo |
-| **Operations OS** | ⬜ | ⬜ | 🟡 SOPs **de crecimiento** | ✅ SOPs **de empresa** |
-| **Money OS** | ⬜ | ⬜ | ⬜ | ✅ Margen por línea · CAC · LTV |
-| **Herramienta a medida** | ⬜ | ⬜ | **1 por trimestre** | **1 por mes** |
-| **Especialista de industria** | ⬜ | ⬜ | Trimestral · techo **$144** | Mensual · techo **$180** |
+| Qué cambia | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Verbo** | ⬜ **No corre como departamento** *(la oferta se estructura dentro de la estrategia de ① Strategy)* | 🟡 **Ligero** | **Profundidad completa:** ejecuta o sistematiza, según la ficha |
+| **Pilar 1 · Oferta** | ⬜ *(estructura de oferta en ① Strategy)* | 🟡 Elige qué ofertas que ya existen se empujan | ✅ Escalarla / autoridad / sistematizarla |
+| **Pilar 2 · Canales grandes** | ⬜ | ⬜ | ✅ Abrir y vender / canal permanente |
+| **Pilar 3 · Upsells** | ⬜ | ⬜ | ✅ Diseñar y lanzar / operando solo |
+| **Conversion OS** *(ventas y conversión)* | ⬜ | ⬜ | ✅ Según la ficha: que nadie se pierda · closing · referidos y comunidad |
+| **Captura de leads** *(Capa 1B)* | ⬜ | ⬜ | ✅ Una receta principal; apoyo si la ficha lo incluye |
+| **Operations OS** *(operación y organización comercial)* | ⬜ | ⬜ | 🟡 SOPs de **las áreas contratadas** |
+| **Money OS** *(finanzas vinculadas al crecimiento)* | ⬜ | ⬜ | ✅ Según la ficha: margen por producto · CAC · valor de cliente, si hay datos confiables |
+| **Herramienta a medida** | ⬜ | ⬜ | Según la ficha *(área Tecnología, datos y automatización)* |
+| **Experto de industria** | ⬜ | ⬜ | Según la ficha: **quién, cuántas horas y qué entrega** |
 
 **Cómo se lee:**
 
-- 🔷 **En la línea Marketing ② Growth corre LIGERO — en sus dos planes:** elige **cuáles de las
+- 🟡 **En Brand Growth ② Growth corre LIGERO:** elige **cuáles de las
   ofertas que ya existen** se empujan este ciclo y con qué objetivo, y lo escribe en
   `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` para ③ Marketing y ⑩ Ads.
-  🛑 **No cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide, es upsell
-  a 🟨 Accelerate, no trabajo a absorber.
-- **Lo que sí corre en la línea 🔷 es el MENSAJE, y lo llevan ③ Marketing con ②B Branding.**
+  🛑 **No cambia qué se vende, en qué paquetes ni a qué precio.** Si el cliente lo pide, es la
+  profundidad de Growth Partnership o un proyecto de Brand Foundation, no trabajo a absorber.
+- **Lo que sí corre en Brand Growth es el MENSAJE, y lo llevan ③ Marketing con ②B Branding.**
   Mensaje = cómo se cuenta lo que ya vende. Oferta = qué vende, en qué paquetes y por cuánto.
-- 🔷 **Los slots de «client-getting» sí existen en la línea Marketing** *(③ Marketing los marca)*,
+- 🟡 **Los slots de «client-getting» sí existen en Brand Growth** *(③ Marketing los marca)*,
   pero su llamada a la acción apunta a `directo`: el DM o el WhatsApp del cliente, que ⑧ Community
-  atiende. **Armar la receta de captura es de 🟨.**
-- ⚠️ **🟨 Accelerate y 🟨 Compound entregan los mismos tres pilares.** Lo que cambia es el verbo:
-  Accelerate **ejecuta**, Compound **sistematiza**. **Venderlo como «más pilares» es venderlo mal.**
-- 🛑 **El especialista es exclusivo de la línea 🟨.** Meterlo en un plan 🔷 rompe el margen de ese
-  plan (`inherent/04-MERCADO.md` → «Red de mentores»).
-- ⚠️ **Arriba de $180 por sesión el especialista NO se absorbe:** va como add-on facturado al
+  atiende cuando la ficha lo incluye. **Armar la receta de captura es de Growth Partnership.**
+- ⚠️ **Growth Partnership no es «más pilares»: es conectar marca y marketing con ventas, experiencia
+  de cliente y sistemas comerciales.** Lo que cambia es el verbo *(ejecuta o sistematiza)* y qué
+  áreas entran. **Venderlo como «más pilares» es venderlo mal.**
+  **No equivale a hacerse cargo de toda la empresa:** sociedad financiera, RR.HH. generalista,
+  administración diaria y operaciones ajenas al crecimiento de marca son otro proveedor y otro alcance.
+- 🛑 **El experto de industria es exclusivo de Growth Partnership.** Meterlo en Brand Growth rompe el
+  margen de ese alcance (`inherent/04-MERCADO.md` → «Red de mentores»). Se especifica quién, cuántas
+  horas y qué entrega: nunca «acceso a expertos» indefinido.
+- ⚠️ **Arriba de $180 por sesión el experto NO se absorbe:** va como add-on facturado al
   cliente. **El presupuesto filtra antes que la afinidad.**
 
-### 🔑 Por qué no todo entra en la línea Marketing
+### 🔑 Por qué no todo entra en Brand Growth
 
 | Sistema | Por qué espera |
 |---|---|
@@ -61,15 +65,15 @@ paso vive en las skills: `skills/README.md`.
 | **Pilar 3** | No se le puede vender más a quien todavía no compró una vez |
 | **Conversion OS** | **Antes no hay nada que perder** |
 | **Operations OS** | **No se puede documentar un proceso que todavía no funcionó** |
-| **Money OS** | **Sin transacciones, el margen por línea es teoría** |
+| **Money OS** | **Sin transacciones, el margen por producto es teoría** |
 
 🛑 **Meterlo antes es cobrar por algo que no se puede usar.**
 
-### ⬜ Tailor Made — se sigue su pipeline
+### ⬜ A la medida — se sigue su pipeline
 
 Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
 secciones: **Qué incluye** y **Su pipeline** —qué departamentos corren, en qué orden, qué entrega
-cada uno y a qué nivel—. **② Growth sigue ese pipeline:** no lo bloquea por no ser un plan de lista
+cada uno y a qué nivel—. **② Growth sigue ese pipeline:** no lo bloquea por no ser un paquete de lista
 ni lo cuestiona por precio.
 
 - **El nivel lo dice el pipeline:** ligero *(qué ofertas se empujan)*, o los pilares y sistemas que declare.
@@ -109,13 +113,13 @@ ni lo cuestiona por precio.
 
 ---
 
-## 3 · Qué se activa según el plan — es restricción dura
+## 3 · Qué se activa según el alcance — es restricción dura
 
-> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
+> 📐 **Cuánto y a qué profundidad según el alcance contratado: §0.** Una sola tabla, y está allá.
 
-🔷 **En la línea Marketing ② Growth corre ligero:** elige cuáles de las ofertas que ya existen se
+**En Brand Growth ② Growth corre ligero:** elige cuáles de las ofertas que ya existen se
 empujan y con qué objetivo. 🛑 **No cambia qué se vende, en qué paquetes ni a qué precio** — eso es
-de 🟨. Si el cliente lo pide, es upsell a 🟨 Accelerate, no trabajo a absorber.
+de la profundidad completa de Growth Partnership *(o de un proyecto de Brand Foundation)*. Si el cliente lo pide, no es trabajo a absorber.
 
 ---
 
@@ -124,7 +128,7 @@ de 🟨. Si el cliente lo pide, es upsell a 🟨 Accelerate, no trabajo a absorb
 | Archivo | Qué es | Quién lo lee |
 |---|---|---|
 | **`motor-de-crecimiento.md`** | La oferta trabajada, el mapa o la apertura de canales grandes, la escalera de upsells y el sistema de conversión | El cliente · ③ Marketing · ⑩ Ads |
-| **`ofertas-a-empujar.md`** — 🔷 | Cuáles de las ofertas que ya existen se empujan este ciclo y con qué objetivo. Vive en `clients/<cliente>/07-oferta-y-ventas/` | ③ Marketing · ⑩ Ads |
+| **`ofertas-a-empujar.md`** — Brand Growth | Cuáles de las ofertas que ya existen se empujan este ciclo y con qué objetivo. Vive en `clients/<cliente>/07-oferta-y-ventas/` | ③ Marketing · ⑩ Ads |
 | **`aprendizaje-de-growth.md`** | Qué pilar movió el número, qué receta de captura trajo leads, qué canal cerró, qué upsell se compró | ② Growth y ① Strategy |
 
 ---
@@ -132,24 +136,24 @@ de 🟨. Si el cliente lo pide, es upsell a 🟨 Accelerate, no trabajo a absorb
 ## 5 · El flujo, de 0 a 100
 
 ```
-   0  ENCARGO       división, plan y qué pilares se activan  → gr-encargo
+   0  ENCARGO       división, nivel y qué pilares se activan   → gr-encargo
         ▼
-   1  OFERTA        🔷 ligero — qué ofertas se empujan       → gr-oferta
-        ▼           🟨 Pilar 1 — qué se vende y a qué precio
-        ▼           🔴 🟨 la oferta nueva se escala al CEO — no para
-  1B  CAPTURA       🟨 objetivo de leads y la receta         → gr-captura
+   1  OFERTA        Brand Growth: ligero — qué ofertas se empujan  → gr-oferta
+        ▼           Growth Partnership: Pilar 1 — qué se vende y a qué precio
+        ▼           🔴 la oferta nueva se escala al CEO — no para
+  1B  CAPTURA       Growth Partnership: objetivo de leads y la receta → gr-captura
         ▼
-   2  CANALES       Pilar 2 — mapear o abrir                 → gr-canales-grandes
+   2  CANALES       Pilar 2 — mapear o abrir                   → gr-canales-grandes
         ▼
-   3  UPSELLS       Pilar 3 — 🟨 A y C solamente                 → gr-upsells
+   3  UPSELLS       Pilar 3 — Growth Partnership solamente     → gr-upsells
         ▼
-   4  CONVERSIÓN    que nadie se pierda — 🟨 A y C               → gr-conversion
+   4  CONVERSIÓN    que nadie se pierda — Growth Partnership   → gr-conversion
         ▼
-   5  HERRAMIENTA   la que el plan incluye — 🟨 🟨            → gr-herramienta
+   5  HERRAMIENTA   la que la ficha incluya — Growth Partnership → gr-herramienta
         ▼
-   6  NÚMEROS       Money OS — 🟨 solamente                   → gr-numeros
+   6  NÚMEROS       Money OS — Growth Partnership solamente    → gr-numeros
         ▼
-   ↻  LOOP          qué movió el número                      → gr-loop
+   ↻  LOOP          qué movió el número                        → gr-loop
 ```
 
 ### 🔴 Sin paradas — la oferta nueva se escala al CEO
@@ -158,9 +162,9 @@ de 🟨. Si el cliente lo pide, es upsell a 🟨 Accelerate, no trabajo a absorb
 
 | Qué se escala | A quién | Por qué |
 |---|---|---|
-| 🟨 **La oferta nueva** — precio incluido, **antes de llevarla al cliente** | **El CEO** | Llevarle al cliente una oferta o un precio nuevo es comprometer precio. Y el precio es decisión comercial del cliente, no nuestra: **nunca se cambia sin él** |
+| **La oferta nueva** *(Growth Partnership)* — precio incluido, **antes de llevarla al cliente** | **El CEO** | Llevarle al cliente una oferta o un precio nuevo es comprometer precio. Y el precio es decisión comercial del cliente, no nuestra: **nunca se cambia sin él** |
 
-**Escalar no frena:** se avisa al CEO y Growth sigue con las capas que vienen. En 🔷 ligero no hay
+**Escalar no frena:** se avisa al CEO y Growth sigue con las capas que vienen. En Brand Growth, ligero, no hay
 nada que escalar: no se toca el precio y no sale al cliente.
 
 ---
@@ -196,10 +200,10 @@ nada que escalar: no se toca el precio y no sale al cliente.
 
 | A | Qué le toca |
 |---|---|
-| **③ Marketing** | Qué oferta se comunica este ciclo y con qué prioridad · 🟨 qué receta de captura toca, para marcar los slots |
+| **③ Marketing** | Qué oferta se comunica este ciclo y con qué prioridad · *(Growth Partnership)* qué receta de captura toca, para marcar los slots |
 | **④ Creatividad** | La oferta, el precio y el objetivo — para los ángulos · la palabra, el recurso y la llamada a la acción de cada pieza de captura |
 | **⑧ Community** | El sistema de seguimiento y recompra, para operarlo · la automatización de comenta-y-te-mando y el registro de leads |
-| **⑩ Ads** | Qué se vende, a qué precio y cuál es el objetivo de la pauta — en 🔷, en `ofertas-a-empujar.md` |
+| **⑩ Ads** | Qué se vende, a qué precio y cuál es el objetivo de la pauta — en Brand Growth, en `ofertas-a-empujar.md` |
 | **00 Account** | Lo que se le puede contar al cliente |
 
 ---
@@ -209,8 +213,8 @@ nada que escalar: no se toca el precio y no sale al cliente.
 - **No corre pauta.** Eso es ⑩ Ads
 - **No cambia el precio sin el cliente.** El precio es su decisión
 - **No promete lo que no está en «Capacidades reales»**
-- **No activa un pilar que el plan no paga**
-- **En 🔷 no cambia qué se vende, en qué paquetes ni a qué precio.** Solo elige qué se empuja
+- **No activa un pilar que el alcance contratado no incluye**
+- **En Brand Growth no cambia qué se vende, en qué paquetes ni a qué precio.** Solo elige qué se empuja
 - **No arregla el rumbo.** Si está mal, se devuelve a ① Strategy
 
 ---
@@ -218,9 +222,9 @@ nada que escalar: no se toca el precio y no sale al cliente.
 ## 10 · Antes de cerrar
 
 - [ ] La **división** está identificada, de ① Strategy
-- [ ] Solo se activaron **los pilares que el plan paga**
-- [ ] 🟨 La oferta tiene **precio**, y lo aprobó el cliente · 🔷 **no se tocó** qué se vende, sus paquetes ni su precio
-- [ ] 🟨 La captura tiene **una receta principal** y un objetivo de leads **interno**: no se prometió al cliente
+- [ ] Solo se activaron **los pilares que el alcance contratado incluye**
+- [ ] Growth Partnership: la oferta tiene **precio**, y lo aprobó el cliente · Brand Growth: **no se tocó** qué se vende, sus paquetes ni su precio
+- [ ] Growth Partnership: la captura tiene **una receta principal** y un objetivo de leads **interno**: no se prometió al cliente
 - [ ] Cada movimiento traza a una **MUST BE TRUE**
 - [ ] Nada promete algo fuera de «Capacidades reales»
-- [ ] 🟨 La oferta nueva **se escaló al CEO** antes de llegar al cliente
+- [ ] Growth Partnership: la oferta nueva **se escaló al CEO** antes de llegar al cliente

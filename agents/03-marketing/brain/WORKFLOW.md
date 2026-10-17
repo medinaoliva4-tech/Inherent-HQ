@@ -19,36 +19,39 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
-## 0 · El plan contratado — cuánto y a qué profundidad
+## 0 · El alcance contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
-`clients/<cliente>/00-onboarding/plan-contratado.md`:
-🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+**Lo primero de cada ciclo: leer la ficha de oferta del cliente.** La anota ① Strategy al arrancar en
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(nivel, áreas, volumen, revisiones y qué queda fuera)*:
+**Brand Foundation** · **Brand Growth** · **Growth Partnership** · ⬜ **a la medida**.
 
-- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
-  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
-  «El desglose por tarea». La profundidad, de `inherent/03-OFERTA.md` → «🔒 Uso interno».
+- 🛑 **Sin ficha anotada, el departamento no arranca:** `BLOQUEADO — falta el alcance contratado`.
+- 🛑 **El alcance contratado es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
+  rompe la promesa publicada (`inherent/03-OFERTA.md`).
+- Los volúmenes y los costos salen de la ficha y de `inherent/06-ECONOMIA.md`; el reparto por tarea, de
+  `inherent/05-OPERACION.md` → «El desglose por tarea».
   **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
 
-| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Slots por ciclo** | **86** | **145** | **145** | **204** |
-| **Campañas por ciclo** | **1** | **2** | **2** | **2** |
-| **Horas de grabación** | 3 h | 4 h | 6 h | 8 h |
-| **Videos planificados** *(20 min c/u)* | 9 | 12 | **18** | 24 |
-| **Derivados — mínimo** *(1:2)* | 4 | 6 | 9 | 12 |
-| **TOTAL videos — mínimo** | **13** | **18** | **27** | **36** |
-| *Derivados — tope (1:1)* | *9* | *12* | *18* | *24* |
-| **Estáticos y carruseles** | 43 | 72 | **63** | 88 |
-| **Stories** | 30 | 55 | 55 | 80 |
-| **Canales** | Donde esté la audiencia | **+ Google y alianzas** | + los que apliquen | + canal permanente |
-| **Revisiones por pieza** | **1** | 2 | 2 | 3 |
+**③ Marketing corre en Brand Growth y en Growth Partnership.** En **Brand Foundation no corre:** el plan de
+lanzamiento o de crecimiento a 90 días sale de ① Strategy, y la ejecución continua *(contenido, campañas,
+canales)* se cotiza como Brand Growth o como módulos.
+
+**Lo que fija la ficha** *(cada cliente trae su propio número; ninguno sale de este manual)*:
+
+| Qué se lee de la ficha | Para qué sirve |
+|---|---|
+| **Slots por ciclo** | El techo del calendario |
+| **Campañas por ciclo** | Cuántas BIG IDEAS idea ④ Creatividad |
+| **Horas de grabación** y **días de rodaje** | El techo real de video |
+| **Videos planificados** *(20 min c/u)* | La base de los derivados |
+| **Derivados** | Mínimo **1 por cada 2 videos planificados** *(1:2)*; tope **1:1** |
+| **Estáticos y carruseles** · **Stories** | El resto de la mezcla |
+| **Canales** contratados | Dónde se programa y se gestiona |
+| **Revisiones por pieza** | Cuántas devoluciones paga la ficha |
 
 **Cómo se lee:**
 
-- 🔑 **Una campaña, una BIG IDEA.** El número de campañas de esta tabla es el que ④ Creatividad usa
+- 🔑 **Una campaña, una BIG IDEA.** El número de campañas de la ficha es el que ④ Creatividad usa
   como número de BIG IDEAS del ciclo (`agents/04-creative/brain/WORKFLOW.md` → §0). **Si acá se
   encargan 2 campañas, allá se idean 2 BIG IDEAS — no una estirada en dos.**
 - 🔑 **La regla de los 20 minutos.** Un video planificado se graba en **20 minutos — si se graba por
@@ -56,27 +59,25 @@ paso vive en las skills: `skills/README.md`.
 - **El rango de derivados no es flojera, es honestidad:** si el material salió muy scripted las
   escenas no se reusan y cae al **mínimo (1:2)**. Si salió suelto llega al **tope (1:1)**.
   ⚠️ **Se promete el MÍNIMO. El tope es techo, no promesa.**
-- ⚠️ **🔷 Marketing Pro y 🟨 Accelerate piden las mismas 145 piezas.** La diferencia no es volumen:
-  **en Accelerate el calendario se arma contra una oferta rediseñada por ② Growth.** En la línea 🔷
+- ⚠️ **Growth Partnership no es «Brand Growth con más piezas».** La diferencia no es volumen:
+  **en Growth Partnership el calendario se arma contra una oferta trabajada por ② Growth** y se conecta con ventas,
+  experiencia de cliente y sistemas comerciales. En Brand Growth
   la oferta llega como está y **solo se trabaja el mensaje.**
-- ⚠️ **🟨 Accelerate no es «Pro con más piezas»:** **50% más video** *(18 planificados contra 12)* y
-  **menos estáticos** *(63 contra 72)*. La mezcla cambia a propósito — **copiar la fila de Pro es un
-  error.**
-- 🛑 **Si el plan del ciclo no entra en el techo, se recorta ACÁ y se declara** — nunca se manda de
+- 🛑 **Si el plan del ciclo no entra en el techo de la ficha, se recorta ACÁ y se declara** — nunca se manda de
   más esperando que alguien aguante. Recortar es decisión de alcance, y es de este departamento.
 
-### ⬜ Tailor Made — cuando el presupuesto no calza en un plan
+### ⬜ A la medida — cuando el cliente elige áreas o módulos sueltos
 
 Se define en el onboarding, en `plan-contratado.md`, con dos secciones: **Qué incluye** y **Su
 pipeline** —qué departamentos corren, en qué orden, qué entrega cada uno y a qué nivel—.
-**③ Marketing trabaja con lo que su pipeline le asigna**, en las unidades de la tabla de arriba: slots,
+**③ Marketing trabaja con lo que su pipeline le asigna**, en las unidades de la ficha: slots,
 campañas, horas, videos.
 
-- **No se bloquea por no ser un plan de lista ni se cuestiona por precio.**
+- **No se bloquea por no ser un paquete de lista ni se cuestiona por precio.**
 - **Si ③ Marketing no está en su pipeline, no corre para ese cliente.**
 - **El método es el mismo; cambia el pipeline.** La trazabilidad y las devoluciones no cambian:
   cambia qué corre y qué se verifica.
-- **Arriba de 🟨 Compound sube el volumen**, pero el techo real sigue siendo lo que se puede
+- **Si sube el volumen**, el techo real sigue siendo lo que se puede
   **grabar**: más slots de video que horas de producción es trabajo que no va a existir.
 
 ---
@@ -156,13 +157,13 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 
 ---
 
-## 3 · El techo: el plan contratado
+## 3 · El techo: el alcance contratado
 
-**Marketing no puede encargar más piezas de las que el plan paga.** Es restricción dura.
+**Marketing no puede encargar más piezas de las que la ficha incluye.** Es restricción dura.
 
-> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
+> 📐 **Cuánto y a qué profundidad según el alcance contratado: §0.** Una sola tabla, y está allá.
 
-🛑 **Si el plan del ciclo no entra en el techo, se recorta acá y se declara** — nunca se manda
+🛑 **Si el plan del ciclo no entra en el techo de la ficha, se recorta acá y se declara** — nunca se manda
 de más esperando que alguien aguante.
 
 ---
@@ -229,7 +230,7 @@ El CEO solo frena el flujo en ① Strategy y en ⑩ Ads — ninguna de las dos p
 - **No decide estética.** Eso es ②B Branding y ④ Creatividad
 - **No publica ni pauta.** Eso es ⑨ Posting y ⑩ Ads
 - **No cambia la estrategia.** Si está mal, se devuelve a ① Strategy
-- **No encarga más de lo que el plan contratado paga**
+- **No encarga más de lo que el alcance contratado incluye**
 - **No inventa un canal** que el cliente no tiene o no puede sostener
 
 ---
@@ -241,5 +242,5 @@ El CEO solo frena el flujo en ① Strategy y en ⑩ Ads — ninguna de las dos p
 - [ ] Cada canal tiene **una función única** y su *«qué NO se hace acá»*
 - [ ] Cada slot tiene `traza` a una MUST BE TRUE
 - [ ] Ninguna de las **cinco combinaciones prohibidas** aparece en el calendario
-- [ ] El total de slots **entra en el techo del plan contratado**
+- [ ] El total de slots **entra en el techo del alcance contratado**
 - [ ] Todo lo que viene de otro departamento está **citado con su ruta**

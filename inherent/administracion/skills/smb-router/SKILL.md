@@ -51,7 +51,7 @@ Pick the **single best match**, not a list of options. If two are close, pick th
 | "Code these invoices" / "process these bills" (no payment yet) | `ap-processor` |
 | "Run payroll" / "timesheets" | `payroll-prep` |
 | "Who owes me money?" / "overdue invoices" | `invoice-chase` |
-| "Márgenes" / "¿cuánto nos deja cada plan?" | `report-builder` — el precio de los planes lo decide el CEO con `inherent/06-ECONOMIA.md` |
+| "Márgenes" / "¿cuánto nos deja cada nivel o propuesta?" | `report-builder` — el precio de cada propuesta lo decide el CEO por alcance, con `inherent/06-ECONOMIA.md` |
 | "Impuestos" / "la declaración del mes" / "IVA" / "la SAT" / "¿nos acercamos al tope de pequeño contribuyente?" | `/tax-prep` |
 | "Los libros ya están cerrados, solo la declaración" / "el paquete del contador del año" | `tax-season-organizer` |
 | "Build me a report" / "track these numbers" / "KPI pack" | `report-builder` |

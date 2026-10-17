@@ -19,8 +19,8 @@ description: >
 > 🔑 **Esta capa es la que habilita el performance fee: 10% de las ventas atribuidas.**
 > ⚠️ **Sin atribución limpia no hay fee.**
 
-🔷 **En Marketing y Marketing Pro no hay fee:** antes de gastar basta el pixel de Meta. **La
-atribución limpia (CAPI + GA4) y el performance fee son de 🟨 Accelerate y Compound.**
+**El performance fee solo existe en Growth Partnership y solo con atribución limpia (CAPI + GA4).**
+En Brand Growth no hay fee: se mide con el tracking que pida la ficha, pero no es base de ningún cobro.
 
 ## 1 · Qué se atribuye y qué no
 
@@ -91,7 +91,7 @@ reporta el gasto como si fuera el CAC.
 
 - **No es el costo por lead.** El costo por lead va aparte, en `gr-captura`: un lead no es un cliente.
 - **No es la base del fee.** El fee se calcula sobre las **ventas** atribuidas (§3); el CAC **lee** cuánto costó conseguirlas.
-- 🔷 **En Marketing y Marketing Pro** se calcula solo si el cliente comparte sus ventas, y **no es base de ningún cobro**.
+- **Fuera de Growth Partnership** se calcula solo si el cliente comparte sus ventas, y **no es base de ningún cobro**.
 - **Lo lee `gr-numeros`** *(Money OS · LTV ÷ CAC)* y alimenta `ad-loop`.
 
 ## 6 · Qué escribe

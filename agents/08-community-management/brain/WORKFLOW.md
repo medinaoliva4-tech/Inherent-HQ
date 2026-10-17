@@ -25,34 +25,39 @@ bandeja vacía.
 
 ---
 
-## 0 · El plan contratado — qué se prende
+## 0 · El alcance contratado — qué se prende
 
-**Lo primero de cada corrida: leer el plan del cliente** en
-`clients/<cliente>/00-onboarding/plan-contratado.md`.
+**Lo primero de cada corrida: leer la ficha de oferta del cliente** en
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(nivel, áreas, volumen y qué queda fuera)*.
 
-- 🛑 **Sin plan anotado, ⑧ Community no corre para ese cliente:** `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo.** Lo que el plan no incluye no se hace aunque sea fácil.
-- ⬜ **Tailor Made: manda Su pipeline** del `plan-contratado.md`, sin cuestionarlo. Si ⑧ Community no está,
-  no corre para ese cliente; si está, prende el nivel que declara —**«Básico» es la columna
-  🔷 Marketing**—.
+- 🛑 **Sin ficha anotada, ⑧ Community no corre para ese cliente:** `BLOQUEADO — falta la ficha de oferta`.
+- 🛑 **El alcance contratado es el techo.** Lo que la ficha no incluye no se hace aunque sea fácil.
+- **⑧ Community corre cuando el alcance incluye el área de atención, retención y comunidad** *(por
+  defecto, en Growth Partnership)*. 🛑 **La atención diaria no va incluida por defecto:** la ficha
+  tiene que definir volumen, horarios, responsables y cobertura.
+- **Alcance a medida: manda Su pipeline** del `plan-contratado.md`, sin cuestionarlo. Si ⑧ Community no está,
+  no corre para ese cliente; si está, prende lo que declara.
 
-| Qué hace ⑧ Community | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Contesta lo simple** *(horarios, ubicación, menú o catálogo, precios publicados, links)* | ✅ | ✅ | ✅ | ✅ |
-| **Pasa lo complejo al WhatsApp del cliente** | ✅ | ✅ | ✅ | ✅ |
-| **Redes que atiende** | Las **Redes** del `plan-contratado.md` *(o las del plan por canal de ③ Marketing, si existe)* | **Todas las del cliente, todos los días** | Todas | Todas |
-| **Modera** *(oculta spam y abuso)* | — | ✅ | ✅ | ✅ |
-| **Seguimiento** *(quién preguntó qué, avisos al COO, `seguimiento/`)* | — | ✅ | ✅ | ✅ |
-| **Auto-DM por palabra clave y embudo de WhatsApp** | — | — | ✅ | ✅ |
-| **Agente de WhatsApp a medida** | — | — | ✅ *(se construye en `05-comunidad/whatsapp/`)* | ✅ |
+**La escalera no es por nivel solamente: se prende por lo que dice la ficha.** De lo básico a lo más
+profundo:
+
+| Qué hace ⑧ Community | **Base** *(siempre que ⑧ corre)* | **Con seguimiento** *(si la ficha lo incluye)* | **Con automatización** *(si la ficha lo incluye)* |
+|---|---|---|---|
+| **Contesta lo simple** *(horarios, ubicación, menú o catálogo, precios publicados, links)* | ✅ | ✅ | ✅ |
+| **Pasa lo complejo al WhatsApp del cliente** | ✅ | ✅ | ✅ |
+| **Redes que atiende** | Los **canales** del `plan-contratado.md` *(o los del plan por canal de ③ Marketing, si existe)* | Los que fije la ficha, con la frecuencia y la cobertura que declare | Los que fije la ficha |
+| **Modera** *(oculta spam y abuso)* | — | ✅ | ✅ |
+| **Seguimiento** *(quién preguntó qué, avisos al COO, `seguimiento/`)* | — | ✅ | ✅ |
+| **Auto-DM por palabra clave y embudo de WhatsApp** | — | — | ✅ |
+| **Agente de WhatsApp a medida** | — | — | ✅ *(se construye en `05-comunidad/whatsapp/`)* |
 
 **Cómo se lee:**
 
-- **En 🔷 Marketing, un evento, una reserva o una queja = darle al usuario el WhatsApp correcto del
-  cliente, y listo.** No se registra ni se avisa: eso es seguimiento, y empieza en Pro.
-- **Desde Pro, además se registra y se avisa al COO.**
+- **En la escalera base, un evento, una reserva o una queja = darle al usuario el WhatsApp correcto del
+  cliente, y listo.** No se registra ni se avisa: eso es seguimiento, y empieza cuando la ficha lo incluye.
+- **Con seguimiento, además se registra y se avisa al COO.**
 - **El auto-DM por palabra clave es una automatización de Zernio** que corre sola, sin la corrida.
-  Se arma solo en 🟨, cuando ③ Marketing o ④ Creatividad piden una palabra clave para una pieza.
+  Se arma solo cuando la ficha incluye automatización y ③ Marketing o ④ Creatividad piden una palabra clave para una pieza.
 
 ---
 
@@ -75,13 +80,13 @@ bandeja vacía.
 |---|---|---|
 | 💬 **Apoyo** *(«qué rico», 👏, una etiqueta)* | Agradece corto, con la voz de la marca, y cierra | 🟢 Sí |
 | 🛍️ **Pregunta simple** *(menú, horario, ubicación, precio publicado, cómo pedir)* | Contesta **solo con lo que dice la ficha** y cierra | 🟢 Sí |
-| 🎉 **Evento** | Contesta, comparte el WhatsApp de eventos y pide el número del usuario | 🟢 La respuesta sí · 📬 **aviso al COO** *(Pro+)* |
-| 📅 **Reserva** *(si el cliente reserva)* | Pide los datos que dice la ficha y confirma **que recibió**, nunca que reservó | 🟢 La respuesta sí · 📬 **aviso al COO** *(Pro+)* |
-| ⏳ **Lo que todavía no existe** *(un lanzamiento, un taller sin fecha)* | «Viene pronto, ¿te avisamos?» | 🟢 Sí · se anota como interesado *(Pro+)* |
+| 🎉 **Evento** | Contesta, comparte el WhatsApp de eventos y pide el número del usuario | 🟢 La respuesta sí · 📬 **aviso al COO** *(con seguimiento)* |
+| 📅 **Reserva** *(si el cliente reserva)* | Pide los datos que dice la ficha y confirma **que recibió**, nunca que reservó | 🟢 La respuesta sí · 📬 **aviso al COO** *(con seguimiento)* |
+| ⏳ **Lo que todavía no existe** *(un lanzamiento, un taller sin fecha)* | «Viene pronto, ¿te avisamos?» | 🟢 Sí · se anota como interesado *(con seguimiento)* |
 | 😠 **Queja** | Redacta una disculpa con tacto | 🟢 La respuesta sí · 🔴 **se escala al COO** |
 | 🤝 **Colaboración · prensa · influencer · empleo** | No contesta | 🔴 **Se escala al COO** |
 | ❓ **Algo que no está en la ficha** | No inventa | 🔴 **Se escala al COO** |
-| 🚫 **Spam · hater · bait** | No contesta. Oculta si es abuso *(Pro+)* | ⚫ — |
+| 🚫 **Spam · hater · bait** | No contesta. Oculta si es abuso *(con seguimiento)* | ⚫ — |
 
 🔒 **Nunca:** comprometer precio, fecha, disponibilidad o alcance que no estén en la ficha ·
 mencionar a otro cliente · hablar de costos de Inherent · escribirle a alguien que no escribió
@@ -158,4 +163,4 @@ conversación.** Los números y los textos viven en la ficha.
 |---|---|---|
 | **`respuestas.md`** — la ficha | `clients/<cliente>/05-comunidad/` | El operador de agentes, con la plantilla `entregables/respuestas.md`. **Se presenta antes de escribirla** |
 | **El reporte de cada corrida** | El correo del COO | `cm-envio` |
-| **`seguimiento/<AAAA-MM>.md`** | `clients/<cliente>/05-comunidad/` | `cm-loop` *(Pro+)* |
+| **`seguimiento/<AAAA-MM>.md`** | `clients/<cliente>/05-comunidad/` | `cm-loop` *(con seguimiento)* |

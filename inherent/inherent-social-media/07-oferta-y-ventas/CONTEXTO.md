@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | **Escribe aquí** | ② Growth |
-| **Se activa en** | Todos. 🔷 Marketing y Pro: solo `ofertas-a-empujar.md` · 🟨 Accelerate y Compound: completo |
+| **Se activa en** | Todos. Brand Foundation y Brand Growth: solo `ofertas-a-empujar.md` · Growth Partnership: completo, según la ficha de alcance |
 
 | Archivo o folder | Qué tiene |
 |---|---|

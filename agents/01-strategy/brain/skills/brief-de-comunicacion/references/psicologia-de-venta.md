@@ -17,7 +17,7 @@ contratado.
 |---|---|---|
 | **Palabras** | *«Respondemos en 12 minutos, de 8 a 20 h»* | *«Atención rápida y de calidad»* |
 | **Visual** | Un número grande, solo, en el color de acento | Un collage de íconos genéricos |
-| **Producto** | El plan dice *«86 piezas al mes»* | El plan dice *«contenido abundante»* |
+| **Producto** | El alcance dice *«los reels y carruseles de tu ficha, con rodaje y revisiones definidos»* | El plan dice *«contenido abundante»* |
 
 ## 2 · Prueba — mostrar antes que afirmar
 

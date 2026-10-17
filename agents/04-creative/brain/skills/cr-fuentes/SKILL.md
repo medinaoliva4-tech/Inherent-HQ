@@ -2,9 +2,9 @@
 name: cr-fuentes
 description: >
   Capa 1 de ④ Creatividad — la skill que CONSIGUE los anuncios. Decide de dónde salen las
-  referencias: la investigación se hace **en 5 niveles** y **por plataforma**, en las que usa el cliente según las
-  Redes de su plan contratado, con tres actores de Apify —anuncios, Instagram y TikTok— y volumen fijado
-  por el plan contratado. Define qué da y qué no da cada fuente, los topes de gasto, en qué países
+  referencias: la investigación se hace **en 5 niveles** y **por plataforma**, en las que usa el cliente según los
+  canales de su ficha de oferta, con tres actores de Apify —anuncios, Instagram y TikTok— y volumen fijado
+  por la ficha. Define qué da y qué no da cada fuente, los topes de gasto, en qué países
   se busca —salen del mercado de cada cliente—, y cuáles pasan a lectura profunda; extrae
   id, anunciante, copy, plataformas y fecha de inicio, y calcula la antigüedad. Úsala cuando pidan
   "buscá los anuncios de esta marca", "qué está corriendo la competencia", "de dónde saco
@@ -101,7 +101,7 @@ headless: el histórico de esa decisión quedó en `BARRIDO-NOCTURNO.md`, marcad
 
 ### 🛑 La investigación se hace por plataforma
 
-**Las plataformas son las del cliente** — las **Redes** de
+**Las plataformas son las del cliente** — los **canales** de
 `clients/<cliente>/00-onboarding/plan-contratado.md` *(si existe `plan-por-canal.md` de ③ Marketing,
 también sirve)*. No se investiga una plataforma donde el cliente no publica, por interesante que sea
 lo que haya ahí.
@@ -116,15 +116,12 @@ lo que haya ahí.
 
 ### Cuántos contenidos por ciclo
 
-**Por plataforma, y según el plan contratado:**
+**Por plataforma, y según la ficha de oferta del cliente:** la ficha fija cuántos contenidos se
+investigan por plataforma *(mitad competencia, mitad referencias)*. Si la ficha no lo fija, se
+declara y se escala al CEO; no se inventa el número.
 
-| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Contenidos a investigar, por plataforma** | **50** | **50** | **100** | **100** |
-
-**Se reparte en partes iguales entre los 5 niveles** *(ver abajo)*: con 50 por plataforma son
-**10 por nivel**; con 100, **20 por nivel**. En un cliente de 🔷 Marketing con tres plataformas son
-150 contenidos: 10 por nivel en cada plataforma.
+**Se reparte en partes iguales entre los 5 niveles de la investigación** *(ver abajo)*: el total por
+plataforma se divide entre cinco.
 
 ### Los 3 aprendizajes de la prueba
 
@@ -181,7 +178,7 @@ los niveles 2 a 5 alimentan a ④ Creatividad. **Nunca en la misma lista.**
 ### Cuántas cuentas y cuántos contenidos
 
 **5 cuentas por nivel.** De cada cuenta se leen sus contenidos hasta completar el cupo del nivel
-(10 o 20 por plataforma, según el plan). Una cuenta que no publica en una plataforma del cliente
+(según el volumen de la ficha). Una cuenta que no publica en una plataforma del cliente
 se sustituye por otra del mismo nivel.
 
 ### 🔄 Se refresca cada mes
@@ -261,7 +258,7 @@ barrido sin control.
 |---|---|
 | Resultados por búsqueda | **máximo 50.** Se ordena por antigüedad y se lee la primera página |
 | Ads por marca en el barrido de competidores | **máximo 25** |
-| Volumen por cliente por ciclo | **El del plan contratado, por plataforma** *(50 / 50 / 100 / 100)*. Si se pasa, **se declara y se para** |
+| Volumen por cliente por ciclo | **El de la ficha de oferta, por plataforma.** Si se pasa, **se declara y se para** |
 | Tope de gasto por cliente | **US$5 al mes.** No es el presupuesto esperado —el real es menos de US$1,30— sino **el límite de seguridad**: si se acerca, algo se está pidiendo mal |
 | Paginar más allá de la primera página | Solo si la primera trajo señal y falta cubrir el hueco |
 | Volver a pedir un ad ya leído | 🛑 **Nunca.** Está en su ficha de referencia — la ficha es la caché |
@@ -285,7 +282,7 @@ Todo relevamiento cierra con:
 
 ```
 - Fuentes usadas: [lista] · no disponibles: [lista] → evidencia faltante: [qué]
-- Plataformas investigadas: [lista, de las Redes del `plan-contratado.md`] · plan del cliente: [plan]
+- Plataformas investigadas: [lista, de los canales del `plan-contratado.md`] · nivel del cliente: [nivel]
 - Países por nivel: nivel 1 [país] · nivel 2 [países] · nivel 3 [país] · nivel 4 [países] · motivo: [mercado del cliente]
 - Contenidos por plataforma: [n] de [50 / 100] · por nivel: [n·n·n·n·n] · cuentas por nivel: [5·5·5·5·5]
 - Subidos a Research (`guardar_research`): [n] · duplicados evitados: [n]
@@ -309,8 +306,8 @@ Lo que le toca a las fuentes. El bloque completo de la capa lo cierra `cr-swipe-
 - [ ] El listado está **ordenado por antigüedad**, no por impresiones ni por engagement
 - [ ] Para orgánico: **la base del creador se midió** antes de declarar un outlier
 - [ ] Ninguna referencia se pidió dos veces — se buscó su ficha antes de volver a consultar
-- [ ] Se investigaron **solo las plataformas del cliente**, según las **Redes** del `plan-contratado.md` *(o `plan-por-canal.md` de ③ Marketing, si existe)*
-- [ ] El **volumen por plataforma** es el del plan contratado *(50 / 50 / 100 / 100)*, **repartido en partes iguales entre los 5 niveles**
+- [ ] Se investigaron **solo las plataformas del cliente**, según los **canales** del `plan-contratado.md` *(o `plan-por-canal.md` de ③ Marketing, si existe)*
+- [ ] El **volumen por plataforma** es el de la ficha de oferta, **repartido en partes iguales entre los 5 niveles**
 - [ ] Hay **5 cuentas por nivel** *(25 por cliente)* y la búsqueda siguió el **bloque 6 del brief de comunicación**
 - [ ] Los **techos** se respetaron: 50 por búsqueda · 25 por marca · US$5/mes de tope de seguridad
 - [ ] Toda corrida de Apify llevó **`resultsLimit`** y **`maxTotalChargeUsd`** — en los tres actores

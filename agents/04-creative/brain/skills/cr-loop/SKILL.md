@@ -122,7 +122,7 @@ seguidos es un patrón de cómo escribe Creative, y entra como hipótesis del ci
 | Departamento | Su pregunta | Quién la responde |
 |---|---|---|
 | **④ Creatividad** — Capa 7 | *¿Qué **patrón creativo** ganó y qué entra al próximo brief?* | 🟢 Esta skill |
-| **③ Marketing** | *¿Se movió la **MUST BE TRUE**? ¿Compoundea?* | 🛑 **No es de Creative** |
+| **③ Marketing** | *¿Se movió la **MUST BE TRUE**? ¿Se acumula?* | 🛑 **No es de Creative** |
 | **③ Marketing** | Los dashboards y el reporte de performance | 🛑 **No es de Creative** |
 
 Son **preguntas distintas sobre los mismos datos**, y ninguna reemplaza a otra.

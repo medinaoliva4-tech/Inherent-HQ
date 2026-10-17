@@ -38,13 +38,13 @@ Contexto del departamento: `agents/01-strategy/brain/WORKFLOW.md`.
 
 | # | Bloque | Qué responde |
 |---|---|---|
-| **1** | **Qué vendemos este ciclo** | **Una** oferta o producto a empujar, citado de lo que ya existe. 🛑 En la línea 🔷 Marketing **no se cambia la oferta**: se elige cuál de las que ya existen se cuenta |
+| **1** | **Qué vendemos este ciclo** | **Una** oferta o producto a empujar, citado de lo que ya existe. 🛑 En Brand Growth **no se cambia la oferta**: se elige cuál de las que ya existen se cuenta |
 | **2** | **A quién** | **Una** persona concreta *(no un segmento)*: qué quiere, qué le duele y cómo lo dice. Con su **lenguaje literal** |
 | **3** | **Qué queremos que haga** | **Una sola acción** medible: seguir, escribir por WhatsApp, reservar, comentar una palabra. Si son tres, no es brief |
 | **4** | **Qué queremos que sienta** | **Una** emoción dominante *(alivio, orgullo, curiosidad, pertenencia)*, con la razón de por qué mueve a esa persona |
 | **5** | **Cómo se comunica** | Tres líneas: **palabras** · **visual** · **ideas creativas** *(ver §3)* |
 | **6** | **Qué buscar** | La inspiración y el contexto que este brief pide *(ver §4)* |
-| **7** | **Qué no decimos** | Lo que el plan no cubre, los claims sin validar y el código saturado de la categoría |
+| **7** | **Qué no decimos** | Lo que el alcance contratado no cubre, los claims sin validar y el código saturado de la categoría |
 
 🛑 **La acción del bloque 3 no es una promesa comercial.** Lo que se promete al cliente sale de
 `inherent/03-OFERTA.md`; este brief solo dirige el contenido.
@@ -81,7 +81,7 @@ máximo cinco líneas.
 
 ## 5 · Cómo trabaja el agente
 
-1. **Lee** la estrategia aprobada y el plan contratado. Sin estrategia: `BLOQUEADO — falta la estrategia`.
+1. **Lee** la estrategia aprobada y el alcance contratado (`plan-contratado.md`). Sin estrategia: `BLOQUEADO — falta la estrategia`.
 2. **Elige una sola oferta, una sola persona y una sola acción.** Si la estrategia trae varias,
    escoge la que mueve la **MUST BE TRUE** del ciclo y deja las demás fuera, anotadas en el bloque 7.
 3. **Escribe los bloques 1 a 4** con datos de `clients/`. Lo que no esté: `⚠️ SIN DATOS`.
@@ -89,15 +89,18 @@ máximo cinco líneas.
 5. **Deriva el bloque 6** del bloque 5.
 6. **Se auto-revisa** con el QA y entrega.
 
-## 6 · Qué cambia por plan
+## 6 · Qué cambia por nivel
 
-> **El plan contratado es el techo.** El brief no promete nada que `plan-contratado.md` no cubra.
+> **El alcance contratado es el techo.** El brief no promete nada que `plan-contratado.md` no cubra.
 
-| | 🔷 **MARKETING · PRO** | 🟨 **ACCELERATE · COMPOUND** |
+| | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
 |---|---|---|
 | **Bloque 1** | Cuál de las ofertas existentes se empuja | La oferta rediseñada por ② Growth |
 | **Bloque 3** | Acción de atención: seguir, escribir, guardar | Acción de venta: reservar, comprar, pedir cotización |
-| **Bloque 7** | «No se promete facturación» | Sin restricción de plan |
+| **Bloque 7** | «No se promete facturación» | Sin restricción de alcance |
+
+> **En Brand Foundation no hay ciclo mensual:** este brief no corre. La comunicación se decide dentro
+> de la estrategia del proyecto; el brief nace cuando el cliente pasa a Brand Growth o a Growth Partnership.
 
 ## 7 · El gate — qué bloquea
 
@@ -111,7 +114,7 @@ máximo cinco líneas.
 
 - [ ] Cabe en **una página** y trae los siete bloques
 - [ ] **Una** oferta, **una** persona, **una** acción, **una** emoción
-- [ ] La oferta está **citada** de lo que ya existe; en la línea 🔷 no se tocó
+- [ ] La oferta está **citada** de lo que ya existe; en Brand Growth no se tocó
 - [ ] La persona trae **lenguaje literal** *(o `⚠️ SIN DATOS`)*
 - [ ] Palabras, visual e ideas creativas traen **ejemplo**, no adjetivos
 - [ ] Máximo **dos principios** de `psicologia-de-venta.md`, nombrados

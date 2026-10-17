@@ -11,14 +11,18 @@
 
 # Industrias — qué significa crecer en cada una
 
-> **Para cada industria:** cómo gana plata el negocio, dónde se traba, y qué hace cada paquete ahí.
+> **Para cada industria:** cómo gana plata el negocio, dónde se traba, y qué hace cada nivel ahí.
 >
 > **Para la web:** el visitante elige su industria y ve su propio caso, no uno genérico.
 > **Para los agentes:** es el punto de partida del bloque 01 · Comprensión.
 
+🔑 **La industria no cambia el precio por sí sola.** Cambia las tareas, los conocimientos y los
+canales. La inversión se ajusta por **volumen y complejidad** del alcance *(ver `06-ECONOMIA.md`
+→ «El precio se arma por alcance»)*.
+
 ---
 
-## Cómo se elige el paquete
+## Cómo se elige el nivel
 
 **Dos ejes deciden. Los dos se preguntan en el diagnóstico.**
 
@@ -26,41 +30,41 @@
 
 *(Los tramos son los del diagnóstico de la web)*
 
-| Momento | Facturación / mes | Paquete |
+| Momento | Facturación / mes | Nivel |
 |---|---|---|
 | Aún no vendo | — | **Todavía no.** Primero producto y oferta |
-| **Construyendo** | $2k – $10k | 🔷 **Marketing** |
-| **Creciendo** | $10k – $50k | 🔷 Marketing Pro → 🟨 **Accelerate** |
-| **Escalando** | $50k – $100k | 🟨 **Accelerate** → 🟨 Compound |
-| **Consolidada** | $100k+ | 🟨 **Compound** |
+| **Construyendo** | $2k – $10k | **Brand Foundation** → **Brand Growth** |
+| **Creciendo** | $10k – $50k | **Brand Growth** |
+| **Escalando** | $50k – $100k | **Brand Growth** → **Growth Partnership** |
+| **Consolidada** | $100k+ | **Growth Partnership** |
 
 ### Eje 2 · Dónde se traba el crecimiento
 
-| El cuello está en… | Paquete | Verbo |
+| El cuello está en… | Nivel | Lo que hacemos |
 |---|---|---|
-| **Nadie lo conoce.** Hay producto, no hay demanda | 🔷 **Marketing** | **ENCENDER** |
-| **Llega gente pero se pierde.** Hay demanda, no hay conversión | 🟨 **Accelerate** | **ACELERAR** |
-| **Funciona, pero todo depende de alguien.** Hay conversión, no hay sistema | 🟨 **Compound** | **COMPONER** |
+| **La marca o la oferta no están claras.** Marca nueva, reposicionamiento u oferta confusa | **Brand Foundation** | **Creamos la marca cool** |
+| **Hay oferta, falta demanda.** Nadie lo conoce lo suficiente | **Brand Growth** | **Hacemos más cool la marca que ya está** |
+| **Llega gente pero se pierde, o todo depende de alguien.** Marca y marketing no se conectan con ventas, atención y sistemas | **Growth Partnership** | **Nos metemos full** |
 
-> 🔑 **Manda el eje 2.** Un negocio de $100k que nadie conoce va a Marketing, no a Compound.
-> **El dinero dice cuánto puede pagar. El cuello dice qué necesita.**
+> 🔑 **Manda el eje 2.** Un negocio de $100k que nadie conoce va a Brand Growth, no a Growth
+> Partnership. **El dinero dice cuánto puede pagar. El cuello dice qué necesita.**
 
 ---
 
-## El propósito de cada paquete
+## El propósito de cada nivel
 
 ```
-🔷 MARKETING — ENCENDER
-   Empezar el motor. Atraer, crear nombre y hacer las asociaciones correctas.
-   Mejora el MENSAJE, no la oferta.
+BRAND FOUNDATION — CREAR
+   Un proyecto con inicio y cierre. Diagnóstico, posicionamiento, estructura de oferta,
+   identidad verbal y visual, y un plan a 90 días. La ejecución continua se cotiza aparte.
 
-🟨 ACCELERATE — ACELERAR
-   Crecer mucho más. Lead magnets, embudos, influencers, canales nuevos
-   y tecnología que quita fricción.
+BRAND GROWTH — CRECER
+   Una colaboración mensual. Crear demanda y mejorar cómo se presenta y se promociona
+   la marca: contenido, canales, campañas y pruebas, dentro del volumen acordado.
 
-🟨 COMPOUND — COMPONER
-   Que cada mes construya sobre el anterior. Retención, LTV, sistemas propios
-   y autonomía real del cliente.
+GROWTH PARTNERSHIP — INTEGRAR
+   Una colaboración integrada. Todo Brand Growth, conectado con ventas, experiencia de
+   cliente y sistemas comerciales. No equivale a hacerse cargo de toda la empresa.
 ```
 
 ---
@@ -74,11 +78,10 @@
 | **Cómo gana** | Pocos clientes, ticket alto, ciclo de venta largo con varias conversaciones |
 | **Dónde se traba** | El fundador es el único que vende. No hay pipeline, hay agenda |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Construye autoridad del fundador y de la marca. Contenido que demuestra criterio, no que vende. Asociaciones con players complementarios |
-| 🟨 **Accelerate** | **Lead magnets** (diagnósticos, calculadoras, reportes de industria), embudo de WhatsApp y LinkedIn orgánico. Google Search para intención alta |
-| 🟨 **Compound** | CRM propio, scoring de leads, secuencias de nurturing. **El pipeline deja de vivir en la cabeza del fundador** |
+| **Brand Growth** | Construye autoridad del fundador y de la marca. Contenido que demuestra criterio, no que vende. Asociaciones con players complementarios |
+| **Growth Partnership** | **Lead magnets** (diagnósticos, calculadoras, reportes de industria), embudo de WhatsApp y LinkedIn orgánico. Google Search para intención alta. CRM propio, scoring de leads, secuencias de nurturing. **El pipeline deja de vivir en la cabeza del fundador** |
 
 ---
 
@@ -89,11 +92,10 @@
 | **Cómo gana** | Cursos, mentorías, charlas, patrocinios, productos propios |
 | **Dónde se traba** | La persona **es** el producto. Si deja de publicar, deja de vender |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Define el territorio: de qué es dueña esta persona. Volumen alto para ganar superficie. Colaboraciones con pares |
-| 🟨 **Accelerate** | Lead magnet + lista propia. **Deja de alquilar la audiencia a Instagram.** Lanzamientos con campaña |
-| 🟨 **Compound** | Comunidad propia y membresía. **IA entrenada con su voz** para escalar sin grabar más |
+| **Brand Growth** | Define el territorio: de qué es dueña esta persona. Volumen alto para ganar superficie. Colaboraciones con pares |
+| **Growth Partnership** | Lead magnet + lista propia. **Deja de alquilar la audiencia a Instagram.** Lanzamientos con campaña. Comunidad propia y membresía. **IA entrenada con su voz** para escalar sin grabar más |
 
 ---
 
@@ -104,11 +106,10 @@
 | **Cómo gana** | Membresías, paquetes de sesiones, productos, retiros |
 | **Dónde se traba** | Adquiere clientes nuevos pero los pierde al tercer mes. **El problema es retención, no demanda** |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Presencia diaria y prueba social real. Transformaciones, testimonios, comunidad. Alianzas con nutricionistas, gimnasios, marcas locales |
-| 🟨 **Accelerate** | Embudo de prueba gratis → membresía. **Influencers locales de nicho**, no de alcance |
-| 🟨 **Compound** | **Retención y LTV son el foco.** Secuencias de reactivación, sistema de referidos, app o portal de miembros |
+| **Brand Growth** | Presencia diaria y prueba social real. Transformaciones, testimonios, comunidad. Alianzas con nutricionistas, gimnasios, marcas locales |
+| **Growth Partnership** | Embudo de prueba gratis → membresía. **Influencers locales de nicho**, no de alcance. **Retención y LTV son el foco.** Secuencias de reactivación, sistema de referidos, app o portal de miembros |
 
 ---
 
@@ -119,11 +120,10 @@
 | **Cómo gana** | Mesa, delivery, eventos, catering, productos empacados |
 | **Dónde se traba** | Llenan fin de semana y mueren entre semana. **El problema es distribución de demanda, no volumen** |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Antojo diario: producto que se ve irresistible, todos los días. Asociaciones con creadores de comida locales y apps de delivery |
-| 🟨 **Accelerate** | Campañas por **daypart** — llenar martes, no sábado. Google Maps e intención local. Pauta segmentada por radio |
-| 🟨 **Compound** | Recompra y frecuencia: club de clientes, cumpleaños, ocasiones. **Canales nuevos** — catering, eventos, producto empacado |
+| **Brand Growth** | Antojo diario: producto que se ve irresistible, todos los días. Asociaciones con creadores de comida locales y apps de delivery |
+| **Growth Partnership** | Campañas por **daypart** — llenar martes, no sábado. Google Maps e intención local. Pauta segmentada por radio. Recompra y frecuencia: club de clientes, cumpleaños, ocasiones. **Canales nuevos** — catering, eventos, producto empacado |
 
 ---
 
@@ -134,11 +134,10 @@
 | **Cómo gana** | Ticket chico y **frecuencia alta**. Café en taza, grano para llevar, pastelería, suscripción |
 | **Dónde se traba** | **No es un problema de clientes nuevos: es de frecuencia.** El cliente viene una vez a la semana y podría venir tres |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | **El ritual diario.** Contenido que ocupa un momento del día —la mañana, la pausa de las 4— no que describe el producto. Foto real, luz de día, nada de estudio |
-| 🟨 **Accelerate** | **Grano para llevar y suscripción** — es donde está el ticket. Google Maps e intención local *(«café cerca de mí»)*. Horario y daypart en la pauta |
-| 🟨 **Compound** | **Club de recompra y comunidad de barrio.** Catas, cursos, mesa comunitaria. El canal nuevo es mayoreo a oficinas |
+| **Brand Growth** | **El ritual diario.** Contenido que ocupa un momento del día —la mañana, la pausa de las 4— no que describe el producto. Foto real, luz de día, nada de estudio |
+| **Growth Partnership** | **Grano para llevar y suscripción** — es donde está el ticket. Google Maps e intención local *(«café cerca de mí»)*. Horario y daypart en la pauta. **Club de recompra y comunidad de barrio.** Catas, cursos, mesa comunitaria. El canal nuevo es mayoreo a oficinas |
 
 > 🔑 **Se separa de Restaurantes porque el cuello es distinto.**
 > Un restaurante pelea **distribución de demanda** *(llenar martes)*. Una cafetería pelea
@@ -156,11 +155,10 @@ más gente: necesita que la misma gente venga más veces.
 | **Cómo gana** | Volumen de unidades, temporada, rotación de inventario |
 | **Dónde se traba** | Cada producto necesita contenido y **no hay capacidad de producirlo** |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | 🔥 **Acá el volumen es la ventaja decisiva.** **La sesión de foto del mes se planifica por colección** — 43 estáticos al mes cubren una colección entera |
-| 🟨 **Accelerate** | Catálogo en Meta y **Performance Max**. Recuperación de carrito. Influencers con código |
-| 🟨 **Compound** | Recompra y LTV. Dashboard de rotación conectado a la pauta |
+| **Brand Growth** | 🔥 **Acá el volumen es la ventaja decisiva.** **La sesión de foto del ciclo se planifica por colección**, y el volumen acordado en la ficha se reparte para cubrir una colección entera |
+| **Growth Partnership** | Catálogo en Meta y **Performance Max**. Recuperación de carrito. Influencers con código. Recompra y LTV. Dashboard de rotación conectado a la pauta |
 
 ---
 
@@ -171,11 +169,10 @@ más gente: necesita que la misma gente venga más veces.
 | **Cómo gana** | Ocupación, tarifa promedio, temporada, eventos |
 | **Dónde se traba** | Depende de OTAs (Booking, Airbnb) que se llevan la comisión. **No tiene canal directo** |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Construye deseo de destino, no de habitación. Asociaciones con turismo, tours y creadores de viaje |
-| 🟨 **Accelerate** | **Reserva directa** como objetivo: landing propia, campañas de temporada, Google Search de intención. Reduce la dependencia de OTAs |
-| 🟨 **Compound** | Motor de reserva propio, secuencias pre y post estadía, programa de huéspedes que vuelven |
+| **Brand Growth** | Construye deseo de destino, no de habitación. Asociaciones con turismo, tours y creadores de viaje |
+| **Growth Partnership** | **Reserva directa** como objetivo: landing propia, campañas de temporada, Google Search de intención. Reduce la dependencia de OTAs. Motor de reserva propio, secuencias pre y post estadía, programa de huéspedes que vuelven |
 
 ---
 
@@ -186,11 +183,10 @@ más gente: necesita que la misma gente venga más veces.
 | **Cómo gana** | Suscripción, ciclo de vida largo, expansión dentro de la cuenta |
 | **Dónde se traba** | El producto es bueno y **nadie entiende qué hace** |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Traduce el producto a problema. Contenido que educa antes de vender. Alianzas con integradores y comunidades |
-| 🟨 **Accelerate** | **Lead magnets técnicos** — plantillas, benchmarks, demos. Google Search por intención de problema. Onboarding a prueba gratuita |
-| 🟨 **Compound** | Activación y retención dentro del producto. **IA propia entrenada con su documentación** |
+| **Brand Growth** | Traduce el producto a problema. Contenido que educa antes de vender. Alianzas con integradores y comunidades |
+| **Growth Partnership** | **Lead magnets técnicos** — plantillas, benchmarks, demos. Google Search por intención de problema. Onboarding a prueba gratuita. Activación y retención dentro del producto. **IA propia entrenada con su documentación** |
 
 ---
 
@@ -201,11 +197,10 @@ más gente: necesita que la misma gente venga más veces.
 | **Cómo gana** | Confianza, ticket alto, relación larga |
 | **Dónde se traba** | Categoría con baja confianza. **Nadie compra a quien no conoce** |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Autoridad y claridad. Educación financiera que construye confianza. Tono cuidado: **la categoría castiga la promesa exagerada** |
-| 🟨 **Accelerate** | Lead magnets de diagnóstico. Embudo con calificación previa. Google Search de intención alta |
-| 🟨 **Compound** | CRM con seguimiento largo, portal de cliente, secuencias por etapa de vida |
+| **Brand Growth** | Autoridad y claridad. Educación financiera que construye confianza. Tono cuidado: **la categoría castiga la promesa exagerada** |
+| **Growth Partnership** | Lead magnets de diagnóstico. Embudo con calificación previa. Google Search de intención alta. CRM con seguimiento largo, portal de cliente, secuencias por etapa de vida |
 
 ---
 
@@ -216,11 +211,10 @@ más gente: necesita que la misma gente venga más veces.
 | **Cómo gana** | Referencia médica, procedimientos, seguimiento |
 | **Dónde se traba** | Depende de referidos. **Crecer exige credibilidad, no alcance** |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Credibilidad del especialista. Casos, proceso, educación. Alianzas con médicos referentes. **Las restricciones de pauta en salud se revisan antes de prometer** |
-| 🟨 **Accelerate** | Embudo de consulta con calificación. WhatsApp para agendar. Google Search por síntoma y procedimiento |
-| 🟨 **Compound** | Seguimiento post procedimiento, recordatorios, portal de paciente, sistema de referidos |
+| **Brand Growth** | Credibilidad del especialista. Casos, proceso, educación. Alianzas con médicos referentes. **Las restricciones de pauta en salud se revisan antes de prometer** |
+| **Growth Partnership** | Embudo de consulta con calificación. WhatsApp para agendar. Google Search por síntoma y procedimiento. Seguimiento post procedimiento, recordatorios, portal de paciente, sistema de referidos |
 
 ---
 
@@ -231,11 +225,10 @@ más gente: necesita que la misma gente venga más veces.
 | **Cómo gana** | Pocos proyectos, ticket muy alto, decisión lenta y emocional |
 | **Dónde se traba** | Portafolio hermoso, **cero distribución**. Solo lo ven quienes ya los conocen |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | Convierte el portafolio en contenido: proceso, antes y después, criterio. Alianzas con desarrolladoras y proveedores |
-| 🟨 **Accelerate** | Lead magnet de proyecto. **Renders que entrega el cliente**, editados con marca. Campañas segmentadas por zona y nivel socioeconómico |
-| 🟨 **Compound** | Portal de cliente para seguimiento de obra |
+| **Brand Growth** | Convierte el portafolio en contenido: proceso, antes y después, criterio. Alianzas con desarrolladoras y proveedores |
+| **Growth Partnership** | Lead magnet de proyecto. **Renders que entrega el cliente**, editados con marca. Campañas segmentadas por zona y nivel socioeconómico. Portal de cliente para seguimiento de obra |
 
 ---
 
@@ -246,11 +239,10 @@ más gente: necesita que la misma gente venga más veces.
 | **Cómo gana** | **Membresía recurrente.** Cuota mensual o anual, eventos, invitados, espacios |
 | **Dónde se traba** | **Se vende pertenencia y se comunica como servicio.** Listan amenidades y precio cuando lo que compra el socio es con quién va a estar |
 
-| | Qué hace acá |
+| Nivel | Qué hace acá |
 |---|---|
-| 🔷 **Marketing** | **Mostrar a los socios, no las instalaciones.** Caras, momentos y conversaciones. El producto es la gente |
-| 🟨 **Accelerate** | **La lista de espera y el referido de socio** son el canal, no la pauta fría. Proceso de admisión que se siente selectivo. Corporativo como cuenta grande |
-| 🟨 **Compound** | **Que la comunidad se sostenga sola:** rituales, comités, embajadores. Medir **churn de membresía**, que es la métrica real del negocio |
+| **Brand Growth** | **Mostrar a los socios, no las instalaciones.** Caras, momentos y conversaciones. El producto es la gente |
+| **Growth Partnership** | **La lista de espera y el referido de socio** son el canal, no la pauta fría. Proceso de admisión que se siente selectivo. Corporativo como cuenta grande. **Que la comunidad se sostenga sola:** rituales, comités, embajadores. Medir **churn de membresía**, que es la métrica real del negocio |
 
 ### Lo que lo hace distinto de todo lo demás
 
@@ -271,23 +263,36 @@ como excepción al CEO — no se cierra la venta por cerrarla.
 
 ## 🔁 Los patrones que se repiten
 
-**Aunque las doce industrias son distintas, el cuello siempre es uno de tres.**
+**Aunque las doce industrias son distintas, el cuello siempre es uno de cuatro.**
 
-| El patrón | Industrias donde más aparece | Paquete |
+| El patrón | Industrias donde más aparece | Nivel |
 |---|---|---|
-| **No me conocen** | Arquitectura · Software · B2B | 🔷 Marketing |
-| **Me conocen y no convierto** | Restaurantes · Salud · Hotelería | 🟨 Accelerate |
-| **Convierto y no retengo** | Wellness · Retail · Marca personal · Cafeterías · Clubes | 🟨 Compound |
+| **La marca o la oferta no están claras** | Marca personal · Software · Arquitectura *(al arrancar o reposicionarse)* | Brand Foundation |
+| **No me conocen** | Arquitectura · Software · B2B | Brand Growth |
+| **Me conocen y no convierto** | Restaurantes · Salud · Hotelería | Growth Partnership |
+| **Convierto y no retengo** | Wellness · Retail · Marca personal · Cafeterías · Clubes | Growth Partnership |
 
-> **Por eso los paquetes no son por industria: son por cuello.**
+> **Por eso los niveles no son por industria: son por cuello.**
 > La industria define **cómo se ve** la solución. El cuello define **cuál es**.
+
+### Cómo cambia el alcance según el tipo de negocio
+
+**La industria no mueve el precio por sí sola: mueve las tareas y los canales. Lo que sube la
+inversión es el volumen y la complejidad.**
+
+| Tipo de negocio | Qué se trabaja | Qué sube el alcance |
+|---|---|---|
+| **Tienda en Instagram** | Marca, contenido de producto, campañas, seguimiento por WhatsApp | Más productos, grabación frecuente, inventario cambiante, atención diaria, pagos y envíos |
+| **Restaurante** | Campañas locales, contenido en el local, reservas y delivery | Varias sucursales, producción frecuente, horarios, menú amplio, promociones |
+| **B2B** | Posicionamiento, contenido experto, leads y pipeline | Ciclos largos, varios decisores, CRM complejo, eventos |
+| **E-commerce de consumo** | Oferta, contenido de producto, anuncios, conversión | Catálogo, mercados, tienda, logística, afiliados, pruebas intensivas |
 
 ---
 
 ## Para la web
 
 El visitante elige su industria y ve su caso: cómo gana, dónde se traba, y qué hace cada
-paquete ahí.
+nivel ahí.
 
 🔒 **Nada de lo que se publique puede salirse de «Capacidades reales» de `06-ECONOMIA.md`.**
 Si un entregable suena bien para una industria pero no hay MCP que lo ejecute, **no va a la web.**
@@ -310,19 +315,18 @@ COSTOS          en quetzales      producción · operación
 INGRESOS        en dólares        al precio del mercado donde esté el cliente
 ```
 
-**El costo de entregar una cuenta es el mismo en Guatemala, México o Miami.**
+**El costo de entregar un alcance es el mismo en Guatemala, México o Miami.**
 Los agentes corren igual. Producción y operación cobran en quetzales.
 **Lo único que cambia es el precio** — y con el mismo costo, un precio más alto es margen más alto.
 
-### El punto de partida · Guatemala
+### El precio por mercado es un factor de alcance
 
-| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| **Precio** | $950 | $1,450 | $2,500 | $4,200 |
-| **Costo fijo por cuenta** | Q1,665 | Q2,555 | Q5,700 | Q8,800 |
-| **Margen** | **77%** | **77%** | **70%** | **73%** |
+**No hay una tabla de precios por plan.** El precio de cada propuesta se arma por **alcance**
+*(volumen y complejidad, ver `06-ECONOMIA.md`)* y **el mercado donde está el cliente es uno de
+los factores** que lo ajustan: qué paga ese mercado por un trabajo equivalente, en qué moneda se
+cobra y qué costos de terceros trae.
 
-**El costo no sube al cambiar de mercado.** Ver `06-ECONOMIA.md` → «Los costos por plan — fijos».
+**El costo no sube al cambiar de mercado.** Ver `06-ECONOMIA.md` → «Los costos — por rubro y por rol».
 
 ---
 
@@ -350,12 +354,13 @@ y el costo de servirlo es el mismo desde acá.
 
 # Red de mentores — mapa, costos y reglas
 
-> **El acompañamiento es el hilo de la línea Growth.** Esta sección dice **de dónde sale cada
-> mentor y cuánto cuesta** — porque el precio define en qué plan cabe.
-> **El mentor de la industria hace la auditoría del cliente**, y su costo sale del rubro
-> Especialista.
+> **El experto de industria es parte de Growth Partnership.** Esta sección dice **de dónde sale
+> cada mentor y cuánto cuesta** — porque el costo define si cabe en el alcance o va aparte.
+> **Cada propuesta especifica quién es el experto, cuántas horas y qué entrega.** Nunca «acceso
+> a expertos» sin límite.
 
 ---
+
 
 ## El mapa por industria
 
@@ -369,11 +374,11 @@ y el costo de servirlo es el mismo desde acá.
 | **E-commerce y DTC** | **MentorPass** — mentor de crecimiento, $72 / 30 min | **MentorPass** — especialista en CX, $180 / 30 min | **MentorPass** — retención y CX, $540 / 30 min |
 | **Wellness y fitness** | **MentorPass** — fundador de marca fitness, $72 / 30 min | **MentorPass** — fundador wellness, $180 / 30 min | **The Maxwell Method** — $600 por 2 sesiones de 90 min · mentoría de 6 semanas $2,900 |
 | **Suplementos** | **MicroMentor** — gratis · **no garantiza experiencia en suplementos** | **MentorPass** — fundador de Obvi, $144 / 30 min | **MentorPass** — fundador de Zesty Paws, $720 / 30 min |
-| **Servicios profesionales** | **MicroMentor** — gratis · orientación general | **GrowthMentor** — $50-85/mes *(algunos mentores cobran aparte)* | **GLG** · **Guidepoint** — cotización. Estimaciones independientes: **$700-1,500+/hora**. Fuera del techo de cualquier plan |
+| **Servicios profesionales** | **MicroMentor** — gratis · orientación general | **GrowthMentor** — $50-85/mes *(algunos mentores cobran aparte)* | **GLG** · **Guidepoint** — cotización. Estimaciones independientes: **$700-1,500+/hora**. Fuera del techo: va como add-on facturado |
 
-🔑 **Si la industria del cliente no está en el mapa, el mentor se busca antes de vender
-Accelerate o Compound.** Sin mentor, la línea «un especialista de tu industria» no tiene con qué
-cumplirse.
+🔑 **Si la industria del cliente no está en el mapa, el mentor se busca antes de proponer
+Growth Partnership con experto de industria.** Sin mentor, «un especialista de tu industria» no
+tiene con qué cumplirse.
 
 ---
 
@@ -385,8 +390,8 @@ cumplirse.
 
 | | Regla | Por qué |
 |---|---|---|
-| **1** | **Solo se selecciona el mentor que cabe en el plan.** El presupuesto filtra antes que la afinidad | Un mentor que no cabe no se propone. No se descubre el costo después |
-| **2** | **Trimestral en Accelerate, mensual en Compound** | El valor del mentor está en el criterio, no en la cadencia. Un fundador no necesita 12 sesiones al año — necesita la correcta en el momento correcto |
+| **1** | **Solo se selecciona el mentor que cabe en el alcance.** El presupuesto filtra antes que la afinidad | Un mentor que no cabe no se propone. No se descubre el costo después |
+| **2** | **La cadencia la fija la ficha de la propuesta:** quién es el experto, cuántas sesiones y qué entrega | El valor del mentor está en el criterio, no en la cadencia. Un fundador no necesita 12 sesiones al año — necesita la correcta en el momento correcto |
 | **3** | **La membresía se compra anual y es de Inherent, no del cliente** | Se paga una vez y sirve a todos los clientes de esa industria durante el año. Costo fijo prorrateado, como la IA |
 
 ### 💡 La regla 3 es la que más plata ahorra
@@ -405,34 +410,18 @@ cumplirse.
 
 ## La política — qué se absorbe y qué no
 
-| Plan | Qué incluye | Techo por sesión | **Rubro Especialista / mes** |
-|---|---|---|---|
-| 🔷 **Marketing** | **No lleva mentor ni especialista** | — | — |
-| 🔷 **Marketing Pro** | **No lleva mentor ni especialista** | — | — |
-| 🟨 **Accelerate** | Comunidad + **1 sesión por trimestre** · auditoría con el mentor | **$144** | **Q1,000** |
-| 🟨 **Compound** | Comunidad + **1 sesión al mes** · auditoría con el mentor | **$180** | **Q2,000** |
+| Nivel | Experto de industria |
+|---|---|
+| **Brand Foundation** | **No lleva mentor ni experto** |
+| **Brand Growth** | **No lleva mentor ni experto** |
+| **Growth Partnership** | Según acuerdo, **y solo aquí:** la ficha dice quién, cuántas horas y qué entrega *(una sesión de asesoría o revisión de estrategia, comentarios de oferta, canal y prácticas, introducciones si se acuerda)* |
 
-*La membresía prorrateada, la auditoría y las sesiones salen del rubro Especialista. Las sesiones
-no usadas se acumulan dentro del trimestre.*
+*La membresía prorrateada, la auditoría y las sesiones se pagan del rubro de especialista de la
+propuesta. El monto de ese rubro sale de la ficha de oferta, no de una tabla por plan.*
 
-Lo que sobra del rubro cubre un mentor un poco más caro o una segunda sesión puntual —
-**nunca uno arriba de $180.**
-
-> 🔑 **El mentor es exclusivo de la línea Growth.** Es el diferenciador que la justifica, y
-> meterlo en la línea Marketing rompería el margen del plan barato sin agregar lo que vende:
-> **en Marketing no hay estrategia que acompañar.**
-
-### El margen final, con el mentor adentro
-
-| Plan | Precio | Costo fijo total | De eso, Especialista | **Margen** |
-|---|---|---|---|---|
-| 🔷 **Marketing** | Q7,315 | Q1,665 | — | **77%** |
-| 🔷 **Marketing Pro** | Q11,165 | Q2,555 | — | **77%** |
-| 🟨 **Accelerate** | Q19,250 | Q5,700 | Q1,000 | **70%** |
-| 🟨 **Compound** | Q32,340 | Q8,800 | Q2,000 | **73%** |
-
-> **Los cuatro quedan entre 70% y 77%, fijos.** El piso del modelo es **60%**: un plan que
-> baje de ahí con el especialista adentro está mal preciado. Ver `06-ECONOMIA.md`.
+> 🔑 **El mentor es exclusivo de Growth Partnership.** Es el diferenciador que justifica la
+> profundidad de ese nivel, y meterlo en Brand Foundation o Brand Growth rompería el margen sin
+> agregar lo que esos niveles venden.
 
 ---
 
@@ -441,7 +430,7 @@ Lo que sobra del rubro cubre un mentor un poco más caro o una segunda sesión p
 **Arriba de $180 por sesión, el mentor va como add-on facturado al cliente, con margen.**
 
 **Por qué:** en MentorPass hay mentores de $360, $540, $720 y arriba de $1,000 la sesión.
-**Un mentor de $950 la sesión no cabe en el rubro Especialista de ningún plan — ni del de $4,200.**
+**Un mentor de $950 la sesión no cabe en el rubro de especialista de ninguna propuesta.**
 
 **Cómo se vende:** *«Hay un mentor que es exactamente lo que necesitas. Cuesta $X la sesión.
 ¿Lo traemos?»* — **es decisión del cliente, no un costo nuestro escondido.**
@@ -456,9 +445,9 @@ Lo que sobra del rubro cubre un mentor un poco más caro o una segunda sesión p
 | | |
 |---|---|
 | **Primero lo gratis** | Wingman, EntreArchitect y MicroMentor cuestan Q0. **Si la industria tiene comunidad, se usa** |
-| **El match filtra por presupuesto** | No solo por afinidad. **Un mentor que no cabe en el plan no se propone** |
+| **El match filtra por presupuesto** | No solo por afinidad. **Un mentor que no cabe en el alcance no se propone** |
 | **La membresía siempre se paga anual** | Baja hasta 41% y sirve a todos los clientes de esa industria. **Es de Inherent, no del cliente** |
-| **Solo en la línea Growth · trimestral en Accelerate** | El valor está en el criterio, no en la frecuencia |
+| **Solo en Growth Partnership** | La ficha especifica quién, cuántas horas y qué entrega. El valor está en el criterio, no en la frecuencia |
 | **Arriba de $180 la sesión: add-on facturado** | Nunca se absorbe. Es decisión del cliente |
 | **Se verifica la experiencia real** | Un mentor de suplementos para mascotas no sirve para suplementos deportivos |
 | **Grupal ≠ 1:1** | EntreArchitect Mastermind es grupal. **No se vende como sesión privada** |

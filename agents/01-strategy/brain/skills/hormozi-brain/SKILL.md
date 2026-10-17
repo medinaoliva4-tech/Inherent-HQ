@@ -33,7 +33,7 @@ references/
 ## Workflow con un cliente
 
 **0 · El techo.** Leer `clients/<cliente>/00-onboarding/plan-contratado.md`. Lo que el material recomienda y el
-plan no incluye se marca `FUERA DEL PLAN` y no entra al brief (ver `CLAUDE.md`: solo Growth toca la oferta).
+alcance contratado no incluye se marca `FUERA DEL ALCANCE` y no entra al brief (ver `CLAUDE.md`: la oferta se trabaja en Brand Foundation y en la profundidad completa de Growth Partnership).
 
 **1 · Diagnosticar la ETAPA** — máximo 3 preguntas:
 1. ¿Cuánto factura al mes y desde cuándo vende?

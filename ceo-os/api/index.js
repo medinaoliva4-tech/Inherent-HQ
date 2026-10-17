@@ -16,6 +16,7 @@ import * as recipes from './_lib/recipes.js';
 import * as recurring from './_lib/recurring.js';
 import * as results from './_lib/results.js';
 import { blockersOf } from '../public/js/cycle.js';
+import { levelName } from '../public/js/levels.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -212,7 +213,7 @@ on('GET', 'repo/precios', async (req, res) => {
   const u = await guard(req, res, 'sales'); if (!u) return;
   const eco = await readFile('inherent/06-ECONOMIA.md');
   if (!eco) return res.status(502).json({ error: 'No pude leer los planes del repo', code: 'NO_REPO' });
-  const { plans, tipoCambio } = parseEconomia(eco.content);
+  const { plans = [], tipoCambio = null } = parseEconomia(eco.content);
   res.json({ tipoCambio, plans: plans.map((p) => ({ id: p.id, name: p.name, precio: p.precio, precioUsd: p.precioUsd, volumen: p.volumen, promete: p.promete, hace: p.hace, incluye: p.incluye, ...(u.role === 'ceo' ? { costo: p.costo, margen: p.margen } : {}) })) });
 });
 on('GET', 'repo/clients', async (req, res) => {
@@ -667,7 +668,7 @@ on('GET', 'portal', async (req, res) => {
   const pt = (pid) => tasks.filter((t) => t.project_id === pid && (t.visibility || 'all') === 'all' && t.tipo !== 'Personal');
   const pct = (l) => (l.length ? Math.round((l.filter((t) => t.status === 'Hecha').length / l.length) * 100) : null);
   const out = {
-    slug, name: acc?.name || slug.toUpperCase(), plan: f ? String(parsePlanContratado(f.content, 'team').plan || '').replace(/^[⬜🔷🟨]️?\s*/u, '') : '',
+    slug, name: acc?.name || slug.toUpperCase(), plan: f ? levelName(String(parsePlanContratado(f.content, 'team').plan || '').replace(/^[⬜🔷🟨]️?\s*/u, '')) : '',
     projects: ps.map((x) => {
       const ts = pt(x.id);
       return { name: x.name, kind: x.kind, phases: (x.phases || []).map(({ name, start, end, status }) => ({ name, start, end, status })), progress: pct(ts),

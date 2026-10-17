@@ -18,48 +18,48 @@ Reúne la data. **No interpreta, no decide, no recomienda.** Interpretar es del 
 
 ---
 
-## A.0 · EL PLAN CONTRATADO ← **el primer dato de todos**
+## A.0 · EL ALCANCE CONTRATADO ← **el primer dato de todos**
 
 > **Antes de mirar el negocio hay que saber hasta dónde podemos llegar con él.**
-> El plan define **qué se le va a trabajar y hasta qué punto.** Sin este dato, la estrategia
+> La ficha de oferta define **qué se le va a trabajar y hasta qué punto.** Sin este dato, la estrategia
 > promete lo que no se puede entregar.
 
-| Plan | El boost | Verbo de los pilares | Sistemas que se activan |
+| Nivel | El boost | Verbo de los pilares | Sistemas que se activan |
 |---|---|---|---|
-| 🔷 **MARKETING** $950 | Existir | ⛔ *no corren* | ⬜ Ninguno |
-| 🔷 **MARKETING PRO** $1,450 | Sostener presencia en serio | ⛔ *no corren* | ⬜ Ninguno |
-| 🟨 **ACCELERATE** $2,500 | Escalar lo que ya funciona, sin perderlo | **Ejecuta** | Growth · Conversion · Operations *(parcial)* |
-| 🟨 **COMPOUND** $4,200 | Que crezca sin el fundador | **Sistematiza** | **Los cuatro** |
-| ⬜ **Tailor Made** | Lo define el CEO en el onboarding | Según su pipeline | Según su pipeline |
+| **BRAND FOUNDATION** | Crear la marca cool *(proyecto con inicio y cierre)* | ⛔ *no corren como departamento: la oferta se estructura en la estrategia* | ⬜ Ninguno |
+| **BRAND GROWTH** | Hacer más cool la marca que ya está | ⛔ *② Growth corre ligero* | ⬜ Ninguno |
+| **GROWTH PARTNERSHIP** | Conectar marca y marketing con ventas, experiencia de cliente y sistemas comerciales | **Ejecuta o sistematiza**, según la ficha | Los que la ficha incluya |
+| ⬜ **A la medida** | Lo define el CEO en el onboarding | Según su pipeline | Según su pipeline |
 
-| Plan | Briefs que se arman |
+| Nivel | Briefs que se arman |
 |---|---|
-| 🔷 **MARKETING** | Branding · Marketing · Creative · Growth *(ligero)* |
-| 🔷 **MARKETING PRO** | + Producción |
-| 🟨 **ACCELERATE** | **Growth completo** · + **Tecnología** |
-| 🟨 **COMPOUND** | + **Sistemas** |
-| ⬜ **Tailor Made** | Los de los departamentos de **Su pipeline** *(`plan-contratado.md`)* |
+| **BRAND FOUNDATION** | Branding · Creative *(dirección creativa y aplicaciones)* · lista priorizada de próximos trabajos |
+| **BRAND GROWTH** | Branding · Marketing · Creative · Growth *(ligero)* · Producción según la ficha |
+| **GROWTH PARTNERSHIP** | **Growth completo** · + **Tecnología** · + **Sistemas**, según la ficha |
+| ⬜ **A la medida** | Los de los departamentos de **Su pipeline** *(`plan-contratado.md`)* |
 
-**Los cuatro incluyen estrategia. Cambia la profundidad, no la existencia.**
-⚠️ **Pero en la línea 🔷 Marketing la estrategia llega hasta el MENSAJE.**
-Qué vende, en qué paquetes y a qué precio **solo se toca desde 🟨 Accelerate.**
+**Los tres incluyen estrategia. Cambia la profundidad, no la existencia.**
+⚠️ **Pero en Brand Growth la estrategia llega hasta el MENSAJE.**
+Qué vende, en qué paquetes y a qué precio **se trabaja en Brand Foundation y en la profundidad completa
+de Growth Partnership.**
 **Los pilares son los mismos — cambia a qué profundidad se activan.** Ver `inherent/03-OFERTA.md`.
+**No todos los clientes compran todas las áreas:** la ficha dice cuáles.
 
 ### Lo que hay que registrar
 
 | | |
 |---|---|
-| **Línea** | 🔷 Marketing *(atención)* · 🟨 Growth *(facturación)* |
-| **Plan contratado** | Marketing · Marketing Pro · Accelerate · Compound · Tailor Made |
+| **Nivel contratado** | Brand Foundation · Brand Growth · Growth Partnership · a la medida |
+| **Áreas contratadas** | Cuáles de las áreas del catálogo entran, y cuáles quedan fuera |
 | **Desde cuándo** | Para saber en qué trimestre va |
-| **Performance fee** | ¿Opcional o incluido? Cambia dónde se pone el foco |
-| **Marcas o cuentas** | 1 paquete = 1 marca. Si hay más, son add-on |
+| **Performance fee** | Solo en Growth Partnership y con atribución limpia: ¿incluido o no? Cambia dónde se pone el foco |
+| **Marcas o cuentas** | 1 ficha = 1 marca. Si hay más, se cotizan aparte |
 
-⚠️ **Si el objetivo del cliente vive en una capa que su plan no cubre** —por ejemplo quiere
-arreglar su embudo de WhatsApp y está en 🔷 Marketing— **no se entrega igual.**
-**Se escala al CEO** y se ofrece subir de plan o cotizarlo como extra.
+⚠️ **Si el objetivo del cliente vive en una capa que su alcance no cubre** —por ejemplo quiere
+arreglar su embudo de WhatsApp y está en Brand Growth— **no se entrega igual.**
+**Se escala al CEO** y se ofrece otro alcance o cotizarlo como módulo.
 
-🛑 **El plan es techo duro.** El agente propone dentro de él, nunca por encima.
+🛑 **El alcance contratado es techo duro.** El agente propone dentro de él, nunca por encima.
 
 ---
 
@@ -86,12 +86,12 @@ arreglar su embudo de WhatsApp y está en 🔷 Marketing— **no se entrega igua
 | **Margen** | Un margen de 15% no soporta la misma estrategia que uno de 70% |
 | **Capacidad de entrega** | Cuántos clientes más aguanta hoy |
 | **Punto de equilibrio** | El piso del objetivo |
-| **Ad spend del cliente** | Nunca está incluido en el paquete. Sin esto, no hay paid |
+| **Ad spend del cliente** | Nunca está incluido en el alcance. Sin esto, no hay paid |
 | **Mercado donde vende** | 🇬🇹 Guatemala · 🇲🇽 México · 🇺🇸 EE.UU. · otro. **Cambia canales, competencia y expectativa de precio** → ver `inherent/04-MERCADO.md` |
 | **Dónde está trabado** | No lo conocen · llega gente y se pierde · funciona pero depende de alguien. **De acá sale el nivel** |
 | **División** | 🔵 **Low ticket** *(el juego es volumen)* · 🟣 **High ticket** *(el juego es precisión)*. **Lo define cómo se decide la compra, no quién compra** → `inherent/02-METODO.md` |
 | **Qué pilar está roto** | 🔵 oferta · ventas en grande · ticket — 🟣 oferta · autoridad · proceso de venta · expansión |
-| **Capacidad de producción de contenido** | Sale del paquete. Techo duro de la cadencia |
+| **Capacidad de producción de contenido** | Sale de la ficha de oferta. Techo duro de la cadencia |
 
 > Si la capacidad de entrega ya está al tope, la estrategia **no es generar más demanda**: es
 > filtrar mejor o subir el precio. Sin este dato el agente se equivoca de problema.

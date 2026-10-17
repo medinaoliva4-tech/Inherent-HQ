@@ -2,6 +2,7 @@ import { html, raw, mount, col, api, acts, toast, fdate, fdateLong, today, initi
 import { upcoming, meetingRows, schedule, markDone } from '../meetings.js';
 import { fit, priceLabel, monthly, avatar, CADENCE } from '../mentors.js';
 import { loadPosts, postsBoard } from '../posts.js';
+import { levelName, isPartnership } from '../levels.js';
 
 // Clients: la página entera de cada cliente. El plan y los accesos salen del repo;
 // el roadmap, los datos de contacto y la lista de accesos internos viven en la base (accounts).
@@ -35,7 +36,7 @@ async function goalWizard() {
   return { goal: a.goal, metric: a.metric, baseline: a.baseline || '', target: a.target, current: a.baseline || '', due: a.due, status: 'now', note: '', every: a.every,
     tasks: String(a.tasks || '').split('\n').map((t) => t.trim()).filter(Boolean).map((t) => ({ t, done: false })), checks: checkpoints(today(), a.due, a.every) };
 }
-const cleanPlan = (s) => String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, '');
+const cleanPlan = (s) => levelName(String(s || '').replace(/^[⬜🔷🟨]️?\s*/u, ''));
 const iso = (d) => d.toISOString().slice(0, 10);
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
 
@@ -60,7 +61,7 @@ export async function render(el, { me, sub, alive }) {
       ${clients.length ? html`<div class="grid g3">${clients.map((c, i) => { const a = acct(c.slug); const rm = goalsOf(a); const done = rm.filter((x) => x.status === 'done').length; const ps = projects.filter((p) => p.client_slug === c.slug);
         const next = rm.filter((x) => x.status !== 'done').sort((x, z) => String(x.due || '9').localeCompare(String(z.due || '9')))[0];
         return html`<a class="card feat ${COLORS[i % 3]}" href="#/clients/${c.slug}" style="min-height:230px;text-decoration:none">
-          <div class="chead"><div class="ico" style="font-size:13px;font-weight:700">${initials(a?.name || c.slug)}</div><h3>${a?.name || c.slug.toUpperCase()}<br><span class="lbl">${c.plan || 'Sin plan'}</span></h3><span class="arrow">↗</span></div>
+          <div class="chead"><div class="ico" style="font-size:13px;font-weight:700">${initials(a?.name || c.slug)}</div><h3>${a?.name || c.slug.toUpperCase()}<br><span class="lbl">${c.plan || 'Sin nivel'}</span></h3><span class="arrow">↗</span></div>
           <div class="lbl">Roadmap</div><div class="big" style="font-size:46px">${done}<small>/${rm.length}</small></div>
           <div class="foot"><span>${next ? 'Meta: ' + next.goal : rm.length ? 'Metas logradas' : 'Sin roadmap todavía'}</span><span>${ps.length} proyecto${ps.length === 1 ? '' : 's'}</span></div></a>`; })}</div>`
       : html`<div class="empty"><b>No encontré clientes en el repo</b>Cada cliente es un folder en clients/ con su 00-onboarding/plan-contratado.md.</div>`}
@@ -77,7 +78,7 @@ export async function render(el, { me, sub, alive }) {
     const ps = projects.filter((p) => p.client_slug === slug);
     const tk = tasks.filter((t) => ps.some((p) => p.id === t.project_id));
     let portalPeople = me.role === 'client' ? [] : (await api('db/team').catch(() => ({ items: [] }))).items.filter((x) => x.role === 'client' && x.client_slug === slug);
-    const isGrowth = () => /accelerate|compound/i.test(info?.plan || '') || ps.some((p) => p.line === 'growth');
+    const isGrowth = () => isPartnership(info?.plan) || ps.some((p) => p.line === 'growth');
     const person = (email) => team.find((t) => t.id === email || t.email === email);
     const saveAcc = async (next) => { try { const r = next.v ? await AC.save(next) : await AC.create(next); a = r; return r; } catch (e) { toast(e.message, true); return null; } };
 
@@ -89,7 +90,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="row" style="margin-bottom:14px"><a class="btn ghost" href="#/clients">← Clientes</a></div>
         <div class="card feat olive" style="min-height:auto;padding:30px">
           <div class="row" style="flex-wrap:wrap;gap:14px;align-items:flex-start"><div class="ico" style="width:64px;height:64px;font-size:20px;font-weight:700">${initials(a.name)}</div>
-            <div style="flex:1;min-width:240px"><div class="lbl">${cleanPlan(info.plan) || (info.app ? 'Desde cotización' : 'Sin plan')}</div><h1 style="font-size:52px;font-weight:500;letter-spacing:-1.6px;line-height:1.05">${a.name}</h1>
+            <div style="flex:1;min-width:240px"><div class="lbl">${cleanPlan(info.plan) || (info.app ? 'Desde cotización' : 'Sin nivel')}</div><h1 style="font-size:52px;font-weight:500;letter-spacing:-1.6px;line-height:1.05">${a.name}</h1>
               <div style="opacity:.85;margin-top:6px">${[a.contact, a.phone, a.email].filter(Boolean).join(' · ') || 'Sin contacto'}</div></div>
             <div class="row" style="gap:8px"><button class="btn cream" data-act="pdf">↓ Roadmap PDF</button>${edit ? html`<button class="btn ghost" data-act="editAcc" style="background:transparent;color:#fdfaf3;border-color:rgba(253,250,243,.4)">Editar datos</button>` : ''}</div></div>
           <div class="split" style="margin-top:26px"><div><span class="lbl">Roadmap</span><b>${done}/${rm.length}</b></div><div><span class="lbl">Proyectos</span><b>${ps.length}</b></div><div><span class="lbl">Tareas abiertas</span><b>${tk.filter((t) => t.status !== 'Hecha').length}</b></div><div><span class="lbl">Entregables</span><b>${arts.length}</b></div></div>
@@ -105,7 +106,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="sec-title" id="s-rm"><h2>Roadmap</h2><span class="mut sm">Metas · cómo se miden · desglose · checkpoints</span><div class="sp"></div>${edit ? html`<button class="btn" data-act="gadd">+ Meta</button>` : ''}</div>
         ${rm.length ? html`<div class="goals">${rm.map(goalCard)}</div>` : html`<div class="empty"><b>Sin metas todavía</b>Una meta trae cómo la medimos, dónde estamos, a dónde vamos, las tareas y cuándo revisamos.</div>`}
 
-        ${resumen ? '' : html`<div class="sec-title" id="s-es"><h2>Especialista</h2><span class="mut sm">${isGrowth() ? 'Incluido en su plan Growth, dentro del techo por sesión' : 'Su plan no lo incluye: va como add-on facturado'}</span><div class="sp"></div>${edit ? html`<button class="btn ghost" data-act="esadd">+ Especialista</button>` : ''}</div>
+        ${resumen ? '' : html`<div class="sec-title" id="s-es"><h2>Especialista</h2><span class="mut sm">${isGrowth() ? 'Incluido en Growth Partnership, dentro del techo por sesión' : 'Su nivel no lo incluye: va como add-on facturado'}</span><div class="sp"></div>${edit ? html`<button class="btn ghost" data-act="esadd">+ Especialista</button>` : ''}</div>
         ${(a.mentors || []).length ? html`<div class="grid g3">${a.mentors.map((x, k) => { const m = mentors.find((y) => y.id === x.id); if (!m) return ''; const [f, c] = isGrowth() ? fit(m) : ['Add-on facturado al cliente', 'red']; const g = goalsOf(a)[x.goal];
           return html`<div class="card mcard"><div class="row" style="gap:10px">${avatar(m)}<div style="min-width:0;flex:1"><b style="font-weight:500">${m.name}</b><div class="mut sm">${m.industry} · ${m.platform || ''}</div></div><button class="sm mut" data-act="esdel" data-k="${k}">${ico('x', 16)}</button></div>
             <div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap"><b style="font-weight:500">${priceLabel(m)}</b><span class="mut sm">· ${CADENCE.find(([v]) => v === x.cadence)?.[1] || ''}</span>${monthly(m, x.cadence) ? html`<span class="mut sm">≈ $${monthly(m, x.cadence)}/mes</span>` : ''}</div>
@@ -199,7 +200,7 @@ export async function render(el, { me, sub, alive }) {
           ${(g.checks || []).length ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Checkpoints:</b> ${g.checks.map((c) => `${fdate(c.date)}${c.done ? ` ✓${c.value ? ' ' + c.value : ''}` : ''}`).join(' · ')}</div>` : ''}
           ${(a.mentors || []).filter((x) => x.goal === rm.indexOf(g)).map((x) => { const m = mentors.find((y) => y.id === x.id); return m ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Especialista:</b> ${m.name} · ${m.industry}</div>` : ''; })}
           ${g.note ? html`<div style="color:#5a4331;font-size:12.5px;margin-top:4px">${g.note}</div>` : ''}</div>`; })}
-        <div class="qfoot"><span>Inherent · Growth Operator</span><span>inherentglobal.com</span></div>`);
+        <div class="qfoot"><span>Inherent · Growth Partner</span><span>inherentglobal.com</span></div>`);
     }
 
     acts(el, {
@@ -211,7 +212,7 @@ export async function render(el, { me, sub, alive }) {
         const goals = goalsOf(a);
         const v = await ask('Agregar especialista', [
           { k: 'id', l: 'Especialista', t: 'select', req: true, opts: [...mentors].sort((x, z) => (x.industry + x.price).localeCompare(z.industry + z.price)).map((m) => [m.id, `${m.industry} · ${m.name} · ${priceLabel(m)}`]) },
-          { k: 'cadence', l: 'Cada cuánto', t: 'select', opts: CADENCE, v: /compound/i.test(info?.plan || '') ? 'mensual' : 'trimestral', half: true },
+          { k: 'cadence', l: 'Cada cuánto', t: 'select', opts: CADENCE, v: 'trimestral', half: true },
           { k: 'goal', l: 'Para qué meta del roadmap', t: 'select', opts: [['', '— Ninguna'], ...goals.map((g, i) => [String(i), g.goal])], half: true },
           { k: 'note', l: 'Para qué lo traemos', t: 'textarea' },
         ], 'Agregar');

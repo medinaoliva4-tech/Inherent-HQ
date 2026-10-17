@@ -49,13 +49,13 @@ description: >
 
 > 🔑 **Se empieza por los propios.** Son los que mejor convierten y los que menos cuestan.
 
-## 4 · Google — qué entra según el plan
+## 4 · Google — qué entra según los canales contratados
 
-| Plan | Qué entra |
+| La ficha dice | Qué entra |
 |---|---|
-| 🔷 **Marketing** | ⛔ |
-| 🔷 **Marketing Pro** | **Pauta de búsqueda** — lo que respalda la promesa publicada *«que te encuentren en Google»* |
-| 🟨 **Accelerate** · 🟨 **Compound** | **Google Ads como canal de la estructura:** Search y Performance Max, con keywords propias y de la competencia |
+| **Google no está en los canales** | ⛔ No se corre |
+| **Solo búsqueda** | **Pauta de búsqueda** — lo que respalda *«que te encuentren en Google»* |
+| **Google Ads como canal completo** | **Google Ads como canal de la estructura:** Search y Performance Max, con keywords propias y de la competencia |
 
 | Tipo | Con qué |
 |---|---|
@@ -63,7 +63,7 @@ description: >
 | **Performance Max** | AdWhispr `launch_pmax_campaign` |
 | **Keywords** | AdWhispr `research_keywords` · `research_competitor_keywords` |
 
-🟨 **En Accelerate y Compound Google corre con el mismo gate del CEO que Meta y TikTok:** su campaña
+**Cuando Google es canal de la ficha, corre con el mismo gate del CEO que Meta y TikTok:** su campaña
 entra en el **GATE 1** y todo cambio de su presupuesto en el **GATE 2**. **Su presupuesto sale del
 total aprobado**, no se suma aparte.
 
@@ -73,8 +73,8 @@ total aprobado**, no se suma aparte.
 
 **`/ads plan`** arma canales, campañas, presupuestos y medición.
 
-🛑 **Lo que devuelva se contrasta contra el objetivo y el techo del plan contratado.** El plugin
-no sabe qué plan tiene el cliente.
+🛑 **Lo que devuelva se contrasta contra el objetivo y el techo del alcance contratado.** El plugin
+no sabe qué alcance tiene el cliente.
 
 ## 6 · Qué escribe
 
@@ -93,5 +93,5 @@ no sabe qué plan tiene el cliente.
 - [ ] La temperatura de cada campaña viene de **③ Marketing**
 - [ ] Ninguna campaña de conversión apunta a **público frío**
 - [ ] Se empezó por los **públicos propios**
-- [ ] Google según el plan: 🔷 Pro solo **búsqueda** · 🟨 Search y PMax, **dentro del presupuesto aprobado** y con sus gates
+- [ ] Google según los canales de la ficha: solo **búsqueda**, o Search y PMax, **dentro del presupuesto aprobado** y con sus gates
 - [ ] El reparto suma **el presupuesto aprobado**, ni un quetzal más

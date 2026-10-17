@@ -73,7 +73,7 @@ export const ENTREVISTA = (m = 'la marca') => `> **Para:** el CEO de ${m} · **O
    > Lo ideal: cada opinión con un caso real. Sin caso, es solo opinión.
 6. ¿Qué conversación te gustaría provocar entre tus clientes?
 7. ¿Qué conocimiento tiene ${m} que todavía no está comunicando?
-   > Lo ideal: mostrar cómo se hace vende más que mostrar el resultado. → Jornada de rodaje (incluida desde Marketing Pro).
+   > Lo ideal: mostrar cómo se hace vende más que mostrar el resultado. → Jornada de rodaje (según el alcance de la ficha de oferta).
 8. ¿En qué temas quieren educar al mercado y en cuáles quieren ser reconocidos como expertos?
 
 ## 5 · Dirección comercial

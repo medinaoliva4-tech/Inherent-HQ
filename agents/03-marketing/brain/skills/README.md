@@ -24,7 +24,7 @@ detalle de cada herramienta.
 
 | # | Skill | Capa | Se dispara cuando… | Produce |
 |---|---|---|---|---|
-| 1 | **`mk-encargo`** | 0 | *«arrancá el ciclo»*, *«cuántas piezas podemos»* | § El encargo — el techo del plan y la capacidad real |
+| 1 | **`mk-encargo`** | 0 | *«arrancá el ciclo»*, *«cuántas piezas podemos»* | § El encargo — el techo de la ficha y la capacidad real |
 | 2 | **`mk-campana`** | 1 | *«qué campaña corremos»* | § Idea de campaña — una frase que el equipo repite |
 | 3 | **`mk-mensaje`** | 2 | *«qué decimos primero»* | § Jerarquía de mensaje |
 | 4 | **`mk-pilares`** | 3 | *«qué pilares»*, *«el sistema de contenido»* | § Sistema de contenido — pilares con su peso |

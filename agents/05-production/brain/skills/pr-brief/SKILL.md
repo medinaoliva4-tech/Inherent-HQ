@@ -88,7 +88,7 @@ Los dos techos van **en números**, no en adjetivos — y al lado, la referencia
 
 ```
 Días de rodaje posibles:    [n]   ← según fechas de preparación de ③ Marketing
-Capacidad:                  [n piezas/ciclo]   ← horas y sesiones del plan · la declarada en ① Strategy si es menor
+Capacidad:                  [n piezas/ciclo]   ← horas y sesiones de la ficha · la declarada en ① Strategy si es menor
 Presupuesto de referencia:  [monto + moneda + fecha / ⚠️ SIN DATOS]   ← onboarding, si existe
 ```
 

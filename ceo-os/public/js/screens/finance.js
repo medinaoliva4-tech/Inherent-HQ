@@ -19,7 +19,7 @@ export async function render(el, { me, sub }) {
   // Todo en paralelo: una sola espera en vez de cinco seguidas.
   let ecoErr = null;
   let [manual, services, rates, eco, clients, payroll, sheet] = await Promise.all([F.list(), resumen ? [] : col('services').list(), resumen ? null : col('rates').get('default').catch(() => null),
-    resumen ? null : api('repo/economia').catch((e) => { ecoErr = e.message; return null; }), resumen ? [] : api('repo/clients').then((r) => r.clients).catch(() => []), resumen ? null : P.get('default').catch(() => null),
+    resumen ? null : api('repo/economia').then((r) => (r?.plans?.length ? r : (ecoErr = r?.error || 'El manual ya no trae costos por plan: el precio se arma por alcance', null))).catch((e) => { ecoErr = e.message; return null; }), resumen ? [] : api('repo/clients').then((r) => r.clients).catch(() => []), resumen ? null : P.get('default').catch(() => null),
     api('finance/sheet').catch((e) => ({ error: e.message }))]);
   // Los movimientos salen de la hoja de Google Sheets; los que se agregan a mano aquí se suman.
   const fromSheet = (sh) => {

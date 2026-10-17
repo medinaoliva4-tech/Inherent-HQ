@@ -21,7 +21,7 @@ description: >
 | 🟢 Apoyo, pregunta simple, evento, reserva, lo que viene | Va al reporte, **no se envía** | **Se envía** |
 | 🔴 Queja | Va al reporte, **no se envía** | **Se envía**, y va arriba del reporte como aviso al COO |
 | 🔴 Colaboración, fuera de la ficha | Va al reporte | Va al reporte |
-| ⚫ Spam, hater | Se reporta | Se oculta si es abuso *(Pro+)* y se reporta |
+| ⚫ Spam, hater | Se reporta | Se oculta si es abuso *(con seguimiento)* y se reporta |
 
 🛑 **El modo lo prende o lo apaga solo el COO**, en la ficha. La corrida nunca lo cambia sola.
 
@@ -33,7 +33,7 @@ description: >
 | El link por DM a quien comentó *(IG y FB)* | `comments_send_private_reply_to_comment` | **Uno solo por comentario y en texto plano.** Un error gasta el único intento: no se reintenta |
 | Respuesta a un DM | `messages_send_inbox_message` | Dentro de la ventana de la plataforma (24 h Meta · 48 h y 10 mensajes TikTok) |
 | DM en «requests» | `messages_accept_conversation_request` | La respuesta acepta la conversación |
-| Ocultar | `comments_hide_inbox_comment` | Solo abuso o spam, desde Pro |
+| Ocultar | `comments_hide_inbox_comment` | Solo abuso o spam, con seguimiento |
 
 **Cada envío lleva el `account_id` exacto de la ficha.** Si una herramienta devuelve que la cuenta
 es ambigua, no se elige a ojo: se reporta.

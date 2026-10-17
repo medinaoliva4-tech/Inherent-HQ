@@ -5,7 +5,7 @@ description: >
   cliente y verifica que esté completo antes de desarrollar nada. Separa lo que ① Strategy ya
   decidió (tipo de marca, código saturado, dirección visual, referencias) de lo que Branding
   tiene que resolver, cruza contra lo que el cliente puede sostener y contra la profundidad que
-  paga su plan. Úsala cuando pidan "arrancá el branding de X", "qué decidió estrategia",
+  paga su alcance. Úsala cuando pidan "arrancá el branding de X", "qué decidió estrategia",
   "verificá el brief de marca". Bloquea si la estrategia no existe o le falta un bloque marcado 🛑.
 ---
 
@@ -58,16 +58,18 @@ uno, no un archivo que el cliente tenga que tener.**
 | ¿Quién va a ejecutar esto? | Si lo ejecuta ⑥A Diseño gráfico con agentes, el sistema tiene que ser **ejecutable sin criterio** |
 | ¿Tiene activos previos? | Se declaran. **Lo que ya existe vale y no se rehace:** se construye encima |
 
-## 4 · La profundidad según el plan
+## 4 · La profundidad según el nivel
 
-| | 🔷 Marketing | 🔷 Mkt Pro | 🟨 Accelerate | 🟨 Compound |
-|---|---|---|---|---|
-| **Qué se hace** | **Se construye la marca completa** | Se extiende | Se evoluciona | Se sistematiza |
-| Activos distintivos | 3 a 5 | 3 a 5 | + activos para pauta | + guía operable por terceros |
-| Entregables | `guia-de-marca.md` + `sistema-visual.md` | + formatos nuevos | + variantes para ⑩ Ads | + manual para que lo use un tercero |
+| | Brand Foundation | Brand Growth | Growth Partnership |
+|---|---|---|---|
+| **Qué se hace** | **Se crea la identidad completa** | Se mantiene y se extiende | Se extiende y se documenta |
+| Activos distintivos | 3 a 5 | 3 a 5; + activos para pauta si la ficha lo incluye | + guía operable por terceros |
+| Entregables | `guia-de-marca.md` + `sistema-visual.md`, según el alcance acordado | + formatos nuevos, + variantes para ⑩ Ads si la ficha lo incluye | + manual para que lo use un tercero |
 
-⚠️ **El brief de ① Strategy llega distinto según la línea.** En 🔷 Marketing trae
-posicionamiento y mensaje; **la oferta llega como está.** En 🟨 Growth trae la oferta rediseñada.
+⚠️ **El brief de ① Strategy llega distinto según el nivel.** En Brand Foundation trae la estrategia
+completa del proyecto *(diagnóstico, audiencia, posicionamiento, estructura de oferta)*; en Brand Growth trae
+posicionamiento y mensaje y **la oferta llega como está**; en Growth Partnership trae la oferta trabajada
+por ② Growth.
 
 ## 5 · Qué escribe
 

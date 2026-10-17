@@ -21,60 +21,58 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
-## 0 · El plan contratado — cuánto y a qué profundidad
+## 0 · El alcance contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
-`clients/<cliente>/00-onboarding/plan-contratado.md`:
-🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+**Lo primero de cada ciclo: leer la ficha de oferta del cliente.** Lo anota ① Strategy al arrancar en
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(nivel, áreas, volumen, revisiones y qué queda
+fuera)*. Los niveles: **Brand Foundation** · **Brand Growth** · **Growth Partnership** · alcance a medida.
 
-- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
-  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` →
-  «El desglose por tarea». **Si cambian allá, cambian acá** — esta tabla no manda sobre ellos.
+- 🛑 **Sin ficha anotada, el departamento no arranca:** `BLOQUEADO — falta la ficha de oferta`.
+- 🛑 **El alcance contratado es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar
+  de menos rompe la promesa de la propuesta.
+- Los números salen de la **ficha**: publicaciones del ciclo, formatos, canales y revisiones.
+  **Si cambia la ficha, cambia el ciclo** — este documento no manda sobre ella.
 
-| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Publicaciones del ciclo** | **86** | **145** | **145** | **204** |
-| de las cuales **videos** *(mínimo)* | 13 | 18 | **27** | 36 |
-| de las cuales **estáticos y carruseles** | 43 | 72 | **63** | 88 |
-| de las cuales **stories** | 30 | 55 | 55 | 80 |
-| **Revisiones por pieza** | **1** | 2 | 2 | 3 |
-| **Conversación después de publicar** *(es de ⑧ Community, no de acá)* | ⛔ No incluida | ✅ | ✅ | ✅ |
+| Qué cambia | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Qué hace ⑨ Posting** | No corre, salvo que la ficha incluya programación o publicación | **Programa y publica las piezas del ciclo** en los canales que dice la ficha | Igual que Brand Growth, en los canales que dice la ficha |
+| **Publicaciones del ciclo** | Las que declare la ficha, si hay | **Las de la ficha:** videos, estáticos, carruseles y stories | **Las de la ficha** |
+| **Revisiones por pieza** | Las de la ficha | Las de la ficha | Las de la ficha |
+| **Conversación después de publicar** *(es de ⑧ Community, no de acá)* | No incluida | Solo si la ficha incluye el área de atención y comunidad | Según la ficha: ⑧ Community corre cuando el alcance incluye atención y comunidad |
 
 **Cómo se lee:**
 
-- **Posting programa TODAS las piezas del ciclo, stories incluidas.** El número de la primera
-  fila es el total del plan: no hay piezas del ciclo que se queden sin programar.
+- **Posting programa TODAS las piezas del ciclo, stories incluidas.** El total es el de la ficha: no
+  hay piezas del ciclo que se queden sin programar.
 - **Si la herramienta no programa stories, no se descartan:** se entregan en una **lista aparte para
   subir a mano**, con su fecha y su hora, y se declara en el handoff. 🛑 **Una story que no se pudo
-  programar sigue siendo una pieza entregada del plan.**
-- 🛑 **Las variantes de creativo de pauta NO van a orgánico.** Las 20/30/35/50 variantes existen para
+  programar sigue siendo una pieza entregada de la ficha.**
+- 🛑 **Las variantes de creativo de pauta NO van a orgánico.** Existen para
   ⑩ Ads y **no cuentan como publicaciones** ni entran al calendario del ciclo. Programarlas infla el
   volumen con piezas que el cliente nunca pidió ver en su feed.
-- ⚠️ **🟨 Accelerate publica lo mismo que Pro, con otra mezcla:** las mismas 145, pero **27 videos
-  contra 18** y **63 estáticos contra 72**. **Copiar el reparto de Pro es un error.**
+- ⚠️ **La mezcla de la ficha manda.** Si la ficha reparte más video y menos estáticos que otro
+  cliente, se programa esa mezcla: **copiar el reparto de otro cliente es un error.**
 - **Posting no contesta.** Deja la pieza publicada; lo que pasa en comentarios y DMs es de
-  ⑧ Community Management — y **no está incluido en 🔷 Marketing.**
-- ⛔ **No hay segundo idioma en ningún plan:** un caption por pieza
+  ⑧ Community Management — y **solo corre si la ficha incluye atención y comunidad.**
+- ⛔ **No hay segundo idioma salvo que la ficha lo declare:** un caption por pieza
   (`agents/07-video-editing/brain/skills/ve-derivadas/SKILL.md` → «5 · El segundo idioma»).
-- 🛑 **Si llegan más piezas que el techo del plan, las de más no se programan:** se escalan al CEO —
+- 🛑 **Si llegan más piezas que el techo de la ficha, las de más no se programan:** se escalan al CEO —
   es alcance.
 
 > 🟡 **La herramienta de publicación está en prueba.** Esta sección define **cuánto** se publica, no
 > **con qué**. El resto de este WORKFLOW y las skills `po-*` nombran la herramienta vigente.
 
-### ⬜ Tailor Made — el acuerdo especial
+### Alcance a medida — el acuerdo especial
 
 Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
 secciones: **Qué incluye** y **Su pipeline** — qué departamentos corren, en qué orden, qué entrega
 cada uno y a qué nivel.
 
-- **Posting sigue ese pipeline.** No se bloquea por no ser un plan de lista ni se cuestiona por precio.
+- **Posting sigue ese pipeline.** No se bloquea por ser a medida ni se cuestiona por precio.
 - 🛑 **Si Posting no está en su pipeline, no corre para ese cliente.**
 - **Cambia el pipeline y qué se verifica, nunca el método:** la trazabilidad, las devoluciones y la
-  auto-revisión antes de programar son iguales en todos los planes.
-- **Arriba de 🟨 Compound sube el volumen**, pero más publicaciones exigen más archivos terminados de
+  auto-revisión antes de programar son iguales en todos los niveles.
+- **Cuando sube el volumen**, más publicaciones exigen más archivos terminados de
   ⑥A Diseño gráfico y ⑦ Video Editing: **sin ellos no hay calendario.**
 
 ---
@@ -367,7 +365,7 @@ qué falló al publicar · si el ciclo quedó programado a tiempo.
 PRE-FLIGHT — Cliente: [x] · Capa: [0-6] · Ciclo: [x]
 ④ Creatividad: Excel del ciclo cerrado [✅/⬜] · filas del ciclo: [n]
 ⑥A Diseño gráfico entregó: [n/n] · ⑦ Video Editing entregó: [n/n] · ⚠️ SIN ARCHIVO: [n]
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · publicaciones del ciclo: [n] de [techo del plan]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida] · publicaciones del ciclo: [n] de [techo de la ficha]
 ① Strategy: cuentas y accesos [✅/⬜] · cuentas con ID de Zernio [n/n] · Zernio conectado [✅/⬜]
 ②B Branding [✅ / — no bloquea] · claims pendientes: [n]
 → PASS | BLOQUEADO: [qué falta exactamente]

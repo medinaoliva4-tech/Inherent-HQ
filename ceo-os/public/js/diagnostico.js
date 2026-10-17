@@ -5,6 +5,7 @@ const $ = (s, r = document) => r.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const API = ($('meta[name=os-api]')?.content || '').trim().replace(/\/$/, '');
 const KEY = new URLSearchParams(location.search).get('k') || '';
+import { LEVEL_NAMES } from './levels.js';
 
 // Cada opción: [valor, texto, detalle]. Las llaves (vende, etapa…) son las que ve Ventas en el CRM.
 const Q = [
@@ -16,23 +17,23 @@ const Q = [
   { k: 'urgencia', q: '¿Qué tan urgente es resolverlo?', opts: [['ya', 'Ya, este mes', ''], ['3m', 'En los próximos tres meses', ''], ['explorando', 'Estoy explorando', '']] },
   { k: 'inversion', q: '¿Cuánto podrías invertir al mes en crecer?', sub: 'La etapa no es mérito: dice qué necesitas ahora.', opts: [['<900', 'Menos de $900', ''], ['900-1500', 'Entre $900 y $1,500', ''], ['1500-3000', 'Entre $1,500 y $3,000', ''], ['>3000', 'Más de $3,000', ''], ['nd', 'No lo sé todavía', '']], two: true },
 ];
-const PLANS = ['Marketing', 'Marketing Pro', 'Accelerate', 'Compound'];
+// Los 3 niveles salen de levels.js (un solo lugar). Aquí solo el texto que ve quien responde el quiz.
+const PLANS = LEVEL_NAMES;
 const PLAN_TXT = {
-  Marketing: ['arrancando → visible', 'Que te conozcan. Contenido con estrategia detrás, todos los días, para pasar de invisible a visible.'],
-  'Marketing Pro': ['visible → presencia sostenida', 'Presencia que no se cae: más volumen, más constancia, y una marca que la gente reconoce.'],
-  Accelerate: ['estancado → escalando', 'Más contenido no te saca de ahí: sistemas sí. Oferta, precio, conversión y canales grandes, para que la facturación se mueva.'],
-  Compound: ['escalando → autónomo', 'Que la empresa crezca sin depender de ti: crecimiento, conversión, operación y dinero, sistematizados.'],
+  'Brand Foundation': ['marca nueva o por reposicionar', 'Creamos la marca cool: diagnóstico, posicionamiento, oferta, identidad y un plan a 90 días. Es un proyecto con inicio y cierre.'],
+  'Brand Growth': ['marca con oferta → más demanda', 'Hacemos más cool la marca que ya está: plan mensual de campañas y contenido, canales, pruebas y revisión de métricas cada mes.'],
+  'Growth Partnership': ['marca, ventas y sistemas conectados', 'Nos metemos full en el crecimiento: todo lo de Brand Growth, más el recorrido del cliente, ventas, procesos y sistemas comerciales, según lo que se acuerde.'],
 };
-// Puntaje 0-100 (qué tan listo está) y plan sugerido (qué le toca por etapa, traba y capacidad).
+// Puntaje 0-100 (qué tan listo está) y nivel sugerido (qué le toca por etapa, traba y capacidad). Es una orientación, no una promesa.
 export function evaluate(a) {
   const pts = { etapa: { arrancando: 10, inestable: 15, estancado: 25, creciendo: 30 }, facturacion: { '<15k': 5, '15-50k': 10, '50-150k': 18, '150-500k': 25, '>500k': 30, nd: 10 }, urgencia: { ya: 25, '3m': 15, explorando: 5 }, inversion: { '<900': 5, '900-1500': 10, '1500-3000': 15, '>3000': 20, nd: 8 } };
   const score = Math.min(100, Object.entries(pts).reduce((s, [k, m]) => s + (m[a[k]] || 0), 0));
-  let i = { arrancando: 0, inestable: 1, estancado: 2, creciendo: 3 }[a.etapa] ?? 0;
-  if (a.trabado === 'nadie') i = Math.min(i, 1);           // problema de atención: línea Marketing
-  if (a.trabado === 'no_compran') i = Math.max(i, 2);      // problema de oferta y conversión: línea Growth
-  if (a.trabado === 'depende') i = Math.max(i, 3);         // la empresa depende del dueño: sistematizar
-  const capF = { '<15k': 0, '15-50k': 1 }[a.facturacion]; if (capF != null) i = Math.min(i, capF); // sin transacciones, Growth es teoría
-  const capI = { '<900': 0, '900-1500': 1, '1500-3000': 2 }[a.inversion]; if (capI != null) i = Math.min(i, capI);
+  let i = { arrancando: 0, inestable: 1, estancado: 1, creciendo: 2 }[a.etapa] ?? 0;
+  if (a.trabado === 'nadie') i = Math.min(i, 1);           // problema de atención: Brand Growth como tope
+  if (a.trabado === 'no_compran') i = Math.max(i, 1);      // oferta y conversión: al menos Brand Growth
+  if (a.trabado === 'depende') i = Math.max(i, 2);         // la empresa depende del dueño: conectar ventas y sistemas
+  const capF = { '<15k': 1, '15-50k': 1 }[a.facturacion]; if (capF != null) i = Math.min(i, capF); // sin transacciones estables, los sistemas comerciales son teoría
+  const capI = { '<900': 1, '900-1500': 1 }[a.inversion]; if (capI != null) i = Math.min(i, capI);
   return { score, plan: PLANS[i] };
 }
 
@@ -47,7 +48,7 @@ function paint() {
   if (step < 0) {
     main.innerHTML = `<section class="step"><span class="eyebrow">Diagnóstico · 2 minutos</span>
       <h1>¿Dónde está trabado <em>tu negocio?</em></h1>
-      <p class="lead">Siete preguntas. Al final te decimos qué le toca a tu empresa hoy, sin venderte volumen: <em>lo que necesita, no lo que la industria dice.</em></p>
+      <p class="lead">Siete preguntas. Al final te contamos qué nivel de trabajo encaja hoy con tu empresa, sin venderte volumen: <em>lo que necesita, no lo que la industria dice.</em> Es una orientación, no una promesa de resultados.</p>
       <button class="btn cream" id="start" type="button">Empezar <span class="arr">→</span></button>
       <p class="tiny" style="margin-top:18px">Nada de esto se comparte. Lo usa Inherent para prepararse antes de hablar contigo.</p></section>`;
     $('#start').onclick = () => go(0);
@@ -81,10 +82,10 @@ function paint() {
   // resultado
   const { score, plan } = evaluate(a); const [arc, txt] = PLAN_TXT[plan];
   main.innerHTML = `<section class="step"><span class="eyebrow">Tu resultado</span><h2>Gracias, <em>${esc((a.name || '').split(' ')[0])}</em>.</h2>
-    <p class="lead">Por lo que nos contaste, hoy a tu negocio le toca:</p>
+    <p class="lead">Por lo que nos contaste, hoy a tu negocio le encaja:</p>
     <div class="result"><div class="arc">${esc(arc)}</div><div class="plan">${esc(plan)}</div><p>${esc(txt)}</p>
       <div class="meter"><i id="meter"></i></div><div class="tiny">Qué tan listo está tu negocio para crecer: <b style="color:var(--cream)">${score}/100</b></div></div>
-    <p class="lead" id="thanks">Te escribimos por WhatsApp para contarte cómo se ve esto en tu empresa, con tus números y tu mercado.</p>
+    <p class="lead" id="thanks">Te escribimos por WhatsApp para contarte cómo se ve esto en tu empresa, con tus números y tu mercado. Respondemos en un minuto. El alcance se define contigo en la conversación; esto es una orientación, no una promesa de resultados.</p>
     <p class="tiny" id="sent">Guardando tus respuestas…</p>
     <a class="btn outline" href="https://inherentglobal.com" style="margin-top:18px">Volver a inherentglobal.com</a></section>`;
   requestAnimationFrame(() => { $('#meter').style.width = score + '%'; });

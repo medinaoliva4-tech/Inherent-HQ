@@ -1,19 +1,12 @@
 # 06 · Graphic Design
 
-**Los estáticos, carruseles y stories del ciclo.** Es el grueso del volumen:
-**73 · 127 · 118 · 168 piezas al mes** según el plan —
-🔷 Marketing · 🔷 Marketing Pro · 🟨 Accelerate · 🟨 Compound.
+**Los estáticos, carruseles y stories del ciclo.** Es el grueso del volumen. **Cuántas piezas,
+de qué formatos y con cuántas revisiones lo fija la ficha de oferta del cliente** —no un número del
+manual— y se entrega según el nivel: **Brand Foundation** *(plantillas y ejemplos de aplicación de la
+identidad)* · **Brand Growth** y **Growth Partnership** *(el volumen de la ficha, con el sistema de
+plantillas del ciclo)*.
 
-| | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| Estáticos y carruseles | 43 | 72 | **63** | 88 |
-| Stories | 30 | 55 | 55 | 80 |
-| **TOTAL** | **73** | **127** | **118** | **168** |
-
-⚠️ **🟨 Accelerate entrega MENOS estáticos que 🔷 Pro** *(63 contra 72)*: las mismas 145 piezas del
-plan se reparten con más video. **La mezcla cambia a propósito.**
-
-> Fuente: `inherent/06-ECONOMIA.md` → «📦 El volumen» y `inherent/05-OPERACION.md` → «El desglose
-> por tarea», filas 15 y 16. **Si cambian allá, cambian acá.**
+> Fuente: la ficha del cliente (`clients/<cliente>/00-onboarding/plan-contratado.md`) y
+> `inherent/05-OPERACION.md`. **Si cambia la ficha, cambia el ciclo.**
 
 **Todo lo que define cómo trabaja está en `brain/WORKFLOW.md`.**

@@ -20,7 +20,7 @@ description: >
 **Un elemento que, repetido, hace que la gente reconozca la marca antes de leer el nombre.**
 
 > 🔑 **Es lo que vuelve el contenido acumulativo.** Sin activos, cada pieza empieza de cero y
-> publicar 204 piezas al mes no construye nada.
+> publicar piezas sin parar no construye nada.
 
 | Es | No es |
 |---|---|
@@ -43,7 +43,7 @@ description: >
 
 | Cuántos | Qué pasa |
 |---|---|
-| **1-2** | No alcanza para sostener la variedad de un ciclo de 204 piezas |
+| **1-2** | No alcanza para sostener la variedad de un ciclo con mucho volumen |
 | **3-5** | ✅ |
 | **6+** | Ninguno se repite lo suficiente para aprenderse |
 

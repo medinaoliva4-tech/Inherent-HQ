@@ -19,7 +19,7 @@ description: >
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
 > `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se dice cuál, se
 > ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* o que el
-> pipeline del ⬜ Tailor Made del cliente ya lo declare.
+> pipeline del alcance a medida del cliente ya lo declare.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 > **En una frase:** Creatividad **dirige**; ⑤ Producción, ⑥A Diseño gráfico y ⑨ Posting **ejecutan**.
@@ -47,7 +47,7 @@ se pide **el archivo exacto**; si falta otro, `⚠️ SIN DATOS` y se sigue. No 
 PRE-FLIGHT — Cliente: [x] · Capa: [0-7] · Bloque: [semana/quincena/mes]
 ③ Marketing [✅/⬜] · ① Strategy [✅/⚠️] · ②B Branding [✅/⚠️] · ⑩ Ads [✅/⚠️]
 Campañas del ciclo: [nombres] · Mezcla 70/20/10: [prevista]
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · piezas del ciclo: [n] de [techo del plan]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida] · piezas del ciclo: [n] de [techo de la ficha]
 Skills a correr: [x] · Output: [ruta]
 → PASS | BLOQUEADO: [qué falta exactamente]
 ```
@@ -215,7 +215,7 @@ mezcla** con 🟢/🟡/⚪) · ⚠️ SIN DATOS · ⏸️ PENDIENTE APROBACIÓN 
 **Checks transversales. Ninguno se omite en silencio, y el ciclo no se libera sin este bloque.**
 
 - [ ] El **PRE-FLIGHT** está emitido con **PASS o BLOQUEADO**, y cada skill corrió **con el output de la anterior**, sin faltantes improvisados
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, en lo que declara **su pipeline**
+- [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es a medida, en lo que declara **su pipeline**
 - [ ] Existen **exactamente los entregables esperados** —`plan-de-contenido.csv`, `brief-del-ciclo.md` y un `ideas-<formato>.md` por cada formato del ciclo— y **todo `id` del CSV tiene su sección `## CR-00N · <concepto>` en el doc de su formato, y al revés**: el puente no se rompe
 - [ ] Las **13 columnas** están completas en cada fila, y **toda fila cuelga de una `campana`**: el ciclo se puede revisar campaña por campaña
 - [ ] 🛑 **Toda fila tiene `traza`** a una MUST BE TRUE —las que no, **eliminadas**— y **toda pieza su hipótesis escrita**, con qué la confirmaría

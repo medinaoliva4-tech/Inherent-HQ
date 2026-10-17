@@ -13,8 +13,8 @@
 
 | Columna | Valores |
 |---|---|
-| `plan_de_interes` | Marketing · Marketing Pro · Accelerate · Compound · Tailor Made |
-| `valor_mensual_usd` | El precio del plan: 950 · 1450 · 2500 · 4200 · lo cotizado |
+| `nivel_de_interes` | Brand Foundation · Brand Growth · Growth Partnership · Tailor Made |
+| `valor_mensual_usd` | Lo cotizado según el alcance de la propuesta *(un proyecto de Brand Foundation va en `notas` con su valor total)* |
 | `etapa` | **Nuevo · Propuesta enviada · Ganado · Perdido** — solo cuatro |
 | `fuente` | WhatsApp · Instagram · Web · Referido · Evento · Otro |
 | `responsable` | El rol: CEO · COO |

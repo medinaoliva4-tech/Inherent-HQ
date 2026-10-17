@@ -15,12 +15,12 @@ inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── README.md              ← el índice. Empezá acá
 ├── 01-IDENTIDAD.md        quiénes somos
 ├── 02-METODO.md           cómo pensamos — los 4 sistemas
-├── 03-OFERTA.md           qué vendemos — los planes y su activación
+├── 03-OFERTA.md           qué vendemos — los 3 niveles, las 12 áreas y la ficha de oferta
 ├── 04-MERCADO.md          a quién y dónde — industrias, mercados, mentores
 ├── 05-OPERACION.md        cómo lo entregamos — roles, pipeline, calendario
 ├── 06-ECONOMIA.md         🔒 cuánto cuesta y cuánto queda
 ├── 07-COMUNICACION.md     cómo lo decimos — brief de web
-├── inherent-social-media/ Inherent como cliente — nuestras propias redes, plan Marketing Pro
+├── inherent-social-media/ Inherent como cliente — nuestras propias redes, nivel Brand Growth
 └── administracion/        skills para administrar Inherent: caja, cobros, SAT, ventas, contratos
 
 agents/                    ← LOS AGENTES — uno por etapa del pipeline
@@ -77,11 +77,11 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 | Rol | Qué hace |
 |---|---|
 | **CEO** | Decide estrategia, ruta, servicios y promesas. Reunión del día 1 con cada cliente. Hace el control de calidad en persona. **Es el gate de la estrategia y de la pauta** |
-| **COO** | Organiza y coordina al equipo operativo y las entregas. QA final. Presenta el día 20 en la línea Marketing |
+| **COO** | Organiza y coordina al equipo operativo y las entregas. QA final. Presenta el día 20 en Brand Growth |
 | **Operador de agentes** | Solo opera agentes: Creatividad, Branding, Diseño, Posting y Community |
 | **Editor de video · Fotografía · Producción** | Editan, fotografían y graban |
 | **Secretaria** *(WhatsApp)* | El agente `00-account`. Atiende al cliente. Escala precio, alcance y fechas al CEO, y lo demás al COO |
-| **Especialista** | La auditoría de la línea Growth |
+| **Especialista** | La auditoría de Growth Partnership |
 
 **Quién ocupa cada rol, qué herramienta llena cada slot y quién hace cada tarea:
 `inherent/05-OPERACION.md`.** El resto del repo nombra el rol, nunca la persona.
@@ -89,11 +89,12 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 ## Los agentes
 
 **`agents/README.md` tiene el roster completo:** las etapas en orden, qué MCP le da cada acción
-a cada agente, y **qué entrega cada uno según el plan contratado.**
+a cada agente, y **qué entrega cada uno según el alcance contratado.**
 
 🔑 **Cada agente tiene su `brain/WORKFLOW.md` con sus capas, sus gates y sus entregables.**
-**El plan contratado es el techo de todos, no una sugerencia:** entregar de más rompe el margen,
-entregar de menos rompe la promesa publicada.
+**El alcance contratado (la ficha de oferta) es el techo de todos, no una sugerencia:** entregar de más rompe el margen,
+entregar de menos rompe la promesa.
+**Sin ficha de oferta, el agente BLOQUEA a ese cliente.**
 
 📅 **El ciclo de contenido corre del día 1 al 20 de cada mes:** día 1 reunión · 1-3 plan ·
 2-3 calendario y shot list · 3-6 brand guidelines · 4-5 coordinar · 6-10 producir ·
@@ -112,14 +113,23 @@ o alcance.** `inherent/06-ECONOMIA.md` no sale del repo.
 
 ## La identidad
 
-# GROWTH OPERATOR
+# BRAND GROWTH PARTNER
 
-**No somos agencia ni consultoría. Operamos el crecimiento.**
-La agencia hace piezas. La consultoría hace diagnósticos. **Nosotros hacemos que el negocio
-crezca, y nos quedamos adentro hasta que pasa.**
+**We build cool brands—and the growth systems behind them.**
+Construimos marcas interesantes, creativas y deseables. **Lideramos el frente de crecimiento**
+*(estrategia, identidad, marketing, experiencia digital, medición)* y **entramos al backend
+cuando hace falta** *(procesos, CRM y automatizaciones, roles, métricas)*.
 
-**Prometemos crecimiento, según la necesidad** — y el tipo lo define dónde está trabado el
-negocio, no lo que queramos vender.
+🎯 **La pregunta filtro:** ¿este trabajo hace la marca **más deseable, más fácil de elegir o más
+capaz de convertir** esa demanda en ingresos? Con quién encajamos: `inherent/01-IDENTIDAD.md`.
+
+**No somos agencia ni consultoría.**
+La agencia hace piezas. La consultoría hace diagnósticos. **Nosotros construimos el camino, el sistema y la medición para que el negocio
+crezca, y nos quedamos adentro mientras se ejecuta.**
+
+**Prometemos un camino, un sistema y medición — no un resultado garantizado.** El tipo de
+crecimiento lo define dónde está trabado el negocio, no lo que queramos vender. **El título no
+significa hacernos cargo de cada función de la empresa:** el alcance se define por cliente.
 
 **Cómo:** con **Estrategia** como columna — ingeniería inversa de la meta financiera hasta la
 pieza, incluyendo mejorar la oferta y el posicionamiento. Y cinco equipos que desarrollan la
@@ -130,47 +140,37 @@ visión: **Marketing · Branding · Creatividad · Tecnología · ADS.**
 
 ## El techo comercial
 
-**`inherent/06-ECONOMIA.md`** define qué se puede entregar según el plan contratado: cuántas
-piezas, qué canales, qué capas entran y cuántas revisiones. **Es restricción dura para todos los
-agentes.** Se lee antes de prometer nada.
+**El techo es el alcance contratado:** nivel + áreas + volumen + revisiones, escrito en la **ficha
+de oferta** del cliente *(`00-onboarding/plan-contratado.md` — conserva el nombre, describe nivel,
+áreas, volumen, revisiones y qué queda fuera)*. **Es restricción dura para todos los agentes.**
+Se lee antes de prometer nada. **Sin ficha, el agente BLOQUEA a ese cliente.**
+`inherent/06-ECONOMIA.md` tiene los costos y las capacidades reales.
 
-### Dos líneas, cuatro planes
-
-```
-🔷 MARKETING      $950     86 piezas    arrancando → visible
-🔷 MARKETING PRO  $1,450   145 piezas   visible → presencia sostenida
-🟨 ACCELERATE     $2,500   145 piezas   estancado → escalando
-🟨 COMPOUND       $4,200   204 piezas   escalando → autónomo
-```
-
-**Más `Tailor Made`** — multi-locación, regulatorio, integraciones, proyectos por hito.
-**Un Tailor Made no se cuestiona:** en el onboarding se define **qué incluye y su pipeline** —qué
-departamentos corren, en qué orden y a qué nivel— y los agentes lo siguen.
-
-🔑 **El eje es qué promete cada línea, no cuánto entrega:**
-**🔷 Marketing promete ATENCIÓN** *(compite con agencias)* · **🟨 Growth promete FACTURACIÓN**
-*(compite con consultoría y CMO fraccional)*.
-
-🔑 **Marketing Pro y Accelerate entregan las mismas 145 piezas, a propósito.**
-El salto **no compra contenido — compra sistemas**: oferta, precio, conversión, canales y SOPs.
-**Venderlo como «más piezas» es venderlo mal.**
-
-🔷 **La línea Marketing apunta a un crecimiento medible:** *(métrica — slot)*
-
-🚀 **Somos un acelerador de marcas. Cada plan es un BOOST distinto, no más volumen del anterior.**
-**Accelerate NO es «que te conozcan más».** Ese comprador ya se siente estancado y **teme romper
-lo que le funciona.**
-
-**Dos divisiones — el eje es cómo se decide la compra, no quién compra:**
+### Tres niveles
 
 ```
-🔵 LOW TICKET    volumen      oferta · big sales · upsells
-🟣 HIGH TICKET   precisión    oferta · cuentas grandes · expansión
+1 · BRAND FOUNDATION    «creamos la marca cool»                 proyecto, con inicio y cierre
+2 · BRAND GROWTH        «hacemos más cool la marca que ya está»  colaboración mensual
+3 · GROWTH PARTNERSHIP  «nos metemos full»                       colaboración integrada
 ```
+
+**Un solo sistema de tres niveles de profundidad, en el orden en que una marca los necesita.**
+En cada propuesta se eligen **solo las áreas necesarias** — no todos compran todo.
+
+🔑 **El nivel dice qué tan adentro entramos, no cuántas piezas entregamos.** El catálogo de
+**12 áreas**, qué cae en cada nivel y la ficha de oferta están en `inherent/03-OFERTA.md`.
+
+🔑 **Prometemos un camino, un sistema y medición — no un resultado garantizado.** El título
+*Brand Growth Partner* **no** significa garantizar todo el crecimiento ni hacerse cargo de cada
+función de la empresa. **El alcance y las responsabilidades se definen por proyecto y cliente.**
+
+🚀 **Somos un acelerador de marcas. Cada nivel es un BOOST distinto, no más volumen del anterior.**
+**Growth Partnership NO es «que te conozcan más».** Ese comprador ya se siente estancado y **teme
+romper lo que le funciona.**
 
 **Los pilares no cambian — son la metodología. Cambia el verbo:**
-Accelerate **ejecuta** · Compound **sistematiza**. **La línea Marketing no activa pilares** —
-ejecuta atención. Ver `inherent/03-OFERTA.md`.
+Foundation **sienta la base** · Growth **ejecuta atención y demanda** · Partnership **integra**.
+Ver `inherent/02-METODO.md` y `inherent/03-OFERTA.md`.
 
 ### Los cuatro sistemas
 
@@ -183,19 +183,18 @@ MONEY OS        que quede utilidad
 
 **Una agencia solo trabaja el primero.** Por eso sus clientes crecen y se rompen.
 
-| | 🔷 MARKETING | 🔷 MKT PRO | 🟨 ACCELERATE | 🟨 COMPOUND |
-|---|---|---|---|---|
-| **Ejecución de marketing** | ✅ | ✅ Mayor volumen | ✅ | ✅ Máximo |
-| **Growth OS** | — | — | Los 3 ejecutando | Los 3 sistematizados |
-| **Conversion OS** | — | — | ✅ | ✅ |
-| **Operations OS** | — | — | SOPs **de crecimiento** | SOPs **de empresa** |
-| **Money OS** | — | — | — | ✅ |
+| | 🧱 FOUNDATION | 📈 GROWTH | 🤝 PARTNERSHIP |
+|---|---|---|---|
+| **Qué es** | Proyecto con cierre | Colaboración mensual | Colaboración integrada |
+| **Growth OS** | Sienta la base *(diagnóstico, oferta, posicionamiento)* | Ejecuta atención y demanda | Los 3 pilares, integrados |
+| **Conversion OS** | — | Lo básico de lo contratado | ✅ Completo |
+| **Operations OS** | — | — | SOPs de las áreas contratadas |
+| **Money OS** | — | — | Finanzas vinculadas al crecimiento |
 
-🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra en la
-línea Marketing porque **antes no hay nada que perder**; Operations porque **no se puede
-documentar un proceso que todavía no funcionó**; Money porque **sin transacciones el margen por
-línea es teoría.** **Meterlo antes es cobrar por algo que no se puede usar.** Ver
-`inherent/02-METODO.md`.
+🔑 **Un sistema entra cuando el negocio tiene con qué alimentarlo.** Conversion no entra antes
+porque **no hay nada que perder**; Operations porque **no se puede documentar un proceso que
+todavía no funcionó**; Money porque **sin transacciones el margen por línea es teoría.**
+**Meterlo antes es cobrar por algo que no se puede usar.** Ver `inherent/02-METODO.md`.
 
 **Seis capacidades bajo un techo:** 📣 Marketing · 🎨 Creative · 🎬 Production · 🏷️ Branding ·
 🔧 Tech · 📊 Consulting. **Strategy debe conocer las seis** para decidir qué activar.
@@ -205,18 +204,17 @@ línea es teoría.** **Meterlo antes es cobrar por algo que no se puede usar.** 
 marca ahí y responde *«¿qué harías si esta fuera tu empresa?»*. **El mentor hace la auditoría.**
 **Por área** *(nuestros)*: corporate structure, eventos, networking y PR, talent production,
 talent marketing. **Red, no nómina.**
-🔑 **Tres reglas lo hacen rentable:** **el mentor es exclusivo de la línea Growth** — meterlo en
-Marketing rompe el margen del plan barato · **trimestral en Accelerate**, mensual en Compound ·
-**la membresía se paga anual y es de Inherent** *(sirve a todos los clientes de esa industria,
-−41% de costo)*. **Arriba de $180/sesión no se absorbe: va como add-on facturado al cliente.**
-Ver `inherent/04-MERCADO.md`.
+🔑 **Tres reglas lo hacen rentable:** **el experto de industria es exclusivo de Growth Partnership**
+y se especifica **quién, cuántas horas y qué entrega** · **la membresía se paga anual y es de
+Inherent** *(sirve a todos los clientes de esa industria)* · **arriba de $180/sesión no se absorbe:
+va como add-on facturado al cliente.** Ver `inherent/04-MERCADO.md`.
 
-## Lo que entrega cada línea
+## Lo que entrega cada nivel
 
-**El texto de las cuatro tarjetas y qué respalda cada línea están en `inherent/03-OFERTA.md`.**
+**El catálogo de áreas, la ficha de oferta y qué cae en cada nivel están en `inherent/03-OFERTA.md`.**
 **La web vive en su propio repo.**
 
-«Tus números claros» lo entrega **Money OS** con el CEO y Strategy.
+«Finanzas vinculadas al crecimiento» lo entrega **Money OS** con el CEO y Strategy.
 **Corporate structure** lo cubre la auditoría del especialista.
 
 ---
@@ -229,72 +227,66 @@ Ver `inherent/04-MERCADO.md`.
 *"Te puedes ir una semana y la empresa factura igual"* ✅
 **El volumen y las herramientas son la EVIDENCIA de que podemos — nunca la oferta.**
 
-🔑 **El precio se justifica por cuántos sistemas activamos y qué tan adentro entramos.**
-**Nunca por volumen de entregables.**
+🔑 **El precio se justifica por el alcance: cuántas áreas activamos y qué tan adentro entramos.**
+**Nunca por volumen de entregables suelto.**
 
-🔑 **La etapa no es mérito, es realidad:** lo que el cliente puede pagar dice en qué etapa está,
-y la etapa dice qué necesita.
+🔑 **La etapa no es mérito, es realidad:** lo que el cliente necesita hoy dice en qué nivel está.
 
 🔑 **Si la empresa es el estorbo, más demanda empeora el problema:** se arregla la capacidad
 primero, aunque la venta fácil sea más pauta.
 
 ### La economía
 
-**La estrategia de precio es matarlos con valor, no cobrar más.** Los precios están **dentro del
-rango que el mercado ya acepta**, con 3x a 5x el volumen de su tramo.
+**El precio se arma por volumen y complejidad:** más canales, más producción, más ubicaciones,
+más integración o más responsabilidad de ejecución. **Los niveles no traen un número fijo de
+piezas ni un precio fijo en el manual.**
+
+🔑 **La web no muestra precio.** Un precio solo, sin contexto, se compara con lo más barato. La
+web **vende lo que la marca puede ganar** y lleva a **«Hablemos»**. **Al primer contacto se
+responde en un minuto**; en la conversación se entiende el caso, se ve lo que está en juego y
+**entonces** se da el precio, con el alcance delante.
+
+🔑 **Los niveles son límites, no pipelines.** Ponen el techo de lo que puede entrar. **El
+pipeline se arma por cliente**, con los módulos que su ficha incluye *(los servicios ya están
+productizados)*. **No existe un solo pipeline:** existe uno por cliente, ajustable cuando
+cambia lo que necesita.
+
+**La industria no cambia el precio por sí sola:** cambia las tareas, los conocimientos y los
+canales; la inversión se ajusta por volumen y complejidad.
 
 🌐 **Guatemala es dónde arrancamos, no el techo.** Los costos se pagan en quetzales y no cambian
 al cambiar de mercado; **lo único que cambia es el precio.** Ver `inherent/04-MERCADO.md`.
-El plan de entrada da **86 piezas a Q7,315 (Q85/pieza)** contra las ~16 de un paquete de Q3,000
-**(Q188/pieza)**.
 
-**El volumen nos separa del mercado. La profundidad separa las líneas entre sí.**
+**Ganamos de hacerles dinero.** El fee base cubre la operación; **la utilidad de verdad puede salir
+del performance fee — 10% de las ventas atribuidas.** **Solo existe en Growth Partnership y solo con
+atribución limpia:** no existe en Foundation ni en Growth.
 
-**Dentro de Marketing el bundle sí es descuento** *(38% menos que comprar suelto)*.
-**El salto a Growth NO es descuento — es acceso:** nada de lo que agrega se vende à la carte.
-**El movimiento comercial es subir a los clientes que ya están, no sumar clientes nuevos.**
-
-**Ganamos de hacerles dinero.** El fee base cubre la operación; **la utilidad de verdad sale del
-performance fee — 10% de las ventas atribuidas, con costo marginal Q0.** Cada quetzal de fee es
-utilidad pura. **Sin atribución limpia no hay fee — y por eso no existe en la línea Marketing.**
-
-**Los cuatro objetivos a la vez: costos bajos · valor enorme · precio justo · márgenes
-altísimos.** Cierran **no bajando el precio, con el costo fijo.**
-
-🔒 **El costo de cada plan es FIJO, por cuenta y por rubro — no es estimación.**
-
-```
-              GRABAC.  FOTO   EDICIÓN  OPERADOR  HERRAM.  ESPECIAL.  AUDIT.   BUFFER   COSTO    MARGEN
-🔷 MARKETING   Q450    Q300    Q200     Q350      Q150       —         —      Q215    Q1,665    77%
-🔷 MKT PRO     Q560    Q300    Q500     Q550      Q200       —         —      Q445    Q2,555    77%
-🟨 ACCELERATE  Q780    Q300    Q700     Q900      Q300     Q1,000    Q1,200   Q520    Q5,700    70%
-🟨 COMPOUND    Q960    Q300   Q1,000   Q1,400     Q500     Q2,000    Q1,800   Q840    Q8,800    73%
-```
-
-**El margen no cambia con el número de clientes.** Si una cuenta consume más, se cotiza extra o
-sube de plan — **nunca se absorbe.** Ver `inherent/06-ECONOMIA.md` → «Los costos por plan — fijos».
+🔒 **Los costos se llevan por rubro y por rol, y se cotizan por alcance** *(la ficha de oferta
+dice el precio base y qué lo aumenta)*. Ver `inherent/06-ECONOMIA.md` y `inherent/05-OPERACION.md`
+→ «Lo que cuesta cada rol».
 🔑 **El CEO y el COO no son rubro:** cobran de la utilidad. Sus horas son **capacidad**, no costo.
 
-🔑 **Cada cuenta paga a cada rubro el monto fijo de su plan.** Se firma una vez con cada
-persona y no se renegocia por cliente. Ver `inherent/05-OPERACION.md` → «Lo que cuesta cada rol».
+🔑 **Costos de terceros siempre aparte:** pauta, producción especial, talento, locaciones, viajes,
+licencias y mentores sobre $180/sesión.
 
 🔑 **La producción no se baja recortando horas** — eso es bajarle el precio a la persona por el
 mismo trabajo. Si el monto no alcanza, **se cambia la mezcla** *(más derivados, contenido crudo
-del cliente)* **o se cotiza extra.**
+del cliente)* **o se cotiza extra.** Si una cuenta consume más de lo contratado, se cotiza extra
+o sube de nivel — **nunca se absorbe.**
 
 🔑 **Esto exige agentes que trabajen entre autónomos y dirigidos:** que levanten excepciones, no
 preguntas. **Si el agente pregunta todo, no ahorra nada.**
 
 🔑 **No se vende una capa suelta DISFRAZADA DE CRECIMIENTO.** Crecer exige algo íntegro.
-**La línea Marketing vende atención y lo dice en la tarjeta** — el cliente sabe qué compró.
-Lo prohibido es cobrar contenido o pauta prometiendo facturación.
+Lo prohibido es cobrar contenido o pauta prometiendo facturación. **La ficha dice qué se compró.**
 
-🔑 **Los cuatro planes incluyen estrategia.** Cambia la profundidad, no la existencia.
-**Pero solo Growth toca la OFERTA.** Marketing trabaja el **mensaje** —cómo se cuenta lo que ya
-vende—; Growth trabaja **qué vende, en qué paquetes y a qué precio.**
-**En la línea Marketing, ② Growth corre ligero:** elige cuáles de las ofertas que ya existen se
-empujan, para que la pauta sepa qué pautar. No cambia la oferta.
-**Confundirlos es regalar el trabajo caro dentro del plan barato.**
+🔑 **Todo nivel incluye estrategia.** Cambia la profundidad, no la existencia.
+**La OFERTA** *(qué vende, en qué paquetes y a qué precio)* **se trabaja en Brand Foundation y en
+Growth Partnership.** En **Brand Growth** se trabaja el **mensaje** —cómo se cuenta lo que ya
+vende—; ② Growth corre ligero: elige cuáles de las ofertas que ya existen se empujan, para que la
+pauta sepa qué pautar. No cambia la oferta.
+**Confundirlos es regalar el trabajo caro dentro del nivel barato.**
+
 
 ### Las herramientas son slots
 
@@ -320,7 +312,7 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 |---|---|
 | Quiénes somos y qué nos diferencia | `inherent/01-IDENTIDAD.md` |
 | El método — los 4 sistemas y las 2 divisiones | `inherent/02-METODO.md` |
-| Los planes, precios y cómo se activa cada uno | `inherent/03-OFERTA.md` |
+| Los 3 niveles, las 12 áreas, la ficha de oferta y cómo se activa cada uno | `inherent/03-OFERTA.md` |
 | Industrias, mercados o la red de mentores | `inherent/04-MERCADO.md` |
 | Los roles, el pipeline o el calendario | `inherent/05-OPERACION.md` |
 | 🔒 Costos, márgenes, capacidades MCP | `inherent/06-ECONOMIA.md` |
@@ -356,7 +348,7 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
   ni «pendiente», ni fechas de verificación, ni historia de cómo se llegó a la decisión.
   **Lo que falta decidir, construir o probar vive en `PENDIENTES.md`, nunca en el manual.**
 - **Los clientes y la facturación de Inherent se leen, nunca se suponen.** Cuántos clientes hay,
-  quiénes son y en qué plan sale **solo de `clients/`** *(el `00-onboarding/plan-contratado.md` de
+  quiénes son y en qué nivel/alcance sale **solo de `clients/`** *(el `00-onboarding/plan-contratado.md` de
   cada uno)*. Lo que factura Inherent sale **solo de la contabilidad**. Los escenarios del manual
   *(«con 5 clientes», «con 10 clientes»)* son modelos, no la realidad. Si el dato no está, se dice.
 - **Antes de escribir en el repo, se presenta qué se va a escribir:** los archivos, qué lleva cada

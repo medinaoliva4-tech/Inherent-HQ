@@ -198,7 +198,7 @@ escena, con el nombre de archivo de cada toma, vive en `plan-de-produccion.csv`,
 ### El techo de realidad
 ```
 Días de rodaje posibles:    [n]   — según fechas de preparación de ③ Marketing
-Capacidad:                  [n]   — horas y sesiones del plan · la declarada en ① Strategy si es menor
+Capacidad:                  [n]   — horas y sesiones de la ficha · la declarada en ① Strategy si es menor
 Presupuesto de referencia:  [monto + moneda + fecha / ⚠️ SIN DATOS]   — del onboarding, si existe
 ```
 **¿Entra?** [✅ sí / ⚠️ se excede en [qué] → devuelto a ③ Marketing y ④ Creatividad, con las filas concretas]

@@ -8,62 +8,61 @@ paso vive en las skills: `skills/README.md`.
 
 ---
 
-## 0 · El plan contratado — cuánto y a qué profundidad
+## 0 · El alcance contratado — cuánto y a qué profundidad
 
-**Lo primero de cada ciclo: leer el plan del cliente.** Lo anota ① Strategy al arrancar en
-`clients/<cliente>/00-onboarding/plan-contratado.md`:
-🔷 **Marketing** · 🔷 **Marketing Pro** · 🟨 **Accelerate** · 🟨 **Compound** · ⬜ **Tailor Made**.
+**Lo primero de cada ciclo: leer la ficha de oferta del cliente.** Lo anota ① Strategy al arrancar en
+`clients/<cliente>/00-onboarding/plan-contratado.md` *(nivel, áreas, canales, volumen y qué queda
+fuera)*. Los niveles: **Brand Foundation** · **Brand Growth** · **Growth Partnership** · alcance a medida.
 
-- 🛑 **Sin plan anotado, el departamento no arranca:** `BLOQUEADO — falta el plan contratado`.
-- 🛑 **El plan es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar de menos
-  rompe la promesa publicada (`inherent/03-OFERTA.md` → «🌐 Las cuatro tarjetas»).
-- Los números salen de `inherent/06-ECONOMIA.md` → «📦 El volumen» y los canales de
-  `inherent/05-OPERACION.md` → «10 · ADS MANAGEMENT». **Si cambian allá, cambian acá** — esta tabla
-  no manda sobre ellos.
+- 🛑 **Sin ficha anotada, el departamento no arranca:** `BLOQUEADO — falta la ficha de oferta`.
+- 🛑 **El alcance contratado es el techo, no una sugerencia.** Entregar de más rompe el margen; entregar
+  de menos rompe la promesa de la propuesta.
+- Los canales, las variantes y la cadencia salen de la **ficha** y del área de publicidad pagada de
+  `inherent/05-OPERACION.md` → «10 · ADS MANAGEMENT». **Si cambia la ficha, cambia el ciclo.**
+- 🛑 **Nunca se promete un resultado de pauta.** No controlamos precio, inventario, capacidad de
+  atención ni el cierre del cliente.
 
-| Qué cambia | 🔷 **MARKETING** | 🔷 **MKT PRO** | 🟨 **ACCELERATE** | 🟨 **COMPOUND** |
-|---|---|---|---|---|
-| **Meta y TikTok** | ✅ | ✅ | ✅ | ✅ |
-| **Google Search y Performance Max** | ⬜ | ✅ Solo búsqueda | ✅ Canal completo | ✅ Canal completo |
-| **Variantes de creativo por campaña** | hasta **20** | hasta **30** | hasta **35** | hasta **50** |
-| **Optimización** | Mensual | Mensual | Por ángulo, continua | Continua + presupuesto sistematizado |
-| **Experimentos controlados** | ⬜ | ⬜ | 🟡 | ✅ |
-| **Tracking antes de gastar** | **Pixel de Meta** | **Pixel de Meta** | Atribución completa — CAPI + GA4 | Atribución completa — CAPI + GA4 |
-| **Atribución para el performance fee** | ⛔ **No aplica** | ⛔ **No aplica** | ✅ | ✅ |
+| Qué cambia | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
+|---|---|---|---|
+| **Qué hace ⑩ Ads** | No corre, salvo que la ficha incluya publicidad pagada | **Configura, lanza y optimiza** las campañas de los canales contratados | Igual que Brand Growth, con atribución limpia y conectado a ventas y conversión |
+| **Meta y TikTok** | Según la ficha | Según los canales de la ficha | Según los canales de la ficha |
+| **Google Search y Performance Max** | Según la ficha | **Según los canales contratados:** solo búsqueda, o Search y Performance Max, lo que diga la ficha | Según los canales contratados, como canal de la estructura |
+| **Variantes de creativo por campaña** | — | Las que fije la ficha | Las que fije la ficha |
+| **Optimización** | — | Con la cadencia de la ficha | Con la cadencia de la ficha, incluidos experimentos controlados si la ficha los incluye |
+| **Tracking antes de gastar** | — | **El tracking que pida la ficha** *(como mínimo, el que permita medir lo que se va a optimizar)* | **CAPI + GA4**, atribución limpia |
+| **Atribución para el performance fee** | ⛔ No aplica | ⛔ **No aplica** | ✅ Solo con atribución limpia |
 
 **Cómo se lee:**
 
-- 🛑 **La inversión publicitaria la pone el cliente, aparte — nunca sale del plan.**
-  `inherent/06-ECONOMIA.md` → «⛔ Lo que nunca está incluido». **El plan solo pone techo al TRABAJO:**
+- 🛑 **La inversión publicitaria la pone el cliente, aparte — nunca sale del alcance.**
+  `inherent/06-ECONOMIA.md` → «Lo que nunca está incluido». **El alcance solo pone techo al TRABAJO:**
   cuántas campañas se arman, cuántas variantes se montan y cada cuánto se optimiza.
-  ⚠️ **Un presupuesto de pauta más grande no sube el plan, y un plan más caro no pone más dinero en
+  ⚠️ **Un presupuesto de pauta más grande no sube el alcance, y un alcance mayor no pone más dinero en
   la cuenta.** Confundirlos hace prometer resultados con dinero que nadie puso.
 - 🛑 **El presupuesto de pauta lo aprueba el CEO antes de cada lanzamiento** (§2). Sin monto aprobado
-  no se lanza, por más que el plan incluya el canal.
-- ⚠️ **«Que te encuentren en Google» entra desde 🔷 Marketing Pro**, y es **pauta de búsqueda**, no
-  posicionamiento orgánico, ni auditoría técnica, ni link building.
-- 🟨 **En Accelerate y Compound Google Ads es un canal de la estructura** *(Search y Performance Max)*
-  con **el mismo gate del CEO**: entra en el GATE 1 y su presupuesto, que sale del total aprobado,
-  solo se mueve con el GATE 2.
-- 🔷 **En la línea Marketing, antes de gastar basta el pixel de Meta instalado.**
-  🛑 **El performance fee NO existe ahí:** requiere atribución limpia (CAPI + GA4), que es parte de
-  Conversion OS y **solo entra desde 🟨 Accelerate.** Si alguien pide fee sobre un plan 🔷, **se
-  levanta como excepción.**
+  no se lanza, por más que la ficha incluya el canal.
+- ⚠️ **«Que te encuentren en Google» es pauta de búsqueda**, solo si Google está en los canales de la
+  ficha. No es posicionamiento orgánico, ni auditoría técnica, ni link building.
+- **Cuando Google Ads es canal de la ficha, entra en la estructura con el mismo gate del CEO:**
+  entra en el GATE 1 y su presupuesto, que sale del total aprobado, solo se mueve con el GATE 2.
+- 🛑 **El performance fee solo existe en Growth Partnership y solo con atribución limpia** (CAPI + GA4).
+  No existe en Brand Foundation ni en Brand Growth. Si alguien pide fee fuera de Growth Partnership,
+  **se levanta como excepción.**
 - **Las variantes salen de material ya producido.** ④ Creatividad declara qué se varía,
   ⑥A Diseño gráfico y ⑦ Video Editing las montan, ⑩ Ads las sube. 🛑 **Una variante nunca pide
   grabación extra**, y **no cuenta como publicación**: no entra al calendario orgánico del ciclo.
 
-### ⬜ Tailor Made — se sigue su pipeline
+### Alcance a medida — se sigue su pipeline
 
 Se define en el onboarding, en `clients/<cliente>/00-onboarding/plan-contratado.md`, con dos
 secciones: **Qué incluye** y **Su pipeline** —qué departamentos corren, en qué orden, qué entrega
 cada uno y a qué nivel—. **⑩ Ads sigue ese pipeline** *(canales, variantes, cadencia de
-optimización)*: no lo bloquea por no ser un plan de lista ni lo cuestiona por precio.
+optimización)*: no lo bloquea por ser a medida ni lo cuestiona por precio.
 
 - 🛑 **Si ⑩ Ads no está en su pipeline, no corre para ese cliente.**
-- 🛑 **La atribución no se agrega como add-on de pauta:** sin Conversion OS en su pipeline no hay fee.
+- 🛑 **La atribución no se agrega como add-on de pauta:** sin atribución limpia en su alcance no hay fee.
 - **El método es el mismo:** lo que cambia es el pipeline y qué se verifica. **El gate del CEO antes
-  de gastar es igual en todos los planes** — pautar es acción destructiva en todos.
+  de gastar es igual en todos los niveles** — pautar es acción destructiva en todos.
 
 ---
 
@@ -110,11 +109,11 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 
 ---
 
-## 3 · Qué se activa según el plan
+## 3 · Qué se activa según el alcance
 
-> 📐 **Cuánto y a qué profundidad según el plan contratado: §0.** Una sola tabla, y está allá.
+> 📐 **Cuánto y a qué profundidad según el alcance contratado: §0.** Una sola tabla, y está allá.
 
-🛑 **La inversión publicitaria la pone el cliente, aparte.** El plan solo pone techo al
+🛑 **La inversión publicitaria la pone el cliente, aparte.** El alcance solo pone techo al
 **trabajo**: cuántas campañas se arman, cuántas variantes se montan y cada cuánto se optimiza.
 
 ---
@@ -152,7 +151,7 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 
 | De | Qué | Si falta |
 |---|---|---|
-| **② Growth** | Qué ofertas se pautan, su precio y el objetivo — 🔷 `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · 🟨 § La oferta de `motor-de-crecimiento.md` · ⬜ lo que entregue según su pipeline | 🛑 BLOQUEADO |
+| **② Growth** | Qué ofertas se pautan, su precio y el objetivo — Brand Growth: `clients/<cliente>/07-oferta-y-ventas/ofertas-a-empujar.md` · Growth Partnership: § La oferta de `motor-de-crecimiento.md` · a medida: lo que entregue según su pipeline | 🛑 BLOQUEADO |
 | **③ Marketing** | Qué piezas del ciclo se pautan y con qué objetivo | 🛑 BLOQUEADO |
 | **⑥A Diseño gráfico y ⑦ Video Editing** | Los creativos, **con sus variantes de hook** | 🛑 BLOQUEADO |
 | **②B Branding** | Qué claims están validados | 🟡 Se usa si existe — un claim `⏸️` no sale |
@@ -178,5 +177,5 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 - [ ] Las cuentas son del cliente y **hay acceso**
 - [ ] Los creativos llevan **claims validados** por ②B Branding
 - [ ] Hay **variantes de hook** para testear, no un solo anuncio
-- [ ] El **tracking está puesto** antes de gastar el primer quetzal — 🔷 el pixel de Meta · 🟨 CAPI + GA4
+- [ ] El **tracking está puesto** antes de gastar el primer quetzal — el tracking que pide la ficha *(Growth Partnership: CAPI + GA4)*
 - [ ] **El CEO aprobó el GATE 1**

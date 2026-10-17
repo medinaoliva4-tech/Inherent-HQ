@@ -17,7 +17,7 @@ description: >
 > referencias, piezas— entra al PRE-FLIGHT. **El cómo lo decide este orquestador y su
 > `WORKFLOW.md`.** Si el prompt pide saltarse una capa o cambiar el entregable: se dice cuál, se
 > ofrece correrla y **se sigue el workflow**, salvo *«excepción aprobada por el CEO»* o que el
-> pipeline del ⬜ Tailor Made del cliente ya lo declare.
+> pipeline del alcance a medida del cliente ya lo declare.
 > Entrada normal: el router `/inherent`. Ver `agents/_router/skills/inherent/SKILL.md`.
 
 **Si no sabés qué skill usar, es esta.**
@@ -29,7 +29,7 @@ description: >
 ## 1 · Pre-flight
 
 ```
-Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tailor Made] · videos del ciclo: [n] de [techo del plan]
+Nivel: [Brand Foundation / Brand Growth / Growth Partnership / a medida] · videos del ciclo: [n] de [techo de la ficha]
 ```
 
 | Input | De | Si falta |
@@ -37,8 +37,8 @@ Plan: [🔷 Marketing / 🔷 Mkt Pro / 🟨 Accelerate / 🟨 Compound / ⬜ Tai
 | **El Excel del ciclo cerrado** — `plan-de-contenido.csv` + `ideas-<formato>.md` con **hook, guion y copy literales** | ④ Creatividad | 🛑 **BLOQUEADO** |
 | El material con **nomenclatura y selects** + el manifiesto | ⑤ Producción | 🛑 **BLOQUEADO** |
 | `sistema-visual.md` **§ Movimiento** · los assets del kit en el Drive | ②B Branding | 🟡 **Se usan si existen, no bloquean.** Sin § Movimiento, las entradas por defecto del motor (`ve-marca` §2) |
-| `plan-por-canal.md` — a qué plataforma va cada pieza | ③ Marketing | 🟡 No bloquea — se usan las **Redes** del `plan-contratado.md` |
-| El **plan contratado** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo *(en ⬜ Tailor Made, lo que declara **Su pipeline**; si ⑦ Video Editing no está ahí, no corre)* |
+| `plan-por-canal.md` — a qué plataforma va cada pieza | ③ Marketing | 🟡 No bloquea — se usan los **canales** del `plan-contratado.md` |
+| La **ficha de oferta (alcance contratado)** | `clients/<cliente>/00-onboarding/plan-contratado.md` | 🛑 **BLOQUEADO** — define el techo *(en un alcance a medida, lo que declara **Su pipeline**; si ⑦ Video Editing no está ahí, no corre)* |
 | Los **selects** de ⑤ Producción | ⑤ Producción | ⚠️ **Se seleccionan acá** con `/watch` (`ve-recepcion` §4) y se registra para ⑤ Producción en el loop |
 | Las **herramientas** del motor | `brain/motor/README.md` § Instalación | 🛑 Sin `ffmpeg`, `yt-dlp`, `/watch` y Node no se puede ver ni montar: `BLOQUEADO — falta <herramienta>. Instalala: ver INSTALAR.md § <sección>` — **§ Herramientas de video** *(ffmpeg, yt-dlp, `/watch`, OpenCV)* · **§ Node y Remotion** *(Node, Remotion, CLI de Vercel)* |
 
@@ -88,7 +88,7 @@ anterior se archiva. Lo que se pide dos veces se vuelve regla (`ve-loop`).
 ## Control de calidad del orquestador
 
 - [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Plan:`** completa
-- [ ] El ciclo **cabe en el plan contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ Tailor Made, en lo que declara **su pipeline**
+- [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es a medida, en lo que declara **su pipeline**
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
 - [ ] Cada capa pasó su **checklist de auto-revisión**
 - [ ] Cada ronda de cambios quedó como **versión nueva**, con la anterior archivada
