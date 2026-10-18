@@ -6,17 +6,19 @@
 //     start: { <perfil>: <sección> } }                             ← dónde abre al entrar
 // Sin configuración, todo sigue como siempre: cada rol ve sus áreas de siempre y puede editarlas.
 // Un perfil que no está en la lista no opina; si una persona tiene varios perfiles, gana el más amplio.
-export const SECTIONS = [['home', 'Hoy'], ['control', 'Control'], ['clients', 'Clientes'], ['sales', 'Comercial'], ['operations', 'Proyectos'], ['work', 'Workspace'], ['content', 'Contenido'], ['resultados', 'Indicadores'], ['roadmap', 'Metas'], ['finanzas', 'Finanzas'], ['library', 'Library'], ['team', 'Equipo']];
+export const SECTIONS = [['home', 'Hoy'], ['control', 'Control'], ['clients', 'Clientes'], ['sales', 'Comercial · prospectos'], ['operations', 'Proyectos'], ['work', 'Workspace'], ['content', 'Contenido'], ['resultados', 'Indicadores'], ['roadmap', 'Roadmap'], ['finanzas', 'Finanzas'], ['library', 'Library'], ['team', 'Equipo']];
 // Las 8 secciones de la barra y qué pantallas (áreas) agrupa cada una. Una sección aparece si su perfil ve al menos una.
+// La primera pantalla de cada lista es la que abre la sección; las demás siguen existiendo por su ruta (Equipo → «Más»).
+// «Mi marca» (#/mimarca) es solo del CEO y no entra en la matriz: no agrupa ninguna pantalla.
 export const GROUPS = [
-  ['inicio', 'Inicio', ['home', 'control']],
-  ['clientes', 'Clientes', ['clients']],
-  ['comercial', 'Comercial', ['sales']],
-  ['operaciones', 'Operaciones', ['operations', 'work', 'content']],
-  ['resultados', 'Resultados', ['resultados', 'roadmap']],
-  ['finanzas', 'Finanzas', ['finanzas']],
-  ['conocimiento', 'Conocimiento', ['library']],
-  ['administracion', 'Administración', ['team']],
+  ['hoy', 'Hoy', ['home', 'control', 'work', 'resultados']],
+  ['clientes', 'Clientes', ['clients', 'operations']],
+  ['servicios', 'Servicios', ['sales', 'finanzas']],
+  ['contenido', 'Contenido', ['content']],
+  ['mimarca', 'Mi marca', []],
+  ['roadmap', 'Roadmap', ['roadmap']],
+  ['equipo', 'Equipo', ['team']],
+  ['library', 'Library', ['library']],
 ];
 export const groupOf = (area) => (GROUPS.find(([, , l]) => l.includes(area)) || [])[0] || null;
 export const AREAS = SECTIONS.map(([k]) => k);
@@ -25,10 +27,10 @@ export const RANK = { oculto: 0, resumen: 1, completo: 2, edita: 3 };
 export const LEVEL_HELP = { oculto: 'No aparece ni se entrega por la API ni por el conector de Claude', resumen: 'Indicadores y lo que requiere acción', completo: 'Lo ve todo, sin cambiar nada', edita: 'Lo ve todo y puede crear o cambiar' };
 // Las secciones con vista «resumen» y qué muestra cada una (lo demás solo se ve en «completo»).
 export const SUMMARY = {
-  home: 'Tu agenda de hoy y tus tareas; sin revenue, leads ni engagement',
+  home: 'Tus responsabilidades de hoy, con su fecha y su área de entrega; sin números de la empresa',
   control: 'Los indicadores del flujo y «Necesita atención»; sin las tarjetas del embudo',
   operations: 'Los proyectos con su avance y las tareas atrasadas o en revisión; sin pipeline, calendario ni timeline',
-  clients: 'La lista de clientes con su plan, sus metas y sus tareas; sin accesos, Drive ni portal',
+  clients: 'La lista de clientes con su nivel, su avance y sus metas; sin accesos, links, precios ni portal',
   sales: 'Los indicadores del CRM y los seguimientos vencidos; sin catálogo, precios ni cotizaciones',
   finanzas: 'Los movimientos del mes (ingresos y gastos); sin costos, rentabilidad, precios ni pagos',
   content: 'Solo el rendimiento (Analytics), sin Research ni Calendario',
@@ -37,8 +39,8 @@ export const SUMMARY = {
 export const SCOPES = [['todos', 'Todos los clientes'], ['asignados', 'Solo sus clientes'], ['propio', 'Solo lo suyo']];
 export const SCOPE_RANK = { propio: 0, asignados: 1, todos: 2 };
 export const SCOPE_HELP = { todos: 'Ve los proyectos, tareas, clientes y leads de toda la empresa', asignados: 'Solo los proyectos donde tiene tareas (y sus clientes y tareas); los leads de su rol', propio: 'Solo sus tareas, los proyectos donde las tiene y los leads que creó' };
-// Dónde abre cada perfil al entrar. Por defecto: su cola de hoy (Workspace); el CEO en Home, el COO en Control.
-export const STARTS = [['work', 'Workspace · su cola de hoy'], ['home', 'Inicio · Hoy'], ['control', 'Inicio · Control'], ['operations', 'Operaciones · Proyectos'], ['sales', 'Comercial'], ['clients', 'Clientes'], ['content', 'Operaciones · Contenido'], ['resultados', 'Resultados'], ['finanzas', 'Finanzas'], ['library', 'Conocimiento']];
+// Dónde abre cada perfil al entrar. Por defecto: sus responsabilidades de hoy; el CEO en Hoy, el COO en Control.
+export const STARTS = [['work', 'Hoy · sus responsabilidades'], ['home', 'Hoy'], ['control', 'Control (vía Equipo → Más)'], ['clients', 'Clientes'], ['operations', 'Clientes · proyectos'], ['sales', 'Servicios · prospectos'], ['finanzas', 'Servicios · finanzas'], ['content', 'Contenido'], ['resultados', 'Indicadores (vía Equipo → Más)'], ['library', 'Library']];
 const DEFAULT_START = { ceo: 'home', coo: 'control' };
 // Lo que nunca cambia la matriz: Finanzas para quien no es CEO se queda en resumen (costos, márgenes,
 // tarifas y pagos son solo del CEO), y Team siempre se ve (quién es quién); cambiarlo ya es solo del CEO.

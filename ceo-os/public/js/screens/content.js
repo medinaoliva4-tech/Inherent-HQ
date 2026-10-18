@@ -45,12 +45,15 @@ export function videoCard(it) {
     <div class="cap mut">${it.text}</div></a>`;
 }
 
-export async function render(el, { me, sub, alive }) {
-  let slug = sub[1] || (() => { try { return localStorage.getItem('content.profile'); } catch { return null; } })() || 'inherent';
+// La marca personal del CEO (perfil «personal») no vive aquí: tiene su pantalla, Mi marca (#/mimarca), que monta esto mismo con el perfil fijo.
+const isPersonal = (slug) => slug === 'personal' || /-personal$/.test(String(slug || ''));
+export async function render(el, { me, sub, alive, fixed = null }) {
+  let slug = fixed || sub[1] || (() => { try { return localStorage.getItem('content.profile'); } catch { return null; } })() || 'inherent';
+  if (!fixed && isPersonal(slug)) slug = 'inherent';
   // Vista por rol: en «resumen» solo se ve el rendimiento (Analytics), sin Research ni Calendario.
   const resumen = me?.views?.content === 'resumen';
-  const tabs = resumen ? TABS.filter(([k]) => k === 'analytics') : TABS;
-  let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : 'analytics';
+  const tabs = fixed ? [['research', 'Research'], ['postear', 'Ideas'], ['calendario', 'Calendario'], ['analytics', 'Analytics']] : resumen ? TABS.filter(([k]) => k === 'analytics') : TABS;
+  let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : fixed ? 'research' : 'analytics';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
   let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
@@ -59,18 +62,20 @@ export async function render(el, { me, sub, alive }) {
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
     slug = data.profile.slug; week = null; posts = null; rs = null; shoots = null; ig = null; inbox = null; rf = null; shotMes = null; gstack = null; gfiles = null; gcur = null;
-    try { localStorage.setItem('content.profile', slug); } catch {}
+    if (fixed) { if (slug !== fixed) return mount(el, html`<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>`); }
+    else { data.profiles = (data.profiles || []).filter((x) => !isPersonal(x.slug)); try { localStorage.setItem('content.profile', slug); } catch {} }
     paint();
   }
   const root = () => data.profile.root;
-  const go = () => history.replaceState(null, '', `#/content/${tab}/${slug}`);
+  const go = () => history.replaceState(null, '', fixed ? `#/mimarca/${tab}` : `#/content/${tab}/${slug}`);
 
   function paint() {
     if (!alive()) return;
     const p = data.profile;
     mount(el, html`
-      <div class="hello"><h1>Contenido</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
-      <div class="row" style="margin-bottom:16px;gap:8px;flex-wrap:wrap">${data.profiles.map((x) => html`<button class="chip ${x.slug === slug ? 'dark' : ''}" data-act="prof" data-s="${x.slug}" style="padding:9px 16px;font-size:13px">${x.name}</button>`)}</div>
+      ${fixed ? html`<div class="hello row" style="align-items:flex-end"><div><h1>Mi marca</h1><p>Tu marca personal: <em>research, ideas y calendario</em>.</p></div><div class="sp"></div><span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span></div>`
+      : html`<div class="hello"><h1>Contenido</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
+      <div class="row" style="margin-bottom:16px;gap:8px;flex-wrap:wrap">${data.profiles.map((x) => html`<button class="chip ${x.slug === slug ? 'dark' : ''}" data-act="prof" data-s="${x.slug}" style="padding:9px 16px;font-size:13px">${x.name}</button>`)}</div>`}
       <div class="row" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
         <div class="tabs" style="margin:0">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>

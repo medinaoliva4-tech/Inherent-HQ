@@ -1,32 +1,36 @@
 import { applyViews, GROUPS, groupOf } from './roleviews.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO, infoTips, canTransition } from './core.js';
 
-// La barra: 8 secciones. Cada una agrupa pantallas (sus pestañas de arriba); la sección aparece si el perfil ve al menos una.
-// Las rutas de siempre (#/work, #/content, #/sales…) siguen siendo las de cada pantalla; #/<sección> lleva a la primera que ve.
+// La barra: 8 secciones. Cada una abre una pantalla; las demás pantallas de la sección siguen por su ruta (Equipo → «Más»).
+// #/<sección> lleva a su pantalla; las rutas de siempre (#/work, #/sales, #/finanzas, #/control, #/resultados, #/setup) siguen igual.
 const ICONS = {
-  inicio: 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
+  hoy: 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
   clientes: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6',
-  comercial: 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0',
-  operaciones: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
-  resultados: 'M4 19V5M4 19h16M8 15l4-5 3 3 5-7',
-  finanzas: 'M3 17l6-6 4 4 8-8M15 7h6v6',
-  conocimiento: 'M4 4h6l2 2h8v14H4z',
-  administracion: 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9',
+  servicios: 'M4 7h16v12H4zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M4 12h16',
+  contenido: 'M4 5h16v14H4zM10 9l5 3-5 3z',
+  mimarca: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',
+  roadmap: 'M4 19V5M4 19h16M8 15l4-5 3 3 5-7',
+  equipo: 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9',
+  library: 'M4 4h6l2 2h8v14H4z',
   portal: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6',
 };
-// Las pestañas de cada sección: [ruta, nombre, área que hace falta, solo CEO].
+// La pantalla que abre cada sección: [ruta, nombre, área que hace falta, solo CEO]. Una sola por sección: sin pestañas arriba.
 const TABS = {
-  inicio: [['home', 'Hoy', 'home'], ['control', 'Control', 'control']],
+  hoy: [['home', 'Hoy', 'home']],
   clientes: [['clients', 'Clientes', 'clients']],
-  comercial: [['sales', 'Comercial', 'sales']],
-  operaciones: [['operations', 'Proyectos', 'operations'], ['work', 'Workspace', 'work'], ['content', 'Contenido', 'content']],
-  resultados: [['resultados', 'Indicadores', 'resultados'], ['roadmap', 'Metas', 'roadmap']],
-  finanzas: [['finanzas', 'Finanzas', 'finanzas']],
-  conocimiento: [['library', 'Library', 'library']],
-  administracion: [['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'team', true], ['team/recetas', 'Recetas', 'team', true], ['setup', 'Arranque', null, true]],
+  servicios: [['services', 'Servicios', 'sales']],
+  contenido: [['content', 'Contenido', 'content']],
+  mimarca: [['mimarca', 'Mi marca', null, true]],
+  roadmap: [['roadmap', 'Roadmap', 'roadmap']],
+  equipo: [['team', 'Equipo', 'team']],
+  library: [['library', 'Library', 'library']],
 };
-const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results' };
-const LABEL = { home: 'Inicio', control: 'Control', work: 'Workspace', finanzas: 'Finanzas', sales: 'Comercial', operations: 'Proyectos', roadmap: 'Metas', clients: 'Clientes', content: 'Contenido', library: 'Conocimiento', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Resultados', me: 'Mi perfil' };
+const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results' };
+const LABEL = { home: 'Hoy', control: 'Control', work: 'Workspace', finanzas: 'Finanzas', sales: 'Comercial', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil' };
+// Rutas que no son un área de la matriz: solo el CEO las abre.
+const CEO_ONLY = ['setup', 'mimarca'];
+// Pantallas viejas → su sección nueva (la configuración guardada no se rompe).
+const ALIAS = { services: 'sales' };
 const root = $('#root');
 const SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>';
 const MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
@@ -68,11 +72,16 @@ async function loginView() {
 
 const tabOk = ([, , area, ceo]) => (!ceo || me.role === 'ceo') && (!area || me.areas.includes(area));
 const tabsOf = (g) => (TABS[g] || []).filter(tabOk);
-const navItems = () => (me.role === 'client' ? [['portal', 'Mi portal']] : GROUPS.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l]));
+// La sección aparece si su pantalla se ve o si el perfil ve alguna de las pantallas que agrupa (Clientes también con Proyectos).
+// Servicios pide ver Comercial de verdad (en resumen, lo del CRM vive en Clientes → Prospectos; Finanzas en resumen sigue en #/finanzas).
+const full = (a) => me.areas.includes(a) && (!me.views || !['resumen'].includes(me.views[a]));
+const groupOn = ([g, , list]) => (g === 'servicios' ? full('sales') || full('finanzas') : tabsOf(g).length || (g !== 'equipo' && list.some((a) => me.areas.includes(a))));
+// El equipo ve: Hoy · Clientes (lo suyo) · Contenido (si lo tiene) · Library. Equipo (quién es quién) sigue en #/team.
+const navItems = () => (me.role === 'client' ? [['portal', 'Mi portal']] : GROUPS.filter((x) => groupOn(x) && (x[0] !== 'equipo' || me.role !== 'team')).map(([g, l]) => [g, l]));
 const navHtml = () => html`${navItems().map(([k, l]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${ICONS[k]}"/></svg>${l}</button>`)}`;
 const hashNow = () => location.hash.replace(/^#\/?/, '');
 // La sección de una ruta: la de su pantalla (setup va con Administración; el portal visto por el equipo, con Clientes).
-const groupFor = (area) => (area === 'setup' ? 'administracion' : area === 'portal' ? (me.role === 'client' ? 'portal' : 'clientes') : groupOf(area));
+const groupFor = (area) => (area === 'setup' ? 'equipo' : area === 'mimarca' ? 'mimarca' : area === 'portal' ? (me.role === 'client' ? 'portal' : 'clientes') : groupOf(ALIAS[area] || area));
 // La pestaña activa: la ruta más larga que calza con la actual (team/vistas antes que team).
 const tabFor = (g, path) => tabsOf(g).filter(([r]) => path === r || path.startsWith(r + '/')).sort((a, z) => z[0].length - a[0].length)[0];
 function paintSub(key) {
@@ -84,8 +93,11 @@ function paintSub(key) {
   mount(sub, html`<div class="tabs" role="tablist">${list.map((t) => html`<button role="tab" class="${on === t ? 'on' : ''}" data-sub="${t[0]}">${t[1]}</button>`)}</div>`);
 }
 // Vistas por rol: las secciones ocultas no aparecen en la barra.
-const markNav = () => { const a = hashNow().split('/')[0]; const key = me.areas.includes(a) || a === 'setup' ? a : me.areas.includes(me.start) ? me.start : me.areas.includes('home') ? 'home' : me.areas[0]; const g = groupFor(key); $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === g)); paintSub(key); };
-events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); mount($('.nav'), navHtml()); markNav(); if (!me.areas.includes(location.hash.replace(/^#\/?/, '').split('/')[0]) && !['me', 'setup'].includes(location.hash.replace(/^#\/?/, '').split('/')[0])) render(); });
+// Dónde abre: «Workspace» (la cola de siempre) hoy es Hoy → sus responsabilidades.
+const landing = () => { const st = me.start === 'work' && me.areas.includes('home') ? 'home' : me.start; return me.areas.includes(st) ? st : me.areas.includes('home') ? 'home' : me.areas[0]; };
+const sees = (a) => me.areas.includes(ALIAS[a] || a) || (CEO_ONLY.includes(a) && me.role === 'ceo');
+const markNav = () => { const a = hashNow().split('/')[0]; const key = sees(a) ? a : landing(); const g = groupFor(key); $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === g)); paintSub(key); };
+events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); mount($('.nav'), navHtml()); markNav(); const a = location.hash.replace(/^#\/?/, '').split('/')[0]; if (!sees(a) && a !== 'me') render(); });
 
 function shell() {
   mount(root, html`<div class="app">
@@ -100,7 +112,7 @@ function shell() {
     <main id="main"></main>
   </div>`);
   // Tocar una sección abre su primera pantalla visible (o el portal, para el cliente).
-  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (!b) return; const g = b.dataset.go; location.hash = '/' + (g === 'portal' ? 'portal' : tabsOf(g)[0]?.[0] || g); };
+  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (!b) return; const g = b.dataset.go; location.hash = '/' + (g === 'portal' ? 'portal' : tabsOf(g)[0]?.[0] || (GROUPS.find(([k]) => k === g)?.[2] || []).find((a) => me.areas.includes(a)) || g); };
   $('#subnav').onclick = (e) => { const b = e.target.closest('[data-sub]'); if (b) location.hash = '/' + b.dataset.sub; };
   // Tocar tu foto abre tu perfil (foto, cumpleaños, conexiones, cerrar sesión).
   $('#avatar').onclick = () => { location.hash = '/me'; };
@@ -111,9 +123,9 @@ function shell() {
 async function render() {
   let [area, ...rest] = hashNow().split('/');
   // #/<sección> (ej. #/operaciones) lleva a su primera pantalla visible; las rutas de cada pantalla siguen igual.
-  if (TABS[area] && !SCREENS[area]) { const t = tabsOf(area)[0]; if (t) { history.replaceState(null, '', '#/' + t[0]); [area, ...rest] = t[0].split('/'); } }
-  // Sin sección (o una que no ve): cada perfil abre donde el CEO decidió, por defecto en su cola de hoy.
-  const key = me.areas.includes(area) || area === 'me' || (area === 'setup' && me.role === 'ceo') ? area : me.areas.includes(me.start) ? me.start : me.areas.includes('home') ? 'home' : me.areas[0];
+  if (TABS[area] && !SCREENS[area]) { const t = tabsOf(area)[0] || [(GROUPS.find(([k]) => k === area)?.[2] || []).find((a) => me.areas.includes(a))]; if (t[0]) { history.replaceState(null, '', '#/' + t[0]); [area, ...rest] = t[0].split('/'); } }
+  // Sin sección (o una que no ve): cada perfil abre donde el CEO decidió, por defecto en Hoy.
+  const key = sees(area) || area === 'me' ? area : landing();
   // Una ruta que este perfil no ve: la dirección cambia a donde de verdad abrió (así la barra y las pestañas no mienten).
   if (area && key !== area) { history.replaceState(null, '', '#/' + key); rest = []; }
   const g = groupFor(key);
@@ -158,7 +170,7 @@ events.addEventListener('logout', () => { if (me) { me = null; toast('Tu sesión
 async function start(u) {
   me = u;
   // El servidor ya manda areas, views, scope y start aplicados; la matriz se guarda para recalcular en vivo si el CEO la cambia.
-  if (me.role !== 'client') { let doc = null; try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); if (!location.hash.replace(/^#\/?/, '') && me.start && me.areas.includes(me.start)) history.replaceState(null, '', '#/' + me.start); }
+  if (me.role !== 'client') { let doc = null; try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); if (!location.hash.replace(/^#\/?/, '')) history.replaceState(null, '', '#/' + landing()); }
   const c = pendingConnect();
   if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); return consentView(root, me, c, () => { shell(); render(); }); }
   shell(); render();

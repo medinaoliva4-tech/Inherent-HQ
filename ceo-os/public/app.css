@@ -1094,3 +1094,30 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 /* Resultados: filas de indicadores de 4 y de 3. */
 .ctlkpis.res4{grid-template-columns:repeat(4,minmax(0,1fr))}.ctlkpis.res3{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:760px){.ctlkpis.res4,.ctlkpis.res3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---------- Cara simple: gráficas en SVG, semáforos, servicios y links ---------- */
+.barchart{margin-top:6px}.barchart svg{display:block}
+.barlabels{display:grid;margin-top:4px}.barlabels span{text-align:center;font-size:11px;color:var(--mut)}
+.barlegend{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--ink2)}.barlegend span{display:inline-flex;align-items:center;gap:6px}.barlegend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.hbars{display:grid;gap:8px;margin-top:6px}.hbar{display:grid;grid-template-columns:minmax(90px,1.1fr) 3fr minmax(80px,1.2fr);gap:10px;align-items:center;font-size:13px}
+.hbar .hl{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hbar .ht{text-align:right;font-size:12px}
+.mstrip{display:grid;gap:3px;margin-top:8px}.mstrip .md{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;border-radius:8px;background:rgba(253,250,243,.55);min-width:0}
+.mstrip .md .n{font-size:10px;color:var(--mut)}.mstrip .md i{width:6px;height:6px;border-radius:50%;display:block}
+.mstrip .md.past{opacity:.6}.mstrip .md.today{background:var(--ink)}.mstrip .md.today .n{color:var(--cream);font-weight:700}
+.dot.light-green{background:#7f9a6a}.dot.light-amber{background:#c9a24a}.dot.light-red{background:#b3402f}
+.feat .dot{vertical-align:middle;margin-right:4px}
+.svc .svinc{margin:8px 0 0 16px;padding:0;color:var(--ink2)}.svc .svinc li{margin:2px 0}
+.svlv{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}.svlv .lbl{grid-column:1/-1;font-size:11px;color:var(--mut)}
+.svlv div{background:rgba(253,250,243,.6);border:1px solid var(--line);border-radius:12px;padding:6px 8px;display:flex;flex-direction:column;align-items:center;font-size:11.5px}.svlv div b{font-size:15px;font-weight:500}.svlv .pr{font-weight:500;color:var(--ink)}
+.svc.off{opacity:.65}
+.moremenu{position:relative;z-index:40}.moremenu .menu{top:48px;width:300px}.moremenu .menu button{flex-direction:column;align-items:flex-start;gap:1px}.moremenu .menu button .mut{font-size:12px}
+.svmod .wkhead{flex-wrap:wrap}.svmod .wkhead .pr{text-align:right;max-width:100%}
+@media (max-width:760px){.svmod .wkhead .pr{flex-basis:100%;text-align:left;margin-top:2px}}
+.gmore{margin-top:10px}.gmore summary{cursor:pointer;list-style:none}.gmore summary::-webkit-details-marker{display:none}
+.empty.sm{padding:16px;font-size:13px}.empty.sm b{font-size:14px}
+@media (max-width:760px){
+  .mstrip{grid-template-columns:repeat(16,1fr)!important}.mstrip .md .n{font-size:8.5px}
+  .hbar{grid-template-columns:1fr;gap:3px}.hbar .ht{text-align:left}
+  .svlv{grid-template-columns:repeat(4,1fr)}
+  .moremenu .menu{left:auto;right:0;width:min(300px,calc(100vw - 32px))}
+}

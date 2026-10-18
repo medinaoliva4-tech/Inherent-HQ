@@ -1,156 +1,103 @@
-import { html, raw, mount, col, api, Q, K, USD, fdate, today, ask, toast, acts, matrix, IC, $ , calQ, calAll, setCalAll, teamList, ico, isSummary } from '../core.js';
+// Hoy. Para el CEO: tres números, las entregas del mes por semana, lo de hoy y lo que necesita atención.
+// Para el equipo: sus responsabilidades (qué, para cuándo y dónde se entrega). Sin revenue, leads ni engagement.
+import { html, mount, col, api, fdate, today, toast, acts, IC, $, calQ, teamList, ico } from '../core.js';
+import { upcoming } from '../meetings.js';
+import { bars, kpis, PAL } from '../charts.js';
+import { openDelivery, dueChip, stChip } from '../taskcard.js';
 import { bdayText } from './me.js';
-import { videoCard } from './content.js';
 import { connectNotice, hookNotice } from '../connectai.js';
 
-const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 19 ? 'Good afternoon' : 'Good evening'; };
+const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; };
+const iso = (d) => d.toISOString().slice(0, 10);
+const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
+const mondayOf = (s) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return iso(d); };
 
 export async function render(el, { me, alive }) {
-  // Vista por rol: en «resumen» Home es tu agenda de hoy y tus tareas; sin revenue, leads ni engagement.
-  const resumen = isSummary(me, 'home');
-  const can = (a) => !resumen && me.areas.includes(a);
-  const [leads, tasks, finance, content] = await Promise.all([
-    can('sales') ? col('leads').list() : [], col('tasks').list(),
-    can('finanzas') ? col('finance').list() : [], col('content').list().catch(() => []),
-  ]);
-  const first = (me.name || '').split(' ')[0];
+  const ceoish = me.role === 'ceo' || me.role === 'coo';
+  let [tasks, projects, people, accounts] = await Promise.all([col('tasks').list(), col('projects').list().catch(() => []), teamList().catch(() => []), col('accounts').list().catch(() => [])]);
+  let repoClients = null; if (ceoish) api('repo/clients').then((r) => { repoClients = r.clients || []; if (alive()) paint(); }).catch(() => { repoClients = []; });
+  const T = today(), M = T.slice(0, 7), first = (me.name || '').split(' ')[0];
+  const monday = mondayOf(T), sunday = addDays(monday, 6);
+  const st = (t) => t.status || 'Por empezar', open = (t) => st(t) !== 'Hecha';
+  const proj = (id) => projects.find((p) => p.id === id);
+  const person = (k) => people.find((p) => p.id === k || p.email === k);
+  const nameOf = (k) => person(k)?.name || (k === me.email ? me.name : k ? String(k).split('@')[0] : 'Sin responsable');
+  const clientOf = (t) => { const p = proj(t.project_id); return p ? p.client || p.name : 'Interno'; };
   // Cumpleaños del equipo: hoy y los próximos 7 días.
-  const people = me.role === 'client' ? [] : await teamList().catch(() => []);
-  const md = (d) => d.toISOString().slice(5, 10);
-  const soon = Array.from({ length: 8 }, (_, i) => md(new Date(Date.now() + i * 864e5)));
+  const md = (d) => d.toISOString().slice(5, 10), soon = Array.from({ length: 8 }, (_, i) => md(new Date(Date.now() + i * 864e5)));
   const bdays = people.filter((p) => p.active !== false && p.birthday && soon.includes(p.birthday)).sort((a, z) => soon.indexOf(a.birthday) - soon.indexOf(z.birthday));
+  // La agenda de Google Calendar de hoy (se refresca al volver a la pestaña y cada 2 minutos).
   let agenda = null, agErr = null;
-  let week = null, weekP = null;
-  if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`content/week?profile=${p}`).catch(() => null))).then(([a, b]) => { week = a; weekP = b; if (alive()) paint(); });
-  // Engagement en vivo de Windsor (lo mismo que Contenido → Analytics); el scrape semanal queda de respaldo.
-  let igI = null, igP = null, hProf = 'inherent', hView = 'top', hType = null;
-  try { hProf = localStorage.getItem('home.prof') || 'inherent'; hView = localStorage.getItem('home.view') || 'top'; } catch {}
-  if (can('content')) Promise.all(['inherent', 'personal'].map((p) => api(`analytics/instagram?profile=${p}&days=30`).catch((e) => ({ error: e.message })))).then(([a, b]) => { igI = a; igP = b; if (alive()) paint(); });
-  const loadAgenda = () => api(`google/calendar?from=${today()}&to=${today()}${calQ()}`).then((r) => { agenda = r.events; agErr = null; if (alive()) paint(); }).catch((e) => { agErr = e.message; agenda = []; if (alive()) paint(); });
+  const loadAgenda = () => api(`google/calendar?from=${T}&to=${T}${calQ()}`).then((r) => { agenda = r.events || []; agErr = null; }).catch((e) => { agErr = e.message; agenda = []; }).then(() => alive() && paint());
   loadAgenda();
-  // La agenda se actualiza al volver a la pestaña y cada 2 minutos.
   const iv = setInterval(() => (alive() ? document.visibilityState === 'visible' && loadAgenda() : clearInterval(iv)), 120000);
   const onVis = () => { if (!alive()) return document.removeEventListener('visibilitychange', onVis); if (document.visibilityState === 'visible') loadAgenda(); };
   document.addEventListener('visibilitychange', onVis);
 
-  // Revenue real: entradas de Finance tipo ingreso
-  const ym = (d) => String(d || '').slice(0, 7);
-  const now = new Date(); const thisM = today().slice(0, 7);
-  const months = Array.from({ length: 8 }, (_, i) => { const d = new Date(now.getFullYear(), now.getMonth() - 7 + i, 1); return d.toISOString().slice(0, 7); });
-  const inc = (m) => finance.filter((f) => f.type === 'ingreso' && ym(f.date) === m).reduce((a, f) => a + (+f.amount || 0), 0);
-  const exp = (m) => finance.filter((f) => f.type === 'gasto' && ym(f.date) === m).reduce((a, f) => a + (+f.amount || 0), 0);
-  const revNow = inc(thisM), costNow = exp(thisM), revSeries = months.map(inc);
+  const ctx = () => ({ me, projects, team: people });
+  const onTask = (r, t) => { tasks = r ? tasks.map((x) => (x.id === r.id ? r : x)) : tasks.filter((x) => x.id !== t.id); paint(); };
+  const trow = (t, extra = '') => html`<div class="wkrow" data-act="open" data-id="${t.id}"><span class="grow"><b style="font-weight:500">${t.title}</b><span class="mut sm"> · ${clientOf(t)}${extra ? ' · ' + extra : ''}</span></span>${dueChip(t)}${stChip(t)}</div>`;
+  const agendaRows = () => agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm">No pude leer tu Google Calendar. <button class="sm linkish" data-act="agRetry">Reintentar</button></div>`
+    : agenda.slice(0, 5).map((e) => html`<a class="wkrow" href="${/^https:\/\//.test(e.link || '') ? e.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="wkt">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="grow">${e.summary}</span>${e.meet ? html`<span class="mut sm">Meet</span>` : ''}</a>`);
+  const head = () => html`<div class="hello"><h1>${greet()}, ${first}.</h1><p>${ceoish ? html`Esto es lo que pasa hoy en <em>Inherent</em>.` : html`Esto es lo tuyo <em>hoy</em>.`}</p></div>
+    ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const now = p.birthday === soon[0], mine = (p.email || p.id) === me.email; return html`<span class="bdi ${now ? 'now' : ''}">${now ? (mine ? html`${ico('spark')} <b>¡Feliz cumpleaños, ${first}!</b>` : html`${ico('cake')} <b>Hoy cumple ${p.name.split(' ')[0]}</b>`) : html`${ico('cake')} ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
+    ${connectNotice(me)}`;
 
-  const open = leads.filter((l) => !['Prospecto', 'Ganado', 'Perdido'].includes(l.stage));
-  const hot = open.filter((l) => (l.interest || 0) >= 4);
-  const pipe = open.reduce((a, l) => a + (+l.value_usd || 0), 0);
-  const mine = tasks.filter((t) => t.assignee === me.email && t.status !== 'Hecha').sort((a, b) => String(a.due || '9').localeCompare(String(b.due || '9')));
-
-  // Para el equipo: el resumen de su trabajo (el detalle está en su Workspace).
-  function summary() {
-    const late = mine.filter((t) => t.due && t.due < today()).length, rev = tasks.filter((t) => t.assignee === me.email && t.status === 'En revisión').length;
-    return html`<div class="card feat olive"><div class="chead"><div class="ico">${ico('check', 14)}</div><h3>Mi trabajo<br><span class="lbl">Lo tuyo esta semana</span></h3><a class="arrow" href="#/work">↗</a></div>
-      <div class="lbl">Pendientes</div><div class="big">${mine.length}${late ? html`<small> · ${late} atrasada${late === 1 ? '' : 's'}</small>` : ''}</div>
-      ${matrix(Math.min(34, mine.length * 3))}
-      <div class="foot"><span>${rev} en revisión</span><span>Abrir mi Workspace →</span></div></div>`;
-  }
-  function paint() {
-    mount(el, html`
-      <div class="hello"><h1>${greet()}, ${first}.</h1><p>Esto es lo que pasa hoy en <em>Inherent</em>.</p></div>
-      ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const isToday = p.birthday === soon[0], mine = (p.email || p.id) === me.email;
-        return html`<span class="bdi ${isToday ? 'now' : ''}">${p.picture ? html`<img src="${p.picture}" alt="" referrerpolicy="no-referrer">` : ''}${isToday ? (mine ? html`${ico('spark')} <b>¡Feliz cumpleaños, ${first}!</b>` : html`${ico('cake')} <b>Hoy cumple ${p.name.split(' ')[0]}</b> · ¡felicítalo!`) : html`${ico('cake')} ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
-      ${connectNotice(me)}
-      ${me.role === 'ceo' && !tasks.length ? html`<a class="asbar" href="#/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> (4 pasos) y queda lista con lo que ya dice el repo →</a>` : ''}
-      <div class="grid g3">
-        ${can('finanzas') ? html`<div class="card feat olive">
-          <div class="chead"><div class="ico">${IC.ring(78)}<span style="font-size:15px">${ico('target', 16)}</span></div><h3>Revenue<br><span class="lbl">${MONTHS[now.getMonth()]} ${now.getFullYear()}</span></h3><a class="arrow" href="#/finanzas">↗</a></div>
-          <div class="lbl">Facturado este mes</div>
-          <div class="big">${revNow ? html`<span class="cur">Q</span>${K(revNow)}` : '—'}</div>
-          ${matrix(revNow ? Math.min(34, Math.round((revNow / Math.max(...revSeries, 1)) * 34)) : 0)}
-          <div class="foot"><span>${revNow ? `Gross ${Q(revNow - costNow)} · Cost ${Q(costNow)}` : 'Se llena con los ingresos de Finanzas'}</span></div>
-        </div>` : ''}
-        ${can('sales') ? html`<div class="card feat terra">
-          <div class="chead"><div class="ico">${IC.ring(46)}<span style="font-size:15px">${ico('smile')}</span></div><h3>Leads<br><span class="lbl">Pipeline abierto</span></h3><a class="arrow" href="#/sales">↗</a></div>
-          <div class="lbl">Leads activos</div>
-          <div class="big">${open.length}<small> · ${hot.length} ${ico('flame')}</small></div>
-          ${matrix(Math.min(34, open.length * 2))}
-          <div class="foot"><span>Pipeline ${USD(pipe)} / mes</span><span>${((n) => `${n} ${n === 1 ? 'ganado' : 'ganados'}`)(leads.filter((l) => l.stage === 'Ganado').length)}</span></div>
-        </div>` : ''}
-        ${!can('content') ? summary() : ''}
-        ${!can('content') ? '' : html`<div class="card">
-          <div class="chead"><div class="ico">${ico('heart')}</div><h3>Engagement<br><span class="mut sm">Personal + Inherent</span></h3><a class="arrow" href="#/content">↗</a></div>
-          ${(() => {
-            // Por perfil: primero Windsor (en vivo, 30 días); si no trae, la foto del último scrape.
-            const pick = (ig, wk) => (ig?.matched && ig.er != null ? { er: ig.er, prev: ig.erPrev, reach: ig.reach, days: ig.erDays, src: 'w' } : wk?.analytics?.at(-1)?.er != null ? { er: wk.analytics.at(-1).er, src: 's' } : null);
-            const e1 = pick(igI, week), e2 = pick(igP, weekP);
-            // Cada número con su dirección: ↑ / ↓ contra el periodo anterior del mismo largo.
-            const trend = (e) => { if (!e || e.prev == null) return html`<span class="mut sm">sin periodo anterior para comparar</span>`; const d = Math.round((e.er - e.prev) * 10) / 10;
-              return d === 0 ? html`<span class="mut sm">= igual que los ${e.days} días anteriores</span>` : html`<span class="sm" style="color:${d > 0 ? '#715640' : '#654c38'};font-weight:600">${d > 0 ? '↑' : '↓'} ${Math.abs(d)} pts</span><span class="mut sm"> vs ${e.days} días antes (${e.prev}%)</span>`; };
-            const col = (name, e) => html`<div style="flex:1;min-width:0"><span class="lbl">${name}</span><b style="font-size:34px;font-weight:500;display:block">${e ? e.er + '%' : '—'}</b><div style="line-height:1.3">${e ? trend(e) : ''}</div></div>`;
-            const ex = e1 || e2;
-            if (ex) return html`<div class="split" style="margin-top:6px;align-items:flex-start">${col('Inherent', e1)}${col('Personal', e2)}</div>
-              <div class="mut sm engwhat">${ex.er >= 1 ? html`<b>Qué significa:</b> en ${e1 ? 'Inherent' : 'Personal'}, de cada 100 personas que vieron tus posts, <b>${Math.round(ex.er)}</b> dieron like, comentaron, guardaron o compartieron. Más alto = el contenido conecta más.` : 'Es la parte de quienes vieron tus posts que interactuó (likes, comentarios, guardados, compartidos).'} ${ex.days && ex.src === 'w' ? `Últimos ${ex.days} días.` : ''}</div>`;
-            if (igI === null && igP === null) return html`<p class="loading">Cargando…</p>`;
-            // Sin datos: decir exactamente por qué, para saber qué arreglar.
-            // Sin datos: una sola razón, en humano, con a dónde ir. (Lo técnico queda en Contenido → Analytics.)
-            const why = [...new Set([['Inherent', igI], ['Personal', igP]].map(([n, r]) => r?.error ? 'No pude leer Instagram ahora. Inténtalo en un momento.' : r?.connected === false ? 'Instagram todavía no está conectado.' : r && !r.handles?.length ? `${n}: falta su cuenta de Instagram.` : r && !r.matched ? `${n}: su cuenta de Instagram no aparece entre las conectadas.` : '').filter(Boolean))];
-            return html`<div class="big">—</div><div class="mut sm" style="margin-top:14px">${why.length ? why.map((w) => html`<div>${w}</div>`) : 'Todavía sin datos.'}${why.length ? html`<a class="btn ghost xs" href="#/content/analytics" style="margin-top:10px">Conectar en Contenido → Analytics</a>` : ''}</div>`; })()}
-        </div>`}
+  // ---------- CEO · COO ----------
+  function ceo() {
+    const openT = tasks.filter(open);
+    const late = openT.filter((t) => t.due && t.due < T), week = openT.filter((t) => t.due && t.due >= monday && t.due <= sunday), review = tasks.filter((t) => st(t) === 'En revisión');
+    const activeSlugs = new Set([...(repoClients || []).filter((c) => c.hasPlan).map((c) => c.slug), ...accounts.filter((a) => a.from_quote).map((a) => a.slug || String(a.id).replace(/^acc-/, ''))]);
+    const nClients = repoClients === null ? '…' : activeSlugs.size;
+    // Entregas del mes por semana: hechas vs pendientes (por su fecha de entrega).
+    const inMonth = tasks.filter((t) => String(t.due || '').slice(0, 7) === M);
+    const [y, m] = M.split('-').map(Number), days = new Date(y, m, 0).getDate(), nWeeks = Math.ceil(days / 7);
+    const groups = Array.from({ length: nWeeks }, (_, i) => { const l = inMonth.filter((t) => Math.floor((+t.due.slice(8) - 1) / 7) === i); return { label: `S${i + 1}`, values: [l.filter((t) => st(t) === 'Hecha').length, l.filter(open).length] }; });
+    const todayT = openT.filter((t) => t.due === T).sort((a, z) => String(a.title).localeCompare(z.title));
+    const meets = upcoming(projects).filter((x) => x.date === T);
+    const attention = [...late, ...review.filter((t) => !late.includes(t))].sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
+    mount(el, html`${head()}
+      ${me.role === 'ceo' && !tasks.length && !projects.length ? html`<a class="asbar" href="#/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> y queda lista con lo que ya dice el repo →</a>` : ''}
+      ${kpis([['Clientes activos', nClients], ['Por entregar esta semana', week.length, week.length ? PAL.brown : ''], ['Entregas atrasadas', late.length, late.length ? PAL.red : '']], { always: true })}
+      <div class="grid g2" style="margin-top:14px">
+        <div class="card wkbox"><div class="wkhead"><div><h3>Entregas del mes por semana</h3><span class="mut sm">Hechas vs. pendientes, por su fecha de entrega</span></div></div>
+          ${bars(groups, [{ name: 'Hechas', c: PAL.ink }, { name: 'Pendientes', c: PAL.light }], { stack: true, empty: 'Sin entregas con fecha este mes. Salen de las tareas de cada proyecto.' })}</div>
+        <div class="card wkbox"><div class="wkhead"><div><h3>Hoy</h3><span class="mut sm">Reuniones y lo que vence hoy</span></div><div class="sp"></div><span class="gbadge">${IC.cal}</span><button class="btn ghost xs" data-act="addTask">+ Tarea</button></div>
+          ${agendaRows()}
+          ${meets.map((x) => html`<div class="wkrow"><span class="wkt">${ico('users', 14)}</span><span class="grow">${x.name}<span class="mut sm"> · ${x.p.client || x.p.name}</span></span></div>`)}
+          ${todayT.length ? todayT.slice(0, 8).map((t) => trow(t, nameOf(t.assignee).split(' ')[0])) : agenda?.length || meets.length ? '' : html`<div class="mut sm" style="padding:6px 0">Nada vence hoy.</div>`}</div>
       </div>
-      <div class="grid g2" style="margin-top:18px">
-        ${!can('content') ? html`<div class="card"><div class="chead"><div class="ico">${ico('list')}</div><h3>Library<br><span class="mut sm">SOPs, prompts y plantillas de tu perfil</span></h3><a class="arrow" href="#/library">↗</a></div>
-          <div class="mut sm">Todo lo que necesitas para entregar está en tu <a href="#/work" style="color:inherit">Workspace</a>: tus tareas, el material de cada cliente y dónde subir tu entrega.</div></div>` : ''}
-        ${!can('content') ? '' : html`<div class="card">
-          ${(() => {
-            // UNA sola tarjeta de Content: eliges la cuenta (Inherent / Personal) y qué ver.
-            const ig = hProf === 'personal' ? igP : igI, wk = hProf === 'personal' ? weekP : week;
-            // Reels | Estáticos (fotos y carruseles): por defecto el que tenga posts.
-            const reels = ig?.topReels || [], stat = ig?.topStatic || [];
-            const type = hType ? hType : reels.length >= stat.length && reels.length ? 'reels' : stat.length ? 'static' : 'reels';
-            const pickT = type === 'reels' ? reels : stat, tDays = type === 'reels' ? ig?.topReelsDays : ig?.topStaticDays;
-            const own = ig?.matched ? pickT.map((x) => ({ url: x.url, thumb: x.thumb, handle: ig.handles?.[0] || '', red: 'instagram', at: x.date, views: x.views, likes: x.likes, comments: x.comments, text: x.caption, icon: x.reel || x.type === 'Video' ? ico('play', 13) : x.type === 'Carrusel' ? ico('copy') : ico('image') })) : [];
-            const niche = wk?.result?.top || [];
-            const queue = content.filter((c) => c.kind === 'post' && c.profile === hProf && c.status !== 'Publicado').sort((x, z) => String(x.date || '9').localeCompare(String(z.date || '9')));
-            const views = [['top', 'Mejor contenido'], ['next', `Por subir${queue.length ? ' · ' + queue.length : ''}`], ...(niche.length ? [['niche', 'Nicho']] : [])];
-            const v = views.some(([k]) => k === hView) ? hView : 'top';
-            const body = v === 'next' ? (queue.length ? html`${queue.slice(0, 5).map((p) => html`<a class="agenda" href="#/content/postear/${p.profile}" style="text-decoration:none;color:inherit"><span class="t">${p.date ? fdate(p.date) : '—'}</span><span class="bar2" style="background:#997d65"></span><div><b style="font-weight:500">${p.title}</b><div class="mut sm">${p.format || 'Pieza'} · ${p.status || 'Idea'}</div></div></a>`)}`
-                : html`<div class="empty" style="margin-top:10px"><b>Nada por subir</b>Las piezas del planner de ${hProf === 'personal' ? 'tu marca personal' : 'Inherent'} aparecen aquí.</div>`)
-              : v === 'niche' ? html`<div class="grid homevids">${niche.slice(0, 3).map(videoCard)}</div>`
-              : ig === null ? html`<p class="loading">Cargando…</p>` : own.length ? html`<div class="grid homevids">${own.slice(0, 3).map(videoCard)}</div>`
-              : html`<div class="empty" style="margin-top:10px"><b>Sin posts todavía</b>${ig?.matched === false || !ig?.handles?.length ? `Conecta la cuenta de Instagram de ${hProf === 'personal' ? 'Personal' : 'Inherent'} en Contenido → Analytics.` : `No hay ${type === 'reels' ? 'reels' : 'fotos ni carruseles'} en los últimos 90 días.`}</div>`;
-            return html`<div class="chead"><div class="ico">${ico('play', 13)}</div><h3>Contenido<br><span class="mut sm">${v === 'top' ? `Tus ${type === 'reels' ? 'reels' : 'fotos y carruseles'} con más interacción · ${tDays || 30} días` : v === 'next' ? 'Lo que sigue en el planner' : 'Lo que más rinde en tu nicho'}</span></h3><a class="arrow" href="#/content">↗</a></div>
-              <div class="row homesel"><div class="tabs mini">${[['inherent', 'Inherent'], ['personal', 'Personal']].map(([k, l]) => html`<button class="${k === hProf ? 'on' : ''}" data-act="hprof" data-k="${k}">${l}</button>`)}</div>
-                <div class="tabs mini">${views.map(([k, l]) => html`<button class="${k === v ? 'on' : ''}" data-act="hview" data-k="${k}">${l}</button>`)}</div>
-                ${v === 'top' && ig?.matched ? html`<div class="tabs mini">${[['reels', `Reels${reels.length ? ' · ' + reels.length : ''}`], ['static', `Estáticos${stat.length ? ' · ' + stat.length : ''}`]].map(([k, l]) => html`<button class="${k === type ? 'on' : ''}" data-act="htype" data-k="${k}">${l}</button>`)}</div>` : ''}</div>${body}`; })()}
-        </div>`}
-        <div class="card todo">
-          <div class="chead"><div class="ico">${ico('check', 14)}</div><h3>Hoy</h3><span class="gbadge" style="margin-left:auto">${IC.cal} Google Calendar</span><button class="btn ghost" style="padding:8px 14px" data-act="addTask">+ Tarea</button></div>
-          ${agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm" style="margin-bottom:8px">No pude leer tu Google Calendar. <button class="sm linkish" data-act="agRetry" style="margin-top:0">Reintentar</button></div>`
-            : agenda.length ? agenda.slice(0, 3).map((e) => html`<a class="agenda" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="t">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="bar2" style="background:#a18770"></span><div><b style="font-weight:500">${e.summary}</b>${e.meet ? html`<div class="mut sm">Google Meet</div>` : e.location ? html`<div class="mut sm">${e.location}</div>` : ''}</div></a>`)
-            : html`<div class="mut sm" style="margin-bottom:8px">Sin eventos hoy en tu calendario.</div>`}
-          ${mine.length ? html`<ul>${mine.slice(0, 6).map((t) => html`<li><input type="checkbox" data-act="done" data-id="${t.id}"><span>${t.title}</span><span class="who mut sm">${t.due ? fdate(t.due) : ''}</span></li>`)}</ul>`
-            : html`<div class="empty" style="margin-top:8px"><b>Nada pendiente</b>Tus tareas aparecen aquí.</div>`}
-        </div>
+      <div class="card wkbox" style="margin-top:14px"><div class="wkhead"><div><h3>Necesita atención</h3><span class="mut sm">Atrasadas y en revisión, con su dueño</span></div>${attention.length ? html`<span class="badge-n">${attention.length}</span>` : ''}</div>
+        ${attention.length ? attention.slice(0, 20).map((t) => html`<div class="wkrow" data-act="open" data-id="${t.id}">${(() => { const p = person(t.assignee); return html`<span class="av" style="background:${p?.color || '#735741'}" title="${nameOf(t.assignee)}">${(nameOf(t.assignee)[0] || '?').toUpperCase()}</span>`; })()}<span class="grow"><b style="font-weight:500">${t.title}</b><span class="mut sm"> · ${clientOf(t)} · ${nameOf(t.assignee).split(' ')[0]}</span></span>${st(t) === 'En revisión' ? stChip(t) : dueChip(t)}</div>`) : html`<div class="mut sm" style="padding:6px 0">Todo en orden ${ico('check', 14)}</div>`}</div>`);
+  }
+
+  // ---------- Equipo: mis responsabilidades ----------
+  function team() {
+    const mine = tasks.filter((t) => t.assignee === me.email && open(t)).sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
+    const late = mine.filter((t) => t.due && t.due < T).length, week = mine.filter((t) => t.due && t.due >= monday && t.due <= sunday).length, review = mine.filter((t) => st(t) === 'En revisión').length;
+    const groups = new Map(); for (const t of mine) { const k = t.project_id || ''; (groups.get(k) || groups.set(k, []).get(k)).push(t); }
+    const title = (k) => { const p = proj(k); return p ? `${p.client ? p.client + ' · ' : ''}${p.name}` : 'Interno'; };
+    const meets = upcoming(projects).filter((x) => x.date === T);
+    mount(el, html`${head()}
+      ${kpis([['Esta semana', week], ['Atrasadas', late, late ? PAL.red : ''], ['En revisión', review]])}
+      <div class="grid g2" style="margin-top:14px;align-items:start">
+        <div><div class="sec-title" style="margin-top:0"><h2>Mis responsabilidades</h2><span class="mut sm">Qué, para cuándo y dónde se entrega</span><div class="sp"></div><button class="btn ghost xs" data-act="addTask">+ Tarea</button></div>
+          ${mine.length ? [...groups.entries()].map(([k, l]) => html`<div class="card wkbox" style="margin-bottom:12px"><div class="wkhead"><h3>${title(k)}</h3><div class="sp"></div><span class="mut sm">${l.length}</span></div>
+            ${l.map((t) => html`<div class="wkrow"><span class="grow" data-act="open" data-id="${t.id}" style="cursor:pointer"><b style="font-weight:500">${t.title}</b>${t.dept || t.role ? html`<span class="mut sm"> · ${t.dept || t.role}</span>` : ''}</span>${dueChip(t)}${stChip(t)}<button class="btn xs" data-act="open" data-id="${t.id}">${st(t) === 'En revisión' ? 'Ver' : 'Entregar'}</button></div>`)}</div>`)
+          : html`<div class="empty"><b>Nada pendiente</b>Cuando te asignen una responsabilidad aparece aquí, con su fecha y dónde entregarla.</div>`}</div>
+        <div class="card wkbox"><div class="wkhead"><div><h3>Hoy</h3><span class="mut sm">Tu agenda y las reuniones de tus proyectos</span></div><span class="gbadge" style="margin-left:auto">${IC.cal}</span></div>
+          ${agendaRows()}${meets.map((x) => html`<div class="wkrow"><span class="wkt">${ico('users', 14)}</span><span class="grow">${x.name}<span class="mut sm"> · ${x.p.client || x.p.name}</span></span></div>`)}
+          ${agenda && !agenda.length && !meets.length ? html`<div class="mut sm" style="padding:6px 0">Sin reuniones hoy.</div>` : ''}
+          <div class="mut sm" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">Tus SOPs y plantillas están en la <a href="#/library" style="color:inherit">Library</a>.</div></div>
       </div>`);
   }
 
+  const paint = () => { if (!alive()) return; (ceoish ? ceo : team)(); };
   acts(el, {
-    done: async (cb) => {
-      const t = tasks.find((x) => x.id === cb.dataset.id);
-      try { Object.assign(t, await col('tasks').save({ ...t, status: 'Hecha' })); toast('Tarea hecha'); setTimeout(() => { mine.splice(mine.indexOf(t), 1); paint(); }, 500); }
-      catch (e) { cb.checked = false; toast(e.message, true); }
-    },
+    open: (b) => { const t = tasks.find((x) => x.id === b.dataset.id); if (t) openDelivery(t, ctx(), (r) => onTask(r, t)); },
     agRetry: () => { agenda = null; agErr = null; paint(); loadAgenda(); },
-    hprof: (b) => { hProf = b.dataset.k; hType = null; try { localStorage.setItem('home.prof', hProf); } catch {} paint(); },
-    htype: (b) => { hType = b.dataset.k; paint(); },
-    hview: (b) => { hView = b.dataset.k; try { localStorage.setItem('home.view', hView); } catch {} paint(); },
-    addTask: async () => {
-      const { newTask } = await import('../create.js'); const { teamList } = await import('../core.js');
-      const t = await newTask({ team: await teamList(), me, projects: await col('projects').list(), pre: { assignee: me.email } });
-      if (t) { tasks.push(t); mine.push(t); paint(); }
-    },
-  }, 'click');
+    addTask: async () => { const { newTask } = await import('../create.js'); const t = await newTask({ team: people, me, projects, pre: { assignee: me.email } }); if (t) { tasks.push(t); paint(); } },
+  });
   hookNotice(el, me, () => alive() && paint());
   paint();
 }
