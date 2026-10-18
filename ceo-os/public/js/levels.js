@@ -6,6 +6,8 @@ export const LEVELS = [
   { id: 'partnership', name: 'Growth Partnership', tag: 'nos metemos full', who: 'Empresa que necesita conectar marca y marketing con ventas, experiencia de cliente y sistemas comerciales.', how: 'Colaboración integrada.' },
 ];
 export const LEVEL_NAMES = LEVELS.map((l) => l.name);
+// El baseline de cada nivel (inherent/CLAUDE.md → «La economía»): el piso interno desde el que se cotiza. Solo lo ve el CEO; nunca sale en la web.
+export const BASELINE = { foundation: { usd: 1200, gtq: 9240, per: 'por proyecto' }, growth: { usd: 2400, gtq: 18480, per: 'al mes' }, partnership: { usd: 4200, gtq: 32340, per: 'al mes' } };
 // Nombre o id viejo → id del nivel nuevo. Orden importa: lo más específico primero.
 const LEGACY = [
   [/brand\s*foundation|foundation/i, 'foundation'],

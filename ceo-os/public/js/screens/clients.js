@@ -5,9 +5,12 @@ import { levelName, isPartnership } from '../levels.js';
 import { goalsUI, goalsOf } from '../goals.js';
 import { serviceTab } from '../client-service.js';
 import { recipesWith } from '../recipes.js';
+import { brandBoard } from '../brand-board.js';
+import { budgetsTab } from '../budgets.js';
+import { render as content } from './content.js';
 
-// Clientes: la lista (quién, su nivel, cómo va el mes) y la página de cada uno en 3 pestañas: Info · Links · Servicio.
-// Prospectos (el CRM) es una cuarta pestaña solo para quien tiene Comercial. El plan y LINKS.md salen del repo;
+// Clientes: la lista (quién, su nivel, cómo va el mes) y la página de cada uno en pestañas: Info · Links · Servicio · Marca
+// (asociaciones e inspo por plataforma) · Presupuestos (photo shoots, pauta, eventos). Prospectos (el CRM) solo para quien tiene Comercial. El plan y LINKS.md salen del repo;
 // contacto, metas, links propios y accesos viven en la base (accounts).
 const COLORS = ['olive', 'terra', 'ink'];
 const CATS = [['fotos', 'Fotos'], ['videos', 'Videos'], ['drive', 'Drive'], ['redes', 'Redes'], ['web', 'Web'], ['otro', 'Otro']];
@@ -54,8 +57,11 @@ export async function render(el, { me, sub, alive }) {
     let a = acct(slug) || { id: 'acc-' + slug, name: slug.toUpperCase(), contact: '', phone: '', email: '', notes: '', roadmap: [], accesos: [], links: [] };
     const ps = projects.filter((p) => p.client_slug === slug);
     const canSales = me.areas.includes('sales');
-    const TABS = [['info', 'Info'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(canSales ? [['prospectos', 'Prospectos']] : [])];
+    const TABS = [['info', 'Info'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['marca', 'Marca'], ['presupuestos', 'Presupuestos']]), ...(canSales ? [['prospectos', 'Prospectos']] : [])];
     let tab = TABS.some(([k]) => k === tab0) ? tab0 : 'info';
+    let msub = sub[2] === 'inspo' ? 'inspo' : 'asociaciones'; // Marca: Asociaciones · Inspo
+    // Finanzas solo para quien la ve: alimenta «presupuesto vs gastado».
+    let entries = null; const loadEntries = () => (me.areas.includes('finanzas') ? col('finance').list().catch(() => null) : Promise.resolve(null));
     let portalPeople = (await api('db/team').catch(() => ({ items: [] }))).items.filter((x) => x.role === 'client' && x.client_slug === slug);
     // Lo que pide la pestaña Servicio (cotizaciones, catálogo, costos, recetas): se lee una vez, sin bloquear la página.
     let extra = null;
@@ -83,6 +89,8 @@ export async function render(el, { me, sub, alive }) {
       const b = $('#cbody', el);
       if (tab === 'info') return infoTab(b);
       if (tab === 'links') return linksTab(b);
+      if (tab === 'marca') return marcaTab(b);
+      if (tab === 'presupuestos') { mount(b, html`<p class="loading">Cargando…</p>`); return loadEntries().then((en) => { entries = en; if (alive() && tab === 'presupuestos') budgetsTab({ el: b, me, slug, name: a.name, edit, entries }); }); }
       if (tab === 'servicio') { if (!extra) { mount(b, html`<p class="loading">Cargando…</p>`); return loadExtra(); } return mount(b, serviceTab({ me, slug, info, projects: ps, tasks, team, precioFicha: c?.precio ?? null, ...extra })); }
       // El CRM se monta tal cual (es una isla: sus botones no le hablan a esta página).
       if (tab === 'prospectos') { b.dataset.island = '1'; mount(b, html`<p class="loading">Cargando…</p>`); import('./sales.js').then((m) => alive() && tab === 'prospectos' && m.render(b, { me, sub: ['crm'], alive })); }
@@ -107,6 +115,14 @@ export async function render(el, { me, sub, alive }) {
         </div>`}`);
     }
 
+    // Marca: las asociaciones del negocio (moodboard, Pinterest, referentes, tono, no-hacer) y la inspo por plataforma (su Research).
+    function marcaTab(b) {
+      mount(b, html`<div class="row" style="margin-bottom:12px;flex-wrap:wrap;gap:8px"><div class="tabs mini" style="margin:0"><button class="${msub === 'asociaciones' ? 'on' : ''}" data-act="msub" data-m="asociaciones">Asociaciones</button><button class="${msub === 'inspo' ? 'on' : ''}" data-act="msub" data-m="inspo">Inspo</button></div><span class="mut sm">${msub === 'asociaciones' ? 'Con qué se asocia la marca: lo que ve, a quién sigue y cómo suena.' : 'Lo que inspira su contenido, por plataforma: IG · TikTok · LinkedIn.'}</span></div><div id="mbody"></div>`);
+      const m = $('#mbody', b);
+      if (msub === 'asociaciones') return brandBoard({ el: m, me, id: slug, name: a.name, edit, business: true, folder: a.assets || '' });
+      m.dataset.island = '1'; return content(m, { me, sub: ['research'], alive, fixed: slug, embed: { base: `#/clients/${slug}/marca/inspo`, only: ['research'], inspo: true, plat: sub[3] } });
+    }
+
     function linksTab(b) {
       const mine = Array.isArray(a.links) ? a.links : [];
       const cats = CATS.filter(([k]) => mine.some((l) => (l.cat || 'otro') === k));
@@ -124,6 +140,7 @@ export async function render(el, { me, sub, alive }) {
     acts(el, island({
       ...goals.acts, gpdf: () => goals.pdf(nivel),
       tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', `#/clients/${slug}/${tab}`); swap(el, paint); },
+      msub: (t) => { msub = t.dataset.m; history.replaceState(null, '', `#/clients/${slug}/marca/${msub}`); marcaTab($('#cbody', el)); },
       mkdrive: async (t) => { t.disabled = true; t.textContent = 'Creando…'; try { const r = await api('drive/client', { method: 'POST', body: { slug, growth: isGrowth() } }); const fresh = await AC.get(a.id).catch(() => null); a = { ...(fresh || a), drive: r.drive, drive_dirs: r.dirs, assets: (fresh || a).assets || r.dirs['01 Assets de marca'] }; toast('Drive creado y conectado'); paint(); } catch (e) { toast(e.message, true); t.disabled = false; t.textContent = 'Crear carpetas'; } },
       lkadd: async () => { const v = await linkForm(null); if (v) saveLinks([...(a.links || []), v]); },
       lkedit: async (t) => { const l = [...(a.links || [])]; const v = await linkForm(l[+t.dataset.i]); if (v) { l[+t.dataset.i] = v; saveLinks(l); } },

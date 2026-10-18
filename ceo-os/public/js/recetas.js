@@ -1,4 +1,5 @@
-// Administración → Recetas: cómo se arma el trabajo, editable por el CEO. Es la pantalla de public/js/recipes.js.
+// Recetas: cómo se arma el trabajo, editable por el CEO. Es la pantalla de public/js/recipes.js. Vive en Servicios → Responsabilidades
+// (plegada, para proyectos y recurrentes); la tabla por paquete o servicio está en responsabilidades.js.
 //   · Proyectos: Ciclo mensual, Business Growth, Proyecto y Custom (tareas, reuniones, lo que se pide al cliente)
 //   · Servicios: las tareas de un servicio del catálogo; al activar un paquete o una cotización salen de aquí
 //   · Recurrentes: las responsabilidades de Inherent (semanal, mensual, fecha fija) que dejan su tarea Interna con SOP y fecha
@@ -18,7 +19,9 @@ const getP = (o, path) => path.split('.').reduce((t, k) => t?.[k], o);
 const ROW = (rc, i) => ({ key: 't' + (Math.max(0, ...(rc.tasks || []).map((t) => +String(t.key).replace(/\D/g, '') || 0)) + 1 + i), title: '', dept: '', day: rc.type === 'servicio' ? 3 : 1, role: 'content', reviewer: rc.type === 'interna' ? '' : 'coo', hours: 0, sop: '', tipo: rc.type === 'interna' ? 'Interna' : 'Delivery', after: [], desc: '' });
 const TYPE_NAME = { proyecto: 'Proyecto', servicio: 'Servicio', interna: 'Recurrente' };
 
-export async function recetasPanel(el) {
+// `solo`: qué secciones mostrar (proyecto · servicio · interna). Servicios → Responsabilidades monta solo proyectos y recurrentes.
+export async function recetasPanel(el, { solo = ['proyecto', 'servicio', 'interna'] } = {}) {
+  const show = (t) => solo.includes(t);
   mount(el, html`<p class="loading">Cargando recetas…</p>`);
   let [docs, services, library] = await Promise.all([RC.list().catch(() => []), col('services').list().catch(() => []), col('docs').list().catch(() => [])]);
   let R = recipesWith(docs), rc = null, isNew = false;
@@ -33,14 +36,14 @@ export async function recetasPanel(el) {
   function list() {
     const by = (t) => R.filter((r) => r.type === t);
     mount(el, html`<div class="card" style="padding:22px">
-      <div class="row" style="flex-wrap:wrap;gap:10px"><div style="flex:1;min-width:240px"><h3 style="margin:0 0 4px">Recetas</h3><div class="mut sm" style="max-width:640px">Así se arma el trabajo: qué tareas salen, de quién, para cuándo, con qué SOP y en qué orden. Si no editas nada, todo sigue como siempre. Al activar un paquete o un plan, el proyecto sale de estas recetas.</div></div>
+      <div class="row" style="flex-wrap:wrap;gap:10px"><div style="flex:1;min-width:240px"><h3 style="margin:0 0 4px">Recetas</h3><div class="mut sm" style="max-width:640px">Así se arma el trabajo: qué tareas salen, de quién, para cuándo, con qué SOP y en qué orden. Si no editas nada, todo sigue como siempre. Al activar un paquete o un plan, el proyecto sale de estas recetas.${show('servicio') ? '' : ' Las de cada paquete y servicio se programan arriba, en la tabla.'}</div></div>
         <button class="btn ghost" data-rc="run" title="Deja creadas las tareas recurrentes que ya toca hacer">${ico('repeat')} Generar lo recurrente</button></div>
-      <div class="sec-title" style="margin-top:20px"><h2>Proyectos</h2></div>${by('proyecto').map(row)}
-      <div class="row" style="margin-top:22px"><div class="sec-title" style="margin:0"><h2>Servicios</h2></div><div class="sp"></div><button class="btn ghost xs" data-rc="new" data-t="servicio">${ico('plus', 13)} Receta de un servicio</button></div>
+      ${show('proyecto') ? html`<div class="sec-title" style="margin-top:20px"><h2>Proyectos</h2></div>${by('proyecto').map(row)}` : ''}
+      ${show('servicio') ? html`<div class="row" style="margin-top:22px"><div class="sec-title" style="margin:0"><h2>Servicios</h2></div><div class="sp"></div><button class="btn ghost xs" data-rc="new" data-t="servicio">${ico('plus', 13)} Receta de un servicio</button></div>
       <div class="mut sm" style="margin:4px 0 6px">Cuando un paquete o una cotización lleva este servicio, sus tareas salen de aquí. Sin receta, sale una tarea por rol, con las horas del catálogo.</div>
-      ${by('servicio').length ? by('servicio').map(row) : html`<div class="mut sm" style="padding:10px 0;border-top:1px solid var(--line)">Todavía no hay recetas de servicios.</div>`}
-      <div class="row" style="margin-top:22px"><div class="sec-title" style="margin:0"><h2>Responsabilidades recurrentes</h2></div><div class="sp"></div><button class="btn ghost xs" data-rc="new" data-t="interna">${ico('plus', 13)} Nueva responsabilidad</button></div>
-      <div class="mut sm" style="margin:4px 0 6px">Tareas Internas que se crean solas con su SOP y su fecha. Vienen apagadas: enciende las que quieras.</div>${by('interna').map(row)}
+      ${by('servicio').length ? by('servicio').map(row) : html`<div class="mut sm" style="padding:10px 0;border-top:1px solid var(--line)">Todavía no hay recetas de servicios.</div>`}` : ''}
+      ${show('interna') ? html`<div class="row" style="margin-top:22px"><div class="sec-title" style="margin:0"><h2>Responsabilidades recurrentes</h2></div><div class="sp"></div><button class="btn ghost xs" data-rc="new" data-t="interna">${ico('plus', 13)} Nueva responsabilidad</button></div>
+      <div class="mut sm" style="margin:4px 0 6px">Tareas Internas que se crean solas con su SOP y su fecha. Vienen apagadas: enciende las que quieras.</div>${by('interna').map(row)}` : ''}
     </div>`);
   }
 

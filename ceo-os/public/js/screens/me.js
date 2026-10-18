@@ -1,5 +1,6 @@
 // Mi perfil: se abre al tocar tu foto. Tu foto, tu cumpleaños, cómo te contactan, tus conexiones y salir.
 import { html, raw, mount, api, toast, cropImage, initials, roleName, IC, LOGO, $, ico } from '../core.js';
+import { purposeCard } from '../purpose.js';
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 export const bdayText = (bd) => (bd ? `${+bd.slice(3)} de ${MESES[+bd.slice(0, 2) - 1]}` : '');
@@ -17,6 +18,7 @@ export async function render(el, { me }) {
           <div class="mut sm">${me.email}${me.birthday ? html` · ${ico('cake')} ${bdayText(me.birthday)}` : ''}</div>
           ${me.picture ? html`<button class="sm mut linkish" data-p="nopic">Quitar foto</button>` : ''}</div>
       </div>
+      <div style="margin-top:14px">${purposeCard(me, { open: true })}</div>
 
       ${client ? '' : html`<div class="card" style="margin-top:14px"><h3 class="profh">Sobre ti</h3>
         <div class="form">
@@ -52,7 +54,7 @@ export async function render(el, { me }) {
     const b = e.target.closest('[data-p]'); if (!b) return;
     const a = b.dataset.p;
     if (a === 'save') {
-      const d = $('#e9dfd2', el).value, m = $('#bdm', el).value;
+      const d = $('#bdd', el).value, m = $('#bdm', el).value;
       if (Boolean(d) !== Boolean(m)) return toast('Elige día y mes', true);
       const v = { birthday: d && m ? `${m}-${d}` : '', phone: $('#pphone', el).value.trim(), bio: $('#pbio', el).value.trim() };
       try { await api('me/profile', { method: 'PUT', body: v }); Object.assign(me, v); toast('Perfil guardado'); paint(); } catch (err) { toast(err.message, true); }

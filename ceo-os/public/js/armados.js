@@ -3,6 +3,7 @@
 // mismo margen del catálogo, y la cotización muestra cuánto vale cada cosa. Solo el CEO (lleva costos).
 import { html, raw, mount, col, api, drawer, closeDrawer, toast, confirmAsk, Q, USD, $, $$, ico } from './core.js';
 import { svcCost, svcHours, svcPrice, svcAuto, marginOf, includesAt, hoursAt, rateAt } from './cycle.js';
+import { LEVELS } from './levels.js';
 
 const B = col('bundles');
 const r50 = (n) => Math.round(n / 50) * 50;
@@ -40,14 +41,15 @@ export async function createBundles({ services, rates, industries = [], onQuote 
     const c = rates ? svcCost(s, rates, lv) : null, p = svcPriceAt(s, lv);
     return { name: s.name, sub: `${lvName(lv)} · nivel ${lv}${qty > 1 ? ` · ×${qty}` : ''} · ${svcHours(s, lv) * qty} h`, cost: c && !c.miss.length ? c.cost * qty : 0, price: (p || 0) * qty, hours: svcHours(s, lv) * qty, ok: p != null, roles: (s.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * qty, cost: (rateAt(rates, t.role, lv) || 0) * hoursAt(t, lv) * qty })), miss: c?.miss?.length ? c.miss : null };
   }
+  // El precio del paquete: la suma del catálogo o, si el CEO lo fijó a mano, ese (el costo no cambia).
   function totals(b) {
-    const ls = (b.lines || []).map(line), price = ls.reduce((a, x) => a + x.price, 0), cost = ls.reduce((a, x) => a + x.cost, 0);
-    return { ls, price, cost, hours: ls.reduce((a, x) => a + x.hours, 0), mg: price ? Math.round((1 - cost / price) * 100) : null };
+    const ls = (b.lines || []).map(line), sum = ls.reduce((a, x) => a + x.price, 0), cost = ls.reduce((a, x) => a + x.cost, 0), manual = +b.price_fixed > 0 ? +b.price_fixed : 0, price = manual || sum;
+    return { ls, price, sum, manual, cost, hours: ls.reduce((a, x) => a + x.hours, 0), mg: price ? Math.round((1 - cost / price) * 100) : null };
   }
 
   // ---------- editor ----------
   function edit(orig) {
-    const b = orig?.id ? JSON.parse(JSON.stringify(orig)) : { name: '', industry: '', desc: '', lines: [], phases: [], ...(orig || {}) };
+    const b = orig?.id ? JSON.parse(JSON.stringify(orig)) : { name: '', industry: '', desc: '', level: '', excludes: '', price_fixed: null, lines: [], phases: [], ...(orig || {}) };
     if (!orig?.id) orig = null;
     b.lines = b.lines || []; b.phases = b.phases || [];
     const svcOpts = (sel) => html`<option value="">Elige un servicio…</option>${services.map((s) => html`<option value="${s.id}" ${s.id === sel ? raw('selected') : ''}>${s.name}</option>`)}`;
@@ -58,8 +60,10 @@ export async function createBundles({ services, rates, industries = [], onQuote 
         <h2>${orig ? 'Editar paquete' : 'Nuevo paquete'}</h2>
         <div class="form" style="margin-top:14px">
           <div><label class="f">Nombre *</label><input class="in" data-k="name" value="${b.name}"></div>
-          <div class="two"><div><label class="f">Industria</label><input class="in" data-k="industry" list="bind" value="${b.industry}"><datalist id="bind">${industries.map((i) => html`<option value="${i}">`)}</datalist></div><div></div></div>
+          <div class="two"><div><label class="f">Nivel</label><select class="in" data-k="level"><option value="">Sin nivel · otro paquete</option>${LEVELS.map((l) => html`<option value="${l.id}" ${l.id === b.level ? raw('selected') : ''}>${l.name}</option>`)}</select></div>
+            <div><label class="f">Industria</label><input class="in" data-k="industry" list="bind" value="${b.industry}"><datalist id="bind">${industries.map((i) => html`<option value="${i}">`)}</datalist></div></div>
           <div><label class="f">Para quién es y qué logra (sale en la cotización)</label><textarea class="in" data-k="desc">${b.desc}</textarea></div>
+          <div><label class="f">Qué queda fuera · uno por línea</label><textarea class="in" data-k="excludes" placeholder="Pauta (se cobra aparte)&#10;Producción especial">${b.excludes || ''}</textarea></div>
         </div>
         <div class="sec-title" style="margin:18px 0 8px"><h3 style="margin:0">Qué incluye</h3></div>
         ${t.ls.map((x, i) => { const l = b.lines[i]; if (l.type === 'custom') return html`<div class="card glass" style="padding:12px 14px;margin-bottom:8px;border-radius:18px">
@@ -81,7 +85,8 @@ export async function createBundles({ services, rates, industries = [], onQuote 
         ${b.phases.map((f, i) => html`<div class="row" style="gap:8px;margin-bottom:8px;flex-wrap:wrap"><input class="in" style="flex:2;min-width:160px" placeholder="Nombre de la fase" data-fi="${i}" data-ff="n" value="${f.n || ''}"><input class="in" style="max-width:110px" placeholder="Semanas" data-fi="${i}" data-ff="w" value="${f.w || ''}"><select class="in" style="flex:2;min-width:160px" data-fi="${i}" data-ff="line"><option value="">Servicio que entrega…</option>${b.lines.map((l, k) => html`<option value="${l.id}" ${l.id === f.line ? raw('selected') : ''}>${t.ls[k].name}</option>`)}</select><button class="btn ghost xs" data-act="rmPh" data-i="${i}" aria-label="Quitar">${ico('trash', 15)}</button></div>`)}
         <button class="btn ghost" data-act="addPh" style="padding:8px 14px">+ Fase</button>
 
-        <div class="card feat olive" style="margin-top:20px;min-height:0"><div class="lbl">Total del paquete</div><div class="big" style="font-size:40px;margin-top:6px">${Q(t.price)}</div>
+        <div style="margin-top:16px"><label class="f">Precio del paquete en Q (vacío = la suma del catálogo${t.sum ? `: ${Q(t.sum)}` : ''})</label><input class="in" type="number" min="0" step="50" data-k="price_fixed" value="${+b.price_fixed > 0 ? +b.price_fixed : ''}" placeholder="${t.sum ? 'Suma del catálogo: ' + Q(t.sum) : 'Suma del catálogo'}"></div>
+        <div class="card feat olive" style="margin-top:14px;min-height:0"><div class="lbl">Total del paquete${t.manual ? ' · precio manual' : ''}</div><div class="big" style="font-size:40px;margin-top:6px">${Q(t.price)}</div>
           <div class="foot"><span>${t.hours} h · ${b.lines.length} línea${b.lines.length === 1 ? '' : 's'}</span><span style="font-weight:700">${ico('lock', 12)} Costo ${Q(t.cost)}${t.mg != null ? ` · ${t.mg}%` : ''}</span></div></div>
         <div class="row" style="margin-top:18px;gap:8px"><button class="btn" data-act="save">Guardar</button><button class="btn ghost" data-act="quote">Cotizar</button><div class="sp"></div>${orig ? html`<button class="btn ghost" data-act="del" aria-label="Eliminar">${ico('trash', 16)}</button>` : ''}</div>`,
       {
@@ -95,7 +100,7 @@ export async function createBundles({ services, rates, industries = [], onQuote 
         rmPh: (x) => { b.phases.splice(+x.dataset.i, 1); draw(); },
         save: async () => {
           if (!b.name.trim()) return toast('Falta el nombre', true);
-          const doc = { ...b, name: b.name.trim(), lines: b.lines.filter((l) => l.service_id || l.mentor_id || (l.type === 'custom' && l.name)) };
+          const doc = { ...b, name: b.name.trim(), level: LEVELS.some((l) => l.id === b.level) ? b.level : '', excludes: String(b.excludes || '').trim(), price_fixed: +b.price_fixed > 0 ? +b.price_fixed : null, lines: b.lines.filter((l) => l.service_id || l.mentor_id || (l.type === 'custom' && l.name)) };
           try { const r = orig ? await B.save(doc) : await B.create(doc); bundles = orig ? bundles.map((x) => (x.id === r.id ? r : x)) : [...bundles, r]; toast('Paquete guardado'); closeDrawer(); onDone(r); }
           catch (e) { toast(e.message, true); }
         },
@@ -105,6 +110,7 @@ export async function createBundles({ services, rates, industries = [], onQuote 
       const d = $('#drawer'); d.scrollTop = keep;
       // Lo escrito se guarda en el paquete al momento (así nunca se lee un formulario viejo).
       $$('[data-k]', d).forEach((x) => x.addEventListener('input', () => { b[x.dataset.k] = x.value; }));
+      $$('[data-k=level],[data-k=price_fixed]', d).forEach((x) => x.addEventListener('change', () => { b[x.dataset.k] = x.value; draw(); }));
       $$('[data-rk]', d).forEach((x) => x.addEventListener('change', () => { const r = b.lines[+x.dataset.li].roles[+x.dataset.rk]; r[x.dataset.rf] = x.dataset.rf === 'hours' ? (x.value === '' ? null : num(x.value)) : x.value; draw(); }));
       $$('[data-li][data-lf]', d).forEach((x) => x.addEventListener('change', () => { const l = b.lines[+x.dataset.li], f = x.dataset.lf; l[f] = f === 'service_id' || f === 'mentor_id' || f === 'name' ? x.value : x.value === '' ? null : num(x.value); draw(); }));
       $$('[data-fi]', d).forEach((x) => x.addEventListener(x.tagName === 'SELECT' ? 'change' : 'input', () => { b.phases[+x.dataset.fi][x.dataset.ff] = x.value; }));
@@ -121,6 +127,7 @@ export async function createBundles({ services, rates, industries = [], onQuote 
       const s = svc(l.service_id), lv = Math.round(num(l.level, 5));
       return { service_id: s.id, name: s.name, description: s.description || '', qty: Math.max(1, num(l.qty, 1)), level: lv, price: x.price / Math.max(1, num(l.qty, 1)), includes: includesAt(s, lv) };
     }).filter(Boolean);
+    if (t.manual && items.length) { const inc = items.flatMap((i) => (i.includes?.length ? i.includes : [i.name])); items.splice(0, items.length, { name: b.name || 'Paquete', description: b.desc || '', qty: 1, price: t.manual, cost: Math.round(t.cost), includes: inc.slice(0, 20) }); }
     const plan = (b.phases || []).filter((f) => f.n).map((f) => `${f.n}${f.w ? ` (semanas ${f.w})` : ''}${f.line ? ` · ${t.ls[b.lines.findIndex((l) => l.id === f.line)]?.name || ''}` : ''}`);
     return { items, intro: b.desc || '', notes: plan.length ? `Plan de trabajo (${b.name}):\n${plan.map((x) => '• ' + x).join('\n')}` : '' };
   }

@@ -1,7 +1,7 @@
 import { SECTIONS, GROUPS, SUMMARY, LEVELS, LEVEL_HELP, SCOPES, SCOPE_HELP, STARTS, baseAreas } from '../roleviews.js';
 import { events, html, raw, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, cropImage, WORK_ROLES, roleName, $, teamDoc, ico } from '../core.js';
 import { bdayText } from './me.js';
-import { recetasPanel } from '../recetas.js';
+import { purposeCard } from '../purpose.js';
 import { roleTable, changeRole } from '../rolemap.js';
 
 const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'];
@@ -12,9 +12,11 @@ const T = col('team'), RV = col('settings');
 export async function render(el, { me, sub = [] }) {
   let people = (await teamList()).filter((p) => p.active !== false || me.role === 'ceo');
   const isCeo = me.role === 'ceo';
-  // Pestañas: Organigrama · Perfiles · Roles (quién cubre cada rol por proyecto) · y, para el CEO, Vistas por rol y Recetas.
+  // Pestañas: Organigrama · Perfiles · Roles (quién cubre cada rol por proyecto) · y, para el CEO, Vistas por rol.
   // «Más» (solo CEO) lleva a las pantallas que ya no están en la barra: Control, Proyectos, Workspace, Comercial, Finanzas, Indicadores, Arranque.
-  let view = ['people', 'roles', 'vistas', 'recetas'].includes(sub[0]) && (isCeo || ['people', 'roles'].includes(sub[0])) ? sub[0] : 'org';
+  // Las recetas ya no viven aquí: #/team/recetas lleva a Servicios → Responsabilidades.
+  if (sub[0] === 'recetas') { location.hash = '/services/responsabilidades'; return; }
+  let view = ['people', 'roles', 'vistas'].includes(sub[0]) && (isCeo || ['people', 'roles'].includes(sub[0])) ? sub[0] : 'org';
   const MORE = [['control', 'Control · el flujo de lead a entrega'], ['operations', 'Proyectos · pipeline, calendario y timeline'], ['work', 'Workspace · la cola de siempre'], ['sales', 'Comercial · CRM, catálogo y cotizaciones'], ['finanzas', 'Finanzas · movimientos y pagos por servicio'], ['resultados', 'Indicadores · lo que de verdad pasó'], ['setup', 'Arranque · dejar la app lista desde el repo']];
   let more = false, rp = null; // rp: proyectos y tareas de la pestaña Roles (se cargan al abrirla)
   function roles() {
@@ -99,7 +101,7 @@ export async function render(el, { me, sub = [] }) {
     if (!rvLoaded) { RV.get('role_views').then((d) => { rv = d; }).catch(() => { rv = null; }).then(() => { rvLoaded = true; if (view === 'vistas') paint(); }); return html`<p class="loading">Cargando…</p>`; }
     const holders = people.filter((p) => (p.roles || []).includes(rvRole) && p.active !== false);
     const touched = Boolean(rvCfg()) || Boolean((rv?.scope || {})[rvRole]) || Boolean((rv?.start || {})[rvRole]);
-    return html`<div class="card" style="padding:22px">
+    return html`${purposeCard({ ...people.find((p) => (p.roles || []).includes(rvRole)) || {}, role: 'team', roles: [rvRole] }, { own: false, open: true })}<div class="card" style="padding:22px">
       <div class="mut sm" style="max-width:680px">Elige un perfil de trabajo y decide <b>qué ve</b>, <b>qué tan a fondo</b>, <b>de qué clientes</b> y <b>dónde abre</b>. Se guarda al tocar y se aplica en el servidor: lo oculto no sale ni por la app ni por el conector de Claude. Un perfil sin configurar sigue como hoy. Si una persona tiene varios perfiles, gana el más amplio. Tú, como CEO, siempre ves y editas todo.</div>
       <div class="row" style="gap:8px;flex-wrap:wrap;margin:16px 0">${WORK_ROLES.filter(([k]) => k !== 'ceo').map(([k]) => html`<button class="chip ${rvRole === k ? 'dark' : ''}" data-act="rvrole" data-r="${k}" style="padding:8px 14px">${rvShort(k)}${(rv?.views || {})[k] || (rv?.scope || {})[k] || (rv?.start || {})[k] ? ' ●' : ''}</button>`)}</div>
       <div class="row sm" style="margin-bottom:6px"><b style="font-weight:500">${roleName(rvRole)}</b><span class="mut">${holders.length ? ' · lo tienen: ' + holders.map((x) => x.name.split(' ')[0]).join(', ') : ' · nadie lo tiene todavía'}</span><div class="sp"></div>${touched ? html`<button class="btn ghost xs" data-act="rvreset">Restablecer (como hoy)</button>` : html`<span class="mut sm">Sin configurar · como hoy</span>`}</div>
@@ -123,16 +125,15 @@ export async function render(el, { me, sub = [] }) {
   }
   function paint() {
     const SUB = { org: html`Quién hace qué en <em>Inherent</em>.`, people: html`Cada persona, <em>sus perfiles de trabajo</em>.`, roles: html`Quién cubre <em>cada rol</em> en cada proyecto.`, vistas: html`Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.`, recetas: html`Cómo se arma el trabajo: <em>tareas, dueños y fechas</em>.` };
-    const TABS = [['org', 'Organigrama'], ['people', 'Perfiles'], ['roles', 'Roles'], ...(isCeo ? [['vistas', 'Vistas por rol'], ['recetas', 'Recetas']] : [])];
+    const TABS = [['org', 'Organigrama'], ['people', 'Perfiles'], ['roles', 'Roles'], ...(isCeo ? [['vistas', 'Vistas por rol']] : [])];
     mount(el, html`<div class="row" style="align-items:flex-end;margin-bottom:18px;flex-wrap:wrap;gap:12px">
       <div class="hello"><h1>Equipo</h1><p style="margin:0">${SUB[view]}</p></div><div class="sp"></div>
       ${isCeo && ['org', 'people'].includes(view) ? html`<button class="btn" data-act="add">+ Agregar</button>` : ''}
       ${isCeo ? html`<div class="moremenu"><button class="btn ghost" data-act="more">Más ${ico('bars', 14)}</button><div class="menu ${more ? 'on' : ''}">${MORE.map(([k, l]) => html`<button data-act="go" data-k="${k}"><span>${l.split(' · ')[0]}</span><span class="mut sm">${l.split(' · ')[1]}</span></button>`)}</div></div>` : ''}
     </div>
-    <div class="tabs" style="margin:0 0 16px">${TABS.map(([k, l]) => html`<button class="${view === k ? 'on' : ''}" data-act="view" data-v="${k}">${l}</button>`)}</div>
+    <div class="row" style="margin:0 0 16px;flex-wrap:wrap;gap:8px"><div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${view === k ? 'on' : ''}" data-act="view" data-v="${k}">${l}</button>`)}</div>${isCeo ? html`<a class="sm mut" href="#/services/responsabilidades" style="margin-left:auto">Las recetas ahora viven en Servicios → Responsabilidades →</a>` : ''}</div>
     ${missing.length && ['org', 'people'].includes(view) ? html`<div class="warnbox" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px"><span style="flex:1">${missing.length === 1 ? '1 persona' : missing.length + ' personas'} del manual y la nómina no ${missing.length === 1 ? 'está' : 'están'} en el organigrama: <b>${missing.map((x) => x.name + ' (' + x.roles.join(', ') + ')').join(' · ')}</b></span><button class="btn" data-act="import">Agregarlas</button></div>` : ''}
-    ${view === 'org' ? html`<div class="card" style="padding:34px 22px">${org()}</div>` : view === 'roles' ? roles() : view === 'vistas' && isCeo ? vistas() : view === 'recetas' && isCeo ? html`<div id="rcbody"></div>` : cards()}`);
-    if (view === 'recetas' && isCeo) recetasPanel($('#rcbody', el));
+    ${view === 'org' ? html`<div class="card" style="padding:34px 22px">${org()}</div>` : view === 'roles' ? roles() : view === 'vistas' && isCeo ? vistas() : cards()}`);
     const st = $('[data-act=rvstart]', el); if (st) st.onchange = () => rvSave({ start: { ...(rv?.start || {}), [rvRole]: st.value } });
   }
 

@@ -103,3 +103,44 @@ export function applyViews(me, doc) {
   me.areas = areas;
   return me;
 }
+
+// ---------- El puesto: qué ve cada perfil, para qué lo ve y qué hace ahí ----------
+// Lo leen Hoy, el Workspace y Mi perfil (tarjeta «Tu puesto») y el CEO en Equipo → Vistas por rol.
+// Una frase por cosa, en lenguaje humano. Los perfiles que hoy no se asignan solos (diseño, producción,
+// community) dicen dentro de cuál viven, para que el CEO sepa dónde cae ese trabajo.
+export const PURPOSE = {
+  ceo: { name: 'CEO', sees: 'Toda la empresa: clientes, dinero, equipo, contenido y pauta.', why: 'Para decidir: estrategia, precio, alcance y presupuesto de pauta.', does: 'Aprueba la estrategia (① Strategy) y la pauta (⑩ Ads), revisa lo que le rinde cuentas y vende.',
+    sections: { home: 'Qué pasa hoy en Inherent: entregas, lo que espera tu decisión y la agenda', control: 'El flujo completo de la empresa y lo que necesita atención', work: 'Tu Workspace: tus tareas, la cola de decisiones y los pipelines', resultados: 'Los indicadores reales de la empresa', clients: 'Cada cliente: ficha, accesos, portal y metas', operations: 'Proyectos, pipeline por cliente y calendario del ciclo', sales: 'El CRM y las cotizaciones', finanzas: 'Caja, cobros, costos y rentabilidad', content: 'Research, planner y rendimiento de cada perfil', roadmap: 'Los megaproyectos de Inherent', library: 'SOPs, playbooks y prompts', team: 'Quién es quién, perfiles y la matriz de vistas' } },
+  coo: { name: 'COO · Operaciones', sees: 'Todos los proyectos, las tareas y la carga del equipo.', why: 'Para que cada entrega salga a tiempo y con calidad.', does: 'Coordina, revisa las entregas (QA final) y presenta el día 20.',
+    sections: { home: 'Qué pasa hoy: entregas y lo que necesita atención', control: 'El flujo del mes y los cuellos de botella', work: 'Entregas por revisar, controles del ciclo y carga del equipo', operations: 'Proyectos, fases y responsables', clients: 'La ficha y el avance de cada cliente', sales: 'Seguimiento comercial', content: 'El plan de contenido de cada cliente', library: 'SOPs y plantillas del equipo', team: 'Perfiles y roles por proyecto' } },
+  content: { name: 'Content · Agent operator', sees: 'Las ideas, el plan y las piezas de cada cliente que tiene asignado.', why: 'Para que cada ciclo tenga ideas, guion, diseño y publicación a tiempo.', does: 'Opera los agentes de ④ Creatividad, ⑥A Diseño y ⑨ Posting, y sube el trabajo a revisión.',
+    sections: { home: 'Tus responsabilidades de hoy con su fecha', work: 'Plan por cliente y etapa, diseño, matriz de publicaciones y community', content: 'Research, planner y calendario de cada perfil', library: 'Tus SOPs y prompts', team: 'Quién hace qué' } },
+  video: { name: 'Video editor · Agent operator', sees: 'Su cola de videos y ads por fecha de entrega, con los assets y prompts de cada marca.', why: 'Para editar lo planificado sin buscar material ni adivinar el estilo.', does: 'Edita, exporta y sube el corte a revisión.',
+    sections: { home: 'Qué cortes vencen hoy y esta semana', work: 'Cola de producción, acceso rápido, kit por cliente y subir corte', library: 'SOPs de edición y prompts generales', team: 'Quién hace qué' } },
+  finance: { name: 'Finance + Business mapping', sees: 'Los proyectos de Business Growth y sus tareas.', why: 'Para que el cliente gane más y gaste menos, con números.', does: 'Mapea el negocio, entrega los análisis y los sube a revisión.',
+    sections: { home: 'Tus entregas de hoy', work: 'Tus proyectos de Business Growth y tu checklist', library: 'SOPs de finanzas y mapping', team: 'Quién hace qué' } },
+  cobros: { name: 'Finanzas de Inherent · cobros', sees: 'Los movimientos del mes: ingresos y gastos, sin costos ni márgenes.', why: 'Para que se cobre a tiempo y la caja cuadre.', does: 'Registra cobros y pagos y persigue lo vencido.',
+    sections: { home: 'Qué se cobra hoy', work: 'Tus tareas de cobro', finanzas: 'Los movimientos del mes (resumen)', library: 'SOP de caja y cobros', team: 'Quién hace qué' } },
+  ads: { name: 'Ads management', sees: 'Por cliente con pauta: el encargo, el OK del CEO, sus tareas de ⑩, las campañas y el aprendizaje.', why: 'Para comprar resultado con el dinero del cliente sin lanzar nada que el CEO no aprobó.', does: 'Corre las capas de ⑩ Ads con sus skills ad-*, registra campañas y entrega cada tarea.',
+    sections: { home: 'Tus tareas de ⑩ Ads que vencen hoy', work: 'Encargo, pasos del método, esta semana, campañas, aprendizaje y cómo va la pauta', library: 'SOPs de pauta y prompts', team: 'Quién hace qué' } },
+  ventas: { name: 'Ventas · CRM y seguimiento', sees: 'Los prospectos y su seguimiento; sin precios internos ni cotizaciones de otros.', why: 'Para que ningún lead se enfríe.', does: 'Mueve leads, anota la actividad y agenda el siguiente paso.',
+    sections: { home: 'Seguimientos de hoy', work: 'Tus tareas comerciales', sales: 'El CRM: prospectos, etapas y seguimientos', library: 'Guiones y SOP de ventas', team: 'Quién hace qué' } },
+  client: { name: 'Cliente', sees: 'Su portal: el plan, las entregas y los resultados de su marca.', why: 'Para saber qué se hizo, qué viene y cómo va.', does: 'Revisa y aprueba lo que se le presenta.', sections: { portal: 'Su plan, entregas y resultados' } },
+  // Trabajo que hoy vive dentro de otro perfil (no se asigna solo).
+  diseno: { name: 'Diseño gráfico', within: 'content', sees: 'Sus tareas de ⑥A Diseño y static ads, con el material de cada cliente.', why: 'Para componer con las plantillas del kit, sin inventar la marca.', does: 'Diseña, exporta y sube a revisión (Workspace → Contenido → Diseño).' },
+  produccion: { name: 'Producción', within: 'video', sees: 'Las jornadas de grabación y el shot list del ciclo.', why: 'Para grabar lo planificado antes del día 11.', does: 'Graba y sube el crudo al Drive del cliente (Workspace → Video).' },
+  community: { name: 'Community', within: 'content', sees: 'El setup de community de cada cliente: tono, FAQ, escalamiento y plantillas.', why: 'Para que la bandeja se conteste con la ficha y nadie invente.', does: 'Completa la ficha y revisa la corrida (Workspace → Contenido → Community).' },
+};
+// Para qué sirve cada sección, cuando el perfil no dice nada más específico.
+export const SECTION_PURPOSE = { home: 'Qué te toca hoy, con su fecha', control: 'El flujo de la empresa y lo que necesita atención', clients: 'La ficha y el avance de cada cliente', sales: 'Prospectos y seguimiento', operations: 'Proyectos y sus fases', work: 'Tu trabajo, en orden', content: 'Research, planner y calendario', resultados: 'Indicadores reales', roadmap: 'Los megaproyectos', finanzas: 'Los números', library: 'SOPs, plantillas y prompts', team: 'Quién es quién', portal: 'Lo que ve el cliente' };
+// El perfil principal de una persona: el CEO y el COO por su rol; el equipo, su primer perfil de trabajo.
+export const mainProfile = (me) => (me.role === 'ceo' ? 'ceo' : me.role === 'coo' ? 'coo' : me.role === 'client' ? 'client' : rolesOf(me).find((r) => PURPOSE[r]) || null);
+// El texto de «Tu puesto» para una persona: su perfil, para qué ve lo que ve y qué hace, y cada sección
+// habilitada con su nivel y su propósito. Usa me.views si ya viene aplicado; si no, lo calcula con la matriz (doc).
+export function rolePurpose(me, doc = me?.viewsDoc) {
+  const key = mainProfile(me), p = key ? PURPOSE[key] : null;
+  const others = rolesOf(me).filter((r) => r !== key && PURPOSE[r]).map((r) => PURPOSE[r].name);
+  const views = me.role === 'client' ? { portal: 'completo' } : me.views || levelsFor(doc, me);
+  const sections = [...SECTIONS, ['portal', 'Portal']].filter(([k]) => views[k] && views[k] !== 'oculto').map(([k, label]) => ({ k, label, level: views[k], purpose: p?.sections?.[k] || SECTION_PURPOSE[k] || '' }));
+  return { key, name: p?.name || 'Sin perfil de trabajo', sees: p?.sees || 'Tus tareas y tu Kanban.', why: p?.why || 'Para entregar lo tuyo a tiempo.', does: p?.does || 'Pide al CEO tu perfil en Equipo → tu persona → Perfiles de trabajo.', others, sections, start: me.start || null, scope: me.scope || null };
+}

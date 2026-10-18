@@ -6,6 +6,7 @@ import { bars, kpis, PAL } from '../charts.js';
 import { openDelivery, dueChip, stChip } from '../taskcard.js';
 import { bdayText } from './me.js';
 import { connectNotice, hookNotice } from '../connectai.js';
+import { purposeCard } from '../purpose.js';
 
 const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; };
 const iso = (d) => d.toISOString().slice(0, 10);
@@ -79,6 +80,7 @@ export async function render(el, { me, alive }) {
     const title = (k) => { const p = proj(k); return p ? `${p.client ? p.client + ' · ' : ''}${p.name}` : 'Interno'; };
     const meets = upcoming(projects).filter((x) => x.date === T);
     mount(el, html`${head()}
+      ${purposeCard(me, { area: 'home' })}
       ${kpis([['Esta semana', week], ['Atrasadas', late, late ? PAL.red : ''], ['En revisión', review]])}
       <div class="grid g2" style="margin-top:14px;align-items:start">
         <div><div class="sec-title" style="margin-top:0"><h2>Mis responsabilidades</h2><span class="mut sm">Qué, para cuándo y dónde se entrega</span><div class="sp"></div><button class="btn ghost xs" data-act="addTask">+ Tarea</button></div>

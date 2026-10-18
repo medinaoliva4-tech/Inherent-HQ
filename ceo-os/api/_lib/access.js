@@ -14,14 +14,15 @@ export const COLLS = {
   leads: 'sales', lead_sources: 'sales', quotes: 'sales', services: 'sales', mentors: 'sales',
   rates: 'finanzas', packages: 'finanzas', bundles: 'finanzas', finance: 'finanzas', payroll: 'finanzas',
   projects: 'operations', tasks: 'operations', recipes: 'operations', accounts: 'clients',
+  brand_boards: 'clients', budgets: 'clients', campaigns: 'operations',
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library', roadmap: 'roadmap',
   team: 'team', settings: 'home', checks: 'work',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
 // (sus tareas, los proyectos y las cuentas de sus clientes). Las tareas también las escribe: ahí entrega.
-export const READ_ALSO = { tasks: ['work'], projects: ['work'], accounts: ['work'], recipes: ['work', 'sales'] };
-export const WRITE_ALSO = { tasks: ['work'] };
+export const READ_ALSO = { tasks: ['work'], projects: ['work'], accounts: ['work'], recipes: ['work', 'sales'], campaigns: ['work'] };
+export const WRITE_ALSO = { tasks: ['work'], campaigns: ['work'] };
 const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors', 'lead_sources', 'recipes']);
 // Costos, márgenes, tarifas y pagos: solo el CEO los lee, siempre, diga lo que diga la matriz.
 // lead_sources lleva las claves de las puertas de intake: también solo el CEO.
@@ -29,7 +30,7 @@ export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lea
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
 export const canRead = (role, coll) => !CEO_READ.has(coll) || role === 'ceo';
 // Las colecciones que filtra el alcance (todos · asignados · propio).
-export const SCOPED = ['projects', 'tasks', 'accounts', 'leads', 'quotes'];
+export const SCOPED = ['projects', 'tasks', 'accounts', 'leads', 'quotes', 'brand_boards', 'budgets', 'campaigns'];
 
 export const domain = () => (process.env.ALLOWED_DOMAIN || 'inherentglobal.com').toLowerCase();
 const admins = () => String(process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
@@ -118,6 +119,10 @@ export async function scoper(u, pre = {}) {
     // Una cotización entra igual que su lead: la que creó, la de un lead suyo o (con «asignados») la de uno de sus clientes.
     quotes: (q) => lc(q._meta?.created_by) === me || payQ.has(q.id) || (Boolean(q.lead_id) && lids.has(q.lead_id)) || (!own && Boolean(q.client_slug) && slugs.has(lc(q.client_slug))),
     client: (slug) => slugs.has(lc(slug)),
+    // El tablero de marca lleva el slug del cliente como id; un presupuesto, en client_slug.
+    brand_boards: (d) => slugs.has(lc(d.id)),
+    budgets: (d) => slugs.has(lc(d.client_slug)),
+    campaigns: (d) => slugs.has(lc(d.client_slug)),
   };
 }
 export const inScope = (sc, coll, d) => !sc || typeof sc[coll] !== 'function' || !d || sc[coll](d);
@@ -136,6 +141,15 @@ export function stripAccesos(u, acc, sc) {
   const { accesos, accesos_to, ...rest } = acc; return rest;
 }
 
+// ---------- Los costos de un presupuesto (Clientes → Presupuestos) ----------
+// Los ven el CEO, el COO y quien edita Clientes. A los demás les llega el presupuesto sin montos: qué se hace, no cuánto cuesta.
+export const seesCosts = (u) => managesAccesos(u);
+export function stripCosts(u, b) {
+  if (!b || seesCosts(u)) return b;
+  const { total, daily, ...rest } = b;
+  return { ...rest, lines: (Array.isArray(b.lines) ? b.lines : []).map(({ cost, subtotal, ...l }) => l), costs_hidden: true };
+}
+
 // ---------- «Resumen» también en el servidor ----------
 // Lo que la pantalla no muestra en resumen tampoco se entrega (ver SUMMARY en roleviews.js):
 //   Comercial en resumen → sin catálogo, precios, especialistas ni cotizaciones. Si además ve Control, recibe las
@@ -151,6 +165,8 @@ export function summaryOf(u, coll) {
   // Los especialistas asignados se ven en la página del cliente: con Clientes completo o edita, sí llegan.
   if (coll === 'mentors' && sales) return ['completo', 'edita'].includes(levelOf(u, 'clients')) ? null : () => null;
   if (coll === 'content' && cont) return () => null;
+  // Clientes en resumen: sin presupuestos (son montos y alcance).
+  if (coll === 'budgets' && levelOf(u, 'clients') === 'resumen') return () => null;
   if (coll === 'sources' && cont) return (d) => (/^(analytics|cfg)-/.test(String(d.id || '')) ? d : null);
   return null;
 }
