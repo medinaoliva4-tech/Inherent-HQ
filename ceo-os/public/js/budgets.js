@@ -85,7 +85,7 @@ export async function budgetsTab({ el, me, slug, name, edit, entries = null }) {
       <h2 style="font-size:22px;font-weight:500;letter-spacing:-.5px;margin:18px 0 6px">${b.name}</h2>
       <table class="bdlines"><thead><tr><th>Concepto</th><th>Cant.</th><th style="text-align:right">Unitario</th><th style="text-align:right">Subtotal</th><th>Paga</th></tr></thead><tbody>${(b.lines || []).map((l) => html`<tr><td>${l.concept}</td><td class="n">${l.qty}</td><td class="n">${money(b, l.cost)}</td><td class="n">${money(b, l.subtotal ?? l.qty * l.cost)}</td><td>${(l.payer || 'cliente') === 'inherent' ? 'Inherent' : 'Cliente'}</td></tr>`)}</tbody></table>
       <div class="row" style="margin-top:14px;gap:22px;flex-wrap:wrap"><div><div class="lbl2">TOTAL</div><b style="font-size:20px;font-weight:500">${money(b, b.total)}</b></div><div><div class="lbl2">PAGA EL CLIENTE</div><b style="font-size:16px;font-weight:500">${money(b, sum(b, 'cliente'))}</b></div><div><div class="lbl2">PAGA INHERENT</div><b style="font-size:16px;font-weight:500">${money(b, sum(b, 'inherent'))}</b></div></div>
-      ${b.note ? html`<div style="color:#5a4331;font-size:12.5px;margin-top:14px;white-space:pre-wrap">${b.note}</div>` : ''}
+      ${b.note ? html`<div style="color:var(--ink2);font-size:12.5px;margin-top:14px;white-space:pre-wrap">${b.note}</div>` : ''}
       <div class="qfoot"><span>Inherent · Growth Partner</span><span>inherentglobal.com</span></div>`);
   }
   const map = {

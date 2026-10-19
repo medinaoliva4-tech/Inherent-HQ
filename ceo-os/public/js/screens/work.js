@@ -8,6 +8,7 @@ import { recipesWith, checksFor } from '../recipes.js';
 import { payDialog } from '../flowui.js';
 import { openDelivery, dueChip as tDue, stChip as tSt } from '../taskcard.js';
 import { purposeCard } from '../purpose.js';
+import { tone } from '../charts.js';
 
 // Workspace: cada persona trabaja desde el perfil (o los perfiles) que tiene asignados en Team.
 // Todos tienen su kanban personal, el de la empresa y sus tareas. Cada perfil agrega lo suyo:
@@ -67,8 +68,8 @@ export async function render(el, { me, sub, alive }) {
     return d < T0 ? html`<span class="chip red sm2">Atrasada</span>` : d === T0 ? html`<span class="chip red sm2">Hoy</span>` : d === T1 ? html`<span class="chip amber sm2">Mañana</span>` : html`<span class="mut sm">${fdate(d)}</span>`; };
   const trow = (t, extra = '') => html`<div class="wkrow ${status(t) === 'Hecha' ? 'done' : ''}" data-act="task" data-id="${t.id}">${extra}${t.assignee ? av(t.assignee, 20) : ''}<span class="grow">${status(t) !== 'Hecha' && blockersOf(t, tasks).length ? html`<span title="Espera a otra tarea">${ico('lock')} </span>` : ''}${t.title}<span class="mut sm"> · ${proj(t.project_id)?.client || proj(t.project_id)?.name || 'Interno'}</span></span>${dueChip(t.due, status(t))}</div>`;
   // Sin ruido: si todos los indicadores están en cero, no se muestran.
-  const kpis = (list) => (list.every(([, v]) => !v) ? '' : html`<div class="wkkpis">${list.map(([l, v, c, act]) => html`<div class="wkkpi" ${act ? raw(`data-act="${act}"`) : ''}><span class="lbl">${l}</span><b style="${c ? `color:${c}` : ''}">${v}</b></div>`)}</div>`);
-  const box = (title, sub, body, right = '') => html`<div class="card wkbox"><div class="wkhead"><div><h3 class="wkttl">${iconFor(title)}${title}</h3>${sub ? html`<span class="mut sm">${sub}</span>` : ''}</div><div class="sp"></div>${right}</div>${body}</div>`;
+  const kpis = (list) => (list.every(([, v]) => !v) ? '' : html`<div class="wkkpis sp-kpis">${list.map(([l, v, c, act]) => html`<div class="wkkpi" ${act ? raw(`data-act="${act}"`) : ''}><span class="lbl">${l}</span><b style="${c ? `color:${tone(c)}` : ''}">${v}</b></div>`)}</div>`);
+  const box = (title, sub, body, right = '', cls = 'card wkbox') => html`<div class="${cls}"><div class="wkhead"><div><h3 class="wkttl">${iconFor(title)}${title}</h3>${sub ? html`<span class="mut sm">${sub}</span>` : ''}</div><div class="sp"></div>${right}</div>${body}</div>`;
 
   // Las reuniones de los proyectos donde le toca estar a esta persona (próximos 30 días).
   function myMeetings() {
@@ -166,7 +167,7 @@ export async function render(el, { me, sub, alive }) {
     loadAgenda();
     const ps = content.filter((c) => c.kind === 'post' && c.date >= T0 && c.date <= T7 && c.status !== 'Publicado').sort((a, z) => a.date.localeCompare(z.date));
     return box('Agenda y contenido', 'Hoy · próximos 7 días', html`${agenda.length ? agenda.slice(0, 4).map((e) => html`<a class="wkrow" href="${/^https:\/\//.test(e.link || '') ? e.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="wkt">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="grow">${e.summary}</span>${e.meet ? html`<span class="mut sm">Meet</span>` : ''}</a>`) : html`<div class="mut sm" style="padding:4px 0">Sin reuniones hoy.</div>`}
-      ${ps.slice(0, 4).map((p) => html`<a class="wkrow" href="#/content/postear/${p.profile}"><span class="wkt" style="background:#f1eadf">${fdate(p.date)}</span><span class="grow">${p.title}<span class="mut sm"> · ${p.profile}</span></span></a>`)}`);
+      ${ps.slice(0, 4).map((p) => html`<a class="wkrow" href="#/content/postear/${p.profile}"><span class="wkt" style="background:var(--bg)">${fdate(p.date)}</span><span class="grow">${p.title}<span class="mut sm"> · ${p.profile}</span></span></a>`)}`);
   }
   function stats(k) {
     const l = tasks.filter((t) => t.assignee === k); const m = ymNow();
@@ -369,34 +370,34 @@ export async function render(el, { me, sub, alive }) {
       <div><span class="lbl">Ficha de oferta</span>${!info || info.loading ? html`<span class="mut sm">Cargando…</span>` : f ? html`${f}` : html`<span class="nd">Sin fila «Pauta» en la ficha: revisa el alcance antes de prometer</span>`}</div></div>
       <div class="adsgate ${ok ? 'ok' : ''}">${ok ? html`${ico('check', 15)}<span><b style="font-weight:500">OK del CEO</b> · ${fdate(ok.at)} · ${Q(ok.budget)}/mes</span>` : html`${ico('lock', 15)}<span><b style="font-weight:500">Esperando OK del CEO</b> · sin el OK del plan y el presupuesto no se lanza nada</span>`}<div class="sp"></div>
         ${isCeo && !asP ? html`<button class="btn xs ${ok ? 'ghost' : ''}" data-act="adsOk" data-s="${sl}" data-v="${ok ? '0' : '1'}">${ok ? 'Retirar OK' : 'Dar OK'}</button>` : ''}</div>`,
-      html`<button class="btn ghost xs" data-act="encargoEdit" data-s="${sl}">Editar</button>`);
+      html`<button class="btn ghost xs" data-act="encargoEdit" data-s="${sl}">Editar</button>`, 'sp-panel');
   }
   function stepsBox(sl) {
     const a = adsAcc(sl), ok = okOf(a), camps = campsFor(sl);
     let marked = false;
     const rows = STEPS.map((s) => { let st = stepState(sl, s, camps, a, ok); if (!marked && st !== 'hecho') { marked = true; if (st === 'pend') st = 'ahora'; } return [s, st]; });
     const LBL = { hecho: ['Hecho', 'green'], curso: ['En curso', 'lime'], ahora: ['Ahora', 'dark'], espera: ['Esperando OK del CEO', 'amber'], bloq: ['Sin OK: no se lanza', 'red'], pend: ['Pendiente', ''] };
-    return box('Pasos del método', 'El flujo de ⑩ Ads · cada paso dice qué skill correr en Claude', html`<div class="adsteps">${rows.map(([[k, name, skill, sub], st]) => html`<div class="adstep ${st}"><span class="n">${k}</span><span><b style="font-weight:500">${name}</b></span>
+    return box('Pasos del método', 'El flujo de ⑩ Ads · cada paso dice qué skill correr en Claude', html`<div class="adsteps sp-steps">${rows.map(([[k, name, skill, sub], st]) => html`<div class="adstep ${st}"><span class="n">${k}</span><span><b style="font-weight:500">${name}</b></span>
       <span class="st"><span class="chip sm2 ${LBL[st][1]}">${LBL[st][0]}</span>${skill ? html`<button class="sk" data-act="skill" data-k="${skill}" data-s="${sl}" data-n="${name}" title="Abre Claude con este paso">${skill}</button>` : isCeo && !asP && !ok ? html`<button class="btn xs" data-act="adsOk" data-s="${sl}" data-v="1">Dar OK</button>` : html`<span class="sk" style="cursor:default">CEO</span>`}</span>
-      <span class="sub">${sub}</span></div>`)}</div>`, html`<span class="sm">${rows.filter(([, st]) => st === 'hecho').length}/${rows.length}</span>`);
+      <span class="sub">${sub}</span></div>`)}</div>`, html`<span class="sm">${rows.filter(([, st]) => st === 'hecho').length}/${rows.length}</span>`, 'sp-panel');
   }
   function weekBox(sl) {
     const l = open(mine()).filter((t) => isAdsT(t) && clientOf(t) === sl).sort(byDue), week = l.filter((t) => !t.due || t.due <= T7);
     return box('Esta semana', 'Tus tareas de ⑩ Ads con su fecha · entrega desde aquí', week.length ? html`${week.slice(0, 8).map((t) => html`<div class="wkrow"><span class="grow" data-act="deliver" data-id="${t.id}"><b style="font-weight:500">${t.title}</b></span>${tDue(t)}${tSt(t)}<button class="btn xs" data-act="deliver" data-id="${t.id}">${status(t) === 'En revisión' ? 'Ver' : 'Entregar'}</button></div>`)}${l.length > week.length ? html`<div class="mut sm" style="padding:6px 0">+ ${l.length - week.length} más adelante</div>` : ''}`
-      : html`<div class="mut sm" style="padding:6px 0">Nada de ⑩ Ads esta semana para este cliente.</div>`, html`<button class="btn ghost xs" data-act="adsTask" data-s="${sl}">+</button>`);
+      : html`<div class="mut sm" style="padding:6px 0">Nada de ⑩ Ads esta semana para este cliente.</div>`, html`<button class="btn ghost xs" data-act="adsTask" data-s="${sl}">+</button>`, 'sp-panel');
   }
   function campsBox(sl) {
     const l = campsFor(sl).sort((a, z) => String(z.from || '').localeCompare(String(a.from || ''))), P = Object.fromEntries(CAMP_PLATS);
     return box('Campañas', campsOn === false ? 'Se guardan como tareas de ⑩ Ads mientras se habilita la colección «campaigns»' : 'Lo que está armado y corriendo · nombre, plataforma, estado, presupuesto diario y fechas',
       campaigns === null && !l.length ? html`<p class="loading sm">Cargando…</p>` : l.length ? html`<div class="camps"><table class="wktable"><thead><tr><th>Campaña</th><th>Plataforma</th><th>Estado</th><th class="n">Diario</th><th>Desde</th><th>Hasta</th></tr></thead><tbody>
         ${l.map((c) => html`<tr class="click" data-act="campEdit" data-id="${c.id}" data-s="${sl}"><td><b style="font-weight:500">${c.name}</b>${c.objective ? html`<div class="mut sm">${c.objective}</div>` : ''}</td><td>${P[c.platform] || c.platform || '—'}</td><td><span class="chip sm2 ${c.status === 'Activa' ? 'lime' : c.status === 'Pausada' ? 'amber' : c.status === 'Terminada' ? 'green' : ''}">${c.status || 'Borrador'}</span></td><td class="n">${c.daily ? Q(c.daily) : '—'}</td><td>${c.from ? fdate(c.from) : '—'}</td><td>${c.to ? fdate(c.to) : '—'}</td></tr>`)}</tbody></table></div>`
-      : html`<div class="mut sm" style="padding:6px 0">Sin campañas registradas. Cuando <b>ad-estructura</b> las arme, anótalas aquí; «Activa» solo con el OK del CEO.</div>`, html`<button class="btn xs" data-act="campNew" data-s="${sl}">+ Campaña</button>`);
+      : html`<div class="mut sm" style="padding:6px 0">Sin campañas registradas. Cuando <b>ad-estructura</b> las arme, anótalas aquí; «Activa» solo con el OK del CEO.</div>`, html`<button class="btn xs" data-act="campNew" data-s="${sl}">+ Campaña</button>`, 'sp-panel');
   }
   function learnBox(sl) {
     loadPauta(sl); const pi = pautaInfo[sl];
     return box('Aprendizaje', 'Lo que dejó el ciclo anterior · aprendizaje-de-pauta.md del cliente', !pi || pi.loading ? html`<p class="loading sm">Cargando…</p>` : pi.error ? html`<div class="mut sm">${pi.error}</div>`
       : pi.aprendizaje ? html`<div class="adslearn">${md(pi.aprendizaje)}</div>` : html`<div class="mut sm" style="padding:6px 0">Todavía no hay <code>aprendizaje-de-pauta.md</code> para este cliente. Lo escribe <b>ad-loop</b> al cerrar el ciclo (revisión del 20).</div>`,
-      pi && !pi.loading && !pi.error ? html`<span class="mut sm">${pi.plan ? 'plan ✓' : 'sin plan'} · ${pi.reporte ? 'reporte ✓' : 'sin reporte'}</span>` : '');
+      pi && !pi.loading && !pi.error ? html`<span class="mut sm">${pi.plan ? 'plan ✓' : 'sin plan'} · ${pi.reporte ? 'reporte ✓' : 'sin reporte'}</span>` : '', 'sp-panel sp-read');
   }
   const cuentasBox = (slugs) => box('Cuentas de pauta', 'Por cliente: abre su Ads Manager directo', slugs.length ? html`${slugs.map((sl) => { const a = adsAcc(sl);
     return html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="adsplat">${ADS.map(([k, l, url]) => a[k] ? html`<a class="adsp" href="${url(a[k])}" target="_blank" rel="noopener noreferrer"><span class="ailogo sm">${LOGO[k]}</span>${l} ↗</a>` : html`<span class="adsp off"><span class="ailogo sm">${LOGO[k]}</span>${l}</span>`)}</div>
@@ -538,7 +539,7 @@ export async function render(el, { me, sub, alive }) {
     const list = sel ? tasks.filter((t) => t.assignee === personSel).sort((a, z) => (status(a) === 'Hecha') - (status(z) === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9'))) : [];
     mount(b, html`<div class="wkgrid">${people().map((p) => { const k = keyOf(p), s = stats(k), pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
       return html`<div class="card wkbox" data-act="person" data-k="${k}" style="cursor:pointer;${personSel === k ? 'outline:2px solid var(--ink)' : ''}"><div class="row">${av(k, 36)}<div class="grow"><b style="font-weight:500">${p.name}</b><div class="mut sm">${(p.roles || []).map(roleName).join(' · ') || p.title || ''}</div></div><i class="dot" style="background:${s.dot}"></i></div>
-        <div class="row" style="margin-top:10px"><b style="font-size:22px;font-weight:400">${s.done}<span class="mut sm">/${s.total}</span></b><div class="sp"></div><span class="sm" style="${s.late ? 'color:#654c38;font-weight:700' : ''}">${s.late ? s.late + ' atrasadas' : 'Al día'}</span></div><div class="wkprog"><i style="width:${pct}%"></i></div></div>`; })}</div>
+        <div class="row" style="margin-top:10px"><b style="font-size:22px;font-weight:400">${s.done}<span class="mut sm">/${s.total}</span></b><div class="sp"></div><span class="sm" style="${s.late ? 'color:var(--warn);font-weight:700' : ''}">${s.late ? s.late + ' atrasadas' : 'Al día'}</span></div><div class="wkprog"><i style="width:${pct}%"></i></div></div>`; })}</div>
       ${sel ? html`<div class="sec-title"><h2>Tareas de ${sel.name}</h2><button class="btn ghost xs" data-act="assignTo">+ Asignarle</button></div><div class="card wkbox">${list.length ? list.map((t) => trow(t)) : html`<div class="mut sm">Sin tareas.</div>`}</div>` : ''}`);
   }
 

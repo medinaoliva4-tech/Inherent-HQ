@@ -239,7 +239,7 @@ export async function render(el, { me, sub, alive }) {
         try { const r = await api('google/drive', { method: 'POST', body: { ...v, folder: f.drive } }); toast('Creado en tu Drive'); if (r.link) window.open(r.link, '_blank', 'noopener'); drive = null; paint(); loadDrive(); } catch (e) { toast(e.message, true); } },
       dfile: (t) => { const x = drive.files.find((y) => y.id === t.dataset.id); const em = /folder/.test(x.mime) ? null : `https://drive.google.com/file/d/${x.id}/preview`;
         drawer(html`<div class="row"><span class="ftype" style="background:${MIME(x.mime)[1]}">${MIME(x.mime)[0]}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${x.name}</h2><div class="mut">${x.owner || ''}${x.modified ? ' · ' + fdate(x.modified.slice(0, 10)) : ''}</div>
-          ${em ? html`<iframe src="${em}" style="width:100%;height:58vh;border:0;border-radius:18px;margin-top:16px;background:#fdfaf3" loading="lazy"></iframe>` : ''}
+          ${em ? html`<iframe src="${em}" style="width:100%;height:58vh;border:0;border-radius:18px;margin-top:16px;background:var(--surface)" loading="lazy"></iframe>` : ''}
           <a class="btn" href="${x.link}" target="_blank" rel="noopener noreferrer" style="margin-top:16px;text-decoration:none;display:inline-flex">Abrir en Drive ↗</a>`); },
     });
     paint();

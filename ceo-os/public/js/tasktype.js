@@ -50,4 +50,4 @@ export function tipoChips(sel, act, tasks = []) {
   return html`<div class="row" style="gap:6px;flex-wrap:wrap;align-items:center"><span class="mut sm" style="margin-right:2px">Tipo</span>
     ${[['todos', 'Todos'], ...TIPOS].map(([k, l]) => html`<button class="chip ${(sel || 'todos') === k ? 'dark' : ''}" data-act="${act}" data-tp="${k}" style="padding:6px 12px;font-size:12px">${l}${k === 'todos' ? '' : html` <span class="mut">${n(k)}</span>`}</button>`)}</div>`;
 }
-export const tipoBadge = (t) => (tipoOf(t) ? html`<span class="chip sm2" style="margin-left:6px;${t.tipo === 'Personal' ? 'background:#e9ded0' : ''}">${t.tipo}</span>` : '');
+export const tipoBadge = (t) => (tipoOf(t) ? html`<span class="chip sm2" style="margin-left:6px;${t.tipo === 'Personal' ? 'background:var(--fill-2)' : ''}">${t.tipo}</span>` : '');

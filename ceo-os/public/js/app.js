@@ -34,7 +34,18 @@ const ALIAS = { services: 'sales' };
 const root = $('#root');
 const SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>';
 const MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
-const setTheme = (dark) => { if (dark) document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme; };
+const setTheme = (dark) => { if (dark) document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme; document.querySelector('meta[name=theme-color]')?.setAttribute('content', dark ? '#15110e' : '#f1eadf'); };
+// El indicador de la sección activa: una píldora que se desliza hasta el botón activo (sin animar la primera vez).
+function moveInd() {
+  const nav = $('.nav'); if (!nav) return;
+  let ind = nav.querySelector('.nav-ind'); if (!ind) { ind = document.createElement('span'); ind.className = 'nav-ind'; ind.setAttribute('aria-hidden', 'true'); nav.prepend(ind); }
+  const on = nav.querySelector('[data-go].on');
+  if (!on) { ind.style.opacity = '0'; return; }
+  ind.style.width = on.offsetWidth + 'px'; ind.style.transform = `translateX(${on.offsetLeft}px)`; ind.style.opacity = '1';
+  if (!ind.classList.contains('ready')) requestAnimationFrame(() => requestAnimationFrame(() => ind.classList.add('ready')));
+}
+addEventListener('resize', () => requestAnimationFrame(moveInd));
+document.fonts?.ready.then(() => moveInd());
 try { setTheme(localStorage.getItem('theme') === 'dark'); } catch {}
 export let me = null;
 let renderGen = 0;
@@ -96,7 +107,7 @@ function paintSub(key) {
 // Dónde abre: «Workspace» (la cola de siempre) hoy es Hoy → sus responsabilidades.
 const landing = () => { const st = me.start === 'work' && me.areas.includes('home') ? 'home' : me.start; return me.areas.includes(st) ? st : me.areas.includes('home') ? 'home' : me.areas[0]; };
 const sees = (a) => me.areas.includes(ALIAS[a] || a) || (CEO_ONLY.includes(a) && me.role === 'ceo');
-const markNav = () => { const a = hashNow().split('/')[0]; const key = sees(a) ? a : landing(); const g = groupFor(key); $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === g)); paintSub(key); };
+const markNav = () => { const a = hashNow().split('/')[0]; const key = sees(a) ? a : landing(); const g = groupFor(key); $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === g)); paintSub(key); moveInd(); };
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); mount($('.nav'), navHtml()); markNav(); const a = location.hash.replace(/^#\/?/, '').split('/')[0]; if (!sees(a) && a !== 'me') render(); });
 
 function shell() {
@@ -130,7 +141,7 @@ async function render() {
   if (area && key !== area) { history.replaceState(null, '', '#/' + key); rest = []; }
   const g = groupFor(key);
   $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === g));
-  paintSub(key);
+  paintSub(key); moveInd();
   $('#avatar')?.classList.toggle('on', key === 'me');
   // En cel, la barra de abajo se desliza hasta la sección actual (solo la barra: scrollIntoView movía toda la página en iOS).
   { const nav = $('.nav'), on = $('.nav [data-go].on'); if (nav && on && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: on.offsetLeft - (nav.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' }); }

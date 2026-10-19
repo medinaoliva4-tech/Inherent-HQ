@@ -191,7 +191,7 @@ export async function render(el, { me, sub, alive }) {
         ${list.map((t) => { const who = person(t.assignee); const late = t.due && t.due < today() && t.status !== 'Hecha';
           return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${tipoBadge(t)}${visLabel(t) ? html` <span class="mut sm">${visLabel(t)}</span>` : ''}${t.sop ? html` <span class="mut sm" title="Tiene SOP">${ico('doc', 13)}</span>` : ''}${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}${t.dept ? ' · ' + t.dept : ''}</td>
             <td>${who ? html`<span class="av" style="background:${who.color || '#735741'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="mut sm">—</span>`}</td>
-            <td style="${late ? 'color:#654c38;font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
+            <td style="${late ? 'color:var(--warn);font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
       </tbody></table></div>` : html`<div class="empty"><b>Sin tareas aquí</b>${emptyMsg}</div>`;
   }
 
