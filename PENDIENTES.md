@@ -17,8 +17,7 @@
 | 5 | **Reposición gratis en las garantías** | El costo se calculó con la economía anterior: recalcular con los costos de los 3 niveles o descartar |
 | 6 | **El margen de rodaje de cada ficha** | Las horas contratadas son tiempo de cámara; ⑤ usa márgenes de referencia (60-90 / 30-45 / 45 min) mientras no se decida |
 | 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de ⑧. **`ceo-os/` va a Vercel (autorizado por el CEO):** la regla de CLAUDE.md ya lo contempla |
-| 8 | **La garantía de leads como promesa comercial** | Hoy es **meta interna**: ② `gr-captura` fija un objetivo de leads por mes y lo mide, pero no se promete al cliente ni va en una propuesta. Decidir si se vuelve garantía, con qué número y con qué condiciones, cuando haya datos de varios ciclos |
-| 9 | **La recompensa de referidos** | Para quien refiere *(cliente o tercero)*. Sin esto no se puede construir el sistema de referidos *(Construir #13)* |
+| 8 | **La recompensa de referidos** | Para quien refiere *(cliente o tercero)*: qué, cuánto, para quién y cuándo se entrega. Sin esto `gr-referidos` queda `BLOQUEADO` *(Construir #13)* |
 
 ---
 
@@ -38,7 +37,7 @@
 | 10 | **Cerantola: pasar lo básico a Figma** | Colores, fuentes y logos de `clients/cerantola/02-marca/sistema-visual.md` a la página «Cerantola». Lo complejo de la marca se diseña ahí |
 | 11 | **Cerantola: mejorar con IA las fotos del PDF** | Vienen en baja resolución. Se retocan con Higgsfield según las reglas de § Imagen |
 | 12 | **Cerantola: crear su perfil de Google Maps** | No existe, y al buscar «Cerantola» aparece Cerantola S.p.A. de Italia. Con su nombre, fotos de proyectos y reseñas de clientes. Ver `clients/cerantola/99-referencias/investigacion/referentes-por-canal.md` § Google |
-| 13 | **Sistema de referidos** *(para después)* | Para Inherent y como servicio, con plataformas externas. Falta decidir la recompensa *(Decisiones #9)*. Hoy no existe ni como skill ni como receta de ② Growth |
+| 13 | **Sistema de referidos: la plataforma** | La skill `gr-referidos` ya existe. Falta la recompensa *(Decisiones #8)* y elegir la plataforma externa que ocupa el slot, probada en una cuenta real antes de anotarla en `inherent/05-OPERACION.md` |
 
 ---
 
@@ -158,6 +157,23 @@
 | 11 | **Objetivo de crecimiento medible que se reporta** *(sin garantía de resultado)* | Reemplaza las metas Nx por plan |
 | 12 | **Umbrales para calificar al cliente por nivel** | Hoy se calculan con los números reales de cada propuesta; decidir si se fija un criterio de facturación mínima |
 | 13 | **Volumen de investigación (scraping) por ficha** | Cuántos contenidos por plataforma según la ficha |
+
+## 🧩 Definir para las skills nuevas
+
+> Las skills ya corren sin estas cifras: donde falta una, se declara y no se inventa. Cuando el CEO
+> decide un punto, entra a la skill y se borra de aquí.
+
+| # | Skill | Qué definir |
+|---|---|---|
+| 1 | `cr-estructura-reel` | La duración objetivo por esqueleto, si se quiere una distinta de la del canal · si se agrega un «re-gancho» a mitad del body como regla |
+| 2 | `cr-estructura-story` | **¿Una «story» de la ficha es un frame o una secuencia?** *(`mk-calendario` cuenta «stories ≤ el techo» sin decirlo)* · cuántos frames como máximo por secuencia |
+| 3 | `cr-fuentes` | La ventana de recencia del orgánico, en días: hasta cuántos días atrás cuenta un contenido como «reciente» |
+| 4 | `gr-referidos` | La recompensa *(Decisiones #8)* · qué plataforma externa ocupa el slot *(Construir #13)* |
+| 5 | `gr-funnel` | Cuántos toques por defecto tiene la secuencia de nutrición y cada cuánto, si se quiere un estándar de arranque |
+| 6 | `gr-producto` | Cada cuánto se revisa el tablero de productos *(¿cada ciclo o cada trimestre?)* · qué cuenta como «señal repetida» para lanzar |
+| 7 | `mk-busqueda` | Si se ofrece SEO técnico u optimización de la web *(cambia primero `inherent/07-COMUNICACION.md` § 7 y el área 4 de `03-OFERTA.md`)* · si el blog de la web entra como formato y con qué volumen |
+| 8 | `mk-podcast` | La cadencia de episodios y cuántos clips mínimos por episodio · si el podcast de Inherent se activa y en qué plataforma |
+| 9 | `mk-calendario` · `mk-pilares` | Si se quiere un porcentaje de arranque por nivel de consciencia en la mezcla del ciclo *(a definir por el CEO; hoy la regla es cubrir los niveles que la estrategia necesita, sin cifra)* |
 
 
 ---

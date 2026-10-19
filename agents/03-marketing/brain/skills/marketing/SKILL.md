@@ -4,7 +4,8 @@ description: >
   Orquestador del departamento ③ Marketing de Inherent. Es la puerta de entrada: lee el pedido,
   verifica el pre-flight, decide qué capas correr y llama a las skills `mk-*` en orden, con la
   auto-revisión de cada capa. Úsala SIEMPRE que el pedido tenga que ver con el plan del ciclo, campañas,
-  jerarquía de mensaje, pilares de contenido, plan por canal, calendario de slots, cadencia, o
+  jerarquía de mensaje, pilares de contenido, plan por canal, búsqueda (SEO de contenido, GEO,
+  Google Business), podcast, calendario de slots, cadencia, o
   cerrar el mes de marketing. Se dispara con "armá el plan del mes de X", "qué campaña corremos",
   "cuántas piezas por canal", "el calendario del ciclo", "qué pilares trabajamos", "qué rindió el
   mes pasado". Requiere que exista la estrategia de ① Strategy: si no existe, BLOQUEA.
@@ -49,6 +50,8 @@ estrategia vigente: **un archivo que existe se toma como aprobado.**
 | *«qué decimos primero»*, *«el mensaje»* | `mk-mensaje` |
 | *«qué pilares»*, *«el sistema de contenido»* | `mk-pilares` |
 | *«qué hace cada canal»*, *«dónde publicamos»* | `mk-canales` |
+| *«SEO»*, *«GEO»*, *«que nos encuentren en Google»*, *«Google Business»* | `mk-busqueda` — solo si la ficha incluye búsqueda o Google |
+| *«podcast»*, *«clips del podcast»*, *«entrevistas»* | `mk-podcast` — solo si la ficha lo incluye |
 | *«el calendario»*, *«cuántas piezas»* | `mk-calendario` |
 | *«qué rindió»*, *«cerrá el mes»* | `mk-loop` |
 
@@ -70,3 +73,4 @@ control de calidad lo hace el CEO en persona. El CEO solo frena el flujo en ① 
 - [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Nivel:`** completa
 - [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ a la medida, **se sigue Su pipeline**
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla
+- [ ] `mk-busqueda` y `mk-podcast` corrieron **solo si la ficha los incluye**

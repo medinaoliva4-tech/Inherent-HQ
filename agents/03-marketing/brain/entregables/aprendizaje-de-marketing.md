@@ -22,7 +22,7 @@
 | Canal | Su métrica | Resultado | Decisión |
 |---|---|---|---|
 
-### Por awareness
+### Por nivel de consciencia
 *¿Le hablamos al nivel correcto, o solo exprimimos a los que ya nos conocían?*
 
 ## C · Qué cambia el próximo ciclo

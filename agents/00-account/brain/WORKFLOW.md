@@ -24,6 +24,8 @@ en el onboarding y lo anota ① Strategy en `clients/<cliente>/00-onboarding/pla
   **Nunca `inherent/06-ECONOMIA.md`:** ni costos, ni márgenes, ni precio (§3 y §4).
 - 🛑 **Nunca promete resultados garantizados.** Se promete un camino, un sistema y medición;
   no «te vamos a subir las ventas X».
+- 🛑 **Nunca promete un número de leads.** Los leads son una meta interna: no se le prometen al
+  cliente. Si pregunta cuántos va a recibir, **lo escala al CEO** *(`inherent/03-OFERTA.md` → «🎯 Los leads»)*.
 
 **Cómo se lo cuenta al cliente — solo en lenguaje de cliente:**
 

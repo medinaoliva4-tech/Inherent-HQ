@@ -39,7 +39,7 @@ Contexto del departamento: `agents/01-strategy/brain/WORKFLOW.md`.
 | # | Bloque | Qué responde |
 |---|---|---|
 | **1** | **Qué vendemos este ciclo** | **Una** oferta o producto a empujar, citado de lo que ya existe. 🛑 En Brand Growth **no se cambia la oferta**: se elige cuál de las que ya existen se cuenta |
-| **2** | **A quién** | **Una** persona concreta *(no un segmento)*: qué quiere, qué le duele y cómo lo dice. Con su **lenguaje literal** |
+| **2** | **A quién** | **Una** persona concreta *(no un segmento)*: qué quiere, qué le duele y cómo lo dice. Con su **lenguaje literal** y **los 3 dolores del ciclo**, cada uno con su cita literal o `⚠️ SIN DATOS` *(si `aprendizaje-creativo.md` dice qué dolor ganó el ciclo anterior, ese va primero)* |
 | **3** | **Qué queremos que haga** | **Una sola acción** medible: seguir, escribir por WhatsApp, reservar, comentar una palabra. Si son tres, no es brief |
 | **4** | **Qué queremos que sienta** | **Una** emoción dominante *(alivio, orgullo, curiosidad, pertenencia)*, con la razón de por qué mueve a esa persona |
 | **5** | **Cómo se comunica** | Tres líneas: **palabras** · **visual** · **ideas creativas** *(ver §3)* |
@@ -115,7 +115,8 @@ máximo cinco líneas.
 - [ ] Cabe en **una página** y trae los siete bloques
 - [ ] **Una** oferta, **una** persona, **una** acción, **una** emoción
 - [ ] La oferta está **citada** de lo que ya existe; en Brand Growth no se tocó
-- [ ] La persona trae **lenguaje literal** *(o `⚠️ SIN DATOS`)*
+- [ ] La persona trae **lenguaje literal** *(o `⚠️ SIN DATOS`)* y **los 3 dolores del ciclo**, cada uno con su cita
+- [ ] Pasa la ficha **«7 · Brief de comunicación»** de `inherent/08-CRITERIOS-DE-ACEPTACION.md`
 - [ ] Palabras, visual e ideas creativas traen **ejemplo**, no adjetivos
 - [ ] Máximo **dos principios** de `psicologia-de-venta.md`, nombrados
 - [ ] El bloque 6 tiene **máximo cinco búsquedas** y cada una remite a una decisión del bloque 5

@@ -3,7 +3,7 @@ name: mk-mensaje
 description: >
   Capa 2 de ③ Marketing — la jerarquía de mensaje del ciclo: qué se dice primero, qué segundo y
   qué no se dice. Es la ley del ciclo y ④ Creatividad la copia tal cual, así que define el orden
-  de prioridad, el mensaje por nivel de awareness y las objeciones que el ciclo responde. Úsala
+  de prioridad, el mensaje por nivel de consciencia y las objeciones que el ciclo responde. Úsala
   cuando pidan "qué decimos primero", "cuál es el mensaje del mes", "qué objeciones atacamos",
   "ordená los mensajes". Requiere la campaña definida.
 ---
@@ -32,21 +32,21 @@ no suma: se siente como contenido suelto, no como una campaña.
 
 🛑 **Dos mensajes madre son cero mensajes madre.**
 
-## 3 · El mensaje por awareness
+## 3 · El mensaje por nivel de consciencia
 
 **El mensaje madre no se dice igual a quien no sabe que tiene el problema que a quien ya nos
 conoce.** Acá se escribe cada versión — ④ Creatividad la usa para fijar el ángulo de cada pieza.
 
-| `awareness` | Qué se le dice |
+| `consciencia` | Qué se le dice |
 |---|---|
-| **Unaware** | Que el problema existe y le está costando algo |
-| **Problem aware** | Que hay una forma de resolverlo |
-| **Solution aware** | **Por qué esta forma y no otra** — acá entra el mecanismo único |
-| **Product aware** | Prueba, diferencia, respuesta a la objeción |
-| **Most aware** | La oferta y por qué ahora |
+| **1 · Inconsciente** | **Su vida, el síntoma** que ya siente — sin nombrar todavía el problema |
+| **2 · Consciente del problema** | **El problema, con nombre** — y que tiene solución |
+| **3 · Consciente de la solución** | **Por qué esta forma y no otra** — acá entra el mecanismo único |
+| **4 · Consciente del producto** | **Por qué tú:** prueba, diferencia, respuesta a la objeción |
+| **5 · Listo para comprar** | **La acción y la oferta:** urgencia real, garantía si la hay, CTA directo |
 
 > 🛑 **No hace falta cubrir los cinco.** Se cubren los que el ciclo va a trabajar, según dónde
-> esté el negocio. Un negocio invisible no tiene gente `Most aware`.
+> esté el negocio. Un negocio invisible no tiene gente `Listo para comprar`.
 
 ## 4 · Las objeciones
 
@@ -79,7 +79,7 @@ cliente dice que le dicen— no de la imaginación.
 | **A · Mensaje madre** | Una frase |
 | **B · Soportes** | 2 o 3, cada uno con la prueba que lo sostiene |
 | **C · Secundarios** | Lo que se cae primero |
-| **D · Por awareness** | El mensaje madre en las versiones que el ciclo trabaja |
+| **D · Por nivel de consciencia** | El mensaje madre en las versiones que el ciclo trabaja |
 | **E · Objeciones** | Las 2-3 que se atacan, con fuente |
 | **F · Lo que NO se dice** | Explícito |
 
@@ -90,7 +90,7 @@ la jerarquía se auto-revisan acá, antes de que se arme un solo slot.
 
 - [ ] Hay **un** mensaje madre, no dos
 - [ ] Los soportes tienen prueba, no adjetivos
-- [ ] Las versiones por awareness cubren los niveles que el ciclo trabaja
+- [ ] Las versiones por nivel de consciencia cubren los niveles que el ciclo trabaja
 - [ ] Las objeciones salen de ① Strategy, **con fuente**
 - [ ] **Lo que NO se dice** está escrito
 - [ ] Ningún mensaje promete algo fuera de «Capacidades reales»

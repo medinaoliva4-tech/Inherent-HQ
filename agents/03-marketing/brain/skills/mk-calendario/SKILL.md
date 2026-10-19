@@ -25,7 +25,7 @@ description: >
 
 ```
 id_slot · semana · canal · formato · pilar · funcion · temperatura
-         · awareness · balance · objetivo_del_slot · traza
+         · consciencia · balance · objetivo_del_slot · traza
          [· etapa · captura]        ← opcionales, al final (§ 1B)
 ```
 
@@ -36,10 +36,43 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 | `semana` | **Número, nunca un día.** `1` · `2` · `3` · `4`. El día lo pone ④ Creatividad |
 | `funcion` | Solo los 6 valores. **La que su canal tiene asignada en `plan-por-canal.md`** |
 | `temperatura` | 4 valores, `Cliente` incluido |
-| `awareness` | 5 valores, **escritos literal** |
+| `consciencia` | 5 valores, **escritos literal** *(§ 1A)* |
 | `balance` | `Marca` o `Activación` |
 | `objetivo_del_slot` | **Específico.** *«Responder la objeción del precio»*, no *«generar awareness»* |
 | `traza` | **La letra de una MUST BE TRUE.** Sin esto el slot no existe |
+
+---
+
+## 1A · `consciencia` — los 5 niveles de consciencia *(Eugene Schwartz)*
+
+**Qué sabe la persona del problema y de nosotros.** Cada slot lleva su nivel **además** de su
+`etapa`: no la reemplaza.
+
+| # | `consciencia` | Qué sabe | De qué se le habla |
+|---|---|---|---|
+| **1** | `Inconsciente` | No sabe que tiene el problema | **De su vida, del síntoma** que ya siente |
+| **2** | `Consciente del problema` | Sabe el problema, no la solución | **Del problema, con nombre** |
+| **3** | `Consciente de la solución` | Conoce el tipo de solución, no las marcas | **De por qué esta forma de resolverlo** |
+| **4** | `Consciente del producto` | Te conoce, no está convencido | **De por qué tú:** prueba y diferencia |
+| **5** | `Listo para comprar` | Convencido, no compró | **De la acción y la oferta:** urgencia real, garantía, CTA directo |
+
+*(Son los niveles de Schwartz: Unaware · Problem aware · Solution aware · Product aware · Most aware.)*
+
+**Cómo se relaciona con `etapa`** — es una guía, no una regla rígida:
+
+| `etapa` | Niveles que suele cubrir |
+|---|---|
+| `TOF` | 1-2 |
+| `MOF` | 3-4 |
+| `BOF` | 5 |
+
+🔑 **La etapa dice dónde está la pieza en el embudo; la consciencia decide el gancho y el mensaje**
+*(④ Creatividad: `cr-hook-copy` § 1B)*. Un `TOF` que le habla a un `Consciente de la solución` es
+válido: se declara y se sigue.
+
+🛑 **La mezcla del ciclo cubre los niveles que la estrategia necesita.** Si ① Strategy dice que
+nadie sabe que tiene el problema, un calendario solo de `Listo para comprar` exprime a los pocos que
+ya llegaron y no crece. Los niveles que no se cubren se dicen y se explica por qué.
 
 ---
 
@@ -52,9 +85,9 @@ usan, van **al final** y se llenan con estas reglas.
 
 | Valor | Qué busca | Equivale a |
 |---|---|---|
-| **`TOF`** | Que alguien **te conozca** | `Frío` · `TOFU` de ④ `cr-brief` |
-| **`MOF`** | Que **confíe** | `Tibio` · `MOFU` |
-| **`BOF`** | Que **compre o escriba** | `Caliente` · `BOFU` |
+| **`TOF`** | Que alguien **te conozca** | `Frío` · `TOFU` de ④ `cr-brief` · consciencia 1-2 *(guía, § 1A)* |
+| **`MOF`** | Que **confíe** | `Tibio` · `MOFU` · consciencia 3-4 |
+| **`BOF`** | Que **compre o escriba** | `Caliente` · `BOFU` · consciencia 5 |
 | *(vacío)* | ④ Creatividad la deriva de la `funcion`, como hoy | — |
 
 🛑 **Nunca contradice a `temperatura` ni a `funcion`:**
@@ -156,7 +189,7 @@ de negocio asignado.**
 |---|---|
 | `balance = Marca` + slot que pide CTA de conversión | ④ Creatividad deriva el CTA del balance. Se contradice |
 | `funcion = Community` + `temperatura ≠ Cliente` | Community le habla a quien ya compró |
-| `awareness = Unaware` + `funcion = Conversion` | Le vende a quien no sabe que tiene el problema |
+| `consciencia = Inconsciente` + `funcion = Conversion` | Le vende a quien no sabe que tiene el problema |
 | Dos canales con la misma `funcion` | Ya se resolvió en la Capa 4. Si reaparece, hay un error |
 | `funcion` que el canal no tiene asignada | `plan-por-canal.md` es ley |
 
@@ -201,6 +234,7 @@ auto-revisa entero, acá, y pasa directo a ④ Creatividad.
 
 - [ ] Las **11 columnas** están completas en todas las filas *(`etapa` y `captura` son opcionales)*
 - [ ] Si hay `etapa`: **no contradice** a `funcion`, y el mix se comparó con **50/30/20** *(o se declaró por qué se aparta)*
+- [ ] Cada slot lleva su **`consciencia`**, y la mezcla del ciclo **cubre los niveles que la estrategia necesita** *(los que no, dichos y con motivo)*
 - [ ] Si hay `captura`: solo con `balance = Activación`, nombra **qué se entrega** y el % de client-getting **no pasa** del que fija la ficha
 - [ ] `semana` es un número, **nunca una fecha**
 - [ ] **Todo slot traza** a una MUST BE TRUE con su letra

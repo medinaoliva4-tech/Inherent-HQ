@@ -49,7 +49,7 @@ más redujo rondas de cambios en cliente real.
 
 ## 3 · El reparto HOOK-BODY-PAYOFF
 
-**④ Creatividad lo definió en `cr-hook-copy`. Se respeta.**
+**④ Creatividad lo definió en `cr-estructura-reel` §1 y lo escribió en `cr-hook-copy`. Se respeta.**
 
 | Bloque | Qué hace | Error típico |
 |---|---|---|

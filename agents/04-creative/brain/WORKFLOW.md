@@ -346,7 +346,7 @@ filosófico) · **guía** (la marca: Yoda, no Luke) · **plan** (3 pasos) · **l
 > 🛑 **El error #1 del contenido de marca es ponerse de héroe.**
 > En pieza corta se ataca el **problema interno**: ❌ *"tu feed está feo"* → ✅ *"te da pena mandarle
 > tu Instagram a un cliente"*.
-> **1 transformación por pieza.** El arco completo cabe en un Reel de 30 s.
+> **1 transformación por pieza.** El arco completo cabe en un Reel de 30 s *(reparto: `cr-estructura-reel` §1)*.
 
 ✅ **Auto-revisión con el QA de `cr-storytelling`, y sigue.** Es la que más pesa: hook, copy, layout,
 tomas y estética derivan de acá. Un concepto equivocado se multiplica por 20 filas.
@@ -360,10 +360,14 @@ bold claim · story/tease) → **frame 1 visual** → estructura con timing → 
 
 ```
 0-3s    HOOK     gancho, texto exacto, legible en mute
-4-15s   BODY     el por qué, los ejemplos
-16-45s  PAYOFF   el fix, el cierre del gap, la prueba
-~5s     CTA      la acción, según la etapa
+        BODY     el por qué, los ejemplos
+        PAYOFF   el fix, el cierre del gap, la prueba
+        CTA      la acción, según la etapa
 ```
+
+**El tiempo de cada tramo y el esqueleto del reel: `cr-estructura-reel`** *(el único reparto
+oficial)*. **La secuencia de una story: `cr-estructura-story`.** Las dos corren aquí, entre la
+historia y el texto exacto.
 
 **`guion` ≠ `copy`.** El guion es **lo que se dice**; el copy es **lo que se ve**. Son dos cosas
 distintas y las dos se entregan literales. Si el formato no lleva voz: `N/A — formato estático`.
@@ -401,6 +405,8 @@ todos lados el algoritmo lo penaliza.
 
 ✅ **El Excel del ciclo cerrado.** Pasa el QA de `cr-adaptacion` y el del orquestador antes del
 handoff. Nada se libera a producción sin ese cierre.
+🛑 **Nada pasa a «Listo» sin su ficha** de `inherent/08-CRITERIOS-DE-ACEPTACION.md`: «1 · Guion de
+reel», «2 · Guion de story» y «8 · Ficha de referente».
 
 ### Capa 7 · LOOP — ¿qué patrón ganó?
 **Skill:** `cr-loop` · **Output:** `aprendizaje-creativo.md`

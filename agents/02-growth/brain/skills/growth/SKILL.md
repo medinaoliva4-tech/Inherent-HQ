@@ -9,7 +9,7 @@ description: >
   de la estrategia de ① Strategy). No para: la oferta nueva se escala al CEO antes de llevarla al cliente.
   Úsala SIEMPRE que el pedido tenga que ver con la oferta, el precio, qué oferta se empuja, canales
   grandes (eventos, mayoreo, corporativos, cuentas grandes), captura de leads (comenta-y-te-mando,
-  quiz, lead magnet, VSL, low ticket, outbound), upsells, recompra, conversión, closing,
+  quiz, lead magnet, VSL, low ticket, outbound), el funnel, producto (qué se lanza o se retira), referidos, upsells, recompra, conversión, closing,
   herramientas a medida o los números del negocio. Se dispara con "mejorá la oferta de X", "qué
   oferta empujamos este mes", "cómo conseguimos leads", "cómo subimos el ticket", "qué canales
   grandes hay", "se nos pierden los leads", "cuánto nos deja cada producto". Requiere que la estrategia exista y la
@@ -72,9 +72,12 @@ con el negocio de otro.
 | | Brand Foundation | Brand Growth | Growth Partnership |
 |---|---|---|---|
 | `gr-oferta` | ⬜ *(sale en ① Strategy)* | 🟡 **Ligero** — qué ofertas se empujan | ✅ |
+| `gr-producto` | ⬜ *(estructura inicial del catálogo, en ① Strategy)* | ⛔ | ✅ |
 | `gr-captura` | ⬜ | ⛔ | ✅ |
+| `gr-funnel` | ⬜ | ⛔ | ✅ |
 | `gr-canales-grandes` | ⬜ | ⛔ | ✅ |
 | `gr-upsells` | ⬜ | ⛔ | ✅ |
+| `gr-referidos` | ⬜ | ⛔ | ✅ si la ficha incluye el área 8 · Inherent: sí |
 | `gr-conversion` | ⬜ | ⛔ | ✅ |
 | `gr-herramienta` | ⬜ | ⛔ | ✅ según la ficha |
 | `gr-numeros` | ⬜ | ⬜ | ✅ según la ficha |
@@ -91,6 +94,9 @@ con el negocio de otro.
 | *«armá el motor de X»*, onboarding | **Las que el alcance activa, en orden** |
 | *«la oferta»*, *«el precio»*, *«el empaque»*, *«qué oferta empujamos»* | `gr-oferta` |
 | *«cómo conseguimos leads»*, *«comenta y te mando»*, *«un quiz»*, *«un lead magnet»*, *«una VSL»*, *«prospectar»*, *«outbound»* | `gr-captura` |
+| *«qué producto lanzamos»*, *«esto no se vende»*, *«qué quitamos del menú»*, *«el catálogo»* | `gr-producto` |
+| *«el funnel»*, *«el embudo»*, *«dónde se cae la gente»*, *«la secuencia de correos»* | `gr-funnel` |
+| *«referidos»*, *«que nos recomienden»*, *«embajadores»* | `gr-referidos` |
 | *«eventos»*, *«mayoreo»*, *«corporativos»*, *«cuentas grandes»* | `gr-canales-grandes` |
 | *«subir el ticket»*, *«combos»*, *«membresías»*, *«recompra»* | `gr-upsells` |
 | *«se nos pierden los leads»*, *«que sepan cerrar»* | `gr-conversion` |
@@ -113,6 +119,6 @@ que escalar: elegir qué ofertas se empujan no cambia el precio ni sale al clien
 
 - [ ] Se declaró el **pre-flight** antes de producir nada, con la **línea `Nivel:`** completa
 - [ ] El ciclo **cabe en el alcance contratado** (§0 del `WORKFLOW.md`): ni de más ni de menos — y si es ⬜ a la medida, **sigue su pipeline**
-- [ ] Growth Partnership: la captura tiene **una receta principal** y su objetivo de leads es **interno**: no se prometió al cliente
+- [ ] Growth Partnership: la captura tiene **una receta principal** y su objetivo de leads es **interno**: no se prometió al cliente, pero es **compromiso operativo** — hay que traerlos *(`gr-captura` §2)*
 - [ ] Si el nivel es Brand Growth, corrió **ligero**: no se tocó qué se vende, sus paquetes ni su precio
 - [ ] **Ninguna capa se saltó**; si faltaba una, se dijo y se ofreció correrla

@@ -29,6 +29,9 @@ paso vive en las skills: `skills/README.md`.
 | **Pilar 3 · Upsells** | ⬜ | ⬜ | ✅ Diseñar y lanzar / operando solo |
 | **Conversion OS** *(ventas y conversión)* | ⬜ | ⬜ | ✅ Según la ficha: que nadie se pierda · closing · referidos y comunidad |
 | **Captura de leads** *(Capa 1B)* | ⬜ | ⬜ | ✅ Una receta principal; apoyo si la ficha lo incluye |
+| **Producto** *(qué se lanza, se mejora o se retira)* | ⬜ *(la estructura inicial del catálogo sale con la estrategia de ① Strategy)* | ⬜ | ✅ `gr-producto` |
+| **Funnel** *(el mapa de punta a punta y la nutrición)* | ⬜ | ⬜ | ✅ `gr-funnel` |
+| **Referidos** | ⬜ | ⬜ | ✅ `gr-referidos`, si la ficha incluye el área 8 |
 | **Operations OS** *(operación y organización comercial)* | ⬜ | ⬜ | 🟡 SOPs de **las áreas contratadas** |
 | **Money OS** *(finanzas vinculadas al crecimiento)* | ⬜ | ⬜ | ✅ Según la ficha: margen por producto · CAC · valor de cliente, si hay datos confiables |
 | **Herramienta a medida** | ⬜ | ⬜ | Según la ficha *(área Tecnología, datos y automatización)* |
@@ -141,11 +144,17 @@ de la profundidad completa de Growth Partnership *(o de un proyecto de Brand Fou
    1  OFERTA        Brand Growth: ligero — qué ofertas se empujan  → gr-oferta
         ▼           Growth Partnership: Pilar 1 — qué se vende y a qué precio
         ▼           🔴 la oferta nueva se escala al CEO — no para
+  1P  PRODUCTO      Growth Partnership: qué se lanza, se mejora o se retira → gr-producto
+        ▼
   1B  CAPTURA       Growth Partnership: objetivo de leads y la receta → gr-captura
+        ▼
+  1C  FUNNEL        Growth Partnership: el mapa de punta a punta   → gr-funnel
         ▼
    2  CANALES       Pilar 2 — mapear o abrir                   → gr-canales-grandes
         ▼
    3  UPSELLS       Pilar 3 — Growth Partnership solamente     → gr-upsells
+        ▼
+  3B  REFERIDOS     Growth Partnership con área 8 · Inherent    → gr-referidos
         ▼
    4  CONVERSIÓN    que nadie se pierda — Growth Partnership   → gr-conversion
         ▼
@@ -224,7 +233,7 @@ nada que escalar: no se toca el precio y no sale al cliente.
 - [ ] La **división** está identificada, de ① Strategy
 - [ ] Solo se activaron **los pilares que el alcance contratado incluye**
 - [ ] Growth Partnership: la oferta tiene **precio**, y lo aprobó el cliente · Brand Growth: **no se tocó** qué se vende, sus paquetes ni su precio
-- [ ] Growth Partnership: la captura tiene **una receta principal** y un objetivo de leads **interno**: no se prometió al cliente
+- [ ] Growth Partnership: la captura tiene **una receta principal** y un objetivo de leads **interno**: no se prometió al cliente, pero es **compromiso operativo** — hay que traerlos *(`gr-captura` §2)*
 - [ ] Cada movimiento traza a una **MUST BE TRUE**
 - [ ] Nada promete algo fuera de «Capacidades reales»
 - [ ] Growth Partnership: la oferta nueva **se escaló al CEO** antes de llegar al cliente

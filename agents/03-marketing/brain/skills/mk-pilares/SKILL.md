@@ -85,7 +85,7 @@ en 100%.**
 | **D · Lo que se descartó** | Pilares que se consideraron y no entraron, con el motivo |
 | **E · El mix de etapas y la captura** | *Opcional.* Ver § 6B |
 
-### 6B · El mix de etapas y la captura — opcional
+### 6B · El mix de etapas, consciencia y captura — opcional
 
 **Si se usa, se escribe acá y baja a las columnas opcionales `etapa` y `captura` de `mk-calendario`.**
 
@@ -96,6 +96,9 @@ en 100%.**
 | **A dónde apunta su llamada a la acción** | `directo` | Receta de `gr-captura` |
 
 - **El mix de arranque se ajusta con datos** de `aprendizaje-de-marketing.md`.
+- **Además de la etapa, la mezcla declara qué niveles de consciencia cubre** *(`mk-calendario` § 1A)*:
+  los que la estrategia necesita, según dónde está el negocio. Sin porcentaje fijo por nivel; los
+  niveles que no se trabajan este ciclo se dicen con su motivo.
 - **El `BOF` y `Conversion` se leen juntos:** `Conversion` sigue entre 10% y 25%.
 - **Cada pilar declara qué parte de sus slots son client-getting.** Un pilar entero de client-getting es un anuncio, no un pilar.
 - **En Brand Growth la llamada a la acción es `directo`:** el DM o WhatsApp del cliente, que ⑧ Community atiende cuando la ficha lo incluye.

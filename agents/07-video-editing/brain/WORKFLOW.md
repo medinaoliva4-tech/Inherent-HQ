@@ -226,3 +226,4 @@ igual que con una ficha estándar.
 - [ ] El total de piezas **entra en el techo del alcance contratado** *(en un alcance a medida, el de su pipeline)*
 - [ ] Cada pieza pasó el **QA medido** de `ve-marca` §6: hoja de revisión, temblor y color
 - [ ] Hay **master + preview** de cada pieza, y las versiones anteriores quedaron archivadas
+- [ ] 🛑 **Nada pasa a «Listo» sin su ficha** de `inherent/08-CRITERIOS-DE-ACEPTACION.md`: «5 · Video editado»

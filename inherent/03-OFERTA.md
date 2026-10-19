@@ -280,6 +280,7 @@ responsabilidades se definen por proyecto y por cliente, en la ficha de oferta.
 |---|---|
 | **Un resultado de ventas garantizado** | No controlamos precio, inventario, capacidad de atención ni cierre del cliente |
 | **Un número de seguidores** | Es la métrica que menos correlaciona con negocio |
+| **Un número de leads** | Es meta interna, no promesa — pero sí compromiso operativo *(ver «🎯 Los leads», en los compromisos)* |
 | **Un múltiplo del negocio** *(«10x»)* | El múltiplo es meta, no resultado |
 | **Cobertura editorial ni asistencia a eventos** | Dependen de terceros |
 | **Hacerse cargo de la empresa** | Sociedad financiera, RR.HH. generalista, administración diaria y operaciones ajenas al crecimiento de marca son otro proveedor |
@@ -487,6 +488,17 @@ no hay fee. **Solo existe en Growth Partnership y solo con atribución limpia.**
 
 🛑 **Brand Foundation y Brand Growth no controlan las tres palancas:** no comprometen ventas y no
 tienen performance fee. 🛑 **Atribución instalada DESPUÉS del primer gasto** = no se cobra ni se promete.
+
+## 🎯 Los leads — meta interna, compromiso operativo
+
+> **Los leads son una META INTERNA: no se le prometen al cliente. Pero es un compromiso
+> operativo: el cliente compra sabiendo que eso es lo que vamos a hacer, así que tenemos que
+> traerlos; si no, quedamos como estafa.**
+
+- 🛑 **No va en la propuesta, ni en la web, ni se llama garantía.** Lo que se compromete por escrito
+  son los tres compromisos de arriba, con sus condiciones.
+- **La meta la fija ② Growth** *(`gr-captura` §2, Growth Partnership)* y se persigue cada ciclo: si
+  la receta no llega, se cambia.
 
 ---
 

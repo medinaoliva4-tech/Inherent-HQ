@@ -13,6 +13,7 @@ INSTALAR.md                ← qué instalar en cada computadora para que corran
 
 inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── README.md              ← el índice. Empezá acá
+├── 00-PRINCIPIOS.md       ← lo que nadie rompe. Se lee al empezar toda sesión
 ├── 01-IDENTIDAD.md        quiénes somos
 ├── 02-METODO.md           cómo pensamos — los 4 sistemas
 ├── 03-OFERTA.md           qué vendemos — los 3 niveles, las 12 áreas y la ficha de oferta
@@ -20,6 +21,7 @@ inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── 05-OPERACION.md        cómo lo entregamos — roles, pipeline, calendario
 ├── 06-ECONOMIA.md         🔒 cuánto cuesta y cuánto queda
 ├── 07-COMUNICACION.md     cómo lo decimos — brief de web
+├── 08-CRITERIOS-DE-ACEPTACION.md  cuándo un entregable está bien hecho — una ficha por entregable
 ├── inherent-social-media/ Inherent como cliente — nuestras propias redes, nivel Brand Growth
 └── administracion/        skills para administrar Inherent: caja, cobros, SAT, ventas, contratos
 
@@ -105,6 +107,8 @@ Ver `inherent/05-OPERACION.md` → «El calendario del ciclo».
 
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa y sigue,
 **②B Branding valida con `br-guardian`** y el COO hace el QA final.
+✅ **Nada pasa a «Listo» sin sus criterios:** cada entregable cumple su ficha de
+`inherent/08-CRITERIOS-DE-ACEPTACION.md` antes de entregarse.
 
 🗣️ **`agents/00-account/` es el único agente que le habla al cliente.** Vive en WhatsApp,
 siempre encendido, **habla como la secretaria de Inherent** y escala lo que no puede resolver:
@@ -319,6 +323,7 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 
 | Si necesitás… | Andá a |
 |---|---|
+| Los principios — lo que nadie rompe, en una página | `inherent/00-PRINCIPIOS.md` |
 | Quiénes somos y qué nos diferencia | `inherent/01-IDENTIDAD.md` |
 | El método — los 4 sistemas y las 2 divisiones | `inherent/02-METODO.md` |
 | Los 3 niveles, las 12 áreas, la ficha de oferta y cómo se activa cada uno | `inherent/03-OFERTA.md` |
@@ -326,6 +331,7 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 | Los roles, el pipeline o el calendario | `inherent/05-OPERACION.md` |
 | 🔒 Costos, márgenes, capacidades MCP | `inherent/06-ECONOMIA.md` |
 | Copy, tono o el brief de la web | `inherent/07-COMUNICACION.md` |
+| Cuándo un entregable está bien hecho *(guion, story, carrusel, video, anuncio, brief, factura, propuesta)* | `inherent/08-CRITERIOS-DE-ACEPTACION.md` |
 | Administrar Inherent: caja, cobros, impuestos, ventas | `inherent/administracion/` |
 | Ver y operar la empresa en una web *(finanzas, sales, operations…)* | `ceo-os/README.md` |
 | Qué instalar en una computadora nueva | `INSTALAR.md` |
@@ -338,6 +344,7 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 el método** — el método es el `WORKFLOW.md`. Un hook (`.claude/hooks/enrutar.sh`) lo recuerda en
 cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, etc. directo.
 
+0. **Lee `inherent/00-PRINCIPIOS.md`.** Es obligatorio al empezar toda sesión, antes que el workflow.
 1. **Identificá el agente** que corresponde al pedido.
 2. **Leé su `brain/WORKFLOW.md` completo.** Es la única fuente de cómo trabaja.
 3. **Identificá el cliente.** Un cliente = un folder en `clients/`, con su `CLAUDE.md` como router. Nunca mezclar dos.

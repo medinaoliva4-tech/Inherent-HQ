@@ -186,8 +186,8 @@ se sustituye por otra del mismo nivel.
 - **Completa al arrancar al cliente**, y **cada mes en los días 1-3 del ciclo**, antes de que
   ④ Creatividad arme las ideas.
 - En el refresco se **conservan las cuentas que siguen vigentes**, se **reemplazan las que
-  dejaron de rendir** y se **lee de nuevo solo lo reciente**. Lo ya leído no se vuelve a pedir:
-  su ficha es la caché.
+  dejaron de rendir** y se **lee de nuevo solo lo reciente** *(cómo se reconoce: § Reciente y
+  resonancia)*. Lo ya leído no se vuelve a pedir: su ficha es la caché.
 
 ### Qué es «ganador» — cambia según sea pauta u orgánico
 
@@ -197,6 +197,31 @@ se sustituye por otra del mismo nivel.
 | **Orgánico** *(Instagram · TikTok)* | **2x o más** las vistas o interacciones **del promedio de esa cuenta** *(se guarda como `multiplicador`)* | Un número absoluto no dice nada. 2x contra su propia base sí |
 
 🛑 **Son los mismos criterios de `cr-swipe-file`**, para que nadie mida con dos reglas.
+
+### Reciente y resonancia — cómo se reconocen
+
+**Reciente** — lo que se vuelve a leer en cada refresco:
+
+| Caso | Qué cuenta como reciente |
+|---|---|
+| **Refresco mensual** | Lo publicado **después de la fecha del relevamiento anterior** *(la del registro obligatorio)* |
+| **Primera lectura de una cuenta** | Sus contenidos **del más nuevo hacia atrás**, hasta completar el cupo del nivel |
+| **Anuncios** | No aplica: en pauta manda la antigüedad *(60-90+ días corriendo)*, no la recencia |
+
+🛑 **La fecha de publicación va siempre en la ficha.** Sin fecha no se puede decir si es reciente.
+
+**Jala al ICP — la `resonancia`.** Se lee **sobre los comentarios**, contra la persona del bloque 2
+del brief de comunicación *(su lenguaje literal y sus dolores)*:
+
+| `resonancia` | Cuándo |
+|---|---|
+| **alta** | Los comentarios **repiten el dolor o el lenguaje literal** del ICP del brief, o **preguntan cómo comprar** *(precio, dónde, cómo)* |
+| **media** | Los comentarios hablan del tema, pero en términos genéricos o desde otra persona |
+| **baja** | Los comentarios son de otra audiencia, o solo emojis y etiquetas |
+
+- 🛑 **`alta` se justifica con al menos un comentario citado textual.**
+- **Sin comentarios leídos no hay `baja`:** va `⚠️ SIN DATOS`.
+- Se puntúa con la ficha **«8 · Ficha de referente»** de `inherent/08-CRITERIOS-DE-ACEPTACION.md`.
 
 ### 🛑 Se scrapean todos, se leen a fondo 10-15
 
@@ -231,7 +256,7 @@ Inherent OS)*, en el perfil del cliente. **Primero `perfiles()` para confirmar e
 |---|---|
 | `creador`, `red`, `formato`, `url`, `fecha` | De la fuente |
 | `metricas` | Vistas, likes, comentarios y **`multiplicador`** *(veces su mediana)* |
-| `tags` | **`nivel-1`…`nivel-5`**, el **país**, el pilar, la etapa del embudo *(si se usa)* y «resonancia alta\|media\|baja» |
+| `tags` | **`nivel-1`…`nivel-5`**, el **país**, el pilar, la etapa del embudo *(si se usa)* y «resonancia alta\|media\|baja» *(criterio: § Reciente y resonancia)* |
 | `por_que_funciono` | Solo en los 10-15 que pasaron a lectura profunda |
 
 🛑 **Se suben los ganadores, no todo lo scrapeado.** El resto queda en el registro de la corrida.
@@ -318,7 +343,8 @@ Lo que le toca a las fuentes. El bloque completo de la capa lo cierra `cr-swipe-
 - [ ] Los **países de los niveles 2 y 3 salieron del mercado del cliente** y quedaron escritos con su motivo — no de una lista fija
 - [ ] **Cada nivel quedó en su sección o archivo**; la competencia no se mezcló con las referencias
 - [ ] Los ganadores se subieron a Research con **`guardar_research`**, con el `tipo` de su nivel, tras `listar_research`
-- [ ] La investigación se **refrescó este mes** (días 1-3 del ciclo)
+- [ ] La investigación se **refrescó este mes** (días 1-3 del ciclo), leyendo de nuevo **solo lo reciente** *(publicado después del relevamiento anterior)*
+- [ ] Cada ganador subido lleva **`resonancia`** con el criterio escrito; las `alta`, con su comentario citado
 - [ ] La metadata se pidió **completa en una sola llamada**
 - [ ] Máximo **3 búsquedas infructuosas** por objetivo; después se pidió un nombre, handle o link
 - [ ] Ningún error ni timeout se reportó como cero; ningún cero se describió como *"no existe"*

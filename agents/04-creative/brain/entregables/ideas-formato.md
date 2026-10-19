@@ -15,6 +15,7 @@
 | **Campaña** | |
 | **Fecha · canal · formato** | |
 | **Objetivo del slot** | *(el específico, el que escribió ③ Marketing)* |
+| **Etapa · consciencia** | `TOF`/`MOF`/`BOF` · `Inconsciente` … `Listo para comprar` — *heredados del calendario; el gancho sale del nivel (`cr-hook-copy` § 1B)* |
 | **Emoción** | *(qué tiene que sentir quien la ve — distinto de cómo se ve)* |
 | **BIG IDEA** | [nombre corto — ver `brief-del-ciclo.md`] |
 | **Cubeta** | `70·probado` / `20·apuesta` / `10·propio` |
@@ -32,10 +33,13 @@
 *(lo que se DICE. Si el formato no lleva voz: `N/A — formato estático`)*
 
 ```
-VO 0-3s   "..."
-VO 4-15s  "..."
-VO 16-30s "..."
+VO HOOK    0-3s   "..."
+VO BODY    [s-s]  "..."
+VO PAYOFF  [s-s]  "..."
 ```
+
+**Esqueleto** *(solo reel: `cr-estructura-reel`)*: [A cámara / Lista / Antes y después / Proceso / Historia / Reel estático]
+**Secuencia** *(solo story: `cr-estructura-story`)*: [Encuesta / Detrás de cámara / Prueba / Oferta / Amplificar] — frames F1-F4
 
 ### Copy
 *(lo que se VE. Literal, con jerarquía)*

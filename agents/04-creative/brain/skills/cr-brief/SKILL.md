@@ -3,7 +3,7 @@ name: cr-brief
 description: >
   Capa 0 de ④ Creatividad — traduce el encargo de ③ Marketing en un brief que se puede idear.
   Carga el encargo de ③ Marketing y lo que exista de ① Strategy y ②B Branding, agrupa los slots
-  del ciclo por campaña, traduce funcion + temperatura + awareness a goal del arte y etapa del funnel, fija la fecha de cada slot
+  del ciclo por campaña, traduce funcion + temperatura + consciencia a goal del arte y etapa del funnel, fija la fecha de cada slot
   y declara el reparto 70/20/10 previsto. Escribe la sección "El brief del ciclo" dentro de
   brief-del-ciclo.md. Úsala cuando pidan "traducí la estrategia de X a brief", "armá el brief del ciclo",
   "qué pide este slot", "en qué etapa juega esta pieza", "qué goal del arte le toca acá",
@@ -51,12 +51,12 @@ crea una segunda versión de la verdad, y en dos ciclos no coinciden.
 |---|---|---|
 | **`funcion`** | El rol de la pieza en el sistema | El **`goal_del_arte`** — es el eje que manda |
 | **`temperatura`** | Relación con **la marca** | La **etapa** y el nivel de fricción del CTA |
-| **`awareness`** | Relación con **el problema** | El **ángulo**: qué necesita escuchar esta persona |
+| **`consciencia`** | Relación con **el problema** | El **ángulo**: qué necesita escuchar esta persona |
 
-> **Awareness ≠ temperatura.** Alguien puede estar `Most aware` del problema y **frío** con nosotros.
+> **Consciencia ≠ temperatura.** Alguien puede ser `Consciente de la solución` y estar **frío** con nosotros.
 > Confundirlos produce piezas que le explican el problema a quien ya lo tiene resuelto.
 
-`funcion`, `temperatura`, `awareness`, `balance`, `pilar`, `formato`, `canal`, `objetivo_del_slot`,
+`funcion`, `temperatura`, `consciencia`, `balance`, `pilar`, `formato`, `canal`, `objetivo_del_slot`,
 `traza` y `semana` salen del **calendario** (`calendario.csv`).
 🛑 Creative **los hereda tal cual y no reasigna ninguno**. Si un slot parece mal clasificado,
 **se devuelve a ③ Marketing** — no se corrige acá.
@@ -73,14 +73,14 @@ crea una segunda versión de la verdad, y en dos ciclos no coinciden.
 
 **La `funcion` decide el `goal_del_arte`.** La `temperatura` ajusta la etapa y la fricción del CTA.
 
-| `funcion` | → `goal_del_arte` | Temperatura **típica** | `awareness` típico | Etapa | Cajas de hook que pesan | Familia de CTA |
+| `funcion` | → `goal_del_arte` | Temperatura **típica** | `consciencia` típica | Etapa | Cajas de hook que pesan | Familia de CTA |
 |---|---|---|---|---|---|---|
-| **Hero** | `alcance` *(ruptura de patrón)* | Frío | Unaware · Problem aware | TOFU | Pattern Interrupt · Bold Claim · Pain | Engagement |
-| **Series** | `memoria` *(repetición)* | Frío → Tibio | Problem aware · Solution aware | TOFU → MOFU | List/Number · Story/Tease | Engagement |
-| **Utility** | `valor-de-uso` *(enseñar)* | Tibio | Problem aware · Solution aware | MOFU | List/Number · Question | Tráfico |
-| **Proof** | `confianza` *(responder objeción)* | Tibio | Solution aware · Product aware | MOFU | Curiosity Gap · Bold Claim con dato | Tráfico o DM |
-| **Conversion** | `accion` | Caliente | Product aware · Most aware | BOFU | Pain · Question directa · Bold Claim | Conversión |
-| **Community** | `pertenencia` *(recurrencia)* | Cliente | Most aware | Post-compra | Story/Tease · Question | Engagement |
+| **Hero** | `alcance` *(ruptura de patrón)* | Frío | Inconsciente · Consciente del problema | TOFU | Pattern Interrupt · Bold Claim · Pain | Engagement |
+| **Series** | `memoria` *(repetición)* | Frío → Tibio | Consciente del problema · Consciente de la solución | TOFU → MOFU | List/Number · Story/Tease | Engagement |
+| **Utility** | `valor-de-uso` *(enseñar)* | Tibio | Consciente del problema · Consciente de la solución | MOFU | List/Number · Question | Tráfico |
+| **Proof** | `confianza` *(responder objeción)* | Tibio | Consciente de la solución · Consciente del producto | MOFU | Curiosity Gap · Bold Claim con dato | Tráfico o DM |
+| **Conversion** | `accion` | Caliente | Consciente del producto · Listo para comprar | BOFU | Pain · Question directa · Bold Claim | Conversión |
+| **Community** | `pertenencia` *(recurrencia)* | Cliente | Listo para comprar | Post-compra | Story/Tease · Question | Engagement |
 
 **Los 6 valores de `goal_del_arte` son un vocabulario cerrado:**
 `alcance · memoria · valor-de-uso · confianza · accion · pertenencia`
@@ -97,7 +97,7 @@ La frase entre paréntesis es aclaración, **no el valor**. En el brief se escri
 
 ```
 Slot:  semana 3 · Instagram · funcion=Proof · temperatura=Tibio · formato=Carrusel
-       objetivo_del_slot="Responder objeción #1" · traza=A · awareness=Solution aware
+       objetivo_del_slot="Responder objeción #1" · traza=A · consciencia=Consciente de la solución
        ↓
 Brief: goal_del_arte=confianza · etapa=MOFU · hook=Curiosity Gap · CTA=tráfico o DM
        ángulo="por qué esta forma y no otra" · fecha=un día de la semana 3
@@ -126,20 +126,25 @@ Es la única excepción a *"el calendario es un encargo"*, y existe porque `plan
 a producción y producción necesita un día. Si el cliente tiene días fijos declarados se respetan;
 si no, se distribuye uniforme dentro de la semana.
 
-## 6 · El ángulo lo dicta el `awareness`
+## 6 · El ángulo lo dicta la `consciencia`
 
-La etapa decide el **hook y el CTA**; el awareness decide **qué se dice**. Las etiquetas se copian
-literales de ③ Marketing — abreviarlas es reescribirlas.
+**Cada pieza lleva su nivel de consciencia además de su etapa** *(TOFU/MOFU/BOFU)*: no la
+reemplaza. La etapa decide **el CTA y su fricción**; la consciencia decide **el gancho y el
+mensaje**. Las etiquetas se copian literales de ③ Marketing *(`mk-calendario` § 1A)* — abreviarlas
+es reescribirlas.
 
-| `awareness` | Qué sabe | El ángulo de la pieza |
-|---|---|---|
-| **Unaware** | No sabe que tiene el problema | Que el problema existe y le está costando algo |
-| **Problem aware** | Sabe el problema, no la solución | Que hay una forma de resolverlo |
-| **Solution aware** | Conoce el tipo de solución, no las marcas | **Por qué esta forma y no otra** — acá entra el mecanismo único |
-| **Product aware** | Nos conoce, no está convencido | Prueba, diferencia, respuesta a la objeción |
-| **Most aware** | Convencido, no compró | La oferta y por qué ahora |
+| # | `consciencia` | Qué sabe | El ángulo de la pieza | Gancho *(`cr-hook-copy` § 1B)* |
+|---|---|---|---|---|
+| **1** | **Inconsciente** | No sabe que tiene el problema | **Su vida, el síntoma** que ya siente | Story/Tease · Pattern Interrupt |
+| **2** | **Consciente del problema** | Sabe el problema, no la solución | **El problema, con nombre** | Pain · Question |
+| **3** | **Consciente de la solución** | Conoce el tipo de solución, no las marcas | **Por qué esta forma y no otra** — acá entra el mecanismo único | Curiosity Gap · Bold Claim |
+| **4** | **Consciente del producto** | Nos conoce, no está convencido | **Por qué tú:** prueba, diferencia, respuesta a la objeción | Bold Claim con dato · Story/Tease *(caso)* |
+| **5** | **Listo para comprar** | Convencido, no compró | **La acción y la oferta:** urgencia real, garantía, CTA directo | Question directa · Pain |
 
-Una pieza `Unaware` que arranca hablando del producto está desperdiciada, por bueno que sea el hook.
+**Guía, no regla rígida:** TOFU ≈ 1-2 · MOFU ≈ 3-4 · BOFU ≈ 5. Si el slot trae otra combinación, se
+respeta y se declara.
+
+Una pieza `Inconsciente` que arranca hablando del producto está desperdiciada, por bueno que sea el hook.
 
 ## 7 · Post-compra — el hueco que TOFU/MOFU/BOFU no cubre
 
@@ -185,7 +190,7 @@ puede producir, **se declara y se devuelve a ③ Marketing** — no se recorta e
 | Falta `funcion` | **BLOQUEADO.** Es la que genera el `goal_del_arte` |
 | No hay **idea de campaña** en `estrategia-de-contenido.md` | **BLOQUEADO.** Sin campaña el ciclo no se puede leer por campaña ni presupuestar. Se pide a ③ Marketing |
 | Falta `traza` a MUST BE TRUE | **No produce la fila.** Devuelve el slot |
-| Falta `awareness` | Lo busca en la especificación de tipos de pieza; si no está, `⚠️ SIN DATOS` y ángulo con confianza reducida |
+| Falta `consciencia` | Lo busca en la especificación de tipos de pieza; si no está, `⚠️ SIN DATOS` y ángulo con confianza reducida |
 | Falta `temperatura` | Se usa la típica de la función + `🟡 temperatura asumida` |
 | Falta `formato` | Se propone del plan por canal + `🟡 propuesto por Creative`, para que ③ Marketing lo confirme |
 | `goal_del_arte` contradice el `objetivo_del_slot` · dos canales con la misma `funcion` · un canal con una `funcion` que el plan no le asigna | **Se devuelve el slot a ③ Marketing** |
@@ -206,7 +211,7 @@ puede producir, **se declara y se devuelve a ③ Marketing** — no se recorta e
 - [ ] La `fecha` está fijada **dentro de la semana** del slot, respetando la frecuencia
 - [ ] Cada slot tiene etapa declarada (TOFU / MOFU / BOFU / **Post-compra**)
 - [ ] Cada slot tiene `traza` a MUST BE TRUE — los que no, **devueltos a ③ Marketing**
-- [ ] El `awareness` está con la **etiqueta literal** (`Unaware` / `Problem aware` / `Solution aware` / `Product aware` / `Most aware`), o `⚠️ SIN DATOS` con confianza reducida
+- [ ] La `consciencia` está con la **etiqueta literal** (`Inconsciente` / `Consciente del problema` / `Consciente de la solución` / `Consciente del producto` / `Listo para comprar`), o `⚠️ SIN DATOS` con confianza reducida
 - [ ] La **función única y el "qué NO se hace acá"** de cada canal están copiados, si existe `plan-por-canal.md`
 - [ ] La capacidad de producción está cuantificada: **cuántas filas caben**
 - [ ] Los claims ya aprobados por ⑩ Ads están listados

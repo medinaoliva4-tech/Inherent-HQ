@@ -76,7 +76,7 @@ transicional en BOFU deja la venta sin pedir.
 2. **En pieza corta se ataca el problema INTERNO.**
 3. **1 transformación por pieza.** Dos transformaciones = ninguna.
 4. **El arco completo cabe** en un Reel de 30 s o un carrusel de 5 slides. No hace falta más — y la
-   distribución se declara.
+   distribución se declara. **En reel, el reparto oficial está en `cr-estructura-reel` §1.**
 5. **La marca aparece como guía, nunca antes del problema.** Si entra en el segundo 1, la pieza es
    un anuncio y se saltea.
 6. **El plan tiene 3 pasos.** Uno es una orden, cinco es un curso.
@@ -89,7 +89,7 @@ transicional en BOFU deja la venta sin pedir.
 
 ## Ejemplo trabajado
 
-**Cliente:** servicio de contenido para PyMEs · **Slot:** carrusel · `awareness=problem` · MOFU
+**Cliente:** servicio de contenido para PyMEs · **Slot:** carrusel · `consciencia=Consciente del problema` · MOFU
 
 | Pieza | Contenido |
 |---|---|
@@ -106,8 +106,8 @@ transicional en BOFU deja la venta sin pedir.
 **Distribución en 5 slides:** `1` problema interno · `2` filosófico + guía · `3-4` el plan ·
 `5` éxito + CTA.
 
-**Distribución en un Reel de 30 s:** `0-3s` problema interno · `4-10s` guía · `11-22s` el plan ·
-`23-27s` éxito · `28-30s` llamado.
+**Distribución en un Reel de 30 s** *(el reparto oficial de `cr-estructura-reel` §1)*: `0-3s`
+problema interno · `4-10s` guía · `11-22s` el plan · `23-27s` éxito · `28-30s` llamado.
 
 ---
 

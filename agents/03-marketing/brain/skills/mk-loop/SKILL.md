@@ -39,9 +39,23 @@ description: >
 ### C · Por canal
 **La métrica que se declaró en su ficha.** No otra, no un promedio.
 
-### D · Por awareness
-¿El ciclo le habló al nivel correcto? Si todo rindió en `Most aware` y nada en `Unaware`, **el
+### D · Por nivel de consciencia
+¿El ciclo le habló al nivel correcto? Si todo rindió en `Listo para comprar` y nada en `Inconsciente`, **el
 negocio no está creciendo: está exprimiendo.**
+
+### E · Tráfico, leads y conversiones — si el área 4 está en la ficha
+
+**Cuando la ficha incluye el área 4** *(«reporte de tráfico, leads y conversiones», `inherent/03-OFERTA.md`)*,
+este loop es su dueño. Por canal:
+
+| Medida | De dónde sale |
+|---|---|
+| **Tráfico** *(visitas a la web, a la tienda o al perfil)* | La analítica del canal *(Windsor si está conectado)* |
+| **Leads** | El CRM de Inherent OS, por fuente *(`gr-captura` §4)* · en Brand Growth, lo que registre ⑧ Community si la ficha incluye seguimiento |
+| **Conversiones** | Las ventas o reservas que el cliente comparte · las atribuidas, de `ad-atribucion` |
+
+🛑 **Sin acceso al dato: `⚠️ SIN DATOS`**, con a quién pedírselo. **Nunca se estima.** Los leads se
+leen contra la meta interna de `gr-captura` §2: no se prometen, pero hay que traerlos.
 
 ## 3 · Qué se decide
 
@@ -73,14 +87,15 @@ lo note.
 | Bloque | Qué lleva |
 |---|---|
 | **A · Lo que se esperaba** | El objetivo del ciclo y las MUST BE TRUE que se movían |
-| **B · Las cuatro lecturas** | Función · pilar · canal · awareness |
+| **B · Las cuatro lecturas** | Función · pilar · canal · nivel de consciencia *(y § E, tráfico, leads y conversiones, si el área 4 está en la ficha)* |
 | **C · Qué cambia** | Pilares que suben, bajan o salen. Canales que se sostienen o se cortan |
 | **D · Lo que se devuelve** | Qué va a ① Strategy, qué a ② Growth, qué a ④ Creatividad |
 | **E · Los huecos** | `⚠️ SIN DATOS`, con el responsable de cada uno |
 
 ## 6 · Checklist
 
-- [ ] Se leyó **por función, pilar, canal y awareness** — no por pieza
+- [ ] Se leyó **por función, pilar, canal y nivel de consciencia** — no por pieza
+- [ ] Si el área 4 está en la ficha: **tráfico, leads y conversiones** por canal, con fuente o `⚠️ SIN DATOS`
 - [ ] Cada canal se juzgó con **la métrica de su propia ficha**
 - [ ] Ningún ganador está declarado **sin datos**
 - [ ] Los huecos tienen **responsable con nombre**

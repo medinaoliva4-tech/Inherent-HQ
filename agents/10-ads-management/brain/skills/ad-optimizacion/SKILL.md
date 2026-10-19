@@ -36,6 +36,22 @@ description: >
 | **Convierte caro** | Oferta o público | 🔴 Puede ser de ② Growth, no de acá |
 | **Rechazo de política** | Un claim o el creativo | Se corrige y se reenvía |
 
+## 2B · Google Search — los términos de búsqueda y las negativas
+
+**Cada semana, mientras corra Search, se lee el informe de términos de búsqueda:** las frases reales
+que activaron el anuncio, no las keywords que se compraron.
+
+| El término… | Qué se hace |
+|---|---|
+| **Trae a quien no compra** *(otra intención: empleo, gratis, cursos, otra ciudad, otro producto)* | Se agrega como **negativa** |
+| **Convierte y no estaba comprado** | Se agrega como **keyword** de su grupo |
+| **Gasta sin convertir y no hay datos suficientes** | Se deja correr y se vuelve a leer |
+| **Es el nombre de un competidor** | Solo se queda si la estructura decidió pujar por competencia *(`ad-estructura` §3)* |
+
+- **Agregar negativas no mueve presupuesto:** no pasa por el GATE 2, pero **se registra** como
+  cualquier cambio *(§6)*.
+- **Una keyword nueva sí cambia a quién se le gasta:** se registra y respeta **un cambio a la vez** *(§1)*.
+
 ## 3 · 🔴 Cuándo el problema no es de pauta
 
 > **Cambiar la pauta cuando el problema era la oferta no arregla nada, y al revés destruye lo
@@ -81,5 +97,6 @@ gastar.
 - [ ] No se tocó nada **sin datos suficientes**
 - [ ] Se distinguió si el problema es **de pauta o de oferta**
 - [ ] Los movimientos siguieron el **orden de costo**
+- [ ] Si corre Google Search: se leyeron los **términos de búsqueda** de la semana y se agregaron las **negativas** *(§2B)*
 - [ ] **Todo movimiento de presupuesto pasó por el GATE 2**
 - [ ] Cada cambio quedó **registrado con su porqué**

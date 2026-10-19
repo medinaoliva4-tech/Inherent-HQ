@@ -56,6 +56,9 @@ description: >
 - **Pasa por los mismos gates del CEO:** el **GATE 1** antes de lanzar y el **GATE 2** en todo movimiento de presupuesto.
 - **El objetivo se escribe en la métrica que Google puede contar:** una conversión medida, no «tráfico».
 - **Si la ficha solo incluye búsqueda, solo entra la pauta de búsqueda** *(ver `ad-estructura` § 4)*.
+- **El anuncio de búsqueda se escribe con los límites de Google** *(`ad-creativos` §4C)* y **los términos
+  de búsqueda se limpian cada semana** *(`ad-optimizacion` §2B)*: se dice en el encargo para que el
+  plan cuente ese trabajo dentro del techo de la ficha.
 
 ## 4 · 🔴 ¿Puede entregar lo que la pauta va a traer?
 

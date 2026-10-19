@@ -142,7 +142,7 @@ Se resuelven las ocho, sin excepción. Una toma incompleta es una toma que se im
 ### Reglas duras del shot list
 
 1. **Cada toma con las 8 propiedades resueltas.** Lo que queda vago se improvisa en el set.
-2. **Las duraciones suman** al total del formato del canal. Si no suman, el shot list está mal.
+2. **Las duraciones suman** al total del formato del canal, repartidas en los tramos de `cr-estructura-reel` §1. Si no suman, el shot list está mal.
 3. **Siempre 2-3 tomas de cobertura**, nombradas como tales.
 4. **La toma 1 es el frame 1 visual** del hook de la Capa 4, y dura lo que ese frame ocupa antes del siguiente corte. **No se decide dos veces** — acá se verifica el cruce.
 5. **El audio se declara por toma**, no al final. *"Le ponemos música"* no es una instrucción.
