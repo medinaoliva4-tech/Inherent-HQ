@@ -16,6 +16,7 @@ import * as recipes from './_lib/recipes.js';
 import * as recurring from './_lib/recurring.js';
 import * as results from './_lib/results.js';
 import { blockersOf } from '../public/js/cycle.js';
+import { parentError } from '../public/js/library-tree.js';
 import { levelName } from '../public/js/levels.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
@@ -143,8 +144,14 @@ const cleanBudget = (b) => {
 const shape = (u, coll, d, sc, sum = summaryOf(u, coll)) => {
   if (!d) return null;
   if (sum) { d = sum(d); if (!d) return null; }
-  return coll === 'accounts' ? stripAccesos(u, d, sc) : coll === 'budgets' ? stripCosts(u, d) : d;
+  return coll === 'accounts' ? stripAccesos(u, d, sc) : coll === 'budgets' ? stripCosts(u, d) : coll === 'settings' && d.id === 'levels' ? levelsFor(u, d) : d;
 };
+// Los niveles editables (settings «levels»): los lee todo el equipo, pero el baseline (el piso interno de precio) solo el CEO.
+const levelsFor = (u, d) => (u.role === 'ceo' ? d : { ...d, levels: Object.fromEntries(Object.entries(d.levels || {}).map(([k, l]) => { const { usd, gtq, ...rest } = l || {}; return [k, rest]; })) });
+// Al guardarlos: solo los 3 niveles y sus campos, en texto corto; el baseline, un número positivo.
+const LEVEL_IDS = ['foundation', 'growth', 'partnership'];
+const cleanLevels = (b) => ({ ...b, id: 'levels', levels: Object.fromEntries(LEVEL_IDS.filter((k) => b.levels?.[k]).map((k) => { const l = b.levels[k], usd = Number(l.usd);
+  return [k, { name: String(l.name || '').slice(0, 60), tag: String(l.tag || '').slice(0, 140), who: String(l.who || '').slice(0, 400), how: String(l.how || '').slice(0, 120), per: String(l.per || '').slice(0, 40), usd: Number.isFinite(usd) && usd > 0 ? Math.round(usd) : null }]; })) });
 on('GET', 'db/:coll', async (req, res) => {
   const u = await collGuard(req, res); if (!u) return;
   const coll = req.params.coll, sc = await scopeOf(u, coll), sum = summaryOf(u, coll);
@@ -191,6 +198,8 @@ on('POST', 'db/:coll', async (req, res) => {
     const dup = leads.findDup(await db.list('leads'), b); if (dup) return res.status(409).json({ error: `Ya existe un lead con ese WhatsApp, correo o cuenta: ${dup.name}`, id: dup.id });
   }
   if (req.params.coll === 'lead_sources') b = leads.cleanSource(b);
+  // Library: una carpeta va dentro de otra que exista (null = raíz).
+  if (req.params.coll === 'folders') { const why = parentError(await db.list('folders'), null, b.parent_id || null); if (why) return res.status(400).json({ error: why }); b.parent_id = b.parent_id || null; }
   { const why = await outOfScope(u, req.params.coll, b, null); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, null);
   if (req.params.coll === 'tasks') b = results.stampDone(null, cleanTask(b));
@@ -200,6 +209,7 @@ on('POST', 'db/:coll', async (req, res) => {
   if (['content', 'sources'].includes(req.params.coll) && !personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' });
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
   if (req.params.coll === 'settings' && (id === 'role_views' || b.id === 'role_views')) forgetViews();
+  if (req.params.coll === 'settings' && id === 'levels') b = cleanLevels(b);
   try { res.json(shape(u, req.params.coll, await db.create(req.params.coll, b, u.email, id), null, null)); }
   catch (e) { if (/duplicate|unique/i.test(e.message)) return res.status(409).json({ error: 'Ya existe' }); throw e; }
 });
@@ -211,6 +221,9 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   // Fuera del alcance de la persona (o de la marca personal) no se cambia: para ella no existe.
   if (SCOPED.includes(req.params.coll) || ['content', 'sources'].includes(req.params.coll)) { const cur = await db.get(req.params.coll, req.params.id); if (cur && (!inScope(await scopeOf(u, req.params.coll), req.params.coll, cur) || !visible(u, req.params.coll, cur))) return res.status(404).json({ error: 'No existe' }); if (!personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' }); }
   if (req.params.coll === 'settings' && req.params.id === 'role_views') forgetViews();
+  if (req.params.coll === 'settings' && req.params.id === 'levels') b = { ...cleanLevels(b), v: b.v };
+  // Library: mover una carpeta nunca la mete dentro de sí misma; si el cambio no trae parent_id, se queda donde estaba.
+  if (req.params.coll === 'folders') { const all = await db.list('folders'); if (!('parent_id' in b)) b.parent_id = all.find((x) => x.id === req.params.id)?.parent_id || null; const why = parentError(all, req.params.id, b.parent_id || null); if (why) return res.status(400).json({ error: why }); b.parent_id = b.parent_id || null; }
   if (['tasks', 'quotes', 'budgets'].includes(req.params.coll)) { const why = await outOfScope(u, req.params.coll, b, await db.get(req.params.coll, req.params.id)); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, await db.get('accounts', req.params.id));
   // El PUT reemplaza el doc: el cliente de un presupuesto no cambia y, si la persona no ve los costos, se conservan los guardados.

@@ -1,17 +1,12 @@
 import { newProject as wizProject, newTask as wizTask, VIS_OPTS, visLabel } from '../create.js';
 import { RECIPE_ROLES } from '../recipes.js';
 import { tipoSopFields, bindSop, readTipoSop, sopLink, tipoChips, tipoMatch, tipoBadge } from '../tasktype.js';
+import { projectPage, myProjects } from '../project-page.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap, ico, isSummary, canEdit, roChip } from '../core.js';
 
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
-const ST = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Entregado', 'green'], off: ['No aplica', ''] };
 const NEXT = { todo: 'now', now: 'done', done: 'todo', off: 'todo' };
 const TSTATUS = { 'Por empezar': '', 'En curso': 'amber', 'En revisión': 'blue', 'Hecha': 'green' };
-const COLORS = ['olive', 'terra', 'ink'];
-// El ciclo de contenido del manual (CLAUDE.md): días del mes
-const CYCLE = [['Reunión día 1', 1, 1], ['Plan', 1, 3], ['Calendario y shot list', 2, 3], ['Brand guidelines', 3, 6], ['Producción', 6, 11], ['Montaje', 12, 15], ['Cambios y programación', 16, 19], ['Presentación al cliente', 20, 20]];
-const PROJECT_PHASES = ['Descubrimiento', 'Estrategia', 'Build', 'Entrega'];
-const GROWTH_PHASES = ['Diagnóstico', 'Auditoría con el especialista', 'Plan', 'Implementación', 'Revisión'];
 const iso = (d) => d.toISOString().slice(0, 10);
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
 
@@ -22,13 +17,14 @@ export async function render(el, { me, sub, alive }) {
   try { clients = (await api('repo/clients')).clients.map((c) => ({ ...c, plan: String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '') })); } catch {}
   // Vista por rol: «resumen» = los proyectos con su avance y las tareas atrasadas o en revisión; sin pipeline, calendario ni timeline.
   const resumen = isSummary(me, 'operations'), edit = canEdit(me, 'operations');
+  // La página de un proyecto: #/operations/p/<id>/<vista> (Resumen, Lista, Tablero, Timeline, Calendario, Archivos, Equipo).
+  const openP = (id) => { location.hash = '#/operations/p/' + encodeURIComponent(id); };
+  if (sub[0] === 'p' && sub[1]) return projectPage(el, { me, id: decodeURIComponent(sub[1]), view: sub[2], edit, data: { projects, tasks, team, docs, clients }, back: () => { location.hash = '#/operations'; }, alive });
   let tab = ['pipe', 'cal', 'time', 'tasks'].includes(sub[0]) ? sub[0] : 'pipe';
   let current = projects[0]?.id || null, taskFilter = 'all', tipoF = 'todos';
   let calMonth = today().slice(0, 7), events = null, evErr = null;
   const person = (email) => team.find((t) => t.id === email || t.email === email);
   const pname = (id) => projects.find((p) => p.id === id)?.name || '—';
-  const progress = (p) => { const ph = p.phases || []; return ph.length ? Math.round((ph.filter((x) => x.status === 'done').length / ph.length) * 100) : 0; };
-  const curPhase = (p) => (p.phases || []).find((x) => x.status !== 'done')?.name || 'Terminado';
 
   async function saveProject(p) { try { const r = await PR.save(p); projects = projects.map((x) => (x.id === r.id ? r : x)); return r; } catch (e) { toast(e.message, true); return null; } }
   async function saveTask(t) { try { const r = await TK.save(t); tasks = tasks.map((x) => (x.id === r.id ? r : x)); return r; } catch (e) { toast(e.message, true); return null; } }
@@ -36,18 +32,14 @@ export async function render(el, { me, sub, alive }) {
   function paint() {
     mount(el, html`
       <div class="hello row"><div><h1>Proyectos</h1><p>Por fase, con <em>tiempos</em> y tareas.</p></div><div class="sp"></div>${roChip(me, 'operations')}${edit && projects.length ? html`<button class="btn" data-act="newProject">+ Proyecto</button>` : ''}</div>
-      ${projects.length ? html`<div class="grid g3">${projects.map((p, i) => { const pct = progress(p); const open = tasks.filter((t) => t.project_id === p.id && t.status !== 'Hecha').length;
-        return html`<div class="card feat ${p.color || COLORS[i % 3]}" style="min-height:230px;cursor:pointer" data-act="pick" data-id="${p.id}">
-          <div class="chead"><div class="ico">${IC.ring(Math.max(4, Math.round(pct * 1.17)))}<span style="font-size:15px">${ico('target', 16)}</span></div><h3>${p.name}<br><span class="lbl">${p.kind}${p.client ? ' · ' + p.client : ''}</span></h3>${p.client_slug ? html`<a class="arrow" href="#/clients/${p.client_slug}" title="Página del cliente" style="margin-right:6px">↗</a>` : ''}${edit ? html`<button class="arrow" data-act="editProject" data-id="${p.id}" title="Editar">${ico('edit')}</button>` : ''}</div>
-          <div class="lbl">Avance</div><div class="big" style="font-size:46px">${pct}<small>%</small></div>
-          <div class="phases">${(p.phases || []).map((x) => html`<i title="${x.name}" style="background:${x.status === 'done' ? 'rgba(253,250,243,.95)' : x.status === 'now' ? 'var(--lime)' : 'rgba(253,250,243,.25)'}"></i>`)}</div>
-          <div class="foot"><span>Fase: ${curPhase(p)}</span><span>${open} tareas abiertas</span></div></div>`; })}</div>`
+      ${projects.length ? html`<div id="mprojects"></div>`
       : html`<div class="empty"><b>Todavía no hay proyectos</b>Si es un cliente con plan, su pipeline se arma solo según lo contratado.${edit ? html`<div><button class="btn" data-act="newProject">+ Proyecto</button></div>` : ''}</div>`}
       ${!projects.length && !tasks.length ? '' : resumen ? html`<div class="sec-title" style="margin-top:22px"><h2>Necesita atención</h2><span class="mut sm">Atrasadas y en revisión</span></div><div id="obody"></div>` : html`<div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
         <div class="tabs" style="margin:0">${[['pipe', 'Proyectos'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>${tab === 'tasks' && edit ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
       </div>
       <div id="obody"></div>`}`);
+    const mp = $('#mprojects', el); if (mp) myProjects(mp, { me, projects, tasks, team, clients, open: openP });
     if (!$('#obody', el)) return; // vacío: solo el botón de crear el primero
     if (resumen) return attention($('#obody', el));
     ({ pipe, cal, time, tasks: taskTab })[tab]($('#obody', el));
@@ -94,7 +86,8 @@ export async function render(el, { me, sub, alive }) {
   function pipe(b) {
     const p = projects.find((x) => x.id === current);
     if (!p) return mount(b, html`<div class="empty"><b>Elige o crea un proyecto</b>El pipeline muestra cada departamento y su entregable.</div>`);
-    mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">${projects.map((x) => html`<button class="chip ${x.id === current ? 'dark' : ''}" data-act="pick" data-id="${x.id}" style="padding:8px 14px;font-size:13px">${x.name}</button>`)}
+    mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">${projects.map((x) => html`<button class="chip ${x.id === current ? 'dark' : ''}" data-act="pipick" data-id="${x.id}" style="padding:8px 14px;font-size:13px">${x.name}</button>`)}
+      <button class="btn ghost xs" data-act="openp" data-id="${p.id}">Abrir proyecto ${ico('right', 13)}</button>
       <div class="sp"></div><span class="mut sm">Se actualiza solo con las tareas de cada departamento</span></div>
       <div class="pipe">${DEPTS.map(([n, name], i) => { const d = deptState(p, n);
         return html`<div class="dept ${d.cls}">
@@ -235,28 +228,6 @@ export async function render(el, { me, sub, alive }) {
     draw();
   }
 
-  async function projectForm(p) {
-    const clientOpts = [['', '— Sin cliente / interno'], ...clients.filter((c) => c.hasPlan).map((c) => [c.slug, c.slug.toUpperCase()])];
-    const v = await ask(p ? 'Editar proyecto' : 'Nuevo proyecto', [
-      { k: 'name', l: 'Nombre', v: p?.name, req: true },
-      ...(p ? [] : [{ k: 'kind', l: 'Tipo', t: 'select', opts: [['Ciclo mensual', 'Contenido · ciclo mensual (días 1 al 20)'], ['Proyecto', 'Contenido · proyecto por fases'], ['Growth', 'Business Growth · consultoría']], half: true }, { k: 'start', l: 'Inicio', t: 'date', v: today().slice(0, 8) + '01', half: true }]),
-      { k: 'client', l: 'Cliente', t: 'select', opts: clientOpts, v: p?.client_slug || '' },
-      { k: 'color', l: 'Color', t: 'select', opts: [['olive', 'Oliva'], ['terra', 'Terracota'], ['ink', 'Café']], v: p?.color || 'olive' },
-    ]);
-    if (!v) return;
-    const c = clients.find((x) => x.slug === v.client);
-    if (p) { const r = await saveProject({ ...p, name: v.name, client: c ? c.slug.toUpperCase() : '', client_slug: v.client, color: v.color }); if (r) paint(); return; }
-    const start = v.start || today();
-    const phases = v.kind === 'Ciclo mensual'
-      ? CYCLE.map(([name, a, z], i) => ({ name, start: addDays(start, a - 1), end: addDays(start, z - 1), status: i === 0 ? 'now' : 'todo' }))
-      : (v.kind === 'Growth' ? GROWTH_PHASES : PROJECT_PHASES).map((name, i) => ({ name, start: addDays(start, i * 7), end: addDays(start, i * 7 + 6), status: i === 0 ? 'now' : 'todo' }));
-    // El pipeline sale del plan contratado: lo que no está en su plan, no corre.
-    const inPlan = c?.pipeline?.length ? new Set(c.pipeline.map((r) => (r.paso.match(/^[①-⑩][A-Z]?/) || [''])[0])) : null;
-    const pipeline = Object.fromEntries(DEPTS.map(([n]) => [n, { status: inPlan && !inPlan.has(n) ? 'off' : 'todo' }]));
-    try { const r = await PR.create({ name: v.name, kind: v.kind, line: v.kind === 'Growth' ? 'growth' : 'contenido', client: c ? c.slug.toUpperCase() : '', client_slug: v.client, color: v.color, phases, pipeline }); projects.push(r); current = r.id; toast('Proyecto creado'); paint(); }
-    catch (e) { toast(e.message, true); }
-  }
-
   // El calendario compartido de la empresa: ahí caen las reuniones de los proyectos.
   async function calPick() {
     let r; try { r = await api('google/calendars'); } catch (e) { return toast(e.message, true); }
@@ -268,16 +239,9 @@ export async function render(el, { me, sub, alive }) {
     calpick: calPick,
     calscope: () => { setCalAll(!calAll()); events = null; const b = $('#obody', el); if (b) cal(b); },
     tab: (t) => { tab = t.dataset.t; if (tab === 'cal') events = null; history.replaceState(null, '', '#/operations/' + tab); swap(el, paint); },
-    pick: (t, e) => { if (e.target.closest('[data-act=editProject]') || e.target.closest('a')) return; current = t.dataset.id; tab = 'pipe'; paint(); },
-    newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); current = r.project.id; tab = 'pipe'; paint(); } },
-    editProject: (t, e) => { e.stopPropagation(); const p = projects.find((x) => x.id === t.dataset.id);
-      drawer(html`<div class="row"><span class="chip">${p.kind}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${p.name}</h2><div class="mut">${p.client || 'Interno'}</div>
-        <b class="sm" style="display:block;margin-top:18px">Fases</b>
-        ${(p.phases || []).map((x, i) => html`<div class="row" style="margin:8px 0"><select class="in" style="width:auto" data-ph="${i}" data-f="status">${[['todo', 'Pendiente'], ['now', 'En curso'], ['done', 'Hecha']].map(([v, l]) => html`<option value="${v}" ${v === x.status ? raw('selected') : ''}>${l}</option>`)}</select><b style="font-weight:500;flex:1">${x.name}</b><input class="in" type="date" style="max-width:150px" data-ph="${i}" data-f="start" value="${x.start || ''}"><input class="in" type="date" style="max-width:150px" data-ph="${i}" data-f="end" value="${x.end || ''}"></div>`)}
-        <div class="row" style="margin-top:16px"><button class="btn" data-act="savePh">Guardar fases</button><button class="btn ghost" data-act="edMeta">Nombre y cliente</button><div class="sp"></div><button class="btn ghost" data-act="delP">${ico('trash')}</button></div>`,
-      { savePh: async () => { const ph = JSON.parse(JSON.stringify(p.phases || [])); $$('[data-ph]', $('#drawer')).forEach((inp) => { ph[+inp.dataset.ph][inp.dataset.f] = inp.value; }); const r = await saveProject({ ...p, phases: ph }); if (r) { toast('Fases guardadas'); closeDrawer(); paint(); } },
-        edMeta: () => { closeDrawer(); projectForm(p); },
-        delP: async () => { if (!(await confirmAsk(`¿Eliminar el proyecto ${p.name}? Sus tareas quedan sin proyecto.`))) return; await PR.remove(p.id); projects = projects.filter((x) => x.id !== p.id); current = projects[0]?.id || null; closeDrawer(); paint(); } }); },
+    pipick: (t) => { current = t.dataset.id; tab = 'pipe'; paint(); },
+    openp: (t) => openP(t.dataset.id),
+    newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); openP(r.project.id); } },
     cycle: async (t) => { const p = projects.find((x) => x.id === current); const d = p.pipeline?.[t.dataset.d] || { status: 'todo' }; const r = await saveProject({ ...p, pipeline: { ...(p.pipeline || {}), [t.dataset.d]: { ...d, status: NEXT[d.status] || 'now' } } }); if (r) pipe($('#obody', el)); },
     artifact: async (t) => { const p = projects.find((x) => x.id === current); const d = p.pipeline?.[t.dataset.d] || { status: 'todo' };
       const v = await ask(`Entregable de ${DEPTS.find(([n]) => n === t.dataset.d)[1]}`, [{ k: 'name', l: 'Nombre', v: d.artifact?.name, req: true }, { k: 'url', l: 'Link (Drive o URL)', v: d.artifact?.url, req: true }]);

@@ -376,7 +376,7 @@ async function call(u, name, a = {}) {
     const f = a.carpeta ? await libFolder(u, a.carpeta, false) : null; if (a.carpeta && !f) throw new Error('No encontré esa carpeta');
     const q = String(a.buscar || '').toLowerCase();
     const list = docs.filter((d) => (!f || d.folder_id === f.id) && (!q || `${d.title} ${d.body || ''}`.toLowerCase().includes(q)));
-    return { carpetas: folders.map((x) => ({ id: x.id, nombre: x.name, documentos: docs.filter((d) => d.folder_id === x.id).length, drive: x.drive || null })),
+    return { carpetas: folders.map((x) => ({ id: x.id, nombre: x.name, ...(x.parent_id ? { dentro_de: folders.find((y) => y.id === x.parent_id)?.name || x.parent_id } : {}), documentos: docs.filter((d) => d.folder_id === x.id).length, drive: x.drive || null })),
       documentos: list.slice(0, 100).map((d) => ({ id: d.id, titulo: d.title, tipo: d.kind || 'Nota', carpeta: folders.find((x) => x.id === d.folder_id)?.name || '', actualizado: d._meta?.updated_at ? new Date(d._meta.updated_at).toISOString().slice(0, 10) : '', ...(d.url ? { link: d.url } : {}) })) };
   }
   if (name === 'leer_documento') {

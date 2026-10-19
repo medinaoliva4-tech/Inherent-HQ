@@ -599,4 +599,6 @@ export async function render(el, { me, sub, alive }) {
   // Desde Control: #/sales/quotes/new/<lead> abre una cotización para ese lead; #/sales/quotes/<id> la abre.
   if (sub[0] === 'quotes' && sub[1] === 'new') editQuote(null, leads.find((x) => x.id === sub[2]) || null);
   else if (sub[0] === 'quotes' && sub[1]) { const qq = quotes.find((x) => x.id === sub[1]); if (qq) editQuote(qq); }
+  // #/sales/crm/<lead> abre ese lead (el chip «Vino de» de la ficha del cliente lleva aquí).
+  else if (sub[0] === 'crm' && sub[1]) { const l = leads.find((x) => x.id === sub[1]); if (l) openLead(l); }
 }

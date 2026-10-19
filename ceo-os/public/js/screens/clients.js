@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, ask, confirmAsk, teamList, ico, isSummary, canEdit, roChip, swap } from '../core.js';
+import { html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, ask, confirmAsk, teamList, ico, isSummary, canEdit, roChip, swap, fromLink, sheetForm } from '../core.js';
 import { upcoming, meetingRows, schedule, markDone } from '../meetings.js';
 import { fit, priceLabel, CADENCE } from '../mentors.js';
 import { levelName, isPartnership } from '../levels.js';
@@ -10,8 +10,9 @@ import { budgetsTab } from '../budgets.js';
 import { render as content } from './content.js';
 
 // Clientes: la lista (quién, su nivel, cómo va el mes) y la página de cada uno en pestañas: Info · Links · Servicio · Marca
-// (asociaciones e inspo por plataforma) · Presupuestos (photo shoots, pauta, eventos). Prospectos (el CRM) solo para quien tiene Comercial. El plan y LINKS.md salen del repo;
-// contacto, metas, links propios y accesos viven en la base (accounts).
+// (asociaciones e inspo por plataforma) · Presupuestos (photo shoots, pauta, eventos). El CRM ya no vive aquí: está en el
+// Centro de control → Comercial; la ficha solo dice «Vino de: <fuente>» con link a su lead. El plan y LINKS.md salen del repo
+// (con su chip «del repo»); contacto, metas, links propios y accesos viven en la base (accounts).
 const COLORS = ['olive', 'terra', 'ink'];
 const CATS = [['fotos', 'Fotos'], ['videos', 'Videos'], ['drive', 'Drive'], ['redes', 'Redes'], ['web', 'Web'], ['otro', 'Otro']];
 const catName = (k) => CATS.find(([x]) => x === k)?.[1] || 'Otro';
@@ -55,9 +56,16 @@ export async function render(el, { me, sub, alive }) {
     info = { links: [], fields: [], pipeline: [], ...(info || {}) };
     let a = acct(slug) || { id: 'acc-' + slug, name: slug.toUpperCase(), contact: '', phone: '', email: '', notes: '', roadmap: [], accesos: [], links: [] };
     const ps = projects.filter((p) => p.client_slug === slug);
-    const canSales = me.areas.includes('sales');
-    const TABS = [['info', 'Info'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['marca', 'Marca'], ['presupuestos', 'Presupuestos']]), ...(canSales ? [['prospectos', 'Prospectos']] : [])];
+    const TABS = [['info', 'Info'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['marca', 'Marca'], ['presupuestos', 'Presupuestos']])];
+    // La pestaña vieja «Prospectos» lleva al CRM, que vive en el Centro de control → Comercial.
+    const hubBase = ['ceo', 'coo'].includes(me.role) ? '#/control-hub/sales' : '#/sales';
+    if (tab0 === 'prospectos') { location.hash = hubBase.slice(1) + '/crm'; return; }
     let tab = TABS.some(([k]) => k === tab0) ? tab0 : 'info';
+    // De dónde vino: el lead que se volvió este cliente (por su cotización o porque el lead lo dice). Solo si se ve Comercial.
+    let origin = null, docs = [];
+    const planPath = `clients/${slug}/00-onboarding/plan-contratado.md`, linksPath = `clients/${slug}/00-onboarding/LINKS.md`;
+    // Lo que llega después (docs de la Library, el lead de origen) solo repinta los chips y, si toca, la pestaña de Links o Servicio.
+    const refresh = () => { if (!alive()) return; const ch = $('#cchips', el); if (ch) mount(ch, chips()); if (tab === 'links' || tab === 'servicio') { const b = $('#cbody', el); if (b) (tab === 'links' ? linksTab(b) : extra && mount(b, serviceTab({ me, slug, info, projects: ps, tasks, team, precioFicha: c?.precio ?? null, planPath: c?.hasPlan ? planPath : '', docs, ...extra }))); } };
     let msub = sub[2] === 'inspo' ? 'inspo' : 'asociaciones'; // Marca: Asociaciones · Inspo
     // Finanzas solo para quien la ve: alimenta «presupuesto vs gastado».
     let entries = null; const loadEntries = () => (me.areas.includes('finanzas') ? col('finance').list().catch(() => null) : Promise.resolve(null));
@@ -79,7 +87,7 @@ export async function render(el, { me, sub, alive }) {
         <header class="sp-cover">
           <div class="sp-cover-top"><div class="sp-cover-mono">${initials(a.name)}</div>
             <div style="flex:1;min-width:220px"><h1>${a.name}</h1>
-              <div class="sp-cover-chips"><span class="chip">${nivel}</span><span class="chip">${[a.contact, a.phone, a.email].filter(Boolean).join(' · ') || 'Sin contacto'}</span></div></div>
+              <div id="cchips">${chips()}</div></div>
             ${edit ? html`<button class="btn cream xs" data-act="editAcc">Editar datos</button>` : ''}</div>
           <div class="sp-cover-nums"><div><span class="lbl">Mes</span><b>${mo.total ? `${mo.done}/${mo.total}` : '—'}</b></div><div><span class="lbl">Estado</span><b class="sm"><i class="dot light-${mo.light[0]}"></i> ${mo.light[1]}</b></div><div><span class="lbl">Metas</span><b>${goalsOf(a).filter((x) => x.status === 'done').length}/${goalsOf(a).length}</b></div></div>
         </header>
@@ -90,11 +98,13 @@ export async function render(el, { me, sub, alive }) {
       if (tab === 'links') return linksTab(b);
       if (tab === 'marca') return marcaTab(b);
       if (tab === 'presupuestos') { mount(b, html`<p class="loading">Cargando…</p>`); return loadEntries().then((en) => { entries = en; if (alive() && tab === 'presupuestos') budgetsTab({ el: b, me, slug, name: a.name, edit, entries }); }); }
-      if (tab === 'servicio') { if (!extra) { mount(b, html`<p class="loading">Cargando…</p>`); return loadExtra(); } return mount(b, serviceTab({ me, slug, info, projects: ps, tasks, team, precioFicha: c?.precio ?? null, ...extra })); }
-      // El CRM se monta tal cual (es una isla: sus botones no le hablan a esta página).
-      if (tab === 'prospectos') { b.dataset.island = '1'; mount(b, html`<p class="loading">Cargando…</p>`); import('./sales.js').then((m) => alive() && tab === 'prospectos' && m.render(b, { me, sub: ['crm'], alive })); }
+      if (tab === 'servicio') { if (!extra) { mount(b, html`<p class="loading">Cargando…</p>`); return loadExtra(); } return mount(b, serviceTab({ me, slug, info, projects: ps, tasks, team, precioFicha: c?.precio ?? null, planPath: c?.hasPlan ? planPath : '', docs, ...extra })); }
     }
 
+    function chips() {
+      return html`<div class="sp-cover-chips"><span class="chip">${nivel}</span><span class="chip">${[a.contact, a.phone, a.email].filter(Boolean).join(' · ') || 'Sin contacto'}</span>${origin ? html`<a class="chip" style="text-decoration:none;color:inherit" href="${hubBase}/crm/${origin.id}" title="Abrir el lead «${origin.name}» en Comercial">Vino de: ${origin.source} ↗</a>` : ''}</div>
+        ${c?.hasPlan ? html`<div style="margin-top:8px">${fromLink({ repo: planPath, docs })}</div>` : ''}`;
+    }
     function infoTab(b) {
       mount(b, html`
         ${resumen ? '' : a.drive ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:12px"><a class="connect on" href="${a.drive}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="lg">${IC.drive}</span>Drive de ${a.name}</a>${Object.entries(a.drive_dirs || {}).map(([k, u]) => html`<a class="chip" href="${u}" target="_blank" rel="noopener noreferrer" style="padding:7px 12px;text-decoration:none;color:inherit">${ico('folder')} ${k.replace(/^\d+ /, '')}</a>`)}</div>`
@@ -104,13 +114,13 @@ export async function render(el, { me, sub, alive }) {
         ${resumen ? '' : html`<div class="grid g11" style="align-items:start;margin-top:22px">
           <div class="card"><div class="row"><b style="font-weight:500">Accesos del equipo</b><div class="sp"></div>${edit ? html`<button class="btn ghost xs" data-act="acadd">+ Acceso</button>` : ''}</div><div class="mut sm" style="margin:2px 0 8px">${ico('lock')} Nunca contraseñas: solo qué cuenta, qué usuario y dónde está la clave</div>
             ${!managesAcc && !('accesos' in a) ? html`<div class="mut sm">Solo los ven el CEO, el COO, quien edita Clientes y las personas que ellos elijan.</div>`
-            : html`${(a.accesos || []).map((x, i) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><b style="font-weight:500;min-width:110px">${x.servicio}</b><span style="flex:1">${x.usuario || '—'}<span class="mut"> · ${x.donde || '—'}</span></span>${edit ? html`<button class="sm mut" data-act="acdel" data-i="${i}">${ico('x', 16)}</button>` : ''}</div>`)}${!(a.accesos || []).length ? html`<div class="mut sm">Sin accesos anotados.</div>` : ''}
+            : html`${(a.accesos || []).map((x, i) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><b style="font-weight:500;min-width:110px">${x.servicio}</b><span style="flex:1">${x.usuario || '—'}<span class="mut"> · ${x.donde || '—'}</span></span>${edit ? html`<button class="sm mut" data-act="acedit" data-i="${i}" title="Editar">${ico('edit')}</button><button class="sm mut" data-act="acdel" data-i="${i}" title="Quitar">${ico('x', 16)}</button>` : ''}</div>`)}${!(a.accesos || []).length ? html`<div class="mut sm">Sin accesos anotados.</div>` : ''}
             ${managesAcc ? html`<div class="mut sm" style="margin-top:12px">${ico('eye', 14)} También los ven: ${(a.accesos_to || []).length ? (a.accesos_to || []).map((e) => html`<span class="chip" style="margin:2px">${person(e)?.name || e}${edit ? html` <button class="sm mut" data-act="acwdel" data-e="${e}">${ico('x', 14)}</button>` : ''}</span>`) : 'nadie más'}${edit ? html` <button class="btn ghost xs" data-act="acwadd">+ Persona</button>` : ''}</div>` : ''}`}</div>
           <div class="card"><div class="row"><b style="font-weight:500">Portal y especialista</b></div>
             <div class="mut sm" style="margin:2px 0 8px">El cliente ve su avance, contenido, reuniones y metas. Nada de costos.</div>
             <div class="row" style="gap:6px;flex-wrap:wrap"><a class="btn ghost xs" href="#/portal/${slug}">${ico('eye')} Ver su portal</a>${me.role === 'ceo' ? html`<button class="btn xs" data-act="portalAdd">+ Dar acceso</button>` : ''}${portalPeople.map((x) => html`<span class="chip">${x.email}${me.role === 'ceo' ? html` <button class="sm mut" data-act="portalDel" data-id="${x.id}">${ico('x', 14)}</button>` : ''}</span>`)}</div>
             <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:14px"><span class="sm mut">${isGrowth() ? 'Especialista incluido en Growth Partnership' : 'Especialista: su nivel no lo incluye, va como add-on'}</span>${edit ? html`<button class="btn ghost xs" data-act="esadd">+ Especialista</button>` : ''}</div>
-            ${(a.mentors || []).map((x, k) => { const m = mentors.find((y) => y.id === x.id); if (!m) return ''; const [f, cc] = isGrowth() ? fit(m) : ['Add-on facturado', 'red']; return html`<div class="row sm" style="padding:8px 0;border-top:1px solid var(--line)"><span style="flex:1"><b style="font-weight:500">${m.name}</b> · ${m.industry} · ${priceLabel(m)} · ${CADENCE.find(([v]) => v === x.cadence)?.[1] || ''}</span><span class="chip ${cc}" style="font-size:11px">${f}</span>${edit ? html`<button class="sm mut" data-act="esdel" data-k="${k}">${ico('x', 16)}</button>` : ''}</div>`; })}</div>
+            ${(a.mentors || []).map((x, k) => { const m = mentors.find((y) => y.id === x.id); if (!m) return ''; const [f, cc] = isGrowth() ? fit(m) : ['Add-on facturado', 'red']; return html`<div class="row sm" style="padding:8px 0;border-top:1px solid var(--line)"><span style="flex:1"><b style="font-weight:500">${m.name}</b> · ${m.industry} · ${priceLabel(m)} · ${CADENCE.find(([v]) => v === x.cadence)?.[1] || ''}</span><span class="chip ${cc}" style="font-size:11px">${f}</span>${edit ? html`<button class="sm mut" data-act="esedit" data-k="${k}" title="Editar">${ico('edit')}</button><button class="sm mut" data-act="esdel" data-k="${k}" title="Quitar">${ico('x', 16)}</button>` : ''}</div>`; })}</div>
         </div>`}`);
     }
 
@@ -129,7 +139,7 @@ export async function render(el, { me, sub, alive }) {
         ${cats.length ? html`<div class="grid g3">${cats.map(([k, l]) => html`<div class="card wkbox"><div class="wkhead"><h3>${ico(k === 'fotos' ? 'image' : k === 'videos' ? 'video' : k === 'drive' ? 'folder' : k === 'web' ? 'link' : 'link', 15)} ${l}</h3></div>
           ${mine.map((x, i) => [x, i]).filter(([x]) => (x.cat || 'otro') === k).map(([x, i]) => html`<div class="wkrow"><a class="grow" href="${/^https?:\/\//.test(x.url) ? x.url : '#'}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><b style="font-weight:500">${x.label || x.url}</b><div class="mut sm" style="overflow:hidden;text-overflow:ellipsis">${x.url}</div></a>${edit ? html`<button class="sm mut" data-act="lkedit" data-i="${i}">${ico('edit')}</button><button class="sm mut" data-act="lkdel" data-i="${i}">${ico('x', 16)}</button>` : ''}</div>`)}</div>`)}</div>`
         : html`<div class="empty"><b>Sin links todavía</b>Agrega el primero: «Fotos» y su link, «Drive» y su link…</div>`}
-        ${info.links.length ? html`<div class="sec-title"><h2>Del repo</h2><span class="mut sm">clients/${slug}/00-onboarding/LINKS.md · solo lectura</span></div>
+        ${info.links.length ? html`<div class="sec-title"><h2>Del repo</h2><span class="mut sm">Solo lectura · se cambia en el repo</span>${fromLink({ repo: linksPath, docs })}</div>
           <div class="card">${info.links.map((l) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><span class="mut" style="min-width:110px">${l.k}</span>${l.url && /^https:\/\//.test(l.url) ? html`<a href="${l.url}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1">${l.v}</a>` : html`<span style="flex:1">${l.v}</span>`}</div>`)}</div>` : ''}`);
     }
     const linkForm = async (x) => { const v = await ask(x ? 'Editar link' : 'Nuevo link', [{ k: 'cat', l: 'Categoría', t: 'select', opts: CATS, v: x?.cat || 'fotos', half: true }, { k: 'label', l: 'Nombre', v: x?.label, req: true, half: true }, { k: 'url', l: 'Link', v: x?.url, req: true }]); if (!v) return null; if (!/^https?:\/\/\S+$/.test(v.url)) { toast('El link debe empezar con https://', true); return null; } return v; };
@@ -163,10 +173,19 @@ export async function render(el, { me, sub, alive }) {
       mtdone: async (t) => { const p = projects.find((x) => x.id === t.dataset.p); const r = p && (await markDone(p, +t.dataset.i)); if (r) { Object.assign(p, r); paint(); } },
       editAcc: async () => { const v = await ask('Datos del cliente', [{ k: 'name', l: 'Nombre', v: a.name, req: true }, { k: 'contact', l: 'Contacto', v: a.contact, half: true }, { k: 'phone', l: 'Teléfono / WhatsApp', v: a.phone, half: true }, { k: 'email', l: 'Correo', t: 'email', v: a.email }, { k: 'assets', l: 'Carpeta de assets en Drive', v: a.assets }, { k: 'notes', l: 'Notas', t: 'textarea', v: a.notes }]); if (v && v.assets && !/^https:\/\/drive\.google\.com\//.test(v.assets)) return toast('La carpeta de assets debe ser un link de Google Drive', true); if (v && (await saveAcc({ ...a, ...v }))) { toast('Guardado'); paint(); } },
       acadd: async () => { const v = await ask('Nuevo acceso', [{ k: 'servicio', l: 'Cuenta o servicio', req: true }, { k: 'usuario', l: 'Usuario', half: true }, { k: 'donde', l: 'Dónde está la clave', half: true }]); if (!v) return; if (/contrase|password|clave:/i.test(v.usuario + ' ' + v.donde) && !(await confirmAsk('Parece que escribiste una contraseña. Aquí solo va DÓNDE está. ¿Guardar igual?'))) return; if (await saveAcc({ ...a, accesos: [...(a.accesos || []), v] })) paint(); },
+      acedit: async (t) => { const i = +t.dataset.i, x = (a.accesos || [])[i]; if (!x) return; const v = await sheetForm('Editar acceso', [{ k: 'servicio', l: 'Cuenta o servicio', v: x.servicio, req: true }, { k: 'usuario', l: 'Usuario', v: x.usuario }, { k: 'donde', l: 'Dónde está la clave', v: x.donde, help: 'Nunca la contraseña: solo dónde está guardada' }], { chip: html`${ico('lock', 12)} Accesos` }); if (!v) return; if (/contrase|password|clave:/i.test(v.usuario + ' ' + v.donde) && !(await confirmAsk('Parece que escribiste una contraseña. Aquí solo va DÓNDE está. ¿Guardar igual?'))) return; const l = [...(a.accesos || [])]; l[i] = v; if (await saveAcc({ ...a, accesos: l })) { toast('Guardado'); paint(); } },
+      esedit: async (t) => { const k = +t.dataset.k, x = (a.mentors || [])[k]; if (!x) return; const m = mentors.find((y) => y.id === x.id); const gl = goalsOf(a); const v = await sheetForm(`Editar especialista${m ? ' · ' + m.name : ''}`, [{ k: 'cadence', l: 'Cada cuánto', t: 'select', opts: CADENCE, v: x.cadence }, { k: 'goal', l: 'Para qué meta', t: 'select', opts: [['', '— Ninguna'], ...gl.map((g, i) => [String(i), g.goal])], v: x.goal == null ? '' : String(x.goal) }, { k: 'note', l: 'Para qué lo traemos', t: 'textarea', v: x.note }]); if (!v) return; const l = [...a.mentors]; l[k] = { ...x, cadence: v.cadence, goal: v.goal === '' ? null : +v.goal, note: v.note }; if (await saveAcc({ ...a, mentors: l })) { toast('Guardado'); paint(); } },
       acdel: async (t) => { if (await saveAcc({ ...a, accesos: (a.accesos || []).filter((_, i) => i !== +t.dataset.i) })) paint(); },
       acwadd: async () => { const opts = team.filter((p) => !(a.accesos_to || []).includes(p.email || p.id)).map((p) => [p.email || p.id, p.name || p.email || p.id]); if (!opts.length) return toast('No hay más personas en el equipo'); const v = await ask('¿Quién más ve los accesos?', [{ k: 'e', l: 'Persona', t: 'select', opts, req: true }]); if (!v) return; if (await saveAcc({ ...a, accesos_to: [...(a.accesos_to || []), v.e] })) paint(); },
       acwdel: async (t) => { if (await saveAcc({ ...a, accesos_to: (a.accesos_to || []).filter((e) => e !== t.dataset.e) })) paint(); },
     }));
     paint();
+    if (me.areas.includes('library')) col('docs').list().then((l) => { docs = l || []; refresh(); }).catch(() => {});
+    if (me.areas.includes('sales')) Promise.all([col('leads').list(), col('quotes').list().catch(() => [])]).then(([leads, qs]) => {
+      const qIds = new Set([a.onboarding?.from_quote, a.from_quote].filter(Boolean));
+      const lid = qs.filter((q) => q.client_slug === slug || qIds.has(q.id)).map((q) => q.lead_id).find(Boolean);
+      const l = leads.find((x) => x.id === lid) || leads.find((x) => x.client_slug === slug);
+      if (l) { origin = { id: l.id, source: l.source || 'Sin fuente', name: l.name }; refresh(); }
+    }).catch(() => {});
   }
 }
