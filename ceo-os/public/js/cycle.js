@@ -1,6 +1,6 @@
 // El ciclo de contenido y sus tareas: lo usan el Arranque y el asistente de «+ Proyecto».
 // Las tareas, reuniones y lo que se pide al cliente ya no viven aquí: salen de las recetas (recipes.js), que el CEO edita.
-import { addDays, workdays, recipeFor, serviceRecipe, DEFAULT_RECIPES, WHO } from './recipes.js';
+import { addDays, workdays, recipeFor, serviceRecipe, bundleRecipe, DEFAULT_RECIPES, WHO } from './recipes.js';
 export { addDays, WHO };
 export const CYCLE = [['Reunión día 1', 1, 1], ['Plan', 1, 3], ['Calendario y shot list', 2, 3], ['Brand guidelines', 3, 6], ['Producción', 6, 11], ['Montaje', 12, 15], ['Cambios y programación', 16, 19], ['Presentación al cliente', 20, 20]];
 export const PROJECT_PHASES = ['Descubrimiento', 'Estrategia', 'Build', 'Entrega'];
@@ -79,6 +79,10 @@ export function customTasks(p, items, team, meEmail, R) {
       out.push({ key: `s${si}r${ri}`, after: top < 0 ? iniKeys : prev.filter((x) => x.st === top).map((x) => `s${si}r${x.ri}`), title: `${i.name} · ${r.role}${+r.hours ? ` (${r.hours} h)` : ''}`, service_id: i.id, service: i.name, project_id: p.id, dept: '', role, assignee: who(role) || meEmail, accountable: coo, due: dueAt(st), checklist: (i.includes || []).map((x) => ({ t: x, done: false })), hours: r.hours, level: i.level, status: 'Por empezar', tipo: 'Delivery' });
     });
   });
+  // Las responsabilidades propias del paquete (Servicios → Responsabilidades), además de las de sus servicios.
+  const br = bundleRecipe(R, p.bundle_id);
+  if (br) { const mk = (k) => `b:${k}`, own = (k) => br.tasks.some((x) => x.key === k);
+    br.tasks.forEach((r) => { const dep = (r.after || []).filter(own); out.push({ key: mk(r.key), after: dep.length ? dep.map(mk) : iniKeys, ...ficha(r, p, who, { due: workdays(start, Math.max(0, +r.day || 0)), assignee: who(r.role) || meEmail, accountable: r.reviewer ? who(r.reviewer) || coo : coo }) }); }); }
   const last = out.map((t) => t.due).sort().at(-1);
   const qaDue = items.every((i) => i.days) && last ? workdays(last, 2) : end;
   // Cierre: el COO revisa lo entregado, lo ve con el CEO y se entrega al cliente.

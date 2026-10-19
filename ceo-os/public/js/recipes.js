@@ -4,6 +4,7 @@
 // Una receta tiene un tipo:
 //   proyecto   el trabajo de un tipo de proyecto (Ciclo mensual, Growth, Proyecto, Custom)
 //   servicio   el trabajo de un servicio del catálogo (service_id); al activar un paquete o una cotización, sus tareas salen de aquí
+//   paquete    las responsabilidades propias de un paquete (bundle_id), además de las de sus servicios; salen al activar ese paquete
 //   interna    una responsabilidad recurrente de Inherent (semanal, mensual, fecha fija) que genera tareas tipo Interna
 // y trae sus tareas (título, perfil, quién revisa, día, horas, SOP, tipo y de qué dependen), sus reuniones
 // y lo que se le pide al cliente. Las recetas de siempre son los valores por defecto: si nadie las edita, todo sigue igual.
@@ -14,7 +15,7 @@ export const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d
 // n días hábiles después de `s` (lunes a viernes).
 export const workdays = (s, n) => { const d = new Date(s + 'T12:00'); let k = 0; while (k < n) { d.setDate(d.getDate() + 1); if (d.getDay() % 6) k++; } return iso(d); };
 
-export const RECIPE_TYPES = [['proyecto', 'Proyecto'], ['servicio', 'Servicio'], ['interna', 'Interna recurrente']];
+export const RECIPE_TYPES = [['proyecto', 'Proyecto'], ['servicio', 'Servicio'], ['paquete', 'Paquete'], ['interna', 'Interna recurrente']];
 export const KINDS = ['Ciclo mensual', 'Growth', 'Proyecto', 'Custom'];
 // Los perfiles que pueden hacer o revisar una tarea (los de Team + «prod», que sale del cargo de producción).
 export const RECIPE_ROLES = [['ceo', 'CEO'], ['coo', 'COO'], ['content', 'Content'], ['video', 'Editor de video'], ['prod', 'Producción'], ['ads', 'Ads'], ['finance', 'Finance'], ['cobros', 'Cobros'], ['ventas', 'Ventas']];
@@ -117,6 +118,8 @@ export const defaultRecipe = (id) => DEFAULT_RECIPES.find((r) => r.id === id) ||
 export const recipeFor = (R, kind) => (R || DEFAULT_RECIPES).find((r) => r.type === 'proyecto' && r.kind === kind && r.active !== false) || (R || DEFAULT_RECIPES).find((r) => r.type === 'proyecto' && r.kind === 'Proyecto') || DEFAULT_RECIPES[2];
 // La receta de un servicio del catálogo (si el CEO la escribió).
 export const serviceRecipe = (R, serviceId) => (R || []).find((r) => r.type === 'servicio' && r.service_id === serviceId && r.active !== false && (r.tasks || []).length) || null;
+// Las responsabilidades propias de un paquete (si el CEO las escribió).
+export const bundleRecipe = (R, bundleId) => (bundleId && (R || []).find((r) => r.type === 'paquete' && r.bundle_id === bundleId && r.active !== false && (r.tasks || []).length)) || null;
 export const checksFor = (R, role) => (recipeFor(R, 'Ciclo mensual').checks || CHECKS)[role] || [];
 
 // ---------- Recurrentes: qué fechas toca ----------
@@ -163,10 +166,11 @@ export function cleanRecipe(b) {
   const bad = (m) => { throw Object.assign(new Error(m), { status: 400 }); };
   b = b || {};
   const name = str(b.name, 80); if (!name) bad('La receta necesita un nombre');
-  const type = RECIPE_TYPES.some(([k]) => k === b.type) ? b.type : bad('Tipo de receta: proyecto, servicio o interna');
+  const type = RECIPE_TYPES.some(([k]) => k === b.type) ? b.type : bad('Tipo de receta: proyecto, servicio, paquete o interna');
   const out = { name, type, active: b.active !== false, unit: b.unit === 'habil' ? 'habil' : 'dia', note: str(b.note, 600) };
   if (type === 'proyecto') { out.kind = KINDS.includes(b.kind) ? b.kind : bad('Tipo de proyecto: Ciclo mensual, Growth, Proyecto o Custom'); }
   if (type === 'servicio') { out.service_id = str(b.service_id, 120); if (!out.service_id) bad('Una receta de servicio dice de cuál servicio es'); out.unit = 'habil'; }
+  if (type === 'paquete') { out.bundle_id = str(b.bundle_id, 120); if (!out.bundle_id) bad('Una receta de paquete dice de cuál paquete es'); out.unit = 'habil'; }
   if (type === 'interna') {
     const r = b.repeat || {}, f = ['semanal', 'mensual', 'anual'].includes(r.freq) ? r.freq : bad('Frecuencia: semanal, mensual o anual');
     out.repeat = f === 'semanal' ? { freq: f, dow: int(r.dow, 1, 7, 1) } : f === 'mensual' ? (() => { const a = int(r.from, 1, 31, 1); return { freq: f, from: a, to: int(r.to, a, 31, a) }; })() : { freq: f, month: int(r.month, 1, 12, 1), day: int(r.day, 1, 31, 1) };
@@ -188,7 +192,8 @@ export function cleanRecipe(b) {
   out.meetings = (Array.isArray(b.meetings) ? b.meetings : []).slice(0, 20).map((m) => ({ name: str(m.name, 120) || bad('Cada reunión necesita nombre'), day: int(m.day, 1, 365, 1), who: (Array.isArray(m.who) ? m.who : []).filter((x) => x in WHO).slice(0, 10), topics: list(m.topics, 12, 200), approves: str(m.approves, 200) }));
   out.ask = list(b.ask, 30, 300);
   if (b.checks && typeof b.checks === 'object') { out.checks = {}; for (const [r, v] of Object.entries(b.checks).slice(0, 12)) { const k = roleOk(r); if (k) out.checks[k] = list(v, 20, 200); } }
-  if (type !== 'interna' && !out.tasks.length && type === 'servicio') bad('Una receta de servicio necesita al menos una tarea');
+  if (type === 'servicio' && !out.tasks.length) bad('Una receta de servicio necesita al menos una tarea');
+  if (type === 'paquete' && !out.tasks.length) bad('Una receta de paquete necesita al menos una responsabilidad');
   if (type === 'interna' && !out.tasks.length) bad('Una receta interna necesita su tarea');
   return out;
 }

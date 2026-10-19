@@ -1,11 +1,13 @@
 import { upcoming, meetingRows, isMine as meetIsMine } from '../meetings.js';
-import { LOGO, lineChart, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor, swap, ico } from '../core.js';
+import { LOGO, lineChart, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor, swap, ico, md } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
 import { tipoSopFields, bindSop, readTipoSop, sopLink, tipoChips, tipoMatch, tipoBadge } from '../tasktype.js';
 import { newProject as wizProject, newTask as wizTask } from '../create.js';
 import { blockersOf, unlocksOf } from '../cycle.js';
 import { recipesWith, checksFor } from '../recipes.js';
 import { payDialog } from '../flowui.js';
+import { openDelivery, dueChip as tDue, stChip as tSt } from '../taskcard.js';
+import { purposeCard } from '../purpose.js';
 
 // Workspace: cada persona trabaja desde el perfil (o los perfiles) que tiene asignados en Team.
 // Todos tienen su kanban personal, el de la empresa y sus tareas. Cada perfil agrega lo suyo:
@@ -84,7 +86,7 @@ export async function render(el, { me, sub, alive }) {
         ${myRoles.length > 1 ? html`<div class="tabs" style="margin:0">${myRoles.map((r) => html`<button class="${r === role ? 'on' : ''}" data-act="role" data-r="${r}">${roleName(r).split(' · ')[0]}</button>`)}</div>` : ''}
         ${canCoord ? html`<button class="btn ghost" data-act="newProject">+ Proyecto</button>` : ''}<button class="btn" data-act="newTask">+ Tarea</button></div>
       <div class="tabs" style="margin:0 0 14px">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
-      ${tab === 'zona' ? myMeetings() : ''}<div id="wbody"></div>`);
+      ${tab === 'zona' ? html`${purposeCard(asP ? { ...asP, role: asP.role || 'team', roles: asP.roles || [], email: who, viewsDoc: me.viewsDoc } : me, { area: 'work', own: !asP })}${myMeetings()}` : ''}<div id="wbody"></div>`);
     const vs = $('#viewAs', el); if (vs) vs.onchange = () => { location.hash = vs.value ? `/work/zona/_/${vs.value}` : '/work'; };
     const b = $('#wbody', el);
     if (tab === 'zona') return (ZONES[role] || noRole)(b);
@@ -307,22 +309,113 @@ export async function render(el, { me, sub, alive }) {
       </div>`);
     hookUpload(b);
   }
-  // =================== ADS MANAGEMENT · Meta, Google, LinkedIn ===================
-  // La pauta no se lanza sin el OK del CEO (plan y presupuesto, y cada cambio de presupuesto): gate ⑩.
+  // =================== ADS MANAGEMENT · el puesto de la persona de pauta ===================
+  // Por cliente con pauta contratada (la ficha dice «Pauta» o ⑩ Ads está en su pipeline, o tiene cuenta o presupuesto
+  // de pauta): el encargo (objetivo, métrica, presupuesto y OK del CEO), los pasos del método de ⑩ con su skill `ad-*`,
+  // sus tareas de la semana, las campañas y el aprendizaje del repo. Sin el OK del CEO (gate ⑩) nada se lanza.
+  // Nada de costos ni márgenes de Inherent: el presupuesto es del cliente y va aparte.
   const ADS = [['meta', 'Meta', (id) => `https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${id}`], ['google', 'Google Ads', (id) => `https://ads.google.com/aw/campaigns?__e=${id.replace(/-/g, '')}`], ['linkedin', 'LinkedIn', (id) => `https://www.linkedin.com/campaignmanager/accounts/${id}/campaigns`]];
+  const CAMP_PLATS = [['meta', 'Meta'], ['google', 'Google Ads'], ['tiktok', 'TikTok'], ['linkedin', 'LinkedIn']];
+  const CAMP_ST = ['Borrador', 'Activa', 'Pausada', 'Terminada'];
+  // Las capas del WORKFLOW de ⑩ Ads, en orden, con la skill que las corre y cómo se reconoce su tarea.
+  const STEPS = [
+    ['0', 'Encargo', 'ad-encargo', 'Objetivo en una métrica, presupuesto del cliente, acceso a las cuentas y tracking', /encargo|objetivo|presupuesto|tracking|acceso/i],
+    ['1', 'Estructura', 'ad-estructura', 'Cuántas campañas, con qué objetivo, qué públicos y cómo se reparte el presupuesto', /estructura|p[úu]blico|campañ|keyword|audienc/i],
+    ['2', 'Creativos', 'ad-creativos', 'Qué piezas se pautan y con qué variantes de hook · claims validados por ②B Branding', /creativ|variante|hook|claim/i],
+    ['G', 'Gate 1 · OK del CEO', null, 'El CEO aprueba el plan y el presupuesto. Sin esto no se lanza', null],
+    ['3', 'Lanzamiento', 'ad-lanzamiento', 'Se corre lo aprobado y se anota qué quedó corriendo y desde cuándo', /lanz/i],
+    ['4', 'Optimización', 'ad-optimizacion', 'Pacing, fatiga y qué se mueve · un cambio a la vez · cada cambio de presupuesto pasa por el Gate 2', /optimiz|pacing|fatiga|pausa/i],
+    ['5', 'Atribución', 'ad-atribucion', 'Qué ventas vinieron de la pauta · solo Growth Partnership, con atribución limpia', /atribu/i],
+    ['↻', 'Loop', 'ad-loop', 'Qué hook ganó, qué fatigó, qué vuelve a ④ Creatividad y a ② Growth · escribe aprendizaje-de-pauta.md', /aprendiz|loop|cierre|revisi[óo]n del 20/i],
+  ];
+  let adsSel = null, campaigns, campsOn = null;
+  const adsInfo = {}, pautaInfo = {};
+  const isAdsT = (t) => /^⑩/.test(t.dept || '') || /\bads\b|pauta|campaña/i.test(t.title || '');
+  const byDue = (a, z) => String(a.due || '9').localeCompare(String(z.due || '9'));
+  const adsAcc = (sl) => accounts.find((x) => x.id === 'acc-' + sl)?.ads || {};
+  const fichaPauta = (sl) => { const i = adsInfo[sl]; if (!i || i.loading) return null; return (i.fields || []).find((f) => /^pauta|publicidad/i.test(f.key))?.value || (i.pipeline || []).find((p) => /⑩/.test(p.paso))?.que || ''; };
+  const hasPauta = (sl) => { const a = adsAcc(sl), f = fichaPauta(sl); return Boolean(a.meta || a.google || a.linkedin || a.budget || a.objetivo) || (f ? !/no entra|no incluye|no aplica|^no\b|^—|sin pauta/i.test(f) : false) || tasks.some((t) => isAdsT(t) && clientOf(t) === sl); };
+  // El OK del CEO vale para este mes y para ese presupuesto: si cambia el monto, se vuelve a pedir (gate 2).
+  const okOf = (a) => (a.ok && a.ok.month === ymNow() && a.ok.budget === (a.budget || null) ? a.ok : null);
+  const Q = (v) => 'Q' + Number(v || 0).toLocaleString('en-US');
+  function loadInfos(slugs) { for (const sl of slugs) if (!adsInfo[sl]) { adsInfo[sl] = { loading: true }; api(`repo/client/${encodeURIComponent(sl)}`).then((r) => { adsInfo[sl] = r; }).catch(() => { adsInfo[sl] = { fields: [], pipeline: [] }; }).then(() => alive() && role === 'ads' && tab === 'zona' && paint()); } }
+  function loadCamps() { if (campaigns !== undefined) return; campaigns = null; col('campaigns').list().then((l) => { campaigns = l; campsOn = true; }).catch(() => { campaigns = []; campsOn = false; }).then(() => alive() && role === 'ads' && tab === 'zona' && paint()); }
+  function loadPauta(sl) { if (!sl || pautaInfo[sl]) return; pautaInfo[sl] = { loading: true }; api(`repo/client/${encodeURIComponent(sl)}/pauta`).then((r) => { pautaInfo[sl] = r; }).catch((e) => { pautaInfo[sl] = { error: e.message }; }).then(() => alive() && role === 'ads' && tab === 'zona' && paint()); }
+  // Mientras la colección «campaigns» no esté habilitada en el servidor, una campaña se guarda como tarea de ⑩ (kind «campaign»).
+  const campOf = (t) => ({ id: t.id, _task: t, client_slug: clientOf(t), name: t.title.replace(/^Campaña · /, ''), ...(t.campaign || {}) });
+  const campsFor = (sl) => [...(campaigns || []).filter((c) => c.client_slug === sl), ...tasks.filter((t) => t.kind === 'campaign' && clientOf(t) === sl).map(campOf)];
+  const RUN = ['Activa', 'Pausada', 'Terminada'];
+  function stepState(sl, [k, , , , re], camps, a, ok) {
+    const l = re ? tasks.filter((t) => isAdsT(t) && clientOf(t) === sl && re.test(t.title)) : [];
+    const byTasks = l.length ? (l.every((t) => status(t) === 'Hecha') ? 'hecho' : 'curso') : 'pend';
+    if (k === '0') return a.objetivo && a.metrica && a.budget ? 'hecho' : byTasks;
+    if (k === '1') return camps.length ? 'hecho' : byTasks;
+    if (k === 'G') return ok ? 'hecho' : 'espera';
+    if (k === '3') return camps.some((c) => RUN.includes(c.status)) ? 'hecho' : ok ? byTasks : 'bloq';
+    if (k === '4') return byTasks === 'pend' && camps.some((c) => c.status === 'Activa') ? 'curso' : byTasks;
+    if (k === '↻') return pautaInfo[sl]?.aprendizaje ? 'hecho' : byTasks;
+    return byTasks;
+  }
+  function encargoBox(sl) {
+    const a = adsAcc(sl), ok = okOf(a), f = fichaPauta(sl), info = adsInfo[sl];
+    const plats = ADS.filter(([k]) => a[k]).map(([, l]) => l);
+    const v = (x, nd = '⚠️ SIN DATOS') => (x ? html`${x}` : html`<span class="nd">${nd}</span>`);
+    return box('Encargo', 'Lo que se compra con la pauta · capa 0', html`<div class="encargo">
+      <div><span class="lbl">Objetivo</span>${v(a.objetivo)}</div>
+      <div><span class="lbl">Métrica</span>${v(a.metrica, '⚠️ SIN DATOS · una métrica, no un deseo')}</div>
+      <div><span class="lbl">Qué se vende</span>${v(a.oferta, 'Lo define ② Growth')}</div>
+      <div><span class="lbl">Canales</span>${v([a.canales, ...plats].filter(Boolean).join(' · ') || null)}</div>
+      <div><span class="lbl">Presupuesto del cliente</span>${a.budget ? html`${Q(a.budget)}/mes <span class="mut sm">· lo pone el cliente, aparte</span>` : v(null)}</div>
+      <div><span class="lbl">Ficha de oferta</span>${!info || info.loading ? html`<span class="mut sm">Cargando…</span>` : f ? html`${f}` : html`<span class="nd">Sin fila «Pauta» en la ficha: revisa el alcance antes de prometer</span>`}</div></div>
+      <div class="adsgate ${ok ? 'ok' : ''}">${ok ? html`${ico('check', 15)}<span><b style="font-weight:500">OK del CEO</b> · ${fdate(ok.at)} · ${Q(ok.budget)}/mes</span>` : html`${ico('lock', 15)}<span><b style="font-weight:500">Esperando OK del CEO</b> · sin el OK del plan y el presupuesto no se lanza nada</span>`}<div class="sp"></div>
+        ${isCeo && !asP ? html`<button class="btn xs ${ok ? 'ghost' : ''}" data-act="adsOk" data-s="${sl}" data-v="${ok ? '0' : '1'}">${ok ? 'Retirar OK' : 'Dar OK'}</button>` : ''}</div>`,
+      html`<button class="btn ghost xs" data-act="encargoEdit" data-s="${sl}">Editar</button>`);
+  }
+  function stepsBox(sl) {
+    const a = adsAcc(sl), ok = okOf(a), camps = campsFor(sl);
+    let marked = false;
+    const rows = STEPS.map((s) => { let st = stepState(sl, s, camps, a, ok); if (!marked && st !== 'hecho') { marked = true; if (st === 'pend') st = 'ahora'; } return [s, st]; });
+    const LBL = { hecho: ['Hecho', 'green'], curso: ['En curso', 'lime'], ahora: ['Ahora', 'dark'], espera: ['Esperando OK del CEO', 'amber'], bloq: ['Sin OK: no se lanza', 'red'], pend: ['Pendiente', ''] };
+    return box('Pasos del método', 'El flujo de ⑩ Ads · cada paso dice qué skill correr en Claude', html`<div class="adsteps">${rows.map(([[k, name, skill, sub], st]) => html`<div class="adstep ${st}"><span class="n">${k}</span><span><b style="font-weight:500">${name}</b></span>
+      <span class="st"><span class="chip sm2 ${LBL[st][1]}">${LBL[st][0]}</span>${skill ? html`<button class="sk" data-act="skill" data-k="${skill}" data-s="${sl}" data-n="${name}" title="Abre Claude con este paso">${skill}</button>` : isCeo && !asP && !ok ? html`<button class="btn xs" data-act="adsOk" data-s="${sl}" data-v="1">Dar OK</button>` : html`<span class="sk" style="cursor:default">CEO</span>`}</span>
+      <span class="sub">${sub}</span></div>`)}</div>`, html`<span class="sm">${rows.filter(([, st]) => st === 'hecho').length}/${rows.length}</span>`);
+  }
+  function weekBox(sl) {
+    const l = open(mine()).filter((t) => isAdsT(t) && clientOf(t) === sl).sort(byDue), week = l.filter((t) => !t.due || t.due <= T7);
+    return box('Esta semana', 'Tus tareas de ⑩ Ads con su fecha · entrega desde aquí', week.length ? html`${week.slice(0, 8).map((t) => html`<div class="wkrow"><span class="grow" data-act="deliver" data-id="${t.id}"><b style="font-weight:500">${t.title}</b></span>${tDue(t)}${tSt(t)}<button class="btn xs" data-act="deliver" data-id="${t.id}">${status(t) === 'En revisión' ? 'Ver' : 'Entregar'}</button></div>`)}${l.length > week.length ? html`<div class="mut sm" style="padding:6px 0">+ ${l.length - week.length} más adelante</div>` : ''}`
+      : html`<div class="mut sm" style="padding:6px 0">Nada de ⑩ Ads esta semana para este cliente.</div>`, html`<button class="btn ghost xs" data-act="adsTask" data-s="${sl}">+</button>`);
+  }
+  function campsBox(sl) {
+    const l = campsFor(sl).sort((a, z) => String(z.from || '').localeCompare(String(a.from || ''))), P = Object.fromEntries(CAMP_PLATS);
+    return box('Campañas', campsOn === false ? 'Se guardan como tareas de ⑩ Ads mientras se habilita la colección «campaigns»' : 'Lo que está armado y corriendo · nombre, plataforma, estado, presupuesto diario y fechas',
+      campaigns === null && !l.length ? html`<p class="loading sm">Cargando…</p>` : l.length ? html`<div class="camps"><table class="wktable"><thead><tr><th>Campaña</th><th>Plataforma</th><th>Estado</th><th class="n">Diario</th><th>Desde</th><th>Hasta</th></tr></thead><tbody>
+        ${l.map((c) => html`<tr class="click" data-act="campEdit" data-id="${c.id}" data-s="${sl}"><td><b style="font-weight:500">${c.name}</b>${c.objective ? html`<div class="mut sm">${c.objective}</div>` : ''}</td><td>${P[c.platform] || c.platform || '—'}</td><td><span class="chip sm2 ${c.status === 'Activa' ? 'lime' : c.status === 'Pausada' ? 'amber' : c.status === 'Terminada' ? 'green' : ''}">${c.status || 'Borrador'}</span></td><td class="n">${c.daily ? Q(c.daily) : '—'}</td><td>${c.from ? fdate(c.from) : '—'}</td><td>${c.to ? fdate(c.to) : '—'}</td></tr>`)}</tbody></table></div>`
+      : html`<div class="mut sm" style="padding:6px 0">Sin campañas registradas. Cuando <b>ad-estructura</b> las arme, anótalas aquí; «Activa» solo con el OK del CEO.</div>`, html`<button class="btn xs" data-act="campNew" data-s="${sl}">+ Campaña</button>`);
+  }
+  function learnBox(sl) {
+    loadPauta(sl); const pi = pautaInfo[sl];
+    return box('Aprendizaje', 'Lo que dejó el ciclo anterior · aprendizaje-de-pauta.md del cliente', !pi || pi.loading ? html`<p class="loading sm">Cargando…</p>` : pi.error ? html`<div class="mut sm">${pi.error}</div>`
+      : pi.aprendizaje ? html`<div class="adslearn">${md(pi.aprendizaje)}</div>` : html`<div class="mut sm" style="padding:6px 0">Todavía no hay <code>aprendizaje-de-pauta.md</code> para este cliente. Lo escribe <b>ad-loop</b> al cerrar el ciclo (revisión del 20).</div>`,
+      pi && !pi.loading && !pi.error ? html`<span class="mut sm">${pi.plan ? 'plan ✓' : 'sin plan'} · ${pi.reporte ? 'reporte ✓' : 'sin reporte'}</span>` : '');
+  }
+  const cuentasBox = (slugs) => box('Cuentas de pauta', 'Por cliente: abre su Ads Manager directo', slugs.length ? html`${slugs.map((sl) => { const a = adsAcc(sl);
+    return html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="adsplat">${ADS.map(([k, l, url]) => a[k] ? html`<a class="adsp" href="${url(a[k])}" target="_blank" rel="noopener noreferrer"><span class="ailogo sm">${LOGO[k]}</span>${l} ↗</a>` : html`<span class="adsp off"><span class="ailogo sm">${LOGO[k]}</span>${l}</span>`)}</div>
+      ${a.budget ? html`<span class="mut sm">${Q(a.budget)}/mes</span>` : ''}<button class="btn ghost xs" data-act="adsEdit" data-s="${sl}">Cuentas</button></div>`; })}` : html`<div class="mut sm">Sin clientes con proyecto activo.</div>`);
   function adsZone(b) {
     const slugs = [...new Set(projects.filter((p) => p.client_slug && p.status !== 'cerrado').map((p) => p.client_slug))];
-    const adsT = tasks.filter((t) => /^⑩/.test(t.dept || '') || /\bads\b|pauta|campaña/i.test(t.title || ''));
-    const gates = adsT.filter((t) => status(t) !== 'Hecha');
-    const accOf = (sl) => accounts.find((x) => x.id === 'acc-' + sl) || {};
-    const withAds = slugs.filter((sl) => Object.values(accOf(sl).ads || {}).some(Boolean));
-    mount(b, html`${kpis([['Clientes con pauta', withAds.length], ['Planes por aprobar', gates.filter((t) => status(t) === 'En revisión').length, '#654c38'], ['Mis tareas de Ads', open(mine()).filter((t) => adsT.includes(t)).length]])}
+    loadInfos(slugs); loadCamps();
+    const withAds = slugs.filter(hasPauta), loading = slugs.some((sl) => adsInfo[sl]?.loading);
+    if (!withAds.includes(adsSel)) { const first = clientOf(open(mine()).sort(byDue).find(isAdsT) || {}); adsSel = withAds.includes(first) ? first : withAds[0] || null; }
+    const myAds = open(mine()).filter(isAdsT), waiting = withAds.filter((sl) => !okOf(adsAcc(sl)));
+    const active = withAds.reduce((n, sl) => n + campsFor(sl).filter((c) => c.status === 'Activa').length, 0);
+    mount(b, html`${kpis([['Clientes con pauta', withAds.length], ['Esperan OK del CEO', waiting.length, waiting.length ? '#725741' : ''], ['Mis tareas de ⑩ esta semana', myAds.filter((t) => !t.due || t.due <= T7).length], ['Campañas activas', active]])}
+      ${withAds.length ? html`<div class="adscli">${withAds.map((sl) => html`<span class="chip ${sl === adsSel ? 'dark' : ''}" data-act="adsCli" data-s="${sl}"><i class="${okOf(adsAcc(sl)) ? 'ok' : ''}"></i>${sl.toUpperCase()}</span>`)}${loading ? html`<span class="mut sm">Leyendo fichas…</span>` : ''}</div>` : ''}
+      ${adsSel ? html`<div class="wkgrid">${encargoBox(adsSel)}${stepsBox(adsSel)}${weekBox(adsSel)}<div class="span2">${campsBox(adsSel)}</div>${learnBox(adsSel)}</div>`
+        : html`<div class="empty" style="margin-bottom:12px"><b>${loading ? 'Leyendo las fichas…' : 'Ningún cliente con pauta contratada'}</b>${loading ? '' : 'Un cliente entra aquí cuando su ficha de oferta incluye pauta (fila «Pauta» o ⑩ Ads en su pipeline) o cuando tiene cuenta o presupuesto de pauta en Clientes.'}</div>`}
+      <div class="sec-title"><h2>La pauta en general</h2><span class="mut sm">Cuentas, cómo va y qué hace la competencia</span></div>
       <div class="wkgrid">
-        <div class="span2">${box('Cuentas de pauta', 'Por cliente: abre su Ads Manager directo', slugs.length ? html`${slugs.map((sl) => { const a = accOf(sl).ads || {};
-          return html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="adsplat">${ADS.map(([k, l, url]) => a[k] ? html`<a class="adsp" href="${url(a[k])}" target="_blank" rel="noopener noreferrer"><span class="ailogo sm">${LOGO[k]}</span>${l} ↗</a>` : html`<span class="adsp off"><span class="ailogo sm">${LOGO[k]}</span>${l}</span>`)}</div>
-            ${a.budget ? html`<span class="mut sm">Q${Number(a.budget).toLocaleString('en-US')}/mes</span>` : ''}<button class="btn ghost xs" data-act="adsEdit" data-s="${sl}">Cuentas</button></div>`; })}` : html`<div class="mut sm">Sin clientes con proyecto activo.</div>`)}</div>
+        <div class="span2">${cuentasBox(slugs)}</div>
         <div class="span2">${adsReport()}</div>
-        ${box('Plan y presupuesto', 'Gate ⑩: el CEO aprueba antes de lanzar', gates.length ? html`${gates.slice(0, 8).map((t) => trow(t))}` : html`<div class="mut sm">Nada esperando.</div>`)}
         ${box('Mis tareas', '', myList(8))}
         <div class="span2">${adsComp(slugs)}</div>
         ${checklist('ads')}${uploader('Entregar trabajo')}${sops('ads')}
@@ -330,6 +423,29 @@ export async function render(el, { me, sub, alive }) {
     hookUpload(b);
     const cs = $('#compSel', b); if (cs) cs.onchange = () => { compSel = cs.value; comp = null; paint(); };
     const ch = $('#adsch', b); if (ch && adsRep?.on) { const days = {}; adsRep.clients.forEach((c) => c.series.forEach((x) => (days[x.date] = (days[x.date] || 0) + x.spend))); const ks = Object.keys(days).sort(); if (ks.length > 1) lineChart(ch, ks.map((d) => fdate(d)), [{ name: 'Gasto', v: ks.map((d) => days[d]), c: '#2c1f16', fill: true }], { fmt: (v) => 'Q' + Math.round(v).toLocaleString('en-US') }); else ch.remove(); }
+  }
+  // Guarda el encargo o las cuentas de un cliente (PUT ads/accounts): el servidor conserva el OK del CEO si el presupuesto no cambió.
+  async function putAds(sl, v) {
+    try { const r = await api('ads/accounts/' + encodeURIComponent(sl), { method: 'PUT', body: v }); const i = accounts.findIndex((x) => x.id === 'acc-' + sl); if (i >= 0) accounts[i] = { ...accounts[i], ads: r.ads }; else accounts.push({ id: 'acc-' + sl, ads: r.ads }); return r.ads; } catch (e) { toast(e.message, true); return null; }
+  }
+  async function campForm(sl, c = null) {
+    const v = await ask(c ? `Campaña · ${c.name}` : `Nueva campaña · ${sl.toUpperCase()}`, [
+      { k: 'name', l: 'Nombre', v: c?.name || '', req: true },
+      { k: 'platform', l: 'Plataforma', t: 'select', opts: CAMP_PLATS, v: c?.platform || 'meta', half: true }, { k: 'status', l: 'Estado', t: 'select', opts: CAMP_ST, v: c?.status || 'Borrador', half: true },
+      { k: 'daily', l: 'Presupuesto diario (Q)', t: 'number', v: c?.daily || '', half: true }, { k: 'objective', l: 'Objetivo · métrica', v: c?.objective || '', half: true },
+      { k: 'from', l: 'Desde', t: 'date', v: c?.from || '', half: true }, { k: 'to', l: 'Hasta', t: 'date', v: c?.to || '', half: true },
+    ], c ? 'Guardar' : 'Registrar');
+    if (!v) return;
+    if (v.status === 'Activa' && c?.status !== 'Activa' && !okOf(adsAcc(sl))) { toast('Sin el OK del CEO no se lanza: queda como borrador', true); v.status = 'Borrador'; }
+    const data = { name: v.name.trim(), platform: v.platform, status: v.status, daily: +v.daily || null, objective: v.objective.trim(), from: v.from, to: v.to };
+    const tst = data.status === 'Terminada' ? 'Hecha' : 'En curso';
+    try {
+      if (c?._task) { if (await save({ ...c._task, title: `Campaña · ${data.name}`, campaign: data, status: tst })) toast('Guardado'); }
+      else if (c) { const r = await col('campaigns').save({ ...c, ...data }); campaigns = campaigns.map((x) => (x.id === r.id ? r : x)); toast('Guardado'); }
+      else if (campsOn) { const r = await col('campaigns').create({ ...data, client_slug: sl }); campaigns = [...(campaigns || []), r]; toast('Campaña registrada'); }
+      else { const p = projects.find((x) => x.client_slug === sl && x.status !== 'cerrado'); if (await create({ title: `Campaña · ${data.name}`, kind: 'campaign', campaign: data, dept: '⑩ Ads', project_id: p?.id || '', assignee: who, status: tst, due: data.to || '' })) toast('Campaña registrada'); }
+      paint();
+    } catch (e) { toast(e.message, true); }
   }
   // Cómo va la pauta (Windsor lee Meta, Google Ads y LinkedIn de las cuentas conectadas).
   let adsRep, adsDays = 30, compSel = null, comp = null;
@@ -484,11 +600,25 @@ export async function render(el, { me, sub, alive }) {
       const list = $('#compList').value.split('\n').map((x) => x.trim()).filter(Boolean);
       try { const r = await api('ads/competitors/' + encodeURIComponent(compSel), { method: 'POST', body: { list } }); comp = { slug: compSel, ...r }; toast('Buscando anuncios… 1-3 min'); paint(); } catch (e) { toast(e.message, true); }
     },
+    adsCli: (t) => { adsSel = t.dataset.s; paint(); },
+    encargoEdit: async (t) => {
+      const sl = t.dataset.s, a = adsAcc(sl);
+      const v = await ask(`Encargo · ${sl.toUpperCase()}`, [{ k: 'objetivo', l: 'Objetivo (qué se quiere lograr)', v: a.objetivo || '', req: true }, { k: 'metrica', l: 'Métrica (una, medible: CPA, ROAS, leads, reservas…)', v: a.metrica || '', req: true, half: true }, { k: 'budget', l: 'Presupuesto del cliente al mes (Q)', t: 'number', v: a.budget || '', half: true }, { k: 'oferta', l: 'Qué se vende (lo define ② Growth)', v: a.oferta || '' }, { k: 'canales', l: 'Canales de la ficha (Meta, Google Search, TikTok…)', v: a.canales || '' }, { k: 'note', l: 'Nota', t: 'textarea', v: a.note || '' }]);
+      if (!v) return;
+      const prev = a.budget || null;
+      if (await putAds(sl, v)) { toast(prev && +v.budget !== +prev ? 'Guardado · el presupuesto cambió: pide el OK del CEO otra vez' : 'Guardado'); paint(); }
+    },
+    adsOk: async (t) => { if (!isCeo) return; const sl = t.dataset.s, give = t.dataset.v === '1'; if (!give && !(await confirmAsk(`¿Retirar el OK de la pauta de ${sl.toUpperCase()}?`))) return; if (await putAds(sl, { ok: give })) { toast(give ? 'OK dado: ya se puede lanzar' : 'OK retirado'); paint(); } },
+    adsTask: (t) => { const p = projects.find((x) => x.client_slug === t.dataset.s && x.status !== 'cerrado'); newTask({ dept: '⑩ Ads', project_id: p?.id || '', assignee: who }); },
+    deliver: (t, e) => { e.stopPropagation(); const x = tasks.find((y) => y.id === t.dataset.id); if (x) openDelivery(x, { me: { ...me, email: who }, projects, team }, (r) => { tasks = r ? tasks.map((y) => (y.id === r.id ? r : y)) : tasks.filter((y) => y.id !== x.id); paint(); }); },
+    campNew: (t) => campForm(t.dataset.s),
+    campEdit: (t) => { const c = campsFor(t.dataset.s).find((x) => x.id === t.dataset.id); if (c) campForm(t.dataset.s, c); },
+    skill: (t) => openClaude(`/inherent ${t.dataset.s}: ⑩ Ads · corre la capa «${t.dataset.n}» con la skill ${t.dataset.k}. Lee primero la ficha de oferta del cliente (clients/${t.dataset.s}/00-onboarding/plan-contratado.md) y el WORKFLOW de agents/10-ads-management.`),
     adsEdit: async (t) => {
       const sl = t.dataset.s, a = (accounts.find((x) => x.id === 'acc-' + sl) || {}).ads || {};
       const v = await ask(`Cuentas de pauta · ${sl.toUpperCase()}`, [{ k: 'meta', l: 'Meta · ID de la cuenta publicitaria (act_…)', v: a.meta || '' }, { k: 'google', l: 'Google Ads · ID de cliente (123-456-7890)', v: a.google || '' }, { k: 'linkedin', l: 'LinkedIn · ID de la cuenta de Campaign Manager', v: a.linkedin || '' }, { k: 'budget', l: 'Presupuesto mensual aprobado (Q)', t: 'number', v: a.budget || '' }]);
       if (!v) return;
-      try { const r = await api('ads/accounts/' + encodeURIComponent(sl), { method: 'PUT', body: v }); const i = accounts.findIndex((x) => x.id === 'acc-' + sl); if (i >= 0) accounts[i] = { ...accounts[i], ads: r.ads }; else accounts.push({ id: 'acc-' + sl, ads: r.ads }); toast('Guardado'); paint(); } catch (e) { toast(e.message, true); }
+      if (await putAds(sl, v)) { toast('Guardado'); paint(); }
     },
     ctab: (t) => { ctab = t.dataset.c; swap(el, paint); },
     kv: (t) => { kView = t.dataset.v; kanban($('#wbody', el)); },

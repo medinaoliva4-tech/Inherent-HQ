@@ -1,6 +1,6 @@
 import { html, raw, mount, col, api, ask, toast, acts, confirmAsk, fdate, today, IC, ico } from '../core.js';
 
-// Metas (antes Roadmap, hoy dentro de Resultados): los pasos grandes (megaproyectos). Cada uno agrupa proyectos y cada proyecto tiene tareas con fecha y hora,
+// Roadmap: los pasos grandes (megaproyectos). Cada uno agrupa proyectos y cada proyecto tiene tareas con fecha y hora,
 // que se pueden mandar al calendario de quien lo usa. Todo vive en un solo documento por megaproyecto.
 const STATUS = { Activo: 'lime', Pausado: 'amber', Hecho: 'green' };
 const uid = () => Math.random().toString(36).slice(2, 10);
@@ -57,7 +57,7 @@ export async function render(el, { me, alive }) {
   function paint() {
     const order = { Activo: 0, Pausado: 1, Hecho: 2 };
     const list = [...megas].sort((a, z) => (order[a.status || 'Activo'] ?? 0) - (order[z.status || 'Activo'] ?? 0) || String(a.start || '9999').localeCompare(String(z.start || '9999')));
-    mount(el, html`<div class="hello row"><div><h1>Metas</h1><p>Los pasos grandes de Inherent, con sus proyectos y <em>tareas con fecha y hora</em>.</p></div><div class="sp"></div>${list.length ? html`<button class="btn" data-act="newMega">+ Meta</button>` : ''}</div>
+    mount(el, html`<div class="hello row"><div><h1>Roadmap</h1><p>Los pasos grandes de Inherent, con sus proyectos y <em>tareas con fecha y hora</em>.</p></div><div class="sp"></div>${list.length ? html`<button class="btn" data-act="newMega">+ Meta</button>` : ''}</div>
       ${list.length ? list.map(megaCard) : html`<div class="empty"><b>Todavía no hay metas</b>Cada meta es un paso grande de Inherent: dentro van sus proyectos y las tareas con fecha y hora.<div><button class="btn" data-act="newMega">+ Meta</button></div></div>`}`);
   }
 

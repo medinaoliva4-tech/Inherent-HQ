@@ -4,7 +4,10 @@ import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveSta
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
-const RED = { instagram: 'Instagram', tiktok: 'TikTok' };
+const RED = { instagram: 'Instagram', tiktok: 'TikTok', linkedin: 'LinkedIn', youtube: 'YouTube' };
+// Inspo: Research filtrado por plataforma. LinkedIn no tiene scraper conectado: lo que hay se guardó a mano (link + captura).
+export const PLATS = [['instagram', 'IG'], ['tiktok', 'TikTok'], ['linkedin', 'LinkedIn']];
+export const redOf = (x) => x?.red || (/tiktok\.com/.test(String(x?.url || '')) ? 'tiktok' : /linkedin\.com/.test(String(x?.url || '')) ? 'linkedin' : /youtu/.test(String(x?.url || '')) ? 'youtube' : 'instagram');
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$|^\/api\/media\/img-[a-f0-9]{24}$/.test(String(u || '')) ? u : null);
 // Las pestañas visibles; el resto del código sigue aquí y vuelve al agregar su pestaña a esta lista.
 const TABS = [['analytics', 'Analytics'], ['research', 'Research'], ['calendario', 'Calendario']];
@@ -45,12 +48,19 @@ export function videoCard(it) {
     <div class="cap mut">${it.text}</div></a>`;
 }
 
-export async function render(el, { me, sub, alive }) {
-  let slug = sub[1] || (() => { try { return localStorage.getItem('content.profile'); } catch { return null; } })() || 'inherent';
+// La marca personal del CEO (perfil «personal») no vive aquí: tiene su pantalla, Mi marca (#/mimarca), que monta esto mismo con el perfil fijo.
+const isPersonal = (slug) => slug === 'personal' || /-personal$/.test(String(slug || ''));
+// embed: la pantalla montada dentro de otra (Mi marca → Inspo/Contenido, Cliente → Marca → Inspo): sin título, con las
+// pestañas de `only`, el perfil fijo y, en modo `inspo`, Research con chips por plataforma (IG · TikTok · LinkedIn).
+export async function render(el, { me, sub, alive, fixed = null, embed = null }) {
+  let slug = fixed || sub[1] || (() => { try { return localStorage.getItem('content.profile'); } catch { return null; } })() || 'inherent';
+  if (!fixed && isPersonal(slug)) slug = 'inherent';
   // Vista por rol: en «resumen» solo se ve el rendimiento (Analytics), sin Research ni Calendario.
   const resumen = me?.views?.content === 'resumen';
-  const tabs = resumen ? TABS.filter(([k]) => k === 'analytics') : TABS;
-  let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : 'analytics';
+  const FIXED_TABS = [['research', 'Research'], ['postear', 'Ideas'], ['calendario', 'Calendario'], ['analytics', 'Analytics']];
+  const tabs = embed?.only ? FIXED_TABS.filter(([k]) => embed.only.includes(k)) : fixed ? FIXED_TABS : resumen ? TABS.filter(([k]) => k === 'analytics') : TABS;
+  let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : tabs[0]?.[0] || 'analytics';
+  let rplat = PLATS.some(([k]) => k === embed?.plat) ? embed.plat : 'instagram';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
   let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
@@ -59,19 +69,21 @@ export async function render(el, { me, sub, alive }) {
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
     slug = data.profile.slug; week = null; posts = null; rs = null; shoots = null; ig = null; inbox = null; rf = null; shotMes = null; gstack = null; gfiles = null; gcur = null;
-    try { localStorage.setItem('content.profile', slug); } catch {}
+    if (fixed) { if (slug !== fixed) return mount(el, fixed === 'personal' ? html`<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>` : html`<div class="empty"><b>Este cliente no tiene perfil de contenido</b>Se crea con su folder en clients/.</div>`); }
+    else { data.profiles = (data.profiles || []).filter((x) => !isPersonal(x.slug)); try { localStorage.setItem('content.profile', slug); } catch {} }
     paint();
   }
   const root = () => data.profile.root;
-  const go = () => history.replaceState(null, '', `#/content/${tab}/${slug}`);
+  const go = () => history.replaceState(null, '', embed ? `${embed.base}${tabs.length > 1 ? '/' + tab : ''}` : fixed ? `#/mimarca/${tab}` : `#/content/${tab}/${slug}`);
 
   function paint() {
     if (!alive()) return;
     const p = data.profile;
     mount(el, html`
-      <div class="hello"><h1>Contenido</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
-      <div class="row" style="margin-bottom:16px;gap:8px;flex-wrap:wrap">${data.profiles.map((x) => html`<button class="chip ${x.slug === slug ? 'dark' : ''}" data-act="prof" data-s="${x.slug}" style="padding:9px 16px;font-size:13px">${x.name}</button>`)}</div>
-      <div class="row" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      ${embed ? '' : fixed ? html`<div class="hello row" style="align-items:flex-end"><div><h1>Mi marca</h1><p>Tu marca personal: <em>research, ideas y calendario</em>.</p></div><div class="sp"></div><span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span></div>`
+      : html`<div class="hello"><h1>Contenido</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
+      <div class="row" style="margin-bottom:16px;gap:8px;flex-wrap:wrap">${data.profiles.map((x) => html`<button class="chip ${x.slug === slug ? 'dark' : ''}" data-act="prof" data-s="${x.slug}" style="padding:9px 16px;font-size:13px">${x.name}</button>`)}</div>`}
+      <div class="row" style="margin-bottom:16px;flex-wrap:wrap;gap:10px${embed && tabs.length < 2 ? ';display:none' : ''}">
         <div class="tabs" style="margin:0">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
         ${tab === 'semana' ? html`<button class="btn" data-act="scrape">Scrapear ahora</button>` : ''}
@@ -315,13 +327,14 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   function research(b) {
     if (needResearch(b, research)) return;
     const W = isoWeek(), q = rq.trim().toLowerCase();
-    const all = researchItems(), base = rview === 'semana' ? all.filter((x) => x.week === W) : all;
+    const allP = researchItems(), all = embed?.inspo ? allP.filter((x) => redOf(x) === rplat) : allP, base = rview === 'semana' ? all.filter((x) => x.week === W) : all;
     const sel = (x) => fmatch(x, rfmt) && rmatch(x, rfilter) && (!rsel.pilar || x.pillar === rsel.pilar) && (!rsel.res || resOf(x) === rsel.res) && (!rsel.talk || x.talk === rsel.talk) && (!rsel.style || x.style === rsel.style) && (!rsel.tag || (x.tags || []).includes(rsel.tag)) && rsearch(x, q);
     const list = base.filter(sel).sort(rsorter[rsort]);
     const pillars = [...new Set([...(data.cfg.pillars || []).map((x) => x.name), ...distinct(all, (x) => x.pillar)])].filter(Boolean);
     const RL = ['alta', 'media', 'baja'], present = { res: RL.filter((r) => all.some((x) => resOf(x) === r)), talk: TALK.filter(([v]) => all.some((x) => x.talk === v)), style: distinct(all, (x) => x.style), tag: distinct(all, (x) => x.tags).slice(0, 24) };
     const frow = (lbl, k, opts) => html`<div class="rfrow"><span class="lbl">${lbl}</span><div class="rfopts">${opts.map(([v, l]) => html`<button class="chip ${rsel[k] === v ? 'dark' : ''}" data-act="rsel" data-k="${k}" data-v="${v}">${l}</button>`)}</div></div>`;
-    mount(b, html`<div class="rtiles">${RFMT.map(([k, l, i]) => html`<button class="rtile ${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}"><i>${ico(i, 22)}</i><span>${l}</span></button>`)}</div>
+    mount(b, html`${embed?.inspo ? html`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:14px"><div class="tabs" style="margin:0">${PLATS.map(([k, l]) => html`<button class="${rplat === k ? 'on' : ''}" data-act="rplat" data-k="${k}">${l} · ${allP.filter((x) => redOf(x) === k).length}</button>`)}</div><div class="sp"></div><button class="btn ghost xs" data-act="rmanual">+ Guardar a mano</button></div>
+      ${rplat === 'linkedin' ? html`<div class="rsource" style="margin-bottom:12px"><span class="fi">${ico('edit', 16)}</span><div style="flex:1;min-width:200px"><b style="font-weight:500">LinkedIn: guardado a mano</b><div class="mut sm">No hay scraper de LinkedIn conectado. Pega el link del post y, si quieres, una captura (link https a la imagen).</div></div></div>` : ''}` : ''}<div class="rtiles">${RFMT.map(([k, l, i]) => html`<button class="rtile ${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}"><i>${ico(i, 22)}</i><span>${l}</span></button>`)}</div>
       <div class="row" style="gap:10px;flex-wrap:wrap;margin:16px 0 12px"><div class="tabs" style="margin:0">${[['biblioteca', 'Biblioteca'], ['semana', `Mi semana · ${all.filter((x) => x.week === W).length}`]].map(([k, l]) => html`<button class="${rview === k ? 'on' : ''}" data-act="rview" data-v="${k}">${l}</button>`)}</div>
 </div>
       ${sourceBox(all)}
@@ -337,7 +350,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       </div>
       </details>
       <div class="mut sm" style="margin:10px 0 12px;font-family:ui-monospace,Menlo,monospace">${list.length} de ${base.length} formatos${rview === 'semana' ? ` · semana ${W.slice(-2)}` : ''}</div>
-      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : all.length ? 'Nada con esos filtros' : 'Research está vacío'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : all.length ? 'Quita algún filtro.' : 'Se llena cuando Claude sube posts con el conector. Copia la instrucción de arriba y pégasela.'}</div>`}`);
+      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : all.length ? 'Nada con esos filtros' : embed?.inspo ? `Sin inspo de ${RED[rplat]} todavía` : 'Research está vacío'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : all.length ? 'Quita algún filtro.' : embed?.inspo ? (rplat === 'linkedin' ? 'Guárdalo a mano: «+ Guardar a mano» con el link del post.' : 'Claude lo sube con guardar_research (copia la instrucción de arriba) o guárdalo a mano.') : 'Se llena cuando Claude sube posts con el conector. Copia la instrucción de arriba y pégasela.'}</div>`}`);
     const qi = $('#rq', b); qi.oninput = () => { rq = qi.value; const pos = qi.selectionStart; research(b); const n = $('#rq', b); n.focus(); n.setSelectionRange(pos, pos); };
     const fd = $('.rfilt', b); if (fd) fd.ontoggle = () => { rfOpen = fd.open; };
     $('#rsort', b).onchange = (e) => { rsort = e.target.value; research(b); };
@@ -640,6 +653,17 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     rview: (t) => { rview = t.dataset.v; research($('#cbody', el)); },
     rsel: (t) => { rsel[t.dataset.k] = rsel[t.dataset.k] === t.dataset.v ? '' : t.dataset.v; research($('#cbody', el)); },
     rreload: () => { rs = null; research($('#cbody', el)); },
+    rplat: (t) => { rplat = t.dataset.k; research($('#cbody', el)); },
+    // Inspo a mano: el link del post (IG, TikTok o LinkedIn), quién lo hizo y una captura opcional. Mismo id que el conector: no se duplica.
+    rmanual: async () => {
+      const v = await ask(`Guardar inspo de ${RED[rplat]}`, [{ k: 'url', l: 'Link del post', req: true }, { k: 'title', l: 'Nombre corto', req: true, half: true }, { k: 'handle', l: 'Cuenta (@)', half: true }, { k: 'thumb', l: 'Captura (link https a la imagen)' }, { k: 'why', l: 'Por qué te sirve', t: 'textarea' }], 'Guardar');
+      if (!v) return; if (!/^https:\/\/\S+$/.test(v.url)) return toast('El link debe empezar con https://', true);
+      const red = redOf({ url: v.url }), thumb = /^https:\/\/\S+$/.test(v.thumb) ? v.thumb : undefined;
+      try { const id = await rsid(slug, v.url), cur = (rs || []).find((x) => x.id === id);
+        const doc = { id, kind: 'research', profile: slug, url: v.url, red: red === 'youtube' ? 'otra' : red, handle: v.handle.replace(/^@/, '').toLowerCase() || undefined, title: v.title, thumb, tipo: 'agregado', format: red === 'linkedin' ? 'estatico' : undefined, manual: true, why: v.why ? { por_que: v.why, inferido: true } : undefined };
+        const r = cur ? await C.save({ ...cur, ...doc, v: cur.v }) : await C.create(doc); rs = [...(rs || []).filter((x) => x.id !== r.id), r]; rplat = PLATS.some(([k]) => k === red) ? red : rplat; toast('Guardado en Inspo'); research($('#cbody', el)); }
+      catch (e) { toast(e.message, true); }
+    },
     rprompt: async () => { try { await navigator.clipboard.writeText(mcpPrompt()); toast('Instrucción copiada: pégasela a Claude'); } catch { toast(mcpPrompt()); } },
     rclear: async () => {
       if (!(await confirmAsk(`¿Vaciar Research de ${data.profile.name}? Se borran los ${(rs || []).length} posts subidos, con su análisis y su plantilla.`))) return;

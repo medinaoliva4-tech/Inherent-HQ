@@ -2,7 +2,7 @@
 import * as db from './_lib/db.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
-import { guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos } from './_lib/access.js';
+import { guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
 import * as zernio from './_lib/zernio.js';
@@ -115,7 +115,7 @@ const personalOk = (u, slug) => slug !== 'personal' || u.role === 'ceo';
 const profOf = (coll, d) => (coll === 'sources' ? d?.profile || String(d?.id || '').replace(/^(cfg|scrape|analytics|ideas|refs|ads)-/, '') : d?.profile);
 // El link de la hoja de Finanzas solo lo lee quien ve Finanzas.
 // El margen objetivo de las propuestas (settings «pricing», Finanzas → Precios) es costo/margen: solo el CEO.
-const visible = (u, coll, d) => (coll !== 'tasks' || seesTask(u, d)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'settings' || ((d?.id !== 'finance_sheet' || u.areas.includes('finanzas')) && (d?.id !== 'pricing' || u.role === 'ceo')));
+const visible = (u, coll, d) => (coll !== 'tasks' || seesTask(u, d)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'brand_boards' || personalOk(u, String(d?.id || ''))) && (coll !== 'settings' || ((d?.id !== 'finance_sheet' || u.areas.includes('finanzas')) && (d?.id !== 'pricing' || u.role === 'ceo')));
 // El alcance (todos · asignados · propio) filtra proyectos, tareas, cuentas de clientes y leads.
 const scopeOf = (u, coll) => (SCOPED.includes(coll) || ['content', 'sources'].includes(coll) ? scoper(u) : null);
 // Content y sources llevan el perfil (un cliente, inherent o personal): con alcance «asignados» o «propio» solo entran los de sus clientes.
@@ -129,12 +129,21 @@ const cleanTask = (b) => {
   if (!sop || (!/^https?:\/\/\S+$/i.test(sop) && !/^[\w.@+-]{1,120}$/.test(sop))) delete o.sop; else o.sop = sop.slice(0, 500);
   return o;
 };
+// Un presupuesto (Clientes → Presupuestos): tipo, renglones y total. El total lo calcula el servidor (cantidad × costo unitario).
+const BUDGET_TYPES = ['Photo shoot', 'Ads', 'Evento', 'Otro'], BUDGET_STATUS = ['borrador', 'enviado', 'aprobado'];
+const cleanBudget = (b) => {
+  const num = (v) => (v !== '' && v != null && Number.isFinite(+v) ? +v : null);
+  const lines = (Array.isArray(b.lines) ? b.lines : []).slice(0, 60).map((l) => { const qty = num(l?.qty) ?? 1, cost = num(l?.cost) ?? 0; return { concept: String(l?.concept || '').slice(0, 160), qty, cost, payer: l?.payer === 'inherent' ? 'inherent' : 'cliente', subtotal: Math.round(qty * cost * 100) / 100 }; }).filter((l) => l.concept);
+  return { ...b, type: BUDGET_TYPES.includes(b.type) ? b.type : 'Otro', name: String(b.name || '').slice(0, 120), status: BUDGET_STATUS.includes(b.status) ? b.status : 'borrador', client_slug: String(b.client_slug || '').toLowerCase().slice(0, 60),
+    lines, total: Math.round(lines.reduce((x, l) => x + l.subtotal, 0) * 100) / 100, note: String(b.note || '').slice(0, 2000), currency: b.currency === 'USD' ? 'USD' : 'GTQ',
+    ...(b.type === 'Ads' ? { month: String(b.month || '').slice(0, 7), daily: num(b.daily), platform: String(b.platform || '').slice(0, 40) } : { month: undefined, daily: undefined, platform: undefined }) };
+};
 // Lo que sale de un doc según quién lo pide: «resumen» recorta o no entrega (summaryOf) y los accesos de un cliente
 // solo llegan a quien los puede ver. null = para esa persona no existe.
 const shape = (u, coll, d, sc, sum = summaryOf(u, coll)) => {
   if (!d) return null;
   if (sum) { d = sum(d); if (!d) return null; }
-  return coll === 'accounts' ? stripAccesos(u, d, sc) : d;
+  return coll === 'accounts' ? stripAccesos(u, d, sc) : coll === 'budgets' ? stripCosts(u, d) : d;
 };
 on('GET', 'db/:coll', async (req, res) => {
   const u = await collGuard(req, res); if (!u) return;
@@ -152,6 +161,9 @@ on('GET', 'db/:coll/:id', async (req, res) => {
 async function outOfScope(u, coll, b, cur) {
   if (coll === 'tasks' && b.project_id && b.project_id !== cur?.project_id) { const p = await db.get('projects', String(b.project_id)); if (p && !inScope(await scoper(u), 'projects', p)) return 'Ese proyecto no está entre los tuyos'; }
   if (coll === 'quotes' && b.lead_id && b.lead_id !== cur?.lead_id) { const l = await db.get('leads', String(b.lead_id)); if (l && !inScope(await scoper(u), 'leads', l)) return 'Ese lead no está entre los tuyos'; }
+  // Un presupuesto o un tablero de marca solo se crea para un cliente del alcance de quien lo crea; el tablero «personal» es del CEO.
+  if (coll === 'budgets' && b.client_slug) { const sc = await scoper(u); if (sc && !sc.client(b.client_slug)) return 'Ese cliente no está entre los tuyos'; }
+  if (coll === 'brand_boards' && !cur) { const id = String(b.id || ''); if (!personalOk(u, id)) return 'La marca personal es solo del CEO'; const sc = await scoper(u); if (sc && !sc.client(id)) return 'Ese cliente no está entre los tuyos'; }
   return null;
 }
 // Los accesos del cliente al guardar: el PUT reemplaza el doc completo, así que lo que la persona no puede ver
@@ -182,6 +194,8 @@ on('POST', 'db/:coll', async (req, res) => {
   { const why = await outOfScope(u, req.params.coll, b, null); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, null);
   if (req.params.coll === 'tasks') b = results.stampDone(null, cleanTask(b));
+  if (req.params.coll === 'budgets') { if (!b.client_slug) return res.status(400).json({ error: 'Falta el cliente del presupuesto' }); b = cleanBudget(b); }
+  if (req.params.coll === 'brand_boards' && !slugOk(String(b.id || ''))) return res.status(400).json({ error: 'El tablero lleva el slug del cliente como id' });
   if (req.params.coll === 'recipes') { try { b = { ...recipes.cleanRecipe(b), id: b.id }; } catch (e) { return res.status(400).json({ error: e.message }); } }
   if (['content', 'sources'].includes(req.params.coll) && !personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' });
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
@@ -197,8 +211,10 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   // Fuera del alcance de la persona (o de la marca personal) no se cambia: para ella no existe.
   if (SCOPED.includes(req.params.coll) || ['content', 'sources'].includes(req.params.coll)) { const cur = await db.get(req.params.coll, req.params.id); if (cur && (!inScope(await scopeOf(u, req.params.coll), req.params.coll, cur) || !visible(u, req.params.coll, cur))) return res.status(404).json({ error: 'No existe' }); if (!personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' }); }
   if (req.params.coll === 'settings' && req.params.id === 'role_views') forgetViews();
-  if (['tasks', 'quotes'].includes(req.params.coll)) { const why = await outOfScope(u, req.params.coll, b, await db.get(req.params.coll, req.params.id)); if (why) return res.status(403).json({ error: why }); }
+  if (['tasks', 'quotes', 'budgets'].includes(req.params.coll)) { const why = await outOfScope(u, req.params.coll, b, await db.get(req.params.coll, req.params.id)); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, await db.get('accounts', req.params.id));
+  // El PUT reemplaza el doc: el cliente de un presupuesto no cambia y, si la persona no ve los costos, se conservan los guardados.
+  if (req.params.coll === 'budgets') { const cur = await db.get('budgets', req.params.id); if (cur) { b.client_slug = cur.client_slug; if (b.costs_hidden || b.lines === undefined) b.lines = cur.lines; } delete b.costs_hidden; b = cleanBudget(b); }
   if (req.params.coll === 'leads') {
     const cur = await db.get('leads', req.params.id); if (!cur) return res.status(404).json({ error: 'No existe' });
     b = leads.normalize(b); b.activity = leads.mergeActivity(cur.activity, b.activity);
@@ -745,11 +761,28 @@ on('PUT', 'ads/accounts/:slug', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   if (!(['ceo', 'coo'].includes(u.role) || (u.roles || []).includes('ads'))) return res.status(403).json({ error: 'Solo Ads, el CEO o el COO' });
   const slug = req.params.slug; if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
-  const b = body(req), ok = (x) => !x || /^[\w-]{3,30}$/.test(String(x));
-  const ads = { meta: String(b.meta || '').trim().replace(/^act_/, ''), google: String(b.google || '').trim(), linkedin: String(b.linkedin || '').trim(), budget: Math.max(0, +b.budget || 0) || null, note: String(b.note || '').slice(0, 300) };
+  const b = body(req), ok = (x) => !x || /^[\w-]{3,30}$/.test(String(x)), txt = (x, n) => String(x || '').trim().slice(0, n);
+  const cur = (await db.get('accounts', 'acc-' + slug))?.ads || {};
+  // El encargo (objetivo en una métrica, oferta y canales) lo escribe Ads; las cuentas y el presupuesto también.
+  const ads = { meta: txt(b.meta ?? cur.meta).replace(/^act_/, ''), google: txt(b.google ?? cur.google), linkedin: txt(b.linkedin ?? cur.linkedin), budget: Math.max(0, +(b.budget ?? cur.budget) || 0) || null, note: txt(b.note ?? cur.note, 300),
+    objetivo: txt(b.objetivo ?? cur.objetivo, 300), metrica: txt(b.metrica ?? cur.metrica, 120), oferta: txt(b.oferta ?? cur.oferta, 300), canales: txt(b.canales ?? cur.canales, 200) };
   if (![ads.meta, ads.google, ads.linkedin].every(ok)) return res.status(400).json({ error: 'Usa solo el número de la cuenta' });
+  // El OK del CEO (gate ⑩): solo él lo da o lo quita; vale para el mes y para ese presupuesto. Si cambia el monto, se vuelve a pedir.
+  if (u.role === 'ceo' && 'ok' in b) ads.ok = b.ok ? { at: new Date().toISOString().slice(0, 10), by: u.email, month: new Date().toISOString().slice(0, 7), budget: ads.budget } : null;
+  else if (cur.ok && cur.ok.budget === ads.budget) ads.ok = cur.ok;
+  if (!ads.ok) delete ads.ok;
   await db.upsert('accounts', 'acc-' + slug, { ads }, u.email);
   res.json({ ok: true, ads });
+});
+// Lo que ⑩ Ads dejó escrito en el repo para un cliente: el aprendizaje vigente (lo escribe ad-loop al cerrar el ciclo)
+// y si ya existen el plan y el reporte de pauta. Sin costos ni márgenes: son archivos del área 06-pauta del cliente.
+on('GET', 'repo/client/:slug/pauta', async (req, res) => {
+  const u = await guardAny(req, res, ['clients', 'work']); if (!u) return;
+  const slug = req.params.slug; if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  { const sc = await scoper(u); if (sc && !sc.client(slug)) return res.status(404).json({ error: 'Ese cliente no está entre los tuyos' }); }
+  const dir = `clients/${slug}/06-pauta`;
+  const [ap, plan, rep] = await Promise.all([readFile(`${dir}/aprendizaje-de-pauta.md`), readFile(`${dir}/plan-de-pauta.md`), readFile(`${dir}/reporte-de-pauta.md`)]);
+  res.json({ slug, aprendizaje: ap ? ap.content.slice(0, 60_000) : null, plan: Boolean(plan), reporte: Boolean(rep), dir });
 });
 
 // El tablero de pauta (Windsor) y los anuncios de la competencia (Apify).

@@ -75,7 +75,7 @@ async function addOnboarding(u, slug, kind, services, R, from) {
 }
 export async function bundleList() {
   const [bundles, services] = await Promise.all([db.list('bundles'), db.list('services')]);
-  return bundles.map((b) => ({ id: b.id, name: b.name || 'Paquete', industry: b.industry || '', desc: b.desc || '', servicios: (b.lines || []).map((l) => (l.type === 'custom' ? { nombre: l.name || 'Servicio propio', propio: true } : l.type === 'mentor' ? { nombre: 'Especialista', especialista: true } : { nombre: services.find((s) => s.id === l.service_id)?.name || 'Servicio', nivel: clamp(l.level), cantidad: Math.max(1, +l.qty || 1) })) }));
+  return bundles.map((b) => ({ id: b.id, name: b.name || 'Paquete', nivel: b.level || '', industry: b.industry || '', desc: b.desc || '', fuera: b.excludes || '', servicios: (b.lines || []).map((l) => (l.type === 'custom' ? { nombre: l.name || 'Servicio propio', propio: true } : l.type === 'mentor' ? { nombre: 'Especialista', especialista: true } : { nombre: services.find((s) => s.id === l.service_id)?.name || 'Servicio', nivel: clamp(l.level), cantidad: Math.max(1, +l.qty || 1) })) }));
 }
 export async function activate(u, { bundle_id, plan, slug, label, start, name }) {
   slug = slugify(slug); if (slug.length < 2) throw Object.assign(new Error('Falta el cliente'), { status: 400 });
