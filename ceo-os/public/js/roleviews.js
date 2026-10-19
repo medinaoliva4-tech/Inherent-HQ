@@ -8,8 +8,10 @@
 // Un perfil que no está en la lista no opina; si una persona tiene varios perfiles, gana el más amplio.
 export const SECTIONS = [['home', 'Hoy'], ['control', 'Control'], ['clients', 'Clientes'], ['sales', 'Comercial · prospectos'], ['operations', 'Proyectos'], ['work', 'Workspace'], ['content', 'Contenido'], ['resultados', 'Indicadores'], ['roadmap', 'Roadmap'], ['finanzas', 'Finanzas'], ['library', 'Library'], ['team', 'Equipo']];
 // Las 8 secciones de la barra y qué pantallas (áreas) agrupa cada una. Una sección aparece si su perfil ve al menos una.
-// La primera pantalla de cada lista es la que abre la sección; las demás siguen existiendo por su ruta (Equipo → «Más»).
+// La primera pantalla de cada lista es la que abre la sección; las demás siguen existiendo por su ruta.
 // «Mi marca» (#/mimarca) es solo del CEO y no entra en la matriz: no agrupa ninguna pantalla.
+// «Control» (#/control-hub) es el Centro de control del CEO y el COO: abre adentro las herramientas de siempre
+// (Control del flujo, Proyectos, Workspace, Comercial, Finanzas, Indicadores, Arranque…). Tampoco entra en la matriz.
 export const GROUPS = [
   ['hoy', 'Hoy', ['home', 'control', 'work', 'resultados']],
   ['clientes', 'Clientes', ['clients', 'operations']],
@@ -18,6 +20,7 @@ export const GROUPS = [
   ['mimarca', 'Mi marca', []],
   ['roadmap', 'Roadmap', ['roadmap']],
   ['equipo', 'Equipo', ['team']],
+  ['control', 'Control', []],
   ['library', 'Library', ['library']],
 ];
 export const groupOf = (area) => (GROUPS.find(([, , l]) => l.includes(area)) || [])[0] || null;
@@ -40,7 +43,7 @@ export const SCOPES = [['todos', 'Todos los clientes'], ['asignados', 'Solo sus 
 export const SCOPE_RANK = { propio: 0, asignados: 1, todos: 2 };
 export const SCOPE_HELP = { todos: 'Ve los proyectos, tareas, clientes y leads de toda la empresa', asignados: 'Solo los proyectos donde tiene tareas (y sus clientes y tareas); los leads de su rol', propio: 'Solo sus tareas, los proyectos donde las tiene y los leads que creó' };
 // Dónde abre cada perfil al entrar. Por defecto: sus responsabilidades de hoy; el CEO en Hoy, el COO en Control.
-export const STARTS = [['work', 'Hoy · sus responsabilidades'], ['home', 'Hoy'], ['control', 'Control (vía Equipo → Más)'], ['clients', 'Clientes'], ['operations', 'Clientes · proyectos'], ['sales', 'Servicios · prospectos'], ['finanzas', 'Servicios · finanzas'], ['content', 'Contenido'], ['resultados', 'Indicadores (vía Equipo → Más)'], ['library', 'Library']];
+export const STARTS = [['work', 'Hoy · sus responsabilidades'], ['home', 'Hoy'], ['control', 'Control del flujo (Centro de control)'], ['clients', 'Clientes'], ['operations', 'Clientes · proyectos'], ['sales', 'Servicios · prospectos'], ['finanzas', 'Servicios · finanzas'], ['content', 'Contenido'], ['resultados', 'Indicadores (Centro de control)'], ['library', 'Library']];
 const DEFAULT_START = { ceo: 'home', coo: 'control' };
 // Lo que nunca cambia la matriz: Finanzas para quien no es CEO se queda en resumen (costos, márgenes,
 // tarifas y pagos son solo del CEO), y Team siempre se ve (quién es quién); cambiarlo ya es solo del CEO.

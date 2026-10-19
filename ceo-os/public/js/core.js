@@ -596,3 +596,48 @@ export function infoTips(root) {
 }
 // Tocar la «i» no abre la tarjeta que la contiene.
 document.addEventListener('click', (e) => { const b = e.target.closest?.('.itip'); if (b) { e.stopPropagation(); e.preventDefault(); b.focus(); } }, true);
+
+// ---------- «De dónde sale»: el chip pequeño que dice de dónde viene un dato y lleva ahí ----------
+// fromLink({ label, href })                    → «⌁ de <label>» con link a esa pantalla
+// fromLink({ repo: 'clients/x/…/LINKS.md', docs }) → «⌁ del repo: LINKS.md»: abre el doc en la Library si está ahí; si no, muestra la ruta
+// plain: true → sin link (para usarlo dentro de algo que ya es un link)
+export function fromLink(src = {}) {
+  if (!src) return '';
+  if (src.repo) {
+    const file = String(src.repo).split('/').pop();
+    const d = (src.docs || []).find((x) => x.repo === src.repo || String(x.title || '').toLowerCase().includes(file.replace(/\.md$/i, '').toLowerCase()));
+    const label = `del repo: ${file}`;
+    return d && !src.plain ? html`<a class="fromlink" href="#/library/${d.folder_id || '_'}/${d.id}" title="Abrir en la Library · ${src.repo}">⌁ ${label}</a>`
+      : html`<span class="fromlink" title="${src.repo}">⌁ ${label}<span class="fromlink-path">${src.repo}</span></span>`;
+  }
+  const label = src.label ? `de ${src.label}` : 'de dónde sale';
+  return src.href && !src.plain ? html`<a class="fromlink" href="${src.href}" title="${src.title || 'De dónde sale este dato'}">⌁ ${label}</a>` : html`<span class="fromlink" title="${src.title || ''}">⌁ ${label}</span>`;
+}
+
+// ---------- El sheet de edición (.sp-sheet): los mismos campos que ask(), en el panel lateral ----------
+// sheetForm(title, fields, { okLabel, chip, note }) → Promise de los valores (o null si se cierra).
+export function sheetForm(title, fields, { okLabel = 'Guardar', chip = '', note = '' } = {}) {
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (v) => { if (done) return; done = true; resolve(v); };
+    const input = (f) => f.t === 'select' ? html`<select class="in" name="${f.k}">${(f.opts || []).map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return html`<option value="${v}" ${String(v) === String(f.v ?? '') ? raw('selected') : ''}>${l}</option>`; })}</select>`
+      : f.t === 'textarea' ? html`<textarea class="in" name="${f.k}" rows="3">${f.v ?? ''}</textarea>`
+      : html`<input class="in" name="${f.k}" type="${f.t || 'text'}" value="${f.v ?? ''}" ${f.t === 'number' ? raw('step="any" inputmode="decimal"') : ''}>`;
+    const d = drawer(html`<div class="row">${chip ? html`<span class="chip">${chip}</span>` : ''}<div class="sp"></div><button class="arrow light" type="button" data-act="close" aria-label="Cerrar">${ico('x', 16)}</button></div>
+      <form class="form" id="sheetform"><h2>${title}</h2>${note ? html`<div class="mut sm" style="margin:-4px 0 12px">${note}</div>` : ''}
+        ${fields.map((f) => html`<div style="margin-bottom:12px"><label class="f">${f.l}${f.req ? ' *' : ''}</label>${input(f)}${f.help ? html`<div class="mut sm" style="margin-top:4px">${f.help}</div>` : ''}</div>`)}</form>
+      <div class="row" style="gap:8px"><button class="btn" type="button" data-act="ok">${okLabel}</button><button class="btn ghost" type="button" data-act="close">Cancelar</button></div>`, {
+      ok: () => {
+        const form = $('#sheetform', d), out = {};
+        for (const f of fields) { let v = String(form.elements[f.k].value ?? '').trim(); if (f.t === 'number') v = v === '' ? null : Number(v); out[f.k] = v; }
+        const miss = fields.find((f) => f.req && (out[f.k] === '' || out[f.k] == null)); if (miss) return toast(`Falta: ${miss.l}`, true);
+        finish(out); closeDrawer();
+      },
+    });
+    const form = $('#sheetform', d); form.onsubmit = (e) => { e.preventDefault(); d.querySelector('[data-act=ok]')?.click(); };
+    // Cerrar el panel (X, velo o Esc) = cancelar.
+    const watch = new MutationObserver(() => { if (!d.classList.contains('on')) { watch.disconnect(); finish(null); } });
+    watch.observe(d, { attributes: true, attributeFilter: ['class'] });
+    setTimeout(() => form.querySelector('.in')?.focus(), 60);
+  });
+}

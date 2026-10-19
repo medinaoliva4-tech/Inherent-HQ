@@ -1,6 +1,7 @@
 // La pestaña «Servicio» del cliente: lo contratado, módulo por módulo — precio, fechas, qué se hace en esas fechas
 // (las tareas de la receta o las del proyecto) y quién (rol → persona del proyecto). Solo el CEO ve precio y costo.
-import { html, fdate, today, Q, ico } from './core.js';
+import { html, fdate, today, Q, ico, fromLink } from './core.js';
+import { quotesShort, quotesBase } from './quotes-short.js';
 import { moduleCost } from './finscope.js';
 import { serviceRecipe, RECIPE_ROLES } from './recipes.js';
 import { monthStrip, PAL } from './charts.js';
@@ -8,10 +9,12 @@ import { monthStrip, PAL } from './charts.js';
 const roleName = (r) => RECIPE_ROLES.find(([k]) => k === r)?.[1] || r;
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
 
-// ctx: { me, slug, info, projects, tasks, quotes, services, rates, recipes (R), team, precioFicha }
+// ctx: { me, slug, info, projects, tasks, quotes, services, rates, recipes (R), team, precioFicha, planPath, docs }
+// Cada dato dice de dónde sale (fromLink): el precio de su cotización o de la ficha del repo; las tareas, de Responsabilidades.
 export function serviceTab(ctx) {
   const { me, info, projects = [], tasks = [], quotes = [], services = [], rates = null, R = [], team = [] } = ctx;
-  const ceo = me.role === 'ceo', T = today(), M = T.slice(0, 7);
+  const ceo = me.role === 'ceo', T = today(), M = T.slice(0, 7), qBase = quotesBase(me);
+  const respHref = (it) => `${['ceo', 'coo'].includes(me.role) ? '#/control-hub/responsabilidades' : '#/services/responsabilidades'}${it?.service_id ? '/s:' + it.service_id : ''}`;
   const person = (k) => team.find((p) => p.id === k || p.email === k)?.name || (k ? String(k).split('@')[0] : '');
   const who = (p, role) => { const k = p.roles_map?.[role] || tasks.find((t) => t.project_id === p.id && t.role === role && t.assignee)?.assignee; return k ? person(k) : null; };
   const money = (v) => (v == null ? html`<span class="mut">—</span>` : Q(v));
@@ -26,7 +29,7 @@ export function serviceTab(ctx) {
     const l = tasks.filter((t) => t.project_id === p.id && (!item?.service_id || t.service_id === item.service_id || !t.service_id)).sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
     return l.map((t) => ({ title: t.title, date: t.due || '', role: t.role || '', who: t.assignee ? person(t.assignee) : who(p, t.role), done: !open(t) }));
   };
-  const stepRows = (l) => (!l.length ? html`<div class="mut sm" style="padding:6px 0">Sin tareas todavía. Salen de la receta del servicio (Equipo → Recetas) o de las tareas del proyecto.</div>`
+  const stepRows = (l) => (!l.length ? html`<div class="mut sm" style="padding:6px 0">Sin tareas todavía. Salen de las responsabilidades del servicio (Servicios → Responsabilidades) o de las tareas del proyecto.</div>`
     : l.slice(0, 14).map((s) => html`<div class="wkrow"><span class="wkt">${s.date ? fdate(s.date) : s.day ? `día ${s.day}` : '—'}</span><span class="grow"><span style="${s.done ? 'text-decoration:line-through;opacity:.55' : ''}">${s.title}</span></span><span class="chip sm2">${s.who || (s.role ? html`<span class="mut">${roleName(s.role)} · sin asignar</span>` : '—')}</span></div>`));
   // Los módulos: los servicios de cada proyecto; si el proyecto no trae módulos, el proyecto entero es el servicio.
   const mods = [];
@@ -37,11 +40,12 @@ export function serviceTab(ctx) {
       const unit = sv?.unit || (p.kind === 'Ciclo mensual' ? 'mes' : 'proyecto');
       const c = it && ceo ? moduleCost(it, services, rates) : null;
       mods.push({ p, it, name: it ? it.name || sv?.name || 'Módulo' : `${p.kind || 'Proyecto'}${p.name && p.name !== p.kind ? ` · ${p.name}` : ''}`, unit, level: it?.level, qty: it?.qty || 1,
-        price: ceo ? (it ? (+it.price > 0 ? +it.price * (+it.qty || 1) : null) : +p.price > 0 ? +p.price : ctx.precioFicha ?? null) : null, cost: c?.cost ?? null, costWhy: c?.why || (c?.miss?.length ? `faltan costos por hora de ${c.miss.join(', ')}` : ''), includes: sv?.includes5 || it?.includes || '' });
+        price: ceo ? (it ? (+it.price > 0 ? +it.price * (+it.qty || 1) : null) : +p.price > 0 ? +p.price : ctx.precioFicha ?? null) : null,
+        src: p.quote_id ? { label: 'su cotización', href: `${qBase}/${p.quote_id}` } : !it && !(+p.price > 0) && ctx.precioFicha != null && ctx.planPath ? { repo: ctx.planPath, docs: ctx.docs } : it ? { label: 'el proyecto', href: '#/operations/pipe' } : null, cost: c?.cost ?? null, costWhy: c?.why || (c?.miss?.length ? `faltan costos por hora de ${c.miss.join(', ')}` : ''), includes: sv?.includes5 || it?.includes || '' });
     }
   }
   // Cotizaciones aceptadas que todavía no son proyecto.
-  for (const q of quotes.filter((x) => x.status === 'Aceptada' && !x.project_id)) for (const it of q.items || []) mods.push({ q, it, name: it.name || 'Módulo', unit: services.find((x) => x.id === it.service_id)?.unit || 'proyecto', level: it.level, qty: it.qty || 1, price: ceo ? (+it.price || 0) * (+it.qty || 1) || null : null, cost: null, pending: `Cotización ${q.number || ''} aceptada · el proyecto arranca con el pago` });
+  for (const q of quotes.filter((x) => x.status === 'Aceptada' && !x.project_id)) for (const it of q.items || []) mods.push({ q, src: { label: `la cotización ${q.number || ''}`.trim(), href: `${qBase}/${q.id}` }, it, name: it.name || 'Módulo', unit: services.find((x) => x.id === it.service_id)?.unit || 'proyecto', level: it.level, qty: it.qty || 1, price: ceo ? (+it.price || 0) * (+it.qty || 1) || null : null, cost: null, pending: `Cotización ${q.number || ''} aceptada · el proyecto arranca con el pago` });
   const total = ceo && mods.some((m) => m.price != null) ? mods.reduce((a, m) => a + (m.price || 0), 0) : null;
   const totalCost = ceo && mods.some((m) => m.cost != null) ? mods.reduce((a, m) => a + (m.cost || 0), 0) : null;
   // La línea de tiempo del mes: las tareas de sus proyectos con fecha este mes.
@@ -53,12 +57,13 @@ export function serviceTab(ctx) {
     <div class="sp-panel" style="margin-bottom:16px;padding-bottom:16px"><div class="wkhead"><div><h3>Este mes</h3><span class="mut sm">Las entregas del mes, día por día · ${marks.length ? `${marks.filter((x) => x.done).length}/${marks.length} hechas` : 'sin entregas con fecha'}</span></div></div>${monthStrip(M, marks, { today: T })}</div>
     ${mods.length ? mods.map((m) => html`<div class="sp-panel svmod" style="margin-bottom:16px">
       <div class="wkhead"><div><h3>${m.name}</h3><span class="mut sm">${m.level ? `Complejidad ${m.level} · ` : ''}por ${m.unit}${m.qty > 1 ? ` · ×${m.qty}` : ''}${m.p ? ` · ${m.p.name}` : ''}</span></div><div class="sp"></div>
-        ${ceo ? html`<div class="pr"><b style="font-weight:500">${m.price == null ? html`<span class="mut sm">precio: vendrá de su cotización o de la ficha</span>` : Q(m.price)}</b>${m.cost != null ? html`<div class="mut sm">${ico('lock', 12)} costo ${Q(m.cost)}</div>` : m.it ? html`<div class="mut sm">${ico('lock', 12)} costo: ${m.costWhy || 'sin dato'}</div>` : ''}</div>` : ''}</div>
+        ${ceo ? html`<div class="pr"><b style="font-weight:500">${m.price == null ? html`<span class="mut sm">precio: vendrá de su cotización o de la ficha</span>` : Q(m.price)}</b>${m.price != null && m.src ? html`<div>${fromLink(m.src)}</div>` : ''}${m.cost != null ? html`<div class="mut sm">${ico('lock', 12)} costo ${Q(m.cost)}</div>` : m.it ? html`<div class="mut sm">${ico('lock', 12)} costo: ${m.costWhy || 'sin dato'}</div>` : ''}</div>` : ''}</div>
       <div class="row sm" style="gap:8px;flex-wrap:wrap;margin:4px 0 8px"><span class="chip sm2">${ico('cal', 13)} ${m.pending ? m.pending : when(m.p, m.unit)}</span>${m.p?.roles_map ? Object.entries(m.p.roles_map).slice(0, 6).map(([r, k]) => html`<span class="chip sm2">${roleName(r)}: ${person(k).split(' ')[0]}</span>`) : ''}</div>
       ${m.includes ? html`<div class="mut sm" style="margin-bottom:6px">${String(m.includes).split('\n').filter(Boolean).slice(0, 4).join(' · ')}</div>` : ''}
-      ${m.p ? stepRows(steps(m.p, m.it)) : ''}</div>`)
+      ${m.p ? html`${stepRows(steps(m.p, m.it))}<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">${fromLink({ label: 'Responsabilidades', href: respHref(m.it), title: 'Quién hace qué y cuándo: la receta del servicio o paquete' })}${fromLink({ label: 'Proyectos', href: '#/operations/tasks', title: 'Las tareas reales del proyecto' })}</div>` : ''}</div>`)
     : html`<div class="empty"><b>Sin servicio activo</b>Aparece cuando el cliente tiene un proyecto (se crea al confirmar el pago de su cotización, o en Proyectos).</div>`}
-    ${fields.length || info?.pipeline?.length ? html`<details class="sp-panel" style="margin-top:4px;padding-top:14px;padding-bottom:14px"><summary class="sm" style="cursor:pointer;font-weight:500">Ficha de oferta del repo</summary>
+    <div style="margin:4px 0 16px">${quotesShort(quotes, me, { title: 'Sus cotizaciones', sub: 'Las de este cliente · se arman en Comercial', empty: 'Este cliente no tiene cotizaciones todavía.' })}</div>
+    ${fields.length || info?.pipeline?.length ? html`<details class="sp-panel" style="margin-top:4px;padding-top:14px;padding-bottom:14px"><summary class="sm" style="cursor:pointer;font-weight:500">Ficha de oferta del repo</summary>${ctx.planPath ? html`<div style="margin:8px 0 4px">${fromLink({ repo: ctx.planPath, docs: ctx.docs })}</div>` : ''}
       ${fields.map((f) => html`<div class="row sm" style="padding:7px 0;border-top:1px solid var(--line);align-items:flex-start"><span class="mut" style="min-width:150px">${f.key}</span><span style="flex:1">${f.value}</span></div>`)}
       ${info?.pipeline?.length ? html`<div class="lbl" style="margin-top:12px;color:var(--mut)">Su pipeline</div>${info.pipeline.map((r) => html`<div class="row sm" style="padding:5px 0"><span style="min-width:150px">${r.paso}</span><span class="mut" style="flex:1">${r.que}</span></div>`)}` : ''}</details>` : ''}`;
 }

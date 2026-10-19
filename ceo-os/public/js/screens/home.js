@@ -1,6 +1,6 @@
 // Hoy. Para el CEO: tres números, las entregas del mes por semana, lo de hoy y lo que necesita atención.
 // Para el equipo: sus responsabilidades (qué, para cuándo y dónde se entrega). Sin revenue, leads ni engagement.
-import { html, raw, mount, col, api, fdate, today, toast, acts, IC, $, calQ, teamList, ico, initials } from '../core.js';
+import { html, raw, mount, col, api, fdate, today, toast, acts, IC, $, calQ, teamList, ico, initials, fromLink } from '../core.js';
 import { upcoming, people as meetPeople } from '../meetings.js';
 import { kpis, PAL } from '../charts.js';
 import { openDelivery, dueChip, stChip } from '../taskcard.js';
@@ -72,9 +72,9 @@ export async function render(el, { me, alive }) {
     mount(el, html`${head()}
       ${me.role === 'ceo' && !tasks.length && !projects.length ? html`<a class="asbar" href="#/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> y queda lista con lo que ya dice el repo →</a>` : ''}
       <div class="sp-kpis">
-        <a class="sp-kpi" href="#/clients"><span class="lbl">Proyectos activos</span><b>${active.length}</b></a>
-        <button class="sp-kpi" data-act="toAtt" style="text-align:left"><span class="lbl">% en día</span><b>${pct == null ? '—' : html`${pct}<small class="mut" style="font-size:16px">%</small>`}</b></button>
-        <a class="sp-kpi" href="#/control"><span class="lbl">Reuniones hoy</span><b>${agenda === null ? '…' : meetsToday}</b></a>
+        <a class="sp-kpi" href="#/control-hub/operations"><span class="lbl">Proyectos activos</span><b>${active.length}</b>${fromLink({ label: 'Proyectos', plain: true, title: 'Los proyectos no cerrados con algo abierto · Centro de control → Proyectos' })}</a>
+        <a class="sp-kpi" href="#/control-hub/resultados"><span class="lbl">% en día</span><b>${pct == null ? '—' : html`${pct}<small class="mut" style="font-size:16px">%</small>`}</b>${fromLink({ label: 'Indicadores', plain: true, title: 'Las tareas de este mes que ya vencieron, contra su fecha · Centro de control → Indicadores' })}</a>
+        <a class="sp-kpi" href="#/control-hub/operations/cal"><span class="lbl">Reuniones hoy</span><b>${agenda === null ? '…' : meetsToday}</b>${fromLink({ label: 'Calendar y Proyectos', plain: true, title: 'Tu Google Calendar y las reuniones de cada proyecto' })}</a>
       </div>
       <div class="hoy-top">
         <section class="sp-panel"><a class="wkhead" href="#/clients" style="text-decoration:none;color:inherit"><div><h3>Proyectos activos</h3><span class="mut sm">Cliente · proyecto · avance del mes</span></div><div class="sp"></div><span class="sp-tile-go">↗</span></a>

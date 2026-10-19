@@ -14,10 +14,30 @@ const LEGACY = [
   [/growth\s*partnership|partnership|accelerate|compound/i, 'partnership'],
   [/brand\s*growth|marketing\s*pro|mkt\s*pro|marketing_pro|^pro$|^marketing$|\bmarketing\b/i, 'growth'],
 ];
+// Lo editable de cada nivel (settings «levels», solo el CEO escribe; Servicios → Paquetes → lápiz). Lo de arriba es el valor
+// por defecto: lo que el CEO cambia se aplica encima, en el mismo objeto, así todo lo que usa levelName/BASELINE lo refleja.
+// El quiz público (/diagnostico) usa LEVEL_NAMES, que se queda fijo.
+export const LEVELS_ID = 'levels';
+export const USD_GTQ = 7.7;
+const DEFAULTS = JSON.parse(JSON.stringify({ levels: LEVELS, base: BASELINE }));
+export const levelDefaults = (id) => { const l = DEFAULTS.levels.find((x) => x.id === id), b = DEFAULTS.base[id]; return l ? { ...l, usd: b?.usd ?? null, per: b?.per || '' } : null; };
+// doc: { id: 'levels', levels: { <id>: { name, tag, who, how, usd, per } } }. Sin doc (o sin un campo), vuelve al defecto.
+export function applyLevels(doc) {
+  const cfg = doc && typeof doc.levels === 'object' ? doc.levels : {};
+  for (const l of LEVELS) {
+    const d = DEFAULTS.levels.find((x) => x.id === l.id), c = cfg[l.id] || {}, b0 = DEFAULTS.base[l.id];
+    for (const k of ['name', 'tag', 'who', 'how']) l[k] = String(c[k] || '').trim() || d[k];
+    const usd = Number.isFinite(+c.usd) && +c.usd > 0 && c.usd !== '' && c.usd != null ? Math.round(+c.usd) : b0.usd;
+    BASELINE[l.id] = { usd, gtq: Math.round(usd * USD_GTQ), per: String(c.per || '').trim() || b0.per };
+  }
+  return LEVELS;
+}
 const norm = (s) => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/^[^\p{L}]+/u, '').trim();
 // Devuelve el nivel ({id,name,…}) de un texto o id, viejo o nuevo; null si no corresponde a ninguno (Tailor Made, «No sé todavía», vacío).
 export function levelOf(text) {
   const t = norm(text); if (!t) return null;
+  // El nombre que el CEO le puso (si lo cambió) también cuenta.
+  const own = LEVELS.find((l) => norm(l.name).toLowerCase() === t.toLowerCase()); if (own) return own;
   const hit = LEGACY.find(([re]) => re.test(t)); return hit ? LEVELS.find((l) => l.id === hit[1]) : null;
 }
 export const levelName = (text) => levelOf(text)?.name || String(text ?? '');

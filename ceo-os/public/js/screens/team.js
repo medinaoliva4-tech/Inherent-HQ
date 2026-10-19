@@ -9,16 +9,17 @@ const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
 const ROLE = { ceo: 'CEO · acceso total', coo: 'COO · todo menos Finanzas', team: 'Equipo · Workspace, Contenido, Conocimiento' };
 const T = col('team'), RV = col('settings');
 
-export async function render(el, { me, sub = [] }) {
+export async function render(el, { me, sub = [], embed = '' }) {
   let people = (await teamList()).filter((p) => p.active !== false || me.role === 'ceo');
   const isCeo = me.role === 'ceo';
   // Pestañas: Organigrama · Perfiles · Roles (quién cubre cada rol por proyecto) · y, para el CEO, Vistas por rol.
-  // «Más» (solo CEO) lleva a las pantallas que ya no están en la barra: Control, Proyectos, Workspace, Comercial, Finanzas, Indicadores, Arranque.
+  // Control, Proyectos, Workspace, Comercial, Finanzas, Indicadores y Arranque viven en el Centro de control (#/control-hub).
+  // embed «vistas»: el Centro de control monta solo la matriz de Vistas por rol (sin las pestañas de Equipo).
   // Las recetas ya no viven aquí: #/team/recetas lleva a Servicios → Responsabilidades.
   if (sub[0] === 'recetas') { location.hash = '/services/responsabilidades'; return; }
   let view = ['people', 'roles', 'vistas'].includes(sub[0]) && (isCeo || ['people', 'roles'].includes(sub[0])) ? sub[0] : 'org';
-  const MORE = [['control', 'Control · el flujo de lead a entrega'], ['operations', 'Proyectos · pipeline, calendario y timeline'], ['work', 'Workspace · la cola de siempre'], ['sales', 'Comercial · CRM, catálogo y cotizaciones'], ['finanzas', 'Finanzas · movimientos y pagos por servicio'], ['resultados', 'Indicadores · lo que de verdad pasó'], ['setup', 'Arranque · dejar la app lista desde el repo']];
-  let more = false, rp = null; // rp: proyectos y tareas de la pestaña Roles (se cargan al abrirla)
+  if (embed === 'vistas' && isCeo) view = 'vistas';
+  let rp = null; // rp: proyectos y tareas de la pestaña Roles (se cargan al abrirla)
   function roles() {
     if (!rp) { Promise.all([col('projects').list().catch(() => []), col('tasks').list().catch(() => [])]).then(([projects, tasks]) => { rp = { projects, tasks }; if (view === 'roles') paint(); }); return html`<p class="loading">Cargando…</p>`; }
     const live = rp.projects.filter((p) => (p.phases || []).some((x) => x.status !== 'done') || !(p.phases || []).length);
@@ -124,12 +125,14 @@ export async function render(el, { me, sub = [] }) {
     } catch (e) { toast(e.message, true); if (/cambió|Recarga/i.test(e.message)) { rvLoaded = false; rv = null; paint(); } }
   }
   function paint() {
+    // Dentro del Centro de control: solo la matriz.
+    if (embed === 'vistas') { mount(el, html`<div class="hello sp-hero" style="margin-top:0"><h1>Vistas por rol</h1><p>Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.</p></div>${isCeo ? vistas() : html`<div class="empty"><b>Solo el CEO</b>La matriz de vistas la decide el CEO.</div>`}`); const st0 = $('[data-act=rvstart]', el); if (st0) st0.onchange = () => rvSave({ start: { ...(rv?.start || {}), [rvRole]: st0.value } }); return; }
     const SUB = { org: html`Quién hace qué en <em>Inherent</em>.`, people: html`Cada persona, <em>sus perfiles de trabajo</em>.`, roles: html`Quién cubre <em>cada rol</em> en cada proyecto.`, vistas: html`Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.`, recetas: html`Cómo se arma el trabajo: <em>tareas, dueños y fechas</em>.` };
     const TABS = [['org', 'Organigrama'], ['people', 'Perfiles'], ['roles', 'Roles'], ...(isCeo ? [['vistas', 'Vistas por rol']] : [])];
     mount(el, html`<div class="row" style="align-items:flex-end;margin-bottom:18px;flex-wrap:wrap;gap:12px">
       <div class="hello sp-hero" style="margin:0"><h1>Equipo</h1><p style="margin:0">${SUB[view]}</p></div><div class="sp"></div>
       ${isCeo && ['org', 'people'].includes(view) ? html`<button class="btn" data-act="add">+ Agregar</button>` : ''}
-      ${isCeo ? html`<div class="moremenu"><button class="btn ghost" data-act="more">Más ${ico('bars', 14)}</button><div class="menu ${more ? 'on' : ''}">${MORE.map(([k, l]) => html`<button data-act="go" data-k="${k}"><span>${l.split(' · ')[0]}</span><span class="mut sm">${l.split(' · ')[1]}</span></button>`)}</div></div>` : ''}
+      ${['ceo', 'coo'].includes(me.role) ? html`<a class="btn ghost" href="#/control-hub">${ico('grid', 14)} Centro de control →</a>` : ''}
     </div>
     <div class="row" style="margin:0 0 16px;flex-wrap:wrap;gap:8px"><div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${view === k ? 'on' : ''}" data-act="view" data-v="${k}">${l}</button>`)}</div>${isCeo ? html`<a class="sm mut" href="#/services/responsabilidades" style="margin-left:auto">Las recetas ahora viven en Servicios → Responsabilidades →</a>` : ''}</div>
     ${missing.length && ['org', 'people'].includes(view) ? html`<div class="warnbox" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px"><span style="flex:1">${missing.length === 1 ? '1 persona' : missing.length + ' personas'} del manual y la nómina no ${missing.length === 1 ? 'está' : 'están'} en el organigrama: <b>${missing.map((x) => x.name + ' (' + x.roles.join(', ') + ')').join(' · ')}</b></span><button class="btn" data-act="import">Agregarlas</button></div>` : ''}
@@ -200,8 +203,8 @@ export async function render(el, { me, sub = [] }) {
     rvset: (b) => { const base = Object.fromEntries(SECTIONS.map(([k]) => [k, rvLevel(k)])); rvSave({ views: { ...(rv?.views || {}), [rvRole]: { ...base, [b.dataset.s]: b.dataset.l } } }); },
     rvscope: (b) => rvSave({ scope: { ...(rv?.scope || {}), [rvRole]: b.dataset.v } }),
     rvreset: () => { const v = { ...(rv?.views || {}) }, sc = { ...(rv?.scope || {}) }, st = { ...(rv?.start || {}) }; delete v[rvRole]; delete sc[rvRole]; delete st[rvRole]; rvSave({ views: v, scope: sc, start: st }); },
-    view: (b) => { view = b.dataset.v; more = false; history.replaceState(null, '', view === 'org' ? '#/team' : '#/team/' + view); paint(); }, add: () => edit(null), open: (b) => open(byId(b.dataset.id)), import: importMissing,
-    more: () => { more = !more; paint(); }, go: (b) => { more = false; location.hash = '/' + b.dataset.k; } });
+    view: (b) => { view = b.dataset.v; history.replaceState(null, '', view === 'org' ? '#/team' : '#/team/' + view); paint(); }, add: () => edit(null), open: (b) => open(byId(b.dataset.id)), import: importMissing,
+  });
   paint();
   findMissing().then(() => missing.length && paint());
 }

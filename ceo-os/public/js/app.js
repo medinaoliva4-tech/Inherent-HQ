@@ -1,8 +1,11 @@
 import { applyViews, GROUPS, groupOf } from './roleviews.js';
+import { applyLevels, LEVELS_ID } from './levels.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO, infoTips, canTransition } from './core.js';
 
-// La barra: 8 secciones. Cada una abre una pantalla; las demás pantallas de la sección siguen por su ruta (Equipo → «Más»).
-// #/<sección> lleva a su pantalla; las rutas de siempre (#/work, #/sales, #/finanzas, #/control, #/resultados, #/setup) siguen igual.
+// La barra: 9 secciones. Cada una abre una pantalla. «Control» es el Centro de control (CEO y COO): ahí se abren, adentro,
+// Control del flujo, Proyectos, Workspace, Comercial, Finanzas, Indicadores y Arranque (#/control-hub/<herramienta>).
+// Las rutas de siempre (#/work, #/sales, #/finanzas, #/control, #/resultados, #/setup, #/operations) siguen funcionando:
+// para el CEO y el COO abren la misma pantalla dentro del Centro de control.
 const ICONS = {
   hoy: 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
   clientes: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6',
@@ -12,6 +15,7 @@ const ICONS = {
   roadmap: 'M4 19V5M4 19h16M8 15l4-5 3 3 5-7',
   equipo: 'M17 20a5 5 0 0 0-10 0M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M21 20a4 4 0 0 0-3-3.9M3 20a4 4 0 0 1 3-3.9',
   library: 'M4 4h6l2 2h8v14H4z',
+  control: 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0M16 4v4M10 10v4M18 16v4',
   portal: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6',
 };
 // La pantalla que abre cada sección: [ruta, nombre, área que hace falta, solo CEO]. Una sola por sección: sin pestañas arriba.
@@ -23,14 +27,19 @@ const TABS = {
   mimarca: [['mimarca', 'Mi marca', null, true]],
   roadmap: [['roadmap', 'Roadmap', 'roadmap']],
   equipo: [['team', 'Equipo', 'team']],
+  control: [['control-hub', 'Centro de control']],
   library: [['library', 'Library', 'library']],
 };
-const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results' };
-const LABEL = { home: 'Hoy', control: 'Control', work: 'Workspace', finanzas: 'Finanzas', sales: 'Comercial', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil' };
+const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub' };
+const LABEL = { home: 'Hoy', control: 'Control', work: 'Workspace', finanzas: 'Finanzas', sales: 'Comercial', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control' };
 // Rutas que no son un área de la matriz: solo el CEO las abre.
 const CEO_ONLY = ['setup', 'mimarca'];
 // Pantallas viejas → su sección nueva (la configuración guardada no se rompe).
 const ALIAS = { services: 'sales' };
+// El Centro de control: solo el CEO y el COO. Sus herramientas son las pantallas de siempre (rutas que, para ellos, abren adentro).
+const HUB = 'control-hub';
+export const HUB_TOOLS = ['control', 'operations', 'work', 'sales', 'finanzas', 'resultados', 'setup'];
+const hubOk = () => ['ceo', 'coo'].includes(me?.role);
 const root = $('#root');
 const SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>';
 const MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
@@ -41,7 +50,10 @@ function moveInd() {
   let ind = nav.querySelector('.nav-ind'); if (!ind) { ind = document.createElement('span'); ind.className = 'nav-ind'; ind.setAttribute('aria-hidden', 'true'); nav.prepend(ind); }
   const on = nav.querySelector('[data-go].on');
   if (!on) { ind.style.opacity = '0'; return; }
-  ind.style.width = on.offsetWidth + 'px'; ind.style.transform = `translateX(${on.offsetLeft}px)`; ind.style.opacity = '1';
+  // Medido contra la propia barra (no contra offsetParent), y vuelto a medir cuando la barra cambia de tamaño.
+  const nr = nav.getBoundingClientRect(), br = on.getBoundingClientRect();
+  ind.style.width = br.width + 'px'; ind.style.transform = `translateX(${br.left - nr.left + nav.scrollLeft - nav.clientLeft}px)`; ind.style.opacity = '1';
+  if (!nav._ro && window.ResizeObserver) { nav._ro = new ResizeObserver(() => requestAnimationFrame(moveInd)); nav._ro.observe(nav); }
   if (!ind.classList.contains('ready')) requestAnimationFrame(() => requestAnimationFrame(() => ind.classList.add('ready')));
 }
 addEventListener('resize', () => requestAnimationFrame(moveInd));
@@ -82,17 +94,18 @@ async function loginView() {
 }
 
 const tabOk = ([, , area, ceo]) => (!ceo || me.role === 'ceo') && (!area || me.areas.includes(area));
-const tabsOf = (g) => (TABS[g] || []).filter(tabOk);
+// «Control» es el Centro de control para el CEO y el COO; para quien no lo tiene pero ve Comercial (perfil ventas), es «Comercial» (el CRM).
+const tabsOf = (g) => (g === 'control' ? (hubOk() ? TABS.control : [['sales', 'Comercial', 'sales']]) : TABS[g] || []).filter(tabOk);
 // La sección aparece si su pantalla se ve o si el perfil ve alguna de las pantallas que agrupa (Clientes también con Proyectos).
-// Servicios pide ver Comercial de verdad (en resumen, lo del CRM vive en Clientes → Prospectos; Finanzas en resumen sigue en #/finanzas).
+// Servicios pide ver Comercial de verdad (el CRM, aunque sea en resumen, está en Control → Comercial; Finanzas en resumen sigue en #/finanzas).
 const full = (a) => me.areas.includes(a) && (!me.views || !['resumen'].includes(me.views[a]));
-const groupOn = ([g, , list]) => (g === 'servicios' ? full('sales') || full('finanzas') : tabsOf(g).length || (g !== 'equipo' && list.some((a) => me.areas.includes(a))));
+const groupOn = ([g, , list]) => (g === 'control' ? hubOk() || tabsOf('control').length > 0 : g === 'servicios' ? full('sales') || full('finanzas') : tabsOf(g).length || (g !== 'equipo' && list.some((a) => me.areas.includes(a))));
 // El equipo ve: Hoy · Clientes (lo suyo) · Contenido (si lo tiene) · Library. Equipo (quién es quién) sigue en #/team.
-const navItems = () => (me.role === 'client' ? [['portal', 'Mi portal']] : GROUPS.filter((x) => groupOn(x) && (x[0] !== 'equipo' || me.role !== 'team')).map(([g, l]) => [g, l]));
+const navItems = () => (me.role === 'client' ? [['portal', 'Mi portal']] : GROUPS.filter((x) => groupOn(x) && (x[0] !== 'equipo' || me.role !== 'team')).map(([g, l]) => [g, g === 'control' && !hubOk() ? 'Comercial' : l]));
 const navHtml = () => html`${navItems().map(([k, l]) => html`<button data-go="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${ICONS[k]}"/></svg>${l}</button>`)}`;
 const hashNow = () => location.hash.replace(/^#\/?/, '');
 // La sección de una ruta: la de su pantalla (setup va con Administración; el portal visto por el equipo, con Clientes).
-const groupFor = (area) => (area === 'setup' ? 'equipo' : area === 'mimarca' ? 'mimarca' : area === 'portal' ? (me.role === 'client' ? 'portal' : 'clientes') : groupOf(ALIAS[area] || area));
+const groupFor = (area) => (area === HUB || (hubOk() && HUB_TOOLS.includes(area)) || (area === 'sales' && !hubOk()) ? 'control' : area === 'setup' ? 'equipo' : area === 'mimarca' ? 'mimarca' : area === 'portal' ? (me.role === 'client' ? 'portal' : 'clientes') : groupOf(ALIAS[area] || area));
 // La pestaña activa: la ruta más larga que calza con la actual (team/vistas antes que team).
 const tabFor = (g, path) => tabsOf(g).filter(([r]) => path === r || path.startsWith(r + '/')).sort((a, z) => z[0].length - a[0].length)[0];
 function paintSub(key) {
@@ -106,8 +119,8 @@ function paintSub(key) {
 // Vistas por rol: las secciones ocultas no aparecen en la barra.
 // Dónde abre: «Workspace» (la cola de siempre) hoy es Hoy → sus responsabilidades.
 const landing = () => { const st = me.start === 'work' && me.areas.includes('home') ? 'home' : me.start; return me.areas.includes(st) ? st : me.areas.includes('home') ? 'home' : me.areas[0]; };
-const sees = (a) => me.areas.includes(ALIAS[a] || a) || (CEO_ONLY.includes(a) && me.role === 'ceo');
-const markNav = () => { const a = hashNow().split('/')[0]; const key = sees(a) ? a : landing(); const g = groupFor(key); $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === g)); paintSub(key); moveInd(); };
+const sees = (a) => me.areas.includes(ALIAS[a] || a) || (CEO_ONLY.includes(a) && me.role === 'ceo') || (a === HUB && hubOk());
+const markNav = () => { const a = hashNow().split('/')[0]; const key = sees(a) ? a : landing(); const g = groupFor(key); $$('.nav [data-go]').forEach((b) => b.classList.toggle('on', b.dataset.go === g)); paintSub(key); moveInd(); requestAnimationFrame(moveInd); };
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); mount($('.nav'), navHtml()); markNav(); const a = location.hash.replace(/^#\/?/, '').split('/')[0]; if (!sees(a) && a !== 'me') render(); });
 
 function shell() {
@@ -135,6 +148,8 @@ async function render() {
   let [area, ...rest] = hashNow().split('/');
   // #/<sección> (ej. #/operaciones) lleva a su primera pantalla visible; las rutas de cada pantalla siguen igual.
   if (TABS[area] && !SCREENS[area]) { const t = tabsOf(area)[0] || [(GROUPS.find(([k]) => k === area)?.[2] || []).find((a) => me.areas.includes(a))]; if (t[0]) { history.replaceState(null, '', '#/' + t[0]); [area, ...rest] = t[0].split('/'); } }
+  // Para el CEO y el COO, las herramientas del Centro de control se abren adentro (misma pantalla, con el menú del centro).
+  if (hubOk() && HUB_TOOLS.includes(area) && sees(area)) { history.replaceState(null, '', '#/' + [HUB, area, ...rest].join('/')); rest = [area, ...rest]; area = HUB; }
   // Sin sección (o una que no ve): cada perfil abre donde el CEO decidió, por defecto en Hoy.
   const key = sees(area) || area === 'me' ? area : landing();
   // Una ruta que este perfil no ve: la dirección cambia a donde de verdad abrió (así la barra y las pestañas no mienten).
@@ -175,13 +190,17 @@ async function render() {
 }
 
 window.addEventListener('hashchange', () => me && render());
+// Dentro del Centro de control, las pantallas siguen escribiendo su ruta de siempre (#/sales/quotes…): se guarda como
+// #/control-hub/sales/quotes, así recargar o compartir el link abre en el mismo lugar.
+{ const rs = history.replaceState.bind(history);
+  history.replaceState = (st, t, url) => { const m = typeof url === 'string' && /^#\/([\w-]+)(.*)$/.exec(url); if (m && hubOk() && HUB_TOOLS.includes(m[1]) && location.hash.startsWith('#/' + HUB + '/')) url = '#/' + HUB + '/' + m[1] + m[2]; return rs(st, t, url); }; }
 $('#veil').onclick = closeDrawer;
 events.addEventListener('logout', () => { if (me) { me = null; toast('Tu sesión expiró', true); loginView(); } });
 
 async function start(u) {
   me = u;
   // El servidor ya manda areas, views, scope y start aplicados; la matriz se guarda para recalcular en vivo si el CEO la cambia.
-  if (me.role !== 'client') { let doc = null; try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); if (!location.hash.replace(/^#\/?/, '')) history.replaceState(null, '', '#/' + landing()); }
+  if (me.role !== 'client') { let doc = null; const lv = api('db/settings').then((r) => applyLevels((r.items || []).find((x) => x.id === LEVELS_ID))).catch(() => {}); try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); await lv; if (!location.hash.replace(/^#\/?/, '')) history.replaceState(null, '', '#/' + landing()); }
   const c = pendingConnect();
   if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); return consentView(root, me, c, () => { shell(); render(); }); }
   shell(); render();

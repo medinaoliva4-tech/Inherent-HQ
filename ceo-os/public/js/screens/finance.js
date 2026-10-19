@@ -1,7 +1,7 @@
 import { svcHours, svcCost, svcPrice, svcAuto } from '../cycle.js';
 import { byScope, proposal, targetMargin, LEVELS, PRICING_ID } from '../finscope.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico, isSummary, canEdit, roChip } from '../core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico, isSummary, canEdit, roChip, fromLink } from '../core.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const CATS_IN = ['Plan mensual', 'Proyecto', 'Performance fee', 'Otro'];
@@ -141,7 +141,8 @@ export async function render(el, { me, sub }) {
     const money = (v) => (v == null ? html`<span class="mut">—</span>` : Q(v));
     const kpi = [['Ingreso', t.income == null ? '—' : Q(t.income)], ['Costo de módulos', t.cost == null ? '—' : Q(t.cost)], ['Margen', t.margin == null ? '—' : Q(t.margin)], ['Margen %', t.pct == null ? '—' : t.pct + '%']];
     mount(b, html`
-      <div class="mut sm" style="margin-bottom:12px">${ico('lock')} <b>${mLabel(month)}</b> · Costo = la suma de los módulos de cada cliente (servicio × complejidad del catálogo). Ingreso = lo cobrado en movimientos con ese cliente o, si no hay, lo cotizado y aceptado. Los módulos por mes caen cada mes activo; los demás, el mes en que arranca el proyecto.</div>
+      <div class="mut sm" style="margin-bottom:12px">${ico('lock')} <b>${mLabel(month)}</b> · Costo = la suma de los módulos de cada cliente (servicio × complejidad del catálogo). Ingreso = lo cobrado en movimientos con ese cliente o, si no hay, lo cotizado y aceptado. Los módulos por mes caen cada mes activo; los demás, el mes en que arranca el proyecto.
+        <div class="row" style="gap:6px;margin-top:6px">${fromLink({ label: 'catálogo', href: '#/services/servicios', title: 'Servicios → Servicios: horas y precio de cada módulo' })}${fromLink({ label: 'costos por hora', href: '#/services/servicios', title: 'Servicios → Servicios → Costos por hora' })}${fromLink({ label: 'cotizaciones', href: '#/control-hub/sales/quotes' })}</div></div>
       <div class="grid g4" style="margin-bottom:16px">${kpi.map(([l, v]) => html`<div class="card glass"><span class="mut sm">${l}</span><div class="big" style="font-size:38px">${v}</div></div>`)}</div>
       ${r.rows.length ? html`<div class="card tscroll"><table><thead><tr><th>Cliente</th><th>Módulos</th><th class="n">Costo</th><th class="n">Cotizado</th><th class="n">Cobrado</th><th class="n">Margen</th><th style="width:22%">%</th></tr></thead><tbody>
         ${r.rows.map((x) => html`<tr class="click" data-act="scope" data-k="${x.slug}"><td><b style="font-weight:500">${x.name}</b>${x.need.length ? html`<div class="mut sm">${ico('alert')} ${x.need.length === 1 ? 'Falta un dato' : `Faltan ${x.need.length} datos`}</div>` : ''}</td>
@@ -173,7 +174,7 @@ export async function render(el, { me, sub }) {
     const r = proposal(prop, services, rates, m);
     const catalogPrice = r.rows.reduce((a, x) => { const sv = services.find((y) => y.id === x.sid); const p = sv ? svcAuto(sv, rates, x.lv) ?? svcPrice(sv, x.lv) : null; return p == null || a == null ? null : a + p * x.qty; }, 0);
     mount(b, html`
-      <div class="mut sm" style="margin-bottom:12px">${ico('lock')} Arma una propuesta con los módulos del catálogo. Su costo es la suma de cada servicio en su complejidad; el precio sugerido deja el margen objetivo.</div>
+      <div class="mut sm" style="margin-bottom:12px">${ico('lock')} Arma una propuesta con los módulos del catálogo. Su costo es la suma de cada servicio en su complejidad; el precio sugerido deja el margen objetivo. ${fromLink({ label: 'catálogo', href: '#/services/servicios' })} ${fromLink({ label: 'costos por hora', href: '#/services/servicios' })}</div>
       ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Primero carga el catálogo en Comercial → Catálogo de servicios.</div>` : html`
       <div class="grid g21">
         <div class="card"><div class="row" style="margin-bottom:10px"><b class="ttl" style="font-size:16px">Módulos de la propuesta</b><div class="sp"></div><button class="btn ghost xs" data-pact="add">+ Módulo</button></div>
