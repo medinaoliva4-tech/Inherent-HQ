@@ -1,4 +1,4 @@
-import { html, raw, mount, col, api, ask, toast, acts, confirmAsk, fdate, today, IC, ico } from '../core.js';
+import { html, raw, mount, col, api, ask, toast, acts, confirmAsk, fdate, today, IC, ico, drawer, closeDrawer } from '../core.js';
 
 // Roadmap: los pasos grandes (megaproyectos). Cada uno agrupa proyectos y cada proyecto tiene tareas con fecha y hora,
 // que se pueden mandar al calendario de quien lo usa. Todo vive en un solo documento por megaproyecto.
@@ -10,7 +10,6 @@ const stamp = (t) => `${t.date || ''}T${hhmm(t.time) || '99:99'}`; // para orden
 export async function render(el, { me, alive }) {
   const R = col('roadmap');
   let [megas, projects] = await Promise.all([R.list(), col('projects').list().catch(() => [])]);
-  let closed = new Set(); // megaproyectos plegados
 
   const tasksOf = (m) => (m.projects || []).flatMap((p) => p.tasks || []);
   const progress = (m) => { const all = tasksOf(m); return { done: all.filter((t) => t.done).length, total: all.length }; };
@@ -20,45 +19,84 @@ export async function render(el, { me, alive }) {
   }
 
   // ---------- vista ----------
+  // Hero con el trimestre y tres números · las metas como tiles anchos con su anillo · la línea de tiempo del trimestre
+  // como strip · el detalle de cada meta (proyectos y tareas) en un sheet lateral.
+  const T = today();
+  const Q = (() => { const y = +T.slice(0, 4), q = Math.floor((+T.slice(5, 7) - 1) / 3); const from = `${y}-${String(q * 3 + 1).padStart(2, '0')}-01`, end = new Date(y, q * 3 + 3, 0, 12); return { y, n: q + 1, from, to: `${y}-${String(q * 3 + 3).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`, months: [0, 1, 2].map((k) => new Date(y, q * 3 + k, 15, 12)) }; })();
+  const late = (t) => !t.done && t.date && t.date < T;
+  const pctOf = (m) => { const { done, total } = progress(m); return total ? Math.round((done / total) * 100) : 0; };
+  const nextOf = (m) => tasksOf(m).filter((t) => !t.done && t.date).sort((a, z) => stamp(a).localeCompare(stamp(z)))[0];
+  const R0 = 26, C0 = 2 * Math.PI * R0;
+  const ring = (pct, big) => html`<div class="sp-ring ${big ? 'big' : ''}" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="trk" cx="32" cy="32" r="${R0}" fill="none" stroke-width="6"/>${raw(pct ? `<circle class="val" cx="32" cy="32" r="${R0}" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C0.toFixed(2)}" stroke-dashoffset="${(C0 * (1 - pct / 100)).toFixed(2)}"/>` : '')}</svg><b>${pct}<small>%</small></b></div>`;
+  let openId = null; // la meta abierta en el sheet
+
   const taskRow = (m, p, t) => {
-    const late = !t.done && t.date && t.date < today();
-    return html`<div class="rmtask ${t.done ? 'done' : ''}" style="display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap">
+    const lt = late(t);
+    return html`<div class="rmtask ${t.done ? 'done' : ''}">
       <input type="checkbox" ${t.done ? raw('checked') : ''} data-act="doneTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Hecha">
-      <div style="flex:1;min-width:180px"><div style="${t.done ? 'text-decoration:line-through;opacity:.55' : ''}">${t.title}</div>
-        <div class="sm ${late ? '' : 'mut'}" style="${late ? 'color:#b3402f' : ''}">${t.date ? html`${ico('cal', 14)} ${fdate(t.date)}${hhmm(t.time) ? ' · ' + t.time : ''}${t.minutes ? ' · ' + t.minutes + ' min' : ''}${late ? ' · atrasada' : ''}` : 'Sin fecha'}</div></div>
-      <div class="row" style="gap:6px">
+      <div class="rmt-main"><div class="rmt-title">${t.title}</div>
+        <div class="sm ${lt ? 'rmt-late' : 'mut'}">${t.date ? html`${ico('cal', 14)} ${fdate(t.date)}${hhmm(t.time) ? ' · ' + t.time : ''}${t.minutes ? ' · ' + t.minutes + ' min' : ''}${lt ? ' · atrasada' : ''}` : 'Sin fecha'}</div></div>
+      <div class="row rmt-acts">
         ${t.event_link ? html`<a class="btn ghost xs" href="${t.event_link}" target="_blank" rel="noopener noreferrer">${ico('check', 14)} En tu calendario</a>`
-          : html`<button class="btn xs" data-act="cal" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" ${t.date ? '' : raw('disabled title="Ponle fecha primero"')}>${ico('cal', 14)} Agregar a mi calendario</button>`}
+          : html`<button class="btn ghost xs" data-act="cal" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" ${t.date ? '' : raw('disabled title="Ponle fecha primero"')}>${ico('cal', 14)} Agregar a mi calendario</button>`}
         <button class="btn ghost xs" data-act="editTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}">Editar</button>
         <button class="btn ghost xs" data-act="delTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Quitar tarea" title="Quitar tarea">${ico('trash', 15)}</button>
       </div></div>`;
   };
   const projectBlock = (m, p) => {
     const ts = [...(p.tasks || [])].sort((a, z) => stamp(a).localeCompare(stamp(z)));
-    const lk = projects.find((x) => x.id === p.project_id);
-    return html`<div style="margin-top:16px">
-      <div class="row rmproj" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500">${p.name}</b>${lk ? html`<a class="chip" href="#/operations" style="font-size:11px;text-decoration:none">${ico('link', 13)} ${lk.name}</a>` : ''}<div class="sp"></div>
+    const lk = projects.find((x) => x.id === p.project_id), dn = ts.filter((t) => t.done).length;
+    return html`<section class="rmproj-box">
+      <div class="row rmproj" style="gap:8px;flex-wrap:wrap"><b>${p.name}</b><span class="mut sm">${dn}/${ts.length}</span>${lk ? html`<a class="chip" href="#/operations" style="font-size:11px;text-decoration:none">${ico('link', 13)} ${lk.name}</a>` : ''}<div class="sp"></div>
         <button class="btn ghost xs" data-act="addTask" data-m="${m.id}" data-p="${p.id}">+ Tarea</button>
         <button class="btn ghost xs" data-act="editProject" data-m="${m.id}" data-p="${p.id}">Editar</button>
         <button class="btn ghost xs" data-act="delProject" data-m="${m.id}" data-p="${p.id}" aria-label="Quitar proyecto" title="Quitar proyecto">${ico('trash', 15)}</button></div>
-      ${ts.length ? ts.map((t) => taskRow(m, p, t)) : html`<div class="mut sm" style="padding:8px 0">Sin tareas todavía.</div>`}</div>`;
+      ${ts.length ? ts.map((t) => taskRow(m, p, t)) : html`<div class="mut sm" style="padding:8px 0">Sin tareas todavía.</div>`}</section>`;
   };
-  const megaCard = (m) => {
-    const { done, total } = progress(m), pct = total ? Math.round((done / total) * 100) : 0, shut = closed.has(m.id);
-    return html`<div class="card rmcard" style="margin-bottom:16px">
-      <div class="row" style="gap:10px;flex-wrap:wrap;align-items:flex-start">
-        <div style="flex:1;min-width:220px;cursor:pointer" data-act="toggle" data-m="${m.id}"><div class="row" style="gap:8px;flex-wrap:wrap"><span class="mut">${ico(shut ? 'right' : 'down', 16)}</span><h3 style="font-size:20px;font-weight:500;letter-spacing:-.4px;margin:0">${m.name}</h3><span class="chip ${STATUS[m.status] || ''}">${m.status || 'Activo'}</span></div>
-          ${m.why ? html`<div class="mut sm" style="margin-top:4px">${m.why}</div>` : ''}
-          <div class="mut sm" style="margin-top:4px">${m.start || m.end ? `${m.start ? fdate(m.start) : '…'} → ${m.end ? fdate(m.end) : '…'} · ` : ''}${(m.projects || []).length} proyecto${(m.projects || []).length === 1 ? '' : 's'} · ${done}/${total} tareas</div></div>
-        <div class="row" style="gap:6px"><button class="btn xs" data-act="addProject" data-m="${m.id}">+ Proyecto</button><button class="btn ghost xs" data-act="editMega" data-m="${m.id}">Editar</button><button class="btn ghost xs" data-act="delMega" data-m="${m.id}" aria-label="Quitar meta" title="Quitar meta">${ico('trash', 15)}</button></div></div>
-      <div style="height:6px;border-radius:6px;background:var(--line);margin-top:12px;overflow:hidden"><div style="height:100%;width:${pct}%;background:#87684e"></div></div>
-      ${shut ? '' : ((m.projects || []).length ? (m.projects || []).map((p) => projectBlock(m, p)) : html`<div class="mut sm" style="margin-top:14px">Agrega los proyectos que forman este paso con «+ Proyecto».</div>`)}</div>`;
+  const dates = (m) => (m.start || m.end ? `${m.start ? fdate(m.start) : '…'} → ${m.end ? fdate(m.end) : '…'}` : 'Sin fechas');
+  const megaTile = (m) => {
+    const { done, total } = progress(m), pct = pctOf(m), nx = nextOf(m), lt = tasksOf(m).filter(late).length, np = (m.projects || []).length;
+    return html`<button class="sp-tile rm-tile" data-act="openMega" data-m="${m.id}">
+      <div class="rm-tile-top">${ring(pct)}<div style="min-width:0;flex:1"><div class="row" style="gap:8px;flex-wrap:wrap"><span class="sp-tile-name">${m.name}</span><span class="chip ${STATUS[m.status] || ''}">${m.status || 'Activo'}</span></div>
+        ${m.why ? html`<div class="rm-why">${m.why}</div>` : ''}</div><span class="sp-tile-go" aria-hidden="true">↗</span></div>
+      <div class="sp-tile-foot"><span>${dates(m)} · ${np} proyecto${np === 1 ? '' : 's'} · ${done}/${total} tareas</span><span class="${lt ? 'rmt-late' : ''}">${lt ? `${lt} vencida${lt === 1 ? '' : 's'}` : nx ? `Sigue: ${fdate(nx.date)}` : total ? 'Todo hecho' : 'Sin tareas'}</span></div></button>`;
+  };
+  // La línea de tiempo: el trimestre en tres meses; cada meta es una barra de su inicio a su fin y cada tarea un punto.
+  const timeline = (list) => {
+    const d0 = new Date(Q.from + 'T12:00'), span = (new Date(Q.to + 'T12:00') - d0) / 864e5 + 1;
+    const pos = (d) => Math.max(0, Math.min(100, ((new Date(d + 'T12:00') - d0) / 864e5 / span) * 100));
+    const rows = list.filter((m) => (m.start || m.end || tasksOf(m).some((t) => t.date)) && (m.start || Q.from) <= Q.to && (m.end || Q.to) >= Q.from);
+    const now = T >= Q.from && T <= Q.to ? pos(T) : null;
+    return html`<section class="sp-panel rm-time"><div class="sp-panel-h row"><h3>Línea de tiempo · T${Q.n} ${Q.y}</h3><span class="mut sm">Cada barra es una meta; cada punto, una tarea</span></div>
+      <div class="rm-months">${Q.months.map((d) => html`<span>${d.toLocaleDateString('es-GT', { month: 'long' })}</span>`)}</div>
+      <div class="sp-strip rm-strip">${now == null ? '' : html`<i class="rm-now" style="left:${now.toFixed(2)}%" title="Hoy"></i>`}
+        ${rows.length ? rows.map((m) => { const a = pos(m.start || Q.from), z = pos(m.end || Q.to), w = Math.max(2, z - a);
+          return html`<button class="rm-lane" data-act="openMega" data-m="${m.id}" aria-label="${m.name}"><span class="rm-lbl" style="left:${a.toFixed(2)}%">${m.name}</span><span class="rm-bar ${String(m.status || 'Activo').toLowerCase()}" style="left:${a.toFixed(2)}%;width:${w.toFixed(2)}%"></span>
+            ${tasksOf(m).filter((t) => t.date && t.date >= Q.from && t.date <= Q.to).map((t) => html`<i class="rm-dot ${t.done ? 'done' : late(t) ? 'late' : ''}" style="left:${pos(t.date).toFixed(2)}%" title="${fdate(t.date)} · ${t.title}"></i>`)}</button>`; })
+        : html`<div class="mut sm" style="padding:14px 8px">Ninguna meta cae en este trimestre.</div>`}</div></section>`;
+  };
+  // El detalle de una meta en el sheet: su anillo, para qué es, sus fechas y sus proyectos con tareas.
+  const sheet = (m) => {
+    const { done, total } = progress(m);
+    return html`<div class="row"><span class="chip ${STATUS[m.status] || ''}">${m.status || 'Activo'}</span><span class="mut sm">${dates(m)}</span><div class="sp"></div><button class="arrow light" data-act="close" aria-label="Cerrar">${ico('x', 16)}</button></div>
+      <div class="rm-sh-top">${ring(pctOf(m), true)}<div style="min-width:0"><h2 style="margin:0">${m.name}</h2>${m.why ? html`<p class="mut" style="margin:6px 0 0">${m.why}</p>` : ''}<div class="mut sm" style="margin-top:6px">${(m.projects || []).length} proyecto${(m.projects || []).length === 1 ? '' : 's'} · ${done}/${total} tareas</div></div></div>
+      ${(m.projects || []).length ? (m.projects || []).map((p) => projectBlock(m, p)) : html`<div class="sp-callout info" style="margin-top:14px"><span class="grow">Agrega los proyectos que forman este paso con «+ Proyecto».</span></div>`}
+      <div class="row"><button class="btn" data-act="addProject" data-m="${m.id}">+ Proyecto</button><button class="btn ghost" data-act="editMega" data-m="${m.id}">Editar</button><div class="sp"></div><button class="btn ghost" data-act="delMega" data-m="${m.id}" aria-label="Quitar meta" title="Quitar meta">${ico('trash', 15)}</button></div>`;
   };
   function paint() {
     const order = { Activo: 0, Pausado: 1, Hecho: 2 };
     const list = [...megas].sort((a, z) => (order[a.status || 'Activo'] ?? 0) - (order[z.status || 'Activo'] ?? 0) || String(a.start || '9999').localeCompare(String(z.start || '9999')));
-    mount(el, html`<div class="hello row"><div><h1>Roadmap</h1><p>Los pasos grandes de Inherent, con sus proyectos y <em>tareas con fecha y hora</em>.</p></div><div class="sp"></div>${list.length ? html`<button class="btn" data-act="newMega">+ Meta</button>` : ''}</div>
-      ${list.length ? list.map(megaCard) : html`<div class="empty"><b>Todavía no hay metas</b>Cada meta es un paso grande de Inherent: dentro van sus proyectos y las tareas con fecha y hora.<div><button class="btn" data-act="newMega">+ Meta</button></div></div>`}`);
+    const all = megas.flatMap(tasksOf), dn = all.filter((t) => t.done).length, overdue = all.filter(late).length, act = megas.filter((m) => (m.status || 'Activo') === 'Activo').length;
+    mount(el, html`<div class="hello sp-hero row" style="align-items:flex-end"><div><span class="lbl">T${Q.n} · ${Q.y}</span><h1>Roadmap</h1><p>Los pasos grandes de Inherent, con sus proyectos y <em>tareas con fecha y hora</em>.</p></div><div class="sp"></div>${list.length ? html`<button class="btn" data-act="newMega">+ Meta</button>` : ''}</div>
+      ${list.length ? html`<div class="sp-kpis">
+          <div><span class="lbl">Metas</span><b>${megas.length}</b><span class="mut sm">${act} activa${act === 1 ? '' : 's'}</span></div>
+          <div><span class="lbl">Avance</span><b>${all.length ? Math.round((dn / all.length) * 100) : '—'}${all.length ? html`<small class="mut" style="font-size:16px">%</small>` : ''}</b><span class="mut sm">${dn} de ${all.length} tareas</span></div>
+          <div><span class="lbl">Checkpoints vencidos</span><b class="${overdue ? 'rmt-late' : ''}">${overdue}</b><span class="mut sm">${overdue ? 'Tareas con fecha pasada sin hacer' : 'Nada vencido'}</span></div></div>
+        <div class="sp-tiles wide rm-tiles">${list.map(megaTile)}</div>
+        ${timeline(list)}`
+      : html`<div class="empty"><b>Todavía no hay metas</b>Cada meta es un paso grande de Inherent: dentro van sus proyectos y las tareas con fecha y hora.<div><button class="btn" data-act="newMega">+ Meta</button></div></div>`}`);
+    const d = document.getElementById('drawer');
+    if (openId) { const m = megas.find((x) => x.id === openId); if (m && d?.classList.contains('on')) drawer(sheet(m), H); else if (!m) { openId = null; closeDrawer(); } }
   }
 
   // ---------- formularios ----------
@@ -79,8 +117,8 @@ export async function render(el, { me, alive }) {
   ], t ? 'Guardar' : 'Agregar');
 
   // ---------- acciones ----------
-  acts(el, {
-    toggle: (b) => { const id = b.dataset.m; closed.has(id) ? closed.delete(id) : closed.add(id); paint(); },
+  const H = {
+    openMega: (b) => { const m = megas.find((x) => x.id === b.dataset.m); if (!m) return; openId = m.id; drawer(sheet(m), H); },
     newMega: async () => {
       const v = await megaForm(null); if (!v) return;
       try { const r = await R.create({ name: v.name, why: v.why || '', start: v.start || '', end: v.end || '', status: v.status || 'Activo', projects: [] }); megas = [...megas, r]; paint(); toast('Meta creada'); } catch (e) { toast(e.message, true); }
@@ -88,9 +126,9 @@ export async function render(el, { me, alive }) {
     editMega: async (b) => { const m = megas.find((x) => x.id === b.dataset.m), v = await megaForm(m); if (!v) return; if (await save({ ...m, name: v.name, why: v.why || '', start: v.start || '', end: v.end || '', status: v.status || 'Activo' })) paint(); },
     delMega: async (b) => {
       const m = megas.find((x) => x.id === b.dataset.m); if (!(await confirmAsk(`¿Eliminar «${m.name}» con todos sus proyectos y tareas?`))) return;
-      try { await R.remove(m.id); megas = megas.filter((x) => x.id !== m.id); paint(); } catch (e) { toast(e.message, true); }
+      try { await R.remove(m.id); megas = megas.filter((x) => x.id !== m.id); if (openId === m.id) { openId = null; closeDrawer(); } paint(); } catch (e) { toast(e.message, true); }
     },
-    addProject: async (b) => { const m = megas.find((x) => x.id === b.dataset.m), v = await projectForm(null); if (!v) return; if (await save({ ...m, projects: [...(m.projects || []), { id: uid(), name: v.name, project_id: v.project_id || '', tasks: [] }] })) { closed.delete(m.id); paint(); } },
+    addProject: async (b) => { const m = megas.find((x) => x.id === b.dataset.m), v = await projectForm(null); if (!v) return; if (await save({ ...m, projects: [...(m.projects || []), { id: uid(), name: v.name, project_id: v.project_id || '', tasks: [] }] })) paint(); },
     editProject: async (b) => { const { m, p } = find(b.dataset.m, b.dataset.p), v = await projectForm(p); if (!v) return; if (await save({ ...m, projects: m.projects.map((x) => (x.id === p.id ? { ...x, name: v.name, project_id: v.project_id || '' } : x)) })) paint(); },
     delProject: async (b) => { const { m, p } = find(b.dataset.m, b.dataset.p); if (!(await confirmAsk(`¿Quitar el proyecto «${p.name}» y sus tareas?`))) return; if (await save({ ...m, projects: m.projects.filter((x) => x.id !== p.id) })) paint(); },
     addTask: async (b) => {
@@ -113,6 +151,8 @@ export async function render(el, { me, alive }) {
         if (await save({ ...m, projects: m.projects.map((x) => (x.id === p.id ? { ...x, tasks: x.tasks.map((y) => (y.id === t.id ? { ...y, event_link: e.link || '#' } : y)) } : x)) })) { paint(); toast('Agregada a tu calendario'); }
       } catch (err) { b.disabled = false; toast(err.message, true); }
     },
-  });
+  };
+  acts(el, H);
+  addEventListener('hashchange', () => { if (openId) { openId = null; closeDrawer(); } }, { once: true });
   if (alive()) paint();
 }

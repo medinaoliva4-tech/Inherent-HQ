@@ -1,4 +1,4 @@
-import { techDetail, html, raw, mount, api, toast, acts, drawer, closeDrawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON, swap, ico, col, confirmAsk } from '../core.js';
+import { techDetail, html, raw, mount, api, toast, acts, drawer, closeDrawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON, swap, ico, col, confirmAsk, initials } from '../core.js';
 import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 
@@ -62,7 +62,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : tabs[0]?.[0] || 'analytics';
   let rplat = PLATS.some(([k]) => k === embed?.plat) ? embed.plat : 'instagram';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
-  let gstack = null, gfiles = null, gcur = null, pview = 'mes', pdate = today();
+  let gstack = null, gfiles = null, gcur = null, pview = 'semana', pdate = today();
   let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
   let rfOpen = false, rview = 'biblioteca', rq = '', rsort = 'res', rsel = { pilar: '', res: '', talk: '', style: '', tag: '' };
 
@@ -80,10 +80,10 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
     if (!alive()) return;
     const p = data.profile;
     mount(el, html`
-      ${embed ? '' : fixed ? html`<div class="hello row" style="align-items:flex-end"><div><h1>Mi marca</h1><p>Tu marca personal: <em>research, ideas y calendario</em>.</p></div><div class="sp"></div><span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span></div>`
-      : html`<div class="hello"><h1>Contenido</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p></div>
-      <div class="row" style="margin-bottom:16px;gap:8px;flex-wrap:wrap">${data.profiles.map((x) => html`<button class="chip ${x.slug === slug ? 'dark' : ''}" data-act="prof" data-s="${x.slug}" style="padding:9px 16px;font-size:13px">${x.name}</button>`)}</div>`}
-      <div class="row" style="margin-bottom:16px;flex-wrap:wrap;gap:10px${embed && tabs.length < 2 ? ';display:none' : ''}">
+      ${embed ? '' : fixed ? html`<div class="hello sp-hero row" style="align-items:flex-end"><div><h1>Mi marca</h1><p>Tu marca personal: <em>research, ideas y calendario</em>.</p></div><div class="sp"></div><span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span></div>`
+      : html`<div class="hello sp-hero ct-hero"><h1>Contenido</h1><p>Lo que pasa en <em>${p.name}</em> esta semana.</p>
+        <div class="ct-profs" role="group" aria-label="Perfil de contenido">${data.profiles.map((x, i) => html`<button class="ct-prof ${x.slug === slug ? 'on' : ''}" data-act="prof" data-s="${x.slug}" aria-pressed="${x.slug === slug ? 'true' : 'false'}"><span class="sp-mono ${['', 't1', 't2'][i % 3]}">${initials(x.name)}</span><span>${x.name}</span></button>`)}</div></div>`}
+      <div class="row ct-bar" style="margin-bottom:16px;flex-wrap:wrap;gap:10px${embed && tabs.length < 2 ? ';display:none' : ''}">
         <div class="tabs" style="margin:0">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>
         ${tab === 'semana' ? html`<button class="btn" data-act="scrape">Scrapear ahora</button>` : ''}
@@ -255,40 +255,49 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   }
   // Cómo se reparte el contenido entre pilares (lo que no tiene pilar va en gris).
   function pillarDonut(pillars, list) {
-    const parts = [...pillars.map((x) => ({ c: x.color, n: list.filter((p) => p.pillar === x.name).length })), { c: '#eee6da', n: list.filter((p) => !pillars.some((x) => x.name === p.pillar)).length }].filter((x) => x.n);
+    const parts = [...pillars.map((x) => ({ c: x.color, n: list.filter((p) => p.pillar === x.name).length })), { c: 'var(--fill-2)', n: list.filter((p) => !pillars.some((x) => x.name === p.pillar)).length }].filter((x) => x.n);
     const total = parts.reduce((a, x) => a + x.n, 0), R = 30, C = 2 * Math.PI * R; let off = 0;
-    const arcs = parts.map((x) => { const len = (x.n / total) * C; const a = `<circle r="${R}" cx="40" cy="40" fill="none" stroke="${x.c}" stroke-width="14" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 40 40)"/>`; off += len; return a; }).join('');
-    return raw(`<svg width="80" height="80" viewBox="0 0 80 80" aria-label="Reparto por pilar">${total ? arcs : `<circle r="${R}" cx="40" cy="40" fill="none" stroke="#f0e9de" stroke-width="14"/>`}<text x="40" y="44" text-anchor="middle" font-size="14" fill="#2c1f16">${total}</text></svg>`);
+    const arcs = parts.map((x) => { const len = (x.n / total) * C; const a = `<circle r="${R}" cx="40" cy="40" fill="none" style="stroke:${x.c}" stroke-width="14" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 40 40)"/>`; off += len; return a; }).join('');
+    return raw(`<svg width="80" height="80" viewBox="0 0 80 80" aria-label="Reparto por pilar">${total ? arcs : `<circle r="${R}" cx="40" cy="40" fill="none" style="stroke:var(--fill-2)" stroke-width="14"/>`}<text x="40" y="44" text-anchor="middle" font-size="14" style="fill:var(--ink)">${total}</text></svg>`);
   }
+  // ---------- Calendario: el mes como strip (cada día con sus puntos) y la semana elegida como panel ----------
+  const DOWL = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+  function calWeek() {
+    const a = new Date(pdate + 'T12:00'), s0 = monday(a);
+    const days = Array.from({ length: 7 }, (_, i) => { const d = new Date(s0); d.setDate(d.getDate() + i); return d; });
+    return { a, days, from: iso(days[0]), to: iso(days[6]) };
+  }
+  function calStrip({ a, from, to }, dots) {
+    const y = a.getFullYear(), m = a.getMonth(), n = new Date(y, m + 1, 0).getDate(), T = today();
+    const name = a.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' }).replace(/^./, (c) => c.toUpperCase());
+    return html`<section class="sp-panel ct-month"><div class="sp-panel-h row"><h3>${name}</h3><span class="mut sm">Toca un día para ver su semana</span><div class="sp"></div>
+        <button class="arrow light" data-act="pmonth" data-d="-1" aria-label="Mes anterior">‹</button><button class="btn ghost xs" data-act="ptoday">Hoy</button><button class="arrow light" data-act="pmonth" data-d="1" aria-label="Mes siguiente">›</button></div>
+      <div class="sp-strip ct-strip" style="grid-template-columns:repeat(${n},minmax(30px,1fr))">${Array.from({ length: n }, (_, i) => { const k = iso(new Date(y, m, i + 1, 12)), l = dots(k), wd = (new Date(y, m, i + 1, 12).getDay() + 6) % 7;
+        return html`<button class="cd ${k === T ? 'today' : ''} ${k >= from && k <= to ? 'wk' : ''} ${wd > 4 ? 'we' : ''}" data-act="pday" data-d="${k}" aria-label="${fdate(k)}${l.length ? ` · ${l.length}` : ''}"><span class="w">${DOW[wd]}</span><span class="n">${i + 1}</span><span class="dots">${l.slice(0, 4).map((c) => html`<i style="background:${c}"></i>`)}</span></button>`; })}</div></section>`;
+  }
+  function calWeekPanel({ days, from, to }, of, chip, act, label, btn) {
+    const T = today();
+    return html`<section class="sp-panel ct-week"><div class="sp-panel-h row"><button class="arrow light" data-act="pnav" data-d="-1" aria-label="Semana anterior">‹</button><div style="min-width:0"><h3>${fdate(from)} – ${fdate(to)}</h3><span class="mut sm">${label}</span></div><button class="arrow light" data-act="pnav" data-d="1" aria-label="Semana siguiente">›</button><div class="sp"></div>${btn}</div>
+      <div class="ct-days">${days.map((d, i) => { const k = iso(d), l = of(k); return html`<div class="ct-day ${k === T ? 'today' : ''} ${i > 4 ? 'we' : ''}" data-act="${act}" data-d="${k}"><div class="ct-dh"><span>${DOWL[i]}</span><b>${d.getDate()}</b></div><div class="ct-dl">${l.map(chip)}<span class="ct-add" aria-hidden="true">${ico('plus', 14)}</span></div></div>`; })}</div></section>`;
+  }
+  const stripTo = (b) => { const st = $('.ct-strip', b), w = st?.querySelector('.cd.wk'); if (st && w && st.scrollWidth > st.clientWidth) st.scrollLeft = Math.max(0, w.offsetLeft - 12); };
   function plan(b) {
     if (needPosts(b, plan)) return;
     const pillars = data.cfg.pillars || [];
-    const colorOf = (n) => pillars.find((x) => x.name === n)?.color || '#e0d4c4';
-    const a = new Date(pdate + 'T12:00');
-    const first = pview === 'mes' ? new Date(a.getFullYear(), a.getMonth(), 1, 12) : a;
-    const start = monday(first);
-    const n = pview === 'mes' ? Math.ceil((((first.getDay() + 6) % 7) + new Date(a.getFullYear(), a.getMonth() + 1, 0).getDate()) / 7) * 7 : 7;
-    const days = Array.from({ length: n }, (_, i) => { const d = new Date(start); d.setDate(d.getDate() + i); return d; });
-    const from = iso(days[0]), to = iso(days[days.length - 1]);
-    const inRange = posts.filter((p) => p.date && p.date >= from && p.date <= to);
-    const title = pview === 'mes' ? a.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' }).replace(/^./, (c) => c.toUpperCase()) : `${fdate(from)} – ${fdate(to)}`;
-    const T = today();
-    const chip = (p) => { const [i, l] = driveState(p); return html`<button class="ppost" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${p.title} · ${l}"><span class="pi">${i}</span><span class="pt">${p.title}</span></button>`; };
+    const colorOf = (n) => pillars.find((x) => x.name === n)?.color || 'var(--ch-light)';
+    const wk = calWeek(), M = pdate.slice(0, 7);
+    const inMonth = posts.filter((p) => String(p.date || '').slice(0, 7) === M);
+    const chip = (p) => { const [i, l] = driveState(p); return html`<button class="ppost" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${p.title} · ${l}"><span class="pi">${i}</span><span class="pt">${p.title}</span>${p.format ? html`<span class="pf">${p.format}</span>` : ''}</button>`; };
     const undated = posts.filter((p) => !p.date && p.status !== 'Publicado');
     mount(b, html`
-      <div class="card" style="padding:14px;margin-bottom:12px"><div class="row" style="flex-wrap:wrap;gap:14px;align-items:center">${pillarDonut(pillars, inRange)}
-        <div style="flex:1;min-width:200px"><b class="sm" style="font-weight:500">Pilares · ${pview === 'mes' ? 'este mes' : 'esta semana'}</b>
-        <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${pillars.length ? pillars.map((x) => { const c = inRange.filter((p) => p.pillar === x.name).length; return html`<span class="chip" style="gap:6px"><i style="width:10px;height:10px;border-radius:50%;background:${x.color};display:inline-block"></i>${x.name}<span class="mut">${c}${inRange.length ? ` · ${Math.round((c / inRange.length) * 100)}%` : ''}</span></span>`; }) : html`<span class="mut sm">Sin pilares todavía: defínelos para ver cómo se reparte el contenido.</span>`}</div></div>
+      <div class="sp-inset ct-pillars"><div class="row" style="flex-wrap:wrap;gap:14px;align-items:center">${pillarDonut(pillars, inMonth)}
+        <div style="flex:1;min-width:200px"><b class="sm" style="font-weight:600">Pilares · este mes</b>
+        <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${pillars.length ? pillars.map((x) => { const c = inMonth.filter((p) => p.pillar === x.name).length; return html`<span class="chip" style="gap:6px"><i style="width:10px;height:10px;border-radius:50%;background:${x.color};display:inline-block"></i>${x.name}<span class="mut">${c}${inMonth.length ? ` · ${Math.round((c / inMonth.length) * 100)}%` : ''}</span></span>`; }) : html`<span class="mut sm">Sin pilares todavía: defínelos para ver cómo se reparte el contenido.</span>`}</div></div>
         <button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div></div>
-      <div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
-        <button class="arrow light" data-act="pnav" data-d="-1">‹</button><b style="font-weight:500;min-width:150px;text-align:center">${title}</b><button class="arrow light" data-act="pnav" data-d="1">›</button>
-        <button class="sm mut" data-act="ptoday">Hoy</button><div class="sp"></div>
-        <span class="mut sm">${ico('folder')} en Drive · ⬆ por subir · ${ico('edit')} por grabar</span>
-        <div class="tabs" style="margin:0">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => html`<button class="${pview === k ? 'on' : ''}" data-act="pview" data-v="${k}">${l}</button>`)}</div>
-        <button class="btn" data-act="pnew" data-d="">+ Pieza</button></div>
-      <div class="pcal ${pview}">${DOW.map((d) => html`<div class="pdow">${d}</div>`)}
-        ${days.map((d) => { const k = iso(d); const l = posts.filter((p) => p.date === k); return html`<div class="pday ${pview === 'mes' && d.getMonth() !== a.getMonth() ? 'out' : ''} ${k === T ? 'today' : ''}" data-act="pnew" data-d="${k}"><span class="pn">${d.getDate()}</span>${l.map(chip)}</div>`; })}</div>
-      ${undated.length ? html`<div class="sec-title"><h2>Sin fecha</h2><span class="mut sm">${undated.length}</span></div><div class="row" style="flex-wrap:wrap;gap:6px">${undated.map(chip)}</div>` : ''}`);
+      ${calStrip(wk, (k) => posts.filter((p) => p.date === k).map((p) => colorOf(p.pillar)))}
+      ${calWeekPanel(wk, (k) => posts.filter((p) => p.date === k), chip, 'pnew', raw(`${ico('folder', 13).toString()} en Drive · ⬆ por subir · ${ico('edit', 13).toString()} por grabar`), html`<button class="btn" data-act="pnew" data-d="">+ Pieza</button>`)}
+      ${undated.length ? html`<div class="sec-title"><h2>Sin fecha</h2><span class="mut sm">${undated.length}</span></div><div class="row ct-undated" style="flex-wrap:wrap;gap:6px">${undated.map(chip)}</div>` : ''}`);
+    stripTo(b);
   }
 
   // ---------- Research: los videos que funcionaron, como galería (el scrape + lo que sube Claude con el conector) ----------
@@ -316,11 +325,16 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   }
   const rmatch = (x, k) => k === 'todos' || (k === 'analisis' ? Boolean(x.why) : x.tipo === k);
   const fmatch = (x, k) => k === 'todo' || (k === 'plantilla' ? Boolean(x.plantilla) : fmtOf(x) === k);
-  const rcard = (it) => { const t = safeImg(it.thumb), f = fmtOf(it); return html`<button class="rcard" data-act="ropen" data-k="${it.key}" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>
-      <span class="rbadge">${it.plantilla ? 'Plantilla' : it.x ? it.x + '×' : RKL[it.tipo] || 'Video'}</span>
-      <span class="ricons">${it.tested ? html`<i title="Probado">${ico('check', 13)}</i>` : ''}${f !== 'reel' ? html`<i title="${f === 'carrusel' ? 'Carrusel' : 'Estático'}">${ico(f === 'carrusel' ? 'layers' : 'image', 13)}</i>` : ''}${it.why ? html`<i title="Tiene análisis">${ico('bulb', 13)}</i>` : ''}</span>
-      ${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 20)}</span>`}
-      <span class="rfoot"><b>@${it.handle || '—'}</b><span>${it.views ? html`${ico('play', 12)} ${K(it.views)}` : it.likes ? html`${ico('heart')} ${K(it.likes)}` : ''}</span></span></button>`; };
+  // Un tile por video o post: miniatura, quién, y dos datos (alcance y cuánto supera su promedio). La ficha abre en un sheet lateral.
+  const rshort = (k) => RLEVELS.find(([x]) => x === k)?.[2] || RKL[k] || 'Video';
+  const rcard = (it) => { const t = safeImg(it.thumb), f = fmtOf(it), r = resOf(it);
+    const d1 = it.views ? html`<span>${ico('play', 12)} <b>${K(it.views)}</b></span>` : it.likes ? html`<span>${ico('heart', 12)} <b>${K(it.likes)}</b></span>` : '';
+    const d2 = it.x ? html`<span><b>×${it.x}</b> su promedio</span>` : r ? html`<span>Resonancia <b>${r}</b></span>` : '';
+    return html`<button class="sp-tile rs-tile" data-act="ropen" data-k="${it.key}" aria-label="${rtitle(it)} · @${it.handle || '—'}">
+      <span class="rs-thumb ${t ? '' : 'none'}" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 22)}</span>`}
+        <span class="rbadge">${it.plantilla ? 'Plantilla' : rshort(it.tipo)}</span>
+        <span class="ricons">${it.tested ? html`<i title="Probado">${ico('check', 13)}</i>` : ''}${f !== 'reel' ? html`<i title="${f === 'carrusel' ? 'Carrusel' : 'Estático'}">${ico(f === 'carrusel' ? 'layers' : 'image', 13)}</i>` : ''}${it.why ? html`<i title="Tiene análisis">${ico('bulb', 13)}</i>` : ''}</span></span>
+      <span class="rs-body"><b class="rs-title">${rtitle(it)}</b><span class="rs-by">@${it.handle || '—'}</span>${d1 || d2 ? html`<span class="rs-data">${d1}${d2}</span>` : ''}</span></button>`; };
   const rsearch = (x, q) => !q || [x.title, x.handle, x.text, x.style, ...(x.tags || []), x.pillar, x.why?.hook, x.why?.por_que, x.why?.adaptacion].join(' ').toLowerCase().includes(q);
   const SORTS = [['res', 'Resonancia primero'], ['x', 'Más veces su promedio'], ['views', 'Más vistas'], ['recent', 'Más recientes']];
   const rsorter = { res: (a, z) => (RESN[resOf(z)] || 0) - (RESN[resOf(a)] || 0) || (z.x || 0) - (a.x || 0), x: (a, z) => (z.x || 0) - (a.x || 0), views: (a, z) => (z.views || 0) - (a.views || 0), recent: (a, z) => String(z.at || '').localeCompare(String(a.at || '')) };
@@ -333,14 +347,15 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const pillars = [...new Set([...(data.cfg.pillars || []).map((x) => x.name), ...distinct(all, (x) => x.pillar)])].filter(Boolean);
     const RL = ['alta', 'media', 'baja'], present = { res: RL.filter((r) => all.some((x) => resOf(x) === r)), talk: TALK.filter(([v]) => all.some((x) => x.talk === v)), style: distinct(all, (x) => x.style), tag: distinct(all, (x) => x.tags).slice(0, 24) };
     const frow = (lbl, k, opts) => html`<div class="rfrow"><span class="lbl">${lbl}</span><div class="rfopts">${opts.map(([v, l]) => html`<button class="chip ${rsel[k] === v ? 'dark' : ''}" data-act="rsel" data-k="${k}" data-v="${v}">${l}</button>`)}</div></div>`;
+    const nf = [rfilter !== 'todos', ...Object.values(rsel)].filter(Boolean).length;
     mount(b, html`${embed?.inspo ? html`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:14px"><div class="tabs" style="margin:0">${PLATS.map(([k, l]) => html`<button class="${rplat === k ? 'on' : ''}" data-act="rplat" data-k="${k}">${l} · ${allP.filter((x) => redOf(x) === k).length}</button>`)}</div><div class="sp"></div><button class="btn ghost xs" data-act="rmanual">+ Guardar a mano</button></div>
-      ${rplat === 'linkedin' ? html`<div class="rsource" style="margin-bottom:12px"><span class="fi">${ico('edit', 16)}</span><div style="flex:1;min-width:200px"><b style="font-weight:500">LinkedIn: guardado a mano</b><div class="mut sm">No hay scraper de LinkedIn conectado. Pega el link del post y, si quieres, una captura (link https a la imagen).</div></div></div>` : ''}` : ''}<div class="rtiles">${RFMT.map(([k, l, i]) => html`<button class="rtile ${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}"><i>${ico(i, 22)}</i><span>${l}</span></button>`)}</div>
-      <div class="row" style="gap:10px;flex-wrap:wrap;margin:16px 0 12px"><div class="tabs" style="margin:0">${[['biblioteca', 'Biblioteca'], ['semana', `Mi semana · ${all.filter((x) => x.week === W).length}`]].map(([k, l]) => html`<button class="${rview === k ? 'on' : ''}" data-act="rview" data-v="${k}">${l}</button>`)}</div>
-</div>
+      ${rplat === 'linkedin' ? html`<div class="sp-callout info" style="margin-bottom:12px"><span class="grow"><b>LinkedIn: guardado a mano.</b> No hay scraper de LinkedIn conectado. Pega el link del post y, si quieres, una captura (link https a la imagen).</span></div>` : ''}` : ''}
+      <div class="rs-bar"><div class="tabs rs-fmt" style="margin:0">${RFMT.map(([k, l, i]) => html`<button class="${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}">${ico(i, 15)} ${l}</button>`)}</div><div class="sp"></div>
+        <div class="tabs" style="margin:0">${[['biblioteca', 'Biblioteca'], ['semana', `Mi semana · ${all.filter((x) => x.week === W).length}`]].map(([k, l]) => html`<button class="${rview === k ? 'on' : ''}" data-act="rview" data-v="${k}">${l}</button>`)}</div></div>
       ${sourceBox(all)}
-      <div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:10px"><input class="in" id="rq" placeholder="Buscar: cuenta, tema, hook, estilo…" value="${rq}" style="flex:1;min-width:220px"><select class="in" id="rsort" style="width:auto">${SORTS.map(([k, l]) => html`<option value="${k}" ${rsort === k ? raw('selected') : ''}>${l}</option>`)}</select></div>
-      <details class="rfilt" ${rfOpen ? raw('open') : ''}><summary>${ico('bars', 15)} Filtrar${(n => n ? html` <b>${n}</b>` : '')([rfilter !== 'todos', ...Object.values(rsel)].filter(Boolean).length)}</summary>
-      <div class="rfilters">
+      <div class="rs-search"><label class="rs-q">${ico('search', 18)}<input class="in" id="rq" placeholder="Buscar: cuenta, tema, hook, estilo…" value="${rq}" aria-label="Buscar en Research"></label><select class="in" id="rsort" aria-label="Ordenar">${SORTS.map(([k, l]) => html`<option value="${k}" ${rsort === k ? raw('selected') : ''}>${l}</option>`)}</select></div>
+      <details class="rfilt" ${rfOpen ? raw('open') : ''}><summary>${ico('bars', 15)} Filtrar${nf ? html` <b>${nf}</b>` : ''}</summary>
+      <div class="rfilters sp-inset">
         <div class="rfrow"><span class="lbl">Fuente</span><div class="rfopts">${rkinds(all).map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}">${l}</button>`)}</div></div>
         ${pillars.length ? frow('Pilar', 'pilar', pillars.map((x) => [x, x])) : ''}
         ${present.res.length ? frow('Resonancia', 'res', present.res.map((x) => [x, x])) : ''}
@@ -349,8 +364,8 @@ Contesta SOLO con este JSON, sin texto antes ni después:
         ${present.tag.length ? frow('Etiquetas', 'tag', present.tag.map((x) => [x, x])) : ''}
       </div>
       </details>
-      <div class="mut sm" style="margin:10px 0 12px;font-family:ui-monospace,Menlo,monospace">${list.length} de ${base.length} formatos${rview === 'semana' ? ` · semana ${W.slice(-2)}` : ''}</div>
-      ${list.length ? html`<div class="rgrid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : all.length ? 'Nada con esos filtros' : embed?.inspo ? `Sin inspo de ${RED[rplat]} todavía` : 'Research está vacío'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : all.length ? 'Quita algún filtro.' : embed?.inspo ? (rplat === 'linkedin' ? 'Guárdalo a mano: «+ Guardar a mano» con el link del post.' : 'Claude lo sube con guardar_research (copia la instrucción de arriba) o guárdalo a mano.') : 'Se llena cuando Claude sube posts con el conector. Copia la instrucción de arriba y pégasela.'}</div>`}`);
+      <div class="rs-count">${list.length} de ${base.length} formatos${rview === 'semana' ? ` · semana ${W.slice(-2)}` : ''}</div>
+      ${list.length ? html`<div class="rs-grid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : all.length ? 'Nada con esos filtros' : embed?.inspo ? `Sin inspo de ${RED[rplat]} todavía` : 'Research está vacío'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : all.length ? 'Quita algún filtro.' : embed?.inspo ? (rplat === 'linkedin' ? 'Guárdalo a mano: «+ Guardar a mano» con el link del post.' : 'Claude lo sube con guardar_research (copia la instrucción de arriba) o guárdalo a mano.') : 'Se llena cuando Claude sube posts con el conector. Copia la instrucción de arriba y pégasela.'}</div>`}`);
     const qi = $('#rq', b); qi.oninput = () => { rq = qi.value; const pos = qi.selectionStart; research(b); const n = $('#rq', b); n.focus(); n.setSelectionRange(pos, pos); };
     const fd = $('.rfilt', b); if (fd) fd.ontoggle = () => { rfOpen = fd.open; };
     $('#rsort', b).onchange = (e) => { rsort = e.target.value; research(b); };
@@ -398,17 +413,16 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     const ad = String(w.adaptacion || '').trim(), cut = ad.search(/\n\s*\n|\n(?=\s*(#|[-*•]|\d+[.)]|\*\*))/), mine = cut > 0 ? ad.slice(0, cut).trim() : ad, analysis = cut > 0 ? ad.slice(cut).trim() : '';
     const allR = researchItems(), styleOpts = distinct(allR, (x) => x.style), pillarOpts = [...new Set([...(data.cfg.pillars || []).map((x) => x.name), ...distinct(allR, (x) => x.pillar)])].filter(Boolean);
     const receta = it.receta || [], clips = it.clips || [];
-    document.querySelector('.rview')?.remove();
-    const v = document.createElement('div'); v.className = 'rview';
-    mount(v, html`<div class="rv-col">
-        <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster">${t ? html`<img src="${t}" alt="">` : ''}<span class="rv-load">Cargando video…</span></div>`
+    document.querySelector('.rsheet')?.remove();
+    // La ficha vive en un sheet lateral: arriba el video o el post, debajo quién lo hizo, las acciones y el análisis.
+    const v = document.createElement('div'); v.className = 'rsheet';
+    mount(v, html`<aside class="sp-sheet rv-sheet" role="dialog" aria-modal="true" aria-label="${rtitle(it)}">
+      <div class="row rv-head"><div class="rv-acc"><span class="rv-av">${(it.handle || '?')[0].toUpperCase()}</span><div style="min-width:0"><b>@${it.handle || '—'}</b><div class="sm mut">${[RED[it.red] || it.red, { reel: 'Reel', carrusel: 'Carrusel', estatico: 'Estático' }[f], RKL[it.tipo]].filter(Boolean).join(' · ')}</div></div></div><div class="sp"></div><button class="arrow light" data-v="close" title="Cerrar" aria-label="Cerrar">${ico('x', 16)}</button></div>
+      <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster">${t ? html`<img src="${t}" alt="">` : ''}<span class="rv-load">Cargando video…</span></div>`
           : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
-          : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}></div>`}
-          <button class="rv-back" data-v="close" title="Cerrar">${ico('x', 18)}</button></div>
-        <div class="rv-foot"><div class="rv-acc"><span class="rv-av">${(it.handle || '?')[0].toUpperCase()}</span><div><b>@${it.handle || '—'}</b><div class="sm">${[RED[it.red] || it.red, { reel: 'Reel', carrusel: 'Carrusel', estatico: 'Estático' }[f], RKL[it.tipo]].filter(Boolean).join(' · ')}</div></div></div>
-          <button class="rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button></div>
-      </div>
-      <div class="rv-actions"><button class="rv-plus" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 22)}</button><button data-v="why" title="Por qué funcionó">${ico('bars', 20)}</button>${/^https:\/\//.test(it.url) ? html`<a href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original">${ico('globe', 20)}</a>` : ''}<button data-v="del" title="Quitar de Research">${ico('trash', 20)}</button></div>
+          : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 26)}</span>`}</div>`}</div>
+      <div class="rv-actions"><button class="btn rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button><button class="btn ghost" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 16)} Agendar</button>
+        <button class="arrow light" data-v="why" title="Por qué funcionó" aria-label="Por qué funcionó">${ico('bars', 17)}</button>${/^https:\/\//.test(it.url) ? html`<a class="arrow light" href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original" aria-label="Abrir el original">${ico('globe', 17)}</a>` : ''}<button class="arrow light" data-v="del" title="Quitar de Research" aria-label="Quitar de Research">${ico('trash', 17)}</button></div>
       <div class="rv-info">
         <div class="rfc-head"><h2>${rtitle(it)}</h2>${resOf(it) ? html`<span class="rfc-res ${resOf(it)}">${resOf(it)}</span>` : ''}</div>
         ${stats.length ? html`<div class="rfc-stats">${stats.map(([v2, l]) => html`<div><b>${v2}</b><span>${l}</span></div>`)}</div>` : ''}
@@ -439,8 +453,8 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
             <label class="sm">Tipo<input class="in" data-tag="style" list="rv-styles" value="${it.style || ''}" placeholder="—"><datalist id="rv-styles">${styleOpts.map((x) => html`<option value="${x}">`)}</datalist></label>
             <label class="sm">Pilar<input class="in" data-tag="pillar" list="rv-pillars" value="${it.pillar || ''}" placeholder="—"><datalist id="rv-pillars">${pillarOpts.map((x) => html`<option value="${x}">`)}</datalist></label>
           </div></details>
-      </div>`);
-    document.body.appendChild(v);
+      </div></aside>`);
+    document.body.appendChild(v); requestAnimationFrame(() => v.classList.add('on')); v.querySelector('[data-v="close"]')?.focus({ preventScroll: true });
     // El video se ve aquí mismo: el servidor saca el link directo del reel (caduca, por eso se pide al abrir). Si Instagram no lo deja, queda la miniatura con el link al original.
     if (f === 'reel' && em) {
       const box = $('#rvmedia', v), fallback = () => { const l = box.querySelector('.rv-load'); if (l) l.outerHTML = `<a class="rv-load rv-ext" href="${it.url}" target="_blank" rel="noopener noreferrer">Instagram no deja verlo aquí · Abrir ↗</a>`; };
@@ -481,28 +495,14 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     mount(b, html`<div class="tabs" style="margin:0 0 14px">${[['publicacion', 'Publicación'], ['grabacion', 'Grabación']].map(([k, l]) => html`<button class="${cview === k ? 'on' : ''}" data-act="cview" data-v="${k}">${l}</button>`)}</div><div id="calb"></div>`);
     (cview === 'grabacion' ? grabacion : plan)($('#calb', b));
   }
-  function calRange() {
-    const a = new Date(pdate + 'T12:00');
-    const first = pview === 'mes' ? new Date(a.getFullYear(), a.getMonth(), 1, 12) : a;
-    const start = monday(first);
-    const n = pview === 'mes' ? Math.ceil((((first.getDay() + 6) % 7) + new Date(a.getFullYear(), a.getMonth() + 1, 0).getDate()) / 7) * 7 : 7;
-    const days = Array.from({ length: n }, (_, i) => { const d = new Date(start); d.setDate(d.getDate() + i); return d; });
-    const from = iso(days[0]), to = iso(days[days.length - 1]);
-    return { a, days, from, to, title: pview === 'mes' ? a.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' }).replace(/^./, (c) => c.toUpperCase()) : `${fdate(from)} – ${fdate(to)}` };
-  }
   function grabacion(b) {
     if (shoots === null) { mount(b, html`<p class="loading">Cargando grabaciones…</p>`); C.list().then((l) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug); }).catch((e) => { shoots = []; toast(e.message, true); }).then(() => alive() && b.isConnected && grabacion(b)); return; }
-    const { a, days, from, to, title } = calRange(), T = today();
-    const inRange = shoots.filter((x) => x.date >= from && x.date <= to && x.status !== 'Cancelado');
-    const chip = (x) => html`<button class="ppost shoot ${x.status === 'Grabado' ? 'done' : ''}" data-act="sedit" data-id="${x.id}" title="${x.title}${x.place ? ' · ' + x.place : ''}"><span class="pi">${x.time || ico('video', 13)}</span><span class="pt">${x.title}</span></button>`;
-    mount(b, html`<div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
-        <button class="arrow light" data-act="pnav" data-d="-1">‹</button><b style="font-weight:500;min-width:150px;text-align:center">${title}</b><button class="arrow light" data-act="pnav" data-d="1">›</button>
-        <button class="sm mut" data-act="ptoday">Hoy</button><div class="sp"></div>
-        <span class="mut sm">${inRange.length} grabaci${inRange.length === 1 ? 'ón' : 'ones'} ${pview === 'mes' ? 'este mes' : 'esta semana'}</span>
-        <div class="tabs" style="margin:0">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => html`<button class="${pview === k ? 'on' : ''}" data-act="pview" data-v="${k}">${l}</button>`)}</div>
-        <button class="btn" data-act="snew" data-d="">+ Grabación</button></div>
-      <div class="pcal ${pview}">${DOW.map((d) => html`<div class="pdow">${d}</div>`)}
-        ${days.map((d) => { const k = iso(d); const l = shoots.filter((x) => x.date === k).sort((x, z) => String(x.time || '').localeCompare(String(z.time || ''))); return html`<div class="pday ${pview === 'mes' && d.getMonth() !== a.getMonth() ? 'out' : ''} ${k === T ? 'today' : ''}" data-act="snew" data-d="${k}"><span class="pn">${d.getDate()}</span>${l.map(chip)}</div>`; })}</div>`);
+    const wk = calWeek(), live = shoots.filter((x) => x.status !== 'Cancelado');
+    const n = live.filter((x) => x.date >= wk.from && x.date <= wk.to).length;
+    const chip = (x) => html`<button class="ppost shoot ${x.status === 'Grabado' ? 'done' : ''}" data-act="sedit" data-id="${x.id}" title="${x.title}${x.place ? ' · ' + x.place : ''}"><span class="pi">${x.time || ico('video', 13)}</span><span class="pt">${x.title}</span>${x.place ? html`<span class="pf">${x.place}</span>` : ''}</button>`;
+    mount(b, html`${calStrip(wk, (k) => live.filter((x) => x.date === k).map(() => 'var(--ink)'))}
+      ${calWeekPanel(wk, (k) => shoots.filter((x) => x.date === k).sort((x, z) => String(x.time || '').localeCompare(String(z.time || ''))), chip, 'snew', `${n} grabaci${n === 1 ? 'ón' : 'ones'} esta semana`, html`<button class="btn" data-act="snew" data-d="">+ Grabación</button>`)}`);
+    stripTo(b);
   }
   async function editShoot(x, date) {
     const v = await ask(x ? 'Grabación' : 'Nueva grabación', [
@@ -528,28 +528,28 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
   function analytics(b) {
     if (ig === null) { mount(b, html`<p class="loading">Cargando analytics…</p>`); api(`analytics/instagram?profile=${encodeURIComponent(slug)}`).then((r) => { ig = r; }).catch((e) => { ig = { error: e.message }; }).then(() => alive() && tab === 'analytics' && b.isConnected && analytics(b)); return; }
     let top;
-    if (ig.error) top = html`<div class="warnbox"><b>No pude leer Instagram ahora.</b> Inténtalo en un momento.${techDetail({ detail: ig.error })}</div>`;
-    else if (!ig.connected) top = connectCard('instagram', 'Conecta Instagram para ver tus analytics', 'Entra con la cuenta de Instagram de la marca y aquí aparecen alcance, vistas, tiempo de visualización y tus mejores reels.', 'igconnect', 'Conectar Instagram');
-    else if (!ig.matched) top = html`<div class="connectcard"><span class="lg big">${LOGO.instagram}</span><div class="grow"><b style="font-weight:500">¿Cuál es el Instagram de ${data.profile.name}?</b><div class="mut sm">${ig.accounts.length ? 'Estas son las cuentas de Instagram conectadas. Toca la de este perfil.' : 'Windsor respondió pero no trae ninguna cuenta de Instagram. En Windsor → Instagram, revisa que la cuenta esté conectada y con datos, y recarga.'}</div>
+    if (ig.error) top = html`<div class="sp-callout"><span class="grow"><b>No pude leer Instagram ahora.</b> Inténtalo en un momento.${techDetail({ detail: ig.error })}</span></div>`;
+    else if (!ig.connected) top = html`<div class="sp-callout info ct-noconn"><span class="lg">${LOGO.instagram}</span><span class="grow"><span class="lbl">Sin conexión</span><b>Conecta Instagram para ver tus analytics</b><span class="mut">Entra con la cuenta de Instagram de la marca y aquí aparecen alcance, vistas, tiempo de visualización y tus mejores reels.</span></span><button class="btn" data-act="igconnect">Conectar Instagram</button></div>`;
+    else if (!ig.matched) top = html`<div class="connectcard sp-panel" style="padding:18px var(--pad)"><span class="lg big">${LOGO.instagram}</span><div class="grow"><b style="font-weight:500">¿Cuál es el Instagram de ${data.profile.name}?</b><div class="mut sm">${ig.accounts.length ? 'Estas son las cuentas de Instagram conectadas. Toca la de este perfil.' : 'Windsor respondió pero no trae ninguna cuenta de Instagram. En Windsor → Instagram, revisa que la cuenta esté conectada y con datos, y recarga.'}</div>
         <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:10px">${ig.accounts.map((x) => html`<button class="connect" data-act="igpick" data-a="${x}"><span class="lg">${LOGO.instagram}</span>@${x}</button>`)}</div></div>${ig.accounts.length ? '' : html`<button class="btn" data-act="igconnect">Conectar una cuenta</button>`}</div>`;
     else {
       const w = ig.watch || {};
       const reels = ig.reels || [];
       const maxAvg = Math.max(1, ...reels.map((x) => x.avg));
       top = html`<div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">${connectChip('instagram', `${ig.handles.map((h) => '@' + h).join(', ')} · conectado`, 'x', true)}<button class="sm mut" data-act="igchange">Cambiar cuenta</button><span class="mut sm">Últimos ${ig.days || 30} días.ai</span></div>
-      <div class="wkkpis">${[['Seguidores', ig.followers ? K(ig.followers) : '—'], ['Alcance', K(ig.reach)], ['Vistas', K(ig.views)], ['Engagement', ig.er == null ? '—' : ig.er + '%'], ['Watch time promedio', w.avg == null ? '—' : w.avg + ' s']].map(([l, v]) => html`<div class="wkkpi"><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
-      ${ig.series.length > 1 ? html`<div class="card wkbox"><div class="wkhead"><h3>Alcance y vistas por día</h3><span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#2c1f16;display:inline-block"></i>Alcance</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #997d65;display:inline-block"></i>Vistas</span></span></div><div class="chart" id="chIG"></div></div>` : ''}
-      <div class="card wkbox" style="margin-top:12px"><div class="wkhead"><div><h3>Reels · ¿hasta dónde los ven?</h3><span class="mut sm">Últimos 90 días · ${w.n || 0} reels con watch time · ${w.hours || 0} h vistas en total${w.hookLost ? html` · <b style="color:var(--warn)">${w.hookLost} se pierden en el hook (&lt;3 s)</b>` : ''}</span></div></div>
+      <div class="sp-kpis">${[['Seguidores', ig.followers ? K(ig.followers) : '—'], ['Alcance', K(ig.reach)], ['Vistas', K(ig.views)], ['Engagement', ig.er == null ? '—' : ig.er + '%'], ['Watch time promedio', w.avg == null ? '—' : w.avg + ' s']].map(([l, v]) => html`<div><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
+      ${ig.series.length > 1 ? html`<div class="sp-panel ct-main"><div class="wkhead"><h3>Alcance y vistas por día</h3><span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#2c1f16;display:inline-block"></i>Alcance</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #997d65;display:inline-block"></i>Vistas</span></span></div><div class="chart" id="chIG"></div></div>` : ''}
+      <div class="sp-panel" style="margin-top:16px"><div class="wkhead"><div><h3>Reels · ¿hasta dónde los ven?</h3><span class="mut sm">Últimos 90 días · ${w.n || 0} reels con watch time · ${w.hours || 0} h vistas en total${w.hookLost ? html` · <b style="color:var(--warn)">${w.hookLost} se pierden en el hook (&lt;3 s)</b>` : ''}</span></div></div>
         ${reels.length ? html`<div class="tscroll"><table class="wktable"><thead><tr><th>Reel</th><th>Fecha</th><th class="n">Vistas</th><th class="n">Alcance</th><th style="min-width:150px">Watch time promedio</th><th class="n">Total</th><th class="n">${ico('heart')}</th><th class="n">Guardados</th><th class="n">Compartidos</th></tr></thead><tbody>
           ${reels.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit" class="row">${safeImg(x.thumb) ? html`<span class="rthumb" style="background-image:url('${safeImg(x.thumb)}')"></span>` : ''}<span class="sm" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.caption || 'Ver reel'}</span></a>` : html`<span class="sm">${x.caption || '—'}</span>`}</td>
             <td class="mut">${fdate(x.date)}</td><td class="n"><b style="font-weight:500">${K(x.views)}</b></td><td class="n">${K(x.reach)}</td>
             <td>${x.avg ? html`<div class="row" style="gap:8px"><div style="flex:1;height:8px;border-radius:99px;background:var(--fill)"><div style="width:${Math.round((x.avg / maxAvg) * 100)}%;height:100%;border-radius:99px;background:${x.avg < 3 ? '#997d65' : '#795c45'}"></div></div><span class="sm" style="width:44px;text-align:right">${x.avg} s</span></div>` : html`<span class="mut sm">—</span>`}</td>
             <td class="n mut">${x.total ? (x.total >= 3600 ? Math.round(x.total / 360) / 10 + ' h' : Math.round(x.total / 60) + ' min') : '—'}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.saves)}</td><td class="n">${K(x.shares)}</td></tr>`)}</tbody></table></div>
-          <div class="mut sm" style="margin-top:10px">${ico('bulb')} Instagram no entrega por API el segundo exacto en que la gente deja de ver (esa curva solo está en la app). Lo más cercano es el <b>watch time promedio</b>: si está debajo de 3 s, se fueron en el hook.</div>`
+          <div class="sp-callout info" style="margin-top:12px"><span class="grow">Instagram no entrega por API el segundo exacto en que la gente deja de ver (esa curva solo está en la app). Lo más cercano es el <b>watch time promedio</b>: si está debajo de 3 s, se fueron en el hook.</span></div>`
         : html`<div class="mut sm" style="padding:6px 0">No hay reels de esta cuenta en los últimos 90 días.</div>`}</div>
-      ${ig.top.length ? html`<div class="card wkbox" style="margin-top:12px"><div class="wkhead"><h3>Mejores posts del periodo</h3></div><div class="tscroll"><table class="wktable"><thead><tr><th>Fecha</th><th>Tipo</th><th class="n">Alcance</th><th class="n">Likes</th><th class="n">Comentarios</th><th class="n">Guardados</th><th class="n">Engagement</th></tr></thead><tbody>${ig.top.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit">${fdate(x.date)}</a>` : fdate(x.date)}</td><td>${x.type}</td><td class="n">${K(x.reach)}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.comments)}</td><td class="n">${K(x.saves)}</td><td class="n"><b style="font-weight:500">${K(x.eng)}</b></td></tr>`)}</tbody></table></div></div>` : ''}`;
+      ${ig.top.length ? html`<div class="sp-panel" style="margin-top:16px"><div class="wkhead"><h3>Mejores posts del periodo</h3></div><div class="tscroll"><table class="wktable"><thead><tr><th>Fecha</th><th>Tipo</th><th class="n">Alcance</th><th class="n">Likes</th><th class="n">Comentarios</th><th class="n">Guardados</th><th class="n">Engagement</th></tr></thead><tbody>${ig.top.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit">${fdate(x.date)}</a>` : fdate(x.date)}</td><td>${x.type}</td><td class="n">${K(x.reach)}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.comments)}</td><td class="n">${K(x.saves)}</td><td class="n"><b style="font-weight:500">${K(x.eng)}</b></td></tr>`)}</tbody></table></div></div>` : ''}`;
     }
-    mount(b, html`${top}<div id="anScrape" style="margin-top:16px"></div>`);
+    mount(b, html`${top}<div id="anScrape" style="margin-top:24px"></div>`);
     const ch = $('#chIG', b); if (ch) lineChart(ch, ig.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: ig.series.map((x) => x.reach), c: '#2c1f16', fill: true }, { name: 'Vistas', v: ig.series.map((x) => x.views), c: '#997d65', dash: true }]);
     scrapeAnalytics($('#anScrape', b));
   }
@@ -559,9 +559,10 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     const delta = (k) => (last && prev && prev[k] ? Math.round(((last[k] - prev[k]) / prev[k]) * 100) : null);
     const own = week.result?.own || [];
     if (!h.length) return mount(b, html`<div class="mut sm">Conecta Instagram en Analytics y tus posts aparecen aquí.</div>`);
-    const kpi = (lbl, v, d) => html`<div class="card"><div class="lbl">${lbl}</div><div class="big" style="font-size:44px">${v}</div><div class="sm ${d == null ? 'mut' : ''}" style="${d == null ? '' : d >= 0 ? 'color:#755943' : 'color:var(--warn)'}">${d == null ? 'vs semana anterior: —' : (d >= 0 ? '▲ ' : '▼ ') + Math.abs(d) + '% vs semana anterior'}</div></div>`;
-    mount(b, html`<div class="grid g4">${kpi('Vistas promedio', K(last.avgViews), delta('avgViews'))}${kpi('Engagement', last.er == null ? '—' : last.er + '%', delta('er'))}${kpi('Likes', K(last.likes), delta('likes'))}${kpi('Posts leídos', last.posts, null)}</div>
-      <div class="card" style="margin-top:16px"><div class="chead"><div class="ico">↗</div><h3>Vistas promedio por semana</h3></div><div class="chart" id="chA"></div></div>
+    const kpi = (lbl, v, d) => html`<div><span class="lbl">${lbl}</span><b>${v}</b><span class="sm ${d == null ? 'mut' : d >= 0 ? 'up' : 'down'}">${d == null ? 'vs semana anterior: —' : (d >= 0 ? '▲ ' : '▼ ') + Math.abs(d) + '% vs semana anterior'}</span></div>`;
+    mount(b, html`<div class="sec-title" style="margin-top:0"><h2>Lectura semanal</h2><span class="mut sm">De los posts que lee el scrape cada lunes</span></div>
+      <div class="sp-kpis ct-delta">${kpi('Vistas promedio', K(last.avgViews), delta('avgViews'))}${kpi('Engagement', last.er == null ? '—' : last.er + '%', delta('er'))}${kpi('Likes', K(last.likes), delta('likes'))}${kpi('Posts leídos', last.posts, null)}</div>
+      <div class="sp-panel ct-main"><div class="wkhead"><h3>Vistas promedio por semana</h3></div><div class="chart" id="chA"></div></div>
       ${own.length ? html`<div class="sec-title"><h2>Tus últimos posts</h2></div><div class="grid g5">${own.slice(0, 10).map(videoCard)}</div>` : ''}`);
     lineChart($('#chA', b), h.map((x) => x.week.slice(5)), [{ name: 'Vistas', v: h.map((x) => x.avgViews), c: '#2c1f16', fill: true }]);
   }
@@ -645,6 +646,8 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     pview: (t) => { pview = t.dataset.v; recal(); },
     pnav: (t) => { const d = new Date(pdate + 'T12:00'); if (pview === 'mes') d.setMonth(d.getMonth() + +t.dataset.d, 1); else d.setDate(d.getDate() + 7 * +t.dataset.d); pdate = d.toISOString().slice(0, 10); recal(); },
     ptoday: () => { pdate = today(); recal(); },
+    pday: (t) => { pdate = t.dataset.d; recal(); },
+    pmonth: (t) => { const d = new Date(pdate + 'T12:00'); d.setMonth(d.getMonth() + +t.dataset.d, 1); pdate = iso(d); recal(); },
     cview: (t) => { cview = t.dataset.v; recal(); },
     snew: (t, e) => { if (e?.target?.closest('.ppost')) return; editShoot(null, t.dataset.d); },
     sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },

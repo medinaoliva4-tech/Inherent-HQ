@@ -58,8 +58,8 @@ export function postsBoard(b, profile, list, onChange) {
   const dr = conn[profile]?.postear_drive;
   const sorted = (s) => list.filter((p) => (p.status || 'Idea') === s).sort((a, z) => String(a.date || '9').localeCompare(String(z.date || '9')));
   mount(b, html`<div class="row" style="margin-bottom:12px"><span class="mut sm">${list.length} piezas · arrastra para cambiar de estado</span><div class="sp"></div>${connectChip('drive', dr ? 'Drive conectado · actualizar' : 'Conectar con Drive', 'x', Boolean(dr), 'data-pact="drive"')}${dr ? html`<button class="sm mut" data-pact="driveset" style="margin:0 8px">Cambiar carpeta</button>` : ''}<button class="btn" data-pact="new">+ Pieza</button></div>
-    <div class="kanban swap">${PSTATUS.map((s) => html`<div class="kcol" data-st="${s}"><h4><span>${s}</span><span class="mut">${sorted(s).length}</span></h4>
-      ${sorted(s).map((p) => html`<div class="kcard" draggable="true" data-pact="open" data-id="${p.id}"><div class="row"><span class="chip ${PCLS[s]}" style="font-size:11px">${p.format || 'Pieza'}</span><div class="sp"></div><span class="mut sm">${p.date ? fdate(p.date) : ''}</span></div><b style="margin-top:8px">${p.title}</b>${p.caption ? html`<div class="mut sm" style="margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.caption}</div>` : ''}<div class="sm mut" style="margin-top:6px">${driveState(p).join(' ')}${p.pillar ? ' · ' + p.pillar : ''}</div></div>`)}</div>`)}</div>`);
+    <div class="ideas-board swap">${PSTATUS.map((s) => html`<section class="kcol igroup" data-st="${s}"><h4><i class="idot st-${PCLS[s] || 'idea'}"></i><span>${s}</span><span class="mut">${sorted(s).length}</span></h4>
+      <div class="igrid">${sorted(s).map((p) => html`<div class="kcard itile" draggable="true" data-pact="open" data-id="${p.id}" tabindex="0" role="button"><div class="row"><span class="chip ${PCLS[s]}" style="font-size:11px">${p.format || 'Pieza'}</span><div class="sp"></div><span class="mut sm">${p.date ? fdate(p.date) : ''}</span></div><b>${p.title}</b>${p.caption ? html`<div class="mut sm icap">${p.caption}</div>` : ''}<div class="sm mut ifoot">${driveState(p).join(' ')}${p.pillar ? ' · ' + p.pillar : ''}</div></div>`)}${sorted(s).length ? '' : html`<div class="iempty">Arrastra aquí una pieza</div>`}</div></section>`)}</div>`);
   const save = (r) => { if (!r) return; list = list.some((x) => x.id === r.id) ? list.map((x) => (x.id === r.id ? r : x)) : [...list, r]; onChange(list); };
   b.onclick = async (e) => {
     const t = e.target.closest('[data-pact]'); if (!t) return;
@@ -88,6 +88,7 @@ export function postsBoard(b, profile, list, onChange) {
     });
   }
   $$('.kcard', b).forEach((c) => c.addEventListener('dragstart', (e) => e.dataTransfer.setData('id', c.dataset.id)));
+  $$('.kcard', b).forEach((c) => c.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); } }));
   $$('.kcol', b).forEach((k) => {
     k.addEventListener('dragover', (e) => { e.preventDefault(); k.classList.add('over'); });
     k.addEventListener('dragleave', () => k.classList.remove('over'));
