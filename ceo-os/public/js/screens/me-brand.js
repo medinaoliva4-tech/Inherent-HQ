@@ -13,17 +13,19 @@ const mlabel = (ym) => `${MONTHS[+ym.slice(5, 7) - 1]} ${ym.slice(2, 4)}`;
 const addM = (ym, n) => { const d = new Date(ym + '-15T12:00'); d.setMonth(d.getMonth() + n); return d.toISOString().slice(0, 7); };
 const isMine = (t, me) => t.tipo === 'Personal' && t.profile === 'personal' && (t._meta?.created_by || t.assignee || '').toLowerCase() === me.email;
 
+// embed: montada dentro de Marcas → Mi marca → Marca ({ base, only }): sin título y solo con las pestañas de `only`.
 export async function render(el, opts) {
-  const { me, sub, alive } = opts;
+  const { me, sub, alive, embed = null } = opts;
   if (me.role !== 'ceo') return mount(el, html`<div class="empty"><b>Mi marca es solo del CEO</b>Tu perfil no la ve.</div>`);
   const T = col('tasks');
-  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'roadmap';
+  const tabs = embed?.only ? TABS.filter(([k]) => embed.only.includes(k)) : TABS;
+  let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : tabs[0][0];
   let tasks = null, mfilter = today().slice(0, 7);
 
   function paint() {
     if (!alive()) return;
-    mount(el, html`<div class="hello sp-hero row" style="align-items:flex-end"><div><h1>Mi marca</h1><p>Tu marca personal: <em>roadmap, asociaciones, inspo y contenido</em>.</p></div><div class="sp"></div><span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span></div>
-      <div class="tabs" style="margin:0 0 16px">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+    mount(el, html`${embed ? '' : html`<div class="hello sp-hero row" style="align-items:flex-end"><div><h1>Mi marca</h1><p>Tu marca personal: <em>roadmap, asociaciones, inspo y contenido</em>.</p></div><div class="sp"></div><span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span></div>`}
+      <div class="tabs" style="margin:0 0 16px">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
       <div id="cbody" class="swap"></div>`);
     const b = $('#cbody', el);
     if (tab === 'roadmap') return roadmap(b);
@@ -52,7 +54,7 @@ export async function render(el, opts) {
   // Inspo, Contenido y Asociaciones son islas: sus botones no le hablan a esta pantalla.
   const island = (map) => Object.fromEntries(Object.entries(map).map(([k, fn]) => [k, (t, e) => { if (t.closest('[data-island]')) return; return fn(t, e); }]));
   acts(el, island({
-    tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', `#/mimarca/${tab}`); swap(el, paint); },
+    tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', embed ? `${embed.base}/${tab}` : `#/mimarca/${tab}`); swap(el, paint); },
     mf: (t) => { mfilter = t.dataset.m; roadmap($('#cbody', el)); },
     plan: async () => {
       const v = await rform(null); if (!v) return;

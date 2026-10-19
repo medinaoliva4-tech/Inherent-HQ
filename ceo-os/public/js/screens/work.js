@@ -1,6 +1,7 @@
 import { upcoming, meetingRows, isMine as meetIsMine } from '../meetings.js';
 import { LOGO, lineChart, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor, swap, ico, md } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
+import { estadoDe } from '../element.js';
 import { tipoSopFields, bindSop, readTipoSop, sopLink, tipoChips, tipoMatch, tipoBadge } from '../tasktype.js';
 import { newProject as wizProject, newTask as wizTask } from '../create.js';
 import { blockersOf, unlocksOf } from '../cycle.js';
@@ -165,7 +166,7 @@ export async function render(el, { me, sub, alive }) {
   function loadAgenda() { if (agenda !== null) return; agenda = []; api(`google/calendar?from=${T0}&to=${T0}${calQ()}`).then((r) => { agenda = r.events; if (alive() && tab === 'zona') paint(); }).catch(() => {}); }
   function agendaBox() {
     loadAgenda();
-    const ps = content.filter((c) => c.kind === 'post' && c.date >= T0 && c.date <= T7 && c.status !== 'Publicado').sort((a, z) => a.date.localeCompare(z.date));
+    const ps = content.filter((c) => c.kind === 'post' && c.date >= T0 && c.date <= T7 && !['Publicado', 'Archivado'].includes(estadoDe(c))).sort((a, z) => a.date.localeCompare(z.date));
     return box('Agenda y contenido', 'Hoy · próximos 7 días', html`${agenda.length ? agenda.slice(0, 4).map((e) => html`<a class="wkrow" href="${/^https:\/\//.test(e.link || '') ? e.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="wkt">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="grow">${e.summary}</span>${e.meet ? html`<span class="mut sm">Meet</span>` : ''}</a>`) : html`<div class="mut sm" style="padding:4px 0">Sin reuniones hoy.</div>`}
       ${ps.slice(0, 4).map((p) => html`<a class="wkrow" href="#/content/postear/${p.profile}"><span class="wkt" style="background:var(--bg)">${fdate(p.date)}</span><span class="grow">${p.title}<span class="mut sm"> · ${p.profile}</span></span></a>`)}`);
   }
@@ -267,17 +268,17 @@ export async function render(el, { me, sub, alive }) {
   // =================== CONTENT ===================
   async function contentZone(b) {
     if (!posts) { mount(b, html`<p class="loading">Cargando…</p>`); const all = (await col('content').list().catch(() => [])).filter((c) => c.kind === 'post'); posts = all; if (!alive()) return; }
-    const ideas = posts.filter((p) => (p.status || 'Idea') === 'Idea'), prod = posts.filter((p) => ['Grabado', 'Editado'].includes(p.status));
+    const ideas = posts.filter((p) => estadoDe(p) === 'Idea'), prod = posts.filter((p) => estadoDe(p) === 'En proceso');
     const design = open(mine()).filter((t) => /^⑥/.test(t.dept || '') || /diseñ|static|estátic|carrusel/i.test(t.title));
     const subtabs = [['ideas', 'Ideas y preproducción'], ['diseno', 'Diseño y static ads'], ['matriz', 'Matriz y publicaciones'], ['community', 'Community']];
-    mount(b, html`${kpis([['Ideas por desarrollar', ideas.length, '', ''], ['En producción', prod.length, '#997d65'], ['Diseños pendientes', design.length, '#a68d77'], ['Por publicar (7 días)', posts.filter((p) => p.date >= T0 && p.date <= T7 && p.status !== 'Publicado').length, '#795c45']])}
+    mount(b, html`${kpis([['Ideas por desarrollar', ideas.length, '', ''], ['En producción', prod.length, '#997d65'], ['Diseños pendientes', design.length, '#a68d77'], ['Por publicar (7 días)', posts.filter((p) => p.date >= T0 && p.date <= T7 && !['Publicado', 'Archivado'].includes(estadoDe(p))).length, '#795c45']])}
       <div class="tabs" style="margin:0 0 12px">${subtabs.map(([k, l]) => html`<button class="${ctab === k ? 'on' : ''}" data-act="ctab" data-c="${k}">${l}</button>`)}</div>
       <div id="cz"></div>`);
     const z = $('#cz', b);
     if (ctab === 'ideas') {
-      const STAGES = [['Idea', 'Idea y concepto'], ['Grabado', 'Guion y preproducción'], ['Editado', 'Diseño y edición'], ['Programado', 'Listo para publicar']];
+      const STAGES = [['Idea', 'Idea y concepto'], ['En proceso', 'Grabación, diseño y edición'], ['Listo', 'Listo para publicar']];
       const profs = [...new Set(posts.map((p) => p.profile))];
-      mount(z, html`<div class="wkgrid"><div class="span2">${box('Plan de contenido por cliente y etapa', 'Las piezas de «Por postear» de cada perfil', profs.length ? html`<div class="wkstage head"><span></span>${STAGES.map(([, l]) => html`<span>${l}</span>`)}</div>${profs.map((pr) => html`<div class="wkstage"><b>${pr.toUpperCase()}</b>${STAGES.map(([s]) => html`<div>${posts.filter((p) => p.profile === pr && (p.status || 'Idea') === s).slice(0, 3).map((p) => html`<div class="wkpost" data-act="post" data-id="${p.id}"><span>${p.title}</span><span class="mut sm">${p.date ? fdate(p.date) : ''}</span></div>`)}</div>`)}</div>`)}` : html`<div class="mut sm" style="padding:6px 0">Todavía no hay piezas. Crea la primera con «+ Pieza».</div>`, html`<button class="btn xs" data-act="newPost">+ Pieza</button>`)}</div>
+      mount(z, html`<div class="wkgrid"><div class="span2">${box('Plan de contenido por cliente y etapa', 'Las piezas de «Por postear» de cada perfil', profs.length ? html`<div class="wkstage head"><span></span>${STAGES.map(([, l]) => html`<span>${l}</span>`)}</div>${profs.map((pr) => html`<div class="wkstage"><b>${pr.toUpperCase()}</b>${STAGES.map(([s]) => html`<div>${posts.filter((p) => p.profile === pr && estadoDe(p) === s).slice(0, 3).map((p) => html`<div class="wkpost" data-act="post" data-id="${p.id}"><span>${p.title}</span><span class="mut sm">${p.date ? fdate(p.date) : ''}</span></div>`)}</div>`)}</div>`)}` : html`<div class="mut sm" style="padding:6px 0">Todavía no hay piezas. Crea la primera con «+ Pieza».</div>`, html`<button class="btn xs" data-act="newPost">+ Pieza</button>`)}</div>
         ${checklist('content')}${material()}${sops('content')}${uploader()}</div>`);
       hookClient(z); hookUpload(z);
     } else if (ctab === 'diseno') {

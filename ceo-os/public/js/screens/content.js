@@ -1,6 +1,7 @@
 import { techDetail, html, raw, mount, api, toast, acts, drawer, closeDrawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON, swap, ico, col, confirmAsk, initials } from '../core.js';
 import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
+import { estadoDe, separar, ESTADO_CLS, nombreDe } from '../element.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
@@ -63,7 +64,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   let rplat = PLATS.some(([k]) => k === embed?.plat) ? embed.plat : 'instagram';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'semana', pdate = today();
-  let rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
+  let parch = false, rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
   let rfOpen = false, rview = 'biblioteca', rq = '', rsort = 'res', rsel = { pilar: '', res: '', talk: '', style: '', tag: '' };
 
   async function load() {
@@ -212,7 +213,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   // ---------- Por postear ----------
   function postear(b) {
     if (!posts) { mount(b, html`<p class="loading">Cargando…</p>`); loadPosts(slug).then((l) => { posts = l; if (alive() && b.isConnected) postear(b); }).catch((e) => mount(b, html`<div class="warnbox">${e.message}</div>`)); return; }
-    postsBoard(b, slug, posts, (l) => { posts = l; postear(b); });
+    postsBoard(b, slug, posts, (l) => { posts = l; postear(b); }, { brand: embed?.brand || data.profile.name });
   }
 
   // ---------- Guiones: una carpeta de Google Drive por perfil ----------
@@ -286,17 +287,22 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const pillars = data.cfg.pillars || [];
     const colorOf = (n) => pillars.find((x) => x.name === n)?.color || 'var(--ch-light)';
     const wk = calWeek(), M = pdate.slice(0, 7);
-    const inMonth = posts.filter((p) => String(p.date || '').slice(0, 7) === M);
-    const chip = (p) => { const [i, l] = driveState(p); return html`<button class="ppost" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${p.title} · ${l}"><span class="pi">${i}</span><span class="pt">${p.title}</span>${p.format ? html`<span class="pf">${p.format}</span>` : ''}</button>`; };
-    const undated = posts.filter((p) => !p.date && p.status !== 'Publicado');
+    // Lo terminado se archiva solo: lo publicado hace más de 30 días (o marcado «Archivado») sale del calendario y va al Archivo.
+    const { vivos, archivo } = separar(posts);
+    const inMonth = vivos.filter((p) => String(p.date || '').slice(0, 7) === M);
+    const brand = embed?.brand || data.profile.name;
+    const chip = (p) => { const [i, l] = driveState(p), e = estadoDe(p); return html`<button class="ppost st-${ESTADO_CLS[e] || 'idea'}" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${nombreDe(p, brand)} · ${e} · ${l}"><span class="pi">${i}</span><span class="pt">${p.title}</span>${p.format ? html`<span class="pf">${p.format}</span>` : ''}</button>`; };
+    const undated = vivos.filter((p) => !p.date && estadoDe(p) !== 'Publicado');
     mount(b, html`
       <div class="sp-inset ct-pillars"><div class="row" style="flex-wrap:wrap;gap:14px;align-items:center">${pillarDonut(pillars, inMonth)}
         <div style="flex:1;min-width:200px"><b class="sm" style="font-weight:600">Pilares · este mes</b>
         <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${pillars.length ? pillars.map((x) => { const c = inMonth.filter((p) => p.pillar === x.name).length; return html`<span class="chip" style="gap:6px"><i style="width:10px;height:10px;border-radius:50%;background:${x.color};display:inline-block"></i>${x.name}<span class="mut">${c}${inMonth.length ? ` · ${Math.round((c / inMonth.length) * 100)}%` : ''}</span></span>`; }) : html`<span class="mut sm">Sin pilares todavía: defínelos para ver cómo se reparte el contenido.</span>`}</div></div>
         <button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div></div>
-      ${calStrip(wk, (k) => posts.filter((p) => p.date === k).map((p) => colorOf(p.pillar)))}
-      ${calWeekPanel(wk, (k) => posts.filter((p) => p.date === k), chip, 'pnew', raw(`${ico('folder', 13).toString()} en Drive · ⬆ por subir · ${ico('edit', 13).toString()} por grabar`), html`<button class="btn" data-act="pnew" data-d="">+ Pieza</button>`)}
-      ${undated.length ? html`<div class="sec-title"><h2>Sin fecha</h2><span class="mut sm">${undated.length}</span></div><div class="row ct-undated" style="flex-wrap:wrap;gap:6px">${undated.map(chip)}</div>` : ''}`);
+      ${calStrip(wk, (k) => vivos.filter((p) => p.date === k).map((p) => colorOf(p.pillar)))}
+      ${calWeekPanel(wk, (k) => vivos.filter((p) => p.date === k), chip, 'pnew', raw(`${ico('folder', 13).toString()} en Drive · ⬆ por subir · ${ico('edit', 13).toString()} por grabar`), html`<button class="btn" data-act="pnew" data-d="">+ Pieza</button>`)}
+      ${undated.length ? html`<div class="sec-title"><h2>Sin fecha</h2><span class="mut sm">${undated.length}</span></div><div class="row ct-undated" style="flex-wrap:wrap;gap:6px">${undated.map(chip)}</div>` : ''}
+      <div class="row el-archbar"><button class="chip ${parch ? 'dark' : ''}" data-act="parch" aria-pressed="${parch ? 'true' : 'false'}">${ico('folder', 13)} Archivo · ${archivo.length}</button><span class="mut sm">Lo publicado hace más de 30 días o marcado «Archivado» sale del calendario solo.</span></div>
+      ${parch ? (archivo.length ? html`<div class="row ct-undated" style="flex-wrap:wrap;gap:6px;margin-top:8px">${archivo.sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).map(chip)}</div>` : html`<div class="mut sm" style="margin-top:8px">Nada archivado todavía.</div>`) : ''}`);
     stripTo(b);
   }
 
@@ -673,8 +679,9 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
       try { for (const x of rs || []) await C.remove(x.id); rs = []; toast('Research vacío'); research($('#cbody', el)); } catch (e) { toast(e.message, true); }
     },
     ropen: (t) => ropen(t.dataset.k),
-    pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; const r = await editPost(slug, null, t.dataset.d ? { date: t.dataset.d } : {}); if (r) { posts = [...posts, r]; recal(); } },
-    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
+    pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; const brand = embed?.brand || data.profile.name; const r = await editPost(slug, null, t.dataset.d ? { date: t.dataset.d, brand } : { brand }); if (r) { posts = [...posts, r]; recal(); } },
+    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p, { brand: embed?.brand || data.profile.name }); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
+    parch: () => { parch = !parch; recal(); },
     pillars: async () => {
       const cur = data.cfg.pillars || [];
       const v = await ask('Pilares de contenido', [{ k: 'list', l: 'Un pilar por línea (máx. 8). Ej.: Educa · Detrás de cámaras · Casos · Oferta', t: 'textarea', v: cur.map((x) => x.name).join('\n') }], 'Guardar');

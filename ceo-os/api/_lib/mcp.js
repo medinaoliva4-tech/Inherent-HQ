@@ -7,6 +7,7 @@ import { userFor, effective, viewsDoc, scoper, inScope, levelOf } from './access
 import { readFile, listDir } from './gh.js';
 import { parsePlanContratado } from './parse.js';
 import { levelName as nivelName } from '../../public/js/levels.js';
+import { estadoDe, archivado, conEstado } from '../../public/js/element.js';
 import * as content from './content.js';
 import * as flow from './flow.js';
 import * as google from './google.js';
@@ -147,7 +148,7 @@ const TOOLS = [
   ['borrar_research', 'content', 'Quita posts de Research de un perfil: los urls que digas, o todo con todo=true.', { perfil: { type: 'string' }, urls: { type: 'array', items: { type: 'string' } }, todo: { type: 'boolean' } }, ['perfil']],
   ['calendario', 'content', 'Los calendarios de un perfil en un mes: publicación (qué sale y cuándo) y grabación (qué se graba cada día).', { perfil: { type: 'string' }, mes: { type: 'string', description: 'AAAA-MM; por defecto el actual' } }, ['perfil']],
   ['agendar', 'content', 'Agenda en el calendario de un perfil: una grabación (qué se graba, cuándo y dónde) o una publicación (una pieza con su fecha).', { perfil: { type: 'string' }, calendario: { type: 'string', enum: ['grabacion', 'publicacion'] }, titulo: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, hora: { type: 'string', description: 'HH:MM, solo grabación' }, lugar: { type: 'string' }, quien: { type: 'string' }, piezas: { type: 'string', description: 'solo grabación: piezas y tomas, una por línea' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'], description: 'solo publicación' }, pilar: { type: 'string' }, notas: { type: 'string' } }, ['perfil', 'calendario', 'titulo', 'fecha']],
-  ['actualizar_idea', 'content', 'Cambia una idea o pieza del planner: título, fecha, formato, pilar, texto, estado o hasta de perfil (para moverla al correcto). Los ids salen de planner.', { id: { type: 'string' }, perfil: { type: 'string', description: 'muévela a este perfil' }, titulo: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD, o vacío para quitarla' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'] }, pilar: { type: 'string' }, texto: { type: 'string' }, estado: { type: 'string' } }, ['id']],
+  ['actualizar_idea', 'content', 'Cambia una idea o pieza del planner: título, fecha, formato, pilar, texto, estado o hasta de perfil (para moverla al correcto). Los ids salen de planner.', { id: { type: 'string' }, perfil: { type: 'string', description: 'muévela a este perfil' }, titulo: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD, o vacío para quitarla' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'] }, pilar: { type: 'string' }, texto: { type: 'string' }, estado: { type: 'string', description: 'Idea · En proceso · Listo · Publicado · Archivado (los viejos Grabado, Editado y Programado se leen como En proceso y Listo)' } }, ['id']],
   ['borrar_idea', 'content', 'Borra ideas o piezas del planner por id (los ids salen de planner). Acepta varias.', { ids: { type: 'array', items: { type: 'string' } } }, ['ids']],
   ['crear_idea', 'content', 'Agrega una idea al planner de un perfil.', { perfil: { type: 'string' }, titulo: { type: 'string' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'] }, pilar: { type: 'string' }, texto: { type: 'string' }, fecha: { type: 'string' } }, ['perfil', 'titulo', 'formato']],
   ['recetas', 'operations', 'Las recetas con las que se arma el trabajo: ciclo mensual, Business Growth, proyecto, custom, las de cada servicio y las responsabilidades recurrentes de Inherent. Sin id las lista; con id trae la receta completa: tareas (perfil, quién revisa, día, horas, SOP, tipo y de qué dependen), reuniones y lo que se pide al cliente.', { id: { type: 'string' } }],
@@ -369,7 +370,7 @@ async function call(u, name, a = {}) {
     const slug = await perfilOk(a.perfil, u);
     const [posts, c] = await Promise.all([db.list('content'), content.cfg(slug)]);
     return { pilares: c.pillars, audiencia: c.audience, diana: c.bullseye, referentes: c.accounts.filter((x) => x.kind === 'referente').map((x) => '@' + x.handle), competencia: c.accounts.filter((x) => x.kind !== 'referente').map((x) => '@' + x.handle),
-      piezas: posts.filter((p) => p.kind === 'post' && p.profile === slug && (!a.mes || String(p.date || '').startsWith(a.mes))).map((p) => ({ id: p.id, titulo: p.title, formato: p.format, pilar: p.pillar || '', fecha: p.date || '', estado: p.status || 'Idea', en_drive: Boolean(p.drive_id || p.url) })) };
+      piezas: posts.filter((p) => p.kind === 'post' && p.profile === slug && (!a.mes || String(p.date || '').startsWith(a.mes))).map((p) => ({ id: p.id, titulo: p.title, formato: p.format, pilar: p.pillar || '', fecha: p.date || '', estado: estadoDe(p), archivada: archivado(p), en_drive: Boolean(p.drive_id || p.url) })) };
   }
   if (name === 'library') {
     const [folders, docs] = await Promise.all([db.list('folders'), db.list('docs')]);
@@ -497,7 +498,7 @@ async function call(u, name, a = {}) {
       await db.upsert('content', id, Object.fromEntries(Object.entries(doc).filter(([, x]) => x !== undefined)), u.email);
       (had ? actualizados : nuevos).push(doc.url);
     }
-    return { ok: true, perfil: slug, nuevos: nuevos.length, actualizados: actualizados.length, ...(sinImg ? { imagenes_sin_guardar: sinImg, aviso: 'Algunas imágenes no se pudieron descargar; vuelve a mandar esos posts con su miniatura para reintentar.' } : {}), ...(malos.length ? { sin_url_valida: malos } : {}), abrir: `/#/content/research/${slug}` };
+    return { ok: true, perfil: slug, nuevos: nuevos.length, actualizados: actualizados.length, ...(sinImg ? { imagenes_sin_guardar: sinImg, aviso: 'Algunas imágenes no se pudieron descargar; vuelve a mandar esos posts con su miniatura para reintentar.' } : {}), ...(malos.length ? { sin_url_valida: malos } : {}), abrir: `/#/marcas/${slug}/investigacion` };
   }
   if (name === 'borrar_research') {
     const slug = await perfilOk(a.perfil, u);
@@ -506,13 +507,13 @@ async function call(u, name, a = {}) {
     if (!a.todo && !want.size) throw new Error('Dime los urls a quitar, o todo=true');
     const list = (await db.list('content')).filter((x) => x.kind === 'research' && x.profile === slug && (a.todo || want.has(k(x.url))));
     for (const x of list) await db.remove('content', x.id, u.email);
-    return { ok: true, quitados: list.length, abrir: `/#/content/research/${slug}` };
+    return { ok: true, quitados: list.length, abrir: `/#/marcas/${slug}/investigacion` };
   }
   if (name === 'calendario') {
     const slug = await perfilOk(a.perfil, u);
     const mes = /^\d{4}-\d{2}$/.test(a.mes || '') ? a.mes : T.slice(0, 7);
     const all = (await db.list('content')).filter((x) => x.profile === slug && String(x.date || '').startsWith(mes)).sort((x, z) => String(x.date).localeCompare(String(z.date)));
-    return { mes, publicacion: all.filter((x) => x.kind === 'post').map((x) => ({ fecha: x.date, titulo: x.title, formato: x.format || '', pilar: x.pillar || '', estado: x.status || 'Idea' })),
+    return { mes, publicacion: all.filter((x) => x.kind === 'post').map((x) => ({ fecha: x.date, titulo: x.title, formato: x.format || '', pilar: x.pillar || '', estado: estadoDe(x) })),
       grabacion: all.filter((x) => x.kind === 'shoot').map((x) => ({ fecha: x.date, hora: x.time || '', titulo: x.title, lugar: x.place || '', quien: x.crew || '', piezas: x.pieces || '', estado: x.status || 'Por grabar' })) };
   }
   if (name === 'agendar') {
@@ -521,10 +522,10 @@ async function call(u, name, a = {}) {
     if (!title || !date) throw new Error('Faltan el título o la fecha (AAAA-MM-DD)');
     if (a.calendario === 'grabacion') {
       const r = await db.create('content', { kind: 'shoot', profile: slug, title, date, time: /^\d{1,2}:\d{2}$/.test(a.hora || '') ? a.hora.padStart(5, '0') : '', place: String(a.lugar || '').slice(0, 200), crew: String(a.quien || '').slice(0, 200), pieces: String(a.piezas || '').slice(0, 4000), notes: String(a.notas || '').slice(0, 4000), status: 'Por grabar' }, u.email);
-      return { ok: true, id: r.id, calendario: 'grabación', fecha: date, titulo: title, abrir: `/#/content/calendario/${slug}` };
+      return { ok: true, id: r.id, calendario: 'grabación', fecha: date, titulo: title, abrir: `/#/marcas/${slug}/calendario` };
     }
     const r = await db.create('content', { kind: 'post', profile: slug, title, format: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'].includes(a.formato) ? a.formato : 'Reel', pillar: String(a.pilar || ''), caption: String(a.notas || '').slice(0, 4000), date, status: 'Idea' }, u.email);
-    return { ok: true, id: r.id, calendario: 'publicación', fecha: date, titulo: title, abrir: `/#/content/calendario/${slug}` };
+    return { ok: true, id: r.id, calendario: 'publicación', fecha: date, titulo: title, abrir: `/#/marcas/${slug}/calendario` };
   }
   if (name === 'actualizar_idea' || name === 'borrar_idea') {
     const ids = name === 'borrar_idea' ? (Array.isArray(a.ids) ? a.ids : [a.ids]).map(String).filter(Boolean).slice(0, 100) : [String(a.id || '')];
@@ -532,16 +533,16 @@ async function call(u, name, a = {}) {
     for (const id of ids) {
       const p = await db.get('content', id); if (!p || p.kind !== 'post' || !mios.has(p.profile)) { faltan.push(id); continue; }
       if (name === 'borrar_idea') { await db.remove('content', id, u.email); out.push(id); continue; }
-      const patch = { ...p };
+      let patch = { ...p };
       if (a.perfil) patch.profile = await perfilOk(a.perfil, u);
       if (a.titulo) patch.title = String(a.titulo).slice(0, 200);
       if ('fecha' in a) patch.date = /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : '';
       if (['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'].includes(a.formato)) patch.format = a.formato;
       if ('pilar' in a) patch.pillar = String(a.pilar || '').slice(0, 80);
       if ('texto' in a) patch.caption = String(a.texto || '').slice(0, 4000);
-      if (a.estado) patch.status = String(a.estado).slice(0, 40);
+      if (a.estado) patch = conEstado(patch, String(a.estado).slice(0, 40));
       const r = await db.update('content', id, patch, p.v, u.email); if (!r) throw new Error('Alguien la cambió justo ahora; intenta de nuevo');
-      return { ok: true, id, titulo: r.title, perfil: r.profile, fecha: r.date || '', estado: r.status || 'Idea' };
+      return { ok: true, id, titulo: r.title, perfil: r.profile, fecha: r.date || '', estado: estadoDe(r) };
     }
     if (name === 'actualizar_idea') throw new Error('No encontré esa idea');
     return { ok: true, borradas: out.length, ...(faltan.length ? { no_encontradas: faltan } : {}) };

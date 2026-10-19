@@ -9,9 +9,9 @@ import { brandBoard } from '../brand-board.js';
 import { budgetsTab } from '../budgets.js';
 import { render as content } from './content.js';
 
-// Clientes: la lista (quién, su nivel, cómo va el mes) y la página de cada uno en pestañas: Info · Links · Servicio · Marca
-// (asociaciones e inspo por plataforma) · Presupuestos (photo shoots, pauta, eventos). El CRM ya no vive aquí: está en el
-// Centro de control → Comercial; la ficha solo dice «Vino de: <fuente>» con link a su lead. El plan y LINKS.md salen del repo
+// Clientes: la lista (quién, su nivel, cómo va el mes) y la página de cada uno en pestañas: Info · Links · Servicio ·
+// Presupuestos (photo shoots, pauta, eventos). Su Marca (asociaciones e inspo) vive en el espacio Marcas: aquí queda un link.
+// El CRM ya no vive aquí: está en Ventas; la ficha solo dice «Vino de: <fuente>» con link a su lead. El plan y LINKS.md salen del repo
 // (con su chip «del repo»); contacto, metas, links propios y accesos viven en la base (accounts).
 const COLORS = ['olive', 'terra', 'ink'];
 const CATS = [['fotos', 'Fotos'], ['videos', 'Videos'], ['drive', 'Drive'], ['redes', 'Redes'], ['web', 'Web'], ['otro', 'Otro']];
@@ -56,9 +56,11 @@ export async function render(el, { me, sub, alive }) {
     info = { links: [], fields: [], pipeline: [], ...(info || {}) };
     let a = acct(slug) || { id: 'acc-' + slug, name: slug.toUpperCase(), contact: '', phone: '', email: '', notes: '', roadmap: [], accesos: [], links: [] };
     const ps = projects.filter((p) => p.client_slug === slug);
-    const TABS = [['info', 'Info'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['marca', 'Marca'], ['presupuestos', 'Presupuestos']])];
-    // La pestaña vieja «Prospectos» lleva al CRM, que vive en el Centro de control → Comercial.
-    const hubBase = ['ceo', 'coo'].includes(me.role) ? '#/control-hub/sales' : '#/sales';
+    // Marca ya no es una pestaña: vive en Marcas → este cliente → Marca (un solo lugar). #/clients/<slug>/marca lleva allá.
+    const TABS = [['info', 'Info'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['presupuestos', 'Presupuestos']])];
+    const toBrand = !resumen && me.areas.includes('clients');
+    // La pestaña vieja «Prospectos» lleva al CRM, que vive en Ventas.
+    const hubBase = '#/sales';
     if (tab0 === 'prospectos') { location.hash = hubBase.slice(1) + '/crm'; return; }
     let tab = TABS.some(([k]) => k === tab0) ? tab0 : 'info';
     // De dónde vino: el lead que se volvió este cliente (por su cotización o porque el lead lo dice). Solo si se ve Comercial.
@@ -91,7 +93,7 @@ export async function render(el, { me, sub, alive }) {
             ${edit ? html`<button class="btn cream xs" data-act="editAcc">Editar datos</button>` : ''}</div>
           <div class="sp-cover-nums"><div><span class="lbl">Mes</span><b>${mo.total ? `${mo.done}/${mo.total}` : '—'}</b></div><div><span class="lbl">Estado</span><b class="sm"><i class="dot light-${mo.light[0]}"></i> ${mo.light[1]}</b></div><div><span class="lbl">Metas</span><b>${goalsOf(a).filter((x) => x.status === 'done').length}/${goalsOf(a).length}</b></div></div>
         </header>
-        <div class="tabs" style="margin:20px 0 20px">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="row" style="margin:20px 0 20px;gap:8px;flex-wrap:wrap"><div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>${toBrand ? html`<a class="chip" href="#/marcas/${slug}/marca" style="text-decoration:none;padding:0 12px;min-height:30px" title="Su marca vive en el espacio Marcas: asociaciones, research, ideas y calendario">${ico('palette', 13)} Marca ↗</a>` : ''}</div>
         <div id="cbody"></div>`);
       const b = $('#cbody', el);
       if (tab === 'info') return infoTab(b);

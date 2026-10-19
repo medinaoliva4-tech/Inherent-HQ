@@ -2,9 +2,11 @@
 // sus metas, lo entregado y sus redes. Todo sale de /api/portal (el servidor decide qué se ve).
 import { html, raw, mount, api, toast, fdate, fdateLong, K, $, $$, lineChart, ICON, ico, initials } from '../core.js';
 import { bars, PAL } from '../charts.js';
+import { estadoDe } from '../element.js';
 
 const ST = { 'Entregado': 'green', 'En revisión': 'amber', 'En curso': 'lime', 'Por empezar': '' };
-const PS = { Idea: 'Idea', Grabado: 'En producción', Editado: 'En producción', Programado: 'Programado', Publicado: 'Publicado' };
+// El estado de cada pieza, como lo lee el cliente (los estados viejos se leen como los nuevos).
+const PS = { Idea: 'Idea', 'En proceso': 'En producción', Listo: 'Listo para publicar', Publicado: 'Publicado', Archivado: 'Publicado' };
 const lvName = (lv) => (!lv ? '' : lv <= 4 ? 'Entrega básica' : lv <= 6 ? 'Entrega sencilla' : lv >= 9 ? 'Entrega fuerte' : 'Entrega media');
 const bar = (p) => html`<div class="gbar"><i style="width:${p ?? 0}%"></i></div>`;
 
@@ -20,15 +22,15 @@ export async function render(el, { me, sub, alive }) {
   const upcoming = d.content.filter((x) => x.date >= d.today);
   const n = (num) => (num == null ? '—' : num);
   const M = d.today.slice(0, 7);
-  const pubM = d.content.filter((x) => x.date.slice(0, 7) === M && x.status === 'Publicado').length;
+  const pubM = d.content.filter((x) => x.date.slice(0, 7) === M && estadoDe(x) === 'Publicado').length;
   // Lo que viene: el contenido por salir y las reuniones por delante, en una sola banda por fecha.
-  const next = [...upcoming.map((x) => ({ date: x.date, k: 'post', title: x.title, sub: [x.format, x.pillar].filter(Boolean).join(' · '), st: PS[x.status] || x.status })),
+  const next = [...upcoming.map((x) => ({ date: x.date, k: 'post', title: x.title, sub: [x.format, x.pillar].filter(Boolean).join(' · '), st: PS[estadoDe(x)] })),
     ...d.meetings.filter((m) => m.date >= d.today && m.status !== 'hecha').map((m) => ({ date: m.date, k: 'meet', title: m.name, sub: m.approves ? `Aprobamos: ${m.approves}` : m.topics.join(' · '), st: 'Reunión' }))].sort((a, z) => a.date.localeCompare(z.date));
   const R0 = 26, C0 = 2 * Math.PI * R0;
   const ring = (pct) => html`<div class="sp-ring pt-ring" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="trk" cx="32" cy="32" r="${R0}" fill="none" stroke-width="6"/>${raw(pct ? `<circle class="val" cx="32" cy="32" r="${R0}" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C0.toFixed(2)}" stroke-dashoffset="${(C0 * (1 - pct / 100)).toFixed(2)}"/>` : '')}</svg><b>${pct == null ? '—' : html`${pct}<small>%</small>`}</b></div>`;
   // Las piezas del mes por semana (planificadas vs publicadas): sale del calendario, sin estimar nada.
   const [yy, mm] = M.split('-').map(Number), nW = Math.ceil(new Date(yy, mm, 0).getDate() / 7);
-  const wk = Array.from({ length: nW }, (_, i) => { const l = d.content.filter((x) => x.date.slice(0, 7) === M && Math.floor((+x.date.slice(8) - 1) / 7) === i); return { label: `S${i + 1}`, values: [l.length, l.filter((x) => x.status === 'Publicado').length] }; });
+  const wk = Array.from({ length: nW }, (_, i) => { const l = d.content.filter((x) => x.date.slice(0, 7) === M && Math.floor((+x.date.slice(8) - 1) / 7) === i); return { label: `S${i + 1}`, values: [l.length, l.filter((x) => estadoDe(x) === 'Publicado').length] }; });
   mount(el, html`
     ${me.role !== 'client' ? html`<div class="asbar">${ico('eye')} Así ve ${d.name} su portal <a href="#/clients/${d.slug}">Volver al cliente</a></div>` : ''}
     <header class="sp-cover pt-cover">
@@ -79,7 +81,7 @@ export async function render(el, { me, sub, alive }) {
     </div>
 
     ${d.content.length ? html`<div class="sec-title"><h2 class="ttl">${ICON.list}Tu contenido</h2><span class="mut sm">Lo que viene y lo último</span></div>
-      <section class="sp-panel">${d.content.map((x) => html`<div class="wkrow"><span class="wkt">${fdate(x.date)}</span><span class="grow">${x.title}<span class="mut sm"> · ${x.format}${x.pillar ? ' · ' + x.pillar : ''}</span></span><span class="chip ${x.status === 'Publicado' ? 'green' : x.status === 'Programado' ? 'lime' : ''}" style="font-size:11px">${PS[x.status] || x.status}</span></div>`)}</section>` : ''}`);
+      <section class="sp-panel">${d.content.map((x) => html`<div class="wkrow"><span class="wkt">${fdate(x.date)}</span><span class="grow">${x.title}<span class="mut sm"> · ${x.format}${x.pillar ? ' · ' + x.pillar : ''}</span></span><span class="chip ${estadoDe(x) === 'Publicado' ? 'green' : estadoDe(x) === 'Listo' ? 'lime' : ''}" style="font-size:11px">${PS[estadoDe(x)]}</span></div>`)}</section>` : ''}`);
   const q = slug ? `?slug=${encodeURIComponent(slug)}` : '';
   $('#onb', el)?.addEventListener('click', async (e) => {
     const b = e.target.closest('[data-ob]'); if (!b) return;

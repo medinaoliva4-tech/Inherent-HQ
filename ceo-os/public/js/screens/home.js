@@ -7,6 +7,7 @@ import { openDelivery, dueChip, stChip } from '../taskcard.js';
 import { bdayText } from './me.js';
 import { connectNotice, hookNotice } from '../connectai.js';
 import { purposeCard } from '../purpose.js';
+import { estadoDe } from '../element.js';
 
 const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; };
 const iso = (d) => d.toISOString().slice(0, 10);
@@ -72,9 +73,9 @@ export async function render(el, { me, alive }) {
     mount(el, html`${head()}
       ${me.role === 'ceo' && !tasks.length && !projects.length ? html`<a class="asbar" href="#/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> y queda lista con lo que ya dice el repo →</a>` : ''}
       <div class="sp-kpis">
-        <a class="sp-kpi" href="#/control-hub/operations"><span class="lbl">Proyectos activos</span><b>${active.length}</b>${fromLink({ label: 'Proyectos', plain: true, title: 'Los proyectos no cerrados con algo abierto · Centro de control → Proyectos' })}</a>
-        <a class="sp-kpi" href="#/control-hub/resultados"><span class="lbl">% en día</span><b>${pct == null ? '—' : html`${pct}<small class="mut" style="font-size:16px">%</small>`}</b>${fromLink({ label: 'Indicadores', plain: true, title: 'Las tareas de este mes que ya vencieron, contra su fecha · Centro de control → Indicadores' })}</a>
-        <a class="sp-kpi" href="#/control-hub/operations/cal"><span class="lbl">Reuniones hoy</span><b>${agenda === null ? '…' : meetsToday}</b>${fromLink({ label: 'Calendar y Proyectos', plain: true, title: 'Tu Google Calendar y las reuniones de cada proyecto' })}</a>
+        <a class="sp-kpi" href="#/operations"><span class="lbl">Proyectos activos</span><b>${active.length}</b>${fromLink({ label: 'Proyectos', plain: true, title: 'Los proyectos no cerrados con algo abierto · Proyectos' })}</a>
+        <a class="sp-kpi" href="#/resultados"><span class="lbl">% en día</span><b>${pct == null ? '—' : html`${pct}<small class="mut" style="font-size:16px">%</small>`}</b>${fromLink({ label: 'Indicadores', plain: true, title: 'Las tareas de este mes que ya vencieron, contra su fecha · Hoy → Indicadores' })}</a>
+        <a class="sp-kpi" href="#/operations/cal"><span class="lbl">Reuniones hoy</span><b>${agenda === null ? '…' : meetsToday}</b>${fromLink({ label: 'Calendar y Proyectos', plain: true, title: 'Tu Google Calendar y las reuniones de cada proyecto' })}</a>
       </div>
       <div class="hoy-top">
         <section class="sp-panel"><a class="wkhead" href="#/clients" style="text-decoration:none;color:inherit"><div><h3>Proyectos activos</h3><span class="mut sm">Cliente · proyecto · avance del mes</span></div><div class="sp"></div><span class="sp-tile-go">↗</span></a>
@@ -108,9 +109,9 @@ export async function render(el, { me, alive }) {
     const [y, m] = M.split('-').map(Number), days = new Date(y, m, 0).getDate(), nW = Math.ceil(days / 7);
     return html`${head2}<div class="slides" role="list">${content.accounts.map((a) => {
       const ps = content.posts.filter((x) => x.profile === a.slug && String(x.date || '').slice(0, 7) === M);
-      const wk = Array.from({ length: nW }, (_, i) => { const l = ps.filter((x) => Math.floor((+x.date.slice(8) - 1) / 7) === i); return [l.length, l.filter((x) => x.status === 'Publicado').length]; });
-      const pub = ps.filter((x) => x.status === 'Publicado').length, ig = content.ig[a.slug];
-      return html`<a class="sp-tile slide" role="listitem" href="#/content/calendario/${a.slug}">
+      const wk = Array.from({ length: nW }, (_, i) => { const l = ps.filter((x) => Math.floor((+x.date.slice(8) - 1) / 7) === i); return [l.length, l.filter((x) => estadoDe(x) === 'Publicado').length]; });
+      const pub = ps.filter((x) => estadoDe(x) === 'Publicado').length, ig = content.ig[a.slug];
+      return html`<a class="sp-tile slide" role="listitem" href="#/marcas/${a.slug}/calendario">
         <div class="sp-tile-top" style="margin-bottom:0"><span class="sp-mono">${initials(a.name)}</span><div style="min-width:0"><div class="sp-tile-name">${a.name}</div><div class="sp-tile-sub">${ig?.series ? 'Instagram conectado' : 'Del calendario de contenido'}</div></div><span class="sp-tile-go">↗</span></div>
         <div class="cnums"><div><span class="lbl">Planificadas</span><b>${ps.length}</b></div><div><span class="lbl">Publicadas</span><b>${pub}</b></div></div>
         ${raw(miniChart(wk, ig?.series))}
