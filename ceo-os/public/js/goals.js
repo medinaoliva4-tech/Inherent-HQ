@@ -69,7 +69,7 @@ export function goalsUI(ctx) {
         ${(g.tasks || []).length ? html`<div style="font-size:12.5px;margin-top:6px"><b style="font-weight:500">Desglose:</b> ${g.tasks.map((t) => (t.done ? '✓ ' : '○ ') + t.t).join(' · ')}</div>` : ''}
         ${(g.checks || []).length ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Checkpoints:</b> ${g.checks.map((c) => `${fdate(c.date)}${c.done ? ` ✓${c.value ? ' ' + c.value : ''}` : ''}`).join(' · ')}</div>` : ''}
         ${(a.mentors || []).filter((x) => x.goal === rm.indexOf(g)).map((x) => { const m = mentors.find((y) => y.id === x.id); return m ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Especialista:</b> ${m.name} · ${m.industry}</div>` : ''; })}
-        ${g.note ? html`<div style="color:#5a4331;font-size:12.5px;margin-top:4px">${g.note}</div>` : ''}</div>`; })}
+        ${g.note ? html`<div style="color:var(--ink2);font-size:12.5px;margin-top:4px">${g.note}</div>` : ''}</div>`; })}
       <div class="qfoot"><span>Inherent · Growth Partner</span><span>inherentglobal.com</span></div>`);
   }
   const acts = {

@@ -39,13 +39,12 @@ export async function render(el, { me, sub, alive }) {
   return page(sub[0], sub[1]);
 
   function list() {
-    mount(el, html`<div class="hello row" style="align-items:flex-end"><div><h1>Clientes</h1><p>Quiénes son y <em>cómo va su mes</em>.</p></div><div class="sp"></div>${roChip(me, 'clients')}</div>
-      ${clients.length ? html`<div class="grid g3">${clients.map((c, i) => { const a = acct(c.slug), mo = month(c.slug), rm = goalsOf(a), next = rm.filter((x) => x.status !== 'done').sort((x, z) => String(x.due || '9').localeCompare(String(z.due || '9')))[0];
-        return html`<a class="card feat ${COLORS[i % 3]}" href="#/clients/${c.slug}" style="min-height:200px;text-decoration:none">
-          <div class="chead"><div class="ico" style="font-size:13px;font-weight:700">${initials(a?.name || c.slug)}</div><h3>${a?.name || c.slug.toUpperCase()}<br><span class="lbl">${c.plan || 'Sin nivel'}</span></h3><span class="arrow">↗</span></div>
-          <div class="lbl">Avance del mes</div><div class="big" style="font-size:40px">${mo.pct == null ? '—' : html`${mo.pct}<small>%</small>`}</div>
-          <div class="gbar" style="background:rgba(253,250,243,.25);margin:8px 0 10px"><i style="width:${mo.pct || 0}%;background:#fdfaf3"></i></div>
-          <div class="foot"><span><i class="dot light-${mo.light[0]}"></i> ${mo.light[1]}</span><span>${mo.total ? `${mo.done}/${mo.total} entregas` : next ? 'Meta: ' + next.goal : `${mo.ps.length} proyecto${mo.ps.length === 1 ? '' : 's'}`}</span></div></a>`; })}</div>`
+    mount(el, html`<div class="hello sp-hero row" style="align-items:flex-end"><div><h1>Clientes</h1><p>Quiénes son y <em>cómo va su mes</em>.</p></div><div class="sp"></div>${roChip(me, 'clients')}</div>
+      ${clients.length ? html`<div class="sp-tiles">${clients.map((c, i) => { const a = acct(c.slug), mo = month(c.slug), rm = goalsOf(a), next = rm.filter((x) => x.status !== 'done').sort((x, z) => String(x.due || '9').localeCompare(String(z.due || '9')))[0];
+        return html`<a class="sp-tile r43" href="#/clients/${c.slug}">
+          <div class="sp-tile-top"><span class="sp-mono ${['', 't1', 't2'][i % 3]}">${initials(a?.name || c.slug)}</span><div style="min-width:0"><div class="sp-tile-name">${a?.name || c.slug.toUpperCase()}</div><div class="sp-tile-sub">${c.plan || 'Sin nivel'}</div></div><span class="sp-tile-go">↗</span></div>
+          <div><span class="lbl">Avance del mes</span><div class="sp-pct" style="margin-top:6px">${mo.pct == null ? '—' : html`${mo.pct}<small>%</small>`}</div><div class="sp-meter"><i style="width:${mo.pct || 0}%"></i></div></div>
+          <div class="sp-tile-foot"><span><i class="dot light-${mo.light[0]}"></i>${mo.light[1]}</span><span>${mo.total ? `${mo.done}/${mo.total} entregas` : next ? 'Meta: ' + next.goal : `${mo.ps.length} proyecto${mo.ps.length === 1 ? '' : 's'}`}</span></div></a>`; })}</div>`
       : html`<div class="empty"><b>No encontré clientes</b>Cada cliente es un folder en clients/ con su 00-onboarding/plan-contratado.md, o entra por una cotización pagada.</div>`}`);
   }
 
@@ -77,14 +76,14 @@ export async function render(el, { me, sub, alive }) {
       const mo = month(slug);
       mount(el, html`
         <div class="row" style="margin-bottom:14px"><a class="btn ghost xs" href="#/clients">← Clientes</a></div>
-        <div class="card feat olive" style="min-height:auto;padding:26px">
-          <div class="row" style="flex-wrap:wrap;gap:14px;align-items:flex-start"><div class="ico" style="width:56px;height:56px;font-size:18px;font-weight:700">${initials(a.name)}</div>
-            <div style="flex:1;min-width:220px"><div class="lbl">${nivel}</div><h1 style="font-size:40px;font-weight:500;letter-spacing:-1.2px;line-height:1.05">${a.name}</h1>
-              <div style="opacity:.85;margin-top:4px;font-size:14px">${[a.contact, a.phone, a.email].filter(Boolean).join(' · ') || 'Sin contacto'}</div></div>
+        <header class="sp-cover">
+          <div class="sp-cover-top"><div class="sp-cover-mono">${initials(a.name)}</div>
+            <div style="flex:1;min-width:220px"><h1>${a.name}</h1>
+              <div class="sp-cover-chips"><span class="chip">${nivel}</span><span class="chip">${[a.contact, a.phone, a.email].filter(Boolean).join(' · ') || 'Sin contacto'}</span></div></div>
             ${edit ? html`<button class="btn cream xs" data-act="editAcc">Editar datos</button>` : ''}</div>
-          <div class="split" style="margin-top:18px"><div><span class="lbl">Mes</span><b>${mo.total ? `${mo.done}/${mo.total}` : '—'}</b></div><div><span class="lbl">Estado</span><b style="font-size:15px"><i class="dot light-${mo.light[0]}"></i> ${mo.light[1]}</b></div><div><span class="lbl">Metas</span><b>${goalsOf(a).filter((x) => x.status === 'done').length}/${goalsOf(a).length}</b></div></div>
-        </div>
-        <div class="tabs" style="margin:16px 0 14px">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+          <div class="sp-cover-nums"><div><span class="lbl">Mes</span><b>${mo.total ? `${mo.done}/${mo.total}` : '—'}</b></div><div><span class="lbl">Estado</span><b class="sm"><i class="dot light-${mo.light[0]}"></i> ${mo.light[1]}</b></div><div><span class="lbl">Metas</span><b>${goalsOf(a).filter((x) => x.status === 'done').length}/${goalsOf(a).length}</b></div></div>
+        </header>
+        <div class="tabs" style="margin:20px 0 20px">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div id="cbody"></div>`);
       const b = $('#cbody', el);
       if (tab === 'info') return infoTab(b);

@@ -5,7 +5,6 @@ import { html, raw, mount, api, ask, toast, Q, ico, today, canEdit } from './cor
 import { LEVELS, BASELINE, levelOf } from './levels.js';
 import { bundleResp, sinResp } from './responsabilidades.js';
 
-const TONE = ['olive', 'terra', 'ink'];
 const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
 
 // ctx: { me, services, bundles, R, bun (createBundles, solo CEO), onQuote, onChange, sel (nivel abierto), setSel }
@@ -23,7 +22,7 @@ export function paquetesTab(el, ctx) {
     const t = bun ? bun.totals(b) : null, resp = bundleResp(R, b, services);
     const lines = b.lines ? (t ? t.ls.map((x) => x.name) : []) : (b.servicios || []).map((s) => s.nombre);
     const fuera = String(b.excludes || b.fuera || '').split('\n').map((x) => x.trim()).filter(Boolean);
-    return html`<div class="card wkbox bdl">
+    return html`<div class="sp-tile bdl">
       <div class="row" style="gap:6px;flex-wrap:wrap"><span class="chip sm2">${b.industry || (lvOf(b) ? LEVELS.find((l) => l.id === lvOf(b)).name : 'Paquete')}</span>${resp.ok ? (resp.own ? html`<span class="chip sm2 green">Con responsables</span>` : '') : sinResp(resp.missing.length ? 'Sin responsables: ' + resp.missing.join(', ') : 'Sin servicios: agrega al menos uno')}<div class="sp"></div>${ceo ? html`<button class="sm mut" data-act="bedit" data-id="${b.id}" title="Editar">${ico('edit')}</button>` : ''}</div>
       <h3 style="font-size:17px;font-weight:500;margin:8px 0 2px">${b.name || 'Paquete'}</h3>
       ${b.desc ? html`<div class="mut sm">${b.desc}</div>` : ''}
@@ -35,13 +34,13 @@ export function paquetesTab(el, ctx) {
         ${ceo && bun ? html`<button class="btn ghost xs" data-act="bquote" data-id="${b.id}">Cotizar</button>` : ''}
         <a class="btn ghost xs" href="#/services/responsabilidades/b:${b.id}">Responsabilidades ${ico('right', 12)}</a></div></div>`;
   }
-  const grid = (list) => html`<div class="grid g3">${list.map(card)}</div>`;
+  const grid = (list) => html`<div class="sp-tiles" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${list.map(card)}</div>`;
 
   mount(el, html`
     <div class="sec-title" style="margin-top:0"><h2>Niveles</h2><span class="mut sm">Un sistema de tres profundidades · el nivel dice qué tan adentro entramos, no cuántas piezas</span></div>
-    <div class="grid g3" style="margin-bottom:18px">${LEVELS.map((l, i) => { const n = ofLevel(l.id).length, bl = BASELINE[l.id]; return html`<div class="card feat ${TONE[i]} lvl ${l.id === sel ? 'on' : ''}" data-act="lvl" data-id="${l.id}" role="button" tabindex="0" style="min-height:190px">
-      <div class="row"><div class="lbl">${l.name}</div><div class="sp"></div>${l.id === sel ? html`<span class="chip sm2" style="background:rgba(253,250,243,.18);color:#fdfaf3">Abierto</span>` : ''}</div>
-      <div style="font-size:15px;margin-top:8px">«${l.tag}»</div>
+    <div class="grid g3" style="margin-bottom:8px">${LEVELS.map((l, i) => { const n = ofLevel(l.id).length, bl = BASELINE[l.id]; return html`<div class="sp-cover sm ${['t1', '', 't2'][i]} lvl ${l.id === sel ? 'on' : ''}" data-act="lvl" data-id="${l.id}" role="button" tabindex="0" aria-pressed="${l.id === sel ? 'true' : 'false'}">
+      <div class="row"><div class="lbl">${l.name}</div><div class="sp"></div>${l.id === sel ? html`<span class="chip sm2" style="background:rgb(255 255 255 / .16);color:#fdfaf3">Abierto</span>` : ''}</div>
+      <div class="tag">«${l.tag}»</div>
       ${ceo && bl ? html`<div class="base">${ico('lock', 11)} Baseline ${usd(bl.usd)} · Q${bl.gtq.toLocaleString('en-US')} ${bl.per}</div>` : ''}
       <div class="foot"><span>${l.how}</span><span>${n ? `${n} paquete${n === 1 ? '' : 's'}` : 'sin paquetes'}</span></div></div>`; })}</div>
     <div class="sec-title"><h2>${level.name}</h2><span class="mut sm">${level.who}</span>${ceo && bun ? html`<a data-act="bnew" data-level="${sel}" style="cursor:pointer">+ Paquete en este nivel</a>` : ''}</div>
