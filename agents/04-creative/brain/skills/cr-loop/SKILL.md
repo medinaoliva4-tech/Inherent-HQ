@@ -106,6 +106,7 @@ Todo lo que se marca para refrescar sale **con fecha límite**, no con un *"pron
 | **2** | Qué **refrescar por fatiga**, **con fecha** | `CR-007 · CPM +38 % / CTR −22 % · remix antes del 15-11` |
 | **3** | El **`swipe-file.md` actualizado** | Los ganadores propios entran a la bóveda como cubeta `10·propio` y van **primero** |
 | **4** | **3 hipótesis** para la próxima ronda | Cada una atada a un objetivo de slot y con qué la confirmaría |
+| **5** | **Qué dolor ganó** | De los 3 dolores del brief de comunicación, cuál movió la métrica del objetivo, con su cita y sus piezas. **Lo lee ① Strategy para el próximo brief** *(bloque 2)* |
 
 **Y además, en el mismo archivo:** el **veredicto de cada hipótesis** del ciclo
 (`confirmada` / `refutada` / `⚠️ SIN DATOS`) · qué **patrón sube al tope de su skill** en la revisión
@@ -177,6 +178,7 @@ hallazgo válido aunque ③ Marketing todavía no vea el movimiento.
 - [ ] Los **ganadores propios entraron a `swipe-file.md`**, con cubeta `10·propio` y ubicados **arriba**
 - [ ] Está declarado **qué patrón sube al tope de qué skill** en la revisión trimestral
 - [ ] Hay **3 hipótesis nuevas**, cada una atada a un objetivo de slot y con qué la confirmaría
+- [ ] Está declarado **qué dolor ganó** *(o `⚠️ SIN DATOS`)*, con su cita y sus piezas
 - [ ] 🛑 Sin métricas: `⚠️ SIN DATOS` + **a quién pedírselas**. **Ningún ganador inventado**
 - [ ] **Ninguna conclusión estratégica emitida** — lo que le toca a ③ Marketing **está devuelto, no respondido**
 - [ ] Las **devoluciones aguas arriba** están listadas: lo que Creative detectó y no le toca arreglar

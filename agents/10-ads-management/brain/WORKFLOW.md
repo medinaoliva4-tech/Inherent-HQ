@@ -178,4 +178,5 @@ Si se prueba y funciona, **se actualizan los tres archivos** — no se vende ant
 - [ ] Los creativos llevan **claims validados** por ②B Branding
 - [ ] Hay **variantes de hook** para testear, no un solo anuncio
 - [ ] El **tracking está puesto** antes de gastar el primer quetzal — el tracking que pide la ficha *(Growth Partnership: CAPI + GA4)*
+- [ ] Cada anuncio cumple su ficha de `inherent/08-CRITERIOS-DE-ACEPTACION.md`: «6A · Anuncio de Meta» o «6B · Anuncio de Google»
 - [ ] **El CEO aprobó el GATE 1**

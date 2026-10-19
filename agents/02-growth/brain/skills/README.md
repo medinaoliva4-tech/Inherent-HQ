@@ -18,15 +18,18 @@ detalle de cada herramienta.
 🛑 **Growth no es pauta.** Si el pedido es sobre presupuesto, campañas o anuncios, es
 **⑩ Ads Management**.
 
-## Las 9 capas
+## Las 12 capas
 
 | # | Skill | Capa | Alcance | Produce |
 |---|---|---|---|---|
 | 1 | **`gr-encargo`** | 0 | Todos | § El encargo — división, unit economics, qué activa el alcance |
 | 2 | **`gr-oferta`** | 1 | Brand Growth ligero · Growth Partnership completo | Brand Growth: `07-oferta-y-ventas/ofertas-a-empujar.md` · Growth Partnership: § La oferta · **🔴 se escala al CEO** *(antes de llevarla al cliente)* |
-| — | **`gr-captura`** | 1B | Growth Partnership | § Captura — el objetivo de leads y la receta *(comenta-y-te-mando · quiz · lead magnet · VSL · low ticket · outbound)* |
+| — | **`gr-producto`** | 1P | Growth Partnership · Brand Foundation: solo la estructura inicial del catálogo | § Producto — qué se lanza, se mejora, se empuja o se retira *(Inherent: el catálogo de Servicios del OS)* |
+| — | **`gr-captura`** | 1B | Growth Partnership | § Captura — el objetivo de leads y la receta *(comenta-y-te-mando · quiz · lead magnet · VSL · low ticket · outbound)* · la meta es interna y es compromiso operativo |
+| — | **`gr-funnel`** | 1C | Growth Partnership | § Funnel — el mapa de punta a punta, con una métrica por paso, y la secuencia de nutrición |
 | 3 | **`gr-canales-grandes`** | 2 | Growth Partnership | § Canales grandes |
 | 4 | **`gr-upsells`** | 3 | Growth Partnership | § La escalera |
+| — | **`gr-referidos`** | 3B | Growth Partnership con área 8 · Inherent | § Referidos — cuándo se pide, a quién, la recompensa y el registro `referido:<quién>` · **sin recompensa aprobada, `BLOQUEADO`** |
 | 5 | **`gr-conversion`** | 4 | Growth Partnership | § Conversión |
 | 6 | **`gr-herramienta`** | 5 | Growth Partnership, según la ficha | § Herramientas |
 | 7 | **`gr-numeros`** | 6 | Growth Partnership, si la ficha lo incluye | § Los números — Money OS |

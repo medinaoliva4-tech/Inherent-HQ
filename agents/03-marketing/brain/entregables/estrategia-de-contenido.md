@@ -61,8 +61,8 @@
 | Soporte | La prueba que lo sostiene |
 |---|---|
 ### C · Secundarios
-### D · Por awareness
-| `awareness` | Qué se le dice |
+### D · Por nivel de consciencia
+| `consciencia` | Qué se le dice |
 |---|---|
 ### E · Objeciones
 | Objeción | Fuente |

@@ -44,6 +44,8 @@ El flujo del departamento y sus reglas viven en `agents/04-creative/brain/WORKFL
 **Cómo se elige la caja.** No por gusto: sale del **objetivo del slot** y de su **etapa**, más el
 banco de hooks propios que ya ganaron (Capa 7). Si dos cajas sirven, gana la que ya ganó.
 
+🔑 **El nivel de consciencia del slot decide qué caja va y de qué habla** *(§ 1B)*.
+
 🛑 **No se repite la misma caja en todo el ciclo.** La audiencia se acostumbra y el hook deja de
 interrumpir.
 
@@ -55,19 +57,38 @@ toma 1 del shot list — acá solo se define.
 ✅ "pantalla negra con el texto, corte seco a cara en primer plano al segundo 2"
 ```
 
+## 1B · El gancho por nivel de consciencia
+
+**Cada slot trae su `consciencia`** *(`mk-calendario` § 1A)*, además de su etapa. **El nivel decide
+el gancho y el mensaje:** un gancho que le habla de la oferta a quien no sabe que tiene el problema
+se pierde, por bueno que sea.
+
+| # | Nivel | De qué habla el gancho | Cajas que pesan | ✅ Ejemplo *(servicio de contenido para PyMEs)* |
+|---|---|---|---|---|
+| **1** | **Inconsciente** | **Su vida, el síntoma** — sin nombrar el problema todavía | Story/Tease · Pattern Interrupt | *"Le mandaste tu Instagram a un cliente y nunca te contestó."* |
+| **2** | **Consciente del problema** | **El problema, con nombre** | Pain · Question | *"Tu contenido no vende porque el primer segundo está muerto."* |
+| **3** | **Consciente de la solución** | **Por qué esta forma de resolverlo** y no otra | Curiosity Gap · Bold Claim | *"Publicar más no arregla nada. Lo que arregla es que cada pieza tenga un trabajo."* |
+| **4** | **Consciente del producto** | **Por qué tú:** prueba y diferencia | Bold Claim con dato · Story/Tease *(caso)* | *"Así pasó [cliente] de no recibir mensajes a tener agenda llena."* ⏸️ *claim: lo valida ②B Branding* |
+| **5** | **Listo para comprar** | **La acción y la oferta:** urgencia real, garantía, CTA directo | Question directa · Pain | *"Escríbenos «REVISIÓN» y esta semana vemos tu cuenta contigo."* |
+
+- 🛑 **La urgencia del nivel 5 tiene que ser real** *(`psicologia-de-venta` §7)*, y la garantía solo
+  si existe en la oferta del cliente: no se inventa.
+- **La etapa sigue mandando sobre el CTA** *(§5)*. Guía: TOFU ≈ 1-2 · MOFU ≈ 3-4 · BOFU ≈ 5; si el
+  slot trae otra combinación, se respeta y se declara.
+
 ---
 
 ## 2 · La estructura — HOOK → BODY → PAYOFF
 
 ```
 0-3s      HOOK      el gancho. Texto exacto, legible en mute, sin saludo
-4-15s     BODY      el por qué. Los ejemplos, el desarrollo, la prueba
-16-45s    PAYOFF    el fix. El cierre del gap, el resultado
-~5s       CTA       la acción, de la familia que corresponde a la etapa
+BODY                el por qué. Los ejemplos, el desarrollo, la prueba
+PAYOFF              el fix. El cierre del gap, el resultado
+CTA                 la acción, de la familia que corresponde a la etapa
 ```
 
-**Ajuste por canal:** TikTok comprime el hook a **2s** · Shorts corta el payoff a los **25-30s** ·
-el carrusel traduce el timing a slides: `slide 1 = hook · 2-4 = body · 5 = payoff + CTA`.
+🛑 **El tiempo de cada tramo sale de `cr-estructura-reel` §1** —el único reparto oficial— y la
+duración total, del canal *(`cr-adaptacion` §2)*. TikTok comprime el hook a **2s**. El carrusel traduce los tramos a slides: `slide 1 = hook · 2-4 = body · 5 = payoff + CTA`.
 
 ---
 
@@ -83,12 +104,12 @@ el carrusel traduce el timing a slides: `slide 1 = hook · 2-4 = body · 5 = pay
 Una pieza puede tener uno sin el otro. **Nunca se dejan vacíos:** si no lleva voz, se escribe
 `N/A — formato estático`.
 
-**El guion va por tramo, atado al timing:**
+**El guion va por tramo, atado al timing** *(los segundos, de `cr-estructura-reel` §1)*:
 
 ```
-VO 0-3s    "..."
-VO 4-15s   "..."
-VO 16-30s  "..."
+VO HOOK    0-3s   "..."
+VO BODY    [s-s]  "..."
+VO PAYOFF  [s-s]  "..."
 ```
 
 ---
@@ -188,9 +209,10 @@ todas las piezas es la falla más común, la más barata de arreglar y la que m�
 **Capa 4 no se entrega sin este bloque completo.**
 
 - [ ] El hook es de **una de las 7 cajas**, y la caja corresponde al objetivo del slot
+- [ ] El gancho **corresponde al nivel de consciencia declarado** del slot *(§ 1B)*
 - [ ] El **texto del hook está literal, entre comillas** — no descrito
 - [ ] **Frame 1 visual definido**
-- [ ] Estructura con timing: HOOK 0-3s · BODY 4-15s · PAYOFF 16-45s · CTA ~5s
+- [ ] Estructura con timing según **`cr-estructura-reel` §1**: HOOK 0-3s · BODY · PAYOFF · CTA, y suma la duración del canal
 - [ ] **Sin saludo ni intro**
 - [ ] **Legible en mute** y en 1 segundo
 - [ ] Si el hook es Curiosity Gap o Story/Tease, **el cierre está escrito en el mismo brief**

@@ -200,3 +200,4 @@ sí y no dicen lo que el posicionamiento decidió.
 - [ ] Todo el texto está dentro de las **safe zones**
 - [ ] **Un solo acento de color** por pieza
 - [ ] El total **entra en el techo** del alcance contratado *(en un alcance a medida, el de su pipeline)*
+- [ ] 🛑 **Nada pasa a «Listo» sin su ficha** de `inherent/08-CRITERIOS-DE-ACEPTACION.md`: «2 · Guion de story», «3 · Carrusel» y «4 · Estático»

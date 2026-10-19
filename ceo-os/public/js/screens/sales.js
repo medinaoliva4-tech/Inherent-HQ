@@ -52,7 +52,7 @@ export async function render(el, { me, sub, alive }) {
   // ---------- layout ----------
   function paint() {
     mount(el, html`
-      <div class="hello row" style="align-items:flex-end"><div><h1>Comercial</h1><p>Cada lead, calificado y con <em>su siguiente paso</em>.</p></div><div class="sp"></div>${roChip(me, 'sales')}</div>
+      <div class="hello row" style="align-items:flex-end"><div><h1>Ventas</h1><p>Cada lead, calificado y con <em>su siguiente paso</em>.</p></div><div class="sp"></div>${roChip(me, 'sales')}</div>
       <div class="row" style="margin-bottom:18px;flex-wrap:wrap">
         ${resumen ? '' : html`<div class="tabs" style="margin:0">
           <button class="${tab === 'crm' ? 'on' : ''}" data-act="tab" data-t="crm">CRM</button>

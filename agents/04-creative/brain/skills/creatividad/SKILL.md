@@ -84,6 +84,7 @@ Skills a correr: [x] · Output: [ruta]
 | *"Qué está funcionando en este formato"* · *"buscá referencias"* · *"mirá este video"* | Solo **Capa 1** | Nada aguas abajo |
 | *"Dame conceptos para X"* | **Capas 2-3** | Capa 0 hecha |
 | *"Escribí el hook y el copy de esta pieza"* | **Capas 4-5** | Capas 2-3 hechas |
+| *"Cómo se arma este reel"* · *"la secuencia de stories"* | `cr-estructura-reel` o `cr-estructura-story` → Capas 4-5 | Capas 2-3 hechas |
 | *"Producción devolvió escenas"* · *"respondé las devoluciones de ⑤ Producción"* | **Capa 5** (`cr-arte-video`) y se vuelve a cerrar el Excel del ciclo — o **Capas 3-6** si el cambio rompe la intención | La devolución de ⑤ Producción con motivo y dos alternativas · `WORKFLOW.md` §8 |
 | *"¿Qué funcionó el mes pasado?"* · *"cerremos el ciclo"* | Solo **Capa 7** | Métricas por pieza |
 
@@ -91,7 +92,7 @@ Skills a correr: [x] · Output: [ruta]
 
 ---
 
-## 3 · Las 10 skills, en orden del flujo
+## 3 · Las 12 skills, en orden del flujo
 
 **INTERPRETAR** 0-1 *(¿qué pide la estrategia y qué ya funciona?)* → **CONCEBIR** 2-3 *(¿cuál es la
 idea y quién es el héroe?)* → **DIRIGIR** 4-6 *(¿cómo se vuelve instrucción ejecutable?)* → **LOOP**
@@ -106,6 +107,8 @@ de la siguiente**: saltar de Interpretar a Dirigir produce piezas bonitas sin id
 | **1** | `cr-fuentes` | Hay que **salir a buscar** anuncios de competencia | Las referencias crudas, con su **antigüedad verificada** |
 | **2** | `cr-big-idea` | *"dame conceptos"*, *"cuál es la big idea"* | 3 BIG IDEAS de una frase, 1 elegida, filtro D/N/R, en `brief-del-ciclo.md` |
 | **3** | `cr-storytelling` | Después de elegir la BIG IDEA | El arco de 7 piezas bajado a esta pieza, en su `ideas-<formato>.md` |
+| **3 → 4** | `cr-estructura-reel` | Cada **reel** del ciclo, después del arco · *"cómo se arma un reel"*, *"un reel que traiga clientes"* | El **esqueleto** y el guion en el **reparto oficial** de tiempo |
+| **3 → 4** | `cr-estructura-story` | Cada **story** del ciclo · *"cómo se arma una story"*, *"qué encuesta ponemos"* | La **secuencia** de frames, su interacción y una acción |
 | **4** | `cr-hook-copy` | *"escribí el hook y el copy"* | Hook, guion y copy **literales**, con CTA por etapa |
 | **5** | `cr-arte-video` | Después del copy | Escenas, encuadres, duraciones, layout, mood, gráficos |
 | **6** | `cr-adaptacion` | Cierre del ciclo | `plan-de-contenido.csv` + un `ideas-<formato>.md` por formato, completos |
@@ -224,6 +227,8 @@ mezcla** con 🟢/🟡/⚪) · ⚠️ SIN DATOS · ⏸️ PENDIENTE APROBACIÓN 
 - [ ] **Ninguna fila cambia la promesa** de ① Strategy ni **el pilar o su peso** de ③ Marketing
 - [ ] **Toda BIG IDEA cuelga de la idea de campaña**, y toda fila de una BIG IDEA
 - [ ] Hook, guion y copy están **literales, entre comillas**, en todas las piezas
+- [ ] Todo reel **declara su esqueleto** y sigue el reparto de `cr-estructura-reel` §1; toda story sigue una secuencia de `cr-estructura-story`
+- [ ] 🛑 **Nada pasa a «Listo» sin su ficha** de `inherent/08-CRITERIOS-DE-ACEPTACION.md`: «1 · Guion de reel», «2 · Guion de story» y «8 · Ficha de referente»
 - [ ] `material` declarado por fila (`ninguno` / `video` / `foto`), el reparto ⑥A Diseño gráfico / ⑦ Video Editing cuadra por `formato`, y el total **cabe en la capacidad real** de ① Strategy
 - [ ] 🛑 Toda pieza con **`material = foto`** tiene su **§ Foto** completa, con el espacio libre para el texto y las piezas que comparten la foto
 - [ ] **Ningún entregable pisa** a ① Strategy, ②B Branding, ③ Marketing, ⑤ Producción, ⑥A Diseño gráfico, ⑨ Posting u ⑩ Ads — se verifica contra la tabla «Qué NO hace» de `WORKFLOW.md §3` — y **ningún campo ajeno reescrito**: todos citados con su ruta

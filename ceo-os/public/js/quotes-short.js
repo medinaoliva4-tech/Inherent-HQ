@@ -1,10 +1,10 @@
 // La tabla corta de cotizaciones (Servicios y Clientes → Servicio): las últimas, con su estado y total.
-// «Ver todas» lleva a Comercial → Cotizaciones; para el CEO y el COO, dentro del Centro de control.
+// «Ver todas» lleva a Ventas → Cotizaciones.
 import { html, Q, fdate } from './core.js';
 
 const QSTATUS = { Borrador: 'amber', Enviada: 'blue', Aceptada: 'green', Rechazada: 'red' };
 const totalOf = (q) => (q.items || []).reduce((a, i) => a + (+i.qty || 0) * (+i.price || 0), 0) * (1 - (+q.discount_pct || 0) / 100);
-export const quotesBase = (me) => (['ceo', 'coo'].includes(me?.role) ? '#/control-hub/sales/quotes' : '#/sales/quotes');
+export const quotesBase = () => '#/sales/quotes';
 
 export function quotesShort(quotes, me, { n = 5, title = 'Cotizaciones', sub = 'Las más recientes', empty = 'Todavía no hay cotizaciones. Se arman en Comercial, desde un lead o desde un paquete.' } = {}) {
   const base = quotesBase(me), list = [...(quotes || [])].sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).slice(0, n);

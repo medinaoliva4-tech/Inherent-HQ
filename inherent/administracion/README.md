@@ -41,3 +41,5 @@ elige la skill.
 confiable, formato)*.
 
 🔒 **Nada se envía, se paga ni se publica sin la aprobación del CEO.**
+✅ **Antes de pedírsela, la factura y la propuesta cumplen su ficha** de
+`inherent/08-CRITERIOS-DE-ACEPTACION.md`: «9 · Factura» y «10 · Propuesta / cotización».

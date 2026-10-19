@@ -3,8 +3,8 @@
 //   · Servicios: el catálogo tal cual (nivel 3 a 10, horas, precio, costo solo CEO) → catalogo.js, con el armador de
 //     propuesta y el margen por cliente plegados arriba («Armar propuesta»)
 //   · Responsabilidades: el pipeline programable por paquete o servicio (las recetas) → responsabilidades.js
-// Las cotizaciones viven en Comercial (Centro de control → Comercial → Cotizaciones): aquí, la tabla corta de las últimas.
-// Los movimientos y pagos, en Finanzas (Centro de control). embed «responsabilidades»: el Centro de control monta solo esa pestaña.
+// Las cotizaciones viven en Ventas → Cotizaciones: aquí, la tabla corta de las últimas.
+// Los movimientos y pagos, en Finanzas. embed «responsabilidades»: monta solo esa pestaña.
 import { byScope, proposal, targetMargin, LEVELS as CX, PRICING_ID } from '../finscope.js';
 import { html, raw, mount, col, api, toast, acts, Q, today, $, $$, ico, isSummary, canEdit, roChip, csv, swap, fromLink } from '../core.js';
 import { hbars, PAL } from '../charts.js';
@@ -20,7 +20,7 @@ const TABS = [['paquetes', 'Paquetes'], ['servicios', 'Servicios'], ['responsabi
 export async function render(el, { me, sub = [], alive, embed = '' }) {
   const ceo = me.role === 'ceo';
   const resumen = isSummary(me, 'sales'), edit = canEdit(me, 'sales');
-  if (resumen) return mount(el, html`<div class="hello"><h1>Servicios</h1><p>Tu perfil ve Comercial <em>en resumen</em>.</p></div><div class="empty"><b>El catálogo y los precios no entran en tu vista</b>Los prospectos y sus seguimientos están en <a href="${['ceo', 'coo'].includes(me.role) ? '#/control-hub/sales' : '#/sales'}">Comercial → CRM</a>.</div>`);
+  if (resumen) return mount(el, html`<div class="hello"><h1>Servicios</h1><p>Tu perfil ve Comercial <em>en resumen</em>.</p></div><div class="empty"><b>El catálogo y los precios no entran en tu vista</b>Los prospectos y sus seguimientos están en <a href="#/sales">Ventas → CRM</a>.</div>`);
   let [services, quotes, rates, pricingDoc, projects, accounts, finance, sheet, bundles, recDocs, docs, industries] = await Promise.all([
     col('services').list().catch(() => []), col('quotes').list().catch(() => []), ceo ? col('rates').get('default').catch(() => null) : null,
     ceo ? col('settings').get(PRICING_ID).catch(() => null) : null, ceo ? col('projects').list().catch(() => []) : [], ceo ? col('accounts').list().catch(() => []) : [], ceo ? col('finance').list().catch(() => []) : [], ceo ? api('finance/sheet').catch(() => null) : null,

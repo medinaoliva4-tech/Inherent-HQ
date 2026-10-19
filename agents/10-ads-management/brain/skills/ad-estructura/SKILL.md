@@ -13,7 +13,7 @@ description: >
 
 | | |
 |---|---|
-| **Consume** | § El encargo · la temperatura y el awareness de `calendario.csv` de ③ Marketing |
+| **Consume** | § El encargo · la temperatura y el nivel de consciencia de `calendario.csv` de ③ Marketing |
 | **Produce** | La sección **§ La estructura** de `plan-de-pauta.md` |
 
 ## 1 · La regla del presupuesto repartido
@@ -45,7 +45,7 @@ description: >
 | **Propios** | Lista del cliente, visitantes, interacciones. **Los más baratos** |
 | **Similares** | Derivados de los propios. Necesitan volumen de origen |
 | **Por interés o keyword** | AdWhispr `research_keywords` · `search_ad_targeting` |
-| **Competencia** | AdWhispr `find_competitors` · `research_competitor_keywords`. **Sus anuncios salen de Apify `apify/facebook-ads-scraper`, solo `country=GT` y por página** — ver `cr-fuentes` |
+| **Competencia** | AdWhispr `find_competitors` · `research_competitor_keywords`. **Sus anuncios salen de Apify `apify/facebook-ads-scraper`, con el país del mercado donde vende el cliente y por página** — ver `cr-fuentes` |
 
 > 🔑 **Se empieza por los propios.** Son los que mejor convierten y los que menos cuestan.
 
@@ -68,6 +68,11 @@ entra en el **GATE 1** y todo cambio de su presupuesto en el **GATE 2**. **Su pr
 total aprobado**, no se suma aparte.
 
 ⚠️ **Es pauta de búsqueda, nunca SEO técnico ni posicionamiento orgánico.**
+
+**Cómo se arma Search:** grupos de anuncios por intención *(una familia de keywords que se buscan
+igual)*, cada uno con su anuncio escrito según `ad-creativos` §4C. **Las negativas de arranque** se
+cargan desde el primer día: lo que se busca con palabras de otra intención *(empleo, gratis, cursos,
+otra ciudad)* según la categoría. La limpieza semanal de términos es de `ad-optimizacion` §2B.
 
 ## 5 · El plan del plugin
 

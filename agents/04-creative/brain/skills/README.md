@@ -25,7 +25,7 @@ en un solo lugar: `agents/04-creative/brain/`.
 |---|---|
 | **`creatividad`** | La puerta de entrada. Lee el pedido, decide qué capas correr, verifica el pre-flight y llama a las demás en orden. **Si no sabés cuál usar, es esta.** |
 
-## Las 10 skills, en orden del flujo
+## Las 12 skills, en orden del flujo
 
 | # | Skill | Capa | Se dispara cuando… | Produce |
 |---|---|---|---|---|
@@ -35,6 +35,8 @@ en un solo lugar: `agents/04-creative/brain/`.
 | 4 | **`cr-fuentes`** | 1 | Hay que salir a buscar anuncios de competencia | Las referencias crudas, con su antigüedad verificada |
 | 5 | **`cr-big-idea`** | 2 | *"dame conceptos"*, *"cuál es la big idea"* | 3 BIG IDEAS de una frase, una elegida, filtro D/N/R aplicado |
 | 6 | **`cr-storytelling`** | 3 | Después de elegir la BIG IDEA | El arco de 7 piezas bajado a esta pieza |
+| 6B | **`cr-estructura-reel`** | 3 → 4 · formato | *"cómo se arma un reel"*, *"un reel que traiga clientes"*, o dos skills dan tiempos distintos | El **esqueleto** de cada reel y su guion en el **reparto oficial** de tiempo · Brand Growth y Growth Partnership *(Brand Foundation: solo los ejemplos de aplicación)* |
+| 6C | **`cr-estructura-story`** | 3 → 4 · formato | *"cómo se arma una story"*, *"qué encuesta ponemos"* | La **secuencia** de frames con su interacción y una acción, en `ideas-story.md` · Brand Growth y Growth Partnership |
 | 7 | **`cr-hook-copy`** | 4 | *"escribí el hook y el copy"* | Hook, guion y copy **literales**, con CTA por etapa |
 | 8 | **`cr-arte-video`** | 5 | Después del copy | Escenas, encuadres, duraciones, layout, mood, elementos gráficos |
 | 9 | **`cr-adaptacion`** | 6 | Cierre del ciclo | `plan-de-contenido.csv` + un `ideas-<formato>.md` por formato, completos |
@@ -54,6 +56,10 @@ cr-brief ──→ cr-swipe-file ──→ cr-big-idea ──→ cr-storytelling
    │                                                                                                          │
    └──────────────────────────────── cr-loop ←──── métricas de las piezas publicadas ←─────────────────────┘
 ```
+
+**Los dos formatos** —`cr-estructura-reel` y `cr-estructura-story`— corren entre `cr-storytelling` y
+`cr-hook-copy`, **solo para las piezas de ese formato**: dicen en qué orden y con qué tiempo va la
+pieza; `cr-hook-copy` escribe los textos exactos encima.
 
 **Las tres reglas de encadenado:**
 

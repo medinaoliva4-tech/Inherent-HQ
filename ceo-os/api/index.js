@@ -18,6 +18,7 @@ import * as results from './_lib/results.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
 import { levelName } from '../public/js/levels.js';
+import { estadoDe, archivado, nombreAuto, marcaDe } from '../public/js/element.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -971,6 +972,73 @@ on('POST', 'intake/:key', async (req, res) => {
     await leads.logSource(src, { ok: false, error: e.status ? e.message : 'Error del servidor', raw: JSON.stringify(b).slice(0, 300) }).catch(() => {});
     res.status(e.status || 500).json({ error: e.status ? e.message : 'Error del servidor' });
   }
+});
+
+// ---------- Buscador global (⌘K): clientes, proyectos, tareas, leads, cotizaciones, servicios, paquetes, docs, research e ideas ----------
+// Busca con las mismas reglas que las listas: la matriz (área oculta = no entra), el alcance (todos · asignados · propio),
+// «resumen» (summaryOf), las tareas privadas y la marca personal (solo el CEO). Devuelve hasta 30, cada uno con a dónde lleva.
+const fold = (x) => String(x ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const SEARCH_TYPES = ['cliente', 'proyecto', 'tarea', 'lead', 'cotizacion', 'servicio', 'paquete', 'doc', 'research', 'idea'];
+const PER_TYPE = 8, MAX_RESULTS = 30;
+// ¿Esta persona lee la colección? Igual que collGuard, sin responder.
+const readsColl = (u, coll) => { const area = COLLS[coll]; return Boolean(area) && canRead(u.role, coll) && [area, ...(READ_ALSO[coll] || [])].some((a) => u.areas.includes(a)); };
+export async function search(u, q) {
+  const words = fold(q).trim().slice(0, 80).split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  const sc = await scoper(u), lists = {};
+  const list = async (coll) => {
+    if (!readsColl(u, coll)) return [];
+    if (!lists[coll]) { const sum = summaryOf(u, coll); lists[coll] = (await db.list(coll)).filter((d) => visible(u, coll, d) && inScope(sc, coll, d) && profInScope(sc, coll, d)).map((d) => shape(u, coll, d, sc, sum)).filter(Boolean); }
+    return lists[coll];
+  };
+  const has = (a) => u.areas.includes(a);
+  const out = [];
+  // Puntaje: el título empieza con lo buscado (3), el título lo tiene todo (2), lo demás lo tiene todo (1).
+  const add = (type, d, { title, sub = '', status = '', route, hay = [] }) => {
+    const t = fold(title), all = fold([title, sub, ...hay].join(' '));
+    if (!words.every((w) => all.includes(w))) return;
+    const score = t.startsWith(words.join(' ')) ? 3 : words.every((w) => t.includes(w)) ? 2 : 1;
+    out.push({ type, id: String(d.id ?? d.slug ?? title), title: String(title || '').slice(0, 140), sub: String(sub || '').slice(0, 140), status: String(status || ''), route, score });
+  };
+  const [projects, tasks, accounts, leadsL, quotes, services, docs, contentL] = await Promise.all(['projects', 'tasks', 'accounts', 'leads', 'quotes', 'services', 'docs', 'content'].map(list));
+  // Clientes: los folders del repo (con su alcance) y las cuentas de la base. Se abren en Proyectos → Clientes.
+  if (has('clients')) {
+    const seen = new Set(), nameOf = (slug) => accounts.find((a) => (a.slug || String(a.id).replace(/^acc-/, '')) === slug)?.name;
+    let dirs = []; try { dirs = (await listDir('clients')).filter((d) => d.type === 'dir' && !d.name.startsWith('_') && (!sc || sc.client(d.name))).map((d) => d.name); } catch {}
+    for (const slug of [...dirs, ...accounts.map((a) => a.slug || String(a.id).replace(/^acc-/, ''))]) {
+      if (!slug || seen.has(slug)) continue; seen.add(slug);
+      const a = accounts.find((x) => (x.slug || String(x.id).replace(/^acc-/, '')) === slug);
+      add('cliente', { id: slug }, { title: nameOf(slug) || slug.toUpperCase(), sub: [slug, a?.contact].filter(Boolean).join(' · '), status: a?.from_quote ? 'Desde cotización' : 'Cliente', route: `#/clients/${slug}`, hay: [slug, a?.contact, a?.email, a?.notes] });
+    }
+  }
+  const pname = (id) => projects.find((p) => p.id === id);
+  for (const p of projects) add('proyecto', p, { title: p.name || 'Proyecto', sub: [p.client || p.client_slug, p.kind].filter(Boolean).join(' · '), status: p.status === 'cerrado' ? 'Cerrado' : 'Activo', route: has('operations') ? `#/operations/p/${encodeURIComponent(p.id)}` : '#/work', hay: [p.client_slug, p.kind, p.line] });
+  for (const t of tasks) { const p = pname(t.project_id); add('tarea', t, { title: t.title || 'Tarea', sub: [p?.client || p?.name || (t.tipo === 'Personal' ? 'Personal' : 'Interna'), t.due ? `vence ${t.due}` : ''].filter(Boolean).join(' · '), status: t.status || 'Por empezar', route: t.project_id && has('operations') ? `#/operations/p/${encodeURIComponent(t.project_id)}` : '#/work/kanban', hay: [t.dept, t.description, p?.name] }); }
+  for (const l of leadsL) add('lead', l, { title: l.name || 'Lead', sub: [l.company, l.source].filter(Boolean).join(' · '), status: l.stage || 'Nuevo', route: `#/sales/crm/${encodeURIComponent(l.id)}`, hay: [l.company, l.email, l.phone, l.wants, l.source, ...(Array.isArray(l.tags) ? l.tags : [])] });
+  for (const x of quotes) add('cotizacion', x, { title: [x.number, x.client].filter(Boolean).join(' · ') || 'Cotización', sub: x.date || '', status: x.status || 'Borrador', route: 'items' in x ? `#/sales/quotes/${encodeURIComponent(x.id)}` : '#/sales', hay: [x.client_slug] });
+  for (const x of services) add('servicio', x, { title: x.name || 'Servicio', sub: x.category || '', status: x.unit || '', route: '#/services/servicios', hay: [x.description] });
+  // Paquetes: el CEO los lee de la base; quien ve Proyectos o Comercial completo, la lista sin precios (como en Servicios).
+  if (u.role === 'ceo' || ((has('operations') || has('sales')) && !summaryOf(u, 'services'))) {
+    const bundles = u.role === 'ceo' ? await db.list('bundles') : await flow.bundleList().catch(() => []);
+    for (const b of bundles) add('paquete', b, { title: b.name || 'Paquete', sub: [b.industry, levelName(b.level || b.nivel || '') || ''].filter(Boolean).join(' · '), status: 'Paquete', route: '#/services/paquetes', hay: [b.desc] });
+  }
+  for (const d of docs) add('doc', d, { title: d.title || 'Documento', sub: d.kind || 'Nota', status: d.kind || '', route: `#/library/${encodeURIComponent(d.folder_id || '_')}/${encodeURIComponent(d.id)}`, hay: [String(d.body || '').slice(0, 4000)] });
+  // Research e ideas: el contenido de cada marca (la personal solo le llega al CEO por visible()).
+  for (const c of contentL) {
+    if (!c.profile) continue;
+    if (c.kind === 'research') add('research', c, { title: c.title || String(c.text || '').split('\n')[0].slice(0, 80) || `@${c.handle || 'referencia'}`, sub: [c.handle ? '@' + c.handle : '', marcaDe(c.profile)].filter(Boolean).join(' · '), status: c.tipo || '', route: `#/marcas/${encodeURIComponent(c.profile)}/investigacion`, hay: [c.handle, c.pillar, ...(Array.isArray(c.tags) ? c.tags : [])] });
+    else if (c.kind === 'post') add('idea', c, { title: c.name || nombreAuto(marcaDe(c.profile), c.format, c.title), sub: c.date ? `sale ${c.date}` : 'sin fecha', status: archivado(c) ? 'Archivado' : estadoDe(c), route: `#/marcas/${encodeURIComponent(c.profile)}/ideas`, hay: [c.title, c.pillar, c.caption] });
+  }
+  // Los mejores de cada tipo (máx. 8) y 30 en total; el orden de los tipos es el de SEARCH_TYPES.
+  const by = SEARCH_TYPES.map((t) => out.filter((x) => x.type === t).sort((a, z) => z.score - a.score || a.title.localeCompare(z.title)).slice(0, PER_TYPE));
+  const picked = [];
+  for (let i = 0; i < PER_TYPE && picked.length < MAX_RESULTS; i++) for (const l of by) if (l[i] && picked.length < MAX_RESULTS) picked.push(l[i]);
+  return picked.sort((a, z) => SEARCH_TYPES.indexOf(a.type) - SEARCH_TYPES.indexOf(z.type) || z.score - a.score).map(({ score, ...x }) => x);
+}
+on('GET', 'search', async (req, res) => {
+  const u = await guard(req, res); if (!u) return;
+  const q = String(req.query.q || '').slice(0, 80);
+  res.json({ q, items: await search(u, q) });
 });
 
 export default async function handler(req, res) {

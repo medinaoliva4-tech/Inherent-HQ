@@ -13,8 +13,8 @@ export async function render(el, { me, sub = [], embed = '' }) {
   let people = (await teamList()).filter((p) => p.active !== false || me.role === 'ceo');
   const isCeo = me.role === 'ceo';
   // Pestañas: Organigrama · Perfiles · Roles (quién cubre cada rol por proyecto) · y, para el CEO, Vistas por rol.
-  // Control, Proyectos, Workspace, Comercial, Finanzas, Indicadores y Arranque viven en el Centro de control (#/control-hub).
-  // embed «vistas»: el Centro de control monta solo la matriz de Vistas por rol (sin las pestañas de Equipo).
+  // Equipo vive en Organization → Inherent (con Visión y misión, Vistas por rol, Roadmap y Library).
+  // embed «vistas»: monta solo la matriz de Vistas por rol (sin las pestañas de Equipo).
   // Las recetas ya no viven aquí: #/team/recetas lleva a Servicios → Responsabilidades.
   if (sub[0] === 'recetas') { location.hash = '/services/responsabilidades'; return; }
   let view = ['people', 'roles', 'vistas'].includes(sub[0]) && (isCeo || ['people', 'roles'].includes(sub[0])) ? sub[0] : 'org';
@@ -132,7 +132,6 @@ export async function render(el, { me, sub = [], embed = '' }) {
     mount(el, html`<div class="row" style="align-items:flex-end;margin-bottom:18px;flex-wrap:wrap;gap:12px">
       <div class="hello sp-hero" style="margin:0"><h1>Equipo</h1><p style="margin:0">${SUB[view]}</p></div><div class="sp"></div>
       ${isCeo && ['org', 'people'].includes(view) ? html`<button class="btn" data-act="add">+ Agregar</button>` : ''}
-      ${['ceo', 'coo'].includes(me.role) ? html`<a class="btn ghost" href="#/control-hub">${ico('grid', 14)} Centro de control →</a>` : ''}
     </div>
     <div class="row" style="margin:0 0 16px;flex-wrap:wrap;gap:8px"><div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${view === k ? 'on' : ''}" data-act="view" data-v="${k}">${l}</button>`)}</div>${isCeo ? html`<a class="sm mut" href="#/services/responsabilidades" style="margin-left:auto">Las recetas ahora viven en Servicios → Responsabilidades →</a>` : ''}</div>
     ${missing.length && ['org', 'people'].includes(view) ? html`<div class="warnbox" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px"><span style="flex:1">${missing.length === 1 ? '1 persona' : missing.length + ' personas'} del manual y la nómina no ${missing.length === 1 ? 'está' : 'están'} en el organigrama: <b>${missing.map((x) => x.name + ' (' + x.roles.join(', ') + ')').join(' · ')}</b></span><button class="btn" data-act="import">Agregarlas</button></div>` : ''}

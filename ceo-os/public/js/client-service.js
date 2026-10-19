@@ -14,7 +14,7 @@ const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDat
 export function serviceTab(ctx) {
   const { me, info, projects = [], tasks = [], quotes = [], services = [], rates = null, R = [], team = [] } = ctx;
   const ceo = me.role === 'ceo', T = today(), M = T.slice(0, 7), qBase = quotesBase(me);
-  const respHref = (it) => `${['ceo', 'coo'].includes(me.role) ? '#/control-hub/responsabilidades' : '#/services/responsabilidades'}${it?.service_id ? '/s:' + it.service_id : ''}`;
+  const respHref = (it) => `${'#/services/responsabilidades'}${it?.service_id ? '/s:' + it.service_id : ''}`;
   const person = (k) => team.find((p) => p.id === k || p.email === k)?.name || (k ? String(k).split('@')[0] : '');
   const who = (p, role) => { const k = p.roles_map?.[role] || tasks.find((t) => t.project_id === p.id && t.role === role && t.assignee)?.assignee; return k ? person(k) : null; };
   const money = (v) => (v == null ? html`<span class="mut">—</span>` : Q(v));

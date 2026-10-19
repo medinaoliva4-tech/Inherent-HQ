@@ -546,7 +546,7 @@ Cliente: [clients/<cliente>/]  ·  Nivel: [Brand Foundation / Brand Growth / Gro
 - [ ] Las renuncias están escritas, no implícitas
 - [ ] Lo externo está en `LINKS.md`, no copiado
 - [ ] Los huecos abiertos están nombrados, no disimulados
-- [ ] 🛑 **El `brief-de-comunicacion-AAAA-MM.md` del ciclo existe** y pasa su QA — sin él ③ Marketing no arranca
+- [ ] 🛑 **El `brief-de-comunicacion-AAAA-MM.md` del ciclo existe** y pasa su QA y la ficha «7 · Brief de comunicación» de `inherent/08-CRITERIOS-DE-ACEPTACION.md` — sin él ③ Marketing no arranca
 - [ ] 🛑 **El alcance quedó anotado en `clients/<cliente>/00-onboarding/plan-contratado.md` ANTES de pasar a los demás departamentos** (§0) — sin eso, los otros once arrancan bloqueados
 - [ ] Nada promete lo que el **alcance contratado** no cubre — ver `inherent/06-ECONOMIA.md`
 - [ ] Si es ⬜ a la medida, `plan-contratado.md` tiene **Qué incluye** y **Su pipeline** (§0)

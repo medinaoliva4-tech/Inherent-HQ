@@ -51,10 +51,15 @@ OBJETIVO: [N] leads al mes por [receta], de los cuales [M] llegan a reunión.
 🛑 **Sin tasa de cierre no hay objetivo inventado.** El primer ciclo se declara `⚠️ SIN DATOS` y
 sirve de línea base: se mide sin meta y la meta sale del dato.
 
-> ⚠️ **La meta de leads es interna.** Sirve para elegir receta y leer si funcionó. **No se promete
-> al cliente, no va en una propuesta y no se llama garantía.** Si el cliente pregunta cuántos leads
-> va a recibir: se escala al CEO. Lo que se puede prometer está en «Capacidades reales» de
-> `inherent/06-ECONOMIA.md`.
+> ⚠️ **Los leads son una META INTERNA: no se le prometen al cliente. Pero es un compromiso
+> operativo: el cliente compra sabiendo que eso es lo que vamos a hacer, así que tenemos que
+> traerlos; si no, quedamos como estafa.**
+>
+> - **Interna:** no va en una propuesta y no se llama garantía. Si el cliente pregunta cuántos
+>   leads va a recibir: se escala al CEO. Lo que se puede prometer está en «Capacidades reales» de
+>   `inherent/06-ECONOMIA.md`.
+> - **Compromiso operativo:** la meta se persigue, no se archiva. Si la receta no la alcanza,
+>   `gr-loop` la cambia o la ajusta el ciclo siguiente *(§6)*; nunca se deja correr igual.
 
 ## 3 · Qué receta, según la naturaleza del negocio
 
@@ -241,7 +246,7 @@ oferta nueva, se escala al CEO:** es comprometer precio.
 
 - [ ] El alcance es **Growth Partnership**
 - [ ] El objetivo es **una frase** y su número sale de datos reales, o va `⚠️ SIN DATOS`
-- [ ] **La meta no se prometió al cliente**
+- [ ] **La meta no se prometió al cliente**, y se trabaja como **compromiso operativo**: si no se alcanza, la receta se cambia
 - [ ] La receta se eligió por la **naturaleza del negocio**, y es **una principal** *(más una de apoyo con datos)*
 - [ ] Está escrito **cómo entra el lead al CRM**, con fuente y siguiente paso
 - [ ] Lo que sale al cliente final **se auto-revisó** antes de encenderse

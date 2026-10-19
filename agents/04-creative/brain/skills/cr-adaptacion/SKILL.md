@@ -63,15 +63,15 @@ existe para Creative — agregarlo es pisar a ③ Marketing.
 | Canal | Qué premia | Versión que se hace | Specs |
 |---|---|---|---|
 | **TikTok** | Watch time y completion | Más cruda y veloz, montada sobre un sonido del momento | **<60s** · hook en **2s** · 9:16 · audio en tendencia |
-| **Instagram Reels** | Factura visual y relación con seguidores | La de mejor acabado, con texto on-screen | **7-30s** · 9:16 · 1080×1920 · 🛑 **sin watermark** |
+| **Instagram Reels** | Factura visual y relación con seguidores | La de mejor acabado, con texto on-screen | **7-30s** · 9:16 · 1080×1920 · 🛑 **sin watermark** · tramos y esqueleto: `cr-estructura-reel` |
 | **YouTube Shorts** | Lo educativo / how-to y la autoridad del canal | Tono how-to, título buscable | **<30s** ideal · 9:16 · título con keyword |
 | **Carrusel (IG / LinkedIn)** | Profundidad y guardados | El guion roto en slides, 1 idea por slide | 4:5 o 1:1 · 5-8 slides · slide 1 = hook |
-| **Story** | Inmediatez y cercanía | La versión más informal, con interacción | 9:16 · 15s por card · safe zones arriba y abajo |
+| **Story** | Inmediatez y cercanía | La versión más informal, con interacción | 9:16 · 15s por card · safe zones arriba y abajo · la secuencia: `cr-estructura-story` |
 | **Post estático** | Una frase que se sostiene sola | Una línea fuerte del guion como quote | 4:5 o 1:1 · legible en el feed comprimido |
 | **Google Business / mapas** | Captura en el momento de decisión | Foto real + información útil, cero producción | Foto horizontal · texto corto |
 | **Email / lista** | Relación directa, cero algoritmo | La versión larga, con la explicación completa | Asunto <50 caracteres · 1 CTA |
 
-**Hook temprano en todas** — y en TikTok, a los **2 s**.
+**Hook temprano en todas** — y en TikTok, a los **2 s**. **En todo video corto** *(TikTok, Reels, Shorts)* **el reparto de tramos es el de `cr-estructura-reel` §1**, dentro de la duración de esta tabla.
 
 ---
 

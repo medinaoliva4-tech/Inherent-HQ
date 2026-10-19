@@ -20,7 +20,7 @@ detalle de cada herramienta.
 |---|---|
 | **`marketing`** | La puerta de entrada. Lee el pedido, decide qué capas correr, verifica el pre-flight y llama a las demás en orden. **Si no sabés cuál usar, es esta.** |
 
-## Las 7 capas, en orden del flujo
+## Las 9 capas, en orden del flujo
 
 | # | Skill | Capa | Se dispara cuando… | Produce |
 |---|---|---|---|---|
@@ -29,6 +29,8 @@ detalle de cada herramienta.
 | 3 | **`mk-mensaje`** | 2 | *«qué decimos primero»* | § Jerarquía de mensaje |
 | 4 | **`mk-pilares`** | 3 | *«qué pilares»*, *«el sistema de contenido»* | § Sistema de contenido — pilares con su peso |
 | 5 | **`mk-canales`** | 4 | *«qué hace cada canal»* | `plan-por-canal.md` — función única y qué NO va ahí |
+| 5B | **`mk-busqueda`** | 4B | *«SEO»*, *«GEO»*, *«que nos encuentren en Google»*, *«Google Business»* — **solo si el área 4 de la ficha incluye búsqueda o Google** · Brand Growth y Growth Partnership | `plan-de-busqueda.md` — qué busca la gente, Google Business, GEO y slots con tema de búsqueda. **Sin SEO técnico** |
+| 5C | **`mk-podcast`** | 4C | *«hagamos un podcast»*, *«clips del podcast»* — **solo si la ficha lo incluye** · Brand Growth y Growth Partnership | La ficha del canal podcast en `plan-por-canal.md` · el episodio *(MOF)* y sus clips *(TOF)* como slots |
 | 6 | **`mk-calendario`** | 5 | *«armá el calendario»* | **`calendario.csv`** |
 | 7 | **`mk-loop`** | 6 | *«qué rindió»*, la revisión del 20 | `aprendizaje-de-marketing.md` |
 

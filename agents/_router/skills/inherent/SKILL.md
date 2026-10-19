@@ -63,9 +63,9 @@ cliente no empieza con `ENRUTAMIENTO`, se saltó el router.
 |---|---|---|
 | Comprensión, contexto, análisis, ingeniería inversa, la estrategia | ① Strategy | `context` → `analysis` → `reverse-engineering` → `methodology` *(según `agents/01-strategy/brain/WORKFLOW.md`)* |
 | Identidad, voz, paleta, tipografía, guía de marca, «¿esto es de marca?» | ②B Branding | `/branding` |
-| Oferta, precio **del cliente**, paquetes, canales grandes, upsells, conversión, números | ② Growth | `/growth` — en **Brand Growth** corre **ligero:** elige qué ofertas que ya existen se empujan · en **Growth Partnership** corre **completo** · a medida: lo que diga su pipeline |
-| Plan del ciclo, pilares, campañas, calendario, canales, mensaje | ③ Marketing | `/marketing` |
-| Ideas, conceptos, BIG IDEA, hooks, copy, shot list, swipe file, plan de contenido | ④ Creatividad | `/creatividad` |
+| Oferta, precio **del cliente**, paquetes, producto, canales grandes, captura, funnel, upsells, referidos, conversión, números | ② Growth | `/growth` — en **Brand Growth** corre **ligero:** elige qué ofertas que ya existen se empujan · en **Growth Partnership** corre **completo** · a medida: lo que diga su pipeline |
+| Plan del ciclo, pilares, campañas, calendario, canales, mensaje, búsqueda *(SEO de contenido, GEO, Google Business)*, podcast | ③ Marketing | `/marketing` |
+| Ideas, conceptos, BIG IDEA, hooks, copy, estructura de reel o de story, shot list, swipe file, plan de contenido | ④ Creatividad | `/creatividad` |
 | Grabar, locaciones, talento, jornadas, call sheet, presupuesto de rodaje | ⑤ Producción | `/produccion` |
 | Estáticos, carruseles, stories, plantillas, fotos de producto | ⑥A Diseño gráfico | `/graphic-design` |
 | Reels, edición, derivadas, cortes | ⑦ Video Editing | `/video-editing` |

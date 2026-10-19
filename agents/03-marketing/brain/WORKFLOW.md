@@ -116,13 +116,14 @@ devuelve a ① Strategy** — no se corrige acá.
 | **`estrategia-de-contenido.md`** | La **idea de campaña** del ciclo, el sistema de contenido, los pilares con su mix y la **jerarquía de mensaje** | ④ Creatividad — **la lee entera antes de idear** |
 | **`plan-por-canal.md`** | Una ficha por canal: su **función única** y **qué NO se hace ahí** | ④ Creatividad · ⑨ Posting |
 | **`calendario.csv`** | **Los slots del ciclo.** Una fila por pieza a producir, en **semanas** | ④ Creatividad — es su encargo |
+| **`plan-de-busqueda.md`** — solo si la ficha incluye búsqueda o Google | Qué busca la gente, Google Business, GEO y los slots con tema de búsqueda *(`mk-busqueda`)* | ④ Creatividad · ⑨ Posting · ⑩ Ads |
 | **`aprendizaje-de-marketing.md`** | El cierre: qué función y qué canal rindieron, y qué cambia el próximo ciclo | ③ Marketing y ① Strategy |
 
 ### Las 11 columnas de `calendario.csv`
 
 ```
 id_slot · semana · canal · formato · pilar · funcion · temperatura
-         · awareness · balance · objetivo_del_slot · traza
+         · consciencia · balance · objetivo_del_slot · traza
 ```
 
 | Columna | Qué lleva | Vocabulario |
@@ -134,7 +135,7 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 | `pilar` | Qué pilar de contenido alimenta | Lo define la Capa 3 |
 | `funcion` | **Para qué existe la pieza** | `Hero` · `Series` · `Proof` · `Utility` · `Conversion` · `Community` |
 | `temperatura` | A quién le habla | `Frío` · `Tibio` · `Caliente` · **`Cliente`** |
-| `awareness` | Qué sabe ya | `Unaware` · `Problem aware` · `Solution aware` · `Product aware` · `Most aware` |
+| `consciencia` | Qué sabe ya — **el nivel de consciencia** *(los 5 de Schwartz, `mk-calendario` § 1A)*. Va **además** de la etapa y decide el gancho y el mensaje | `Inconsciente` · `Consciente del problema` · `Consciente de la solución` · `Consciente del producto` · `Listo para comprar` |
 | `balance` | Marca o venta | `Marca` · `Activación` |
 | `objetivo_del_slot` | **Específico.** *«Responder la objeción del precio»* | Una línea |
 | `traza` | La letra de la MUST BE TRUE que mueve | De ① Strategy |
@@ -151,7 +152,7 @@ id_slot · semana · canal · formato · pilar · funcion · temperatura
 |---|---|
 | `balance = Marca` + CTA de conversión | Rompe el slot. El CTA lo deriva ④ Creatividad del balance |
 | `funcion = Community` + `temperatura ≠ Cliente` | Community le habla a quien ya compró |
-| `awareness = Unaware` + `funcion = Conversion` | Vender a quien no sabe que tiene el problema |
+| `consciencia = Inconsciente` + `funcion = Conversion` | Vender a quien no sabe que tiene el problema |
 | Dos canales con la **misma** `funcion` | Si dos canales hacen lo mismo, sobra uno |
 | Un canal con una `funcion` que su ficha no le asigna | El plan por canal es ley |
 
@@ -180,6 +181,10 @@ de más esperando que alguien aguante.
    3  PILARES       el sistema de contenido y su mix           → mk-pilares
         ▼
    4  CANALES       función única por canal y qué NO va ahí    → mk-canales
+        ▼
+  4B  BÚSQUEDA      Google, Google Business y GEO — solo si la ficha lo incluye → mk-busqueda
+        ▼
+  4C  PODCAST       el episodio y sus clips TOF — solo si la ficha lo incluye   → mk-podcast
         ▼
    5  CALENDARIO    los slots + la PRUEBA DE ALINEACIÓN         → mk-calendario
         ▼           →→→ pasa a ④ Creatividad

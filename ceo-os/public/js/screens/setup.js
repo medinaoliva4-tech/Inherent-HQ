@@ -68,7 +68,7 @@ Precio, alcance y fechas → el CEO · lo demás → el COO.`],
 1. En Workspace → Content → **Matriz y publicaciones**: crea cada pieza con su fecha
 2. Por cada pieza: formato, idea, caption y CTA
 3. Los static ads del ciclo se crean como tareas de ⑥A Diseño gráfico
-4. Mueve cada pieza por su estado: Idea → Grabado → Editado → Programado → Publicado
+4. Mueve cada pieza por su estado: Idea → En proceso → Listo → Publicado (lo publicado hace más de 30 días se archiva solo)
 
 ## Checklist de calidad
 - [ ] Toda pieza tiene CTA
