@@ -64,7 +64,7 @@ export async function render(el, { me, sub = [], alive }) {
     const M = BLOQUES.find((b) => b.id === bid);
     const key = `os.estrategia.chat.${me.email}.${slug}.${bid}`;
     const chat = chatDe(key);
-    const S = { tab: 'ctx', sel: null, laya: false, cargando: false, fuentes: [], salud: null, pareo: '' };
+    const S = { tab: 'ctx', sel: null, laya: false, cargando: false, fuentes: [], salud: null, pareo: '', lib: null, libQ: '', libSel: new Set(), libOn: false };
     const bl = () => data.bloques.find((x) => x.id === bid);
     const puede = () => data.puede.editar && bl().estado !== 'aprobado';
     const esCeo = () => me.role === 'ceo';
@@ -154,11 +154,13 @@ export async function render(el, { me, sub = [], alive }) {
     }
     const SRC = [];
     const srcBtn = (f) => { const i = SRC.push(f) - 1; return html`<button type="button" class="es-src" data-act="fuente" data-i="${i}" title="${f.titulo || ''}">${ico('doc', 13)}<span>${citaLabel(f)}</span></button>`; };
+    const libBtn = (a) => html`<button type="button" class="es-src lib" data-act="libdoc" data-id="${a.id}" title="${a.carpeta || 'Library'}">${ico('folder', 13)}<span>${a.titulo}</span></button>`;
     function fuentesCard(b) {
       SRC.length = 0;
       const citadas = [...new Map([...(b.borrador?.fuentes || []), ...chat.fuentes].map((s) => [`${s.ruta}|${s.t || ''}|${s.p || ''}`, s])).values()];
       const mat = [...(b.material || []), ...(bid === 'roadmap' && data.etapa ? fuentesDeEtapa(data.etapa.n) : [])];
       return html`<section class="es-card"><span class="lbl">Fuentes citadas</span>${citadas.length ? html`<div class="es-links">${citadas.map((f) => srcBtn(f))}</div>` : html`<p class="mut sm">Cuando el chat cite un libro o un video de Hormozi, aparece aquí con un link al pasaje.</p>`}
+        ${chat.adj.length ? html`<span class="lbl" style="margin-top:14px">De la Library</span><div class="es-links">${chat.adj.map((a) => libBtn(a))}</div>` : ''}
         ${mat.length ? html`<span class="lbl" style="margin-top:14px">Material de este bloque</span><div class="es-links">${mat.map((f) => srcBtn(f))}</div>` : ''}</section>`;
     }
 
@@ -197,10 +199,53 @@ export async function render(el, { me, sub = [], alive }) {
       const f = fase(), ok = f === 'listo';
       mount(chatEl, html`<header class="es-ch-h"><div><span class="lbl">Chat con Strategy</span><b>${M.nombre} · ${data.nombre}</b></div><span class="es-pill ${ok ? 'on' : ''}" title="${ok ? 'Tu Claude, en tu compu' : 'Falta conectar tu compu'}"><i></i>${ok ? 'En tu compu' : f === 'cargando' ? '…' : 'Sin conectar'}</span></header>
         <div class="es-msgs" id="es-msgs" aria-live="polite"></div>
-        ${ok ? html`<div class="es-quick" id="es-quick"></div><form class="es-form" id="es-form"><textarea class="in" id="es-in" rows="1" placeholder="Escribe tu pedido…" aria-label="Mensaje para Strategy"></textarea><button class="btn es-send" type="submit" id="es-send" aria-label="Enviar">${ico('right', 16)}</button></form>` : setup(f)}`);
-      paintMsgs(); paintQuick();
+        ${ok ? html`<div class="es-quick" id="es-quick"></div><div class="es-adj" id="es-adj"></div><form class="es-form" id="es-form">${data.puede.library ? html`<button type="button" class="es-attach" data-act="adjuntar" aria-label="Agregar contexto de la Library" title="Agregar contexto de la Library" aria-expanded="${S.libOn ? 'true' : 'false'}">${ico('plus', 18)}</button>` : ''}<textarea class="in" id="es-in" rows="1" placeholder="Escribe tu pedido…" aria-label="Mensaje para Strategy"></textarea><button class="btn es-send" type="submit" id="es-send" aria-label="Enviar">${ico('right', 16)}</button></form>` : setup(f)}`);
+      if (ok) chatEl.insertAdjacentHTML('beforeend', '<div class="es-lib" id="es-lib" role="dialog" aria-label="Agregar contexto de la Library" hidden></div>');
+      paintMsgs(); paintQuick(); paintAdj(); if (S.libOn && ok) paintLib(); else S.libOn = false;
       const ta = $('#es-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
     }
+    // ---------- La Library como contexto ----------
+    function paintAdj() {
+      const box = $('#es-adj', chatEl); if (!box) return;
+      mount(box, chat.adj.length ? html`<span class="es-adj-l">Contexto</span>${chat.adj.map((a) => html`<span class="es-adj-c"><button type="button" data-act="libdoc" data-id="${a.id}" title="${a.carpeta || 'Library'}">${ico('doc', 12)}<span>${a.titulo}</span></button><button type="button" class="x" data-act="adj-quitar" data-id="${a.id}" aria-label="Quitar ${a.titulo}">×</button></span>`)}` : '');
+    }
+    async function abrirLib() {
+      S.libOn = true; S.libSel = new Set(chat.adj.map((a) => a.id)); S.libQ = '';
+      paintLib();
+      if (!S.lib) { try { S.lib = await api('estrategia/library'); } catch (e) { S.lib = { docs: [], max: 6, error: e.message }; } if (S.libOn) paintLib(); }
+      $('#es-lib-q', chatEl)?.focus();
+    }
+    function cerrarLib() { S.libOn = false; const p = $('#es-lib', chatEl); if (p) p.hidden = true; $('[data-act="adjuntar"]', chatEl)?.setAttribute('aria-expanded', 'false'); }
+    function paintLib() {
+      const p = $('#es-lib', chatEl); if (!p) return;
+      p.hidden = false; $('[data-act="adjuntar"]', chatEl)?.setAttribute('aria-expanded', 'true');
+      const L = S.lib, max = L?.max || 6;
+      if (!$('#es-lib-q', p)) mount(p, html`<header class="es-lib-h"><div><b>Agregar contexto</b><span class="mut sm">Documentos de texto de la Library</span></div><button type="button" class="es-lib-x" data-act="lib-cerrar" aria-label="Cerrar">×</button></header>
+        <label class="es-lib-s">${ico('search', 15)}<input id="es-lib-q" type="search" placeholder="Buscar por título o carpeta" autocomplete="off" aria-label="Buscar en la Library"></label>
+        <div class="es-lib-list" id="es-lib-list" role="listbox" aria-multiselectable="true"></div>
+        <footer class="es-lib-f"><span class="mut sm" id="es-lib-n"></span><button type="button" class="btn xs" data-act="lib-ok" id="es-lib-ok">Usar como contexto</button></footer>`);
+      const list = $('#es-lib-list', p);
+      $('#es-lib-n', p).textContent = `${S.libSel.size} de ${max}`;
+      if (!L) return mount(list, html`<p class="es-lib-e mut">Cargando la Library…</p>`);
+      if (L.error) return mount(list, html`<p class="es-lib-e es-err">${L.error}</p>`);
+      const q = S.libQ.trim().toLowerCase(), nom = String(data.nombre || '').toLowerCase();
+      const hits = L.docs.filter((d) => !q || `${d.titulo} ${d.carpeta} ${d.tipo}`.toLowerCase().includes(q));
+      const suyos = q ? [] : hits.filter((d) => nom && `${d.titulo} ${d.carpeta}`.toLowerCase().includes(nom));
+      const resto = hits.filter((d) => !suyos.includes(d));
+      const fila = (d) => { const on = S.libSel.has(d.id), lleno = !on && S.libSel.size >= max; return html`<button type="button" role="option" aria-selected="${on ? 'true' : 'false'}" class="es-lib-r ${on ? 'on' : ''}" data-act="lib-toggle" data-id="${d.id}" ${lleno ? raw('disabled title="Llegaste al máximo"') : ''}>
+        <span class="es-lib-ck">${on ? ico('check', 13) : ''}</span><span class="es-lib-t"><b>${d.titulo}</b><span class="mut sm">${[d.tipo, d.carpeta, d.en ? fd(d.en) : ''].filter(Boolean).join(' · ')}</span></span><span class="es-lib-k mut sm">${kb(d.largo)}</span></button>`; };
+      mount(list, hits.length ? html`${suyos.length ? html`<span class="lbl">De ${data.nombre}</span>${suyos.map(fila)}<span class="lbl">Todo lo demás</span>` : ''}${resto.map(fila)}`
+        : html`<p class="es-lib-e mut">${L.docs.length ? 'Nada coincide con esa búsqueda.' : 'La Library todavía no tiene documentos de texto.'}</p>`);
+    }
+    const kb = (n) => (n >= 1000 ? `${Math.round(n / 1000)} mil car.` : `${n} car.`);
+    async function abrirLibDoc(id) {
+      let d; try { d = (await api('estrategia/library/textos', { method: 'POST', body: { ids: [id] } })).docs[0]; } catch (e) { return toast(e.message, true); }
+      if (!d) return toast('Ese documento ya no está en la Library', true);
+      drawer(html`<article class="es-doc"><span class="lbl">${d.tipo}${d.carpeta ? ` · ${d.carpeta}` : ''}</span><h1>${d.titulo}</h1>
+          <p class="mut sm">Así lo recibe el chat${d.recortado ? ' (recortado: es más largo de lo que cabe en un mensaje)' : ''}.</p>
+          <a class="btn ghost xs" href="#/library/${d.folder}/${d.id}">${ico('folder', 13)} Abrir en la Library</a><div class="es-md" style="margin-top:16px">${md(unirParrafos(d.contenido))}</div></article>`, {}, { section: 'Estrategia', title: d.titulo });
+    }
+
     function paintQuick() {
       const q = $('#es-quick', chatEl); if (!q) return;
       mount(q, chat.msgs.length ? '' : html`${(RAPIDOS[bid] || []).map((t) => html`<button type="button" class="chip" data-act="rapido" data-t="${t}">${t}</button>`)}`);
@@ -222,7 +267,10 @@ export async function render(el, { me, sub = [], alive }) {
     function conCitas(m) {
       let t = m.t; const marks = [];
       (m.citas || []).forEach((c, k) => { if (c.ok && t.includes(c.raw)) { t = t.split(c.raw).join(`⟦c${k}⟧`); marks.push(k); } });
+      const libs = [];
+      t = t.replace(/\[LIBRARY\s*\|\s*([^\]]+?)\s*\]/gi, (all, tit) => { const a = chat.adj.find((x) => x.titulo.trim().toLowerCase() === tit.trim().toLowerCase()); if (!a) return all; libs.push(a); return `⟦l${libs.length - 1}⟧`; });
       let h = String(md(unirParrafos(t)));
+      libs.forEach((a, k) => { h = h.split(`⟦l${k}⟧`).join(`<button type="button" class="es-cite lib" data-act="libdoc" data-id="${esc(a.id)}" title="${esc(a.carpeta || 'Library')}">${esc(a.titulo)}</button>`); });
       for (const k of marks) { const c = m.citas[k]; h = h.split(`⟦c${k}⟧`).join(`<button type="button" class="es-cite" data-act="cita" data-m="${chat.msgs.indexOf(m)}" data-k="${k}" title="${esc(c.titulo)}">${esc(citaLabel(c))}</button>`); }
       return h;
     }
@@ -230,14 +278,21 @@ export async function render(el, { me, sub = [], alive }) {
     // ---------- Mandar un mensaje ----------
     async function enviar(texto, { reintento = false } = {}) {
       texto = String(texto || '').trim(); if (!texto || enVuelo) return;
-      const b = bl();
+      const b = bl(), ctrl = new AbortController(); enVuelo = ctrl;
       if (!reintento) { chat.msgs.push({ r: 'u', t: texto }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] }); }
       const msg = chat.msgs[chat.msgs.length - 1];
       msg.t = ''; msg.err = ''; msg.stream = true; paintMsgs(); paintQuick();
+      const usadoResume = Boolean(chat.sesion) && !reintento;
+      // La Library: los documentos que esta conversación todavía no leyó van completos; los demás, solo nombrados.
+      const nuevos = chat.adj.filter((a) => !usadoResume || !chat.enviados.includes(a.id)), viejos = chat.adj.filter((a) => !nuevos.includes(a));
+      let library = [];
+      if (nuevos.length) {
+        try { const r = await api('estrategia/library/textos', { method: 'POST', body: { ids: nuevos.map((a) => a.id) } }); library = r.docs; if (r.faltan?.length) { chat.adj = chat.adj.filter((a) => !r.faltan.includes(a.id)); paintAdj(); toast('Un documento ya no está en la Library: lo quité del contexto', true); } }
+        catch (e) { enVuelo = null; msg.stream = false; msg.err = `No pude leer la Library: ${e.message}`; guardarChat(key, chat); paintMsgs(); return; }
+      }
       const historial = reintento ? chat.msgs.slice(0, -2).filter((x) => x.t).slice(-6).map((x) => `${x.r === 'u' ? 'Tú' : 'Strategy'}: ${x.t.slice(0, 1200)}`).join('\n\n') : '';
-      const prompt = promptDe({ cliente: data.nombre, slug, carpeta: data.carpeta, bloque: bid, nivel: data.nivel?.nombre, nivelId: data.nivel?.id, limite: b.limite, incluye: data.nivel?.id === 'medida' ? data.ficha.incluye : [], etapa: etapaN(), etapaConfirmada: Boolean(data.etapa?.confirmada), entregables: b.entregables.map((x) => x.ruta ? `${data.carpeta}/${x.ruta}` : '').filter(Boolean), mensaje: texto }) + (historial ? `\n\nConversación hasta ahora:\n${historial}` : '');
-      const ctrl = new AbortController(); enVuelo = ctrl;
-      let usadoResume = Boolean(chat.sesion) && !reintento, fallo = null;
+      const prompt = promptDe({ cliente: data.nombre, slug, carpeta: data.carpeta, bloque: bid, nivel: data.nivel?.nombre, nivelId: data.nivel?.id, limite: b.limite, incluye: data.nivel?.id === 'medida' ? data.ficha.incluye : [], etapa: etapaN(), etapaConfirmada: Boolean(data.etapa?.confirmada), entregables: b.entregables.map((x) => x.ruta ? `${data.carpeta}/${x.ruta}` : '').filter(Boolean), mensaje: texto, library, adjuntos: viejos.map((a) => a.titulo) }) + (historial ? `\n\nConversación hasta ahora:\n${historial}` : '');
+      let fallo = null;
       try {
         const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, ...(usadoResume ? { resume: chat.sesion } : {}) }) });
         if (!r.ok) { const j = await r.json().catch(() => ({})); const e = new Error(j.error || `El puente respondió ${r.status}`); e.status = r.status; e.codigo = j.codigo; throw e; }
@@ -263,6 +318,7 @@ export async function render(el, { me, sub = [], alive }) {
         else msg.err = e.message && e.message !== 'Failed to fetch' ? e.message : 'No pude hablar con el puente. ¿Sigue encendido?';
         if (e.status === 401 || e.status === 412) { await salud(); }
       } finally { enVuelo = null; msg.stream = false; }
+      if (!msg.err && msg.t) chat.enviados = [...new Set([...(usadoResume ? chat.enviados : []), ...library.map((x) => x.id)])];
       guardarChat(key, chat); paintMsgs(); paintQuick();
       if (msg.err) { if (fase() !== 'listo') paintChat(); return; }
       if (msg.t) {
@@ -281,6 +337,16 @@ export async function render(el, { me, sub = [], alive }) {
       const t = e.target.closest('[data-act]'); if (!t || !root.contains(t)) return;
       const a = t.dataset.act;
       if (a === 'copiar') return copiar(t.dataset.t);
+      if (a === 'adjuntar') return S.libOn ? cerrarLib() : abrirLib();
+      if (a === 'lib-cerrar') return cerrarLib();
+      if (a === 'lib-toggle') { const id = t.dataset.id; S.libSel.has(id) ? S.libSel.delete(id) : S.libSel.add(id); return paintLib(); }
+      if (a === 'lib-ok') {
+        const docs = S.lib?.docs || [];
+        chat.adj = [...S.libSel].map((id) => chat.adj.find((x) => x.id === id) || docs.find((x) => x.id === id)).filter(Boolean).map(({ id, titulo, tipo, carpeta, folder }) => ({ id, titulo, tipo, carpeta, folder }));
+        guardarChat(key, chat); cerrarLib(); paintAdj(); paintCtx(); $('#es-in', chatEl)?.focus(); return;
+      }
+      if (a === 'adj-quitar') { chat.adj = chat.adj.filter((x) => x.id !== t.dataset.id); guardarChat(key, chat); paintAdj(); paintCtx(); return; }
+      if (a === 'libdoc') return abrirLibDoc(t.dataset.id);
       if (a === 'reintentar') { t.disabled = true; t.textContent = 'Buscando…'; await salud(); return paintChat(); }
       if (a === 'rapido') return enviar(t.dataset.t);
       if (a === 'detener') { try { enVuelo?.abort(); } catch {} return; }
@@ -317,6 +383,8 @@ export async function render(el, { me, sub = [], alive }) {
         return paintChat();
       }
     });
+    root.addEventListener('input', (e) => { if (e.target.id === 'es-lib-q') { S.libQ = e.target.value; paintLib(); } });
+    root.addEventListener('keydown', (e) => { if (e.key === 'Escape' && S.libOn) { e.preventDefault(); cerrarLib(); $('[data-act="adjuntar"]', chatEl)?.focus(); } });
     root.addEventListener('keydown', (e) => { if (e.target.id === 'es-in' && e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#es-form', el)?.requestSubmit(); } });
 
     // Laya propone la etapa: con el puente local si está; si no, queda pendiente para Claude Code.
@@ -344,12 +412,12 @@ export async function render(el, { me, sub = [], alive }) {
 // ---------- Los chats guardados ----------
 function chatDe(key) {
   if (CHATS.has(key)) return CHATS.get(key);
-  let c = { msgs: [], sesion: null, fuentes: [] };
-  try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) c = { msgs: j.msgs.map((m) => ({ ...m, stream: false })), sesion: j.sesion || null, fuentes: Array.isArray(j.fuentes) ? j.fuentes : [] }; } catch {}
+  let c = { msgs: [], sesion: null, fuentes: [], adj: [], enviados: [] };
+  try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) c = { msgs: j.msgs.map((m) => ({ ...m, stream: false })), sesion: j.sesion || null, fuentes: Array.isArray(j.fuentes) ? j.fuentes : [], adj: Array.isArray(j.adj) ? j.adj : [], enviados: Array.isArray(j.enviados) ? j.enviados : [] }; } catch {}
   CHATS.set(key, c); return c;
 }
 function guardarChat(key, c) {
-  try { localStorage.setItem(key, JSON.stringify({ msgs: c.msgs.slice(-40).map(({ r, t, err, citas }) => ({ r, t, ...(err ? { err } : {}), ...(citas ? { citas } : {}) })), sesion: c.sesion, fuentes: c.fuentes.slice(-40) })); } catch {}
+  try { localStorage.setItem(key, JSON.stringify({ msgs: c.msgs.slice(-40).map(({ r, t, err, citas }) => ({ r, t, ...(err ? { err } : {}), ...(citas ? { citas } : {}) })), sesion: c.sesion, fuentes: c.fuentes.slice(-40), adj: c.adj, enviados: c.enviados })); } catch {}
 }
 
 // «Etapa 3 · 00:12:40», «Offers · 6. Value Offer… · pág 81»: lo que se ve en el link de una cita.
