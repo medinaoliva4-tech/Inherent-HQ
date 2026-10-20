@@ -347,7 +347,7 @@ let mermaidP = null;
 function loadMermaid() {
   return (mermaidP ||= new Promise((ok, ko) => {
     const sc = document.createElement('script'); sc.src = '/vendor/mermaid-11.12.0.min.js';
-    sc.onload = () => { window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'base', fontFamily: '42dot Sans, system-ui, sans-serif',
+    sc.onload = () => { window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'base', fontFamily: 'Inter, system-ui, sans-serif',
       themeVariables: { primaryColor: '#fbf7ef', primaryBorderColor: '#2c1f16', primaryTextColor: '#2c1f16', lineColor: '#735741', secondaryColor: '#f0e9de', tertiaryColor: '#f4eee4', fontSize: '15px' } }); ok(window.mermaid); };
     sc.onerror = () => { mermaidP = null; ko(new Error('No cargó el motor de diagramas')); };
     document.head.append(sc);

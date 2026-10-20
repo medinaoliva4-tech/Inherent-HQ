@@ -5,7 +5,7 @@
   --lime:#efe7dc; --lime-ink:#594231;
   --r:30px; --shadow:0 30px 70px -30px rgba(66,48,34,.28), 0 2px 8px rgba(66,48,34,.05);
   --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  --sans:'42dot Sans',Helvetica,system-ui,sans-serif; --serif:'42dot Sans',Helvetica,system-ui,sans-serif;
+  --sans:'Inter',Helvetica,system-ui,sans-serif; --serif:'Inter',Helvetica,system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0}[hidden]{display:none!important}
 html{background:var(--bg)}html,body{min-height:100%;color:var(--ink);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased}
