@@ -1,6 +1,6 @@
 // Hoy. Para el CEO: tres números, las entregas del mes por semana, lo de hoy y lo que necesita atención.
 // Para el equipo: sus responsabilidades (qué, para cuándo y dónde se entrega). Sin revenue, leads ni engagement.
-import { html, raw, mount, col, api, fdate, today, toast, acts, IC, $, calQ, teamList, ico, initials, fromLink } from '../core.js';
+import { html, raw, mount, col, api, fdate, today, toast, acts, IC, $, $$, Q, calQ, teamList, ico, initials, fromLink } from '../core.js';
 import { upcoming, people as meetPeople } from '../meetings.js';
 import { kpis, PAL } from '../charts.js';
 import { openDelivery, dueChip, stChip } from '../taskcard.js';
@@ -8,6 +8,7 @@ import { bdayText } from './me.js';
 import { connectNotice, hookNotice } from '../connectai.js';
 import { purposeCard } from '../purpose.js';
 import { estadoDe } from '../element.js';
+import { dueAccess, dueSoon, durText, updateWaits } from '../ventas-flujo.js';
 
 const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; };
 const iso = (d) => d.toISOString().slice(0, 10);
@@ -35,6 +36,24 @@ export async function render(el, { me, alive }) {
   const iv = setInterval(() => (alive() ? document.visibilityState === 'visible' && loadAgenda() : clearInterval(iv)), 120000);
   const onVis = () => { if (!alive()) return document.removeEventListener('visibilitychange', onVis); if (document.visibilityState === 'visible') loadAgenda(); };
   document.addEventListener('visibilitychange', onVis);
+
+  // «Vence pronto»: leads sin responder y seguimientos de ventas de hoy o mañana (quien ve Ventas) y facturas de los
+  // próximos 7 días o vencidas (por cobrar: el CEO y quien ve Finanzas; por pagar: solo el CEO). Se carga aparte.
+  const acc = dueAccess(me);
+  let dueLeads = acc.sales ? null : [], dueInv = acc.cobrar || acc.pagar ? null : [];
+  if (acc.sales) col('leads').list().catch(() => []).then((l) => { dueLeads = l; if (alive()) paint(); });
+  if (acc.cobrar || acc.pagar) col('invoices').list().catch(() => []).then((l) => { dueInv = l; if (alive()) paint(); });
+  const tk = setInterval(() => (alive() ? updateWaits($$('[data-wait]', el), Date.now()) : clearInterval(tk)), 1000);
+  const money = (n, c = 'GTQ') => { try { return new Intl.NumberFormat('es-GT', { style: 'currency', currency: c, maximumFractionDigits: c === 'GTQ' ? 0 : 2 }).format(+n || 0); } catch { return Q(n); } };
+  const vpRow = (x) => html`<a class="wkrow" href="${x.href}"><span class="grow"><b style="font-weight:500">${x.title}</b><span class="mut sm"> · ${x.kind === 'lead' ? x.sub : `${x.kind === 'cobrar' ? 'Por cobrar' : 'Por pagar'}${x.sub ? ' · ' + x.sub : ''}`}</span></span>${x.kind !== 'lead' ? html`<span class="sm vp-amt">${money(x.amount, x.currency)}</span>` : ''}${x.wait != null ? html`<span class="vf-timer ${x.tone}" data-wait="${x.created}" title="Sin responder desde que entró">${durText(x.wait)}</span>` : html`<span class="chip sm2 ${x.tone === 'late' ? 'red' : ''}">${x.date < T ? `Venció ${fdate(x.date)}` : whenLabel(x.date)}</span>`}</a>`;
+  const dueCard = () => {
+    if (!acc.sales && !acc.cobrar && !acc.pagar) return '';
+    const items = dueSoon({ leads: dueLeads || [], invoices: dueInv || [], access: acc, T, now: Date.now() }), loading = dueLeads === null || dueInv === null;
+    return html`<div class="sp-callout info hoy-att hoy-vp" style="flex-direction:column;gap:2px;align-items:stretch">
+      <div class="row" style="gap:8px">${ico('clock', 16)}<b>Vence pronto</b><span class="mut sm">${acc.sales && (acc.cobrar || acc.pagar) ? 'Leads, seguimientos y facturas' : acc.sales ? 'Leads y seguimientos' : 'Facturas'}, por fecha</span><div class="sp"></div>${items.length ? html`<span class="badge-n">${items.length}</span>` : ''}</div>
+      ${items.length ? items.slice(0, 5).map(vpRow) : loading ? html`<p class="loading sm">Cargando…</p>` : html`<div class="mut sm">Nada vence en estos días ${ico('check', 14)}</div>`}
+      ${items.length > 5 ? html`<span class="sm mut" style="padding-top:6px">y ${items.length - 5} más</span>` : ''}</div>`;
+  };
 
   const ctx = () => ({ me, projects, team: people });
   const onTask = (r, t) => { tasks = r ? tasks.map((x) => (x.id === r.id ? r : x)) : tasks.filter((x) => x.id !== t.id); paint(); };
@@ -69,7 +88,7 @@ export async function render(el, { me, alive }) {
     const meets = [...evs.filter((e) => e.date >= T), ...pm].sort((a, z) => (a.date + (a.time || '99')).localeCompare(z.date + (z.time || '99')));
     const meetsToday = meets.filter((x) => x.date === T).length;
     const attention = [...late, ...review.filter((t) => !late.includes(t))].sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
-    const R = 26, C = 2 * Math.PI * R;
+    const R = 26, C = 2 * Math.PI * R, vp = dueCard();
     mount(el, html`${head()}
       ${me.role === 'ceo' && !tasks.length && !projects.length ? html`<a class="asbar" href="#/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> y queda lista con lo que ya dice el repo →</a>` : ''}
       <div class="sp-kpis">
@@ -93,10 +112,12 @@ export async function render(el, { me, alive }) {
           ${agenda !== null && !meets.length ? html`<div class="mut sm" style="padding:12px 0">Sin reuniones por delante.</div>` : ''}</section>
       </div>
       <section class="slider" id="cslider">${slider()}</section>
+      <div class="${vp ? 'hoy-pair' : ''}">
       <div class="sp-callout ${attention.length ? '' : 'ok'} hoy-att" id="hoy-att" style="flex-direction:column;gap:2px;align-items:stretch">
         <div class="row" style="gap:8px">${ico('alert', 16)}<b>Necesita atención</b><span class="mut sm">Atrasadas y en revisión, con su dueño</span><div class="sp"></div>${attention.length ? html`<span class="badge-n">${attention.length}</span>` : ''}</div>
         ${attention.length ? attention.slice(0, 5).map((t) => html`<div class="wkrow" data-act="open" data-id="${t.id}"><span class="grow"><b style="font-weight:500">${t.title}</b><span class="mut sm"> · ${clientOf(t)} · ${nameOf(t.assignee).split(' ')[0]}</span></span>${st(t) === 'En revisión' ? stChip(t) : dueChip(t)}</div>`) : html`<div class="mut sm">Todo en orden ${ico('check', 14)}</div>`}
-        ${attention.length > 5 ? html`<a class="sm" href="#/control" style="color:var(--ink2);padding-top:6px">Ver las ${attention.length} en Control →</a>` : ''}</div>`);
+        ${attention.length > 5 ? html`<a class="sm" href="#/control" style="color:var(--ink2);padding-top:6px">Ver las ${attention.length} en Control →</a>` : ''}</div>
+      ${vp}</div>`);
     bindSlider();
   }
 
@@ -169,10 +190,11 @@ export async function render(el, { me, alive }) {
           ${mine.length ? [...groups.entries()].map(([k, l]) => html`<div class="card wkbox" style="margin-bottom:12px"><div class="wkhead"><h3>${title(k)}</h3><div class="sp"></div><span class="mut sm">${l.length}</span></div>
             ${l.map((t) => html`<div class="wkrow"><span class="grow" data-act="open" data-id="${t.id}" style="cursor:pointer"><b style="font-weight:500">${t.title}</b>${t.dept || t.role ? html`<span class="mut sm"> · ${t.dept || t.role}</span>` : ''}</span>${dueChip(t)}${stChip(t)}<button class="btn xs" data-act="open" data-id="${t.id}">${st(t) === 'En revisión' ? 'Ver' : 'Entregar'}</button></div>`)}</div>`)
           : html`<div class="empty"><b>Nada pendiente</b>Cuando te asignen una responsabilidad aparece aquí, con su fecha y dónde entregarla.</div>`}</div>
-        <div class="card wkbox"><div class="wkhead"><div><h3>Hoy</h3><span class="mut sm">Tu agenda y las reuniones de tus proyectos</span></div><span class="gbadge" style="margin-left:auto">${IC.cal}</span></div>
+        <div class="hoy-side"><div class="card wkbox"><div class="wkhead"><div><h3>Hoy</h3><span class="mut sm">Tu agenda y las reuniones de tus proyectos</span></div><span class="gbadge" style="margin-left:auto">${IC.cal}</span></div>
           ${agendaRows()}${meets.map((x) => html`<div class="wkrow"><span class="wkt">${ico('users', 14)}</span><span class="grow">${x.name}<span class="mut sm"> · ${x.p.client || x.p.name}</span></span></div>`)}
           ${agenda && !agenda.length && !meets.length ? html`<div class="mut sm" style="padding:6px 0">Sin reuniones hoy.</div>` : ''}
           <div class="mut sm" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">Tus SOPs y plantillas están en la <a href="#/library" style="color:inherit">Library</a>.</div></div>
+          ${dueCard()}</div>
       </div>`);
   }
 

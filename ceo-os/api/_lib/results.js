@@ -36,7 +36,9 @@ const seesTask = (u, t) => {
 // (lo que no es «Lead creado» ni «Volvió a entrar»). Los prospectos que salimos a buscar no cuentan.
 function responseHours(l) {
   const born = bornAt(l); if (!born) return undefined;
-  const first = (l.activity || []).slice(1).find((a) => a?.at && !/^(Lead creado|Volvió a entrar)/i.test(String(a.text || '')));
+  // «Ya respondí» (Ventas) guarda la hora exacta de la primera respuesta: manda sobre el historial.
+  const own = Date.parse(l.first_reply_at || ''); if (Number.isFinite(own)) { const h0 = (own - born) / 3600e3; return h0 >= 0 ? h0 : undefined; }
+  const first =(l.activity || []).slice(1).find((a) => a?.at && !/^(Lead creado|Volvió a entrar)/i.test(String(a.text || '')));
   if (!first) return null; // todavía sin respuesta
   const h = (Date.parse(first.at) - born) / 3600e3;
   return h >= 0 ? h : undefined;

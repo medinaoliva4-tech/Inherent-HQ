@@ -1,4 +1,4 @@
-import { upcoming, meetingRows, isMine as meetIsMine } from '../meetings.js';
+import { upcoming, isMine as meetIsMine } from '../meetings.js';
 import { LOGO, lineChart, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor, swap, ico, md } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
 import { estadoDe } from '../element.js';
@@ -9,7 +9,7 @@ import { recipesWith, checksFor } from '../recipes.js';
 import { payDialog } from '../flowui.js';
 import { openDelivery, dueChip as tDue, stChip as tSt } from '../taskcard.js';
 import { purposeCard } from '../purpose.js';
-import { tone } from '../charts.js';
+import { PURPOSE } from '../roleviews.js';
 
 // Workspace: cada persona trabaja desde el perfil (o los perfiles) que tiene asignados en Team.
 // Todos tienen su kanban personal, el de la empresa y sus tareas. Cada perfil agrega lo suyo:
@@ -40,7 +40,7 @@ export async function render(el, { me, sub, alive }) {
   let role = myRoles.includes(sub[1]) ? sub[1] : !asP && myRoles.includes(pref) ? pref : myRoles[0] || null;
   let tab = ['zona', 'kanban', 'pipes', 'equipo'].includes(sub[0]) ? sub[0] : 'zona';
   Promise.all([col('accounts').list().catch(() => []), col('settings').get('drive').catch(() => null)]).then(([a2, s2]) => { accounts = a2; settings = s2; if (alive() && tab === 'zona' && ['video', 'ads'].includes(role)) paint(); });
-  let tipoF = 'todos', kView = 'personal', pipeSel = 'contenido', personSel = null, ctab = 'ideas', clientSel = null, ceoLane = 'estrategia';
+  let tipoF = 'todos', kView = 'personal', pipeSel = 'contenido', personSel = null, clientSel = null, ceoLane = 'estrategia';
   let agenda = null, clientInfo = {}, posts = null;
   const T0 = today(), T1 = addDays(T0, 1), T7 = addDays(T0, 7);
   const canCoord = (isCeo && !asP) || myRoles.includes('coo');
@@ -68,41 +68,93 @@ export async function render(el, { me, sub, alive }) {
   const dueChip = (d, st) => { if (!d || st === 'Hecha') return d ? html`<span class="mut sm">${fdate(d)}</span>` : '';
     return d < T0 ? html`<span class="chip red sm2">Atrasada</span>` : d === T0 ? html`<span class="chip red sm2">Hoy</span>` : d === T1 ? html`<span class="chip amber sm2">Mañana</span>` : html`<span class="mut sm">${fdate(d)}</span>`; };
   const trow = (t, extra = '') => html`<div class="wkrow ${status(t) === 'Hecha' ? 'done' : ''}" data-act="task" data-id="${t.id}">${extra}${t.assignee ? av(t.assignee, 20) : ''}<span class="grow">${status(t) !== 'Hecha' && blockersOf(t, tasks).length ? html`<span title="Espera a otra tarea">${ico('lock')} </span>` : ''}${t.title}<span class="mut sm"> · ${proj(t.project_id)?.client || proj(t.project_id)?.name || 'Interno'}</span></span>${dueChip(t.due, status(t))}</div>`;
-  // Sin ruido: si todos los indicadores están en cero, no se muestran.
-  const kpis = (list) => (list.every(([, v]) => !v) ? '' : html`<div class="wkkpis sp-kpis">${list.map(([l, v, c, act]) => html`<div class="wkkpi" ${act ? raw(`data-act="${act}"`) : ''}><span class="lbl">${l}</span><b style="${c ? `color:${tone(c)}` : ''}">${v}</b></div>`)}</div>`);
   const box = (title, sub, body, right = '', cls = 'card wkbox') => html`<div class="${cls}"><div class="wkhead"><div><h3 class="wkttl">${iconFor(title)}${title}</h3>${sub ? html`<span class="mut sm">${sub}</span>` : ''}</div><div class="sp"></div>${right}</div>${body}</div>`;
 
-  // Las reuniones de los proyectos donde le toca estar a esta persona (próximos 30 días).
-  function myMeetings() {
-    const lim = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
-    const l = upcoming(projects).filter((m) => m.date <= lim && meetIsMine(m, team, who)).slice(0, matchMedia('(max-width:760px)').matches ? 1 : 3); // en el cel solo la próxima
-    return l.length ? html`<div style="margin-bottom:14px">${box('Mis próximas reuniones', 'Las de tus proyectos: quiénes van y de qué se habla', meetingRows(l, team, { ...me, email: who }, false))}</div>` : '';
-  }
-
   // ---------- pantalla ----------
+  // Todos los roles ven lo mismo, en el mismo orden y corto: una línea con su puesto y cuántas cosas tiene hoy,
+  // «Hoy» (lo que vence hoy o ya venció, con Entregar), «Esta semana», una sola zona propia del rol (en pestañas
+  // cuando tiene más de una cosa) y «Más», cerrado, con lo que no es acción de hoy (checklist, SOPs, subir trabajo).
   function paint() {
     if (!alive()) return;
-    const tabs = [['zona', myRoles.length > 1 ? 'Resumen' : role ? roleName(role).split(' · ')[0] : 'Mi trabajo'], ['kanban', 'Kanban'], ...(canCoord ? [['pipes', 'Pipelines'], ['equipo', 'Equipo']] : [])];
+    const tabs = [['zona', 'Mi día'], ['kanban', 'Kanban'], ...(canCoord ? [['pipes', 'Pipelines'], ['equipo', 'Equipo']] : [])];
     const viewSel = isCeo ? html`<select class="in sm" id="viewAs" style="width:auto"><option value="">Mi Workspace</option>${team.filter((p) => p.active !== false && p.kind !== 'ia' && p.id !== me.email).map((p) => html`<option value="${p.email || p.id}" ${asP && (asP.email || asP.id) === (p.email || p.id) ? raw('selected') : ''}>Ver como ${p.name}</option>`)}</select>` : '';
     mount(el, html`${asP ? html`<div class="asbar">${ico('eye')} Estás viendo el Workspace de <b>${asP.name}</b> · lo que hagas aquí queda a su nombre <a href="#/work">Volver al mío</a></div>` : ''}<div class="wktop"><div><h1>${asP ? asP.name.split(' ')[0] : 'Workspace'}</h1><p class="mut">${role ? roleName(role) : asP ? 'Sin perfil de trabajo asignado' : 'Tu trabajo, en orden'}</p></div><div class="sp"></div>${viewSel}
-        ${myRoles.length > 1 ? html`<div class="tabs" style="margin:0">${myRoles.map((r) => html`<button class="${r === role ? 'on' : ''}" data-act="role" data-r="${r}">${roleName(r).split(' · ')[0]}</button>`)}</div>` : ''}
         ${canCoord ? html`<button class="btn ghost" data-act="newProject">+ Proyecto</button>` : ''}<button class="btn" data-act="newTask">+ Tarea</button></div>
-      <div class="tabs" style="margin:0 0 14px">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
-      ${tab === 'zona' ? html`${purposeCard(asP ? { ...asP, role: asP.role || 'team', roles: asP.roles || [], email: who, viewsDoc: me.viewsDoc } : me, { area: 'work', own: !asP })}${myMeetings()}` : ''}<div id="wbody"></div>`);
+      <div class="wsnav"><div class="tabs" style="margin:0">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        ${tab === 'zona' && myRoles.length > 1 ? html`<div class="tabs mini wsroles">${myRoles.map((r) => html`<button class="${r === role ? 'on' : ''}" data-act="role" data-r="${r}">${roleName(r).split(' · ')[0]}</button>`)}</div>` : ''}</div>
+      <div id="wbody"></div>`);
     const vs = $('#viewAs', el); if (vs) vs.onchange = () => { location.hash = vs.value ? `/work/zona/_/${vs.value}` : '/work'; };
     const b = $('#wbody', el);
-    if (tab === 'zona') return (ZONES[role] || noRole)(b);
+    if (tab === 'zona') return zona(b);
     ({ kanban, pipes, equipo })[tab](b);
   }
-  function noRole(b) {
-    mount(b, html`<div class="grid g11">${box('Mis tareas', 'Lo que tienes abierto', myList(8))}${box('Todavía no tienes un perfil de trabajo', '', html`<div class="mut sm" style="padding:6px 0">El CEO te lo asigna en <b>Team → tu perfil → Perfiles de trabajo</b>. Mientras, usa tu Kanban.</div>`)}</div>`);
+
+  // ---------- lo que comparten todos: la línea, Hoy, Esta semana y Más ----------
+  // Qué tareas son de cada rol. Si la persona tiene un solo perfil, todas las suyas son de ese perfil.
+  const ROLE_TASKS = {
+    content: (t) => /^(④|⑥|⑧|⑨)/.test(t.dept || '') || /idea|gui[oó]n|diseñ|carrusel|static|est[áa]tic|post|story|copy/i.test(t.title || ''),
+    video: (t) => /^(⑦|⑤)/.test(t.dept || '') || /video|reel|corte|ugc/i.test(t.title || ''),
+    ads: (t) => isAdsT(t),
+    ventas: (t) => t.tipo === 'Comercial' || /venta/i.test(t.dept || '') || /lead|seguimiento|prospect|cotiz|venta/i.test(t.title || ''),
+    finance: (t) => pipeOf(t) === 'growth' || /mapa|mapping|margen|finanz/i.test(t.title || ''),
+    cobros: (t) => t.kind === 'pago' || /cobr|pago|factur/i.test(`${t.dept || ''} ${t.title || ''}`),
+  };
+  const roleTasks = () => { const l = open(mine()); const f = myRoles.length > 1 && ROLE_TASKS[role]; return (f ? l.filter(f) : l).sort(byDue); };
+  const cli = (t) => proj(t.project_id)?.client || proj(t.project_id)?.name || 'Interno';
+  const dayName = (d) => (d === T0 ? 'Hoy' : d === T1 ? 'Mañana' : new Date(d + 'T12:00').toLocaleDateString('es', { weekday: 'short', day: 'numeric' }));
+  const empty = (t) => html`<div class="wsempty">${t}</div>`;
+  const panel = (body, cls = '') => html`<div class="card wspanel ${cls}">${body}</div>`;
+  const pill = (t) => html`<span class="wscount warn">${t}</span>`;
+  let showAll = false, moreOpen = false; const ztab = {};
+
+  function zona(b) {
+    const Z = ZONES[role] || noRoleZ;
+    const all = roleTasks(), hoy = all.filter((t) => t.due && t.due <= T0);
+    const week = all.filter((t) => t.due && t.due > T0 && t.due <= T7), later = all.length - hoy.length - week.length;
+    const tl = Z.tabs ? Z.tabs() : [];
+    let k = ztab[role]; if (!tl.some(([x]) => x === k)) k = tl[0]?.[0] || 'main'; ztab[role] = k;
+    const moreBody = Z.more ? Z.more() : '';
+    mount(b, html`<div class="ws">
+      ${oneLine(hoy.length, Z.extra ? Z.extra() : '')}
+      <div class="wsgrid">${hoyBox(hoy)}${weekList(week, later)}</div>
+      <section class="wszone"><div class="wszhead"><h2>${Z.title}</h2>${tl.length > 1 ? html`<div class="tabs mini wstabs">${tl.map(([x, l, n]) => html`<button class="${x === k ? 'on' : ''}" data-act="ztab" data-z="${x}">${l}${n ? html`<span class="wsn">${n}</span>` : ''}</button>`)}</div>` : ''}</div><div id="wz"></div></section>
+      <details class="wsmore" ${moreOpen ? raw('open') : ''}><summary>${ico('right', 14)}<b>Más</b><span class="mut sm">${Z.moreLbl || 'Checklist del ciclo, SOPs y subir trabajo'}</span></summary>
+        ${moreBody ? html`<div class="wkgrid">${moreBody}</div>` : ''}
+        <div class="wspurp">${purposeCard(asP ? { ...asP, role: asP.role || 'team', roles: asP.roles || [], email: who, viewsDoc: me.viewsDoc } : me, { area: 'work', own: !asP })}</div></details>
+    </div>`);
+    hookQuick(b);
+    const d = $('.wsmore', b); if (d) d.ontoggle = () => { moreOpen = d.open; };
+    Promise.resolve(Z.body(k, $('#wz', b))).then(() => { if (!alive()) return; hookUpload(b); hookClient(b); });
   }
-  const myList = (n) => { const l = open(mine()).sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9'))); return l.length ? html`${l.slice(0, n).map((t) => trow(t, html`<input type="checkbox" data-act="tdone" data-id="${t.id}">`))}` : html`<div class="mut sm" style="padding:8px 0">Nada abierto.</div>`; };
+  function oneLine(n, extra) {
+    const P = PURPOSE[role];
+    const txt = P ? (asP ? `${P.name} · ${P.does}` : P.short || P.does) : asP ? 'Sin perfil de trabajo asignado' : 'Todavía no tienes perfil de trabajo: te lo asigna el CEO en Equipo.';
+    return html`<div class="wsline"><span class="lbl">${asP ? `Puesto de ${asP.name.split(' ')[0]}` : 'Tu puesto'}</span><span class="wsdoes">${txt}</span><div class="sp"></div><span class="wscount ${n ? 'on' : ''}"><b>${n}</b> para hoy</span>${extra}</div>`;
+  }
+  const dayRow = (t) => html`<div class="wsrow" data-act="task" data-id="${t.id}"><span class="grow">${status(t) !== 'Hecha' && blockersOf(t, tasks).length ? html`<span title="Espera a otra tarea">${ico('lock', 13)} </span>` : ''}${t.title}<span class="mut sm"> · ${cli(t)}</span></span>${dueChip(t.due, status(t))}<button class="btn xs ${status(t) === 'En revisión' ? 'ghost' : ''}" data-act="deliver" data-id="${t.id}">${status(t) === 'En revisión' ? 'Ver' : 'Entregar'}</button></div>`;
+  function hoyBox(list) {
+    const shown = showAll ? list : list.slice(0, 5);
+    return html`<section class="card wsbox"><div class="wshead"><h3>Hoy</h3>${list.length ? html`<span class="mut sm">${list.length === 1 ? '1 por entregar' : `${list.length} por entregar`}</span>` : ''}<div class="sp"></div>${list.length > 5 ? html`<button class="sm wslink" data-act="hoyAll">${showAll ? 'Ver menos' : `Ver todas (${list.length})`}</button>` : ''}</div>
+      ${list.length ? shown.map(dayRow) : empty(html`Nada vence hoy. ${ico('spark', 14)}`)}
+      <input class="in sm wsquick" id="quick" placeholder="+ Tarea para hoy y Enter"></section>`;
+  }
+  function weekList(list, later) {
+    const meets = upcoming(projects).filter((m) => m.date <= T7 && meetIsMine(m, team, who));
+    const items = [...list.map((t) => ({ d: t.due, t })), ...meets.map((m) => ({ d: m.date, m }))].sort((a, z) => a.d.localeCompare(z.d));
+    const rest = Math.max(0, items.length - 6) + later;
+    return html`<section class="card wsbox"><div class="wshead"><h3>Esta semana</h3>${items.length ? html`<span class="mut sm">${items.length}</span>` : ''}</div>
+      ${items.length ? items.slice(0, 6).map(({ d, t, m }) => (t
+        ? html`<div class="wsrow" data-act="task" data-id="${t.id}"><span class="wsday">${dayName(d)}</span><span class="grow">${t.title}<span class="mut sm"> · ${cli(t)}</span></span></div>`
+        : html`<div class="wsrow static"><span class="wsday">${dayName(d)}</span><span class="grow">${ico('users', 13)} ${m.name}<span class="mut sm"> · ${m.p.client || m.p.name}</span></span></div>`)) : empty('Nada más esta semana.')}
+      ${rest ? html`<button class="sm wslink" data-act="tab" data-t="kanban">${rest} más adelante o sin fecha · Kanban ›</button>` : ''}</section>`;
+  }
+  const noRoleZ = { title: 'Tu perfil de trabajo', body: (k, z) => mount(z, panel(html`<div class="mut sm">El CEO te lo asigna en <b>Equipo → tu perfil → Perfiles de trabajo</b>. Mientras, usa tu Kanban.</div>`)) };
 
   // =================== piezas que comparten los perfiles ===================
   function checklist(r) {
     const id = `${who}.${r}.${ymNow()}`, doc = checks.find((c) => c.id === id), done = doc?.done || [];
     const items = checksFor(R, r);
+    if (!items.length) return '';
     return box(`Checklist · ${roleName(r).split(' · ')[0]}`, `Ciclo ${ymNow()}`, html`${items.map((t, i) => html`<label class="wkcheck"><input type="checkbox" data-act="ck" data-r="${r}" data-i="${i}" ${done.includes(i) ? raw('checked') : ''}><span>${t}</span></label>`)}`,
       html`<span class="sm">${done.length}/${items.length}</span><div class="wkprog" style="width:70px;margin:0 0 0 8px"><i style="width:${items.length ? (done.length / items.length) * 100 : 0}%"></i></div>`);
   }
@@ -163,12 +215,12 @@ export async function render(el, { me, sub, alive }) {
     return out;
   }
   const decRow = (d) => html`<${raw(d.href ? 'a' : 'div')} class="wkdec" ${raw(d.href ? `href="${d.href}"` : `data-act="${d.act}" data-id="${d.id}"`)} style="border-left-color:${d.tone}"><span class="grow"><b style="font-weight:500">${d.t}</b><span class="mut sm"> · ${d.sub}</span></span><span class="mut">›</span></${raw(d.href ? 'a' : 'div')}>`;
-  function loadAgenda() { if (agenda !== null) return; agenda = []; api(`google/calendar?from=${T0}&to=${T0}${calQ()}`).then((r) => { agenda = r.events; if (alive() && tab === 'zona') paint(); }).catch(() => {}); }
-  function agendaBox() {
+  function loadAgenda() { if (agenda !== null) return; agenda = []; api(`google/calendar?from=${T0}&to=${T0}${calQ()}`).then((r) => { agenda = r?.events || []; if (alive() && tab === 'zona') paint(); }).catch(() => {}); }
+  function agendaBody() {
     loadAgenda();
     const ps = content.filter((c) => c.kind === 'post' && c.date >= T0 && c.date <= T7 && !['Publicado', 'Archivado'].includes(estadoDe(c))).sort((a, z) => a.date.localeCompare(z.date));
-    return box('Agenda y contenido', 'Hoy · próximos 7 días', html`${agenda.length ? agenda.slice(0, 4).map((e) => html`<a class="wkrow" href="${/^https:\/\//.test(e.link || '') ? e.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="wkt">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="grow">${e.summary}</span>${e.meet ? html`<span class="mut sm">Meet</span>` : ''}</a>`) : html`<div class="mut sm" style="padding:4px 0">Sin reuniones hoy.</div>`}
-      ${ps.slice(0, 4).map((p) => html`<a class="wkrow" href="#/content/postear/${p.profile}"><span class="wkt" style="background:var(--bg)">${fdate(p.date)}</span><span class="grow">${p.title}<span class="mut sm"> · ${p.profile}</span></span></a>`)}`);
+    return html`<h4 class="wsh4">Reuniones de hoy</h4>${agenda.length ? agenda.slice(0, 4).map((e) => html`<a class="wsrow" href="${/^https:\/\//.test(e.link || '') ? e.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="wsday">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="grow">${e.summary}</span>${e.meet ? html`<span class="mut sm">Meet</span>` : ''}</a>`) : empty('Sin reuniones hoy.')}
+      ${ps.length ? html`<h4 class="wsh4">Se publica esta semana</h4>${ps.slice(0, 4).map((p) => html`<a class="wsrow" href="#/content/postear/${p.profile}"><span class="wsday">${dayName(p.date)}</span><span class="grow">${p.title}<span class="mut sm"> · ${p.profile}</span></span></a>`)}` : ''}`;
   }
   function stats(k) {
     const l = tasks.filter((t) => t.assignee === k); const m = ymNow();
@@ -177,71 +229,71 @@ export async function render(el, { me, sub, alive }) {
     return { total: month.length, done: month.filter((t) => status(t) === 'Hecha').length, late, open: open(l).length, dot: late ? '#654c38' : open(l).length > 8 ? '#aa917b' : '#84654c' };
   }
   const people = () => team.filter((p) => p.active !== false && p.kind !== 'ia' && keyOf(p) !== ceoKey);
-  const accBox = () => box('Accountability', 'Este mes', html`${people().map((p) => { const s = stats(keyOf(p)); return html`<div class="wkrow" data-act="person" data-k="${keyOf(p)}">${av(keyOf(p), 24)}<span class="grow"><b style="font-weight:500">${p.name.split(' ')[0]}</b><span class="mut sm"> · ${(p.roles || []).map((r) => roleName(r).split(' · ')[0]).join(', ') || p.title || ''}</span></span><span class="sm">${s.done}/${s.total}</span><i class="dot" style="background:${s.dot}"></i></div>`; })}`);
+  const accRows = () => (people().length ? html`${people().map((p) => { const s = stats(keyOf(p)); return html`<div class="wsrow" data-act="person" data-k="${keyOf(p)}">${av(keyOf(p), 22)}<span class="grow">${p.name.split(' ')[0]}<span class="mut sm"> · ${(p.roles || []).map((r) => roleName(r).split(' · ')[0]).join(', ') || p.title || ''}</span></span><span class="sm">${s.done}/${s.total}</span><i class="dot" style="background:${s.dot}"></i></div>`; })}` : empty('Sin equipo todavía.'));
   const pipeMini = (k) => { const l = tasks.filter((t) => pipeOf(t) === k), done = l.filter((t) => status(t) === 'Hecha').length, pct = l.length ? Math.round((done / l.length) * 100) : 0;
     return html`<div class="wkpipe" data-act="pipe" data-k="${k}"><div class="row"><b style="font-weight:500">${PIPES[k].name}</b><div class="sp"></div><span class="sm">${done}/${l.length}</span></div><div class="wkprog"><i style="width:${pct}%;background:${PIPES[k].bar}"></i></div><div class="mut sm" style="margin-top:4px">${COLS.slice(0, 3).map(([s, l2]) => `${l.filter((t) => status(t) === s).length} ${l2.toLowerCase()}`).join(' · ')}</div></div>`; };
-  function ceoZone(b) {
-    const dq = decisions(), my = open(mine()).filter((t) => !t.due || t.due <= T1);
-    const lanes = { estrategia: ['Estrategia', /^[①③②](?!B)/, '① Strategy'], clientes: ['Clientes', /^(①|②)/, '① Strategy'], ads: ['Ads (agente)', /^⑩/, '⑩ Ads'] };
-    const [, re, dept] = lanes[ceoLane];
-    const laneList = open(tasks).filter((t) => re.test(t.dept || '') && (isMine(t) || accOf(t) === ceoKey));
-    mount(b, html`${kpis([['Mis tareas de hoy', my.length], ['Esperan tu decisión', dq.length, dq.length ? '#654c38' : ''], ['Atrasadas', open(tasks).filter((t) => t.due && t.due < T0).length, ''], ['En revisión', tasks.filter((t) => status(t) === 'En revisión').length], ['Proyectos activos', projects.filter((p) => (p.phases || []).some((x) => x.status !== 'done')).length]])}
-      <div class="wkgrid">
-        ${box('Mis tareas de hoy', '', html`${my.length ? my.slice(0, 7).map((t) => trow(t, html`<input type="checkbox" data-act="tdone" data-id="${t.id}">`)) : html`<div class="mut sm" style="padding:6px 0">Nada para hoy.</div>`}<input class="in sm" id="quick" placeholder="+ Tarea para hoy y Enter" style="margin-top:8px">`)}
-        ${box('Cola de decisiones', '', dq.length ? html`${dq.slice(0, 6).map(decRow)}` : html`<div class="mut sm" style="padding:6px 0">Nada espera tu decisión. ${ico('spark')}</div>`, dq.length ? html`<span class="badge-n">${dq.length}</span>` : '')}
-        ${agendaBox()}
-        ${box('Pipelines', 'Quién lo hace → quién rinde cuentas', html`${Object.keys(PIPES).map(pipeMini)}`, html`<button class="sm mut" data-act="tab" data-t="pipes">Ver →</button>`)}
-        ${accBox()}
-        ${box('Lo tuyo como CEO', '', html`<div class="tabs mini">${Object.entries(lanes).map(([k, [l]]) => html`<button class="${k === ceoLane ? 'on' : ''}" data-act="lane" data-l="${k}">${l}</button>`)}</div>
-          ${ceoLane === 'ads' ? projects.filter((p) => p.pipeline?.['⑩']?.status === 'now').map((p) => html`<a class="wkrow" href="#/operations/pipe"><span class="chip red sm2">Gate</span><span class="grow">Aprobar pauta · ${p.client || p.name}</span></a>`) : ''}
-          ${ceoLane === 'clientes' ? quotes.filter((q) => ['Borrador', 'Enviada'].includes(q.status)).slice(0, 3).map((q) => html`<a class="wkrow" href="#/sales/quotes"><span class="chip sm2">${q.status}</span><span class="grow">${q.number} · ${q.client}</span></a>`) : ''}
-          ${laneList.length ? laneList.slice(0, 5).map((t) => trow(t)) : html`<div class="mut sm" style="padding:6px 0">Nada abierto.</div>`}`, html`<button class="btn ghost xs" data-act="laneTask" data-d="${dept}">+</button>`)}
-      </div>`);
-    hookQuick(b);
-  }
+  const LANES = { estrategia: ['Estrategia', /^[①③②](?!B)/, '① Strategy'], clientes: ['Clientes', /^(①|②)/, '① Strategy'], ads: ['Ads (agente)', /^⑩/, '⑩ Ads'] };
+  const ceoZ = {
+    title: 'Lo tuyo como CEO',
+    extra: () => { const n = decisions().length; return n ? pill(n === 1 ? '1 espera tu decisión' : `${n} esperan tu decisión`) : ''; },
+    tabs: () => [['dec', 'Decisiones', decisions().length], ['agenda', 'Agenda'], ['equipo', 'Equipo'], ['area', 'Por área']],
+    body: (k, z) => {
+      if (k === 'dec') { const dq = decisions(); return mount(z, panel(dq.length ? html`${dq.slice(0, 8).map(decRow)}${dq.length > 8 ? html`<div class="mut sm">+ ${dq.length - 8} más</div>` : ''}` : empty(html`Nada espera tu decisión. ${ico('spark', 14)}`))); }
+      if (k === 'agenda') return mount(z, panel(agendaBody()));
+      if (k === 'equipo') return mount(z, html`<div class="wsgrid2">${panel(html`<h4 class="wsh4">Accountability · este mes</h4>${accRows()}`)}${panel(html`<h4 class="wsh4">Pipelines</h4>${Object.keys(PIPES).map(pipeMini)}<button class="sm wslink" data-act="tab" data-t="pipes">Ver pipelines ›</button>`)}</div>`);
+      const [, re, dept] = LANES[ceoLane];
+      const laneList = open(tasks).filter((t) => re.test(t.dept || '') && (isMine(t) || accOf(t) === ceoKey));
+      mount(z, panel(html`<div class="row" style="gap:8px;margin-bottom:4px"><div class="tabs mini" style="margin:0">${Object.entries(LANES).map(([x, [l]]) => html`<button class="${x === ceoLane ? 'on' : ''}" data-act="lane" data-l="${x}">${l}</button>`)}</div><div class="sp"></div><button class="btn ghost xs" data-act="laneTask" data-d="${dept}">+ Tarea</button></div>
+        ${ceoLane === 'ads' ? projects.filter((p) => p.pipeline?.['⑩']?.status === 'now').map((p) => html`<a class="wsrow" href="#/operations/pipe"><span class="chip red sm2">Gate</span><span class="grow">Aprobar pauta · ${p.client || p.name}</span></a>`) : ''}
+        ${ceoLane === 'clientes' ? quotes.filter((q) => ['Borrador', 'Enviada'].includes(q.status)).slice(0, 3).map((q) => html`<a class="wsrow" href="#/sales/quotes"><span class="chip sm2">${q.status}</span><span class="grow">${q.number} · ${q.client}</span></a>`) : ''}
+        ${laneList.length ? laneList.slice(0, 6).map((t) => trow(t)) : empty('Nada abierto.')}`));
+    },
+    more: () => html`${checklist('ceo')}${sops('ceo')}`,
+    moreLbl: 'Checklist del ciclo y SOPs',
+  };
 
   // =================== COO ===================
-  function cooZone(b) {
-    const review = tasks.filter((t) => status(t) === 'En revisión' && (accOf(t) === who || (whoP && accOf(t) === whoP.id)));
-    const noOwner = open(tasks).filter((t) => !t.assignee);
-    const upcoming = projects.flatMap((p) => (p.phases || []).filter((x) => x.status !== 'done' && x.start && x.start <= addDays(T0, 10) && (x.end || x.start) >= T0).map((x) => ({ p, x }))).sort((a, z) => a.x.start.localeCompare(z.x.start));
-    const load = people().map((p) => ({ p, n: open(tasks.filter((t) => t.assignee === keyOf(p))).length })).sort((a, z) => z.n - a.n);
-    const max = Math.max(1, ...load.map((x) => x.n));
-    mount(b, html`${kpis([['Por revisar', review.length, review.length ? '#a68d77' : ''], ['Atrasadas', open(tasks).filter((t) => t.due && t.due < T0).length, '#654c38'], ['Sin responsable', noOwner.length], ['Mis tareas', open(mine()).length], ['Día del ciclo', `${Math.min(+T0.slice(8), 31)}/20`]])}
-      <div class="wkgrid">
-        ${checklist('coo')}
-        ${box('Entregas por revisar', 'Te rinden cuentas a ti', review.length ? html`${review.slice(0, 7).map((t) => html`<div class="wkrow" data-act="task" data-id="${t.id}">${av(t.assignee, 20)}<span class="grow">${t.title}<span class="mut sm"> · ${proj(t.project_id)?.client || 'Interno'}</span></span><button class="btn ghost xs" data-act="approveQ" data-id="${t.id}">${ico('check', 14)}</button></div>`)}` : html`<div class="mut sm" style="padding:6px 0">Nada por revisar.</div>`)}
-        ${box('Próximos controles del ciclo', 'Fases de los próximos 10 días', upcoming.length ? html`${upcoming.slice(0, 6).map(({ p, x }) => html`<a class="wkrow" href="#/operations/time"><span class="wkt">${fdate(x.start)}</span><span class="grow"><b style="font-weight:500">${x.name}</b><span class="mut sm"> · ${p.client || p.name}</span></span><span class="chip sm2 ${x.status === 'now' ? 'lime' : ''}">${x.status === 'now' ? 'En curso' : 'Pendiente'}</span></a>`)}` : html`<div class="mut sm" style="padding:6px 0">Sin fases próximas.</div>`)}
-        ${box('Carga del equipo', 'Tareas abiertas por persona', html`${load.map(({ p, n }) => html`<div class="wkrow" data-act="person" data-k="${keyOf(p)}">${av(keyOf(p), 20)}<span style="width:80px">${p.name.split(' ')[0]}</span><div class="wkprog grow" style="margin:0"><i style="width:${(n / max) * 100}%;background:${n > 8 ? '#aa917b' : '#795c45'}"></i></div><span class="sm" style="width:20px;text-align:right">${n}</span></div>`)}`)}
-        ${uploader()}
-        ${sops('coo')}
-      </div>`);
-    hookUpload(b);
-  }
+  const cooReview = () => tasks.filter((t) => status(t) === 'En revisión' && (accOf(t) === who || (whoP && accOf(t) === whoP.id)));
+  const cooZ = {
+    title: 'Revisión y ciclo',
+    extra: () => { const n = cooReview().length; return n ? pill(`${n} por revisar`) : ''; },
+    tabs: () => [['rev', 'Por revisar', cooReview().length], ['ciclo', 'Controles del ciclo'], ['equipo', 'Equipo']],
+    body: (k, z) => {
+      if (k === 'rev') { const review = cooReview(); return mount(z, panel(review.length ? html`${review.slice(0, 8).map((t) => html`<div class="wsrow" data-act="task" data-id="${t.id}">${av(t.assignee, 20)}<span class="grow">${t.title}<span class="mut sm"> · ${cli(t)}</span></span><button class="btn ghost xs" data-act="approveQ" data-id="${t.id}" title="Aprobar">${ico('check', 14)}</button></div>`)}${review.length > 8 ? html`<div class="mut sm">+ ${review.length - 8} más en el Kanban</div>` : ''}` : empty('Nada por revisar.'))); }
+      if (k === 'ciclo') {
+        const up = projects.flatMap((p) => (p.phases || []).filter((x) => x.status !== 'done' && x.start && x.start <= addDays(T0, 10) && (x.end || x.start) >= T0).map((x) => ({ p, x }))).sort((a, z2) => a.x.start.localeCompare(z2.x.start));
+        return mount(z, panel(html`<div class="wsnote">Día <b>${Math.min(+T0.slice(8), 31)}</b> del ciclo · el 11 cierra producción · el 20 se presenta</div>
+          ${up.length ? up.slice(0, 6).map(({ p, x }) => html`<a class="wsrow" href="#/operations/time"><span class="wsday">${dayName(x.start)}</span><span class="grow">${x.name}<span class="mut sm"> · ${p.client || p.name}</span></span><span class="chip sm2 ${x.status === 'now' ? 'lime' : ''}">${x.status === 'now' ? 'En curso' : 'Pendiente'}</span></a>`) : empty('Sin fases en los próximos 10 días.')}`));
+      }
+      const load = people().map((p) => ({ p, n: open(tasks.filter((t) => t.assignee === keyOf(p))).length })).sort((a, z2) => z2.n - a.n), max = Math.max(1, ...load.map((x) => x.n));
+      const noOwner = open(tasks).filter((t) => !t.assignee).length, late = open(tasks).filter((t) => t.due && t.due < T0).length;
+      mount(z, panel(html`${noOwner || late ? html`<div class="wsnote">${late ? html`<b>${late}</b> atrasadas` : ''}${noOwner && late ? ' · ' : ''}${noOwner ? html`<b>${noOwner}</b> sin responsable` : ''} <button class="sm wslink" data-act="kvGo">Ver en el Kanban ›</button></div>` : ''}
+        ${load.map(({ p, n }) => html`<div class="wsrow" data-act="person" data-k="${keyOf(p)}">${av(keyOf(p), 20)}<span class="wsname">${p.name.split(' ')[0]}</span><div class="wkprog grow" style="margin:0"><i style="width:${(n / max) * 100}%;background:${n > 8 ? '#aa917b' : '#795c45'}"></i></div><span class="sm" style="width:20px;text-align:right">${n}</span></div>`)}`));
+    },
+    more: () => html`${checklist('coo')}${uploader()}${sops('coo')}`,
+  };
 
   // =================== VIDEO ===================
-  function videoZone(b) {
-    const vids = mine().filter((t) => /^(⑦|⑤|⑩)/.test(t.dept || '') || /video|reel|corte|ugc|ad/i.test(t.title));
-    const q = open(vids).sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
-    const n = (s) => vids.filter((t) => status(t) === s).length;
-    mount(b, html`${kpis([['Por producir', n('Por empezar')], ['En edición', n('En curso'), '#a18770'], ['En revisión', n('En revisión'), '#a68d77']])}
-      <div class="wkgrid">
-        <div class="span2">${box('Cola de producción', 'Tus videos y ads, por fecha de entrega', q.length ? html`<table class="wktable"><thead><tr><th>Pieza</th><th>Cliente</th><th>Tipo</th><th>Entrega</th><th>Estado</th></tr></thead><tbody>${q.slice(0, 8).map((t) => html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b></td><td class="mut">${proj(t.project_id)?.client || '—'}</td><td><span class="chip sm2 ${/^⑩/.test(t.dept || '') ? 'red' : ''}">${/^⑩/.test(t.dept || '') ? 'Ads' : 'Video'}</span></td><td>${dueChip(t.due, status(t)) || '—'}</td><td><span class="chip sm2">${status(t)}</span></td></tr>`)}</tbody></table>` : html`<div class="mut sm" style="padding:6px 0">Sin videos asignados. Cuando te asignen una tarea de ⑦ Video Editing o ⑩ Ads aparece aquí.</div>`)}</div>
-        ${quick()}
-        ${clientKit()}
-        ${uploader('Subir corte para revisión')}
-        ${checklist('video')}
-        ${deliveries()}
-      </div>`);
-    hookUpload(b); hookClient(b);
-  }
+  const vids = () => mine().filter((t) => /^(⑦|⑤|⑩)/.test(t.dept || '') || /video|reel|corte|ugc|\bads?\b/i.test(t.title || ''));
+  const videoZ = {
+    title: 'Tus videos',
+    tabs: () => [['cola', 'Cola de producción', open(vids()).length], ['kit', 'Kit por cliente']],
+    body: (k, z) => {
+      if (k === 'kit') return mount(z, clientKit());
+      const q = open(vids()).sort(byDue);
+      mount(z, panel(q.length ? html`<div class="wsscroll"><table class="wktable"><thead><tr><th>Pieza</th><th>Cliente</th><th>Tipo</th><th>Entrega</th><th>Estado</th></tr></thead><tbody>${q.slice(0, 10).map((t) => html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b></td><td class="mut">${proj(t.project_id)?.client || '—'}</td><td><span class="chip sm2 ${/^⑩/.test(t.dept || '') ? 'red' : ''}">${/^⑩/.test(t.dept || '') ? 'Ads' : 'Video'}</span></td><td>${dueChip(t.due, status(t)) || '—'}</td><td><span class="chip sm2">${status(t)}</span></td></tr>`)}</tbody></table></div>`
+        : empty('Sin videos asignados. Cuando te asignen una tarea de ⑦ Video Editing o ⑩ Ads aparece aquí.')));
+    },
+    more: () => html`${quick()}${uploader('Subir corte para revisión')}${checklist('video')}${deliveries()}`,
+    moreLbl: 'SOPs y prompts, subir corte, checklist y entregas',
+  };
   // Acceso rápido: SOPs y prompts generales (los crea el CEO en la Library, tipo «Prompt»).
   function quick() {
     const sopsV = docs.filter((d) => (d.roles || []).includes('video') && d.kind !== 'Prompt');
     const gen = docs.filter((d) => d.kind === 'Prompt' && !d.client);
     const link = (d) => html`<a class="wksop" href="#/library/${d.folder_id || '_'}/${d.id}"><span class="ftype" style="background:${d.kind === 'Prompt' ? '#81634b' : '#87684e'}">${d.kind === 'Prompt' ? ico('spark') : (d.kind || 'Doc').slice(0, 3).toUpperCase()}</span><span>${d.kind === 'Prompt' ? d.vtype || d.title : d.title}</span></a>`;
     return box('Acceso rápido', 'SOPs y prompts generales', html`${sopsV.length ? html`<div class="lbl" style="color:var(--mut);margin:2px 0 6px">SOPs</div><div class="wksops">${sopsV.slice(0, 4).map(link)}</div>` : ''}
-      <div class="lbl" style="color:var(--mut);margin:10px 0 6px">Prompts generales</div>${gen.length ? html`<div class="wksops">${gen.slice(0, 6).map(link)}</div>` : html`<div class="mut sm">Todavía no hay. El CEO los crea en Library → + Documento → Prompt de video → General.</div>`}
+      <div class="lbl" style="color:var(--mut);margin:10px 0 6px">Prompts generales</div>${gen.length ? html`<div class="wksops">${gen.slice(0, 6).map(link)}</div>` : html`<div class="mut sm">Todavía no hay. El CEO los crea en la Library.</div>`}
       ${settings?.root ? html`<a class="wkrow" href="${settings.root}" target="_blank" rel="noopener noreferrer" style="margin-top:6px"><span class="fi">${IC.drive}</span><span class="grow">Carpeta de entregas en Drive</span><span class="mut">↗</span></a>` : ''}`, html`<a class="sm mut" href="#/library">Library →</a>`);
   }
   // Por cliente: sus assets en Drive y los prompts de esa marca por tipo de video.
@@ -254,63 +306,92 @@ export async function render(el, { me, sub, alive }) {
     const assets = /^https:\/\//.test(acc.assets || '') ? acc.assets : info?.links?.find((l) => /drive/i.test(l.k) && /^https:\/\//.test(l.url || ''))?.url;
     const prompts = docs.filter((d) => d.kind === 'Prompt' && d.client === clientSel);
     const byType = {}; prompts.forEach((d) => (byType[d.vtype || 'Otro'] ||= []).push(d));
-    return box('Por cliente', 'Assets y prompts de cada marca', html`<select class="in" id="clientSel" style="margin-bottom:8px">${slugs.map((x) => html`<option value="${x}" ${x === clientSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select>
-      ${!clientSel ? html`<div class="mut sm">Sin clientes con proyecto.</div>` : html`
-      ${assets ? html`<a class="wkrow" href="${assets}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow"><b style="font-weight:500">Assets</b><span class="mut sm"> · logos, fotos, videos crudos</span></span><span class="mut">↗</span></a>` : html`<div class="wkrow"><span class="fi">${IC.drive}</span><span class="grow mut sm">Sin carpeta de assets. Se agrega en Clientes → ${clientSel.toUpperCase()} → Editar datos.</span></div>`}
+    return panel(html`<div class="row" style="gap:10px;margin-bottom:6px;flex-wrap:wrap"><select class="in" id="clientSel" style="width:auto;min-width:140px">${slugs.map((x) => html`<option value="${x}" ${x === clientSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select><span class="mut sm">Assets y prompts de cada marca</span></div>
+      ${!clientSel ? empty('Sin clientes con proyecto.') : html`
+      ${assets ? html`<a class="wsrow" href="${assets}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow">Assets<span class="mut sm"> · logos, fotos, videos crudos</span></span><span class="mut">↗</span></a>` : html`<div class="wsrow static"><span class="fi">${IC.drive}</span><span class="grow mut sm">Sin carpeta de assets. Se agrega en Clientes → ${clientSel.toUpperCase()} → Editar datos.</span></div>`}
       ${[[ico('doc'), 'Guiones', 'en Drive', guionesLink(clientSel)], [ico('video'), 'Videos por postear', 'carpeta de Drive', driveOf(clientSel).postear_drive], ...(canContent ? [[ico('cal'), 'Calendario', 'Planner del mes', `#/content/plan/${clientSel}`]] : [])].map(([i, t, sub, h]) => h
-        ? html`<a class="wkrow" href="${h}" ${/^https/.test(h) ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span style="width:22px;text-align:center">${i}</span><span class="grow">${t}<span class="mut sm"> · ${sub}</span></span><span class="mut">${/^https/.test(h) ? '↗' : '›'}</span></a>`
-        : html`<div class="wkrow"><span style="width:22px;text-align:center">${i}</span><span class="grow mut sm">${t}: ${driveOf(clientSel).loading ? 'cargando…' : 'sin carpeta conectada. La conecta Content.'}</span></div>`)}
-      <div class="lbl" style="color:var(--mut);margin:10px 0 6px">Prompts de ${clientSel.toUpperCase()}</div>
-      ${prompts.length ? Object.entries(byType).map(([ty, l]) => html`<div class="wkrow"><span class="chip sm2">${ty}</span><span class="grow">${l.map((d, i) => html`${i ? ' · ' : ''}<a href="#/library/${d.folder_id || '_'}/${d.id}" style="color:inherit">${d.title}</a>`)}</span><button class="btn ghost xs" data-act="copyP" data-id="${l[0].id}">Copiar</button><button class="btn xs" data-act="claudeP" data-id="${l[0].id}" title="Abre tu Claude con este prompt (usa tu cuenta)">${ICON.sparkle} Claude</button></div>`)
-        : html`<div class="mut sm">Sin prompts para esta marca. El CEO los crea en Library → Prompt de video.</div>`}`}`);
+        ? html`<a class="wsrow" href="${h}" ${/^https/.test(h) ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span style="width:22px;text-align:center">${i}</span><span class="grow">${t}<span class="mut sm"> · ${sub}</span></span><span class="mut">${/^https/.test(h) ? '↗' : '›'}</span></a>`
+        : html`<div class="wsrow static"><span style="width:22px;text-align:center">${i}</span><span class="grow mut sm">${t}: ${driveOf(clientSel).loading ? 'cargando…' : 'sin carpeta conectada. La conecta Content.'}</span></div>`)}
+      <h4 class="wsh4">Prompts de ${clientSel.toUpperCase()}</h4>
+      ${prompts.length ? Object.entries(byType).map(([ty, l]) => html`<div class="wsrow static"><span class="chip sm2">${ty}</span><span class="grow">${l.map((d, i) => html`${i ? ' · ' : ''}<a href="#/library/${d.folder_id || '_'}/${d.id}" style="color:inherit">${d.title}</a>`)}</span><button class="btn ghost xs" data-act="copyP" data-id="${l[0].id}">Copiar</button><button class="btn xs" data-act="claudeP" data-id="${l[0].id}" title="Abre tu Claude con este prompt (usa tu cuenta)">${ICON.sparkle} Claude</button></div>`)
+        : empty('Sin prompts para esta marca. El CEO los crea en Library → Prompt de video.')}`}`);
   }
 
   // =================== CONTENT ===================
-  async function contentZone(b) {
-    if (!posts) { mount(b, html`<p class="loading">Cargando…</p>`); const all = (await col('content').list().catch(() => [])).filter((c) => c.kind === 'post'); posts = all; if (!alive()) return; }
-    const ideas = posts.filter((p) => estadoDe(p) === 'Idea'), prod = posts.filter((p) => estadoDe(p) === 'En proceso');
-    const design = open(mine()).filter((t) => /^⑥/.test(t.dept || '') || /diseñ|static|estátic|carrusel/i.test(t.title));
-    const subtabs = [['ideas', 'Ideas y preproducción'], ['diseno', 'Diseño y static ads'], ['matriz', 'Matriz y publicaciones'], ['community', 'Community']];
-    mount(b, html`${kpis([['Ideas por desarrollar', ideas.length, '', ''], ['En producción', prod.length, '#997d65'], ['Diseños pendientes', design.length, '#a68d77'], ['Por publicar (7 días)', posts.filter((p) => p.date >= T0 && p.date <= T7 && !['Publicado', 'Archivado'].includes(estadoDe(p))).length, '#795c45']])}
-      <div class="tabs" style="margin:0 0 12px">${subtabs.map(([k, l]) => html`<button class="${ctab === k ? 'on' : ''}" data-act="ctab" data-c="${k}">${l}</button>`)}</div>
-      <div id="cz"></div>`);
-    const z = $('#cz', b);
-    if (ctab === 'ideas') {
-      const STAGES = [['Idea', 'Idea y concepto'], ['En proceso', 'Grabación, diseño y edición'], ['Listo', 'Listo para publicar']];
+  let planView = 'etapa';
+  const designT = () => open(mine()).filter((t) => /^⑥/.test(t.dept || '') || /diseñ|static|estátic|carrusel/i.test(t.title || ''));
+  const contentZ = {
+    title: 'Contenido',
+    tabs: () => [['plan', 'Plan'], ['diseno', 'Diseño', designT().length], ['community', 'Community']],
+    body: async (k, z) => {
+      if (k === 'diseno') { const d = designT().sort(byDue); return mount(z, panel(html`<div class="row" style="margin-bottom:2px"><span class="mut sm">Tus tareas de ⑥A Diseño gráfico y static ads</span><div class="sp"></div><button class="btn ghost xs" data-act="laneTask" data-d="⑥A Diseño gráfico">+ Tarea</button></div>${d.length ? d.map(dayRow) : empty('Nada pendiente.')}`)); }
+      if (k === 'community') {
+        const slugs = [...new Set(projects.map((p) => p.client_slug).filter(Boolean))];
+        const accs = await col('accounts').list().catch(() => []); if (!alive()) return;
+        mount(z, slugs.length ? html`<div class="wkgrid">${slugs.map((s) => { const a = accs.find((x) => x.id === 'acc-' + s) || {}; const c = a.community || {};
+          return box(`Community · ${s.toUpperCase()}`, `${COMMUNITY.filter((_, i) => c[i]).length}/${COMMUNITY.length} listo`, html`${COMMUNITY.map((l, i) => html`<label class="wkcheck"><input type="checkbox" data-act="comm" data-s="${s}" data-i="${i}" ${c[i] ? raw('checked') : ''}><span>${l}</span></label>`)}<a class="sm mut" href="#/clients/${s}">Ver cliente →</a>`); })}</div>` : panel(empty('Sin clientes con proyecto.')));
+        $$('[data-act=comm]', z).forEach((cb) => cb.addEventListener('change', async () => {
+          const id = 'acc-' + cb.dataset.s; const A = col('accounts');
+          try { const cur = await A.get(id).catch(() => null); const community = { ...(cur?.community || {}), [cb.dataset.i]: cb.checked };
+            if (cur) await A.save({ ...cur, community }); else await A.create({ id, name: cb.dataset.s.toUpperCase(), roadmap: [], accesos: [], community }); toast('Guardado'); } catch (e) { cb.checked = !cb.checked; toast(e.message, true); }
+        }));
+        return;
+      }
+      if (!posts) { mount(z, html`<p class="loading">Cargando…</p>`); posts = (await col('content').list().catch(() => [])).filter((c) => c.kind === 'post'); if (!alive() || ztab[role] !== 'plan') return; }
+      const head = html`<div class="row" style="gap:8px;margin-bottom:6px"><div class="tabs mini" style="margin:0"><button class="${planView === 'etapa' ? 'on' : ''}" data-act="planView" data-v="etapa">Por etapa</button><button class="${planView === 'fecha' ? 'on' : ''}" data-act="planView" data-v="fecha">Por fecha</button></div><div class="sp"></div><button class="btn xs" data-act="newPost">+ Pieza</button></div>`;
+      if (planView === 'fecha') {
+        const list = posts.filter((p) => p.date >= addDays(T0, -3)).sort((a, z2) => String(a.date).localeCompare(String(z2.date)));
+        return mount(z, panel(html`${head}${list.length ? html`<div class="wsscroll"><table class="wktable"><thead><tr><th>Fecha</th><th>Perfil</th><th>Formato</th><th>Idea</th><th>CTA</th><th>Estado</th></tr></thead><tbody>${list.slice(0, 12).map((p) => html`<tr class="click" data-act="post" data-id="${p.id}"><td>${p.date ? fdate(p.date) : '—'}</td><td class="mut">${p.profile}</td><td>${p.format || '—'}</td><td><b style="font-weight:500">${p.title}</b></td><td class="mut sm">${String(p.caption || '').split('\n').filter(Boolean).pop()?.slice(0, 40) || '—'}</td><td><span class="chip sm2">${p.status || 'Idea'}</span></td></tr>`)}</tbody></table></div>` : empty('Sin publicaciones con fecha.')}`));
+      }
+      const STAGES = [['Idea', 'Idea'], ['En proceso', 'En proceso'], ['Listo', 'Listo']];
       const profs = [...new Set(posts.map((p) => p.profile))];
-      mount(z, html`<div class="wkgrid"><div class="span2">${box('Plan de contenido por cliente y etapa', 'Las piezas de «Por postear» de cada perfil', profs.length ? html`<div class="wkstage head"><span></span>${STAGES.map(([, l]) => html`<span>${l}</span>`)}</div>${profs.map((pr) => html`<div class="wkstage"><b>${pr.toUpperCase()}</b>${STAGES.map(([s]) => html`<div>${posts.filter((p) => p.profile === pr && estadoDe(p) === s).slice(0, 3).map((p) => html`<div class="wkpost" data-act="post" data-id="${p.id}"><span>${p.title}</span><span class="mut sm">${p.date ? fdate(p.date) : ''}</span></div>`)}</div>`)}</div>`)}` : html`<div class="mut sm" style="padding:6px 0">Todavía no hay piezas. Crea la primera con «+ Pieza».</div>`, html`<button class="btn xs" data-act="newPost">+ Pieza</button>`)}</div>
-        ${checklist('content')}${material()}${sops('content')}${uploader()}</div>`);
-      hookClient(z); hookUpload(z);
-    } else if (ctab === 'diseno') {
-      mount(z, html`<div class="wkgrid"><div class="span2">${box('Diseño y static ads', 'Tus tareas de ⑥A Diseño gráfico y static ads', design.length ? html`${design.map((t) => trow(t))}` : html`<div class="mut sm" style="padding:6px 0">Nada pendiente.</div>`, html`<button class="btn ghost xs" data-act="laneTask" data-d="⑥A Diseño gráfico">+</button>`)}</div>${uploader('Subir diseño para revisión')}${material()}</div>`);
-      hookUpload(z); hookClient(z);
-    } else if (ctab === 'matriz') {
-      const list = posts.filter((p) => p.date >= addDays(T0, -3)).sort((a, z2) => String(a.date).localeCompare(String(z2.date)));
-      mount(z, box('Matriz de publicaciones', 'Fecha, canal, formato, idea y CTA', list.length ? html`<table class="wktable"><thead><tr><th>Fecha</th><th>Perfil</th><th>Formato</th><th>Idea</th><th>CTA</th><th>Estado</th></tr></thead><tbody>${list.map((p) => html`<tr class="click" data-act="post" data-id="${p.id}"><td>${p.date ? fdate(p.date) : '—'}</td><td class="mut">${p.profile}</td><td>${p.format || '—'}</td><td><b style="font-weight:500">${p.title}</b></td><td class="mut sm">${String(p.caption || '').split('\n').filter(Boolean).pop()?.slice(0, 40) || '—'}</td><td><span class="chip sm2">${p.status || 'Idea'}</span></td></tr>`)}</tbody></table>` : html`<div class="mut sm" style="padding:6px 0">Sin publicaciones con fecha.</div>`, html`<button class="btn xs" data-act="newPost">+ Publicación</button>`));
-    } else {
-      const slugs = [...new Set(projects.map((p) => p.client_slug).filter(Boolean))];
-      const accs = await col('accounts').list().catch(() => []);
-      mount(z, html`<div class="wkgrid">${slugs.map((s) => { const a = accs.find((x) => x.id === 'acc-' + s) || {}; const c = a.community || {};
-        return box(`Setup de community · ${s.toUpperCase()}`, `${COMMUNITY.filter((_, i) => c[i]).length}/${COMMUNITY.length} listo`, html`${COMMUNITY.map((l, i) => html`<label class="wkcheck"><input type="checkbox" data-act="comm" data-s="${s}" data-i="${i}" ${c[i] ? raw('checked') : ''}><span>${l}</span></label>`)}<a class="sm mut" href="#/clients/${s}">Ver cliente →</a>`); })}</div>`);
-      $$('[data-act=comm]', z).forEach((cb) => cb.addEventListener('change', async () => {
-        const id = 'acc-' + cb.dataset.s; const A = col('accounts');
-        try { const cur = await A.get(id).catch(() => null); const community = { ...(cur?.community || {}), [cb.dataset.i]: cb.checked };
-          if (cur) await A.save({ ...cur, community }); else await A.create({ id, name: cb.dataset.s.toUpperCase(), roadmap: [], accesos: [], community }); toast('Guardado'); } catch (e) { cb.checked = !cb.checked; toast(e.message, true); }
-      }));
-    }
-  }
+      mount(z, panel(html`${head}${profs.length ? html`<div class="wsscroll"><div class="wsstage head"><span></span>${STAGES.map(([, l]) => html`<span>${l}</span>`)}</div>${profs.map((pr) => html`<div class="wsstage"><b>${pr.toUpperCase()}</b>${STAGES.map(([s]) => html`<div>${posts.filter((p) => p.profile === pr && estadoDe(p) === s).slice(0, 3).map((p) => html`<div class="wkpost" data-act="post" data-id="${p.id}"><span>${p.title}</span><span class="mut sm">${p.date ? fdate(p.date) : ''}</span></div>`)}</div>`)}</div>`)}</div>` : empty('Todavía no hay piezas. Crea la primera con «+ Pieza».')}`));
+    },
+    more: () => html`${checklist('content')}${material()}${sops('content')}${uploader()}`,
+    moreLbl: 'Checklist del ciclo, material del cliente, SOPs y subir trabajo',
+  };
 
   // =================== FINANCE + BUSINESS MAPPING ===================
-  function financeZone(b) {
-    const gp = projects.filter((p) => lineOf(p) === 'growth');
-    mount(b, html`${kpis([['Proyectos', gp.length], ['Mis tareas abiertas', open(mine()).length], ['En revisión', mine().filter((t) => status(t) === 'En revisión').length, '#a68d77']])}
-      <div class="wkgrid">
-        <div class="span2">${box('Mis proyectos', 'Business Growth: que ganen más y gasten menos', gp.length ? html`${gp.map((p) => { const ph = p.phases || []; const d = ph.filter((x) => x.status === 'done').length; return html`<a class="wkrow" href="${p.client_slug ? '#/clients/' + p.client_slug : '#/operations/pipe'}"><span class="grow"><b style="font-weight:500">${p.name}</b><span class="mut sm"> · ${ph.find((x) => x.status !== 'done')?.name || 'Terminado'}</span></span><div class="wkprog" style="width:120px;margin:0"><i style="width:${ph.length ? (d / ph.length) * 100 : 0}%;background:#81634b"></i></div><span class="sm">${d}/${ph.length}</span></a>`; })}` : html`<div class="mut sm" style="padding:6px 0">Sin proyectos de Business Growth. Se crean en Operaciones → Proyectos → «+ Proyecto» → Business Growth.</div>`)}</div>
-        ${box('Mis tareas', '', myList(8))}
-        ${checklist('finance')}${uploader('Entregar trabajo')}${sops('finance')}
-      </div>`);
-    hookUpload(b);
-  }
+  const financeZ = {
+    title: 'Tus proyectos de Business Growth',
+    body: (k, z) => {
+      const gp = projects.filter((p) => lineOf(p) === 'growth');
+      mount(z, panel(gp.length ? html`${gp.map((p) => { const ph = p.phases || []; const d = ph.filter((x) => x.status === 'done').length; return html`<a class="wsrow" href="${p.client_slug ? '#/clients/' + p.client_slug : '#/operations/pipe'}"><span class="grow">${p.name}<span class="mut sm"> · ${ph.find((x) => x.status !== 'done')?.name || 'Terminado'}</span></span><div class="wkprog" style="width:100px;margin:0;flex:none"><i style="width:${ph.length ? (d / ph.length) * 100 : 0}%;background:#81634b"></i></div><span class="sm">${d}/${ph.length}</span></a>`; })}`
+        : empty('Sin proyectos de Business Growth. Se crean en Proyectos → «+ Proyecto» → Business Growth.')));
+    },
+    more: () => html`${checklist('finance')}${uploader('Entregar trabajo')}${sops('finance')}`,
+  };
+
+  // =================== VENTAS ===================
+  let leads;
+  const canSales = () => isCeo || me.areas.includes('sales');
+  function loadLeads() { if (leads !== undefined) return; if (!canSales()) { leads = []; return; } leads = null; col('leads').list().then((l) => { leads = l; }).catch(() => { leads = []; }).then(() => alive() && role === 'ventas' && tab === 'zona' && paint()); }
+  const followUps = () => (leads || []).filter((l) => l.next_date && l.next_date <= T7 && !/ganad|perdid|cerrad|descart/i.test(l.stage || '')).sort((a, z) => a.next_date.localeCompare(z.next_date));
+  const ventasZ = {
+    title: 'Seguimientos del CRM',
+    extra: () => { loadLeads(); const n = followUps().filter((l) => l.next_date <= T0).length; return n ? pill(n === 1 ? '1 seguimiento para hoy' : `${n} seguimientos para hoy`) : ''; },
+    body: (k, z) => {
+      loadLeads();
+      if (!canSales()) return mount(z, panel(empty('El CRM se abre cuando el CEO te da acceso a Ventas.')));
+      const l = followUps();
+      mount(z, panel(leads === null ? html`<p class="loading sm">Cargando…</p>` : html`${l.length ? l.slice(0, 8).map((x) => html`<a class="wsrow" href="#/org/sales"><span class="wsday">${x.next_date < T0 ? html`<span class="chip red sm2">Atrasado</span>` : dayName(x.next_date)}</span><span class="grow">${x.name}<span class="mut sm">${x.company ? ` · ${x.company}` : ''} · ${x.stage || 'Nuevo'}</span></span><span class="mut">›</span></a>`) : empty('Ningún seguimiento esta semana.')}
+        <a class="sm wslink" href="#/org/sales">Abrir el CRM ›</a>`));
+    },
+    more: () => html`${checklist('ventas')}${sops('ventas')}`,
+    moreLbl: 'Checklist del ciclo y SOPs',
+  };
+
+  // =================== COBROS ===================
+  const cobrosZ = {
+    title: 'Cobros pendientes',
+    body: (k, z) => {
+      const l = open(tasks).filter((t) => t.kind === 'pago' || ROLE_TASKS.cobros(t)).sort(byDue);
+      mount(z, panel(html`${l.length ? l.slice(0, 8).map((t) => html`<div class="wsrow" data-act="task" data-id="${t.id}"><span class="grow">${t.title}<span class="mut sm"> · ${cli(t)}${t.amount_due ? ` · ${t.currency || 'GTQ'} ${Number(t.amount_due).toLocaleString('en-US')}` : ''}</span></span>${tDue(t)}</div>`) : empty('Nada por cobrar.')}
+        ${me.areas.includes('finanzas') ? html`<a class="sm wslink" href="#/org/finanzas">Abrir Finanzas ›</a>` : ''}`));
+    },
+    more: () => html`${checklist('cobros')}${sops('cobros')}`,
+    moreLbl: 'Checklist del ciclo y SOPs',
+  };
   // =================== ADS MANAGEMENT · el puesto de la persona de pauta ===================
   // Por cliente con pauta contratada (la ficha dice «Pauta» o ⑩ Ads está en su pipeline, o tiene cuenta o presupuesto
   // de pauta): el encargo (objetivo, métrica, presupuesto y OK del CEO), los pasos del método de ⑩ con su skill `ad-*`,
@@ -382,11 +463,6 @@ export async function render(el, { me, sub, alive }) {
       <span class="st"><span class="chip sm2 ${LBL[st][1]}">${LBL[st][0]}</span>${skill ? html`<button class="sk" data-act="skill" data-k="${skill}" data-s="${sl}" data-n="${name}" title="Abre Claude con este paso">${skill}</button>` : isCeo && !asP && !ok ? html`<button class="btn xs" data-act="adsOk" data-s="${sl}" data-v="1">Dar OK</button>` : html`<span class="sk" style="cursor:default">CEO</span>`}</span>
       <span class="sub">${sub}</span></div>`)}</div>`, html`<span class="sm">${rows.filter(([, st]) => st === 'hecho').length}/${rows.length}</span>`, 'sp-panel');
   }
-  function weekBox(sl) {
-    const l = open(mine()).filter((t) => isAdsT(t) && clientOf(t) === sl).sort(byDue), week = l.filter((t) => !t.due || t.due <= T7);
-    return box('Esta semana', 'Tus tareas de ⑩ Ads con su fecha · entrega desde aquí', week.length ? html`${week.slice(0, 8).map((t) => html`<div class="wkrow"><span class="grow" data-act="deliver" data-id="${t.id}"><b style="font-weight:500">${t.title}</b></span>${tDue(t)}${tSt(t)}<button class="btn xs" data-act="deliver" data-id="${t.id}">${status(t) === 'En revisión' ? 'Ver' : 'Entregar'}</button></div>`)}${l.length > week.length ? html`<div class="mut sm" style="padding:6px 0">+ ${l.length - week.length} más adelante</div>` : ''}`
-      : html`<div class="mut sm" style="padding:6px 0">Nada de ⑩ Ads esta semana para este cliente.</div>`, html`<button class="btn ghost xs" data-act="adsTask" data-s="${sl}">+</button>`, 'sp-panel');
-  }
   function campsBox(sl) {
     const l = campsFor(sl).sort((a, z) => String(z.from || '').localeCompare(String(a.from || ''))), P = Object.fromEntries(CAMP_PLATS);
     return box('Campañas', campsOn === false ? 'Se guardan como tareas de ⑩ Ads mientras se habilita la colección «campaigns»' : 'Lo que está armado y corriendo · nombre, plataforma, estado, presupuesto diario y fechas',
@@ -403,29 +479,31 @@ export async function render(el, { me, sub, alive }) {
   const cuentasBox = (slugs) => box('Cuentas de pauta', 'Por cliente: abre su Ads Manager directo', slugs.length ? html`${slugs.map((sl) => { const a = adsAcc(sl);
     return html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="adsplat">${ADS.map(([k, l, url]) => a[k] ? html`<a class="adsp" href="${url(a[k])}" target="_blank" rel="noopener noreferrer"><span class="ailogo sm">${LOGO[k]}</span>${l} ↗</a>` : html`<span class="adsp off"><span class="ailogo sm">${LOGO[k]}</span>${l}</span>`)}</div>
       ${a.budget ? html`<span class="mut sm">${Q(a.budget)}/mes</span>` : ''}<button class="btn ghost xs" data-act="adsEdit" data-s="${sl}">Cuentas</button></div>`; })}` : html`<div class="mut sm">Sin clientes con proyecto activo.</div>`);
-  function adsZone(b) {
+  function adsState() {
     const slugs = [...new Set(projects.filter((p) => p.client_slug && p.status !== 'cerrado').map((p) => p.client_slug))];
     loadInfos(slugs); loadCamps();
     const withAds = slugs.filter(hasPauta), loading = slugs.some((sl) => adsInfo[sl]?.loading);
     if (!withAds.includes(adsSel)) { const first = clientOf(open(mine()).sort(byDue).find(isAdsT) || {}); adsSel = withAds.includes(first) ? first : withAds[0] || null; }
-    const myAds = open(mine()).filter(isAdsT), waiting = withAds.filter((sl) => !okOf(adsAcc(sl)));
-    const active = withAds.reduce((n, sl) => n + campsFor(sl).filter((c) => c.status === 'Activa').length, 0);
-    mount(b, html`${kpis([['Clientes con pauta', withAds.length], ['Esperan OK del CEO', waiting.length, waiting.length ? '#725741' : ''], ['Mis tareas de ⑩ esta semana', myAds.filter((t) => !t.due || t.due <= T7).length], ['Campañas activas', active]])}
-      ${withAds.length ? html`<div class="adscli">${withAds.map((sl) => html`<span class="chip ${sl === adsSel ? 'dark' : ''}" data-act="adsCli" data-s="${sl}"><i class="${okOf(adsAcc(sl)) ? 'ok' : ''}"></i>${sl.toUpperCase()}</span>`)}${loading ? html`<span class="mut sm">Leyendo fichas…</span>` : ''}</div>` : ''}
-      ${adsSel ? html`<div class="wkgrid">${encargoBox(adsSel)}${stepsBox(adsSel)}${weekBox(adsSel)}<div class="span2">${campsBox(adsSel)}</div>${learnBox(adsSel)}</div>`
-        : html`<div class="empty" style="margin-bottom:12px"><b>${loading ? 'Leyendo las fichas…' : 'Ningún cliente con pauta contratada'}</b>${loading ? '' : 'Un cliente entra aquí cuando su ficha de oferta incluye pauta (fila «Pauta» o ⑩ Ads en su pipeline) o cuando tiene cuenta o presupuesto de pauta en Clientes.'}</div>`}
-      <div class="sec-title"><h2>La pauta en general</h2><span class="mut sm">Cuentas, cómo va y qué hace la competencia</span></div>
-      <div class="wkgrid">
-        <div class="span2">${cuentasBox(slugs)}</div>
-        <div class="span2">${adsReport()}</div>
-        ${box('Mis tareas', '', myList(8))}
-        <div class="span2">${adsComp(slugs)}</div>
-        ${checklist('ads')}${uploader('Entregar trabajo')}${sops('ads')}
-      </div>`);
-    hookUpload(b);
-    const cs = $('#compSel', b); if (cs) cs.onchange = () => { compSel = cs.value; comp = null; paint(); };
-    const ch = $('#adsch', b); if (ch && adsRep?.on) { const days = {}; adsRep.clients.forEach((c) => c.series.forEach((x) => (days[x.date] = (days[x.date] || 0) + x.spend))); const ks = Object.keys(days).sort(); if (ks.length > 1) lineChart(ch, ks.map((d) => fdate(d)), [{ name: 'Gasto', v: ks.map((d) => days[d]), c: '#2c1f16', fill: true }], { fmt: (v) => 'Q' + Math.round(v).toLocaleString('en-US') }); else ch.remove(); }
+    return { slugs, withAds, loading };
   }
+  // El puesto de pauta: un cliente a la vez, en tres pestañas. El candado «Esperando OK del CEO» vive en el Encargo.
+  const adsZ = {
+    title: 'Pauta por cliente',
+    extra: () => { const { withAds } = adsState(); const w = withAds.filter((sl) => !okOf(adsAcc(sl))).length; return w ? pill(w === 1 ? '1 espera el OK del CEO' : `${w} esperan el OK del CEO`) : ''; },
+    tabs: () => { const { withAds } = adsState(); const act = withAds.reduce((n, sl) => n + campsFor(sl).filter((c) => c.status === 'Activa').length, 0); return [['encargo', 'Encargo'], ['camps', 'Campañas', act], ['learn', 'Aprendizaje']]; },
+    body: (k, z) => {
+      const { slugs, withAds, loading } = adsState();
+      const chips = withAds.length ? html`<div class="adscli">${withAds.map((sl) => html`<span class="chip ${sl === adsSel ? 'dark' : ''}" data-act="adsCli" data-s="${sl}"><i class="${okOf(adsAcc(sl)) ? 'ok' : ''}"></i>${sl.toUpperCase()}</span>`)}${loading ? html`<span class="mut sm">Leyendo fichas…</span>` : ''}<div class="sp"></div><button class="btn ghost xs" data-act="adsTask" data-s="${adsSel}">+ Tarea de ⑩</button></div>` : '';
+      const none = html`<div class="empty" style="margin-bottom:12px"><b>${loading ? 'Leyendo las fichas…' : 'Ningún cliente con pauta contratada'}</b>${loading ? '' : 'Un cliente entra aquí cuando su ficha incluye pauta o cuando tiene cuenta o presupuesto de pauta (pestaña Campañas → Cuentas).'}</div>`;
+      if (k === 'camps') mount(z, html`${chips}${adsSel ? campsBox(adsSel) : ''}<div class="wsgrid2" style="margin-top:12px">${adsReport()}${cuentasBox(slugs)}</div>`);
+      else if (!adsSel) mount(z, none);
+      else if (k === 'learn') mount(z, html`${chips}<div class="wsgrid2">${learnBox(adsSel)}${adsComp(slugs)}</div>`);
+      else mount(z, html`${chips}<div class="wsgrid2 wsads">${encargoBox(adsSel)}${stepsBox(adsSel)}</div>`);
+      const cs = $('#compSel', z); if (cs) cs.onchange = () => { compSel = cs.value; comp = null; paint(); };
+      const ch = $('#adsch', z); if (ch && adsRep?.on) { const days = {}; adsRep.clients.forEach((c) => c.series.forEach((x) => (days[x.date] = (days[x.date] || 0) + x.spend))); const ks = Object.keys(days).sort(); if (ks.length > 1) lineChart(ch, ks.map((d) => fdate(d)), [{ name: 'Gasto', v: ks.map((d) => days[d]), c: '#2c1f16', fill: true }], { fmt: (v) => 'Q' + Math.round(v).toLocaleString('en-US') }); else ch.remove(); }
+    },
+    more: () => html`${checklist('ads')}${uploader('Entregar trabajo')}${sops('ads')}`,
+  };
   // Guarda el encargo o las cuentas de un cliente (PUT ads/accounts): el servidor conserva el OK del CEO si el presupuesto no cambió.
   async function putAds(sl, v) {
     try { const r = await api('ads/accounts/' + encodeURIComponent(sl), { method: 'PUT', body: v }); const i = accounts.findIndex((x) => x.id === 'acc-' + sl); if (i >= 0) accounts[i] = { ...accounts[i], ads: r.ads }; else accounts.push({ id: 'acc-' + sl, ads: r.ads }); return r.ads; } catch (e) { toast(e.message, true); return null; }
@@ -487,7 +565,7 @@ export async function render(el, { me, sub, alive }) {
         : comp?.items ? html`<div class="mut sm" style="margin-top:8px">No encontré anuncios activos de esas marcas.</div>` : ''}
       <div class="mut sm" style="margin-top:10px">Google y LinkedIn: <a href="https://adstransparency.google.com/" target="_blank" rel="noopener noreferrer">Google Ads Transparency ↗</a> · <a href="https://www.linkedin.com/ad-library/" target="_blank" rel="noopener noreferrer">LinkedIn Ad Library ↗</a></div>`);
   }
-  const ZONES = { ceo: ceoZone, coo: cooZone, video: videoZone, content: contentZone, finance: financeZone, ads: adsZone };
+  const ZONES = { ceo: ceoZ, coo: cooZ, content: contentZ, video: videoZ, ads: adsZ, ventas: ventasZ, finance: financeZ, cobros: cobrosZ };
 
   // ---------- conexiones de las piezas ----------
   function hookQuick(b) { const qi = $('#quick', b); if (qi) qi.onkeydown = async (e) => { if (e.key !== 'Enter' || !qi.value.trim()) return; if (await create({ title: qi.value.trim(), assignee: who, due: T0, status: 'Por empezar' })) paint(); }; }
@@ -622,7 +700,10 @@ export async function render(el, { me, sub, alive }) {
       if (!v) return;
       if (await putAds(sl, v)) { toast('Guardado'); paint(); }
     },
-    ctab: (t) => { ctab = t.dataset.c; swap(el, paint); },
+    ztab: (t) => { ztab[role] = t.dataset.z; paint(); },
+    planView: (t) => { planView = t.dataset.v; paint(); },
+    hoyAll: () => { showAll = !showAll; paint(); },
+    kvGo: () => { kView = 'empresa'; tab = 'kanban'; history.replaceState(null, '', `#/work/kanban/${role || '_'}${asP ? '/' + who : ''}`); paint(); },
     kv: (t) => { kView = t.dataset.v; kanban($('#wbody', el)); },
     tipof: (t) => { tipoF = t.dataset.tp; tab === 'pipes' ? pipes($('#wbody', el)) : kanban($('#wbody', el)); },
     pipe: (t) => { pipeSel = t.dataset.k; tab = 'pipes'; paint(); },
