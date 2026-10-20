@@ -165,9 +165,10 @@ export async function render(el, { me, sub = [], alive }) {
     }
 
     // ---------- Derecha: el chat ----------
-    async function salud() {
+    // ms: lo que se espera al puente. Al tocar «Ya lo hice» se espera más: la primera vez Chrome pide permiso para hablar con tu compu.
+    async function salud(ms = 4000) {
       let v = { on: false };
-      try { const c = new AbortController(), t = setTimeout(() => c.abort(), 1500); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
+      try { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
       S.salud = v; return v;
     }
     // Qué le falta al chat para correr (en este orden).
@@ -294,7 +295,7 @@ export async function render(el, { me, sub = [], alive }) {
       const prompt = promptDe({ cliente: data.nombre, slug, carpeta: data.carpeta, bloque: bid, nivel: data.nivel?.nombre, nivelId: data.nivel?.id, limite: b.limite, incluye: data.nivel?.id === 'medida' ? data.ficha.incluye : [], etapa: etapaN(), etapaConfirmada: Boolean(data.etapa?.confirmada), entregables: b.entregables.map((x) => x.ruta ? `${data.carpeta}/${x.ruta}` : '').filter(Boolean), mensaje: texto, library, adjuntos: viejos.map((a) => a.titulo) }) + (historial ? `\n\nConversación hasta ahora:\n${historial}` : '');
       let fallo = null;
       try {
-        const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, ...(usadoResume ? { resume: chat.sesion } : {}) }) });
+        const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, ...(usadoResume ? { resume: chat.sesion } : {}) }) });
         if (!r.ok) { const j = await r.json().catch(() => ({})); const e = new Error(j.error || `El puente respondió ${r.status}`); e.status = r.status; e.codigo = j.codigo; throw e; }
         const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '';
         for (;;) {
@@ -347,7 +348,7 @@ export async function render(el, { me, sub = [], alive }) {
       }
       if (a === 'adj-quitar') { chat.adj = chat.adj.filter((x) => x.id !== t.dataset.id); guardarChat(key, chat); paintAdj(); paintCtx(); return; }
       if (a === 'libdoc') return abrirLibDoc(t.dataset.id);
-      if (a === 'reintentar') { t.disabled = true; t.textContent = 'Buscando…'; await salud(); return paintChat(); }
+      if (a === 'reintentar') { t.disabled = true; t.textContent = 'Buscando… si Chrome pregunta, dale «Permitir»'; await salud(30000); if (!S.salud?.on) toast('Tu compu no respondió. Si usas Safari, abre el OS en Chrome; si Chrome preguntó y dijiste que no, dale permiso en el candado de la barra de direcciones.', true); return paintChat(); }
       if (a === 'rapido') return enviar(t.dataset.t);
       if (a === 'detener') { try { enVuelo?.abort(); } catch {} return; }
       if (a === 'fuente') return abrir(SRC[+t.dataset.i]);
@@ -377,7 +378,7 @@ export async function render(el, { me, sub = [], alive }) {
         const v = new FormData(e.target).get('t')?.toString().trim(); if (!v) return;
         const btn = $('button', e.target); btn.disabled = true;
         try {
-          const r = await fetch(PUENTE + '/chat/estado', { headers: { Authorization: 'Bearer ' + v }, credentials: 'omit', cache: 'no-store' });
+          const r = await fetch(PUENTE + '/chat/estado', { headers: { Authorization: 'Bearer ' + v }, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' });
           if (r.ok) { setTok(v); S.pareo = ''; toast('Listo: tu compu quedó emparejada'); await salud(); } else S.pareo = r.status === 401 ? 'Ese token no es el del puente.' : r.status === 403 ? 'El puente no deja entrar desde esta dirección.' : r.status === 429 ? 'Demasiados intentos. Espera un minuto.' : `El puente respondió ${r.status}.`;
         } catch { S.pareo = 'No pude hablar con el puente.'; }
         return paintChat();
