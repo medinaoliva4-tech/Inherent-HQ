@@ -18,16 +18,19 @@ export const COLLS = {
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library', roadmap: 'roadmap',
   team: 'team', settings: 'home', checks: 'work',
-  invoices: 'finanzas', bank_moves: 'finanzas',
+  // Los juicios de Laya (Fase 3): los lee quien ve el elemento juzgado. Solo por /api/laya/* (api/_lib/laya.js).
+  judgments: 'work',
+  invoices: 'finanzas', bank_moves: 'finanzas', cost_recipes: 'finanzas',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
 // (sus tareas, los proyectos y las cuentas de sus clientes). Las tareas también las escribe: ahí entrega.
 export const READ_ALSO = { tasks: ['work'], projects: ['work'], accounts: ['work'], recipes: ['work', 'sales'], campaigns: ['work'] };
 export const WRITE_ALSO = { tasks: ['work'], campaigns: ['work'] };
-const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors', 'lead_sources', 'recipes', 'invoices', 'bank_moves']);
+const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors', 'lead_sources', 'recipes', 'invoices', 'bank_moves', 'cost_recipes']);
 // Costos, márgenes, tarifas y pagos: solo el CEO los lee, siempre, diga lo que diga la matriz.
 // lead_sources lleva las claves de las puertas de intake: también solo el CEO. El estado de cuenta del banco (bank_moves), igual.
-export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lead_sources', 'bank_moves']);
+// La receta de costos de cada cliente (cost_recipes), igual.
+export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lead_sources', 'bank_moves', 'cost_recipes']);
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
 export const canRead = (role, coll) => !CEO_READ.has(coll) || role === 'ceo';
 // Las colecciones que filtra el alcance (todos · asignados · propio).

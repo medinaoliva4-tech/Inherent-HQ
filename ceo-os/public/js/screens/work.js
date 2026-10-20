@@ -9,6 +9,7 @@ import { recipesWith, checksFor } from '../recipes.js';
 import { payDialog } from '../flowui.js';
 import { openDelivery, dueChip as tDue, stChip as tSt } from '../taskcard.js';
 import { purposeCard } from '../purpose.js';
+import { taskKanban } from '../kanban.js';
 import { PURPOSE } from '../roleviews.js';
 
 // Workspace: cada persona trabaja desde el perfil (o los perfiles) que tiene asignados en Team.
@@ -40,7 +41,7 @@ export async function render(el, { me, sub, alive }) {
   let role = myRoles.includes(sub[1]) ? sub[1] : !asP && myRoles.includes(pref) ? pref : myRoles[0] || null;
   let tab = ['zona', 'kanban', 'pipes', 'equipo'].includes(sub[0]) ? sub[0] : 'zona';
   Promise.all([col('accounts').list().catch(() => []), col('settings').get('drive').catch(() => null)]).then(([a2, s2]) => { accounts = a2; settings = s2; if (alive() && tab === 'zona' && ['video', 'ads'].includes(role)) paint(); });
-  let tipoF = 'todos', kView = 'personal', pipeSel = 'contenido', personSel = null, clientSel = null, ceoLane = 'estrategia';
+  let tipoF = 'todos', pipeSel = 'contenido', personSel = null, clientSel = null, ceoLane = 'estrategia';
   let agenda = null, clientInfo = {}, posts = null;
   const T0 = today(), T1 = addDays(T0, 1), T7 = addDays(T0, 7);
   const canCoord = (isCeo && !asP) || myRoles.includes('coo');
@@ -590,20 +591,10 @@ export async function render(el, { me, sub, alive }) {
   }
 
   // =================== KANBAN · PIPELINES · EQUIPO ===================
-  const card = (t) => { const p = proj(t.project_id);
-    return html`<div class="kcard wk" draggable="true" data-act="task" data-id="${t.id}"><b>${t.title}</b><div class="mut sm">${p ? (p.client || p.name) : 'Interno'}${t.dept ? ' · ' + t.dept.split(' ')[0] : ''}${tipoBadge(t)}</div>
-      <div class="row" style="margin-top:8px;gap:6px">${t.assignee ? av(t.assignee, 20) : ''}<span class="sm">${t.assignee ? nameOf(t.assignee).split(' ')[0] : '—'}</span><div class="sp"></div>${dueChip(t.due, status(t))}</div></div>`; };
+  // El mismo Kanban de Proyectos (kanban.js), filtrado a lo de esta persona.
   function kanban(b) {
-    const base = (kView === 'personal' ? mine() : tasks).filter((t) => tipoMatch(t, tipoF));
-    mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px"><div class="tabs mini" style="margin:0"><button class="${kView === 'personal' ? 'on' : ''}" data-act="kv" data-v="personal">Personal</button><button class="${kView === 'empresa' ? 'on' : ''}" data-act="kv" data-v="empresa">Empresa</button></div><span class="mut sm">${open(base).length} abiertas · arrastra para mover</span><div class="sp"></div>${tipoChips(tipoF, 'tipof', kView === 'personal' ? mine() : tasks)}</div>
-      <div class="kanban wkk">${COLS.map(([s, l, c]) => { const list = base.filter((t) => status(t) === s).sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
-        return html`<div class="kcol" data-st="${s}"><h4><span class="row" style="gap:8px"><i class="dot" style="background:${c}"></i>${l}</span><span class="mut">${list.length}</span></h4>${(s === 'Hecha' ? list.slice(-10) : list).map(card)}<button class="wkadd" data-act="colAdd" data-s="${s}">+ Añadir tarea</button></div>`; })}</div>`);
-    $$('.kcard', b).forEach((c) => c.addEventListener('dragstart', (e) => e.dataTransfer.setData('id', c.dataset.id)));
-    $$('.kcol', b).forEach((k) => {
-      k.addEventListener('dragover', (e) => { e.preventDefault(); k.classList.add('over'); });
-      k.addEventListener('dragleave', () => k.classList.remove('over'));
-      k.addEventListener('drop', async (e) => { e.preventDefault(); k.classList.remove('over'); const t = tasks.find((x) => x.id === e.dataTransfer.getData('id')); if (t && status(t) !== k.dataset.st && (await save({ ...t, status: k.dataset.st }))) kanban(b); });
-    });
+    taskKanban(b, { tasks: () => tasks, projects, team, me: { ...me, email: who }, scope: isMine, show: { project: true }, key: 'work', save: (t, patch) => save({ ...t, ...patch }), open: openTask,
+      add: (s, f) => newTask({ status: s, assignee: who, ...(f.project ? { project_id: f.project } : {}) }) });
   }
   function pipes(b) {
     const list = tasks.filter((t) => pipeOf(t) === pipeSel && tipoMatch(t, tipoF)).sort((a, z) => (status(a) === 'Hecha') - (status(z) === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9')));
@@ -703,8 +694,8 @@ export async function render(el, { me, sub, alive }) {
     ztab: (t) => { ztab[role] = t.dataset.z; paint(); },
     planView: (t) => { planView = t.dataset.v; paint(); },
     hoyAll: () => { showAll = !showAll; paint(); },
-    kvGo: () => { kView = 'empresa'; tab = 'kanban'; history.replaceState(null, '', `#/work/kanban/${role || '_'}${asP ? '/' + who : ''}`); paint(); },
-    kv: (t) => { kView = t.dataset.v; kanban($('#wbody', el)); },
+    // Lo de toda la empresa vive en un solo Kanban: Proyectos → Tareas.
+    kvGo: () => { location.hash = '/org/operations/tasks'; },
     tipof: (t) => { tipoF = t.dataset.tp; tab === 'pipes' ? pipes($('#wbody', el)) : kanban($('#wbody', el)); },
     pipe: (t) => { pipeSel = t.dataset.k; tab = 'pipes'; paint(); },
     person: (t) => { personSel = t.dataset.k; tab = 'equipo'; paint(); },
@@ -722,7 +713,6 @@ export async function render(el, { me, sub, alive }) {
     newPost: async () => { const pr = await ask('¿Para qué perfil?', [{ k: 'p', l: 'Perfil', t: 'select', opts: [['inherent', 'Inherent'], ['personal', 'Marca personal'], ...[...new Set(projects.map((p) => p.client_slug).filter(Boolean))].map((s) => [s, s.toUpperCase()])] }], 'Seguir'); if (!pr) return; const r = await editPost(pr.p, null); if (r) { posts = [...(posts || []), r]; paint(); } },
     newTask: () => newTask(),
     newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); paint(); } },
-    colAdd: (t) => newTask({ status: t.dataset.s, assignee: kView === 'personal' ? who : '' }),
     laneTask: (t) => newTask({ dept: t.dataset.d }),
     assignTo: () => newTask({ assignee: personSel }),
   });

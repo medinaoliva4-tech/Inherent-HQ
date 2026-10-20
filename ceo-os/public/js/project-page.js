@@ -1,10 +1,12 @@
 // La página de un proyecto (#/operations/p/<id>/<vista>), inspirada en Notion (cabecera con portada y propiedades
 // que se editan con un clic), Asana (Resumen con status update fechado, Lista por secciones, Timeline) y Monday
-// (estados de color, Tablero por estado). Una sola fuente: el proyecto (db/projects) y sus tareas (db/tasks).
+// (estados de color). Una sola fuente: el proyecto (db/projects) y sus tareas (db/tasks). Las tareas se ven en el
+// Kanban único de la app (kanban.js), filtrado a este proyecto: no hay otra lista ni otro tablero.
 // Las fases son las secciones: cada tarea guarda `phase` (la clave de su fase); sin clave, cae por su fecha.
 // Quien no edita Proyectos la ve completa en solo lectura (sin arrastrar ni editar celdas).
-import { html, raw, mount, col, api, toast, confirmAsk, fdate, today, $, $$, ico, initials, md, IC } from './core.js';
-import { STATES, openTaskSheet } from './taskcard.js';
+import { html, raw, mount, col, api, toast, ask, confirmAsk, fdate, today, $, $$, ico, initials, md, IC } from './core.js';
+import { openTaskSheet } from './taskcard.js';
+import { taskKanban } from './kanban.js';
 import { roleTable, changeRole, roleLabel } from './rolemap.js';
 import { RECIPE_ROLES } from './recipes.js';
 import { holders } from './cycle.js';
@@ -18,7 +20,7 @@ const PHST = [['todo', 'Pendiente'], ['now', 'En curso'], ['done', 'Hecha']];
 const PHCLS = { todo: 'todo', now: 'now', done: 'done' };
 const UPD = [['green', 'A tiempo'], ['yellow', 'En riesgo'], ['red', 'Atrasado'], ['blue', 'En pausa']];
 const UPD_TO_ST = { green: 'En curso', yellow: 'En riesgo', red: 'En riesgo', blue: 'Pausado' };
-const VIEWS = [['resumen', 'Resumen', 'doc'], ['lista', 'Lista', 'list'], ['tablero', 'Tablero', 'grid'], ['timeline', 'Timeline', 'bars'], ['calendario', 'Calendario', 'cal'], ['archivos', 'Archivos', 'folder'], ['equipo', 'Equipo', 'users']];
+const VIEWS = [['tareas', 'Tareas', 'grid'], ['resumen', 'Resumen', 'doc'], ['timeline', 'Timeline', 'bars'], ['calendario', 'Calendario', 'cal'], ['archivos', 'Archivos', 'folder'], ['equipo', 'Equipo', 'users']];
 const COVERS = [['t1', 'Café claro'], ['t2', 'Café oscuro'], ['olive', 'Oliva'], ['terra', 'Terracota'], ['ink', 'Espresso']];
 const DAY = 864e5;
 const iso = (d) => d.toISOString().slice(0, 10);
@@ -53,7 +55,7 @@ const mono = (p) => (p.icon ? String(p.icon) : initials(p.name || '?'));
 const coverStyle = (p) => (okUrl(p.cover_img) ? raw(`style="background-image:linear-gradient(180deg,rgb(0 0 0 / .05),rgb(0 0 0 / .35)),url('${String(p.cover_img).replace(/['"()\\\s]/g, encodeURIComponent)}');background-size:cover;background-position:center"`) : '');
 const driveImg = (u) => { const m = String(u).match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]{10,})/); return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1600` : u; };
 
-// ---------- Un arrastre con el puntero (mouse y touch): mover filas, tarjetas y barras ----------
+// ---------- Un arrastre con el puntero (mouse y touch): mover las barras del Timeline ----------
 let dragged = false;
 function dragger(root, sel, h) {
   root.addEventListener('pointerdown', (e) => {
@@ -67,9 +69,6 @@ function dragger(root, sel, h) {
     addEventListener('pointermove', mv, { passive: false }); addEventListener('pointerup', up); addEventListener('pointercancel', up);
   });
 }
-// Un fantasma que sigue al puntero mientras se arrastra.
-const ghostOf = (el) => { const r = el.getBoundingClientRect(), g = el.cloneNode(true); g.classList.add('pp-ghost'); Object.assign(g.style, { width: r.width + 'px', left: r.left + 'px', top: r.top + 'px' }); document.body.append(g); return { g, box: r }; };
-const under = (ev, ghost) => { ghost && (ghost.style.display = 'none'); const t = document.elementFromPoint(ev.clientX, ev.clientY); ghost && (ghost.style.display = ''); return t; };
 
 // ---------- Popover para editar una propiedad (como Notion: clic en el valor) ----------
 let popEl = null;
@@ -137,7 +136,8 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
   let p = projects.find((x) => x.id === id);
   if (!p) { try { p = await PR.get(id); projects.push(p); } catch {} }
   if (!p) return mount(el, html`<div class="empty"><b>Ese proyecto no existe</b>O no está entre los tuyos.<div><button class="btn" data-x="back">← Proyectos</button></div></div>`), (el.onclick = (e) => e.target.closest('[data-x=back]') && back());
-  view = VIEWS.some(([k]) => k === view) ? view : 'resumen';
+  // Abre en el Kanban de sus tareas (las vistas viejas Lista y Tablero caen ahí).
+  view = VIEWS.some(([k]) => k === view) ? view : 'tareas';
   let zoom = lsGet('pp.zoom', 'semana'), calMonth = today().slice(0, 7), briefEdit = false, upColor = 'green';
   const folded = new Set(lsGet('pp.fold.' + id, []));
   // Las fases con clave estable: la clave se guarda con el proyecto la primera vez que se necesita.
@@ -201,7 +201,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
   function paintBody() {
     const b = $('#ppbody', el); if (!b) return; closePop();
     const sx = $('.pp-gwrap', b)?.scrollLeft;
-    ({ resumen, lista, tablero, timeline, calendario, archivos, equipo })[view](b);
+    ({ tareas, resumen, timeline, calendario, archivos, equipo })[view](b);
     if (sx != null && $('.pp-gwrap', b)) $('.pp-gwrap', b).scrollLeft = sx;
   }
 
@@ -245,46 +245,14 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
       </aside></div>`);
   }
 
-  // ---------- Lista (Asana): secciones = fases, columnas tipo Monday, edición en la celda ----------
-  function lista(b) {
-    const secs = sections();
-    mount(b, html`<div class="sp-panel pp-list">
-      <div class="pp-row pp-lh"><span></span><span></span><span>Tarea</span><span>Responsable</span><span>Fecha</span><span>Estado</span><span>SOP</span><span>Depende de</span><span></span></div>
-      ${secs.map((s) => { const f = folded.has(s.k), d = s.tasks.filter((t) => t.status === 'Hecha').length;
-        return html`<section class="pp-sec ${f ? 'fold' : ''}" data-sec="${s.k}">
-          <div class="pp-sech"><button class="pp-caret" data-x="fold" data-k="${s.k}" aria-label="${f ? 'Abrir' : 'Plegar'} sección" aria-expanded="${String(!f)}">${ico(f ? 'right' : 'down', 14)}</button>
-            <h4 ${edit && !s.none ? raw(`contenteditable="true" spellcheck="false" data-edit="phname" data-k="${s.k}"`) : ''}>${s.name}</h4>
-            ${s.none ? '' : html`${edit ? html`<button class="pp-chipbtn" data-x="phdates" data-k="${s.k}">${s.start ? fdate(s.start) : '—'} → ${s.end ? fdate(s.end) : '—'}</button><button class="pp-chipbtn" data-x="phstatus" data-k="${s.k}"><span class="pp-phdot ${PHCLS[s.status] || 'todo'}"></span>${(PHST.find(([k]) => k === s.status) || PHST[0])[1]}</button>` : html`<span class="mut sm">${s.start ? fdate(s.start) : '—'} → ${s.end ? fdate(s.end) : '—'}</span><span class="sm"><span class="pp-phdot ${PHCLS[s.status] || 'todo'}"></span>${(PHST.find(([k]) => k === s.status) || PHST[0])[1]}</span>`}`}
-            <span class="mut sm pp-cnt">${d}/${s.tasks.length}</span>${edit && !s.none ? html`<button class="pp-mini" data-x="phmenu" data-k="${s.k}" aria-label="Más opciones de la fase">⋯</button>` : ''}</div>
-          <div class="pp-secb">${s.tasks.map(row)}
-            ${edit ? html`<div class="pp-row pp-addrow"><span></span><span>${ico('plus', 14)}</span><input class="pp-addin" data-add="${s.k}" placeholder="Agregar tarea…" aria-label="Agregar tarea a ${s.name}"></div>` : !s.tasks.length ? html`<div class="pp-empty sm" style="padding:10px 16px">Sin tareas.</div>` : ''}</div></section>`; })}
-      ${edit ? html`<button class="btn ghost pp-addph" data-x="phadd">${ico('plus', 14)} Fase</button>` : ''}</div>`);
-  }
-  function row(t) {
-    const who = person(t.assignee), T = today(), st = t.status || 'Por empezar', late = t.due && t.due < T && st !== 'Hecha', bl = blockers(t);
-    const deps = (t.depends_on || []).map((d) => tasks.find((x) => x.id === d)).filter(Boolean), sopT = t.sop ? (/^https?:/.test(t.sop) ? 'Link' : docs.find((d) => d.id === t.sop)?.title || 'SOP') : '';
-    const C = (k, v, l) => (edit ? html`<button class="pp-cell" data-cell="${k}" data-id="${t.id}" aria-label="${l}">${v}</button>` : html`<span class="pp-cell ro">${v}</span>`);
-    return html`<div class="pp-row ${st === 'Hecha' ? 'done' : ''}" data-id="${t.id}">
-      <span class="pp-grip" ${edit ? raw('data-grip title="Arrastra para mover"') : ''}>${edit ? '⋮⋮' : ''}</span>
-      <button class="pp-check ${st === 'Hecha' ? 'on' : ''}" ${edit ? raw(`data-x="tdone" data-id="${t.id}"`) : raw('disabled')} aria-label="${st === 'Hecha' ? 'Reabrir' : 'Marcar hecha'}">${ico('check', 12)}</button>
-      <span class="pp-tt"><span class="pp-title" ${edit ? raw(`data-x="ttl" data-id="${t.id}"`) : raw(`data-x="task" data-id="${t.id}"`)}>${t.title}</span>${bl.length ? html`<span class="pp-lock" title="Espera: ${bl.map((x) => x.title).join(', ')}">${ico('lock', 12)}</span>` : ''}${(t.checklist || []).length ? html`<span class="mut sm pp-ck">${t.checklist.filter((c) => c.done).length}/${t.checklist.length}</span>` : ''}</span>
-      <span data-l="Responsable">${C('assignee', html`${av(who, 22)}<span class="pp-nm">${who?.name?.split(' ')[0] || 'Nadie'}</span>`, 'Responsable')}</span>
-      <span data-l="Fecha">${C('due', html`<span class="${late ? 'pp-late' : ''}">${t.due ? fdate(t.due) : html`<span class="mut">—</span>`}</span>`, 'Fecha')}</span>
-      <span data-l="Estado">${C('status', tChip(st), 'Estado')}</span>
-      <span data-l="SOP">${sopT && !edit ? html`<a class="pp-cell" href="${/^https?:/.test(t.sop) ? t.sop : `#/library/${docs.find((d) => d.id === t.sop)?.folder_id || '_'}/${t.sop}`}" ${/^https?:/.test(t.sop) ? raw('target="_blank" rel="noopener noreferrer"') : ''} title="${sopT}">${ico('doc', 14)}</a>` : C('sop', sopT ? html`${ico('doc', 14)}<span class="pp-nm">${sopT}</span>` : html`<span class="mut">—</span>`, 'SOP')}</span>
-      <span data-l="Depende de">${C('deps', deps.length ? html`<span class="pp-deps">${deps.slice(0, 2).map((d) => html`<span class="pp-dep ${d.status === 'Hecha' ? 'ok' : ''}">${d.title}</span>`)}${deps.length > 2 ? html`<span class="mut sm">+${deps.length - 2}</span>` : ''}</span>` : html`<span class="mut">—</span>`, 'Depende de')}</span>
-      <button class="pp-open" data-x="task" data-id="${t.id}" aria-label="Abrir tarea">${ico('right', 14)}</button></div>`;
-  }
-
-  // ---------- Tablero (Monday/Asana Kanban por estado) ----------
-  function tablero(b) {
-    const ts = mine(), ph = phases();
-    mount(b, html`<div class="pp-kwrap"><div class="pp-kanban">${STATES.map((s) => { const l = ts.filter((t) => (t.status || 'Por empezar') === s).sort(order);
-      return html`<div class="pp-kcol" data-col="${s}"><div class="pp-kh">${tChip(s)}<span class="mut sm">${l.length}</span></div>
-        <div class="pp-kb">${l.map((t) => { const who = person(t.assignee), x = ph.find((y) => y.k === phaseOf(t, ph)), bl = blockers(t), late = t.due && t.due < today() && s !== 'Hecha';
-          return html`<div class="pp-card" data-card="${t.id}" data-x="task" data-id="${t.id}" tabindex="0"><b>${t.title}</b>
-            <div class="pp-cardm">${x ? html`<span class="pp-tag">${x.name}</span>` : ''}${bl.length ? html`<span class="pp-lock" title="Espera: ${bl.map((y) => y.title).join(', ')}">${ico('lock', 12)}</span>` : ''}<span class="sp"></span>${t.due ? html`<span class="sm ${late ? 'pp-late' : 'mut'}">${fdate(t.due)}</span>` : ''}${av(who, 22)}</div></div>`; })}
-          ${edit && s === 'Por empezar' ? html`<input class="pp-addin pp-kadd" data-add="_k" placeholder="+ Tarea" aria-label="Agregar tarea">` : ''}</div></div>`; })}</div></div>`);
+  // ---------- Tareas: el mismo Kanban de Proyectos, solo con las de este proyecto ----------
+  function tareas(b) {
+    taskKanban(b, { tasks: () => tasks, projects, team, me, scope: (t) => t.project_id === p.id, show: { person: true }, key: 'pp', edit,
+      save: (t, patch) => saveT(t, patch), open: openTask, changed: paintHead,
+      add: edit ? async (status) => {
+        const v = await ask('Nueva tarea', [{ k: 'title', l: '¿Qué hay que hacer?', req: true }], 'Crear'); if (!v) return;
+        const r = await newTask('_', v.title.slice(0, 200)); if (r && status !== 'Por empezar') await saveT(r, { status });
+        if (r) toast('Tarea creada'); paintHead(); paintBody(); } : null });
   }
 
   // ---------- Timeline (Gantt): fases y tareas como barras, dependencias, hoy, zoom ----------
@@ -365,22 +333,6 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
     const ph = phases().map((x) => (x.k === k ? { ...x, ...patch } : x));
     if (await saveP({ phases: ph }, true)) { paintHead(); paintBody(); }
   }
-  function cellEdit(btn) {
-    const t = T_(btn.dataset.id); if (!t) return;
-    const done = async (patch) => { closePop(); const r = await saveT(t, patch); paintHead(); paintBody(); if (r) toast('Guardado'); };
-    const k = btn.dataset.cell;
-    if (k === 'assignee') pop(btn, html`<div class="pp-plist">${crew.map((x) => html`<button data-pop="pick" data-v="${x.email || x.id}" class="${(x.email || x.id) === t.assignee ? 'on' : ''}">${av(x, 22)} ${x.name}</button>`)}<button data-pop="pick" data-v="">${av(null, 22)} Sin responsable</button></div>`, { pick: (b2) => done({ assignee: b2.dataset.v }) });
-    if (k === 'due') pop(btn, html`<div class="pp-pform"><label class="f">Fecha</label><input class="in" type="date" value="${t.due || ''}" data-popchg="d"><div class="row" style="gap:6px;margin-top:8px"><button class="btn ghost xs" data-pop="today">Hoy</button><button class="btn ghost xs" data-pop="clear">Quitar</button></div></div>`, { d: (i) => i.value && done({ due: i.value }), today: () => done({ due: today() }), clear: () => done({ due: '' }) });
-    if (k === 'status') pop(btn, html`<div class="pp-plist">${STATES.map((s) => html`<button data-pop="st" data-v="${s}">${tChip(s)}</button>`)}</div>`, { st: (b2) => done({ status: b2.dataset.v }) });
-    if (k === 'sop') { const list = [...docs.filter((d) => d.kind === 'SOP'), ...docs.filter((d) => d.kind !== 'SOP' && d.kind !== 'Prompt')];
-      pop(btn, html`<div class="pp-pform"><label class="f">SOP de la Library</label><select class="in" data-popchg="s"><option value="">— Ninguno</option>${list.map((d) => html`<option value="${d.id}" ${d.id === t.sop ? raw('selected') : ''}>${d.title}</option>`)}</select><label class="f" style="margin-top:8px">o un link</label><div class="row" style="gap:6px"><input class="in" id="ppsopl" placeholder="https://…" value="${/^https?:/.test(t.sop || '') ? t.sop : ''}"><button class="btn xs" data-pop="l">OK</button></div></div>`,
-        { s: (s) => done({ sop: s.value }), l: () => { const v = $('#ppsopl').value.trim(); if (v && !okUrl(v)) return toast('El link debe empezar con https://', true); done({ sop: v }); } }); }
-    if (k === 'deps') { const others = mine().filter((x) => x.id !== t.id).sort(order), cur = new Set(t.depends_on || []);
-      // Sin ciclos: no puede depender de algo que ya depende de ella.
-      const down = new Set(); const walk = (i) => tasks.filter((x) => (x.depends_on || []).includes(i)).forEach((x) => { if (!down.has(x.id)) { down.add(x.id); walk(x.id); } }); walk(t.id);
-      pop(btn, html`<div class="pp-pform"><label class="f">Tiene que estar hecho antes</label><div class="pp-pchecks">${others.map((x) => html`<label class="check ${down.has(x.id) ? 'mut' : ''}"><input type="checkbox" value="${x.id}" ${cur.has(x.id) ? raw('checked') : ''} ${down.has(x.id) ? raw('disabled title="Ya depende de esta tarea"') : ''}> ${x.title}</label>`)}</div><button class="btn xs" data-pop="ok" style="margin-top:8px">Guardar</button></div>`,
-        { ok: () => done({ depends_on: $$('.pp-pop input[type=checkbox]:checked').map((i) => i.value) }) }); }
-  }
   function phaseMenu(btn) {
     const k = btn.dataset.k, x = phases().find((y) => y.k === k); if (!x) return;
     pop(btn, html`<div class="pp-pform"><label class="f">Nombre</label><input class="in" id="pphn" value="${x.name}"><div class="two" style="margin-top:8px"><div><label class="f">Inicio</label><input class="in" type="date" id="pphs" value="${x.start || ''}"></div><div><label class="f">Fin</label><input class="in" type="date" id="pphe" value="${x.end || ''}"></div></div>
@@ -396,7 +348,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
     if (!(await ensureKeys())) return; if (await saveP({ phases: ph }, true)) paintBody(); }
   async function addPhase() {
     const ph = phases(), last = ph.at(-1), s = last?.end ? addDays(last.end, 1) : today();
-    if (await saveP({ phases: [...ph, { k: 'ph' + Date.now().toString(36), name: 'Nueva fase', start: s, end: addDays(s, 6), status: 'todo' }] }, true)) { toast('Fase agregada'); paintHead(); paintBody(); const h = $$('[data-edit=phname]', el).at(-1); if (h) { h.focus(); document.getSelection().selectAllChildren(h); } }
+    if (await saveP({ phases: [...ph, { k: 'ph' + Date.now().toString(36), name: 'Nueva fase', start: s, end: addDays(s, 6), status: 'todo' }] }, true)) { toast('Fase agregada'); paintHead(); paintBody(); }
   }
   function propEdit(btn) {
     const k = btn.dataset.prop, done = async (patch) => { closePop(); if (await saveP(patch)) paint(); };
@@ -417,9 +369,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
   el.addEventListener('click', async (e) => {
     if (dragged) return;
     const pr = e.target.closest('[data-prop]'); if (pr && edit) return propEdit(pr);
-    const c = e.target.closest('[data-cell]'); if (c && edit) return cellEdit(c);
-    const a = e.target.closest('[data-x]');
-    if (!a) { const r = e.target.closest('.pp-row[data-id]'); if (r && !e.target.closest('a,button,input,[contenteditable=true]')) { const t = T_(r.dataset.id); if (t) openTask(t); } return; }
+    const a = e.target.closest('[data-x]'); if (!a) return;
     const x = a.dataset.x;
     if (x === 'back') return back();
     if (x === 'view') { view = a.dataset.v; setHash(); $$('.pp-tabs button', el).forEach((b2) => { const on = b2.dataset.v === view; b2.classList.toggle('on', on); b2.setAttribute('aria-selected', on); }); return paintBody(); }
@@ -429,11 +379,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
     if (x === 'tltoday') { const w = $('.pp-gwrap', el), t2 = $('.pp-today', el); if (w && t2) w.scrollTo({ left: Math.max(0, t2.offsetLeft - w.clientWidth / 3), behavior: 'smooth' }); return; }
     if (x === 'cmon') { const d = +a.dataset.d; if (!d) calMonth = today().slice(0, 7); else { const dt = new Date(calMonth + '-15'); dt.setMonth(dt.getMonth() + d); calMonth = dt.toISOString().slice(0, 7); } return paintBody(); }
     if (!edit) return;
-    if (x === 'ttl') return inlineTitle(a);
-    if (x === 'tdone') { const t = T_(a.dataset.id); if (!t) return; const r = await saveT(t, { status: t.status === 'Hecha' ? 'En curso' : 'Hecha' }); if (r) toast(r.status === 'Hecha' ? 'Hecha' : 'Reabierta'); paintHead(); return paintBody(); }
     if (x === 'phmenu') return phaseMenu(a);
-    if (x === 'phdates') { const k = a.dataset.k, ph = phases().find((y) => y.k === k); return pop(a, html`<div class="pp-pform"><div class="two"><div><label class="f">Inicio</label><input class="in" type="date" id="pphs" value="${ph.start || ''}"></div><div><label class="f">Fin</label><input class="in" type="date" id="pphe" value="${ph.end || ''}"></div></div><button class="btn xs" data-pop="ok" style="margin-top:8px">Guardar</button></div>`, { ok: () => { const s = $('#pphs').value, en = $('#pphe').value; if (s && en && en < s) return toast('El fin no puede ser antes del inicio', true); closePop(); patchPhase(k, { start: s, end: en }); } }); }
-    if (x === 'phstatus') { const k = a.dataset.k; return pop(a, html`<div class="pp-plist">${PHST.map(([v, l]) => html`<button data-pop="v" data-v="${v}"><span class="pp-phdot ${PHCLS[v]}"></span>${l}</button>`)}</div>`, { v: (b2) => { closePop(); patchPhase(k, { status: b2.dataset.v }); } }); }
     if (x === 'phadd') return addPhase();
     if (x === 'briefedit') { briefEdit = true; paintBody(); return $('#ppbrief', el)?.focus(); }
     if (x === 'briefcancel') { briefEdit = false; return paintBody(); }
@@ -457,43 +403,19 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
     if (wrap) ta.setRangeText(wrap[0], s, en, 'select'); else ta.setRangeText({ h: '## ', ul: '- ', ok: '- [ ] ' }[f], ls, ls, 'end');
     ta.focus();
   }
-  // Título y nombres editables en línea: Enter guarda, Esc cancela.
-  function inlineTitle(span) {
-    const t = T_(span.dataset.id); if (!t) return;
-    span.contentEditable = 'true'; span.spellcheck = false; span.dataset.edit = 'ttl'; span.focus(); document.getSelection().selectAllChildren(span);
-  }
+  // El nombre del proyecto se edita en línea: Enter guarda, Esc cancela.
   el.addEventListener('keydown', (e) => {
-    const ed = e.target.closest('[data-edit]'); if (ed) { if (e.key === 'Enter') { e.preventDefault(); ed.blur(); } if (e.key === 'Escape') { ed.dataset.cancel = '1'; ed.blur(); } return; }
-    const add = e.target.closest('[data-add]'); if (add && e.key === 'Enter') { e.preventDefault(); const v = add.value.trim(); if (!v) return; const k = add.dataset.add; add.disabled = true;
-      newTask(k === '_k' ? '_' : k, v.slice(0, 200)).then((r) => { if (r) toast('Tarea creada'); paintHead(); paintBody(); const n = $(`[data-add="${k}"]`, el); n?.focus(); }); }
-    if (e.key === 'Enter' && e.target.closest('.pp-card')) { const t = T_(e.target.closest('.pp-card').dataset.card); if (t) openTask(t); }
+    const ed = e.target.closest('[data-edit]'); if (ed) { if (e.key === 'Enter') { e.preventDefault(); ed.blur(); } if (e.key === 'Escape') { ed.dataset.cancel = '1'; ed.blur(); } }
   });
   el.addEventListener('focusout', async (e) => {
     const ed = e.target.closest?.('[data-edit]'); if (!ed) return;
     const v = ed.textContent.replace(/\s+/g, ' ').trim(), kind = ed.dataset.edit, cancel = ed.dataset.cancel; delete ed.dataset.cancel;
-    if (kind === 'ttl') { ed.contentEditable = 'false'; delete ed.dataset.edit; const t = T_(ed.dataset.id); if (!t) return; if (cancel || !v || v === t.title) { ed.textContent = t.title; return; } if (await saveT(t, { title: v.slice(0, 200) })) toast('Guardado'); return paintBody(); }
     if (kind === 'pname') { if (cancel || !v || v === p.name) { ed.textContent = p.name; return; } if (await saveP({ name: v.slice(0, 120) })) paintHead(); return; }
-    if (kind === 'phname') { const k = ed.dataset.k, ph = phases().find((y) => y.k === k); if (!ph) return; if (cancel || !v || v === ph.name) { ed.textContent = ph.name; return; } return patchPhase(k, { name: v.slice(0, 80) }); }
   });
   el.addEventListener('change', async (e) => { const s = e.target.closest('[data-rolesel]'); if (!s || !edit) return; if (await changeRole(s.dataset.pid, s.dataset.rolesel, s.value)) { [p, tasks] = await Promise.all([PR.get(p.id), TK.list()]); data.tasks = tasks; projects.splice(projects.findIndex((x) => x.id === p.id), 1, p); } paintHead(); paintBody(); });
 
   // ---------- Arrastrar ----------
   if (edit) {
-    // Lista: la fila se mueve de lugar o de fase.
-    dragger(el, '.pp-row[data-id] .pp-grip', {
-      start: (g) => { const r = g.closest('.pp-row'); return { r, id: r.dataset.id }; },
-      begin: (st) => { Object.assign(st, ghostOf(st.r)); st.r.classList.add('pp-dragging'); },
-      move: (st, ev, dx, dy) => { st.g.style.transform = `translate(${Math.round(dx / 4)}px, ${dy}px)`; mark(st, ev); },
-      end: (st, ev, dx, dy, cancel) => { st.g.remove(); st.r.classList.remove('pp-dragging'); const tg = st.tg; clearMarks(); if (!cancel && tg) dropRow(st.id, tg); },
-    });
-    // Tablero: la tarjeta cambia de estado.
-    dragger(el, '.pp-card', {
-      start: (c) => ({ c, id: c.dataset.card }),
-      begin: (st) => { Object.assign(st, ghostOf(st.c)); st.c.classList.add('pp-dragging'); },
-      move: (st, ev, dx, dy) => { st.g.style.transform = `translate(${dx}px, ${dy}px) rotate(1.5deg)`; const col2 = under(ev, st.g)?.closest('.pp-kcol'); $$('.pp-kcol', el).forEach((k) => k.classList.toggle('over', k === col2)); st.col = col2; },
-      end: async (st, ev, dx, dy, cancel) => { st.g.remove(); st.c.classList.remove('pp-dragging'); $$('.pp-kcol', el).forEach((k) => k.classList.remove('over')); const t = T_(st.id); const to = st.col?.dataset.col;
-        if (cancel || !t || !to || to === (t.status || 'Por empezar')) return; const r = await saveT(t, { status: to }); if (r) toast(`${t.title} → ${to}`); paintHead(); paintBody(); },
-    });
     // Timeline: la barra mueve sus fechas; el borde derecho cambia el fin.
     dragger(el, '.pp-bar.ed', {
       start: (bar, e) => ({ bar, rz: Boolean(e.target.closest('[data-rz]')), l0: bar.offsetLeft, w0: bar.offsetWidth, dw: zoom === 'mes' ? 10 : 30 }),
@@ -508,26 +430,6 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
         const r = await saveT(t, patch); if (r) toast(`${t.title}: ${r.start && r.start !== r.due ? fdate(r.start) + ' – ' : ''}${fdate(r.due)}`); paintHead(); paintBody(); },
     });
   }
-  // Marca dónde cae la fila que se arrastra: antes o después de otra fila, o al final de una sección.
-  function mark(st, ev) {
-    clearMarks(); const el2 = under(ev, st.g); const r = el2?.closest('.pp-row[data-id]'), sec = el2?.closest('.pp-sec');
-    if (r && r.dataset.id !== st.id) { const bx = r.getBoundingClientRect(), after = ev.clientY > bx.top + bx.height / 2; r.classList.add(after ? 'drop-after' : 'drop-before'); st.tg = { sec: r.closest('.pp-sec').dataset.sec, id: r.dataset.id, after }; }
-    else if (sec) { sec.classList.add('drop-in'); st.tg = { sec: sec.dataset.sec }; } else st.tg = null;
-  }
-  const clearMarks = () => $$('.drop-before,.drop-after,.drop-in', el).forEach((x) => x.classList.remove('drop-before', 'drop-after', 'drop-in'));
-  async function dropRow(tid, tg) {
-    const t = T_(tid); if (!t) return;
-    if (tg.sec !== '_' && !(await ensureKeys())) return;
-    const sec = sections().find((s) => s.k === tg.sec); if (!sec) return;
-    const list = sec.tasks.filter((x) => x.id !== tid); let i = tg.id ? list.findIndex((x) => x.id === tg.id) + (tg.after ? 1 : 0) : list.length; if (i < 0) i = list.length;
-    list.splice(i, 0, t);
-    const changes = list.map((x, j) => [x, { pos: (j + 1) * 10, ...(x.id === tid ? { phase: tg.sec } : {}) }]).filter(([x, pt]) => x.pos !== pt.pos || (pt.phase && pt.phase !== x.phase));
-    for (const [x, pt] of changes) await saveT(T_(x.id), pt);
-    toast(tg.sec !== phaseOf(t) ? `Movida a ${sec.name}` : 'Orden guardado'); paintHead(); paintBody();
-  }
-  // Lista: el título de la fila se edita con doble clic también.
-  el.addEventListener('dblclick', (e) => { if (!edit) return; const s = e.target.closest('.pp-title[data-id]'); if (s) inlineTitle(s); });
-
   setHash(); paint();
   // Al salir de la pantalla, se cierra cualquier popover abierto.
   const iv = setInterval(() => { if (!alive() || !el.isConnected) { closePop(); clearInterval(iv); } }, 1000);

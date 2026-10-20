@@ -4,10 +4,12 @@
 // La forma de una factura (colección «invoices») es un contrato: otras pantallas la leen. No se cambia.
 //   { kind:'cobrar'|'pagar', client:'slug' (cobrar) | vendor:'texto' (pagar), concept, amount, currency:'GTQ'|'USD',
 //     issued:'AAAA-MM-DD', due:'AAAA-MM-DD', status:'pendiente'|'pagada'|'anulada', paid_at, bank_ref,
-//     source:'auto'|'manual'|'claude', period:'AAAA-MM' (cobrar auto), file_url?, notes? }
+//     source:'auto'|'manual'|'claude', period:'AAAA-MM' (cobrar auto), file_url?, notes?,
+//     por pagar, opcionales: client (el cliente al que va ese costo), category (de CATS_OUT), from_invoice (el cobro que la creó) }
 // «Vencida» no se guarda: se calcula (pendiente y due < hoy).
 import { levelOf, USD_GTQ } from './levels.js';
-import { projectSpan, keyOf } from './finscope.js';
+import { projectSpan, keyOf, byScope } from './finscope.js';
+import { hoursAt, rateAt } from './cycle.js';
 
 export const KINDS = ['cobrar', 'pagar'];
 export const STATUS = ['pendiente', 'pagada', 'anulada'];
@@ -15,6 +17,9 @@ export const ESTADOS = ['pendiente', 'vencida', 'pagada', 'anulada'];
 export const SOURCES = ['auto', 'manual', 'claude'];
 export const CURRENCIES = ['GTQ', 'USD'];
 export const DIA_COBRO = 5; // si el cliente no tiene día de cobro, vence el 5 del mes
+// Las categorías de los movimientos de Finanzas (las usa la pantalla y el registro automático de ingresos y gastos).
+export const CATS_IN = ['Plan mensual', 'Proyecto', 'Performance fee', 'Otro'];
+export const CATS_OUT = ['Pagos por servicio', 'Herramientas / IA', 'Producción', 'Pauta', 'Oficina', 'Impuestos', 'Otro'];
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
 const isDate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(String(s || ''));
@@ -96,6 +101,11 @@ export function limpiarFactura(b = {}, hoy = hoyISO()) {
   if (kind === 'cobrar' && isMonth(b.period)) o.period = b.period;
   const f = String(b.file_url || '').trim(); if (f) { if (!/^https:\/\/\S+$/i.test(f)) throw new Error('El link del archivo tiene que empezar con https://'); o.file_url = f.slice(0, 600); }
   const n = String(b.notes || '').trim(); if (n) o.notes = n.slice(0, 2000);
+  if (kind === 'pagar') {
+    const c = String(b.client || '').trim().toLowerCase(); if (/^[\w-]{2,60}$/.test(c)) o.client = c;
+    if (CATS_OUT.includes(b.category)) o.category = b.category;
+  }
+  const fi = String(b.from_invoice || '').trim(); if (/^[\w.@+-]{1,160}$/.test(fi)) o.from_invoice = fi;
   return o;
 }
 // El nombre que se muestra: el cliente en mayúsculas (o su nombre en la cuenta) o el proveedor.
@@ -172,6 +182,99 @@ export function cobrosDelMes({ period, clients = [], accounts = [], projects = [
     const issued = hoy.slice(0, 7) === period ? hoy : `${period}-01`;
     out.crear.push({ id: idCobro(slug, period), kind: 'cobrar', client: slug, concept: `Fee mensual · ${mesLabel(period)}`, amount: fee.amount, currency: fee.currency, issued, due: `${period}-${String(dia).padStart(2, '0')}`, status: 'pendiente', source: 'auto', period, notes: `Precio: ${fee.from}` });
   }
+  return out;
+}
+
+// ---------- La receta de costos: lo que cuesta cada mes un cliente con cobro recurrente ----------
+// Colección «cost_recipes» (área finanzas, solo el CEO la lee y la escribe). id = slug del cliente.
+//   { client:'slug', lines:[{ concepto, rol, proveedor, monto (número, o null = sin dato), moneda:'GTQ'|'USD', categoria (CATS_OUT), horas? }],
+//     dia_pago?: 1-31 (el día en que vencen sus costos; si no, el 5) }
+// Cuando entra el pago de su fee mensual, cada línea con monto se vuelve una factura por pagar (efectosDelPago).
+export const DIA_PAGO = 5;
+export function limpiarReceta(b = {}) {
+  const client = String(b.client || b.id || '').trim().toLowerCase();
+  if (!/^[\w-]{2,60}$/.test(client)) throw new Error('Falta el cliente (su slug)');
+  const raw = Array.isArray(b.lines) ? b.lines : [];
+  if (raw.length > 40) throw new Error('Son demasiadas líneas: máximo 40');
+  const lines = [];
+  for (const l of raw) {
+    const rol = String(l?.rol || '').trim().slice(0, 80), proveedor = String(l?.proveedor || '').trim().slice(0, 120);
+    const concepto = (String(l?.concepto || '').trim() || rol || proveedor).slice(0, 160);
+    const m = l?.monto === '' || l?.monto == null ? null : typeof l.monto === 'string' ? leerMonto(l.monto) : +l.monto;
+    if (!concepto && m == null) continue; // una fila en blanco
+    if (!concepto) throw new Error('Cada línea lleva un concepto, un rol o un proveedor');
+    if (m != null && !(Number.isFinite(m) && m > 0)) throw new Error(`El monto de «${concepto}» tiene que ser mayor que cero (o vacío si todavía no se sabe)`);
+    const o = { concepto, rol, proveedor, monto: m == null ? null : r2(m), moneda: l?.moneda === 'USD' ? 'USD' : 'GTQ', categoria: CATS_OUT.includes(l?.categoria) ? l.categoria : rol ? 'Pagos por servicio' : 'Otro' };
+    if (+l?.horas > 0) o.horas = Math.round(+l.horas * 10) / 10;
+    lines.push(o);
+  }
+  const o = { client, lines };
+  const dia = Math.round(+b.dia_pago); if (dia >= 1 && dia <= 31) o.dia_pago = dia;
+  return o;
+}
+// El total al mes en quetzales (USD a Q7.70). sinMonto = las líneas que todavía no tienen monto (el total queda incompleto).
+export function totalReceta(rec) {
+  const L = Array.isArray(rec?.lines) ? rec.lines : [];
+  const conMonto = L.filter((l) => +l.monto > 0);
+  return { total: r2(conMonto.reduce((a, l) => a + enGTQ({ amount: l.monto, currency: l.moneda }), 0)), sinMonto: L.length - conMonto.length, usd: conMonto.some((l) => l.moneda === 'USD') };
+}
+// La receta que propone el sistema la primera vez: los módulos por mes que el cliente tiene activos en el mes (los mismos
+// que cuenta Rentabilidad, con byScope), partidos por rol: horas del rol × su costo por hora. Una línea por rol.
+// Si falta el costo por hora de un rol, su línea sale sin monto (⚠️ sin costo por hora): nunca se inventa.
+export function recetaPropuesta({ slug, month, services = [], rates = null, projects = [], quotes = [], accounts = [] }) {
+  const k = keyOf(slug), row = byScope({ month, services, rates, projects, quotes, accounts, entries: [] }).rows.find((r) => r.slug === k);
+  const roles = new Map(), avisos = [];
+  for (const m of (row?.modules || []).filter((x) => x.unit === 'mes')) {
+    const s = services.find((x) => x.id === m.service_id), n = Math.max(1, +m.qty || 1);
+    const tasks = s ? (s.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, m.level) * n })) : (m.roles || []).filter((r) => r.role && +r.hours > 0).map((r) => ({ role: r.role, hours: +r.hours }));
+    if (!tasks.length) { avisos.push(m.why || `«${m.name}» no tiene horas por rol`); continue; }
+    for (const t of tasks) {
+      if (!t.role || !(t.hours > 0)) continue;
+      const L = roles.get(t.role) || roles.set(t.role, { rol: t.role, horas: 0, monto: 0, sin: false, mods: [] }).get(t.role);
+      const rt = rates ? rateAt(rates, t.role, m.level) : null;
+      L.horas += t.hours; if (rt == null) L.sin = true; else L.monto += rt * t.hours;
+      if (!L.mods.includes(m.name)) L.mods.push(m.name);
+    }
+  }
+  if (!rates && roles.size) avisos.push('Faltan los costos por hora (Comercial → Catálogo → Costos por hora)');
+  const lines = [...roles.values()].map((L) => ({ concepto: `${L.rol} · ${L.mods.join(', ')}`.slice(0, 160), rol: L.rol, proveedor: '', monto: L.sin ? null : r2(L.monto), moneda: 'GTQ', categoria: 'Pagos por servicio', horas: Math.round(L.horas * 10) / 10, ...(L.sin ? { aviso: '⚠️ sin costo por hora' } : {}) }));
+  return { client: k, lines, avisos, propuesta: true, month };
+}
+
+// ---------- Cuando entra un pago: el ingreso, los costos del mes y el gasto (los aplica el servidor, sin duplicar) ----------
+// Ids fijos: pagar dos veces, o deshacer y volver a pagar, no repite nada.
+export const idIngreso = (invoiceId) => `ing-${invoiceId}`;
+export const idCosto = (invoiceId, n) => `cost-${invoiceId}-${n}`;
+export const idGasto = (invoiceId) => `gas-${invoiceId}`;
+// Un cobro es «Plan mensual» si es del mes (period) o su concepto lo dice; si no, «Proyecto».
+export const categoriaIngreso = (inv) => (isMonth(inv?.period) || /mensual|al mes|por mes/i.test(String(inv?.concept || '')) ? 'Plan mensual' : 'Proyecto');
+const mesSiguiente = (period) => { const [y, m] = period.split('-').map(Number); return m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, '0')}`; };
+// Lo que provoca una factura pagada. Devuelve { movimiento (con id), costos: [factura por pagar con id], sinMonto, sinReceta }.
+//   Por cobrar → el ingreso en Finanzas y, si es Plan mensual y el cliente tiene receta, una por pagar por línea con monto
+//                (vence el día de pago de la receta, o el 5, del mes siguiente al cobro).
+//   Por pagar  → el gasto en Finanzas.
+// Los movimientos van en quetzales, como todos los de Finanzas: lo que viene en USD se pasa a Q7.70 y el concepto lo dice.
+export function efectosDelPago(inv, receta = null) {
+  const out = { movimiento: null, costos: [], sinMonto: 0, sinReceta: false };
+  if (!inv?.id || inv.status !== 'pagada' || !KINDS.includes(inv.kind)) return out;
+  const date = isDate(inv.paid_at) ? inv.paid_at : hoyISO();
+  const usd = inv.currency === 'USD' ? ` (USD ${inv.amount} a Q${USD_GTQ})` : '';
+  const base = { amount: r2(enGTQ(inv)), date, invoice_id: inv.id, source: 'auto' };
+  if (inv.kind === 'pagar') {
+    const v = String(inv.vendor || '').trim(), c = String(inv.concept || '').trim();
+    out.movimiento = { id: idGasto(inv.id), type: 'gasto', concept: (v && !c.toLowerCase().includes(v.toLowerCase()) ? `${v} · ${c}` : c) + usd, ...base, category: CATS_OUT.includes(inv.category) ? inv.category : 'Otro', client: inv.client ? String(inv.client).toUpperCase() : '' };
+    return out;
+  }
+  const cat = categoriaIngreso(inv);
+  out.movimiento = { id: idIngreso(inv.id), type: 'ingreso', concept: String(inv.concept || '') + usd, ...base, category: cat, client: String(inv.client || '').toUpperCase() };
+  if (cat !== 'Plan mensual') return out;
+  if (!receta) { out.sinReceta = true; return out; }
+  const period = isMonth(inv.period) ? inv.period : date.slice(0, 7), next = mesSiguiente(period);
+  const d0 = Math.round(+receta.dia_pago), dia = Math.min(d0 >= 1 && d0 <= 31 ? d0 : DIA_PAGO, lastDay(next));
+  (receta.lines || []).forEach((l, n) => {
+    if (!(+l.monto > 0)) { out.sinMonto++; return; }
+    out.costos.push({ id: idCosto(inv.id, n + 1), kind: 'pagar', vendor: String(l.proveedor || l.rol || l.concepto || 'Costo').slice(0, 120), client: inv.client, concept: `${l.concepto} · ${String(inv.client).toUpperCase()} · ${mesLabel(period)}`.slice(0, 200), amount: r2(+l.monto), currency: l.moneda === 'USD' ? 'USD' : 'GTQ', issued: date, due: `${next}-${String(dia).padStart(2, '0')}`, status: 'pendiente', source: 'auto', category: CATS_OUT.includes(l.categoria) ? l.categoria : 'Otro', from_invoice: inv.id });
+  });
   return out;
 }
 

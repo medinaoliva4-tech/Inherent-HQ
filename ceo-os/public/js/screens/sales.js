@@ -7,6 +7,7 @@ import { packagesTab } from '../paquetes.js';
 import { createBundles } from '../armados.js';
 import { createCatalog, CATS, lvName } from '../catalogo.js';
 import { FLOW, stageLabel, flowIndex, isWaiting, createdAt, waitMs, waitTone, durText, salesMetrics, AFTER_REPLY, updateWaits } from '../ventas-flujo.js';
+import { layaBox } from '../laya-ui.js';
 
 const STAGES = ['Prospecto', 'Nuevo', 'Contactado', 'Reunión', 'Propuesta', 'Ganado', 'Perdido'];
 const BOARD = STAGES.slice(1); // el tablero: los prospectos tienen su bandeja aparte
@@ -232,7 +233,7 @@ export async function render(el, { me, sub, alive }) {
       ${isWaiting(l) ? html`<div class="vf-waitbox">${timer(l)}<span class="grow">Espera tu primera respuesta</span>${edit ? html`<button class="btn xs" data-act="replied">Ya respondí</button>` : ''}</div>` : ''}
       ${l.plan || l.answers ? html`<div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><b style="font-weight:500">Diagnóstico</b><div class="sp"></div>${l.plan ? html`<span class="chip dark">${levelName(l.plan)}</span>` : ''}${l.score != null ? html`<span class="chip">${l.score}/100</span>` : ''}</div>
         ${l.answers && typeof l.answers === 'object' ? html`<div class="sm" style="margin-top:8px">${Object.entries(l.answers).map(([k, v]) => html`<div><span class="mut">${k}:</span> ${Array.isArray(v) ? v.join(', ') : typeof v === 'object' ? JSON.stringify(v) : v}</div>`)}</div>` : ''}</div>` : ''}
-      <div class="row" style="margin:18px 0 6px"><span class="sm mut">Interés</span><div class="sp"></div><span class="vf-laya-slot"><span class="mut sm">Nota de Laya</span><span class="chip vf-laya" title="Fase 3: Laya puntúa el lead">Laya · pronto</span></span></div>
+      <div class="row" style="margin:18px 0 6px"><span class="sm mut">Interés</span><div class="sp"></div><span class="vf-laya-slot" id="laya-lead"></span></div>
       <div class="scorein" id="sc">${[1, 2, 3, 4, 5].map((n) => html`<button data-act="score" data-n="${n}" class="${n <= interest ? 'on' : ''}" title="${n}"></button>`)}</div>
       <div style="margin:16px 0 6px" class="sm mut">Estado</div>
       <div class="tagbox" id="tg">${all.map((t) => html`<span class="chip ${tags.includes(t) ? TAGS[t] ?? 'dark' : 'off'}" data-act="tag" data-t="${t}">${t}</span>`)}<span class="chip off" data-act="newTag">+ etiqueta</span></div>
@@ -264,6 +265,7 @@ export async function render(el, { me, sub, alive }) {
       quote: async () => { if (!(await persist())) return; closeDrawer(); editQuote(null, leads.find((x) => x.id === l.id)); },
       del: async () => { if (!(await confirmAsk(`¿Eliminar a ${l.name}?`))) return; await L.remove(l.id); leads = leads.filter((x) => x.id !== l.id); closeDrawer(); paint(); },
     });
+    layaBox($('#laya-lead', d), { coll: 'leads', id: l.id, compact: true }); // Fase 3: el juicio de Laya (encaja, nivel, urgencia)
     // Al elegir Perdido aparece el motivo; en una etapa abierta el paso y la fecha son obligatorios.
     $('#lstage', d).onchange = (e) => { $('#lost', d).hidden = e.target.value !== 'Perdido'; const must = OPEN.includes(e.target.value); $$('[data-must]', d).forEach((lb) => { lb.textContent = (lb.dataset.must === 'paso' ? 'Siguiente paso' : 'Fecha') + (must ? ' *' : ''); }); };
     const formVals = () => { const f = $('#lf', d); const o = Object.fromEntries(new FormData(f)); o.value_usd = o.value_usd === '' ? null : +o.value_usd; o.ig = String(o.ig || '').replace(/^@/, ''); return o; };

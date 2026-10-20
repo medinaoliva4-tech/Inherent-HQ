@@ -1,11 +1,9 @@
-import { newProject as wizProject, newTask as wizTask, VIS_OPTS, visLabel } from '../create.js';
-import { RECIPE_ROLES } from '../recipes.js';
-import { tipoSopFields, bindSop, readTipoSop, sopLink, tipoChips, tipoMatch, tipoBadge } from '../tasktype.js';
+import { newProject as wizProject, newTask as wizTask, VIS_OPTS } from '../create.js';
+import { tipoSopFields, bindSop, readTipoSop, sopLink } from '../tasktype.js';
 import { projectPage, myProjects } from '../project-page.js';
+import { taskKanban } from '../kanban.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap, ico, isSummary, canEdit, roChip } from '../core.js';
 
-const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
-const NEXT = { todo: 'now', now: 'done', done: 'todo', off: 'todo' };
 const TSTATUS = { 'Por empezar': '', 'En curso': 'amber', 'En revisión': 'blue', 'Hecha': 'green' };
 const iso = (d) => d.toISOString().slice(0, 10);
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
@@ -17,11 +15,11 @@ export async function render(el, { me, sub, alive }) {
   try { clients = (await api('repo/clients')).clients.map((c) => ({ ...c, plan: String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '') })); } catch {}
   // Vista por rol: «resumen» = los proyectos con su avance y las tareas atrasadas o en revisión; sin pipeline, calendario ni timeline.
   const resumen = isSummary(me, 'operations'), edit = canEdit(me, 'operations');
-  // La página de un proyecto: #/operations/p/<id>/<vista> (Resumen, Lista, Tablero, Timeline, Calendario, Archivos, Equipo).
+  // La página de un proyecto: #/operations/p/<id>/<vista> (Tareas, Resumen, Timeline, Calendario, Archivos, Equipo).
   const openP = (id) => { location.hash = '#/operations/p/' + encodeURIComponent(id); };
   if (sub[0] === 'p' && sub[1]) return projectPage(el, { me, id: decodeURIComponent(sub[1]), view: sub[2], edit, data: { projects, tasks, team, docs, clients }, back: () => { location.hash = '#/operations'; }, alive });
-  let tab = ['pipe', 'cal', 'time', 'tasks'].includes(sub[0]) ? sub[0] : 'pipe';
-  let current = projects[0]?.id || null, taskFilter = 'all', tipoF = 'todos';
+  // Un solo Kanban con todas las tareas (antes: la tira por departamento + la tabla «Tareas de…» + la pestaña Tareas).
+  let tab = ['cal', 'time'].includes(sub[0]) ? sub[0] : 'tasks', kb = null;
   let calMonth = today().slice(0, 7), events = null, evErr = null;
   const person = (email) => team.find((t) => t.id === email || t.email === email);
   const pname = (id) => projects.find((p) => p.id === id)?.name || '—';
@@ -35,14 +33,14 @@ export async function render(el, { me, sub, alive }) {
       ${projects.length ? html`<div id="mprojects"></div>`
       : html`<div class="empty"><b>Todavía no hay proyectos</b>Si es un cliente con plan, su pipeline se arma solo según lo contratado.${edit ? html`<div><button class="btn" data-act="newProject">+ Proyecto</button></div>` : ''}</div>`}
       ${!projects.length && !tasks.length ? '' : resumen ? html`<div class="sec-title" style="margin-top:22px"><h2>Necesita atención</h2><span class="mut sm">Atrasadas y en revisión</span></div><div id="obody"></div>` : html`<div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${[['pipe', 'Proyectos'], ['cal', 'Calendario'], ['time', 'Timeline'], ['tasks', 'Tareas']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${[['tasks', 'Tareas'], ['cal', 'Calendario'], ['time', 'Timeline']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>${tab === 'tasks' && edit ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
       </div>
       <div id="obody"></div>`}`);
     const mp = $('#mprojects', el); if (mp) myProjects(mp, { me, projects, tasks, team, clients, open: openP });
     if (!$('#obody', el)) return; // vacío: solo el botón de crear el primero
     if (resumen) return attention($('#obody', el));
-    ({ pipe, cal, time, tasks: taskTab })[tab]($('#obody', el));
+    ({ tasks: board, cal, time })[tab]($('#obody', el));
   }
   // El resumen: solo lo que requiere acción, por proyecto.
   function attention(b) {
@@ -51,55 +49,12 @@ export async function render(el, { me, sub, alive }) {
     mount(b, list.length ? html`<div class="card">${list.slice(0, 40).map((t) => html`<div class="wkrow" data-act="task" data-id="${t.id}"><span class="grow">${t.title}<span class="mut sm"> · ${pname(t.project_id)} · ${person(t.assignee)?.name || 'Sin responsable'}</span></span>${t.status === 'En revisión' ? html`<span class="chip amber sm2">En revisión</span>` : html`<span class="chip red sm2">Venció ${fdate(t.due)}</span>`}</div>`)}</div>` : html`<div class="card"><div class="mut">Todo en orden ${ico('check', 14)}</div></div>`);
   }
 
-  // ---------- Pipeline por cliente, con sus entregables ----------
-  // Cada departamento se mueve solo con sus tareas: nadie actualiza el pipeline a mano.
-  function deptState(p, n) {
-    const ts = tasks.filter((t) => t.project_id === p.id && new RegExp(`^${n}( |$)`).test(t.dept || ''));
-    if (!ts.length) return p.pipeline?.[n]?.status === 'off' ? { tasks: ts, label: 'No incluido', chip: '', cls: 'off' } : { tasks: ts, label: 'Sin tarea', chip: '', cls: '' };
-    if (ts.every((t) => t.status === 'Hecha')) return { tasks: ts, label: 'Entregado', chip: 'green', cls: 'done' };
-    if (ts.some((t) => t.status === 'En revisión')) return { tasks: ts, label: 'En revisión', chip: 'amber', cls: 'now' };
-    if (ts.some((t) => t.status === 'En curso')) return { tasks: ts, label: 'En curso', chip: 'lime', cls: 'now' };
-    return { tasks: ts, label: 'Pendiente', chip: '', cls: '' };
+  // ---------- Tareas: el Kanban único (kanban.js), filtrable por proyecto y por responsable ----------
+  function board(b) {
+    kb = taskKanban(b, { tasks: () => tasks, projects, team, me, show: { project: true, person: true }, key: 'ops', edit,
+      save: (t, patch) => saveTask({ ...t, ...patch }), open: openTask, openProject: openP });
   }
-  // Quién cubre cada rol en este proyecto, en un solo lugar: al cambiarlo se reasignan las tareas abiertas de ese rol.
-  function roleTable(p) {
-    const ts = tasks.filter((t) => t.project_id === p.id && t.role);
-    const roles = [...new Set([...Object.keys(p.roles_map || {}), ...ts.map((t) => t.role)])].sort((a, z) => RECIPE_ROLES.findIndex(([k]) => k === a) - RECIPE_ROLES.findIndex(([k]) => k === z));
-    if (!roles.length) return '';
-    const crew = team.filter((x) => x.active !== false && x.kind !== 'ia' && String(x.email || x.id).includes('@'));
-    const cur = (r) => p.roles_map?.[r] || ts.find((t) => t.role === r && t.assignee)?.assignee || '';
-    return html`<div class="card" style="margin-top:22px;padding:18px 20px"><h3 style="font-weight:500;font-size:18px;letter-spacing:-.3px;margin:0 0 2px">Quién cubre cada rol</h3><div class="mut sm" style="margin-bottom:12px">${edit ? 'Cambia a alguien y sus tareas abiertas de ese rol pasan a la persona nueva (queda en el historial de cada tarea).' : 'Las personas que cubren cada rol de este proyecto.'}</div>
-      <div class="rolemap">${roles.map((r) => { const open = ts.filter((t) => t.role === r && t.status !== 'Hecha').length, c = cur(r);
-        return html`<b style="font-weight:500">${RECIPE_ROLES.find(([k]) => k === r)?.[1] || r}</b>
-          ${edit ? html`<select class="in" data-rolesel="${r}" data-pid="${p.id}"><option value="">— sin asignar</option>${crew.map((x) => html`<option value="${x.email || x.id}" ${(x.email || x.id) === c ? raw('selected') : ''}>${x.name}</option>`)}</select>` : html`<span>${person(c)?.name || '—'}</span>`}
-          <span class="chip sm2">${open} ${open === 1 ? 'abierta' : 'abiertas'}</span>`; })}</div></div>`;
-  }
-  async function changeRole(pid, role, email) {
-    if (!email) { toast('Elige a alguien del equipo', true); return paint(); }
-    try {
-      const r = await api('flow/role', { method: 'POST', body: { project_id: pid, role, email } });
-      toast(r.tareas ? `${r.tareas} ${r.tareas === 1 ? 'tarea reasignada' : 'tareas reasignadas'}` : 'Guardado');
-      [projects, tasks] = await Promise.all([PR.list(), TK.list()]); paint();
-    } catch (e) { toast(e.message, true); paint(); }
-  }
-  el.addEventListener('change', (e) => { const s = e.target.closest('[data-rolesel]'); if (s) changeRole(s.dataset.pid, s.dataset.rolesel, s.value); });
-  function pipe(b) {
-    const p = projects.find((x) => x.id === current);
-    if (!p) return mount(b, html`<div class="empty"><b>Elige o crea un proyecto</b>El pipeline muestra cada departamento y su entregable.</div>`);
-    mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">${projects.map((x) => html`<button class="chip ${x.id === current ? 'dark' : ''}" data-act="pipick" data-id="${x.id}" style="padding:8px 14px;font-size:13px">${x.name}</button>`)}
-      <button class="btn ghost xs" data-act="openp" data-id="${p.id}">Abrir proyecto ${ico('right', 13)}</button>
-      <div class="sp"></div><span class="mut sm">Se actualiza solo con las tareas de cada departamento</span></div>
-      <div class="pipe">${DEPTS.map(([n, name], i) => { const d = deptState(p, n);
-        return html`<div class="dept ${d.cls}">
-          <div class="row"><span class="num">${n}</span><span class="chip ${d.chip}" style="margin-left:auto">${d.label}</span></div>
-          <h4>${name}</h4>
-          ${d.tasks.map((t) => html`<button class="artifact" data-act="task" data-id="${t.id}" style="width:100%;margin-top:6px"><span class="fi">${t.status === 'Hecha' ? ico('check', 13) : t.status === 'En revisión' ? ico('clock') : '•'}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;font-size:12.5px">${t.title}</b><div class="mut" style="font-size:11px">${person(t.assignee)?.name || 'Sin responsable'}${t.due ? ' · ' + fdate(t.due) : ''}</div></div></button>`)}
-          ${d.tasks.some((t) => /^https?:\/\//.test(t.link || '')) ? html`<a class="sm mut" href="${d.tasks.find((t) => /^https?:\/\//.test(t.link || '')).link}" target="_blank" rel="noopener noreferrer" style="display:block;margin-top:6px">Ver entrega ↗</a>` : ''}
-          ${i < DEPTS.length - 1 ? html`<span class="pipe-line"></span>` : ''}</div>`; })}</div>
-      ${roleTable(p)}
-      <div class="row" style="margin:22px 0 10px"><h3 style="font-weight:500;font-size:20px;letter-spacing:-.4px">Tareas de ${p.name}</h3><div class="sp"></div><button class="btn ghost" data-act="newTask">+ Tarea</button></div>
-      ${taskTable(tasks.filter((t) => t.project_id === p.id), 'Este proyecto todavía no tiene tareas. Agrégalas con «+ Tarea»: cada una se abre, tiene responsable, fecha y checklist.')}`);
-  }
+  async function addTask(pre = {}) { const r = await wizTask({ team, me, projects, pre }); if (r) { tasks.push(r); paint(); } }
 
   // ---------- Calendario (Google Calendar + tareas + fases) ----------
   async function loadEvents() {
@@ -167,27 +122,6 @@ export async function render(el, { me, sub, alive }) {
     </div></div>`);
   }
 
-  // ---------- Tareas ----------
-  function taskTab(b) {
-    const list = tasks.filter((t) => (taskFilter === 'all' || (taskFilter === 'mine' ? t.assignee === me.email : t.project_id === taskFilter)) && tipoMatch(t, tipoF))
-      .sort((a, z) => (a.status === 'Hecha') - (z.status === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9')));
-    mount(b, html`<div class="row" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">
-        <button class="chip ${taskFilter === 'all' ? 'dark' : ''}" data-act="tf" data-f="all" style="padding:8px 14px">Todas</button>
-        <button class="chip ${taskFilter === 'mine' ? 'dark' : ''}" data-act="tf" data-f="mine" style="padding:8px 14px">Mías</button>
-        ${projects.map((p) => html`<button class="chip ${taskFilter === p.id ? 'dark' : ''}" data-act="tf" data-f="${p.id}" style="padding:8px 14px">${p.name}</button>`)}</div>
-      <div style="margin-bottom:12px">${tipoChips(tipoF, 'tipof', tasks)}</div>
-      ${taskTable(list, 'Crea una con «+ Tarea».')}`);
-  }
-  function taskTable(list, emptyMsg) {
-    list = [...list].sort((a, z) => (a.status === 'Hecha') - (z.status === 'Hecha') || String(a.due || '9').localeCompare(String(z.due || '9')));
-    return list.length ? html`<div class="card"><table><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead><tbody>
-        ${list.map((t) => { const who = person(t.assignee); const late = t.due && t.due < today() && t.status !== 'Hecha';
-          return html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${tipoBadge(t)}${visLabel(t) ? html` <span class="mut sm">${visLabel(t)}</span>` : ''}${t.sop ? html` <span class="mut sm" title="Tiene SOP">${ico('doc', 13)}</span>` : ''}${(t.checklist || []).length ? html`<div class="mut sm">${t.checklist.filter((c) => c.done).length}/${t.checklist.length} checklist</div>` : ''}</td><td class="mut">${pname(t.project_id)}${t.dept ? ' · ' + t.dept : ''}</td>
-            <td>${who ? html`<span class="av" style="background:${who.color || '#735741'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="mut sm">—</span>`}</td>
-            <td style="${late ? 'color:var(--warn);font-weight:700' : ''}">${t.due ? fdate(t.due) : '—'}</td><td><span class="chip ${TSTATUS[t.status] ?? ''}">${t.status || 'Por empezar'}</span></td></tr>`; })}
-      </tbody></table></div>` : html`<div class="empty"><b>Sin tareas aquí</b>${emptyMsg}</div>`;
-  }
-
   function openTask(t) {
     const draw = () => {
       const who = person(t.assignee);
@@ -239,14 +173,7 @@ export async function render(el, { me, sub, alive }) {
     calpick: calPick,
     calscope: () => { setCalAll(!calAll()); events = null; const b = $('#obody', el); if (b) cal(b); },
     tab: (t) => { tab = t.dataset.t; if (tab === 'cal') events = null; history.replaceState(null, '', '#/operations/' + tab); swap(el, paint); },
-    pipick: (t) => { current = t.dataset.id; tab = 'pipe'; paint(); },
-    openp: (t) => openP(t.dataset.id),
     newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); openP(r.project.id); } },
-    cycle: async (t) => { const p = projects.find((x) => x.id === current); const d = p.pipeline?.[t.dataset.d] || { status: 'todo' }; const r = await saveProject({ ...p, pipeline: { ...(p.pipeline || {}), [t.dataset.d]: { ...d, status: NEXT[d.status] || 'now' } } }); if (r) pipe($('#obody', el)); },
-    artifact: async (t) => { const p = projects.find((x) => x.id === current); const d = p.pipeline?.[t.dataset.d] || { status: 'todo' };
-      const v = await ask(`Entregable de ${DEPTS.find(([n]) => n === t.dataset.d)[1]}`, [{ k: 'name', l: 'Nombre', v: d.artifact?.name, req: true }, { k: 'url', l: 'Link (Drive o URL)', v: d.artifact?.url, req: true }]);
-      if (!v) return; if (!/^https?:\/\//.test(v.url)) return toast('El link debe empezar con https://', true);
-      const r = await saveProject({ ...p, pipeline: { ...(p.pipeline || {}), [t.dataset.d]: { ...d, artifact: v } } }); if (r) pipe($('#obody', el)); },
     mrefresh: () => { events = null; cal($('#obody', el)); },
     mtoday: () => { calMonth = today().slice(0, 7); events = null; cal($('#obody', el)); },
     mprev: () => { const d = new Date(calMonth + '-15'); d.setMonth(d.getMonth() - 1); calMonth = d.toISOString().slice(0, 7); events = null; cal($('#obody', el)); },
@@ -255,10 +182,8 @@ export async function render(el, { me, sub, alive }) {
     day: (t) => newEvent(`${calMonth}-${String(t.dataset.d).padStart(2, '0')}`),
     ev: (t, e) => { e.stopPropagation(); openEvent(events[+t.dataset.i]); },
     dayall: (t) => { const d = +t.dataset.d; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${fdate(`${calMonth}-${String(d).padStart(2, '0')}`)}</h2><div style="margin-top:14px">${(dayMap[d] || []).map(evChip)}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)) }); },
-    tipof: (t) => { tipoF = t.dataset.tp; taskTab($('#obody', el)); },
-    tf: (t) => { taskFilter = t.dataset.f; taskTab($('#obody', el)); },
     task: (t) => openTask(tasks.find((x) => x.id === t.dataset.id)),
-    newTask: async () => { const r = await wizTask({ team, me, projects, pre: tab === 'pipe' && current ? { project_id: current } : {} }); if (r) { tasks.push(r); paint(); } },
+    newTask: () => addTask(kb?.project() ? { project_id: kb.project() } : {}),
   });
   // Se actualiza solo: cada minuto mientras está abierto y al volver a la pestaña del navegador.
   const tick = () => { if (!alive()) return stop(); if (tab === 'cal' && document.visibilityState === 'visible' && !document.querySelector('dialog[open]') && !$('#drawer')?.classList.contains('on')) { events = null; const b = $('#obody', el); if (b) cal(b); } };

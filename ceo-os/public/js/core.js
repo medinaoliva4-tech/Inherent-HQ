@@ -116,10 +116,29 @@ export function toast(msg, err) {
   const t = $('#toast'); t.textContent = msg; t.className = 'on' + (err ? ' err' : '');
   clearTimeout(tt); tt = setTimeout(() => (t.className = ''), 2800);
 }
-export function drawer(content, map = {}) {
-  const d = $('#drawer'); mount(d, content);
-  d.onclick = (e) => { const t = e.target.closest('[data-act]'); if (!t) return; if (t.dataset.act === 'close') return closeDrawer(); map[t.dataset.act]?.(t, e); };
-  d.classList.add('on'); $('#veil').classList.add('on');
+// ---------- La vista grande: lo que antes se abría en un panel de costado ahora se abre a pantalla completa ----------
+// drawer(content, map, opts) es la misma API de siempre. Arriba lleva «← <Sección> / <título>»: la flecha (o Esc)
+// regresa al lugar exacto, con el scroll como estaba. opts: { section, title, back } o solo el nombre de la sección;
+// sin sección, sale de la ruta actual (la registra app.js con setViewSection); sin título, del contenido (su h2).
+let bvSection = () => '', bvBack = null, bvFrom = null;
+export const setViewSection = (fn) => { bvSection = fn; };
+const bvTitle = (b) => { const h = b.querySelector('h1,h2'); if (h?.textContent.trim()) return h.textContent.trim();
+  const i = b.querySelector('input[id$="title"]'); return i?.value?.trim() || b.querySelector('h3')?.textContent.trim() || b.querySelector('.chip')?.textContent.trim() || ''; };
+export function drawer(content, map = {}, opts = {}) {
+  if (typeof opts === 'string') opts = { section: opts };
+  const d = $('#drawer'), was = d.classList.contains('on');
+  if (!was || !bvFrom) bvFrom = { y: scrollY, ay: $('.app')?.scrollTop || 0, focus: was ? bvFrom?.focus : document.activeElement };
+  if (opts.section || !bvFrom.section) { let s = opts.section; if (!s) { try { s = bvSection(); } catch {} } bvFrom.section = s || 'Inicio'; }
+  mount(d, html`<div class="bv-bar"><div class="bv-in"><button class="bv-back" type="button" data-act="close" aria-label="Volver a ${bvFrom.section}">${ico('arrow-left', 18)}<span>${bvFrom.section}</span></button><span class="bv-crumb"></span></div></div><div class="bv-body">${content}</div>`);
+  const t = opts.title || bvTitle($('.bv-body', d)); $('.bv-crumb', d).textContent = t ? '/ ' + t : '';
+  bvBack = opts.back || null;
+  d.onclick = (e) => { const t = e.target.closest('[data-act]'); if (!t) return; if (t.dataset.act === 'close') return (bvBack || closeDrawer)(); map[t.dataset.act]?.(t, e); };
+  if (!was) {
+    d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', t || bvFrom.section);
+    d.scrollTop = 0; d.classList.add('on'); document.documentElement.classList.add('bv-on');
+    // El foco entra a la vista (sin anillo); con Tab, lo primero es la flecha de regresar.
+    d.tabIndex = -1; setTimeout(() => { if (d.classList.contains('on') && !d.contains(document.activeElement)) d.focus({ preventScroll: true }); }, 60);
+  }
   return d;
 }
 // Cambio suave (View Transitions: Chrome, Edge y Safari 18+; sin soporte, cambia directo).
@@ -136,36 +155,70 @@ export function swap(el, update) {
   const b = el.querySelector('#body,#fbody,#obody,#wbody,#cbody'); if (!b) return;
   b.classList.remove('tabin'); void b.offsetWidth; b.classList.add('tabin');
 }
-export function closeDrawer() { $('#drawer').classList.remove('on'); $('#veil').classList.remove('on'); }
-// Esc cierra el panel lateral (si no hay un diálogo abierto encima).
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#drawer')?.classList.contains('on') && !document.querySelector('dialog[open]')) closeDrawer(); });
+export function closeDrawer() {
+  const d = $('#drawer'); if (!d) return; const was = d.classList.contains('on');
+  d.classList.remove('on'); $('#veil')?.classList.remove('on'); document.documentElement.classList.remove('bv-on'); bvBack = null;
+  // Vuelve exactamente a donde estaba: el scroll de la página (en el cel se desliza .app) y el foco.
+  if (was && bvFrom) { const f = bvFrom; bvFrom = null; scrollTo({ top: f.y, left: 0, behavior: 'instant' }); const a = $('.app'); if (a) a.scrollTop = f.ay; if (f.focus?.isConnected) f.focus.focus({ preventScroll: true }); }
+}
+// Esc regresa (si no hay un diálogo abierto encima).
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#drawer')?.classList.contains('on') && !document.querySelector('dialog[open]')) (bvBack || closeDrawer)(); });
 
 // fields: [{k, l, t:'text'|'number'|'date'|'select'|'textarea'|'email', opts:[], v, req, half}]
+// Hasta 4 campos: el modal pequeño. Más de 4: se abre en la vista grande. Siempre devuelve una Promise con los valores (o null).
+const askInput = (f) => f.t === 'checks' ? html`<div class="checks">${(f.opts || []).map(([v, l]) => html`<label class="check"><input type="checkbox" name="${f.k}" value="${v}" ${(f.v || []).includes(v) ? raw('checked') : ''}> ${l}</label>`)}</div>`
+  : f.t === 'select' ? html`<select class="in" name="${f.k}">${(f.opts || []).map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return html`<option value="${v}" ${String(v) === String(f.v ?? '') ? raw('selected') : ''}>${l}</option>`; })}</select>`
+  : f.t === 'textarea' ? html`<textarea class="in" name="${f.k}">${f.v ?? ''}</textarea>`
+  : f.t === 'file' ? html`<input class="in" name="${f.k}" type="file" accept="${f.accept || ''}">`
+  : html`<input class="in" name="${f.k}" type="${f.t || 'text'}" value="${f.v ?? ''}" ${f.t === 'number' ? raw('step="any"') : ''}>`;
+function askRows(fields) {
+  const rows = []; let pend = [];
+  fields.forEach((f) => { const cell = html`<div><label class="f">${f.l}${f.req ? ' *' : ''}</label>${askInput(f)}</div>`; if (f.half) { pend.push(cell); if (pend.length === 2) { rows.push(html`<div class="two">${pend}</div>`); pend = []; } } else { if (pend.length) { rows.push(html`<div class="two">${pend}</div>`); pend = []; } rows.push(cell); } });
+  if (pend.length) rows.push(html`<div class="two">${pend}</div>`);
+  return rows;
+}
+// Lee el formulario; si falta un campo obligatorio avisa y devuelve null.
+function askRead(form, fields) {
+  const out = {};
+  for (const f of fields) { if (f.t === 'file') { out[f.k] = form.elements[f.k].files[0] || null; continue; } if (f.t === 'checks') { out[f.k] = [...form.querySelectorAll(`input[name="${f.k}"]:checked`)].map((x) => x.value); continue; } let v = form.elements[f.k].value.trim(); if (f.t === 'number') v = v === '' ? null : Number(v); out[f.k] = v; }
+  const miss = fields.find((f) => f.req && (out[f.k] === '' || out[f.k] == null));
+  if (miss) { toast(`Falta: ${miss.l}`, true); return null; }
+  return out;
+}
 export function ask(title, fields, okLabel = 'Guardar') {
+  if (fields.length > 4) return askBig(title, fields, okLabel);
   return new Promise((resolve) => {
     const dlg = document.createElement('dialog'); dlg.className = 'dlg';
-    const input = (f) => f.t === 'checks' ? html`<div class="checks">${(f.opts || []).map(([v, l]) => html`<label class="check"><input type="checkbox" name="${f.k}" value="${v}" ${(f.v || []).includes(v) ? raw('checked') : ''}> ${l}</label>`)}</div>`
-      : f.t === 'select' ? html`<select class="in" name="${f.k}">${(f.opts || []).map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return html`<option value="${v}" ${String(v) === String(f.v ?? '') ? raw('selected') : ''}>${l}</option>`; })}</select>`
-      : f.t === 'textarea' ? html`<textarea class="in" name="${f.k}">${f.v ?? ''}</textarea>`
-      : f.t === 'file' ? html`<input class="in" name="${f.k}" type="file" accept="${f.accept || ''}">`
-      : html`<input class="in" name="${f.k}" type="${f.t || 'text'}" value="${f.v ?? ''}" ${f.t === 'number' ? raw('step="any"') : ''}>`;
-    const rows = []; let pend = [];
-    fields.forEach((f) => { const cell = html`<div><label class="f">${f.l}${f.req ? ' *' : ''}</label>${input(f)}</div>`; if (f.half) { pend.push(cell); if (pend.length === 2) { rows.push(html`<div class="two">${pend}</div>`); pend = []; } } else { if (pend.length) { rows.push(html`<div class="two">${pend}</div>`); pend = []; } rows.push(cell); } });
-    if (pend.length) rows.push(html`<div class="two">${pend}</div>`);
-    mount(dlg, html`<form class="in-dlg form" method="dialog"><h3>${title}</h3>${rows}<div class="row" style="margin-top:6px"><button class="btn" value="ok">${okLabel}</button><button class="btn ghost" value="no" type="button" data-x>Cancelar</button></div></form>`);
+    mount(dlg, html`<form class="in-dlg form" method="dialog"><h3>${title}</h3>${askRows(fields)}<div class="row" style="margin-top:6px"><button class="btn" value="ok">${okLabel}</button><button class="btn ghost" value="no" type="button" data-x>Cancelar</button></div></form>`);
     document.body.append(dlg);
     const form = $('form', dlg);
     $('[data-x]', dlg).onclick = () => dlg.close();
-    form.onsubmit = (e) => {
-      e.preventDefault();
-      const out = {};
-      for (const f of fields) { if (f.t === 'file') { out[f.k] = form.elements[f.k].files[0] || null; continue; } if (f.t === 'checks') { out[f.k] = [...form.querySelectorAll(`input[name="${f.k}"]:checked`)].map((x) => x.value); continue; } let v = form.elements[f.k].value.trim(); if (f.t === 'number') v = v === '' ? null : Number(v); out[f.k] = v; }
-      const miss = fields.find((f) => f.req && (out[f.k] === '' || out[f.k] == null));
-      if (miss) return toast(`Falta: ${miss.l}`, true);
-      resolve(out); dlg.close();
-    };
+    form.onsubmit = (e) => { e.preventDefault(); const out = askRead(form, fields); if (out) { resolve(out); dlg.close(); } };
     dlg.addEventListener('close', () => { resolve(null); dlg.remove(); });
     dlg.showModal(); form.querySelector('.in')?.focus();
+  });
+}
+// El mismo formulario en la vista grande. Si ya había algo abierto en grande (ej. una ficha), al terminar vuelve a eso.
+function askBig(title, fields, okLabel) {
+  return new Promise((resolve) => {
+    const d = $('#drawer'), prev = d.classList.contains('on') ? { nodes: [...d.childNodes], onclick: d.onclick, back: bvBack, y: d.scrollTop } : null;
+    let done = false, watch = null;
+    const finish = (v) => {
+      if (done) return; done = true; watch?.disconnect(); resolve(v);
+      if (!d.classList.contains('on')) return;
+      if (prev) { d.replaceChildren(...prev.nodes); d.onclick = prev.onclick; bvBack = prev.back; d.scrollTop = prev.y; } else closeDrawer();
+    };
+    const submit = () => { const out = askRead($('#bvask', d), fields); if (out) finish(out); };
+    drawer(html`<form class="form bv-ask" id="bvask"><h2>${title}</h2>${askRows(fields)}</form>
+      <div class="row bv-actions"><button class="btn" type="button" data-act="bvok">${okLabel}</button><button class="btn ghost" type="button" data-act="close">Cancelar</button></div>`,
+    { bvok: submit }, { title, back: prev ? () => finish(null) : null });
+    const form = $('#bvask', d);
+    form.onsubmit = (e) => { e.preventDefault(); submit(); };
+    form.onkeydown = (e) => { if (e.key === 'Enter' && e.target.matches('input:not([type=checkbox]):not([type=file])')) { e.preventDefault(); submit(); } };
+    // Cerrar la vista (flecha, Esc o cambiar de pantalla) = cancelar.
+    watch = new MutationObserver(() => { if (!d.classList.contains('on')) finish(null); });
+    watch.observe(d, { attributes: true, attributeFilter: ['class'] });
+    setTimeout(() => form.querySelector('.in')?.focus({ preventScroll: true }), 60);
   });
 }
 export const confirmAsk = async (msg) => (await ask(msg, [], 'Sí, confirmar')) !== null;
@@ -183,7 +236,7 @@ const ICO = {
   trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
   cal: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
-  down: '<path d="M6 9l6 6 6-6"/>', right: '<path d="M9 6l6 6-6 6"/>', check: '<path d="M5 12l5 5 9-10"/>',
+  down: '<path d="M6 9l6 6 6-6"/>', right: '<path d="M9 6l6 6-6 6"/>', 'arrow-left': '<path d="M19 12H5M11 6l-6 6 6 6"/>', check: '<path d="M5 12l5 5 9-10"/>',
   doc: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
   alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.5v.5"/>', trend: '<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
   folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
@@ -243,8 +296,8 @@ const ICO = {
 export const ico = (n, s = 15) => raw(`<svg class="lni" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;flex:none">${ICO[n] || ''}</svg>`);
 export const emblem = (dark) => raw(`<img src="/brand/${dark ? 'emblem-dark' : 'emblem'}.svg" alt="Inherent" style="width:100%;display:block">`);
 
-// Matriz de puntos de las tarjetas (on = cuántas columnas encendidas de 34)
-export const matrix = (on) => raw(`<div class="matrix">${Array.from({ length: 68 }, (_, i) => `<i class="${(i % 34) < on && (i < 34 ? (i * 7) % 3 !== 0 : (i * 5) % 4 !== 1) ? 'on' : ''}"></i>`).join('')}</div>`);
+// Matriz de puntos decorativa: retirada. Se conserva el export para no tocar las pantallas que la llaman.
+export const matrix = () => '';
 
 // ---------- gráfica de línea con tooltip ----------
 // fmt: cómo se ve el número en el tooltip (por defecto 1.2K; Finance pasa Q).
@@ -614,7 +667,7 @@ export function fromLink(src = {}) {
   return src.href && !src.plain ? html`<a class="fromlink" href="${src.href}" title="${src.title || 'De dónde sale este dato'}">⌁ ${label}</a>` : html`<span class="fromlink" title="${src.title || ''}">⌁ ${label}</span>`;
 }
 
-// ---------- El sheet de edición (.sp-sheet): los mismos campos que ask(), en el panel lateral ----------
+// ---------- El sheet de edición: los mismos campos que ask(), en la vista grande ----------
 // sheetForm(title, fields, { okLabel, chip, note }) → Promise de los valores (o null si se cierra).
 export function sheetForm(title, fields, { okLabel = 'Guardar', chip = '', note = '' } = {}) {
   return new Promise((resolve) => {

@@ -1,6 +1,6 @@
 import { applyViews, GROUPS, SPACES } from './roleviews.js';
 import { applyLevels, LEVELS_ID } from './levels.js';
-import { $, $$, html, raw, mount, api, events, toast, closeDrawer, IC, emblem, initials, esc, LOGO, infoTips, canTransition, ico } from './core.js';
+import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, initials, esc, LOGO, infoTips, canTransition, ico } from './core.js';
 import { loadBrands, brandsNow, brandAccess, MODULES, modulesFor, defaultModule, isSoon } from './brandlist.js';
 import { openSearch, searchOpen } from './search.js';
 
@@ -32,7 +32,7 @@ const TABS = {
   ventas: [['sales', 'Ventas', 'sales']],
   servicios: [['services', 'Servicios', () => full('sales')]],
   finanzas: [['finanzas', 'Finanzas', 'finanzas']],
-  inherent: [['vision', 'Visión y misión', 'all'], ['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'ceo'], ['roadmap', 'Roadmap', 'roadmap'], ['library', 'Library', 'library']],
+  inherent: [['vision', 'Visión y misión', 'all'], ['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'ceo'], ['team/laya', 'Laya', 'ceo'], ['roadmap', 'Roadmap', 'roadmap'], ['library', 'Library', 'library']],
 };
 const ORG = GROUPS.filter((g) => g[3] === 'org').map(([k, l]) => [k, l]);
 const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands' };
@@ -100,6 +100,15 @@ const sees = (k) => {
 };
 // La sección de Organization de una pantalla (el portal visto por el equipo va con Proyectos).
 const sectionOf = (key) => (key === 'portal' ? 'proyectos' : ORG.map(([g]) => g).find((g) => (TABS[g] || []).some(([r]) => r.split('/')[0] === key)) || null);
+// El nombre de donde estás, para la vista grande («← Proyectos / Inherent»): la pestaña abierta, o la marca en Marcas.
+setViewSection(() => {
+  if (!me) return '';
+  const cur = resolve(hashNow());
+  if (cur.key === 'marcas') return brandsNow().find((b) => b.slug === cur.rest[0])?.name || 'Marcas';
+  const path = [cur.key, ...cur.rest].join('/');
+  const tab = (TABS[sectionOf(cur.key)] || []).filter(([r]) => path === r || path.startsWith(r + '/')).sort((a, z) => z[0].length - a[0].length)[0];
+  return tab?.[1] || LABEL[cur.key] || '';
+});
 
 // ---------- El espacio: se recuerda por persona y la última ruta de cada uno ----------
 const LS = (k) => `os.${k}.${me?.email || ''}`;
