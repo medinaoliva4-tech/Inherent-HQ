@@ -85,6 +85,7 @@ export async function estado(slug) {
   return {
     status: running ? 'running' : d?.last ? 'done' : 'none', at: d?.at || null, last: d?.last || null, error: err0,
     runs: (d?.runs || []).map(({ red, status, handle }) => ({ red, status, ...(handle ? { handle } : {}) })), saltadas: d?.skipped || [],
+    laya_error: d?.laya_error || null,
     mes: { usd: d?.month?.ym === ym ? +d.month.usd || 0 : 0, tope: content.TOPE_MES_USD },
   };
 }
@@ -139,7 +140,9 @@ async function ingest(slug, doc, posts, who) {
   await Promise.all(Array.from({ length: 6 }, async () => { while (queue.length && Date.now() - t0 < 20_000) { const o = queue.shift(); const l = await keepImg(o.thumb, who).catch(() => null); if (l) o.thumb = l; } }));
   for (const d of nuevos) { const { id, ...rest } = d; await db.upsert('content', id, rest, who); }
   for (const { id, patch } of act) await db.upsert('content', id, patch, who);
-  await laya.pedirPendientes('content', nuevos, who).catch((e) => console.error('laya pendientes', e.message));
+  // Cada post nuevo queda pendiente de Laya. Si falla, queda anotado (se ve en Investigación) y el cron diario lo reintenta.
+  try { await laya.pedirPendientes('content', nuevos, who); if (doc.laya_error) await db.upsert('sources', 'scrape-' + slug, { laya_error: null }, who); }
+  catch (e) { console.error('laya pendientes', e.message); await db.upsert('sources', 'scrape-' + slug, { laya_error: { msg: e.message, n: nuevos.length, at: new Date().toISOString() } }, who).catch(() => {}); }
   return { nuevos: nuevos.length, actualizados: act.length };
 }
 content.alTerminar(ingest);
@@ -163,12 +166,29 @@ export async function cronScrape(who = 'cron') {
   }
   return { done, saltadas, fallas };
 }
-// Cada día: recoge lo que quedó corriendo (por si el webhook no llegó y nadie abrió la página).
-export async function cronSettle(who = 'cron') {
-  const done = [];
-  for (const p of await content.profiles()) { try { const d = await settle(p.slug, who); if (d?.result && d?.last) done.push(p.slug); } catch (e) { console.error('cron settle', p.slug, e.message); } }
-  return { done };
+// Cada día: recoge lo que quedó corriendo (por si el webhook no llegó y nadie abrió la página) y vuelve a dejar
+// pendientes de Laya los posts del scraping que se quedaron sin juicio ni pendiente.
+export async function cronSettle(who = 'cron', { soloLaya = false } = {}) {
+  const done = [], conLaya = [];
+  for (const p of await content.profiles()) {
+    if (!soloLaya) { try { const d = await settle(p.slug, who); if (d?.result && d?.last) done.push(p.slug); } catch (e) { console.error('cron settle', p.slug, e.message); } }
+    try { const n = await pendientesFaltantes(p.slug, who); if (n) conLaya.push({ slug: p.slug, n }); } catch (e) { console.error('cron laya', p.slug, e.message); }
+  }
+  return { done, laya: conLaya };
 }
+// Los posts del scraping de una marca que no tienen ni juicio ni pendiente de Laya: se vuelven a pedir.
+export async function pendientesFaltantes(slug, who) {
+  const [all, jz] = await Promise.all([db.list('content'), db.list(laya.COLL)]);
+  const con = new Set(jz.filter((j) => j.target?.coll === 'content').map((j) => j.target.id));
+  const faltan = all.filter((x) => x.kind === 'research' && x.profile === slug && x.source === 'apify' && !con.has(x.id));
+  const n = faltan.length ? await laya.pedirPendientes('content', faltan, who) : 0;
+  const d = await db.get('sources', 'scrape-' + slug);
+  if (d?.laya_error) await db.upsert('sources', 'scrape-' + slug, { laya_error: null }, who);
+  return n;
+}
+// Lo que pasó con la búsqueda automática del lunes (también cuando no corrió): se guarda para mostrarlo en Investigación.
+export async function anotarCron(r, who = 'cron') { await db.upsert('settings', 'cron_scrape', { at: new Date().toISOString(), skipped: null, done: [], saltadas: [], fallas: [], ...r }, who).catch(() => {}); return r; }
+export const cronVisto = () => db.get('settings', 'cron_scrape').then((d) => (d ? { at: d.at, skipped: d.skipped || null, fallas: (d.fallas || []).length, done: (d.done || []).length } : null)).catch(() => null);
 
 // ---------- las rutas (api/index.js las registra con inv.rutas(on)) ----------
 const safeEq = (a, b) => { const x = Buffer.from(String(a)), y = Buffer.from(String(b)); return x.length === y.length && crypto.timingSafeEqual(x, y); };
@@ -184,7 +204,7 @@ export function rutas(on) {
     const slug = String(req.query.profile || ''), u = await abre(req, res, slug); if (!u) return;
     const cats = await referentes(slug); if (!cats) return res.status(404).json({ error: 'Esa marca no tiene perfil de contenido' });
     const [f, st, it] = await Promise.all([ficha(slug), estado(slug), items(slug)]);
-    res.json({ apify: content.apifyOn(), puede: { actualizar: MANDAN.includes(u.role), editar: edits(u, 'content') }, ficha: f, estado: st, referentes: cats, puerta: it.puerta, items: it.items });
+    res.json({ apify: content.apifyOn(), cron: await cronVisto(), puede: { actualizar: MANDAN.includes(u.role), editar: edits(u, 'content') }, ficha: f, estado: st, referentes: cats, puerta: it.puerta, items: it.items });
   });
   on('POST', 'investigacion/referentes', async (req, res) => {
     const b = body(req), slug = String(b.profile || ''), u = await abre(req, res, slug, true); if (!u) return;

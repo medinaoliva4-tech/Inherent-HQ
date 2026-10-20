@@ -61,7 +61,7 @@ export async function brandHome(el, { me, b, alive }) {
     const items = S.inv ? (S.inv.items || []).filter((x) => x.url) : null, top = items ? loQueFunciona(items).slice(0, 3) : null;
     return html`<section class="bh-card"><header class="bh-h"><span class="lbl">Lo que funciona</span><a class="bh-more" href="${base}/investigacion">Investigación ${ico('right', 12)}</a></header>
       ${S.inv?.error ? html`<p class="mut sm">${S.inv.error}</p>` : top == null ? html`<p class="mut sm">Cargando…</p>` : top.length ? html`<div class="bh-top">${top.map((x) => { const t = safeImg(x.thumb); return html`<a href="${base}/investigacion" class="bh-top-i">${t ? html`<img src="${t}" alt="" loading="lazy" referrerpolicy="no-referrer">` : html`<span class="bh-top-ph">${ico('image', 18)}</span>`}<span class="bh-top-t">${x.handle ? '@' + x.handle : x.title || 'Post'}${x.x ? html` · <b>×${(+x.x).toFixed(1)}</b>` : ''}</span></a>`; })}</div>`
-        : html`<p class="bh-empty">${S.inv?.estado?.last ? 'Esta semana nada rindió arriba de su promedio.' : 'Se llena con la primera búsqueda de los lunes.'}</p>`}</section>`;
+        : html`<p class="bh-empty">${S.inv?.apify === false ? 'La búsqueda automática está apagada: falta la llave de Apify en Vercel.' : S.inv?.estado?.last ? 'Esta semana nada rindió arriba de su promedio.' : 'Se llena con la primera búsqueda de los lunes.'}</p>`}</section>`;
   }
 
   // ---------- 3 · Estrategia y números ----------

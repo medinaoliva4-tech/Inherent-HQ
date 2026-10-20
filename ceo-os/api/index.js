@@ -478,15 +478,15 @@ on('GET', 'community/inbox', async (req, res) => {
 on('GET', 'cron/scrape', async (req, res) => {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).json({ error: 'No autorizado' });
-  if (!content.apifyOn()) return res.json({ skipped: 'sin APIFY_TOKEN' });
-  res.json(await inv.cronScrape('cron'));
+  if (!content.apifyOn()) return res.json(await inv.anotarCron({ skipped: 'Falta la llave de Apify (APIFY_TOKEN) en Vercel' }));
+  res.json(await inv.anotarCron(await inv.cronScrape('cron')));
 });
 // Cada día recoge lo que quedó corriendo (por si el webhook de Apify no llegó y nadie abrió Investigación).
 on('GET', 'cron/settle', async (req, res) => {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).json({ error: 'No autorizado' });
-  if (!content.apifyOn()) return res.json({ skipped: 'sin APIFY_TOKEN' });
-  res.json(await inv.cronSettle('cron'));
+  // Sin Apify no hay nada que recoger, pero los pendientes de Laya se reintentan igual.
+  res.json(await inv.cronSettle('cron', { soloLaya: !content.apifyOn() }));
 });
 
 // Cada día deja lista la tarea de cada responsabilidad recurrente que ya toca (recetas internas activas).

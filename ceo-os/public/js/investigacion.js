@@ -93,7 +93,7 @@ function renderStatus(b, { st }) {
   const sirven = L ? items.filter((x) => x.scraped_at === L.at && x.laya?.sirve === true).length : 0;
   const listas = (E.runs || []).filter((r) => r.status !== 'READY' && r.status !== 'RUNNING').length;
   let line, sub = '';
-  if (!D.apify) { line = 'El scraping automático no está conectado'; sub = 'Falta APIFY_TOKEN en Vercel. Lo que ya está aquí sigue igual.'; }
+  if (!D.apify) { line = 'El scraping automático no está conectado'; sub = `Falta APIFY_TOKEN en Vercel. Lo que ya está aquí sigue igual.${D.cron?.skipped ? ` La última búsqueda automática (${cuando(D.cron.at)}) no corrió.` : ''}`; }
   else if (D.ficha && !D.ficha.activa) line = 'Sin ficha de oferta: la investigación automática de esta marca está bloqueada';
   else if (E.status === 'running') line = `Buscando posts nuevos… ${listas} de ${plural((E.runs || []).length, 'búsqueda')} lista${listas === 1 ? '' : 's'}`;
   else if (L) line = `Última actualización: ${cuando(L.done_at || L.at)} · ${plural(L.nuevos || 0, 'post nuevo', 'posts nuevos')} · ${sirven} ${sirven === 1 ? 'sirve' : 'sirven'}`;
@@ -108,6 +108,7 @@ function renderStatus(b, { st }) {
       ${D.puede?.actualizar && D.apify && D.ficha?.activa !== false && (hayRefs(D) || E.last) ? html`<button class="btn xs inv-upd" data-iv="update" ${running ? raw('disabled') : ''}>${ico('repeat', 14)} ${running ? 'Buscando…' : 'Actualizar ahora'}</button>` : ''}
     </div>
     ${E.error ? html`<div class="inv-alert" role="alert">${ico('alert', 16)}<span>${E.error.msg}</span></div>` : ''}
+    ${E.laya_error ? html`<div class="inv-note mut sm" role="status">Laya no pudo dejar ${plural(E.laya_error.n || 0, 'post', 'posts')} pendiente${E.laya_error.n === 1 ? '' : 's'} de juicio (${E.laya_error.msg}). Se reintenta sola cada día.</div>` : ''}
     ${fallas.length ? html`<div class="inv-note mut sm" title="${fallas.map((f) => `${redNombre(f.red)}${f.handle ? ' @' + f.handle : ''}: ${f.why}`).join('\n')}">Esta vez no se pudo leer ${[...new Set(fallas.map((f) => redNombre(f.red)))].join(' ni ')}. Se intenta de nuevo el lunes.</div>` : ''}
     ${fuera.length ? html`<div class="inv-note mut sm">${fuera.join(' y ')} no ${fuera.length === 1 ? 'está' : 'están'} en la ficha de oferta: no se investiga${fuera.length === 1 ? '' : 'n'}.</div>` : ''}`);
 }
