@@ -2,42 +2,16 @@ import { techDetail, html, raw, mount, api, toast, acts, drawer, closeDrawer, fd
 import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 import { estadoDe, separar, ESTADO_CLS, nombreDe } from '../element.js';
-import { layaBox } from '../laya-ui.js';
+import { investigacion } from '../investigacion.js';
+import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre } from '../calendario-contenido.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
 const RED = { instagram: 'Instagram', tiktok: 'TikTok', linkedin: 'LinkedIn', youtube: 'YouTube' };
-// Inspo: Research filtrado por plataforma. LinkedIn no tiene scraper conectado: lo que hay se guardó a mano (link + captura).
-export const PLATS = [['instagram', 'IG'], ['tiktok', 'TikTok'], ['linkedin', 'LinkedIn']];
-export const redOf = (x) => x?.red || (/tiktok\.com/.test(String(x?.url || '')) ? 'tiktok' : /linkedin\.com/.test(String(x?.url || '')) ? 'linkedin' : /youtu/.test(String(x?.url || '')) ? 'youtube' : 'instagram');
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$|^\/api\/media\/img-[a-f0-9]{24}$/.test(String(u || '')) ? u : null);
 // Las pestañas visibles; el resto del código sigue aquí y vuelve al agregar su pestaña a esta lista.
 const TABS = [['analytics', 'Analytics'], ['research', 'Research'], ['calendario', 'Calendario']];
 const C = col('content');
-// Research: de dónde viene cada video.
-// Los 5 niveles de la investigación (5 posts por nivel). Los nombres viejos (nicho, referente, agregado) se siguen viendo con su nombre.
-const RLEVELS = [['competencia', 'Competencia local', 'Competencia'], ['referente-similar', 'Referente · mercado parecido', 'Mercado parecido'], ['referente-aspiracional', 'Referente aspiracional', 'Aspiracional'], ['referente-crecimiento', 'Referente de crecimiento', 'Crecimiento'], ['propia', 'Lo propio', 'Lo propio']];
-const RLEGACY = [['nicho', 'Ganadores del nicho'], ['referente', 'Referentes'], ['agregado', 'Agregados']];
-const RPERLEVEL = 5;
-const rkinds = (all) => [['todos', 'Todas las fuentes'], ...RLEVELS.map(([k, l]) => [k, l]), ...RLEGACY.filter(([k]) => all.some((x) => x.tipo === k)), ['analisis', 'Con análisis']];
-// Como en Edits: arriba se elige qué tipo de contenido se ve.
-const RFMT = [['todo', 'Todo', 'grid'], ['reel', 'Reels', 'video'], ['carrusel', 'Carruseles', 'layers'], ['estatico', 'Estáticos', 'image'], ['plantilla', 'Plantillas', 'copy']];
-const fmtOf = (it) => it.format || (it.video === false ? 'estatico' : 'reel');
-// La biblioteca de formatos: resonancia, si hay que hablar y el tipo de formato. Las pone Claude (conector) o el equipo.
-// Los filtros de Research no son fijos: salen de lo que Claude subió de cada marca (sus pilares, sus tipos, sus etiquetas).
-const distinct = (list, f) => { const n = new Map(); for (const x of list) for (const v of [].concat(f(x) || [])) if (v) n.set(v, (n.get(v) || 0) + 1); return [...n].sort((a, z) => z[1] - a[1]).map(([v]) => v); };
-const TALK = [['no', 'sin hablar'], ['voz', 'voz en off'], ['si', 'hablando a cámara']];
-const resOf = (it) => it.resonance || (it.x >= 3 ? 'alta' : it.x >= 1.5 ? 'media' : it.x ? 'baja' : '');
-const RESN = { alta: 3, media: 2, baja: 1 };
-const TALKL = { no: 'sin hablar', voz: 'voz en off', si: 'hablando a cámara' };
-const mss = (n) => `${Math.floor(n / 60)}:${String(Math.round(n % 60)).padStart(2, '0')}`;
-const rtitle = (it) => it.title || String(it.text || '').split('\n')[0].slice(0, 80) || `@${it.handle || 'referencia'}`;
-const isoWeek = (d = new Date()) => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return `${t.getUTCFullYear()}-W${String(Math.ceil(((t - y) / 864e5 + 1) / 7)).padStart(2, '0')}`; };
-// El mismo id que usa el conector para un post de Research (así no se duplica).
-async function rsid(profile, url) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${profile}|${String(url).replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase()}`)); return 'rs-' + [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('').slice(0, 20); }
-const RKL = { nicho: 'Ganador del nicho', referente: 'Referente', competencia: 'Competencia', 'referente-similar': 'Referente similar', 'referente-aspiracional': 'Aspiracional', 'referente-crecimiento': 'Crecimiento', propia: 'Lo propio', agregado: 'Agregado' };
-const rkey = (u) => String(u || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
-const embedOf = (u) => { let m; if ((m = String(u).match(/instagram\.com\/(?:p|reel|reels|tv)\/([\w-]+)/))) return `https://www.instagram.com/p/${m[1]}/embed`; if ((m = String(u).match(/tiktok\.com\/@[^/]+\/video\/(\d+)/))) return `https://www.tiktok.com/embed/v2/${m[1]}`; return null; };
 const SHOOT = ['Por grabar', 'Grabado', 'Cancelado'];
 const KIND = { referente: 'Referente', competencia: 'Competencia', nicho: 'Nicho', propia: 'Tuya', 'referente-similar': 'Referente similar', 'referente-aspiracional': 'Aspiracional', 'referente-crecimiento': 'Crecimiento' };
 
@@ -62,11 +36,9 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   const FIXED_TABS = [['research', 'Research'], ['postear', 'Ideas'], ['calendario', 'Calendario'], ['analytics', 'Analytics']];
   const tabs = embed?.only ? FIXED_TABS.filter(([k]) => embed.only.includes(k)) : fixed ? FIXED_TABS : resumen ? TABS.filter(([k]) => k === 'analytics') : TABS;
   let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : tabs[0]?.[0] || 'analytics';
-  let rplat = PLATS.some(([k]) => k === embed?.plat) ? embed.plat : 'instagram';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'semana', pdate = today();
-  let parch = false, rs = null, rfilter = 'todos', rfmt = 'todo', cview = 'publicacion', shoots = null;
-  let rfOpen = false, rview = 'biblioteca', rq = '', rsort = 'res', rsel = { pilar: '', res: '', talk: '', style: '', tag: '' };
+  let parch = false, rs = null, cview = sub?.[0] === 'grabacion' ? 'grabacion' : 'publicacion', shoots = null;
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
@@ -255,13 +227,6 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     }).catch((e) => mount(b, html`<div class="warnbox">${e.message}</div>`));
     return true;
   }
-  // Cómo se reparte el contenido entre pilares (lo que no tiene pilar va en gris).
-  function pillarDonut(pillars, list) {
-    const parts = [...pillars.map((x) => ({ c: x.color, n: list.filter((p) => p.pillar === x.name).length })), { c: 'var(--fill-2)', n: list.filter((p) => !pillars.some((x) => x.name === p.pillar)).length }].filter((x) => x.n);
-    const total = parts.reduce((a, x) => a + x.n, 0), R = 30, C = 2 * Math.PI * R; let off = 0;
-    const arcs = parts.map((x) => { const len = (x.n / total) * C; const a = `<circle r="${R}" cx="40" cy="40" fill="none" style="stroke:${x.c}" stroke-width="14" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 40 40)"/>`; off += len; return a; }).join('');
-    return raw(`<svg width="80" height="80" viewBox="0 0 80 80" aria-label="Reparto por pilar">${total ? arcs : `<circle r="${R}" cx="40" cy="40" fill="none" style="stroke:var(--fill-2)" stroke-width="14"/>`}<text x="40" y="44" text-anchor="middle" font-size="14" style="fill:var(--ink)">${total}</text></svg>`);
-  }
   // ---------- Calendario: el mes como strip (cada día con sus puntos) y la semana elegida como panel ----------
   const DOWL = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
   function calWeek() {
@@ -283,220 +248,46 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       <div class="ct-days">${days.map((d, i) => { const k = iso(d), l = of(k); return html`<div class="ct-day ${k === T ? 'today' : ''} ${i > 4 ? 'we' : ''}" data-act="${act}" data-d="${k}"><div class="ct-dh"><span>${DOWL[i]}</span><b>${d.getDate()}</b></div><div class="ct-dl">${l.map(chip)}<span class="ct-add" aria-hidden="true">${ico('plus', 14)}</span></div></div>`; })}</div></section>`;
   }
   const stripTo = (b) => { const st = $('.ct-strip', b), w = st?.querySelector('.cd.wk'); if (st && w && st.scrollWidth > st.clientWidth) st.scrollLeft = Math.max(0, w.offsetLeft - 12); };
+  // El calendario es la suma: investigación (el referente que replica) + pilar o campaña + formato, con su nivel de consciencia.
+  // Arriba, una línea con la mezcla del mes; debajo, los filtros. Las reglas viven en calendario-contenido.js.
+  let ccf = {}, crefs = null, ccamps = [], cavs = [], cabiertos = [];
+  const conBrief = () => mesesConBrief(data.profile.months || []);
+  const cerrado = (fecha) => candado(String(fecha || '').slice(0, 7), conBrief(), cabiertos);
+  function needRefs(b, fn) {
+    if (crefs) return false;
+    mount(b, html`<p class="loading">Cargando…</p>`);
+    Promise.all([C.list().catch(() => []), col('campaigns').list().catch(() => []), api(`avatares?profile=${encodeURIComponent(slug)}`).then((r) => r.avatares).catch(() => []), col('settings').get('brief_open').catch(() => null)]).then(([l, cs, av, bo]) => { crefs = replicasDe(l, slug); ccamps = cs.filter((c) => c.client_slug === slug); cavs = av; cabiertos = bo?.marcas?.[slug] || []; }).then(() => alive() && b.isConnected && fn(b));
+    return true;
+  }
+  const pieceOpts = (extra = {}) => ({ brand: embed?.brand || data.profile.name, replicas: crefs || undefined, avatares: cavs, candado: cerrado, campanas: ejes(posts || [], [], ccamps).campanas, ...extra });
   function plan(b) {
-    if (needPosts(b, plan)) return;
+    if (needPosts(b, plan) || needRefs(b, plan)) return;
     const pillars = data.cfg.pillars || [];
     const colorOf = (n) => pillars.find((x) => x.name === n)?.color || 'var(--ch-light)';
     const wk = calWeek(), M = pdate.slice(0, 7);
     // Lo terminado se archiva solo: lo publicado hace más de 30 días (o marcado «Archivado») sale del calendario y va al Archivo.
     const { vivos, archivo } = separar(posts);
-    const inMonth = vivos.filter((p) => String(p.date || '').slice(0, 7) === M);
+    const vis = filtrar(vivos, { ...ccf, avatares: cavs });
     const brand = embed?.brand || data.profile.name;
-    const chip = (p) => { const [i, l] = driveState(p), e = estadoDe(p); return html`<button class="ppost st-${ESTADO_CLS[e] || 'idea'}" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${nombreDe(p, brand)} · ${e} · ${l}"><span class="pi">${i}</span><span class="pt">${p.title}</span>${p.format ? html`<span class="pf">${p.format}</span>` : ''}</button>`; };
-    const undated = vivos.filter((p) => !p.date && estadoDe(p) !== 'Publicado');
+    const mesL = new Date(M + '-15T12:00').toLocaleDateString('es-GT', { month: 'long' }).replace(/^./, (c) => c.toUpperCase());
+    const chip = (p) => { const [i, l] = driveState(p), e = estadoDe(p); return html`<button class="ppost st-${ESTADO_CLS[e] || 'idea'}" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${nombreDe(p, brand)} · ${e} · ${l} · ${tituloPieza(p, crefs)}"><span class="pi">${i}</span><span class="pt">${p.title}</span>${marcasPieza(p)}${p.format ? html`<span class="pf">${p.format}</span>` : ''}</button>`; };
+    const undated = vis.filter((p) => !p.date && estadoDe(p) !== 'Publicado');
     mount(b, html`
-      <div class="sp-inset ct-pillars"><div class="row" style="flex-wrap:wrap;gap:14px;align-items:center">${pillarDonut(pillars, inMonth)}
-        <div style="flex:1;min-width:200px"><b class="sm" style="font-weight:600">Pilares · este mes</b>
-        <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${pillars.length ? pillars.map((x) => { const c = inMonth.filter((p) => p.pillar === x.name).length; return html`<span class="chip" style="gap:6px"><i style="width:10px;height:10px;border-radius:50%;background:${x.color};display:inline-block"></i>${x.name}<span class="mut">${c}${inMonth.length ? ` · ${Math.round((c / inMonth.length) * 100)}%` : ''}</span></span>`; }) : html`<span class="mut sm">Sin pilares todavía: defínelos para ver cómo se reparte el contenido.</span>`}</div></div>
-        <button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div></div>
-      ${calStrip(wk, (k) => vivos.filter((p) => p.date === k).map((p) => colorOf(p.pillar)))}
-      ${calWeekPanel(wk, (k) => vivos.filter((p) => p.date === k), chip, 'pnew', raw(`${ico('folder', 13).toString()} en Drive · ⬆ por subir · ${ico('edit', 13).toString()} por grabar`), html`<button class="btn" data-act="pnew" data-d="">+ Pieza</button>`)}
+      ${(() => { const k = cerrado(M + '-01'); return k.cerrado ? html`<div class="cc-lock" role="status">${ico('lock', 16)}<div><b>Sin brief del ciclo de ${mesNombre(M)}</b><span class="mut sm">No se crean piezas con fecha de este mes hasta que ④ Creatividad deje el brief en 04-contenido/${M}/brief-del-ciclo.md. Las ideas sin fecha sí se pueden crear.</span></div>${me.role === 'ceo' ? html`<button class="btn ghost xs" data-act="briefOpen" data-m="${M}">Abrir el mes sin brief</button>` : ''}</div>` : k.por === 'ceo' ? html`<div class="cc-lock open mut sm">${ico('lock', 13)} ${mesNombre(M)} está abierto sin brief: lo abrió ${String(k.abierto.por || '').split('@')[0]}.</div>` : ''; })()}
+      <div class="cc-top">${mezclaHtml(mezclaDelMes(vivos, M, pillars, cavs), ccf, mesL)}<button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div>
+      ${filtrosHtml(ccf, ejes(vivos, pillars, ccamps), crefs.length)}
+      ${calStrip(wk, (k) => vis.filter((p) => p.date === k).map((p) => colorOf(p.pillar)))}
+      ${calWeekPanel(wk, (k) => vis.filter((p) => p.date === k), chip, 'pnew', raw(`${ico('folder', 13).toString()} en Drive · ⬆ por subir · ${ico('edit', 13).toString()} por grabar · ↻ replica`), html`<button class="btn" data-act="pnew" data-d="">+ Pieza</button>`)}
       ${undated.length ? html`<div class="sec-title"><h2>Sin fecha</h2><span class="mut sm">${undated.length}</span></div><div class="row ct-undated" style="flex-wrap:wrap;gap:6px">${undated.map(chip)}</div>` : ''}
       <div class="row el-archbar"><button class="chip ${parch ? 'dark' : ''}" data-act="parch" aria-pressed="${parch ? 'true' : 'false'}">${ico('folder', 13)} Archivo · ${archivo.length}</button><span class="mut sm">Lo publicado hace más de 30 días o marcado «Archivado» sale del calendario solo.</span></div>
       ${parch ? (archivo.length ? html`<div class="row ct-undated" style="flex-wrap:wrap;gap:6px;margin-top:8px">${archivo.sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).map(chip)}</div>` : html`<div class="mut sm" style="margin-top:8px">Nada archivado todavía.</div>`) : ''}`);
+    b.querySelectorAll('[data-ccf]').forEach((x) => { x.onchange = () => { ccf = { ...ccf, [x.dataset.ccf]: x.value }; plan(b); }; });
     stripTo(b);
   }
 
-  // ---------- Research: los videos que funcionaron, como galería (el scrape + lo que sube Claude con el conector) ----------
-  // Cada video puede traer «por qué funcionó» y una plantilla para la marca: los dos los escribe Claude y los sube con guardar_research.
-  // Research muestra SOLO lo que sube Claude con el conector de Inherent (guardar_research). El scrape semanal no entra aquí.
-  function needResearch(b, fn) {
-    if (rs) return false;
-    mount(b, html`<p class="loading">Cargando research…</p>`);
-    C.list().then((l) => { rs = l.filter((x) => x.kind === 'research' && x.profile === slug); }).catch(() => { rs = []; }).then(() => alive() && b.isConnected && fn(b));
-    return true;
-  }
-  function researchItems() {
-    return (rs || []).filter((x) => x.url).map((x) => ({ ...x, tipo: x.tipo || 'agregado', key: rkey(x.url) }))
-      .sort((a, z) => (z.x || 0) - (a.x || 0) || (z.views || 0) - (a.views || 0));
-  }
-  // La fuente: cuántos subió el conector, cuándo y quién. Desde aquí se copia la instrucción para Claude o se vacía.
-  const mcpPrompt = () => `Sube a Research del OS de Inherent lo que encontraste, con el conector de Inherent. Primero llama perfiles() para confirmar el perfil: es «${slug}». Luego guardar_research con perfil «${slug}» y una lista en «posts» (hasta 40 por llamada). Investiga en 5 niveles y pon el nivel en «tipo» de cada post: competencia (competencia local), referente-similar (referentes en mercados parecidos al de la marca), referente-aspiracional, referente-crecimiento (los que más crecen o más engagement tienen) y propia (lo de la marca). 5 posts por nivel; los países salen del mercado de la marca, no de una lista fija; se refresca cada mes. Cada post: url, formato (reel, carrusel o estatico), tipo, creador, fecha, titulo (nombre corto del formato), metricas {vistas, likes, comentarios, duracion_s, multiplicador (vs su mediana), engagement_pct}, miniatura, slides si es carrusel, caption, por_que_funciono {hook, retencion, estructura, por_que, adaptacion}, dificultad (1 a 5), tiempo_grabacion, receta y clips si los tienes, y tags: el pilar, el tipo de formato, «resonancia alta|media|baja», «sin hablar|voz en off|hablando a cámara» y lo que sirva para filtrar. En adaptacion, el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) se muestra en Análisis. Antes de subir, revisa con listar_research para no duplicar. No inventes métricas y solo urls https.`;
-  function sourceBox(all) {
-    const ts = (x) => String(x._meta?.updated_at || x._meta?.created_at || ''), last = all.map(ts).filter((x) => !isNaN(Date.parse(x))).sort().pop();
-    const who = all.find((x) => ts(x) === last)?._meta?.updated_by || all.find((x) => ts(x) === last)?._meta?.created_by;
-    return html`<div class="rsource"><span class="fi">${ico('bolt', 16)}</span><div style="flex:1;min-width:200px"><b style="font-weight:500">Fuente: conector de Claude</b>
-        <div class="mut sm">${all.length ? `${all.length} post${all.length === 1 ? '' : 's'} subido${all.length === 1 ? '' : 's'} con guardar_research${last ? ' · ' : ''}${last ? `último ${fdate(new Date(last).toISOString().slice(0, 10))}` : ''}${who ? ` por ${who}` : ''}` : 'Todavía no se ha subido nada. Claude lo sube con guardar_research.'}</div></div>
-      <button class="btn ghost xs" data-act="rprompt">Copiar instrucción para Claude</button><button class="btn ghost xs" data-act="rreload">Actualizar</button>${all.length ? html`<button class="btn ghost xs" data-act="rclear">Vaciar</button>` : ''}
-      <div class="rlevels sm mut" style="flex-basis:100%;display:flex;gap:6px 14px;flex-wrap:wrap">${RLEVELS.map(([k, l, sh]) => { const n = all.filter((x) => x.tipo === k).length; return html`<span title="${l}: ${n} de ${RPERLEVEL}" style="${n >= RPERLEVEL ? 'color:var(--ink)' : ''}">${sh} <b style="font-weight:500">${n}/${RPERLEVEL}</b></span>`; })}</div></div>`;
-  }
-  const rmatch = (x, k) => k === 'todos' || (k === 'analisis' ? Boolean(x.why) : x.tipo === k);
-  const fmatch = (x, k) => k === 'todo' || (k === 'plantilla' ? Boolean(x.plantilla) : fmtOf(x) === k);
-  // Un tile por video o post: miniatura, quién, y dos datos (alcance y cuánto supera su promedio). La ficha abre en un sheet lateral.
-  const rshort = (k) => RLEVELS.find(([x]) => x === k)?.[2] || RKL[k] || 'Video';
-  const rcard = (it) => { const t = safeImg(it.thumb), f = fmtOf(it), r = resOf(it);
-    const d1 = it.views ? html`<span>${ico('play', 12)} <b>${K(it.views)}</b></span>` : it.likes ? html`<span>${ico('heart', 12)} <b>${K(it.likes)}</b></span>` : '';
-    const d2 = it.x ? html`<span><b>×${it.x}</b> su promedio</span>` : r ? html`<span>Resonancia <b>${r}</b></span>` : '';
-    return html`<button class="sp-tile rs-tile" data-act="ropen" data-k="${it.key}" aria-label="${rtitle(it)} · @${it.handle || '—'}">
-      <span class="rs-thumb ${t ? '' : 'none'}" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 22)}</span>`}
-        <span class="rbadge">${it.plantilla ? 'Plantilla' : rshort(it.tipo)}</span>
-        <span class="ricons">${it.tested ? html`<i title="Probado">${ico('check', 13)}</i>` : ''}${f !== 'reel' ? html`<i title="${f === 'carrusel' ? 'Carrusel' : 'Estático'}">${ico(f === 'carrusel' ? 'layers' : 'image', 13)}</i>` : ''}${it.why ? html`<i title="Tiene análisis">${ico('bulb', 13)}</i>` : ''}</span></span>
-      <span class="rs-body"><b class="rs-title">${rtitle(it)}</b><span class="rs-by">@${it.handle || '—'}</span>${d1 || d2 ? html`<span class="rs-data">${d1}${d2}</span>` : ''}</span></button>`; };
-  const rsearch = (x, q) => !q || [x.title, x.handle, x.text, x.style, ...(x.tags || []), x.pillar, x.why?.hook, x.why?.por_que, x.why?.adaptacion].join(' ').toLowerCase().includes(q);
-  const SORTS = [['res', 'Resonancia primero'], ['x', 'Más veces su promedio'], ['views', 'Más vistas'], ['recent', 'Más recientes']];
-  const rsorter = { res: (a, z) => (RESN[resOf(z)] || 0) - (RESN[resOf(a)] || 0) || (z.x || 0) - (a.x || 0), x: (a, z) => (z.x || 0) - (a.x || 0), views: (a, z) => (z.views || 0) - (a.views || 0), recent: (a, z) => String(z.at || '').localeCompare(String(a.at || '')) };
-  function research(b) {
-    if (needResearch(b, research)) return;
-    const W = isoWeek(), q = rq.trim().toLowerCase();
-    const allP = researchItems(), all = embed?.inspo ? allP.filter((x) => redOf(x) === rplat) : allP, base = rview === 'semana' ? all.filter((x) => x.week === W) : all;
-    const sel = (x) => fmatch(x, rfmt) && rmatch(x, rfilter) && (!rsel.pilar || x.pillar === rsel.pilar) && (!rsel.res || resOf(x) === rsel.res) && (!rsel.talk || x.talk === rsel.talk) && (!rsel.style || x.style === rsel.style) && (!rsel.tag || (x.tags || []).includes(rsel.tag)) && rsearch(x, q);
-    const list = base.filter(sel).sort(rsorter[rsort]);
-    const pillars = [...new Set([...(data.cfg.pillars || []).map((x) => x.name), ...distinct(all, (x) => x.pillar)])].filter(Boolean);
-    const RL = ['alta', 'media', 'baja'], present = { res: RL.filter((r) => all.some((x) => resOf(x) === r)), talk: TALK.filter(([v]) => all.some((x) => x.talk === v)), style: distinct(all, (x) => x.style), tag: distinct(all, (x) => x.tags).slice(0, 24) };
-    const frow = (lbl, k, opts) => html`<div class="rfrow"><span class="lbl">${lbl}</span><div class="rfopts">${opts.map(([v, l]) => html`<button class="chip ${rsel[k] === v ? 'dark' : ''}" data-act="rsel" data-k="${k}" data-v="${v}">${l}</button>`)}</div></div>`;
-    const nf = [rfilter !== 'todos', ...Object.values(rsel)].filter(Boolean).length;
-    mount(b, html`${embed?.inspo ? html`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:14px"><div class="tabs" style="margin:0">${PLATS.map(([k, l]) => html`<button class="${rplat === k ? 'on' : ''}" data-act="rplat" data-k="${k}">${l} · ${allP.filter((x) => redOf(x) === k).length}</button>`)}</div><div class="sp"></div><button class="btn ghost xs" data-act="rmanual">+ Guardar a mano</button></div>
-      ${rplat === 'linkedin' ? html`<div class="sp-callout info" style="margin-bottom:12px"><span class="grow"><b>LinkedIn: guardado a mano.</b> No hay scraper de LinkedIn conectado. Pega el link del post y, si quieres, una captura (link https a la imagen).</span></div>` : ''}` : ''}
-      <div class="rs-bar"><div class="tabs rs-fmt" style="margin:0">${RFMT.map(([k, l, i]) => html`<button class="${rfmt === k ? 'on' : ''}" data-act="rfmt" data-k="${k}">${ico(i, 15)} ${l}</button>`)}</div><div class="sp"></div>
-        <div class="tabs" style="margin:0">${[['biblioteca', 'Biblioteca'], ['semana', `Mi semana · ${all.filter((x) => x.week === W).length}`]].map(([k, l]) => html`<button class="${rview === k ? 'on' : ''}" data-act="rview" data-v="${k}">${l}</button>`)}</div></div>
-      ${sourceBox(all)}
-      <div class="rs-search"><label class="rs-q">${ico('search', 18)}<input class="in" id="rq" placeholder="Buscar: cuenta, tema, hook, estilo…" value="${rq}" aria-label="Buscar en Research"></label><select class="in" id="rsort" aria-label="Ordenar">${SORTS.map(([k, l]) => html`<option value="${k}" ${rsort === k ? raw('selected') : ''}>${l}</option>`)}</select></div>
-      <details class="rfilt" ${rfOpen ? raw('open') : ''}><summary>${ico('bars', 15)} Filtrar${nf ? html` <b>${nf}</b>` : ''}</summary>
-      <div class="rfilters sp-inset">
-        <div class="rfrow"><span class="lbl">Fuente</span><div class="rfopts">${rkinds(all).map(([k, l]) => html`<button class="chip ${rfilter === k ? 'dark' : ''}" data-act="rfilter" data-k="${k}">${l}</button>`)}</div></div>
-        ${pillars.length ? frow('Pilar', 'pilar', pillars.map((x) => [x, x])) : ''}
-        ${present.res.length ? frow('Resonancia', 'res', present.res.map((x) => [x, x])) : ''}
-        ${present.talk.length ? frow('¿Hablas?', 'talk', present.talk) : ''}
-        ${present.style.length ? frow('Tipo', 'style', present.style.map((x) => [x, x])) : ''}
-        ${present.tag.length ? frow('Etiquetas', 'tag', present.tag.map((x) => [x, x])) : ''}
-      </div>
-      </details>
-      <div class="rs-count">${list.length} de ${base.length} formatos${rview === 'semana' ? ` · semana ${W.slice(-2)}` : ''}</div>
-      ${list.length ? html`<div class="rs-grid">${list.map(rcard)}</div>` : html`<div class="empty"><b>${rview === 'semana' ? 'Tu semana está vacía' : all.length ? 'Nada con esos filtros' : embed?.inspo ? `Sin inspo de ${RED[rplat]} todavía` : 'Research está vacío'}</b>${rview === 'semana' ? 'Abre un formato de la Biblioteca y toca «A mi semana».' : all.length ? 'Quita algún filtro.' : embed?.inspo ? (rplat === 'linkedin' ? 'Guárdalo a mano: «+ Guardar a mano» con el link del post.' : 'Claude lo sube con guardar_research (copia la instrucción de arriba) o guárdalo a mano.') : 'Se llena cuando Claude sube posts con el conector. Copia la instrucción de arriba y pégasela.'}</div>`}`);
-    const qi = $('#rq', b); qi.oninput = () => { rq = qi.value; const pos = qi.selectionStart; research(b); const n = $('#rq', b); n.focus(); n.setSelectionRange(pos, pos); };
-    const fd = $('.rfilt', b); if (fd) fd.ontoggle = () => { rfOpen = fd.open; };
-    $('#rsort', b).onchange = (e) => { rsort = e.target.value; research(b); };
-  }
-  // Guarda etiquetas de un post de Research: si solo venía del scrape, se crea con el mismo id que usa el conector.
-  async function rsave(it, patch) {
-    const id = await rsid(slug, it.url);
-    const cur = (rs || []).find((x) => x.id === id) || (await C.get(id).catch(() => null));
-    const keep = Object.fromEntries(['url', 'red', 'handle', 'thumb', 'views', 'likes', 'comments', 'shares', 'x', 'at', 'text', 'tipo', 'format', 'slides'].filter((k) => it[k] != null && it[k] !== '').map((k) => [k, it[k]]));
-    const r = cur ? await C.save({ ...cur, ...patch }) : await C.create({ id, kind: 'research', profile: slug, ...keep, ...patch });
-    rs = [...(rs || []).filter((x) => x.id !== r.id), r];
-    return r;
-  }
-  const vidLine = (it) => [it.url, `@${it.handle || '—'}`, RED[it.red] || it.red, it.views && `${it.views} vistas`, it.likes && `${it.likes} likes`, it.x && `${it.x}× su promedio`].filter(Boolean).join(' · ');
-  const whyText = (w) => [w.hook && `Hook: ${w.hook}`, w.retencion && `Qué retuvo: ${w.retencion}`, w.estructura?.length && `Estructura: ${w.estructura.join(' → ')}`, w.por_que && `Por qué funcionó: ${w.por_que}`].filter(Boolean).join('\n');
-  // «Usar plantilla»: abre Claude Code en la nube con todo listo. Lee el brand kit de la marca y entrega el video como plantilla terminada.
-  function usePrompt(it) {
-    const p = data.profile, r = root();
-    return `/inherent ④ Creatividad · ${p.name}: convierte este video de referencia en una plantilla terminada para la marca.
-
-Video: ${it.url}${it.title ? ` («${it.title}»)` : ''}
-1. Lee el post completo con el conector de Inherent: leer_research, perfil «${slug}», ese url (trae métricas, hook, tu versión, receta, clips y por qué funcionó).
-2. Lee ${r}/CLAUDE.md y el brand kit: ${r}/02-marca/ y los links de Figma y Drive en ${r}/00-onboarding/LINKS.md. Si no está ahí, búscalo y dime dónde quedó.
-3. Del video toma solo el craft (formato, hook, ritmo, estructura, edición); el tema sale de la estrategia (${r}/01-estrategia/).
-4. Entrega la plantilla con estas secciones, en Markdown: ## Hook (texto y visual) · ## Guion por escena (tiempos) · ## Tomas · ## Texto en pantalla · ## Música y ritmo · ## Edición · ## Assets de la marca (fondos, logos, tipografías, hex).
-5. Súbela con guardar_research: perfil «${slug}», ese url y la plantilla en «plantilla».`;
-  }
-  function whyPrompt(it) {
-    const p = data.profile;
-    return `/inherent ④ Creatividad · ${p.name}: desglosa por qué funcionó este video.
-
-Video: ${vidLine(it)}
-${it.text ? `Texto del post: ${String(it.text).replace(/\s+/g, ' ').slice(0, 300)}\n` : ''}
-Ábrelo si puedes. Si no puedes verlo, deduce del texto y las métricas y márcalo como inferido.
-Devuelve: el hook (lo que pasa o se dice en los primeros 3 segundos), qué retuvo a la gente, la estructura en beats, por qué funcionó y cómo lo adaptaría ${p.name} (su estrategia está en ${root()}/01-estrategia/).
-Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}» y en «posts» este post: url, titulo, metricas {vistas, likes, comentarios, duracion_s, multiplicador}, dificultad (1 a 5), tiempo_grabacion, receta, clips {tiempo, que}, tags y por_que_funciono {hook, retencion, estructura, por_que, adaptacion (el primer párrafo es tu versión para la marca), inferido}.`;
-  }
-  // El detalle, como en Edits: el video en grande, la cuenta y «Usar plantilla» abajo, las acciones al lado.
-  function ropen(k) {
-    const it = researchItems().find((x) => x.key === k); if (!it) return;
-    const w = it.why || {}, em = embedOf(it.url), t = safeImg(it.thumb), f = fmtOf(it), slides = (it.slides || []).map(safeImg).filter(Boolean);
-    const stats = [it.views && [K(it.views), 'Vistas'], !it.views && it.likes && [K(it.likes), 'Likes'], it.x && [`×${it.x}`, 'Su mediana'], it.dur && [mss(it.dur), 'Duración'], it.diff && [`${it.diff}/5`, 'Dificultad'], it.er && !it.diff && [`${it.er}%`, 'Engagement']].filter(Boolean);
-    const chips = [it.pillar && [it.pillar, 'on'], it.style && [it.style], it.talk && [TALKL[it.talk]], it.rec && [`${it.rec} grabando`], ...(it.tags || []).map((x) => [x])].filter(Boolean);
-    // «adaptacion»: el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) va a Análisis.
-    const ad = String(w.adaptacion || '').trim(), cut = ad.search(/\n\s*\n|\n(?=\s*(#|[-*•]|\d+[.)]|\*\*))/), mine = cut > 0 ? ad.slice(0, cut).trim() : ad, analysis = cut > 0 ? ad.slice(cut).trim() : '';
-    const allR = researchItems(), styleOpts = distinct(allR, (x) => x.style), pillarOpts = [...new Set([...(data.cfg.pillars || []).map((x) => x.name), ...distinct(allR, (x) => x.pillar)])].filter(Boolean);
-    const receta = it.receta || [], clips = it.clips || [];
-    document.querySelector('.rsheet')?.remove();
-    // La ficha vive en un sheet lateral: arriba el video o el post, debajo quién lo hizo, las acciones y el análisis.
-    const v = document.createElement('div'); v.className = 'rsheet';
-    mount(v, html`<aside class="sp-sheet rv-sheet" role="dialog" aria-modal="true" aria-label="${rtitle(it)}">
-      <div class="row rv-head"><div class="rv-acc"><span class="rv-av">${(it.handle || '?')[0].toUpperCase()}</span><div style="min-width:0"><b>@${it.handle || '—'}</b><div class="sm mut">${[RED[it.red] || it.red, { reel: 'Reel', carrusel: 'Carrusel', estatico: 'Estático' }[f], RKL[it.tipo]].filter(Boolean).join(' · ')}</div></div></div><div class="sp"></div><button class="arrow light" data-v="close" title="Cerrar" aria-label="Cerrar">${ico('x', 16)}</button></div>
-      <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster">${t ? html`<img src="${t}" alt="">` : ''}<span class="rv-load">Cargando video…</span></div>`
-          : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
-          : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 26)}</span>`}</div>`}</div>
-      <div class="rv-actions"><button class="btn rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button><button class="btn ghost" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 16)} Agendar</button>
-        <button class="arrow light" data-v="why" title="Por qué funcionó" aria-label="Por qué funcionó">${ico('bars', 17)}</button>${/^https:\/\//.test(it.url) ? html`<a class="arrow light" href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original" aria-label="Abrir el original">${ico('globe', 17)}</a>` : ''}<button class="arrow light" data-v="del" title="Quitar de Research" aria-label="Quitar de Research">${ico('trash', 17)}</button></div>
-      <div class="rv-info">
-        <div class="rfc-head"><h2>${rtitle(it)}</h2>${resOf(it) ? html`<span class="rfc-res ${resOf(it)}">${resOf(it)}</span>` : ''}</div>
-        ${stats.length ? html`<div class="rfc-stats">${stats.map(([v2, l]) => html`<div><b>${v2}</b><span>${l}</span></div>`)}</div>` : ''}
-        ${chips.length ? html`<div class="rfc-chips">${chips.map(([l, c]) => html`<span class="${c || ''}">${l}</span>`)}</div>` : ''}
-        <div id="laya-ref"></div>
-        ${w.hook ? html`<div class="rfc-sec"><span class="lbl">Hook</span><p>${w.hook}</p></div>` : ''}
-        ${mine ? html`<div class="rfc-sec"><span class="lbl">Tu versión</span><div class="rfc-md">${md(mine)}</div></div>` : ''}
-        ${!it.why ? html`<div class="rfc-sec"><p class="mut">Todavía sin análisis. Claude lo desglosa y lo sube aquí.</p><button class="btn xs" data-v="ask">Pedir el análisis a Claude</button></div>` : ''}
-        ${receta.length || clips.length ? html`<details class="rfc-more" open><summary>Cómo se hace</summary>
-          ${receta.length ? html`<div class="rfc-sec"><span class="lbl">Receta</span><ol>${receta.map((x) => html`<li>${x}</li>`)}</ol></div>` : ''}
-          ${clips.length ? html`<div class="rfc-sec"><span class="lbl">Clips</span><ul class="rfc-clips">${clips.map((c) => html`<li>${c.t ? html`<b>${c.t}</b>` : ''}<span>${c.que}</span></li>`)}</ul></div>` : ''}
-        </details>` : ''}
-        ${w.estructura?.length || w.retencion || w.por_que ? html`<details class="rfc-more" id="rvwhy"><summary>Por qué funciona</summary>
-          ${w.estructura?.length ? html`<div class="rfc-sec"><span class="lbl">Estructura</span><ol>${w.estructura.map((x) => html`<li>${x}</li>`)}</ol></div>` : ''}
-          ${w.retencion ? html`<div class="rfc-sec"><span class="lbl">Qué retuvo</span><p>${w.retencion}</p></div>` : ''}
-          ${w.por_que ? html`<div class="rfc-sec"><span class="lbl">Por qué funcionó${w.inferido ? ' · inferido' : ''}</span><p>${w.por_que}</p></div>` : ''}
-        </details>` : ''}
-        ${analysis || it.text ? html`<details class="rfc-more"><summary>Análisis</summary>
-          ${analysis ? html`<div class="rfc-sec"><div class="rfc-md">${md(analysis)}</div></div>` : ''}
-          ${it.text ? html`<div class="rfc-sec"><span class="lbl">Texto del post</span><p class="mut">${String(it.text).slice(0, 800)}</p></div>` : ''}
-        </details>` : ''}
-        ${it.plantilla ? html`<details class="rfc-more rfc-tpl" open><summary>Plantilla para ${data.profile.name}</summary><div class="rfc-md">${md(it.plantilla)}</div></details>` : ''}
-        <div class="rfc-foot">${/^https:\/\//.test(it.url) ? html`<a href="${it.url}" target="_blank" rel="noopener noreferrer">Ver original @${it.handle || '—'} ↗</a>` : html`<span></span>`}<button class="rfc-btn ${it.tested ? 'on' : ''}" data-v="tested">${it.tested ? '✓ Probado' : 'Marcar probado'}</button></div>
-        <details class="rfc-edit"><summary>Etiquetas</summary>
-          <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><button class="chip ${it.week === isoWeek() ? 'dark' : ''}" data-v="week">${it.week === isoWeek() ? '✓ En mi semana' : '+ A mi semana'}</button></div>
-          <div class="grid g2 rtags" style="gap:8px;margin-top:10px;border:0;padding:0">
-            <label class="sm">Resonancia<select class="in" data-tag="resonance"><option value="">${resOf(it) ? `auto: ${resOf(it)}` : '—'}</option>${['alta', 'media', 'baja'].map((x) => html`<option ${it.resonance === x ? raw('selected') : ''}>${x}</option>`)}</select></label>
-            <label class="sm">¿Hablas?<select class="in" data-tag="talk"><option value="">—</option>${TALK.map(([v2, l]) => html`<option value="${v2}" ${it.talk === v2 ? raw('selected') : ''}>${l}</option>`)}</select></label>
-            <label class="sm">Tipo<input class="in" data-tag="style" list="rv-styles" value="${it.style || ''}" placeholder="—"><datalist id="rv-styles">${styleOpts.map((x) => html`<option value="${x}">`)}</datalist></label>
-            <label class="sm">Pilar<input class="in" data-tag="pillar" list="rv-pillars" value="${it.pillar || ''}" placeholder="—"><datalist id="rv-pillars">${pillarOpts.map((x) => html`<option value="${x}">`)}</datalist></label>
-          </div></details>
-      </div></aside>`);
-    document.body.appendChild(v); requestAnimationFrame(() => v.classList.add('on'));
-    if (it.id) layaBox(v.querySelector('#laya-ref'), { coll: 'content', id: it.id }); // Fase 3 · Laya: ¿sirve para esta marca? v.querySelector('[data-v="close"]')?.focus({ preventScroll: true });
-    // El video se ve aquí mismo: el servidor saca el link directo del reel (caduca, por eso se pide al abrir). Si Instagram no lo deja, queda la miniatura con el link al original.
-    if (f === 'reel' && em) {
-      const box = $('#rvmedia', v), fallback = () => { const l = box.querySelector('.rv-load'); if (l) l.outerHTML = `<a class="rv-load rv-ext" href="${it.url}" target="_blank" rel="noopener noreferrer">Instagram no deja verlo aquí · Abrir ↗</a>`; };
-      fetch('/api/content/video?' + new URLSearchParams({ url: it.url })).then((r) => (r.ok ? r.json() : {})).then(({ src }) => {
-        const p = box.querySelector('.rv-poster'); if (!p) return; if (!src) return fallback();
-        const vd = document.createElement('video'); Object.assign(vd, { src, controls: true, autoplay: true, muted: true, loop: true, playsInline: true }); if (t) vd.poster = t;
-        vd.setAttribute('referrerpolicy', 'no-referrer');
-        let viaOS = false; vd.onerror = () => { if (viaOS) { vd.replaceWith(p); return fallback(); } viaOS = true; vd.src = '/api/content/stream?' + new URLSearchParams({ u: src }); vd.play?.().catch(() => {}); };
-        p.replaceWith(vd);
-      }).catch(fallback);
-    }
-    const close = () => { v.remove(); removeEventListener('keydown', esc); }, esc = (e) => { if (e.key === 'Escape') close(); };
-    addEventListener('keydown', esc); addEventListener('hashchange', close, { once: true });
-    const tag = async (patch, msg) => { try { Object.assign(it, await rsave(it, patch)); toast(msg); research($('#cbody', el)); } catch (er) { toast(er.message, true); } };
-    v.querySelectorAll('[data-tag]').forEach((sl) => { sl.onchange = () => tag({ [sl.dataset.tag]: sl.value.trim().slice(0, 80) }, 'Etiqueta guardada'); });
-    v.onclick = async (e) => {
-      if (e.target === v) return close();
-      const tg = e.target.closest('[data-v="week"],[data-v="tested"]');
-      if (tg) { const on = tg.dataset.v === 'week' ? it.week !== isoWeek() : !it.tested; await tag(tg.dataset.v === 'week' ? { week: on ? isoWeek() : '' } : { tested: on }, tg.dataset.v === 'week' ? (on ? 'Agregado a tu semana' : 'Quitado de tu semana') : on ? 'Marcado como probado' : 'Quitado de probados');
-        tg.classList.toggle('dark', on); tg.classList.toggle('on', on); tg.textContent = tg.dataset.v === 'week' ? (on ? '✓ En mi semana' : '+ A mi semana') : on ? '✓ Probado' : 'Marcar probado'; return; }
-      const a = e.target.closest('[data-v]')?.dataset.v; if (!a) return;
-      if (a === 'close') close();
-      if (a === 'del') { if (!(await confirmAsk('¿Quitar este post de Research?'))) return; try { await C.remove(it.id); rs = (rs || []).filter((x) => x.id !== it.id); close(); toast('Quitado de Research'); research($('#cbody', el)); } catch (er) { toast(er.message, true); } return; }
-      if (a === 'use') { openClaude(usePrompt(it)); toast('Se abrió Claude Code con todo listo: dale enviar'); }
-      if (a === 'ask') { openClaude(whyPrompt(it)); toast('Se abrió Claude Code: dale enviar. Cuando termine, toca «Actualizar»'); }
-      if (a === 'why') { const d = $('#rvwhy', v); if (d) { d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
-      if (a === 'plan') {
-        const x = await ask('Agendar en Publicación', [{ k: 'title', l: 'Idea', v: `Basado en @${it.handle || 'referencia'}`, req: true }, { k: 'date', l: 'Fecha', t: 'date', v: today(), req: true, half: true }, { k: 'format', l: 'Formato', t: 'select', opts: ['Reel', 'Carrusel', 'Estático', 'TikTok', 'Story'], v: f === 'carrusel' ? 'Carrusel' : f === 'estatico' ? 'Estático' : 'Reel', half: true }], 'Agendar');
-        if (!x) return;
-        try { await C.create({ kind: 'post', profile: slug, title: x.title, date: x.date, format: x.format, status: 'Idea', caption: `Referencia: ${it.url}` }); posts = null; toast('Agendado en Calendario → Publicación'); } catch (er) { toast(er.message, true); }
-      }
-    };
-  }
+  // ---------- Research → Investigación (Fase 4): vive en investigacion.js; aquí solo el enganche ----------
+  // rs guarda el estado de la investigación mientras la marca esté abierta (load() lo limpia al cambiar de marca).
+  function research(b) { rs ||= {}; investigacion(b, { me, slug, data, alive, embed, st: rs, onPost: () => { posts = null; } }); }
 
   // ---------- Calendario: Publicación (las piezas del Planner) y Grabación (qué se graba cada día) ----------
   const recal = () => (tab === 'calendario' ? calendario($('#cbody', el)) : plan($('#cbody', el)));
@@ -660,30 +451,15 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
     cview: (t) => { cview = t.dataset.v; recal(); },
     snew: (t, e) => { if (e?.target?.closest('.ppost')) return; editShoot(null, t.dataset.d); },
     sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },
-    rfilter: (t) => { rfilter = t.dataset.k; research($('#cbody', el)); },
-    rfmt: (t) => { rfmt = t.dataset.k; research($('#cbody', el)); },
-    rview: (t) => { rview = t.dataset.v; research($('#cbody', el)); },
-    rsel: (t) => { rsel[t.dataset.k] = rsel[t.dataset.k] === t.dataset.v ? '' : t.dataset.v; research($('#cbody', el)); },
-    rreload: () => { rs = null; research($('#cbody', el)); },
-    rplat: (t) => { rplat = t.dataset.k; research($('#cbody', el)); },
-    // Inspo a mano: el link del post (IG, TikTok o LinkedIn), quién lo hizo y una captura opcional. Mismo id que el conector: no se duplica.
-    rmanual: async () => {
-      const v = await ask(`Guardar inspo de ${RED[rplat]}`, [{ k: 'url', l: 'Link del post', req: true }, { k: 'title', l: 'Nombre corto', req: true, half: true }, { k: 'handle', l: 'Cuenta (@)', half: true }, { k: 'thumb', l: 'Captura (link https a la imagen)' }, { k: 'why', l: 'Por qué te sirve', t: 'textarea' }], 'Guardar');
-      if (!v) return; if (!/^https:\/\/\S+$/.test(v.url)) return toast('El link debe empezar con https://', true);
-      const red = redOf({ url: v.url }), thumb = /^https:\/\/\S+$/.test(v.thumb) ? v.thumb : undefined;
-      try { const id = await rsid(slug, v.url), cur = (rs || []).find((x) => x.id === id);
-        const doc = { id, kind: 'research', profile: slug, url: v.url, red: red === 'youtube' ? 'otra' : red, handle: v.handle.replace(/^@/, '').toLowerCase() || undefined, title: v.title, thumb, tipo: 'agregado', format: red === 'linkedin' ? 'estatico' : undefined, manual: true, why: v.why ? { por_que: v.why, inferido: true } : undefined };
-        const r = cur ? await C.save({ ...cur, ...doc, v: cur.v }) : await C.create(doc); rs = [...(rs || []).filter((x) => x.id !== r.id), r]; rplat = PLATS.some(([k]) => k === red) ? red : rplat; toast('Guardado en Inspo'); research($('#cbody', el)); }
-      catch (e) { toast(e.message, true); }
+    pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; if (t.dataset.d && cerrado(t.dataset.d).cerrado) return toast(`Sin brief del ciclo de ${mesNombre(t.dataset.d.slice(0, 7))}: no se crean piezas con fecha de ese mes`, true); const r = await editPost(slug, null, pieceOpts(t.dataset.d ? { date: t.dataset.d } : {})); if (r) { posts = [...posts, r]; recal(); } },
+    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p, pieceOpts()); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
+    ccmix: (t) => { const k = t.dataset.f, v = t.dataset.v; ccf = { ...ccf, [k]: ccf[k] === v ? '' : v }; recal(); },
+    ccclear: () => { ccf = {}; recal(); },
+    briefOpen: async (t) => {
+      if (!(await confirmAsk(`¿Abrir ${mesNombre(t.dataset.m)} sin brief del ciclo? Queda anotado que lo abriste tú.`))) return;
+      try { const d = (await col('settings').get('brief_open').catch(() => null)) || { id: 'brief_open', marcas: {} }; const marcas = { ...(d.marcas || {}) }; marcas[slug] = [...(marcas[slug] || []).filter((x) => x.mes !== t.dataset.m), { mes: t.dataset.m, por: me.email, en: new Date().toISOString() }];
+        await (d.v ? col('settings').save({ ...d, marcas }) : col('settings').create({ id: 'brief_open', marcas })); cabiertos = marcas[slug]; toast('Mes abierto sin brief'); recal(); } catch (e) { toast(e.message, true); }
     },
-    rprompt: async () => { try { await navigator.clipboard.writeText(mcpPrompt()); toast('Instrucción copiada: pégasela a Claude'); } catch { toast(mcpPrompt()); } },
-    rclear: async () => {
-      if (!(await confirmAsk(`¿Vaciar Research de ${data.profile.name}? Se borran los ${(rs || []).length} posts subidos, con su análisis y su plantilla.`))) return;
-      try { for (const x of rs || []) await C.remove(x.id); rs = []; toast('Research vacío'); research($('#cbody', el)); } catch (e) { toast(e.message, true); }
-    },
-    ropen: (t) => ropen(t.dataset.k),
-    pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; const brand = embed?.brand || data.profile.name; const r = await editPost(slug, null, t.dataset.d ? { date: t.dataset.d, brand } : { brand }); if (r) { posts = [...posts, r]; recal(); } },
-    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p, { brand: embed?.brand || data.profile.name }); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
     parch: () => { parch = !parch; recal(); },
     pillars: async () => {
       const cur = data.cfg.pillars || [];

@@ -11,6 +11,7 @@ import { roleTable, changeRole, roleLabel } from './rolemap.js';
 import { RECIPE_ROLES } from './recipes.js';
 import { holders } from './cycle.js';
 import { levelName, LEVEL_NAMES } from './levels.js';
+import { intelView } from './intel-ui.js';
 
 const PR = col('projects'), TK = col('tasks');
 export const PSTATES = ['En curso', 'En riesgo', 'Pausado', 'Hecho'];
@@ -20,7 +21,7 @@ const PHST = [['todo', 'Pendiente'], ['now', 'En curso'], ['done', 'Hecha']];
 const PHCLS = { todo: 'todo', now: 'now', done: 'done' };
 const UPD = [['green', 'A tiempo'], ['yellow', 'En riesgo'], ['red', 'Atrasado'], ['blue', 'En pausa']];
 const UPD_TO_ST = { green: 'En curso', yellow: 'En riesgo', red: 'En riesgo', blue: 'Pausado' };
-const VIEWS = [['tareas', 'Tareas', 'grid'], ['resumen', 'Resumen', 'doc'], ['timeline', 'Timeline', 'bars'], ['calendario', 'Calendario', 'cal'], ['archivos', 'Archivos', 'folder'], ['equipo', 'Equipo', 'users']];
+const VIEWS = [['tareas', 'Tareas', 'grid'], ['entregables', 'Entregables', 'layers'], ['resumen', 'Resumen', 'doc'], ['timeline', 'Timeline', 'bars'], ['calendario', 'Calendario', 'cal'], ['archivos', 'Archivos', 'folder'], ['equipo', 'Equipo', 'users']];
 const COVERS = [['t1', 'Café claro'], ['t2', 'Café oscuro'], ['olive', 'Oliva'], ['terra', 'Terracota'], ['ink', 'Espresso']];
 const DAY = 864e5;
 const iso = (d) => d.toISOString().slice(0, 10);
@@ -137,7 +138,9 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
   if (!p) { try { p = await PR.get(id); projects.push(p); } catch {} }
   if (!p) return mount(el, html`<div class="empty"><b>Ese proyecto no existe</b>O no está entre los tuyos.<div><button class="btn" data-x="back">← Proyectos</button></div></div>`), (el.onclick = (e) => e.target.closest('[data-x=back]') && back());
   // Abre en el Kanban de sus tareas (las vistas viejas Lista y Tablero caen ahí).
-  view = VIEWS.some(([k]) => k === view) ? view : 'tareas';
+  // «Entregables» (Intel) solo existe en un proyecto de un cliente: lee la carpeta de ese cliente.
+  const views = () => VIEWS.filter(([k]) => k !== 'entregables' || p.client_slug);
+  view = views().some(([k]) => k === view) ? view : 'tareas';
   let zoom = lsGet('pp.zoom', 'semana'), calMonth = today().slice(0, 7), briefEdit = false, upColor = 'green';
   const folded = new Set(lsGet('pp.fold.' + id, []));
   // Las fases con clave estable: la clave se guarda con el proyecto la primera vez que se necesita.
@@ -194,16 +197,19 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
             <div class="pp-pk">${ico('trend', 14)} Avance</div><div class="pp-prog"><span class="pp-meter big" title="${pct}% hecho${tpct != null ? ` · ${tpct}% del tiempo` : ''}"><i style="width:${pct}%"></i>${tpct != null ? html`<em style="left:${tpct}%"></em>` : ''}</span><b>${pct}%</b>${pace ? html`<span class="pp-pace ${pace === 'Al día' ? 'ok' : 'bad'}">${pace}</span>` : ''}${tpct != null ? html`<span class="mut sm">${tpct}% del tiempo</span>` : ''}</div>
           </div>
         </div></div>
-      <nav class="pp-tabs" role="tablist">${VIEWS.map(([k, l, i]) => html`<button role="tab" class="${view === k ? 'on' : ''}" aria-selected="${String(view === k)}" data-x="view" data-v="${k}">${ico(i, 15)}<span>${l}</span></button>`)}</nav>`;
+      <nav class="pp-tabs" role="tablist">${views().map(([k, l, i]) => html`<button role="tab" class="${view === k ? 'on' : ''}" aria-selected="${String(view === k)}" data-x="view" data-v="${k}">${ico(i, 15)}<span>${l}</span></button>`)}</nav>`;
   }
   const paintHead = () => { const h = $('#pphead', el); if (h) mount(h, head()); };
   function paint() { mount(el, html`<div class="pp"><div id="pphead">${head()}</div><div id="ppbody" class="pp-body"></div></div>`); paintBody(); }
   function paintBody() {
     const b = $('#ppbody', el); if (!b) return; closePop();
     const sx = $('.pp-gwrap', b)?.scrollLeft;
-    ({ tareas, resumen, timeline, calendario, archivos, equipo })[view](b);
+    ({ tareas, entregables, resumen, timeline, calendario, archivos, equipo })[view](b);
     if (sx != null && $('.pp-gwrap', b)) $('.pp-gwrap', b).scrollLeft = sx;
   }
+
+  // ---------- Entregables (Intel): el avatar y lo que los agentes dejaron escrito en la carpeta del cliente ----------
+  function entregables(b) { intelView(b, { slug: p.client_slug, alive: () => el.isConnected && view === 'entregables' }); }
 
   // ---------- Resumen (Asana Overview): brief, objetivos, enlaces y status update ----------
   function resumen(b) {

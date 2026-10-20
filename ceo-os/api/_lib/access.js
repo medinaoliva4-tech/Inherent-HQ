@@ -20,6 +20,10 @@ export const COLLS = {
   team: 'team', settings: 'home', checks: 'work',
   // Los juicios de Laya (Fase 3): los lee quien ve el elemento juzgado. Solo por /api/laya/* (api/_lib/laya.js).
   judgments: 'work',
+  // App 02 · Estrategia: el estado de cada bloque (vacío · en trabajo · aprobado) y su borrador. Solo por /api/estrategia/* (api/_lib/estrategia.js).
+  strategy: 'estrategia',
+  // App 01 · Marca › Cliente ideal: los avatares de cada marca. Solo por /api/avatares/* (api/_lib/avatares.js).
+  avatars: 'content',
   invoices: 'finanzas', bank_moves: 'finanzas', cost_recipes: 'finanzas',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
@@ -127,6 +131,7 @@ export async function scoper(u, pre = {}) {
     brand_boards: (d) => slugs.has(lc(d.id)),
     budgets: (d) => slugs.has(lc(d.client_slug)),
     campaigns: (d) => slugs.has(lc(d.client_slug)),
+    strategy: (d) => lc(d.slug) === 'inherent' || slugs.has(lc(d.slug)),
   };
 }
 export const inScope = (sc, coll, d) => !sc || typeof sc[coll] !== 'function' || !d || sc[coll](d);

@@ -3,17 +3,21 @@
 // Un juicio lo lee quien ve el elemento juzgado (y nadie más): las rutas genéricas db/judgments no existen.
 import * as db from './db.js';
 import { guard, COLLS, canRead, summaryOf, scoper, inScope, edits } from './access.js';
+import * as intel from './intel.js';
+import { contextoEtapa } from './estrategia.js';
+import { textoAprobados } from './avatares.js';
+import { parseDocId } from '../../public/js/estrategia.js';
 import * as content from './content.js';
 import { body } from './http.js';
 import { marcaDe } from '../../public/js/element.js';
 import { PUERTAS, GATES_ID, MODELO, ENGINES, ENGINE_LISTO, INSTALAR_MCP, puertaDeDoc, puertasDe, limpiarPuertas, preguntasDe, textoDe, leerRespuesta, resumen } from '../../public/js/laya.js';
 
 export const COLL = 'judgments';
-const TARGETS = ['leads', 'invoices', 'content'];
+const TARGETS = ['leads', 'invoices', 'content', 'strategy'];
 const idOk = (s) => /^[\w.@+-]{1,120}$/.test(String(s || ''));
 const lc = (x) => String(x || '').toLowerCase();
 const pendId = (gate, coll, id) => `pend-${gate}-${coll}-${id}`.toLowerCase().slice(0, 200);
-export const etiqueta = (coll, d) => String((coll === 'leads' ? d?.name : coll === 'invoices' ? [d?.vendor, d?.concept].filter(Boolean).join(' · ') : d?.title || (d?.handle ? '@' + d.handle : '')) || d?.id || '').slice(0, 120);
+export const etiqueta = (coll, d) => String((coll === 'strategy' ? `${d?.slug || ''} · etapa` : coll === 'leads' ? d?.name : coll === 'invoices' ? [d?.vendor, d?.concept].filter(Boolean).join(' · ') : d?.title || (d?.handle ? '@' + d.handle : '')) || d?.id || '').slice(0, 120);
 
 // El elemento, si esta persona lo ve (la misma regla que la app: área, «resumen», alcance y la marca personal). Si no, null.
 export async function verObjetivo(u, coll, id, cache = {}) {
@@ -22,6 +26,12 @@ export async function verObjetivo(u, coll, id, cache = {}) {
   if (!u.areas?.includes(area) || !canRead(u.role, coll)) return null;
   const k = coll + '/' + id; if (k in cache) return cache[k];
   let d = await db.get(coll, id);
+  // Estrategia: el elemento es el bloque Diagnóstico de un cliente (existe aunque todavía no se haya guardado nada).
+  if (coll === 'strategy') {
+    const p = parseDocId(id); if (!p || p.bloque !== 'diagnostico' || !(await intel.slugValido(p.slug))) return (cache[k] = null);
+    if (p.slug !== 'inherent') { const sc = await (cache._sc ??= scoper(u)); if (!inScope(sc, 'strategy', { slug: p.slug })) return (cache[k] = null); }
+    return (cache[k] = { ...(d || {}), id, slug: p.slug, bloque: 'diagnostico' });
+  }
   const sum = summaryOf(u, coll); if (d && sum) d = sum(d);
   if (d && coll === 'leads') { const sc = await (cache._sc ??= scoper(u)); if (!inScope(sc, 'leads', d)) d = null; }
   if (d && coll === 'content') {
@@ -42,17 +52,30 @@ async function contextoDe(gate, d) {
       .sort((a, z) => Math.abs((Date.parse(a.issued || a.due || '') || 0) - t0) - Math.abs((Date.parse(z.issued || z.due || '') || 0) - t0));
     return { otras: otras.slice(0, 12) };
   }
+  if (gate === 'etapa') return await contextoEtapa(d.slug);
   return {};
 }
 async function marcaPara(gate, d) {
   if (gate !== 'referente' && gate !== 'idea') return null;
   const c = await content.cfg(d.profile || 'inherent').catch(() => null);
-  return { name: marcaDe(d.profile || 'inherent'), audience: c?.audience || {}, pillars: c?.pillars || [] };
+  const avatares = await textoAprobados(d.profile || 'inherent').catch(() => []);
+  return { name: marcaDe(d.profile || 'inherent'), audience: c?.audience || {}, avatares, pillars: c?.pillars || [] };
 }
 export async function armar(gate, d, settings) {
   return { texto: textoDe(gate, d, await marcaPara(gate, d), await contextoDe(gate, d)), questions: preguntasDe(gate, settings), model: MODELO };
 }
 const gatesDoc = () => db.get('settings', GATES_ID).catch(() => null);
+// Fase 4 · Investigación: cada post nuevo del scraping queda pendiente de juicio (lo resuelve el puente al abrir
+// Investigación, o Claude Code con juicios_pendientes). Uno por elemento: el id del pendiente es fijo.
+export async function pedirPendientes(coll, docs, who) {
+  let n = 0;
+  for (const d of docs || []) {
+    const gate = puertaDeDoc(coll, d); if (!gate || !idOk(d?.id)) continue;
+    await db.upsert(COLL, pendId(gate, coll, d.id), { target: { coll, id: d.id }, target_label: etiqueta(coll, d), gate, status: 'pendiente', engine: 'laya-mcp', at: new Date().toISOString(), by: who }, who);
+    n++;
+  }
+  return n;
+}
 
 // Guarda las respuestas (una por pregunta) y quita el pendiente de ese elemento. Devuelve los juicios creados.
 export async function guardar(u, { gate, coll, id, d, resultado, engine, settings }) {

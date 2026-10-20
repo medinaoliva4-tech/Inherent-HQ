@@ -1,10 +1,7 @@
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, USD, fdate, fdateLong, today, $, $$, emblem , wizard, teamList, swap, ico, WORK_ROLES, roleName, isSummary, canEdit, roChip } from '../core.js';
 import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, marginOf, GROWTH, growthText, includesAt, daysAt } from '../cycle.js';
 import { newProject } from '../create.js';
-import { mentorsTab, editMentor } from '../mentors.js';
-import { LEVELS, levelName } from '../levels.js';
-import { packagesTab } from '../paquetes.js';
-import { createBundles } from '../armados.js';
+import { levelName } from '../levels.js';
 import { createCatalog, CATS, lvName } from '../catalogo.js';
 import { FLOW, stageLabel, flowIndex, isWaiting, createdAt, waitMs, waitTone, durText, salesMetrics, AFTER_REPLY, updateWaits } from '../ventas-flujo.js';
 import { layaBox } from '../laya-ui.js';
@@ -32,11 +29,12 @@ export async function render(el, { me, sub, alive }) {
   let rates = null;
   if (isCeo) { rates = await R.get('default').catch(() => null); }
   let plans = null, plansErr = null;
-  if (!resumen) api('repo/precios').then((r) => { plans = r; if (tab === 'cat' && alive()) paint(); }).catch((e) => { plansErr = e.message; });
+  if (!resumen) api('repo/precios').then((r) => { plans = r; }).catch((e) => { plansErr = e.message; });
 
-  // Fuentes (con las claves de cada puerta de intake) y Paquetes: solo el CEO; el servidor tampoco los entrega a nadie más.
-  let tab = (resumen ? ['crm'] : ['crm', 'cat', 'esp', 'quotes', ...(isCeo ? ['src', 'pkg'] : [])]).includes(sub[0]) ? sub[0] : 'crm';
-  let mentors = null, mInd = 'Todas';
+  // Ventas = conseguir y cerrar: CRM · Cotizaciones · Fuentes. El catálogo, los especialistas y los paquetes viven en
+  // Servicios (sus rutas viejas, #/sales/cat · esp · pkg, redirigen allá: roleviews.js → MOVED).
+  // Fuentes (con las claves de cada puerta de intake): solo el CEO; el servidor tampoco las entrega a nadie más.
+  let tab = (resumen ? ['crm'] : ['crm', 'quotes', ...(isCeo ? ['src'] : [])]).includes(sub[0]) ? sub[0] : 'crm';
   let crmView = 'list', q = '', tagF = '';
 
   // ---------- costos (solo CEO) ----------
@@ -58,22 +56,18 @@ export async function render(el, { me, sub, alive }) {
       <div class="row" style="margin-bottom:18px;flex-wrap:wrap">
         ${resumen ? '' : html`<div class="tabs" style="margin:0">
           <button class="${tab === 'crm' ? 'on' : ''}" data-act="tab" data-t="crm">CRM</button>
-          <button class="${tab === 'cat' ? 'on' : ''}" data-act="tab" data-t="cat">Catálogo de servicios</button>
-          <button class="${tab === 'esp' ? 'on' : ''}" data-act="tab" data-t="esp">Especialistas</button>
           <button class="${tab === 'quotes' ? 'on' : ''}" data-act="tab" data-t="quotes">Cotizaciones</button>
-          ${isCeo ? html`<button class="${tab === 'src' ? 'on' : ''}" data-act="tab" data-t="src">Fuentes</button><button class="${tab === 'pkg' ? 'on' : ''}" data-act="tab" data-t="pkg">Paquetes</button>` : ''}
+          ${isCeo ? html`<button class="${tab === 'src' ? 'on' : ''}" data-act="tab" data-t="src">Fuentes</button>` : ''}
         </div>`}
         <div class="sp"></div>
         ${tab === 'crm' && edit ? html`<button class="btn" data-act="newLead">+ Nuevo lead</button>` : ''}
-        ${tab === 'cat' && edit ? html`${isCeo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'quotes' && edit ? html`<button class="btn" data-act="newQuote">+ Nueva cotización</button>` : ''}
-        ${tab === 'esp' && isCeo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
         ${tab === 'src' && isCeo ? html`<button class="btn" data-act="newSrc">+ Fuente</button>` : ''}
       </div>
       <div id="body"></div>`);
     const body = $('#body', el);
     if (resumen) return crmResumen(body);
-    ({ crm, cat, esp, quotes: quotesTab, pkg: pkgTab, src: srcTab })[tab](body);
+    ({ crm, quotes: quotesTab, src: srcTab })[tab](body);
   }
   // ---------- El resumen del CRM: los indicadores y lo que requiere acción (vencidos y lo de hoy) ----------
   function crmResumen(body) {
@@ -94,21 +88,6 @@ export async function render(el, { me, sub, alive }) {
       <div class="card">${late.length ? late.slice(0, 30).map((l) => row(l, html`<span class="chip red sm2">Venció ${fdate(l.next_date)}</span>`)) : html`<div class="mut">Nada vencido ${ico('check', 14)}</div>`}</div>
       <div class="sec-title" style="margin-top:22px"><h2>Para hoy</h2></div>
       <div class="card">${hoy.length ? hoy.map((l) => row(l, html`<span class="chip amber sm2">${stageLabel(l.stage)}</span>`)) : html`<div class="mut">Sin seguimientos para hoy</div>`}</div>`);
-  }
-
-  // ---------- Paquetes: una sola lista — los propios (servicios y especialistas) y los de cada industria ----------
-  function pkgTab(b) {
-    const onQuote = (pre) => editQuote({ number: nextNumber(), date: today(), valid_days: 15, status: 'Borrador', discount_pct: 0, notes: '', lead_id: '', client: '', contact: '', email: '', ...pre }, null);
-    mount(b, html`<p class="loading">Cargando paquetes…</p>`);
-    fetch('/data/paquetes.json').then((r) => r.json()).then((d) => d.ind.map((i) => i.n)).catch(() => [])
-      .then((industries) => createBundles({ services, rates, industries, onQuote })).catch(() => null)
-      .then((bun) => packagesTab(b, { onQuote, bun }));
-  }
-
-  // ---------- Especialistas por industria ----------
-  function esp(body) {
-    if (!mentors) { mount(body, html`<p class="loading">Cargando…</p>`); col('mentors').list().then((l) => { mentors = l; if (alive() && tab === 'esp') esp(body); }).catch((e) => mount(body, html`<div class="warnbox">${e.message}</div>`)); return; }
-    mentorsTab(body, { list: mentors, isCeo, ind: mInd, onInd: (v) => { mInd = v; esp(body); }, onChange: (l) => { mentors = l; esp(body); } });
   }
 
   // ---------- CRM ----------
@@ -366,11 +345,10 @@ export async function render(el, { me, sub, alive }) {
   }
 
 
-  // ---------- Catálogo ----------
-  // La pestaña, el editor del servicio, los costos por hora y los ejemplos viven en catalogo.js (lo comparte Servicios → Servicios).
-  const CAT = createCatalog({ me, getS: () => services, setS: (l) => { services = l; }, getR: () => rates, setR: (r) => { rates = r; }, paint, alive, isCat: () => tab === 'cat' });
-  const cat = (body) => CAT.cat(body), editService = CAT.editService;
-  CAT.bind(el);
+  // ---------- El editor del servicio ----------
+  // El catálogo vive en Servicios → Servicios (catalogo.js). Aquí solo se usa su editor: «Completar» un servicio desde la cotización.
+  const CAT = createCatalog({ me, getS: () => services, setS: (l) => { services = l; }, getR: () => rates, setR: (r) => { rates = r; }, paint, alive, isCat: () => false });
+  const editService = CAT.editService;
 
   // ---------- Cotizaciones ----------
   // La cotización guarda todo en quetzales y se muestra en su moneda (rate = 1 Q en esa moneda).
@@ -429,7 +407,7 @@ export async function render(el, { me, sub, alive }) {
             <div class="row" style="margin-top:10px"><select class="in" id="addSvc"><option value="">+ Agregar del catálogo…</option>
               ${plans?.plans?.length ? html`<optgroup label="Niveles anteriores (mensual)">${plans.plans.map((p) => html`<option value="plan:${p.id}">${levelName(p.name)} — ${Q(p.precio)}</option>`)}</optgroup>` : ''}
               ${services.length ? html`<optgroup label="Servicios del catálogo">${services.map((s) => html`<option value="${s.id}">${s.name}${s.price ? ' — ' + Q(s.price) : ''}</option>`)}</optgroup>` : ''}<option value="new">Crear servicio nuevo (se guarda en el catálogo)</option><option value="free">Línea libre (solo esta cotización)</option></select></div>
-            ${!services.length ? html`<div class="mut sm" style="margin-top:8px">Tu catálogo está vacío. Crea servicios aquí mismo o en «Catálogo de servicios».</div>` : ''}
+            ${!services.length ? html`<div class="mut sm" style="margin-top:8px">Tu catálogo está vacío. Crea servicios aquí mismo o en <a href="#/services/servicios">Servicios → Servicios</a>.</div>` : ''}
             <div class="two" style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="f">Descuento %</label><input class="in" id="qdisc" type="number" value="${doc.discount_pct || 0}"></div><div><label class="f">Válida por (días)</label><input class="in" id="qvalid" type="number" value="${doc.valid_days || 15}"></div></div>
             <div style="margin-top:12px"><label class="f">Tiempo total (días hábiles)</label><input class="in" id="qdays" type="number" min="0" value="${+doc.days > 0 ? doc.days : ''}" placeholder="${autoDays(doc) ? `${autoDays(doc)} si todo va en paralelo` : 'Escribe los días'}"><div class="mut sm" style="margin-top:4px">Si hay servicios que van uno después de otro, escribe el total real.</div></div>
             <div style="margin-top:12px"><label class="f">Lo que esto va a provocar en su negocio (sale ANTES del precio)</label><textarea class="in" id="qintro" style="min-height:120px" placeholder="Cómo se traduce en crecimiento lo que vamos a implementar.">${doc.intro || ''}</textarea></div>
@@ -450,7 +428,7 @@ export async function render(el, { me, sub, alive }) {
         if (v === 'new') {
           const n = await ask('Nuevo servicio', [{ k: 'name', l: 'Nombre', req: true }, { k: 'category', l: 'Categoría', t: 'select', opts: CATS.map((c) => [c, c]), half: true }, { k: 'unit', l: 'Se cobra por', t: 'select', opts: [['proyecto', 'Proyecto'], ['mes', 'Mes'], ['pieza', 'Pieza'], ['hora', 'Hora']], half: true }, { k: 'price', l: 'Precio (Q)', t: 'number', req: true }, { k: 'description', l: 'Descripción (sale en la cotización)', t: 'textarea' }]);
           if (!n) return draw();
-          try { const r = await S.create({ ...n, price: +n.price || 0, tasks: [] }); services.push(r); doc.items.push({ service_id: r.id, name: r.name, description: r.description || '', qty: 1, price: r.price }); toast('Servicio creado y agregado · Sus horas se editan en el Catálogo'); }
+          try { const r = await S.create({ ...n, price: +n.price || 0, tasks: [] }); services.push(r); doc.items.push({ service_id: r.id, name: r.name, description: r.description || '', qty: 1, price: r.price }); toast('Servicio creado y agregado · Sus horas se editan en Servicios'); }
           catch (err) { toast(err.message, true); }
           return draw();
         }
@@ -511,7 +489,7 @@ export async function render(el, { me, sub, alive }) {
         const items = doc.items.filter((i) => i.service_id).map((i) => { const sv = services.find((x) => x.id === i.service_id); if (!sv) return null; const lv = i.level || sv.level || 5;
           return { id: sv.id, name: sv.name, level: lv, days: daysAt(sv, lv) || null, includes: includesAt(sv, lv), hours: svcHours(sv, lv) * (+i.qty || 1), roles: (sv.tasks || []).map((t) => ({ role: t.role, hours: hoursAt(t, lv) * (+i.qty || 1) })), price: (+i.price || 0) * (+i.qty || 1) }; }).filter(Boolean);
         const r = await newProject({ team: await teamList(), me, projects: await col('projects').list(), tasks: [], pre: { kind: 'Custom', items, name: `${doc.client} · ${doc.number}`, quote_id: doc.id } });
-        if (r) { if (doc.status !== 'Aceptada') { doc.status = 'Aceptada'; try { const q = await C.save(doc); doc = JSON.parse(JSON.stringify(q)); quotes = quotes.map((x) => (x.id === q.id ? q : x)); } catch {} } toast('Proyecto creado desde la cotización'); location.hash = '/operations/pipe'; }
+        if (r) { if (doc.status !== 'Aceptada') { doc.status = 'Aceptada'; try { const q = await C.save(doc); doc = JSON.parse(JSON.stringify(q)); quotes = quotes.map((x) => (x.id === q.id ? q : x)); } catch {} } toast('Proyecto creado desde la cotización'); location.hash = '/operations'; }
       },
       delQ: async () => { if (!(await confirmAsk(`¿Eliminar ${doc.number}?`))) return; await C.remove(doc.id); quotes = quotes.filter((x) => x.id !== doc.id); paint(); },
     };
@@ -627,9 +605,8 @@ export async function render(el, { me, sub, alive }) {
     stageF: (b) => { stageF = stageF === b.dataset.f ? '' : b.dataset.f; if (crmView === 'pros') crmView = 'list'; paint(); },
     replied: async (b) => { const l = leads.find((x) => x.id === b.dataset.id); if (l && await replied(l)) paint(); },
     lead: (b) => openLead(leads.find((l) => l.id === b.dataset.id)),
-    newLead, ...CAT.actions,
+    newLead,
     newQuote: () => editQuote(null, null),
-    newMentor: async () => { const r = await editMentor(null, [...new Set((mentors || []).map((m) => m.industry))]); if (r && !r.deleted) { mentors = [...(mentors || []), r]; paint(); } },
     quote: (b) => editQuote(quotes.find((x) => x.id === b.dataset.id)),
     toCrm: async (b) => { const l = leads.find((x) => x.id === b.dataset.id); if (l && await moveLead(l, b.dataset.s)) paint(); },
     archive: async (b) => { const l = leads.find((x) => x.id === b.dataset.id); if (l && await saveLead({ ...l, archived: true, activity: [...(l.activity || []), act('Archivado de la bandeja de prospectos')] })) paint(); },

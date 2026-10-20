@@ -1,10 +1,11 @@
-// Servicios: tres pestañas en una sola sección.
-//   · Paquetes: los 3 niveles arriba (cada uno abre sus paquetes) y los otros paquetes → servicios-paquetes.js
-//   · Servicios: el catálogo tal cual (nivel 3 a 10, horas, precio, costo solo CEO) → catalogo.js, con el armador de
-//     propuesta y el margen por cliente plegados arriba («Armar propuesta»)
+// Servicios: lo que vendemos y cómo se entrega. Cuatro pestañas; cada cosa vive en un solo lugar.
+//   · Paquetes: «Por nivel» — los 3 niveles arriba (cada uno abre sus paquetes) y los otros paquetes → servicios-paquetes.js;
+//     «Por industria» (solo CEO) — los 108 paquetes por industria con fases, tarifas y margen → paquetes.js (antes Ventas → Paquetes)
+//   · Servicios: el catálogo (nivel 3 a 10, horas, precio, costo solo CEO) → catalogo.js, con el armador de propuesta y el
+//     margen por cliente plegados arriba (antes también estaba en Ventas → Catálogo de servicios)
+//   · Especialistas: la red por industria → mentors.js (antes Ventas → Especialistas)
 //   · Responsabilidades: el pipeline programable por paquete o servicio (las recetas) → responsabilidades.js
-// Las cotizaciones viven en Ventas → Cotizaciones: aquí, la tabla corta de las últimas.
-// Los movimientos y pagos, en Finanzas. embed «responsabilidades»: monta solo esa pestaña.
+// Las cotizaciones viven solo en Ventas → Cotizaciones. Los movimientos y pagos, en Finanzas. embed «responsabilidades»: monta solo esa pestaña.
 import { byScope, proposal, targetMargin, LEVELS as CX, PRICING_ID } from '../finscope.js';
 import { html, raw, mount, col, api, toast, acts, Q, today, $, $$, ico, isSummary, canEdit, roChip, csv, swap, fromLink } from '../core.js';
 import { hbars, PAL } from '../charts.js';
@@ -12,10 +13,12 @@ import { createCatalog } from '../catalogo.js';
 import { createBundles } from '../armados.js';
 import { recipesWith } from '../recipes.js';
 import { paquetesTab } from '../servicios-paquetes.js';
+import { packagesTab } from '../paquetes.js';
+import { mentorsTab, editMentor } from '../mentors.js';
 import { responsabilidadesTab, svcResp, sinResp } from '../responsabilidades.js';
-import { quotesShort, quotesBase } from '../quotes-short.js';
+import { quotesBase } from '../quotes-short.js';
 
-const TABS = [['paquetes', 'Paquetes'], ['servicios', 'Servicios'], ['responsabilidades', 'Responsabilidades']];
+const TABS = [['paquetes', 'Paquetes'], ['servicios', 'Servicios'], ['especialistas', 'Especialistas'], ['responsabilidades', 'Responsabilidades']];
 
 export async function render(el, { me, sub = [], alive, embed = '' }) {
   const ceo = me.role === 'ceo';
@@ -29,6 +32,9 @@ export async function render(el, { me, sub = [], alive, embed = '' }) {
     col('recipes').list().catch(() => []), col('docs').list().catch(() => []), fetch('/data/paquetes.json').then((r) => r.json()).then((d) => d.ind.map((i) => i.n)).catch(() => [])]);
   let R = recipesWith(recDocs);
   let tab = embed === 'responsabilidades' ? 'responsabilidades' : TABS.some(([k]) => k === sub[0]) ? sub[0] : 'paquetes', lvSel = '', prop = [];
+  // Paquetes: «nivel» (los 3 niveles y sus paquetes) o «industria» (los 108 por industria, solo CEO: lleva costos).
+  let pkView = ceo && tab === 'paquetes' && sub[1] === 'industria' ? 'industria' : 'nivel';
+  let mentors = null, mInd = 'Todas';
   const entries = [...finance, ...fromSheet(sheet)], M = today().slice(0, 7);
   const lines = (s) => String(s || '').split('\n').map((x) => x.trim()).filter(Boolean);
 
@@ -54,9 +60,13 @@ export async function render(el, { me, sub = [], alive, embed = '' }) {
       <div class="row" style="margin-bottom:18px;flex-wrap:wrap;gap:8px">
         <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div><div class="sp"></div>
         ${tab === 'servicios' && edit ? html`${ceo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
+        ${tab === 'especialistas' && ceo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
-      <div id="body"></div>${tab !== 'responsabilidades' ? html`<div id="qshort" style="margin-top:22px">${quotesShort(quotes, me, { sub: 'Las más recientes · se arman y se envían en Comercial' })}</div>` : ''}`);
+      ${tab === 'paquetes' && ceo ? html`<div class="row sd-seg" role="group" aria-label="Ver paquetes">${[['nivel', 'Por nivel'], ['industria', 'Por industria']].map(([k, l]) => html`<button class="chip ${pkView === k ? 'dark' : ''}" aria-pressed="${pkView === k ? 'true' : 'false'}" data-act="pkview" data-v="${k}">${l}</button>`)}</div>` : ''}
+      <div id="body"></div>`);
     const body = $('#body', el);
+    if (tab === 'especialistas') return especialistas(body);
+    if (tab === 'paquetes' && pkView === 'industria') return packagesTab(body, { onQuote, bun });
     if (tab === 'paquetes') return paquetesTab(body, { me, services, bundles, R, bun, onQuote, sel: lvSel, setSel: (v) => { lvSel = v; paint(); }, onChange: async () => { await reloadBundles(); paint(); }, onLevels: () => paint() });
     if (tab === 'responsabilidades') return responsabilidadesTab(body, { me, services, bundles, R, docs, pick: sub[1] || '', reload: reloadRecipes, onChange: () => {} });
     mount(body, html`${ceo ? html`<details class="fold" id="propbox" style="margin-bottom:18px"><summary>${ico('right', 13)} Armar propuesta y margen por cliente</summary><div class="grid g11" style="margin-top:12px;align-items:start"><div id="prop"></div>${marginCard()}</div></details>` : ''}<div id="cat"></div>`);
@@ -93,8 +103,15 @@ export async function render(el, { me, sub = [], alive, embed = '' }) {
       if (t.dataset.pact === 'rm') { prop.splice(+t.dataset.i, 1); propBuilder(b); }
       if (t.dataset.pact === 'margin') { const v = +$('#pmargin', b).value; if (!(v >= 1 && v <= 95)) return toast('El margen objetivo va de 1% a 95%', true); try { pricingDoc = pricingDoc ? await col('settings').save({ ...pricingDoc, margin: v }) : await col('settings').create({ id: PRICING_ID, margin: v }); toast('Margen objetivo guardado'); propBuilder(b); } catch (err) { toast(err.message, true); } } };
   }
+  // ---------- Especialistas por industria (antes en Ventas) ----------
+  function especialistas(body) {
+    if (!mentors) { mount(body, html`<p class="loading">Cargando…</p>`); col('mentors').list().then((l) => { mentors = l; }).catch((e) => { mentors = []; toast(e.message, true); }).then(() => { if (alive() && tab === 'especialistas') especialistas(body); }); return; }
+    mentorsTab(body, { list: mentors, isCeo: ceo, ind: mInd, onInd: (v) => { mInd = v; especialistas(body); }, onChange: (l) => { mentors = l; especialistas(body); } });
+  }
   acts(el, {
-    tab: (b) => { tab = b.dataset.t; history.replaceState(null, '', '#/services/' + tab); swap(el, paint); },
+    tab: (b) => { tab = b.dataset.t; history.replaceState(null, '', '#/services/' + tab + (tab === 'paquetes' && pkView === 'industria' ? '/industria' : '')); swap(el, paint); },
+    pkview: async (b) => { pkView = b.dataset.v; history.replaceState(null, '', '#/services/paquetes' + (pkView === 'industria' ? '/industria' : '')); if (pkView === 'nivel') await reloadBundles(); swap(el, paint); },
+    newMentor: async () => { const r = await editMentor(null, [...new Set((mentors || []).map((m) => m.industry))]); if (r && !r.deleted) { mentors = [...(mentors || []), r]; paint(); } },
     ...CAT.actions,
   });
   paint();

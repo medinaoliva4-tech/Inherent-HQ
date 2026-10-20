@@ -157,7 +157,7 @@ export async function render(el, { me, sub, alive }) {
       lkedit: async (t) => { const l = [...(a.links || [])]; const v = await linkForm(l[+t.dataset.i]); if (v) { l[+t.dataset.i] = v; saveLinks(l); } },
       lkdel: async (t) => { if (await confirmAsk('¿Quitar este link?')) saveLinks((a.links || []).filter((_, i) => i !== +t.dataset.i)); },
       esadd: async () => {
-        if (!mentors.length) return toast('Primero carga la red de especialistas en Comercial → Especialistas', true);
+        if (!mentors.length) return toast('Primero carga la red de especialistas en Servicios → Especialistas', true);
         const gl = goalsOf(a);
         const v = await ask('Agregar especialista', [{ k: 'id', l: 'Especialista', t: 'select', req: true, opts: [...mentors].sort((x, z) => (x.industry + x.price).localeCompare(z.industry + z.price)).map((m) => [m.id, `${m.industry} · ${m.name} · ${priceLabel(m)}`]) }, { k: 'cadence', l: 'Cada cuánto', t: 'select', opts: CADENCE, v: 'trimestral', half: true }, { k: 'goal', l: 'Para qué meta', t: 'select', opts: [['', '— Ninguna'], ...gl.map((g, i) => [String(i), g.goal])], half: true }, { k: 'note', l: 'Para qué lo traemos', t: 'textarea' }], 'Agregar');
         if (!v) return; const m = mentors.find((x) => x.id === v.id);

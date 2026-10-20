@@ -6,7 +6,8 @@
 //     start: { <perfil>: <sección> } }                             ← dónde abre al entrar
 // Sin configuración, todo sigue como siempre: cada rol ve sus áreas de siempre y puede editarlas.
 // Un perfil que no está en la lista no opina; si una persona tiene varios perfiles, gana el más amplio.
-export const SECTIONS = [['home', 'Hoy'], ['control', 'Control del flujo'], ['clients', 'Clientes'], ['sales', 'Ventas · CRM'], ['operations', 'Proyectos'], ['work', 'Workspace'], ['content', 'Marcas · contenido'], ['resultados', 'Indicadores'], ['roadmap', 'Roadmap'], ['finanzas', 'Finanzas'], ['library', 'Library'], ['team', 'Equipo']];
+// «sales» abre Ventas (CRM, cotizaciones, fuentes) y Servicios (paquetes, catálogo, especialistas, responsabilidades).
+export const SECTIONS = [['home', 'Hoy'], ['control', 'Control del flujo'], ['clients', 'Clientes'], ['sales', 'Ventas y Servicios'],['operations', 'Proyectos'], ['work', 'Workspace'], ['content', 'Marcas · contenido'], ['estrategia', 'Estrategia'], ['resultados', 'Indicadores'], ['roadmap', 'Roadmap'], ['finanzas', 'Finanzas'], ['library', 'Library'], ['team', 'Equipo']];
 // Los dos espacios del OS y sus secciones. El interruptor de arriba cambia de espacio; cada uno tiene su propia barra.
 //   Organization (cómo se maneja la empresa): Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent.
 //   Marcas (cómo se crean marcas): una marca por cliente, Inherent y la marca personal del CEO (privada).
@@ -20,9 +21,27 @@ export const GROUPS = [
   ['servicios', 'Servicios', [], 'org'],
   ['finanzas', 'Finanzas', ['finanzas'], 'org'],
   ['inherent', 'Inherent', ['team', 'roadmap', 'library'], 'org'],
+  ['estrategia', 'Estrategia', ['estrategia'], 'estrategia'],
   ['marcas', 'Marcas', ['content'], 'marcas'],
 ];
-export const SPACES = [['org', 'Organization'], ['marcas', 'Marcas']];
+// Tres espacios: Organization · Estrategia (App 02: lo ve el CEO y quien él habilite aquí) · Marcas.
+export const SPACES = [['org', 'Organization'], ['estrategia', 'Estrategia'], ['marcas', 'Marcas']];
+// Cada cosa vive en un solo lugar: Ventas = conseguir y cerrar (CRM · Cotizaciones · Fuentes); Servicios = lo que vendemos
+// y cómo se entrega (Paquetes · Servicios · Especialistas · Responsabilidades); Proyectos = ejecutar (Tareas · Calendario · Timeline).
+// Las rutas viejas de lo que se mudó redirigen a su lugar nuevo (las usa el router de app.js). Lo que sigue a la ruta se conserva.
+export const MOVED = {
+  'sales/cat': 'services/servicios', 'sales/catalogo': 'services/servicios', 'sales/servicios': 'services/servicios',
+  'sales/esp': 'services/especialistas', 'sales/especialistas': 'services/especialistas',
+  'sales/pkg': 'services/paquetes/industria', 'sales/paquetes': 'services/paquetes',
+  'services/quotes': 'sales/quotes', 'services/cotizaciones': 'sales/quotes',
+  'operations/calendario': 'operations/cal', 'operations/timeline': 'operations/time',
+};
+// ['org','sales','cat',…] o ['sales','cat',…] → ['org','services','servicios',…]; null si la ruta no se mudó.
+export function movedRoute(parts = []) {
+  const p = parts[0] === 'org' ? parts.slice(1) : parts;
+  const to = MOVED[`${p[0]}/${p[1]}`];
+  return to ? ['org', ...to.split('/'), ...p.slice(2)] : null;
+}
 export const groupOf = (area) => (GROUPS.find(([, , l]) => l.includes(area)) || [])[0] || null;
 export const AREAS = SECTIONS.map(([k]) => k);
 export const LEVELS = [['oculto', 'Oculto'], ['resumen', 'Resumen'], ['completo', 'Completo'], ['edita', 'Edita']];
@@ -53,9 +72,10 @@ const FLOOR = { team: 'completo' };
 // Las áreas de siempre de cada rol de acceso (sin configuración, esto es lo que ve cada quien).
 // Resultados (los indicadores) lo ven por defecto el CEO y el COO; cada bloque además pide ver su sección de origen.
 const ROLE_AREAS = { ceo: AREAS, coo: AREAS.filter((a) => a !== 'finanzas' && a !== 'roadmap'), team: ['home', 'work', 'content', 'library', 'team'], client: [] };
+// Estrategia es del CEO y de quien él habilite en esta matriz (nadie la ve por defecto; el cliente nunca).
 // Content es para decidir: solo el CEO y quien tiene el perfil de trabajo «content».
 // Sales entra también con el perfil de trabajo «ventas» (el CRM lo opera un rol, no una persona).
-export const baseAreas = (role, roles = []) => [...(ROLE_AREAS[role] || []), ...(role === 'team' && roles.includes('ventas') ? ['sales'] : [])].filter((a) => a !== 'content' || role === 'ceo' || roles.includes('content'));
+export const baseAreas = (role, roles = []) => [...(ROLE_AREAS[role] || []), ...(role === 'team' && roles.includes('ventas') ? ['sales'] : [])].filter((a) => (a !== 'content' || role === 'ceo' || roles.includes('content')) && (a !== 'estrategia' || role === 'ceo'));
 
 // Los perfiles de trabajo de una persona (igual que el Workspace).
 export const rolesOf = (me) => (me.roles?.length ? me.roles : me.role === 'ceo' ? ['ceo'] : me.role === 'coo' ? ['coo'] : []);
@@ -113,7 +133,7 @@ export function applyViews(me, doc) {
 // community) dicen dentro de cuál viven, para que el CEO sepa dónde cae ese trabajo.
 export const PURPOSE = {
   ceo: { name: 'CEO', short: 'Decides estrategia, precio y pauta, y revisas lo que te rinde cuentas.', sees: 'Toda la empresa: clientes, dinero, equipo, contenido y pauta.', why: 'Para decidir: estrategia, precio, alcance y presupuesto de pauta.', does: 'Aprueba la estrategia (① Strategy) y la pauta (⑩ Ads), revisa lo que le rinde cuentas y vende.',
-    sections: { home: 'Qué pasa hoy en Inherent: entregas, lo que espera tu decisión y la agenda', control: 'El flujo completo de la empresa y lo que necesita atención', work: 'Tu día: tus tareas, las decisiones que esperan tu OK, la agenda y el equipo', resultados: 'Los indicadores reales de la empresa', clients: 'Cada cliente: ficha, accesos, portal y metas', operations: 'Proyectos, pipeline por cliente y calendario del ciclo', sales: 'El CRM y las cotizaciones', finanzas: 'Caja, cobros, costos y rentabilidad', content: 'Research, planner y rendimiento de cada perfil', roadmap: 'Los megaproyectos de Inherent', library: 'SOPs, playbooks y prompts', team: 'Quién es quién, perfiles y la matriz de vistas' } },
+    sections: { home: 'Qué pasa hoy en Inherent: entregas, lo que espera tu decisión y la agenda', control: 'El flujo completo de la empresa y lo que necesita atención', work: 'Tu día: tus tareas, las decisiones que esperan tu OK, la agenda y el equipo', resultados: 'Los indicadores reales de la empresa', clients: 'Cada cliente: ficha, accesos, portal y metas', operations: 'Proyectos, pipeline por cliente y calendario del ciclo', sales: 'El CRM y las cotizaciones', finanzas: 'Caja, cobros, costos y rentabilidad', content: 'Research, planner y rendimiento de cada perfil', estrategia: 'La estrategia de cada cliente por bloques, con el chat de Strategy y su aprobación', roadmap: 'Los megaproyectos de Inherent', library: 'SOPs, playbooks y prompts', team: 'Quién es quién, perfiles y la matriz de vistas' } },
   coo: { name: 'COO · Operaciones', short: 'Que cada entrega salga a tiempo y bien: revisas y coordinas.', sees: 'Todos los proyectos, las tareas y la carga del equipo.', why: 'Para que cada entrega salga a tiempo y con calidad.', does: 'Coordina, revisa las entregas (QA final) y presenta el día 20.',
     sections: { home: 'Qué pasa hoy: entregas y lo que necesita atención', control: 'El flujo del mes y los cuellos de botella', work: 'Tu día: entregas por revisar, controles del ciclo y carga del equipo', operations: 'Proyectos, fases y responsables', clients: 'La ficha y el avance de cada cliente', sales: 'Seguimiento comercial', content: 'El plan de contenido de cada cliente', library: 'SOPs y plantillas del equipo', team: 'Perfiles y roles por proyecto' } },
   content: { name: 'Content · Agent operator', short: 'Ideas, diseño y publicaciones de cada cliente, a tiempo.', sees: 'Las ideas, el plan y las piezas de cada cliente que tiene asignado.', why: 'Para que cada ciclo tenga ideas, guion, diseño y publicación a tiempo.', does: 'Opera los agentes de ④ Creatividad, ⑥A Diseño y ⑨ Posting, y sube el trabajo a revisión.',

@@ -1,6 +1,6 @@
 // Finanzas por alcance: cuánto cuesta, cuánto entra y cuánto queda de cada cliente, con los datos de la plataforma.
 // Ya no hay planes con costo fijo: cada cliente cuesta la suma de sus módulos (servicio del catálogo × su complejidad 3/5/8/10,
-// con las horas de cada rol y el costo por hora de Comercial → Costos por hora). Lo comparten la pantalla de Finanzas y las pruebas.
+// con las horas de cada rol y el costo por hora de Servicios → Costos por hora). Lo comparten la pantalla de Finanzas y las pruebas.
 //   Costo   = Σ módulos de sus proyectos (o de su cotización aceptada que todavía no tiene proyecto).
 //   Ingreso = los movimientos de ingreso del mes con ese cliente; si no hay, lo cotizado/aceptado de esos módulos.
 //   Margen  = ingreso − costo.
@@ -23,7 +23,7 @@ const lvOf = (n) => Math.max(3, Math.min(10, Math.round(+n || 5)));
 // que guardó el proyecto. miss = roles sin costo por hora (el costo queda incompleto, no en cero).
 export function moduleCost(item, services, rates) {
   const lv = lvOf(item.level), s = services.find((x) => x.id === (item.service_id || item.id));
-  if (!rates) return { cost: null, miss: [], why: 'Faltan los costos por hora (Comercial → Catálogo → Costos por hora)' };
+  if (!rates) return { cost: null, miss: [], why: 'Faltan los costos por hora (Servicios → Servicios → Costos por hora)' };
   if (s) {
     const per = svcHours(s, lv), n = item.qty != null ? Math.max(1, +item.qty || 1) : per > 0 && +item.hours > 0 ? Math.max(1, Math.round(+item.hours / per)) : 1;
     const c = svcCost(s, rates, lv);

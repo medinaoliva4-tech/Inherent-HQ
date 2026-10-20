@@ -1,14 +1,18 @@
-import { applyViews, GROUPS, SPACES } from './roleviews.js';
+import { applyViews, GROUPS, SPACES, movedRoute } from './roleviews.js';
 import { applyLevels, LEVELS_ID } from './levels.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, initials, esc, LOGO, infoTips, canTransition, ico } from './core.js';
-import { loadBrands, brandsNow, brandAccess, MODULES, modulesFor, defaultModule, isSoon } from './brandlist.js';
+import { loadBrands, brandsNow, brandAccess, MODULES, AREAS, areaOf, firstOfArea, modulesFor, defaultModule, isSoon } from './brandlist.js';
 import { openSearch, searchOpen } from './search.js';
+import { loadEstrategia, estrategiaNow } from './stratlist.js';
+import { BLOQUES } from './estrategia.js';
 
-// Dos espacios, como cambiar de app en un iPhone: el interruptor de arriba (junto al logo) cambia entre
+// Tres espacios, como cambiar de app en un iPhone: el interruptor de arriba (junto al logo) cambia entre
 //   ORGANIZATION  cómo se maneja la empresa   Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent
+//   ESTRATEGIA    la estrategia de cada cliente  una tarjeta por cliente → Diagnóstico · Oferta · Modelo de dinero · Leads · Roadmap
+//                 (App 02: solo el CEO y quien él habilite en Vistas por rol; el cliente nunca)
 //   MARCAS        cómo se crean marcas         una tile por marca → Investigación · Ideas · Calendario · Marca (+ lo que viene)
 // Cada espacio tiene su propia barra (en el cel, la barra de abajo cambia con el espacio) y una fila de pestañas debajo.
-// Rutas: #/org/<pantalla>/… y #/marcas/<marca>/<módulo>/…. TODAS las rutas viejas siguen funcionando (alias):
+// Rutas: #/org/<pantalla>/…, #/estrategia/<cliente>/<bloque> y #/marcas/<marca>/<módulo>/…. TODAS las rutas viejas siguen funcionando (alias):
 //   #/<pantalla>/… → #/org/<pantalla>/… · #/control-hub/<herramienta> → su sección nueva · #/content/<pestaña>/<perfil> y
 //   #/mimarca/<pestaña> → su marca en Marcas · #/clients/<slug>/marca → Marcas → esa marca → Marca.
 // El espacio elegido se recuerda por persona (localStorage) y por ruta. El buscador global (⌘K) vive en los dos.
@@ -20,6 +24,7 @@ const P = {
   finanzas: 'M5 20V10M12 20V4M19 20v-7',
   inherent: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',
   marcas: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
+  estrategia: 'M12 3l2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4z',
   portal: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6',
 };
 const svg = (d) => raw(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`);
@@ -35,15 +40,15 @@ const TABS = {
   inherent: [['vision', 'Visión y misión', 'all'], ['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'ceo'], ['team/laya', 'Laya', 'ceo'], ['roadmap', 'Roadmap', 'roadmap'], ['library', 'Library', 'library']],
 };
 const ORG = GROUPS.filter((g) => g[3] === 'org').map(([k, l]) => [k, l]);
-const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands' };
-const LABEL = { home: 'Hoy', control: 'Control del flujo', work: 'Workspace', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control', vision: 'Visión y misión', marcas: 'Marcas' };
+const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands', estrategia: 'strategy' };
+const LABEL = { home: 'Hoy', control: 'Control del flujo', work: 'Workspace', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control', vision: 'Visión y misión', marcas: 'Marcas', estrategia: 'Estrategia' };
 // Las pantallas de Organization (lo que no es Marcas, Mi perfil ni el portal del cliente).
 const ORG_SCREENS = ['home', 'control', 'work', 'resultados', 'setup', 'clients', 'operations', 'portal', 'sales', 'services', 'finanzas', 'vision', 'team', 'roadmap', 'library'];
 // Las áreas que cuentan como «ve algo de Organization» (Equipo y Visión los ve todo el equipo: no cuentan).
 const ORG_AREAS = ['home', 'work', 'control', 'resultados', 'clients', 'operations', 'sales', 'finanzas', 'roadmap', 'library'];
 // Alias de rutas viejas.
 const HUB_MAP = { control: 'control', operations: 'operations', work: 'work', sales: 'sales', finanzas: 'finanzas', resultados: 'resultados', responsabilidades: 'services/responsabilidades', vistas: 'team/vistas', setup: 'setup' };
-const CT_MOD = { research: 'investigacion', refs: 'investigacion', semana: 'investigacion', fuentes: 'investigacion', shot: 'investigacion', postear: 'ideas', guiones: 'ideas', plan: 'calendario', calendario: 'calendario', analytics: 'calendario/analytics', bandeja: 'calendario/analytics' };
+const CT_MOD = { research: 'investigacion', refs: 'investigacion', semana: 'investigacion', fuentes: 'investigacion', shot: 'investigacion', postear: 'ideas', guiones: 'ideas', plan: 'calendario', calendario: 'calendario', analytics: 'resultados', bandeja: 'calendario/analytics' };
 const OLD_SECTION = { hoy: 'hoy', clientes: 'proyectos', proyectos: 'proyectos', ventas: 'ventas', servicios: 'servicios', finanzas: 'finanzas', inherent: 'inherent', equipo: 'inherent', comercial: 'ventas' };
 const root = $('#root');
 const SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>';
@@ -89,12 +94,16 @@ const needOk = (n) => (n === 'all' ? me.role !== 'client' : n === 'ceo' ? me.rol
 const tabsOf = (g) => (TABS[g] || []).filter(([, , n]) => needOk(n));
 const hasOrg = () => me.role !== 'client' && ORG_AREAS.some((a) => me.areas.includes(a));
 const hasMarcas = () => brandAccess(me).any;
+const hasEstrategia = () => me.role !== 'client' && me.areas.includes('estrategia');
+// Los espacios que esta persona puede abrir (el interruptor aparece con dos o más).
+const spacesFor = () => SPACES.filter(([k]) => (k === 'org' ? hasOrg() : k === 'marcas' ? hasMarcas() : hasEstrategia()));
 const sees = (k) => {
   if (k === 'me') return true;
   if (me.role === 'client') return k === 'portal';
   if (k === 'vision') return true;
   if (k === 'setup') return me.role === 'ceo';
   if (k === 'marcas') return hasMarcas();
+  if (k === 'estrategia') return hasEstrategia();
   if (k === 'services') return me.areas.includes('sales');
   return me.areas.includes(k);
 };
@@ -105,6 +114,7 @@ setViewSection(() => {
   if (!me) return '';
   const cur = resolve(hashNow());
   if (cur.key === 'marcas') return brandsNow().find((b) => b.slug === cur.rest[0])?.name || 'Marcas';
+  if (cur.key === 'estrategia') return estrategiaNow().find((c) => c.slug === cur.rest[0])?.nombre || 'Estrategia';
   const path = [cur.key, ...cur.rest].join('/');
   const tab = (TABS[sectionOf(cur.key)] || []).filter(([r]) => path === r || path.startsWith(r + '/')).sort((a, z) => z[0].length - a[0].length)[0];
   return tab?.[1] || LABEL[cur.key] || '';
@@ -114,31 +124,33 @@ setViewSection(() => {
 const LS = (k) => `os.${k}.${me?.email || ''}`;
 const lsGet = (k) => { try { return localStorage.getItem(LS(k)); } catch { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(LS(k), v); } catch {} };
-let space = null; // 'org' | 'marcas' | null (cliente)
+let space = null; // 'org' | 'estrategia' | 'marcas' | null (cliente)
 const hashNow = () => location.hash.replace(/^#\/?/, '');
 
 // Dónde abre Organization: lo que el CEO decidió para el perfil (por defecto Hoy).
 const orgLanding = () => { const st = me.start === 'work' && me.areas.includes('home') ? 'home' : me.start; return st && st !== 'content' && me.areas.includes(st) ? st : ['home', 'work'].find((a) => me.areas.includes(a)) || ORG_AREAS.find((a) => me.areas.includes(a)) || 'vision'; };
 // La casa de cada espacio (sin la última ruta).
-const spaceHome = (sp) => (sp === 'marcas' ? 'marcas' : 'org/' + orgLanding());
+const spaceHome = (sp) => (sp === 'marcas' ? 'marcas' : sp === 'estrategia' ? 'estrategia' : 'org/' + orgLanding());
 // Al abrir la app o al tocar el interruptor: el espacio recordado y, adentro, la última ruta que se usó.
 function landing(useLast = true) {
   if (me.role === 'client') return 'portal';
   let sp = lsGet('space') || (me.start === 'content' || !hasOrg() ? 'marcas' : 'org');
+  if (sp === 'estrategia' && !hasEstrategia()) sp = 'org';
   if (sp === 'marcas' && !hasMarcas()) sp = 'org';
   if (sp === 'org' && !hasOrg() && hasMarcas()) sp = 'marcas';
   const last = useLast && lsGet('last.' + sp);
-  return last && (sp === 'org' ? last.startsWith('org/') : last.startsWith('marcas')) ? last : spaceHome(sp);
+  return last && (sp === 'org' ? last.startsWith('org/') : last.startsWith(sp)) ? last : spaceHome(sp);
 }
 
 // ---------- Rutas: alias de las viejas y la forma canónica ----------
 function alias(parts) {
+  const mv = movedRoute(parts); if (mv) return mv; // lo que se mudó de sección (Ventas → Servicios…): roleviews.js → MOVED
   const [a, ...r] = parts;
   if (a === 'control-hub') return r[0] && HUB_MAP[r[0]] ? ['org', ...HUB_MAP[r[0]].split('/'), ...r.slice(1)] : ['org', 'home'];
   if (a === 'mimarca') {
     const t = r[0] || 'roadmap';
     if (t === 'inspo') return ['marcas', 'personal', 'investigacion', ...r.slice(1, 2)];
-    if (t === 'contenido') return ['marcas', 'personal', ...(r[1] === 'analytics' ? ['calendario', 'analytics'] : r[1] === 'calendario' ? ['calendario'] : ['ideas'])];
+    if (t === 'contenido') return ['marcas', 'personal', ...(r[1] === 'analytics' ? ['resultados'] : r[1] === 'calendario' ? ['calendario'] : ['ideas'])];
     return ['marcas', 'personal', 'marca', ...(['roadmap', 'asociaciones'].includes(t) ? [t] : [])];
   }
   if (a === 'content') {
@@ -161,10 +173,11 @@ function resolve(path) {
   if (!parts.length) return resolve(landing());
   if (parts[0] === 'me') return { key: 'me', rest: parts.slice(1), url: parts.join('/'), space: null };
   if (parts[0] === 'marcas') return sees('marcas') ? { key: 'marcas', rest: parts.slice(1), url: parts.join('/'), space: 'marcas' } : fallback();
+  if (parts[0] === 'estrategia') return sees('estrategia') ? { key: 'estrategia', rest: parts.slice(1), url: parts.join('/'), space: 'estrategia' } : fallback();
   let org = parts[0] === 'org' ? parts.slice(1) : parts;
   if (!org.length) return resolve(spaceHome('org'));
   const key = org[0];
-  if (!SCREENS[key] || !sees(key) || ['content', 'mimarca', 'control-hub', 'marcas'].includes(key)) return path === landing(false) ? { key: 'vision', rest: [], url: 'org/vision', space: 'org' } : fallback();
+  if (!SCREENS[key] || !sees(key) || ['content', 'mimarca', 'control-hub', 'marcas', 'estrategia'].includes(key)) return path === landing(false) ? { key: 'vision', rest: [], url: 'org/vision', space: 'org' } : fallback();
   if (key === 'portal' && me.role === 'client') return { key, rest: org.slice(1), url: org.join('/'), space: null };
   return { key, rest: org.slice(1), url: 'org/' + org.join('/'), space: 'org' };
 }
@@ -172,17 +185,19 @@ function resolve(path) {
 // ---------- La barra (una por espacio) y las pestañas de debajo ----------
 const navItems = () => {
   if (me.role === 'client') return [['portal', 'Mi portal', svg(P.portal)]];
+  if (space === 'estrategia') return [['estrategia', 'Estrategia', svg(P.estrategia)], ...estrategiaNow().map((c) => [`estrategia/${c.slug}`, c.nombre, html`<span class="nav-mono ${c.slug === 'inherent' ? 'priv' : ''}">${initials(c.nombre)}</span>`])];
   if (space === 'marcas') return [['marcas', 'Marcas', svg(P.marcas)], ...brandsNow().map((b, i) => [`marcas/${b.slug}`, b.personal ? 'Mi marca' : b.name, html`<span class="nav-mono ${b.personal ? 'priv' : ['', 't1', 't2'][i % 3]}">${b.personal ? ico('lock', 11) : initials(b.name)}</span>`])];
   return ORG.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l, svg(P[g])]);
 };
 const navHtml = () => html`${navItems().map(([k, l, i]) => html`<button data-go="${k}" title="${l}">${i}<span>${l}</span></button>`)}`;
-const switchHtml = () => html`<div class="space-sw" role="tablist" aria-label="Espacio">${SPACES.map(([k, l]) => html`<button role="tab" data-space="${k}" aria-selected="${space === k ? 'true' : 'false'}">${l}</button>`)}<span class="space-ind" aria-hidden="true"></span></div>`;
-const showSwitch = () => me.role !== 'client' && hasMarcas() && (hasOrg() || space === 'org');
+const switchHtml = () => html`<div class="space-sw" role="tablist" aria-label="Espacio" data-n="${spacesFor().length}">${spacesFor().map(([k, l]) => html`<button role="tab" data-space="${k}" aria-selected="${space === k ? 'true' : 'false'}">${l}</button>`)}<span class="space-ind" aria-hidden="true"></span></div>`;
+const showSwitch = () => me.role !== 'client' && spacesFor().length >= 2;
 // El botón activo de la barra según la ruta.
 function navKey(cur) {
   if (!cur) return null;
   if (cur.key === 'portal' && me.role === 'client') return 'portal';
   if (cur.key === 'marcas') return cur.rest[0] ? `marcas/${cur.rest[0]}` : 'marcas';
+  if (cur.key === 'estrategia') return cur.rest[0] ? `estrategia/${cur.rest[0]}` : 'estrategia';
   return sectionOf(cur.key);
 }
 function moveInd() {
@@ -213,8 +228,8 @@ function paintNav(force) {
   const nav = $('.nav'); if (!nav) return;
   const sig = space + '|' + navItems().map(([k]) => k).join(',');
   if (force || sig !== navFor) {
-    navFor = sig; mount(nav, navHtml()); nav.setAttribute('aria-label', space === 'marcas' ? 'Marcas' : 'Organization');
-    nav.classList.toggle('brands', space === 'marcas'); document.documentElement.dataset.space = space || '';
+    navFor = sig; mount(nav, navHtml()); nav.setAttribute('aria-label', space === 'marcas' ? 'Marcas' : space === 'estrategia' ? 'Estrategia' : 'Organization');
+    nav.classList.toggle('brands', space === 'marcas' || space === 'estrategia'); document.documentElement.dataset.space = space || '';
   }
   const top = $('.top'); const want = showSwitch();
   if (top && Boolean($('.space-sw', top)) !== want) { if (want) $('.brand', top).insertAdjacentHTML('afterend', String(switchHtml())); else $('.space-sw', top).remove(); }
@@ -235,17 +250,29 @@ function paintSub(cur) {
     const g = sectionOf(cur.key); list = g ? tabsOf(g).map(([r, l]) => ({ route: 'org/' + r, label: l, r })) : [];
     const path = [cur.key, ...cur.rest].join('/');
     on = list.filter((t) => path === t.r || path.startsWith(t.r + '/')).sort((a, z) => z.r.length - a.r.length)[0];
+  } else if (cur?.space === 'estrategia' && cur.rest[0]) {
+    // Los 5 bloques del cliente, en orden. El que se abre sin bloque es el Diagnóstico.
+    const k = BLOQUES.some((b) => b.id === cur.rest[1]) ? cur.rest[1] : BLOQUES[0].id;
+    list = BLOQUES.map((b) => ({ route: `estrategia/${cur.rest[0]}/${b.id}`, label: `${b.n} · ${b.nombre}`, k: b.id }));
+    on = list.find((t) => t.k === k);
   } else if (cur?.space === 'marcas' && cur.rest[0]) {
     const b = brandsNow().find((x) => x.slug === cur.rest[0]);
     if (b) {
       const live = modulesFor(me, b), mod = cur.rest[1] || defaultModule(me, b);
-      list = MODULES.filter(([k, , , soon]) => soon || live.includes(k)).map(([k, l, , soon]) => ({ route: `marcas/${b.slug}/${k}`, label: l, k, soon: Boolean(soon) }));
-      on = list.find((t) => t.k === mod);
+      // Dos filas: las áreas (por función) y, abajo, las herramientas del área abierta. Inicio va solo, sin segunda fila.
+      const area = areaOf(mod), modName = (k) => MODULES.find(([x]) => x === k);
+      const tools = area[0] === 'inicio' ? [] : area[3].filter((k) => isSoon(k) || live.includes(k)).map((k) => ({ route: `marcas/${b.slug}/${k}`, label: modName(k)[1], k, soon: isSoon(k) }));
+      const areas = AREAS.filter(([k, , , mods]) => k === 'inicio' ? live.includes('inicio') : mods.some((m) => isSoon(m) || live.includes(m)));
+      sub.hidden = false;
+      mount(sub, html`<div class="brand-nav"><div class="tabs area-tabs" role="tablist" aria-label="Áreas de la marca">${areas.map(([k, l, ic, , que]) => html`<button role="tab" class="${k === area[0] ? 'on' : ''}" aria-selected="${k === area[0] ? 'true' : 'false'}" data-sub="marcas/${b.slug}/${firstOfArea(me, b, k)}" title="${que}">${ico(ic, 15)}<span>${l}</span></button>`)}</div>
+        ${tools.length ? html`<div class="tabs mod-tabs" role="tablist" aria-label="Herramientas de ${area[1]}">${tools.map((t) => html`<button role="tab" class="${t.k === mod ? 'on' : ''} ${t.soon ? 'soon' : ''}" aria-selected="${t.k === mod ? 'true' : 'false'}" data-sub="${t.route}" ${t.soon ? raw('title="Próximamente"') : ''}>${t.label}${t.soon ? html`<i class="soon-tag">Pronto</i>` : ''}</button>`)}</div>` : ''}</div>`);
+      for (const tb of sub.querySelectorAll('.tabs')) { const ob = tb.querySelector('button.on'); if (ob && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = ob.offsetLeft - (tb.clientWidth - ob.offsetWidth) / 2; }
+      return;
     }
   }
   if (list.length < 2) { sub.hidden = true; sub.innerHTML = ''; return; }
   sub.hidden = false;
-  mount(sub, html`<div class="tabs ${cur.space === 'marcas' ? 'mod-tabs' : ''}" role="tablist" aria-label="${cur.space === 'marcas' ? 'Módulos de la marca' : 'Pestañas de la sección'}">${list.map((t) => html`<button role="tab" class="${on === t ? 'on' : ''} ${t.soon ? 'soon' : ''}" aria-selected="${on === t ? 'true' : 'false'}" data-sub="${t.route}" ${t.soon ? raw('title="Próximamente"') : ''}>${t.label}${t.soon ? html`<i class="soon-tag">Pronto</i>` : ''}</button>`)}</div>`);
+  mount(sub, html`<div class="tabs ${cur.space === 'marcas' ? 'mod-tabs' : ''}" role="tablist" aria-label="${cur.space === 'marcas' ? 'Módulos de la marca' : cur.space === 'estrategia' ? 'Bloques de la estrategia' : 'Pestañas de la sección'}">${list.map((t) => html`<button role="tab" class="${on === t ? 'on' : ''} ${t.soon ? 'soon' : ''}" aria-selected="${on === t ? 'true' : 'false'}" data-sub="${t.route}" ${t.soon ? raw('title="Próximamente"') : ''}>${t.label}${t.soon ? html`<i class="soon-tag">Pronto</i>` : ''}</button>`)}</div>`);
   const tb = sub.querySelector('.tabs'), ob = sub.querySelector('button.on'); if (tb && ob && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = ob.offsetLeft - (tb.clientWidth - ob.offsetWidth) / 2;
 }
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); navFor = null; markNav(); const cur = resolve(hashNow()); if (cur.url !== hashNow()) render(); });
@@ -257,6 +284,7 @@ function jumpItems() {
   if (me.role === 'client') return [];
   const out = [];
   if (hasOrg()) for (const [g, l] of ORG) for (const [r, tl, n] of TABS[g]) if (needOk(n)) out.push({ title: tl, sub: tl === l ? 'Organization' : `Organization · ${l}`, route: '#/org/' + r, icon: svg(P[g]) });
+  if (hasEstrategia()) { out.push({ title: 'Estrategia', sub: 'Todos los clientes', route: '#/estrategia', icon: svg(P.estrategia) }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Estrategia', route: `#/estrategia/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
   if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg(P.marcas) }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
   return out;
 }
@@ -279,7 +307,7 @@ function shell() {
   </div>`);
   navFor = null; paintNav(true);
   // Tocar una sección abre su primera pantalla visible; una marca, su página; «Marcas», la pantalla de inicio con las tiles.
-  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (!b) return; const g = b.dataset.go; location.hash = '/' + (g === 'portal' ? 'portal' : g.startsWith('marcas') ? g : 'org/' + (tabsOf(g)[0]?.[0] || orgLanding())); };
+  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (!b) return; const g = b.dataset.go; location.hash = '/' + (g === 'portal' ? 'portal' : g.startsWith('marcas') || g.startsWith('estrategia') ? g : 'org/' + (tabsOf(g)[0]?.[0] || orgLanding())); };
   $('#subnav').onclick = (e) => { const b = e.target.closest('[data-sub]'); if (b) location.hash = '/' + b.dataset.sub; };
   // El interruptor: cambia de espacio y vuelve a donde estabas en ese espacio.
   $('.top').addEventListener('click', (e) => { const b = e.target.closest('[data-space]'); if (!b || b.dataset.space === space) return; lsSet('space', b.dataset.space); const last = lsGet('last.' + b.dataset.space); location.hash = '/' + (last || spaceHome(b.dataset.space)); });
@@ -291,6 +319,8 @@ function shell() {
   $('#themebtn').onclick = () => { const dark = document.documentElement.dataset.theme !== 'dark'; setTheme(dark); try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {} $('#themebtn').innerHTML = dark ? SUN : MOON; };
   // Las marcas llegan después (la barra de Marcas y el buscador las usan).
   if (hasMarcas()) loadBrands(me).then(() => { if (me) markNav(); });
+  // Estrategia: los clientes llegan después (la barra y el buscador los usan).
+  if (hasEstrategia()) loadEstrategia().then(() => { if (me) markNav(); });
 }
 
 async function render() {
@@ -298,7 +328,7 @@ async function render() {
   // La dirección siempre dice dónde se abrió de verdad (alias y rutas que este perfil no ve se reescriben).
   if (cur.url !== hashNow()) history.replaceState(null, '', '#/' + cur.url);
   if (cur.space) { space = cur.space; lsSet('space', space); lsSet('last.' + space, cur.url); }
-  else if (!space) space = me.role === 'client' ? null : landing().startsWith('marcas') ? 'marcas' : 'org';
+  else if (!space) space = me.role === 'client' ? null : landing().startsWith('marcas') ? 'marcas' : landing().startsWith('estrategia') ? 'estrategia' : 'org';
   if (cur.space === 'marcas' && cur.rest[0] && !brandsNow().length) loadBrands(me).then(() => { if (me) markNav(); });
   markNav(cur);
   $('#avatar')?.classList.toggle('on', cur.key === 'me');
@@ -339,7 +369,7 @@ window.addEventListener('hashchange', () => me && render());
     const m = typeof url === 'string' && /^#\/([\w-]+)(.*)$/.exec(url);
     if (m && me && location.hash.startsWith('#/org/') && ORG_SCREENS.includes(m[1])) url = '#/org/' + m[1] + m[2];
     const out = rs(st, t, url);
-    if (me && typeof url === 'string') { const h = url.replace(/^#\/?/, ''); if (h.startsWith('org/')) lsSet('last.org', h); else if (h.startsWith('marcas')) lsSet('last.marcas', h); }
+    if (me && typeof url === 'string') { const h = url.replace(/^#\/?/, ''); if (h.startsWith('org/')) lsSet('last.org', h); else if (h.startsWith('marcas')) lsSet('last.marcas', h); else if (h.startsWith('estrategia')) lsSet('last.estrategia', h); }
     return out;
   }; }
 $('#veil').onclick = closeDrawer;

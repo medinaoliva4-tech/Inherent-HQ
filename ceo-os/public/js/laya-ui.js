@@ -1,9 +1,9 @@
 // Fase 3 · Laya en la interfaz: el chip del juicio en cada ficha (lead, factura por pagar, referente, idea)
-// y la sub-vista Inherent → Laya (el puente, el comando para instalarlo, las puertas y los últimos juicios).
+// y la sub-vista Inherent → Laya (el paso a paso para instalar el puente, las puertas y los últimos juicios).
 // El motor se intercambia: primero el puente local (instantáneo); si no responde, el juicio queda «pendiente»
 // y Claude Code lo resuelve con juicios_pendientes / guardar_juicio. «claude» queda para la Fase 6.
 import { html, raw, mount, api, toast, fdate, ico } from './core.js';
-import { PUENTE, COMANDO, INSTALAR_MCP, ENGINE_LABEL, TIPOS, TIPO_LABEL, PUERTAS, GATES, cumple, umbralTexto, corto } from './laya.js';
+import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, OLLAMA, MODELO_LOCAL, INSTALAR_MODELO_MAC, INSTALAR_MODELO_WIN, sistemaDe, MODELO, INSTALAR_MCP, ENGINE_LABEL, TIPOS, TIPO_LABEL, PUERTAS, GATES, cumple, umbralTexto, corto } from './laya.js';
 
 // ---------- el puente local ----------
 let est = { at: 0, v: null };
@@ -18,7 +18,21 @@ export async function puenteEstado(force = false) {
   try { const r = await conTiempo(PUENTE + '/health'); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', listo: Boolean(j.listo), cargando: Boolean(j.cargando), modelo: j.modelo || '', error: j.error || null, laya: j.laya || '' }; } } catch { /* apagado */ }
   est = { at: Date.now(), v }; return v;
 }
-async function juzgarLocal(t) {
+// El modelo local (Ollama, opcional): { on, tiene } — on = responde en 127.0.0.1:11434 · tiene = ya bajó el modelo
+// (null si el navegador no deja leer la lista). Primero lee /api/tags; si el navegador no lo deja, basta con que conteste.
+let estM = { at: 0, v: null };
+export async function modeloLocalEstado(force = false) {
+  if (!force && estM.v && Date.now() - estM.at < 15000) return estM.v;
+  let v = { on: false, tiene: false };
+  try {
+    const r = await conTiempo(OLLAMA + '/api/tags');
+    if (r.ok) { const j = await r.json(); v = { on: true, tiene: (j.models || []).some((m) => m.name === MODELO_LOCAL) }; }
+  } catch {
+    try { await conTiempo(OLLAMA + '/api/tags', { mode: 'no-cors' }); v = { on: true, tiene: null }; } catch { /* apagado */ }
+  }
+  estM = { at: Date.now(), v }; return v;
+}
+export async function juzgarLocal(t) { // Fase 4: Investigación lo usa para juzgar en lote
   const r = await conTiempo(PUENTE + '/juzgar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ texto: t.texto, questions: t.questions, model: t.model }) }, 180000);
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error || `El puente respondió ${r.status}`);
@@ -87,7 +101,70 @@ export async function layaView(el, { me } = {}) {
   let P, J;
   try { [P, J] = await Promise.all([api('laya/puertas'), api('laya/juicios?n=20')]); }
   catch (e) { return mount(el, html`<div class="warnbox">No pude leer Laya: ${e.message}</div>`); }
-  let puertas = P.puertas, guardadas = { ...(P.guardadas || {}) }, st = await puenteEstado(true);
+  let puertas = P.puertas, guardadas = { ...(P.guardadas || {}) }, st = await puenteEstado(true), md = await modeloLocalEstado(true);
+
+  // ---- el puente: un paso a paso con check que se pone verde solo (polling a /health cada 3 s) ----
+  const sis0 = sistemaDe(globalThis.navigator?.userAgent || '');
+  let sis = sis0, copiado = false, abierto = false;
+  const cmd = () => (sis === 'win' ? INSTALAR_WIN : INSTALAR_MAC);
+  const cmdModelo = () => (sis === 'win' ? INSTALAR_MODELO_WIN : INSTALAR_MODELO_MAC);
+  const TERMINAL = {
+    mac: html`Abre la Terminal: <b>⌘ Espacio</b> → escribe «Terminal» → Enter. Pega con <b>⌘ V</b> y dale Enter.`,
+    linux: html`Abre la Terminal (<b>Ctrl Alt T</b>). Pega con <b>Ctrl Shift V</b> y dale Enter.`,
+    win: html`Abre PowerShell: tecla <b>Windows</b> → escribe «PowerShell» → Enter. Pega con <b>Ctrl V</b> y dale Enter.`,
+  };
+  const num = (hecho, n) => html`<span class="ly-num">${hecho ? ico('check', 13) : n}</span>`;
+  const estadoTexto = () => (!st.on ? 'Esperando a Laya… el punto se pone verde solo.' : st.listo ? `Laya corriendo · modelo ${st.modelo || MODELO}`
+    : st.error ? `Laya encendió, pero el modelo no cargó: ${st.error}` : 'Laya encendió · cargando el modelo…');
+  // El paso opcional: el modelo local. Punto verde si http://127.0.0.1:11434/api/tags responde.
+  const mdTexto = () => (md.on ? (md.tiene === false ? `Ollama corriendo, pero falta bajar ${MODELO_LOCAL}: vuelve a correr el comando.` : `Modelo local corriendo · ${MODELO_LOCAL}`) : 'Opcional. Sin él, el texto repetitivo lo escribe Claude.');
+  const modeloOpcional = (compacto) => compacto
+    ? html`<div class="card ly-card ly-run" style="margin-top:8px"><span class="dot ${md.on ? 'ly-on' : 'ly-off'}"></span><b>Modelo local (opcional)</b><span class="mut">· ${mdTexto()}</span>
+        <span class="sp"></span>${md.on && md.tiene !== false ? '' : html`<button class="btn xs ghost" data-l="copiarm">Copiar comando</button>`}</div>`
+    : html`<li class="${md.on ? 'hecho' : ''}">${num(md.on, 4)}<div><b>Modelo local (opcional)</b>
+          <div class="mut sm">Para variantes de caption, alt text y títulos cortos sin gastar créditos de Claude. Baja ${MODELO_LOCAL} (~3.4 GB).</div>
+          <div class="aiurl"><code>${cmdModelo()}</code><button class="btn xs ghost" data-l="copiarm">Copiar</button></div>
+          <div class="ly-estado"><span class="dot ${md.on ? 'ly-on' : 'ly-off'}"></span><span class="sm">${mdTexto()}</span></div></div></li>`;
+  function puenteCard() {
+    if (st.on && st.listo && !abierto) {
+      return html`<div class="card ly-card ly-run"><span class="dot ly-on"></span><b>Laya corriendo</b><span class="mut">· modelo ${st.modelo || MODELO}</span>
+        <span class="sp"></span><button class="btn xs ghost" data-l="abrir" title="Vuelve a correr el comando para actualizar Laya">Actualizar</button></div>
+        ${modeloOpcional(true)}`;
+    }
+    const h1 = copiado || st.on, h2 = st.on, h3 = st.on && st.listo;
+    return html`<div class="card ly-card ly-inst"><b>Deja Laya corriendo en tu compu</b><span class="mut sm"> · una sola vez; después arranca solo, también al reiniciar</span>
+      <ol class="ly-pasos">
+        <li class="${h1 ? 'hecho' : ''}">${num(h1, 1)}<div><b>Copia este comando</b>
+          <div class="aiurl"><code>${cmd()}</code><button class="btn xs" data-l="copiar">Copiar</button></div>
+          <button class="ly-lnk mut sm" type="button" data-l="sis">${sis === 'win' ? '¿Usas Mac o Linux?' : '¿Usas Windows?'}</button></div></li>
+        <li class="${h2 ? 'hecho' : ''}">${num(h2, 2)}<div><b>${sis === 'win' ? 'Pégalo en PowerShell y espera' : 'Pégalo en la Terminal y espera'}</b>
+          <div class="mut sm">${TERMINAL[sis]}</div>
+          <div class="mut sm">La primera vez tarda de 5 a 15 minutos (baja ~650 MB). Termina con «Laya está corriendo».</div></div></li>
+        <li class="${h3 ? 'hecho' : ''}">${num(h3, 3)}<div><b>Listo</b>
+          <div class="ly-estado"><span class="dot ${st.on ? 'ly-on' : 'ly-off ly-pulse'}"></span><span class="sm">${estadoTexto()}</span></div></div></li>
+        ${modeloOpcional(false)}
+      </ol>
+      <div class="mut sm ly-permiso">Chrome te va a preguntar si dejas que Inherent OS hable con tu compu: dale <b>Permitir</b>.</div>
+      ${abierto ? html`<button class="btn xs ghost" data-l="cerrar" style="margin-top:10px">Cerrar</button>` : ''}</div>`;
+  }
+  const pintarPuente = () => { const b = el.querySelector?.('[data-ly-puente]'); if (b) mount(b, puenteCard()); };
+  const firma = (v) => [v.on, v.listo, v.cargando, v.error, v.modelo].join('|');
+  const firmaM = (v) => [v.on, v.tiene].join('|');
+  const gen = (el._lyGen = (el._lyGen || 0) + 1); // una sola vigilancia por pantalla abierta
+  async function vigilar() {
+    const b = el.querySelector?.('[data-ly-puente]');
+    if (el._lyGen !== gen || !b || b.isConnected === false) return; // se salió de Inherent → Laya
+    if (!globalThis.document?.hidden) {
+      const n = await puenteEstado(true);
+      if (el._lyGen !== gen) return;
+      const m = await modeloLocalEstado(true);
+      if (el._lyGen !== gen) return;
+      if (firma(n) !== firma(st) || firmaM(m) !== firmaM(md)) { const antes = st.listo, antesM = md.on; st = n; md = m; pintarPuente(); if (n.listo && !antes) toast('Laya está corriendo'); else if (m.on && !antesM) toast('El modelo local está corriendo'); }
+    }
+    setTimeout(vigilar, 3000);
+  }
+  setTimeout(vigilar, 3000);
+
   const draft = Object.fromEntries(GATES.map((g) => [g, puertas[g].preguntas.map((q) => ({ ...q }))]));
 
   const qForm = (g, q, k) => html`<div class="ly-qf card" data-g="${g}" data-k="${k}">
@@ -108,14 +185,9 @@ export async function layaView(el, { me } = {}) {
 
   function paint() {
     mount(el, html`<div class="hello sp-hero" style="margin-top:0"><h1>Laya</h1><p>El motor de decisiones que <em>corre en tu compu</em>.</p></div>
-      <div class="ly-grid">
-        <div class="card ly-card"><div class="row"><span class="dot ${st.on ? 'ly-on' : 'ly-off'}"></span><b>${st.on ? (st.listo ? 'Puente encendido' : st.error ? 'Puente encendido, Laya no cargó' : 'Puente encendido · cargando el modelo') : 'Puente apagado'}</b><span class="sp"></span><button class="btn xs ghost" data-l="check">Revisar</button></div>
-          <div class="mut sm" style="margin-top:6px">${st.on ? `${PUENTE}${st.modelo ? ` · modelo ${st.modelo}` : ''}${st.laya ? ` · Laya ${st.laya}` : ''}${st.error ? ` · ${st.error}` : ''}` : 'Sin puente, «Pedir a Laya» deja el juicio pendiente y Claude Code lo resuelve.'}</div></div>
-        <div class="card ly-card"><b class="sm">Instálalo y enciéndelo</b><div class="mut sm">Desde la raíz del repo, en tu compu (Python 3.10+). La primera vez baja ~644 MB.</div>
-          <div class="aiurl"><code>${COMANDO}</code><button class="btn xs" data-l="copy">Copiar</button></div>
-          <div class="mut sm" style="margin-top:8px">Para que Claude Code resuelva los pendientes:</div>
-          <div class="aiurl"><code>${INSTALAR_MCP}</code><button class="btn xs ghost" data-l="copymcp">Copiar</button></div></div>
-      </div>
+      <div data-ly-puente>${puenteCard()}</div>
+      <details class="ly-mcp mut sm"><summary>Sin Laya en tu compu, «Pedir a Laya» deja el juicio pendiente: así lo resuelve Claude Code</summary>
+        <div class="aiurl"><code>${INSTALAR_MCP}</code><button class="btn xs ghost" data-l="copymcp">Copiar</button></div></details>
       <div class="sec-title" style="margin:26px 0 10px"><h2 style="font-size:19px">Puertas y preguntas</h2><span class="mut sm">${ceo ? 'Las cambia el CEO. Umbral de 0 a 1; vacío = sin umbral.' : 'Solo el CEO las cambia.'}</span></div>
       ${GATES.map((g) => html`<section class="ly-gate"><div class="row"><b>${PUERTAS[g].label}</b><span class="mut sm">· ${PUERTAS[g].donde}</span>${guardadas[g] ? html`<span class="chip sm2">editada</span>` : html`<span class="chip sm2 off">de fábrica</span>`}<span class="sp"></span>
           ${ceo ? html`<button class="btn xs ghost" data-l="add" data-g="${g}">+ Pregunta</button>${guardadas[g] ? html`<button class="btn xs ghost" data-l="reset" data-g="${g}">De fábrica</button>` : ''}<button class="btn xs" data-l="save" data-g="${g}">Guardar</button>` : ''}</div>
@@ -132,8 +204,10 @@ export async function layaView(el, { me } = {}) {
   }
   el.onclick = async (e) => {
     const t = e.target.closest('[data-l],[data-q]'); if (!t || !el.contains(t)) return;
-    if (t.dataset.l === 'check') { st = await puenteEstado(true); paint(); toast(st.on ? 'El puente responde' : 'El puente no responde'); return; }
-    if (t.dataset.l === 'copy') return copiar(COMANDO, 'Copiado · pégalo en tu terminal');
+    if (t.dataset.l === 'copiar') { copiado = true; pintarPuente(); return copiar(cmd(), sis === 'win' ? 'Copiado · pégalo en PowerShell' : 'Copiado · pégalo en la Terminal'); }
+    if (t.dataset.l === 'copiarm') return copiar(cmdModelo(), sis === 'win' ? 'Copiado · pégalo en PowerShell' : 'Copiado · pégalo en la Terminal');
+    if (t.dataset.l === 'sis') { sis = sis !== 'win' ? 'win' : sis0 === 'win' ? 'mac' : sis0; copiado = false; return pintarPuente(); }
+    if (t.dataset.l === 'abrir' || t.dataset.l === 'cerrar') { abierto = t.dataset.l === 'abrir'; return pintarPuente(); }
     if (t.dataset.l === 'copymcp') return copiar(INSTALAR_MCP, 'Copiado · pégalo en tu terminal');
     if (!ceo) return;
     const g = t.dataset.g || t.closest('.ly-qf')?.dataset.g;

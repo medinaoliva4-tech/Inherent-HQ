@@ -3,13 +3,8 @@
 Web privada de Inherent, en 8 secciones: **Inicio · Clientes · Comercial · Operaciones · Resultados · Finanzas · Conocimiento · Administración**.
 Se entra con **Google** y solo con cuentas **@inherentglobal.com**.
 
-| Fase | Qué trae | Estado |
-|---|---|---|
-| 1 | Base, login con Google, Home, **Sales** (CRM, catálogo con costo por hora, cotizaciones con PDF) y **Team** (organigrama, perfiles y accesos) | ✅ |
-| 2 | Finance (movimientos, costs, profitability, pricing, nómina por rol) y Operations (proyectos por fase, pipeline por cliente con entregables, tareas, Google Calendar, timeline) | ✅ |
-| 3 | Library: carpetas, SOPs, playbooks y videos con editor; carpetas conectadas a Google Drive (ver y crear Docs) | ✅ |
-| 4 | Content: semana (top 10 del nicho), por postear, guiones y planner del repo, analytics de las cuentas propias, fuentes · scrape semanal con Apify · Clients: página por cliente con roadmap en PDF | ✅ |
-| 5 | Portal del cliente | 🚧 |
+**Las fases del OS están en [`PLAN-OS.md`](PLAN-OS.md) § 4.** Ese es el plan: esta página solo describe cómo funciona lo que ya existe.
+Hechas y unidas a main: **0 a 4** (la 4, «Marcas: entender», con App 02 · Estrategia). Sigue la **5 · Marcas: crear**.
 
 ## De dónde salen los datos
 

@@ -1,55 +1,82 @@
-// El portal del cliente: cómo va lo que contrató, su contenido, su calendario, sus reuniones,
-// sus metas, lo entregado y sus redes. Todo sale de /api/portal (el servidor decide qué se ve).
-import { html, raw, mount, api, toast, fdate, fdateLong, K, $, $$, lineChart, ICON, ico, initials } from '../core.js';
-import { bars, PAL } from '../charts.js';
+// El portal del cliente, como el dashboard de la web: Resumen · Contenido · Entregas · Metas.
+// Todo sale de /api/portal (el servidor decide qué se ve). Lo que no tiene dato dice «—» y qué falta conectar: nunca un número inventado.
+// Intel («Entregables» de estrategia) NO se muestra aquí: es información del cliente, pero no para el cliente.
+import { html, raw, mount, api, toast, fdate, fdateLong, K, $, $$, ico, initials, ask, confirmAsk } from '../core.js';
 import { estadoDe } from '../element.js';
 
 const ST = { 'Entregado': 'green', 'En revisión': 'amber', 'En curso': 'lime', 'Por empezar': '' };
-// El estado de cada pieza, como lo lee el cliente (los estados viejos se leen como los nuevos).
-const PS = { Idea: 'Idea', 'En proceso': 'En producción', Listo: 'Listo para publicar', Publicado: 'Publicado', Archivado: 'Publicado' };
 const lvName = (lv) => (!lv ? '' : lv <= 4 ? 'Entrega básica' : lv <= 6 ? 'Entrega sencilla' : lv >= 9 ? 'Entrega fuerte' : 'Entrega media');
-const bar = (p) => html`<div class="gbar"><i style="width:${p ?? 0}%"></i></div>`;
+const TABS = [['resumen', 'Resumen'], ['contenido', 'Contenido'], ['entregas', 'Entregas'], ['metas', 'Metas']];
+let TAB = 'resumen';
+
+// El estado de una pieza como lo lee el cliente (sale de estadoDe: Idea · En proceso · Listo · Publicado).
+const pstate = (x) => { const e = estadoDe(x); return e === 'Publicado' || e === 'Archivado' ? ['Publicado', 's-pub'] : e === 'Listo' ? ['Programado', 's-prog'] : e === 'En proceso' ? (x.por_aprobar ? ['Por aprobar', 's-rev'] : x.cliente === 'cambios' ? ['Cambios pedidos', 's-rev'] : ['En producción', 's-idea']) : ['En idea', 's-idea']; };
+const porAprobar = (x) => x.por_aprobar === true && estadoDe(x) === 'En proceso'; // solo lo que el equipo envió a aprobación
+const EST = { Entregado: 's-pub', Hecho: 's-pub', Agendada: 's-prog', 'En curso': 's-prog', 'Por empezar': 's-idea', 'Por agendar': 's-rev' };
+
+// El cambio contra el periodo anterior: «↑ +22%». Sin dato anterior, no se muestra.
+const delta = (k) => (k?.pct == null ? '' : k.pct > 0 ? html`<span class="pd-d up">↑ +${k.pct}%</span>` : k.pct < 0 ? html`<span class="pd-d down">↓ −${Math.abs(k.pct)}%</span>` : html`<span class="pd-d">→ 0%</span>`);
+const kcard = (label, value, line, title = '') => html`<div class="pd-kpi" ${title ? raw(`title="${title.replace(/"/g, '&quot;')}"`) : ''}><span class="pd-l">${label}</span><b class="pd-v ${value === '—' ? 'none' : ''}">${value}</b><div class="pd-sub">${line}</div></div>`;
+
+// La gráfica de 30 días: leads en barras, alcance en línea (cada uno a su propia escala, como en la web). Solo lo que existe.
+function chart(serie) {
+  const W = 640, H = 230, L = 8, R = 8, T = 18, B = 34, n = serie.length, step = (W - L - R) / n, base = H - B;
+  const reach = serie.map((s) => s.alcance), leads = serie.map((s) => s.leads);
+  const hasR = reach.some((v) => v != null), hasL = leads.some((v) => v), maxR = Math.max(1, ...reach.map((v) => v || 0)), maxL = Math.max(1, ...leads.map((v) => v || 0));
+  const x = (i) => L + step * i + step / 2, yR = (v) => T + (1 - v / maxR) * (base - T - 6);
+  const bars = hasL ? leads.map((v, i) => (v ? `<rect x="${(x(i) - step * 0.3).toFixed(1)}" y="${(base - (v / maxL) * (base - T - 30)).toFixed(1)}" width="${(step * 0.6).toFixed(1)}" height="${((v / maxL) * (base - T - 30)).toFixed(1)}" rx="3" class="pd-bar"><title>${serie[i].date}: ${v} leads</title></rect>` : '')).join('') : '';
+  let d = '', pen = false;
+  if (hasR) reach.forEach((v, i) => { if (v == null) { pen = false; return; } d += `${pen ? 'L' : 'M'}${x(i).toFixed(1)},${yR(v).toFixed(1)} `; pen = true; });
+  const dots = hasR ? reach.map((v, i) => (v == null ? '' : `<circle cx="${x(i).toFixed(1)}" cy="${yR(v).toFixed(1)}" r="9" class="pd-hit"><title>${serie[i].date}: ${K(v)} de alcance</title></circle>`)).join('') : '';
+  const lab = (i, a) => `<text x="${a === 'end' ? W - R : a === 'middle' ? W / 2 : L}" y="${H - 8}" text-anchor="${a}" class="pd-ax">Día ${i}</text>`;
+  return raw(`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfica de alcance y leads de los últimos 30 días" class="pd-chart"><g class="pd-grid"><line x1="0" y1="30" x2="${W}" y2="30"/><line x1="0" y1="95" x2="${W}" y2="95"/><line x1="0" y1="160" x2="${W}" y2="160"/></g>${bars}${hasR ? `<path d="${d}" class="pd-line"/>${dots}` : ''}${lab(1, 'start')}${lab(15, 'middle')}${lab(30, 'end')}</svg>`);
+}
 
 export async function render(el, { me, sub, alive }) {
   const slug = me.role === 'client' ? '' : sub[0] || '';
   let d;
   try { d = await api('portal' + (slug ? `?slug=${encodeURIComponent(slug)}` : '')); } catch (e) { return mount(el, html`<div class="empty"><b>No pude abrir el portal</b>${e.message}</div>`); }
   if (!alive()) return;
-  const all = d.projects.flatMap((p) => p.services);
-  const avg = d.projects.filter((p) => p.progress != null);
-  const progress = avg.length ? Math.round(avg.reduce((a, p) => a + p.progress, 0) / avg.length) : null;
-  const nextMeet = d.meetings.find((m) => m.date >= d.today && m.status !== 'hecha');
-  const upcoming = d.content.filter((x) => x.date >= d.today);
-  const n = (num) => (num == null ? '—' : num);
-  const M = d.today.slice(0, 7);
-  const pubM = d.content.filter((x) => x.date.slice(0, 7) === M && estadoDe(x) === 'Publicado').length;
-  // Lo que viene: el contenido por salir y las reuniones por delante, en una sola banda por fecha.
-  const next = [...upcoming.map((x) => ({ date: x.date, k: 'post', title: x.title, sub: [x.format, x.pillar].filter(Boolean).join(' · '), st: PS[estadoDe(x)] })),
-    ...d.meetings.filter((m) => m.date >= d.today && m.status !== 'hecha').map((m) => ({ date: m.date, k: 'meet', title: m.name, sub: m.approves ? `Aprobamos: ${m.approves}` : m.topics.join(' · '), st: 'Reunión' }))].sort((a, z) => a.date.localeCompare(z.date));
+  const isClient = me.role === 'client', r = d.resumen, en = d.entregas;
+  const q = slug ? `?slug=${encodeURIComponent(slug)}` : '';
+  const pend = d.content.filter(porAprobar);
+  const ob = d.onboarding, obN = ob ? ob.items.filter((x) => x.done).length : 0, obAll = ob ? obN === ob.items.length : false;
   const R0 = 26, C0 = 2 * Math.PI * R0;
   const ring = (pct) => html`<div class="sp-ring pt-ring" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="trk" cx="32" cy="32" r="${R0}" fill="none" stroke-width="6"/>${raw(pct ? `<circle class="val" cx="32" cy="32" r="${R0}" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C0.toFixed(2)}" stroke-dashoffset="${(C0 * (1 - pct / 100)).toFixed(2)}"/>` : '')}</svg><b>${pct == null ? '—' : html`${pct}<small>%</small>`}</b></div>`;
-  // Las piezas del mes por semana (planificadas vs publicadas): sale del calendario, sin estimar nada.
-  const [yy, mm] = M.split('-').map(Number), nW = Math.ceil(new Date(yy, mm, 0).getDate() / 7);
-  const wk = Array.from({ length: nW }, (_, i) => { const l = d.content.filter((x) => x.date.slice(0, 7) === M && Math.floor((+x.date.slice(8) - 1) / 7) === i); return { label: `S${i + 1}`, values: [l.length, l.filter((x) => estadoDe(x) === 'Publicado').length] }; });
-  mount(el, html`
-    ${me.role !== 'client' ? html`<div class="asbar">${ico('eye')} Así ve ${d.name} su portal <a href="#/clients/${d.slug}">Volver al cliente</a></div>` : ''}
-    <header class="sp-cover pt-cover">
-      <div class="sp-cover-top"><div class="sp-cover-mono">${initials(d.name)}</div>
-        <div style="flex:1;min-width:220px"><span class="lbl">Tu proyecto con Inherent</span><h1>${d.name}</h1>
-          <div class="sp-cover-chips">${d.plan ? html`<span class="chip">Tu nivel: ${d.plan}</span>` : ''}${d.folder ? html`<a class="chip" href="${d.folder}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${ico('folder', 13)} Tu carpeta de entregables ↗</a>` : ''}</div></div></div>
-      <div class="sp-cover-nums"><div><span class="lbl">Avance</span><b>${progress == null ? '—' : progress + '%'}</b></div><div><span class="lbl">Próxima reunión</span><b>${nextMeet ? fdate(nextMeet.date) : '—'}</b></div><div><span class="lbl">Por publicar</span><b>${upcoming.length}</b></div><div><span class="lbl">Entregado</span><b>${d.delivered.length}</b></div></div>
-    </header>
-    ${d.onboarding ? (() => { const ob = d.onboarding, n = ob.items.filter((x) => x.done).length, all = n === ob.items.length;
-      return html`<section class="sp-panel onb pt-onb ${all ? 'ok' : ''}" id="onb"><div class="sp-panel-h row" style="gap:10px;flex-wrap:wrap"><h3>${all ? html`${ico('check')} Onboarding completo` : html`${ico('smile')} Tu onboarding`}</h3><div class="sp"></div><span class="sm mut">${n}/${ob.items.length} listos</span></div>
-        <div class="mut sm" style="margin-top:8px">${all ? '¡Gracias! Con esto el equipo ya tiene todo para avanzar.' : 'Lo que necesitamos de ti para arrancar. Marca lo que ya hiciste y deja un link o comentario si hace falta.'}</div>
-        <div class="sp-meter" style="margin:10px 0 6px"><i style="width:${Math.round((n / (ob.items.length || 1)) * 100)}%"></i></div>
-        ${ob.items.map((x, i) => html`<div class="onbi"><label class="check"><input type="checkbox" data-i="${i}" ${x.done ? raw('checked') : ''}> <span>${x.t}</span></label><input class="in sm" data-n="${i}" value="${x.note || ''}" placeholder="Link o comentario (opcional)"></div>`)}
-        <div class="row" style="margin-top:10px"><button class="btn" data-ob="save">Guardar</button></div>
-        <div class="onbteam sp-inset"><b style="font-weight:600">¿Alguien de tu equipo ve esto?</b><div class="mut sm">Invítalo: entra con su Google y ve este mismo portal.</div>
-          ${d.people.length ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:8px">${d.people.map((p) => html`<span class="chip">${p.name || p.email} · ${p.email}</span>`)}</div>` : ''}
-          <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><input class="in" id="invn" placeholder="Nombre" style="max-width:180px"><input class="in" id="inve" type="email" placeholder="correo@suempresa.com" style="max-width:260px"><button class="btn ghost" data-ob="invite">Invitar a alguien de mi equipo</button></div></div></section>`; })() : ''}
+  const falta = (k) => (r.falta[k] ? html`<span class="pd-falta">${r.falta[k]}</span>` : '');
+  const num = (v) => (v == null ? '—' : v);
 
-    ${d.projects.length ? html`<div class="sec-title"><h2 class="ttl">${ICON.list}Lo que contrataste</h2></div>
+  // ---- Onboarding: lo que necesitamos del cliente. Arriba mientras no esté completo; completo, se guarda dentro de Resumen.
+  const onbBody = ob ? html`<div class="mut sm" style="margin-top:8px">${obAll ? '¡Gracias! Con esto el equipo ya tiene todo para avanzar.' : 'Lo que necesitamos de ti para arrancar. Marca lo que ya hiciste y deja un link o comentario si hace falta.'}</div>
+        <div class="sp-meter" style="margin:10px 0 6px"><i style="width:${Math.round((obN / (ob.items.length || 1)) * 100)}%"></i></div>
+        ${ob.items.map((x, i) => html`<div class="onbi"><label class="check"><input type="checkbox" data-i="${i}" ${x.done ? raw('checked') : ''}> <span>${x.t}</span></label><input class="in sm" data-n="${i}" value="${x.note || ''}" placeholder="Link o comentario (opcional)"></div>`)}
+        <div class="row" style="margin-top:10px"><button class="btn" data-ob="save">Guardar</button></div>` : '';
+  const onbTop = ob && !obAll ? html`<section class="sp-panel onb pt-onb" id="onb"><div class="sp-panel-h row" style="gap:10px;flex-wrap:wrap"><h3>${ico('smile')} Tu onboarding</h3><div class="sp"></div><span class="sm mut">${obN}/${ob.items.length} listos</span></div>${onbBody}</section>` : '';
+  const onbDone = ob && obAll ? html`<details class="pd-onbd" id="onb"><summary>${ico('check')} Onboarding completo <span class="mut sm">${obN}/${ob.items.length}</span></summary>${onbBody}</details>` : '';
+
+  // ---- Resumen
+  const fuentesMax = r.fuentes?.length ? Math.max(...r.fuentes.map((f) => f.n)) : 1;
+  const hayGrafica = r.serie.some((s) => s.alcance != null || s.leads);
+  const resumen = html`
+    <div class="pd-kpis">
+      ${kcard('Alcance', r.alcance ? K(r.alcance.valor) : '—', r.alcance ? delta(r.alcance) : falta('alcance'))}
+      ${kcard('Seguidores nuevos', r.seguidores ? (r.seguidores.valor > 0 ? '+' : '') + r.seguidores.valor.toLocaleString('en-US') : '—', r.seguidores ? delta(r.seguidores) : falta('seguidores'), r.seguidores?.total ? `En total: ${r.seguidores.total.toLocaleString('en-US')}` : '')}
+      ${kcard('Leads', r.leads ? r.leads.valor : '—', r.leads ? delta(r.leads) : falta('leads'))}
+      ${kcard('Reuniones', r.reuniones ? r.reuniones.valor : '—', r.reuniones ? delta(r.reuniones) : falta('reuniones'))}
+      ${kcard('Piezas publicadas', r.piezas.valor, r.piezas.aTiempo != null ? html`<span class="pd-d">${r.piezas.aTiempo}% a tiempo</span>` : '')}
+    </div>
+    <div class="pd-row">
+      <div class="pd-box"><h4>Últimos 30 días · <b>Alcance</b> + leads</h4>
+        ${hayGrafica ? html`${chart(r.serie)}<div class="pd-leg">${r.serie.some((s) => s.alcance != null) ? html`<span><i class="ln"></i>Alcance</span>` : ''}${r.serie.some((s) => s.leads) ? html`<span><i class="br"></i>Leads</span>` : ''}</div>`
+          : html`<div class="pd-empty"><b>Todavía no hay datos de estos 30 días</b>${[r.falta.alcance, r.falta.leads].filter(Boolean).join(' · ') || 'Aún no hay movimiento en este periodo.'}</div>`}
+      </div>
+      <div class="pd-box"><h4>De dónde vienen los leads</h4>
+        ${r.fuentes?.length ? html`<div class="pd-src">${r.fuentes.map((f) => html`<div><span>${f.fuente}</span><span class="t"><i style="width:${Math.max(6, Math.round((f.n / fuentesMax) * 100))}%"></i></span><b>${f.n}</b></div>`)}</div>`
+          : r.fuentes ? html`<div class="pd-empty"><b>Sin leads en estos 30 días</b>Cuando entren, aquí ves de dónde vienen.</div>`
+          : html`<div class="pd-empty"><b>—</b>${r.falta.leads}: así sabrás de dónde viene cada lead.</div>`}
+      </div>
+    </div>
+    ${d.projects.length ? html`<div class="pd-sec"><h3>Lo que contrataste</h3></div>
       ${d.projects.map((p) => html`<section class="pt-proj">
         <div class="pt-proj-h">${ring(p.progress)}<div style="flex:1;min-width:0"><h3>${p.name}</h3>${p.phases.length ? html`<div class="pt-phases">${p.phases.map((f) => html`<span class="pt-ph ${f.status}">${f.status === 'done' ? ico('check', 12) : html`<i></i>`} ${f.name}${f.end ? html`<small>${fdate(f.end)}</small>` : ''}</span>`)}</div>` : ''}</div></div>
         ${p.services.length ? html`<div class="sp-tiles pt-tiles">${p.services.map((sv) => html`<div class="sp-tile pt-svc">
@@ -57,41 +84,80 @@ export async function render(el, { me, sub, alive }) {
           <div class="sp-tile-sub">${lvName(sv.level)}${sv.days ? ` · ${sv.days} días hábiles` : ''}${sv.due ? ` · entrega ${fdate(sv.due)}` : ''}</div>
           ${sv.progress != null ? html`<div class="sp-meter"><i style="width:${sv.progress}%"></i></div>` : ''}
           ${sv.includes.length ? html`<ul class="pt-inc">${sv.includes.map((x) => html`<li>${x}</li>`)}</ul>` : ''}</div>`)}</div>` : ''}</section>`)}` : ''}
+    <section class="sp-panel pd-team" id="pteam"><div class="sp-panel-h row"><h3>Tu equipo</h3></div>
+      <b style="font-weight:600">¿Alguien de tu equipo ve esto?</b><div class="mut sm">Invítalo: entra con su Google y ve este mismo portal.</div>
+      ${d.people.length ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:8px">${d.people.map((p) => html`<span class="chip">${p.name || p.email} · ${p.email}</span>`)}</div>` : ''}
+      <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><input class="in" id="invn" placeholder="Nombre" style="max-width:180px"><input class="in" id="inve" type="email" placeholder="correo@suempresa.com" style="max-width:260px"><button class="btn ghost" data-ob="invite">Invitar a alguien de mi equipo</button></div></section>
+    ${onbDone}`;
 
-    <div class="sec-title"><h2 class="ttl">${ICON.cal}Lo que viene</h2><span class="mut sm">Tu contenido por salir y las reuniones</span></div>
-    ${next.length ? html`<div class="sp-strip pt-next" role="list">${next.map((x) => html`<div class="pt-nx nx-${x.k}" role="listitem"><div class="pt-nx-d"><b>${fdate(x.date).split(' ')[0]}</b><span>${fdate(x.date).split(' ').slice(1).join(' ')}</span></div>
-        <div style="min-width:0"><span class="lbl">${x.st}</span><b class="pt-nx-t">${x.title}</b>${x.sub ? html`<span class="mut sm">${x.sub}</span>` : ''}</div></div>`)}</div>`
-      : html`<div class="sp-callout info"><span class="grow">Todavía no hay contenido ni reuniones por delante en tu calendario.</span></div>`}
+  // ---- Contenido
+  const cardCls = ['a', 'b', 'c', 'd'];
+  const contenido = html`
+    ${pend.length ? html`<div class="pd-banner">${ico('check')} ${pend.length === 1 ? '1 pieza espera tu OK' : `${pend.length} piezas esperan tu OK`}</div>` : ''}
+    ${d.content.length ? html`<div class="pd-cal">${d.content.map((x, i) => { const [lab, cls] = pstate(x);
+      return html`<article class="pd-post">
+        <div class="pd-im ${cardCls[i % 4]}"><span>${x.title}</span></div>
+        <div class="pd-m"><span>${x.format} · ${fdate(x.date)}</span><span class="pd-st ${cls}">${lab}</span></div>
+        ${x.url || (x.cliente === 'cambios' && !porAprobar(x) && x.nota) ? html`<div class="pd-pn">${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer">Ver pieza ↗</a>` : ''}${x.cliente === 'cambios' && !porAprobar(x) && x.nota ? html`<span class="mut sm">Pediste: «${x.nota}»</span>` : ''}</div>` : ''}
+        ${isClient && porAprobar(x) ? html`<div class="pd-act"><button class="btn xs" data-pa="aprobar" data-id="${x.id}">Aprobar</button><button class="btn xs ghost" data-pa="cambios" data-id="${x.id}">Pedir cambios</button></div>` : ''}
+      </article>`; })}</div>`
+      : html`<div class="pd-empty"><b>Todavía no hay piezas</b>Aquí verás cada pieza con su fecha y su estado.</div>`}
+    <p class="pd-note">Aquí apruebas cada pieza antes de que salga. Nada se publica sin tu OK.</p>`;
 
-    <div class="sec-title"><h2 class="ttl">${ICON.chart}Resultados</h2>${d.analytics ? html`<span class="mut sm">Tus redes · ${d.analytics.handles.map((h) => '@' + h).join(', ')} · últimos 30 días</span>` : html`<span class="mut sm">Tu contenido de este mes</span>`}</div>
-    <section class="sp-panel pt-res">
-      ${d.analytics ? html`<div class="sp-kpis pt-kpis">${[['Seguidores', d.analytics.followers ? K(d.analytics.followers) : '—'], ['Alcance', K(d.analytics.reach)], ['Vistas', K(d.analytics.views)], ['Engagement', d.analytics.er == null ? '—' : d.analytics.er + '%'], ['Posts', n(d.analytics.posts)]].map(([l, v]) => html`<div><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
-        ${d.analytics.series.length > 1 ? html`<div class="wkhead" style="border:0;background:none;margin:0;padding:10px 0 0"><h3>Alcance por día</h3></div><div class="chart" id="pch"></div>` : ''}`
-      : html`<div class="sp-kpis pt-kpis"><div><span class="lbl">Piezas del mes</span><b>${wk.reduce((a, w) => a + w.values[0], 0)}</b></div><div><span class="lbl">Publicadas</span><b>${pubM}</b></div><div><span class="lbl">Por publicar</span><b>${upcoming.length}</b></div></div>
-        <div class="wkhead" style="border:0;background:none;margin:0;padding:10px 0 4px"><h3>Planificadas vs. publicadas, por semana</h3></div>${bars(wk, [{ name: 'Planificadas', c: PAL.light }, { name: 'Publicadas', c: PAL.ink }], { h: 140, empty: 'Todavía no hay piezas con fecha este mes.' })}`}
-      ${d.goals.length ? html`<div class="pt-goals"><h3>Tus metas</h3>${d.goals.map((g) => { const b = parseFloat(String(g.baseline || '').replace(/[^\d.-]/g, '')) || 0, t = parseFloat(String(g.target || '').replace(/[^\d.-]/g, '')), c = parseFloat(String(g.current || '').replace(/[^\d.-]/g, '')); const p = g.status === 'done' ? 100 : Number.isFinite(t) && Number.isFinite(c) && t !== b ? Math.max(0, Math.min(100, Math.round(((c - b) / (t - b)) * 100))) : null;
-        return html`<div class="pt-goal"><div class="row" style="gap:8px;flex-wrap:wrap"><b>${g.goal}</b><div class="sp"></div><span class="mut sm">${g.due ? 'Para el ' + fdateLong(g.due) : ''}</span></div>${g.metric ? html`<div class="gmetric"><span class="mut sm">${ico('ruler')} ${g.metric}</span><div class="row" style="gap:10px;margin-top:6px"><span class="sm">Hoy <b style="font-weight:600">${g.current || g.baseline || '—'}</b></span>${bar(p)}<span class="sm">Meta <b style="font-weight:600">${g.target || '—'}</b></span></div></div>` : ''}</div>`; })}</div>` : ''}
-    </section>
+  // ---- Entregas
+  const dot = (e) => (['Entregado', 'Hecho'].includes(e) ? 'ok' : 'mid');
+  const entregas = html`
+    <div class="pd-box"><h4>Esta semana</h4>
+      <div class="pd-list">
+        ${en.semana.map((x) => html`<div class="pd-li"><span class="pd-dot ${dot(x.estado)}"></span><span>${x.title}<small>${[x.dept, x.due ? 'entrega ' + fdate(x.due) : ''].filter(Boolean).join(' · ')}</small></span><span class="pd-st ${EST[x.estado] || 's-idea'}">${x.estado}</span></div>`)}
+        ${en.presentacion ? html`<div class="pd-li"><span class="pd-dot ${dot(en.presentacion.estado)}"></span><span>${en.presentacion.name}<small>${fdate(en.presentacion.date)} · contigo</small></span><span class="pd-st ${EST[en.presentacion.estado] || 's-idea'}">${en.presentacion.estado}</span></div>` : ''}
+        ${!en.semana.length && !en.presentacion ? html`<div class="pd-empty"><b>Esta semana no hay entregas programadas</b>Cuando haya, las ves aquí con su estado.</div>` : ''}
+      </div></div>
+    <div class="pd-row even">
+      <div class="pd-box"><h4>Reuniones <span class="pd-c">${d.meetings.length}</span></h4>
+        ${d.meetings.length ? d.meetings.map((m) => html`<div class="meet"><div class="mdate"><b>${fdate(m.date).split(' ')[0]}</b><span>${fdate(m.date).split(' ').slice(1).join(' ')}</span></div><div class="grow" style="min-width:0"><div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:600">${m.name}</b>${m.status === 'hecha' ? html`<span class="chip green" style="font-size:11px">Hecha</span>` : ''}</div>${m.approves ? html`<div class="sm" style="margin-top:4px">${ico('check', 14)} Aprobamos: ${m.approves}</div>` : ''}<div class="sm" style="margin-top:4px">${m.topics.map((t) => html`<span class="mtopic">${t}</span>`)}</div></div></div>`) : html`<div class="mut sm" style="padding:6px 0">Sin reuniones agendadas.</div>`}</div>
+      <div class="pd-box"><h4>Entregado ${d.folder ? html`<a class="pd-lk" href="${d.folder}" target="_blank" rel="noopener noreferrer">Tu carpeta de entregables ↗</a>` : ''}</h4>
+        ${d.delivered.length ? d.delivered.map((x) => html`<div class="wkrow"><span class="pt-ok">${ico('check', 14)}</span><span class="grow">${x.title}</span><span class="mut sm">${x.date ? fdate(x.date) : ''}</span></div>`) : html`<div class="mut sm" style="padding:6px 0">Aquí aparece lo que vamos entregando.</div>`}</div>
+    </div>`;
 
-    <div class="grid g2 pt-two">
-      <section class="sp-panel"><div class="sp-panel-h row"><h3>Reuniones</h3><span class="mut sm">${d.meetings.length}</span></div>
-        ${d.meetings.length ? d.meetings.map((m) => html`<div class="meet"><div class="mdate"><b>${fdate(m.date).split(' ')[0]}</b><span>${fdate(m.date).split(' ').slice(1).join(' ')}</span></div><div class="grow" style="min-width:0"><div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:600">${m.name}</b>${m.status === 'hecha' ? html`<span class="chip green" style="font-size:11px">Hecha</span>` : ''}</div>${m.approves ? html`<div class="sm" style="margin-top:4px">${ico('check', 14)} Aprobamos: ${m.approves}</div>` : ''}<div class="sm" style="margin-top:4px">${m.topics.map((t) => html`<span class="mtopic">${t}</span>`)}</div></div></div>`) : html`<div class="mut sm" style="padding:12px 0">Sin reuniones agendadas.</div>`}</section>
-      <section class="sp-panel"><div class="sp-panel-h row"><h3>Entregado</h3><div class="sp"></div>${d.folder ? html`<a class="sm" href="${d.folder}" target="_blank" rel="noopener noreferrer">Tu carpeta de entregables ↗</a>` : ''}</div>
-        ${d.delivered.length ? d.delivered.map((x) => html`<div class="wkrow"><span class="pt-ok">${ico('check', 14)}</span><span class="grow">${x.title}</span><span class="mut sm">${x.date ? fdate(x.date) : ''}</span></div>`) : html`<div class="mut sm" style="padding:12px 0">Aquí aparece lo que vamos entregando.</div>`}</section>
-    </div>
+  // ---- Metas
+  const metas = html`<div class="pd-box"><h4>Tus metas</h4>
+    ${d.goals.length ? d.goals.map((g) => html`<div class="pd-goal"><div class="pd-gt"><span>${g.goal}</span><b>${g.metric ? (g.current || g.baseline || '—') : ''}</b></div>
+      ${g.avance != null ? html`<div class="t"><i style="width:${g.avance}%"></i></div>` : ''}
+      <div class="pd-gs mut sm">${[g.metric ? `Hoy ${g.current || g.baseline || '—'} · Meta ${g.target || '—'}` : '', g.avance != null ? `${g.avance}%` : '', g.due ? 'Para el ' + fdateLong(g.due) : ''].filter(Boolean).join(' · ')}</div></div>`)
+      : html`<div class="pd-empty"><b>Todavía no hay metas</b>Cuando se definan, aquí ves cada una con su avance.</div>`}</div>`;
 
-    ${d.content.length ? html`<div class="sec-title"><h2 class="ttl">${ICON.list}Tu contenido</h2><span class="mut sm">Lo que viene y lo último</span></div>
-      <section class="sp-panel">${d.content.map((x) => html`<div class="wkrow"><span class="wkt">${fdate(x.date)}</span><span class="grow">${x.title}<span class="mut sm"> · ${x.format}${x.pillar ? ' · ' + x.pillar : ''}</span></span><span class="chip ${estadoDe(x) === 'Publicado' ? 'green' : estadoDe(x) === 'Listo' ? 'lime' : ''}" style="font-size:11px">${PS[estadoDe(x)]}</span></div>`)}</section>` : ''}`);
-  const q = slug ? `?slug=${encodeURIComponent(slug)}` : '';
-  $('#onb', el)?.addEventListener('click', async (e) => {
+  const panes = { resumen, contenido, entregas, metas };
+  mount(el, html`<div id="pt">
+    ${me.role !== 'client' ? html`<div class="asbar">${ico('eye')} Así ve ${d.name} su portal <a href="#/clients/${d.slug}">Volver al cliente</a></div>` : ''}
+    ${onbTop}
+    <div class="pd" id="pd">
+      <div class="pd-hd"><div class="pd-av">${initials(d.name)}</div>
+        <div style="min-width:0"><h1>${d.name}</h1><small>Últimos 30 días · ${fdate(r.desde)} al ${fdate(r.hasta)}</small></div>
+        <div class="sp"></div><span class="pd-chip live">● En vivo</span>${d.plan ? html`<span class="pd-chip">Tu nivel: ${d.plan}</span>` : ''}</div>
+      <div class="pd-tabs" role="tablist">${TABS.map(([k, l]) => html`<button role="tab" data-tab="${k}" class="${TAB === k ? 'on' : ''}" aria-selected="${TAB === k}">${l}${k === 'contenido' && pend.length ? html`<i class="pd-n">${pend.length}</i>` : ''}</button>`)}</div>
+      ${TABS.map(([k]) => html`<div class="pd-pane ${TAB === k ? 'on' : ''}" id="pd-${k}" role="tabpanel">${panes[k]}</div>`)}
+    </div></div>`);
+  const again = () => render(el, { me, sub, alive });
+  $('#pt', el).addEventListener('click', async (e) => {
+    const t = e.target.closest('[data-tab]');
+    if (t) { TAB = t.dataset.tab; $$('.pd-tabs button', el).forEach((b) => { const on = b.dataset.tab === TAB; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); }); $$('.pd-pane', el).forEach((p) => p.classList.toggle('on', p.id === 'pd-' + TAB)); return; }
+    const pa = e.target.closest('[data-pa]');
+    if (pa) {
+      const x = d.content.find((c) => c.id === pa.dataset.id); if (!x) return;
+      let body;
+      if (pa.dataset.pa === 'aprobar') { if (!(await confirmAsk(`¿Aprobar «${x.title}»? Queda programada para salir.`))) return; body = { accion: 'aprobar' }; }
+      else { const v = await ask(`Pedir cambios · ${x.title}`, [{ k: 'nota', l: '¿Qué cambiamos?', t: 'textarea', req: true }], 'Enviar'); if (!v) return; body = { accion: 'cambios', nota: v.nota }; }
+      try { await api(`portal/content/${encodeURIComponent(x.id)}`, { method: 'POST', body }); toast(body.accion === 'aprobar' ? 'Aprobada. Queda programada' : 'Listo: le avisamos al equipo'); again(); } catch (err) { toast(err.message, true); }
+      return;
+    }
     const b = e.target.closest('[data-ob]'); if (!b) return;
     if (b.dataset.ob === 'save') {
       const items = d.onboarding.items.map((x, i) => ({ done: $(`[data-i="${i}"]`, el).checked, note: $(`[data-n="${i}"]`, el).value.trim() }));
-      try { const r = await api('portal/onboarding' + q, { method: 'PUT', body: { items } }); toast(r.done ? '¡Onboarding completo! Gracias' : 'Guardado'); render(el, { me, sub, alive }); } catch (err) { toast(err.message, true); }
+      try { const rs = await api('portal/onboarding' + q, { method: 'PUT', body: { items } }); toast(rs.done ? '¡Onboarding completo! Gracias' : 'Guardado'); again(); } catch (err) { toast(err.message, true); }
     } else {
       const email = $('#inve', el).value.trim(), name = $('#invn', el).value.trim(); if (!email) return toast('Escribe su correo', true);
-      try { const r = await api('portal/invite' + q, { method: 'POST', body: { email, name } }); toast(r.mailed ? `Listo: le llegó un correo a ${email}` : `Listo: ${email} ya tiene acceso. Dile que entre a ${location.origin} con su Google.`); render(el, { me, sub, alive }); } catch (err) { toast(err.message, true); }
+      try { const rs = await api('portal/invite' + q, { method: 'POST', body: { email, name } }); toast(rs.mailed ? `Listo: le llegó un correo a ${email}` : `Listo: ${email} ya tiene acceso. Dile que entre a ${location.origin} con su Google.`); again(); } catch (err) { toast(err.message, true); }
     }
   });
-  const ch = $('#pch', el); if (ch) lineChart(ch, d.analytics.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: d.analytics.series.map((x) => x.reach), c: '#2c1f16', fill: true }]);
 }

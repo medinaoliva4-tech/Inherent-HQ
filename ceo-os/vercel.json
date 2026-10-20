@@ -41,7 +41,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'none'; manifest-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://drive.google.com https://*.cdninstagram.com https://*.fbcdn.net https://*.tiktokcdn.com https://*.tiktokcdn-us.com https://i.pinimg.com; connect-src 'self' https://www.googleapis.com http://127.0.0.1:7357; media-src 'self' blob: https://drive.google.com https://*.cdninstagram.com https://*.fbcdn.net; frame-src https://drive.google.com https://docs.google.com https://www.youtube.com https://player.vimeo.com https://www.loom.com https://www.instagram.com https://www.tiktok.com https://open.spotify.com; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+          "value": "default-src 'none'; manifest-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://drive.google.com https://*.cdninstagram.com https://*.fbcdn.net https://*.tiktokcdn.com https://*.tiktokcdn-us.com https://i.pinimg.com https://i.ytimg.com https://media.licdn.com; connect-src 'self' https://www.googleapis.com http://127.0.0.1:7357 http://127.0.0.1:11434; media-src 'self' blob: https://drive.google.com https://*.cdninstagram.com https://*.fbcdn.net; frame-src https://drive.google.com https://docs.google.com https://www.youtube.com https://player.vimeo.com https://www.loom.com https://www.instagram.com https://www.tiktok.com https://open.spotify.com; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
         },
         {
           "key": "Strict-Transport-Security",
@@ -79,6 +79,19 @@
       ]
     },
     {
+      "source": "/laya/(instalar\\.sh|instalar\\.ps1|puente\\.py)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300"
+        }
+      ]
+    },
+    {
       "source": "/diagnostico(.html)?",
       "headers": [
         {
@@ -90,7 +103,8 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "api/_data/**"
+      "includeFiles": "api/_data/**",
+      "maxDuration": 60
     }
   },
   "crons": [
@@ -100,7 +114,7 @@
     },
     {
       "path": "/api/cron/settle",
-      "schedule": "0 16 * * 1"
+      "schedule": "0 16 * * *"
     },
     {
       "path": "/api/cron/recurrentes",

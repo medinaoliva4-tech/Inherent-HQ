@@ -123,8 +123,8 @@ export async function render(el, { me, sub }) {
       return html`<td class="n">${!(sv.tasks || []).length ? html`<span class="mut sm">sin horas</span>` : !c ? '—' : c.miss.length ? html`<span title="Faltan costos por hora: ${c.miss.join(', ')}">${ico('alert')} ${Q(c.cost)}</span>` : html`<b style="font-weight:500">${Q(c.cost)}</b>`}<div class="mut sm">${h} h</div></td>`; };
     mount(b, html`
       <div id="recCost" style="margin-bottom:24px"></div>
-      <div class="mut sm" style="margin-bottom:12px">${ico('lock')} Lo que cuesta entregar cada módulo según su complejidad. Las horas por rol salen del catálogo (Comercial → Catálogo) y el costo por hora de «Costos por hora». El costo de cada cliente es la suma de sus módulos: ver «Rentabilidad».</div>
-      ${!rates ? html`<div class="warnbox" style="margin-bottom:14px">Sin costos por hora todavía: el costo de cada módulo vendrá de Comercial → Catálogo → Costos por hora.</div>` : ''}
+      <div class="mut sm" style="margin-bottom:12px">${ico('lock')} Lo que cuesta entregar cada módulo según su complejidad. Las horas por rol salen del catálogo (Servicios → Servicios) y el costo por hora de «Costos por hora». El costo de cada cliente es la suma de sus módulos: ver «Rentabilidad».</div>
+      ${!rates ? html`<div class="warnbox" style="margin-bottom:14px">Sin costos por hora todavía: el costo de cada módulo vendrá de Servicios → Servicios → Costos por hora.</div>` : ''}
       ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Los módulos del catálogo de Comercial aparecen aquí con su costo en cada complejidad.</div>`
       : html`<div class="card tscroll"><table><thead><tr><th>Servicio</th><th>Equipo</th>${LEVELS.map((lv) => html`<th class="n">Complejidad ${lv}</th>`)}<th class="n">Precio (5)</th></tr></thead><tbody>
         ${services.map((sv) => html`<tr><td><b style="font-weight:500">${sv.name}</b><div class="mut sm">${sv.category || ''} · por ${sv.unit || 'proyecto'}</div></td><td>${(sv.tasks || []).map((t) => html`<span class="chip" style="margin:2px">${t.role}</span>`)}</td>${LEVELS.map((lv) => cell(sv, lv))}<td class="n">${(() => { const pr = svcAuto(sv, rates, 5) ?? svcPrice(sv, 5); return pr ? Q(pr) : '—'; })()}</td></tr>`)}
@@ -185,7 +185,7 @@ export async function render(el, { me, sub }) {
     const catalogPrice = r.rows.reduce((a, x) => { const sv = services.find((y) => y.id === x.sid); const p = sv ? svcAuto(sv, rates, x.lv) ?? svcPrice(sv, x.lv) : null; return p == null || a == null ? null : a + p * x.qty; }, 0);
     mount(b, html`
       <div class="mut sm" style="margin-bottom:12px">${ico('lock')} Arma una propuesta con los módulos del catálogo. Su costo es la suma de cada servicio en su complejidad; el precio sugerido deja el margen objetivo. ${fromLink({ label: 'catálogo', href: '#/services/servicios' })} ${fromLink({ label: 'costos por hora', href: '#/services/servicios' })}</div>
-      ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Primero carga el catálogo en Comercial → Catálogo de servicios.</div>` : html`
+      ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Primero carga el catálogo en Servicios → Servicios.</div>` : html`
       <div class="grid g21">
         <div class="card"><div class="row" style="margin-bottom:10px"><b class="ttl" style="font-size:16px">Módulos de la propuesta</b><div class="sp"></div><button class="btn ghost xs" data-pact="add">+ Módulo</button></div>
           <table><thead><tr><th>Servicio</th><th>Complejidad</th><th class="n">Cantidad</th><th class="n">Horas</th><th class="n">Costo</th><th></th></tr></thead><tbody>
@@ -196,7 +196,7 @@ export async function render(el, { me, sub }) {
           </tbody></table></div>
         <div class="card feat ink"><div class="lbl">Precio sugerido</div><div class="big" style="font-size:44px;margin-top:6px">${r.price == null ? '—' : Q(r.price)}</div>
           <div class="split" style="margin-top:16px"><div><span class="lbl">Costo</span><b>${r.cost == null ? '—' : Q(r.cost)}</b></div><div><span class="lbl">Margen objetivo</span><b>${m}%</b></div><div><span class="lbl">Catálogo</span><b>${catalogPrice ? Q(catalogPrice) : '—'}</b></div></div>
-          ${!r.complete && r.rows.length ? html`<div class="sm" style="margin-top:12px;opacity:.85">${ico('alert')} Sin precio sugerido: ${!rates ? 'faltan los costos por hora (Comercial → Catálogo → Costos por hora)' : 'a un módulo le faltan horas o costos por hora'}.</div>` : ''}
+          ${!r.complete && r.rows.length ? html`<div class="sm" style="margin-top:12px;opacity:.85">${ico('alert')} Sin precio sugerido: ${!rates ? 'faltan los costos por hora (Servicios → Servicios → Costos por hora)' : 'a un módulo le faltan horas o costos por hora'}.</div>` : ''}
           ${catalogPrice && r.cost ? html`<div class="sm" style="margin-top:8px;opacity:.85">Al precio del catálogo el margen sería ${Math.round((1 - r.cost / catalogPrice) * 100)}%.</div>` : ''}
           ${edit ? html`<div class="row" style="margin-top:16px;gap:8px"><input class="in mini" type="number" min="1" max="95" id="pmargin" value="${m}" style="max-width:90px"><span>%</span><button class="btn cream xs" data-pact="margin">Guardar margen objetivo</button></div>` : ''}</div>
       </div>`}`);

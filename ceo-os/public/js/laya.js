@@ -6,6 +6,7 @@
 //   juicio   → { target:{coll,id}, gate, question_id, answer, prob|score, why, engine, model, at, by }
 
 import { CATS_OUT } from './facturas.js';
+import { OPCIONES_ETAPA, textoEtapa } from './estrategia.js';
 
 export const PUENTE = 'http://127.0.0.1:7357';
 export const GATES_ID = 'laya_gates';
@@ -21,6 +22,18 @@ export const MODELO = 'multilingual';
 export const INSTALAR = 'pip install "laya[serve]"';
 export const ENCENDER = 'python ceo-os/tools/laya-puente/puente.py';
 export const COMANDO = `${INSTALAR} && ${ENCENDER}`;
+// El instalador de un comando (public/laya/): deja el puente corriendo siempre en la compu de cada quien.
+export const INSTALADOR = 'https://inherent-work.vercel.app/laya';
+export const INSTALAR_MAC = `curl -fsSL ${INSTALADOR}/instalar.sh | bash`;
+export const INSTALAR_WIN = `irm ${INSTALADOR}/instalar.ps1 | iex`;
+// El modelo local (opcional): el mismo instalador con --modelo-local / -ModeloLocal. Instala Ollama y un modelo
+// pequeño que escribe español para el texto repetitivo (variantes de caption, alt text, títulos cortos).
+export const OLLAMA = 'http://127.0.0.1:11434';
+export const MODELO_LOCAL = 'gemma3:4b';
+export const INSTALAR_MODELO_MAC = `curl -fsSL ${INSTALADOR}/instalar.sh | bash -s -- --modelo-local`;
+export const INSTALAR_MODELO_WIN = `& ([scriptblock]::Create((irm ${INSTALADOR}/instalar.ps1))) -ModeloLocal`;
+// 'win' | 'linux' | 'mac' según el user agent (Mac y Linux usan el mismo comando).
+export const sistemaDe = (ua = '') => (/Windows/i.test(ua) ? 'win' : /Linux|X11|CrOS/i.test(ua) && !/Android/i.test(ua) ? 'linux' : 'mac');
 // Sin puente: Claude Code, en una compu con Laya por MCP, resuelve los pendientes.
 export const INSTALAR_MCP = 'pip install "laya[mcp]" && claude mcp add laya -- laya-mcp-server';
 
@@ -66,6 +79,11 @@ export const PUERTAS = {
       niveles: ['nada: no le habla', 'poco: genérico, podría ser de cualquiera', 'bastante: le habla a su problema', 'mucho: lo detiene y lo hace seguir leyendo'], umbral: null },
     { id: 'suena', tipo: 'noul', chip: 'suena a la marca', texto: '¿Este hook o copy suena a la marca descrita al inicio?', umbral: null },
   ] },
+  // App 02 · Estrategia, bloque Diagnóstico: Laya propone la etapa del $100M Scaling Roadmap (0 a 9) y el CEO la confirma.
+  // Las 10 opciones y sus descripciones salen del roadmap (public/js/estrategia.js → ETAPAS).
+  etapa: { label: 'Etapa del negocio', donde: 'Estrategia', area: 'estrategia', coll: 'strategy', preguntas: [
+    { id: 'etapa', tipo: 'choice', chip: 'etapa', texto: '¿En qué etapa del $100M Scaling Roadmap de Acquisition.com (de la 0 a la 9) está este negocio hoy?', opciones: OPCIONES_ETAPA },
+  ] },
 };
 export const GATES = Object.keys(PUERTAS);
 // La puerta que le toca a un elemento de una colección (content se separa por kind).
@@ -73,6 +91,7 @@ export function puertaDeDoc(coll, d) {
   if (coll === 'leads') return 'lead';
   if (coll === 'invoices') return d?.kind === 'pagar' ? 'factura' : null;
   if (coll === 'content') return d?.kind === 'research' ? 'referente' : d?.kind === 'post' ? 'idea' : null;
+  if (coll === 'strategy') return d?.bloque === 'diagnostico' ? 'etapa' : null;
   return null;
 }
 
@@ -147,7 +166,9 @@ const sistema = (t) => /^(Etapa|Siguiente paso|Responsable|Motivo de pérdida|Pr
 function marcaTexto(marca) {
   if (!marca) return '';
   const m = typeof marca === 'string' ? { name: marca } : marca, a = m.audience || {};
-  return [linea('Marca', m.name), linea('Cliente ideal (ICP)', [a.exacto, a.nicho, a.general].filter(Boolean).join(' · ')), linea('Pilares de contenido', lista(m.pillars)), linea('Voz de la marca', m.voz)].filter(Boolean).join('\n');
+  // Con avatares aprobados (Cliente ideal), van ellos, el principal primero; si no, lo que diga la configuración de la marca.
+  const icp = m.avatares?.length ? `\n${m.avatares.map((x) => '- ' + x).join('\n')}` : [a.exacto, a.nicho, a.general].filter(Boolean).join(' · ');
+  return [linea('Marca', m.name), linea('Cliente ideal (ICP)', icp), linea('Pilares de contenido', lista(m.pillars)), linea('Voz de la marca', m.voz)].filter(Boolean).join('\n');
 }
 // gate + el elemento (+ la marca, + contexto: otras facturas para la de duplicadas) → un texto en español.
 export function textoDe(gate, el = {}, marca = null, contexto = {}) {
@@ -169,6 +190,8 @@ export function textoDe(gate, el = {}, marca = null, contexto = {}) {
       linea('Pilar', el.pillar), linea('Tipo', el.style), linea('Por qué funcionó (análisis)', w.por_que), el.text ? `Texto del post:\n${String(el.text).trim()}` : ''].filter((x) => x !== null && x !== undefined && x !== false).join('\n').replace(/\n{3,}/g, '\n\n');
   } else if (gate === 'idea') {
     t = [marcaTexto(marca), '', linea('Formato', el.format), linea('Pilar', el.pillar), linea('Hook o idea', el.title), el.caption ? `Copy:\n${String(el.caption).trim()}` : ''].join('\n').replace(/\n{3,}/g, '\n\n');
+  } else if (gate === 'etapa') {
+    t = textoEtapa(contexto);
   } else throw new Error(`Puerta desconocida: ${gate}`);
   t = t.trim();
   return t.length > MAX_TEXTO ? t.slice(0, MAX_TEXTO) : t;
@@ -232,6 +255,17 @@ export function frase(j, q) {
   if (j.tipo === 'noul') return `${chip} ${pct(j.prob)}`;
   if (j.tipo === 'score') return `${chip} ${corto(j.answer)}`;
   return `${chip} ${corto(j.answer)}`;
+}
+// Fase 4 · Investigación: el juicio de un referente en una línea — «Laya · sirve 84% · gancho» — y si sirve.
+// Usa la primera pregunta sí/no (sirve) y la primera de opción (por qué funciona) de la puerta, aunque el CEO les cambie el id.
+// r: lo que devuelve resumen(). sirve: true/false según el umbral (vacío = 50%), o null sin juicio.
+export function chipReferente(r, puerta) {
+  const qs = puerta?.preguntas || [], qS = qs.find((q) => q.tipo === 'noul'), qP = qs.find((q) => q.tipo === 'choice');
+  const s = qS ? r?.ultimos?.[qS.id] : null, p = qP ? r?.ultimos?.[qP.id] : null;
+  const prob = Number.isFinite(s?.prob) ? s.prob : null, um = Number.isFinite(qS?.umbral) ? qS.umbral : 0.5;
+  const estado = r?.estado || 'vacio', por = p ? corto(p.answer) : null;
+  if (prob === null && !por) return { estado, chip: estado === 'pendiente' ? 'Laya · pendiente' : 'Laya · sin juicio', sirve: null, prob: null, por: null };
+  return { estado, chip: ['Laya', prob !== null ? `${qS.chip} ${pct(prob)}` : null, por].filter(Boolean).join(' · '), sirve: prob === null ? null : prob >= um, prob, por };
 }
 // Lo último por pregunta de los juicios de UN elemento → { estado:'vacio'|'pendiente'|'listo', chip:'Laya · encaja 82%', extra:[...], ultimos:{qid:juicio}, at }.
 // Un pendiente más nuevo que la última respuesta manda: el chip dice «pendiente».
