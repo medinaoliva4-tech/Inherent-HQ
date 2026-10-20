@@ -121,15 +121,35 @@ export async function profile(p) {
 const ACTOR_DEF = { instagram: 'apify~instagram-scraper', tiktok: 'clockworks~tiktok-scraper', youtube: 'streamers~youtube-scraper', linkedin: 'harvestapi~linkedin-profile-posts' };
 const actorOf = (red) => String(process.env['APIFY_ACTOR_' + red.toUpperCase()] || ACTOR_DEF[red]).trim().replace('/', '~');
 const PER_SOURCE = 10, MAX_SOURCES = 25, PER_ACCOUNT = 6, MAX_SOLO = 10;
-// cr-fuentes: tope de seguridad de US$5 por cliente al mes. Cada run lleva maxTotalChargeUsd (el freno duro) y maxItems.
+// cr-fuentes: el tope de la cuenta de Apify se reparte en partes iguales entre las marcas, para que ninguna se lo gaste todo.
+// El total sale del tope mensual que tiene la cuenta en Apify (o de APIFY_TOPE_TOTAL); si no se puede leer, US$5 por marca.
+// Cada run lleva maxTotalChargeUsd (el freno duro) y maxItems.
 export const TOPE_MES_USD = 5;
+let TOPE_CACHE = null;
+export async function topeTotal() {
+  const env = +process.env.APIFY_TOPE_TOTAL;
+  if (env > 0) return env;
+  if (TOPE_CACHE && Date.now() - TOPE_CACHE.at < 3600e3) return TOPE_CACHE.usd;
+  let usd = null;
+  try { const d = (await apify('users/me/limits')).data; usd = +d?.limits?.maxMonthlyUsageUsd > 0 ? +d.limits.maxMonthlyUsageUsd : null; } catch { usd = null; }
+  TOPE_CACHE = { at: Date.now(), usd }; return usd;
+}
+// Lo que le toca a cada marca este mes: el total entre el número de marcas con perfil de contenido.
+export async function topeMarca() {
+  const [total, ps] = await Promise.all([topeTotal(), profiles()]);
+  if (!total) return TOPE_MES_USD;
+  return Math.round((total / Math.max(1, ps.length)) * 100) / 100;
+}
 const RUN_USD = 1;
 export const apifyOn = () => Boolean(process.env.APIFY_TOKEN?.trim());
 // Un error de Apify, dicho claro: sin crédito, token malo o una falla. Nunca lleva .status 401/403 (http.fail los lee como Google).
 export function apifyError(code, txt = '') {
   const t = String(txt || '');
-  const credit = code === 402 || /not-enough-usage|usage[- ]limit|monthly usage|insufficient|credit|payment[- ]required|exceeded.*limit|limit.*exceeded|hard limit/i.test(t);
-  const err = credit ? ['APIFY_CREDIT', 'Apify se quedó sin crédito. Lo que ya está en la investigación sigue igual.']
+  // El tope de uso de la cuenta (lo pone el dueño en Apify) no es lo mismo que quedarse sin saldo.
+  const tope = /usage[- ]limit|monthly usage|hard limit|exceeded.*limit|limit.*exceeded|not-enough-usage/i.test(t);
+  const credit = !tope && (code === 402 || /insufficient|credit|payment[- ]required/i.test(t));
+  const err = tope ? ['APIFY_TOPE_CUENTA', 'La cuenta de Apify llegó a su tope de uso del mes. Súbelo en Apify › Settings › Billing › Limits.']
+    : credit ? ['APIFY_CREDIT', 'Apify se quedó sin crédito. Lo que ya está en la investigación sigue igual.']
     : code === 401 ? ['APIFY_TOKEN', 'Apify no aceptó el APIFY_TOKEN. Revísalo en Vercel.']
     : code === 0 ? ['APIFY_DOWN', 'Apify no respondió. Se intenta de nuevo en la siguiente pasada.']
     : ['APIFY', `Apify falló (${code}).`];
@@ -195,7 +215,7 @@ export async function startScrape(src, opts = {}) {
       const j = await apify(`acts/${actorOf(x.red)}/runs?${q}`, { method: 'POST', body: JSON.stringify(x.input) });
       runs.push({ red: x.red, runId: j.data.id, datasetId: j.data.defaultDatasetId, status: j.data.status, ...(x.solo ? { handle: x.solo } : {}) });
     } catch (e) {
-      if (['APIFY_CREDIT', 'APIFY_TOKEN', 'NO_APIFY'].includes(e.code)) error = e;
+      if (['APIFY_CREDIT', 'APIFY_TOPE_CUENTA', 'APIFY_TOKEN', 'NO_APIFY'].includes(e.code)) error = e;
       skipped.push({ red: x.red, why: e.message, ...(x.solo ? { handle: x.solo } : {}) });
     }
   }
@@ -307,14 +327,15 @@ export async function scrape(slug, who, opts = {}) {
   if (prev?.runs?.length && !prev.result && Date.now() - Date.parse(prev.at || 0) < 3 * 3600e3) return { ...prev, already: true };
   const ym = new Date().toISOString().slice(0, 7), spent = prev?.month?.ym === ym ? +prev.month.usd || 0 : 0;
   const at = new Date().toISOString();
-  if (spent >= TOPE_MES_USD) {
-    const e = Object.assign(new Error(`Esta marca ya usó el tope de US$${TOPE_MES_USD} de Apify de este mes. Vuelve a correr el mes que entra.`), { code: 'APIFY_TOPE' });
+  const tope = await topeMarca();
+  if (spent >= tope) {
+    const e = Object.assign(new Error(`Esta marca ya usó su parte del tope de Apify de este mes (US$${tope}). Vuelve a correr el mes que entra.`), { code: 'APIFY_TOPE' });
     await db.upsert('sources', 'scrape-' + slug, { profile: slug, error: { code: e.code, msg: e.message, at } }, who);
     throw e;
   }
   // Solo lo reciente: lo publicado desde un día antes de la búsqueda anterior (la primera vez, 30 días).
   const since = prev?.last?.at ? new Date(Date.parse(prev.last.at) - 864e5).toISOString().slice(0, 10) : null;
-  const { runs, skipped, error } = await startScrape(src, { slug, since, budget: TOPE_MES_USD - spent, redes: opts.redes || null });
+  const { runs, skipped, error } = await startScrape(src, { slug, since, budget: tope - spent, redes: opts.redes || null });
   if (!runs.length) {
     const e = error || Object.assign(new Error(skipped[0]?.why ? `No se pudo buscar: ${skipped[0].why}` : 'No hay cuentas que buscar en las redes de esta marca'), { code: 'APIFY_NADA' });
     await db.upsert('sources', 'scrape-' + slug, { profile: slug, error: { code: e.code || 'APIFY', msg: e.message, at } }, who);

@@ -86,7 +86,7 @@ export async function estado(slug) {
     status: running ? 'running' : d?.last ? 'done' : 'none', at: d?.at || null, last: d?.last || null, error: err0,
     runs: (d?.runs || []).map(({ red, status, handle }) => ({ red, status, ...(handle ? { handle } : {}) })), saltadas: d?.skipped || [],
     laya_error: d?.laya_error || null,
-    mes: { usd: d?.month?.ym === ym ? +d.month.usd || 0 : 0, tope: content.TOPE_MES_USD },
+    mes: { usd: d?.month?.ym === ym ? +d.month.usd || 0 : 0, tope: await content.topeMarca().catch(() => content.TOPE_MES_USD) },
   };
 }
 
@@ -161,7 +161,7 @@ export async function cronScrape(who = 'cron') {
     try { const d = await content.scrape(p.slug, who, { redes: f.redes }); (d.already ? saltadas : done).push(d.already ? { slug: p.slug, why: 'ya estaba buscando' } : p.slug); }
     catch (e) {
       if (e.status === 400) { saltadas.push({ slug: p.slug, why: e.message }); continue; }
-      fallas.push({ slug: p.slug, why: e.message }); if (['APIFY_CREDIT', 'APIFY_TOKEN'].includes(e.code)) corte = e;
+      fallas.push({ slug: p.slug, why: e.message }); if (['APIFY_CREDIT', 'APIFY_TOPE_CUENTA', 'APIFY_TOKEN'].includes(e.code)) corte = e;
     }
   }
   return { done, saltadas, fallas };
