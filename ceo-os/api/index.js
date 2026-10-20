@@ -15,6 +15,8 @@ import * as leads from './_lib/leads.js';
 import * as recipes from './_lib/recipes.js';
 import * as recurring from './_lib/recurring.js';
 import * as results from './_lib/results.js';
+import * as facturas from './_lib/facturas.js';
+import { limpiarFactura } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
 import { levelName } from '../public/js/levels.js';
@@ -207,6 +209,7 @@ on('POST', 'db/:coll', async (req, res) => {
   if (req.params.coll === 'budgets') { if (!b.client_slug) return res.status(400).json({ error: 'Falta el cliente del presupuesto' }); b = cleanBudget(b); }
   if (req.params.coll === 'brand_boards' && !slugOk(String(b.id || ''))) return res.status(400).json({ error: 'El tablero lleva el slug del cliente como id' });
   if (req.params.coll === 'recipes') { try { b = { ...recipes.cleanRecipe(b), id: b.id }; } catch (e) { return res.status(400).json({ error: e.message }); } }
+  if (req.params.coll === 'invoices') { try { b = { ...limpiarFactura(b), id: b.id }; } catch (e) { return res.status(400).json({ error: e.message }); } }
   if (['content', 'sources'].includes(req.params.coll) && !personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' });
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
   if (req.params.coll === 'settings' && (id === 'role_views' || b.id === 'role_views')) forgetViews();
@@ -231,10 +234,11 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   if (req.params.coll === 'budgets') { const cur = await db.get('budgets', req.params.id); if (cur) { b.client_slug = cur.client_slug; if (b.costs_hidden || b.lines === undefined) b.lines = cur.lines; } delete b.costs_hidden; b = cleanBudget(b); }
   if (req.params.coll === 'leads') {
     const cur = await db.get('leads', req.params.id); if (!cur) return res.status(404).json({ error: 'No existe' });
-    b = leads.normalize(b); b.activity = leads.mergeActivity(cur.activity, b.activity);
+    b = leads.keepFirstReply(cur, leads.normalize(b)); b.activity = leads.mergeActivity(cur.activity, b.activity);
     const bad = leads.check(b); if (bad) return res.status(400).json({ error: bad });
   }
   if (req.params.coll === 'recipes') { try { b = { ...recipes.cleanRecipe(b), v: b.v }; } catch (e) { return res.status(400).json({ error: e.message }); } }
+  if (req.params.coll === 'invoices') { try { b = { ...limpiarFactura(b), v: b.v }; } catch (e) { return res.status(400).json({ error: e.message }); } }
   if (req.params.coll === 'lead_sources') { const cur = await db.get('lead_sources', req.params.id); b = { ...leads.cleanSource({ ...cur, ...b, key: cur?.key || b.key }), log: cur?.log || [], n: cur?.n || null, v: b.v }; }
   if (req.params.coll === 'tasks') {
     b = cleanTask(b);
@@ -615,6 +619,29 @@ on('PUT', 'finance/sheet', async (req, res) => {
   if (url && !sheetId(url)) return res.status(400).json({ error: 'Pega el link de una hoja de Google Sheets' });
   await db.upsert('settings', 'finance_sheet', { url }, u.email);
   res.json({ url });
+});
+// ---------- Finanzas → Facturas: cobros del mes, marcar pagada y el cruce con el banco (solo el CEO) ----------
+const ceoFin = async (req, res) => { const u = await guard(req, res, 'finanzas', { write: true }); if (!u) return null; if (u.role !== 'ceo') { res.status(403).json({ error: 'Solo el CEO puede cambiar esto' }); return null; } return u; };
+const finFail = (res, e) => (e.status >= 400 && e.status < 500 ? res.status(e.status).json({ error: e.message }) : fail(res, e));
+on('POST', 'finance/cobros', async (req, res) => {
+  const u = await ceoFin(req, res); if (!u) return;
+  const period = String(body(req).period || new Date().toISOString().slice(0, 7));
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(period)) return res.status(400).json({ error: 'El mes va como AAAA-MM' });
+  try { res.json(await facturas.generarCobros(u, period)); } catch (e) { finFail(res, e); }
+});
+on('POST', 'finance/pagada/:id', async (req, res) => {
+  const u = await ceoFin(req, res); if (!u) return;
+  const b = body(req);
+  try { res.json(await facturas.marcarPagada(u, req.params.id, { paid_at: b.paid_at, bank_ref: String(b.bank_ref || '').slice(0, 120) })); } catch (e) { finFail(res, e); }
+});
+on('POST', 'finance/banco', async (req, res) => {
+  const u = await ceoFin(req, res); if (!u) return;
+  try { res.json(await facturas.guardarMovimientos(u, body(req).moves)); } catch (e) { finFail(res, e); }
+});
+on('POST', 'finance/cruce', async (req, res) => {
+  const u = await ceoFin(req, res); if (!u) return;
+  const b = body(req);
+  try { res.json(await facturas.conciliar(u, b.invoice_id, b.move_id)); } catch (e) { finFail(res, e); }
 });
 on('POST', 'finance/sheet', async (req, res) => {
   const u = await guard(req, res, 'finanzas', { write: true }); if (!u) return;

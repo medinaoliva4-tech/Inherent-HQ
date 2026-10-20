@@ -18,15 +18,16 @@ export const COLLS = {
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library', roadmap: 'roadmap',
   team: 'team', settings: 'home', checks: 'work',
+  invoices: 'finanzas', bank_moves: 'finanzas',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
 // (sus tareas, los proyectos y las cuentas de sus clientes). Las tareas también las escribe: ahí entrega.
 export const READ_ALSO = { tasks: ['work'], projects: ['work'], accounts: ['work'], recipes: ['work', 'sales'], campaigns: ['work'] };
 export const WRITE_ALSO = { tasks: ['work'], campaigns: ['work'] };
-const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors', 'lead_sources', 'recipes']);
+const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors', 'lead_sources', 'recipes', 'invoices', 'bank_moves']);
 // Costos, márgenes, tarifas y pagos: solo el CEO los lee, siempre, diga lo que diga la matriz.
-// lead_sources lleva las claves de las puertas de intake: también solo el CEO.
-export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lead_sources']);
+// lead_sources lleva las claves de las puertas de intake: también solo el CEO. El estado de cuenta del banco (bank_moves), igual.
+export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lead_sources', 'bank_moves']);
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
 export const canRead = (role, coll) => !CEO_READ.has(coll) || role === 'ceo';
 // Las colecciones que filtra el alcance (todos · asignados · propio).
@@ -150,6 +151,15 @@ export function stripCosts(u, b) {
   return { ...rest, lines: (Array.isArray(b.lines) ? b.lines : []).map(({ cost, subtotal, ...l }) => l), costs_hidden: true };
 }
 
+// ---------- Las facturas (Finanzas → Facturas) ----------
+// Las por pagar a proveedores son gasto de Inherent: solo el CEO. Quien ve Finanzas en resumen (el perfil Cobros)
+// lee solo las por cobrar, que no llevan costos ni márgenes. Escribirlas, generarlas y cruzarlas con el banco: solo el CEO.
+export const seesPayables = (u) => u?.role === 'ceo';
+export function stripInvoice(u, d) {
+  if (!d || seesPayables(u)) return d;
+  return d.kind === 'cobrar' ? d : null;
+}
+
 // ---------- «Resumen» también en el servidor ----------
 // Lo que la pantalla no muestra en resumen tampoco se entrega (ver SUMMARY en roleviews.js):
 //   Comercial en resumen → sin catálogo, precios, especialistas ni cotizaciones. Si además ve Control, recibe las
@@ -158,6 +168,7 @@ export function stripCosts(u, b) {
 // Devuelve null (no cambia nada) o una función doc → doc | null.
 const QUOTE_LITE = ['id', 'v', 'number', 'client', 'client_slug', 'lead_id', 'status', 'date', 'sent_at', 'approved_at', 'pay_task_id', 'project_id', '_meta'];
 export function summaryOf(u, coll) {
+  if (coll === 'invoices' && u && !seesPayables(u)) return (d) => stripInvoice(u, d);
   if (!u || u.role === 'ceo' || !u.views) return null;
   const sales = levelOf(u, 'sales') === 'resumen', cont = levelOf(u, 'content') === 'resumen';
   if (coll === 'quotes' && sales) return sees(u, 'control') ? (q) => ({ ...Object.fromEntries(QUOTE_LITE.filter((k) => k in q).map((k) => [k, q[k]])), ...(q.payment ? { payment: { status: q.payment.status } } : {}) }) : () => null;

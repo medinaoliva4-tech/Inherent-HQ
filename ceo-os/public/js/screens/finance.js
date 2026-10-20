@@ -1,6 +1,7 @@
 import { svcHours, svcCost, svcPrice, svcAuto } from '../cycle.js';
 import { byScope, proposal, targetMargin, LEVELS, PRICING_ID } from '../finscope.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
+import { facturasTab } from '../facturas-ui.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico, isSummary, canEdit, roChip, fromLink } from '../core.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -41,8 +42,9 @@ export async function render(el, { me, sub }) {
   };
   let entries = [...manual, ...fromSheet(sheet)];
 
-  const TABS = resumen ? [['mov', 'Movimientos']] : [['mov', 'Movimientos'], ['costs', 'Costos'], ['profit', 'Rentabilidad'], ['pricing', 'Precios'], ['nomina', 'Pagos por servicio']];
-  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : 'mov';
+  // Facturas: la primera para el CEO. En resumen (el perfil Cobros) llega solo lo por cobrar, después de Movimientos.
+  const TABS = resumen ? [['mov', 'Movimientos'], ['fact', 'Facturas']] : [['fact', 'Facturas'], ['mov', 'Movimientos'], ['costs', 'Costos'], ['profit', 'Rentabilidad'], ['pricing', 'Precios'], ['nomina', 'Pagos por servicio']];
+  let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : TABS[0][0];
   const now = today().slice(0, 7);
   let month = now;
   const months8 = Array.from({ length: 8 }, (_, i) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 7 + i); return d.toISOString().slice(0, 7); });
@@ -78,8 +80,11 @@ export async function render(el, { me, sub }) {
       { name: 'Costo', v: months8.map((m) => sum('gasto', m)), c: '#997d65', dash: true }], { fmt: Q });
     $('[data-act=month]', el).onchange = (e) => { month = e.target.value; paint(); };
     const b = $('#fbody', el);
-    ({ mov, costs, profit, pricing, nomina })[tab](b);
+    ({ fact, mov, costs, profit, pricing, nomina })[tab](b);
   }
+
+  // ---------- Facturas: por cobrar, por pagar y el cruce con el banco (facturas-ui.js) ----------
+  function fact(b) { facturasTab(b, { me, clients }); }
 
   // ---------- Movimientos ----------
   function mov(b) {

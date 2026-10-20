@@ -3,6 +3,8 @@
 // solo se agrega · el responsable es un rol, nunca una persona.
 import crypto from 'node:crypto';
 import * as db from './db.js';
+import { stageKey, STAGE_INPUTS } from '../../public/js/ventas-flujo.js';
+export { stageKey, STAGE_INPUTS };
 
 export const STAGES = ['Prospecto', 'Nuevo', 'Contactado', 'Reunión', 'Propuesta', 'Ganado', 'Perdido'];
 export const OPEN = ['Nuevo', 'Contactado', 'Reunión', 'Propuesta']; // abiertos: exigen siguiente paso y fecha
@@ -41,7 +43,10 @@ export function normalize(d) {
   if ('phone' in o) o.phone = s(o.phone, 40);
   if ('email' in o) o.email = s(o.email, 160).toLowerCase();
   if ('ig' in o) o.ig = igKey(o.ig);
-  o.stage = STAGES.includes(o.stage) ? o.stage : o.stage ? o.stage : 'Nuevo';
+  // Los nombres del flujo (Respondido, Entendiendo el caso, Propuesta con alcance) se guardan con la etapa de siempre.
+  o.stage = stageKey(o.stage) || 'Nuevo';
+  // La primera respuesta al lead (el cronómetro de «un minuto»): una fecha y hora válida, o no va.
+  if ('first_reply_at' in o) { const t = Date.parse(o.first_reply_at); if (o.first_reply_at && Number.isFinite(t)) o.first_reply_at = new Date(t).toISOString(); else delete o.first_reply_at; }
   o.owner_role = s(o.owner_role, 40) || DEFAULT_ROLE;
   o.direction = o.direction === 'out' ? 'out' : 'in';
   if ('interest' in o) o.interest = Math.max(0, Math.min(5, Math.round(+o.interest || 0)));
@@ -55,6 +60,8 @@ export function normalize(d) {
   if (o.answers === undefined) delete o.answers;
   return o;
 }
+// La primera respuesta no se cambia una vez guardada (como el historial): lo que ya estaba se queda.
+export function keepFirstReply(cur, b) { if (cur?.first_reply_at) b.first_reply_at = cur.first_reply_at; return b; }
 // El candado. Devuelve el motivo si no se puede guardar; null si está bien.
 export function check(doc) {
   const stage = doc.stage || 'Nuevo';

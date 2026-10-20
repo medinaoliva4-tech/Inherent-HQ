@@ -15,6 +15,8 @@ import * as leads from './leads.js';
 import * as recipes from './recipes.js';
 import * as recurring from './recurring.js';
 import * as results from './results.js';
+import * as facturasLib from './facturas.js';
+import { estadoFactura, totales as totalesFacturas, ESTADOS as ESTADOS_FACTURA } from '../../public/js/facturas.js';
 import { repeatText, RECIPE_TYPES, KINDS as RECIPE_KINDS, RECIPE_ROLES } from '../../public/js/recipes.js';
 import { phasesFor, meetingsFor, tasksFor, holders, roleToWork, DEPTS, hoursAt, svcHours, svcCost, svcPrice, svcAuto, growthText, includesAt, daysAt, addDays } from '../../public/js/cycle.js';
 
@@ -128,9 +130,9 @@ const TOOLS = [
   ['resumen', 'operations', 'Panorama: proyectos activos, tareas abiertas por persona y próximas reuniones.', {}],
   ['catalogo', 'sales', 'Los servicios que vendemos: qué incluyen y cuánto tardan y cuestan en nivel 3 (básico), 5 (sencillo), 8 y 10 (fuerte).', {}],
   ['crear_cotizacion', 'sales', 'Arma una cotización con servicios del catálogo y su nivel de entrega (5 sencillo a 10 fuerte). El precio lo calcula la app.', { cliente: { type: 'string' }, contacto: { type: 'string' }, servicios: { type: 'array', items: { type: 'object', properties: { servicio: { type: 'string', description: 'nombre o id del catálogo' }, nivel: { type: 'number' }, cantidad: { type: 'number' } }, required: ['servicio'] } }, moneda: { type: 'string', description: 'código ISO, ej. GTQ o USD' }, notas: { type: 'string' } }, ['cliente', 'servicios']],
-  ['leads', 'sales', 'El CRM: los leads con su etapa, fuente, responsable (rol) y siguiente paso. Los vencidos van primero. Filtros opcionales: etapa (Prospecto, Nuevo, Contactado, Reunión, Propuesta, Ganado, Perdido), fuente (nombre), vencidos=true (siguiente paso con fecha pasada), buscar (texto).', { etapa: { type: 'string', enum: leads.STAGES }, fuente: { type: 'string' }, vencidos: { type: 'boolean' }, buscar: { type: 'string' } }],
-  ['crear_lead', 'sales', 'Crea un lead en el CRM. Si ya existe uno con el mismo WhatsApp, correo o cuenta de IG, no lo duplica: le agrega la actividad y te devuelve el que ya estaba. Un lead abierto necesita siguiente paso y fecha (si no los mandas, queda «Responder y calificar» para hoy).', { nombre: { type: 'string', description: 'empresa o marca' }, contacto: { type: 'string', description: 'con quién hablamos' }, telefono: { type: 'string', description: 'WhatsApp' }, correo: { type: 'string' }, cuenta_ig: { type: 'string' }, fuente: { type: 'string', description: 'de dónde llegó: WhatsApp, Instagram, Web, Referido, Evento, LinkedIn, o el nombre de una fuente' }, interesado_en: { type: 'string' }, interes: { type: 'number', description: '1 frío a 5 listo para cerrar' }, etapa: { type: 'string', enum: leads.STAGES }, siguiente_paso: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD del siguiente paso' }, notas: { type: 'string' }, responsable: { type: 'string', description: 'rol; por defecto ventas' } }, ['nombre']],
-  ['actualizar_lead', 'sales', 'Mueve un lead de etapa o cambia su siguiente paso, fecha, notas, interés, valor mensual o responsable (rol). Para pasarlo a Perdido es obligatorio el motivo: precio, tiempo, no era el momento, se fue con otro, otro. Todo cambio queda en el historial.', { id: { type: 'string' }, etapa: { type: 'string', enum: leads.STAGES }, siguiente_paso: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, notas: { type: 'string', description: 'reemplaza las notas' }, motivo_perdida: { type: 'string', enum: leads.LOST }, interes: { type: 'number' }, valor_usd: { type: 'number', description: 'valor mensual en USD' }, responsable: { type: 'string', description: 'rol' }, interesado_en: { type: 'string' } }, ['id']],
+  ['leads', 'sales', 'El CRM: los leads con su etapa, fuente, responsable (rol) y siguiente paso. Los vencidos van primero. Filtros opcionales: etapa (Prospecto, Nuevo, Contactado = Respondido, Reunión = Entendiendo el caso, Propuesta = Propuesta con alcance, Ganado, Perdido), fuente (nombre), vencidos=true (siguiente paso con fecha pasada), buscar (texto).', { etapa: { type: 'string', enum: leads.STAGE_INPUTS }, fuente: { type: 'string' }, vencidos: { type: 'boolean' }, buscar: { type: 'string' } }],
+  ['crear_lead', 'sales', 'Crea un lead en el CRM. Si ya existe uno con el mismo WhatsApp, correo o cuenta de IG, no lo duplica: le agrega la actividad y te devuelve el que ya estaba. Un lead abierto necesita siguiente paso y fecha (si no los mandas, queda «Responder y calificar» para hoy).', { nombre: { type: 'string', description: 'empresa o marca' }, contacto: { type: 'string', description: 'con quién hablamos' }, telefono: { type: 'string', description: 'WhatsApp' }, correo: { type: 'string' }, cuenta_ig: { type: 'string' }, fuente: { type: 'string', description: 'de dónde llegó: WhatsApp, Instagram, Web, Referido, Evento, LinkedIn, o el nombre de una fuente' }, interesado_en: { type: 'string' }, interes: { type: 'number', description: '1 frío a 5 listo para cerrar' }, etapa: { type: 'string', enum: leads.STAGE_INPUTS }, siguiente_paso: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD del siguiente paso' }, notas: { type: 'string' }, responsable: { type: 'string', description: 'rol; por defecto ventas' } }, ['nombre']],
+  ['actualizar_lead', 'sales', 'Mueve un lead de etapa o cambia su siguiente paso, fecha, notas, interés, valor mensual o responsable (rol). Para pasarlo a Perdido es obligatorio el motivo: precio, tiempo, no era el momento, se fue con otro, otro. Todo cambio queda en el historial.', { id: { type: 'string' }, etapa: { type: 'string', enum: leads.STAGE_INPUTS }, siguiente_paso: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, notas: { type: 'string', description: 'reemplaza las notas' }, motivo_perdida: { type: 'string', enum: leads.LOST }, interes: { type: 'number' }, valor_usd: { type: 'number', description: 'valor mensual en USD' }, responsable: { type: 'string', description: 'rol' }, interesado_en: { type: 'string' } }, ['id']],
   ['registrar_actividad', 'sales', 'Anota en el historial de un lead lo que pasó: una llamada, un mensaje, una reunión. El historial solo se agrega, nunca se borra.', { id: { type: 'string' }, texto: { type: 'string' } }, ['id', 'texto']],
   ['importar_prospectos', 'sales', 'Mete un lote de prospectos (hasta 100, de scraping o de una lista) a la bandeja de Prospectos del CRM. Entran como Prospecto saliente, sin contar como lead hasta que respondan. No duplica por WhatsApp, correo o cuenta de IG. «fuente» es el nombre de una fuente de Comercial → Fuentes (o un nombre libre, ej. «Apify · restaurantes zona 10»).', { fuente: { type: 'string' }, prospectos: { type: 'array', items: { type: 'object', properties: { nombre: { type: 'string' }, cuenta_ig: { type: 'string' }, telefono: { type: 'string' }, correo: { type: 'string' }, contacto: { type: 'string' }, ciudad: { type: 'string' }, industria: { type: 'string' }, url: { type: 'string' }, notas: { type: 'string' } } } } }, ['prospectos']],
   ['crear_proyecto', 'operations', 'Crea un proyecto con sus fases, reuniones y tareas; todo sale de las recetas (ver recetas). Tipo: Ciclo mensual, Proyecto, Growth o Custom (Custom sale de una cotización; para un paquete o el alcance contratado del cliente usa activar_paquete).', { cliente: { type: 'string', description: 'slug del cliente, o inherent' }, tipo: { type: 'string', enum: ['Ciclo mensual', 'Proyecto', 'Growth', 'Custom'] }, inicio: { type: 'string', description: 'AAAA-MM-DD' }, cotizacion_id: { type: 'string' }, nombre: { type: 'string' } }, ['cliente', 'tipo']],
@@ -163,16 +165,21 @@ const TOOLS = [
   ['activar_paquete', 'operations', 'Activa un paquete (paquete_id) o el alcance contratado del cliente según su nivel (plan=true; niveles: Brand Foundation, Brand Growth, Growth Partnership): arma el proyecto con las tareas de las recetas de sus servicios, cada una con dueño por perfil, revisor, fecha, SOP, tipo Delivery y dependencias. El alcance arma el ciclo mensual con los departamentos de su pipeline (y Business Growth en Growth Partnership). Respeta el alcance de tu perfil.', { cliente: { type: 'string', description: 'slug del cliente, o inherent' }, paquete_id: { type: 'string' }, plan: { type: 'boolean' }, inicio: { type: 'string', description: 'AAAA-MM-DD' }, nombre: { type: 'string' } }, ['cliente']],
   ['asignar_rol', 'operations', 'Cambia quién cubre un rol en un proyecto y reasigna las tareas abiertas de ese rol (queda en el historial de cada tarea y del proyecto). Sin persona, muestra la tabla de roles del proyecto.', { proyecto_id: { type: 'string' }, rol: { type: 'string', enum: RECIPE_ROLES.map(([k]) => k) }, persona: { type: 'string', description: 'correo' } }, ['proyecto_id']],
   ['generar_recurrentes', 'operations', 'SOLO CEO O COO. Deja creadas las tareas de las responsabilidades recurrentes (recetas internas activas) que ya toca hacer. No duplica: se puede correr las veces que sea.', {}],
+  ['facturas', 'finanzas', 'SOLO EL CEO. Las facturas de Inherent: por cobrar (a clientes) y por pagar (a proveedores), con su estado (pendiente, vencida, pagada o anulada; «vencida» = pendiente con fecha pasada) y los totales en quetzales. Filtros opcionales: tipo y estado.', { tipo: { type: 'string', enum: ['cobrar', 'pagar'] }, estado: { type: 'string', enum: ESTADOS_FACTURA } }],
+  ['registrar_factura', 'finanzas', 'SOLO EL CEO. Registra una factura. Pensado para la skill ap-processor: lee los correos con factura de un proveedor y regístrala aquí (tipo pagar). No duplica: si ya existe una del mismo proveedor, monto y fecha, devuelve esa. Por cobrar lleva el slug del cliente. Montos en quetzales salvo moneda USD.', { tipo: { type: 'string', enum: ['pagar', 'cobrar'], description: 'por defecto pagar' }, proveedor: { type: 'string', description: 'quién nos cobra (tipo pagar)' }, cliente: { type: 'string', description: 'slug del cliente (tipo cobrar)' }, concepto: { type: 'string' }, monto: { type: 'number' }, moneda: { type: 'string', enum: ['GTQ', 'USD'] }, emitida: { type: 'string', description: 'AAAA-MM-DD' }, vence: { type: 'string', description: 'AAAA-MM-DD' }, archivo: { type: 'string', description: 'link https al PDF o al correo' }, notas: { type: 'string', description: 'número de factura, NIT u otro dato' } }, ['concepto', 'monto', 'vence']],
+  ['marcar_pagada', 'finanzas', 'SOLO EL CEO. Marca una factura como pagada, con la fecha del pago y la referencia del banco si se saben. Los ids salen de facturas.', { id: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD; por defecto hoy' }, referencia: { type: 'string', description: 'referencia del banco' } }, ['id']],
 ];
 // Las herramientas que cambian algo: hace falta nivel «edita» en su área (la matriz del CEO). Las demás, con ver basta.
-const WRITE = new Set(['crear_tarea', 'actualizar_tarea', 'crear_cotizacion', 'crear_lead', 'actualizar_lead', 'registrar_actividad', 'importar_prospectos', 'crear_proyecto', 'subir_documento', 'subir_archivo', 'actualizar_perfil', 'guardar_research', 'borrar_research', 'agendar', 'actualizar_idea', 'borrar_idea', 'crear_idea', 'guardar_receta', 'activar_paquete', 'asignar_rol', 'generar_recurrentes']);
+const WRITE = new Set(['crear_tarea', 'actualizar_tarea', 'crear_cotizacion', 'crear_lead', 'actualizar_lead', 'registrar_actividad', 'importar_prospectos', 'crear_proyecto', 'subir_documento', 'subir_archivo', 'actualizar_perfil', 'guardar_research', 'borrar_research', 'agendar', 'actualizar_idea', 'borrar_idea', 'crear_idea', 'guardar_receta', 'activar_paquete', 'asignar_rol', 'generar_recurrentes', 'registrar_factura', 'marcar_pagada']);
 // Sin views (pruebas que pasan el usuario a mano), el área visible alcanza, como antes.
 const mayWrite = (u, name, area) => !WRITE.has(name) || !area || !u.views || levelOf(u, area) === 'edita';
 // «Resumen» también aquí: lo que la pantalla no muestra en resumen, el conector no lo entrega
 // (Comercial: sin catálogo ni precios; Contenido: solo rendimiento, sin Research, planner ni calendario).
 const SUMMARY_HIDES = { sales: ['catalogo'], content: ['contenido_semana', 'planner', 'calendario', 'listar_research', 'leer_research'] };
 const hiddenBySummary = (u, name) => u.role !== 'ceo' && Boolean(u.views) && Object.entries(SUMMARY_HIDES).some(([area, l]) => l.includes(name) && levelOf(u, area) === 'resumen');
-const toolsFor = (u) => TOOLS.filter(([name, a]) => (!a || u.areas.includes(a)) && mayWrite(u, name, a) && !hiddenBySummary(u, name)).map(([name, , description, properties, required]) => ({ name, description, inputSchema: { type: 'object', properties, ...(required ? { required } : {}) } }));
+// Las facturas (por cobrar y por pagar, con el banco) son solo del CEO, aunque otro perfil vea Finanzas en resumen.
+const CEO_ONLY = new Set(['facturas', 'registrar_factura', 'marcar_pagada']);
+const toolsFor = (u) => TOOLS.filter(([name, a]) => (!a || u.areas.includes(a)) && mayWrite(u, name, a) && !hiddenBySummary(u, name) && (!CEO_ONLY.has(name) || u.role === 'ceo')).map(([name, , description, properties, required]) => ({ name, description, inputSchema: { type: 'object', properties, ...(required ? { required } : {}) } }));
 
 async function call(u, name, a = {}) {
   if (name === 'research') name = 'listar_research'; // el nombre viejo
@@ -180,6 +187,7 @@ async function call(u, name, a = {}) {
   if (tool[1] && !u.areas.includes(tool[1])) throw new Error('Tu perfil no tiene acceso a esto');
   if (!mayWrite(u, name, tool[1])) throw new Error('Tu perfil solo puede ver esto, no cambiarlo');
   if (hiddenBySummary(u, name)) throw new Error('Tu perfil ve esta sección en «resumen»: esto no entra');
+  if (CEO_ONLY.has(name) && u.role !== 'ceo') throw new Error('Solo el CEO usa las facturas');
   const T = today();
   const sc = await scoper(u); // el alcance: null = todo
   const inS = (coll, d) => inScope(sc, coll, d);
@@ -273,7 +281,7 @@ async function call(u, name, a = {}) {
   }
   if (name === 'leads') {
     const all = (await db.list('leads')).filter((l) => inS('leads', l)), q = String(a.buscar || '').toLowerCase();
-    const list = all.filter((l) => (!a.etapa || (l.stage || 'Nuevo') === a.etapa) && (!a.fuente || String(l.source || '').toLowerCase().includes(String(a.fuente).toLowerCase())) && (!a.vencidos || (leads.OPEN.includes(l.stage || 'Nuevo') && l.next_date && l.next_date < T)) && (!q || [l.name, l.contact, l.company, l.wants, l.notes, l.phone, l.email, l.ig].join(' ').toLowerCase().includes(q)));
+    const list = all.filter((l) => (!a.etapa || (l.stage || 'Nuevo') === leads.stageKey(a.etapa)) && (!a.fuente || String(l.source || '').toLowerCase().includes(String(a.fuente).toLowerCase())) && (!a.vencidos || (leads.OPEN.includes(l.stage || 'Nuevo') && l.next_date && l.next_date < T)) && (!q || [l.name, l.contact, l.company, l.wants, l.notes, l.phone, l.email, l.ig].join(' ').toLowerCase().includes(q)));
     const late = (l) => leads.OPEN.includes(l.stage || 'Nuevo') && l.next_date && l.next_date < T;
     return list.sort((x, z) => (late(z) - late(x)) || String(x.next_date || '9').localeCompare(String(z.next_date || '9'))).slice(0, 200).map((l) => ({ id: l.id, nombre: l.name, contacto: l.contact || '', empresa: l.company || '', etapa: l.stage || 'Nuevo', fuente: l.source || '', responsable: l.owner_role || leads.DEFAULT_ROLE, interes: l.interest || 0, interesado_en: l.wants || '', valor_usd: l.value_usd ?? null, siguiente_paso: l.next_step || '', fecha: l.next_date || '', vencido: Boolean(late(l)), telefono: l.phone || '', correo: l.email || '', ig: l.ig ? '@' + l.ig : '', ...(l.stage === 'Perdido' ? { motivo_perdida: l.lost_reason || '' } : {}), ...(l.plan ? { plan_sugerido: l.plan, puntaje: l.score ?? null } : {}), ultimo: (l.activity || []).at(-1)?.text || '' }));
   }
@@ -287,7 +295,7 @@ async function call(u, name, a = {}) {
     const patch = { ...l }, notes = [];
     if (name === 'registrar_actividad') { if (!String(a.texto || '').trim()) throw new Error('Falta el texto'); notes.push(String(a.texto)); }
     else {
-      if (a.etapa && a.etapa !== (l.stage || 'Nuevo')) { patch.stage = a.etapa; notes.push(`Etapa: ${l.stage || 'Nuevo'} → ${a.etapa}`); }
+      if (a.etapa && leads.stageKey(a.etapa) !== (l.stage || 'Nuevo')) { patch.stage = leads.stageKey(a.etapa); notes.push(`Etapa: ${l.stage || 'Nuevo'} → ${patch.stage}`); }
       if (a.motivo_perdida) patch.lost_reason = a.motivo_perdida;
       if (a.siguiente_paso != null) patch.next_step = String(a.siguiente_paso);
       if (a.fecha != null) patch.next_date = String(a.fecha);
@@ -552,8 +560,25 @@ async function call(u, name, a = {}) {
     const p = await db.create('content', { kind: 'post', profile: slug, title: String(a.titulo).slice(0, 200), format: a.formato || 'Reel', pillar: a.pilar || '', caption: String(a.texto || '').slice(0, 4000), date: /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : '', status: 'Idea' }, u.email);
     return { ok: true, id: p.id, titulo: p.title };
   }
+  if (name === 'facturas') {
+    const all = await db.list('invoices');
+    const l = all.filter((i) => (!a.tipo || i.kind === a.tipo) && (!a.estado || estadoFactura(i, T) === a.estado)).sort((x, z) => String(x.due || '9').localeCompare(String(z.due || '9')));
+    return { hoy: T, totales: totalesFacturas(all, T), facturas: l.slice(0, 200).map(facturaOut(T)) };
+  }
+  if (name === 'registrar_factura') {
+    const kind = a.tipo === 'cobrar' ? 'cobrar' : 'pagar';
+    if (kind === 'cobrar') { const c = String(a.cliente || '').trim().toLowerCase(), dirs = (await listDir('clients')).map((d) => d.name), accs = (await db.list('accounts')).map((x) => x.slug || String(x.id).replace(/^acc-/, '')); if (!dirs.includes(c) && !accs.includes(c)) throw new Error(`Cliente «${a.cliente || ''}» no existe. Usa su slug (ver clientes()).`); }
+    const r = await facturasLib.registrar(u, { kind, client: a.cliente, vendor: a.proveedor, concept: a.concepto, amount: a.monto, currency: a.moneda, issued: a.emitida, due: a.vence, file_url: a.archivo, notes: a.notas }, 'claude');
+    return { ok: true, ...(r.ya_existia ? { ya_existia: true } : {}), factura: facturaOut(T)(r), abrir: '/#/finanzas/fact' };
+  }
+  if (name === 'marcar_pagada') {
+    const r = await facturasLib.marcarPagada(u, a.id, { paid_at: a.fecha, bank_ref: String(a.referencia || '').slice(0, 120) });
+    return { ok: true, ...(r.ya_estaba ? { ya_estaba: true } : {}), factura: facturaOut(T)(r) };
+  }
   throw new Error('Herramienta desconocida');
 }
+// Una factura como la entrega el conector: en español y con su estado calculado (vencida no se guarda).
+const facturaOut = (T) => (i) => ({ id: i.id, tipo: i.kind, ...(i.kind === 'cobrar' ? { cliente: i.client } : { proveedor: i.vendor }), concepto: i.concept, monto: i.amount, moneda: i.currency, emitida: i.issued, vence: i.due, estado: estadoFactura(i, T), ...(i.paid_at ? { pagada_el: i.paid_at } : {}), ...(i.bank_ref ? { referencia_banco: i.bank_ref } : {}), origen: i.source, ...(i.period ? { mes: i.period } : {}), ...(i.file_url ? { archivo: i.file_url } : {}), ...(i.notes ? { notas: i.notes } : {}) });
 
 // JSON-RPC del protocolo MCP (HTTP). Devuelve { status, json } para la ruta.
 export async function handle(token, m) {

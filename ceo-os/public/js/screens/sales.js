@@ -6,6 +6,7 @@ import { LEVELS, levelName } from '../levels.js';
 import { packagesTab } from '../paquetes.js';
 import { createBundles } from '../armados.js';
 import { createCatalog, CATS, lvName } from '../catalogo.js';
+import { FLOW, stageLabel, flowIndex, isWaiting, createdAt, waitMs, waitTone, durText, salesMetrics, AFTER_REPLY, updateWaits } from '../ventas-flujo.js';
 
 const STAGES = ['Prospecto', 'Nuevo', 'Contactado', 'Reunión', 'Propuesta', 'Ganado', 'Perdido'];
 const BOARD = STAGES.slice(1); // el tablero: los prospectos tienen su bandeja aparte
@@ -80,7 +81,8 @@ export async function render(el, { me, sub, alive }) {
     const pros = leads.filter((l) => l.stage === 'Prospecto' && !l.archived);
     const late = open.filter(isLate).sort(byUrgency), hoy = open.filter((l) => l.next_date === T);
     const row = (l, chip) => html`<div class="wkrow" data-act="lead" data-id="${l.id}"><span class="grow"><b style="font-weight:500">${l.name}</b><span class="mut sm"> · ${l.next_step || 'Sin siguiente paso'} · ${roleLabel(l.owner_role)}</span></span>${chip}</div>`;
-    mount(body, html`
+    const m = salesMetrics(leads);
+    mount(body, html`${topNums(m)}${inbox(m.waiting)}
       <div class="grid g4" style="margin-bottom:18px">
         <div class="card glass"><span class="mut sm">Leads abiertos</span><div class="big" style="font-size:42px">${open.length}</div></div>
         <div class="card glass"><span class="mut sm">Calientes ${ico('flame')}</span><div class="big" style="font-size:42px">${open.filter((l) => (l.interest || 0) >= 4).length}</div></div>
@@ -90,7 +92,7 @@ export async function render(el, { me, sub, alive }) {
       <div class="sec-title"><h2>Seguimiento vencido</h2><span class="mut sm">Lo primero que hay que mover</span></div>
       <div class="card">${late.length ? late.slice(0, 30).map((l) => row(l, html`<span class="chip red sm2">Venció ${fdate(l.next_date)}</span>`)) : html`<div class="mut">Nada vencido ${ico('check', 14)}</div>`}</div>
       <div class="sec-title" style="margin-top:22px"><h2>Para hoy</h2></div>
-      <div class="card">${hoy.length ? hoy.map((l) => row(l, html`<span class="chip amber sm2">${l.stage || 'Nuevo'}</span>`)) : html`<div class="mut">Sin seguimientos para hoy</div>`}</div>`);
+      <div class="card">${hoy.length ? hoy.map((l) => row(l, html`<span class="chip amber sm2">${stageLabel(l.stage)}</span>`)) : html`<div class="mut">Sin seguimientos para hoy</div>`}</div>`);
   }
 
   // ---------- Paquetes: una sola lista — los propios (servicios y especialistas) y los de cada industria ----------
@@ -118,21 +120,55 @@ export async function render(el, { me, sub, alive }) {
   const nextDay = () => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().slice(0, 10); };
   const plusDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
   const act = (text) => ({ at: new Date().toISOString(), who: me.name, text });
+  const whenTxt = (d) => (d === T ? 'hoy' : d === nextDay() ? 'mañana' : fdate(d));
+  const monthName = new Date().toLocaleDateString('es-GT', { month: 'long' });
+  // ---------- El flujo de atención y cierre ----------
+  // Arriba, tres números: sin responder · tiempo medio de primera respuesta del mes · propuestas abiertas.
+  const topNums = (m) => html`<div class="sp-kpis vf-kpis">
+      <div class="sp-kpi"><span class="lbl">Sin responder</span><b class="${m.unanswered ? 'vf-big ' + waitTone(m.oldestMs) : ''}">${m.unanswered}</b><span class="mut sm">${m.unanswered ? html`El más antiguo lleva <span data-wait="${createdAt(m.waiting[0])}" data-plain="1">${durText(m.oldestMs)}</span>` : 'Todo respondido'}</span></div>
+      <div class="sp-kpi"><span class="lbl">Primera respuesta · ${monthName}</span><b>${m.avgReplyMs == null ? '—' : durText(m.avgReplyMs)}</b><span class="mut sm">${m.replied ? `Promedio de ${m.replied} lead${m.replied === 1 ? '' : 's'} · la meta es 1 min` : 'Sale de los leads que entran este mes'}</span></div>
+      <div class="sp-kpi"><span class="lbl">Propuestas abiertas</span><b>${m.proposals}</b><span class="mut sm">${m.proposalsUsd ? `${USD(m.proposalsUsd)} / mes en juego` : 'Con el alcance delante'}</span></div>
+    </div>`;
+  // Los leads nuevos que esperan la primera respuesta, con su cronómetro: verde antes del minuto, ámbar antes de 15, rojo después.
+  const timer = (l) => html`<span class="vf-timer ${waitTone(waitMs(l))}" data-wait="${createdAt(l)}" title="Desde que entró">${durText(waitMs(l))}</span>`;
+  const inbox = (ws) => (!ws.length ? '' : html`<section class="vf-inbox"><div class="vf-inbox-h"><b>Sin responder</b><span class="mut sm">Al primer contacto se responde en un minuto</span></div>
+      ${ws.map((l) => html`<div class="wkrow" data-act="lead" data-id="${l.id}">${timer(l)}<span class="grow"><b style="font-weight:500">${l.name}</b><span class="mut sm"> · ${[l.source, l.contact || l.phone || (l.ig ? '@' + l.ig : '')].filter(Boolean).join(' · ') || 'Sin fuente'}</span></span>${edit ? html`<button class="btn xs" data-act="replied" data-id="${l.id}">Ya respondí</button>` : ''}</div>`)}</section>`);
+  // La tira del cierre: cada paso con lo que toca hacer y su fecha más próxima. Tocar un paso filtra la lista.
+  let stageF = '';
+  const strip = (pipe) => html`<div class="vf-strip" role="list" aria-label="Etapas del cierre">${FLOW.map((f, i) => {
+    const ls = pipe.filter((l) => f.keys.includes(l.stage || 'Nuevo')), op = ls.filter((l) => OPEN.includes(l.stage || 'Nuevo'));
+    const late = op.filter(isLate).length, next = op.filter((l) => l.next_date && l.next_date >= T).sort((a, z) => a.next_date.localeCompare(z.next_date))[0];
+    const won = ls.filter((l) => l.stage === 'Ganado').length;
+    return html`<button class="vf-step ${stageF === f.id ? 'on' : ''}" role="listitem" data-act="stageF" data-f="${f.id}" aria-pressed="${stageF === f.id ? 'true' : 'false'}">
+        <span class="vf-top"><span class="vf-n">${i + 1}</span><span class="vf-c">${ls.length}</span></span>
+        <span class="vf-l">${f.label}</span>${f.hint ? html`<span class="vf-h">${f.hint}</span>` : ''}
+        <span class="vf-s">${f.step}</span>
+        <span class="vf-d ${late ? 'late' : ''}">${f.id === 'cierre' ? `${won} ganado${won === 1 ? '' : 's'} · ${ls.length - won} perdido${ls.length - won === 1 ? '' : 's'}` : late ? `${late} vencido${late === 1 ? '' : 's'}` : next ? `Próximo: ${whenTxt(next.next_date)}` : 'Sin pendientes'}</span></button>`; })}</div>`;
+  // «Ya respondí»: guarda la hora de la primera respuesta, lo pasa a Respondido y propone el siguiente paso.
+  async function replied(l) {
+    const cur = leads.find((x) => x.id === l.id) || l;
+    if (!isWaiting(cur)) { toast('Ese lead ya tenía respuesta'); return null; }
+    const at = new Date().toISOString(), took = durText(Date.parse(at) - createdAt(cur));
+    const patch = { first_reply_at: at }, notes = [`Primera respuesta · a los ${took}`];
+    if ((cur.stage || 'Nuevo') === 'Nuevo') {
+      patch.stage = 'Contactado'; notes.push(`Etapa: Nuevo → ${stageLabel('Contactado')}`);
+      if (!cur.next_step || /^(responder|primer mensaje)/i.test(cur.next_step) || !cur.next_date || cur.next_date < T) { patch.next_step = AFTER_REPLY; patch.next_date = cur.next_date && cur.next_date > T ? cur.next_date : T; notes.push(`Siguiente paso: ${patch.next_step} · ${patch.next_date}`); }
+    }
+    return saveLead({ ...cur, ...patch, activity: [...(cur.activity || []), ...notes.map(act)] }, `Respondido en ${took}`);
+  }
   function crm(body) {
     const pipe = leads.filter((l) => (l.stage || 'Nuevo') !== 'Prospecto');
     const pros = leads.filter((l) => l.stage === 'Prospecto' && !l.archived);
     const open = pipe.filter((l) => OPEN.includes(l.stage || 'Nuevo'));
     const match = (l) => (!q || [l.name, l.company, l.contact, l.wants, l.notes, l.phone, l.email, l.ig, l.source].join(' ').toLowerCase().includes(q)) && (!tagF || (l.tags || []).includes(tagF));
-    const filtered = pipe.filter(match).sort(byUrgency);
+    const inStage = (l) => !stageF || (FLOW.find((f) => f.id === stageF)?.keys || []).includes(l.stage || 'Nuevo');
+    const filtered = pipe.filter((l) => match(l) && inStage(l)).sort(byUrgency);
+    const m = salesMetrics(leads), pipeUsd = open.reduce((a, l) => a + (+l.value_usd || 0), 0), hot = open.filter((l) => (l.interest || 0) >= 4).length;
     const usedTags = [...new Set(pipe.flatMap((l) => l.tags || []))];
     const late = open.filter(isLate);
-    mount(body, html`
-      <div class="grid g4" style="margin-bottom:18px">
-        <div class="card glass"><span class="mut sm">Calientes ${ico('flame')}</span><div class="big" style="font-size:42px">${open.filter((l) => (l.interest || 0) >= 4).length}</div></div>
-        <div class="card glass"><span class="mut sm">Seguimiento vencido</span><div class="big" style="font-size:42px${late.length ? ';color:var(--warn)' : ''}">${late.length}</div></div>
-        <div class="card glass"><span class="mut sm">Prospectos por contactar</span><div class="big" style="font-size:42px">${pros.length}</div></div>
-        <div class="card glass"><span class="mut sm">Pipeline abierto / mes</span><div class="big" style="font-size:42px">${USD(open.reduce((a, l) => a + (+l.value_usd || 0), 0))}</div></div>
-      </div>
+    mount(body, html`${topNums(m)}${inbox(m.waiting)}
+      ${pipe.length ? strip(pipe) : ''}
+      <div class="vf-mini mut sm"><span>${ico('flame', 13)} ${hot} caliente${hot === 1 ? '' : 's'}</span><span class="${late.length ? 'vf-warn' : ''}">${late.length} con seguimiento vencido</span><span>${pros.length} prospecto${pros.length === 1 ? '' : 's'} por contactar</span><span>${USD(pipeUsd)} de pipeline abierto / mes</span></div>
       <div class="row" style="margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <input class="in" id="q" placeholder="Buscar lead…" value="${q}" style="max-width:260px">
         ${crmView !== 'pros' ? html`<button class="chip ${tagF ? '' : 'dark'}" data-act="tagF" data-t="" style="padding:8px 14px">Todos</button>
@@ -143,9 +179,9 @@ export async function render(el, { me, sub, alive }) {
       ${crmView === 'pros' ? prosView(pros.filter(match))
       : !pipe.length ? html`<div class="empty"><b>Todavía no hay leads</b>Crea el primero con «+ Nuevo lead», o conecta una fuente en «Fuentes».</div>`
       : crmView === 'list' ? html`<div class="card"><table><thead><tr><th>Lead</th><th>Interés</th><th>Etapa</th><th>Fuente</th><th>Responsable</th><th class="n">Valor / mes</th><th>Siguiente paso</th></tr></thead><tbody>
-        ${filtered.map((l) => html`<tr class="click" data-act="lead" data-id="${l.id}"><td><b style="font-weight:500">${l.name}</b><div class="mut sm">${[l.contact, l.company].filter(Boolean).join(' · ')}</div>${(l.tags || []).length ? html`<div>${(l.tags || []).map(tagChip)}</div>` : ''}</td><td>${score(l.interest)}</td><td><span class="chip ${STAGEC[l.stage] ?? ''}">${l.stage || 'Nuevo'}</span>${l.stage === 'Perdido' && l.lost_reason ? html`<div class="mut sm">${l.lost_reason}</div>` : ''}</td><td class="sm">${l.source || '—'}</td><td class="sm">${roleLabel(l.owner_role)}</td><td class="n">${l.value_usd ? USD(l.value_usd) : '—'}</td><td class="sm" style="${isLate(l) ? 'color:var(--warn);font-weight:700' : ''}">${OPEN.includes(l.stage || 'Nuevo') ? html`${l.next_step || '—'}${l.next_date ? html`<div class="mut">${isLate(l) ? 'Venció el ' : ''}${fdate(l.next_date)}</div>` : ''}` : html`<span class="mut">—</span>`}</td></tr>`)}
+        ${filtered.map((l) => html`<tr class="click" data-act="lead" data-id="${l.id}"><td><b style="font-weight:500">${l.name}</b><div class="mut sm">${[l.contact, l.company].filter(Boolean).join(' · ')}</div>${(l.tags || []).length ? html`<div>${(l.tags || []).map(tagChip)}</div>` : ''}</td><td>${score(l.interest)}</td><td><span class="chip ${STAGEC[l.stage] ?? ''}">${stageLabel(l.stage)}</span>${l.stage === 'Perdido' && l.lost_reason ? html`<div class="mut sm">${l.lost_reason}</div>` : ''}</td><td class="sm">${l.source || '—'}</td><td class="sm">${roleLabel(l.owner_role)}</td><td class="n">${l.value_usd ? USD(l.value_usd) : '—'}</td><td class="sm" style="${isLate(l) ? 'color:var(--warn);font-weight:700' : ''}">${OPEN.includes(l.stage || 'Nuevo') ? html`${l.next_step || '—'}${l.next_date ? html`<div class="mut">${isLate(l) ? 'Venció el ' : ''}${fdate(l.next_date)}</div>` : ''}` : html`<span class="mut">—</span>`}</td></tr>`)}
         </tbody></table></div>`
-      : html`<div class="kanban" style="grid-template-columns:repeat(${BOARD.length},minmax(210px,1fr))">${BOARD.map((s) => { const ls = filtered.filter((l) => (l.stage || 'Nuevo') === s); return html`<div class="kcol" data-stage="${s}"><h4><span>${s}</span><span class="mut">${ls.length}</span></h4>
+      : html`<div class="kanban" style="grid-template-columns:repeat(${BOARD.length},minmax(210px,1fr))">${BOARD.map((s) => { const ls = filtered.filter((l) => (l.stage || 'Nuevo') === s); return html`<div class="kcol" data-stage="${s}"><h4><span>${stageLabel(s)}</span><span class="mut">${ls.length}</span></h4>
           ${ls.map((l) => html`<div class="kcard" draggable="true" data-act="lead" data-id="${l.id}"><b>${l.name}</b><div class="mut sm">${levelName(l.wants) || l.source || ''}</div>${OPEN.includes(s) ? html`<div class="sm" style="margin-top:6px;${isLate(l) ? 'color:var(--warn);font-weight:700' : ''}">${l.next_step || 'Sin siguiente paso'}${l.next_date ? ` · ${fdate(l.next_date)}` : ''}</div>` : s === 'Perdido' && l.lost_reason ? html`<div class="mut sm" style="margin-top:6px">${l.lost_reason}</div>` : ''}<div class="row" style="margin-top:8px">${score(l.interest)}<div class="sp"></div><span class="sm">${l.value_usd ? USD(l.value_usd) : ''}</span></div></div>`)}</div>`; })}</div>`}`);
     const qi = $('#q', body);
     qi.oninput = () => { q = qi.value.toLowerCase(); const pos = qi.selectionStart; crm(body); const n = $('#q', body); n.focus(); n.setSelectionRange(pos, pos); };
@@ -173,15 +209,15 @@ export async function render(el, { me, sub, alive }) {
       </tbody></table></div>`)}`;
   }
 
-  async function saveLead(l) {
-    try { const s = await L.save(l); leads = leads.map((x) => (x.id === s.id ? s : x)); toast('Guardado'); return s; }
+  async function saveLead(l, msg = 'Guardado') {
+    try { const s = await L.save(l); leads = leads.map((x) => (x.id === s.id ? s : x)); toast(msg); return s; }
     catch (e) { toast(e.message, true); return null; }
   }
   // Mover de etapa con sus candados: Perdido pide el motivo; una etapa abierta pide siguiente paso y fecha si no los tiene vigentes.
   async function moveLead(l, stage) {
-    const cur = leads.find((x) => x.id === l.id) || l, extra = {}, notes = [`Etapa: ${cur.stage || 'Nuevo'} → ${stage}`];
+    const cur = leads.find((x) => x.id === l.id) || l, extra = {}, notes = [`Etapa: ${stageLabel(cur.stage)} → ${stageLabel(stage)}`];
     if (stage === 'Perdido') { const v = await ask(`¿Por qué se perdió ${cur.name}?`, [{ k: 'r', l: 'Motivo', t: 'select', opts: LOST.map((x) => [x, x]), req: true }, { k: 'n', l: 'Nota (opcional)' }], 'Marcar perdido'); if (!v) return null; extra.lost_reason = v.r; notes.push(`Motivo de pérdida: ${v.r}${v.n ? ` · ${v.n}` : ''}`); }
-    else if (OPEN.includes(stage) && (!cur.next_step || !cur.next_date || cur.next_date < T)) { const v = await ask(`${cur.name} → ${stage}: ¿cuál es el siguiente paso?`, [{ k: 's', l: 'Siguiente paso', req: true, v: cur.next_step || '' }, { k: 'd', l: 'Fecha', t: 'date', req: true, v: cur.next_date >= T ? cur.next_date : nextDay() }], 'Mover'); if (!v) return null; extra.next_step = v.s; extra.next_date = v.d; notes.push(`Siguiente paso: ${v.s} · ${v.d}`); }
+    else if (OPEN.includes(stage) && (!cur.next_step || !cur.next_date || cur.next_date < T)) { const v = await ask(`${cur.name} → ${stageLabel(stage)}: ¿cuál es el siguiente paso?`, [{ k: 's', l: 'Siguiente paso', req: true, v: cur.next_step || '' }, { k: 'd', l: 'Fecha', t: 'date', req: true, v: cur.next_date >= T ? cur.next_date : nextDay() }], 'Mover'); if (!v) return null; extra.next_step = v.s; extra.next_date = v.d; notes.push(`Siguiente paso: ${v.s} · ${v.d}`); }
     return saveLead({ ...cur, ...extra, stage, activity: [...(cur.activity || []), ...notes.map(act)] });
   }
 
@@ -191,14 +227,17 @@ export async function render(el, { me, sub, alive }) {
     const stage0 = l.stage || 'Nuevo';
     const d = drawer(html`<div class="row"><span class="chip">${l.source || 'Sin fuente'}</span>${l.direction === 'out' ? html`<span class="chip">Saliente</span>` : ''}<div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <h2>${l.name}</h2><div class="mut">${[l.contact, l.company, l.ig && '@' + l.ig].filter(Boolean).join(' · ')}</div>
+      ${flowIndex(stage0) >= 0 ? html`<div class="vf-track" aria-label="Etapa del cierre">${FLOW.map((f, k) => { const i = flowIndex(stage0); return html`<span class="${k < i ? 'done' : k === i ? 'on' : ''}">${f.id === 'cierre' && k === i ? stageLabel(stage0) : f.label}</span>`; })}</div>
+        ${OPEN.includes(stage0) ? html`<div class="vf-next ${isLate(l) ? 'late' : ''}"><span class="mut">Siguiente paso</span> <b>${l.next_step || 'Sin siguiente paso'}</b>${l.next_date ? html` · ${isLate(l) ? 'venció el ' : ''}${fdate(l.next_date)}` : ''}</div>` : ''}` : ''}
+      ${isWaiting(l) ? html`<div class="vf-waitbox">${timer(l)}<span class="grow">Espera tu primera respuesta</span>${edit ? html`<button class="btn xs" data-act="replied">Ya respondí</button>` : ''}</div>` : ''}
       ${l.plan || l.answers ? html`<div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><b style="font-weight:500">Diagnóstico</b><div class="sp"></div>${l.plan ? html`<span class="chip dark">${levelName(l.plan)}</span>` : ''}${l.score != null ? html`<span class="chip">${l.score}/100</span>` : ''}</div>
         ${l.answers && typeof l.answers === 'object' ? html`<div class="sm" style="margin-top:8px">${Object.entries(l.answers).map(([k, v]) => html`<div><span class="mut">${k}:</span> ${Array.isArray(v) ? v.join(', ') : typeof v === 'object' ? JSON.stringify(v) : v}</div>`)}</div>` : ''}</div>` : ''}
-      <div style="margin:18px 0 6px" class="sm mut">Interés</div>
+      <div class="row" style="margin:18px 0 6px"><span class="sm mut">Interés</span><div class="sp"></div><span class="vf-laya-slot"><span class="mut sm">Nota de Laya</span><span class="chip vf-laya" title="Fase 3: Laya puntúa el lead">Laya · pronto</span></span></div>
       <div class="scorein" id="sc">${[1, 2, 3, 4, 5].map((n) => html`<button data-act="score" data-n="${n}" class="${n <= interest ? 'on' : ''}" title="${n}"></button>`)}</div>
       <div style="margin:16px 0 6px" class="sm mut">Estado</div>
       <div class="tagbox" id="tg">${all.map((t) => html`<span class="chip ${tags.includes(t) ? TAGS[t] ?? 'dark' : 'off'}" data-act="tag" data-t="${t}">${t}</span>`)}<span class="chip off" data-act="newTag">+ etiqueta</span></div>
       <form class="form" id="lf" style="margin-top:18px">
-        <div class="two"><div><label class="f">Etapa</label><select class="in" name="stage" id="lstage">${STAGES.map((s) => html`<option ${s === stage0 ? raw('selected') : ''}>${s}</option>`)}</select></div>
+        <div class="two"><div><label class="f">Etapa</label><select class="in" name="stage" id="lstage">${STAGES.map((s) => html`<option value="${s}" ${s === stage0 ? raw('selected') : ''}>${stageLabel(s)}</option>`)}</select></div>
           <div><label class="f">Responsable (rol)</label><select class="in" name="owner_role">${[...new Set([...WORK_ROLES.map(([k]) => k), l.owner_role || 'ventas'])].map((k) => html`<option value="${k}" ${k === (l.owner_role || 'ventas') ? raw('selected') : ''}>${roleLabel(k)}</option>`)}</select></div></div>
         <div id="lost" ${stage0 === 'Perdido' ? '' : raw('hidden')}><label class="f">Motivo de pérdida *</label><select class="in" name="lost_reason"><option value="">— Elige el motivo</option>${LOST.map((x) => html`<option ${x === l.lost_reason ? raw('selected') : ''}>${x}</option>`)}</select></div>
         <div class="two"><div><label class="f" data-must="paso">Siguiente paso${OPEN.includes(stage0) ? ' *' : ''}</label><input class="in" name="next_step" value="${l.next_step || ''}" placeholder="Llamar, mandar propuesta, agendar…"></div>
@@ -216,6 +255,7 @@ export async function render(el, { me, sub, alive }) {
       <div class="row" style="margin:8px 0"><input class="in" id="note" placeholder="Registrar llamada, mensaje o nota…"><button class="btn ghost" data-act="note">Agregar</button></div>
       ${(l.activity || []).slice().reverse().map((a) => html`<div class="comment"><span class="av">${(a.who || '?')[0]}</span><p><span class="mut sm">${fdate(String(a.at || '').slice(0, 10))} · ${a.who}</span><br>${a.text}</p></div>`)}`,
     {
+      replied: async () => { const s = await replied(l); if (s) { paint(); openLead(s); } },
       score: (b) => { interest = +b.dataset.n; $$('#sc button').forEach((x) => x.classList.toggle('on', +x.dataset.n <= interest)); },
       tag: (b) => { const t = b.dataset.t; tags = tags.includes(t) ? tags.filter((x) => x !== t) : [...tags, t]; b.className = `chip ${tags.includes(t) ? TAGS[t] ?? 'dark' : 'off'}`; },
       newTag: async () => { const v = await ask('Nueva etiqueta', [{ k: 't', l: 'Etiqueta', req: true }], 'Agregar'); if (v) { tags.push(v.t); await persist(); openLead(leads.find((x) => x.id === l.id)); } },
@@ -233,7 +273,7 @@ export async function render(el, { me, sub, alive }) {
       const cur = leads.find((x) => x.id === l.id);
       const v = formVals(); const bad = lockMsg(v); if (bad) { toast(bad, true); return null; }
       const changes = [];
-      if ((cur.stage || 'Nuevo') !== v.stage) changes.push(`Etapa: ${cur.stage || 'Nuevo'} → ${v.stage}`);
+      if ((cur.stage || 'Nuevo') !== v.stage) changes.push(`Etapa: ${stageLabel(cur.stage)} → ${stageLabel(v.stage)}`);
       if (v.stage === 'Perdido' && v.lost_reason !== (cur.lost_reason || '')) changes.push(`Motivo de pérdida: ${v.lost_reason}`);
       if (v.next_step && (v.next_step !== (cur.next_step || '') || v.next_date !== (cur.next_date || ''))) changes.push(`Siguiente paso: ${v.next_step}${v.next_date ? ` · ${v.next_date}` : ''}`);
       if (v.owner_role !== (cur.owner_role || 'ventas')) changes.push(`Responsable: ${roleLabel(cur.owner_role)} → ${roleLabel(v.owner_role)}`);
@@ -282,7 +322,7 @@ export async function render(el, { me, sub, alive }) {
       : html`<div class="grid g3">${srcs.map((s) => { const n = s.n || {}; return html`<div class="card">
           <div class="row" style="flex-wrap:wrap;gap:6px"><span class="chip ${s.active === false ? '' : 'dark'}">${s.active === false ? 'Pausada' : 'Activa'}</span><span class="chip">${SRC_TYPES.find(([k]) => k === s.type)?.[1] || s.type}</span>${s.main ? html`<span class="chip lime">Quiz principal</span>` : ''}<div class="sp"></div><span class="mut sm">${s.direction === 'out' ? 'Saliente' : 'Entrante'}</span></div>
           <h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin:12px 0 4px">${s.name}</h3>
-          <div class="mut sm">Entra como <b style="font-weight:500">${s.stage_in || 'Nuevo'}</b> · responsable ${roleLabel(s.role)}${Object.keys(s.map || {}).length ? ` · ${Object.keys(s.map).length} campos mapeados` : ''}</div>
+          <div class="mut sm">Entra como <b style="font-weight:500">${stageLabel(s.stage_in)}</b> · responsable ${roleLabel(s.role)}${Object.keys(s.map || {}).length ? ` · ${Object.keys(s.map).length} campos mapeados` : ''}</div>
           <div class="row sm" style="margin:12px 0 4px;gap:14px"><span>${n.ok || 0} recibidos</span><span style="${n.fail ? 'color:var(--warn)' : ''}">${n.fail || 0} fallidos</span>${n.last_at ? html`<span class="mut">último ${fdate(n.last_at.slice(0, 10))}</span>` : ''}</div>
           <div class="row" style="margin-top:10px;gap:6px"><input class="in" readonly value="${srcLink(s)}" style="font-size:12px;padding:8px 10px"><button class="btn ghost" data-act="copyLink" data-id="${s.id}" style="padding:8px 12px" title="Copiar el link">${ico('copy', 15)}</button></div>
           <div class="row" style="margin-top:12px;gap:6px;flex-wrap:wrap"><button class="btn ghost xs" data-act="srcLog" data-id="${s.id}">Registro</button>${isCeo ? html`<button class="btn ghost xs" data-act="srcEdit" data-id="${s.id}">Editar</button><button class="btn ghost xs" data-act="srcToggle" data-id="${s.id}">${s.active === false ? 'Activar' : 'Pausar'}</button>` : ''}</div>
@@ -296,7 +336,7 @@ export async function render(el, { me, sub, alive }) {
         <div><label class="f">Nombre *</label><input class="in" name="name" value="${cur.name}" placeholder="Ej. Quiz de la web, Formulario de Meta, Apify restaurantes"></div>
         <div class="two"><div><label class="f">Tipo</label><select class="in" name="type">${SRC_TYPES.map(([k, l]) => html`<option value="${k}" ${k === cur.type ? raw('selected') : ''}>${l}</option>`)}</select></div>
           <div><label class="f">Dirección</label><select class="in" name="direction"><option value="in" ${cur.direction !== 'out' ? raw('selected') : ''}>Entrante (ellos llegan)</option><option value="out" ${cur.direction === 'out' ? raw('selected') : ''}>Saliente (nosotros buscamos)</option></select></div></div>
-        <div class="two"><div><label class="f">Etapa de entrada</label><select class="in" name="stage_in">${STAGES.filter((x) => !['Ganado', 'Perdido'].includes(x)).map((x) => html`<option ${x === cur.stage_in ? raw('selected') : ''}>${x}</option>`)}</select></div>
+        <div class="two"><div><label class="f">Etapa de entrada</label><select class="in" name="stage_in">${STAGES.filter((x) => !['Ganado', 'Perdido'].includes(x)).map((x) => html`<option value="${x}" ${x === cur.stage_in ? raw('selected') : ''}>${stageLabel(x)}</option>`)}</select></div>
           <div><label class="f">Rol asignado</label><select class="in" name="role">${[...new Set([...WORK_ROLES.map(([k]) => k), cur.role])].map((k) => html`<option value="${k}" ${k === cur.role ? raw('selected') : ''}>${roleLabel(k)}</option>`)}</select></div></div>
         <label class="check"><input type="checkbox" name="main" ${cur.main ? raw('checked') : ''}> Es la fuente principal del quiz público (/diagnostico sin clave la usa)</label>
         <div><label class="f">Notas</label><input class="in" name="notes" value="${cur.notes || ''}"></div>
@@ -448,7 +488,7 @@ export async function render(el, { me, sub, alive }) {
           // Un lead abierto siempre lleva siguiente paso: al cotizar, es dar seguimiento a la cotización.
           const follow = { next_step: 'Dar seguimiento a la cotización', next_date: plusDays(3) };
           if (!ld) { ld = await L.create({ name: doc.client.trim(), contact: doc.contact || '', email: doc.email || '', stage: 'Propuesta', owner_role: 'ventas', ...follow, tags: [], activity: [act(`Lead creado desde la cotización ${doc.number}`)] }); leads.push(ld); }
-          else if (['Prospecto', 'Nuevo', 'Contactado', 'Reunión'].includes(ld.stage || 'Nuevo')) { const r = await L.save({ ...ld, stage: 'Propuesta', ...(ld.next_step && ld.next_date >= T ? {} : follow), activity: [...(ld.activity || []), act(`Etapa: ${ld.stage || 'Nuevo'} → Propuesta · cotización ${doc.number}`)] }); leads = leads.map((x) => (x.id === r.id ? r : x)); }
+          else if (['Prospecto', 'Nuevo', 'Contactado', 'Reunión'].includes(ld.stage || 'Nuevo')) { const r = await L.save({ ...ld, stage: 'Propuesta', ...(ld.next_step && ld.next_date >= T ? {} : follow), activity: [...(ld.activity || []), act(`Etapa: ${stageLabel(ld.stage)} → ${stageLabel('Propuesta')} · cotización ${doc.number}`)] }); leads = leads.map((x) => (x.id === r.id ? r : x)); }
           doc.lead_id = ld.id; if (!doc.contact) doc.contact = ld.contact || ''; if (!doc.email) doc.email = ld.email || '';
         } catch (e) { return toast(e.message, true); }
         // Enviada, aprobada o rechazada no es solo una etiqueta: dispara el flujo (tarea de cobro, lead, Control).
@@ -582,6 +622,8 @@ export async function render(el, { me, sub, alive }) {
     tab: (b) => { tab = b.dataset.t; history.replaceState(null, '', '#/sales/' + tab); swap(el, paint); },
     crmView: (b) => { crmView = b.dataset.v; paint(); },
     tagF: (b) => { tagF = b.dataset.t; paint(); },
+    stageF: (b) => { stageF = stageF === b.dataset.f ? '' : b.dataset.f; if (crmView === 'pros') crmView = 'list'; paint(); },
+    replied: async (b) => { const l = leads.find((x) => x.id === b.dataset.id); if (l && await replied(l)) paint(); },
     lead: (b) => openLead(leads.find((l) => l.id === b.dataset.id)),
     newLead, ...CAT.actions,
     newQuote: () => editQuote(null, null),
@@ -596,6 +638,14 @@ export async function render(el, { me, sub, alive }) {
     copyLink: (b) => { const sx = srcs.find((x) => x.id === b.dataset.id); navigator.clipboard?.writeText(srcLink(sx)).then(() => toast('Link copiado')).catch(() => toast('No pude copiar; selecciónalo del campo', true)); },
   });
   paint();
+  // El cronómetro corre cada segundo; cada 30 s se revisa si entró un lead nuevo (solo en el CRM, con la pestaña a la vista y sin un lead abierto).
+  let ticks = 0;
+  const tick = setInterval(async () => {
+    if (!alive()) return clearInterval(tick);
+    updateWaits($$('[data-wait]'), Date.now());
+    if (++ticks % 30 || tab !== 'crm' || document.visibilityState !== 'visible' || $('#drawer')?.classList.contains('on') || document.activeElement?.id === 'q') return;
+    try { const fresh = await L.list(); const sig = (ls) => ls.filter(isWaiting).map((x) => x.id).sort().join(); const changed = sig(fresh) !== sig(leads) || fresh.length !== leads.length; leads = fresh; if (changed && alive() && tab === 'crm') paint(); } catch {}
+  }, 1000);
   // Desde Control: #/sales/quotes/new/<lead> abre una cotización para ese lead; #/sales/quotes/<id> la abre.
   if (sub[0] === 'quotes' && sub[1] === 'new') editQuote(null, leads.find((x) => x.id === sub[2]) || null);
   else if (sub[0] === 'quotes' && sub[1]) { const qq = quotes.find((x) => x.id === sub[1]); if (qq) editQuote(qq); }
