@@ -177,7 +177,7 @@ export async function render(el, { me, sub = [], alive }) {
       const s = S.salud; if (!s) return 'cargando';
       if (!s.on) return 'apagado';
       if (!s.chat) return 'viejo';
-      if (s.chat.ayuda) return s.chat.ayuda; // sin_repo · repo_invalido · sin_claude
+      if (s.chat.ayuda) return s.chat.ayuda; // bajando_repo · sin_github · repo_error · repo_invalido · sin_claude (sin_repo: puentes viejos)
       if (!tok()) return 'sin-token';
       return 'listo';
     }
@@ -190,7 +190,10 @@ export async function render(el, { me, sub = [], alive }) {
       if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
       if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat. Corre otra vez el comando y actualiza solo:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
-      if (f === 'sin_repo' || f === 'repo_invalido') return html`<div class="es-setup"><b>${f === 'sin_repo' ? 'Dile dónde está el repo' : 'Esa ruta no es el repo de Inherent'}</b><p>Una línea, con la ruta de tu clon de Inherent-HQ:</p>${cmd(win ? 'Add-Content "$HOME\\.inherent\\laya\\config" \'INHERENT_REPO=C:\\ruta\\a\\Inherent-HQ\'' : "echo 'INHERENT_REPO=/ruta/a/Inherent-HQ' >> ~/.inherent/laya/config")}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'bajando_repo') return html`<div class="es-setup"><b>Preparando la copia del repo</b><p>El puente baja el repo de Inherent la primera vez (un minuto). Después se pone al día solo antes de cada chat.</p><button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
+      if (f === 'sin_github') return html`<div class="es-setup"><b>Inicia sesión en GitHub (una sola vez)</b><p>El repo es privado: el puente necesita tu permiso para leerlo. Corre otra vez el comando de instalar y sigue lo que te pide en el navegador:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'repo_error') return html`<div class="es-setup"><b>No pude bajar el repo</b><p>${S.salud?.chat?.error_repo || 'Revisa tu internet.'} Se reintenta solo en un minuto; si sigue, corre otra vez el comando de instalar.</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
+      if (f === 'sin_repo' || f === 'repo_invalido') return html`<div class="es-setup"><b>${f === 'sin_repo' ? 'Actualiza el puente' : 'Esa ruta no es el repo de Inherent'}</b><p>${f === 'sin_repo' ? 'El puente nuevo baja solo una copia del repo y la pone al día antes de cada chat. Corre otra vez el comando:' : 'Quita la línea INHERENT_REPO de ~/.inherent/laya/config para que el puente use su copia automática, y corre otra vez el comando:'}</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'sin_claude') return html`<div class="es-setup"><b>No encuentro Claude Code</b><p>Instálalo e inicia sesión con tu cuenta (comando <code>claude</code>). Luego vuelve aquí.</p><button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       return html`<div class="es-setup"><b>Empareja tu compu (una sola vez)</b><p>Pega el token que imprimió el puente. Para verlo:</p>${cmd(win ? 'Get-Content "$HOME\\.inherent\\laya\\chat-token"' : 'cat ~/.inherent/laya/chat-token')}
         <form class="es-pair" data-act="pair"><input class="in" name="t" type="password" autocomplete="off" spellcheck="false" placeholder="Pega el token" aria-label="Token del puente"><button class="btn xs" type="submit">Emparejar</button></form>${S.pareo ? html`<p class="es-err">${S.pareo}</p>` : ''}</div>`;
