@@ -10,6 +10,7 @@ import { render as content } from './content.js';
 import { render as meBrand } from './me-brand.js';
 import { brandBoard } from '../brand-board.js';
 import { brandHome } from '../brand-home.js';
+import { avatarUI } from '../avatar-ui.js';
 import { canEdit } from '../roleviews.js';
 
 const TONE = ['', 't1', 't2'];
@@ -63,13 +64,14 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Una marca abierta ----------
   async function page(b, mod, rest, live) {
     const M = MODULES.find(([k]) => k === mod);
-    const what = { inicio: 'Cómo va la marca hoy', resultados: 'Qué funcionó y qué no', investigacion: 'Lo que funciona en su categoría y por qué', ideas: 'Las ideas y piezas, de la idea a publicado', calendario: 'Qué sale y qué se graba cada día', marca: b.personal ? 'Tu roadmap y con qué se asocia tu marca' : 'Con qué se asocia la marca: lo que ve, a quién sigue y cómo suena' }[mod] || M[3];
+    const what = { inicio: 'Cómo va la marca hoy', icp: 'A quién le hablamos, con qué peso y cómo se nota en el video', resultados: 'Qué funcionó y qué no', investigacion: 'Lo que funciona en su categoría y por qué', ideas: 'Las ideas y piezas, de la idea a publicado', calendario: 'Qué sale y qué se graba cada día', marca: b.personal ? 'Tu roadmap y con qué se asocia tu marca' : 'Con qué se asocia la marca: lo que ve, a quién sigue y cómo suena' }[mod] || M[3];
     mount(el, html`<div class="hello sp-hero row brand-hero" style="align-items:flex-end"><span class="sp-mono big ${b.personal ? 'priv' : ''}">${b.personal ? ico('lock', 20) : initials(b.name)}</span><div style="min-width:0"><h1>${b.name}</h1><p>${mod === 'inicio' ? what : html`<span class="mut">${areaOf(mod)[1]} ›</span> <em>${M[1]}</em> · ${what}`}</p></div><div class="sp"></div>${b.personal ? html`<span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span>` : ''}</div>
       <div id="bmod"></div>`);
     const box = $('#bmod', el), base = `#/marcas/${b.slug}/${mod}`;
     if (isSoon(mod)) return mount(box, html`<section class="sp-panel soon-panel"><span class="soon-ic">${ico(M[2], 22)}</span><span class="chip">Próximamente</span><h2>${M[1]}</h2><p>${M[3]}</p><div class="mut sm">Llega en una fase siguiente. Mientras tanto, ${live.length ? html`sigue en <a href="#/marcas/${b.slug}/${live[0]}">${MODULES.find(([k]) => k === live[0])[1]}</a>` : 'las demás pestañas siguen como hoy'}.</div></section>`);
     const common = { me, alive, fixed: b.slug };
     if (mod === 'inicio') return brandHome(box, { me, b, alive });
+    if (mod === 'icp') return avatarUI(box, { me, b, alive });
     if (mod === 'resultados') { box.dataset.island = '1'; return content(box, { ...common, sub: ['analytics'], embed: { base, only: ['analytics'], brand: b.name } }); }
     if (mod === 'investigacion') { box.dataset.island = '1'; return content(box, { ...common, sub: ['research'], embed: { base, only: ['research'], inspo: Boolean(b.personal), plat: rest[0], brand: b.name } }); }
     if (mod === 'ideas') { box.dataset.island = '1'; return content(box, { ...common, sub: ['postear'], embed: { base, only: ['postear'], brand: b.name } }); }

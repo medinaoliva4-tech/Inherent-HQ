@@ -166,7 +166,9 @@ const sistema = (t) => /^(Etapa|Siguiente paso|Responsable|Motivo de pérdida|Pr
 function marcaTexto(marca) {
   if (!marca) return '';
   const m = typeof marca === 'string' ? { name: marca } : marca, a = m.audience || {};
-  return [linea('Marca', m.name), linea('Cliente ideal (ICP)', [a.exacto, a.nicho, a.general].filter(Boolean).join(' · ')), linea('Pilares de contenido', lista(m.pillars)), linea('Voz de la marca', m.voz)].filter(Boolean).join('\n');
+  // Con avatares aprobados (Cliente ideal), van ellos, el principal primero; si no, lo que diga la configuración de la marca.
+  const icp = m.avatares?.length ? `\n${m.avatares.map((x) => '- ' + x).join('\n')}` : [a.exacto, a.nicho, a.general].filter(Boolean).join(' · ');
+  return [linea('Marca', m.name), linea('Cliente ideal (ICP)', icp), linea('Pilares de contenido', lista(m.pillars)), linea('Voz de la marca', m.voz)].filter(Boolean).join('\n');
 }
 // gate + el elemento (+ la marca, + contexto: otras facturas para la de duplicadas) → un texto en español.
 export function textoDe(gate, el = {}, marca = null, contexto = {}) {

@@ -5,6 +5,7 @@ import * as db from './db.js';
 import { guard, COLLS, canRead, summaryOf, scoper, inScope, edits } from './access.js';
 import * as intel from './intel.js';
 import { contextoEtapa } from './estrategia.js';
+import { textoAprobados } from './avatares.js';
 import { parseDocId } from '../../public/js/estrategia.js';
 import * as content from './content.js';
 import { body } from './http.js';
@@ -57,7 +58,8 @@ async function contextoDe(gate, d) {
 async function marcaPara(gate, d) {
   if (gate !== 'referente' && gate !== 'idea') return null;
   const c = await content.cfg(d.profile || 'inherent').catch(() => null);
-  return { name: marcaDe(d.profile || 'inherent'), audience: c?.audience || {}, pillars: c?.pillars || [] };
+  const avatares = await textoAprobados(d.profile || 'inherent').catch(() => []);
+  return { name: marcaDe(d.profile || 'inherent'), audience: c?.audience || {}, avatares, pillars: c?.pillars || [] };
 }
 export async function armar(gate, d, settings) {
   return { texto: textoDe(gate, d, await marcaPara(gate, d), await contextoDe(gate, d)), questions: preguntasDe(gate, settings), model: MODELO };

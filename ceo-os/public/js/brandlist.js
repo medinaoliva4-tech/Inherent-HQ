@@ -53,7 +53,7 @@ export const forgetBrands = () => { cache = null; pending = null; };
 export const MODULES = [
   ['inicio', 'Inicio', 'home'],
   ['investigacion', 'Investigación', 'search'],
-  ['icp', 'Cliente ideal', 'target', 'La ficha del cliente ideal: quién es, qué le duele, qué desea y con qué palabras lo dice.'],
+  ['icp', 'Cliente ideal', 'target'],
   ['brief', 'Brief del ciclo', 'doc', 'El brief de comunicación del mes. Sin brief aprobado, no se crean piezas del ciclo.'],
   ['ideas', 'Ideas', 'bulb'],
   ['creacion', 'Creación', 'edit', 'Guiones de reel y story con la voz de la marca, desde una plantilla y con Claude al lado.'],
@@ -84,6 +84,7 @@ export function modulesFor(me, b) {
   const ok = {
     inicio: A.any,
     investigacion: A.contentFull,
+    icp: A.contentFull,
     ideas: A.contentFull,
     calendario: A.contentFull,
     resultados: A.content,

@@ -3505,4 +3505,68 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
   .bh-ciclo-l span:nth-child(2){display:none}
   .brand-nav .tabs{width:100%}
 }
+/* App 01 · Marca › Entender › Cliente ideal (avatares) */
+.avt{display:flex;flex-direction:column;gap:var(--s4)}
+.avt .lbl{display:block;font-size:var(--fs-e);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+.av-top{display:flex;flex-direction:column;gap:var(--s3)}
+.av-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.av-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;background:var(--glass2);border:1px solid var(--stroke);box-shadow:var(--sh-1);font-size:14px;transition:background var(--t) var(--ease)}
+.av-chip i{width:10px;height:10px;border-radius:50%}
+.av-chip b{font-weight:500}.av-chip span{color:var(--mut);font-size:13px;font-variant-numeric:tabular-nums}
+.av-chip.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}.av-chip.on span{color:rgb(255 255 255 / .7)}
+.av-ok{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#5d7a46;color:#fff!important}
+.av-new{display:flex;gap:6px;align-items:center}.av-new .in{width:280px;padding:8px 12px}
+.av-pesos{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.av-bar{display:flex;gap:3px;height:10px;flex:1 1 320px;min-width:200px}
+.av-bar i{border-radius:4px;min-width:6px}.av-bar i.libre{background:var(--hair);border:1px dashed var(--hair-strong)}
+.av-suma{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600}
+.av-suma.ok{color:#5d7a46}.av-suma.warn{color:var(--warn)}
+:root[data-theme="dark"] .av-suma.ok{color:#a9c58f}
+.av-body{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:var(--s4);align-items:start}
+.av-ficha{display:flex;flex-direction:column;gap:var(--s3);min-width:0}
+.av-sec{background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r-l);box-shadow:var(--sh-1);padding:var(--s5)}
+.av-sec>header{display:flex;gap:12px;align-items:flex-start;margin-bottom:var(--s4)}
+.av-sec h3{font-size:16px;font-weight:600;letter-spacing:-.2px}
+.av-sec header p{font-size:13.5px;color:var(--ink2);margin-top:2px;max-width:640px}
+.av-n{width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:12.5px;font-weight:600;background:var(--fill);color:var(--ink2)}
+.av-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s3) var(--s4)}
+.av-f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.av-f.w{grid-column:1/-1}
+.av-l{font-size:12.5px;font-weight:500;color:var(--ink2)}
+.av-f .in{padding:9px 12px;font-size:14px}
+.av-f textarea.in{resize:vertical;line-height:1.45}
+.av-num{display:flex;align-items:center;gap:6px}.av-num span{font-size:13px;color:var(--mut)}.av-num .in{flex:1}
+.av-sug{align-self:flex-start;font-size:12px;font-weight:500;color:var(--tone);padding:3px 8px;border-radius:99px;background:var(--fill)}
+.av-sug:hover{color:var(--ink)}
+.av-score{display:flex;gap:4px}
+.av-score button{width:36px;height:32px;border-radius:8px;border:1px solid var(--hair-strong);font-size:13px;font-weight:600;color:var(--mut);background:var(--surface)}
+.av-score button.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.av-score button:disabled{cursor:default}
+.av-angs{display:flex;flex-direction:column;gap:8px}
+.av-ang{display:grid;grid-template-columns:170px minmax(0,1fr) 30px;gap:8px;align-items:center}
+.av-ang .in{padding:8px 10px;font-size:14px}
+.av-x{width:30px;height:30px;border-radius:50%;font-size:18px;color:var(--mut)}.av-x:hover{background:var(--fill);color:var(--ink)}
+.av-side{position:sticky;top:16px;display:flex;flex-direction:column;gap:var(--s3)}
+.av-card{background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r-l);box-shadow:var(--sh-2);padding:var(--s4);display:flex;flex-direction:column;gap:10px}
+.av-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.av-st-ok{background:rgb(93 122 70 / .16);color:#5d7a46}
+:root[data-theme="dark"] .av-st-ok{color:#a9c58f}
+.av-peso{display:flex;align-items:center;gap:10px}.av-peso input{flex:1;accent-color:var(--ink)}.av-peso b{width:44px;text-align:right;font-variant-numeric:tabular-nums}
+.av-av{display:flex;flex-direction:column;gap:5px}
+.av-av-b{height:6px;border-radius:99px;background:var(--hair)}.av-av-b i{display:block;height:100%;border-radius:99px;background:var(--ink2)}
+.av-chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--hair);color:var(--mut)}
+.av-chk:first-of-type{border-top:0}
+.av-chk div{display:flex;flex-direction:column;gap:2px;min-width:0}.av-chk b{font-size:13.5px;font-weight:600;color:var(--ink)}
+.av-chk.ok>svg{color:#5d7a46}.av-chk.warn>svg{color:var(--warn)}
+.av-think{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+.av-resp summary{cursor:pointer;font-size:12.5px;color:var(--tone)}
+.av-resp div{margin-top:6px;white-space:pre-wrap;color:var(--ink2);max-height:240px;overflow:auto}
+.av-arch{align-self:center;font-size:12.5px;color:var(--mut);text-decoration:underline;text-underline-offset:2px}
+.av-arch:hover{color:var(--warn)}
+.av-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:56px 24px;border-radius:var(--r-l);background:var(--glass2);border:1px solid var(--stroke)}
+.av-empty h2{font-size:var(--fs-t2);font-weight:500;letter-spacing:-.4px}
+.av-empty p{max-width:520px;color:var(--ink2)}
+.av-empty-i{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--fill);color:var(--ink2)}
+@media (max-width:1000px){.av-body{grid-template-columns:minmax(0,1fr)}.av-side{position:static;order:-1}}
+@media (max-width:760px){.av-fields{grid-template-columns:minmax(0,1fr)}.av-sec{padding:var(--s4)}.av-ang{grid-template-columns:minmax(0,1fr) 30px}.av-ang select{grid-column:1/-1}.av-new{width:100%}.av-new .in{flex:1;width:auto}}
 /* === fin App 01 · Marca === */

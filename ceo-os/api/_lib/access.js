@@ -22,6 +22,8 @@ export const COLLS = {
   judgments: 'work',
   // App 02 · Estrategia: el estado de cada bloque (vacío · en trabajo · aprobado) y su borrador. Solo por /api/estrategia/* (api/_lib/estrategia.js).
   strategy: 'estrategia',
+  // App 01 · Marca › Cliente ideal: los avatares de cada marca. Solo por /api/avatares/* (api/_lib/avatares.js).
+  avatars: 'content',
   invoices: 'finanzas', bank_moves: 'finanzas', cost_recipes: 'finanzas',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas

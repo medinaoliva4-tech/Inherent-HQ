@@ -19,6 +19,7 @@ import * as facturas from './_lib/facturas.js';
 import * as laya from './_lib/laya.js';
 import * as intel from './_lib/intel.js';
 import * as estrategia from './_lib/estrategia.js';
+import * as avatares from './_lib/avatares.js';
 import * as portal from './_lib/portal.js';
 import * as inv from './_lib/investigacion.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
@@ -108,6 +109,7 @@ async function collGuard(req, res, write) {
   if (coll === laya.COLL) { res.status(404).json({ error: 'Los juicios de Laya están en /api/laya/juicios' }); return null; }
   // El estado y los borradores de Estrategia solo se escriben por /api/estrategia/* (ahí vive la regla: solo el CEO aprueba).
   if (coll === 'strategy') { res.status(404).json({ error: 'La estrategia está en /api/estrategia' }); return null; }
+  if (coll === 'avatars') { res.status(404).json({ error: 'Los avatares están en /api/avatares' }); return null; }
   const any = coll === 'settings' && !write ? null : [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])];
   const u = any ? await guardAny(req, res, any, { write }) : await guard(req, res); if (!u) return null;
   if (!canRead(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO ve esto' }); return null; }
@@ -1100,6 +1102,8 @@ export async function search(u, q) {
 laya.rutas(on);
 // ---------- App 02 · Estrategia: 5 bloques por cliente, el estado de cada uno y las fuentes de Hormozi ----------
 estrategia.rutas(on);
+// ---------- App 01 · Marca › Cliente ideal: los avatares de cada marca, con su peso y el OK del CEO ----------
+avatares.rutas(on);
 // ---------- Investigación (Fase 4): referentes por marca, scraping automático con Apify y «Usar como formato» ----------
 inv.rutas(on);
 
