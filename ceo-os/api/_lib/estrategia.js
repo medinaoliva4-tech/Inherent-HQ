@@ -8,15 +8,18 @@
 // contra una lista cerrada de carpetas y sin «..».
 import fs from 'node:fs';
 import * as db from './db.js';
-import { guard, scoper, edits } from './access.js';
+import { guard, scoper, edits, canRead } from './access.js';
 import { readFile, listFiles, listDir, repoSource } from './gh.js';
 import * as intel from './intel.js';
 import { body } from './http.js';
 import { parsePlanContratado, tables, clean } from './parse.js';
 import { BLOQUES, bloqueDe, docId, parseDocId, estadoDe, nivelDe, limiteDe, seccion, etapaDe, extraerCitas, dondeDe, tiempo, etapaDeRespuesta, HORMOZI, COLL } from '../../public/js/estrategia.js';
 import { puertasDe, resumen as resumenLaya, GATES_ID } from '../../public/js/laya.js';
+import { pathLabel } from '../../public/js/library-tree.js';
 
 const MAX_BORRADOR = 60_000;
+// La Library como contexto del chat: hasta 6 documentos y ~36 mil caracteres en total (el puente acepta 60 mil por mensaje).
+const MAX_ADJ = 6, MAX_ADJ_TEXTO = 36_000;
 const ahora = () => new Date().toISOString();
 const cap = (s, n) => String(s ?? '').slice(0, n);
 
@@ -180,6 +183,20 @@ export async function fuenteDe(ruta, { t = null, p = null, completo = false } = 
 
 // ---------- Las rutas (api/index.js las registra con estrategia.rutas(on)) ----------
 const blocksOf = (docs, hay, etapa) => Object.fromEntries(BLOQUES.map((b) => [b.id, estadoDe(docs[b.id], Boolean(hay[b.id]) || (b.id === 'diagnostico' && Boolean(etapa)))]));
+
+// ---------- La Library como contexto del chat ----------
+// Solo documentos de texto (SOPs, playbooks, entrevistas, notas): los archivos de Drive todavía no. Quien no ve la Library no la recibe.
+const veLibrary = (u) => u.areas.includes('library') && canRead(u.role, 'docs');
+// El texto de un documento: su cuerpo y, si es entrevista, sus respuestas y su diagnóstico.
+function textoDoc(d) {
+  const partes = [String(d.body || '').trim()];
+  const r = Object.entries(d.answers || {}).filter(([, v]) => String(v || '').trim());
+  if (r.length) partes.push('Respuestas:\n' + r.map(([k, v]) => `${k}: ${v}`).join('\n'));
+  if (d.diagnosis) partes.push('Diagnóstico:\n' + String(d.diagnosis).trim());
+  return partes.filter(Boolean).join('\n\n');
+}
+const carpetaDe = (folders, d) => (d.folder_id ? pathLabel(folders, d.folder_id) : '');
+
 export function rutas(on) {
   // La lista: un cliente por tarjeta, con su nivel, su etapa y el estado de sus 5 bloques.
   on('GET', 'estrategia', async (req, res) => {
@@ -211,6 +228,28 @@ export function rutas(on) {
     res.json({ citas: await citasDe(body(req).texto) });
   });
 
+  // La Library: la lista de documentos de texto, para elegir cuáles adjuntar al chat.
+  on('GET', 'estrategia/library', async (req, res) => {
+    const u = await acceso(req, res); if (!u) return;
+    if (!veLibrary(u)) return res.status(403).json({ error: 'No tienes acceso a la Library' });
+    const [docs, folders] = await Promise.all([db.list('docs'), db.list('folders')]);
+    const lista = docs.map((d) => ({ d, t: textoDoc(d) })).filter((x) => x.t)
+      .map(({ d, t }) => ({ id: d.id, titulo: d.title || 'Sin título', tipo: d.kind || 'Nota', carpeta: carpetaDe(folders, d), folder: d.folder_id || '_', en: d._meta?.updated_at || null, largo: t.length }))
+      .sort((a, b) => String(b.en || '').localeCompare(String(a.en || '')));
+    res.json({ docs: lista, max: MAX_ADJ });
+  });
+  // El texto de los documentos adjuntos, recortado para que quepa en el mensaje del chat.
+  on('POST', 'estrategia/library/textos', async (req, res) => {
+    const u = await acceso(req, res); if (!u) return;
+    if (!veLibrary(u)) return res.status(403).json({ error: 'No tienes acceso a la Library' });
+    const ids = [...new Set((Array.isArray(body(req).ids) ? body(req).ids : []).map(String))].slice(0, MAX_ADJ);
+    const folders = await db.list('folders');
+    const docs = (await Promise.all(ids.map((id) => db.get('docs', id)))).filter(Boolean);
+    const cada = Math.floor(MAX_ADJ_TEXTO / Math.max(1, docs.length));
+    res.json({ docs: docs.map((d) => { const t = textoDoc(d); return { id: d.id, titulo: d.title || 'Sin título', tipo: d.kind || 'Nota', carpeta: carpetaDe(folders, d), folder: d.folder_id || '_', contenido: cap(t, cada), recortado: t.length > cada }; }),
+      faltan: ids.filter((id) => !docs.some((d) => d.id === id)) });
+  });
+
   // Un cliente: sus 5 bloques con su entregable del repo, su estado, su límite de nivel y su borrador.
   on('GET', 'estrategia/:slug', async (req, res) => {
     const slug = String(req.params.slug || ''), u = await acceso(req, res, slug); if (!u) return;
@@ -223,7 +262,7 @@ export function rutas(on) {
         borrador: d?.borrador || null, aprobado: d?.aprobado || null, entregables: e.entregables, faltan: e.faltan, hayRepo: e.hay, material: b.material };
     });
     res.json({ slug, nombre: f.nombre, nivel: f.nivel, plan: f.plan, ficha: { hay: f.hay, linea: f.linea, incluye: f.incluye, fuera: f.fuera, pipeline: f.pipeline }, carpeta: intel.rootOf(slug),
-      etapa, propuesta: await propuestaLaya(slug), avatar: ir.avatar, bloques, puede: { editar: edits(u, 'estrategia'), aprobar: u.role === 'ceo' } });
+      etapa, propuesta: await propuestaLaya(slug), avatar: ir.avatar, bloques, puede: { editar: edits(u, 'estrategia'), aprobar: u.role === 'ceo', library: veLibrary(u) } });
   });
 
   // Guardar el borrador del entregable (lo que sale del chat). No toca el repo: pasarlo al repo es después y con el OK del CEO.
