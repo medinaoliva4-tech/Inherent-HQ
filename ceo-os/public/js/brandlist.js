@@ -49,30 +49,49 @@ export const brandsNow = () => cache || [];
 export const forgetBrands = () => { cache = null; pending = null; };
 
 // ---------- Los módulos de una marca (Marca › Módulo › Elemento) ----------
-// [clave, nombre, ícono, qué hará (solo los que llegan después)]. Los 4 primeros ya funcionan; los demás se ven como «Próximamente».
+// [clave, nombre, ícono, qué hará (solo los que llegan después)]. Los que traen texto se ven como «Pronto».
 export const MODULES = [
+  ['inicio', 'Inicio', 'home'],
   ['investigacion', 'Investigación', 'search'],
+  ['icp', 'Cliente ideal', 'target', 'La ficha del cliente ideal: quién es, qué le duele, qué desea y con qué palabras lo dice.'],
+  ['brief', 'Brief del ciclo', 'doc', 'El brief de comunicación del mes. Sin brief aprobado, no se crean piezas del ciclo.'],
   ['ideas', 'Ideas', 'bulb'],
-  ['calendario', 'Calendario', 'cal'],
-  ['marca', 'Marca', 'palette'],
   ['creacion', 'Creación', 'edit', 'Guiones de reel y story con la voz de la marca, desde una plantilla y con Claude al lado.'],
   ['formatos', 'Formatos', 'copy', 'Plantillas editables de reel, story y ficha de referente, listas para reusar.'],
+  ['marca', 'Identidad', 'palette'],
   ['design', 'Design system', 'layers', 'Colores, tipografía, logo, grilla y componentes de la marca, sincronizados con Figma.'],
   ['video', 'Video', 'video', 'Una ficha por video: assets, cortes, lógica y transiciones, con vista previa.'],
+  ['calendario', 'Calendario', 'cal'],
   ['ads', 'Ads', 'megaphone', 'Variaciones de una pieza que funcionó, listas para pautar en Meta y Google con tu OK.'],
+  ['resultados', 'Resultados', 'bars'],
 ];
+// Las áreas: los módulos agrupados por función, en el orden del trabajo (entender → crear → diseñar → publicar → medir).
+// [clave, nombre, ícono, módulos, para qué]. Inicio es el panel de la marca: va solo.
+export const AREAS = [
+  ['inicio', 'Inicio', 'home', ['inicio'], 'Cómo va la marca hoy'],
+  ['entender', 'Entender', 'search', ['investigacion', 'icp', 'brief'], 'Qué funciona, a quién le hablamos y qué decimos este mes'],
+  ['crear', 'Crear', 'bulb', ['ideas', 'creacion', 'formatos'], 'De la idea al guion'],
+  ['diseno', 'Diseño', 'palette', ['marca', 'design', 'video'], 'Cómo se ve y cómo suena la marca'],
+  ['publicar', 'Publicar', 'cal', ['calendario', 'ads'], 'Qué sale, cuándo y con qué pauta'],
+  ['medir', 'Medir', 'bars', ['resultados'], 'Qué funcionó y qué no'],
+];
+export const areaOf = (k) => AREAS.find(([, , , mods]) => mods.includes(k)) || AREAS[0];
 export const isSoon = (k) => Boolean(MODULES.find(([x]) => x === k)?.[3]);
 // Los módulos que ya funcionan y que este perfil puede abrir en esta marca.
 export function modulesFor(me, b) {
   const A = brandAccess(me);
   if (!b) return [];
   const ok = {
+    inicio: A.any,
     investigacion: A.contentFull,
     ideas: A.contentFull,
-    calendario: A.content,
+    calendario: A.contentFull,
+    resultados: A.content,
     marca: b.personal ? me.role === 'ceo' : A.clientsFull,
   };
   return MODULES.filter(([k, , , soon]) => !soon && ok[k]).map(([k]) => k);
 }
-// El módulo con el que abre una marca: el primero que este perfil puede abrir (o Creación, si no hay ninguno).
+// El módulo con el que abre una marca: su Inicio (o el primero que este perfil puede abrir).
 export const defaultModule = (me, b) => modulesFor(me, b)[0] || 'creacion';
+// El módulo con el que abre un área: el primero que funciona para este perfil, o el primero «Pronto».
+export const firstOfArea = (me, b, area) => { const mods = (AREAS.find(([k]) => k === area) || AREAS[0])[3], live = modulesFor(me, b); return mods.find((k) => live.includes(k)) || mods.find(isSoon) || mods[0]; };

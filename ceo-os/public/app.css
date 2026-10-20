@@ -3397,3 +3397,104 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 .es-lib-f{display:flex;justify-content:space-between;align-items:center;gap:var(--s3);padding:10px var(--s4);border-top:1px solid var(--hair)}
 @media (max-width:900px){.es-adj{padding:0 var(--s4) var(--s2)}.es-lib{left:var(--s2);right:var(--s2);bottom:76px}.es-lib-k{display:none}.es-lib-r{grid-template-columns:22px minmax(0,1fr)}}
 /* === fin App 02 · Estrategia === */
+
+/* =====================================================================================
+   App 01 · Marca: la barra por áreas (Inicio · Entender · Crear · Diseño · Publicar · Medir) y el Inicio de la marca.
+   ===================================================================================== */
+.brand-nav{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.brand-nav .tabs{max-width:100%;overflow-x:auto;scrollbar-width:none}
+.brand-nav .tabs::-webkit-scrollbar{display:none}
+.area-tabs button{display:inline-flex;align-items:center;gap:7px}
+.area-tabs button svg{opacity:.7}.area-tabs button.on svg{opacity:1}
+.brand-nav .mod-tabs{background:transparent;border-color:transparent;padding:0 4px;gap:2px}
+.brand-nav .mod-tabs button{padding:6px 12px;font-size:13px;border-radius:99px}
+.brand-nav .mod-tabs button.on{background:var(--ink);color:var(--cream);box-shadow:none}
+.brand-nav .mod-tabs button.on .soon-tag{background:rgb(255 255 255 / .16);color:inherit}
+
+.bh{display:flex;flex-direction:column;gap:var(--s4)}
+.bh .lbl{display:block;font-size:var(--fs-e);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.bh-card{background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r-l);box-shadow:var(--sh-2);padding:var(--s5);min-width:0}
+.bh-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4)}
+.bh-row.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.bh-row:has(>:only-child){grid-template-columns:minmax(0,1fr)}
+.bh-h{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);margin-bottom:var(--s3)}
+.bh-more{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;color:var(--ink2);text-decoration:none}
+.bh-more:hover{color:var(--ink)}
+.bh-empty{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut)}
+
+/* El mes: el ciclo y las piezas */
+.bh-mes{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:var(--s6)}
+.bh-dia{display:flex;align-items:baseline;gap:12px;margin:8px 0 14px}
+.bh-dia b{font-size:56px;font-weight:300;letter-spacing:-2.5px;line-height:1}
+.bh-dia span{font-size:14.5px;color:var(--ink2)}.bh-dia strong{font-weight:600;color:var(--ink)}
+.bh-ciclo{display:flex;gap:4px;height:8px}
+.bh-ciclo i{border-radius:99px;background:var(--hair-strong)}
+.bh-ciclo i.ok{background:rgb(var(--ink-rgb) / .45)}.bh-ciclo i.now{background:var(--ink);box-shadow:0 0 0 3px rgb(var(--ink-rgb) / .1)}
+.bh-ciclo-l{display:flex;justify-content:space-between;gap:8px;margin-top:8px}
+.bh-bar{display:flex;gap:3px;height:12px;margin:10px 0 14px}
+.bh-bar i{border-radius:4px;min-width:6px}.bh-bar i.vacio{flex:1;background:var(--hair)}
+.bh-dot{width:9px;height:9px;border-radius:50%;flex:none}
+:is(.bh-bar i,.bh-dot).e-idea{background:rgb(var(--ink-rgb) / .2)}
+:is(.bh-bar i,.bh-dot).e-proc{background:#c49a5c}
+:is(.bh-bar i,.bh-dot).e-listo{background:#9aa96a}
+:is(.bh-bar i,.bh-dot).e-pub{background:#5d7a46}
+.bh-est{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s2)}
+.bh-est a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:var(--r-s);background:var(--surface);border:1px solid var(--hair);text-decoration:none;color:inherit;transition:border-color var(--t) var(--ease)}
+.bh-est a:hover{border-color:var(--hair-strong)}
+.bh-est a .bh-dot{margin-bottom:4px}
+.bh-est b{font-size:24px;font-weight:400;letter-spacing:-.6px;line-height:1.1}
+
+/* Listas cortas */
+.bh-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column}
+.bh-list li+li{border-top:1px solid var(--hair)}
+.bh-list a{display:flex;align-items:center;gap:12px;padding:9px 0;text-decoration:none;color:inherit}
+.bh-list a>b,.bh-li-t b{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bh-list a>b{flex:1;min-width:0}
+.bh-li-t{display:flex;flex-direction:column;min-width:0}
+.bh-date{width:40px;flex:none;display:flex;flex-direction:column;align-items:center;padding:4px 0;border-radius:10px;background:var(--fill);line-height:1.1}
+.bh-date b{font-size:16px;font-weight:600}.bh-date span{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+
+/* Lo que funciona */
+.bh-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.bh-top-i{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:inherit;min-width:0}
+.bh-top-i img,.bh-top-ph{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:10px;background:var(--fill);display:grid;place-items:center;color:var(--mut)}
+.bh-top-t{font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Estrategia y números */
+.bh-kv{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-bottom:var(--s3)}
+.bh-kv>div,.bh-k{display:flex;flex-direction:column;gap:2px;min-width:0}
+.bh-kv b{font-size:15px;font-weight:600}
+.bh-blocks{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.bh-blocks a{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--ink2);font-size:12px;min-width:0}
+.bh-blocks a span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bh-blocks i{height:6px;border-radius:99px;background:var(--hair-strong)}
+.bh-blocks a.trabajo i{background:rgb(var(--ink-rgb) / .4)}.bh-blocks a.aprobado i{background:#5d7a46}
+.bh-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s4) var(--s3)}
+.bh-k b{font-size:26px;font-weight:400;letter-spacing:-.8px;line-height:1.1}
+
+/* Herramientas por área */
+.bh-areas h2{font-size:var(--fs-t2);font-weight:500;letter-spacing:-.5px;margin:var(--s3) 0 var(--s3)}
+.bh-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s3)}
+.bh-area{background:var(--glass);border:1px solid var(--stroke);border-radius:var(--r);padding:var(--s4);display:flex;flex-direction:column;gap:var(--s3)}
+.bh-area header{display:flex;gap:10px;align-items:flex-start}
+.bh-area header div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.bh-area header b{font-size:15px;font-weight:600}
+.bh-area-i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--fill);color:var(--ink2)}
+.bh-tools{display:flex;flex-direction:column;gap:2px}
+.bh-tools a{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--ink);text-decoration:none;transition:background var(--t) var(--ease)}
+.bh-tools a span{flex:1}
+.bh-tools a:hover{background:var(--fill)}
+.bh-tools a.soon{color:var(--mut)}
+.bh-tools a>svg:last-child{opacity:.45}
+
+@media (max-width:1100px){.bh-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.bh-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.bh-row>:last-child:nth-child(3){grid-column:1/-1}.bh-mes{grid-template-columns:minmax(0,1fr);gap:var(--s5)}}
+@media (max-width:760px){
+  .bh-row,.bh-row.two{grid-template-columns:minmax(0,1fr)}.bh-row>:last-child:nth-child(3){grid-column:auto}
+  .bh-card{padding:var(--s4)}
+  .bh-dia b{font-size:44px}
+  .bh-est{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bh-grid{grid-template-columns:minmax(0,1fr)}
+  .bh-ciclo-l span:nth-child(2){display:none}
+  .brand-nav .tabs{width:100%}
+}
+/* === fin App 01 · Marca === */

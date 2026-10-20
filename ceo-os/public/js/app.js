@@ -1,7 +1,7 @@
 import { applyViews, GROUPS, SPACES, movedRoute } from './roleviews.js';
 import { applyLevels, LEVELS_ID } from './levels.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, initials, esc, LOGO, infoTips, canTransition, ico } from './core.js';
-import { loadBrands, brandsNow, brandAccess, MODULES, modulesFor, defaultModule, isSoon } from './brandlist.js';
+import { loadBrands, brandsNow, brandAccess, MODULES, AREAS, areaOf, firstOfArea, modulesFor, defaultModule, isSoon } from './brandlist.js';
 import { openSearch, searchOpen } from './search.js';
 import { loadEstrategia, estrategiaNow } from './stratlist.js';
 import { BLOQUES } from './estrategia.js';
@@ -48,7 +48,7 @@ const ORG_SCREENS = ['home', 'control', 'work', 'resultados', 'setup', 'clients'
 const ORG_AREAS = ['home', 'work', 'control', 'resultados', 'clients', 'operations', 'sales', 'finanzas', 'roadmap', 'library'];
 // Alias de rutas viejas.
 const HUB_MAP = { control: 'control', operations: 'operations', work: 'work', sales: 'sales', finanzas: 'finanzas', resultados: 'resultados', responsabilidades: 'services/responsabilidades', vistas: 'team/vistas', setup: 'setup' };
-const CT_MOD = { research: 'investigacion', refs: 'investigacion', semana: 'investigacion', fuentes: 'investigacion', shot: 'investigacion', postear: 'ideas', guiones: 'ideas', plan: 'calendario', calendario: 'calendario', analytics: 'calendario/analytics', bandeja: 'calendario/analytics' };
+const CT_MOD = { research: 'investigacion', refs: 'investigacion', semana: 'investigacion', fuentes: 'investigacion', shot: 'investigacion', postear: 'ideas', guiones: 'ideas', plan: 'calendario', calendario: 'calendario', analytics: 'resultados', bandeja: 'calendario/analytics' };
 const OLD_SECTION = { hoy: 'hoy', clientes: 'proyectos', proyectos: 'proyectos', ventas: 'ventas', servicios: 'servicios', finanzas: 'finanzas', inherent: 'inherent', equipo: 'inherent', comercial: 'ventas' };
 const root = $('#root');
 const SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>';
@@ -150,7 +150,7 @@ function alias(parts) {
   if (a === 'mimarca') {
     const t = r[0] || 'roadmap';
     if (t === 'inspo') return ['marcas', 'personal', 'investigacion', ...r.slice(1, 2)];
-    if (t === 'contenido') return ['marcas', 'personal', ...(r[1] === 'analytics' ? ['calendario', 'analytics'] : r[1] === 'calendario' ? ['calendario'] : ['ideas'])];
+    if (t === 'contenido') return ['marcas', 'personal', ...(r[1] === 'analytics' ? ['resultados'] : r[1] === 'calendario' ? ['calendario'] : ['ideas'])];
     return ['marcas', 'personal', 'marca', ...(['roadmap', 'asociaciones'].includes(t) ? [t] : [])];
   }
   if (a === 'content') {
@@ -259,8 +259,15 @@ function paintSub(cur) {
     const b = brandsNow().find((x) => x.slug === cur.rest[0]);
     if (b) {
       const live = modulesFor(me, b), mod = cur.rest[1] || defaultModule(me, b);
-      list = MODULES.filter(([k, , , soon]) => soon || live.includes(k)).map(([k, l, , soon]) => ({ route: `marcas/${b.slug}/${k}`, label: l, k, soon: Boolean(soon) }));
-      on = list.find((t) => t.k === mod);
+      // Dos filas: las áreas (por función) y, abajo, las herramientas del área abierta. Inicio va solo, sin segunda fila.
+      const area = areaOf(mod), modName = (k) => MODULES.find(([x]) => x === k);
+      const tools = area[0] === 'inicio' ? [] : area[3].filter((k) => isSoon(k) || live.includes(k)).map((k) => ({ route: `marcas/${b.slug}/${k}`, label: modName(k)[1], k, soon: isSoon(k) }));
+      const areas = AREAS.filter(([k, , , mods]) => k === 'inicio' ? live.includes('inicio') : mods.some((m) => isSoon(m) || live.includes(m)));
+      sub.hidden = false;
+      mount(sub, html`<div class="brand-nav"><div class="tabs area-tabs" role="tablist" aria-label="Áreas de la marca">${areas.map(([k, l, ic, , que]) => html`<button role="tab" class="${k === area[0] ? 'on' : ''}" aria-selected="${k === area[0] ? 'true' : 'false'}" data-sub="marcas/${b.slug}/${firstOfArea(me, b, k)}" title="${que}">${ico(ic, 15)}<span>${l}</span></button>`)}</div>
+        ${tools.length ? html`<div class="tabs mod-tabs" role="tablist" aria-label="Herramientas de ${area[1]}">${tools.map((t) => html`<button role="tab" class="${t.k === mod ? 'on' : ''} ${t.soon ? 'soon' : ''}" aria-selected="${t.k === mod ? 'true' : 'false'}" data-sub="${t.route}" ${t.soon ? raw('title="Próximamente"') : ''}>${t.label}${t.soon ? html`<i class="soon-tag">Pronto</i>` : ''}</button>`)}</div>` : ''}</div>`);
+      for (const tb of sub.querySelectorAll('.tabs')) { const ob = tb.querySelector('button.on'); if (ob && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = ob.offsetLeft - (tb.clientWidth - ob.offsetWidth) / 2; }
+      return;
     }
   }
   if (list.length < 2) { sub.hidden = true; sub.innerHTML = ''; return; }
