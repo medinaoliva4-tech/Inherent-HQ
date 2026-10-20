@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>IG-POST · estático 4:5 · ejemplo</title>
+<script type="application/json" id="plantilla">
+{
+  "id": "IG-POST",
+  "nombre": "Estático de feed 4:5",
+  "red": "instagram",
+  "formato": "estatico",
+  "medidas": [1080, 1350],
+  "safe": [76, 76, 76, 76],
+  "para": "Una frase o dato que se sostiene sola en el feed. Un foco, un acento.",
+  "variantes": {
+    "A": { "nombre": "Foto a sangre", "descripcion": "La foto ocupa la parte alta; el titular va en un panel sólido abajo. Para cuando la imagen es lo más fuerte.", "requiere_imagen": true, "densidad": "media", "acento": "acento" },
+    "B": { "nombre": "Titular arriba", "descripcion": "Bloque de color con el titular arriba y la foto enmarcada abajo. Para titulares largos o afirmaciones.", "requiere_imagen": true, "densidad": "alta", "acento": "acento2" },
+    "C": { "nombre": "Solo tipografía", "descripcion": "Fondo claro, titular enorme y una cifra opcional. Funciona sin imagen. Para datos, citas y frases.", "requiere_imagen": false, "densidad": "baja", "acento": "acento" }
+  },
+  "campos": {
+    "etiqueta": { "max": 28, "obligatorio": true, "auxiliar": true, "que": "palabra corta de contexto, va en mayúsculas. Texto auxiliar: si falta lo escribe el modelo más barato" },
+    "titulo": { "max": 70, "obligatorio": true, "que": "la frase principal; *palabra* = énfasis en el acento" },
+    "subtitulo": { "max": 110, "obligatorio": false },
+    "cifra": { "max": 8, "obligatorio": false, "que": "solo variante C" },
+    "cta": { "max": 28, "obligatorio": false },
+    "imagen": { "obligatorio": false, "que": "ruta de la foto (obligatoria en A y B)" }
+  }
+}
+</script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1350px;overflow:hidden}
+  body{position:relative;font-family:var(--tipografia-texto-familia);font-weight:var(--tipografia-texto-peso);color:var(--color-texto);background:var(--color-fondo);-webkit-font-smoothing:antialiased}
+  em{font-style:normal;color:var(--acento-activo)}
+  .etiqueta{font-size:26px;line-height:1.3;font-weight:var(--tipografia-etiqueta-peso);letter-spacing:var(--tipografia-etiqueta-espaciado);text-transform:uppercase;color:var(--acento-activo)}
+  .titulo{font-family:var(--tipografia-titulo-familia);font-weight:var(--tipografia-titulo-peso);letter-spacing:var(--tipografia-titulo-espaciado);line-height:1.02}
+  .subtitulo{font-size:34px;line-height:1.4;color:var(--color-texto-suave)}
+  .cta{font-size:28px;font-weight:600;line-height:1;padding:20px 28px;background:var(--acento-activo);color:var(--color-texto);border-radius:var(--forma-radio)}
+  .logo{display:block;height:44px;width:auto}
+  .pie{position:absolute;left:var(--espacio-margen-redes);right:var(--espacio-margen-redes);bottom:76px;display:flex;align-items:center;justify-content:space-between}
+  .foto{position:absolute;object-fit:cover;display:block}
+  .vacio-foto{position:absolute;background:#33302c}
+  .v-a,.v-b,.v-c{display:none}
+  html[data-variante="A"] .v-a,html[data-variante="B"] .v-b,html[data-variante="C"] .v-c{display:block}
+
+  /* A · foto a sangre */
+  html[data-variante="A"]{--acento-activo:var(--color-acento)}
+  .v-a .foto,.v-a .vacio-foto{left:0;top:0;width:1080px;height:700px}
+  .v-a .panel{position:absolute;left:0;right:0;top:700px;bottom:0;background:var(--color-fondo);padding:52px 76px 0;display:flex;flex-direction:column;gap:22px}
+  .v-a .titulo{font-size:80px}
+  .v-a .subtitulo{font-size:30px;max-width:820px}
+
+  /* B · titular arriba */
+  html[data-variante="B"]{--acento-activo:var(--color-acento2)}
+  html[data-variante="B"] body{background:var(--color-claro);color:var(--color-tinta)}
+  .v-b .col{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;flex-direction:column}
+  .v-b .bloque{background:var(--color-acento2);padding:76px 76px 64px;display:flex;flex-direction:column;gap:26px}
+  html[data-variante="B"] .etiqueta,html[data-variante="B"] em{color:var(--color-tinta)}
+  .v-b .titulo{font-size:92px;color:var(--color-texto)}
+  .v-b .marco{margin:56px 76px 0;height:380px;position:relative}
+  .v-b .foto,.v-b .vacio-foto{position:static;width:100%;height:100%;display:block}
+  .v-b .subtitulo{margin:28px 76px 0;font-size:28px;color:#5b5750}
+  html[data-variante="B"] .cta{color:var(--color-texto)}
+
+  /* C · solo tipografía */
+  html[data-variante="C"]{--acento-activo:var(--color-acento)}
+  html[data-variante="C"] body{background:var(--color-claro);color:var(--color-tinta)}
+  .v-c .etiqueta{position:absolute;left:76px;top:76px}
+  .v-c .cifra{position:absolute;left:76px;top:150px;font-family:var(--tipografia-titulo-familia);font-weight:var(--tipografia-titulo-peso);font-size:300px;line-height:1;letter-spacing:-0.05em;color:var(--color-acento)}
+  .v-c .titulo{position:absolute;left:76px;right:76px;top:520px;font-size:104px;color:var(--color-tinta)}
+  .v-c .sin-cifra .titulo{top:260px}
+  .v-c .subtitulo{position:absolute;left:76px;right:76px;top:1080px;font-size:34px;color:#5b5750}
+  .v-c .pie{bottom:76px}
+</style>
+</head>
+<body>
+
+<div class="v-a">
+  {{#si imagen}}<img class="foto" src="{{imagen}}" alt="">{{/si}}{{#no imagen}}<div class="vacio-foto"></div>{{/no}}
+  <div class="panel">
+    <div class="etiqueta" data-campo="etiqueta" data-max-lineas="1">{{etiqueta|mayus}}</div>
+    <div class="titulo" data-campo="titulo" data-max-lineas="3">{{titulo|rico}}</div>
+    {{#si subtitulo}}<div class="subtitulo" data-campo="subtitulo" data-max-lineas="2">{{subtitulo}}</div>{{/si}}
+  </div>
+  <div class="pie"><img class="logo" src="{{tokens.assets.logo}}" alt="">{{#si cta}}<div class="cta" data-campo="cta" data-max-lineas="1">{{cta}}</div>{{/si}}</div>
+</div>
+
+<div class="v-b">
+  <div class="col">
+    <div class="bloque">
+      <div class="etiqueta" data-campo="etiqueta" data-max-lineas="1">{{etiqueta|mayus}}</div>
+      <div class="titulo" data-campo="titulo" data-max-lineas="4">{{titulo|rico}}</div>
+    </div>
+    <div class="marco">{{#si imagen}}<img class="foto" src="{{imagen}}" alt="">{{/si}}{{#no imagen}}<div class="vacio-foto"></div>{{/no}}</div>
+    {{#si subtitulo}}<div class="subtitulo" data-campo="subtitulo" data-max-lineas="2">{{subtitulo}}</div>{{/si}}
+  </div>
+  <div class="pie"><img class="logo" src="{{tokens.assets.logo-oscuro}}" alt="">{{#si cta}}<div class="cta" data-campo="cta" data-max-lineas="1">{{cta}}</div>{{/si}}</div>
+</div>
+
+<div class="v-c">
+  <div class="etiqueta" data-campo="etiqueta" data-max-lineas="1">{{etiqueta|mayus}}</div>
+  {{#si cifra}}<div class="cifra" data-campo="cifra" data-max-lineas="1">{{cifra}}</div>{{/si}}
+  <div class="{{#no cifra}}sin-cifra{{/no}}"><div class="titulo" data-campo="titulo" data-max-lineas="4">{{titulo|rico}}</div></div>
+  {{#si subtitulo}}<div class="subtitulo" data-campo="subtitulo" data-max-lineas="2">{{subtitulo}}</div>{{/si}}
+  <div class="pie"><img class="logo" src="{{tokens.assets.logo-oscuro}}" alt="">{{#si cta}}<div class="cta" data-campo="cta" data-max-lineas="1">{{cta}}</div>{{/si}}</div>
+</div>
+
+</body>
+</html>

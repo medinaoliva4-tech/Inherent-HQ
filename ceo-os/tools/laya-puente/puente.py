@@ -4,8 +4,11 @@
 Laya corre en tu compu (no en Vercel). Este puente carga ``laya.Router`` una sola vez y le deja a la
 web del OS pedirle juicios desde el navegador:
 
-    GET  /health   -> {"status": "ok", "listo": bool, ...}
-    POST /juzgar   -> {"texto": str, "questions": {...}} -> el resultado de Laya (answers, routing, usage)
+    GET  /health        -> {"status": "ok", "listo": bool, "chat": {...}, ...}
+    POST /juzgar        -> {"texto": str, "questions": {...}} -> el resultado de Laya (answers, routing, usage)
+    GET  /chat/estado   -> con token: {"ok": true, ...}; sin token, 401. Sirve para emparejar sin gastar nada
+    POST /chat          -> {"prompt": str, "resume"?: uuid} -> corre Claude Code (`claude -p`) dentro de tu clon del repo y
+                           devuelve la respuesta en streaming (SSE: inicio · delta · herramienta · fin · error)
 
 Seguridad:
   * escucha solo en 127.0.0.1;
@@ -14,12 +17,39 @@ Seguridad:
   * responde el preflight de Private Network Access (Access-Control-Allow-Private-Network: true);
   * rechaza otro Host (DNS rebinding), otro Origin y cuerpos que no sean JSON.
 
+El chat de Estrategia (/chat) ejecuta Claude Code en tu compu, con TU sesión de Claude (no gasta API de Inherent), así que
+es lo más delicado y va con candados extra:
+  * emparejamiento con token: la primera vez el puente genera uno, lo imprime y lo guarda (0600) en
+    ~/.inherent/laya/chat-token; el OS te lo pide una sola vez. `puente.py --token` lo vuelve a mostrar; sin token, 401;
+  * solo desde el OS: /chat exige un Origin permitido (un script sin Origin o una página de otro sitio, 403);
+  * SOLO LECTURA: `claude -p --tools Read,Grep,Glob --allowedTools Read,Grep,Glob` (+ `--restricted` si tu Claude Code lo trae,
+    que además encierra la lectura en el repo), `--permission-mode dontAsk`, sin servidores MCP. Nunca usa
+    --dangerously-skip-permissions;
+  * corre dentro del clon del repo: la ruta va en INHERENT_REPO (variable de entorno o línea en el archivo «config»;
+    el archivo se relee en cada mensaje, no hace falta reiniciar);
+  * tiempo máximo por respuesta (INHERENT_CHAT_SEGUNDOS, 240 por defecto) y un solo chat a la vez.
+
+Como servicio (lo deja así el instalador de un comando, https://inherent-work.vercel.app/laya/instalar.sh):
+  * carga el modelo al arrancar, para que el primer juicio sea rápido;
+  * LAYA_PUENTE_LOG=<carpeta> guarda el log en <carpeta>/puente.log con rotación (1 MB × 3), sin crecer sin límite;
+  * LAYA_PUENTE_PUERTO cambia el puerto (el OS lo busca en 7357);
+  * --precargar baja el modelo (la primera vez) y sale: el instalador lo usa antes de dejarlo corriendo;
+  * un archivo «config» junto a este (líneas CLAVE=valor: HF_HOME, LAYA_PUENTE_PUERTO, LAYA_PUENTE_LOG…) completa
+    el entorno, para servicios que no pasan variables (la tarea programada de Windows). El entorno manda.
+
 Uso:  pip install "laya[serve]"   y luego   python puente.py
 """
 import argparse
+import hmac
 import json
+import logging
+import logging.handlers
 import os
 import re
+import secrets
+import shutil
+import signal
+import subprocess
 import sys
 import threading
 import time
@@ -33,7 +63,18 @@ MODELO = "multilingual"  # el checkpoint que lee español (~644 MB la primera ve
 MAX_CUERPO = 256 * 1024
 MAX_TEXTO = 20000
 MAX_PREGUNTAS = 16
-VERSION = "1"
+VERSION = "3"
+LOG_MAX = 1_000_000  # bytes por archivo de log
+LOG_COPIAS = 3
+
+# --- el chat de Estrategia ---
+MAX_PROMPT = 60000
+CHAT_SEGUNDOS = 240  # tiempo máximo por respuesta
+HERRAMIENTAS = ("Read", "Grep", "Glob")  # lo único que puede usar el chat: leer
+BLOQUEADAS = ("Bash", "Edit", "Write", "MultiEdit", "NotebookEdit", "WebFetch", "WebSearch", "Task")
+REGLA_CHAT = ("Chat de Estrategia de Inherent OS, en solo lectura: no crees, cambies ni borres archivos y no ejecutes comandos. "
+              "Lo que escribas es un borrador que revisa el CEO. Responde en español de «tú».")
+UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
 
 
 def patrones(texto):
@@ -58,6 +99,7 @@ class Laya:
         self.cargando = False
         self.lock = threading.Lock()  # una inferencia a la vez
         self.version = None
+        self.segundos = None  # cuánto tardó en cargar
 
     def cargar(self):
         self.cargando = True
@@ -69,7 +111,8 @@ class Laya:
             self.router = Router(max_loaded=1)
             # Un juicio de calentamiento: baja el checkpoint (la primera vez) y lo deja en memoria.
             self.router.predict("Hola", {"x": {"type": "noul", "instructions": "¿Es un saludo?"}}, model=self.modelo)
-            print(f"[puente] Laya {self.version} lista con «{self.modelo}» en {time.time() - t:.1f} s", flush=True)
+            self.segundos = round(time.time() - t, 1)
+            print(f"[puente] Laya {self.version} lista con «{self.modelo}» en {self.segundos} s", flush=True)
         except Exception as e:  # noqa: BLE001
             self.error = f"{type(e).__name__}: {e}"
             traceback.print_exc()
@@ -113,7 +156,209 @@ def validar(cuerpo):
     return texto, q, modelo
 
 
-def servidor(laya_, origenes, puerto):
+def carpeta_datos():
+    """Donde viven el token y lo que no debe quedar junto al código (nunca dentro de un repo)."""
+    return os.environ.get("LAYA_PUENTE_DATOS") or os.path.join(os.path.expanduser("~"), ".inherent", "laya")
+
+
+def ruta_config():
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "config")
+
+
+def valor_de_config(clave):
+    """La última línea CLAVE=valor del archivo «config» (se relee cada vez: cambiarlo no pide reiniciar)."""
+    out = ""
+    try:
+        with open(ruta_config(), encoding="utf-8-sig") as f:
+            for linea in f:
+                k, sep, v = linea.strip().partition("=")
+                if sep and k == clave:
+                    out = v.strip().strip('"').strip("'")
+    except OSError:
+        pass
+    return out
+
+
+class Chat:
+    """El chat de Estrategia: `claude -p` en solo lectura, dentro del clon del repo, con token y un solo chat a la vez."""
+
+    def __init__(self, repo_env="", claude_env="", segundos=CHAT_SEGUNDOS, datos=None):
+        self.repo_env = repo_env  # lo que mandó el entorno o --repo: gana sobre el archivo «config»
+        self.claude_env = claude_env
+        self.segundos = max(10, min(900, int(segundos or CHAT_SEGUNDOS)))
+        self.datos = datos or carpeta_datos()
+        self.ruta_token = os.path.join(self.datos, "chat-token")
+        self.token, self.token_nuevo = self.cargar_token()
+        self.lock = threading.Lock()  # un solo chat a la vez
+        self.ayuda = None  # el texto de `claude --help`, una sola vez
+        self.fallos = []  # instantes de los tokens malos (freno contra adivinar)
+
+    # --- token ---
+    def cargar_token(self, renovar=False):
+        if not renovar:
+            try:
+                with open(self.ruta_token, encoding="utf-8") as f:
+                    t = f.read().strip()
+                if len(t) >= 24:
+                    return t, False
+            except OSError:
+                pass
+        t = secrets.token_urlsafe(32)
+        os.makedirs(self.datos, exist_ok=True)
+        fd = os.open(self.ruta_token, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(t + "\n")
+        try:
+            os.chmod(self.ruta_token, 0o600)
+        except OSError:
+            pass
+        return t, True
+
+    def token_ok(self, cabecera):
+        """True si la cabecera Authorization es «Bearer <token>»; False si no; None si ya probaron demasiados (frena)."""
+        ahora = time.time()
+        self.fallos = [x for x in self.fallos if ahora - x < 60]
+        if len(self.fallos) >= 8:
+            return None
+        m = re.match(r"^Bearer\s+(\S{8,200})$", cabecera or "")
+        if m and hmac.compare_digest(m.group(1).encode(), self.token.encode()):
+            return True
+        self.fallos.append(ahora)
+        return False
+
+    # --- repo y claude ---
+    def repo(self):
+        r = self.repo_env or valor_de_config("INHERENT_REPO")
+        return os.path.abspath(os.path.expanduser(r)) if r else ""
+
+    def repo_valido(self, r):
+        return bool(r) and os.path.isfile(os.path.join(r, "CLAUDE.md")) and os.path.isdir(os.path.join(r, "agents", "01-strategy"))
+
+    def buscar_claude(self):
+        c = self.claude_env or valor_de_config("INHERENT_CLAUDE")
+        if c:
+            return c if os.path.isfile(c) else None
+        casa = os.path.expanduser("~")
+        extra = [os.path.join(casa, ".claude", "local"), os.path.join(casa, ".local", "bin"), "/usr/local/bin", "/opt/homebrew/bin",
+                 os.path.join(casa, ".npm-global", "bin"), os.path.join(os.environ.get("APPDATA", ""), "npm")]
+        return shutil.which("claude", path=os.pathsep.join([os.environ.get("PATH", ""), *[x for x in extra if x]]))
+
+    def soporta(self, claude, flag):
+        if self.ayuda is None:
+            try:
+                r = subprocess.run([claude, "--help"], capture_output=True, text=True, timeout=20, stdin=subprocess.DEVNULL)
+                self.ayuda = (r.stdout or "") + (r.stderr or "")
+            except Exception:  # noqa: BLE001
+                self.ayuda = ""
+        return flag in self.ayuda
+
+    def estado(self):
+        """Lo que /health cuenta del chat (sin el token)."""
+        r = self.repo()
+        claude = self.buscar_claude()
+        ok_repo = bool(r and self.repo_valido(r))
+        ayuda = None if ok_repo and claude else ("sin_repo" if not r else "repo_invalido" if not ok_repo else "sin_claude")
+        return {"listo": ayuda is None, "ayuda": ayuda, "repo": ok_repo, "repo_configurado": bool(r), "claude": bool(claude),
+                "ocupado": self.lock.locked(), "segundos": self.segundos}
+
+    def comando(self, claude, resume):
+        cmd = [claude, "-p", "--output-format", "stream-json", "--verbose"]
+        if self.soporta(claude, "--include-partial-messages"):
+            cmd.append("--include-partial-messages")
+        # Solo lectura: las herramientas disponibles son estas tres, y lo demás se niega sin preguntar.
+        cmd += ["--tools", ",".join(HERRAMIENTAS), "--allowedTools", ",".join(HERRAMIENTAS), "--disallowedTools", ",".join(BLOQUEADAS),
+                "--permission-mode", "dontAsk"]
+        if self.soporta(claude, "--strict-mcp-config"):
+            cmd.append("--strict-mcp-config")  # sin servidores MCP (Gmail, Drive, Zernio…): el chat no toca nada afuera
+        if self.soporta(claude, "--restricted"):
+            cmd.append("--restricted")  # además, la lectura queda encerrada en el repo
+        elif self.soporta(claude, "--setting-sources"):
+            cmd += ["--setting-sources", "user"]  # sin los hooks y permisos del proyecto
+        cmd += ["--append-system-prompt", REGLA_CHAT]
+        if resume:
+            cmd += ["--resume", resume]
+        return cmd
+
+    def correr(self, prompt, resume, emitir, vivo):
+        """Corre claude y va emitiendo (evento, datos). Devuelve True si terminó bien. Mata el proceso si se acaba el tiempo o si `vivo()` es False."""
+        repo, claude = self.repo(), self.buscar_claude()
+        env = dict(os.environ)
+        env["PATH"] = os.pathsep.join([os.path.dirname(claude), "/usr/local/bin", "/opt/homebrew/bin", env.get("PATH", "")])
+        kw = {"start_new_session": True} if os.name != "nt" else {"creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)}
+        proc = subprocess.Popen(self.comando(claude, resume), cwd=repo, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kw)
+        estado = {"agotado": False, "fin": False}
+        err = []
+
+        def matar():
+            try:
+                if os.name == "nt":
+                    proc.kill()
+                else:
+                    os.killpg(proc.pid, signal.SIGKILL)
+            except Exception:  # noqa: BLE001
+                pass
+
+        def tiempo():
+            estado["agotado"] = True
+            matar()
+
+        reloj = threading.Timer(self.segundos, tiempo)
+        reloj.daemon = True
+        reloj.start()
+        threading.Thread(target=lambda: [err.append(x.decode("utf-8", "replace")) for x in proc.stderr], daemon=True).start()
+        try:
+            proc.stdin.write(prompt.encode("utf-8"))  # el prompt va por stdin: sin límite de argumentos y sin que se lea como una opción
+            proc.stdin.close()
+        except OSError:
+            pass
+        try:
+            for linea in proc.stdout:
+                if not vivo():
+                    matar()
+                    return False
+                try:
+                    j = json.loads(linea)
+                except ValueError:
+                    continue
+                t = j.get("type")
+                if t == "system" and j.get("subtype") == "init":
+                    emitir("inicio", {"sesion": j.get("session_id")})
+                elif t == "stream_event":
+                    d = (j.get("event") or {}).get("delta") or {}
+                    if d.get("type") == "text_delta" and d.get("text"):
+                        emitir("delta", {"texto": d["text"]})
+                elif t == "assistant":
+                    for c in (j.get("message") or {}).get("content") or []:
+                        if c.get("type") == "tool_use":
+                            i = c.get("input") or {}
+                            det = str(i.get("file_path") or i.get("pattern") or i.get("path") or "")
+                            if det.startswith(repo):
+                                det = det[len(repo):].lstrip("/\\")
+                            emitir("herramienta", {"nombre": str(c.get("name"))[:30], "detalle": det[:200]})
+                elif t == "result":
+                    estado["fin"] = True
+                    if j.get("is_error"):
+                        emitir("error", {"error": str(j.get("result") or "Claude no pudo responder")[:600], "sesion": j.get("session_id")})
+                    else:
+                        emitir("fin", {"texto": str(j.get("result") or ""), "sesion": j.get("session_id")})
+            proc.wait(timeout=10)
+        except (BrokenPipeError, ConnectionError):
+            matar()
+            return False
+        finally:
+            reloj.cancel()
+            if proc.poll() is None:
+                matar()
+        if estado["agotado"]:
+            emitir("error", {"error": f"Claude tardó más de {self.segundos} s y se cortó. Pide algo más acotado.", "codigo": "tiempo"})
+            return False
+        if not estado["fin"]:
+            emitir("error", {"error": (("".join(err)).strip()[-500:] or "Claude Code se cerró sin responder. Revisa que tengas la sesión iniciada (claude)."), "codigo": "claude"})
+            return False
+        return True
+
+
+def servidor(laya_, origenes, puerto, chat=None):
     hosts = {f"127.0.0.1:{puerto}", f"localhost:{puerto}"}
 
     class H(BaseHTTPRequestHandler):
@@ -156,10 +401,98 @@ def servidor(laya_, origenes, puerto):
                 return False
             return True
 
+        # ---------- el chat de Estrategia ----------
+        def chat_puerta(self):
+            """Las tres puertas de /chat: viene del OS (Origin permitido), con el token y con el chat encendido. True si pasa."""
+            if chat is None:
+                self.responder(404, {"error": "El chat está apagado en este puente"})
+                return False
+            if not self.origen():  # sin Origin (un script) o de otro sitio: el chat solo se abre desde el OS
+                self.responder(403, {"error": "El chat solo se abre desde Inherent OS"})
+                return False
+            ok = chat.token_ok(self.headers.get("Authorization", ""))
+            if ok is None:
+                self.responder(429, {"error": "Demasiados intentos con un token malo. Espera un minuto."}, {"Retry-After": "60"})
+                return False
+            if not ok:
+                self.responder(401, {"error": "Falta el token de emparejamiento o no es el correcto", "codigo": "token"})
+                return False
+            return True
+
+        def chat_estado(self):
+            if not self.chat_puerta():
+                return
+            self.responder(200, {"ok": True, **chat.estado()})
+
+        def sse(self, evento, datos):
+            self.wfile.write(("event: " + evento + "\ndata: " + json.dumps(datos, ensure_ascii=False) + "\n\n").encode("utf-8"))
+            self.wfile.flush()
+
+        def chat_enviar(self):
+            if not self.chat_puerta():
+                return
+            if "application/json" not in self.headers.get("Content-Type", ""):
+                return self.responder(415, {"error": "Manda JSON (Content-Type: application/json)"})
+            try:
+                n = int(self.headers.get("Content-Length") or 0)
+            except ValueError:
+                n = -1
+            if n <= 0 or n > MAX_PROMPT * 4 + 4096:
+                return self.responder(413, {"error": "El cuerpo es demasiado grande o está vacío"})
+            try:
+                b = json.loads(self.rfile.read(n).decode("utf-8"))
+            except (ValueError, UnicodeDecodeError):
+                return self.responder(400, {"error": "El cuerpo no es JSON"})
+            prompt = b.get("prompt") if isinstance(b, dict) else None
+            resume = b.get("resume") if isinstance(b, dict) else None
+            if not isinstance(prompt, str) or not prompt.strip():
+                return self.responder(400, {"error": "Falta «prompt»"})
+            if len(prompt) > MAX_PROMPT:
+                return self.responder(413, {"error": f"El prompt pasa de {MAX_PROMPT} caracteres"})
+            if resume is not None and not (isinstance(resume, str) and UUID.match(resume)):
+                return self.responder(400, {"error": "«resume» no es un id de sesión válido"})
+            st = chat.estado()
+            if not st["listo"]:
+                msg = {"sin_repo": "Falta INHERENT_REPO: la ruta de tu clon del repo, en el archivo config del puente.",
+                       "repo_invalido": "INHERENT_REPO no apunta a un clon de Inherent-HQ (falta CLAUDE.md o agents/01-strategy).",
+                       "sin_claude": "No encuentro Claude Code en tu compu (el comando claude)."}[st["ayuda"]]
+                return self.responder(412, {"error": msg, "codigo": st["ayuda"]})
+            if not chat.lock.acquire(blocking=False):
+                return self.responder(429, {"error": "Ya hay una respuesta en curso. Espera a que termine.", "codigo": "ocupado"})
+            try:
+                self.send_response(200)
+                o = self.origen()
+                if o:
+                    self.send_header("Access-Control-Allow-Origin", o)
+                    self.send_header("Vary", "Origin")
+                self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+                self.send_header("Cache-Control", "no-store")
+                self.send_header("X-Accel-Buffering", "no")
+                self.send_header("Connection", "close")
+                self.end_headers()
+                self.close_connection = True
+                vivo = {"v": True}
+
+                def emitir(evento, datos):
+                    try:
+                        self.sse(evento, datos)
+                    except (BrokenPipeError, ConnectionError, OSError):
+                        vivo["v"] = False
+
+                chat.correr(prompt, resume, emitir, lambda: vivo["v"])
+            except Exception as e:  # noqa: BLE001
+                traceback.print_exc()
+                try:
+                    self.sse("error", {"error": "El chat falló: " + type(e).__name__})
+                except Exception:  # noqa: BLE001
+                    pass
+            finally:
+                chat.lock.release()
+
         def do_OPTIONS(self):  # noqa: N802 — el preflight de CORS y de Private Network Access
             if not self.filtro():
                 return
-            extra = {"Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type",
+            extra = {"Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, Authorization",
                      "Access-Control-Max-Age": "600"}
             if self.headers.get("Access-Control-Request-Private-Network", "").lower() == "true":
                 extra["Access-Control-Allow-Private-Network"] = "true"
@@ -168,16 +501,26 @@ def servidor(laya_, origenes, puerto):
         def do_GET(self):  # noqa: N802
             if not self.filtro():
                 return
-            if self.path.split("?")[0] != "/health":
-                return self.responder(404, {"error": "No existe. Usa /health o /juzgar"})
-            self.responder(200, {"status": "ok", "puente": VERSION, "listo": laya_.listo.is_set() and not laya_.error,
-                                 "cargando": laya_.cargando, "error": laya_.error, "modelo": laya_.modelo, "laya": laya_.version})
+            ruta = self.path.split("?")[0]
+            if ruta == "/chat/estado":
+                return self.chat_estado()
+            if ruta != "/health":
+                return self.responder(404, {"error": "No existe. Usa /health, /juzgar o /chat"})
+            cargado = laya_.listo.is_set() and not laya_.error and laya_.router is not None
+            self.responder(200, {"status": "ok", "puente": VERSION, "version": VERSION, "listo": cargado,
+                                 "cargando": laya_.cargando, "error": laya_.error, "modelo": laya_.modelo,
+                                 "modelo_cargado": laya_.modelo if cargado else None, "laya": laya_.version,
+                                 "carga_s": laya_.segundos, "puerto": puerto, "pid": os.getpid(),
+                                 "chat": chat.estado() if chat else {"listo": False, "ayuda": "apagado"}})
 
         def do_POST(self):  # noqa: N802
             if not self.filtro():
                 return
-            if self.path.split("?")[0] != "/juzgar":
-                return self.responder(404, {"error": "No existe. Usa /juzgar"})
+            ruta = self.path.split("?")[0]
+            if ruta == "/chat":
+                return self.chat_enviar()
+            if ruta != "/juzgar":
+                return self.responder(404, {"error": "No existe. Usa /juzgar o /chat"})
             if "application/json" not in self.headers.get("Content-Type", ""):
                 return self.responder(415, {"error": "Manda JSON (Content-Type: application/json)"})
             try:
@@ -214,24 +557,114 @@ def servidor(laya_, origenes, puerto):
     return Servidor((HOST, puerto), H)
 
 
+class _AlLog:
+    """stdout/stderr → el log con rotación (prints, tracebacks y avisos de torch), línea por línea."""
+
+    def __init__(self, log, nivel):
+        self.log, self.nivel, self.buf = log, nivel, ""
+
+    def write(self, s):
+        self.buf += str(s)
+        while "\n" in self.buf:
+            linea, self.buf = self.buf.split("\n", 1)
+            linea = linea.rstrip("\r")
+            if linea.strip():
+                self.log.log(self.nivel, linea.split("\r")[-1])
+        return len(s)
+
+    def flush(self):
+        pass
+
+    def isatty(self):
+        return False
+
+
+def configurar_log(destino):
+    """Manda todo a <destino>/puente.log, rotando a 1 MB × 3. Recorta sistema.log (la salida que guarda launchd)."""
+    os.makedirs(destino, exist_ok=True)
+    for nombre in os.listdir(destino):  # lo que escribe el sistema fuera de Python (launchd, nohup) no rota solo
+        ruta = os.path.join(destino, nombre)
+        if nombre.endswith(".log") and not nombre.startswith("puente.log") and os.path.isfile(ruta) and os.path.getsize(ruta) > 5 * LOG_MAX:
+            with open(ruta, "r+b") as f:
+                f.truncate(0)
+    h = logging.handlers.RotatingFileHandler(os.path.join(destino, "puente.log"), maxBytes=LOG_MAX, backupCount=LOG_COPIAS, encoding="utf-8")
+    h.setFormatter(logging.Formatter("%(asctime)s %(message)s", "%Y-%m-%d %H:%M:%S"))
+    log = logging.getLogger("laya-puente")
+    log.setLevel(logging.INFO)
+    log.addHandler(h)
+    log.propagate = False
+    logging.raiseExceptions = False  # si el disco falla, el log no se llama a sí mismo en bucle
+    sys.stdout, sys.stderr = _AlLog(log, logging.INFO), _AlLog(log, logging.ERROR)
+
+
+def precargar(modelo):
+    """Baja el modelo (la primera vez) y lo prueba con un juicio. Sale 0 si quedó listo."""
+    laya_ = Laya(modelo)
+    laya_.cargar()
+    return 0 if laya_.router is not None and not laya_.error else 1
+
+
+def cargar_config():
+    """Lee «config» junto a este archivo (CLAVE=valor por línea) sin pisar lo que ya trae el entorno."""
+    ruta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config")
+    try:
+        with open(ruta, encoding="utf-8-sig") as f:
+            for linea in f:
+                k, sep, v = linea.strip().partition("=")
+                if sep and re.match(r"^[A-Z][A-Z0-9_]{0,60}$", k):
+                    os.environ.setdefault(k, v.strip())
+    except OSError:
+        pass
+
+
 def main():
+    repo_env = os.environ.get("INHERENT_REPO", "")  # antes de leer «config»: lo que manda el entorno gana
+    claude_env = os.environ.get("INHERENT_CLAUDE", "")
+    cargar_config()
     ap = argparse.ArgumentParser(description="Puente local de Laya para Inherent OS (escucha solo en 127.0.0.1).")
     ap.add_argument("--puerto", type=int, default=int(os.environ.get("LAYA_PUENTE_PUERTO", PUERTO)))
     ap.add_argument("--origenes", default=os.environ.get("LAYA_PUENTE_ORIGENES", ORIGENES),
                     help="orígenes permitidos, separados por coma; ':*' = cualquier puerto")
     ap.add_argument("--modelo", default=os.environ.get("LAYA_PUENTE_MODELO", MODELO))
+    ap.add_argument("--log", default=os.environ.get("LAYA_PUENTE_LOG", ""),
+                    help="carpeta del log con rotación; vacío = a la consola")
+    ap.add_argument("--precargar", action="store_true", help="baja el modelo, lo prueba y sale (sin servidor)")
+    ap.add_argument("--repo", default=repo_env, help="ruta de tu clon de Inherent-HQ para el chat (o INHERENT_REPO en el entorno / el archivo config)")
+    ap.add_argument("--token", action="store_true", help="muestra el token de emparejamiento del chat (lo crea si no existe) y sale")
+    ap.add_argument("--nuevo-token", action="store_true", help="cambia el token del chat por uno nuevo, lo muestra y sale")
     a = ap.parse_args()
+    if a.token or a.nuevo_token:
+        c = Chat(a.repo, os.environ.get("INHERENT_CLAUDE", ""), os.environ.get("INHERENT_CHAT_SEGUNDOS") or CHAT_SEGUNDOS)
+        if a.nuevo_token:
+            c.token, _ = c.cargar_token(renovar=True)
+        print(c.token)
+        sys.exit(0)
+    if a.precargar:
+        sys.exit(precargar(a.modelo))
+    if a.log:
+        configurar_log(a.log)
     if a.puerto != PUERTO:
         print(f"[puente] Ojo: el OS busca el puente en el puerto {PUERTO}.", file=sys.stderr)
     laya_ = Laya(a.modelo)
-    srv = servidor(laya_, patrones(a.origenes), a.puerto)
+    chat = Chat(a.repo, claude_env, os.environ.get("INHERENT_CHAT_SEGUNDOS") or CHAT_SEGUNDOS)
+    try:
+        srv = servidor(laya_, patrones(a.origenes), a.puerto, chat)
+    except OSError as e:
+        print(f"[puente] No pude abrir el puerto {a.puerto} ({e}). ¿Ya hay otro puente encendido?", file=sys.stderr, flush=True)
+        sys.exit(1)
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))  # launchd / systemd lo apagan con SIGTERM
     threading.Thread(target=laya_.cargar, daemon=True).start()
     print(f"[puente] Escuchando en http://{HOST}:{a.puerto} · orígenes: {a.origenes}", flush=True)
+    if chat.token_nuevo:
+        print(f"[puente] Chat de Estrategia · token de emparejamiento (pégalo una sola vez en Inherent OS): {chat.token}", flush=True)
+        print(f"[puente] Queda guardado en {chat.ruta_token}. Para verlo otra vez: python puente.py --token", flush=True)
+    st = chat.estado()
+    print("[puente] Chat de Estrategia: " + ("listo." if st["listo"] else {"sin_repo": "falta INHERENT_REPO (la ruta de tu clon del repo, en el archivo config).", "repo_invalido": "INHERENT_REPO no apunta a un clon de Inherent-HQ.", "sin_claude": "no encuentro Claude Code (el comando claude)."}[st["ayuda"]]), flush=True)
     print("[puente] Cargando Laya (la primera vez baja el modelo, ~644 MB)…", flush=True)
     try:
         srv.serve_forever()
-    except KeyboardInterrupt:
-        print("\n[puente] Apagado.")
+    except (KeyboardInterrupt, SystemExit):
+        print("[puente] Apagado.", flush=True)
 
 
 if __name__ == "__main__":

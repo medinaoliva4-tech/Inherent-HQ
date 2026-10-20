@@ -1,0 +1,9 @@
+{
+  "comun": { "etiqueta": "Guía rápida" },
+  "slides": [
+    { "titulo": "Tres señales de que tu marca *no se recuerda*", "subtitulo": "Desliza para verlas", "imagen": "assets/foto-ejemplo.svg", "variante": "A" },
+    { "titulo": "1. Cada pieza parece de otra marca", "variante": "C" },
+    { "titulo": "2. Nadie puede describir *lo que haces*", "variante": "C" },
+    { "titulo": "3. Te comparan solo por precio", "variante": "C", "cta": "Guárdalo" }
+  ]
+}

@@ -17,6 +17,10 @@ import * as recurring from './_lib/recurring.js';
 import * as results from './_lib/results.js';
 import * as facturas from './_lib/facturas.js';
 import * as laya from './_lib/laya.js';
+import * as intel from './_lib/intel.js';
+import * as estrategia from './_lib/estrategia.js';
+import * as portal from './_lib/portal.js';
+import * as inv from './_lib/investigacion.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
@@ -102,6 +106,8 @@ async function collGuard(req, res, write) {
   if (!area) { res.status(404).json({ error: 'Colección desconocida' }); return null; }
   // Los juicios de Laya se leen según el elemento juzgado: solo por /api/laya/juicios.
   if (coll === laya.COLL) { res.status(404).json({ error: 'Los juicios de Laya están en /api/laya/juicios' }); return null; }
+  // El estado y los borradores de Estrategia solo se escriben por /api/estrategia/* (ahí vive la regla: solo el CEO aprueba).
+  if (coll === 'strategy') { res.status(404).json({ error: 'La estrategia está en /api/estrategia' }); return null; }
   const any = coll === 'settings' && !write ? null : [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])];
   const u = any ? await guardAny(req, res, any, { write }) : await guard(req, res); if (!u) return null;
   if (!canRead(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO ve esto' }); return null; }
@@ -467,25 +473,20 @@ on('GET', 'community/inbox', async (req, res) => {
   try { res.json({ connected: true, handles, ...(await zernio.inbox(handles)) }); } catch (e) { res.status(502).json({ error: e.message }); }
 });
 
-// Vercel Cron, una vez a la semana (lunes): scrapea los perfiles con «Scrape semanal».
+// Vercel Cron, una vez a la semana (lunes): Fase 4 · arranca la investigación de cada marca activa (con ficha de
+// oferta y referentes), en las redes de su ficha. Solo arranca los runs de Apify; los recoge el webhook (investigacion.js).
 on('GET', 'cron/scrape', async (req, res) => {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).json({ error: 'No autorizado' });
   if (!content.apifyOn()) return res.json({ skipped: 'sin APIFY_TOKEN' });
-  const done = [];
-  for (const p of await content.profiles()) {
-    if (!(await content.cfg(p.slug)).auto) continue;
-    try { await content.scrape(p.slug, 'cron'); done.push(p.slug); } catch (e) { console.error('cron scrape', p.slug, e.message); }
-  }
-  res.json({ done });
+  res.json(await inv.cronScrape('cron'));
 });
-// Cada lunes también cierra lo que quedó corriendo (por si nadie abrió Content).
+// Cada día recoge lo que quedó corriendo (por si el webhook de Apify no llegó y nadie abrió Investigación).
 on('GET', 'cron/settle', async (req, res) => {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).json({ error: 'No autorizado' });
-  const done = [];
-  for (const p of await content.profiles()) { try { const d = await content.settle(p.slug, 'cron'); if (d?.result) done.push(p.slug); } catch {} }
-  res.json({ done });
+  if (!content.apifyOn()) return res.json({ skipped: 'sin APIFY_TOKEN' });
+  res.json(await inv.cronSettle('cron'));
 });
 
 // Cada día deja lista la tarea de cada responsabilidad recurrente que ya toca (recetas internas activas).
@@ -770,8 +771,8 @@ on('GET', 'portal', async (req, res) => {
         services: (x.services || []).map((sv) => { const st = ts.filter((t) => String(t.title).startsWith(sv.name + ' ·')); return { name: sv.name, level: sv.level, days: sv.days || null, includes: sv.includes || [], progress: pct(st), status: !st.length ? 'Por empezar' : st.every((t) => t.status === 'Hecha') ? 'Entregado' : st.some((t) => t.status === 'En revisión') ? 'En revisión' : st.some((t) => ['En curso', 'Hecha'].includes(t.status)) ? 'En curso' : 'Por empezar', due: st.map((t) => t.due).filter(Boolean).sort().at(-1) || null }; }) };
     }),
     meetings: ps.flatMap((x) => (x.meetings || []).filter((m) => (m.who || []).includes('cliente')).map((m) => ({ date: m.date, name: m.name, topics: m.topics || [], approves: m.approves || '', status: m.status || 'todo' }))).sort((a, z) => a.date.localeCompare(z.date)),
-    content: posts.filter((x) => x.kind === 'post' && x.profile === slug && x.date && x.date >= new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10)).map((x) => ({ title: x.title, format: x.format || 'Pieza', date: x.date, status: x.status || 'Idea', pillar: x.pillar || '' })).sort((a, z) => a.date.localeCompare(z.date)),
-    goals: (acc?.goals || []).map((g) => ({ goal: g.goal, metric: g.metric, baseline: g.baseline, current: g.current, target: g.target, due: g.due, status: g.status, checks: (g.checks || []).map(({ date, done, value }) => ({ date, done, value })) })),
+    content: portal.piezas(posts, slug, today),
+    goals: portal.metas(acc?.goals),
     delivered: ps.flatMap((x) => pt(x.id).filter((t) => t.status === 'Hecha').map((t) => ({ title: t.title.replace(/\s·\s[^·]+\(\d+(\.\d+)? h\)$/, ''), date: t.done_at || String(t._meta?.updated_at || '').slice(0, 10) }))).sort((a, z) => z.date.localeCompare(a.date)).slice(0, 20),
     folder: acc?.drive_dirs?.['05 Entregables'] || null,
     onboarding: acc?.onboarding ? { items: acc.onboarding.items.map(({ t, done, note }) => ({ t, done, note })), done_at: acc.onboarding.done_at || null } : null,
@@ -783,8 +784,22 @@ on('GET', 'portal', async (req, res) => {
     const handles = (await content.profile(p)).own.filter((a) => a.red === 'instagram').map((a) => a.handle);
     const picked = (await content.cfg(slug)).ig_account; const hs = picked ? [picked] : handles;
     if (hs.length) { try { const ig = await content.instagram(hs, 30); if (ig.matched) out.analytics = { handles: hs, followers: ig.followers, reach: ig.reach, views: ig.views, er: ig.er, posts: ig.posts, series: ig.series, top: ig.top.slice(0, 6).map(({ date, type, url, reach, likes, comments, saves }) => ({ date, type, url, reach, likes, comments, saves })) }; } catch {} }
+    if (out.analytics) out.ig = await portal.ig(out.analytics.handles, today);
   }
+  // El portal como el dashboard de la web: resumen (5 indicadores, gráfica y leads por fuente), entregas de la semana. Solo datos reales.
+  const mine = ps.flatMap((x) => (x.meetings || []).filter((m) => (m.who || []).includes('cliente')));
+  out.resumen = portal.resumen({ slug, T: today, posts, leads: await db.list('leads'), meetings: mine, analytics: out.analytics, ig: out.ig });
+  out.entregas = portal.entregas(ps, pt, today);
+  delete out.ig;
   res.json(out);
+});
+// El cliente aprueba una pieza o pide cambios (solo las de su propia marca): la deja «Listo» o con su nota.
+on('POST', 'portal/content/:id', async (req, res) => {
+  const u = await guard(req, res, 'portal', { client: true }); if (!u) return;
+  if (u.role !== 'client') return res.status(403).json({ error: 'Solo el cliente aprueba sus piezas' });
+  if (!slugOk(u.client_slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  try { res.json(await portal.decidir(u, u.client_slug, req.params.id, body(req))); }
+  catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
 });
 
 // El cliente llena su onboarding e invita a alguien de su equipo (solo en su propio portal).
@@ -829,6 +844,20 @@ on('GET', 'repo/client/:slug/pauta', async (req, res) => {
   const dir = `clients/${slug}/06-pauta`;
   const [ap, plan, rep] = await Promise.all([readFile(`${dir}/aprendizaje-de-pauta.md`), readFile(`${dir}/plan-de-pauta.md`), readFile(`${dir}/reporte-de-pauta.md`)]);
   res.json({ slug, aprendizaje: ap ? ap.content.slice(0, 60_000) : null, plan: Boolean(plan), reporte: Boolean(rep), dir });
+});
+
+// Intel: el trabajo de fondo de los agentes en la carpeta de un cliente (avatar, estrategia, marca, plan, reportes…), por departamento.
+// Es estrategia: es información del cliente, pero no para el cliente. El rol `client` recibe 403 siempre. El equipo ve lo de su
+// alcance por cliente; los montos (presupuesto de producción) solo los ve quien ya ve costos. La ruta de cada archivo sale del
+// mapa (public/js/intel-mapa.js), nunca de la petición.
+on('GET', 'repo/client/:slug/intel', async (req, res) => {
+  const u = await guard(req, res, undefined, { client: true }); if (!u) return;
+  if (u.role === 'client') return res.status(403).json({ error: 'Esta información es solo del equipo' });
+  const slug = String(req.params.slug || '');
+  if (!['clients', 'operations', 'content', 'work', 'portal'].some((a) => u.areas.includes(a))) return res.status(403).json({ error: 'Sin acceso a esta área' });
+  { const sc = await scoper(u); if (sc && !sc.client(slug)) return res.status(404).json({ error: 'Ese cliente no está entre los tuyos' }); }
+  if (!(await intel.slugValido(slug))) return res.status(404).json({ error: 'No existe' });
+  res.json(await intel.intelFor(slug, { vista: 'equipo', costos: managesAccesos(u) }));
 });
 
 // El tablero de pauta (Windsor) y los anuncios de la competencia (Apify).
@@ -1069,6 +1098,10 @@ export async function search(u, q) {
 }
 // ---------- Laya (Fase 3): el juicio como dato — puertas, texto, juicios y pendientes ----------
 laya.rutas(on);
+// ---------- App 02 · Estrategia: 5 bloques por cliente, el estado de cada uno y las fuentes de Hormozi ----------
+estrategia.rutas(on);
+// ---------- Investigación (Fase 4): referentes por marca, scraping automático con Apify y «Usar como formato» ----------
+inv.rutas(on);
 
 on('GET', 'search', async (req, res) => {
   const u = await guard(req, res); if (!u) return;

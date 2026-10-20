@@ -1,6 +1,6 @@
 // El catálogo de servicios: la tarjeta de cada servicio con su nivel de entrega (3 básico · 10 fuerte), horas, días, precio
 // y costo (solo CEO); el editor del servicio y los costos por hora. Es el mismo código para Servicios → Servicios y para
-// Comercial → Catálogo de servicios: una sola presentación, una sola edición.
+// el editor de servicio de Ventas → Cotizaciones («Completar»): una sola presentación, una sola edición.
 import { html, raw, mount, col, drawer, closeDrawer, toast, confirmAsk, Q, $, $$, ico } from './core.js';
 import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, marginOf, GROWTH, growthText, includesAt, daysAt } from './cycle.js';
 import { LEVELS } from './levels.js';

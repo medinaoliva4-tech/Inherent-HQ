@@ -236,7 +236,7 @@ export function recetaPropuesta({ slug, month, services = [], rates = null, proj
       if (!L.mods.includes(m.name)) L.mods.push(m.name);
     }
   }
-  if (!rates && roles.size) avisos.push('Faltan los costos por hora (Comercial → Catálogo → Costos por hora)');
+  if (!rates && roles.size) avisos.push('Faltan los costos por hora (Servicios → Servicios → Costos por hora)');
   const lines = [...roles.values()].map((L) => ({ concepto: `${L.rol} · ${L.mods.join(', ')}`.slice(0, 160), rol: L.rol, proveedor: '', monto: L.sin ? null : r2(L.monto), moneda: 'GTQ', categoria: 'Pagos por servicio', horas: Math.round(L.horas * 10) / 10, ...(L.sin ? { aviso: '⚠️ sin costo por hora' } : {}) }));
   return { client: k, lines, avisos, propuesta: true, month };
 }

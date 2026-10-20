@@ -2,6 +2,7 @@ import { newProject as wizProject, newTask as wizTask, VIS_OPTS } from '../creat
 import { tipoSopFields, bindSop, readTipoSop, sopLink } from '../tasktype.js';
 import { projectPage, myProjects } from '../project-page.js';
 import { taskKanban } from '../kanban.js';
+import { juntarEventos, filtrarPorRol, tiposVisibles, rango, porDia, calendarioHtml, diaHtml, hitoHtml } from '../calendario-trabajo.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap, ico, isSummary, canEdit, roChip } from '../core.js';
 
 const TSTATUS = { 'Por empezar': '', 'En curso': 'amber', 'En revisión': 'blue', 'Hecha': 'green' };
@@ -20,7 +21,12 @@ export async function render(el, { me, sub, alive }) {
   if (sub[0] === 'p' && sub[1]) return projectPage(el, { me, id: decodeURIComponent(sub[1]), view: sub[2], edit, data: { projects, tasks, team, docs, clients }, back: () => { location.hash = '#/operations'; }, alive });
   // Un solo Kanban con todas las tareas (antes: la tira por departamento + la tabla «Tareas de…» + la pestaña Tareas).
   let tab = ['cal', 'time'].includes(sub[0]) ? sub[0] : 'tasks', kb = null;
-  let calMonth = today().slice(0, 7), events = null, evErr = null;
+  // El calendario de trabajo (calendario-trabajo.js): uno solo con reuniones, producción, entregas, ventas, facturas y el ciclo.
+  // La vista (mes o semana) y los tipos apagados se recuerdan en este navegador.
+  const lsGet = (k, d) => { try { return localStorage.getItem('cal.' + k) ?? d; } catch { return d; } };
+  const lsSet = (k, v) => { try { localStorage.setItem('cal.' + k, v); } catch {} };
+  let calView = lsGet('vista', 'mes') === 'semana' ? 'semana' : 'mes', calDate = today(), events = null, evErr = null, extra = null;
+  const calOff = new Set(String(lsGet('off', '')).split(',').filter(Boolean));
   const person = (email) => team.find((t) => t.id === email || t.email === email);
   const pname = (id) => projects.find((p) => p.id === id)?.name || '—';
 
@@ -56,13 +62,18 @@ export async function render(el, { me, sub, alive }) {
   }
   async function addTask(pre = {}) { const r = await wizTask({ team, me, projects, pre }); if (r) { tasks.push(r); paint(); } }
 
-  // ---------- Calendario (Google Calendar + tareas + fases) ----------
+  // ---------- Calendario de trabajo (Google Calendar + todo lo operativo) ----------
   async function loadEvents() {
-    const [y, m] = calMonth.split('-').map(Number);
-    const from = iso(new Date(Date.UTC(y, m - 1, 0))), to = iso(new Date(Date.UTC(y, m, 1)));
-    try { const r = await api(`google/calendar?from=${from}&to=${to}${calQ()}`); events = r.events; calInfo = { allCals: r.allCals !== false, calendars: r.calendars || [] }; evErr = null; } catch (e) { events = []; evErr = e.message; }
+    const R = rango(calView, calDate), from = new Date(Date.parse(R.from + 'T12:00:00Z') - 864e5).toISOString().slice(0, 10), to = new Date(Date.parse(R.to + 'T12:00:00Z') + 864e5).toISOString().slice(0, 10);
+    try { const r = await api(`google/calendar?from=${from}&to=${to}${calQ()}`); events = r.events || []; calInfo = { allCals: r.allCals !== false, calendars: r.calendars || [] }; evErr = null; } catch (e) { events = []; evErr = e.message; }
   }
-  const evChip = (it) => html`<div class="ev ${it.c}" ${it.task ? raw(`data-act="task" data-id="${it.task}"`) : it.ev != null ? raw(`data-act="ev" data-i="${it.ev}"`) : ''} ${it.color ? raw(`style="background:${it.color}33;border-left:3px solid ${it.color}"`) : ''}>${it.t}</div>`;
+  // Lo que no es de Proyectos: los seguimientos de Ventas, los vencimientos de Facturas y las grabaciones. Solo se pide lo que el perfil ve.
+  async function loadExtra() {
+    const a = me.areas || [];
+    const [leads, invoices, content] = await Promise.all([a.includes('sales') ? col('leads').list().catch(() => []) : [], a.includes('finanzas') ? col('invoices').list().catch(() => []) : [],
+      a.includes('content') && me.views?.content !== 'resumen' ? col('content').list().catch(() => []) : []]);
+    extra = { leads, invoices, shoots: content.filter((x) => x.kind === 'shoot') };
+  }
   let calInfo = { allCals: true, calendars: [] }, dayMap = {};
   function openEvent(e) {
     const when = e.allDay ? fdate(String(e.start).slice(0, 10)) + (String(e.end).slice(0, 10) > addDays(String(e.start).slice(0, 10), 1) ? ' – ' + fdate(addDays(String(e.end).slice(0, 10), -1)) : ' · todo el día')
@@ -81,29 +92,20 @@ export async function render(el, { me, sub, alive }) {
     if (!v) return; try { await api('google/calendar', { method: 'POST', body: v }); toast('Evento creado en tu Google Calendar'); events = null; cal($('#obody', el)); } catch (e) { toast(e.message, true); }
   }
   function cal(b) {
-    if (events === null) { if (!b.querySelector('.cal')) mount(b, html`<p class="loading">Cargando tu Google Calendar…</p>`); loadEvents().then(() => tab === 'cal' && alive() && b.isConnected && cal(b)); return; }
-    const [y, m] = calMonth.split('-').map(Number);
-    const first = new Date(y, m - 1, 1), days = new Date(y, m, 0).getDate(), lead = (first.getDay() + 6) % 7;
-    const byDay = {};
-    const add = (date, item) => { if (date && date.slice(0, 7) === calMonth) (byDay[+date.slice(8, 10)] ||= []).push(item); };
-    // Los eventos de varios días aparecen en cada día; cada calendario con su color de Google.
-    events.forEach((e, i) => { const s0 = String(e.start).slice(0, 10), e0 = e.allDay ? addDays(String(e.end).slice(0, 10), -1) : String(e.end || e.start).slice(0, 10);
-      for (let d = s0, n = 0; d <= e0 && n < 40; d = addDays(d, 1), n++) add(d, { t: (e.allDay || d !== s0 ? '' : String(e.start).slice(11, 16) + ' ') + e.summary, c: 'e1', ev: i, color: /^#[0-9a-f]{6}$/i.test(e.color || '') ? e.color : null }); });
-    tasks.filter((t) => t.due && t.status !== 'Hecha').forEach((t) => add(t.due, { t: '✓ ' + t.title, c: 'e3', task: t.id }));
-    projects.forEach((p) => (p.phases || []).forEach((ph) => ph.start && add(ph.start, { t: `${ph.name} · ${p.name}`, c: 'e2' })));
-    projects.forEach((p) => (p.meetings || []).forEach((m) => m.status !== 'hecha' && !m.link && add(m.date, { t: `${ico('users')} ${m.name} · ${p.client || p.name}`, c: 'e2' })));
-    dayMap = byDay;
-    const cells = [];
-    for (let i = 0; i < 42; i++) { const d = i - lead + 1; if (i >= 35 && d > days) break; cells.push(d); }
-    mount(b, html`<div class="card">
-      <div class="chead"><div class="ico">${ico('grid')}</div><h3>${first.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })}</h3>
-        ${evErr ? html`<span class="chip amber" style="margin-left:12px">Google Calendar: ${evErr}</span>` : html`<span class="gbadge" style="margin-left:12px">${IC.cal} ${calInfo.allCals ? `${calInfo.calendars.length} calendario${calInfo.calendars.length === 1 ? '' : 's'} de Google` : 'Solo tu calendario principal · sal y vuelve a entrar para ver todos'}</span>`}
-        <div class="sp"></div><button class="chip ${calAll() ? '' : 'dark'}" data-act="calscope" style="padding:8px 12px">${calAll() ? 'Todos mis calendarios' : 'Solo Inherent'}</button>${me.role === 'ceo' ? html`<button class="btn ghost" data-act="calpick" style="padding:8px 14px">Calendario de Inherent</button>` : ''}<button class="btn ghost" data-act="mrefresh" title="Actualizar" style="padding:8px 14px">↻</button><button class="btn ghost" data-act="mtoday" style="padding:8px 14px">Hoy</button><button class="btn ghost" data-act="mprev" style="padding:8px 14px">‹</button><button class="btn ghost" data-act="mnext" style="padding:8px 14px">›</button><button class="btn" data-act="newEvent" style="padding:9px 16px">+ Evento</button></div>
-      <div class="cal">${['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d) => html`<div class="dh">${d}</div>`)}
-        ${cells.map((d) => { const out = d < 1 || d > days; const isToday = !out && `${calMonth}-${String(d).padStart(2, '0')}` === today();
-          return html`<div class="d ${out ? 'o' : ''} ${isToday ? 'today' : ''}" ${out ? '' : raw(`data-act="day" data-d="${d}" title="Toca para crear un evento"`)}><span class="n">${out ? '' : d}</span>${out ? '' : (byDay[d] || []).slice(0, 4).map(evChip)}${!out && (byDay[d] || []).length > 4 ? html`<button class="mut sm" data-act="dayall" data-d="${d}">+${byDay[d].length - 4} más</button>` : ''}</div>`; })}
-      </div>
-      <div class="row sm mut" style="gap:16px;margin-top:12px"><span class="row" style="gap:6px"><i class="ev e1" style="width:12px;height:12px;padding:0;margin:0"></i>Google Calendar</span><span class="row" style="gap:6px"><i class="ev e3" style="width:12px;height:12px;padding:0;margin:0"></i>Tareas</span><span class="row" style="gap:6px"><i class="ev e2" style="width:12px;height:12px;padding:0;margin:0"></i>Fases de proyecto</span></div></div>`);
+    if (events === null || extra === null) { if (!b.querySelector('.wc')) mount(b, html`<p class="loading">Cargando el calendario…</p>`); Promise.all([events === null ? loadEvents() : null, extra === null ? loadExtra() : null]).then(() => tab === 'cal' && alive() && b.isConnected && cal(b)); return; }
+    const R = rango(calView, calDate), T = today();
+    const evs = filtrarPorRol(juntarEventos({ google: events, tasks, projects, shoots: extra.shoots, leads: extra.leads, invoices: extra.invoices, from: R.from, to: R.to, hoy: T }), me);
+    dayMap = porDia(evs.filter((e) => !calOff.has(e.tipo)));
+    mount(b, calendarioHtml({ vista: calView, fecha: calDate, eventos: evs, off: calOff, tipos: tiposVisibles(me), info: calInfo, err: evErr, ceo: me.role === 'ceo', hoy: T, all: calAll() }));
+  }
+  const calMove = (n) => { const d = new Date(calDate + 'T12:00:00Z'); if (calView === 'semana') d.setUTCDate(d.getUTCDate() + 7 * n); else d.setUTCMonth(d.getUTCMonth() + n, 1); calDate = d.toISOString().slice(0, 10); events = null; cal($('#obody', el)); };
+  // Un hito del ciclo: qué pasa ese día y los proyectos de ciclo mensual a los que aplica.
+  function openHito(d) {
+    const cyc = projects.filter((p) => p.kind === 'Ciclo mensual');
+    drawer(html`<div class="row"><span class="chip">Ciclo de contenido</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>${hitoHtml(d)}
+      <div class="sec-title" style="margin-top:18px"><h2 style="font-size:17px">Proyectos del ciclo</h2><span class="mut sm">${cyc.length}</span></div>
+      ${cyc.length ? cyc.map((p) => html`<a class="wkrow" href="#/operations/p/${encodeURIComponent(p.id)}"><span class="grow">${p.name}</span><span class="mut sm">${p.client || ''}</span></a>`) : html`<div class="mut sm">Ningún proyecto de ciclo mensual todavía.</div>`}
+      <p class="mut sm" style="margin-top:14px">Las fechas se ajustan cada mes al calendario real; los límites del 11 y el 20 se respetan.</p>`);
   }
 
   // ---------- Timeline (Gantt por semanas) ----------
@@ -172,16 +174,20 @@ export async function render(el, { me, sub, alive }) {
   acts(el, {
     calpick: calPick,
     calscope: () => { setCalAll(!calAll()); events = null; const b = $('#obody', el); if (b) cal(b); },
+    cvista: (t) => { calView = t.dataset.v === 'semana' ? 'semana' : 'mes'; lsSet('vista', calView); events = null; cal($('#obody', el)); },
+    ctipo: (t) => { const k = t.dataset.t; calOff.has(k) ? calOff.delete(k) : calOff.add(k); lsSet('off', [...calOff].join(',')); cal($('#obody', el)); },
+    go: () => {}, // un link: el navegador lo abre
+    hito: (t) => openHito(t.dataset.d),
     tab: (t) => { tab = t.dataset.t; if (tab === 'cal') events = null; history.replaceState(null, '', '#/operations/' + tab); swap(el, paint); },
     newProject: async () => { const r = await wizProject({ team, me, projects, tasks }); if (r) { projects.push(r.project); tasks.push(...r.tasks); openP(r.project.id); } },
-    mrefresh: () => { events = null; cal($('#obody', el)); },
-    mtoday: () => { calMonth = today().slice(0, 7); events = null; cal($('#obody', el)); },
-    mprev: () => { const d = new Date(calMonth + '-15'); d.setMonth(d.getMonth() - 1); calMonth = d.toISOString().slice(0, 7); events = null; cal($('#obody', el)); },
-    mnext: () => { const d = new Date(calMonth + '-15'); d.setMonth(d.getMonth() + 1); calMonth = d.toISOString().slice(0, 7); events = null; cal($('#obody', el)); },
+    mrefresh: () => { events = null; extra = null; cal($('#obody', el)); },
+    mtoday: () => { calDate = today(); events = null; cal($('#obody', el)); },
+    mprev: () => calMove(-1),
+    mnext: () => calMove(1),
     newEvent: () => newEvent(),
-    day: (t) => newEvent(`${calMonth}-${String(t.dataset.d).padStart(2, '0')}`),
+    day: (t) => newEvent(t.dataset.date),
     ev: (t, e) => { e.stopPropagation(); openEvent(events[+t.dataset.i]); },
-    dayall: (t) => { const d = +t.dataset.d; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${fdate(`${calMonth}-${String(d).padStart(2, '0')}`)}</h2><div style="margin-top:14px">${(dayMap[d] || []).map(evChip)}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)) }); },
+    dayall: (t) => { const d = t.dataset.date; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${fdate(d)}</h2><div style="margin-top:14px">${diaHtml(dayMap[d] || [])}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)), hito: (x) => openHito(x.dataset.d) }); },
     task: (t) => openTask(tasks.find((x) => x.id === t.dataset.id)),
     newTask: () => addTask(kb?.project() ? { project_id: kb.project() } : {}),
   });

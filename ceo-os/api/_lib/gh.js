@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import nodePath from 'node:path';
 import crypto from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 const LOCAL = process.env.LOCAL_REPO;
 // En Vercel se lee la copia que hace el build (scripts/snapshot.mjs).
 let SNAP;
@@ -108,4 +109,15 @@ export function listFiles(prefix) {
     walk(prefix); return out;
   }
   return snap() ? Object.keys(SNAP.files).filter((k) => k.startsWith(prefix + '/')) : [];
+}
+
+// Cuándo se tocó por última vez un archivo (AAAA-MM-DD): el último commit. En local, de git; en Vercel, de la copia del build
+// (scripts/snapshot.mjs la guarda si git estaba disponible). Con la API de GitHub no se consulta (sería un llamado por archivo): null.
+const DATES = new Map();
+export function fileDate(path) {
+  if (!LOCAL) return useSnap() ? SNAP.dates?.[path] || null : null;
+  if (DATES.has(path)) return DATES.get(path);
+  let d = null;
+  try { d = execFileSync('git', ['log', '-1', '--format=%cI', '--', path], { cwd: LOCAL, encoding: 'utf8', timeout: 4000, stdio: ['ignore', 'pipe', 'ignore'] }).trim().slice(0, 10) || null; } catch {}
+  DATES.set(path, d); return d;
 }

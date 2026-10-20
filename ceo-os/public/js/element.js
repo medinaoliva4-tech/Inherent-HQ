@@ -69,5 +69,6 @@ export function conEstado(x, estado, hoy = new Date()) {
   const s = estadoParaGuardar(estado), out = { ...x, status: s };
   if (s === 'Publicado') out.published_at = x?.published_at || isoDia(hoy);
   else if (s !== ARCHIVADO) delete out.published_at;
+  if (s !== 'En proceso') delete out.por_aprobar; // «Por aprobar» solo vale mientras la pieza sigue «En proceso»
   return out;
 }

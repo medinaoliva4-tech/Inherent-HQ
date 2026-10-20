@@ -3,6 +3,7 @@
 import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard, api, connectChip, ask as askF, ico } from './core.js';
 import { ESTADOS, ESTADOS_TODOS, ESTADO_CLS, ESTADO_AYUDA, estadoDe, separar, conEstado, nombreAuto, nombreDe } from './element.js';
 import { layaBox } from './laya-ui.js';
+import { CONSCIENCIA, consciencia, replicasDe, replicaNombre, conReplica } from './calendario-contenido.js';
 
 // Los estados son los del modelo de elemento (Idea · En proceso · Listo · Publicado, más Archivado).
 // Los viejos (Grabado, Editado, Programado) se leen como los nuevos: nada se reescribe en la base.
@@ -20,19 +21,30 @@ export function setConn(profile, patch) { conn[profile] = { ...(conn[profile] ||
 export const driveState = (p) => (p.drive_id || /^https:\/\//.test(p.url || '') ? [ico('folder', 14), 'En Drive'] : estadoDe(p) === 'Idea' ? [ico('edit', 14), 'Por grabar'] : [ico('upload', 14), 'Por subir']);
 
 // pre.brand: el nombre de la marca, para el nombre automático «Marca – Formato – Tema».
+// Cada pieza es la suma de investigación + pilar o campaña + formato (calendario-contenido.js): guarda pillar, campana, format,
+// consciencia (los 5 niveles del método) y replica_de (el post de Research que replica). pre.replicas: los referentes marcados
+// «Usar como formato» (si no vienen, se leen de Research); pre.campanas: las campañas que ya existen.
+const DAW = ['No sabe que tiene el problema', 'Sabe el problema, no la solución', 'Conoce la solución, no la marca', 'Te conoce, no está convencido', 'Convencido, falta la acción'];
 export async function editPost(profile, p, pre = {}) {
   const pillars = pillarsOf(profile);
+  const refs = pre.replicas || replicasDe(await C.list().catch(() => []), profile);
+  const camps = [...new Set([...(pre.campanas || []), p?.campana].filter(Boolean))];
   const named = (o) => ({ ...o, name: nombreAuto(pre.brand || p?.brand_name || '', o.format, o.title) });
+  const withRef = (o) => { const r = refs.find((x) => x.id === o.replica_de); const out = conReplica(o, r || (o.replica_de ? { id: o.replica_de } : null)); if (!out.consciencia) delete out.consciencia; if (!out.campana) delete out.campana; return out; };
   if (!p) { // nueva pieza: con preguntas
     const a = await wizard('Nueva pieza', [
-      { k: 'format', q: '¿Qué formato?', type: 'cards', req: true, v: pre.format, show: () => !pre.format, opts: [['Reel', ico('video')], ['TikTok', ico('music')], ['Carrusel', ico('folder')], ['Story', ico('circle')], ['Estático', ico('image')], ['YouTube', ico('play', 13)]].map(([v, i]) => ({ v, i, l: v })) },
+      { k: 'replica_de', q: '¿Replica un referente?', sub: 'De Investigación: los posts marcados «Usar como formato».', type: 'cards', v: pre.replica_de, show: () => refs.length > 0 && pre.replica_de === undefined, after: (x) => { const r = refs.find((y) => y.id === x.replica_de); if (r) Object.assign(x, conReplica({ format: x.format }, r)); },
+        opts: [{ v: '', i: ico('edit'), l: 'Original', d: 'Sin referente' }, ...refs.map((r) => ({ v: r.id, i: ico('repeat'), l: `Replicar: ${replicaNombre(r)}`, d: r.format || '' }))] },
+      { k: 'format', q: '¿Qué formato?', type: 'cards', req: true, v: pre.format, show: (x) => !pre.format && !refs.find((r) => r.id === x.replica_de), opts: [['Reel', ico('video')], ['TikTok', ico('music')], ['Carrusel', ico('folder')], ['Story', ico('circle')], ['Estático', ico('image')], ['YouTube', ico('play', 13)]].map(([v, i]) => ({ v, i, l: v })) },
       { k: 'title', q: '¿Cuál es la idea?', type: 'text', req: true, ph: 'Ej. Detrás de cocina', v: pre.title },
       { k: 'pillar', q: '¿De qué pilar?', type: 'cards', show: () => pillars.length > 0, v: pre.pillar, opts: pillars.map((x) => ({ v: x.name, i: ico('dot', 12), l: x.name })) },
+      { k: 'campana', q: '¿De qué campaña?', type: 'cards', show: () => camps.length > 0, v: pre.campana, opts: [{ v: '', l: 'Ninguna' }, ...camps.map((x) => ({ v: x, i: ico('megaphone'), l: x }))] },
+      { k: 'consciencia', q: '¿A quién le habla?', sub: 'Su nivel de consciencia', type: 'cards', req: true, v: pre.consciencia, opts: CONSCIENCIA.map((x, i) => ({ v: x, l: `${i + 1} · ${x}`, d: DAW[i] })) },
       { k: 'date', q: '¿Cuándo sale?', type: 'when', v: pre.date, show: () => !pre.date },
       { k: 'status', q: '¿En qué va?', type: 'cards', req: true, opts: ESTADOS.map((v) => ({ v, l: v, d: ESTADO_AYUDA[v] })) },
     ], 'Agregar');
     if (!a) return null;
-    try { return await C.create(named(conEstado({ ...a, ...(pre.caption ? { caption: pre.caption } : {}), profile, kind: 'post', ...(pre.brand ? { brand_name: pre.brand } : {}) }, a.status))); } catch (e) { toast(e.message, true); return null; }
+    try { return await C.create(named(withRef(conEstado({ ...a, ...(pre.caption ? { caption: pre.caption } : {}), profile, kind: 'post', ...(pre.brand ? { brand_name: pre.brand } : {}) }, a.status)))); } catch (e) { toast(e.message, true); return null; }
   }
   const v = await ask(p ? 'Editar pieza' : 'Nueva pieza por postear', [
     { k: 'title', l: 'Título', v: p?.title, req: true },
@@ -40,12 +52,15 @@ export async function editPost(profile, p, pre = {}) {
     { k: 'date', l: 'Fecha de publicación', t: 'date', v: p?.date, half: true },
     { k: 'status', l: 'Estado', t: 'select', opts: ESTADOS_TODOS.map((x) => [x, x]), v: estadoDe(p), half: true },
     ...(pillars.length ? [{ k: 'pillar', l: 'Pilar', t: 'select', opts: [['', '—'], ...pillars.map((x) => [x.name, x.name])], v: p?.pillar || '', half: true }] : []),
+    { k: 'campana', l: 'Campaña', v: p?.campana || '', half: true },
+    { k: 'consciencia', l: 'Nivel de consciencia', t: 'select', opts: [['', '—'], ...CONSCIENCIA.map((x, i) => [x, `${i + 1} · ${x}`])], v: consciencia(p), half: true },
+    ...(refs.length || p?.replica_de ? [{ k: 'replica_de', l: 'Replica', t: 'select', opts: [['', 'Original · sin referente'], ...refs.map((r) => [r.id, `Replicar: ${replicaNombre(r)}`]), ...(p?.replica_de && !refs.some((r) => r.id === p.replica_de) ? [[p.replica_de, 'El referente ya no está en Research']] : [])], v: p?.replica_de || '', half: true }] : []),
     { k: 'url', l: 'Video o archivo (Drive)', v: p?.url, half: true },
     { k: 'caption', l: 'Caption', t: 'textarea', v: p?.caption },
   ], p ? 'Guardar' : 'Agregar');
   if (!v) return null;
   if (v.url && !/^https:\/\//.test(v.url)) { toast('El link debe empezar con https://', true); return null; }
-  try { return p ? await C.save(named(conEstado({ ...p, ...v }, v.status))) : await C.create(named(conEstado({ ...v, profile, kind: 'post' }, v.status))); } catch (e) { toast(e.message, true); return null; }
+  try { return p ? await C.save(named(withRef(conEstado({ ...p, ...v }, v.status)))) : await C.create(named(withRef(conEstado({ ...v, profile, kind: 'post' }, v.status)))); } catch (e) { toast(e.message, true); return null; }
 }
 
 // Tablero por estado, con arrastrar y soltar. onChange(list) recibe la lista actualizada.
@@ -95,10 +110,12 @@ export function postsBoard(b, profile, list, onChange, opts = {}) {
       ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:9/12;border:0;border-radius:18px;margin-top:16px;background:#1a120c" allow="autoplay; fullscreen" loading="lazy"></iframe>` : p.url ? html`<a class="artifact" href="${p.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:14px"><span class="fi">${ico('play', 13)}</span><div><b style="font-weight:500">Abrir video</b></div></a>` : ''}
       ${p.caption ? html`<b class="sm" style="display:block;margin-top:18px">Caption</b><p style="white-space:pre-wrap;margin-top:6px">${p.caption}</p>` : ''}
       <div id="laya-idea" style="margin-top:16px"></div>
+      ${e === 'En proceso' ? html`<div class="row" style="margin-top:18px;gap:8px"><button class="btn ${p.por_aprobar ? 'ghost' : ''}" data-act="aprob">${p.por_aprobar ? 'Quitar de aprobación' : 'Enviar a aprobación'}</button><span class="mut sm">${p.por_aprobar ? 'El cliente la ve en «Por aprobar»' : 'El cliente solo aprueba lo que envías aquí'}</span></div>` : ''}
       <b class="sm" style="display:block;margin-top:18px">Mover a</b>
       <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">${ESTADOS_TODOS.map((s) => html`<button class="chip ${s === e ? 'dark' : ''}" data-act="st" data-s="${s}" style="padding:8px 12px" title="${ESTADO_AYUDA[s]}">${s}</button>`)}</div>
       <div class="row" style="margin-top:22px"><button class="btn" data-act="edit">Editar</button><div class="sp"></div><button class="btn ghost" data-act="del">${ico('trash')}</button></div>`, {
       st: async (t) => { try { const r = await C.save(conEstado(p, t.dataset.s)); save(r); openPost(r); } catch (err) { toast(err.message, true); } },
+      aprob: async () => { try { const { aprobacion, ...rest } = p; const r = await C.save(p.por_aprobar ? { ...p, por_aprobar: false } : { ...rest, por_aprobar: true }); save(r); openPost(r); toast(r.por_aprobar ? 'Enviada: el cliente ya la ve en «Por aprobar»' : 'Quitada de aprobación'); } catch (err) { toast(err.message, true); } },
       edit: async () => { closeDrawer(); save(await editPost(profile, p, { brand: opts.brand })); },
       del: async () => { if (!(await confirmAsk(`¿Eliminar «${p.title}»?`))) return; await C.remove(p.id); closeDrawer(); list = list.filter((x) => x.id !== p.id); onChange(list); },
     });

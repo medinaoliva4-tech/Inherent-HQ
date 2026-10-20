@@ -1,0 +1,5 @@
+id,campana,fecha,canal,formato,pilar,funcion,concepto,mezcla,traza,material,estado,trial
+CR-007,Una sola idea,2026-11-04,Instagram,estatico,Prueba,Proof,Dato de una sola idea repetida,70·probado,A,ninguno,listo,no
+CR-009,Una sola idea,2026-11-09,Instagram,carrusel,Educación,Utility,Tres señales de que una marca no se recuerda,20·apuesta,B,ninguno,listo,no
+CR-011,Una sola idea,2026-11-12,Instagram,reel,Educación,Series,Reel de la idea madre,70·probado,A,video,listo,sí
+CR-013,Una sola idea,2026-11-16,Instagram,estatico,Oferta,Conversion,Invitación a hablar,10·propio,C,ninguno,listo,no
