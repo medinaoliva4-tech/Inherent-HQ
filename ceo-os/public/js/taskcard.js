@@ -1,6 +1,6 @@
 // El área de entrega de una tarea: qué es, para cuándo, y dónde se entrega (link o archivo a Drive).
 // Es el mismo flujo del Workspace: el link o el archivo subido dejan la tarea «En revisión» de quien rinde cuentas.
-import { html, raw, mount, col, api, drawer, closeDrawer, toast, fdate, today, $, IC, ico, uploadToDrive, confirmAsk, initials } from './core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, toast, fdate, today, $, $$, IC, ico, uploadToDrive, confirmAsk, initials } from './core.js';
 
 const TK = col('tasks');
 export const STATES = ['Por empezar', 'En curso', 'En revisión', 'Hecha'];
@@ -76,6 +76,18 @@ export function openTaskSheet(t, ctx, onChange = () => {}) {
   const save = async (patch) => { try { const r = await TK.save({ ...t, ...patch }); t = r; onChange(r); return r; } catch (e) { toast(e.message, true); return null; } };
   const sopOf = () => { if (!t.sop) return ''; if (/^https?:\/\//.test(t.sop)) return { href: t.sop, name: t.sop.replace(/^https?:\/\//, '').slice(0, 40), ext: true }; const d = docs.find((x) => x.id === t.sop); return d ? { href: `#/library/${d.folder_id || '_'}/${d.id}`, name: d.title } : ''; };
   const deps = () => (t.depends_on || []).map((id) => tasks.find((x) => x.id === id)).filter(Boolean);
+  // Quien edita: «Depende de» con casillas (solo tareas del mismo proyecto y sin ciclos: no puede depender de algo que ya depende de ella)
+  // y el SOP de la Library o un link https.
+  const depsEdit = () => {
+    const others = tasks.filter((x) => x.id !== t.id && (x.project_id || '') === (t.project_id || '')), cur = new Set(t.depends_on || []);
+    const down = new Set(); const walk = (i) => tasks.filter((x) => (x.depends_on || []).includes(i)).forEach((x) => { if (!down.has(x.id)) { down.add(x.id); walk(x.id); } }); walk(t.id);
+    return others.length ? html`<div class="ts-dchecks">${others.map((x) => html`<label class="check ${down.has(x.id) ? 'mut' : ''}"><input type="checkbox" class="tsdep" value="${x.id}" ${cur.has(x.id) ? raw('checked') : ''} ${down.has(x.id) ? raw('disabled title="Ya depende de esta tarea"') : ''}> ${x.title}</label>`)}</div>` : html`<span class="mut">No hay otras tareas en este proyecto</span>`;
+  };
+  const sopEdit = () => {
+    const list = [...docs.filter((d) => d.kind === 'SOP'), ...docs.filter((d) => d.kind !== 'SOP' && d.kind !== 'Prompt')], link = /^https?:/.test(t.sop || '') ? t.sop : '';
+    return html`<div class="ts-sop"><select class="in ts-in" id="tssop" aria-label="SOP de la Library"><option value="">— Ninguno</option>${list.map((d) => html`<option value="${d.id}" ${d.id === t.sop ? raw('selected') : ''}>${d.title}</option>`)}</select>
+      <input class="in ts-in" id="tssopl" placeholder="o un link https://…" value="${link}" aria-label="Link del SOP"></div>`;
+  };
   const crew = team.filter((x) => x.active !== false && x.kind !== 'ia');
   const prop = (l, v) => html`<div class="ts-k">${l}</div><div class="ts-v">${v}</div>`;
   const draw = () => {
@@ -89,8 +101,8 @@ export function openTaskSheet(t, ctx, onChange = () => {}) {
         ${prop('Fecha', edit ? html`<input class="in ts-in" type="date" id="tsdue" value="${t.due || ''}">` : dueChip(t))}
         ${phases.length ? prop('Fase', edit ? html`<select class="in ts-in" id="tsphase"><option value="">— Sin fase</option>${phases.map((x) => html`<option value="${x.k}" ${x.k === t.phase ? raw('selected') : ''}>${x.name}</option>`)}</select>` : html`<span>${ph?.name || '—'}</span>`) : ''}
         ${t.accountable ? prop('Revisa', html`<span>${who(t.accountable)}</span>`) : ''}
-        ${prop('Depende de', dl.length ? html`<span class="ts-deps">${dl.map((d) => html`<span class="chip sm2 ${d.status === 'Hecha' ? '' : 'red'}">${d.status === 'Hecha' ? ico('check', 11) : ico('lock', 11)} ${d.title}</span>`)}</span>` : html`<span class="mut">Nada</span>`)}
-        ${prop('SOP', sop ? html`<a href="${sop.href}" ${sop.ext ? raw('target="_blank" rel="noopener noreferrer"') : ''} class="ts-link">${ico('doc', 14)} ${sop.name}</a>` : html`<span class="mut">Sin SOP</span>`)}
+        ${edit ? prop('Depende de', depsEdit()) : prop('Depende de', dl.length ? html`<span class="ts-deps">${dl.map((d) => html`<span class="chip sm2 ${d.status === 'Hecha' ? '' : 'red'}">${d.status === 'Hecha' ? ico('check', 11) : ico('lock', 11)} ${d.title}</span>`)}</span>` : html`<span class="mut">Nada</span>`)}
+        ${edit ? prop('SOP', sopEdit()) : prop('SOP', sop ? html`<a href="${sop.href}" ${sop.ext ? raw('target="_blank" rel="noopener noreferrer"') : ''} class="ts-link">${ico('doc', 14)} ${sop.name}</a>` : html`<span class="mut">Sin SOP</span>`)}
       </div>
       <div class="lbl ts-h">Descripción</div>
       ${edit ? html`<textarea class="in" id="tsdesc" rows="3" placeholder="Qué es y qué incluye…">${t.description || ''}</textarea>` : t.description ? html`<p class="sm" style="white-space:pre-wrap;margin:0">${t.description}</p>` : html`<p class="mut sm" style="margin:0">Sin descripción.</p>`}
@@ -114,7 +126,7 @@ export function openTaskSheet(t, ctx, onChange = () => {}) {
       tsaddchk: async () => { const v = $('#tsnewchk').value.trim(); if (!v) return; if (await save({ ...collect(), checklist: [...(t.checklist || []), { t: v, done: false }] })) draw(); },
       tsaddcom: async () => { const v = $('#tsnewcom').value.trim(); if (!v) return; if (await save({ ...collect(), comments: [...(t.comments || []), { who: me.name, at: new Date().toISOString(), text: v }] })) draw(); },
       tsstart: async () => { if (await save({ status: 'En curso' })) draw(); },
-      tssave: async () => { if (await save(collect())) { toast('Guardado'); closeDrawer(); } },
+      tssave: async () => { const l = $('#tssopl')?.value.trim(); if (l && !/^https:\/\//.test(l)) return toast('El link del SOP debe empezar con https://', true); if (await save(collect())) { toast('Guardado'); closeDrawer(); } },
       tsdeliver: async () => { const link = $('#dlink').value.trim(); if (!link) { toast('Pega el link de tu entrega o sube el archivo', true); return $('#dlink').focus(); } if (!/^https?:\/\//.test(link)) return toast('El link debe empezar con https://', true); if (await save({ ...collect(), link, status: 'En revisión' })) { toast('Entregado a revisión'); closeDrawer(); } },
       tsapprove: async () => { if (await save({ status: 'Hecha' })) { toast('Aprobado'); closeDrawer(); } },
       tsback: async () => { const { ask } = await import('./core.js'); const v = await ask('¿Qué hay que cambiar?', [{ k: 'note', l: 'Comentario para quien lo hizo', t: 'textarea', req: true }], 'Devolver'); if (!v) return; if (await save({ status: 'En curso', comments: [...(t.comments || []), { who: me.name, at: new Date().toISOString(), text: '↩ ' + v.note }] })) { toast('Devuelto con comentario'); closeDrawer(); } },
@@ -131,6 +143,8 @@ export function openTaskSheet(t, ctx, onChange = () => {}) {
     if ($('#tsdue')) o.due = v('tsdue');
     if ($('#tsphase')) o.phase = v('tsphase');
     if ($('#tsdesc')) o.description = v('tsdesc');
+    if ($('#tssop')) { const l = v('tssopl').trim(); o.sop = /^https:\/\//.test(l) ? l : v('tssop'); }
+    if ($('.ts-dchecks')) o.depends_on = $$('.ts-dchecks .tsdep:checked').map((i) => i.value);
     return o;
   };
   // Quien es responsable (sin editar) cambia el estado al instante.

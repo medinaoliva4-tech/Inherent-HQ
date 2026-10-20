@@ -16,6 +16,7 @@ import * as recipes from './recipes.js';
 import * as recurring from './recurring.js';
 import * as results from './results.js';
 import * as facturasLib from './facturas.js';
+import * as layaLib from './laya.js';
 import { estadoFactura, totales as totalesFacturas, ESTADOS as ESTADOS_FACTURA } from '../../public/js/facturas.js';
 import { repeatText, RECIPE_TYPES, KINDS as RECIPE_KINDS, RECIPE_ROLES } from '../../public/js/recipes.js';
 import { phasesFor, meetingsFor, tasksFor, holders, roleToWork, DEPTS, hoursAt, svcHours, svcCost, svcPrice, svcAuto, growthText, includesAt, daysAt, addDays } from '../../public/js/cycle.js';
@@ -167,10 +168,11 @@ const TOOLS = [
   ['generar_recurrentes', 'operations', 'SOLO CEO O COO. Deja creadas las tareas de las responsabilidades recurrentes (recetas internas activas) que ya toca hacer. No duplica: se puede correr las veces que sea.', {}],
   ['facturas', 'finanzas', 'SOLO EL CEO. Las facturas de Inherent: por cobrar (a clientes) y por pagar (a proveedores), con su estado (pendiente, vencida, pagada o anulada; «vencida» = pendiente con fecha pasada) y los totales en quetzales. Filtros opcionales: tipo y estado.', { tipo: { type: 'string', enum: ['cobrar', 'pagar'] }, estado: { type: 'string', enum: ESTADOS_FACTURA } }],
   ['registrar_factura', 'finanzas', 'SOLO EL CEO. Registra una factura. Pensado para la skill ap-processor: lee los correos con factura de un proveedor y regístrala aquí (tipo pagar). No duplica: si ya existe una del mismo proveedor, monto y fecha, devuelve esa. Por cobrar lleva el slug del cliente. Montos en quetzales salvo moneda USD.', { tipo: { type: 'string', enum: ['pagar', 'cobrar'], description: 'por defecto pagar' }, proveedor: { type: 'string', description: 'quién nos cobra (tipo pagar)' }, cliente: { type: 'string', description: 'slug del cliente (tipo cobrar)' }, concepto: { type: 'string' }, monto: { type: 'number' }, moneda: { type: 'string', enum: ['GTQ', 'USD'] }, emitida: { type: 'string', description: 'AAAA-MM-DD' }, vence: { type: 'string', description: 'AAAA-MM-DD' }, archivo: { type: 'string', description: 'link https al PDF o al correo' }, notas: { type: 'string', description: 'número de factura, NIT u otro dato' } }, ['concepto', 'monto', 'vence']],
-  ['marcar_pagada', 'finanzas', 'SOLO EL CEO. Marca una factura como pagada, con la fecha del pago y la referencia del banco si se saben. Los ids salen de facturas.', { id: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD; por defecto hoy' }, referencia: { type: 'string', description: 'referencia del banco' } }, ['id']],
+  ['marcar_pagada', 'finanzas', 'SOLO EL CEO. Marca una factura como pagada, con la fecha del pago y la referencia del banco si se saben. Los ids salen de facturas. Queda registrado solo: un cobro pagado crea su ingreso en Finanzas y, si es del plan mensual, los costos del mes del cliente (su receta de costos) como facturas por pagar; un pago a proveedor crea su gasto. Sin duplicar.', { id: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD; por defecto hoy' }, referencia: { type: 'string', description: 'referencia del banco' } }, ['id']],
+  ...layaLib.TOOLS, // Fase 3 · Laya: juicios_pendientes y guardar_juicio
 ];
 // Las herramientas que cambian algo: hace falta nivel «edita» en su área (la matriz del CEO). Las demás, con ver basta.
-const WRITE = new Set(['crear_tarea', 'actualizar_tarea', 'crear_cotizacion', 'crear_lead', 'actualizar_lead', 'registrar_actividad', 'importar_prospectos', 'crear_proyecto', 'subir_documento', 'subir_archivo', 'actualizar_perfil', 'guardar_research', 'borrar_research', 'agendar', 'actualizar_idea', 'borrar_idea', 'crear_idea', 'guardar_receta', 'activar_paquete', 'asignar_rol', 'generar_recurrentes', 'registrar_factura', 'marcar_pagada']);
+const WRITE = new Set(['guardar_juicio', 'crear_tarea', 'actualizar_tarea', 'crear_cotizacion', 'crear_lead', 'actualizar_lead', 'registrar_actividad', 'importar_prospectos', 'crear_proyecto', 'subir_documento', 'subir_archivo', 'actualizar_perfil', 'guardar_research', 'borrar_research', 'agendar', 'actualizar_idea', 'borrar_idea', 'crear_idea', 'guardar_receta', 'activar_paquete', 'asignar_rol', 'generar_recurrentes', 'registrar_factura', 'marcar_pagada']);
 // Sin views (pruebas que pasan el usuario a mano), el área visible alcanza, como antes.
 const mayWrite = (u, name, area) => !WRITE.has(name) || !area || !u.views || levelOf(u, area) === 'edita';
 // «Resumen» también aquí: lo que la pantalla no muestra en resumen, el conector no lo entrega
@@ -188,6 +190,7 @@ async function call(u, name, a = {}) {
   if (!mayWrite(u, name, tool[1])) throw new Error('Tu perfil solo puede ver esto, no cambiarlo');
   if (hiddenBySummary(u, name)) throw new Error('Tu perfil ve esta sección en «resumen»: esto no entra');
   if (CEO_ONLY.has(name) && u.role !== 'ceo') throw new Error('Solo el CEO usa las facturas');
+  if (name === 'juicios_pendientes' || name === 'guardar_juicio') return layaLib.mcp(u, name, a);
   const T = today();
   const sc = await scoper(u); // el alcance: null = todo
   const inS = (coll, d) => inScope(sc, coll, d);
@@ -573,7 +576,8 @@ async function call(u, name, a = {}) {
   }
   if (name === 'marcar_pagada') {
     const r = await facturasLib.marcarPagada(u, a.id, { paid_at: a.fecha, bank_ref: String(a.referencia || '').slice(0, 120) });
-    return { ok: true, ...(r.ya_estaba ? { ya_estaba: true } : {}), factura: facturaOut(T)(r) };
+    const ef = r.efectos || {}; // lo que se registró solo: el ingreso o el gasto en Finanzas y los costos del mes del cliente
+    return { ok: true, ...(r.ya_estaba ? { ya_estaba: true } : {}), factura: facturaOut(T)(r), registrado: { ...(r.kind === 'cobrar' ? { ingreso: Boolean(ef.ingreso), costos_del_mes: (ef.costos || []).length, ...(ef.sinReceta ? { sin_receta: true } : {}), ...(ef.sinMonto ? { lineas_sin_monto: ef.sinMonto } : {}) } : { gasto: Boolean(ef.gasto) }) } };
   }
   throw new Error('Herramienta desconocida');
 }

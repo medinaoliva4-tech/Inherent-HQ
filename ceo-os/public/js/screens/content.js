@@ -2,6 +2,7 @@ import { techDetail, html, raw, mount, api, toast, acts, drawer, closeDrawer, fd
 import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 import { estadoDe, separar, ESTADO_CLS, nombreDe } from '../element.js';
+import { layaBox } from '../laya-ui.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
@@ -433,6 +434,7 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
         <div class="rfc-head"><h2>${rtitle(it)}</h2>${resOf(it) ? html`<span class="rfc-res ${resOf(it)}">${resOf(it)}</span>` : ''}</div>
         ${stats.length ? html`<div class="rfc-stats">${stats.map(([v2, l]) => html`<div><b>${v2}</b><span>${l}</span></div>`)}</div>` : ''}
         ${chips.length ? html`<div class="rfc-chips">${chips.map(([l, c]) => html`<span class="${c || ''}">${l}</span>`)}</div>` : ''}
+        <div id="laya-ref"></div>
         ${w.hook ? html`<div class="rfc-sec"><span class="lbl">Hook</span><p>${w.hook}</p></div>` : ''}
         ${mine ? html`<div class="rfc-sec"><span class="lbl">Tu versión</span><div class="rfc-md">${md(mine)}</div></div>` : ''}
         ${!it.why ? html`<div class="rfc-sec"><p class="mut">Todavía sin análisis. Claude lo desglosa y lo sube aquí.</p><button class="btn xs" data-v="ask">Pedir el análisis a Claude</button></div>` : ''}
@@ -460,7 +462,8 @@ Súbelo al OS con el conector de Inherent: guardar_research con perfil «${slug}
             <label class="sm">Pilar<input class="in" data-tag="pillar" list="rv-pillars" value="${it.pillar || ''}" placeholder="—"><datalist id="rv-pillars">${pillarOpts.map((x) => html`<option value="${x}">`)}</datalist></label>
           </div></details>
       </div></aside>`);
-    document.body.appendChild(v); requestAnimationFrame(() => v.classList.add('on')); v.querySelector('[data-v="close"]')?.focus({ preventScroll: true });
+    document.body.appendChild(v); requestAnimationFrame(() => v.classList.add('on'));
+    if (it.id) layaBox(v.querySelector('#laya-ref'), { coll: 'content', id: it.id }); // Fase 3 · Laya: ¿sirve para esta marca? v.querySelector('[data-v="close"]')?.focus({ preventScroll: true });
     // El video se ve aquí mismo: el servidor saca el link directo del reel (caduca, por eso se pide al abrir). Si Instagram no lo deja, queda la miniatura con el link al original.
     if (f === 'reel' && em) {
       const box = $('#rvmedia', v), fallback = () => { const l = box.querySelector('.rv-load'); if (l) l.outerHTML = `<a class="rv-load rv-ext" href="${it.url}" target="_blank" rel="noopener noreferrer">Instagram no deja verlo aquí · Abrir ↗</a>`; };

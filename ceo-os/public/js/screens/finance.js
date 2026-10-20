@@ -1,12 +1,11 @@
 import { svcHours, svcCost, svcPrice, svcAuto } from '../cycle.js';
 import { byScope, proposal, targetMargin, LEVELS, PRICING_ID } from '../finscope.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
-import { facturasTab } from '../facturas-ui.js';
+import { facturasTab, costosPorCliente } from '../facturas-ui.js';
+import { CATS_IN, CATS_OUT } from '../facturas.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico, isSummary, canEdit, roChip, fromLink } from '../core.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-const CATS_IN = ['Plan mensual', 'Proyecto', 'Performance fee', 'Otro'];
-const CATS_OUT = ['Pagos por servicio', 'Herramientas / IA', 'Producción', 'Pauta', 'Oficina', 'Impuestos', 'Otro'];
 const ym = (d) => String(d || '').slice(0, 7);
 const mLabel = (m) => `${MONTHS[+m.slice(5) - 1]} ${m.slice(2, 4)}`;
 const slug = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -84,7 +83,11 @@ export async function render(el, { me, sub }) {
   }
 
   // ---------- Facturas: por cobrar, por pagar y el cruce con el banco (facturas-ui.js) ----------
-  function fact(b) { facturasTab(b, { me, clients }); }
+  // Lo que se registra solo al marcar una factura pagada (ingreso o gasto) entra a los movimientos sin recargar.
+  let openInv = null; // la factura que se abre al llegar desde el enlace de un movimiento
+  const onMov = (m) => { manual = [...manual.filter((x) => x.id !== m.id), m]; entries = [...manual, ...fromSheet(sheet)]; };
+  const goInv = (id) => { closeDrawer(); tab = 'fact'; openInv = id; history.replaceState(null, '', '#/finanzas/fact'); swap(el, paint); };
+  function fact(b) { const open = openInv; openInv = null; facturasTab(b, { me, clients, movs: manual, onMov, open }); }
 
   // ---------- Movimientos ----------
   function mov(b) {
@@ -93,7 +96,7 @@ export async function render(el, { me, sub }) {
       : !sheet?.url && edit ? html`<div class="mut sm" style="margin-bottom:12px">${ico('bulb')} Conecta tu Google Sheet (arriba) y los movimientos entran solos. Columnas: fecha, tipo, concepto, monto, categoría y cliente.</div>` : '';
     mount(b, !list.length ? html`${note}<div class="empty"><b>Sin movimientos en ${mLabel(month)}</b>${sheet?.url ? 'Agrega filas a tu hoja de Google Sheets y recarga.' : 'Conecta tu Google Sheet o registra un ingreso o gasto.'}</div>`
       : html`${note}<div class="card"><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Cliente</th><th>Categoría</th><th class="n">Monto</th></tr></thead><tbody>
-        ${list.map((e) => html`<tr class="click" data-act="${e.sheet ? 'sheet' : 'edit'}" data-id="${e.id}"><td class="mut">${fdate(e.date)}</td><td><b style="font-weight:500">${e.concept}</b>${e.sheet ? html` <span class="mut sm">· Sheet</span>` : ''}</td><td>${e.client || '—'}</td><td><span class="chip">${e.category || '—'}</span></td>
+        ${list.map((e) => html`<tr class="click" data-act="${e.sheet ? 'sheet' : 'edit'}" data-id="${e.id}"><td class="mut">${fdate(e.date)}</td><td><b style="font-weight:500">${e.concept}</b>${e.sheet ? html` <span class="mut sm">· Sheet</span>` : ''}${e.source === 'auto' ? html` <span class="chip sm2">auto</span>${e.invoice_id && !resumen ? html` <a class="sm mov-inv" data-act="inv" data-id="${e.invoice_id}">factura</a>` : ''}` : ''}</td><td>${e.client || '—'}</td><td><span class="chip">${e.category || '—'}</span></td>
           <td class="n"><b style="color:${e.type === 'ingreso' ? '#715640' : '#654c38'}">${e.type === 'ingreso' ? '+' : '−'}${Q(e.amount)}</b></td></tr>`)}
       </tbody></table></div>`);
   }
@@ -119,6 +122,7 @@ export async function render(el, { me, sub }) {
     const cell = (sv, lv) => { const c = svcCost(sv, rates, lv), h = svcHours(sv, lv);
       return html`<td class="n">${!(sv.tasks || []).length ? html`<span class="mut sm">sin horas</span>` : !c ? '—' : c.miss.length ? html`<span title="Faltan costos por hora: ${c.miss.join(', ')}">${ico('alert')} ${Q(c.cost)}</span>` : html`<b style="font-weight:500">${Q(c.cost)}</b>`}<div class="mut sm">${h} h</div></td>`; };
     mount(b, html`
+      <div id="recCost" style="margin-bottom:24px"></div>
       <div class="mut sm" style="margin-bottom:12px">${ico('lock')} Lo que cuesta entregar cada módulo según su complejidad. Las horas por rol salen del catálogo (Comercial → Catálogo) y el costo por hora de «Costos por hora». El costo de cada cliente es la suma de sus módulos: ver «Rentabilidad».</div>
       ${!rates ? html`<div class="warnbox" style="margin-bottom:14px">Sin costos por hora todavía: el costo de cada módulo vendrá de Comercial → Catálogo → Costos por hora.</div>` : ''}
       ${!services.length ? html`<div class="empty"><b>Sin servicios</b>Los módulos del catálogo de Comercial aparecen aquí con su costo en cada complejidad.</div>`
@@ -126,6 +130,7 @@ export async function render(el, { me, sub }) {
         ${services.map((sv) => html`<tr><td><b style="font-weight:500">${sv.name}</b><div class="mut sm">${sv.category || ''} · por ${sv.unit || 'proyecto'}</div></td><td>${(sv.tasks || []).map((t) => html`<span class="chip" style="margin:2px">${t.role}</span>`)}</td>${LEVELS.map((lv) => cell(sv, lv))}<td class="n">${(() => { const pr = svcAuto(sv, rates, 5) ?? svcPrice(sv, 5); return pr ? Q(pr) : '—'; })()}</td></tr>`)}
       </tbody></table></div>`}<div id="espCost"></div>`);
     espCosts($('#espCost', b));
+    costosPorCliente($('#recCost', b), { services, rates, projects, quotes, accounts, clients, edit });
   }
 
   // Los especialistas asignados a cada cliente: cuánto cuestan al mes y si van como add-on.
@@ -312,6 +317,7 @@ export async function render(el, { me, sub }) {
   }
   acts(el, {
     tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', '#/finanzas/' + tab); swap(el, paint); },
+    inv: (t) => goInv(t.dataset.id),
     add: (t) => editEntry(null, t.dataset.type),
     sheet: async () => { if (sheet?.url) return window.open(sheet.url, '_blank', 'noopener'); connectSheet(); },
     sheetset: () => connectSheet(),
@@ -319,9 +325,10 @@ export async function render(el, { me, sub }) {
       const e = entries.find((x) => x.id === t.dataset.id);
       drawer(html`<div class="row"><span class="chip ${e.type === 'ingreso' ? 'green' : 'red'}">${e.type}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
         <h2>${e.concept}</h2><div class="big" style="font-size:44px;margin-top:10px">${Q(e.amount)}</div>
-        <div class="kv"><span>Fecha</span><b style="font-weight:500">${fdate(e.date)}</b><span>Categoría</span><b style="font-weight:500">${e.category || '—'}</b><span>Cliente</span><b style="font-weight:500">${e.client || '—'}</b></div>
+        <div class="kv"><span>Fecha</span><b style="font-weight:500">${fdate(e.date)}</b><span>Categoría</span><b style="font-weight:500">${e.category || '—'}</b><span>Cliente</span><b style="font-weight:500">${e.client || '—'}</b>${e.source === 'auto' ? html`<span>Origen</span><b style="font-weight:500">Registrado solo, al pagarse su factura</b>` : ''}</div>
+        ${e.invoice_id && !resumen ? html`<button class="btn ghost" data-act="inv" data-id="${e.invoice_id}" style="margin-bottom:10px">${ico('doc')} Ver factura</button>` : ''}
         ${edit ? html`<div class="row"><button class="btn" data-act="ed">Editar</button><button class="btn ghost" data-act="del">Eliminar</button></div>` : ''}`,
-      { ed: () => { closeDrawer(); editEntry(e); }, del: async () => { if (!(await confirmAsk('¿Eliminar este movimiento?'))) return; await F.remove(e.id); entries = entries.filter((x) => x.id !== e.id); manual = entries.filter((x) => !x.sheet); closeDrawer(); paint(); } });
+      { inv: (t) => goInv(t.dataset.id), ed: () => { closeDrawer(); editEntry(e); }, del: async () => { if (!(await confirmAsk('¿Eliminar este movimiento?'))) return; await F.remove(e.id); entries = entries.filter((x) => x.id !== e.id); manual = entries.filter((x) => !x.sheet); closeDrawer(); paint(); } });
     },
   });
   paint();

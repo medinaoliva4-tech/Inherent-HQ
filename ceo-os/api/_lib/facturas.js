@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import * as db from './db.js';
 import { readFile, listDir } from './gh.js';
 import { parsePlanContratado } from './parse.js';
-import { limpiarFactura, cobrosDelMes, claveMovimiento, estadoFactura } from '../../public/js/facturas.js';
+import { limpiarFactura, cobrosDelMes, claveMovimiento, estadoFactura, efectosDelPago } from '../../public/js/facturas.js';
 
 const hoy = () => new Date().toISOString().slice(0, 10);
 const isDate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(String(s || ''));
@@ -44,16 +44,48 @@ export async function registrar(u, data, source = 'manual') {
 }
 
 // Marca una factura como pagada (con la fecha y la referencia del banco, si se saben).
+// Es el único lugar por donde una factura queda pagada (a mano, con el cruce del banco o con marcar_pagada de Claude):
+// aquí mismo se registra lo que eso provoca (alPagar). Devuelve la factura con «efectos» (no se guarda en la factura).
 export async function marcarPagada(u, id, { paid_at, bank_ref } = {}) {
   const cur = await db.get('invoices', String(id || ''));
   if (!cur) throw err('No encontré esa factura', 404);
   if (cur.status === 'anulada') throw err('Esa factura está anulada');
-  if (cur.status === 'pagada') return { ...cur, ya_estaba: true };
+  if (cur.status === 'pagada') return { ...cur, ya_estaba: true, efectos: await alPagar(u, cur) }; // completa lo que falte, sin repetir
   const { id: _i, v, _meta, ...doc } = cur;
   const next = limpiarFactura({ ...doc, status: 'pagada', paid_at: isDate(paid_at) ? paid_at : hoy(), bank_ref: bank_ref || cur.bank_ref }, hoy());
   const r = await db.update('invoices', cur.id, next, cur.v, u.email);
   if (!r) throw err('Alguien la cambió justo ahora; intenta de nuevo', 409);
-  return r;
+  return { ...r, efectos: await alPagar(u, r) };
+}
+
+// ---------- Lo que pasa solo cuando entra (o sale) un pago ----------
+// La receta de costos del cliente (cost_recipes, id = slug).
+export async function recetaDe(slug) {
+  const s = String(slug || '').toLowerCase(); if (!s) return null;
+  return (await db.get('cost_recipes', s)) || (await db.list('cost_recipes')).find((r) => r.client === s) || null;
+}
+// Crea el doc con su id fijo solo si no existe. Devuelve el doc nuevo o null si ya estaba.
+async function crearUnaVez(coll, id, doc, who) {
+  if (await db.get(coll, id)) return null;
+  try { return await db.create(coll, doc, who, id); }
+  catch (e) { if (/duplicate|unique/i.test(e.message)) return null; throw e; }
+}
+// Por cobrar pagada → el ingreso en Finanzas (ing-<id>) y una por pagar por línea de la receta (cost-<id>-<n>).
+// Por pagar pagada  → el gasto en Finanzas (gas-<id>). Los ids son fijos: nada se repite.
+// Devuelve { ingreso, gasto, costos: [las por pagar de ese cobro], nuevos, sinMonto, sinReceta }.
+export async function alPagar(u, inv) {
+  const plan = efectosDelPago(inv, inv.kind === 'cobrar' ? await recetaDe(inv.client) : null);
+  const out = { ingreso: null, gasto: null, costos: [], nuevos: 0, sinMonto: plan.sinMonto, sinReceta: plan.sinReceta };
+  if (plan.movimiento) {
+    const { id, ...m } = plan.movimiento;
+    out[m.type === 'ingreso' ? 'ingreso' : 'gasto'] = (await crearUnaVez('finance', id, m, u.email)) || (await db.get('finance', id));
+  }
+  for (const { id, ...c } of plan.costos) {
+    let d = await crearUnaVez('invoices', id, limpiarFactura(c, hoy()), u.email);
+    if (d) out.nuevos++; else d = await db.get('invoices', id);
+    if (d) out.costos.push(d);
+  }
+  return out;
 }
 
 // Guarda los movimientos del estado de cuenta sin duplicar (la clave es fecha + monto + referencia).
@@ -82,7 +114,7 @@ export async function conciliar(u, invoiceId, moveId) {
   if (mv.invoice_id && mv.invoice_id !== inv.id) throw err('Ese movimiento ya está ligado a otra factura');
   if ((mv.type === 'credito') !== (inv.kind === 'cobrar')) throw err(mv.type === 'credito' ? 'Un crédito solo paga una factura por cobrar' : 'Un débito solo paga una factura por pagar');
   if (!['pendiente', 'vencida'].includes(estadoFactura(inv, hoy())) && inv.status !== 'pagada') throw err('Esa factura no está pendiente');
-  const r = inv.status === 'pagada' ? inv : await marcarPagada(u, inv.id, { paid_at: mv.date, bank_ref: mv.ref || mv.desc.slice(0, 60) || mv.id });
+  const r = await marcarPagada(u, inv.id, { paid_at: mv.date, bank_ref: mv.ref || mv.desc.slice(0, 60) || mv.id }); // si ya estaba pagada, no la cambia
   const { id: _i, v, _meta, ...m } = mv;
   await db.update('bank_moves', mv.id, { ...m, invoice_id: inv.id }, mv.v, u.email);
   return r;

@@ -16,7 +16,8 @@ import * as recipes from './_lib/recipes.js';
 import * as recurring from './_lib/recurring.js';
 import * as results from './_lib/results.js';
 import * as facturas from './_lib/facturas.js';
-import { limpiarFactura } from '../public/js/facturas.js';
+import * as laya from './_lib/laya.js';
+import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
 import { levelName } from '../public/js/levels.js';
@@ -99,6 +100,8 @@ async function collGuard(req, res, write) {
   const coll = req.params.coll;
   const area = COLLS[coll];
   if (!area) { res.status(404).json({ error: 'Colección desconocida' }); return null; }
+  // Los juicios de Laya se leen según el elemento juzgado: solo por /api/laya/juicios.
+  if (coll === laya.COLL) { res.status(404).json({ error: 'Los juicios de Laya están en /api/laya/juicios' }); return null; }
   const any = coll === 'settings' && !write ? null : [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])];
   const u = any ? await guardAny(req, res, any, { write }) : await guard(req, res); if (!u) return null;
   if (!canRead(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO ve esto' }); return null; }
@@ -210,6 +213,7 @@ on('POST', 'db/:coll', async (req, res) => {
   if (req.params.coll === 'brand_boards' && !slugOk(String(b.id || ''))) return res.status(400).json({ error: 'El tablero lleva el slug del cliente como id' });
   if (req.params.coll === 'recipes') { try { b = { ...recipes.cleanRecipe(b), id: b.id }; } catch (e) { return res.status(400).json({ error: e.message }); } }
   if (req.params.coll === 'invoices') { try { b = { ...limpiarFactura(b), id: b.id }; } catch (e) { return res.status(400).json({ error: e.message }); } }
+  if (req.params.coll === 'cost_recipes') { try { b = limpiarReceta(b); b.id = b.client; } catch (e) { return res.status(400).json({ error: e.message }); } }
   if (['content', 'sources'].includes(req.params.coll) && !personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' });
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
   if (req.params.coll === 'settings' && (id === 'role_views' || b.id === 'role_views')) forgetViews();
@@ -239,6 +243,7 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   }
   if (req.params.coll === 'recipes') { try { b = { ...recipes.cleanRecipe(b), v: b.v }; } catch (e) { return res.status(400).json({ error: e.message }); } }
   if (req.params.coll === 'invoices') { try { b = { ...limpiarFactura(b), v: b.v }; } catch (e) { return res.status(400).json({ error: e.message }); } }
+  if (req.params.coll === 'cost_recipes') { try { b = { ...limpiarReceta({ ...b, client: (await db.get('cost_recipes', req.params.id))?.client || b.client }), v: b.v }; } catch (e) { return res.status(400).json({ error: e.message }); } }
   if (req.params.coll === 'lead_sources') { const cur = await db.get('lead_sources', req.params.id); b = { ...leads.cleanSource({ ...cur, ...b, key: cur?.key || b.key }), log: cur?.log || [], n: cur?.n || null, v: b.v }; }
   if (req.params.coll === 'tasks') {
     b = cleanTask(b);
@@ -1062,6 +1067,9 @@ export async function search(u, q) {
   for (let i = 0; i < PER_TYPE && picked.length < MAX_RESULTS; i++) for (const l of by) if (l[i] && picked.length < MAX_RESULTS) picked.push(l[i]);
   return picked.sort((a, z) => SEARCH_TYPES.indexOf(a.type) - SEARCH_TYPES.indexOf(z.type) || z.score - a.score).map(({ score, ...x }) => x);
 }
+// ---------- Laya (Fase 3): el juicio como dato — puertas, texto, juicios y pendientes ----------
+laya.rutas(on);
+
 on('GET', 'search', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   const q = String(req.query.q || '').slice(0, 80);

@@ -17,6 +17,8 @@ export async function render(el, { me, sub = [], embed = '' }) {
   // embed «vistas»: monta solo la matriz de Vistas por rol (sin las pestañas de Equipo).
   // Las recetas ya no viven aquí: #/team/recetas lleva a Servicios → Responsabilidades.
   if (sub[0] === 'recetas') { location.hash = '/services/responsabilidades'; return; }
+  // Fase 3 · Laya: el puente, el comando para instalarlo, las puertas (las edita el CEO) y los últimos juicios.
+  if (sub[0] === 'laya') { const { layaView } = await import('../laya-ui.js'); return layaView(el, { me }); }
   let view = ['people', 'roles', 'vistas'].includes(sub[0]) && (isCeo || ['people', 'roles'].includes(sub[0])) ? sub[0] : 'org';
   if (embed === 'vistas' && isCeo) view = 'vistas';
   let rp = null; // rp: proyectos y tareas de la pestaña Roles (se cargan al abrirla)

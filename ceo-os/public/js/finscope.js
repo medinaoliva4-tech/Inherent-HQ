@@ -55,7 +55,8 @@ export function byScope({ month, services = [], rates = null, projects = [], quo
   const row = (k, fb) => { if (!rows.has(k)) rows.set(k, { slug: k, name: nameOf(k, fb), modules: [], cost: null, costMiss: [], costWhy: [], quoted: null, received: null, spent: null, income: null, incomeFrom: null, margin: null, pct: null, active: false }); return rows.get(k); };
   const add = (r, item, { price, from, unit, factor = 1 }) => {
     const c = moduleCost(item, services, rates);
-    r.modules.push({ name: item.name || 'Módulo', level: lvOf(item.level), qty: c.qty ?? 1, unit, from, cost: c.cost, miss: c.miss, why: c.why || '', price: price == null ? null : price * factor });
+    // service_id y roles: para partir el costo por rol (la receta de costos de Finanzas, en facturas.js).
+    r.modules.push({ name: item.name || 'Módulo', service_id: item.service_id || item.id || null, roles: Array.isArray(item.roles) ? item.roles : [], level: lvOf(item.level), qty: c.qty ?? 1, unit, from, cost: c.cost, miss: c.miss, why: c.why || '', price: price == null ? null : price * factor });
   };
   // 1) Proyectos con módulos (de una cotización o de un paquete) y proyectos activos sin módulos (ciclo o Growth del alcance).
   for (const p of projects) {

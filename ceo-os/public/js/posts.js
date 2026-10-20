@@ -2,6 +2,7 @@
 // Se usa en Content y en la página de cada cliente. Vive en la colección content.
 import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard, api, connectChip, ask as askF, ico } from './core.js';
 import { ESTADOS, ESTADOS_TODOS, ESTADO_CLS, ESTADO_AYUDA, estadoDe, separar, conEstado, nombreAuto, nombreDe } from './element.js';
+import { layaBox } from './laya-ui.js';
 
 // Los estados son los del modelo de elemento (Idea · En proceso · Listo · Publicado, más Archivado).
 // Los viejos (Grabado, Editado, Programado) se leen como los nuevos: nada se reescribe en la base.
@@ -86,12 +87,14 @@ export function postsBoard(b, profile, list, onChange, opts = {}) {
     const p = list.find((x) => x.id === t.dataset.id); if (p) openPost(p);
   };
   function openPost(p) {
+    queueMicrotask(() => layaBox(document.getElementById('laya-idea'), { coll: 'content', id: p.id })); // Fase 3 · Laya: ¿engancha?, ¿suena a la marca?
     const em = embedUrl(p.url);
     const e = estadoDe(p);
     drawer(html`<div class="row"><span class="chip ${PCLS[e]}">${e}</span><span class="chip">${p.format || 'Pieza'}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <h2>${p.title}</h2><div class="mut sm" style="margin-top:2px">${nombreDe(p, opts.brand)}</div><div class="mut">${p.date ? 'Sale el ' + fdate(p.date) : 'Sin fecha'}${p.published_at ? ` · publicado el ${fdate(p.published_at)}` : ''}</div>
       ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:9/12;border:0;border-radius:18px;margin-top:16px;background:#1a120c" allow="autoplay; fullscreen" loading="lazy"></iframe>` : p.url ? html`<a class="artifact" href="${p.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:14px"><span class="fi">${ico('play', 13)}</span><div><b style="font-weight:500">Abrir video</b></div></a>` : ''}
       ${p.caption ? html`<b class="sm" style="display:block;margin-top:18px">Caption</b><p style="white-space:pre-wrap;margin-top:6px">${p.caption}</p>` : ''}
+      <div id="laya-idea" style="margin-top:16px"></div>
       <b class="sm" style="display:block;margin-top:18px">Mover a</b>
       <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">${ESTADOS_TODOS.map((s) => html`<button class="chip ${s === e ? 'dark' : ''}" data-act="st" data-s="${s}" style="padding:8px 12px" title="${ESTADO_AYUDA[s]}">${s}</button>`)}</div>
       <div class="row" style="margin-top:22px"><button class="btn" data-act="edit">Editar</button><div class="sp"></div><button class="btn ghost" data-act="del">${ico('trash')}</button></div>`, {
