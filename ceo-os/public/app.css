@@ -3584,4 +3584,58 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 .bb-vacio h2{font-size:var(--fs-t2);font-weight:500;letter-spacing:-.4px;text-transform:none}
 .bb-vacio p{max-width:520px;color:var(--ink2)}
 @media (max-width:760px){.bb{grid-template-columns:minmax(0,1fr)}.bb-meses{position:static;flex-direction:row;overflow-x:auto}.bb-mes{flex:none}.cc-lock{flex-wrap:wrap}}
+/* App 01 · Marca › Crear › Formatos */
+.fm{display:flex;flex-direction:column;gap:var(--s5)}
+.fm-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.fm-bar .tabs{margin:0}
+.fm-h{font-size:var(--fs-t2);font-weight:500;letter-spacing:-.4px;margin-bottom:var(--s3)}
+.fm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--s3)}
+.fm-card{display:flex;flex-direction:column;gap:8px;background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r);box-shadow:var(--sh-1);padding:var(--s4)}
+.fm-card header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fm-card h3{font-size:16px;font-weight:600;letter-spacing:-.2px}
+.fm-tramos{list-style:none;padding:0;margin:4px 0 0;display:flex;flex-wrap:wrap;gap:4px}
+.fm-tramos li{display:inline-flex;gap:5px;align-items:baseline;padding:3px 8px;border-radius:8px;background:var(--fill);font-size:12px}
+.fm-tramos li b{font-weight:600}.fm-tramos li span{color:var(--mut);font-size:11px}
+.fm-card footer{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:8px}
+.fm-vacio{padding:18px;border:1.5px dashed var(--hair-strong);border-radius:var(--r)}
+.fm-ed{max-width:760px}
+.fm-ed-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s3);margin-top:10px}
+.fm-partes{display:flex;flex-direction:column;gap:6px;margin:6px 0 8px}
+.fm-p{display:grid;grid-template-columns:130px 90px minmax(0,1fr) 30px;gap:6px;align-items:center}
+.fm-p .in{padding:8px 10px;font-size:14px}
+.fm-refs{display:flex;flex-direction:column;gap:6px}
+.fm-ref{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:12px 14px;border-radius:var(--r-s);border:1px solid var(--hair);background:var(--surface)}
+.fm-ref:hover{border-color:var(--hair-strong);background:var(--fill)}
+
+/* App 01 · Marca › Crear › Creación (guiones) */
+.cr{display:grid;grid-template-columns:240px minmax(0,1fr) 300px;gap:var(--s4);align-items:start}
+.cr-list{display:flex;flex-direction:column;gap:4px;position:sticky;top:16px;max-height:calc(100dvh - 40px);overflow:auto}
+.cr-new{align-self:flex-start;margin-bottom:6px}
+.cr-item{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px 12px;border-radius:12px;overflow:hidden}
+.cr-item b{font-size:14px;font-weight:500;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr-item i{position:absolute;left:12px;bottom:5px;height:2px;border-radius:2px;background:var(--hair-strong);max-width:calc(100% - 24px)}
+.cr-item:hover{background:var(--fill)}.cr-item.on{background:var(--glass2);box-shadow:var(--sh-1);border:1px solid var(--stroke)}
+.cr-item.on i{background:var(--ink2)}
+.cr-vacio-l{padding:8px 12px}
+.cr-main{display:flex;flex-direction:column;gap:var(--s3);min-width:0}
+.cr-h{background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r-l);box-shadow:var(--sh-1);padding:var(--s4)}
+.cr-title{font-size:20px;font-weight:500;letter-spacing:-.3px;padding:8px 10px;border-color:transparent;background:transparent}
+.cr-title:hover,.cr-title:focus{border-color:var(--hair-strong);background:var(--surface)}
+.cr-meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.cr-meta label{display:flex;flex-direction:column;gap:4px;min-width:0}.cr-meta span{font-size:11.5px;font-weight:500;color:var(--mut)}
+.cr-meta .in{padding:7px 9px;font-size:13.5px}
+.cr-tramos{display:flex;flex-direction:column;gap:var(--s3)}
+.cr-t{background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r-l);box-shadow:var(--sh-1);padding:var(--s4);border-left:4px solid var(--ink2)}
+.cr-t header{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:10px}.cr-t header b{font-size:15px;font-weight:700;letter-spacing:.04em}
+.cr-t-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+.cr-t .in{padding:8px 10px;font-size:14px}.cr-t textarea.in{resize:vertical;line-height:1.5}
+.cr-cap{background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r-l);padding:var(--s4)}
+.cr-side{display:flex;flex-direction:column;gap:var(--s3);position:sticky;top:16px}
+.cr-ctx{display:flex;flex-direction:column;gap:3px;padding:8px 0;border-top:1px solid var(--hair)}
+.cr-ctx:first-of-type{border-top:0}.cr-ctx b{font-size:13.5px;font-weight:600;display:flex;gap:6px;align-items:center}
+.cr-sen summary{cursor:pointer;font-size:12.5px;color:var(--tone);margin-top:4px}
+.cr-sen ul{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--ink2);display:grid;gap:3px}
+.cr-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:56px 24px;border-radius:var(--r-l);background:var(--glass2);border:1px solid var(--stroke)}
+.cr-empty h2{font-size:var(--fs-t2);font-weight:500}
+@media (max-width:1200px){.cr{grid-template-columns:200px minmax(0,1fr)}.cr-side{grid-column:2;position:static}}
+@media (max-width:760px){.cr{grid-template-columns:minmax(0,1fr)}.cr-list{position:static;flex-direction:row;overflow-x:auto;max-height:none}.cr-item{flex:none;width:200px}.cr-side{grid-column:auto}.cr-t-g,.fm-ed-g{grid-template-columns:minmax(0,1fr)}.fm-p{grid-template-columns:minmax(0,1fr) 80px 30px}.fm-p [data-p="que"]{grid-column:1/-1;order:3}}
 /* === fin App 01 · Marca === */
