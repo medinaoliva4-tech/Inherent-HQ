@@ -1,0 +1,10 @@
+{
+  "name": "inherent-render",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Motor de render de Inherent: plantilla HTML + tokens + contenido → PNG o PDF, sin gastar créditos de IA.",
+  "type": "module",
+  "bin": { "inherent-render": "./render.mjs" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "playwright-core": "^1.50.0" }
+}

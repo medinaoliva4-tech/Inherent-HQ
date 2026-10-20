@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>PRES-16x9 · presentación · ejemplo</title>
+<script type="application/json" id="plantilla">
+{
+  "id": "PRES-16x9",
+  "nombre": "Presentación 16:9",
+  "red": "presentacion",
+  "formato": "presentacion",
+  "medidas": [1920, 1080],
+  "safe": [96, 120, 96, 120],
+  "para": "Presentación al cliente o de ventas, exportada a PDF de varias páginas. Una idea por lámina.",
+  "variantes": {
+    "A": { "nombre": "Oscura", "descripcion": "Fondo de marca oscuro, texto claro, acento naranja. Para presentar en pantalla grande.", "requiere_imagen": false, "densidad": "media", "acento": "acento" },
+    "B": { "nombre": "Clara", "descripcion": "Fondo claro, texto oscuro, acento azul. Para documentos que se leen o se imprimen.", "requiere_imagen": false, "densidad": "media", "acento": "acento2" }
+  },
+  "tipos": {
+    "portada": { "campos": ["etiqueta", "titulo", "subtitulo"] },
+    "contenido": { "campos": ["etiqueta", "titulo", "puntos"] },
+    "cifra": { "campos": ["etiqueta", "cifra", "titulo"] },
+    "cierre": { "campos": ["titulo", "cta"] }
+  },
+  "campos": {
+    "etiqueta": { "max": 32, "obligatorio": false, "auxiliar": true },
+    "titulo": { "max": 80, "obligatorio": true, "que": "*palabra* = énfasis en el acento" },
+    "subtitulo": { "max": 120, "obligatorio": false },
+    "puntos": { "obligatorio": false, "que": "lista de frases cortas (máximo 4, de máximo 90 caracteres)" },
+    "cifra": { "max": 10, "obligatorio": false },
+    "cta": { "max": 40, "obligatorio": false }
+  }
+}
+</script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1920px;height:1080px;overflow:hidden}
+  html[data-variante="A"]{--fondo:var(--color-fondo);--tinta:var(--color-texto);--suave:var(--color-texto-suave);--ac:var(--color-acento)}
+  html[data-variante="B"]{--fondo:var(--color-claro);--tinta:var(--color-tinta);--suave:#5b5750;--ac:var(--color-acento2)}
+  body{position:relative;background:var(--fondo);color:var(--tinta);font-family:var(--tipografia-texto-familia);font-weight:var(--tipografia-texto-peso);-webkit-font-smoothing:antialiased}
+  em{font-style:normal;color:var(--ac)}
+  .etiqueta{position:absolute;left:120px;top:96px;font-size:26px;font-weight:var(--tipografia-etiqueta-peso);letter-spacing:var(--tipografia-etiqueta-espaciado);text-transform:uppercase;color:var(--ac)}
+  .titulo{position:absolute;left:120px;right:240px;font-family:var(--tipografia-titulo-familia);font-weight:var(--tipografia-titulo-peso);letter-spacing:var(--tipografia-titulo-espaciado);line-height:1.04}
+  .logo{position:absolute;left:120px;bottom:96px;height:48px;width:auto}
+  .pagina{position:absolute;right:120px;bottom:96px;font-size:24px;color:var(--suave)}
+  html[data-variante="A"] .l-b,html[data-variante="B"] .l-a{display:none}
+  .barra{position:absolute;left:120px;top:150px;width:96px;height:8px;background:var(--ac)}
+  .t-portada,.t-contenido,.t-cifra,.t-cierre{display:none}
+  html[data-tipo="portada"] .t-portada,html[data-tipo="contenido"] .t-contenido,html[data-tipo="cifra"] .t-cifra,html[data-tipo="cierre"] .t-cierre{display:block}
+
+  .t-portada .titulo{top:300px;font-size:148px}
+  .t-portada .subtitulo{position:absolute;left:120px;right:480px;top:700px;font-size:40px;line-height:1.4;color:var(--suave)}
+
+  .t-contenido .titulo{top:200px;font-size:84px}
+  .t-contenido ul{position:absolute;left:120px;right:240px;top:470px;list-style:none}
+  .t-contenido li{font-size:44px;line-height:1.3;padding:0 0 28px 56px;position:relative}
+  .t-contenido li::before{content:"";position:absolute;left:0;top:20px;width:20px;height:20px;background:var(--ac)}
+
+  .t-cifra .cifra{position:absolute;left:120px;top:230px;font-family:var(--tipografia-titulo-familia);font-weight:var(--tipografia-titulo-peso);font-size:380px;line-height:1;letter-spacing:-0.05em;color:var(--ac)}
+  .t-cifra .titulo{top:700px;font-size:64px}
+
+  .t-cierre .titulo{top:340px;font-size:120px}
+  .t-cierre .cta{position:absolute;left:120px;top:760px;font-size:36px;font-weight:600;padding:28px 40px;background:var(--ac);color:#fff}
+</style>
+</head>
+<body>
+  {{#si etiqueta}}<div class="etiqueta" data-campo="etiqueta" data-max-lineas="1">{{etiqueta|mayus}}</div>{{/si}}
+  <div class="barra"></div>
+
+  <div class="t-portada">
+    <div class="titulo" data-campo="titulo" data-max-lineas="3">{{titulo|rico}}</div>
+    {{#si subtitulo}}<div class="subtitulo" data-campo="subtitulo" data-max-lineas="3">{{subtitulo}}</div>{{/si}}
+  </div>
+
+  <div class="t-contenido">
+    <div class="titulo" data-campo="titulo" data-max-lineas="2">{{titulo|rico}}</div>
+    <ul>{{#cada puntos}}<li data-max-lineas="2">{{.}}</li>{{/cada}}</ul>
+  </div>
+
+  <div class="t-cifra">
+    {{#si cifra}}<div class="cifra" data-campo="cifra" data-max-lineas="1">{{cifra}}</div>{{/si}}
+    <div class="titulo" data-campo="titulo" data-max-lineas="2">{{titulo|rico}}</div>
+  </div>
+
+  <div class="t-cierre">
+    <div class="titulo" data-campo="titulo" data-max-lineas="3">{{titulo|rico}}</div>
+    {{#si cta}}<div class="cta" data-campo="cta" data-max-lineas="1">{{cta}}</div>{{/si}}
+  </div>
+
+  <img class="logo l-a" src="{{tokens.assets.logo}}" alt=""><img class="logo l-b" src="{{tokens.assets.logo-oscuro}}" alt="">
+  <div class="pagina" data-fuera-safe>{{_n}} / {{_total}}</div>
+</body>
+</html>
