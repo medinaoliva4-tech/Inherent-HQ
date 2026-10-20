@@ -3569,4 +3569,19 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 .av-empty-i{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--fill);color:var(--ink2)}
 @media (max-width:1000px){.av-body{grid-template-columns:minmax(0,1fr)}.av-side{position:static;order:-1}}
 @media (max-width:760px){.av-fields{grid-template-columns:minmax(0,1fr)}.av-sec{padding:var(--s4)}.av-ang{grid-template-columns:minmax(0,1fr) 30px}.av-ang select{grid-column:1/-1}.av-new{width:100%}.av-new .in{flex:1;width:auto}}
+/* El candado del brief (calendario) y Entender › Brief del ciclo */
+.cc-lock{display:flex;align-items:center;gap:12px;padding:12px 16px;margin-bottom:12px;border-radius:var(--r-s);background:rgb(122 70 50 / .07);border:1px solid rgb(122 70 50 / .18);color:var(--warn)}
+.cc-lock div{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.cc-lock b{color:var(--ink);font-weight:600}
+.cc-lock.open{background:var(--fill);border-color:var(--hair);color:var(--mut);padding:8px 12px}
+.bb{display:grid;grid-template-columns:220px minmax(0,1fr);gap:var(--s4);align-items:start}
+.bb-meses{display:flex;flex-direction:column;gap:4px;position:sticky;top:16px}
+.bb-mes{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;font-size:14px;text-align:left;color:var(--ink2)}
+.bb-mes span{flex:1;text-transform:capitalize}.bb-mes i{font-style:normal;font-size:10.5px;color:var(--mut)}
+.bb-mes:hover{background:var(--fill)}.bb-mes.on{background:var(--ink);color:var(--cream)}.bb-mes.on i{color:rgb(255 255 255 / .7)}
+.bb-doc{background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r-l);box-shadow:var(--sh-1);padding:var(--s5);min-width:0}
+.bb-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:var(--s4)}
+.bb-vacio{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:32px 12px}
+.bb-vacio h2{font-size:var(--fs-t2);font-weight:500;letter-spacing:-.4px;text-transform:none}
+.bb-vacio p{max-width:520px;color:var(--ink2)}
+@media (max-width:760px){.bb{grid-template-columns:minmax(0,1fr)}.bb-meses{position:static;flex-direction:row;overflow-x:auto}.bb-mes{flex:none}.cc-lock{flex-wrap:wrap}}
 /* === fin App 01 · Marca === */

@@ -148,6 +148,40 @@ async function ingest(slug, doc, posts, who) {
 content.alTerminar(ingest);
 export const settle = (slug, who) => content.settle(slug, who);
 
+
+// ---------- Inspo con un link: el OS lee el post solo (sin créditos: el embed público de IG y el oEmbed de TikTok y YouTube) ----------
+const ent = (t) => String(t || '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n)).replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16))).replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
+async function traer(u, ms = 12000) { const r = await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15', 'Accept-Language': 'es,en;q=0.8' }, signal: AbortSignal.timeout(ms) }); if (!r.ok) throw new Error(String(r.status)); return r; }
+export async function leerPost(url) {
+  const u = String(url || '').trim();
+  const ig = /instagram\.com\/(?:[\w.]+\/)?(?:p|reel|reels|tv)\/([\w-]+)/i.exec(u);
+  try {
+    if (ig) {
+      const h = await (await traer(`https://www.instagram.com/p/${ig[1]}/embed/captioned/`)).text();
+      const handle = (/class="UsernameText"[^>]*>([^<]+)</.exec(h) || /class="CaptionUsername"[^>]*>([^<]+)</.exec(h) || [])[1];
+      const cap = /<div class="Caption">([\s\S]*?)<div class="CaptionComments/.exec(h)?.[1] || '';
+      const text = ent(cap.replace(/<a class="CaptionUsername"[\s\S]*?<\/a>/, ''));
+      const thumb = ent((/<img class="EmbeddedMediaImage"[^>]*src="([^"]+)"/.exec(h) || [])[1] || '');
+      return { red: 'instagram', handle: handle?.trim(), text, thumb: /^https:\/\//.test(thumb) ? thumb : undefined, format: /\/(reel|reels|tv)\//i.test(u) ? 'reel' : undefined };
+    }
+    if (/tiktok\.com/i.test(u)) { const j = await (await traer(`https://www.tiktok.com/oembed?url=${encodeURIComponent(u)}`)).json(); return { red: 'tiktok', handle: j.author_unique_id || j.author_name, text: j.title || '', thumb: j.thumbnail_url, format: 'reel' }; }
+    if (/youtube\.com|youtu\.be/i.test(u)) { const j = await (await traer(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(u)}`)).json(); return { red: 'youtube', handle: String(j.author_url || '').split('/').pop()?.replace(/^@/, '') || j.author_name, text: j.title || '', thumb: j.thumbnail_url, format: /shorts\//.test(u) ? 'reel' : undefined }; }
+    const h = await (await traer(u)).text(), meta = (k) => ent((new RegExp(`<meta[^>]+(?:property|name)="${k}"[^>]+content="([^"]*)"`, 'i').exec(h) || [])[1] || '');
+    return { red: /linkedin/i.test(u) ? 'linkedin' : undefined, text: meta('og:description') || meta('description'), title: meta('og:title'), thumb: /^https:\/\//.test(meta('og:image')) ? meta('og:image') : undefined };
+  } catch (e) { return { error: `No pude leer el post (${e.message}). Se guarda solo con el link.` }; }
+}
+export async function guardarInspo(slug, { url, why }, who) {
+  const u = String(url || '').trim(); if (!/^https:\/\/\S+$/.test(u)) throw err(400, 'El link debe empezar con https://');
+  const leido = await leerPost(u), id = rsId(slug, u), cur = await db.get('content', id);
+  let thumb = leido.thumb; if (thumb) thumb = (await keepImg(thumb, who).catch(() => null)) || thumb;
+  const handle = String(leido.handle || '').replace(/^@/, '').toLowerCase() || undefined;
+  const text = leido.text ? leido.text.slice(0, 2000) : undefined;
+  const title = (String(leido.text || leido.title || '').split('\n').map((l) => l.trim()).find(Boolean) || (handle ? '@' + handle : 'Inspo')).slice(0, 80);
+  const doc = def({ kind: 'research', profile: slug, url: u, red: leido.red, handle, title: cur?.title || title, text: cur?.text || text, thumb: cur?.thumb || thumb, format: cur?.format || leido.format, tipo: cur?.tipo || 'agregado', manual: true, inspo: true, why: why ? { ...(cur?.why || {}), por_que: String(why).slice(0, 1000), inferido: true } : undefined });
+  const d = await db.upsert('content', id, doc, who);
+  if (!cur) await laya.pedirPendientes('content', [d], who).catch(() => {});
+  return { item: d, aviso: leido.error || null };
+}
 // ---------- el cron ----------
 // Lunes: arranca la búsqueda de cada marca activa (con ficha) en las redes de su ficha. Si Apify se queda sin crédito,
 // no se le sigue pegando: las demás marcas quedan con el aviso.
@@ -205,6 +239,11 @@ export function rutas(on) {
     const cats = await referentes(slug); if (!cats) return res.status(404).json({ error: 'Esa marca no tiene perfil de contenido' });
     const [f, st, it] = await Promise.all([ficha(slug), estado(slug), items(slug)]);
     res.json({ apify: content.apifyOn(), cron: await cronVisto(), puede: { actualizar: MANDAN.includes(u.role), editar: edits(u, 'content') }, ficha: f, estado: st, referentes: cats, puerta: it.puerta, items: it.items });
+  });
+  on('POST', 'investigacion/inspo', async (req, res) => {
+    const b = body(req), slug = String(b.profile || ''), u = await abre(req, res, slug, true); if (!u) return;
+    try { res.json(await guardarInspo(slug, { url: b.url, why: b.why }, u.email)); }
+    catch (e) { if (e.status) return res.status(e.status).json({ error: e.message }); throw e; }
   });
   on('POST', 'investigacion/referentes', async (req, res) => {
     const b = body(req), slug = String(b.profile || ''), u = await abre(req, res, slug, true); if (!u) return;

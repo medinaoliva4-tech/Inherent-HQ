@@ -54,7 +54,7 @@ export const MODULES = [
   ['inicio', 'Inicio', 'home'],
   ['investigacion', 'Investigación', 'search'],
   ['icp', 'Cliente ideal', 'target'],
-  ['brief', 'Brief del ciclo', 'doc', 'El brief de comunicación del mes. Sin brief aprobado, no se crean piezas del ciclo.'],
+  ['brief', 'Brief del ciclo', 'doc'],
   ['ideas', 'Ideas', 'bulb'],
   ['creacion', 'Creación', 'edit', 'Guiones de reel y story con la voz de la marca, desde una plantilla y con Claude al lado.'],
   ['formatos', 'Formatos', 'copy', 'Plantillas editables de reel, story y ficha de referente, listas para reusar.'],
@@ -62,7 +62,7 @@ export const MODULES = [
   ['design', 'Design system', 'layers', 'Colores, tipografía, logo, grilla y componentes de la marca, sincronizados con Figma.'],
   ['video', 'Video', 'video', 'Una ficha por video: assets, cortes, lógica y transiciones, con vista previa.'],
   ['calendario', 'Calendario', 'cal'],
-  ['ads', 'Ads', 'megaphone', 'Variaciones de una pieza que funcionó, listas para pautar en Meta y Google con tu OK.'],
+  ['ads', 'Ads', 'megaphone', 'AI ads: un video muy específico por avatar (sus señales dichas y mostradas) para que la IA de Meta lo lleve a esa persona, y sus variaciones listas para pautar en Meta y Google con tu OK.'],
   ['resultados', 'Resultados', 'bars'],
 ];
 // Las áreas: los módulos agrupados por función, en el orden del trabajo (entender → crear → diseñar → publicar → medir).
@@ -85,6 +85,7 @@ export function modulesFor(me, b) {
     inicio: A.any,
     investigacion: A.contentFull,
     icp: A.contentFull,
+    brief: A.contentFull,
     ideas: A.contentFull,
     calendario: A.contentFull,
     resultados: A.content,

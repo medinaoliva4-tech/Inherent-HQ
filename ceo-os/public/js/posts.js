@@ -4,6 +4,7 @@ import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, cl
 import { ESTADOS, ESTADOS_TODOS, ESTADO_CLS, ESTADO_AYUDA, estadoDe, separar, conEstado, nombreAuto, nombreDe } from './element.js';
 import { layaBox } from './laya-ui.js';
 import { CONSCIENCIA, consciencia, replicasDe, replicaNombre, conReplica } from './calendario-contenido.js';
+import { ANGULOS, ANGULO_AYUDA } from './avatares.js';
 
 // Los estados son los del modelo de elemento (Idea · En proceso · Listo · Publicado, más Archivado).
 // Los viejos (Grabado, Editado, Programado) se leen como los nuevos: nada se reescribe en la base.
@@ -29,8 +30,11 @@ export async function editPost(profile, p, pre = {}) {
   const pillars = pillarsOf(profile);
   const refs = pre.replicas || replicasDe(await C.list().catch(() => []), profile);
   const camps = [...new Set([...(pre.campanas || []), p?.campana].filter(Boolean))];
+  // Cliente ideal: a qué avatar le habla la pieza y con qué ángulo (Marca › Entender › Cliente ideal).
+  const avs = (pre.avatares || await api(`avatares?profile=${encodeURIComponent(profile)}`).then((r) => r.avatares).catch(() => [])).filter((x) => !x.archivado);
+  const angulosDe = (id) => { const a = avs.find((x) => x.id === id); const propios = (a?.angulos || []).map((g) => ({ v: `${g.tipo} · ${g.texto}`, l: g.tipo, d: g.texto })); return propios.length ? propios : ANGULOS.map((t) => ({ v: t, l: t, d: ANGULO_AYUDA[t] })); };
   const named = (o) => ({ ...o, name: nombreAuto(pre.brand || p?.brand_name || '', o.format, o.title) });
-  const withRef = (o) => { const r = refs.find((x) => x.id === o.replica_de); const out = conReplica(o, r || (o.replica_de ? { id: o.replica_de } : null)); if (!out.consciencia) delete out.consciencia; if (!out.campana) delete out.campana; return out; };
+  const withRef = (o) => { const r = refs.find((x) => x.id === o.replica_de); const out = conReplica(o, r || (o.replica_de ? { id: o.replica_de } : null)); if (!out.consciencia) delete out.consciencia; if (!out.campana) delete out.campana; if (!out.avatar) delete out.avatar; if (!out.angulo) delete out.angulo; return out; };
   if (!p) { // nueva pieza: con preguntas
     const a = await wizard('Nueva pieza', [
       { k: 'replica_de', q: '¿Replica un referente?', sub: 'De Investigación: los posts marcados «Usar como formato».', type: 'cards', v: pre.replica_de, show: () => refs.length > 0 && pre.replica_de === undefined, after: (x) => { const r = refs.find((y) => y.id === x.replica_de); if (r) Object.assign(x, conReplica({ format: x.format }, r)); },
@@ -40,10 +44,15 @@ export async function editPost(profile, p, pre = {}) {
       { k: 'pillar', q: '¿De qué pilar?', type: 'cards', show: () => pillars.length > 0, v: pre.pillar, opts: pillars.map((x) => ({ v: x.name, i: ico('dot', 12), l: x.name })) },
       { k: 'campana', q: '¿De qué campaña?', type: 'cards', show: () => camps.length > 0, v: pre.campana, opts: [{ v: '', l: 'Ninguna' }, ...camps.map((x) => ({ v: x, i: ico('megaphone'), l: x }))] },
       { k: 'consciencia', q: '¿A quién le habla?', sub: 'Su nivel de consciencia', type: 'cards', req: true, v: pre.consciencia, opts: CONSCIENCIA.map((x, i) => ({ v: x, l: `${i + 1} · ${x}`, d: DAW[i] })) },
+      { k: 'avatar', q: '¿A qué avatar le habla?', sub: 'De Cliente ideal: el principal recibe más volumen', type: 'cards', show: () => avs.length > 0, v: pre.avatar, opts: avs.map((a) => ({ v: a.id, i: ico('target'), l: a.nombre, d: `Peso ${a.peso || 0}%${a.estado === 'aprobado' ? ' · aprobado' : ''}` })) },
+      { k: 'angulo', q: '¿Con qué ángulo?', sub: 'La misma oferta, presentada distinto', type: 'cards', show: (x) => avs.length > 0 && Boolean(x.avatar), opts: (x) => angulosDe(x.avatar) },
       { k: 'date', q: '¿Cuándo sale?', type: 'when', v: pre.date, show: () => !pre.date },
       { k: 'status', q: '¿En qué va?', type: 'cards', req: true, opts: ESTADOS.map((v) => ({ v, l: v, d: ESTADO_AYUDA[v] })) },
     ], 'Agregar');
     if (!a) return null;
+    // El candado del brief: sin el brief del ciclo de ese mes no se crean piezas con fecha (las ideas sin fecha, sí).
+    const k = a.date && pre.candado ? pre.candado(a.date) : null;
+    if (k?.cerrado) { toast(`Sin brief del ciclo de ese mes: guárdala como idea sin fecha o pide el brief a ④ Creatividad`, true); return null; }
     try { return await C.create(named(withRef(conEstado({ ...a, ...(pre.caption ? { caption: pre.caption } : {}), profile, kind: 'post', ...(pre.brand ? { brand_name: pre.brand } : {}) }, a.status)))); } catch (e) { toast(e.message, true); return null; }
   }
   const v = await ask(p ? 'Editar pieza' : 'Nueva pieza por postear', [
@@ -53,6 +62,7 @@ export async function editPost(profile, p, pre = {}) {
     { k: 'status', l: 'Estado', t: 'select', opts: ESTADOS_TODOS.map((x) => [x, x]), v: estadoDe(p), half: true },
     ...(pillars.length ? [{ k: 'pillar', l: 'Pilar', t: 'select', opts: [['', '—'], ...pillars.map((x) => [x.name, x.name])], v: p?.pillar || '', half: true }] : []),
     { k: 'campana', l: 'Campaña', v: p?.campana || '', half: true },
+    ...(avs.length ? [{ k: 'avatar', l: 'Avatar', t: 'select', opts: [['', '—'], ...avs.map((a) => [a.id, `${a.nombre} · ${a.peso || 0}%`])], v: p?.avatar || '', half: true }, { k: 'angulo', l: 'Ángulo', v: p?.angulo || '', half: true }] : []),
     { k: 'consciencia', l: 'Nivel de consciencia', t: 'select', opts: [['', '—'], ...CONSCIENCIA.map((x, i) => [x, `${i + 1} · ${x}`])], v: consciencia(p), half: true },
     ...(refs.length || p?.replica_de ? [{ k: 'replica_de', l: 'Replica', t: 'select', opts: [['', 'Original · sin referente'], ...refs.map((r) => [r.id, `Replicar: ${replicaNombre(r)}`]), ...(p?.replica_de && !refs.some((r) => r.id === p.replica_de) ? [[p.replica_de, 'El referente ya no está en Research']] : [])], v: p?.replica_de || '', half: true }] : []),
     { k: 'url', l: 'Video o archivo (Drive)', v: p?.url, half: true },

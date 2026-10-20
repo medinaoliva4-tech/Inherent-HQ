@@ -9,6 +9,8 @@ import { html, raw, mount, api, toast, fdate, K, md, ask, today, openClaude, ICO
 import { CATS, POR_CAT, REDES, redNombre, catNombre, cuenta } from './referentes.js';
 import { layaBox, puenteEstado, juzgarLocal } from './laya-ui.js';
 import { chipReferente } from './laya.js';
+import { tokenDe, saludPuente, preguntar } from './puente-chat.js';
+import { resumenAvatar } from './avatares.js';
 
 const C = col('content');
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$|^\/api\/media\/img-[a-f0-9]{24}$/.test(String(u || '')) ? u : null);
@@ -75,7 +77,7 @@ function paint(b, ctx) {
   mount(b, html`<div class="inv">
     <div id="inv-status"></div>
     <section class="inv-sec" aria-labelledby="inv-top-h"><div class="inv-h"><h2 id="inv-top-h">Lo que funciona</h2><span class="mut sm">Rinde más que su propio promedio y Laya dice que sirve</span></div><div id="inv-top"></div></section>
-    <section class="inv-sec" aria-labelledby="inv-lib-h"><div class="inv-h"><h2 id="inv-lib-h">Biblioteca</h2><span class="mut sm" id="inv-n"></span><span class="sp"></span>${D.puede?.editar ? html`<button class="btn ghost xs" data-iv="manual">${ico('plus', 13)} Guardar a mano</button>` : ''}</div>
+    <section class="inv-sec" aria-labelledby="inv-lib-h"><div class="inv-h"><h2 id="inv-lib-h">Biblioteca</h2><span class="mut sm" id="inv-n"></span><span class="sp"></span>${D.puede?.editar ? html`<button class="btn xs" data-iv="manual">${ico('plus', 13)} Inspo</button>` : ''}</div>
       <div id="inv-filters"></div><div id="inv-lib"></div></section>
     <div id="inv-refs"></div>
     <div class="inv-mcp mut sm">Claude también sube posts con guardar_research · <button class="inv-link" data-iv="prompt">Copiar instrucción</button>${D.puede?.editar && itemsOf(st).length ? html` · <button class="inv-link" data-iv="clear">Vaciar</button>` : ''}</div>
@@ -241,20 +243,39 @@ async function replicar(it, b, ctx) {
   try { const r = await api('investigacion/replicar', { method: 'PUT', body: { profile: ctx.slug, id: it.id, replicar: on } }); Object.assign(it, { replicar: r.replicar, v: r.v }); toast(on ? 'Listo: queda como formato a replicar en Ideas y el calendario' : 'Ya no es formato a replicar'); renderTop(b, ctx); renderLib(b, ctx); }
   catch (er) { toast(er.message, true); }
 }
-// Inspo a mano: el link del post (IG, TikTok, YouTube o LinkedIn), quién lo hizo y una captura opcional. Mismo id que el conector.
+// Inspo con un link (IG, TikTok, YouTube o LinkedIn): el OS lee el post solo —cuenta, texto y miniatura— sin gastar créditos.
+// Después, en el post: «Escribir en mi voz» (Claude, en tu compu) y «Usar como formato» → Ideas y el calendario.
 async function manual(b, ctx) {
   const { st, slug } = ctx;
-  const v = await ask('Guardar un post a mano', [{ k: 'url', l: 'Link del post', req: true }, { k: 'title', l: 'Nombre corto', req: true, half: true }, { k: 'handle', l: 'Cuenta (@)', half: true }, { k: 'thumb', l: 'Captura (link https a la imagen)' }, { k: 'why', l: 'Por qué te sirve', t: 'textarea' }], 'Guardar');
+  const v = await ask('Agregar inspo', [{ k: 'url', l: 'Link del post', req: true, ph: 'https://www.instagram.com/reel/…' }, { k: 'why', l: 'Por qué te sirve (opcional)', t: 'textarea' }], 'Guardar');
   if (!v) return; if (!/^https:\/\/\S+$/.test(v.url)) return toast('El link debe empezar con https://', true);
-  const red = redOf({ url: v.url }), thumb = /^https:\/\/\S+$/.test(v.thumb) ? v.thumb : undefined;
+  toast('Leyendo el post…');
   try {
-    const id = await rsid(slug, v.url), cur = st.d.items.find((x) => x.id === id);
-    const doc = { id, kind: 'research', profile: slug, url: v.url, red, handle: v.handle.replace(/^@/, '').toLowerCase() || undefined, title: v.title, thumb, tipo: 'agregado', format: red === 'linkedin' ? 'estatico' : undefined, manual: true, why: v.why ? { por_que: v.why, inferido: true } : undefined };
-    const { laya, ...base } = cur || {};
-    const r = cur ? await C.save({ ...base, ...doc, v: cur.v }) : await C.create(doc);
-    st.d.items = [...st.d.items.filter((x) => x.id !== r.id), { ...r, laya: cur?.laya || { estado: 'vacio', chip: 'Laya · sin juicio', sirve: null } }];
-    toast('Guardado en la investigación'); paint(b, ctx); layaLote(b, ctx);
+    const { item, aviso } = await api('investigacion/inspo', { method: 'POST', body: { profile: slug, url: v.url, why: v.why || '' } });
+    const cur = st.d.items.find((x) => x.id === item.id);
+    st.d.items = [...st.d.items.filter((x) => x.id !== item.id), { ...item, laya: cur?.laya || { estado: 'vacio', chip: 'Laya · sin juicio', sirve: null } }];
+    toast(aviso || 'Inspo guardada: ábrela para escribirla en tu voz', Boolean(aviso)); paint(b, ctx); layaLote(b, ctx); ropen(item.id, b, ctx);
   } catch (er) { toast(er.message, true); }
+}
+// «Escribir en mi voz»: Claude (en tu compu, solo lectura) reescribe la inspo como guion de la marca, para su avatar principal.
+async function enMiVoz(it, b, ctx, btn) {
+  const { slug, data, me } = ctx;
+  const tok = tokenDe(me), s0 = await saludPuente();
+  if (!s0.on || !s0.listo || !tok) return toast(!s0.on ? 'Enciende el puente de Laya en esta compu (Estrategia te dice cómo)' : !tok ? 'Empareja esta compu una vez en Estrategia › Chat' : 'Al puente le falta el repo o Claude Code: revísalo en Estrategia', true);
+  const avs = await api(`avatares?profile=${encodeURIComponent(slug)}`).then((r) => r.avatares.filter((a) => !a.archivado)).catch(() => []);
+  const carpeta = slug === 'inherent' ? 'inherent/inherent-social-media' : `clients/${slug}`, w = it.why || {};
+  const prompt = [`Eres ④ Creatividad de Inherent. Trabajas en SOLO LECTURA. Reescribe esta inspo como guion para la marca ${data.profile.name}, con su voz.`,
+    `Lee antes, si existen: inherent/00-PRINCIPIOS.md, ${carpeta}/00-onboarding/plan-contratado.md y la voz de marca en ${carpeta}/02-marca/.`,
+    `La inspo (@${it.handle || '—'}, ${it.url}):`, String(it.text || it.title || '').slice(0, 1500), w.hook ? `Hook original: ${w.hook}` : '', w.por_que ? `Por qué sirve: ${w.por_que}` : '',
+    avs.length ? `Cliente ideal (el primero es el principal):\n${avs.map((a) => '- ' + resumenAvatar(a)).join('\n')}` : '',
+    'Escribe en español de «tú», en Markdown:', '1. Un primer párrafo corto «Tu versión»: la idea en dos líneas.', '2. **Gancho** (3 opciones).', '3. **Guion** por escenas: qué se dice y qué se ve.',
+    '4. **Señales para Meta**: qué decir y mostrar para que el video llegue al avatar principal.', '5. **CTA**.', 'No copies el texto original: toma la estructura. Nada de cifras inventadas.'].filter(Boolean).join('\n');
+  btn.disabled = true; btn.textContent = 'Claude está escribiendo…';
+  try {
+    const texto = await preguntar({ prompt, token: tok, onTool: (t) => { btn.textContent = t.slice(0, 40); } });
+    const r = await C.save({ ...it, why: { ...w, adaptacion: texto.trim() } });
+    Object.assign(it, { why: r.why, v: r.v }); toast('Listo: tu versión quedó en el post'); ropen(it.id, b, ctx);
+  } catch (e) { toast(e.message, true); btn.disabled = false; btn.textContent = 'Escribir en mi voz'; }
 }
 const mcpPrompt = (slug) => `Sube a la Investigación del OS de Inherent lo que encontraste, con el conector de Inherent. Primero llama perfiles() para confirmar el perfil: es «${slug}». Luego guardar_research con perfil «${slug}» y una lista en «posts» (hasta 40 por llamada). Pon el nivel en «tipo» de cada post: competencia, referente-similar, referente-aspiracional, referente-crecimiento o propia. Cada post: url, formato (reel, carrusel o estatico), tipo, creador, fecha, titulo, metricas {vistas, likes, comentarios, duracion_s, multiplicador (vs el promedio de su cuenta), engagement_pct}, miniatura, slides si es carrusel, caption, por_que_funciono {hook, retencion, estructura, por_que, adaptacion}, dificultad (1 a 5), tiempo_grabacion, receta, clips y tags. Antes de subir, revisa con listar_research para no duplicar. No inventes métricas y solo urls https.`;
 
@@ -314,7 +335,7 @@ function ropen(id, b, ctx) {
     <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster">${t ? html`<img src="${t}" alt="">` : ''}<span class="rv-load">Cargando video…</span></div>`
         : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
         : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 26)}</span>`}</div>`}</div>
-    <div class="rv-actions">${edit ? html`<button class="btn ${it.replicar ? '' : 'ghost'} rv-rep" data-v="rep" aria-pressed="${it.replicar ? 'true' : 'false'}">${ico('repeat', 15)} ${it.replicar ? 'Formato a replicar' : 'Usar como formato'}</button>` : ''}<button class="btn rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button>${edit ? html`<button class="btn ghost" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 16)} Agendar</button>` : ''}
+    <div class="rv-actions">${edit ? html`<button class="btn ${it.replicar ? '' : 'ghost'} rv-rep" data-v="rep" aria-pressed="${it.replicar ? 'true' : 'false'}">${ico('repeat', 15)} ${it.replicar ? 'Formato a replicar' : 'Usar como formato'}</button>` : ''}${edit ? html`<button class="btn ghost rv-voz" data-v="voz">${ico('edit', 15)} Escribir en mi voz</button>` : ''}<button class="btn rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button>${edit ? html`<button class="btn ghost" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 16)} Agendar</button>` : ''}
       ${/^https:\/\//.test(it.url) ? html`<a class="arrow light" href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original" aria-label="Abrir el original">${ico('globe', 17)}</a>` : ''}${edit ? html`<button class="arrow light" data-v="del" title="Quitar de la investigación" aria-label="Quitar de la investigación">${ico('trash', 17)}</button>` : ''}</div>
     <div class="rv-info">
       <div class="rfc-head"><h2>${rtitle(it)}</h2>${it.x ? html`<span class="rfc-res ${it.x >= 2 ? 'alta' : it.x >= 1 ? 'media' : 'baja'}">×${it.x}</span>` : it.resonance ? html`<span class="rfc-res ${it.resonance}">${it.resonance}</span>` : ''}</div>
@@ -377,6 +398,7 @@ function ropen(id, b, ctx) {
     if (a === 'rep') { await replicar(it, b, ctx); const r = v.querySelector('[data-v="rep"]'); if (r) { r.classList.toggle('ghost', !it.replicar); r.setAttribute('aria-pressed', String(Boolean(it.replicar))); mount(r, html`${ico('repeat', 15)} ${it.replicar ? 'Formato a replicar' : 'Usar como formato'}`); } }
     if (a === 'del') { if (!(await confirmAsk('¿Quitar este post de la investigación?'))) return; try { await C.remove(it.id); st.d.items = st.d.items.filter((x) => x.id !== it.id); close(); toast('Quitado'); paint(b, ctx); } catch (er) { toast(er.message, true); } return; }
     if (a === 'use') { openClaude(usePrompt(it, ctx)); toast('Se abrió Claude Code con todo listo: dale enviar'); }
+    if (a === 'voz') return enMiVoz(it, b, ctx, e.target.closest('[data-v]'));
     if (a === 'ask') { openClaude(whyPrompt(it, ctx)); toast('Se abrió Claude Code: dale enviar. Cuando termine, vuelve a abrir la investigación'); }
     if (a === 'plan') {
       const x = await ask('Agendar en Publicación', [{ k: 'title', l: 'Idea', v: `Basado en @${it.handle || 'referencia'}`, req: true }, { k: 'date', l: 'Fecha', t: 'date', v: today(), req: true, half: true }, { k: 'format', l: 'Formato', t: 'select', opts: ['Reel', 'Carrusel', 'Estático', 'TikTok', 'Story'], v: f === 'carrusel' ? 'Carrusel' : f === 'estatico' ? 'Estático' : 'Reel', half: true }], 'Agendar');

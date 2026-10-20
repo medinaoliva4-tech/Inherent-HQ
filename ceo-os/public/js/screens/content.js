@@ -3,7 +3,7 @@ import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 import { estadoDe, separar, ESTADO_CLS, nombreDe } from '../element.js';
 import { investigacion } from '../investigacion.js';
-import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza } from '../calendario-contenido.js';
+import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre } from '../calendario-contenido.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
@@ -250,14 +250,16 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   const stripTo = (b) => { const st = $('.ct-strip', b), w = st?.querySelector('.cd.wk'); if (st && w && st.scrollWidth > st.clientWidth) st.scrollLeft = Math.max(0, w.offsetLeft - 12); };
   // El calendario es la suma: investigación (el referente que replica) + pilar o campaña + formato, con su nivel de consciencia.
   // Arriba, una línea con la mezcla del mes; debajo, los filtros. Las reglas viven en calendario-contenido.js.
-  let ccf = {}, crefs = null, ccamps = [];
+  let ccf = {}, crefs = null, ccamps = [], cavs = [], cabiertos = [];
+  const conBrief = () => mesesConBrief(data.profile.months || []);
+  const cerrado = (fecha) => candado(String(fecha || '').slice(0, 7), conBrief(), cabiertos);
   function needRefs(b, fn) {
     if (crefs) return false;
     mount(b, html`<p class="loading">Cargando…</p>`);
-    Promise.all([C.list().catch(() => []), col('campaigns').list().catch(() => [])]).then(([l, cs]) => { crefs = replicasDe(l, slug); ccamps = cs.filter((c) => c.client_slug === slug); }).then(() => alive() && b.isConnected && fn(b));
+    Promise.all([C.list().catch(() => []), col('campaigns').list().catch(() => []), api(`avatares?profile=${encodeURIComponent(slug)}`).then((r) => r.avatares).catch(() => []), col('settings').get('brief_open').catch(() => null)]).then(([l, cs, av, bo]) => { crefs = replicasDe(l, slug); ccamps = cs.filter((c) => c.client_slug === slug); cavs = av; cabiertos = bo?.marcas?.[slug] || []; }).then(() => alive() && b.isConnected && fn(b));
     return true;
   }
-  const pieceOpts = (extra = {}) => ({ brand: embed?.brand || data.profile.name, replicas: crefs || undefined, campanas: ejes(posts || [], [], ccamps).campanas, ...extra });
+  const pieceOpts = (extra = {}) => ({ brand: embed?.brand || data.profile.name, replicas: crefs || undefined, avatares: cavs, candado: cerrado, campanas: ejes(posts || [], [], ccamps).campanas, ...extra });
   function plan(b) {
     if (needPosts(b, plan) || needRefs(b, plan)) return;
     const pillars = data.cfg.pillars || [];
@@ -265,13 +267,14 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const wk = calWeek(), M = pdate.slice(0, 7);
     // Lo terminado se archiva solo: lo publicado hace más de 30 días (o marcado «Archivado») sale del calendario y va al Archivo.
     const { vivos, archivo } = separar(posts);
-    const vis = filtrar(vivos, ccf);
+    const vis = filtrar(vivos, { ...ccf, avatares: cavs });
     const brand = embed?.brand || data.profile.name;
     const mesL = new Date(M + '-15T12:00').toLocaleDateString('es-GT', { month: 'long' }).replace(/^./, (c) => c.toUpperCase());
     const chip = (p) => { const [i, l] = driveState(p), e = estadoDe(p); return html`<button class="ppost st-${ESTADO_CLS[e] || 'idea'}" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${nombreDe(p, brand)} · ${e} · ${l} · ${tituloPieza(p, crefs)}"><span class="pi">${i}</span><span class="pt">${p.title}</span>${marcasPieza(p)}${p.format ? html`<span class="pf">${p.format}</span>` : ''}</button>`; };
     const undated = vis.filter((p) => !p.date && estadoDe(p) !== 'Publicado');
     mount(b, html`
-      <div class="cc-top">${mezclaHtml(mezclaDelMes(vivos, M, pillars), ccf, mesL)}<button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div>
+      ${(() => { const k = cerrado(M + '-01'); return k.cerrado ? html`<div class="cc-lock" role="status">${ico('lock', 16)}<div><b>Sin brief del ciclo de ${mesNombre(M)}</b><span class="mut sm">No se crean piezas con fecha de este mes hasta que ④ Creatividad deje el brief en 04-contenido/${M}/brief-del-ciclo.md. Las ideas sin fecha sí se pueden crear.</span></div>${me.role === 'ceo' ? html`<button class="btn ghost xs" data-act="briefOpen" data-m="${M}">Abrir el mes sin brief</button>` : ''}</div>` : k.por === 'ceo' ? html`<div class="cc-lock open mut sm">${ico('lock', 13)} ${mesNombre(M)} está abierto sin brief: lo abrió ${String(k.abierto.por || '').split('@')[0]}.</div>` : ''; })()}
+      <div class="cc-top">${mezclaHtml(mezclaDelMes(vivos, M, pillars, cavs), ccf, mesL)}<button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div>
       ${filtrosHtml(ccf, ejes(vivos, pillars, ccamps), crefs.length)}
       ${calStrip(wk, (k) => vis.filter((p) => p.date === k).map((p) => colorOf(p.pillar)))}
       ${calWeekPanel(wk, (k) => vis.filter((p) => p.date === k), chip, 'pnew', raw(`${ico('folder', 13).toString()} en Drive · ⬆ por subir · ${ico('edit', 13).toString()} por grabar · ↻ replica`), html`<button class="btn" data-act="pnew" data-d="">+ Pieza</button>`)}
@@ -448,10 +451,15 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     cview: (t) => { cview = t.dataset.v; recal(); },
     snew: (t, e) => { if (e?.target?.closest('.ppost')) return; editShoot(null, t.dataset.d); },
     sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },
-    pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; const r = await editPost(slug, null, pieceOpts(t.dataset.d ? { date: t.dataset.d } : {})); if (r) { posts = [...posts, r]; recal(); } },
+    pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; if (t.dataset.d && cerrado(t.dataset.d).cerrado) return toast(`Sin brief del ciclo de ${mesNombre(t.dataset.d.slice(0, 7))}: no se crean piezas con fecha de ese mes`, true); const r = await editPost(slug, null, pieceOpts(t.dataset.d ? { date: t.dataset.d } : {})); if (r) { posts = [...posts, r]; recal(); } },
     pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p, pieceOpts()); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
     ccmix: (t) => { const k = t.dataset.f, v = t.dataset.v; ccf = { ...ccf, [k]: ccf[k] === v ? '' : v }; recal(); },
     ccclear: () => { ccf = {}; recal(); },
+    briefOpen: async (t) => {
+      if (!(await confirmAsk(`¿Abrir ${mesNombre(t.dataset.m)} sin brief del ciclo? Queda anotado que lo abriste tú.`))) return;
+      try { const d = (await col('settings').get('brief_open').catch(() => null)) || { id: 'brief_open', marcas: {} }; const marcas = { ...(d.marcas || {}) }; marcas[slug] = [...(marcas[slug] || []).filter((x) => x.mes !== t.dataset.m), { mes: t.dataset.m, por: me.email, en: new Date().toISOString() }];
+        await (d.v ? col('settings').save({ ...d, marcas }) : col('settings').create({ id: 'brief_open', marcas })); cabiertos = marcas[slug]; toast('Mes abierto sin brief'); recal(); } catch (e) { toast(e.message, true); }
+    },
     parch: () => { parch = !parch; recal(); },
     pillars: async () => {
       const cur = data.cfg.pillars || [];
