@@ -31,7 +31,7 @@
 | 4 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
 | 5 | **Match automático de mentores** | Strategy busca por industria, etapa y presupuesto en las plataformas de mentores. Falta el login |
 | 6 | **Cobro internacional** | Stripe, Wise o equivalente, con factura deducible para el cliente |
-| 7 | **CEO OS v2 · fases 3-5** (`ceo-os/`) | Library con Drive · Content con guiones diarios por IA · portal del cliente |
+| 7 | **Inherent OS · fases 5 a 7** (`ceo-os/`) | El plan y el orden están en `ceo-os/PLAN-OS.md` § 4. Hechas: 0 a 4 |
 | 8 | **CEO OS: desplegar** | Conectar la base de datos (Neon) en Vercel, crear el cliente OAuth de Google y cargar las variables. Pasos en `ceo-os/README.md` |
 | 9 | **CEO OS: costos por hora de cada rol** | Solo Producción tiene tarifa en el manual (Q150/h). Sin las demás no hay costo ni precio sugerido en el catálogo |
 | 10 | **Cerantola: pasar lo básico a Figma** | Colores, fuentes y logos de `clients/cerantola/02-marca/sistema-visual.md` a la página «Cerantola». Lo complejo de la marca se diseña ahí |
