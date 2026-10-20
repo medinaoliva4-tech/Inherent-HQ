@@ -15,6 +15,10 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-2;background:
   radial-gradient(30% 30% at 96% 86%,#ede5d9 0%,transparent 70%)}
 body::after{content:"";position:fixed;inset:0;z-index:-1;background-image:var(--grain);opacity:.09;pointer-events:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+/* Los links son café en todo el OS (nunca el azul del navegador). :where() no pesa: cualquier estilo propio de un link manda. */
+:where(a){color:var(--tone)}
+:where(a:not([class])){text-decoration-color:rgb(var(--ink-rgb) / .3);text-underline-offset:2px}
+:where(a:not([class])):hover{color:var(--ink);text-decoration-color:currentColor}
 .serif{font-family:var(--serif);font-weight:400}
 .app{max-width:1380px;margin:0 auto;padding:22px 28px 70px}
 
@@ -3417,7 +3421,8 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 .bh-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4)}
 .bh-row.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .bh-row:has(>:only-child){grid-template-columns:minmax(0,1fr)}
-.bh-h{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);margin-bottom:var(--s3)}
+.bh-h{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);margin-bottom:var(--s3);min-height:22px}
+.bh-h .lbl{margin:0}
 .bh-more{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;color:var(--ink2);text-decoration:none}
 .bh-more:hover{color:var(--ink)}
 .bh-empty{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut)}
@@ -3442,6 +3447,7 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 .bh-est a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:var(--r-s);background:var(--surface);border:1px solid var(--hair);text-decoration:none;color:inherit;transition:border-color var(--t) var(--ease)}
 .bh-est a:hover{border-color:var(--hair-strong)}
 .bh-est a .bh-dot{margin-bottom:4px}
+.bh-est+p{margin-top:var(--s3)}
 .bh-est b{font-size:24px;font-weight:400;letter-spacing:-.6px;line-height:1.1}
 
 /* Listas cortas */
@@ -3482,7 +3488,9 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 .bh-area-i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--fill);color:var(--ink2)}
 .bh-tools{display:flex;flex-direction:column;gap:2px}
 .bh-tools a{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--ink);text-decoration:none;transition:background var(--t) var(--ease)}
-.bh-tools a span{flex:1}
+.bh-tools a span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bh-tools .soon-tag{flex:none;margin-left:2px;font-size:8.5px;padding:2px 5px;letter-spacing:.04em}
+.bh-tools a{padding:8px 6px 8px 8px}
 .bh-tools a:hover{background:var(--fill)}
 .bh-tools a.soon{color:var(--mut)}
 .bh-tools a>svg:last-child{opacity:.45}
