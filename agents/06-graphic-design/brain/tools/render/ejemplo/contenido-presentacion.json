@@ -1,8 +1,0 @@
-{
-  "slides": [
-    { "tipo": "portada", "etiqueta": "Propuesta · octubre", "titulo": "Una marca que *se recuerda* y se elige", "subtitulo": "Camino, sistema y medición para los próximos tres meses." },
-    { "tipo": "contenido", "etiqueta": "Qué haremos", "titulo": "Tres decisiones, *una sola* dirección", "puntos": ["Una idea madre que se repite en cada pieza", "Un sistema visual que cualquiera del equipo puede aplicar", "Una medición que dice qué conservar y qué cambiar"] },
-    { "tipo": "cifra", "etiqueta": "Meta interna", "cifra": "3 meses", "titulo": "Para tener el sistema funcionando y medido" },
-    { "tipo": "cierre", "titulo": "¿Empezamos *esta semana*?", "cta": "Hablemos" }
-  ]
-}

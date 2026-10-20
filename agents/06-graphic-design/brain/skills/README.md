@@ -27,20 +27,6 @@ detalle de cada herramienta.
 | 5 | **`gd-export`** | 4 | *«exportá el paquete»* | Archivos finales + manifiesto |
 | 6 | **`gd-loop`** | 5 | La revisión del 20 | `aprendizaje-de-diseno.md` |
 
-## Las skills por red — Capa 3, por formato
-
-Cuatro skills cortas, del mismo molde, que llenan **las plantillas HTML con variantes** del cliente con el
-copy literal del calendario y exportan con el motor de render (`brain/tools/render/`). **Claude no dibuja**:
-Laya elige plantilla y variante y compara candidatas; el texto auxiliar que falte lo escribe el modelo local o,
-si no responde, el modelo más barato de Claude. **No crean plantillas** — las hace `gd-plantillas`.
-
-| Skill | Piezas | Salida |
-|---|---|---|
-| **`ig-content`** | Post, carrusel, story y portada de reel | PNG |
-| **`fb-content`** | Post y story | PNG |
-| **`linkedin-content`** | Post con imagen y carrusel en PDF | PNG · PDF |
-| **`presentation`** | Presentación 16:9 | PDF |
-
 ---
 
 ## La regla que hace viable el departamento

@@ -14,7 +14,7 @@ paso vive en las skills: `skills/README.md`.
 
 | Días | Qué corre | Entrega |
 |---|---|---|
-| **12 – 15** | **Montar el contenido** — `gd-recepcion` → `gd-plantillas` → `gd-imagen` → `gd-composicion` *(por red: `ig-content` · `fb-content` · `linkedin-content` · `presentation`)* | Piezas compuestas |
+| **12 – 15** | **Montar el contenido** — `gd-recepcion` → `gd-plantillas` → `gd-imagen` → `gd-composicion` | Piezas compuestas |
 | **16 – 19** | **Cambios** — lo que devuelve `br-guardian` · `gd-export` | Paquete exportado **a más tardar el día 19** |
 
 ---
@@ -119,8 +119,6 @@ alcanza para una pieza, **se devuelve a ②B Branding con la regla que falta** �
    2  IMAGEN        de dónde sale cada imagen                → gd-imagen
         ▼
    3  COMPOSICIÓN   llenar las plantillas, pieza por pieza   → gd-composicion
-                    por red, con el motor de render y Laya   → ig-content · fb-content
-                                                              · linkedin-content · presentation
         ▼
    4  EXPORT        specs por formato y nomenclatura         → gd-export
         ▼           →→→ pasa a QA y después a ⑨ Posting
@@ -145,9 +143,6 @@ alcanza para una pieza, **se devuelve a ②B Branding con la regla que falta** �
 | Acción | MCP | |
 |---|---|---|
 | Componer cada pieza sobre la plantilla | **Operador de agentes** — dentro del costo fijo de su rubro | 👤 |
-| Llenar la plantilla HTML con el calendario y exportar PNG o PDF | **Motor de render local** (`brain/tools/render/`: Node + Chrome, sin créditos de IA) | ⬜ |
-| Elegir plantilla y variante, y comparar candidatas | **Laya** *(el puente local del OS)* — sin él, el modelo más barato de Claude | ⬜ |
-| Escribir el texto auxiliar que falte | **Modelo local** *(Ollama)* — sin él, el modelo más barato de Claude | ⬜ |
 | Fotos de producto | ⑤ Producción — la sesión de foto del mes | 👤 |
 | Reencuadrar para cada formato | `ffmpeg` local *(recorte y escala)* | ⬜ |
 | Generar imagen con IA · quitar fondo · escalar calidad | ⛔ **Sin herramienta — no se promete** | 🔴 |

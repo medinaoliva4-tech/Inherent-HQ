@@ -18,8 +18,6 @@
 | 6 | **El margen de rodaje de cada ficha** | Las horas contratadas son tiempo de cámara; ⑤ usa márgenes de referencia (60-90 / 30-45 / 45 min) mientras no se decida |
 | 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de ⑧. **`ceo-os/` va a Vercel (autorizado por el CEO):** la regla de CLAUDE.md ya lo contempla |
 | 8 | **La recompensa de referidos** | Para quien refiere *(cliente o tercero)*: qué, cuánto, para quién y cuándo se entrega. Sin esto `gr-referidos` queda `BLOQUEADO` *(Construir #13)* |
-| 9 | **El calendario de contenido trae el contexto del ciclo** | El `plan-de-contenido.csv` y los `ideas-<formato>.md` no traen ICP, estrategia del mes ni fechas del mes. Propuesta: un bloque «Contexto del ciclo» *(ICP · estrategia del mes · fechas)* en `brief-del-ciclo.md` y un punto en el QA de `cr-adaptacion`. Mientras no se decida, las skills de ⑥A lo leen de su fuente |
-| 10 | **¿Quién escribe caption y alt text?** | Hoy son de ⑨ `po-caption`. Las skills de ⑥A solo escriben texto auxiliar de plantilla *(etiquetas)* con el modelo local. Decidir si ⑥A también escribe variantes de caption y alt text *(cambia `WORKFLOW.md` §8 de ⑥A)* |
 
 ---
 
@@ -27,7 +25,7 @@
 
 | # | Qué | Por qué |
 |---|---|---|
-| 1 | **Herramienta o MCP para ⑦ Video Editing** | Hoy es manual: las horas del editor son el techo. ⑥A compone con el motor de render *(probar: Probar #14)* |
+| 1 | **Herramienta o MCP para ⑥A Diseño y ⑦ Video Editing** | Hoy son 100% manuales: las horas del operador y del editor son el techo |
 | 2 | **Operación automatizada** | Programar, publicar y reportar sin humano; el operador supervisa más cuentas |
 | 3 | **Pipeline de herramientas** | Plantillas y despliegue automatizado para que la tecnología de Growth Partnership quepa en el rubro Operador |
 | 4 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
@@ -40,9 +38,6 @@
 | 11 | **Cerantola: mejorar con IA las fotos del PDF** | Vienen en baja resolución. Se retocan con Higgsfield según las reglas de § Imagen |
 | 12 | **Cerantola: crear su perfil de Google Maps** | No existe, y al buscar «Cerantola» aparece Cerantola S.p.A. de Italia. Con su nombre, fotos de proyectos y reseñas de clientes. Ver `clients/cerantola/99-referencias/investigacion/referentes-por-canal.md` § Google |
 | 13 | **Sistema de referidos: la plataforma** | La skill `gr-referidos` ya existe. Falta la recompensa *(Decisiones #8)* y elegir la plataforma externa que ocupa el slot, probada en una cuenta real antes de anotarla en `inherent/05-OPERACION.md` |
-| 14 | **Plantillas HTML con variantes** | Las 4 skills por red *(`ig-content`, `fb-content`, `linkedin-content`, `presentation`)* necesitan, en `02-marca/kit-de-redes/plantillas/`, un `tokens.json` y una plantilla HTML por formato con sus variantes *(formato en `agents/06-graphic-design/brain/tools/render/README.md`)*. `gd-plantillas` hoy las entrega en Figma: hay que decidir que entregue también el HTML. Cerantola: pasar IG-01…IG-09, LI-01…LI-06 y FB-02 |
-| 15 | **Ojo visual** *(CLIP/SigLIP)* | Los criterios 👁️ de `08-CRITERIOS-DE-ACEPTACION.md` no tienen herramienta conectada. Hoy los cubre Claude con visión sobre una hoja de contacto y el QA del COO |
-| 16 | **Capacidades reales e instalación** | Anotar el motor de render, Laya y el modelo local en `inherent/06-ECONOMIA.md` § Capacidades reales y en `INSTALAR.md` cuando pasen la prueba *(Probar #14)* |
 
 ---
 
@@ -66,8 +61,6 @@
 | 11 | **`ffmpeg` local:** reencuadre y análisis de video | ⑦ y `cr-lectura-de-video` |
 | 12 | **Un mes completo al volumen de una ficha real** | Que el volumen sea capacidad probada |
 | 13 | **Captura de leads:** comenta-y-te-mando con Zernio `comment_automations_*` y prospección con Apify *(Maps y LinkedIn)* contra una cuenta real | ② `gr-captura` y el auto-DM de ⑧ |
-| 14 | **Motor de render y las 4 skills por red:** un ciclo completo con las plantillas HTML de un cliente real. Medir si la variante que elige Laya coincide con la que elegiría el COO | ⑥A: el volumen sin componer a mano |
-| 15 | **Instalador con `--modelo-local` / `-ModeloLocal`:** probado en Linux; falta Mac y Windows. Y `gemma3:4b` escribiendo el texto auxiliar de una marca real | Modelo local para texto repetitivo |
 
 ### Las garantías — no se publican hasta cerrar los cuatro
 
@@ -181,8 +174,6 @@
 | 7 | `mk-busqueda` | Si se ofrece SEO técnico u optimización de la web *(cambia primero `inherent/07-COMUNICACION.md` § 7 y el área 4 de `03-OFERTA.md`)* · si el blog de la web entra como formato y con qué volumen |
 | 8 | `mk-podcast` | La cadencia de episodios y cuántos clips mínimos por episodio · si el podcast de Inherent se activa y en qué plataforma |
 | 9 | `mk-calendario` · `mk-pilares` | Si se quiere un porcentaje de arranque por nivel de consciencia en la mezcla del ciclo *(a definir por el CEO; hoy la regla es cubrir los niveles que la estrategia necesita, sin cifra)* |
-| 10 | `presentation` | La ficha de criterios de la presentación en `08-CRITERIOS-DE-ACEPTACION.md` *(hoy aplica la del carrusel)* · cuántas láminas como máximo · el peso máximo si se manda por correo |
-| 11 | `ig-content` · `fb-content` · `linkedin-content` | Cuántas variantes mínimo por plantilla · el umbral de confianza de Laya por debajo del cual decide Claude · el recorte exacto de la portada de reel y las safe zones por formato en `sistema-visual.md` de cada cliente |
 
 
 ---

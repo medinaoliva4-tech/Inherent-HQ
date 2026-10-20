@@ -48,7 +48,6 @@ posicionamiento decidió, y eso es peor que no publicar.
 | *«las plantillas»*, *«el molde del mes»* | `gd-plantillas` |
 | *«fotos de producto»*, *«de dónde sale la imagen»* | `gd-imagen` |
 | *«armá este carrusel»*, *«componé esta pieza»* | `gd-composicion` |
-| *«las piezas de Instagram / Facebook / LinkedIn»*, *«la presentación en PDF»* | `ig-content` · `fb-content` · `linkedin-content` · `presentation` |
 | *«exportá»*, *«dejalo listo para posting»* | `gd-export` |
 | *«qué plantilla rindió»*, la revisión del 20 | `gd-loop` |
 
