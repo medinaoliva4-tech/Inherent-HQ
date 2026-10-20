@@ -28,7 +28,7 @@ export const PALETTE = [
 ];
 const PAL = Object.fromEntries(PALETTE.map((p) => [p.k, p]));
 export const INK = { stroke: '#2c1f16', edge: '#8c725c', label: '#4a3628', labelBg: '#fcf9f2', bg: '#f6f1e8' };
-export const FONT = "'42dot Sans', Helvetica, Arial, sans-serif";
+export const FONT = "'Inter', Helvetica, Arial, sans-serif";
 export const FS = 14, LH = 19;
 
 const num = (v, d = 0) => (Number.isFinite(Number(v)) ? Math.round(Number(v) * 100) / 100 : d);
