@@ -126,7 +126,7 @@ export function leerSistema(md) {
   };
 }
 
-// El contraste WCAG entre dos hex (para la pieza de prueba y para lo que el archivo no trae).
+// El contraste WCAG entre dos hex (para lo que el archivo no trae).
 const lum = (hex) => { const h = hex.replace('#', ''), f = h.length === 3 ? h.split('').map((x) => x + x).join('') : h; return [0, 2, 4].map((i) => parseInt(f.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)).reduce((a, c, i) => a + c * [0.2126, 0.7152, 0.0722][i], 0); };
 export const contraste = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return Math.round(((x + 0.05) / (y + 0.05)) * 10) / 10; };
 
@@ -141,22 +141,3 @@ export function tokensCss(sis) {
   return L.join('\n');
 }
 
-// Las medidas de composición que usa la pieza de prueba (en % del lado). Lo que el archivo no dice queda en null.
-export function zonas(sis) {
-  const rows = (sis.composicion || []).flatMap((t) => t.rows), de = (re) => plano(rows.find((r) => re.test(plano(r[0])))?.[1] || '');
-  const pct = (s, re) => { const m = re.exec(s); return m ? +m[1] : null; };
-  const mg = de(/m[aá]rgen/i), sz = de(/safe/i), gr = de(/grilla/i);
-  return {
-    margen: pct(mg, /(\d+(?:\.\d+)?)\s*%/) ?? pct(sz, /m[aá]rgenes de (\d+(?:\.\d+)?)\s*%/),
-    story: { arriba: pct(sz, /(\d+)\s*%\s*de arriba/), abajo: pct(sz, /(\d+)\s*%\s*de abajo/), derecha: pct(sz, /(\d+)\s*%\s*derech/) },
-    columnas: pct(gr, /(\d+)\s*columnas en redes/) ?? pct(gr, /(\d+)\s*columnas/),
-  };
-}
-// Los roles que usa la pieza: fondo (el principal), tinta (el de más contraste sobre el fondo) y acento.
-export function roles(sis) {
-  const cs = sis.colores; if (!cs.length) return null;
-  const fondo = cs.find((c) => /principal/i.test(c.rol)) || cs[0];
-  const acento = cs.find((c) => /acento/i.test(c.rol)) || null;
-  const tinta = cs.filter((c) => c !== fondo && c !== acento).sort((a, b) => contraste(b.hex, fondo.hex) - contraste(a.hex, fondo.hex))[0] || { hex: '#FFFFFF', nombre: 'Blanco' };
-  return { fondo, tinta, acento };
-}
