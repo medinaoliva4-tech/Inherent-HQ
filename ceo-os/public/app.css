@@ -3883,3 +3883,27 @@ span.ev-sup{cursor:default}
 .vx-bs{font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 9px;white-space:nowrap}.vx-bs.corriendo{background:rgb(70 120 190 / .12);color:#3f6ea8}.vx-bs.listo{background:rgb(60 138 90 / .13);color:#2f7a4d}.vx-bs.fallo{background:rgb(180 71 47 / .1);color:#b4472f}
 .vx-ed{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.vx-ed.ok{background:#3c8a5a}.vx-ed.am{background:#c49a3c}.vx-ed.bad{background:#b4472f}
 .vx-enc{font-size:11px;border-radius:999px;padding:1px 8px;margin-left:4px}.vx-enc.ok{background:rgb(60 138 90 / .13);color:#2f7a4d}.vx-enc.am{background:rgb(196 150 60 / .16);color:#8a6512}.vx-enc.bad{background:rgb(180 71 47 / .1);color:#b4472f}
+/* Finanzas › Resumen (como el tablero de Xero) y el reparto de Profit First */
+.fx{display:flex;flex-direction:column;gap:14px}
+.fx-hero{display:grid;grid-template-columns:1fr 1.3fr;gap:24px;align-items:center}
+.fx-queda>b{display:block;font-size:52px;font-weight:300;letter-spacing:-1px;line-height:1.05;margin-top:4px}
+.fx-tres{display:flex;gap:24px;margin-top:10px}.fx-tres small{display:block;color:var(--mut);font-size:12px}.fx-tres b{font-size:18px}
+.ok{color:#2f7a4d}.bad,.late{color:#b4472f}
+.fx-leg{gap:12px;font-size:12px;color:var(--mut);margin-bottom:8px}.fx-leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}.fx-leg i.ent,.fx-b i.ent{background:#2f7a4d}.fx-leg i.sal,.fx-b i.sal{background:#d9a89a}
+.fx-bars{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;height:150px}
+.fx-m{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;color:var(--mut)}.fx-m.on span{color:var(--ink);font-weight:600}
+.fx-b{flex:1;display:flex;gap:4px;align-items:flex-end;border-bottom:1px solid var(--hair);width:100%;justify-content:center}.fx-b i{width:16px;border-radius:5px 5px 0 0;min-height:2px}
+.fx-row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.fx-row2{display:grid;grid-template-columns:1.1fr 1fr;gap:14px}
+.fx-card{display:flex;flex-direction:column;gap:8px;min-width:0}
+.fx-big{font-size:28px;font-weight:400}
+.fx-age{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px;background:var(--fill)}.fx-age i{display:block}
+.fx-agel{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--mut)}.fx-agel i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+.fx-li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-top:1px solid var(--hair)}.fx-li small{color:var(--mut)}.fx-li b{white-space:nowrap}
+.fx-split{display:flex;height:32px;border-radius:10px;overflow:hidden;font-size:12px;color:#fff;font-weight:600}.fx-split span{display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden}
+.fx-sl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.fx-sl div{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:8px 10px}.fx-sl small{display:block;color:var(--mut);font-size:11.5px}.fx-sl b{font-size:15px}
+.fx-rc{display:grid;grid-template-columns:130px 1fr 48px;gap:10px;align-items:center;font-size:13.5px;padding:4px 0}.fx-rb{height:10px;border-radius:5px;background:var(--fill);overflow:hidden}.fx-rb i{display:block;height:100%}
+.fx-more{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fx-mi{all:unset;cursor:pointer;background:var(--surface);border:1px solid var(--hair);border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:center;font-size:14px}.fx-mi:hover{background:var(--fill)}
+.fx-mi i{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-style:normal;font-size:13px;flex:none}.fx-mi small{display:block;color:var(--mut);font-size:12px}
+.fx-mas{opacity:.85}
+@media (max-width:1000px){.fx-hero,.fx-row3,.fx-row2,.fx-more{grid-template-columns:1fr}.fx-sl{grid-template-columns:1fr 1fr}}

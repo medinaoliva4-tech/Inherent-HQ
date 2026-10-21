@@ -2,7 +2,7 @@ import { svcHours, svcCost, svcPrice, svcAuto } from '../cycle.js';
 import { byScope, proposal, targetMargin, LEVELS, PRICING_ID } from '../finscope.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
 import { facturasTab, costosPorCliente } from '../facturas-ui.js';
-import { CATS_IN, CATS_OUT } from '../facturas.js';
+import { CATS_IN, CATS_OUT, estadoFactura, cruzar } from '../facturas.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, Q, K, fdate, today, $, $$, IC, matrix, lineChart, csv, connectChip, wizard, swap, ico, isSummary, canEdit, roChip, fromLink } from '../core.js';
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -42,7 +42,9 @@ export async function render(el, { me, sub }) {
   let entries = [...manual, ...fromSheet(sheet)];
 
   // Facturas: la primera para el CEO. En resumen (el perfil Cobros) llega solo lo por cobrar, después de Movimientos.
-  const TABS = resumen ? [['mov', 'Movimientos'], ['fact', 'Facturas']] : [['fact', 'Facturas'], ['mov', 'Movimientos'], ['costs', 'Costos'], ['profit', 'Rentabilidad'], ['pricing', 'Precios'], ['nomina', 'Pagos por servicio']];
+  const TABS = resumen ? [['mov', 'Movimientos'], ['fact', 'Facturas']] : [['res', 'Resumen'], ['fact', 'Facturas'], ['mov', 'Movimientos'], ['costs', 'Costos'], ['profit', 'Rentabilidad'], ['pricing', 'Precios'], ['nomina', 'Pagos por servicio']];
+  // Las de todos los días arriba; las de vez en cuando, más chicas (y también como tarjetas al final del Resumen).
+  const MAS = ['costs', 'profit', 'pricing', 'nomina'];
   let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : TABS[0][0];
   const now = today().slice(0, 7);
   let month = now;
@@ -51,9 +53,10 @@ export async function render(el, { me, sub }) {
 
   function paint() {
     const rev = sum('ingreso', month), cost = sum('gasto', month);
+    if (tab === 'res') return resumenHtml();
     mount(el, html`
       <div class="hello row" style="align-items:flex-end"><div><h1>Finanzas</h1><p>Cuánto entra, cuánto cuesta, <em>cuánto queda</em>.</p></div><div class="sp"></div>${roChip(me, 'finanzas')}</div>
-      <div class="grid g21">
+      <div class="grid g21" ${raw(TABS.some(([k]) => k === 'res') ? 'hidden' : '')}>
         <div class="card">
           <div class="chead"><div class="ico">↗</div><h3>Revenue vs. costo · 8 meses</h3><div class="sp"></div>
             <span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#2c1f16;display:inline-block"></i>Revenue</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #997d65;display:inline-block"></i>Costo</span></span></div>
@@ -69,7 +72,7 @@ export async function render(el, { me, sub }) {
         </div>
       </div>
       <div class="row" style="margin:24px 0 18px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        ${tabsHtml()}
         <div class="sp"></div>
         ${tab === 'mov' && edit ? html`${connectChip('sheets', sheet?.url ? 'Google Sheet conectado' : 'Conectar Google Sheet', 'sheet', Boolean(sheet?.url))}${sheet?.url ? html`<button class="sm mut" data-act="sheetset" style="margin:0 6px">Cambiar</button>` : ''}<button class="btn ghost" data-act="add" data-type="gasto">+ Gasto</button><button class="btn" data-act="add" data-type="ingreso">+ Ingreso</button>` : ''}
       </div>
@@ -79,7 +82,88 @@ export async function render(el, { me, sub }) {
       { name: 'Costo', v: months8.map((m) => sum('gasto', m)), c: '#997d65', dash: true }], { fmt: Q });
     $('[data-act=month]', el).onchange = (e) => { month = e.target.value; paint(); };
     const b = $('#fbody', el);
-    ({ fact, mov, costs, profit, pricing, nomina })[tab](b);
+    ({ fact, mov, costs, profit, pricing, nomina, res: () => {} })[tab](b);
+  }
+
+  const tabsHtml = () => html`<div class="tabs" style="margin:0">${TABS.filter(([k]) => !MAS.includes(k)).map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>${TABS.some(([k]) => MAS.includes(k)) ? html`<div class="tabs mini fx-mas" style="margin:0">${TABS.filter(([k]) => MAS.includes(k)).map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>` : ''}`;
+
+  // ---------- Resumen (como el tablero de Xero) + el reparto de Profit First ----------
+  // El reparto: settings › reparto = { utilidad, impuestos, operacion } en %. De arranque: 40 · 15 · 45 (utilidad sana ~40%).
+  // La meta de margen de cada producto: settings › reparto.margen (80%).
+  let reparto = null, invs = null, moves = null;
+  const REP0 = { utilidad: 40, impuestos: 15, operacion: 45, margen: 80 };
+  const rep = () => ({ ...REP0, ...(reparto || {}) });
+  async function cargarRes() {
+    [reparto, invs, moves] = await Promise.all([col('settings').get('reparto').catch(() => null), col('invoices').list().catch(() => []), col('bank_moves').list().catch(() => [])]);
+    if (tab === 'res') resumenHtml();
+  }
+  function resumenHtml() {
+    const T = today(), T7 = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);
+    const rev = sum('ingreso', month), cost = sum('gasto', month), queda = rev - cost;
+    const m6 = months8.slice(-6), maxV = Math.max(1, ...m6.flatMap((m) => [sum('ingreso', m), sum('gasto', m)]));
+    const iv = invs || [], est = (i) => estadoFactura(i, T);
+    const cobrar = iv.filter((i) => i.kind === 'cobrar' && ['pendiente', 'vencida'].includes(est(i))).sort((a, z) => String(a.due).localeCompare(String(z.due)));
+    const pagar = iv.filter((i) => i.kind === 'pagar' && ['pendiente', 'vencida'].includes(est(i))).sort((a, z) => String(a.due).localeCompare(String(z.due)));
+    const monto = (i) => (i.currency === 'USD' ? (+i.amount || 0) * 7.7 : +i.amount || 0);
+    const suma = (l) => l.reduce((a, i) => a + monto(i), 0);
+    const venc = cobrar.filter((i) => est(i) === 'vencida'), semana = cobrar.filter((i) => est(i) !== 'vencida' && i.due <= T7), aldia = cobrar.filter((i) => est(i) !== 'vencida' && i.due > T7);
+    const tot = suma(cobrar) || 1;
+    const pagarSem = pagar.filter((i) => est(i) === 'vencida' || i.due <= T7);
+    const quien = (i) => (i.kind === 'cobrar' ? (accounts.find((a) => (a.slug || String(a.id).replace(/^acc-/, '')) === i.client)?.name || String(i.client || '').toUpperCase()) : i.vendor || '—');
+    const tel = (i) => String(accounts.find((a) => (a.slug || String(a.id).replace(/^acc-/, '')) === i.client)?.phone || '').replace(/\D/g, '');
+    const fila = (i) => html`<div class="fx-li"><span>${quien(i)} <small>· ${i.concept || ''}</small></span><b class="${est(i) === 'vencida' ? 'late' : ''}">${i.currency === 'USD' ? '$' : 'Q'}${(+i.amount || 0).toLocaleString('es-GT')} · ${est(i) === 'vencida' ? 'venció ' : ''}${fdate(i.due)}</b></div>`;
+    const sinConc = (moves || []).filter((m) => !m.invoice_id), ultimo = (moves || []).map((m) => m.date).filter(Boolean).sort().at(-1);
+    const pares = invs && moves ? cruzar(invs, moves, T).length : 0;
+    // El ingreso real (Profit First): lo que entró menos lo que es de terceros (la pauta que paga el cliente).
+    const terceros = sum('gasto', month, (e) => e.category === 'Pauta'), real = Math.max(0, rev - terceros), R = rep();
+    const parte = (k) => Math.round((real * (+R[k] || 0)) / 100), opGasto = cost - terceros;
+    const scope = byScope({ month, services, rates, projects, quotes, accounts, entries }).rows.filter((x) => x.pct != null).sort((a, z) => z.pct - a.pct);
+    const tono = (pct) => (pct >= R.margen ? '#2f7a4d' : pct >= R.margen - 20 ? '#c49a3c' : '#b4472f');
+    const recordar = venc[0] || semana[0];
+    mount(el, html`<div class="hello row" style="align-items:flex-end"><div><h1>Finanzas</h1><p>Cuánto entra, cuánto cuesta, <em>cuánto queda</em>.</p></div><div class="sp"></div>${roChip(me, 'finanzas')}</div>
+      <div class="row" style="margin:0 0 16px;flex-wrap:wrap;gap:8px">${tabsHtml()}<div class="sp"></div><select class="in" data-act="month" style="width:auto" aria-label="Mes">${months8.slice().reverse().map((m) => html`<option value="${m}" ${m === month ? raw('selected') : ''}>${mLabel(m)}</option>`)}</select></div>
+      <div class="fx">
+        <section class="card fx-hero"><div class="fx-queda"><span class="lbl">Lo que queda en ${mLabel(month)}</span><b class="${queda < 0 ? 'late' : ''}">${Q(queda)}</b>
+            <div class="fx-tres"><div><small>Entró</small><b class="ok">${Q(rev)}</b></div><div><small>Salió</small><b class="bad">${Q(cost)}</b></div><div><small>Margen</small><b>${rev ? Math.round((queda / rev) * 100) + '%' : '—'}</b></div></div></div>
+          <div><div class="row fx-leg"><span class="lbl" style="margin:0">Entra y sale · 6 meses</span><div class="sp"></div><span><i class="ent"></i>Entra</span><span><i class="sal"></i>Sale</span></div>
+            <div class="fx-bars">${m6.map((m) => html`<div class="fx-m ${m === month ? 'on' : ''}" title="${mLabel(m)} · entra ${Q(sum('ingreso', m))} · sale ${Q(sum('gasto', m))}"><div class="fx-b"><i class="ent" style="height:${(sum('ingreso', m) / maxV) * 100}%"></i><i class="sal" style="height:${(sum('gasto', m) / maxV) * 100}%"></i></div><span>${mLabel(m).split(' ')[0]}</span></div>`)}</div></div></section>
+        <div class="fx-row3">
+          <section class="card fx-card"><div class="row"><span class="lbl">Te deben</span><div class="sp"></div><button class="sm wslink" data-act="tab" data-t="fact">Ver todo ›</button></div>
+            ${invs === null ? html`<p class="mut sm">Cargando…</p>` : html`<b class="fx-big">${Q(suma(cobrar))}</b><small class="mut">${cobrar.length} factura${cobrar.length === 1 ? '' : 's'}${venc.length ? ` · ${venc.length} vencida${venc.length === 1 ? '' : 's'}` : ''}</small>
+            ${cobrar.length ? html`<div class="fx-age"><i style="width:${(suma(aldia) / tot) * 100}%;background:#2f7a4d"></i><i style="width:${(suma(semana) / tot) * 100}%;background:#c49a3c"></i><i style="width:${(suma(venc) / tot) * 100}%;background:#b4472f"></i></div><div class="fx-agel"><span><i style="background:#2f7a4d"></i>Al día</span><span><i style="background:#c49a3c"></i>Vence esta semana</span><span><i style="background:#b4472f"></i>Vencida</span></div>` : ''}
+            ${cobrar.slice(0, 3).map(fila)}
+            <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:4px"><button class="btn xs" data-act="tab" data-t="fact">Generar cobros del mes</button>${recordar && tel(recordar) ? html`<a class="btn ghost xs" target="_blank" rel="noopener" href="https://wa.me/${tel(recordar)}?text=${encodeURIComponent(`Hola, ¿cómo estás? Te escribo de Inherent por la factura de ${recordar.concept || 'este mes'} (${recordar.currency === 'USD' ? '$' : 'Q'}${(+recordar.amount || 0).toLocaleString('es-GT')}) que ${est(recordar) === 'vencida' ? 'venció' : 'vence'} el ${fdate(recordar.due)}. Cualquier cosa me dices. ¡Gracias!`)}">✆ Recordar a ${quien(recordar)}</a>` : ''}</div>`}</section>
+          <section class="card fx-card"><div class="row"><span class="lbl">Por pagar</span><div class="sp"></div><button class="sm wslink" data-act="tab" data-t="fact">Ver todo ›</button></div>
+            ${invs === null ? html`<p class="mut sm">Cargando…</p>` : html`<b class="fx-big">${Q(suma(pagarSem))}</b><small class="mut">esta semana · ${pagarSem.length} factura${pagarSem.length === 1 ? '' : 's'}${pagar.length > pagarSem.length ? ` · ${pagar.length - pagarSem.length} más adelante` : ''}</small>
+            ${pagarSem.slice(0, 3).map(fila)}${pagarSem.length ? '' : html`<p class="mut sm">Nada por pagar esta semana.</p>`}
+            <div class="row" style="gap:6px;margin-top:4px"><button class="btn ghost xs" data-act="tab" data-t="fact">+ Por pagar</button></div>`}</section>
+          <section class="card fx-card"><div class="row"><span class="lbl">Banco</span><div class="sp"></div><button class="sm wslink" data-act="tab" data-t="fact">Cruce ›</button></div>
+            ${moves === null ? html`<p class="mut sm">Cargando…</p>` : html`<b class="fx-big">${(moves || []).length ? `${sinConc.length}` : '—'}</b><small class="mut">${(moves || []).length ? `movimientos sin conciliar · último del ${fdate(ultimo)}` : 'Todavía no se ha subido un estado de cuenta'}</small>
+            ${pares ? html`<div class="fx-li"><span>Pagos que empatan con una factura</span><b class="ok">${pares}</b></div>` : ''}
+            <div class="row" style="margin-top:4px"><button class="btn xs" data-act="tab" data-t="fact">↑ Subir estado de cuenta</button></div>`}</section>
+        </div>
+        <div class="fx-row2">
+          <section class="card fx-card"><div class="row"><span class="lbl">El reparto · Profit First</span><div class="sp"></div><button class="sm wslink" data-act="repEdit">Ajustar % ›</button></div>
+            <div class="fx-li" style="border:0;padding-top:0"><span>Entró ${Q(rev)} − terceros ${Q(terceros)} <small>(la pauta del cliente)</small></span><b>Ingreso real ${Q(real)}</b></div>
+            <div class="fx-split"><span style="width:${R.utilidad}%;background:#2f7a4d">Utilidad ${R.utilidad}%</span><span style="width:${R.impuestos}%;background:#9a7414">Impuestos ${R.impuestos}%</span><span style="width:${R.operacion}%;background:#6b513c">Operación ${R.operacion}%</span></div>
+            <div class="fx-sl"><div><small>Utilidad</small><b>${Q(parte('utilidad'))}</b></div><div><small>Impuestos</small><b>${Q(parte('impuestos'))}</b></div><div><small>Operación</small><b>${Q(parte('operacion'))}</b></div><div><small>Gastaste en operación</small><b class="${opGasto > parte('operacion') ? 'bad' : 'ok'}">${Q(opGasto)} ${opGasto > parte('operacion') ? '↑' : '✓'}</b></div></div>
+            <span class="mut sm">El CEO y el COO cobran de la utilidad. Meta: utilidad sana de ~${R.utilidad}% y margen de ${R.margen}% en cada producto.</span></section>
+          <section class="card fx-card"><div class="row"><span class="lbl">Rentabilidad por cliente · ${mLabel(month)}</span><div class="sp"></div><button class="sm wslink" data-act="tab" data-t="profit">Ver todo ›</button></div>
+            ${scope.length ? scope.slice(0, 6).map((x) => html`<div class="fx-rc"><b>${x.name}</b><div class="fx-rb"><i style="width:${Math.max(2, Math.min(100, x.pct))}%;background:${tono(x.pct)}"></i></div><span style="color:${tono(x.pct)}">${x.pct}%</span></div>`) : html`<p class="mut sm">Sin datos de alcance este mes: aparecen los clientes con módulos y su ingreso.</p>`}
+            <span class="mut sm">Meta: ${R.margen}% de margen en cada producto. En ámbar hasta 20 puntos abajo; en rojo, más abajo: se cotiza extra o se cambia la mezcla.</span></section>
+        </div>
+        <div class="fx-more">${[['costs', '◫', '#9a7414', 'Costos', 'Por rubro y por rol'], ['pricing', '$', '#3f6ea8', 'Precios', 'Baselines y servicios'], ['nomina', '⇄', '#7a5aa0', 'Pagos por servicio', 'Lo que se paga a cada rol']].map(([k, ic, c, t, sb]) => html`<button type="button" class="fx-mi" data-act="tab" data-t="${k}"><i style="background:${c}1f;color:${c}">${ic}</i><span><b>${t}</b><small>${sb}</small></span></button>`)}</div>
+      </div>`);
+    $('[data-act=month]', el).onchange = (e) => { month = e.target.value; resumenHtml(); };
+    if (invs === null) cargarRes();
+  }
+  async function editarReparto() {
+    const R = rep();
+    const v = await ask('El reparto (Profit First)', [{ k: 'utilidad', l: 'Utilidad %', t: 'number', v: R.utilidad, half: true }, { k: 'impuestos', l: 'Impuestos %', t: 'number', v: R.impuestos, half: true }, { k: 'operacion', l: 'Operación %', t: 'number', v: R.operacion, half: true }, { k: 'margen', l: 'Meta de margen por producto %', t: 'number', v: R.margen, half: true }]);
+    if (!v) return;
+    const n = { utilidad: +v.utilidad, impuestos: +v.impuestos, operacion: +v.operacion, margen: +v.margen };
+    if (n.utilidad + n.impuestos + n.operacion !== 100) return toast('Utilidad + impuestos + operación tienen que sumar 100%', true);
+    try { reparto = reparto?.v ? await col('settings').save({ ...reparto, ...n }) : await col('settings').create({ id: 'reparto', ...n }); toast('Reparto guardado'); resumenHtml(); } catch (e) { toast(e.message, true); }
   }
 
   // ---------- Facturas: por cobrar, por pagar y el cruce con el banco (facturas-ui.js) ----------
@@ -317,6 +401,7 @@ export async function render(el, { me, sub }) {
   }
   acts(el, {
     tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', '#/finanzas/' + tab); swap(el, paint); },
+    repEdit: () => editarReparto(),
     inv: (t) => goInv(t.dataset.id),
     add: (t) => editEntry(null, t.dataset.type),
     sheet: async () => { if (sheet?.url) return window.open(sheet.url, '_blank', 'noopener'); connectSheet(); },
