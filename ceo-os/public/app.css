@@ -4063,3 +4063,4 @@ body.arrastrando{cursor:col-resize;user-select:none}
 .pm-tbl tr.mal td{background:rgb(180 71 47 / .05)}
 .pm-foot{display:flex;align-items:center;gap:12px;border-top:1px solid var(--hair);padding:12px 22px;font-size:13px;color:var(--mut);flex-wrap:wrap}.pm-foot .sp{flex:1}
 @media (max-width:1100px){.pm{grid-template-columns:1fr;height:auto}.pm-chat{min-height:70dvh}.pm-pane{overflow:visible}.pm-body{overflow:visible}}
+.es-setup{position:relative}
