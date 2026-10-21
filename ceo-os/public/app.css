@@ -4020,3 +4020,19 @@ a.es-pick{text-decoration:none}
 .hy-cb{height:8px;border-radius:9px;background:var(--fill);position:relative;overflow:hidden}.hy-cb i{position:absolute;inset:0 auto 0 0;background:var(--hair-strong)}.hy-cb i+i{background:var(--ink)}
 .hy-cn{text-align:right;color:var(--mut);font-size:12.5px}.hy-cn b{color:var(--ink)}
 @media (max-width:900px){.hy-two{grid-template-columns:1fr}.hy-it{flex-wrap:wrap}.hy-t{flex-basis:calc(100% - 42px)}}
+/* Diseño · + Contexto */
+.dz-chips{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px 0}.dz-chips:empty{display:none}
+.dz-chip{display:inline-flex;gap:6px;align-items:center;background:var(--fill);border-radius:999px;padding:3px 6px 3px 11px;font-size:12px;color:var(--ink)}
+.dz-chip button{border:0;background:none;color:var(--mut);cursor:pointer;font-size:14px;line-height:1;padding:0 3px}
+.es-pick.dz-ctxb.need{border-color:var(--ink);font-weight:600}
+.dz-ctxp{position:absolute;left:12px;bottom:calc(100% + 8px);width:min(400px,calc(100% - 24px));max-height:440px;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--sh-2, 0 16px 40px rgb(60 40 20/.14));padding:8px;z-index:30}
+.dz-ph{display:flex;align-items:baseline;gap:8px;padding:6px 8px 8px}.dz-ph b{font-size:14px}
+.dz-back{border:0;background:var(--fill);border-radius:50%;width:26px;height:26px;display:grid;place-items:center;cursor:pointer;color:var(--ink);align-self:center}
+.dz-ctxp>.in{margin:0 6px 6px;width:auto}
+.dz-ol{display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.dz-o{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;border:0;background:none;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);cursor:pointer}
+.dz-o:hover{background:var(--fill)}.dz-o.on{background:var(--fill)}.dz-o:disabled{opacity:.45;cursor:default}
+.dz-oi{width:28px;height:28px;border-radius:9px;background:var(--fill);display:grid;place-items:center;flex:none;color:var(--ink2, var(--ink))}.dz-o.on .dz-oi{background:var(--surface)}
+.dz-ot{flex:1;min-width:0}.dz-ot small{display:block;color:var(--mut);font-size:12px}
+.dz-ck{width:18px;height:18px;border-radius:6px;border:1px solid var(--hair-strong);display:grid;place-items:center;flex:none}.dz-o.on .dz-ck{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.dz-n{display:inline-flex;gap:4px;align-items:center;color:var(--mut);font-size:12px}

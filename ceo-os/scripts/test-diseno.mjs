@@ -1,20 +1,30 @@
 // Pruebas del chat de Diseño: el pedido lleva el método, el bloque final se lee limpio y la pieza queda Lista.
 // npm run test:diseno
 import assert from 'node:assert/strict';
-import { promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, carpetaDe } from '../public/js/diseno.js';
+import { promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, carpetaDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoRefs, textoIdea } from '../public/js/diseno.js';
 import { figmaDe, tipoAsset } from '../public/js/sistema-visual.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
-t('La primera vez el pedido lleva el método, la marca y la idea', () => {
-  const p = promptDiseno({ marca: 'Cerantola', slug: 'cerantola', formato: 'Carrusel', idea: { title: 'La apertura', guion: 'Portada: el hotel' }, pedido: 'Arma el carrusel', primera: true });
-  for (const x of ['agents/06-graphic-design/brain/WORKFLOW.md', 'clients/cerantola/02-marca/sistema-visual.md', 'kit-de-redes/kit.md', 'plan-contratado.md', 'get_screenshot', '```diseno', 'IDEA DEL PLANNER', 'Portada: el hotel', 'Pedido: Arma el carrusel']) assert.ok(p.includes(x), x);
+t('La primera vez el pedido lleva el método, la marca y el contexto', () => {
+  const p = promptDiseno({ marca: 'Cerantola', slug: 'cerantola', formato: 'Carrusel', contexto: textoIdea({ title: 'La apertura' }, 'Portada: el hotel'), pedido: 'Arma el carrusel', primera: true });
+  for (const x of ['agents/06-graphic-design/brain/WORKFLOW.md', 'clients/cerantola/02-marca/sistema-visual.md', 'kit-de-redes/kit.md', 'plan-contratado.md', 'get_screenshot', '```diseno', 'CONTEXTO QUE AGREGÓ LA PERSONA', 'IDEA DEL CALENDARIO', 'Portada: el hotel', 'Pedido: Arma el carrusel']) assert.ok(p.includes(x), x);
   assert.match(p, /\n\nCUANDO TERMINES/);
 });
 t('Después solo va el pedido, la lámina y el cierre', () => {
   const p = promptDiseno({ marca: 'Cerantola', slug: 'cerantola', lamina: { id: '1:4', nombre: '04 Las cifras' }, pedido: 'Deja una sola cifra naranja', primera: false });
   assert.ok(p.includes('«04 Las cifras» (nodo 1:4)')); assert.ok(p.includes('```diseno')); assert.ok(!p.includes('WORKFLOW.md'));
 });
+t('+ Contexto: los meses, las etiquetas y el calendario con lo que falta diseñar', () => {
+  assert.deepEqual(MESES_CTX(new Date(2026, 11, 3)), ['2026-12', '2027-01']);
+  assert.equal(etiquetaCtx('cal:2026-10', { marca: 'Cerantola' }), 'Calendario de Cerantola · Octubre 2026');
+  assert.equal(etiquetaCtx('idea:x', { ideas: [{ id: 'x', title: 'La apertura' }] }), 'Idea · La apertura');
+  const c = textoCalendario({ marca: 'Cerantola', mes: '2026-10', piezas: [{ date: '2026-10-09', format: 'Carrusel', title: 'Cifras', status: 'Idea' }, { date: '2026-10-02', format: 'Reel', title: 'Apertura', status: 'Publicado' }, { date: '2026-11-01', format: 'Story', title: 'Otro mes' }] });
+  assert.ok(c.includes('2 piezas, 1 por diseñar')); assert.ok(c.indexOf('Apertura') < c.indexOf('Cifras')); assert.ok(c.includes('FALTA DISEÑAR')); assert.ok(!c.includes('Otro mes'));
+  assert.ok(textoPlan({ root: 'clients/cerantola', mes: '2026-10' }).includes('clients/cerantola/03-marketing/2026-10/'));
+  const rf = textoRefs([{ handle: 'a', views: 10 }, { handle: 'b', views: 99, replicar: true }]); assert.ok(rf.includes('@b') && !rf.includes('@a'));
+});
+t('Lo nuevo del contexto también llega después del primer mensaje', () => assert.ok(promptDiseno({ marca: 'X', slug: 'x', contexto: 'REFERENTES…', pedido: 'Sigue', primera: false }).includes('REFERENTES…')));
 t('Inherent usa su propia carpeta', () => assert.equal(carpetaDe('inherent'), 'inherent/inherent-social-media'));
 t('El bloque final se lee y se quita del texto', () => {
   const r = leerDiseno('Listo.\n\n```diseno\n{"titulo":"La apertura","formato":"Carrusel","figma":"https://www.figma.com/design/x?node-id=1-2","laminas":[{"id":"1:2","nombre":"01 Portada"},{"id":"1:3"}],"revision":[{"ok":false,"texto":"Dos acentos"}],"pregunta":{"texto":"¿Qué foto?","opciones":["A","B"]}}\n```');
