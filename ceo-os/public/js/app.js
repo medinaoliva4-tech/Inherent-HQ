@@ -115,7 +115,7 @@ const sectionOf = (key) => (key === 'portal' ? 'proyectos' : ORG.map(([g]) => g)
 setViewSection(() => {
   if (!me) return '';
   const cur = resolve(hashNow());
-  if (cur.key === 'marcas') return cur.rest[0] === 'diseno' ? 'Diseño' : brandsNow().find((b) => b.slug === cur.rest[0])?.name || 'Marcas';
+  if (cur.key === 'marcas') return cur.rest[0] === 'diseno' ? 'Chat' : brandsNow().find((b) => b.slug === cur.rest[0])?.name || 'Marcas';
   if (cur.key === 'estrategia') return estrategiaNow().find((c) => c.slug === cur.rest[0])?.nombre || 'Estrategia';
   const path = [cur.key, ...cur.rest].join('/');
   const tab = (TABS[sectionOf(cur.key)] || []).filter(([r]) => path === r || path.startsWith(r + '/')).sort((a, z) => z[0].length - a[0].length)[0];
@@ -191,8 +191,8 @@ const navItems = () => {
   if (me.role === 'client') return [['portal', 'Mi portal', svg(P.portal)]];
   // Estrategia es un solo chat: el cliente se elige en la caja del chat, no en la barra.
   if (space === 'estrategia') return [['estrategia', 'Estrategia', svg(P.estrategia)]];
-  // Marcas: la página de las marcas (cada perfil se abre desde ahí) y el chat de Diseño. Las marcas no van en la barra.
-  if (space === 'marcas') return [['marcas', 'Marcas', svg(P.marcas)], ...(brandAccess(me).contentFull ? [['marcas/diseno', 'Diseño', svg(P.diseno)]] : [])];
+  // Diseño gráfico: las marcas (cada perfil se abre desde ahí) y su único chat (plan del mes → ideas → diseño).
+  if (space === 'marcas') return [['marcas', 'Marcas', svg(P.marcas)], ...(brandAccess(me).contentFull ? [['marcas/diseno', 'Chat', svg(P.estrategia)]] : [])];
   return ORG.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l, svg(P[g])]);
 };
 const navHtml = () => html`${navItems().map(([k, l, i]) => html`<button data-go="${k}" title="${l}">${i}<span>${l}</span></button>`)}`;
@@ -286,7 +286,7 @@ function jumpItems() {
   const out = [];
   if (hasOrg()) for (const [g, l] of ORG) for (const [r, tl, n] of TABS[g]) if (needOk(n)) out.push({ title: tl, sub: tl === l ? 'Organization' : `Organization · ${l}`, route: '#/org/' + r, icon: svg(P[g]) });
   if (hasEstrategia()) { out.push({ title: 'Estrategia', sub: 'Todos los clientes', route: '#/estrategia', icon: svg(P.estrategia) }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Estrategia', route: `#/estrategia/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
-  if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg(P.marcas) }); if (brandAccess(me).contentFull) out.push({ title: 'Diseño', sub: 'Marcas · chat de Diseño', route: '#/marcas/diseno', icon: svg(P.diseno) }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
+  if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg(P.marcas) }); if (brandAccess(me).contentFull) out.push({ title: 'Chat de Diseño gráfico', sub: 'Plan del mes, ideas y diseño', route: '#/marcas/diseno', icon: svg(P.estrategia) }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
   return out;
 }
 const search = () => { if (me && me.role !== 'client') openSearch({ jump: jumpItems }); };
