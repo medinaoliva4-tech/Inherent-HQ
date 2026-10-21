@@ -4,7 +4,6 @@ import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSectio
 import { loadBrands, brandsNow, brandAccess, MODULES, AREAS, areaOf, firstOfArea, modulesFor, defaultModule, isSoon } from './brandlist.js';
 import { openSearch, searchOpen } from './search.js';
 import { loadEstrategia, estrategiaNow } from './stratlist.js';
-import { BLOQUES } from './estrategia.js';
 
 // Tres espacios, como cambiar de app en un iPhone: el interruptor de arriba (junto al logo) cambia entre
 //   ORGANIZATION  cómo se maneja la empresa   Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent
@@ -185,7 +184,8 @@ function resolve(path) {
 // ---------- La barra (una por espacio) y las pestañas de debajo ----------
 const navItems = () => {
   if (me.role === 'client') return [['portal', 'Mi portal', svg(P.portal)]];
-  if (space === 'estrategia') return [['estrategia', 'Estrategia', svg(P.estrategia)], ...estrategiaNow().map((c) => [`estrategia/${c.slug}`, c.nombre, html`<span class="nav-mono ${c.slug === 'inherent' ? 'priv' : ''}">${initials(c.nombre)}</span>`])];
+  // Estrategia es un solo chat: el cliente se elige en la caja del chat, no en la barra.
+  if (space === 'estrategia') return [['estrategia', 'Estrategia', svg(P.estrategia)]];
   if (space === 'marcas') return [['marcas', 'Marcas', svg(P.marcas)], ...brandsNow().map((b, i) => [`marcas/${b.slug}`, b.personal ? 'Mi marca' : b.name, html`<span class="nav-mono ${b.personal ? 'priv' : ['', 't1', 't2'][i % 3]}">${b.personal ? ico('lock', 11) : initials(b.name)}</span>`])];
   return ORG.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l, svg(P[g])]);
 };
@@ -250,11 +250,6 @@ function paintSub(cur) {
     const g = sectionOf(cur.key); list = g ? tabsOf(g).map(([r, l]) => ({ route: 'org/' + r, label: l, r })) : [];
     const path = [cur.key, ...cur.rest].join('/');
     on = list.filter((t) => path === t.r || path.startsWith(t.r + '/')).sort((a, z) => z.r.length - a.r.length)[0];
-  } else if (cur?.space === 'estrategia' && cur.rest[0]) {
-    // Los 5 bloques del cliente, en orden. El que se abre sin bloque es el Diagnóstico.
-    const k = BLOQUES.some((b) => b.id === cur.rest[1]) ? cur.rest[1] : BLOQUES[0].id;
-    list = BLOQUES.map((b) => ({ route: `estrategia/${cur.rest[0]}/${b.id}`, label: `${b.n} · ${b.nombre}`, k: b.id }));
-    on = list.find((t) => t.k === k);
   } else if (cur?.space === 'marcas' && cur.rest[0]) {
     const b = brandsNow().find((x) => x.slug === cur.rest[0]);
     if (b) {

@@ -44,21 +44,18 @@ export async function render(el, { me, sub = [], alive }) {
   return cliente(slug, bloque0);
 
   // ---------- Inicio: una tarjeta por cliente ----------
+  // Al entrar: un solo chat, sin cliente. Se elige el cliente en la caja (como el repo en Claude Code) y ahí arranca.
   async function lista() {
-    const d = await loadEstrategia({ force: true });
-    if (!alive()) return;
-    const cs = d.clientes || [];
-    mount(el, html`<div class="hello sp-hero"><h1>Estrategia</h1><p>Elige un cliente para ver <em>su etapa, su oferta y su plan</em>.</p></div>
-      ${cs.length ? html`<div class="sp-tiles es-tiles">${cs.map((c, i) => html`<a class="sp-tile es-tile" href="#/estrategia/${c.slug}">
-        <div class="sp-tile-top"><span class="sp-mono ${c.slug === 'inherent' ? 'priv' : TONE[i % 3]}">${initials(c.nombre)}</span><div style="min-width:0"><div class="sp-tile-name">${c.nombre}</div><div class="sp-tile-sub">${c.nivel ? c.nivel.nombre : c.hayFicha ? 'Sin nivel' : 'Sin ficha de oferta'}</div></div><span class="sp-tile-go">${ico('right', 13)}</span></div>
-        <div class="es-etapa">${c.etapa ? html`<span class="chip ${c.etapa.confirmada ? 'dark' : ''}">${etapaLabel(etapaDe(c.etapa.n))}${c.etapa.confirmada ? '' : ' · sin confirmar'}</span>` : html`<span class="chip off">Sin etapa</span>`}</div>
-        <div class="es-dots" aria-label="${c.aprobados} de 5 bloques aprobados">${BLOQUES.map((b) => html`<i class="${ESTADO_CLS[c.bloques[b.id]] || ''}" title="${b.nombre}: ${estadoLabel(c.bloques[b.id])}"></i>`)}</div>
-        <div class="sp-tile-foot"><span>${c.aprobados} de 5 aprobados</span>${c.hayFicha ? '' : html`<span class="chip warn">Sin ficha</span>`}</div></a>`)}</div>`
-        : html`<div class="empty"><b>Todavía no hay clientes</b>Aparecen cuando hay un folder en clients/ con su ficha de oferta.</div>`}`);
+    mount(el, html`<div class="es-start"><h1>¿Qué trabajamos hoy?</h1><p class="mut">Elige un cliente para empezar</p>
+      <div class="es-box es-box-start"><div class="es-form"><textarea class="in" rows="1" placeholder="Elige un cliente para escribir…" disabled aria-label="Mensaje para Strategy"></textarea><button class="btn es-send" type="button" disabled aria-label="Enviar">${ico('right', 16)}</button></div>
+        <div class="es-foot"><button type="button" class="es-pick need" data-act="cliente" aria-haspopup="listbox">Elegir cliente ▾</button><span></span></div></div></div>`);
+    el.onclick = (e) => { const t = e.target.closest('[data-act="cliente"]'); if (t) menuClientes(t); };
+    const t = $('[data-act="cliente"]', el); if (t) menuClientes(t);
   }
 
   // ---------- Un cliente ----------
   async function cliente(slug, b0) {
+    el.onclick = null;
     // El chat corre en la compu de cada quien (el puente de Laya): en el teléfono no hay dónde.
     if (/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '')) return mount(el, html`<a class="btn ghost" href="#/estrategia">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty es-solo-compu"><span class="es-hint-i">${ico('spark', 22)}</span><b>Disponible solo en tu compu</b>La Estrategia trabaja con el Claude de tu computadora. Ábrela desde ahí.</div>`);
     let data;
@@ -82,9 +79,8 @@ export async function render(el, { me, sub = [], alive }) {
 
     // El cuerpo de la pantalla: cabecera con el estado del bloque, el chat al centro y el contexto en un panel lateral que se abre con «Contexto».
     mount(el, html`<div class="es" id="es">
-      <div class="es-head" id="es-head"></div>
       <div class="es-split es2" id="es-split" data-panel="${S.panel ? 'on' : 'off'}"><section class="es-col es-chat" id="es-chat" aria-label="Chat con Strategy"></section>
-        <section class="es-col es-viva" id="es-viva" aria-label="Estrategia en vivo"><div class="es-viva-bar"><b>Estrategia de ${data.nombre}</b><span class="es-live" id="es-live"></span><span class="sp"></span><button type="button" class="btn xs" data-act="roadmap">✦ Agregar roadmap</button><button type="button" class="btn ghost xs" data-act="panel" aria-label="Ocultar la estrategia">${ico('x', 13)}</button></div>
+        <section class="es-col es-viva" id="es-viva" aria-label="Estrategia en vivo"><div class="es-viva-bar"><span id="es-head" class="es-vh"></span><span class="es-live" id="es-live"></span><span class="sp"></span><button type="button" class="btn xs" data-act="roadmap">✦ Agregar roadmap</button><button type="button" class="btn ghost xs" data-act="panel" aria-label="Ocultar la estrategia">${ico('x', 13)}</button></div>
           <div class="es-viva-body"><div id="es-viva-in"></div><details class="es-det" id="es-det"><summary>Hormozi · ${M.nombre}: detalle del bloque, fuentes y aprobación</summary><div class="es-ctx" id="es-ctx"></div></details></div></section></div></div>`);
     const root = $('#es', el), ctx = $('#es-ctx', el), chatEl = $('#es-chat', el), vivaEl = $('#es-viva-in', el);
     const editable = () => data.puede.editar && !data.vivaAprobada;
@@ -113,11 +109,11 @@ export async function render(el, { me, sub = [], alive }) {
     }
 
     // ---------- Cabecera ----------
+    // La cabecera vive en la barra del panel: el cliente, su nivel y su etapa.
     function paintHead() {
-      mount($('#es-head', el), html`<a class="es-back" href="#/estrategia" aria-label="Todos los clientes">${ico('arrow-left', 16)}</a><span class="sp-mono ${slug === 'inherent' ? 'priv' : ''}">${initials(data.nombre)}</span>
-        <div class="es-head-t"><h1>${data.nombre}</h1><div class="es-chips">${data.nivel ? html`<span class="chip">${data.nivel.nombre}</span>` : html`<span class="chip warn">Sin ficha de oferta</span>`}
-          ${data.etapa ? html`<span class="chip ${data.etapa.confirmada ? 'dark' : ''}">${data.etapa.confirmada ? ico('check', 12) : ''} ${etapaTxt()}</span>` : html`<span class="chip off">Sin etapa</span>`}</div></div>
-        <div class="es-head-b"><span class="mut sm">${bl().nombre}</span><span class="chip es-st ${ESTADO_CLS[bl().estado]}">${estadoLabel(bl().estado)}</span>${aprobarBtn(bl())}<button type="button" class="btn ghost xs ${S.panel ? 'on' : ''}" data-act="panel" aria-expanded="${S.panel ? 'true' : 'false'}" aria-controls="es-viva">${ico('doc', 13)} Estrategia</button></div>`);
+      const h = $('#es-head', el); if (!h) return;
+      mount(h, html`<b>${data.nombre}</b>${data.nivel ? html`<span class="mut sm">${data.nivel.nombre}</span>` : html`<span class="chip warn">Sin ficha de oferta</span>`}${data.etapa ? html`<span class="chip ${data.etapa.confirmada ? 'dark' : ''}">${data.etapa.confirmada ? ico('check', 12) : ''} ${etapaTxt()}</span>` : ''}`);
+      const tg = $('[data-act="panel"].es-pick', el); if (tg) tg.hidden = S.panel;
     }
 
     // ---------- Izquierda: el contexto ----------
@@ -232,12 +228,13 @@ export async function render(el, { me, sub = [], alive }) {
         <form class="es-pair" data-act="pair"><input class="in" name="t" type="password" autocomplete="off" spellcheck="false" placeholder="Pega el token" aria-label="Token del puente"><button class="btn xs" type="submit">Emparejar</button></form>${S.pareo ? html`<p class="es-err">${S.pareo}</p>` : ''}</div>`;
     }
     const RAPIDOS = { diagnostico: ['¿En qué etapa está y por qué?', '¿Qué dato falta para estar seguros?'], oferta: ['Arma la ecuación de valor', 'Propón la Grand Slam Offer', '¿Qué haría la oferta más difícil de rechazar?'], modelo: ['Propón atracción, upsell, downsell y continuidad', '¿Qué upsell va primero?'], leads: ['¿Dónde consigue clientes con esta oferta?', 'Core Four: ¿cuál va primero?'], roadmap: ['Arma el plan de 90 días para su etapa', '¿Qué es lo primero que hacemos esta semana?'] };
+    const pickers = () => html`<button type="button" class="es-pick" data-act="cliente" aria-haspopup="listbox" title="Cambiar de cliente"><i class="${slug === 'inherent' ? 'priv' : ''}">${initials(data.nombre)}</i>${data.nombre} ▾</button><button type="button" class="es-pick" data-act="hz" aria-haspopup="menu" title="Enfocar un bloque de Hormozi">Hormozi · ${M.nombre} ▾</button><button type="button" class="es-pick" data-act="panel" ${S.panel ? raw('hidden') : ''}>${ico('doc', 12)} Estrategia</button>`;
     function paintChat() {
       const f = fase(), ok = f === 'listo';
       const pill = html`<span class="es-pill ${ok ? 'on' : ''}" title="${ok ? 'Tu Claude, en tu compu' : 'Falta conectar tu compu'}"><i></i>${ok ? 'En tu compu' : f === 'cargando' ? '…' : 'Sin conectar'}</span>`;
       chatEl.classList.toggle('vacio', !chat.msgs.length);
       mount(chatEl, html`<div class="es-msgs" id="es-msgs" aria-live="polite"></div>
-        ${ok ? html`<div class="es-box"><div class="es-adj" id="es-adj"></div><form class="es-form" id="es-form">${data.puede.library ? html`<button type="button" class="es-attach" data-act="adjuntar" aria-label="Agregar contexto de la Library" title="Agregar contexto de la Library" aria-expanded="${S.libOn ? 'true' : 'false'}">${ico('plus', 18)}</button>` : ''}<textarea class="in" id="es-in" rows="1" placeholder="Opina, agrega un dato o pide más detalle…" aria-label="Mensaje para Strategy"></textarea><button class="btn es-send" type="submit" id="es-send" aria-label="Enviar">${ico('right', 16)}</button></form><div class="es-foot"><button type="button" class="es-tog ${S.inv ? 'on' : ''}" data-act="inv" aria-pressed="${S.inv ? 'true' : 'false'}" title="Incluir lo que juntó Investigación (scraping) en el próximo mensaje">${ico('search', 12)} Investigación</button><span class="mut sm">Hormozi · ${M.nombre}</span>${pill}</div></div><div class="es-quick" id="es-quick"></div>` : html`<div class="es-foot">${pill}</div>${setup(f)}`}`);
+        ${ok ? html`<div class="es-box"><div class="es-adj" id="es-adj"></div><form class="es-form" id="es-form">${data.puede.library ? html`<button type="button" class="es-attach" data-act="adjuntar" aria-label="Agregar contexto de la Library" title="Agregar contexto de la Library" aria-expanded="${S.libOn ? 'true' : 'false'}">${ico('plus', 18)}</button>` : ''}<textarea class="in" id="es-in" rows="1" placeholder="Opina, agrega un dato o pide más detalle…" aria-label="Mensaje para Strategy"></textarea><button class="btn es-send" type="submit" id="es-send" aria-label="Enviar">${ico('right', 16)}</button></form><div class="es-foot"><button type="button" class="es-tog ${S.inv ? 'on' : ''}" data-act="inv" aria-pressed="${S.inv ? 'true' : 'false'}" title="Incluir lo que juntó Investigación (scraping) en el próximo mensaje">${ico('search', 12)} Investigación</button>${pickers()}${pill}</div></div><div class="es-quick" id="es-quick"></div>` : html`<div class="es-foot">${pickers()}${pill}</div>${setup(f)}`}`);
       if (ok) chatEl.insertAdjacentHTML('beforeend', '<div class="es-lib" id="es-lib" role="dialog" aria-label="Agregar contexto de la Library" hidden></div>');
       paintMsgs(); paintQuick(); paintAdj(); if (S.libOn && ok) paintLib(); else S.libOn = false;
       const ta = $('#es-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
@@ -388,7 +385,9 @@ export async function render(el, { me, sub = [], alive }) {
       const t = e.target.closest('[data-act]'); if (!t || !root.contains(t)) return;
       const a = t.dataset.act;
       if (a === 'copiar') return copiar(t.dataset.t);
-      if (a === 'panel') { S.panel = !S.panel; try { localStorage.setItem('os.estrategia.panel', S.panel ? 'on' : 'off'); } catch {} $('#es-split', el).dataset.panel = S.panel ? 'on' : 'off'; return paintHead(); }
+      if (a === 'panel') { S.panel = !S.panel; try { localStorage.setItem('os.estrategia.panel', S.panel ? 'on' : 'off'); } catch {} $('#es-split', el).dataset.panel = S.panel ? 'on' : 'off'; $$('[data-act="panel"].es-pick', el).forEach((x) => { x.hidden = S.panel; }); return paintHead(); }
+      if (a === 'cliente') return menuClientes(t, slug);
+      if (a === 'hz') return menu(t, data.bloques.map((x) => ({ href: `#/estrategia/${slug}/${x.id}`, on: x.id === bid, dot: x.estado === 'aprobado' ? 'ok' : x.estado === 'trabajo' ? 'w' : '', label: `${x.n} · ${x.nombre}`, sub: estadoLabel(x.estado) })));
       if (a === 'opcion') { t.closest('.es-q')?.classList.add('hecha'); return enviar(t.dataset.t); }
       if (a === 'inv') { S.inv = !S.inv; t.classList.toggle('on', S.inv); t.setAttribute('aria-pressed', S.inv ? 'true' : 'false'); return; }
       if (a === 'roadmap') { if (fase() !== 'listo') return toast('Primero conecta tu compu para hablar con Strategy', true); return enviar('Agrega el roadmap al cliente: arma el plan por trimestres con lo que ya tenemos (filas por área, 4 trimestres y la meta de cada uno). Si falta algo importante, pregúntamelo.'); }
@@ -464,6 +463,23 @@ export async function render(el, { me, sub = [], alive }) {
     // Todo está declarado: ahora sí se pinta.
     paintHead(); paintCtx(); paintViva(); paintChat(); salud().then(() => { if (alive()) paintChat(); });
   }
+}
+
+// ---------- Los menús de la caja: el cliente y el bloque de Hormozi ----------
+function menu(anchor, items, { buscar = false } = {}) {
+  document.querySelector('.es-menu')?.remove();
+  const box = anchor.closest('.es-box') || anchor.parentElement;
+  const m = document.createElement('div'); m.className = 'es-menu'; m.setAttribute('role', 'listbox');
+  const pinta = (q = '') => html`${buscar ? html`<input class="in" placeholder="Buscar cliente…" aria-label="Buscar cliente" value="${q}">` : ''}${items.filter((x) => !q || x.label.toLowerCase().includes(q.toLowerCase())).map((x) => html`<a href="${x.href}" class="${x.on ? 'on' : ''}" role="option">${x.mono != null ? html`<i class="mono ${x.priv ? 'priv' : ''}">${x.mono}</i>` : html`<b class="${x.dot || ''}"></b>`}<span>${x.label}</span>${x.sub ? html`<small>${x.sub}</small>` : ''}</a>`)}`;
+  mount(m, pinta()); box.append(m);
+  const inp = m.querySelector('input'); if (inp) { inp.focus(); inp.oninput = () => { const q = inp.value; mount(m, pinta(q)); const n = m.querySelector('input'); n.focus(); n.setSelectionRange(q.length, q.length); n.oninput = inp.oninput; }; }
+  const cerrar = (e) => { if (!m.contains(e.target) && e.target !== anchor) { m.remove(); document.removeEventListener('pointerdown', cerrar); } };
+  setTimeout(() => document.addEventListener('pointerdown', cerrar));
+  m.addEventListener('click', (e) => { if (e.target.closest('a')) m.remove(); });
+}
+async function menuClientes(anchor, actual = '') {
+  const d = await loadEstrategia().catch(() => ({ clientes: [] }));
+  menu(anchor, (d.clientes || []).map((c) => ({ href: `#/estrategia/${c.slug}`, on: c.slug === actual, mono: initials(c.nombre), priv: c.slug === 'inherent', label: c.nombre, sub: [c.slug === 'inherent' ? 'Nuestras redes' : c.nivel?.nombre || (c.hayFicha ? '' : 'Sin ficha'), c.etapa ? `Etapa ${c.etapa.n}` : ''].filter(Boolean).join(' · ') })), { buscar: true });
 }
 
 // ---------- Los chats guardados ----------
