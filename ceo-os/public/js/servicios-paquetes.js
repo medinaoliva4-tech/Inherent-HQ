@@ -1,7 +1,7 @@
 // Servicios → Paquetes: arriba los 3 niveles (editables por el CEO con el lápiz: settings «levels»; el baseline solo lo ve el CEO); cada nivel abre sus
 // paquetes (colección `bundles`, campo `level`); abajo «Otros paquetes» (sin nivel). Un paquete se arma con el editor
 // de armados.js, se cotiza y se activa en un cliente (flow.activate → proyecto con tareas, dueños, fechas y SOP).
-import { html, raw, mount, api, ask, toast, Q, ico, today, canEdit, col, sheetForm, fromLink } from './core.js';
+import { html, raw, mount, api, ask, toast, Q, ico, today, canEdit, col, sheetForm, fromLink, $ } from './core.js';
 import { LEVELS, BASELINE, levelOf, applyLevels, levelDefaults, LEVELS_ID, USD_GTQ } from './levels.js';
 import { bundleResp, sinResp } from './responsabilidades.js';
 
@@ -10,54 +10,92 @@ const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
 // ctx: { me, services, bundles, R, bun (createBundles, solo CEO), onQuote, onChange, sel (nivel abierto), setSel }
 export function paquetesTab(el, ctx) {
   const { me, services, bundles, R, bun } = ctx, ceo = me.role === 'ceo', canAct = canEdit(me, 'operations') && me.areas.includes('operations');
+  const meta = +ctx.meta || 80; // la meta de margen por producto (Finanzas › reparto.margen; manual: 80%)
   // El nivel de un paquete: su id («growth») o, si viene de datos viejos, el nombre que se traduce con levelOf.
   const lvOf = (b) => { const v = b.level || b.nivel || ''; return (LEVELS.find((l) => l.id === v) || levelOf(v))?.id || ''; };
   const ofLevel = (id) => bundles.filter((b) => lvOf(b) === id);
-  const others = bundles.filter((b) => !lvOf(b));
-  const sel = ctx.sel && LEVELS.some((l) => l.id === ctx.sel) ? ctx.sel : (LEVELS.find((l) => ofLevel(l.id).length) || LEVELS[0]).id;
-  const level = LEVELS.find((l) => l.id === sel);
+  const industrias = [...new Set(bundles.filter((b) => !lvOf(b) && b.industry).map((b) => b.industry))].sort();
+  const medida = bundles.filter((b) => !lvOf(b) && !b.industry);
+  // La colección abierta (como en Shopify): «lv:growth», «ind:Food & Beverage» o «otros».
+  const S = ctx.state || (ctx.state = {});
+  if (!S.col) S.col = ctx.sel ? `lv:${ctx.sel}` : (LEVELS.find((l) => ofLevel(l.id).length) ? `lv:${LEVELS.find((l) => ofLevel(l.id).length).id}` : industrias[0] ? `ind:${industrias[0]}` : 'otros');
+  S.q ??= ''; S.orden ??= 'margen'; S.vista ??= 'tarjetas';
+  const enCol = (b) => (S.col.startsWith('lv:') ? lvOf(b) === S.col.slice(3) : S.col.startsWith('ind:') ? !lvOf(b) && b.industry === S.col.slice(4) : !lvOf(b) && !b.industry);
+  const tot = (b) => (bun ? bun.totals(b) : null);
+  const IND_IC = (n) => (/food|bebid|restaur/i.test(n) ? 'cake' : /retail|commerce|tienda/i.test(n) ? 'tag' : /distrib|mayore/i.test(n) ? 'layers' : /salud|health|medic/i.test(n) ? 'smile' : /hotel|turis/i.test(n) ? 'home' : 'puzzle');
+  const TONOS = ['#a8503a', '#3f6ea8', '#7a5aa0', '#2f7a4d', '#9a7414', '#6b513c'];
+  const tonoInd = (n) => TONOS[Math.abs([...String(n)].reduce((a, c) => a + c.charCodeAt(0), 0)) % TONOS.length];
+  const LV_IC = { foundation: ['layers', '#9a7414'], growth: ['bolt', '#2f7a4d'], partnership: ['users', '#6b513c'] };
+  const icoDe = (b) => (lvOf(b) ? LV_IC[lvOf(b)] || ['puzzle', '#6b513c'] : b.industry ? [IND_IC(b.industry), tonoInd(b.industry)] : ['puzzle', '#8a7563']);
+  const mgTono = (mg) => (mg == null ? '' : mg >= meta ? 'ok' : mg >= meta - 20 ? 'am' : 'bad');
+  const lineas = (b) => (b.lines ? (tot(b)?.ls || []).map((x) => x.name) : (b.servicios || []).map((x) => x.nombre));
 
-  // La tarjeta de un paquete: qué incluye, precio (solo con costos: CEO), responsables y acciones.
-  function card(b) {
-    const t = bun ? bun.totals(b) : null, resp = bundleResp(R, b, services);
-    const lines = b.lines ? (t ? t.ls.map((x) => x.name) : []) : (b.servicios || []).map((s) => s.nombre);
-    const fuera = String(b.excludes || b.fuera || '').split('\n').map((x) => x.trim()).filter(Boolean);
-    return html`<div class="sp-tile bdl">
-      <div class="row" style="gap:6px;flex-wrap:wrap"><span class="chip sm2">${b.industry || (lvOf(b) ? LEVELS.find((l) => l.id === lvOf(b)).name : 'Paquete')}</span>${resp.ok ? (resp.own ? html`<span class="chip sm2 green">Con responsables</span>` : '') : sinResp(resp.missing.length ? 'Sin responsables: ' + resp.missing.join(', ') : 'Sin servicios: agrega al menos uno')}<div class="sp"></div>${ceo ? html`<button class="sm mut" data-act="bedit" data-id="${b.id}" title="Editar">${ico('edit')}</button>` : ''}</div>
-      <h3 style="font-size:17px;font-weight:500;margin:8px 0 2px">${b.name || 'Paquete'}</h3>
-      ${b.desc ? html`<div class="mut sm">${b.desc}</div>` : ''}
-      ${lines.length ? html`<ul class="svinc sm">${lines.slice(0, 6).map((x) => html`<li>${x}</li>`)}${lines.length > 6 ? html`<li class="mut">y ${lines.length - 6} más</li>` : ''}</ul>` : html`<div class="mut sm" style="margin-top:6px">Todavía no tiene servicios.</div>`}
-      ${fuera.length ? html`<div class="mut sm" style="margin-top:6px"><b style="font-weight:500">Queda fuera:</b> ${fuera.join(' · ')}</div>` : ''}
-      ${t ? html`<div class="row" style="margin-top:10px;gap:8px;align-items:baseline"><b style="font-size:22px;font-weight:500;letter-spacing:-.5px">${t.price ? Q(t.price) : '—'}</b><span class="mut sm">${t.manual ? 'precio manual' : 'suma del catálogo'}${t.hours ? ` · ${t.hours} h` : ''}</span>${t.manual ? '' : fromLink({ label: 'catálogo', href: '#/services/servicios', title: 'El precio es la suma de cada servicio del catálogo en su complejidad' })}<div class="sp"></div><span class="mut sm">${ico('lock', 12)} ${t.cost ? `Costo ${Q(t.cost)}${t.mg != null ? ` · ${t.mg}%` : ''}` : 'sin costo'}</span></div>` : ''}
-      <div class="row" style="margin-top:12px;gap:6px;flex-wrap:wrap">
-        ${canAct ? html`<button class="btn xs" data-act="activate" data-id="${b.id}">Activar en un cliente</button>` : ''}
-        ${ceo && bun ? html`<button class="btn ghost xs" data-act="bquote" data-id="${b.id}">Cotizar</button>` : ''}
-        <a class="btn ghost xs" href="#/services/responsabilidades/b:${b.id}">Responsabilidades ${ico('right', 12)}</a></div></div>`;
+  function lista() {
+    const q = S.q.toLowerCase();
+    let l = bundles.filter(enCol).filter((b) => !q || [b.name, b.desc, b.industry, ...lineas(b)].join(' ').toLowerCase().includes(q));
+    const k = { margen: (b) => -(tot(b)?.mg ?? -999), precio: (b) => -(tot(b)?.price || 0), nombre: (b) => String(b.name || '').toLowerCase() }[S.orden];
+    return l.sort((a, z) => (k(a) < k(z) ? -1 : k(a) > k(z) ? 1 : 0));
   }
-  const grid = (list) => html`<div class="sp-tiles" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${list.map(card)}</div>`;
-
-  mount(el, html`
-    <div class="sec-title" style="margin-top:0"><h2>Niveles</h2><span class="mut sm">Un sistema de tres profundidades · el nivel dice qué tan adentro entramos, no cuántas piezas</span></div>
-    <div class="grid g3" style="margin-bottom:8px">${LEVELS.map((l, i) => { const n = ofLevel(l.id).length, bl = BASELINE[l.id]; return html`<div class="sp-cover sm ${['t1', '', 't2'][i]} lvl ${l.id === sel ? 'on' : ''}" data-act="lvl" data-id="${l.id}" role="button" tabindex="0" aria-pressed="${l.id === sel ? 'true' : 'false'}">
-      <div class="row"><div class="lbl">${l.name}</div><div class="sp"></div>${l.id === sel ? html`<span class="chip sm2" style="background:rgb(255 255 255 / .16);color:#fdfaf3">Abierto</span>` : ''}${ceo ? html`<button class="lvl-edit" data-act="lvedit" data-id="${l.id}" title="Editar ${l.name}" aria-label="Editar ${l.name}">${ico('edit', 14)}</button>` : ''}</div>
-      <div class="tag">«${l.tag}»</div>
-      ${ceo && bl ? html`<div class="base">${ico('lock', 11)} Baseline ${usd(bl.usd)} · Q${bl.gtq.toLocaleString('en-US')} ${bl.per}</div>` : ''}
-      <div class="foot"><span>${l.how}</span><span>${n ? `${n} paquete${n === 1 ? '' : 's'}` : 'sin paquetes'}</span></div></div>`; })}</div>
-    <div class="sec-title"><h2>${level.name}</h2><span class="mut sm">${level.who}</span>${ceo && bun ? html`<a data-act="bnew" data-level="${sel}" style="cursor:pointer">+ Paquete en este nivel</a>` : ''}</div>
-    ${ofLevel(sel).length ? grid(ofLevel(sel)) : html`<div class="empty"><b>Sin paquetes en ${level.name}</b>${ceo ? 'Arma el primero: nombre, servicios del catálogo con su complejidad y cantidad, qué queda fuera y el precio.' : 'El CEO los arma aquí.'}</div>`}
-    <div class="sec-title"><h2>Otros paquetes</h2><span class="mut sm">Paquetes sin nivel: por industria o a la medida</span>${ceo && bun ? html`<a data-act="bnew" data-level="" style="cursor:pointer">+ Paquete</a>` : ''}</div>
-    ${others.length ? grid(others) : html`<div class="empty sm"><b>Sin otros paquetes</b>Los que no caben en un nivel viven aquí.</div>`}`);
+  function card(b) {
+    const t = tot(b), resp = bundleResp(R, b, services), ls = lineas(b), [ic, c] = icoDe(b);
+    return html`<button type="button" class="sc-card ${S.sel === b.id ? 'on' : ''}" data-act="bver" data-id="${b.id}">
+      <div class="sc-t"><span class="sc-ic" style="background:${c}1c;color:${c}">${ico(ic, 16)}</span><span><b>${b.name || 'Paquete'}</b>${b.desc ? html`<small>${String(b.desc).slice(0, 70)}</small>` : ''}</span></div>
+      ${ls.length ? html`<ul>${ls.slice(0, 3).map((x) => html`<li>${x}</li>`)}</ul>` : html`<small class="mut">Todavía no tiene servicios.</small>`}
+      <small class="${resp.ok ? 'mut' : 'sc-warn'}">${resp.ok ? '' : html`${ico('alert', 11)} Sin responsables · `}${ls.length > 3 ? `+${ls.length - 3} servicio${ls.length - 3 === 1 ? '' : 's'} más` : ''}${t?.hours ? `${ls.length > 3 || !resp.ok ? ' · ' : ''}${t.hours} h` : ''}</small>
+      <div class="sc-f"><b>${t?.price ? Q(t.price) : '—'}</b>${t?.mg != null ? html`<span class="sc-mg ${mgTono(t.mg)}">${t.mg}% margen</span>` : ''}</div></button>`;
+  }
+  function fila(b) {
+    const t = tot(b), [ic, c] = icoDe(b);
+    return html`<tr class="click" data-act="bver" data-id="${b.id}"><td><span class="sc-ic sm" style="background:${c}1c;color:${c}">${ico(ic, 13)}</span> <b style="font-weight:500">${b.name}</b></td><td class="sm">${lineas(b).length} servicios</td><td class="n">${t?.hours ? `${t.hours} h` : '—'}</td><td class="n"><b>${t?.price ? Q(t.price) : '—'}</b></td><td class="n">${t?.mg != null ? html`<span class="sc-mg ${mgTono(t.mg)}">${t.mg}%</span>` : '—'}</td></tr>`;
+  }
+  function detalle(b) {
+    if (!b) return html`<div class="sc-det sc-det-vacio"><span class="mut">Toca un paquete para ver qué incluye, cuánto deja y quién lo hace.</span></div>`;
+    const t = tot(b), resp = bundleResp(R, b, services), [ic, c] = icoDe(b);
+    const fuera = String(b.excludes || b.fuera || '').split('\n').map((x) => x.trim()).filter(Boolean);
+    const roles = [...new Set((t?.ls || []).flatMap((x) => (x.roles || []).map((r) => r.role || r.name || r)).filter((x) => typeof x === 'string' && x))];
+    const falta = t && t.mg != null && t.mg < meta && t.cost ? Math.ceil(t.cost / (1 - meta / 100) / 50) * 50 : null;
+    return html`<div class="sc-det"><span class="lbl">${lvOf(b) ? LEVELS.find((l) => l.id === lvOf(b)).name : b.industry || 'A la medida'}</span>
+      <h3><span class="sc-ic" style="background:${c}1c;color:${c}">${ico(ic, 16)}</span>${b.name}</h3>${b.desc ? html`<p class="mut sm" style="margin:0">${b.desc}</p>` : ''}
+      ${t ? html`<div class="sc-kv"><div><small>Precio</small><b>${t.price ? Q(t.price) : '—'}</b></div><div><small>${ico('lock', 10)} Costo</small><b>${t.cost ? Q(t.cost) : '—'}</b></div><div><small>Margen</small><b class="${mgTono(t.mg)}">${t.mg != null ? t.mg + '%' : '—'}</b></div><div><small>Horas</small><b>${t.hours ? t.hours + ' h' : '—'}</b></div></div>
+        ${falta ? html`<p class="sc-tip">Meta: ${meta}% de margen. Para llegar: subir a ${Q(falta)} o cambiar la mezcla (más derivados, contenido crudo del cliente).</p>` : t.mg != null && t.mg >= meta ? html`<p class="sc-tip ok">Llega a la meta de ${meta}% de margen.</p>` : ''}` : ''}
+      <span class="lbl">Lo que incluye · ${lineas(b).length} servicio${lineas(b).length === 1 ? '' : 's'}</span>
+      <div class="sc-mods">${t ? t.ls.map((x) => html`<div><span>${x.name}<small> · ${x.sub || ''}</small></span><b>${x.price ? Q(x.price) : '—'}</b></div>`) : lineas(b).map((x) => html`<div><span>${x}</span></div>`)}</div>
+      ${fuera.length ? html`<p class="mut sm" style="margin:0"><b style="font-weight:500">Queda fuera:</b> ${fuera.join(' · ')}</p>` : ''}
+      <span class="lbl">Quién lo hace</span>${roles.length ? html`<div class="sc-who">${roles.map((r) => html`<span>${r}</span>`)}</div>` : ''}${resp.ok ? '' : sinResp(resp.missing.length ? 'Sin responsables: ' + resp.missing.join(', ') : 'Sin servicios: agrega al menos uno')}
+      <div class="row" style="gap:6px;flex-wrap:wrap">${canAct ? html`<button class="btn xs" data-act="activate" data-id="${b.id}">Activar en un cliente</button>` : ''}${ceo && bun ? html`<button class="btn ghost xs" data-act="bquote" data-id="${b.id}">Cotizar</button><button class="btn ghost xs" data-act="bedit" data-id="${b.id}">${ico('edit', 12)} Editar</button>` : ''}<a class="btn ghost xs" href="#/services/responsabilidades/b:${b.id}">Responsabilidades ${ico('right', 12)}</a></div></div>`;
+  }
+  function paint() {
+    const l = lista(), sel = bundles.find((b) => b.id === S.sel && enCol(b)) || null;
+    const item = (k, label, n, ic, c, extra = '') => html`<button type="button" class="sc-v ${S.col === k ? 'on' : ''}" data-act="bcol" data-k="${k}"><i style="background:${c}1c;color:${c}">${ico(ic, 12)}</i><span>${label}</span><small>${n}</small>${extra}</button>`;
+    const lvSel = S.col.startsWith('lv:') ? LEVELS.find((x) => x.id === S.col.slice(3)) : null, bl = lvSel && BASELINE[lvSel.id];
+    mount(el, html`<div class="sc">
+      <aside class="sc-side"><span class="sc-h">Niveles</span>${LEVELS.map((x) => item(`lv:${x.id}`, x.name, ofLevel(x.id).length, ...(LV_IC[x.id] || ['puzzle', '#6b513c'])))}
+        ${industrias.length ? html`<span class="sc-h">Por industria</span>${industrias.map((n) => item(`ind:${n}`, n, bundles.filter((b) => !lvOf(b) && b.industry === n).length, IND_IC(n), tonoInd(n)))}` : ''}
+        ${medida.length ? item('otros', 'A la medida', medida.length, 'puzzle', '#8a7563') : ''}
+        <span class="sc-h">Lo que lo compone</span><a class="sc-v" href="#/services/servicios"><i style="background:#6b513c1c;color:#6b513c">${ico('list', 12)}</i><span>Catálogo de servicios</span><small>${services.length}</small></a><a class="sc-v" href="#/services/especialistas"><i style="background:#9a74141c;color:#9a7414">${ico('star', 12)}</i><span>Especialistas</span></a><a class="sc-v" href="#/services/responsabilidades"><i style="background:#7a5aa01c;color:#7a5aa0">${ico('repeat', 12)}</i><span>Responsabilidades</span></a></aside>
+      <main class="sc-main">
+        ${lvSel ? html`<div class="sc-lv"><div><b>${lvSel.name}</b> <span class="mut sm">«${lvSel.tag}» · ${lvSel.how}</span>${ceo && bl ? html` <span class="mut sm">· ${ico('lock', 10)} baseline ${usd(bl.usd)} ${bl.per}</span>` : ''}</div>${ceo ? html`<button class="btn ghost xs" data-act="lvedit" data-id="${lvSel.id}">${ico('edit', 12)} Editar nivel</button>` : ''}</div>` : ''}
+        <div class="row sc-bar"><input class="in" id="scq" placeholder="Buscar paquete o servicio…" value="${S.q}"><div class="tabs mini" style="margin:0">${[['tarjetas', 'Tarjetas'], ['lista', 'Lista']].map(([k, t]) => html`<button class="${S.vista === k ? 'on' : ''}" data-act="bvista" data-k="${k}">${t}</button>`)}</div>${bun ? html`<div class="tabs mini" style="margin:0">${[['margen', 'Margen'], ['precio', 'Precio'], ['nombre', 'Nombre']].map(([k, t]) => html`<button class="${S.orden === k ? 'on' : ''}" data-act="borden" data-k="${k}">${t}</button>`)}</div>` : ''}${ceo && bun ? html`<button class="btn xs" data-act="bnew" data-level="${S.col.startsWith('lv:') ? S.col.slice(3) : ''}">+ Paquete</button>` : ''}</div>
+        ${!l.length ? html`<div class="empty"><b>Sin paquetes aquí</b>${ceo ? 'Arma el primero con «+ Paquete»: nombre, servicios del catálogo, qué queda fuera y el precio.' : 'El CEO los arma aquí.'}</div>`
+          : S.vista === 'lista' ? html`<div class="card tscroll"><table><thead><tr><th>Paquete</th><th>Incluye</th><th class="n">Horas</th><th class="n">Precio</th><th class="n">Margen</th></tr></thead><tbody>${l.map(fila)}</tbody></table></div>`
+          : html`<div class="sc-grid">${l.map(card)}</div>`}</main>
+      <aside class="sc-right">${detalle(sel)}</aside></div>`);
+    const qi = $('#scq', el); if (qi) qi.oninput = () => { S.q = qi.value; const pos = qi.selectionStart; paint(); const n = $('#scq', el); n.focus(); n.setSelectionRange(pos, pos); };
+  }
+  paint();
 
   el.onclick = async (e) => {
     const t = e.target.closest('[data-act]'); if (!t) return; const a = t.dataset.act;
     if (a === 'lvedit') { e.stopPropagation(); await editLevel(t.dataset.id); return; }
-    if (a === 'lvl') { ctx.setSel(t.dataset.id); return; }
+    if (a === 'bcol') { S.col = t.dataset.k; S.sel = null; return paint(); }
+    if (a === 'bver') { S.sel = t.dataset.id; return paint(); }
+    if (a === 'bvista') { S.vista = t.dataset.k; return paint(); }
+    if (a === 'borden') { S.orden = t.dataset.k; return paint(); }
     if (a === 'bnew' && bun) { bun.edit({ level: t.dataset.level || '' }, () => ctx.onChange()); return; }
     if (a === 'bedit' && bun) { bun.edit(bundles.find((x) => x.id === t.dataset.id), () => ctx.onChange()); return; }
     if (a === 'bquote' && bun) { const b = bundles.find((x) => x.id === t.dataset.id); if (!bun.totals(b).ls.some((x) => x.ok)) return toast('El paquete necesita al menos un servicio con precio', true); bun.quote(b); return; }
     if (a === 'activate') { await activate(bundles.find((x) => x.id === t.dataset.id)); }
   };
-  el.onkeydown = (e) => { if (e.key === 'Enter' && e.target.dataset?.act === 'lvl') ctx.setSel(e.target.dataset.id); };
 
   // Editar un nivel (solo el CEO): nombre, frase, descripción, formato, baseline y cómo se cobra. Se guarda en settings
   // «levels» y se aplica en vivo a todo lo que usa el nombre o el baseline del nivel (el quiz público no cambia).

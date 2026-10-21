@@ -3907,3 +3907,27 @@ span.ev-sup{cursor:default}
 .fx-mi i{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-style:normal;font-size:13px;flex:none}.fx-mi small{display:block;color:var(--mut);font-size:12px}
 .fx-mas{opacity:.85}
 @media (max-width:1000px){.fx-hero,.fx-row3,.fx-row2,.fx-more{grid-template-columns:1fr}.fx-sl{grid-template-columns:1fr 1fr}}
+/* Servicios › Paquetes (como el catálogo de Shopify): colecciones a la izquierda, tarjetas y el detalle a la derecha. */
+.sc{display:grid;grid-template-columns:230px minmax(0,1fr) 370px;gap:16px;align-items:start}
+.sc-side{display:flex;flex-direction:column;gap:2px;position:sticky;top:96px}.sc-h{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);padding:10px 8px 4px}
+.sc-v{all:unset;cursor:pointer;display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:10px;font-size:13.5px;color:var(--ink)}.sc-v:hover{background:var(--fill)}.sc-v.on{background:var(--surface);font-weight:600;box-shadow:0 0 0 1px var(--hair)}
+.sc-v i{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;flex:none}.sc-v span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sc-v small{color:var(--mut);font-weight:600;font-size:12px}
+.sc-main{min-width:0}.sc-bar{gap:8px;flex-wrap:wrap;margin-bottom:12px}.sc-bar .in{flex:1;min-width:200px}
+.sc-lv{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:10px 14px;margin-bottom:12px;flex-wrap:wrap}
+.sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.sc-card{all:unset;cursor:pointer;background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box}.sc-card:hover{box-shadow:var(--sh-2)}.sc-card.on{box-shadow:0 0 0 2px var(--ink)}
+.sc-t{display:flex;gap:10px;align-items:flex-start}.sc-t b{display:block;font-size:14.5px}.sc-t small{display:block;color:var(--mut);font-size:12px}
+.sc-ic{width:34px;height:34px;border-radius:11px;display:inline-grid;place-items:center;flex:none;vertical-align:middle}.sc-ic.sm{width:24px;height:24px;border-radius:8px}
+.sc-card ul{margin:0;padding-left:16px;font-size:12.5px;color:var(--ink2);display:flex;flex-direction:column;gap:2px}
+.sc-card>small{font-size:12px}.sc-warn{color:#9a7414}
+.sc-f{display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-top:1px solid var(--hair);padding-top:8px;margin-top:auto}.sc-f b{font-size:17px}
+.sc-mg{font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;white-space:nowrap}.sc-mg.ok{background:rgb(60 138 90 / .13);color:#2f7a4d}.sc-mg.am{background:rgb(196 150 60 / .16);color:#8a6512}.sc-mg.bad{background:rgb(180 71 47 / .1);color:#b4472f}
+.sc-right{position:sticky;top:96px}
+.sc-det{background:var(--surface);border:1px solid var(--hair);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:11px;box-shadow:var(--sh-2)}.sc-det-vacio{min-height:160px;justify-content:center;text-align:center;box-shadow:none;background:transparent;border-style:dashed}
+.sc-det h3{margin:0;font-size:19px;display:flex;align-items:center;gap:10px}
+.sc-kv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.sc-kv div{background:var(--fill);border-radius:12px;padding:8px 9px}.sc-kv small{display:block;color:var(--mut);font-size:11px}.sc-kv b{font-size:14px}.sc-kv .ok{color:#2f7a4d}.sc-kv .am{color:#8a6512}.sc-kv .bad{color:#b4472f}
+.sc-tip{margin:0;font-size:12.5px;color:#8a6512;background:rgb(196 150 60 / .1);border-radius:10px;padding:8px 10px}.sc-tip.ok{color:#2f7a4d;background:rgb(60 138 90 / .1)}
+.sc-mods{display:flex;flex-direction:column}.sc-mods div{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-top:1px solid var(--hair)}.sc-mods small{color:var(--mut)}
+.sc-who{display:flex;gap:6px;flex-wrap:wrap}.sc-who span{font-size:12px;border:1px solid var(--hair);border-radius:999px;padding:2px 9px}
+@media (max-width:1250px){.sc{grid-template-columns:210px minmax(0,1fr)}.sc-right{grid-column:1/-1;position:static}}
+@media (max-width:760px){.sc{grid-template-columns:1fr}.sc-side{position:static;flex-direction:row;flex-wrap:wrap}.sc-h{display:none}}

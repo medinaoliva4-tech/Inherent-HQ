@@ -35,6 +35,8 @@ export async function render(el, { me, sub = [], alive, embed = '' }) {
   // Paquetes: «nivel» (los 3 niveles y sus paquetes) o «industria» (los 108 por industria, solo CEO: lleva costos).
   let pkView = ceo && tab === 'paquetes' && sub[1] === 'industria' ? 'industria' : 'nivel';
   let mentors = null, mInd = 'Todas';
+  // El catálogo de paquetes recuerda la colección, la búsqueda y el paquete abierto entre repintadas; la meta de margen sale de Finanzas.
+  const pkState = {}; const metaMg = (await col('settings').get('reparto').catch(() => null))?.margen || 80;
   const entries = [...finance, ...fromSheet(sheet)], M = today().slice(0, 7);
   const lines = (s) => String(s || '').split('\n').map((x) => x.trim()).filter(Boolean);
 
@@ -62,12 +64,12 @@ export async function render(el, { me, sub = [], alive, embed = '' }) {
         ${tab === 'servicios' && edit ? html`${ceo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'especialistas' && ceo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
-      ${tab === 'paquetes' && ceo ? html`<div class="row sd-seg" role="group" aria-label="Ver paquetes">${[['nivel', 'Por nivel'], ['industria', 'Por industria']].map(([k, l]) => html`<button class="chip ${pkView === k ? 'dark' : ''}" aria-pressed="${pkView === k ? 'true' : 'false'}" data-act="pkview" data-v="${k}">${l}</button>`)}</div>` : ''}
+      ${tab === 'paquetes' && ceo ? html`<div class="row sd-seg" role="group" aria-label="Ver paquetes">${[['nivel', 'Catálogo'], ['industria', 'Biblioteca por industria']].map(([k, l]) => html`<button class="chip ${pkView === k ? 'dark' : ''}" aria-pressed="${pkView === k ? 'true' : 'false'}" data-act="pkview" data-v="${k}">${l}</button>`)}</div>` : ''}
       <div id="body"></div>`);
     const body = $('#body', el);
     if (tab === 'especialistas') return especialistas(body);
     if (tab === 'paquetes' && pkView === 'industria') return packagesTab(body, { onQuote, bun });
-    if (tab === 'paquetes') return paquetesTab(body, { me, services, bundles, R, bun, onQuote, sel: lvSel, setSel: (v) => { lvSel = v; paint(); }, onChange: async () => { await reloadBundles(); paint(); }, onLevels: () => paint() });
+    if (tab === 'paquetes') return paquetesTab(body, { me, services, bundles, R, bun, onQuote, meta: metaMg, state: pkState, sel: lvSel, setSel: (v) => { lvSel = v; paint(); }, onChange: async () => { await reloadBundles(); paint(); }, onLevels: () => paint() });
     if (tab === 'responsabilidades') return responsabilidadesTab(body, { me, services, bundles, R, docs, pick: sub[1] || '', reload: reloadRecipes, onChange: () => {} });
     mount(body, html`${ceo ? html`<details class="fold" id="propbox" style="margin-bottom:18px"><summary>${ico('right', 13)} Armar propuesta y margen por cliente</summary><div class="grid g11" style="margin-top:12px;align-items:start"><div id="prop"></div>${marginCard()}</div></details>` : ''}<div id="cat"></div>`);
     CAT.cat($('#cat', body));
