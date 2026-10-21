@@ -16,6 +16,7 @@ import { parsePlanContratado, tables, clean } from './parse.js';
 import { BLOQUES, bloqueDe, docId, parseDocId, estadoDe, nivelDe, limiteDe, seccion, etapaDe, extraerCitas, dondeDe, tiempo, etapaDeRespuesta, HORMOZI, COLL } from '../../public/js/estrategia.js';
 import { puertasDe, resumen as resumenLaya, GATES_ID } from '../../public/js/laya.js';
 import { pathLabel } from '../../public/js/library-tree.js';
+import { vivaId, limpiarParche, aplicar } from '../../public/js/estrategia-viva.js';
 
 const MAX_BORRADOR = 60_000;
 // La Library como contexto del chat: hasta 6 documentos y ~36 mil caracteres en total (el puente acepta 60 mil por mensaje).
@@ -251,9 +252,30 @@ export function rutas(on) {
   });
 
   // Un cliente: sus 5 bloques con su entregable del repo, su estado, su límite de nivel y su borrador.
+  // La estrategia en vivo (lo que se concreta en el chat): leer va con la pantalla; aquí se guarda y se aprueba.
+  // Quien edita Estrategia la llena; solo el CEO la aprueba. Aprobada, queda cerrada hasta que el CEO la reabra.
+  on('PUT', 'estrategia/:slug/viva', async (req, res) => {
+    const slug = String(req.params.slug || ''), u = await acceso(req, res, slug, { write: true }); if (!u) return;
+    const cur = (await db.get(COLL, vivaId(slug))) || {};
+    if (cur.aprobado) return res.status(409).json({ error: 'La estrategia está aprobada: el CEO tiene que reabrirla para cambiarla.', code: 'APROBADO' });
+    const parche = limpiarParche(body(req).parche);
+    if (!Object.keys(parche).length) return res.json({ ok: true, viva: cur.viva || {}, cambiadas: [] });
+    const { viva, cambiadas } = aplicar(cur.viva || {}, parche, ahora());
+    const d = await db.upsert(COLL, vivaId(slug), { slug, bloque: 'viva', viva, aprobado: null }, u.email);
+    res.json({ ok: true, viva: d.viva, cambiadas });
+  });
+  on('POST', 'estrategia/:slug/viva/aprobar', async (req, res) => {
+    const slug = String(req.params.slug || ''), u = await acceso(req, res, slug, { write: true }); if (!u) return;
+    if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO aprueba la estrategia' });
+    const cur = await db.get(COLL, vivaId(slug)), aprobar = body(req).aprobar !== false;
+    if (aprobar && !cur?.viva?.roadmap?.filas?.length) return res.status(400).json({ error: 'Falta el roadmap: agrégalo antes de aprobar.' });
+    const d = await db.upsert(COLL, vivaId(slug), { slug, bloque: 'viva', aprobado: aprobar ? { por: u.email, en: ahora() } : null }, u.email);
+    res.json({ ok: true, aprobado: d.aprobado });
+  });
+
   on('GET', 'estrategia/:slug', async (req, res) => {
     const slug = String(req.params.slug || ''), u = await acceso(req, res, slug); if (!u) return;
-    const [f, docs] = await Promise.all([ficha(slug), docsDe(slug)]);
+    const [f, docs, viva] = await Promise.all([ficha(slug), docsDe(slug), db.get(COLL, vivaId(slug)).catch(() => null)]);
     const ir = await intelDe(slug, u.role === 'ceo');
     const etapa = docs.diagnostico?.etapa || null;
     const bloques = BLOQUES.map((b) => {
@@ -262,7 +284,7 @@ export function rutas(on) {
         borrador: d?.borrador || null, aprobado: d?.aprobado || null, entregables: e.entregables, faltan: e.faltan, hayRepo: e.hay, material: b.material };
     });
     res.json({ slug, nombre: f.nombre, nivel: f.nivel, plan: f.plan, ficha: { hay: f.hay, linea: f.linea, incluye: f.incluye, fuera: f.fuera, pipeline: f.pipeline }, carpeta: intel.rootOf(slug),
-      etapa, propuesta: await propuestaLaya(slug), avatar: ir.avatar, bloques, puede: { editar: edits(u, 'estrategia'), aprobar: u.role === 'ceo', library: veLibrary(u) } });
+      etapa, propuesta: await propuestaLaya(slug), avatar: ir.avatar, bloques, viva: viva?.viva || {}, vivaAprobada: viva?.aprobado || null, puede: { editar: edits(u, 'estrategia'), aprobar: u.role === 'ceo', library: veLibrary(u) } });
   });
 
   // Guardar el borrador del entregable (lo que sale del chat). No toca el repo: pasarlo al repo es después y con el OK del CEO.
