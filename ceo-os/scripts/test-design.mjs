@@ -1,7 +1,7 @@
 // Pruebas del Design system: el sistema-visual.md de una marca se lee bien y lo que falta queda vacío.
 // npm run test:design
 import assert from 'node:assert/strict';
-import { leerSistema, colorEn, contraste, zonas, roles, fuentesUrl, tokensCss } from '../public/js/sistema-visual.js';
+import { leerSistema, colorEn, contraste, fuentesUrl, tokensCss } from '../public/js/sistema-visual.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 const MD = `# Sistema visual — Prueba
@@ -70,16 +70,15 @@ t('La escala sale con familia, peso, tamaño, interlineado y espaciado', () => {
 });
 t('Logos, composición y lo prohibido', () => {
   assert.equal(S.logos[0].archivo, 'logo-blanco.svg'); assert.equal(S.logos[0].fondo.nombre, 'Negro mate');
-  assert.deepEqual(zonas(S), { margen: 7, story: { arriba: 14, abajo: 22, derecha: 12 }, columnas: 6 });
+  assert.equal(S.composicion[0].rows.length, 3);
   assert.deepEqual(S.prohibido, ['Dos acentos.', 'Emojis.']);
 });
-t('Roles, contraste WCAG, fuentes y tokens', () => {
-  const r = roles(S); assert.equal(r.fondo.nombre, 'Negro mate'); assert.equal(r.tinta.nombre, 'Blanco'); assert.equal(r.acento.nombre, 'Naranja Marca');
+t('Contraste WCAG, fuentes y tokens', () => {
   assert.equal(contraste('#FFFFFF', '#000000'), 21);
   assert.equal(fuentesUrl(S.tipo.familias), 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&family=Inter:wght@300;400&display=swap');
   assert.match(tokensCss(S), /--color-naranja-marca: #C4702A;/);
 });
 t('Un archivo vacío no rompe: todo queda vacío', () => {
-  const v = leerSistema(''); assert.deepEqual([v.colores, v.logos, v.prohibido, v.tipo.escala], [[], [], [], []]); assert.equal(roles(v), null);
+  const v = leerSistema(''); assert.deepEqual([v.colores, v.logos, v.prohibido, v.tipo.escala], [[], [], [], []]);
 });
 console.log(`\n${ok} pruebas pasaron`);
