@@ -8,6 +8,7 @@ import { juzgarLocal } from '../laya-ui.js';
 import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe } from '../laya.js';
 import { BLOQUES, ETAPAS, etapaLabel, etapaDe, estadoLabel, fuentesDeEtapa, promptDe } from '../estrategia.js';
 import { loadEstrategia, forgetEstrategia } from '../stratlist.js';
+import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from '../puente-chat.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
 const TONE = ['', 't1', 't2'];
@@ -188,6 +189,7 @@ export async function render(el, { me, sub = [], alive }) {
       const win = so() === 'win';
       if (f === 'sin-ficha') return html`<div class="es-setup"><b>Sin ficha de oferta, el chat está bloqueado</b><p>El alcance contratado es el techo de todos los agentes. Anótalo en ${data.carpeta}/00-onboarding/plan-contratado.md.</p></div>`;
       if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
+      if (f === 'apagado' && chromeBloquea()) return html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p><button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat. Corre otra vez el comando y actualiza solo:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'bajando_repo') return html`<div class="es-setup"><b>Preparando la copia del repo</b><p>El puente baja el repo de Inherent la primera vez (un minuto). Después se pone al día solo antes de cada chat.</p><button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
@@ -314,12 +316,12 @@ export async function render(el, { me, sub = [], alive }) {
             else if (ev === 'error') fallo = d;
           }
         }
-        if (fallo) { if (usadoResume && !reintento && /session|conversation|resume/i.test(fallo.error || '')) { chat.sesion = null; enVuelo = null; await enviar(texto, { reintento: true }); return; } msg.err = fallo.error || 'Claude no pudo responder'; }
+        if (fallo) { if (usadoResume && !reintento && /session|conversation|resume/i.test(fallo.error || '')) { chat.sesion = null; enVuelo = null; await enviar(texto, { reintento: true }); return; } msg.err = sesionVencida(fallo.error) ? PASOS_LOGIN : fallo.error || 'Claude no pudo responder'; }
       } catch (e) {
         if (e.name === 'AbortError') msg.err = msg.t ? 'Interrumpido.' : 'Interrumpido antes de responder.';
         else if (e.status === 401) { setTok(''); S.pareo = 'Ese token ya no sirve. Pega el actual.'; msg.err = 'El puente no reconoció tu token.'; }
         else if (e.status === 412 || e.status === 429) msg.err = e.message;
-        else msg.err = e.message && e.message !== 'Failed to fetch' ? e.message : 'No pude hablar con el puente. ¿Sigue encendido?';
+        else msg.err = chromeBloquea() ? PASOS_COPIA_VIEJA : sesionVencida(e.message) ? PASOS_LOGIN : e.message && e.message !== 'Failed to fetch' ? e.message : 'No pude hablar con el puente. ¿Sigue encendido?';
         if (e.status === 401 || e.status === 412) { await salud(); }
       } finally { enVuelo = null; msg.stream = false; }
       if (!msg.err && msg.t) chat.enviados = [...new Set([...(usadoResume ? chat.enviados : []), ...library.map((x) => x.id)])];
@@ -351,7 +353,7 @@ export async function render(el, { me, sub = [], alive }) {
       }
       if (a === 'adj-quitar') { chat.adj = chat.adj.filter((x) => x.id !== t.dataset.id); guardarChat(key, chat); paintAdj(); paintCtx(); return; }
       if (a === 'libdoc') return abrirLibDoc(t.dataset.id);
-      if (a === 'reintentar') { t.disabled = true; t.textContent = 'Buscando… si Chrome pregunta, dale «Permitir»'; await salud(30000); if (!S.salud?.on) toast('Tu compu no respondió. Si usas Safari, abre el OS en Chrome; si Chrome preguntó y dijiste que no, dale permiso en el candado de la barra de direcciones.', true); return paintChat(); }
+      if (a === 'reintentar') { t.disabled = true; t.textContent = 'Buscando… si Chrome pregunta, dale «Permitir»'; await salud(30000); if (!S.salud?.on) toast(chromeBloquea() ? PASOS_COPIA_VIEJA : 'Tu compu no respondió. Si usas Safari, abre el OS en Chrome; si Chrome preguntó y dijiste que no, dale permiso en el candado de la barra de direcciones.', true); return paintChat(); }
       if (a === 'rapido') return enviar(t.dataset.t);
       if (a === 'detener') { try { enVuelo?.abort(); } catch {} return; }
       if (a === 'fuente') return abrir(SRC[+t.dataset.i]);

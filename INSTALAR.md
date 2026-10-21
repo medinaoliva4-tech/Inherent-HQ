@@ -16,6 +16,18 @@
 
 ---
 
+## Si el chat de Estrategia no conecta
+
+**El puente de Laya responde, pero el OS dice «Sin conectar»:** Chrome guardó una versión vieja del OS.
+1. Toca el ícono a la izquierda de la dirección del OS.
+2. «Configuración del sitio» → «Borrar datos».
+3. Cierra la pestaña, ábrela de nuevo y vuelve a emparejar la compu.
+
+**El chat dice «OAuth session expired» o «Failed to authenticate»:** se venció la sesión de Claude en esa compu.
+1. Abre la Terminal.
+2. Escribe `claude` y Enter, luego `/login` y Enter.
+3. Inicia sesión en el navegador y vuelve al chat.
+
 ## Figma + Figwright
 
 **Para qué:** leer y exportar el kit de redes. ②B Branding.
