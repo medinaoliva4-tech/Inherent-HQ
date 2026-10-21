@@ -12,7 +12,8 @@
     "test:fase4": "node scripts/test-fase4.mjs",
     "test:fase5": "node scripts/test-fase5.mjs",
     "test:viva": "node scripts/test-viva.mjs",
-    "test:ventas": "node scripts/test-ventas.mjs"
+    "test:ventas": "node scripts/test-ventas.mjs",
+    "test:design": "node scripts/test-design.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0"

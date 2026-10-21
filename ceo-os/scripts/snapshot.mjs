@@ -31,6 +31,9 @@ for (const p of profiles) {
   take(`${p}/00-onboarding/LINKS.md`);
   walk(`${p}/99-referencias/investigacion`, text);
   walk(`${p}/04-contenido`, (q) => text(q) && !/\/CONTEXTO\.md$|\/AAAA-MM\//.test(q));
+  // El design system de la marca (Marca › Diseño › Design system): su sistema visual y los logos en SVG.
+  take(`${p}/02-marca/sistema-visual.md`);
+  walk(`${p}/02-marca/logos`, (q) => /\.svg$/i.test(q));
 }
 
 // Intel: solo los archivos del mapa de entregables (public/js/intel-mapa.js), de cada cliente y de Inherent. Nada más del folder

@@ -1,7 +1,7 @@
 // Marcas (App 01): cómo se crean marcas creativas. Arriba, una tile por marca (los clientes activos, Inherent y la marca
 // personal del CEO, con candado). Al entrar a una marca: Investigación · Ideas · Calendario · Marca (lo que ya existía en
-// Contenido, Mi marca y Cliente → Marca, montado con la marca fija) y, como «Próximamente», Creación, Formatos,
-// Design system, Video y Ads. Las pestañas de la marca viven en la barra de abajo de la de arriba (subnav de app.js).
+// Contenido, Mi marca y Cliente → Marca, montado con la marca fija), el Design system (el sistema-visual.md de la marca) y,
+// como «Próximamente», Video y Ads. Las pestañas de la marca viven en la barra de abajo de la de arriba (subnav de app.js).
 // Rutas: #/marcas · #/marcas/<marca> · #/marcas/<marca>/<módulo>/…
 import { html, mount, col, ico, initials, fdate, today, events, $ } from '../core.js';
 import { loadBrands, brandAccess, MODULES, areaOf, modulesFor, defaultModule, isSoon } from '../brandlist.js';
@@ -14,6 +14,7 @@ import { avatarUI } from '../avatar-ui.js';
 import { brandBrief } from '../brand-brief.js';
 import { formatosUI } from '../formatos-ui.js';
 import { creacionUI } from '../creacion-ui.js';
+import { designSystemUI } from '../design-system-ui.js';
 import { canEdit } from '../roleviews.js';
 
 const TONE = ['', 't1', 't2'];
@@ -67,7 +68,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Una marca abierta ----------
   async function page(b, mod, rest, live) {
     const M = MODULES.find(([k]) => k === mod);
-    const what = { inicio: 'Cómo va la marca hoy', icp: 'A quién le hablamos, con qué peso y cómo se nota en el video', formatos: 'Las plantillas de la marca y las del método', creacion: 'El guion, tramo por tramo, con el avatar y el brief al lado', brief: 'Qué decimos este mes: sin brief no se crean piezas del ciclo', resultados: 'Qué funcionó y qué no', investigacion: 'Lo que funciona en su categoría y por qué', ideas: 'Las ideas y piezas, de la idea a publicado', calendario: 'Qué sale y qué se graba cada día', marca: b.personal ? 'Tu roadmap y con qué se asocia tu marca' : 'Con qué se asocia la marca: lo que ve, a quién sigue y cómo suena' }[mod] || M[3];
+    const what = { inicio: 'Cómo va la marca hoy', design: 'Cómo se ve la marca, en valores que se ejecutan', icp: 'A quién le hablamos, con qué peso y cómo se nota en el video', formatos: 'Las plantillas de la marca y las del método', creacion: 'El guion, tramo por tramo, con el avatar y el brief al lado', brief: 'Qué decimos este mes: sin brief no se crean piezas del ciclo', resultados: 'Qué funcionó y qué no', investigacion: 'Lo que funciona en su categoría y por qué', ideas: 'Las ideas y piezas, de la idea a publicado', calendario: 'Qué sale y qué se graba cada día', marca: b.personal ? 'Tu roadmap y con qué se asocia tu marca' : 'Con qué se asocia la marca: lo que ve, a quién sigue y cómo suena' }[mod] || M[3];
     mount(el, html`<div class="hello sp-hero row brand-hero" style="align-items:flex-end"><span class="sp-mono big ${b.personal ? 'priv' : ''}">${b.personal ? ico('lock', 20) : initials(b.name)}</span><div style="min-width:0"><h1>${b.name}</h1><p>${mod === 'inicio' ? what : html`<span class="mut">${areaOf(mod)[1]} ›</span> <em>${M[1]}</em> · ${what}`}</p></div><div class="sp"></div>${b.personal ? html`<span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span>` : ''}</div>
       <div id="bmod"></div>`);
     const box = $('#bmod', el), base = `#/marcas/${b.slug}/${mod}`;
@@ -78,6 +79,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (mod === 'brief') return brandBrief(box, { me, b, alive });
     if (mod === 'formatos') return formatosUI(box, { me, b, alive });
     if (mod === 'creacion') return creacionUI(box, { me, b, alive, rest });
+    if (mod === 'design') return designSystemUI(box, { me, b, alive });
     if (mod === 'resultados') { box.dataset.island = '1'; return content(box, { ...common, sub: ['analytics'], embed: { base, only: ['analytics'], brand: b.name } }); }
     if (mod === 'investigacion') { box.dataset.island = '1'; return content(box, { ...common, sub: ['research'], embed: { base, only: ['research'], inspo: Boolean(b.personal), plat: rest[0], brand: b.name } }); }
     if (mod === 'ideas') { box.dataset.island = '1'; return content(box, { ...common, sub: ['postear'], embed: { base, only: ['postear'], brand: b.name } }); }
