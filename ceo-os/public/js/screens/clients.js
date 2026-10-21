@@ -8,6 +8,8 @@ import { recipesWith } from '../recipes.js';
 import { brandBoard } from '../brand-board.js';
 import { budgetsTab } from '../budgets.js';
 import { render as content } from './content.js';
+import { loadEstrategia } from '../stratlist.js';
+import { BLOQUES, etapaLabel, etapaDe } from '../estrategia.js';
 
 // Clientes: la lista (quién, su nivel, cómo va el mes) y la página de cada uno en pestañas: Info · Links · Servicio ·
 // Presupuestos (photo shoots, pauta, eventos). Su Marca (asociaciones e inspo) vive en el espacio Marcas: aquí queda un link.
@@ -109,8 +111,7 @@ export async function render(el, { me, sub, alive }) {
     }
     function infoTab(b) {
       mount(b, html`
-        ${resumen ? '' : a.drive ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:12px"><a class="connect on" href="${a.drive}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="lg">${IC.drive}</span>Drive de ${a.name}</a>${Object.entries(a.drive_dirs || {}).map(([k, u]) => html`<a class="chip" href="${u}" target="_blank" rel="noopener noreferrer" style="padding:7px 12px;text-decoration:none;color:inherit">${ico('folder')} ${k.replace(/^\d+ /, '')}</a>`)}</div>`
-          : !edit ? '' : html`<div class="connectcard" style="margin-bottom:12px"><span class="lg big">${IC.drive}</span><div class="grow"><b style="font-weight:500">Crea el Drive de ${a.name}</b><div class="mut sm">Onboarding · Assets · Guiones · Crudo · Por postear · Entregables · Reportes${isGrowth() ? ' · Números y auditoría' : ''}.</div></div><button class="btn" data-act="mkdrive">Crear carpetas</button></div>`}
+        <div class="grid g11 cl-sum">${estrategiaCard()}${proyectosCard()}</div>
         ${goals.section()}
         <div class="sec-title"><h2>Reuniones</h2><span class="mut sm">Las de sus proyectos</span></div><div class="card">${meetingRows(upcoming(ps), team, me, true)}</div>
         ${resumen ? '' : html`<div class="grid g11" style="align-items:start;margin-top:22px">
@@ -134,10 +135,31 @@ export async function render(el, { me, sub, alive }) {
       m.dataset.island = '1'; return content(m, { me, sub: ['research'], alive, fixed: slug, embed: { base: `#/clients/${slug}/marca/inspo`, only: ['research'], inspo: true, plat: sub[3] } });
     }
 
+    // Lo que este cliente tiene en Estrategia (etapa y bloques aprobados) y sus proyectos: lo primero que se ve en Info.
+    let est = undefined; // undefined: cargando · null: sin acceso o sin estrategia
+    const veEst = me.role !== 'client' && (me.areas || []).includes('estrategia');
+    if (veEst) loadEstrategia().then((d) => { est = (d.clientes || []).find((x) => x.slug === slug) || null; if (alive() && tab === 'info') { const s0 = $('#cl-est', el); if (s0) s0.outerHTML = String(estrategiaCard()); } }).catch(() => { est = null; });
+    function estrategiaCard() {
+      if (!veEst) return '';
+      const e = est;
+      return html`<section class="card cl-card" id="cl-est"><div class="row"><b class="cl-h">Estrategia</b><div class="sp"></div><a class="btn ghost xs" href="#/estrategia/${slug}">Abrir</a></div>
+        ${e === undefined ? html`<p class="mut sm">Cargando…</p>` : !e ? html`<p class="mut sm">Este cliente todavía no tiene estrategia en el OS.</p>` : html`
+        <div class="cl-kv"><div><span class="mut sm">Etapa</span><b>${e.etapa && etapaDe(e.etapa.n) ? `${etapaLabel(etapaDe(e.etapa.n))}${e.etapa.confirmada ? '' : ' · sin confirmar'}` : 'Sin etapa'}</b></div><div><span class="mut sm">Aprobado por el CEO</span><b>${e.aprobados} de 5 bloques</b></div></div>
+        <div class="cl-blocks">${BLOQUES.map((x) => html`<a href="#/estrategia/${slug}/${x.id}" class="${e.bloques[x.id] || 'vacio'}" title="${x.nombre}"><i></i><span>${x.nombre}</span></a>`)}</div>`}</section>`;
+    }
+    function proyectosCard() {
+      const pct = (p) => { const ts = tasks.filter((t) => t.project_id === p.id); return ts.length ? Math.round((ts.filter((t) => t.status === 'Hecha').length / ts.length) * 100) : null; };
+      const fase = (p) => (p.phases || []).find((f) => f.status === 'now')?.name || (p.phases || []).find((f) => f.status !== 'done')?.name || '';
+      return html`<section class="card cl-card"><div class="row"><b class="cl-h">Proyectos</b><span class="mut sm">${ps.length || ''}</span><div class="sp"></div><a class="btn ghost xs" href="#/operations">Ver en Proyectos</a></div>
+        ${ps.length ? html`<div class="cl-projs">${ps.map((p) => { const n = pct(p); return html`<a class="cl-proj" href="#/operations/p/${encodeURIComponent(p.id)}"><span class="cl-proj-t"><b>${p.name}</b><span class="mut sm">${[p.kind, fase(p)].filter(Boolean).join(' · ') || 'Sin fase'}</span></span><span class="cl-proj-p"><i style="width:${n ?? 0}%"></i></span><span class="mut sm cl-proj-n">${n == null ? '—' : n + '%'}</span></a>`; })}</div>`
+          : html`<p class="mut sm">Todavía no hay proyectos de ${a.name}. Se crean en <a href="#/operations">Proyectos</a> y quedan ligados a este cliente.</p>`}</section>`;
+    }
     function linksTab(b) {
       const mine = Array.isArray(a.links) ? a.links : [];
       const cats = CATS.filter(([k]) => mine.some((l) => (l.cat || 'otro') === k));
-      mount(b, html`<div class="row" style="margin-bottom:12px;flex-wrap:wrap;gap:8px"><span class="mut sm">Los links del cliente por categoría: fotos, videos, Drive, redes, web.</span><div class="sp"></div>${edit ? html`<button class="btn" data-act="lkadd">+ Link</button>` : ''}</div>
+      mount(b, html`${resumen ? '' : a.drive ? html`<div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:12px"><a class="connect on" href="${a.drive}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><span class="lg">${IC.drive}</span>Drive de ${a.name}</a>${Object.entries(a.drive_dirs || {}).map(([k, u]) => html`<a class="chip" href="${u}" target="_blank" rel="noopener noreferrer" style="padding:7px 12px;text-decoration:none;color:inherit">${ico('folder')} ${k.replace(/^\d+ /, '')}</a>`)}</div>`
+          : !edit ? '' : html`<div class="connectcard" style="margin-bottom:12px"><span class="lg big">${IC.drive}</span><div class="grow"><b style="font-weight:500">Crea el Drive de ${a.name}</b><div class="mut sm">Onboarding · Assets · Guiones · Crudo · Por postear · Entregables · Reportes${isGrowth() ? ' · Números y auditoría' : ''}.</div></div><button class="btn" data-act="mkdrive">Crear carpetas</button></div>`}
+        <div class="row" style="margin-bottom:12px;flex-wrap:wrap;gap:8px"><span class="mut sm">Los links del cliente por categoría: fotos, videos, Drive, redes, web.</span><div class="sp"></div>${edit ? html`<button class="btn" data-act="lkadd">+ Link</button>` : ''}</div>
         ${cats.length ? html`<div class="grid g3">${cats.map(([k, l]) => html`<div class="card wkbox"><div class="wkhead"><h3>${ico(k === 'fotos' ? 'image' : k === 'videos' ? 'video' : k === 'drive' ? 'folder' : k === 'web' ? 'link' : 'link', 15)} ${l}</h3></div>
           ${mine.map((x, i) => [x, i]).filter(([x]) => (x.cat || 'otro') === k).map(([x, i]) => html`<div class="wkrow"><a class="grow" href="${/^https?:\/\//.test(x.url) ? x.url : '#'}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><b style="font-weight:500">${x.label || x.url}</b><div class="mut sm" style="overflow:hidden;text-overflow:ellipsis">${x.url}</div></a>${edit ? html`<button class="sm mut" data-act="lkedit" data-i="${i}">${ico('edit')}</button><button class="sm mut" data-act="lkdel" data-i="${i}">${ico('x', 16)}</button>` : ''}</div>`)}</div>`)}</div>`
         : html`<div class="empty"><b>Sin links todavía</b>Agrega el primero: «Fotos» y su link, «Drive» y su link…</div>`}

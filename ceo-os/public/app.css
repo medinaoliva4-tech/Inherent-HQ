@@ -27,7 +27,9 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .brand{display:flex;align-items:center;gap:10px;margin-right:4px}
 .emb{width:40px;height:40px;border-radius:50%;background:var(--ink);display:grid;place-items:center;flex:none}
 .emb svg{width:18px!important;height:auto!important}
-.word{font-family:var(--serif);font-size:27px;letter-spacing:-.5px;line-height:1}
+.word{font-family:var(--serif);font-size:27px;letter-spacing:-.5px;line-height:1;display:flex;align-items:flex-start;flex:none;white-space:nowrap}
+/* «OS» siempre arriba a la derecha de la palabra, en todos los espacios: nunca salta de línea aunque la barra venga llena. */
+.word img{flex:none}
 .word sup{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:1px;margin-left:4px;vertical-align:top;position:relative;top:4px;color:var(--mut)}
 .nav{display:flex;gap:4px;padding:5px;border-radius:99px;background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(18px);box-shadow:var(--shadow)}
 .nav button{display:flex;align-items:center;gap:7px;padding:10px 15px;border-radius:99px;color:var(--ink2);font-weight:500;font-size:13.5px;transition:.2s}
@@ -3639,3 +3641,19 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 @media (max-width:1200px){.cr{grid-template-columns:200px minmax(0,1fr)}.cr-side{grid-column:2;position:static}}
 @media (max-width:760px){.cr{grid-template-columns:minmax(0,1fr)}.cr-list{position:static;flex-direction:row;overflow-x:auto;max-height:none}.cr-item{flex:none;width:200px}.cr-side{grid-column:auto}.cr-t-g,.fm-ed-g{grid-template-columns:minmax(0,1fr)}.fm-p{grid-template-columns:minmax(0,1fr) 80px 30px}.fm-p [data-p="que"]{grid-column:1/-1;order:3}}
 /* === fin App 01 · Marca === */
+/* Perfil del cliente › Info: Estrategia y Proyectos arriba. */
+.cl-sum{gap:14px;margin-bottom:14px}
+.cl-card{display:flex;flex-direction:column;gap:12px;min-width:0}
+.cl-h{font-size:15px}
+.cl-kv{display:flex;gap:24px;flex-wrap:wrap}.cl-kv>div{display:flex;flex-direction:column;gap:2px}
+.cl-blocks{display:flex;flex-wrap:wrap;gap:6px}
+.cl-blocks a{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--hair);border-radius:999px;font-size:12.5px;color:var(--ink);text-decoration:none}
+.cl-blocks i{width:8px;height:8px;border-radius:50%;background:var(--hair)}
+.cl-blocks .trabajo i{background:#c9a227}.cl-blocks .aprobado i{background:#3c8a5a}
+.cl-projs{display:flex;flex-direction:column}
+.cl-proj{display:grid;grid-template-columns:1fr 90px 38px;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--hair);color:var(--ink);text-decoration:none}
+.cl-proj:first-child{border-top:0}.cl-proj:hover b{text-decoration:underline}
+.cl-proj-t{display:flex;flex-direction:column;min-width:0}.cl-proj-t>*{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl-proj-p{height:5px;border-radius:3px;background:var(--fill);overflow:hidden}.cl-proj-p i{display:block;height:100%;background:var(--ink)}
+.cl-proj-n{text-align:right}
+@media (max-width:760px){.cl-sum{grid-template-columns:1fr}}
