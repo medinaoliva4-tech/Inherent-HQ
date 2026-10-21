@@ -5,6 +5,7 @@ import { levelName } from '../levels.js';
 import { createCatalog, CATS, lvName } from '../catalogo.js';
 import { FLOW, stageLabel, flowIndex, isWaiting, createdAt, waitMs, waitTone, durText, salesMetrics, AFTER_REPLY, updateWaits } from '../ventas-flujo.js';
 import { layaBox } from '../laya-ui.js';
+import { PROB, estancado, sinSiguiente, ganadoEn, tasasReales, cascada, llevamos, pronostico, habilesQuedan, KINDS } from '../ventas-meta.js';
 
 const STAGES = ['Prospecto', 'Nuevo', 'Contactado', 'Reunión', 'Propuesta', 'Ganado', 'Perdido'];
 const BOARD = STAGES.slice(1); // el tablero: los prospectos tienen su bandeja aparte
@@ -34,8 +35,10 @@ export async function render(el, { me, sub, alive }) {
   // Ventas = conseguir y cerrar: CRM · Cotizaciones · Fuentes. El catálogo, los especialistas y los paquetes viven en
   // Servicios (sus rutas viejas, #/sales/cat · esp · pkg, redirigen allá: roleviews.js → MOVED).
   // Fuentes (con las claves de cada puerta de intake): solo el CEO; el servidor tampoco las entrega a nadie más.
-  let tab = (resumen ? ['crm'] : ['crm', 'quotes', ...(isCeo ? ['src'] : [])]).includes(sub[0]) ? sub[0] : 'crm';
-  let crmView = 'list', q = '', tagF = '';
+  let tab = (resumen ? ['crm'] : ['crm', 'pros', 'quotes', ...(isCeo ? ['src'] : [])]).includes(sub[0]) ? sub[0] : 'crm';
+  let crmView = (() => { try { return ['board', 'list', 'meta'].includes(localStorage.getItem('ventas.vista')) ? localStorage.getItem('ventas.vista') : 'board'; } catch { return 'board'; } })(), q = '', tagF = '', vistaF = 'abierto';
+  // La meta de cada mes (la pone el CEO): settings › ventas_meta = { meses: { 'AAAA-MM': usd }, ticket }.
+  let metaDoc = await col('settings').get('ventas_meta').catch(() => null);
 
   // ---------- costos (solo CEO) ----------
   const rateOf = (role) => rates?.roles?.find((r) => r.role === role)?.rate ?? null;
@@ -55,7 +58,8 @@ export async function render(el, { me, sub, alive }) {
       <div class="hello row" style="align-items:flex-end"><div><h1>Ventas</h1><p>Cada lead, calificado y con <em>su siguiente paso</em>.</p></div><div class="sp"></div>${roChip(me, 'sales')}</div>
       <div class="row" style="margin-bottom:18px;flex-wrap:wrap">
         ${resumen ? '' : html`<div class="tabs" style="margin:0">
-          <button class="${tab === 'crm' ? 'on' : ''}" data-act="tab" data-t="crm">CRM</button>
+          <button class="${tab === 'crm' ? 'on' : ''}" data-act="tab" data-t="crm">${ico('target', 13)} CRM</button>
+          <button class="${tab === 'pros' ? 'on' : ''}" data-act="tab" data-t="pros">${ico('inbox', 13)} Prospectos${leads.filter((l) => l.stage === 'Prospecto' && !l.archived).length ? html` <span class="mut">${leads.filter((l) => l.stage === 'Prospecto' && !l.archived).length}</span>` : ''}</button>
           <button class="${tab === 'quotes' ? 'on' : ''}" data-act="tab" data-t="quotes">Cotizaciones</button>
           ${isCeo ? html`<button class="${tab === 'src' ? 'on' : ''}" data-act="tab" data-t="src">Fuentes</button>` : ''}
         </div>`}
@@ -67,7 +71,7 @@ export async function render(el, { me, sub, alive }) {
       <div id="body"></div>`);
     const body = $('#body', el);
     if (resumen) return crmResumen(body);
-    ({ crm, quotes: quotesTab, src: srcTab })[tab](body);
+    ({ crm, pros: (b) => mount(b, prosView(leads.filter((l) => l.stage === 'Prospecto' && !l.archived))), quotes: quotesTab, src: srcTab })[tab](body);
   }
   // ---------- El resumen del CRM: los indicadores y lo que requiere acción (vencidos y lo de hoy) ----------
   function crmResumen(body) {
@@ -136,6 +140,62 @@ export async function render(el, { me, sub, alive }) {
     }
     return saveLead({ ...cur, ...patch, activity: [...(cur.activity || []), ...notes.map(act)] }, `Respondido en ${took}`);
   }
+  // ---------- La meta del mes (HubSpot: pronóstico ponderado; Pipedrive: metas) ----------
+  const MES = T.slice(0, 7);
+  const metaMes = () => +(metaDoc?.meses?.[MES]) || 0;
+  async function guardarMeta(cambio) {
+    const next = { ...(metaDoc || { id: 'ventas_meta' }), ...cambio };
+    try { metaDoc = metaDoc?.v ? await col('settings').save(next) : await col('settings').create(next); toast('Guardado'); paint(); } catch (e) { toast(e.message, true); }
+  }
+  async function editarMeta() {
+    if (!isCeo) return toast('La meta la pone el CEO', true);
+    const v = await ask('La meta de este mes', [{ k: 'm', l: 'Ventas nuevas este mes (USD al mes, como el valor de los leads)', t: 'number', v: metaMes() || '', req: true }]);
+    if (v) guardarMeta({ meses: { ...(metaDoc?.meses || {}), [MES]: +v.m } });
+  }
+  function metaStrip() {
+    const meta = metaMes(), y = llevamos(leads, MES), fc = pronostico(leads), sup = tasasReales(leads), ganado = y.ganado;
+    const pct = (x) => (meta ? Math.min(100, Math.round((x / meta) * 100)) : 0);
+    return html`<section class="vx-goal"><div><div class="row"><b>${meta ? html`Meta de ${new Date(T + 'T12:00').toLocaleDateString('es', { month: 'long' })} · ${USD(meta)} en ventas nuevas` : 'Sin meta este mes'}</b><div class="sp"></div>${isCeo ? html`<button class="sm wslink" data-act="metaEdit">${meta ? 'Cambiar' : 'Poner la meta'}</button>` : ''}</div>
+        <div class="vx-gbar"><span class="won" style="width:${pct(ganado)}%"></span><span class="fc" style="left:${pct(ganado)}%;width:${Math.max(0, Math.min(100 - pct(ganado), pct(fc)))}%"></span></div>
+        <div class="vx-leg"><span><i class="won"></i> Ganado ${USD(ganado)}</span><span><i class="fc"></i> Pronóstico ${USD(Math.round(fc))}</span>${meta ? html`<span>Falta ${USD(Math.max(0, meta - ganado))}</span>` : ''}</div></div>
+      <div class="vx-k"><small>Pronóstico ponderado</small><b>${USD(Math.round(fc))}</b><small>valor × probabilidad de su etapa</small></div>
+      <div class="vx-k"><small>Cierre de propuestas · 90 días</small><b>${sup.cierre != null ? `${Math.round(sup.cierre * 100)}%` : '—'}</b><small>${sup.cierre != null ? `de cada 10 propuestas, cierran ${Math.round(sup.cierre * 10)}` : 'Faltan datos (3 propuestas o más)'}</small></div>
+      <div class="vx-k"><small>Ticket promedio · 90 días</small><b>${sup.ticket ? USD(Math.round(sup.ticket)) : '—'}</b><small>${sup.ticket ? 'de lo ganado' : 'Sin ventas ganadas todavía'}</small></div></section>`;
+  }
+  function metaView() {
+    const meta = metaMes(), sup = tasasReales(leads), y = llevamos(leads, MES), dias = habilesQuedan();
+    const ticket = sup.ticket || (metaDoc?.ticket ? +metaDoc.ticket : null);
+    const c = cascada(meta, { ...sup, ticket });
+    const tasa = (x, real) => html`<b>${x != null ? `${Math.round(x * 100)}%` : '—'}</b> <span class="${real ? 'vx-real' : 'mut sm'}">${real ? 'real · 90 días' : 'de arranque'}</span>`;
+    if (!meta) return html`<div class="card vx-meta-empty"><b>Pon la meta del mes</b><p class="mut">Con la meta, la calculadora te dice cuántas ventas, propuestas, conversaciones, leads y mensajes de outreach hacen falta, y cuánto llevas.</p>${isCeo ? html`<button class="btn" data-act="metaEdit">Poner la meta</button>` : html`<p class="mut sm">La pone el CEO.</p>`}</div>`;
+    if (!c) return html`<div class="card vx-meta-empty"><b>Falta el ticket promedio</b><p class="mut">Todavía no hay ventas ganadas para calcularlo. ${isCeo ? 'Escríbelo a mano:' : 'El CEO lo puede escribir a mano.'}</p>${isCeo ? html`<button class="btn" data-act="ticketEdit">Escribir el ticket</button>` : ''}</div>`;
+    const niveles = [['ventas', 'Ventas', 'clientes nuevos', '#2f7a4d'], ['propuestas', 'Propuestas', 'con alcance delante', '#a8503a'], ['conversaciones', 'Conversaciones', 'entendiendo el caso', '#8a6fb0'], ['leads', 'Leads', 'que entraron este mes', '#c49a3c'], ['outreach', 'Outreach', 'mensajes a prospectos', '#7d8fb0']];
+    // Lo que más falta: el nivel con menos avance; si empatan, el de más abajo (el outreach mueve todo lo demás).
+    const peor = niveles.map(([k], n) => [k, c[k] ? y[k] / c[k] : 1, n]).sort((a, z) => a[1] - z[1] || z[2] - a[2])[0];
+    const hoyN = new Date(T + 'T12:00'), finMes = new Date(hoyN.getFullYear(), hoyN.getMonth() + 1, 0).getDate();
+    const ritmo = y.ganado ? Math.round((y.ganado / hoyN.getDate()) * finMes) : 0;
+    const sem = Object.fromEntries(niveles.map(([k]) => [k, Math.ceil((Math.max(0, c[k] - y[k]) / dias) * 5)]));
+    const lunes = new Date(Date.now() - ((new Date().getDay() + 6) % 7) * 864e5).toISOString().slice(0, 10);
+    const abiertos = leads.filter((l) => OPEN.includes(l.stage || 'Nuevo'));
+    const card = (ic, color, titulo, val, de, extra = '') => html`<div class="vx-a"><div class="vx-ah"><i style="background:${color}1f;color:${color}">${ic}</i>${titulo}</div><div class="vx-av"><b>${val}</b><span>${de}</span></div>${extra}</div>`;
+    const barras = (ks, color) => html`<div class="vx-week" aria-label="Lunes a viernes">${[0, 1, 2, 3, 4].map((d) => { const n = ks.reduce((a, k) => a + (y.porDia[k]?.[d] || 0), 0); return html`<i style="height:${Math.min(100, 10 + n * 14)}%;background:${n ? color : 'var(--hair)'}"></i>`; })}</div>`;
+    const avg = salesMetrics(leads).avgReplyMs;
+    return html`<div class="vx-metalay"><section class="card vx-calc"><span class="lbl">La meta de este mes · ${isCeo ? 'tócala para cambiarla' : 'la pone el CEO'}</span>
+        <div class="vx-metain">${isCeo ? html`<button type="button" class="vx-big" data-act="metaEdit">${USD(meta)}</button>` : html`<b class="vx-big">${USD(meta)}</b>`}<span class="mut">en ventas nuevas · quedan ${dias} días hábiles</span></div>
+        <div class="vx-in3"><div class="vx-in"><small>Ticket promedio</small><b>${USD(Math.round(ticket))}</b> <span class="${sup.ticket ? 'vx-real' : 'mut sm'}">${sup.ticket ? 'real · 90 días' : 'escrito a mano'}</span></div><div class="vx-in"><small>Cierre de propuestas</small>${tasa(sup.cierre ?? 0.25, sup.cierre != null)}</div><div class="vx-in"><small>De conversación a propuesta</small>${tasa(sup.aPropuesta ?? 0.5, sup.aPropuesta != null)}</div></div>
+        <span class="lbl">De la meta para atrás · lo que hace falta vs. lo que llevas</span>
+        <div class="vx-fn">${niveles.map(([k, t, sb, color]) => { const need = c[k], have = y[k], falta = Math.max(0, need - have); return html`<div class="vx-fr"><div><b>${t}</b><small>${sb}</small></div><div class="vx-trk"><i style="width:${Math.min(100, need ? (have / need) * 100 : 0)}%;background:${color}"></i><span>${have} de ${need}</span></div><div class="vx-n">${falta ? html`<b class="${have / need < 0.5 ? 'bad' : 'am'}">faltan ${falta}</b><small>${Math.ceil(falta / dias)} por día</small>` : html`<b class="ok">✓ listo</b>`}</div></div>`; })}</div>
+        <div class="vx-tip">⚑ ${y.ganado ? html`Con el ritmo de hoy llegas a <b>${USD(ritmo)}</b> (${Math.round((ritmo / meta) * 100)}%). ` : ''}Lo que más falta es <b>${niveles.find(([k]) => k === peor[0])[1].toLowerCase()}</b>${c[peor[0]] - y[peor[0]] > 0 ? html`: ${Math.ceil((c[peor[0]] - y[peor[0]]) / dias)} al día cierran la diferencia` : ''}.</div>
+        <p class="mut sm">Los supuestos «de arranque» se cambian solos por los reales cuando haya 3 propuestas o más en 90 días.</p></section>
+      <section class="card vx-vol"><span class="lbl">El volumen · lo que nos mueve esta semana</span><div class="vx-acts">
+        ${card('✉', '#3f6ea8', 'Mensajes de outreach', y.semana.outreach, `de ${sem.outreach} esta semana`, barras(['outreach'], '#3f6ea8'))}
+        ${card('☎', '#2f7a4d', 'Llamadas y reuniones', y.semana.llamada + y.semana.reunion, 'esta semana', barras(['llamada', 'reunion'], '#2f7a4d'))}
+        ${card('⚡', '#a8503a', 'Primera respuesta', avg != null ? durText(avg) : '—', 'promedio del mes · meta 1 min')}
+        ${card('↻', '#9a7414', 'Seguimientos a tiempo', abiertos.length ? `${Math.round((abiertos.filter((l) => !isLate(l)).length / abiertos.length) * 100)}%` : '—', `${abiertos.filter(isLate).length} vencidos`)}
+        ${card('▤', '#7a5aa0', 'Propuestas enviadas', y.semana.propuesta + quotes.filter((x) => x.date && x.date >= lunes).length, `de ${sem.propuestas} esta semana`)}
+        ${card('◎', '#6b513c', 'Pipeline abierto', USD(abiertos.reduce((a, l) => a + (+l.value_usd || 0), 0)), `${abiertos.length} tratos`)}
+      </div><p class="mut sm">El volumen sale de lo que se anota: «+1 outreach» en Prospectos y, en cada lead, el tipo de cada nota (llamada, reunión, propuesta, seguimiento). Lo que no se anota, no cuenta.</p></section></div>`;
+  }
   function crm(body) {
     const pipe = leads.filter((l) => (l.stage || 'Nuevo') !== 'Prospecto');
     const pros = leads.filter((l) => l.stage === 'Prospecto' && !l.archived);
@@ -146,25 +206,25 @@ export async function render(el, { me, sub, alive }) {
     const m = salesMetrics(leads), pipeUsd = open.reduce((a, l) => a + (+l.value_usd || 0), 0), hot = open.filter((l) => (l.interest || 0) >= 4).length;
     const usedTags = [...new Set(pipe.flatMap((l) => l.tags || []))];
     const late = open.filter(isLate);
-    mount(body, html`${topNums(m)}${inbox(m.waiting)}
-      ${pipe.length ? strip(pipe) : ''}
-      <div class="vf-mini mut sm"><span>${ico('flame', 13)} ${hot} caliente${hot === 1 ? '' : 's'}</span><span class="${late.length ? 'vf-warn' : ''}">${late.length} con seguimiento vencido</span><span>${pros.length} prospecto${pros.length === 1 ? '' : 's'} por contactar</span><span>${USD(pipeUsd)} de pipeline abierto / mes</span></div>
-      <div class="row" style="margin-bottom:14px;flex-wrap:wrap;gap:8px">
-        <input class="in" id="q" placeholder="Buscar lead…" value="${q}" style="max-width:260px">
-        ${crmView !== 'pros' ? html`<button class="chip ${tagF ? '' : 'dark'}" data-act="tagF" data-t="" style="padding:8px 14px">Todos</button>
-        ${usedTags.map((t) => html`<button class="chip ${tagF === t ? 'dark' : ''}" data-act="tagF" data-t="${t}" style="padding:8px 14px">${t}</button>`)}` : ''}
-        <div class="sp"></div>
-        <div class="tabs" style="margin:0"><button class="${crmView === 'list' ? 'on' : ''}" data-act="crmView" data-v="list">Lista</button><button class="${crmView === 'board' ? 'on' : ''}" data-act="crmView" data-v="board">Tablero</button><button class="${crmView === 'pros' ? 'on' : ''}" data-act="crmView" data-v="pros">Prospectos${pros.length ? html` <span class="mut">${pros.length}</span>` : ''}</button></div>
-      </div>
-      ${crmView === 'pros' ? prosView(pros.filter(match))
-      : !pipe.length ? html`<div class="empty"><b>Todavía no hay leads</b>Crea el primero con «+ Nuevo lead», o conecta una fuente en «Fuentes».</div>`
+    // Listas inteligentes (como las Smart Views de Close): se llenan solas.
+    const VISTAS = [['abierto', 'Todo abierto', '#6b513c', '◎', (l) => OPEN.includes(l.stage || 'Nuevo')], ['sinpaso', 'Sin siguiente paso', '#b4472f', '!', (l) => sinSiguiente(l)], ['estancados', 'Estancados', '#b4472f', '◷', (l) => estancado(l) > 0],
+      ['hoy', 'Actividad hoy', '#c58a2b', '⚑', (l) => OPEN.includes(l.stage || 'Nuevo') && l.next_date && l.next_date <= T], ['calientes', 'Calientes', '#c2541f', '▲', (l) => OPEN.includes(l.stage || 'Nuevo') && (l.interest || 0) >= 4], ['responder', 'Por responder', '#3f6ea8', '⚡', (l) => m.waiting.includes(l)],
+      ['ganados', 'Ganados este mes', '#2f7a4d', '✓', (l) => { const t = ganadoEn(l); return t != null && new Date(t).toISOString().slice(0, 7) === T.slice(0, 7); }], ['perdidos', 'Perdidos', '#9a8f80', '×', (l) => l.stage === 'Perdido']];
+    const vf = VISTAS.find((v) => v[0] === vistaF) || VISTAS[0];
+    const shown = filtered.filter(vf[4]);
+    mount(body, html`${inbox(m.waiting)}${metaStrip()}
+      <div class="row vx-bar"><div class="tabs" style="margin:0" role="tablist" aria-label="Vista">${[['board', 'Tablero'], ['list', 'Lista'], ['meta', 'Meta']].map(([k, l]) => html`<button class="${crmView === k ? 'on' : ''}" data-act="crmView" data-v="${k}">${l}</button>`)}</div>
+        ${crmView !== 'meta' ? html`<input class="in" id="q" placeholder="Buscar lead…" value="${q}" style="max-width:260px">${usedTags.length ? html`<button class="chip ${tagF ? '' : 'dark'}" data-act="tagF" data-t="" style="padding:6px 12px">Todas las etiquetas</button>${usedTags.map((t) => html`<button class="chip ${tagF === t ? 'dark' : ''}" data-act="tagF" data-t="${t}" style="padding:6px 12px">${t}</button>`)}` : ''}` : ''}</div>
+      ${crmView === 'meta' ? metaView() : html`<div class="vx"><aside class="vx-views"><span class="vx-h">Listas inteligentes</span>${VISTAS.map(([k, lab, c, ic, f], n) => html`${n === 6 ? html`<span class="vx-h">Cerrados</span>` : ''}<button type="button" class="vx-v ${vistaF === k ? 'on' : ''}" data-act="vista" data-k="${k}"><i style="background:${c}">${ic}</i>${lab}<small class="${['sinpaso', 'estancados', 'responder'].includes(k) && filtered.filter(f).length ? 'r' : ''}">${filtered.filter(f).length}</small></button>`)}</aside><div class="vx-main">
+      ${!pipe.length ? html`<div class="empty"><b>Todavía no hay leads</b>Crea el primero con «+ Nuevo lead», o conecta una fuente en «Fuentes».</div>`
       : crmView === 'list' ? html`<div class="card"><table><thead><tr><th>Lead</th><th>Interés</th><th>Etapa</th><th>Fuente</th><th>Responsable</th><th class="n">Valor / mes</th><th>Siguiente paso</th></tr></thead><tbody>
-        ${filtered.map((l) => html`<tr class="click" data-act="lead" data-id="${l.id}"><td><b style="font-weight:500">${l.name}</b><div class="mut sm">${[l.contact, l.company].filter(Boolean).join(' · ')}</div>${(l.tags || []).length ? html`<div>${(l.tags || []).map(tagChip)}</div>` : ''}</td><td>${score(l.interest)}</td><td><span class="chip ${STAGEC[l.stage] ?? ''}">${stageLabel(l.stage)}</span>${l.stage === 'Perdido' && l.lost_reason ? html`<div class="mut sm">${l.lost_reason}</div>` : ''}</td><td class="sm">${l.source || '—'}</td><td class="sm">${roleLabel(l.owner_role)}</td><td class="n">${l.value_usd ? USD(l.value_usd) : '—'}</td><td class="sm" style="${isLate(l) ? 'color:var(--warn);font-weight:700' : ''}">${OPEN.includes(l.stage || 'Nuevo') ? html`${l.next_step || '—'}${l.next_date ? html`<div class="mut">${isLate(l) ? 'Venció el ' : ''}${fdate(l.next_date)}</div>` : ''}` : html`<span class="mut">—</span>`}</td></tr>`)}
+        ${shown.length ? '' : html`<tr><td colspan="7" class="mut">Nada en «${vf[1]}».</td></tr>`}${shown.map((l) => html`<tr class="click" data-act="lead" data-id="${l.id}"><td><b style="font-weight:500">${l.name}</b><div class="mut sm">${[l.contact, l.company].filter(Boolean).join(' · ')}</div>${(l.tags || []).length ? html`<div>${(l.tags || []).map(tagChip)}</div>` : ''}</td><td>${score(l.interest)}</td><td><span class="chip ${STAGEC[l.stage] ?? ''}">${stageLabel(l.stage)}</span>${l.stage === 'Perdido' && l.lost_reason ? html`<div class="mut sm">${l.lost_reason}</div>` : ''}</td><td class="sm">${l.source || '—'}</td><td class="sm">${roleLabel(l.owner_role)}</td><td class="n">${l.value_usd ? USD(l.value_usd) : '—'}</td><td class="sm" style="${isLate(l) ? 'color:var(--warn);font-weight:700' : ''}">${OPEN.includes(l.stage || 'Nuevo') ? html`${l.next_step || '—'}${l.next_date ? html`<div class="mut">${isLate(l) ? 'Venció el ' : ''}${fdate(l.next_date)}</div>` : ''}` : html`<span class="mut">—</span>`}</td></tr>`)}
         </tbody></table></div>`
-      : html`<div class="kanban" style="grid-template-columns:repeat(${BOARD.length},minmax(210px,1fr))">${BOARD.map((s) => { const ls = filtered.filter((l) => (l.stage || 'Nuevo') === s); return html`<div class="kcol" data-stage="${s}"><h4><span>${stageLabel(s)}</span><span class="mut">${ls.length}</span></h4>
-          ${ls.map((l) => html`<div class="kcard" draggable="true" data-act="lead" data-id="${l.id}"><b>${l.name}</b><div class="mut sm">${levelName(l.wants) || l.source || ''}</div>${OPEN.includes(s) ? html`<div class="sm" style="margin-top:6px;${isLate(l) ? 'color:var(--warn);font-weight:700' : ''}">${l.next_step || 'Sin siguiente paso'}${l.next_date ? ` · ${fdate(l.next_date)}` : ''}</div>` : s === 'Perdido' && l.lost_reason ? html`<div class="mut sm" style="margin-top:6px">${l.lost_reason}</div>` : ''}<div class="row" style="margin-top:8px">${score(l.interest)}<div class="sp"></div><span class="sm">${l.value_usd ? USD(l.value_usd) : ''}</span></div></div>`)}</div>`; })}</div>`}`);
+      : html`<div class="vx-board">${BOARD.filter((x) => x !== 'Perdido' || vistaF === 'perdidos').map((st) => { const ls = shown.filter((l) => (l.stage || 'Nuevo') === st), sum = ls.reduce((a, l) => a + (+l.value_usd || 0), 0); return html`<div class="kcol vx-col" data-stage="${st}"><div class="vx-ch"><div class="row"><i class="vx-dot s-${st.replace(/[^a-z]/gi, '')}"></i><b>${stageLabel(st)}</b><span class="vx-p">${Math.round((PROB[st] ?? 0) * 100)}%</span></div><small>${ls.length}${sum ? ` · ${USD(sum)}` : ''}${FLOW.find((f) => f.keys.includes(st))?.step ? ` · ${FLOW.find((f) => f.keys.includes(st)).step}` : ''}</small></div>
+          ${ls.map((l) => { const rot = estancado(l), late = isLate(l), sinp = sinSiguiente(l); return html`<div class="kcard vx-cd ${rot ? 'rot' : ''}" draggable="true" data-act="lead" data-id="${l.id}">${rot ? html`<span class="vx-rot">Sin tocar ${rot} día${rot === 1 ? '' : 's'}</span>` : ''}<div class="row" style="gap:6px;align-items:flex-start"><b>${l.name}</b><div class="sp"></div><span class="vx-val">${l.value_usd ? USD(l.value_usd) : ''}</span></div><small class="mut">${[l.source, l.contact].filter(Boolean).join(' · ') || levelName(l.wants) || ''}</small><div class="row" style="margin-top:2px">${score(l.interest)}</div>
+            ${OPEN.includes(st) ? html`<div class="vx-nx ${sinp ? 'none' : late ? 'late' : 'ok'}">${sinp ? '! Sin siguiente paso · agéndalo' : `${late ? '◷ ' : '→ '}${l.next_step}${l.next_date ? ` · ${late ? 'venció ' : ''}${fdate(l.next_date)}` : ''}`}</div>` : st === 'Perdido' && l.lost_reason ? html`<small class="mut">${l.lost_reason}</small>` : ''}</div>`; })}</div>`; })}</div>`}</div></div>`}`);
     const qi = $('#q', body);
-    qi.oninput = () => { q = qi.value.toLowerCase(); const pos = qi.selectionStart; crm(body); const n = $('#q', body); n.focus(); n.setSelectionRange(pos, pos); };
+    if (qi) qi.oninput = () => { q = qi.value.toLowerCase(); const pos = qi.selectionStart; crm(body); const n = $('#q', body); n.focus(); n.setSelectionRange(pos, pos); };
     // drag & drop entre etapas: a Perdido pide el motivo; a una etapa abierta exige siguiente paso y fecha.
     $$('.kcard', body).forEach((c) => c.addEventListener('dragstart', (e) => e.dataTransfer.setData('id', c.dataset.id)));
     $$('.kcol', body).forEach((k) => {
@@ -185,7 +245,7 @@ export async function render(el, { me, sub, alive }) {
     return html`<div class="mut sm" style="margin-bottom:6px">Un prospecto no cuenta como lead hasta que responde. «→ Lead» o «Contactado» lo pasan al pipeline con su siguiente paso; la ✕ lo archiva.</div>
       ${Object.entries(bySrc).map(([src, ls]) => html`<div class="sec-title" style="margin:18px 0 10px"><h2 style="font-size:17px">${src}</h2><span class="mut sm">${ls.length}</span></div>
       <div class="card"><table><thead><tr><th>Prospecto</th><th>Contacto</th><th>Notas</th><th></th></tr></thead><tbody>
-        ${ls.map((l) => html`<tr><td class="click" data-act="lead" data-id="${l.id}"><b style="font-weight:500">${l.name}</b>${l.company ? html`<div class="mut sm">${l.company}</div>` : ''}</td><td class="sm">${[l.ig && '@' + l.ig, l.phone, l.email].filter(Boolean).join(' · ') || '—'}</td><td class="sm mut" style="max-width:320px;white-space:pre-line">${String(l.notes || '').slice(0, 160)}</td><td style="white-space:nowrap;text-align:right"><button class="btn ghost xs" data-act="toCrm" data-id="${l.id}" data-s="Nuevo">→ Lead</button> <button class="btn ghost xs" data-act="toCrm" data-id="${l.id}" data-s="Contactado">Contactado</button> <button class="btn ghost xs" data-act="archive" data-id="${l.id}" title="Archivar">${ico('x', 14)}</button></td></tr>`)}
+        ${ls.map((l) => html`<tr><td class="click" data-act="lead" data-id="${l.id}"><b style="font-weight:500">${l.name}</b>${l.company ? html`<div class="mut sm">${l.company}</div>` : ''}</td><td class="sm">${[l.ig && '@' + l.ig, l.phone, l.email].filter(Boolean).join(' · ') || '—'}</td><td class="sm mut" style="max-width:320px;white-space:pre-line">${String(l.notes || '').slice(0, 160)}</td><td style="white-space:nowrap;text-align:right">${(l.activity || []).filter((a) => a.kind === 'outreach').length ? html`<span class="mut sm" title="Mensajes de outreach">${ico('mail', 12)} ${(l.activity || []).filter((a) => a.kind === 'outreach').length}</span> ` : ''}<button class="btn ghost xs" data-act="outreach" data-id="${l.id}" title="Anotar un mensaje de outreach">+1 outreach</button> <button class="btn ghost xs" data-act="toCrm" data-id="${l.id}" data-s="Nuevo">→ Lead</button> <button class="btn ghost xs" data-act="toCrm" data-id="${l.id}" data-s="Contactado">Contactado</button> <button class="btn ghost xs" data-act="archive" data-id="${l.id}" title="Archivar">${ico('x', 14)}</button></td></tr>`)}
       </tbody></table></div>`)}`;
   }
 
@@ -232,7 +292,7 @@ export async function render(el, { me, sub, alive }) {
       </form>
       <div class="row" style="margin:16px 0"><button class="btn" data-act="save">Guardar</button><button class="btn ghost" data-act="quote">Crear cotización</button><div class="sp"></div><button class="btn ghost" data-act="del" title="Eliminar">${ico('trash', 16)}</button></div>
       <b class="sm">Historial</b> <span class="mut sm">· solo se agrega</span>
-      <div class="row" style="margin:8px 0"><input class="in" id="note" placeholder="Registrar llamada, mensaje o nota…"><button class="btn ghost" data-act="note">Agregar</button></div>
+      <div class="row" style="margin:8px 0;gap:6px"><select class="in" id="nkind" style="width:auto" aria-label="Qué fue"><option value="">Nota</option>${KINDS.map(([k, t]) => html`<option value="${k}">${t}</option>`)}</select><input class="in" id="note" placeholder="Qué pasó…"><button class="btn ghost" data-act="note">Agregar</button></div>
       ${(l.activity || []).slice().reverse().map((a) => html`<div class="comment"><span class="av">${(a.who || '?')[0]}</span><p><span class="mut sm">${fdate(String(a.at || '').slice(0, 10))} · ${a.who}</span><br>${a.text}</p></div>`)}`,
     {
       replied: async () => { const s = await replied(l); if (s) { paint(); openLead(s); } },
@@ -240,7 +300,7 @@ export async function render(el, { me, sub, alive }) {
       tag: (b) => { const t = b.dataset.t; tags = tags.includes(t) ? tags.filter((x) => x !== t) : [...tags, t]; b.className = `chip ${tags.includes(t) ? TAGS[t] ?? 'dark' : 'off'}`; },
       newTag: async () => { const v = await ask('Nueva etiqueta', [{ k: 't', l: 'Etiqueta', req: true }], 'Agregar'); if (v) { tags.push(v.t); await persist(); openLead(leads.find((x) => x.id === l.id)); } },
       save: async () => { if (await persist()) { closeDrawer(); paint(); } },
-      note: async () => { const n = $('#note').value.trim(); if (!n) return; l = leads.find((x) => x.id === l.id); const v = formVals(); const bad = lockMsg(v); if (bad) return toast(bad, true); const s = await saveLead({ ...l, ...v, tags, interest, activity: [...(l.activity || []), act(n)] }); if (s) openLead(s); },
+      note: async () => { const n = $('#note').value.trim(); if (!n) return; l = leads.find((x) => x.id === l.id); const v = formVals(); const bad = lockMsg(v); if (bad) return toast(bad, true); const s = await saveLead({ ...l, ...v, tags, interest, activity: [...(l.activity || []), { ...act(n), ...($('#nkind')?.value ? { kind: $('#nkind').value } : {}) }] }); if (s) openLead(s); },
       quote: async () => { if (!(await persist())) return; closeDrawer(); editQuote(null, leads.find((x) => x.id === l.id)); },
       del: async () => { if (!(await confirmAsk(`¿Eliminar a ${l.name}?`))) return; await L.remove(l.id); leads = leads.filter((x) => x.id !== l.id); closeDrawer(); paint(); },
     });
@@ -600,7 +660,11 @@ export async function render(el, { me, sub, alive }) {
   // ---------- acciones ----------
   acts(el, {
     tab: (b) => { tab = b.dataset.t; history.replaceState(null, '', '#/sales/' + tab); swap(el, paint); },
-    crmView: (b) => { crmView = b.dataset.v; paint(); },
+    crmView: (b) => { crmView = b.dataset.v; try { localStorage.setItem('ventas.vista', crmView); } catch {} paint(); },
+    vista: (b) => { vistaF = b.dataset.k; paint(); },
+    metaEdit: () => editarMeta(),
+    ticketEdit: async () => { const v = await ask('Ticket promedio (USD al mes)', [{ k: 't', l: 'Lo que paga en promedio un cliente nuevo', t: 'number', v: metaDoc?.ticket || '', req: true }]); if (v) guardarMeta({ ticket: +v.t }); },
+    outreach: async (b) => { const l = leads.find((x) => x.id === b.dataset.id); if (l && await saveLead({ ...l, activity: [...(l.activity || []), { ...act('Mensaje de outreach'), kind: 'outreach' }] }, '+1 outreach')) paint(); },
     tagF: (b) => { tagF = b.dataset.t; paint(); },
     stageF: (b) => { stageF = stageF === b.dataset.f ? '' : b.dataset.f; if (crmView === 'pros') crmView = 'list'; paint(); },
     replied: async (b) => { const l = leads.find((x) => x.id === b.dataset.id); if (l && await replied(l)) paint(); },
