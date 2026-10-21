@@ -3350,11 +3350,6 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 /* Pantalla chica: una columna a la vez, con pestañas */
 @media (max-width:900px){
   .es{--es-h:calc(100dvh - 250px)}
-  .es-tabs{display:inline-flex;align-self:stretch;margin-bottom:0}
-  .es-tabs button{flex:1}
-  .es-split{grid-template-columns:minmax(0,1fr)}
-  .es-split[data-tab="ctx"] .es-chat,.es-split[data-tab="chat"] .es-ctx{display:none}
-  .es-ctx{height:auto;min-height:0;overflow:visible;padding:var(--s4);background:transparent;border:0;box-shadow:none}
   .es-chat{min-height:440px}
   .es-kv,.es-cells{grid-template-columns:1fr;gap:var(--s3)}
   .es-bh{flex-direction:column}
@@ -3657,3 +3652,31 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 .cl-proj-p{height:5px;border-radius:3px;background:var(--fill);overflow:hidden}.cl-proj-p i{display:block;height:100%;background:var(--ink)}
 .cl-proj-n{text-align:right}
 @media (max-width:760px){.cl-sum{grid-template-columns:1fr}}
+
+/* Estrategia, acomodo tipo Claude: el chat al centro; el contexto, un panel lateral que se abre con «Contexto». */
+.es-head{flex-wrap:wrap}
+.es-head-b{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.es-head-b .btn.on{background:var(--fill)}
+.es-split{grid-template-columns:minmax(0,1fr);position:relative}
+.es-split[data-ctx="on"]{grid-template-columns:minmax(0,1fr) minmax(320px,420px)}
+.es-split[data-ctx="off"] .es-ctx{display:none}
+.es-split .es-chat{order:1}.es-split .es-ctx{order:2;position:relative}
+.es-ctx-x{position:absolute;top:10px;right:12px;width:28px;height:28px;border-radius:50%;border:0;background:var(--fill);color:var(--ink);font-size:18px;line-height:1;cursor:pointer;z-index:1}
+.es-chat{background:transparent;border:0;box-shadow:none}
+.es-chat .es-msgs{width:100%;max-width:780px;margin:0 auto}
+.es-box{width:calc(100% - 2*var(--s4));max-width:760px;margin:0 auto var(--s3);border-radius:24px;background:var(--surface);border:1px solid var(--hair-strong);box-shadow:var(--sh-2);flex:none}
+.es-box .es-form{margin:0;border:0;box-shadow:none;background:transparent}
+.es-box .es-adj{padding:10px 14px 0}.es-box .es-adj:empty{display:none}
+.es-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 16px 10px}
+.es-chat>.es-foot{max-width:760px;width:100%;margin:0 auto;padding:var(--s3) var(--s4)}
+.es-chat .es-quick{width:100%;max-width:760px;margin:0 auto;justify-content:center}
+.es-chat.vacio{justify-content:center}
+.es-chat.vacio .es-msgs{flex:none;overflow:visible}
+.es-chat.vacio .es-hint{max-width:520px}.es-chat.vacio .es-hint b{font-size:28px;font-family:var(--serif);letter-spacing:-.3px}
+@media (max-width:900px){
+  .es-split[data-ctx="on"]{grid-template-columns:minmax(0,1fr)}
+  .es-split[data-ctx="on"] .es-ctx{position:fixed;inset:0;z-index:60;height:auto;border-radius:0;padding:var(--s5) var(--s4)}
+  .es-head-b{margin-left:0;width:100%}
+}
+.es-ctx .es-bh{padding-right:34px}
+.es-chat>.es-foot{justify-content:center}

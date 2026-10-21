@@ -65,7 +65,7 @@ export async function render(el, { me, sub = [], alive }) {
     const M = BLOQUES.find((b) => b.id === bid);
     const key = `os.estrategia.chat.${me.email}.${slug}.${bid}`;
     const chat = chatDe(key);
-    const S = { tab: 'ctx', sel: null, laya: false, cargando: false, fuentes: [], salud: null, pareo: '', lib: null, libQ: '', libSel: new Set(), libOn: false };
+    const S = { ctxOn: (() => { try { return localStorage.getItem('os.estrategia.ctx') === '1'; } catch { return false; } })(), sel: null, laya: false, cargando: false, fuentes: [], salud: null, pareo: '', lib: null, libQ: '', libSel: new Set(), libOn: false };
     const bl = () => data.bloques.find((x) => x.id === bid);
     const puede = () => data.puede.editar && bl().estado !== 'aprobado';
     const esCeo = () => me.role === 'ceo';
@@ -75,24 +75,24 @@ export async function render(el, { me, sub = [], alive }) {
     const etapaTxt = () => (data.etapa ? `${etapaLabel(etapaDe(data.etapa.n))}${data.etapa.confirmada ? '' : ' · sin confirmar'}` : 'Sin etapa');
     const recargar = async () => { try { data = await api(`estrategia/${encodeURIComponent(slug)}`); } catch (e) { toast(e.message, true); } forgetEstrategia(); loadEstrategia({ force: true }).then(() => sync()); if (alive()) { paintCtx(); paintChat(); paintHead(); } };
 
-    // El cuerpo de la pantalla: cabecera, pestañas (solo en pantalla chica) y las dos columnas.
+    // El cuerpo de la pantalla: cabecera con el estado del bloque, el chat al centro y el contexto en un panel lateral que se abre con «Contexto».
     mount(el, html`<div class="es" id="es">
       <div class="es-head" id="es-head"></div>
-      <div class="es-tabs tabs" role="tablist" aria-label="Contexto o chat"><button role="tab" class="on" data-es-tab="ctx" aria-selected="true">Contexto</button><button role="tab" data-es-tab="chat" aria-selected="false">Chat</button></div>
-      <div class="es-split" id="es-split" data-tab="ctx"><section class="es-col es-ctx" id="es-ctx" aria-label="Contexto"></section><section class="es-col es-chat" id="es-chat" aria-label="Chat con Strategy"></section></div></div>`);
+      <div class="es-split" id="es-split" data-ctx="${S.ctxOn ? 'on' : 'off'}"><section class="es-col es-ctx" id="es-ctx" aria-label="Contexto"></section><section class="es-col es-chat" id="es-chat" aria-label="Chat con Strategy"></section></div></div>`);
     const root = $('#es', el), ctx = $('#es-ctx', el), chatEl = $('#es-chat', el);
 
     // ---------- Cabecera ----------
     function paintHead() {
       mount($('#es-head', el), html`<a class="es-back" href="#/estrategia" aria-label="Todos los clientes">${ico('arrow-left', 16)}</a><span class="sp-mono ${slug === 'inherent' ? 'priv' : ''}">${initials(data.nombre)}</span>
         <div class="es-head-t"><h1>${data.nombre}</h1><div class="es-chips">${data.nivel ? html`<span class="chip">${data.nivel.nombre}</span>` : html`<span class="chip warn">Sin ficha de oferta</span>`}
-          ${data.etapa ? html`<span class="chip ${data.etapa.confirmada ? 'dark' : ''}">${data.etapa.confirmada ? ico('check', 12) : ''} ${etapaTxt()}</span>` : html`<span class="chip off">Sin etapa</span>`}</div></div>`);
+          ${data.etapa ? html`<span class="chip ${data.etapa.confirmada ? 'dark' : ''}">${data.etapa.confirmada ? ico('check', 12) : ''} ${etapaTxt()}</span>` : html`<span class="chip off">Sin etapa</span>`}</div></div>
+        <div class="es-head-b"><span class="mut sm">${bl().nombre}</span><span class="chip es-st ${ESTADO_CLS[bl().estado]}">${estadoLabel(bl().estado)}</span>${aprobarBtn(bl())}<button type="button" class="btn ghost xs ${S.ctxOn ? 'on' : ''}" data-act="ctx" aria-expanded="${S.ctxOn ? 'true' : 'false'}" aria-controls="es-ctx">${ico('doc', 13)} Contexto</button></div>`);
     }
 
     // ---------- Izquierda: el contexto ----------
     function paintCtx() {
       const b = bl(), top = ctx.scrollTop;
-      mount(ctx, html`<header class="es-bh"><div style="min-width:0"><span class="lbl">Bloque ${b.n} de 5</span><h2>${b.nombre}</h2><p class="mut">${b.pide}</p></div>
+      mount(ctx, html`<button type="button" class="es-ctx-x" data-act="ctx-cerrar" aria-label="Cerrar contexto">×</button><header class="es-bh"><div style="min-width:0"><span class="lbl">Bloque ${b.n} de 5</span><h2>${b.nombre}</h2><p class="mut">${b.pide}</p></div>
           <div class="es-state"><span class="chip es-st ${ESTADO_CLS[b.estado]}">${estadoLabel(b.estado)}</span>${aprobarBtn(b)}</div></header>
         ${b.estado === 'aprobado' ? html`<p class="es-note">${ico('lock', 13)} Aprobado por el CEO${b.aprobado?.en ? ` el ${fd(b.aprobado.en)}` : ''}. Para cambiarlo, el CEO tiene que reabrirlo.</p>` : ''}
         ${claveCard()}${limiteCard(b)}${bid === 'diagnostico' ? etapaCard() : ''}${bid === 'roadmap' ? roadmapCard() : ''}${borradorCard(b)}${repoCards(b)}${fuentesCard(b)}`);
@@ -203,9 +203,10 @@ export async function render(el, { me, sub = [], alive }) {
     const RAPIDOS = { diagnostico: ['¿En qué etapa está y por qué?', '¿Qué dato falta para estar seguros?'], oferta: ['Arma la ecuación de valor', 'Propón la Grand Slam Offer', '¿Qué haría la oferta más difícil de rechazar?'], modelo: ['Propón atracción, upsell, downsell y continuidad', '¿Qué upsell va primero?'], leads: ['¿Dónde consigue clientes con esta oferta?', 'Core Four: ¿cuál va primero?'], roadmap: ['Arma el plan de 90 días para su etapa', '¿Qué es lo primero que hacemos esta semana?'] };
     function paintChat() {
       const f = fase(), ok = f === 'listo';
-      mount(chatEl, html`<header class="es-ch-h"><div><span class="lbl">Chat con Strategy</span><b>${M.nombre} · ${data.nombre}</b></div><span class="es-pill ${ok ? 'on' : ''}" title="${ok ? 'Tu Claude, en tu compu' : 'Falta conectar tu compu'}"><i></i>${ok ? 'En tu compu' : f === 'cargando' ? '…' : 'Sin conectar'}</span></header>
-        <div class="es-msgs" id="es-msgs" aria-live="polite"></div>
-        ${ok ? html`<div class="es-quick" id="es-quick"></div><div class="es-adj" id="es-adj"></div><form class="es-form" id="es-form">${data.puede.library ? html`<button type="button" class="es-attach" data-act="adjuntar" aria-label="Agregar contexto de la Library" title="Agregar contexto de la Library" aria-expanded="${S.libOn ? 'true' : 'false'}">${ico('plus', 18)}</button>` : ''}<textarea class="in" id="es-in" rows="1" placeholder="Escribe tu pedido…" aria-label="Mensaje para Strategy"></textarea><button class="btn es-send" type="submit" id="es-send" aria-label="Enviar">${ico('right', 16)}</button></form>` : setup(f)}`);
+      const pill = html`<span class="es-pill ${ok ? 'on' : ''}" title="${ok ? 'Tu Claude, en tu compu' : 'Falta conectar tu compu'}"><i></i>${ok ? 'En tu compu' : f === 'cargando' ? '…' : 'Sin conectar'}</span>`;
+      chatEl.classList.toggle('vacio', !chat.msgs.length);
+      mount(chatEl, html`<div class="es-msgs" id="es-msgs" aria-live="polite"></div>
+        ${ok ? html`<div class="es-box"><div class="es-adj" id="es-adj"></div><form class="es-form" id="es-form">${data.puede.library ? html`<button type="button" class="es-attach" data-act="adjuntar" aria-label="Agregar contexto de la Library" title="Agregar contexto de la Library" aria-expanded="${S.libOn ? 'true' : 'false'}">${ico('plus', 18)}</button>` : ''}<textarea class="in" id="es-in" rows="1" placeholder="Escribe tu pedido…" aria-label="Mensaje para Strategy"></textarea><button class="btn es-send" type="submit" id="es-send" aria-label="Enviar">${ico('right', 16)}</button></form><div class="es-foot"><span class="mut sm">${M.nombre}</span>${pill}</div></div><div class="es-quick" id="es-quick"></div>` : html`<div class="es-foot">${pill}</div>${setup(f)}`}`);
       if (ok) chatEl.insertAdjacentHTML('beforeend', '<div class="es-lib" id="es-lib" role="dialog" aria-label="Agregar contexto de la Library" hidden></div>');
       paintMsgs(); paintQuick(); paintAdj(); if (S.libOn && ok) paintLib(); else S.libOn = false;
       const ta = $('#es-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
@@ -258,8 +259,9 @@ export async function render(el, { me, sub = [], alive }) {
     }
     function paintMsgs() {
       const box = $('#es-msgs', chatEl); if (!box) return;
+      chatEl.classList.toggle('vacio', !chat.msgs.length);
       const abajo = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
-      mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : html`<div class="es-hint"><span class="es-hint-i">${ico('spark', 22)}</span><b>${M.nombre}</b><p>${M.pide}</p></div>`);
+      mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : html`<div class="es-hint"><span class="es-hint-i">${ico('spark', 22)}</span><b>¿Qué trabajamos de ${data.nombre} hoy?</b><p>${M.nombre} · ${M.pide}</p></div>`);
       if (abajo || chat.msgs.length <= 2) box.scrollTop = box.scrollHeight;
     }
     function msgHtml(m, i) {
@@ -338,11 +340,10 @@ export async function render(el, { me, sub = [], alive }) {
 
     // ---------- Clics ----------
     root.addEventListener('click', async (e) => {
-      const tab = e.target.closest('[data-es-tab]');
-      if (tab) { S.tab = tab.dataset.esTab; $('#es-split', el).dataset.tab = S.tab; $$('.es-tabs [data-es-tab]', el).forEach((x) => { const on = x === tab; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); }); return; }
       const t = e.target.closest('[data-act]'); if (!t || !root.contains(t)) return;
       const a = t.dataset.act;
       if (a === 'copiar') return copiar(t.dataset.t);
+      if (a === 'ctx' || a === 'ctx-cerrar') { S.ctxOn = a === 'ctx' ? !S.ctxOn : false; try { localStorage.setItem('os.estrategia.ctx', S.ctxOn ? '1' : ''); } catch {} $('#es-split', el).dataset.ctx = S.ctxOn ? 'on' : 'off'; return paintHead(); }
       if (a === 'adjuntar') return S.libOn ? cerrarLib() : abrirLib();
       if (a === 'lib-cerrar') return cerrarLib();
       if (a === 'lib-toggle') { const id = t.dataset.id; S.libSel.has(id) ? S.libSel.delete(id) : S.libSel.add(id); return paintLib(); }
@@ -363,7 +364,7 @@ export async function render(el, { me, sub = [], alive }) {
         const m = chat.msgs[+t.dataset.i]; if (!m?.t) return;
         if (bl().borrador && !(await confirmAsk('Ya hay un borrador. ¿Lo reemplazo con esta respuesta?'))) return;
         t.disabled = true;
-        try { await api(`estrategia/${encodeURIComponent(slug)}/${bid}/borrador`, { method: 'PUT', body: { texto: m.t, fuentes: (m.citas || []).filter((c) => c.ok).map(comoCita) } }); toast('Guardado como borrador'); S.tab = 'ctx'; await recargar(); const sp = $('#es-split', el); sp.dataset.tab = 'ctx'; $$('.es-tabs [data-es-tab]', el).forEach((x) => { const on = x.dataset.esTab === 'ctx'; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); }); ctx.scrollTop = 0; }
+        try { await api(`estrategia/${encodeURIComponent(slug)}/${bid}/borrador`, { method: 'PUT', body: { texto: m.t, fuentes: (m.citas || []).filter((c) => c.ok).map(comoCita) } }); toast('Guardado como borrador'); S.ctxOn = true; await recargar(); $('#es-split', el).dataset.ctx = 'on'; paintHead(); ctx.scrollTop = 0; }
         catch (err) { toast(err.message, true); t.disabled = false; }
         return;
       }
