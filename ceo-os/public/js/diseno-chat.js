@@ -3,10 +3,10 @@
 // Drive de la marca y deja la idea del planner en «Listo», para programarla y publicarla.
 // Corre con el Claude de tu compu por el puente de Laya (modo «diseno»: el repo en solo lectura + Figma con figwright).
 // Rutas: #/marcas/diseno · #/marcas/diseno/<marca>
-import { html, raw, mount, api, col, toast, ico, md, initials, confirmAsk, uploadToDrive, $, $$ } from './core.js';
+import { html, raw, mount, api, col, toast, ico, md, initials, confirmAsk, ask, uploadToDrive, $, $$ } from './core.js';
 import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe } from './laya.js';
 import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from './puente-chat.js';
-import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe } from './diseno.js';
+import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoIdea, textoRefs, carpetaDe } from './diseno.js';
 import { leerSistema } from './sistema-visual.js';
 import { estadoDe } from './element.js';
 
@@ -53,8 +53,9 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     el.onclick = null;
     mount(el, html`<p class="loading">Cargando…</p>`);
     const key = `os.diseno.chat.${me.email}.${b.slug}`;
-    const chat = (() => { try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { msgs: j.msgs, sesion: j.sesion || null, formato: j.formato || 'Carrusel', ideaId: j.ideaId || '', resultado: j.resultado || null }; } catch {} return { msgs: [], sesion: null, formato: 'Carrusel', ideaId: '', resultado: null }; })();
-    const guardar = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}) })), sesion: chat.sesion, formato: chat.formato, ideaId: chat.ideaId, resultado: chat.resultado })); } catch {} };
+    // El contexto: claves «cal:AAAA-MM» · «plan:AAAA-MM» · «idea:<id>» · «lib:<id>» · «refs». `enviados`: las que esta sesión de Claude ya leyó.
+    const chat = (() => { const base = { msgs: [], sesion: null, formato: 'Carrusel', ideaId: '', resultado: null, ctx: [], libT: {}, enviados: [] }; try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { ...base, ...j, ctx: Array.isArray(j.ctx) ? j.ctx : j.ideaId ? [`idea:${j.ideaId}`] : [], enviados: Array.isArray(j.enviados) ? j.enviados : [] }; } catch {} return base; })();
+    const guardar = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}) })), sesion: chat.sesion, formato: chat.formato, ideaId: chat.ideaId, resultado: chat.resultado, ctx: chat.ctx, libT: chat.libT, enviados: chat.enviados })); } catch {} };
     const tok = () => { try { return localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
     const setTok = (t) => { try { if (t) localStorage.setItem(`os.estrategia.token.${me.email}`, t); else localStorage.removeItem(`os.estrategia.token.${me.email}`); } catch {} };
     const [sisD, todo] = await Promise.all([api(`repo/client/${encodeURIComponent(b.slug)}/sistema`).catch(() => ({ md: '' })), col('content').list().catch(() => [])]);
@@ -63,6 +64,9 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     const ideas = todo.filter((p) => p.kind === 'post' && p.profile === b.slug && !['Publicado', 'Archivado'].includes(estadoDe(p))).sort((a, z) => String(a.date || '9').localeCompare(String(z.date || '9')));
     const S = { salud: null, pareo: '', lamina: null, guardando: false };
     const idea = () => ideas.find((p) => p.id === chat.ideaId) || null;
+    const ideasCtx = () => chat.ctx.filter((k) => k.startsWith('idea:')).map((k) => ideas.find((p) => p.id === k.slice(5))).filter(Boolean);
+    // La pieza donde se guarda lo diseñado: la única idea del contexto (si hay varias, se pregunta al guardar).
+    const fijarDestino = () => { const l = ideasCtx(); chat.ideaId = l.length === 1 ? l[0].id : ''; };
     const img = (id) => IMGS.get(`${b.slug}|${id}`) || '';
 
     mount(el, html`<div class="dz"><section class="es-chat dz-chat" id="dz-chat"></section><section class="dz-pane" id="dz-pane"></section></div>`);
@@ -100,18 +104,74 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
 
     // ---------- El chat ----------
     function pickers() {
-      const i = idea();
-      return html`<button type="button" class="es-pick" data-act="marca" aria-haspopup="listbox" title="Cambiar de marca"><i>${initials(b.name)}</i>${b.name} ▾</button>
+      return html`<button type="button" class="es-pick dz-ctxb ${chat.ctx.length ? '' : 'need'}" data-act="ctx" aria-haspopup="dialog" aria-expanded="false">${ico('plus', 12)} Contexto</button>
+        <button type="button" class="es-pick" data-act="marca" aria-haspopup="listbox" title="Cambiar de marca"><i>${initials(b.name)}</i>${b.name} ▾</button>
         <a class="es-pick" href="#/marcas/${b.slug}/design" title="Abrir el Design system">${ico('layers', 12)} Design system${sisD.kit ? ' · Kit de redes' : ''}</a>
         <button type="button" class="es-pick" data-act="formato" aria-haspopup="listbox">${chat.formato} ▾</button>
-        <button type="button" class="es-pick ${i ? 'on' : ''}" data-act="idea" aria-haspopup="listbox" title="${i ? i.title : 'Elegir una idea del planner'}">${ico('bulb', 12)} ${i ? i.title.slice(0, 28) + (i.title.length > 28 ? '…' : '') : 'Desde una idea'} ▾</button>
         ${S.lamina ? html`<span class="es-pick on">${S.lamina.nombre}<button type="button" class="dz-x" data-act="sin-lamina" aria-label="Quitar la lámina">×</button></span>` : ''}`;
     }
+    // ---------- + Contexto ----------
+    const libMax = 6;
+    let libData = null; // la lista de la Library (se pide al abrirla)
+    const nombreCtx = (k) => etiquetaCtx(k, { marca: b.name, ideas, libT: chat.libT });
+    function chipsHtml() { return chat.ctx.length ? chat.ctx.map((k) => html`<span class="dz-chip" title="${chat.enviados.includes(k) ? 'Claude ya lo leyó en esta conversación' : 'Claude lo lee en tu próximo mensaje'}">${nombreCtx(k)}<button type="button" data-act="ctx-x" data-k="${k}" aria-label="Quitar ${nombreCtx(k)}">×</button></span>`) : ''; }
+    function repintarCaja() { const c = $('#dz-chips', chatEl); if (c) mount(c, chipsHtml()); const pk = $('.dz-picks', chatEl); if (pk) mount(pk, pickers()); }
+    const toggleCtx = (k) => { chat.ctx = chat.ctx.includes(k) ? chat.ctx.filter((x) => x !== k) : [...chat.ctx, k]; fijarDestino(); guardar(); repintarCaja(); paintPane(); };
+    function panelCtx(anchor, vista = 'inicio', q = '') {
+      document.querySelector('.dz-ctxp')?.remove();
+      const box = anchor.closest('.es-box'); if (!box) return;
+      const m = document.createElement('div'); m.className = 'dz-ctxp'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', 'Agregar contexto');
+      const fila = (k, ic, t, sub, extra = '') => html`<button type="button" class="dz-o ${chat.ctx.includes(k) ? 'on' : ''}" data-ck="${k}" ${raw(extra)}><span class="dz-oi">${ico(ic, 14)}</span><span class="dz-ot">${t}<small>${sub}</small></span><span class="dz-ck">${chat.ctx.includes(k) ? ico('check', 12) : ''}</span></button>`;
+      const ir = (v, t, sub, n) => html`<button type="button" class="dz-o" data-vista="${v}"><span class="dz-oi">${ico(v === 'ideas' ? 'bulb' : 'doc', 14)}</span><span class="dz-ot">${t}<small>${sub}</small></span><span class="dz-n">${n ? html`${n} ${ico('right', 12)}` : ico('right', 12)}</span></button>`;
+      const pinta = () => {
+        const deMes = (mes) => ideas.filter((p) => String(p.date || '').slice(0, 7) === mes).length;
+        const nIdeas = chat.ctx.filter((k) => k.startsWith('idea:')).length, nLib = chat.ctx.filter((k) => k.startsWith('lib:')).length;
+        const refs = todo.filter((x) => x.kind === 'research' && x.profile === b.slug);
+        if (vista === 'ideas') { const l = ideas.filter((p) => !q || String(p.title || '').toLowerCase().includes(q.toLowerCase())); mount(m, html`<header class="dz-ph"><button type="button" class="dz-back" data-vista="inicio" aria-label="Volver">${ico('arrow-left', 14)}</button><b>Ideas del calendario</b><span class="mut sm">Elige una o varias</span></header><input class="in" data-q placeholder="Buscar idea…" value="${q}">
+          <div class="dz-ol">${l.length ? l.map((p) => fila(`idea:${p.id}`, 'bulb', p.title || 'Sin título', [p.format, p.date ? p.date.slice(8, 10) + '/' + p.date.slice(5, 7) : 'sin fecha', estadoDe(p)].filter(Boolean).join(' · '))) : html`<p class="mut sm" style="padding:8px 10px;margin:0">No hay ideas abiertas de ${b.name}.</p>`}</div>`); }
+        else if (vista === 'lib') { const docs = (libData?.docs || []).filter((d) => !q || `${d.titulo} ${d.carpeta}`.toLowerCase().includes(q.toLowerCase())); mount(m, html`<header class="dz-ph"><button type="button" class="dz-back" data-vista="inicio" aria-label="Volver">${ico('arrow-left', 14)}</button><b>Library</b><span class="mut sm">${nLib} de ${libMax}</span></header><input class="in" data-q placeholder="Buscar documento…" value="${q}">
+          <div class="dz-ol">${libData === null ? html`<p class="mut sm" style="padding:8px 10px;margin:0">Cargando la Library…</p>` : libData.error ? html`<p class="es-err" style="padding:8px 10px;margin:0">${libData.error}</p>` : docs.length ? docs.slice(0, 60).map((d) => fila(`lib:${d.id}`, 'doc', d.titulo, [d.tipo, d.carpeta].filter(Boolean).join(' · '), !chat.ctx.includes(`lib:${d.id}`) && nLib >= libMax ? 'disabled' : '')) : html`<p class="mut sm" style="padding:8px 10px;margin:0">Nada coincide.</p>`}</div>`); }
+        else mount(m, html`<header class="dz-ph"><b>Agregar contexto</b><span class="mut sm">Lo que Claude lee antes de diseñar</span></header><div class="dz-ol">
+          ${MESES_CTX().map((mes) => fila(`cal:${mes}`, 'cal', nombreCtx(`cal:${mes}`), `${deMes(mes)} pieza${deMes(mes) === 1 ? '' : 's'} con fecha · lo que falta diseñar, con su slot`))}
+          ${fila(`plan:${MESES_CTX()[0]}`, 'target', nombreCtx(`plan:${MESES_CTX()[0]}`), 'El mensaje, los pilares y la función de cada canal (del repo)')}
+          ${ir('ideas', 'Ideas del calendario', 'Una o varias, con su guion', nIdeas)}
+          ${ir('lib', 'Un documento de la Library', 'SOPs, entrevistas, notas', nLib)}
+          ${fila('refs', 'play', 'Referentes de Investigación', refs.length ? `${refs.filter((x) => x.replicar).length || Math.min(8, refs.length)} referentes ${refs.some((x) => x.replicar) ? 'marcados «Usar como formato»' : 'con más vistas'}` : 'Todavía no hay nada en Investigación', refs.length ? '' : 'disabled')}</div>`);
+        const inp = m.querySelector('[data-q]'); if (inp) { inp.oninput = () => { q = inp.value; pinta(); const n = m.querySelector('[data-q]'); n.focus(); n.setSelectionRange(q.length, q.length); }; }
+      };
+      pinta(); box.append(m); anchor.setAttribute('aria-expanded', 'true');
+      m.addEventListener('click', async (e) => {
+        const v = e.target.closest('[data-vista]'); if (v) { vista = v.dataset.vista; q = ''; if (vista === 'lib' && libData === null) { pinta(); try { libData = await api('estrategia/library'); } catch (er) { libData = { docs: [], error: er.status === 403 ? 'Tu perfil no ve la Library.' : er.message }; } } pinta(); m.querySelector('[data-q]')?.focus(); return; }
+        const o = e.target.closest('[data-ck]'); if (!o || o.disabled) return;
+        const k = o.dataset.ck; if (k.startsWith('lib:')) { const d = libData?.docs.find((x) => `lib:${x.id}` === k); if (d) chat.libT[d.id] = d.titulo; }
+        toggleCtx(k); pinta();
+      });
+      const cerrar = (e) => { if (!m.contains(e.target) && !e.target.closest('[data-act="ctx"]')) { m.remove(); anchor.setAttribute('aria-expanded', 'false'); document.removeEventListener('pointerdown', cerrar); } };
+      setTimeout(() => document.addEventListener('pointerdown', cerrar));
+    }
+    // El texto de lo que esta sesión de Claude todavía no leyó.
+    async function textoContexto(nuevas) {
+      const partes = [], root = carpetaDe(b.slug);
+      let guiones = null;
+      const guionDe = async (id) => { if (!id) return ''; try { guiones ||= (await api(`guiones?profile=${encodeURIComponent(b.slug)}`)).guiones; const g = guiones.find((x) => x.id === id); return g ? (g.tramos || []).map((t) => [t.nombre, ...Object.entries(t).filter(([k2, v]) => k2 !== 'nombre' && typeof v === 'string' && v.trim()).map(([, v]) => v)].join(': ')).join('\n') : ''; } catch { return ''; } };
+      const libIds = nuevas.filter((k) => k.startsWith('lib:')).map((k) => k.slice(4));
+      let libDocs = [];
+      if (libIds.length) { try { libDocs = (await api('estrategia/library/textos', { method: 'POST', body: { ids: libIds } })).docs; } catch (e) { toast(`No pude leer la Library: ${e.message}`, true); } }
+      for (const k of nuevas) {
+        if (k.startsWith('cal:')) partes.push(textoCalendario({ marca: b.name, mes: k.slice(4), piezas: todo.filter((x) => x.kind === 'post' && x.profile === b.slug), estadoDe }));
+        else if (k.startsWith('plan:')) partes.push(textoPlan({ root, mes: k.slice(5) }));
+        else if (k.startsWith('idea:')) { const p = ideas.find((x) => x.id === k.slice(5)); if (p) partes.push(textoIdea(p, await guionDe(p.guion))); }
+        else if (k.startsWith('lib:')) { const d = libDocs.find((x) => x.id === k.slice(4)); if (d) partes.push(`DOCUMENTO DE LA LIBRARY «${d.titulo}» (${d.tipo}${d.carpeta ? ' · ' + d.carpeta : ''}):\n${d.contenido}`); }
+        else if (k === 'refs') partes.push(textoRefs(todo.filter((x) => x.kind === 'research' && x.profile === b.slug)));
+      }
+      return partes.filter(Boolean).join('\n\n');
+    }
+
     function paintChat() {
       const f = fase(), ok = f === 'listo';
       const pill = html`<span class="es-pill ${ok ? 'on' : ''}"><i></i>${ok ? 'Figma en tu compu' : f === 'cargando' ? '…' : f === 'sin-sistema' ? 'Sin sistema visual' : 'Sin conectar'}</span>`;
       mount(chatEl, html`<div class="es-msgs" id="dz-msgs" aria-live="polite"></div>
-        ${ok ? html`<div class="es-box"><form class="es-form" id="dz-form"><textarea class="in" id="dz-in" rows="1" placeholder="${chat.resultado ? 'Pide un cambio, o selecciona una lámina y dile qué ajustar…' : `Qué diseñamos de ${b.name}…`}" aria-label="Pedido para Diseño"></textarea><button class="btn es-send" type="submit" aria-label="Enviar">${ico('right', 16)}</button></form>
+        ${ok ? html`<div class="es-box"><div class="dz-chips" id="dz-chips">${chipsHtml()}</div><form class="es-form" id="dz-form"><textarea class="in" id="dz-in" rows="1" placeholder="${chat.resultado ? 'Pide un cambio, o selecciona una lámina y dile qué ajustar…' : `Qué diseñamos de ${b.name}…`}" aria-label="Pedido para Diseño"></textarea><button class="btn es-send" type="submit" aria-label="Enviar">${ico('right', 16)}</button></form>
           <div class="es-foot"><div class="dz-picks">${pickers()}</div>${pill}</div></div>` : html`${setup(f)}<div class="es-foot">${pill}</div>`}`);
       paintMsgs();
       const ta = $('#dz-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
@@ -145,13 +205,11 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       chat.msgs.push({ r: 'u', t: S.lamina ? `${S.lamina.nombre} · ${texto}` : texto }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] });
       const msg = chat.msgs[chat.msgs.length - 1], sueltas = [];
       paintMsgs();
-      let ideaDatos = null;
-      const i = idea();
-      if (i && primera) {
-        ideaDatos = { title: i.title, format: i.format, date: i.date, hook: i.hook, caption: i.caption };
-        if (i.guion) { try { const g = (await api(`guiones?profile=${encodeURIComponent(b.slug)}`)).guiones.find((x) => x.id === i.guion); if (g) ideaDatos.guion = (g.tramos || []).map((t) => [t.nombre, ...Object.entries(t).filter(([k, v]) => k !== 'nombre' && typeof v === 'string' && v.trim()).map(([, v]) => v)].join(': ')).join('\n'); } catch { /* sin guion */ } }
-      }
-      const prompt = promptDiseno({ marca: b.name, slug: b.slug, formato: chat.formato, idea: ideaDatos, lamina: S.lamina, pedido: texto, primera });
+      // El contexto: completo la primera vez; después, solo lo que se agregó (la sesión de Claude ya leyó lo demás).
+      if (primera) chat.enviados = [];
+      const nuevas = chat.ctx.filter((k) => !chat.enviados.includes(k));
+      const contexto = nuevas.length ? await textoContexto(nuevas) : '';
+      const prompt = promptDiseno({ marca: b.name, slug: b.slug, formato: chat.formato, contexto, lamina: S.lamina, pedido: texto, primera });
       let raw0 = '', fallo = null;
       try {
         const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, modo: 'diseno', ...(chat.sesion ? { resume: chat.sesion } : {}) }) });
@@ -171,7 +229,8 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
             else if (ev === 'error') fallo = d;
           }
         }
-        if (fallo) { if (!primera && /session|conversation|resume/i.test(fallo.error || '')) chat.sesion = null; msg.err = sesionVencida(fallo.error) ? PASOS_LOGIN : fallo.error || 'Claude no pudo responder'; }
+        if (!fallo) chat.enviados = [...new Set([...chat.enviados, ...nuevas])];
+        if (fallo) { if (!primera && /session|conversation|resume/i.test(fallo.error || '')) { chat.sesion = null; chat.enviados = []; } msg.err = sesionVencida(fallo.error) ? PASOS_LOGIN : fallo.error || 'Claude no pudo responder'; }
       } catch (e) {
         if (e.name === 'AbortError') msg.err = 'Interrumpido.';
         else if (e.status === 401) { setTok(''); S.pareo = 'Ese token ya no sirve. Pega el actual.'; msg.err = 'El puente no reconoció tu token.'; }
@@ -210,13 +269,17 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
           <span class="dz-im">${img(l.id) ? html`<img alt="${l.nombre}" src="${img(l.id)}">` : html`<span class="mut sm">Sin vista previa</span>`}</span><span class="dz-cap"><b>${l.nombre}</b></span></button>`)}</div>
         ${faltan ? html`<p class="mut sm" style="margin:0">${faltan === r.laminas.length ? 'Las vistas previas no se guardan al recargar.' : `Faltan ${faltan} vistas previas.`} <button type="button" class="linkish" data-act="reexportar">Pedirlas otra vez</button></p>` : ''}
         <footer class="dz-save">${r.guardado ? html`<span>Guardado ${raw('&middot;')} queda <b>Listo</b> en el Calendario de ${b.name}.</span><span class="sp"></span><a class="btn xs" href="#/marcas/${b.slug}/calendario">Ir al Calendario</a>`
-          : html`<span>${malas.length ? `Antes de guardar, revisa: ${malas.map((x) => x.texto).join(' · ')}. ` : ''}Se guarda en ${idea() ? `la idea «${idea().title}»` : 'una pieza nueva del planner'}: queda <b>Lista</b> para programarla y publicarla.</span><span class="sp"></span><button class="btn" data-act="guardar" ${S.guardando ? raw('disabled') : ''}>${S.guardando ? 'Guardando…' : 'Guardar en contenido'}</button>`}</footer>`);
+          : html`<span>${malas.length ? `Antes de guardar, revisa: ${malas.map((x) => x.texto).join(' · ')}. ` : ''}Se guarda en ${idea() ? `la idea «${idea().title}»` : ideasCtx().length > 1 ? 'la idea que elijas del contexto' : 'una pieza nueva del calendario'}: queda <b>Lista</b> para programarla y publicarla.</span><span class="sp"></span><button class="btn" data-act="guardar" ${S.guardando ? raw('disabled') : ''}>${S.guardando ? 'Guardando…' : 'Guardar en contenido'}</button>`}</footer>`);
     }
 
     async function guardarEnContenido() {
       const r = chat.resultado; if (!r || S.guardando) return;
       let post = idea();
-      if (!post && !(await confirmAsk(`No elegiste una idea del planner. ¿Creo una pieza nueva «${r.titulo || 'Sin título'}» en ${b.name}?`))) return;
+      const varias = ideasCtx();
+      if (!post && varias.length > 1) {
+        const v = await ask('¿En qué idea del calendario se guarda?', [{ k: 'id', l: 'Idea', t: 'select', opts: [...varias.map((p) => [p.id, `${p.title}${p.date ? ` · ${p.date.slice(8, 10)}/${p.date.slice(5, 7)}` : ''}`]), ['', 'Una pieza nueva']] }], 'Guardar');
+        if (!v) return; post = varias.find((p) => p.id === v.id) || null;
+      } else if (!post && !(await confirmAsk(`No hay una idea del calendario en el contexto. ¿Creo una pieza nueva «${r.titulo || 'Sin título'}» en ${b.name}?`))) return;
       S.guardando = true; paintPane();
       try {
         if (!post) post = await col('content').create({ kind: 'post', profile: b.slug, title: r.titulo || 'Sin título', format: ['Carrusel', 'Estático', 'Story'].includes(r.formato) ? r.formato : chat.formato === 'Plantilla' ? 'Estático' : chat.formato, status: 'Idea' });
@@ -235,7 +298,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         const cur = await col('content').get(post.id).catch(() => post);
         const sv = await col('content').save(piezaLista(cur, r, subidas));
         if (!ideas.some((x) => x.id === sv.id)) ideas.push(sv);
-        chat.ideaId = sv.id; chat.resultado = { ...r, guardado: { id: sv.id, at: new Date().toISOString() } }; guardar();
+        chat.ideaId = sv.id; if (!chat.ctx.includes(`idea:${sv.id}`)) chat.ctx = [...chat.ctx, `idea:${sv.id}`]; chat.resultado = { ...r, guardado: { id: sv.id, at: new Date().toISOString() } }; guardar();
         toast(me.google?.drive ? 'Guardado: quedó Listo en el Calendario' : 'Guardado con el link de Figma. Conecta tu Google para subir también las láminas a Drive.');
       } catch (e) { toast(e.message, true); }
       S.guardando = false; if (alive()) paintPane();
@@ -251,9 +314,10 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (a === 'copiar') { try { await navigator.clipboard.writeText(t.dataset.t); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo', true); } return; }
       if (a === 'marca') return menuMarcas(t, b.slug);
       if (a === 'formato') return menuDz(t, FORMATOS.map(([f, d]) => ({ label: f, sub: d, on: chat.formato === f, pick: () => { chat.formato = f; guardar(); mount($('.dz-picks', chatEl), pickers()); } })));
-      if (a === 'idea') return menuDz(t, [{ label: 'Sin idea: diseño libre', on: !chat.ideaId, pick: () => { chat.ideaId = ''; guardar(); mount($('.dz-picks', chatEl), pickers()); paintPane(); } }, ...ideas.map((p) => ({ label: p.title || 'Sin título', sub: [p.format, p.date ? p.date.slice(5).split('-').reverse().join('/') : '', estadoDe(p)].filter(Boolean).join(' · '), on: p.id === chat.ideaId, pick: () => { chat.ideaId = p.id; if (['Carrusel', 'Estático', 'Story'].includes(p.format)) chat.formato = p.format; guardar(); mount($('.dz-picks', chatEl), pickers()); paintPane(); } }))], { buscar: 'Buscar idea del planner…' });
+      if (a === 'ctx') return document.querySelector('.dz-ctxp') ? (document.querySelector('.dz-ctxp').remove(), t.setAttribute('aria-expanded', 'false')) : panelCtx(t);
+      if (a === 'ctx-x') return toggleCtx(t.dataset.k);
       if (a === 'sin-lamina') { S.lamina = null; mount($('.dz-picks', chatEl), pickers()); paintPane(); return; }
-      if (a === 'lamina') { const l = chat.resultado?.laminas.find((x) => x.id === t.dataset.id); S.lamina = S.lamina?.id === l?.id ? null : l; paintPane(); const pk = $('.dz-picks', chatEl); if (pk) mount(pk, pickers()); $('#dz-in', chatEl)?.focus(); return; }
+      if (a === 'lamina') { const l = chat.resultado?.laminas.find((x) => x.id === t.dataset.id); S.lamina = S.lamina?.id === l?.id ? null : l; paintPane(); repintarCaja(); $('#dz-in', chatEl)?.focus(); return; }
       if (a === 'opcion') { t.closest('.es-q')?.classList.add('hecha'); return enviar(t.dataset.t); }
       if (a === 'sug') { const ta = $('#dz-in', chatEl); if (ta) { ta.value = t.dataset.t; ta.focus(); } return; }
       if (a === 'detener') { try { enVuelo?.abort(); } catch {} return; }
