@@ -9,6 +9,7 @@ import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from './
 import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoIdea, textoRefs, carpetaDe } from './diseno.js';
 import { leerSistema } from './sistema-visual.js';
 import { estadoDe } from './element.js';
+import { divisor } from './divisor.js';
 
 const IMGS = new Map(); // `${marca}|${nodo}` → data URL (solo en memoria: pesan)
 let enVuelo = null;
@@ -340,6 +341,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     });
     root.addEventListener('keydown', (e) => { if (e.target.id === 'dz-in' && e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#dz-form', root)?.requestSubmit(); } });
 
+    divisor(root, chatEl, { key: 'diseno' });
     paintChat(); paintPane(); salud().then(() => { if (alive()) paintChat(); });
   }
 }

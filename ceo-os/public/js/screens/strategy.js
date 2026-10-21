@@ -11,6 +11,7 @@ import { loadEstrategia, forgetEstrategia } from '../stratlist.js';
 import { panelViva } from '../estrategia-viva-ui.js';
 import { instrucciones, sinBloques, leerBloques, PASOS } from '../estrategia-viva.js';
 import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from '../puente-chat.js';
+import { divisor } from '../divisor.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
 const TONE = ['', 't1', 't2'];
@@ -385,7 +386,7 @@ export async function render(el, { me, sub = [], alive }) {
       const t = e.target.closest('[data-act]'); if (!t || !root.contains(t)) return;
       const a = t.dataset.act;
       if (a === 'copiar') return copiar(t.dataset.t);
-      if (a === 'panel') { S.panel = !S.panel; try { localStorage.setItem('os.estrategia.panel', S.panel ? 'on' : 'off'); } catch {} $('#es-split', el).dataset.panel = S.panel ? 'on' : 'off'; $$('[data-act="panel"].es-pick', el).forEach((x) => { x.hidden = S.panel; }); return paintHead(); }
+      if (a === 'panel') { S.panel = !S.panel; try { localStorage.setItem('os.estrategia.panel', S.panel ? 'on' : 'off'); } catch {} $('#es-split', el).dataset.panel = S.panel ? 'on' : 'off'; requestAnimationFrame(() => div?.ubicar()); $$('[data-act="panel"].es-pick', el).forEach((x) => { x.hidden = S.panel; }); return paintHead(); }
       if (a === 'cliente') return menuClientes(t, slug);
       if (a === 'hz') return menu(t, data.bloques.map((x) => ({ href: `#/estrategia/${slug}/${x.id}`, on: x.id === bid, dot: x.estado === 'aprobado' ? 'ok' : x.estado === 'trabajo' ? 'w' : '', label: `${x.n} · ${x.nombre}`, sub: estadoLabel(x.estado) })));
       if (a === 'opcion') { t.closest('.es-q')?.classList.add('hecha'); return enviar(t.dataset.t); }
@@ -461,6 +462,7 @@ export async function render(el, { me, sub = [], alive }) {
     }
 
     // Todo está declarado: ahora sí se pinta.
+    const div = divisor($('#es-split', el), chatEl, { key: 'estrategia', min: 340 });
     paintHead(); paintCtx(); paintViva(); paintChat(); salud().then(() => { if (alive()) paintChat(); });
   }
 }

@@ -14,7 +14,8 @@
     "test:viva": "node scripts/test-viva.mjs",
     "test:ventas": "node scripts/test-ventas.mjs",
     "test:design": "node scripts/test-design.mjs",
-    "test:diseno": "node scripts/test-diseno.mjs"
+    "test:diseno": "node scripts/test-diseno.mjs",
+    "test:plan": "node scripts/test-plan.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0"
