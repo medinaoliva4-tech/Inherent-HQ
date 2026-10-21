@@ -77,7 +77,7 @@ precio no sale del ahorro de IA — saldría de bajarle el pago a la gente, y es
 | **Costos bajos** | Costo por rubro y por rol, acotado por la ficha. Ningún rubro se pasa de su monto |
 | **Valor enorme** | Un alcance claro, con volumen real sobre el mismo material |
 | **Precio justo** | Dentro del rango que el mercado ya acepta para ese alcance |
-| **Márgenes buenos** | El margen objetivo se fija al cotizar y no cambia con el número de clientes |
+| **Márgenes buenos** | **80% de margen en cada producto**, sobre el costo real de los rubros de la ficha. No cambia con el número de clientes |
 
 ### ⚡ Lo que solo se puede hacer con agentes
 
@@ -127,8 +127,12 @@ y se facturan al cliente.
 
 ### El margen
 
-**El margen objetivo se fija al cotizar, sobre el costo real de los rubros de la ficha.** No hay
-un margen por nivel escrito en el manual: cada propuesta lo calcula con sus montos reales.
+**La meta es 80% de margen en cada producto, sobre el costo real de los rubros de la ficha.** Cada
+propuesta lo calcula con sus montos reales; si no llega, se cambia la mezcla o se cotiza extra.
+
+**La meta de la empresa es una utilidad sana de alrededor de 40%.** El ingreso real *(lo que entra
+menos lo que es de terceros, como la pauta del cliente)* se reparte en utilidad, impuestos y operación.
+El CEO y el COO cobran de la utilidad.
 
 **El margen no cambia con el número de clientes.** Con 1, 5 o 20 clientes, la misma propuesta
 deja el mismo margen. Lo que crece con cada cliente es la utilidad absoluta, no el porcentaje.
