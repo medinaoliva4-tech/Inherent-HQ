@@ -3,6 +3,7 @@
 // Referencias: zeroheight y Frontify (el portal de marca: cada valor a la vista, copiable y con su regla).
 
 const SIN_EMOJI = /[\p{Extended_Pictographic}\u{FE0F}\u{200D}]/gu;
+export const sinEmoji = (s) => String(s ?? '').replace(SIN_EMOJI, '');
 export const limpio = (s) => String(s ?? '').replace(SIN_EMOJI, '').replace(/\s{2,}/g, ' ').trim();
 // Texto plano (sin markdown) para comparar y para los valores.
 export const plano = (s) => limpio(s).replace(/\*\*?|`/g, '').replace(/\s*\(([^)]*)\)\s*/g, ' ($1) ').replace(/\s{2,}/g, ' ').trim();
@@ -141,3 +142,18 @@ export function tokensCss(sis) {
   return L.join('\n');
 }
 
+
+// El primer link de Figma de un texto (el kit de redes lo trae en su tabla).
+export const figmaDe = (txt) => (/https:\/\/(?:www\.)?figma\.com\/[^\s)>\]]+/.exec(String(txt || '')) || [])[0] || '';
+// El grupo de un archivo de la carpeta de assets, por su nombre o su tipo.
+export function tipoAsset(f) {
+  const n = String(f.name || '').toLowerCase(), m = String(f.mime || '');
+  if (/folder/.test(m)) return 'Carpetas';
+  if (/[ií]cono|icon/.test(n)) return 'Íconos';
+  if (/textur|pattern|patr[oó]n|trama/.test(n)) return 'Texturas';
+  if (/logo/.test(n)) return 'Logos';
+  if (/font|fuente|\.(ttf|otf|woff2?)$/.test(n)) return 'Fuentes';
+  if (/^image\//.test(m)) return 'Fotos e imágenes';
+  if (/^video\//.test(m)) return 'Video';
+  return 'Otros';
+}

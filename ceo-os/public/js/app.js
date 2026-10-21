@@ -25,6 +25,7 @@ const P = {
   inherent: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',
   marcas: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
   estrategia: 'M12 3l2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4z',
+  diseno: 'M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10zM13.5 7.5l3 3M15 20h5',
   portal: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6',
 };
 const svg = (d) => raw(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`);
@@ -113,7 +114,7 @@ const sectionOf = (key) => (key === 'portal' ? 'proyectos' : ORG.map(([g]) => g)
 setViewSection(() => {
   if (!me) return '';
   const cur = resolve(hashNow());
-  if (cur.key === 'marcas') return brandsNow().find((b) => b.slug === cur.rest[0])?.name || 'Marcas';
+  if (cur.key === 'marcas') return cur.rest[0] === 'diseno' ? 'Diseño' : brandsNow().find((b) => b.slug === cur.rest[0])?.name || 'Marcas';
   if (cur.key === 'estrategia') return estrategiaNow().find((c) => c.slug === cur.rest[0])?.nombre || 'Estrategia';
   const path = [cur.key, ...cur.rest].join('/');
   const tab = (TABS[sectionOf(cur.key)] || []).filter(([r]) => path === r || path.startsWith(r + '/')).sort((a, z) => z[0].length - a[0].length)[0];
@@ -187,7 +188,8 @@ const navItems = () => {
   if (me.role === 'client') return [['portal', 'Mi portal', svg(P.portal)]];
   // Estrategia es un solo chat: el cliente se elige en la caja del chat, no en la barra.
   if (space === 'estrategia') return [['estrategia', 'Estrategia', svg(P.estrategia)]];
-  if (space === 'marcas') return [['marcas', 'Marcas', svg(P.marcas)], ...brandsNow().map((b, i) => [`marcas/${b.slug}`, b.personal ? 'Mi marca' : b.name, html`<span class="nav-mono ${b.personal ? 'priv' : ['', 't1', 't2'][i % 3]}">${b.personal ? ico('lock', 11) : initials(b.name)}</span>`])];
+  // Marcas: la página de las marcas (cada perfil se abre desde ahí) y el chat de Diseño. Las marcas no van en la barra.
+  if (space === 'marcas') return [['marcas', 'Marcas', svg(P.marcas)], ...(brandAccess(me).contentFull ? [['marcas/diseno', 'Diseño', svg(P.diseno)]] : [])];
   return ORG.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l, svg(P[g])]);
 };
 const navHtml = () => html`${navItems().map(([k, l, i]) => html`<button data-go="${k}" title="${l}">${i}<span>${l}</span></button>`)}`;
@@ -197,7 +199,7 @@ const showSwitch = () => me.role !== 'client' && spacesFor().length >= 2;
 function navKey(cur) {
   if (!cur) return null;
   if (cur.key === 'portal' && me.role === 'client') return 'portal';
-  if (cur.key === 'marcas') return cur.rest[0] ? `marcas/${cur.rest[0]}` : 'marcas';
+  if (cur.key === 'marcas') return cur.rest[0] === 'diseno' ? 'marcas/diseno' : 'marcas';
   if (cur.key === 'estrategia') return cur.rest[0] ? `estrategia/${cur.rest[0]}` : 'estrategia';
   return sectionOf(cur.key);
 }
@@ -281,7 +283,7 @@ function jumpItems() {
   const out = [];
   if (hasOrg()) for (const [g, l] of ORG) for (const [r, tl, n] of TABS[g]) if (needOk(n)) out.push({ title: tl, sub: tl === l ? 'Organization' : `Organization · ${l}`, route: '#/org/' + r, icon: svg(P[g]) });
   if (hasEstrategia()) { out.push({ title: 'Estrategia', sub: 'Todos los clientes', route: '#/estrategia', icon: svg(P.estrategia) }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Estrategia', route: `#/estrategia/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
-  if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg(P.marcas) }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
+  if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg(P.marcas) }); if (brandAccess(me).contentFull) out.push({ title: 'Diseño', sub: 'Marcas · chat de Diseño', route: '#/marcas/diseno', icon: svg(P.diseno) }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
   return out;
 }
 const search = () => { if (me && me.role !== 'client') openSearch({ jump: jumpItems }); };

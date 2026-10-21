@@ -3964,3 +3964,33 @@ span.ev-sup{cursor:default}
 .dsy-no{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}.dsy-no li{border:1px solid #e9c9bd;background:#fbefea;color:#8d3b26;border-radius:999px;padding:3px 11px;font-size:12.5px}
 .dsy-vacio{max-width:640px}
 @media (max-width:900px){.dsy{grid-template-columns:1fr}.dsy-idx{display:none}.dsy-tr{grid-template-columns:1fr}.dsy-tm{text-align:left}}
+.dsy-as{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.dsy-a{display:flex;flex-direction:column;gap:5px;color:var(--ink);text-decoration:none;min-width:0}.dsy-a small{font-size:11.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dsy-ai{aspect-ratio:1;border:1px solid var(--hair);border-radius:12px;background:#fff;display:grid;place-items:center;overflow:hidden;color:var(--mut)}.dsy-ai img{width:100%;height:100%;object-fit:cover}
+.dsy-a:hover .dsy-ai{border-color:var(--hair-strong)}
+.dsy-kit .md h2{font-size:15px;margin:14px 0 6px}.dsy-kit .md{font-size:13px}.dsy-kit .md hr{display:none}
+
+/* ---------- Marcas › Diseño: el chat de Diseño (dz-*) ---------- */
+.dz-start .es-box{text-align:left}
+.dz-sug{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.dz-sug>*{border:1px solid var(--hair);border-radius:999px;padding:6px 13px;font:inherit;font-size:13px;background:var(--surface);color:var(--ink)}
+.dz-sug button{cursor:pointer}.dz-sug button:hover{background:var(--fill)}
+.dz{display:grid;grid-template-columns:minmax(340px,430px) minmax(0,1fr);gap:var(--s4);height:calc(100dvh - 150px);min-height:560px}
+.dz-chat{min-height:0}.dz-chat .es-msgs{max-width:none}.dz-chat .es-box{width:calc(100% - 8px);max-width:none}
+.dz-picks{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.dz-picks .es-pick.on{border-color:var(--ink)}
+.dz-x{border:0;background:none;padding:0 0 0 4px;font-size:14px;line-height:1;cursor:pointer;color:var(--mut)}
+.dz-steps{display:flex;flex-direction:column;gap:3px;margin:0 0 8px;font-size:12.5px;color:var(--mut)}.dz-steps span{display:flex;gap:7px;align-items:center}.dz-steps .now{color:var(--ink)}
+.dz-pane{background:var(--surface);border:1px solid var(--hair);border-radius:22px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;min-height:0}
+.dz-empty{margin:auto;max-width:360px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}.dz-empty b{font-size:17px;font-weight:500}.dz-empty p{margin:0;font-size:14px}
+.dz-pal{display:flex;margin:6px 0}.dz-pal span{width:28px;height:28px;border:2px solid var(--surface);border-radius:50%;margin-left:-6px;box-shadow:0 0 0 1px var(--hair)}
+.dz-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.dz-h h2{margin:0;font:600 19px/1.2 var(--sans, inherit)}.dz-h .sp{flex:1}
+.dz-rev{display:flex;gap:6px;flex-wrap:wrap}.dz-rev span{font-size:12px;border-radius:999px;padding:2px 10px;background:#e7f1ea;color:#2f7a4d}.dz-rev span.am{background:#f6ecd9;color:#8a5a12}
+.dz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}.dz-grid.st{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.dz-fr{display:flex;flex-direction:column;gap:6px;border:0;background:none;padding:0;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
+.dz-im{aspect-ratio:4/5;background:var(--fill);display:grid;place-items:center;overflow:hidden;border-radius:4px}.dz-grid.st .dz-im{aspect-ratio:9/16}
+.dz-im img{width:100%;height:100%;object-fit:contain;display:block}
+.dz-fr.sel .dz-im{outline:2px solid #C4702A;outline-offset:3px}.dz-fr:hover .dz-im{outline:1px solid var(--hair-strong);outline-offset:3px}
+.dz-cap{font-size:12.5px;color:var(--mut)}.dz-cap b{color:var(--ink);font-weight:600}
+.dz-save{display:flex;align-items:center;gap:12px;border-top:1px solid var(--hair);padding-top:14px;font-size:13px;color:var(--mut);margin-top:auto;flex-wrap:wrap}.dz-save b{color:var(--ink)}.dz-save .sp{flex:1}
+@media (max-width:900px){.dz{grid-template-columns:1fr;height:auto}.dz-chat{min-height:70dvh}}
+a.es-pick{text-decoration:none}
