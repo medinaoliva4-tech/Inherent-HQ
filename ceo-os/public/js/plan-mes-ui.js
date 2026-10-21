@@ -8,6 +8,7 @@ import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from './
 import { promptPlan, leerPlan, sinBloqueP, nombreMes, revisarSlots, sumaPilares, avancePlan, SECCIONES_P, NOMBRE_P } from './plan-mes.js';
 import { textoRefs } from './diseno.js';
 import { divisor } from './divisor.js';
+import { motorBtn, menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor } from './motor-ui.js';
 
 let enVuelo = null;
 const mesDe = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -27,8 +28,8 @@ export async function planMesUI(el, { me, b, alive, rest = [] }) {
   let plan = d.plan || {}, fresh = [];
   const edit = Boolean(d.puede?.editar);
   const key = `os.plan.chat.${me.email}.${b.slug}.${mes}`;
-  const chat = (() => { try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { msgs: j.msgs, sesion: j.sesion || null }; } catch {} return { msgs: [], sesion: null }; })();
-  const guardarChat = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta, aplicado }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}), ...(aplicado ? { aplicado } : {}) })), sesion: chat.sesion })); } catch {} };
+  const chat = (() => { try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { msgs: j.msgs, sesion: j.sesion || null, motor: j.motor || 'claude:' }; } catch {} return { msgs: [], sesion: null, motor: '' }; })();
+  const guardarChat = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta, aplicado }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}), ...(aplicado ? { aplicado } : {}) })), sesion: chat.sesion, motor: chat.motor })); } catch {} };
   const tok = () => { try { return localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
   const setTok = (t) => { try { if (t) localStorage.setItem(`os.estrategia.token.${me.email}`, t); else localStorage.removeItem(`os.estrategia.token.${me.email}`); } catch {} };
   const S = { salud: null, pareo: '', pasando: false, piezas: d.piezas || 0 };
@@ -48,6 +49,7 @@ export async function planMesUI(el, { me, b, alive, rest = [] }) {
     if (!s.chat) return 'viejo';
     if (s.chat.ayuda) return s.chat.ayuda;
     if (!tok()) return 'sin-token';
+    if (faltaMotor(me, s.chat)) return 'motor';
     return 'listo';
   }
   const cmd = (c) => html`<div class="es-cmd"><code>${c}</code><button type="button" class="btn ghost xs" data-act="copiar" data-t="${c}">${ico('copy', 13)} Copiar</button></div>`;
@@ -56,6 +58,7 @@ export async function planMesUI(el, { me, b, alive, rest = [] }) {
     if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
     if (f === 'apagado') return chromeBloquea() ? html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p>${otra}</div>` : html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(inst)}${otra}</div>`;
     if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Corre otra vez el comando y se actualiza solo:</p>${cmd(inst)}${otra}</div>`;
+    if (f === 'motor') return faltaHtml(faltaMotor(me, S.salud?.chat), cmd);
     if (f === 'sin_claude') return html`<div class="es-setup"><b>No encuentro Claude Code</b><p>Instálalo e inicia sesión con tu cuenta (comando <code>claude</code>). Luego vuelve aquí.</p>${otra}</div>`;
     if (f !== 'sin-token') return html`<div class="es-setup"><b>El puente está preparando el repo</b><p>${S.salud?.chat?.error_repo || 'Si en un minuto sigue igual, corre otra vez el comando de instalar.'}</p>${cmd(inst)}${otra}</div>`;
     return html`<div class="es-setup"><b>Empareja tu compu (una sola vez)</b><p>Es el mismo token del chat de Estrategia. Para verlo:</p>${cmd(sistemaDe(navigator.userAgent || '') === 'win' ? 'Get-Content "$HOME\\.inherent\\laya\\chat-token"' : 'cat ~/.inherent/laya/chat-token')}
@@ -69,7 +72,7 @@ export async function planMesUI(el, { me, b, alive, rest = [] }) {
     const pill = html`<span class="es-pill ${ok ? 'on' : ''}"><i></i>${ok ? 'En tu compu' : f === 'cargando' ? '…' : 'Sin conectar'}</span>`;
     mount(chatEl, html`<div class="es-msgs" id="pm-msgs" aria-live="polite"></div>
       ${ok ? html`<div class="es-box"><form class="es-form" id="pm-form"><textarea class="in" id="pm-in" rows="1" placeholder="Opina, agrega un dato o pide más detalle…" aria-label="Mensaje para Marketing"></textarea><button class="btn es-send" type="submit" aria-label="Enviar">${ico('right', 16)}</button></form>
-        <div class="es-foot"><div class="dz-picks">${mesPick()}</div>${pill}</div></div>` : html`${setup(f)}<div class="es-foot">${pill}</div>`}`);
+        <div class="es-foot"><div class="dz-picks">${mesPick()}${motorBtn(me)}</div>${pill}</div></div>` : html`${setup(f)}<div class="es-foot">${pill}</div>`}`);
     paintMsgs();
     const ta = $('#pm-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
   }
@@ -102,6 +105,7 @@ export async function planMesUI(el, { me, b, alive, rest = [] }) {
     texto = String(texto || '').trim(); if (!texto || enVuelo) return;
     if (fase() !== 'listo') return toast('Primero conecta tu compu', true);
     const ctrl = new AbortController(); enVuelo = ctrl;
+    if (chat.motor !== claveMotor(me)) { chat.sesion = null; chat.motor = claveMotor(me); }
     const primera = !chat.sesion;
     chat.msgs.push({ r: 'u', t: texto }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] });
     const msg = chat.msgs[chat.msgs.length - 1]; paintMsgs();
@@ -109,7 +113,7 @@ export async function planMesUI(el, { me, b, alive, rest = [] }) {
     const prompt = promptPlan({ marca: b.name, slug: b.slug, mes, plan, ...ctx, pedido: texto, primera });
     let raw0 = '', fallo = null;
     try {
-      const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, ...(chat.sesion ? { resume: chat.sesion } : {}) }) });
+      const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, ...cuerpoMotor(me), ...(chat.sesion ? { resume: chat.sesion } : {}) }) });
       if (!r.ok) { const j = await r.json().catch(() => ({})); throw Object.assign(new Error(j.error || `El puente respondió ${r.status}`), { status: r.status }); }
       const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '';
       for (;;) {
@@ -189,6 +193,7 @@ export async function planMesUI(el, { me, b, alive, rest = [] }) {
       const cerrar = (ev) => { if (!m.contains(ev.target) && ev.target !== t) { m.remove(); document.removeEventListener('pointerdown', cerrar); } };
       setTimeout(() => document.addEventListener('pointerdown', cerrar)); return;
     }
+    if (a === 'motor') return menuMotor(t, me, S.salud?.chat, () => paintChat());
     if (a === 'opcion') { t.closest('.es-q')?.classList.add('hecha'); return enviar(t.dataset.t); }
     if (a === 'rapido') return enviar(t.dataset.t);
     if (a === 'detener') { try { enVuelo?.abort(); } catch {} return; }

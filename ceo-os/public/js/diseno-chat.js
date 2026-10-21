@@ -10,6 +10,7 @@ import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista,
 import { leerSistema } from './sistema-visual.js';
 import { estadoDe } from './element.js';
 import { divisor } from './divisor.js';
+import { motorBtn, menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor } from './motor-ui.js';
 
 const IMGS = new Map(); // `${marca}|${nodo}` → data URL (solo en memoria: pesan)
 let enVuelo = null;
@@ -55,8 +56,8 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     mount(el, html`<p class="loading">Cargando…</p>`);
     const key = `os.diseno.chat.${me.email}.${b.slug}`;
     // El contexto: claves «cal:AAAA-MM» · «plan:AAAA-MM» · «idea:<id>» · «lib:<id>» · «refs». `enviados`: las que esta sesión de Claude ya leyó.
-    const chat = (() => { const base = { msgs: [], sesion: null, formato: 'Carrusel', ideaId: '', resultado: null, ctx: [], libT: {}, enviados: [] }; try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { ...base, ...j, ctx: Array.isArray(j.ctx) ? j.ctx : j.ideaId ? [`idea:${j.ideaId}`] : [], enviados: Array.isArray(j.enviados) ? j.enviados : [] }; } catch {} return base; })();
-    const guardar = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}) })), sesion: chat.sesion, formato: chat.formato, ideaId: chat.ideaId, resultado: chat.resultado, ctx: chat.ctx, libT: chat.libT, enviados: chat.enviados })); } catch {} };
+    const chat = (() => { const base = { msgs: [], sesion: null, motor: '', formato: 'Carrusel', ideaId: '', resultado: null, ctx: [], libT: {}, enviados: [] }; try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { ...base, ...j, ctx: Array.isArray(j.ctx) ? j.ctx : j.ideaId ? [`idea:${j.ideaId}`] : [], enviados: Array.isArray(j.enviados) ? j.enviados : [] }; } catch {} return base; })();
+    const guardar = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}) })), sesion: chat.sesion, motor: chat.motor, formato: chat.formato, ideaId: chat.ideaId, resultado: chat.resultado, ctx: chat.ctx, libT: chat.libT, enviados: chat.enviados })); } catch {} };
     const tok = () => { try { return localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
     const setTok = (t) => { try { if (t) localStorage.setItem(`os.estrategia.token.${me.email}`, t); else localStorage.removeItem(`os.estrategia.token.${me.email}`); } catch {} };
     const [sisD, todo] = await Promise.all([api(`repo/client/${encodeURIComponent(b.slug)}/sistema`).catch(() => ({ md: '' })), col('content').list().catch(() => [])]);
@@ -86,6 +87,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (!s.chat || !(s.chat.modos || []).includes('diseno')) return 'viejo';
       if (s.chat.ayuda) return s.chat.ayuda;
       if (!tok()) return 'sin-token';
+      if (faltaMotor(me, s.chat, { diseno: true })) return 'motor';
       return 'listo';
     }
     const cmd = (c) => html`<div class="es-cmd"><code>${c}</code><button type="button" class="btn ghost xs" data-act="copiar" data-t="${c}">${ico('copy', 13)} Copiar</button></div>`;
@@ -97,6 +99,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (f === 'apagado' && chromeBloquea()) return html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p>${otra}</div>`;
       if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(inst)}${otra}</div>`;
       if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat de Diseño. Corre otra vez el comando y se actualiza solo:</p>${cmd(inst)}${otra}</div>`;
+      if (f === 'motor') return faltaHtml(faltaMotor(me, S.salud?.chat, { diseno: true }), cmd);
       if (f === 'sin_claude') return html`<div class="es-setup"><b>No encuentro Claude Code</b><p>Instálalo e inicia sesión con tu cuenta (comando <code>claude</code>). Luego vuelve aquí.</p>${otra}</div>`;
       if (['bajando_repo', 'sin_github', 'repo_error', 'sin_repo', 'repo_invalido'].includes(f)) return html`<div class="es-setup"><b>El puente está preparando el repo</b><p>${S.salud?.chat?.error_repo || 'Si en un minuto sigue igual, corre otra vez el comando de instalar.'}</p>${cmd(inst)}${otra}</div>`;
       return html`<div class="es-setup"><b>Empareja tu compu (una sola vez)</b><p>Es el mismo token del chat de Estrategia. Para verlo:</p>${cmd(sistemaDe(navigator.userAgent || '') === 'win' ? 'Get-Content "$HOME\\.inherent\\laya\\chat-token"' : 'cat ~/.inherent/laya/chat-token')}
@@ -108,7 +111,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       return html`<button type="button" class="es-pick dz-ctxb ${chat.ctx.length ? '' : 'need'}" data-act="ctx" aria-haspopup="dialog" aria-expanded="false">${ico('plus', 12)} Contexto</button>
         <button type="button" class="es-pick" data-act="marca" aria-haspopup="listbox" title="Cambiar de marca"><i>${initials(b.name)}</i>${b.name} ▾</button>
         <a class="es-pick" href="#/marcas/${b.slug}/design" title="Abrir el Design system">${ico('layers', 12)} Design system${sisD.kit ? ' · Kit de redes' : ''}</a>
-        <button type="button" class="es-pick" data-act="formato" aria-haspopup="listbox">${chat.formato} ▾</button>
+        <button type="button" class="es-pick" data-act="formato" aria-haspopup="listbox">${chat.formato} ▾</button>${motorBtn(me)}
         ${S.lamina ? html`<span class="es-pick on">${S.lamina.nombre}<button type="button" class="dz-x" data-act="sin-lamina" aria-label="Quitar la lámina">×</button></span>` : ''}`;
     }
     // ---------- + Contexto ----------
@@ -202,6 +205,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       texto = String(texto || '').trim(); if (!texto || enVuelo) return;
       if (fase() !== 'listo') return toast('Primero conecta tu compu', true);
       const ctrl = new AbortController(); enVuelo = ctrl;
+      if (chat.motor !== claveMotor(me)) { chat.sesion = null; chat.motor = claveMotor(me); }
       const primera = !chat.sesion;
       chat.msgs.push({ r: 'u', t: S.lamina ? `${S.lamina.nombre} · ${texto}` : texto }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] });
       const msg = chat.msgs[chat.msgs.length - 1], sueltas = [];
@@ -213,7 +217,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const prompt = promptDiseno({ marca: b.name, slug: b.slug, formato: chat.formato, contexto, lamina: S.lamina, pedido: texto, primera });
       let raw0 = '', fallo = null;
       try {
-        const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, modo: 'diseno', ...(chat.sesion ? { resume: chat.sesion } : {}) }) });
+        const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, modo: 'diseno', ...cuerpoMotor(me), ...(chat.sesion ? { resume: chat.sesion } : {}) }) });
         if (!r.ok) { const j = await r.json().catch(() => ({})); throw Object.assign(new Error(j.error || `El puente respondió ${r.status}`), { status: r.status }); }
         const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '';
         for (;;) {
@@ -314,6 +318,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const a = t.dataset.act;
       if (a === 'copiar') { try { await navigator.clipboard.writeText(t.dataset.t); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo', true); } return; }
       if (a === 'marca') return menuMarcas(t, b.slug);
+      if (a === 'motor') return menuMotor(t, me, S.salud?.chat, () => paintChat(), { diseno: true });
       if (a === 'formato') return menuDz(t, FORMATOS.map(([f, d]) => ({ label: f, sub: d, on: chat.formato === f, pick: () => { chat.formato = f; guardar(); mount($('.dz-picks', chatEl), pickers()); } })));
       if (a === 'ctx') return document.querySelector('.dz-ctxp') ? (document.querySelector('.dz-ctxp').remove(), t.setAttribute('aria-expanded', 'false')) : panelCtx(t);
       if (a === 'ctx-x') return toggleCtx(t.dataset.k);

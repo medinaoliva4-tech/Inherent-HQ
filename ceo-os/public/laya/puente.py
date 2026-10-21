@@ -25,6 +25,8 @@ es lo más delicado y va con candados extra:
   * SOLO LECTURA: `claude -p --tools Read,Grep,Glob --allowedTools Read,Grep,Glob` (+ `--restricted` si tu Claude Code lo trae,
     que además encierra la lectura en el repo), `--permission-mode dontAsk`, sin servidores MCP. Nunca usa
     --dangerously-skip-permissions;
+  * «motor»: "claude" (Claude Code), "chatgpt" o "local" (los dos con Codex: `codex exec --json`, sandbox read-only, sin pedir
+    permisos e ignorando la configuración de la persona; "local" usa Ollama con «modelo»). /health cuenta cuáles hay en la compu;
   * el chat de Diseño («modo»: "diseno") es el mismo candado de solo lectura sobre el repo, más un único servidor MCP:
     figwright (Figma), con --mcp-config y --strict-mcp-config. Las imágenes de get_screenshot se reenvían al OS (evento «imagen»);
   * corre dentro del clon del repo: la ruta va en INHERENT_REPO (variable de entorno o línea en el archivo «config»;
@@ -56,6 +58,7 @@ import sys
 import threading
 import time
 import traceback
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HOST = "127.0.0.1"
@@ -65,7 +68,7 @@ MODELO = "multilingual"  # el checkpoint que lee español (~644 MB la primera ve
 MAX_CUERPO = 256 * 1024
 MAX_TEXTO = 20000
 MAX_PREGUNTAS = 16
-VERSION = "5"
+VERSION = "6"
 # La copia del repo que el puente maneja solo (si no le dices otra con INHERENT_REPO): se pone al día con main antes de cada chat.
 REPO_URL = os.environ.get("INHERENT_REPO_URL") or "https://github.com/medinaoliva4-tech/Inherent-HQ.git"
 SYNC_CADA = 60  # segundos mínimos entre dos puestas al día
@@ -85,6 +88,10 @@ MAX_IMAGEN = 8 * 1024 * 1024  # bytes de base64 por imagen que se reenvía al OS
 MAX_IMAGENES = 40
 REGLA_DISENO = ("Chat de Diseño de Inherent OS. El repo es de solo lectura: no crees, cambies ni borres archivos y no ejecutes comandos. "
                 "Diseñas en Figma con las herramientas de figwright, dentro del archivo y la página de la marca. Responde en español de «tú».")
+# --- los motores: Claude (Claude Code), ChatGPT y los modelos locales (los dos por Codex: `codex exec`) ---
+MOTORES = ("claude", "chatgpt", "local")
+OLLAMA = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
+MODELO_OK = re.compile(r"^[\w.:/-]{1,80}$")
 REGLA_CHAT = ("Chat de Estrategia de Inherent OS, en solo lectura: no crees, cambies ni borres archivos y no ejecutes comandos. "
               "Lo que escribas es un borrador que revisa el CEO. Responde en español de «tú».")
 UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
@@ -204,6 +211,7 @@ class Chat:
         self.token, self.token_nuevo = self.cargar_token()
         self.lock = threading.Lock()  # un solo chat a la vez
         self.ayuda = None  # el texto de `claude --help`, una sola vez
+        self._chatgpt = None  # (cuándo, si hay sesión de ChatGPT en Codex)
         self.fallos = []  # instantes de los tokens malos (freno contra adivinar)
         self.sync = {"at": 0.0, "ok_at": None, "error": None, "commit": None}  # la copia automática del repo
         self.sync_lock = threading.Lock()
@@ -298,6 +306,35 @@ class Chat:
                  os.path.join(casa, ".npm-global", "bin"), os.path.join(os.environ.get("APPDATA", ""), "npm")]
         return shutil.which("claude", path=os.pathsep.join([os.environ.get("PATH", ""), *[x for x in extra if x]]))
 
+    def buscar_codex(self):
+        """Codex (el agente de OpenAI): corre ChatGPT con tu sesión y también los modelos locales de Ollama."""
+        c = os.environ.get("INHERENT_CODEX") or valor_de_config("INHERENT_CODEX")
+        if c:
+            return c if os.path.isfile(c) else None
+        casa = os.path.expanduser("~")
+        extra = [os.path.join(casa, ".local", "bin"), "/usr/local/bin", "/opt/homebrew/bin", os.path.join(casa, ".npm-global", "bin"), os.path.join(os.environ.get("APPDATA", ""), "npm")]
+        return shutil.which("codex", path=os.pathsep.join([os.environ.get("PATH", ""), *[x for x in extra if x]]))
+
+    def sesion_chatgpt(self, codex):
+        """Si Codex tiene la sesión de ChatGPT iniciada (`codex login status`). Se guarda un minuto."""
+        ahora = time.time()
+        if self._chatgpt and ahora - self._chatgpt[0] < 60:
+            return self._chatgpt[1]
+        try:
+            ok = subprocess.run([codex, "login", "status"], capture_output=True, text=True, timeout=15, stdin=subprocess.DEVNULL).returncode == 0
+        except Exception:  # noqa: BLE001
+            ok = False
+        self._chatgpt = (ahora, ok)
+        return ok
+
+    def modelos_locales(self):
+        """Los modelos que tiene Ollama en esta compu (vacío si Ollama no está corriendo)."""
+        try:
+            with urllib.request.urlopen(OLLAMA + "/api/tags", timeout=2) as r:
+                return [str(m.get("name")) for m in json.loads(r.read().decode("utf-8")).get("models", []) if m.get("name")][:30]
+        except Exception:  # noqa: BLE001
+            return []
+
     def soporta(self, claude, flag):
         if self.ayuda is None:
             try:
@@ -310,20 +347,88 @@ class Chat:
     def estado(self):
         """Lo que /health cuenta del chat (sin el token)."""
         r = self.repo()
-        claude = self.buscar_claude()
+        claude, codex = self.buscar_claude(), self.buscar_codex()
         propio = bool(self.repo_propio())
         if not propio and self.sync["at"] == 0:
             threading.Thread(target=self.sincronizar, daemon=True).start()  # la primera vez, en segundo plano
         ok_repo = bool(r and self.repo_valido(r))
         if ok_repo:
-            ayuda = None if claude else "sin_claude"
+            ayuda = None if (claude or codex) else "sin_claude"
         elif propio:
             ayuda = "repo_invalido"
         else:
             ayuda = "sin_github" if self.sin_github() else "bajando_repo" if self.sync["error"] is None else "repo_error"
         return {"listo": ayuda is None, "ayuda": ayuda, "repo": ok_repo, "repo_configurado": propio, "copia": "propia" if propio else "automatica",
                 "commit": self.sync["commit"], "sincronizado": self.sync["ok_at"], "error_repo": None if ok_repo else self.sync["error"],
-                "claude": bool(claude), "ocupado": self.lock.locked(), "segundos": self.segundos, "modos": ["estrategia", "diseno"]}
+                "claude": bool(claude), "ocupado": self.lock.locked(), "segundos": self.segundos, "modos": ["estrategia", "diseno"],
+                "motores": {"claude": bool(claude),
+                            "chatgpt": {"instalado": bool(codex), "sesion": bool(codex) and self.sesion_chatgpt(codex)},
+                            "local": {"instalado": bool(codex), "modelos": self.modelos_locales() if codex else []}}}
+
+    def comando_codex(self, codex, resume, modo="estrategia", motor="chatgpt", modelo=None):
+        """Codex en solo lectura: sandbox read-only, sin pedir permisos y sin la configuración de la persona (solo su sesión).
+        Diseño suma figwright como único servidor MCP. Los modelos locales van por Ollama."""
+        cmd = [codex, "exec"] + (["resume"] if resume else []) + ["--json", "--skip-git-repo-check", "--ignore-user-config",
+               "-c", 'sandbox_mode="read-only"', "-c", 'approval_policy="never"']
+        if motor == "local":
+            cmd += ["-c", 'model_provider="ollama"'] + (["-m", modelo] if modelo else [])
+        if modo == "diseno":
+            cmd += ["-c", 'mcp_servers.figwright.command="npx"', "-c", 'mcp_servers.figwright.args=["-y", "@figwright/mcp@latest"]']
+        if resume:
+            cmd += [resume, "-"]
+        else:
+            cmd += ["-C", self.repo(), "-"]
+        return cmd
+
+    @staticmethod
+    def evento_codex(j, emitir, estado, nodos, imagenes, modo):
+        """Un evento JSONL de `codex exec --json` → los mismos eventos SSE que Claude (inicio · delta · herramienta · imagen · fin · error)."""
+        t, item = j.get("type"), j.get("item") or {}
+        if t == "thread.started":
+            estado["sesion"] = j.get("thread_id")
+            emitir("inicio", {"sesion": j.get("thread_id")})
+        elif t == "item.started" and item.get("type") == "command_execution":
+            emitir("herramienta", {"nombre": "Read", "detalle": str(item.get("command") or "")[:200]})
+        elif t in ("item.started", "item.completed") and item.get("type") == "mcp_tool_call":
+            tool = str(item.get("tool") or "")
+            if t == "item.started":
+                emitir("herramienta", {"nombre": ("figma:" if item.get("server") == "figwright" else "") + tool[:40], "detalle": tool})
+            elif modo == "diseno" and tool == "get_screenshot":
+                args = item.get("arguments") or {}
+                if isinstance(args, str):
+                    try:
+                        args = json.loads(args)
+                    except ValueError:
+                        args = {}
+                ids = [str(x)[:40] for x in (args.get("nodeIds") or [])]
+                res = item.get("result") or {}
+                k = 0
+                for x in (res.get("content") if isinstance(res, dict) else None) or []:
+                    if not isinstance(x, dict) or x.get("type") != "image":
+                        continue
+                    datos = x.get("data") or (x.get("source") or {}).get("data") or ""
+                    tipo = x.get("mimeType") or (x.get("source") or {}).get("media_type") or "image/png"
+                    if imagenes["n"] < MAX_IMAGENES and datos and len(datos) <= MAX_IMAGEN and tipo in ("image/png", "image/jpeg", "image/webp"):
+                        imagenes["n"] += 1
+                        emitir("imagen", {"nodo": ids[k] if k < len(ids) else None, "tipo": tipo, "datos": datos})
+                    k += 1
+        elif t == "item.completed" and item.get("type") == "agent_message":
+            texto = str(item.get("text") or "")
+            estado["texto"] = (estado.get("texto") + "\n\n" if estado.get("texto") else "") + texto
+            emitir("delta", {"texto": ("\n\n" if estado.get("partes") else "") + texto})
+            estado["partes"] = True
+        elif t == "turn.completed":
+            estado["fin"] = True
+            emitir("fin", {"texto": estado.get("texto", ""), "sesion": estado.get("sesion")})
+        elif t in ("turn.failed", "error"):
+            estado["fin"] = True
+            m = (j.get("error") or {}).get("message") if isinstance(j.get("error"), dict) else j.get("message")
+            m = str(m or "El modelo no pudo responder")
+            if "401" in m or "Unauthorized" in m:
+                m = "Falta iniciar la sesión de ChatGPT en tu compu: abre la Terminal, escribe codex login y sigue lo que te pide."
+            elif "Ollama" in m or "11434" in m:
+                m = "Ollama no está corriendo: ábrelo (o en la Terminal: ollama serve) y vuelve a intentar."
+            emitir("error", {"error": m[:600], "codigo": "codex"})
 
     def mcp_diseno(self):
         """El archivo con el único servidor MCP del chat de Diseño (figwright)."""
@@ -355,14 +460,22 @@ class Chat:
             cmd += ["--resume", resume]
         return cmd
 
-    def correr(self, prompt, resume, emitir, vivo, modo="estrategia"):
+    def correr(self, prompt, resume, emitir, vivo, modo="estrategia", motor="claude", modelo=None):
         """Corre claude y va emitiendo (evento, datos). Devuelve True si terminó bien. Mata el proceso si se acaba el tiempo o si `vivo()` es False."""
         self.sincronizar()  # lo último de main antes de leer (si falla, se lee la copia que ya hay)
-        repo, claude = self.repo(), self.buscar_claude()
+        repo = self.repo()
+        usa_codex = motor in ("chatgpt", "local")
+        prog = self.buscar_codex() if usa_codex else self.buscar_claude()
+        if not prog:
+            emitir("error", {"error": "No encuentro Codex en tu compu (el programa de ChatGPT y de los modelos locales)." if usa_codex else "No encuentro Claude Code en tu compu (el comando claude).", "codigo": "sin_motor"})
+            return False
+        if usa_codex:  # Codex no tiene un «system prompt» aparte: la regla va al principio del mensaje.
+            prompt = (REGLA_DISENO if modo == "diseno" else REGLA_CHAT) + "\n\n" + prompt
         env = dict(os.environ)
-        env["PATH"] = os.pathsep.join([os.path.dirname(claude), "/usr/local/bin", "/opt/homebrew/bin", env.get("PATH", "")])
+        env["PATH"] = os.pathsep.join([os.path.dirname(prog), "/usr/local/bin", "/opt/homebrew/bin", env.get("PATH", "")])
         kw = {"start_new_session": True} if os.name != "nt" else {"creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)}
-        proc = subprocess.Popen(self.comando(claude, resume, modo), cwd=repo, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kw)
+        cmd = self.comando_codex(prog, resume, modo, motor, modelo) if usa_codex else self.comando(prog, resume, modo)
+        proc = subprocess.Popen(cmd, cwd=repo, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kw)
         estado = {"agotado": False, "fin": False}
         err = []
         nodos = {}  # id del tool_use de get_screenshot → los nodos que pidió (para nombrar cada imagen)
@@ -401,6 +514,9 @@ class Chat:
                 except ValueError:
                     continue
                 t = j.get("type")
+                if usa_codex:
+                    self.evento_codex(j, emitir, estado, nodos, imagenes, modo)
+                    continue
                 if t == "system" and j.get("subtype") == "init":
                     emitir("inicio", {"sesion": j.get("session_id")})
                 elif t == "stream_event":
@@ -452,10 +568,12 @@ class Chat:
             if proc.poll() is None:
                 matar()
         if estado["agotado"]:
-            emitir("error", {"error": f"Claude tardó más de {segundos} s y se cortó. Pide algo más acotado.", "codigo": "tiempo"})
+            emitir("error", {"error": f"{'El modelo' if usa_codex else 'Claude'} tardó más de {segundos} s y se cortó. Pide algo más acotado.", "codigo": "tiempo"})
             return False
         if not estado["fin"]:
-            emitir("error", {"error": (("".join(err)).strip()[-500:] or "Claude Code se cerró sin responder. Revisa que tengas la sesión iniciada (claude)."), "codigo": "claude"})
+            ayuda = "Codex se cerró sin responder. Revisa que tengas la sesión de ChatGPT iniciada (codex login) o que Ollama esté corriendo." if usa_codex else "Claude Code se cerró sin responder. Revisa que tengas la sesión iniciada (claude)."
+            err_txt = "\n".join(x for x in "".join(err).splitlines() if not re.match(r"^\s*\d+: <unknown>", x) and "WARNING" not in x).strip()
+            emitir("error", {"error": (err_txt[-500:] or ayuda), "codigo": "codex" if usa_codex else "claude"})
             return False
         return True
 
@@ -550,6 +668,14 @@ def servidor(laya_, origenes, puerto, chat=None):
             modo = b.get("modo", "estrategia") if isinstance(b, dict) else "estrategia"
             if modo not in ("estrategia", "diseno"):
                 return self.responder(400, {"error": "«modo» es estrategia o diseno"})
+            motor = b.get("motor", "claude") if isinstance(b, dict) else "claude"
+            modelo = b.get("modelo") if isinstance(b, dict) else None
+            if motor not in MOTORES:
+                return self.responder(400, {"error": "«motor» es claude, chatgpt o local"})
+            if modelo is not None and not (isinstance(modelo, str) and MODELO_OK.match(modelo)):
+                return self.responder(400, {"error": "«modelo» no es un nombre de modelo válido"})
+            if motor == "local" and not modelo:
+                return self.responder(400, {"error": "Elige qué modelo local usar"})
             if not isinstance(prompt, str) or not prompt.strip():
                 return self.responder(400, {"error": "Falta «prompt»"})
             if len(prompt) > MAX_PROMPT:
@@ -584,7 +710,7 @@ def servidor(laya_, origenes, puerto, chat=None):
                     except (BrokenPipeError, ConnectionError, OSError):
                         vivo["v"] = False
 
-                chat.correr(prompt, resume, emitir, lambda: vivo["v"], modo)
+                chat.correr(prompt, resume, emitir, lambda: vivo["v"], modo, motor, modelo)
             except Exception as e:  # noqa: BLE001
                 traceback.print_exc()
                 try:
