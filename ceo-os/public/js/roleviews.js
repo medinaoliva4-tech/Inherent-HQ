@@ -16,11 +16,11 @@ export const SECTIONS = [['home', 'Hoy'], ['control', 'Control del flujo'], ['cl
 // El Centro de control ya no es una sección: sus herramientas viven en Hoy, Ventas, Servicios, Finanzas e Inherent.
 export const GROUPS = [
   ['hoy', 'Hoy', ['home', 'work', 'control', 'resultados'], 'org'],
+  ['inherent', 'Inherent', ['team', 'roadmap', 'library'], 'org'],
   ['proyectos', 'Proyectos', ['clients', 'operations'], 'org'],
   ['ventas', 'Ventas', ['sales'], 'org'],
   ['servicios', 'Servicios', [], 'org'],
   ['finanzas', 'Finanzas', ['finanzas'], 'org'],
-  ['inherent', 'Inherent', ['team', 'roadmap', 'library'], 'org'],
   ['estrategia', 'Estrategia', ['estrategia'], 'estrategia'],
   ['marcas', 'Marcas', ['content'], 'marcas'],
 ];

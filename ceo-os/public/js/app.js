@@ -1,3 +1,4 @@
+import { instalarMenu } from './menu-contextual.js';
 import { applyViews, GROUPS, SPACES, movedRoute } from './roleviews.js';
 import { applyLevels, LEVELS_ID } from './levels.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, initials, esc, LOGO, infoTips, canTransition, ico } from './core.js';
@@ -372,6 +373,7 @@ events.addEventListener('logout', () => { if (me) { me = null; toast('Tu sesión
 
 async function start(u) {
   me = u;
+  if (u.role !== 'client') instalarMenu(u);
   // El servidor ya manda areas, views, scope y start aplicados; la matriz se guarda para recalcular en vivo si el CEO la cambia.
   if (me.role !== 'client') { let doc = null; const lv = api('db/settings').then((r) => applyLevels((r.items || []).find((x) => x.id === LEVELS_ID))).catch(() => {}); try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); await lv; if (!hashNow()) history.replaceState(null, '', '#/' + landing()); }
   const c = pendingConnect();

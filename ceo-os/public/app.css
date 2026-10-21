@@ -3768,3 +3768,11 @@ span.ev-sup{cursor:default}
 .es-menu small{margin-left:auto;color:var(--mut);font-size:12px;white-space:nowrap}
 .es-menu b{width:8px;height:8px;border-radius:50%;background:var(--hair-strong);flex:none}.es-menu b.ok{background:#3c8a5a}.es-menu b.w{background:#c9a227}
 .es-vh{display:flex;align-items:center;gap:8px;min-width:0}.es-vh b{font-size:15px}
+/* Más aire: el OS usa más ancho de pantalla, y Estrategia (sin barras arriba) llega hasta abajo. */
+.app{max-width:1600px}
+@media (min-width:761px){.app{padding-left:36px;padding-right:36px}}
+.es{--es-h:calc(100dvh - 150px)}
+.es-split.es2{grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr)}
+.es-split.es2[data-panel="off"] .es-chat{max-width:880px;width:100%;margin:0 auto}
+@media (max-width:900px){.es{--es-h:calc(100dvh - 160px)}}
+@media (max-width:760px){.es{--es-h:calc(100dvh - 220px - env(safe-area-inset-bottom))}}
