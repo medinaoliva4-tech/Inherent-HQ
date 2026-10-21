@@ -4,7 +4,7 @@ import { newProject } from '../create.js';
 import { levelName } from '../levels.js';
 import { createCatalog, CATS, lvName } from '../catalogo.js';
 import { FLOW, stageLabel, flowIndex, isWaiting, createdAt, waitMs, waitTone, durText, salesMetrics, AFTER_REPLY, updateWaits } from '../ventas-flujo.js';
-import { layaBox } from '../laya-ui.js';
+import { layaBox, juzgarLocal } from '../laya-ui.js';
 import { PROB, estancado, sinSiguiente, ganadoEn, tasasReales, cascada, llevamos, pronostico, habilesQuedan, KINDS } from '../ventas-meta.js';
 
 const STAGES = ['Prospecto', 'Nuevo', 'Contactado', 'Reunión', 'Propuesta', 'Ganado', 'Perdido'];
@@ -71,7 +71,7 @@ export async function render(el, { me, sub, alive }) {
       <div id="body"></div>`);
     const body = $('#body', el);
     if (resumen) return crmResumen(body);
-    ({ crm, pros: (b) => mount(b, prosView(leads.filter((l) => l.stage === 'Prospecto' && !l.archived))), quotes: quotesTab, src: srcTab })[tab](body);
+    ({ crm, pros: prosTab, quotes: quotesTab, src: srcTab })[tab](body);
   }
   // ---------- El resumen del CRM: los indicadores y lo que requiere acción (vencidos y lo de hoy) ----------
   function crmResumen(body) {
@@ -238,6 +238,55 @@ export async function render(el, { me, sub, alive }) {
       });
     });
   }
+  // ---------- Prospectos: buscar leads (Apify) y filtrarlos con Laya ----------
+  let busq = null, encF = '', filtrando = false;
+  const ENC = [['si', 'Encaja', 'ok'], ['talvez', 'Tal vez', 'am'], ['no', 'No encaja', 'bad']];
+  const encDe = (items = []) => { const j = items.find((x) => x.question_id === 'encaja'); if (!j) return null; const a = String(j.answer ?? '').toLowerCase(); return /^(s[ií]|yes|true|encaja)/.test(a) ? 'si' : /^(no|false)/.test(a) ? 'no' : 'talvez'; };
+  async function cargarBusq() { try { busq = await api('leads/buscar'); } catch (e) { busq = { error: e.message, busquedas: [] }; } }
+  function prosTab(body) {
+    const all = leads.filter((l) => l.stage === 'Prospecto' && !l.archived);
+    const list = encF === 'sin' ? all.filter((l) => !l.laya_encaja) : encF ? all.filter((l) => l.laya_encaja === encF) : all;
+    const corriendo = (busq?.busquedas || []).filter((x) => x.status === 'corriendo');
+    mount(body, html`<section class="card vx-buscar"><div class="row"><b>${ico('search', 15)} Buscar leads</b><span class="mut sm">Con Apify, como Investigación. Lo que encuentra entra aquí abajo, sin repetir lo que ya está en Ventas.</span></div>
+        ${busq === null ? html`<p class="mut sm">Cargando…</p>` : !busq.apify ? html`<p class="mut sm">El scraping no está conectado: falta APIFY_TOKEN en Vercel.</p>` : edit ? html`<form class="vx-bform" id="bform"><div class="tabs mini" style="margin:0" role="radiogroup" aria-label="Dónde buscar"><button type="button" class="on" data-act="bfuente" data-f="maps">Google Maps</button><button type="button" data-act="bfuente" data-f="instagram">Instagram</button></div>
+          <input class="in" name="q" placeholder="Qué buscar · ej. restaurantes" required><input class="in" name="lugar" placeholder="Dónde · ej. zona 10, Guatemala"><select class="in" name="n" aria-label="Cuántos" style="width:auto">${[10, 20, 30, 50].map((n) => html`<option value="${n}" ${n === 20 ? raw('selected') : ''}>${n} resultados</option>`)}</select><button class="btn" type="submit">Buscar</button></form>
+          <p class="mut sm" style="margin:0">Cada búsqueda gasta hasta US$1 de Apify y busca un máximo de ${busq.max || 50} resultados.</p>` : ''}
+        ${(busq?.busquedas || []).length ? html`<div class="vx-blist">${busq.busquedas.slice(0, 6).map((x) => html`<div class="vx-bi"><span class="vx-bs ${x.status}">${x.status === 'corriendo' ? 'Buscando…' : x.status === 'listo' ? `${x.creados} nuevos` : 'Falló'}</span><span><b>${x.q}</b>${x.lugar ? ` · ${x.lugar}` : ''} <span class="mut sm">· ${x.fuente === 'maps' ? 'Google Maps' : 'Instagram'} · ${fdate(String(x.at).slice(0, 10))}${x.repetidos ? ` · ${x.repetidos} ya estaban` : ''}</span></span>${x.status === 'corriendo' && edit ? html`<button class="btn ghost xs" data-act="brecoger" data-id="${x.id}">Revisar</button>` : ''}</div>`)}</div>` : ''}</section>
+      <div class="row vx-bar"><span class="lbl" style="margin:0">Filtrar con Laya</span><button class="chip ${encF ? '' : 'dark'}" data-act="encF" data-e="">Todos ${all.length}</button>${ENC.map(([k, l, c]) => html`<button class="chip ${encF === k ? 'dark' : ''}" data-act="encF" data-e="${k}"><i class="vx-ed ${c}"></i>${l} ${all.filter((x) => x.laya_encaja === k).length}</button>`)}<button class="chip ${encF === 'sin' ? 'dark' : ''}" data-act="encF" data-e="sin">Sin filtrar ${all.filter((x) => !x.laya_encaja).length}</button>
+        <div class="sp"></div>${edit && all.some((x) => !x.laya_encaja) ? html`<button class="btn ghost xs" data-act="layaPros" ${filtrando ? raw('disabled') : ''}>${filtrando ? 'Laya está filtrando…' : `✦ Filtrar ${Math.min(20, all.filter((x) => !x.laya_encaja).length)} con Laya`}</button>` : ''}</div>
+      ${prosView(list)}`);
+    if (busq === null) cargarBusq().then(() => { if (alive() && tab === 'pros') prosTab(body); });
+    if (corriendo.length) setTimeout(async () => { if (!alive() || tab !== 'pros') return; for (const x of corriendo) await recoger(x.id, true); }, 15000);
+    const f = $('#bform', body); if (f) f.onsubmit = async (e) => {
+      e.preventDefault(); const fd = new FormData(f), fuente = $('[data-act="bfuente"].on', f)?.dataset.f || 'maps';
+      try { const d = await api('leads/buscar', { method: 'POST', body: { fuente, q: fd.get('q'), lugar: fd.get('lugar'), n: +fd.get('n') } }); busq.busquedas = [d, ...busq.busquedas]; toast('Buscando… tarda de 1 a 3 minutos'); prosTab(body); } catch (er) { toast(er.message, true); }
+    };
+  }
+  async function recoger(id, silencio = false) {
+    try {
+      const d = await api(`leads/buscar/${id}/recoger`, { method: 'POST', body: {} });
+      busq.busquedas = busq.busquedas.map((x) => (x.id === id ? d : x));
+      if (d.status === 'listo') { leads = await L.list(); toast(`${d.creados} prospectos nuevos`); } else if (d.status === 'fallo') toast('La búsqueda falló en Apify', true); else if (!silencio) toast('Todavía está buscando');
+      if (alive() && tab === 'pros') prosTab($('#body', el));
+    } catch (e) { if (!silencio) toast(e.message, true); }
+  }
+  // Laya juzga cada prospecto con la puerta «lead» (¿encaja con Inherent?): en el puente de tu compu o, si no está, queda pendiente.
+  async function layaPros() {
+    const sinF = leads.filter((l) => l.stage === 'Prospecto' && !l.archived && !l.laya_encaja).slice(0, 20);
+    filtrando = true; prosTab($('#body', el)); let hechos = 0, pend = 0;
+    for (const l of sinF) {
+      try {
+        const t = await api(`laya/texto?coll=leads&id=${encodeURIComponent(l.id)}`);
+        let r;
+        try { r = await api('laya/juicios', { method: 'POST', body: { coll: 'leads', id: l.id, engine: 'laya-local', resultado: await juzgarLocal(t) } }); }
+        catch { await api('laya/juicios', { method: 'POST', body: { coll: 'leads', id: l.id, pendiente: true } }); pend++; continue; }
+        const e = encDe(r.items); if (e) { const cur = leads.find((x) => x.id === l.id); const sv = await L.save({ ...cur, laya_encaja: e }); leads = leads.map((x) => (x.id === sv.id ? sv : x)); hechos++; }
+      } catch { /* sigue con el siguiente */ }
+      if (alive() && tab === 'pros') prosTab($('#body', el));
+    }
+    filtrando = false; toast(pend ? `Laya filtró ${hechos}. ${pend} quedaron pendientes: el puente no respondió.` : `Laya filtró ${hechos}`, Boolean(pend && !hechos));
+    if (alive() && tab === 'pros') prosTab($('#body', el));
+  }
   // La bandeja de prospectos (outbound): lo scrapeado o importado espera aquí y pasa al pipeline cuando responde.
   function prosView(list) {
     if (!list.length) return html`<div class="empty"><b>No hay prospectos esperando</b>Entran desde una fuente de scraping o importando una lista (también por el conector de Claude: «importar_prospectos»).</div>`;
@@ -245,7 +294,7 @@ export async function render(el, { me, sub, alive }) {
     return html`<div class="mut sm" style="margin-bottom:6px">Un prospecto no cuenta como lead hasta que responde. «→ Lead» o «Contactado» lo pasan al pipeline con su siguiente paso; la ✕ lo archiva.</div>
       ${Object.entries(bySrc).map(([src, ls]) => html`<div class="sec-title" style="margin:18px 0 10px"><h2 style="font-size:17px">${src}</h2><span class="mut sm">${ls.length}</span></div>
       <div class="card"><table><thead><tr><th>Prospecto</th><th>Contacto</th><th>Notas</th><th></th></tr></thead><tbody>
-        ${ls.map((l) => html`<tr><td class="click" data-act="lead" data-id="${l.id}"><b style="font-weight:500">${l.name}</b>${l.company ? html`<div class="mut sm">${l.company}</div>` : ''}</td><td class="sm">${[l.ig && '@' + l.ig, l.phone, l.email].filter(Boolean).join(' · ') || '—'}</td><td class="sm mut" style="max-width:320px;white-space:pre-line">${String(l.notes || '').slice(0, 160)}</td><td style="white-space:nowrap;text-align:right">${(l.activity || []).filter((a) => a.kind === 'outreach').length ? html`<span class="mut sm" title="Mensajes de outreach">${ico('mail', 12)} ${(l.activity || []).filter((a) => a.kind === 'outreach').length}</span> ` : ''}<button class="btn ghost xs" data-act="outreach" data-id="${l.id}" title="Anotar un mensaje de outreach">+1 outreach</button> <button class="btn ghost xs" data-act="toCrm" data-id="${l.id}" data-s="Nuevo">→ Lead</button> <button class="btn ghost xs" data-act="toCrm" data-id="${l.id}" data-s="Contactado">Contactado</button> <button class="btn ghost xs" data-act="archive" data-id="${l.id}" title="Archivar">${ico('x', 14)}</button></td></tr>`)}
+        ${ls.map((l) => html`<tr><td class="click" data-act="lead" data-id="${l.id}"><b style="font-weight:500">${l.name}</b>${l.laya_encaja ? html` <span class="vx-enc ${({ si: 'ok', talvez: 'am', no: 'bad' })[l.laya_encaja]}">${({ si: 'Encaja', talvez: 'Tal vez', no: 'No encaja' })[l.laya_encaja]}</span>` : ''}${l.company && l.company !== l.name ? html`<div class="mut sm">${l.company}</div>` : ''}</td><td class="sm">${[l.ig && '@' + l.ig, l.phone, l.email].filter(Boolean).join(' · ') || '—'}</td><td class="sm mut" style="max-width:320px;white-space:pre-line">${String(l.notes || '').slice(0, 160)}</td><td style="white-space:nowrap;text-align:right">${(l.activity || []).filter((a) => a.kind === 'outreach').length ? html`<span class="mut sm" title="Mensajes de outreach">${ico('mail', 12)} ${(l.activity || []).filter((a) => a.kind === 'outreach').length}</span> ` : ''}<button class="btn ghost xs" data-act="outreach" data-id="${l.id}" title="Anotar un mensaje de outreach">+1 outreach</button> <button class="btn ghost xs" data-act="toCrm" data-id="${l.id}" data-s="Nuevo">→ Lead</button> <button class="btn ghost xs" data-act="toCrm" data-id="${l.id}" data-s="Contactado">Contactado</button> <button class="btn ghost xs" data-act="archive" data-id="${l.id}" title="Archivar">${ico('x', 14)}</button></td></tr>`)}
       </tbody></table></div>`)}`;
   }
 
@@ -662,6 +711,10 @@ export async function render(el, { me, sub, alive }) {
     tab: (b) => { tab = b.dataset.t; history.replaceState(null, '', '#/sales/' + tab); swap(el, paint); },
     crmView: (b) => { crmView = b.dataset.v; try { localStorage.setItem('ventas.vista', crmView); } catch {} paint(); },
     vista: (b) => { vistaF = b.dataset.k; paint(); },
+    encF: (b) => { encF = b.dataset.e; prosTab($('#body', el)); },
+    bfuente: (b) => { $$('[data-act="bfuente"]', b.parentElement).forEach((x) => x.classList.toggle('on', x === b)); const q = $('#bform [name="q"]', el), lg = $('#bform [name="lugar"]', el); if (q) q.placeholder = b.dataset.f === 'maps' ? 'Qué buscar · ej. restaurantes' : 'Qué buscar · ej. cafeterías guatemala'; if (lg) lg.hidden = b.dataset.f !== 'maps'; },
+    brecoger: (b) => recoger(b.dataset.id),
+    layaPros: () => layaPros(),
     metaEdit: () => editarMeta(),
     ticketEdit: async () => { const v = await ask('Ticket promedio (USD al mes)', [{ k: 't', l: 'Lo que paga en promedio un cliente nuevo', t: 'number', v: metaDoc?.ticket || '', req: true }]); if (v) guardarMeta({ ticket: +v.t }); },
     outreach: async (b) => { const l = leads.find((x) => x.id === b.dataset.id); if (l && await saveLead({ ...l, activity: [...(l.activity || []), { ...act('Mensaje de outreach'), kind: 'outreach' }] }, '+1 outreach')) paint(); },
