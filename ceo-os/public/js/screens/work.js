@@ -23,6 +23,9 @@ const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'
 const COMMUNITY = ['Tono y voz de la marca', 'FAQ y respuestas frecuentes', 'Reglas de escalamiento', 'Plantillas de respuesta'];
 const ymNow = () => today().slice(0, 7);
 
+// Las listas de Mis tareas (las de la izquierda).
+const LISTAS = [['hoy'], ['atrasadas'], ['decisiones'], ['proximos'], ['proyectos']];
+
 export async function render(el, { me, sub, alive }) {
   const TK = col('tasks'), CK = col('checks');
   const isCeo = me.role === 'ceo';
@@ -39,7 +42,7 @@ export async function render(el, { me, sub, alive }) {
   const myRoles = asP ? asP.roles || [] : (meP?.roles?.length ? meP.roles : me.roles?.length ? me.roles : isCeo ? ['ceo'] : me.role === 'coo' ? ['coo'] : []);
   const pref = (() => { try { return localStorage.getItem('work.role'); } catch { return null; } })();
   let role = myRoles.includes(sub[1]) ? sub[1] : !asP && myRoles.includes(pref) ? pref : myRoles[0] || null;
-  let tab = ['zona', 'kanban', 'pipes', 'equipo'].includes(sub[0]) ? sub[0] : 'zona';
+  let tab = LISTAS.some(([k]) => k === sub[0]) || ['zona', 'kanban', 'pipes', 'equipo'].includes(sub[0]) ? sub[0] : 'hoy';
   Promise.all([col('accounts').list().catch(() => []), col('settings').get('drive').catch(() => null)]).then(([a2, s2]) => { accounts = a2; settings = s2; if (alive() && tab === 'zona' && ['video', 'ads'].includes(role)) paint(); });
   let tipoF = 'todos', pipeSel = 'contenido', personSel = null, clientSel = null, ceoLane = 'estrategia';
   let agenda = null, clientInfo = {}, posts = null;
@@ -75,19 +78,53 @@ export async function render(el, { me, sub, alive }) {
   // Todos los roles ven lo mismo, en el mismo orden y corto: una línea con su puesto y cuántas cosas tiene hoy,
   // «Hoy» (lo que vence hoy o ya venció, con Entregar), «Esta semana», una sola zona propia del rol (en pestañas
   // cuando tiene más de una cosa) y «Más», cerrado, con lo que no es acción de hoy (checklist, SOPs, subir trabajo).
+  // Mis tareas (como Recordatorios): a la izquierda las listas con su número; a la derecha, una sola lista.
+  // Lo de la empresa vive en Hoy y en Proyectos; aquí solo lo de cada quien para organizarse.
+  const dec = () => (isCeo && !asP ? decisions() : cooReview().map((t) => ({ t: `Revisar: ${t.title}`, sub: `${nameOf(t.assignee)} lo entregó`, act: 'task', id: t.id })));
+  const listas = () => {
+    const l = open(mine());
+    return { hoy: l.filter((t) => t.due === T0), atrasadas: l.filter((t) => t.due && t.due < T0), proximos: l.filter((t) => !t.due || t.due > T0).sort(byDue) };
+  };
+  const misProyectos = () => { const ids = new Set(open(mine()).map((t) => t.project_id).filter(Boolean)); return projects.filter((p) => ids.has(p.id) || p.owner === who); };
   function paint() {
     if (!alive()) return;
-    const tabs = [['zona', 'Mi día'], ['kanban', 'Kanban'], ...(canCoord ? [['pipes', 'Pipelines'], ['equipo', 'Equipo']] : [])];
-    const viewSel = isCeo ? html`<select class="in sm" id="viewAs" style="width:auto"><option value="">Mi Workspace</option>${team.filter((p) => p.active !== false && p.kind !== 'ia' && p.id !== me.email).map((p) => html`<option value="${p.email || p.id}" ${asP && (asP.email || asP.id) === (p.email || p.id) ? raw('selected') : ''}>Ver como ${p.name}</option>`)}</select>` : '';
-    mount(el, html`${asP ? html`<div class="asbar">${ico('eye')} Estás viendo el Workspace de <b>${asP.name}</b> · lo que hagas aquí queda a su nombre <a href="#/work">Volver al mío</a></div>` : ''}<div class="wktop"><div><h1>${asP ? asP.name.split(' ')[0] : 'Workspace'}</h1><p class="mut">${role ? roleName(role) : asP ? 'Sin perfil de trabajo asignado' : 'Tu trabajo, en orden'}</p></div><div class="sp"></div>${viewSel}
-        ${canCoord ? html`<button class="btn ghost" data-act="newProject">+ Proyecto</button>` : ''}<button class="btn" data-act="newTask">+ Tarea</button></div>
-      <div class="wsnav"><div class="tabs" style="margin:0">${tabs.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
-        ${tab === 'zona' && myRoles.length > 1 ? html`<div class="tabs mini wsroles">${myRoles.map((r) => html`<button class="${r === role ? 'on' : ''}" data-act="role" data-r="${r}">${roleName(r).split(' · ')[0]}</button>`)}</div>` : ''}</div>
-      <div id="wbody"></div>`);
-    const vs = $('#viewAs', el); if (vs) vs.onchange = () => { location.hash = vs.value ? `/work/zona/_/${vs.value}` : '/work'; };
+    const L = listas(), D = dec();
+    const viewSel = isCeo ? html`<select class="in sm mt-who-sel" id="viewAs" aria-label="Ver las tareas de"><option value="">Mis tareas</option>${team.filter((p) => p.active !== false && p.kind !== 'ia' && p.id !== me.email).map((p) => html`<option value="${p.email || p.id}" ${asP && (asP.email || asP.id) === (p.email || p.id) ? raw('selected') : ''}>Ver las de ${p.name}</option>`)}</select>` : '';
+    const tile = (k, l, n, color, ic) => html`<button type="button" class="mt-tile ${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><span class="mt-ic" style="background:${color}">${ic}</span><b>${n}</b><span>${l}</span></button>`;
+    const item = (k, l, color, ic, n = '') => html`<button type="button" class="mt-li ${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><i style="background:${color}">${ic}</i>${l}${n !== '' ? html`<small>${n}</small>` : ''}</button>`;
+    const Z = ZONES[role];
+    mount(el, html`${asP ? html`<div class="asbar">${ico('eye')} Estás viendo las tareas de <b>${asP.name}</b> · lo que hagas aquí queda a su nombre <a href="#/work">Volver a las mías</a></div>` : ''}
+      <div class="mt"><aside class="mt-side">
+        <div class="mt-who"><span class="mt-av">${initials(whoP?.name || me.name)}</span><div><b>${asP ? asP.name : 'Mis tareas'}</b><span class="mut sm">${myRoles.map((r) => roleName(r).split(' · ')[0]).join(' · ') || 'Sin rol'}</span></div></div>
+        ${viewSel}
+        <div class="mt-tiles">${tile('hoy', 'Hoy', L.hoy.length, '#6b513c', '◷')}${tile('atrasadas', 'Atrasadas', L.atrasadas.length, '#b4472f', '!')}${tile('decisiones', isCeo && !asP ? 'Decisiones' : 'Por revisar', D.length, '#c58a2b', '⚑')}${tile('proximos', 'Próximos', L.proximos.length, '#7d7266', '▦')}</div>
+        <div class="mt-lists"><span class="mt-h">Lo mío</span>${item('proyectos', 'Mis proyectos', '#5a7d6a', '◧', misProyectos().length)}${item('kanban', 'Tablero', '#7a5f48', '▤')}
+          ${Z ? item('zona', Z.title || 'Mi rol', '#8a6fb0', '◈') : ''}
+          ${canCoord ? html`<span class="mt-h">Coordinar</span>${item('pipes', 'Pipelines', '#3c8a5a', '⇢')}${item('equipo', 'Equipo', '#a0785a', '◉')}` : ''}</div>
+      </aside><main class="mt-main card"><div id="wbody"></div></main></div>`);
+    const vs = $('#viewAs', el); if (vs) vs.onchange = () => { location.hash = vs.value ? `/work/hoy/_/${vs.value}` : '/work'; };
     const b = $('#wbody', el);
-    if (tab === 'zona') return zona(b);
-    ({ kanban, pipes, equipo })[tab](b);
+    if (tab === 'zona') return zona(b, { solo: true });
+    if (['kanban', 'pipes', 'equipo'].includes(tab)) return ({ kanban, pipes, equipo })[tab](b);
+    lista(b, tab, L, D);
+  }
+  const LISTA_T = { hoy: 'Hoy', atrasadas: 'Atrasadas', decisiones: 'Decisiones', proximos: 'Próximos', proyectos: 'Mis proyectos' };
+  function fila(t) {
+    const st = status(t), p = proj(t.project_id), late = t.due && t.due < T0 && st !== 'Hecha';
+    return html`<div class="mt-tk ${st === 'Hecha' ? 'done' : ''}" data-act="task" data-id="${t.id}"><input type="checkbox" class="mt-c" data-act="tdone" data-id="${t.id}" ${st === 'Hecha' ? raw('checked') : ''} aria-label="Marcar como hecha"><div class="mt-x"><div>${t.title}</div>
+      <small>${t.due ? html`<span class="${late ? 'mt-late' : ''}">${t.due === T0 ? 'Hoy' : t.due === T1 ? 'Mañana' : fdate(t.due)}</span>` : ''}${st === 'En revisión' ? html`<span class="mt-flag">En revisión</span>` : st === 'En curso' ? html`<span>En curso</span>` : ''}${p ? html`<span class="mt-chip">${p.client || p.name}</span>` : ''}${t.dept ? html`<span>${t.dept}</span>` : ''}</small></div></div>`;
+  }
+  function lista(b, k, L, D) {
+    const sub = k === 'hoy' ? `${new Date(T0 + 'T12:00').toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' })}` : k === 'decisiones' ? (isCeo && !asP ? 'Lo que espera que tú decidas' : 'Lo que te entregaron para revisar') : k === 'proximos' ? 'Lo que viene, por fecha' : k === 'atrasadas' ? 'Se pasaron de su fecha' : 'Tus tareas por proyecto';
+    const head = (n) => html`<header class="mt-mh"><div><h1>${LISTA_T[k]}</h1><p class="mut">${sub}</p></div><div class="row" style="gap:8px">${canCoord ? html`<button class="btn ghost" data-act="newProject">+ Proyecto</button>` : ''}<button class="btn" data-act="newTask">+ Tarea</button><span class="mt-n">${n}</span></div></header>`;
+    const grupos = (l) => { const g = new Map(); for (const t of l) { const p = proj(t.project_id), key = p ? `${p.client || 'Inherent'} · ${p.name}` : 'Sin proyecto'; (g.get(key) || g.set(key, []).get(key)).push(t); } return [...g].map(([n, ts]) => html`<div class="mt-grp">${n}</div>${ts.map(fila)}`); };
+    const vacio = (t) => html`<p class="mt-vacio">${t} ${ico('spark', 14)}</p>`;
+    if (k === 'decisiones') return mount(b, html`${head(D.length)}${D.length ? D.map((d) => html`<${raw(d.href ? 'a' : 'div')} class="mt-tk" ${raw(d.href ? `href="${d.href}"` : `data-act="${d.act}" data-id="${d.id}"`)}><span class="mt-c mt-dec">⚑</span><div class="mt-x"><div>${d.t}</div><small><span>${d.sub}</span></small></div></${raw(d.href ? 'a' : 'div')}>`) : vacio('Nada espera tu decisión.')}`);
+    if (k === 'proyectos') { const ps = misProyectos(); return mount(b, html`${head(ps.length)}${ps.length ? ps.map((p) => html`<div class="mt-grp"><a href="#/operations/p/${encodeURIComponent(p.id)}">${p.client ? `${p.client} · ` : ''}${p.name} ›</a></div>${open(mine()).filter((t) => t.project_id === p.id).map(fila)}`) : vacio('No tienes tareas en ningún proyecto.')}`); }
+    if (k === 'proximos') { const dias = new Map(); for (const t of L.proximos) { const d = t.due ? dayName(t.due) : 'Sin fecha'; (dias.get(d) || dias.set(d, []).get(d)).push(t); } return mount(b, html`${head(L.proximos.length)}${L.proximos.length ? [...dias].map(([d, ts]) => html`<div class="mt-grp">${d}</div>${ts.map(fila)}`) : vacio('Nada por delante.')}`); }
+    const l = L[k] || [];
+    mount(b, html`${head(l.length)}${l.length ? grupos(l) : vacio(k === 'hoy' ? 'Nada vence hoy.' : 'Nada atrasado.')}${k === 'hoy' ? html`<div class="mt-add"><span class="mt-c"></span><input class="in" id="quick" placeholder="Nueva tarea para hoy y Enter" aria-label="Nueva tarea para hoy"></div>` : ''}`);
+    hookQuick(b);
   }
 
   // ---------- lo que comparten todos: la línea, Hoy, Esta semana y Más ----------
@@ -108,7 +145,7 @@ export async function render(el, { me, sub, alive }) {
   const pill = (t) => html`<span class="wscount warn">${t}</span>`;
   let showAll = false, moreOpen = false; const ztab = {};
 
-  function zona(b) {
+  function zona(b, { solo = false } = {}) {
     const Z = ZONES[role] || noRoleZ;
     const all = roleTasks(), hoy = all.filter((t) => t.due && t.due <= T0);
     const week = all.filter((t) => t.due && t.due > T0 && t.due <= T7), later = all.length - hoy.length - week.length;
@@ -116,8 +153,7 @@ export async function render(el, { me, sub, alive }) {
     let k = ztab[role]; if (!tl.some(([x]) => x === k)) k = tl[0]?.[0] || 'main'; ztab[role] = k;
     const moreBody = Z.more ? Z.more() : '';
     mount(b, html`<div class="ws">
-      ${oneLine(hoy.length, Z.extra ? Z.extra() : '')}
-      <div class="wsgrid">${hoyBox(hoy)}${weekList(week, later)}</div>
+      ${solo ? '' : html`${oneLine(hoy.length, Z.extra ? Z.extra() : '')}<div class="wsgrid">${hoyBox(hoy)}${weekList(week, later)}</div>`}
       <section class="wszone"><div class="wszhead"><h2>${Z.title}</h2>${tl.length > 1 ? html`<div class="tabs mini wstabs">${tl.map(([x, l, n]) => html`<button class="${x === k ? 'on' : ''}" data-act="ztab" data-z="${x}">${l}${n ? html`<span class="wsn">${n}</span>` : ''}</button>`)}</div>` : ''}</div><div id="wz"></div></section>
       <details class="wsmore" ${moreOpen ? raw('open') : ''}><summary>${ico('right', 14)}<b>Más</b><span class="mut sm">${Z.moreLbl || 'Checklist del ciclo, SOPs y subir trabajo'}</span></summary>
         ${moreBody ? html`<div class="wkgrid">${moreBody}</div>` : ''}

@@ -7,7 +7,7 @@
 // Sin configuración, todo sigue como siempre: cada rol ve sus áreas de siempre y puede editarlas.
 // Un perfil que no está en la lista no opina; si una persona tiene varios perfiles, gana el más amplio.
 // «sales» abre Ventas (CRM, cotizaciones, fuentes) y Servicios (paquetes, catálogo, especialistas, responsabilidades).
-export const SECTIONS = [['home', 'Hoy'], ['control', 'Control del flujo'], ['clients', 'Clientes'], ['sales', 'Ventas y Servicios'],['operations', 'Proyectos'], ['work', 'Workspace'], ['content', 'Marcas · contenido'], ['estrategia', 'Estrategia'], ['resultados', 'Indicadores'], ['roadmap', 'Roadmap'], ['finanzas', 'Finanzas'], ['library', 'Library'], ['team', 'Equipo']];
+export const SECTIONS = [['home', 'Hoy'], ['control', 'Control del flujo'], ['clients', 'Clientes'], ['sales', 'Ventas y Servicios'],['operations', 'Proyectos'], ['work', 'Mis tareas'], ['content', 'Marcas · contenido'], ['estrategia', 'Estrategia'], ['resultados', 'Indicadores'], ['roadmap', 'Roadmap'], ['finanzas', 'Finanzas'], ['library', 'Library'], ['team', 'Equipo']];
 // Los dos espacios del OS y sus secciones. El interruptor de arriba cambia de espacio; cada uno tiene su propia barra.
 //   Organization (cómo se maneja la empresa): Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent.
 //   Marcas (cómo se crean marcas): una marca por cliente, Inherent y la marca personal del CEO (privada).
