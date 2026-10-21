@@ -112,7 +112,8 @@ export async function render(el, { me, sub, alive }) {
     if (veFin) col('invoices').list().then((l) => { cobros = l.filter((i) => i.kind === 'cobrar' && i.client === slug && ['pendiente', 'vencida'].includes(estadoFactura(i, today()))); if (alive() && tab === 'info') { const z = $('#cp-cobros', el); if (z) z.outerHTML = String(cobrosCard()); } }).catch(() => { cobros = null; });
     function cicloCard() {
       const dia = +today().slice(8, 10), fase = dia > 20 ? null : CYCLE.filter(([, x, z]) => dia >= x && dia <= z).at(-1) || null;
-      return html`<section class="card cp-card"><span class="lbl">El ciclo de este mes</span><div class="cp-dia"><b>${dia > 20 ? '20+' : `Día ${dia}`}</b><span class="mut">${dia > 20 ? 'Ya se presentó. Lo presentado se publica desde el día 1.' : fase ? fase[0] : ''}</span></div>
+      const pa = ps.find((p) => p.status !== 'cerrado') || ps[0];
+      return html`<section class="card cp-card"><div class="row"><span class="lbl">El ciclo de este mes</span><div class="sp"></div>${pa ? html`<a class="sm" href="#/operations/p/${encodeURIComponent(pa.id)}/timeline">Editar fechas ›</a>` : toBrand ? html`<a class="sm" href="#/marcas/${slug}/calendario">Calendario ›</a>` : ''}</div><div class="cp-dia"><b>${dia > 20 ? '20+' : `Día ${dia}`}</b><span class="mut">${dia > 20 ? 'Ya se presentó. Lo presentado se publica desde el día 1.' : fase ? fase[0] : ''}</span></div>
         <div class="bh-ciclo" aria-label="Fases del ciclo">${CYCLE.map(([n, x, z]) => html`<i class="${dia > z ? 'ok' : dia >= x ? 'now' : ''}" style="flex:${z - x + 1}" title="${n}"></i>`)}</div>
         <div class="bh-ciclo-l mut sm"><span>Día 1 · reunión</span><span>11 · último día para producir</span><span>20 · presentación</span></div></section>`;
     }
@@ -125,7 +126,7 @@ export async function render(el, { me, sub, alive }) {
     function reunionCard() {
       const m = upcoming(ps)[0];
       const d = m ? new Date(m.date + 'T12:00') : null;
-      return html`<section class="card cp-card"><span class="lbl">Próxima reunión</span>${m ? html`<div class="cp-meet"><div class="cp-day"><span>${d.toLocaleDateString('es', { month: 'short' }).replace('.', '').toUpperCase()}</span><b>${d.getDate()}</b></div><div><b>${m.title || m.kind || 'Reunión'}</b><div class="mut sm">${[m.time, m.where || m.link ? 'En línea' : '', m.p?.name].filter(Boolean).join(' · ')}</div></div></div>` : html`<p class="mut sm">Sin reuniones por delante.</p>`}</section>`;
+      return html`<section class="card cp-card"><div class="row"><span class="lbl">Próxima reunión</span><div class="sp"></div>${(m?.p || ps[0]) ? html`<a class="sm" href="#/operations/p/${encodeURIComponent((m?.p || ps[0]).id)}/calendario">${m ? 'Ver o mover ›' : 'Agendar ›'}</a>` : ''}</div>${m ? html`<div class="cp-meet"><div class="cp-day"><span>${d.toLocaleDateString('es', { month: 'short' }).replace('.', '').toUpperCase()}</span><b>${d.getDate()}</b></div><div><b>${m.title || m.kind || 'Reunión'}</b><div class="mut sm">${[m.time, m.where || m.link ? 'En línea' : '', m.p?.name].filter(Boolean).join(' · ')}</div></div></div>` : html`<p class="mut sm">Sin reuniones por delante.</p>`}</section>`;
     }
     function cobrosCard() {
       if (!veFin) return '';

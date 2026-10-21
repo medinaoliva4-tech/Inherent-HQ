@@ -3837,3 +3837,4 @@ span.ev-sup{cursor:default}
 @media (max-width:1000px){.cp-row3{grid-template-columns:1fr}}
 .cp-hd .sp-cover-chips .chip{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--hair)}
 .cp-hd .sp-cover-chips a.chip{color:var(--ink)}
+.cp-hd{align-items:flex-start}.cp-mono{width:64px;height:64px;margin-top:2px}
