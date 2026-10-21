@@ -59,7 +59,7 @@ export const MODULES = [
   ['creacion', 'Creación', 'edit'],
   ['formatos', 'Formatos', 'copy'],
   ['marca', 'Identidad', 'palette'],
-  ['design', 'Design system', 'layers', 'Colores, tipografía, logo, grilla y componentes de la marca, sincronizados con Figma.'],
+  ['design', 'Design system', 'layers'],
   ['video', 'Video', 'video', 'Una ficha por video: assets, cortes, lógica y transiciones, con vista previa.'],
   ['calendario', 'Calendario', 'cal'],
   ['ads', 'Ads', 'megaphone', 'AI ads: un video muy específico por avatar (sus señales dichas y mostradas) para que la IA de Meta lo lleve a esa persona, y sus variaciones listas para pautar en Meta y Google con tu OK.'],
@@ -92,6 +92,7 @@ export function modulesFor(me, b) {
     calendario: A.contentFull,
     resultados: A.content,
     marca: b.personal ? me.role === 'ceo' : A.clientsFull,
+    design: !b.personal && (A.contentFull || A.clientsFull),
   };
   return MODULES.filter(([k, , , soon]) => !soon && ok[k]).map(([k]) => k);
 }

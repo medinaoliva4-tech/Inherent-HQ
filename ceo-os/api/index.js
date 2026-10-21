@@ -29,6 +29,7 @@ import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
 import { levelName } from '../public/js/levels.js';
 import { estadoDe, archivado, nombreAuto, marcaDe } from '../public/js/element.js';
+import { leerSistema } from '../public/js/sistema-visual.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
 import { body, fail } from './_lib/http.js';
 
@@ -516,6 +517,24 @@ on('GET', 'repo/client/:slug', async (req, res) => {
   const p = plan ? parsePlanContratado(plan.content, u.role) : { plan: '', fields: [], pipeline: [] };
   const prof = await content.profile({ slug, name: slug.toUpperCase(), root: `clients/${slug}` });
   res.json({ slug, ...p, links: prof.links, own: prof.own, months: prof.months.map((m) => ({ mes: m.mes, files: m.files.map((f) => ({ path: f.path, name: f.name, area: f.area })) })) });
+});
+
+// ---------- Marca › Diseño › Design system: el sistema visual de la marca y sus logos ----------
+// Lee 02-marca/sistema-visual.md (lo escribe ②B Branding con br-sistema) y los logos SVG que nombra su § Logo.
+on('GET', 'repo/client/:slug/sistema', async (req, res) => {
+  const u = await guardAny(req, res, ['clients', 'content']); if (!u) return;
+  const slug = req.params.slug; if (!slugOk(slug) || slug === 'personal') return res.status(400).json({ error: 'Marca inválida' });
+  if (slug !== 'inherent') { const sc = await scoper(u); if (sc && !sc.client(slug)) return res.status(404).json({ error: 'Esa marca no está entre las tuyas' }); }
+  const root = slug === 'inherent' ? 'inherent/inherent-social-media' : `clients/${slug}`, path = `${root}/02-marca/sistema-visual.md`;
+  const f = await readFile(path);
+  if (!f) return res.json({ slug, path, md: '', logos: {} });
+  const logos = {};
+  for (const l of leerSistema(f.content).logos) {
+    if (logos[l.archivo] || !/^[\w.-]+\.svg$/i.test(l.archivo)) continue;
+    const svg = await readFile(`${root}/02-marca/logos/${l.archivo}`).catch(() => null);
+    if (svg && svg.content.length < 300000 && /<svg[\s>]/i.test(svg.content)) logos[l.archivo] = 'data:image/svg+xml;base64,' + Buffer.from(svg.content).toString('base64');
+  }
+  res.json({ slug, path, md: f.content, logos });
 });
 
 // ---------- Google Drive (Library) ----------
