@@ -26,6 +26,8 @@ export const COLLS = {
   avatars: 'content',
   // App 01 · Marca › Crear: formatos y guiones. Solo por /api/formatos/* y /api/guiones/* (api/_lib/creacion.js).
   formats: 'content', scripts: 'content',
+  // App 01 · Marca › Crear › Plan del mes: el plan de ③ Marketing de cada mes. Solo por /api/plan/* (api/_lib/plan.js).
+  plans: 'content',
   invoices: 'finanzas', bank_moves: 'finanzas', cost_recipes: 'finanzas',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas

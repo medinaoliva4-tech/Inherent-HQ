@@ -21,6 +21,7 @@ import * as intel from './_lib/intel.js';
 import * as estrategia from './_lib/estrategia.js';
 import * as avatares from './_lib/avatares.js';
 import * as creacion from './_lib/creacion.js';
+import * as planMes from './_lib/plan.js';
 import * as portal from './_lib/portal.js';
 import * as inv from './_lib/investigacion.js';
 import * as buscar from './_lib/buscar.js';
@@ -1130,6 +1131,7 @@ estrategia.rutas(on);
 avatares.rutas(on);
 // ---------- App 01 · Marca › Crear: formatos (plantillas) y guiones ----------
 creacion.rutas(on);
+planMes.rutas(on);
 // ---------- Investigación (Fase 4): referentes por marca, scraping automático con Apify y «Usar como formato» ----------
 inv.rutas(on);
 
