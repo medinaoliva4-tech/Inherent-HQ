@@ -9,7 +9,7 @@ const HEALTH = { ok: ['En camino', 'green', '#795c45'], riesgo: ['En riesgo', 'a
 export const goalsOf = (a) => a?.goals || (a?.roadmap || []).map((x) => ({ goal: x.t, due: x.date || '', status: x.status || 'todo', note: x.note || '', metric: '', baseline: '', target: '', current: '', tasks: [], checks: [] }));
 const num = (v) => { const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, '')); return Number.isFinite(n) ? n : null; };
 export const pctOf = (g) => { if (g.status === 'done') return 100; const b = num(g.baseline) ?? 0, t = num(g.target), c = num(g.current); if (t == null || c == null || t === b) return null; return Math.max(0, Math.min(100, Math.round(((c - b) / (t - b)) * 100))); };
-const healthOf = (g) => [...(g.checks || [])].reverse().find((c) => c.done)?.health || null;
+export const healthOf = (g) => [...(g.checks || [])].reverse().find((c) => c.done)?.health || null;
 function checkpoints(from, to, every) {
   const out = []; const d = new Date(from + 'T12:00'), end = new Date((to || from) + 'T12:00');
   const step = () => (every === 'semanal' ? d.setDate(d.getDate() + 7) : every === 'quincenal' ? d.setDate(d.getDate() + 14) : d.setMonth(d.getMonth() + 1));

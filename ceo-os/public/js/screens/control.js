@@ -1,10 +1,10 @@
 // Control: el panel del CEO y el COO. Todo lo que entra, de lead a entrega, conectado:
 // lead → cotización → aprobada → pago → confirmado → proyecto con responsables, fechas y dependencias.
 // Cada tarjeta trae su siguiente paso. Abajo, lo que necesita atención hoy (bloqueos, atrasos, revisiones).
-import { html, mount, col, api, toast, acts, ask, confirmAsk, drawer, fdate, today, teamList, Q, ico, isSummary, roChip } from '../core.js';
+import { html, mount, col, api, toast, acts, ask, drawer, fdate, today, teamList, Q, ico, isSummary, roChip } from '../core.js';
 import { blockersOf, unlocksOf, addDays } from '../cycle.js';
 import { levelName } from '../levels.js';
-import { payDialog, openProof } from '../flowui.js';
+import { payDialog, openProof, confirmarYArrancar } from '../flowui.js';
 
 const STEPS = [
   ['lead', 'Leads', 'Por cotizar', '#b29c87'],
@@ -14,7 +14,6 @@ const STEPS = [
   ['run', 'En marcha', 'Proyectos', '#755943'],
 ];
 const OPEN_LEAD = ['Nuevo', 'Contactado', 'Reunión', 'Propuesta'];
-const nextWorkday = () => { const d = new Date(); do d.setDate(d.getDate() + 1); while (!(d.getDay() % 6)); return d.toISOString().slice(0, 10); };
 
 export async function render(el, { me }) {
   const ceoish = me.role === 'ceo' || me.role === 'coo';
@@ -131,22 +130,8 @@ export async function render(el, { me }) {
       if (await payDialog({ quote_id: q.id, client: q.client, currency: q.currency || 'GTQ', amount: Math.round(sub(q) * (q.currency && q.currency !== 'GTQ' ? +q.rate || 1 : 1) * 100) / 100 })) refresh();
     },
     confirm: async (b) => {
-      const q = quotes.find((x) => x.id === b.dataset.id);
-      const hasSvc = (q.items || []).some((i) => i.service_id);
-      const v = await ask(`Confirmar el pago y arrancar · ${q.client}`, [
-        { k: 'kind', l: 'Tipo de proyecto', t: 'select', v: hasSvc ? 'Custom' : 'Proyecto', opts: [['Custom', 'Custom · los servicios de la cotización'], ['Ciclo mensual', 'Ciclo de contenido'], ['Proyecto', 'Proyecto por fases'], ['Growth', 'Business Growth']] },
-        { k: 'start', l: 'Arranca', t: 'date', v: nextWorkday(), req: true, half: true },
-        { k: 'email', l: 'Correo del cliente (le da acceso a su portal)', t: 'email', v: q.email || leads.find((l) => l.id === q.lead_id)?.email || '' },
-        { k: 'welcome', l: 'Correo de bienvenida', t: 'select', v: 'si', opts: [['si', 'Sí: gracias + su portal + su onboarding'], ['no', 'No mandar correo']] },
-        { k: 'slug', l: 'Nombre corto del cliente', v: q.client_slug || String(q.client || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''), req: true, half: true }], 'Confirmar y arrancar');
-      if (!v) return;
-      const st = await api('status').catch(() => ({}));
-      if (v.email && !st.portal) toast('Ojo: el cliente podrá entrar a su portal cuando termines el cliente de Google del portal', true);
-      const r = await step(q.id, 'confirm', v);
-      if (r?.project_id) {
-        toast(`Arrancó ${r.tasks} tareas para ${r.people} personas${r.welcome?.sent ? ` · correo enviado a ${r.welcome.to}` : ''}`); openProject(r.project_id);
-        if (r.welcome && !r.welcome.sent && (await confirmAsk('No pude mandarlo desde tu Gmail (sal y vuelve a entrar para dar el permiso). ¿Lo abro en Gmail ya escrito?'))) window.open(r.welcome.compose, '_blank', 'noopener');
-      }
+      const r = await confirmarYArrancar(quotes.find((x) => x.id === b.dataset.id), { leads });
+      if (r?.project_id) { await refresh(); openProject(r.project_id); }
     },
     proof: (b) => openProof(b.dataset.id),
     proj: (b) => (b.dataset.id ? openProject(b.dataset.id) : b.dataset.href && (location.hash = b.dataset.href)),

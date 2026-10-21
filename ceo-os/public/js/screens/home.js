@@ -1,6 +1,6 @@
-// Hoy. Para el CEO: tres números, las entregas del mes por semana, lo de hoy y lo que necesita atención.
+// Hoy. Para el CEO y el COO: el pulso del mes (un número por área), lo que necesita atención, la agenda y el contenido.
 // Para el equipo: sus responsabilidades (qué, para cuándo y dónde se entrega). Sin revenue, leads ni engagement.
-import { html, raw, mount, col, api, fdate, today, toast, acts, IC, $, $$, Q, calQ, teamList, ico, initials, fromLink } from '../core.js';
+import { html, raw, mount, col, api, fdate, today, toast, acts, IC, $, $$, Q, USD, calQ, teamList, ico, initials } from '../core.js';
 import { upcoming, people as meetPeople } from '../meetings.js';
 import { kpis, PAL } from '../charts.js';
 import { openDelivery, dueChip, stChip } from '../taskcard.js';
@@ -9,6 +9,11 @@ import { connectNotice, hookNotice } from '../connectai.js';
 import { purposeCard } from '../purpose.js';
 import { estadoDe } from '../element.js';
 import { dueAccess, dueSoon, durText, updateWaits } from '../ventas-flujo.js';
+import { llevamos, pronostico, habilesQuedan } from '../ventas-meta.js';
+import { totales } from '../facturas.js';
+import { goalsOf, healthOf } from '../goals.js';
+import { levelName } from '../levels.js';
+import { payDialog, openProof, confirmarYArrancar } from '../flowui.js';
 
 const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; };
 const iso = (d) => d.toISOString().slice(0, 10);
@@ -60,121 +65,118 @@ export async function render(el, { me, alive }) {
   const trow = (t, extra = '') => html`<div class="wkrow" data-act="open" data-id="${t.id}"><span class="grow"><b style="font-weight:500">${t.title}</b><span class="mut sm"> · ${clientOf(t)}${extra ? ' · ' + extra : ''}</span></span>${dueChip(t)}${stChip(t)}</div>`;
   const agendaRows = () => agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm">No pude leer tu Google Calendar. <button class="sm linkish" data-act="agRetry">Reintentar</button></div>`
     : agenda.slice(0, 5).map((e) => html`<a class="wkrow" href="${/^https:\/\//.test(e.link || '') ? e.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="wkt">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="grow">${e.summary}</span>${e.meet ? html`<span class="mut sm">Meet</span>` : ''}</a>`);
-  const head = () => html`<div class="hello sp-hero"><h1>${greet()}, ${first}.</h1><p>${ceoish ? html`Esto es lo que pasa hoy en <em>Inherent</em>.` : html`Esto es lo tuyo <em>hoy</em>.`}</p></div>
+  const head = (linea) => html`<div class="hello sp-hero"><h1>${greet()}, ${first}.</h1><p>${linea || (ceoish ? html`Esto es lo que pasa hoy en <em>Inherent</em>.` : html`Esto es lo tuyo <em>hoy</em>.`)}</p></div>
     ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const now = p.birthday === soon[0], mine = (p.email || p.id) === me.email; return html`<span class="bdi ${now ? 'now' : ''}">${now ? (mine ? html`${ico('spark')} <b>¡Feliz cumpleaños, ${first}!</b>` : html`${ico('cake')} <b>Hoy cumple ${p.name.split(' ')[0]}</b>`) : html`${ico('cake')} ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
     ${connectNotice(me)}`;
 
   // ---------- CEO · COO ----------
-  // Solo cuatro cosas, cada una lleva a donde está desarrollada: proyectos activos · % en día · reuniones · contenido de cada cuenta.
-  // Al final, compacta, la lista de lo que necesita atención.
+  // Arriba, el pulso del mes: cuatro números, uno por área, y cada uno lleva a donde se trabaja (Ventas, Finanzas,
+  // Proyectos, Clientes). Abajo, una sola lista de lo que se traba si nadie lo mueve, con su botón; a la derecha, la
+  // agenda y el contenido del mes. Lo de cobrar y arrancar (lo que era Control del flujo) vive aquí.
   const tasksOf = (p) => tasks.filter((t) => t.project_id === p.id);
   const daysFrom = (d) => Math.round((new Date(d + 'T12:00') - new Date(T + 'T12:00')) / 864e5);
   const whenLabel = (d) => (d === T ? 'Hoy' : daysFrom(d) === 1 ? 'Mañana' : fdate(d));
+  const seesClients = (me.areas || []).includes('clients');
+  let quotes = null, metaDoc = null;
+  if (ceoish || acc.sales) col('quotes').list().catch(() => []).then((l) => { quotes = l; if (alive()) paint(); });
+  if (acc.sales) col('settings').get('ventas_meta').catch(() => null).then((d) => { metaDoc = d; if (alive()) paint(); });
+  const qSub = (q) => (q.items || []).reduce((a, i) => a + (+i.qty || 0) * (+i.price || 0), 0) * (1 - (+q.discount_pct || 0) / 100);
+  const pct = (a, b) => (b ? Math.max(0, Math.min(100, Math.round((a / b) * 100))) : 0);
+
+  function pulso(late) {
+    const out = [];
+    if (acc.sales) {
+      const l = dueLeads || [], meta = +(metaDoc?.meses?.[M]) || 0, ganado = llevamos(l, M).ganado, fc = Math.round(pronostico(l));
+      out.push({ k: 'Ventas', href: '#/org/sales/crm', big: dueLeads === null ? '…' : USD(ganado), de: meta ? `de ${USD(meta)}` : '', bar: meta ? pct(ganado, meta) : null,
+        sub: meta ? html`Pronóstico <em>${USD(fc)}</em> · faltan ${habilesQuedan()} días hábiles` : html`Sin meta este mes · ponla en Ventas › Meta` });
+    }
+    if (acc.cobrar) {
+      const t = totales(dueInv || []), tot = t.cobradoMes + t.porCobrar;
+      out.push({ k: 'Ingresos cobrados', href: '#/org/finanzas', big: dueInv === null ? '…' : Q(t.cobradoMes), bar: tot ? pct(t.cobradoMes, tot) : null, green: true,
+        sub: t.nPorCobrar ? html`${Q(t.porCobrar)} por cobrar${t.nVencidas ? html` · <span class="r">${t.nVencidas} vencida${t.nVencidas === 1 ? '' : 's'}</span>` : ''}` : 'Nada por cobrar' });
+    }
+    const dueM = tasks.filter((t) => t.due && t.due.slice(0, 7) === M && t.due < T && (open(t) || t.done_at));
+    const onTime = dueM.filter((t) => !open(t) && String(t.done_at).slice(0, 10) <= t.due).length, p2 = dueM.length ? Math.round((onTime / dueM.length) * 100) : null;
+    out.push({ k: 'Entregas a tiempo', href: '#/org/operations', big: p2 == null ? '—' : p2, de: p2 == null ? '' : '%', bar: p2,
+      sub: p2 == null ? 'Sale de las tareas de este mes que ya vencieron' : html`${onTime} de ${dueM.length}${late.length ? html` · <span class="r">${late.length} atrasada${late.length === 1 ? '' : 's'}</span>` : ''}` });
+    if (seesClients) {
+      const con = accounts.map((a) => ({ a, gs: goalsOf(a).filter((g) => g.status !== 'done') })).filter((x) => x.gs.length);
+      const mal = con.filter((x) => x.gs.some((g) => ['riesgo', 'off'].includes(healthOf(g))));
+      out.push({ k: 'Clientes en su meta', href: '#/org/clients', big: con.length ? con.length - mal.length : '—', de: con.length ? `de ${con.length}` : '', bar: con.length ? pct(con.length - mal.length, con.length) : null,
+        sub: !con.length ? 'Sin metas puestas en los clientes' : mal.length ? `${mal.map((x) => x.a.name).slice(0, 2).join(' y ')} va${mal.length === 1 ? '' : 'n'} por debajo` : 'Todos van en camino' });
+    }
+    return html`<div class="hy-pulso">${out.map((x) => html`<a class="hy-k" href="${x.href}"><span class="hy-go">↗</span><span class="lbl" style="margin:0">${x.k}</span><b>${x.big}${x.de ? html`<small>${x.de}</small>` : ''}</b>
+      <span class="hy-bar">${x.bar != null ? html`<i style="width:${x.bar}%${x.green ? ';background:#3c8a5a' : ''}"></i>` : ''}</span><span class="hy-n">${x.sub}</span></a>`)}</div>`;
+  }
+
+  // Lo que necesita atención: pagos, cotizaciones, leads listos para cotizar, seguimientos, facturas, tareas y onboardings.
+  function atencion(late, review) {
+    const out = [], qs = quotes || [];
+    const conQuote = new Set(qs.filter((q) => q.status !== 'Rechazada').map((q) => q.lead_id).filter(Boolean));
+    const money = (q, n) => { const c = q.currency || 'GTQ'; try { return new Intl.NumberFormat('es-GT', { style: 'currency', currency: c, maximumFractionDigits: c === 'GTQ' ? 0 : 2 }).format(n); } catch { return Q(n); } };
+    for (const q of qs) {
+      if (q.status === 'Aceptada' && q.payment?.status === 'por confirmar') out.push({ w: 0, ic: '$', tone: 'm', t: `Pago de ${q.client}`, s: `Subieron el comprobante · ${q.number} · ${money({ currency: q.payment.currency }, q.payment.amount)}`, tag: 'Hoy', btn: ceoish ? ['confirm', 'Confirmar pago', q.id, true] : null, proof: q.payment.proof_id });
+      else if (q.status === 'Aceptada' && (!q.payment || q.payment.status === 'rechazado')) out.push({ w: 1, ic: '$', tone: 'm', t: `Falta el pago de ${q.client}`, s: `${q.number} · ${money(q, qSub(q))} aprobada${q.payment?.status === 'rechazado' ? ' · pago devuelto' : ''}`, tag: '', btn: ['pay', 'Subir pago', q.id] });
+      else if (q.status === 'Enviada' && q.sent_at && q.sent_at.slice(0, 10) <= addDays(T, -5)) { const d = -daysFrom(q.sent_at.slice(0, 10)); out.push({ w: 3, ic: ico('mail', 14), tone: 'b', t: `${q.client} no ha respondido la cotización`, s: `${q.number} · enviada el ${fdate(q.sent_at.slice(0, 10))}`, tag: `${d} días`, red: true, href: `#/org/sales/quotes/${q.id}`, hl: 'Dar seguimiento' }); }
+    }
+    for (const l of dueLeads || []) if (['Reunión', 'Propuesta'].includes(l.stage) && !l.archived && !conQuote.has(l.id)) out.push({ w: 4, ic: '→', tone: 'g', t: `${l.name} · por cotizar`, s: [l.wants ? levelName(l.wants) : '', l.company].filter(Boolean).join(' · ') || 'Lista para cotizar', tag: '', href: `#/org/sales/quotes/new/${l.id}`, hl: 'Cotizar' });
+    for (const x of dueSoon({ leads: dueLeads || [], invoices: dueInv || [], access: acc, T, now: Date.now() })) out.push({ w: x.date < T ? 2 : 5, ic: x.kind === 'lead' ? '☏' : '$', tone: x.kind === 'lead' ? 'b' : 'm', t: x.kind === 'lead' ? (x.wait != null ? `${x.title} espera respuesta` : `Seguimiento a ${x.title}`) : `${x.kind === 'cobrar' ? 'Cobrar a' : 'Pagar a'} ${x.title}`, s: x.kind === 'lead' ? x.sub : [x.sub, Q(x.amount)].filter(Boolean).join(' · '), tag: x.wait != null ? html`<span class="vf-timer ${x.tone}" data-wait="${x.created}">${durText(x.wait)}</span>` : x.date < T ? `Venció ${fdate(x.date)}` : whenLabel(x.date), red: x.date < T, href: x.href, hl: 'Abrir' });
+    for (const t of [...late, ...review.filter((r) => !late.includes(r))]) out.push({ w: st(t) === 'En revisión' ? 6 : 2, ic: st(t) === 'En revisión' ? ico('eye', 14) : '!', tone: st(t) === 'En revisión' ? 'b' : 'v', t: st(t) === 'En revisión' ? `Revisar: ${t.title}` : t.title, s: `${clientOf(t)} · ${nameOf(t.assignee).split(' ')[0]}`, tag: st(t) === 'En revisión' ? 'En revisión' : `Venció ${fdate(t.due)}`, red: st(t) !== 'En revisión', task: t.id });
+    for (const a of accounts) { const ob = a.onboarding; if (!ob?.items?.length || ob.done_at || !ob.at || ob.at.slice(0, 10) > addDays(T, -2)) continue; out.push({ w: 5, ic: '○', tone: 'b', t: `${a.name} no ha terminado su onboarding`, s: `${ob.items.filter((x) => x.done).length} de ${ob.items.length} listos`, tag: `Desde el ${fdate(ob.at.slice(0, 10))}`, href: `#/portal/${a.slug || a.id.replace(/^acc-/, '')}`, hl: 'Abrir' }); }
+    return out.sort((a, z) => a.w - z.w);
+  }
+  const itemHtml = (x) => html`<div class="hy-it"><span class="hy-d ${x.tone}">${x.ic}</span><div class="hy-t">${x.t}<small>${x.s}</small></div><span class="hy-tag ${x.red ? 'r' : ''}">${x.tag}</span>
+    ${x.proof ? html`<button class="btn ghost xs" data-act="proof" data-id="${x.proof}">Comprobante</button>` : ''}
+    ${x.btn ? html`<button class="btn xs ${x.btn[3] ? '' : 'ghost'}" data-act="${x.btn[0]}" data-id="${x.btn[2]}">${x.btn[1]}</button>` : x.task ? html`<button class="btn ghost xs" data-act="open" data-id="${x.task}">Abrir</button>` : x.href ? html`<a class="btn ghost xs" href="${x.href}">${x.hl}</a>` : ''}</div>`;
+
   function ceo() {
     const openT = tasks.filter(open);
     const late = openT.filter((t) => t.due && t.due < T), review = tasks.filter((t) => st(t) === 'En revisión');
-    // 1 · Proyectos activos (como en Control): no cerrados y con algo abierto (o recién creados, sin tareas).
-    const active = projects.filter((p) => p.status !== 'cerrado' && (tasksOf(p).some(open) || !tasksOf(p).length));
-    const progM = (p) => { const l = tasksOf(p).filter((t) => String(t.due || '').slice(0, 7) === M), d = l.filter((t) => !open(t)).length; return { n: l.length, d, pct: l.length ? Math.round((d / l.length) * 100) : null }; };
-    // 2 · % en día: de las tareas de este mes que ya vencieron, cuántas se entregaron a tiempo (done_at ≤ due).
-    //     Las hechas sin fecha de entrega registrada no se cuentan (no se puede saber si fueron a tiempo).
-    const dueM = tasks.filter((t) => t.due && t.due.slice(0, 7) === M && t.due < T && (open(t) || t.done_at));
-    const onTime = dueM.filter((t) => !open(t) && String(t.done_at).slice(0, 10) <= t.due).length;
-    const pct = dueM.length ? Math.round((onTime / dueM.length) * 100) : null;
-    // 3 · Reuniones: Google Calendar + las de los proyectos, las próximas 5.
+    // La agenda: Google Calendar + las reuniones de los proyectos.
     const evs = (agenda || []).map((e) => ({ date: String(e.start).slice(0, 10), time: e.allDay ? '' : String(e.start).slice(11, 16), name: e.summary, sub: [e.calName, e.meet ? 'Meet' : ''].filter(Boolean).join(' · '), href: /^https:\/\//.test(e.link || '') ? e.link : '', ext: true }));
     const links = new Set(evs.map((e) => e.href).filter(Boolean));
-    const pm = upcoming(projects).filter((x) => !(x.link && links.has(x.link))).map((x) => ({ date: x.date, time: x.time || '', name: x.name, sub: [x.p.client || x.p.name, meetPeople(x, people, me.email).map((y) => (y.name ? y.name.split(' ')[0] : y.label)).join(', ')].filter(Boolean).join(' · '), href: x.p.client_slug ? `#/clients/${x.p.client_slug}` : '#/clients' }));
+    const pm = upcoming(projects).filter((x) => !(x.link && links.has(x.link))).map((x) => ({ date: x.date, time: x.time || '', name: x.name, sub: [x.p.client || x.p.name, meetPeople(x, people, me.email).map((y) => (y.name ? y.name.split(' ')[0] : y.label)).join(', ')].filter(Boolean).join(' · '), href: x.p.client_slug ? `#/clients/${x.p.client_slug}` : '' }));
     const meets = [...evs.filter((e) => e.date >= T), ...pm].sort((a, z) => (a.date + (a.time || '99')).localeCompare(z.date + (z.time || '99')));
-    const meetsToday = meets.filter((x) => x.date === T).length;
-    const attention = [...late, ...review.filter((t) => !late.includes(t))].sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
-    const R = 26, C = 2 * Math.PI * R, vp = dueCard();
-    mount(el, html`${head()}
-      ${me.role === 'ceo' && !tasks.length && !projects.length ? html`<a class="asbar" href="#/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> y queda lista con lo que ya dice el repo →</a>` : ''}
-      <div class="sp-kpis">
-        <a class="sp-kpi" href="#/operations"><span class="lbl">Proyectos activos</span><b>${active.length}</b>${fromLink({ label: 'Proyectos', plain: true, title: 'Los proyectos no cerrados con algo abierto · Proyectos' })}</a>
-        <a class="sp-kpi" href="#/resultados"><span class="lbl">% en día</span><b>${pct == null ? '—' : html`${pct}<small class="mut" style="font-size:16px">%</small>`}</b>${fromLink({ label: 'Indicadores', plain: true, title: 'Las tareas de este mes que ya vencieron, contra su fecha · Hoy → Indicadores' })}</a>
-        <a class="sp-kpi" href="#/operations/cal"><span class="lbl">Reuniones hoy</span><b>${agenda === null ? '…' : meetsToday}</b>${fromLink({ label: 'Calendar y Proyectos', plain: true, title: 'Tu Google Calendar y las reuniones de cada proyecto' })}</a>
-      </div>
-      <div class="hoy-top">
-        <section class="sp-panel"><a class="wkhead" href="#/clients" style="text-decoration:none;color:inherit"><div><h3>Proyectos activos</h3><span class="mut sm">Cliente · proyecto · avance del mes</span></div><div class="sp"></div><span class="sp-tile-go">↗</span></a>
-          ${active.length ? active.slice(0, 6).map((p) => { const g = progM(p); return html`<a class="hoy-proj" href="${p.client_slug ? `#/clients/${p.client_slug}/servicio` : '#/clients'}"><div class="row"><b style="font-weight:500" class="grow">${p.client || p.name}</b><span class="mut sm">${g.n ? `${g.d}/${g.n}` : 'sin entregas este mes'}</span></div><span class="mut sm">${p.name}</span><div class="sp-meter"><i style="width:${g.pct || 0}%"></i></div></a>`; })
-          : html`<div class="mut sm" style="padding:12px 0">Sin proyectos activos. Nacen al confirmar el pago de una cotización.</div>`}
-          ${active.length > 6 ? html`<a class="sm mut" href="#/control" style="padding:10px 0 2px">y ${active.length - 6} más →</a>` : ''}</section>
-        <section class="sp-panel"><div class="wkhead" data-act="toAtt"><div><h3>% en día</h3><span class="mut sm">Entregadas a tiempo de las que ya vencieron este mes</span></div></div>
-          <div class="hoy-big"><div class="sp-ring" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="trk" cx="32" cy="32" r="${R}" fill="none" stroke-width="6"/>${pct == null ? '' : raw(`<circle class="val" cx="32" cy="32" r="${R}" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C * (1 - pct / 100)).toFixed(2)}"/>`)}</svg></div>
-            <div><div class="sp-pct">${pct == null ? '—' : html`${pct}<small>%</small>`}</div><div class="mut sm" style="margin-top:4px">${pct == null ? 'Sale de las tareas con fecha de este mes que ya vencieron' : `${onTime} de ${dueM.length} a tiempo`}</div></div></div>
-          <button class="sp-callout ${late.length ? '' : 'ok'}" data-act="toAtt" style="margin-top:auto;width:100%;text-align:left;padding:10px 14px"><span class="grow">${late.length ? html`<b>${late.length} atrasada${late.length === 1 ? '' : 's'}</b> · ver cuáles` : 'Nada atrasado'}</span></button></section>
-        <section class="sp-panel"><a class="wkhead" href="#/control" style="text-decoration:none;color:inherit"><div><h3>Reuniones</h3><span class="mut sm">Google Calendar y las de los proyectos</span></div><div class="sp"></div><span class="gbadge">${IC.cal}</span></a>
-          ${agenda === null && !pm.length ? html`<p class="loading sm">Cargando tu agenda…</p>` : ''}
-          ${agErr ? html`<div class="mut sm" style="padding:8px 0">No pude leer tu Google Calendar. <button class="sm linkish" data-act="agRetry">Reintentar</button></div>` : ''}
-          ${meets.slice(0, 5).map((x) => html`<a class="hoy-meet" href="${x.href || '#/control'}" ${x.ext && x.href ? raw('target="_blank" rel="noopener noreferrer"') : ''}><div class="hoy-when"><b>${x.time || fdate(x.date).split(' ')[0]}</b><span>${whenLabel(x.date)}</span></div><div class="grow" style="min-width:0"><b style="font-weight:500;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x.name}</b><span class="mut sm">${x.sub || ' '}</span></div></a>`)}
-          ${agenda !== null && !meets.length ? html`<div class="mut sm" style="padding:12px 0">Sin reuniones por delante.</div>` : ''}</section>
-      </div>
-      <section class="slider" id="cslider">${slider()}</section>
-      <div class="${vp ? 'hoy-pair' : ''}">
-      <div class="sp-callout ${attention.length ? '' : 'ok'} hoy-att" id="hoy-att" style="flex-direction:column;gap:2px;align-items:stretch">
-        <div class="row" style="gap:8px">${ico('alert', 16)}<b>Necesita atención</b><span class="mut sm">Atrasadas y en revisión, con su dueño</span><div class="sp"></div>${attention.length ? html`<span class="badge-n">${attention.length}</span>` : ''}</div>
-        ${attention.length ? attention.slice(0, 5).map((t) => html`<div class="wkrow" data-act="open" data-id="${t.id}"><span class="grow"><b style="font-weight:500">${t.title}</b><span class="mut sm"> · ${clientOf(t)} · ${nameOf(t.assignee).split(' ')[0]}</span></span>${st(t) === 'En revisión' ? stChip(t) : dueChip(t)}</div>`) : html`<div class="mut sm">Todo en orden ${ico('check', 14)}</div>`}
-        ${attention.length > 5 ? html`<a class="sm" href="#/control" style="color:var(--ink2);padding-top:6px">Ver las ${attention.length} en Control →</a>` : ''}</div>
-      ${vp}</div>`);
-    bindSlider();
+    const att = atencion(late, review), decide = att.filter((x) => x.btn || x.w <= 2).length;
+    const n = decide || att.length;
+    const fecha = new Date(T + 'T12:00').toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, (c) => c.toUpperCase());
+    mount(el, html`${head(html`${fecha}${n ? html` · <em>${n} cosa${n === 1 ? '' : 's'}</em> necesita${n === 1 ? '' : 'n'} tu decisión hoy.` : ' · Todo en orden.'}`)}
+      ${me.role === 'ceo' && !tasks.length && !projects.length ? html`<a class="asbar" href="#/org/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> y queda lista con lo que ya dice el repo →</a>` : ''}
+      <span class="lbl hy-lbl">El pulso del mes · ${new Date(T + 'T12:00').toLocaleDateString('es', { month: 'long' })}</span>
+      ${pulso(late)}
+      <div class="hy-two">
+        <section class="hy-box" id="hoy-att"><div class="hy-bh"><h2>Necesita atención</h2><span>Lo que se traba si nadie lo mueve, con su siguiente paso</span>${att.length ? html`<span class="hy-c">${att.length}</span>` : ''}</div>
+          ${att.length ? att.slice(0, 12).map(itemHtml) : html`<div class="mut sm" style="padding:10px 0">Nada trabado ${ico('check', 14)}</div>`}
+          ${att.length > 12 ? html`<span class="mut sm" style="padding-top:8px">y ${att.length - 12} más</span>` : ''}</section>
+        <div class="hy-side">
+          <section class="hy-box"><div class="hy-bh"><h2>Agenda</h2><span>Hoy y lo que viene</span></div>
+            ${agenda === null && !pm.length ? html`<p class="loading sm">Cargando tu agenda…</p>` : ''}
+            ${agErr ? html`<div class="mut sm" style="padding:6px 0">No pude leer tu Google Calendar. <button class="sm linkish" data-act="agRetry">Reintentar</button></div>` : ''}
+            ${meets.slice(0, 5).map((x) => html`<a class="hy-ag ${x.date === T ? 'now' : ''}" href="${x.href || '#/org/operations/cal'}" ${x.ext && x.href ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span class="hy-h">${x.date === T ? x.time || 'Hoy' : whenLabel(x.date)}<small>${x.date === T ? (x.time ? 'Hoy' : '') : x.time}</small></span><span class="hy-t">${x.name}<small>${x.sub}</small></span></a>`)}
+            ${agenda !== null && !meets.length ? html`<div class="mut sm" style="padding:6px 0">Sin reuniones por delante.</div>` : ''}</section>
+          <section class="hy-box"><div class="hy-bh"><h2>Contenido del mes</h2><span>Publicadas de las planificadas</span></div>${contenido()}</section>
+        </div>
+      </div>`);
+    updateWaits($$('[data-wait]', el), Date.now());
   }
-
-  // 4 · Contenido de cada cuenta activa: un carrusel, una gráfica por cuenta (planificadas vs publicadas por semana;
-  //     el alcance de 30 días como línea fina si Instagram está conectado). Toca la tarjeta → su Contenido.
-  function slider() {
-    const head2 = html`<div class="slider-h"><h2>Contenido del mes</h2><span class="mut sm">Planificadas vs. publicadas, por semana</span>${(content.accounts || []).length > 1 ? html`<div class="slider-nav"><button data-act="sl" data-d="-1" aria-label="Anterior"><span style="display:inline-flex;transform:rotate(180deg)">${ico('right', 16)}</span></button><button data-act="sl" data-d="1" aria-label="Siguiente">${ico('right', 16)}</button></div>` : ''}</div>`;
-    if (content.accounts === null) return html`${head2}<p class="loading">Cargando…</p>`;
-    if (!content.accounts.length) return html`${head2}<div class="sp-callout info"><span>Sin cuentas activas con contenido. Aparecen cuando un cliente activo tiene su perfil de contenido en el repo.</span></div>`;
-    const [y, m] = M.split('-').map(Number), days = new Date(y, m, 0).getDate(), nW = Math.ceil(days / 7);
-    return html`${head2}<div class="slides" role="list">${content.accounts.map((a) => {
-      const ps = content.posts.filter((x) => x.profile === a.slug && String(x.date || '').slice(0, 7) === M);
-      const wk = Array.from({ length: nW }, (_, i) => { const l = ps.filter((x) => Math.floor((+x.date.slice(8) - 1) / 7) === i); return [l.length, l.filter((x) => estadoDe(x) === 'Publicado').length]; });
-      const pub = ps.filter((x) => estadoDe(x) === 'Publicado').length, ig = content.ig[a.slug];
-      return html`<a class="sp-tile slide" role="listitem" href="#/marcas/${a.slug}/calendario">
-        <div class="sp-tile-top" style="margin-bottom:0"><span class="sp-mono">${initials(a.name)}</span><div style="min-width:0"><div class="sp-tile-name">${a.name}</div><div class="sp-tile-sub">${ig?.series ? 'Instagram conectado' : 'Del calendario de contenido'}</div></div><span class="sp-tile-go">↗</span></div>
-        <div class="cnums"><div><span class="lbl">Planificadas</span><b>${ps.length}</b></div><div><span class="lbl">Publicadas</span><b>${pub}</b></div></div>
-        ${raw(miniChart(wk, ig?.series))}
-        <div class="clegend"><span><i style="background:var(--ch-light)"></i>Planificadas</span><span><i style="background:var(--ink)"></i>Publicadas</span>${ig?.series ? html`<span><i class="line" style="background:var(--ch-brown)"></i>Alcance 30 días</span>` : ''}</div></a>`; })}</div>
-      ${content.accounts.length > 1 ? html`<div class="slider-dots">${content.accounts.map((a, i) => html`<button data-act="sldot" data-i="${i}" aria-label="${a.name}" class="${i === 0 ? 'on' : ''}"></button>`)}</div>` : ''}`;
+  function contenido() {
+    if (content.accounts === null) return html`<p class="loading sm">Cargando…</p>`;
+    if (!content.accounts.length) return html`<div class="mut sm" style="padding:6px 0">Sin cuentas activas con contenido.</div>`;
+    return content.accounts.map((a) => {
+      const ps = content.posts.filter((x) => x.profile === a.slug && String(x.date || '').slice(0, 7) === M), pub = ps.filter((x) => estadoDe(x) === 'Publicado').length, listo = ps.filter((x) => ['Listo', 'Publicado'].includes(estadoDe(x))).length;
+      return html`<a class="hy-ct" href="#/marcas/${a.slug}/calendario"><span class="hy-m"><i>${initials(a.name)}</i>${a.name}</span><span class="hy-cb">${ps.length ? html`<i style="width:${pct(listo, ps.length)}%"></i><i style="width:${pct(pub, ps.length)}%"></i>` : ''}</span><span class="hy-cn">${ps.length ? html`<b>${pub}</b> de ${ps.length}` : 'Sin piezas'}</span></a>`;
+    });
   }
-  function miniChart(wk, series) {
-    const W = 300, H = 96, P = 4, max = Math.max(1, ...wk.map(([p]) => p)), gw = W / wk.length, bw = Math.min(28, gw * 0.42);
-    let s = `<svg class="cchart" viewBox="0 0 ${W} ${H + 14}" aria-hidden="true"><line x1="0" x2="${W}" y1="${H}" y2="${H}" style="stroke:var(--hair-strong)" vector-effect="non-scaling-stroke"/>`;
-    wk.forEach(([p, d], i) => { const x = i * gw + (gw - bw) / 2, hp = (p / max) * (H - P), hd = (d / max) * (H - P);
-      if (p) s += `<rect x="${x.toFixed(1)}" y="${(H - hp).toFixed(1)}" width="${bw.toFixed(1)}" height="${hp.toFixed(1)}" rx="5" style="fill:var(--ch-light)"/>`;
-      if (d) s += `<rect x="${x.toFixed(1)}" y="${(H - hd).toFixed(1)}" width="${bw.toFixed(1)}" height="${hd.toFixed(1)}" rx="5" style="fill:var(--ink)"/>`;
-      s += `<text x="${(i * gw + gw / 2).toFixed(1)}" y="${H + 12}" text-anchor="middle" style="fill:var(--mut);font-size:10px">S${i + 1}</text>`; });
-    if (series && series.length > 1) { const v = series.map((x) => +x.reach || 0), mx = Math.max(1, ...v);
-      s += `<polyline fill="none" vector-effect="non-scaling-stroke" style="stroke:var(--ch-brown);stroke-width:1.5" points="${v.map((n, i) => `${((i / (v.length - 1)) * W).toFixed(1)},${(H - (n / mx) * (H - P)).toFixed(1)}`).join(' ')}"/>`; }
-    if (!wk.some(([p]) => p) && !(series && series.length > 1)) s += `<text x="${W / 2}" y="${H / 2}" text-anchor="middle" style="fill:var(--mut);font-size:12px">Sin piezas con fecha este mes</text>`;
-    return s + '</svg>';
-  }
-  function bindSlider() {
-    const sl = $('.slides', el); if (!sl) return;
-    const dots = [...el.querySelectorAll('.slider-dots button')], nav = [...el.querySelectorAll('.slider-nav button')];
-    const upd = () => { const w = sl.firstElementChild?.offsetWidth || 1, i = Math.round(sl.scrollLeft / (w + 16)); dots.forEach((d, k) => d.classList.toggle('on', k === i)); if (nav[0]) nav[0].disabled = sl.scrollLeft < 4; if (nav[1]) nav[1].disabled = sl.scrollLeft + sl.clientWidth >= sl.scrollWidth - 4; };
-    sl.addEventListener('scroll', () => requestAnimationFrame(upd), { passive: true }); upd();
-    // Si todas las cuentas caben a la vista, sin flechas ni puntos.
-    const fit = () => { const all = sl.scrollWidth <= sl.clientWidth + 4; el.querySelectorAll('.slider-nav,.slider-dots').forEach((x) => { x.hidden = all; }); }; fit(); new ResizeObserver(fit).observe(sl);
-  }
-  // Las cuentas: los perfiles de contenido del repo que son clientes activos (más Inherent). El alcance, solo si ya está conectado (se guarda en la sesión).
-  const content = { accounts: null, posts: [], ig: {} };
+  // Las cuentas: los perfiles de contenido del repo que son clientes activos (más Inherent).
+  const content = { accounts: null, posts: [] };
   if (ceoish) {
     Promise.all([api('repo/content').catch(() => ({ profiles: [] })), col('content').list().catch(() => []), api('repo/clients').catch(() => ({ clients: [] }))]).then(([rc, all, cl]) => {
       const act = new Set([...(cl.clients || []).filter((c) => c.hasPlan).map((c) => c.slug), ...accounts.filter((a) => a.from_quote).map((a) => a.slug || String(a.id).replace(/^acc-/, ''))]);
       content.accounts = (rc.profiles || []).filter((x) => x.slug !== 'personal' && (act.has(x.slug) || x.slug === 'inherent')).map((x) => ({ slug: x.slug, name: accounts.find((a) => a.id === 'acc-' + x.slug)?.name || x.name || x.slug.toUpperCase() }));
       content.posts = all.filter((x) => x.kind === 'post');
       if (alive()) paint();
-      for (const a of content.accounts) {
-        let c = null; try { c = JSON.parse(sessionStorage.getItem('hoy.ig.' + a.slug) || 'null'); } catch {}
-        const use = (r) => { if (r?.connected && r.matched && (r.series || []).length > 1) { content.ig[a.slug] = { series: r.series.slice(-30) }; if (alive()) paint(); } };
-        if (c) use(c); else api(`analytics/instagram?profile=${encodeURIComponent(a.slug)}`).then((r) => { try { sessionStorage.setItem('hoy.ig.' + a.slug, JSON.stringify({ connected: r.connected, matched: r.matched, series: (r.series || []).slice(-30) })); } catch {} use(r); }).catch(() => {});
-      }
     });
   }
-
   // ---------- Equipo: mis responsabilidades ----------
   function team() {
     const mine = tasks.filter((t) => t.assignee === me.email && open(t)).sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
@@ -201,9 +203,9 @@ export async function render(el, { me, alive }) {
   const paint = () => { if (!alive()) return; (ceoish ? ceo : team)(); };
   acts(el, {
     open: (b) => { const t = tasks.find((x) => x.id === b.dataset.id); if (t) openDelivery(t, ctx(), (r) => onTask(r, t)); },
-    toAtt: () => { const a = $('#hoy-att', el); if (a) a.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); },
-    sl: (b) => { const s2 = $('.slides', el); if (s2) s2.scrollBy({ left: (+b.dataset.d) * ((s2.firstElementChild?.offsetWidth || 300) + 16), behavior: 'smooth' }); },
-    sldot: (b) => { const s2 = $('.slides', el); if (s2) s2.scrollTo({ left: (+b.dataset.i) * ((s2.firstElementChild?.offsetWidth || 300) + 16), behavior: 'smooth' }); },
+    confirm: async (b) => { const q = (quotes || []).find((x) => x.id === b.dataset.id); if (!q) return; const r = await confirmarYArrancar(q, { leads: dueLeads || [] }); if (r?.project_id) { [quotes, tasks, projects] = await Promise.all([col('quotes').list(), col('tasks').list(), col('projects').list()]); paint(); } },
+    pay: async (b) => { const q = (quotes || []).find((x) => x.id === b.dataset.id); if (!q) return; if (await payDialog({ quote_id: q.id, client: q.client, currency: q.currency || 'GTQ', amount: Math.round(qSub(q) * (q.currency && q.currency !== 'GTQ' ? +q.rate || 1 : 1) * 100) / 100 })) { quotes = await col('quotes').list(); paint(); } },
+    proof: (b) => openProof(b.dataset.id),
     agRetry: () => { agenda = null; agErr = null; paint(); loadAgenda(); },
     addTask: async () => { const { newTask } = await import('../create.js'); const t = await newTask({ team: people, me, projects, pre: { assignee: me.email } }); if (t) { tasks.push(t); paint(); } },
   });
