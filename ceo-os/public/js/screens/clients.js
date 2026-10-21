@@ -10,6 +10,8 @@ import { budgetsTab } from '../budgets.js';
 import { render as content } from './content.js';
 import { loadEstrategia } from '../stratlist.js';
 import { BLOQUES, etapaLabel, etapaDe } from '../estrategia.js';
+import { CYCLE } from '../cycle.js';
+import { estadoFactura } from '../facturas.js';
 
 // Clientes: la lista (quién, su nivel, cómo va el mes) y la página de cada uno en pestañas: Info · Links · Servicio ·
 // Presupuestos (photo shoots, pauta, eventos). Su Marca (asociaciones e inspo) vive en el espacio Marcas: aquí queda un link.
@@ -59,7 +61,7 @@ export async function render(el, { me, sub, alive }) {
     let a = acct(slug) || { id: 'acc-' + slug, name: slug.toUpperCase(), contact: '', phone: '', email: '', notes: '', roadmap: [], accesos: [], links: [] };
     const ps = projects.filter((p) => p.client_slug === slug);
     // Marca ya no es una pestaña: vive en Marcas → este cliente → Marca (un solo lugar). #/clients/<slug>/marca lleva allá.
-    const TABS = [['info', 'Info'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['presupuestos', 'Presupuestos']])];
+    const TABS = [['info', 'Inicio'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['presupuestos', 'Presupuestos'], ['ajustes', 'Portal y accesos']])];
     const toBrand = !resumen && me.areas.includes('clients');
     // La pestaña vieja «Prospectos» lleva al CRM, que vive en Ventas.
     const hubBase = '#/sales';
@@ -87,18 +89,14 @@ export async function render(el, { me, sub, alive }) {
       if (!alive()) return;
       const mo = month(slug);
       mount(el, html`
-        <div class="row" style="margin-bottom:14px"><a class="btn ghost xs" href="#/clients">← Clientes</a></div>
-        <header class="sp-cover">
-          <div class="sp-cover-top"><div class="sp-cover-mono">${initials(a.name)}</div>
-            <div style="flex:1;min-width:220px"><h1>${a.name}</h1>
-              <div id="cchips">${chips()}</div></div>
-            ${edit ? html`<button class="btn cream xs" data-act="editAcc">Editar datos</button>` : ''}</div>
-          <div class="sp-cover-nums"><div><span class="lbl">Mes</span><b>${mo.total ? `${mo.done}/${mo.total}` : '—'}</b></div><div><span class="lbl">Estado</span><b class="sm"><i class="dot light-${mo.light[0]}"></i> ${mo.light[1]}</b></div><div><span class="lbl">Metas</span><b>${goalsOf(a).filter((x) => x.status === 'done').length}/${goalsOf(a).length}</b></div></div>
-        </header>
-        <div class="row" style="margin:20px 0 20px;gap:8px;flex-wrap:wrap"><div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>${toBrand ? html`<a class="chip" href="#/marcas/${slug}/marca" style="text-decoration:none;padding:0 12px;min-height:30px" title="Su marca vive en el espacio Marcas: asociaciones, research, ideas y calendario">${ico('palette', 13)} Marca ↗</a>` : ''}</div>
+        <div class="row" style="margin-bottom:14px">${tab === 'info' ? html`<a class="btn ghost xs" href="#/clients">← Clientes</a>` : html`<button class="btn ghost xs" data-act="tab" data-t="info">← ${a.name}</button>`}</div>
+        ${tab === 'info' ? html`<header class="cp-hd"><span class="cp-mono">${initials(a.name)}</span><div class="cp-hd-t"><h1>${a.name}</h1><p>Cómo va la cuenta hoy</p><div id="cchips">${chips()}</div></div>
+          <div class="cp-hd-b">${toBrand ? html`<a class="btn ghost xs" href="#/marcas/${slug}">${ico('spark', 13)} Marca ↗</a>` : ''}${edit ? html`<button class="btn ghost xs" data-act="editAcc">Editar datos</button>` : ''}</div></header>`
+          : html`<header class="cp-hd sm"><div class="cp-hd-t"><h1>${(TABS.find(([k]) => k === tab) || [, ''])[1]}</h1><p>${a.name}</p></div></header>`}
         <div id="cbody"></div>`);
       const b = $('#cbody', el);
       if (tab === 'info') return infoTab(b);
+      if (tab === 'ajustes') return ajustesTab(b);
       if (tab === 'links') return linksTab(b);
       if (tab === 'marca') return marcaTab(b);
       if (tab === 'presupuestos') { mount(b, html`<p class="loading">Cargando…</p>`); return loadEntries().then((en) => { entries = en; if (alive() && tab === 'presupuestos') budgetsTab({ el: b, me, slug, name: a.name, edit, entries }); }); }
@@ -109,12 +107,56 @@ export async function render(el, { me, sub, alive }) {
       return html`<div class="sp-cover-chips"><span class="chip">${nivel}</span><span class="chip">${[a.contact, a.phone, a.email].filter(Boolean).join(' · ') || 'Sin contacto'}</span>${origin ? html`<a class="chip" style="text-decoration:none;color:inherit" href="${hubBase}/crm/${origin.id}" title="Abrir el lead «${origin.name}» en Comercial">Vino de: ${origin.source} ↗</a>` : ''}</div>
         ${c?.hasPlan ? html`<div style="margin-top:8px">${fromLink({ repo: planPath, docs })}</div>` : ''}`;
     }
+    // El Inicio del cliente (como el Inicio de Marca): el ciclo y sus proyectos; lo de esta semana; el rumbo; y abajo, todo lo demás.
+    let cobros = undefined; const veFin = me.role !== 'client' && (me.areas || []).includes('finanzas');
+    if (veFin) col('invoices').list().then((l) => { cobros = l.filter((i) => i.kind === 'cobrar' && i.client === slug && ['pendiente', 'vencida'].includes(estadoFactura(i, today()))); if (alive() && tab === 'info') { const z = $('#cp-cobros', el); if (z) z.outerHTML = String(cobrosCard()); } }).catch(() => { cobros = null; });
+    function cicloCard() {
+      const dia = +today().slice(8, 10), fase = dia > 20 ? null : CYCLE.filter(([, x, z]) => dia >= x && dia <= z).at(-1) || null;
+      return html`<section class="card cp-card"><span class="lbl">El ciclo de este mes</span><div class="cp-dia"><b>${dia > 20 ? '20+' : `Día ${dia}`}</b><span class="mut">${dia > 20 ? 'Ya se presentó. Lo presentado se publica desde el día 1.' : fase ? fase[0] : ''}</span></div>
+        <div class="bh-ciclo" aria-label="Fases del ciclo">${CYCLE.map(([n, x, z]) => html`<i class="${dia > z ? 'ok' : dia >= x ? 'now' : ''}" style="flex:${z - x + 1}" title="${n}"></i>`)}</div>
+        <div class="bh-ciclo-l mut sm"><span>Día 1 · reunión</span><span>11 · último día para producir</span><span>20 · presentación</span></div></section>`;
+    }
+    function semanaCard() {
+      const T0 = today(), T7 = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10), ids = new Set(ps.map((p) => p.id));
+      const l = tasks.filter((t) => ids.has(t.project_id) && (t.status || 'Por empezar') !== 'Hecha' && t.due && t.due <= T7).sort((x, z) => String(x.due).localeCompare(String(z.due)));
+      return html`<section class="card cp-card"><div class="row"><span class="lbl">Lo que falta esta semana</span><div class="sp"></div>${ps[0] ? html`<a class="sm" href="#/operations/p/${encodeURIComponent(ps[0].id)}">Tareas ›</a>` : ''}</div>
+        ${l.length ? l.slice(0, 4).map((t) => html`<a class="cp-it" href="#/operations/p/${encodeURIComponent(t.project_id)}"><i class="cp-c"></i><span><b>${t.title}</b><small class="${t.due < T0 ? 'cp-late' : ''}">${t.due < T0 ? 'Atrasada' : t.due === T0 ? 'Hoy' : fdate(t.due)}${t.dept ? ` · ${t.dept}` : ''}${t.status === 'En revisión' ? ' · En revisión' : ''}</small></span></a>`) : html`<p class="mut sm">Nada por entregar esta semana. ${ico('spark', 13)}</p>`}${l.length > 4 ? html`<span class="mut sm">y ${l.length - 4} más</span>` : ''}</section>`;
+    }
+    function reunionCard() {
+      const m = upcoming(ps)[0];
+      const d = m ? new Date(m.date + 'T12:00') : null;
+      return html`<section class="card cp-card"><span class="lbl">Próxima reunión</span>${m ? html`<div class="cp-meet"><div class="cp-day"><span>${d.toLocaleDateString('es', { month: 'short' }).replace('.', '').toUpperCase()}</span><b>${d.getDate()}</b></div><div><b>${m.title || m.kind || 'Reunión'}</b><div class="mut sm">${[m.time, m.where || m.link ? 'En línea' : '', m.p?.name].filter(Boolean).join(' · ')}</div></div></div>` : html`<p class="mut sm">Sin reuniones por delante.</p>`}</section>`;
+    }
+    function cobrosCard() {
+      if (!veFin) return '';
+      const l = cobros || [], venc = l.filter((i) => estadoFactura(i, today()) === 'vencida');
+      const tot = (cur) => l.filter((i) => (i.currency || 'GTQ') === cur).reduce((n, i) => n + (+i.amount || 0), 0);
+      const q = tot('GTQ'), u = tot('USD');
+      return html`<section class="card cp-card" id="cp-cobros"><div class="row"><span class="lbl">Cobros</span><div class="sp"></div><a class="sm" href="#/finanzas">Finanzas ›</a></div>
+        ${cobros === undefined ? html`<p class="mut sm">Cargando…</p>` : cobros === null ? html`<p class="mut sm">No pude leer las facturas.</p>` : html`<b class="cp-money">${l.length ? [q ? `Q${q.toLocaleString('es-GT')}` : '', u ? `$${u.toLocaleString('en-US')}` : ''].filter(Boolean).join(' + ') : 'Q0'}</b>
+        <span class="mut sm">${l.length ? `Por cobrar · ${l.length === 1 ? 'vence' : 'la primera vence'} el ${fdate(l.map((i) => i.due).sort()[0])}` : 'Nada por cobrar'}</span>
+        <span class="cp-tag ${venc.length ? 'bad' : 'ok'}">${venc.length ? `${venc.length} vencida${venc.length === 1 ? '' : 's'}` : 'Al día con los pagos'}</span>`}</section>`;
+    }
+    function herramientas() {
+      const t = (k, icon, titulo, sub, links) => html`<section class="cp-tool"><header><span class="cp-ti ${k}">${ico(icon, 15)}</span><div><b>${titulo}</b><span class="mut sm">${sub}</span></div></header>${links.map(([l, attrs]) => html`<${raw(attrs.href ? 'a' : 'button')} class="cp-tl" ${raw(attrs.href ? `href="${attrs.href}"` : `type="button" data-act="tab" data-t="${attrs.tab}"`)}>${l}<span>›</span></${raw(attrs.href ? 'a' : 'button')}>`)}</section>`;
+      return html`<div class="sec-title"><h2>Todo del cliente</h2></div><div class="cp-tools">
+        ${resumen ? '' : t('t1', 'link', 'Links', 'Drive, redes y archivos', [['Drive y links', { tab: 'links' }]])}
+        ${t('t2', 'doc', 'Servicio', 'Qué contrató y qué no', [['Ficha y servicio', { tab: 'servicio' }], ...(resumen ? [] : [['Presupuestos', { tab: 'presupuestos' }]])])}
+        ${resumen ? '' : t('t3', 'eye', 'Portal y accesos', 'Lo que ve el cliente y quién entra', [['Portal y especialista', { tab: 'ajustes' }], ['Ver su portal', { href: `#/portal/${slug}` }]])}
+        ${toBrand ? t('t4', 'spark', 'Marca', 'Contenido, diseño y resultados', [['Inicio de la marca', { href: `#/marcas/${slug}` }], ['Calendario', { href: `#/marcas/${slug}/calendario` }]]) : ''}
+        ${veEst ? t('t5', 'target', 'Estrategia', 'Etapa, meta y roadmap', [['Abrir la estrategia', { href: `#/estrategia/${slug}` }]]) : ''}</div>`;
+    }
     function infoTab(b) {
-      mount(b, html`
-        <div class="grid g11 cl-sum">${estrategiaCard()}${proyectosCard()}</div>
-        ${goals.section()}
-        <div class="sec-title"><h2>Reuniones</h2><span class="mut sm">Las de sus proyectos</span></div><div class="card">${meetingRows(upcoming(ps), team, me, true)}</div>
-        ${resumen ? '' : html`<div class="grid g11" style="align-items:start;margin-top:22px">
+      mount(b, html`<div class="cpf">
+        <div class="grid g11 cp-row">${cicloCard()}${proyectosCard()}</div>
+        <div class="cp-row3">${semanaCard()}${reunionCard()}${cobrosCard()}</div>
+        <div class="grid g11 cp-row">${estrategiaCard()}<section class="card cp-card cp-goals">${goals.section()}</section></div>
+        ${herramientas()}</div>`);
+    }
+    // Portal, especialista y accesos del equipo: lo que se configura de vez en cuando.
+    function ajustesTab(b) {
+      if (resumen) return mount(b, html`<p class="mut">Tu vista de Clientes es resumen.</p>`);
+      mount(b, html`<div class="grid g11" style="align-items:start;margin-top:22px">
           <div class="card"><div class="row"><b style="font-weight:500">Accesos del equipo</b><div class="sp"></div>${edit ? html`<button class="btn ghost xs" data-act="acadd">+ Acceso</button>` : ''}</div><div class="mut sm" style="margin:2px 0 8px">${ico('lock')} Nunca contraseñas: solo qué cuenta, qué usuario y dónde está la clave</div>
             ${!managesAcc && !('accesos' in a) ? html`<div class="mut sm">Solo los ven el CEO, el COO, quien edita Clientes y las personas que ellos elijan.</div>`
             : html`${(a.accesos || []).map((x, i) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><b style="font-weight:500;min-width:110px">${x.servicio}</b><span style="flex:1">${x.usuario || '—'}<span class="mut"> · ${x.donde || '—'}</span></span>${edit ? html`<button class="sm mut" data-act="acedit" data-i="${i}" title="Editar">${ico('edit')}</button><button class="sm mut" data-act="acdel" data-i="${i}" title="Quitar">${ico('x', 16)}</button>` : ''}</div>`)}${!(a.accesos || []).length ? html`<div class="mut sm">Sin accesos anotados.</div>` : ''}
@@ -124,7 +166,7 @@ export async function render(el, { me, sub, alive }) {
             <div class="row" style="gap:6px;flex-wrap:wrap"><a class="btn ghost xs" href="#/portal/${slug}">${ico('eye')} Ver su portal</a>${me.role === 'ceo' ? html`<button class="btn xs" data-act="portalAdd">+ Dar acceso</button>` : ''}${portalPeople.map((x) => html`<span class="chip">${x.email}${me.role === 'ceo' ? html` <button class="sm mut" data-act="portalDel" data-id="${x.id}">${ico('x', 14)}</button>` : ''}</span>`)}</div>
             <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:14px"><span class="sm mut">${isGrowth() ? 'Especialista incluido en Growth Partnership' : 'Especialista: su nivel no lo incluye, va como add-on'}</span>${edit ? html`<button class="btn ghost xs" data-act="esadd">+ Especialista</button>` : ''}</div>
             ${(a.mentors || []).map((x, k) => { const m = mentors.find((y) => y.id === x.id); if (!m) return ''; const [f, cc] = isGrowth() ? fit(m) : ['Add-on facturado', 'red']; return html`<div class="row sm" style="padding:8px 0;border-top:1px solid var(--line)"><span style="flex:1"><b style="font-weight:500">${m.name}</b> · ${m.industry} · ${priceLabel(m)} · ${CADENCE.find(([v]) => v === x.cadence)?.[1] || ''}</span><span class="chip ${cc}" style="font-size:11px">${f}</span>${edit ? html`<button class="sm mut" data-act="esedit" data-k="${k}" title="Editar">${ico('edit')}</button><button class="sm mut" data-act="esdel" data-k="${k}" title="Quitar">${ico('x', 16)}</button>` : ''}</div>`; })}</div>
-        </div>`}`);
+        </div>`);
     }
 
     // Marca: las asociaciones del negocio (moodboard, Pinterest, referentes, tono, no-hacer) y la inspo por plataforma (su Research).
