@@ -58,8 +58,8 @@ export async function render(el, { me, sub, alive }) {
       <div class="hello row" style="align-items:flex-end"><div><h1>Ventas</h1><p>Cada lead, calificado y con <em>su siguiente paso</em>.</p></div><div class="sp"></div>${roChip(me, 'sales')}</div>
       <div class="row" style="margin-bottom:18px;flex-wrap:wrap">
         ${resumen ? '' : html`<div class="tabs" style="margin:0">
-          <button class="${tab === 'crm' ? 'on' : ''}" data-act="tab" data-t="crm">${ico('target', 13)} CRM</button>
-          <button class="${tab === 'pros' ? 'on' : ''}" data-act="tab" data-t="pros">${ico('inbox', 13)} Prospectos${leads.filter((l) => l.stage === 'Prospecto' && !l.archived).length ? html` <span class="mut">${leads.filter((l) => l.stage === 'Prospecto' && !l.archived).length}</span>` : ''}</button>
+          <button class="${tab === 'crm' ? 'on' : ''}" data-act="tab" data-t="crm">CRM</button>
+          <button class="${tab === 'pros' ? 'on' : ''}" data-act="tab" data-t="pros">Prospectos${leads.filter((l) => l.stage === 'Prospecto' && !l.archived).length ? html` <span class="mut">${leads.filter((l) => l.stage === 'Prospecto' && !l.archived).length}</span>` : ''}</button>
           <button class="${tab === 'quotes' ? 'on' : ''}" data-act="tab" data-t="quotes">Cotizaciones</button>
           ${isCeo ? html`<button class="${tab === 'src' ? 'on' : ''}" data-act="tab" data-t="src">Fuentes</button>` : ''}
         </div>`}
