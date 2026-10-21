@@ -15,6 +15,7 @@ import { brandBrief } from '../brand-brief.js';
 import { formatosUI } from '../formatos-ui.js';
 import { creacionUI } from '../creacion-ui.js';
 import { designSystemUI } from '../design-system-ui.js';
+import { disenoChat } from '../diseno-chat.js';
 import { canEdit } from '../roleviews.js';
 
 const TONE = ['', 't1', 't2'];
@@ -28,6 +29,8 @@ export async function render(el, { me, sub = [], alive }) {
   if (!alive()) return;
   const [slug, mod0, ...rest] = sub;
   if (!slug) return tiles(brands);
+  // El chat de Diseño: elige la marca en la caja, como Estrategia (#/marcas/diseno).
+  if (slug === 'diseno') return disenoChat(el, { me, sub: [mod0, ...rest].filter(Boolean), alive, brands });
   const b = brands.find((x) => x.slug === slug);
   if (!b) return mount(el, html`<a class="btn ghost" href="#/marcas">${ico('grid', 14)} Todas las marcas</a><div class="empty" style="margin-top:16px"><b>No encontré esa marca</b>${slug === 'personal' ? 'La marca personal es solo del CEO.' : 'Puede que no esté entre tus clientes o que ya no esté activa.'}</div>`);
   // Sin módulo (o uno que no existe): abre en el primero que este perfil puede abrir. La barra se entera (navsync).

@@ -1,10 +1,10 @@
-import { html, raw, mount, api, toast, ico, inline, acts, $, $$ } from './core.js';
-import { leerSistema, fuentesUrl, tokensCss, contraste } from './sistema-visual.js';
+import { html, raw, mount, api, col, toast, ico, inline, md as mdDoc, acts, $, $$ } from './core.js';
+import { leerSistema, fuentesUrl, tokensCss, contraste, sinEmoji, figmaDe, tipoAsset } from './sistema-visual.js';
 
 // Marca › Diseño › Design system: el sistema visual de la marca a la vista, como un portal de marca (zeroheight, Frontify).
 // Cada valor se copia con un clic. La fuente es 02-marca/sistema-visual.md del repo: se edita allá (②B Branding, br-sistema).
 const REPO = 'https://github.com/medinaoliva4-tech/Inherent-HQ/blob/main/';
-const IDX = [['color', 'Color'], ['tipo', 'Tipografía'], ['logo', 'Logo'], ['comp', 'Composición'], ['imagen', 'Imagen'], ['mov', 'Movimiento'], ['no', 'Lo prohibido']];
+const IDX = [['color', 'Color'], ['tipo', 'Tipografía'], ['logo', 'Logo'], ['comp', 'Composición'], ['imagen', 'Imagen'], ['mov', 'Movimiento'], ['no', 'Lo prohibido'], ['assets', 'Assets'], ['kit', 'Kit de redes']];
 const md = (s) => raw(inline(s));
 const fontsOn = new Set();
 function cargarFuentes(url) { if (!url || fontsOn.has(url)) return; fontsOn.add(url); const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = url; document.head.appendChild(l); }
@@ -25,6 +25,11 @@ export async function designSystemUI(el, { me, b, alive }) {
   const sis = leerSistema(d.md);
   cargarFuentes(fuentesUrl(sis.tipo.familias));
   const S = { on: 'color' };
+  // Los assets (íconos, texturas, fotos) viven en la carpeta «01 Assets de marca» del Drive del cliente.
+  const acc = await col('accounts').get('acc-' + b.slug).catch(() => null);
+  if (!alive()) return;
+  const A = { folder: acc?.assets || acc?.drive_dirs?.['01 Assets de marca'] || '', files: null, error: '' };
+  const kitFigma = figmaDe(d.kit);
   const logoSrc = (l) => d.logos[l?.archivo] || '';
 
   const sw = (c) => html`<div class="dsy-sw"><div class="dsy-swc" style="background:${c.hex}"><em style="color:${contraste(c.hex, '#FFFFFF') >= 3 ? '#fff' : '#262523'}">${c.rol}</em></div>
@@ -37,6 +42,23 @@ export async function designSystemUI(el, { me, b, alive }) {
     ? html`<div class="dsy-rules">${t.rows.map((r) => html`<div class="dsy-rl"><span class="lbl">${raw(inline(r[0]).replace(/<\/?b>/g, ''))}</span><div>${md(r[1])}</div></div>`)}</div>`
     : html`<div class="dsy-tbl"><table><thead><tr>${t.head.map((h) => html`<th>${h}</th>`)}</tr></thead><tbody>${t.rows.map((r) => html`<tr>${r.map((c) => html`<td>${md(c)}</td>`)}</tr>`)}</tbody></table></div>`}`);
   const sec = (k, titulo, sub, cuerpo) => html`<section class="dsy-sec" id="dsy-${k}"><h2>${titulo}</h2>${sub ? html`<p class="dsy-sub">${sub}</p>` : ''}${cuerpo}</section>`;
+
+  function assetsHtml() {
+    if (!A.folder) return html`<p class="mut sm" style="margin:0">Esta marca todavía no tiene su carpeta de Drive. Créala en Clientes › la marca › Ajustes › Drive, y sube ahí los íconos, las texturas y las fotos.</p>`;
+    const abrir = html`<a class="btn ghost xs" href="${A.folder}" target="_blank" rel="noopener">${ico('drive', 12)} Abrir la carpeta</a>`;
+    if (A.error) return html`<div class="row" style="gap:10px"><span class="mut sm">${A.error}</span>${abrir}</div>`;
+    if (!A.files) return html`<p class="mut sm" style="margin:0">Leyendo la carpeta…</p>`;
+    if (!A.files.length) return html`<div class="row" style="gap:10px"><span class="mut sm">La carpeta está vacía.</span>${abrir}</div>`;
+    const grupos = {}; for (const f of A.files) (grupos[tipoAsset(f)] ||= []).push(f);
+    return html`<div class="row" style="justify-content:flex-end">${abrir}</div>${Object.entries(grupos).map(([g, fs]) => html`<span class="lbl">${g} · ${fs.length}</span><div class="dsy-as">${fs.map((f) => html`<a class="dsy-a" href="${f.link}" target="_blank" rel="noopener" title="${f.name}">
+      <span class="dsy-ai">${/^image\//.test(f.mime) ? html`<img alt="" loading="lazy" src="https://drive.google.com/thumbnail?id=${encodeURIComponent(f.id)}&sz=w400">` : ico(/folder/.test(f.mime) ? 'folder' : 'doc', 22)}</span><small>${f.name}</small></a>`)}</div>`)}`;
+  }
+  async function cargarAssets() {
+    if (!A.folder) return;
+    try { A.files = (await api(`google/drive?folder=${encodeURIComponent(A.folder)}`)).files || []; }
+    catch (e) { A.error = e.status === 403 ? 'Tu perfil no puede leer Drive desde el OS.' : e.code === 'NO_GOOGLE' || /google/i.test(e.message) ? 'Conecta tu Google para ver los assets aquí.' : e.message; }
+    if (alive()) { const box = $('#dsy-af', el); if (box) mount(box, assetsHtml()); }
+  }
 
   function paint() {
     const T = sis.tipo;
@@ -62,11 +84,14 @@ export async function designSystemUI(el, { me, b, alive }) {
         ${sec('imagen', 'Imagen', '', html`${reglasHtml(sis.imagen.reglas)}${sis.imagen.notas.map((n) => html`<p class="dsy-nota">${md(n)}</p>`)}`)}
         ${sec('mov', 'Movimiento', 'Para ⑦ Video Editing', reglasHtml(sis.movimiento))}
         ${sec('no', 'Lo prohibido', '', sis.prohibido.length ? html`<ul class="dsy-no">${sis.prohibido.map((n) => html`<li>${md(n.replace(/\.$/, ''))}</li>`)}</ul>` : html`<p class="mut sm">El archivo no trae la lista.</p>`)}
+        ${sec('assets', 'Assets', 'Íconos, texturas, fotos y lo demás que se usa en las piezas. Viven en la carpeta «01 Assets de marca» de Drive.', html`<div id="dsy-af">${assetsHtml()}</div>`)}
+        ${sec('kit', 'Kit de redes', d.kit ? 'Cómo se aplica el sistema en redes. Los componentes viven en Figma.' : '', d.kit ? html`${kitFigma ? html`<div class="row" style="gap:8px"><a class="btn" href="${kitFigma}" target="_blank" rel="noopener">${ico('link', 13)} Abrir el kit en Figma</a>${d.kitPath ? html`<a class="btn ghost" href="${REPO + d.kitPath}" target="_blank" rel="noopener">Ver el archivo</a>` : ''}</div>` : ''}<div class="dsy-kit">${mdDoc(sinEmoji(d.kit.replace(/^#\s.*\n/, '').replace(/^>.*\n/gm, '').replace(/^(#+)\s*§\s*/gm, '$1 ')))}</div>` : html`<p class="mut sm" style="margin:0">Esta marca todavía no tiene su kit de redes. Lo arma ②B Branding en <code>02-marca/kit-de-redes/kit.md</code>, con el link a su página de Figma.</p>`)}
         ${sis.otras.map((o) => sec('x', o.titulo, '', html`${reglasHtml(o.reglas)}${o.vinetas.length ? html`<ul class="dsy-ul">${o.vinetas.map((n) => html`<li>${md(n)}</li>`)}</ul>` : ''}${o.notas.map((n) => html`<p class="dsy-nota">${md(n)}</p>`)}`))}
       </main>
     </div>`);
   }
   paint();
+  cargarAssets();
   // Al bajar, el índice marca la sección que está a la vista.
   const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { S.on = e.target.id.replace('dsy-', ''); $$('.dsy-idx [data-act="ir"]', el).forEach((a) => a.classList.toggle('on', a.dataset.k === S.on)); } }, { rootMargin: '-20% 0px -70% 0px' });
   $$('.dsy-sec', el).forEach((s) => io.observe(s));

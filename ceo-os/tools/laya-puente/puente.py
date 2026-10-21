@@ -7,7 +7,7 @@ web del OS pedirle juicios desde el navegador:
     GET  /health        -> {"status": "ok", "listo": bool, "chat": {...}, ...}
     POST /juzgar        -> {"texto": str, "questions": {...}} -> el resultado de Laya (answers, routing, usage)
     GET  /chat/estado   -> con token: {"ok": true, ...}; sin token, 401. Sirve para emparejar sin gastar nada
-    POST /chat          -> {"prompt": str, "resume"?: uuid} -> corre Claude Code (`claude -p`) dentro de tu clon del repo y
+    POST /chat          -> {"prompt": str, "resume"?: uuid, "modo"?: "estrategia"|"diseno"} -> corre Claude Code (`claude -p`) dentro de tu clon del repo y
                            devuelve la respuesta en streaming (SSE: inicio · delta · herramienta · fin · error)
 
 Seguridad:
@@ -25,6 +25,8 @@ es lo más delicado y va con candados extra:
   * SOLO LECTURA: `claude -p --tools Read,Grep,Glob --allowedTools Read,Grep,Glob` (+ `--restricted` si tu Claude Code lo trae,
     que además encierra la lectura en el repo), `--permission-mode dontAsk`, sin servidores MCP. Nunca usa
     --dangerously-skip-permissions;
+  * el chat de Diseño («modo»: "diseno") es el mismo candado de solo lectura sobre el repo, más un único servidor MCP:
+    figwright (Figma), con --mcp-config y --strict-mcp-config. Las imágenes de get_screenshot se reenvían al OS (evento «imagen»);
   * corre dentro del clon del repo: la ruta va en INHERENT_REPO (variable de entorno o línea en el archivo «config»;
     el archivo se relee en cada mensaje, no hace falta reiniciar);
   * tiempo máximo por respuesta (INHERENT_CHAT_SEGUNDOS, 240 por defecto) y un solo chat a la vez.
@@ -63,7 +65,10 @@ MODELO = "multilingual"  # el checkpoint que lee español (~644 MB la primera ve
 MAX_CUERPO = 256 * 1024
 MAX_TEXTO = 20000
 MAX_PREGUNTAS = 16
-VERSION = "3"
+VERSION = "5"
+# La copia del repo que el puente maneja solo (si no le dices otra con INHERENT_REPO): se pone al día con main antes de cada chat.
+REPO_URL = os.environ.get("INHERENT_REPO_URL") or "https://github.com/medinaoliva4-tech/Inherent-HQ.git"
+SYNC_CADA = 60  # segundos mínimos entre dos puestas al día
 LOG_MAX = 1_000_000  # bytes por archivo de log
 LOG_COPIAS = 3
 
@@ -72,6 +77,14 @@ MAX_PROMPT = 60000
 CHAT_SEGUNDOS = 240  # tiempo máximo por respuesta
 HERRAMIENTAS = ("Read", "Grep", "Glob")  # lo único que puede usar el chat: leer
 BLOQUEADAS = ("Bash", "Edit", "Write", "MultiEdit", "NotebookEdit", "WebFetch", "WebSearch", "Task")
+# --- el chat de Diseño: el repo sigue en solo lectura; lo único que se suma es Figma (figwright), para diseñar ---
+DISENO_SEGUNDOS = 600  # diseñar en Figma tarda más que responder
+DISENO_MCP = {"mcpServers": {"figwright": {"command": "npx", "args": ["-y", "@figwright/mcp@latest"]}}}
+DISENO_PERMITIDAS = ("Read", "Grep", "Glob", "mcp__figwright")  # leer el repo y usar Figma; nada más
+MAX_IMAGEN = 8 * 1024 * 1024  # bytes de base64 por imagen que se reenvía al OS
+MAX_IMAGENES = 40
+REGLA_DISENO = ("Chat de Diseño de Inherent OS. El repo es de solo lectura: no crees, cambies ni borres archivos y no ejecutes comandos. "
+                "Diseñas en Figma con las herramientas de figwright, dentro del archivo y la página de la marca. Responde en español de «tú».")
 REGLA_CHAT = ("Chat de Estrategia de Inherent OS, en solo lectura: no crees, cambies ni borres archivos y no ejecutes comandos. "
               "Lo que escribas es un borrador que revisa el CEO. Responde en español de «tú».")
 UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
@@ -192,6 +205,8 @@ class Chat:
         self.lock = threading.Lock()  # un solo chat a la vez
         self.ayuda = None  # el texto de `claude --help`, una sola vez
         self.fallos = []  # instantes de los tokens malos (freno contra adivinar)
+        self.sync = {"at": 0.0, "ok_at": None, "error": None, "commit": None}  # la copia automática del repo
+        self.sync_lock = threading.Lock()
 
     # --- token ---
     def cargar_token(self, renovar=False):
@@ -227,9 +242,49 @@ class Chat:
         return False
 
     # --- repo y claude ---
+    def repo_propio(self):
+        """El repo que la persona eligió (entorno, --repo o config). Vacío = el puente maneja su propia copia."""
+        return self.repo_env or valor_de_config("INHERENT_REPO")
+
     def repo(self):
-        r = self.repo_env or valor_de_config("INHERENT_REPO")
-        return os.path.abspath(os.path.expanduser(r)) if r else ""
+        r = self.repo_propio()
+        return os.path.abspath(os.path.expanduser(r)) if r else os.path.join(self.datos, "repo")
+
+    # --- la copia automática: se baja una vez y antes de cada chat se pone al día con main (solo lectura: nadie la edita) ---
+    def sincronizar(self, forzar=False):
+        if self.repo_propio():
+            return True
+        if not forzar and time.time() - self.sync["at"] < SYNC_CADA:
+            return self.sync["error"] is None
+        with self.sync_lock:
+            if not forzar and time.time() - self.sync["at"] < SYNC_CADA:
+                return self.sync["error"] is None
+            self.sync["at"] = time.time()
+            destino = self.repo()
+            git = shutil.which("git") or "/usr/bin/git"
+            env = dict(os.environ, GIT_TERMINAL_PROMPT="0")  # nunca se queda esperando una contraseña
+            try:
+                if not os.path.isdir(os.path.join(destino, ".git")):
+                    if os.path.isdir(destino):
+                        shutil.rmtree(destino, ignore_errors=True)
+                    pasos = [[git, "clone", "--depth", "1", "--single-branch", "--branch", "main", REPO_URL, destino]]
+                else:
+                    pasos = [[git, "-C", destino, "fetch", "--depth", "1", "origin", "main"], [git, "-C", destino, "reset", "--hard", "-q", "FETCH_HEAD"]]
+                for cmd in pasos:
+                    r = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env, stdin=subprocess.DEVNULL)
+                    if r.returncode != 0:
+                        raise RuntimeError((r.stderr or r.stdout or "git falló").strip()[-300:])
+                c = subprocess.run([git, "-C", destino, "rev-parse", "--short", "HEAD"], capture_output=True, text=True, timeout=20)
+                self.sync.update(error=None, ok_at=time.time(), commit=(c.stdout or "").strip() or None)
+                return True
+            except Exception as e:  # noqa: BLE001
+                msg = str(e).replace(REPO_URL, "el repo")
+                self.sync["error"] = msg
+                return False
+
+    def sin_github(self):
+        e = (self.sync.get("error") or "").lower()
+        return any(x in e for x in ("authentication", "could not read username", "terminal prompts disabled", "403", "permission denied", "repository not found"))
 
     def repo_valido(self, r):
         return bool(r) and os.path.isfile(os.path.join(r, "CLAUDE.md")) and os.path.isdir(os.path.join(r, "agents", "01-strategy"))
@@ -256,38 +311,63 @@ class Chat:
         """Lo que /health cuenta del chat (sin el token)."""
         r = self.repo()
         claude = self.buscar_claude()
+        propio = bool(self.repo_propio())
+        if not propio and self.sync["at"] == 0:
+            threading.Thread(target=self.sincronizar, daemon=True).start()  # la primera vez, en segundo plano
         ok_repo = bool(r and self.repo_valido(r))
-        ayuda = None if ok_repo and claude else ("sin_repo" if not r else "repo_invalido" if not ok_repo else "sin_claude")
-        return {"listo": ayuda is None, "ayuda": ayuda, "repo": ok_repo, "repo_configurado": bool(r), "claude": bool(claude),
-                "ocupado": self.lock.locked(), "segundos": self.segundos}
+        if ok_repo:
+            ayuda = None if claude else "sin_claude"
+        elif propio:
+            ayuda = "repo_invalido"
+        else:
+            ayuda = "sin_github" if self.sin_github() else "bajando_repo" if self.sync["error"] is None else "repo_error"
+        return {"listo": ayuda is None, "ayuda": ayuda, "repo": ok_repo, "repo_configurado": propio, "copia": "propia" if propio else "automatica",
+                "commit": self.sync["commit"], "sincronizado": self.sync["ok_at"], "error_repo": None if ok_repo else self.sync["error"],
+                "claude": bool(claude), "ocupado": self.lock.locked(), "segundos": self.segundos, "modos": ["estrategia", "diseno"]}
 
-    def comando(self, claude, resume):
+    def mcp_diseno(self):
+        """El archivo con el único servidor MCP del chat de Diseño (figwright)."""
+        ruta = os.path.join(self.datos, "mcp-diseno.json")
+        os.makedirs(self.datos, exist_ok=True)
+        with open(ruta, "w", encoding="utf-8") as f:
+            json.dump(DISENO_MCP, f)
+        return ruta
+
+    def comando(self, claude, resume, modo="estrategia"):
         cmd = [claude, "-p", "--output-format", "stream-json", "--verbose"]
         if self.soporta(claude, "--include-partial-messages"):
             cmd.append("--include-partial-messages")
+        diseno = modo == "diseno"
         # Solo lectura: las herramientas disponibles son estas tres, y lo demás se niega sin preguntar.
-        cmd += ["--tools", ",".join(HERRAMIENTAS), "--allowedTools", ",".join(HERRAMIENTAS), "--disallowedTools", ",".join(BLOQUEADAS),
-                "--permission-mode", "dontAsk"]
+        # En Diseño se permite además figwright (Figma); el repo sigue igual de cerrado.
+        cmd += ["--tools", ",".join(HERRAMIENTAS), "--allowedTools", ",".join(DISENO_PERMITIDAS if diseno else HERRAMIENTAS),
+                "--disallowedTools", ",".join(BLOQUEADAS), "--permission-mode", "dontAsk"]
+        if diseno:
+            cmd += ["--mcp-config", self.mcp_diseno()]
         if self.soporta(claude, "--strict-mcp-config"):
-            cmd.append("--strict-mcp-config")  # sin servidores MCP (Gmail, Drive, Zernio…): el chat no toca nada afuera
+            cmd.append("--strict-mcp-config")  # solo los MCP de --mcp-config: Estrategia ninguno; Diseño, figwright
         if self.soporta(claude, "--restricted"):
             cmd.append("--restricted")  # además, la lectura queda encerrada en el repo
         elif self.soporta(claude, "--setting-sources"):
             cmd += ["--setting-sources", "user"]  # sin los hooks y permisos del proyecto
-        cmd += ["--append-system-prompt", REGLA_CHAT]
+        cmd += ["--append-system-prompt", REGLA_DISENO if diseno else REGLA_CHAT]
         if resume:
             cmd += ["--resume", resume]
         return cmd
 
-    def correr(self, prompt, resume, emitir, vivo):
+    def correr(self, prompt, resume, emitir, vivo, modo="estrategia"):
         """Corre claude y va emitiendo (evento, datos). Devuelve True si terminó bien. Mata el proceso si se acaba el tiempo o si `vivo()` es False."""
+        self.sincronizar()  # lo último de main antes de leer (si falla, se lee la copia que ya hay)
         repo, claude = self.repo(), self.buscar_claude()
         env = dict(os.environ)
         env["PATH"] = os.pathsep.join([os.path.dirname(claude), "/usr/local/bin", "/opt/homebrew/bin", env.get("PATH", "")])
         kw = {"start_new_session": True} if os.name != "nt" else {"creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)}
-        proc = subprocess.Popen(self.comando(claude, resume), cwd=repo, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kw)
+        proc = subprocess.Popen(self.comando(claude, resume, modo), cwd=repo, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kw)
         estado = {"agotado": False, "fin": False}
         err = []
+        nodos = {}  # id del tool_use de get_screenshot → los nodos que pidió (para nombrar cada imagen)
+        imagenes = {"n": 0}
+        segundos = max(self.segundos, DISENO_SEGUNDOS) if modo == "diseno" else self.segundos
 
         def matar():
             try:
@@ -302,7 +382,7 @@ class Chat:
             estado["agotado"] = True
             matar()
 
-        reloj = threading.Timer(self.segundos, tiempo)
+        reloj = threading.Timer(segundos, tiempo)
         reloj.daemon = True
         reloj.start()
         threading.Thread(target=lambda: [err.append(x.decode("utf-8", "replace")) for x in proc.stderr], daemon=True).start()
@@ -334,7 +414,29 @@ class Chat:
                             det = str(i.get("file_path") or i.get("pattern") or i.get("path") or "")
                             if det.startswith(repo):
                                 det = det[len(repo):].lstrip("/\\")
-                            emitir("herramienta", {"nombre": str(c.get("name"))[:30], "detalle": det[:200]})
+                            nombre = str(c.get("name") or "")
+                            if nombre.startswith("mcp__figwright__"):
+                                det = nombre[len("mcp__figwright__"):]
+                                if det == "get_screenshot" and isinstance(i.get("nodeIds"), list):
+                                    nodos[c.get("id")] = [str(x)[:40] for x in i["nodeIds"]]
+                            emitir("herramienta", {"nombre": nombre.replace("mcp__figwright__", "figma:")[:40], "detalle": det[:200]})
+                elif t == "user" and modo == "diseno":
+                    # Lo que devuelve get_screenshot: una imagen por nodo. Se reenvía al OS para mostrar las piezas.
+                    for c in (j.get("message") or {}).get("content") or []:
+                        if not isinstance(c, dict) or c.get("type") != "tool_result" or c.get("tool_use_id") not in nodos:
+                            continue
+                        ids = nodos.pop(c.get("tool_use_id"))
+                        k = 0
+                        for x in c.get("content") if isinstance(c.get("content"), list) else []:
+                            if not isinstance(x, dict) or x.get("type") != "image":
+                                continue
+                            src = x.get("source") or {}
+                            datos = src.get("data") or ""
+                            tipo = src.get("media_type") or "image/png"
+                            if imagenes["n"] < MAX_IMAGENES and datos and len(datos) <= MAX_IMAGEN and tipo in ("image/png", "image/jpeg", "image/webp"):
+                                imagenes["n"] += 1
+                                emitir("imagen", {"nodo": ids[k] if k < len(ids) else None, "tipo": tipo, "datos": datos})
+                            k += 1
                 elif t == "result":
                     estado["fin"] = True
                     if j.get("is_error"):
@@ -350,7 +452,7 @@ class Chat:
             if proc.poll() is None:
                 matar()
         if estado["agotado"]:
-            emitir("error", {"error": f"Claude tardó más de {self.segundos} s y se cortó. Pide algo más acotado.", "codigo": "tiempo"})
+            emitir("error", {"error": f"Claude tardó más de {segundos} s y se cortó. Pide algo más acotado.", "codigo": "tiempo"})
             return False
         if not estado["fin"]:
             emitir("error", {"error": (("".join(err)).strip()[-500:] or "Claude Code se cerró sin responder. Revisa que tengas la sesión iniciada (claude)."), "codigo": "claude"})
@@ -445,6 +547,9 @@ def servidor(laya_, origenes, puerto, chat=None):
                 return self.responder(400, {"error": "El cuerpo no es JSON"})
             prompt = b.get("prompt") if isinstance(b, dict) else None
             resume = b.get("resume") if isinstance(b, dict) else None
+            modo = b.get("modo", "estrategia") if isinstance(b, dict) else "estrategia"
+            if modo not in ("estrategia", "diseno"):
+                return self.responder(400, {"error": "«modo» es estrategia o diseno"})
             if not isinstance(prompt, str) or not prompt.strip():
                 return self.responder(400, {"error": "Falta «prompt»"})
             if len(prompt) > MAX_PROMPT:
@@ -479,7 +584,7 @@ def servidor(laya_, origenes, puerto, chat=None):
                     except (BrokenPipeError, ConnectionError, OSError):
                         vivo["v"] = False
 
-                chat.correr(prompt, resume, emitir, lambda: vivo["v"])
+                chat.correr(prompt, resume, emitir, lambda: vivo["v"], modo)
             except Exception as e:  # noqa: BLE001
                 traceback.print_exc()
                 try:
@@ -632,7 +737,16 @@ def main():
     ap.add_argument("--repo", default=repo_env, help="ruta de tu clon de Inherent-HQ para el chat (o INHERENT_REPO en el entorno / el archivo config)")
     ap.add_argument("--token", action="store_true", help="muestra el token de emparejamiento del chat (lo crea si no existe) y sale")
     ap.add_argument("--nuevo-token", action="store_true", help="cambia el token del chat por uno nuevo, lo muestra y sale")
+    ap.add_argument("--sincronizar", action="store_true", help="baja (o pone al día) la copia del repo que usa el chat, dice cómo quedó y sale")
     a = ap.parse_args()
+    if a.sincronizar:
+        c = Chat(a.repo, os.environ.get("INHERENT_CLAUDE", ""), os.environ.get("INHERENT_CHAT_SEGUNDOS") or CHAT_SEGUNDOS)
+        if c.repo_propio():
+            print(f"[puente] Usas tu propio repo ({c.repo()}): no hay copia automática que poner al día.")
+            sys.exit(0)
+        ok = c.sincronizar(forzar=True)
+        print(f"[puente] Copia del repo al día en {c.repo()} ({c.sync['commit']})." if ok else f"[puente] No pude bajar el repo: {c.sync['error']}")
+        sys.exit(0 if ok else (3 if c.sin_github() else 1))
     if a.token or a.nuevo_token:
         c = Chat(a.repo, os.environ.get("INHERENT_CLAUDE", ""), os.environ.get("INHERENT_CHAT_SEGUNDOS") or CHAT_SEGUNDOS)
         if a.nuevo_token:
@@ -658,8 +772,9 @@ def main():
     if chat.token_nuevo:
         print(f"[puente] Chat de Estrategia · token de emparejamiento (pégalo una sola vez en Inherent OS): {chat.token}", flush=True)
         print(f"[puente] Queda guardado en {chat.ruta_token}. Para verlo otra vez: python puente.py --token", flush=True)
+    chat.sincronizar(forzar=True)
     st = chat.estado()
-    print("[puente] Chat de Estrategia: " + ("listo." if st["listo"] else {"sin_repo": "falta INHERENT_REPO (la ruta de tu clon del repo, en el archivo config).", "repo_invalido": "INHERENT_REPO no apunta a un clon de Inherent-HQ.", "sin_claude": "no encuentro Claude Code (el comando claude)."}[st["ayuda"]]), flush=True)
+    print("[puente] Chat de Estrategia: " + ("listo." if st["listo"] else {"sin_github": "no pude bajar el repo: inicia sesión en GitHub una vez (gh auth login).", "bajando_repo": "bajando la copia del repo…", "repo_error": "no pude bajar el repo: " + str(st.get("error_repo")), "repo_invalido": "INHERENT_REPO no apunta a un clon de Inherent-HQ.", "sin_claude": "no encuentro Claude Code (el comando claude)."}.get(st["ayuda"], st["ayuda"])), flush=True)
     print("[puente] Cargando Laya (la primera vez baja el modelo, ~644 MB)…", flush=True)
     try:
         srv.serve_forever()

@@ -466,11 +466,11 @@ export async function render(el, { me, sub = [], alive }) {
 }
 
 // ---------- Los menús de la caja: el cliente y el bloque de Hormozi ----------
-function menu(anchor, items, { buscar = false } = {}) {
+export function menu(anchor, items, { buscar = false, placeholder = 'Buscar cliente…' } = {}) {
   document.querySelector('.es-menu')?.remove();
   const box = anchor.closest('.es-box') || anchor.parentElement;
   const m = document.createElement('div'); m.className = 'es-menu'; m.setAttribute('role', 'listbox');
-  const pinta = (q = '') => html`${buscar ? html`<input class="in" placeholder="Buscar cliente…" aria-label="Buscar cliente" value="${q}">` : ''}${items.filter((x) => !q || x.label.toLowerCase().includes(q.toLowerCase())).map((x) => html`<a href="${x.href}" class="${x.on ? 'on' : ''}" role="option">${x.mono != null ? html`<i class="mono ${x.priv ? 'priv' : ''}">${x.mono}</i>` : html`<b class="${x.dot || ''}"></b>`}<span>${x.label}</span>${x.sub ? html`<small>${x.sub}</small>` : ''}</a>`)}`;
+  const pinta = (q = '') => html`${buscar ? html`<input class="in" placeholder="${placeholder}" aria-label="${placeholder}" value="${q}">` : ''}${items.filter((x) => !q || x.label.toLowerCase().includes(q.toLowerCase())).map((x) => html`<a href="${x.href}" class="${x.on ? 'on' : ''}" role="option">${x.mono != null ? html`<i class="mono ${x.priv ? 'priv' : ''}">${x.mono}</i>` : html`<b class="${x.dot || ''}"></b>`}<span>${x.label}</span>${x.sub ? html`<small>${x.sub}</small>` : ''}</a>`)}`;
   mount(m, pinta()); box.append(m);
   const inp = m.querySelector('input'); if (inp) { inp.focus(); inp.oninput = () => { const q = inp.value; mount(m, pinta(q)); const n = m.querySelector('input'); n.focus(); n.setSelectionRange(q.length, q.length); n.oninput = inp.oninput; }; }
   const cerrar = (e) => { if (!m.contains(e.target) && e.target !== anchor) { m.remove(); document.removeEventListener('pointerdown', cerrar); } };
