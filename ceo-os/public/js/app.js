@@ -33,12 +33,13 @@ const svg = (d) => raw(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColo
 // Qué hace falta: un área de la matriz · 'ceo' · 'all' (todo el equipo) · una función.
 const full = (a) => me.areas.includes(a) && me.views?.[a] !== 'resumen';
 const TABS = {
-  hoy: [['home', 'Hoy', 'home'], ['work', 'Mis tareas', 'work'], ['control', 'Control del flujo', 'control'], ['resultados', 'Indicadores', 'resultados'], ['setup', 'Arranque', 'ceo']],
+  // Control del flujo e Indicadores ya no son pestañas: su pulso y lo que necesita atención viven en Hoy (cada número lleva a su área).
+  hoy: [['home', 'Hoy', 'home'], ['work', 'Mis tareas', 'work']],
   proyectos: [['clients', 'Clientes', 'clients'], ['operations', 'Proyectos', 'operations']],
   ventas: [['sales', 'Ventas', 'sales']],
   servicios: [['services', 'Servicios', () => full('sales')]],
   finanzas: [['finanzas', 'Finanzas', 'finanzas']],
-  inherent: [['vision', 'Visión y misión', 'all'], ['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'ceo'], ['team/laya', 'Laya', 'ceo'], ['roadmap', 'Roadmap', 'roadmap'], ['library', 'Library', 'library']],
+  inherent: [['vision', 'Visión y misión', 'all'], ['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'ceo'], ['team/laya', 'Laya', 'ceo'], ['roadmap', 'Roadmap', 'roadmap'], ['library', 'Library', 'library'], ['setup', 'Arranque', 'ceo']],
 };
 const ORG = GROUPS.filter((g) => g[3] === 'org').map(([k, l]) => [k, l]);
 const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands', estrategia: 'strategy' };
@@ -178,6 +179,8 @@ function resolve(path) {
   let org = parts[0] === 'org' ? parts.slice(1) : parts;
   if (!org.length) return resolve(spaceHome('org'));
   const key = org[0];
+  // Control del flujo e Indicadores se volvieron parte de Hoy: sus links viejos abren Hoy.
+  if (key === 'control' || key === 'resultados') return resolve('org/home');
   if (!SCREENS[key] || !sees(key) || ['content', 'mimarca', 'control-hub', 'marcas', 'estrategia'].includes(key)) return path === landing(false) ? { key: 'vision', rest: [], url: 'org/vision', space: 'org' } : fallback();
   if (key === 'portal' && me.role === 'client') return { key, rest: org.slice(1), url: org.join('/'), space: null };
   return { key, rest: org.slice(1), url: 'org/' + org.join('/'), space: 'org' };
