@@ -32,3 +32,14 @@ t('Sin suficientes propuestas, el cierre real queda vacío', () => {
   assert.equal(tasasReales([{ stage: 'Ganado', value_usd: 500 }], now).cierre, null);
 });
 console.log(`\n${ok} pruebas pasaron`);
+// Buscar leads: cada resultado de Apify se vuelve un prospecto y no se repite.
+const { prospecto, llave } = await import('../api/_lib/buscar.js');
+t('Un lugar de Google Maps se vuelve prospecto con sus datos', () => {
+  const p = prospecto('maps', { title: 'Café Altura', phone: '+502 5555 1234', website: 'https://cafealtura.gt', categoryName: 'Cafetería', totalScore: 4.6, reviewsCount: 320, address: 'Zona 10' });
+  assert.equal(p.name, 'Café Altura'); assert.match(p.notes, /4\.6★ \(320 reseñas\)/); assert.ok(llave(p).includes('55551234'));
+});
+t('Una cuenta de Instagram se vuelve prospecto', () => {
+  const p = prospecto('instagram', { username: 'cafealtura', fullName: 'Café Altura', followersCount: 1200, biography: 'Café de especialidad' });
+  assert.equal(p.ig, 'cafealtura'); assert.match(p.notes, /1200 seguidores/);
+});
+console.log(`${ok} pruebas pasaron en total`);

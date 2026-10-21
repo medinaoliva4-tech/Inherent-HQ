@@ -23,6 +23,7 @@ import * as avatares from './_lib/avatares.js';
 import * as creacion from './_lib/creacion.js';
 import * as portal from './_lib/portal.js';
 import * as inv from './_lib/investigacion.js';
+import * as buscar from './_lib/buscar.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
@@ -1101,6 +1102,8 @@ export async function search(u, q) {
   return picked.sort((a, z) => SEARCH_TYPES.indexOf(a.type) - SEARCH_TYPES.indexOf(z.type) || z.score - a.score).map(({ score, ...x }) => x);
 }
 // ---------- Laya (Fase 3): el juicio como dato — puertas, texto, juicios y pendientes ----------
+// ---------- Ventas › Buscar leads: scraping de prospectos con Apify ----------
+buscar.rutas(on);
 laya.rutas(on);
 // ---------- App 02 · Estrategia: 5 bloques por cliente, el estado de cada uno y las fuentes de Hormozi ----------
 estrategia.rutas(on);

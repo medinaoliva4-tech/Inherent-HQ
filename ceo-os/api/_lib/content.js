@@ -155,7 +155,7 @@ export function apifyError(code, txt = '') {
     : ['APIFY', `Apify falló (${code}).`];
   return Object.assign(new Error(err[1]), { code: err[0], apifyStatus: code, detail: `Apify ${code}: ${t.slice(0, 200)}` });
 }
-async function apify(path, init = {}) {
+export async function apify(path, init = {}) {
   const t = process.env.APIFY_TOKEN?.trim(); if (!t) throw Object.assign(new Error('Falta APIFY_TOKEN en Vercel'), { code: 'NO_APIFY' });
   let r;
   try { r = await fetch(`https://api.apify.com/v2/${path}`, { ...init, headers: { Authorization: `Bearer ${t}`, 'Content-Type': 'application/json', ...(init.headers || {}) }, signal: AbortSignal.timeout(20000) }); }

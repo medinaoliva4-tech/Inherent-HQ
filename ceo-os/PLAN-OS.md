@@ -157,7 +157,7 @@ De la lista «AI stack para construir un negocio desde cero» (todo menos Higgsf
 | **2 · Organization** | Facturas por cobrar/pagar con Gmail y banco · flujo de atención y cierre en Ventas · página de Visión y misión · Hoy unificado · **Workspaces por rol rehechos: cortos, sin info suelta, solo lo que ese rol hace hoy** | Manejar la empresa rápido |
 | **3 · Laya** | Herramienta `juzgar()`, preguntas por puerta editables, notas guardadas; conectado a Facturas, Ventas e Investigación | El criterio del sistema |
 | **4 · Marcas: entender** | Investigación con ICP y fichas · **scraping automático** (cada semana el servidor jala los posts de los referentes de cada marca con Apify, sin prompt) · **Laya analiza cada post** contra la marca (¿sirve?, ¿por qué funciona?) · página reordenada: arriba lo que funciona, abajo la biblioteca · Ideas por pilar y etapa · candado del brief de comunicación | Que nada se cree sin entender |
-| **5 · Marcas: crear** | Formatos · Creación de guiones · Design system + Figma · Ficha de video · **Ads Studio** (variaciones + lanzar con OK) · **Tech** (web viva, landings, herramientas, auditoría SEO/GEO con claude-seo) | Crear con la voz y el look de la marca |
+| **5 · Marcas: crear** | Formatos · Creación de guiones · Design system + Figma + **chat de Diseño con cerebro** · Ficha de video · **Ads Studio** (variaciones + lanzar con OK) · **Tech** (web viva, landings, herramientas, auditoría SEO/GEO con claude-seo) | Crear con la voz y el look de la marca |
 | **6 · Marcas: publicar + Claude** | Calendario con estados y archivo · assets de Drive · Inherent Terminal + chat lateral · Laya y ojo visual locales · **walkthrough de conexión** · **videos «Cómo se usa»** | Operar sin salir del OS |
 | **7 · Pulido Apple** | Etiqueta «Facturas» en Gmail (Claude registra las facturas de proveedores) · Textos, vacíos que enseñan, móvil, modo noche, prueba con una persona no técnica | Que se entienda en 10 segundos |
 
@@ -233,6 +233,12 @@ Referencia: reel de @joshuablatch — «cualquiera puede hacer que Claude edite 
 - **Plantillas de edición** reutilizables por formato (reel de gancho, testimonio, detrás de cámaras, anuncio) construidas con herramientas de código (ffmpeg / Remotion) que Claude corre en la terminal de cada persona.
 - **Flujo:** la ficha de video (assets, cortes, lógica, transiciones) + el kit de la marca → Claude arma el corte → el ojo visual y Claude con visión lo revisan contra los criterios → tú apruebas → derivadas y variaciones para Ads Studio.
 - Se apoya en las skills `ve-armado`, `ve-marca`, `ve-derivadas` y `ve-export`.
+
+## 13B · Chat de Diseño con cerebro (Marca › Diseño) — Fase 5, con el design system
+- Como el chat de Estrategia: a un lado el chat; al otro, lo que se va concretando (paleta, tipografía, componentes, plantillas por formato).
+- **El cerebro:** una base de conocimiento conectada, al estilo Obsidian, con notas enlazadas entre sí. Lleva la guía de marca de ②B Branding, los lineamientos de Inherent, las referencias que funcionaron y el *ideal outcome* de cada pieza. El chat la lee antes de proponer.
+- El diseño gráfico se ejecuta desde Claude: el chat trabaja con esos lineamientos y deja el resultado en la marca.
+- Referencia: un reel que mandó el CEO (no se pudo ver desde aquí; Eden pide plan de pago).
 
 ## 14 · Tech (Marca › Tech) — web viva y herramientas a medida
 Referencia: reel de @mattxwebb — «tu web no debería ser estática».
