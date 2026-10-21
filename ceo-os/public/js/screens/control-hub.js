@@ -9,7 +9,7 @@ const OPEN_LEAD = ['Nuevo', 'Contactado', 'Reunión', 'Propuesta'];
 const TOOLS = [
   ['control', 'Control del flujo', 'De lead a entrega: el embudo y lo que necesita atención', 'target', 'control', 'control'],
   ['operations', 'Proyectos', 'Pipeline, calendario y timeline de cada proyecto', 'layers', 'operations', 'operations'],
-  ['work', 'Workspace', 'La cola de siempre: tareas, decisiones y pipelines', 'list', 'work', 'work'],
+  ['work', 'Mis tareas', 'Lo tuyo para organizarte: hoy, atrasadas, decisiones y lo que viene', 'list', 'work', 'work'],
   ['sales', 'Comercial · CRM', 'Leads, cotizaciones, especialistas y fuentes', 'megaphone', 'sales', 'sales'],
   ['finanzas', 'Finanzas', 'Movimientos, costos, rentabilidad y pagos por servicio', 'bars', 'finance', 'finanzas'],
   ['resultados', 'Indicadores', 'Lo que de verdad pasó: leads, entregas, ingresos y metas', 'star', 'results', 'resultados'],

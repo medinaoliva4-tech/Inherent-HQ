@@ -32,7 +32,7 @@ const svg = (d) => raw(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColo
 // Qué hace falta: un área de la matriz · 'ceo' · 'all' (todo el equipo) · una función.
 const full = (a) => me.areas.includes(a) && me.views?.[a] !== 'resumen';
 const TABS = {
-  hoy: [['home', 'Hoy', 'home'], ['work', 'Workspace', 'work'], ['control', 'Control del flujo', 'control'], ['resultados', 'Indicadores', 'resultados'], ['setup', 'Arranque', 'ceo']],
+  hoy: [['home', 'Hoy', 'home'], ['work', 'Mis tareas', 'work'], ['control', 'Control del flujo', 'control'], ['resultados', 'Indicadores', 'resultados'], ['setup', 'Arranque', 'ceo']],
   proyectos: [['clients', 'Clientes', 'clients'], ['operations', 'Proyectos', 'operations']],
   ventas: [['sales', 'Ventas', 'sales']],
   servicios: [['services', 'Servicios', () => full('sales')]],
@@ -41,7 +41,7 @@ const TABS = {
 };
 const ORG = GROUPS.filter((g) => g[3] === 'org').map(([k, l]) => [k, l]);
 const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands', estrategia: 'strategy' };
-const LABEL = { home: 'Hoy', control: 'Control del flujo', work: 'Workspace', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control', vision: 'Visión y misión', marcas: 'Marcas', estrategia: 'Estrategia' };
+const LABEL = { home: 'Hoy', control: 'Control del flujo', work: 'Mis tareas', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control', vision: 'Visión y misión', marcas: 'Marcas', estrategia: 'Estrategia' };
 // Las pantallas de Organization (lo que no es Marcas, Mi perfil ni el portal del cliente).
 const ORG_SCREENS = ['home', 'control', 'work', 'resultados', 'setup', 'clients', 'operations', 'portal', 'sales', 'services', 'finanzas', 'vision', 'team', 'roadmap', 'library'];
 // Las áreas que cuentan como «ve algo de Organization» (Equipo y Visión los ve todo el equipo: no cuentan).
