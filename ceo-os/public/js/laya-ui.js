@@ -7,9 +7,9 @@ import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, OLLAMA, MODELO_LOCAL, INSTALAR_MODE
 
 // ---------- el puente local ----------
 let est = { at: 0, v: null };
-async function conTiempo(url, opts = {}, ms = 1500) {
+async function conTiempo(url, opts = {}, ms = 4000) {
   const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
-  try { return await fetch(url, { ...opts, signal: c.signal, credentials: 'omit', cache: 'no-store' }); } finally { clearTimeout(t); }
+  try { return await fetch(url, { ...opts, signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); } finally { clearTimeout(t); }
 }
 // { on, listo, cargando, modelo, error } — se recuerda 15 s para no tocar el puente en cada ficha.
 export async function puenteEstado(force = false) {

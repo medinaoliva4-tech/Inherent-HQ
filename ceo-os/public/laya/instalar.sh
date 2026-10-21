@@ -149,7 +149,12 @@ main() {
   fi
   HF_HOME="$HF" USE_TF=0 TOKENIZERS_PARALLELISM=false "$PY" "$LAYA_HOME/puente.py" --precargar </dev/null >>"$LOGS/instalar.log" 2>&1 ||
     fallo "No pude bajar o probar el modelo. Revisa tu internet y vuelve a correr el comando."
+  # Lo que la persona eligió a mano (su propio repo, su Claude) se conserva al reescribir la config.
+  local propio=""
+  [ -f "$LAYA_HOME/config" ] && propio="$(grep -E '^(INHERENT_REPO|INHERENT_CLAUDE)=' "$LAYA_HOME/config" || true)"
   printf 'HF_HOME=%s\nLAYA_PUENTE_PUERTO=%s\nLAYA_PUENTE_LOG=%s\n' "$HF" "$PUERTO" "$LOGS" >"$LAYA_HOME/config"
+  [ -n "$propio" ] && printf '%s\n' "$propio" >>"$LAYA_HOME/config"
+  copia_repo "$PY"
 
   # El puerto tiene que estar libre: si responde algo aquí, es un puente abierto a mano.
   if curl -fsS -m 2 "http://127.0.0.1:$PUERTO/health" >/dev/null 2>&1; then
@@ -318,6 +323,33 @@ detener() {
     fi
     rm -f "$LAYA_HOME/puente.pid"
   fi
+}
+
+# La copia del repo que lee el chat: la maneja el puente (~/.inherent/laya/repo) y la pone al día con main antes de cada chat.
+# Nadie la edita. Como el repo es privado, la primera vez hay que iniciar sesión en GitHub (una sola vez, en el navegador).
+copia_repo() {
+  local PY="$1" rc=0
+  if grep -q '^INHERENT_REPO=' "$LAYA_HOME/config" 2>/dev/null; then return 0; fi
+  paso "Preparando la copia del repo de Inherent (se pone al día sola antes de cada chat)"
+  if ! command -v git >/dev/null 2>&1; then
+    printf '⚠️  Falta git. En Mac: corre «xcode-select --install», acepta, y vuelve a correr este comando.\n'; return 0
+  fi
+  "$PY" "$LAYA_HOME/puente.py" --sincronizar </dev/null >>"$LOGS/instalar.log" 2>&1 || rc=$?
+  if [ "$rc" = 3 ]; then
+    paso "GitHub pide que inicies sesión (una sola vez)"
+    if ! command -v gh >/dev/null 2>&1; then
+      if command -v brew >/dev/null 2>&1; then brew install gh >>"$LOGS/instalar.log" 2>&1 || true; fi
+    fi
+    if command -v gh >/dev/null 2>&1; then
+      gh auth status -h github.com >/dev/null 2>&1 || gh auth login -h github.com -p https -w </dev/tty || true
+      gh auth setup-git >/dev/null 2>&1 || true
+      rc=0; "$PY" "$LAYA_HOME/puente.py" --sincronizar </dev/null >>"$LOGS/instalar.log" 2>&1 || rc=$?
+    else
+      printf '⚠️  Instala GitHub CLI (https://cli.github.com), corre «gh auth login» y vuelve a correr este comando.\n'; return 0
+    fi
+  fi
+  if [ "$rc" = 0 ]; then printf 'Copia del repo lista: el chat siempre lee lo último de main.\n'
+  else printf '⚠️  No pude bajar el repo (mira %s/instalar.log). Laya funciona igual; el chat espera la copia.\n' "$LOGS"; fi
 }
 
 verificar() {

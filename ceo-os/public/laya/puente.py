@@ -63,7 +63,10 @@ MODELO = "multilingual"  # el checkpoint que lee español (~644 MB la primera ve
 MAX_CUERPO = 256 * 1024
 MAX_TEXTO = 20000
 MAX_PREGUNTAS = 16
-VERSION = "3"
+VERSION = "4"
+# La copia del repo que el puente maneja solo (si no le dices otra con INHERENT_REPO): se pone al día con main antes de cada chat.
+REPO_URL = os.environ.get("INHERENT_REPO_URL") or "https://github.com/medinaoliva4-tech/Inherent-HQ.git"
+SYNC_CADA = 60  # segundos mínimos entre dos puestas al día
 LOG_MAX = 1_000_000  # bytes por archivo de log
 LOG_COPIAS = 3
 
@@ -192,6 +195,8 @@ class Chat:
         self.lock = threading.Lock()  # un solo chat a la vez
         self.ayuda = None  # el texto de `claude --help`, una sola vez
         self.fallos = []  # instantes de los tokens malos (freno contra adivinar)
+        self.sync = {"at": 0.0, "ok_at": None, "error": None, "commit": None}  # la copia automática del repo
+        self.sync_lock = threading.Lock()
 
     # --- token ---
     def cargar_token(self, renovar=False):
@@ -227,9 +232,49 @@ class Chat:
         return False
 
     # --- repo y claude ---
+    def repo_propio(self):
+        """El repo que la persona eligió (entorno, --repo o config). Vacío = el puente maneja su propia copia."""
+        return self.repo_env or valor_de_config("INHERENT_REPO")
+
     def repo(self):
-        r = self.repo_env or valor_de_config("INHERENT_REPO")
-        return os.path.abspath(os.path.expanduser(r)) if r else ""
+        r = self.repo_propio()
+        return os.path.abspath(os.path.expanduser(r)) if r else os.path.join(self.datos, "repo")
+
+    # --- la copia automática: se baja una vez y antes de cada chat se pone al día con main (solo lectura: nadie la edita) ---
+    def sincronizar(self, forzar=False):
+        if self.repo_propio():
+            return True
+        if not forzar and time.time() - self.sync["at"] < SYNC_CADA:
+            return self.sync["error"] is None
+        with self.sync_lock:
+            if not forzar and time.time() - self.sync["at"] < SYNC_CADA:
+                return self.sync["error"] is None
+            self.sync["at"] = time.time()
+            destino = self.repo()
+            git = shutil.which("git") or "/usr/bin/git"
+            env = dict(os.environ, GIT_TERMINAL_PROMPT="0")  # nunca se queda esperando una contraseña
+            try:
+                if not os.path.isdir(os.path.join(destino, ".git")):
+                    if os.path.isdir(destino):
+                        shutil.rmtree(destino, ignore_errors=True)
+                    pasos = [[git, "clone", "--depth", "1", "--single-branch", "--branch", "main", REPO_URL, destino]]
+                else:
+                    pasos = [[git, "-C", destino, "fetch", "--depth", "1", "origin", "main"], [git, "-C", destino, "reset", "--hard", "-q", "FETCH_HEAD"]]
+                for cmd in pasos:
+                    r = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env, stdin=subprocess.DEVNULL)
+                    if r.returncode != 0:
+                        raise RuntimeError((r.stderr or r.stdout or "git falló").strip()[-300:])
+                c = subprocess.run([git, "-C", destino, "rev-parse", "--short", "HEAD"], capture_output=True, text=True, timeout=20)
+                self.sync.update(error=None, ok_at=time.time(), commit=(c.stdout or "").strip() or None)
+                return True
+            except Exception as e:  # noqa: BLE001
+                msg = str(e).replace(REPO_URL, "el repo")
+                self.sync["error"] = msg
+                return False
+
+    def sin_github(self):
+        e = (self.sync.get("error") or "").lower()
+        return any(x in e for x in ("authentication", "could not read username", "terminal prompts disabled", "403", "permission denied", "repository not found"))
 
     def repo_valido(self, r):
         return bool(r) and os.path.isfile(os.path.join(r, "CLAUDE.md")) and os.path.isdir(os.path.join(r, "agents", "01-strategy"))
@@ -256,10 +301,19 @@ class Chat:
         """Lo que /health cuenta del chat (sin el token)."""
         r = self.repo()
         claude = self.buscar_claude()
+        propio = bool(self.repo_propio())
+        if not propio and self.sync["at"] == 0:
+            threading.Thread(target=self.sincronizar, daemon=True).start()  # la primera vez, en segundo plano
         ok_repo = bool(r and self.repo_valido(r))
-        ayuda = None if ok_repo and claude else ("sin_repo" if not r else "repo_invalido" if not ok_repo else "sin_claude")
-        return {"listo": ayuda is None, "ayuda": ayuda, "repo": ok_repo, "repo_configurado": bool(r), "claude": bool(claude),
-                "ocupado": self.lock.locked(), "segundos": self.segundos}
+        if ok_repo:
+            ayuda = None if claude else "sin_claude"
+        elif propio:
+            ayuda = "repo_invalido"
+        else:
+            ayuda = "sin_github" if self.sin_github() else "bajando_repo" if self.sync["error"] is None else "repo_error"
+        return {"listo": ayuda is None, "ayuda": ayuda, "repo": ok_repo, "repo_configurado": propio, "copia": "propia" if propio else "automatica",
+                "commit": self.sync["commit"], "sincronizado": self.sync["ok_at"], "error_repo": None if ok_repo else self.sync["error"],
+                "claude": bool(claude), "ocupado": self.lock.locked(), "segundos": self.segundos}
 
     def comando(self, claude, resume):
         cmd = [claude, "-p", "--output-format", "stream-json", "--verbose"]
@@ -281,6 +335,7 @@ class Chat:
 
     def correr(self, prompt, resume, emitir, vivo):
         """Corre claude y va emitiendo (evento, datos). Devuelve True si terminó bien. Mata el proceso si se acaba el tiempo o si `vivo()` es False."""
+        self.sincronizar()  # lo último de main antes de leer (si falla, se lee la copia que ya hay)
         repo, claude = self.repo(), self.buscar_claude()
         env = dict(os.environ)
         env["PATH"] = os.pathsep.join([os.path.dirname(claude), "/usr/local/bin", "/opt/homebrew/bin", env.get("PATH", "")])
@@ -632,7 +687,16 @@ def main():
     ap.add_argument("--repo", default=repo_env, help="ruta de tu clon de Inherent-HQ para el chat (o INHERENT_REPO en el entorno / el archivo config)")
     ap.add_argument("--token", action="store_true", help="muestra el token de emparejamiento del chat (lo crea si no existe) y sale")
     ap.add_argument("--nuevo-token", action="store_true", help="cambia el token del chat por uno nuevo, lo muestra y sale")
+    ap.add_argument("--sincronizar", action="store_true", help="baja (o pone al día) la copia del repo que usa el chat, dice cómo quedó y sale")
     a = ap.parse_args()
+    if a.sincronizar:
+        c = Chat(a.repo, os.environ.get("INHERENT_CLAUDE", ""), os.environ.get("INHERENT_CHAT_SEGUNDOS") or CHAT_SEGUNDOS)
+        if c.repo_propio():
+            print(f"[puente] Usas tu propio repo ({c.repo()}): no hay copia automática que poner al día.")
+            sys.exit(0)
+        ok = c.sincronizar(forzar=True)
+        print(f"[puente] Copia del repo al día en {c.repo()} ({c.sync['commit']})." if ok else f"[puente] No pude bajar el repo: {c.sync['error']}")
+        sys.exit(0 if ok else (3 if c.sin_github() else 1))
     if a.token or a.nuevo_token:
         c = Chat(a.repo, os.environ.get("INHERENT_CLAUDE", ""), os.environ.get("INHERENT_CHAT_SEGUNDOS") or CHAT_SEGUNDOS)
         if a.nuevo_token:
@@ -658,8 +722,9 @@ def main():
     if chat.token_nuevo:
         print(f"[puente] Chat de Estrategia · token de emparejamiento (pégalo una sola vez en Inherent OS): {chat.token}", flush=True)
         print(f"[puente] Queda guardado en {chat.ruta_token}. Para verlo otra vez: python puente.py --token", flush=True)
+    chat.sincronizar(forzar=True)
     st = chat.estado()
-    print("[puente] Chat de Estrategia: " + ("listo." if st["listo"] else {"sin_repo": "falta INHERENT_REPO (la ruta de tu clon del repo, en el archivo config).", "repo_invalido": "INHERENT_REPO no apunta a un clon de Inherent-HQ.", "sin_claude": "no encuentro Claude Code (el comando claude)."}[st["ayuda"]]), flush=True)
+    print("[puente] Chat de Estrategia: " + ("listo." if st["listo"] else {"sin_github": "no pude bajar el repo: inicia sesión en GitHub una vez (gh auth login).", "bajando_repo": "bajando la copia del repo…", "repo_error": "no pude bajar el repo: " + str(st.get("error_repo")), "repo_invalido": "INHERENT_REPO no apunta a un clon de Inherent-HQ.", "sin_claude": "no encuentro Claude Code (el comando claude)."}.get(st["ayuda"], st["ayuda"])), flush=True)
     print("[puente] Cargando Laya (la primera vez baja el modelo, ~644 MB)…", flush=True)
     try:
         srv.serve_forever()

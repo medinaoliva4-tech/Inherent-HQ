@@ -24,6 +24,8 @@ export const COLLS = {
   strategy: 'estrategia',
   // App 01 · Marca › Cliente ideal: los avatares de cada marca. Solo por /api/avatares/* (api/_lib/avatares.js).
   avatars: 'content',
+  // App 01 · Marca › Crear: formatos y guiones. Solo por /api/formatos/* y /api/guiones/* (api/_lib/creacion.js).
+  formats: 'content', scripts: 'content',
   invoices: 'finanzas', bank_moves: 'finanzas', cost_recipes: 'finanzas',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas

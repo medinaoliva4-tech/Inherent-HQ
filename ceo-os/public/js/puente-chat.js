@@ -6,15 +6,15 @@ import { PUENTE } from './laya.js';
 export const tokenDe = (me) => { try { return localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
 
 // ¿El puente está encendido y con chat? → { on, listo, ayuda }
-export async function saludPuente() {
-  const c = new AbortController(), t = setTimeout(() => c.abort(), 1500);
-  try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store' }); if (!r.ok) return { on: false }; const j = await r.json(); return { on: j.status === 'ok', listo: Boolean(j.chat?.listo), ayuda: j.chat?.ayuda || null }; }
+export async function saludPuente(ms = 15000) {
+  const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+  try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); if (!r.ok) return { on: false }; const j = await r.json(); return { on: j.status === 'ok', listo: Boolean(j.chat?.listo), ayuda: j.chat?.ayuda || null }; }
   catch { return { on: false }; } finally { clearTimeout(t); }
 }
 
 // Manda el prompt y va entregando el texto (onDelta) y lo que Claude lee (onTool). Devuelve el texto final.
 export async function preguntar({ prompt, token, signal, onDelta = () => {}, onTool = () => {} }) {
-  const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify({ prompt }) });
+  const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify({ prompt }) });
   if (!r.ok) { const j = await r.json().catch(() => ({})); throw Object.assign(new Error(j.error || `El puente respondió ${r.status}`), { status: r.status }); }
   const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '', texto = '', fallo = null;
   for (;;) {

@@ -165,9 +165,10 @@ export async function render(el, { me, sub = [], alive }) {
     }
 
     // ---------- Derecha: el chat ----------
-    async function salud() {
+    // ms: lo que se espera al puente. Al tocar «Ya lo hice» se espera más: la primera vez Chrome pide permiso para hablar con tu compu.
+    async function salud(ms = 4000) {
       let v = { on: false };
-      try { const c = new AbortController(), t = setTimeout(() => c.abort(), 1500); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
+      try { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
       S.salud = v; return v;
     }
     // Qué le falta al chat para correr (en este orden).
@@ -176,7 +177,7 @@ export async function render(el, { me, sub = [], alive }) {
       const s = S.salud; if (!s) return 'cargando';
       if (!s.on) return 'apagado';
       if (!s.chat) return 'viejo';
-      if (s.chat.ayuda) return s.chat.ayuda; // sin_repo · repo_invalido · sin_claude
+      if (s.chat.ayuda) return s.chat.ayuda; // bajando_repo · sin_github · repo_error · repo_invalido · sin_claude (sin_repo: puentes viejos)
       if (!tok()) return 'sin-token';
       return 'listo';
     }
@@ -189,7 +190,10 @@ export async function render(el, { me, sub = [], alive }) {
       if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
       if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat. Corre otra vez el comando y actualiza solo:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
-      if (f === 'sin_repo' || f === 'repo_invalido') return html`<div class="es-setup"><b>${f === 'sin_repo' ? 'Dile dónde está el repo' : 'Esa ruta no es el repo de Inherent'}</b><p>Una línea, con la ruta de tu clon de Inherent-HQ:</p>${cmd(win ? 'Add-Content "$HOME\\.inherent\\laya\\config" \'INHERENT_REPO=C:\\ruta\\a\\Inherent-HQ\'' : "echo 'INHERENT_REPO=/ruta/a/Inherent-HQ' >> ~/.inherent/laya/config")}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'bajando_repo') return html`<div class="es-setup"><b>Preparando la copia del repo</b><p>El puente baja el repo de Inherent la primera vez (un minuto). Después se pone al día solo antes de cada chat.</p><button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
+      if (f === 'sin_github') return html`<div class="es-setup"><b>Inicia sesión en GitHub (una sola vez)</b><p>El repo es privado: el puente necesita tu permiso para leerlo. Corre otra vez el comando de instalar y sigue lo que te pide en el navegador:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'repo_error') return html`<div class="es-setup"><b>No pude bajar el repo</b><p>${S.salud?.chat?.error_repo || 'Revisa tu internet.'} Se reintenta solo en un minuto; si sigue, corre otra vez el comando de instalar.</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
+      if (f === 'sin_repo' || f === 'repo_invalido') return html`<div class="es-setup"><b>${f === 'sin_repo' ? 'Actualiza el puente' : 'Esa ruta no es el repo de Inherent'}</b><p>${f === 'sin_repo' ? 'El puente nuevo baja solo una copia del repo y la pone al día antes de cada chat. Corre otra vez el comando:' : 'Quita la línea INHERENT_REPO de ~/.inherent/laya/config para que el puente use su copia automática, y corre otra vez el comando:'}</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'sin_claude') return html`<div class="es-setup"><b>No encuentro Claude Code</b><p>Instálalo e inicia sesión con tu cuenta (comando <code>claude</code>). Luego vuelve aquí.</p><button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       return html`<div class="es-setup"><b>Empareja tu compu (una sola vez)</b><p>Pega el token que imprimió el puente. Para verlo:</p>${cmd(win ? 'Get-Content "$HOME\\.inherent\\laya\\chat-token"' : 'cat ~/.inherent/laya/chat-token')}
         <form class="es-pair" data-act="pair"><input class="in" name="t" type="password" autocomplete="off" spellcheck="false" placeholder="Pega el token" aria-label="Token del puente"><button class="btn xs" type="submit">Emparejar</button></form>${S.pareo ? html`<p class="es-err">${S.pareo}</p>` : ''}</div>`;
@@ -294,7 +298,7 @@ export async function render(el, { me, sub = [], alive }) {
       const prompt = promptDe({ cliente: data.nombre, slug, carpeta: data.carpeta, bloque: bid, nivel: data.nivel?.nombre, nivelId: data.nivel?.id, limite: b.limite, incluye: data.nivel?.id === 'medida' ? data.ficha.incluye : [], etapa: etapaN(), etapaConfirmada: Boolean(data.etapa?.confirmada), entregables: b.entregables.map((x) => x.ruta ? `${data.carpeta}/${x.ruta}` : '').filter(Boolean), mensaje: texto, library, adjuntos: viejos.map((a) => a.titulo) }) + (historial ? `\n\nConversación hasta ahora:\n${historial}` : '');
       let fallo = null;
       try {
-        const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, ...(usadoResume ? { resume: chat.sesion } : {}) }) });
+        const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, ...(usadoResume ? { resume: chat.sesion } : {}) }) });
         if (!r.ok) { const j = await r.json().catch(() => ({})); const e = new Error(j.error || `El puente respondió ${r.status}`); e.status = r.status; e.codigo = j.codigo; throw e; }
         const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '';
         for (;;) {
@@ -347,7 +351,7 @@ export async function render(el, { me, sub = [], alive }) {
       }
       if (a === 'adj-quitar') { chat.adj = chat.adj.filter((x) => x.id !== t.dataset.id); guardarChat(key, chat); paintAdj(); paintCtx(); return; }
       if (a === 'libdoc') return abrirLibDoc(t.dataset.id);
-      if (a === 'reintentar') { t.disabled = true; t.textContent = 'Buscando…'; await salud(); return paintChat(); }
+      if (a === 'reintentar') { t.disabled = true; t.textContent = 'Buscando… si Chrome pregunta, dale «Permitir»'; await salud(30000); if (!S.salud?.on) toast('Tu compu no respondió. Si usas Safari, abre el OS en Chrome; si Chrome preguntó y dijiste que no, dale permiso en el candado de la barra de direcciones.', true); return paintChat(); }
       if (a === 'rapido') return enviar(t.dataset.t);
       if (a === 'detener') { try { enVuelo?.abort(); } catch {} return; }
       if (a === 'fuente') return abrir(SRC[+t.dataset.i]);
@@ -377,7 +381,7 @@ export async function render(el, { me, sub = [], alive }) {
         const v = new FormData(e.target).get('t')?.toString().trim(); if (!v) return;
         const btn = $('button', e.target); btn.disabled = true;
         try {
-          const r = await fetch(PUENTE + '/chat/estado', { headers: { Authorization: 'Bearer ' + v }, credentials: 'omit', cache: 'no-store' });
+          const r = await fetch(PUENTE + '/chat/estado', { headers: { Authorization: 'Bearer ' + v }, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' });
           if (r.ok) { setTok(v); S.pareo = ''; toast('Listo: tu compu quedó emparejada'); await salud(); } else S.pareo = r.status === 401 ? 'Ese token no es el del puente.' : r.status === 403 ? 'El puente no deja entrar desde esta dirección.' : r.status === 429 ? 'Demasiados intentos. Espera un minuto.' : `El puente respondió ${r.status}.`;
         } catch { S.pareo = 'No pude hablar con el puente.'; }
         return paintChat();
