@@ -70,6 +70,15 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
 - **Resultados** — qué funcionó y qué no. *No se pierde:* vuelve a Investigación y al plan del mes siguiente.
 - **Tech** — la web, las landings y las herramientas de la marca. *No se pierde:* una landing entra al CRM; la web viva la enciende el CEO y solo comparte lo ya publicado; la auditoría de SEO se guarda con su puntaje.
 
+### El primer día y «Cómo se usa»
+
+- **El OS lleva de la mano a quien entra por primera vez**, pantalla a pantalla, y **enseña cada parte con el video del CEO.**
+- *No se pierde:*
+  - seis pasos con check que se comprueban solos; se puede pausar y el OS recuerda dónde iba;
+  - si algo falla, dice qué hacer en una frase;
+  - el video se abre en una ventanita que sigue contigo mientras haces lo que explica;
+  - el OS sabe qué videos vio cada quien y lo muestra en su perfil y en Equipo.
+
 ### La app de Mac
 
 - **El OS en su propia ventana, con el puente adentro.**

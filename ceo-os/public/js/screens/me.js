@@ -7,6 +7,15 @@ export const bdayText = (bd) => (bd ? `${+bd.slice(3)} de ${MESES[+bd.slice(0, 2
 
 export async function render(el, { me }) {
   const client = me.role === 'client';
+  // Tu primer día y los videos «Cómo se usa» que le tocan a tu puesto.
+  const { cargarGuias, listaVideos, vistosDe, clickVideo } = await import('../guia.js');
+  const { videosDe } = await import('../guia-secciones.js');
+  const { abrirPrimerDia, avancePrimerDia, primerDiaHecho } = await import('../primer-dia.js');
+  const G = client ? { items: [], vistos: {} } : await cargarGuias();
+  const mios = videosDe(G.items, me);
+  const primerDiaHtml = () => { const a = avancePrimerDia(me), ok = primerDiaHecho(me); return html`<div class="card" style="margin-top:14px"><h3 class="profh">Tu primer día</h3>
+    <div class="row" style="gap:10px;flex-wrap:wrap"><span class="chip ${ok ? 'ok' : ''}">${ok ? html`${ico('check', 13)} Terminado` : `${a.n} de ${a.total} pasos`}</span><button class="btn ghost xs" data-p="pd">${ok ? 'Volver a verlo' : 'Seguir el recorrido'}</button></div></div>`; };
+  const videosHtml = () => { const v = vistosDe(mios, me.vistos || G.vistos); return html`<div class="card" style="margin-top:14px"><h3 class="profh">Cómo se usa · ${v.vistos} de ${v.total} vistos</h3>${listaVideos(mios, me.vistos || G.vistos, me)}</div>`; };
   const paint = () => {
     const [mm, dd] = (me.birthday || '-').split('-');
     mount(el, html`<div class="myprof">
@@ -19,6 +28,7 @@ export async function render(el, { me }) {
           ${me.picture ? html`<button class="sm mut linkish" data-p="nopic">Quitar foto</button>` : ''}</div>
       </div>
       <div style="margin-top:14px">${purposeCard(me, { open: true })}</div>
+      ${client ? '' : html`${primerDiaHtml()}${videosHtml()}`}
 
       ${client ? '' : html`<div class="card" style="margin-top:14px"><h3 class="profh">Sobre ti</h3>
         <div class="form">
@@ -50,9 +60,11 @@ export async function render(el, { me }) {
     try { const photo = await cropImage(e.target.files[0]); e.target.value = ''; if (!photo) return; await api('me/photo', { method: 'PUT', body: { photo } }); me.picture = photo; toast('Foto actualizada'); paint(); refreshAvatar(me); }
     catch (err) { toast(err.message, true); }
   });
+  el.addEventListener('click', clickVideo(me));
   el.addEventListener('click', async (e) => {
     const b = e.target.closest('[data-p]'); if (!b) return;
     const a = b.dataset.p;
+    if (a === 'pd') return abrirPrimerDia(me);
     if (a === 'save') {
       const d = $('#bdd', el).value, m = $('#bdm', el).value;
       if (Boolean(d) !== Boolean(m)) return toast('Elige día y mes', true);

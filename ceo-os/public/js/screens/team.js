@@ -3,6 +3,8 @@ import { events, html, raw, mount, col, api, drawer, closeDrawer, ask, toast, in
 import { bdayText } from './me.js';
 import { purposeCard } from '../purpose.js';
 import { roleTable, changeRole } from '../rolemap.js';
+import { cargarGuias, vistosDe } from '../guia.js';
+import { videosDe } from '../guia-secciones.js';
 
 const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
@@ -12,6 +14,9 @@ const T = col('team'), RV = col('settings');
 export async function render(el, { me, sub = [], embed = '' }) {
   let people = (await teamList()).filter((p) => p.active !== false || me.role === 'ceo');
   const isCeo = me.role === 'ceo';
+  const G = await cargarGuias(); // los videos «Cómo se usa», para decir cuántos vio cada quien
+  // Cómo va cada persona con el OS: su primer día y los videos de su puesto.
+  const arranque = (p) => { if (!p.email) return ''; const v = vistosDe(videosDe(G.items, p), p.vistos || {}); const pd = p.primer_dia; return html`<span>Arranque</span><b style="font-weight:500">${pd?.hecho_at ? 'Primer día listo ✓' : pd ? `Primer día: ${Object.values(pd.hechos || {}).filter(Boolean).length} de 6` : 'Primer día pendiente'}${v.total ? ` · vio ${v.vistos} de ${v.total} videos` : ''}</b>`; };
   // Pestañas: Organigrama · Perfiles · Roles (quién cubre cada rol por proyecto) · y, para el CEO, Vistas por rol.
   // Equipo vive en Organization → Inherent (con Visión y misión, Vistas por rol, Roadmap y Library).
   // embed «vistas»: monta solo la matriz de Vistas por rol (sin las pestañas de Equipo).
@@ -189,6 +194,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
         ${p.phone ? html`<span>Teléfono</span><b style="font-weight:500">${p.phone}</b>` : ''}
         ${p.email ? html`<span>Acceso</span><b style="font-weight:500">${ROLE[p.role || 'team']}</b>` : ''}
         <span>Perfiles</span><b style="font-weight:500">${(p.roles || []).length ? p.roles.map(roleName).join(' · ') : '—'}</b>
+        ${arranque(p)}
         ${p.email ? html`<span>Google</span><span class="row" style="color:var(--ink)">${p.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${p.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}${!p.google ? 'Aún no entra' : ''}</span>` : ''}
       </div>
       ${p.id === me.email || isCeo ? html`<div class="row" style="margin-bottom:10px"><label class="btn ghost" style="cursor:pointer">${ico('camera')} ${p.photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="photoIn" hidden></label>${p.photo ? html`<button class="btn ghost" data-act="nophoto">Quitar foto</button>` : ''}</div>` : ''}
