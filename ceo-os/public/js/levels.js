@@ -7,7 +7,8 @@ export const LEVELS = [
 ];
 export const LEVEL_NAMES = LEVELS.map((l) => l.name);
 // El baseline de cada nivel (inherent/CLAUDE.md → «La economía»): el piso interno desde el que se cotiza. Solo lo ve el CEO; nunca sale en la web.
-export const BASELINE = { foundation: { usd: 1200, gtq: 9240, per: 'por proyecto' }, growth: { usd: 2400, gtq: 18480, per: 'al mes' }, partnership: { usd: 4200, gtq: 32340, per: 'al mes' } };
+export const BASELINE = { foundation: { usd: null, gtq: null, per: 'por proyecto' }, growth: { usd: null, gtq: null, per: 'al mes' }, partnership: { usd: null, gtq: null, per: 'al mes' } };
+// Los números los manda el servidor solo al CEO (/api/internos/baseline → baseDefaults): el código público no los lleva.
 // Nombre o id viejo → id del nivel nuevo. Orden importa: lo más específico primero.
 const LEGACY = [
   [/brand\s*foundation|foundation/i, 'foundation'],
@@ -20,6 +21,7 @@ const LEGACY = [
 export const LEVELS_ID = 'levels';
 export const USD_GTQ = 7.7;
 const DEFAULTS = JSON.parse(JSON.stringify({ levels: LEVELS, base: BASELINE }));
+export function baseDefaults(base) { for (const [id, b] of Object.entries(base || {})) if (DEFAULTS.base[id]) DEFAULTS.base[id] = { ...DEFAULTS.base[id], usd: b.usd ?? null, per: b.per || DEFAULTS.base[id].per }; }
 export const levelDefaults = (id) => { const l = DEFAULTS.levels.find((x) => x.id === id), b = DEFAULTS.base[id]; return l ? { ...l, usd: b?.usd ?? null, per: b?.per || '' } : null; };
 // doc: { id: 'levels', levels: { <id>: { name, tag, who, how, usd, per } } }. Sin doc (o sin un campo), vuelve al defecto.
 export function applyLevels(doc) {
@@ -28,7 +30,7 @@ export function applyLevels(doc) {
     const d = DEFAULTS.levels.find((x) => x.id === l.id), c = cfg[l.id] || {}, b0 = DEFAULTS.base[l.id];
     for (const k of ['name', 'tag', 'who', 'how']) l[k] = String(c[k] || '').trim() || d[k];
     const usd = Number.isFinite(+c.usd) && +c.usd > 0 && c.usd !== '' && c.usd != null ? Math.round(+c.usd) : b0.usd;
-    BASELINE[l.id] = { usd, gtq: Math.round(usd * USD_GTQ), per: String(c.per || '').trim() || b0.per };
+    BASELINE[l.id] = { usd, gtq: usd == null ? null : Math.round(usd * USD_GTQ), per: String(c.per || '').trim() || b0.per };
   }
   return LEVELS;
 }

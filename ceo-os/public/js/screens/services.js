@@ -29,7 +29,7 @@ export async function render(el, { me, sub = [], alive, embed = '' }) {
     ceo ? col('settings').get(PRICING_ID).catch(() => null) : null, ceo ? col('projects').list().catch(() => []) : [], ceo ? col('accounts').list().catch(() => []) : [], ceo ? col('finance').list().catch(() => []) : [], ceo ? api('finance/sheet').catch(() => null) : null,
     // Los paquetes con costos solo los lee el CEO; los demás ven la lista sin costos (flow/bundles).
     ceo ? col('bundles').list().catch(() => []) : api('flow/bundles').then((r) => (r.bundles || []).map((b) => ({ ...b, level: b.nivel }))).catch(() => []),
-    col('recipes').list().catch(() => []), col('docs').list().catch(() => []), fetch('/data/paquetes.json').then((r) => r.json()).then((d) => d.ind.map((i) => i.n)).catch(() => [])]);
+    col('recipes').list().catch(() => []), col('docs').list().catch(() => []), api('internos/industrias').then((d) => d.nombres).catch(() => [])]);
   let R = recipesWith(recDocs);
   let tab = embed === 'responsabilidades' ? 'responsabilidades' : TABS.some(([k]) => k === sub[0]) ? sub[0] : 'paquetes', lvSel = '', prop = [];
   // Paquetes: «nivel» (los 3 niveles y sus paquetes) o «industria» (los 108 por industria, solo CEO: lleva costos).

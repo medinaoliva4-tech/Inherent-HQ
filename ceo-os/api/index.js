@@ -26,6 +26,7 @@ import * as portal from './_lib/portal.js';
 import * as inv from './_lib/investigacion.js';
 import * as buscar from './_lib/buscar.js';
 import * as escritorio from './_lib/escritorio.js';
+import * as internos from './_lib/internos.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
@@ -1137,6 +1138,8 @@ planMes.rutas(on);
 inv.rutas(on);
 // ---------- La app de escritorio: si hay versión nueva y el link para bajarla ----------
 escritorio.rutas(on);
+// ---------- Lo interno (costos, baseline, paquetes por industria): solo desde el servidor ----------
+internos.rutas(on);
 
 on('GET', 'search', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
