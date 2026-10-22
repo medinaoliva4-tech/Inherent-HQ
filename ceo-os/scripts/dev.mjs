@@ -8,6 +8,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..');
 process.env.LOCAL_REPO ||= path.join(root, '..');
+// En local, nunca la base real: las pruebas escriben datos falsos. Solo con DEV_BASE_REAL=1 se usa DATABASE_URL.
+if (process.env.DEV_BASE_REAL !== '1') { delete process.env.DATABASE_URL; delete process.env.POSTGRES_URL; }
 process.env.LOCAL_DB ||= path.join(root, '.devdb');
 process.env.DEV_LOGIN = '1';
 process.env.SESSION_SECRET ||= 'dev-only-secret-dev-only-secret-0123456789';

@@ -3,6 +3,8 @@ import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 import { estadoDe, separar, ESTADO_CLS, nombreDe } from '../element.js';
 import { investigacion } from '../investigacion.js';
+import { TIPOS_MARCA, eventosMarca } from '../calendario-vistas.js';
+import { calendarioHtml, rango, porDia, diaHtml, hitoHtml } from '../calendario-trabajo.js';
 import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre } from '../calendario-contenido.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
@@ -38,7 +40,9 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : tabs[0]?.[0] || 'analytics';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'semana', pdate = today();
-  let parch = false, rs = null, cview = sub?.[0] === 'grabacion' ? 'grabacion' : 'publicacion', shoots = null;
+  let parch = false, rs = null, shoots = null, ops = null, cvista = 'mes';
+  // Los filtros del calendario de la marca: los que se apagaron quedan apagados (por persona).
+  let coff = new Set((() => { try { return JSON.parse(localStorage.getItem('os.cal.marca.off') || '[]'); } catch { return []; } })());
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
@@ -289,20 +293,24 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   // rs guarda el estado de la investigación mientras la marca esté abierta (load() lo limpia al cambiar de marca).
   function research(b) { rs ||= {}; investigacion(b, { me, slug, data, alive, embed, st: rs, onPost: () => { posts = null; } }); }
 
-  // ---------- Calendario: Publicación (las piezas del Planner) y Grabación (qué se graba cada día) ----------
+  // ---------- Calendario: se ve igual que el de Proyectos, con 3 filtros — Operativo · Planificación · Programado (calendario-vistas.js) ----------
   const recal = () => (tab === 'calendario' ? calendario($('#cbody', el)) : plan($('#cbody', el)));
+  let cdia = null; // los eventos del día que se abrió con «+N más»
   function calendario(b) {
-    mount(b, html`<div class="tabs" style="margin:0 0 14px">${[['publicacion', 'Publicación'], ['grabacion', 'Grabación']].map(([k, l]) => html`<button class="${cview === k ? 'on' : ''}" data-act="cview" data-v="${k}">${l}</button>`)}</div><div id="calb"></div>`);
-    (cview === 'grabacion' ? grabacion : plan)($('#calb', b));
-  }
-  function grabacion(b) {
-    if (shoots === null) { mount(b, html`<p class="loading">Cargando grabaciones…</p>`); C.list().then((l) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug); }).catch((e) => { shoots = []; toast(e.message, true); }).then(() => alive() && b.isConnected && grabacion(b)); return; }
-    const wk = calWeek(), live = shoots.filter((x) => x.status !== 'Cancelado');
-    const n = live.filter((x) => x.date >= wk.from && x.date <= wk.to).length;
-    const chip = (x) => html`<button class="ppost shoot ${x.status === 'Grabado' ? 'done' : ''}" data-act="sedit" data-id="${x.id}" title="${x.title}${x.place ? ' · ' + x.place : ''}"><span class="pi">${x.time || ico('video', 13)}</span><span class="pt">${x.title}</span>${x.place ? html`<span class="pf">${x.place}</span>` : ''}</button>`;
-    mount(b, html`${calStrip(wk, (k) => live.filter((x) => x.date === k).map(() => 'var(--ink)'))}
-      ${calWeekPanel(wk, (k) => shoots.filter((x) => x.date === k).sort((x, z) => String(x.time || '').localeCompare(String(z.time || ''))), chip, 'snew', `${n} grabaci${n === 1 ? 'ón' : 'ones'} esta semana`, html`<button class="btn" data-act="snew" data-d="">+ Grabación</button>`)}`);
-    stripTo(b);
+    if (needPosts(b, calendario) || needRefs(b, calendario)) return;
+    if (shoots === null || ops === null) {
+      mount(b, html`<p class="loading">Cargando…</p>`);
+      Promise.all([C.list().catch(() => []), col('tasks').list().catch(() => []), col('projects').list().catch(() => [])])
+        .then(([l, t, pr]) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug); ops = { tasks: t, projects: pr }; })
+        .then(() => alive() && b.isConnected && calendario(b));
+      return;
+    }
+    const R = rango(cvista, pdate), hoy = today();
+    const eventos = eventosMarca({ posts: separar(posts).vivos, shoots, tasks: ops.tasks, projects: ops.projects, slug, from: R.from, to: R.to, hoy });
+    cdia = porDia(eventos.filter((e) => !coff.has(e.tipo)));
+    mount(b, html`<div class="cm-cal">${calendarioHtml({ vista: cvista, fecha: pdate, eventos, off: coff, tipos: TIPOS_MARCA.map(([k]) => k), lista: TIPOS_MARCA, hoy,
+      botones: html`<button class="btn ghost xs" data-act="snew" data-d="">+ Grabación</button><button class="btn xs" data-act="pnew" data-d="">+ Pieza</button>`,
+      pie: html`<div class="wc-foot"><span class="mut sm"><b>Operativo:</b> grabaciones, tareas y reuniones de sus proyectos, y los días 1, 11 y 20 · <b>Planificación:</b> piezas en Idea o En proceso · <b>Programado:</b> lo listo, con hora y red. Lo atrasado sale en rojo.</span></div>` })}</div>`);
   }
   async function editShoot(x, date) {
     const v = await ask(x ? 'Grabación' : 'Nueva grabación', [
@@ -448,7 +456,15 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     ptoday: () => { pdate = today(); recal(); },
     pday: (t) => { pdate = t.dataset.d; recal(); },
     pmonth: (t) => { const d = new Date(pdate + 'T12:00'); d.setMonth(d.getMonth() + +t.dataset.d, 1); pdate = iso(d); recal(); },
-    cview: (t) => { cview = t.dataset.v; recal(); },
+    cvista: (t) => { cvista = t.dataset.v === 'semana' ? 'semana' : 'mes'; recal(); },
+    mprev: () => { const d = new Date(pdate + 'T12:00'); if (cvista === 'mes') d.setMonth(d.getMonth() - 1, 1); else d.setDate(d.getDate() - 7); pdate = iso(d); recal(); },
+    mnext: () => { const d = new Date(pdate + 'T12:00'); if (cvista === 'mes') d.setMonth(d.getMonth() + 1, 1); else d.setDate(d.getDate() + 7); pdate = iso(d); recal(); },
+    mtoday: () => { pdate = today(); recal(); },
+    mrefresh: () => { posts = null; shoots = null; ops = null; recal(); },
+    ctipo: (t) => { const k = t.dataset.t; coff.has(k) ? coff.delete(k) : coff.add(k); try { localStorage.setItem('os.cal.marca.off', JSON.stringify([...coff])); } catch {} recal(); },
+    day: (t, e) => { if (e?.target?.closest('.wc-ev,.wc-more')) return; const d = t.dataset.date; if (d && cerrado(d).cerrado) return toast(`Sin brief del ciclo de ${mesNombre(d.slice(0, 7))}: no se crean piezas con fecha de ese mes`, true); editPost(slug, null, pieceOpts(d ? { date: d } : {})).then((r) => { if (r) { posts = [...posts, r]; recal(); } }); },
+    dayall: (t) => { const desde = (fn) => (x) => { closeDrawer(); fn(x); }; drawer(diaHtml(cdia?.[t.dataset.date] || []), { pedit: desde((x) => el.querySelector('#cbody') && posts && editPost(slug, posts.find((y) => y.id === x.dataset.id), pieceOpts()).then((r) => { if (r) { posts = posts.map((y) => (y.id === r.id ? r : y)); recal(); } })), sedit: desde((x) => { const y = shoots.find((z) => z.id === x.dataset.id); if (y) editShoot(y); }), go: () => closeDrawer(), hito: (x) => drawer(hitoHtml(x.dataset.d), {}, { section: 'Calendario', title: 'El ciclo' }) }, { section: 'Calendario', title: fdate(t.dataset.date) }); },
+    hito: (t) => drawer(hitoHtml(t.dataset.d), {}, { section: 'Calendario', title: 'El ciclo' }),
     snew: (t, e) => { if (e?.target?.closest('.ppost')) return; editShoot(null, t.dataset.d); },
     sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },
     pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; if (t.dataset.d && cerrado(t.dataset.d).cerrado) return toast(`Sin brief del ciclo de ${mesNombre(t.dataset.d.slice(0, 7))}: no se crean piezas con fecha de ese mes`, true); const r = await editPost(slug, null, pieceOpts(t.dataset.d ? { date: t.dataset.d } : {})); if (r) { posts = [...posts, r]; recal(); } },

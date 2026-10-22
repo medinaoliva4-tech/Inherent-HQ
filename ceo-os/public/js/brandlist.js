@@ -87,7 +87,7 @@ export const FLUJO = {
   creacion: ['ideas', 'El guion, tramo por tramo, con el formato de la idea y el brief al lado.', 'calendario'],
   marca: [null, 'La identidad: territorio, voz y lo que la hace reconocible.', 'design'],
   design: ['marca', 'Cómo se ve la marca, en valores que se ejecutan. El chat de Diseño gráfico lo usa para armar las piezas.', 'calendario'],
-  calendario: ['creacion', 'Qué sale y cuándo. Lo Listo se programa y se publica.', 'resultados'],
+  calendario: ['creacion', 'Lo que hay que hacer, lo que se planea y lo que ya está programado: se prende y se apaga cada uno.', 'resultados'],
   ads: ['calendario', 'Qué se pauta, con qué presupuesto y tu OK.', 'resultados'],
   resultados: ['calendario', 'Qué funcionó y qué no. Vuelve a Investigación y al plan del mes siguiente.', 'investigacion'],
 };

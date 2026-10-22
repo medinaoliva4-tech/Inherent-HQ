@@ -4111,3 +4111,26 @@ body.arrastrando{cursor:col-resize;user-select:none}
 .dz-chip-t:hover{text-decoration:underline}
 .es-et{gap:2px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.es-et::-webkit-scrollbar{display:none}
 .es-et .dg-e{padding:5px 9px 5px 5px;gap:6px;white-space:nowrap;flex:none}
+
+
+/* Los chats llenan la pantalla de arriba a abajo, y el panel de la derecha se oculta y se vuelve a abrir */
+.dz{height:calc(100dvh - 124px)}
+.es{--es-h:calc(100dvh - 124px)}
+@media (max-width:900px){.es{--es-h:calc(100dvh - 160px)}}
+@media (max-width:760px){.es{--es-h:calc(100dvh - 220px - env(safe-area-inset-bottom))}}
+.ver-panel{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--hair);background:var(--surface);color:var(--ink);font:inherit;font-size:12.5px;border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap;flex:none}
+.ver-panel:hover{background:var(--fill)}
+.ver-panel .vp-v{display:none}
+.dz.sin-area .ver-panel .vp-o,.es-split[data-panel="off"] .ver-panel .vp-o{display:none}
+.dz.sin-area .ver-panel .vp-v,.es-split[data-panel="off"] .ver-panel .vp-v{display:inline}
+.dz.sin-area .ver-panel,.es-split[data-panel="off"] .ver-panel{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+@media (max-width:900px){.ver-panel{display:none}}
+.es-et{overflow:visible;gap:8px}
+.es-pasos{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}.es-pasos::-webkit-scrollbar{display:none}
+/* En Estrategia el panel ya trae su ×: el botón del chat solo aparece para volver a abrirlo */
+.es-split:not([data-panel="off"]) .es-et .ver-panel{display:none}
+
+/* El calendario de la marca: los mismos colores que Proyectos, con sus 3 filtros */
+.t-operativo{--wt:var(--wt-produccion);--wt-ink:var(--wt-produccion-ink)}
+.t-planificacion{--wt:var(--wt-entregas);--wt-ink:var(--wt-entregas-ink)}
+.t-programado{--wt:var(--wt-ventas);--wt-ink:var(--wt-ventas-ink)}
