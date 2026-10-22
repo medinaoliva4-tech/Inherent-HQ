@@ -3,17 +3,19 @@
 // CHAT con Strategy. El chat corre con el Claude de cada persona en su compu (puente local de Laya, puerto 7357), en solo lectura.
 // Las pestañas de los 5 bloques viven en la barra de abajo de la de arriba (subnav de app.js).
 // Rutas: #/estrategia · #/estrategia/<cliente> · #/estrategia/<cliente>/<bloque>
-import { html, raw, mount, api, col, ask, toast, ico, fdate, md, drawer, $, $$, esc, events, confirmAsk, initials } from '../core.js';
+import { html, raw, mount, api, col, ask, toast, ico, fdate, md, drawer, closeDrawer, $, $$, esc, events, confirmAsk, initials } from '../core.js';
 import { juzgarLocal } from '../laya-ui.js';
-import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe } from '../laya.js';
+import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe, APP_MAC, enApp } from '../laya.js';
 import { BLOQUES, ETAPAS, etapaLabel, etapaDe, estadoLabel, fuentesDeEtapa, promptDe } from '../estrategia.js';
 import { loadEstrategia, forgetEstrategia } from '../stratlist.js';
 import { panelViva } from '../estrategia-viva-ui.js';
 import { instrucciones, sinBloques, leerBloques, PASOS } from '../estrategia-viva.js';
 import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from '../puente-chat.js';
 import { divisor, ubicarPop, junto } from '../divisor.js';
-import { tarjetaDoc, barraChat, botonesEnviar } from '../artifact.js';
-import { motorBtn, menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, motorDe, nombreMotor } from '../motor-ui.js';
+import { tarjetaDoc, barraChat, botonesEnviar, bandeja } from '../artifact.js';
+import { botonVoz, dictar } from '../voz.js';
+import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn } from '../motor-ui.js';
+import { NIVELES_FICHA, CAMPOS_FICHA } from '../ficha.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
 const TONE = ['', 't1', 't2'];
@@ -74,7 +76,7 @@ export async function render(el, { me, sub = [], alive }) {
     const bl = () => data.bloques.find((x) => x.id === bid);
     const puede = () => data.puede.editar && bl().estado !== 'aprobado';
     const esCeo = () => me.role === 'ceo';
-    const tok = () => { try { return localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
+    const tok = () => { try { return window.inherentEscritorio?.token || localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } }; // en la app de escritorio, el token llega solo
     const setTok = (t) => { try { if (t) localStorage.setItem(`os.estrategia.token.${me.email}`, t); else localStorage.removeItem(`os.estrategia.token.${me.email}`); } catch {} };
     const etapaN = () => (data.etapa ? data.etapa.n : null);
     const etapaTxt = () => (data.etapa ? `${etapaLabel(etapaDe(data.etapa.n))}${data.etapa.confirmada ? '' : ' · sin confirmar'}` : 'Sin etapa');
@@ -101,7 +103,7 @@ export async function render(el, { me, sub = [], alive }) {
     // El bloque de Hormozi que se usa como lente: el del paso en que estás (o el de la página, si el paso no tiene uno).
     const bloqueAhora = () => data.bloques.find((x) => x.id === PASOS.find((p) => p.id === pasoAhora())?.hz?.[0]) || bl();
     const pasoAhora = () => chat.paso && abiertoP(chat.paso) ? chat.paso : (PASOS.find((p) => !hechoP(p.id)) || PASOS[PASOS.length - 1]).id;
-    const pasosIn = () => html`${PASOS.map((p, i) => html`${i ? html`<span class="cb-sep">›</span>` : ''}<button type="button" class="dg-e ${pasoAhora() === p.id ? 'on' : ''} ${hechoP(p.id) ? 'ok' : ''}" data-act="paso" data-p="${p.id}" title="${p.largo}${abiertoP(p.id) ? '' : ' · se abre cuando el paso anterior esté hecho'}"><i>${hechoP(p.id) ? ico('check', 11) : abiertoP(p.id) ? p.n : ico('lock', 11)}</i>${p.nombre}</button>`)}`;
+    const pasosIn = () => html`${PASOS.map((p, i) => html`${i ? html`<span class="cb-sep">›</span>` : ''}<button type="button" class="dg-e ${pasoAhora() === p.id ? 'on' : ''} ${hechoP(p.id) ? 'ok' : ''}" data-act="paso" data-p="${p.id}" title="${p.largo}${abiertoP(p.id) ? '' : ' · se abre cuando el paso anterior esté hecho'}"><i>${hechoP(p.id) ? ico('check', 11) : abiertoP(p.id) ? p.n : ico('lock', 11)}</i><span class="cb-l">${p.nombre}</span></button>`)}`;
     // Tocar un supuesto subrayado: se cambia a mano y la cascada se recalcula.
     async function editarSupuesto(campo) {
       if (!editable()) return;
@@ -152,12 +154,17 @@ export async function render(el, { me, sub = [], alive }) {
           <div><span class="lbl">El avatar</span><b>${a?.hay && a.arquetipo ? a.arquetipo : a?.hay ? 'Con quién hablamos' : 'Todavía no está'}</b></div></div>
         ${a?.hay ? html`<details class="es-avatar"><summary>Ver el avatar</summary><div class="es-cells">${a.campos.filter((c) => c.texto).map((c) => html`<div><span class="lbl">${c.label}</span><p>${c.texto}</p></div>`)}</div></details>` : ''}</section>`;
     }
+    // Sin ficha: el CEO la crea aquí (queda en el repo). Si existe pero no dice el nivel, la edita.
+    const FICHA = '00-onboarding/plan-contratado.md';
+    const fichaBtn = () => !esCeo() ? html`<p class="mut sm">La crea el CEO, desde esta pantalla.</p>`
+      : data.ficha.hay ? html`<p class="mut sm">La ficha existe, pero no dice el nivel contratado.</p><button type="button" class="btn xs" data-act="editar" data-ruta="${FICHA}" data-titulo="Ficha de oferta">Editar la ficha</button>`
+      : html`<button type="button" class="btn xs" data-act="ficha">${ico('plus', 13)} Crear la ficha aquí</button>`;
     // El límite del nivel: lo que este bloque puede y no puede incluir.
     function limiteCard(b) {
       const L = b.limite, med = data.nivel?.id === 'medida';
-      if (!data.nivel) return html`<section class="es-card es-lim no"><span class="es-lim-i">${ico('alert', 18)}</span><div><b>Sin ficha de oferta</b><p>El alcance contratado es el techo: sin ficha, Strategy bloquea a este cliente. Se anota en ${data.carpeta}/00-onboarding/plan-contratado.md.</p></div></section>`;
+      if (!data.nivel) return html`<section class="es-card es-lim no"><span class="es-lim-i">${ico('alert', 18)}</span><div><b>Sin ficha de oferta</b><p>El alcance contratado es el techo: sin ficha, Strategy bloquea a este cliente.</p>${fichaBtn()}</div></section>`;
       return html`<section class="es-card es-lim ${L?.estado || ''}"><span class="es-lim-i">${ico(L?.estado === 'no' ? 'lock' : L?.estado === 'parcial' ? 'alert' : 'check', 18)}</span>
-        <div><span class="lbl">Límite del nivel · ${data.nivel.nombre}</span><b>${L?.titulo || ''}</b><p>${L?.texto || ''}</p>
+        <div><span class="lbl">Límite del nivel · ${data.nivel.nombre}${esCeo() ? html` · <button type="button" class="es-lnk" data-act="editar" data-ruta="${FICHA}" data-titulo="Ficha de oferta">Editar la ficha</button>` : ''}</span><b>${L?.titulo || ''}</b><p>${L?.texto || ''}</p>
         ${med && data.ficha.incluye.length ? html`<ul class="es-inc">${data.ficha.incluye.map((x) => html`<li><b>${x.k}</b> ${x.v}</li>`)}</ul>` : ''}${med && data.ficha.fuera ? html`<p class="mut sm"><b>Queda fuera:</b> ${data.ficha.fuera}</p>` : ''}</div></section>`;
     }
     // Diagnóstico: Laya propone la etapa y el CEO la confirma.
@@ -188,7 +195,7 @@ export async function render(el, { me, sub = [], alive }) {
     }
     function repoCards(b) {
       const items = b.entregables;
-      return html`${items.map((it, i) => html`<details class="es-card es-doc-c" ${i === 0 && !b.borrador ? raw('open') : ''}><summary><span class="es-sum"><b>${it.titulo}</b><span class="mut sm">${it.sec ? it.sec.label : it.sirve}</span></span><span class="es-sum-r">${it.apoyo ? html`<span class="chip sm2">Apoyo</span>` : ''}<span class="chip sm2 dark">Del repo</span>${it.fecha ? html`<span class="mut sm">${fd(it.fecha)}</span>` : ''}</span></summary>
+      return html`${items.map((it, i) => html`<details class="es-card es-doc-c" ${i === 0 && !b.borrador ? raw('open') : ''}><summary><span class="es-sum"><b>${it.titulo}</b><span class="mut sm">${it.sec ? it.sec.label : it.sirve}</span></span><span class="es-sum-r">${it.apoyo ? html`<span class="chip sm2">Apoyo</span>` : ''}<span class="chip sm2 dark">Del repo</span>${it.fecha ? html`<span class="mut sm">${fd(it.fecha)}</span>` : ''}${esCeo() && it.ruta ? html`<button type="button" class="btn ghost xs" data-act="editar" data-ruta="${it.ruta}" data-titulo="${it.titulo}">Editar</button>` : ''}</span></summary>
           ${it.sec && !it.sec.hay ? html`<p class="mut sm">No encontré «${it.sec.label}» en este documento: se muestra completo.</p>` : ''}
           <div class="es-md">${it.contenido?.trim() ? md(it.fmt === 'csv' ? it.contenido : unirParrafos(it.contenido)) : html`<p class="mut">Este documento está vacío.</p>`}</div></details>`)}
         ${!b.hayRepo ? html`<section class="es-card es-empty"><b>Todavía no hay entregable de este bloque en el repo</b><span class="mut sm">${b.faltan.filter((f) => !f.apoyo).map((f) => f.titulo).join(' · ') || 'Aparece cuando Strategy lo escribe en la carpeta del cliente.'}</span></section>` : ''}`;
@@ -209,7 +216,7 @@ export async function render(el, { me, sub = [], alive }) {
     // ms: lo que se espera al puente. Al tocar «Ya lo hice» se espera más: la primera vez Chrome pide permiso para hablar con tu compu.
     async function salud(ms = 4000) {
       let v = { on: false };
-      try { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
+      try { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null, listo: Boolean(j.listo), cargando: Boolean(j.cargando) }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
       S.salud = v; return v;
     }
     // Qué le falta al chat para correr (en este orden).
@@ -228,9 +235,11 @@ export async function render(el, { me, sub = [], alive }) {
     const cmd = (c) => html`<div class="es-cmd"><code>${c}</code><button type="button" class="btn ghost xs" data-act="copiar" data-t="${c}">${ico('copy', 13)} Copiar</button></div>`;
     function setup(f) {
       const win = so() === 'win';
-      if (f === 'sin-ficha') return html`<div class="es-setup"><b>Sin ficha de oferta, el chat está bloqueado</b><p>El alcance contratado es el techo de todos los agentes. Anótalo en ${data.carpeta}/00-onboarding/plan-contratado.md.</p></div>`;
+      if (f === 'sin-ficha') return html`<div class="es-setup"><b>Sin ficha de oferta, el chat está bloqueado</b><p>El alcance contratado es el techo de todos los agentes.</p>${fichaBtn()}</div>`;
       if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
       if (f === 'apagado' && chromeBloquea()) return html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p><button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'apagado' && enApp()) return html`<div class="es-setup"><b>El puente de la app no respondió</b><p>En el menú de arriba: Puente › Reiniciar el puente. Si sigue igual, cierra la app y ábrela otra vez.</p><button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
+      if (f === 'apagado' && !win) return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Baja la app de Mac: trae el puente adentro y se prende sola, sin comandos.</p><a class="btn xs" href="${APP_MAC}" target="_blank" rel="noopener">Bajar Inherent OS para Mac</a><p class="mut sm" style="margin-top:12px">O, sin la app, un comando en la Terminal:</p>${cmd(INSTALAR_MAC)}<button class="btn ghost xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat. Corre otra vez el comando y actualiza solo:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'bajando_repo') return html`<div class="es-setup"><b>Preparando la copia del repo</b><p>El puente baja el repo de Inherent la primera vez (un minuto). Después se pone al día solo antes de cada chat.</p><button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
@@ -243,18 +252,21 @@ export async function render(el, { me, sub = [], alive }) {
         <form class="es-pair" data-act="pair"><input class="in" name="t" type="password" autocomplete="off" spellcheck="false" placeholder="Pega el token" aria-label="Token del puente"><button class="btn xs" type="submit">Emparejar</button></form>${S.pareo ? html`<p class="es-err">${S.pareo}</p>` : ''}</div>`;
     }
     const RAPIDOS = { diagnostico: ['¿En qué etapa está y por qué?', '¿Qué dato falta para estar seguros?'], oferta: ['Arma la ecuación de valor', 'Propón la Grand Slam Offer', '¿Qué haría la oferta más difícil de rechazar?'], modelo: ['Propón atracción, upsell, downsell y continuidad', '¿Qué upsell va primero?'], leads: ['¿Dónde consigue clientes con esta oferta?', 'Core Four: ¿cuál va primero?'], roadmap: ['Arma el plan de 90 días para su etapa', '¿Qué es lo primero que hacemos esta semana?'] };
-    const modeloHtml = () => { const ok = fase() === 'listo'; return html`<button type="button" class="cx-model" data-act="motor" aria-haspopup="listbox" title="Qué modelo responde">${nombreMotor(motorDe(me))} ▾<small class="${ok ? 'on' : ''}">● ${ok ? 'en tu compu' : 'sin conectar'}</small></button>`; };
+    const modeloHtml = () => modeloBtn(me, fase() === 'listo');
+    // La franja de abajo de la caja: el cliente, el contexto y el modo de trabajo (Hormozi, con el bloque del paso).
+    const bandejaHtml = () => bandeja({ cliente: { act: 'cliente', nombre: data.nombre }, contexto: (S.inv ? 1 : 0) + chat.adj.length, modo: `Hormozi · ${bloqueAhora().nombre}` });
     const pasoPh = () => ({ contexto: 'Cuánto factura hoy y cuánto quiere facturar…', analisis: '¿Qué tiene que ser verdad para lograrlo?…', inversa: 'El ticket, el cierre, la conversión…', metodologia: 'La oferta, el modelo de dinero, los canales…', entrega: 'Qué se hace cada trimestre…' }[pasoAhora()] || 'Opina, agrega un dato o pide más detalle…');
     // La ventana «+»: el contexto que lee el chat y cómo trabaja (la misma que en Diseño gráfico, adaptada a Estrategia).
-    function panelCtx(anchor) {
+    function panelCtx(anchor, solo = '') {
       document.querySelector('.dz-ctxp')?.remove();
       const box = anchor.closest('.es-box'); if (!box) return;
       const m = document.createElement('div'); m.className = 'dz-ctxp'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', 'Contexto y cómo trabaja');
-      const pinta = () => mount(m, html`<header class="dz-ph"><b>Contexto</b><span class="mut sm">Lo que lee antes de responder</span></header><div class="dz-ol">
+      const pinta = () => mount(m, html`${solo === 'modo' ? '' : html`<header class="dz-ph"><b>Contexto</b><span class="mut sm">Lo que lee antes de responder</span></header><div class="dz-ol">
           <button type="button" class="dz-o ${S.inv ? 'on' : ''}" data-x="inv"><span class="dz-oi">${ico('play', 14)}</span><span class="dz-ot">Investigación<small>Los posts ganadores de su mercado (el scraping de referentes y competencia)</small></span><span class="dz-ck">${S.inv ? ico('check', 11) : ''}</span></button>
           ${data.puede.library ? html`<button type="button" class="dz-o" data-x="lib"><span class="dz-oi">${ico('doc', 14)}</span><span class="dz-ot">Documentos de la Library<small>SOPs, entrevistas, notas</small></span><span class="dz-n">${chat.adj.length ? `${chat.adj.length} ` : ''}${ico('right', 12)}</span></button>` : ''}</div>
-        <header class="dz-ph dz-ph2"><b>Modo de trabajo</b><span class="mut sm">Cómo responde</span></header><div class="dz-ol">
-          <button type="button" class="dz-o on" disabled title="En Estrategia siempre está prendido: es el método"><span class="dz-oi">${ico('target', 14)}</span><span class="dz-ot">Lente Hormozi · ${bloqueAhora().nombre}<small>Siempre prendido en Estrategia · el bloque sale del paso en que estás</small></span><span class="dz-ck">${ico('check', 11)}</span></button></div>`);
+`}
+        ${solo === 'contexto' ? '' : html`<header class="dz-ph ${solo ? '' : 'dz-ph2'}"><b>Modo de trabajo</b><span class="mut sm">Cómo responde</span></header><div class="dz-ol">
+          <button type="button" class="dz-o on" disabled title="En Estrategia siempre está prendido: es el método"><span class="dz-oi">${ico('target', 14)}</span><span class="dz-ot">Lente Hormozi · ${bloqueAhora().nombre}<small>Siempre prendido en Estrategia · el bloque sale del paso en que estás</small></span><span class="dz-ck">${ico('check', 11)}</span></button></div>`}`);
       pinta(); box.append(m); ubicarPop(m, box); anchor.setAttribute('aria-expanded', 'true');
       const fuera = () => { m.remove(); anchor.setAttribute('aria-expanded', 'false'); document.removeEventListener('pointerdown', cerrar); };
       m.addEventListener('click', (e) => {
@@ -264,7 +276,7 @@ export async function render(el, { me, sub = [], alive }) {
         if (x === 'cliente') return menuClientes(anchor, slug);
         if (x === 'lib') return abrirLib();
       });
-      const cerrar = (e) => { if (!m.contains(e.target) && !e.target.closest('[data-act="ctx"]')) fuera(); };
+      const cerrar = (e) => { if (!m.contains(e.target) && !e.target.closest('[data-act="ctx"],[data-act="ctx-c"],[data-act="ctx-m"]')) fuera(); };
       setTimeout(() => document.addEventListener('pointerdown', cerrar));
     }
     const menuHz = (t) => menu(t, data.bloques.map((x) => ({ href: `#/estrategia/${slug}/${x.id}`, on: x.id === bid, dot: x.estado === 'aprobado' ? 'ok' : x.estado === 'trabajo' ? 'w' : '', label: `${x.n} · ${x.nombre}`, sub: estadoLabel(x.estado) })));
@@ -272,9 +284,9 @@ export async function render(el, { me, sub = [], alive }) {
     function paintChat() {
       const f = fase(), ok = f === 'listo';
       chatEl.classList.toggle('vacio', !chat.msgs.length);
-      mount(chatEl, html`${barraChat({ cliente: { act: 'cliente', mono: initials(data.nombre), nombre: data.nombre }, panel: S.panel, pasos: pasosIn() })}<div class="es-msgs" id="es-msgs" aria-live="polite"></div>
+      mount(chatEl, html`${barraChat({ panel: S.panel, pasos: pasosIn() })}<div class="es-msgs" id="es-msgs" aria-live="polite"></div>
         ${ok ? html`<div class="ch-sug" id="es-quick"></div><div class="es-box cx"><div class="dz-chips" id="es-adj"></div><form class="es-form" id="es-form"><textarea class="in" id="es-in" rows="1" placeholder="${pasoPh()}" aria-label="Mensaje para Strategy"></textarea></form>
-          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}${botonesEnviar('es-form')}</div></div>` : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
+          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}${botonVoz()}${botonesEnviar('es-form')}</div><div id="es-tray">${bandejaHtml()}</div></div>` : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
       if (ok) chatEl.insertAdjacentHTML('beforeend', '<div class="es-lib" id="es-lib" role="dialog" aria-label="Agregar contexto de la Library" hidden></div>');
       paintMsgs(); paintQuick(); paintAdj(); if (S.libOn && ok) paintLib(); else S.libOn = false;
       const ta = $('#es-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
@@ -282,8 +294,8 @@ export async function render(el, { me, sub = [], alive }) {
     // ---------- La Library como contexto ----------
     function paintAdj() {
       const box = $('#es-adj', chatEl); if (!box) return;
-      mount(box, html`<span class="dz-chip fijo" title="El cliente: su ficha, su nivel y su carpeta">${data.nombre}</span><span class="dz-chip fijo" title="El lente de Hormozi: el bloque sale del paso en que estás">Hormozi · ${bloqueAhora().nombre}</span>
-        ${S.inv ? html`<span class="dz-chip" title="Los posts ganadores de Investigación van en el próximo mensaje">Investigación<button type="button" data-act="inv" aria-label="Quitar Investigación">×</button></span>` : ''}
+      const tr = $('#es-tray', chatEl); if (tr) mount(tr, bandejaHtml());
+      mount(box, html`${S.inv ? html`<span class="dz-chip" title="Los posts ganadores de Investigación van en el próximo mensaje">Investigación<button type="button" data-act="inv" aria-label="Quitar Investigación">×</button></span>` : ''}
         ${chat.adj.map((a) => html`<span class="dz-chip"><button type="button" class="dz-chip-t" data-act="libdoc" data-id="${a.id}" title="${a.carpeta || 'Library'}">${a.titulo}</button><button type="button" data-act="adj-quitar" data-id="${a.id}" aria-label="Quitar ${a.titulo}">×</button></span>`)}`);
     }
     async function abrirLib() {
@@ -321,6 +333,31 @@ export async function render(el, { me, sub = [], alive }) {
       drawer(html`<article class="es-doc"><span class="lbl">${d.tipo}${d.carpeta ? ` · ${d.carpeta}` : ''}</span><h1>${d.titulo}</h1>
           <p class="mut sm">Así lo recibe el chat${d.recortado ? ' (recortado: es más largo de lo que cabe en un mensaje)' : ''}.</p>
           <a class="btn ghost xs" href="#/library/${d.folder}/${d.id}">${ico('folder', 13)} Abrir en la Library</a><div class="es-md" style="margin-top:16px">${md(unirParrafos(d.contenido))}</div></article>`, {}, { section: 'Estrategia', title: d.titulo });
+    }
+
+    // ---------- Escribir en el repo desde el OS (solo el CEO): la ficha que falta y los documentos del cliente ----------
+    async function crearFicha() {
+      const v = await ask(`Ficha de oferta de ${data.nombre}`, [
+        { k: 'nivel', l: 'Nivel contratado', t: 'select', req: true, opts: [['', 'Elige el nivel…'], ...NIVELES_FICHA.map((n) => [n, n])] },
+        ...CAMPOS_FICHA.map(([k, l, ph]) => ({ k, l, ph, t: k === 'entregables' || k === 'fuera' ? 'textarea' : 'text' })),
+      ], 'Guardar en el repo');
+      if (!v) return;
+      try { await api(`estrategia/${encodeURIComponent(slug)}/ficha`, { method: 'PUT', body: { campos: v } }); toast('Ficha guardada en el repo. Lo que dejaste vacío quedó como «⚠️ SIN DATOS».'); await recargar(); }
+      catch (e) { toast(e.message, true); }
+    }
+    async function editarDoc(ruta, titulo) {
+      let d; try { d = await api(`estrategia/${encodeURIComponent(slug)}/doc?ruta=${encodeURIComponent(ruta)}`); } catch (e) { return toast(e.message, true); }
+      const guardar = async (b) => {
+        b.disabled = true;
+        try { await api(`estrategia/${encodeURIComponent(slug)}/doc`, { method: 'PUT', body: { ruta, contenido: $('#es-ed').value, base: d.base } }); toast('Guardado en el repo'); closeDrawer(); await recargar(); }
+        catch (e) { toast(e.message, true); b.disabled = false; }
+      };
+      drawer(html`<article class="es-doc es-ed"><span class="lbl">${data.carpeta}/${ruta}</span><h1>${titulo || ruta}</h1>
+          <p class="mut sm">Lo que guardes queda en el repo. Los agentes lo leen desde ya; en las demás pantallas del OS aparece en un minuto.</p>
+          <textarea id="es-ed" class="in es-ed-t" spellcheck="true" aria-label="Contenido de ${titulo || ruta}">${d.contenido}</textarea>
+          <div class="row bv-actions"><button class="btn" type="button" data-act="ed-ok">Guardar en el repo</button><button class="btn ghost" type="button" data-act="close">Cancelar</button></div></article>`,
+      { 'ed-ok': guardar }, { section: 'Estrategia', title: titulo || ruta });
+      $('#es-ed')?.focus();
     }
 
     function paintQuick() {
@@ -436,7 +473,9 @@ export async function render(el, { me, sub = [], alive }) {
       if (a === 'paso') { const p = t.dataset.p; if (!abiertoP(p)) return toast('Ese paso se abre cuando el anterior esté hecho', true); chat.paso = p; guardarChat(key, chat); mount(chatEl.querySelector('.cb-p'), pasosIn()); paintAdj(); const ta = $('#es-in', chatEl); if (ta) ta.placeholder = pasoPh(); return; }
       if (a === 'a-plan') { const d = new Date(), mes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug, etapa: 'plan', mes })); } catch {} location.hash = `#/marcas/diseno/${slug}`; return; }
       if (a === 'cliente') return menuClientes(t, slug);
-      if (a === 'motor') return menuMotor(t, me, S.salud?.chat, () => paintChat());
+      if (a === 'motor') return menuMotor(t, me, S.salud?.chat, () => paintChat(), { laya: S.salud?.on ? S.salud : null });
+      if (a === 'ctx-c' || a === 'ctx-m') return document.querySelector('.dz-ctxp') ? document.querySelector('.dz-ctxp').remove() : panelCtx(t, a === 'ctx-c' ? 'contexto' : 'modo');
+      if (a === 'voz') return dictar(t, $('#es-in', chatEl));
       if (a === 'hz') return menuHz(t);
       if (a === 'opcion') { t.closest('.es-q')?.classList.add('hecha'); return enviar(t.dataset.t); }
       if (a === 'inv') { S.inv = !S.inv; chat.inv = S.inv; guardarChat(key, chat); return paintAdj(); }
@@ -453,6 +492,8 @@ export async function render(el, { me, sub = [], alive }) {
       }
       if (a === 'adj-quitar') { chat.adj = chat.adj.filter((x) => x.id !== t.dataset.id); guardarChat(key, chat); paintAdj(); paintCtx(); return; }
       if (a === 'libdoc') return abrirLibDoc(t.dataset.id);
+      if (a === 'ficha') return crearFicha();
+      if (a === 'editar') { e.preventDefault(); return editarDoc(t.dataset.ruta, t.dataset.titulo); }
       if (a === 'reintentar') { t.disabled = true; t.textContent = 'Buscando… si Chrome pregunta, dale «Permitir»'; await salud(30000); if (!S.salud?.on) toast(chromeBloquea() ? PASOS_COPIA_VIEJA : 'Tu compu no respondió. Si usas Safari, abre el OS en Chrome; si Chrome preguntó y dijiste que no, dale permiso en el candado de la barra de direcciones.', true); return paintChat(); }
       if (a === 'rapido') return enviar(t.dataset.t);
       if (a === 'detener') { try { enVuelo?.abort(); } catch {} return; }

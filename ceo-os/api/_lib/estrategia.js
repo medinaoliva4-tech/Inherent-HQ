@@ -9,7 +9,7 @@
 import fs from 'node:fs';
 import * as db from './db.js';
 import { guard, scoper, edits, canRead } from './access.js';
-import { readFile, listFiles, listDir, repoSource } from './gh.js';
+import { readFile, listFiles, listDir, repoSource, escribirSeguro, huella } from './gh.js';
 import * as intel from './intel.js';
 import { body } from './http.js';
 import { parsePlanContratado, tables, clean } from './parse.js';
@@ -17,6 +17,7 @@ import { BLOQUES, bloqueDe, docId, parseDocId, estadoDe, nivelDe, limiteDe, secc
 import { puertasDe, resumen as resumenLaya, GATES_ID } from '../../public/js/laya.js';
 import { pathLabel } from '../../public/js/library-tree.js';
 import { vivaId, limpiarParche, aplicar } from '../../public/js/estrategia-viva.js';
+import { fichaMd, rutaEditable } from '../../public/js/ficha.js';
 
 const MAX_BORRADOR = 60_000;
 // La Library como contexto del chat: hasta 6 documentos y ~36 mil caracteres en total (el puente acepta 60 mil por mensaje).
@@ -271,6 +272,39 @@ export function rutas(on) {
     if (aprobar && !cur?.viva?.roadmap?.filas?.length) return res.status(400).json({ error: 'Falta el roadmap: agrégalo antes de aprobar.' });
     const d = await db.upsert(COLL, vivaId(slug), { slug, bloque: 'viva', aprobado: aprobar ? { por: u.email, en: ahora() } : null }, u.email);
     res.json({ ok: true, aprobado: d.aprobado });
+  });
+
+  // Escribir en el repo desde el OS: la ficha de oferta (cuando falta) y los documentos de la carpeta del cliente.
+  // Solo el CEO: lo que está en el repo ya pasó por él. Cada guardado es un commit; si el archivo cambió desde que se abrió,
+  // no se pisa (409) y hay que abrirlo otra vez.
+  const soloCeo = (u, res) => { if (u.role === 'ceo') return true; res.status(403).json({ error: 'Solo el CEO escribe en el repo' }); return false; };
+  const conflicto = (res) => res.status(409).json({ error: 'Este archivo cambió en el repo desde que lo abriste. Ciérralo y ábrelo otra vez.', code: 'CONFLICTO' });
+  on('PUT', 'estrategia/:slug/ficha', async (req, res) => {
+    const slug = String(req.params.slug || ''), u = await acceso(req, res, slug, { write: true }); if (!u || !soloCeo(u, res)) return;
+    const x = body(req), f = await ficha(slug);
+    if (f.hay) return res.status(409).json({ error: 'Este cliente ya tiene ficha: edítala desde sus documentos.', code: 'YA_HAY' });
+    const d = Object.fromEntries(Object.entries(x.campos || {}).map(([k, v]) => [k, cap(v, 600)]));
+    if (!d.nivel) return res.status(400).json({ error: 'Elige el nivel contratado' });
+    const w = await escribirSeguro(`${intel.rootOf(slug)}/00-onboarding/plan-contratado.md`, fichaMd({ ...d, nombre: f.nombre }), null, `ficha de oferta de ${f.nombre}`);
+    if (w.conflict) return conflicto(res);
+    olvidar(); res.json({ ok: true });
+  });
+  on('GET', 'estrategia/:slug/doc', async (req, res) => {
+    const slug = String(req.params.slug || ''), u = await acceso(req, res, slug, { write: true }); if (!u || !soloCeo(u, res)) return;
+    const ruta = String(req.query.ruta || ''); if (!rutaEditable(ruta)) return res.status(400).json({ error: 'Ese archivo no se edita desde aquí' });
+    const f = await readFile(`${intel.rootOf(slug)}/${ruta}`); if (!f) return res.status(404).json({ error: 'No encontré ese archivo en el repo' });
+    res.json({ ruta, contenido: f.content, base: huella(f.content) });
+  });
+  on('PUT', 'estrategia/:slug/doc', async (req, res) => {
+    const slug = String(req.params.slug || ''), u = await acceso(req, res, slug, { write: true }); if (!u || !soloCeo(u, res)) return;
+    const x = body(req), ruta = String(x.ruta || ''), contenido = String(x.contenido ?? '');
+    if (!rutaEditable(ruta)) return res.status(400).json({ error: 'Ese archivo no se edita desde aquí' });
+    if (!x.base) return res.status(400).json({ error: 'Abre el archivo antes de guardarlo' });
+    if (!contenido.trim()) return res.status(400).json({ error: 'El archivo quedaría vacío: no lo guardé' });
+    if (contenido.length > 200_000) return res.status(400).json({ error: 'El archivo es muy largo para editarlo aquí' });
+    const w = await escribirSeguro(`${intel.rootOf(slug)}/${ruta}`, contenido.replace(/\r\n/g, '\n'), String(x.base), `edita ${ruta}`);
+    if (w.conflict) return conflicto(res);
+    olvidar(); res.json({ ok: true, base: huella(contenido.replace(/\r\n/g, '\n')) });
   });
 
   on('GET', 'estrategia/:slug', async (req, res) => {

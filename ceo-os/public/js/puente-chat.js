@@ -13,7 +13,7 @@ export const PASOS_COPIA_VIEJA = 'Chrome guardó una versión vieja del OS. Toca
 export const sesionVencida = (m) => /oauth|authenticat|login|not logged|session expired|unauthorized/i.test(String(m || ''));
 export const PASOS_LOGIN = 'Se venció la sesión de Claude en tu compu. Abre la Terminal, escribe claude y Enter, luego /login y Enter, e inicia sesión en el navegador. Después vuelve aquí y manda el mensaje otra vez.';
 
-export const tokenDe = (me) => { try { return localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
+export const tokenDe = (me) => { try { return window.inherentEscritorio?.token || localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
 
 // ¿El puente está encendido y con chat? → { on, listo, ayuda }
 export async function saludPuente(ms = 15000) {

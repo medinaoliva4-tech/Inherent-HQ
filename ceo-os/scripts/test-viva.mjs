@@ -2,6 +2,9 @@
 // npm run test:viva
 import assert from 'node:assert/strict';
 import { limpiarParche, aplicar, cascada, avance, leerBloques, sinBloques } from '../public/js/estrategia-viva.js';
+import { fichaMd, rutaEditable } from '../public/js/ficha.js';
+import { parsePlanContratado } from '../api/_lib/parse.js';
+import { nivelDe } from '../public/js/estrategia.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
@@ -28,5 +31,18 @@ t('Los bloques de Strategy se leen y no se muestran', () => {
   assert.equal(b.parche.meta.objetivo, 1000); assert.equal(b.preguntas[0].texto, '¿Cuánto?');
   assert.equal(sinBloques(r), 'Hola.');
   assert.equal(sinBloques('Hola.\n```estrategia\n{"me'), 'Hola.');
+});
+t('La ficha que se crea en el OS la leen los agentes, y lo vacío queda como «SIN DATOS»', () => {
+  const md = fichaMd({ nombre: 'Akai', nivel: 'Brand Growth', linea: 'Growth', fuera: 'Pauta | web\nEventos' });
+  const pc = parsePlanContratado(md, 'team');
+  assert.equal(nivelDe(pc.plan).id, 'growth');
+  assert.equal(pc.fields.find((f) => f.key === 'Queda fuera').value, 'Pauta / web · Eventos');
+  assert.match(md, /\*\*Rondas de revisión\*\* \| ⚠️ SIN DATOS/);
+  assert.equal(nivelDe(parsePlanContratado(fichaMd({ nombre: 'X', nivel: 'A la medida' }), 'team').plan).id, 'medida');
+});
+t('Desde el OS solo se editan textos dentro de la carpeta del cliente', () => {
+  assert.ok(rutaEditable('00-onboarding/plan-contratado.md'));
+  assert.ok(rutaEditable('03-marketing/2026-10/plan.csv'));
+  for (const r of ['../akai/00-onboarding/plan-contratado.md', '/etc/passwd.md', 'a/../../b.md', 'foto.png', '', null]) assert.ok(!rutaEditable(r), String(r));
 });
 console.log(`\n${ok} pruebas pasaron`);

@@ -157,6 +157,14 @@ main() {
   copia_repo "$PY"
 
   # El puerto tiene que estar libre: si responde algo aquí, es un puente abierto a mano.
+  # Desde la app de escritorio (LAYA_DESDE_APP), es el puente de la app: la app lo apaga al leer este paso.
+  if [ -n "${LAYA_DESDE_APP:-}" ] && curl -fsS -m 2 "http://127.0.0.1:$PUERTO/health" >/dev/null 2>&1; then
+    paso "Cambiando al puente de siempre"
+    for _ in $(seq 1 30); do
+      curl -fsS -m 1 "http://127.0.0.1:$PUERTO/health" >/dev/null 2>&1 || break
+      sleep 1
+    done
+  fi
   if curl -fsS -m 2 "http://127.0.0.1:$PUERTO/health" >/dev/null 2>&1; then
     fallo "Ya hay un puente abierto a mano en otra ventana: ciérralo (Ctrl + C) y vuelve a correr el comando."
   fi
