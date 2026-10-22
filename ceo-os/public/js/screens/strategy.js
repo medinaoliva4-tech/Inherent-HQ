@@ -11,8 +11,8 @@ import { loadEstrategia, forgetEstrategia } from '../stratlist.js';
 import { panelViva } from '../estrategia-viva-ui.js';
 import { instrucciones, sinBloques, leerBloques, PASOS } from '../estrategia-viva.js';
 import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from '../puente-chat.js';
-import { divisor, ubicarPop } from '../divisor.js';
-import { tarjetaDoc, barraChat } from '../artifact.js';
+import { divisor, ubicarPop, junto } from '../divisor.js';
+import { tarjetaDoc, barraChat, botonesEnviar } from '../artifact.js';
 import { motorBtn, menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, motorDe, nombreMotor } from '../motor-ui.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
@@ -250,10 +250,10 @@ export async function render(el, { me, sub = [], alive }) {
       document.querySelector('.dz-ctxp')?.remove();
       const box = anchor.closest('.es-box'); if (!box) return;
       const m = document.createElement('div'); m.className = 'dz-ctxp'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', 'Contexto y cómo trabaja');
-      const pinta = () => mount(m, html`<header class="dz-ph"><b>Contexto</b><span class="mut sm">Lo que el chat lee antes de responder</span></header><div class="dz-ol">
-          <button type="button" class="dz-o on" data-x="cliente"><span class="dz-oi">${initials(data.nombre)}</span><span class="dz-ot">Cliente · ${data.nombre}<small>Su ficha, su nivel, su etapa y su carpeta del repo · cambiar</small></span><span class="dz-n">${ico('right', 12)}</span></button>
+      const pinta = () => mount(m, html`<header class="dz-ph"><b>Contexto</b><span class="mut sm">Lo que lee antes de responder</span></header><div class="dz-ol">
           <button type="button" class="dz-o ${S.inv ? 'on' : ''}" data-x="inv"><span class="dz-oi">${ico('play', 14)}</span><span class="dz-ot">Investigación<small>Los posts ganadores de su mercado (el scraping de referentes y competencia)</small></span><span class="dz-ck">${S.inv ? ico('check', 11) : ''}</span></button>
-          ${data.puede.library ? html`<button type="button" class="dz-o" data-x="lib"><span class="dz-oi">${ico('doc', 14)}</span><span class="dz-ot">Documentos de la Library<small>SOPs, entrevistas, notas</small></span><span class="dz-n">${chat.adj.length ? `${chat.adj.length} ` : ''}${ico('right', 12)}</span></button>` : ''}
+          ${data.puede.library ? html`<button type="button" class="dz-o" data-x="lib"><span class="dz-oi">${ico('doc', 14)}</span><span class="dz-ot">Documentos de la Library<small>SOPs, entrevistas, notas</small></span><span class="dz-n">${chat.adj.length ? `${chat.adj.length} ` : ''}${ico('right', 12)}</span></button>` : ''}</div>
+        <header class="dz-ph dz-ph2"><b>Modo de trabajo</b><span class="mut sm">Cómo responde</span></header><div class="dz-ol">
           <button type="button" class="dz-o on" disabled title="En Estrategia siempre está prendido: es el método"><span class="dz-oi">${ico('target', 14)}</span><span class="dz-ot">Lente Hormozi · ${bloqueAhora().nombre}<small>Siempre prendido en Estrategia · el bloque sale del paso en que estás</small></span><span class="dz-ck">${ico('check', 11)}</span></button></div>`);
       pinta(); box.append(m); ubicarPop(m, box); anchor.setAttribute('aria-expanded', 'true');
       const fuera = () => { m.remove(); anchor.setAttribute('aria-expanded', 'false'); document.removeEventListener('pointerdown', cerrar); };
@@ -274,7 +274,7 @@ export async function render(el, { me, sub = [], alive }) {
       chatEl.classList.toggle('vacio', !chat.msgs.length);
       mount(chatEl, html`${barraChat({ cliente: { act: 'cliente', mono: initials(data.nombre), nombre: data.nombre }, panel: S.panel, pasos: pasosIn() })}<div class="es-msgs" id="es-msgs" aria-live="polite"></div>
         ${ok ? html`<div class="ch-sug" id="es-quick"></div><div class="es-box cx"><div class="dz-chips" id="es-adj"></div><form class="es-form" id="es-form"><textarea class="in" id="es-in" rows="1" placeholder="${pasoPh()}" aria-label="Mensaje para Strategy"></textarea></form>
-          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}<button class="btn es-send" type="submit" form="es-form" id="es-send" aria-label="Enviar">${ico('right', 16)}</button></div></div>` : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
+          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}${botonesEnviar('es-form')}</div></div>` : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
       if (ok) chatEl.insertAdjacentHTML('beforeend', '<div class="es-lib" id="es-lib" role="dialog" aria-label="Agregar contexto de la Library" hidden></div>');
       paintMsgs(); paintQuick(); paintAdj(); if (S.libOn && ok) paintLib(); else S.libOn = false;
       const ta = $('#es-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
@@ -329,7 +329,7 @@ export async function render(el, { me, sub = [], alive }) {
     }
     function paintMsgs() {
       const box = $('#es-msgs', chatEl); if (!box) return;
-      chatEl.classList.toggle('vacio', !chat.msgs.length);
+      chatEl.classList.toggle('vacio', !chat.msgs.length); chatEl.classList.toggle('pensando', Boolean(enVuelo));
       const abajo = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
       mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : html`<div class="es-hint"><b>¿Qué trabajamos de ${data.nombre} hoy?</b><p>Empieza por la meta: cuánto factura hoy y cuánto quiere facturar. Strategy arma la estrategia a la derecha.</p></div>`);
       if (abajo || chat.msgs.length <= 2) box.scrollTop = box.scrollHeight;
@@ -337,10 +337,10 @@ export async function render(el, { me, sub = [], alive }) {
     function msgHtml(m, i) {
       if (m.r === 'u') return html`<div class="es-m u"><div class="es-b">${m.t}</div></div>`;
       const busy = m.stream, ult = i === chat.msgs.length - 1;
-      return html`<div class="es-m a"><div class="es-b">${m.tools?.length && busy && !m.t ? html`<p class="es-tool">${ico('doc', 12)} ${m.tools[m.tools.length - 1]}</p>` : ''}${m.t ? raw(conCitas(m)) : busy ? html`<span class="es-dots-t"><i></i><i></i><i></i></span>` : ''}
+      return html`<div class="es-m a"><div class="es-b">${m.tools?.length && busy && !m.t ? html`<p class="es-tool">${ico('doc', 12)} ${m.tools[m.tools.length - 1]}</p>` : ''}${m.t ? raw(conCitas(m)) : busy ? html`<span class="ch-think">Pensando…</span>` : ''}
         ${m.err ? html`<p class="es-err">${m.err}</p>` : ''}${m.aplicado?.length ? html`<span class="es-upd"><i>✦</i>Estrategia · ${m.aplicado.join(', ')} actualizado</span>${S.panel ? '' : tarjetaDoc({ ic: 'doc', titulo: `Estrategia de ${data.nombre}`, sub: data.vivaAprobada ? 'Aprobada' : `En construcción · ${avanceDe().n} de 5` })}` : ''}${m.aviso ? html`<p class="mut sm">${m.aviso}</p>` : ''}
         ${m.pregunta ? html`<div class="es-q ${ult ? '' : 'hecha'}"><span class="lbl">Una pregunta antes de seguir</span><b>${m.pregunta.texto}</b>${m.pregunta.por_que ? html`<small>${m.pregunta.por_que}</small>` : ''}${m.pregunta.opciones.length ? html`<div class="es-opts">${m.pregunta.opciones.map((o) => html`<button type="button" data-act="opcion" data-t="${o}" ${ult ? '' : raw('disabled')}>${o}</button>`)}</div>` : ''}</div>` : ''}</div>
-        ${!busy && m.t && !m.err ? html`<div class="es-act">${puede() ? html`<button type="button" class="btn ghost xs" data-act="guardar" data-i="${i}">${ico('edit', 12)} Guardar como borrador del entregable</button>` : ''}${m.citas?.some((c) => c.ok) ? html`<span class="mut sm">${m.citas.filter((c) => c.ok).length} fuente${m.citas.filter((c) => c.ok).length === 1 ? '' : 's'}</span>` : ''}</div>` : ''}${busy && ult ? html`<div class="es-act"><button type="button" class="btn ghost xs" data-act="detener">${ico('stop', 12)} Detener</button></div>` : ''}</div>`;
+        ${!busy && m.t && !m.err ? html`<div class="ch-acts"><button type="button" class="ch-ab" data-act="copiar" data-t="${m.t}" title="Copiar la respuesta">${ico('copy', 13)} Copiar</button>${puede() ? html`<button type="button" class="ch-ab" data-act="guardar" data-i="${i}" title="Guardarla como borrador del entregable de este bloque">${ico('edit', 13)} Guardar como borrador</button>` : ''}${m.citas?.some((c) => c.ok) ? html`<span class="mut sm">${m.citas.filter((c) => c.ok).length} fuente${m.citas.filter((c) => c.ok).length === 1 ? '' : 's'}</span>` : ''}</div>` : ''}</div>`;
     }
     // El texto de una respuesta, con cada cita resuelta convertida en un link al pasaje.
     function conCitas(m) {
@@ -431,6 +431,7 @@ export async function render(el, { me, sub = [], alive }) {
       if (a === 'copiar') return copiar(t.dataset.t);
       if (a === 'panel' || a === 'panel-tg') return togglePanel();
       if (a === 'panel-abrir') return S.panel ? null : togglePanel();
+      if (a === 'chat-nuevo') { if (enVuelo) return; if (chat.msgs.length && !(await confirmAsk('¿Empiezo una conversación nueva? Lo que ya está en la estrategia se queda.'))) return; Object.assign(chat, { msgs: [], sesion: null, enviados: [] }); guardarChat(key, chat); paintChat(); return; }
       if (a === 'ctx') return document.querySelector('.dz-ctxp') ? (document.querySelector('.dz-ctxp').remove(), t.setAttribute('aria-expanded', 'false')) : panelCtx(t);
       if (a === 'paso') { const p = t.dataset.p; if (!abiertoP(p)) return toast('Ese paso se abre cuando el anterior esté hecho', true); chat.paso = p; guardarChat(key, chat); mount(chatEl.querySelector('.cb-p'), pasosIn()); paintAdj(); const ta = $('#es-in', chatEl); if (ta) ta.placeholder = pasoPh(); return; }
       if (a === 'a-plan') { const d = new Date(), mes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug, etapa: 'plan', mes })); } catch {} location.hash = `#/marcas/diseno/${slug}`; return; }
@@ -521,7 +522,7 @@ export function menu(anchor, items, { buscar = false, placeholder = 'Buscar clie
   const box = anchor.closest('.es-box') || anchor.parentElement;
   const m = document.createElement('div'); m.className = 'es-menu'; m.setAttribute('role', 'listbox');
   const pinta = (q = '') => html`${buscar ? html`<input class="in" placeholder="${placeholder}" aria-label="${placeholder}" value="${q}">` : ''}${items.filter((x) => !q || x.label.toLowerCase().includes(q.toLowerCase())).map((x) => html`<a href="${x.href}" class="${x.on ? 'on' : ''}" role="option">${x.mono != null ? html`<i class="mono ${x.priv ? 'priv' : ''}">${x.mono}</i>` : html`<b class="${x.dot || ''}"></b>`}<span>${x.label}</span>${x.sub ? html`<small>${x.sub}</small>` : ''}</a>`)}`;
-  mount(m, pinta()); box.append(m);
+  mount(m, pinta()); box.append(m); junto(m, anchor, box);
   const inp = m.querySelector('input'); if (inp) { inp.focus(); inp.oninput = () => { const q = inp.value; mount(m, pinta(q)); const n = m.querySelector('input'); n.focus(); n.setSelectionRange(q.length, q.length); n.oninput = inp.oninput; }; }
   const cerrar = (e) => { if (!m.contains(e.target) && e.target !== anchor) { m.remove(); document.removeEventListener('pointerdown', cerrar); } };
   setTimeout(() => document.addEventListener('pointerdown', cerrar));

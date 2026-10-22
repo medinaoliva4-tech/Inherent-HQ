@@ -4194,3 +4194,22 @@ button.dz-chip-sel{border:1px solid var(--hair);background:var(--surface);color:
 .cb-mini{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border:1px dashed var(--hair-strong, var(--hair));background:transparent;color:var(--mut);font:inherit;font-size:12px;border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap;flex:none}.cb-mini:hover{color:var(--ink);border-style:solid}
 .dz-o:disabled.on{opacity:1;cursor:default}
 .dg-suelta{background:color-mix(in srgb,#c98a2b 16%,transparent);color:var(--ink)}.dg-suelta .linkish{color:inherit}
+
+/* ---------- Los chats, más como Claude o ChatGPT ---------- */
+/* Enviar con la flecha hacia arriba; mientras responde, el mismo lugar es «Detener» */
+.es-stop{display:none}
+.es-chat.pensando .es-box .es-send{display:none}
+.es-chat.pensando .es-box .es-stop{display:grid}
+.es-box .es-send,.es-box .es-stop{width:36px;height:36px;padding:0;border-radius:50%;place-items:center;flex:none}
+.es-box .es-send{display:grid}
+/* «Pensando…» con un brillo que corre, en vez de los tres puntos */
+.ch-think{display:inline-block;color:var(--mut);background:linear-gradient(90deg,var(--mut) 0%,var(--ink) 45%,var(--mut) 90%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ch-brillo 1.6s linear infinite}
+@keyframes ch-brillo{from{background-position:100% 0}to{background-position:-100% 0}}
+@media (prefers-reduced-motion:reduce){.ch-think{animation:none;-webkit-text-fill-color:var(--mut)}}
+/* Las acciones debajo de cada respuesta: discretas, se notan al pasar el mouse */
+.ch-acts{display:flex;gap:4px;margin-top:6px;opacity:.55;transition:opacity .15s}
+.es-m.a:hover .ch-acts,.es-m.a:last-child .ch-acts{opacity:1}
+.ch-ab{display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;color:var(--mut);font:inherit;font-size:12px;border-radius:8px;padding:4px 8px;cursor:pointer}
+.ch-ab:hover{background:var(--fill);color:var(--ink)}
+/* El «+»: Contexto (lo que lee) y Modo de trabajo (cómo responde) */
+.dz-ph2{margin-top:6px;padding-top:12px;border-top:1px solid var(--hair)}
