@@ -22,10 +22,10 @@ export const GROUPS = [
   ['servicios', 'Servicios', [], 'org'],
   ['finanzas', 'Finanzas', ['finanzas'], 'org'],
   ['estrategia', 'Estrategia', ['estrategia'], 'estrategia'],
-  ['marcas', 'Diseño gráfico', ['content'], 'marcas'],
+  ['marcas', 'Marcas', ['content'], 'marcas'],
 ];
 // Tres espacios: Organization · Estrategia (App 02: lo ve el CEO y quien él habilite aquí) · Marcas.
-export const SPACES = [['org', 'Organization'], ['estrategia', 'Estrategia'], ['marcas', 'Diseño gráfico']];
+export const SPACES = [['org', 'Organization'], ['estrategia', 'Estrategia'], ['marcas', 'Marcas']];
 // Cada cosa vive en un solo lugar: Ventas = conseguir y cerrar (CRM · Cotizaciones · Fuentes); Servicios = lo que vendemos
 // y cómo se entrega (Paquetes · Servicios · Especialistas · Responsabilidades); Proyectos = ejecutar (Tareas · Calendario · Timeline).
 // Las rutas viejas de lo que se mudó redirigen a su lugar nuevo (las usa el router de app.js). Lo que sigue a la ruta se conserva.

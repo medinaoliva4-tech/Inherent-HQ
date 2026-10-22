@@ -192,7 +192,7 @@ const navItems = () => {
   // Estrategia es un solo chat: el cliente se elige en la caja del chat, no en la barra.
   if (space === 'estrategia') return [['estrategia', 'Estrategia', svg(P.estrategia)]];
   // Diseño gráfico: las marcas (cada perfil se abre desde ahí) y su único chat (plan del mes → ideas → diseño).
-  if (space === 'marcas') return [['marcas', 'Marcas', svg(P.marcas)], ...(brandAccess(me).contentFull ? [['marcas/diseno', 'Chat', svg(P.estrategia)]] : [])];
+  if (space === 'marcas') return [['marcas', 'Todas', svg(P.marcas)], ...(brandAccess(me).contentFull ? [['marcas/diseno', 'Chat', svg(P.estrategia)]] : [])];
   return ORG.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l, svg(P[g])]);
 };
 const navHtml = () => html`${navItems().map(([k, l, i]) => html`<button data-go="${k}" title="${l}">${i}<span>${l}</span></button>`)}`;

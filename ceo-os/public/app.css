@@ -3409,7 +3409,7 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 .area-tabs button svg{opacity:.7}.area-tabs button.on svg{opacity:1}
 .brand-nav .mod-tabs{background:transparent;border-color:transparent;padding:0 4px;gap:2px}
 .brand-nav .mod-tabs button{padding:6px 12px;font-size:13px;border-radius:99px}
-.brand-nav .mod-tabs button.on{background:var(--ink);color:var(--cream);box-shadow:none}
+.brand-nav .mod-tabs button.on,:root[data-theme="dark"] .brand-nav .mod-tabs button.on{background:var(--ink);color:var(--cream);box-shadow:none}
 .brand-nav .mod-tabs button.on .soon-tag{background:rgb(255 255 255 / .16);color:inherit}
 
 .bh{display:flex;flex-direction:column;gap:var(--s4)}

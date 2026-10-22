@@ -42,7 +42,8 @@ export function levelOf(text) {
   const own = LEVELS.find((l) => norm(l.name).toLowerCase() === t.toLowerCase()); if (own) return own;
   const hit = LEGACY.find(([re]) => re.test(t)); return hit ? LEVELS.find((l) => l.id === hit[1]) : null;
 }
-export const levelName = (text) => levelOf(text)?.name || String(text ?? '');
+// Un alcance a la medida («Tailor Made» en fichas viejas) se muestra siempre igual.
+export const levelName = (text) => levelOf(text)?.name || String(text ?? '').replace(/tailor[\s-]*made/i, 'A la medida');
 export const sameLevel = (a, b) => { const x = levelOf(a), y = levelOf(b); return x && y ? x.id === y.id : String(a ?? '').trim() === String(b ?? '').trim(); };
 // ¿El cliente está en el nivel Growth Partnership? (antes Accelerate y Compound; también la línea «Growth» de la ficha.)
 export const isPartnership = (plan, linea = '') => levelOf(plan)?.id === 'partnership' || /^🟨/u.test(String(linea || ''));
