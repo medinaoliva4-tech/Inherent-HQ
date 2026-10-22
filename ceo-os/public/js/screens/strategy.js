@@ -216,7 +216,7 @@ export async function render(el, { me, sub = [], alive }) {
     // ms: lo que se espera al puente. Al tocar «Ya lo hice» se espera más: la primera vez Chrome pide permiso para hablar con tu compu.
     async function salud(ms = 4000) {
       let v = { on: false };
-      try { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null, listo: Boolean(j.listo), cargando: Boolean(j.cargando) }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
+      try { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null, listo: Boolean(j.listo), cargando: Boolean(j.cargando), ojo: j.ojo || null }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
       S.salud = v; return v;
     }
     // Qué le falta al chat para correr (en este orden).

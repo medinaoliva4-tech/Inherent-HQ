@@ -58,7 +58,7 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
 
 **La línea del trabajo: entender → crear → diseñar → publicar y medir, y Tech.**
 
-- **Investigación** — los posts que ganan en su mercado, con su porqué. *No se pierde:* el scraping semanal y el juicio de Laya.
+- **Investigación** — los posts que ganan en su mercado, con su porqué. *No se pierde:* el scraping semanal, el juicio de Laya y el ojo visual (si la imagen se parece a la marca; nunca si es «bonita»).
 - **Cliente ideal** — a quién le hablamos y con qué peso. *No se pierde:* lo aprueba el CEO.
 - **Brief del ciclo** — qué decimos este mes. *No se pierde:* sin brief no hay piezas con fecha de ese mes, salvo que el CEO lo abra.
 - **Plan del mes, Formatos, Ideas y Guiones** — del plan a la pieza, en una sola línea. *No se pierde:* sin estrategia aprobada no hay plan; sin plan no hay ideas; una idea se cuenta en un formato que ya funcionó.

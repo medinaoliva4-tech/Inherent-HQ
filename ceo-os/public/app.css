@@ -4326,3 +4326,11 @@ button.dz-chip-sel{border:1px solid var(--hair);background:var(--surface);color:
 .el-arch-i{display:flex;align-items:center;gap:10px;background:var(--fill);border-radius:10px;padding:6px 8px 6px 12px}
 .el-arch-t{flex:1;min-width:0;display:flex;flex-direction:column;text-align:left;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer}
 .el-arch-t b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* El ojo visual: ¿se parece a la marca? */
+.ojo-chip{display:inline-flex;align-items:center;gap:4px;font-size:11px}
+.ojo-chip.ok{background:rgb(93 122 70 / .16);color:#5d7a46}
+.ojo-chip.medio{background:rgb(196 138 42 / .16);color:#9a6a1c}
+.ojo-chip.no{background:rgb(180 68 44 / .14);color:#b4442c}
+:root[data-theme="dark"] .ojo-chip.ok{color:#a9c58f}:root[data-theme="dark"] .ojo-chip.medio{color:#e0b46a}:root[data-theme="dark"] .ojo-chip.no{color:#e48a74}
+.dz-ojo{display:block;margin-top:3px}

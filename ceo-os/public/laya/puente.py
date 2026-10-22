@@ -4,7 +4,8 @@
 Laya corre en tu compu (no en Vercel). Este puente carga ``laya.Router`` una sola vez y le deja a la
 web del OS pedirle juicios desde el navegador:
 
-    GET  /health        -> {"status": "ok", "listo": bool, "chat": {...}, ...}
+    GET  /health        -> {"status": "ok", "listo": bool, "chat": {...}, "ojo": {...}, ...}
+    POST /ver           -> el ojo visual: { url | imagen (base64), refs: [urls], texto } → { parecido 0..1, refs }
     POST /juzgar        -> {"texto": str, "questions": {...}} -> el resultado de Laya (answers, routing, usage)
     GET  /chat/estado   -> con token: {"ok": true, ...}; sin token, 401. Sirve para emparejar sin gastar nada
     POST /chat          -> {"prompt": str, "resume"?: uuid, "modo"?: "estrategia"|"diseno"} -> corre Claude Code (`claude -p`) dentro de tu clon del repo y
@@ -59,6 +60,8 @@ import threading
 import time
 import traceback
 import urllib.request
+import base64
+import io
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HOST = "127.0.0.1"
@@ -68,7 +71,7 @@ MODELO = "multilingual"  # el checkpoint que lee español (~644 MB la primera ve
 MAX_CUERPO = 256 * 1024
 MAX_TEXTO = 20000
 MAX_PREGUNTAS = 16
-VERSION = "7"
+VERSION = "8"
 # La copia del repo que el puente maneja solo (si no le dices otra con INHERENT_REPO): se pone al día con main antes de cada chat.
 REPO_URL = os.environ.get("INHERENT_REPO_URL") or "https://github.com/medinaoliva4-tech/Inherent-HQ.git"
 SYNC_CADA = 60  # segundos mínimos entre dos puestas al día
@@ -150,6 +153,117 @@ class Laya:
             raise RuntimeError("Laya no cargó: " + str(self.error))
         with self.lock:
             return self.router.predict(texto, questions, model=modelo or self.modelo)
+
+
+OJO_MODELO = os.environ.get("LAYA_OJO_MODELO", "openai/clip-vit-base-patch32")
+OJO_MAX_IMG = 8 * 1024 * 1024  # bytes por imagen
+OJO_MAX_REFS = 24
+
+
+class Ojo:
+    """El ojo visual: ¿esta imagen se parece a la marca? Compara la imagen con el moodboard (imágenes de referencia) y con
+    una descripción corta de la marca, con CLIP, en la compu. Solo dice parecido, no calidad. Carga la primera vez que se usa
+    (baja ~600 MB una sola vez); si no está instalado (transformers + Pillow), /ver responde 503 y el OS no muestra el chip."""
+
+    def __init__(self, modelo=OJO_MODELO):
+        self.modelo = modelo
+        self.model = None
+        self.proc = None
+        self.torch = None
+        self.error = None
+        self.cargando = False
+        self.lock = threading.Lock()
+        self.cache = {}  # url o huella → vector de referencia (por marca)
+
+    def disponible(self):
+        try:
+            import importlib.util
+            return all(importlib.util.find_spec(m) for m in ("transformers", "PIL", "torch"))
+        except Exception:  # noqa: BLE001
+            return False
+
+    def cargar(self):
+        with self.lock:
+            if self.model is not None or self.error:
+                return
+            self.cargando = True
+            try:
+                import torch
+                from transformers import CLIPModel, CLIPProcessor
+                self.model = CLIPModel.from_pretrained(self.modelo).eval()
+                self.proc = CLIPProcessor.from_pretrained(self.modelo)
+                self.torch = torch
+                print(f"[puente] Ojo visual listo ({self.modelo})", flush=True)
+            except Exception as e:  # noqa: BLE001
+                self.error = f"{type(e).__name__}: {e}"
+                print("[puente] El ojo visual no cargó: " + self.error, file=sys.stderr, flush=True)
+            finally:
+                self.cargando = False
+
+    def estado(self):
+        return {"disponible": self.disponible(), "listo": self.model is not None, "cargando": self.cargando, "error": self.error, "modelo": self.modelo}
+
+    def bajar(self, url):
+        if not re.match(r"^https://", url or ""):
+            raise ValueError("Solo imágenes https")
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (inherent-os ojo)"})
+        with urllib.request.urlopen(req, timeout=12) as r:
+            datos = r.read(OJO_MAX_IMG + 1)
+        if len(datos) > OJO_MAX_IMG:
+            raise ValueError("La imagen pesa más de 8 MB")
+        return datos
+
+    def imagen(self, datos):
+        from PIL import Image
+        return Image.open(io.BytesIO(datos)).convert("RGB")
+
+    def vec_imagen(self, datos):
+        with self.torch.no_grad():
+            x = self.proc(images=self.imagen(datos), return_tensors="pt")
+            v = self.model.get_image_features(**x)
+        return (v / v.norm(dim=-1, keepdim=True))[0]
+
+    def vec_texto(self, textos):
+        with self.torch.no_grad():
+            x = self.proc(text=textos, return_tensors="pt", padding=True, truncation=True)
+            v = self.model.get_text_features(**x)
+        return v / v.norm(dim=-1, keepdim=True)
+
+    def referencia(self, url):
+        """El vector de una imagen de referencia, guardado por url (el moodboard cambia poco)."""
+        if url in self.cache:
+            return self.cache[url]
+        try:
+            v = self.vec_imagen(self.bajar(url))
+        except Exception:  # noqa: BLE001
+            v = None
+        if len(self.cache) > 400:
+            self.cache.clear()
+        self.cache[url] = v
+        return v
+
+    def ver(self, datos, refs, texto):
+        """→ {parecido 0..1, refs (cuántas sirvieron), sim_refs, sim_texto}. Parecido = parecido a las referencias (si hay)
+        y a la descripción de la marca; mapeado a 0..1 desde los rangos típicos de CLIP."""
+        if self.model is None:
+            self.cargar()
+        if self.error:
+            raise RuntimeError("El ojo visual no cargó: " + self.error)
+        v = self.vec_imagen(datos)
+        vs = [r for r in (self.referencia(u) for u in (refs or [])[:OJO_MAX_REFS]) if r is not None]
+        sim_refs = float(sum(float((v * r).sum()) for r in vs) / len(vs)) if vs else None
+        sim_texto = None
+        if texto:
+            t = self.vec_texto([texto, "a generic stock photo, unrelated to any brand"])
+            sims = (t @ v).tolist()
+            sim_texto = float(sims[0] - sims[1])  # cuánto más se parece a la marca que a nada en particular
+        partes = []
+        if sim_refs is not None:
+            partes.append((min(1.0, max(0.0, (sim_refs - 0.45) / 0.4)), 0.7))
+        if sim_texto is not None:
+            partes.append((min(1.0, max(0.0, 0.5 + sim_texto * 8)), 0.3 if sim_refs is not None else 1.0))
+        parecido = sum(p * w for p, w in partes) / sum(w for _, w in partes) if partes else None
+        return {"parecido": None if parecido is None else round(parecido, 3), "refs": len(vs), "sim_refs": sim_refs, "sim_texto": sim_texto}
 
 
 def validar(cuerpo):
@@ -582,7 +696,7 @@ class Chat:
         return True
 
 
-def servidor(laya_, origenes, puerto, chat=None):
+def servidor(laya_, origenes, puerto, chat=None, ojo=None):
     hosts = {f"127.0.0.1:{puerto}", f"localhost:{puerto}"}
 
     class H(BaseHTTPRequestHandler):
@@ -748,7 +862,43 @@ def servidor(laya_, origenes, puerto, chat=None):
                                  "cargando": laya_.cargando, "error": laya_.error, "modelo": laya_.modelo,
                                  "modelo_cargado": laya_.modelo if cargado else None, "laya": laya_.version,
                                  "carga_s": laya_.segundos, "puerto": puerto, "pid": os.getpid(),
+                                 "ojo": ojo.estado() if ojo else {"disponible": False, "listo": False},
                                  "chat": chat.estado() if chat else {"listo": False, "ayuda": "apagado"}})
+
+        def ver(self):
+            """El ojo visual. Cuerpo: { url | imagen (base64), refs: [urls], texto } → { parecido, refs, ms }."""
+            if ojo is None or not ojo.disponible():
+                return self.responder(503, {"error": "El ojo visual no está instalado en esta compu", "ayuda": "sin_ojo"})
+            try:
+                n = int(self.headers.get("Content-Length") or 0)
+            except ValueError:
+                n = -1
+            if n <= 0 or n > OJO_MAX_IMG * 2:
+                return self.responder(413, {"error": "La imagen pesa más de 8 MB"})
+            try:
+                b = json.loads(self.rfile.read(n).decode("utf-8"))
+                if not isinstance(b, dict):
+                    raise ValueError("Manda un objeto")
+                refs = [u for u in (b.get("refs") or []) if isinstance(u, str) and u.startswith("https://")][:OJO_MAX_REFS]
+                texto = str(b.get("texto") or "")[:300]
+                if b.get("imagen"):
+                    datos = base64.b64decode(str(b["imagen"]).split(",")[-1], validate=False)
+                    if len(datos) > OJO_MAX_IMG:
+                        raise ValueError("La imagen pesa más de 8 MB")
+                elif b.get("url"):
+                    datos = ojo.bajar(str(b["url"]))
+                else:
+                    raise ValueError("Manda «url» o «imagen»")
+            except (ValueError, UnicodeDecodeError, OSError) as e:
+                return self.responder(400, {"error": str(e)})
+            t = time.time()
+            try:
+                r = ojo.ver(datos, refs, texto)
+            except Exception as e:  # noqa: BLE001
+                traceback.print_exc()
+                return self.responder(503, {"error": str(e) if "ojo" in str(e).lower() else "El ojo visual falló"})
+            r["ms"] = round((time.time() - t) * 1000)
+            self.responder(200, r)
 
         def do_POST(self):  # noqa: N802
             if not self.filtro():
@@ -756,8 +906,10 @@ def servidor(laya_, origenes, puerto, chat=None):
             ruta = self.path.split("?")[0]
             if ruta == "/chat":
                 return self.chat_enviar()
+            if ruta == "/ver":
+                return self.ver()
             if ruta != "/juzgar":
-                return self.responder(404, {"error": "No existe. Usa /juzgar o /chat"})
+                return self.responder(404, {"error": "No existe. Usa /juzgar, /ver o /chat"})
             if "application/json" not in self.headers.get("Content-Type", ""):
                 return self.responder(415, {"error": "Manda JSON (Content-Type: application/json)"})
             try:
@@ -838,6 +990,9 @@ def precargar(modelo):
     """Baja el modelo (la primera vez) y lo prueba con un juicio. Sale 0 si quedó listo."""
     laya_ = Laya(modelo)
     laya_.cargar()
+    ojo = Ojo()
+    if ojo.disponible():
+        ojo.cargar()  # también baja el modelo del ojo visual, para que no espere la primera imagen
     return 0 if laya_.router is not None and not laya_.error else 1
 
 
@@ -893,13 +1048,16 @@ def main():
         print(f"[puente] Ojo: el OS busca el puente en el puerto {PUERTO}.", file=sys.stderr)
     laya_ = Laya(a.modelo)
     chat = Chat(a.repo, claude_env, os.environ.get("INHERENT_CHAT_SEGUNDOS") or CHAT_SEGUNDOS)
+    ojo = Ojo()
     try:
-        srv = servidor(laya_, patrones(a.origenes), a.puerto, chat)
+        srv = servidor(laya_, patrones(a.origenes), a.puerto, chat, ojo)
     except OSError as e:
         print(f"[puente] No pude abrir el puerto {a.puerto} ({e}). ¿Ya hay otro puente encendido?", file=sys.stderr, flush=True)
         sys.exit(1)
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))  # launchd / systemd lo apagan con SIGTERM
     threading.Thread(target=laya_.cargar, daemon=True).start()
+    if ojo.disponible() and os.environ.get("LAYA_OJO", "1") != "0":
+        threading.Thread(target=ojo.cargar, daemon=True).start()  # el ojo visual, en segundo plano (la primera vez baja su modelo)
     print(f"[puente] Escuchando en http://{HOST}:{a.puerto} · orígenes: {a.origenes}", flush=True)
     if chat.token_nuevo:
         print(f"[puente] Chat de Estrategia · token de emparejamiento (pégalo una sola vez en Inherent OS): {chat.token}", flush=True)

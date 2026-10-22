@@ -18,9 +18,11 @@ import { promptIdeas, leerIdeas, sinBloqueI } from './ideas-chat.js';
 import { divisor, ubicarPop, junto } from './divisor.js';
 import { docHtml, tarjetaDoc, barraChat, botonesEnviar, bandeja } from './artifact.js';
 import { botonVoz, dictar } from './voz.js';
+import { verImagen, ojoChip } from './ojo.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn } from './motor-ui.js';
 
 const IMGS = new Map(); // `${marca}|${nodo}` → data URL (solo en memoria: pesan)
+const OJO = new Map(); // `${marca}|${nodo}` → { parecido, refs } del ojo visual
 const ETAPAS = [['plan', 'Plan del mes', '③ Marketing'], ['ideas', 'Ideas', '④ Creatividad'], ['diseno', 'Diseño', '⑥A Diseño gráfico']];
 let enVuelo = null;
 const enCompu = () => !/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '');
@@ -107,6 +109,18 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     // La pieza donde se guarda lo diseñado: la única idea del contexto (si hay varias, se pregunta al guardar).
     const fijarDestino = () => { const l = ideasCtx(); chat.ideaId = l.length === 1 ? l[0].id : ''; };
     const img = (id) => IMGS.get(`${b.slug}|${id}`) || '';
+    // El ojo visual sobre cada lámina con captura: ¿se parece a la marca? De a una, sin trabar el chat.
+    let viendo = false;
+    async function verLaminas(laminas) {
+      if (viendo) return; viendo = true;
+      try {
+        for (const l of laminas) {
+          const k = `${b.slug}|${l.id}`, src = IMGS.get(k); if (!src || OJO.has(k) || !alive()) continue;
+          try { const r = await verImagen(b.slug, { imagen: src }); if (!r) break; OJO.set(k, r); document.querySelectorAll(`[data-ojo="${l.id}"]`).forEach((x) => { x.innerHTML = String(ojoChip(r, { compact: true })); }); }
+          catch { break; }
+        }
+      } finally { viendo = false; }
+    }
 
     mount(el, html`<div class="dz"><section class="es-chat dz-chat" id="dz-chat"></section><section class="dz-pane" id="dz-pane"></section></div>`);
     const root = $('.dz', el), chatEl = $('#dz-chat', el), paneEl = $('#dz-pane', el);
@@ -114,7 +128,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     // ---------- El puente ----------
     async function salud(ms = 4000) {
       let v = { on: false };
-      try { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null, listo: Boolean(j.listo), cargando: Boolean(j.cargando) }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
+      try { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(PUENTE + '/health', { signal: c.signal, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback' }); if (r.ok) { const j = await r.json(); v = { on: j.status === 'ok', chat: j.chat || null, listo: Boolean(j.listo), cargando: Boolean(j.cargando), ojo: j.ojo || null }; } } finally { clearTimeout(t); } } catch { /* apagado */ }
       S.salud = v; return v;
     }
     function fase() {
@@ -356,9 +370,10 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       }
       const faltan = r.laminas.filter((l) => !img(l.id)).length;
       const malas = r.revision.filter((x) => !x.ok);
+      queueMicrotask(() => verLaminas(r.laminas));
       docD(html`${r.revision.length ? html`<div class="dz-rev">${r.revision.map((x) => html`<span class="${x.ok ? 'ok' : 'am'}">${x.texto}</span>`)}</div>` : ''}
         <div class="dz-grid ${/story/i.test(r.formato || chat.formato) ? 'st' : ''}">${r.laminas.map((l) => html`<button type="button" class="dz-fr ${S.lamina?.id === l.id ? 'sel' : ''}" data-act="lamina" data-id="${l.id}" title="Seleccionar para pedir un cambio">
-          <span class="dz-im">${img(l.id) ? html`<img alt="${l.nombre}" src="${img(l.id)}">` : html`<span class="mut sm">Sin vista previa</span>`}</span><span class="dz-cap"><b>${l.nombre}</b></span></button>`)}</div>
+          <span class="dz-im">${img(l.id) ? html`<img alt="${l.nombre}" src="${img(l.id)}">` : html`<span class="mut sm">Sin vista previa</span>`}</span><span class="dz-cap"><b>${l.nombre}</b><span class="dz-ojo" data-ojo="${l.id}">${ojoChip(OJO.get(`${b.slug}|${l.id}`), { compact: true })}</span></span></button>`)}</div>
         ${faltan ? html`<p class="mut sm" style="margin:0">${faltan === r.laminas.length ? 'Las vistas previas no se guardan al recargar.' : `Faltan ${faltan} vistas previas.`} <button type="button" class="linkish" data-act="reexportar">Pedirlas otra vez</button></p>` : ''}`, { titulo: r.titulo || 'Sin título', sub: `${r.formato || chat.formato} · ${r.laminas.length} lámina${r.laminas.length === 1 ? '' : 's'} · ⑥A Diseño gráfico`, estado: r.guardado ? 'Guardado' : 'Borrador', ok: Boolean(r.guardado),
         acciones: html`${r.figma ? html`<a class="btn ghost xs" href="${r.figma}" target="_blank" rel="noopener">${ico('link', 12)} Abrir en Figma</a>` : ''}${faltan < r.laminas.length ? html`<button class="btn ghost xs" data-act="bajar">${ico('down', 12)} PNG</button>` : ''}`,
         pie: { texto: '', accion: html`${r.guardado ? html`<span>Guardado ${raw('&middot;')} queda <b>Listo</b> en el Calendario de ${b.name}.</span><span class="sp"></span><a class="btn xs" href="#/marcas/${b.slug}/calendario">Ir al Calendario</a>`

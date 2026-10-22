@@ -30,6 +30,7 @@ import * as internos from './_lib/internos.js';
 import * as video from './_lib/video.js';
 import * as adsStudio from './_lib/ads-studio.js';
 import * as tech from './_lib/tech.js';
+import * as ojo from './_lib/ojo.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
@@ -1169,6 +1170,8 @@ internos.rutas(on);
 video.rutas(on);
 adsStudio.rutas(on);
 tech.rutas(on);
+// ---------- El ojo visual: el contexto de la marca para el puente ----------
+ojo.rutas(on);
 
 on('GET', 'search', async (req, res) => {
   const u = await guard(req, res); if (!u) return;

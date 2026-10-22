@@ -8,6 +8,7 @@
 import { html, raw, mount, api, toast, fdate, K, md, ask, today, openClaude, ICON, ico, col, confirmAsk, $ } from './core.js';
 import { CATS, POR_CAT, REDES, redNombre, catNombre, cuenta } from './referentes.js';
 import { layaBox, puenteEstado, juzgarLocal } from './laya-ui.js';
+import { ojoEstado, verImagen, ojoChip } from './ojo.js';
 import { chipReferente } from './laya.js';
 import { tokenDe, saludPuente, preguntar } from './puente-chat.js';
 import { resumenAvatar } from './avatares.js';
@@ -54,7 +55,7 @@ export function investigacion(b, ctx) {
   if (st.d.fail) return mount(b, html`<div class="warnbox">No pude abrir la investigación: ${st.d.fail}</div><button class="btn ghost xs" style="margin-top:10px" data-iv="reload">Reintentar</button>`), (b.onclick = (e) => { if (e.target.closest('[data-iv="reload"]')) { st.d = null; investigacion(b, ctx); } });
   paint(b, ctx);
   if (st.d.estado?.status === 'running') st.timer = setTimeout(() => recoger(b, ctx), st.polled ? 20000 : 1500);
-  layaLote(b, ctx);
+  layaLote(b, ctx).then(() => ver(b, ctx));
 }
 
 // ---------- los datos ----------
@@ -135,7 +136,7 @@ function bigCard(it, puerta) {
     <div class="inv-cb">
       <div class="inv-who"><b>@${it.handle || '—'}</b><span class="mut">${[redNombre(redOf(it)), FMTL[f]].filter(Boolean).join(' · ')}</span></div>
       ${why ? html`<p class="inv-why">${why}</p>` : ''}
-      <div class="inv-foot">${layaChip(it)}<button class="btn xs ${it.replicar ? '' : 'ghost'} inv-use" data-iv="use" data-id="${it.id}" aria-pressed="${it.replicar ? 'true' : 'false'}">${it.replicar ? html`${ico('repeat', 13)} Formato a replicar` : 'Usar como formato'}</button></div>
+      <div class="inv-foot">${layaChip(it)}<span data-ojoid="${it.id}">${ojoChip(it.ojo)}</span><button class="btn xs ${it.replicar ? '' : 'ghost'} inv-use" data-iv="use" data-id="${it.id}" aria-pressed="${it.replicar ? 'true' : 'false'}">${it.replicar ? html`${ico('repeat', 13)} Formato a replicar` : 'Usar como formato'}</button></div>
     </div></article>`;
 }
 function renderTop(b, { st }) {
@@ -172,7 +173,7 @@ function tile(it) {
       <span class="ricons">${it.replicar ? html`<i title="Formato a replicar">${ico('repeat', 13)}</i>` : ''}${it.why ? html`<i title="Tiene análisis">${ico('bulb', 13)}</i>` : ''}</span></span>
     <span class="rs-body"><b class="rs-title">${rtitle(it)}</b><span class="rs-by">@${it.handle || '—'} · ${redNombre(redOf(it))}</span>
       <span class="rs-data">${it.views ? html`<span>${ico('play', 12)} <b>${K(it.views)}</b></span>` : it.likes ? html`<span>${ico('heart', 12)} <b>${K(it.likes)}</b></span>` : ''}${it.x ? html`<span><b>×${it.x}</b> su promedio</span>` : it.resonance ? html`<span>Resonancia <b>${it.resonance}</b></span>` : ''}</span>
-      ${layaChip(it, 'sub')}</span></button>`;
+      ${layaChip(it, 'sub')}<span data-ojoid="${it.id}">${ojoChip(it.ojo, { compact: true })}</span></span></button>`;
 }
 function renderLib(b, { st }) {
   const box = $('#inv-lib', b); if (!box) return;
@@ -254,7 +255,7 @@ async function manual(b, ctx) {
     const { item, aviso } = await api('investigacion/inspo', { method: 'POST', body: { profile: slug, url: v.url, why: v.why || '' } });
     const cur = st.d.items.find((x) => x.id === item.id);
     st.d.items = [...st.d.items.filter((x) => x.id !== item.id), { ...item, laya: cur?.laya || { estado: 'vacio', chip: 'Laya · sin juicio', sirve: null } }];
-    toast(aviso || 'Inspo guardada: ábrela para escribirla en tu voz', Boolean(aviso)); paint(b, ctx); layaLote(b, ctx); ropen(item.id, b, ctx);
+    toast(aviso || 'Inspo guardada: ábrela para escribirla en tu voz', Boolean(aviso)); paint(b, ctx); layaLote(b, ctx).then(() => ver(b, ctx)); ropen(item.id, b, ctx);
   } catch (er) { toast(er.message, true); }
 }
 // «Escribir en mi voz»: Claude (en tu compu, solo lectura) reescribe la inspo como guion de la marca, para su avatar principal.
@@ -316,6 +317,27 @@ async function layaLote(b, ctx) {
   }
   st.judging = false;
   if (hechos && alive() && b.isConnected) { renderTop(b, ctx); renderStatus(b, ctx); }
+}
+// El ojo visual: cada referente con imagen que todavía no tiene su parecido con la marca. Corre después de Laya, de a pocos.
+async function ver(b, ctx) {
+  const { st, slug, alive } = ctx;
+  if (st.viendo || !st.d?.puede?.editar) return;
+  const falta = itemsOf(st).filter((x) => safeImg(x.thumb) && !x.ojo && !st.vistos?.has(x.id)).sort((a, z) => score(z) - score(a)).slice(0, 24);
+  if (!falta.length) return;
+  const e = await ojoEstado(); if (!e.on || !e.disponible || !e.listo) return;
+  st.viendo = true; st.vistos ||= new Set();
+  let fallos = 0;
+  for (const it of falta) {
+    if (!alive() || fallos >= 2) break;
+    st.vistos.add(it.id);
+    try {
+      const r = await verImagen(slug, { url: safeImg(it.thumb) }); if (!r) break;
+      it.ojo = r;
+      try { const { laya, ...base } = it; await C.save({ ...base, ojo: r }); } catch { /* se queda en memoria */ }
+      document.querySelectorAll(`[data-ojoid="${it.id}"]`).forEach((ch) => { ch.innerHTML = String(ojoChip(r, { compact: ch.closest('.rs-tile') !== null })); });
+    } catch { fallos++; }
+  }
+  st.viendo = false;
 }
 
 // ---------- el detalle: el post en grande, la cuenta, las acciones y el análisis (un sheet lateral) ----------
