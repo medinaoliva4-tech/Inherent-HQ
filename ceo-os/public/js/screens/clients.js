@@ -134,8 +134,8 @@ export async function render(el, { me, sub, alive }) {
       const tot = (cur) => l.filter((i) => (i.currency || 'GTQ') === cur).reduce((n, i) => n + (+i.amount || 0), 0);
       const q = tot('GTQ'), u = tot('USD');
       return html`<section class="card cp-card" id="cp-cobros"><div class="row"><span class="lbl">Cobros</span><div class="sp"></div><a class="sm" href="#/finanzas">Finanzas ›</a></div>
-        ${cobros === undefined ? html`<p class="mut sm">Cargando…</p>` : cobros === null ? html`<p class="mut sm">No pude leer las facturas.</p>` : html`<b class="cp-money">${l.length ? [q ? `Q${q.toLocaleString('es-GT')}` : '', u ? `$${u.toLocaleString('en-US')}` : ''].filter(Boolean).join(' + ') : 'Q0'}</b>
-        <span class="mut sm">${l.length ? `Por cobrar · ${l.length === 1 ? 'vence' : 'la primera vence'} el ${fdate(l.map((i) => i.due).sort()[0])}` : 'Nada por cobrar'}</span>
+        ${cobros === undefined ? html`<p class="mut sm">Cargando…</p>` : cobros === null ? html`<p class="mut sm">No pude leer las facturas.</p>` : html`<b class="cp-money">${l.length ? [q ? `Q${q.toLocaleString('es-GT')}` : '', u ? `$${u.toLocaleString('en-US')}` : ''].filter(Boolean).join(' + ') : '—'}</b>
+        <span class="mut sm">${l.length ? `Por cobrar · ${l.length === 1 ? 'vence' : 'la primera vence'} el ${fdate(l.map((i) => i.due).sort()[0])}` : 'Nada por cobrar · sale de las facturas de este cliente en Finanzas'}</span>
         <span class="cp-tag ${venc.length ? 'bad' : 'ok'}">${venc.length ? `${venc.length} vencida${venc.length === 1 ? '' : 's'}` : 'Al día con los pagos'}</span>`}</section>`;
     }
     function herramientas() {

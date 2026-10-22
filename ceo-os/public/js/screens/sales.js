@@ -157,8 +157,8 @@ export async function render(el, { me, sub, alive }) {
     const pct = (x) => (meta ? Math.min(100, Math.round((x / meta) * 100)) : 0);
     return html`<section class="vx-goal"><div><div class="row"><b>${meta ? html`Meta de ${new Date(T + 'T12:00').toLocaleDateString('es', { month: 'long' })} · ${USD(meta)} en ventas nuevas` : 'Sin meta este mes'}</b><div class="sp"></div>${isCeo ? html`<button class="sm wslink" data-act="metaEdit">${meta ? 'Cambiar' : 'Poner la meta'}</button>` : ''}</div>
         <div class="vx-gbar"><span class="won" style="width:${pct(ganado)}%"></span><span class="fc" style="left:${pct(ganado)}%;width:${Math.max(0, Math.min(100 - pct(ganado), pct(fc)))}%"></span></div>
-        <div class="vx-leg"><span><i class="won"></i> Ganado ${USD(ganado)}</span><span><i class="fc"></i> Pronóstico ${USD(Math.round(fc))}</span>${meta ? html`<span>Falta ${USD(Math.max(0, meta - ganado))}</span>` : ''}</div></div>
-      <div class="vx-k"><small>Pronóstico ponderado</small><b>${USD(Math.round(fc))}</b><small>valor × probabilidad de su etapa</small></div>
+        <div class="vx-leg"><span><i class="won"></i> Ganado ${ganado ? USD(ganado) : '—'}</span><span><i class="fc"></i> Pronóstico ${fc ? USD(Math.round(fc)) : '—'}</span>${meta ? html`<span>Falta ${USD(Math.max(0, meta - ganado))}</span>` : ''}</div></div>
+      <div class="vx-k"><small>Pronóstico ponderado</small><b>${fc ? USD(Math.round(fc)) : '—'}</b><small>${fc ? 'valor × probabilidad de su etapa' : 'Sale del valor de cada lead abierto × la probabilidad de su etapa'}</small></div>
       <div class="vx-k"><small>Cierre de propuestas · 90 días</small><b>${sup.cierre != null ? `${Math.round(sup.cierre * 100)}%` : '—'}</b><small>${sup.cierre != null ? `de cada 10 propuestas, cierran ${Math.round(sup.cierre * 10)}` : 'Faltan datos (3 propuestas o más)'}</small></div>
       <div class="vx-k"><small>Ticket promedio · 90 días</small><b>${sup.ticket ? USD(Math.round(sup.ticket)) : '—'}</b><small>${sup.ticket ? 'de lo ganado' : 'Sin ventas ganadas todavía'}</small></div></section>`;
   }

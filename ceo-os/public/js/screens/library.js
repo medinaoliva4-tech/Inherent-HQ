@@ -291,7 +291,7 @@ export async function render(el, { me, sub, alive }) {
         ${f ? html`${crumbs(fid)}<div class="sp-hero row lib-fhero"><div class="lib-fbig">${folderSvg({ w: 84, drive: Boolean(f.drive), tone: f.tone })}</div>
             <div style="flex:1;min-width:200px"><h1>${f.name}</h1><p>${f.desc || [subs.length && `${subs.length} carpeta${subs.length === 1 ? '' : 's'}`, `${here.length} documento${here.length === 1 ? '' : 's'}`, f.drive && 'conectada a Drive'].filter(Boolean).join(' · ')}</p></div>
             <div class="row lib-acts" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" data-act="newFolderHere">+ Carpeta</button><button class="btn ghost" data-act="recHere">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDocHere">+ Documento</button>${more('folder', f.id)}</div></div>`
-          : html`<div class="hello sp-hero row lib-hero" style="align-items:flex-end"><div><h1>Conocimiento</h1><p>SOPs, playbooks y videos. <em>Todo en un lugar.</em></p></div><div class="sp"></div>
+          : html`<div class="hello sp-hero row lib-hero" style="align-items:flex-end"><div><h1>Library</h1><p>SOPs, playbooks y videos. <em>Todo en un lugar.</em></p></div><div class="sp"></div>
             <div class="row lib-acts" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" data-act="newFolderHere">+ Carpeta</button><button class="btn ghost" data-act="recHere">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDocHere">+ Documento</button></div></div>`}
         <label class="lib-search">${ico('search', 20)}<input class="in" id="q" type="search" placeholder="${f ? `Buscar en ${f.name}…` : 'Buscar en la library…'}" value="${q}" aria-label="Buscar"><span class="mut sm">${((n) => `${n} documento${n === 1 ? '' : 's'}`)((scope ? docs.filter((d) => scope.has(d.folder_id)) : docs).length)}</span></label>
         ${q ? html`${foundF.length ? html`<div class="sec-title"><h2>Carpetas</h2><span class="mut sm">${foundF.length}</span></div><div class="sp-tiles lib-folders">${foundF.map(folderTile)}</div>` : ''}
@@ -406,7 +406,7 @@ ${qa}`;
   // ---------- Documento: leer y editar ----------
   async function docPage(id) {
     let d = docs.find((x) => x.id === id);
-    if (!d) return mount(el, html`<a class="btn ghost" href="#/library">← Conocimiento</a><div class="empty" style="margin-top:16px"><b>Ese documento no existe</b></div>`);
+    if (!d) return mount(el, html`<a class="btn ghost" href="#/library">← Library</a><div class="empty" style="margin-top:16px"><b>Ese documento no existe</b></div>`);
     let editing = sub[2] === 'edit', ed = null;
     const back = inFolder(d) ? `#/library/${d.folder_id}` : '#/library';
     const paint = () => {

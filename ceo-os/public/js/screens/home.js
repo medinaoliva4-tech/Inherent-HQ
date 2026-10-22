@@ -1,6 +1,7 @@
 // Hoy. Para el CEO y el COO: el pulso del mes (un número por área), lo que necesita atención, la agenda y el contenido.
 // Para el equipo: sus responsabilidades (qué, para cuándo y dónde se entrega). Sin revenue, leads ni engagement.
 import { html, raw, mount, col, api, fdate, today, toast, acts, IC, $, $$, Q, USD, calQ, teamList, ico, initials } from '../core.js';
+import { USD_GTQ } from '../levels.js';
 import { upcoming, people as meetPeople } from '../meetings.js';
 import { kpis, PAL } from '../charts.js';
 import { openDelivery, dueChip, stChip } from '../taskcard.js';
@@ -63,7 +64,7 @@ export async function render(el, { me, alive }) {
   const ctx = () => ({ me, projects, team: people });
   const onTask = (r, t) => { tasks = r ? tasks.map((x) => (x.id === r.id ? r : x)) : tasks.filter((x) => x.id !== t.id); paint(); };
   const trow = (t, extra = '') => html`<div class="wkrow" data-act="open" data-id="${t.id}"><span class="grow"><b style="font-weight:500">${t.title}</b><span class="mut sm"> · ${clientOf(t)}${extra ? ' · ' + extra : ''}</span></span>${dueChip(t)}${stChip(t)}</div>`;
-  const agendaRows = () => agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm">No pude leer tu Google Calendar. <button class="sm linkish" data-act="agRetry">Reintentar</button></div>`
+  const agendaRows = () => agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm">No pude leer tu Google Calendar: conecta tu Google en <a href="#/me">Mi perfil</a>. <button class="sm linkish" data-act="agRetry">Reintentar</button></div>`
     : agenda.slice(0, 5).map((e) => html`<a class="wkrow" href="${/^https:\/\//.test(e.link || '') ? e.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="wkt">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="grow">${e.summary}</span>${e.meet ? html`<span class="mut sm">Meet</span>` : ''}</a>`);
   const head = (linea) => html`<div class="hello sp-hero"><h1>${greet()}, ${first}.</h1><p>${linea || (ceoish ? html`Esto es lo que pasa hoy en <em>Inherent</em>.` : html`Esto es lo tuyo <em>hoy</em>.`)}</p></div>
     ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const now = p.birthday === soon[0], mine = (p.email || p.id) === me.email; return html`<span class="bdi ${now ? 'now' : ''}">${now ? (mine ? html`${ico('spark')} <b>¡Feliz cumpleaños, ${first}!</b>` : html`${ico('cake')} <b>Hoy cumple ${p.name.split(' ')[0]}</b>`) : html`${ico('cake')} ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
@@ -87,13 +88,13 @@ export async function render(el, { me, alive }) {
     const out = [];
     if (acc.sales) {
       const l = dueLeads || [], meta = +(metaDoc?.meses?.[M]) || 0, ganado = llevamos(l, M).ganado, fc = Math.round(pronostico(l));
-      out.push({ k: 'Ventas', href: '#/org/sales/crm', big: dueLeads === null ? '…' : USD(ganado), de: meta ? `de ${USD(meta)}` : '', bar: meta ? pct(ganado, meta) : null,
-        sub: meta ? html`Pronóstico <em>${USD(fc)}</em> · faltan ${habilesQuedan()} días hábiles` : html`Sin meta este mes · ponla en Ventas › Meta` });
+      out.push({ k: 'Ventas', href: '#/org/sales/crm', big: dueLeads === null ? '…' : ganado ? Q(ganado * USD_GTQ) : '—', de: meta ? `de ${Q(meta * USD_GTQ)}` : '', bar: meta ? pct(ganado, meta) : null,
+        sub: meta ? html`Pronóstico <em>${Q(fc * USD_GTQ)}</em> · faltan ${habilesQuedan()} días hábiles` : ganado ? html`Sin meta este mes · ponla en Ventas › Meta` : html`Sale de las cotizaciones ganadas en Ventas · sin meta este mes` });
     }
     if (acc.cobrar) {
       const t = totales(dueInv || []), tot = t.cobradoMes + t.porCobrar;
-      out.push({ k: 'Ingresos cobrados', href: '#/org/finanzas', big: dueInv === null ? '…' : Q(t.cobradoMes), bar: tot ? pct(t.cobradoMes, tot) : null, green: true,
-        sub: t.nPorCobrar ? html`${Q(t.porCobrar)} por cobrar${t.nVencidas ? html` · <span class="r">${t.nVencidas} vencida${t.nVencidas === 1 ? '' : 's'}</span>` : ''}` : 'Nada por cobrar' });
+      out.push({ k: 'Ingresos cobrados', href: '#/org/finanzas', big: dueInv === null ? '…' : t.cobradoMes ? Q(t.cobradoMes) : '—', bar: tot ? pct(t.cobradoMes, tot) : null, green: true,
+        sub: t.nPorCobrar ? html`${Q(t.porCobrar)} por cobrar${t.nVencidas ? html` · <span class="r">${t.nVencidas} vencida${t.nVencidas === 1 ? '' : 's'}</span>` : ''}` : 'Sale de las facturas marcadas como pagadas en Finanzas' });
     }
     const dueM = tasks.filter((t) => t.due && t.due.slice(0, 7) === M && t.due < T && (open(t) || t.done_at));
     const onTime = dueM.filter((t) => !open(t) && String(t.done_at).slice(0, 10) <= t.due).length, p2 = dueM.length ? Math.round((onTime / dueM.length) * 100) : null;
@@ -151,7 +152,7 @@ export async function render(el, { me, alive }) {
         <div class="hy-side">
           <section class="hy-box"><div class="hy-bh"><h2>Agenda</h2><span>Hoy y lo que viene</span></div>
             ${agenda === null && !pm.length ? html`<p class="loading sm">Cargando tu agenda…</p>` : ''}
-            ${agErr ? html`<div class="mut sm" style="padding:6px 0">No pude leer tu Google Calendar. <button class="sm linkish" data-act="agRetry">Reintentar</button></div>` : ''}
+            ${agErr ? html`<div class="mut sm" style="padding:6px 0">No pude leer tu Google Calendar: conecta tu Google en <a href="#/me">Mi perfil</a>. <button class="sm linkish" data-act="agRetry">Reintentar</button></div>` : ''}
             ${meets.slice(0, 5).map((x) => html`<a class="hy-ag ${x.date === T ? 'now' : ''}" href="${x.href || '#/org/operations/cal'}" ${x.ext && x.href ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span class="hy-h">${x.date === T ? x.time || 'Hoy' : whenLabel(x.date)}<small>${x.date === T ? (x.time ? 'Hoy' : '') : x.time}</small></span><span class="hy-t">${x.name}<small>${x.sub}</small></span></a>`)}
             ${agenda !== null && !meets.length ? html`<div class="mut sm" style="padding:6px 0">Sin reuniones por delante.</div>` : ''}</section>
           <section class="hy-box"><div class="hy-bh"><h2>Contenido del mes</h2><span>Publicadas de las planificadas</span></div>${contenido()}</section>

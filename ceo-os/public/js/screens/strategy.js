@@ -103,7 +103,7 @@ export async function render(el, { me, sub = [], alive }) {
     // El bloque de Hormozi que se usa como lente: el del paso en que estás (o el de la página, si el paso no tiene uno).
     const bloqueAhora = () => data.bloques.find((x) => x.id === PASOS.find((p) => p.id === pasoAhora())?.hz?.[0]) || bl();
     const pasoAhora = () => chat.paso && abiertoP(chat.paso) ? chat.paso : (PASOS.find((p) => !hechoP(p.id)) || PASOS[PASOS.length - 1]).id;
-    const pasosIn = () => html`${PASOS.map((p, i) => html`${i ? html`<span class="cb-sep">›</span>` : ''}<button type="button" class="dg-e ${pasoAhora() === p.id ? 'on' : ''} ${hechoP(p.id) ? 'ok' : ''}" data-act="paso" data-p="${p.id}" title="${p.largo}${abiertoP(p.id) ? '' : ' · se abre cuando el paso anterior esté hecho'}"><i>${hechoP(p.id) ? ico('check', 11) : abiertoP(p.id) ? p.n : ico('lock', 11)}</i><span class="cb-l">${p.nombre}</span></button>`)}`;
+    const pasosIn = () => html`${PASOS.map((p, i) => html`${i ? html`<span class="cb-sep">›</span>` : ''}<button type="button" class="dg-e ${pasoAhora() === p.id ? 'on' : ''} ${hechoP(p.id) ? 'ok' : ''}" data-act="paso" data-p="${p.id}" aria-label="${p.nombre}" title="${p.nombre} · ${p.largo}${abiertoP(p.id) ? '' : ' · se abre cuando el paso anterior esté hecho'}"><i>${hechoP(p.id) ? ico('check', 11) : abiertoP(p.id) ? p.n : ico('lock', 11)}</i><span class="cb-l">${p.nombre}</span></button>`)}`;
     // Tocar un supuesto subrayado: se cambia a mano y la cascada se recalcula.
     async function editarSupuesto(campo) {
       if (!editable()) return;

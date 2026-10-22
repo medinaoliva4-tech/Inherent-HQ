@@ -366,7 +366,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const h = week.analytics || [], last = h[h.length - 1], prev = h[h.length - 2];
     const delta = (k) => (last && prev && prev[k] ? Math.round(((last[k] - prev[k]) / prev[k]) * 100) : null);
     const own = week.result?.own || [];
-    if (!h.length) return mount(b, html`<div class="mut sm">Conecta Instagram en Analytics y tus posts aparecen aquí.</div>`);
+    if (!h.length) return mount(b, html`<div class="mut sm">Conecta Instagram arriba y tus posts aparecen aquí.</div>`);
     const kpi = (lbl, v, d) => html`<div><span class="lbl">${lbl}</span><b>${v}</b><span class="sm ${d == null ? 'mut' : d >= 0 ? 'up' : 'down'}">${d == null ? 'vs semana anterior: —' : (d >= 0 ? '▲ ' : '▼ ') + Math.abs(d) + '% vs semana anterior'}</span></div>`;
     mount(b, html`<div class="sec-title" style="margin-top:0"><h2>Lectura semanal</h2><span class="mut sm">De los posts que lee el scrape cada lunes</span></div>
       <div class="sp-kpis ct-delta">${kpi('Vistas promedio', K(last.avgViews), delta('avgViews'))}${kpi('Engagement', last.er == null ? '—' : last.er + '%', delta('er'))}${kpi('Likes', K(last.likes), delta('likes'))}${kpi('Posts leídos', last.posts, null)}</div>

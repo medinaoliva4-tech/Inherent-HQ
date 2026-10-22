@@ -105,7 +105,7 @@ app de Mac = la misma web en una ventana + el puente adentro
 
 ## 3 · Las pantallas
 
-Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espacios con un interruptor arriba: **Organization**, **Estrategia** y **Marcas** (en pantalla se llama «Diseño gráfico»). Las rutas viejas siguen funcionando como alias.
+Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espacios con un interruptor arriba: **Organization**, **Estrategia** y **Marcas**. Las rutas viejas siguen funcionando como alias.
 
 **Organization** (`#/org/…`)
 - `#/org/home` · `screens/home.js` — Hoy: al CEO y al COO, el pulso del mes, lo que necesita atención, la agenda y el contenido; al equipo, sus responsabilidades.
