@@ -3,6 +3,7 @@ import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 import { estadoDe, separar, ESTADO_CLS, nombreDe } from '../element.js';
 import { investigacion } from '../investigacion.js';
+import { VISTAS, vistaDe, FASES, LIMITES, operativo, programado, redDe, mesSig, diasDelMes } from '../calendario-vistas.js';
 import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre } from '../calendario-contenido.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
@@ -38,7 +39,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : tabs[0]?.[0] || 'analytics';
   let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'semana', pdate = today();
-  let parch = false, rs = null, cview = sub?.[0] === 'grabacion' ? 'grabacion' : 'publicacion', shoots = null;
+  let parch = false, rs = null, cview = vistaDe(sub?.[0] === 'grabacion' ? 'grabacion' : (() => { try { return localStorage.getItem('os.cal.vista'); } catch { return ''; } })()), shoots = null;
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
@@ -289,20 +290,46 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   // rs guarda el estado de la investigación mientras la marca esté abierta (load() lo limpia al cambiar de marca).
   function research(b) { rs ||= {}; investigacion(b, { me, slug, data, alive, embed, st: rs, onPost: () => { posts = null; } }); }
 
-  // ---------- Calendario: Publicación (las piezas del Planner) y Grabación (qué se graba cada día) ----------
+  // ---------- Calendario: 3 vistas — Operativo (qué hay que hacer) · Planificación (las piezas y su estado) · Programado (lo listo) ----------
   const recal = () => (tab === 'calendario' ? calendario($('#cbody', el)) : plan($('#cbody', el)));
   function calendario(b) {
-    mount(b, html`<div class="tabs" style="margin:0 0 14px">${[['publicacion', 'Publicación'], ['grabacion', 'Grabación']].map(([k, l]) => html`<button class="${cview === k ? 'on' : ''}" data-act="cview" data-v="${k}">${l}</button>`)}</div><div id="calb"></div>`);
-    (cview === 'grabacion' ? grabacion : plan)($('#calb', b));
+    const V = VISTAS.find(([k]) => k === cview) || VISTAS[1];
+    mount(b, html`<div class="cv-top"><div class="tabs cv-tabs" role="tablist" aria-label="Vista del calendario">${VISTAS.map(([k, l]) => html`<button role="tab" class="${cview === k ? 'on' : ''}" aria-selected="${cview === k ? 'true' : 'false'}" data-act="cview" data-v="${k}">${l}</button>`)}</div>
+        <p class="cv-que">${V[2]}</p></div><div id="calb"></div>`);
+    ({ operativo: operativoV, planificacion: plan, programado: programadoV })[cview]($('#calb', b));
   }
-  function grabacion(b) {
-    if (shoots === null) { mount(b, html`<p class="loading">Cargando grabaciones…</p>`); C.list().then((l) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug); }).catch((e) => { shoots = []; toast(e.message, true); }).then(() => alive() && b.isConnected && grabacion(b)); return; }
-    const wk = calWeek(), live = shoots.filter((x) => x.status !== 'Cancelado');
-    const n = live.filter((x) => x.date >= wk.from && x.date <= wk.to).length;
-    const chip = (x) => html`<button class="ppost shoot ${x.status === 'Grabado' ? 'done' : ''}" data-act="sedit" data-id="${x.id}" title="${x.title}${x.place ? ' · ' + x.place : ''}"><span class="pi">${x.time || ico('video', 13)}</span><span class="pt">${x.title}</span>${x.place ? html`<span class="pf">${x.place}</span>` : ''}</button>`;
-    mount(b, html`${calStrip(wk, (k) => live.filter((x) => x.date === k).map(() => 'var(--ink)'))}
-      ${calWeekPanel(wk, (k) => shoots.filter((x) => x.date === k).sort((x, z) => String(x.time || '').localeCompare(String(z.time || ''))), chip, 'snew', `${n} grabaci${n === 1 ? 'ón' : 'ones'} esta semana`, html`<button class="btn" data-act="snew" data-d="">+ Grabación</button>`)}`);
-    stripTo(b);
+  // Operativo: un renglón por pieza del mes siguiente y sus tareas sobre los días 1 a 20 del ciclo; abajo, las grabaciones agendadas.
+  function operativoV(b) {
+    if (needPosts(b, operativoV)) return;
+    if (shoots === null) { mount(b, html`<p class="loading">Cargando…</p>`); C.list().then((l) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug); }).catch(() => { shoots = []; }).then(() => alive() && b.isConnected && operativoV(b)); return; }
+    const M = pdate.slice(0, 7), sale = mesSig(M), T = today(), hoyD = T.slice(0, 7) === M ? +T.slice(8, 10) : 0;
+    const filas = operativo(separar(posts).vivos, M), D = LIMITES.presentar, dias = Array.from({ length: D }, (_, i) => i + 1);
+    const mesL = (m) => new Date(m + '-15T12:00').toLocaleDateString('es-GT', { month: 'long' });
+    const nombre = mesL(M).replace(/^./, (c) => c.toUpperCase());
+    const barra = (t) => html`<span class="cv-t ${t.k} ${t.estado}" style="grid-column:${t.d[0]} / ${t.d[1] + 1}" title="${t.dep} · ${t.l}${t.estado === 'hecha' ? ' · hecho' : t.estado === 'curso' ? ' · en curso' : ''}">${t.estado === 'hecha' ? ico('check', 11) : ''}<b>${t.l}</b><small>${t.dep}</small></span>`;
+    const tomas = shoots.filter((x) => x.status !== 'Cancelado' && String(x.date || '').slice(0, 7) === M).sort((a, z) => `${a.date}${a.time || ''}`.localeCompare(`${z.date}${z.time || ''}`));
+    mount(b, html`<section class="sp-panel cv-op"><div class="sp-panel-h row"><button class="arrow light" data-act="pmonth" data-d="-1" aria-label="Mes anterior">‹</button><div style="min-width:0"><h3>Ciclo de ${nombre}</h3><span class="mut sm">Produce lo que sale en ${mesL(sale)} · ${filas.length} pieza${filas.length === 1 ? '' : 's'}</span></div><button class="arrow light" data-act="pmonth" data-d="1" aria-label="Mes siguiente">›</button><div class="sp"></div><button class="btn ghost xs" data-act="ptoday">Hoy</button></div>
+      <div class="cv-scroll"><div class="cv-grid" style="--d:${D}">
+        <div class="cv-h cv-pz">Pieza</div><div class="cv-h cv-dias">${dias.map((d) => html`<span class="${d === LIMITES.producir || d === LIMITES.presentar ? 'lim' : ''} ${d === hoyD ? 'hoy' : ''}" title="${d === LIMITES.producir ? 'Último día para producir' : d === LIMITES.presentar ? 'Presentación al cliente' : ''}">${d}</span>`)}</div>
+        <div class="cv-pz cv-fz"><b>El ciclo</b></div><div class="cv-fila cv-fases">${FASES.map((f) => html`<span class="cv-f" style="grid-column:${f.d[0]} / ${f.d[1] + 1}">${f.l}</span>`)}</div>
+        ${filas.length ? filas.map(({ p, tareas }) => html`<button type="button" class="cv-pz" data-act="pedit" data-id="${p.id}"><b>${p.title || 'Sin título'}</b><small>${[p.format, `sale el ${+p.date.slice(8, 10)}`, estadoDe(p)].filter(Boolean).join(' · ')}</small></button><div class="cv-fila">${hoyD && hoyD <= D ? html`<i class="cv-hoy" style="grid-column:${hoyD}"></i>` : ''}${tareas.map(barra)}</div>`)
+          : html`<p class="cv-vacio">Todavía no hay piezas con fecha en ${mesL(sale)}. Salen del Plan del mes: en el chat de Diseño gráfico, «Pasar a Creatividad» las pone aquí.</p>`}
+      </div></div>
+      <footer class="cv-pie"><span class="mut sm">Cada tarea sale sola del formato de la pieza. Los días se ajustan cada mes al calendario real; el 11 y el 20 se respetan.</span></footer></section>
+      <section class="sp-panel cv-tomas"><div class="sp-panel-h row"><div><h3>Grabaciones de ${mesL(M)}</h3><span class="mut sm">${tomas.length ? `${tomas.length} agendada${tomas.length === 1 ? '' : 's'}` : 'Ninguna agendada todavía'}</span></div><div class="sp"></div><button class="btn xs" data-act="snew" data-d="">+ Grabación</button></div>
+        ${tomas.length ? html`<div class="cv-tl">${tomas.map((x) => html`<button type="button" class="cv-toma ${x.status === 'Grabado' ? 'done' : ''}" data-act="sedit" data-id="${x.id}"><span class="cv-td">${fdate(x.date)}${x.time ? ` · ${x.time}` : ''}</span><b>${x.title}</b><small>${[x.place, x.crew, x.status].filter(Boolean).join(' · ')}</small></button>`)}</div>` : ''}</section>`);
+  }
+  // Programado: la semana con lo listo, cada pieza con su hora y su red.
+  function programadoV(b) {
+    if (needPosts(b, programadoV)) return;
+    const wk = calWeek(), r = programado(separar(posts).vivos, wk.from, wk.to), T = today();
+    const portada = (p) => (/^https:\/\//.test(p.thumb || p.cover || '') ? p.thumb || p.cover : '');
+    const tarjeta = (p) => html`<button type="button" class="cv-pg ${estadoDe(p) === 'Publicado' ? 'pub' : ''}" data-act="pedit" data-id="${p.id}">${portada(p) ? html`<span class="cv-img" style="background-image:url('${portada(p)}')"></span>` : ''}
+      <span class="cv-pgt"><b>${p.time || html`<span class="cv-sin">Sin hora</span>`}</b> · ${redDe(p) || html`<span class="cv-sin">sin red</span>`}</span><small>${p.title || 'Sin título'}${p.format ? ` · ${p.format}` : ''}${estadoDe(p) === 'Publicado' ? ' · ya salió' : ''}</small></button>`;
+    mount(b, html`<section class="sp-panel cv-pr"><div class="sp-panel-h row"><button class="arrow light" data-act="pnav" data-d="-1" aria-label="Semana anterior">‹</button><div style="min-width:0"><h3>${fdate(wk.from)} – ${fdate(wk.to)}</h3><span class="mut sm">${r.piezas.length} lista${r.piezas.length === 1 ? '' : 's'}</span></div><button class="arrow light" data-act="pnav" data-d="1" aria-label="Semana siguiente">›</button><div class="sp"></div>
+        ${r.sinHora ? html`<span class="pm-warn">${r.sinHora} sin hora</span>` : ''}${r.sinRed ? html`<span class="pm-warn">${r.sinRed} sin red</span>` : ''}<button class="btn ghost xs" data-act="ptoday">Hoy</button></div>
+      <div class="cv-semana">${wk.days.map((d, i) => { const k = iso(d), l = r.piezas.filter((p) => p.date === k); return html`<div class="cv-dia ${k === T ? 'hoy' : ''}"><span class="cv-dh">${DOWL[i]} ${d.getDate()}</span>${l.map(tarjeta)}</div>`; })}</div>
+      ${r.piezas.length ? '' : html`<p class="cv-vacio">Nada listo esta semana. Una pieza aparece aquí cuando su estado es Listo: ponle la hora y la red al abrirla.</p>`}</section>`);
   }
   async function editShoot(x, date) {
     const v = await ask(x ? 'Grabación' : 'Nueva grabación', [
@@ -448,7 +475,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     ptoday: () => { pdate = today(); recal(); },
     pday: (t) => { pdate = t.dataset.d; recal(); },
     pmonth: (t) => { const d = new Date(pdate + 'T12:00'); d.setMonth(d.getMonth() + +t.dataset.d, 1); pdate = iso(d); recal(); },
-    cview: (t) => { cview = t.dataset.v; recal(); },
+    cview: (t) => { cview = vistaDe(t.dataset.v); try { localStorage.setItem('os.cal.vista', cview); } catch {} recal(); },
     snew: (t, e) => { if (e?.target?.closest('.ppost')) return; editShoot(null, t.dataset.d); },
     sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },
     pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; if (t.dataset.d && cerrado(t.dataset.d).cerrado) return toast(`Sin brief del ciclo de ${mesNombre(t.dataset.d.slice(0, 7))}: no se crean piezas con fecha de ese mes`, true); const r = await editPost(slug, null, pieceOpts(t.dataset.d ? { date: t.dataset.d } : {})); if (r) { posts = [...posts, r]; recal(); } },
