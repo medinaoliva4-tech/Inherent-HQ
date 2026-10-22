@@ -27,7 +27,7 @@ export function mentorsTab(body, { list, isCeo, onChange, ind = 'Todas', onInd }
   mount(body, html`
     <div class="mut sm" style="margin-bottom:12px">La red de especialistas de ${ico('stairs')} Growth Partnership: gente que ya creció una marca en esa industria. En cada propuesta se define quién, cuántas horas y qué entrega. Techo por sesión: <b>$180</b>; arriba de eso va como add-on facturado al cliente.</div>
     <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:14px">${['Todas', ...inds].map((x) => html`<button class="chip ${x === ind ? 'dark' : ''}" data-mact="ind" data-v="${x}" style="padding:7px 13px">${x}</button>`)}</div>
-    ${!list.length ? html`<div class="empty"><b>Todavía no hay especialistas</b>${isCeo ? html`Carga el mapa del manual para empezar, o agrega uno.<div style="margin-top:14px"><button class="btn ghost" data-mact="seed">Cargar el mapa del manual (${SEED.length})</button></div>` : 'El CEO los agrega aquí.'}</div>`
+    ${!list.length ? html`<div class="empty"><b>Todavía no hay especialistas</b>${isCeo ? html`Carga el mapa del manual para empezar, o agrega uno.<div style="margin-top:14px"><button class="btn ghost" data-mact="seed">Cargar el mapa del manual</button></div>` : 'El CEO los agrega aquí.'}</div>`
       : [...new Set(shown.map((m) => m.industry))].sort().map((i) => html`<div class="sec-title"><h2>${i}</h2></div>
         <div class="grid g3">${TIERS.map(([t, tl]) => html`<div><div class="lbl" style="color:var(--mut);margin-bottom:8px">${tl}</div>${shown.filter((m) => m.industry === i && m.tier === t).sort((a, z) => (+a.price || 0) - (+z.price || 0)).map((m) => { const [f, c] = fit(m); return html`
           <div class="card mcard" ${isCeo ? raw(`data-mact="edit" data-id="${m.id}"`) : ''}>

@@ -36,7 +36,7 @@ El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez qu
 
 **Vistas por rol:** en **Administración → Vistas por rol** el CEO elige, por perfil de trabajo, qué secciones ve y qué tan a fondo
 (*Oculto · Resumen · Completo*; Resumen existe en Content: solo rendimiento). Se guarda en `settings` (id `role_views`).
-Sin configurar, todo se ve completo. Hoy se aplica en la interfaz (barra y Content), no en el servidor.
+Sin configurar, todo se ve completo. Se aplica en el servidor (`api/_lib/access.js`), en el conector MCP y en la interfaz: la pantalla solo refleja lo que el servidor ya decidió.
 
 ## Las 8 secciones
 
@@ -117,7 +117,7 @@ nadie edita nada todo sale igual. Un doc con el mismo id reemplaza la de siempre
 | `ZERNIO_API_KEY` | Content → Bandeja: comentarios y DMs de las cuentas propias (llave con el grupo «messages»). Solo lectura |
 | `GOOGLE_PORTAL_CLIENT_ID` · `GOOGLE_PORTAL_CLIENT_SECRET` | El login del **portal del cliente** («Soy cliente»): un cliente OAuth de Google tipo **Externo**, solo con nombre y correo. Entra únicamente un correo que el CEO aprobó en Clients → Portal del cliente |
 | `CRON_SECRET` | Para el scrape semanal (Vercel Cron, lunes 13:00 UTC; cierre a las 16:00). Sin él, el cron no corre |
-| `GITHUB_TOKEN` | No hace falta. La app solo **lee** el repo: lo copia en cada build (`scripts/snapshot.mjs`). El repo guarda lo macro; el trabajo del día a día vive en la app |
+| `GITHUB_TOKEN` | Para **escribir** en el repo (el CEO crea la ficha de oferta y edita documentos desde Estrategia) y para que la app de Mac sepa si hay versión nueva. Con permiso «Contents: Read and write» sobre el repo. Para **leer**, la app usa la copia que arma cada build (`scripts/snapshot.mjs`) |
 
 ### Google (una vez)
 

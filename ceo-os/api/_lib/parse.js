@@ -30,7 +30,8 @@ const PLAN_IDS = ['marketing', 'pro', 'accelerate', 'compound'];
 export function parseEconomia(md) {
   const all = tables(md);
   const costT = all.find((t) => findRow(t, 'Grabación') && findRow(t, 'COSTO') && findRow(t, 'MARGEN'));
-  if (!costT) return { error: 'No encontré la tabla de costos en 06-ECONOMIA.md' };
+  // El manual de hoy ya no trae una tabla de costos por plan: el precio se arma por alcance (§ 2 «por rubro y por rol»).
+  if (!costT) return porAlcance(md, all);
   const head = costT.rows[0];
   const iPrecio = costT.rows.findIndex((r) => clean(r[0]).toLowerCase() === 'precio');
   const iCosto = costT.rows.findIndex((r) => clean(r[0]).toUpperCase() === 'COSTO');
@@ -70,15 +71,30 @@ export function parseEconomia(md) {
     };
   });
 
-  // El piso mensual de la empresa (bloque de texto) y el costo de scraping por cliente.
-  const pisoIdx = md.indexOf('El piso mensual de la empresa');
-  const pisoBlock = pisoIdx >= 0 ? md.slice(pisoIdx, pisoIdx + 600) : '';
-  const piso = {};
-  for (const m of pisoBlock.matchAll(/^(CEO|IA|Scraping)\s+Q\s*([\d,]+)/gm)) piso[m[1].toLowerCase()] = +m[2].replace(/,/g, '');
   const sc = md.replace(/\*/g, '').match(/~Q([\d.]+)\s*🔷\s*·\s*~Q([\d.]+)\s*🟨/);
   const scraping = sc ? { marketing: +sc[1], growth: +sc[2] } : null;
 
-  return { plans, piso, scraping, tipoCambio: plans[0].precioUsd ? +(plans[0].precio / plans[0].precioUsd).toFixed(2) : null };
+  return { plans, rubros: [], herramientas: [], piso: pisoDe(md), scraping, tipoCambio: plans[0].precioUsd ? +(plans[0].precio / plans[0].precioUsd).toFixed(2) : null };
+}
+// El piso mensual de la empresa (bloque de texto): CEO, IA y Scraping.
+function pisoDe(md) {
+  const i = md.indexOf('El piso mensual de la empresa'), bloque = i >= 0 ? md.slice(i, i + 600) : '', piso = {};
+  for (const m of bloque.matchAll(/^(CEO|IA|Scraping)\s+Q\s*([\d,]+)/gm)) piso[m[1].toLowerCase()] = +m[2].replace(/,/g, '');
+  return piso;
+}
+// El manual por alcance: los rubros y lo que paga cada uno, las herramientas con cómo se cobran, el piso y el tipo de cambio.
+// `plans` queda vacío: las pantallas que lo usaban ya dicen que el precio se arma por alcance.
+function porAlcance(md, all) {
+  const cab = (t) => clean(t.rows[0]?.[0] || '').toLowerCase();
+  const rubT = all.find((t) => cab(t) === 'rubro' && findRow(t, 'Grabación'));
+  const herT = all.find((t) => cab(t) === 'herramienta');
+  const tc = /USD a Q\s*([\d.]+)/i.exec(md);
+  return {
+    plans: [],
+    rubros: (rubT?.rows.slice(1) || []).map((r) => ({ rubro: clean(r[0]), paga: clean(r[1]) })).filter((x) => x.rubro),
+    herramientas: (herT?.rows.slice(1) || []).map((r) => ({ herramienta: clean(r[0]), como: clean(r[1]), mes: clean(r[2]) })).filter((x) => x.herramienta),
+    piso: pisoDe(md), scraping: null, tipoCambio: tc ? +tc[1] : null,
+  };
 }
 
 export function parseOperacion(md) {

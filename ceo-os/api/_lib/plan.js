@@ -19,6 +19,11 @@ async function abre(req, res, write = false) {
   return u;
 }
 
+// La secuencia del chat de Diseño gráfico, también aquí (no solo en la pantalla): sin estrategia aprobada no hay plan;
+// sin plan pasado a Creatividad no hay ideas. La pieza suelta no pasa por estas rutas.
+const SIN_ESTRATEGIA = { error: 'Primero el CEO aprueba la estrategia de esta marca (Estrategia › Aprobar). Sin estrategia aprobada no hay plan.', code: 'SIN_ESTRATEGIA' };
+async function estrategiaAprobada(slug) { const v = await db.get('strategy', vivaId(slug)).catch(() => null); return Boolean(v?.aprobado); }
+
 export function rutas(on) {
   on('GET', 'plan/:slug/:mes', async (req, res) => {
     const u = await abre(req, res); if (!u) return;
@@ -32,6 +37,7 @@ export function rutas(on) {
   on('PUT', 'plan/:slug/:mes', async (req, res) => {
     const u = await abre(req, res, true); if (!u) return;
     const { slug, mes } = req.params, id = idPlan(slug, mes);
+    if (!(await estrategiaAprobada(slug))) return res.status(409).json(SIN_ESTRATEGIA);
     const cur = await db.get(COLL_P, id);
     const { plan, cambiadas } = aplicarPlan(cur || { profile: slug, mes }, body(req).parche || {});
     if (!cambiadas.length) return res.json({ plan: cur, cambiadas });
@@ -44,6 +50,8 @@ export function rutas(on) {
     const u = await abre(req, res, true); if (!u) return;
     const { slug, mes } = req.params, ideas = limpiarIdeas(body(req).ideas);
     if (!ideas.length) return res.status(400).json({ error: 'No llegó ninguna idea' });
+    const plan = await db.get(COLL_P, idPlan(slug, mes));
+    if (!plan?.a_creatividad) return res.status(409).json({ error: 'Primero pasa el plan del mes a Creatividad: sin plan no hay ideas.', code: 'SIN_PLAN' });
     const piezas = (await db.list('content')).filter((x) => x.kind === 'post' && x.slot?.plan === idPlan(slug, mes));
     let puestas = 0; const faltan = [];
     for (const i of ideas) {
@@ -58,6 +66,7 @@ export function rutas(on) {
   on('POST', 'plan/:slug/:mes/a-creatividad', async (req, res) => {
     const u = await abre(req, res, true); if (!u) return;
     const { slug, mes } = req.params;
+    if (!(await estrategiaAprobada(slug))) return res.status(409).json(SIN_ESTRATEGIA);
     const plan = await db.get(COLL_P, idPlan(slug, mes));
     if (!plan?.slots?.length) return res.status(400).json({ error: 'El plan todavía no tiene slots' });
     let nuevas = 0, puestas = 0;
