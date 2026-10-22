@@ -98,7 +98,7 @@ export async function render(el, { me, sub = [], alive }) {
     // Una secuencia cerrada, como en Diseño gráfico: un paso se abre cuando el anterior está hecho.
     const abiertoP = (id) => { const i = PASOS.findIndex((p) => p.id === id); return i <= 0 || hechoP(id) || PASOS.slice(0, i).every((p) => hechoP(p.id)); };
     const pasoAhora = () => chat.paso && abiertoP(chat.paso) ? chat.paso : (PASOS.find((p) => !hechoP(p.id)) || PASOS[PASOS.length - 1]).id;
-    const pasosIn = () => html`${PASOS.map((p) => html`<button type="button" class="dg-e ${pasoAhora() === p.id ? 'on' : ''} ${hechoP(p.id) ? 'ok' : ''}" data-act="paso" data-p="${p.id}" title="${p.largo}${abiertoP(p.id) ? '' : ' · se abre cuando el paso anterior esté hecho'}"><i>${hechoP(p.id) ? ico('check', 11) : abiertoP(p.id) ? p.n : ico('lock', 11)}</i>${p.nombre}</button>`)}`;
+    const pasosIn = () => html`<div class="es-pasos">${PASOS.map((p) => html`<button type="button" class="dg-e ${pasoAhora() === p.id ? 'on' : ''} ${hechoP(p.id) ? 'ok' : ''}" data-act="paso" data-p="${p.id}" title="${p.largo}${abiertoP(p.id) ? '' : ' · se abre cuando el paso anterior esté hecho'}"><i>${hechoP(p.id) ? ico('check', 11) : abiertoP(p.id) ? p.n : ico('lock', 11)}</i>${p.nombre}</button>`)}</div><button type="button" class="ver-panel" data-act="panel-tg" title="Ocultar o mostrar el panel de la derecha">${ico('layers', 13)}<span class="vp-o">Ocultar panel</span><span class="vp-v">Ver panel</span></button>`;
     // Tocar un supuesto subrayado: se cambia a mano y la cascada se recalcula.
     async function editarSupuesto(campo) {
       if (!editable()) return;
@@ -432,7 +432,7 @@ export async function render(el, { me, sub = [], alive }) {
       const t = e.target.closest('[data-act]'); if (!t || !root.contains(t)) return;
       const a = t.dataset.act;
       if (a === 'copiar') return copiar(t.dataset.t);
-      if (a === 'panel') return togglePanel();
+      if (a === 'panel' || a === 'panel-tg') return togglePanel();
       if (a === 'ctx') return document.querySelector('.dz-ctxp') ? (document.querySelector('.dz-ctxp').remove(), t.setAttribute('aria-expanded', 'false')) : panelCtx(t);
       if (a === 'paso') { const p = t.dataset.p; if (!abiertoP(p)) return toast('Ese paso se abre cuando el anterior esté hecho', true); chat.paso = p; guardarChat(key, chat); mount(chatEl.querySelector('.dg-et'), pasosIn()); const ta = $('#es-in', chatEl); if (ta) ta.placeholder = pasoPh(); return; }
       if (a === 'a-plan') { const d = new Date(), mes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug, etapa: 'plan', mes })); } catch {} location.hash = `#/marcas/diseno/${slug}`; return; }

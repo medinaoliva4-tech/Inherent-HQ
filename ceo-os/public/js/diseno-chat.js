@@ -81,7 +81,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     const abierta = (k) => (k === 'diseno' && chat.suelta) || Boolean(E.estrategia?.aprobada && (k === 'plan' || (k === 'ideas' ? planHecho() : E.conIdea > 0)));
     const hecha = (k) => (k === 'plan' ? planHecho() : k === 'ideas' ? E.conIdea > 0 : Boolean(chat.resultado?.guardado));
     const etapaHtml = () => html`<div class="dg-et">${ETAPAS.map(([k, l, dep], i) => html`<button type="button" class="dg-e ${chat.etapa === k ? 'on' : ''} ${hecha(k) ? 'ok' : ''}" data-act="etapa" data-e="${k}" title="${dep}${abierta(k) ? '' : ' · todavía cerrada'}"><i>${hecha(k) ? ico('check', 11) : abierta(k) ? i + 1 : ico('lock', 11)}</i>${l}</button>`)}
-      <span class="sp"></span><button type="button" class="es-pick" data-act="mesdg" aria-haspopup="listbox">${nombreMes(chat.mes).replace(/^./, (c) => c.toUpperCase())} ▾</button></div>
+      <span class="sp"></span><button type="button" class="es-pick" data-act="mesdg" aria-haspopup="listbox">${nombreMes(chat.mes).replace(/^./, (c) => c.toUpperCase())} ▾</button><button type="button" class="ver-panel" data-act="panel-tg" title="Ocultar o mostrar el panel de la derecha">${ico('layers', 13)}<span class="vp-o">Ocultar panel</span><span class="vp-v">Ver panel</span></button></div>
       ${chat.suelta ? html`<div class="dg-suelta">${ico('alert', 12)} Pieza suelta: no sale de la estrategia ni del plan del mes. <button type="button" class="linkish" data-act="suelta">Volver a la secuencia</button></div>` : ''}`;
     // Por qué una etapa está cerrada y qué hacer.
     function cerradaHtml(k) {
@@ -429,6 +429,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (a === 'copiar') { try { await navigator.clipboard.writeText(t.dataset.t); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo', true); } return; }
       if (a === 'marca') return menuMarcas(t, b.slug);
       if (a === 'motor') return menuMotor(t, me, S.salud?.chat, () => paintChat(), { diseno: true });
+      if (a === 'panel-tg') { chat.area = !chat.area; guardar(); ponerArea(); return; }
       if (a === 'etapa') { chat.etapa = t.dataset.e; if (chat.etapa !== 'diseno') S.lamina = null; guardar(); paintChat(); paintPane(); return; }
       if (a === 'mesdg') return menuDz(t, mesesPlan().map((x, i) => ({ label: nombreMes(x).replace(/^./, (c) => c.toUpperCase()), sub: ['El anterior', 'Este mes', 'El siguiente'][i], on: x === chat.mes, pick: () => cambiarMes(x) })));
       if (a === 'suelta') { chat.suelta = !chat.suelta; chat.etapa = chat.suelta ? 'diseno' : ETAPAS.map(([k]) => k).find(abierta) || 'plan'; guardar(); paintChat(); paintPane(); return; }
