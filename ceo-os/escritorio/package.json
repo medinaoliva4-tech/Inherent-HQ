@@ -1,7 +1,7 @@
 {
   "name": "inherent-os-escritorio",
   "productName": "Inherent OS",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Inherent OS como app de escritorio, con el puente de Laya adentro.",
   "private": true,
   "main": "main.js",
@@ -17,9 +17,25 @@
     "appId": "global.inherent.os",
     "productName": "Inherent OS",
     "artifactName": "Inherent-OS-${arch}.${ext}",
-    "directories": { "output": "dist", "buildResources": "build" },
-    "files": ["main.js", "preload.js", "package.json"],
-    "extraResources": [{ "from": "../public/laya/puente.py", "to": "puente/puente.py" }, { "from": "../public/laya/instalar.sh", "to": "puente/instalar.sh" }],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../public/laya/puente.py",
+        "to": "puente/puente.py"
+      },
+      {
+        "from": "../public/laya/instalar.sh",
+        "to": "puente/instalar.sh"
+      }
+    ],
     "afterPack": "./firmar.js",
     "mac": {
       "category": "public.app-category.productivity",
@@ -28,6 +44,8 @@
       "hardenedRuntime": false,
       "gatekeeperAssess": false
     },
-    "dmg": { "title": "Inherent OS" }
+    "dmg": {
+      "title": "Inherent OS"
+    }
   }
 }
