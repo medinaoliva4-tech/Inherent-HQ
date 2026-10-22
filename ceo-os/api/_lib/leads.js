@@ -93,6 +93,7 @@ export async function createOrTouch(data, who, via = '') {
   const bad = check(d); if (bad) throw err(bad);
   const first = `Lead creado${via ? ` · ${via}` : ''}`;
   const lead = await db.create('leads', { ...d, activity: mergeActivity([], [entry(who, first), ...(Array.isArray(d.activity) ? d.activity : [])]) }, who);
+  import('./avisos.js').then((a) => a.nuevoLead(lead)).catch(() => {}); // el aviso al celular de quien ve Ventas
   return { lead, duplicate: false };
 }
 

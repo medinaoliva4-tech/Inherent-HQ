@@ -117,6 +117,7 @@ nadie edita nada todo sale igual. Un doc con el mismo id reemplaza la de siempre
 | `ZERNIO_API_KEY` | Content → Bandeja: comentarios y DMs de las cuentas propias (llave con el grupo «messages»). Solo lectura |
 | `GOOGLE_PORTAL_CLIENT_ID` · `GOOGLE_PORTAL_CLIENT_SECRET` | El login del **portal del cliente** («Soy cliente»): un cliente OAuth de Google tipo **Externo**, solo con nombre y correo. Entra únicamente un correo que el CEO aprobó en Clients → Portal del cliente |
 | `CRON_SECRET` | Para el scrape semanal (Vercel Cron, lunes 13:00 UTC; cierre a las 16:00). Sin él, el cron no corre |
+| `VAPID_PUBLIC_KEY` · `VAPID_PRIVATE_KEY` · `VAPID_SUBJECT` | Los avisos al celular (web push): se generan una vez con `npx web-push generate-vapid-keys`; el subject es un `mailto:`. Sin ellas, Mi perfil dice que faltan y nada se rompe |
 | `GITHUB_TOKEN` | Para **escribir** en el repo (el CEO crea la ficha de oferta y edita documentos desde Estrategia) y para que la app de Mac sepa si hay versión nueva. Con permiso «Contents: Read and write» sobre el repo. Para **leer**, la app usa la copia que arma cada build (`scripts/snapshot.mjs`) |
 
 ### Google (una vez)

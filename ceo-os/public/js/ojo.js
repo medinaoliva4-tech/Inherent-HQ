@@ -33,5 +33,5 @@ export const tonoOjo = (p) => (p == null ? '' : p >= 0.6 ? 'ok' : p >= 0.4 ? 'me
 export function ojoChip(r, { compact = false } = {}) {
   if (!r || r.parecido == null) return '';
   const t = tonoOjo(r.parecido), txt = t === 'ok' ? 'Se ve de la marca' : t === 'medio' ? 'Más o menos de la marca' : 'No se parece a la marca';
-  return html`<span class="chip ojo-chip ${t}" title="${txt} · ${pct(r.parecido)}${r.refs ? ` · comparada con ${r.refs} imagen${r.refs === 1 ? '' : 'es'} del moodboard` : ' · sin moodboard: solo la descripción de la marca'}">${ico('eye', 11)} ${compact ? pct(r.parecido) : `${txt} · ${pct(r.parecido)}`}</span>`;
+  return html`<span class="chip ojo-chip ${t}" title="${txt} · ${pct(r.parecido)}${r.refs ? ` · comparada con ${r.refs} ${r.refs === 1 ? 'imagen' : 'imágenes'} del moodboard` : ' · sin moodboard: solo la descripción de la marca'}">${ico('eye', 11)} ${compact ? pct(r.parecido) : `${txt} · ${pct(r.parecido)}`}</span>`;
 }

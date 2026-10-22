@@ -3,7 +3,7 @@
 // el servidor tampoco le entrega lo por pagar ni el banco.
 // Cuando una factura queda pagada, el servidor registra solo el ingreso (o el gasto) y los costos del mes del cliente:
 // la fila de un cobro pagado lo dice en una línea. Abajo: «Costos por cliente» (la receta de costos), para Finanzas → Costos.
-import { html, raw, mount, col, api, ask, drawer, closeDrawer, toast, Q, USD, fdate, today, csv, ico } from './core.js';
+import { html, raw, mount, col, api, ask, drawer, closeDrawer, toast, Q, USD, fdate, today, csv, ico, openClaude } from './core.js';
 import { layaBox } from './laya-ui.js';
 import { estadoFactura, totales, cruzar, quienFactura, mesLabel, leerEstadoDeCuenta, movimientosBanco, filaEncabezado, filasBanco, CATS_OUT, feeMensual, recetaPropuesta, totalReceta, enGTQ } from './facturas.js';
 
@@ -31,7 +31,7 @@ export async function facturasTab(b, { me, clients = [], movs = [], onMov = null
     mount(b, html`
       <div class="fx-kpis ${ceo ? '' : 'two'}">${kpis.map(([l, v, s, warn]) => html`<div class="fx-kpi ${warn ? 'warn' : ''}"><span class="lbl">${l}</span><b>${Q(v)}</b><span class="mut sm">${s}</span></div>`)}</div>
       ${t.usd ? html`<div class="mut sm fx-note">Los montos en USD se suman a Q7.70.</div>` : ''}
-      ${ceo ? html`<div class="fx-acts"><button class="btn" data-fx="gen">Generar cobros del mes</button><button class="btn ghost" data-fx="addpagar">+ Por pagar</button><button class="btn ghost" data-fx="bank">${ico('upload')} Subir estado de cuenta</button></div>` : ''}
+      ${ceo ? html`<div class="fx-acts"><button class="btn" data-fx="gen">Generar cobros del mes</button><button class="btn ghost" data-fx="addpagar">+ Por pagar</button><button class="btn ghost" data-fx="gmail" title="Claude lee los correos con la etiqueta «Facturas» de tu Gmail y registra cada factura de proveedor aquí">${ico('mail')} Registrar desde Gmail</button><button class="btn ghost" data-fx="bank">${ico('upload')} Subir estado de cuenta</button></div>` : ''}
       ${pairs.length ? html`<button class="fx-banner" data-fx="cruce">${ico('link')} <span><b>${pairs.length} ${pairs.length === 1 ? 'movimiento del banco empata' : 'movimientos del banco empatan'}</b> con facturas pendientes</span><span class="sp"></span><span class="chip">Revisar</span></button>` : ''}
       ${gen ? html`<div class="fx-gen">${gen.creadas.length ? html`<div>${ico('spark')} ${gen.creadas.length} ${gen.creadas.length === 1 ? 'cobro creado' : 'cobros creados'} para ${mesLabel(gen.period)}.</div>` : html`<div>${ico('spark')} Nada nuevo para ${mesLabel(gen.period)}.</div>`}
         ${gen.sinPrecio.length ? html`<div>${ico('alert')} Sin precio: ${gen.sinPrecio.map((x) => x.nombre).join(' · ')}</div>` : ''}
@@ -39,6 +39,17 @@ export async function facturasTab(b, { me, clients = [], movs = [], onMov = null
       <div class="fx-lists ${ceo ? '' : 'one'}">${lista('cobrar')}${ceo ? lista('pagar') : ''}</div>`);
   }
 
+  // Las facturas de proveedores entran por la etiqueta «Facturas» de Gmail: Claude (con el conector de Inherent) las lee y las registra.
+  function desdeGmail() {
+    const prompt = `Corre la skill ap-processor de inherent/administracion/skills con mi Gmail.
+1. Busca en mi Gmail los correos con la etiqueta «Facturas» de los últimos 60 días (label:Facturas newer_than:60d) y lee cada factura adjunta o en el cuerpo.
+2. De cada una saca: proveedor, NIT, concepto, monto, moneda (GTQ o USD), fecha de emisión y fecha de vencimiento, y el link del archivo si lo subiste a Drive.
+3. Regístrala con la herramienta registrar_factura del conector Inherent OS, tipo "pagar". No la registres dos veces: el conector avisa si ya existía.
+4. No pagues nada ni marques nada como pagada.
+5. Al final dime: cuántas registraste (proveedor y monto), cuáles ya existían y cuáles no pudiste leer y por qué.`;
+    const ok = openClaude(prompt);
+    toast(ok ? 'Se abrió Claude con el pedido. Si no aparece, pégalo: ya está copiado.' : 'El pedido quedó copiado: pégalo en Claude.');
+  }
   function lista(kind) {
     const mine = invs.filter((i) => i.kind === kind);
     const open = mine.filter((i) => ['pendiente', 'vencida'].includes(estadoFactura(i, T))).sort((a, z) => String(a.due).localeCompare(String(z.due)));
@@ -174,7 +185,7 @@ export async function facturasTab(b, { me, clients = [], movs = [], onMov = null
     if (a === 'paid') { e.stopPropagation(); return i && pagar(i); }
     if (a === 'open') return i && abrir(i);
     if (!ceo) return;
-    if (a === 'gen') generar(); if (a === 'addpagar') editar(null, 'pagar'); if (a === 'addcobrar') editar(null, 'cobrar'); if (a === 'bank') banco(); if (a === 'cruce') cruce();
+    if (a === 'gen') generar(); if (a === 'gmail') desdeGmail(); if (a === 'addpagar') editar(null, 'pagar'); if (a === 'addcobrar') editar(null, 'cobrar'); if (a === 'bank') banco(); if (a === 'cruce') cruce();
   };
   paint();
   if (open) { const i = invs.find((x) => x.id === open); if (i) abrir(i); } // desde el enlace de un movimiento
