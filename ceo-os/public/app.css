@@ -4213,3 +4213,45 @@ button.dz-chip-sel{border:1px solid var(--hair);background:var(--surface);color:
 .ch-ab:hover{background:var(--fill);color:var(--ink)}
 /* El «+»: Contexto (lo que lee) y Modo de trabajo (cómo responde) */
 .dz-ph2{margin-top:6px;padding-top:12px;border-top:1px solid var(--hair)}
+
+/* ---------- La caja del chat, como la de ChatGPT ---------- */
+/* La barra de arriba: una sola fila (los pasos y, a la derecha, conversación nueva y el panel) */
+.cb-r .cb-p{flex:1 1 auto;min-width:0}
+.cb{padding-bottom:8px}
+/* El modelo: su nombre y un punto (verde: tu compu conectada · rojo: sin conectar) */
+.cx-model{display:inline-flex;align-items:center;gap:7px;font-weight:500}
+.cx-dot{width:7px;height:7px;border-radius:50%;background:#c4553f;flex:none;box-shadow:0 0 0 3px color-mix(in srgb,#c4553f 18%,transparent)}
+.cx-dot.on{background:#2f9a5d;box-shadow:0 0 0 3px color-mix(in srgb,#2f9a5d 18%,transparent)}
+.cx-car{color:var(--mut);font-size:11px}
+/* El micrófono */
+.cx-mic{width:34px;height:34px;border-radius:50%;border:0;background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none}
+.cx-mic:hover{background:var(--fill)}
+.cx-mic.on{background:#c4553f;color:#fff;animation:mic-pulso 1.4s ease-in-out infinite}
+@keyframes mic-pulso{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,#c4553f 45%,transparent)}50%{box-shadow:0 0 0 7px transparent}}
+@media (prefers-reduced-motion:reduce){.cx-mic.on{animation:none}}
+/* Enviar: el círculo oscuro con la flecha gruesa */
+.es-box .es-send{background:var(--ink);color:var(--surface);border:0}
+.es-box .es-send:hover{opacity:.88}
+/* La franja de abajo: el cliente, el mes, el contexto y el modo de trabajo */
+.cx-tray{display:flex;align-items:center;gap:2px;flex-wrap:wrap;margin:6px -6px -6px;padding:6px 8px;border-top:1px solid var(--hair);background:color-mix(in srgb,var(--fill) 55%,transparent);border-radius:0 0 22px 22px}
+.cx-t{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--ink);font:inherit;font-size:12.5px;border-radius:9px;padding:5px 9px;cursor:pointer;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.cx-t:hover{background:var(--fill)}
+.cx-t svg{color:var(--mut)}
+.cx-n{font-size:11px;font-weight:600;background:var(--ink);color:var(--surface);border-radius:999px;padding:0 6px;line-height:16px}
+.dz-chips:empty{display:none}
+/* Laya, al pie del menú del modelo */
+.mm-laya{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;margin:6px 4px 2px;padding:8px 8px 4px;border-top:1px solid var(--hair);font-size:12.5px;color:var(--ink)}
+.mm-laya i{width:7px;height:7px;border-radius:50%;background:#c9a227}.mm-laya.ok i{background:#2f9a5d}
+.mm-laya small{flex-basis:100%;padding-left:15px;color:var(--mut);font-size:11.5px}
+/* En un chat angosto: los pasos en una sola fila (los que no son el actual, solo con su número) y la franja sin partirse */
+.dz-chat,.es-split.es2 .es-chat{container-type:inline-size}
+.cb-p{flex-wrap:nowrap;overflow-x:auto}
+@container (max-width:560px){.cb-p .dg-e:not(.on) .cb-l{display:none}.cb-p .dg-e:not(.on){padding-right:4px}.cb-p .cb-mini .cb-l{display:none}.cb-p .cb-mini{padding:4px 7px}}
+.cx-tray{flex-wrap:nowrap;overflow:hidden}
+.cx-t{min-width:0;flex:0 1 auto}
+
+/* Escribir en el repo desde el OS: el link de «Editar la ficha» y el editor de un documento */
+.es-lnk { background: none; border: 0; padding: 0; font: inherit; color: var(--ink); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; letter-spacing: inherit; text-transform: inherit; }
+.es-lnk:hover { color: var(--accent, var(--ink)); }
+.es-ed .es-ed-t { width: 100%; min-height: 62vh; margin-top: 14px; font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; tab-size: 2; }
+.es-sum-r .btn.xs { margin-left: 4px; }

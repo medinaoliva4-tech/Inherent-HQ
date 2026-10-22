@@ -9,6 +9,7 @@ on:
     paths:
       - 'ceo-os/escritorio/**'
       - 'ceo-os/public/laya/puente.py'
+      - 'ceo-os/public/laya/instalar.sh'
       - '.github/workflows/escritorio.yml'
   workflow_dispatch:
 

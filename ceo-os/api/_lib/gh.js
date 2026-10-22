@@ -13,6 +13,8 @@ function snap() {
   return SNAP;
 }
 const useSnap = () => !LOCAL && snap();
+// Lo que el OS escribió en el repo desde que se armó la copia del build: se lee de aquí hasta que Vercel publique otra vez.
+const RECIENTES = new Map();
 export const repoSource = () => (LOCAL ? 'local' : snap() ? 'build' : process.env.GITHUB_TOKEN ? 'github' : 'none');
 const lp = (p) => nodePath.join(LOCAL, p);
 const sha1 = (c) => crypto.createHash('sha1').update(c).digest('hex');
@@ -50,7 +52,7 @@ async function gh(path, init = {}) {
 
 export async function readFile(path) {
   if (LOCAL) { try { const c = fs.readFileSync(lp(path), 'utf8'); return { content: c, sha: sha1(c) }; } catch { return null; } }
-  if (useSnap()) { const c = SNAP.files[path]; return c == null ? null : { content: c, sha: sha1(c) }; }
+  if (useSnap()) { const c = RECIENTES.has(path) ? RECIENTES.get(path) : SNAP.files[path]; return c == null ? null : { content: c, sha: sha1(c) }; }
   const r = await gh(`contents/${enc(path)}?ref=${encodeURIComponent(cfg().branch)}`);
   if (r.status === 404) return null;
   if (!r.ok) throw new Error(`GitHub ${r.status} leyendo ${path}`);
@@ -121,3 +123,18 @@ export function fileDate(path) {
   try { d = execFileSync('git', ['log', '-1', '--format=%cI', '--', path], { cwd: LOCAL, encoding: 'utf8', timeout: 4000, stdio: ['ignore', 'pipe', 'ignore'] }).trim().slice(0, 10) || null; } catch {}
   DATES.set(path, d); return d;
 }
+
+// Escribir un archivo que alguien vio en el OS: «base» es la huella (sha1) de lo que vio. Si el archivo cambió desde entonces,
+// no se pisa (conflict). Se compara contra lo que hay hoy en GitHub, no contra la copia del build.
+export async function escribirSeguro(path, content, base, message) {
+  if (LOCAL) { let cur = null; try { cur = fs.readFileSync(lp(path), 'utf8'); } catch {} if ((cur === null) !== !base || (cur !== null && sha1(cur) !== base)) return { conflict: true }; return writeFile(path, content, null, message); }
+  const r = await gh(`contents/${enc(path)}?ref=${encodeURIComponent(cfg().branch)}`);
+  let actual = null;
+  if (r.ok) { const j = await r.json(); if (Array.isArray(j) || j.type !== 'file') return { conflict: true }; actual = { sha: j.sha, content: Buffer.from(j.content || '', 'base64').toString('utf8') }; }
+  else if (r.status !== 404) throw await ghError(r, 'leyendo ' + path);
+  if ((actual === null) !== !base || (actual && sha1(actual.content) !== base)) return { conflict: true };
+  const w = await writeFile(path, content, actual?.sha, message);
+  if (!w.conflict) RECIENTES.set(path, content);
+  return w;
+}
+export const huella = (c) => sha1(String(c));

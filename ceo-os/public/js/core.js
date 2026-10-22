@@ -168,9 +168,9 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#draw
 // Hasta 4 campos: el modal pequeño. Más de 4: se abre en la vista grande. Siempre devuelve una Promise con los valores (o null).
 const askInput = (f) => f.t === 'checks' ? html`<div class="checks">${(f.opts || []).map(([v, l]) => html`<label class="check"><input type="checkbox" name="${f.k}" value="${v}" ${(f.v || []).includes(v) ? raw('checked') : ''}> ${l}</label>`)}</div>`
   : f.t === 'select' ? html`<select class="in" name="${f.k}">${(f.opts || []).map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return html`<option value="${v}" ${String(v) === String(f.v ?? '') ? raw('selected') : ''}>${l}</option>`; })}</select>`
-  : f.t === 'textarea' ? html`<textarea class="in" name="${f.k}">${f.v ?? ''}</textarea>`
+  : f.t === 'textarea' ? html`<textarea class="in" name="${f.k}" placeholder="${f.ph || ''}">${f.v ?? ''}</textarea>`
   : f.t === 'file' ? html`<input class="in" name="${f.k}" type="file" accept="${f.accept || ''}">`
-  : html`<input class="in" name="${f.k}" type="${f.t || 'text'}" value="${f.v ?? ''}" ${f.t === 'number' ? raw('step="any"') : ''}>`;
+  : html`<input class="in" name="${f.k}" type="${f.t || 'text'}" value="${f.v ?? ''}" placeholder="${f.ph || ''}" ${f.t === 'number' ? raw('step="any"') : ''}>`;
 function askRows(fields) {
   const rows = []; let pend = [];
   fields.forEach((f) => { const cell = html`<div><label class="f">${f.l}${f.req ? ' *' : ''}</label>${askInput(f)}</div>`; if (f.half) { pend.push(cell); if (pend.length === 2) { rows.push(html`<div class="two">${pend}</div>`); pend = []; } } else { if (pend.length) { rows.push(html`<div class="two">${pend}</div>`); pend = []; } rows.push(cell); } });
