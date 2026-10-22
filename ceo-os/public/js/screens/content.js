@@ -1,7 +1,7 @@
 import { techDetail, html, raw, mount, api, toast, acts, drawer, closeDrawer, fdate, K, md, csv, $, lineChart, ask, today , connectCard, connectChip, LOGO, openClaude, claudeJSON, ICON, swap, ico, col, confirmAsk, initials } from '../core.js';
 import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
-import { estadoDe, separar, ESTADO_CLS, nombreDe } from '../element.js';
+import { estadoDe, separar, conEstado, ESTADO_CLS, nombreDe } from '../element.js';
 import { investigacion } from '../investigacion.js';
 import { TIPOS_MARCA, eventosMarca } from '../calendario-vistas.js';
 import { calendarioHtml, rango, porDia, diaHtml, hitoHtml } from '../calendario-trabajo.js';
@@ -310,7 +310,13 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     cdia = porDia(eventos.filter((e) => !coff.has(e.tipo)));
     mount(b, html`<div class="cm-cal">${calendarioHtml({ vista: cvista, fecha: pdate, eventos, off: coff, tipos: TIPOS_MARCA.map(([k]) => k), lista: TIPOS_MARCA, hoy,
       botones: html`<button class="btn ghost xs" data-act="snew" data-d="">+ Grabación</button><button class="btn xs" data-act="pnew" data-d="">+ Pieza</button>`,
-      pie: html`<div class="wc-foot"><span class="mut sm"><b>Operativo:</b> grabaciones, tareas y reuniones de sus proyectos, y los días 1, 11 y 20 · <b>Planificación:</b> piezas en Idea o En proceso · <b>Programado:</b> lo listo, con hora y red. Lo atrasado sale en rojo.</span></div>` })}</div>`);
+      pie: html`<div class="wc-foot"><span class="mut sm"><b>Operativo:</b> grabaciones, tareas y reuniones de sus proyectos, y los días 1, 11 y 20 · <b>Planificación:</b> piezas en Idea o En proceso · <b>Programado:</b> lo listo, con hora y red. Lo atrasado sale en rojo.</span></div>` })}
+      ${archivoHtml(separar(posts).archivo)}</div>`);
+  }
+  // El Archivo: lo publicado hace más de 30 días (o marcado «Archivado») sale del calendario solo. Se ve aquí y se puede recuperar.
+  function archivoHtml(archivo) {
+    return html`<div class="row el-archbar"><button class="chip ${parch ? 'dark' : ''}" data-act="parch" aria-pressed="${parch ? 'true' : 'false'}">${ico('folder', 13)} Archivo · ${archivo.length}</button><span class="mut sm">Lo publicado hace más de 30 días o marcado «Archivado» sale del calendario solo. Recuperar lo vuelve a poner como Listo.</span></div>
+      ${parch ? (archivo.length ? html`<div class="el-arch">${archivo.sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).map((p) => html`<div class="el-arch-i"><button type="button" class="el-arch-t" data-act="pedit" data-id="${p.id}"><b>${p.title}</b><span class="mut sm">${p.format || 'Pieza'}${p.date ? ` · ${fdate(p.date)}` : ''}${(p.assets || []).length ? ` · ${p.assets.length} archivo${p.assets.length === 1 ? '' : 's'}` : ''}</span></button><button type="button" class="btn ghost xs" data-act="prec" data-id="${p.id}">${ico('repeat', 12)} Recuperar</button></div>`)}</div>` : html`<div class="mut sm" style="margin-top:8px">Nada archivado todavía: aquí llega lo que ya salió y cumplió su mes.</div>`) : ''}`;
   }
   async function editShoot(x, date) {
     const v = await ask(x ? 'Grabación' : 'Nueva grabación', [
@@ -477,6 +483,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
         await (d.v ? col('settings').save({ ...d, marcas }) : col('settings').create({ id: 'brief_open', marcas })); cabiertos = marcas[slug]; toast('Mes abierto sin brief'); recal(); } catch (e) { toast(e.message, true); }
     },
     parch: () => { parch = !parch; recal(); },
+    prec: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; try { const { archived, ...rest } = p; const r = await C.save(conEstado(rest, 'Listo')); posts = posts.map((x) => (x.id === r.id ? r : x)); toast('Recuperada: vuelve al calendario como Listo'); recal(); } catch (err) { toast(err.message, true); } },
     pillars: async () => {
       const cur = data.cfg.pillars || [];
       const v = await ask('Pilares de contenido', [{ k: 'list', l: 'Un pilar por línea (máx. 8). Ej.: Educa · Detrás de cámaras · Casos · Oferta', t: 'textarea', v: cur.map((x) => x.name).join('\n') }], 'Guardar');
