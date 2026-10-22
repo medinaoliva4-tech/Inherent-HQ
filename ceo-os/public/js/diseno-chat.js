@@ -15,8 +15,8 @@ import { estadoDe } from './element.js';
 import { promptPlan, leerPlan, sinBloqueP, NOMBRE_P, nombreMes } from './plan-mes.js';
 import { planPanel, pasarPlan, mesesPlan } from './plan-mes-ui.js';
 import { promptIdeas, leerIdeas, sinBloqueI } from './ideas-chat.js';
-import { divisor, ubicarPop } from './divisor.js';
-import { docHtml, tarjetaDoc, barraChat } from './artifact.js';
+import { divisor, ubicarPop, junto } from './divisor.js';
+import { docHtml, tarjetaDoc, barraChat, botonesEnviar } from './artifact.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, motorDe, nombreMotor } from './motor-ui.js';
 
 const IMGS = new Map(); // `${marca}|${nodo}` → data URL (solo en memoria: pesan)
@@ -30,7 +30,7 @@ function menuDz(anchor, items, { buscar = '' } = {}) {
   const box = anchor.closest('.es-box') || anchor.parentElement;
   const m = document.createElement('div'); m.className = 'es-menu'; m.setAttribute('role', 'listbox');
   const pinta = (q = '') => { mount(m, html`${buscar ? html`<input class="in" placeholder="${buscar}" aria-label="${buscar}" value="${q}">` : ''}${items.filter((x) => !q || x.label.toLowerCase().includes(q.toLowerCase())).map((x, i) => html`<a href="#" class="${x.on ? 'on' : ''}" role="option" data-i="${items.indexOf(x)}">${x.mono != null ? html`<i class="mono">${x.mono}</i>` : html`<b></b>`}<span>${x.label}</span>${x.sub ? html`<small>${x.sub}</small>` : ''}</a>`)}${items.length ? '' : html`<p class="mut sm" style="padding:8px 12px;margin:0">No hay opciones.</p>`}`); const inp = m.querySelector('input'); if (inp) { inp.oninput = () => { const v = inp.value; pinta(v); const n = m.querySelector('input'); n.focus(); n.setSelectionRange(v.length, v.length); }; } };
-  pinta(); box.append(m); m.querySelector('input')?.focus();
+  pinta(); box.append(m); junto(m, anchor, box); m.querySelector('input')?.focus();
   const cerrar = (e) => { if (!m.contains(e.target) && e.target !== anchor) { m.remove(); document.removeEventListener('pointerdown', cerrar); } };
   setTimeout(() => document.addEventListener('pointerdown', cerrar));
   m.addEventListener('click', (e) => { const a = e.target.closest('a[data-i]'); if (!a) return; e.preventDefault(); m.remove(); items[+a.dataset.i]?.pick(); });
@@ -163,6 +163,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const m = document.createElement('div'); m.className = 'dz-ctxp'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-label', 'Agregar contexto');
       const fila = (k, ic, t, sub, extra = '') => html`<button type="button" class="dz-o ${chat.ctx.includes(k) ? 'on' : ''}" data-ck="${k}" ${raw(extra)}><span class="dz-oi">${ico(ic, 14)}</span><span class="dz-ot">${t}<small>${sub}</small></span><span class="dz-ck">${chat.ctx.includes(k) ? ico('check', 12) : ''}</span></button>`;
       const tg = (k, ic, t, sub) => html`<button type="button" class="dz-o" data-tg="${k}"><span class="dz-oi">${ico(ic, 14)}</span><span class="dz-ot">${t}<small>${sub}</small></span><span class="dz-sw ${chat[k] ? 'on' : ''}"></span></button>`;
+      const modo = (k, ic, t, sub) => html`<button type="button" class="dz-o ${chat[k] ? 'on' : ''}" data-tg="${k}"><span class="dz-oi">${ico(ic, 14)}</span><span class="dz-ot">${t}<small>${sub}</small></span><span class="dz-ck">${chat[k] ? ico('check', 12) : ''}</span></button>`;
       const ir = (v, t, sub, n) => html`<button type="button" class="dz-o" data-vista="${v}"><span class="dz-oi">${ico(v === 'ideas' ? 'bulb' : 'doc', 14)}</span><span class="dz-ot">${t}<small>${sub}</small></span><span class="dz-n">${n ? html`${n} ${ico('right', 12)}` : ico('right', 12)}</span></button>`;
       const pinta = () => {
         const deMes = (mes) => ideas.filter((p) => String(p.date || '').slice(0, 7) === mes).length;
@@ -173,23 +174,25 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         else if (vista === 'lib') { const docs = (libData?.docs || []).filter((d) => !q || `${d.titulo} ${d.carpeta}`.toLowerCase().includes(q.toLowerCase())); mount(m, html`<header class="dz-ph"><button type="button" class="dz-back" data-vista="inicio" aria-label="Volver">${ico('arrow-left', 14)}</button><b>Library</b><span class="mut sm">${nLib} de ${libMax}</span></header><input class="in" data-q placeholder="Buscar documento…" value="${q}">
           <div class="dz-ol">${libData === null ? html`<p class="mut sm" style="padding:8px 10px;margin:0">Cargando la Library…</p>` : libData.error ? html`<p class="es-err" style="padding:8px 10px;margin:0">${libData.error}</p>` : docs.length ? docs.slice(0, 60).map((d) => fila(`lib:${d.id}`, 'doc', d.titulo, [d.tipo, d.carpeta].filter(Boolean).join(' · '), !chat.ctx.includes(`lib:${d.id}`) && nLib >= libMax ? 'disabled' : '')) : html`<p class="mut sm" style="padding:8px 10px;margin:0">Nada coincide.</p>`}</div>`); }
         else if (vista === 'formato') mount(m, html`<header class="dz-ph"><button type="button" class="dz-back" data-vista="inicio" aria-label="Volver">${ico('arrow-left', 14)}</button><b>Formato</b></header><div class="dz-ol">${FORMATOS.map(([f, dsc]) => html`<button type="button" class="dz-o ${chat.formato === f ? 'on' : ''}" data-fmt="${f}"><span class="dz-oi">${ico('layers', 14)}</span><span class="dz-ot">${f}<small>${dsc}</small></span><span class="dz-ck">${chat.formato === f ? ico('check', 12) : ''}</span></button>`)}</div>`);
-        else mount(m, html`<header class="dz-ph"><b>Contexto</b><span class="mut sm">Lo que el chat lee antes de responder</span></header><div class="dz-ol">
-          <button type="button" class="dz-o on" data-marca="1"><span class="dz-oi">${initials(b.name)}</span><span class="dz-ot">Cliente · ${b.name}<small>Su ficha, su estrategia, su marca y su design system · cambiar</small></span><span class="dz-n">${ico('right', 12)}</span></button>
+        else mount(m, html`<header class="dz-ph"><b>Contexto</b><span class="mut sm">Lo que lee antes de responder</span></header><div class="dz-ol">
           ${fila('refs', 'play', 'Investigación', refs.length ? `${refs.filter((x) => x.replicar).length || Math.min(8, refs.length)} posts ganadores ${refs.some((x) => x.replicar) ? 'marcados «Usar como formato»' : 'de su mercado'}` : 'Todavía no hay nada en Investigación', refs.length ? '' : 'disabled')}
           ${ir('lib', 'Documentos de la Library', 'SOPs, entrevistas, notas', nLib)}
-          <button type="button" class="dz-o ${chat.hormozi ? 'on' : ''}" data-tg="hormozi"><span class="dz-oi">${ico('target', 14)}</span><span class="dz-ot">Lente Hormozi<small>Oferta, valor y demanda en cada respuesta</small></span><span class="dz-ck">${chat.hormozi ? ico('check', 12) : ''}</span></button>
           ${MESES_CTX().map((mes) => fila(`cal:${mes}`, 'cal', nombreCtx(`cal:${mes}`), `${deMes(mes)} pieza${deMes(mes) === 1 ? '' : 's'} con fecha · lo que falta diseñar`))}
           ${fila(`plan:${MESES_CTX()[0]}`, 'target', nombreCtx(`plan:${MESES_CTX()[0]}`), 'El mensaje, los pilares y la función de cada canal')}
-          ${ir('ideas', 'Ideas del calendario', 'Una o varias, con su guion', nIdeas)}</div>`);
+          ${ir('ideas', 'Ideas del calendario', 'Una o varias, con su guion', nIdeas)}</div>
+        <header class="dz-ph dz-ph2"><b>Modo de trabajo</b><span class="mut sm">Cómo responde</span></header><div class="dz-ol">
+          ${modo('hormozi', 'target', 'Lente Hormozi', 'Oferta, valor y demanda en cada respuesta')}
+          <button type="button" class="dz-o" data-vista="formato"><span class="dz-oi">${ico('layers', 14)}</span><span class="dz-ot">Formato · ${chat.formato}<small>Carrusel, estático, story o plantilla</small></span><span class="dz-n">${ico('right', 12)}</span></button>
+          ${modo('suelta', 'alert', 'Pieza suelta', 'Algo puntual que no sale del plan: va directo a Diseño')}</div>`);
         const inp = m.querySelector('[data-q]'); if (inp) { inp.oninput = () => { q = inp.value; pinta(); const n = m.querySelector('[data-q]'); n.focus(); n.setSelectionRange(q.length, q.length); }; }
       };
       pinta(); box.append(m); ubicarPop(m, box); anchor.setAttribute('aria-expanded', 'true');
       m.addEventListener('click', async (e) => {
         const v = e.target.closest('[data-vista]'); if (v) { vista = v.dataset.vista; q = ''; if (vista === 'lib' && libData === null) { pinta(); try { libData = await api('estrategia/library'); } catch (er) { libData = { docs: [], error: er.status === 403 ? 'Tu perfil no ve la Library.' : er.message }; } } pinta(); m.querySelector('[data-q]')?.focus(); return; }
-        if (e.target.closest('[data-marca]')) { m.remove(); return menuMarcas(anchor, b.slug); }
         const f = e.target.closest('[data-fmt]'); if (f) { chat.formato = f.dataset.fmt; guardar(); repintarCaja(); vista = 'inicio'; return pinta(); }
         const g = e.target.closest('[data-tg]');
-        if (g) { chat.hormozi = !chat.hormozi; guardar(); repintarCaja(); return pinta(); }
+        if (g?.dataset.tg === 'hormozi') { chat.hormozi = !chat.hormozi; guardar(); repintarCaja(); return pinta(); }
+        if (g?.dataset.tg === 'suelta') { m.remove(); chat.suelta = !chat.suelta; chat.etapa = chat.suelta ? 'diseno' : ETAPAS.map(([k]) => k).find(abierta) || 'plan'; guardar(); paintChat(); paintPane(); return; }
         const o = e.target.closest('[data-ck]'); if (!o || o.disabled) return;
         const k = o.dataset.ck; if (k.startsWith('lib:')) { const d = libData?.docs.find((x) => `lib:${x.id}` === k); if (d) chat.libT[d.id] = d.titulo; }
         toggleCtx(k); pinta();
@@ -220,7 +223,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const ph = chat.etapa === 'plan' ? 'Qué se dice este mes, y en qué canal…' : chat.etapa === 'ideas' ? 'Pide ideas para una pieza del plan…' : chat.resultado ? 'Pide un cambio, o selecciona una lámina y dile qué ajustar…' : `Qué diseñamos de ${b.name}…`;
       mount(chatEl, html`${etapaHtml()}<div class="es-msgs" id="dz-msgs" aria-live="polite"></div>
         ${!abre ? cerradaHtml(chat.etapa) : ok ? html`<div class="ch-sug" id="dz-sug">${sugHtml()}</div><div class="es-box cx"><div class="dz-chips" id="dz-chips">${chipsHtml()}</div><form class="es-form" id="dz-form"><textarea class="in" id="dz-in" rows="1" placeholder="${ph}" aria-label="Mensaje para el chat"></textarea></form>
-          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}<button class="btn es-send" type="submit" form="dz-form" aria-label="Enviar">${ico('right', 16)}</button></div></div>`
+          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}${botonesEnviar('dz-form')}</div></div>`
           : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
       paintMsgs();
       const ta = $('#dz-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
@@ -228,6 +231,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     const sugHtml = () => (abierta(chat.etapa) ? ayuda()[3].map((x) => html`<button type="button" data-act="${chat.etapa === 'diseno' ? 'sug' : 'rapido'}" data-t="${x}">${x}</button>`) : '');
     function paintMsgs() {
       const box = $('#dz-msgs', chatEl); if (!box) return;
+      chatEl.classList.toggle('pensando', Boolean(enVuelo));
       chatEl.classList.toggle('vacio', !chat.msgs.length);
       const H = ayuda();
       mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : html`<div class="es-hint"><b>${H[1]}</b><p>${H[2]}</p></div>`);
@@ -236,10 +240,10 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     function msgHtml(m, i) {
       if (m.r === 'u') return html`<div class="es-m u"><div class="es-b">${m.t}</div></div>`;
       const busy = m.stream, ult = i === chat.msgs.length - 1;
-      return html`<div class="es-m a"><div class="es-b">${m.tools?.length ? html`<div class="dz-steps">${m.tools.slice(-6).map((t, k, xs) => html`<span class="${busy && k === xs.length - 1 ? 'now' : ''}">${ico(busy && k === xs.length - 1 ? 'spark' : 'check', 12)} ${t}</span>`)}</div>` : ''}${m.t ? md(m.t) : busy ? html`<span class="es-dots-t"><i></i><i></i><i></i></span>` : ''}
+      return html`<div class="es-m a"><div class="es-b">${m.tools?.length ? html`<div class="dz-steps">${m.tools.slice(-6).map((t, k, xs) => html`<span class="${busy && k === xs.length - 1 ? 'now' : ''}">${ico(busy && k === xs.length - 1 ? 'spark' : 'check', 12)} ${t}</span>`)}</div>` : ''}${m.t ? md(m.t) : busy ? html`<span class="ch-think">Pensando…</span>` : ''}
         ${m.err ? html`<p class="es-err">${m.err}</p>` : ''}${m.aplicado?.length ? html`<span class="es-upd"><i>✦</i>${m.aplicado.join(' · ')}</span>` : ''}${m.aviso ? html`<p class="mut sm">${m.aviso}</p>` : ''}${m.doc && !chat.area ? tarjetaDoc(docDe(m.doc)) : ''}
         ${m.pregunta ? html`<div class="es-q ${ult ? '' : 'hecha'}"><span class="lbl">Una pregunta antes de seguir</span><b>${m.pregunta.texto}</b>${m.pregunta.opciones.length ? html`<div class="es-opts">${m.pregunta.opciones.map((o) => html`<button type="button" data-act="opcion" data-t="${o}" ${ult ? '' : raw('disabled')}>${o}</button>`)}</div>` : ''}</div>` : ''}</div>
-        ${busy && ult ? html`<div class="es-act"><button type="button" class="btn ghost xs" data-act="detener">${ico('dot', 12)} Detener</button></div>` : ''}</div>`;
+        ${!busy && m.t && !m.err ? html`<div class="ch-acts"><button type="button" class="ch-ab" data-act="copiar" data-t="${m.t}" title="Copiar la respuesta">${ico('copy', 13)} Copiar</button></div>` : ''}</div>`;
     }
     const pasoDe = (d) => {
       const n = String(d.nombre || '');
@@ -437,6 +441,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (a === 'motor') return menuMotor(t, me, S.salud?.chat, () => paintChat(), { diseno: true });
       if (a === 'panel-tg' || a === 'panel-x' || a === 'panel-abrir') { chat.area = a === 'panel-tg' ? !chat.area : a === 'panel-abrir'; guardar(); ponerArea(); const tg = $('[data-act="panel-tg"]', chatEl); if (tg) { tg.classList.toggle('on', chat.area); tg.setAttribute('aria-pressed', String(chat.area)); } paintMsgs(); return; }
       if (a === 'marca-cambiar') return menuMarcas(t, b.slug);
+      if (a === 'chat-nuevo') { if (enVuelo) return; if (chat.msgs.length && !(await confirmAsk('¿Empiezo una conversación nueva? Lo que ya está en el panel se queda.'))) return; Object.assign(chat, { msgs: [], sesion: null, enviados: [], vistas: [] }); guardar(); paintChat(); return; }
       if (a === 'etapa') { chat.etapa = t.dataset.e; if (chat.etapa !== 'diseno') S.lamina = null; guardar(); paintChat(); paintPane(); return; }
       if (a === 'mesdg') return menuDz(t, mesesPlan().map((x, i) => ({ label: nombreMes(x).replace(/^./, (c) => c.toUpperCase()), sub: ['El anterior', 'Este mes', 'El siguiente'][i], on: x === chat.mes, pick: () => cambiarMes(x) })));
       if (a === 'suelta') { chat.suelta = !chat.suelta; chat.etapa = chat.suelta ? 'diseno' : ETAPAS.map(([k]) => k).find(abierta) || 'plan'; guardar(); paintChat(); paintPane(); return; }

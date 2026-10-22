@@ -6,6 +6,14 @@ import { html, raw, ico } from './core.js';
 // El ícono del panel (como el de Claude): un rectángulo partido.
 export const icoPanel = (s = 15) => raw(`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M14 4v16"/></svg>`);
 
+// Los íconos del chat (como en Claude o ChatGPT): enviar, detener y conversación nueva.
+const svg = (d, s = 16) => raw(`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`);
+export const icoEnviar = () => svg('<path d="M12 19V5M6 11l6-6 6 6"/>');
+export const icoParar = () => raw('<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2.5" fill="currentColor"/></svg>');
+export const icoNuevo = () => svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>', 15);
+// Los dos botones de la caja: enviar y, mientras responde, detener (el CSS muestra uno u otro).
+export const botonesEnviar = (form) => html`<button class="btn es-send" type="submit" form="${form}" aria-label="Enviar" title="Enviar (Enter)">${icoEnviar()}</button><button class="btn es-stop" type="button" data-act="detener" aria-label="Detener" title="Detener">${icoParar()}</button>`;
+
 // o = { ic, titulo, sub, estado, ok (estado en verde), acciones (html), cerrar (bool), prog: [[nombre, hecho]], cuerpo (html), pie: { texto, accion (html) } }
 export function docHtml(o) {
   return html`<div class="ad">
@@ -23,5 +31,6 @@ export const tarjetaDoc = (o) => html`<button type="button" class="ad-card" data
 // La barra fija de arriba del chat: el cliente, lo de la derecha (mes, panel) y abajo los pasos.
 // o = { cliente: { nombre, act }, derecha (html), panel (bool: abierto), pasos (html) }
 export const barraChat = (o) => html`<div class="cb"><div class="cb-r"><button type="button" class="cb-cli" data-act="${o.cliente.act}" aria-haspopup="listbox" title="Cambiar de cliente"><i>${o.cliente.mono}</i>${o.cliente.nombre} <small>▾</small></button><span class="sp"></span>${o.derecha || ''}
+    <button type="button" class="cb-ib" data-act="chat-nuevo" title="Conversación nueva">${icoNuevo()}</button>
     <button type="button" class="cb-ib ${o.panel ? 'on' : ''}" data-act="panel-tg" aria-pressed="${o.panel ? 'true' : 'false'}" title="${o.panel ? 'Cerrar el panel' : 'Abrir el panel'}">${icoPanel()}</button></div>
   ${o.pasos ? html`<div class="cb-p">${o.pasos}</div>` : ''}</div>`;
