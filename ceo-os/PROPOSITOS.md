@@ -41,7 +41,7 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
 - **Clientes y Proyectos** — quién es cada cliente, qué se le entrega y cuándo. *No se pierde:* un solo Kanban; cada entrega pasa por revisión.
 - **Ventas** — que ningún lead se enfríe. *No se pierde:* el primer contacto se responde en un minuto; un lead abierto siempre tiene siguiente paso y fecha; nada duplicado.
 - **Servicios** — lo que se vende y cómo se entrega. *No se pierde:* el precio se arma por alcance, no por volumen; los costos solo los ve el CEO.
-- **Finanzas** — que quede utilidad. *No se pierde:* facturas por cobrar y por pagar, el cruce con el banco y la rentabilidad por alcance; la factura electrónica la emite el contador.
+- **Finanzas** — que quede utilidad. *No se pierde:* facturas por cobrar y por pagar, el cruce con el banco y la rentabilidad por alcance; la factura electrónica la emite el contador; las facturas de proveedores entran por la etiqueta «Facturas» de Gmail y las registra Claude, sin pagar nada.
 - **Inherent** (Equipo, Visión, Roadmap, Library) — la empresa por dentro. *No se pierde:* Vistas por rol las decide el CEO y las hace cumplir el servidor.
 - **Laya** — el criterio del sistema. *No se pierde:* responde preguntas fijas sobre un texto, en la compu de cada persona; propone, no decide.
 
@@ -78,6 +78,10 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
   - si algo falla, dice qué hacer en una frase;
   - el video se abre en una ventanita que sigue contigo mientras haces lo que explica;
   - el OS sabe qué videos vio cada quien y lo muestra en su perfil y en Equipo.
+
+### El celular
+
+- **El OS en el bolsillo, como app, y avisa lo justo.** *No se pierde:* un aviso cuando entra un lead (responder en un minuto) y uno por la mañana con lo que necesita atención; nunca ruido. Cada quien lo enciende o lo apaga en su perfil.
 
 ### La app de Mac
 

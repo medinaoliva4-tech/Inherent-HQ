@@ -175,6 +175,7 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espa
 - `intel.js` — los entregables de los agentes en la carpeta del cliente (según `intel-mapa.js`), limpios de costos, y el avatar · ruta `repo/client/:slug/intel` (al cliente, 403).
 - `investigacion.js` — referentes por marca, «Actualizar ahora» (CEO y COO), webhook de Apify, crons, posts nuevos a Research con su juicio de Laya por hacer · rutas `investigacion*`.
 - `ojo.js` — el contexto del ojo visual por marca (el moodboard y una frase de la marca) · ruta `ojo/contexto`.
+- `avisos.js` — los avisos al celular (web push, con `web-push`): `avisos/clave`, `avisos/suscribir`, `avisos/quitar`, `avisos/probar` y el cron `cron/avisos` (la mañana: tus tareas de hoy y los leads sin responder). `nuevoLead` avisa a quien ve Ventas cuando entra un lead. Claves en `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` y `VAPID_SUBJECT`.
 - `guia.js` — el primer día y los videos «Cómo se usa»: `guia` (los documentos de la Library marcados con `guia = <sección>`), `guia/visto` (qué vio cada quien, en `team.<email>.vistos`), `me/primer-dia` (el recorrido: paso, hechos, pausado, terminado; la prueba final se detecta por lo que creó la persona).
 - `laya.js` — los juicios (`judgments`), las preguntas (`settings` `laya_gates`, solo el CEO), los que esperan juicio y las herramientas MCP `juicios_pendientes` y `guardar_juicio` · rutas `laya/*`.
 - `leads.js` — las reglas del CRM (etapas, candado, duplicados, historial), las fuentes y la entrada pública.
@@ -224,6 +225,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `ojo.js` — el ojo visual: el estado del puente, `verImagen` (url o base64) y el chip «Se ve de la marca · 82%».
 - `puente-chat.js` — `/health` y `/chat` del puente, en solo lectura, para pantallas fuera de Estrategia; las dos fallas típicas con sus pasos.
 - `motor-ui.js` — elegir el motor del chat (`claude`, `chatgpt` o `local`) y qué le falta a la compu · se guarda por persona.
+- `avisos.js` — activar, quitar y probar los avisos en este dispositivo (registra `public/sw.js`, pide permiso y guarda la suscripción). En iPhone solo funciona con el OS agregado a la pantalla de inicio.
 - `guia.js` — «Cómo se usa»: el botón de la barra (`#guiabtn`, lo prende `app.js` según la sección), la ventanita flotante del video (`.guia-pip`: sigue contigo al navegar, se minimiza, cambia de lado) y la lista de videos vistos.
 - `guia-secciones.js` — las secciones que pueden tener video y qué videos le tocan a cada puesto · puro (lo usa también el servidor).
 - `primer-dia.js` — el recorrido del primer día: 6 pasos con check (quién eres · la app · Claude · Laya · Google · una prueba), se comprueba solo contra el puente y la cuenta, se pausa y se retoma desde el chip de la barra (`#pdchip`).
@@ -379,6 +381,13 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 
 ---
 
+**Los avisos al celular** (`public/sw.js`, `public/js/avisos.js`, `api/_lib/avisos.js`)
+- El OS se instala como app (manifest) y, con los avisos activados desde Mi perfil, recibe: un aviso cuando entra un lead (a quien ve Ventas, para responder en un minuto) y, de lunes a viernes a las 7:30 de Guatemala (`cron/avisos`), lo que necesita atención hoy. El service worker solo recibe avisos: no guarda páginas.
+- La suscripción de cada dispositivo vive en `team.<email>.push` (hasta 5); las muertas se olvidan solas. Sin las claves VAPID en Vercel, el botón dice que faltan y nada se rompe.
+
+**Las facturas de proveedores desde Gmail** (`public/js/facturas-ui.js` → `desdeGmail`)
+- En Finanzas › Facturas, «Registrar desde Gmail» abre Claude con el pedido: correr `ap-processor` sobre la etiqueta «Facturas» del Gmail del CEO y registrar cada factura con `registrar_factura` del conector (tipo pagar), sin duplicar y sin pagar nada. La etiqueta la crea el CEO en Gmail.
+
 **El primer día y «Cómo se usa»** (`public/js/primer-dia.js`, `public/js/guia.js`, `api/_lib/guia.js`)
 - La primera vez que alguien del equipo entra, se abre el recorrido de 6 pasos. Cada paso se comprueba solo: la app (el puente responde o `window.inherentEscritorio`), Claude (`chat.claude` del `/health`), Laya (`listo`), Google (Drive y Calendar en `me.google`), la prueba (algo creado con su cuenta en content, tasks, leads o projects). Los pasos de la app, Claude y Laya se pueden saltar («mi puesto no usa esto»).
 - «Seguir después» lo pausa: queda el chip «Tu primer día · n de 6» en la barra; Mi perfil también lo reabre. Se guarda en `team.<email>.primer_dia`.
@@ -459,7 +468,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - **Calendar:** el de cada persona y el de Inherent. **Sheets:** la hoja de movimientos de Finanzas. **Gmail:** los correos al cliente.
 
 **Variables de entorno** (los valores viven en Vercel o en la compu, nunca en el repo)
-- **Vercel:** `DATABASE_URL` / `POSTGRES_URL` · `SESSION_SECRET` · `APP_URL` · `PUBLIC_URL` · `GOOGLE_CLIENT_ID` · `GOOGLE_CLIENT_SECRET` · `GOOGLE_PORTAL_CLIENT_ID` · `GOOGLE_PORTAL_CLIENT_SECRET` · `ADMIN_EMAILS` · `ALLOWED_DOMAIN` · `GITHUB_TOKEN` · `GITHUB_REPO` · `GITHUB_BRANCH` · `APIFY_TOKEN` · `APIFY_TOPE_TOTAL` · `APIFY_ACTOR_<RED>` · `WINDSOR_API_KEY` · `ZERNIO_API_KEY` · `CRON_SECRET` · `TIMEZONE`.
+- **Vercel:** `DATABASE_URL` / `POSTGRES_URL` · `SESSION_SECRET` · `APP_URL` · `PUBLIC_URL` · `GOOGLE_CLIENT_ID` · `GOOGLE_CLIENT_SECRET` · `GOOGLE_PORTAL_CLIENT_ID` · `GOOGLE_PORTAL_CLIENT_SECRET` · `ADMIN_EMAILS` · `ALLOWED_DOMAIN` · `GITHUB_TOKEN` · `GITHUB_REPO` · `GITHUB_BRANCH` · `APIFY_TOKEN` · `APIFY_TOPE_TOTAL` · `APIFY_ACTOR_<RED>` · `WINDSOR_API_KEY` · `ZERNIO_API_KEY` · `CRON_SECRET` · `TIMEZONE` · `VAPID_PUBLIC_KEY` · `VAPID_PRIVATE_KEY` · `VAPID_SUBJECT`.
 - **Local:** `LOCAL_REPO` · `LOCAL_DB` · `DEV_LOGIN` · `DEV_BASE_REAL`.
 - **Puente:** `LAYA_OJO` (0 apaga el ojo visual) · `LAYA_OJO_MODELO` · `LAYA_PUENTE_PUERTO` · `LAYA_PUENTE_ORIGENES` · `LAYA_PUENTE_MODELO` · `LAYA_PUENTE_LOG` · `LAYA_PUENTE_DATOS` · `INHERENT_REPO` · `INHERENT_REPO_URL` · `INHERENT_CLAUDE` · `INHERENT_CHAT_SEGUNDOS` · `OLLAMA_HOST` · `HF_HOME`.
 - **Instalador:** `LAYA_HOME` · `LAYA_PYTHON` · `LAYA_BASE_URL` · `LAYA_MODELO_LOCAL` · `LAYA_DESDE_APP` (lo pone la app: el instalador espera a que la app apague su puente). **App de Mac:** `INHERENT_OS_URL`.

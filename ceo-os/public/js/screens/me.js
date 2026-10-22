@@ -15,6 +15,12 @@ export async function render(el, { me }) {
   const mios = videosDe(G.items, me);
   const primerDiaHtml = () => { const a = avancePrimerDia(me), ok = primerDiaHecho(me); return html`<div class="card" style="margin-top:14px"><h3 class="profh">Tu primer día</h3>
     <div class="row" style="gap:10px;flex-wrap:wrap"><span class="chip ${ok ? 'ok' : ''}">${ok ? html`${ico('check', 13)} Terminado` : `${a.n} de ${a.total} pasos`}</span><button class="btn ghost xs" data-p="pd">${ok ? 'Volver a verlo' : 'Seguir el recorrido'}</button></div></div>`; };
+  // Los avisos en este dispositivo (web push): se activan aquí; el estado se lee del navegador y del servidor.
+  const AV = client ? null : await import('../avisos.js');
+  let av = AV ? await AV.estadoAvisos() : null;
+  const avisosHtml = () => !av ? '' : html`<div class="card" style="margin-top:14px"><h3 class="profh">Avisos en este dispositivo</h3>
+    <p class="mut sm" style="margin:0 0 10px">Cuando entra un lead y, cada mañana, lo que necesita tu atención. ${av.ios && !av.instalada ? 'En iPhone: primero agrega el OS a la pantalla de inicio (Compartir → «Agregar a inicio») y ábrelo desde ahí.' : ''}</p>
+    <div class="row" style="gap:8px;flex-wrap:wrap">${av.activo ? html`<span class="chip ok">${ico('check', 13)} Activos aquí</span><button class="btn ghost xs" data-p="av-probar">Mandar uno de prueba</button><button class="btn ghost xs" data-p="av-quitar">Quitar</button>` : html`<button class="btn xs" data-p="av-on" ${!av.soporta || !av.servidor ? raw('disabled') : ''}>Activar avisos</button>${!av.servidor ? html`<span class="mut sm">Faltan las claves de avisos en el servidor.</span>` : !av.soporta ? html`<span class="mut sm">Este navegador no recibe avisos.</span>` : av.permiso === 'denied' ? html`<span class="mut sm">Bloqueaste los avisos en el navegador: cámbialo en sus ajustes.</span>` : ''}`}${av.dispositivos > (av.activo ? 1 : 0) ? html`<span class="mut sm">· ${av.dispositivos - (av.activo ? 1 : 0)} ${av.dispositivos - (av.activo ? 1 : 0) === 1 ? 'otro dispositivo' : 'otros dispositivos'}</span>` : ''}</div></div>`;
   const videosHtml = () => { const v = vistosDe(mios, me.vistos || G.vistos); return html`<div class="card" style="margin-top:14px"><h3 class="profh">Cómo se usa · ${v.vistos} de ${v.total} vistos</h3>${listaVideos(mios, me.vistos || G.vistos, me)}</div>`; };
   const paint = () => {
     const [mm, dd] = (me.birthday || '-').split('-');
@@ -28,7 +34,7 @@ export async function render(el, { me }) {
           ${me.picture ? html`<button class="sm mut linkish" data-p="nopic">Quitar foto</button>` : ''}</div>
       </div>
       <div style="margin-top:14px">${purposeCard(me, { open: true })}</div>
-      ${client ? '' : html`${primerDiaHtml()}${videosHtml()}`}
+      ${client ? '' : html`${primerDiaHtml()}${avisosHtml()}${videosHtml()}`}
 
       ${client ? '' : html`<div class="card" style="margin-top:14px"><h3 class="profh">Sobre ti</h3>
         <div class="form">
@@ -65,6 +71,9 @@ export async function render(el, { me }) {
     const b = e.target.closest('[data-p]'); if (!b) return;
     const a = b.dataset.p;
     if (a === 'pd') return abrirPrimerDia(me);
+    if (a === 'av-on') { try { await AV.activarAvisos(); toast('Avisos activados en este dispositivo'); } catch (err) { toast(err.message, true); } av = await AV.estadoAvisos(); paint(); return; }
+    if (a === 'av-quitar') { await AV.quitarAvisos(); toast('Avisos quitados'); av = await AV.estadoAvisos(); paint(); return; }
+    if (a === 'av-probar') { try { const r = await AV.probarAvisos(); toast(r.mandados ? 'Te mandé un aviso' : 'No llegó a ningún dispositivo', !r.mandados); } catch (err) { toast(err.message, true); } return; }
     if (a === 'save') {
       const d = $('#bdd', el).value, m = $('#bdm', el).value;
       if (Boolean(d) !== Boolean(m)) return toast('Elige día y mes', true);

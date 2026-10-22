@@ -32,6 +32,7 @@ import * as adsStudio from './_lib/ads-studio.js';
 import * as tech from './_lib/tech.js';
 import * as ojo from './_lib/ojo.js';
 import * as guia from './_lib/guia.js';
+import * as avisos from './_lib/avisos.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
@@ -259,7 +260,7 @@ on('POST', 'db/:coll', async (req, res) => {
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
   if (req.params.coll === 'settings' && (id === 'role_views' || b.id === 'role_views')) forgetViews();
   if (req.params.coll === 'settings' && id === 'levels') b = cleanLevels(b);
-  try { res.json(shape(u, req.params.coll, await db.create(req.params.coll, b, u.email, id), null, null)); }
+  try { const creado = await db.create(req.params.coll, b, u.email, id); if (req.params.coll === 'leads') avisos.nuevoLead(creado); res.json(shape(u, req.params.coll, creado, null, null)); }
   catch (e) { if (/duplicate|unique/i.test(e.message)) return res.status(409).json({ error: 'Ya existe' }); throw e; }
 });
 on('PUT', 'db/:coll/:id', async (req, res) => {
@@ -1174,6 +1175,7 @@ tech.rutas(on);
 // ---------- El ojo visual: el contexto de la marca para el puente ----------
 ojo.rutas(on);
 guia.rutas(on);
+avisos.rutas(on);
 
 on('GET', 'search', async (req, res) => {
   const u = await guard(req, res); if (!u) return;

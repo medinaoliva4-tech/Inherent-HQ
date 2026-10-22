@@ -35,7 +35,7 @@ export async function brandBoard({ el, me, id, name, edit, business = false, fol
   function paint() {
     const sp = spotifyEmbed(doc.spotify), imgs = doc.images || [];
     mount(el, html`
-      <section class="sp-panel" style="margin-bottom:16px;padding-bottom:20px"><div class="wkhead" style="flex-wrap:wrap"><h3 class="ttl">${ico('image')} Moodboard</h3><span class="mut sm" style="display:inline">${imgs.length} imagen${imgs.length === 1 ? '' : 'es'}</span><div class="sp"></div>
+      <section class="sp-panel" style="margin-bottom:16px;padding-bottom:20px"><div class="wkhead" style="flex-wrap:wrap"><h3 class="ttl">${ico('image')} Moodboard</h3><span class="mut sm" style="display:inline">${imgs.length} ${imgs.length === 1 ? 'imagen' : 'imágenes'}</span><div class="sp"></div>
           ${HTTPS.test(doc.pinterest) ? html`<a class="chip" href="${doc.pinterest}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;padding:7px 12px">${ico('pin')} Tablero de Pinterest ↗</a>` : ''}
           ${edit ? html`<button class="btn ghost xs" data-act="pin">${doc.pinterest ? 'Cambiar Pinterest' : '+ Link de Pinterest'}</button>` : ''}</div>
         <div class="mut sm" style="margin:6px 0 2px">Lo que se ve, se siente y se quiere parecer. Pega links de imágenes (los pines de Pinterest sirven) o súbelas a Drive.</div>
@@ -71,7 +71,7 @@ export async function brandBoard({ el, me, id, name, edit, business = false, fol
   // Subir a Drive: la carpeta de assets del cliente si existe; la imagen queda en Drive y aquí su vista previa.
   acts(el, { up: async (inp) => {
     const files = [...(inp.files || [])].slice(0, 12); if (!files.length) return;
-    toast(`Subiendo ${files.length} imagen${files.length === 1 ? '' : 'es'} a Drive…`);
+    toast(`Subiendo ${files.length} ${files.length === 1 ? 'imagen' : 'imágenes'} a Drive…`);
     const added = [];
     for (const f of files) { try { const r = await uploadToDrive(f, `Moodboard · ${name} · ${f.name}`, () => {}, folder ? { folder } : {}); added.push({ url: driveThumb(r.id), link: r.link, drive_id: r.id, note: '' }); } catch (e) { toast(`${f.name}: ${e.message}`, true); } }
     inp.value = '';
