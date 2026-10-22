@@ -50,6 +50,9 @@ async function gh(path, init = {}) {
   });
 }
 
+// Otras llamadas a la API de GitHub sobre el repo (ej. las versiones de la app de escritorio). Devuelve la respuesta tal cual.
+export const ghApi = (path, init) => gh(path, init);
+
 export async function readFile(path) {
   if (LOCAL) { try { const c = fs.readFileSync(lp(path), 'utf8'); return { content: c, sha: sha1(c) }; } catch { return null; } }
   if (useSnap()) { const c = RECIENTES.has(path) ? RECIENTES.get(path) : SNAP.files[path]; return c == null ? null : { content: c, sha: sha1(c) }; }

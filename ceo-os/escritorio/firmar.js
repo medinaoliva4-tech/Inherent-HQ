@@ -1,5 +1,6 @@
 // Firma «ad hoc» la app antes de armar el .dmg. Sin una cuenta de Apple Developer no hay firma de verdad, pero una Mac con
-// chip de Apple no abre una app que no tenga ninguna: con esta, la primera vez se abre con clic derecho › Abrir.
+// chip de Apple no abre una app que no tenga ninguna: con esta, la primera vez se abre desde Ajustes › Privacidad y seguridad
+// › «Abrir de todos modos».
 const { execFileSync } = require('node:child_process');
 const path = require('node:path');
 

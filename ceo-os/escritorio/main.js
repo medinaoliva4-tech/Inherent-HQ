@@ -3,8 +3,10 @@
 //   2. Le pasa al OS el token del puente: ya no hay que emparejar la compu ni pegar nada.
 //   3. Al cerrar la app, apaga el puente que prendió (el del instalador lo deja como estaba).
 //   4. Si Laya no está en la Mac, la instala la primera vez (con tu OK): el mismo instalador de un comando, que trae adentro.
+//   5. Se pone al día sola: si hay una versión nueva de la app, avisa y con un clic se reemplaza y se vuelve a abrir.
+//   6. Arranca al 85% del tamaño y recuerda el que elijas (⌘ − / ⌘ + / ⌘ 0).
 // El puente es el mismo archivo de la web (public/laya/puente.py) y corre con el Python de la Mac.
-const { app, BrowserWindow, Menu, shell, dialog, ipcMain, Notification } = require('electron');
+const { app, BrowserWindow, Menu, shell, dialog, ipcMain, Notification, net } = require('electron');
 const { spawn, execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const http = require('node:http');
@@ -146,6 +148,114 @@ function instalarLaya() {
   });
 }
 
+// ---------- El tamaño: arranca al 85% y recuerda el que elijas ----------
+const AJUSTES = path.join(DATOS, 'app-ajustes.json');
+const ZOOM_BASE = 0.85;
+const PASOS_ZOOM = [0.67, 0.75, 0.8, 0.85, 0.9, 1, 1.1, 1.25, 1.5];
+const ajustes = () => { try { return JSON.parse(fs.readFileSync(AJUSTES, 'utf8')); } catch { return {}; } };
+const guardarAjuste = (k, v) => { try { fs.mkdirSync(DATOS, { recursive: true }); fs.writeFileSync(AJUSTES, JSON.stringify({ ...ajustes(), [k]: v })); } catch { /* sin carpeta: no se recuerda */ } };
+const zoom = () => { const z = Number(ajustes().zoom); return z >= 0.5 && z <= 2 ? z : ZOOM_BASE; };
+function ponerZoom(z) { ventana?.webContents.setZoomFactor(z); guardarAjuste('zoom', z); }
+function moverZoom(d) {
+  const z = zoom(); let i = 0;
+  PASOS_ZOOM.forEach((p, k) => { if (Math.abs(p - z) < Math.abs(PASOS_ZOOM[i] - z)) i = k; });
+  ponerZoom(PASOS_ZOOM[Math.max(0, Math.min(PASOS_ZOOM.length - 1, i + d))]);
+}
+
+// ---------- Actualizaciones: la app se pone al día sola ----------
+// Al abrir (y cada 6 horas) le pregunta al OS por la última versión publicada desde main (el repo es privado: el OS la lee
+// con su token y la app pregunta con tu sesión). Si hay una más nueva, avisa. «Actualizar» baja el .zip, cambia la app y la
+// vuelve a abrir. Si macOS no deja cambiarla, muestra la nueva en el Finder para arrastrarla a Aplicaciones.
+const mayor = (a, b) => { const x = String(a).split('.').map(Number), y = String(b).split('.').map(Number); for (let i = 0; i < 3; i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); return false; };
+let actualizando = false, revisando = false, revisado = false, saltada = null;
+
+// Una ruta del OS con la sesión de la ventana. null si la ventana no está en el OS o no respondió.
+async function preguntarOS(ruta) {
+  if (!ventana || !delOS(ventana.webContents.getURL())) return null;
+  const js = `fetch(${JSON.stringify('/api/' + ruta)}, { credentials: 'same-origin', cache: 'no-store' }).then((r) => r.json().then((j) => (r.ok ? j : { error: j.error || r.status }), () => ({ error: r.status }))).catch(() => null)`;
+  try { return await ventana.webContents.executeJavaScript(js, true); } catch { return null; }
+}
+
+// Devuelve true si el OS contestó (haya o no versión nueva).
+async function buscarActualizacion(aMano = false) {
+  if (actualizando || revisando) return false;
+  revisando = true;
+  try {
+    const v = await preguntarOS('escritorio/version');
+    if (!v || v.error) {
+      if (aMano) await dialog.showMessageBox(ventana, { type: 'info', message: 'No pude revisar si hay una versión nueva', detail: 'Abre el OS con tu sesión iniciada y vuelve a intentarlo.', buttons: ['Entendido'] });
+      return false;
+    }
+    if (!v.version || !mayor(v.version, app.getVersion())) {
+      if (aMano) await dialog.showMessageBox(ventana, { type: 'info', message: `Ya tienes la última versión (${app.getVersion()})`, buttons: ['Entendido'] });
+      return true;
+    }
+    if (!aMano && saltada === v.version) return true;
+    const r = await dialog.showMessageBox(ventana, {
+      type: 'info',
+      message: `Hay una versión nueva de Inherent OS (${v.version})`,
+      detail: `Tienes la ${app.getVersion()}. Se baja, se cambia y la app se vuelve a abrir sola. Tarda un par de minutos.`,
+      buttons: ['Actualizar', 'Después'],
+      defaultId: 0,
+      cancelId: 1,
+    });
+    if (r.response === 0) actualizar(); else saltada = v.version;
+    return true;
+  } finally { revisando = false; }
+}
+
+const CAMBIAR = `#!/bin/bash
+# Cambia la app por la versión nueva cuando la vieja termina de cerrarse, y la vuelve a abrir.
+pid="$1"; actual="$2"; nueva="$3"
+for _ in $(seq 1 60); do kill -0 "$pid" 2>/dev/null || break; sleep 0.5; done
+xattr -dr com.apple.quarantine "$nueva" 2>/dev/null
+if mv "$actual" "$actual.vieja" 2>/dev/null; then
+  if mv "$nueva" "$actual"; then rm -rf "$actual.vieja"; open "$actual"; exit 0; fi
+  mv "$actual.vieja" "$actual"
+fi
+open -R "$nueva"
+osascript -e 'display dialog "macOS no dejó que Inherent OS se cambiara sola. Arrastra la app nueva (la que ves en el Finder) a Aplicaciones y reemplaza la anterior." buttons {"Entendido"} default button 1 with title "Inherent OS"' >/dev/null 2>&1
+`;
+
+async function actualizar() {
+  actualizando = true;
+  const fallo = async (m) => {
+    actualizando = false; ventana?.setProgressBar(-1);
+    await dialog.showMessageBox(ventana, { type: 'warning', message: 'No se pudo actualizar', detail: `${m}\n\nLa app sigue funcionando. Puedes bajar la versión nueva desde la página de descargas.`, buttons: ['Entendido'] });
+  };
+  if (process.platform !== 'darwin') return fallo('La actualización automática es para Mac.');
+  const d = await preguntarOS(`escritorio/descarga?arch=${process.arch === 'x64' ? 'x64' : 'arm64'}`);
+  if (!d?.url) return fallo(d?.error ? String(d.error) : 'El OS no respondió.');
+  let host = ''; try { host = new URL(d.url).host; } catch { /* link raro */ }
+  if (!/(^|\.)githubusercontent\.com$|(^|\.)github\.com$/.test(host)) return fallo('El link de descarga no es de GitHub.');
+  const dir = path.join(app.getPath('temp'), 'inherent-os-actualizacion');
+  const zip = path.join(dir, 'app.zip');
+  try {
+    fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+    const r = await net.fetch(d.url);
+    if (!r.ok || !r.body) throw new Error(`La descarga respondió ${r.status}.`);
+    const total = Number(r.headers.get('content-length')) || d.tam || 0;
+    const out = fs.createWriteStream(zip); let bajado = 0;
+    for await (const parte of r.body) {
+      bajado += parte.length;
+      if (!out.write(parte)) await new Promise((ok) => out.once('drain', ok));
+      if (total) ventana?.setProgressBar(Math.min(1, bajado / total));
+    }
+    await new Promise((ok, mal) => { out.on('error', mal); out.end(ok); });
+    ventana?.setProgressBar(2); // sin porcentaje mientras se abre el .zip
+    execFileSync('/usr/bin/ditto', ['-x', '-k', zip, dir]);
+  } catch (e) { return fallo(String(e.message || e)); }
+  const nombre = fs.readdirSync(dir).find((n) => n.endsWith('.app'));
+  if (!nombre) return fallo('El .zip no traía la app.');
+  const nueva = path.join(dir, nombre);
+  const actual = path.resolve(process.execPath, '..', '..', '..'); // …/Inherent OS.app
+  if (!app.isPackaged || !actual.endsWith('.app')) { actualizando = false; ventana?.setProgressBar(-1); shell.showItemInFolder(nueva); return; }
+  const script = path.join(dir, 'cambiar.sh');
+  fs.writeFileSync(script, CAMBIAR);
+  spawn('/bin/bash', [script, String(process.pid), actual, nueva], { detached: true, stdio: 'ignore' }).unref();
+  app.quit();
+}
+
 // ---------- La ventana ----------
 const delOS = (u) => { try { return new URL(u).host === OS_HOST; } catch { return false; } };
 // El inicio de sesión con Google pasa por estas páginas: se quedan en la ventana para volver al OS con la sesión.
@@ -168,15 +278,34 @@ function crearVentana() {
     e.preventDefault();
     shell.openExternal(url);
   });
+  ventana.webContents.on('did-finish-load', () => {
+    if (!ventana) return;
+    ventana.webContents.setZoomFactor(zoom());
+    // La primera vez que el OS carga con sesión, se revisa si hay versión nueva.
+    if (!revisado && delOS(ventana.webContents.getURL())) setTimeout(async () => { if (await buscarActualizacion()) revisado = true; }, 5000);
+  });
+  ventana.webContents.on('zoom-changed', (e, dir) => moverZoom(dir === 'in' ? 1 : -1));
   ventana.on('closed', () => { ventana = null; });
   ventana.loadURL(OS_URL);
 }
 
 function menu() {
   const m = [
-    { role: 'appMenu' },
+    { label: app.name, submenu: [
+      { role: 'about', label: `Acerca de ${app.name}` },
+      { label: 'Buscar actualizaciones…', click: () => buscarActualizacion(true) },
+      { type: 'separator' },
+      { role: 'hide', label: `Ocultar ${app.name}` }, { role: 'hideOthers', label: 'Ocultar otros' }, { role: 'unhide', label: 'Mostrar todo' },
+      { type: 'separator' },
+      { role: 'quit', label: `Salir de ${app.name}` },
+    ] },
     { role: 'editMenu' },
-    { label: 'Ver', submenu: [{ role: 'reload', label: 'Recargar' }, { role: 'forceReload', label: 'Recargar sin caché' }, { type: 'separator' }, { role: 'resetZoom', label: 'Tamaño real' }, { role: 'zoomIn', label: 'Acercar' }, { role: 'zoomOut', label: 'Alejar' }, { type: 'separator' }, { role: 'togglefullscreen', label: 'Pantalla completa' }, { role: 'toggleDevTools', label: 'Herramientas de desarrollo' }] },
+    { label: 'Ver', submenu: [{ role: 'reload', label: 'Recargar' }, { role: 'forceReload', label: 'Recargar sin caché' }, { type: 'separator' },
+      { label: 'Tamaño normal', accelerator: 'CmdOrCtrl+0', click: () => ponerZoom(ZOOM_BASE) },
+      { label: 'Acercar', accelerator: 'CmdOrCtrl+Plus', click: () => moverZoom(1) },
+      { label: 'Acercar', accelerator: 'CmdOrCtrl+=', visible: false, click: () => moverZoom(1) },
+      { label: 'Alejar', accelerator: 'CmdOrCtrl+-', click: () => moverZoom(-1) },
+      { type: 'separator' }, { role: 'togglefullscreen', label: 'Pantalla completa' }, { role: 'toggleDevTools', label: 'Herramientas de desarrollo' }] },
     { label: 'Puente', submenu: [
       { label: 'Reiniciar el puente', click: async () => { apagarPuente(); await prenderPuente(); ventana?.webContents.reload(); } },
       { label: 'Instalar Laya', click: () => instalarLaya() },
@@ -199,6 +328,7 @@ else {
     if (!(await ofrecerLaya()) && estado === 'sin-herramientas') avisarHerramientas();
   });
   app.on('activate', () => { if (!ventana) crearVentana(); });
+  setInterval(() => buscarActualizacion(), 6 * 60 * 60 * 1000);
   app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
   app.on('before-quit', () => { apagarPuente(); if (instalando) { try { instalando.proc.kill('SIGTERM'); } catch { /* ya terminó */ } } });
 }
