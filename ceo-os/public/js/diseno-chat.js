@@ -85,7 +85,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     // La barra fija de arriba: el cliente, el mes y el panel; abajo, las etapas en orden.
     const etapaHtml = () => html`${barraChat({ cliente: { act: 'marca-cambiar', mono: initials(b.name), nombre: b.name }, panel: chat.area,
         derecha: html`<button type="button" class="cb-ib txt" data-act="mesdg" aria-haspopup="listbox">${Mes()} ▾</button>`,
-        pasos: html`${ETAPAS.map(([k, l, dep], i) => html`${i ? html`<span class="cb-sep">›</span>` : ''}<button type="button" class="dg-e ${chat.etapa === k ? 'on' : ''} ${hecha(k) ? 'ok' : ''}" data-act="etapa" data-e="${k}" title="${dep}${abierta(k) ? '' : ' · todavía cerrada'}"><i>${hecha(k) ? ico('check', 11) : abierta(k) ? i + 1 : ico('lock', 11)}</i>${l}</button>`)}` })}
+        pasos: html`${ETAPAS.map(([k, l, dep], i) => html`${i ? html`<span class="cb-sep">›</span>` : ''}<button type="button" class="dg-e ${chat.etapa === k ? 'on' : ''} ${hecha(k) ? 'ok' : ''}" data-act="etapa" data-e="${k}" title="${dep}${abierta(k) ? '' : ' · todavía cerrada'}"><i>${hecha(k) ? ico('check', 11) : abierta(k) ? i + 1 : ico('lock', 11)}</i>${l}</button>`)}${chat.suelta ? '' : html`<button type="button" class="cb-mini" data-act="suelta" title="Algo puntual que no sale del plan: va directo a Diseño">${ico('plus', 11)} Pieza suelta</button>`}` })}
       ${chat.suelta ? html`<div class="dg-suelta">${ico('alert', 12)} Pieza suelta: no sale de la estrategia ni del plan del mes. <button type="button" class="linkish" data-act="suelta">Volver a la secuencia</button></div>` : ''}`;
     // Lo que se pide en cada etapa: el título del chat vacío y las sugerencias de arriba de la caja.
     const ayuda = () => ({ plan: ['target', `El plan de ${nombreMes(chat.mes)}`, 'Qué se dice este mes, en qué canal y en qué semana, y para qué sirve cada pieza. Sale de la estrategia aprobada.', ['Arma el plan del mes', '¿Este mes es campaña o pilar?', 'Reparte las piezas por semana']],
@@ -151,7 +151,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     let libData = null; // la lista de la Library (se pide al abrirla)
     const nombreCtx = (k) => etiquetaCtx(k, { marca: b.name, ideas, libT: chat.libT });
     function chipsHtml() {
-      return html`<span class="dz-chip fijo" title="La marca: su ficha, su estrategia y su design system">${b.name}</span>${chat.hormozi ? html`<span class="dz-chip fijo">Hormozi</span>` : ''}${chat.etapa === 'diseno' ? html`<span class="dz-chip fijo">${chat.formato}</span>` : ''}
+      return html`<span class="dz-chip fijo" title="La marca: su ficha, su estrategia y su design system">${b.name}</span>${chat.etapa === 'diseno' ? html`<button type="button" class="dz-chip dz-chip-sel" data-act="formato" aria-haspopup="listbox" title="Cambiar el formato">${chat.formato} ▾</button>` : ''}${chat.hormozi ? html`<span class="dz-chip" title="Oferta, valor y demanda en cada respuesta">Hormozi<button type="button" data-act="hz-x" aria-label="Quitar el lente Hormozi">×</button></span>` : ''}
         ${chat.ctx.map((k) => html`<span class="dz-chip" title="${chat.enviados.includes(k) ? 'Ya lo leyó en esta conversación' : 'Lo lee en tu próximo mensaje'}">${nombreCtx(k)}<button type="button" data-act="ctx-x" data-k="${k}" aria-label="Quitar ${nombreCtx(k)}">×</button></span>`)}
         ${S.lamina ? html`<span class="dz-chip">${S.lamina.nombre}<button type="button" data-act="sin-lamina" aria-label="Quitar la lámina">×</button></span>` : ''}`;
     }
@@ -175,16 +175,12 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         else if (vista === 'formato') mount(m, html`<header class="dz-ph"><button type="button" class="dz-back" data-vista="inicio" aria-label="Volver">${ico('arrow-left', 14)}</button><b>Formato</b></header><div class="dz-ol">${FORMATOS.map(([f, dsc]) => html`<button type="button" class="dz-o ${chat.formato === f ? 'on' : ''}" data-fmt="${f}"><span class="dz-oi">${ico('layers', 14)}</span><span class="dz-ot">${f}<small>${dsc}</small></span><span class="dz-ck">${chat.formato === f ? ico('check', 12) : ''}</span></button>`)}</div>`);
         else mount(m, html`<header class="dz-ph"><b>Contexto</b><span class="mut sm">Lo que el chat lee antes de responder</span></header><div class="dz-ol">
           <button type="button" class="dz-o on" data-marca="1"><span class="dz-oi">${initials(b.name)}</span><span class="dz-ot">Cliente · ${b.name}<small>Su ficha, su estrategia, su marca y su design system · cambiar</small></span><span class="dz-n">${ico('right', 12)}</span></button>
-          ${MESES_CTX().map((mes) => fila(`cal:${mes}`, 'cal', nombreCtx(`cal:${mes}`), `${deMes(mes)} pieza${deMes(mes) === 1 ? '' : 's'} con fecha · lo que falta diseñar, con su slot`))}
-          ${fila(`plan:${MESES_CTX()[0]}`, 'target', nombreCtx(`plan:${MESES_CTX()[0]}`), 'El mensaje, los pilares y la función de cada canal (del repo)')}
-          ${ir('ideas', 'Ideas del calendario', 'Una o varias, con su guion', nIdeas)}
-          ${ir('lib', 'Un documento de la Library', 'SOPs, entrevistas, notas', nLib)}
-          ${fila('refs', 'play', 'Investigación', refs.length ? `${refs.filter((x) => x.replicar).length || Math.min(8, refs.length)} referentes ${refs.some((x) => x.replicar) ? 'marcados «Usar como formato»' : 'con más vistas'}` : 'Todavía no hay nada en Investigación', refs.length ? '' : 'disabled')}</div>
-          <header class="dz-ph" style="margin-top:4px"><b>Cómo trabaja</b></header><div class="dz-ol">
-          ${tg('hormozi', 'target', 'Lente Hormozi', 'Oferta, valor y demanda en cada respuesta')}
-          ${tg('area', 'layers', 'Área de trabajo', 'Lo acordado se arma a la derecha')}
-          ${chat.etapa === 'diseno' ? html`<button type="button" class="dz-o" data-vista="formato"><span class="dz-oi">${ico('layers', 14)}</span><span class="dz-ot">Formato · ${chat.formato}<small>Carrusel, estático, story o plantilla</small></span><span class="dz-n">${ico('right', 12)}</span></button>` : ''}
-          ${tg('suelta', 'alert', 'Pieza suelta', 'Algo puntual que no sale del plan: va directo a Diseño')}</div>`);
+          ${fila('refs', 'play', 'Investigación', refs.length ? `${refs.filter((x) => x.replicar).length || Math.min(8, refs.length)} posts ganadores ${refs.some((x) => x.replicar) ? 'marcados «Usar como formato»' : 'de su mercado'}` : 'Todavía no hay nada en Investigación', refs.length ? '' : 'disabled')}
+          ${ir('lib', 'Documentos de la Library', 'SOPs, entrevistas, notas', nLib)}
+          <button type="button" class="dz-o ${chat.hormozi ? 'on' : ''}" data-tg="hormozi"><span class="dz-oi">${ico('target', 14)}</span><span class="dz-ot">Lente Hormozi<small>Oferta, valor y demanda en cada respuesta</small></span><span class="dz-ck">${chat.hormozi ? ico('check', 12) : ''}</span></button>
+          ${MESES_CTX().map((mes) => fila(`cal:${mes}`, 'cal', nombreCtx(`cal:${mes}`), `${deMes(mes)} pieza${deMes(mes) === 1 ? '' : 's'} con fecha · lo que falta diseñar`))}
+          ${fila(`plan:${MESES_CTX()[0]}`, 'target', nombreCtx(`plan:${MESES_CTX()[0]}`), 'El mensaje, los pilares y la función de cada canal')}
+          ${ir('ideas', 'Ideas del calendario', 'Una o varias, con su guion', nIdeas)}</div>`);
         const inp = m.querySelector('[data-q]'); if (inp) { inp.oninput = () => { q = inp.value; pinta(); const n = m.querySelector('[data-q]'); n.focus(); n.setSelectionRange(q.length, q.length); }; }
       };
       pinta(); box.append(m); ubicarPop(m, box); anchor.setAttribute('aria-expanded', 'true');
@@ -193,7 +189,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         if (e.target.closest('[data-marca]')) { m.remove(); return menuMarcas(anchor, b.slug); }
         const f = e.target.closest('[data-fmt]'); if (f) { chat.formato = f.dataset.fmt; guardar(); repintarCaja(); vista = 'inicio'; return pinta(); }
         const g = e.target.closest('[data-tg]');
-        if (g) { const k = g.dataset.tg; chat[k] = !chat[k]; if (k === 'suelta' && chat.suelta) chat.etapa = 'diseno'; if (k === 'suelta' && !chat.suelta && !abierta(chat.etapa)) chat.etapa = 'plan'; guardar(); if (k === 'area') ponerArea(); if (k === 'suelta') { m.remove(); paintChat(); paintPane(); return; } repintarCaja(); return pinta(); }
+        if (g) { chat.hormozi = !chat.hormozi; guardar(); repintarCaja(); return pinta(); }
         const o = e.target.closest('[data-ck]'); if (!o || o.disabled) return;
         const k = o.dataset.ck; if (k.startsWith('lib:')) { const d = libData?.docs.find((x) => `lib:${x.id}` === k); if (d) chat.libT[d.id] = d.titulo; }
         toggleCtx(k); pinta();
@@ -450,6 +446,8 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (a === 'idea-enviar') { const x = chat.ideasProp[+t.dataset.i]; return x ? enviarIdeas([x]) : null; }
       if (a === 'ctx') return document.querySelector('.dz-ctxp') ? (document.querySelector('.dz-ctxp').remove(), t.setAttribute('aria-expanded', 'false')) : panelCtx(t);
       if (a === 'ctx-x') return toggleCtx(t.dataset.k);
+      if (a === 'hz-x') { chat.hormozi = false; guardar(); return repintarCaja(); }
+      if (a === 'formato') return menuDz(t, FORMATOS.map(([f, dsc]) => ({ label: f, sub: dsc, on: chat.formato === f, pick: () => { chat.formato = f; guardar(); repintarCaja(); } })));
       if (a === 'sin-lamina') { S.lamina = null; repintarCaja(); paintPane(); return; }
       if (a === 'lamina') { const l = chat.resultado?.laminas.find((x) => x.id === t.dataset.id); S.lamina = S.lamina?.id === l?.id ? null : l; paintPane(); repintarCaja(); $('#dz-in', chatEl)?.focus(); return; }
       if (a === 'opcion') { t.closest('.es-q')?.classList.add('hecha'); return enviar(t.dataset.t); }
