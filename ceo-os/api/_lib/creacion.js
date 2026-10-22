@@ -23,6 +23,8 @@ async function abre(req, res, slug, write = false) {
   if (!(await puedeVer(u, slug))) { res.status(404).json({ error: 'Esa marca no está entre las tuyas' }); return null; }
   return u;
 }
+// La misma puerta para los otros módulos de una marca (Video, Ads, Tech): Contenido completo y la marca entre las tuyas.
+export const abreMarca = abre;
 const deMarca = async (coll, slug) => (await db.list(coll)).filter((x) => x.profile === slug && !x.archivado);
 const formatoDe = async (id) => BASE.find((f) => f.id === id) || (await db.get(COLL_F, id).catch(() => null));
 

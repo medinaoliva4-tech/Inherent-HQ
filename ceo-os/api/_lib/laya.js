@@ -13,7 +13,7 @@ import { marcaDe } from '../../public/js/element.js';
 import { PUERTAS, GATES_ID, MODELO, ENGINES, ENGINE_LISTO, INSTALAR_MCP, puertaDeDoc, puertasDe, limpiarPuertas, preguntasDe, textoDe, leerRespuesta, resumen } from '../../public/js/laya.js';
 
 export const COLL = 'judgments';
-const TARGETS = ['leads', 'invoices', 'content', 'strategy'];
+const TARGETS = ['leads', 'invoices', 'content', 'strategy', 'ad_variants'];
 const idOk = (s) => /^[\w.@+-]{1,120}$/.test(String(s || ''));
 const lc = (x) => String(x || '').toLowerCase();
 const pendId = (gate, coll, id) => `pend-${gate}-${coll}-${id}`.toLowerCase().slice(0, 200);
@@ -34,10 +34,12 @@ export async function verObjetivo(u, coll, id, cache = {}) {
   }
   const sum = summaryOf(u, coll); if (d && sum) d = sum(d);
   if (d && coll === 'leads') { const sc = await (cache._sc ??= scoper(u)); if (!inScope(sc, 'leads', d)) d = null; }
-  if (d && coll === 'content') {
+  if (d && (coll === 'content' || coll === 'ad_variants')) {
     if (d.profile === 'personal' && u.role !== 'ceo') d = null;
     else if (d.profile && d.profile !== 'inherent') { const sc = await (cache._sc ??= scoper(u)); if (sc && !sc.client(d.profile)) d = null; }
   }
+  // Un anuncio de Google no tiene texto principal: Laya juzga sus títulos y descripciones.
+  if (d && coll === 'ad_variants' && d.plataforma === 'google') d = { ...d, caption: [...(d.google?.titulos || []), ...(d.google?.descripciones || [])].join('\n') };
   return (cache[k] = d || null);
 }
 // Pedir o guardar un juicio cambia algo del área del elemento: hace falta nivel «edita» ahí.

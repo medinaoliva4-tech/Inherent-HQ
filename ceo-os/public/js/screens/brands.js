@@ -1,7 +1,8 @@
 // Marcas (App 01): cómo se crean marcas creativas. Arriba, una tile por marca (los clientes activos, Inherent y la marca
 // personal del CEO, con candado). Al entrar a una marca: Investigación · Ideas · Calendario · Marca (lo que ya existía en
 // Contenido, Mi marca y Cliente → Marca, montado con la marca fija), el Design system (el sistema-visual.md de la marca) y,
-// como «Próximamente», Video y Ads. Las pestañas de la marca viven en la barra de abajo de la de arriba (subnav de app.js).
+// Video (kit y fichas), Ads (variaciones con el OK del CEO) y Tech (sitios, web viva y SEO). Las pestañas de la marca viven en
+// la barra de abajo de la de arriba (subnav de app.js).
 // Rutas: #/marcas · #/marcas/<marca> · #/marcas/<marca>/<módulo>/…
 import { html, mount, col, ico, initials, fdate, today, events, $ } from '../core.js';
 import { loadBrands, brandAccess, MODULES, FLUJO, areaOf, modulesFor, defaultModule, isSoon } from '../brandlist.js';
@@ -17,6 +18,9 @@ import { creacionUI } from '../creacion-ui.js';
 import { designSystemUI } from '../design-system-ui.js';
 import { disenoChat } from '../diseno-chat.js';
 import { planMesUI } from '../plan-mes-ui.js';
+import { videoUI } from '../video-ui.js';
+import { adsUI } from '../ads-ui.js';
+import { techUI } from '../tech-ui.js';
 import { canEdit } from '../roleviews.js';
 
 const TONE = ['', 't1', 't2'];
@@ -89,6 +93,9 @@ export async function render(el, { me, sub = [], alive }) {
     if (mod === 'creacion') return creacionUI(box, { me, b, alive, rest });
     if (mod === 'design') return designSystemUI(box, { me, b, alive });
     if (mod === 'plan') return planMesUI(box, { me, b, alive, rest });
+    if (mod === 'video') return videoUI(box, { me, b, alive });
+    if (mod === 'ads') return adsUI(box, { me, b, alive });
+    if (mod === 'tech') return techUI(box, { me, b, alive });
     if (mod === 'resultados') { box.dataset.island = '1'; return content(box, { ...common, sub: ['analytics'], embed: { base, only: ['analytics'], brand: b.name } }); }
     if (mod === 'investigacion') { box.dataset.island = '1'; return content(box, { ...common, sub: ['research'], embed: { base, only: ['research'], inspo: Boolean(b.personal), plat: rest[0], brand: b.name } }); }
     if (mod === 'ideas') { box.dataset.island = '1'; return content(box, { ...common, sub: ['postear'], embed: { base, only: ['postear'], brand: b.name } }); }

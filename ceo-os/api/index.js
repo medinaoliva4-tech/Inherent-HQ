@@ -27,6 +27,9 @@ import * as inv from './_lib/investigacion.js';
 import * as buscar from './_lib/buscar.js';
 import * as escritorio from './_lib/escritorio.js';
 import * as internos from './_lib/internos.js';
+import * as video from './_lib/video.js';
+import * as adsStudio from './_lib/ads-studio.js';
+import * as tech from './_lib/tech.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
@@ -119,6 +122,8 @@ async function collGuard(req, res, write) {
   if (coll === 'formats' || coll === 'scripts') { res.status(404).json({ error: 'Formatos y guiones están en /api/formatos y /api/guiones' }); return null; }
   // El plan del mes pide la estrategia aprobada: solo por /api/plan, que lo revisa.
   if (coll === 'plans') { res.status(404).json({ error: 'El plan del mes está en /api/plan' }); return null; }
+  // Video, Ads y Tech de cada marca: solo por sus rutas (el OK del CEO para pautar y la web viva viven ahí).
+  if (coll === 'videos' || coll === 'ad_variants' || coll === 'tech') { res.status(404).json({ error: 'Esto está en /api/video, /api/ads-studio y /api/tech' }); return null; }
   const any = coll === 'settings' && !write ? null : [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])];
   const u = any ? await guardAny(req, res, any, { write }) : await guard(req, res); if (!u) return null;
   if (!canRead(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO ve esto' }); return null; }
@@ -1160,6 +1165,10 @@ inv.rutas(on);
 escritorio.rutas(on);
 // ---------- Lo interno (costos, baseline, paquetes por industria): solo desde el servidor ----------
 internos.rutas(on);
+// ---------- App 01 · Marca › Video, Ads y Tech ----------
+video.rutas(on);
+adsStudio.rutas(on);
+tech.rutas(on);
 
 on('GET', 'search', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
