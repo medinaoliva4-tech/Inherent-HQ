@@ -1,0 +1,53 @@
+# Inherent OS para Mac: arma la app de escritorio (con el puente adentro) en una Mac de GitHub y la deja en Releases.
+# En main queda como la última versión (el OS la ofrece con «Bajar Inherent OS para Mac»); en otra rama, como versión de prueba.
+# Si algo falla, el registro del armado queda en una versión de prueba «escritorio-registro-N» para poder leerlo.
+name: App de escritorio (Mac)
+
+on:
+  push:
+    branches: [main, 'escritorio-*']
+    paths:
+      - 'ceo-os/escritorio/**'
+      - 'ceo-os/public/laya/puente.py'
+      - '.github/workflows/escritorio.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mac:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Armar la app (chip de Apple e Intel)
+        working-directory: ceo-os/escritorio
+        run: |
+          npm ci --no-audit --no-fund 2>&1 | tee -a "$GITHUB_WORKSPACE/armado.log"
+          npx electron-builder --mac dmg --arm64 --x64 --publish never 2>&1 | tee -a "$GITHUB_WORKSPACE/armado.log"
+          ls -la dist | tee -a "$GITHUB_WORKSPACE/armado.log"
+
+      - name: Publicar en Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p "require('./ceo-os/escritorio/package.json').version")
+          TAG="escritorio-v${VERSION}-${{ github.run_number }}"
+          if [ "${{ github.ref_name }}" = "main" ]; then TIPO="--latest"; else TIPO="--prerelease"; fi
+          gh release create "$TAG" ceo-os/escritorio/dist/Inherent-OS-arm64.dmg ceo-os/escritorio/dist/Inherent-OS-x64.dmg \
+            --target "${{ github.sha }}" $TIPO \
+            --title "Inherent OS para Mac · ${VERSION} (${{ github.run_number }})" \
+            --notes "Baja Inherent-OS-arm64.dmg si tu Mac tiene chip de Apple (M1, M2, M3…) o Inherent-OS-x64.dmg si es Intel. La primera vez: clic derecho sobre la app › Abrir. Rama: ${{ github.ref_name }}."
+
+      - name: Si falla, dejar el registro
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "escritorio-registro-${{ github.run_number }}" armado.log --target "${{ github.sha }}" --prerelease \
+            --title "Registro del armado ${{ github.run_number }} (falló)" --notes "El armado de la app de Mac falló. Rama: ${{ github.ref_name }}." || true

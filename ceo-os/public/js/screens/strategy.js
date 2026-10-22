@@ -5,7 +5,7 @@
 // Rutas: #/estrategia · #/estrategia/<cliente> · #/estrategia/<cliente>/<bloque>
 import { html, raw, mount, api, col, ask, toast, ico, fdate, md, drawer, $, $$, esc, events, confirmAsk, initials } from '../core.js';
 import { juzgarLocal } from '../laya-ui.js';
-import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe } from '../laya.js';
+import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe, APP_MAC, enApp } from '../laya.js';
 import { BLOQUES, ETAPAS, etapaLabel, etapaDe, estadoLabel, fuentesDeEtapa, promptDe } from '../estrategia.js';
 import { loadEstrategia, forgetEstrategia } from '../stratlist.js';
 import { panelViva } from '../estrategia-viva-ui.js';
@@ -74,7 +74,7 @@ export async function render(el, { me, sub = [], alive }) {
     const bl = () => data.bloques.find((x) => x.id === bid);
     const puede = () => data.puede.editar && bl().estado !== 'aprobado';
     const esCeo = () => me.role === 'ceo';
-    const tok = () => { try { return localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
+    const tok = () => { try { return window.inherentEscritorio?.token || localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } }; // en la app de escritorio, el token llega solo
     const setTok = (t) => { try { if (t) localStorage.setItem(`os.estrategia.token.${me.email}`, t); else localStorage.removeItem(`os.estrategia.token.${me.email}`); } catch {} };
     const etapaN = () => (data.etapa ? data.etapa.n : null);
     const etapaTxt = () => (data.etapa ? `${etapaLabel(etapaDe(data.etapa.n))}${data.etapa.confirmada ? '' : ' · sin confirmar'}` : 'Sin etapa');
@@ -231,6 +231,8 @@ export async function render(el, { me, sub = [], alive }) {
       if (f === 'sin-ficha') return html`<div class="es-setup"><b>Sin ficha de oferta, el chat está bloqueado</b><p>El alcance contratado es el techo de todos los agentes. Anótalo en ${data.carpeta}/00-onboarding/plan-contratado.md.</p></div>`;
       if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
       if (f === 'apagado' && chromeBloquea()) return html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p><button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'apagado' && enApp()) return html`<div class="es-setup"><b>El puente de la app no respondió</b><p>En el menú de arriba: Puente › Reiniciar el puente. Si sigue igual, cierra la app y ábrela otra vez.</p><button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
+      if (f === 'apagado' && !win) return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Baja la app de Mac: trae el puente adentro y se prende sola, sin comandos.</p><a class="btn xs" href="${APP_MAC}" target="_blank" rel="noopener">Bajar Inherent OS para Mac</a><p class="mut sm" style="margin-top:12px">O, sin la app, un comando en la Terminal:</p>${cmd(INSTALAR_MAC)}<button class="btn ghost xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat. Corre otra vez el comando y actualiza solo:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'bajando_repo') return html`<div class="es-setup"><b>Preparando la copia del repo</b><p>El puente baja el repo de Inherent la primera vez (un minuto). Después se pone al día solo antes de cada chat.</p><button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;

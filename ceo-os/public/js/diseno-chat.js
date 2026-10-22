@@ -7,7 +7,7 @@
 // lectura; Diseño suma Figma con figwright).
 // Rutas: #/marcas/diseno · #/marcas/diseno/<marca>
 import { html, raw, mount, api, col, toast, ico, md, initials, confirmAsk, ask, uploadToDrive, $, $$ } from './core.js';
-import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe } from './laya.js';
+import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe, APP_MAC, enApp } from './laya.js';
 import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from './puente-chat.js';
 import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoIdea, textoRefs, textoFormatos, carpetaDe } from './diseno.js';
 import { leerSistema } from './sistema-visual.js';
@@ -66,7 +66,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     // El contexto: claves «cal:AAAA-MM» · «plan:AAAA-MM» · «idea:<id>» · «lib:<id>» · «refs». `enviados`: las que esta sesión de Claude ya leyó.
     const chat = (() => { const base = { msgs: [], sesion: null, motor: '', formato: 'Carrusel', ideaId: '', resultado: null, ctx: [], libT: {}, enviados: [], etapa: 'plan', mes: mesesPlan()[1], suelta: false, hormozi: true, area: true, vistas: [], ideasProp: [] }; try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { ...base, ...j, ctx: Array.isArray(j.ctx) ? j.ctx : j.ideaId ? [`idea:${j.ideaId}`] : [], enviados: Array.isArray(j.enviados) ? j.enviados : [] }; } catch {} return base; })();
     const guardar = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta, doc }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}), ...(doc ? { doc } : {}) })), sesion: chat.sesion, motor: chat.motor, etapa: chat.etapa, mes: chat.mes, suelta: chat.suelta, hormozi: chat.hormozi, area: chat.area, vistas: chat.vistas, ideasProp: chat.ideasProp.slice(-40), formato: chat.formato, ideaId: chat.ideaId, resultado: chat.resultado, ctx: chat.ctx, libT: chat.libT, enviados: chat.enviados })); } catch {} };
-    const tok = () => { try { return localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
+    const tok = () => { try { return window.inherentEscritorio?.token || localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } }; // en la app de escritorio, el token llega solo
     const setTok = (t) => { try { if (t) localStorage.setItem(`os.estrategia.token.${me.email}`, t); else localStorage.removeItem(`os.estrategia.token.${me.email}`); } catch {} };
     // Si se llegó desde una herramienta («Trabajarlo en el chat»), abre en esa etapa y ese mes.
     try { const j = JSON.parse(localStorage.getItem('os.dg.etapa') || 'null'); if (j?.slug === b.slug) { if (ETAPAS.some(([k]) => k === j.etapa)) chat.etapa = j.etapa; if (/^\d{4}-\d{2}$/.test(j.mes || '')) chat.mes = j.mes; } localStorage.removeItem('os.dg.etapa'); } catch {}
@@ -134,6 +134,8 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (f === 'sin-sistema') return html`<div class="es-setup"><b>${b.name} todavía no tiene su sistema visual</b><p>Sin sistema visual, ⑥A Diseño gráfico no arranca. Lo escribe ②B Branding con br-sistema.</p><a class="btn xs" href="#/marcas/${b.slug}/design">Ver el Design system</a></div>`;
       if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
       if (f === 'apagado' && chromeBloquea()) return html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p>${otra}</div>`;
+      if (f === 'apagado' && enApp()) return html`<div class="es-setup"><b>El puente de la app no respondió</b><p>En el menú de arriba: Puente › Reiniciar el puente. Si sigue igual, cierra la app y ábrela otra vez.</p>${otra}</div>`;
+      if (f === 'apagado' && inst === INSTALAR_MAC) return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Baja la app de Mac: trae el puente adentro y se prende sola, sin comandos.</p><a class="btn xs" href="${APP_MAC}" target="_blank" rel="noopener">Bajar Inherent OS para Mac</a><p class="mut sm" style="margin-top:12px">O, sin la app, un comando en la Terminal:</p>${cmd(inst)}${otra}</div>`;
       if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(inst)}${otra}</div>`;
       if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat de Diseño. Corre otra vez el comando y se actualiza solo:</p>${cmd(inst)}${otra}</div>`;
       if (f === 'motor') return faltaHtml(faltaMotor(me, S.salud?.chat, { diseno: true }), cmd);

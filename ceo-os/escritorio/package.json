@@ -1,0 +1,33 @@
+{
+  "name": "inherent-os-escritorio",
+  "productName": "Inherent OS",
+  "version": "0.1.0",
+  "description": "Inherent OS como app de escritorio, con el puente de Laya adentro.",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "mac": "electron-builder --mac dmg --arm64 --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "electron-builder": "26.16.1"
+  },
+  "build": {
+    "appId": "global.inherent.os",
+    "productName": "Inherent OS",
+    "artifactName": "Inherent-OS-${arch}.${ext}",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["main.js", "preload.js", "package.json"],
+    "extraResources": [{ "from": "../public/laya/puente.py", "to": "puente/puente.py" }],
+    "afterPack": "./firmar.js",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.png",
+      "identity": null,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "dmg": { "title": "Inherent OS" }
+  }
+}

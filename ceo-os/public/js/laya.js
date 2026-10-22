@@ -25,6 +25,9 @@ export const COMANDO = `${INSTALAR} && ${ENCENDER}`;
 // El instalador de un comando (public/laya/): deja el puente corriendo siempre en la compu de cada quien.
 export const INSTALADOR = 'https://inherent-work.vercel.app/laya';
 export const INSTALAR_MAC = `curl -fsSL ${INSTALADOR}/instalar.sh | bash`;
+// La app de Mac, con el puente adentro: GitHub la arma sola en cada cambio y la deja en Releases.
+export const APP_MAC = 'https://github.com/medinaoliva4-tech/Inherent-HQ/releases/latest';
+export const enApp = () => typeof window !== 'undefined' && Boolean(window.inherentEscritorio);
 export const INSTALAR_WIN = `irm ${INSTALADOR}/instalar.ps1 | iex`;
 // El modelo local (opcional): el mismo instalador con --modelo-local / -ModeloLocal. Instala Ollama y un modelo
 // pequeño que escribe español para el texto repetitivo (variantes de caption, alt text, títulos cortos).
