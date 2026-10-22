@@ -16,6 +16,7 @@ import { promptPlan, leerPlan, sinBloqueP, NOMBRE_P, nombreMes } from './plan-me
 import { planPanel, pasarPlan, mesesPlan } from './plan-mes-ui.js';
 import { promptIdeas, leerIdeas, sinBloqueI } from './ideas-chat.js';
 import { divisor, ubicarPop } from './divisor.js';
+import { docHtml, tarjetaDoc, barraChat } from './artifact.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, motorDe, nombreMotor } from './motor-ui.js';
 
 const IMGS = new Map(); // `${marca}|${nodo}` → data URL (solo en memoria: pesan)
@@ -64,7 +65,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     const key = `os.diseno.chat.${me.email}.${b.slug}`;
     // El contexto: claves «cal:AAAA-MM» · «plan:AAAA-MM» · «idea:<id>» · «lib:<id>» · «refs». `enviados`: las que esta sesión de Claude ya leyó.
     const chat = (() => { const base = { msgs: [], sesion: null, motor: '', formato: 'Carrusel', ideaId: '', resultado: null, ctx: [], libT: {}, enviados: [], etapa: 'plan', mes: mesesPlan()[1], suelta: false, hormozi: true, area: true, vistas: [], ideasProp: [] }; try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { ...base, ...j, ctx: Array.isArray(j.ctx) ? j.ctx : j.ideaId ? [`idea:${j.ideaId}`] : [], enviados: Array.isArray(j.enviados) ? j.enviados : [] }; } catch {} return base; })();
-    const guardar = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}) })), sesion: chat.sesion, motor: chat.motor, etapa: chat.etapa, mes: chat.mes, suelta: chat.suelta, hormozi: chat.hormozi, area: chat.area, vistas: chat.vistas, ideasProp: chat.ideasProp.slice(-40), formato: chat.formato, ideaId: chat.ideaId, resultado: chat.resultado, ctx: chat.ctx, libT: chat.libT, enviados: chat.enviados })); } catch {} };
+    const guardar = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta, doc }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}), ...(doc ? { doc } : {}) })), sesion: chat.sesion, motor: chat.motor, etapa: chat.etapa, mes: chat.mes, suelta: chat.suelta, hormozi: chat.hormozi, area: chat.area, vistas: chat.vistas, ideasProp: chat.ideasProp.slice(-40), formato: chat.formato, ideaId: chat.ideaId, resultado: chat.resultado, ctx: chat.ctx, libT: chat.libT, enviados: chat.enviados })); } catch {} };
     const tok = () => { try { return localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
     const setTok = (t) => { try { if (t) localStorage.setItem(`os.estrategia.token.${me.email}`, t); else localStorage.removeItem(`os.estrategia.token.${me.email}`); } catch {} };
     // Si se llegó desde una herramienta («Trabajarlo en el chat»), abre en esa etapa y ese mes.
@@ -80,9 +81,20 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     // Todo pide la estrategia aprobada; la pieza suelta es la única que entra directo (y solo a Diseño).
     const abierta = (k) => (k === 'diseno' && chat.suelta) || Boolean(E.estrategia?.aprobada && (k === 'plan' || (k === 'ideas' ? planHecho() : E.conIdea > 0)));
     const hecha = (k) => (k === 'plan' ? planHecho() : k === 'ideas' ? E.conIdea > 0 : Boolean(chat.resultado?.guardado));
-    const etapaHtml = () => html`<div class="dg-et">${ETAPAS.map(([k, l, dep], i) => html`<button type="button" class="dg-e ${chat.etapa === k ? 'on' : ''} ${hecha(k) ? 'ok' : ''}" data-act="etapa" data-e="${k}" title="${dep}${abierta(k) ? '' : ' · todavía cerrada'}"><i>${hecha(k) ? ico('check', 11) : abierta(k) ? i + 1 : ico('lock', 11)}</i>${l}</button>`)}
-      <span class="sp"></span><button type="button" class="es-pick" data-act="mesdg" aria-haspopup="listbox">${nombreMes(chat.mes).replace(/^./, (c) => c.toUpperCase())} ▾</button><button type="button" class="ver-panel" data-act="panel-tg" title="Ocultar o mostrar el panel de la derecha">${ico('layers', 13)}<span class="vp-o">Ocultar panel</span><span class="vp-v">Ver panel</span></button></div>
+    const Mes = () => nombreMes(chat.mes).replace(/^./, (c) => c.toUpperCase());
+    // La barra fija de arriba: el cliente, el mes y el panel; abajo, las etapas en orden.
+    const etapaHtml = () => html`${barraChat({ cliente: { act: 'marca-cambiar', mono: initials(b.name), nombre: b.name }, panel: chat.area,
+        derecha: html`<button type="button" class="cb-ib txt" data-act="mesdg" aria-haspopup="listbox">${Mes()} ▾</button>`,
+        pasos: html`${ETAPAS.map(([k, l, dep], i) => html`${i ? html`<span class="cb-sep">›</span>` : ''}<button type="button" class="dg-e ${chat.etapa === k ? 'on' : ''} ${hecha(k) ? 'ok' : ''}" data-act="etapa" data-e="${k}" title="${dep}${abierta(k) ? '' : ' · todavía cerrada'}"><i>${hecha(k) ? ico('check', 11) : abierta(k) ? i + 1 : ico('lock', 11)}</i>${l}</button>`)}` })}
       ${chat.suelta ? html`<div class="dg-suelta">${ico('alert', 12)} Pieza suelta: no sale de la estrategia ni del plan del mes. <button type="button" class="linkish" data-act="suelta">Volver a la secuencia</button></div>` : ''}`;
+    // Lo que se pide en cada etapa: el título del chat vacío y las sugerencias de arriba de la caja.
+    const ayuda = () => ({ plan: ['target', `El plan de ${nombreMes(chat.mes)}`, 'Qué se dice este mes, en qué canal y en qué semana, y para qué sirve cada pieza. Sale de la estrategia aprobada.', ['Arma el plan del mes', '¿Este mes es campaña o pilar?', 'Reparte las piezas por semana']],
+      ideas: ['bulb', `Las ideas de ${nombreMes(chat.mes)}`, 'Una idea por pieza del plan: qué comunicamos, el formato que ya funciona en Investigación y cómo se adapta.', ['Dame ideas para todas las piezas', 'Ideas para la semana 1', '¿Qué referente nos sirve más?']],
+      diseno: ['edit', `¿Qué diseñamos de ${b.name}?`, 'Se diseña lo que ya se ideó. El chat lee el design system y el kit de redes, y arma las piezas en Figma.', SUGERENCIAS] })[chat.etapa];
+    // El documento de cada etapa (la tarjeta del chat y la cabecera del panel).
+    const docDe = (e) => (e === 'plan' ? { ic: 'target', titulo: `Plan de ${Mes()} · ③ Marketing`, sub: 'Ábrelo para ver el plan completo' }
+      : e === 'ideas' ? { ic: 'bulb', titulo: `Ideas de ${Mes()} · ④ Creatividad`, sub: `${chat.ideasProp.filter((x) => (x.mes || chat.mes) === chat.mes).length} ideas en la mesa` }
+      : { ic: 'layers', titulo: chat.resultado?.titulo || `Las piezas de ${b.name}`, sub: '⑥A Diseño gráfico' });
     // Por qué una etapa está cerrada y qué hacer.
     function cerradaHtml(k) {
       if (k === 'plan') return html`<div class="es-setup"><b>${ico('lock', 14)} Primero, la estrategia</b><p>Nadie hace contenido sin estrategia. La de ${b.name} todavía no está aprobada por el CEO.</p><div class="row" style="gap:8px"><a class="btn xs" href="#/estrategia/${b.slug}">Ir a Estrategia</a><button class="btn ghost xs" data-act="suelta">Es una pieza suelta</button></div></div>`;
@@ -209,29 +221,27 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
 
     function paintChat() {
       const f = fase(), ok = f === 'listo', abre = abierta(chat.etapa);
-      const ph = chat.etapa === 'plan' ? `Qué se dice en ${nombreMes(chat.mes)}, en qué canal y en qué semana…` : chat.etapa === 'ideas' ? 'Pide ideas para un slot, o di qué no te convence…' : chat.resultado ? 'Pide un cambio, o selecciona una lámina y dile qué ajustar…' : `Qué diseñamos de ${b.name}…`;
+      const ph = chat.etapa === 'plan' ? 'Qué se dice este mes, y en qué canal…' : chat.etapa === 'ideas' ? 'Pide ideas para una pieza del plan…' : chat.resultado ? 'Pide un cambio, o selecciona una lámina y dile qué ajustar…' : `Qué diseñamos de ${b.name}…`;
       mount(chatEl, html`${etapaHtml()}<div class="es-msgs" id="dz-msgs" aria-live="polite"></div>
-        ${!abre ? cerradaHtml(chat.etapa) : ok ? html`<div class="es-box cx"><div class="dz-chips" id="dz-chips">${chipsHtml()}</div><form class="es-form" id="dz-form"><textarea class="in" id="dz-in" rows="1" placeholder="${ph}" aria-label="Mensaje para el chat"></textarea></form>
+        ${!abre ? cerradaHtml(chat.etapa) : ok ? html`<div class="ch-sug" id="dz-sug">${sugHtml()}</div><div class="es-box cx"><div class="dz-chips" id="dz-chips">${chipsHtml()}</div><form class="es-form" id="dz-form"><textarea class="in" id="dz-in" rows="1" placeholder="${ph}" aria-label="Mensaje para el chat"></textarea></form>
           <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}<button class="btn es-send" type="submit" form="dz-form" aria-label="Enviar">${ico('right', 16)}</button></div></div>`
           : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
       paintMsgs();
       const ta = $('#dz-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
     }
+    const sugHtml = () => (abierta(chat.etapa) ? ayuda()[3].map((x) => html`<button type="button" data-act="${chat.etapa === 'diseno' ? 'sug' : 'rapido'}" data-t="${x}">${x}</button>`) : '');
     function paintMsgs() {
       const box = $('#dz-msgs', chatEl); if (!box) return;
       chatEl.classList.toggle('vacio', !chat.msgs.length);
-      const H = { plan: ['target', `El plan de ${nombreMes(chat.mes)}`, 'Marketing reparte la estrategia en el tiempo y en los canales: qué se dice, dónde, en qué semana y para qué sirve cada pieza.', ['Arma el plan del mes', '¿Este mes es campaña o pilar?', 'Reparte los slots por semana']],
-        ideas: ['bulb', `Las ideas de ${nombreMes(chat.mes)}`, 'Creatividad toma cada slot del plan y propone ideas que enganchen, inspiradas en lo que funciona en Investigación.', ['Dame ideas para todos los slots', 'Ideas para la semana 1', '¿Qué referente nos sirve más?']],
-        diseno: ['edit', `¿Qué diseñamos de ${b.name}?`, 'Se diseña lo que ya se ideó. El chat lee el design system y el kit de redes, y arma las piezas en Figma.', SUGERENCIAS] }[chat.etapa];
-      mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : html`<div class="es-hint"><span class="es-hint-i">${ico(H[0], 22)}</span><b>${H[1]}</b><p>${H[2]}</p>
-        <div class="dz-sug" ${abierta(chat.etapa) ? '' : raw('hidden')}>${H[3].map((x) => html`<button type="button" data-act="${chat.etapa === 'diseno' ? 'sug' : 'rapido'}" data-t="${x}">${x}</button>`)}</div></div>`);
+      const H = ayuda();
+      mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : html`<div class="es-hint"><b>${H[1]}</b><p>${H[2]}</p></div>`);
       box.scrollTop = box.scrollHeight;
     }
     function msgHtml(m, i) {
       if (m.r === 'u') return html`<div class="es-m u"><div class="es-b">${m.t}</div></div>`;
       const busy = m.stream, ult = i === chat.msgs.length - 1;
       return html`<div class="es-m a"><div class="es-b">${m.tools?.length ? html`<div class="dz-steps">${m.tools.slice(-6).map((t, k, xs) => html`<span class="${busy && k === xs.length - 1 ? 'now' : ''}">${ico(busy && k === xs.length - 1 ? 'spark' : 'check', 12)} ${t}</span>`)}</div>` : ''}${m.t ? md(m.t) : busy ? html`<span class="es-dots-t"><i></i><i></i><i></i></span>` : ''}
-        ${m.err ? html`<p class="es-err">${m.err}</p>` : ''}${m.aplicado?.length ? html`<span class="es-upd"><i>✦</i>${m.aplicado.join(' · ')}</span>` : ''}${m.aviso ? html`<p class="mut sm">${m.aviso}</p>` : ''}
+        ${m.err ? html`<p class="es-err">${m.err}</p>` : ''}${m.aplicado?.length ? html`<span class="es-upd"><i>✦</i>${m.aplicado.join(' · ')}</span>` : ''}${m.aviso ? html`<p class="mut sm">${m.aviso}</p>` : ''}${m.doc && !chat.area ? tarjetaDoc(docDe(m.doc)) : ''}
         ${m.pregunta ? html`<div class="es-q ${ult ? '' : 'hecha'}"><span class="lbl">Una pregunta antes de seguir</span><b>${m.pregunta.texto}</b>${m.pregunta.opciones.length ? html`<div class="es-opts">${m.pregunta.opciones.map((o) => html`<button type="button" data-act="opcion" data-t="${o}" ${ult ? '' : raw('disabled')}>${o}</button>`)}</div>` : ''}</div>` : ''}</div>
         ${busy && ult ? html`<div class="es-act"><button type="button" class="btn ghost xs" data-act="detener">${ico('dot', 12)} Detener</button></div>` : ''}</div>`;
     }
@@ -294,16 +304,17 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         msg.t = sinBloqueP(sinBloqueI(sinBloque(limpio))); if (pregunta) msg.pregunta = pregunta;
         if (Object.keys(parche).length) {
           if (!E.puede?.editar) msg.aviso = 'Tu perfil no puede cambiar el plan.';
-          else { try { const x = await api(`plan/${encodeURIComponent(b.slug)}/${chat.mes}`, { method: 'PUT', body: { parche } }); E.plan = x.plan || E.plan; S.fresh = x.cambiadas || []; msg.aplicado = [`Plan del mes · ${S.fresh.map((k) => NOMBRE_P[k] || k).join(', ')} actualizado`]; } catch (er) { msg.err = `No pude guardar el plan: ${er.message}`; } }
+          else { try { const x = await api(`plan/${encodeURIComponent(b.slug)}/${chat.mes}`, { method: 'PUT', body: { parche } }); E.plan = x.plan || E.plan; S.fresh = x.cambiadas || []; msg.doc = 'plan'; msg.aplicado = [`Plan del mes · ${S.fresh.map((k) => NOMBRE_P[k] || k).join(', ')} actualizado`]; } catch (er) { msg.err = `No pude guardar el plan: ${er.message}`; } }
         }
       } else if (etapa === 'ideas') {
         const { texto: limpio, ideas: nuevasI, pregunta } = leerIdeas(raw0);
         msg.t = sinBloqueP(sinBloqueI(sinBloque(limpio))); if (pregunta) msg.pregunta = pregunta;
-        if (nuevasI.length) { chat.ideasProp = [...nuevasI.map((x) => ({ ...x, mes: chat.mes })), ...chat.ideasProp.filter((x) => x.enviada)].slice(0, 40); msg.aplicado = [`${nuevasI.length} idea${nuevasI.length === 1 ? '' : 's'} a la derecha, listas para enviar a Ideas`]; }
+        if (nuevasI.length) { msg.doc = 'ideas'; chat.ideasProp = [...nuevasI.map((x) => ({ ...x, mes: chat.mes })), ...chat.ideasProp.filter((x) => x.enviada)].slice(0, 40); msg.aplicado = [`${nuevasI.length} idea${nuevasI.length === 1 ? '' : 's'} a la derecha, listas para enviar a Ideas`]; }
       } else {
         const { texto: limpio, resultado, pregunta } = leerDiseno(raw0);
         msg.t = sinBloqueP(sinBloqueI(sinBloque(limpio))); if (pregunta) msg.pregunta = pregunta;
         if (resultado) {
+          msg.doc = 'diseno';
           resultado.laminas.forEach((l, k) => { if (!img(l.id) && sueltas[k]) IMGS.set(`${b.slug}|${l.id}`, sueltas[k]); });
           chat.resultado = { ...resultado, guardado: null }; S.lamina = null;
         }
@@ -325,29 +336,28 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       ponerArea();
       paneEl.className = chat.etapa === 'diseno' ? 'dz-pane' : 'pm-pane dg-pane';
       if (chat.etapa === 'plan') {
-        mount(paneEl, planPanel({ b, mes: chat.mes, plan: E.plan || {}, piezas: E.piezas, edit: E.puede?.editar && abierta('plan'), fresh: S.fresh, pasando: S.pasando }));
+        mount(paneEl, planPanel({ b, mes: chat.mes, plan: E.plan || {}, piezas: E.piezas, edit: E.puede?.editar && abierta('plan'), fresh: S.fresh, pasando: S.pasando, cerrar: true, abrir: [`#/marcas/${b.slug}/plan/${chat.mes}`, 'Abrir en Plan del mes'] }));
         if (S.fresh.length) setTimeout(() => { S.fresh = []; $$('.ev-sec.fresh', paneEl).forEach((x) => x.classList.remove('fresh')); }, 4000);
         return;
       }
       if (chat.etapa === 'ideas') return mount(paneEl, ideasPanel());
-      if (!abierta('diseno')) return mount(paneEl, html`<div class="dz-empty"><span class="es-hint-i">${ico('lock', 22)}</span><b>Todavía no hay qué diseñar</b><p class="mut">Se diseña lo que Creatividad ya ideó para el plan de ${nombreMes(chat.mes)}.</p></div>`);
+      const docD = (cuerpo, extra = {}) => mount(paneEl, docHtml({ ...docDe('diseno'), sub: `${b.name} · ⑥A Diseño gráfico`, cerrar: true, acciones: html`<a class="btn ghost xs" href="#/marcas/${b.slug}/design">${ico('layers', 12)} Design system</a>`, cuerpo, ...extra }));
+      if (!abierta('diseno')) return docD(html`<div class="dz-empty"><span class="es-hint-i">${ico('lock', 22)}</span><b>Todavía no hay qué diseñar</b><p class="mut">Se diseña lo que Creatividad ya ideó para el plan de ${nombreMes(chat.mes)}.</p></div>`, { estado: 'Cerrado' });
       const r = chat.resultado;
       if (!r) {
-        mount(paneEl, html`<div class="dz-empty"><span class="es-hint-i">${ico('layers', 22)}</span><b>Aquí aparecen las piezas</b><p class="mut">Claude las arma en Figma con el design system de ${b.name} y las revisa contra su guía antes de mostrártelas.</p>
-          ${sis?.colores.length ? html`<div class="dz-pal">${sis.colores.map((c) => html`<span title="${c.nombre} · ${c.hex}" style="background:${c.hex}"></span>`)}</div>` : ''}
-          <a class="btn ghost xs" href="#/marcas/${b.slug}/design">${ico('layers', 12)} Ver el design system</a></div>`);
+        docD(html`<div class="dz-empty"><span class="es-hint-i">${ico('layers', 22)}</span><b>Aquí aparecen las piezas</b><p class="mut">Claude las arma en Figma con el design system de ${b.name} y las revisa contra su guía antes de mostrártelas.</p>
+          ${sis?.colores.length ? html`<div class="dz-pal">${sis.colores.map((c) => html`<span title="${c.nombre} · ${c.hex}" style="background:${c.hex}"></span>`)}</div>` : ''}</div>`, { estado: 'Vacío' });
         return;
       }
       const faltan = r.laminas.filter((l) => !img(l.id)).length;
       const malas = r.revision.filter((x) => !x.ok);
-      mount(paneEl, html`<header class="dz-h"><div style="min-width:0"><h2>${r.titulo || 'Sin título'}</h2><span class="lbl" style="margin:0">${r.formato || chat.formato} · ${r.laminas.length} lámina${r.laminas.length === 1 ? '' : 's'}</span></div><span class="sp"></span>
-          ${r.figma ? html`<a class="btn ghost xs" href="${r.figma}" target="_blank" rel="noopener">${ico('link', 12)} Abrir en Figma</a>` : ''}${faltan < r.laminas.length ? html`<button class="btn ghost xs" data-act="bajar">${ico('down', 12)} Descargar PNG</button>` : ''}</header>
-        ${r.revision.length ? html`<div class="dz-rev">${r.revision.map((x) => html`<span class="${x.ok ? 'ok' : 'am'}">${x.texto}</span>`)}</div>` : ''}
+      docD(html`${r.revision.length ? html`<div class="dz-rev">${r.revision.map((x) => html`<span class="${x.ok ? 'ok' : 'am'}">${x.texto}</span>`)}</div>` : ''}
         <div class="dz-grid ${/story/i.test(r.formato || chat.formato) ? 'st' : ''}">${r.laminas.map((l) => html`<button type="button" class="dz-fr ${S.lamina?.id === l.id ? 'sel' : ''}" data-act="lamina" data-id="${l.id}" title="Seleccionar para pedir un cambio">
           <span class="dz-im">${img(l.id) ? html`<img alt="${l.nombre}" src="${img(l.id)}">` : html`<span class="mut sm">Sin vista previa</span>`}</span><span class="dz-cap"><b>${l.nombre}</b></span></button>`)}</div>
-        ${faltan ? html`<p class="mut sm" style="margin:0">${faltan === r.laminas.length ? 'Las vistas previas no se guardan al recargar.' : `Faltan ${faltan} vistas previas.`} <button type="button" class="linkish" data-act="reexportar">Pedirlas otra vez</button></p>` : ''}
-        <footer class="dz-save">${r.guardado ? html`<span>Guardado ${raw('&middot;')} queda <b>Listo</b> en el Calendario de ${b.name}.</span><span class="sp"></span><a class="btn xs" href="#/marcas/${b.slug}/calendario">Ir al Calendario</a>`
-          : html`<span>${malas.length ? `Antes de guardar, revisa: ${malas.map((x) => x.texto).join(' · ')}. ` : ''}Se guarda en ${idea() ? `la idea «${idea().title}»` : ideasCtx().length > 1 ? 'la idea que elijas del contexto' : 'una pieza nueva del calendario'}: queda <b>Lista</b> para programarla y publicarla.</span><span class="sp"></span><button class="btn" data-act="guardar" ${S.guardando ? raw('disabled') : ''}>${S.guardando ? 'Guardando…' : 'Guardar en contenido'}</button>`}</footer>`);
+        ${faltan ? html`<p class="mut sm" style="margin:0">${faltan === r.laminas.length ? 'Las vistas previas no se guardan al recargar.' : `Faltan ${faltan} vistas previas.`} <button type="button" class="linkish" data-act="reexportar">Pedirlas otra vez</button></p>` : ''}`, { titulo: r.titulo || 'Sin título', sub: `${r.formato || chat.formato} · ${r.laminas.length} lámina${r.laminas.length === 1 ? '' : 's'} · ⑥A Diseño gráfico`, estado: r.guardado ? 'Guardado' : 'Borrador', ok: Boolean(r.guardado),
+        acciones: html`${r.figma ? html`<a class="btn ghost xs" href="${r.figma}" target="_blank" rel="noopener">${ico('link', 12)} Abrir en Figma</a>` : ''}${faltan < r.laminas.length ? html`<button class="btn ghost xs" data-act="bajar">${ico('down', 12)} PNG</button>` : ''}`,
+        pie: { texto: '', accion: html`${r.guardado ? html`<span>Guardado ${raw('&middot;')} queda <b>Listo</b> en el Calendario de ${b.name}.</span><span class="sp"></span><a class="btn xs" href="#/marcas/${b.slug}/calendario">Ir al Calendario</a>`
+          : html`<span>${malas.length ? `Antes de guardar, revisa: ${malas.map((x) => x.texto).join(' · ')}. ` : ''}Se guarda en ${idea() ? `la idea «${idea().title}»` : ideasCtx().length > 1 ? 'la idea que elijas del contexto' : 'una pieza nueva del calendario'}: queda <b>Lista</b> para programarla y publicarla.</span><span class="sp"></span><button class="btn" data-act="guardar" ${S.guardando ? raw('disabled') : ''}>${S.guardando ? 'Guardando…' : 'Guardar en contenido'}</button>`}` } });
     }
 
     // El área de trabajo de Ideas: lo que propuso Creatividad (por enviar) y lo que ya está en las piezas del plan.
@@ -359,20 +369,20 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const refDe = (rf) => { const p = todo.find((r) => r.kind === 'research' && r.profile === b.slug && r.url && (rf.includes(r.url) || r.url.includes(rf))), n = +p?.x;
         return p ? html`<a class="pm-tag g" href="${p.url}" target="_blank" rel="noopener">@${p.handle || 'referente'}${n ? ` · ×${+n.toFixed(1)}` : ''} ↗</a>` : link(rf); };
       const link = (rf) => (/^https?:\/\//.test(rf) ? html`<a class="pm-tag" href="${rf}" target="_blank" rel="noopener">${rf.replace(/^https?:\/\/(www\.)?/, '').slice(0, 40)} ↗</a>` : rf ? html`<span class="pm-tag">${rf}</span>` : '');
-      return html`<div class="pm-bar"><div style="min-width:0"><span class="lbl" style="margin:0">Ideas de ${nombreMes(chat.mes)} · ④ Creatividad</span><h2>${prop.length ? `${prop.length} idea${prop.length === 1 ? '' : 's'} en la mesa` : 'Todavía sin ideas'}</h2></div><span class="sp"></span>
-          ${porEnviar.length && E.puede?.editar && abierta('ideas') ? html`<button class="btn" data-act="ideas-enviar" ${S.enviando ? raw('disabled') : ''}>${S.enviando ? 'Enviando…' : `Enviar ${porEnviar.length} a Ideas`} ${ico('right', 13)}</button>` : ''}</div>
-        <div class="pm-body">
+      return docHtml({ ...docDe('ideas'), sub: b.name, estado: prop.length ? `${prop.length} en la mesa` : 'Vacío', cerrar: true,
+        acciones: html`<a class="btn ghost xs" href="#/marcas/${b.slug}/ideas">${ico('link', 12)} Abrir en Ideas</a>`,
+        cuerpo: html`
           ${prop.length ? html`<div class="dg-ideas">${prop.map((x, i) => { const sl = slotDe(x.slot); return html`<article class="dg-idea ${x.enviada ? 'ok' : ''}"><div class="row" style="gap:6px;flex-wrap:wrap"><span class="pm-tag">${x.slot}</span>${sl ? html`<span class="mut sm">Semana ${sl.semana} · ${sl.canal} · ${sl.funcion || ''}</span>` : html`<span class="pm-warn">Ese slot no está en el plan</span>`}<span class="sp"></span>${x.enviada ? html`<span class="ev-ok">${ico('check', 12)} En Ideas</span>` : E.puede?.editar && sl && abierta('ideas') ? html`<button class="btn ghost xs" data-act="idea-enviar" data-i="${chat.ideasProp.indexOf(x)}">Enviar a Ideas</button>` : ''}</div>
               <h3>${x.titulo}</h3>${x.hook ? html`<p class="dg-hook">«${x.hook}»</p>` : ''}
               <dl class="dg-tri"><div><dt>Qué comunicamos</dt><dd>${x.mensaje || sl?.objetivo || html`<span class="mut">Sin mensaje</span>`}</dd></div>
                 <div><dt>El formato que ya funciona</dt><dd>${x.referente ? html`${refDe(x.referente)}${x.por_que ? html`<span class="mut sm">${x.por_que}</span>` : ''}` : html`<span class="pm-warn">${ico('alert', 12)} Sin formato de referencia. Pídele uno de Investigación.</span>`}</dd></div>
                 <div><dt>Cómo se adapta</dt><dd>${x.adaptacion || html`<span class="mut">Falta la adaptación</span>`}</dd></div></dl>
-              <div class="row" style="gap:6px;flex-wrap:wrap">${x.formato ? html`<span class="pm-tag">${x.formato}</span>` : ''}${sl?.traza ? html`<span class="pm-tag g">Traza a ${sl.traza}</span>` : ''}</div></article>`; })}</div>`
+              <div class="row" style="gap:6px;flex-wrap:wrap">${x.formato ? html`<span class="pm-tag">${x.formato}</span>` : ''}${sl?.traza ? html`<span class="pm-tag g">Traza a la estrategia: ${sl.traza}</span>` : ''}</div></article>`; })}</div>`
           : html`<p class="ev-vacio">Pídele al chat ideas para los slots del plan. Cada una llega con qué comunicamos, el formato que ya funciona (un post ganador de Investigación) y cómo se adapta. Las que te gusten se envían a Ideas.</p>`}
           <section class="ev-sec"><header><b>En las piezas del plan</b><span class="mut sm">${delPlan.filter((x) => x.idea_chat).length} de ${delPlan.length} slots con idea</span></header>
-            ${delPlan.length ? html`<div class="pm-tbl"><table><thead><tr><th>Slot</th><th>Pieza</th><th>Estado</th></tr></thead><tbody>${delPlan.sort((a, z) => String(a.slot?.id).localeCompare(String(z.slot?.id))).map((x) => html`<tr><td>${x.slot?.id}</td><td>${x.title}${x.idea_chat ? '' : html` <span class="mut sm">· sin idea todavía</span>`}</td><td>${estadoDe(x)}</td></tr>`)}</tbody></table></div>` : html`<p class="ev-vacio">El plan todavía no pasó a Creatividad.</p>`}</section>
-        </div>
-        <footer class="pm-foot"><span>Las ideas enviadas quedan en la pieza de su slot. Ahí se eligen, se ordenan y pasan a Guiones.</span><span class="sp"></span><a class="btn ghost xs" href="#/marcas/${b.slug}/ideas">Abrir Ideas</a></footer>`;
+            ${delPlan.length ? html`<div class="pm-tbl"><table><thead><tr><th>Slot</th><th>Pieza</th><th>Estado</th></tr></thead><tbody>${delPlan.sort((a, z) => String(a.slot?.id).localeCompare(String(z.slot?.id))).map((x) => html`<tr><td>${x.slot?.id}</td><td>${x.title}${x.idea_chat ? '' : html` <span class="mut sm">· sin idea todavía</span>`}</td><td>${estadoDe(x)}</td></tr>`)}</tbody></table></div>` : html`<p class="ev-vacio">El plan todavía no pasó a Creatividad.</p>`}</section>`,
+        pie: { texto: 'Las ideas enviadas quedan en la pieza de su slot. Ahí se eligen, se ordenan y pasan a Guiones.',
+          accion: porEnviar.length && E.puede?.editar && abierta('ideas') ? html`<button class="btn" data-act="ideas-enviar" ${S.enviando ? raw('disabled') : ''}>${S.enviando ? 'Enviando…' : `Enviar ${porEnviar.length} a Ideas`} ${ico('right', 13)}</button>` : '' } });
     }
     async function enviarIdeas(lista) {
       if (!lista.length || S.enviando) return;
@@ -429,7 +439,8 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (a === 'copiar') { try { await navigator.clipboard.writeText(t.dataset.t); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo', true); } return; }
       if (a === 'marca') return menuMarcas(t, b.slug);
       if (a === 'motor') return menuMotor(t, me, S.salud?.chat, () => paintChat(), { diseno: true });
-      if (a === 'panel-tg') { chat.area = !chat.area; guardar(); ponerArea(); return; }
+      if (a === 'panel-tg' || a === 'panel-x' || a === 'panel-abrir') { chat.area = a === 'panel-tg' ? !chat.area : a === 'panel-abrir'; guardar(); ponerArea(); const tg = $('[data-act="panel-tg"]', chatEl); if (tg) { tg.classList.toggle('on', chat.area); tg.setAttribute('aria-pressed', String(chat.area)); } paintMsgs(); return; }
+      if (a === 'marca-cambiar') return menuMarcas(t, b.slug);
       if (a === 'etapa') { chat.etapa = t.dataset.e; if (chat.etapa !== 'diseno') S.lamina = null; guardar(); paintChat(); paintPane(); return; }
       if (a === 'mesdg') return menuDz(t, mesesPlan().map((x, i) => ({ label: nombreMes(x).replace(/^./, (c) => c.toUpperCase()), sub: ['El anterior', 'Este mes', 'El siguiente'][i], on: x === chat.mes, pick: () => cambiarMes(x) })));
       if (a === 'suelta') { chat.suelta = !chat.suelta; chat.etapa = chat.suelta ? 'diseno' : ETAPAS.map(([k]) => k).find(abierta) || 'plan'; guardar(); paintChat(); paintPane(); return; }

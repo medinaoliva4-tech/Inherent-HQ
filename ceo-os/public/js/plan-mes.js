@@ -8,7 +8,7 @@ export const COLL_P = 'plans';
 export const idPlan = (slug, mes) => `${slug}--${mes}`;
 export const mesOk = (m) => /^\d{4}-(0[1-9]|1[0-2])$/.test(String(m || ''));
 export const SECCIONES_P = ['campana', 'mensaje', 'pilares', 'canales', 'slots'];
-export const NOMBRE_P = { campana: 'La idea del mes', mensaje: 'El mensaje', pilares: 'Los pilares', canales: 'Los canales', slots: 'Los slots' };
+export const NOMBRE_P = { campana: 'La idea del mes', mensaje: 'El mensaje', pilares: 'Los pilares', canales: 'Los canales', slots: 'Las piezas' };
 
 // El vocabulario del calendario de Marketing (WORKFLOW § 2).
 export const FUNCIONES = ['Hero', 'Series', 'Proof', 'Utility', 'Conversion', 'Community'];
