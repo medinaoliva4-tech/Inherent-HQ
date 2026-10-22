@@ -168,6 +168,7 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espa
 - `gh.js` — el repo: lee del disco (local), de la copia del build (Vercel) o de GitHub; escribe con `escribirSeguro`; `ghApi` para otras llamadas a GitHub (las versiones de la app) · la única puerta al repo.
 - `google.js` — login con Google (equipo y portal), el token de cada persona (sellado en `vault`), llamadas a Google y correo por Gmail.
 - `http.js` — `body()` y `fail()`: cada error conocido a su código y un mensaje claro.
+- `internos.js` — lo interno que no puede ir en el código público: los paquetes por industria y sus reglas de costo, el baseline de los niveles y el mapa inicial de especialistas (`datos/paquetes-industria.js`) · rutas `internos/*`, casi todas solo CEO.
 - `intel.js` — los entregables de los agentes en la carpeta del cliente (según `intel-mapa.js`), limpios de costos, y el avatar · ruta `repo/client/:slug/intel` (al cliente, 403).
 - `investigacion.js` — referentes por marca, «Actualizar ahora» (CEO y COO), webhook de Apify, crons, posts nuevos a Research con su juicio de Laya por hacer · rutas `investigacion*`.
 - `laya.js` — los juicios (`judgments`), las preguntas (`settings` `laya_gates`, solo el CEO), los que esperan juicio y las herramientas MCP `juicios_pendientes` y `guardar_juicio` · rutas `laya/*`.
@@ -279,7 +280,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `catalogo.js` — el catálogo de servicios y su editor (el costo, solo CEO).
 - `armados.js` — paquetes armados con servicios del catálogo (solo CEO).
 - `servicios-paquetes.js` — Servicios → Paquetes por nivel.
-- `paquetes.js` — los paquetes por industria (`public/data/paquetes.json` más los ajustes en `packages`), solo CEO.
+- `paquetes.js` — los paquetes por industria (los entrega `/api/internos/paquetes` más los ajustes en `packages`), solo CEO.
 - `mentors.js` — la red de especialistas.
 
 **Clientes**
@@ -301,7 +302,6 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 
 **Lo demás de `public/`**
 - `public/diagnostico.html` — la página pública del quiz.
-- `public/data/paquetes.json` — los paquetes por industria.
 - `public/vendor/` — Mermaid, jsPDF y html2canvas (el PDF de las cotizaciones), con sus licencias.
 - `public/brand/` y `public/manifest.webmanifest` — logos, íconos y la instalación como app.
 - `public/laya/` — `puente.py`, `instalar.sh` e `instalar.ps1` (sección 6).
@@ -477,7 +477,7 @@ npm run test:ventas  # la meta de Ventas
 - Escribir en el repo pide `GITHUB_TOKEN` con permiso de escritura y hace commit directo a `GITHUB_BRANCH`.
 
 **Seguridad y configuración**
-- Todo `public/` se sirve sin login: el código del navegador, `public/data/paquetes.json` (horas y precios de los paquetes por industria, con nombres de clientes en algunas descripciones), el baseline de `levels.js` y la lista inicial de especialistas de `mentors.js` los puede bajar quien tenga el link. Los datos de la base sí pasan por los permisos.
+- Todo `public/` se sirve sin login: ahí va solo código y textos públicos. **Precios, costos, baseline y datos de clientes nunca van en `public/`:** van en el servidor y salen por una ruta con sesión (`api/_lib/internos.js`, `api/_lib/datos/`). Los datos de la base pasan por los permisos.
 - Cambiar `SESSION_SECRET` cierra todas las sesiones y deja ilegibles los tokens de Google de `vault`: cada persona vuelve a entrar con Google.
 - El dominio de producción está escrito en `puente.py` (orígenes), `instalar.sh`, `instalar.ps1`, `laya.js` (`INSTALADOR`) y `escritorio/main.js`: cambiar de dominio es tocarlos todos.
 - El límite de la entrada pública de leads se cuenta en memoria, por instancia.

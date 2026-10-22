@@ -1,21 +1,18 @@
 // Servicios → Paquetes → Por industria: los 108 paquetes por industria con sus fases, horas por rol, tarifas editables, margen y % de crecimiento.
 // Solo el CEO (lleva costos). Los ajustes viven en la colección `packages` (id «default»). «Cotizar» arma una cotización con el formato nuevo.
-import { html, raw, mount, col, toast, Q, $, $$, ico, openClaude } from './core.js';
+import { html, raw, mount, col, api, toast, Q, $, $$, ico, openClaude } from './core.js';
 
 const CX = { S: 'Sencillo', M: 'Medio', X: 'Fuerte' };
-const DEF = () => ({
-  id: 'default',
-  roles: [{ id: 'dir', n: 'Dirección (CEO)', c: 0, dir: true }, { id: 'fin', n: 'Finanzas y administración', c: 300 }, { id: 'mkt', n: 'Marketing (con creatividad)', c: 200 }, { id: 'op', n: 'Operador de agentes', c: 150 }, { id: 'prod', n: 'Producción y foto', c: 150 }, { id: 'edi', n: 'Edición y diseño', c: 100 }],
-  markup: 2.5, ovh: 0, dirVal: 300, mentor: 1400, cx: { S: 1, M: 1.25, X: 1.5 }, round: 500,
-  sc: { base: 100000, gr: 15, marg: 30, months: 6, pct: 10 }, ov: {},
-});
 const rnd = (x, s) => (s > 0 ? Math.round(x / s) * s : Math.round(x));
 const N = (n, d = 1) => (Math.round(n * 10 ** d) / 10 ** d).toLocaleString('en-US');
 const num = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
 
 export async function packagesTab(body, { onQuote, bun }) {
   mount(body, html`<div class="mut">Cargando paquetes…</div>`);
-  const [data, saved] = await Promise.all([fetch('/data/paquetes.json').then((r) => r.json()), col('packages').get('default').catch(() => null)]);
+  // Los paquetes y sus reglas de costo los entrega el servidor, solo al CEO (antes estaban en public/: cualquiera los bajaba).
+  let data, DEF;
+  try { const r = await api('internos/paquetes'); data = r.data; DEF = () => JSON.parse(JSON.stringify(r.def)); } catch (e) { return mount(body, html`<div class="warnbox">${e.message}</div>`); }
+  const saved = await col('packages').get('default').catch(() => null);
   const P = data.p, IND = Object.fromEntries(data.ind.map((i) => [i.id, i.n])), PB = Object.fromEntries(P.map((p) => [p.id, p]));
   const D = col('packages');
   let S = Object.assign(DEF(), saved || {}), exists = !!saved, sub = 'pk', SEL = 'bm-arranque', F = { ind: '', q: '', std: false };

@@ -1,37 +1,13 @@
 // La red de especialistas por industria: quién es, cuánto cuesta, por qué ese precio y en qué plan cabe.
 // La política (techo por sesión, membresía anual de Inherent) está en inherent/04-MERCADO.md.
-import { html, raw, mount, col, drawer, closeDrawer, toast, confirmAsk, $, squareImage, initials, ico } from './core.js';
+import { html, raw, mount, col, api, drawer, closeDrawer, toast, confirmAsk, $, squareImage, initials, ico } from './core.js';
 
 export const TIERS = [['low', 'Económico'], ['medio', 'Medio'], ['premium', 'Premium']];
 export const UNITS = [['sesion', 'por sesión'], ['mes', 'membresía al mes'], ['gratis', 'gratis'], ['cotizacion', 'cotización']];
 export const CADENCE = [['trimestral', '1 sesión por trimestre'], ['mensual', '1 sesión al mes'], ['puntual', 'Una sesión puntual']];
 const M = col('mentors');
 
-// El mapa del manual, para arrancar (se editan y se agregan más desde la app).
-const SEED = [
-  ['Restaurantes', 'low', 'Wingman', 'Comunidad', 0, 'gratis', 0, 'Comunidad de dueños, sin 1:1'],
-  ['Restaurantes', 'medio', 'GrowthMentor', 'GrowthMentor', 50, 'mes', 0, 'Membresía anual ($85/mes trimestral). Crecimiento y marketing; no garantiza mentor de operaciones'],
-  ['Restaurantes', 'premium', 'MASTERESTAURANT', 'Directo', 950, 'sesion', 90, 'Especialista de restaurantes, sesión virtual de 1.5 h'],
-  ['Arquitectura', 'low', 'EntreArchitect Network', 'EntreArchitect', 0, 'gratis', 0, 'Comunidad para firmas pequeñas'],
-  ['Arquitectura', 'medio', 'EntreArchitect Pro', 'EntreArchitect', 49, 'mes', 0, 'Coaching grupal · $499/año'],
-  ['Arquitectura', 'premium', 'EntreArchitect Mastermind', 'EntreArchitect', 99, 'mes', 0, 'Mastermind grupal ($999/año); no es 1:1 privado'],
-  ['Moda y fast fashion', 'low', 'The Apparel Mentor', 'The Apparel Mentor', 39, 'mes', 0, 'Clases, eventos y coaching 1:1'],
-  ['Moda y fast fashion', 'medio', 'Operador de moda DTC', 'MentorPass', 144, 'sesion', 30, 'Opera marcas DTC de moda'],
-  ['Moda y fast fashion', 'premium', 'Fundador DTC', 'MentorPass', 360, 'sesion', 30, 'Fundó una marca DTC: criterio de dueño'],
-  ['Moda y fast fashion', 'premium', 'WE are COCO', 'WE are COCO', 0, 'cotizacion', 0, 'Red de 350+ compradores de retail'],
-  ['E-commerce y DTC', 'low', 'Mentor de crecimiento', 'MentorPass', 72, 'sesion', 30, 'Crecimiento general de e-commerce'],
-  ['E-commerce y DTC', 'medio', 'Especialista en CX', 'MentorPass', 180, 'sesion', 30, 'Experiencia del cliente y recompra'],
-  ['E-commerce y DTC', 'premium', 'Retención y CX', 'MentorPass', 540, 'sesion', 30, 'Retención a escala: lo que más mueve el LTV'],
-  ['Wellness y fitness', 'low', 'Fundador de marca fitness', 'MentorPass', 72, 'sesion', 30, 'Ya creció una marca fitness'],
-  ['Wellness y fitness', 'medio', 'Fundador wellness', 'MentorPass', 180, 'sesion', 30, 'Fundador con marca wellness más grande'],
-  ['Wellness y fitness', 'premium', 'The Maxwell Method', 'Directo', 300, 'sesion', 90, '$600 por 2 sesiones de 90 min · mentoría de 6 semanas $2,900'],
-  ['Suplementos', 'low', 'MicroMentor', 'MicroMentor', 0, 'gratis', 0, 'Gratis; no garantiza experiencia en suplementos'],
-  ['Suplementos', 'medio', 'Fundador de Obvi', 'MentorPass', 144, 'sesion', 30, 'Fundó una marca de suplementos'],
-  ['Suplementos', 'premium', 'Fundador de Zesty Paws', 'MentorPass', 720, 'sesion', 30, 'Fundó y vendió una marca grande de suplementos'],
-  ['Servicios profesionales', 'low', 'MicroMentor', 'MicroMentor', 0, 'gratis', 0, 'Orientación general'],
-  ['Servicios profesionales', 'medio', 'GrowthMentor', 'GrowthMentor', 50, 'mes', 0, '$50-85/mes; algunos mentores cobran aparte'],
-  ['Servicios profesionales', 'premium', 'GLG · Guidepoint', 'GLG', 0, 'cotizacion', 0, 'Expertos por hora: $700-1,500+/h. Fuera del techo de cualquier nivel'],
-];
+// El mapa del manual para arrancar lo entrega el servidor (/api/internos/especialistas, solo CEO): se edita y se agrega desde la app.
 
 export const priceLabel = (m) => (m.unit === 'gratis' ? 'Gratis' : m.unit === 'cotizacion' ? 'Cotización' : m.unit === 'mes' ? `$${m.price}/mes` : `$${m.price} / ${m.minutes || 30} min`);
 // Qué cubre, según la política del manual: los especialistas son de Growth Partnership; hasta $180 por sesión se absorbe en el alcance acordado, arriba va aparte.
@@ -64,7 +40,7 @@ export function mentorsTab(body, { list, isCeo, onChange, ind = 'Todas', onInd }
   body.onclick = async (e) => {
     const t = e.target.closest('[data-mact]'); if (!t || e.target.closest('a')) return;
     if (t.dataset.mact === 'ind') return onInd(t.dataset.v);
-    if (t.dataset.mact === 'seed') { t.disabled = true; const made = []; for (const [industry, tier, name, platform, price, unit, minutes, why] of SEED) made.push(await M.create({ industry, tier, name, platform, price, unit, minutes, why, link: '', photo: null })); toast(`${made.length} especialistas cargados ${ico('check', 14)}`); return onChange([...list, ...made]); }
+    if (t.dataset.mact === 'seed') { t.disabled = true; const made = []; let SEED = []; try { SEED = (await api('internos/especialistas')).especialistas; } catch (err) { t.disabled = false; return toast(err.message, true); } for (const s of SEED) made.push(await M.create({ ...s, link: '', photo: null })); toast(`${made.length} especialistas cargados ${ico('check', 14)}`); return onChange([...list, ...made]); }
     if (t.dataset.mact === 'edit') { const r = await editMentor(list.find((m) => m.id === t.dataset.id), inds); if (r) onChange(r.deleted ? list.filter((m) => m.id !== r.id) : list.map((m) => (m.id === r.id ? r : m))); }
   };
 }
