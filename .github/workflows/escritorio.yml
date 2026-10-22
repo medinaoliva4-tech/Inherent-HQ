@@ -1,4 +1,5 @@
 # Inherent OS para Mac: arma la app de escritorio (con el puente adentro) en una Mac de GitHub y la deja en Releases.
+# El .dmg es para instalarla; el .zip lo baja la app sola cuando se actualiza (ruta escritorio/descarga del OS).
 # En main queda como la última versión (el OS la ofrece con «Bajar Inherent OS para Mac»); en otra rama, como versión de prueba.
 # Si algo falla, el registro del armado queda en una versión de prueba «escritorio-registro-N» para poder leerlo.
 name: App de escritorio (Mac)
@@ -30,7 +31,7 @@ jobs:
         working-directory: ceo-os/escritorio
         run: |
           npm ci --no-audit --no-fund 2>&1 | tee -a "$GITHUB_WORKSPACE/armado.log"
-          npx electron-builder --mac dmg --arm64 --x64 --publish never 2>&1 | tee -a "$GITHUB_WORKSPACE/armado.log"
+          npx electron-builder --mac dmg zip --arm64 --x64 --publish never 2>&1 | tee -a "$GITHUB_WORKSPACE/armado.log"
           ls -la dist | tee -a "$GITHUB_WORKSPACE/armado.log"
 
       - name: Publicar en Releases
@@ -41,9 +42,10 @@ jobs:
           TAG="escritorio-v${VERSION}-${{ github.run_number }}"
           if [ "${{ github.ref_name }}" = "main" ]; then TIPO="--latest"; else TIPO="--prerelease"; fi
           gh release create "$TAG" ceo-os/escritorio/dist/Inherent-OS-arm64.dmg ceo-os/escritorio/dist/Inherent-OS-x64.dmg \
+            ceo-os/escritorio/dist/Inherent-OS-arm64.zip ceo-os/escritorio/dist/Inherent-OS-x64.zip \
             --target "${{ github.sha }}" $TIPO \
             --title "Inherent OS para Mac · ${VERSION} (${{ github.run_number }})" \
-            --notes "Baja Inherent-OS-arm64.dmg si tu Mac tiene chip de Apple (M1, M2, M3…) o Inherent-OS-x64.dmg si es Intel. La primera vez: clic derecho sobre la app › Abrir. Rama: ${{ github.ref_name }}."
+            --notes "Baja Inherent-OS-arm64.dmg si tu Mac tiene chip de Apple (M1, M2, M3…) o Inherent-OS-x64.dmg si es Intel. Arrástrala a Aplicaciones. La primera vez macOS la bloquea porque no tiene firma de Apple: toca «Listo», ve a Ajustes del Sistema › Privacidad y seguridad › «Abrir de todos modos», y ábrela otra vez. Después se actualiza sola. Rama: ${{ github.ref_name }}."
 
       - name: Si falla, dejar el registro
         if: failure()
