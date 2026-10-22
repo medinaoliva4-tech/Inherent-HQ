@@ -19,7 +19,7 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
 - **Lo accionable arriba, una cosa a la vez.** El CEO tiene TDAH: un mensaje corto vale más que una pantalla llena.
 - **Los vacíos enseñan.** Una pantalla vacía dice qué hacer y de dónde va a salir el dato. Nunca un cero inventado.
 - **Un mismo lenguaje.** Los chats tienen la misma estructura; los calendarios se ven igual; cada módulo de una marca dice de dónde viene, qué se hace ahí y a dónde pasa.
-- **Los chats se sienten como ChatGPT o Claude.** La caja abajo, la franja con cliente, mes, contexto y modo, el modelo con su punto verde o rojo, la voz y el panel que se esconde.
+- **Los chats se sienten como ChatGPT o Claude.** La conversación centrada; lo tuyo en una burbuja suave a la derecha; la respuesta sin burbuja, con el avatar del agente y sus acciones al pasar el mouse (copiar, reintentar, guardar); el chat vacío con un título y tarjetas de lo que se puede pedir; la caja abajo con la franja de cliente, mes, contexto y modo, el modelo con su punto verde o rojo y la voz; un aviso de que puede equivocarse; el panel que se esconde. **Un chat por parte del proceso, no un historial de chats.**
 - **Evidencia o etiqueta.** Lo que no tiene fuente dice «⚠️ SIN DATOS». El OS no inventa.
 
 ## 3 · Lo que no se negocia
