@@ -3,6 +3,8 @@
 Web privada de Inherent, en 8 secciones: **Inicio · Clientes · Comercial · Operaciones · Resultados · Finanzas · Conocimiento · Administración**.
 Se entra con **Google** y solo con cuentas **@inherentglobal.com**.
 
+**Antes de cambiar algo, lee [`MAPA.md`](MAPA.md):** qué hace cada archivo, por qué existe y las reglas que no se rompen.
+
 **Las fases del OS están en [`PLAN-OS.md`](PLAN-OS.md) § 4.** Ese es el plan: esta página solo describe cómo funciona lo que ya existe.
 Hechas y unidas a main: **0 a 4** (la 4, «Marcas: entender», con App 02 · Estrategia). Sigue la **5 · Marcas: crear**.
 
