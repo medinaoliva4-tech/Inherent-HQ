@@ -30,3 +30,11 @@ export function divisor(cont, izq, { key, min = 320, max = 0.72 } = {}) {
   h.addEventListener('keydown', (e) => { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); const w = limite(izq.getBoundingClientRect().width + (e.key === 'ArrowRight' ? 32 : -32)); poner(w); guardar(w); });
   return { ubicar };
 }
+
+// Una ventana que sale de la caja del chat: se abre hacia donde hay espacio (arriba o abajo) y se baja por dentro si no cabe.
+export function ubicarPop(m, box) {
+  const r = box.getBoundingClientRect(), barra = document.querySelector('header.top')?.getBoundingClientRect().bottom || 80;
+  const arriba = r.top - barra - 16, abajo = innerHeight - r.bottom - 16, haciaAbajo = arriba < 320 && abajo > arriba;
+  m.classList.toggle('abajo', haciaAbajo);
+  m.style.maxHeight = `${Math.max(220, Math.min(560, haciaAbajo ? abajo : arriba))}px`;
+}

@@ -4025,7 +4025,7 @@ a.es-pick{text-decoration:none}
 .dz-chip{display:inline-flex;gap:6px;align-items:center;background:var(--fill);border-radius:999px;padding:3px 6px 3px 11px;font-size:12px;color:var(--ink)}
 .dz-chip button{border:0;background:none;color:var(--mut);cursor:pointer;font-size:14px;line-height:1;padding:0 3px}
 .es-pick.dz-ctxb.need{border-color:var(--ink);font-weight:600}
-.dz-ctxp{position:absolute;left:12px;bottom:calc(100% + 8px);width:min(400px,calc(100% - 24px));max-height:440px;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--sh-2, 0 16px 40px rgb(60 40 20/.14));padding:8px;z-index:30}
+.dz-ctxp{position:absolute;left:12px;bottom:calc(100% + 8px);width:min(400px,calc(100% - 24px));max-height:440px;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;background:var(--surface);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--sh-2, 0 16px 40px rgb(60 40 20/.14));padding:8px;z-index:30}
 .dz-ph{display:flex;align-items:baseline;gap:8px;padding:6px 8px 8px}.dz-ph b{font-size:14px}
 .dz-back{border:0;background:var(--fill);border-radius:50%;width:26px;height:26px;display:grid;place-items:center;cursor:pointer;color:var(--ink);align-self:center}
 .dz-ctxp>.in{margin:0 6px 6px;width:auto}
@@ -4087,3 +4087,27 @@ body.arrastrando{cursor:col-resize;user-select:none}
 .dg-ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
 .dg-idea{background:var(--bg);border:1px solid var(--hair);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}.dg-idea h3{margin:0;font:400 18px/1.25 var(--serif)}.dg-idea.ok{border-color:#bfdcc8}
 .dg-hook{margin:0;font-size:13.5px}
+
+/* La ventana «+»: se baja entera (no cada lista por su lado) y se abre hacia abajo si arriba no cabe */
+.dz-ctxp .dz-ol{overflow:visible;flex:none}
+.dz-ctxp.abajo{bottom:auto;top:calc(100% + 8px)}
+
+/* La línea del trabajo: la misma cabecera en cada herramienta de la marca (viene de · qué haces aquí · pasa a) */
+.flujo{display:grid;grid-template-columns:minmax(0,max-content) minmax(0,1fr) minmax(0,max-content);gap:14px;align-items:center;margin:0 0 16px;padding:10px 14px;border:1px solid var(--hair);border-radius:14px;background:var(--surface);font-size:13.5px}
+.flujo .fl-aqui{color:var(--ink);text-align:center;line-height:1.4}
+.flujo a{display:inline-flex;align-items:center;gap:6px;color:var(--ink);text-decoration:none;white-space:nowrap;padding:4px 10px;border-radius:999px;background:var(--fill)}
+.flujo a:hover{background:var(--hair)}
+@media (max-width:720px){.flujo{grid-template-columns:1fr 1fr}.flujo .fl-aqui{grid-column:1/-1;grid-row:1;text-align:left}.flujo .fl-a{justify-self:end}}
+
+/* Una idea: qué comunicamos · el formato que ya funciona · cómo se adapta */
+.dg-tri{display:grid;gap:8px;margin:2px 0 4px;padding:10px 12px;border-radius:12px;background:var(--fill)}
+.dg-tri>div{display:grid;gap:2px}
+.dg-tri dt{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.dg-tri dd{margin:0;font-size:13.5px;line-height:1.45;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+
+/* El chat de Estrategia, igual que el de Diseño gráfico: los pasos arriba, «+» y el modelo a la derecha */
+.es-chat>.es-et{padding:0 0 8px}
+.dz-chip-t{border:0;background:none;font:inherit;color:inherit;cursor:pointer;padding:0;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dz-chip-t:hover{text-decoration:underline}
+.es-et{gap:2px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.es-et::-webkit-scrollbar{display:none}
+.es-et .dg-e{padding:5px 9px 5px 5px;gap:6px;white-space:nowrap;flex:none}

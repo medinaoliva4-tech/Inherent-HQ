@@ -36,4 +36,24 @@ t('Cada slot es una pieza del calendario, con id fijo y su semana', () => {
   assert.equal(ps[0].id, 'post-ejemplo-2026-10-mk-001'); assert.equal(ps[0].data.format, 'Carrusel'); assert.equal(ps[0].data.date, '2026-10-08');
   assert.equal(ps[0].data.slot.plan, idPlan('ejemplo', '2026-10')); assert.equal(ps[0].data.campana, 'El delivery');
 });
+
+// Las ideas del chat: mensaje + formato que ya funciona + adaptación.
+const { leerIdeas, promptIdeas } = await import('../public/js/ideas-chat.js');
+t('Una idea trae qué comunicamos, el formato ganador y cómo se adapta', () => {
+  const r = leerIdeas('Listo.\n```ideas\n{"ideas":[{"slot":"mk-1","titulo":"T","mensaje":"Llega caliente","referente":"https://ig/reel/1","por_que":"Comparación","adaptacion":"Pediste vs llegó"}]}\n```');
+  assert.equal(r.ideas[0].slot, 'MK-1'); assert.equal(r.ideas[0].mensaje, 'Llega caliente'); assert.equal(r.ideas[0].adaptacion, 'Pediste vs llegó');
+  const p = promptIdeas({ marca: 'X', slug: 'x', mes: '2026-10', slots: [], investigacion: '', formatos: 'FORMATOS DE LA MARCA…', pedido: 'Ideas', primera: true });
+  assert.ok(p.includes('adaptacion') && p.includes('todavía no hay posts ganadores') && p.includes('FORMATOS DE LA MARCA…'));
+});
+// La línea del trabajo: cada herramienta viene de y pasa a una que existe.
+// brandlist.js importa el DOM: se leen sus tres listas como datos.
+const src = (await import('node:fs')).readFileSync(new URL('../public/js/brandlist.js', import.meta.url), 'utf8');
+const lista = (nombre) => Function(`return ${src.match(new RegExp(`export const ${nombre} = ([\\[{][\\s\\S]*?\\n[\\]}]);`))[1]}`)();
+const FLUJO = lista('FLUJO'), MODULES = lista('MODULES'), AREAS = lista('AREAS');
+t('La línea del trabajo apunta a herramientas que existen y Crear va en orden', () => {
+  const keys = MODULES.map(([k]) => k);
+  for (const [k, [de, , a]] of Object.entries(FLUJO)) { assert.ok(keys.includes(k), k); if (de) assert.ok(keys.includes(de), de); if (a) assert.ok(keys.includes(a), a); }
+  assert.deepEqual(AREAS.find(([k]) => k === 'crear')[3], ['plan', 'formatos', 'ideas', 'creacion']);
+});
+
 console.log(`\n${ok} pruebas pasaron`);

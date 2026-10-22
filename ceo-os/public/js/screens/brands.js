@@ -4,7 +4,7 @@
 // como «Próximamente», Video y Ads. Las pestañas de la marca viven en la barra de abajo de la de arriba (subnav de app.js).
 // Rutas: #/marcas · #/marcas/<marca> · #/marcas/<marca>/<módulo>/…
 import { html, mount, col, ico, initials, fdate, today, events, $ } from '../core.js';
-import { loadBrands, brandAccess, MODULES, areaOf, modulesFor, defaultModule, isSoon } from '../brandlist.js';
+import { loadBrands, brandAccess, MODULES, FLUJO, areaOf, modulesFor, defaultModule, isSoon } from '../brandlist.js';
 import { estadoDe, separar } from '../element.js';
 import { render as content } from './content.js';
 import { render as meBrand } from './me-brand.js';
@@ -72,9 +72,13 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Una marca abierta ----------
   async function page(b, mod, rest, live) {
     const M = MODULES.find(([k]) => k === mod);
-    const what = { inicio: 'Cómo va la marca hoy', design: 'Cómo se ve la marca, en valores que se ejecutan', plan: 'Qué se dice este mes, en qué canal, en qué semana y para qué sirve cada pieza', icp: 'A quién le hablamos, con qué peso y cómo se nota en el video', formatos: 'Las plantillas de la marca y las del método', creacion: 'El guion, tramo por tramo, con el avatar y el brief al lado', brief: 'Qué decimos este mes: sin brief no se crean piezas del ciclo', resultados: 'Qué funcionó y qué no', investigacion: 'Lo que funciona en su categoría y por qué', ideas: 'Las ideas y piezas, de la idea a publicado', calendario: 'Qué sale y qué se graba cada día', marca: b.personal ? 'Tu roadmap y con qué se asocia tu marca' : 'Con qué se asocia la marca: lo que ve, a quién sigue y cómo suena' }[mod] || M[3];
-    mount(el, html`<div class="hello sp-hero row brand-hero" style="align-items:flex-end"><span class="sp-mono big ${b.personal ? 'priv' : ''}">${b.personal ? ico('lock', 20) : initials(b.name)}</span><div style="min-width:0"><h1>${b.name}</h1><p>${mod === 'inicio' ? what : html`<span class="mut">${areaOf(mod)[1]} ›</span> <em>${M[1]}</em> · ${what}`}</p></div><div class="sp"></div>${b.personal ? html`<span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span>` : ''}</div>
-      <div id="bmod"></div>`);
+    const F = FLUJO[mod], nom = (k) => MODULES.find(([x]) => x === k)?.[1] || k;
+    const what = mod === 'inicio' ? 'Cómo va la marca hoy' : mod === 'marca' && b.personal ? 'Tu roadmap y con qué se asocia tu marca' : F?.[1] || M[3] || '';
+    // La misma cabecera en todas: de dónde viene, qué haces aquí y a dónde pasa.
+    const paso = (k, lado) => (k && (live.includes(k) || isSoon(k)) ? html`<a class="fl-${lado}" href="#/marcas/${b.slug}/${k}">${lado === 'de' ? html`${ico('arrow-left', 12)} <span class="mut">Viene de</span> ${nom(k)}` : html`<span class="mut">Pasa a</span> ${nom(k)} ${ico('right', 12)}`}</a>` : html`<span></span>`);
+    const flujo = F && mod !== 'inicio' ? html`<nav class="flujo" aria-label="La línea del trabajo">${paso(F[0], 'de')}<span class="fl-aqui">${what}</span>${paso(F[2], 'a')}</nav>` : '';
+    mount(el, html`<div class="hello sp-hero row brand-hero" style="align-items:flex-end"><span class="sp-mono big ${b.personal ? 'priv' : ''}">${b.personal ? ico('lock', 20) : initials(b.name)}</span><div style="min-width:0"><h1>${b.name}</h1><p>${mod === 'inicio' ? what : html`<span class="mut">${areaOf(mod)[1]} ›</span> <em>${M[1]}</em>`}</p></div><div class="sp"></div>${b.personal ? html`<span class="chip dark" title="Solo la ve el CEO: ni la API ni el conector la entregan a nadie más">${ico('lock', 13)} Privado</span>` : ''}</div>
+      ${flujo}<div id="bmod"></div>`);
     const box = $('#bmod', el), base = `#/marcas/${b.slug}/${mod}`;
     if (isSoon(mod)) return mount(box, html`<section class="sp-panel soon-panel"><span class="soon-ic">${ico(M[2], 22)}</span><span class="chip">Próximamente</span><h2>${M[1]}</h2><p>${M[3]}</p><div class="mut sm">Llega en una fase siguiente. Mientras tanto, ${live.length ? html`sigue en <a href="#/marcas/${b.slug}/${live[0]}">${MODULES.find(([k]) => k === live[0])[1]}</a>` : 'las demás pestañas siguen como hoy'}.</div></section>`);
     const common = { me, alive, fixed: b.slug };
