@@ -4313,3 +4313,16 @@ button.dz-chip-sel{border:1px solid var(--hair);background:var(--surface);color:
 .ax-card header{flex-wrap:wrap;justify-content:flex-start}
 .vd-ed .lbl{display:block}
 .vd-ed [data-act="corte"],.vd-ed [data-act="asset"]{margin-top:8px}
+
+/* Los archivos de Drive de una pieza (ficha) y el Archivo del calendario */
+.as-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:8px}
+.as-i{position:relative;display:flex;flex-direction:column;gap:4px}
+.as-i img,.as-f{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:var(--fill);border:1px solid var(--stroke)}
+.as-f{display:grid;place-items:center;color:var(--mut)}
+.as-n{font-size:11px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.as-x{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgb(0 0 0 / .55);color:#fff;font-size:14px;line-height:1;cursor:pointer;opacity:0}
+.as-i:hover .as-x,.as-x:focus-visible{opacity:1}
+.el-arch{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.el-arch-i{display:flex;align-items:center;gap:10px;background:var(--fill);border-radius:10px;padding:6px 8px 6px 12px}
+.el-arch-t{flex:1;min-width:0;display:flex;flex-direction:column;text-align:left;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer}
+.el-arch-t b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

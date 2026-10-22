@@ -1,6 +1,6 @@
 // «Por postear»: los videos y piezas propias de un perfil, de la idea a publicado.
 // Se usa en Content y en la página de cada cliente. Vive en la colección content.
-import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard, api, connectChip, ask as askF, ico } from './core.js';
+import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard, api, connectChip, ask as askF, ico, uploadToDrive } from './core.js';
 import { REDES } from './calendario-vistas.js';
 import { ESTADOS, ESTADOS_TODOS, ESTADO_CLS, ESTADO_AYUDA, estadoDe, separar, conEstado, nombreAuto, nombreDe } from './element.js';
 import { layaBox } from './laya-ui.js';
@@ -114,7 +114,17 @@ export function postsBoard(b, profile, list, onChange, opts = {}) {
     }
     const p = list.find((x) => x.id === t.dataset.id); if (p) openPost(p);
   };
+  // Los archivos de la pieza (foto, video, lámina) que ya están en Drive: miniatura, link y subir uno más.
+  const miniatura = (a) => (/^image\//.test(a.mime || '') ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(a.id)}&sz=w320` : '');
+  function assetsHtml(p) {
+    const l = p.assets || [];
+    return html`<b class="sm" style="display:block;margin-top:18px">Archivos en Drive${l.length ? ` · ${l.length}` : ''}</b>
+      ${l.length ? html`<div class="as-grid">${l.map((a) => html`<div class="as-i">${miniatura(a) ? html`<a href="${a.link || '#'}" target="_blank" rel="noopener noreferrer"><img src="${miniatura(a)}" alt="${a.name}" loading="lazy"></a>` : html`<a class="as-f" href="${a.link || '#'}" target="_blank" rel="noopener noreferrer">${ico(/^video\//.test(a.mime || '') ? 'video' : 'doc', 18)}</a>`}
+        <span class="as-n" title="${a.name}">${a.name}</span><button type="button" class="as-x" data-act="aquitar" data-id="${a.id}" aria-label="Quitar de la pieza">×</button></div>`)}</div>` : html`<p class="mut sm" style="margin-top:4px">Todavía no hay archivos: sube la foto, el video o la lámina y queda en Drive, ligado a esta pieza.</p>`}
+      <div class="row" style="gap:8px;margin-top:8px;align-items:center"><button type="button" class="btn ghost xs" data-act="asub">${ico('upload', 13)} Subir a Drive</button><span class="mut sm" id="as-prog"></span><input type="file" id="as-file" accept="image/*,video/*,.pdf" style="display:none"></div>`;
+  }
   function openPost(p) {
+    queueMicrotask(() => { const i = $('#as-file'); if (i) i.onchange = () => subirAsset(p, i.files[0]); });
     queueMicrotask(() => layaBox(document.getElementById('laya-idea'), { coll: 'content', id: p.id })); // Fase 3 · Laya: ¿engancha?, ¿suena a la marca?
     const em = embedUrl(p.url);
     const e = estadoDe(p);
@@ -122,6 +132,7 @@ export function postsBoard(b, profile, list, onChange, opts = {}) {
       <h2>${p.title}</h2><div class="mut sm" style="margin-top:2px">${nombreDe(p, opts.brand)}</div><div class="mut">${p.date ? 'Sale el ' + fdate(p.date) : 'Sin fecha'}${p.published_at ? ` · publicado el ${fdate(p.published_at)}` : ''}</div>
       ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:9/12;border:0;border-radius:18px;margin-top:16px;background:#1a120c" allow="autoplay; fullscreen" loading="lazy"></iframe>` : p.url ? html`<a class="artifact" href="${p.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:14px"><span class="fi">${ico('play', 13)}</span><div><b style="font-weight:500">Abrir video</b></div></a>` : ''}
       ${p.caption ? html`<b class="sm" style="display:block;margin-top:18px">Caption</b><p style="white-space:pre-wrap;margin-top:6px">${p.caption}</p>` : ''}
+      ${assetsHtml(p)}
       <div id="laya-idea" style="margin-top:16px"></div>
       ${e === 'En proceso' ? html`<div class="row" style="margin-top:18px;gap:8px"><button class="btn ${p.por_aprobar ? 'ghost' : ''}" data-act="aprob">${p.por_aprobar ? 'Quitar de aprobación' : 'Enviar a aprobación'}</button><span class="mut sm">${p.por_aprobar ? 'El cliente la ve en «Por aprobar»' : 'El cliente solo aprueba lo que envías aquí'}</span></div>` : ''}
       <b class="sm" style="display:block;margin-top:18px">Mover a</b>
@@ -131,8 +142,20 @@ export function postsBoard(b, profile, list, onChange, opts = {}) {
       aprob: async () => { try { const { aprobacion, ...rest } = p; const r = await C.save(p.por_aprobar ? { ...p, por_aprobar: false } : { ...rest, por_aprobar: true }); save(r); openPost(r); toast(r.por_aprobar ? 'Enviada: el cliente ya la ve en «Por aprobar»' : 'Quitada de aprobación'); } catch (err) { toast(err.message, true); } },
       aguion: () => closeDrawer(),
       edit: async () => { closeDrawer(); save(await editPost(profile, p, { brand: opts.brand })); },
+      asub: () => $('#as-file')?.click(),
+      aquitar: async (t) => { try { const r = await C.save({ ...p, assets: (p.assets || []).filter((a) => a.id !== t.dataset.id) }); save(r); openPost(r); } catch (err) { toast(err.message, true); } },
       del: async () => { if (!(await confirmAsk(`¿Eliminar «${p.title}»?`))) return; await C.remove(p.id); closeDrawer(); list = list.filter((x) => x.id !== p.id); onChange(list); },
     });
+  }
+  // Subir un archivo a Drive y dejarlo en la pieza (en la carpeta de piezas de la marca, si está conectada).
+  async function subirAsset(p, file) {
+    if (!file) return;
+    const bar = $('#as-prog'); if (bar) bar.textContent = 'Subiendo… 0%';
+    try {
+      const f = await uploadToDrive(file, file.name, (x) => { if (bar) bar.textContent = `Subiendo… ${Math.round(x * 100)}%`; }, conn[profile]?.postear_drive || {});
+      const r = await C.save({ ...p, assets: [...(p.assets || []), { id: f.id, name: f.name, mime: f.mime, link: f.link, at: new Date().toISOString() }] });
+      save(r); openPost(r); toast('Subido a Drive');
+    } catch (err) { if (bar) bar.textContent = ''; toast(err.message, true); }
   }
   $$('.kcard', b).forEach((c) => c.addEventListener('dragstart', (e) => e.dataTransfer.setData('id', c.dataset.id)));
   $$('.kcard', b).forEach((c) => c.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); } }));

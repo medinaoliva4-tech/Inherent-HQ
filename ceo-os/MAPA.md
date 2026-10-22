@@ -251,7 +251,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `formatos.js` — las plantillas base de reel y story y la forma de un guion · compartido con el servidor.
 - `formatos-ui.js` — la pantalla de Formatos.
 - `creacion-ui.js` — el editor de guiones.
-- `posts.js` — las piezas de la idea a publicado, su tablero y la conexión a Drive.
+- `posts.js` — las piezas de la idea a publicado, su tablero, la conexión a Drive y los archivos de cada pieza (`assets`: foto, video o lámina subidos a Drive, con miniatura).
 - `brand-board.js` — Identidad: moodboard, música, personas, marcas y tono.
 - `sistema-visual.js` — lee `02-marca/sistema-visual.md` y lo vuelve datos · puro.
 - `design-system-ui.js` — el Design system a la vista, cada valor copiable.
@@ -268,6 +268,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `calendario-contenido.js` — el calendario de contenido de una marca: mezcla del mes, filtros y candado del brief.
 - `calendario-trabajo.js` — el calendario de trabajo único: reuniones, producción, entregas, ventas, facturas y los días 1, 11 y 20 del ciclo.
 - `calendario-vistas.js` — el calendario de una marca con 3 filtros: Operativo, Planificación, Programado.
+- El Archivo (lo publicado hace más de 30 días o marcado «Archivado») se ve en Ideas y en el calendario de la marca, y una pieza se recupera como Listo (`archivoHtml` en `screens/content.js`).
 
 **Proyectos y tareas**
 - `project-page.js` — la página de un proyecto: Tareas, Resumen, Timeline, Calendario, Archivos, Equipo.
