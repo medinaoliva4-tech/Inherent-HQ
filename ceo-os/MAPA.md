@@ -174,6 +174,7 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espa
 - `internos.js` — lo interno que no puede ir en el código público: los paquetes por industria y sus reglas de costo, el baseline de los niveles y el mapa inicial de especialistas (`datos/paquetes-industria.js`) · rutas `internos/*`, casi todas solo CEO.
 - `intel.js` — los entregables de los agentes en la carpeta del cliente (según `intel-mapa.js`), limpios de costos, y el avatar · ruta `repo/client/:slug/intel` (al cliente, 403).
 - `investigacion.js` — referentes por marca, «Actualizar ahora» (CEO y COO), webhook de Apify, crons, posts nuevos a Research con su juicio de Laya por hacer · rutas `investigacion*`.
+- `ojo.js` — el contexto del ojo visual por marca (el moodboard y una frase de la marca) · ruta `ojo/contexto`.
 - `laya.js` — los juicios (`judgments`), las preguntas (`settings` `laya_gates`, solo el CEO), los que esperan juicio y las herramientas MCP `juicios_pendientes` y `guardar_juicio` · rutas `laya/*`.
 - `leads.js` — las reglas del CRM (etapas, candado, duplicados, historial), las fuentes y la entrada pública.
 - `mail.js` — correos al cliente (bienvenida e invitación) desde el Gmail de quien confirma; sin permiso de Gmail, un link con el correo escrito.
@@ -219,6 +220,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 **Chats, puente y Laya**
 - `laya.js` — la dirección del puente (`PUENTE`), los comandos de instalación, las puertas de Laya y sus preguntas, cómo se lee un juicio · puro.
 - `laya-ui.js` — el chip del juicio en cada ficha y la vista Inherent → Laya; primero el puente, si no responde, el juicio queda en espera.
+- `ojo.js` — el ojo visual: el estado del puente, `verImagen` (url o base64) y el chip «Se ve de la marca · 82%».
 - `puente-chat.js` — `/health` y `/chat` del puente, en solo lectura, para pantallas fuera de Estrategia; las dos fallas típicas con sus pasos.
 - `motor-ui.js` — elegir el motor del chat (`claude`, `chatgpt` o `local`) y qué le falta a la compu · se guarda por persona.
 - `artifact.js` — el panel derecho de los chats y sus íconos.
@@ -328,7 +330,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - El navegador llama directo a `http://127.0.0.1:7357` (`PUENTE` en `laya.js`); la CSP lo permite. Vercel nunca habla con el puente.
 - **Emparejar:** el puente crea un token la primera vez (`~/.inherent/laya/chat-token`, permisos 0600). La persona lo pega una vez y queda en `localStorage` (`os.estrategia.token.<correo>`). En la app de Mac llega solo (`window.inherentEscritorio.token`).
 - `puente.py --token` muestra el token · `--nuevo-token` lo cambia · 8 tokens malos en un minuto frenan los intentos.
-- **Endpoints:** `GET /health` (Laya, chat y motores) · `POST /juzgar` (Laya) · `GET /chat/estado` (probar el token) · `POST /chat` (respuesta en SSE: `inicio · delta · herramienta · fin · error`, más `imagen` en Diseño).
+- **Endpoints:** `GET /health` (Laya, chat, motores y el ojo visual) · `POST /juzgar` (Laya) · `POST /ver` (el ojo visual) · `GET /chat/estado` (probar el token) · `POST /chat` (respuesta en SSE: `inicio · delta · herramienta · fin · error`, más `imagen` en Diseño).
 - **Cuerpo de `/chat`:** `prompt` (hasta 60 000 caracteres), `resume` (para seguir la conversación), `modo`, `motor` y `modelo`.
 - **Un chat a la vez** por compu; 240 s por respuesta (`INHERENT_CHAT_SEGUNDOS`), 600 s en Diseño.
 
@@ -351,8 +353,13 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - **Sin puente,** el juicio queda en espera; lo resuelve una sesión de Claude Code con Laya por MCP, con `juicios_pendientes` y `guardar_juicio` del conector.
 - **Las puertas** (`PUERTAS` en `laya.js`, editables por el CEO): lead, factura por pagar, referente de Investigación, hook o copy, etapa del negocio.
 
+**El ojo visual** (`Ojo` en `puente.py`, `public/js/ojo.js`, `api/_lib/ojo.js`)
+- ¿Esta imagen se parece a la marca? Lo decide el puente con CLIP (`openai/clip-vit-base-patch32`, ~600 MB que baja la primera vez que arranca), comparando la imagen con el moodboard de la marca (`brand_boards.images`) y con una frase de la marca (colores del design system, tono). Solo parecido, nunca calidad.
+- `POST /ver { url | imagen (base64), refs, texto }` → `{ parecido 0..1, refs }`. Sin `transformers` + `Pillow` en la compu, responde 503 y el OS no muestra el chip.
+- El contexto lo arma el servidor en `GET /api/ojo/contexto?profile=`. El chip sale en Investigación (cada referente con imagen, guardado en `ojo`), en las láminas del chat de Diseño (la captura de Figma) y en la ficha de una pieza (su primera imagen).
+
 **El instalador** (`public/laya/instalar.sh` para Mac y Linux, `instalar.ps1` para Windows)
-- Sin permisos de administrador, todo en `~/.inherent/laya`: `uv`, un Python 3.12 propio, `laya[serve]`, el puente y el modelo de Laya.
+- Sin permisos de administrador, todo en `~/.inherent/laya`: `uv`, un Python 3.12 propio, `laya[serve]` y Pillow, el puente y el modelo de Laya (el del ojo visual lo baja el puente al arrancar).
 - Lo deja siempre encendido: LaunchAgent `global.inherent.laya` (Mac), servicio de usuario `inherent-laya` (Linux), tarea programada «Inherent Laya» (Windows).
 - Prepara la copia del repo (`puente.py --sincronizar`); si GitHub pide sesión, usa `gh auth login`.
 - Opciones: `--modelo-local` (Ollama y un modelo pequeño) · `--solo-modelo-local` · `--desinstalar`. Correrlo otra vez actualiza.
@@ -443,7 +450,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 **Variables de entorno** (los valores viven en Vercel o en la compu, nunca en el repo)
 - **Vercel:** `DATABASE_URL` / `POSTGRES_URL` · `SESSION_SECRET` · `APP_URL` · `PUBLIC_URL` · `GOOGLE_CLIENT_ID` · `GOOGLE_CLIENT_SECRET` · `GOOGLE_PORTAL_CLIENT_ID` · `GOOGLE_PORTAL_CLIENT_SECRET` · `ADMIN_EMAILS` · `ALLOWED_DOMAIN` · `GITHUB_TOKEN` · `GITHUB_REPO` · `GITHUB_BRANCH` · `APIFY_TOKEN` · `APIFY_TOPE_TOTAL` · `APIFY_ACTOR_<RED>` · `WINDSOR_API_KEY` · `ZERNIO_API_KEY` · `CRON_SECRET` · `TIMEZONE`.
 - **Local:** `LOCAL_REPO` · `LOCAL_DB` · `DEV_LOGIN` · `DEV_BASE_REAL`.
-- **Puente:** `LAYA_PUENTE_PUERTO` · `LAYA_PUENTE_ORIGENES` · `LAYA_PUENTE_MODELO` · `LAYA_PUENTE_LOG` · `LAYA_PUENTE_DATOS` · `INHERENT_REPO` · `INHERENT_REPO_URL` · `INHERENT_CLAUDE` · `INHERENT_CHAT_SEGUNDOS` · `OLLAMA_HOST` · `HF_HOME`.
+- **Puente:** `LAYA_OJO` (0 apaga el ojo visual) · `LAYA_OJO_MODELO` · `LAYA_PUENTE_PUERTO` · `LAYA_PUENTE_ORIGENES` · `LAYA_PUENTE_MODELO` · `LAYA_PUENTE_LOG` · `LAYA_PUENTE_DATOS` · `INHERENT_REPO` · `INHERENT_REPO_URL` · `INHERENT_CLAUDE` · `INHERENT_CHAT_SEGUNDOS` · `OLLAMA_HOST` · `HF_HOME`.
 - **Instalador:** `LAYA_HOME` · `LAYA_PYTHON` · `LAYA_BASE_URL` · `LAYA_MODELO_LOCAL` · `LAYA_DESDE_APP` (lo pone la app: el instalador espera a que la app apague su puente). **App de Mac:** `INHERENT_OS_URL`.
 
 ---

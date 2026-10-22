@@ -4,6 +4,7 @@ import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, cl
 import { REDES } from './calendario-vistas.js';
 import { ESTADOS, ESTADOS_TODOS, ESTADO_CLS, ESTADO_AYUDA, estadoDe, separar, conEstado, nombreAuto, nombreDe } from './element.js';
 import { layaBox } from './laya-ui.js';
+import { verImagen, ojoChip } from './ojo.js';
 import { CONSCIENCIA, consciencia, replicasDe, replicaNombre, conReplica } from './calendario-contenido.js';
 import { ANGULOS, ANGULO_AYUDA } from './avatares.js';
 
@@ -118,13 +119,15 @@ export function postsBoard(b, profile, list, onChange, opts = {}) {
   const miniatura = (a) => (/^image\//.test(a.mime || '') ? `https://drive.google.com/thumbnail?id=${encodeURIComponent(a.id)}&sz=w320` : '');
   function assetsHtml(p) {
     const l = p.assets || [];
-    return html`<b class="sm" style="display:block;margin-top:18px">Archivos en Drive${l.length ? ` · ${l.length}` : ''}</b>
+    return html`<b class="sm" style="display:block;margin-top:18px">Archivos en Drive${l.length ? ` · ${l.length}` : ''} <span id="as-ojo">${ojoChip(p.ojo, { compact: true })}</span></b>
       ${l.length ? html`<div class="as-grid">${l.map((a) => html`<div class="as-i">${miniatura(a) ? html`<a href="${a.link || '#'}" target="_blank" rel="noopener noreferrer"><img src="${miniatura(a)}" alt="${a.name}" loading="lazy"></a>` : html`<a class="as-f" href="${a.link || '#'}" target="_blank" rel="noopener noreferrer">${ico(/^video\//.test(a.mime || '') ? 'video' : 'doc', 18)}</a>`}
         <span class="as-n" title="${a.name}">${a.name}</span><button type="button" class="as-x" data-act="aquitar" data-id="${a.id}" aria-label="Quitar de la pieza">×</button></div>`)}</div>` : html`<p class="mut sm" style="margin-top:4px">Todavía no hay archivos: sube la foto, el video o la lámina y queda en Drive, ligado a esta pieza.</p>`}
       <div class="row" style="gap:8px;margin-top:8px;align-items:center"><button type="button" class="btn ghost xs" data-act="asub">${ico('upload', 13)} Subir a Drive</button><span class="mut sm" id="as-prog"></span><input type="file" id="as-file" accept="image/*,video/*,.pdf" style="display:none"></div>`;
   }
   function openPost(p) {
     queueMicrotask(() => { const i = $('#as-file'); if (i) i.onchange = () => subirAsset(p, i.files[0]); });
+    // El ojo visual sobre la primera imagen de la pieza (si el puente lo tiene): queda guardado en la pieza.
+    if (!p.ojo && profile) { const a = (p.assets || []).find((x) => /^image\//.test(x.mime || '')); const url = a ? miniatura(a) : /^https:\/\/.*\.(png|jpe?g|webp)(\?|$)/i.test(p.url || '') ? p.url : ''; if (url) verImagen(profile, { url }).then(async (r) => { if (!r) return; try { const s = await C.save({ ...p, ojo: r }); save(s); } catch { /* se queda sin guardar */ } const el = $('#as-ojo'); if (el) el.innerHTML = String(ojoChip(r, { compact: true })); }).catch(() => {}); }
     queueMicrotask(() => layaBox(document.getElementById('laya-idea'), { coll: 'content', id: p.id })); // Fase 3 · Laya: ¿engancha?, ¿suena a la marca?
     const em = embedUrl(p.url);
     const e = estadoDe(p);

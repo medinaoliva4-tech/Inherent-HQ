@@ -8,7 +8,8 @@
 # Qué hace (sin sudo, todo dentro de ~/.inherent/laya):
 #   1. Instala uv si no está (el instalador oficial, dentro de esta carpeta: no toca tu PATH).
 #   2. Crea un entorno con Python 3.12 propio (no usa el Python de tu sistema).
-#   3. Instala laya[serve] (en Linux, torch para CPU; en Mac con Apple Silicon torch ya trae MPS).
+#   3. Instala laya[serve] y Pillow (en Linux, torch para CPU; en Mac con Apple Silicon torch ya trae MPS). Con eso el
+#      puente también trae el ojo visual (CLIP, ~600 MB que baja solo la primera vez que arranca).
 #   4. Copia el puente (puente.py) y baja el modelo multilingual (~650 MB, solo la primera vez).
 #   5. Lo deja corriendo siempre: LaunchAgent en Mac, servicio de usuario systemd en Linux
 #      (si no hay systemd de usuario, lo arranca con nohup y te avisa).
@@ -118,14 +119,14 @@ main() {
     # torch solo CPU: no baja los ~2 GB de CUDA.
     "${pip[@]}" --upgrade torch --index-url https://download.pytorch.org/whl/cpu >>"$LOGS/instalar.log" 2>&1 ||
       fallo "No pude instalar torch. Revisa tu internet y vuelve a correr el comando."
-    "${pip[@]}" --upgrade-package laya "laya[serve]" >>"$LOGS/instalar.log" 2>&1 ||
+    "${pip[@]}" --upgrade-package laya "laya[serve]" pillow >>"$LOGS/instalar.log" 2>&1 ||
       fallo "No pude instalar Laya. Mira $LOGS/instalar.log y vuelve a intentar."
   elif [ "$(uname -m)" = "x86_64" ]; then
     # Mac con Intel: torch dejó de publicar para Intel en 2.2.2; esas versiones son las que corren ahí.
-    "${pip[@]}" --upgrade-package laya "laya[serve]" "numpy<2" "torch==2.2.2" "transformers==4.57.6" "huggingface_hub<1.0" >>"$LOGS/instalar.log" 2>&1 ||
+    "${pip[@]}" --upgrade-package laya "laya[serve]" pillow "numpy<2" "torch==2.2.2" "transformers==4.57.6" "huggingface_hub<1.0" >>"$LOGS/instalar.log" 2>&1 ||
       fallo "No pude instalar Laya en esta Mac con Intel. Mira $LOGS/instalar.log y mándaselo a tu operador."
   else
-    "${pip[@]}" --upgrade-package laya "laya[serve]" >>"$LOGS/instalar.log" 2>&1 ||
+    "${pip[@]}" --upgrade-package laya "laya[serve]" pillow >>"$LOGS/instalar.log" 2>&1 ||
       fallo "No pude instalar Laya. Mira $LOGS/instalar.log y vuelve a intentar."
   fi
 
