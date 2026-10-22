@@ -61,9 +61,10 @@ export const MODULES = [
   ['formatos', 'Formatos', 'copy'],
   ['marca', 'Identidad', 'palette'],
   ['design', 'Design system', 'layers'],
-  ['video', 'Video', 'video', 'Una ficha por video: assets, cortes, lógica y transiciones, con vista previa.'],
+  ['video', 'Video', 'video'],
   ['calendario', 'Calendario', 'cal'],
-  ['ads', 'Ads', 'megaphone', 'AI ads: un video muy específico por avatar (sus señales dichas y mostradas) para que la IA de Meta lo lleve a esa persona, y sus variaciones listas para pautar en Meta y Google con tu OK.'],
+  ['ads', 'Ads', 'megaphone'],
+  ['tech', 'Tech', 'globe'],
   ['resultados', 'Resultados', 'bars'],
 ];
 // Las áreas: los módulos agrupados por función, en el orden del trabajo (entender → crear → diseñar → publicar y medir).
@@ -74,6 +75,7 @@ export const AREAS = [
   ['crear', 'Crear', 'bulb', ['plan', 'formatos', 'ideas', 'creacion'], 'Del plan del mes al guion, en una sola línea'],
   ['diseno', 'Diseño', 'palette', ['marca', 'design', 'video'], 'Cómo se ve y cómo suena la marca'],
   ['publicar', 'Publicar y medir', 'cal', ['calendario', 'ads', 'resultados'], 'Qué sale, cuándo, con qué pauta y qué funcionó'],
+  ['tech', 'Tech', 'globe', ['tech'], 'Su web, sus landings y sus herramientas'],
 ];
 // La línea del trabajo: de dónde viene cada herramienta, qué se hace en ella y a dónde pasa. Es la misma cabecera en todas.
 // clave → [viene de, qué haces aquí, pasa a]
@@ -88,7 +90,9 @@ export const FLUJO = {
   marca: [null, 'La identidad: territorio, voz y lo que la hace reconocible.', 'design'],
   design: ['marca', 'Cómo se ve la marca, en valores que se ejecutan. El chat de Diseño gráfico lo usa para armar las piezas.', 'calendario'],
   calendario: ['creacion', 'Lo que hay que hacer, lo que se planea y lo que ya está programado: se prende y se apaga cada uno.', 'resultados'],
-  ads: ['calendario', 'Qué se pauta, con qué presupuesto y tu OK.', 'resultados'],
+  video: ['design', 'El kit de edición de la marca y una ficha por video: assets, cortes y música. ⑦ Video Editing lo arma con Claude.', 'calendario'],
+  ads: ['calendario', 'De lo que funcionó, variaciones por avatar para Meta y Google. Solo se lanza con el OK del CEO.', 'resultados'],
+  tech: ['design', 'Su web, landings y herramientas: la landing conectada al CRM, la web viva y la auditoría de SEO.', 'resultados'],
   resultados: ['calendario', 'Qué funcionó y qué no. Vuelve a Investigación y al plan del mes siguiente.', 'investigacion'],
 };
 export const areaOf = (k) => AREAS.find(([, , , mods]) => mods.includes(k)) || AREAS[0];
@@ -110,6 +114,9 @@ export function modulesFor(me, b) {
     resultados: A.content,
     marca: b.personal ? me.role === 'ceo' : A.clientsFull,
     design: !b.personal && (A.contentFull || A.clientsFull),
+    video: A.contentFull,
+    ads: !b.personal && A.contentFull,
+    tech: !b.personal && A.contentFull,
   };
   return MODULES.filter(([k, , , soon]) => !soon && ok[k]).map(([k]) => k);
 }

@@ -4255,3 +4255,61 @@ button.dz-chip-sel{border:1px solid var(--hair);background:var(--surface);color:
 .es-lnk:hover { color: var(--accent, var(--ink)); }
 .es-ed .es-ed-t { width: 100%; min-height: 62vh; margin-top: 14px; font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; tab-size: 2; }
 .es-sum-r .btn.xs { margin-left: 4px; }
+
+/* ---------- Marca › Video: el kit, el cuadro con safe zones y la línea de tiempo ---------- */
+.vd-kit{display:flex;gap:var(--s4);align-items:flex-start;background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r);box-shadow:var(--sh-1);padding:var(--s4);margin-bottom:var(--s4)}
+.vd-kit-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+.vd-colores{display:flex;gap:6px;flex-wrap:wrap}
+.vd-col{width:22px;height:22px;border-radius:6px;border:1px solid var(--stroke)}
+.vd-dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 18px;margin:0}
+.vd-dl dt{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.vd-dl dd{margin:2px 0 0;font-size:13px;line-height:1.4}
+.vd-cuadro{position:relative;flex:none;border-radius:10px;overflow:hidden;box-shadow:var(--sh-1);border:1px solid var(--stroke)}
+.vd-safe{position:absolute;border:1px dashed rgb(255 255 255 / .35);border-radius:4px;pointer-events:none}
+.vd-sub{position:absolute;text-align:center;line-height:1.2;font-weight:500;text-shadow:0 1px 2px rgb(0 0 0 / .35);word-break:break-word}
+.vd-linea{display:flex;gap:2px;height:22px;border-radius:6px;overflow:hidden;background:var(--fill)}
+.vd-linea.vacia{height:auto;padding:6px 8px;background:none;border:1px dashed var(--hair)}
+.vd-tramo{display:flex;align-items:center;justify-content:center;min-width:14px;font-size:10px;font-weight:600;color:#fff;background:#795c45}
+.vd-tramo.t1{background:#a68d77}.vd-tramo.t2{background:#5f7a8c}.vd-tramo.t3{background:#7f9a6a}
+.vd-linea-pie{display:flex;justify-content:space-between;margin-top:2px}
+.vd-ed-g{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--s5);align-items:start}
+.vd-ed-prev{position:sticky;top:12px;display:flex;flex-direction:column;gap:6px;max-width:320px}
+.vd-c{display:grid;grid-template-columns:22px 64px 64px minmax(0,1.4fr) minmax(0,1.2fr) minmax(0,1fr) 30px;gap:6px;align-items:center;margin-top:6px}
+.vd-c-h{margin-top:4px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.vd-n{font-size:12px;font-weight:600;color:var(--mut);text-align:center}
+.vd-a{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto auto;gap:6px;align-items:center;margin-top:6px}
+@media (max-width:860px){.vd-kit{flex-direction:column}.vd-ed-g{grid-template-columns:1fr}.vd-ed-prev{position:static}.vd-c{grid-template-columns:22px 1fr 1fr;}.vd-c-h{display:none}}
+
+/* ---------- Marca › Ads: variaciones, contadores y la regla del OK ---------- */
+.ax-regla{display:flex;align-items:center;gap:6px;margin:-4px 0 12px}
+.ax-card.sel{outline:2px solid var(--ink);outline-offset:-1px}
+.ax-txt{font-size:13.5px;line-height:1.45;white-space:pre-line;max-height:9.5em;overflow:hidden}
+.ax-g{margin:0;padding-left:16px;font-size:13px;line-height:1.5}.ax-g.d{color:var(--ink2)}
+.ax-cnt{font-size:10.5px;color:var(--mut);font-variant-numeric:tabular-nums;margin-left:4px}
+.ax-cnt.mal,.ax-live.mal{color:#b4442c;font-weight:600}
+.ax-live{font-weight:400;color:var(--mut);margin-left:6px;font-variant-numeric:tabular-nums}
+.ax-lineas{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.ax-falta{font-size:12px;color:#b4442c}
+.ax-stream{white-space:pre-wrap;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill);border-radius:10px;padding:12px;max-height:60vh;overflow:auto}
+.ax-card footer .check{font-size:12.5px;margin-right:auto}
+
+/* ---------- Marca › Tech: sitios, web viva y auditorías ---------- */
+.tc section+section{margin-top:var(--s5)}
+.tc-url{display:inline-flex;gap:4px;align-items:center;word-break:break-all}
+.tc-viva{background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r);padding:var(--s4);display:flex;flex-direction:column;gap:10px}
+.tc-dot{width:10px;height:10px;border-radius:50%;background:var(--mut);opacity:.5}
+.tc-viva.on .tc-dot{background:#5d7a46;opacity:1;box-shadow:0 0 0 4px rgb(93 122 70 / .16)}
+.tc-code{white-space:pre-wrap;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill);border-radius:10px;padding:12px;overflow:auto}
+.tc-auds{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--s3)}
+.tc-aud{display:flex;gap:12px;align-items:center;text-align:left;background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--r);padding:12px;cursor:pointer;font:inherit;color:inherit}
+.tc-aud > span:last-child{display:flex;flex-direction:column;min-width:0}
+.tc-pts{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:700;background:var(--fill)}
+.tc-pts.ok{background:rgb(93 122 70 / .16);color:#5d7a46}.tc-pts.med{background:rgb(196 138 42 / .16);color:#9a6a1c}.tc-pts.bajo{background:rgb(180 68 44 / .14);color:#b4442c}
+/* Estados «en camino» y «no rindió» (Video, Ads y Tech), junto a .av-st-ok */
+.av-st-borr{background:rgb(196 138 42 / .16);color:#9a6a1c}
+.av-st-no{background:rgb(180 68 44 / .14);color:#b4442c}
+:root[data-theme="dark"] .av-st-borr{color:#e0b46a}
+:root[data-theme="dark"] .av-st-no{color:#e48a74}
+.ax-card header{flex-wrap:wrap;justify-content:flex-start}
+.vd-ed .lbl{display:block}
+.vd-ed [data-act="corte"],.vd-ed [data-act="asset"]{margin-top:8px}

@@ -60,8 +60,8 @@ app de Mac = la misma web en una ventana + el puente adentro
 **El CEO es el candado**
 - **Estrategia:** solo el CEO aprueba o reabre un bloque, aprueba la estrategia en vivo y confirma la etapa (`api/_lib/estrategia.js`). Aprobado = cerrado hasta que él lo reabra.
 - **Pauta:** su OK vive en `accounts.ads.ok` y vale **para ese mes y ese presupuesto**; si cambia el monto, se cae (`PUT /api/ads/accounts/:slug`).
-- **También solo él:** aprobar avatares, editar recetas, editar las preguntas de Laya y escribir en el repo.
-- `strategy`, `avatars`, `formats`, `scripts`, `plans` y `judgments` **no pasan por `/api/db`** (responde 404): solo por sus rutas, que aplican estas reglas. No abras esa puerta.
+- **También solo él:** aprobar avatares, editar recetas, editar las preguntas de Laya, escribir en el repo, aprobar y lanzar variaciones de anuncio (Marca › Ads), conectar una landing al CRM y encender la web viva.
+- `strategy`, `avatars`, `formats`, `scripts`, `plans`, `videos`, `ad_variants`, `tech` y `judgments` **no pasan por `/api/db`** (responde 404): solo por sus rutas, que aplican estas reglas. No abras esa puerta.
 - **La secuencia del chat de Diseño** (estrategia aprobada → plan → ideas → diseño) y **el candado del brief** (sin brief del ciclo no hay piezas con fecha de ese mes, salvo que el CEO lo abra) los hace cumplir el servidor: `api/_lib/plan.js` y `reglasPieza` en `api/index.js` (423).
 
 **El alcance por cliente**
@@ -95,6 +95,7 @@ app de Mac = la misma web en una ventana + el puente adentro
 - Toda escritura lleva `X-CEOOS: 1` y el Origin propio (`csrfOk`). `api()` de `core.js` ya lo pone.
 - Los crons (`/api/cron/*`) piden `Bearer CRON_SECRET`. El webhook de Apify va firmado por marca y su cuerpo no se cree: se le vuelve a preguntar a Apify.
 - La entrada pública de leads (`POST /api/intake/<clave>`): clave por fuente, honeypot, 12 envíos cada 10 min por IP y clave, 20 KB máximo.
+- La web viva (`GET /api/publico/<marca>/publicado`): sin sesión, solo si el CEO la encendió, solo lo publicado y nunca links de Drive ni de Figma (`piezaPublica` en `public/js/tech.js`).
 
 **El puente**
 - **La regla de solo lectura del chat de Estrategia en `puente.py` no se quita:** `HERRAMIENTAS` (Read, Grep, Glob), `BLOQUEADAS`, `--permission-mode dontAsk`, `--strict-mcp-config`, `--restricted`, `REGLA_CHAT`; con Codex, `sandbox_mode="read-only"`. Diseño suma solo figwright (Figma); el repo sigue cerrado.
@@ -133,7 +134,7 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espa
   - `plan` → `plan-mes-ui.js` · `formatos` → `formatos-ui.js` · `ideas` → `screens/content.js` + `posts.js` · `creacion` → `creacion-ui.js`
   - `marca` → `brand-board.js` (en la marca personal, `screens/me-brand.js`) · `design` → `design-system-ui.js`
   - `calendario` → `screens/content.js` + `calendario-vistas.js` · `resultados` → `screens/content.js` (Analytics)
-  - `video` y `ads` → solo el aviso «Próximamente».
+  - `video` → `video-ui.js` (el kit de edición y las fichas) · `ads` → `ads-ui.js` (variaciones con el OK del CEO) · `tech` → `tech-ui.js` (sitios, landing al CRM, web viva y SEO)
 - `#/marcas/diseno[/<marca>]` · `diseno-chat.js` — el chat de Diseño gráfico: Plan del mes → Ideas → Diseño en Figma.
 
 **Fuera de los espacios**
@@ -157,6 +158,7 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espa
 **`api/_lib/`**
 - `access.js` — quién entra a qué: `COLLS` (colección → área), `CEO_WRITE`, `CEO_READ`, `SCOPED`, `guard`/`guardAny`, anti-CSRF, alcance (`scoper`) y lo que se recorta (`stripAccesos`, `stripCosts`, `stripInvoice`, `summaryOf`) · el candado de todo.
 - `ads.js` — el tablero de pauta por cliente (Windsor) y los anuncios activos de la competencia (Apify, biblioteca de Meta) en `sources/ads-<slug>` · rutas `ads/report`, `ads/competitors/:slug`.
+- `ads-studio.js` — Marca › Ads sobre `ad_variants`: variaciones en Borrador, solo el CEO aprueba o reabre, «Lanzar» (CEO, con presupuesto) crea la tarea para ⑩ Ads y no toca ninguna cuenta de anuncios · rutas `ads-studio*`.
 - `avatares.js` — Cliente ideal sobre `avatars`: edita quien edita Contenido, aprueba solo el CEO, se archiva · rutas `avatares*`.
 - `buscar.js` — Buscar leads: Apify (Google Maps o Instagram) deja prospectos sin duplicar; cada búsqueda en `lead_searches`, con tope de ítems y de gasto · rutas `leads/buscar*`.
 - `content.js` — perfiles de contenido, su configuración (`sources/cfg-`), el scraping con Apify en dos tiempos (arranca; recoge el webhook, la página abierta o el cron) y el tope de Apify por marca · lo usan Contenido e Investigación.
@@ -185,7 +187,9 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espa
 - `refs.js` — Referencias por pilar: videos que pega el equipo → Apify busca lo que más rindió de esos creadores (`sources/refs-<slug>`).
 - `results.js` — los Indicadores reales (comercial, entregas a tiempo, ingresos del mes, metas) y el `done_at` de cada tarea.
 - `session.js` — la cookie firmada: 30 días máximo, 14 sin uso, se renueva al usarse.
+- `tech.js` — Marca › Tech sobre `tech`: sitios, conectar una landing al CRM (el CEO crea su fuente de leads), la web viva (la enciende el CEO) y las auditorías de SEO · rutas `tech*` y la pública `publico/:marca/publicado`.
 - `vault.js` — cifra con AES-256-GCM, con una clave que sale de `SESSION_SECRET`.
+- `video.js` — Marca › Video sobre `videos`: el kit de edición (`kit--<marca>`) y las fichas de video, que se archivan · rutas `video*`.
 - `zernio.js` — la bandeja de comentarios y DMs de las cuentas propias, solo lectura.
 
 **`api/_data/`** — lo genera el build y está en `.gitignore`: `repo.json` (la copia del repo que lee el OS) y `fuentes.json` (hormozi-brain para Estrategia).
@@ -251,6 +255,14 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `brand-board.js` — Identidad: moodboard, música, personas, marcas y tono.
 - `sistema-visual.js` — lee `02-marca/sistema-visual.md` y lo vuelve datos · puro.
 - `design-system-ui.js` — el Design system a la vista, cada valor copiable.
+
+**Marcas · video, anuncios y web**
+- `video.js` — el kit de edición (sale del design system con `kitDesdeSistema`), la ficha de video y el pedido para ⑦ Video Editing · puro.
+- `video-ui.js` — la pantalla de Video: el kit con su vista previa 9:16, las fichas con su línea de tiempo y «Armar con Claude».
+- `ads-studio.js` — las variaciones (Meta y Google, con sus límites de caracteres), sus estados y quién los cambia, el pedido a Claude y la tarea para ⑩ · puro.
+- `ads-ui.js` — la pantalla de Ads: crear variaciones (por el puente o pegando la respuesta), Laya las califica, aprobar (CEO) y lanzar (CEO).
+- `tech.js` — los sitios, el formulario de la landing, el pedido de auditoría de SEO y lo que la web viva puede compartir · puro.
+- `tech-ui.js` — la pantalla de Tech.
 
 **Calendarios**
 - `calendario-contenido.js` — el calendario de contenido de una marca: mezcla del mes, filtros y candado del brief.
@@ -406,6 +418,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 | `content` | content | Piezas (`kind: post`), Research (`kind: research`) y grabaciones (`kind: shoot`) |
 | `sources` | content | Por perfil: `cfg-`, `scrape-`, `analytics-`, `ideas-`, `refs-`, `ads-<perfil>` |
 | `avatars` · `formats` · `scripts` · `plans` | content | Cliente ideal · formatos · guiones · Plan del mes |
+| `videos` · `ad_variants` · `tech` | content | Kit y fichas de video · variaciones de anuncio · sitios, web viva y auditorías de SEO (solo por sus rutas) |
 | `strategy` | estrategia | `<slug>--<bloque>` (estado y borrador) y `<slug>--viva` (estrategia en vivo) |
 | `judgments` | work | Los juicios de Laya y los que esperan juicio |
 | `folders` · `docs` | library | Carpetas y documentos de la Library |
@@ -448,6 +461,7 @@ npm run test:plan    # Plan del mes
 npm run test:diseno  # chat de Diseño
 npm run test:design  # Design system (sistema-visual.md)
 npm run test:ventas  # la meta de Ventas
+npm run test:marca   # Marca › Video, Ads y Tech
 ```
 
 - **El servidor local** (`scripts/dev.mjs`) sirve `public/` y la API en el puerto 3000, con la base PGlite en `ceo-os/.devdb/`, login de prueba, un CEO de prueba, los mismos encabezados de `vercel.json` y `/diagnostico`.
@@ -480,9 +494,10 @@ npm run test:ventas  # la meta de Ventas
 - Cambiar `SESSION_SECRET` cierra todas las sesiones y deja ilegibles los tokens de Google de `vault`: cada persona vuelve a entrar con Google.
 - El dominio de producción está escrito en `puente.py` (orígenes), `instalar.sh`, `instalar.ps1`, `laya.js` (`INSTALADOR`) y `escritorio/main.js`: cambiar de dominio es tocarlos todos.
 - El límite de la entrada pública de leads se cuenta en memoria, por instancia.
+- `/api/publico/<marca>/publicado` responde sin sesión solo si el CEO encendió la web viva de esa marca, y solo con lo publicado (título, texto, fecha, formato y el link si es de una red pública).
 
 **Alcance del producto**
-- Marca › Video y Marca › Ads son solo el aviso «Próximamente».
+- Marca › Video no edita: arma el pedido para ⑦, que corre en la compu del editor. Marca › Ads no lanza: crea la tarea para ⑩ Ads, que lanza con su gate.
 - Zernio y Windsor son de solo lectura: se responde en Zernio o con ⑧ Community Management.
 - Apify reparte su tope mensual entre las marcas; sin crédito, el scraping se corta y queda el aviso en Investigación.
 - Cada llamada a la API tiene 60 s: por eso el scraping arranca y se recoge en dos tiempos.

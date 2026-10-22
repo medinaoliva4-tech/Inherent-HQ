@@ -95,6 +95,8 @@ export function puertaDeDoc(coll, d) {
   if (coll === 'invoices') return d?.kind === 'pagar' ? 'factura' : null;
   if (coll === 'content') return d?.kind === 'research' ? 'referente' : d?.kind === 'post' ? 'idea' : null;
   if (coll === 'strategy') return d?.bloque === 'diagnostico' ? 'etapa' : null;
+  // Una variación de anuncio (Marca › Ads) se juzga como un hook o copy: su gancho y su texto.
+  if (coll === 'ad_variants') return 'idea';
   return null;
 }
 

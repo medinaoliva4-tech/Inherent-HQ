@@ -28,6 +28,8 @@ export const COLLS = {
   formats: 'content', scripts: 'content',
   // App 01 · Marca › Crear › Plan del mes: el plan de ③ Marketing de cada mes. Solo por /api/plan/* (api/_lib/plan.js).
   plans: 'content',
+  // App 01 · Marca › Video, Ads y Tech. Solo por /api/video, /api/ads-studio y /api/tech (api/_lib/video.js, ads-studio.js, tech.js).
+  videos: 'content', ad_variants: 'content', tech: 'content',
   invoices: 'finanzas', bank_moves: 'finanzas', cost_recipes: 'finanzas',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
