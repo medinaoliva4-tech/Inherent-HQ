@@ -285,10 +285,11 @@ export async function render(el, { me, sub = [], alive }) {
       const f = fase(), ok = f === 'listo';
       chatEl.classList.toggle('vacio', !chat.msgs.length);
       mount(chatEl, html`${barraChat({ panel: S.panel, pasos: pasosIn() })}<div class="es-msgs" id="es-msgs" aria-live="polite"></div>
-        ${ok ? html`<div class="ch-sug" id="es-quick"></div><div class="es-box cx"><div class="dz-chips" id="es-adj"></div><form class="es-form" id="es-form"><textarea class="in" id="es-in" rows="1" placeholder="${pasoPh()}" aria-label="Mensaje para Strategy"></textarea></form>
-          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}${botonVoz()}${botonesEnviar('es-form')}</div><div id="es-tray">${bandejaHtml()}</div></div>` : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
+        ${ok ? html`<div class="es-box cx"><div class="dz-chips" id="es-adj"></div><form class="es-form" id="es-form"><textarea class="in" id="es-in" rows="1" placeholder="${pasoPh()}" aria-label="Mensaje para Strategy"></textarea></form>
+          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}${botonVoz()}${botonesEnviar('es-form')}</div><div id="es-tray">${bandejaHtml()}</div></div><p class="ch-aviso">Strategy lee el repo y puede equivocarse: revisa lo importante.</p><button type="button" class="ch-abajo" data-act="abajo" aria-label="Bajar al final" hidden>${ico('down', 16)}</button>` : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
       if (ok) chatEl.insertAdjacentHTML('beforeend', '<div class="es-lib" id="es-lib" role="dialog" aria-label="Agregar contexto de la Library" hidden></div>');
-      paintMsgs(); paintQuick(); paintAdj(); if (S.libOn && ok) paintLib(); else S.libOn = false;
+      paintMsgs(); paintAdj(); if (S.libOn && ok) paintLib(); else S.libOn = false;
+      const msgs = $('#es-msgs', chatEl); if (msgs) msgs.onscroll = flechaAbajo;
       const ta = $('#es-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
     }
     // ---------- La Library como contexto ----------
@@ -360,24 +361,30 @@ export async function render(el, { me, sub = [], alive }) {
       $('#es-ed')?.focus();
     }
 
-    function paintQuick() {
-      const q = $('#es-quick', chatEl); if (!q) return;
-      mount(q, chat.msgs.length ? '' : html`${(RAPIDOS[bid] || []).map((t) => html`<button type="button" class="chip" data-act="rapido" data-t="${t}">${t}</button>`)}`);
+    // La flecha para bajar al final: aparece cuando la conversación quedó arriba.
+    function flechaAbajo() {
+      const box = $('#es-msgs', chatEl), b = $('.ch-abajo', chatEl); if (!box || !b) return;
+      b.hidden = box.scrollHeight - box.scrollTop - box.clientHeight < 120;
     }
+    // El chat vacío: el título y las tarjetas con lo que se le puede pedir en este bloque.
+    const vacioHtml = () => html`<div class="es-hint"><h1>¿Qué trabajamos de ${data.nombre} hoy?</h1><p>Empieza por la meta: cuánto factura hoy y cuánto quiere facturar. Strategy arma la estrategia a la derecha.</p>
+      <div class="ch-cards">${(RAPIDOS[bid] || []).map((t) => html`<button type="button" class="ch-card" data-act="rapido" data-t="${t}"><b>${t}</b><span>${bl().nombre}</span></button>`)}</div></div>`;
     function paintMsgs() {
       const box = $('#es-msgs', chatEl); if (!box) return;
       chatEl.classList.toggle('vacio', !chat.msgs.length); chatEl.classList.toggle('pensando', Boolean(enVuelo));
       const abajo = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
-      mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : html`<div class="es-hint"><b>¿Qué trabajamos de ${data.nombre} hoy?</b><p>Empieza por la meta: cuánto factura hoy y cuánto quiere facturar. Strategy arma la estrategia a la derecha.</p></div>`);
+      mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : vacioHtml());
       if (abajo || chat.msgs.length <= 2) box.scrollTop = box.scrollHeight;
+      flechaAbajo();
     }
+    const horaDe = (ts) => (ts ? new Date(ts).toLocaleTimeString('es-GT', { hour: 'numeric', minute: '2-digit' }) : '');
     function msgHtml(m, i) {
-      if (m.r === 'u') return html`<div class="es-m u"><div class="es-b">${m.t}</div></div>`;
+      if (m.r === 'u') return html`<div class="es-m u"><div class="es-b">${m.t}</div>${m.ts ? html`<span class="es-hora">${horaDe(m.ts)}</span>` : ''}</div>`;
       const busy = m.stream, ult = i === chat.msgs.length - 1;
-      return html`<div class="es-m a"><div class="es-b">${m.tools?.length && busy && !m.t ? html`<p class="es-tool">${ico('doc', 12)} ${m.tools[m.tools.length - 1]}</p>` : ''}${m.t ? raw(conCitas(m)) : busy ? html`<span class="ch-think">Pensando…</span>` : ''}
+      return html`<div class="es-m a"><span class="es-av" aria-hidden="true">S</span><div class="es-tx"><div class="es-b">${m.tools?.length && busy && !m.t ? html`<p class="es-tool">${ico('doc', 12)} ${m.tools[m.tools.length - 1]}</p>` : ''}${m.t ? raw(conCitas(m)) : busy ? html`<span class="ch-think"><i></i>Pensando…</span>` : ''}
         ${m.err ? html`<p class="es-err">${m.err}</p>` : ''}${m.aplicado?.length ? html`<span class="es-upd"><i>✦</i>Estrategia · ${m.aplicado.join(', ')} actualizado</span>${S.panel ? '' : tarjetaDoc({ ic: 'doc', titulo: `Estrategia de ${data.nombre}`, sub: data.vivaAprobada ? 'Aprobada' : `En construcción · ${avanceDe().n} de 5` })}` : ''}${m.aviso ? html`<p class="mut sm">${m.aviso}</p>` : ''}
         ${m.pregunta ? html`<div class="es-q ${ult ? '' : 'hecha'}"><span class="lbl">Una pregunta antes de seguir</span><b>${m.pregunta.texto}</b>${m.pregunta.por_que ? html`<small>${m.pregunta.por_que}</small>` : ''}${m.pregunta.opciones.length ? html`<div class="es-opts">${m.pregunta.opciones.map((o) => html`<button type="button" data-act="opcion" data-t="${o}" ${ult ? '' : raw('disabled')}>${o}</button>`)}</div>` : ''}</div>` : ''}</div>
-        ${!busy && m.t && !m.err ? html`<div class="ch-acts"><button type="button" class="ch-ab" data-act="copiar" data-t="${m.t}" title="Copiar la respuesta">${ico('copy', 13)} Copiar</button>${puede() ? html`<button type="button" class="ch-ab" data-act="guardar" data-i="${i}" title="Guardarla como borrador del entregable de este bloque">${ico('edit', 13)} Guardar como borrador</button>` : ''}${m.citas?.some((c) => c.ok) ? html`<span class="mut sm">${m.citas.filter((c) => c.ok).length} fuente${m.citas.filter((c) => c.ok).length === 1 ? '' : 's'}</span>` : ''}</div>` : ''}</div>`;
+        ${!busy && (m.t || m.err) ? html`<div class="ch-acts">${m.t ? html`<button type="button" class="ch-ab" data-act="copiar" data-t="${m.t}" title="Copiar la respuesta">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" class="ch-ab" data-act="reenviar" title="Volver a pedir esta respuesta">${ico('redo', 13)} Reintentar</button>` : ''}${m.t && !m.err && puede() ? html`<button type="button" class="ch-ab" data-act="guardar" data-i="${i}" title="Guardarla como borrador del entregable de este bloque">${ico('edit', 13)} Guardar como borrador</button>` : ''}${m.citas?.some((c) => c.ok) ? html`<span class="mut sm">${m.citas.filter((c) => c.ok).length} fuente${m.citas.filter((c) => c.ok).length === 1 ? '' : 's'}</span>` : ''}</div>` : ''}</div></div>`;
     }
     // El texto de una respuesta, con cada cita resuelta convertida en un link al pasaje.
     function conCitas(m) {
@@ -395,9 +402,9 @@ export async function render(el, { me, sub = [], alive }) {
     async function enviar(texto, { reintento = false } = {}) {
       texto = String(texto || '').trim(); if (!texto || enVuelo) return;
       const b = bloqueAhora(), ctrl = new AbortController(); enVuelo = ctrl;
-      if (!reintento) { chat.msgs.push({ r: 'u', t: texto }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] }); }
+      if (!reintento) { chat.msgs.push({ r: 'u', t: texto, ts: Date.now() }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] }); }
       const msg = chat.msgs[chat.msgs.length - 1];
-      msg.t = ''; msg.err = ''; msg.stream = true; paintMsgs(); paintQuick();
+      msg.t = ''; msg.err = ''; msg.stream = true; paintMsgs();
       if (chat.motor !== claveMotor(me)) { chat.sesion = null; chat.motor = claveMotor(me); }
       const usadoResume = Boolean(chat.sesion) && !reintento;
       // La Library: los documentos que esta conversación todavía no leyó van completos; los demás, solo nombrados.
@@ -440,7 +447,7 @@ export async function render(el, { me, sub = [], alive }) {
         if (e.status === 401 || e.status === 412) { await salud(); }
       } finally { enVuelo = null; msg.stream = false; }
       if (!msg.err && msg.t) chat.enviados = [...new Set([...(usadoResume ? chat.enviados : []), ...library.map((x) => x.id)])];
-      guardarChat(key, chat); paintMsgs(); paintQuick();
+      guardarChat(key, chat); paintMsgs();
       if (msg.err) { if (fase() !== 'listo') paintChat(); return; }
       // Lo que Strategy concretó va al panel; la pregunta puntual queda como tarjeta en el chat.
       if (msg.raw) {
@@ -466,6 +473,8 @@ export async function render(el, { me, sub = [], alive }) {
       const t = e.target.closest('[data-act]'); if (!t || !root.contains(t)) return;
       const a = t.dataset.act;
       if (a === 'copiar') return copiar(t.dataset.t);
+      if (a === 'abajo') { const box = $('#es-msgs', chatEl); if (box) box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' }); return; }
+      if (a === 'reenviar') { const u = [...chat.msgs].reverse().find((x) => x.r === 'u'); if (u && !enVuelo) enviar(u.t, { reintento: true }); return; }
       if (a === 'panel' || a === 'panel-tg') return togglePanel();
       if (a === 'panel-abrir') return S.panel ? null : togglePanel();
       if (a === 'chat-nuevo') { if (enVuelo) return; if (chat.msgs.length && !(await confirmAsk('¿Empiezo una conversación nueva? Lo que ya está en la estrategia se queda.'))) return; Object.assign(chat, { msgs: [], sesion: null, enviados: [] }); guardarChat(key, chat); paintChat(); return; }

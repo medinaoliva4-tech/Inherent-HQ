@@ -4334,3 +4334,29 @@ button.dz-chip-sel{border:1px solid var(--hair);background:var(--surface);color:
 .ojo-chip.no{background:rgb(180 68 44 / .14);color:#b4442c}
 :root[data-theme="dark"] .ojo-chip.ok{color:#a9c58f}:root[data-theme="dark"] .ojo-chip.medio{color:#e0b46a}:root[data-theme="dark"] .ojo-chip.no{color:#e48a74}
 .dz-ojo{display:block;margin-top:3px}
+/* ---------- El chat como app: conversación centrada, burbuja suave, avatar, acciones al pasar, vacío con tarjetas ---------- */
+.es-chat .es-msgs{max-width:760px;gap:22px;padding:var(--s3) var(--s4) var(--s5)}
+.es-m.u .es-b{max-width:78%;background:var(--fill);color:var(--ink);box-shadow:none}
+.es-hora{font-size:11px;color:var(--mut);opacity:0;transition:opacity .15s;margin-right:4px}.es-m.u:hover .es-hora{opacity:1}
+.es-m.a{flex-direction:row;align-items:flex-start;gap:12px}
+.es-av{flex:none;width:26px;height:26px;border-radius:8px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:12px;font-weight:600;margin-top:2px}
+.es-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.es-m.a .es-b{line-height:1.65}
+.ch-acts{margin-top:2px;margin-left:-6px;opacity:0}
+.es-m.a:hover .ch-acts,.es-m.a:focus-within .ch-acts,.es-m.a:last-child .ch-acts{opacity:1}
+.ch-think{display:inline-flex;align-items:center;gap:8px;color:var(--mut);font-size:13px;background:none;-webkit-text-fill-color:currentColor;animation:none}
+.ch-think i{width:8px;height:8px;border-radius:50%;background:var(--mut);animation:ch-pulso 1.2s infinite}
+@keyframes ch-pulso{0%,100%{opacity:.3}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.ch-think i{animation:none}}
+.ch-abajo{position:absolute;left:50%;bottom:190px;transform:translateX(-50%);width:34px;height:34px;border-radius:50%;background:var(--surface);border:1px solid var(--hair-strong);box-shadow:var(--sh-2);display:grid;place-items:center;color:var(--ink2);z-index:3;cursor:pointer}
+.ch-abajo:hover{background:var(--fill)}.ch-abajo[hidden]{display:none}
+.ch-aviso{width:100%;max-width:760px;margin:-4px auto 8px;text-align:center;font-size:11.5px;color:var(--mut);flex:none;padding:0 var(--s4)}
+.es-chat.vacio .es-hint{max-width:640px;gap:14px;padding-bottom:40px}
+.es-chat.vacio .es-hint h1{font-size:30px;font-weight:500;letter-spacing:-.5px;line-height:1.15;text-wrap:balance;color:var(--ink)}
+.es-chat.vacio .es-hint p{max-width:46ch}
+.ch-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;margin-top:6px}
+.ch-card{text-align:left;padding:12px 14px;border-radius:14px;border:1px solid var(--hair-strong);background:var(--surface);color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:3px;cursor:pointer;transition:background var(--t) var(--ease)}
+.ch-card:hover{background:var(--fill)}.ch-card b{font-weight:500;font-size:14px}.ch-card span{font-size:12.5px;color:var(--mut)}
+@media (max-width:760px){.ch-cards{grid-template-columns:1fr}.es-m.u .es-b{max-width:90%}.ch-acts{opacity:1}.es-hora{display:none}}
+.es-chat.vacio .es-hint .ch-card b{font-size:14px;font-family:var(--font);font-weight:500}
+.ch-ab{white-space:nowrap}

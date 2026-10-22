@@ -241,28 +241,37 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const f = fase(), ok = f === 'listo', abre = abierta(chat.etapa);
       const ph = chat.etapa === 'plan' ? 'Qué se dice este mes, y en qué canal…' : chat.etapa === 'ideas' ? 'Pide ideas para una pieza del plan…' : chat.resultado ? 'Pide un cambio, o selecciona una lámina y dile qué ajustar…' : `Qué diseñamos de ${b.name}…`;
       mount(chatEl, html`${etapaHtml()}<div class="es-msgs" id="dz-msgs" aria-live="polite"></div>
-        ${!abre ? cerradaHtml(chat.etapa) : ok ? html`<div class="ch-sug" id="dz-sug">${sugHtml()}</div><div class="es-box cx"><div class="dz-chips" id="dz-chips">${chipsHtml()}</div><form class="es-form" id="dz-form"><textarea class="in" id="dz-in" rows="1" placeholder="${ph}" aria-label="Mensaje para el chat"></textarea></form>
-          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}${botonVoz()}${botonesEnviar('dz-form')}</div><div id="dz-tray">${bandejaHtml()}</div></div>`
+        ${!abre ? cerradaHtml(chat.etapa) : ok ? html`<div class="es-box cx"><div class="dz-chips" id="dz-chips">${chipsHtml()}</div><form class="es-form" id="dz-form"><textarea class="in" id="dz-in" rows="1" placeholder="${ph}" aria-label="Mensaje para el chat"></textarea></form>
+          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}${botonVoz()}${botonesEnviar('dz-form')}</div><div id="dz-tray">${bandejaHtml()}</div></div><p class="ch-aviso">Diseño trabaja en Figma con el design system y puede equivocarse: revisa lo importante.</p><button type="button" class="ch-abajo" data-act="abajo" aria-label="Bajar al final" hidden>${ico('down', 16)}</button>`
           : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
       paintMsgs();
       const ta = $('#dz-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
+      const msgs = $('#dz-msgs', chatEl); if (msgs) msgs.onscroll = flechaAbajo;
     }
-    const sugHtml = () => (abierta(chat.etapa) ? ayuda()[3].map((x) => html`<button type="button" data-act="${chat.etapa === 'diseno' ? 'sug' : 'rapido'}" data-t="${x}">${x}</button>`) : '');
+    // El chat vacío: el título de la etapa y las tarjetas con lo que se le puede pedir.
+    const cardsHtml = () => (abierta(chat.etapa) ? html`<div class="ch-cards">${ayuda()[3].map((x) => html`<button type="button" class="ch-card" data-act="${chat.etapa === 'diseno' ? 'sug' : 'rapido'}" data-t="${x}"><b>${x}</b><span>${ETAPAS.find((e) => e[0] === chat.etapa)?.[1] || ''}</span></button>`)}</div>` : '');
+    // La flecha para bajar al final: aparece cuando la conversación quedó arriba.
+    function flechaAbajo() {
+      const box = $('#dz-msgs', chatEl), b = $('.ch-abajo', chatEl); if (!box || !b) return;
+      b.hidden = box.scrollHeight - box.scrollTop - box.clientHeight < 120;
+    }
     function paintMsgs() {
       const box = $('#dz-msgs', chatEl); if (!box) return;
       chatEl.classList.toggle('pensando', Boolean(enVuelo));
       chatEl.classList.toggle('vacio', !chat.msgs.length);
       const H = ayuda();
-      mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : html`<div class="es-hint"><b>${H[1]}</b><p>${H[2]}</p></div>`);
+      mount(box, chat.msgs.length ? chat.msgs.map((m, i) => msgHtml(m, i)) : html`<div class="es-hint"><h1>${H[1]}</h1><p>${H[2]}</p>${cardsHtml()}</div>`);
       box.scrollTop = box.scrollHeight;
+      flechaAbajo();
     }
+    const horaDe = (ts) => (ts ? new Date(ts).toLocaleTimeString('es-GT', { hour: 'numeric', minute: '2-digit' }) : '');
     function msgHtml(m, i) {
-      if (m.r === 'u') return html`<div class="es-m u"><div class="es-b">${m.t}</div></div>`;
+      if (m.r === 'u') return html`<div class="es-m u"><div class="es-b">${m.t}</div>${m.ts ? html`<span class="es-hora">${horaDe(m.ts)}</span>` : ''}</div>`;
       const busy = m.stream, ult = i === chat.msgs.length - 1;
-      return html`<div class="es-m a"><div class="es-b">${m.tools?.length ? html`<div class="dz-steps">${m.tools.slice(-6).map((t, k, xs) => html`<span class="${busy && k === xs.length - 1 ? 'now' : ''}">${ico(busy && k === xs.length - 1 ? 'spark' : 'check', 12)} ${t}</span>`)}</div>` : ''}${m.t ? md(m.t) : busy ? html`<span class="ch-think">Pensando…</span>` : ''}
+      return html`<div class="es-m a"><span class="es-av" aria-hidden="true">D</span><div class="es-tx"><div class="es-b">${m.tools?.length ? html`<div class="dz-steps">${m.tools.slice(-6).map((t, k, xs) => html`<span class="${busy && k === xs.length - 1 ? 'now' : ''}">${ico(busy && k === xs.length - 1 ? 'spark' : 'check', 12)} ${t}</span>`)}</div>` : ''}${m.t ? md(m.t) : busy ? html`<span class="ch-think"><i></i>Pensando…</span>` : ''}
         ${m.err ? html`<p class="es-err">${m.err}</p>` : ''}${m.aplicado?.length ? html`<span class="es-upd"><i>✦</i>${m.aplicado.join(' · ')}</span>` : ''}${m.aviso ? html`<p class="mut sm">${m.aviso}</p>` : ''}${m.doc && !chat.area ? tarjetaDoc(docDe(m.doc)) : ''}
         ${m.pregunta ? html`<div class="es-q ${ult ? '' : 'hecha'}"><span class="lbl">Una pregunta antes de seguir</span><b>${m.pregunta.texto}</b>${m.pregunta.opciones.length ? html`<div class="es-opts">${m.pregunta.opciones.map((o) => html`<button type="button" data-act="opcion" data-t="${o}" ${ult ? '' : raw('disabled')}>${o}</button>`)}</div>` : ''}</div>` : ''}</div>
-        ${!busy && m.t && !m.err ? html`<div class="ch-acts"><button type="button" class="ch-ab" data-act="copiar" data-t="${m.t}" title="Copiar la respuesta">${ico('copy', 13)} Copiar</button></div>` : ''}</div>`;
+        ${!busy && (m.t || m.err) ? html`<div class="ch-acts">${m.t ? html`<button type="button" class="ch-ab" data-act="copiar" data-t="${m.t}" title="Copiar la respuesta">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" class="ch-ab" data-act="reenviar" title="Volver a pedir esta respuesta">${ico('redo', 13)} Reintentar</button>` : ''}</div>` : ''}</div></div>`;
     }
     const pasoDe = (d) => {
       const n = String(d.nombre || '');
@@ -279,7 +288,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const primera = !chat.sesion, etapa = chat.etapa;
       if (primera) chat.vistas = [];
       const metodo = !chat.vistas.includes(etapa); // la primera vez en esta etapa, el pedido lleva el método del departamento
-      chat.msgs.push({ r: 'u', t: S.lamina ? `${S.lamina.nombre} · ${texto}` : texto }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] });
+      chat.msgs.push({ r: 'u', t: S.lamina ? `${S.lamina.nombre} · ${texto}` : texto, ts: Date.now(), pedido: texto }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] });
       const msg = chat.msgs[chat.msgs.length - 1], sueltas = [];
       paintMsgs();
       // El contexto: completo la primera vez; después, solo lo que se agregó (la sesión de Claude ya leyó lo demás).
@@ -457,6 +466,11 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const t = e.target.closest('[data-act]'); if (!t || !root.contains(t)) return;
       const a = t.dataset.act;
       if (a === 'copiar') { try { await navigator.clipboard.writeText(t.dataset.t); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo', true); } return; }
+      if (a === 'abajo') { const box = $('#dz-msgs', chatEl); if (box) box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' }); return; }
+      if (a === 'reenviar') { // se quita el último par y se vuelve a mandar el mismo pedido
+        if (enVuelo || chat.msgs.length < 2) return; const u = chat.msgs[chat.msgs.length - 2]; if (u.r !== 'u') return;
+        chat.msgs.splice(-2); return enviar(u.pedido || u.t);
+      }
       if (a === 'marca') return menuMarcas(t, b.slug);
       if (a === 'motor') return menuMotor(t, me, S.salud?.chat, () => paintChat(), { diseno: true, laya: S.salud?.on ? S.salud : null });
       if (a === 'ctx-c' || a === 'ctx-m') return document.querySelector('.dz-ctxp') ? document.querySelector('.dz-ctxp').remove() : panelCtx(t, 'inicio', '', a === 'ctx-c' ? 'contexto' : 'modo');

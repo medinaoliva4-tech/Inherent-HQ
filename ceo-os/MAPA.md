@@ -328,6 +328,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 
 **Cómo habla el OS con la compu**
 - El navegador llama directo a `http://127.0.0.1:7357` (`PUENTE` en `laya.js`); la CSP lo permite. Vercel nunca habla con el puente.
+- **Cómo se ve un chat** (Estrategia y Diseño comparten las clases `es-*` y `ch-*` de `app.css`): la barra de pasos arriba (`barraChat` en `artifact.js`), la conversación centrada (`.es-msgs`), el mensaje propio en burbuja suave con la hora al pasar (`.es-m.u`, `.es-hora`), la respuesta con avatar y sin burbuja (`.es-m.a`, `.es-av`, `.es-tx`) y sus acciones al pasar (`.ch-acts`: copiar, reintentar, guardar como borrador), el vacío con título y tarjetas (`.es-hint h1`, `.ch-cards`), la flecha para bajar al final (`.ch-abajo`), la caja (`.es-box`) con su franja (`bandeja`) y el aviso de abajo (`.ch-aviso`). No hay historial de chats: uno por parte del proceso.
 - **Emparejar:** el puente crea un token la primera vez (`~/.inherent/laya/chat-token`, permisos 0600). La persona lo pega una vez y queda en `localStorage` (`os.estrategia.token.<correo>`). En la app de Mac llega solo (`window.inherentEscritorio.token`).
 - `puente.py --token` muestra el token · `--nuevo-token` lo cambia · 8 tokens malos en un minuto frenan los intentos.
 - **Endpoints:** `GET /health` (Laya, chat, motores y el ojo visual) · `POST /juzgar` (Laya) · `POST /ver` (el ojo visual) · `GET /chat/estado` (probar el token) · `POST /chat` (respuesta en SSE: `inicio · delta · herramienta · fin · error`, más `imagen` en Diseño).
