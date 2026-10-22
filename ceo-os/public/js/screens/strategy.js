@@ -98,6 +98,8 @@ export async function render(el, { me, sub = [], alive }) {
     const avanceDe = () => ({ n: PASOS.filter((p) => hechoP(p.id)).length });
     // Una secuencia cerrada, como en Diseño gráfico: un paso se abre cuando el anterior está hecho.
     const abiertoP = (id) => { const i = PASOS.findIndex((p) => p.id === id); return i <= 0 || hechoP(id) || PASOS.slice(0, i).every((p) => hechoP(p.id)); };
+    // El bloque de Hormozi que se usa como lente: el del paso en que estás (o el de la página, si el paso no tiene uno).
+    const bloqueAhora = () => data.bloques.find((x) => x.id === PASOS.find((p) => p.id === pasoAhora())?.hz?.[0]) || bl();
     const pasoAhora = () => chat.paso && abiertoP(chat.paso) ? chat.paso : (PASOS.find((p) => !hechoP(p.id)) || PASOS[PASOS.length - 1]).id;
     const pasosIn = () => html`${PASOS.map((p, i) => html`${i ? html`<span class="cb-sep">›</span>` : ''}<button type="button" class="dg-e ${pasoAhora() === p.id ? 'on' : ''} ${hechoP(p.id) ? 'ok' : ''}" data-act="paso" data-p="${p.id}" title="${p.largo}${abiertoP(p.id) ? '' : ' · se abre cuando el paso anterior esté hecho'}"><i>${hechoP(p.id) ? ico('check', 11) : abiertoP(p.id) ? p.n : ico('lock', 11)}</i>${p.nombre}</button>`)}`;
     // Tocar un supuesto subrayado: se cambia a mano y la cascada se recalcula.
@@ -241,7 +243,6 @@ export async function render(el, { me, sub = [], alive }) {
         <form class="es-pair" data-act="pair"><input class="in" name="t" type="password" autocomplete="off" spellcheck="false" placeholder="Pega el token" aria-label="Token del puente"><button class="btn xs" type="submit">Emparejar</button></form>${S.pareo ? html`<p class="es-err">${S.pareo}</p>` : ''}</div>`;
     }
     const RAPIDOS = { diagnostico: ['¿En qué etapa está y por qué?', '¿Qué dato falta para estar seguros?'], oferta: ['Arma la ecuación de valor', 'Propón la Grand Slam Offer', '¿Qué haría la oferta más difícil de rechazar?'], modelo: ['Propón atracción, upsell, downsell y continuidad', '¿Qué upsell va primero?'], leads: ['¿Dónde consigue clientes con esta oferta?', 'Core Four: ¿cuál va primero?'], roadmap: ['Arma el plan de 90 días para su etapa', '¿Qué es lo primero que hacemos esta semana?'] };
-    const pickers = () => html`<button type="button" class="es-pick" data-act="cliente" aria-haspopup="listbox" title="Cambiar de cliente"><i class="${slug === 'inherent' ? 'priv' : ''}">${initials(data.nombre)}</i>${data.nombre} ▾</button><button type="button" class="es-pick" data-act="hz" aria-haspopup="menu" title="Enfocar un bloque de Hormozi">Hormozi · ${M.nombre} ▾</button>${motorBtn(me)}<button type="button" class="es-pick" data-act="panel" ${S.panel ? raw('hidden') : ''}>${ico('doc', 12)} Estrategia</button>`;
     const modeloHtml = () => { const ok = fase() === 'listo'; return html`<button type="button" class="cx-model" data-act="motor" aria-haspopup="listbox" title="Qué modelo responde">${nombreMotor(motorDe(me))} ▾<small class="${ok ? 'on' : ''}">● ${ok ? 'en tu compu' : 'sin conectar'}</small></button>`; };
     const pasoPh = () => ({ contexto: 'Cuánto factura hoy y cuánto quiere facturar…', analisis: '¿Qué tiene que ser verdad para lograrlo?…', inversa: 'El ticket, el cierre, la conversión…', metodologia: 'La oferta, el modelo de dinero, los canales…', entrega: 'Qué se hace cada trimestre…' }[pasoAhora()] || 'Opina, agrega un dato o pide más detalle…');
     // La ventana «+»: el contexto que lee el chat y cómo trabaja (la misma que en Diseño gráfico, adaptada a Estrategia).
@@ -253,19 +254,15 @@ export async function render(el, { me, sub = [], alive }) {
           <button type="button" class="dz-o on" data-x="cliente"><span class="dz-oi">${initials(data.nombre)}</span><span class="dz-ot">Cliente · ${data.nombre}<small>Su ficha, su nivel, su etapa y su carpeta del repo · cambiar</small></span><span class="dz-n">${ico('right', 12)}</span></button>
           <button type="button" class="dz-o ${S.inv ? 'on' : ''}" data-x="inv"><span class="dz-oi">${ico('play', 14)}</span><span class="dz-ot">Investigación<small>Los posts ganadores de su mercado (el scraping de referentes y competencia)</small></span><span class="dz-ck">${S.inv ? ico('check', 11) : ''}</span></button>
           ${data.puede.library ? html`<button type="button" class="dz-o" data-x="lib"><span class="dz-oi">${ico('doc', 14)}</span><span class="dz-ot">Documentos de la Library<small>SOPs, entrevistas, notas</small></span><span class="dz-n">${chat.adj.length ? `${chat.adj.length} ` : ''}${ico('right', 12)}</span></button>` : ''}
-          <button type="button" class="dz-o" data-x="hz"><span class="dz-oi">${ico('target', 14)}</span><span class="dz-ot">Hormozi · ${M.nombre}<small>El bloque del $100M que se usa como lente</small></span><span class="dz-n">${ico('right', 12)}</span></button></div>
-        <header class="dz-ph" style="margin-top:4px"><b>Cómo trabaja</b></header><div class="dz-ol">
-          <button type="button" class="dz-o" data-x="panel"><span class="dz-oi">${ico('layers', 14)}</span><span class="dz-ot">Área de trabajo<small>La estrategia se arma a la derecha</small></span><span class="dz-sw ${S.panel ? 'on' : ''}"></span></button></div>`);
+          <button type="button" class="dz-o on" disabled title="En Estrategia siempre está prendido: es el método"><span class="dz-oi">${ico('target', 14)}</span><span class="dz-ot">Lente Hormozi · ${bloqueAhora().nombre}<small>Siempre prendido en Estrategia · el bloque sale del paso en que estás</small></span><span class="dz-ck">${ico('check', 11)}</span></button></div>`);
       pinta(); box.append(m); ubicarPop(m, box); anchor.setAttribute('aria-expanded', 'true');
       const fuera = () => { m.remove(); anchor.setAttribute('aria-expanded', 'false'); document.removeEventListener('pointerdown', cerrar); };
       m.addEventListener('click', (e) => {
         const x = e.target.closest('[data-x]')?.dataset.x; if (!x) return;
         if (x === 'inv') { S.inv = !S.inv; chat.inv = S.inv; guardarChat(key, chat); paintAdj(); return pinta(); }
-        if (x === 'panel') { togglePanel(); return pinta(); }
         fuera();
         if (x === 'cliente') return menuClientes(anchor, slug);
         if (x === 'lib') return abrirLib();
-        if (x === 'hz') return menuHz(anchor);
       });
       const cerrar = (e) => { if (!m.contains(e.target) && !e.target.closest('[data-act="ctx"]')) fuera(); };
       setTimeout(() => document.addEventListener('pointerdown', cerrar));
@@ -274,11 +271,10 @@ export async function render(el, { me, sub = [], alive }) {
     function togglePanel() { S.panel = !S.panel; try { localStorage.setItem('os.estrategia.panel', S.panel ? 'on' : 'off'); } catch {} $('#es-split', el).dataset.panel = S.panel ? 'on' : 'off'; requestAnimationFrame(() => div?.ubicar()); $$('[data-act="panel"].es-pick', el).forEach((x) => { x.hidden = S.panel; }); const tg = $('[data-act="panel-tg"]', chatEl); if (tg) { tg.classList.toggle('on', S.panel); tg.setAttribute('aria-pressed', String(S.panel)); } paintHead(); paintMsgs(); }
     function paintChat() {
       const f = fase(), ok = f === 'listo';
-      const pill = html`<span class="es-pill ${ok ? 'on' : ''}" title="${ok ? 'Tu Claude, en tu compu' : 'Falta conectar tu compu'}"><i></i>${ok ? 'En tu compu' : f === 'cargando' ? '…' : 'Sin conectar'}</span>`;
       chatEl.classList.toggle('vacio', !chat.msgs.length);
       mount(chatEl, html`${barraChat({ cliente: { act: 'cliente', mono: initials(data.nombre), nombre: data.nombre }, panel: S.panel, pasos: pasosIn() })}<div class="es-msgs" id="es-msgs" aria-live="polite"></div>
         ${ok ? html`<div class="ch-sug" id="es-quick"></div><div class="es-box cx"><div class="dz-chips" id="es-adj"></div><form class="es-form" id="es-form"><textarea class="in" id="es-in" rows="1" placeholder="${pasoPh()}" aria-label="Mensaje para Strategy"></textarea></form>
-          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}<button class="btn es-send" type="submit" form="es-form" id="es-send" aria-label="Enviar">${ico('right', 16)}</button></div></div>` : html`<div class="es-foot">${pickers()}${pill}</div>${setup(f)}`}`);
+          <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}<button class="btn es-send" type="submit" form="es-form" id="es-send" aria-label="Enviar">${ico('right', 16)}</button></div></div>` : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
       if (ok) chatEl.insertAdjacentHTML('beforeend', '<div class="es-lib" id="es-lib" role="dialog" aria-label="Agregar contexto de la Library" hidden></div>');
       paintMsgs(); paintQuick(); paintAdj(); if (S.libOn && ok) paintLib(); else S.libOn = false;
       const ta = $('#es-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
@@ -286,7 +282,7 @@ export async function render(el, { me, sub = [], alive }) {
     // ---------- La Library como contexto ----------
     function paintAdj() {
       const box = $('#es-adj', chatEl); if (!box) return;
-      mount(box, html`<span class="dz-chip fijo" title="El cliente: su ficha, su nivel y su carpeta">${data.nombre}</span><span class="dz-chip fijo" title="El bloque de Hormozi que se usa como lente">Hormozi · ${M.nombre}</span>
+      mount(box, html`<span class="dz-chip fijo" title="El cliente: su ficha, su nivel y su carpeta">${data.nombre}</span><span class="dz-chip fijo" title="El lente de Hormozi: el bloque sale del paso en que estás">Hormozi · ${bloqueAhora().nombre}</span>
         ${S.inv ? html`<span class="dz-chip" title="Los posts ganadores de Investigación van en el próximo mensaje">Investigación<button type="button" data-act="inv" aria-label="Quitar Investigación">×</button></span>` : ''}
         ${chat.adj.map((a) => html`<span class="dz-chip"><button type="button" class="dz-chip-t" data-act="libdoc" data-id="${a.id}" title="${a.carpeta || 'Library'}">${a.titulo}</button><button type="button" data-act="adj-quitar" data-id="${a.id}" aria-label="Quitar ${a.titulo}">×</button></span>`)}`);
     }
@@ -361,7 +357,7 @@ export async function render(el, { me, sub = [], alive }) {
     // ---------- Mandar un mensaje ----------
     async function enviar(texto, { reintento = false } = {}) {
       texto = String(texto || '').trim(); if (!texto || enVuelo) return;
-      const b = bl(), ctrl = new AbortController(); enVuelo = ctrl;
+      const b = bloqueAhora(), ctrl = new AbortController(); enVuelo = ctrl;
       if (!reintento) { chat.msgs.push({ r: 'u', t: texto }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] }); }
       const msg = chat.msgs[chat.msgs.length - 1];
       msg.t = ''; msg.err = ''; msg.stream = true; paintMsgs(); paintQuick();
@@ -375,7 +371,7 @@ export async function render(el, { me, sub = [], alive }) {
         catch (e) { enVuelo = null; msg.stream = false; msg.err = `No pude leer la Library: ${e.message}`; guardarChat(key, chat); paintMsgs(); return; }
       }
       const historial = reintento ? chat.msgs.slice(0, -2).filter((x) => x.t).slice(-6).map((x) => `${x.r === 'u' ? 'Tú' : 'Strategy'}: ${x.t.slice(0, 1200)}`).join('\n\n') : '';
-      const prompt = promptDe({ cliente: data.nombre, slug, carpeta: data.carpeta, bloque: bid, nivel: data.nivel?.nombre, nivelId: data.nivel?.id, limite: b.limite, incluye: data.nivel?.id === 'medida' ? data.ficha.incluye : [], etapa: etapaN(), etapaConfirmada: Boolean(data.etapa?.confirmada), entregables: b.entregables.map((x) => x.ruta ? `${data.carpeta}/${x.ruta}` : '').filter(Boolean), mensaje: texto, library, adjuntos: viejos.map((a) => a.titulo) }) + (historial ? `\n\nConversación hasta ahora:\n${historial}` : '');
+      const prompt = promptDe({ cliente: data.nombre, slug, carpeta: data.carpeta, bloque: b.id, nivel: data.nivel?.nombre, nivelId: data.nivel?.id, limite: b.limite, incluye: data.nivel?.id === 'medida' ? data.ficha.incluye : [], etapa: etapaN(), etapaConfirmada: Boolean(data.etapa?.confirmada), entregables: b.entregables.map((x) => x.ruta ? `${data.carpeta}/${x.ruta}` : '').filter(Boolean), mensaje: texto, library, adjuntos: viejos.map((a) => a.titulo) }) + (historial ? `\n\nConversación hasta ahora:\n${historial}` : '');
       let inv = '';
       if (S.inv) { try { const all = await col('content').list(); inv = all.filter((x) => x.kind === 'research' && x.profile === slug).slice(0, 25).map((x) => `- @${x.handle || '—'} · ${x.format || 'post'}${x.views ? ` · ${x.views} vistas` : ''}${x.title ? ` · ${String(x.title).slice(0, 80)}` : ''}${x.why?.hook ? ` · hook: «${String(x.why.hook).slice(0, 90)}»` : ''}${x.why?.por_que ? ` · por qué funciona: ${String(x.why.por_que).slice(0, 140)}` : ''}`).join('\n'); } catch { inv = ''; } }
       const P = PASOS.find((p) => p.id === pasoAhora());
@@ -436,7 +432,7 @@ export async function render(el, { me, sub = [], alive }) {
       if (a === 'panel' || a === 'panel-tg') return togglePanel();
       if (a === 'panel-abrir') return S.panel ? null : togglePanel();
       if (a === 'ctx') return document.querySelector('.dz-ctxp') ? (document.querySelector('.dz-ctxp').remove(), t.setAttribute('aria-expanded', 'false')) : panelCtx(t);
-      if (a === 'paso') { const p = t.dataset.p; if (!abiertoP(p)) return toast('Ese paso se abre cuando el anterior esté hecho', true); chat.paso = p; guardarChat(key, chat); mount(chatEl.querySelector('.cb-p'), pasosIn()); const ta = $('#es-in', chatEl); if (ta) ta.placeholder = pasoPh(); return; }
+      if (a === 'paso') { const p = t.dataset.p; if (!abiertoP(p)) return toast('Ese paso se abre cuando el anterior esté hecho', true); chat.paso = p; guardarChat(key, chat); mount(chatEl.querySelector('.cb-p'), pasosIn()); paintAdj(); const ta = $('#es-in', chatEl); if (ta) ta.placeholder = pasoPh(); return; }
       if (a === 'a-plan') { const d = new Date(), mes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug, etapa: 'plan', mes })); } catch {} location.hash = `#/marcas/diseno/${slug}`; return; }
       if (a === 'cliente') return menuClientes(t, slug);
       if (a === 'motor') return menuMotor(t, me, S.salud?.chat, () => paintChat());

@@ -4189,3 +4189,8 @@ body.arrastrando{cursor:col-resize;user-select:none}
 .ad-in>.ev-sec.fresh{padding:12px 14px;margin:0 -14px;border-radius:14px}
 .pmt-top .tabs a{padding:6px 13px;white-space:nowrap}
 .dz-chat .es-box,.es-split.es2 .es-chat .es-box{width:100%;max-width:none;margin-left:0;margin-right:0}
+/* La caja: el formato se toca para cambiarlo; la pieza suelta, al final de las etapas */
+button.dz-chip-sel{border:1px solid var(--hair);background:var(--surface);color:var(--ink);font:inherit;font-size:12px;cursor:pointer;padding:3px 11px}button.dz-chip-sel:hover{background:var(--fill)}
+.cb-mini{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border:1px dashed var(--hair-strong, var(--hair));background:transparent;color:var(--mut);font:inherit;font-size:12px;border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap;flex:none}.cb-mini:hover{color:var(--ink);border-style:solid}
+.dz-o:disabled.on{opacity:1;cursor:default}
+.dg-suelta{background:color-mix(in srgb,#c98a2b 16%,transparent);color:var(--ink)}.dg-suelta .linkish{color:inherit}
