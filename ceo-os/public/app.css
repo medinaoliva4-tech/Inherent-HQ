@@ -4129,3 +4129,8 @@ body.arrastrando{cursor:col-resize;user-select:none}
 .es-pasos{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}.es-pasos::-webkit-scrollbar{display:none}
 /* En Estrategia el panel ya trae su ×: el botón del chat solo aparece para volver a abrirlo */
 .es-split:not([data-panel="off"]) .es-et .ver-panel{display:none}
+
+/* El calendario de la marca: los mismos colores que Proyectos, con sus 3 filtros */
+.t-operativo{--wt:var(--wt-produccion);--wt-ink:var(--wt-produccion-ink)}
+.t-planificacion{--wt:var(--wt-entregas);--wt-ink:var(--wt-entregas-ink)}
+.t-programado{--wt:var(--wt-ventas);--wt-ink:var(--wt-ventas-ink)}

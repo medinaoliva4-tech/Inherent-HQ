@@ -1,6 +1,7 @@
 // «Por postear»: los videos y piezas propias de un perfil, de la idea a publicado.
 // Se usa en Content y en la página de cada cliente. Vive en la colección content.
 import { html, raw, mount, col, ask, toast, fdate, $, $$, confirmAsk, drawer, closeDrawer, embedUrl , wizard, api, connectChip, ask as askF, ico } from './core.js';
+import { REDES } from './calendario-vistas.js';
 import { ESTADOS, ESTADOS_TODOS, ESTADO_CLS, ESTADO_AYUDA, estadoDe, separar, conEstado, nombreAuto, nombreDe } from './element.js';
 import { layaBox } from './laya-ui.js';
 import { CONSCIENCIA, consciencia, replicasDe, replicaNombre, conReplica } from './calendario-contenido.js';
@@ -60,6 +61,8 @@ export async function editPost(profile, p, pre = {}) {
     { k: 'format', l: 'Formato', t: 'select', opts: ['Reel', 'TikTok', 'Carrusel', 'Story', 'Estático', 'YouTube'].map((x) => [x, x]), v: p?.format || 'Reel', half: true },
     { k: 'date', l: 'Fecha de publicación', t: 'date', v: p?.date, half: true },
     { k: 'status', l: 'Estado', t: 'select', opts: ESTADOS_TODOS.map((x) => [x, x]), v: estadoDe(p), half: true },
+    { k: 'time', l: 'Hora de salida', t: 'time', v: p?.time || '', half: true },
+    { k: 'red', l: 'Red', t: 'select', opts: [['', '—'], ...REDES.map((x) => [x, x])], v: p?.red || p?.slot?.canal || '', half: true },
     ...(pillars.length ? [{ k: 'pillar', l: 'Pilar', t: 'select', opts: [['', '—'], ...pillars.map((x) => [x.name, x.name])], v: p?.pillar || '', half: true }] : []),
     { k: 'campana', l: 'Campaña', v: p?.campana || '', half: true },
     ...(avs.length ? [{ k: 'avatar', l: 'Avatar', t: 'select', opts: [['', '—'], ...avs.map((a) => [a.id, `${a.nombre} · ${a.peso || 0}%`])], v: p?.avatar || '', half: true }, { k: 'angulo', l: 'Ángulo', v: p?.angulo || '', half: true }] : []),

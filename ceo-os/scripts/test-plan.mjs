@@ -56,4 +56,18 @@ t('La línea del trabajo apunta a herramientas que existen y Crear va en orden',
   assert.deepEqual(AREAS.find(([k]) => k === 'crear')[3], ['plan', 'formatos', 'ideas', 'creacion']);
 });
 
+// El calendario de la marca: los 3 filtros.
+const CV = await import('../public/js/calendario-vistas.js');
+t('Calendario: Operativo, Planificación y Programado salen de lo que ya existe', () => {
+  const ev = CV.eventosMarca({ slug: 'x', from: '2026-10-01', to: '2026-10-31', hoy: '2026-10-22',
+    posts: [{ id: 'a', kind: 'post', date: '2026-10-05', status: 'Idea' }, { id: 'b', kind: 'post', date: '2026-10-23', status: 'Listo', time: '18:30', red: 'TikTok' }, { id: 'c', kind: 'post', date: '2026-10-24', status: 'Listo' }, { id: 'd', kind: 'post', date: '2026-11-02', status: 'Idea' }],
+    shoots: [{ id: 's', profile: 'x', date: '2026-10-07' }, { id: 's2', profile: 'otra', date: '2026-10-07' }],
+    projects: [{ id: 'p1', client_slug: 'x', name: 'Ciclo', meetings: [{ name: 'Día 1', date: '2026-10-01' }] }, { id: 'p2', client_slug: 'otra' }],
+    tasks: [{ id: 't1', project_id: 'p1', due: '2026-10-10', title: 'Grabar' }, { id: 't2', project_id: 'p2', due: '2026-10-10' }, { id: 't3', project_id: 'p1', due: '2026-10-10', status: 'Hecha' }] });
+  const de = (k) => ev.filter((e) => e.tipo === k);
+  assert.equal(de('operativo').filter((e) => !e.ciclo).length, 3); assert.equal(de('operativo').filter((e) => e.ciclo).length, 3);
+  assert.equal(de('planificacion').length, 1); assert.ok(de('planificacion')[0].late);
+  assert.equal(de('programado').length, 2); assert.ok(de('programado').find((e) => e.k === 'p-c').falta); assert.ok(!de('programado').find((e) => e.k === 'p-b').falta);
+  assert.equal(CV.redDe({ format: 'TikTok' }), '');
+});
 console.log(`\n${ok} pruebas pasaron`);
