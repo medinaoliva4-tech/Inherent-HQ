@@ -68,7 +68,7 @@ MODELO = "multilingual"  # el checkpoint que lee español (~644 MB la primera ve
 MAX_CUERPO = 256 * 1024
 MAX_TEXTO = 20000
 MAX_PREGUNTAS = 16
-VERSION = "6"
+VERSION = "7"
 # La copia del repo que el puente maneja solo (si no le dices otra con INHERENT_REPO): se pone al día con main antes de cada chat.
 REPO_URL = os.environ.get("INHERENT_REPO_URL") or "https://github.com/medinaoliva4-tech/Inherent-HQ.git"
 SYNC_CADA = 60  # segundos mínimos entre dos puestas al día
@@ -90,6 +90,8 @@ REGLA_DISENO = ("Chat de Diseño de Inherent OS. El repo es de solo lectura: no 
                 "Diseñas en Figma con las herramientas de figwright, dentro del archivo y la página de la marca. Responde en español de «tú».")
 # --- los motores: Claude (Claude Code), ChatGPT y los modelos locales (los dos por Codex: `codex exec`) ---
 MOTORES = ("claude", "chatgpt", "local")
+# Los modelos de Claude que se pueden elegir desde el OS (alias de Claude Code: siempre el más nuevo de cada uno).
+CLAUDE_MODELOS = ("opus", "sonnet", "haiku")
 OLLAMA = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
 MODELO_OK = re.compile(r"^[\w.:/-]{1,80}$")
 REGLA_CHAT = ("Chat de Estrategia de Inherent OS, en solo lectura: no crees, cambies ni borres archivos y no ejecutes comandos. "
@@ -360,7 +362,7 @@ class Chat:
             ayuda = "sin_github" if self.sin_github() else "bajando_repo" if self.sync["error"] is None else "repo_error"
         return {"listo": ayuda is None, "ayuda": ayuda, "repo": ok_repo, "repo_configurado": propio, "copia": "propia" if propio else "automatica",
                 "commit": self.sync["commit"], "sincronizado": self.sync["ok_at"], "error_repo": None if ok_repo else self.sync["error"],
-                "claude": bool(claude), "ocupado": self.lock.locked(), "segundos": self.segundos, "modos": ["estrategia", "diseno"],
+                "claude": bool(claude), "ocupado": self.lock.locked(), "segundos": self.segundos, "modos": ["estrategia", "diseno"], "claude_modelos": list(CLAUDE_MODELOS),
                 "motores": {"claude": bool(claude),
                             "chatgpt": {"instalado": bool(codex), "sesion": bool(codex) and self.sesion_chatgpt(codex)},
                             "local": {"instalado": bool(codex), "modelos": self.modelos_locales() if codex else []}}}
@@ -438,8 +440,10 @@ class Chat:
             json.dump(DISENO_MCP, f)
         return ruta
 
-    def comando(self, claude, resume, modo="estrategia"):
+    def comando(self, claude, resume, modo="estrategia", modelo=None):
         cmd = [claude, "-p", "--output-format", "stream-json", "--verbose"]
+        if modelo in CLAUDE_MODELOS:
+            cmd += ["--model", modelo]
         if self.soporta(claude, "--include-partial-messages"):
             cmd.append("--include-partial-messages")
         diseno = modo == "diseno"
@@ -474,7 +478,7 @@ class Chat:
         env = dict(os.environ)
         env["PATH"] = os.pathsep.join([os.path.dirname(prog), "/usr/local/bin", "/opt/homebrew/bin", env.get("PATH", "")])
         kw = {"start_new_session": True} if os.name != "nt" else {"creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)}
-        cmd = self.comando_codex(prog, resume, modo, motor, modelo) if usa_codex else self.comando(prog, resume, modo)
+        cmd = self.comando_codex(prog, resume, modo, motor, modelo) if usa_codex else self.comando(prog, resume, modo, modelo)
         proc = subprocess.Popen(cmd, cwd=repo, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kw)
         estado = {"agotado": False, "fin": False}
         err = []
@@ -676,6 +680,8 @@ def servidor(laya_, origenes, puerto, chat=None):
                 return self.responder(400, {"error": "«modelo» no es un nombre de modelo válido"})
             if motor == "local" and not modelo:
                 return self.responder(400, {"error": "Elige qué modelo local usar"})
+            if motor == "claude" and modelo and modelo not in CLAUDE_MODELOS:
+                return self.responder(400, {"error": "«modelo» de Claude es opus, sonnet o haiku"})
             if not isinstance(prompt, str) or not prompt.strip():
                 return self.responder(400, {"error": "Falta «prompt»"})
             if len(prompt) > MAX_PROMPT:

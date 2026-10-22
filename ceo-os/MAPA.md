@@ -61,7 +61,8 @@ app de Mac = la misma web en una ventana + el puente adentro
 - **Estrategia:** solo el CEO aprueba o reabre un bloque, aprueba la estrategia en vivo y confirma la etapa (`api/_lib/estrategia.js`). Aprobado = cerrado hasta que él lo reabra.
 - **Pauta:** su OK vive en `accounts.ads.ok` y vale **para ese mes y ese presupuesto**; si cambia el monto, se cae (`PUT /api/ads/accounts/:slug`).
 - **También solo él:** aprobar avatares, editar recetas, editar las preguntas de Laya y escribir en el repo.
-- `strategy`, `avatars`, `formats`, `scripts` y `judgments` **no pasan por `/api/db`** (responde 404): solo por sus rutas, que aplican estas reglas. No abras esa puerta.
+- `strategy`, `avatars`, `formats`, `scripts`, `plans` y `judgments` **no pasan por `/api/db`** (responde 404): solo por sus rutas, que aplican estas reglas. No abras esa puerta.
+- **La secuencia del chat de Diseño** (estrategia aprobada → plan → ideas → diseño) y **el candado del brief** (sin brief del ciclo no hay piezas con fecha de ese mes, salvo que el CEO lo abra) los hace cumplir el servidor: `api/_lib/plan.js` y `reglasPieza` en `api/index.js` (423).
 
 **El alcance por cliente**
 - Sin ficha de oferta (`clients/<cliente>/00-onboarding/plan-contratado.md`) la marca no está activa: su Investigación responde 409 y el scraping de los lunes la salta.
@@ -346,7 +347,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 
 **Las dos copias del puente**
 - `public/laya/puente.py` es el que baja el instalador y el que trae la app de Mac.
-- `tools/laya-puente/puente.py` (con su `README.md`) es la copia para correrlo a mano. Deben ser idénticas: si cambias una, copia la otra.
+- `tools/laya-puente/puente.py` (con su `README.md`) es la copia para correrlo a mano. Deben ser idénticas: si cambias una, copia la otra (`npm test` avisa si no).
 
 **El otro camino a la IA**
 - `openClaude` y `claudeJSON` (`core.js`) abren la IA de la persona en una pestaña nueva con el prompt listo; la persona pega la respuesta. Lo usan Contenido, Investigación, la diana, la Library, el Workspace y los paquetes por industria.
@@ -439,7 +440,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 cd ceo-os
 npm install
 npm run dev          # http://localhost:3000 → «Entrar en modo prueba»
-npm test             # el parser contra el manual real del repo
+npm test             # el parser contra el manual real del repo y las dos copias del puente
 npm run test:fase4   # Cliente ideal, candado del brief, mezcla del mes, errores de Apify
 npm run test:fase5   # Formatos y Guiones
 npm run test:viva    # Estrategia en vivo
@@ -465,11 +466,9 @@ npm run test:ventas  # la meta de Ventas
 - Los chats y Laya dependen de la compu de cada persona: sin el puente encendido, el chat no corre y los juicios quedan en espera.
 - Un chat a la vez por compu, con tope de tiempo y de tamaño (sección 6).
 - Las conversaciones viven en el `localStorage` del navegador de cada persona (Estrategia guarda las últimas 40, Diseño las últimas 30): no se comparten ni pasan a otra compu.
-- `public/laya/puente.py` y `tools/laya-puente/puente.py` no son idénticos: el de `public/` (el que se instala) es la versión 7, con elección de modelo; el de `tools/` es la 6.
 
-**Reglas que hoy cumple solo la pantalla**
-- La secuencia del chat de Diseño (estrategia aprobada → plan → ideas → diseño) y el candado del brief sobre el calendario: el servidor no los bloquea (`plan.js` solo dice si la estrategia está aprobada).
-- `plans` se puede tocar por `/api/db/plans`: `collGuard` no la cierra como a `strategy`, `avatars`, `formats` y `scripts`.
+**Reglas de las piezas**
+- La secuencia del chat de Diseño y el candado del brief los cuida el servidor en `/api/plan` y en `/api/db/content` (`reglasPieza` en `api/index.js`). Las herramientas del conector MCP que crean piezas escriben directo en la base y no pasan por ese candado.
 
 **El repo**
 - Vercel lee la copia del último build: lo que cambia en el repo se ve en el OS después de publicar.
@@ -491,5 +490,5 @@ npm run test:ventas  # la meta de Ventas
 - La app de Mac no tiene firma de Apple (solo «ad hoc») y es solo para Mac: la primera vez macOS la bloquea y se abre desde Ajustes del Sistema › Privacidad y seguridad › «Abrir de todos modos». Las actualizaciones no pasan por ese paso. Sus registros del puente van a `~/.inherent/laya/logs`; los del instalador, a `~/.inherent/laya/log`.
 
 **Documentación y pruebas**
-- `README.md` está atrasado en dos puntos: dice que `GITHUB_TOKEN` no hace falta (hace falta para escribir en el repo) y que Vistas por rol se aplica solo en la interfaz (se aplica en el servidor y en el conector).
-- `npm test` corre solo el parser: las demás pruebas se corren una por una.
+- `npm test` corre el parser del manual y revisa que las dos copias del puente sean iguales; las demás pruebas se corren una por una.
+- El manual de economía de hoy no trae costos por plan: `parseEconomia` devuelve los rubros, las herramientas, el piso y el tipo de cambio, y `plans` vacío.

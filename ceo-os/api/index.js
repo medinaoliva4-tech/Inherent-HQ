@@ -117,11 +117,29 @@ async function collGuard(req, res, write) {
   if (coll === 'strategy') { res.status(404).json({ error: 'La estrategia está en /api/estrategia' }); return null; }
   if (coll === 'avatars') { res.status(404).json({ error: 'Los avatares están en /api/avatares' }); return null; }
   if (coll === 'formats' || coll === 'scripts') { res.status(404).json({ error: 'Formatos y guiones están en /api/formatos y /api/guiones' }); return null; }
+  // El plan del mes pide la estrategia aprobada: solo por /api/plan, que lo revisa.
+  if (coll === 'plans') { res.status(404).json({ error: 'El plan del mes está en /api/plan' }); return null; }
   const any = coll === 'settings' && !write ? null : [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])];
   const u = any ? await guardAny(req, res, any, { write }) : await guard(req, res); if (!u) return null;
   if (!canRead(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO ve esto' }); return null; }
   if (write && !canWrite(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO puede cambiar esto' }); return null; }
   return u;
+}
+// Las reglas de las piezas, también en el servidor (antes solo las cuidaba la pantalla):
+// · El candado del brief: una pieza con fecha de un mes sin brief del ciclo no entra, salvo que el CEO haya abierto ese mes.
+//   Solo cuando la fecha es nueva o cambia de mes (lo ya agendado no se toca) y solo en marcas con ficha de oferta.
+// · La secuencia del chat de Diseño: una pieza del plan no queda diseñada sin su idea. La pieza suelta (sin slot) sí entra.
+async function reglasPieza(b, cur) {
+  if (b?.kind !== 'post') return null;
+  if (b.diseno && b.slot?.plan && !b.idea_chat && !cur?.diseno) return 'Esta pieza del plan todavía no tiene idea: primero la etapa Ideas, después el diseño.';
+  const mes = String(b.date || '').slice(0, 7);
+  if (!b.profile || !/^\d{4}-\d{2}$/.test(mes) || String(cur?.date || '').slice(0, 7) === mes) return null;
+  const root = b.profile === 'inherent' ? 'inherent/inherent-social-media' : `clients/${b.profile}`;
+  if (!/^[\w-]+$/.test(b.profile) || !(await readFile(`${root}/00-onboarding/plan-contratado.md`))) return null;
+  if (await readFile(`${root}/04-contenido/${mes}/brief-del-ciclo.md`)) return null;
+  const bo = await db.get('settings', 'brief_open').catch(() => null);
+  if ((bo?.marcas?.[b.profile] || []).some((x) => x.mes === mes)) return null;
+  return `Sin brief del ciclo de ${mes}: guárdala como idea sin fecha, pide el brief a ④ Creatividad o que el CEO abra el mes.`;
 }
 // Tareas: «solo yo» la ven quien la creó y a quien se asignó; «ciertas personas» suma a las elegidas.
 // Una tarea «Personal» la ve solo quien la creó (aunque su visibilidad diga «todos»).
@@ -223,6 +241,7 @@ on('POST', 'db/:coll', async (req, res) => {
   if (req.params.coll === 'folders') { const why = parentError(await db.list('folders'), null, b.parent_id || null); if (why) return res.status(400).json({ error: why }); b.parent_id = b.parent_id || null; }
   { const why = await outOfScope(u, req.params.coll, b, null); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, null);
+  if (req.params.coll === 'content') { const why = await reglasPieza(b, null); if (why) return res.status(423).json({ error: why, code: 'REGLA_PIEZA' }); }
   if (req.params.coll === 'tasks') b = results.stampDone(null, cleanTask(b));
   if (req.params.coll === 'budgets') { if (!b.client_slug) return res.status(400).json({ error: 'Falta el cliente del presupuesto' }); b = cleanBudget(b); }
   if (req.params.coll === 'brand_boards' && !slugOk(String(b.id || ''))) return res.status(400).json({ error: 'El tablero lleva el slug del cliente como id' });
@@ -249,6 +268,7 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   if (req.params.coll === 'folders') { const all = await db.list('folders'); if (!('parent_id' in b)) b.parent_id = all.find((x) => x.id === req.params.id)?.parent_id || null; const why = parentError(all, req.params.id, b.parent_id || null); if (why) return res.status(400).json({ error: why }); b.parent_id = b.parent_id || null; }
   if (['tasks', 'quotes', 'budgets'].includes(req.params.coll)) { const why = await outOfScope(u, req.params.coll, b, await db.get(req.params.coll, req.params.id)); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, await db.get('accounts', req.params.id));
+  if (req.params.coll === 'content') { const why = await reglasPieza(b, await db.get('content', req.params.id)); if (why) return res.status(423).json({ error: why, code: 'REGLA_PIEZA' }); }
   // El PUT reemplaza el doc: el cliente de un presupuesto no cambia y, si la persona no ve los costos, se conservan los guardados.
   if (req.params.coll === 'budgets') { const cur = await db.get('budgets', req.params.id); if (cur) { b.client_slug = cur.client_slug; if (b.costs_hidden || b.lines === undefined) b.lines = cur.lines; } delete b.costs_hidden; b = cleanBudget(b); }
   if (req.params.coll === 'leads') {
