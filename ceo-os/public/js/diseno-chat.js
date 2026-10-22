@@ -9,13 +9,13 @@
 import { html, raw, mount, api, col, toast, ico, md, initials, confirmAsk, ask, uploadToDrive, $, $$ } from './core.js';
 import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe } from './laya.js';
 import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from './puente-chat.js';
-import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoIdea, textoRefs, carpetaDe } from './diseno.js';
+import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoIdea, textoRefs, textoFormatos, carpetaDe } from './diseno.js';
 import { leerSistema } from './sistema-visual.js';
 import { estadoDe } from './element.js';
 import { promptPlan, leerPlan, sinBloqueP, NOMBRE_P, nombreMes } from './plan-mes.js';
 import { planPanel, pasarPlan, mesesPlan } from './plan-mes-ui.js';
 import { promptIdeas, leerIdeas, sinBloqueI } from './ideas-chat.js';
-import { divisor } from './divisor.js';
+import { divisor, ubicarPop } from './divisor.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, motorDe, nombreMotor } from './motor-ui.js';
 
 const IMGS = new Map(); // `${marca}|${nodo}` → data URL (solo en memoria: pesan)
@@ -175,7 +175,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
           ${tg('suelta', 'alert', 'Pieza suelta', 'Algo puntual que no sale del plan: va directo a Diseño')}</div>`);
         const inp = m.querySelector('[data-q]'); if (inp) { inp.oninput = () => { q = inp.value; pinta(); const n = m.querySelector('[data-q]'); n.focus(); n.setSelectionRange(q.length, q.length); }; }
       };
-      pinta(); box.append(m); anchor.setAttribute('aria-expanded', 'true');
+      pinta(); box.append(m); ubicarPop(m, box); anchor.setAttribute('aria-expanded', 'true');
       m.addEventListener('click', async (e) => {
         const v = e.target.closest('[data-vista]'); if (v) { vista = v.dataset.vista; q = ''; if (vista === 'lib' && libData === null) { pinta(); try { libData = await api('estrategia/library'); } catch (er) { libData = { docs: [], error: er.status === 403 ? 'Tu perfil no ve la Library.' : er.message }; } } pinta(); m.querySelector('[data-q]')?.focus(); return; }
         if (e.target.closest('[data-marca]')) { m.remove(); return menuMarcas(anchor, b.slug); }
@@ -258,8 +258,9 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const nuevas = chat.ctx.filter((k) => !chat.enviados.includes(k));
       const contexto = nuevas.length ? await textoContexto(nuevas) : '';
       const delMes = todo.filter((x) => x.kind === 'post' && x.profile === b.slug && String(x.date || '').slice(0, 7) === chat.mes);
+      const fms = etapa === 'ideas' && metodo ? await api(`formatos?profile=${encodeURIComponent(b.slug)}`).then((r) => [...(r.marca || []), ...(r.base || [])]).catch(() => []) : [];
       const prompt = etapa === 'plan' ? promptPlan({ marca: b.name, slug: b.slug, mes: chat.mes, plan: E.plan, ...(metodo ? await encargo() : {}), contexto, hormozi: chat.hormozi, pedido: texto, primera: metodo })
-        : etapa === 'ideas' ? promptIdeas({ marca: b.name, slug: b.slug, mes: chat.mes, slots: E.plan?.slots || [], existentes: delMes.map((x) => x.title).filter(Boolean), investigacion: metodo ? textoRefs(todo.filter((x) => x.kind === 'research' && x.profile === b.slug)) : '', contexto, hormozi: chat.hormozi, pedido: texto, primera: metodo })
+        : etapa === 'ideas' ? promptIdeas({ marca: b.name, slug: b.slug, mes: chat.mes, slots: E.plan?.slots || [], existentes: delMes.map((x) => x.title).filter(Boolean), investigacion: metodo ? textoRefs(todo.filter((x) => x.kind === 'research' && x.profile === b.slug)) : '', formatos: textoFormatos(fms), contexto, hormozi: chat.hormozi, pedido: texto, primera: metodo })
         : promptDiseno({ marca: b.name, slug: b.slug, formato: chat.formato, contexto: [chat.suelta ? 'PIEZA SUELTA: no sale del plan del mes; es algo puntual que pidió la persona.' : '', contexto].filter(Boolean).join('\n\n'), lamina: S.lamina, pedido: texto, primera: metodo });
       let raw0 = '', fallo = null;
       try {
@@ -354,13 +355,20 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const delPlan = todo.filter((x) => x.kind === 'post' && x.slot?.plan === `${b.slug}--${chat.mes}`);
       const prop = chat.ideasProp.filter((x) => (x.mes || chat.mes) === chat.mes), porEnviar = prop.filter((x) => !x.enviada && E.plan?.slots?.some((y) => y.id === x.slot));
       const slotDe = (id) => E.plan?.slots?.find((x) => x.id === id);
+      // El referente: si es un post de Investigación, se ve con su cuenta y cuánto rinde (×N su promedio).
+      const refDe = (rf) => { const p = todo.find((r) => r.kind === 'research' && r.profile === b.slug && r.url && (rf.includes(r.url) || r.url.includes(rf))), n = +p?.x;
+        return p ? html`<a class="pm-tag g" href="${p.url}" target="_blank" rel="noopener">@${p.handle || 'referente'}${n ? ` · ×${+n.toFixed(1)}` : ''} ↗</a>` : link(rf); };
       const link = (rf) => (/^https?:\/\//.test(rf) ? html`<a class="pm-tag" href="${rf}" target="_blank" rel="noopener">${rf.replace(/^https?:\/\/(www\.)?/, '').slice(0, 40)} ↗</a>` : rf ? html`<span class="pm-tag">${rf}</span>` : '');
       return html`<div class="pm-bar"><div style="min-width:0"><span class="lbl" style="margin:0">Ideas de ${nombreMes(chat.mes)} · ④ Creatividad</span><h2>${prop.length ? `${prop.length} idea${prop.length === 1 ? '' : 's'} en la mesa` : 'Todavía sin ideas'}</h2></div><span class="sp"></span>
           ${porEnviar.length && E.puede?.editar && abierta('ideas') ? html`<button class="btn" data-act="ideas-enviar" ${S.enviando ? raw('disabled') : ''}>${S.enviando ? 'Enviando…' : `Enviar ${porEnviar.length} a Ideas`} ${ico('right', 13)}</button>` : ''}</div>
         <div class="pm-body">
           ${prop.length ? html`<div class="dg-ideas">${prop.map((x, i) => { const sl = slotDe(x.slot); return html`<article class="dg-idea ${x.enviada ? 'ok' : ''}"><div class="row" style="gap:6px;flex-wrap:wrap"><span class="pm-tag">${x.slot}</span>${sl ? html`<span class="mut sm">Semana ${sl.semana} · ${sl.canal} · ${sl.funcion || ''}</span>` : html`<span class="pm-warn">Ese slot no está en el plan</span>`}<span class="sp"></span>${x.enviada ? html`<span class="ev-ok">${ico('check', 12)} En Ideas</span>` : E.puede?.editar && sl && abierta('ideas') ? html`<button class="btn ghost xs" data-act="idea-enviar" data-i="${chat.ideasProp.indexOf(x)}">Enviar a Ideas</button>` : ''}</div>
-              <h3>${x.titulo}</h3>${x.hook ? html`<p class="dg-hook">«${x.hook}»</p>` : ''}${x.por_que ? html`<p class="mut sm" style="margin:0">${x.por_que}</p>` : ''}<div class="row" style="gap:6px;flex-wrap:wrap">${x.formato ? html`<span class="pm-tag">${x.formato}</span>` : ''}${link(x.referente)}${sl?.traza ? html`<span class="pm-tag g">Traza a ${sl.traza}</span>` : ''}</div></article>`; })}</div>`
-          : html`<p class="ev-vacio">Pídele al chat ideas para los slots del plan. Aparecen aquí con su hook, su porqué y el referente que las inspira; las que te gusten se envían a Ideas.</p>`}
+              <h3>${x.titulo}</h3>${x.hook ? html`<p class="dg-hook">«${x.hook}»</p>` : ''}
+              <dl class="dg-tri"><div><dt>Qué comunicamos</dt><dd>${x.mensaje || sl?.objetivo || html`<span class="mut">Sin mensaje</span>`}</dd></div>
+                <div><dt>El formato que ya funciona</dt><dd>${x.referente ? html`${refDe(x.referente)}${x.por_que ? html`<span class="mut sm">${x.por_que}</span>` : ''}` : html`<span class="pm-warn">${ico('alert', 12)} Sin formato de referencia. Pídele uno de Investigación.</span>`}</dd></div>
+                <div><dt>Cómo se adapta</dt><dd>${x.adaptacion || html`<span class="mut">Falta la adaptación</span>`}</dd></div></dl>
+              <div class="row" style="gap:6px;flex-wrap:wrap">${x.formato ? html`<span class="pm-tag">${x.formato}</span>` : ''}${sl?.traza ? html`<span class="pm-tag g">Traza a ${sl.traza}</span>` : ''}</div></article>`; })}</div>`
+          : html`<p class="ev-vacio">Pídele al chat ideas para los slots del plan. Cada una llega con qué comunicamos, el formato que ya funciona (un post ganador de Investigación) y cómo se adapta. Las que te gusten se envían a Ideas.</p>`}
           <section class="ev-sec"><header><b>En las piezas del plan</b><span class="mut sm">${delPlan.filter((x) => x.idea_chat).length} de ${delPlan.length} slots con idea</span></header>
             ${delPlan.length ? html`<div class="pm-tbl"><table><thead><tr><th>Slot</th><th>Pieza</th><th>Estado</th></tr></thead><tbody>${delPlan.sort((a, z) => String(a.slot?.id).localeCompare(String(z.slot?.id))).map((x) => html`<tr><td>${x.slot?.id}</td><td>${x.title}${x.idea_chat ? '' : html` <span class="mut sm">· sin idea todavía</span>`}</td><td>${estadoDe(x)}</td></tr>`)}</tbody></table></div>` : html`<p class="ev-vacio">El plan todavía no pasó a Creatividad.</p>`}</section>
         </div>

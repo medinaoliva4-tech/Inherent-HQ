@@ -1,7 +1,7 @@
 // Pruebas del chat de Diseño: el pedido lleva el método, el bloque final se lee limpio y la pieza queda Lista.
 // npm run test:diseno
 import assert from 'node:assert/strict';
-import { promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, carpetaDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoRefs, textoIdea } from '../public/js/diseno.js';
+import { promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, carpetaDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoRefs, textoFormatos, textoIdea } from '../public/js/diseno.js';
 import { figmaDe, tipoAsset } from '../public/js/sistema-visual.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -22,7 +22,8 @@ t('+ Contexto: los meses, las etiquetas y el calendario con lo que falta diseña
   const c = textoCalendario({ marca: 'Cerantola', mes: '2026-10', piezas: [{ date: '2026-10-09', format: 'Carrusel', title: 'Cifras', status: 'Idea' }, { date: '2026-10-02', format: 'Reel', title: 'Apertura', status: 'Publicado' }, { date: '2026-11-01', format: 'Story', title: 'Otro mes' }] });
   assert.ok(c.includes('2 piezas, 1 por diseñar')); assert.ok(c.indexOf('Apertura') < c.indexOf('Cifras')); assert.ok(c.includes('FALTA DISEÑAR')); assert.ok(!c.includes('Otro mes'));
   assert.ok(textoPlan({ root: 'clients/cerantola', mes: '2026-10' }).includes('clients/cerantola/03-marketing/2026-10/'));
-  const rf = textoRefs([{ handle: 'a', views: 10 }, { handle: 'b', views: 99, replicar: true }]); assert.ok(rf.includes('@b') && !rf.includes('@a'));
+  const rf = textoRefs([{ handle: 'a', views: 10 }, { handle: 'c', x: 4 }, { handle: 'b', views: 99, replicar: true }]); assert.ok(rf.indexOf('@b') < rf.indexOf('@c') && rf.indexOf('@c') < rf.indexOf('@a')); assert.ok(rf.includes('rinde ×4'));
+  const fm = textoFormatos([{ nombre: 'Pediste vs llegó', tipo: 'reel', ref: { url: 'https://x/reel/1' }, partes: [{ nombre: 'Hook' }, { nombre: 'Prueba' }] }]); assert.ok(fm.includes('sale de https://x/reel/1') && fm.includes('Hook → Prueba'));
 });
 t('Lo nuevo del contexto también llega después del primer mensaje', () => assert.ok(promptDiseno({ marca: 'X', slug: 'x', contexto: 'REFERENTES…', pedido: 'Sigue', primera: false }).includes('REFERENTES…')));
 t('Inherent usa su propia carpeta', () => assert.equal(carpetaDe('inherent'), 'inherent/inherent-social-media'));

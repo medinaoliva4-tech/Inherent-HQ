@@ -57,7 +57,7 @@ export const MODULES = [
   ['brief', 'Brief del ciclo', 'doc'],
   ['plan', 'Plan del mes', 'target'],
   ['ideas', 'Ideas', 'bulb'],
-  ['creacion', 'Creación', 'edit'],
+  ['creacion', 'Guiones', 'edit'],
   ['formatos', 'Formatos', 'copy'],
   ['marca', 'Identidad', 'palette'],
   ['design', 'Design system', 'layers'],
@@ -66,16 +66,31 @@ export const MODULES = [
   ['ads', 'Ads', 'megaphone', 'AI ads: un video muy específico por avatar (sus señales dichas y mostradas) para que la IA de Meta lo lleve a esa persona, y sus variaciones listas para pautar en Meta y Google con tu OK.'],
   ['resultados', 'Resultados', 'bars'],
 ];
-// Las áreas: los módulos agrupados por función, en el orden del trabajo (entender → crear → diseñar → publicar → medir).
+// Las áreas: los módulos agrupados por función, en el orden del trabajo (entender → crear → diseñar → publicar y medir).
 // [clave, nombre, ícono, módulos, para qué]. Inicio es el panel de la marca: va solo.
 export const AREAS = [
   ['inicio', 'Inicio', 'home', ['inicio'], 'Cómo va la marca hoy'],
   ['entender', 'Entender', 'search', ['investigacion', 'icp', 'brief'], 'Qué funciona, a quién le hablamos y qué decimos este mes'],
-  ['crear', 'Crear', 'bulb', ['plan', 'ideas', 'creacion', 'formatos'], 'Del plan del mes al guion'],
+  ['crear', 'Crear', 'bulb', ['plan', 'formatos', 'ideas', 'creacion'], 'Del plan del mes al guion, en una sola línea'],
   ['diseno', 'Diseño', 'palette', ['marca', 'design', 'video'], 'Cómo se ve y cómo suena la marca'],
-  ['publicar', 'Publicar', 'cal', ['calendario', 'ads'], 'Qué sale, cuándo y con qué pauta'],
-  ['medir', 'Medir', 'bars', ['resultados'], 'Qué funcionó y qué no'],
+  ['publicar', 'Publicar y medir', 'cal', ['calendario', 'ads', 'resultados'], 'Qué sale, cuándo, con qué pauta y qué funcionó'],
 ];
+// La línea del trabajo: de dónde viene cada herramienta, qué se hace en ella y a dónde pasa. Es la misma cabecera en todas.
+// clave → [viene de, qué haces aquí, pasa a]
+export const FLUJO = {
+  investigacion: [null, 'Los posts que ganan en su mercado, con su porqué. De aquí salen los formatos.', 'formatos'],
+  icp: ['investigacion', 'A quién le hablamos, con qué peso y cómo se nota en el video.', 'brief'],
+  brief: ['icp', 'Qué decimos este mes y su candado: sin brief no hay ideas.', 'plan'],
+  plan: ['brief', 'Qué se dice este mes, en qué canal y semana, y para qué sirve cada pieza. Se arma en el chat de Diseño gráfico.', 'formatos'],
+  formatos: ['investigacion', 'Los formatos que ya funcionan, sacados de los posts ganadores. Una idea se cuenta en uno de estos.', 'ideas'],
+  ideas: ['plan', 'Cada idea junta tres cosas: qué comunicamos (el plan), el formato que ya funciona y cómo se adapta.', 'creacion'],
+  creacion: ['ideas', 'El guion, tramo por tramo, con el formato de la idea y el brief al lado.', 'calendario'],
+  marca: [null, 'La identidad: territorio, voz y lo que la hace reconocible.', 'design'],
+  design: ['marca', 'Cómo se ve la marca, en valores que se ejecutan. El chat de Diseño gráfico lo usa para armar las piezas.', 'calendario'],
+  calendario: ['creacion', 'Qué sale y cuándo. Lo Listo se programa y se publica.', 'resultados'],
+  ads: ['calendario', 'Qué se pauta, con qué presupuesto y tu OK.', 'resultados'],
+  resultados: ['calendario', 'Qué funcionó y qué no. Vuelve a Investigación y al plan del mes siguiente.', 'investigacion'],
+};
 export const areaOf = (k) => AREAS.find(([, , , mods]) => mods.includes(k)) || AREAS[0];
 export const isSoon = (k) => Boolean(MODULES.find(([x]) => x === k)?.[3]);
 // Los módulos que ya funcionan y que este perfil puede abrir en esta marca.
