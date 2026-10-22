@@ -175,6 +175,7 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espa
 - `intel.js` — los entregables de los agentes en la carpeta del cliente (según `intel-mapa.js`), limpios de costos, y el avatar · ruta `repo/client/:slug/intel` (al cliente, 403).
 - `investigacion.js` — referentes por marca, «Actualizar ahora» (CEO y COO), webhook de Apify, crons, posts nuevos a Research con su juicio de Laya por hacer · rutas `investigacion*`.
 - `ojo.js` — el contexto del ojo visual por marca (el moodboard y una frase de la marca) · ruta `ojo/contexto`.
+- `guia.js` — el primer día y los videos «Cómo se usa»: `guia` (los documentos de la Library marcados con `guia = <sección>`), `guia/visto` (qué vio cada quien, en `team.<email>.vistos`), `me/primer-dia` (el recorrido: paso, hechos, pausado, terminado; la prueba final se detecta por lo que creó la persona).
 - `laya.js` — los juicios (`judgments`), las preguntas (`settings` `laya_gates`, solo el CEO), los que esperan juicio y las herramientas MCP `juicios_pendientes` y `guardar_juicio` · rutas `laya/*`.
 - `leads.js` — las reglas del CRM (etapas, candado, duplicados, historial), las fuentes y la entrada pública.
 - `mail.js` — correos al cliente (bienvenida e invitación) desde el Gmail de quien confirma; sin permiso de Gmail, un link con el correo escrito.
@@ -223,6 +224,9 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `ojo.js` — el ojo visual: el estado del puente, `verImagen` (url o base64) y el chip «Se ve de la marca · 82%».
 - `puente-chat.js` — `/health` y `/chat` del puente, en solo lectura, para pantallas fuera de Estrategia; las dos fallas típicas con sus pasos.
 - `motor-ui.js` — elegir el motor del chat (`claude`, `chatgpt` o `local`) y qué le falta a la compu · se guarda por persona.
+- `guia.js` — «Cómo se usa»: el botón de la barra (`#guiabtn`, lo prende `app.js` según la sección), la ventanita flotante del video (`.guia-pip`: sigue contigo al navegar, se minimiza, cambia de lado) y la lista de videos vistos.
+- `guia-secciones.js` — las secciones que pueden tener video y qué videos le tocan a cada puesto · puro (lo usa también el servidor).
+- `primer-dia.js` — el recorrido del primer día: 6 pasos con check (quién eres · la app · Claude · Laya · Google · una prueba), se comprueba solo contra el puente y la cuenta, se pausa y se retoma desde el chip de la barra (`#pdchip`).
 - `artifact.js` — el panel derecho de los chats y sus íconos.
 - `voz.js` — dictar en la caja del chat.
 - `diseno-chat.js` — el chat de Diseño gráfico (Plan → Ideas → Diseño), su área de trabajo y el emparejamiento.
@@ -374,6 +378,12 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `openClaude` y `claudeJSON` (`core.js`) abren la IA de la persona en una pestaña nueva con el prompt listo; la persona pega la respuesta. Lo usan Contenido, Investigación, la diana, la Library, el Workspace y los paquetes por industria.
 
 ---
+
+**El primer día y «Cómo se usa»** (`public/js/primer-dia.js`, `public/js/guia.js`, `api/_lib/guia.js`)
+- La primera vez que alguien del equipo entra, se abre el recorrido de 6 pasos. Cada paso se comprueba solo: la app (el puente responde o `window.inherentEscritorio`), Claude (`chat.claude` del `/health`), Laya (`listo`), Google (Drive y Calendar en `me.google`), la prueba (algo creado con su cuenta en content, tasks, leads o projects). Los pasos de la app, Claude y Laya se pueden saltar («mi puesto no usa esto»).
+- «Seguir después» lo pausa: queda el chip «Tu primer día · n de 6» en la barra; Mi perfil también lo reabre. Se guarda en `team.<email>.primer_dia`.
+- Un video «Cómo se usa» es un documento de la Library (tipo Video, con link) al que el CEO o el COO le ponen la sección (`guia`), el orden y los perfiles. El botón de la barra aparece en esa sección; con varios videos sale un menú. Al abrirlo queda anotado en `team.<email>.vistos`; Mi perfil lista los de su puesto y Equipo dice cuántos vio cada quien.
+- Pendiente para después: las marcas de tiempo que resaltan botones de la pantalla mientras corre el video.
 
 ## 7 · La app de Mac
 

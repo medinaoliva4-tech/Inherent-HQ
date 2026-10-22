@@ -5,6 +5,8 @@ import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSectio
 import { loadBrands, brandsNow, brandAccess, MODULES, AREAS, areaOf, firstOfArea, modulesFor, defaultModule, isSoon } from './brandlist.js';
 import { openSearch, searchOpen } from './search.js';
 import { loadEstrategia, estrategiaNow } from './stratlist.js';
+import { marcarSeccion, instalarBoton } from './guia.js';
+import { primerDia } from './primer-dia.js';
 
 // Tres espacios, como cambiar de app en un iPhone: el interruptor de arriba (junto al logo) cambia entre
 //   ORGANIZATION  cómo se maneja la empresa   Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent
@@ -278,7 +280,9 @@ function paintSub(cur) {
 }
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); navFor = null; markNav(); const cur = resolve(hashNow()); if (cur.url !== hashNow()) render(); });
 // Una pantalla cambió su ruta sola (ej. Marcas eligió el módulo con el que abre): la barra y las pestañas se ponen al día.
-events.addEventListener('navsync', () => { if (me) markNav(); });
+events.addEventListener('navsync', () => { if (me) { markNav(); if (me.role !== 'client') marcarSeccion(seccionGuia(resolve(hashNow()))); } });
+// La sección para el botón «Cómo se usa» (las claves de guia-secciones.js): la sección de Organization, Estrategia, o el módulo de la marca.
+const seccionGuia = (cur) => (cur.key === 'me' ? 'me' : cur.key === 'estrategia' ? 'estrategia' : cur.key === 'marcas' ? (cur.rest[0] === 'diseno' ? 'diseno' : cur.rest[0] ? cur.rest[1] || null : 'marcas') : sectionOf(cur.key));
 
 // ---------- El buscador: «Ir a» con lo que ve este perfil ----------
 function jumpItems() {
@@ -300,6 +304,7 @@ function shell() {
       <nav class="nav" aria-label="Secciones"></nav>
       <div class="sp"></div>
       ${me.role !== 'client' ? html`<button class="searchbtn" id="searchbtn" type="button" aria-label="Buscar (${mac ? '⌘' : 'Ctrl+'}K)" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 17)}<kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>` : ''}
+      ${me.role !== 'client' ? html`<button class="pdchip" id="pdchip" type="button" hidden></button><button class="guiabtn" id="guiabtn" type="button" hidden aria-label="Cómo se usa esta parte">${ico('video', 15)}<span>Cómo se usa</span></button>` : ''}
       <button class="themebtn" id="themebtn" title="Modo noche" aria-label="Cambiar modo día / noche">${raw(document.documentElement.dataset.theme === 'dark' ? SUN : MOON)}</button>
       <div class="avatar" id="avatar" title="Mi perfil" role="button" tabindex="0" aria-label="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
@@ -313,6 +318,7 @@ function shell() {
   // El interruptor: cambia de espacio y vuelve a donde estabas en ese espacio.
   $('.top').addEventListener('click', (e) => { const b = e.target.closest('[data-space]'); if (!b || b.dataset.space === space) return; lsSet('space', b.dataset.space); const last = lsGet('last.' + b.dataset.space); location.hash = '/' + (last || spaceHome(b.dataset.space)); });
   $('#searchbtn')?.addEventListener('click', search);
+  instalarBoton(me);
   // Tocar tu foto abre tu perfil (foto, cumpleaños, conexiones, cerrar sesión).
   $('#avatar').onclick = () => { location.hash = '/me'; };
   $('#avatar').onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.hash = '/me'; } };
@@ -332,6 +338,7 @@ async function render() {
   else if (!space) space = me.role === 'client' ? null : landing().startsWith('marcas') ? 'marcas' : landing().startsWith('estrategia') ? 'estrategia' : 'org';
   if (cur.space === 'marcas' && cur.rest[0] && !brandsNow().length) loadBrands(me).then(() => { if (me) markNav(); });
   markNav(cur);
+  if (me.role !== 'client') marcarSeccion(seccionGuia(cur));
   $('#avatar')?.classList.toggle('on', cur.key === 'me');
   closeDrawer();
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
@@ -384,6 +391,8 @@ async function start(u) {
   const c = pendingConnect();
   if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); return consentView(root, me, c, () => { shell(); render(); }); }
   shell(); render();
+  // El primer día: la primera vez, el recorrido de 6 pasos (se puede pausar; el chip de la barra lo retoma).
+  if (me.role !== 'client') primerDia(me);
   // Las responsabilidades recurrentes (recetas internas encendidas) dejan su tarea al abrir la app, una vez al día. El cron diario hace lo mismo.
   if (['ceo', 'coo'].includes(me.role)) { try { const d = new Date().toISOString().slice(0, 10); if (localStorage.getItem('rec.run') !== d) api('recipes/run', { method: 'POST', body: {} }).then(() => { try { localStorage.setItem('rec.run', d); } catch {} }).catch(() => {}); } catch {} }
 }

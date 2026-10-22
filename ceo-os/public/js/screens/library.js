@@ -5,6 +5,8 @@ import { html, raw, mount, col, api, acts, toast, fdate, ask, confirmAsk, drawer
 import { childrenOf, parentOf, pathOf, pathLabel, descendants, canMove, contentsOf, flatTree } from '../library-tree.js';
 import { ctxMenu, wireDnd, moveDialog, folderIcon, homeIcon } from '../library-ui.js';
 import { diagramEditor, diagramView, measure, fromDoc, toMermaid, template, empty as emptyDiagram } from '../diagram-editor.js';
+import { SECCIONES, nombreSeccion } from '../guia-secciones.js';
+import { olvidarGuias } from '../guia.js';
 
 // Library: SOPs, playbooks, videos y notas que el equipo escribe aquí, en carpetas.
 // Una carpeta se puede conectar a una carpeta de Google Drive: se ve su contenido y se crean Docs ahí.
@@ -114,6 +116,7 @@ const driveOk = (u) => /^https:\/\/drive\.google\.com\/drive\/(u\/\d+\/)?folders
 export async function render(el, { me, sub, alive }) {
   // Abrir prompts en Claude (con la cuenta de cada quien): Content, Editor de video y CEO.
   const canClaude = me.role === 'ceo' || (me.roles || []).some((r) => r === 'content' || r === 'video');
+  const canGuia = ['ceo', 'coo'].includes(me.role); // marcar un documento como el «Cómo se usa» de una sección
   const F = col('folders'), D = col('docs');
   let [folders, docs] = await Promise.all([F.list(), D.list()]);
   let q = '';
@@ -168,7 +171,7 @@ export async function render(el, { me, sub, alive }) {
   const more = (kind, id) => html`<button type="button" class="lib-more" data-act="more" data-kind="${kind}" data-id="${id}" aria-label="Más acciones" title="Más acciones">${raw('<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg>')}</button>`;
   // Cada documento es una fila en un panel: el ícono dice su tipo, luego el título, la carpeta y cuándo cambió. Se arrastra a otra carpeta.
   const docRow = (d, showFolder = true) => html`<div class="lib-row" role="button" tabindex="0" data-act="doc" data-id="${d.id}" data-ctx="doc" draggable="true" data-drag="doc" data-folder="${inFolder(d) || ''}" data-name="${d.title}"><span class="lib-ic" style="--k:${KCOL[d.kind] || '#9f846d'}">${ico(KICO[d.kind] || 'doc', 17)}</span>
-    <span class="lib-t"><b>${d.title}</b><span class="mut sm">${[d.kind || 'Doc', showFolder && (inFolder(d) ? pathLabel(folders, d.folder_id) : 'Sin carpeta'), d.url && 'video'].filter(Boolean).join(' · ')}</span></span>
+    <span class="lib-t"><b>${d.title}</b><span class="mut sm">${[d.kind || 'Doc', showFolder && (inFolder(d) ? pathLabel(folders, d.folder_id) : 'Sin carpeta'), d.url && 'video', d.guia && `Cómo se usa · ${nombreSeccion(d.guia)}`].filter(Boolean).join(' · ')}</span></span>
     <span class="lib-when mut sm">${d._meta?.updated_at ? fdate(String(d._meta?.updated_at).slice(0, 10)) : ''}${d._meta?.updated_by ? html`<span class="lib-by"> · ${d._meta.updated_by}</span>` : ''}</span>${more('doc', d.id)}</div>`;
   const folderTile = (f) => { const n = docs.filter((d) => d.folder_id === f.id).length, k = childrenOf(folders, f.id).length;
     return html`<div class="sp-tile lib-folder" role="link" tabindex="0" data-act="folder" data-id="${f.id}" data-ctx="folder" data-drop="${f.id}" draggable="true" data-drag="folder" data-parent="${parentOf(folders, f.id) || ''}" data-name="${f.name}">
@@ -417,7 +420,8 @@ ${qa}`;
       mount(el, html`<div class="row lib-dbar" style="margin-bottom:14px;gap:8px">${crumbs(inFolder(d), editing ? `Editando · ${d.title}` : d.title)}<div class="sp"></div>
           ${editing ? html`<button class="btn ghost" data-act="cancel">Cancelar</button><button class="btn" data-act="save">Guardar</button>` : html`<button class="btn ghost" data-act="del">${ico('trash')}</button><button class="btn" data-act="edit">Editar</button>`}</div>
         <div class="${editing ? `card lib-edit${isDg ? ' wide' : ''}` : 'sp-panel lib-read'}">
-          ${editing ? html`${raw(isDg ? `<details class="lib-dmeta"${innerWidth > 760 ? ' open' : ''}><summary>Tipo, perfiles y carpeta</summary>` : '')}<div class="row" style="gap:10px;flex-wrap:wrap"><select class="in" id="dkind" style="width:auto">${KINDS.map((k) => html`<option ${k === d.kind ? raw('selected') : ''}>${k}</option>`)}</select><span class="mut sm" style="margin-left:6px">Perfil:</span>${WORK_ROLES.map(([k, l]) => html`<label class="chip" style="cursor:pointer;padding:6px 10px"><input type="checkbox" class="drole" value="${k}" ${(d.roles || []).includes(k) ? raw('checked') : ''} style="margin-right:4px">${l.split(' · ')[0]}</label>`)}<select class="in" id="dfolder" style="width:auto"><option value="">— Sin carpeta</option>${flatTree(folders).map((r) => html`<option value="${r.f.id}" ${r.f.id === d.folder_id ? raw('selected') : ''}>${pathLabel(folders, r.f.id)}</option>`)}</select></div>${raw(isDg ? '</details>' : '')}
+          ${editing ? html`${raw(isDg ? `<details class="lib-dmeta"${innerWidth > 760 ? ' open' : ''}><summary>Tipo, perfiles y carpeta</summary>` : '')}<div class="row" style="gap:10px;flex-wrap:wrap"><select class="in" id="dkind" style="width:auto">${KINDS.map((k) => html`<option ${k === d.kind ? raw('selected') : ''}>${k}</option>`)}</select><span class="mut sm" style="margin-left:6px">Perfil:</span>${WORK_ROLES.map(([k, l]) => html`<label class="chip" style="cursor:pointer;padding:6px 10px"><input type="checkbox" class="drole" value="${k}" ${(d.roles || []).includes(k) ? raw('checked') : ''} style="margin-right:4px">${l.split(' · ')[0]}</label>`)}<select class="in" id="dfolder" style="width:auto"><option value="">— Sin carpeta</option>${flatTree(folders).map((r) => html`<option value="${r.f.id}" ${r.f.id === d.folder_id ? raw('selected') : ''}>${pathLabel(folders, r.f.id)}</option>`)}</select>
+              ${canGuia ? html`<select class="in" id="dguia" style="width:auto" title="Este documento es el «Cómo se usa» de una parte del OS: su botón aparece en esa sección"><option value="">— No es «Cómo se usa»</option>${SECCIONES.map(([k, l]) => html`<option value="${k}" ${k === d.guia ? raw('selected') : ''}>Cómo se usa · ${l}</option>`)}</select><input class="in" id="dorden" type="number" min="0" style="width:84px" placeholder="Orden" title="En qué orden se ve (la primera semana)" value="${d.orden || ''}">` : ''}</div>${raw(isDg ? '</details>' : '')}
               <input class="in" id="dtitle" value="${d.title}" style="font-size:34px;font-weight:500;letter-spacing:-1px;border:0;padding:10px 0;background:transparent;margin-top:8px">
               ${isDg ? html`${dgOld ? html`<div class="warnbox" style="margin:4px 0 12px">Este diagrama estaba escrito en Mermaid de otro tipo (no es un flujo) y no se puede pasar solo al editor visual. Abajo está cómo se veía: ármalo de nuevo con una plantilla. Al guardar, se reemplaza.</div>${diagram(d.body)}` : ''}
               <div class="lib-dged" id="dged"></div>
@@ -500,7 +504,8 @@ ${qa}`;
       const dgm = kind === 'Diagrama' && ed ? ed.get() : null;
       const { diagram: _old, ...rest } = d;
       try {
-        d = await D.save({ ...rest, title: $('#dtitle', el).value.trim() || d.title, kind, folder_id: $('#dfolder', el).value, url, body: dgm ? toMermaid(dgm) : $('#dbody', el)?.value ?? d.body, ...(dgm ? { diagram: dgm } : kind === 'Diagrama' && _old ? { diagram: _old } : {}), roles: [...el.querySelectorAll('.drole:checked')].map((x) => x.value) });
+        d = await D.save({ ...rest, title: $('#dtitle', el).value.trim() || d.title, kind, folder_id: $('#dfolder', el).value, url, body: dgm ? toMermaid(dgm) : $('#dbody', el)?.value ?? d.body, ...(dgm ? { diagram: dgm } : kind === 'Diagrama' && _old ? { diagram: _old } : {}), roles: [...el.querySelectorAll('.drole:checked')].map((x) => x.value), ...(canGuia ? { guia: $('#dguia', el)?.value || '', orden: Number($('#dorden', el)?.value) || 0 } : {}) });
+        if (canGuia) olvidarGuias();
         docs = docs.map((x) => (x.id === d.id ? d : x)); ed?.clean(); editing = false; history.replaceState(null, '', `#/library/${d.folder_id || '_'}/${d.id}`); toast('Guardado'); paint();
       } catch (e) { toast(e.message, true); }
     }

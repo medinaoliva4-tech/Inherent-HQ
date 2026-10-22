@@ -31,6 +31,7 @@ import * as video from './_lib/video.js';
 import * as adsStudio from './_lib/ads-studio.js';
 import * as tech from './_lib/tech.js';
 import * as ojo from './_lib/ojo.js';
+import * as guia from './_lib/guia.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
@@ -83,7 +84,7 @@ on('GET', 'me', async (req, res) => {
   const u = await guard(req, res, undefined, { client: true }); if (!u) return;
   const t = await db.get('team', u.email);
   // areas, views (profundidad por sección), scope (alcance de datos) y start (dónde abre) ya vienen aplicados por el servidor.
-  res.json({ ...u, google: t?.google || {}, birthday: t?.birthday || '', phone: t?.phone || '', bio: t?.bio || '', since: t?._meta?.created_at || '', mcp: Boolean(t?.mcp_hash) || Boolean(t?.mcp_grants?.length), mcp_apps: (t?.mcp_grants || []).map(({ g, name, at }) => ({ g, name, at })) });
+  res.json({ ...u, google: t?.google || {}, birthday: t?.birthday || '', phone: t?.phone || '', bio: t?.bio || '', since: t?._meta?.created_at || '', mcp: Boolean(t?.mcp_hash) || Boolean(t?.mcp_grants?.length), mcp_apps: (t?.mcp_grants || []).map(({ g, name, at }) => ({ g, name, at })), vistos: t?.vistos || {}, primer_dia: t?.primer_dia || null });
 });
 // Cada quien cambia su propia foto (una imagen chica que el navegador ya recortó).
 on('PUT', 'me/photo', async (req, res) => {
@@ -1172,6 +1173,7 @@ adsStudio.rutas(on);
 tech.rutas(on);
 // ---------- El ojo visual: el contexto de la marca para el puente ----------
 ojo.rutas(on);
+guia.rutas(on);
 
 on('GET', 'search', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
