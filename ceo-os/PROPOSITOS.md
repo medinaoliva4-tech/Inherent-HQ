@@ -29,7 +29,7 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
 - **El cliente nunca ve** costos, márgenes, horas, notas internas ni nada de otro cliente. Los precios y costos nunca van en el código público.
 - **Nada destructivo sin OK.** El OS no gasta dinero (Ads crea la tarea para ⑩), no borra (se archiva) y no publica sin aprobación.
 - **La regla de solo lectura del chat de Estrategia (`puente.py`) no se quita.**
-- **La IA corre en la compu de cada persona**, con su propia cuenta. Es privado: Vercel nunca habla con el puente.
+- **La IA corre en la compu de cada persona**, con su propia cuenta y el modelo que elija (ChatGPT, Claude o local, por Hermes o por el puente). Es privado: Vercel nunca habla con el puente ni con Hermes.
 - **El servidor local nunca usa la base de producción.**
 
 ## 4 · Cada parte: su propósito y lo que no se pierde

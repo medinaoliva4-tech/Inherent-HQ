@@ -225,6 +225,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `ojo.js` — el ojo visual: el estado del puente, `verImagen` (url o base64) y el chip «Se ve de la marca · 82%».
 - `puente-chat.js` — `/health` y `/chat` del puente, en solo lectura, para pantallas fuera de Estrategia; las dos fallas típicas con sus pasos.
 - `motor-ui.js` — elegir el motor del chat (`claude`, `chatgpt` o `local`) y qué le falta a la compu · se guarda por persona.
+- `hermes.js` — Hermes Agent en la compu de cada persona (el harness de los chats): la conexión (`hermesDe`: la app de Mac la entrega sola o se pega la llave una vez), `saludHermes`, `modelosHermes` (los proveedores y modelos que esa compu tiene conectados) y `chatHermes` (streaming por su API compatible con OpenAI, una sesión por chat del OS).
 - `avisos.js` — activar, quitar y probar los avisos en este dispositivo (registra `public/sw.js`, pide permiso y guarda la suscripción). En iPhone solo funciona con el OS agregado a la pantalla de inicio.
 - `guia.js` — «Cómo se usa»: el botón de la barra (`#guiabtn`, lo prende `app.js` según la sección), la ventanita flotante del video (`.guia-pip`: sigue contigo al navegar, se minimiza, cambia de lado) y la lista de videos vistos.
 - `guia-secciones.js` — las secciones que pueden tener video y qué videos le tocan a cada puesto · puro (lo usa también el servidor).
@@ -359,6 +360,12 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - **Flujo:** el navegador pide el texto a `/api/laya/texto` → lo juzga en `127.0.0.1:7357/juzgar` → lo guarda en `/api/laya/juicios`.
 - **Sin puente,** el juicio queda en espera; lo resuelve una sesión de Claude Code con Laya por MCP, con `juicios_pendientes` y `guardar_juicio` del conector.
 - **Las puertas** (`PUERTAS` en `laya.js`, editables por el CEO): lead, factura por pagar, referente de Investigación, hook o copy, etapa del negocio.
+
+**Hermes, el harness** (`public/laya/hermes/instalar.sh`, `public/laya/hermes/SOUL.md`, `public/js/hermes.js`, `motor-ui.js`)
+- Hermes Agent (Nous Research, código abierto) corre en la compu de cada persona con el perfil «inherent»: su identidad es `SOUL.md`, su carpeta de trabajo es la copia del repo del puente (`~/.inherent/laya/repo`, así lee `CLAUDE.md` y el manual), tiene el conector de Inherent OS por MCP (OAuth) y su API local en `127.0.0.1:8642`, solo para el OS, con una llave en `~/.inherent/hermes/api-key` que la app de Mac lee sola.
+- La instala la app (menú Puente › Instalar Hermes) o un comando (`curl -fsSL …/laya/hermes/instalar.sh | bash`). El modelo lo elige cada quien en Hermes (`inherent model`: ChatGPT con su cuenta, Claude, OpenRouter, Nous, o uno local) y el selector del chat lista lo que esa compu tiene conectado (sección «Hermes»).
+- Hoy responde por Hermes el chat de Estrategia cuando se elige un modelo de Hermes; los demás chats siguen por el puente. Laya y el ojo visual no cambian.
+- Vercel nunca habla con Hermes. El CSP permite `connect-src http://127.0.0.1:8642`.
 
 **El ojo visual** (`Ojo` en `puente.py`, `public/js/ojo.js`, `api/_lib/ojo.js`)
 - ¿Esta imagen se parece a la marca? Lo decide el puente con CLIP (`openai/clip-vit-base-patch32`, ~600 MB que baja la primera vez que arranca), comparando la imagen con el moodboard de la marca (`brand_boards.images`) y con una frase de la marca (colores del design system, tono). Solo parecido, nunca calidad.
