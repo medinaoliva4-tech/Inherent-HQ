@@ -77,7 +77,7 @@ export async function render(el, { me, sub = [], alive }) {
     const grupos = {}; for (const s of lista) (grupos[grupoFecha(s.last_active || s.started_at)] ||= []).push(s);
     const fila = (s) => { const m = modoDe(leerIdSesion(s.id)?.modo || 'organizacion'); return html`<div class="ls-row ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"><i class="ls-m" data-m="${m.id}">${m.letra}</i><span>${s.title || s.preview || 'Conversación'}</span></a><button type="button" class="ls-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
     const estado = !S.salud ? ['', 'Buscando Hermes…'] : !S.salud.on ? ['off', 'Hermes apagado'] : !S.salud.auth ? ['off', 'Falta la llave'] : ['on', `Hermes ${S.salud.version || ''}`.trim()];
-    mount(C('llm-side'), html`<div class="ls-brand"><span class="ls-logo">${raw('<img src="/brand/emblem.svg" alt="">')}</span><b>Inherent</b><span class="ls-tag">LLM</span></div>
+    mount(C('llm-side'), html`<div class="ls-brand"><span class="ls-emb">${raw('<img src="/brand/emblem.svg" alt="">')}</span><span class="ls-wm">${raw('<img class="wm-noche" src="/brand/wordmark-light.svg" alt="Inherent"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="">')}<sup>LLM</sup></span></div>
       <button type="button" class="ls-new" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
       <div class="ls-k">Modos</div>
       <nav class="ls-modos">${modos.map((m) => html`<button type="button" class="ls-modo ${m.id === S.modo ? 'on' : ''}" data-a="modo" data-m="${m.id}"><i data-m="${m.id}">${m.letra}</i><span><b>${m.nombre}</b><small>${m.sub}</small></span></button>`)}</nav>
