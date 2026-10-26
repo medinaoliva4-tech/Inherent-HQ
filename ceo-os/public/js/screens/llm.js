@@ -4,8 +4,8 @@
 // su memoria y el conector de Inherent OS. Tres modos con su harness (llm/modos.js) y su panel (llm/paneles.js).
 // Vercel nunca habla con Hermes. Rutas: #/chat · #/chat/<sesión>
 import { html, raw, mount, api, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
-import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion } from '../hermes.js';
-import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha } from '../llm/modos.js';
+import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal } from '../hermes.js';
+import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo } from '../llm/modos.js';
 import { panelDe, datosEstrategia, olvidarPanel } from '../llm/paneles.js';
 import { leerBloques, instrucciones, avance, PASOS } from '../estrategia-viva.js';
 import { etapaDe, etapaLabel } from '../estrategia.js';
@@ -17,6 +17,8 @@ import { tokenDe } from '../puente-chat.js';
 import { icoApp } from '../dock.js';
 
 const K = (me) => `os.llm.${me.email}`;
+// En pantallas chicas el panel va encima del chat: empieza cerrado y abrirlo no se recuerda.
+const angosto = () => matchMedia('(max-width: 1100px)').matches;
 const leer = (me) => { try { return JSON.parse(localStorage.getItem(K(me)) || '{}') || {}; } catch { return {}; } };
 const guardar = (me, v) => { try { localStorage.setItem(K(me), JSON.stringify(v)); } catch {} };
 const ICO_PANEL = raw('<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M15 4v16"/></svg>');
@@ -24,6 +26,7 @@ const ICO_SIDE = raw('<svg viewBox="0 0 24 24" width="16" height="16" fill="none
 const ICO_NUEVO = raw('<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>');
 const ICO_ARRIBA = raw('<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>');
 const ICO_STOP = raw('<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor"/></svg>');
+const ICO_RAMA = raw('<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="7" r="2"/><path d="M6 7v10M18 9c0 5-6 4-11.2 8.6"/></svg>');
 const ELECCION = { once: 'Permitir una vez', session: 'En esta conversación', always: 'Siempre', deny: 'No' };
 
 export async function render(el, { me, sub = [], alive }) {
@@ -32,11 +35,19 @@ export async function render(el, { me, sub = [], alive }) {
   const modos = MODOS.filter((m) => puedeModo(m.id));
   const S = {
     modo: modos.some((m) => m.id === pref.modo) ? pref.modo : modos[0].id,
-    slugs: pref.slugs || {}, modelo: pref.modelo || null, panel: typeof pref.panel === 'boolean' ? pref.panel : !matchMedia('(max-width: 1100px)').matches, tema: pref.tema || 'noche',
+    slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: Boolean(pref.privado), esfuerzo: pref.esfuerzo || '', panel: angosto() ? false : pref.panel !== false, tema: pref.tema || 'noche',
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
   };
-  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, panel: S.panel, tema: S.tema });
+  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, esfuerzo: S.esfuerzo, panel: angosto() ? pref.panel : S.panel, tema: S.tema });
+  // Modo privado: responde un modelo que corre en esta compu (Ollama, LM Studio…). El elegido si es local; si no, el primero que haya.
+  const modeloLocal = () => {
+    if (S.modelo?.model && esLocal(S.modelo.provider)) return S.modelo;
+    const a = S.modelos?.actual; if (a?.model && esLocal(a.provider)) return { provider: a.provider, model: a.model };
+    const p = (S.modelos?.proveedores || []).find((x) => esLocal(x.slug) && x.listo && x.modelos.length);
+    return p ? { provider: p.slug, model: p.modelos[0] } : null;
+  };
+  const modeloTurno = () => (S.privado ? modeloLocal() || {} : S.modelo || {});
   const slugAhora = () => (modoDe(S.modo).pide ? S.slugs[S.modo] || '' : '');
   const opciones = () => (S.modo === 'estrategia' ? estrategiaNow().map((c) => [c.slug, c.nombre]) : S.modo === 'diseno' ? brandsNow().map((b) => [b.slug, b.name]) : []);
   const nombreSlug = () => opciones().find(([s]) => s === slugAhora())?.[1] || slugAhora();
@@ -46,6 +57,7 @@ export async function render(el, { me, sub = [], alive }) {
     <aside class="llm-side" id="llm-side" aria-label="Conversaciones"></aside>
     <main class="llm-main" id="llm-main">
       <header class="llm-head"><button type="button" class="llm-ib llm-solo-cel" data-a="side" aria-label="Conversaciones">${ICO_SIDE}</button><div class="llm-titulo" id="llm-titulo"></div><span class="sp"></span>
+        <button type="button" class="llm-ib" data-a="ramificar" id="llm-rama" hidden aria-label="Ramificar: seguir en una conversación nueva con todo lo hablado" title="Ramificar">${ICO_RAMA}</button>
         <button type="button" class="llm-ib" data-a="panel" aria-label="Mostrar u ocultar el panel" title="Panel">${ICO_PANEL}</button></header>
       <div class="llm-conv" id="llm-conv"><div class="llm-col" id="llm-col"></div></div>
       <button type="button" class="llm-abajo" data-a="abajo" aria-label="Bajar al final" hidden>${ico('down', 16)}</button>
@@ -78,7 +90,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- El centro: vacío (la pregunta grande, como Perplexity) o la conversación ----------
   const vacio = () => !S.msgs.length;
   function pintarTitulo() {
-    const m = modoDe(S.modo);
+    const m = modoDe(S.modo), rama = C('llm-rama'); if (rama) rama.hidden = !S.sesion || vacio();
     mount(C('llm-titulo'), vacio() ? html`<span class="lt-modo"><i data-m="${m.id}">${m.letra}</i>${m.nombre}</span>` : html`<span class="lt-t">${S.titulo || 'Conversación'}</span><span class="lt-modo sm"><i data-m="${m.id}">${m.letra}</i>${m.nombre}${slugAhora() ? ` · ${nombreSlug()}` : ''}</span>`);
   }
   function pintarCentro() {
@@ -114,6 +126,7 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- La caja (composer): modo · cliente/marca · modelo · voz · enviar ----------
   function nombreModelo() {
+    if (S.privado) { const l = modeloLocal(); return l ? `${nombreProveedor(l.provider)} · ${l.model.split('/').pop()}` : 'Sin modelo local'; }
     const v = S.modelo, a = S.modelos?.actual;
     if (v?.model) return `${nombreProveedor(v.provider)} · ${v.model.split('/').pop()}`;
     return a?.model ? `${nombreProveedor(a.provider)} · ${a.model.split('/').pop()}` : 'Modelo';
@@ -123,6 +136,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (!listo()) return mount(box, vacio() ? heroHtml() : html`<div class="llm-col">${setupHtml()}</div>`);
     const m = modoDe(S.modo), sl = slugAhora();
     mount(box, html`${vacio() ? heroHtml() : ''}<div class="lc-w">
+      ${S.privado && S.modelos && !modeloLocal() ? html`<div class="lc-aviso">${ico('lock', 13)} El modo privado necesita un modelo en tu compu. Con Ollama instalado, en la Terminal: <code>ollama pull qwen3-coder:30b</code> <button type="button" data-a="copiar" data-t="ollama pull qwen3-coder:30b">Copiar</button> · y para que Hermes lo use: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button></div>` : ''}
       ${sinModelo() ? html`<div class="lc-aviso">${ico('alert', 13)} Hermes no tiene un modelo conectado. En la Terminal: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button></div>` : ''}
       <form class="lc" id="llm-form"><div class="lc-cmds" id="lc-cmds" hidden></div>
         <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : 'Pide algo…   «/» para comandos'}" aria-label="Mensaje"></textarea>
@@ -130,7 +144,8 @@ export async function render(el, { me, sub = [], alive }) {
           <button type="button" class="lc-chip lc-modo" data-a="menu-modo" aria-haspopup="listbox"><i data-m="${m.id}">${m.letra}</i>${m.nombre}<span class="lc-car">▾</span></button>
           ${m.pide ? html`<button type="button" class="lc-chip ${sl ? '' : 'falta'}" data-a="menu-slug" aria-haspopup="listbox">${ico(m.pide === 'marca' ? 'grid' : 'users', 13)}${sl ? nombreSlug() : m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente'}<span class="lc-car">▾</span></button>` : ''}
           <span class="sp"></span>
-          <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="Qué modelo responde (por Hermes, en tu compu)"><i class="lc-dot on"></i>${nombreModelo()}<span class="lc-car">▾</span></button>
+          <button type="button" class="lc-chip lc-priv ${S.privado ? 'on' : ''}" data-a="privado" aria-pressed="${S.privado ? 'true' : 'false'}" title="${S.privado ? 'Modo privado: responde un modelo en tu compu; nada sale de ella' : 'Prender el modo privado: para datos de clientes, finanzas o lo que no debe salir de tu compu'}">${ico('lock', 13)}<span>Privado</span></button>
+          <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="Qué modelo responde y cuánto piensa (por Hermes, en tu compu)">${S.privado ? ico('lock', 12) : html`<i class="lc-dot on"></i>`}${nombreModelo()}${S.esfuerzo ? html`<span class="lc-esf">· ${nombreEsfuerzo(S.esfuerzo)}</span>` : ''}<span class="lc-car">▾</span></button>
           ${botonVoz()}
           ${S.enVuelo ? html`<button type="button" class="lc-send stop" data-a="detener" aria-label="Detener">${ICO_STOP}</button>` : html`<button type="submit" class="lc-send" aria-label="Enviar">${ICO_ARRIBA}</button>`}
         </div></form>
@@ -166,7 +181,7 @@ export async function render(el, { me, sub = [], alive }) {
     const cuerpo = x.t ? md(x.t) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
     return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${pasosHtml}<div class="lm-md">${cuerpo}</div>${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
       ${apr}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
-      ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${x.t}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}</div>` : ''}</div></div>`;
+      ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${x.t}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
   }
   function pintarHilo() {
     const col = C('llm-col'), box = C('llm-conv');
@@ -208,7 +223,7 @@ export async function render(el, { me, sub = [], alive }) {
   function menu(anchor, titulo, items, onPick, { buscar = false, pie = '' } = {}) {
     el.querySelector('.llm-menu')?.remove();
     const m = document.createElement('div'); m.className = 'llm-menu'; m.setAttribute('role', 'listbox');
-    const pintar = (q = '') => { const xs = items.filter((x) => !q || x.label.toLowerCase().includes(q.toLowerCase())); return html`<span class="lmn-k">${titulo}</span>${buscar ? html`<input class="lmn-q" placeholder="Buscar" aria-label="Buscar">` : ''}<div class="lmn-l">${xs.length ? xs.map((x) => html`<button type="button" role="option" class="${x.on ? 'on' : ''} ${x.off ? 'off' : ''}" data-v="${x.v}" ${x.off ? raw('disabled') : ''}>${x.ico || ''}<span><b>${x.label}</b>${x.sub ? html`<small>${x.sub}</small>` : ''}</span>${x.on ? ico('check', 13) : ''}</button>`) : html`<p class="lmn-mut">Nada por aquí.</p>`}</div>${pie}`; };
+    const pintar = (q = '') => { const xs = items.filter((x) => x.grupo ? !q : !q || x.label.toLowerCase().includes(q.toLowerCase())); return html`<span class="lmn-k">${titulo}</span>${buscar ? html`<input class="lmn-q" placeholder="Buscar" aria-label="Buscar">` : ''}<div class="lmn-l">${xs.length ? xs.map((x) => x.grupo ? html`<span class="lmn-k lmn-g">${x.grupo}</span>` : html`<button type="button" role="option" class="${x.on ? 'on' : ''} ${x.off ? 'off' : ''}" data-v="${x.v}" ${x.off ? raw('disabled') : ''}>${x.ico || ''}<span><b>${x.label}</b>${x.sub ? html`<small>${x.sub}</small>` : ''}</span>${x.on ? ico('check', 13) : ''}</button>`) : html`<p class="lmn-mut">Nada por aquí.</p>`}</div>${pie}`; };
     mount(m, pintar());
     R.append(m);
     const r = anchor.getBoundingClientRect(), rr = R.getBoundingClientRect();
@@ -222,10 +237,17 @@ export async function render(el, { me, sub = [], alive }) {
   const menuSlug = (a) => menu(a, S.modo === 'diseno' ? 'Marca' : 'Cliente', opciones().map(([s, n]) => ({ v: s, label: n, on: s === slugAhora() })), (v) => { S.slugs[S.modo] = v; persistir(); nuevo(); }, { buscar: true });
   async function menuModelo(a) {
     if (!S.modelos) { try { S.modelos = await modelosHermes(me); } catch { S.modelos = { actual: {}, proveedores: [] }; } }
-    const items = [{ v: '', label: 'Por defecto de Hermes', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El que elegiste con «inherent model»', on: !S.modelo?.model }];
-    for (const p of S.modelos.proveedores) for (const x of p.listo ? p.modelos.slice(0, 8) : []) items.push({ v: `${p.slug}|${x}`, label: `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, sub: p.nombre, on: S.modelo?.provider === p.slug && S.modelo?.model === x });
+    const items = [{ grupo: 'Cuánto piensa' }, ...ESFUERZOS.map(([k, l, d]) => ({ v: 'esf:' + k, label: l, sub: d, on: (S.esfuerzo || '') === k })), { grupo: S.privado ? 'Modelos en tu compu (modo privado)' : 'Qué modelo responde' }];
+    if (!S.privado) items.push({ v: '', label: 'Por defecto de Hermes', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El que elegiste con «inherent model»', on: !S.modelo?.model });
+    const loc = S.privado ? modeloLocal() : null;
+    for (const p of S.modelos.proveedores) for (const x of p.listo && (!S.privado || esLocal(p.slug)) ? p.modelos.slice(0, 8) : []) items.push({ v: `${p.slug}|${x}`, label: `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, sub: esLocal(p.slug) ? `${p.nombre} · en tu compu` : p.nombre, on: S.privado ? loc?.provider === p.slug && loc?.model === x : S.modelo?.provider === p.slug && S.modelo?.model === x });
+    if (S.privado && !loc) items.push({ v: 'x', label: 'Todavía no hay un modelo en tu compu', sub: 'Abajo: cómo bajar uno gratis con Ollama', off: true });
     const pie = html`<p class="lmn-pie">¿Falta uno? En la Terminal: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>`;
-    menu(a, 'Qué modelo responde', items, (v) => { S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null; persistir(); pintarCaja(); }, { buscar: items.length > 8, pie });
+    menu(a, 'Modelo', items, (v) => {
+      if (v.startsWith('esf:')) S.esfuerzo = v.slice(4);
+      else S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null;
+      persistir(); pintarCaja();
+    }, { buscar: items.length > 14, pie: S.privado && !loc ? html`<p class="lmn-pie">Con <b>Ollama</b> instalado, en la Terminal: <code>ollama pull qwen3-coder:30b</code> <button type="button" data-a="copiar" data-t="ollama pull qwen3-coder:30b">Copiar</button> · luego <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>` : pie });
   }
 
   // ---------- Ajustes: Hermes, la llave, el tema y los comandos de la Terminal ----------
@@ -280,9 +302,25 @@ export async function render(el, { me, sub = [], alive }) {
     if (alive()) { pintarTitulo(); pintarCentro(); }
   }
 
+  // ---------- Modo privado y ramificar ----------
+  async function alternarPrivado() {
+    S.privado = !S.privado; persistir();
+    if (S.privado && !S.modelos && listo()) { try { S.modelos = await modelosHermes(me); } catch {} }
+    toast(S.privado ? (modeloLocal() ? 'Modo privado: responde un modelo en tu compu' : 'Modo privado: falta un modelo en tu compu') : 'Modo privado apagado', S.privado && !modeloLocal());
+    pintarCaja();
+  }
+  async function ramificar() {
+    if (S.enVuelo) return toast('Espera a que termine la respuesta', true);
+    if (!S.sesion) return toast('Primero escribe algo en esta conversación', true);
+    const nuevoId = idSesion(S.modo, slugAhora()), titulo = `${(S.titulo || 'Conversación').slice(0, 48)} · rama`;
+    try { await ramificarSesion(me, S.sesion, { nuevoId, titulo }); } catch (e) { return toast(`No pude ramificar: ${e.message}`, true); }
+    toast('Rama nueva: sigue desde aquí; la original queda guardada');
+    location.hash = '#/chat/' + nuevoId;
+  }
+
   // ---------- Mandar un mensaje ----------
   async function contexto() {
-    const base = { persona: me.name, puesto: me.title || (me.roles?.length ? me.roles : [me.role]).filter(Boolean).map(roleName).join(' · '), fecha: today() }, slug = slugAhora();
+    const base = { privado: S.privado, persona: me.name, puesto: me.title || (me.roles?.length ? me.roles : [me.role]).filter(Boolean).map(roleName).join(' · '), fecha: today() }, slug = slugAhora();
     if (S.modo === 'estrategia' && slug) {
       const d = await datosEstrategia(slug), v = d.viva || {}, P = PASOS.find((p) => p.id === avance(v).ahora), e = d.etapa?.n != null ? etapaDe(d.etapa.n) : null;
       return { ...base, cliente: d.nombre, carpeta: d.carpeta, nivel: d.nivel?.nombre || 'SIN FICHA DE OFERTA',
@@ -306,6 +344,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (!listo()) return toast('Primero conecta Hermes', true);
     const m = modoDe(S.modo);
     if (m.pide && !slugAhora()) { toast(m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente', true); const b = el.querySelector('[data-a="menu-slug"]'); if (b) menuSlug(b); return; }
+    if (S.privado && !modeloLocal()) { toast('El modo privado necesita un modelo en tu compu', true); pintarCaja(); return; }
     const ctrl = new AbortController(); S.enVuelo = ctrl;
     if (!reintento) { S.msgs.push({ r: 'u', t: texto }); }
     else if (S.msgs[S.msgs.length - 1]?.r === 'a') S.msgs.pop();
@@ -319,7 +358,7 @@ export async function render(el, { me, sub = [], alive }) {
         S.sesion = id; history.replaceState(null, '', '#/chat/' + id);
       }
       const [sistema] = await Promise.all([contexto().then((c) => sistemaDe(S.modo, c)), repoAlDia()]);
-      const r = await turnoSesion(me, S.sesion, { mensaje: texto, sistema, modelo: S.modelo || {}, signal: ctrl.signal, on: {
+      const r = await turnoSesion(me, S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); },
         tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle }); else msg.tools.push(p); pintarUltimo(); },
@@ -355,6 +394,8 @@ export async function render(el, { me, sub = [], alive }) {
     if (['/estrategia', '/organizacion', '/diseno'].includes(cmd)) return modos.some((m) => m.id === cmd.slice(1)) ? (cambiarModo(cmd.slice(1)), arg && enviar(arg)) : toast('Tu perfil no tiene ese modo', true);
     if (cmd === '/modelo') { const b = el.querySelector('[data-a="menu-modelo"]'); if (b) menuModelo(b); return; }
     if (cmd === '/terminal') return ajustes();
+    if (cmd === '/privado') return alternarPrivado();
+    if (cmd === '/ramificar') return ramificar();
     if (cmd === '/skill') {
       const xs = await skills(), b = el.querySelector('[data-a="menu-modo"]') || el.querySelector('.lc-send');
       if (!xs.length) return toast('Hermes no tiene skills instaladas', true);
@@ -380,6 +421,8 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'opcion') return enviar(t.dataset.t);
     if (a === 'comando') return comando({ cmd: t.dataset.c, arg: '' });
     if (a === 'detener') { S.enVuelo?.abort(); return; }
+    if (a === 'privado') return alternarPrivado();
+    if (a === 'ramificar') return ramificar();
     if (a === 'reintentar') { const u = [...S.msgs].reverse().find((x) => x.r === 'u'); if (u) enviar(u.t, { reintento: true }); return; }
     if (a === 'copiar') { try { await navigator.clipboard.writeText(t.dataset.t); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo', true); } return; }
     if (a === 'aprobar') {

@@ -36,7 +36,14 @@ Hermes Agent corre en tu compu y mueve los chats del OS con el modelo que elijas
    `curl -fsSL https://inherent-work.vercel.app/laya/hermes/instalar.sh | bash`
 2. Elige el modelo, en la Terminal: `inherent model` (ChatGPT: `inherent auth add openai-codex --browser`).
 3. Autoriza el conector de Inherent OS la primera vez: `inherent mcp login inherent` (entra con tu Google).
-4. En el chat de Estrategia, en el selector del modelo, elige uno de la sección **Hermes**. Si el OS te pide la llave: `cat ~/.inherent/hermes/api-key`.
+4. Abre el **Chat** (el ícono de chat en el dock de la izquierda, o `#/chat`). Si el OS te pide la llave: `cat ~/.inherent/hermes/api-key`.
+5. Si algo no abre: `inherent update`.
+
+**Modelo local (gratis y privado)** — para el **modo privado** del Chat (datos de clientes, finanzas, lo que no debe salir de tu compu):
+1. Instala [Ollama](https://ollama.com) y baja un modelo con memoria suficiente: `ollama pull qwen3-coder:30b`.
+2. Hermes necesita al menos 64K de memoria (contexto) en el modelo local: `inherent config set model.ollama_num_ctx 65536`.
+3. Conéctalo en Hermes con `inherent model` (elige Ollama). En el Chat, toca **Privado** junto al modelo.
+Depende de tu compu: si va muy lento, baja uno más chico.
 
 Claude con suscripción solo funciona con **Max + créditos extra**; con Pro, usa una API key (`inherent auth add anthropic`).
 

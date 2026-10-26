@@ -4755,7 +4755,7 @@ html[data-app="chat"] .app{padding:0;max-width:none}
 .lsh{grid-template-columns:minmax(0,1fr)}
 .lsh section{min-width:0}
 .lsh .lsu-btn{justify-self:start}
-html[data-app="chat"],html[data-app="chat"] body{overflow:hidden;overscroll-behavior:none}
+html[data-app="chat"],html[data-app="chat"] body{overflow:hidden;overscroll-behavior:none;scrollbar-gutter:auto}
 html[data-app="chat"] .app::before,html[data-app="chat"] .app::after{display:none}
 @media (max-width:760px){
   .lc-row{flex-wrap:nowrap}
@@ -4766,3 +4766,12 @@ html[data-app="chat"] .app::before,html[data-app="chat"] .app::after{display:non
 }
 .lsh-cmds{grid-template-columns:minmax(0,1fr)}
 .lsu-cmd{min-width:0}
+/* Modo privado, cuánto piensa y ramificar (Inherent LLM) */
+.lc-priv{color:var(--l-mut)}
+.lc-priv.on{color:var(--l-acc);border-color:color-mix(in srgb,var(--l-acc) 55%,transparent);background:color-mix(in srgb,var(--l-acc) 12%,transparent)}
+.lc-esf{color:var(--l-mut)}
+.lmn-g{padding-top:10px}
+.lmn-g:first-child{padding-top:6px}
+.lm-acts button svg{width:13px;height:13px}
+@media (max-width:760px){.lc-priv span{display:none}.lc-priv{padding:0 9px;flex-shrink:0}.lc-esf{display:none}}
+html[data-app="chat"] .app{overflow:hidden}
