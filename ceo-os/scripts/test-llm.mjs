@@ -3,7 +3,7 @@
 // npm run test:llm
 import assert from 'node:assert/strict';
 import { leerMeta, crearBrujula, progreso, tareaActual, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe } from '../public/js/llm/brujula.js';
-import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, CONSULTING, alcanceConsulting, leerEncargo, tareaDeEncargo, encargosDe } from '../public/js/llm/modos.js';
+import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, CONSULTING, alcanceConsulting, consultingAbierto, leerEncargo, tareaDeEncargo, encargosDe } from '../public/js/llm/modos.js';
 import { AREAS, areasDe, areaDe, areaDeModo, areaDeEspacio, switchHtml, areaConFlecha } from '../public/js/areas.js';
 import { IAS, iaDe, iasListas, esLocal } from '../public/js/llm/ias.js';
 
@@ -36,7 +36,7 @@ t('el system prompt lleva reglas, harness, criterios, protocolo y el contexto co
 
 t('el harness nunca abre la puerta a pautar, publicar, borrar o editar el repo', () => {
   const s = sistemaDe('organizacion');
-  assert.match(s, /Nunca: costos, márgenes/);
+  assert.match(s, /Nunca: los costos y márgenes de Inherent \(inherent\/06-ECONOMIA\.md\)/);
   assert.match(s, /El repo NO se edita desde aquí/);
   assert.match(s, /Nunca borres/);
 });
@@ -153,13 +153,23 @@ t('Consulting: operaciones, finanzas y equipo de un cliente, con el techo del ni
   assert.equal(alcanceConsulting({ id: 'growth', nombre: 'Brand Growth' }), 'fuera');
   assert.equal(alcanceConsulting({ id: 'medida', nombre: 'A la medida' }), 'ficha');
   assert.equal(alcanceConsulting(null), 'sin-ficha');
+  // En Partnership, Finanzas va «según acuerdo»: solo si la ficha la nombra.
+  const gp = { id: 'partnership', nombre: 'Growth Partnership' };
+  assert.equal(alcanceConsulting(gp, { incluye: [{ k: 'Áreas', v: '1 a 10' }] }), 'sin-finanzas');
+  assert.equal(alcanceConsulting(gp, { incluye: [{ k: '11 · Finanzas vinculadas al crecimiento', v: 'sí' }] }), 'si');
+  assert.deepEqual(['si', 'sin-finanzas', 'ficha', 'fuera', 'sin-ficha'].map(consultingAbierto), [true, true, true, false, false]);
+  assert.match(s, /inherent\/06-ECONOMIA\.md no se lee/, 'Consulting trabaja los números del cliente, nunca los de Inherent');
+  assert.match(sistemaDe('estrategia'), /A Consulting solo se manda si el nivel del cliente lo trae/);
 });
 
 t('encargos: Estrategia manda trabajo a Consulting o a Diseño y queda como tarea', () => {
   assert.match(sistemaDe('estrategia'), /```encargo/, 'el harness de Estrategia enseña el bloque');
-  const r = 'Hay que verlo.\n```encargo\n{"area":"consulting","titulo":"Crear el BMC de Nao","por_que":"Ver de dónde sale la utilidad","vence":"2026-11-05"}\n```\n```encargo\n{"area":"Diseño","titulo":"Carrusel de lanzamiento"}\n```\n```encargo\n{"area":"ventas","titulo":"No existe"}\n```';
+  const r = 'Hay que verlo.\n```encargo\n{"area":"consulting","titulo":"Crear el BMC de Nao","por_que":"Ver de dónde sale la utilidad","vence":"2099-11-05"}\n```\n```encargo\n{"area":"Diseño","titulo":"Carrusel de lanzamiento"}\n```\n```encargo\n{"area":"ventas","titulo":"Sin área"}\n```';
   const k = leerTarjetas(r);
-  assert.deepEqual(k.encargos, [{ area: 'consulting', titulo: 'Crear el BMC de Nao', por_que: 'Ver de dónde sale la utilidad', vence: '2026-11-05' }, { area: 'diseno', titulo: 'Carrusel de lanzamiento', por_que: '', vence: '' }]);
+  assert.deepEqual(k.encargos, [{ area: 'consulting', titulo: 'Crear el BMC de Nao', por_que: 'Ver de dónde sale la utilidad', vence: '2099-11-05' }, { area: 'diseno', titulo: 'Carrusel de lanzamiento', por_que: '', vence: '' }, { area: '', titulo: 'Sin área', por_que: '', vence: '' }], 'un área que no se entiende no se pierde: sale sin área');
+  assert.deepEqual(['finanzas', 'Operaciones', 'equipo', ' consulting ', 'Diseño gráfico', 'campañas', 'evento'].map((a) => leerEncargo({ area: a, titulo: 'x' }).area), ['consulting', 'consulting', 'consulting', 'consulting', 'diseno', 'marketing', 'marketing'], 'los sinónimos van a su área');
+  assert.equal(leerEncargo({ area: 'consulting', titulo: 'x', vence: '2026-02-31' }, '2026-01-01').vence, '', 'una fecha que no existe se ignora');
+  assert.equal(leerEncargo({ area: 'consulting', titulo: 'x', vence: '2026-01-02' }, '2026-03-01').vence, '', 'una fecha pasada se ignora');
   assert.equal(textoVisible(r), 'Hay que verlo.');
   assert.equal(textoVisible('Va\n```encargo\n{"area":"cons'), 'Va', 'a medio escribir no se ve');
   assert.equal(leerEncargo({ area: 'consulting', titulo: '' }), null);
@@ -167,10 +177,14 @@ t('encargos: Estrategia manda trabajo a Consulting o a Diseño y queda como tare
   assert.equal(leerTarjetas(Array(5).fill('```encargo\n{"area":"diseno","titulo":"x"}\n```').join('\n')).encargos.length, 3, 'máximo 3');
   const t0 = tareaDeEncargo(k.encargos[0], { cliente: 'nao', nombre: 'Nao', email: 'ceo@x.com' });
   assert.equal(t0.area, 'consulting'); assert.equal(t0.cliente, 'nao'); assert.equal(t0.origen, 'estrategia'); assert.equal(t0.assignee, 'ceo@x.com');
-  assert.equal(t0.due, '2026-11-05'); assert.equal(t0.status, 'Por empezar'); assert.equal(t0.dept, '');
+  assert.equal(t0.due, '2099-11-05'); assert.equal(t0.status, 'Por empezar'); assert.equal(t0.dept, '');
+  assert.equal(t0.visibility, 'private', 'el porqué es de la estrategia: solo lo ven quien lo manda y a quien se asigna');
+  assert.equal(t0.client_slug, 'nao', 'Mis tareas y el conector saben de qué cliente es');
   assert.equal(tareaDeEncargo(k.encargos[1], { cliente: 'nao', email: 'a' }).dept, '⑥A Diseño gráfico');
-  const xs = encargosDe([{ area: 'consulting', cliente: 'nao', status: 'Hecha', title: 'a' }, { area: 'consulting', cliente: 'nao', status: 'Por empezar', title: 'b' }, { area: 'diseno', cliente: 'nao', title: 'c' }, { area: 'consulting', cliente: 'akai', title: 'd' }], 'consulting', 'nao');
-  assert.deepEqual(xs.map((x) => x.title), ['b', 'a'], 'abiertas primero, solo del área y del cliente');
+  const E = { origen: 'estrategia' }, f = (d) => ({ _meta: { created_at: d } });
+  const xs = encargosDe([{ ...E, area: 'consulting', cliente: 'nao', status: 'Hecha', title: 'a' }, { ...E, ...f('2026-01-01'), area: 'consulting', cliente: 'nao', status: 'Por empezar', title: 'viejo' }, { ...E, ...f('2026-03-01'), area: 'consulting', cliente: 'nao', title: 'nuevo' },
+    { ...E, area: 'diseno', cliente: 'nao', title: 'c' }, { ...E, area: 'consulting', cliente: 'akai', title: 'd' }, { area: 'consulting', cliente: 'nao', title: 'no es de Estrategia' }], 'consulting', 'nao');
+  assert.deepEqual(xs.map((x) => x.title), ['nuevo', 'viejo', 'a'], 'abiertas primero y las nuevas arriba; solo de Estrategia, del área y del cliente');
 });
 
 t('Marketing: el plan del mes y las campañas salen del Chat como bloques', () => {

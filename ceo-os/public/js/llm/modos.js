@@ -18,7 +18,7 @@ export const REGLAS_COMUNES = [
   'Antes del primer pedido de trabajo, lee inherent/00-PRINCIPIOS.md y CLAUDE.md de tu carpeta (la copia del repo de Inherent).',
   'Evidencia o etiqueta: un dato sin fuente va como [dice el cliente, sin verificar] o ⚠️ SIN DATOS. Nunca inventes cifras ni nombres.',
   'El alcance contratado (clients/<cliente>/00-onboarding/plan-contratado.md) es el techo. Sin ficha de oferta, no avances con ese cliente: dilo.',
-  'Nunca: costos, márgenes ni nada de otro cliente; prometer precio, fecha o alcance; gastar dinero, pautar, publicar ni borrar. Precio, alcance y fechas se escalan al CEO.',
+  'Nunca: los costos y márgenes de Inherent (inherent/06-ECONOMIA.md) ni nada de otro cliente; prometer precio, fecha o alcance; gastar dinero, pautar, publicar ni borrar. Precio, alcance y fechas se escalan al CEO.',
   'El repo NO se edita desde aquí: tu carpeta es una copia que se reinicia sola. Lo que se guarda en el OS va por las herramientas del conector «inherent», y solo cuando la persona lo pide.',
   'Roles, no nombres de personas.',
   'Español de «tú». Corto y humano: lo accionable primero, en pasos cortos. Sin jerga: si un término técnico hace falta, explícalo en una frase.',
@@ -62,7 +62,8 @@ export const HARNESS = {
       '```encargo',
       '{"area":"consulting","titulo":"Crear el BMC de la empresa","por_que":"una frase: qué decide la estrategia con esto","vence":"AAAA-MM-DD o vacío"}',
       '```',
-      'area: consulting (operaciones, finanzas, equipo), marketing (plan, campañas, eventos) o diseno (piezas). Máximo 3 encargos por respuesta.',
+      'area: uno de estos tres valores, tal cual: consulting · marketing · diseno. consulting es operaciones, finanzas o equipo; marketing, el plan, una campaña o un evento; diseno, las piezas. Máximo 3 encargos por respuesta.',
+      'A Consulting solo se manda si el nivel del cliente lo trae (Growth Partnership, o un alcance a la medida que lo declare en su ficha). Si no, dilo como FUERA DEL ALCANCE y escálalo al CEO: no lo mandes.',
     ],
     herramientas: 'Leer y buscar en el repo. No uses el conector «inherent» para escribir: la estrategia se guarda sola desde el panel con el bloque ```estrategia```, y los encargos con el bloque ```encargo```.',
     criterios: ['Parte de la meta financiera y la baja a números (ticket, cierre, conversión, visita)', 'Cada recomendación cita su fuente', 'Respeta el nivel contratado: lo demás va FUERA DEL ALCANCE', 'Sin cifras inventadas: lo que falta va como ⚠️ SIN DATOS', 'Termina con un primer paso concreto'],
@@ -106,6 +107,8 @@ export const HARNESS = {
     como: [
       'Lee inherent/02-METODO.md (3 · OPERATIONS OS y 4 · MONEY OS) y la ficha de oferta del cliente antes de proponer.',
       'Operations OS y Money OS son de Growth Partnership. Si el nivel del cliente es otro y su ficha no los incluye, lo que propongas va marcado FUERA DEL ALCANCE y no entra al plan.',
+      'En Growth Partnership: 10 · Operación y organización comercial entra; 11 · Finanzas vinculadas al crecimiento, solo si su ficha la incluye. Siempre fuera: contabilidad, impuestos, nómina, asesoría legal o fiscal, y los SOPs de toda la empresa. Operations OS parte de la auditoría del especialista.',
+      'Los números del cliente son tu trabajo. Los costos y márgenes de Inherent no: inherent/06-ECONOMIA.md no se lee.',
       'Los números son del cliente: trabaja solo con lo que comparte la persona o está en su carpeta, y nunca los mezcles con otro cliente. Sin costos confiables, el margen por línea es teoría: dilo así y marca lo que falta como ⚠️ SIN DATOS.',
       'Si la empresa es el estorbo, más demanda empeora el problema: primero la capacidad.',
       'La estructura corporativa la cubre la auditoría del especialista: propón qué preguntarle, no la resuelvas tú.',
@@ -182,8 +185,12 @@ export const CONSULTING = [
     ['Estructura corporativa', '¿Qué le preguntamos al especialista en la auditoría de estructura corporativa?'],
   ]],
 ];
-// ¿Su nivel trae Operations OS y Money OS? Solo Growth Partnership; a la medida, lo que diga su ficha. nivel = { id, nombre } | null
-export const alcanceConsulting = (nivel) => (!nivel ? 'sin-ficha' : nivel.id === 'partnership' ? 'si' : nivel.id === 'medida' ? 'ficha' : 'fuera');
+// ¿Su nivel trae Operations OS y Money OS? Solo Growth Partnership (Finanzas, «según acuerdo»: solo si su ficha la nombra);
+// a la medida, lo que diga su ficha. nivel = { id, nombre } | null · ficha = { incluye: [{ k, v }] } (de /api/estrategia/:slug)
+const nombraFinanzas = (ficha) => (ficha?.incluye || []).some((x) => /finanz|money os/i.test(`${x.k} ${x.v}`));
+export const alcanceConsulting = (nivel, ficha) => (!nivel ? 'sin-ficha' : nivel.id === 'partnership' ? (!ficha || nombraFinanzas(ficha) ? 'si' : 'sin-finanzas') : nivel.id === 'medida' ? 'ficha' : 'fuera');
+// ¿Se le puede mandar un encargo a Consulting? Con Partnership o a la medida (la ficha es el techo); con otro nivel, no.
+export const consultingAbierto = (a) => a === 'si' || a === 'sin-finanzas' || a === 'ficha';
 
 // Los comandos «/» de la caja: atajos del OS y las capacidades de Hermes (skills y la Terminal).
 export const COMANDOS = [
@@ -253,11 +260,15 @@ export function leerTarjetas(t) {
 }
 // Un encargo de Estrategia para otra área. → { area, titulo, por_que, vence } | null
 export const AREAS_ENCARGO = { consulting: 'Consulting', marketing: 'Marketing', diseno: 'Diseño' };
-export function leerEncargo(j) {
-  const area = String(j?.area || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''), titulo = corta(j?.titulo, 120);
-  if (!AREAS_ENCARGO[area] || !titulo) return null;
-  const vence = /^\d{4}-\d{2}-\d{2}$/.test(String(j?.vence || '')) ? j.vence : '';
-  return { area, titulo, por_que: corta(j?.por_que, 300), vence };
+// Lo que el modelo puede escribir en vez del valor exacto: se lleva a su área (no se pierde un encargo por una palabra).
+const SINONIMOS = [[/^(consult|operac|operat|finanz|money|equipo|margen|bmc)/, 'consulting'], [/^(marketing|mercadeo|plan|campan|evento)/, 'marketing'], [/^(disen|grafic|pieza|creativ)/, 'diseno']];
+export const areaEncargo = (v) => { const a = String(v || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); return AREAS_ENCARGO[a] ? a : SINONIMOS.find(([re]) => re.test(a))?.[1] || ''; };
+const fechaReal = (s) => { if (!/^\d{4}-\d{2}-\d{2}$/.test(String(s || ''))) return ''; const d = new Date(s + 'T12:00:00Z'); return d.toISOString().slice(0, 10) === s ? s : ''; };
+export function leerEncargo(j, hoy = new Date().toISOString().slice(0, 10)) {
+  const titulo = corta(j?.titulo, 120); if (!titulo) return null;
+  const v = fechaReal(j?.vence);
+  // Sin un área que se entienda no se borra en silencio: sale la tarjeta con el aviso y sin botón.
+  return { area: areaEncargo(j?.area), titulo, por_que: corta(j?.por_que, 300), vence: v && v >= hoy ? v : '' };
 }
 // La tarea que deja un encargo al mandarlo: de quien lo manda (la reasigna en Mis tareas), con su área y su cliente,
 // para que la pantalla de esa área y su modo del Chat la encuentren. cliente: slug · email: quien lo manda.
@@ -265,13 +276,15 @@ export function tareaDeEncargo(e, { cliente, nombre, email }) {
   return {
     title: e.titulo, description: [e.por_que, `Encargo de Estrategia · ${nombre || cliente}.`].filter(Boolean).join('\n\n'),
     status: 'Por empezar', tipo: 'Delivery', dept: { diseno: '⑥A Diseño gráfico', marketing: '③ Marketing' }[e.area] || '', due: e.vence || '',
-    assignee: email, accountable: '', visibility: 'all', viewers: [], checklist: [], comments: [], project_id: '',
-    area: e.area, cliente, origen: 'estrategia',
+    // «Solo yo»: la ven quien la manda y a quien se asigna. El porqué es de la estrategia: no lo lee todo el equipo.
+    assignee: email, accountable: '', visibility: 'private', viewers: [], checklist: [], comments: [], project_id: '',
+    area: e.area, cliente, client_slug: cliente, origen: 'estrategia',
   };
 }
 // Las tareas de un área y un cliente (los encargos), abiertas primero.
-export const encargosDe = (tareas, area, cliente) => (tareas || []).filter((t) => t.area === area && (!cliente || t.cliente === cliente))
-  .sort((a, b) => (a.status === 'Hecha') - (b.status === 'Hecha') || String(b.created_at || '').localeCompare(String(a.created_at || '')));
+const creada = (t) => String(t._meta?.created_at || t.created_at || '');
+export const encargosDe = (tareas, area, cliente) => (tareas || []).filter((t) => t.origen === 'estrategia' && t.area === area && (!cliente || t.cliente === cliente))
+  .sort((a, b) => (a.status === 'Hecha') - (b.status === 'Hecha') || creada(b).localeCompare(creada(a)));
 
 // ---------- Las sesiones ----------
 // El id de una conversación: «inh-<modo>-<cliente o marca>-<marca de tiempo>». Hermes lo guarda tal cual.

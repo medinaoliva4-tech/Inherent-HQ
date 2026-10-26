@@ -55,7 +55,7 @@ const today = () => new Date().toISOString().slice(0, 10);
 const TASK_TIPOS = ['Delivery', 'Comercial', 'Interna', 'Personal'];
 const sopOk = (v) => { const s = String(v || '').trim(); return /^https?:\/\/\S+$/i.test(s) || /^[\w.@+-]{1,120}$/.test(s) ? s.slice(0, 500) : ''; };
 const seesTask = (u, t) => { if (t?.tipo === 'Personal') return String(t._meta?.created_by || t.assignee || '').toLowerCase() === u.email; const vis = t?.visibility || 'all'; if (vis === 'all') return true; return [t._meta?.created_by, t.assignee, ...(vis === 'people' ? [t.accountable, ...(t.viewers || [])] : [])].filter(Boolean).map((x) => String(x).toLowerCase()).includes(u.email); };
-const pick = (t, ps = []) => ({ id: t.id, titulo: t.title, estado: t.status || 'Por empezar', persona: t.assignee || '', vence: t.due || '', proyecto: ps.find((p) => p.id === t.project_id)?.name || '', depto: t.dept || '', tipo: t.tipo || '', sop: t.sop || '' });
+const pick = (t, ps = []) => ({ id: t.id, titulo: t.title, estado: t.status || 'Por empezar', persona: t.assignee || '', vence: t.due || '', proyecto: ps.find((p) => p.id === t.project_id)?.name || '', depto: t.dept || '', tipo: t.tipo || '', sop: t.sop || '', ...(t.origen === 'estrategia' ? { encargo: { area: t.area || '', cliente: t.cliente || '' } } : {}) });
 // El mismo precio que la app: automático (horas × costo/h × multiplicador × complejidad) salvo que tenga precio fijo.
 const priceAt = (s, lv, rates) => (!s.price_fixed && !(s.price && !s.prices) ? svcAuto(s, rates, lv) : null) ?? svcPrice(s, lv);
 const growthOf = (s) => (s.growth_type ? { type: s.growth_type, pct: +s.growth_pct || 10, how: s.growth_how || '' } : null);

@@ -215,7 +215,20 @@ on('GET', 'db/:coll/:id', async (req, res) => {
   out ? res.json(out) : res.status(404).json({ error: 'No existe' });
 });
 // Una tarea solo cae en un proyecto del alcance de quien la crea o la mueve; una cotización, en un lead de su alcance.
+// Un encargo de Estrategia (origen «estrategia», con su área y su cliente) solo lo manda quien ve Estrategia, y solo a un
+// cliente que existe y está en su alcance. Quien no ve Estrategia, al editar, conserva lo que la tarea ya traía.
+const ENCARGO_K = ['origen', 'area', 'cliente', 'client_slug'];
+const veEstrategia = (u) => u.role === 'ceo' || (u.areas || []).includes('estrategia');
+async function encargoMal(u, b, cur) {
+  if (!veEstrategia(u)) { for (const k of ENCARGO_K) { if (cur && k in cur) b[k] = cur[k]; else delete b[k]; } return null; }
+  const cambia = ENCARGO_K.some((k) => (b[k] ?? '') !== (cur?.[k] ?? ''));
+  if (!cambia || !b.cliente) return null;
+  if (!(await intel.slugValido(String(b.cliente)))) return 'Ese cliente no existe';
+  const sc = await scoper(u); if (sc && b.cliente !== 'inherent' && !sc.client(String(b.cliente))) return 'Ese cliente no está entre los tuyos';
+  return null;
+}
 async function outOfScope(u, coll, b, cur) {
+  if (coll === 'tasks') { const why = await encargoMal(u, b, cur); if (why) return why; }
   if (coll === 'tasks' && b.project_id && b.project_id !== cur?.project_id) { const p = await db.get('projects', String(b.project_id)); if (p && !inScope(await scoper(u), 'projects', p)) return 'Ese proyecto no está entre los tuyos'; }
   if (coll === 'quotes' && b.lead_id && b.lead_id !== cur?.lead_id) { const l = await db.get('leads', String(b.lead_id)); if (l && !inScope(await scoper(u), 'leads', l)) return 'Ese lead no está entre los tuyos'; }
   // Un presupuesto o un tablero de marca solo se crea para un cliente del alcance de quien lo crea; el tablero «personal» es del CEO.

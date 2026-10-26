@@ -62,7 +62,7 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
   - las conversaciones viven en la compu de cada persona, no en Vercel;
   - la **Brújula** convierte lo vago en una meta medible con fecha y tareas, y avisa cuando la conversación se desvía: el chat sirve para avanzar, no solo para explorar (pensado para el TDAH del CEO: una cosa a la vez, la de ahora a la vista);
   - el **modo privado** («En tu compu» en el switch de IA) existe para lo que no debe salir de la compu (datos de clientes, finanzas): responde un modelo local y, si no hay, no manda nada;
-  - **Estrategia empodera a las demás áreas:** lo que la estrategia pide y se ejecuta en otra área (un BMC en Consulting, una pieza en Diseño) sale como encargo; la persona lo manda con un botón, queda como tarea y se trabaja ahí. Nada se manda solo.
+  - **Estrategia empodera a las demás áreas:** lo que la estrategia pide y se ejecuta en otra área (un BMC en Consulting, una pieza en Diseño) sale como encargo; la persona lo manda con un botón, queda como tarea y se trabaja ahí. Nada se manda solo. A Consulting solo va si el nivel del cliente lo trae; si no, se escala al CEO. El encargo lo ven quien lo manda y a quien se asigna (lleva el porqué de la estrategia).
 
 ### Marketing
 
@@ -78,7 +78,8 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
 
 - **El backend de un cliente** — lo útil para organizar sus operaciones, sus finanzas (márgenes, precio, costo de adquisición, valor de vida, su modelo de negocio) y su equipo (quién decide qué, puestos, onboarding), más los encargos que le manda Estrategia. Lo lleva el CEO con Strategy.
 - *No se pierde:*
-  - Operations OS y Money OS son de Growth Partnership: con otro nivel, lo que se proponga va FUERA DEL ALCANCE y se dice;
+  - Operations OS y Money OS son de Growth Partnership (Finanzas, según acuerdo: solo si la ficha la incluye): con otro nivel, lo que se proponga va FUERA DEL ALCANCE y se dice;
+  - los números del cliente son el trabajo; los costos y márgenes de Inherent no entran (`inherent/06-ECONOMIA.md` no se lee);
   - los números son del cliente: sin costos confiables, el margen es teoría y se dice; nada de otro cliente;
   - las finanzas de Inherent no viven aquí: están en Organización → Finanzas.
 

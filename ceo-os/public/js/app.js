@@ -131,6 +131,8 @@ const areasTablero = () => areasDe({ estrategia: hasEstrategia(), organizacion: 
 // El área de lo que está abierto. En las marcas la dice el grupo del módulo (Marketing planea y mide; Diseño hace las piezas);
 // en la lista de marcas o en el Inicio de una marca, la última de las dos que se eligió.
 function areaDeRuta(cur = resolve(hashNow())) {
+  // Fuera de un espacio (Mi perfil) manda el área elegida, la misma que sigue el Chat.
+  if (!cur?.space) { const g = areaDe(areaGuardada(me.email)); if (g && areasTablero().some((x) => x.id === g.id)) return g; }
   if (cur?.space !== 'marcas') return areaDeEspacio(cur?.space || space);
   const dos = areasTablero().filter((a) => a.espacio === 'marcas').map((a) => a.id), g = areaGuardada(me.email);
   const b = cur.rest[0] && cur.rest[0] !== 'diseno' ? brandsNow().find((x) => x.slug === cur.rest[0]) : null;
@@ -167,7 +169,11 @@ function landing(useLast = true) {
 
 // El dock: Organización vuelve al último espacio (Organization o Marcas) y a su última ruta; Chat, a la última conversación.
 function irApp(a) {
-  if (a === 'chat') { const l = lsGet('last.chat'); location.hash = '/' + (l && l.startsWith('chat') ? l : 'chat'); return; }
+  // Al Chat: la última conversación, si es del área elegida; si no, una nueva en esa área (el Chat no le cambia el área al Tablero).
+  if (a === 'chat') {
+    const l = lsGet('last.chat'), m = /^chat\/inh-([a-z]+)-/.exec(l || '')?.[1], ar = lateral() ? areaDe(areaGuardada(me.email)) : null;
+    location.hash = '/' + (l && l.startsWith('chat') && (!ar || !m || m === ar.modo) ? l : 'chat'); return;
+  }
   let sp = lsGet('space.os');
   // Con la barra lateral, el Tablero abre en el área que se eligió (también en el Chat).
   if (lateral()) { const ar = areaDe(areaGuardada(me.email)); if (ar && areasTablero().some((x) => x.id === ar.id)) { const l = lsGet('last.a.' + ar.id); if (enEspacio(l, ar.espacio)) { location.hash = '/' + l; return; } sp = ar.espacio; } }
@@ -277,7 +283,9 @@ function paintNav(force) {
   if (lateral()) {
     // En el cel, arriba va el switch de áreas (el mismo de la barra lateral, más chico).
     const xs = areasTablero(), want = xs.length >= 2;
-    $('.asw', top)?.remove(); if (want && top) $('.brand', top).insertAdjacentHTML('afterend', areaSwitch(xs, areaDeRuta()?.id, (n, px) => svgIco(n, px), 'asw chico'));
+    const enSw = document.activeElement?.closest?.('.top .asw'), aid = areaDeRuta()?.id;
+    $('.asw', top)?.remove(); if (want && top) $('.brand', top).insertAdjacentHTML('afterend', areaSwitch(xs, aid, (n, px) => svgIco(n, px), 'asw chico'));
+    if (enSw) $(`.top .asw [data-area="${aid}"]`)?.focus();
     top?.classList.toggle('has-sw', want); return;
   }
   const want = showSwitch();
@@ -310,14 +318,14 @@ function paintSub(cur) {
       const ar = lateral() ? areaDeRuta(cur)?.id : '';
       const areas = AREAS.filter(([k, , , mods, , aa]) => (!ar || aa === ar || aa === 'ambas') && (k === 'inicio' ? live.includes('inicio') : mods.some((m) => isSoon(m) || live.includes(m))));
       sub.hidden = false;
-      if (enBarra()) { if (!tools.length) { sub.hidden = true; sub.innerHTML = ''; return; } mount(sub, html`<div class="brand-nav"><div class="tabs mod-tabs" role="tablist" aria-label="Herramientas de ${area[1]}">${tools.map((t) => html`<button role="tab" class="${t.k === mod ? 'on' : ''} ${t.soon ? 'soon' : ''}" aria-selected="${t.k === mod ? 'true' : 'false'}" data-sub="${t.route}" ${t.soon ? raw('title="Próximamente"') : ''}>${t.label}${t.soon ? html`<i class="soon-tag">Pronto</i>` : ''}</button>`)}</div></div>`); return; }
+      if (subsEnBarra()) { if (!tools.length) { sub.hidden = true; sub.innerHTML = ''; return; } mount(sub, html`<div class="brand-nav"><div class="tabs mod-tabs" role="tablist" aria-label="Herramientas de ${area[1]}">${tools.map((t) => html`<button role="tab" class="${t.k === mod ? 'on' : ''} ${t.soon ? 'soon' : ''}" aria-selected="${t.k === mod ? 'true' : 'false'}" data-sub="${t.route}" ${t.soon ? raw('title="Próximamente"') : ''}>${t.label}${t.soon ? html`<i class="soon-tag">Pronto</i>` : ''}</button>`)}</div></div>`); return; }
       mount(sub, html`<div class="brand-nav"><div class="tabs area-tabs" role="tablist" aria-label="Áreas de la marca">${areas.map(([k, l, ic, , que]) => html`<button role="tab" class="${k === area[0] ? 'on' : ''}" aria-selected="${k === area[0] ? 'true' : 'false'}" data-sub="marcas/${b.slug}/${firstOfArea(me, b, k)}" title="${que}">${ico(ic, 15)}<span>${l}</span></button>`)}</div>
         ${tools.length ? html`<div class="tabs mod-tabs" role="tablist" aria-label="Herramientas de ${area[1]}">${tools.map((t) => html`<button role="tab" class="${t.k === mod ? 'on' : ''} ${t.soon ? 'soon' : ''}" aria-selected="${t.k === mod ? 'true' : 'false'}" data-sub="${t.route}" ${t.soon ? raw('title="Próximamente"') : ''}>${t.label}${t.soon ? html`<i class="soon-tag">Pronto</i>` : ''}</button>`)}</div>` : ''}</div>`);
       for (const tb of sub.querySelectorAll('.tabs')) { const ob = tb.querySelector('button.on'); if (ob && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = ob.offsetLeft - (tb.clientWidth - ob.offsetWidth) / 2; }
       return;
     }
   }
-  if (list.length < 2 || enBarra()) { sub.hidden = true; sub.innerHTML = ''; return; }
+  if (list.length < 2 || subsEnBarra()) { sub.hidden = true; sub.innerHTML = ''; return; }
   sub.hidden = false;
   mount(sub, html`<div class="tabs ${cur.space === 'marcas' ? 'mod-tabs' : ''}" role="tablist" aria-label="${cur.space === 'marcas' ? 'Módulos de la marca' : cur.space === 'estrategia' ? 'Bloques de la estrategia' : 'Pestañas de la sección'}">${list.map((t) => html`<button role="tab" class="${on === t ? 'on' : ''} ${t.soon ? 'soon' : ''}" aria-selected="${on === t ? 'true' : 'false'}" data-sub="${t.route}" ${t.soon ? raw('title="Próximamente"') : ''}>${t.label}${t.soon ? html`<i class="soon-tag">Pronto</i>` : ''}</button>`)}</div>`);
   const tb = sub.querySelector('.tabs'), ob = sub.querySelector('button.on'); if (tb && ob && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = ob.offsetLeft - (tb.clientWidth - ob.offsetWidth) / 2;
@@ -333,6 +341,8 @@ const seccionGuia = (cur) => (cur.key === 'me' ? 'me' : cur.key === 'estrategia'
 // «Pregúntale al Chat», tu primer día y «Cómo se usa», y tú (día y noche, Mi perfil). ⌘B la deja solo con íconos.
 const enBarra = () => lateral() && desk.matches;
 const latMini = () => lsGet('barra.mini') === '1';
+// Las pestañas de la sección van debajo de ella en la barra; con la barra en mini (solo íconos) vuelven arriba.
+const subsEnBarra = () => enBarra() && !latMini();
 // La pestaña abierta de una lista de pestañas según la ruta (la más larga que coincide).
 const tabAbierta = (cur, list) => { const path = [cur.key, ...cur.rest].join('/'); return list.filter((t) => path === t.r || path.startsWith(t.r + '/')).sort((a, z) => z.r.length - a.r.length)[0]; };
 const latIt = (ruta, label, icon, on, sub = '') => html`<a class="lat-it ${on ? 'on' : ''}" href="#/${ruta}" title="${label}" ${on ? raw('aria-current="page"') : ''}>${icon}<span class="lat-t">${label}</span></a>${sub}`;
@@ -367,11 +377,13 @@ function paintLat(cur = resolve(hashNow())) {
   const lat = $('.lat'); if (!lat) return;
   const xs = areasTablero(), a = areaDeRuta(cur);
   lat.dataset.area = a?.id || '';
-  const enSw = document.activeElement?.closest?.('.lat .asw');
+  // Se vuelve a pintar en cada navegación: el foco del teclado se queda donde estaba (el switch o el mismo link).
+  const enSw = document.activeElement?.closest?.('.lat .asw'), enLink = document.activeElement?.closest?.('.lat-nav a')?.getAttribute('href');
   mount($('#lat-area', lat), html`${xs.length >= 2 ? raw(areaSwitch(xs, a?.id, (n, px) => svgIco(n, px))) : ''}${a ? html`<div class="lat-area"><b>${a.nombre}</b><small>${a.sub}</small></div>` : ''}`);
-  mount($('#lat-nav', lat), html`${cur.key === 'me' ? latIt('me', 'Mi perfil', ico('user', 16), true) : latSecciones(cur)}`);
+  mount($('#lat-nav', lat), html`${cur.key === 'me' ? latIt('me', 'Mi perfil', ico('user', 16), true) : ''}${latSecciones(cur)}`);
   const sub = $('#lat-chat-sub', lat); if (sub) sub.textContent = `En modo ${a?.nombre || 'Organización'}`;
   if (enSw) $(`.lat .asw [data-area="${a?.id}"]`)?.focus();
+  else if (enLink) [...lat.querySelectorAll('.lat-nav a')].find((x) => x.getAttribute('href') === enLink)?.focus();
   $('.lat-it.on', lat)?.scrollIntoView?.({ block: 'nearest' });
 }
 // Cambiar de área: el espacio de esa área, donde estabas en él (lo recuerda también el Chat).
@@ -379,7 +391,7 @@ function paintLat(cur = resolve(hashNow())) {
 const enEspacio = (r, sp) => Boolean(r) && (sp === 'org' ? r.startsWith('org/') : r.startsWith(sp));
 function irArea(id) {
   const a = areaDe(id); if (!a || !areasTablero().some((x) => x.id === id)) return;
-  const antes = areaDeRuta()?.id; guardarArea(me.email, id); if (antes === id) return;
+  const antes = areaDeRuta()?.id; guardarArea(me.email, id); if (antes === id && resolve(hashNow()).space) return;
   lsSet('space', a.espacio);
   const cur = resolve(hashNow()), b = a.espacio === 'marcas' && cur.space === 'marcas' && cur.rest[0] ? brandsNow().find((x) => x.slug === cur.rest[0]) : null;
   const last = lsGet('last.a.' + id) || lsGet('last.' + a.espacio);
@@ -402,13 +414,13 @@ function menuYo(btn) {
     <a role="menuitem" href="#/me">${ico('user', 15)} Mi perfil</a><button type="button" role="menuitem" data-lat="arriba">${ico('panel-left', 15)} Volver a la barra de arriba</button>`);
   pintar(); btn.closest('.lat-yo').append(m);
   m.addEventListener('click', (e) => {
-    const t = e.target.closest('[data-tema]'); if (t) { ponerTema(t.dataset.tema); pintar(); return; }
+    const t = e.target.closest('[data-tema]'); if (t) { ponerTema(t.dataset.tema); pintar(); m.querySelector(`[data-tema="${t.dataset.tema}"]`)?.focus(); return; }
     if (e.target.closest('[data-lat="arriba"]')) { import('./areas.js').then(({ ponerBarra }) => { ponerBarra(me, false); location.reload(); }); return; }
     if (e.target.closest('a')) m.remove();
   });
   setTimeout(() => document.addEventListener('pointerdown', function fuera(e) { if (!m.contains(e.target) && !btn.contains(e.target)) { m.remove(); document.removeEventListener('pointerdown', fuera); } }));
 }
-const ponerMini = (on) => { lsSet('barra.mini', on ? '1' : '0'); document.documentElement.toggleAttribute('data-lat-mini', on); const b = $('.lat [data-lat="mini"]'); if (b) { b.setAttribute('aria-label', on ? 'Mostrar la barra (⌘B)' : 'Esconder la barra (⌘B)'); b.title = on ? 'Mostrar la barra · ⌘B' : 'Esconder la barra · ⌘B'; } };
+const ponerMini = (on) => { lsSet('barra.mini', on ? '1' : '0'); document.documentElement.toggleAttribute('data-lat-mini', on); if (me) markNav(); const b = $('.lat [data-lat="mini"]'); if (b) { b.setAttribute('aria-label', on ? 'Mostrar la barra (⌘B)' : 'Esconder la barra (⌘B)'); b.title = on ? 'Mostrar la barra · ⌘B' : 'Esconder la barra · ⌘B'; } };
 function latHtml(mac) {
   return html`<aside class="lat" aria-label="Barra lateral">
     <a class="lat-marca" href="#/" aria-label="Inherent OS"><span class="lat-emb">${emblem()}</span><span class="lat-wm"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="Inherent"><img class="wm-noche" src="/brand/wordmark-light.svg" alt=""><sup>OS</sup></span></a>
@@ -434,7 +446,7 @@ function instalarLat() {
     if (k === 'mini') return ponerMini(!latMini());
   });
   lat.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { $('.lat-menu')?.remove(); return; }
+    if (e.key === 'Escape') { if ($('.lat-menu')) { $('.lat-menu').remove(); $('.lat [data-lat="yo"]')?.focus(); } return; }
     if (!e.target.closest('.asw')) return;
     const id = areaConFlecha(areasTablero(), areaDeRuta()?.id, e.key); if (id) { e.preventDefault(); irArea(id); }
   });
@@ -444,7 +456,7 @@ function instalarLat() {
 }
 // ⌘B (Ctrl+B): la barra con o sin nombres. No cuando se escribe.
 document.addEventListener('keydown', (e) => {
-  if (!(e.metaKey || e.ctrlKey) || e.altKey || e.key.toLowerCase() !== 'b' || !me || !enBarra() || !$('.lat')) return;
+  if (!(e.metaKey || e.ctrlKey) || e.altKey || e.key.toLowerCase() !== 'b' || !me || !enBarra() || !$('.lat') || document.documentElement.dataset.app === 'chat') return;
   if (e.target.closest?.('input,textarea,select,[contenteditable="true"]')) return;
   e.preventDefault(); ponerMini(!latMini());
 });
@@ -484,6 +496,8 @@ function shell() {
   $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (!b) return; const g = b.dataset.go; location.hash = '/' + (g === 'portal' ? 'portal' : /^(marcas|estrategia|consulting)\b/.test(g) ? g : 'org/' + (tabsOf(g)[0]?.[0] || orgLanding())); };
   $('#subnav').onclick = (e) => { const b = e.target.closest('[data-sub]'); if (b) location.hash = '/' + b.dataset.sub; };
   // El interruptor: cambia de espacio y vuelve a donde estabas en ese espacio.
+  // El switch de áreas de arriba (cel o ventana angosta): las flechas cambian de área, como en la barra lateral.
+  $('.top').addEventListener('keydown', (e) => { if (!e.target.closest?.('.asw')) return; const id = areaConFlecha(areasTablero(), areaDeRuta()?.id, e.key); if (id) { e.preventDefault(); irArea(id); } });
   $('.top').addEventListener('click', (e) => { const ar = e.target.closest('.asw [data-area]'); if (ar) return irArea(ar.dataset.area); const b = e.target.closest('[data-space]'); if (!b || b.dataset.space === space) return; lsSet('space', b.dataset.space); const last = lsGet('last.' + b.dataset.space); location.hash = '/' + (last || spaceHome(b.dataset.space)); });
   $('#searchbtn')?.addEventListener('click', search);
   instalarBoton(me);

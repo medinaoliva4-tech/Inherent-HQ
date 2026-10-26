@@ -6,10 +6,10 @@
 // Vercel nunca habla con Hermes. Rutas: #/chat · #/chat/<sesión>
 import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
 import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal, IAS, iaDe, iasListas } from '../hermes.js';
-import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo } from '../llm/modos.js';
+import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
 import { limpiarPlan, nombreMes, NOMBRE_P } from '../plan-mes.js';
 import { tipoDe, anticipacion } from '../campanas.js';
-import { panelDe, datosEstrategia, olvidarPanel } from '../llm/paneles.js';
+import { panelDe, datosEstrategia, olvidarPanel, verTareas } from '../llm/paneles.js';
 import { crearBrujula, progreso, tareaActual, terminada, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe, QUIEN } from '../llm/brujula.js';
 import { leerBloques, instrucciones, avance, PASOS } from '../estrategia-viva.js';
 import { etapaDe, etapaLabel } from '../estrategia.js';
@@ -57,10 +57,10 @@ export async function render(el, { me, sub = [], alive }) {
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
   };
-  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel });
-  // Lo que el Tablero dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra.
+  // Lo que el Tablero dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
+  // solo cuando llega a la caja (si Hermes no está listo, espera: no se pierde).
   let borrador = String(pref.borrador || '');
-  if (borrador) persistir();
+  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
   // El mes del plan que trabaja Marketing: el que mandó el Tablero, o el de este mes.
   const mesPlan = /^\d{4}-\d{2}$/.test(pref.mes || '') ? pref.mes : today().slice(0, 7);
   // Modo privado: responde un modelo que corre en esta compu (Ollama, LM Studio…). El elegido si es local; si no, el primero que haya.
@@ -72,7 +72,7 @@ export async function render(el, { me, sub = [], alive }) {
   };
   const modeloTurno = () => (S.privado ? modeloLocal() || {} : S.modelo || {});
   const slugAhora = () => (modoDe(S.modo).pide ? S.slugs[S.modo] || '' : '');
-  const opciones = () => (S.modo === 'estrategia' || S.modo === 'consulting' ? estrategiaNow().map((c) => [c.slug, c.nombre]) : S.modo === 'diseno' || S.modo === 'marketing' ? brandsNow().filter((b) => S.modo === 'diseno' || !b.personal).map((b) => [b.slug, b.name]) : []);
+  const opciones = () => (S.modo === 'estrategia' || S.modo === 'consulting' ? estrategiaNow().filter((c) => S.modo === 'estrategia' || c.slug !== 'inherent').map((c) => [c.slug, c.nombre]) : S.modo === 'diseno' || S.modo === 'marketing' ? brandsNow().filter((b) => S.modo === 'diseno' || !b.personal).map((b) => [b.slug, b.name]) : []);
   // Qué IA responde ahora: la del modelo elegido, la de Hermes por defecto, o «en tu compu» con el modo privado. '' si no se sabe.
   const iaAhora = () => (S.privado ? 'local' : S.modelo?.model ? iaDe(S.modelo.provider) : S.modelos?.actual?.provider ? iaDe(S.modelos.actual.provider) : '');
   const nombreSlug = () => opciones().find(([s]) => s === slugAhora())?.[1] || slugAhora();
@@ -110,7 +110,7 @@ export async function render(el, { me, sub = [], alive }) {
       <div class="ls-area" data-m="${S.modo}"><b>${a?.nombre || modoDe(S.modo).nombre}</b><small>${a?.sub || modoDe(S.modo).sub}</small></div>
       <button type="button" class="ls-new" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
       <div class="ls-k ls-kr">${q ? 'Todas las áreas' : 'Recientes'}<label class="ls-busca">${ico('search', 12)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label></div>
-      <div class="ls-list">${!listo() ? html`<p class="ls-mut">Las conversaciones viven en Hermes, en tu compu.</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : `Todavía no hay conversaciones de ${a?.nombre || 'esta área'}.`}</p>`}</div>
+      <div class="ls-list">${!listo() ? html`<p class="ls-mut">Las conversaciones viven en Hermes, en tu compu.</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : S.sesiones.tope ? `Entre las últimas ${S.sesiones.length} conversaciones no hay de ${a?.nombre || 'esta área'}.` : `Todavía no hay conversaciones de ${a?.nombre || 'esta área'}.`}</p>`}</div>
       <footer class="ls-foot"><button type="button" class="ls-os" data-a="ir-os">${icoApp('os')}<span>Tablero</span></button><button type="button" class="ls-me" data-a="ajustes" title="Hermes y ajustes">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<span>${initials(me.name)}</span>`}<span class="ls-me-t"><b>${me.name}</b><small><i class="ls-dot ${estado[0]}"></i>${estado[1]}</small></span>${ico('gear', 15)}</button></footer>`);
     const qi = C('ls-q'); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n = C('ls-q'); n.focus(); n.setSelectionRange(pos, pos); };
   }
@@ -168,16 +168,28 @@ export async function render(el, { me, sub = [], alive }) {
     if (xs.length < 2) return '';
     return html`<div class="lc-ias" role="radiogroup" aria-label="Qué IA responde">${xs.map(([id, n, ic]) => html`<button type="button" role="radio" class="${id === on ? 'on' : ''}" aria-checked="${id === on ? 'true' : 'false'}" data-a="ia" data-ia="${id}" style="--c:var(--ia-${id})" title="${id === 'local' ? 'En tu compu · privado: nada sale de ella' : n}" aria-label="${n}">${ico(ic, 15)}</button>`)}</div>`;
   }
+  // Un solo estado: si responde un modelo de tu compu, es el modo privado (con su regla). Un modelo guardado de un
+  // proveedor que Hermes ya no tiene listo se suelta: vuelve el de Hermes por defecto.
+  const provListo = (m) => Boolean(m?.model && (S.modelos?.proveedores || []).some((p) => p.slug === m.provider && p.listo));
+  function ajustarModelo() {
+    if (!S.modelos?.proveedores) return;
+    for (const [k, m] of Object.entries(S.porIa)) if (!provListo(m)) delete S.porIa[k];
+    if (S.modelo?.model && !provListo(S.modelo)) S.modelo = null;
+    if (!S.privado && (S.modelo?.model ? esLocal(S.modelo.provider) : esLocal(S.modelos.actual?.provider))) S.privado = true;
+  }
   // Cambiar de IA: vuelve al último modelo que usaste con ella, o al de Hermes por defecto si es de ella, o al primero que tenga.
   function ponerIa(id) {
-    if (id === iaAhora()) return;
-    if (S.modelo?.model && !S.privado) S.porIa[iaDe(S.modelo.provider)] = S.modelo;
-    if (id === 'local') { S.privado = true; persistir(); toast(modeloLocal() ? 'En tu compu: nada sale de ella' : 'Falta un modelo en tu compu', !modeloLocal()); return pintarCaja(); }
-    S.privado = false;
+    if (id === 'local' ? S.privado : !S.privado && id === iaAhora()) return;
+    if (S.modelo?.model) S.porIa[esLocal(S.modelo.provider) ? 'local' : iaDe(S.modelo.provider)] = S.modelo;
+    if (id === 'local') {
+      S.privado = true; if (provListo(S.porIa.local)) S.modelo = S.porIa.local;
+      persistir(); toast(modeloLocal() ? 'En tu compu: nada sale de ella' : 'Falta un modelo en tu compu', !modeloLocal()); return pintarCaja();
+    }
+    S.privado = false; if (esLocal(S.modelo?.provider)) S.modelo = null;
     const ps = (S.modelos?.proveedores || []).filter((p) => p.listo && p.modelos.length && iaDe(p.slug) === id && !esLocal(p.slug));
     const guardado = S.porIa[id], sigue = guardado && ps.some((p) => p.slug === guardado.provider && p.modelos.includes(guardado.model));
     const a = S.modelos?.actual;
-    S.modelo = sigue ? guardado : a?.model && iaDe(a.provider) === id ? null : ps[0] ? { provider: ps[0].slug, model: ps[0].modelos[0] } : S.modelo;
+    S.modelo = sigue ? guardado : a?.model && iaDe(a.provider) === id ? null : ps[0] ? { provider: ps[0].slug, model: ps[0].modelos[0] } : null;
     persistir(); pintarCaja();
   }
   function pintarCaja() {
@@ -199,7 +211,9 @@ export async function render(el, { me, sub = [], alive }) {
           ${S.enVuelo ? html`<button type="button" class="lc-send stop" data-a="detener" aria-label="Detener">${ICO_STOP}</button>` : html`<button type="submit" class="lc-send" aria-label="Enviar">${ICO_ARRIBA}</button>`}
         </div></form>
       <p class="lc-nota">El Inherent LLM trabaja con las reglas de Inherent y puede equivocarse: revisa lo importante.</p></div>`);
-    const ta = $('#llm-in', el); ta.value = prev; crecer(ta);
+    const ta = $('#llm-in', el); ta.value = prev;
+    if (borrador && !prev) { ta.value = borrador; borrador = ''; persistir(); }
+    crecer(ta);
     ta.oninput = () => { crecer(ta); comandos(ta.value); };
   }
   const crecer = (ta) => { ta.style.height = 'auto'; ta.style.height = Math.min(240, ta.scrollHeight) + 'px'; };
@@ -241,11 +255,17 @@ export async function render(el, { me, sub = [], alive }) {
     flecha();
   }
   // Un encargo de Estrategia para otra área (Consulting o Diseño): se manda con un botón y queda como tarea de quien lo manda.
+  // Sin un área que se entienda no se esconde: sale con el aviso. Fuera del alcance, o sin tareas en el perfil, no hay botón.
   function encargoHtml(en, i, k, x) {
-    const a = areaDe(en.area), hecho = x.mandados?.[k], sl = slugAhora();
+    const a = areaDe(en.area), hecho = x.mandados?.[k], sl = slugAhora(), nom = AREAS_ENCARGO[en.area];
+    if (!nom) return html`<div class="lm-enc"><span class="lm-k">${ico('alert', 12)} Encargo sin un área que se entienda</span><b>${en.titulo}</b>${en.por_que ? html`<small>${en.por_que}</small>` : ''}<small class="lm-enc-no">Pídele que diga a qué área va: Consulting, Marketing o Diseño.</small></div>`;
     const ir = en.area === 'consulting' ? `#/consulting/${encodeURIComponent(sl)}` : `#/marcas/${encodeURIComponent(sl)}`;
-    return html`<div class="lm-enc" data-m="${en.area}"><span class="lm-k">${ico(a?.icono || 'send', 12)} Encargo para ${AREAS_ENCARGO[en.area]}</span><b>${en.titulo}</b>${en.por_que ? html`<small>${en.por_que}</small>` : ''}
-      <div class="lm-ops">${hecho ? html`<span class="lm-meta-ok">${ico('check', 13)} ${hecho === 'ya' ? 'Ya estaba mandado' : 'Mandado'} · está en Mis tareas</span>${sl ? html`<a class="lm-enc-ir" href="${ir}">Abrir en ${AREAS_ENCARGO[en.area]} ↗</a>` : ''}` : html`<button type="button" class="si" data-a="encargo" data-i="${i}" data-k="${k}" ${S.enVuelo ? raw('disabled') : ''}>Mandar a ${AREAS_ENCARGO[en.area]}</button>`}</div></div>`;
+    const ops = hecho === 'enviando' ? html`<span class="lm-meta-ok">Mandando…</span>`
+      : hecho === 'fuera' ? html`<span class="lm-enc-no">${ico('alert', 13)} Fuera del alcance de su nivel · escálalo al CEO</span>`
+      : hecho ? html`<span class="lm-meta-ok">${ico('check', 13)} ${hecho === 'ya' ? 'Ya está abierto' : 'Mandado'} · en Mis tareas</span>${sl ? html`<a class="lm-enc-ir" href="${ir}">Abrir en ${nom} ↗</a>` : ''}`
+      : !verTareas(me) ? html`<span class="lm-enc-no">Tu perfil no ve las tareas: pídele al CEO que lo mande</span>`
+      : html`<button type="button" class="si" data-a="encargo" data-i="${i}" data-k="${k}" ${S.enVuelo ? raw('disabled') : ''}>Mandar a ${nom}</button>`;
+    return html`<div class="lm-enc" data-m="${en.area}"><span class="lm-k">${ico(a?.icono || 'send', 12)} Encargo para ${nom}</span><b>${en.titulo}</b>${en.por_que ? html`<small>${en.por_que}</small>` : ''}<div class="lm-ops">${ops}</div></div>`;
   }
   // ③ Marketing propone el plan del mes o una campaña: se guardan con un botón (nada se guarda solo).
   function planHtml(pl, i, x) {
@@ -272,16 +292,30 @@ export async function render(el, { me, sub = [], alive }) {
     catch (e) { toast(e.message, true); }
     pintarHilo();
   }
+  // Ya hay uno abierto igual (mismo cliente, área y título). Uno hecho no cuenta: un encargo puede volver cada ciclo.
+  const abiertoIgual = (ts, en, sl) => ts.some((t) => t.origen === 'estrategia' && t.cliente === sl && t.area === en.area && t.title === en.titulo && t.status !== 'Hecha');
   async function mandarEncargo(i, k) {
-    const x = S.msgs[i], en = x?.tarjetas?.encargos?.[k], sl = slugAhora(); if (!en || x.mandados?.[k]) return;
+    const x = S.msgs[i], en = x?.tarjetas?.encargos?.[k], sl = slugAhora(); if (!en?.area || x.mandados?.[k]) return;
     if (!sl) return toast('Primero elige el cliente de esta conversación', true);
+    // Se marca antes de esperar a nadie: un doble clic no lo manda dos veces.
+    const marca = (v) => { const m = { ...(x.mandados || {}) }; if (v) m[k] = v; else delete m[k]; x.mandados = m; pintarHilo(); };
+    marca('enviando');
     try {
-      // Nada duplicado: si ya se mandó (por ejemplo, antes de recargar), no se crea otra vez.
-      const ya = (await col('tasks').list().catch(() => [])).some((t) => t.origen === 'estrategia' && t.cliente === sl && t.area === en.area && t.title === en.titulo);
+      if (en.area === 'consulting') {
+        const d = await datosEstrategia(sl);
+        if (!consultingAbierto(alcanceConsulting(d.nivel, d.ficha))) { marca('fuera'); return toast(`Con ${d.nivel?.nombre || 'su ficha'}, Consulting va fuera del alcance: escálalo al CEO`, true); }
+      }
+      const ya = abiertoIgual(await col('tasks').list(), en, sl);
       if (!ya) await col('tasks').create(tareaDeEncargo(en, { cliente: sl, nombre: nombreSlug(), email: me.email }));
-      x.mandados = { ...(x.mandados || {}), [k]: ya ? 'ya' : 'si' };
-      toast(ya ? 'Ese encargo ya estaba mandado' : `Mandado a ${AREAS_ENCARGO[en.area]} · está en Mis tareas`);
-    } catch (e) { toast(e.status === 403 ? 'Tu perfil no puede crear tareas: pídeselo al CEO' : `No se pudo mandar: ${e.message}`, true); }
+      marca(ya ? 'ya' : 'si');
+      toast(ya ? 'Ese encargo ya está abierto en Mis tareas' : `Mandado a ${AREAS_ENCARGO[en.area]} · está en Mis tareas`);
+    } catch (e) { marca(''); toast(e.status === 403 ? 'Tu perfil no puede crear tareas: pídeselo al CEO' : `No se pudo mandar: ${e.message}`, true); }
+  }
+  // Al volver a abrir una conversación, los encargos que ya están abiertos en las tareas salen como mandados.
+  async function marcarMandados() {
+    const sl = slugAhora(); if (!sl || !verTareas(me) || !S.msgs.some((x) => x.tarjetas?.encargos?.length)) return;
+    const ts = await col('tasks').list().catch(() => null); if (!ts || !alive()) return;
+    for (const x of S.msgs) (x.tarjetas?.encargos || []).forEach((en, k) => { if (en.area && !x.mandados?.[k] && abiertoIgual(ts, en, sl)) x.mandados = { ...(x.mandados || {}), [k]: 'ya' }; });
     pintarHilo();
   }
 
@@ -371,9 +405,10 @@ export async function render(el, { me, sub = [], alive }) {
   const menuModo = (a) => menu(a, 'Modo', modos.map((m) => ({ v: m.id, label: m.nombre, sub: m.sub, on: m.id === S.modo, ico: html`<i class="lmn-m" data-m="${m.id}">${m.letra}</i>` })), (v) => cambiarModo(v));
   const menuSlug = (a) => menu(a, S.modo === 'diseno' ? 'Marca' : 'Cliente', opciones().map(([s, n]) => ({ v: s, label: n, on: s === slugAhora() })), (v) => { S.slugs[S.modo] = v; persistir(); nuevo(); }, { buscar: true });
   async function menuModelo(a) {
-    if (!S.modelos) { try { S.modelos = await modelosHermes(me); } catch { S.modelos = { actual: {}, proveedores: [] }; } }
+    if (!S.modelos) { try { S.modelos = await modelosHermes(me); ajustarModelo(); } catch { S.modelos = { actual: {}, proveedores: [] }; } }
     // Con el switch de IA, aquí van solo los modelos de esa IA (sin IA conocida, todos).
-    const ia = iaAhora(), deIa = (slug) => (S.privado ? esLocal(slug) : !ia || (iaDe(slug) === ia && !esLocal(slug)));
+    // Si la IA de ahora ya no está lista en Hermes, no se filtra: que siempre haya algo que elegir.
+    const ia = iasListas(S.modelos).some(([k]) => k === iaAhora()) ? iaAhora() : '', deIa = (slug) => (S.privado ? esLocal(slug) : !esLocal(slug) && (!ia || iaDe(slug) === ia));
     const nombreIa = (IAS.find(([k]) => k === ia) || [])[1];
     const items = [{ grupo: 'Cuánto piensa' }, ...ESFUERZOS.map(([k, l, d]) => ({ v: 'esf:' + k, label: l, sub: d, on: (S.esfuerzo || '') === k })), { grupo: S.privado ? 'Modelos en tu compu (modo privado)' : nombreIa ? `Modelos de ${nombreIa}` : 'Qué modelo responde' }];
     if (!S.privado && (!ia || iaDe(S.modelos.actual.provider) === ia)) items.push({ v: '', label: 'Por defecto de Hermes', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El que elegiste con «inherent model»', on: !S.modelo?.model });
@@ -383,7 +418,7 @@ export async function render(el, { me, sub = [], alive }) {
     const pie = html`<p class="lmn-pie">¿Falta uno? En la Terminal: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>`;
     menu(a, 'Modelo', items, (v) => {
       if (v.startsWith('esf:')) S.esfuerzo = v.slice(4);
-      else { S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null; if (S.modelo && !S.privado) S.porIa[iaDe(S.modelo.provider)] = S.modelo; }
+      else { S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null; if (S.modelo) S.porIa[S.privado ? 'local' : iaDe(S.modelo.provider)] = S.modelo; ajustarModelo(); }
       persistir(); pintarCaja();
     }, { buscar: items.length > 14, pie: S.privado && !loc ? html`<p class="lmn-pie">Con <b>Ollama</b> instalado, en la Terminal: <code>ollama pull qwen3-coder:30b</code> <button type="button" data-a="copiar" data-t="ollama pull qwen3-coder:30b">Copiar</button> · luego <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>` : pie });
   }
@@ -409,8 +444,10 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- Cambiar de modo, de conversación, empezar una nueva ----------
   function cambiarModo(id) {
-    if (!modos.some((m) => m.id === id)) return;
-    if (id === S.modo && vacio()) return;
+    // La misma área no hace nada (para empezar de cero está «Nueva conversación»). Con una respuesta en camino no se cambia:
+    // cambiar abre una conversación nueva y cortaría la respuesta.
+    if (!modos.some((m) => m.id === id) || id === S.modo) return;
+    if (S.enVuelo) return toast('Espera a que termine la respuesta, o detenla, para cambiar de área', true);
     S.modo = id; persistir(); guardarArea(me.email, areaDeModo(id)?.id || '');
     if (!vacio() || S.sesion) return nuevo();
     pintarSide(); pintarCentro(); pintarPanel();
@@ -439,15 +476,18 @@ export async function render(el, { me, sub = [], alive }) {
       }
       S.msgs = out;
     } catch (e) { S.msgs = [{ r: 'a', modo: S.modo, t: '', err: `No pude leer la conversación: ${e.message}` }]; }
-    if (alive()) { pintarTitulo(); pintarCentro(); }
+    if (alive()) { pintarTitulo(); pintarCentro(); marcarMandados(); }
   }
 
   // ---------- Modo privado y ramificar ----------
+  // Prender o apagar el privado es lo mismo que elegir «En tu compu» o volver a otra IA en el switch.
   async function alternarPrivado() {
-    S.privado = !S.privado; persistir();
-    if (S.privado && !S.modelos && listo()) { try { S.modelos = await modelosHermes(me); } catch {} }
-    toast(S.privado ? (modeloLocal() ? 'Modo privado: responde un modelo en tu compu' : 'Modo privado: falta un modelo en tu compu') : 'Modo privado apagado', S.privado && !modeloLocal());
-    pintarCaja();
+    if (!S.modelos && listo()) { try { S.modelos = await modelosHermes(me); ajustarModelo(); } catch {} }
+    if (!S.privado) return ponerIa('local');
+    const otra = (S.modelos ? iasListas(S.modelos) : []).find(([k]) => k !== 'local')?.[0];
+    if (S.modelos && !otra) return toast('En esta compu solo hay modelos locales: el privado se queda prendido', true);
+    if (otra) ponerIa(otra); else { S.privado = false; if (esLocal(S.modelo?.provider)) S.modelo = null; persistir(); pintarCaja(); }
+    toast('Modo privado apagado');
   }
   async function ramificar() {
     if (S.enVuelo) return toast('Espera a que termine la respuesta', true);
@@ -576,13 +616,18 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'menu-modo') return menuModo(t);
     if (a === 'menu-slug') return menuSlug(t);
     if (a === 'menu-modelo') return menuModelo(t);
-    if (a === 'refrescar-modelos') { el.querySelector('.llm-menu')?.remove(); try { S.modelos = await modelosHermes(me, { fresco: true }); toast('Lista de modelos al día'); } catch (er) { toast(er.message, true); } return pintarCaja(); }
+    if (a === 'refrescar-modelos') { el.querySelector('.llm-menu')?.remove(); try { S.modelos = await modelosHermes(me, { fresco: true }); ajustarModelo(); persistir(); toast('Lista de modelos al día'); } catch (er) { toast(er.message, true); } return pintarCaja(); }
     if (a === 'sugerencia') return enviar(t.dataset.t);
     if (a === 'opcion') return enviar(t.dataset.t);
     if (a === 'comando') return comando({ cmd: t.dataset.c, arg: '' });
     if (a === 'detener') { S.enVuelo?.abort(); return; }
     if (a === 'privado') return alternarPrivado();
-    if (a === 'ia') return ponerIa(t.dataset.ia);
+    if (a === 'ia') {
+      // En el cel solo se ve la IA que responde: tocarla abre las demás; elegir otra (o la misma) lo cierra.
+      const g = t.closest('.lc-ias');
+      if (matchMedia('(max-width: 760px)').matches && !g.classList.contains('abierto') && t.classList.contains('on')) return g.classList.add('abierto');
+      g.classList.remove('abierto'); return ponerIa(t.dataset.ia);
+    }
     if (a === 'encargo') return mandarEncargo(+t.dataset.i, +t.dataset.k);
     if (a === 'guardar-plan') return guardarPlan(+t.dataset.i);
     if (a === 'guardar-campana') return guardarCampana(+t.dataset.i, +t.dataset.k);
@@ -623,7 +668,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'revisar') return revisar();
   });
   el.addEventListener('keydown', (e) => {
-    if (e.target.closest?.('.asw')) { const id = areaConFlecha(areas, areaDeModo(S.modo)?.id, e.key); if (id) { e.preventDefault(); cambiarModo(areaDe(id).modo); el.querySelector(`.asw [data-area="${id}"]`)?.focus(); } return; }
+    if (e.target.closest?.('.asw')) { const id = areaConFlecha(areas, areaDeModo(S.modo)?.id, e.key); if (id) { e.preventDefault(); cambiarModo(areaDe(id).modo); el.querySelector(`.asw [data-area="${areaDeModo(S.modo)?.id}"]`)?.focus(); return; } }
     if (e.target.id !== 'llm-in') { if (e.key === 'Escape') el.querySelector('.llm-sheet, .llm-menu')?.remove(); return; }
     const cmds = $('#lc-cmds', el);
     if (cmds && !cmds.hidden && (e.key === 'Enter' || e.key === 'Tab') && !e.shiftKey) { e.preventDefault(); const b = cmds.querySelector('button.on'); if (b) comando({ cmd: b.dataset.c, arg: '' }); return; }
@@ -648,7 +693,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (!alive()) return;
     if (listo()) {
       const [xs, mods] = await Promise.all([sesionesHermes(me).catch(() => []), modelosHermes(me).catch(() => null)]);
-      S.sesiones = xs; S.modelos = mods;
+      S.sesiones = xs; S.modelos = mods; ajustarModelo();
     }
     if (!alive()) return;
     pintarSide(); pintarCentro();
@@ -659,7 +704,5 @@ export async function render(el, { me, sub = [], alive }) {
   await revisar();
   if (sub[0] && listo()) await abrirSesion(decodeURIComponent(sub[0]));
   else pintarPanel();
-  const ta = $('#llm-in', el);
-  if (ta && borrador && !sub[0]) { ta.value = borrador; crecer(ta); borrador = ''; }
-  ta?.focus();
+  $('#llm-in', el)?.focus();
 }

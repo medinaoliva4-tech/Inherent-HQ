@@ -50,15 +50,16 @@ async function panelEstrategia(me, slug) {
 }
 
 // El aviso del alcance de Consulting (lo usa también la pantalla de Consulting del Tablero).
-export const avisoConsulting = (nivel) => {
-  const a = alcanceConsulting(nivel);
+export const avisoConsulting = (nivel, ficha) => {
+  const a = alcanceConsulting(nivel, ficha);
   return a === 'sin-ficha' ? html`<div class="lp-warn">Sin ficha de oferta, el agente bloquea a este cliente: el alcance contratado es el techo.</div>`
     : a === 'fuera' ? html`<div class="lp-warn">Operations OS y Money OS son de Growth Partnership. Con ${nivel.nombre}, lo que se proponga va FUERA DEL ALCANCE.</div>`
-    : a === 'ficha' ? html`<div class="lp-warn">A la medida: lo que incluye su ficha es el techo.</div>` : '';
+    : a === 'ficha' ? html`<div class="lp-warn">A la medida: lo que incluye su ficha es el techo.</div>`
+    : a === 'sin-finanzas' ? html`<div class="lp-warn">Operación y organización comercial sí. Finanzas va «según acuerdo» y su ficha no la incluye: lo de Money OS va FUERA DEL ALCANCE.</div>` : '';
 };
 // Los encargos abiertos de Estrategia para esta área y este cliente: tocarlos los manda al Chat como pedido.
 export const pedidoDeEncargo = (t) => `Encargo de Estrategia: ${t.title}.${t.description ? ` ${String(t.description).split('\n\n')[0]}` : ''}`;
-const verTareas = (me) => me.areas?.includes('work') || me.areas?.includes('operations');
+export const verTareas = (me) => me.areas?.includes('work') || me.areas?.includes('operations');
 async function encargosHtml(me, area, slug) {
   if (!verTareas(me)) return '';
   const xs = encargosDe(await col('tasks').list().catch(() => []), area, slug).filter((t) => t.status !== 'Hecha').slice(0, 6);
@@ -81,7 +82,7 @@ async function panelConsulting(me, slug) {
   if (!slug) return vacio('Elige un cliente', 'Abajo, junto al modo, elige de quién es el consulting. El panel muestra su alcance, los encargos de Estrategia y los temas para empezar.');
   const [data, enc] = await Promise.all([datosEstrategia(slug), encargosHtml(me, 'consulting', slug)]);
   return html`<div class="lp-head"><div><span class="lp-k">Consulting</span><h3>${data.nombre}</h3><span class="lp-mut">${data.nivel?.nombre || 'Sin ficha de oferta'}</span></div><a class="lp-btn" href="#/consulting/${esc(slug)}">Tablero ↗</a></div>
-    ${avisoConsulting(data.nivel)}${enc}
+    ${avisoConsulting(data.nivel, data.ficha)}${enc}
     ${CONSULTING.map(([, g, , ts]) => html`<section class="lp-sec"><span class="lp-k">${g}</span>${ts.map(([t, q]) => html`<button type="button" class="lp-row lp-tema" data-a="sugerencia" data-t="${q}"><span class="lp-dot"></span><span class="lp-t">${t}</span></button>`)}</section>`)}`;
 }
 

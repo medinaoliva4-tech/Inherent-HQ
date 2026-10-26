@@ -3772,7 +3772,7 @@ span.ev-sup{cursor:default}
 .app{max-width:1600px}
 @media (min-width:761px){.app{padding-left:36px;padding-right:36px}}
 .es{--es-h:calc(100dvh - 150px)}
-.es-split.es2{grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr)}
+@media (min-width:1101px){.es-split.es2{grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr)}}
 .es-split.es2[data-panel="off"] .es-chat{max-width:880px;width:100%;margin:0 auto}
 @media (max-width:900px){.es{--es-h:calc(100dvh - 160px)}}
 @media (max-width:760px){.es{--es-h:calc(100dvh - 220px - env(safe-area-inset-bottom))}}
@@ -4365,7 +4365,7 @@ button.dz-chip-sel{border:1px solid var(--hair);background:var(--surface);color:
 .guiabtn:hover{background:var(--fill)}.guiabtn[hidden]{display:none}
 .pdchip{display:inline-flex;align-items:center;height:34px;padding:0 12px;border-radius:999px;border:0;background:var(--ink);color:var(--bg);font:inherit;font-size:13px;font-weight:500;cursor:pointer;margin-right:4px}
 .pdchip:hover{opacity:.9}.pdchip[hidden]{display:none}
-.guia-menu{position:fixed;z-index:60;display:flex;flex-direction:column;min-width:240px;padding:6px;border-radius:14px;background:var(--surface);border:1px solid var(--hair-strong);box-shadow:var(--sh-2)}
+.guia-menu{position:fixed;z-index:60;display:flex;flex-direction:column;min-width:240px;max-height:min(420px,70vh);overflow-y:auto;padding:6px;border-radius:14px;background:var(--surface);border:1px solid var(--hair-strong);box-shadow:var(--sh-2)}
 .guia-menu button{display:flex;align-items:center;gap:8px;text-align:left;padding:9px 10px;border-radius:9px;border:0;background:none;color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer}.guia-menu button:hover{background:var(--fill)}.guia-menu i{color:var(--mut);margin-left:auto}
 .guia-pip{position:fixed;z-index:55;bottom:max(16px,env(safe-area-inset-bottom,0px));width:min(380px,calc(100vw - 32px));border-radius:18px;background:var(--surface);border:1px solid var(--hair-strong);box-shadow:var(--sh-2);overflow:hidden;display:flex;flex-direction:column}
 .guia-pip.der{right:16px}.guia-pip.izq{left:16px}
@@ -5020,7 +5020,8 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 @keyframes aswPop{0%{transform:scale(.8)}60%{transform:scale(1.1)}100%{transform:none}}
 .asw.chico{flex:none;width:calc(var(--n) * 36px)}
 .asw.chico button{height:28px}
-@media (max-width:420px){html[data-barra="lateral"] .top{gap:4px}html[data-barra="lateral"] .top .themebtn{display:none}.asw.chico{width:calc(var(--n) * 34px)}}
+@media (max-width:460px){html[data-barra="lateral"] .top{gap:4px}html[data-barra="lateral"] .top .guiabtn span{display:none}html[data-barra="lateral"] .top .guiabtn{width:34px;padding:0;justify-content:center}.asw.chico{width:calc(var(--n) * 32px)}.asw.chico button{height:26px}}
+@media (max-width:380px){html[data-barra="lateral"] .top .guiabtn{display:none}}
 
 /* La barra lateral del Tablero (compu). La del cel es la de siempre. */
 .lat{display:none}
@@ -5084,8 +5085,8 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .lat-ib:hover{background:var(--ui-surf2);color:var(--ui-ink)}
 .lat-menu{position:absolute;z-index:40;left:0;right:0;bottom:calc(100% + 6px);display:grid;gap:2px;padding:6px;border-radius:14px;background:var(--ui-surf);box-shadow:var(--ui-sh-2)}
 .lat-menu-k{padding:6px 8px 2px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-mut)}
-.lat-tema{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;padding:3px;margin:0 2px 4px;border-radius:10px;background:var(--ui-fill2)}
-.lat-tema button{height:28px;border:0;border-radius:8px;background:transparent;color:var(--ui-ink2);font:inherit;font-size:12px;cursor:pointer}
+.lat-tema{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:2px;padding:3px;margin:0 2px 4px;border-radius:10px;background:var(--ui-fill2)}
+.lat-tema button{min-height:28px;padding:0 8px;white-space:nowrap;border:0;border-radius:8px;background:transparent;color:var(--ui-ink2);font:inherit;font-size:12px;cursor:pointer}
 .lat-tema button.on{background:var(--ui-surf);color:var(--ui-ink);font-weight:600;box-shadow:var(--ui-sh-1)}
 .lat-menu>a,.lat-menu>button{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;border:0;background:transparent;color:var(--ui-ink);font:inherit;font-size:13.5px;text-align:left;text-decoration:none;cursor:pointer}
 .lat-menu>a:hover,.lat-menu>button:hover{background:var(--ui-surf2)}
@@ -5093,7 +5094,15 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 @media (min-width:761px){
   html[data-barra="lateral"][data-lat-mini]{--lat-w:64px}
   [data-lat-mini] .lat{padding-left:8px;padding-right:8px;align-items:stretch}
-  [data-lat-mini] .lat-wm,[data-lat-mini] .lat-area,[data-lat-mini] .lat-k,[data-lat-mini] .lat-subs,[data-lat-mini] .lat-it>.lat-t,[data-lat-mini] .lat-it kbd,[data-lat-mini] .lat-chat span,[data-lat-mini] .lat-yo-b span,[data-lat-mini] .lat-ayuda{display:none}
+  [data-lat-mini] .lat-wm,[data-lat-mini] .lat-area,[data-lat-mini] .lat-k,[data-lat-mini] .lat-subs,[data-lat-mini] .lat-it>.lat-t,[data-lat-mini] .lat-it kbd,[data-lat-mini] .lat-chat span,[data-lat-mini] .lat-yo-b span{display:none}
+  /* «Cómo se usa» y tu primer día siguen ahí, solo con su ícono (o su avance). */
+  [data-lat-mini] .lat-ayuda{flex-direction:column;align-items:center}
+  [data-lat-mini] .lat-ayuda .guiabtn{width:40px;padding:0;flex:none}[data-lat-mini] .lat-ayuda .guiabtn span{display:none}
+  [data-lat-mini] .lat-ayuda .pdchip{width:40px;padding:0;flex:none;font-size:0;justify-content:center}[data-lat-mini] .lat-ayuda .pdchip::before{content:attr(data-n);font-size:11.5px;font-weight:600}
+  /* El menú de tú sale a la derecha con su ancho; los nombres del switch, a la derecha del ícono. */
+  [data-lat-mini] .lat-menu{left:calc(100% + 10px);right:auto;bottom:0;width:248px}
+  [data-lat-mini] .lat .asw-tip{top:50%;left:calc(100% + 10px);transform:translate(-3px,-50%)}
+  [data-lat-mini] .lat .asw button:hover .asw-tip,[data-lat-mini] .lat .asw button:focus-visible .asw-tip{transform:translate(0,-50%)}
   [data-lat-mini] .lat-marca{justify-content:center;padding:2px 0 4px}
   [data-lat-mini] .lat .asw{grid-template-columns:1fr;grid-auto-rows:34px;border-radius:14px}
   [data-lat-mini] .lat .asw-pastilla{width:calc(100% - 6px);height:34px;bottom:auto;transform:translateY(calc(var(--i) * 100%))}
@@ -5114,12 +5123,20 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .lc-ias button:hover{color:var(--c)}
 .lc-ias button.on{color:var(--c);background:var(--l-surf);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--c) 55%,transparent)}
 .lc-ias button:focus-visible{outline:2px solid var(--c);outline-offset:1px}
+/* En el cel el switch de IA muestra solo la que responde: tocarla abre las demás (así no aplasta el cliente ni el modelo). */
+@media (max-width:760px){
+  .lc-ias:not(.abierto) button:not(.on){display:none}
+  .lc-ias.abierto{position:absolute;right:8px;bottom:calc(100% + 6px);z-index:5;background:var(--l-surf);box-shadow:var(--l-shadow)}
+  .lc-row{position:relative}
+  .lc-chip.falta{min-width:0;flex:0 1 auto}
+}
 /* Un encargo de Estrategia para otra área. */
 .lm-enc{margin-top:12px;padding:12px 14px;border-radius:var(--r-4);border:1px solid color-mix(in srgb,var(--m,var(--l-acc)) 35%,var(--l-line));background:var(--l-surf);display:grid;gap:6px}
 .lm-enc .lm-k{color:var(--m,var(--l-mut))}
 .lm-enc b{font-size:14.5px;font-weight:600}
 .lm-enc small{font-size:12.5px;color:var(--l-mut)}
 .lm-enc-ir{font-size:12.5px;color:var(--l-ink2);text-decoration:underline;text-underline-offset:3px}
+.lm-enc .lm-enc-no,.lm-enc-no{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--l-warn)}
 .lp-tema{width:100%;border:0;background:transparent;color:var(--l-ink);font:inherit;text-align:left;cursor:pointer}
 .lp-tema small{margin-left:auto;font-size:11.5px;color:var(--l-mut)}
 
@@ -5196,3 +5213,8 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .cm-resp i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:700;background:var(--ui-fill2)}
 .cm-arch summary{cursor:pointer;font-size:13px;color:var(--ui-mut);margin-bottom:10px}
 @media (max-width:760px){.cm-dl div{grid-template-columns:1fr;gap:2px}.cm-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Con la barra lateral el contenido tiene 316 px menos (124 en mini): los chats con panel pasan a una columna antes
+   (los mismos cortes de 1100 px, contando la barra). */
+@media (min-width:761px) and (max-width:1416px){html[data-barra="lateral"]:not([data-lat-mini]) .es-split.es2,html[data-barra="lateral"]:not([data-lat-mini]) .dividido{grid-template-columns:minmax(0,1fr) !important}html[data-barra="lateral"]:not([data-lat-mini]) .es-split.es2 .es-viva{height:auto;min-height:0}html[data-barra="lateral"]:not([data-lat-mini]) .es-viva-body{overflow:visible}html[data-barra="lateral"]:not([data-lat-mini]) .ev-g4{grid-template-columns:1fr 1fr}html[data-barra="lateral"]:not([data-lat-mini]) .divisor{display:none}html[data-barra="lateral"]:not([data-lat-mini]) .pm{grid-template-columns:1fr;height:auto}html[data-barra="lateral"]:not([data-lat-mini]) .pm-chat{min-height:70dvh}html[data-barra="lateral"]:not([data-lat-mini]) .pm-pane,html[data-barra="lateral"]:not([data-lat-mini]) .pm-body{overflow:visible}}
+@media (min-width:761px) and (max-width:1224px){html[data-barra="lateral"][data-lat-mini] .es-split.es2,html[data-barra="lateral"][data-lat-mini] .dividido{grid-template-columns:minmax(0,1fr) !important}html[data-barra="lateral"][data-lat-mini] .es-split.es2 .es-viva{height:auto;min-height:0}html[data-barra="lateral"][data-lat-mini] .es-viva-body{overflow:visible}html[data-barra="lateral"][data-lat-mini] .ev-g4{grid-template-columns:1fr 1fr}html[data-barra="lateral"][data-lat-mini] .divisor{display:none}html[data-barra="lateral"][data-lat-mini] .pm{grid-template-columns:1fr;height:auto}html[data-barra="lateral"][data-lat-mini] .pm-chat{min-height:70dvh}html[data-barra="lateral"][data-lat-mini] .pm-pane,html[data-barra="lateral"][data-lat-mini] .pm-body{overflow:visible}}

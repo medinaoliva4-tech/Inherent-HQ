@@ -31,8 +31,9 @@ export function guardarArea(email, id) { try { localStorage.setItem(K(email), id
 // El switch: una pastilla con el ícono de cada área (role="radiogroup"); la elegida lleva su color. Texto HTML, sin DOM.
 // svg(nombre, px) pinta el ícono (svgIco de iconos.js). clase: 'asw' en la barra, 'asw chico' en el cel.
 export function switchHtml(areas, actual, svg, clase = 'asw') {
-  const i = Math.max(0, areas.findIndex((a) => a.id === actual));
-  return `<div class="${clase}" role="radiogroup" aria-label="Área" style="--n:${areas.length};--i:${i}" data-on="${actual || ''}"><span class="asw-pastilla" aria-hidden="true"></span>${areas.map((a) => `<button type="button" role="radio" data-area="${a.id}" aria-checked="${a.id === actual}" tabindex="${a.id === actual ? 0 : -1}" aria-label="${a.nombre}" style="--c:var(--ui-m-${a.id})">${svg(a.icono, 18)}<span class="asw-tip">${a.nombre}</span></button>`).join('')}</div>`;
+  // Sin un área de la lista elegida: sin pastilla, y el primero recibe el Tab (si no, con teclado no se entra al switch).
+  const j = areas.findIndex((a) => a.id === actual), i = Math.max(0, j), on = j >= 0 ? actual : '';
+  return `<div class="${clase}" role="radiogroup" aria-label="Área" style="--n:${areas.length};--i:${i}" data-on="${on}"><span class="asw-pastilla" aria-hidden="true"></span>${areas.map((a, k) => `<button type="button" role="radio" data-area="${a.id}" aria-checked="${a.id === on}" tabindex="${(on ? a.id === on : k === 0) ? 0 : -1}" aria-label="${a.nombre}" style="--c:var(--ui-m-${a.id})">${svg(a.icono, 18)}<span class="asw-tip">${a.nombre}</span></button>`).join('')}</div>`;
 }
 // Flechas dentro del switch: la siguiente o la anterior (da la vuelta). → id del área o null.
 export function areaConFlecha(areas, actual, tecla) {

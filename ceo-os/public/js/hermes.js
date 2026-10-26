@@ -86,9 +86,10 @@ const lista = (j, k) => (Array.isArray(j) ? j : j?.data || j?.[k] || j?.items ||
 const conexion = (me) => { const h = hermesDe(me); if (!h) throw Object.assign(new Error('Hermes no está conectado en esta compu'), { status: 0 }); return h; };
 
 // → [{ id, title, preview, model, last_active, started_at, message_count }]
-export async function sesionesHermes(me, { limite = 80, prefijo = 'inh-' } = {}) {
-  const j = await (await pide(conexion(me), `/api/sessions?source=api_server&limit=${limite}`, { ms: 10000 })).json();
-  return lista(j, 'sessions').filter((s) => s && String(s.id || '').startsWith(prefijo) && !s.archived && !s.hidden);
+// tope: true si Hermes devolvió el máximo (puede haber más antiguas que no llegaron).
+export async function sesionesHermes(me, { limite = 300, prefijo = 'inh-' } = {}) {
+  const j = await (await pide(conexion(me), `/api/sessions?source=api_server&limit=${limite}`, { ms: 10000 })).json(), todas = lista(j, 'sessions');
+  return Object.assign(todas.filter((s) => s && String(s.id || '').startsWith(prefijo) && !s.archived && !s.hidden), { tope: todas.length >= limite });
 }
 export async function crearSesion(me, { id, titulo, sistema, modelo = {} }) {
   const body = { id, source: 'api_server', ...(titulo ? { title: titulo } : {}), ...(sistema ? { system_prompt: sistema } : {}), ...(modelo.model ? { model: modelo.model, provider: modelo.provider || undefined } : {}) };
