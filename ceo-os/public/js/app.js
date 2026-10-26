@@ -163,6 +163,8 @@ function landing(useLast = true) {
   if ((sp === 'estrategia' || sp === 'consulting') && !hasEstrategia()) sp = 'org';
   if (sp === 'marcas' && !hasMarcas()) sp = 'org';
   if (sp === 'org' && !hasOrg() && hasMarcas()) sp = 'marcas';
+  // Solo con Estrategia (sin Organization ni Marcas): abre en Estrategia, no en una página suelta de Inherent.
+  else if (sp === 'org' && !hasOrg() && hasEstrategia()) sp = 'estrategia';
   const last = useLast && lsGet('last.' + sp);
   return last && (sp === 'org' ? last.startsWith('org/') : last.startsWith(sp)) ? last : spaceHome(sp);
 }
@@ -177,7 +179,7 @@ function irApp(a) {
   let sp = lsGet('space.os');
   // Con la barra lateral, el Tablero abre en el área que se eligió (también en el Chat).
   if (lateral()) { const ar = areaDe(areaGuardada(me.email)); if (ar && areasTablero().some((x) => x.id === ar.id)) { const l = lsGet('last.a.' + ar.id); if (enEspacio(l, ar.espacio)) { location.hash = '/' + l; return; } sp = ar.espacio; } }
-  if (!['org', 'marcas', 'estrategia', 'consulting'].includes(sp) || (sp === 'marcas' && !hasMarcas()) || (sp === 'org' && !hasOrg()) || ((sp === 'estrategia' || sp === 'consulting') && !hasEstrategia())) sp = hasOrg() ? 'org' : 'marcas';
+  if (!['org', 'marcas', 'estrategia', 'consulting'].includes(sp) || (sp === 'marcas' && !hasMarcas()) || (sp === 'org' && !hasOrg()) || ((sp === 'estrategia' || sp === 'consulting') && !hasEstrategia())) sp = hasOrg() ? 'org' : hasMarcas() ? 'marcas' : hasEstrategia() ? 'estrategia' : 'org';
   const last = lsGet('last.' + sp);
   location.hash = '/' + (last && (sp === 'org' ? last.startsWith('org/') : last.startsWith(sp)) ? last : spaceHome(sp));
 }
