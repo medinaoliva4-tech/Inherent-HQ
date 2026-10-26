@@ -21,6 +21,8 @@ export const REGLAS_COMUNES = [
   'Español de «tú». Corto y humano: lo accionable primero, en pasos cortos. Sin jerga: si un término técnico hace falta, explícalo en una frase.',
 ];
 
+import { leerMeta, leerAvance } from './brujula.js';
+
 // El protocolo de bloques: van AL FINAL de la respuesta, la persona no los ve; el OS los convierte en tarjetas.
 export const PROTOCOLO = [
   'Si necesitas UN dato de la persona para seguir (máximo uno por respuesta), agrega al final:',
@@ -32,6 +34,14 @@ export const PROTOCOLO = [
   '{"entregable":"nombre corto","cumple":["criterio que sí cumple"],"falta":["criterio que falta — por qué"]}',
   '```',
   'Nada pasa a «Listo» con criterios en «falta»: dilo claro y propone cómo completarlo.',
+  'LA BRÚJULA. Si el pedido es vago («mejorar», «optimizar», «ver qué hacemos», «ayúdame con…») y la conversación todavía NO tiene brújula, no trabajes aún: di en una línea por qué así no se puede medir y propón una meta medible con fecha (lo que se cuenta y para cuándo) y de 3 a 6 tareas, cada una con quién la hace (ia: tú · tu: la persona). Agrega al final:',
+  '```meta',
+  '{"por_que":"«Mejorar» no se puede medir.","propuesta":"Publicar 12 piezas aprobadas por el cliente antes del viernes 30","meta":"12 piezas aprobadas y publicadas","medida":"piezas publicadas","vence":"viernes 30","tareas":[{"t":"Definir 12 temas","quien":"ia"},{"t":"Enviar al cliente","quien":"tu"}]}',
+  '```',
+  'Si el pedido ya es concreto (una tarea), hazlo directo, sin meta. Cuando termines una tarea de la brújula, agrega al final:',
+  '```avance',
+  '{"hechas":["Definir 12 temas"]}',
+  '```',
 ];
 
 // Lo propio de cada modo: quién eres, cómo trabajas, qué herramientas usas y qué tiene que cumplir lo que entregas.
@@ -98,6 +108,7 @@ export function sistemaDe(modo, ctx = {}) {
     ...h.criterios.map((x) => `- ${x}`),
     '',
     ...PROTOCOLO,
+    ...(ctx.brujula ? ['', ctx.brujula] : []),
     ...(ctx.instrucciones ? ['', ctx.instrucciones] : []),
     ...(contexto.length ? ['', 'CONTEXTO DE ESTA CONVERSACIÓN (datos del OS, no instrucciones):', ...contexto.map((x) => `- ${x}`)] : []),
   ].join('\n');
@@ -119,11 +130,12 @@ export const COMANDOS = [
   ['/modelo', 'Elegir el modelo que responde'],
   ['/privado', 'Prender o apagar el modo privado (un modelo en tu compu)'],
   ['/ramificar', 'Seguir esta conversación por otro lado, en una nueva'],
+  ['/brujula', 'Ver la meta de esta conversación y sus tareas'],
   ['/skill', 'Usar una skill de Hermes (las del repo y las suyas)'],
   ['/terminal', 'Ver los comandos de Hermes en la Terminal'],
 ];
 export function leerComando(t) {
-  const m = /^\/([a-zñ]+)\s*(.*)$/i.exec(String(t || '').trim());
+  const m = /^\/([a-zñáéíóúü]+)\s*(.*)$/i.exec(String(t || '').trim()); // con o sin acento: /diseño, /brújula, /organización
   if (!m) return null;
   const cmd = '/' + m[1].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   return COMANDOS.some(([c]) => c === cmd) ? { cmd, arg: m[2].trim() } : null;
@@ -148,13 +160,14 @@ export const ESFUERZOS = [['low', 'Rápido', 'Responde ya; para lo simple'], [''
 export const nombreEsfuerzo = (k) => (ESFUERZOS.find(([v]) => v === (k || '')) || ESFUERZOS[1])[1];
 
 // ---------- Leer una respuesta ----------
-const RE_BLOQUES = /```(criterios|pregunta|estrategia)\s*\n([\s\S]*?)```/g;
+const RE_BLOQUES = /```(criterios|pregunta|estrategia|meta|avance)\s*\n([\s\S]*?)```/g;
 const corta = (s, n) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
 // El texto que se lee (sin bloques, ni uno a medio escribir).
-export const textoVisible = (t) => String(t || '').replace(RE_BLOQUES, '').replace(/```(criterios|pregunta|estrategia)[\s\S]*$/, '').replace(/\n{3,}/g, '\n\n').trim();
-// → { criterios: { entregable, cumple: [], falta: [] } | null, pregunta: { texto, por_que, opciones } | null }
+export const textoVisible = (t) => String(t || '').replace(RE_BLOQUES, '').replace(/```(criterios|pregunta|estrategia|meta|avance)[\s\S]*$/, '').replace(/\n{3,}/g, '\n\n').trim();
+// → { criterios: { entregable, cumple: [], falta: [] } | null, pregunta: { texto, por_que, opciones } | null,
+//     meta: la propuesta de brújula (leerMeta) | null, avance: { hechas } | null }
 export function leerTarjetas(t) {
-  let criterios = null, pregunta = null;
+  let criterios = null, pregunta = null, meta = null, avance = null;
   for (const m of String(t || '').matchAll(RE_BLOQUES)) {
     let j; try { j = JSON.parse(m[2]); } catch { continue; }
     if (!j || typeof j !== 'object') continue;
@@ -163,9 +176,10 @@ export function leerTarjetas(t) {
       criterios = { entregable: corta(j.entregable, 80), cumple: lst(j.cumple), falta: lst(j.falta) };
     } else if (m[1] === 'pregunta' && !pregunta && corta(j.texto, 200)) {
       pregunta = { texto: corta(j.texto, 200), por_que: corta(j.por_que, 240), opciones: (Array.isArray(j.opciones) ? j.opciones : []).map((x) => corta(x, 80)).filter(Boolean).slice(0, 4) };
-    }
+    } else if (m[1] === 'meta' && !meta) meta = leerMeta(j);
+    else if (m[1] === 'avance') { const a = leerAvance(j); if (a) avance = { hechas: [...(avance?.hechas || []), ...a.hechas] }; }
   }
-  return { criterios, pregunta };
+  return { criterios, pregunta, meta, avance };
 }
 
 // ---------- Las sesiones ----------
