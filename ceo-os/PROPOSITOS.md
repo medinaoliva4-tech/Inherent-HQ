@@ -59,6 +59,7 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
   - lo que pide permiso, se pregunta en la conversación; una pregunta a la vez;
   - la estrategia la sigue aprobando el CEO: el chat no la cambia si ya está aprobada;
   - las conversaciones viven en la compu de cada persona, no en Vercel;
+  - la **Brújula** convierte lo vago en una meta medible con fecha y tareas, y avisa cuando la conversación se desvía: el chat sirve para avanzar, no solo para explorar (pensado para el TDAH del CEO: una cosa a la vez, la de ahora a la vista);
   - el **modo privado** existe para lo que no debe salir de la compu (datos de clientes, finanzas): responde un modelo local y, si no hay, no manda nada.
 
 ### Estrategia

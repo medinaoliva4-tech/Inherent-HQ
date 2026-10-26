@@ -7,6 +7,7 @@ import { html, raw, mount, api, toast, $, ico, md, esc, initials, today, roleNam
 import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal } from '../hermes.js';
 import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo } from '../llm/modos.js';
 import { panelDe, datosEstrategia, olvidarPanel } from '../llm/paneles.js';
+import { crearBrujula, progreso, tareaActual, terminada, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe, QUIEN } from '../llm/brujula.js';
 import { leerBloques, instrucciones, avance, PASOS } from '../estrategia-viva.js';
 import { etapaDe, etapaLabel } from '../estrategia.js';
 import { loadEstrategia, estrategiaNow } from '../stratlist.js';
@@ -20,6 +21,10 @@ import { ponerTema, temaElegido, esNoche } from '../tema.js';
 
 const K = (me) => `os.llm.${me.email}`;
 // En pantallas chicas el panel va encima del chat: empieza cerrado y abrirlo no se recuerda.
+// La Brújula de cada conversación (su meta y sus tareas) se guarda en este navegador, por conversación.
+const KB = (me) => `os.llm.brujula.${me.email}`;
+const brujulas = (me) => { try { return JSON.parse(localStorage.getItem(KB(me)) || '{}') || {}; } catch { return {}; } };
+const guardarBrujula = (me, sid, b) => { if (!sid) return; try { const m = brujulas(me); if (b) m[sid] = b; else delete m[sid]; localStorage.setItem(KB(me), JSON.stringify(m)); } catch {} };
 const angosto = () => matchMedia('(max-width: 1100px)').matches;
 const leer = (me) => { try { return JSON.parse(localStorage.getItem(K(me)) || '{}') || {}; } catch { return {}; } };
 const guardar = (me, v) => { try { localStorage.setItem(K(me), JSON.stringify(v)); } catch {} };
@@ -41,11 +46,11 @@ export async function render(el, { me, sub = [], alive }) {
   const modos = MODOS.filter((m) => puedeModo(m.id));
   const S = {
     modo: modos.some((m) => m.id === pref.modo) ? pref.modo : modos[0].id,
-    slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: Boolean(pref.privado), esfuerzo: pref.esfuerzo || '', panel: angosto() ? false : pref.panel !== false,
+    slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: Boolean(pref.privado), esfuerzo: pref.esfuerzo || '', brujula: null, limite: +pref.limite || 0, panel: angosto() ? false : pref.panel !== false,
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
   };
-  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, esfuerzo: S.esfuerzo, panel: angosto() ? pref.panel : S.panel });
+  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel });
   // Modo privado: responde un modelo que corre en esta compu (Ollama, LM Studio…). El elegido si es local; si no, el primero que haya.
   const modeloLocal = () => {
     if (S.modelo?.model && esLocal(S.modelo.provider)) return S.modelo;
@@ -63,6 +68,7 @@ export async function render(el, { me, sub = [], alive }) {
     <aside class="llm-side" id="llm-side" aria-label="Conversaciones"></aside>
     <main class="llm-main" id="llm-main">
       <header class="llm-head"><button type="button" class="llm-ib llm-solo-cel" data-a="side" aria-label="Conversaciones">${ICO_SIDE}</button><div class="llm-titulo" id="llm-titulo"></div><span class="sp"></span>
+        <button type="button" class="llm-bru-chip" data-a="ver-brujula" id="llm-bru" hidden title="La brújula de esta conversación"></button>
         <button type="button" class="llm-ib" data-a="ramificar" id="llm-rama" hidden aria-label="Ramificar: seguir en una conversación nueva con todo lo hablado" title="Ramificar">${ICO_RAMA}</button>
         <button type="button" class="llm-ib" data-a="panel" aria-label="Mostrar u ocultar el panel" title="Panel">${ICO_PANEL}</button></header>
       <div class="llm-conv" id="llm-conv"><div class="llm-col" id="llm-col"></div></div>
@@ -187,16 +193,22 @@ export async function render(el, { me, sub = [], alive }) {
       <div class="lm-ops">${(x.aprob.choices || ['once', 'deny']).map((c) => html`<button type="button" class="${c === 'deny' ? 'no' : c === 'once' ? 'si' : ''}" data-a="aprobar" data-c="${c}" data-i="${i}">${ELECCION[c] || c}</button>`)}</div></div>` : '';
     const cuerpo = x.t ? md(x.t) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
     return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${pasosHtml}<div class="lm-md">${cuerpo}</div>${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
-      ${apr}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
+      ${apr}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
       ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${x.t}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
   }
   function pintarHilo() {
     const col = C('llm-col'), box = C('llm-conv');
     if (vacio()) { mount(col, ''); flecha(); return; }
     const abajo = box.scrollHeight - box.scrollTop - box.clientHeight < 120;
-    mount(col, html`${S.msgs.map((x, i) => msgHtml(x, i))}`);
+    mount(col, html`${S.msgs.map((x, i) => msgHtml(x, i))}${desvioHtml()}`);
     if (abajo || S.enVuelo) box.scrollTop = box.scrollHeight;
     flecha();
+  }
+  // Llevas varios turnos y ninguna tarea se movió: la Brújula te ofrece volver (una vez por desvío).
+  function desvioHtml() {
+    const b = S.brujula; if (!desviado(b) || S.enVuelo || S.msgs[S.msgs.length - 1]?.r !== 'a') return '';
+    const t = tareaActual(b).t;
+    return html`<div class="lm-desvio" role="status">${ico('alert', 14)}<div><p>Llevas ${b.giros} turnos y ninguna tarea se ha movido. ¿Volvemos a «${t}»?</p><div class="lm-ops"><button type="button" class="si" data-a="volver-tarea">Volver a «${t.length > 34 ? t.slice(0, 33) + '…' : t}»</button><button type="button" data-a="seguir-asi">Seguir así</button></div></div></div>`;
   }
   // Solo el último mensaje, mientras llega el streaming (no se repinta toda la conversación).
   let raf = 0;
@@ -223,8 +235,43 @@ export async function render(el, { me, sub = [], alive }) {
     const gen = ++panelGen;
     if (!box.childElementCount) mount(box, html`<p class="lp-mut" style="padding:16px">Cargando…</p>`);
     const h = await panelDe({ me, modo: S.modo, slug: slugAhora(), nombre: nombreSlug() });
-    if (gen === panelGen && alive()) mount(box, h);
+    if (gen === panelGen && alive()) mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${brujulaHtml()}${h}${usoHtml()}`);
   }
+
+  // ---------- La Brújula: la meta medible de la conversación, sus tareas y el ritmo de la semana ----------
+  const ICO_BRU = () => ico('compass', 16);
+  function metaHtml(m, ult) {
+    const ya = Boolean(S.brujula), activa = ult && !ya && !S.enVuelo;
+    return html`<div class="lm-meta ${ya ? 'hecha' : ''}"><b class="lm-meta-h">${ICO_BRU()} ${ya ? 'Meta de esta conversación' : 'Antes de empezar, aterricemos la meta'}</b>
+      ${m.por_que && !ya ? html`<p class="lm-meta-p">${m.por_que} Propongo:</p>` : ''}<mark class="lm-meta-m">${m.propuesta}</mark>
+      ${activa ? html`<div class="lm-ops"><button type="button" class="si" data-a="meta-aceptar">Aceptar meta</button><button type="button" data-a="meta-ajustar">Ajustar</button><button type="button" data-a="meta-tarea">Es solo una tarea</button></div>` : ya ? html`<span class="lm-meta-ok">${ico('check', 13)} Aceptada · la sigues en la Brújula</span>` : ''}</div>`;
+  }
+  function brujulaHtml() {
+    const b = S.brujula; if (!b) return '';
+    const { hechas, total, pct } = progreso(b), ahora = tareaActual(b);
+    return html`<section class="bru" aria-label="Brújula"><header><b>${ICO_BRU()} Brújula</b><span class="bru-chip">${b.tipo === 'tarea' ? 'Tarea' : 'Proyecto'}</span><button type="button" class="llm-ib bru-quitar" data-a="bru-quitar" title="Quitar la brújula de esta conversación" aria-label="Quitar la brújula">${ico('trash', 14)}</button></header>
+      <h3>${b.meta}</h3>${b.medida || b.vence ? html`<p class="bru-mut">${b.medida ? `Medida: ${b.medida}` : ''}${b.medida && b.vence ? ' · ' : ''}${b.vence ? `vence ${b.vence}` : ''}</p>` : ''}
+      <div class="bru-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+      <p class="bru-mut">${terminada(b) ? html`<b class="bru-listo">${ico('check', 13)} Meta cumplida</b> · ` : ''}${hechas} de ${total} tareas · ${pct}%</p>
+      <ul class="bru-ts">${b.tareas.map((x, i) => html`<li class="${x.hecha ? 'hecha' : ''}"><button type="button" class="bru-ck" role="checkbox" aria-checked="${x.hecha ? 'true' : 'false'}" data-a="bru-tarea" data-k="${i}" aria-label="${x.hecha ? 'Desmarcar' : 'Marcar como hecha'}: ${x.t}">${x.hecha ? ico('check', 13) : ''}</button><span class="bru-t">${x.t}</span>${x === ahora ? html`<span class="bru-tag ahora">Ahora</span>` : x.quien === 'tu' ? html`<span class="bru-tag tu">TÚ</span>` : html`<small class="bru-ia">${QUIEN.ia}</small>`}</li>`)}</ul></section>`;
+  }
+  // El uso del Chat esta semana contra TU límite (Hermes no da el de la suscripción): para no quemarlo el lunes.
+  function usoHtml() {
+    if (!listo()) return '';
+    const ini = inicioSemana(), usados = S.sesiones.filter((x) => (Date.parse(x.last_active) || (+x.last_active < 1e12 ? +x.last_active * 1000 : +x.last_active) || 0) >= ini).reduce((a, x) => a + usosDe(x), 0);
+    const r = ritmoSemana({ usados, limite: S.limite });
+    if (r.pct == null) return html`<section class="bru-uso"><span class="lp-k">Uso del Chat esta semana</span><p class="bru-mut">${usados} ${usados === 1 ? 'uso' : 'usos'} desde el lunes. <button type="button" class="bru-link" data-a="uso-limite">Pon tu límite</button> y te digo a qué ritmo vas.</p></section>`;
+    const alto = r.pct > r.ideal + 10;
+    return html`<section class="bru-uso ${alto ? 'alto' : ''}"><span class="lp-k">Uso del Chat esta semana · tu límite: ${S.limite}</span>
+      <div class="bru-bar uso"><i style="width:${Math.min(100, r.pct)}%"></i><b class="bru-ideal" style="left:${r.ideal}%" title="Dónde deberías ir hoy"></b></div>
+      <p class="bru-mut">${r.pct}% usado · ritmo ideal ${r.ideal}% · ${r.pct >= 100 ? 'ya llegaste a tu límite' : `te quedan ~${r.porDia}%/día`}</p></section>`;
+  }
+  function pintarBrujula() {
+    const c = C('llm-bru'); if (!c) return;
+    const b = S.brujula; c.hidden = !b;
+    if (b) { const { hechas, total } = progreso(b); mount(c, html`${ICO_BRU()}<span>${hechas}/${total}</span>`); c.classList.toggle('alerta', desviado(b)); }
+  }
+  function ponerBrujula(b) { S.brujula = b; guardarBrujula(me, S.sesion, b); pintarBrujula(); }
 
   // ---------- Menús (modo, cliente/marca, modelo) ----------
   function menu(anchor, titulo, items, onPick, { buscar = false, pie = '' } = {}) {
@@ -267,6 +314,8 @@ export async function render(el, { me, sub = [], alive }) {
         ${cx && !enApp() ? html`<button type="button" class="lsu-btn ghost" data-a="olvidar-llave">Olvidar la llave en este navegador</button>` : ''}
         <p class="lp-mut">El modelo, las suscripciones, las skills y la memoria viven en Hermes. Aquí se ven; se cambian con estos comandos (perfil «inherent»):</p>
         <div class="lsh-cmds">${TERMINAL.map(([t, c]) => html`<div class="lsu-cmd"><span>${t}</span><code>${c}</code><button type="button" data-a="copiar" data-t="${c}">Copiar</button></div>`)}</div></section>
+      <section><span class="lp-k">Tu límite semanal del Chat</span><p class="lp-mut">Cuántos usos quieres gastar por semana (los que tu suscripción aguanta). Con él, la Brújula te dice a qué ritmo vas. Es tu número: Hermes no da el límite de la suscripción.</p>
+        <form class="lsu-pair" data-f="limite"><input name="n" type="number" min="0" step="10" inputmode="numeric" value="${S.limite || ''}" placeholder="Por ejemplo, 300" aria-label="Usos por semana"><button type="submit" class="lsu-btn">Guardar</button></form></section>
       <section><span class="lp-k">Día y noche · para las dos apps</span><div class="lsh-tema">${[['sistema', 'Como mi compu'], ['dia', 'Día'], ['noche', 'Noche']].map(([k, l]) => html`<button type="button" class="${temaElegido() === k ? 'on' : ''}" data-a="tema" data-t="${k}">${l}</button>`)}</div></section>
       <section><span class="lp-k">Skills de Hermes</span><div id="lsh-skills"><p class="lp-mut">${listo() ? 'Cargando…' : 'Conecta Hermes para verlas.'}</p></div></section></div>`);
     R.append(d);
@@ -284,14 +333,14 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function nuevo() {
     if (S.enVuelo) S.enVuelo.abort();
-    S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; R.classList.remove('side-on');
+    S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; R.classList.remove('side-on'); pintarBrujula();
     if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat');
     pintarSide(); pintarCentro(); pintarPanel(); $('#llm-in', el)?.focus();
   }
   async function abrirSesion(id) {
     const info = leerIdSesion(id); if (!info) { toast('Esa conversación no es del Inherent LLM', true); return nuevo(); }
     S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; if (info.slug) S.slugs[S.modo] = info.slug;
-    S.msgs = []; S.titulo = S.sesiones.find((s) => s.id === id)?.title || '';
+    S.msgs = []; S.titulo = S.sesiones.find((s) => s.id === id)?.title || ''; S.brujula = brujulas(me)[id] || null; pintarBrujula();
     pintarSide(); pintarCentro(); pintarPanel();
     try {
       const rows = await mensajesSesion(me, id);
@@ -327,7 +376,7 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- Mandar un mensaje ----------
   async function contexto() {
-    const base = { privado: S.privado, persona: me.name, puesto: me.title || (me.roles?.length ? me.roles : [me.role]).filter(Boolean).map(roleName).join(' · '), fecha: today() }, slug = slugAhora();
+    const base = { brujula: contextoBrujula(S.brujula), privado: S.privado, persona: me.name, puesto: me.title || (me.roles?.length ? me.roles : [me.role]).filter(Boolean).map(roleName).join(' · '), fecha: today() }, slug = slugAhora();
     if (S.modo === 'estrategia' && slug) {
       const d = await datosEstrategia(slug), v = d.viva || {}, P = PASOS.find((p) => p.id === avance(v).ahora), e = d.etapa?.n != null ? etapaDe(d.etapa.n) : null;
       return { ...base, cliente: d.nombre, carpeta: d.carpeta, nivel: d.nivel?.nombre || 'SIN FICHA DE OFERTA',
@@ -345,7 +394,8 @@ export async function render(el, { me, sub = [], alive }) {
     const t = tokenDe(me); if (!t) return;
     try { await fetch(PUENTE + '/chat/sincronizar', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', headers: { Authorization: 'Bearer ' + t }, signal: AbortSignal.timeout(25000) }); } catch { /* sin puente: Hermes lee la copia que hay */ }
   }
-  async function enviar(texto, { reintento = false } = {}) {
+  // sinGiro: lo que la persona manda desde la Brújula (aceptar la meta, volver a la tarea) no cuenta como turno perdido.
+  async function enviar(texto, { reintento = false, sinGiro = false } = {}) {
     texto = String(texto || '').trim(); if (!texto || S.enVuelo) return;
     const cm = leerComando(texto); if (cm && !reintento) return comando(cm);
     if (!listo()) return toast('Primero conecta Hermes', true);
@@ -353,7 +403,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (m.pide && !slugAhora()) { toast(m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente', true); const b = el.querySelector('[data-a="menu-slug"]'); if (b) menuSlug(b); return; }
     if (S.privado && !modeloLocal()) { toast('El modo privado necesita un modelo en tu compu', true); pintarCaja(); return; }
     const ctrl = new AbortController(); S.enVuelo = ctrl;
-    if (!reintento) { S.msgs.push({ r: 'u', t: texto }); }
+    if (!reintento) { S.msgs.push({ r: 'u', t: texto }); if (S.brujula && !sinGiro) ponerBrujula(contarGiro(S.brujula)); }
     else if (S.msgs[S.msgs.length - 1]?.r === 'a') S.msgs.pop();
     const msg = { r: 'a', modo: S.modo, t: '', stream: true, tools: [], notas: [] }; S.msgs.push(msg);
     if (!S.titulo) S.titulo = tituloDe(texto);
@@ -390,6 +440,7 @@ export async function render(el, { me, sub = [], alive }) {
         olvidarPanel(`e:${slugAhora()}`);
       }
     }
+    if (msg.tarjetas?.avance && S.brujula) { const nb = aplicarAvance(S.brujula, msg.tarjetas.avance); if (nb !== S.brujula) { ponerBrujula(nb); msg.aplicado = `Brújula: ${progreso(nb).hechas} de ${progreso(nb).total} tareas`; } }
     delete msg.raw;
     if (!alive()) return;
     pintarCentro(); pintarPanel();
@@ -403,6 +454,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (cmd === '/terminal') return ajustes();
     if (cmd === '/privado') return alternarPrivado();
     if (cmd === '/ramificar') return ramificar();
+    if (cmd === '/brujula') { if (!S.brujula) return toast('Esta conversación todavía no tiene meta: pide algo y te propongo una'); S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
     if (cmd === '/skill') {
       const xs = await skills(), b = el.querySelector('[data-a="menu-modo"]') || el.querySelector('.lc-send');
       if (!xs.length) return toast('Hermes no tiene skills instaladas', true);
@@ -430,6 +482,21 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'detener') { S.enVuelo?.abort(); return; }
     if (a === 'privado') return alternarPrivado();
     if (a === 'ramificar') return ramificar();
+    if (a === 'meta-aceptar') {
+      const x = [...S.msgs].reverse().find((m) => m.tarjetas?.meta); if (!x || !S.sesion) return;
+      const m = x.tarjetas.meta; ponerBrujula(crearBrujula(m));
+      if (!angosto()) { S.panel = true; R.dataset.panel = 'on'; }
+      pintarHilo(); pintarPanel();
+      return enviar(`Acepto la meta: ${m.propuesta}.${m.tareas[0] ? ` Empecemos por «${m.tareas[0].t}».` : ''}`, { sinGiro: true });
+    }
+    if (a === 'meta-ajustar') { const ta = $('#llm-in', el); ta.value = 'Ajustemos la meta: '; crecer(ta); ta.focus(); return; }
+    if (a === 'meta-tarea') return enviar('Es solo una tarea, no un proyecto: hazla directo.');
+    if (a === 'bru-tarea') { const i = +t.dataset.k, x = S.brujula?.tareas[i]; if (!x) return; ponerBrujula(marcar(S.brujula, i, !x.hecha)); pintarHilo(); return pintarPanel(); }
+    if (a === 'bru-quitar') { if (!(await confirmAsk('¿Quitar la brújula de esta conversación? La conversación se queda.'))) return; ponerBrujula(null); pintarHilo(); return pintarPanel(); }
+    if (a === 'ver-brujula') { S.panel = !(S.panel && R.dataset.panel === 'on'); R.dataset.panel = S.panel ? 'on' : 'off'; return pintarPanel(); }
+    if (a === 'volver-tarea') { const x = tareaActual(S.brujula); if (!x) return; ponerBrujula({ ...S.brujula, giros: 0 }); return enviar(`Volvamos a la tarea de ahora: «${x.t}».`, { sinGiro: true }); }
+    if (a === 'seguir-asi') { ponerBrujula({ ...S.brujula, giros: 0 }); return pintarHilo(); }
+    if (a === 'uso-limite') return ajustes();
     if (a === 'reintentar') { const u = [...S.msgs].reverse().find((x) => x.r === 'u'); if (u) enviar(u.t, { reintento: true }); return; }
     if (a === 'copiar') { try { await navigator.clipboard.writeText(t.dataset.t); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo', true); } return; }
     if (a === 'aprobar') {
@@ -460,6 +527,7 @@ export async function render(el, { me, sub = [], alive }) {
   el.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (e.target.id === 'llm-form') { const ta = $('#llm-in', el), v = ta.value; if (!v.trim()) return; ta.value = ''; crecer(ta); comandos(''); return enviar(v); }
+    if (e.target.dataset.f === 'limite') { S.limite = Math.max(0, Math.round(+new FormData(e.target).get('n') || 0)); persistir(); toast(S.limite ? `Tu límite: ${S.limite} usos por semana` : 'Sin límite semanal'); el.querySelector('.llm-sheet')?.remove(); return pintarPanel(); }
     if (e.target.dataset.f === 'llave') {
       const v = new FormData(e.target).get('k')?.toString().trim(); if (!v) return;
       setHermes(me, { key: v }); const h = await saludHermes(me);

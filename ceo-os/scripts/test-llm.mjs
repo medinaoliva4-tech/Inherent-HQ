@@ -1,6 +1,7 @@
 // Pruebas del Inherent LLM: el harness de cada modo, los comandos «/», las tarjetas (criterios y pregunta) y las sesiones.
 // npm run test:llm
 import assert from 'node:assert/strict';
+import { leerMeta, crearBrujula, progreso, tareaActual, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe } from '../public/js/llm/brujula.js';
 import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo } from '../public/js/llm/modos.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -43,7 +44,8 @@ t('comandos «/»: con y sin acento, con argumento, y lo demás es texto', () =>
   assert.deepEqual(leerComando('/skill hormozi'), { cmd: '/skill', arg: 'hormozi' });
   assert.equal(leerComando('/inventado'), null);
   assert.equal(leerComando('hola /nuevo'), null);
-  assert.equal(COMANDOS.length, 9);
+  assert.equal(COMANDOS.length, 10);
+  assert.deepEqual(leerComando('/brújula'), { cmd: '/brujula', arg: '' });
   assert.deepEqual(leerComando('/privado'), { cmd: '/privado', arg: '' });
   assert.deepEqual(leerComando('/ramificar'), { cmd: '/ramificar', arg: '' });
   assert.ok(TERMINAL.every(([l, c]) => l && c && !/sk-|key=/.test(c)));
@@ -58,7 +60,7 @@ t('las tarjetas: criterios y pregunta salen del texto; lo visible no las muestra
   // A medio escribir (streaming): el bloque abierto no se ve.
   assert.equal(textoVisible('Hola\n```criterios\n{"entre'), 'Hola');
   // JSON roto: no hay tarjeta, y no se rompe.
-  assert.deepEqual(leerTarjetas('```pregunta\n{roto}\n```'), { criterios: null, pregunta: null });
+  assert.deepEqual(leerTarjetas('```pregunta\n{roto}\n```'), { criterios: null, pregunta: null, meta: null, avance: null });
   // El bloque de estrategia tampoco se ve (lo guarda el OS).
   assert.equal(textoVisible('Listo.\n```estrategia\n{"meta":"x"}\n```'), 'Listo.');
 });
@@ -93,6 +95,43 @@ t('modo privado y cuánto piensa', () => {
   assert.equal(nombreEsfuerzo('raro'), 'Normal');
   assert.ok(TERMINAL.some(([, c]) => c.includes('ollama_num_ctx 65536')), 'la Terminal dice cómo darle 64K al modelo local');
   assert.ok(TERMINAL.some(([, c]) => c === 'inherent update'));
+});
+
+t('la brújula: la meta, sus tareas, el avance y el aviso de desvío', () => {
+  const m = leerMeta({ por_que: '«Mejorar» no se puede medir.', propuesta: 'Publicar 12 piezas antes del viernes 30', meta: '12 piezas publicadas', medida: 'piezas publicadas', vence: 'viernes 30', tareas: [{ t: 'Definir 12 temas' }, { t: 'Redactar 12 copies' }, { t: 'Enviar al cliente', quien: 'tú' }] });
+  assert.equal(m.tareas[2].quien, 'tu');
+  assert.equal(leerMeta({ tareas: [] }), null, 'sin propuesta no hay meta');
+  let b = crearBrujula(m, 1);
+  assert.deepEqual(progreso(b), { hechas: 0, total: 3, pct: 0 });
+  assert.equal(tareaActual(b).t, 'Definir 12 temas');
+  // Tres turnos sin mover nada → desvío; mover una tarea lo reinicia
+  b = contarGiro(contarGiro(contarGiro(b)));
+  assert.ok(desviado(b));
+  assert.match(contextoBrujula(b), /Llevan 3 turnos sin mover ninguna tarea/);
+  b = aplicarAvance(b, { hechas: ['definir 12 TEMAS'] }); // sin importar mayúsculas ni acentos
+  assert.equal(b.giros, 0); assert.ok(!desviado(b));
+  assert.deepEqual(progreso(b), { hechas: 1, total: 3, pct: 33 });
+  assert.equal(tareaActual(b).t, 'Redactar 12 copies');
+  assert.equal(aplicarAvance(b, { hechas: ['algo que no existe'] }), b, 'lo que no está en la brújula no cambia nada');
+  b = marcar(marcar(b, 1), 2);
+  assert.equal(progreso(b).pct, 100); assert.equal(tareaActual(b), null);
+  assert.match(contextoBrujula(b), /Todas las tareas están hechas/);
+  assert.match(contextoBrujula(marcar(b, 0, false)), /TAREA ACTUAL: Definir 12 temas/);
+  // El harness la lleva al agente
+  assert.match(sistemaDe('organizacion', { brujula: contextoBrujula(b) }), /BRÚJULA DE ESTA CONVERSACIÓN/);
+  assert.match(sistemaDe('organizacion'), /```meta/, 'el protocolo enseña a proponer la meta');
+});
+
+t('el uso de la semana: contra tu límite y al ritmo de la semana', () => {
+  const lunes = new Date(2026, 9, 26, 0, 0).getTime(), jueves = new Date(2026, 9, 29, 12, 0).getTime();
+  assert.equal(inicioSemana(jueves), lunes);
+  assert.equal(inicioSemana(new Date(2026, 10, 1, 23, 0).getTime()), lunes, 'el domingo sigue siendo la misma semana');
+  const r = ritmoSemana({ usados: 126, limite: 300, ahora: jueves });
+  assert.equal(r.pct, 42); assert.equal(r.ideal, 50); assert.equal(r.dias, 4); assert.equal(r.porDia, 15);
+  assert.equal(ritmoSemana({ usados: 10, limite: 0, ahora: jueves }).pct, null, 'sin límite no hay %');
+  assert.equal(ritmoSemana({ usados: 400, limite: 300, ahora: jueves }).porDia, 0);
+  assert.equal(usosDe({ api_call_count: 7, message_count: 40 }), 7);
+  assert.equal(usosDe({ message_count: 9 }), 5);
 });
 
 console.log(`\n${ok} pruebas del Inherent LLM pasaron`);
