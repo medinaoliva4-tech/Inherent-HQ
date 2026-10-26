@@ -28,6 +28,18 @@
 2. Escribe `claude` y Enter, luego `/login` y Enter.
 3. Inicia sesión en el navegador y vuelve al chat.
 
+## Hermes (el harness de los chats)
+
+Hermes Agent corre en tu compu y mueve los chats del OS con el modelo que elijas: ChatGPT con tu suscripción, Claude, Nous, OpenRouter o uno local.
+
+1. Instálalo desde la app de Mac (menú **Puente › Instalar Hermes**) o con un comando:
+   `curl -fsSL https://inherent-work.vercel.app/laya/hermes/instalar.sh | bash`
+2. Elige el modelo, en la Terminal: `inherent model` (ChatGPT: `inherent auth add openai-codex --browser`).
+3. Autoriza el conector de Inherent OS la primera vez: `inherent mcp login inherent` (entra con tu Google).
+4. En el chat de Estrategia, en el selector del modelo, elige uno de la sección **Hermes**. Si el OS te pide la llave: `cat ~/.inherent/hermes/api-key`.
+
+Claude con suscripción solo funciona con **Max + créditos extra**; con Pro, usa una API key (`inherent auth add anthropic`).
+
 ## Figma + Figwright
 
 **Para qué:** leer y exportar el kit de redes. ②B Branding.
