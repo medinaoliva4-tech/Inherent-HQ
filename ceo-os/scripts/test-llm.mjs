@@ -76,6 +76,8 @@ t('las sesiones: id con modo y cliente, se lee de vuelta; lo ajeno no', () => {
   assert.deepEqual(leerIdSesion(idSesion('organizacion', '')), { modo: 'organizacion', slug: '' });
   assert.equal(leerIdSesion('20260101_abc'), null);
   assert.equal(leerIdSesion('inh-otro-x-1'), null);
+  assert.deepEqual(leerIdSesion(idSesion('consulting', 'nao', 1767225600000, 0.5)), { modo: 'consulting', slug: 'nao' }, 'las de Consulting se reabren');
+  assert.equal(leerIdSesion('inh-nao-abc'), null, 'las del chat viejo de Estrategia no son del Chat');
 });
 
 t('títulos y grupos de fecha como la barra de Hermes', () => {

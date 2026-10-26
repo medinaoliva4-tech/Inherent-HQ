@@ -258,8 +258,8 @@ function paintNav(force) {
   const nav = $('.nav'); if (!nav) return;
   const sig = space + '|' + navItems().map(([k]) => k).join(',');
   if (force || sig !== navFor) {
-    navFor = sig; mount(nav, navHtml()); nav.setAttribute('aria-label', space === 'marcas' ? 'Marcas' : space === 'estrategia' ? 'Estrategia' : 'Organization');
-    nav.classList.toggle('brands', space === 'marcas' || space === 'estrategia'); document.documentElement.dataset.space = space || '';
+    navFor = sig; mount(nav, navHtml()); nav.setAttribute('aria-label', areaDeEspacio(space)?.nombre || 'Secciones');
+    nav.classList.toggle('brands', ['marcas', 'estrategia', 'consulting'].includes(space)); document.documentElement.dataset.space = space || '';
   }
   const top = $('.top');
   if (lateral()) {
@@ -437,7 +437,7 @@ function jumpItems() {
   if (hasOrg()) for (const [g, l] of ORG) for (const [r, tl, n] of TABS[g]) if (needOk(n)) out.push({ title: tl, sub: tl === l ? 'Organization' : `Organization · ${l}`, route: '#/org/' + r, icon: svg(g) });
   if (hasEstrategia()) { out.push({ title: 'Estrategia', sub: 'Todos los clientes', route: '#/estrategia', icon: svg('estrategia') }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Estrategia', route: `#/estrategia/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
   if (hasEstrategia()) { out.push({ title: 'Consulting', sub: 'Operaciones, finanzas y equipo de un cliente', route: '#/consulting', icon: svg('consulting') }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Consulting', route: `#/consulting/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
-  if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg('marcas') }); if (brandAccess(me).contentFull) out.push({ title: 'Chat de Diseño gráfico', sub: 'Plan del mes, ideas y diseño', route: '#/marcas/diseno', icon: svg('estrategia') }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
+  if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg('marcas') }); if (brandAccess(me).contentFull) out.push({ title: 'Chat de Diseño gráfico', sub: 'Plan del mes, ideas y diseño', route: '#/marcas/diseno', icon: svg('diseno') }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
   return out;
 }
 const search = () => { if (me && me.role !== 'client') openSearch({ jump: jumpItems }); };
@@ -462,7 +462,7 @@ function shell() {
   </div>`);
   navFor = null; paintNav(true);
   // Tocar una sección abre su primera pantalla visible; una marca, su página; «Marcas», la pantalla de inicio con las tiles.
-  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (!b) return; const g = b.dataset.go; location.hash = '/' + (g === 'portal' ? 'portal' : g.startsWith('marcas') || g.startsWith('estrategia') ? g : 'org/' + (tabsOf(g)[0]?.[0] || orgLanding())); };
+  $('.nav').onclick = (e) => { const b = e.target.closest('[data-go]'); if (!b) return; const g = b.dataset.go; location.hash = '/' + (g === 'portal' ? 'portal' : /^(marcas|estrategia|consulting)\b/.test(g) ? g : 'org/' + (tabsOf(g)[0]?.[0] || orgLanding())); };
   $('#subnav').onclick = (e) => { const b = e.target.closest('[data-sub]'); if (b) location.hash = '/' + b.dataset.sub; };
   // El interruptor: cambia de espacio y vuelve a donde estabas en ese espacio.
   $('.top').addEventListener('click', (e) => { const ar = e.target.closest('.asw [data-area]'); if (ar) return irArea(ar.dataset.area); const b = e.target.closest('[data-space]'); if (!b || b.dataset.space === space) return; lsSet('space', b.dataset.space); const last = lsGet('last.' + b.dataset.space); location.hash = '/' + (last || spaceHome(b.dataset.space)); });

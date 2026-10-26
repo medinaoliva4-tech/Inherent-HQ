@@ -83,7 +83,7 @@ export const HARNESS = {
       'Si tienes las herramientas de Figma (figwright), diseña en Figma con el kit de la marca y di qué lámina hiciste. Si no las tienes, entrega la especificación lámina por lámina (texto, jerarquía, color del sistema, foto o ilustración).',
       'Valida contra la guía de la marca como lo haría ②B Branding (br-guardian) antes de dar algo por listo.',
     ],
-    herramientas: 'Leer el repo; Figma por figwright si está conectado; el conector «inherent» para ver el plan del mes y las ideas de la marca.',
+    herramientas: 'Leer el repo; Figma por figwright solo si aparece entre tus herramientas; el conector «inherent» para ver las ideas y el contenido de la marca (planner, contenido_semana).',
     criterios: ['Usa solo colores, tipografías y activos del sistema visual de la marca', 'Un mensaje por pieza, con hook en la primera lámina y CTA en la última', 'Texto legible en celular', 'Revisa la ficha del formato en inherent/08-CRITERIOS-DE-ACEPTACION.md (carrusel, estático, story)'],
   },
   consulting: {
@@ -139,7 +139,7 @@ export function sistemaDe(modo, ctx = {}) {
 export const SUGERENCIAS = {
   estrategia: [['¿En qué etapa está y por qué?', 'Diagnóstico'], ['Baja la meta a números: ticket, cierre y conversión', 'Ingeniería inversa'], ['¿Qué haría la oferta más difícil de rechazar?', 'Oferta'], ['Arma el roadmap de 90 días', 'Roadmap']],
   organizacion: [['¿Qué tengo pendiente hoy?', 'Tu día'], ['¿Qué leads están sin responder?', 'Ventas'], ['¿Qué entregas vencen esta semana?', 'Proyectos'], ['Crea una tarea para el editor de video', 'Tareas']],
-  diseno: [['¿Qué piezas del plan del mes faltan por diseñar?', 'Plan del mes'], ['Arma un carrusel con la plantilla de la marca', 'Carrusel'], ['Revisa esta pieza contra la guía de la marca', 'Revisión'], ['Propón 3 portadas para el reel de la semana', 'Ideas']],
+  diseno: [['¿Qué piezas del plan del mes faltan por diseñar?', 'Plan del mes'], ['Especifica un carrusel lámina por lámina', 'Carrusel'], ['Revisa esta pieza contra la guía de la marca', 'Revisión'], ['Propón 3 portadas para el reel de la semana', 'Ideas']],
   consulting: [['¿Dónde se traba la operación hoy?', 'Operaciones'], ['¿Qué decisiones solo debería tomar el fundador?', 'Estructura'], ['¿Qué línea deja margen y cuál lo desangra?', 'Márgenes'], ['¿Cuánto puede pagar por un cliente sin perder?', 'Finanzas']],
 };
 
@@ -260,8 +260,10 @@ export function idSesion(modo, slug, ahora = Date.now(), azar = Math.random()) {
   return `inh-${modoDe(modo).id}-${s}-${ahora.toString(36)}${Math.floor(azar * 1e6).toString(36)}`;
 }
 // → { modo, slug } de un id de sesión del LLM (o null si no es nuestra).
+// Los modos salen de MODOS: cuando entra un área nueva, sus conversaciones se leen solas.
+const RE_SESION = new RegExp(`^inh-(${MODOS.map((m) => m.id).join('|')})-([a-z0-9_-]+)-[a-z0-9]+$`);
 export function leerIdSesion(id) {
-  const m = /^inh-(estrategia|organizacion|diseno)-([a-z0-9_-]+)-[a-z0-9]+$/.exec(String(id || ''));
+  const m = RE_SESION.exec(String(id || ''));
   return m ? { modo: m[1], slug: m[2] === 'general' ? '' : m[2] } : null;
 }
 // El título de una conversación nueva: la primera línea del primer mensaje.

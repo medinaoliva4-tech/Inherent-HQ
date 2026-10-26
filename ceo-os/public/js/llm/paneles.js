@@ -80,7 +80,7 @@ async function panelOrganizacion(me) {
   return html`<div class="lp-head"><div><span class="lp-k">Tu día</span><h3>${new Date().toLocaleDateString('es-GT', { weekday: 'long', day: 'numeric', month: 'long' })}</h3></div><a class="lp-btn" href="#/org/home">Hoy ↗</a></div>
     ${me.areas?.includes('sales') ? html`<section class="lp-sec"><span class="lp-k">Leads sin responder</span>${esperando.length ? esperando.map((l) => html`<a class="lp-row tarde" href="#/org/sales"><span class="lp-dot"></span><span class="lp-t">${l.name || 'Lead'}</span><small>${l.source || ''}</small></a>`) : html`<p class="lp-mut">Todo respondido.</p>`}</section>` : ''}
     <section class="lp-sec"><span class="lp-k">Tus tareas · próximos 7 días</span>${mias.length ? mias.map(fila) : html`<p class="lp-mut">Nada con fecha esta semana.</p>`}</section>
-    <p class="lp-mut">Lo que el agente cree o cambie por el conector aparece aquí y en Organización.</p>`;
+    <p class="lp-mut">Lo que el agente cree o cambie por el conector aparece aquí y en el Tablero.</p>`;
 }
 
 async function panelDiseno(me, slug, nombre) {

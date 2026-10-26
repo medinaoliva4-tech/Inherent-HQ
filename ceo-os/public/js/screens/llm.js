@@ -97,7 +97,7 @@ export async function render(el, { me, sub = [], alive }) {
   // Sin buscar se ven las conversaciones del área; al buscar, las de todas (cada una con la letra de su área).
   function pintarSide() {
     const q = S.busca.trim().toLowerCase(), a = areaDeModo(S.modo);
-    const lista = S.sesiones.filter((s) => (q ? String(s.title || s.preview || '').toLowerCase().includes(q) : (leerIdSesion(s.id)?.modo || 'organizacion') === S.modo));
+    const lista = S.sesiones.filter((s) => leerIdSesion(s.id) && (q ? String(s.title || s.preview || '').toLowerCase().includes(q) : leerIdSesion(s.id).modo === S.modo));
     const grupos = {}; for (const s of lista) (grupos[grupoFecha(s.last_active || s.started_at)] ||= []).push(s);
     const fila = (s) => { const m = modoDe(leerIdSesion(s.id)?.modo || 'organizacion'); return html`<div class="ls-row ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"><i class="ls-m" data-m="${m.id}">${m.letra}</i><span>${s.title || s.preview || 'Conversación'}</span></a><button type="button" class="ls-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
     const estado = !S.salud ? ['', 'Buscando Hermes…'] : !S.salud.on ? ['off', 'Hermes apagado'] : !S.salud.auth ? ['off', 'Falta la llave'] : ['on', `Hermes ${S.salud.version || ''}`.trim()];
@@ -526,6 +526,9 @@ export async function render(el, { me, sub = [], alive }) {
   el.addEventListener('click', async (e) => {
     const v = e.target.closest('[data-act="voz"]'); if (v && el.contains(v)) return dictar(v, $('#llm-in', el));
     const ar = e.target.closest('.asw [data-area]'); if (ar && el.contains(ar)) { const m = areaDe(ar.dataset.area)?.modo; return m && cambiarModo(m); }
+    // Aprobar o reabrir la estrategia desde el panel (solo el CEO; el servidor lo vuelve a revisar).
+    const va = e.target.closest('[data-act="viva-aprobar"]');
+    if (va && el.contains(va)) { const sl = slugAhora(); if (!sl) return; try { const r = await api(`estrategia/${encodeURIComponent(sl)}/viva/aprobar`, { method: 'POST', body: { aprobar: !va.dataset.no } }); toast(r.aprobado ? 'Estrategia aprobada' : 'Estrategia reabierta'); olvidarPanel(`e:${sl}`); pintarPanel(); } catch (er) { toast(er.message, true); } return; }
     const t = e.target.closest('[data-a]'); if (!t || !el.contains(t)) return;
     const a = t.dataset.a;
     if (a === 'nuevo') return nuevo();
