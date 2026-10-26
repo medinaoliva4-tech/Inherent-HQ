@@ -31,6 +31,10 @@ const ICO_STOP = raw(svgIco('stop-lleno', 14));
 const ICO_RAMA = raw(svgIco('rama', 16));
 const ELECCION = { once: 'Permitir una vez', session: 'En esta conversación', always: 'Siempre', deny: 'No' };
 
+// Un solo escuchador del tema para el Chat montado (no uno por pintada: guardaría las conversaciones viejas en memoria).
+let llmVivo = null;
+window.addEventListener('tema', () => { if (llmVivo?.isConnected) llmVivo.dataset.tema = esNoche() ? 'noche' : 'dia'; });
+
 export async function render(el, { me, sub = [], alive }) {
   const pref = leer(me);
   const puedeModo = (id) => (id === 'estrategia' ? me.areas?.includes('estrategia') : id === 'diseno' ? brandAccess(me).any : true);
@@ -71,8 +75,7 @@ export async function render(el, { me, sub = [], alive }) {
   </div>`);
   const R = $('.llm', el), C = (id) => $('#' + id, el);
   // El día y la noche son uno solo para las dos apps (tema.js): si cambia (aquí, en Organización o en la compu), el Chat lo sigue.
-  const onTema = () => { if (!alive() || !R.isConnected) return window.removeEventListener('tema', onTema); R.dataset.tema = esNoche() ? 'noche' : 'dia'; };
-  window.addEventListener('tema', onTema);
+  llmVivo = R;
 
   // ---------- La barra lateral (estilo Hermes: nueva · modos · recientes por fecha · tú y Hermes) ----------
   function pintarSide() {

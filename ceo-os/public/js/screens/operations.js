@@ -154,7 +154,7 @@ export async function render(el, { me, sub, alive }) {
         addchk: async () => { const v = $('#newchk').value.trim(); if (!v) return; t = collect(); t.checklist = [...(t.checklist || []), { t: v, done: false }]; const r = await saveTask(t); if (r) { t = r; draw(); } },
         addcom: async () => { const v = $('#newcom').value.trim(); if (!v) return; t = collect(); t.comments = [...(t.comments || []), { who: me.name, at: new Date().toISOString(), text: v }]; const r = await saveTask(t); if (r) { t = r; draw(); } },
         tsave: async () => { const r = await saveTask(collect()); if (r) { toast('Guardado'); closeDrawer(); paint(); } },
-        tcal: async () => { try { const e = await api('google/calendar', { method: 'POST', body: { summary: `${ico('check', 14)} ${t.title}`, date: t.due, description: `Tarea de ${pname(t.project_id)} · Inherent OS` } }); toast('Agendada en tu Google Calendar'); events = null; if (e.link) window.open(e.link, '_blank', 'noopener'); } catch (e) { toast(e.message, true); } },
+        tcal: async () => { try { const e = await api('google/calendar', { method: 'POST', body: { summary: t.title, date: t.due, description: `Tarea de ${pname(t.project_id)} · Inherent OS` } }); toast('Agendada en tu Google Calendar'); events = null; if (e.link) window.open(e.link, '_blank', 'noopener'); } catch (e) { toast(e.message, true); } },
         tdel: async () => { if (!(await confirmAsk(`¿Eliminar «${t.title}»?`))) return; await TK.remove(t.id); tasks = tasks.filter((x) => x.id !== t.id); closeDrawer(); paint(); },
       });
       $('#tvis').onchange = (e) => { $('#tviewers').hidden = e.target.value !== 'people'; };

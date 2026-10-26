@@ -4,7 +4,9 @@
 const mq = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : null;
 const FONDO = { dia: '#faf9f6', noche: '#1f1e1c' }; // el fondo de cada tema: la franja del iPhone se pinta igual
 
+let enMemoria = null; // si el navegador no deja guardar, la elección vale en esta pestaña
 export function temaElegido() {
+  if (enMemoria) return enMemoria;
   try { const t = localStorage.getItem('theme'); return t === 'dark' ? 'noche' : t === 'light' ? 'dia' : 'sistema'; } catch { return 'sistema'; }
 }
 export const esNoche = () => document.documentElement.dataset.theme === 'dark';
@@ -23,7 +25,8 @@ export function ponerTema(t) {
     if (t === 'noche') localStorage.setItem('theme', 'dark');
     else if (t === 'dia') localStorage.setItem('theme', 'light');
     else localStorage.removeItem('theme');
-  } catch { /* sin almacenamiento: vale solo en esta pestaña */ }
+    enMemoria = null;
+  } catch { enMemoria = ['dia', 'noche'].includes(t) ? t : 'sistema'; }
   aplicar();
 }
 

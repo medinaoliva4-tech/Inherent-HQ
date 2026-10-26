@@ -4882,7 +4882,6 @@ body::before,body::after,:root[data-theme="dark"] body::before,:root[data-theme=
 .ic{stroke-width:1.75}
 
 /* El foco del teclado: un anillo café en todo lo que se toca. */
-button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
 .in:focus,.in:focus-visible{outline:none;border-color:color-mix(in srgb,var(--ui-acc) 55%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--ui-acc) 18%,transparent)}
 
 /* Para lectores de pantalla. */
@@ -4929,3 +4928,13 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vt2In 200ms var(--e-ou
 .mt-ic,.mt-li i{background:none!important;border-radius:0}
 .mt-li i{width:20px;height:20px}
 .mt-ic .lni,.mt-li i .lni{vertical-align:0}
+/* Revisión del bloque 1 */
+/* El foco café: en botones y links con su anillo; en los campos solo si el campo no trae su propio estilo (peso 0). */
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visible,.btn:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+:where(input,select,textarea):where(:focus-visible){outline:2px solid var(--ui-focus);outline-offset:2px}
+/* De noche, los íconos de color de Ventas y Mis tareas se aclaran para que se lean sobre el fondo oscuro. */
+:root[data-theme="dark"] :is(.vx-v i,.vx-ah i,.mt-ic,.mt-li i)>.lni{color:color-mix(in srgb,currentColor 55%,#fff)}
+/* Sin View Transition, la entrada de la pantalla no le gana a la aparición diferida del esqueleto. */
+#main.enter>.skel{animation:skAparece 0s linear 160ms both}
+/* Imprimir o guardar en PDF (Presupuesto, Roadmap): la hoja siempre en papel, de día o de noche. */
+@media print{html,body,:root[data-theme="dark"] body{background:#fcf9f2!important}}

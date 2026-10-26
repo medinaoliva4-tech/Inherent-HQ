@@ -147,6 +147,7 @@ const L = {
 // Propios de Inherent: el Chat (burbuja abierta con la chispa de la IA) y la chispa rellena.
 const PROPIOS = {
   'chat-ia': '<path d="M20.5 12.2c-.4 3.9-4.2 6.8-8.6 6.8-1.06 0-2.08-.15-3.03-.44L4.5 19.9l1.12-3.73C4 14.83 3 13 3 11c0-4.1 4-7.4 9-7.5"/><path d="M18 2.8l.75 2.05L20.8 5.6l-2.05.75L18 8.4l-.75-2.05L15.2 5.6l2.05-.75z" fill="currentColor" stroke-width="1.1"/>',
+  'dot': '<circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/>',
   'stop-lleno': '<rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor" stroke="none"/>',
 };
 
@@ -177,7 +178,7 @@ export const ALIAS = {
   'snow': 'snowflake',
   'spark': 'sparkles',
   'stairs': 'chart-no-axes-column-increasing',
-  'stop': 'square',
+  'stop': 'stop-lleno',
   'trash': 'trash-2',
   'trend': 'trending-up',
   'tool': 'wrench',
@@ -186,6 +187,7 @@ export const ALIAS = {
   'info': 'info',
   'ok': 'circle-check',
   'bad': 'circle-x',
+  'book': 'book-open', 'team': 'users', 'slides': 'presentation', 'versus': 'swords', 'sparkle4': 'sparkle',
   'nav-hoy': 'house',
   'nav-proyectos': 'layers',
   'nav-ventas': 'megaphone',

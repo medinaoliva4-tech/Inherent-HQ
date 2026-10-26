@@ -311,7 +311,7 @@ function shell() {
       ${me.role !== 'client' ? html`<a class="tochat" href="#/chat" aria-label="Abrir el Chat (Inherent LLM)" title="Chat · Inherent LLM">${icoApp('chat')}</a>` : ''}
       ${me.role !== 'client' ? html`<button class="searchbtn" id="searchbtn" type="button" aria-label="Buscar (${mac ? '⌘' : 'Ctrl+'}K)" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 17)}<kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>` : ''}
       ${me.role !== 'client' ? html`<button class="pdchip" id="pdchip" type="button" hidden aria-label="Seguir tu primer día"></button><button class="guiabtn" id="guiabtn" type="button" hidden aria-label="Cómo se usa esta parte">${ico('video', 15)}<span>Cómo se usa</span></button>` : ''}
-      <button class="themebtn" id="themebtn" title="Modo noche" aria-label="Cambiar modo día / noche">${raw(icoTema())}</button>
+      <button class="themebtn" id="themebtn" title="${esNoche() ? 'Modo día' : 'Modo noche'}" aria-label="Cambiar modo día / noche">${raw(icoTema())}</button>
       <div class="avatar" id="avatar" title="Mi perfil" role="button" tabindex="0" aria-label="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
     <div id="subnav" class="subnav" hidden></div>
@@ -348,22 +348,27 @@ async function render() {
   markNav(cur);
   if (me.role !== 'client') marcarSeccion(seccionGuia(cur));
   $('#avatar')?.classList.toggle('on', cur.key === 'me');
-  closeDrawer();
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
   // Cambiar de sección sin saltos: arriba de una vez (sin animar el scroll) y la página no se encoge
   // mientras carga la siguiente (antes «Cargando…» la hacía chiquita y el navegador brincaba).
   const old = $('#main'), keep = old.offsetHeight;
-  const main = old.cloneNode(false); main.style.minHeight = keep + 'px';
+  const main = old.cloneNode(false); main.removeAttribute('inert'); main.style.minHeight = keep + 'px';
   const gen = ++renderGen, vt = canTransition(), alive = () => gen === renderGen;
   // El módulo de la pantalla llega ANTES de la transición (después de la primera vez ya está en caché): así la transición
   // nunca espera a la red y la pantalla no se queda congelada en la anterior.
+  // Mientras baja, la pantalla vieja ya no se puede tocar (si no, una pestaña tocada a destiempo cambiaría la dirección).
+  old.inert = true;
   let mod = null, err = null;
   try { mod = await import(`./screens/${SCREENS[cur.key]}.js`); } catch (e) { err = e; }
   if (!alive()) return;
-  const fallo = (e) => mount(main, html`<div class="warnbox ui-fallo">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message || 'No cargó.'} <button type="button" class="btn ghost xs" data-reintentar>Reintentar</button></div>`);
-  main.addEventListener('click', (e) => { if (e.target.closest('[data-reintentar]') && alive()) render(); });
+  // Si lo que falló fue bajar el código de la pantalla, «Reintentar» recarga la página (el navegador de la app de Mac
+  // recuerda el módulo que falló y volver a pedirlo fallaría igual).
+  const fallo = (e) => { main.style.minHeight = ''; const recarga = e === err || /dynamically imported module|Importing a module script failed|module script/i.test(e?.message || ''); mount(main, html`<div class="warnbox ui-fallo">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : recarga ? 'No se pudo abrir esta parte (¿se fue el internet?).' : e.message || 'No cargó.'} <button type="button" class="btn ghost xs" data-reintentar="${recarga ? 'recargar' : ''}">Reintentar</button></div>`); };
+  main.addEventListener('click', (e) => { const b = e.target.closest('[data-reintentar]'); if (b && alive()) { if (b.dataset.reintentar === 'recargar') location.reload(); else render(); } });
   let lista = null;
   const pintar = () => {
+    if (!alive()) return null; // ya se pidió otra pantalla: esta no se pinta
+    closeDrawer();
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); $('.app')?.scrollTo({ top: 0, left: 0, behavior: 'instant' }); // en el cel el que se desliza es .app
     old.replaceWith(main);
     if (!vt) { main.classList.add('enter'); setTimeout(() => main.classList.remove('enter'), 900); }

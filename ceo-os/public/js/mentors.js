@@ -40,7 +40,7 @@ export function mentorsTab(body, { list, isCeo, onChange, ind = 'Todas', onInd }
   body.onclick = async (e) => {
     const t = e.target.closest('[data-mact]'); if (!t || e.target.closest('a')) return;
     if (t.dataset.mact === 'ind') return onInd(t.dataset.v);
-    if (t.dataset.mact === 'seed') { t.disabled = true; const made = []; let SEED = []; try { SEED = (await api('internos/especialistas')).especialistas; } catch (err) { t.disabled = false; return toast(err.message, true); } for (const s of SEED) made.push(await M.create({ ...s, link: '', photo: null })); toast(`${made.length} especialistas cargados ${ico('check', 14)}`); return onChange([...list, ...made]); }
+    if (t.dataset.mact === 'seed') { t.disabled = true; const made = []; let SEED = []; try { SEED = (await api('internos/especialistas')).especialistas; } catch (err) { t.disabled = false; return toast(err.message, true); } for (const s of SEED) made.push(await M.create({ ...s, link: '', photo: null })); toast(`${made.length} especialistas cargados`); return onChange([...list, ...made]); }
     if (t.dataset.mact === 'edit') { const r = await editMentor(list.find((m) => m.id === t.dataset.id), inds); if (r) onChange(r.deleted ? list.filter((m) => m.id !== r.id) : list.map((m) => (m.id === r.id ? r : m))); }
   };
 }
