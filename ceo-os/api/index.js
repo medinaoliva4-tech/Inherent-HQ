@@ -35,6 +35,7 @@ import * as ojo from './_lib/ojo.js';
 import * as guia from './_lib/guia.js';
 import * as avisos from './_lib/avisos.js';
 import { seesTask, personalOk, profOf, visible, scopeOf, profInScope, shape, levelsFor } from './_lib/leer.js';
+import { hoyGT } from '../public/js/avisos-reglas/base.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
@@ -148,7 +149,8 @@ async function reglasPieza(b, cur) {
   if (!b.profile || !/^\d{4}-\d{2}$/.test(mes) || String(cur?.date || '').slice(0, 7) === mes) return null;
   const root = b.profile === 'inherent' ? 'inherent/inherent-social-media' : `clients/${b.profile}`;
   if (!/^[\w-]+$/.test(b.profile) || !(await readFile(`${root}/00-onboarding/plan-contratado.md`))) return null;
-  if (await readFile(`${root}/04-contenido/${mes}/brief-del-ciclo.md`)) return null;
+  // El brief del ciclo vale en las dos rutas: la de siempre y la del manual (04-contenido/<mes>/ideas/, agents/04-creative).
+  if ((await readFile(`${root}/04-contenido/${mes}/brief-del-ciclo.md`)) || (await readFile(`${root}/04-contenido/${mes}/ideas/brief-del-ciclo.md`))) return null;
   const bo = await db.get('settings', 'brief_open').catch(() => null);
   if ((bo?.marcas?.[b.profile] || []).some((x) => x.mes === mes)) return null;
   return `Sin brief del ciclo de ${mes}: guárdala como idea sin fecha, pide el brief a ④ Creatividad o que el CEO abra el mes.`;
@@ -873,7 +875,8 @@ on('PUT', 'ads/accounts/:slug', async (req, res) => {
     objetivo: txt(b.objetivo ?? cur.objetivo, 300), metrica: txt(b.metrica ?? cur.metrica, 120), oferta: txt(b.oferta ?? cur.oferta, 300), canales: txt(b.canales ?? cur.canales, 200) };
   if (![ads.meta, ads.google, ads.linkedin].every(ok)) return res.status(400).json({ error: 'Usa solo el número de la cuenta' });
   // El OK del CEO (gate ⑩): solo él lo da o lo quita; vale para el mes y para ese presupuesto. Si cambia el monto, se vuelve a pedir.
-  if (u.role === 'ceo' && 'ok' in b) ads.ok = b.ok ? { at: new Date().toISOString().slice(0, 10), by: u.email, month: new Date().toISOString().slice(0, 7), budget: ads.budget } : null;
+  // El mes del OK es el de Guatemala (el último día del mes, después de las 18:00, en UTC ya sería el siguiente).
+  if (u.role === 'ceo' && 'ok' in b) { const hoy = hoyGT(); ads.ok = b.ok ? { at: hoy, by: u.email, month: hoy.slice(0, 7), budget: ads.budget } : null; }
   else if (cur.ok && cur.ok.budget === ads.budget) ads.ok = cur.ok;
   if (!ads.ok) delete ads.ok;
   await db.upsert('accounts', 'acc-' + slug, { ads }, u.email);

@@ -4,6 +4,7 @@
 // algo cambia (el evento «avisos» de events).
 import { api, events } from './core.js';
 import { avisosCompu } from './avisos-compu.js';
+import { aplicarPospuestos, hoyGT } from './avisos-reglas/base.js';
 
 let ultimo = { at: 0, r: null, compu: [] }, enVuelo = null;
 // Los avisos de esta persona (servidor + compu). fresco: sin la memoria de 30 s.
@@ -12,7 +13,10 @@ export async function leerAvisos(me, { fresco = false, compu = false } = {}) {
   if (enVuelo && !fresco) return enVuelo;
   enVuelo = (async () => {
     const [r, c] = await Promise.all([api('avisos').catch((e) => ({ items: [], pospuestos: [], n: {}, error: e.message })), avisosCompu(me, { forzar: compu }).catch(() => [])]);
-    ultimo = { at: Date.now(), r, compu: c, conCompu: compu || ultimo.conCompu };
+    // Lo que pospusiste de tu compu se guarda en el servidor como lo demás; aquí se aplica.
+    const pc = aplicarPospuestos(c, r.pos || {}, hoyGT());
+    r.pospuestos = [...(r.pospuestos || []), ...pc.pospuestos];
+    ultimo = { at: Date.now(), r, compu: pc.visibles, conCompu: compu || ultimo.conCompu };
     return ultimo;
   })();
   try { return await enVuelo; } finally { enVuelo = null; }

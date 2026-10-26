@@ -72,6 +72,10 @@ ipcMain.on('inherent:token', (e) => { e.returnValue = delOS(e.senderFrame?.url |
 const HERMES_DATOS = path.join(os.homedir(), '.inherent', 'hermes');
 const hermes = () => { try { const key = fs.readFileSync(path.join(HERMES_DATOS, 'api-key'), 'utf8').trim(); if (!key) return null; let url = 'http://127.0.0.1:8642'; try { url = fs.readFileSync(path.join(HERMES_DATOS, 'api-url'), 'utf8').trim() || url; } catch { /* la URL de siempre */ } return { url, key }; } catch { return null; } };
 ipcMain.on('inherent:hermes', (e) => { e.returnValue = delOS(e.senderFrame?.url || '') ? hermes() : null; });
+// La versión instalada (no es secreta): el OS la compara con la última publicada y avisa si hay una nueva (aviso pla-app-mac).
+ipcMain.on('inherent:version', (e) => { e.returnValue = app.getVersion(); });
+// «Actualizar la app» desde el OS: el mismo diálogo del menú Inherent OS › Buscar actualizaciones… (solo desde el OS).
+ipcMain.on('inherent:actualizar', (e) => { if (delOS(e.senderFrame?.url || '')) buscarActualizacion(true); });
 
 // Sin las herramientas de Apple no hay git ni Python: se ofrece instalarlas (un clic, las instala la Mac).
 async function avisarHerramientas() {

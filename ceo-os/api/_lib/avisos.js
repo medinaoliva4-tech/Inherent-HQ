@@ -65,22 +65,30 @@ export async function resumenDiario(hoy = hoyGT()) {
 // Los Avisos de una persona, ya sin los que pospuso. errores: reglas que fallaron (solo se le muestran al CEO).
 export async function avisosDe(u, hoy = hoyGT()) {
   const { persona, datos } = await datosDe(u);
-  const { items, errores } = correr(REGLAS, datos, persona, hoy);
+  const r0 = correr(REGLAS, datos, persona, hoy), errores = r0.errores;
+  // El nombre del cliente para la etiqueta del aviso (la regla trae el slug).
+  const nombres = Object.fromEntries((datos.clientes || []).map((c) => [c.slug, c.nombre]));
+  const items = r0.items.map((x) => (x.cliente && nombres[x.cliente] ? { ...x, clienteNombre: nombres[x.cliente] } : x));
   const { visibles, pospuestos } = aplicarPospuestos(items, datos.yo?.avisos_pos || {}, hoy);
   return { hoy, items: visibles, pospuestos, n: contar(visibles), errores, pos: datos.yo?.avisos_pos || {}, todos: items };
 }
+
+const COMPU = /^pla-(hermes|puente|app-mac)$|^pla-avisos-celular:este$/;
 
 export function rutas(on) {
   on('GET', 'avisos', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const r = await avisosDe(u);
-    res.json({ hoy: r.hoy, items: r.items, pospuestos: r.pospuestos, n: r.n, ...(u.role === 'ceo' && r.errores.length ? { errores: r.errores } : {}) });
+    // pos: lo que pospuso (clave → hasta y huella), para que el navegador aplique lo mismo a los avisos de la compu.
+    res.json({ hoy: r.hoy, items: r.items, pospuestos: r.pospuestos, pos: r.pos, n: r.n, ...(u.role === 'ceo' && r.errores.length ? { errores: r.errores } : {}) });
   });
   on('POST', 'avisos', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const b = body(req), clave = String(b.clave || '').slice(0, 160); if (!clave) return res.status(400).json({ error: 'Falta el aviso' });
     const r = await avisosDe(u);
-    const out = posponer(r.pos, { clave, hasta: b.hasta, huella: b.huella, volver: Boolean(b.volver) }, r.todos.find((x) => x.clave === clave), r.hoy);
+    // Los de la compu (Hermes, el puente, la app, este dispositivo) los calcula el navegador: llegan con su urgencia y su huella.
+    const compu = COMPU.test(clave) && b.compu ? { clave, urgencia: ['alta', 'media', 'baja'].includes(b.compu.urgencia) ? b.compu.urgencia : 'alta', huella: String(b.compu.huella ?? '').slice(0, 200), fijo: false } : null;
+    const out = posponer(r.pos, { clave, hasta: b.hasta, huella: b.huella, volver: Boolean(b.volver) }, r.todos.find((x) => x.clave === clave) || compu, r.hoy);
     if (out.error) return res.status(400).json({ error: out.error });
     await db.upsert('team', u.email, { avisos_pos: out.pos }, u.email);
     res.json({ ok: true, hasta: out.pos[clave]?.hasta || null });

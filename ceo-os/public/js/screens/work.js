@@ -10,7 +10,9 @@ import { payDialog } from '../flowui.js';
 import { openDelivery, dueChip as tDue, stChip as tSt } from '../taskcard.js';
 import { purposeCard } from '../purpose.js';
 import { taskKanban } from '../kanban.js';
+import { hoyGT } from '../avisos-reglas/base.js';
 import { estrategiaNow } from '../stratlist.js';
+import { keyOf, cadenaDe, okOf as okDelMes } from '../tareas-cadena.js';
 
 // El cliente de una tarea sin proyecto (un encargo de Estrategia lo trae en client_slug).
 const cliDe = (t) => { const s = t.client_slug || ''; return s ? estrategiaNow().find((c) => c.slug === s)?.nombre || s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, ' ') : ''; };
@@ -56,14 +58,9 @@ export async function render(el, { me, sub, alive }) {
   const canCoord = (isCeo && !asP) || myRoles.includes('coo');
 
   // ---------- personas y responsabilidad ----------
-  const keyOf = (p) => p.email || p.id;
-  const person = (k) => team.find((p) => p.id === k || p.email === k);
+  // La cadena (quién revisa, el jefe directo, el CEO) vive en tareas-cadena.js: Avisos la usa igual.
+  const { person, ceoKey, cooKey, bossOf, accOf, chain } = cadenaDe(team, keyOf(meP || { id: me.email }));
   const nameOf = (k) => person(k)?.name || (k === me.email ? me.name : k ? String(k).split('@')[0] : '—');
-  const ceoKey = keyOf(team.find((p) => !p.reports_to && p.role === 'ceo') || meP || { id: me.email });
-  const cooKey = keyOf(team.find((p) => (p.roles || []).includes('coo')) || { id: ceoKey });
-  const bossOf = (k) => { const p = person(k); const b = p?.reports_to && person(p.reports_to); return b ? keyOf(b) : null; };
-  const accOf = (t) => t.accountable || bossOf(t.assignee) || ceoKey;
-  const chain = (t) => { const out = [t.assignee || null]; let k = accOf(t); const seen = new Set(out); while (k && !seen.has(k) && out.length < 6) { out.push(k); seen.add(k); k = bossOf(k); } if (!seen.has(ceoKey)) out.push(ceoKey); return out.filter(Boolean); };
   const av = (k, size = 24) => { const p = person(k); const n = p?.name || nameOf(k); return p?.picture
     ? html`<img src="${p.picture}" referrerpolicy="no-referrer" alt="" title="${n}" class="wav" style="width:${size}px;height:${size}px">`
     : html`<span class="av" title="${n}" style="width:${size}px;height:${size}px;font-size:${Math.round(size / 2.6)}px;background:${p?.color || COLORS[(n.length || 0) % COLORS.length]}">${initials(n)}</span>`; };
@@ -462,7 +459,8 @@ export async function render(el, { me, sub, alive }) {
   const fichaPauta = (sl) => { const i = adsInfo[sl]; if (!i || i.loading) return null; return (i.fields || []).find((f) => /^pauta|publicidad/i.test(f.key))?.value || (i.pipeline || []).find((p) => /⑩/.test(p.paso))?.que || ''; };
   const hasPauta = (sl) => { const a = adsAcc(sl), f = fichaPauta(sl); return Boolean(a.meta || a.google || a.linkedin || a.budget || a.objetivo) || (f ? !/no entra|no incluye|no aplica|^no\b|^—|sin pauta/i.test(f) : false) || tasks.some((t) => isAdsT(t) && clientOf(t) === sl); };
   // El OK del CEO vale para este mes y para ese presupuesto: si cambia el monto, se vuelve a pedir (gate 2).
-  const okOf = (a) => (a.ok && a.ok.month === ymNow() && a.ok.budget === (a.budget || null) ? a.ok : null);
+  // El mes del OK es el de Guatemala, igual que lo guarda el servidor (PUT ads/accounts).
+  const okOf = (a) => okDelMes(a, hoyGT().slice(0, 7));
   const Q = (v) => 'Q' + Number(v || 0).toLocaleString('en-US');
   function loadInfos(slugs) { for (const sl of slugs) if (!adsInfo[sl]) { adsInfo[sl] = { loading: true }; api(`repo/client/${encodeURIComponent(sl)}`).then((r) => { adsInfo[sl] = r; }).catch(() => { adsInfo[sl] = { fields: [], pipeline: [] }; }).then(() => alive() && role === 'ads' && tab === 'zona' && paint()); } }
   function loadCamps() { if (campaigns !== undefined) return; campaigns = null; col('campaigns').list().then((l) => { campaigns = l; campsOn = true; }).catch(() => { campaigns = []; campsOn = false; }).then(() => alive() && role === 'ads' && tab === 'zona' && paint()); }

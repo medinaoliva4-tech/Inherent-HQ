@@ -18,7 +18,8 @@ export async function render(el, { me, alive }) {
   const todos = () => ordenar([...(x.r?.items || []), ...(x.compu || [])]);
   const boton = (a, cls, k) => {
     if (!a) return '';
-    if (a.href) return html`<a class="btn sm ${cls}" href="${a.href}">${a.label}</a>`;
+    // Un link de afuera (la app de Mac en GitHub, Google) abre en otra pestaña: el OS no se va.
+    if (a.href) return /^https?:/.test(a.href) ? html`<a class="btn sm ${cls}" href="${a.href}" target="_blank" rel="noopener">${a.label}</a>` : html`<a class="btn sm ${cls}" href="${a.href}">${a.label}</a>`;
     return html`<button type="button" class="btn sm ${cls}" data-av="${k}">${a.label}</button>`;
   };
   const fila = (v) => html`<article class="avi" data-u="${v.urgencia}" data-clave="${v.clave}">
@@ -56,8 +57,23 @@ export async function render(el, { me, alive }) {
       const { openDelivery } = await import('../taskcard.js'); const t = await api('db/tasks/' + encodeURIComponent(a.id)).catch(() => null);
       if (!t) return toast('No encontré esa tarea', true);
       const [projects, team] = await Promise.all([api('db/projects').then((r) => r.items).catch(() => []), api('db/team').then((r) => r.items).catch(() => [])]);
-      return openDelivery(t, { me, projects, team }, recargar);
+      // Quien revisa sale de la misma cadena que Mis tareas (el responsable, si no su jefe directo, si no el CEO).
+      const { cadenaDe } = await import('../tareas-cadena.js');
+      return openDelivery(t, { me, projects, team, canApprove: cadenaDe(team, me.email).accOf(t) === me.email }, recargar);
     }
+    if (a.abre === 'comprobante') { const { openProof } = await import('../flowui.js'); return openProof(a.id); }
+    if (a.abre === 'agendar') {
+      const { schedule } = await import('../meetings.js');
+      const [p, team] = await Promise.all([api('db/projects/' + encodeURIComponent(a.proyecto)).catch(() => null), api('db/team').then((r) => r.items).catch(() => [])]);
+      if (!p?.meetings?.[a.i]) return toast('No encontré esa reunión', true);
+      await schedule(p, a.i, team, me); return recargar();
+    }
+    // El chat de Diseño gráfico en una etapa y un mes (diseno-chat.js lee os.dg.etapa al abrir la marca).
+    if (a.abre === 'diseno') { try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug: a.slug, etapa: a.etapa, mes: a.mes })); } catch {} location.hash = '#/marcas/diseno/' + encodeURIComponent(a.slug); return; }
+    // El calendario de la marca con un solo filtro prendido (content.js lee os.cal.marca.off).
+    if (a.abre === 'calendario') { try { localStorage.setItem('os.cal.marca.off', JSON.stringify(['operativo', 'planificacion', 'programado'].filter((k) => k !== a.filtro))); } catch {} location.hash = '#/marcas/' + encodeURIComponent(a.slug) + '/calendario'; return; }
+    if (a.abre === 'actualizar-app') { window.inherentEscritorio?.actualizar?.(); toast('Buscando la versión nueva de la app…'); return; }
+    if (a.abre === 'guia') { const { cargarGuias, abrirGuia } = await import('../guia.js'); const G = await cargarGuias(); const d = (G?.items || []).find((y) => y.id === a.id); return d ? abrirGuia(d, me) : toast('Ese video ya no está', true); }
     if (a.abre === 'pago') { const { payDialog } = await import('../flowui.js'); await payDialog(a.datos || {}); return recargar(); }
     if (a.abre === 'confirmar-pago') { const { confirmarYArrancar } = await import('../flowui.js'); const q = await api('db/quotes/' + encodeURIComponent(a.id)).catch(() => null); if (q) await confirmarYArrancar(q); return recargar(); }
   };
@@ -78,8 +94,8 @@ export async function render(el, { me, alive }) {
       document.body.append(m);
       m.onclick = async (ev) => {
         const d = ev.target.closest('[data-d]')?.dataset.d; if (!d) return; m.remove();
-        if (v.id && x.compu.some((y) => y.clave === v.clave)) return toast('Este aviso es de tu compu: se quita solo cuando lo resuelvas', true);
-        try { await api('avisos', { method: 'POST', body: { clave: v.clave, hasta: d, huella: v.huella } }); toast('Lo vuelves a ver ' + (d === masDias(hoy, 1) ? 'mañana' : 'en una semana')); } catch (er) { toast(er.message, true); }
+        const deCompu = x.compu.some((y) => y.clave === v.clave);
+        try { await api('avisos', { method: 'POST', body: { clave: v.clave, hasta: d, huella: v.huella, ...(deCompu ? { compu: { urgencia: v.urgencia, huella: v.huella } } : {}) } }); toast('Lo vuelves a ver ' + (d === masDias(hoy, 1) ? 'mañana' : 'en una semana')); } catch (er) { toast(er.message, true); }
         recargar();
       };
       setTimeout(() => document.addEventListener('click', function fuera(ev) { if (!m.contains(ev.target)) { m.remove(); document.removeEventListener('click', fuera); } }), 0);

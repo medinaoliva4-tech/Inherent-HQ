@@ -32,7 +32,8 @@ export function aviso(regla, o) {
     id: regla.id, clave: o.clave || regla.id, grupo: regla.grupo, area: o.area || regla.area || 'todas',
     urgencia: URGENCIAS.includes(o.urgencia) ? o.urgencia : regla.urgencia || 'media',
     titulo: String(o.titulo || '').slice(0, 200), detalle: String(o.detalle || '').slice(0, 400), cliente: o.cliente || '',
-    accion: o.accion || null, accion2: o.accion2 || null, huella: String(o.huella ?? ''), desde: o.desde || '', fijo: Boolean(o.fijo ?? regla.fijo),
+    accion: o.accion || null, accion2: o.accion2 || null, huella: String(o.huella ?? ''), desde: o.desde instanceof Date ? o.desde.toISOString() : String(o.desde || ''), fijo: Boolean(o.fijo ?? regla.fijo),
+    ...(o.tapa?.length ? { tapa: o.tapa } : {}),
     ...(o.vivo ? { vivo: o.vivo } : {}),
   };
 }
@@ -72,7 +73,9 @@ export function correr(reglas, datos, persona, hoy) {
     catch (e) { errores.push(`${r.id}: ${e.message}`); }
   }
   const sinFicha = new Set(out.filter((x) => x.id === 'cli-sin-ficha').map((x) => x.cliente));
-  const xs = out.filter((x) => !(x.cliente && sinFicha.has(x.cliente) && x.id !== 'cli-sin-ficha' && x.grupo === 'clientes'));
+  // Un aviso de cliente que ya enlaza tu tarea de la receta atrasada la «tapa»: sale uno solo, con la tarea adentro.
+  const tapadas = new Set(out.flatMap((x) => x.tapa || []));
+  const xs = out.filter((x) => !tapadas.has(x.clave) && !(x.cliente && sinFicha.has(x.cliente) && x.id !== 'cli-sin-ficha' && x.grupo === 'clientes'));
   // Una clave sale una vez (dos reglas que dicen lo mismo de lo mismo: gana la primera).
   const vistos = new Set();
   return { items: ordenar(xs.filter((x) => (vistos.has(x.clave) ? false : vistos.add(x.clave)))), errores };

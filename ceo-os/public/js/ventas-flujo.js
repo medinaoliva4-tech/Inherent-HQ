@@ -99,7 +99,7 @@ export function dueSoon({ leads = [], invoices = [], access, T, now = Date.now()
   }
   for (const f of Array.isArray(invoices) ? invoices : []) {
     if (!f || !['cobrar', 'pagar'].includes(f.kind) || !access?.[f.kind] || !invoiceSoon(f, T)) continue;
-    out.push({ kind: f.kind, id: f.id, date: f.due, rank: 2, title: (f.kind === 'cobrar' ? String(f.client || '').toUpperCase() : f.vendor) || f.vendor || 'Factura', sub: f.concept || '', amount: +f.amount || 0, currency: f.currency || 'GTQ', tone: f.due < T ? 'late' : f.due === T ? 'warn' : '', overdue: f.due < T, href: '#/org/finanzas/facturas' });
+    out.push({ kind: f.kind, id: f.id, date: f.due, rank: 2, title: (f.kind === 'cobrar' ? String(f.client || '').toUpperCase() : f.vendor) || f.vendor || 'Factura', sub: f.concept || '', amount: +f.amount || 0, currency: f.currency || 'GTQ', tone: f.due < T ? 'late' : f.due === T ? 'warn' : '', overdue: f.due < T, href: '#/org/finanzas/fact' });
   }
   return out.sort((a, z) => a.date.localeCompare(z.date) || a.rank - z.rank || String(a.title).localeCompare(String(z.title)));
 }

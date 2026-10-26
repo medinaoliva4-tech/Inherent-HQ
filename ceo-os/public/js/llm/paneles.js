@@ -9,7 +9,7 @@ import { html, api, col, ico, fdate, today, esc } from '../core.js';
 import { panelViva } from '../estrategia-viva-ui.js';
 import { avance } from '../estrategia-viva.js';
 import { isWaiting } from '../ventas-flujo.js';
-import { HARNESS, modoDe, CONSULTING, alcanceConsulting, encargosDe } from './modos.js';
+import { HARNESS, modoDe, CONSULTING, textoAlcanceConsulting, encargosDe } from './modos.js';
 import { avancePlan, nombreMes } from '../plan-mes.js';
 import { tipoDe, proximaFecha, revisarCampana } from '../campanas.js';
 
@@ -50,13 +50,8 @@ async function panelEstrategia(me, slug) {
 }
 
 // El aviso del alcance de Consulting (lo usa también la pantalla de Consulting del Tablero).
-export const avisoConsulting = (nivel, ficha) => {
-  const a = alcanceConsulting(nivel, ficha);
-  return a === 'sin-ficha' ? html`<div class="lp-warn">Sin ficha de oferta, el agente bloquea a este cliente: el alcance contratado es el techo.</div>`
-    : a === 'fuera' ? html`<div class="lp-warn">Operations OS y Money OS son de Growth Partnership. Con ${nivel.nombre}, lo que se proponga va FUERA DEL ALCANCE.</div>`
-    : a === 'ficha' ? html`<div class="lp-warn">A la medida: lo que incluye su ficha es el techo.</div>`
-    : a === 'sin-finanzas' ? html`<div class="lp-warn">Operación y organización comercial sí. Finanzas va «según acuerdo» y su ficha no la incluye: lo de Money OS va FUERA DEL ALCANCE.</div>` : '';
-};
+// El texto sale de llm/modos.js (textoAlcanceConsulting): el mismo que dicen los Avisos.
+export const avisoConsulting = (nivel, ficha) => { const t = textoAlcanceConsulting(nivel, ficha); return t ? html`<div class="lp-warn">${t}</div>` : ''; };
 // Los encargos abiertos de Estrategia para esta área y este cliente: tocarlos los manda al Chat como pedido.
 export const pedidoDeEncargo = (t) => `Encargo de Estrategia: ${t.title}.${t.description ? ` ${String(t.description).split('\n\n')[0]}` : ''}`;
 export const verTareas = (me) => me.areas?.includes('work') || me.areas?.includes('operations');

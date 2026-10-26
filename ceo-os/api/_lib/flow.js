@@ -70,7 +70,7 @@ export async function createProject(u, { slug, label, kind, start, quote, name, 
 async function addOnboarding(u, slug, kind, services, R, from) {
   const acc = await db.get('accounts', 'acc-' + slug); if (!acc) return 0;
   const prev = acc.onboarding?.items || [], add = onboardingFor(kind, services, R).filter((x) => !prev.some((y) => y.t === x.t));
-  if (add.length) await put('accounts', 'acc-' + slug, { onboarding: { ...(acc.onboarding || {}), items: [...prev, ...add], updated_at: now(), updated_by: u.email, ...(from ? { from } : {}) } }, u.email);
+  if (add.length) await put('accounts', 'acc-' + slug, { onboarding: { ...(acc.onboarding || {}), items: [...prev, ...add], at: acc.onboarding?.at || now(), updated_at: now(), updated_by: u.email, ...(from ? { from } : {}) } }, u.email);
   return add.length;
 }
 export async function bundleList() {
