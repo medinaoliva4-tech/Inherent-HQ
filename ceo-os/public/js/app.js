@@ -1,13 +1,15 @@
 import { instalarMenu } from './menu-contextual.js';
 import { applyViews, GROUPS, SPACES, movedRoute } from './roleviews.js';
 import { applyLevels, baseDefaults, LEVELS_ID } from './levels.js';
-import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, initials, esc, LOGO, infoTips, canTransition, ico } from './core.js';
+import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, initials, esc, LOGO, infoTips, canTransition, ico, skel } from './core.js';
 import { loadBrands, brandsNow, brandAccess, MODULES, AREAS, areaOf, firstOfArea, modulesFor, defaultModule, isSoon } from './brandlist.js';
 import { openSearch, searchOpen } from './search.js';
 import { loadEstrategia, estrategiaNow } from './stratlist.js';
 import { marcarSeccion, instalarBoton } from './guia.js';
 import { primerDia } from './primer-dia.js';
 import { pintarDock, quitarDock, icoApp } from './dock.js';
+import { svgIco } from './iconos.js';
+import { ponerTema, esNoche } from './tema.js';
 
 // Tres espacios, como cambiar de app en un iPhone: el interruptor de arriba (junto al logo) cambia entre
 //   ORGANIZATION  cómo se maneja la empresa   Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent
@@ -22,19 +24,8 @@ import { pintarDock, quitarDock, icoApp } from './dock.js';
 // Arriba de los espacios, dos apps unidas por el dock (dock.js): Organización (Organization y Marcas) y Chat (#/chat, el
 // Inherent LLM: Estrategia, Organización y Diseño en un solo chat con Hermes). Estrategia ya no va en el interruptor: su
 // pantalla sigue en #/estrategia (el tablero, y el chat por el puente mientras Hermes no está instalado).
-const P = {
-  hoy: 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
-  proyectos: 'M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5',
-  ventas: 'M3 10v4a1 1 0 0 0 1 1h2.5L15 19.5V4.5L6.5 9H4a1 1 0 0 0-1 1zM18.5 9a4 4 0 0 1 0 6',
-  servicios: 'M4 7h16v12H4zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M4 12h16',
-  finanzas: 'M5 20V10M12 20V4M19 20v-7',
-  inherent: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',
-  marcas: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
-  estrategia: 'M12 3l2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4z',
-  diseno: 'M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10zM13.5 7.5l3 3M15 20h5',
-  portal: 'M3 21V8l9-5 9 5v13M9 21v-6h6v6',
-};
-const svg = (d) => raw(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`);
+// Los íconos de la barra salen del set del OS (iconos.js: nav-hoy, nav-proyectos…).
+const svg = (k) => raw(svgIco('nav-' + k, 16));
 // Organization: las pantallas de cada sección → [ruta, nombre, qué hace falta para verla]. Varias = pestañas debajo de la barra.
 // Qué hace falta: un área de la matriz · 'ceo' · 'all' (todo el equipo) · una función.
 const full = (a) => me.areas.includes(a) && me.views?.[a] !== 'resumen';
@@ -59,10 +50,8 @@ const HUB_MAP = { control: 'control', operations: 'operations', work: 'work', sa
 const CT_MOD = { research: 'investigacion', refs: 'investigacion', semana: 'investigacion', fuentes: 'investigacion', shot: 'investigacion', postear: 'ideas', guiones: 'ideas', plan: 'calendario', calendario: 'calendario', analytics: 'resultados', bandeja: 'calendario/analytics' };
 const OLD_SECTION = { hoy: 'hoy', clientes: 'proyectos', proyectos: 'proyectos', ventas: 'ventas', servicios: 'servicios', finanzas: 'finanzas', inherent: 'inherent', equipo: 'inherent', comercial: 'ventas' };
 const root = $('#root');
-const SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>';
-const MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
-const setTheme = (dark) => { if (dark) document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme; document.querySelector('meta[name=theme-color]')?.setAttribute('content', dark ? '#15110e' : '#f1eadf'); };
-try { setTheme(localStorage.getItem('theme') === 'dark'); } catch {}
+// El botón de día y noche muestra a dónde vas: de noche el sol, de día la luna. El tema lo lleva tema.js (uno para las dos apps).
+const icoTema = () => svgIco(esNoche() ? 'sun' : 'moon', 18);
 export let me = null;
 let renderGen = 0;
 
@@ -206,12 +195,12 @@ function resolve(path) {
 
 // ---------- La barra (una por espacio) y las pestañas de debajo ----------
 const navItems = () => {
-  if (me.role === 'client') return [['portal', 'Mi portal', svg(P.portal)]];
+  if (me.role === 'client') return [['portal', 'Mi portal', svg('portal')]];
   // Estrategia es un solo chat: el cliente se elige en la caja del chat, no en la barra.
-  if (space === 'estrategia') return [['estrategia', 'Estrategia', svg(P.estrategia)]];
+  if (space === 'estrategia') return [['estrategia', 'Estrategia', svg('estrategia')]];
   // Marcas: las marcas (cada perfil se abre desde ahí). Su chat se mudó al Chat (modo Diseño); #/marcas/diseno sigue abriendo.
-  if (space === 'marcas') return [['marcas', 'Todas', svg(P.marcas)]];
-  return ORG.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l, svg(P[g])]);
+  if (space === 'marcas') return [['marcas', 'Todas', svg('marcas')]];
+  return ORG.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l, svg(g)]);
 };
 const navHtml = () => html`${navItems().map(([k, l, i]) => html`<button data-go="${k}" title="${l}">${i}<span>${l}</span></button>`)}`;
 const switchHtml = () => html`<div class="space-sw" role="tablist" aria-label="Espacio" data-n="${spacesFor().length}">${spacesFor().map(([k, l]) => html`<button role="tab" data-space="${k}" aria-selected="${space === k ? 'true' : 'false'}">${l}</button>`)}<span class="space-ind" aria-hidden="true"></span></div>`;
@@ -304,9 +293,9 @@ const seccionGuia = (cur) => (cur.key === 'me' ? 'me' : cur.key === 'estrategia'
 function jumpItems() {
   if (me.role === 'client') return [];
   const out = [{ title: 'Chat · Inherent LLM', sub: 'Estrategia, Organización y Diseño en un solo chat', route: '#/chat', icon: icoApp('chat') }];
-  if (hasOrg()) for (const [g, l] of ORG) for (const [r, tl, n] of TABS[g]) if (needOk(n)) out.push({ title: tl, sub: tl === l ? 'Organization' : `Organization · ${l}`, route: '#/org/' + r, icon: svg(P[g]) });
-  if (hasEstrategia()) { out.push({ title: 'Estrategia', sub: 'Todos los clientes', route: '#/estrategia', icon: svg(P.estrategia) }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Estrategia', route: `#/estrategia/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
-  if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg(P.marcas) }); if (brandAccess(me).contentFull) out.push({ title: 'Chat de Diseño gráfico', sub: 'Plan del mes, ideas y diseño', route: '#/marcas/diseno', icon: svg(P.estrategia) }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
+  if (hasOrg()) for (const [g, l] of ORG) for (const [r, tl, n] of TABS[g]) if (needOk(n)) out.push({ title: tl, sub: tl === l ? 'Organization' : `Organization · ${l}`, route: '#/org/' + r, icon: svg(g) });
+  if (hasEstrategia()) { out.push({ title: 'Estrategia', sub: 'Todos los clientes', route: '#/estrategia', icon: svg('estrategia') }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Estrategia', route: `#/estrategia/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
+  if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg('marcas') }); if (brandAccess(me).contentFull) out.push({ title: 'Chat de Diseño gráfico', sub: 'Plan del mes, ideas y diseño', route: '#/marcas/diseno', icon: svg('estrategia') }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
   return out;
 }
 const search = () => { if (me && me.role !== 'client') openSearch({ jump: jumpItems }); };
@@ -322,7 +311,7 @@ function shell() {
       ${me.role !== 'client' ? html`<a class="tochat" href="#/chat" aria-label="Abrir el Chat (Inherent LLM)" title="Chat · Inherent LLM">${icoApp('chat')}</a>` : ''}
       ${me.role !== 'client' ? html`<button class="searchbtn" id="searchbtn" type="button" aria-label="Buscar (${mac ? '⌘' : 'Ctrl+'}K)" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 17)}<kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>` : ''}
       ${me.role !== 'client' ? html`<button class="pdchip" id="pdchip" type="button" hidden aria-label="Seguir tu primer día"></button><button class="guiabtn" id="guiabtn" type="button" hidden aria-label="Cómo se usa esta parte">${ico('video', 15)}<span>Cómo se usa</span></button>` : ''}
-      <button class="themebtn" id="themebtn" title="Modo noche" aria-label="Cambiar modo día / noche">${raw(document.documentElement.dataset.theme === 'dark' ? SUN : MOON)}</button>
+      <button class="themebtn" id="themebtn" title="${esNoche() ? 'Modo día' : 'Modo noche'}" aria-label="Cambiar modo día / noche">${raw(icoTema())}</button>
       <div class="avatar" id="avatar" title="Mi perfil" role="button" tabindex="0" aria-label="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
     <div id="subnav" class="subnav" hidden></div>
@@ -340,7 +329,7 @@ function shell() {
   $('#avatar').onclick = () => { location.hash = '/me'; };
   $('#avatar').onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.hash = '/me'; } };
   // Modo noche: se guarda en este navegador.
-  $('#themebtn').onclick = () => { const dark = document.documentElement.dataset.theme !== 'dark'; setTheme(dark); try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {} $('#themebtn').innerHTML = dark ? SUN : MOON; };
+  $('#themebtn').onclick = () => ponerTema(esNoche() ? 'dia' : 'noche');
   // Las marcas llegan después (la barra de Marcas y el buscador las usan).
   if (hasMarcas()) loadBrands(me).then(() => { if (me) markNav(); });
   // Estrategia: los clientes llegan después (la barra y el buscador los usan).
@@ -359,36 +348,51 @@ async function render() {
   markNav(cur);
   if (me.role !== 'client') marcarSeccion(seccionGuia(cur));
   $('#avatar')?.classList.toggle('on', cur.key === 'me');
-  closeDrawer();
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
   // Cambiar de sección sin saltos: arriba de una vez (sin animar el scroll) y la página no se encoge
   // mientras carga la siguiente (antes «Cargando…» la hacía chiquita y el navegador brincaba).
   const old = $('#main'), keep = old.offsetHeight;
-  const main = old.cloneNode(false); main.style.minHeight = keep + 'px';
-  const gen = ++renderGen, vt = canTransition();
-  const apply = async () => {
+  const main = old.cloneNode(false); main.removeAttribute('inert'); main.style.minHeight = keep + 'px';
+  const gen = ++renderGen, vt = canTransition(), alive = () => gen === renderGen;
+  // El módulo de la pantalla llega ANTES de la transición (después de la primera vez ya está en caché): así la transición
+  // nunca espera a la red y la pantalla no se queda congelada en la anterior.
+  // Mientras baja, la pantalla vieja ya no se puede tocar (si no, una pestaña tocada a destiempo cambiaría la dirección).
+  old.inert = true;
+  let mod = null, err = null;
+  try { mod = await import(`./screens/${SCREENS[cur.key]}.js`); } catch (e) { err = e; }
+  if (!alive()) return;
+  // Si lo que falló fue bajar el código de la pantalla, «Reintentar» recarga la página (el navegador de la app de Mac
+  // recuerda el módulo que falló y volver a pedirlo fallaría igual).
+  const fallo = (e) => { main.style.minHeight = ''; const recarga = e === err || /dynamically imported module|Importing a module script failed|module script/i.test(e?.message || ''); mount(main, html`<div class="warnbox ui-fallo">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : recarga ? 'No se pudo abrir esta parte (¿se fue el internet?).' : e.message || 'No cargó.'} <button type="button" class="btn ghost xs" data-reintentar="${recarga ? 'recargar' : ''}">Reintentar</button></div>`); };
+  main.addEventListener('click', (e) => { const b = e.target.closest('[data-reintentar]'); if (b && alive()) { if (b.dataset.reintentar === 'recargar') location.reload(); else render(); } });
+  let lista = null;
+  const pintar = () => {
+    if (!alive()) return null; // ya se pidió otra pantalla: esta no se pinta
+    closeDrawer();
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); $('.app')?.scrollTo({ top: 0, left: 0, behavior: 'instant' }); // en el cel el que se desliza es .app
     old.replaceWith(main);
     if (!vt) { main.classList.add('enter'); setTimeout(() => main.classList.remove('enter'), 900); }
-    const slow = setTimeout(() => { if (gen === renderGen && !main.childElementCount) mount(main, html`<p class="loading">Cargando…</p>`); }, 250);
-    try {
-      const mod = await import(`./screens/${SCREENS[cur.key]}.js`);
-      if (gen !== renderGen) return;
-      await mod.render(main, { me, area: cur.key, sub: cur.rest, label: LABEL[cur.key] || cur.key, alive: () => gen === renderGen });
-    } catch (e) {
-      mount(main, html`<div class="warnbox">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : e.message}</div>`);
-    } finally { clearTimeout(slow); if (gen === renderGen) main.style.minHeight = ''; }
+    // La forma de la pantalla mientras llegan los datos (se ve solo si tarda: antes de 160 ms no aparece nada).
+    mount(main, mod?.esqueleto?.() || skel('pagina'));
+    if (err) { fallo(err); return null; }
+    lista = Promise.resolve()
+      .then(() => mod.render(main, { me, area: cur.key, sub: cur.rest, label: LABEL[cur.key] || cur.key, alive }))
+      .catch((e) => { if (alive()) fallo(e); })
+      .finally(() => { if (alive()) main.style.minHeight = ''; });
+    // Si la pantalla queda lista en menos de 150 ms entra directo; si no, entra su esqueleto y los datos llegan encima.
+    return Promise.race([lista, new Promise((r) => setTimeout(r, 150))]);
   };
-  // Con transiciones, la pantalla vieja se queda a la vista hasta que la nueva está lista y entonces cambia suave.
   if (vt) {
     const root = document.documentElement; root.dataset.vt = 'nav';
-    const t = document.startViewTransition(apply);
+    const t = document.startViewTransition(pintar);
     t.finished.finally(() => { if (root.dataset.vt === 'nav') delete root.dataset.vt; });
     await t.updateCallbackDone.catch(() => {});
-  } else await apply();
+  } else pintar();
+  await lista;
 }
 
 window.addEventListener('hashchange', () => me && render());
+window.addEventListener('tema', () => { const b = $('#themebtn'); if (b) { b.innerHTML = icoTema(); b.title = esNoche() ? 'Modo día' : 'Modo noche'; } });
 // Las pantallas siguen escribiendo su ruta de siempre (#/sales/quotes…). Dentro de Organization se guarda como
 // #/org/sales/quotes, así recargar o compartir el link abre en el mismo lugar (y la última ruta del espacio se recuerda).
 { const rs = history.replaceState.bind(history);
@@ -410,6 +414,8 @@ async function start(u) {
   const c = pendingConnect();
   if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); return consentView(root, me, c, () => { shell(); render(); }); }
   shell(); render();
+  // Las pantallas de todos los días se bajan en segundo plano: el primer clic ya no espera a que llegue su código.
+  if (me.role !== 'client') { const pre = () => { for (const k of ['home', 'work', 'operations', 'sales', 'finanzas', 'clients', 'marcas', 'chat']) if (SCREENS[k] && sees(k)) import(`./screens/${SCREENS[k]}.js`).catch(() => {}); }; 'requestIdleCallback' in window ? requestIdleCallback(pre, { timeout: 3000 }) : setTimeout(pre, 1500); }
   // El primer día: la primera vez, el recorrido de 6 pasos (se puede pausar; el chip de la barra lo retoma).
   if (me.role !== 'client') primerDia(me);
   // El service worker de los avisos (web push). Sin él, nada cambia.

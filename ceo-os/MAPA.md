@@ -25,7 +25,9 @@ Si el mapa y el código no coinciden, manda el código. Corrige el mapa en el mi
 | Cómo se arma el trabajo | `public/js/recipes.js` (las recetas de siempre) y `api/_lib/flow.js` |
 | Lo que el OS lee del repo | `scripts/snapshot.mjs` (la copia) y `api/_lib/gh.js` (la lectura) |
 | La app de Mac | `escritorio/main.js` |
-| Estilos | `public/app.css` (uno solo, con variables de color de día y de noche) |
+| Estilos | `public/app.css` (uno solo). Los colores, el movimiento y los radios viven en el bloque **«SISTEMA v2»** del final (tokens `--ui-*`, de día y de noche); los nombres viejos (`--bg`, `--ink`…) son alias |
+| Íconos | `public/js/iconos.js` (un solo set: Lucide + los propios) · se pintan con `ico()` de `core.js` |
+| Día y noche | `public/js/tema-boot.js` (antes del primer pintado) y `public/js/tema.js` (uno solo para las dos apps) |
 
 ---
 
@@ -211,9 +213,11 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 **Núcleo**
 - `public/index.html` — la única página: carga Inter, `app.css` y `js/app.js` · todo vive en `#root`.
 - `public/app.css` — todos los estilos, con variables de color de día y de noche.
-- `app.js` — login, las dos apps y sus espacios, la barra y las pestañas, el router y sus alias, y el arranque · la entrada del navegador.
+- `app.js` — login, las dos apps y sus espacios, la barra y las pestañas, el router y sus alias, y el arranque · la entrada del navegador. `render()` baja el módulo de la pantalla antes de la transición, la transición espera como mucho 150 ms y la pantalla pinta su forma (`skel()`) mientras llegan los datos: nunca se queda congelada la anterior. Si algo falla, «Reintentar». Las pantallas de todos los días se bajan en segundo plano al abrir.
+- `iconos.js` — el set de íconos del OS: Lucide (licencia ISC, el aviso va arriba) más los propios (`chat-ia`, `stop-lleno`), con los nombres de antes como alias (`ALIAS`: cal → calendar, gear → settings…) y `svgIco(nombre, tamaño)` · tamaños sm 14 · md 16 · lg 18 · xl 20 · puro (lo prueba `test:ui`). Para agregar uno se copia su nodo de `lucide-static`.
+- `tema.js` — el día y la noche, uno solo para Organización y el Chat: `temaElegido()` ('sistema' · 'dia' · 'noche'), `ponerTema()`, `esNoche()` y el evento `tema`. Se guarda en `localStorage` `theme` (nada = sigue a la compu). `tema-boot.js` (script clásico en el `head`) lo pone antes del primer pintado y pinta la franja del iPhone (`theme-color`).
 - `dock.js` — el dock: Organización y Chat, la app activa y el salto a la otra (`pintarDock`, `quitarDock`, `icoApp`).
-- `core.js` — `html`/`raw`/`mount`, `api()` y `col()`, toast, drawer, `ask`, íconos, markdown, Mermaid, CSV, `openClaude`/`claudeJSON` · lo que usan todas las pantallas.
+- `core.js` — `html`/`raw`/`mount`, `api()` y `col()`, toast, drawer, `ask`, íconos (`ico()` sale de `iconos.js`), la forma de una pantalla que carga (`skel()`), markdown, Mermaid, CSV, `openClaude`/`claudeJSON` · lo que usan todas las pantallas.
 - `roleviews.js` — la matriz de Vistas por rol, secciones, espacios, rutas mudadas y el «para qué» de cada puesto · compartido con el servidor.
 - `levels.js` — los 3 niveles y la traducción de nombres viejos; el baseline (solo CEO) · un solo lugar para los niveles.
 - `element.js` — el modelo de elemento: estados (Idea · En proceso · Listo · Publicado), nombre automático y archivado · puro.
@@ -509,6 +513,8 @@ npm run test:design  # Design system (sistema-visual.md)
 npm run test:ventas  # la meta de Ventas
 npm run test:marca   # Marca › Video, Ads y Tech
 npm run test:llm     # el Inherent LLM: harness, comandos, tarjetas y sesiones
+npm run test:ui      # el sistema de diseño: íconos que existen, día y noche, contraste AA, papel intacto
+npm run capturas     # capturas de día y de noche, compu y cel, en .capturas/ (con el OS local corriendo)
 ```
 
 - **El servidor local** (`scripts/dev.mjs`) sirve `public/` y la API en el puerto 3000, con la base PGlite en `ceo-os/.devdb/`, login de prueba, un CEO de prueba, los mismos encabezados de `vercel.json` y `/diagnostico`.

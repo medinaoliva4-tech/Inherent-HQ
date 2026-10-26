@@ -3,11 +3,10 @@
 // En la compu es una barrita a la izquierda (sin logo: el logo va en cada app, una sola vez); en el cel se esconde y cada
 // app trae su atajo a la otra. El ícono del Chat es una burbuja abierta con la chispa de la IA arriba.
 import { html, mount, raw } from './core.js';
+import { svgIco } from './iconos.js';
 
-const ICONOS = {
-  os: '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>',
-  chat: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12.2c-.4 3.9-4.2 6.8-8.6 6.8-1.06 0-2.08-.15-3.03-.44L4.5 19.9l1.12-3.73C4 14.83 3 13 3 11c0-4.1 4-7.4 9-7.5"/><path d="M18 2.8l.75 2.05L20.8 5.6l-2.05.75L18 8.4l-.75-2.05L15.2 5.6l2.05-.75z" fill="currentColor" stroke-width="1.1"/></svg>',
-};
+// Del set del OS (iconos.js): la cuadrícula de Organización y el Chat (burbuja abierta con la chispa de la IA).
+const ICONOS = { os: svgIco('os', 20, 'lni lni-dock'), chat: svgIco('chat-ia', 20, 'lni lni-dock') };
 export const APPS = [['os', 'Organización'], ['chat', 'Chat · Inherent LLM']];
 
 // ir(app) lleva a la app; actual: 'os' | 'chat'.

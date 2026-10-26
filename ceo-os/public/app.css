@@ -4778,3 +4778,163 @@ html[data-app="chat"] .app::before,html[data-app="chat"] .app::after{display:non
 .lm-acts button svg{width:13px;height:13px}
 @media (max-width:760px){.lc-priv span{display:none}.lc-priv{padding:0 9px;flex-shrink:0}.lc-esf{display:none}}
 html[data-app="chat"] .app{overflow:hidden}
+
+/* ===================== SISTEMA v2 · un solo sistema para Organización y el Chat =====================
+   Los colores del Inherent LLM: de noche gris cálido tipo Claude, de día blanco cálido, café solo de acento. El tema lo pone
+   tema-boot.js / tema.js (html[data-theme]). Los tokens de antes (--bg, --ink, --surface…) quedan como ALIAS de los --ui-*:
+   las pantallas no cambian de código. Las zonas de papel (cotización, login, portadas) conservan su paleta de siempre.
+   Movimiento: corto, solo transform y opacity, la salida dura ~70% de la entrada; con «reducir movimiento», nada se mueve. */
+:root{
+  --ui-bg:#faf9f6; --ui-side:#f2f0eb; --ui-surf:#ffffff; --ui-surf2:#f0ede7; --ui-fill:#f5f3ef; --ui-fill2:#ebe7e0;
+  --ui-line:rgb(30 25 20 / .09); --ui-line2:rgb(30 25 20 / .16);
+  --ui-ink:#1f1d1a; --ui-ink2:#4a463f; --ui-mut:#736d64; --ui-mut2:#8a847a; --ui-acc:#8a5a36; --ui-acc-ink:#fffaf3; --ui-user:#efebe4;
+  --ui-ok:#3f7a46; --ui-warn:#a4532f; --ui-bad:#b3402e;
+  --ui-glass:rgb(255 255 255 / .8); --ui-ink-rgb:31 29 26; --ui-surf-rgb:255 255 255;
+  --ui-sh-1:0 0 0 1px var(--ui-line),0 1px 2px rgb(40 30 20 / .05);
+  --ui-sh-2:0 0 0 1px var(--ui-line),0 12px 32px -14px rgb(40 30 20 / .28);
+  --ui-sh-3:0 18px 50px -22px rgb(40 30 20 / .28),0 1px 2px rgb(40 30 20 / .05);
+  --ui-m-estrategia:#b07a45; --ui-m-organizacion:#4f8a62; --ui-m-diseno:#7563b5;
+  --ui-focus:var(--ui-acc);
+  --d-1:100ms; --d-2:150ms; --d-3:200ms; --d-4:300ms; --d-5:500ms;
+  --e-out:cubic-bezier(.23,1,.32,1); --e-move:cubic-bezier(.77,0,.175,1); --e-std:cubic-bezier(.2,0,0,1); --e-sheet:cubic-bezier(.32,.72,0,1);
+  --r-1:6px; --r-2:10px; --r-3:12px; --r-4:16px;
+}
+:root[data-theme="dark"]{
+  --ui-bg:#1f1e1c; --ui-side:#181816; --ui-surf:#2a2926; --ui-surf2:#34322e; --ui-fill:#2f2e2b; --ui-fill2:#3a3834;
+  --ui-line:rgb(255 250 240 / .085); --ui-line2:rgb(255 250 240 / .14);
+  --ui-ink:#ecebe6; --ui-ink2:#c4c1b8; --ui-mut:#9a968c; --ui-mut2:#8e8a80; --ui-acc:#c99d74; --ui-acc-ink:#1d1712; --ui-user:#302e2a;
+  --ui-ok:#8fbf8a; --ui-warn:#e3a07f; --ui-bad:#e8857a;
+  --ui-glass:rgb(42 41 38 / .78); --ui-ink-rgb:236 235 230; --ui-surf-rgb:42 41 38;
+  --ui-sh-1:0 0 0 1px var(--ui-line),0 1px 0 rgb(0 0 0 / .25);
+  --ui-sh-2:0 0 0 1px var(--ui-line2),0 16px 40px -14px rgb(0 0 0 / .65);
+  --ui-sh-3:0 18px 50px -18px rgb(0 0 0 / .7),0 1px 0 rgb(255 250 240 / .04) inset;
+  --ui-m-estrategia:#d4a373; --ui-m-organizacion:#8fb39a; --ui-m-diseno:#a99ad6;
+}
+/* Los tokens de antes, como alias (en los dos temas, para ganarle a los bloques viejos de :root[data-theme="dark"]). */
+:root,:root[data-theme="dark"]{
+  --bg:var(--ui-bg); --ink:var(--ui-ink); --ink2:var(--ui-ink2); --mut:var(--ui-mut); --tone:var(--ui-acc); --warn:var(--ui-warn);
+  --ink-rgb:var(--ui-ink-rgb); --surface:var(--ui-surf); --surface-rgb:var(--ui-surf-rgb); --fill:var(--ui-fill); --fill-2:var(--ui-fill2);
+  --line:var(--ui-line); --hair:var(--ui-line); --hair-strong:var(--ui-line2);
+  --glass:var(--ui-glass); --glass2:var(--ui-surf); --bar:var(--ui-glass);
+  --cream:var(--ui-bg); --cream2:var(--ui-side); --espresso:var(--ui-ink); --brown:var(--ui-ink2); --lime:var(--ui-surf2); --lime-ink:var(--ui-ink2);
+  --sh-1:var(--ui-sh-1); --sh-2:var(--ui-sh-2); --sh-3:var(--ui-sh-3); --shadow:var(--ui-sh-1);
+  --r:16px; --r-s:10px; --r-l:18px; --ease:var(--e-out); --t:var(--d-3);
+  /* usados sin existir hasta hoy */
+  --font:var(--sans); --soft:var(--ui-fill); --fill2:var(--ui-fill2); --accent:var(--ui-acc);
+}
+:root{--stroke:rgb(255 255 255 / .7)}
+:root[data-theme="dark"]{--stroke:var(--ui-line)}
+/* Las zonas de papel: la cotización, el login, las portadas y lo que siempre fue papel conservan la paleta de siempre. */
+:is(.qdoc,.feat,.login,.bx,.rview,.recbar,.inbox,.sp-cover){
+  --bg:#f1eadf; --ink:#2c1f16; --ink2:#4a3628; --mut:#7d624b; --tone:#6a503c; --warn:#7a4632;
+  --ink-rgb:44 31 22; --surface:#fcf9f2; --surface-rgb:253 250 243; --fill:#f3ede3; --fill-2:#ebe3d6;
+  --line:rgb(44 31 22 / .1); --hair:rgb(44 31 22 / .08); --hair-strong:rgb(44 31 22 / .14);
+  --glass:rgb(253 250 243 / .62); --glass2:rgb(253 250 243 / .9); --bar:rgb(253 250 243 / .72); --stroke:rgb(255 255 255 / .6);
+  --cream:#f4eee5; --cream2:#f1ebe0; --espresso:#36271b; --brown:#423022; --lime:#efe7dc; --lime-ink:#594231;
+  --sh-1:0 1px 2px rgb(44 31 22 / .05); --sh-2:0 12px 32px -12px rgb(44 31 22 / .24),0 2px 6px rgb(44 31 22 / .04); --shadow:var(--sh-1);
+  --ui-bg:#f1eadf; --ui-surf:#fcf9f2; --ui-surf2:#f3ede3; --ui-fill:#f3ede3; --ui-fill2:#ebe3d6; --ui-ink:#2c1f16; --ui-ink2:#4a3628; --ui-mut:#7d624b;
+  --ui-line:rgb(44 31 22 / .1); --ui-line2:rgb(44 31 22 / .14); --ui-acc:#6a503c; --ui-acc-ink:#fffaf3;
+  color-scheme:light;
+}
+html{background:var(--ui-bg)}
+body{background:var(--ui-bg)}
+/* Plano como el Chat: sin manchas de color ni grano detrás. */
+body::before,body::after,:root[data-theme="dark"] body::before,:root[data-theme="dark"] body::after{display:none}
+::selection{background:color-mix(in srgb,var(--ui-acc) 26%,transparent)}
+
+/* El Chat lee el mismo sistema (antes tenía su propia paleta y su propio día/noche). */
+.llm,.llm[data-tema="dia"]{
+  --l-bg:var(--ui-bg); --l-side:var(--ui-side); --l-surf:var(--ui-surf); --l-surf2:var(--ui-surf2); --l-line:var(--ui-line); --l-line2:var(--ui-line2);
+  --l-ink:var(--ui-ink); --l-ink2:var(--ui-ink2); --l-mut:var(--ui-mut); --l-acc:var(--ui-acc); --l-acc-ink:var(--ui-acc-ink); --l-user:var(--ui-user);
+  --l-ok:var(--ui-ok); --l-warn:var(--ui-warn); --l-glass:var(--ui-glass); --l-shadow:var(--ui-sh-3);
+  --l-m-estrategia:var(--ui-m-estrategia); --l-m-organizacion:var(--ui-m-organizacion); --l-m-diseno:var(--ui-m-diseno);
+  --tone:var(--ui-acc); --ink-rgb:var(--ui-ink-rgb); --surface-rgb:var(--ui-surf-rgb);
+  color-scheme:light;
+}
+:root[data-theme="dark"] .llm{color-scheme:dark}
+/* El logo del Chat y el panel de Estrategia siguen al tema global. */
+.llm .wm-dia,:root[data-theme="dark"] .llm .wm-dia{display:none}
+.llm .wm-noche{display:none}
+:root[data-theme="light"] .llm .wm-dia{display:block}
+:root[data-theme="dark"] .llm .wm-noche{display:block}
+:root[data-theme="light"] .llm .ls-emb{box-shadow:none}
+:root[data-theme="dark"] .ev-bar.w{background:rgb(201 162 39 / .16);color:#e6c873}
+:root[data-theme="dark"] .ev-sup.falta{color:#e0b84a;border-bottom-color:rgb(224 184 74 / .6)}
+:root[data-theme="dark"] .ev-ck.riesgo i{background:rgb(201 162 39 / .2)}
+:root[data-theme="dark"] .ev-week span.s{background:#4a3d30;color:#ecebe6}
+
+/* El dock: la barrita de las dos apps, con los mismos tokens en las dos. */
+@media (min-width:761px){
+  .dock,html[data-app="chat"] .dock,html[data-app="chat"][data-llm-tema="dia"] .dock{background:var(--ui-side);border-right:1px solid var(--ui-line);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .dock button,html[data-app="chat"] .dock button,html[data-app="chat"][data-llm-tema="dia"] .dock button{color:var(--ui-mut2);transition:background var(--d-2) var(--e-std),color var(--d-2) var(--e-std),transform var(--d-1) var(--e-out)}
+  .dock button:hover,html[data-app="chat"] .dock button:hover,html[data-app="chat"][data-llm-tema="dia"] .dock button:hover{background:var(--ui-surf2);color:var(--ui-ink)}
+  .dock button:active{transform:scale(.95)}
+  .dock button.on,html[data-app="chat"] .dock button.on,html[data-app="chat"][data-llm-tema="dia"] .dock button.on{background:var(--ui-ink);color:var(--ui-bg)}
+  .dock button.on::before,html[data-app="chat"] .dock button.on::before,html[data-app="chat"][data-llm-tema="dia"] .dock button.on::before{background:var(--ui-ink)}
+  .dock-tip,html[data-app="chat"] .dock-tip,html[data-app="chat"][data-llm-tema="dia"] .dock-tip{background:var(--ui-ink);color:var(--ui-bg)}
+}
+
+/* Íconos: un solo set (iconos.js), trazo parejo según el tamaño. Sin estilos sueltos en el HTML. */
+.lni{stroke-width:1.75;flex:none;vertical-align:-3px}
+.lni-sm{stroke-width:2}
+.lni-xl{stroke-width:1.6}
+.lni-fuerte{stroke-width:2.2}
+.ic{stroke-width:1.75}
+
+/* El foco del teclado: un anillo café en todo lo que se toca. */
+.in:focus,.in:focus-visible{outline:none;border-color:color-mix(in srgb,var(--ui-acc) 55%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--ui-acc) 18%,transparent)}
+
+/* Para lectores de pantalla. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* La forma de una pantalla mientras cargan sus datos (skel() de core.js): aparece solo si tarda (160 ms) y brilla suave. */
+.skel{display:grid;gap:12px;padding:6px 0;animation:skAparece 0s linear 160ms both}
+@keyframes skAparece{from{visibility:hidden}to{visibility:visible}}
+.skel i{display:block;border-radius:var(--r-2);background:var(--ui-surf2)}
+.skel .sk-t{height:30px;width:min(340px,60%)}
+.skel .sk-s{height:14px;width:min(240px,40%);margin-bottom:10px}
+.skel .sk-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:6px}
+.skel .sk-kpis i{height:92px;border-radius:var(--r-3)}
+.skel .sk-row{height:46px}
+@media (max-width:760px){.skel .sk-kpis{grid-template-columns:1fr 1fr}}
+@media (prefers-reduced-motion:no-preference){
+  .skel i{background:linear-gradient(90deg,var(--ui-surf2) 0%,var(--ui-fill) 50%,var(--ui-surf2) 100%);background-size:200% 100%;animation:skBrillo 1.5s linear infinite}
+}
+@keyframes skBrillo{from{background-position:100% 0}to{background-position:-100% 0}}
+.ui-fallo{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+/* Movimiento entre pantallas: lo viejo se va en 120 ms y lo nuevo entra en 200 ms, apenas subiendo. */
+@keyframes vt2Out{to{opacity:0}}
+@keyframes vt2In{from{opacity:0;transform:translateY(4px)}}
+html[data-vt=nav]::view-transition-old(vt-main){animation:vt2Out 120ms var(--e-out) both}
+html[data-vt=nav]::view-transition-new(vt-main){animation:vt2In 200ms var(--e-out) both}
+/* Lo que se toca responde: un leve hundirse al presionar (solo transform). */
+@media (prefers-reduced-motion:no-preference){
+  .btn,.nav button,.space-sw button,.chip,.tile,.ls-row a,.ls-modo,.ls-new,.lc-send,.lsg-c{transition:background var(--d-2) var(--e-std),color var(--d-2) var(--e-std),border-color var(--d-2) var(--e-std),transform var(--d-1) var(--e-out)}
+  .btn:active,.nav button:active,.space-sw button:active,.ls-new:active,.ls-modo:active,.lsg-c:active{transform:scale(.97)}
+}
+/* Con «reducir movimiento» el corte global de arriba apaga todo; los indicadores de estado (girar, pensar) sí se quedan. */
+@media (prefers-reduced-motion:reduce){
+  .lm-spin,.ui-spin{animation-duration:.8s!important;animation-iteration-count:infinite!important}
+}
+/* Ventas: las listas inteligentes y el volumen con íconos de línea en su color, sin cuadrito de fondo (como Linear). */
+.vx-v i,.vx-ah i{background:none!important;width:18px;height:18px;border-radius:0}
+.vx-v i .lni,.vx-ah i .lni{vertical-align:0}
+/* La pestaña activa de arriba: un fondo suave como en el Chat, no una píldora oscura. */
+.nav-ind{background:var(--ui-surf2);box-shadow:inset 0 0 0 1px var(--ui-line)}
+.nav button.on{color:var(--ui-ink)}
+:root[data-theme="dark"] .space-ind{background:var(--ui-surf2)}
+/* Mis tareas: las mismas listas con íconos de línea en su color, sin círculo de fondo. */
+.mt-ic,.mt-li i{background:none!important;border-radius:0}
+.mt-li i{width:20px;height:20px}
+.mt-ic .lni,.mt-li i .lni{vertical-align:0}
+/* Revisión del bloque 1 */
+/* El foco café: en botones y links con su anillo; en los campos solo si el campo no trae su propio estilo (peso 0). */
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visible,.btn:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+:where(input,select,textarea):where(:focus-visible){outline:2px solid var(--ui-focus);outline-offset:2px}
+/* De noche, los íconos de color de Ventas y Mis tareas se aclaran para que se lean sobre el fondo oscuro. */
+:root[data-theme="dark"] :is(.vx-v i,.vx-ah i,.mt-ic,.mt-li i)>.lni{color:color-mix(in srgb,currentColor 55%,#fff)}
+/* Sin View Transition, la entrada de la pantalla no le gana a la aparición diferida del esqueleto. */
+#main.enter>.skel{animation:skAparece 0s linear 160ms both}
+/* Imprimir o guardar en PDF (Presupuesto, Roadmap): la hoja siempre en papel, de día o de noche. */
+@media print{html,body,:root[data-theme="dark"] body{background:#fcf9f2!important}}
