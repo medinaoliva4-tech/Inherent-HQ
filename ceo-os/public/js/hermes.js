@@ -44,7 +44,11 @@ export async function modelosHermes(me, { fresco = false } = {}) {
   return { actual: { provider: j.provider || '', model: j.model || '' }, proveedores };
 }
 // Nombres amables de los proveedores de Hermes, para el selector.
-export const nombreProveedor = (slug) => ({ 'openai-codex': 'ChatGPT', anthropic: 'Claude', nous: 'Nous Portal', openrouter: 'OpenRouter', openai: 'OpenAI', lmstudio: 'LM Studio', ollama: 'Ollama', llamacpp: 'llama.cpp', custom: 'Endpoint propio', 'github-copilot': 'Copilot', xai: 'Grok' }[slug] || slug);
+export const nombreProveedor = (slug) => ({ 'openai-codex': 'ChatGPT', anthropic: 'Claude', nous: 'Nous Portal', openrouter: 'OpenRouter', openai: 'OpenAI', lmstudio: 'LM Studio', ollama: 'Ollama', llamacpp: 'llama.cpp', 'llama-cpp': 'llama.cpp', vllm: 'vLLM', local: 'Modelo local', 'ollama-cloud': 'Ollama Cloud', custom: 'Endpoint propio', 'github-copilot': 'Copilot', xai: 'Grok' }[slug] || slug);
+
+// Los proveedores que corren en la compu (el modo privado): lo que se habla no sale de ella. Ollama Cloud no cuenta.
+export const LOCALES = ['ollama', 'lmstudio', 'llamacpp', 'llama-cpp', 'vllm', 'local'];
+export const esLocal = (slug) => LOCALES.includes(String(slug || ''));
 
 // Una respuesta en streaming por la API compatible con OpenAI. Mantiene la conversación con X-Hermes-Session-Id
 // (Hermes guarda el historial): cada chat del OS manda su propia sesión. onDelta(texto acumulado) · onTool(nombre).
@@ -100,9 +104,10 @@ export async function skillsHermes(me) { const j = await (await pide(conexion(me
 
 // Un turno en una sesión, en streaming (SSE). Cerrar la conexión (signal) detiene al agente: así funciona «Detener».
 // on = { delta(texto acumulado), tool({ fase: 'inicio'|'fin'|'error', nombre, detalle }), nota(texto), aprobacion(evento), run(runId) }
-export async function turnoSesion(me, id, { mensaje, sistema, modelo = {}, signal, on = {} }) {
+// esfuerzo: cuánto piensa el modelo antes de responder ('low' rápido · 'high' a fondo · '' lo que decida el modelo).
+export async function turnoSesion(me, id, { mensaje, sistema, modelo = {}, esfuerzo = '', signal, on = {} }) {
   const h = conexion(me);
-  const body = { message: mensaje, ...(sistema ? { system_message: sistema } : {}), ...(modelo.model ? { model: modelo.model, ...(modelo.provider ? { provider: modelo.provider } : {}) } : {}) };
+  const body = { message: mensaje, ...(sistema ? { system_message: sistema } : {}), ...(modelo.model ? { model: modelo.model, ...(modelo.provider ? { provider: modelo.provider } : {}) } : {}), ...(esfuerzo ? { model_options: { reasoning_effort: esfuerzo } } : {}) };
   const r = await pide(h, `/api/sessions/${encodeURIComponent(id)}/chat/stream`, { method: 'POST', body, signal, ms: 30 * 60 * 1000 });
   const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '', texto = '', final = null, fallo = '', estado = '';
   const emitir = (ev, d) => {
@@ -130,6 +135,10 @@ export async function turnoSesion(me, id, { mensaje, sistema, modelo = {}, signa
   if (fallo) throw new Error(fallo);
   if (estado === 'cancelled') throw Object.assign(new Error('Interrumpido.'), { name: 'AbortError' });
   return { texto: final ?? texto, estado };
+}
+// Ramificar: una conversación nueva con todo lo hablado, para seguir por otro lado (Hermes da por cerrada la original).
+export async function ramificarSesion(me, id, { nuevoId, titulo }) {
+  return (await pide(conexion(me), `/api/sessions/${encodeURIComponent(id)}/fork`, { method: 'POST', body: { id: nuevoId, ...(titulo ? { title: titulo } : {}) }, ms: 15000 })).json();
 }
 // Responder una aprobación (un comando que pide permiso). choice: once · session · always · deny.
 export async function responderAprobacion(me, runId, ev, choice) {

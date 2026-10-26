@@ -80,6 +80,7 @@ export function sistemaDe(modo, ctx = {}) {
     ctx.fecha ? `Hoy: ${ctx.fecha}` : '',
     ctx.cliente ? `${m.pide === 'marca' ? 'Marca' : 'Cliente'}: ${ctx.cliente}${ctx.carpeta ? ` (${ctx.carpeta})` : ''}` : '',
     ctx.nivel ? `Nivel contratado: ${ctx.nivel}` : '',
+    ctx.privado ? 'Modo privado: respondes con un modelo que corre en esta compu. No busques en la web ni mandes lo de esta conversación a servicios de afuera.' : '',
     ...(ctx.extra || []),
   ].filter(Boolean);
   return [
@@ -116,6 +117,8 @@ export const COMANDOS = [
   ['/diseno', 'Cambiar al modo Diseño'],
   ['/nuevo', 'Empezar una conversación nueva'],
   ['/modelo', 'Elegir el modelo que responde'],
+  ['/privado', 'Prender o apagar el modo privado (un modelo en tu compu)'],
+  ['/ramificar', 'Seguir esta conversación por otro lado, en una nueva'],
   ['/skill', 'Usar una skill de Hermes (las del repo y las suyas)'],
   ['/terminal', 'Ver los comandos de Hermes en la Terminal'],
 ];
@@ -127,15 +130,22 @@ export function leerComando(t) {
 }
 // Los comandos de la Terminal que hacen funcionar a Hermes (perfil «inherent»): el backend se alimenta desde ahí.
 export const TERMINAL = [
-  ['Instalar o actualizar Hermes', 'curl -fsSL https://inherent-work.vercel.app/laya/hermes/instalar.sh | bash'],
+  ['Instalar Hermes', 'curl -fsSL https://inherent-work.vercel.app/laya/hermes/instalar.sh | bash'],
+  ['Actualizar Hermes (si algo no abre)', 'inherent update'],
   ['Elegir el modelo (suscripción, API o local)', 'inherent model'],
   ['Conectar ChatGPT con tu suscripción', 'inherent auth add openai-codex --browser'],
   ['Conectar Claude', 'inherent auth add anthropic'],
   ['Autorizar el conector de Inherent OS', 'inherent mcp login inherent'],
+  ['Modelo local, gratis y privado (con Ollama instalado)', 'ollama pull qwen3-coder:30b'],
+  ['Darle al modelo local la memoria que Hermes necesita (64K)', 'inherent config set model.ollama_num_ctx 65536'],
   ['Ver las skills que tiene', 'inherent skills list'],
   ['Revisar que todo esté bien', 'inherent doctor'],
   ['Ver la llave del OS', 'cat ~/.inherent/hermes/api-key'],
 ];
+
+// Cuánto piensa el modelo antes de responder (Hermes lo manda como reasoning_effort). '' = lo que decida el modelo.
+export const ESFUERZOS = [['low', 'Rápido', 'Responde ya; para lo simple'], ['', 'Normal', 'Lo que decida el modelo'], ['high', 'A fondo', 'Piensa más; para estrategia y lo difícil']];
+export const nombreEsfuerzo = (k) => (ESFUERZOS.find(([v]) => v === (k || '')) || ESFUERZOS[1])[1];
 
 // ---------- Leer una respuesta ----------
 const RE_BLOQUES = /```(criterios|pregunta|estrategia)\s*\n([\s\S]*?)```/g;

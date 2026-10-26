@@ -55,7 +55,8 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
   - lo que se guarda en el OS va por el conector, con lo que el perfil de la persona permite y con su OK;
   - lo que pide permiso, se pregunta en la conversación; una pregunta a la vez;
   - la estrategia la sigue aprobando el CEO: el chat no la cambia si ya está aprobada;
-  - las conversaciones viven en la compu de cada persona, no en Vercel.
+  - las conversaciones viven en la compu de cada persona, no en Vercel;
+  - el **modo privado** existe para lo que no debe salir de la compu (datos de clientes, finanzas): responde un modelo local y, si no hay, no manda nada.
 
 ### Estrategia
 

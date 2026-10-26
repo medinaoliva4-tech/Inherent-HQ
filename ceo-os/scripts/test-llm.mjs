@@ -1,7 +1,7 @@
 // Pruebas del Inherent LLM: el harness de cada modo, los comandos «/», las tarjetas (criterios y pregunta) y las sesiones.
 // npm run test:llm
 import assert from 'node:assert/strict';
-import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha } from '../public/js/llm/modos.js';
+import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo } from '../public/js/llm/modos.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
@@ -43,7 +43,9 @@ t('comandos «/»: con y sin acento, con argumento, y lo demás es texto', () =>
   assert.deepEqual(leerComando('/skill hormozi'), { cmd: '/skill', arg: 'hormozi' });
   assert.equal(leerComando('/inventado'), null);
   assert.equal(leerComando('hola /nuevo'), null);
-  assert.equal(COMANDOS.length, 7);
+  assert.equal(COMANDOS.length, 9);
+  assert.deepEqual(leerComando('/privado'), { cmd: '/privado', arg: '' });
+  assert.deepEqual(leerComando('/ramificar'), { cmd: '/ramificar', arg: '' });
   assert.ok(TERMINAL.every(([l, c]) => l && c && !/sk-|key=/.test(c)));
 });
 
@@ -80,6 +82,17 @@ t('títulos y grupos de fecha como la barra de Hermes', () => {
   assert.equal(grupoFecha(new Date(2026, 9, 21).toISOString(), ahora), 'Últimos 7 días');
   assert.equal(grupoFecha(new Date(2026, 8, 1).getTime(), ahora), 'Antes');
   assert.equal(grupoFecha(null, ahora), 'Antes');
+});
+
+t('modo privado y cuánto piensa', () => {
+  assert.match(sistemaDe('organizacion', { privado: true }), /Modo privado: respondes con un modelo que corre en esta compu/);
+  assert.ok(!sistemaDe('organizacion', { privado: false }).includes('Modo privado'));
+  assert.deepEqual(ESFUERZOS.map(([k]) => k), ['low', '', 'high']);
+  assert.equal(nombreEsfuerzo('high'), 'A fondo');
+  assert.equal(nombreEsfuerzo(''), 'Normal');
+  assert.equal(nombreEsfuerzo('raro'), 'Normal');
+  assert.ok(TERMINAL.some(([, c]) => c.includes('ollama_num_ctx 65536')), 'la Terminal dice cómo darle 64K al modelo local');
+  assert.ok(TERMINAL.some(([, c]) => c === 'inherent update'));
 });
 
 console.log(`\n${ok} pruebas del Inherent LLM pasaron`);

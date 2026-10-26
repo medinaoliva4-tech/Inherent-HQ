@@ -4417,7 +4417,6 @@ html[data-app="chat"] .app{padding:0;max-width:none}
 @media (min-width:761px){
   html.con-dock body{padding-left:60px}
   .dock{position:fixed;left:0;top:0;bottom:0;width:60px;z-index:45;display:flex;flex-direction:column;align-items:center;gap:6px;padding:calc(14px + env(safe-area-inset-top)) 0 14px;background:var(--glass2);border-right:1px solid var(--hair);-webkit-backdrop-filter:blur(24px) saturate(1.5);backdrop-filter:blur(24px) saturate(1.5)}
-  .dock-emb{width:32px;height:32px;padding:7px;border-radius:10px;background:#1d1813;margin-bottom:14px;box-shadow:0 0 0 1px rgb(255 245 230 / .08) inset}
   .dock button{position:relative;width:42px;height:42px;display:grid;place-items:center;border-radius:13px;color:var(--mut);background:transparent;border:0;cursor:pointer;transition:background var(--t) var(--ease),color var(--t) var(--ease)}
   .dock button:hover{background:var(--fill);color:var(--ink)}
   .dock button.on{background:var(--ink);color:var(--cream)}
@@ -4470,11 +4469,15 @@ html[data-app="chat"] .app{padding:0;max-width:none}
 
 /* La barra de sesiones */
 .llm-side{display:flex;flex-direction:column;min-height:0;padding:calc(12px + env(safe-area-inset-top)) 10px 10px;background:var(--l-side);border-right:1px solid var(--l-line)}
-.ls-brand{display:flex;align-items:center;gap:9px;padding:2px 6px 14px}
-.ls-logo{width:26px;height:26px;padding:5px;border-radius:8px;background:#1d1813;box-shadow:0 0 0 1px rgb(255 245 230 / .1) inset}
-.ls-logo img{width:100%;display:block}
-.ls-brand b{font-size:15px;letter-spacing:-.01em}
-.ls-tag{font-size:10.5px;font-weight:600;letter-spacing:.06em;padding:2px 6px;border-radius:6px;color:var(--l-acc);background:color-mix(in srgb,var(--l-acc) 14%,transparent)}
+.ls-brand{display:flex;align-items:center;gap:10px;padding:2px 6px 16px}
+.ls-emb{width:32px;height:32px;flex:none;border-radius:50%;display:grid;place-items:center;background:#2c1f16;box-shadow:0 0 0 1px rgb(255 240 225 / .14)}
+.ls-emb img{width:17px;height:auto;display:block}
+.ls-wm{display:flex;align-items:flex-start;gap:5px;line-height:1}
+.ls-wm img{height:20px;width:auto;display:block}
+.ls-wm .wm-noche{opacity:.94}
+.ls-wm sup{font:700 9.5px/1 var(--sans);letter-spacing:1px;color:var(--l-acc);position:relative;top:1px}
+.llm .wm-dia{display:none}.llm[data-tema="dia"] .wm-dia{display:block}.llm[data-tema="dia"] .wm-noche{display:none}
+.llm[data-tema="dia"] .ls-emb{box-shadow:none}
 .ls-new{display:flex;align-items:center;gap:9px;width:100%;height:38px;padding:0 12px;border-radius:11px;border:1px solid var(--l-line);background:var(--l-surf);font-size:13.5px;font-weight:500;transition:background .15s}
 .ls-new:hover{background:var(--l-surf2)}
 .ls-k{display:flex;align-items:center;gap:8px;margin:18px 8px 6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--l-mut)}
@@ -4755,7 +4758,7 @@ html[data-app="chat"] .app{padding:0;max-width:none}
 .lsh{grid-template-columns:minmax(0,1fr)}
 .lsh section{min-width:0}
 .lsh .lsu-btn{justify-self:start}
-html[data-app="chat"],html[data-app="chat"] body{overflow:hidden;overscroll-behavior:none}
+html[data-app="chat"],html[data-app="chat"] body{overflow:hidden;overscroll-behavior:none;scrollbar-gutter:auto}
 html[data-app="chat"] .app::before,html[data-app="chat"] .app::after{display:none}
 @media (max-width:760px){
   .lc-row{flex-wrap:nowrap}
@@ -4766,3 +4769,12 @@ html[data-app="chat"] .app::before,html[data-app="chat"] .app::after{display:non
 }
 .lsh-cmds{grid-template-columns:minmax(0,1fr)}
 .lsu-cmd{min-width:0}
+/* Modo privado, cuánto piensa y ramificar (Inherent LLM) */
+.lc-priv{color:var(--l-mut)}
+.lc-priv.on{color:var(--l-acc);border-color:color-mix(in srgb,var(--l-acc) 55%,transparent);background:color-mix(in srgb,var(--l-acc) 12%,transparent)}
+.lc-esf{color:var(--l-mut)}
+.lmn-g{padding-top:10px}
+.lmn-g:first-child{padding-top:6px}
+.lm-acts button svg{width:13px;height:13px}
+@media (max-width:760px){.lc-priv span{display:none}.lc-priv{padding:0 9px;flex-shrink:0}.lc-esf{display:none}}
+html[data-app="chat"] .app{overflow:hidden}
