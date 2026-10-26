@@ -6,19 +6,14 @@ import { html, mount, col, toast, ico, fdate, esc, initials, skel } from '../cor
 import { loadEstrategia, estrategiaNow } from '../stratlist.js';
 import { datosEstrategia, avisoConsulting, pedidoDeEncargo } from '../llm/paneles.js';
 import { CONSULTING, alcanceConsulting, encargosDe } from '../llm/modos.js';
-import { guardarArea } from '../areas.js';
+import { abrirEnChat } from '../areas.js';
 
 export const esqueleto = () => skel('pagina');
 const ALCANCE = { si: ['Growth Partnership', 'ok'], ficha: ['A la medida', ''], fuera: ['Fuera del alcance', 'fuera'], 'sin-ficha': ['Sin ficha', 'fuera'] };
 const verTareas = (me) => me.areas?.includes('work') || me.areas?.includes('operations');
 
 // Abre el Chat en modo Consulting con este cliente y el pedido escrito en la caja (se manda cuando la persona quiere).
-function alChat(me, slug, pedido) {
-  const k = `os.llm.${me.email}`; let p = {}; try { p = JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch {}
-  p.modo = 'consulting'; p.slugs = { ...(p.slugs || {}), consulting: slug }; p.borrador = pedido;
-  try { localStorage.setItem(k, JSON.stringify(p)); } catch {}
-  guardarArea(me.email, 'consulting'); location.hash = '/chat';
-}
+const alChat = (me, slug, pedido) => abrirEnChat(me.email, { modo: 'consulting', slug, borrador: pedido });
 
 export async function render(el, { me, sub = [], alive }) {
   const slug = sub[0] ? decodeURIComponent(sub[0]) : '';

@@ -7,6 +7,8 @@
 import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
 import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal, IAS, iaDe, iasListas } from '../hermes.js';
 import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo } from '../llm/modos.js';
+import { limpiarPlan, nombreMes, NOMBRE_P } from '../plan-mes.js';
+import { tipoDe, anticipacion } from '../campanas.js';
 import { panelDe, datosEstrategia, olvidarPanel } from '../llm/paneles.js';
 import { crearBrujula, progreso, tareaActual, terminada, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe, QUIEN } from '../llm/brujula.js';
 import { leerBloques, instrucciones, avance, PASOS } from '../estrategia-viva.js';
@@ -44,7 +46,7 @@ window.addEventListener('tema', () => { if (llmVivo?.isConnected) llmVivo.datase
 
 export async function render(el, { me, sub = [], alive }) {
   const pref = leer(me);
-  const puedeModo = (id) => (id === 'estrategia' || id === 'consulting' ? me.areas?.includes('estrategia') : id === 'diseno' ? brandAccess(me).any : true);
+  const puedeModo = (id) => (id === 'estrategia' || id === 'consulting' ? me.areas?.includes('estrategia') : id === 'diseno' ? brandAccess(me).any : id === 'marketing' ? brandAccess(me).contentFull : true);
   const modos = MODOS.filter((m) => puedeModo(m.id));
   // Las áreas del switch son los modos que esta persona abre. El área elegida la comparten el Tablero y el Chat.
   const areas = AREAS.filter((a) => modos.some((m) => m.id === a.modo));
@@ -59,6 +61,8 @@ export async function render(el, { me, sub = [], alive }) {
   // Lo que el Tablero dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra.
   let borrador = String(pref.borrador || '');
   if (borrador) persistir();
+  // El mes del plan que trabaja Marketing: el que mandó el Tablero, o el de este mes.
+  const mesPlan = /^\d{4}-\d{2}$/.test(pref.mes || '') ? pref.mes : today().slice(0, 7);
   // Modo privado: responde un modelo que corre en esta compu (Ollama, LM Studio…). El elegido si es local; si no, el primero que haya.
   const modeloLocal = () => {
     if (S.modelo?.model && esLocal(S.modelo.provider)) return S.modelo;
@@ -68,7 +72,7 @@ export async function render(el, { me, sub = [], alive }) {
   };
   const modeloTurno = () => (S.privado ? modeloLocal() || {} : S.modelo || {});
   const slugAhora = () => (modoDe(S.modo).pide ? S.slugs[S.modo] || '' : '');
-  const opciones = () => (S.modo === 'estrategia' || S.modo === 'consulting' ? estrategiaNow().map((c) => [c.slug, c.nombre]) : S.modo === 'diseno' ? brandsNow().map((b) => [b.slug, b.name]) : []);
+  const opciones = () => (S.modo === 'estrategia' || S.modo === 'consulting' ? estrategiaNow().map((c) => [c.slug, c.nombre]) : S.modo === 'diseno' || S.modo === 'marketing' ? brandsNow().filter((b) => S.modo === 'diseno' || !b.personal).map((b) => [b.slug, b.name]) : []);
   // Qué IA responde ahora: la del modelo elegido, la de Hermes por defecto, o «en tu compu» con el modo privado. '' si no se sabe.
   const iaAhora = () => (S.privado ? 'local' : S.modelo?.model ? iaDe(S.modelo.provider) : S.modelos?.actual?.provider ? iaDe(S.modelos.actual.provider) : '');
   const nombreSlug = () => opciones().find(([s]) => s === slugAhora())?.[1] || slugAhora();
@@ -124,7 +128,7 @@ export async function render(el, { me, sub = [], alive }) {
   function heroHtml() {
     const m = modoDe(S.modo), s = nombreSlug();
     if (!listo()) return setupHtml();
-    return html`<div class="lh"><h1>${S.modo === 'estrategia' && s ? html`¿Qué trabajamos de ${s}?` : S.modo === 'diseno' && s ? html`¿Qué diseñamos para ${s}?` : S.modo === 'consulting' && s ? html`¿Qué ordenamos del negocio de ${s}?` : S.modo === 'organizacion' ? '¿Qué organizamos hoy?' : '¿En qué trabajamos?'}</h1>
+    return html`<div class="lh"><h1>${S.modo === 'estrategia' && s ? html`¿Qué trabajamos de ${s}?` : S.modo === 'diseno' && s ? html`¿Qué diseñamos para ${s}?` : S.modo === 'consulting' && s ? html`¿Qué ordenamos del negocio de ${s}?` : S.modo === 'marketing' && s ? html`¿Qué planeamos para ${s}?` : S.modo === 'organizacion' ? '¿Qué organizamos hoy?' : '¿En qué trabajamos?'}</h1>
       <p>${m.depto} · ${m.sub}. Con las reglas de Inherent y el modelo que elijas.</p></div>`;
   }
   // Lo que falta para que Hermes conteste (instalado · llave · modelo), con los comandos a la vista.
@@ -225,7 +229,7 @@ export async function render(el, { me, sub = [], alive }) {
       <div class="lm-ops">${(x.aprob.choices || ['once', 'deny']).map((c) => html`<button type="button" class="${c === 'deny' ? 'no' : c === 'once' ? 'si' : ''}" data-a="aprobar" data-c="${c}" data-i="${i}">${ELECCION[c] || c}</button>`)}</div></div>` : '';
     const cuerpo = x.t ? md(x.t) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
     return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${pasosHtml}<div class="lm-md">${cuerpo}</div>${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
-      ${apr}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
+      ${apr}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${x.tarjetas?.plan ? planHtml(x.tarjetas.plan, i, x) : ''}${(x.tarjetas?.campanas || []).map((c, k) => campanaHtml(c, i, k, x))}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
       ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${x.t}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
   }
   function pintarHilo() {
@@ -242,6 +246,31 @@ export async function render(el, { me, sub = [], alive }) {
     const ir = en.area === 'consulting' ? `#/consulting/${encodeURIComponent(sl)}` : `#/marcas/${encodeURIComponent(sl)}`;
     return html`<div class="lm-enc" data-m="${en.area}"><span class="lm-k">${ico(a?.icono || 'send', 12)} Encargo para ${AREAS_ENCARGO[en.area]}</span><b>${en.titulo}</b>${en.por_que ? html`<small>${en.por_que}</small>` : ''}
       <div class="lm-ops">${hecho ? html`<span class="lm-meta-ok">${ico('check', 13)} ${hecho === 'ya' ? 'Ya estaba mandado' : 'Mandado'} · está en Mis tareas</span>${sl ? html`<a class="lm-enc-ir" href="${ir}">Abrir en ${AREAS_ENCARGO[en.area]} ↗</a>` : ''}` : html`<button type="button" class="si" data-a="encargo" data-i="${i}" data-k="${k}" ${S.enVuelo ? raw('disabled') : ''}>Mandar a ${AREAS_ENCARGO[en.area]}</button>`}</div></div>`;
+  }
+  // ③ Marketing propone el plan del mes o una campaña: se guardan con un botón (nada se guarda solo).
+  function planHtml(pl, i, x) {
+    const secc = Object.keys(pl).map((k) => (NOMBRE_P[k] || k).replace(/^(La|El|Los|Las) /, '').toLowerCase()).join(', '), sl = slugAhora();
+    return html`<div class="lm-enc" data-m="marketing"><span class="lm-k">${ico('target', 12)} Plan de ${nombreMes(mesPlan)}</span><b>Cambia: ${secc}</b>${pl.slots ? html`<small>${pl.slots.length} piezas en el plan</small>` : ''}
+      <div class="lm-ops">${x.planGuardado ? html`<span class="lm-meta-ok">${ico('check', 13)} Guardado en el plan</span>${sl ? html`<a class="lm-enc-ir" href="#/marcas/${encodeURIComponent(sl)}/plan/${mesPlan}">Ver el plan ↗</a>` : ''}` : html`<button type="button" class="si" data-a="guardar-plan" data-i="${i}" ${S.enVuelo ? raw('disabled') : ''}>Guardar en el plan</button>`}</div></div>`;
+  }
+  function campanaHtml(c, i, k, x) {
+    const sl = slugAhora(), a = anticipacion(c);
+    return html`<div class="lm-enc" data-m="marketing"><span class="lm-k">${ico('calendar-days', 12)} ${tipoDe(c.tipo)[1]}${c.ancla ? ` · ${c.ancla}` : ''}</span><b>${c.nombre}</b>${c.frase ? html`<small>«${c.frase}»</small>` : ''}${a.length ? html`<small>${a.map((y) => `${y.que.toLowerCase()} ${y.fecha.slice(5)}`).join(' · ')}</small>` : ''}
+      <div class="lm-ops">${x.campanasGuardadas?.[k] ? html`<span class="lm-meta-ok">${ico('check', 13)} Guardada en Campañas y eventos</span>${sl ? html`<a class="lm-enc-ir" href="#/marcas/${encodeURIComponent(sl)}/campanas">Abrir ↗</a>` : ''}` : html`<button type="button" class="si" data-a="guardar-campana" data-i="${i}" data-k="${k}" ${S.enVuelo ? raw('disabled') : ''}>Guardar la campaña</button>`}</div></div>`;
+  }
+  async function guardarPlan(i) {
+    const x = S.msgs[i], pl = x?.tarjetas?.plan, sl = slugAhora(); if (!pl || x.planGuardado) return;
+    if (!sl) return toast('Primero elige la marca de esta conversación', true);
+    try { const r = await api(`plan/${encodeURIComponent(sl)}/${mesPlan}`, { method: 'PUT', body: { parche: limpiarPlan(pl) } }); x.planGuardado = true; toast(r.cambiadas?.length ? `Plan de ${nombreMes(mesPlan)} al día` : 'El plan ya tenía eso'); olvidarPanel(`mk:${sl}:${mesPlan}`); pintarPanel(); }
+    catch (e) { toast(e.message, true); }
+    pintarHilo();
+  }
+  async function guardarCampana(i, k) {
+    const x = S.msgs[i], c = x?.tarjetas?.campanas?.[k], sl = slugAhora(); if (!c || x.campanasGuardadas?.[k]) return;
+    if (!sl) return toast('Primero elige la marca de esta conversación', true);
+    try { const r = await api(`campanas/${encodeURIComponent(sl)}`, { method: 'POST', body: c }); x.campanasGuardadas = { ...(x.campanasGuardadas || {}), [k]: true }; toast(r.nueva ? 'Campaña guardada' : 'Ya existía: la puse al día'); olvidarPanel(`mk:${sl}:${mesPlan}`); pintarPanel(); }
+    catch (e) { toast(e.message, true); }
+    pintarHilo();
   }
   async function mandarEncargo(i, k) {
     const x = S.msgs[i], en = x?.tarjetas?.encargos?.[k], sl = slugAhora(); if (!en || x.mandados?.[k]) return;
@@ -286,7 +315,7 @@ export async function render(el, { me, sub = [], alive }) {
     const box = C('llm-panel'); if (!S.panel) return mount(box, '');
     const gen = ++panelGen;
     if (!box.childElementCount) mount(box, html`<p class="lp-mut" style="padding:16px">Cargando…</p>`);
-    const h = await panelDe({ me, modo: S.modo, slug: slugAhora(), nombre: nombreSlug() });
+    const h = await panelDe({ me, modo: S.modo, slug: slugAhora(), nombre: nombreSlug(), mes: mesPlan });
     if (gen === panelGen && alive()) mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${brujulaHtml()}${h}${usoHtml()}`);
   }
 
@@ -446,6 +475,14 @@ export async function render(el, { me, sub = [], alive }) {
       return { ...base, cliente: d.nombre, carpeta: d.carpeta, nivel: d.nivel?.nombre || 'SIN FICHA DE OFERTA',
         extra: [...(d.ficha?.incluye?.length ? [`Su ficha incluye: ${d.ficha.incluye.map((x) => `${x.k}: ${x.v}`).join(' · ')}`] : [])] };
     }
+    if (S.modo === 'marketing' && slug) {
+      const [pl, cs] = await Promise.all([api(`plan/${encodeURIComponent(slug)}/${mesPlan}`).catch(() => null), api(`campanas/${encodeURIComponent(slug)}`).catch(() => null)]);
+      const vivas = (cs?.campanas || []).filter((c) => !['Cerrada', 'Archivada'].includes(c.estado)).slice(0, 6);
+      return { ...base, cliente: nombreSlug(), carpeta: slug === 'inherent' ? 'inherent/inherent-social-media' : `clients/${slug}`,
+        extra: [`Mes del plan: ${mesPlan} (${nombreMes(mesPlan)})`, pl?.estrategia && !pl.estrategia.aprobada ? 'La estrategia de esta marca NO está aprobada: sin estrategia aprobada no hay plan ni campañas (el OS no los guarda). Dilo.' : '',
+          pl?.plan ? `El plan como va (datos): ${JSON.stringify(limpiarPlan(pl.plan)).slice(0, 8000)}` : 'El plan de ese mes todavía está vacío.',
+          vivas.length ? `Campañas y eventos abiertos: ${vivas.map((c) => `${c.nombre} (${tipoDe(c.tipo)[1]}, ${c.ancla || 'sin fecha'})`).join(' · ')}` : ''].filter(Boolean) };
+    }
     if (S.modo === 'diseno' && slug) return { ...base, cliente: nombreSlug(), carpeta: slug === 'inherent' ? 'inherent/inherent-social-media' : `clients/${slug}`, extra: [`Mes del ciclo: ${today().slice(0, 7)}`] };
     return { ...base, extra: [`Secciones que ve en el OS: ${(me.areas || []).join(', ') || '—'}`] };
   }
@@ -509,7 +546,7 @@ export async function render(el, { me, sub = [], alive }) {
   async function comando({ cmd, arg }) {
     const ta = $('#llm-in', el); if (ta) { ta.value = ''; crecer(ta); comandos(''); }
     if (cmd === '/nuevo') return nuevo();
-    if (['/estrategia', '/organizacion', '/diseno', '/consulting'].includes(cmd)) return modos.some((m) => m.id === cmd.slice(1)) ? (cambiarModo(cmd.slice(1)), arg && enviar(arg)) : toast('Tu perfil no tiene ese modo', true);
+    if (['/estrategia', '/organizacion', '/marketing', '/diseno', '/consulting'].includes(cmd)) return modos.some((m) => m.id === cmd.slice(1)) ? (cambiarModo(cmd.slice(1)), arg && enviar(arg)) : toast('Tu perfil no tiene ese modo', true);
     if (cmd === '/modelo') { const b = el.querySelector('[data-a="menu-modelo"]'); if (b) menuModelo(b); return; }
     if (cmd === '/terminal') return ajustes();
     if (cmd === '/privado') return alternarPrivado();
@@ -547,6 +584,8 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'privado') return alternarPrivado();
     if (a === 'ia') return ponerIa(t.dataset.ia);
     if (a === 'encargo') return mandarEncargo(+t.dataset.i, +t.dataset.k);
+    if (a === 'guardar-plan') return guardarPlan(+t.dataset.i);
+    if (a === 'guardar-campana') return guardarCampana(+t.dataset.i, +t.dataset.k);
     if (a === 'ramificar') return ramificar();
     if (a === 'meta-aceptar') {
       const x = [...S.msgs].reverse().find((m) => m.tarjetas?.meta); if (!x || !S.sesion) return;

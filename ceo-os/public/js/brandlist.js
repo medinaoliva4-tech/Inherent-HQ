@@ -56,6 +56,7 @@ export const MODULES = [
   ['icp', 'Cliente ideal', 'target'],
   ['brief', 'Brief del ciclo', 'doc'],
   ['plan', 'Plan del mes', 'target'],
+  ['campanas', 'Campañas y eventos', 'calendar-days'],
   ['ideas', 'Ideas', 'bulb'],
   ['creacion', 'Guiones', 'edit'],
   ['formatos', 'Formatos', 'copy'],
@@ -67,23 +68,29 @@ export const MODULES = [
   ['tech', 'Tech', 'globe'],
   ['resultados', 'Resultados', 'bars'],
 ];
-// Las áreas: los módulos agrupados por función, en el orden del trabajo (entender → crear → diseñar → publicar y medir).
-// [clave, nombre, ícono, módulos, para qué]. Inicio es el panel de la marca: va solo.
+// Los grupos: los módulos agrupados por función, en el orden del trabajo (entender → planear → crear → diseñar → publicar y medir).
+// [clave, nombre, ícono, módulos, para qué, área]. El área (areas.js) dice dónde vive el grupo con la barra lateral:
+// Marketing planea y mide (③ Marketing, ⑩ Ads); Diseño hace las piezas (④ Creatividad, ⑥A, ⑦). Inicio, el panel de la marca, va en las dos.
 export const AREAS = [
-  ['inicio', 'Inicio', 'home', ['inicio'], 'Cómo va la marca hoy'],
-  ['entender', 'Entender', 'search', ['investigacion', 'icp', 'brief'], 'Qué funciona, a quién le hablamos y qué decimos este mes'],
-  ['crear', 'Crear', 'bulb', ['plan', 'formatos', 'ideas', 'creacion'], 'Del plan del mes al guion, en una sola línea'],
-  ['diseno', 'Diseño', 'palette', ['marca', 'design', 'video'], 'Cómo se ve y cómo suena la marca'],
-  ['publicar', 'Publicar y medir', 'cal', ['calendario', 'ads', 'resultados'], 'Qué sale, cuándo, con qué pauta y qué funcionó'],
-  ['tech', 'Tech', 'globe', ['tech'], 'Su web, sus landings y sus herramientas'],
+  ['inicio', 'Inicio', 'home', ['inicio'], 'Cómo va la marca hoy', 'ambas'],
+  ['entender', 'Entender', 'search', ['investigacion', 'icp'], 'Qué funciona y a quién le hablamos', 'marketing'],
+  ['planear', 'Planear', 'target', ['plan', 'campanas'], 'Qué se dice este mes, las campañas y los eventos', 'marketing'],
+  ['crear', 'Crear', 'bulb', ['brief', 'formatos', 'ideas', 'creacion'], 'Del brief del ciclo al guion, en una sola línea', 'diseno'],
+  ['diseno', 'Diseño', 'palette', ['marca', 'design', 'video'], 'Cómo se ve y cómo suena la marca', 'diseno'],
+  ['publicar', 'Publicar y medir', 'cal', ['calendario', 'ads', 'resultados'], 'Qué sale, cuándo, con qué pauta y qué funcionó', 'marketing'],
+  ['tech', 'Tech', 'globe', ['tech'], 'Su web, sus landings y sus herramientas', 'marketing'],
 ];
+// El área de un módulo: 'marketing' · 'diseno' · 'ambas'. Y los grupos de un área (con Inicio).
+export const areaDeModulo = (k) => (AREAS.find(([, , , mods]) => mods.includes(k)) || [])[5] || '';
+export const gruposDe = (area) => AREAS.filter((g) => g[5] === area || g[5] === 'ambas');
 // La línea del trabajo: de dónde viene cada herramienta, qué se hace en ella y a dónde pasa. Es la misma cabecera en todas.
 // clave → [viene de, qué haces aquí, pasa a]
 export const FLUJO = {
   investigacion: [null, 'Los posts que ganan en su mercado, con su porqué. De aquí salen los formatos.', 'formatos'],
-  icp: ['investigacion', 'A quién le hablamos, con qué peso y cómo se nota en el video.', 'brief'],
-  brief: ['icp', 'Qué decimos este mes y su candado: sin brief no hay ideas.', 'plan'],
-  plan: ['brief', 'Qué se dice este mes, en qué canal y semana, y para qué sirve cada pieza. Se arma en el chat de Diseño gráfico.', 'formatos'],
+  icp: ['investigacion', 'A quién le hablamos, con qué peso y cómo se nota en el video.', 'plan'],
+  plan: ['icp', 'Qué se dice este mes, en qué canal y semana, y para qué sirve cada pieza. Se arma en el Chat, en modo Marketing.', 'campanas'],
+  campanas: ['plan', 'Los empujones con fecha: aperturas, lanzamientos, temporadas, promociones y eventos, con su frase y cuándo se avisa.', 'brief'],
+  brief: ['plan', 'Qué decimos este mes y su candado: sin brief no hay ideas.', 'ideas'],
   formatos: ['investigacion', 'Los formatos que ya funcionan, sacados de los posts ganadores. Una idea se cuenta en uno de estos.', 'ideas'],
   ideas: ['plan', 'Cada idea junta tres cosas: qué comunicamos (el plan), el formato que ya funciona y cómo se adapta.', 'creacion'],
   creacion: ['ideas', 'El guion, tramo por tramo, con el formato de la idea y el brief al lado.', 'calendario'],
@@ -107,6 +114,7 @@ export function modulesFor(me, b) {
     icp: A.contentFull,
     brief: A.contentFull,
     plan: !b.personal && A.contentFull,
+    campanas: !b.personal && A.contentFull,
     ideas: A.contentFull,
     creacion: A.contentFull,
     formatos: A.contentFull,

@@ -9,8 +9,8 @@ import { IAS, iaDe, iasListas, esLocal } from '../public/js/llm/ias.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
-t('cuatro modos, cada uno con su harness y sus sugerencias', () => {
-  assert.deepEqual(MODOS.map((m) => m.id), ['estrategia', 'organizacion', 'diseno', 'consulting']);
+t('cinco modos, cada uno con su harness y sus sugerencias', () => {
+  assert.deepEqual(MODOS.map((m) => m.id), ['estrategia', 'organizacion', 'marketing', 'diseno', 'consulting']);
   for (const m of MODOS) {
     const h = HARNESS[m.id];
     assert.ok(h.rol && h.como.length && h.herramientas && h.criterios.length >= 3, m.id);
@@ -47,7 +47,8 @@ t('comandos «/»: con y sin acento, con argumento, y lo demás es texto', () =>
   assert.deepEqual(leerComando('/skill hormozi'), { cmd: '/skill', arg: 'hormozi' });
   assert.equal(leerComando('/inventado'), null);
   assert.equal(leerComando('hola /nuevo'), null);
-  assert.equal(COMANDOS.length, 11);
+  assert.equal(COMANDOS.length, 12);
+  assert.deepEqual(leerComando('/marketing'), { cmd: '/marketing', arg: '' });
   assert.deepEqual(leerComando('/consulting nao'), { cmd: '/consulting', arg: 'nao' });
   assert.deepEqual(leerComando('/brújula'), { cmd: '/brujula', arg: '' });
   assert.deepEqual(leerComando('/privado'), { cmd: '/privado', arg: '' });
@@ -64,7 +65,7 @@ t('las tarjetas: criterios y pregunta salen del texto; lo visible no las muestra
   // A medio escribir (streaming): el bloque abierto no se ve.
   assert.equal(textoVisible('Hola\n```criterios\n{"entre'), 'Hola');
   // JSON roto: no hay tarjeta, y no se rompe.
-  assert.deepEqual(leerTarjetas('```pregunta\n{roto}\n```'), { criterios: null, pregunta: null, meta: null, avance: null, encargos: [] });
+  assert.deepEqual(leerTarjetas('```pregunta\n{roto}\n```'), { criterios: null, pregunta: null, meta: null, avance: null, encargos: [], plan: null, campanas: [] });
   // El bloque de estrategia tampoco se ve (lo guarda el OS).
   assert.equal(textoVisible('Listo.\n```estrategia\n{"meta":"x"}\n```'), 'Listo.');
 });
@@ -172,10 +173,23 @@ t('encargos: Estrategia manda trabajo a Consulting o a Diseño y queda como tare
   assert.deepEqual(xs.map((x) => x.title), ['b', 'a'], 'abiertas primero, solo del área y del cliente');
 });
 
+t('Marketing: el plan del mes y las campañas salen del Chat como bloques', () => {
+  const s = sistemaDe('marketing', { cliente: 'Nao', carpeta: 'clients/nao' });
+  assert.match(s, /^INHERENT LLM · MODO MARKETING \(③ Marketing\)/);
+  assert.ok(s.includes('```plan') && s.includes('```campana') && s.includes('mk-campana'));
+  const r = 'Va.\n```plan\n{"pilares":[{"nombre":"Autoridad","peso":40}],"inventado":1}\n```\n```campana\n{"nombre":"Apertura","tipo":"Apertura o inauguración","ancla":"2026-12-12"}\n```\n```campana\n{"nombre":"Otra","tipo":"evento"}\n```\n```campana\n{"nombre":"Tercera"}\n```';
+  const k = leerTarjetas(r);
+  assert.deepEqual(Object.keys(k.plan), ['pilares'], 'solo secciones conocidas del plan');
+  assert.equal(k.campanas.length, 2, 'dos campañas como máximo por respuesta (mk-campana § 2)');
+  assert.equal(k.campanas[0].tipo, 'apertura');
+  assert.equal(textoVisible(r), 'Va.');
+  assert.equal(tareaDeEncargo({ area: 'marketing', titulo: 'Campaña de apertura' }, { cliente: 'nao', email: 'a' }).dept, '③ Marketing');
+});
+
 t('las áreas: las mismas del Tablero y del Chat, con su switch', () => {
-  assert.deepEqual(AREAS.map((a) => a.id), ['estrategia', 'organizacion', 'diseno', 'consulting']);
+  assert.deepEqual(AREAS.map((a) => a.id), ['estrategia', 'organizacion', 'marketing', 'diseno', 'consulting']);
   for (const a of AREAS) assert.ok(MODOS.some((m) => m.id === a.modo), `${a.id} tiene modo en el Chat`);
-  assert.equal(areaDeEspacio('marcas').id, 'diseno'); assert.equal(areaDeEspacio('org').id, 'organizacion'); assert.equal(areaDeModo('consulting').espacio, 'consulting');
+  assert.equal(areaDeEspacio('marcas').id, 'marketing', 'Marketing y Diseño comparten las marcas: el área la decide el módulo (app.js)'); assert.equal(areaDeEspacio('org').id, 'organizacion'); assert.equal(areaDeModo('consulting').espacio, 'consulting');
   const xs = areasDe({ organizacion: true, diseno: true });
   assert.deepEqual(xs.map((a) => a.id), ['organizacion', 'diseno']);
   assert.equal(areaConFlecha(xs, 'diseno', 'ArrowRight'), 'organizacion', 'da la vuelta');

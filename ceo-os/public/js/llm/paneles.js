@@ -2,6 +2,7 @@
 //   Estrategia   → la estrategia en vivo del cliente (la misma de siempre, de solo lectura) y su tablero completo
 //   Organización → tu día: lo que vence, los leads sin responder y atajos a Organización
 //   Diseño       → el mes de la marca: piezas por estado, lo próximo y los atajos a Ideas, Plan y el chat con Figma
+//   Marketing    → el plan del mes de la marca (avance y lo que falta), las campañas y eventos que vienen y sus encargos
 //   Consulting   → el cliente: si su nivel trae Operations OS y Money OS, y los temas para empezar
 // Arriba de cada panel, «Cómo trabaja este modo»: el harness a la vista (reglas y criterios de aceptación).
 import { html, api, col, ico, fdate, today, esc } from '../core.js';
@@ -9,6 +10,8 @@ import { panelViva } from '../estrategia-viva-ui.js';
 import { avance } from '../estrategia-viva.js';
 import { isWaiting } from '../ventas-flujo.js';
 import { HARNESS, modoDe, CONSULTING, alcanceConsulting, encargosDe } from './modos.js';
+import { avancePlan, nombreMes } from '../plan-mes.js';
+import { tipoDe, proximaFecha, revisarCampana } from '../campanas.js';
 
 // Cada modo guarda lo que leyó para no pedirlo en cada turno (se refresca después de cada respuesta).
 const cache = new Map();
@@ -27,11 +30,12 @@ const harnessHtml = (modo) => {
 const vacio = (t, p) => html`<div class="lp-vacio"><b>${t}</b><p>${p}</p></div>`;
 
 // → html del panel. o = { me, modo, slug, nombre }
-export async function panelDe({ me, modo, slug, nombre }) {
+export async function panelDe({ me, modo, slug, nombre, mes }) {
   try {
     if (modo === 'estrategia') return html`${harnessHtml(modo)}${await panelEstrategia(me, slug)}`;
     if (modo === 'diseno') return html`${harnessHtml(modo)}${await panelDiseno(me, slug, nombre)}`;
     if (modo === 'consulting') return html`${harnessHtml(modo)}${await panelConsulting(me, slug)}`;
+    if (modo === 'marketing') return html`${harnessHtml(modo)}${await panelMarketing(me, slug, nombre, mes)}`;
     return html`${harnessHtml(modo)}${await panelOrganizacion(me)}`;
   } catch (e) { return html`${harnessHtml(modo)}<div class="lp-err">No pude leer el panel: ${e.message}</div>`; }
 }
@@ -60,6 +64,19 @@ async function encargosHtml(me, area, slug) {
   const xs = encargosDe(await col('tasks').list().catch(() => []), area, slug).filter((t) => t.status !== 'Hecha').slice(0, 6);
   return xs.length ? html`<section class="lp-sec"><span class="lp-k">Encargos de Estrategia</span>${xs.map((t) => html`<button type="button" class="lp-row lp-tema" data-a="sugerencia" data-t="${pedidoDeEncargo(t)}"><span class="lp-dot"></span><span class="lp-t">${t.title}</span><small>${t.status || 'Por empezar'}</small></button>`)}</section>` : '';
 }
+// Marketing: el plan del mes (cuánto va y si ya pasó a Creatividad) y lo que viene en campañas y eventos.
+async function panelMarketing(me, slug, nombre, mes) {
+  if (!slug) return vacio('Elige una marca', 'Abajo, junto al modo, elige la marca. El panel muestra su plan del mes y sus campañas.');
+  const [d, cs, enc] = await Promise.all([una(`mk:${slug}:${mes}`, () => api(`plan/${encodeURIComponent(slug)}/${mes}`)).catch(() => null), api(`campanas/${encodeURIComponent(slug)}`).catch(() => null), encargosHtml(me, 'marketing', slug)]);
+  const n = d?.plan ? avancePlan(d.plan) : 0, hoy = today();
+  const vienen = (cs?.campanas || []).filter((c) => !['Cerrada', 'Archivada'].includes(c.estado)).sort((a, z) => String(a.ancla).localeCompare(String(z.ancla))).slice(0, 5);
+  return html`<div class="lp-head"><div><span class="lp-k">Marketing</span><h3>${nombre || slug}</h3><span class="lp-mut">Plan de ${nombreMes(mes)} · ${d?.piezas ? 'en Ideas' : n ? `${n} de 5` : 'vacío'}</span></div><a class="lp-btn" href="#/marcas/${esc(slug)}/plan/${mes}">Plan ↗</a></div>
+    ${d && !d.estrategia?.aprobada ? html`<div class="lp-warn">La estrategia todavía no está aprobada: sin ella no hay plan ni campañas.</div>` : ''}
+    <section class="lp-sec"><span class="lp-k">Campañas y eventos</span>${vienen.length ? vienen.map((c) => { const px = proximaFecha(c, hoy), f = revisarCampana(c, hoy).length; return html`<a class="lp-row ${f ? 'tarde' : ''}" href="#/marcas/${esc(slug)}/campanas"><span class="lp-dot"></span><span class="lp-t">${c.nombre}</span><small>${px ? `${px.que.toLowerCase()} ${fdate(px.fecha)}` : tipoDe(c.tipo)[1]}</small></a>`; }) : html`<p class="lp-mut">Nada por delante. Pide una campaña o un evento y guárdala con su botón.</p>`}</section>
+    ${enc}
+    <div class="lp-links"><a href="#/marcas/${esc(slug)}/campanas">Campañas y eventos ↗</a><a href="#/marcas/${esc(slug)}/calendario">Calendario ↗</a></div>`;
+}
+
 async function panelConsulting(me, slug) {
   if (!slug) return vacio('Elige un cliente', 'Abajo, junto al modo, elige de quién es el consulting. El panel muestra su alcance, los encargos de Estrategia y los temas para empezar.');
   const [data, enc] = await Promise.all([datosEstrategia(slug), encargosHtml(me, 'consulting', slug)]);

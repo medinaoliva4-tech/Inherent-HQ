@@ -2,7 +2,7 @@ import { instalarMenu } from './menu-contextual.js';
 import { applyViews, GROUPS, SPACES, movedRoute } from './roleviews.js';
 import { applyLevels, baseDefaults, LEVELS_ID } from './levels.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, initials, esc, LOGO, infoTips, canTransition, ico, skel, roleName } from './core.js';
-import { loadBrands, brandsNow, brandAccess, MODULES, AREAS, areaOf, firstOfArea, modulesFor, defaultModule, isSoon } from './brandlist.js';
+import { loadBrands, brandsNow, brandAccess, MODULES, AREAS, areaOf, firstOfArea, modulesFor, defaultModule, isSoon, areaDeModulo, gruposDe } from './brandlist.js';
 import { openSearch, searchOpen } from './search.js';
 import { loadEstrategia, estrategiaNow } from './stratlist.js';
 import { marcarSeccion, instalarBoton } from './guia.js';
@@ -10,7 +10,7 @@ import { primerDia } from './primer-dia.js';
 import { pintarDock, quitarDock, icoApp } from './dock.js';
 import { svgIco } from './iconos.js';
 import { ponerTema, esNoche, temaElegido } from './tema.js';
-import { areasDe, areaDe, areaDeEspacio, areaGuardada, guardarArea, switchHtml as areaSwitch, areaConFlecha, barraLateral } from './areas.js';
+import { areasDe, areaDe, areaDeEspacio, areaGuardada, guardarArea, switchHtml as areaSwitch, areaConFlecha, barraLateral, abrirEnChat } from './areas.js';
 
 // Tres espacios, como cambiar de app en un iPhone: el interruptor de arriba (junto al logo) cambia entre
 //   ORGANIZATION  cómo se maneja la empresa   Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent
@@ -127,7 +127,19 @@ setViewSection(() => {
 
 // La barra lateral y las áreas que abre esta persona en el Tablero (Consulting va con Estrategia).
 const lateral = () => barraLateral(me);
-const areasTablero = () => areasDe({ estrategia: hasEstrategia(), organizacion: hasOrg(), diseno: hasMarcas(), consulting: hasEstrategia() });
+const areasTablero = () => areasDe({ estrategia: hasEstrategia(), organizacion: hasOrg(), marketing: hasMarcas() && brandAccess(me).contentFull, diseno: hasMarcas(), consulting: hasEstrategia() });
+// El área de lo que está abierto. En las marcas la dice el grupo del módulo (Marketing planea y mide; Diseño hace las piezas);
+// en la lista de marcas o en el Inicio de una marca, la última de las dos que se eligió.
+function areaDeRuta(cur = resolve(hashNow())) {
+  if (cur?.space !== 'marcas') return areaDeEspacio(cur?.space || space);
+  const dos = areasTablero().filter((a) => a.espacio === 'marcas').map((a) => a.id), g = areaGuardada(me.email);
+  const b = cur.rest[0] && cur.rest[0] !== 'diseno' ? brandsNow().find((x) => x.slug === cur.rest[0]) : null;
+  const m = areaDeModulo(cur.rest[1] || (b ? defaultModule(me, b) : ''));
+  return areaDe(m && m !== 'ambas' && dos.includes(m) ? m : dos.includes(g) ? g : dos[0]);
+}
+// Con qué módulo abre un área en una marca: Marketing en su plan del mes, Diseño en sus ideas (o el primero que pueda abrir).
+const ABRE_EN = { marketing: 'plan', diseno: 'ideas' };
+const primerModulo = (id, b) => { const live = modulesFor(me, b); return live.includes(ABRE_EN[id]) ? ABRE_EN[id] : gruposDe(id).filter((x) => x[0] !== 'inicio').flatMap((x) => x[3]).find((k) => live.includes(k)) || defaultModule(me, b); };
 const desk = matchMedia('(min-width: 761px)');
 
 // ---------- El espacio: se recuerda por persona y la última ruta de cada uno ----------
@@ -158,7 +170,7 @@ function irApp(a) {
   if (a === 'chat') { const l = lsGet('last.chat'); location.hash = '/' + (l && l.startsWith('chat') ? l : 'chat'); return; }
   let sp = lsGet('space.os');
   // Con la barra lateral, el Tablero abre en el área que se eligió (también en el Chat).
-  if (lateral()) { const ar = areaDe(areaGuardada(me.email)); if (ar && areasTablero().some((x) => x.id === ar.id)) sp = ar.espacio; }
+  if (lateral()) { const ar = areaDe(areaGuardada(me.email)); if (ar && areasTablero().some((x) => x.id === ar.id)) { const l = lsGet('last.a.' + ar.id); if (enEspacio(l, ar.espacio)) { location.hash = '/' + l; return; } sp = ar.espacio; } }
   if (!['org', 'marcas', 'estrategia', 'consulting'].includes(sp) || (sp === 'marcas' && !hasMarcas()) || (sp === 'org' && !hasOrg()) || ((sp === 'estrategia' || sp === 'consulting') && !hasEstrategia())) sp = hasOrg() ? 'org' : 'marcas';
   const last = lsGet('last.' + sp);
   location.hash = '/' + (last && (sp === 'org' ? last.startsWith('org/') : last.startsWith(sp)) ? last : spaceHome(sp));
@@ -258,14 +270,14 @@ function paintNav(force) {
   const nav = $('.nav'); if (!nav) return;
   const sig = space + '|' + navItems().map(([k]) => k).join(',');
   if (force || sig !== navFor) {
-    navFor = sig; mount(nav, navHtml()); nav.setAttribute('aria-label', areaDeEspacio(space)?.nombre || 'Secciones');
+    navFor = sig; mount(nav, navHtml()); nav.setAttribute('aria-label', areaDeRuta()?.nombre || 'Secciones');
     nav.classList.toggle('brands', ['marcas', 'estrategia', 'consulting'].includes(space)); document.documentElement.dataset.space = space || '';
   }
   const top = $('.top');
   if (lateral()) {
     // En el cel, arriba va el switch de áreas (el mismo de la barra lateral, más chico).
     const xs = areasTablero(), want = xs.length >= 2;
-    $('.asw', top)?.remove(); if (want && top) $('.brand', top).insertAdjacentHTML('afterend', areaSwitch(xs, areaDeEspacio(space)?.id, (n, px) => svgIco(n, px), 'asw chico'));
+    $('.asw', top)?.remove(); if (want && top) $('.brand', top).insertAdjacentHTML('afterend', areaSwitch(xs, areaDeRuta()?.id, (n, px) => svgIco(n, px), 'asw chico'));
     top?.classList.toggle('has-sw', want); return;
   }
   const want = showSwitch();
@@ -294,7 +306,9 @@ function paintSub(cur) {
       // Dos filas: las áreas (por función) y, abajo, las herramientas del área abierta. Inicio va solo, sin segunda fila.
       const area = areaOf(mod), modName = (k) => MODULES.find(([x]) => x === k);
       const tools = area[0] === 'inicio' ? [] : area[3].filter((k) => isSoon(k) || live.includes(k)).map((k) => ({ route: `marcas/${b.slug}/${k}`, label: modName(k)[1], k, soon: isSoon(k) }));
-      const areas = AREAS.filter(([k, , , mods]) => k === 'inicio' ? live.includes('inicio') : mods.some((m) => isSoon(m) || live.includes(m)));
+      // Con la barra lateral (también en el cel), solo los grupos del área abierta: Marketing planea y mide, Diseño hace las piezas.
+      const ar = lateral() ? areaDeRuta(cur)?.id : '';
+      const areas = AREAS.filter(([k, , , mods, , aa]) => (!ar || aa === ar || aa === 'ambas') && (k === 'inicio' ? live.includes('inicio') : mods.some((m) => isSoon(m) || live.includes(m))));
       sub.hidden = false;
       if (enBarra()) { if (!tools.length) { sub.hidden = true; sub.innerHTML = ''; return; } mount(sub, html`<div class="brand-nav"><div class="tabs mod-tabs" role="tablist" aria-label="Herramientas de ${area[1]}">${tools.map((t) => html`<button role="tab" class="${t.k === mod ? 'on' : ''} ${t.soon ? 'soon' : ''}" aria-selected="${t.k === mod ? 'true' : 'false'}" data-sub="${t.route}" ${t.soon ? raw('title="Próximamente"') : ''}>${t.label}${t.soon ? html`<i class="soon-tag">Pronto</i>` : ''}</button>`)}</div></div>`); return; }
       mount(sub, html`<div class="brand-nav"><div class="tabs area-tabs" role="tablist" aria-label="Áreas de la marca">${areas.map(([k, l, ic, , que]) => html`<button role="tab" class="${k === area[0] ? 'on' : ''}" aria-selected="${k === area[0] ? 'true' : 'false'}" data-sub="marcas/${b.slug}/${firstOfArea(me, b, k)}" title="${que}">${ico(ic, 15)}<span>${l}</span></button>`)}</div>
@@ -326,14 +340,16 @@ const latSubs = (xs) => (xs.length ? html`<div class="lat-subs">${xs.map(([ruta,
 const mono = (n, priv) => (priv ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(n)}</span>`);
 function latSecciones(cur) {
   if (space === 'marcas') {
-    const abierta = cur.key === 'marcas' ? cur.rest[0] : '';
-    return [html`<span class="lat-k">Marcas</span>`, latIt('marcas', 'Todas las marcas', svg('marcas'), !abierta), ...brandsNow().map((b) => {
+    // Marketing y Diseño: las mismas marcas; debajo de la abierta, solo los grupos de esa área (y su Inicio).
+    const abierta = cur.key === 'marcas' ? cur.rest[0] : '', ar = areaDeRuta(cur)?.id || 'diseno';
+    const marcas = brandsNow().filter((b) => ar !== 'marketing' || !b.personal);
+    return [html`<span class="lat-k">Marcas</span>`, latIt('marcas', 'Todas las marcas', svg('marcas'), !abierta), ...marcas.map((b) => {
       const on = b.slug === abierta; let subs = '';
       if (on) {
         const live = modulesFor(me, b), mod = cur.rest[1] || defaultModule(me, b), area = areaOf(mod);
-        subs = latSubs(AREAS.filter(([k, , , mods]) => (k === 'inicio' ? live.includes('inicio') : mods.some((m) => isSoon(m) || live.includes(m)))).map(([k, l, ic]) => [`marcas/${b.slug}/${firstOfArea(me, b, k)}`, l, k === area[0], ico(ic, 14)]));
+        subs = latSubs(gruposDe(ar).filter(([k, , , mods]) => (k === 'inicio' ? live.includes('inicio') : mods.some((m) => isSoon(m) || live.includes(m)))).map(([k, l, ic]) => [`marcas/${b.slug}/${firstOfArea(me, b, k)}`, l, k === area[0], ico(ic, 14)]));
       }
-      return latIt(`marcas/${b.slug}`, b.name, mono(b.name, b.personal), on, subs);
+      return latIt(`marcas/${b.slug}/${primerModulo(ar, b)}`, b.name, mono(b.name, b.personal), on, subs);
     })];
   }
   if (space === 'estrategia' || space === 'consulting') {
@@ -349,7 +365,7 @@ function latSecciones(cur) {
 }
 function paintLat(cur = resolve(hashNow())) {
   const lat = $('.lat'); if (!lat) return;
-  const xs = areasTablero(), a = areaDeEspacio(cur.space || space) || areaDeEspacio(space);
+  const xs = areasTablero(), a = areaDeRuta(cur);
   lat.dataset.area = a?.id || '';
   const enSw = document.activeElement?.closest?.('.lat .asw');
   mount($('#lat-area', lat), html`${xs.length >= 2 ? raw(areaSwitch(xs, a?.id, (n, px) => svgIco(n, px))) : ''}${a ? html`<div class="lat-area"><b>${a.nombre}</b><small>${a.sub}</small></div>` : ''}`);
@@ -359,20 +375,23 @@ function paintLat(cur = resolve(hashNow())) {
   $('.lat-it.on', lat)?.scrollIntoView?.({ block: 'nearest' });
 }
 // Cambiar de área: el espacio de esa área, donde estabas en él (lo recuerda también el Chat).
+// Marketing y Diseño comparten las marcas: se cambia al primer módulo del área en la misma marca (o a lo último que usaste ahí).
+const enEspacio = (r, sp) => Boolean(r) && (sp === 'org' ? r.startsWith('org/') : r.startsWith(sp));
 function irArea(id) {
   const a = areaDe(id); if (!a || !areasTablero().some((x) => x.id === id)) return;
-  guardarArea(me.email, id); if (a.espacio === space) return;
-  lsSet('space', a.espacio); const last = lsGet('last.' + a.espacio);
-  location.hash = '/' + (last && (a.espacio === 'org' ? last.startsWith('org/') : last.startsWith(a.espacio)) ? last : spaceHome(a.espacio));
+  const antes = areaDeRuta()?.id; guardarArea(me.email, id); if (antes === id) return;
+  lsSet('space', a.espacio);
+  const cur = resolve(hashNow()), b = a.espacio === 'marcas' && cur.space === 'marcas' && cur.rest[0] ? brandsNow().find((x) => x.slug === cur.rest[0]) : null;
+  const last = lsGet('last.a.' + id) || lsGet('last.' + a.espacio);
+  const to = b ? `marcas/${b.slug}/${primerModulo(id, b)}` : enEspacio(last, a.espacio) ? last : spaceHome(a.espacio);
+  if (to === hashNow()) return markNav(); // la misma ruta (la lista de marcas): solo cambia la barra
+  location.hash = '/' + to;
 }
 // «Pregúntale al Chat»: abre una conversación nueva en el modo del área, con el cliente o la marca que estás viendo.
 function preguntarAlChat() {
-  const cur = resolve(hashNow()), a = areaDeEspacio(cur.space) || areaDe('organizacion'), k = `os.llm.${me.email}`;
+  const cur = resolve(hashNow()), a = areaDeRuta(cur) || areaDe('organizacion');
   const slug = ['estrategia', 'consulting', 'marcas'].includes(cur.key) && cur.rest[0] && cur.rest[0] !== 'diseno' ? decodeURIComponent(cur.rest[0]) : '';
-  let p = {}; try { p = JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch {}
-  p.modo = a.modo; if (slug) p.slugs = { ...(p.slugs || {}), [a.modo]: slug };
-  try { localStorage.setItem(k, JSON.stringify(p)); } catch {}
-  guardarArea(me.email, a.id); location.hash = '/chat';
+  abrirEnChat(me.email, { modo: a.modo, slug, mes: cur.key === 'marcas' && cur.rest[1] === 'plan' && /^\d{4}-\d{2}$/.test(cur.rest[2] || '') ? cur.rest[2] : '' });
 }
 // Tu primer día y «Cómo se usa» son los mismos botones de siempre: en la compu viven abajo en la barra; en el cel, arriba.
 function ubicarAyuda() { const dest = enBarra() ? $('#lat-ayuda') : $('#top-ayuda'); if (dest) for (const id of ['pdchip', 'guiabtn']) { const b = $('#' + id); if (b && b.parentElement !== dest) dest.append(b); } }
@@ -417,7 +436,7 @@ function instalarLat() {
   lat.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { $('.lat-menu')?.remove(); return; }
     if (!e.target.closest('.asw')) return;
-    const id = areaConFlecha(areasTablero(), areaDeEspacio(space)?.id, e.key); if (id) { e.preventDefault(); irArea(id); }
+    const id = areaConFlecha(areasTablero(), areaDeRuta()?.id, e.key); if (id) { e.preventDefault(); irArea(id); }
   });
   ponerMini(latMini());
   desk.addEventListener('change', () => { ubicarAyuda(); markNav(); });
@@ -485,7 +504,7 @@ async function render() {
   // La dirección siempre dice dónde se abrió de verdad (alias y rutas que este perfil no ve se reescriben).
   if (cur.url !== hashNow()) history.replaceState(null, '', '#/' + cur.url);
   if (cur.space) { space = cur.space; lsSet('space', space); lsSet('last.' + space, cur.url); if (space !== 'chat') lsSet('space.os', space); }
-  if (lateral() && cur.space && cur.space !== 'chat') { const ar = areaDeEspacio(cur.space); if (ar) guardarArea(me.email, ar.id); }
+  if (lateral() && cur.space && cur.space !== 'chat') { const ar = areaDeRuta(cur); if (ar) { guardarArea(me.email, ar.id); lsSet('last.a.' + ar.id, cur.url); } }
   // El dock: en qué app estás. En el Chat la barra de arriba se esconde (la app ocupa toda la pantalla).
   if (me.role !== 'client') { const app = cur.space === 'chat' ? 'chat' : 'os'; document.documentElement.dataset.app = app; pintarDock(app, irApp); }
   else if (!space) space = me.role === 'client' ? null : landing().startsWith('marcas') ? 'marcas' : landing().startsWith('estrategia') ? 'estrategia' : 'org';

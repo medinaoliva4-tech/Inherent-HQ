@@ -22,6 +22,7 @@ import * as estrategia from './_lib/estrategia.js';
 import * as avatares from './_lib/avatares.js';
 import * as creacion from './_lib/creacion.js';
 import * as planMes from './_lib/plan.js';
+import * as campanas from './_lib/campanas.js';
 import * as portal from './_lib/portal.js';
 import * as inv from './_lib/investigacion.js';
 import * as buscar from './_lib/buscar.js';
@@ -125,6 +126,8 @@ async function collGuard(req, res, write) {
   if (coll === 'formats' || coll === 'scripts') { res.status(404).json({ error: 'Formatos y guiones están en /api/formatos y /api/guiones' }); return null; }
   // El plan del mes pide la estrategia aprobada: solo por /api/plan, que lo revisa.
   if (coll === 'plans') { res.status(404).json({ error: 'El plan del mes está en /api/plan' }); return null; }
+  // Las campañas y los eventos también piden la estrategia aprobada: solo por /api/campanas.
+  if (coll === 'mk_campaigns') { res.status(404).json({ error: 'Las campañas y los eventos están en /api/campanas' }); return null; }
   // Video, Ads y Tech de cada marca: solo por sus rutas (el OK del CEO para pautar y la web viva viven ahí).
   if (coll === 'videos' || coll === 'ad_variants' || coll === 'tech') { res.status(404).json({ error: 'Esto está en /api/video, /api/ads-studio y /api/tech' }); return null; }
   const any = coll === 'settings' && !write ? null : [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])];
@@ -1162,6 +1165,7 @@ avatares.rutas(on);
 // ---------- App 01 · Marca › Crear: formatos (plantillas) y guiones ----------
 creacion.rutas(on);
 planMes.rutas(on);
+campanas.rutas(on);
 // ---------- Investigación (Fase 4): referentes por marca, scraping automático con Apify y «Usar como formato» ----------
 inv.rutas(on);
 // ---------- La app de escritorio: si hay versión nueva y el link para bajarla ----------

@@ -7,7 +7,8 @@
 export const MODOS = [
   { id: 'estrategia', nombre: 'Estrategia', letra: 'S', icono: 'target', sub: 'La estrategia de cada cliente', pide: 'cliente', depto: '① Strategy' },
   { id: 'organizacion', nombre: 'Organización', letra: 'O', icono: 'clipboard', sub: 'Tareas, proyectos, leads y tu día', pide: '', depto: 'Organización' },
-  { id: 'diseno', nombre: 'Diseño', letra: 'D', icono: 'edit', sub: 'Plan del mes, ideas y piezas', pide: 'marca', depto: '⑥A Diseño gráfico' },
+  { id: 'marketing', nombre: 'Marketing', letra: 'M', icono: 'megaphone', sub: 'Plan del mes, campañas y eventos', pide: 'marca', depto: '③ Marketing' },
+  { id: 'diseno', nombre: 'Diseño', letra: 'D', icono: 'edit', sub: 'Las piezas: ideas, guiones e identidad', pide: 'marca', depto: '⑥A Diseño gráfico' },
   { id: 'consulting', nombre: 'Consulting', letra: 'C', icono: 'chart-pie', sub: 'Operaciones, finanzas, márgenes y estructura de un cliente', pide: 'cliente', depto: 'Consulting · Operations OS y Money OS' },
 ];
 export const modoDe = (id) => MODOS.find((m) => m.id === id) || MODOS[0];
@@ -24,6 +25,8 @@ export const REGLAS_COMUNES = [
 ];
 
 import { leerMeta, leerAvance } from './brujula.js';
+import { FUNCIONES, TEMPERATURAS, CONSCIENCIAS, BALANCES, limpiarPlan } from '../plan-mes.js';
+import { TIPOS_C, leerCampana } from '../campanas.js';
 
 // El protocolo de bloques: van AL FINAL de la respuesta, la persona no los ve; el OS los convierte en tarjetas.
 export const PROTOCOLO = [
@@ -55,11 +58,11 @@ export const HARNESS = {
       'Usa la skill hormozi-brain (agents/01-strategy/brain/skills/hormozi-brain: SKILL.md, INDEX.md y references/). Responde con base en ese material, no de memoria, y cita la fuente exacta entre corchetes: [$100M OFFERS | 6. Value Offer | pág. PDF 81] o [ROADMAP VIDEO | STAGE 3 | 00:12:40].',
       'Lo que el material recomienda y el nivel contratado no incluye va marcado FUERA DEL ALCANCE y no entra al plan.',
       'Cierra con un primer paso para hoy.',
-      'Lo que la estrategia pide y se ejecuta en otra área (un BMC, un mapa de procesos o los perfiles de puesto en Consulting; una pieza en Diseño) no lo hagas aquí: mándalo como encargo, uno por bloque, al final de la respuesta. La persona lo manda con un botón y queda como tarea:',
+      'Lo que la estrategia pide y se ejecuta en otra área (un BMC, un mapa de procesos o los perfiles de puesto en Consulting; el plan, una campaña o un evento en Marketing; una pieza en Diseño) no lo hagas aquí: mándalo como encargo, uno por bloque, al final de la respuesta. La persona lo manda con un botón y queda como tarea:',
       '```encargo',
       '{"area":"consulting","titulo":"Crear el BMC de la empresa","por_que":"una frase: qué decide la estrategia con esto","vence":"AAAA-MM-DD o vacío"}',
       '```',
-      'area: consulting (operaciones, finanzas, equipo) o diseno (piezas). Máximo 3 encargos por respuesta.',
+      'area: consulting (operaciones, finanzas, equipo), marketing (plan, campañas, eventos) o diseno (piezas). Máximo 3 encargos por respuesta.',
     ],
     herramientas: 'Leer y buscar en el repo. No uses el conector «inherent» para escribir: la estrategia se guarda sola desde el panel con el bloque ```estrategia```, y los encargos con el bloque ```encargo```.',
     criterios: ['Parte de la meta financiera y la baja a números (ticket, cierre, conversión, visita)', 'Cada recomendación cita su fuente', 'Respeta el nivel contratado: lo demás va FUERA DEL ALCANCE', 'Sin cifras inventadas: lo que falta va como ⚠️ SIN DATOS', 'Termina con un primer paso concreto'],
@@ -74,6 +77,18 @@ export const HARNESS = {
     ],
     herramientas: 'Las herramientas del conector «inherent» (Inherent OS): ven y cambian solo lo que el perfil de la persona permite. Nunca borres: archiva o cambia el estado.',
     criterios: ['La tarea o el lead tiene dueño (rol), fecha y siguiente paso', 'No se duplicó nada (se buscó antes de crear)', 'Lo que pidió permiso se hizo con el OK de la persona', 'Lo que es de precio, alcance o fechas con el cliente quedó escalado al CEO'],
+  },
+  marketing: {
+    rol: 'Eres ③ Marketing de Inherent: planeas y mides la demanda de la marca. El plan del mes (qué se dice, en qué canal y semana, y para qué sirve cada pieza), las campañas y los eventos con su anticipación, qué se pauta y cuándo, y qué funcionó. No escribes piezas, hooks ni copy: eso es de ④ Creatividad.',
+    como: [
+      'Lee agents/03-marketing/brain/WORKFLOW.md y las skills que indica (mk-encargo, mk-campana, mk-pilares, mk-mensaje, mk-canales, mk-calendario) y la ficha de oferta de la marca: el alcance contratado es el techo (cuántas piezas y qué canales). Sin ficha, no planees: dilo.',
+      'El plan del mes vive en el OS: lo que decidas del plan va al final en un bloque ```plan``` (JSON válido; solo las secciones que cambian): {"campana":{"nombre":"…","idea":"…","tipo":"campaña|pilar","traza":"A","meta":"…"},"mensaje":[{"titulo":"…","para":"…"}],"pilares":[{"nombre":"…","peso":40,"para":"…"}],"canales":[{"canal":"Instagram","funcion":"…","frecuencia":"…","formatos":"…","no":"…"}],"slots":[{"id":"MK-001","semana":1,"canal":"…","formato":"…","pilar":"…","funcion":"…","temperatura":"…","consciencia":"…","balance":"…","objetivo":"…","traza":"A"}]}. La persona lo guarda con un botón.',
+      `Vocabulario del plan: función ${FUNCIONES.join(' · ')} · temperatura ${TEMPERATURAS.join(' · ')} · consciencia ${CONSCIENCIAS.join(' · ')} · balance ${BALANCES.join(' · ')}. Todo slot traza a una MUST BE TRUE. Nunca: Community a quien no es cliente · Conversion a un Inconsciente · Marca con Conversion · dos canales con la misma función.`,
+      `Una campaña es un empujón con fecha (si no tiene fecha después de la cual deje de servir, es un pilar). Una por ciclo, dos como máximo. Cada campaña o evento va en un bloque \`\`\`campana\`\`\` al final: {"nombre":"…","frase":"…","tipo":"${TIPOS_C.map(([k]) => k).join('|')}","ancla":"AAAA-MM-DD","hasta":"AAAA-MM-DD o vacío","mbt":"letra · la MUST BE TRUE","se_nota":"…","no_es":"…"} (un evento suma "evento":{"objetivo":"…","lugar":"…","cupo":0,"proveedores":"…","medicion":"…"}). La anticipación sale sola de mk-campana; si la ajustas, dilo.`,
+      'Si la estrategia está mal o no traza, dilo y devuélvela a ① Strategy. La pauta sale solo con el OK del CEO (⑩ Ads).',
+    ],
+    herramientas: 'Leer el repo; el conector «inherent» para ver el contenido y el calendario de la marca. El plan y las campañas se guardan con los bloques ```plan``` y ```campana```, con el botón de la persona.',
+    criterios: ['Todo slot y toda campaña trazan a una MUST BE TRUE', 'Respeta el alcance contratado: piezas y canales de la ficha', 'Cada campaña tiene frase, fecha, en qué se nota y qué NO es', 'Nunca un solo aviso: la campaña lleva su anticipación y su último empujón', 'No escribe piezas ni copy: eso es de ④ Creatividad'],
   },
   diseno: {
     rol: 'Eres ⑥A Diseño gráfico de Inherent: conviertes el plan del mes y las ideas en piezas (carrusel, estático, story) con el sistema visual de la marca.',
@@ -139,6 +154,7 @@ export function sistemaDe(modo, ctx = {}) {
 export const SUGERENCIAS = {
   estrategia: [['¿En qué etapa está y por qué?', 'Diagnóstico'], ['Baja la meta a números: ticket, cierre y conversión', 'Ingeniería inversa'], ['¿Qué haría la oferta más difícil de rechazar?', 'Oferta'], ['Arma el roadmap de 90 días', 'Roadmap']],
   organizacion: [['¿Qué tengo pendiente hoy?', 'Tu día'], ['¿Qué leads están sin responder?', 'Ventas'], ['¿Qué entregas vencen esta semana?', 'Proyectos'], ['Crea una tarea para el editor de video', 'Tareas']],
+  marketing: [['Armemos el plan del mes', 'Plan del mes'], ['¿Este mes es campaña o pilar?', 'Campaña'], ['Organiza el evento de lanzamiento con su anticipación', 'Evento'], ['¿Qué funcionó el mes pasado y qué cambiamos?', 'Resultados']],
   diseno: [['¿Qué piezas del plan del mes faltan por diseñar?', 'Plan del mes'], ['Especifica un carrusel lámina por lámina', 'Carrusel'], ['Revisa esta pieza contra la guía de la marca', 'Revisión'], ['Propón 3 portadas para el reel de la semana', 'Ideas']],
   consulting: [['¿Dónde se traba la operación hoy?', 'Operaciones'], ['¿Qué decisiones solo debería tomar el fundador?', 'Estructura'], ['¿Qué línea deja margen y cuál lo desangra?', 'Márgenes'], ['¿Cuánto puede pagar por un cliente sin perder?', 'Finanzas']],
 };
@@ -173,6 +189,7 @@ export const alcanceConsulting = (nivel) => (!nivel ? 'sin-ficha' : nivel.id ===
 export const COMANDOS = [
   ['/estrategia', 'Cambiar al modo Estrategia'],
   ['/organizacion', 'Cambiar al modo Organización'],
+  ['/marketing', 'Cambiar al modo Marketing'],
   ['/diseno', 'Cambiar al modo Diseño'],
   ['/consulting', 'Cambiar al modo Consulting'],
   ['/nuevo', 'Empezar una conversación nueva'],
@@ -209,14 +226,15 @@ export const ESFUERZOS = [['low', 'Rápido', 'Responde ya; para lo simple'], [''
 export const nombreEsfuerzo = (k) => (ESFUERZOS.find(([v]) => v === (k || '')) || ESFUERZOS[1])[1];
 
 // ---------- Leer una respuesta ----------
-const RE_BLOQUES = /```(criterios|pregunta|estrategia|meta|avance|encargo)\s*\n([\s\S]*?)```/g;
+const RE_BLOQUES = /```(criterios|pregunta|estrategia|meta|avance|encargo|plan|campana)\s*\n([\s\S]*?)```/g;
 const corta = (s, n) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
 // El texto que se lee (sin bloques, ni uno a medio escribir).
-export const textoVisible = (t) => String(t || '').replace(RE_BLOQUES, '').replace(/```(criterios|pregunta|estrategia|meta|avance|encargo)[\s\S]*$/, '').replace(/\n{3,}/g, '\n\n').trim();
+export const textoVisible = (t) => String(t || '').replace(RE_BLOQUES, '').replace(/```(criterios|pregunta|estrategia|meta|avance|encargo|plan|campana)[\s\S]*$/, '').replace(/\n{3,}/g, '\n\n').trim();
 // → { criterios: { entregable, cumple: [], falta: [] } | null, pregunta: { texto, por_que, opciones } | null,
-//     meta: la propuesta de brújula (leerMeta) | null, avance: { hechas } | null, encargos: [{ area, titulo, por_que, vence }] }
+//     meta: la propuesta de brújula (leerMeta) | null, avance: { hechas } | null, encargos: [{ area, titulo, por_que, vence }],
+//     plan: el parche del plan del mes (limpiarPlan) | null, campanas: [campaña limpia] (máximo 2, mk-campana § 2) }
 export function leerTarjetas(t) {
-  let criterios = null, pregunta = null, meta = null, avance = null; const encargos = [];
+  let criterios = null, pregunta = null, meta = null, avance = null, plan = null; const encargos = [], campanas = [];
   for (const m of String(t || '').matchAll(RE_BLOQUES)) {
     let j; try { j = JSON.parse(m[2]); } catch { continue; }
     if (!j || typeof j !== 'object') continue;
@@ -228,11 +246,13 @@ export function leerTarjetas(t) {
     } else if (m[1] === 'meta' && !meta) meta = leerMeta(j);
     else if (m[1] === 'avance') { const a = leerAvance(j); if (a) avance = { hechas: [...(avance?.hechas || []), ...a.hechas] }; }
     else if (m[1] === 'encargo' && encargos.length < 3) { const e = leerEncargo(j); if (e) encargos.push(e); }
+    else if (m[1] === 'plan') { const pl = limpiarPlan(j); if (Object.keys(pl).length) plan = { ...(plan || {}), ...pl }; }
+    else if (m[1] === 'campana' && campanas.length < 2) { const c = leerCampana(j); if (c) campanas.push(c); }
   }
-  return { criterios, pregunta, meta, avance, encargos };
+  return { criterios, pregunta, meta, avance, encargos, plan, campanas };
 }
 // Un encargo de Estrategia para otra área. → { area, titulo, por_que, vence } | null
-export const AREAS_ENCARGO = { consulting: 'Consulting', diseno: 'Diseño' };
+export const AREAS_ENCARGO = { consulting: 'Consulting', marketing: 'Marketing', diseno: 'Diseño' };
 export function leerEncargo(j) {
   const area = String(j?.area || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''), titulo = corta(j?.titulo, 120);
   if (!AREAS_ENCARGO[area] || !titulo) return null;
@@ -244,7 +264,7 @@ export function leerEncargo(j) {
 export function tareaDeEncargo(e, { cliente, nombre, email }) {
   return {
     title: e.titulo, description: [e.por_que, `Encargo de Estrategia · ${nombre || cliente}.`].filter(Boolean).join('\n\n'),
-    status: 'Por empezar', tipo: 'Delivery', dept: e.area === 'diseno' ? '⑥A Diseño gráfico' : '', due: e.vence || '',
+    status: 'Por empezar', tipo: 'Delivery', dept: { diseno: '⑥A Diseño gráfico', marketing: '③ Marketing' }[e.area] || '', due: e.vence || '',
     assignee: email, accountable: '', visibility: 'all', viewers: [], checklist: [], comments: [], project_id: '',
     area: e.area, cliente, origen: 'estrategia',
   };

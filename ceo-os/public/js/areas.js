@@ -1,23 +1,26 @@
-// Las cuatro áreas de Inherent OS, iguales en las dos apps (el Tablero y el Chat). El área dice QUÉ trabajas; la app, CÓMO
+// Las cinco áreas de Inherent OS, iguales en las dos apps (el Tablero y el Chat). El área dice QUÉ trabajas; la app, CÓMO
 // (ver y mover las cosas, o conversarlas). Se escoge una vez con el switch de arriba de la barra y las dos apps la siguen.
 //   Estrategia    la estrategia de cada cliente (① Strategy)
 //   Organización  cómo se maneja Inherent: tu día, proyectos, ventas, servicios y sus finanzas
-//   Diseño        las marcas: plan del mes, ideas y piezas (⑥A Diseño gráfico)
+//   Marketing     planear y medir la demanda de cada marca: plan del mes, campañas y eventos, calendario, pauta (③ Marketing)
+//   Diseño        hacer las piezas de cada marca: brief, ideas, guiones, identidad y video (④ Creatividad · ⑥A Diseño gráfico)
 //   Consulting    el backend de un cliente: sus operaciones, finanzas, márgenes y estructura (Operations OS y Money OS)
 // Cada una tiene su color (--ui-m-<id> en app.css). espacio: el espacio del Tablero (app.js) · modo: el modo del Chat (llm/modos.js).
+// Marketing y Diseño comparten el espacio de las marcas (#/marcas/…): el área la dice el grupo del módulo abierto (brandlist.js).
 // Puro: sin DOM ni red (lo prueba scripts/test-ui.mjs).
 export const AREAS = [
   { id: 'estrategia', nombre: 'Estrategia', sub: 'La estrategia de cada cliente', icono: 'target', espacio: 'estrategia', modo: 'estrategia' },
   { id: 'organizacion', nombre: 'Organización', sub: 'Cómo se maneja Inherent', icono: 'clipboard', espacio: 'org', modo: 'organizacion' },
-  { id: 'diseno', nombre: 'Diseño', sub: 'Marcas: plan del mes, ideas y piezas', icono: 'palette', espacio: 'marcas', modo: 'diseno' },
+  { id: 'marketing', nombre: 'Marketing', sub: 'Plan del mes, campañas y eventos de cada marca', icono: 'megaphone', espacio: 'marcas', modo: 'marketing' },
+  { id: 'diseno', nombre: 'Diseño', sub: 'Las piezas de cada marca: ideas, guiones e identidad', icono: 'palette', espacio: 'marcas', modo: 'diseno' },
   { id: 'consulting', nombre: 'Consulting', sub: 'Operaciones, finanzas, márgenes y estructura de un cliente', icono: 'chart-pie', espacio: 'consulting', modo: 'consulting' },
 ];
 export const areaDe = (id) => AREAS.find((a) => a.id === id) || null;
-export const areaDeEspacio = (sp) => AREAS.find((a) => a.espacio === sp) || null;
+export const areaDeEspacio = (sp) => AREAS.find((a) => a.espacio === sp) || null; // en «marcas» es la primera (Marketing): app.js usa el módulo
 export const areaDeModo = (m) => AREAS.find((a) => a.modo === m) || null;
 
 // Las que abre esta persona. puede = { estrategia, organizacion, diseno, consulting } (booleanos que arma cada app).
-// Consulting va con Estrategia: lo lleva el CEO con Strategy, y el CEO decide quién más en Vistas por rol.
+// Consulting va con Estrategia: lo lleva el CEO con Strategy, y el CEO decide quién más en Vistas por rol. Marketing y Diseño, con las marcas.
 export const areasDe = (puede = {}) => AREAS.filter((a) => puede[a.id]);
 
 // El área elegida se recuerda por persona en este navegador: la escriben y la leen las dos apps.
@@ -47,3 +50,15 @@ export function barraLateral(me) {
   return v ? v === 'lateral' : me.role === 'ceo';
 }
 export function ponerBarra(me, lateral) { try { localStorage.setItem(KB(me.email), lateral ? 'lateral' : 'arriba'); } catch {} }
+
+// Abrir el Chat con un pedido escrito: en el modo de un área, con su cliente o marca y (opcional) el mes del plan. Lo usan
+// «Pregúntale al Chat», Consulting, Campañas y eventos y el plan del mes. Lo único de este archivo que toca el navegador.
+export function abrirEnChat(email, { modo, slug = '', borrador = '', mes = '' } = {}) {
+  const k = `os.llm.${email}`; let p = {};
+  try { p = JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch {}
+  p.modo = modo; if (slug) p.slugs = { ...(p.slugs || {}), [modo]: slug };
+  if (borrador) p.borrador = borrador; if (mes) p.mes = mes;
+  try { localStorage.setItem(k, JSON.stringify(p)); } catch {}
+  guardarArea(email, areaDeModo(modo)?.id || '');
+  if (typeof location !== 'undefined') location.hash = '/chat';
+}
