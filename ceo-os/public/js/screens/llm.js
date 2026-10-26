@@ -15,18 +15,20 @@ import { botonVoz, dictar } from '../voz.js';
 import { PUENTE, enApp } from '../laya.js';
 import { tokenDe } from '../puente-chat.js';
 import { icoApp } from '../dock.js';
+import { svgIco } from '../iconos.js';
+import { ponerTema, temaElegido, esNoche } from '../tema.js';
 
 const K = (me) => `os.llm.${me.email}`;
 // En pantallas chicas el panel va encima del chat: empieza cerrado y abrirlo no se recuerda.
 const angosto = () => matchMedia('(max-width: 1100px)').matches;
 const leer = (me) => { try { return JSON.parse(localStorage.getItem(K(me)) || '{}') || {}; } catch { return {}; } };
 const guardar = (me, v) => { try { localStorage.setItem(K(me), JSON.stringify(v)); } catch {} };
-const ICO_PANEL = raw('<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M15 4v16"/></svg>');
-const ICO_SIDE = raw('<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg>');
-const ICO_NUEVO = raw('<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>');
-const ICO_ARRIBA = raw('<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>');
-const ICO_STOP = raw('<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor"/></svg>');
-const ICO_RAMA = raw('<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="7" r="2"/><path d="M6 7v10M18 9c0 5-6 4-11.2 8.6"/></svg>');
+const ICO_PANEL = raw(svgIco('panel', 16));
+const ICO_SIDE = raw(svgIco('side', 16));
+const ICO_NUEVO = raw(svgIco('nuevo', 16));
+const ICO_ARRIBA = raw(svgIco('enviar', 17, 'lni lni-fuerte'));
+const ICO_STOP = raw(svgIco('stop-lleno', 14));
+const ICO_RAMA = raw(svgIco('rama', 16));
 const ELECCION = { once: 'Permitir una vez', session: 'En esta conversación', always: 'Siempre', deny: 'No' };
 
 export async function render(el, { me, sub = [], alive }) {
@@ -35,11 +37,11 @@ export async function render(el, { me, sub = [], alive }) {
   const modos = MODOS.filter((m) => puedeModo(m.id));
   const S = {
     modo: modos.some((m) => m.id === pref.modo) ? pref.modo : modos[0].id,
-    slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: Boolean(pref.privado), esfuerzo: pref.esfuerzo || '', panel: angosto() ? false : pref.panel !== false, tema: pref.tema || 'noche',
+    slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: Boolean(pref.privado), esfuerzo: pref.esfuerzo || '', panel: angosto() ? false : pref.panel !== false,
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
   };
-  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, esfuerzo: S.esfuerzo, panel: angosto() ? pref.panel : S.panel, tema: S.tema });
+  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, esfuerzo: S.esfuerzo, panel: angosto() ? pref.panel : S.panel });
   // Modo privado: responde un modelo que corre en esta compu (Ollama, LM Studio…). El elegido si es local; si no, el primero que haya.
   const modeloLocal = () => {
     if (S.modelo?.model && esLocal(S.modelo.provider)) return S.modelo;
@@ -53,7 +55,7 @@ export async function render(el, { me, sub = [], alive }) {
   const nombreSlug = () => opciones().find(([s]) => s === slugAhora())?.[1] || slugAhora();
   const listo = () => Boolean(S.salud?.on && S.salud?.auth);
 
-  mount(el, html`<div class="llm" data-tema="${S.tema}" data-panel="${S.panel ? 'on' : 'off'}">
+  mount(el, html`<div class="llm" data-tema="${esNoche() ? 'noche' : 'dia'}" data-panel="${S.panel ? 'on' : 'off'}">
     <aside class="llm-side" id="llm-side" aria-label="Conversaciones"></aside>
     <main class="llm-main" id="llm-main">
       <header class="llm-head"><button type="button" class="llm-ib llm-solo-cel" data-a="side" aria-label="Conversaciones">${ICO_SIDE}</button><div class="llm-titulo" id="llm-titulo"></div><span class="sp"></span>
@@ -68,7 +70,9 @@ export async function render(el, { me, sub = [], alive }) {
     <div class="llm-velo" data-a="side"></div>
   </div>`);
   const R = $('.llm', el), C = (id) => $('#' + id, el);
-  document.documentElement.dataset.llmTema = S.tema; // el dock se viste igual que el chat
+  // El día y la noche son uno solo para las dos apps (tema.js): si cambia (aquí, en Organización o en la compu), el Chat lo sigue.
+  const onTema = () => { if (!alive() || !R.isConnected) return window.removeEventListener('tema', onTema); R.dataset.tema = esNoche() ? 'noche' : 'dia'; };
+  window.addEventListener('tema', onTema);
 
   // ---------- La barra lateral (estilo Hermes: nueva · modos · recientes por fecha · tú y Hermes) ----------
   function pintarSide() {
@@ -260,7 +264,7 @@ export async function render(el, { me, sub = [], alive }) {
         ${cx && !enApp() ? html`<button type="button" class="lsu-btn ghost" data-a="olvidar-llave">Olvidar la llave en este navegador</button>` : ''}
         <p class="lp-mut">El modelo, las suscripciones, las skills y la memoria viven en Hermes. Aquí se ven; se cambian con estos comandos (perfil «inherent»):</p>
         <div class="lsh-cmds">${TERMINAL.map(([t, c]) => html`<div class="lsu-cmd"><span>${t}</span><code>${c}</code><button type="button" data-a="copiar" data-t="${c}">Copiar</button></div>`)}</div></section>
-      <section><span class="lp-k">Tema</span><div class="lsh-tema">${[['noche', 'Noche'], ['dia', 'Día']].map(([k, l]) => html`<button type="button" class="${S.tema === k ? 'on' : ''}" data-a="tema" data-t="${k}">${l}</button>`)}</div></section>
+      <section><span class="lp-k">Día y noche · para las dos apps</span><div class="lsh-tema">${[['sistema', 'Como mi compu'], ['dia', 'Día'], ['noche', 'Noche']].map(([k, l]) => html`<button type="button" class="${temaElegido() === k ? 'on' : ''}" data-a="tema" data-t="${k}">${l}</button>`)}</div></section>
       <section><span class="lp-k">Skills de Hermes</span><div id="lsh-skills"><p class="lp-mut">${listo() ? 'Cargando…' : 'Conecta Hermes para verlas.'}</p></div></section></div>`);
     R.append(d);
     if (listo()) skills().then((xs) => { const b = d.querySelector('#lsh-skills'); if (b) mount(b, xs.length ? html`<div class="lsh-sk">${xs.slice(0, 60).map((s) => html`<span title="${s.description || ''}">${s.name}</span>`)}</div><p class="lp-mut">Úsalas con «/skill» en la caja.</p>` : html`<p class="lp-mut">Sin skills instaladas.</p>`); }).catch(() => {});
@@ -440,7 +444,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'cerrar-sheet') return el.querySelector('.llm-sheet')?.remove();
     if (a === 'olvidar-llave') { setHermes(me, null); el.querySelector('.llm-sheet')?.remove(); return revisar(); }
     if (a === 'ir-os') { document.querySelector('.dock [data-app="os"]')?.click(); return; }
-    if (a === 'tema') { S.tema = t.dataset.t; R.dataset.tema = S.tema; document.documentElement.dataset.llmTema = S.tema; persistir(); el.querySelector('.llm-sheet')?.remove(); return ajustes(); }
+    if (a === 'tema') { ponerTema(t.dataset.t); el.querySelector('.llm-sheet')?.remove(); return ajustes(); }
     if (a === 'revisar') return revisar();
   });
   el.addEventListener('keydown', (e) => {

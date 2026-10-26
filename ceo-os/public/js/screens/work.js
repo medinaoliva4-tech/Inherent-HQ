@@ -11,6 +11,8 @@ import { openDelivery, dueChip as tDue, stChip as tSt } from '../taskcard.js';
 import { purposeCard } from '../purpose.js';
 import { taskKanban } from '../kanban.js';
 import { PURPOSE } from '../roleviews.js';
+// Los símbolos de las listas de Mis tareas, como íconos de línea del set del OS.
+const GLIFO = { '◷': 'clock', '!': 'alert', '⚑': 'badge-check', '▦': 'calendar-days', '◧': 'layers', '▤': 'kanban', '◈': 'star', '⇢': 'arrow-right', '◉': 'users' };
 
 // Workspace: cada persona trabaja desde el perfil (o los perfiles) que tiene asignados en Team.
 // Todos tienen su kanban personal, el de la empresa y sus tareas. Cada perfil agrega lo suyo:
@@ -90,8 +92,8 @@ export async function render(el, { me, sub, alive }) {
     if (!alive()) return;
     const L = listas(), D = dec();
     const viewSel = isCeo ? html`<select class="in sm mt-who-sel" id="viewAs" aria-label="Ver las tareas de"><option value="">Mis tareas</option>${team.filter((p) => p.active !== false && p.kind !== 'ia' && p.id !== me.email).map((p) => html`<option value="${p.email || p.id}" ${asP && (asP.email || asP.id) === (p.email || p.id) ? raw('selected') : ''}>Ver las de ${p.name}</option>`)}</select>` : '';
-    const tile = (k, l, n, color, ic) => html`<button type="button" class="mt-tile ${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><span class="mt-ic" style="background:${color}">${ic}</span><b>${n}</b><span>${l}</span></button>`;
-    const item = (k, l, color, ic, n = '') => html`<button type="button" class="mt-li ${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><i style="background:${color}">${ic}</i>${l}${n !== '' ? html`<small>${n}</small>` : ''}</button>`;
+    const tile = (k, l, n, color, ic) => html`<button type="button" class="mt-tile ${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><span class="mt-ic" style="color:${color}">${ico(GLIFO[ic] || 'dot', 18)}</span><b>${n}</b><span>${l}</span></button>`;
+    const item = (k, l, color, ic, n = '') => html`<button type="button" class="mt-li ${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><i style="color:${color}">${ico(GLIFO[ic] || 'dot', 16)}</i>${l}${n !== '' ? html`<small>${n}</small>` : ''}</button>`;
     const Z = ZONES[role];
     mount(el, html`${asP ? html`<div class="asbar">${ico('eye')} Estás viendo las tareas de <b>${asP.name}</b> · lo que hagas aquí queda a su nombre <a href="#/work">Volver a las mías</a></div>` : ''}
       <div class="mt"><aside class="mt-side">

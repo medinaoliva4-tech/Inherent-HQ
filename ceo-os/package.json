@@ -17,7 +17,9 @@
     "test:diseno": "node scripts/test-diseno.mjs",
     "test:plan": "node scripts/test-plan.mjs",
     "test:marca": "node scripts/test-marca.mjs",
-    "test:llm": "node scripts/test-llm.mjs"
+    "test:llm": "node scripts/test-llm.mjs",
+    "test:ui": "node scripts/test-ui.mjs",
+    "capturas": "node scripts/capturas.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",

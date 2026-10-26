@@ -22,6 +22,9 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
 - **Los chats se sienten como ChatGPT o Claude.** La conversación centrada; lo tuyo en una burbuja suave a la derecha; la respuesta sin burbuja, con el avatar del agente y sus acciones al pasar el mouse (copiar, reintentar, guardar); el chat vacío con un título y tarjetas de lo que se puede pedir; la caja abajo con la franja de cliente, mes, contexto y modo, el modelo con su punto verde o rojo y la voz; un aviso de que puede equivocarse; el panel que se esconde. **Un chat por parte del proceso, no un historial de chats.**
 - **Evidencia o etiqueta.** Lo que no tiene fuente dice «⚠️ SIN DATOS». El OS no inventa.
 - **Dos apps, un OS.** Organización (proyectos, briefs, clientes, ventas, finanzas) y Chat (el Inherent LLM) se separan y se unen con el dock, como un escritorio. Cada una vuelve a donde estabas.
+- **Un solo sistema de diseño.** Organización y el Chat comparten colores (de noche gris cálido tipo Claude, de día blanco cálido, café solo de acento), íconos (un solo set) y un solo día/noche. Las zonas de papel (cotización, login, portadas) no cambian.
+- **Nada se congela.** Al tocar una sección se ve al momento la forma de la pantalla y los datos llegan encima; lo que no cargó dice «Reintentar», nunca se ve vacío.
+- **Movimiento corto y con propósito.** Menos de 300 ms, solo lo que ayuda a entender qué pasó; con «reducir movimiento» no se mueve nada.
 
 ## 3 · Lo que no se negocia
 
