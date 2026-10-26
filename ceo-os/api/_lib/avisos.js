@@ -9,9 +9,8 @@
 // Las claves van en VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY y VAPID_SUBJECT (mailto:). Sin ellas, nada se rompe: el botón dice que falta configurarlo.
 import webpush from 'web-push';
 import * as db from './db.js';
-import { guard, userFor, effective, viewsDoc } from './access.js';
+import { guard, userFor, effective, viewsDoc, scoper } from './access.js';
 import { body } from './http.js';
-import { isWaiting } from '../../public/js/ventas-flujo.js';
 import { datosDe } from './avisos-datos.js';
 import { REGLAS } from '../../public/js/avisos-reglas/index.js';
 import { correr, aplicarPospuestos, posponer, contar, hoyGT } from '../../public/js/avisos-reglas/base.js';
@@ -46,28 +45,23 @@ async function conAvisos() {
   }
   return out;
 }
-// Entró un lead: a quien ve Ventas, para responder en un minuto.
+// Entró un lead: a quien ve Ventas y lo tiene en su alcance (con «asignados», los de su rol), para responder en un minuto.
 export async function nuevoLead(lead) {
   if (!listo() || !lead || lead.direction === 'out') return;
   try {
-    for (const u of await conAvisos()) if (u.areas.includes('sales')) await mandar(u.email, { title: 'Lead nuevo · responde en un minuto', body: [lead.name, lead.source].filter(Boolean).join(' · ').slice(0, 120), url: '/#/org/sales', tag: 'lead-' + lead.id });
+    for (const u of await conAvisos()) { if (!u.areas.includes('sales')) continue; const sc = await scoper(u); if (sc && !sc.leads(lead)) continue; await mandar(u.email, { title: 'Lead nuevo · responde en un minuto', body: [lead.name, lead.source].filter(Boolean).join(' · ').slice(0, 120), url: '/#/org/sales', tag: 'lead-' + lead.id }); }
   } catch (e) { console.error('aviso de lead', e.message); }
 }
-// La mañana: tus tareas de hoy o vencidas y los leads sin responder (si ves Ventas).
-export async function resumenDiario(hoy = new Date().toISOString().slice(0, 10)) {
+// La mañana: lo urgente de tus Avisos (lo mismo que ves en #/avisos, sin lo que pospusiste).
+export async function resumenDiario(hoy = hoyGT()) {
   if (!listo()) return { mandados: 0 };
-  const [tasks, leads] = await Promise.all([db.list('tasks'), db.list('leads')]);
-  const esperando = leads.filter(isWaiting).length;
   let mandados = 0;
   for (const u of await conAvisos()) {
-    const mias = tasks.filter((t) => String(t.assignee || '').toLowerCase() === u.email && t.status !== 'Hecha' && t.due && t.due <= hoy);
-    const partes = [mias.length ? `${mias.length} ${mias.length === 1 ? 'tarea' : 'tareas'} para hoy` : '', u.areas.includes('sales') && esperando ? `${esperando} ${esperando === 1 ? 'lead sin responder' : 'leads sin responder'}` : ''].filter(Boolean);
-    if (!partes.length) continue;
-    mandados += await mandar(u.email, { title: 'Hoy en Inherent OS', body: partes.join(' · '), url: u.areas.includes('home') ? '/#/org/home' : '/#/org/work', tag: 'manana-' + hoy });
+    const r = await avisosDe(u, hoy).catch(() => null); const urg = (r?.items || []).filter((x) => x.urgencia === 'alta'); if (!urg.length) continue;
+    mandados += await mandar(u.email, { title: 'Hoy en Inherent OS', body: urg.length === 1 ? urg[0].titulo : `${urg.length} cosas urgentes · ${urg[0].titulo}`, url: '/#/avisos', tag: 'manana-' + hoy });
   }
   return { mandados };
 }
-
 // Los Avisos de una persona, ya sin los que pospuso. errores: reglas que fallaron (solo se le muestran al CEO).
 export async function avisosDe(u, hoy = hoyGT()) {
   const { persona, datos } = await datosDe(u);

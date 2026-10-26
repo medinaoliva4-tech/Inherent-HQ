@@ -38,28 +38,28 @@ El CEO asigna el rol de cada persona en **Team**. Quien entra por primera vez qu
 (*Oculto · Resumen · Completo*; Resumen existe en Content: solo rendimiento). Se guarda en `settings` (id `role_views`).
 Sin configurar, todo se ve completo. Se aplica en el servidor (`api/_lib/access.js`), en el conector MCP y en la interfaz: la pantalla solo refleja lo que el servidor ya decidió.
 
-## Las 8 secciones
+## Las secciones de Organización
 
-Cada sección agrupa pantallas; arriba de la pantalla van sus pestañas. Una sección aparece si el perfil ve al menos una.
+Cada sección agrupa pantallas; con la barra lateral, sus pestañas van debajo de ella (arriba, en la barra de siempre). Una sección aparece si el perfil ve al menos una. Las áreas de trabajo (Estrategia, Marketing, Diseño y Consulting) tienen su propio espacio y se eligen con el switch de áreas.
 
 | Sección | Pestañas (ruta) |
 |---|---|
-| Inicio | Hoy (`#/home`) · Control (`#/control`) |
-| Clientes | Clientes (`#/clients`), con el portal de cada cliente |
-| Comercial | CRM, catálogo, especialistas, cotizaciones, fuentes y paquetes (`#/sales`) |
-| Operaciones | Proyectos (`#/operations`) · Workspace (`#/work`) · Contenido (`#/content`) |
-| Resultados | Indicadores (`#/resultados`) · Metas (`#/roadmap`) |
-| Finanzas | `#/finanzas` |
-| Conocimiento | La Library (`#/library`) |
-| Administración | Equipo (`#/team`) · Vistas por rol · Recetas · Arranque (solo el CEO) |
+| Hoy | Hoy (`#/org/home`) · Mis tareas (`#/org/work`) |
+| Proyectos | Clientes (`#/org/clients`), con el portal de cada cliente · Proyectos (`#/org/operations`) |
+| Ventas | CRM, prospectos, cotizaciones y fuentes (`#/org/sales`) |
+| Servicios | El catálogo, los paquetes y las responsabilidades (`#/org/services`) |
+| Finanzas | `#/org/finanzas` |
+| Inherent | Visión y misión · Equipo · Vistas por rol · Laya · Roadmap · Library · Arranque (solo el CEO) |
+
+Además: **Avisos** (`#/avisos`, la campanita) y **Mi perfil** (`#/me`).
 
 `#/<sección>` (ej. `#/operaciones`) abre su primera pestaña visible; las rutas de cada pantalla siguen igual.
 
-**Resultados** solo usa datos que ya existen; lo que no tiene dato sale vacío con de dónde va a salir, nunca en cero.
+**Los indicadores** (en Hoy y en la herramienta `resultados` del conector) solo usan datos que ya existen; lo que no tiene dato sale vacío con de dónde va a salir, nunca en cero.
 Cada bloque pide ver su sección de origen: **Comercial** (leads y cierre por fuente, tiempo de respuesta, valor del
 pipeline por etapa, motivos de pérdida), **Entregas** (tareas hechas a tiempo contra su fecha límite: cada tarea guarda
 `done_at` el día que queda «Hecha»), **Ingresos** del mes (solo ingresos, sin costos) y **Clientes** (sus metas, meta
-contra real, y sus redes de Instagram por Windsor a pedido). Lo mismo da la herramienta `resultados` del conector.
+contra real, y sus redes de Instagram por Windsor a pedido).
 
 **Tareas:** cada una tiene **tipo** (Delivery, Comercial, Interna, Personal; Personal solo la ve quien la creó) y **SOP**
 (un documento de la Library o un link). **Research** tiene 5 niveles: competencia, referente-similar, referente-aspiracional,

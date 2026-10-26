@@ -62,8 +62,10 @@ export const SCOPES = [['todos', 'Todos los clientes'], ['asignados', 'Solo sus 
 export const SCOPE_RANK = { propio: 0, asignados: 1, todos: 2 };
 export const SCOPE_HELP = { todos: 'Ve los proyectos, tareas, clientes y leads de toda la empresa', asignados: 'Solo los proyectos donde tiene tareas (y sus clientes y tareas); los leads de su rol', propio: 'Solo sus tareas, los proyectos donde las tiene y los leads que creó' };
 // Dónde abre cada perfil al entrar. Por defecto: sus responsabilidades de hoy; el CEO en Hoy, el COO en Control.
-export const STARTS = [['work', 'Hoy · sus responsabilidades'], ['home', 'Hoy'], ['control', 'Hoy · Control del flujo'], ['clients', 'Proyectos · clientes'], ['operations', 'Proyectos'], ['sales', 'Ventas · CRM'], ['finanzas', 'Finanzas'], ['content', 'Marcas'], ['resultados', 'Hoy · Indicadores'], ['library', 'Inherent · Library']];
-const DEFAULT_START = { ceo: 'home', coo: 'control' };
+export const STARTS = [['work', 'Hoy · sus responsabilidades'], ['home', 'Hoy'], ['clients', 'Proyectos · clientes'], ['operations', 'Proyectos'], ['sales', 'Ventas · CRM'], ['finanzas', 'Finanzas'], ['content', 'Marcas'], ['library', 'Inherent · Library']];
+const DEFAULT_START = { ceo: 'home', coo: 'home' };
+// Control del flujo e Indicadores ya no son pantallas (viven en Hoy): si un perfil viejo abre ahí, abre en Hoy.
+const START_VIEJO = { control: 'home', resultados: 'home' };
 // Lo que nunca cambia la matriz: Finanzas para quien no es CEO se queda en resumen (costos, márgenes,
 // tarifas y pagos son solo del CEO), y Team siempre se ve (quién es quién); cambiarlo ya es solo del CEO.
 const CAP = { finanzas: 'resumen' };
@@ -106,7 +108,7 @@ export function scopeFor(doc, me) {
 }
 // Dónde abre: lo configurado para su primer perfil que lo tenga; si no, su cola de hoy. El CEO siempre en Home.
 export function startFor(doc, me, views) {
-  const want = (me.role === 'ceo' ? null : rolesOf(me).map((r) => doc?.start?.[r]).find((s) => AREAS.includes(s))) || DEFAULT_START[me.role] || 'work';
+  const w0 = (me.role === 'ceo' ? null : rolesOf(me).map((r) => doc?.start?.[r]).find((s) => AREAS.includes(s))) || DEFAULT_START[me.role] || 'work', want = START_VIEJO[w0] || w0;
   if (views && views[want] !== 'oculto') return want;
   return AREAS.find((a) => views?.[a] && views[a] !== 'oculto') || 'home';
 }

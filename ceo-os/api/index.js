@@ -922,20 +922,8 @@ on('POST', 'ads/competitors/:slug', async (req, res) => {
   catch (e) { if (e.status || e.code) return res.status(e.status || 503).json({ error: e.message }); res.status(502).json({ error: e.message }); }
 });
 
-// ---------- Resultados: los números reales de Inherent y de cada cliente ----------
-// Cada bloque sale solo si la persona ve su sección de origen; lo que no tiene dato va vacío, nunca en cero.
-on('GET', 'results', async (req, res) => {
-  const u = await guard(req, res, 'resultados'); if (!u) return;
-  res.json(await results.compute(u, { dias: +req.query.dias || 90 }));
-});
-// Las redes de un cliente (Instagram por Windsor): aparte, porque tarda.
-on('GET', 'results/redes/:slug', async (req, res) => {
-  const u = await guard(req, res, 'resultados'); if (!u) return;
-  const slug = req.params.slug; if (!slugOk(slug) || slug === 'personal') return res.status(400).json({ error: 'Cliente inválido' });
-  if (!u.areas.includes('clients')) return res.status(403).json({ error: 'Sin acceso a esta área' });
-  const sc = await scoper(u); if (sc && !sc.client(slug)) return res.status(404).json({ error: 'No existe' });
-  try { res.json(await results.redes(slug)); } catch (e) { res.status(502).json({ error: e.message }); }
-});
+// Resultados (los números reales de Inherent y de cada cliente) ya no tienen pantalla ni ruta: viven en Hoy y en la
+// herramienta «resultados» del conector (api/_lib/results.js).
 
 // ---------- Flujo: lead → cotización → pago → proyecto ----------
 on('POST', 'flow/quote/:id', async (req, res) => {

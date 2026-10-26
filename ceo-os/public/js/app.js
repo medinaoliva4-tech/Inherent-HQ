@@ -45,10 +45,10 @@ const TABS = {
   inherent: [['vision', 'Visión y misión', 'all'], ['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'ceo'], ['team/laya', 'Laya', 'ceo'], ['roadmap', 'Roadmap', 'roadmap'], ['library', 'Library', 'library'], ['setup', 'Arranque', 'ceo']],
 };
 const ORG = GROUPS.filter((g) => g[3] === 'org').map(([k, l]) => [k, l]);
-const SCREENS = { me: 'me', avisos: 'avisos', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands', estrategia: 'strategy', consulting: 'consulting', chat: 'llm' };
-const LABEL = { avisos: 'Avisos', home: 'Hoy', control: 'Control del flujo', work: 'Mis tareas', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control', vision: 'Visión y misión', marcas: 'Marcas', estrategia: 'Estrategia', consulting: 'Consulting', chat: 'Inherent LLM' };
+const SCREENS = { me: 'me', avisos: 'avisos', home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', vision: 'vision', marcas: 'brands', estrategia: 'strategy', consulting: 'consulting', chat: 'llm' };
+const LABEL = { avisos: 'Avisos', home: 'Hoy', work: 'Mis tareas', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', me: 'Mi perfil', vision: 'Visión y misión', marcas: 'Marcas', estrategia: 'Estrategia', consulting: 'Consulting', chat: 'Inherent LLM' };
 // Las pantallas de Organization (lo que no es Marcas, Mi perfil ni el portal del cliente).
-const ORG_SCREENS = ['home', 'control', 'work', 'resultados', 'setup', 'clients', 'operations', 'portal', 'sales', 'services', 'finanzas', 'vision', 'team', 'roadmap', 'library'];
+const ORG_SCREENS = ['home', 'work', 'setup', 'clients', 'operations', 'portal', 'sales', 'services', 'finanzas', 'vision', 'team', 'roadmap', 'library'];
 // Las áreas que cuentan como «ve algo de Organization» (Equipo y Visión los ve todo el equipo: no cuentan).
 const ORG_AREAS = ['home', 'work', 'control', 'resultados', 'clients', 'operations', 'sales', 'finanzas', 'roadmap', 'library'];
 // Alias de rutas viejas.
@@ -225,7 +225,7 @@ function resolve(path) {
   const key = org[0];
   // Control del flujo e Indicadores se volvieron parte de Hoy: sus links viejos abren Hoy.
   if (key === 'control' || key === 'resultados') return resolve('org/home');
-  if (!SCREENS[key] || !sees(key) || ['content', 'mimarca', 'control-hub', 'marcas', 'estrategia', 'consulting'].includes(key)) return path === landing(false) ? { key: 'vision', rest: [], url: 'org/vision', space: 'org' } : fallback();
+  if (!SCREENS[key] || !sees(key) || ['content', 'mimarca', 'marcas', 'estrategia', 'consulting'].includes(key)) return path === landing(false) ? { key: 'vision', rest: [], url: 'org/vision', space: 'org' } : fallback();
   if (key === 'portal' && me.role === 'client') return { key, rest: org.slice(1), url: org.join('/'), space: null };
   return { key, rest: org.slice(1), url: 'org/' + org.join('/'), space: 'org' };
 }
@@ -470,7 +470,7 @@ document.addEventListener('keydown', (e) => {
 // ---------- El buscador: «Ir a» con lo que ve este perfil ----------
 function jumpItems() {
   if (me.role === 'client') return [];
-  const out = [{ title: 'Chat · Inherent LLM', sub: 'Estrategia, Organización, Diseño y Consulting en un solo chat', route: '#/chat', icon: icoApp('chat') }];
+  const out = [{ title: 'Chat · Inherent LLM', sub: 'Estrategia, Organización, Marketing, Diseño y Consulting en un solo chat', route: '#/chat', icon: icoApp('chat') }, { title: 'Avisos', sub: 'Lo que pide atención: tu trabajo, cada cliente y la plataforma', route: '#/avisos', icon: ico('bell', 16) }];
   if (hasOrg()) for (const [g, l] of ORG) for (const [r, tl, n] of TABS[g]) if (needOk(n)) out.push({ title: tl, sub: tl === l ? 'Organization' : `Organization · ${l}`, route: '#/org/' + r, icon: svg(g) });
   if (hasEstrategia()) { out.push({ title: 'Estrategia', sub: 'Todos los clientes', route: '#/estrategia', icon: svg('estrategia') }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Estrategia', route: `#/estrategia/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
   if (hasEstrategia()) { out.push({ title: 'Consulting', sub: 'Operaciones, finanzas y equipo de un cliente', route: '#/consulting', icon: svg('consulting') }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Consulting', route: `#/consulting/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
