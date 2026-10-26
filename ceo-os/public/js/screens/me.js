@@ -1,6 +1,7 @@
 // Mi perfil: se abre al tocar tu foto. Tu foto, tu cumpleaños, cómo te contactan, tus conexiones y salir.
 import { html, raw, mount, api, toast, cropImage, initials, roleName, IC, LOGO, $, ico } from '../core.js';
 import { purposeCard } from '../purpose.js';
+import { barraLateral, ponerBarra } from '../areas.js';
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 export const bdayText = (bd) => (bd ? `${+bd.slice(3)} de ${MESES[+bd.slice(0, 2) - 1]}` : '');
@@ -56,6 +57,7 @@ export async function render(el, { me }) {
       <div class="card" style="margin-top:14px">
         ${me.role === 'ceo' ? html`<a class="profrow" href="#/setup"><span>${ico('gear')}</span><span class="grow">Arranque de la app</span><span class="mut">→</span></a>` : ''}
         ${client ? '' : html`<a class="profrow" href="#/team"><span>${ico('users')}</span><span class="grow">El equipo</span><span class="mut">→</span></a>`}
+        ${client ? '' : html`<button class="profrow" data-p="barra" aria-pressed="${barraLateral(me) ? 'true' : 'false'}"><span>${ico('panel-left')}</span><span class="grow">Barra lateral, como en el Chat <span class="mut sm">en la compu</span></span><span class="mut">${barraLateral(me) ? 'Prendida' : 'Apagada'}</span></button>`}
         <button class="profrow" data-p="out"><span>↩</span><span class="grow">Cerrar sesión</span></button>
       </div></div>`);
   };
@@ -71,6 +73,8 @@ export async function render(el, { me }) {
     const b = e.target.closest('[data-p]'); if (!b) return;
     const a = b.dataset.p;
     if (a === 'pd') return abrirPrimerDia(me);
+    // La barra lateral se prende o se apaga para esta persona; la app se vuelve a armar con la nueva.
+    if (a === 'barra') { ponerBarra(me, !barraLateral(me)); location.reload(); return; }
     if (a === 'av-on') { try { await AV.activarAvisos(); toast('Avisos activados en este dispositivo'); } catch (err) { toast(err.message, true); } av = await AV.estadoAvisos(); paint(); return; }
     if (a === 'av-quitar') { await AV.quitarAvisos(); toast('Avisos quitados'); av = await AV.estadoAvisos(); paint(); return; }
     if (a === 'av-probar') { try { const r = await AV.probarAvisos(); toast(r.mandados ? 'Te mandé un aviso' : 'No llegó a ningún dispositivo', !r.mandados); } catch (err) { toast(err.message, true); } return; }

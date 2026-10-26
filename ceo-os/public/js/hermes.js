@@ -46,9 +46,8 @@ export async function modelosHermes(me, { fresco = false } = {}) {
 // Nombres amables de los proveedores de Hermes, para el selector.
 export const nombreProveedor = (slug) => ({ 'openai-codex': 'ChatGPT', anthropic: 'Claude', nous: 'Nous Portal', openrouter: 'OpenRouter', openai: 'OpenAI', lmstudio: 'LM Studio', ollama: 'Ollama', llamacpp: 'llama.cpp', 'llama-cpp': 'llama.cpp', vllm: 'vLLM', local: 'Modelo local', 'ollama-cloud': 'Ollama Cloud', custom: 'Endpoint propio', 'github-copilot': 'Copilot', xai: 'Grok' }[slug] || slug);
 
-// Los proveedores que corren en la compu (el modo privado): lo que se habla no sale de ella. Ollama Cloud no cuenta.
-export const LOCALES = ['ollama', 'lmstudio', 'llamacpp', 'llama-cpp', 'vllm', 'local'];
-export const esLocal = (slug) => LOCALES.includes(String(slug || ''));
+// Los proveedores locales y las IAs del switch viven en llm/ias.js (puro, lo prueba scripts/test-llm.mjs).
+export { LOCALES, esLocal, IAS, iaDe, iasListas } from './llm/ias.js';
 
 // Una respuesta en streaming por la API compatible con OpenAI. Mantiene la conversación con X-Hermes-Session-Id
 // (Hermes guarda el historial): cada chat del OS manda su propia sesión. onDelta(texto acumulado) · onTool(nombre).

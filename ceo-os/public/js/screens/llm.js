@@ -1,11 +1,12 @@
 // El Inherent LLM (#/chat): la app de conversación de Inherent OS, separada de Organización (las une el dock).
 // Front con la estructura de Hermes Desktop —barra de sesiones · conversación · panel— y el backend de Hermes en la compu
 // de cada persona (hermes.js): el modelo que cada quien conectó (ChatGPT con su suscripción, Claude, local), sus skills,
-// su memoria y el conector de Inherent OS. Tres modos con su harness (llm/modos.js) y su panel (llm/paneles.js).
+// su memoria y el conector de Inherent OS. Un modo por área (areas.js), con su harness (llm/modos.js) y su panel (llm/paneles.js).
+// Arriba de la barra, el switch de áreas (el mismo del Tablero); en la caja, el switch de IA (Claude, ChatGPT, en tu compu u otras).
 // Vercel nunca habla con Hermes. Rutas: #/chat · #/chat/<sesión>
-import { html, raw, mount, api, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
-import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal } from '../hermes.js';
-import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo } from '../llm/modos.js';
+import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
+import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal, IAS, iaDe, iasListas } from '../hermes.js';
+import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo } from '../llm/modos.js';
 import { panelDe, datosEstrategia, olvidarPanel } from '../llm/paneles.js';
 import { crearBrujula, progreso, tareaActual, terminada, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe, QUIEN } from '../llm/brujula.js';
 import { leerBloques, instrucciones, avance, PASOS } from '../estrategia-viva.js';
@@ -17,6 +18,7 @@ import { PUENTE, enApp } from '../laya.js';
 import { tokenDe } from '../puente-chat.js';
 import { icoApp } from '../dock.js';
 import { svgIco } from '../iconos.js';
+import { AREAS, areaDe, areaDeModo, areaGuardada, guardarArea, switchHtml, areaConFlecha } from '../areas.js';
 import { ponerTema, temaElegido, esNoche } from '../tema.js';
 
 const K = (me) => `os.llm.${me.email}`;
@@ -42,15 +44,21 @@ window.addEventListener('tema', () => { if (llmVivo?.isConnected) llmVivo.datase
 
 export async function render(el, { me, sub = [], alive }) {
   const pref = leer(me);
-  const puedeModo = (id) => (id === 'estrategia' ? me.areas?.includes('estrategia') : id === 'diseno' ? brandAccess(me).any : true);
+  const puedeModo = (id) => (id === 'estrategia' || id === 'consulting' ? me.areas?.includes('estrategia') : id === 'diseno' ? brandAccess(me).any : true);
   const modos = MODOS.filter((m) => puedeModo(m.id));
+  // Las áreas del switch son los modos que esta persona abre. El área elegida la comparten el Tablero y el Chat.
+  const areas = AREAS.filter((a) => modos.some((m) => m.id === a.modo));
+  const modoGuardado = areaDe(areaGuardada(me.email))?.modo;
   const S = {
-    modo: modos.some((m) => m.id === pref.modo) ? pref.modo : modos[0].id,
-    slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: Boolean(pref.privado), esfuerzo: pref.esfuerzo || '', brujula: null, limite: +pref.limite || 0, panel: angosto() ? false : pref.panel !== false,
+    modo: modos.some((m) => m.id === modoGuardado) ? modoGuardado : modos.some((m) => m.id === pref.modo) ? pref.modo : modos[0].id,
+    slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: Boolean(pref.privado), porIa: pref.porIa || {}, esfuerzo: pref.esfuerzo || '', brujula: null, limite: +pref.limite || 0, panel: angosto() ? false : pref.panel !== false,
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
   };
-  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel });
+  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel });
+  // Lo que el Tablero dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra.
+  let borrador = String(pref.borrador || '');
+  if (borrador) persistir();
   // Modo privado: responde un modelo que corre en esta compu (Ollama, LM Studio…). El elegido si es local; si no, el primero que haya.
   const modeloLocal = () => {
     if (S.modelo?.model && esLocal(S.modelo.provider)) return S.modelo;
@@ -60,7 +68,9 @@ export async function render(el, { me, sub = [], alive }) {
   };
   const modeloTurno = () => (S.privado ? modeloLocal() || {} : S.modelo || {});
   const slugAhora = () => (modoDe(S.modo).pide ? S.slugs[S.modo] || '' : '');
-  const opciones = () => (S.modo === 'estrategia' ? estrategiaNow().map((c) => [c.slug, c.nombre]) : S.modo === 'diseno' ? brandsNow().map((b) => [b.slug, b.name]) : []);
+  const opciones = () => (S.modo === 'estrategia' || S.modo === 'consulting' ? estrategiaNow().map((c) => [c.slug, c.nombre]) : S.modo === 'diseno' ? brandsNow().map((b) => [b.slug, b.name]) : []);
+  // Qué IA responde ahora: la del modelo elegido, la de Hermes por defecto, o «en tu compu» con el modo privado. '' si no se sabe.
+  const iaAhora = () => (S.privado ? 'local' : S.modelo?.model ? iaDe(S.modelo.provider) : S.modelos?.actual?.provider ? iaDe(S.modelos.actual.provider) : '');
   const nombreSlug = () => opciones().find(([s]) => s === slugAhora())?.[1] || slugAhora();
   const listo = () => Boolean(S.salud?.on && S.salud?.auth);
 
@@ -83,20 +93,21 @@ export async function render(el, { me, sub = [], alive }) {
   // El día y la noche son uno solo para las dos apps (tema.js): si cambia (aquí, en Organización o en la compu), el Chat lo sigue.
   llmVivo = R;
 
-  // ---------- La barra lateral (estilo Hermes: nueva · modos · recientes por fecha · tú y Hermes) ----------
+  // ---------- La barra lateral (estilo Hermes: el switch de áreas · nueva · las conversaciones del área por fecha · tú y Hermes) ----------
+  // Sin buscar se ven las conversaciones del área; al buscar, las de todas (cada una con la letra de su área).
   function pintarSide() {
-    const q = S.busca.trim().toLowerCase();
-    const lista = S.sesiones.filter((s) => !q || String(s.title || s.preview || '').toLowerCase().includes(q));
+    const q = S.busca.trim().toLowerCase(), a = areaDeModo(S.modo);
+    const lista = S.sesiones.filter((s) => (q ? String(s.title || s.preview || '').toLowerCase().includes(q) : (leerIdSesion(s.id)?.modo || 'organizacion') === S.modo));
     const grupos = {}; for (const s of lista) (grupos[grupoFecha(s.last_active || s.started_at)] ||= []).push(s);
     const fila = (s) => { const m = modoDe(leerIdSesion(s.id)?.modo || 'organizacion'); return html`<div class="ls-row ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"><i class="ls-m" data-m="${m.id}">${m.letra}</i><span>${s.title || s.preview || 'Conversación'}</span></a><button type="button" class="ls-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
     const estado = !S.salud ? ['', 'Buscando Hermes…'] : !S.salud.on ? ['off', 'Hermes apagado'] : !S.salud.auth ? ['off', 'Falta la llave'] : ['on', `Hermes ${S.salud.version || ''}`.trim()];
     mount(C('llm-side'), html`<div class="ls-brand"><span class="ls-emb">${raw('<img src="/brand/emblem.svg" alt="">')}</span><span class="ls-wm">${raw('<img class="wm-noche" src="/brand/wordmark-light.svg" alt="Inherent"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="">')}<sup>LLM</sup></span></div>
+      ${areas.length > 1 ? raw(switchHtml(areas, a?.id, (n, px) => svgIco(n, px))) : ''}
+      <div class="ls-area" data-m="${S.modo}"><b>${a?.nombre || modoDe(S.modo).nombre}</b><small>${a?.sub || modoDe(S.modo).sub}</small></div>
       <button type="button" class="ls-new" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
-      <div class="ls-k">Modos</div>
-      <nav class="ls-modos">${modos.map((m) => html`<button type="button" class="ls-modo ${m.id === S.modo ? 'on' : ''}" data-a="modo" data-m="${m.id}"><i data-m="${m.id}">${m.letra}</i><span><b>${m.nombre}</b><small>${m.sub}</small></span></button>`)}</nav>
-      <div class="ls-k ls-kr">Recientes<label class="ls-busca">${ico('search', 12)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label></div>
-      <div class="ls-list">${!listo() ? html`<p class="ls-mut">Las conversaciones viven en Hermes, en tu compu.</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : 'Todavía no hay conversaciones.'}</p>`}</div>
-      <footer class="ls-foot"><button type="button" class="ls-os" data-a="ir-os">${icoApp('os')}<span>Organización</span></button><button type="button" class="ls-me" data-a="ajustes" title="Hermes y ajustes">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<span>${initials(me.name)}</span>`}<span class="ls-me-t"><b>${me.name}</b><small><i class="ls-dot ${estado[0]}"></i>${estado[1]}</small></span>${ico('gear', 15)}</button></footer>`);
+      <div class="ls-k ls-kr">${q ? 'Todas las áreas' : 'Recientes'}<label class="ls-busca">${ico('search', 12)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label></div>
+      <div class="ls-list">${!listo() ? html`<p class="ls-mut">Las conversaciones viven en Hermes, en tu compu.</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : `Todavía no hay conversaciones de ${a?.nombre || 'esta área'}.`}</p>`}</div>
+      <footer class="ls-foot"><button type="button" class="ls-os" data-a="ir-os">${icoApp('os')}<span>Tablero</span></button><button type="button" class="ls-me" data-a="ajustes" title="Hermes y ajustes">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<span>${initials(me.name)}</span>`}<span class="ls-me-t"><b>${me.name}</b><small><i class="ls-dot ${estado[0]}"></i>${estado[1]}</small></span>${ico('gear', 15)}</button></footer>`);
     const qi = C('ls-q'); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n = C('ls-q'); n.focus(); n.setSelectionRange(pos, pos); };
   }
 
@@ -113,7 +124,7 @@ export async function render(el, { me, sub = [], alive }) {
   function heroHtml() {
     const m = modoDe(S.modo), s = nombreSlug();
     if (!listo()) return setupHtml();
-    return html`<div class="lh"><h1>${S.modo === 'estrategia' && s ? html`¿Qué trabajamos de ${s}?` : S.modo === 'diseno' && s ? html`¿Qué diseñamos para ${s}?` : S.modo === 'organizacion' ? '¿Qué organizamos hoy?' : '¿En qué trabajamos?'}</h1>
+    return html`<div class="lh"><h1>${S.modo === 'estrategia' && s ? html`¿Qué trabajamos de ${s}?` : S.modo === 'diseno' && s ? html`¿Qué diseñamos para ${s}?` : S.modo === 'consulting' && s ? html`¿Qué ordenamos del negocio de ${s}?` : S.modo === 'organizacion' ? '¿Qué organizamos hoy?' : '¿En qué trabajamos?'}</h1>
       <p>${m.depto} · ${m.sub}. Con las reglas de Inherent y el modelo que elijas.</p></div>`;
   }
   // Lo que falta para que Hermes conteste (instalado · llave · modelo), con los comandos a la vista.
@@ -138,11 +149,32 @@ export async function render(el, { me, sub = [], alive }) {
   }
 
   // ---------- La caja (composer): modo · cliente/marca · modelo · voz · enviar ----------
+  // El nombre del modelo en la caja: sin la IA (ya la dice el switch), salvo en «Otras», donde va el proveedor.
+  const conProv = (x) => (iaDe(x.provider) === 'otras' || esLocal(x.provider) ? `${nombreProveedor(x.provider)} · ` : '') + x.model.split('/').pop();
   function nombreModelo() {
-    if (S.privado) { const l = modeloLocal(); return l ? `${nombreProveedor(l.provider)} · ${l.model.split('/').pop()}` : 'Sin modelo local'; }
+    if (S.privado) { const l = modeloLocal(); return l ? conProv(l) : 'Sin modelo local'; }
     const v = S.modelo, a = S.modelos?.actual;
-    if (v?.model) return `${nombreProveedor(v.provider)} · ${v.model.split('/').pop()}`;
-    return a?.model ? `${nombreProveedor(a.provider)} · ${a.model.split('/').pop()}` : 'Modelo';
+    if (v?.model) return conProv(v);
+    return a?.model ? conProv(a) : 'Modelo';
+  }
+  // El switch de IA: qué inteligencia (o empresa) responde. Solo las que esta compu tiene listas; «En tu compu» es el modo privado.
+  function iasHtml() {
+    if (!S.modelos) return '';
+    const xs = iasListas(S.modelos), on = iaAhora();
+    if (xs.length < 2) return '';
+    return html`<div class="lc-ias" role="radiogroup" aria-label="Qué IA responde">${xs.map(([id, n, ic]) => html`<button type="button" role="radio" class="${id === on ? 'on' : ''}" aria-checked="${id === on ? 'true' : 'false'}" data-a="ia" data-ia="${id}" style="--c:var(--ia-${id})" title="${id === 'local' ? 'En tu compu · privado: nada sale de ella' : n}" aria-label="${n}">${ico(ic, 15)}</button>`)}</div>`;
+  }
+  // Cambiar de IA: vuelve al último modelo que usaste con ella, o al de Hermes por defecto si es de ella, o al primero que tenga.
+  function ponerIa(id) {
+    if (id === iaAhora()) return;
+    if (S.modelo?.model && !S.privado) S.porIa[iaDe(S.modelo.provider)] = S.modelo;
+    if (id === 'local') { S.privado = true; persistir(); toast(modeloLocal() ? 'En tu compu: nada sale de ella' : 'Falta un modelo en tu compu', !modeloLocal()); return pintarCaja(); }
+    S.privado = false;
+    const ps = (S.modelos?.proveedores || []).filter((p) => p.listo && p.modelos.length && iaDe(p.slug) === id && !esLocal(p.slug));
+    const guardado = S.porIa[id], sigue = guardado && ps.some((p) => p.slug === guardado.provider && p.modelos.includes(guardado.model));
+    const a = S.modelos?.actual;
+    S.modelo = sigue ? guardado : a?.model && iaDe(a.provider) === id ? null : ps[0] ? { provider: ps[0].slug, model: ps[0].modelos[0] } : S.modelo;
+    persistir(); pintarCaja();
   }
   function pintarCaja() {
     const box = C('llm-compw'), prev = $('#llm-in', el)?.value || '';
@@ -157,7 +189,7 @@ export async function render(el, { me, sub = [], alive }) {
           <button type="button" class="lc-chip lc-modo" data-a="menu-modo" aria-haspopup="listbox"><i data-m="${m.id}">${m.letra}</i>${m.nombre}<span class="lc-car">▾</span></button>
           ${m.pide ? html`<button type="button" class="lc-chip ${sl ? '' : 'falta'}" data-a="menu-slug" aria-haspopup="listbox">${ico(m.pide === 'marca' ? 'grid' : 'users', 13)}${sl ? nombreSlug() : m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente'}<span class="lc-car">▾</span></button>` : ''}
           <span class="sp"></span>
-          <button type="button" class="lc-chip lc-priv ${S.privado ? 'on' : ''}" data-a="privado" aria-pressed="${S.privado ? 'true' : 'false'}" title="${S.privado ? 'Modo privado: responde un modelo en tu compu; nada sale de ella' : 'Prender el modo privado: para datos de clientes, finanzas o lo que no debe salir de tu compu'}">${ico('lock', 13)}<span>Privado</span></button>
+          ${iasHtml() || html`<button type="button" class="lc-chip lc-priv ${S.privado ? 'on' : ''}" data-a="privado" aria-pressed="${S.privado ? 'true' : 'false'}" title="${S.privado ? 'Modo privado: responde un modelo en tu compu; nada sale de ella' : 'Prender el modo privado: para datos de clientes, finanzas o lo que no debe salir de tu compu'}">${ico('lock', 13)}<span>Privado</span></button>`}
           <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="Qué modelo responde y cuánto piensa (por Hermes, en tu compu)">${S.privado ? ico('lock', 12) : html`<i class="lc-dot on"></i>`}${nombreModelo()}${S.esfuerzo ? html`<span class="lc-esf">· ${nombreEsfuerzo(S.esfuerzo)}</span>` : ''}<span class="lc-car">▾</span></button>
           ${botonVoz()}
           ${S.enVuelo ? html`<button type="button" class="lc-send stop" data-a="detener" aria-label="Detener">${ICO_STOP}</button>` : html`<button type="submit" class="lc-send" aria-label="Enviar">${ICO_ARRIBA}</button>`}
@@ -193,7 +225,7 @@ export async function render(el, { me, sub = [], alive }) {
       <div class="lm-ops">${(x.aprob.choices || ['once', 'deny']).map((c) => html`<button type="button" class="${c === 'deny' ? 'no' : c === 'once' ? 'si' : ''}" data-a="aprobar" data-c="${c}" data-i="${i}">${ELECCION[c] || c}</button>`)}</div></div>` : '';
     const cuerpo = x.t ? md(x.t) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
     return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${pasosHtml}<div class="lm-md">${cuerpo}</div>${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
-      ${apr}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
+      ${apr}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
       ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${x.t}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
   }
   function pintarHilo() {
@@ -204,6 +236,26 @@ export async function render(el, { me, sub = [], alive }) {
     if (abajo || S.enVuelo) box.scrollTop = box.scrollHeight;
     flecha();
   }
+  // Un encargo de Estrategia para otra área (Consulting o Diseño): se manda con un botón y queda como tarea de quien lo manda.
+  function encargoHtml(en, i, k, x) {
+    const a = areaDe(en.area), hecho = x.mandados?.[k], sl = slugAhora();
+    const ir = en.area === 'consulting' ? `#/consulting/${encodeURIComponent(sl)}` : `#/marcas/${encodeURIComponent(sl)}`;
+    return html`<div class="lm-enc" data-m="${en.area}"><span class="lm-k">${ico(a?.icono || 'send', 12)} Encargo para ${AREAS_ENCARGO[en.area]}</span><b>${en.titulo}</b>${en.por_que ? html`<small>${en.por_que}</small>` : ''}
+      <div class="lm-ops">${hecho ? html`<span class="lm-meta-ok">${ico('check', 13)} ${hecho === 'ya' ? 'Ya estaba mandado' : 'Mandado'} · está en Mis tareas</span>${sl ? html`<a class="lm-enc-ir" href="${ir}">Abrir en ${AREAS_ENCARGO[en.area]} ↗</a>` : ''}` : html`<button type="button" class="si" data-a="encargo" data-i="${i}" data-k="${k}" ${S.enVuelo ? raw('disabled') : ''}>Mandar a ${AREAS_ENCARGO[en.area]}</button>`}</div></div>`;
+  }
+  async function mandarEncargo(i, k) {
+    const x = S.msgs[i], en = x?.tarjetas?.encargos?.[k], sl = slugAhora(); if (!en || x.mandados?.[k]) return;
+    if (!sl) return toast('Primero elige el cliente de esta conversación', true);
+    try {
+      // Nada duplicado: si ya se mandó (por ejemplo, antes de recargar), no se crea otra vez.
+      const ya = (await col('tasks').list().catch(() => [])).some((t) => t.origen === 'estrategia' && t.cliente === sl && t.area === en.area && t.title === en.titulo);
+      if (!ya) await col('tasks').create(tareaDeEncargo(en, { cliente: sl, nombre: nombreSlug(), email: me.email }));
+      x.mandados = { ...(x.mandados || {}), [k]: ya ? 'ya' : 'si' };
+      toast(ya ? 'Ese encargo ya estaba mandado' : `Mandado a ${AREAS_ENCARGO[en.area]} · está en Mis tareas`);
+    } catch (e) { toast(e.status === 403 ? 'Tu perfil no puede crear tareas: pídeselo al CEO' : `No se pudo mandar: ${e.message}`, true); }
+    pintarHilo();
+  }
+
   // Llevas varios turnos y ninguna tarea se movió: la Brújula te ofrece volver (una vez por desvío).
   function desvioHtml() {
     const b = S.brujula; if (!desviado(b) || S.enVuelo || S.msgs[S.msgs.length - 1]?.r !== 'a') return '';
@@ -291,15 +343,18 @@ export async function render(el, { me, sub = [], alive }) {
   const menuSlug = (a) => menu(a, S.modo === 'diseno' ? 'Marca' : 'Cliente', opciones().map(([s, n]) => ({ v: s, label: n, on: s === slugAhora() })), (v) => { S.slugs[S.modo] = v; persistir(); nuevo(); }, { buscar: true });
   async function menuModelo(a) {
     if (!S.modelos) { try { S.modelos = await modelosHermes(me); } catch { S.modelos = { actual: {}, proveedores: [] }; } }
-    const items = [{ grupo: 'Cuánto piensa' }, ...ESFUERZOS.map(([k, l, d]) => ({ v: 'esf:' + k, label: l, sub: d, on: (S.esfuerzo || '') === k })), { grupo: S.privado ? 'Modelos en tu compu (modo privado)' : 'Qué modelo responde' }];
-    if (!S.privado) items.push({ v: '', label: 'Por defecto de Hermes', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El que elegiste con «inherent model»', on: !S.modelo?.model });
+    // Con el switch de IA, aquí van solo los modelos de esa IA (sin IA conocida, todos).
+    const ia = iaAhora(), deIa = (slug) => (S.privado ? esLocal(slug) : !ia || (iaDe(slug) === ia && !esLocal(slug)));
+    const nombreIa = (IAS.find(([k]) => k === ia) || [])[1];
+    const items = [{ grupo: 'Cuánto piensa' }, ...ESFUERZOS.map(([k, l, d]) => ({ v: 'esf:' + k, label: l, sub: d, on: (S.esfuerzo || '') === k })), { grupo: S.privado ? 'Modelos en tu compu (modo privado)' : nombreIa ? `Modelos de ${nombreIa}` : 'Qué modelo responde' }];
+    if (!S.privado && (!ia || iaDe(S.modelos.actual.provider) === ia)) items.push({ v: '', label: 'Por defecto de Hermes', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El que elegiste con «inherent model»', on: !S.modelo?.model });
     const loc = S.privado ? modeloLocal() : null;
-    for (const p of S.modelos.proveedores) for (const x of p.listo && (!S.privado || esLocal(p.slug)) ? p.modelos.slice(0, 8) : []) items.push({ v: `${p.slug}|${x}`, label: `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, sub: esLocal(p.slug) ? `${p.nombre} · en tu compu` : p.nombre, on: S.privado ? loc?.provider === p.slug && loc?.model === x : S.modelo?.provider === p.slug && S.modelo?.model === x });
+    for (const p of S.modelos.proveedores) for (const x of p.listo && deIa(p.slug) ? p.modelos.slice(0, 8) : []) items.push({ v: `${p.slug}|${x}`, label: `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, sub: esLocal(p.slug) ? `${p.nombre} · en tu compu` : p.nombre, on: S.privado ? loc?.provider === p.slug && loc?.model === x : S.modelo?.provider === p.slug && S.modelo?.model === x });
     if (S.privado && !loc) items.push({ v: 'x', label: 'Todavía no hay un modelo en tu compu', sub: 'Abajo: cómo bajar uno gratis con Ollama', off: true });
     const pie = html`<p class="lmn-pie">¿Falta uno? En la Terminal: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>`;
     menu(a, 'Modelo', items, (v) => {
       if (v.startsWith('esf:')) S.esfuerzo = v.slice(4);
-      else S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null;
+      else { S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null; if (S.modelo && !S.privado) S.porIa[iaDe(S.modelo.provider)] = S.modelo; }
       persistir(); pintarCaja();
     }, { buscar: items.length > 14, pie: S.privado && !loc ? html`<p class="lmn-pie">Con <b>Ollama</b> instalado, en la Terminal: <code>ollama pull qwen3-coder:30b</code> <button type="button" data-a="copiar" data-t="ollama pull qwen3-coder:30b">Copiar</button> · luego <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>` : pie });
   }
@@ -327,7 +382,7 @@ export async function render(el, { me, sub = [], alive }) {
   function cambiarModo(id) {
     if (!modos.some((m) => m.id === id)) return;
     if (id === S.modo && vacio()) return;
-    S.modo = id; persistir();
+    S.modo = id; persistir(); guardarArea(me.email, areaDeModo(id)?.id || '');
     if (!vacio() || S.sesion) return nuevo();
     pintarSide(); pintarCentro(); pintarPanel();
   }
@@ -339,7 +394,7 @@ export async function render(el, { me, sub = [], alive }) {
   }
   async function abrirSesion(id) {
     const info = leerIdSesion(id); if (!info) { toast('Esa conversación no es del Inherent LLM', true); return nuevo(); }
-    S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; if (info.slug) S.slugs[S.modo] = info.slug;
+    S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; if (info.slug) S.slugs[S.modo] = info.slug; guardarArea(me.email, areaDeModo(S.modo)?.id || '');
     S.msgs = []; S.titulo = S.sesiones.find((s) => s.id === id)?.title || ''; S.brujula = brujulas(me)[id] || null; pintarBrujula();
     pintarSide(); pintarCentro(); pintarPanel();
     try {
@@ -385,6 +440,11 @@ export async function render(el, { me, sub = [], alive }) {
           P ? `Paso de la estrategia en el que estamos: ${P.n} · ${P.largo}` : '',
           d.vivaAprobada ? 'La estrategia está APROBADA por el CEO: no mandes el bloque ```estrategia```; si algo debe cambiar, dilo y que el CEO la reabra.' : ''].filter(Boolean),
         instrucciones: d.vivaAprobada ? '' : instrucciones(v, { nivel: d.nivel?.nombre || '' }) };
+    }
+    if (S.modo === 'consulting' && slug) {
+      const d = await datosEstrategia(slug);
+      return { ...base, cliente: d.nombre, carpeta: d.carpeta, nivel: d.nivel?.nombre || 'SIN FICHA DE OFERTA',
+        extra: [...(d.ficha?.incluye?.length ? [`Su ficha incluye: ${d.ficha.incluye.map((x) => `${x.k}: ${x.v}`).join(' · ')}`] : [])] };
     }
     if (S.modo === 'diseno' && slug) return { ...base, cliente: nombreSlug(), carpeta: slug === 'inherent' ? 'inherent/inherent-social-media' : `clients/${slug}`, extra: [`Mes del ciclo: ${today().slice(0, 7)}`] };
     return { ...base, extra: [`Secciones que ve en el OS: ${(me.areas || []).join(', ') || '—'}`] };
@@ -449,7 +509,7 @@ export async function render(el, { me, sub = [], alive }) {
   async function comando({ cmd, arg }) {
     const ta = $('#llm-in', el); if (ta) { ta.value = ''; crecer(ta); comandos(''); }
     if (cmd === '/nuevo') return nuevo();
-    if (['/estrategia', '/organizacion', '/diseno'].includes(cmd)) return modos.some((m) => m.id === cmd.slice(1)) ? (cambiarModo(cmd.slice(1)), arg && enviar(arg)) : toast('Tu perfil no tiene ese modo', true);
+    if (['/estrategia', '/organizacion', '/diseno', '/consulting'].includes(cmd)) return modos.some((m) => m.id === cmd.slice(1)) ? (cambiarModo(cmd.slice(1)), arg && enviar(arg)) : toast('Tu perfil no tiene ese modo', true);
     if (cmd === '/modelo') { const b = el.querySelector('[data-a="menu-modelo"]'); if (b) menuModelo(b); return; }
     if (cmd === '/terminal') return ajustes();
     if (cmd === '/privado') return alternarPrivado();
@@ -465,6 +525,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Clics, teclado y formularios ----------
   el.addEventListener('click', async (e) => {
     const v = e.target.closest('[data-act="voz"]'); if (v && el.contains(v)) return dictar(v, $('#llm-in', el));
+    const ar = e.target.closest('.asw [data-area]'); if (ar && el.contains(ar)) { const m = areaDe(ar.dataset.area)?.modo; return m && cambiarModo(m); }
     const t = e.target.closest('[data-a]'); if (!t || !el.contains(t)) return;
     const a = t.dataset.a;
     if (a === 'nuevo') return nuevo();
@@ -481,6 +542,8 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'comando') return comando({ cmd: t.dataset.c, arg: '' });
     if (a === 'detener') { S.enVuelo?.abort(); return; }
     if (a === 'privado') return alternarPrivado();
+    if (a === 'ia') return ponerIa(t.dataset.ia);
+    if (a === 'encargo') return mandarEncargo(+t.dataset.i, +t.dataset.k);
     if (a === 'ramificar') return ramificar();
     if (a === 'meta-aceptar') {
       const x = [...S.msgs].reverse().find((m) => m.tarjetas?.meta); if (!x || !S.sesion) return;
@@ -518,6 +581,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'revisar') return revisar();
   });
   el.addEventListener('keydown', (e) => {
+    if (e.target.closest?.('.asw')) { const id = areaConFlecha(areas, areaDeModo(S.modo)?.id, e.key); if (id) { e.preventDefault(); cambiarModo(areaDe(id).modo); el.querySelector(`.asw [data-area="${id}"]`)?.focus(); } return; }
     if (e.target.id !== 'llm-in') { if (e.key === 'Escape') el.querySelector('.llm-sheet, .llm-menu')?.remove(); return; }
     const cmds = $('#lc-cmds', el);
     if (cmds && !cmds.hidden && (e.key === 'Enter' || e.key === 'Tab') && !e.shiftKey) { e.preventDefault(); const b = cmds.querySelector('button.on'); if (b) comando({ cmd: b.dataset.c, arg: '' }); return; }
@@ -553,5 +617,7 @@ export async function render(el, { me, sub = [], alive }) {
   await revisar();
   if (sub[0] && listo()) await abrirSesion(decodeURIComponent(sub[0]));
   else pintarPanel();
-  $('#llm-in', el)?.focus();
+  const ta = $('#llm-in', el);
+  if (ta && borrador && !sub[0]) { ta.value = borrador; crecer(ta); borrador = ''; }
+  ta?.focus();
 }
