@@ -86,6 +86,9 @@ main() {
   hermes -p "$PERFIL" config set API_SERVER_HOST 127.0.0.1 >/dev/null
   hermes -p "$PERFIL" config set API_SERVER_CORS_ORIGINS "$OS_URL,http://localhost:3000" >/dev/null
   hermes -p "$PERFIL" config set API_SERVER_MODEL_NAME inherent >/dev/null
+  # Sin terminal, ni código, ni navegador, ni control de la compu, ni tareas programadas: el Inherent LLM lee el repo
+  # (la copia que el puente pone al día y limpia antes de cada turno) y trabaja en el OS por su conector.
+  hermes -p "$PERFIL" config set agent.disabled_toolsets '["terminal", "code_execution", "browser", "computer_use", "cronjob"]' >/dev/null
 
   # 6 · Siempre encendido
   echo "→ Dejándolo encendido (launchd)"

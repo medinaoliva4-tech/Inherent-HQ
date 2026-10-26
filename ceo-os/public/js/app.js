@@ -7,6 +7,7 @@ import { openSearch, searchOpen } from './search.js';
 import { loadEstrategia, estrategiaNow } from './stratlist.js';
 import { marcarSeccion, instalarBoton } from './guia.js';
 import { primerDia } from './primer-dia.js';
+import { pintarDock, quitarDock, icoApp } from './dock.js';
 
 // Tres espacios, como cambiar de app en un iPhone: el interruptor de arriba (junto al logo) cambia entre
 //   ORGANIZATION  cómo se maneja la empresa   Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent
@@ -18,6 +19,9 @@ import { primerDia } from './primer-dia.js';
 //   #/<pantalla>/… → #/org/<pantalla>/… · #/control-hub/<herramienta> → su sección nueva · #/content/<pestaña>/<perfil> y
 //   #/mimarca/<pestaña> → su marca en Marcas · #/clients/<slug>/marca → Marcas → esa marca → Marca.
 // El espacio elegido se recuerda por persona (localStorage) y por ruta. El buscador global (⌘K) vive en los dos.
+// Arriba de los espacios, dos apps unidas por el dock (dock.js): Organización (Organization y Marcas) y Chat (#/chat, el
+// Inherent LLM: Estrategia, Organización y Diseño en un solo chat con Hermes). Estrategia ya no va en el interruptor: su
+// pantalla sigue en #/estrategia (el tablero, y el chat por el puente mientras Hermes no está instalado).
 const P = {
   hoy: 'M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
   proyectos: 'M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5',
@@ -44,8 +48,8 @@ const TABS = {
   inherent: [['vision', 'Visión y misión', 'all'], ['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'ceo'], ['team/laya', 'Laya', 'ceo'], ['roadmap', 'Roadmap', 'roadmap'], ['library', 'Library', 'library'], ['setup', 'Arranque', 'ceo']],
 };
 const ORG = GROUPS.filter((g) => g[3] === 'org').map(([k, l]) => [k, l]);
-const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands', estrategia: 'strategy' };
-const LABEL = { home: 'Hoy', control: 'Control del flujo', work: 'Mis tareas', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control', vision: 'Visión y misión', marcas: 'Marcas', estrategia: 'Estrategia' };
+const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands', estrategia: 'strategy', chat: 'llm' };
+const LABEL = { home: 'Hoy', control: 'Control del flujo', work: 'Mis tareas', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control', vision: 'Visión y misión', marcas: 'Marcas', estrategia: 'Estrategia', chat: 'Inherent LLM' };
 // Las pantallas de Organization (lo que no es Marcas, Mi perfil ni el portal del cliente).
 const ORG_SCREENS = ['home', 'control', 'work', 'resultados', 'setup', 'clients', 'operations', 'portal', 'sales', 'services', 'finanzas', 'vision', 'team', 'roadmap', 'library'];
 // Las áreas que cuentan como «ve algo de Organization» (Equipo y Visión los ve todo el equipo: no cuentan).
@@ -69,6 +73,7 @@ const ERR = { conector: 'No se pudo conectar la app.', dominio: 'No pudimos veri
 const pendingConnect = () => { try { return sessionStorage.getItem('connect'); } catch { return null; } };
 
 async function loginView() {
+  quitarDock(); delete document.documentElement.dataset.app;
   let st = { google: false, db: false, domain: 'inherentglobal.com' };
   try { st = await api('status'); } catch {}
   const qs = new URLSearchParams(location.search); const err = qs.get('error'), detail = qs.get('detail');
@@ -100,11 +105,12 @@ const hasOrg = () => me.role !== 'client' && ORG_AREAS.some((a) => me.areas.incl
 const hasMarcas = () => brandAccess(me).any;
 const hasEstrategia = () => me.role !== 'client' && me.areas.includes('estrategia');
 // Los espacios que esta persona puede abrir (el interruptor aparece con dos o más).
-const spacesFor = () => SPACES.filter(([k]) => (k === 'org' ? hasOrg() : k === 'marcas' ? hasMarcas() : hasEstrategia()));
+// Estrategia se mudó al Chat: ya no va en el interruptor (su pantalla sigue abriendo por link, desde el panel del Chat y con ⌘K).
+const spacesFor = () => SPACES.filter(([k]) => (k === 'org' ? hasOrg() : k === 'marcas' ? hasMarcas() : false));
 const sees = (k) => {
   if (k === 'me') return true;
   if (me.role === 'client') return k === 'portal';
-  if (k === 'vision') return true;
+  if (k === 'vision' || k === 'chat') return true;
   if (k === 'setup') return me.role === 'ceo';
   if (k === 'marcas') return hasMarcas();
   if (k === 'estrategia') return hasEstrategia();
@@ -139,11 +145,20 @@ const spaceHome = (sp) => (sp === 'marcas' ? 'marcas' : sp === 'estrategia' ? 'e
 function landing(useLast = true) {
   if (me.role === 'client') return 'portal';
   let sp = lsGet('space') || (me.start === 'content' || !hasOrg() ? 'marcas' : 'org');
+  if (sp === 'chat') { const l = useLast && lsGet('last.chat'); return l && l.startsWith('chat') ? l : 'chat'; }
   if (sp === 'estrategia' && !hasEstrategia()) sp = 'org';
   if (sp === 'marcas' && !hasMarcas()) sp = 'org';
   if (sp === 'org' && !hasOrg() && hasMarcas()) sp = 'marcas';
   const last = useLast && lsGet('last.' + sp);
   return last && (sp === 'org' ? last.startsWith('org/') : last.startsWith(sp)) ? last : spaceHome(sp);
+}
+
+// El dock: Organización vuelve al último espacio (Organization o Marcas) y a su última ruta; Chat, a la última conversación.
+function irApp(a) {
+  if (a === 'chat') { const l = lsGet('last.chat'); location.hash = '/' + (l && l.startsWith('chat') ? l : 'chat'); return; }
+  let sp = lsGet('space.os'); if (!['org', 'marcas', 'estrategia'].includes(sp) || (sp === 'marcas' && !hasMarcas()) || (sp === 'org' && !hasOrg()) || (sp === 'estrategia' && !hasEstrategia())) sp = hasOrg() ? 'org' : 'marcas';
+  const last = lsGet('last.' + sp);
+  location.hash = '/' + (last && (sp === 'org' ? last.startsWith('org/') : last.startsWith(sp)) ? last : spaceHome(sp));
 }
 
 // ---------- Rutas: alias de las viejas y la forma canónica ----------
@@ -178,6 +193,7 @@ function resolve(path) {
   if (parts[0] === 'me') return { key: 'me', rest: parts.slice(1), url: parts.join('/'), space: null };
   if (parts[0] === 'marcas') return sees('marcas') ? { key: 'marcas', rest: parts.slice(1), url: parts.join('/'), space: 'marcas' } : fallback();
   if (parts[0] === 'estrategia') return sees('estrategia') ? { key: 'estrategia', rest: parts.slice(1), url: parts.join('/'), space: 'estrategia' } : fallback();
+  if (parts[0] === 'chat') return sees('chat') ? { key: 'chat', rest: parts.slice(1), url: parts.join('/'), space: 'chat' } : fallback();
   let org = parts[0] === 'org' ? parts.slice(1) : parts;
   if (!org.length) return resolve(spaceHome('org'));
   const key = org[0];
@@ -193,8 +209,8 @@ const navItems = () => {
   if (me.role === 'client') return [['portal', 'Mi portal', svg(P.portal)]];
   // Estrategia es un solo chat: el cliente se elige en la caja del chat, no en la barra.
   if (space === 'estrategia') return [['estrategia', 'Estrategia', svg(P.estrategia)]];
-  // Diseño gráfico: las marcas (cada perfil se abre desde ahí) y su único chat (plan del mes → ideas → diseño).
-  if (space === 'marcas') return [['marcas', 'Todas', svg(P.marcas)], ...(brandAccess(me).contentFull ? [['marcas/diseno', 'Chat', svg(P.estrategia)]] : [])];
+  // Marcas: las marcas (cada perfil se abre desde ahí). Su chat se mudó al Chat (modo Diseño); #/marcas/diseno sigue abriendo.
+  if (space === 'marcas') return [['marcas', 'Todas', svg(P.marcas)]];
   return ORG.filter(([g]) => tabsOf(g).length).map(([g, l]) => [g, l, svg(P[g])]);
 };
 const navHtml = () => html`${navItems().map(([k, l, i]) => html`<button data-go="${k}" title="${l}">${i}<span>${l}</span></button>`)}`;
@@ -287,7 +303,7 @@ const seccionGuia = (cur) => (cur.key === 'me' ? 'me' : cur.key === 'estrategia'
 // ---------- El buscador: «Ir a» con lo que ve este perfil ----------
 function jumpItems() {
   if (me.role === 'client') return [];
-  const out = [];
+  const out = [{ title: 'Chat · Inherent LLM', sub: 'Estrategia, Organización y Diseño en un solo chat', route: '#/chat', icon: icoApp('chat') }];
   if (hasOrg()) for (const [g, l] of ORG) for (const [r, tl, n] of TABS[g]) if (needOk(n)) out.push({ title: tl, sub: tl === l ? 'Organization' : `Organization · ${l}`, route: '#/org/' + r, icon: svg(P[g]) });
   if (hasEstrategia()) { out.push({ title: 'Estrategia', sub: 'Todos los clientes', route: '#/estrategia', icon: svg(P.estrategia) }); for (const c of estrategiaNow()) out.push({ title: c.nombre, sub: 'Estrategia', route: `#/estrategia/${c.slug}`, icon: html`<span class="nav-mono sm">${initials(c.nombre)}</span>` }); }
   if (hasMarcas()) { out.push({ title: 'Marcas', sub: 'Todas las marcas', route: '#/marcas', icon: svg(P.marcas) }); if (brandAccess(me).contentFull) out.push({ title: 'Chat de Diseño gráfico', sub: 'Plan del mes, ideas y diseño', route: '#/marcas/diseno', icon: svg(P.estrategia) }); for (const b of brandsNow()) out.push({ title: b.name, sub: b.personal ? 'Marcas · privada' : 'Marcas', route: `#/marcas/${b.slug}`, icon: b.personal ? ico('lock', 16) : html`<span class="nav-mono sm">${initials(b.name)}</span>` }); }
@@ -303,6 +319,7 @@ function shell() {
       <div class="brand"><div class="emb">${emblem()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
       <nav class="nav" aria-label="Secciones"></nav>
       <div class="sp"></div>
+      ${me.role !== 'client' ? html`<a class="tochat" href="#/chat" aria-label="Abrir el Chat (Inherent LLM)" title="Chat · Inherent LLM">${icoApp('chat')}</a>` : ''}
       ${me.role !== 'client' ? html`<button class="searchbtn" id="searchbtn" type="button" aria-label="Buscar (${mac ? '⌘' : 'Ctrl+'}K)" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 17)}<kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>` : ''}
       ${me.role !== 'client' ? html`<button class="pdchip" id="pdchip" type="button" hidden aria-label="Seguir tu primer día"></button><button class="guiabtn" id="guiabtn" type="button" hidden aria-label="Cómo se usa esta parte">${ico('video', 15)}<span>Cómo se usa</span></button>` : ''}
       <button class="themebtn" id="themebtn" title="Modo noche" aria-label="Cambiar modo día / noche">${raw(document.documentElement.dataset.theme === 'dark' ? SUN : MOON)}</button>
@@ -334,7 +351,9 @@ async function render() {
   const cur = resolve(hashNow());
   // La dirección siempre dice dónde se abrió de verdad (alias y rutas que este perfil no ve se reescriben).
   if (cur.url !== hashNow()) history.replaceState(null, '', '#/' + cur.url);
-  if (cur.space) { space = cur.space; lsSet('space', space); lsSet('last.' + space, cur.url); }
+  if (cur.space) { space = cur.space; lsSet('space', space); lsSet('last.' + space, cur.url); if (space !== 'chat') lsSet('space.os', space); }
+  // El dock: en qué app estás. En el Chat la barra de arriba se esconde (la app ocupa toda la pantalla).
+  if (me.role !== 'client') { const app = cur.space === 'chat' ? 'chat' : 'os'; document.documentElement.dataset.app = app; pintarDock(app, irApp); }
   else if (!space) space = me.role === 'client' ? null : landing().startsWith('marcas') ? 'marcas' : landing().startsWith('estrategia') ? 'estrategia' : 'org';
   if (cur.space === 'marcas' && cur.rest[0] && !brandsNow().length) loadBrands(me).then(() => { if (me) markNav(); });
   markNav(cur);
@@ -377,7 +396,7 @@ window.addEventListener('hashchange', () => me && render());
     const m = typeof url === 'string' && /^#\/([\w-]+)(.*)$/.exec(url);
     if (m && me && location.hash.startsWith('#/org/') && ORG_SCREENS.includes(m[1])) url = '#/org/' + m[1] + m[2];
     const out = rs(st, t, url);
-    if (me && typeof url === 'string') { const h = url.replace(/^#\/?/, ''); if (h.startsWith('org/')) lsSet('last.org', h); else if (h.startsWith('marcas')) lsSet('last.marcas', h); else if (h.startsWith('estrategia')) lsSet('last.estrategia', h); }
+    if (me && typeof url === 'string') { const h = url.replace(/^#\/?/, ''); if (h.startsWith('org/')) lsSet('last.org', h); else if (h.startsWith('marcas')) lsSet('last.marcas', h); else if (h.startsWith('estrategia')) lsSet('last.estrategia', h); else if (h.startsWith('chat')) lsSet('last.chat', h); }
     return out;
   }; }
 $('#veil').onclick = closeDrawer;

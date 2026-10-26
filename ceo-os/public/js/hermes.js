@@ -50,7 +50,7 @@ export const nombreProveedor = (slug) => ({ 'openai-codex': 'ChatGPT', anthropic
 // (Hermes guarda el historial): cada chat del OS manda su propia sesión. onDelta(texto acumulado) · onTool(nombre).
 export async function chatHermes(me, { sesion, sistema, mensaje, modelo = {}, signal, onDelta = () => {}, onTool = () => {} }) {
   const h = hermesDe(me); if (!h) throw new Error('Hermes no está conectado en esta compu');
-  const r = await pide(h, '/v1/chat/completions', { method: 'POST', signal, ms: 20 * 60 * 1000, headers: { 'X-Hermes-Session-Id': sesion, 'X-Hermes-Session-Key': `inherent:${me.email}` }, body: { model: modelo.model || 'inherent', ...(modelo.provider ? { provider: modelo.provider } : {}), stream: true, messages: [...(sistema ? [{ role: 'system', content: sistema }] : []), { role: 'user', content: mensaje }] } });
+  const r = await pide(h, '/v1/chat/completions', { method: 'POST', signal, ms: 20 * 60 * 1000, headers: { 'X-Hermes-Session-Id': sesion }, body: { model: modelo.model || 'inherent', ...(modelo.provider ? { provider: modelo.provider } : {}), stream: true, messages: [...(sistema ? [{ role: 'system', content: sistema }] : []), { role: 'user', content: mensaje }] } });
   const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '', texto = '', fin = '';
   for (;;) {
     const { value, done } = await rd.read(); if (done) break;
@@ -74,3 +74,65 @@ export async function chatHermes(me, { sesion, sistema, mensaje, modelo = {}, si
 // Nombre de una herramienta de Hermes, en humano, para la lista de pasos del chat.
 export const pasoHermes = (n) => ({ read_file: 'Leyendo un archivo', search_files: 'Buscando en el repo', terminal: 'Corriendo un comando', web_search: 'Buscando en la web', web_extract: 'Leyendo una página', memory: 'Guardando en memoria', skill_view: 'Leyendo una skill', skills_list: 'Buscando skills', todo_list: 'Ordenando los pasos' }[n] || n.replace(/_/g, ' '));
 export const URL_HERMES = URL_BASE;
+
+// ---------- Las sesiones de Hermes (el Inherent LLM) ----------
+// Cada conversación del Inherent LLM es una sesión de Hermes con id «inh-<modo>-…» y su propio system prompt (el harness
+// del modo). Hermes guarda el historial: el OS solo la lista, la lee y le manda turnos. CORS de Hermes: solo GET, POST y
+// DELETE y las cabeceras Authorization, Content-Type, Idempotency-Key y X-Hermes-Session-Id (nada de PATCH ni Session-Key).
+const lista = (j, k) => (Array.isArray(j) ? j : j?.data || j?.[k] || j?.items || []);
+const conexion = (me) => { const h = hermesDe(me); if (!h) throw Object.assign(new Error('Hermes no está conectado en esta compu'), { status: 0 }); return h; };
+
+// → [{ id, title, preview, model, last_active, started_at, message_count }]
+export async function sesionesHermes(me, { limite = 80, prefijo = 'inh-' } = {}) {
+  const j = await (await pide(conexion(me), `/api/sessions?source=api_server&limit=${limite}`, { ms: 10000 })).json();
+  return lista(j, 'sessions').filter((s) => s && String(s.id || '').startsWith(prefijo) && !s.archived && !s.hidden);
+}
+export async function crearSesion(me, { id, titulo, sistema, modelo = {} }) {
+  const body = { id, source: 'api_server', ...(titulo ? { title: titulo } : {}), ...(sistema ? { system_prompt: sistema } : {}), ...(modelo.model ? { model: modelo.model, provider: modelo.provider || undefined } : {}) };
+  return (await pide(conexion(me), '/api/sessions', { method: 'POST', body, ms: 10000 })).json();
+}
+export async function mensajesSesion(me, id) {
+  const j = await (await pide(conexion(me), `/api/sessions/${encodeURIComponent(id)}/messages`, { ms: 15000 })).json();
+  return lista(j, 'messages');
+}
+export async function borrarSesion(me, id) { await pide(conexion(me), `/api/sessions/${encodeURIComponent(id)}`, { method: 'DELETE', ms: 10000 }); }
+export async function skillsHermes(me) { const j = await (await pide(conexion(me), '/v1/skills', { ms: 10000 })).json(); return lista(j, 'skills'); }
+
+// Un turno en una sesión, en streaming (SSE). Cerrar la conexión (signal) detiene al agente: así funciona «Detener».
+// on = { delta(texto acumulado), tool({ fase: 'inicio'|'fin'|'error', nombre, detalle }), nota(texto), aprobacion(evento), run(runId) }
+export async function turnoSesion(me, id, { mensaje, sistema, modelo = {}, signal, on = {} }) {
+  const h = conexion(me);
+  const body = { message: mensaje, ...(sistema ? { system_message: sistema } : {}), ...(modelo.model ? { model: modelo.model, ...(modelo.provider ? { provider: modelo.provider } : {}) } : {}) };
+  const r = await pide(h, `/api/sessions/${encodeURIComponent(id)}/chat/stream`, { method: 'POST', body, signal, ms: 30 * 60 * 1000 });
+  const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '', texto = '', final = null, fallo = '', estado = '';
+  const emitir = (ev, d) => {
+    if (ev === 'run.started' && d.run_id) on.run?.(d.run_id);
+    else if (ev === 'assistant.delta') { texto += d.delta || ''; on.delta?.(texto); }
+    else if (ev === 'tool.started' || ev === 'tool.completed' || ev === 'tool.failed') on.tool?.({ fase: ev === 'tool.started' ? 'inicio' : ev === 'tool.failed' ? 'error' : 'fin', nombre: String(d.tool_name || ''), detalle: String(d.preview || '').slice(0, 300), args: d.args || null });
+    else if (ev === 'assistant.commentary' && d.text && !d.already_streamed) on.nota?.(String(d.text));
+    else if (ev === 'approval.request') on.aprobacion?.(d);
+    else if (ev === 'assistant.completed') final = String(d.content ?? '');
+    else if (ev.startsWith('run.') && ev !== 'run.started') estado = ev.slice(4);
+    else if (ev === 'error') fallo = d.message || 'Hermes no pudo responder';
+  };
+  for (;;) {
+    const { value, done } = await rd.read(); if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let k; while ((k = buf.indexOf('\n\n')) >= 0) {
+      const bloq = buf.slice(0, k); buf = buf.slice(k + 2);
+      if (!bloq.trim() || bloq.startsWith(':')) continue; // keepalive
+      const ev = /^event: ([\w.]+)/m.exec(bloq)?.[1] || '', crudo = /^data: (.*)$/m.exec(bloq)?.[1];
+      if (!crudo) continue;
+      let d = {}; try { d = JSON.parse(crudo); } catch { continue; }
+      emitir(ev || d.event || '', d);
+    }
+  }
+  if (fallo) throw new Error(fallo);
+  if (estado === 'cancelled') throw Object.assign(new Error('Interrumpido.'), { name: 'AbortError' });
+  return { texto: final ?? texto, estado };
+}
+// Responder una aprobación (un comando que pide permiso). choice: once · session · always · deny.
+export async function responderAprobacion(me, runId, ev, choice) {
+  const body = { choice, ...(ev.request_id ? { request_id: ev.request_id } : {}), ...(ev.execution_generation != null ? { execution_generation: ev.execution_generation } : {}) };
+  return (await pide(conexion(me), `/v1/runs/${encodeURIComponent(runId)}/approval`, { method: 'POST', body, ms: 15000 })).json();
+}

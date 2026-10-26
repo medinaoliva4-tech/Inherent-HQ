@@ -19,6 +19,8 @@ Si el mapa y el código no coinciden, manda el código. Corrige el mapa en el mi
 | Una pantalla | `public/js/screens/<pantalla>.js` · las rutas `#/…` están en `public/js/app.js` |
 | Un módulo de una marca | `public/js/brandlist.js` (la lista) y `public/js/screens/brands.js` (qué monta) |
 | El chat de Estrategia o de Diseño | `public/js/screens/strategy.js`, `public/js/diseno-chat.js` y `public/laya/puente.py` |
+| El Chat (Inherent LLM) | `public/js/screens/llm.js`, `public/js/llm/modos.js` (el harness de cada modo), `public/js/llm/paneles.js` y `public/js/hermes.js` |
+| El dock (las dos apps) | `public/js/dock.js` y `irApp` en `public/js/app.js` |
 | El conector MCP | `api/_lib/mcp.js` (herramientas) y `api/_lib/oauth.js` (la conexión) |
 | Cómo se arma el trabajo | `public/js/recipes.js` (las recetas de siempre) y `api/_lib/flow.js` |
 | Lo que el OS lee del repo | `scripts/snapshot.mjs` (la copia) y `api/_lib/gh.js` (la lectura) |
@@ -105,7 +107,10 @@ app de Mac = la misma web en una ventana + el puente adentro
 
 ## 3 · Las pantallas
 
-Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espacios con un interruptor arriba: **Organization**, **Estrategia** y **Marcas**. Las rutas viejas siguen funcionando como alias.
+Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). **Dos apps unidas por el dock** (`dock.js`: una barrita a la izquierda en la compu; en el cel, un atajo en cada app): **Organización** y **Chat**. Organización tiene dos espacios con un interruptor arriba: **Organization** y **Marcas**. Estrategia ya no va en el interruptor: su pantalla sigue en `#/estrategia` (el tablero y el chat por el puente) y se abre desde el panel del Chat o con ⌘K. Cada app vuelve a donde estabas (`last.<espacio>`, `space.os`). Las rutas viejas siguen funcionando como alias.
+
+**Chat** (todo el equipo; el cliente nunca)
+- `#/chat[/<sesión>]` · `screens/llm.js` — el Inherent LLM, a pantalla completa (la barra de Organización se esconde): la barra de conversaciones (nueva · modos · recientes por fecha · tú y el estado de Hermes), la conversación (pasos de las herramientas, permisos, tarjetas de criterios y de pregunta, copiar y reintentar) y el panel del modo. Un solo chat con tres modos: **Estrategia** (pide cliente; el panel es la estrategia en vivo y lo que Strategy concreta se guarda en ella si se puede editar y no está aprobada), **Organización** (tu día: tareas y leads) y **Diseño** (pide marca; las piezas del mes). La caja: modo, cliente o marca, el modelo (lo que Hermes tiene conectado), dictar y los comandos «/» (`/estrategia`, `/organizacion`, `/diseno`, `/nuevo`, `/modelo`, `/skill`, `/terminal`). Responde Hermes en la compu de cada persona; sin Hermes, la pantalla dice qué falta (encenderlo, la llave) y deja a la vista los chats de siempre.
 
 **Organization** (`#/org/…`)
 - `#/org/home` · `screens/home.js` — Hoy: al CEO y al COO, el pulso del mes, lo que necesita atención, la agenda y el contenido; al equipo, sus responsabilidades.
@@ -135,7 +140,7 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). Tres espa
   - `marca` → `brand-board.js` (en la marca personal, `screens/me-brand.js`) · `design` → `design-system-ui.js`
   - `calendario` → `screens/content.js` + `calendario-vistas.js` · `resultados` → `screens/content.js` (Analytics)
   - `video` → `video-ui.js` (el kit de edición y las fichas) · `ads` → `ads-ui.js` (variaciones con el OK del CEO) · `tech` → `tech-ui.js` (sitios, landing al CRM, web viva y SEO)
-- `#/marcas/diseno[/<marca>]` · `diseno-chat.js` — el chat de Diseño gráfico: Plan del mes → Ideas → Diseño en Figma.
+- `#/marcas/diseno[/<marca>]` · `diseno-chat.js` — el chat de Diseño gráfico: Plan del mes → Ideas → Diseño en Figma. Ya no va en la barra de Marcas (su lugar es el modo Diseño del Chat); se abre desde el panel del Chat y con ⌘K.
 
 **Fuera de los espacios**
 - `#/me` · `screens/me.js` — Mi perfil: foto, cumpleaños, contacto, conexiones (Google y el conector MCP) y salir.
@@ -206,7 +211,8 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 **Núcleo**
 - `public/index.html` — la única página: carga Inter, `app.css` y `js/app.js` · todo vive en `#root`.
 - `public/app.css` — todos los estilos, con variables de color de día y de noche.
-- `app.js` — login, los 3 espacios, la barra y las pestañas, el router y sus alias, y el arranque · la entrada del navegador.
+- `app.js` — login, las dos apps y sus espacios, la barra y las pestañas, el router y sus alias, y el arranque · la entrada del navegador.
+- `dock.js` — el dock: Organización y Chat, la app activa y el salto a la otra (`pintarDock`, `quitarDock`, `icoApp`).
 - `core.js` — `html`/`raw`/`mount`, `api()` y `col()`, toast, drawer, `ask`, íconos, markdown, Mermaid, CSV, `openClaude`/`claudeJSON` · lo que usan todas las pantallas.
 - `roleviews.js` — la matriz de Vistas por rol, secciones, espacios, rutas mudadas y el «para qué» de cada puesto · compartido con el servidor.
 - `levels.js` — los 3 niveles y la traducción de nombres viejos; el baseline (solo CEO) · un solo lugar para los niveles.
@@ -225,7 +231,9 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `ojo.js` — el ojo visual: el estado del puente, `verImagen` (url o base64) y el chip «Se ve de la marca · 82%».
 - `puente-chat.js` — `/health` y `/chat` del puente, en solo lectura, para pantallas fuera de Estrategia; las dos fallas típicas con sus pasos.
 - `motor-ui.js` — elegir el motor del chat (`claude`, `chatgpt` o `local`) y qué le falta a la compu · se guarda por persona.
-- `hermes.js` — Hermes Agent en la compu de cada persona (el harness de los chats): la conexión (`hermesDe`: la app de Mac la entrega sola o se pega la llave una vez), `saludHermes`, `modelosHermes` (los proveedores y modelos que esa compu tiene conectados) y `chatHermes` (streaming por su API compatible con OpenAI, una sesión por chat del OS).
+- `hermes.js` — Hermes Agent en la compu de cada persona (el harness de los chats): la conexión (`hermesDe`: la app de Mac la entrega sola o se pega la llave una vez), `saludHermes`, `modelosHermes` (los proveedores y modelos que esa compu tiene conectados) y `chatHermes` (streaming por su API compatible con OpenAI, una sesión por chat del OS). · la API de sesiones del Inherent LLM: `sesionesHermes`, `crearSesion`, `mensajesSesion`, `borrarSesion`, `skillsHermes`, `turnoSesion` (SSE: pasos, deltas, permisos y el texto final) y `responderAprobacion`.
+- `llm/modos.js` — el Inherent LLM sin pantalla: los 3 modos, las reglas comunes, el harness de cada modo (rol, cómo trabaja, herramientas y criterios de aceptación), `sistemaDe` (el system prompt de cada turno), los comandos «/», los comandos de la Terminal, las tarjetas (`leerTarjetas`: ```criterios``` y ```pregunta```) y el id de cada sesión (`inh-<modo>-<cliente>-…`) · puro.
+- `llm/paneles.js` — el panel de la derecha del Chat según el modo (`panelDe`) y los datos de Estrategia de un cliente (`datosEstrategia`, con caché que se olvida después de cada respuesta).
 - `avisos.js` — activar, quitar y probar los avisos en este dispositivo (registra `public/sw.js`, pide permiso y guarda la suscripción). En iPhone solo funciona con el OS agregado a la pantalla de inicio.
 - `guia.js` — «Cómo se usa»: el botón de la barra (`#guiabtn`, lo prende `app.js` según la sección), la ventanita flotante del video (`.guia-pip`: sigue contigo al navegar, se minimiza, cambia de lado) y la lista de videos vistos.
 - `guia-secciones.js` — las secciones que pueden tener video y qué videos le tocan a cada puesto · puro (lo usa también el servidor).
@@ -338,7 +346,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - **Cómo se ve un chat** (Estrategia y Diseño comparten las clases `es-*` y `ch-*` de `app.css`): la barra de pasos arriba (`barraChat` en `artifact.js`), la conversación centrada (`.es-msgs`), el mensaje propio en burbuja suave con la hora al pasar (`.es-m.u`, `.es-hora`), la respuesta con avatar y sin burbuja (`.es-m.a`, `.es-av`, `.es-tx`) y sus acciones al pasar (`.ch-acts`: copiar, reintentar, guardar como borrador), el vacío con título y tarjetas (`.es-hint h1`, `.ch-cards`), la flecha para bajar al final (`.ch-abajo`), la caja (`.es-box`) con su franja (`bandeja`) y el aviso de abajo (`.ch-aviso`). No hay historial de chats: uno por parte del proceso.
 - **Emparejar:** el puente crea un token la primera vez (`~/.inherent/laya/chat-token`, permisos 0600). La persona lo pega una vez y queda en `localStorage` (`os.estrategia.token.<correo>`). En la app de Mac llega solo (`window.inherentEscritorio.token`).
 - `puente.py --token` muestra el token · `--nuevo-token` lo cambia · 8 tokens malos en un minuto frenan los intentos.
-- **Endpoints:** `GET /health` (Laya, chat, motores y el ojo visual) · `POST /juzgar` (Laya) · `POST /ver` (el ojo visual) · `GET /chat/estado` (probar el token) · `POST /chat` (respuesta en SSE: `inicio · delta · herramienta · fin · error`, más `imagen` en Diseño).
+- **Endpoints:** `GET /health` (Laya, chat, motores y el ojo visual) · `POST /juzgar` (Laya) · `POST /ver` (el ojo visual) · `GET /chat/estado` (probar el token) · `POST /chat` (respuesta en SSE: `inicio · delta · herramienta · fin · error`, más `imagen` en Diseño) · `POST /chat/sincronizar` (con el token: pone al día la copia del repo y borra cualquier cambio local; el Chat lo llama antes de cada turno de Hermes).
 - **Cuerpo de `/chat`:** `prompt` (hasta 60 000 caracteres), `resume` (para seguir la conversación), `modo`, `motor` y `modelo`.
 - **Un chat a la vez** por compu; 240 s por respuesta (`INHERENT_CHAT_SEGUNDOS`), 600 s en Diseño.
 
@@ -364,7 +372,9 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 **Hermes, el harness** (`public/laya/hermes/instalar.sh`, `public/laya/hermes/SOUL.md`, `public/js/hermes.js`, `motor-ui.js`)
 - Hermes Agent (Nous Research, código abierto) corre en la compu de cada persona con el perfil «inherent»: su identidad es `SOUL.md`, su carpeta de trabajo es la copia del repo del puente (`~/.inherent/laya/repo`, así lee `CLAUDE.md` y el manual), tiene el conector de Inherent OS por MCP (OAuth) y su API local en `127.0.0.1:8642`, solo para el OS, con una llave en `~/.inherent/hermes/api-key` que la app de Mac lee sola.
 - La instala la app (menú Puente › Instalar Hermes) o un comando (`curl -fsSL …/laya/hermes/instalar.sh | bash`). El modelo lo elige cada quien en Hermes (`inherent model`: ChatGPT con su cuenta, Claude, OpenRouter, Nous, o uno local) y el selector del chat lista lo que esa compu tiene conectado (sección «Hermes»).
-- Hoy responde por Hermes el chat de Estrategia cuando se elige un modelo de Hermes; los demás chats siguen por el puente. Laya y el ojo visual no cambian.
+- **El Chat (`#/chat`) corre todo por Hermes:** cada conversación es una sesión de Hermes (`inh-<modo>-…`, la lista y el historial viven en Hermes) y cada turno manda el harness del modo como `system_message` (`llm/modos.js` → `sistemaDe`), encima de `SOUL.md` y del `CLAUDE.md` que Hermes lee de su carpeta. El chat de Estrategia de siempre también responde por Hermes cuando se elige uno de sus modelos; el de Diseño sigue por el puente. Laya y el ojo visual no cambian.
+- **Solo lectura:** el perfil «inherent» trae apagadas las herramientas `terminal`, `code_execution`, `browser`, `computer_use` y `cronjob` (`agent.disabled_toolsets`), y antes de cada turno el puente pone al día y limpia la copia del repo (`/chat/sincronizar`). Lo que se guarda en el OS va por el conector, con lo que el perfil de la persona permite.
+- **CORS de Hermes:** solo `GET`, `POST` y `DELETE` y las cabeceras `Authorization`, `Content-Type`, `Idempotency-Key` y `X-Hermes-Session-Id`. Una cabecera de más rompe la llamada desde el navegador.
 - Vercel nunca habla con Hermes. El CSP permite `connect-src http://127.0.0.1:8642`.
 
 **El ojo visual** (`Ojo` en `puente.py`, `public/js/ojo.js`, `api/_lib/ojo.js`)
@@ -497,6 +507,7 @@ npm run test:diseno  # chat de Diseño
 npm run test:design  # Design system (sistema-visual.md)
 npm run test:ventas  # la meta de Ventas
 npm run test:marca   # Marca › Video, Ads y Tech
+npm run test:llm     # el Inherent LLM: harness, comandos, tarjetas y sesiones
 ```
 
 - **El servidor local** (`scripts/dev.mjs`) sirve `public/` y la API en el puerto 3000, con la base PGlite en `ceo-os/.devdb/`, login de prueba, un CEO de prueba, los mismos encabezados de `vercel.json` y `/diagnostico`.

@@ -71,7 +71,7 @@ MODELO = "multilingual"  # el checkpoint que lee español (~644 MB la primera ve
 MAX_CUERPO = 256 * 1024
 MAX_TEXTO = 20000
 MAX_PREGUNTAS = 16
-VERSION = "8"
+VERSION = "9"
 # La copia del repo que el puente maneja solo (si no le dices otra con INHERENT_REPO): se pone al día con main antes de cada chat.
 REPO_URL = os.environ.get("INHERENT_REPO_URL") or "https://github.com/medinaoliva4-tech/Inherent-HQ.git"
 SYNC_CADA = 60  # segundos mínimos entre dos puestas al día
@@ -762,6 +762,14 @@ def servidor(laya_, origenes, puerto, chat=None, ojo=None):
                 return
             self.responder(200, {"ok": True, **chat.estado()})
 
+        def chat_sincronizar(self):
+            """Pone al día la copia del repo que leen el chat y Hermes (el Inherent LLM) y borra cualquier cambio local
+            (git reset --hard). Como mucho una vez por minuto: si ya está al día, contesta al instante."""
+            if not self.chat_puerta():
+                return
+            ok = chat.sincronizar()
+            self.responder(200 if ok else 502, {"ok": bool(ok), **chat.estado()})
+
         def sse(self, evento, datos):
             self.wfile.write(("event: " + evento + "\ndata: " + json.dumps(datos, ensure_ascii=False) + "\n\n").encode("utf-8"))
             self.wfile.flush()
@@ -906,6 +914,8 @@ def servidor(laya_, origenes, puerto, chat=None, ojo=None):
             ruta = self.path.split("?")[0]
             if ruta == "/chat":
                 return self.chat_enviar()
+            if ruta == "/chat/sincronizar":
+                return self.chat_sincronizar()
             if ruta == "/ver":
                 return self.ver()
             if ruta != "/juzgar":
