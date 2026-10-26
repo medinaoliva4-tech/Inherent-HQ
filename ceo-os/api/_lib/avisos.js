@@ -4,12 +4,17 @@
 //   POST avisos/quitar     → la quita
 //   POST avisos/probar     → manda un aviso de prueba a la persona
 //   GET  cron/avisos       → el resumen de la mañana (Vercel Cron, con CRON_SECRET)
+//   GET  avisos            → los Avisos de la persona (#/avisos y la campanita): Tu trabajo · Clientes · La plataforma
+//   POST avisos            → posponer uno { clave, hasta, huella } o regresarlo { clave, volver: true } (team.<email>.avisos_pos)
 // Las claves van en VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY y VAPID_SUBJECT (mailto:). Sin ellas, nada se rompe: el botón dice que falta configurarlo.
 import webpush from 'web-push';
 import * as db from './db.js';
 import { guard, userFor, effective, viewsDoc } from './access.js';
 import { body } from './http.js';
 import { isWaiting } from '../../public/js/ventas-flujo.js';
+import { datosDe } from './avisos-datos.js';
+import { REGLAS } from '../../public/js/avisos-reglas/index.js';
+import { correr, aplicarPospuestos, posponer, contar, hoyGT } from '../../public/js/avisos-reglas/base.js';
 
 export const listo = () => Boolean(process.env.VAPID_PUBLIC_KEY?.trim() && process.env.VAPID_PRIVATE_KEY?.trim());
 let configurado = false;
@@ -63,7 +68,29 @@ export async function resumenDiario(hoy = new Date().toISOString().slice(0, 10))
   return { mandados };
 }
 
+// Los Avisos de una persona, ya sin los que pospuso. errores: reglas que fallaron (solo se le muestran al CEO).
+export async function avisosDe(u, hoy = hoyGT()) {
+  const { persona, datos } = await datosDe(u);
+  const { items, errores } = correr(REGLAS, datos, persona, hoy);
+  const { visibles, pospuestos } = aplicarPospuestos(items, datos.yo?.avisos_pos || {}, hoy);
+  return { hoy, items: visibles, pospuestos, n: contar(visibles), errores, pos: datos.yo?.avisos_pos || {}, todos: items };
+}
+
 export function rutas(on) {
+  on('GET', 'avisos', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await avisosDe(u);
+    res.json({ hoy: r.hoy, items: r.items, pospuestos: r.pospuestos, n: r.n, ...(u.role === 'ceo' && r.errores.length ? { errores: r.errores } : {}) });
+  });
+  on('POST', 'avisos', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const b = body(req), clave = String(b.clave || '').slice(0, 160); if (!clave) return res.status(400).json({ error: 'Falta el aviso' });
+    const r = await avisosDe(u);
+    const out = posponer(r.pos, { clave, hasta: b.hasta, huella: b.huella, volver: Boolean(b.volver) }, r.todos.find((x) => x.clave === clave), r.hoy);
+    if (out.error) return res.status(400).json({ error: out.error });
+    await db.upsert('team', u.email, { avisos_pos: out.pos }, u.email);
+    res.json({ ok: true, hasta: out.pos[clave]?.hasta || null });
+  });
   on('GET', 'avisos/clave', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const t = await db.get('team', u.email);

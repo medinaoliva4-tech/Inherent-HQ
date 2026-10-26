@@ -7,6 +7,7 @@ import * as google from './google.js';
 import * as content from './content.js';
 import * as leads from './leads.js';
 import { scoper, inScope } from './access.js';
+import { seesTask } from './leer.js';
 
 const DAY = 864e5;
 const iso = (d) => new Date(d).toISOString().slice(0, 10);
@@ -25,12 +26,7 @@ export function stampDone(prev, next) {
   return next;
 }
 
-// Las tareas: las mismas reglas de visibilidad que el resto de la app (Personal solo su dueño, «solo yo», alcance).
-const seesTask = (u, t) => {
-  if (t?.tipo === 'Personal') return lc(t._meta?.created_by || t.assignee) === u.email;
-  const vis = t?.visibility || 'all'; if (vis === 'all') return true;
-  return [t._meta?.created_by, t.assignee, ...(vis === 'people' ? [t.accountable, ...(Array.isArray(t.viewers) ? t.viewers : [])] : [])].filter(Boolean).map(lc).includes(u.email);
-};
+// Las tareas: las mismas reglas de visibilidad que el resto de la app (leer.js: Personal solo su dueño, «solo yo», alcance).
 
 // El tiempo de respuesta de un lead que entró solo: del alta a la primera acción de alguien del equipo
 // (lo que no es «Lead creado» ni «Volvió a entrar»). Los prospectos que salimos a buscar no cuentan.

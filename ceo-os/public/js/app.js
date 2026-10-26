@@ -45,8 +45,8 @@ const TABS = {
   inherent: [['vision', 'Visión y misión', 'all'], ['team', 'Equipo', 'team'], ['team/vistas', 'Vistas por rol', 'ceo'], ['team/laya', 'Laya', 'ceo'], ['roadmap', 'Roadmap', 'roadmap'], ['library', 'Library', 'library'], ['setup', 'Arranque', 'ceo']],
 };
 const ORG = GROUPS.filter((g) => g[3] === 'org').map(([k, l]) => [k, l]);
-const SCREENS = { me: 'me', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands', estrategia: 'strategy', consulting: 'consulting', chat: 'llm' };
-const LABEL = { home: 'Hoy', control: 'Control del flujo', work: 'Mis tareas', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control', vision: 'Visión y misión', marcas: 'Marcas', estrategia: 'Estrategia', consulting: 'Consulting', chat: 'Inherent LLM' };
+const SCREENS = { me: 'me', avisos: 'avisos', home: 'home', control: 'control', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', content: 'content', mimarca: 'me-brand', library: 'library', team: 'team', setup: 'setup', portal: 'portal', resultados: 'results', 'control-hub': 'control-hub', vision: 'vision', marcas: 'brands', estrategia: 'strategy', consulting: 'consulting', chat: 'llm' };
+const LABEL = { avisos: 'Avisos', home: 'Hoy', control: 'Control del flujo', work: 'Mis tareas', finanzas: 'Finanzas', sales: 'Ventas', services: 'Servicios', operations: 'Proyectos', roadmap: 'Roadmap', clients: 'Clientes', content: 'Contenido', mimarca: 'Mi marca', library: 'Library', team: 'Equipo', setup: 'Arranque', portal: 'Mi portal', resultados: 'Indicadores', me: 'Mi perfil', 'control-hub': 'Centro de control', vision: 'Visión y misión', marcas: 'Marcas', estrategia: 'Estrategia', consulting: 'Consulting', chat: 'Inherent LLM' };
 // Las pantallas de Organization (lo que no es Marcas, Mi perfil ni el portal del cliente).
 const ORG_SCREENS = ['home', 'control', 'work', 'resultados', 'setup', 'clients', 'operations', 'portal', 'sales', 'services', 'finanzas', 'vision', 'team', 'roadmap', 'library'];
 // Las áreas que cuentan como «ve algo de Organization» (Equipo y Visión los ve todo el equipo: no cuentan).
@@ -104,6 +104,7 @@ const hasEstrategia = () => me.role !== 'client' && me.areas.includes('estrategi
 const spacesFor = () => SPACES.filter(([k]) => (k === 'org' ? hasOrg() : k === 'marcas' ? hasMarcas() : false));
 const sees = (k) => {
   if (k === 'me') return true;
+  if (k === 'avisos') return me.role !== 'client';
   if (me.role === 'client') return k === 'portal';
   if (k === 'vision' || k === 'chat') return true;
   if (k === 'setup') return me.role === 'ceo';
@@ -214,6 +215,7 @@ function resolve(path) {
   const fallback = () => resolve(landing(false));
   if (!parts.length) return resolve(landing());
   if (parts[0] === 'me') return { key: 'me', rest: parts.slice(1), url: parts.join('/'), space: null };
+  if (parts[0] === 'avisos') return sees('avisos') ? { key: 'avisos', rest: [], url: 'avisos', space: null } : fallback();
   if (parts[0] === 'marcas') return sees('marcas') ? { key: 'marcas', rest: parts.slice(1), url: parts.join('/'), space: 'marcas' } : fallback();
   if (parts[0] === 'estrategia') return sees('estrategia') ? { key: 'estrategia', rest: parts.slice(1), url: parts.join('/'), space: 'estrategia' } : fallback();
   if (parts[0] === 'consulting') return sees('consulting') ? { key: 'consulting', rest: parts.slice(1), url: parts.join('/'), space: 'consulting' } : fallback();
@@ -383,6 +385,7 @@ function paintLat(cur = resolve(hashNow())) {
   const enSw = document.activeElement?.closest?.('.lat .asw'), enLink = document.activeElement?.closest?.('.lat-nav a')?.getAttribute('href');
   mount($('#lat-area', lat), html`${xs.length >= 2 ? raw(areaSwitch(xs, a?.id, (n, px) => svgIco(n, px))) : ''}${a ? html`<div class="lat-area"><b>${a.nombre}</b><small>${a.sub}</small></div>` : ''}`);
   mount($('#lat-nav', lat), html`${cur.key === 'me' ? latIt('me', 'Mi perfil', ico('user', 16), true) : ''}${latSecciones(cur)}`);
+  $('.lat-avisos', lat)?.classList.toggle('on', cur.key === 'avisos');
   const sub = $('#lat-chat-sub', lat); if (sub) sub.textContent = `En modo ${a?.nombre || 'Organización'}`;
   if (enSw) $(`.lat .asw [data-area="${a?.id}"]`)?.focus();
   else if (enLink) [...lat.querySelectorAll('.lat-nav a')].find((x) => x.getAttribute('href') === enLink)?.focus();
@@ -428,6 +431,7 @@ function latHtml(mac) {
     <a class="lat-marca" href="#/" aria-label="Inherent OS"><span class="lat-emb">${emblem()}</span><span class="lat-wm"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="Inherent"><img class="wm-noche" src="/brand/wordmark-light.svg" alt=""><sup>OS</sup></span></a>
     <div id="lat-area"></div>
     <button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
+    <a class="lat-it lat-avisos" href="#/avisos" data-avisos title="Avisos">${ico('bell', 16)}<span class="lat-t">Avisos</span><b class="lat-n" data-avisos-n hidden></b></a>
     <nav class="lat-nav" id="lat-nav" aria-label="Secciones del área"></nav>
     <div class="lat-pie">
       <div class="lat-ayuda" id="lat-ayuda"></div>
@@ -487,6 +491,7 @@ function shell() {
       ${me.role !== 'client' ? html`<a class="tochat" href="#/chat" aria-label="Abrir el Chat (Inherent LLM)" title="Chat · Inherent LLM">${icoApp('chat')}</a>` : ''}
       ${me.role !== 'client' ? html`<button class="searchbtn" id="searchbtn" type="button" aria-label="Buscar (${mac ? '⌘' : 'Ctrl+'}K)" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 17)}<kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>` : ''}
       ${me.role !== 'client' ? html`<span class="top-ayuda" id="top-ayuda"><button class="pdchip" id="pdchip" type="button" hidden aria-label="Seguir tu primer día"></button><button class="guiabtn" id="guiabtn" type="button" hidden aria-label="Cómo se usa esta parte">${ico('video', 15)}<span>Cómo se usa</span></button></span>` : ''}
+      ${me.role !== 'client' ? html`<a class="bellbtn" href="#/avisos" data-avisos aria-label="Avisos" title="Avisos">${ico('bell', 18)}<b data-avisos-n hidden></b></a>` : ''}
       <button class="themebtn" id="themebtn" title="${esNoche() ? 'Modo día' : 'Modo noche'}" aria-label="Cambiar modo día / noche">${raw(icoTema())}</button>
       <div class="avatar" id="avatar" title="Mi perfil" role="button" tabindex="0" aria-label="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
@@ -528,6 +533,7 @@ async function render() {
   markNav(cur);
   if (me.role !== 'client') marcarSeccion(seccionGuia(cur));
   $('#avatar')?.classList.toggle('on', cur.key === 'me');
+  for (const b of $$('[data-avisos]')) b.classList.toggle('on', cur.key === 'avisos');
   // Contenedor nuevo por pantalla: así no quedan escuchadores de la pantalla anterior.
   // Cambiar de sección sin saltos: arriba de una vez (sin animar el scroll) y la página no se encoge
   // mientras carga la siguiente (antes «Cargando…» la hacía chiquita y el navegador brincaba).
@@ -600,6 +606,8 @@ async function start(u) {
   if (me.role !== 'client') { const pre = () => { for (const k of ['home', 'work', 'operations', 'sales', 'finanzas', 'clients', 'marcas', 'chat']) if (SCREENS[k] && sees(k)) import(`./screens/${SCREENS[k]}.js`).catch(() => {}); }; 'requestIdleCallback' in window ? requestIdleCallback(pre, { timeout: 3000 }) : setTimeout(pre, 1500); }
   // El primer día: la primera vez, el recorrido de 6 pasos (se puede pausar; el chip de la barra lo retoma).
   if (me.role !== 'client') primerDia(me);
+  // Avisos: la campanita cuenta lo que pide atención (servidor + tu compu) y se pone al día sola.
+  if (me.role !== 'client') import('./avisos-ui.js').then((a) => a.instalarCampana(me)).catch(() => {});
   // El service worker de los avisos (web push). Sin él, nada cambia.
   if (me.role !== 'client') import('./avisos.js').then((a) => a.registrarSW()).catch(() => {});
   // Las responsabilidades recurrentes (recetas internas encendidas) dejan su tarea al abrir la app, una vez al día. El cron diario hace lo mismo.

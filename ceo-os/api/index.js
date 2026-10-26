@@ -34,6 +34,7 @@ import * as tech from './_lib/tech.js';
 import * as ojo from './_lib/ojo.js';
 import * as guia from './_lib/guia.js';
 import * as avisos from './_lib/avisos.js';
+import { seesTask, personalOk, profOf, visible, scopeOf, profInScope, shape, levelsFor } from './_lib/leer.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
@@ -152,25 +153,6 @@ async function reglasPieza(b, cur) {
   if ((bo?.marcas?.[b.profile] || []).some((x) => x.mes === mes)) return null;
   return `Sin brief del ciclo de ${mes}: guárdala como idea sin fecha, pide el brief a ④ Creatividad o que el CEO abra el mes.`;
 }
-// Tareas: «solo yo» la ven quien la creó y a quien se asignó; «ciertas personas» suma a las elegidas.
-// Una tarea «Personal» la ve solo quien la creó (aunque su visibilidad diga «todos»).
-const seesTask = (u, t) => {
-  if (t?.tipo === 'Personal') return String(t._meta?.created_by || t.assignee || '').toLowerCase() === u.email;
-  const vis = t?.visibility || 'all'; if (vis === 'all') return true;
-  const mine = [t._meta?.created_by, t.assignee, ...(vis === 'people' ? [t.accountable, ...(Array.isArray(t.viewers) ? t.viewers : [])] : [])];
-  return mine.filter(Boolean).map((x) => String(x).toLowerCase()).includes(u.email);
-};
-// La marca personal del CEO es privada: su contenido (Research, planner, calendario, conexiones) solo lo ve él.
-const personalOk = (u, slug) => slug !== 'personal' || u.role === 'ceo';
-// Los docs de «sources» (scrape-, refs-, ads-, ideas-…<perfil>) no siempre traen el campo profile: el perfil sale también del id.
-const profOf = (coll, d) => (coll === 'sources' ? d?.profile || String(d?.id || '').replace(/^(cfg|scrape|analytics|ideas|refs|ads)-/, '') : d?.profile);
-// El link de la hoja de Finanzas solo lo lee quien ve Finanzas.
-// El margen objetivo de las propuestas (settings «pricing», Finanzas → Precios) es costo/margen: solo el CEO.
-const visible = (u, coll, d) => (coll !== 'tasks' || seesTask(u, d)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'brand_boards' || personalOk(u, String(d?.id || ''))) && (coll !== 'settings' || ((d?.id !== 'finance_sheet' || u.areas.includes('finanzas')) && (d?.id !== 'pricing' || u.role === 'ceo')));
-// El alcance (todos · asignados · propio) filtra proyectos, tareas, cuentas de clientes y leads.
-const scopeOf = (u, coll) => (SCOPED.includes(coll) || ['content', 'sources'].includes(coll) ? scoper(u) : null);
-// Content y sources llevan el perfil (un cliente, inherent o personal): con alcance «asignados» o «propio» solo entran los de sus clientes.
-const profInScope = (sc, coll, d) => { if (!sc || !['content', 'sources'].includes(coll)) return true; const p = profOf(coll, d); return !p || p === 'inherent' || sc.client(p); };
 // El tipo de una tarea es uno de cuatro; el SOP es el id de un doc de la Library o un link https.
 const TASK_TIPOS = ['Delivery', 'Comercial', 'Interna', 'Personal'];
 const cleanTask = (b) => {
@@ -189,15 +171,6 @@ const cleanBudget = (b) => {
     lines, total: Math.round(lines.reduce((x, l) => x + l.subtotal, 0) * 100) / 100, note: String(b.note || '').slice(0, 2000), currency: b.currency === 'USD' ? 'USD' : 'GTQ',
     ...(b.type === 'Ads' ? { month: String(b.month || '').slice(0, 7), daily: num(b.daily), platform: String(b.platform || '').slice(0, 40) } : { month: undefined, daily: undefined, platform: undefined }) };
 };
-// Lo que sale de un doc según quién lo pide: «resumen» recorta o no entrega (summaryOf) y los accesos de un cliente
-// solo llegan a quien los puede ver. null = para esa persona no existe.
-const shape = (u, coll, d, sc, sum = summaryOf(u, coll)) => {
-  if (!d) return null;
-  if (sum) { d = sum(d); if (!d) return null; }
-  return coll === 'accounts' ? stripAccesos(u, d, sc) : coll === 'budgets' ? stripCosts(u, d) : coll === 'settings' && d.id === 'levels' ? levelsFor(u, d) : d;
-};
-// Los niveles editables (settings «levels»): los lee todo el equipo, pero el baseline (el piso interno de precio) solo el CEO.
-const levelsFor = (u, d) => (u.role === 'ceo' ? d : { ...d, levels: Object.fromEntries(Object.entries(d.levels || {}).map(([k, l]) => { const { usd, gtq, ...rest } = l || {}; return [k, rest]; })) });
 // Al guardarlos: solo los 3 niveles y sus campos, en texto corto; el baseline, un número positivo.
 const LEVEL_IDS = ['foundation', 'growth', 'partnership'];
 const cleanLevels = (b) => ({ ...b, id: 'levels', levels: Object.fromEntries(LEVEL_IDS.filter((k) => b.levels?.[k]).map((k) => { const l = b.levels[k], usd = Number(l.usd);

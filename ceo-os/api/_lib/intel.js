@@ -28,6 +28,17 @@ async function archivos(root) {
   return l.map((p) => p.slice(root.length + 1));
 }
 
+// Qué entregables existen en la carpeta de un cliente, sin leerlos (para los Avisos: «falta el brief de noviembre»).
+// → [{ id, mes, variante, costos }]. Se guarda 60 s y lo comparten todas las personas.
+const PRES = new Map();
+export async function presentes(slug) {
+  const m = PRES.get(slug); if (m && Date.now() - m.at < 60_000) return m.v;
+  const fs = await archivos(rootOf(slug)), v = [];
+  for (const e of ENTREGABLES) for (const f of fs) { const c = coincide(e, f); if (c) v.push({ id: e.id, mes: c.mes || '', variante: c.variante || '', costos: Boolean(e.costos) }); }
+  PRES.set(slug, { at: Date.now(), v }); if (PRES.size > 80) PRES.delete(PRES.keys().next().value);
+  return v;
+}
+
 // ---------- Limpieza ----------
 // Líneas que nunca salen del equipo de costos (ni hacia el cliente ni hacia quien no ve costos).
 // («márgenes» a secas NO se filtra: en el sistema visual son los márgenes de la página.)

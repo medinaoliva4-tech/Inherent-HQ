@@ -30,7 +30,7 @@ export async function ficha(slug) {
   const root = intel.rootOf(slug);
   const f = await readFile(`${root}/00-onboarding/plan-contratado.md`);
   const nombre = (f && /^#\s+.*?[—–-]\s*(.+?)\s*$/m.exec(f.content)?.[1]) || (slug === 'inherent' ? 'Inherent' : slug.toUpperCase());
-  if (!f) return { hay: false, nombre, plan: '', nivel: null, linea: '', incluye: [], fuera: '', pipeline: [] };
+  if (!f) return { hay: false, nombre, plan: '', nivel: null, linea: '', incluye: [], fuera: '', pipeline: [], redes: '' };
   // «team»: el precio y el costo nunca salen de aquí (la ficha los lleva; Estrategia no los necesita).
   const pc = parsePlanContratado(f.content, 'team');
   const campo = (re) => pc.fields.find((x) => re.test(x.key))?.value || '';
@@ -38,7 +38,7 @@ export async function ficha(slug) {
   const inc = tables(f.content).find((t) => /qu[eé] incluye/i.test(t.heading));
   const incluye = (inc?.rows || []).map((r) => ({ k: clean(r[0]), v: clean(r[1]) })).filter((x) => x.k && x.v).slice(0, 12);
   if (!incluye.length && campo(/^[aá]reas$/i)) incluye.push({ k: 'Áreas', v: campo(/^[aá]reas$/i) });
-  return { hay: true, nombre, plan, nivel: nivelDe(plan), linea: campo(/^l[ií]nea$/i), incluye, fuera: campo(/^queda fuera$/i), pipeline: (pc.pipeline || []).slice(0, 10) };
+  return { hay: true, nombre, plan, nivel: nivelDe(plan), linea: campo(/^l[ií]nea$/i), incluye, fuera: campo(/^queda fuera$/i), pipeline: (pc.pipeline || []).slice(0, 10), redes: campo(/^redes$/i) };
 }
 
 // ---------- Lo del repo (Intel), con un poco de memoria para no leer 40 archivos por cada pantalla ----------
