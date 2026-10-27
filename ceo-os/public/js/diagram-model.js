@@ -2,7 +2,8 @@
 // Funciones puras (sin DOM): las usa el editor visual (diagram-editor.js), la vista de lectura y las pruebas en Node.
 //
 // Un diagrama es { v, dir, edgeStyle, nodes, edges, viewport }:
-//   nodo   { id, type: rect|diamond|ellipse|note, x, y, w, h, text, fill }   (x, y = esquina de arriba a la izquierda)
+//   nodo   { id, type: rect|diamond|ellipse|note, x, y, w, h, text, fill, lane? }   (x, y = esquina de arriba a la izquierda;
+//          lane = carril por rol, opcional: lo usa el Mapa del camino del dinero y solo aparece si el nodo lo trae)
 //   arista { id, from, to, label, style: curve|ortho, head, fromPort, toPort }   (puertos t|r|b|l; vacío = automático)
 //   viewport { x, y, k }   pantalla = mundo × k + (x, y)
 
@@ -54,8 +55,10 @@ export function normalize(raw) {
     let id = String(n.id || '').slice(0, 60) || 'n' + (seen.size + 1); while (seen.has(id)) id += '_';
     seen.add(id);
     const type = TYPES.includes(n.type) ? n.type : 'rect', S = SHAPES[type];
-    out.nodes.push({ id, type, x: num(n.x), y: num(n.y), w: clamp(num(n.w, S.w), 40, 2000), h: clamp(num(n.h, S.h), 28, 2000),
-      text: String(n.text ?? '').slice(0, 2000), fill: fillKey(n.fill) });
+    const nodo = { id, type, x: num(n.x), y: num(n.y), w: clamp(num(n.w, S.w), 40, 2000), h: clamp(num(n.h, S.h), 28, 2000),
+      text: String(n.text ?? '').slice(0, 2000), fill: fillKey(n.fill) };
+    if (typeof n.lane === 'string') nodo.lane = n.lane.slice(0, 60); // carril por rol (opcional; '' = sin rol); sin él, el nodo queda igual que siempre
+    out.nodes.push(nodo);
   }
   const eids = new Set();
   for (const e of (Array.isArray(d.edges) ? d.edges : []).slice(0, 1200)) {

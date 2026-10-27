@@ -3,13 +3,14 @@
 //   Organización → tu día: lo que vence, los leads sin responder y atajos a Organización
 //   Diseño       → el mes de la marca: piezas por estado, lo próximo y los atajos a Ideas, Plan y el chat con Figma
 //   Marketing    → el plan del mes de la marca (avance y lo que falta), las campañas y eventos que vienen y sus encargos
-//   Consulting   → el cliente: si su nivel trae Operations OS y Money OS, y los temas para empezar
+//   Consulting   → el cliente: si su nivel trae Operations OS y Money OS, los encargos de Estrategia y sus herramientas
 // Arriba de cada panel, «Cómo trabaja este modo»: el harness a la vista (reglas y criterios de aceptación).
 import { html, api, col, ico, fdate, today, esc } from '../core.js';
 import { panelViva } from '../estrategia-viva-ui.js';
 import { avance } from '../estrategia-viva.js';
 import { isWaiting } from '../ventas-flujo.js';
-import { HARNESS, modoDe, CONSULTING, textoAlcanceConsulting, encargosDe } from './modos.js';
+import { HARNESS, modoDe, textoAlcanceConsulting, encargosDe, alcanceConsulting, consultingAbierto } from './modos.js';
+import { deWorkspace, rutaHerramienta } from '../herramientas.js';
 import { avancePlan, nombreMes } from '../plan-mes.js';
 import { tipoDe, proximaFecha, revisarCampana } from '../campanas.js';
 
@@ -74,11 +75,14 @@ async function panelMarketing(me, slug, nombre, mes) {
 }
 
 async function panelConsulting(me, slug) {
-  if (!slug) return vacio('Elige un cliente', 'Abajo, junto al modo, elige de quién es el consulting. El panel muestra su alcance, los encargos de Estrategia y los temas para empezar.');
+  if (!slug) return vacio('Elige un cliente', 'Abajo, junto al modo, elige de quién es el consulting. El panel muestra su alcance, los encargos de Estrategia y sus herramientas.');
   const [data, enc] = await Promise.all([datosEstrategia(slug), encargosHtml(me, 'consulting', slug)]);
+  // Las herramientas que ya se trabajan (las 6 del Tool Shell, en el orden de su cadena) y que el perfil abre; con un nivel que no
+  // trae Consulting no se ofrecen (el aviso de arriba dice por qué).
+  const herramientas = consultingAbierto(alcanceConsulting(data.nivel, data.ficha)) ? deWorkspace('consulting').filter((t) => t.monta && t.puede(me, { slug })) : [];
   return html`<div class="lp-head"><div><span class="lp-k">Consulting</span><h3>${data.nombre}</h3><span class="lp-mut">${data.nivel?.nombre || 'Sin ficha de oferta'}</span></div><a class="lp-btn" href="#/ws/consulting/${esc(slug)}/overview">Tablero ↗</a></div>
     ${avisoConsulting(data.nivel, data.ficha)}${enc}
-    ${CONSULTING.map(([, g, , ts]) => html`<section class="lp-sec"><span class="lp-k">${g}</span>${ts.map(([t, q]) => html`<button type="button" class="lp-row lp-tema" data-a="sugerencia" data-t="${q}"><span class="lp-dot"></span><span class="lp-t">${t}</span></button>`)}</section>`)}`;
+    ${herramientas.length ? html`<section class="lp-sec"><span class="lp-k">Herramientas</span>${herramientas.map((t) => html`<a class="lp-row" href="${rutaHerramienta('consulting', slug, t.id)}" title="${t.produce}"><span class="lp-dot"></span><span class="lp-t">${t.nombre}</span></a>`)}</section>` : ''}`;
 }
 
 async function panelOrganizacion(me) {

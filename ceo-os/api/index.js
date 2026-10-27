@@ -20,6 +20,7 @@ import * as laya from './_lib/laya.js';
 import * as intel from './_lib/intel.js';
 import * as estrategia from './_lib/estrategia.js';
 import * as avatares from './_lib/avatares.js';
+import * as entregables from './_lib/entregables.js';
 import * as creacion from './_lib/creacion.js';
 import * as planMes from './_lib/plan.js';
 import * as campanas from './_lib/campanas.js';
@@ -125,6 +126,8 @@ async function collGuard(req, res, write) {
   // El estado y los borradores de Estrategia solo se escriben por /api/estrategia/* (ahí vive la regla: solo el CEO aprueba).
   if (coll === 'strategy') { res.status(404).json({ error: 'La estrategia está en /api/estrategia' }); return null; }
   if (coll === 'avatars') { res.status(404).json({ error: 'Los avatares están en /api/avatares' }); return null; }
+  // Los entregables de las herramientas y sus versiones: solo por sus rutas (ahí viven el alcance, la ficha y quién aprueba).
+  if (coll === 'deliverables' || coll === 'deliverable_versions') { res.status(404).json({ error: 'Los entregables están en /api/entregables' }); return null; }
   if (coll === 'formats' || coll === 'scripts') { res.status(404).json({ error: 'Formatos y guiones están en /api/formatos y /api/guiones' }); return null; }
   // El plan del mes pide la estrategia aprobada: solo por /api/plan, que lo revisa.
   if (coll === 'plans') { res.status(404).json({ error: 'El plan del mes está en /api/plan' }); return null; }
@@ -1146,6 +1149,8 @@ laya.rutas(on);
 estrategia.rutas(on);
 // ---------- App 01 · Marca › Cliente ideal: los avatares de cada marca, con su peso y el OK del CEO ----------
 avatares.rutas(on);
+// ---------- Los entregables de las herramientas del OS: versiones, estados y quién aprueba ----------
+entregables.rutas(on, { cleanTask });
 // ---------- App 01 · Marca › Crear: formatos (plantillas) y guiones ----------
 creacion.rutas(on);
 planMes.rutas(on);

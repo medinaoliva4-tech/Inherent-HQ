@@ -43,9 +43,9 @@ t('cada herramienta: ws válido, pestaña del ws, prioridad, estado, aprueba, gu
     if (h.estado !== 'pronto') assert.ok(h.monta, `${h.id}: ${h.estado} sin monta`); else assert.equal(h.monta, null, `${h.id}: pronto con monta`);
   }
   assert.deepEqual(HERRAMIENTAS.filter((h) => h.estado === 'lista').map((h) => h.id), ['content-calendar']);
-  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 18);
-  assert.equal(HERRAMIENTAS.filter((h) => h.monta).length, 19, 'las 19 que se montan en la Fase 1');
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye', 'bullseye'], ['customer-avatar-studio', 'avatar'], ['business-xray', 'strategy'], ['offer-architect', 'strategy'], ['growth-roadmap', 'strategy'], ['viral-intelligence-lab', 'research'], ['content-strategy-studio', 'plan'], ['content-calendar', 'calendario'], ['campaign-architect', 'campanas'], ['funnel-builder', 'tech'], ['ads-intelligence', 'ads'], ['marketing-performance-center', 'analytics'], ['brand-dna-studio', 'brandBoard'], ['moodboard-studio', 'brandBoard'], ['creative-direction-lab', 'ideas'], ['visual-identity-builder', 'design'], ['design-studio', 'disenoChat'], ['script-storyboard-studio', 'creacion'], ['post-production-workspace', 'video']]);
+  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 24, '18 de la Fase 1 + las 6 de Consulting de la Fase 2');
+  assert.equal(HERRAMIENTAS.filter((h) => h.monta).length, 25, 'las 19 de la Fase 1 + las 6 del Tool Shell');
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye', 'bullseye'], ['customer-avatar-studio', 'avatar'], ['business-xray', 'strategy'], ['offer-architect', 'strategy'], ['growth-roadmap', 'strategy'], ['viral-intelligence-lab', 'research'], ['content-strategy-studio', 'plan'], ['content-calendar', 'calendario'], ['campaign-architect', 'campanas'], ['funnel-builder', 'tech'], ['ads-intelligence', 'ads'], ['marketing-performance-center', 'analytics'], ['brand-dna-studio', 'brandBoard'], ['moodboard-studio', 'brandBoard'], ['creative-direction-lab', 'ideas'], ['visual-identity-builder', 'design'], ['design-studio', 'disenoChat'], ['business-health-assessment', 'shell'], ['root-cause-explorer', 'shell'], ['process-mapper', 'shell'], ['financial-scenario-lab', 'shell'], ['solution-blueprint-builder', 'shell'], ['impact-tracker', 'shell'], ['script-storyboard-studio', 'creacion'], ['post-production-workspace', 'video']]);
   // Consulting lleva el nombre en español y el inglés como alias.
   for (const h of deWorkspace('consulting')) assert.ok(h.alias, `${h.id}: alias`);
   assert.equal(herramientaDe('business-health-assessment').nombre, 'Diagnóstico de crecimiento');
@@ -203,6 +203,208 @@ t('puede y puedeWs reflejan brandAccess y hasEstrategia', () => {
   assert.ok(p('post-production-workspace', equipo) && !p('post-production-workspace', cliente));
   assert.ok(p('content-calendar', equipo, null), 'sin contexto también se puede');
   assert.ok(!p('customer-bullseye', null, null), 'sin persona no hay nada');
+});
+
+// ---------- Fase 2 · la colección «deliverables» (public/js/entregables.js y su servidor) ----------
+const E = await import('../public/js/entregables.js');
+const TIPOS_TAREA = ['Delivery', 'Comercial', 'Interna', 'Personal'];
+const aprobadoDe = (o = {}) => ({ id: 'e1', tool: 'customer-bullseye', ws: 'strategy', titulo: 'La diana de Akai', client_slug: 'akai', ciclo: '', project_id: 'p1', estado: 'Aprobado', version: 3, aprobado: { por: 'ceo@x.com', en: '2026-10-01T00:00:00Z', version: 3 }, contenido: { a: 1, b: { c: 2 } }, criterios: { cumple: [], falta: [] }, ...o });
+
+t('pasoPermitido: Borrador→En revisión→Aprobado→Entregado y nada más', () => {
+  assert.deepEqual(E.ESTADOS, ['Borrador', 'En revisión', 'Aprobado', 'Entregado']);
+  assert.equal(E.pasoPermitido('Borrador', 'En revisión'), 'edita');
+  assert.equal(E.pasoPermitido('En revisión', 'Borrador'), 'edita');
+  assert.equal(E.pasoPermitido('En revisión', 'Aprobado'), 'aprobador');
+  assert.equal(E.pasoPermitido('Aprobado', 'Entregado'), 'edita');
+  assert.equal(E.pasoPermitido('Aprobado', 'Borrador'), null, 'un Aprobado solo vuelve a Borrador por una versión nueva');
+  assert.equal(E.pasoPermitido('Borrador', 'Aprobado'), null, 'no se aprueba sin pasar por revisión');
+  assert.equal(E.pasoPermitido('Entregado', 'Borrador'), null);
+  assert.equal(E.pasoPermitido('Entregado', 'Aprobado'), null);
+  assert.equal(E.pasoPermitido('Borrador', 'Borrador'), null);
+  assert.equal(E.pasoPermitido('constructor', 'toString'), null);
+});
+
+t('puedeAprobar: aprueba «ceo» solo el CEO; «coo», el CEO o el COO', () => {
+  const ceo = { role: 'ceo' }, coo = { role: 'coo' }, equipo = { role: 'team' }, cliente = { role: 'client' };
+  const delCeo = herramientaDe('customer-bullseye'), delCoo = herramientaDe('hook-laboratory');
+  assert.equal(delCeo.aprueba, 'ceo'); assert.equal(delCoo.aprueba, 'coo');
+  assert.ok(E.puedeAprobar(ceo, delCeo) && !E.puedeAprobar(coo, delCeo) && !E.puedeAprobar(equipo, delCeo));
+  assert.ok(E.puedeAprobar(ceo, delCoo) && E.puedeAprobar(coo, delCoo) && !E.puedeAprobar(equipo, delCoo) && !E.puedeAprobar(cliente, delCoo));
+  assert.ok(E.puedeAprobar(ceo, null) && !E.puedeAprobar(coo, null), 'una herramienta que ya no existe la aprueba solo el CEO');
+});
+
+t('faltas() bloquea aprobar: los «falta» del entregable más los de la herramienta', () => {
+  const h = herramientaDe('hook-laboratory'), antes = h.faltas;
+  try {
+    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'hook-laboratory', criterios: { cumple: ['x'], falta: [] } })), [], 'sin faltas se puede aprobar');
+    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'hook-laboratory', criterios: { cumple: [], falta: ['Falta la fuente'] } })), ['Falta la fuente']);
+    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'nada', criterios: { falta: ['Una'] } })), ['Una'], 'una herramienta que no existe no rompe');
+    assert.deepEqual(E.faltas({ tool: 'hook-laboratory' }), [], 'sin criterios tampoco');
+    h.faltas = (c, extra) => [...(c.vacio ? ['Contenido vacío'] : []), ...(extra.capacidadRoja ? ['Capacidad en rojo'] : [])];
+    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'hook-laboratory', contenido: { vacio: true }, criterios: { falta: ['Una'] } }), { capacidadRoja: true }), ['Una', 'Contenido vacío', 'Capacidad en rojo']);
+    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'hook-laboratory', contenido: {} })), []);
+  } finally { if (antes) h.faltas = antes; else delete h.faltas; }
+});
+
+t('cambioDeContenido: un Aprobado editado sube la versión, vuelve a Borrador y pierde el OK', () => {
+  const cur = aprobadoDe();
+  assert.deepEqual(E.cambioDeContenido(cur, { a: 2, b: { c: 2 } }), { version: 4, estado: 'Borrador', aprobado: null });
+  assert.deepEqual(E.cambioDeContenido({ ...cur, estado: 'Entregado' }, { a: 9 }), { version: 4, estado: 'Borrador', aprobado: null });
+  assert.deepEqual(E.cambioDeContenido({ ...cur, estado: 'En revisión', aprobado: null }, { a: 9 }), { version: 4, estado: 'En revisión', aprobado: null }, 'en revisión sigue en revisión');
+  assert.deepEqual(E.cambioDeContenido({ ...cur, estado: 'Borrador', aprobado: null }, { a: 9 }), { version: 4, estado: 'Borrador', aprobado: null });
+});
+
+t('cambioDeContenido: sin cambio no sube la versión (ni con las llaves en otro orden, como las devuelve jsonb)', () => {
+  const cur = aprobadoDe();
+  assert.deepEqual(E.cambioDeContenido(cur, { a: 1, b: { c: 2 } }), { version: 3, estado: 'Aprobado', aprobado: cur.aprobado });
+  assert.deepEqual(E.cambioDeContenido(cur, { b: { c: 2 }, a: 1 }), { version: 3, estado: 'Aprobado', aprobado: cur.aprobado }, 'el orden de las llaves no es un cambio');
+  assert.equal(E.cambioDeContenido({ ...cur, contenido: { x: [1, { y: 2, z: 3 }] } }, { x: [1, { z: 3, y: 2 }] }).version, 3);
+  assert.equal(E.cambioDeContenido({ ...cur, contenido: { x: [1, 2] } }, { x: [2, 1] }).version, 4, 'el orden de una lista sí es un cambio');
+  assert.equal(E.idVersion('abc', 4), 'abc--v4');
+});
+
+t('siguienteDe: solo desde Aprobado, solo a una herramienta de su va_a, con las entradas de la versión aprobada', () => {
+  const doc = aprobadoDe({ version: 5, aprobado: { por: 'ceo@x.com', en: '2026-10-01T00:00:00Z', version: 4 } });
+  const s = E.siguienteDe(doc, 'customer-avatar-studio');
+  assert.deepEqual(s, { tool: 'customer-avatar-studio', ws: 'strategy', pestana: 'research', titulo: 'La diana de Akai', client_slug: 'akai', project_id: 'p1', ciclo: '',
+    entradas: [{ deliverable_id: 'e1', version: 4, tool: 'customer-bullseye' }], contenido: {} });
+  assert.equal(s.entradas[0].version, doc.aprobado.version, 'apunta a la versión aprobada, no a la abierta');
+  assert.equal(E.siguienteDe(doc, 'campaign-architect').ws, 'marketing', 'puede cruzar de workspace si está en va_a');
+  assert.equal(E.siguienteDe({ ...doc, estado: 'Borrador', aprobado: null }, 'customer-avatar-studio'), null, 'un Borrador no pasa');
+  assert.equal(E.siguienteDe({ ...doc, estado: 'En revisión', aprobado: null }, 'customer-avatar-studio'), null, 'en revisión tampoco');
+  assert.ok(E.siguienteDe({ ...doc, estado: 'Entregado' }, 'customer-avatar-studio'), 'un Entregado ya fue aprobado');
+  assert.equal(E.siguienteDe(doc, 'content-calendar'), null, 'no está en su va_a');
+  assert.equal(E.siguienteDe(doc, 'customer-bullseye'), null, 'ni a sí misma');
+  assert.equal(E.siguienteDe(doc, 'nada'), null);
+  assert.equal(E.siguienteDe(aprobadoDe({ tool: 'nada' }), 'customer-avatar-studio'), null);
+  assert.equal(E.siguienteDe(null, 'customer-avatar-studio'), null);
+});
+
+t('tareasDeEntregable: tipo válido, Por empezar, origen entregable, ligadas al entregable y al cliente (máx. 12)', () => {
+  const doc = aprobadoDe({ tool: 'solution-blueprint-builder', ws: 'consulting', titulo: 'Plan 90 días', version: 2 });
+  const filas = [{ title: 'Documentar el cierre', due: '2026-11-15', assignee: 'ops@x.com', dept: '③ Marketing', fila: 'F1', por_que: 'La restricción es el cierre' }, { title: '   ' }, { title: 'Sin fecha ni dueño', due: 'mañana', fila: 'F2' }];
+  const ts = E.tareasDeEntregable(doc, filas, { email: 'yo@x.com', ws: 'consulting' });
+  assert.equal(ts.length, 2, 'la fila sin título se ignora');
+  for (const x of ts) {
+    assert.ok(TIPOS_TAREA.includes(x.tipo), x.tipo);
+    assert.equal(x.status, 'Por empezar'); assert.equal(x.origen, 'entregable'); assert.equal(x.deliverable_id, 'e1');
+    assert.equal(x.client_slug, 'akai'); assert.equal(x.cliente, 'akai'); assert.equal(x.area, 'consulting'); assert.equal(x.project_id, 'p1'); assert.equal(x.visibility, 'all');
+  }
+  assert.deepEqual(ts[0], { title: 'Documentar el cierre', description: 'La restricción es el cierre · Entregable «Plan 90 días» v2', status: 'Por empezar', tipo: 'Delivery', dept: '③ Marketing', due: '2026-11-15',
+    assignee: 'ops@x.com', visibility: 'all', project_id: 'p1', client_slug: 'akai', cliente: 'akai', area: 'consulting', origen: 'entregable', deliverable_id: 'e1', fila: 'F1' });
+  assert.equal(ts[1].assignee, 'yo@x.com', 'sin dueño, quien convierte'); assert.equal(ts[1].due, '', 'una fecha mal escrita se quita'); assert.equal(ts[1].description, 'Entregable «Plan 90 días» v2');
+  assert.equal(E.tareasDeEntregable(doc, Array.from({ length: 20 }, (_, i) => ({ title: `T${i}` })), { email: 'a@x.com' }).length, 12, 'máximo 12');
+  assert.equal(E.tareasDeEntregable(doc, null, {}).length, 0);
+  assert.equal(E.tareasDeEntregable(aprobadoDe({ ws: 'strategy' }), [{ title: 'x' }], { email: 'a@x.com', ws: 'strategy' })[0].visibility, 'private', 'Strategy es privada, como los encargos');
+});
+
+t('limpiarEntregable quita lo que pone el servidor y acota lo demás', () => {
+  const sucio = { id: 'x', v: 9, _meta: { a: 1 }, estado: 'Aprobado', aprobado: { por: 'a' }, historial: [{ x: 1 }], version: 7, owner: 'otro@x.com', tareas: ['t'], resultado: [{}], siguientes: [{}], archivado: true, ws: 'strategy', pestana: 'research',
+    tool: 'customer-bullseye', titulo: 'T'.repeat(300), client_slug: ' AKAI ', ciclo: '2026-10', project_id: 'p-1', contenido: { id: 'dentro', v: 2, _meta: 1, ok: 'sí', anidado: { id: 'a', v: 1, texto: 'x'.repeat(5000), lista: Array.from({ length: 300 }, (_, i) => i) } },
+    criterios: { cumple: Array.from({ length: 20 }, (_, i) => `c${i}`), falta: ['y'.repeat(500), '', 3] }, entradas: Array.from({ length: 15 }, (_, i) => ({ deliverable_id: `d${i}`, version: 2, tool: 'customer-bullseye', extra: 1 })), ia: { via: 'hermes', modelo: 'm'.repeat(200) } };
+  const l = E.limpiarEntregable(sucio);
+  assert.deepEqual(Object.keys(l).sort(), ['ciclo', 'client_slug', 'contenido', 'criterios', 'entradas', 'ia', 'project_id', 'titulo', 'tool']);
+  for (const k of ['id', 'v', '_meta', 'estado', 'aprobado', 'historial', 'version', 'owner', 'tareas', 'resultado', 'siguientes', 'archivado']) assert.ok(!(k in l), k);
+  assert.equal(l.titulo.length, 120); assert.equal(l.client_slug, 'akai'); assert.equal(l.ciclo, '2026-10'); assert.equal(l.project_id, 'p-1');
+  assert.deepEqual(l.contenido, { ok: 'sí', anidado: { texto: 'x'.repeat(4000), lista: Array.from({ length: 200 }, (_, i) => i) } }, 'sin id, v ni _meta en ningún nivel; textos y listas acotados');
+  assert.equal(l.criterios.cumple.length, 12); assert.deepEqual(l.criterios.falta, ['y'.repeat(200), '3']);
+  assert.equal(l.entradas.length, 10); assert.deepEqual(l.entradas[0], { deliverable_id: 'd0', version: 2, tool: 'customer-bullseye' });
+  assert.deepEqual(l.ia, { via: 'hermes', modelo: 'm'.repeat(80) });
+  const vacio = E.limpiarEntregable({ tool: 'x y', ciclo: '2026-13', contenido: 'texto', ia: { via: 'inventada' }, entradas: [{ deliverable_id: '../x', version: 1 }, { deliverable_id: 'ok', version: 0 }] });
+  assert.deepEqual(vacio, { tool: '', titulo: '', client_slug: '', ciclo: '', project_id: '', contenido: {}, criterios: { cumple: [], falta: [] }, entradas: [], ia: { via: 'manual', modelo: '' } });
+  assert.deepEqual(E.limpiarEntregable({ contenido: { a: 1 } }, (c) => ({ a: c.a + 1 })).contenido, { a: 2 }, 'usa el limpiar() de la herramienta');
+  assert.deepEqual(E.limpiarEntregable(JSON.parse('{"contenido":{"__proto__":{"x":1},"y":2}}')).contenido, { y: 2 }, 'nada que toque el prototipo');
+  assert.deepEqual(E.limpiarGenerico([1, 2]), {}); assert.deepEqual(E.limpiarGenerico(null), {});
+});
+
+t('estáticas · collGuard bloquea deliverables y deliverable_versions; COLLS y scoper los tienen', () => {
+  const index = fs.readFileSync(new URL('../api/index.js', import.meta.url), 'utf8'), access = fs.readFileSync(new URL('../api/_lib/access.js', import.meta.url), 'utf8');
+  const guard = index.slice(index.indexOf('async function collGuard'), index.indexOf('async function reglasPieza'));
+  assert.match(guard, /coll === 'deliverables' \|\| coll === 'deliverable_versions'\) \{ res\.status\(404\)\.json\(\{ error: 'Los entregables están en \/api\/entregables' \}\)/, 'collGuard: 404 con el aviso');
+  assert.match(access, /deliverables: 'content'/); assert.match(access, /deliverable_versions: 'content'/);
+  const scoper = access.slice(access.indexOf('export async function scoper'), access.indexOf('export const inScope'));
+  assert.match(scoper, /deliverables: \(d\) => lc\(d\.client_slug\) === 'inherent' \|\| slugs\.has\(lc\(d\.client_slug\)\)/, 'scoper: deliverables');
+  assert.match(scoper, /deliverable_versions: \(d\) =>/, 'scoper: las versiones también');
+  assert.ok(!/CEO_WRITE = new Set\([^)]*deliverables/.test(access), 'deliverables no es solo del CEO');
+});
+
+t('estáticas · entregables.js: sin upsert, todo db.update lleva v, sin { client: true }; index.js lo registra', () => {
+  const src = fs.readFileSync(new URL('../api/_lib/entregables.js', import.meta.url), 'utf8'), index = fs.readFileSync(new URL('../api/index.js', import.meta.url), 'utf8');
+  assert.ok(!src.includes('db.upsert'), 'ninguna ruta usa db.upsert');
+  assert.ok(!src.includes('client: true') && !/client\s*:\s*true/.test(src), 'ninguna ruta abre la puerta al cliente');
+  // Cada db.update( tiene 5 argumentos: colección, id, datos, la v y quien escribe.
+  let n = 0;
+  for (let i = src.indexOf('db.update('); i !== -1; i = src.indexOf('db.update(', i + 1)) {
+    let depth = 0, comas = 0, q = '', j = i + 'db.update'.length;
+    for (; j < src.length; j++) {
+      const c = src[j];
+      if (q) { if (c === '\\') j++; else if (c === q) q = ''; continue; }
+      if ('\'"`'.includes(c)) q = c;
+      else if ('([{'.includes(c)) depth++;
+      else if (')]}'.includes(c)) { depth--; if (depth === 0) break; }
+      else if (c === ',' && depth === 1) comas++;
+    }
+    assert.equal(comas + 1, 5, `db.update #${n + 1} lleva ${comas + 1} argumentos`); n++;
+  }
+  assert.ok(n >= 1, 'hay al menos un db.update');
+  assert.ok(index.includes('entregables.rutas(on'), 'api/index.js registra entregables.rutas(on');
+  assert.match(index, /import \* as entregables from '\.\/_lib\/entregables\.js'/);
+  assert.match(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'), /"test:consulting": "node scripts\/test-consulting\.mjs && node scripts\/test-consulting-dinero\.mjs"/);
+});
+
+t('estáticas · costos y versión: toda respuesta con un entregable pasa por salida(), aprobar exige v y el shell la manda', () => {
+  const src = fs.readFileSync(new URL('../api/_lib/entregables.js', import.meta.url), 'utf8'), shell = fs.readFileSync(new URL('../public/js/tool-shell.js', import.meta.url), 'utf8');
+  // Las únicas respuestas que llevan un doc crudo son las que no son un doc (la lista de versiones, el aviso del alcance, las tareas).
+  const crudas = [...src.matchAll(/res\.json\((.*)\)/g)].map((m) => m[1]).filter((x) => !/salida\(/.test(x));
+  assert.deepEqual(crudas.map((x) => x.slice(0, 12)), ['{ items: [],', '{ versiones:', '{ creadas: [', '{ creadas: i'], 'ninguna respuesta con contenido sale sin pasar por salida()');
+  assert.match(src, /import \{[^}]*seesCosts[^}]*\} from '\.\/access\.js'/, 'usa seesCosts de access.js');
+  assert.ok(src.includes('tool.conCostos(null, limpio.contenido)') && src.includes('tool.conCostos(cur.contenido, limpio.contenido)'), 'POST y PUT conservan o descartan los costos');
+  // Aprobar: sin v, 400; con una v vieja, 409; las dos antes de las faltas.
+  const apr = src.slice(src.indexOf("if (a === 'Aprobado') {"), src.indexOf('const f = faltas(cur'));
+  assert.match(apr, /b\.v == null[^\n]*400[^\n]*FALTA_V/); assert.match(apr, /Number\(b\.v\) !== cur\.v[^\n]*409[^\n]*CONFLICTO/);
+  // El shell manda la versión que leyó en estado, tareas, siguiente, resultado y archivar.
+  for (const ruta of ['estado', 'tareas', 'siguiente', 'resultado', 'archivar']) assert.match(shell, new RegExp('/' + ruta + '`, \\{ method: \'POST\', body: \\{ v: S\\.doc\\.v'), `tool-shell: /${ruta} manda v`);
+  // Solo el Money Model Lab tiene costos que ocultar.
+  assert.deepEqual(HERRAMIENTAS.filter((h) => typeof h.sinCostos === 'function' || typeof h.conCostos === 'function').map((h) => h.id), ['financial-scenario-lab']);
+  const h = herramientaDe('financial-scenario-lab');
+  assert.equal(typeof h.sinCostos, 'function'); assert.equal(typeof h.conCostos, 'function');
+});
+
+// ---------- Fase 2: las 6 herramientas reales de Consulting se montan en el Tool Shell ----------
+const REALES = [['business-health-assessment', 'salud'], ['root-cause-explorer', 'causas'], ['process-mapper', 'procesos'], ['financial-scenario-lab', 'escenarios'], ['solution-blueprint-builder', 'blueprint'], ['impact-tracker', 'impacto']];
+t('Consulting: 6 herramientas con monta shell, su vista y las funciones de su módulo puro; las otras 2 siguen Pronto', () => {
+  for (const [id, vista] of REALES) {
+    const h = herramientaDe(id);
+    assert.equal(h.estado, 'parcial', id); assert.equal(h.monta, 'shell', id); assert.equal(h.vista, vista, id);
+    assert.equal(h.guarda.coll, 'deliverables', id);
+    assert.ok(typeof h.bloque === 'string' && h.bloque, `${id}: bloque`);
+    for (const f of ['vacio', 'prompt', 'leer', 'limpiar', 'faltas', 'aMd']) assert.equal(typeof h[f], 'function', `${id}.${f}`);
+    assert.ok(fs.existsSync(new URL(`../public/js/consulting/${vista}-ui.js`, import.meta.url)), `${id}: falta consulting/${vista}-ui.js`);
+    // El prompt pide su bloque y sus criterios, y cabe en 5 000 caracteres.
+    const p = h.prompt({ hoy: '2026-10-27', cliente: { slug: 'akai', nombre: 'Akai', nivel: { id: 'medida', nombre: 'A la medida' } }, ficha: null, estrategia: { etapa: null, trabado: '', meta: '' }, entradas: [], aprendizajes: [] });
+    assert.ok(p.includes(h.bloque) && p.includes('criterios') && p.length < 5000, `${id}: prompt`);
+    // limpiar tira id, v y _meta del contenido.
+    const l = h.limpiar({ ...h.vacio(), id: 'x', v: 9, _meta: { a: 1 } });
+    assert.ok(!('id' in l) && !('v' in l) && !('_meta' in l), `${id}: limpiar`);
+  }
+  assert.equal(new Set(REALES.map(([id]) => herramientaDe(id).bloque)).size, 6, 'cada herramienta pide su propio bloque');
+  assert.deepEqual(REALES.filter(([id]) => typeof herramientaDe(id).tareasDe === 'function').map(([id]) => id), ['root-cause-explorer', 'solution-blueprint-builder'], 'solo el Árbol (pruebas) y el Plan (primer paso) se vuelven tareas');
+  for (const id of ['automation-opportunity-finder', 'organization-architect']) { const h = herramientaDe(id); assert.equal(h.estado, 'pronto', id); assert.equal(h.monta, null, id); assert.equal(h.bloque, undefined, id); }
+});
+
+t('Plan de 90 días: con la capacidad en rojo (extra o Diagnóstico en las entradas) la demanda antes que la capacidad no deja aprobar', () => {
+  const fila = (id, tipo, mes) => ({ id, objetivo: 'Aumentar las ventas de $1M a $1.5M para el 31/12/2027', dueno: 'Ventas', primer_paso: 'Llamar a los leads', metrica: 'Ventas del mes', mes, tipo });
+  const c = { horizontes: { h12: '', h35: '' }, filas: [fila('f1', 'demanda', 1), fila('f2', 'capacidad', 2)] };
+  const h = herramientaDe('solution-blueprint-builder');
+  assert.deepEqual(h.faltas(c, {}), [], 'sin Diagnóstico no hay regla');
+  assert.equal(h.faltas(c, { capacidadRoja: true }).length, 1, 'extra.capacidadRoja (lo que manda el servidor)');
+  assert.equal(h.faltas(c, { capacidadRoja: false }).length, 0, 'extra manda sobre las entradas');
+  const diag = (capacidad) => ({ ctx: { entradas: [{ tool: 'business-health-assessment', titulo: 'Diagnóstico', version: 2, contenido: { capacidad } }] } });
+  assert.equal(h.faltas(c, diag('rojo')).length, 1, 'el shell pasa las entradas leídas');
+  assert.equal(h.faltas(c, diag('verde')).length, 0);
+  assert.equal(h.faltas({ ...c, filas: [fila('f1', 'capacidad', 1), fila('f2', 'demanda', 2)] }, diag('rojo')).length, 0, 'capacidad primero: pasa');
+  // faltas() de entregables.js suma las del registro (lo que llama el servidor al aprobar).
+  assert.equal(E.faltas({ tool: 'solution-blueprint-builder', contenido: c, criterios: { cumple: [], falta: ['otra'] } }, { capacidadRoja: true }).length, 2);
 });
 
 console.log(`\n${ok} pruebas OK`);

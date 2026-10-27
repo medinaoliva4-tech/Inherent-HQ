@@ -1,5 +1,7 @@
 // Las metas del cliente (su roadmap): qué queremos, cómo se mide, dónde estamos, el desglose y los checkpoints.
 // Viven en la cuenta (accounts.goals). Lo usa la página del cliente (pestaña Info) y su PDF.
+// Una meta que manda Consulting trae además `origen: 'consulting'`, `blueprint_ref` (el id del entregable del que salió) y
+// `blueprint_fila` (la fila o meta dentro de él). Son campos opcionales: el wizard no los pide y editar una meta los conserva.
 import { html, raw, fdate, fdateLong, today, ask, confirmAsk, toast, wizard, ico, docView, docHead } from './core.js';
 import { priceLabel, avatar } from './mentors.js';
 
@@ -10,6 +12,19 @@ export const goalsOf = (a) => a?.goals || (a?.roadmap || []).map((x) => ({ goal:
 const num = (v) => { const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, '')); return Number.isFinite(n) ? n : null; };
 export const pctOf = (g) => { if (g.status === 'done') return 100; const b = num(g.baseline) ?? 0, t = num(g.target), c = num(g.current); if (t == null || c == null || t === b) return null; return Math.max(0, Math.min(100, Math.round(((c - b) / (t - b)) * 100))); };
 export const healthOf = (g) => [...(g.checks || [])].reverse().find((c) => c.done)?.health || null;
+// La clave de una meta de Consulting para no duplicarla al mandarla otra vez: entregable + fila. Sin las dos, no hay clave.
+export const claveConsulting = (g) => (g?.origen === 'consulting' && g.blueprint_ref && g.blueprint_fila ? `${g.blueprint_ref}|${g.blueprint_fila}` : '');
+// Suma las metas nuevas a las de la cuenta sin repetir las que ya llegaron: { goals, agregadas, repetidas }. No cambia las que ya había.
+export function sumarMetas(actuales, nuevas) {
+  const vistas = new Set((actuales || []).map(claveConsulting).filter(Boolean)), agregadas = [], repetidas = [];
+  for (const g of nuevas || []) {
+    const k = claveConsulting(g);
+    if (k && vistas.has(k)) { repetidas.push(g); continue; }
+    if (k) vistas.add(k);
+    agregadas.push(g);
+  }
+  return { goals: [...(actuales || []), ...agregadas], agregadas, repetidas };
+}
 function checkpoints(from, to, every) {
   const out = []; const d = new Date(from + 'T12:00'), end = new Date((to || from) + 'T12:00');
   const step = () => (every === 'semanal' ? d.setDate(d.getDate() + 7) : every === 'quincenal' ? d.setDate(d.getDate() + 14) : d.setMonth(d.getMonth() + 1));
@@ -42,6 +57,7 @@ export function goalsUI(ctx) {
       <div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500;font-size:17px">${g.goal}</b>
         <button class="chip ${RM[g.status]?.[1] || ''}" data-act="gst" data-g="${g.i}" style="font-size:11px" ${edit ? '' : raw('disabled')}>${RM[g.status]?.[0] || 'Pendiente'}</button>
         ${h ? html`<span class="chip ${HEALTH[h][1]}" style="font-size:11px">${HEALTH[h][0]}</span>` : ''}
+        ${g.origen === 'consulting' ? html`<span class="chip" style="font-size:11px" title="Viene de un entregable de Consulting">Consulting</span>` : ''}
         <div class="sp"></div><span class="mut sm">${g.due ? 'Para el ' + fdateLong(g.due) : 'Sin fecha'}</span>${edit ? html`<button class="sm mut" data-act="gedit" data-g="${g.i}" title="Editar">${ico('edit')}</button><button class="sm mut" data-act="gdel" data-g="${g.i}" title="Quitar">${ico('x', 16)}</button>` : ''}</div>
       ${g.metric ? html`<div class="gmetric"><span class="mut sm">${ico('ruler')} ${g.metric}</span><div class="row" style="gap:10px;margin-top:6px"><span class="sm">Hoy <b style="font-weight:500">${g.current || g.baseline || '—'}</b></span><div class="gbar"><i style="width:${pct ?? 0}%"></i></div><span class="sm">Meta <b style="font-weight:500">${g.target || '—'}</b></span><span class="sm mut" style="width:40px;text-align:right">${pct == null ? '' : pct + '%'}</span></div></div>` : html`<div class="mut sm" style="margin-top:6px">Sin métrica todavía.</div>`}
       ${g.note ? html`<div class="mut sm" style="margin-top:6px">${g.note}</div>` : ''}
