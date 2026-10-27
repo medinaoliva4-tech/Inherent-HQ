@@ -16,12 +16,13 @@ Si el mapa y el código no coinciden, manda el código. Corrige el mapa en el mi
 |---|---|
 | Quién ve o edita qué | `public/js/roleviews.js` (la matriz) y `api/_lib/access.js` (el candado) |
 | Una ruta de la API | `api/index.js` o el `api/_lib/<tema>.js` que la registra con `rutas(on)` |
-| Una pantalla | `public/js/screens/<pantalla>.js` · las rutas `#/…` están en `public/js/app.js` |
-| Un módulo de una marca | `public/js/brandlist.js` (la lista) y `public/js/screens/brands.js` (qué monta) |
+| Una pantalla | `public/js/screens/<pantalla>.js` · las rutas `#/…` están en `public/js/app.js` (`NAV`, `resolve`, `alias`) |
+| Una herramienta de un workspace | `public/js/herramientas.js` (el registro: workspaces, pestañas, las 42 herramientas y sus rutas) y `public/js/screens/workspace.js` (qué monta) |
+| El selector de cliente | `public/js/contexto.js` (la lista única, `os.ctx.<correo>`, el popover) |
 | El chat de Estrategia o de Diseño | `public/js/screens/strategy.js`, `public/js/diseno-chat.js` y `public/laya/puente.py` |
 | El Chat (Inherent LLM) | `public/js/screens/llm.js`, `public/js/llm/modos.js` (el harness de cada modo), `public/js/llm/paneles.js` y `public/js/hermes.js` |
-| El dock (las dos apps) | `public/js/dock.js` y `irApp` en `public/js/app.js` |
-| Las áreas y la barra lateral | `public/js/areas.js` (las 5 áreas, el switch, quién tiene la barra lateral, `abrirEnChat`) y `paintLat`/`areaDeRuta` en `public/js/app.js` |
+| La barra lateral y las rutas | `public/js/app.js` (`NAV`, `resolve`, `alias`, `paintLat`, el hook de `replaceState`) |
+| Los modos del Chat | `public/js/llm/modos.js` (`MODOS`) y `public/js/areas.js` (`AREAS`, `abrirEnChat`) |
 | Las campañas y los eventos de una marca | `public/js/campanas.js` (la regla de mk-campana), `public/js/campanas-ui.js` y `api/_lib/campanas.js` |
 | El conector MCP | `api/_lib/mcp.js` (herramientas) y `api/_lib/oauth.js` (la conexión) |
 | Cómo se arma el trabajo | `public/js/recipes.js` (las recetas de siempre) y `api/_lib/flow.js` |
@@ -29,7 +30,7 @@ Si el mapa y el código no coinciden, manda el código. Corrige el mapa en el mi
 | La app de Mac | `escritorio/main.js` |
 | Estilos | `public/app.css` (uno solo). Los colores, el movimiento y los radios viven en el bloque **«SISTEMA v2»** del final (tokens `--ui-*`, de día y de noche); los nombres viejos (`--bg`, `--ink`…) son alias |
 | Íconos | `public/js/iconos.js` (un solo set: Lucide + los propios) · se pintan con `ico()` de `core.js` |
-| Día y noche | `public/js/tema-boot.js` (antes del primer pintado) y `public/js/tema.js` (uno solo para las dos apps) |
+| Día y noche | `public/js/tema-boot.js` (antes del primer pintado) y `public/js/tema.js` (uno solo para todo el OS) |
 
 ---
 
@@ -66,7 +67,7 @@ app de Mac = la misma web en una ventana + el puente adentro
 **El CEO es el candado**
 - **Estrategia:** solo el CEO aprueba o reabre un bloque, aprueba la estrategia en vivo y confirma la etapa (`api/_lib/estrategia.js`). Aprobado = cerrado hasta que él lo reabra.
 - **Pauta:** su OK vive en `accounts.ads.ok` y vale **para ese mes y ese presupuesto**; si cambia el monto, se cae (`PUT /api/ads/accounts/:slug`).
-- **También solo él:** aprobar avatares, editar recetas, editar las preguntas de Laya, escribir en el repo, aprobar y lanzar variaciones de anuncio (Marca › Ads), conectar una landing al CRM y encender la web viva.
+- **También solo él:** aprobar avatares, editar recetas, editar las preguntas de Laya, escribir en el repo, aprobar y lanzar variaciones de anuncio (Marketing › Ads Intelligence), conectar una landing al CRM y encender la web viva.
 - `strategy`, `avatars`, `formats`, `scripts`, `plans`, `videos`, `ad_variants`, `tech` y `judgments` **no pasan por `/api/db`** (responde 404): solo por sus rutas, que aplican estas reglas. No abras esa puerta.
 - **La secuencia del chat de Diseño** (estrategia aprobada → plan → ideas → diseño) y **el candado del brief** (sin brief del ciclo no hay piezas con fecha de ese mes, salvo que el CEO lo abra) los hace cumplir el servidor: `api/_lib/plan.js` y `reglasPieza` en `api/index.js` (423).
 
@@ -85,7 +86,7 @@ app de Mac = la misma web en una ventana + el puente adentro
 - **CRM** (`api/_lib/leads.js`): un lead abierto exige siguiente paso y fecha · el historial solo se agrega · el responsable es un rol · sin duplicados por WhatsApp, correo o IG.
 - **Tareas:** una «Personal» la ve solo quien la creó; con dependencias abiertas no avanza (423), salvo CEO o COO.
 - Lo que no tiene dato sale **vacío y dice de dónde va a salir**, nunca en cero (Indicadores, portal, Finanzas, gráficas).
-- En Marcas nada se borra: avatares, formatos y guiones se archivan.
+- En los workspaces nada se borra: avatares, formatos, guiones, videos y variaciones de anuncio se archivan.
 
 **El repo**
 - **Se escribe solo con `escribirSeguro`** (`api/_lib/gh.js`): compara la huella de lo que se abrió; si el archivo cambió, 409. Nunca `writeFile` directo desde una ruta.
@@ -111,54 +112,114 @@ app de Mac = la misma web en una ventana + el puente adentro
 
 ## 3 · Las pantallas
 
-Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). **Dos apps unidas por el dock** (`dock.js`: una barrita a la izquierda en la compu; en el cel, un atajo en cada app): el **Tablero** (las pantallas) y el **Chat**. **Las dos tienen las mismas cinco áreas** (`areas.js`): **Estrategia · Organización · Marketing · Diseño · Consulting**. Marketing y Diseño comparten las marcas (`#/marcas/…`): el área la dice el grupo del módulo abierto (`brandlist.js` → `AREAS`, sexto campo; `areaDeRuta` en `app.js`). Marketing planea y mide (Entender · Planear · Publicar y medir · Tech) y abre en el plan del mes; Diseño hace las piezas (Crear · Diseño) y abre en Ideas. El área dice qué trabajas; la app, cómo (ver y mover las cosas, o conversarlas). Se escoge con el **switch de áreas** (una pastilla con el ícono de cada área, en su color) y las dos apps la siguen (`os.area.<correo>`). **La barra lateral** (como la del Chat) va primero para el CEO y cada quien la prende o la apaga en Mi perfil (`os.barra.<correo>`): arriba la marca y el switch de áreas, en medio las secciones, marcas o clientes del área (la abierta muestra sus pestañas debajo), abajo «Pregúntale al Chat» (abre el Chat en el modo del área, con el cliente o la marca que estás viendo), tu primer día y «Cómo se usa», y tú (día y noche, Mi perfil). ⌘B la deja solo con íconos. En el cel sigue la barra de abajo, con el switch de áreas arriba. Sin la barra lateral, el Tablero tiene dos espacios con un interruptor arriba: **Organization** y **Marcas**. Estrategia ya no va en el interruptor: su pantalla sigue en `#/estrategia` (el tablero y el chat por el puente) y se abre desde el panel del Chat o con ⌘K. Cada app vuelve a donde estabas (`last.<espacio>`, `space.os`). Las rutas viejas siguen funcionando como alias.
+Las rutas están en `public/js/app.js` (`NAV`, `SCREENS`, `resolve`, `alias`). **Una sola barra:** lateral en la compu (⌘B la deja solo con íconos; `os.barra.mini.<correo>`); en el cel, el chip del cliente arriba y la barra de abajo (Home · Organization · AI · Workspaces · Más), cada grupo con su hoja. **Tres capas:** **Organization** (cómo se maneja Inherent, `#/org/…`) → **AI Harness** (el Chat y la inteligencia compartida, `#/ai` y `#/chat`) → **Workspaces** (donde se trabaja a cada cliente: Strategy · Marketing · Creative · Consulting · Production, `#/ws/…`). Arriba de la barra, **el selector de cliente** (3.3): el cliente o la marca con la que trabajan los workspaces y el Chat. Los nombres de la barra viven en la constante `NAV` de `app.js`, en inglés (como los puso el CEO): se cambian en un solo lugar. Organization y AI Harness se abren y se cierran (`os.lat.grp.<correo>`); el workspace abierto muestra sus pestañas debajo. Abajo de la barra: tu primer día y «Cómo se usa», **«Ask InherentOS»** (abre el Chat en el modo del workspace abierto —o Organization— con el cliente del contexto) y tú (día y noche, Mi perfil). Library y Finances son ítems de primer nivel pero siguen en `#/org/…` (Vistas por rol no cambia). Quién ve qué solo se refleja (`sees`, `puedeWs` de `herramientas.js`): Strategy y Consulting, quien ve Estrategia; Marketing, Creative y Production, quien ve Contenido o Clientes; el rol `client` solo ve `#/portal`, con una barra mínima. El OS abre en la última ruta (`os.last.route.<correo>`) o donde el CEO decidió para el perfil (`me.start`). Las rutas viejas siguen funcionando como alias (3.6): nunca 404.
 
-**Chat** (todo el equipo; el cliente nunca)
-- `#/chat[/<sesión>]` · `screens/llm.js` — el Inherent LLM, a pantalla completa (la barra de Organización se esconde): la barra de conversaciones (el switch de áreas · nueva · las conversaciones del área por fecha, o las de todas al buscar · tú y el estado de Hermes), la conversación (pasos de las herramientas, permisos, tarjetas de criterios y de pregunta, copiar y reintentar) y el panel del modo. Un solo chat con un modo por área: **Marketing** (pide marca; ③ Marketing arma el plan del mes y las campañas y eventos: los manda en bloques ```plan``` y ```campana``` y la persona los guarda con un botón; el panel muestra el plan del mes y lo que viene), **Estrategia** (pide cliente; el panel es la estrategia en vivo y lo que Strategy concreta se guarda en ella si se puede editar y no está aprobada; lo que se ejecuta en otra área lo manda como **encargo**), **Organización** (tu día: tareas y leads), **Diseño** (pide marca; las piezas del mes y sus encargos) y **Consulting** (pide cliente; su alcance, los encargos de Estrategia y los temas de operaciones, finanzas y equipo). La caja: modo, cliente o marca, el **switch de IA** (qué empresa responde: Claude, ChatGPT, **en tu compu** —el modo privado: Ollama, LM Studio, llama.cpp, vLLM; si no hay, dice cómo bajar uno— u otras; solo las que la compu tiene listas, `llm/ias.js`), el modelo de esa IA (cada IA recuerda el suyo) y **cuánto piensa** (Rápido · Normal · A fondo → `model_options.reasoning_effort`), dictar y los comandos «/» (`/estrategia`, `/organizacion`, `/marketing`, `/diseno`, `/consulting`, `/nuevo`, `/modelo`, `/privado`, `/ramificar`, `/skill`, `/terminal`). **La Brújula:** si el pedido es vago, el agente propone una meta medible con fecha y sus tareas («Antes de empezar, aterricemos la meta»: Aceptar meta · Ajustar · Es solo una tarea); aceptada, el panel la muestra arriba (avance, la tarea de «Ahora», quién hace cada una: IA o TÚ) y el agente la recibe en cada turno; si pasan 3 turnos sin mover ninguna tarea, el Chat ofrece volver a la de ahora. Se guarda por conversación en el navegador (`os.llm.brujula.<correo>`). Abajo del panel, el uso del Chat esta semana contra el límite que pone la persona en Ajustes (Hermes no da el de la suscripción). **Ramificar** (en la cabecera y en la última respuesta) sigue la conversación en una nueva con todo lo hablado (`POST /api/sessions/{id}/fork`; Hermes da por cerrada la original). En pantallas chicas el panel va encima del chat: empieza cerrado. Responde Hermes en la compu de cada persona; sin Hermes, la pantalla dice qué falta (encenderlo, la llave) y deja a la vista los chats de siempre.
+**Home** (`#/home` · `screens/home.js`; todo el equipo)
+- Arriba el hero y **«Ask InherentOS anything»**: al enviar abre el Chat con el texto como borrador (`abrirEnChat`), en el modo del último workspace usado (`os.ws.ultimo.<correo>`; sin dato, Organization) y con el cliente del contexto; debajo, tres sugerencias del modo (`SUGERENCIAS` de `llm/modos.js`).
+- **4 KPIs**, cada uno lleva a donde se trabaja: Active projects (`projStatus` ≠ Hecho → Projects) · Tasks due (abiertas con fecha hasta el domingo, las vencidas en rojo → Tasks) · Monthly revenue (`totales(invoices).cobradoMes`, solo quien cobra → Finances) · Active clients (con ficha o con cuenta desde una cotización, solo quien ve Clientes → Clients). Sin dato: «—» y de dónde va a salir, nunca 0.
+- **Recent Activity:** lo último que se movió entre lo que Home ya carga (tareas, proyectos, leads, cotizaciones, contenido), por `_meta.updated_at` (`/api/db` lo entrega a todos los roles). Sin rutas nuevas.
+- **Quick Access:** una tarjeta por workspace que el perfil abre, con su color y el último cliente usado ahí (`os.ws.ultimo.<correo>.<ws>`).
+- Debajo, al CEO y al COO: lo que necesita atención, la agenda, el contenido del mes y los cumpleaños. Al equipo: «Tu puesto» (`purposeCard`), sus responsabilidades y su agenda.
 
-**Organization** (`#/org/…`)
-- `#/org/home` · `screens/home.js` — Hoy: al CEO y al COO, el pulso del mes, lo que necesita atención, la agenda y el contenido; al equipo, sus responsabilidades.
-- `#/org/work` · `screens/work.js` — Mis tareas: el Workspace por perfil de trabajo (ceo, coo, content, video, ads, ventas, finance, cobros), kanban y entregar a revisión.
-- `#/org/clients[/<slug>/<pestaña>]` · `screens/clients.js` — la lista de clientes y la página de cada uno: Inicio · Links · Servicio · Presupuestos · Portal y accesos.
-- `#/org/operations` (`tasks · cal · time`) · `screens/operations.js` — Proyectos: el Kanban único, el calendario de trabajo y el timeline.
+**Organization** (`#/org/…`; lo ve quien tiene alguna de sus áreas)
+- En la barra: Projects · Tasks · CRM · Deadlines · Clients · Services, y **Company** (Team · Vision · Roadmap · Laya · Setup), colapsado. Library y Finances van al final de la barra.
+- `#/org/work` · `screens/work.js` — Tasks (Mis tareas): el Workspace por perfil de trabajo (ceo, coo, content, video, ads, ventas, finance, cobros), kanban y entregar a revisión.
+- `#/org/clients[/<slug>/<pestaña>]` · `screens/clients.js` — Clients: la lista de clientes y la página de cada uno: Inicio · Links · Servicio · Presupuestos · Portal y accesos.
+- `#/org/operations` (`tasks · cal · time`) · `screens/operations.js` — Projects: el Kanban único, el calendario de trabajo (Deadlines, `#/org/operations/cal`) y el timeline.
 - `#/org/operations/p/<id>/<vista>` · `project-page.js` — la página de un proyecto.
 - `#/org/portal/<slug>` · `screens/portal.js` — así ve el cliente su portal (CEO y COO).
-- `#/org/sales` (`crm · pros · quotes · src`) · `screens/sales.js` — Ventas: CRM con flujo de atención y meta, Prospectos y Buscar leads, Cotizaciones, Fuentes (solo CEO).
-- `#/org/services` (`paquetes · servicios · especialistas · responsabilidades`) · `screens/services.js` — lo que se vende y cómo se entrega.
-- `#/org/finanzas` · `screens/finance.js` — Resumen, Facturas, Movimientos, Costos, Rentabilidad, Precios, Pagos por servicio. Para quien no es CEO: Movimientos y Facturas por cobrar.
+- `#/org/sales` (`crm · pros · quotes · src`) · `screens/sales.js` — CRM con flujo de atención y meta, Prospectos y Buscar leads, Cotizaciones, Fuentes (solo CEO).
+- `#/org/services` (`paquetes · servicios · especialistas · responsabilidades`) · `screens/services.js` — Services: lo que se vende y cómo se entrega (quien ve Ventas completo).
+- `#/org/finanzas` · `screens/finance.js` — Finances: Resumen, Facturas, Movimientos, Costos, Rentabilidad, Precios, Pagos por servicio. Para quien no es CEO: Movimientos y Facturas por cobrar.
 - `#/org/vision` · `screens/vision.js` — Visión y misión (`settings` `vision`): la escribe el CEO, la lee todo el equipo.
-- `#/org/team` (`org · people · roles · vistas`) · `screens/team.js` — Equipo: organigrama, perfiles, quién cubre cada rol y Vistas por rol (CEO).
+- `#/org/team` (`org · people · roles · vistas`) · `screens/team.js` — Team: organigrama, perfiles, quién cubre cada rol y Vistas por rol (CEO).
 - `#/org/team/laya` · `laya-ui.js` — instalar el puente, las preguntas de Laya y los últimos juicios (CEO).
 - `#/org/roadmap` · `screens/roadmap.js` — los megaproyectos de Inherent, con sus proyectos y tareas.
 - `#/org/library[/<carpeta>/<doc>]` · `screens/library.js` (+ `library-entrevista.js`) — SOPs, playbooks, videos, notas, entrevistas y diagramas en carpetas; una carpeta se puede ligar a Drive.
 - `#/org/setup` · `screens/setup.js` — Arranque (CEO): equipo, clientes y ciclo, tareas y Library base, con lo que dice el repo.
 
-**Consulting** (quien ve Estrategia; el cliente nunca)
-- `#/consulting[/<cliente>]` · `screens/consulting.js` — el backend de un cliente (Inherent no está: sus finanzas viven en Organization): si su nivel trae Operations OS y Money OS (`alcanceConsulting`: Growth Partnership, con Finanzas solo si su ficha la nombra; a la medida, su ficha; con otro nivel, temas y encargos se escalan al CEO), los **encargos de Estrategia** (tareas «solo yo» con `area: 'consulting'`, `cliente`, `client_slug` y `origen: 'estrategia'`: «Hacerlo en el Chat» o «Hecha»; el servidor solo acepta encargos de quien ve Estrategia, para un cliente que existe y está en su alcance) y los temas de **Operaciones · Finanzas · Equipo** (`CONSULTING` en `llm/modos.js`, del Método): cada uno abre el Chat en modo Consulting con el pedido escrito. Las finanzas de Inherent siguen en Organization → Finanzas.
+**AI Harness** (`#/ai`; todo el equipo, el cliente nunca)
+- `#/ai[/<página>]` · `screens/harness.js` — la portada de la inteligencia compartida: las **acciones rápidas** (Deep Research → el Chat en modo Strategy con el pedido escrito · Create Deliverable → el menú de las herramientas listas o parciales, por workspace, con el cliente del contexto · Run Workflow → Workflows · Analyze Performance → el Marketing Performance Center) y **Memory & Context** (Organization · Client · Project · Execution history: de dónde saca la IA lo que sabe, con sus links). Las páginas Agents · Skills · Workflows · Memory · Models · Evaluations son fichas «Pronto» que dicen qué van a mostrar; Agents ya enseña los 6 modos del Chat con su rol (`MODOS`, `HARNESS`) y «Abrir en el Chat». Una página desconocida vuelve a `#/ai`.
+- `#/chat[/<sesión>]` · `screens/llm.js` — el Inherent LLM, una pantalla más dentro del cascarón (vive en `#main`, a la derecha de la barra; el elemento lleva la clase `llm-host`): la barra de conversaciones (el modo —un selector cuando la persona abre más de uno—, nueva, las conversaciones del modo por fecha, o las de todos al buscar, tú y el estado de Hermes), la conversación (pasos de las herramientas, permisos, tarjetas de criterios y de pregunta, copiar y reintentar) y el panel del modo. **Seis modos, uno por workspace más Organization** (`llm/modos.js` → `MODOS`; `areas.js` los comparte con los workspaces): **Strategy** (pide cliente; el panel es la estrategia en vivo y lo que Strategy concreta se guarda en ella si se puede editar y no está aprobada; lo que se ejecuta en otra área lo manda como **encargo**), **Organization** (tu día: tareas y leads), **Marketing** (pide marca; ③ Marketing arma el plan del mes y las campañas y eventos: los manda en bloques ```plan``` y ```campana``` y la persona los guarda con un botón; el panel muestra el plan del mes y lo que viene), **Creative** (pide marca; las piezas del mes y sus encargos), **Consulting** (pide cliente; su alcance, los encargos de Estrategia y los temas de operaciones, finanzas y equipo) y **Production** (pide marca; brief, guiones, shot list, grabación y edición; su panel es hoy el de Creative: las piezas del mes). El modo se elige con los comandos «/», con el selector de la barra de conversaciones o llega por `abrirEnChat` (`os.llm.<correo>`: modo, `slugs` por modo, borrador, mes); el cliente del contexto ya viene en `slugs`. La caja: modo, cliente o marca, el **switch de IA** (qué empresa responde: Claude, ChatGPT, **en tu compu** —el modo privado: Ollama, LM Studio, llama.cpp, vLLM; si no hay, dice cómo bajar uno— u otras; solo las que la compu tiene listas, `llm/ias.js`), el modelo de esa IA (cada IA recuerda el suyo) y **cuánto piensa** (Rápido · Normal · A fondo → `model_options.reasoning_effort`), dictar y los comandos «/» (`/estrategia`, `/organizacion`, `/marketing`, `/diseno`, `/consulting`, `/produccion`, `/nuevo`, `/modelo`, `/privado`, `/ramificar`, `/brujula`, `/skill`, `/terminal`). **La Brújula:** si el pedido es vago, el agente propone una meta medible con fecha y sus tareas («Antes de empezar, aterricemos la meta»: Aceptar meta · Ajustar · Es solo una tarea); aceptada, el panel la muestra arriba (avance, la tarea de «Ahora», quién hace cada una: IA o TÚ) y el agente la recibe en cada turno; si pasan 3 turnos sin mover ninguna tarea, el Chat ofrece volver a la de ahora. Se guarda por conversación en el navegador (`os.llm.brujula.<correo>`). Abajo del panel, el uso del Chat esta semana contra el límite que pone la persona en Ajustes (Hermes no da el de la suscripción). **Ramificar** (en la cabecera y en la última respuesta) sigue la conversación en una nueva con todo lo hablado (`POST /api/sessions/{id}/fork`; Hermes da por cerrada la original). En el cel el Chat ocupa la pantalla entre la barra de arriba y la de abajo; el panel va encima del chat y empieza cerrado. Responde Hermes en la compu de cada persona; sin Hermes, la pantalla dice qué falta (encenderlo, la llave) y deja a la vista los chats de siempre.
 
-**Estrategia** (CEO y quien él habilite en Vistas por rol; el cliente nunca)
-- `#/estrategia[/<cliente>/<bloque>]` · `screens/strategy.js` — 5 bloques (Diagnóstico · Oferta · Modelo de dinero · Leads · Roadmap): el contexto a la izquierda, el chat a la derecha, la estrategia en vivo, aprobar (CEO) y editar en el repo la ficha y los documentos del cliente (CEO).
+**Workspaces** (`#/ws/<ws>/<cliente>/<pestaña>[/<herramienta>[/<resto>]]` · `screens/workspace.js`; el cliente nunca)
+- **Los cinco**, con sus pestañas (`WORKSPACES` en `herramientas.js`; cada pestaña tiene su paso del flujo):
+  - **Strategy** (quien ve Estrategia; modo `estrategia` del Chat): Overview · Research · Analysis · Strategy · Roadmap — 9 herramientas.
+  - **Marketing** (quien ve Contenido o Clientes; modo `marketing`): Overview · Audience · Campaigns · Content · Analytics — 10.
+  - **Creative** (ídem; modo `diseno`): Overview · Brief · Concepts · Design · Review — 7.
+  - **Consulting** (quien ve Estrategia; modo `consulting`): Overview · Assessment · Analysis · Solutions · Implementation — 8.
+  - **Production** (quien ve Contenido o Clientes; modo `produccion`): Overview · Pre-production · Production · Post-production · Delivery — 8.
+- **Sin cliente** (`#/ws/<ws>`): el del contexto, si está en la lista (abre su Overview sin dejar entrada en el historial); si no, el selector de cliente en grande. Un cliente que no está en la lista: aviso y el selector. `personal` (la marca del CEO) solo con el CEO. Abrir un cliente por la ruta lo vuelve el contexto.
+- **El hero del cliente:** monograma (candado en la marca personal), nombre y nivel; chips con la etapa (Strategy: sale del Business X-Ray; dice si el CEO la confirmó), el día del ciclo 1-20 (Production), la aprobación de la estrategia (Strategy y Consulting) y «Privado» (marca personal); **«Continuar en el Chat»** (abre el Chat en el modo del workspace con ese cliente); y **el flujo compartido** (`FLUJO`: Objective · Research · Plan · Execute · Deliver · Measure · Improve) con el paso de la pestaña resaltado.
+- **La grilla:** una tarjeta por herramienta que el perfil abre (`puede(me, b)` del registro, más `modulesFor` de `brandlist.js` para las que montan un módulo): nombre, qué produce, estado (**Lista · Parcial · Pronto**), su último entregable (hoy «⚠️ SIN DATOS»: sale de `deliverables` en la Fase 2) y los chips «viene de» / «va a» (son links cuando la herramienta vive en el mismo workspace; si no, dicen en cuál). Clic en la tarjeta → la herramienta.
+- **Overview:** el resumen del cliente en ese workspace (Strategy: la estrategia en vivo, solo lectura · Marketing: el Inicio de la marca, `brand-home.js` · Creative: el brief del ciclo, `brand-brief.js` · Consulting: `consultingOverview` de `screens/consulting.js` · Production: Delivery), la **«Siguiente acción»** (la primera P1 lista o parcial de la cadena del workspace, `cadena()`) y las tarjetas de todas sus pestañas.
+- **Pestañas con algo arriba de su grilla:** Creative › Brief (el brief del ciclo) y › Review (las piezas en revisión) · Production › Delivery (el calendario de la marca y lo por aprobar) · Marketing › Audience (links a la diana y los avatares, que se editan en Strategy).
+- **Una herramienta:** su cabecera (← la pestaña, el nombre, viene de → va a, el estado) y el módulo que la monta. La pestaña la dice la herramienta (`tool.pestana`), aunque la ruta traiga otra. Una **«Pronto»** abre su **ficha**: qué recibe, qué produce, a qué alimenta, prioridad y quién aprueba, más «Continuar en el Chat». No es un hueco vacío.
+- **Qué monta cada herramienta en esta fase** (la tabla de montaje de `workspace.js`, por la clave `monta` del registro; las otras 23 son «Pronto»):
 
-**Marcas**
-- `#/marcas` · `screens/brands.js` — una tile por marca: Inherent, clientes con ficha, los que vienen de una cotización, perfiles de contenido y la marca personal (solo CEO).
-- `#/marcas/<marca>/<módulo>` · `screens/brands.js` — monta el módulo (la lista está en `brandlist.js` → `MODULES` y `AREAS`):
-  - `inicio` → `brand-home.js` · `investigacion` → `screens/content.js` + `investigacion.js` · `icp` → `avatar-ui.js` · `brief` → `brand-brief.js`
-  - `plan` → `plan-mes-ui.js` («Trabajarlo en el Chat» abre el modo Marketing con la marca y el mes) · `campanas` → `campanas-ui.js` (Campañas y eventos: frase, fecha, anticipación de mk-campana, lo que falta, quién la lleva; los eventos con lugar, cupo, objetivo, proveedores y cómo se mide; no se borran, se archivan; colección `mk_campaigns` por `/api/campanas`, con el candado de la estrategia aprobada) · `formatos` → `formatos-ui.js` · `ideas` → `screens/content.js` + `posts.js` · `creacion` → `creacion-ui.js`
-  - `marca` → `brand-board.js` (en la marca personal, `screens/me-brand.js`) · `design` → `design-system-ui.js`
-  - `calendario` → `screens/content.js` + `calendario-vistas.js` · `resultados` → `screens/content.js` (Analytics)
-  - `video` → `video-ui.js` (el kit de edición y las fichas) · `ads` → `ads-ui.js` (variaciones con el OK del CEO) · `tech` → `tech-ui.js` (sitios, landing al CRM, web viva y SEO)
-- `#/marcas/diseno[/<marca>]` · `diseno-chat.js` — el chat de Diseño gráfico: Plan del mes → Ideas → Diseño en Figma. Ya no va en la barra de Marcas (su lugar es el modo Diseño del Chat); se abre desde el panel del Chat y con ⌘K.
+| Herramienta | Monta |
+|---|---|
+| Strategy › Customer Bullseye | `bullseyeTool` de `screens/content.js`: la diana (`bullseye.js`) sobre `sources/cfg-<slug>` |
+| Strategy › Customer Avatar Studio | `avatar-ui.js` |
+| Strategy › Business X-Ray · Offer Architect (`/oferta`, `/modelo`, `/leads`) · Growth Roadmap Builder | `screens/strategy.js` por bloque (Diagnóstico · Oferta, Modelo de dinero, Leads · Roadmap): el contexto a la izquierda, el chat a la derecha, la estrategia en vivo, aprobar (CEO) y editar en el repo la ficha y los documentos del cliente (CEO). Su chat propio no cambió |
+| Marketing › Viral Intelligence Lab | `screens/content.js` (Investigación) + `investigacion.js` |
+| Marketing › Content Strategy Studio (`/<AAAA-MM>`) | `plan-mes-ui.js` («Trabajarlo en el Chat» abre el modo Marketing con la marca y el mes) |
+| Marketing › Content Calendar (la única **Lista**) | `screens/content.js` + `calendario-vistas.js` |
+| Marketing › Campaign Architect | `campanas-ui.js` (Campañas y eventos: colección `mk_campaigns` por `/api/campanas`, con el candado de la estrategia aprobada) |
+| Marketing › Funnel Builder | `tech-ui.js` (sitios, landing al CRM, web viva y SEO) |
+| Marketing › Ads Intelligence | `ads-ui.js` (variaciones con el OK del CEO) |
+| Marketing › Marketing Performance Center | `screens/content.js` (Analytics) |
+| Creative › Brand DNA Studio · Moodboard Studio | `brand-board.js` (en la marca personal, `screens/me-brand.js`) |
+| Creative › Creative Direction Lab (`/formatos`) | `screens/content.js` + `posts.js` (Ideas); con `/formatos`, `formatos-ui.js` |
+| Creative › Visual Identity Builder | `design-system-ui.js` |
+| Creative › Design Studio | `diseno-chat.js`: el chat de Diseño gráfico, Plan del mes → Ideas → Diseño en Figma |
+| Production › Script & Storyboard Studio | `creacion-ui.js` (el editor de guiones) |
+| Production › Post-Production Workspace | `video-ui.js` (el kit de edición y las fichas) |
 
-**Fuera de los espacios**
-- `#/avisos` · `screens/avisos.js` — **Avisos**: lo que pide atención, en Tu trabajo · Clientes · La plataforma, del más urgente al menos. Cada aviso con su botón (ir, hacer, abrir la tarea, abrir el Chat con el pedido, copiar un comando), «Después» (mañana o en una semana; lo urgente, un día; lo fijo, nunca) y los pospuestos para regresarlos. La campanita (barra lateral y arriba en el cel) cuenta lo urgente y lo de pronto, y se pone al día sola (`avisos-ui.js`).
-- `#/me` · `screens/me.js` — Mi perfil: foto, cumpleaños, contacto, conexiones (Google y el conector MCP), prender o apagar la barra lateral y salir.
+- **El registro** (`herramientas.js`, sección 5) es la única lista: la barra, la página del workspace, el Harness, los alias y las pruebas leen de ahí. Cada herramienta dice `ws`, `pestana`, qué produce, `estado`, `prioridad`, `icono`, `monta`, dónde guarda (`guarda`), `viene_de` / `va_a` (el grafo es acíclico; `viene_de` se calcula como el inverso), quién aprueba (`aprueba`: el CEO en todo Strategy, en Ads Intelligence, en el Diagnóstico de crecimiento y en el Money Model Lab; el COO en lo demás) y `puede(me, b)`, que solo refleja.
+
+**El selector de cliente** (3.3 · `contexto.js`)
+- **Una sola lista:** Inherent · clientes con ficha · cuentas desde una cotización y perfiles de contenido · la marca personal (solo el CEO): la unión de `loadBrands` (`brandlist.js`) y `loadEstrategia` (`stratlist.js`). Cada ítem: `slug, name, sub, personal, content, client, estrategia, nivel`.
+- El elegido se guarda por persona en `os.ctx.<correo>` y se copia a los `slugs` de los cinco modos con cliente en `os.llm.<correo>` (así el Chat abre con el mismo cliente); dispara el evento `contexto` y la barra, el chip y «Ask InherentOS» lo reflejan.
+- Elegir dentro de un workspace mantiene workspace y pestaña (sin la herramienta: el otro cliente puede no tenerla); en Home y en el Harness la pantalla vuelve a leer el contexto.
+- Se cierra **al navegar, con clic afuera y con Escape**: un solo juego de manejadores a nivel `document` (`instalarContexto`, instalado una vez por `app.js`); abrir o cerrar lo decide el DOM (`.ctx-pop`), nunca una referencia al botón. `cerrarPopovers()` también quita los menús propios de `app.js` (todo popover lleva `[data-popover]`). Con más de 6 clientes trae una caja de búsqueda; flechas y Enter para elegir. En el cel va como hoja; con la barra en íconos se abre a la derecha.
+
+**Dónde quedó lo de antes**
+- **Estrategia** → Strategy › Analysis (Business X-Ray), › Strategy (Offer Architect: oferta, modelo de dinero, leads) y › Roadmap (Growth Roadmap Builder): `screens/strategy.js` sigue siendo el tablero y el chat por el puente; lo monta `workspace.js` por bloque. Las rutas `#/estrategia/…` que siguen escribiendo `estrategia-viva-ui.js` y el panel del Chat se canonizan.
+- **Consulting** → Consulting › Overview: `consultingOverview` de `screens/consulting.js` (el alcance por nivel, la etapa, los encargos de Estrategia —tareas «solo yo» con `area: 'consulting'`, `cliente`, `client_slug` y `origen: 'estrategia'`: «Hacerlo en el Chat» o «Hecha»— y los temas de Operaciones · Finanzas · Equipo, `CONSULTING` en `llm/modos.js`). Inherent no está: sus finanzas viven en Organization → Finances.
+- **Marcas** → las herramientas de Marketing, Creative y Production (`LEGACY_MODULO` dice a cuál va cada módulo de antes). La portada de tiles ya no existe: `#/marcas` abre Home y los clientes se eligen en el selector o con ⌘K.
+- **El chat de Diseño** → Creative › Design › Design Studio.
+
+**3.6 Rutas viejas → nuevas** (alias permanentes; `alias()` de `app.js` con `wsDeRuta` de `herramientas.js`, y el hook de `history.replaceState` canoniza las que las pantallas siguen escribiendo, para que recargar, compartir el link y la barra queden en sincronía)
+
+| Ruta vieja | Va a |
+|---|---|
+| `#/marcas` | `#/home` |
+| `#/marcas/<marca>` | `#/ws/marketing/<marca>/overview` (y la marca pasa a ser el contexto) |
+| `#/marcas/<marca>/<módulo>[/…]` | `#/ws/<ws>/<marca>/<pestaña>/<herramienta>[/…]` según `LEGACY_MODULO`; conserva el resto (`plan/2026-10`). Un módulo desconocido → el Overview de Marketing |
+| `#/marcas/diseno[/<marca>]` | `#/ws/creative/<marca o contexto>/design/design-studio` |
+| `#/marcas/personal/…` | igual, con la marca `personal` (solo CEO) |
+| `#/estrategia` | `#/ws/strategy/<contexto>/overview` (sin contexto, el selector en grande) |
+| `#/estrategia/<cliente>[/<bloque>]` | `diagnostico → analysis/business-xray` · `oferta · modelo · leads → strategy/offer-architect[/modelo|/leads]` · `roadmap → roadmap/growth-roadmap`; sin bloque, el Overview (`LEGACY_BLOQUE`) |
+| `#/consulting[/<cliente>]` | `#/ws/consulting/<cliente o contexto>/overview` |
+| `#/content/fuentes[/<slug>]` | `#/ws/strategy/<slug o contexto>/research/customer-bullseye` (el slug tal cual, también `personal`) |
+| `#/content/<tab>[/<perfil>]`, `#/mimarca/…`, `#/clients/<slug>/marca`, `#/contenido` | por la cadena de alias de siempre (`CT_MOD`), terminando en `#/ws/…` o en Home |
+| `#/org/home`, `#/org`, `#/org/control`, `#/org/resultados`, `#/control-hub/…` | `#/home` (o la sección nueva, `HUB_MAP`) |
+| `#/org/<sección vieja>` (hoy, clientes, proyectos, ventas, comercial, servicios, finanzas, inherent, equipo) y `#/<pantalla>` sin `org/` | la primera pantalla de esa sección que la persona ve (`OLD_SECTION`); `MOVED` de `roleviews.js` sigue igual |
+| `#/chat[/<sesión>]`, `#/avisos`, `#/me`, `#/portal` | sin cambio |
+
+El servidor (`public/js/avisos-reglas/*.js`, `api/index.js`, `api/_lib/mcp.js`), `llm/paneles.js`, `estrategia-viva-ui.js`, `calendario-trabajo.js`, `posts.js`, `investigacion.js`, `formatos-ui.js`, `creacion-ui.js`, `plan-mes-ui.js`, `campanas-ui.js`, `brand-home.js`, `diseno-chat.js`, `primer-dia.js` y varias `screens/*.js` siguen emitiendo `#/marcas/…`, `#/estrategia/…` y `#/consulting/…`: por eso los alias no se quitan. La lista completa: `grep -rlE "#/(marcas|estrategia|consulting)" public/js api`.
+
+**Fuera de las capas**
+- `#/avisos` · `screens/avisos.js` — **Avisos**: lo que pide atención, en Tu trabajo · Clientes · La plataforma, del más urgente al menos. Cada aviso con su botón (ir, hacer, abrir la tarea, abrir el Chat con el pedido, copiar un comando), «Después» (mañana o en una semana; lo urgente, un día; lo fijo, nunca) y los pospuestos para regresarlos. La campanita (en la barra lateral y arriba en el cel) cuenta lo urgente y lo de pronto, y se pone al día sola (`avisos-ui.js`).
+- `#/me` · `screens/me.js` — Mi perfil: foto, cumpleaños, contacto, conexiones (Google y el conector MCP), los avisos en este dispositivo y salir.
 - `#/portal` · `screens/portal.js` — el portal del rol `client`: Resumen · Contenido (aprobar o pedir cambios) · Entregas · Metas.
 - `/?connect=<id>` · `connectai.js` — la pantalla «Permitir» cuando una app de IA se conecta por MCP.
 - `/diagnostico` · `public/diagnostico.html` + `diagnostico.js` — el quiz público, sin login, que manda leads a la fuente tipo quiz.
 
-**Archivos de pantalla sin ruta**
-- Control del flujo, Indicadores y el Centro de control ya no existen como pantallas: sus links viejos (`#/org/control`, `#/org/resultados`, `#/control-hub/…`) llevan a Hoy o a su sección nueva.
-- `screens/content.js` y `screens/me-brand.js` no tienen ruta propia: se montan dentro de Marcas.
+**Archivos de pantalla sin ruta propia**
+- Control del flujo, Indicadores y el Centro de control son parte de Home: sus links viejos (`#/org/control`, `#/org/resultados`, `#/control-hub/…`) abren Home o su sección nueva.
+- `screens/content.js` (Investigación, Ideas, Calendario, Analytics y la diana), `screens/strategy.js`, `screens/consulting.js` y `screens/me-brand.js` se montan dentro de los workspaces; sus rutas de antes son alias.
 
 ---
 
@@ -171,7 +232,7 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). **Dos app
 **`api/_lib/`**
 - `access.js` — quién entra a qué: `COLLS` (colección → área), `CEO_WRITE`, `CEO_READ`, `SCOPED`, `guard`/`guardAny`, anti-CSRF, alcance (`scoper`) y lo que se recorta (`stripAccesos`, `stripCosts`, `stripInvoice`, `summaryOf`) · el candado de todo.
 - `ads.js` — el tablero de pauta por cliente (Windsor) y los anuncios activos de la competencia (Apify, biblioteca de Meta) en `sources/ads-<slug>` · rutas `ads/report`, `ads/competitors/:slug`.
-- `ads-studio.js` — Marca › Ads sobre `ad_variants`: variaciones en Borrador, solo el CEO aprueba o reabre, «Lanzar» (CEO, con presupuesto) crea la tarea para ⑩ Ads y no toca ninguna cuenta de anuncios · rutas `ads-studio*`.
+- `ads-studio.js` — Ads Intelligence (Marketing › Campaigns) sobre `ad_variants`: variaciones en Borrador, solo el CEO aprueba o reabre, «Lanzar» (CEO, con presupuesto) crea la tarea para ⑩ Ads y no toca ninguna cuenta de anuncios · rutas `ads-studio*`.
 - `avatares.js` — Cliente ideal sobre `avatars`: edita quien edita Contenido, aprueba solo el CEO, se archiva · rutas `avatares*`.
 - `buscar.js` — Buscar leads: Apify (Google Maps o Instagram) deja prospectos sin duplicar; cada búsqueda en `lead_searches`, con tope de ítems y de gasto · rutas `leads/buscar*`.
 - `content.js` — perfiles de contenido, su configuración (`sources/cfg-`), el scraping con Apify en dos tiempos (arranca; recoge el webhook, la página abierta o el cron) y el tope de Apify por marca · lo usan Contenido e Investigación.
@@ -205,9 +266,9 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). **Dos app
 - `refs.js` — Referencias por pilar: videos que pega el equipo → Apify busca lo que más rindió de esos creadores (`sources/refs-<slug>`).
 - `results.js` — los indicadores reales (comercial, entregas a tiempo, ingresos del mes, metas) y el `done_at` de cada tarea; los usa la herramienta `resultados` del conector (sin ruta ni pantalla propias).
 - `session.js` — la cookie firmada: 30 días máximo, 14 sin uso, se renueva al usarse.
-- `tech.js` — Marca › Tech sobre `tech`: sitios, conectar una landing al CRM (el CEO crea su fuente de leads), la web viva (la enciende el CEO) y las auditorías de SEO · rutas `tech*` y la pública `publico/:marca/publicado`.
+- `tech.js` — Funnel Builder (Marketing › Campaigns) sobre `tech`: sitios, conectar una landing al CRM (el CEO crea su fuente de leads), la web viva (la enciende el CEO) y las auditorías de SEO · rutas `tech*` y la pública `publico/:marca/publicado`.
 - `vault.js` — cifra con AES-256-GCM, con una clave que sale de `SESSION_SECRET`.
-- `video.js` — Marca › Video sobre `videos`: el kit de edición (`kit--<marca>`) y las fichas de video, que se archivan · rutas `video*`.
+- `video.js` — Post-Production Workspace (Production) sobre `videos`: el kit de edición (`kit--<marca>`) y las fichas de video, que se archivan · rutas `video*`.
 - `zernio.js` — la bandeja de comentarios y DMs de las cuentas propias, solo lectura.
 
 **`api/_data/`** — lo genera el build y está en `.gitignore`: `repo.json` (la copia del repo que lee el OS) y `fuentes.json` (hormozi-brain para Estrategia).
@@ -221,19 +282,22 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 **Núcleo**
 - `public/index.html` — la única página: carga Inter, `app.css` y `js/app.js` · todo vive en `#root`.
 - `public/app.css` — todos los estilos, con variables de color de día y de noche.
-- `app.js` — login, las dos apps y sus espacios, la barra y las pestañas, el router y sus alias, y el arranque · la entrada del navegador. `render()` baja el módulo de la pantalla antes de la transición, la transición espera como mucho 150 ms y la pantalla pinta su forma (`skel()`) mientras llegan los datos: nunca se queda congelada la anterior. Si algo falla, «Reintentar». Las pantallas de todos los días se bajan en segundo plano al abrir.
+- `app.js` — la entrada del navegador: el login, el cascarón (la barra lateral, el chip y la barra del cel, sus hojas y el menú de «tú»; todo popover lleva `[data-popover]`), **`NAV`** (el árbol de la barra en una sola constante, nombres en inglés; los workspaces salen de `herramientas.js`), el router (`resolve` → `{ key, rest, url }`, `alias` para las rutas viejas de 3.6, `landing` por la última ruta `os.last.route.<correo>` o `me.start`), el hook de `history.replaceState` (canoniza lo que las pantallas siguen escribiendo y guarda la última ruta), lo que pone en `<html>` (`data-barra="lateral"` siempre, `data-pantalla` = la pantalla, `data-capa` = home · org · ai · ws, `data-lat-mini` con ⌘B), lo que recuerda por persona (`os.last.route`, `os.ws.ultimo.<correo>` y `os.ws.ultimo.<correo>.<ws>`, `os.lat.grp`, `os.barra.mini`; `os.ctx` lo lleva `contexto.js`), el buscador «Ir a» (`jumpItems`: páginas, workspaces con sus pestañas y cada cliente en su último workspace), la sección de «Cómo se usa» (`seccionGuia`) y el arranque. `render()` baja el módulo de la pantalla antes de la transición, la transición espera como mucho 150 ms y la pantalla pinta su forma (`skel()`) mientras llegan los datos: nunca se queda congelada la anterior. Si algo falla, «Reintentar». Las pantallas de todos los días se bajan en segundo plano al abrir.
 - `iconos.js` — el set de íconos del OS: Lucide (licencia ISC, el aviso va arriba) más los propios (`chat-ia`, `stop-lleno`), con los nombres de antes como alias (`ALIAS`: cal → calendar, gear → settings…) y `svgIco(nombre, tamaño)` · tamaños sm 14 · md 16 · lg 18 · xl 20 · puro (lo prueba `test:ui`). Para agregar uno se copia su nodo de `lucide-static`.
-- `tema.js` — el día y la noche, uno solo para Organización y el Chat: `temaElegido()` ('sistema' · 'dia' · 'noche'), `ponerTema()`, `esNoche()` y el evento `tema`. Se guarda en `localStorage` `theme` (nada = sigue a la compu). `tema-boot.js` (script clásico en el `head`) lo pone antes del primer pintado y pinta la franja del iPhone (`theme-color`).
-- `dock.js` — el dock: el Tablero y el Chat, la app activa y el salto a la otra (`pintarDock`, `quitarDock`, `icoApp`).
-- `areas.js` — las 4 áreas (Estrategia · Organización · Diseño · Consulting: su espacio en el Tablero, su modo en el Chat, su ícono y su color `--ui-m-<id>`), el área elegida por persona, el switch (`switchHtml`, `areaConFlecha`) y quién tiene la barra lateral (`barraLateral`, `ponerBarra`) · puro.
+- `tema.js` — el día y la noche, uno solo para todo el OS (el Chat incluido): `temaElegido()` ('sistema' · 'dia' · 'noche'), `ponerTema()`, `esNoche()` y el evento `tema`. Se guarda en `localStorage` `theme` (nada = sigue a la compu). `tema-boot.js` (script clásico en el `head`) lo pone antes del primer pintado y pinta la franja del iPhone (`theme-color`).
+- `herramientas.js` — **el registro de herramientas**: `FLUJO` (los 7 pasos), `WORKSPACES` (los 5, con pestañas, ícono `nav-<id>`, color `--ui-m-<id>` y su modo del Chat), `HERRAMIENTAS` (las 42: 9 Strategy · 10 Marketing · 7 Creative · 8 Consulting · 8 Production), `LEGACY_MODULO` y `LEGACY_BLOQUE` (los módulos y bloques de antes), y los helpers: `wsDe`, `pestanaDe`, `herramientaDe`, `deWorkspace`, `cadena` (los `va_a` hasta el final), `moduloDe`, `rutaHerramienta` y `rutaBloque` (arman `#/ws/…`), `wsDeRuta` (lee una ruta nueva o traduce una vieja; `alias()` la usa), `puedeWs`, `veEstrategia` y `acc` (la regla de `brandAccess` y `hasEstrategia`, copiada, no importada) · puro: sin DOM ni red, sin `brandlist`, `core` ni `app` (lo prueba `test:herramientas`).
+- `contexto.js` — el selector de cliente (3.3): `cargarContexto` (la lista única), `contextoLista`, `contextoDe`, `nombreContexto`, `contextoActual` y `ponerContexto` (`os.ctx.<correo>` + los `slugs` de `os.llm.<correo>` + el evento `contexto`), `selectorHtml` (el botón o el panel grande), `instalarContexto` (los manejadores a nivel `document`, una sola vez) y `cerrarPopovers`.
+- `areas.js` — los modos del Chat como áreas: `AREAS` (los 5 workspaces por su modo, más Organization; cada una con su ícono, su modo y su workspace), `areaDe`, `areaDeModo`, el modo elegido por persona (`areaGuardada`, `guardarArea`: `os.area.<correo>`) y `abrirEnChat` (abre el Chat en un modo con su cliente, un borrador y el mes: lo usan «Ask InherentOS», Home, el Harness, los workspaces, Consulting, Campañas y eventos y el plan del mes) · puro salvo `abrirEnChat`.
+- `screens/workspace.js` — la página de un workspace (3): pestañas, hero, flujo, grilla, Overview, la ficha «Pronto» y la tabla de montaje (`MOD_LEGADO` dice qué módulo de antes revisa `modulesFor`).
+- `screens/harness.js` — el AI Harness (3): la portada con las acciones rápidas y Memory & Context, y las fichas de sus páginas.
 - `core.js` — `html`/`raw`/`mount`, `api()` y `col()`, toast, drawer, `ask`, íconos (`ico()` sale de `iconos.js`), la forma de una pantalla que carga (`skel()`), markdown, Mermaid, CSV, `openClaude`/`claudeJSON` · lo que usan todas las pantallas.
-- `roleviews.js` — la matriz de Vistas por rol, secciones, espacios, rutas mudadas y el «para qué» de cada puesto · compartido con el servidor.
+- `roleviews.js` — la matriz de Vistas por rol, las secciones y sus grupos (`GROUPS`, con etiquetas en inglés y dónde vive cada uno: `org` o `ws`), las rutas mudadas (`MOVED`) y el «para qué» de cada puesto · compartido con el servidor.
 - `levels.js` — los 3 niveles y la traducción de nombres viejos; el baseline (solo CEO) · un solo lugar para los niveles.
 - `element.js` — el modelo de elemento: estados (Idea · En proceso · Listo · Publicado), nombre automático y archivado · puro.
 - `search.js` — el buscador ⌘K: «Ir a» más `/api/search`.
 - `menu-contextual.js` — clic derecho en tareas, proyectos, clientes, leads y respuestas del chat.
-- `brandlist.js` — las marcas, sus módulos y áreas, y qué ve cada perfil dentro de una marca.
-- `stratlist.js` — los clientes del espacio Estrategia.
+- `brandlist.js` — las marcas que se trabajan en los workspaces (`loadBrands`, `brandsNow`, `brandAccess`) y qué módulo de antes abre cada perfil dentro de una marca (`modulesFor`, `defaultModule`); `MODULES`, `AREAS` y `FLUJO` quedan solo como datos para eso y para las pruebas. A dónde va cada cosa lo dice `herramientas.js`.
+- `stratlist.js` — los clientes de Estrategia tal como los da `/api/estrategia` (slug, nombre, nivel, ficha, etapa, bloques); `contexto.js` los une con las marcas para el selector.
 - `purpose.js` — la tarjeta «Tu puesto».
 - `charts.js` — gráficas SVG sin librerías; si todo está en cero, no pintan nada.
 - `divisor.js` — el divisor que se arrastra entre el chat y su panel.
@@ -245,7 +309,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `puente-chat.js` — `/health` y `/chat` del puente, en solo lectura, para pantallas fuera de Estrategia; las dos fallas típicas con sus pasos.
 - `motor-ui.js` — elegir el motor del chat (`claude`, `chatgpt` o `local`) y qué le falta a la compu · se guarda por persona.
 - `hermes.js` — Hermes Agent en la compu de cada persona (el harness de los chats): la conexión (`hermesDe`: la app de Mac la entrega sola o se pega la llave una vez), `saludHermes`, `modelosHermes` (los proveedores y modelos que esa compu tiene conectados) y `chatHermes` (streaming por su API compatible con OpenAI, una sesión por chat del OS). · la API de sesiones del Inherent LLM: `sesionesHermes`, `crearSesion`, `mensajesSesion`, `borrarSesion`, `skillsHermes`, `turnoSesion` (SSE: pasos, deltas, permisos y el texto final) y `responderAprobacion`.
-- `llm/modos.js` — el Inherent LLM sin pantalla: los 5 modos (uno por área), las reglas comunes, el harness de cada modo (rol, cómo trabaja, herramientas y criterios de aceptación), `sistemaDe` (el system prompt de cada turno), los comandos «/», los comandos de la Terminal, las tarjetas (`leerTarjetas`: ```criterios```, ```pregunta``` y ```encargo```), los encargos (`leerEncargo`, `tareaDeEncargo`, `encargosDe`), los temas de Consulting (`CONSULTING`, `alcanceConsulting`) y el id de cada sesión (`inh-<modo>-<cliente>-…`) · puro.
+- `llm/modos.js` — el Inherent LLM sin pantalla: los 6 modos (uno por workspace más Organization; ids `estrategia · organizacion · marketing · diseno · consulting · produccion`, nombres en inglés), las reglas comunes, el harness de cada modo (rol, cómo trabaja, herramientas y criterios de aceptación), `sistemaDe` (el system prompt de cada turno), los comandos «/», los comandos de la Terminal, las tarjetas (`leerTarjetas`: ```criterios```, ```pregunta``` y ```encargo```), los encargos (`leerEncargo`, `tareaDeEncargo`, `encargosDe`), los temas de Consulting (`CONSULTING`, `alcanceConsulting`) y el id de cada sesión (`inh-<modo>-<cliente>-…`) · puro.
 - `llm/ias.js` — las IAs del switch de la caja (`IAS`: Claude · ChatGPT · en tu compu · otras; `iaDe`, `iasListas`) y los proveedores que corren en la compu (`LOCALES`, `esLocal`) · puro.
 - `llm/brujula.js` — la Brújula del Chat: la meta medible de una conversación (`leerMeta` del bloque ```meta```), sus tareas (`crearBrujula`, `marcar`, `aplicarAvance` del bloque ```avance```), el aviso de desvío (`contarGiro`, `desviado`: 3 turnos sin mover nada), lo que el harness le dice al agente en cada turno (`contextoBrujula`) y el ritmo de uso de la semana contra el límite que pone la persona (`ritmoSemana`, `usosDe`) · puro.
 - `llm/paneles.js` — el panel de la derecha del Chat según el modo (`panelDe`) y los datos de Estrategia de un cliente (`datosEstrategia`, con caché que se olvida después de cada respuesta).
@@ -255,7 +319,7 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `primer-dia.js` — el recorrido del primer día: 6 pasos con check (quién eres · la app · Claude · Laya · Google · una prueba), se comprueba solo contra el puente y la cuenta, se pausa y se retoma desde el chip de la barra (`#pdchip`).
 - `artifact.js` — el panel derecho de los chats y sus íconos.
 - `voz.js` — dictar en la caja del chat.
-- `diseno-chat.js` — el chat de Diseño gráfico (Plan → Ideas → Diseño), su área de trabajo y el emparejamiento.
+- `diseno-chat.js` — el chat de Diseño gráfico (Plan → Ideas → Diseño), su área de trabajo y el emparejamiento; lo monta Creative › Design Studio.
 - `diseno.js` — el pedido de la etapa Diseño y cómo se lee la respuesta (la pieza queda Lista) · puro.
 - `ideas-chat.js` — el pedido de la etapa Ideas y cómo se leen las ideas · puro.
 - `connectai.js` — conectar el OS a la IA de cada persona por MCP y la pantalla «Permitir».
@@ -268,33 +332,33 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `intel-mapa.js` — el mapa de entregables por departamento y si los ve el cliente · lo usan el build, el servidor y la interfaz.
 - `intel-ui.js` — la pestaña «Entregables» de un proyecto.
 
-**Marcas · entender**
-- `investigacion.js` — la página de Investigación: estado, «Lo que funciona», la biblioteca y los referentes.
+**Las herramientas · entender** (Strategy y Marketing)
+- `investigacion.js` — la página de Investigación (Viral Intelligence Lab): estado, «Lo que funciona», la biblioteca y los referentes.
 - `referentes.js` — categorías de referentes, cuentas, clave de post sin duplicados y resonancia · puro.
 - `avatares.js` — el método del Cliente ideal (campos, pesos, regla 10×) · compartido con el servidor.
-- `avatar-ui.js` — la pantalla del Cliente ideal.
-- `brand-brief.js` — el brief del ciclo (sale del repo) y su candado sobre el calendario.
-- `brand-home.js` — el Inicio de una marca.
-- `bullseye.js` — la diana de audiencia.
+- `avatar-ui.js` — la pantalla del Cliente ideal (Customer Avatar Studio).
+- `brand-brief.js` — el brief del ciclo (sale del repo) y su candado sobre el calendario; el Overview y la pestaña Brief de Creative.
+- `brand-home.js` — el Inicio de una marca: el Overview de Marketing.
+- `bullseye.js` — la diana de audiencia (Customer Bullseye).
 
-**Marcas · crear y diseñar**
+**Las herramientas · crear y diseñar** (Marketing y Creative)
 - `plan-mes.js` — el Plan del mes de ③ Marketing (slots) · puro.
-- `plan-mes-ui.js` — la herramienta del Plan del mes y su panel.
+- `plan-mes-ui.js` — la herramienta del Plan del mes (Content Strategy Studio) y su panel.
 - `formatos.js` — las plantillas base de reel y story y la forma de un guion · compartido con el servidor.
 - `formatos-ui.js` — la pantalla de Formatos.
-- `creacion-ui.js` — el editor de guiones.
+- `creacion-ui.js` — el editor de guiones (Script & Storyboard Studio).
 - `posts.js` — las piezas de la idea a publicado, su tablero, la conexión a Drive y los archivos de cada pieza (`assets`: foto, video o lámina subidos a Drive, con miniatura).
-- `brand-board.js` — Identidad: moodboard, música, personas, marcas y tono.
+- `brand-board.js` — Identidad: moodboard, música, personas, marcas y tono (Brand DNA Studio y Moodboard Studio).
 - `sistema-visual.js` — lee `02-marca/sistema-visual.md` y lo vuelve datos · puro.
-- `design-system-ui.js` — el Design system a la vista, cada valor copiable.
+- `design-system-ui.js` — el Design system a la vista, cada valor copiable (Visual Identity Builder).
 
-**Marcas · video, anuncios y web**
+**Las herramientas · video, anuncios y web** (Production y Marketing)
 - `video.js` — el kit de edición (sale del design system con `kitDesdeSistema`), la ficha de video y el pedido para ⑦ Video Editing · puro.
-- `video-ui.js` — la pantalla de Video: el kit con su vista previa 9:16, las fichas con su línea de tiempo y «Armar con Claude».
+- `video-ui.js` — la pantalla de Video (Post-Production Workspace): el kit con su vista previa 9:16, las fichas con su línea de tiempo y «Armar con Claude».
 - `ads-studio.js` — las variaciones (Meta y Google, con sus límites de caracteres), sus estados y quién los cambia, el pedido a Claude y la tarea para ⑩ · puro.
-- `ads-ui.js` — la pantalla de Ads: crear variaciones (por el puente o pegando la respuesta), Laya las califica, aprobar (CEO) y lanzar (CEO).
+- `ads-ui.js` — la pantalla de Ads (Ads Intelligence): crear variaciones (por el puente o pegando la respuesta), Laya las califica, aprobar (CEO) y lanzar (CEO).
 - `tech.js` — los sitios, el formulario de la landing, el pedido de auditoría de SEO y lo que la web viva puede compartir · puro.
-- `tech-ui.js` — la pantalla de Tech.
+- `tech-ui.js` — la pantalla de Tech (Funnel Builder: sitios y landings).
 
 **Calendarios**
 - `calendario-contenido.js` — el calendario de contenido de una marca: mezcla del mes, filtros y candado del brief.
@@ -526,10 +590,12 @@ npm run test:plan    # Plan del mes
 npm run test:diseno  # chat de Diseño
 npm run test:design  # Design system (sistema-visual.md)
 npm run test:ventas  # la meta de Ventas
-npm run test:marca   # Marca › Video, Ads y Tech
-npm run test:llm     # el Inherent LLM: harness, comandos, tarjetas, encargos, sesiones, áreas y el switch de IA
-npm run test:ui      # el sistema de diseño: íconos que existen, día y noche, contraste AA, papel intacto
+npm run test:marca   # Video, Ads y Tech (Post-Production Workspace, Ads Intelligence, Funnel Builder)
+npm run test:llm     # el Inherent LLM: harness de los 6 modos, comandos, tarjetas, encargos, sesiones, áreas y el switch de IA
+npm run test:ui      # el sistema de diseño: íconos que existen (los de la barra y los workspaces también), día y noche, contraste AA, papel intacto
+npm run test:herramientas  # el registro de las 42 herramientas, el grafo va_a y los alias de rutas
 npm run capturas     # capturas de día y de noche, compu y cel, en .capturas/ (con el OS local corriendo)
+npm run capturas -- home,org/work,ai,chat,ws/marketing/<cliente>/overview   # solo esas rutas
 ```
 
 - **El servidor local** (`scripts/dev.mjs`) sirve `public/` y la API en el puerto 3000, con la base PGlite en `ceo-os/.devdb/`, login de prueba, un CEO de prueba, los mismos encabezados de `vercel.json` y `/diagnostico`.
@@ -547,7 +613,7 @@ npm run capturas     # capturas de día y de noche, compu y cel, en .capturas/ (
 **El puente y los chats**
 - Los chats y Laya dependen de la compu de cada persona: sin el puente encendido, el chat no corre y los juicios quedan en espera.
 - Un chat a la vez por compu, con tope de tiempo y de tamaño (sección 6).
-- Las conversaciones viven en el `localStorage` del navegador de cada persona (Estrategia guarda las últimas 40, Diseño las últimas 30): no se comparten ni pasan a otra compu.
+- Las conversaciones de los chats por el puente viven en el `localStorage` del navegador de cada persona (Strategy guarda las últimas 40, el Design Studio las últimas 30): no se comparten ni pasan a otra compu. Las del Chat viven en Hermes, en la compu de cada quien.
 
 **Reglas de las piezas**
 - La secuencia del chat de Diseño y el candado del brief los cuida el servidor en `/api/plan` y en `/api/db/content` (`reglasPieza` en `api/index.js`). Las herramientas del conector MCP que crean piezas escriben directo en la base y no pasan por ese candado.
@@ -565,7 +631,7 @@ npm run capturas     # capturas de día y de noche, compu y cel, en .capturas/ (
 - `/api/publico/<marca>/publicado` responde sin sesión solo si el CEO encendió la web viva de esa marca, y solo con lo publicado (título, texto, fecha, formato y el link si es de una red pública).
 
 **Alcance del producto**
-- Marca › Video no edita: arma el pedido para ⑦, que corre en la compu del editor. Marca › Ads no lanza: crea la tarea para ⑩ Ads, que lanza con su gate.
+- El Post-Production Workspace no edita: arma el pedido para ⑦, que corre en la compu del editor. Ads Intelligence no lanza: crea la tarea para ⑩ Ads, que lanza con su gate.
 - Zernio y Windsor son de solo lectura: se responde en Zernio o con ⑧ Community Management.
 - Apify reparte su tope mensual entre las marcas; sin crédito, el scraping se corta y queda el aviso en Investigación.
 - Cada llamada a la API tiene 60 s: por eso el scraping arranca y se recoge en dos tiempos.
