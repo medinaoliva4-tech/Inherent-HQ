@@ -4980,3 +4980,26 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .emb-noche{display:none!important}
 :root[data-theme="dark"] .emb-dia{display:none!important}
 :root[data-theme="dark"] .emb-noche{display:block!important}
+
+/* Organización y los workspaces. Organización es la casa (neutra); cada workspace es una app con su color: la barra se
+   tiñe, arriba va la app con lo que está abierto y «← Organización» para volver. En el cel, Organización tiene su botón. */
+.lat-volver{color:var(--ui-ink2)}
+.lat-app{display:flex;align-items:center;gap:10px;margin:0 2px;padding:8px;border-radius:14px;background:color-mix(in srgb,var(--ac) 12%,var(--ui-surf));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ac) 30%,transparent)}
+.lat-app-ico{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--ac);color:var(--ui-surf)}
+.lat-app>span{display:grid;min-width:0;line-height:1.25}
+.lat-app small{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ac)}
+.lat-app b{font-size:15px;font-weight:650;letter-spacing:-.01em;color:var(--ui-ink)}
+.lat-app em{font-style:normal;font-size:12px;color:var(--ui-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lat-k-apps{margin-top:2px}
+@media (min-width:761px){html[data-barra="lateral"] .lat[data-app="1"]{background:color-mix(in srgb,var(--ac) 6%,var(--ui-side))}}
+[data-lat-mini] .lat-app{justify-content:center;margin:0;padding:3px;background:none;box-shadow:none}
+[data-lat-mini] .lat-app>span{display:none}
+.top-areas{display:flex;align-items:center;gap:6px;flex:none}
+.top-org{width:34px;height:34px;flex:none;border:0;border-radius:999px;display:grid;place-items:center;padding:0;cursor:pointer;background:var(--ui-fill2);box-shadow:inset 0 0 0 1px var(--ui-line);color:var(--ui-ink2)}
+.top-org.on{background:var(--ui-surf);color:var(--ui-m-organizacion);box-shadow:0 1px 3px rgb(30 25 20 / .12),0 0 0 1px color-mix(in srgb,var(--ui-m-organizacion) 40%,transparent)}
+.top-org:focus-visible{outline:2px solid var(--ui-m-organizacion);outline-offset:2px}
+.top[data-app="estrategia"]{--ac:var(--ui-m-estrategia)}.top[data-app="marketing"]{--ac:var(--ui-m-marketing)}.top[data-app="diseno"]{--ac:var(--ui-m-diseno)}.top[data-app="consulting"]{--ac:var(--ui-m-consulting)}
+.top[data-app]:not([data-app=""]){box-shadow:inset 0 -2px 0 var(--ac),0 1px 2px rgb(30 25 20 / .06)}
+@media (max-width:460px){.top-areas{gap:4px}.top-org{width:30px;height:30px}}
+/* Sin un área elegida (en Organización, el switch de workspaces): sin pastilla. */
+.asw[data-on=""] .asw-pastilla{opacity:0}
