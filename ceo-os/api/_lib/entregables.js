@@ -5,15 +5,16 @@
 // Cambiar el contenido crea una versión nueva (<id>--v<n>, solo se crea) y un Aprobado vuelve a Borrador.
 // Los costos del cliente (Money Model Lab) solo salen a quien ve costos: a los demás se les quitan al leer y se conservan al guardar.
 // Toda escritura pasa la versión que se leyó: la base devuelve null si alguien cambió el doc antes (409). Nunca se hace upsert: no deja huella en audit.
+// Strategy (Fase 3a): al guardar una diana o un X-Ray el servidor los deja en su casa (sources cfg-<slug> · la estrategia en vivo); Offer Architect
+// no se aprueba aquí (se aprueba con el bloque Oferta, solo el CEO: 409 APRUEBA_BLOQUE) y Brand Growth no le cambia el stack (403).
 import * as db from './db.js';
 import * as results from './results.js';
 import { guard, scoper, edits, levelOf, seesCosts } from './access.js';
 import { body } from './http.js';
-import { ficha } from './estrategia.js';
+import { ficha, estrategiaCerrada, dianaASuCasa, xrayAViva, ofertaAprobada, nivelDeOferta, limpiarDe } from './estrategia.js';
 import { herramientaDe } from '../../public/js/herramientas.js';
 import { alcanceConsulting, consultingAbierto, textoAlcanceConsulting } from '../../public/js/llm/modos.js';
-import { COLL as COLL_ESTRATEGIA } from '../../public/js/estrategia.js';
-import { vivaId } from '../../public/js/estrategia-viva.js';
+import * as oferta from '../../public/js/strategy/oferta.js';
 import { COLL, COLL_V, AREA_DE, pasoPermitido, puedeAprobar, limpiarEntregable, faltas, cambioDeContenido, idVersion, siguienteDe, tareasDeEntregable, canon } from '../../public/js/entregables.js';
 
 // Constantes locales, como en avatares.js y ads-studio.js (el slug es el nombre de la carpeta del cliente: sin «_» al inicio).
@@ -48,7 +49,35 @@ async function alcanceDe(ws, slug) {
   if (!consultingAbierto(a)) return { abierto: false, code: 'FUERA_DEL_ALCANCE', texto };
   return { abierto: true, code: '', texto };
 }
-const estrategiaCerrada = async (slug) => Boolean((await db.get(COLL_ESTRATEGIA, vivaId(slug)).catch(() => null))?.aprobado);
+const TEXTO_APROBADA = 'La estrategia está aprobada: solo lectura hasta que el CEO la reabra';
+// Brand Growth solo elige qué oferta empujar y su mensaje: el stack y las variaciones (y la escalera, que es de Partnership) se bloquean aquí,
+// no solo en la interfaz. Lo decide el módulo puro (oferta.cambiaBloqueado) con el nivel de la ficha; «A la medida» manda su ficha y no se bloquea.
+// Una ficha que existe pero cuyo nivel no se reconoce NO deja pasar nada: se aplica el techo más bajo (Brand Growth). Solo pasan sin nivel
+// Inherent y la marca personal, que no tienen ficha (nivelDeOferta devuelve null).
+async function ofertaMal(tool, slug, antes, despues) {
+  if (tool?.id !== 'offer-architect') return null;
+  const n = await nivelDeOferta(slug);
+  if (!n || n.id === 'medida') return null;
+  const partes = oferta.cambiaBloqueado(antes ?? (typeof oferta.vacio === 'function' ? oferta.vacio() : {}), despues, n.id);
+  if (!partes?.length) return null;
+  const con = n.supuesto ? 'La ficha no dice el nivel contratado y se aplica el más bajo (Brand Growth). Esto' : `Con ${n.nombre} esto`;
+  return { error: `${con} no se cambia: ${partes.join(', ')}. Se escala al CEO.`, code: 'FUERA_DEL_ALCANCE', partes };
+}
+// La oferta aprobada (el bloque Oferta o el de Modelo de dinero) no se cambia ni se esquiva: ni editando, ni con un Borrador nuevo, ni
+// archivando o desarchivando el espejo. Hasta que el CEO reabra el bloque, 409 APROBADO. true = ya respondió.
+async function ofertaCerrada(res, slug) {
+  const bloques = await ofertaAprobada(slug);
+  if (!bloques.length) return false;
+  res.status(409).json({ error: `La oferta está aprobada (${bloques.join(' y ')}): el CEO tiene que reabrir ${bloques.length > 1 ? 'esos bloques' : 'ese bloque'} para cambiarla.`, code: 'APROBADO' });
+  return true;
+}
+// Lo que una herramienta de Strategy deja en su casa al guardar (lo hace el servidor, no la interfaz): la diana → sources cfg-<slug>.bullseye;
+// el X-Ray → la estrategia en vivo. Devuelve el aviso si no pudo (el entregable ya quedó guardado; guardar otra vez lo repite sin duplicar nada).
+async function aSuCasa(u, d) {
+  if (d.tool === 'customer-bullseye') return (await dianaASuCasa(d.client_slug, d.contenido, u)).ok ? null : 'La diana cambió en Fuentes justo ahora: vuelve a guardar';
+  if (d.tool === 'business-xray') return (await xrayAViva(d.client_slug, d.contenido, u)).ok ? null : 'La estrategia en vivo cambió justo ahora: vuelve a guardar';
+  return null;
+}
 
 // ---------- Acceso ----------
 // guard del área del workspace (sin abrirle la puerta al rol cliente: el cliente no entra) · vista «resumen» → 403 (salvo leer el Performance Center)
@@ -112,6 +141,8 @@ const guardar = async (res, cur, data, b, u) => {
 // Costos: quien no los ve recibe el entregable sin ellos (con costs_hidden), en toda respuesta que lleve contenido: nunca se toca el doc guardado.
 const ocultaCostos = (u, tool) => !seesCosts(u) && typeof tool?.sinCostos === 'function';
 const salida = (u, d) => (d && ocultaCostos(u, herramientaDe(d.tool)) ? { ...d, contenido: herramientaDe(d.tool).sinCostos(d.contenido), costs_hidden: true } : d);
+// Si lo que el servidor deja en su casa no pudo escribirse, el aviso viaja con el entregable (que ya quedó guardado).
+const avisoDe = (a) => (a ? { aviso: a } : {});
 const grande = (res, x) => (JSON.stringify(x).length > MAX_BYTES ? (res.status(413).json({ error: 'Demasiado grande', code: 'GRANDE' }), true) : false);
 
 export function rutas(on, { cleanTask = (t) => t } = {}) {
@@ -125,7 +156,9 @@ export function rutas(on, { cleanTask = (t) => t } = {}) {
     if (!alcance.abierto) return res.json({ items: [], puede, alcance });
     const items = (await db.list(COLL)).filter((d) => d.ws === ws && lc(d.client_slug) === slug && (!tool || d.tool === tool) && (!ciclo || d.ciclo === ciclo) && (req.query.archivados === '1' || !d.archivado))
       .sort((a, z) => tiempo(z._meta?.updated_at) - tiempo(a._meta?.updated_at));
-    res.json({ items: items.map((d) => salida(u, d)), puede, alcance });
+    // Con la estrategia en vivo aprobada, Strategy de ese cliente es solo lectura: los items sí salen, con el aviso en el alcance.
+    const cerrada = ws === 'strategy' && (await estrategiaCerrada(slug));
+    res.json({ items: items.map((d) => salida(u, d)), puede, alcance: cerrada ? { abierto: false, code: 'APROBADO', texto: TEXTO_APROBADA } : alcance });
   });
   on('GET', 'entregables/:id', async (req, res) => {
     const { cur, u } = await deDoc(req, res); if (!u) return;
@@ -150,18 +183,20 @@ export function rutas(on, { cleanTask = (t) => t } = {}) {
     const b = body(req), tool = herramientaDe(String(b.tool || ''));
     if (!tool) return res.status(400).json({ error: 'Esa herramienta no existe' });
     const slug = lc(b.client_slug), u = await abre(req, res, { ws: tool.ws, slug, write: true, tool: tool.id }); if (!u) return;
+    if (tool.id === 'offer-architect' && (await ofertaCerrada(res, slug))) return; // un Borrador nuevo no esquiva la oferta aprobada
     if (grande(res, b)) return;
     let limpio;
-    try { limpio = limpiarEntregable({ ...b, tool: tool.id, client_slug: slug }, tool.limpiar); } catch { return res.status(400).json({ error: 'El contenido no sirve para esta herramienta' }); }
+    try { limpio = limpiarEntregable({ ...b, tool: tool.id, client_slug: slug }, limpiarDe(tool)); } catch { return res.status(400).json({ error: 'El contenido no sirve para esta herramienta' }); }
     if (ocultaCostos(u, tool)) limpio.contenido = tool.conCostos(null, limpio.contenido); // quien no ve costos no los escribe
     if (grande(res, limpio)) return;
+    const malO = await ofertaMal(tool, slug, null, limpio.contenido); if (malO) return res.status(403).json(malO);
     const malP = await proyectoMal(u, limpio.project_id); if (malP) return res.status(404).json({ error: malP });
     const malE = await entradasMal(limpio.entradas, slug); if (malE) return res.status(400).json({ error: malE });
     const doc = { ...limpio, titulo: limpio.titulo || tool.nombre, ws: tool.ws, pestana: tool.pestana, owner: u.email, estado: 'Borrador', archivado: false, version: 1, aprobado: null,
       historial: [entrada(u, 'crear', 1)], tareas: [], resultado: [], siguientes: [] };
     const d = await db.create(COLL, doc, u.email);
     await db.create(COLL_V, versionDe(d, 1), u.email, idVersion(d.id, 1));
-    res.json(salida(u, d));
+    res.json({ ...salida(u, d), ...avisoDe(await aSuCasa(u, d)) });
   });
 
   // ---------- Editar ----------
@@ -172,27 +207,33 @@ export function rutas(on, { cleanTask = (t) => t } = {}) {
     const b = body(req), tool = herramientaDe(cur.tool);
     if (grande(res, b)) return;
     let limpio;
-    try { limpio = limpiarEntregable({ ...cur, ...b, tool: cur.tool, client_slug: cur.client_slug, entradas: cur.entradas }, tool?.limpiar); } catch { return res.status(400).json({ error: 'El contenido no sirve para esta herramienta' }); }
+    try { limpio = limpiarEntregable({ ...cur, ...b, tool: cur.tool, client_slug: cur.client_slug, entradas: cur.entradas }, limpiarDe(tool)); } catch { return res.status(400).json({ error: 'El contenido no sirve para esta herramienta' }); }
     if (ocultaCostos(u, tool)) limpio.contenido = tool.conCostos(cur.contenido, limpio.contenido); // lo que mandó sin costos no pisa los guardados
     if (grande(res, limpio)) return;
     if ('project_id' in b && limpio.project_id !== cur.project_id) { const malP = await proyectoMal(u, limpio.project_id); if (malP) return res.status(404).json({ error: malP }); }
+    const malO = await ofertaMal(tool, cur.client_slug, cur.contenido, limpio.contenido); if (malO) return res.status(403).json(malO);
     const cambio = cambioDeContenido(cur, limpio.contenido);
+    // La oferta se aprueba con el bloque (Oferta o Modelo de dinero): aprobada, cambiarla es 409 hasta que el CEO reabra el bloque.
+    if (tool?.id === 'offer-architect' && cambio.version !== cur.version && (await ofertaCerrada(res, cur.client_slug))) return;
     const campos = { titulo: limpio.titulo || cur.titulo, ciclo: 'ciclo' in b ? limpio.ciclo : cur.ciclo || '', project_id: 'project_id' in b ? limpio.project_id : cur.project_id || '',
       criterios: 'criterios' in b ? limpio.criterios : cur.criterios, ia: 'ia' in b ? limpio.ia : cur.ia, contenido: limpio.contenido };
     // Sin nada que guardar no se escribe (y no ensucia el historial): pero una versión vieja de quien edita sigue siendo 409.
     if (cambio.version === cur.version && canon({ ...campos }) === canon({ titulo: cur.titulo, ciclo: cur.ciclo || '', project_id: cur.project_id || '', criterios: cur.criterios, ia: cur.ia, contenido: cur.contenido })) {
-      return b.v != null && Number(b.v) !== cur.v ? res.status(409).json({ error: CONFLICTO, code: 'CONFLICTO' }) : res.json(salida(u, cur));
+      return b.v != null && Number(b.v) !== cur.v ? res.status(409).json({ error: CONFLICTO, code: 'CONFLICTO' }) : res.json({ ...salida(u, cur), ...avisoDe(await aSuCasa(u, cur)) });
     }
     const data = { ...cur, ...campos, version: cambio.version, estado: cambio.estado, aprobado: cambio.aprobado, historial: [...hist(cur), entrada(u, 'editar', cambio.version, cambio.estado !== cur.estado ? `Vuelve a ${cambio.estado}: cambió el contenido` : '')] };
     const d = await guardar(res, cur, data, b, u); if (!d) return;
     if (cambio.version !== cur.version) await db.create(COLL_V, versionDe(d, cambio.version), u.email, idVersion(d.id, cambio.version));
-    res.json(salida(u, d));
+    res.json({ ...salida(u, d), ...avisoDe(await aSuCasa(u, d)) });
   });
 
   // ---------- Estado ----------
   on('POST', 'entregables/:id/estado', async (req, res) => {
     const { cur, u } = await deDoc(req, res, { write: true, cierra: false }); if (!u) return;
-    const b = body(req), a = String(b.a || ''), tool = herramientaDe(cur.tool), quien = pasoPermitido(cur.estado, a);
+    const b = body(req), a = String(b.a || ''), tool = herramientaDe(cur.tool);
+    // Offer Architect envuelve los bloques Oferta y Modelo de dinero: no hay otro camino de aprobación, ni para el CEO.
+    if (cur.tool === 'offer-architect' && a === 'Aprobado') return res.status(409).json({ error: 'Se aprueba con el bloque Oferta (solo el CEO)', code: 'APRUEBA_BLOQUE' });
+    const quien = pasoPermitido(cur.estado, a);
     if (!quien) return res.status(409).json({ error: `De «${cur.estado}» no se pasa a «${a}»`, code: 'PASO' });
     if (quien === 'aprobador' && !puedeAprobar(u, tool)) return res.status(403).json({ error: !tool || tool.aprueba === 'ceo' ? 'Solo el CEO aprueba esto' : 'Solo el CEO o el COO aprueban esto' });
     if (a === 'Aprobado') {
@@ -213,6 +254,7 @@ export function rutas(on, { cleanTask = (t) => t } = {}) {
     const { cur, u } = await deDoc(req, res, { write: true, editable: false }); if (!u) return;
     const b = body(req), si = b.archivado !== false;
     if (Boolean(cur.archivado) === si) return res.json(salida(u, cur));
+    if (cur.tool === 'offer-architect' && (await ofertaCerrada(res, cur.client_slug))) return; // archivar el espejo aprobado deja un Borrador nuevo como «el último»
     const d = await guardar(res, cur, { ...cur, archivado: si, historial: [...hist(cur), entrada(u, si ? 'archivar' : 'desarchivar', cur.version)] }, b, u); if (!d) return;
     res.json(salida(u, d));
   });
@@ -230,8 +272,9 @@ export function rutas(on, { cleanTask = (t) => t } = {}) {
       const p = idOk(s.deliverable_id) ? await db.get(COLL, s.deliverable_id) : null;
       if (p && !p.archivado && lc(p.client_slug) === lc(cur.client_slug) && (p.entradas || []).some((e) => e.deliverable_id === cur.id && e.version === version)) return res.json({ doc: salida(u, p), ya: true });
     }
+    if (nuevo.tool === 'offer-architect' && (await ofertaCerrada(res, cur.client_slug))) return; // otro Borrador de Offer Architect no esquiva la oferta aprobada
     const nid = db.newId();
-    const doc = { ...limpiarEntregable(nuevo, tool.limpiar), ws: tool.ws, pestana: tool.pestana, owner: u.email, estado: 'Borrador', archivado: false, version: 1, aprobado: null,
+    const doc = { ...limpiarEntregable(nuevo, limpiarDe(tool)), ws: tool.ws, pestana: tool.pestana, owner: u.email, estado: 'Borrador', archivado: false, version: 1, aprobado: null,
       historial: [entrada(u, 'crear', 1, `Viene de «${cur.titulo}» v${version}`)], tareas: [], resultado: [], siguientes: [] };
     const data = { ...cur, siguientes: [...(cur.siguientes || []), { tool: nuevo.tool, deliverable_id: nid }], historial: [...hist(cur), entrada(u, 'siguiente', cur.version, `→ ${tool.nombre}`)] };
     // Primero el origen (con su v: si alguien lo cambió, no se crea nada) y luego el Borrador con el id ya reservado.

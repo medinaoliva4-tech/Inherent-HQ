@@ -6,6 +6,9 @@
 // /api/db/strategy (la ruta genérica responde 404): todo pasa por las rutas de aquí, que aplican esas reglas.
 // Las fuentes (hormozi-brain/references) se sirven solo a quien ve Estrategia (el cliente nunca), con la ruta validada
 // contra una lista cerrada de carpetas y sin «..».
+// Fase 3a: la diana (PUT estrategia/:slug/bullseye) y los espejos de las herramientas de Strategy en «deliverables»:
+// Customer Bullseye → sources cfg-<slug>.bullseye · Business X-Ray → la estrategia en vivo · Offer Architect → se aprueba con
+// el bloque Oferta/Modelo. api/_lib/entregables.js llama a estas funciones al guardar; aquí está la regla y la escritura.
 import fs from 'node:fs';
 import * as db from './db.js';
 import { guard, scoper, edits, canRead } from './access.js';
@@ -18,6 +21,12 @@ import { puertasDe, resumen as resumenLaya, GATES_ID } from '../../public/js/lay
 import { pathLabel } from '../../public/js/library-tree.js';
 import { vivaId, limpiarParche, aplicar } from '../../public/js/estrategia-viva.js';
 import { fichaMd, rutaEditable } from '../../public/js/ficha.js';
+import { cleanBullseye, guardarDiana } from './content.js';
+import * as diana from '../../public/js/strategy/diana.js';
+import * as xray from '../../public/js/strategy/xray.js';
+import * as oferta from '../../public/js/strategy/oferta.js';
+import { herramientaDe } from '../../public/js/herramientas.js';
+import { COLL as COLL_ENT, COLL_V, idVersion, cambioDeContenido, limpiarEntregable, canon, faltas as faltasDe } from '../../public/js/entregables.js';
 
 const MAX_BORRADOR = 60_000;
 // La Library como contexto del chat: hasta 6 documentos y ~36 mil caracteres en total (el puente acepta 60 mil por mensaje).
@@ -78,6 +87,141 @@ async function acceso(req, res, slug, { write = false } = {}) {
   return u;
 }
 const docsDe = async (slug) => Object.fromEntries((await db.list(COLL)).filter((d) => d.slug === slug).map((d) => [d.bloque, d]));
+
+// Como acceso(), pero también deja pasar la marca personal del CEO: no es una carpeta de clients/ (su diana vive en sources cfg-personal).
+async function accesoMarca(req, res, slug, opts) {
+  if (slug !== 'personal') return acceso(req, res, slug, opts);
+  const u = await guard(req, res, 'estrategia', opts); if (!u) return null;
+  if (u.role !== 'ceo') { res.status(404).json({ error: 'Esa marca no está entre las tuyas' }); return null; }
+  return u;
+}
+
+// ---------- Strategy en «deliverables»: los espejos y sus reglas ----------
+// Lo escribe el servidor (db.update con la v que leyó: si alguien lo cambió, reintenta una vez y si no, avisa). Nada de upsert.
+const lc = (x) => String(x || '').toLowerCase();
+const tiempoDe = (x) => { const t = new Date(x).getTime(); return Number.isFinite(t) ? t : 0; };
+const hist = (d) => (Array.isArray(d.historial) ? d.historial : []);
+const entrada = (u, accion, version, texto = '') => ({ en: ahora(), por: u.email, accion, nota: cap(String(texto).replace(/\s+/g, ' ').trim(), 400), version });
+// La foto de una versión (la misma de api/_lib/entregables.js): solo se crea, nunca se edita.
+const fotoDe = (d, n) => ({ deliverable_id: d.id, version: n, tool: d.tool, ws: d.ws, pestana: d.pestana, titulo: d.titulo, client_slug: d.client_slug, ciclo: d.ciclo, project_id: d.project_id, estado: d.estado, contenido: d.contenido, criterios: d.criterios, entradas: d.entradas, ia: d.ia });
+const CONFLICTO = 'Alguien lo cambió justo ahora. Recarga y vuelve a intentar.';
+// Crear con un id que otro acaba de crear no es un error: es un conflicto (null) y se vuelve a leer.
+async function escribe(coll, id, cur, data, who) {
+  try { return cur ? await db.update(coll, id, data, cur.v, who) : await db.create(coll, data, who, id); } catch (e) { if (!cur && /duplicate key|unique constraint/i.test(String(e?.message))) return null; throw e; }
+}
+export const estrategiaCerrada = async (slug) => Boolean((await db.get(COLL, vivaId(slug)).catch(() => null))?.aprobado);
+// El último entregable sin archivar de una herramienta para un cliente.
+async function ultimoDe(tool, slug) {
+  return (await db.list(COLL_ENT)).filter((d) => d.tool === tool && lc(d.client_slug) === lc(slug) && !d.archivado).sort((a, z) => tiempoDe(z._meta?.updated_at) - tiempoDe(a._meta?.updated_at))[0] || null;
+}
+// El módulo puro de cada herramienta de Strategy que guarda un entregable (diana, X-Ray y oferta).
+const MODULO = { 'customer-bullseye': diana, 'business-xray': xray, 'offer-architect': oferta };
+// El limpiar() de una herramienta: el del registro y, si el registro aún no lo trae, el de su módulo puro.
+export const limpiarDe = (tool) => (typeof tool?.limpiar === 'function' ? tool.limpiar : MODULO[tool?.id]?.limpiar);
+// Un entregable «con algo»: su contenido no es el vacío de su herramienta.
+function conContenido(d) {
+  const limpiar = limpiarDe(herramientaDe(d?.tool)), m = MODULO[d?.tool]; let vacio = {};
+  try { vacio = limpiar ? limpiar(typeof m?.vacio === 'function' ? m.vacio() : {}) : {}; } catch { vacio = {}; }
+  return canon(d?.contenido ?? {}) !== canon(vacio);
+}
+
+// Customer Bullseye → su espejo en deliverables (el último; si no hay, un Borrador nuevo). Cambiar la diana de un Aprobado crea la
+// versión nueva y lo vuelve Borrador, como en cualquier entregable. null = alguien lo cambió justo ahora.
+export async function espejoDiana(slug, contenido, u) {
+  const nuevo = diana.limpiar(contenido);
+  for (let i = 0; i < 2; i++) {
+    const cur = await ultimoDe('customer-bullseye', slug);
+    if (!cur) {
+      const limpio = limpiarEntregable({ tool: 'customer-bullseye', titulo: herramientaDe('customer-bullseye')?.nombre, client_slug: slug, contenido: nuevo, ia: { via: 'manual' } }, diana.limpiar);
+      const doc = { ...limpio, titulo: limpio.titulo || 'Customer Bullseye', ws: 'strategy', pestana: 'research', owner: u.email, estado: 'Borrador', archivado: false, version: 1, aprobado: null, historial: [entrada(u, 'crear', 1, 'Desde la diana')], tareas: [], resultado: [], siguientes: [] };
+      const d = await db.create(COLL_ENT, doc, u.email);
+      await db.create(COLL_V, fotoDe(d, 1), u.email, idVersion(d.id, 1));
+      return d;
+    }
+    const cambio = cambioDeContenido(cur, nuevo);
+    if (cambio.version === cur.version) return cur;
+    const data = { ...cur, contenido: nuevo, version: cambio.version, estado: cambio.estado, aprobado: cambio.aprobado, historial: [...hist(cur), entrada(u, 'editar', cambio.version, cambio.estado !== cur.estado ? `Vuelve a ${cambio.estado}: cambió la diana` : 'Desde la diana')] };
+    const d = await db.update(COLL_ENT, cur.id, data, cur.v, u.email);
+    if (d) { await db.create(COLL_V, fotoDe(d, cambio.version), u.email, idVersion(d.id, cambio.version)); return d; }
+  }
+  return null;
+}
+// Un Customer Bullseye guardado en deliverables (POST/PUT): la diana también va a su casa (sources cfg-<slug>.bullseye, con «audience»).
+// Una diana a medias (sin centro o sin los 5 niveles) no se pasa a su casa. { ok:false } = alguien cambió la configuración justo ahora.
+export async function dianaASuCasa(slug, contenido, u) {
+  if (!cleanBullseye(contenido)) return { ok: true, saltada: true };
+  const g = await guardarDiana(slug, contenido, u.email);
+  return g.conflicto || g.invalida ? { ok: false } : { ok: true, igual: Boolean(g.igual) };
+}
+
+// Business X-Ray guardado → la estrategia en vivo: la conclusión (contexto) y dónde está trabado (análisis). Lo que viene vacío no borra
+// lo que ya se concretó en el chat. Con la estrategia aprobada no se toca. { ok:false } = alguien la cambió justo ahora.
+export async function xrayAViva(slug, contenido, u) {
+  const parche = limpiarParche(xray.aViva(contenido));
+  for (const k of ['contexto', 'analisis']) if (parche[k]) { parche[k] = Object.fromEntries(Object.entries(parche[k]).filter(([, v]) => v !== '')); if (!Object.keys(parche[k]).length) delete parche[k]; }
+  if (!Object.keys(parche).length) return { ok: true, vacio: true };
+  const id = vivaId(slug), sinFecha = ({ actualizado, ...r }) => canon(r);
+  for (let i = 0; i < 2; i++) {
+    const cur = await db.get(COLL, id);
+    if (cur?.aprobado) return { ok: true, cerrada: true };
+    const { viva, cambiadas } = aplicar(cur?.viva || {}, parche, ahora());
+    if (cur && sinFecha(viva) === sinFecha(cur.viva || {})) return { ok: true, igual: true };
+    const d = await escribe(COLL, id, cur, { ...(cur || {}), slug, bloque: 'viva', viva, aprobado: null }, u.email);
+    if (d) return { ok: true, cambiadas };
+  }
+  return { ok: false };
+}
+
+// Offer Architect envuelve los bloques Oferta y Modelo de dinero: no hay un segundo botón de aprobar. Al aprobar uno de los dos, su
+// entregable espejo (el último sin archivar) queda Aprobado con la versión aprobada, para que «Enviar a…» funcione. Aprobar es tan estricto como
+// POST entregables/:id/estado: pide la v que leyó el CEO (400 FALTA_V), la compara con la de ahora (409 CONFLICTO) y corre faltas() (400 FALTAS).
+// Un espejo vacío (o sin espejo) no se sella: no hay nada que aprobar en la herramienta. Reabrir regresa a Borrador el espejo que lleva el OK
+// (el Aprobado con su aprobado.version, no el más reciente a secas); el servidor solo lo pide cuando ningún bloque de la oferta sigue aprobado.
+// Devuelve { ok:true, espejo } o { ok:false, status, code, error, faltas? }.
+export const esDeOferta = (bloque) => bloque === 'oferta' || bloque === 'modelo';
+const esAprobado = (d) => ['Aprobado', 'Entregado'].includes(d?.estado);
+const malSello = (status, code, error, extra = {}) => ({ ok: false, status, code, error, ...extra });
+// El nivel que manda en la oferta (bloqueos y faltas): el de la ficha; una ficha sin nivel reconocido cae en el techo más bajo (Brand Growth);
+// «A la medida» se rige por su ficha. Sin ficha (Inherent y la marca personal) no hay nivel: null.
+// → { id, nombre, supuesto } (supuesto: la ficha no trae nivel y se tomó Brand Growth) o null.
+export async function nivelDeOferta(slug) {
+  const f = await ficha(slug);
+  if (!f.hay) return null;
+  return f.nivel ? { id: f.nivel.id, nombre: f.nivel.nombre, supuesto: false } : { id: 'growth', nombre: 'Brand Growth', supuesto: true };
+}
+async function selladoDe(slug) {
+  return (await db.list(COLL_ENT)).filter((d) => d.tool === 'offer-architect' && lc(d.client_slug) === lc(slug) && !d.archivado && esAprobado(d))
+    .sort((a, z) => tiempoDe(z.aprobado?.en) - tiempoDe(a.aprobado?.en))[0] || null;
+}
+export async function sellarOferta(slug, u, aprobar, { v } = {}) {
+  if (aprobar) {
+    const cur = await ultimoDe('offer-architect', slug);
+    if (!cur || !conContenido(cur)) return { ok: true, espejo: null };
+    if (esAprobado(cur) && cur.aprobado?.version === cur.version) return { ok: true, espejo: cur.id }; // el otro bloque ya lo selló con esta versión
+    if (v == null || v === '' || !Number.isInteger(Number(v))) return malSello(400, 'FALTA_V', 'Esta oferta se aprueba desde Offer Architect: ahí ves la versión que apruebas.');
+    if (Number(v) !== cur.v) return malSello(409, 'CONFLICTO', CONFLICTO);
+    const f = faltasDe(cur, { nivelId: (await nivelDeOferta(slug))?.id });
+    if (f.length) return malSello(400, 'FALTAS', f.join(' · '), { faltas: f });
+    const nota = `${cur.estado} → Aprobado · con el bloque Oferta`;
+    const d = await db.update(COLL_ENT, cur.id, { ...cur, estado: 'Aprobado', aprobado: { por: u.email, en: ahora(), version: cur.version }, historial: [...hist(cur), entrada(u, 'estado', cur.version, nota)] }, cur.v, u.email);
+    return d ? { ok: true, espejo: d.id } : malSello(409, 'CONFLICTO', CONFLICTO);
+  }
+  for (let i = 0; i < 2; i++) {
+    const cur = (await selladoDe(slug)) || (await ultimoDe('offer-architect', slug));
+    if (!cur || !esAprobado(cur)) return { ok: true, espejo: cur?.id ?? null };
+    const nota = `${cur.estado} → Borrador · el CEO reabrió el bloque`;
+    const d = await db.update(COLL_ENT, cur.id, { ...cur, estado: 'Borrador', aprobado: null, historial: [...hist(cur), entrada(u, 'estado', cur.version, nota)] }, cur.v, u.email);
+    if (d) return { ok: true, espejo: d.id };
+  }
+  return malSello(409, 'CONFLICTO', CONFLICTO);
+}
+// ¿El otro bloque de la oferta (Modelo si es Oferta, Oferta si es Modelo) sigue aprobado?
+const otroDeOfertaAprobado = async (slug, bloque) => (await db.get(COLL, docId(slug, bloque === 'oferta' ? 'modelo' : 'oferta')).catch(() => null))?.estado === 'aprobado';
+// Qué bloques de la oferta (Oferta, Modelo de dinero) están aprobados: con alguno, la oferta está cerrada hasta que el CEO lo reabra.
+export async function ofertaAprobada(slug) {
+  const docs = await Promise.all(['oferta', 'modelo'].map((b) => db.get(COLL, docId(slug, b)).catch(() => null)));
+  return ['oferta', 'modelo'].filter((b, i) => docs[i]?.estado === 'aprobado').map((b) => bloqueDe(b).nombre);
+}
 
 // El juicio de Laya sobre la etapa (lo último), para mostrarlo como propuesta.
 async function propuestaLaya(slug) {
@@ -254,23 +398,53 @@ export function rutas(on) {
   // Un cliente: sus 5 bloques con su entregable del repo, su estado, su límite de nivel y su borrador.
   // La estrategia en vivo (lo que se concreta en el chat): leer va con la pantalla; aquí se guarda y se aprueba.
   // Quien edita Estrategia la llena; solo el CEO la aprueba. Aprobada, queda cerrada hasta que el CEO la reabra.
+  // Se escribe con db.update y la v que se leyó (nunca upsert: no deja huella en audit y pisa lo que otro escribió en medio). Si alguien cambió el
+  // documento antes (otro editor, el X-Ray, el CEO que aprueba), se lee otra vez y se reaplica el parche; con dos intentos fallidos, 409.
+  // El parche nunca toca «aprobado»: eso es solo de viva/aprobar.
   on('PUT', 'estrategia/:slug/viva', async (req, res) => {
     const slug = String(req.params.slug || ''), u = await acceso(req, res, slug, { write: true }); if (!u) return;
-    const cur = (await db.get(COLL, vivaId(slug))) || {};
-    if (cur.aprobado) return res.status(409).json({ error: 'La estrategia está aprobada: el CEO tiene que reabrirla para cambiarla.', code: 'APROBADO' });
-    const parche = limpiarParche(body(req).parche);
-    if (!Object.keys(parche).length) return res.json({ ok: true, viva: cur.viva || {}, cambiadas: [] });
-    const { viva, cambiadas } = aplicar(cur.viva || {}, parche, ahora());
-    const d = await db.upsert(COLL, vivaId(slug), { slug, bloque: 'viva', viva, aprobado: null }, u.email);
-    res.json({ ok: true, viva: d.viva, cambiadas });
+    const id = vivaId(slug), parche = limpiarParche(body(req).parche);
+    for (let i = 0; i < 2; i++) {
+      const cur = await db.get(COLL, id);
+      if (cur?.aprobado) return res.status(409).json({ error: 'La estrategia está aprobada: el CEO tiene que reabrirla para cambiarla.', code: 'APROBADO' });
+      if (!Object.keys(parche).length) return res.json({ ok: true, viva: cur?.viva || {}, cambiadas: [] });
+      const { viva, cambiadas } = aplicar(cur?.viva || {}, parche, ahora());
+      const d = await escribe(COLL, id, cur, { ...(cur || {}), slug, bloque: 'viva', viva }, u.email);
+      if (d) return res.json({ ok: true, viva: d.viva, cambiadas });
+    }
+    res.status(409).json({ error: CONFLICTO, code: 'CONFLICTO' });
   });
+  // Aprobar mira las filas del documento que va a escribir: si el roadmap cambió en medio, la v ya no coincide y se vuelve a leer.
   on('POST', 'estrategia/:slug/viva/aprobar', async (req, res) => {
     const slug = String(req.params.slug || ''), u = await acceso(req, res, slug, { write: true }); if (!u) return;
     if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO aprueba la estrategia' });
-    const cur = await db.get(COLL, vivaId(slug)), aprobar = body(req).aprobar !== false;
-    if (aprobar && !cur?.viva?.roadmap?.filas?.length) return res.status(400).json({ error: 'Falta el roadmap: agrégalo antes de aprobar.' });
-    const d = await db.upsert(COLL, vivaId(slug), { slug, bloque: 'viva', aprobado: aprobar ? { por: u.email, en: ahora() } : null }, u.email);
-    res.json({ ok: true, aprobado: d.aprobado });
+    const id = vivaId(slug), aprobar = body(req).aprobar !== false;
+    for (let i = 0; i < 2; i++) {
+      const cur = await db.get(COLL, id), rm = cur?.viva?.roadmap;
+      if (aprobar && !(rm?.items?.length || rm?.filas?.length)) return res.status(400).json({ error: 'Sin filas no se aprueba', code: 'SIN_FILAS' });
+      if (!cur) return res.json({ ok: true, aprobado: null }); // reabrir lo que nunca se guardó
+      const d = await escribe(COLL, id, cur, { ...cur, slug, bloque: 'viva', aprobado: aprobar ? { por: u.email, en: ahora() } : null }, u.email);
+      if (d) return res.json({ ok: true, aprobado: d.aprobado });
+    }
+    res.status(409).json({ error: CONFLICTO, code: 'CONFLICTO' });
+  });
+
+  // La diana (Customer Bullseye): sources cfg-<slug>.bullseye (la casa de siempre, que leen Marketing › Audience y la herramienta planner del
+  // conector) con «audience» al día, y su espejo en deliverables. Quien edita Estrategia la guarda (la marca personal, solo el CEO).
+  // Sin ficha de oferta, 409; con la estrategia aprobada queda en solo lectura (409) hasta que el CEO la reabra.
+  on('PUT', 'estrategia/:slug/bullseye', async (req, res) => {
+    const slug = String(req.params.slug || ''), u = await accesoMarca(req, res, slug, { write: true }); if (!u) return;
+    if (await estrategiaCerrada(slug)) return res.status(409).json({ error: 'La estrategia está aprobada: el CEO tiene que reabrirla para cambiar la diana.', code: 'APROBADO' });
+    if (slug !== 'personal' && slug !== 'inherent' && !(await ficha(slug)).hay) return res.status(409).json({ error: 'Sin ficha de oferta: el alcance contratado es el techo', code: 'SIN_FICHA' });
+    const x = body(req);
+    if (JSON.stringify(x.bullseye ?? null).length > 60_000) return res.status(413).json({ error: 'La diana es demasiado grande', code: 'GRANDE' });
+    const contenido = diana.limpiar(x.bullseye);
+    const g = await guardarDiana(slug, contenido, u.email, { v: x.v });
+    if (g.invalida) return res.status(400).json({ error: 'A la diana le falta el centro o alguno de los 5 niveles' });
+    if (g.conflicto) return res.status(409).json({ error: CONFLICTO, code: 'CONFLICTO' });
+    const e = await espejoDiana(slug, contenido, u);
+    if (!e) return res.status(409).json({ error: CONFLICTO, code: 'CONFLICTO' });
+    res.json({ ok: true, bullseye: contenido, v: g.v, entregable: { id: e.id, v: e.v, version: e.version, estado: e.estado } });
   });
 
   // Escribir en el repo desde el OS: la ficha de oferta (cuando falta) y los documentos de la carpeta del cliente.
@@ -338,11 +512,20 @@ export function rutas(on) {
     const slug = String(req.params.slug || ''), u = await acceso(req, res, slug, { write: true }); if (!u) return;
     if (u.role !== 'ceo') return res.status(403).json({ error: 'Solo el CEO aprueba la estrategia' });
     const b = bloqueDe(req.params.bloque); if (!b) return res.status(404).json({ error: 'Ese bloque no existe' });
-    const id = docId(slug, b.id), cur = await db.get(COLL, id), aprobar = body(req).aprobar !== false;
-    if (!aprobar) { const d = await db.upsert(COLL, id, { slug, bloque: b.id, estado: '', aprobado: null }, u.email); return res.json({ ok: true, bloque: b.id, estado: estadoDe(d, true) }); }
+    const id = docId(slug, b.id), cur = await db.get(COLL, id), x = body(req), aprobar = x.aprobar !== false;
+    if (!aprobar) {
+      // Reabrir Oferta o Modelo regresa a Borrador el entregable de Offer Architect (no hay otro botón para abrirlo), pero solo si el otro
+      // bloque de la oferta no sigue aprobado: el espejo lleva el OK de los dos.
+      if (esDeOferta(b.id) && !(await otroDeOfertaAprobado(slug, b.id))) { const r = await sellarOferta(slug, u, false); if (!r.ok) return res.status(r.status).json({ error: r.error, code: r.code }); }
+      const d = await db.upsert(COLL, id, { slug, bloque: b.id, estado: '', aprobado: null }, u.email); return res.json({ ok: true, bloque: b.id, estado: estadoDe(d, true) });
+    }
     const hay = entregablesDe(b, await intelDe(slug, true)).hay;
     if (b.id === 'diagnostico' && !cur?.etapa?.confirmada) return res.status(400).json({ error: 'Primero confirma la etapa del negocio.' });
-    if (!cur?.borrador?.texto && !hay && b.id !== 'diagnostico') return res.status(400).json({ error: 'No hay nada que aprobar: este bloque está vacío.' });
+    // El contenido de Oferta y Modelo también puede estar en el entregable de Offer Architect (la herramienta), no solo en el borrador del chat.
+    const enHerramienta = esDeOferta(b.id) && conContenido(await ultimoDe('offer-architect', slug));
+    if (!cur?.borrador?.texto && !hay && !enHerramienta && b.id !== 'diagnostico') return res.status(400).json({ error: 'No hay nada que aprobar: este bloque está vacío.' });
+    // Se aprueba con el bloque: el entregable de Offer Architect queda Aprobado (con su versión) en la misma ruta, con la v que leyó el CEO y sin faltas.
+    if (esDeOferta(b.id)) { const r = await sellarOferta(slug, u, true, { v: x.v }); if (!r.ok) return res.status(r.status).json({ error: r.error, code: r.code, ...(r.faltas ? { faltas: r.faltas } : {}) }); }
     const d = await db.upsert(COLL, id, { slug, bloque: b.id, estado: 'aprobado', aprobado: { por: u.email, en: ahora() } }, u.email);
     res.json({ ok: true, bloque: b.id, estado: 'aprobado', aprobado: d.aprobado });
   });
