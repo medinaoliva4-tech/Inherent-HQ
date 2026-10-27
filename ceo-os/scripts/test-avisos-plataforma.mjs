@@ -109,7 +109,7 @@ t('pla-mcp: mientras no conectes ninguna IA, baja, con «Conectar»', () => {
 t('pla-videos: los de tu puesto que no has visto, con el siguiente; el CEO ve todos', () => {
   const guias = [{ id: 'g1', title: 'Mis tareas', guia: 'hoy', roles: [] }, { id: 'g2', title: 'El Design system', guia: 'design', roles: ['content'] }, { id: 'g3', title: 'Editar video', guia: 'video', roles: ['video'] }];
   const [x] = corre('pla-videos', { guias, yo: yoDe(ANA, { roles: ['content'], vistos: { g1: '2026-10-01' } }) }, ANA);
-  assert.equal(x.titulo, 'Te falta 1 video de «Cómo se usa» de tu puesto'); assert.equal(x.detalle, 'El siguiente: «El Design system» · Marca · Design system.');
+  assert.equal(x.titulo, 'Te falta 1 video de «Cómo se usa» de tu puesto'); assert.equal(x.detalle, 'El siguiente: «El Design system» · Creative · Visual Identity Builder.');
   assert.equal(x.urgencia, 'baja'); assert.equal(x.accion.abre, 'guia'); assert.equal(x.accion2.href, '#/me'); assert.equal(x.huella, 'g2');
   assert.equal(corre('pla-videos', { guias, yo: yoDe(CEO) })[0].titulo, 'Te faltan 3 videos de «Cómo se usa» de tu puesto');
   assert.deepEqual(corre('pla-videos', { guias, yo: yoDe(ANA, { roles: ['content'], vistos: { g1: 1, g2: 1 } }) }, ANA), [], 'todo visto');

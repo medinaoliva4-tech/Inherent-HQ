@@ -17,6 +17,7 @@ import { keyOf, cadenaDe, okOf as okDelMes } from '../tareas-cadena.js';
 // El cliente de una tarea sin proyecto (un encargo de Estrategia lo trae en client_slug).
 const cliDe = (t) => { const s = t.client_slug || ''; return s ? estrategiaNow().find((c) => c.slug === s)?.nombre || s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, ' ') : ''; };
 import { PURPOSE } from '../roleviews.js';
+import { rutaModulo } from '../herramientas.js';
 // Los símbolos de las listas de Mis tareas, como íconos de línea del set del OS.
 const GLIFO = { '◷': 'clock', '!': 'alert', '⚑': 'badge-check', '▦': 'calendar-days', '◧': 'layers', '▤': 'kanban', '◈': 'star', '⇢': 'arrow-right', '◉': 'users' };
 
@@ -224,8 +225,8 @@ export async function render(el, { me, sub, alive }) {
     return cfgs[slug];
   }
   const canContent = me.areas.includes('content');
-  const guionesLink = (slug) => driveOf(slug).guiones_drive || (canContent ? `#/content/guiones/${slug}` : null);
-  const planLink = (slug) => (canContent ? `#/content/plan/${slug}` : driveOf(slug).postear_drive || null);
+  const guionesLink = (slug) => driveOf(slug).guiones_drive || (canContent ? rutaModulo(slug, 'creacion') : null);
+  const planLink = (slug) => (canContent ? rutaModulo(slug, 'calendario') : driveOf(slug).postear_drive || null);
   function material() {
     const slugs = [...new Set(projects.map((p) => p.client_slug).filter(Boolean))];
     clientSel ||= clientOf(open(mine())[0] || {}) || slugs[0] || null;
@@ -260,7 +261,7 @@ export async function render(el, { me, sub, alive }) {
     loadAgenda();
     const ps = content.filter((c) => c.kind === 'post' && c.date >= T0 && c.date <= T7 && !['Publicado', 'Archivado'].includes(estadoDe(c))).sort((a, z) => a.date.localeCompare(z.date));
     return html`<h4 class="wsh4">Reuniones de hoy</h4>${agenda.length ? agenda.slice(0, 4).map((e) => html`<a class="wsrow" href="${/^https:\/\//.test(e.link || '') ? e.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="wsday">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="grow">${e.summary}</span>${e.meet ? html`<span class="mut sm">Meet</span>` : ''}</a>`) : empty('Sin reuniones hoy.')}
-      ${ps.length ? html`<h4 class="wsh4">Se publica esta semana</h4>${ps.slice(0, 4).map((p) => html`<a class="wsrow" href="#/content/postear/${p.profile}"><span class="wsday">${dayName(p.date)}</span><span class="grow">${p.title}<span class="mut sm"> · ${p.profile}</span></span></a>`)}` : ''}`;
+      ${ps.length ? html`<h4 class="wsh4">Se publica esta semana</h4>${ps.slice(0, 4).map((p) => html`<a class="wsrow" href="${rutaModulo(p.profile, 'ideas')}"><span class="wsday">${dayName(p.date)}</span><span class="grow">${p.title}<span class="mut sm"> · ${p.profile}</span></span></a>`)}` : ''}`;
   }
   function stats(k) {
     const l = tasks.filter((t) => t.assignee === k); const m = ymNow();
@@ -349,7 +350,7 @@ export async function render(el, { me, sub, alive }) {
     return panel(html`<div class="row" style="gap:10px;margin-bottom:6px;flex-wrap:wrap"><select class="in" id="clientSel" style="width:auto;min-width:140px">${slugs.map((x) => html`<option value="${x}" ${x === clientSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select><span class="mut sm">Assets y prompts de cada marca</span></div>
       ${!clientSel ? empty('Sin clientes con proyecto.') : html`
       ${assets ? html`<a class="wsrow" href="${assets}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow">Assets<span class="mut sm"> · logos, fotos, videos crudos</span></span><span class="mut">↗</span></a>` : html`<div class="wsrow static"><span class="fi">${IC.drive}</span><span class="grow mut sm">Sin carpeta de assets. Se agrega en Clientes → ${clientSel.toUpperCase()} → Editar datos.</span></div>`}
-      ${[[ico('doc'), 'Guiones', 'en Drive', guionesLink(clientSel)], [ico('video'), 'Videos por postear', 'carpeta de Drive', driveOf(clientSel).postear_drive], ...(canContent ? [[ico('cal'), 'Calendario', 'Planner del mes', `#/content/plan/${clientSel}`]] : [])].map(([i, t, sub, h]) => h
+      ${[[ico('doc'), 'Guiones', 'en Drive', guionesLink(clientSel)], [ico('video'), 'Videos por postear', 'carpeta de Drive', driveOf(clientSel).postear_drive], ...(canContent ? [[ico('cal'), 'Calendario', 'Planner del mes', rutaModulo(clientSel, 'calendario')]] : [])].map(([i, t, sub, h]) => h
         ? html`<a class="wsrow" href="${h}" ${/^https/.test(h) ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span style="width:22px;text-align:center">${i}</span><span class="grow">${t}<span class="mut sm"> · ${sub}</span></span><span class="mut">${/^https/.test(h) ? '↗' : '›'}</span></a>`
         : html`<div class="wsrow static"><span style="width:22px;text-align:center">${i}</span><span class="grow mut sm">${t}: ${driveOf(clientSel).loading ? 'cargando…' : 'sin carpeta conectada. La conecta Content.'}</span></div>`)}
       <h4 class="wsh4">Prompts de ${clientSel.toUpperCase()}</h4>

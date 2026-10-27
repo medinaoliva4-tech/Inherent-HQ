@@ -12,6 +12,7 @@ import { loadEstrategia } from '../stratlist.js';
 import { BLOQUES, etapaLabel, etapaDe } from '../estrategia.js';
 import { CYCLE } from '../cycle.js';
 import { estadoFactura } from '../facturas.js';
+import { rutaModulo, rutaBloque } from '../herramientas.js';
 
 // Clientes: la lista (quién, su nivel, cómo va el mes) y la página de cada uno en pestañas: Info · Links · Servicio ·
 // Presupuestos (photo shoots, pauta, eventos). Su Marca (asociaciones e inspo) vive en el espacio Marcas: aquí queda un link.
@@ -91,7 +92,7 @@ export async function render(el, { me, sub, alive }) {
       mount(el, html`
         <div class="row" style="margin-bottom:14px">${tab === 'info' ? html`<a class="btn ghost xs" href="#/clients">← Clientes</a>` : html`<button class="btn ghost xs" data-act="tab" data-t="info">← ${a.name}</button>`}</div>
         ${tab === 'info' ? html`<header class="cp-hd"><span class="cp-mono">${initials(a.name)}</span><div class="cp-hd-t"><h1>${a.name}</h1><p>Cómo va la cuenta hoy</p><div id="cchips">${chips()}</div></div>
-          <div class="cp-hd-b">${toBrand ? html`<a class="btn ghost xs" href="#/marcas/${slug}">${ico('spark', 13)} Marca ↗</a>` : ''}${edit ? html`<button class="btn ghost xs" data-act="editAcc">Editar datos</button>` : ''}</div></header>`
+          <div class="cp-hd-b">${toBrand ? html`<a class="btn ghost xs" href="#/ws/marketing/${slug}/overview">${ico('spark', 13)} Marketing ↗</a>` : ''}${edit ? html`<button class="btn ghost xs" data-act="editAcc">Editar datos</button>` : ''}</div></header>`
           : html`<header class="cp-hd sm"><div class="cp-hd-t"><h1>${(TABS.find(([k]) => k === tab) || [, ''])[1]}</h1><p>${a.name}</p></div></header>`}
         <div id="cbody"></div>`);
       const b = $('#cbody', el);
@@ -113,7 +114,7 @@ export async function render(el, { me, sub, alive }) {
     function cicloCard() {
       const dia = +today().slice(8, 10), fase = dia > 20 ? null : CYCLE.filter(([, x, z]) => dia >= x && dia <= z).at(-1) || null;
       const pa = ps.find((p) => p.status !== 'cerrado') || ps[0];
-      return html`<section class="card cp-card"><div class="row"><span class="lbl">El ciclo de este mes</span><div class="sp"></div>${pa ? html`<a class="sm" href="#/operations/p/${encodeURIComponent(pa.id)}/timeline">Editar fechas ›</a>` : toBrand ? html`<a class="sm" href="#/marcas/${slug}/calendario">Calendario ›</a>` : ''}</div><div class="cp-dia"><b>${dia > 20 ? '20+' : `Día ${dia}`}</b><span class="mut">${dia > 20 ? 'Ya se presentó. Lo presentado se publica desde el día 1.' : fase ? fase[0] : ''}</span></div>
+      return html`<section class="card cp-card"><div class="row"><span class="lbl">El ciclo de este mes</span><div class="sp"></div>${pa ? html`<a class="sm" href="#/operations/p/${encodeURIComponent(pa.id)}/timeline">Editar fechas ›</a>` : toBrand ? html`<a class="sm" href="${rutaModulo(slug, 'calendario')}">Calendario ›</a>` : ''}</div><div class="cp-dia"><b>${dia > 20 ? '20+' : `Día ${dia}`}</b><span class="mut">${dia > 20 ? 'Ya se presentó. Lo presentado se publica desde el día 1.' : fase ? fase[0] : ''}</span></div>
         <div class="bh-ciclo" aria-label="Fases del ciclo">${CYCLE.map(([n, x, z]) => html`<i class="${dia > z ? 'ok' : dia >= x ? 'now' : ''}" style="flex:${z - x + 1}" title="${n}"></i>`)}</div>
         <div class="bh-ciclo-l mut sm"><span>Día 1 · reunión</span><span>11 · último día para producir</span><span>20 · presentación</span></div></section>`;
     }
@@ -144,8 +145,8 @@ export async function render(el, { me, sub, alive }) {
         ${resumen ? '' : t('t1', 'link', 'Links', 'Drive, redes y archivos', [['Drive y links', { tab: 'links' }]])}
         ${t('t2', 'doc', 'Servicio', 'Qué contrató y qué no', [['Ficha y servicio', { tab: 'servicio' }], ...(resumen ? [] : [['Presupuestos', { tab: 'presupuestos' }]])])}
         ${resumen ? '' : t('t3', 'eye', 'Portal y accesos', 'Lo que ve el cliente y quién entra', [['Portal y especialista', { tab: 'ajustes' }], ['Ver su portal', { href: `#/portal/${slug}` }]])}
-        ${toBrand ? t('t4', 'spark', 'Marca', 'Contenido, diseño y resultados', [['Inicio de la marca', { href: `#/marcas/${slug}` }], ['Calendario', { href: `#/marcas/${slug}/calendario` }]]) : ''}
-        ${veEst ? t('t5', 'target', 'Estrategia', 'Etapa, meta y roadmap', [['Abrir la estrategia', { href: `#/estrategia/${slug}` }]]) : ''}</div>`;
+        ${toBrand ? t('t4', 'spark', 'Marca', 'Contenido, diseño y resultados', [['Inicio de la marca', { href: `#/ws/marketing/${slug}/overview` }], ['Calendario', { href: rutaModulo(slug, 'calendario') }]]) : ''}
+        ${veEst ? t('t5', 'target', 'Estrategia', 'Etapa, meta y roadmap', [['Abrir la estrategia', { href: `#/ws/strategy/${slug}/overview` }]]) : ''}</div>`;
     }
     function infoTab(b) {
       mount(b, html`<div class="cpf">
@@ -185,10 +186,10 @@ export async function render(el, { me, sub, alive }) {
     function estrategiaCard() {
       if (!veEst) return '';
       const e = est;
-      return html`<section class="card cl-card" id="cl-est"><div class="row"><b class="cl-h">Estrategia</b><div class="sp"></div><a class="btn ghost xs" href="#/estrategia/${slug}">Abrir</a></div>
+      return html`<section class="card cl-card" id="cl-est"><div class="row"><b class="cl-h">Estrategia</b><div class="sp"></div><a class="btn ghost xs" href="#/ws/strategy/${slug}/overview">Abrir</a></div>
         ${e === undefined ? html`<p class="mut sm">Cargando…</p>` : !e ? html`<p class="mut sm">Este cliente todavía no tiene estrategia en el OS.</p>` : html`
         <div class="cl-kv"><div><span class="mut sm">Etapa</span><b>${e.etapa && etapaDe(e.etapa.n) ? `${etapaLabel(etapaDe(e.etapa.n))}${e.etapa.confirmada ? '' : ' · sin confirmar'}` : 'Sin etapa'}</b></div><div><span class="mut sm">Aprobado por el CEO</span><b>${e.aprobados} de 5 bloques</b></div></div>
-        <div class="cl-blocks">${BLOQUES.map((x) => html`<a href="#/estrategia/${slug}/${x.id}" class="${e.bloques[x.id] || 'vacio'}" title="${x.nombre}"><i></i><span>${x.nombre}</span></a>`)}</div>`}</section>`;
+        <div class="cl-blocks">${BLOQUES.map((x) => html`<a href="${rutaBloque(slug, x.id)}" class="${e.bloques[x.id] || 'vacio'}" title="${x.nombre}"><i></i><span>${x.nombre}</span></a>`)}</div>`}</section>`;
     }
     function proyectosCard() {
       const pct = (p) => { const ts = tasks.filter((t) => t.project_id === p.id); return ts.length ? Math.round((ts.filter((t) => t.status === 'Hecha').length / ts.length) * 100) : null; };

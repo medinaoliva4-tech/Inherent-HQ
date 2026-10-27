@@ -12,6 +12,7 @@ import { ojoEstado, verImagen, ojoChip } from './ojo.js';
 import { chipReferente } from './laya.js';
 import { tokenDe, saludPuente, preguntar } from './puente-chat.js';
 import { resumenAvatar } from './avatares.js';
+import { rutaModulo } from './herramientas.js';
 
 const C = col('content');
 const safeImg = (u) => (/^https:\/\/[^\s'"()]+$|^\/api\/media\/img-[a-f0-9]{24}$/.test(String(u || '')) ? u : null);
@@ -357,7 +358,7 @@ function ropen(id, b, ctx) {
     <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster">${t ? html`<img src="${t}" alt="">` : ''}<span class="rv-load">Cargando video…</span></div>`
         : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
         : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 26)}</span>`}</div>`}</div>
-    <div class="rv-actions">${edit ? html`<button class="btn ${it.replicar ? '' : 'ghost'} rv-rep" data-v="rep" aria-pressed="${it.replicar ? 'true' : 'false'}">${ico('repeat', 15)} ${it.replicar ? 'Formato a replicar' : 'Usar como formato'}</button>` : ''}${edit ? html`<a class="btn ghost rv-guion" href="#/marcas/${slug}/creacion/nuevo/inspo:${it.id}">${ico('edit', 15)} Convertir en guion</a>` : ''}${edit ? html`<button class="btn ghost rv-voz" data-v="voz">${ico('edit', 15)} Escribir en mi voz</button>` : ''}<button class="btn rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button>${edit ? html`<button class="btn ghost" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 16)} Agendar</button>` : ''}
+    <div class="rv-actions">${edit ? html`<button class="btn ${it.replicar ? '' : 'ghost'} rv-rep" data-v="rep" aria-pressed="${it.replicar ? 'true' : 'false'}">${ico('repeat', 15)} ${it.replicar ? 'Formato a replicar' : 'Usar como formato'}</button>` : ''}${edit ? html`<a class="btn ghost rv-guion" href="${rutaModulo(slug, 'creacion', ['nuevo', `inspo:${it.id}`])}">${ico('edit', 15)} Convertir en guion</a>` : ''}${edit ? html`<button class="btn ghost rv-voz" data-v="voz">${ico('edit', 15)} Escribir en mi voz</button>` : ''}<button class="btn rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button>${edit ? html`<button class="btn ghost" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 16)} Agendar</button>` : ''}
       ${/^https:\/\//.test(it.url) ? html`<a class="arrow light" href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original" aria-label="Abrir el original">${ico('globe', 17)}</a>` : ''}${edit ? html`<button class="arrow light" data-v="del" title="Quitar de la investigación" aria-label="Quitar de la investigación">${ico('trash', 17)}</button>` : ''}</div>
     <div class="rv-info">
       <div class="rfc-head"><h2>${rtitle(it)}</h2>${it.x ? html`<span class="rfc-res ${it.x >= 2 ? 'alta' : it.x >= 1 ? 'media' : 'baja'}">×${it.x}</span>` : it.resonance ? html`<span class="rfc-res ${it.resonance}">${it.resonance}</span>` : ''}</div>

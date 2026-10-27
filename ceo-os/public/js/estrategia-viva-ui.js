@@ -3,6 +3,7 @@
 // Los supuestos subrayados se tocan para cambiarlos (data-act="viva-edit"); el resto se llena desde el chat.
 import { html } from './core.js';
 import { PASOS, cascada, avance } from './estrategia-viva.js';
+import { rutaBloque } from './herramientas.js';
 
 const RECIENTE = 3 * 60_000;
 const DIAS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
@@ -19,7 +20,7 @@ export function panelViva({ v = {}, data, bid, editable, esCeo, aprobada }) {
   // Un supuesto que se toca para cambiarlo.
   const sup = (campo, valor, vacio = 'sin dato') => (editable ? html`<button type="button" class="ev-sup ${valor == null ? 'falta' : ''}" data-act="viva-edit" data-campo="${campo}">${valor ?? `⚠️ ${vacio}`}</button>` : html`<span class="ev-sup ${valor == null ? 'falta' : ''}">${valor ?? `⚠️ ${vacio}`}</span>`);
   const hz = (ids) => html`<div class="ev-hz">${ids.map((id) => { const b = data.bloques.find((x) => x.id === id); if (!b) return ''; const off = b.limite && /no se cambia|fuera/i.test(`${b.limite.titulo} ${b.limite.texto}`);
-    return html`<a class="ev-tool ${b.id === bid ? 'on' : ''} ${off ? 'off' : ''}" href="#/estrategia/${data.slug}/${b.id}" title="${b.limite ? `${b.limite.titulo}: ${b.limite.texto}` : `Hormozi · ${b.pide}`}"><i class="${b.estado === 'aprobado' ? 'ok' : b.estado === 'trabajo' ? 'w' : ''}"></i>Hormozi · ${b.nombre}</a>`; })}</div>`;
+    return html`<a class="ev-tool ${b.id === bid ? 'on' : ''} ${off ? 'off' : ''}" href="${rutaBloque(data.slug, b.id)}" title="${b.limite ? `${b.limite.titulo}: ${b.limite.texto}` : `Hormozi · ${b.pide}`}"><i class="${b.estado === 'aprobado' ? 'ok' : b.estado === 'trabajo' ? 'w' : ''}"></i>Hormozi · ${b.nombre}</a>`; })}</div>`;
   const sec = (p, cuerpo, k = p.id) => html`<section class="ev-sec ${nuevo(k)} ${ahora === p.id ? 'now' : ''}"><header><span class="lbl">${p.n} · ${p.largo}</span>${listo[p.id] ? html`<span class="ev-ok">✓</span>` : ''}</header>${cuerpo}${p.hz.length ? hz(p.hz) : ''}</section>`;
   const max = c.ventas || 1, i = v.inversa || {}, a = v.analisis || {}, m = v.metodologia || {}, ct = v.contenido || {}, pa = v.pauta || {}, rm = v.roadmap || {};
   const fila = (num, w, txt, cls = '') => html`<div class="ev-fr"><b>${num}</b><div class="ev-bar ${cls}" style="width:${Math.max(18, Math.min(100, w))}%">${txt}</div></div>`;

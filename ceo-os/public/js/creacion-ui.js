@@ -2,12 +2,14 @@
 //   Izquierda: los guiones de la marca (+ Guion). Centro: el guion, tramo por tramo (qué se dice · en pantalla · qué se ve) y el caption.
 //   Derecha: el contexto (avatar y sus señales, ángulo, nivel de consciencia → etapa, brief del mes, la inspo), «Escribir con Claude»
 //   (en tu compu, solo lectura) y «Pasar a Ideas» (la pieza del calendario, con el guion enlazado).
-// Rutas: #/marcas/<marca>/creacion · …/creacion/<id> · …/creacion/nuevo/f:<formato> | post:<pieza> | inspo:<post de Research>
+// Rutas: #/ws/production/<marca>/pre-production/script-storyboard-studio[/<id> | /nuevo/f:<formato> | post:<pieza> | inspo:<post de Research>]
+// (lo monta screens/workspace.js; las viejas #/marcas/<marca>/creacion/… son alias).
 import { html, raw, mount, api, toast, ico, $, $$, confirmAsk, col, today } from './core.js';
 import { BASE, ESTADOS_G, CTA_POR_ETAPA, ESQ_POR_NIVEL, etapaDeNivel, lleno, promptGuion, leerGuionClaude } from './formatos.js';
 import { ANGULOS, resumenAvatar } from './avatares.js';
 import { CONSCIENCIA, nivelConsciencia, mesesConBrief, candado, mesNombre } from './calendario-contenido.js';
 import { tokenDe, saludPuente, preguntar } from './puente-chat.js';
+import { rutaModulo } from './herramientas.js';
 
 export async function creacionUI(el, { me, b, alive, rest = [] }) {
   const S = { guiones: [], formatos: [...BASE], avatares: [], puede: {}, sel: null, conBrief: [], abiertos: [], claude: null, pedido: '', antes: null, inspo: null };
@@ -21,7 +23,7 @@ export async function creacionUI(el, { me, b, alive, rest = [] }) {
   if (!alive()) return;
   const ed = () => Boolean(S.puede.editar), cur = () => S.guiones.find((x) => x.id === S.sel) || null;
   const fmt = (id) => S.formatos.find((f) => f.id === id) || BASE[0], av = (id) => S.avatares.find((x) => x.id === id) || null;
-  const ir = (id) => { history.replaceState(null, '', `#/marcas/${b.slug}/creacion${id ? '/' + id : ''}`); };
+  const ir = (id) => { history.replaceState(null, '', rutaModulo(b.slug, 'creacion', id ? [id] : [])); };
 
   // ---------- Un guion nuevo desde un formato, una pieza de Ideas o una inspo ----------
   async function crear(pre = {}) {
@@ -46,7 +48,7 @@ export async function creacionUI(el, { me, b, alive, rest = [] }) {
     const g = cur();
     mount(el, html`<div class="cr"><aside class="cr-list">${ed() ? html`<button class="btn xs cr-new" data-cr="nuevo">${ico('plus', 13)} Guion</button>` : ''}
         ${S.guiones.length ? S.guiones.map((x) => html`<button type="button" class="cr-item ${x.id === S.sel ? 'on' : ''}" data-cr="sel" data-id="${x.id}"><b>${x.titulo}</b><span class="mut sm">${fmt(x.formato).nombre} · ${x.estado}${x.post ? ' · en Ideas' : ''}</span><i style="width:${lleno(x)}%"></i></button>`) : html`<p class="mut sm cr-vacio-l">Todavía no hay guiones.</p>`}</aside>
-      ${g ? html`<section class="cr-main" id="cr-main">${main(g)}</section><aside class="cr-side" id="cr-side">${side(g)}</aside>` : html`<section class="cr-main cr-empty"><span class="av-empty-i">${ico('edit', 24)}</span><h2>Escribe el primer guion</h2><p>Elige un formato en <a href="#/marcas/${b.slug}/formatos">Formatos</a>, o convierte una pieza de Ideas o una inspo en guion.</p>${ed() ? html`<button class="btn" data-cr="nuevo">${ico('plus', 14)} Guion</button>` : ''}</section>`}</div>`);
+      ${g ? html`<section class="cr-main" id="cr-main">${main(g)}</section><aside class="cr-side" id="cr-side">${side(g)}</aside>` : html`<section class="cr-main cr-empty"><span class="av-empty-i">${ico('edit', 24)}</span><h2>Escribe el primer guion</h2><p>Elige un formato en <a href="${rutaModulo(b.slug, 'formatos')}">Formatos</a>, o convierte una pieza de Ideas o una inspo en guion.</p>${ed() ? html`<button class="btn" data-cr="nuevo">${ico('plus', 14)} Guion</button>` : ''}</section>`}</div>`);
   }
 
   // ---------- Centro: el guion ----------
@@ -72,12 +74,12 @@ export async function creacionUI(el, { me, b, alive, rest = [] }) {
     const a = av(g.avatar), etapa = etapaDeNivel(g.consciencia), k = candado(MES, S.conBrief, S.abiertos), C = S.claude;
     return html`<div class="av-card"><div class="av-row"><span class="chip ${g.estado === 'Listo para grabar' ? 'av-st-ok' : ''}">${g.estado}</span><span class="mut sm" id="cr-save">Guardado</span></div>
         <div class="av-av"><span class="mut sm">Escrito al ${lleno(g)}%</span><div class="av-av-b"><i style="width:${lleno(g)}%"></i></div></div>
-        ${ed() ? html`<button class="btn xs" data-cr="ideas">${ico(g.post ? 'repeat' : 'bulb', 13)} ${g.post ? 'Poner al día en Ideas' : 'Pasar a Ideas'}</button>` : ''}${g.post ? html`<a class="mut sm" href="#/marcas/${b.slug}/ideas">Ver la pieza en Ideas →</a>` : ''}</div>
+        ${ed() ? html`<button class="btn xs" data-cr="ideas">${ico(g.post ? 'repeat' : 'bulb', 13)} ${g.post ? 'Poner al día en Ideas' : 'Pasar a Ideas'}</button>` : ''}${g.post ? html`<a class="mut sm" href="${rutaModulo(b.slug, 'ideas')}">Ver la pieza en Ideas →</a>` : ''}</div>
       <div class="av-card"><span class="lbl">Contexto</span>
-        <div class="cr-ctx"><b>${a ? a.nombre : 'Sin avatar'}</b><span class="mut sm">${a ? resumenAvatar(a) : html`Defínelo en <a href="#/marcas/${b.slug}/icp">Cliente ideal</a>.`}</span>
+        <div class="cr-ctx"><b>${a ? a.nombre : 'Sin avatar'}</b><span class="mut sm">${a ? resumenAvatar(a) : html`Defínelo en <a href="${rutaModulo(b.slug, 'icp')}">Cliente ideal</a>.`}</span>
           ${a?.campos?.decir?.length || a?.campos?.mostrar?.length ? html`<details class="cr-sen"><summary>Señales para Meta</summary><ul>${[...(a.campos.decir || []).map((x) => 'Decir: ' + x), ...(a.campos.mostrar || []).map((x) => 'Mostrar: ' + x)].map((x) => html`<li>${x}</li>`)}</ul></details>` : ''}</div>
         ${g.consciencia ? html`<div class="cr-ctx"><b>${etapa} · ${CONSCIENCIA[g.consciencia - 1]}</b><span class="mut sm">CTA de ${CTA_POR_ETAPA[etapa]}. Esqueletos que mejor sirven: ${ESQ_POR_NIVEL[g.consciencia - 1].join(' o ')}.</span></div>` : ''}
-        <div class="cr-ctx"><b>${ico(k.cerrado ? 'lock' : 'check', 13)} Brief de ${mesNombre(MES)}</b><span class="mut sm">${k.cerrado ? 'Todavía no hay brief: el guion se escribe, pero la pieza no se agenda en este mes.' : k.por === 'ceo' ? 'Abierto por el CEO sin brief.' : 'Listo: Claude lo lee.'} <a href="#/marcas/${b.slug}/brief">Ver</a></span></div>
+        <div class="cr-ctx"><b>${ico(k.cerrado ? 'lock' : 'check', 13)} Brief de ${mesNombre(MES)}</b><span class="mut sm">${k.cerrado ? 'Todavía no hay brief: el guion se escribe, pero la pieza no se agenda en este mes.' : k.por === 'ceo' ? 'Abierto por el CEO sin brief.' : 'Listo: Claude lo lee.'} <a href="${rutaModulo(b.slug, 'brief')}">Ver</a></span></div>
         ${S.inspo ? html`<div class="cr-ctx"><b>${ico('repeat', 13)} Replica a @${S.inspo.handle || '—'}</b><span class="mut sm">${String(S.inspo.text || S.inspo.title || '').slice(0, 160)}</span></div>` : ''}</div>
       ${ed() ? html`<div class="av-card"><span class="lbl">Claude, en tu compu</span>
         ${!C ? html`<p class="mut sm">Escribe los tramos con la voz de la marca, para este avatar y su nivel de consciencia. Solo lectura.</p><textarea class="in" rows="2" data-cr-pedido placeholder="Opcional: «más corto», «con humor», «en inglés»…">${S.pedido}</textarea><button class="btn xs" data-cr="claude">${ico('spark', 13)} Escribir con Claude</button>${S.antes ? html`<button class="btn ghost xs" data-cr="deshacer">Deshacer lo de Claude</button>` : ''}` : ''}

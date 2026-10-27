@@ -5,7 +5,7 @@
 // A la izquierda el chat; a la derecha el área de trabajo de la etapa (el plan, las ideas, las piezas), armada con lo que se
 // habló y lo que ya está en las herramientas. Corre con el modelo de tu compu por el puente de Laya (Plan e Ideas en solo
 // lectura; Diseño suma Figma con figwright).
-// Rutas: #/marcas/diseno · #/marcas/diseno/<marca>
+// Rutas: #/ws/creative/<marca>/design/design-studio (lo monta screens/workspace.js); las viejas #/marcas/diseno[/<marca>] son alias.
 import { html, raw, mount, api, col, toast, ico, md, initials, confirmAsk, ask, uploadToDrive, $, $$ } from './core.js';
 import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe, APP_MAC, enApp } from './laya.js';
 import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from './puente-chat.js';
@@ -20,6 +20,7 @@ import { docHtml, tarjetaDoc, barraChat, botonesEnviar, bandeja } from './artifa
 import { botonVoz, dictar } from './voz.js';
 import { verImagen, ojoChip } from './ojo.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn } from './motor-ui.js';
+import { rutaModulo } from './herramientas.js';
 
 const IMGS = new Map(); // `${marca}|${nodo}` → data URL (solo en memoria: pesan)
 const OJO = new Map(); // `${marca}|${nodo}` → { parecido, refs } del ojo visual
@@ -42,13 +43,13 @@ function menuDz(anchor, items, { buscar = '' } = {}) {
 export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
   if (enVuelo) { try { enVuelo.abort(); } catch {} enVuelo = null; }
   const marcas = brands.filter((b) => !b.personal);
-  const ir = (slug) => { location.hash = `/marcas/diseno/${slug}`; };
+  const ir = (slug) => { location.hash = `/ws/creative/${slug}/design/design-studio`; };
   const menuMarcas = (anchor, actual = '') => menuDz(anchor, marcas.map((b) => ({ label: b.name, sub: b.sub, mono: initials(b.name), on: b.slug === actual, pick: () => ir(b.slug) })), { buscar: 'Buscar marca…' });
   const slug = sub[0];
   if (!slug) return inicio();
-  if (!enCompu()) return mount(el, html`<a class="btn ghost" href="#/marcas/diseno">${ico('arrow-left', 14)} Diseño</a><div class="empty es-solo-compu"><span class="es-hint-i">${ico('edit', 22)}</span><b>Disponible solo en tu compu</b>El chat de Diseño trabaja con el Claude y el Figma de tu computadora. Ábrelo desde ahí.</div>`);
+  if (!enCompu()) return mount(el, html`<a class="btn ghost" href="#/ws/creative">${ico('arrow-left', 14)} Diseño</a><div class="empty es-solo-compu"><span class="es-hint-i">${ico('edit', 22)}</span><b>Disponible solo en tu compu</b>El chat de Diseño trabaja con el Claude y el Figma de tu computadora. Ábrelo desde ahí.</div>`);
   const b = marcas.find((x) => x.slug === slug);
-  if (!b) return mount(el, html`<a class="btn ghost" href="#/marcas/diseno">${ico('arrow-left', 14)} Diseño</a><div class="empty" style="margin-top:16px"><b>No encontré esa marca</b>Elige otra en la caja.</div>`);
+  if (!b) return mount(el, html`<a class="btn ghost" href="#/ws/creative">${ico('arrow-left', 14)} Diseño</a><div class="empty" style="margin-top:16px"><b>No encontré esa marca</b>Elige otra en la caja.</div>`);
   return trabajo(b);
 
   // ---------- Inicio: «¿Qué diseñamos hoy?» ----------
@@ -99,7 +100,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       : { ic: 'layers', titulo: chat.resultado?.titulo || `Las piezas de ${b.name}`, sub: '⑥A Diseño gráfico' });
     // Por qué una etapa está cerrada y qué hacer.
     function cerradaHtml(k) {
-      if (k === 'plan') return html`<div class="es-setup"><b>${ico('lock', 14)} Primero, la estrategia</b><p>Nadie hace contenido sin estrategia. La de ${b.name} todavía no está aprobada por el CEO.</p><div class="row" style="gap:8px"><a class="btn xs" href="#/estrategia/${b.slug}">Ir a Estrategia</a><button class="btn ghost xs" data-act="suelta">Es una pieza suelta</button></div></div>`;
+      if (k === 'plan') return html`<div class="es-setup"><b>${ico('lock', 14)} Primero, la estrategia</b><p>Nadie hace contenido sin estrategia. La de ${b.name} todavía no está aprobada por el CEO.</p><div class="row" style="gap:8px"><a class="btn xs" href="#/ws/strategy/${b.slug}/overview">Ir a Estrategia</a><button class="btn ghost xs" data-act="suelta">Es una pieza suelta</button></div></div>`;
       if (k === 'ideas') return html`<div class="es-setup"><b>${ico('lock', 14)} Primero, el plan del mes</b><p>Las ideas salen de los slots del plan de ${nombreMes(chat.mes)}. Arma el plan y pásalo a Creatividad.</p><div class="row" style="gap:8px"><button class="btn xs" data-act="etapa" data-e="plan">Ir al plan del mes</button></div></div>`;
       return html`<div class="es-setup"><b>${ico('lock', 14)} Primero, las ideas</b><p>Se diseña lo que Creatividad ya ideó para el plan. Si es algo puntual que no sale del plan, márcalo como pieza suelta.</p><div class="row" style="gap:8px"><button class="btn xs" data-act="etapa" data-e="ideas">Ir a las ideas</button><button class="btn ghost xs" data-act="suelta">Es una pieza suelta</button></div></div>`;
     }
@@ -145,7 +146,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     function setup(f) {
       const inst = sistemaDe(navigator.userAgent || '') === 'win' ? INSTALAR_WIN : INSTALAR_MAC;
       const otra = html`<button class="btn xs" data-act="reintentar">Ya lo hice</button>`;
-      if (f === 'sin-sistema') return html`<div class="es-setup"><b>${b.name} todavía no tiene su sistema visual</b><p>Sin sistema visual, ⑥A Diseño gráfico no arranca. Lo escribe ②B Branding con br-sistema.</p><a class="btn xs" href="#/marcas/${b.slug}/design">Ver el Design system</a></div>`;
+      if (f === 'sin-sistema') return html`<div class="es-setup"><b>${b.name} todavía no tiene su sistema visual</b><p>Sin sistema visual, ⑥A Diseño gráfico no arranca. Lo escribe ②B Branding con br-sistema.</p><a class="btn xs" href="${rutaModulo(b.slug, 'design')}">Ver el Design system</a></div>`;
       if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
       if (f === 'apagado' && chromeBloquea()) return html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p>${otra}</div>`;
       if (f === 'apagado' && enApp()) return html`<div class="es-setup"><b>El puente de la app no respondió</b><p>En el menú de arriba: Puente › Reiniciar el puente. Si sigue igual, cierra la app y ábrela otra vez.</p>${otra}</div>`;
@@ -364,12 +365,12 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       ponerArea();
       paneEl.className = chat.etapa === 'diseno' ? 'dz-pane' : 'pm-pane dg-pane';
       if (chat.etapa === 'plan') {
-        mount(paneEl, planPanel({ b, mes: chat.mes, plan: E.plan || {}, piezas: E.piezas, edit: E.puede?.editar && abierta('plan'), fresh: S.fresh, pasando: S.pasando, cerrar: true, abrir: [`#/marcas/${b.slug}/plan/${chat.mes}`, 'Abrir en Plan del mes'] }));
+        mount(paneEl, planPanel({ b, mes: chat.mes, plan: E.plan || {}, piezas: E.piezas, edit: E.puede?.editar && abierta('plan'), fresh: S.fresh, pasando: S.pasando, cerrar: true, abrir: [rutaModulo(b.slug, 'plan', [chat.mes]), 'Abrir en Plan del mes'] }));
         if (S.fresh.length) setTimeout(() => { S.fresh = []; $$('.ev-sec.fresh', paneEl).forEach((x) => x.classList.remove('fresh')); }, 4000);
         return;
       }
       if (chat.etapa === 'ideas') return mount(paneEl, ideasPanel());
-      const docD = (cuerpo, extra = {}) => mount(paneEl, docHtml({ ...docDe('diseno'), sub: `${b.name} · ⑥A Diseño gráfico`, cerrar: true, acciones: html`<a class="btn ghost xs" href="#/marcas/${b.slug}/design">${ico('layers', 12)} Design system</a>`, cuerpo, ...extra }));
+      const docD = (cuerpo, extra = {}) => mount(paneEl, docHtml({ ...docDe('diseno'), sub: `${b.name} · ⑥A Diseño gráfico`, cerrar: true, acciones: html`<a class="btn ghost xs" href="${rutaModulo(b.slug, 'design')}">${ico('layers', 12)} Design system</a>`, cuerpo, ...extra }));
       if (!abierta('diseno')) return docD(html`<div class="dz-empty"><span class="es-hint-i">${ico('lock', 22)}</span><b>Todavía no hay qué diseñar</b><p class="mut">Se diseña lo que Creatividad ya ideó para el plan de ${nombreMes(chat.mes)}.</p></div>`, { estado: 'Cerrado' });
       const r = chat.resultado;
       if (!r) {
@@ -385,7 +386,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
           <span class="dz-im">${img(l.id) ? html`<img alt="${l.nombre}" src="${img(l.id)}">` : html`<span class="mut sm">Sin vista previa</span>`}</span><span class="dz-cap"><b>${l.nombre}</b><span class="dz-ojo" data-ojo="${l.id}">${ojoChip(OJO.get(`${b.slug}|${l.id}`), { compact: true })}</span></span></button>`)}</div>
         ${faltan ? html`<p class="mut sm" style="margin:0">${faltan === r.laminas.length ? 'Las vistas previas no se guardan al recargar.' : `Faltan ${faltan} vistas previas.`} <button type="button" class="linkish" data-act="reexportar">Pedirlas otra vez</button></p>` : ''}`, { titulo: r.titulo || 'Sin título', sub: `${r.formato || chat.formato} · ${r.laminas.length} lámina${r.laminas.length === 1 ? '' : 's'} · ⑥A Diseño gráfico`, estado: r.guardado ? 'Guardado' : 'Borrador', ok: Boolean(r.guardado),
         acciones: html`${r.figma ? html`<a class="btn ghost xs" href="${r.figma}" target="_blank" rel="noopener">${ico('link', 12)} Abrir en Figma</a>` : ''}${faltan < r.laminas.length ? html`<button class="btn ghost xs" data-act="bajar">${ico('down', 12)} PNG</button>` : ''}`,
-        pie: { texto: '', accion: html`${r.guardado ? html`<span>Guardado ${raw('&middot;')} queda <b>Listo</b> en el Calendario de ${b.name}.</span><span class="sp"></span><a class="btn xs" href="#/marcas/${b.slug}/calendario">Ir al Calendario</a>`
+        pie: { texto: '', accion: html`${r.guardado ? html`<span>Guardado ${raw('&middot;')} queda <b>Listo</b> en el Calendario de ${b.name}.</span><span class="sp"></span><a class="btn xs" href="${rutaModulo(b.slug, 'calendario')}">Ir al Calendario</a>`
           : html`<span>${malas.length ? `Antes de guardar, revisa: ${malas.map((x) => x.texto).join(' · ')}. ` : ''}Se guarda en ${idea() ? `la idea «${idea().title}»` : ideasCtx().length > 1 ? 'la idea que elijas del contexto' : 'una pieza nueva del calendario'}: queda <b>Lista</b> para programarla y publicarla.</span><span class="sp"></span><button class="btn" data-act="guardar" ${S.guardando ? raw('disabled') : ''}>${S.guardando ? 'Guardando…' : 'Guardar en contenido'}</button>`}` } });
     }
 
@@ -399,7 +400,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         return p ? html`<a class="pm-tag g" href="${p.url}" target="_blank" rel="noopener">@${p.handle || 'referente'}${n ? ` · ×${+n.toFixed(1)}` : ''} ↗</a>` : link(rf); };
       const link = (rf) => (/^https?:\/\//.test(rf) ? html`<a class="pm-tag" href="${rf}" target="_blank" rel="noopener">${rf.replace(/^https?:\/\/(www\.)?/, '').slice(0, 40)} ↗</a>` : rf ? html`<span class="pm-tag">${rf}</span>` : '');
       return docHtml({ ...docDe('ideas'), sub: b.name, estado: prop.length ? `${prop.length} en la mesa` : 'Vacío', cerrar: true,
-        acciones: html`<a class="btn ghost xs" href="#/marcas/${b.slug}/ideas">${ico('link', 12)} Abrir en Ideas</a>`,
+        acciones: html`<a class="btn ghost xs" href="${rutaModulo(b.slug, 'ideas')}">${ico('link', 12)} Abrir en Ideas</a>`,
         cuerpo: html`
           ${prop.length ? html`<div class="dg-ideas">${prop.map((x, i) => { const sl = slotDe(x.slot); return html`<article class="dg-idea ${x.enviada ? 'ok' : ''}"><div class="row" style="gap:6px;flex-wrap:wrap"><span class="pm-tag">${x.slot}</span>${sl ? html`<span class="mut sm">Semana ${sl.semana} · ${sl.canal} · ${sl.funcion || ''}</span>` : html`<span class="pm-warn">Ese slot no está en el plan</span>`}<span class="sp"></span>${x.enviada ? html`<span class="ev-ok">${ico('check', 12)} En Ideas</span>` : E.puede?.editar && sl && abierta('ideas') ? html`<button class="btn ghost xs" data-act="idea-enviar" data-i="${chat.ideasProp.indexOf(x)}">Enviar a Ideas</button>` : ''}</div>
               <h3>${x.titulo}</h3>${x.hook ? html`<p class="dg-hook">«${x.hook}»</p>` : ''}

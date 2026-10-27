@@ -7,6 +7,7 @@ import { leerAvisos, cuentaDe, pintarCampana, avisar } from '../avisos-ui.js';
 import { olvidarCompu } from '../avisos-compu.js';
 import { abrirEnChat } from '../areas.js';
 import { updateWaits } from '../ventas-flujo.js';
+import { rutaModulo } from '../herramientas.js';
 
 export const esqueleto = () => skel('pagina');
 const URG = { alta: 'Urgente', media: 'Pronto', baja: 'Cuando puedas' };
@@ -69,9 +70,9 @@ export async function render(el, { me, alive }) {
       await schedule(p, a.i, team, me); return recargar();
     }
     // El chat de Diseño gráfico en una etapa y un mes (diseno-chat.js lee os.dg.etapa al abrir la marca).
-    if (a.abre === 'diseno') { try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug: a.slug, etapa: a.etapa, mes: a.mes })); } catch {} location.hash = '#/marcas/diseno/' + encodeURIComponent(a.slug); return; }
+    if (a.abre === 'diseno') { try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug: a.slug, etapa: a.etapa, mes: a.mes })); } catch {} location.hash = '#/ws/creative/' + encodeURIComponent(a.slug) + '/design/design-studio'; return; }
     // El calendario de la marca con un solo filtro prendido (content.js lee os.cal.marca.off).
-    if (a.abre === 'calendario') { try { localStorage.setItem('os.cal.marca.off', JSON.stringify(['operativo', 'planificacion', 'programado'].filter((k) => k !== a.filtro))); } catch {} location.hash = '#/marcas/' + encodeURIComponent(a.slug) + '/calendario'; return; }
+    if (a.abre === 'calendario') { try { localStorage.setItem('os.cal.marca.off', JSON.stringify(['operativo', 'planificacion', 'programado'].filter((k) => k !== a.filtro))); } catch {} location.hash = rutaModulo(encodeURIComponent(a.slug), 'calendario'); return; }
     if (a.abre === 'actualizar-app') { window.inherentEscritorio?.actualizar?.(); toast('Buscando la versión nueva de la app…'); return; }
     if (a.abre === 'guia') { const { cargarGuias, abrirGuia } = await import('../guia.js'); const G = await cargarGuias(); const d = (G?.items || []).find((y) => y.id === a.id); return d ? abrirGuia(d, me) : toast('Ese video ya no está', true); }
     if (a.abre === 'pago') { const { payDialog } = await import('../flowui.js'); await payDialog(a.datos || {}); return recargar(); }

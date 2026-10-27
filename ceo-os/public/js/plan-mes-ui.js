@@ -1,10 +1,11 @@
 // Marca › Crear › Plan del mes: la herramienta. El plan de ③ Marketing de cada mes, a la vista para revisarlo y pasarlo a
 // Ideas. Se arma en el Chat, en modo Marketing (o en el chat de Diseño gráfico, etapa 1); aquí se ve, se revisa y se pasa a Creatividad.
-// Rutas: #/marcas/<marca>/plan · #/marcas/<marca>/plan/<AAAA-MM>
+// Rutas: #/ws/marketing/<marca>/content/content-strategy-studio[/<AAAA-MM>] (lo monta screens/workspace.js); las viejas #/marcas/<marca>/plan[/<mes>] son alias.
 import { html, raw, mount, api, toast, ico, confirmAsk, $, $$ } from './core.js';
 import { nombreMes, revisarSlots, sumaPilares, avancePlan, SECCIONES_P, NOMBRE_P } from './plan-mes.js';
 import { docHtml } from './artifact.js';
 import { abrirEnChat } from './areas.js';
+import { rutaModulo } from './herramientas.js';
 
 const PILAR_C = ['#2a1f17', '#8a6a50', '#c9b39b', '#5d7a46', '#3f6ea8', '#b4472f'];
 export const mesDe = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -34,7 +35,7 @@ export function planPanel(o) {
     prog: SECCIONES_P.map((k) => [NOMBRE_P[k].replace(/^(La|El|Los|Las) /, '').replace(/^./, (c) => c.toUpperCase()), Boolean(k === 'campana' ? p.campana?.nombre : p[k]?.length)]),
     cuerpo,
     pie: { texto: o.piezas ? `${o.piezas} pieza${o.piezas === 1 ? '' : 's'} de este plan ya están en Ideas.` : 'Marketing decide qué se dice, dónde y cuándo. Las piezas las escribe Creatividad.',
-      accion: html`${o.piezas ? html`<a class="btn ghost xs" href="#/marcas/${o.b.slug}/ideas">Ver en Ideas</a>` : ''}${p.slots?.length && o.edit ? html`<button class="btn" data-act="pasar" ${o.pasando ? raw('disabled') : ''}>${o.pasando ? 'Pasando…' : `${o.piezas ? 'Poner al día' : 'Pasar'} ${p.slots.length} piezas a Ideas`} ${ico('right', 13)}</button>` : ''}` } });
+      accion: html`${o.piezas ? html`<a class="btn ghost xs" href="${rutaModulo(o.b.slug, 'ideas')}">Ver en Ideas</a>` : ''}${p.slots?.length && o.edit ? html`<button class="btn" data-act="pasar" ${o.pasando ? raw('disabled') : ''}>${o.pasando ? 'Pasando…' : `${o.piezas ? 'Poner al día' : 'Pasar'} ${p.slots.length} piezas a Ideas`} ${ico('right', 13)}</button>` : ''}` } });
 }
 // «Pasar a Creatividad»: cada slot queda como pieza del calendario. Devuelve cuántas quedaron, o null.
 export async function pasarPlan(b, mes, plan) {
@@ -53,7 +54,7 @@ export async function planMesUI(el, { me, b, alive, rest = [] }) {
   try { d = await api(`plan/${encodeURIComponent(b.slug)}/${mes}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude abrir el plan</b>${e.message}</div>`); }
   if (!alive()) return;
   const S = { plan: d.plan || {}, piezas: d.piezas || 0, pasando: false };
-  const paint = () => mount(el, html`<div class="pmt-top"><div class="tabs" style="margin:0">${meses.map((x) => html`<a class="${x === mes ? 'on' : ''}" href="#/marcas/${b.slug}/plan/${x}">${nombreMes(x).replace(/^./, (c) => c.toUpperCase())}</a>`)}</div><span class="sp"></span>
+  const paint = () => mount(el, html`<div class="pmt-top"><div class="tabs" style="margin:0">${meses.map((x) => html`<a class="${x === mes ? 'on' : ''}" href="${rutaModulo(b.slug, 'plan', [x])}">${nombreMes(x).replace(/^./, (c) => c.toUpperCase())}</a>`)}</div><span class="sp"></span>
       ${!d.estrategia?.aprobada ? html`<span class="pm-warn">${ico('lock', 12)} La estrategia de ${b.name} todavía no está aprobada</span>` : ''}</div>
     <section class="pm-pane pmt">${planPanel({ b, mes, plan: S.plan, piezas: S.piezas, edit: d.puede?.editar, pasando: S.pasando, abrir: [`#/chat`, 'Trabajarlo en el Chat', 'plan'] })}</section>`);
   paint();
