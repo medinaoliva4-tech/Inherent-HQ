@@ -1,5 +1,5 @@
 // Los 12 agentes del repo (agents/00-account … agents/10-ads-management) como lista fija, para la página Agents del
-// AI Harness (#/ai/agents). Puro: sin DOM ni red. El OS vive en Vercel y la carpeta agents/ NO está en la copia del build,
+// Los 12 agentes del repo (antes la página #/ai/agents del AI Harness; hoy Inherent AI no la tiene, la lista se conserva). Puro: sin DOM ni red. El OS vive en Vercel y la carpeta agents/ NO está en la copia del build,
 // así que no se lee ni se lista desde el servidor: esta lista se actualiza a mano cuando cambia agents/README.md
 // (lo vigila scripts/test-harness.mjs: 12 agentes, ids únicos, números en orden).
 // modo: el modo del Chat (llm/modos.js) que corre ese agente en el OS; '' = no tiene modo propio todavía.

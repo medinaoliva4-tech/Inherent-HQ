@@ -1,9 +1,9 @@
-// Home (#/home): la portada del OS para todo el equipo (plan §3.4). Arriba el hero y «Ask InherentOS» (abre el Chat con
-// el borrador, en el modo del último workspace y con el cliente del contexto); luego 4 KPIs (proyectos, tareas, ingresos,
-// clientes: cada uno lleva a donde se trabaja; sin dato, vacío y de dónde va a salir, nunca 0), la actividad reciente
-// (lo que esta pantalla ya carga, por _meta.updated_at) y los accesos a los 5 workspaces. Abajo, para el CEO y el COO,
-// lo que necesita atención, la agenda y el contenido del mes; para el equipo, sus responsabilidades. Los cargadores de
-// datos son los de siempre; cambió el layout.
+// Home (#/home): la portada del OS para todo el equipo. Arriba el hero y «Ask InherentOS» (abre el Chat con el borrador,
+// en el modo de la última área abierta); luego 4 KPIs (proyectos, tareas, ingresos, clientes: cada uno lleva a donde se
+// trabaja; sin dato, vacío y de dónde va a salir, nunca 0), la actividad reciente (lo que esta pantalla ya carga, por
+// _meta.updated_at) y «Importante»: las notas fijadas de las áreas que esta persona ve (col area_notes). Abajo, para el CEO
+// y el COO, lo que necesita atención, la agenda y el contenido del mes; para el equipo, sus responsabilidades. Los
+// cargadores de datos son los de siempre; cambió el layout.
 import { html, raw, mount, col, api, fdate, today, acts, IC, $, $$, Q, calQ, teamList, ico, initials, skel } from '../core.js';
 import { upcoming, people as meetPeople } from '../meetings.js';
 import { openDelivery, dueChip, stChip } from '../taskcard.js';
@@ -19,6 +19,7 @@ import { projStatus } from '../project-page.js';
 import { WORKSPACES, puedeWs } from '../herramientas.js';
 import { cargarContexto, contextoLista, contextoActual } from '../contexto.js';
 import { abrirEnChat } from '../areas.js';
+import { leerNota, ordenar } from '../areas-notas.js';
 import { SUGERENCIAS, modoDe } from '../llm/modos.js';
 
 export const esqueleto = () => skel('pagina');
@@ -90,13 +91,12 @@ export async function render(el, { me, alive }) {
   if (ceoish || acc.sales) col('quotes').list().catch(() => []).then((l) => { quotes = l; if (alive()) paint(); });
   const qSub = (q) => (q.items || []).reduce((a, i) => a + (+i.qty || 0) * (+i.price || 0), 0) * (1 - (+q.discount_pct || 0) / 100);
 
-  // ---------- El contexto y el último workspace ----------
-  // app.js guarda el último workspace abierto (os.ws.ultimo.<correo>) y el último cliente por workspace
-  // (os.ws.ultimo.<correo>.<ws>); si no hay, vale el cliente del contexto.
+  // ---------- La última área ----------
+  // app.js guarda la última área abierta (os.ws.ultimo.<correo> = strategy, marketing…); el cliente que ya tenía elegido
+  // el Chat se queda (contexto.js).
   const ctxSlug = () => contextoActual(me) || '';
   const nombreDe = (slug) => (slug ? contextoLista().find((c) => c.slug === slug)?.name || slug : '');
   const ultimoWs = () => lsGet(`os.ws.ultimo.${me.email}`);
-  const ultimoSlug = (ws) => lsGet(`os.ws.ultimo.${me.email}.${ws}`) || ctxSlug();
   const modoAsk = () => WORKSPACES.find((w) => w.id === ultimoWs())?.modo || 'organizacion';
 
   // ---------- Hero ----------
@@ -152,20 +152,35 @@ export async function render(el, { me, alive }) {
     for (const p of projects) rows.push({ ts: cuando(p), ic: 'kanban', t: p.name, s: p.client || 'Interno', who: quien(p), href: `#/org/operations/p/${p.id}/resumen` });
     if (acc.sales) for (const l of dueLeads || []) if (!l.archived) rows.push({ ts: cuando(l), ic: 'phone', t: l.name, s: [l.company, l.stage].filter(Boolean).join(' · ') || 'Lead', who: quien(l, l.owner), href: `#/org/sales/crm/${encodeURIComponent(l.id)}` });
     if (ceoish || acc.sales) for (const q of quotes || []) rows.push({ ts: cuando(q), ic: 'receipt', t: `Cotización ${q.number || ''}`.trim(), s: [q.client, q.status].filter(Boolean).join(' · '), who: quien(q), href: `#/org/sales/quotes/${q.id}` });
-    if (ceoish) for (const c of content.posts) rows.push({ ts: cuando(c), ic: 'image', t: c.title || 'Pieza', s: [content.accounts?.find((a) => a.slug === c.profile)?.name || c.profile, estadoDe(c)].filter(Boolean).join(' · '), who: quien(c), href: `#/ws/marketing/${c.profile}/content/content-calendar` });
+    if (ceoish) for (const c of content.posts) rows.push({ ts: cuando(c), ic: 'image', t: c.title || 'Pieza', s: [content.accounts?.find((a) => a.slug === c.profile)?.name || c.profile, estadoDe(c)].filter(Boolean).join(' · '), who: quien(c), href: '#/areas/marketing' });
     const lista = rows.filter((r) => r.ts).sort((a, z) => String(z.ts).localeCompare(String(a.ts))).slice(0, 8);
     return html`<section class="home-act"><div class="hy-bh"><h2>Recent Activity</h2><span>Lo último que se movió</span></div>
       ${lista.length ? lista.map((r) => html`<a class="home-act-row" href="${r.href}"><span class="home-act-ic">${ico(r.ic, 15)}</span><span class="home-act-t">${r.t}<small>${r.s}</small></span><span class="home-act-who mut sm">${r.who ? corto(r.who) : ''}</span><span class="home-act-when mut sm">${relativo(r.ts)}</span></a>`)
       : html`<div class="mut sm" style="padding:8px 0">Nada todavía: sale de las tareas, proyectos${acc.sales ? ', leads, cotizaciones' : ''}${ceoish ? ' y contenido' : ''} que se muevan.</div>`}</section>`;
   }
 
-  // ---------- Quick Access: los 5 workspaces ----------
-  function accesos() {
+  // ---------- Importante: las notas fijadas de las áreas ----------
+  // col('area_notes') (areas-notas.js: una nota por documento, con su área, título, texto y la marca «importante»; nada se
+  // borra, se archiva). Salen hasta 8, las más recientes primero, solo de las áreas que esta persona ve. Sin notas: links a las áreas.
+  let notas = null;
+  col('area_notes').list().catch(() => []).then((l) => { notas = (Array.isArray(l) ? l : []).map(leerNota); if (alive()) paint(); });
+  const lineas = (t) => String(t || '').split(/\r?\n/).map((x) => x.replace(/^[\s#>*\-]+/, '').replace(/[*_`]/g, '').trim()).filter(Boolean);
+  const corta = (t, n = 140) => (t.length > n ? t.slice(0, n - 1) + '…' : t);
+  function importante() {
     const ws = WORKSPACES.filter((w) => puedeWs(me, w.id));
     if (!ws.length) return '';
-    return html`<section class="home-quick" aria-label="Workspaces">${ws.map((w) => { const n = nombreDe(ultimoSlug(w.id)); return html`<a class="home-ws" href="#/ws/${w.id}" style="--ac:var(${w.color})"><span class="home-ws-ic">${ico(w.icono, 18)}</span><b>${w.nombre}</b><span class="home-ws-sub mut sm">${w.sub}</span><span class="home-ws-last sm">${n ? html`Último cliente: <em>${n}</em>` : 'Sin cliente todavía'}</span></a>`; })}</section>`;
+    const porId = new Map(ws.map((w) => [w.id, w]));
+    const lista = ordenar((notas || []).filter((n) => n.importante && !n.archivado && porId.has(n.area))).slice(0, 8);
+    const card = (n) => {
+      const w = porId.get(n.area), ls = lineas(n.texto), t = n.titulo || ls.shift() || 'Nota';
+      return html`<a class="home-imp-card" href="#/areas/${w.id}" style="--ac:var(${w.color})"><span class="home-imp-area">${ico(w.icono, 13)}${w.nombre}</span><b>${corta(t, 90)}</b>${ls.length ? html`<span class="home-imp-t">${ls.slice(0, 2).map((x) => html`<span>${corta(x)}</span>`)}</span>` : ''}</a>`;
+    };
+    return html`<section class="home-imp" aria-label="Importante"><div class="hy-bh"><h2>Importante</h2><span>Lo que fijaste en cada área</span></div>
+      ${notas === null ? html`<p class="loading sm">Cargando…</p>`
+      : lista.length ? html`<div class="home-imp-grid">${lista.map(card)}</div>`
+      : html`<div class="home-imp-vacio"><span class="mut sm">Fija lo importante desde cada área</span><div class="home-imp-links">${ws.map((w) => html`<a class="home-imp-ws" href="#/areas/${w.id}" style="--ac:var(${w.color})">${ico(w.icono, 14)}${w.nombre}</a>`)}</div></div>`}</section>`;
   }
-  const comun = () => html`${ask()}${kpis()}<div class="home-two">${actividad()}${accesos()}</div>`;
+  const comun = () => html`${ask()}${kpis()}<div class="home-two">${actividad()}${importante()}</div>`;
 
   // ---------- CEO · COO ----------
   // Lo que se traba si nadie lo mueve, con su botón; a la derecha, la agenda y el contenido del mes. Lo de cobrar y
@@ -222,7 +237,7 @@ export async function render(el, { me, alive }) {
     if (!content.accounts.length) return html`<div class="mut sm" style="padding:6px 0">Sin cuentas activas con contenido.</div>`;
     return content.accounts.map((a) => {
       const ps = content.posts.filter((x) => x.profile === a.slug && String(x.date || '').slice(0, 7) === M), pub = ps.filter((x) => estadoDe(x) === 'Publicado').length, listo = ps.filter((x) => ['Listo', 'Publicado'].includes(estadoDe(x))).length;
-      return html`<a class="hy-ct" href="#/ws/marketing/${a.slug}/content/content-calendar"><span class="hy-m"><i>${initials(a.name)}</i>${a.name}</span><span class="hy-cb">${ps.length ? html`<i style="width:${pct(listo, ps.length)}%"></i><i style="width:${pct(pub, ps.length)}%"></i>` : ''}</span><span class="hy-cn">${ps.length ? html`<b>${pub}</b> de ${ps.length}` : 'Sin piezas'}</span></a>`;
+      return html`<a class="hy-ct" href="#/areas/marketing"><span class="hy-m"><i>${initials(a.name)}</i>${a.name}</span><span class="hy-cb">${ps.length ? html`<i style="width:${pct(listo, ps.length)}%"></i><i style="width:${pct(pub, ps.length)}%"></i>` : ''}</span><span class="hy-cn">${ps.length ? html`<b>${pub}</b> de ${ps.length}` : 'Sin piezas'}</span></a>`;
     });
   }
   // Las cuentas: los perfiles de contenido del repo que son clientes activos (más Inherent).

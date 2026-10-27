@@ -121,6 +121,15 @@ export async function mensajesSesion(me, id) {
 }
 export async function borrarSesion(me, id) { await pide(conexion(me), `/api/sessions/${encodeURIComponent(id)}`, { method: 'DELETE', ms: 10000 }); }
 export async function skillsHermes(me) { const j = await (await pide(conexion(me), '/v1/skills', { ms: 10000 })).json(); return lista(j, 'skills'); }
+// Los toolsets de Hermes (web, file, memory, skills…; lo que la IA puede usar) → [{ name, label, enabled, configured, tools: [nombre] }]. [] si Hermes no contesta.
+export async function toolsetsHermes(me) {
+  try {
+    const j = await (await pide(conexion(me), '/v1/toolsets', { ms: 10000 })).json();
+    let xs = lista(j, 'toolsets');
+    if (!xs.length && j && typeof j === 'object' && !Array.isArray(j)) xs = Object.entries(j).filter(([, v]) => v && typeof v === 'object').map(([name, v]) => ({ name, ...v }));
+    return xs.filter((t) => t && typeof t === 'object').map((t) => ({ name: String(t.name || t.id || ''), label: String(t.label || t.title || t.name || t.id || ''), enabled: Boolean(t.enabled), configured: t.configured !== false, tools: (Array.isArray(t.tools) ? t.tools : []).map((x) => String(x?.name ?? x ?? '')).filter(Boolean) })).filter((t) => t.name);
+  } catch { return []; }
+}
 
 // Un turno en una sesión, en streaming (SSE). Cerrar la conexión (signal) detiene al agente: así funciona «Detener».
 // on = { delta(texto acumulado), tool({ fase: 'inicio'|'fin'|'error', nombre, detalle }), nota(texto), aprobacion(evento), run(runId) }

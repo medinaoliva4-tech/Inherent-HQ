@@ -18,9 +18,9 @@ export async function guias() {
   return (await db.list('docs')).filter((d) => d.guia && CLAVES.has(d.guia)).map(recorte).sort((a, b) => a.orden - b.orden || a.title.localeCompare(b.title));
 }
 
-// La prueba final del primer día: la persona ya creó algo en el OS (una pieza, una idea, una tarea, un lead…).
+// La prueba final del primer día: la persona ya creó algo en el OS (una pieza, una nota de área, una tarea, un lead…).
 async function hizoPrueba(email) {
-  for (const coll of ['content', 'tasks', 'leads', 'projects']) {
+  for (const coll of ['content', 'tasks', 'leads', 'projects', 'area_notes']) {
     const xs = await db.list(coll).catch(() => []);
     if (xs.some((x) => x._meta?.created_by === email)) return true;
   }

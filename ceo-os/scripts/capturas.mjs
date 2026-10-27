@@ -1,7 +1,7 @@
 // Capturas del OS para revisar un cambio de diseño: cada ruta, de día y de noche, en la compu (1440) y en el cel (390).
 // Usa el Playwright instalado en la compu (npm root -g), sin agregarlo al proyecto. Con el OS local corriendo (npm run dev):
 //   npm run capturas                         → las pantallas de todos los días
-//   npm run capturas -- org/sales,chat antes → solo esas, con el prefijo «antes» (un workspace con cliente: ws/marketing/<slug>/overview)
+//   npm run capturas -- org/sales,chat antes → solo esas, con el prefijo «antes» (un área: areas/marketing)
 // Guarda en ceo-os/.capturas/ (no se sube) y avisa de errores de consola y de scroll horizontal.
 import { createRequire } from 'node:module';
 import { execSync } from 'node:child_process';
@@ -10,7 +10,7 @@ import path from 'node:path';
 
 const { chromium } = createRequire(execSync('npm root -g').toString().trim() + '/')('playwright');
 const B = process.env.OS_URL || 'http://localhost:3000';
-const rutas = (process.argv[2] || 'home,ai,org/work,org/clients,org/operations,org/sales,org/services,org/finanzas,org/vision,org/library,ws/strategy,ws/marketing,ws/creative,ws/consulting,ws/production,chat,me').split(',');
+const rutas = (process.argv[2] || 'home,ai,ai/mcps,org/work,org/clients,org/operations,org/sales,org/services,org/finanzas,org/vision,org/library,areas/strategy,areas/marketing,areas/creative,areas/consulting,areas/production,chat,me').split(',');
 const pre = process.argv[3] || 'cap';
 const OUT = path.join(path.dirname(new URL(import.meta.url).pathname), '..', '.capturas');
 fs.mkdirSync(OUT, { recursive: true });

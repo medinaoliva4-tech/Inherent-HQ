@@ -34,6 +34,8 @@ export const COLLS = {
   // Solo por /api/entregables/* (api/_lib/entregables.js); nunca por /api/db.
   deliverables: 'content', deliverable_versions: 'content',
   invoices: 'finanzas', bank_moves: 'finanzas', cost_recipes: 'finanzas',
+  // Áreas: la información que cada área guarda y lo importante fijado. Por /api/db, con su v y su audit.
+  area_notes: 'library',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
 // (sus tareas, los proyectos y las cuentas de sus clientes). Las tareas también las escribe: ahí entrega.

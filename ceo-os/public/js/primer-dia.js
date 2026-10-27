@@ -4,7 +4,6 @@
 import { html, raw, mount, api, toast, $, ico, roleName } from './core.js';
 import { healthPuente } from './puente-chat.js';
 import { PASOS_PRIMER_DIA } from './primer-dia-pasos.js';
-import { puedeWs } from './herramientas.js';
 
 const PASOS = PASOS_PRIMER_DIA;
 const OPCIONALES = new Set(['app', 'claude', 'laya']);
@@ -60,7 +59,7 @@ export async function abrirPrimerDia(me) {
   let ok = Object.fromEntries(PASOS.map(([k]) => [k, Boolean(me.primer_dia?.hechos?.[k])])), paso = PASOS.findIndex(([k]) => !ok[k]), revisando = false;
   if (paso < 0) paso = PASOS.length - 1;
   const [primero] = me.name.split(' ');
-  const espacios = [me.areas?.some((a) => ['home', 'work', 'clients', 'operations', 'sales', 'finanzas'].includes(a)) && 'Organization', 'AI Harness', (me.areas?.includes('estrategia') || me.areas?.includes('content') || me.areas?.includes('clients') || me.areas?.includes('marcas')) && 'Workspaces'].filter(Boolean);
+  const espacios = [me.areas?.some((a) => ['home', 'work', 'clients', 'operations', 'sales', 'finanzas'].includes(a)) && 'Organization', 'Inherent AI', (me.areas?.includes('estrategia') || me.areas?.includes('content') || me.areas?.includes('clients') || me.areas?.includes('marcas')) && 'Áreas'].filter(Boolean);
   const cuerpo = (k) => {
     if (k === 'quien') return html`<p>Hola, ${primero}. En Inherent eres <b>${me.title || (me.roles || []).map(roleName).join(' · ') || (me.role === 'ceo' ? 'el CEO' : 'parte del equipo')}</b>.</p>
       <p>Vas a ver ${espacios.length ? html`<b>${espacios.join(' · ')}</b>` : 'tu espacio de trabajo'}: lo que tu puesto necesita, nada más. Si te falta algo, el CEO lo abre en Vistas por rol.</p>
@@ -79,8 +78,8 @@ export async function abrirPrimerDia(me) {
     if (k === 'google') return html`<p>Con Google conectado, el OS guarda archivos en <b>Drive</b> y agenda en <b>Calendar</b> con tu cuenta.</p>
       <p class="mut sm">${me.google?.drive && me.google?.calendar ? html`<b class="ok">Drive y Calendar conectados ✓</b>` : html`Falta ${[!me.google?.drive && 'Drive', !me.google?.calendar && 'Calendar'].filter(Boolean).join(' y ')}. Vuelve a entrar con Google y acepta los permisos.`}</p>
       ${me.google?.drive && me.google?.calendar ? html`<div class="row"><button class="btn" data-pd="hecho" data-k="google">Seguir</button></div>` : html`<div class="row" style="gap:8px"><a class="btn" href="/api/auth/google">Conectar Google</a>${revisarBtn('google')}</div>`}`;
-    return html`<p>Última: crea algo de verdad. <b>Una idea</b> en Creative › Creative Direction Lab, <b>una tarea</b> en Mis tareas o <b>un lead</b> en Ventas. Cuando exista, este paso se marca solo.</p>
-      <div class="row" style="gap:8px;flex-wrap:wrap">${espacios.includes('Workspaces') ? html`<a class="btn" href="#/ws/${puedeWs(me, 'marketing') ? 'marketing' : 'strategy'}" data-pd="ir">Ir a los workspaces</a>` : ''}${me.areas?.includes('work') ? html`<a class="btn ${espacios.includes('Workspaces') ? 'ghost' : ''}" href="#/org/work" data-pd="ir">Ir a Mis tareas</a>` : ''}${me.areas?.includes('sales') ? html`<a class="btn ghost" href="#/org/sales" data-pd="ir">Ir a Ventas</a>` : ''}${revisarBtn('prueba')}</div>
+    return html`<p>Última: crea algo de verdad. <b>Una nota</b> en tu área, <b>una tarea</b> en Mis tareas o <b>un lead</b> en Ventas. Cuando exista, este paso se marca solo.</p>
+      <div class="row" style="gap:8px;flex-wrap:wrap">${espacios.includes('Áreas') ? html`<a class="btn" href="#/areas" data-pd="ir">Ir a las áreas</a>` : ''}${me.areas?.includes('work') ? html`<a class="btn ${espacios.includes('Áreas') ? 'ghost' : ''}" href="#/org/work" data-pd="ir">Ir a Mis tareas</a>` : ''}${me.areas?.includes('sales') ? html`<a class="btn ghost" href="#/org/sales" data-pd="ir">Ir a Ventas</a>` : ''}${revisarBtn('prueba')}</div>
       <p class="mut sm">Puedes pausar aquí: el recorrido te espera en la barra de arriba.</p>`;
   };
   const revisarBtn = (k) => html`<button class="btn ghost" data-pd="revisar" data-k="${k}" ${revisando ? raw('disabled') : ''}>${revisando ? 'Revisando…' : 'Ya lo hice: revisar'}</button>`;
