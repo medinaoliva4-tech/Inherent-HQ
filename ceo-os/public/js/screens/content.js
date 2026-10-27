@@ -88,7 +88,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
     if (week.warn) return mount(b, html`${head}<div class="warnbox">${week.warn}</div>`);
     const r = week.result;
     if (!data.apify && !r) return mount(b, html`${head}<div class="warnbox">La lectura semanal de redes todavía no está activada. <span class="sm" style="opacity:.8">Quien administra la app la activa con la variable APIFY_TOKEN en Vercel.</span></div>`);
-    if (!r) return mount(b, html`${head}<div class="empty"><b>${week.status === 'running' ? 'Leyendo tus redes…' : 'Sin semana todavía'}</b>${week.status === 'running' ? 'Tarda unos minutos. Esta pantalla se actualiza sola.' : html`Revisa las <a href="#/content/fuentes/${slug}" style="color:inherit">Fuentes</a> y dale «Scrapear ahora».`}</div>`);
+    if (!r) return mount(b, html`${head}<div class="empty"><b>${week.status === 'running' ? 'Leyendo tus redes…' : 'Sin semana todavía'}</b>${week.status === 'running' ? 'Tarda unos minutos. Esta pantalla se actualiza sola.' : html`Revisa las <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a> y dale «Scrapear ahora».`}</div>`);
     mount(b, html`${head}
       <div class="sec-title" style="margin-top:0"><h2>Top 10 del nicho</h2><span class="mut sm">Cuántas veces supera el promedio de <b>su propia cuenta</b></span></div>
       ${r.top.length ? html`<div class="grid g5">${r.top.map(videoCard)}</div>` : html`<div class="empty"><b>Sin videos esta semana</b>Agrega hashtags o cuentas en Fuentes.</div>`}
@@ -174,7 +174,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     if (inbox === null) { mount(b, html`<p class="loading">Leyendo la bandeja…</p>`); api(`community/inbox?profile=${encodeURIComponent(slug)}`).then((r) => { inbox = r; }).catch((e) => { inbox = { error: e.message }; }).then(() => alive() && tab === 'bandeja' && b.isConnected && bandeja(b)); return; }
     if (inbox.error) return mount(b, html`<div class="warnbox">${inbox.error}</div>`);
     if (!inbox.connected) return mount(b, html`<div class="warnbox">Para ver la bandeja falta conectar Zernio: agrega <b>ZERNIO_API_KEY</b> (con el grupo «messages» activo) en las variables de Vercel (Sensitive) y vuelve a publicar.</div>`);
-    if (inbox.noAccounts) return mount(b, html`<div class="empty"><b>Este perfil no tiene cuentas propias</b>Agrégalas en <a href="#/content/fuentes/${slug}" style="color:inherit">Fuentes</a>.</div>`);
+    if (inbox.noAccounts) return mount(b, html`<div class="empty"><b>Este perfil no tiene cuentas propias</b>Agrégalas en <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a>.</div>`);
     if (!inbox.accounts) return mount(b, html`<div class="empty"><b>Zernio no tiene conectadas las cuentas de ${data.profile.name}</b>${inbox.handles.map((h) => '@' + h).join(', ')} · conéctalas en Zernio y recarga.</div>`);
     const ago = (d) => (d ? fdate(String(d).slice(0, 10)) : '');
     mount(b, html`<div class="row" style="margin-bottom:12px;gap:10px;flex-wrap:wrap"><span class="mut sm">Se contesta en Zernio (o con ⑧ Community). Lo nuevo puede tardar hasta 10 minutos en aparecer.</span><div class="sp"></div><a class="btn" href="https://zernio.com/dashboard" target="_blank" rel="noopener noreferrer">Contestar en Zernio ↗</a></div>
@@ -529,4 +529,30 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   acts(el, { auto: (t) => saveCfg({ auto: t.checked }).then(() => toast(t.checked ? 'Se scrapea solo cada lunes' : 'Scrape semanal apagado')) }, 'change');
   mount(el, html`<p class="loading">Leyendo el repo…</p>`);
   load();
+}
+
+// ---------- Customer Bullseye como herramienta (Strategy › Research) ----------
+// Monta la diana (bullseye.js) con su guardado, sin depender del tab Fuentes ni del estado de render(): lee el perfil del
+// repo, guarda en content/cfg (y deja «audiencia» al día para lo que todavía la lee, como el MCP) y arma el prompt con los
+// pilares, las cuentas, los referentes, la competencia y, si hay semana leída, los últimos posts propios.
+export async function bullseyeTool(host, { slug, me, alive }) {
+  mount(host, html`<p class="loading">Leyendo el repo…</p>`);
+  let data;
+  try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(host, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
+  if (!alive() || !host.isConnected) return;
+  if (data.profile?.slug !== slug) return mount(host, slug === 'personal' ? html`<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>` : html`<div class="empty"><b>Este cliente no tiene perfil de contenido</b>Se crea con su folder en clients/.</div>`);
+  const p = data.profile;
+  // Los últimos posts propios (de la semana leída) solo enriquecen el prompt: sin semana, se omiten.
+  let own = [];
+  const posts4 = (l = [], n) => (!l?.length ? '(todavía sin datos)' : '') + (l || []).slice(0, n).map((x) => `- @${x.handle} · ${x.views ? x.views + ' vistas' : x.likes + ' likes'}${x.x ? ` · ${x.x}× su promedio` : ''} · ${x.url}\n  ${String(x.text || '').replace(/\s+/g, ' ').slice(0, 150)}`).join('\n') || '(nada)';
+  if (me?.views?.content !== 'resumen') api(`content/week?profile=${encodeURIComponent(slug)}`).then((w) => { own = w?.result?.own || []; }).catch(() => {});
+  async function saveBx(bx) {
+    const audience = { exacto: bx.center || bx.rings[0]?.label || '', nicho: bx.rings[1]?.label || '', general: bx.rings[3]?.label || '' };
+    const r = await api('content/cfg', { method: 'PUT', body: { profile: slug, ...data.cfg, bullseye: bx, audience } });
+    data.cfg = { ...data.cfg, ...r };
+    if (!r.bullseye) throw new Error('A la diana le falta el centro o alguno de los 5 niveles');
+    return r.bullseye;
+  }
+  const c = data.cfg || {};
+  bullseye(host, { name: p.name, bx: c.bullseye, save: saveBx, prompt: () => bullseyePrompt({ name: p.name, pillars: (c.pillars || []).map((x) => x.name), own: (p.own || []).map((a) => '@' + a.handle), refs: (c.accounts || []).filter((x) => x.kind === 'referente').map((a) => '@' + a.handle), comp: [...(p.competitors || []), ...(c.accounts || []).filter((x) => x.kind !== 'referente')].map((a) => '@' + a.handle), posts: posts4(own, 5), bx: c.bullseye }) });
 }

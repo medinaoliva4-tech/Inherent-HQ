@@ -2,7 +2,7 @@
 // con la pantalla dividida: a la izquierda el CONTEXTO (el entregable, los datos clave y las fuentes citadas) y a la derecha el
 // CHAT con Strategy. El chat corre con el Claude de cada persona en su compu (puente local de Laya, puerto 7357), en solo lectura.
 // Las pestañas de los 5 bloques viven en la barra de abajo de la de arriba (subnav de app.js).
-// Rutas: #/estrategia · #/estrategia/<cliente> · #/estrategia/<cliente>/<bloque>
+// Rutas: #/ws/strategy/<cliente>/<pestaña>/<herramienta>[/<bloque>] (la monta screens/workspace.js por bloque); las viejas #/estrategia/… son alias.
 import { html, raw, mount, api, col, ask, toast, ico, fdate, md, drawer, closeDrawer, $, $$, esc, events, confirmAsk, initials } from '../core.js';
 import { juzgarLocal } from '../laya-ui.js';
 import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe, APP_MAC, enApp } from '../laya.js';
@@ -17,6 +17,7 @@ import { tarjetaDoc, barraChat, botonesEnviar, bandeja } from '../artifact.js';
 import { botonVoz, dictar } from '../voz.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn, motorDe, esHermes } from '../motor-ui.js';
 import { NIVELES_FICHA, CAMPOS_FICHA } from '../ficha.js';
+import { rutaBloque } from '../herramientas.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
 const ESTADO_CLS = { vacio: '', trabajo: 'work', aprobado: 'ok' };
@@ -62,13 +63,13 @@ export async function render(el, { me, sub = [], alive }) {
   async function cliente(slug, b0) {
     el.onclick = null;
     // El chat corre en la compu de cada quien (el puente de Laya): en el teléfono no hay dónde.
-    if (/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '')) return mount(el, html`<a class="btn ghost" href="#/estrategia">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty es-solo-compu"><span class="es-hint-i">${ico('spark', 22)}</span><b>Disponible solo en tu compu</b>La Estrategia trabaja con el Claude de tu computadora. Ábrela desde ahí.</div>`);
+    if (/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '')) return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty es-solo-compu"><span class="es-hint-i">${ico('spark', 22)}</span><b>Disponible solo en tu compu</b>La Estrategia trabaja con el Claude de tu computadora. Ábrela desde ahí.</div>`);
     let data;
     try { data = await api(`estrategia/${encodeURIComponent(slug)}`); }
-    catch (e) { if (!alive()) return; return mount(el, html`<a class="btn ghost" href="#/estrategia">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty" style="margin-top:16px"><b>No pude abrir este cliente</b>${e.message}</div>`); }
+    catch (e) { if (!alive()) return; return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty" style="margin-top:16px"><b>No pude abrir este cliente</b>${e.message}</div>`); }
     if (!alive()) return;
     const bid = BLOQUES.some((b) => b.id === b0) ? b0 : BLOQUES[0].id;
-    if (bid !== b0) { history.replaceState(null, '', `#/estrategia/${slug}/${bid}`); sync(); }
+    if (bid !== b0) { history.replaceState(null, '', rutaBloque(slug, bid)); sync(); }
     const M = BLOQUES.find((b) => b.id === bid);
     const key = `os.estrategia.chat.${me.email}.${slug}.viva`;
     const chat = chatDe(key);
@@ -183,7 +184,7 @@ export async function render(el, { me, sub = [], alive }) {
     // Roadmap: lo que dice Hormozi de la etapa del negocio.
     function roadmapCard() {
       const e = data.etapa ? etapaDe(data.etapa.n) : null;
-      if (!e) return html`<section class="es-card"><span class="lbl">Su etapa</span><p class="mut">El plan de 90 días sale de la etapa del negocio. Primero confirma la etapa en <a href="#/estrategia/${slug}/diagnostico">Diagnóstico</a>.</p></section>`;
+      if (!e) return html`<section class="es-card"><span class="lbl">Su etapa</span><p class="mut">El plan de 90 días sale de la etapa del negocio. Primero confirma la etapa en <a href="${rutaBloque(slug, 'diagnostico')}">Diagnóstico</a>.</p></section>`;
       return html`<section class="es-card"><span class="lbl">Lo que dice Hormozi de la ${etapaLabel(e)}</span>
         <dl class="es-dl"><div><dt>Tu rol</dt><dd>${e.rol}</dd></div><div><dt>Equipo</dt><dd>${e.gente}</dd></div><div class="w"><dt>Lo que traba</dt><dd><i>«${e.traba}»</i></dd></div><div class="w"><dt>Para pasar de etapa</dt><dd><i>«${e.graduar}»</i></dd></div></dl>
         <div class="es-links">${fuentesDeEtapa(e.n).map((f) => srcBtn(f))}</div></section>`;
@@ -286,7 +287,7 @@ export async function render(el, { me, sub = [], alive }) {
       const cerrar = (e) => { if (!m.contains(e.target) && !e.target.closest('[data-act="ctx"],[data-act="ctx-c"],[data-act="ctx-m"]')) fuera(); };
       setTimeout(() => document.addEventListener('pointerdown', cerrar));
     }
-    const menuHz = (t) => menu(t, data.bloques.map((x) => ({ href: `#/estrategia/${slug}/${x.id}`, on: x.id === bid, dot: x.estado === 'aprobado' ? 'ok' : x.estado === 'trabajo' ? 'w' : '', label: `${x.n} · ${x.nombre}`, sub: estadoLabel(x.estado) })));
+    const menuHz = (t) => menu(t, data.bloques.map((x) => ({ href: rutaBloque(slug, x.id), on: x.id === bid, dot: x.estado === 'aprobado' ? 'ok' : x.estado === 'trabajo' ? 'w' : '', label: `${x.n} · ${x.nombre}`, sub: estadoLabel(x.estado) })));
     function togglePanel() { S.panel = !S.panel; try { localStorage.setItem('os.estrategia.panel', S.panel ? 'on' : 'off'); } catch {} $('#es-split', el).dataset.panel = S.panel ? 'on' : 'off'; requestAnimationFrame(() => div?.ubicar()); $$('[data-act="panel"].es-pick', el).forEach((x) => { x.hidden = S.panel; }); const tg = $('[data-act="panel-tg"]', chatEl); if (tg) { tg.classList.toggle('on', S.panel); tg.setAttribute('aria-pressed', String(S.panel)); } paintHead(); paintMsgs(); }
     function paintChat() {
       const f = fase(), ok = f === 'listo';
@@ -497,7 +498,7 @@ export async function render(el, { me, sub = [], alive }) {
       if (a === 'chat-nuevo') { if (enVuelo) return; if (chat.msgs.length && !(await confirmAsk('¿Empiezo una conversación nueva? Lo que ya está en la estrategia se queda.'))) return; Object.assign(chat, { msgs: [], sesion: null, enviados: [] }); guardarChat(key, chat); paintChat(); return; }
       if (a === 'ctx') return document.querySelector('.dz-ctxp') ? (document.querySelector('.dz-ctxp').remove(), t.setAttribute('aria-expanded', 'false')) : panelCtx(t);
       if (a === 'paso') { const p = t.dataset.p; if (!abiertoP(p)) return toast('Ese paso se abre cuando el anterior esté hecho', true); chat.paso = p; guardarChat(key, chat); mount(chatEl.querySelector('.cb-p'), pasosIn()); paintAdj(); const ta = $('#es-in', chatEl); if (ta) ta.placeholder = pasoPh(); return; }
-      if (a === 'a-plan') { const d = new Date(), mes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug, etapa: 'plan', mes })); } catch {} location.hash = `#/marcas/diseno/${slug}`; return; }
+      if (a === 'a-plan') { const d = new Date(), mes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug, etapa: 'plan', mes })); } catch {} location.hash = `#/ws/creative/${slug}/design/design-studio`; return; }
       if (a === 'cliente') return menuClientes(t, slug);
       if (a === 'motor') {
         // Los modelos de Hermes se piden al abrir el menú (una vez por pantalla; «refrescar» desde la Terminal cambia la lista).
@@ -607,7 +608,7 @@ export function menu(anchor, items, { buscar = false, placeholder = 'Buscar clie
 }
 async function menuClientes(anchor, actual = '') {
   const d = await loadEstrategia().catch(() => ({ clientes: [] }));
-  menu(anchor, (d.clientes || []).map((c) => ({ href: `#/estrategia/${c.slug}`, on: c.slug === actual, mono: initials(c.nombre), priv: c.slug === 'inherent', label: c.nombre, sub: [c.slug === 'inherent' ? 'Nuestras redes' : c.nivel?.nombre || (c.hayFicha ? '' : 'Sin ficha'), c.etapa ? `Etapa ${c.etapa.n}` : ''].filter(Boolean).join(' · ') })), { buscar: true });
+  menu(anchor, (d.clientes || []).map((c) => ({ href: `#/ws/strategy/${c.slug}/overview`, on: c.slug === actual, mono: initials(c.nombre), priv: c.slug === 'inherent', label: c.nombre, sub: [c.slug === 'inherent' ? 'Nuestras redes' : c.nivel?.nombre || (c.hayFicha ? '' : 'Sin ficha'), c.etapa ? `Etapa ${c.etapa.n}` : ''].filter(Boolean).join(' · ') })), { buscar: true });
 }
 
 // ---------- Los chats guardados ----------
