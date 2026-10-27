@@ -2,6 +2,14 @@
 // Es la única lista: la barra lateral, la página de un workspace (screens/workspace.js), los alias de app.js y las
 // pruebas (scripts/test-herramientas.mjs) leen de aquí. Puro: sin DOM ni red, sin importar brandlist/core/app.
 // Los permisos los pone el servidor; puede() y puedeWs() solo reflejan la misma regla (copiada de brandAccess y hasEstrategia).
+// Las herramientas de Consulting traen aquí lo que ya hace su módulo puro (public/js/consulting/<m>.js: prompt, leer, limpiar,
+// faltas, aMd…): con eso el shell, el servidor (que limpia y mide las faltas al aprobar) y las pruebas leen lo mismo.
+import * as salud from './consulting/salud.js';
+import * as causas from './consulting/causas.js';
+import * as procesos from './consulting/procesos.js';
+import * as escenarios from './consulting/escenarios.js';
+import * as blueprint from './consulting/blueprint.js';
+import * as impacto from './consulting/impacto.js';
 
 // ---------- El flujo compartido (7 pasos) ----------
 export const FLUJO = [
@@ -59,6 +67,18 @@ export const puedeWs = (me, wsId) => (wsId === 'strategy' || wsId === 'consultin
 // puede(me, b) = abre el workspace (puedeWs) y cumple la regla propia de la herramienta.
 const H = (o) => ({ estado: 'pronto', monta: null, aprueba: 'coo', viene_de: [], va_a: [], ...o, puede: (me, b) => puedeWs(me, o.ws) && o.puede(me, b) });
 const D = (nota) => ({ coll: 'deliverables', nota });
+// Una herramienta con entregable que se monta en el Tool Shell: m = su módulo puro, vista = la clave de su vista (consulting/<vista>-ui.js).
+// El shell pide bloque, prompt, leer, limpiar, faltas y aMd; tareasDe (opcional) enciende «Convertir en tareas».
+// sinCostos(contenido) y conCostos(actual, nuevo) (opcionales): el servidor los usa con quien no ve costos (quita los del cliente al leer y los conserva al guardar).
+const SH = (m, vista, extra = {}) => ({ estado: 'parcial', monta: 'shell', vista, bloque: m.BLOQUE, vacio: m.vacio, prompt: m.prompt, leer: m.leer, limpiar: m.limpiar, faltas: m.faltas, aMd: m.aMd, ...extra });
+// El Plan de 90 días no recomienda demanda con la capacidad en rojo. El servidor pasa extra.capacidadRoja (del último Diagnóstico
+// aprobado); en pantalla el shell pasa las entradas leídas (extra.ctx.entradas), de donde se saca el mismo dato.
+const capacidadRojaDe = (extra = {}) => {
+  if (typeof extra.capacidadRoja === 'boolean') return extra.capacidadRoja;
+  const d = (Array.isArray(extra.ctx?.entradas) ? extra.ctx.entradas : []).find((e) => e?.tool === 'business-health-assessment');
+  return d ? salud.capacidadRoja(salud.limpiar(d.contenido)) : false;
+};
+const faltasPlan = (c, extra = {}) => blueprint.faltas(c, { ...extra, capacidadRoja: capacidadRojaDe(extra) });
 export const HERRAMIENTAS = [
   // Strategy — entender el negocio, encontrar oportunidades, diseñar crecimiento rentable (9)
   H({ id: 'customer-bullseye', ws: 'strategy', pestana: 'research', nombre: 'Customer Bullseye', produce: 'La diana: ICP, segmentos por prioridad y un mensaje por anillo',
@@ -145,18 +165,22 @@ export const HERRAMIENTAS = [
 
   // Consulting — el backend del crecimiento: que la empresa aguante la demanda y que cada venta deje más (8)
   H({ id: 'business-health-assessment', ws: 'consulting', pestana: 'assessment', nombre: 'Diagnóstico de crecimiento', alias: 'Business Health Assessment',
+    ...SH(salud, 'salud'),
     produce: 'La etapa, la restricción, capacidad vs demanda y el scorecard de los 4 sistemas', prioridad: 'P1', icono: 'chart-pie',
     guarda: D('tool business-health-assessment; lee la etapa y trabado de Strategy, no los duplica'),
     va_a: ['root-cause-explorer', 'organization-architect'], aprueba: 'ceo', puede: soloEstrategia }),
   H({ id: 'root-cause-explorer', ws: 'consulting', pestana: 'analysis', nombre: 'Árbol de la brecha', alias: 'Root Cause Explorer',
+    ...SH(causas, 'causas', { tareasDe: causas.tareasDe }),
     produce: 'La brecha de la meta, abierta por la ecuación de ingresos hasta sus causas', prioridad: 'P1', icono: 'git-branch',
     guarda: D('el diagrama (diagram-model.js); las pruebas se vuelven tareas area consulting'),
     va_a: ['process-mapper', 'financial-scenario-lab'], puede: soloEstrategia }),
   H({ id: 'process-mapper', ws: 'consulting', pestana: 'analysis', nombre: 'Mapa del camino del dinero', alias: 'Process Mapper',
+    ...SH(procesos, 'procesos'),
     produce: 'El recorrido lead → venta → entrega → recompra, hoy vs optimizado', prioridad: 'P1', icono: 'shuffle',
     guarda: D('el diagrama con carriles por rol + el estándar de entrega'),
     va_a: ['automation-opportunity-finder', 'organization-architect', 'solution-blueprint-builder'], puede: soloEstrategia }),
   H({ id: 'financial-scenario-lab', ws: 'consulting', pestana: 'analysis', nombre: 'Money Model Lab', alias: 'Financial Scenario Lab',
+    ...SH(escenarios, 'escenarios', { sinCostos: escenarios.sinCostos, conCostos: escenarios.conCostos }), // el servidor las usa con quien no ve costos
     produce: 'BMC, BCG, modelo de dinero y 2 a 4 escenarios con margen, CAC, LTV y caja', prioridad: 'P1', icono: 'wallet',
     guarda: D('los números del cliente etiquetados; un cambio de precio u oferta se manda a Strategy como encargo'),
     va_a: ['solution-blueprint-builder', 'offer-architect', 'pricing-packages'], aprueba: 'ceo', puede: soloEstrategia }),
@@ -169,10 +193,12 @@ export const HERRAMIENTAS = [
     guarda: D('nunca lee team ni recipes (son de Inherent)'),
     va_a: ['solution-blueprint-builder'], puede: soloEstrategia }),
   H({ id: 'solution-blueprint-builder', ws: 'consulting', pestana: 'solutions', nombre: 'Plan de crecimiento 90 días', alias: 'Solution Blueprint Builder',
+    ...SH(blueprint, 'blueprint', { tareasDe: blueprint.tareasDe, faltas: faltasPlan }),
     produce: 'Filas con objetivo, restricción, sistema, dueño, primer paso y métrica', prioridad: 'P1', icono: 'list-checks',
     guarda: D('se convierte en tareas area consulting; las métricas van a accounts.goals'),
     va_a: ['impact-tracker'], puede: soloEstrategia }),
   H({ id: 'impact-tracker', ws: 'consulting', pestana: 'implementation', nombre: 'Impact Tracker', alias: 'Impact Tracker',
+    ...SH(impacto, 'impacto'),
     produce: 'Antes vs después de la ecuación de ingresos y del scorecard, con el reporte para el cliente', prioridad: 'P1', icono: 'trending-up',
     guarda: D('las metas en accounts.goals por la ruta que ya existe; el reporte como deliverable'),
     puede: soloEstrategia }),

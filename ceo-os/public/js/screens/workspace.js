@@ -1,9 +1,10 @@
 // La página de un workspace: #/ws/<ws>/<cliente>/<pestaña>[/<herramienta>[/<resto>]]. Arriba las pestañas del workspace, el
 // hero del cliente (monograma, nivel, etapa si aplica, aprobación y el flujo compartido) y «Continuar en el Chat». Abajo, la
-// grilla de herramientas de la pestaña (nombre, qué produce, estado, último entregable, viene de / va a); el Overview suma el
+// grilla de herramientas de la pestaña (nombre, qué produce, estado, último entregable —una sola lectura de /api/entregables por
+// grilla—, viene de / va a); el Overview suma el
 // resumen del cliente en ese workspace, todas las herramientas por pestaña y la siguiente acción. Con una herramienta en la
-// ruta, se monta su módulo (la tabla de montaje que antes vivía en la portada de Marcas) o, si es «Pronto», su ficha: qué recibe, qué
-// produce, a qué alimenta y su prioridad. Sin cliente, el selector de contexto en grande. Los permisos los pone el servidor:
+// ruta, se monta su módulo (la tabla de montaje que antes vivía en la portada de Marcas; la clave 'shell' monta el Tool Shell con la
+// vista de la herramienta) o, si es «Pronto», su ficha: qué recibe, qué produce, a qué alimenta y su prioridad. Sin cliente, el selector de contexto en grande. Los permisos los pone el servidor:
 // aquí solo se refleja (puedeWs, puede() de cada herramienta y modulesFor de brandlist.js).
 import { html, mount, col, api, ico, initials, skel, $, fdate, today } from '../core.js';
 import { WORKSPACES, FLUJO, wsDe, pestanaDe, herramientaDe, deWorkspace, cadena, rutaHerramienta, puedeWs } from '../herramientas.js';
@@ -33,6 +34,17 @@ import { adsUI } from '../ads-ui.js';
 import { techUI } from '../tech-ui.js';
 
 export const esqueleto = () => skel('pagina');
+
+// Las vistas de las herramientas con entregable (clave 'vista' del registro): cada una se carga cuando se abre su herramienta.
+const VISTAS = {
+  salud: () => import('../consulting/salud-ui.js'),
+  causas: () => import('../consulting/causas-ui.js'),
+  procesos: () => import('../consulting/procesos-ui.js'),
+  escenarios: () => import('../consulting/escenarios-ui.js'),
+  blueprint: () => import('../consulting/blueprint-ui.js'),
+  impacto: () => import('../consulting/impacto-ui.js'),
+};
+const reciente = (d) => String(d._meta?.updated_at || d._meta?.created_at || '');
 
 const EST = { lista: 'Lista', parcial: 'Parcial', pronto: 'Pronto' };
 // Un paso de FLUJO puede ser un texto o { id, nombre }; la pestaña guarda su paso igual.
@@ -88,6 +100,10 @@ export async function render(el, { me, sub = [], alive }) {
     const card = e.target.closest('.tool-card[data-href]');
     if (card && !e.target.closest('a')) location.hash = card.dataset.href;
   });
+  // Los entregables del cliente en este workspace: UNA lectura por pintado (la comparten las tarjetas y el Overview de Consulting).
+  // null si falla (sin permiso, sin ficha, sin red): quien la usa deja su texto de hoy.
+  let entregables = null;
+  const leerEntregables = () => (entregables ||= api(`entregables?ws=${encodeURIComponent(ws)}&slug=${encodeURIComponent(slug)}`).catch(() => null));
   const cuerpo = $('#ws-cuerpo', el);
   if (tool) return herramienta(cuerpo, tool);
   if (pestana.id === 'overview') return overview(cuerpo);
@@ -125,8 +141,23 @@ export async function render(el, { me, sub = [], alive }) {
       <span class="tool-card-ico">${ico(t.icono || 'target', 18)}</span>
       <div class="tool-card-t"><a href="${rutaHerramienta(ws, slug, t.id)}">${t.nombre}</a><span class="tool-card-est" data-est="${t.estado}">${EST[t.estado] || t.estado}</span></div>
       <p>${t.produce || ''}</p>
-      <div class="tool-card-ult"><span class="mut sm">Último entregable: —</span><span class="mut sm">⚠️ SIN DATOS: saldrá de deliverables (Fase 2)</span></div>
+      <div class="tool-card-ult" data-tool="${t.id}"><span class="mut sm">Último entregable: —</span><span class="mut sm">⚠️ SIN DATOS: saldrá de deliverables (Fase 2)</span></div>
       <div class="tool-card-chips">${chipsDe('viene de', t.viene_de)}${chipsDe('va a', t.va_a)}</div></article>`;
+  }
+  // «Último entregable» de cada tarjeta. Si falla o el cliente no tiene entregables, queda el texto de hoy.
+  async function ultimos(box) {
+    if (!box.querySelector('.tool-card-ult')) return;
+    const r = await leerEntregables();
+    if (!r || !alive() || !box.isConnected) return;
+    const por = new Map();
+    for (const d of Array.isArray(r?.items) ? r.items : []) { if (d.archivado || !d.tool) continue; const p = por.get(d.tool); if (!p || reciente(d) > reciente(p)) por.set(d.tool, d); }
+    for (const n of box.querySelectorAll('.tool-card-ult[data-tool]')) {
+      const d = por.get(n.dataset.tool);
+      // Una herramienta que ya tiene su Tool Shell no «saldrá» de nada: solo todavía no hay un borrador.
+      if (!d) { if (herramientaDe(n.dataset.tool)?.monta === 'shell') mount(n, html`<span class="mut sm">Último entregable: —</span><span class="mut sm">⚠️ SIN DATOS: todavía no hay un borrador</span>`); continue; }
+      const f = reciente(d);
+      mount(n, html`<span class="mut sm">Último entregable</span><span class="sm tool-card-ult-d"><span class="chip sm2 tool-card-ult-e" data-estado="${d.estado || 'Borrador'}">${d.estado || 'Borrador'}</span> <span class="mut">v${d.version || 1}${f ? ` · ${fdate(f)}` : ''}</span></span>`);
+    }
   }
   function grilla(ts) { return (ts.length ? html`<div class="ws-grid">${ts.map(tarjeta)}</div>` : html`<p class="mut sm">Sin herramientas que tu perfil abra en esta pestaña.</p>`); }
   function seccion(titulo, sub, cuerpo, extra = '') { return html`<section class="ws-sec ${extra}"><div class="ws-sec-h"><h2>${titulo}</h2>${sub ? html`<span class="mut sm">${sub}</span>` : ''}</div>${cuerpo}</section>`; }
@@ -147,11 +178,12 @@ export async function render(el, { me, sub = [], alive }) {
   async function overview(box) {
     mount(box, html`<section class="ws-sec" id="ws-resumen"><div id="ws-res"></div></section>${siguiente()}
       ${W.pestanas.map((p) => { const ts = visibles(p); return ts.length ? seccion(html`<a href="${rutaPest(p)}">${p.nombre}</a>`, pasoNombre(p.paso), grilla(ts)) : ''; })}`);
+    ultimos(box).catch(() => {});
     const r = $('#ws-res', box);
     if (ws === 'strategy') return resumenStrategy(r);
     if (ws === 'marketing') return brandHome(r, { me, b, alive });
     if (ws === 'creative') return brandBrief(r, { me, b, alive });
-    if (ws === 'consulting') return consultingOverview(r, { me, slug, alive, cabecera: false });
+    if (ws === 'consulting') return consultingOverview(r, { me, slug, alive, cabecera: false, entregables: leerEntregables() });
     if (ws === 'production') return delivery(r);
   }
   function resumenStrategy(r) {
@@ -163,6 +195,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Una pestaña: lo extra arriba y su grilla ----------
   async function pagina(box) {
     mount(box, html`<div id="ws-extra"></div>${seccion(pestana.nombre, pasoNombre(pestana.paso), grilla(visibles(pestana)))}`);
+    ultimos(box).catch(() => {});
     const x = $('#ws-extra', box);
     if (ws === 'creative' && pestana.id === 'brief') return brandBrief(x, { me, b, alive });
     if (ws === 'creative' && pestana.id === 'review') return revision(x);
@@ -200,7 +233,7 @@ export async function render(el, { me, sub = [], alive }) {
     const li = (ids = []) => (ids.length ? html`<ul>${ids.map((id) => { const x = herramientaDe(id); return html`<li>${x && x.ws === ws ? html`<a href="${rutaHerramienta(ws, slug, id)}">${x.nombre}</a>` : nomTool(id)}${x && x.ws !== ws ? html` <span class="mut sm">· ${wsDe(x.ws)?.nombre || x.ws}</span>` : ''}</li>`; })}</ul>` : html`<span class="mut">Nada: empieza desde cero.</span>`);
     return html`<section class="tool-ficha"><span class="tool-ficha-ico">${ico(t.icono || 'target', 22)}</span><span class="chip">Pronto</span><h2>${t.nombre}</h2><p>${t.produce || ''}</p>
       <dl class="tool-ficha-dl"><div><dt>Recibe</dt><dd>${li(t.viene_de)}</dd></div><div><dt>Produce</dt><dd>${t.produce || '—'}</dd></div><div><dt>Alimenta</dt><dd>${li(t.va_a)}</dd></div><div><dt>Prioridad</dt><dd>${t.prioridad || '—'}${t.aprueba ? html` <span class="mut sm">· aprueba ${t.aprueba === 'ceo' ? 'el CEO' : 'el COO'}</span>` : ''}</dd></div></dl>
-      <p class="mut sm">Llega en la Fase ${ws === 'consulting' ? '2' : '3'}. Mientras, lo que ya tengas se trabaja en el Chat.</p>
+      <p class="mut sm">Llega en la Fase ${ws === 'consulting' && t.prioridad === 'P1' ? '2' : '3'}. Mientras, lo que ya tengas se trabaja en el Chat.</p>
       <button type="button" class="btn" data-ws="chat">${ico('chat-ia', 14)} Continuar en el Chat</button></section>`;
   }
   async function herramienta(box, t) {
@@ -214,6 +247,17 @@ export async function render(el, { me, sub = [], alive }) {
     const common = { me, alive, fixed: b.slug };
     const embed = (h, only, extra = {}) => { h.dataset.island = '1'; return content(h, { ...common, sub: [only], embed: { base, only: [only], brand: b.name, ...extra } }); };
     switch (t.monta) {
+      // El Tool Shell: el marco común (estados, versiones, IA, criterios) con la vista de la herramienta en el centro.
+      case 'shell': {
+        const cargar = VISTAS[t.vista];
+        if (!cargar) return mount(host, ficha(t));
+        mount(host, esqueleto());
+        let vista = null, toolShell = null;
+        try { [{ vista }, { toolShell }] = await Promise.all([cargar(), import('../tool-shell.js')]); } catch (e) { console.error(e); }
+        if (!alive() || !host.isConnected) return;
+        if (!vista || !toolShell) return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        return toolShell(host, { me, tool: t, slug, b, alive, vista, resto });
+      }
       case 'bullseye': return bullseyeTool(host, { slug, me, alive });
       case 'avatar': return avatarUI(host, { me, b, alive });
       case 'strategy': {

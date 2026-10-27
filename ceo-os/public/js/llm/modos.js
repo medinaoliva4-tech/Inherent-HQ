@@ -174,12 +174,13 @@ export const SUGERENCIAS = {
   organizacion: [['¿Qué tengo pendiente hoy?', 'Tu día'], ['¿Qué leads están sin responder?', 'Ventas'], ['¿Qué entregas vencen esta semana?', 'Proyectos'], ['Crea una tarea para el editor de video', 'Tareas']],
   marketing: [['Armemos el plan del mes', 'Plan del mes'], ['¿Este mes es campaña o pilar?', 'Campaña'], ['Organiza el evento de lanzamiento con su anticipación', 'Evento'], ['¿Qué funcionó el mes pasado y qué cambiamos?', 'Resultados']],
   diseno: [['¿Qué piezas del plan del mes faltan por diseñar?', 'Plan del mes'], ['Especifica un carrusel lámina por lámina', 'Carrusel'], ['Revisa esta pieza contra la guía de la marca', 'Revisión'], ['Propón 3 portadas para el reel de la semana', 'Ideas']],
-  consulting: [['¿Dónde se traba la operación hoy?', 'Operaciones'], ['¿Qué decisiones solo debería tomar el fundador?', 'Estructura'], ['¿Qué línea deja margen y cuál lo desangra?', 'Márgenes'], ['¿Cuánto puede pagar por un cliente sin perder?', 'Finanzas']],
+  consulting: [['Corre el Diagnóstico de crecimiento de este cliente', 'Diagnóstico'], ['¿Qué rama del árbol de la brecha pesa más?', 'Árbol de la brecha'], ['Arma los escenarios: subir precio, upsell, retención', 'Money Model Lab'], ['Convierte el diagnóstico en el plan de 90 días', 'Plan 90 días']],
   produccion: [['¿Qué videos del plan del mes faltan por producir?', 'Plan del mes'], ['Escribe el guion con storyboard del reel de la semana', 'Guion'], ['Arma el shot list y la jornada de grabación', 'Grabación'], ['Revisa este corte contra los criterios de video', 'Edición']],
 };
 
 // Los temas de Consulting: lo útil para organizar las operaciones, las finanzas y el equipo de un cliente (inherent/02-METODO.md:
-// 3 · OPERATIONS OS y 4 · MONEY OS). Cada tema abre el Chat con su pedido. Los usan el panel del modo y la pantalla de Consulting.
+// 3 · OPERATIONS OS y 4 · MONEY OS). Ya no son la interfaz de Consulting (esa son sus herramientas, public/js/herramientas.js):
+// quedan como las semillas de IA que citan los prompts de public/js/consulting/<m>.js (y las pruebas).
 // [id, grupo, ícono, [[tema, pedido]]]
 export const CONSULTING = [
   ['operaciones', 'Operaciones', 'layers', [
