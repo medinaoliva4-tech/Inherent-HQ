@@ -5,8 +5,11 @@
 // Strategy (Fase 3a): una herramienta con aprobarConBloque (Offer Architect) no se aprueba con /estado: el CEO la aprueba y la reabre con la
 // ruta de su bloque (POST estrategia/<slug>/<bloque>/aprobar) y el servidor deja el entregable Aprobado o en Borrador. Con la estrategia
 // aprobada (alcance APROBADO) toda la herramienta queda en solo lectura, con otro aviso que el de «fuera del alcance».
-import { html, raw, mount, api, ico, toast, confirmAsk, ask, acts, fdate, skel, techDetail, $ } from './core.js';
-import { herramientaDe, rutaHerramienta, WORKSPACES } from './herramientas.js';
+// Marketing (Fase 3b): una herramienta con ciclo (tool.ciclo: el Performance Center, un entregable por mes) trae un selector de mes (el actual y los 11
+// anteriores) que se recuerda en la ruta (resto[0] = AAAA-MM); la lista se pide con &ciclo=<mes> y el entregable nace con ese mes (ciclo y contenido.mes).
+import { html, raw, mount, api, ico, toast, confirmAsk, ask, acts, fdate, skel, techDetail, today, $ } from './core.js';
+import { herramientaDe, rutaHerramienta, mesesDeCiclo, WORKSPACES } from './herramientas.js';
+import { nombreMes } from './plan-mes.js';
 import { abrirEnChat } from './areas.js';
 import { pasoPermitido, faltas as faltasEntregable } from './entregables.js';
 import { armarCtx, correrIA } from './ia-herramienta.js';
@@ -21,6 +24,8 @@ const reciente = (a, z) => String(z._meta?.updated_at || z._meta?.created_at || 
 const rutaDoc = (id) => 'entregables/' + enc(id);
 const SIN_CRITERIOS = { cumple: [], falta: [] };
 const tareasTxt = (n) => (n === 1 ? '1 tarea' : `${n} tareas`);
+const cicloOk = (c) => /^\d{4}-(0[1-9]|1[0-2])$/.test(String(c ?? ''));
+const propio = (d, tool, slug) => (d && d.tool === tool.id && String(d.client_slug || '').toLowerCase() === slug.toLowerCase() ? d : null);
 const TEXTO_APROBADA = 'La estrategia está aprobada: solo lectura hasta que el CEO la reabra';
 
 // host: dónde se monta · tool: el registro de herramientas.js (con prompt, leer, faltas, aMd…) · vista: la de la herramienta
@@ -32,7 +37,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   const modo = WORKSPACES.find((w) => w.id === tool.ws)?.modo || '';
   const puedeIA = typeof tool.prompt === 'function' && typeof tool.leer === 'function';
   const S = { items: [], puede: { editar: false, aprobar: false }, alcance: { abierto: true, code: '', texto: '' }, doc: null, local: null, contenido: {}, sucio: false,
-    ctx: null, gen: null, cmp: null, ocupado: false, pintando: false, plegado: false, k: {} };
+    ctx: null, gen: null, cmp: null, ocupado: false, pintando: false, plegado: false, k: {}, ciclo: '' };
   try { S.plegado = localStorage.getItem(K_PLEGADO) === '1'; } catch {}
   let root = null;
 
@@ -45,6 +50,10 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   const nombreBloque = () => bloqueDe(tool.aprobarConBloque)?.nombre || tool.aprobarConBloque || '';
   const estadoDe = () => S.doc?.estado || 'Borrador';
   const aprueba = () => (tool.aprueba === 'ceo' ? 'CEO' : 'COO');
+  // Con ciclo: S.ciclo es el mes del selector; el mes de lo que se edita (contenido.mes) manda sobre él si es válido (un borrador nuevo puede cambiarlo).
+  const conCiclo = Boolean(tool.ciclo);
+  const mesDeTrabajo = () => (cicloOk(S.contenido?.mes) ? S.contenido.mes : S.ciclo);
+  const rutaLista = () => `entregables?ws=${enc(tool.ws)}&slug=${enc(slug)}&tool=${enc(tool.id)}${conCiclo && S.ciclo ? `&ciclo=${enc(S.ciclo)}` : ''}`;
   // Las faltas: las que dejó la IA o la persona en el doc, más las que calcula la herramienta sobre lo que hay en pantalla.
   function faltasAhora() {
     const extra = { entradas: S.doc?.entradas || [], ctx: S.ctx }, out = new Set();
@@ -59,24 +68,36 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   function nuevoLocal() {
     S.doc = null; S.local = { criterios: clon(SIN_CRITERIOS), ia: { via: 'manual', modelo: '' } }; S.sucio = false; S.cmp = null;
     let c = {}; if (S.alcance.abierto) { try { c = vista.nuevo(S.ctx) ?? {}; } catch { c = {}; } }
+    if (conCiclo && S.alcance.abierto && S.ciclo && c && typeof c === 'object' && !Array.isArray(c)) c = { ...c, mes: S.ciclo }; // el mes elegido manda en un borrador nuevo
     S.contenido = clon(c);
   }
   // La lista del cliente y su alcance; abre el entregable pedido, si no el más reciente, si no un borrador local.
   async function cargar({ abrir = '' } = {}) {
-    const r = await api(`entregables?ws=${enc(tool.ws)}&slug=${enc(slug)}&tool=${enc(tool.id)}`);
+    let doc0 = null;
+    if (conCiclo) { // el mes: el de la ruta (AAAA-MM), el del entregable que se abre o el actual
+      if (cicloOk(abrir)) { S.ciclo = abrir; abrir = ''; }
+      else if (abrir && !cicloOk(S.ciclo)) {
+        doc0 = propio(await api(rutaDoc(abrir)).catch(() => null), tool, slug);
+        if (!alive()) return;
+        if (cicloOk(doc0?.ciclo)) S.ciclo = doc0.ciclo;
+      }
+      if (!cicloOk(S.ciclo)) S.ciclo = mesesDeCiclo(today(), 1)[0] || '';
+    }
+    const r = await api(rutaLista());
     if (!alive()) return;
     S.items = (r.items || []).filter((d) => !d.archivado).sort(reciente);
     S.puede = { editar: Boolean(r.puede?.editar), aprobar: Boolean(r.puede?.aprobar) };
     S.alcance = { abierto: r.alcance?.abierto !== false, code: r.alcance?.code || '', texto: r.alcance?.texto || '' };
     let doc = abrir ? S.items.find((d) => d.id === abrir) : null;
     if (!doc && abrir) { // uno archivado no sale en la lista: se pide por su id (si es de esta herramienta y de este cliente)
-      const d = await api(rutaDoc(abrir)).catch(() => null);
+      const d = doc0 || propio(await api(rutaDoc(abrir)).catch(() => null), tool, slug);
       if (!alive()) return;
-      if (d && d.tool === tool.id && String(d.client_slug || '').toLowerCase() === slug.toLowerCase()) doc = d;
+      if (d) doc = d;
     }
     doc = doc || S.items[0] || null;
     S.ctx = await armarCtx(me, { tool, slug, entradas: doc?.entradas || [] });
     if (!alive()) return;
+    if (conCiclo) S.ctx = { ...S.ctx, mes: S.ciclo };
     S.cmp = null; S.sucio = false;
     if (doc) { S.doc = doc; S.local = null; S.contenido = clon(doc.contenido); } else nuevoLocal();
   }
@@ -85,7 +106,8 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     if (alive()) pintarTodo();
   }
   // La dirección lleva el id del entregable abierto (sin recargar la página ni agregar un paso al historial).
-  const marcarRuta = () => { try { history.replaceState(null, '', rutaHerramienta(tool.ws, slug, tool.id, S.doc ? [S.doc.id] : [])); } catch {} };
+  // Con ciclo, la dirección lleva el mes elegido (AAAA-MM) en lugar del id: hay un entregable por mes.
+  const marcarRuta = () => { try { history.replaceState(null, '', rutaHerramienta(tool.ws, slug, tool.id, conCiclo ? (S.ciclo ? [S.ciclo] : []) : S.doc ? [S.doc.id] : [])); } catch {} };
   // Lo que devuelve el servidor se vuelve el doc de la pantalla. conservar: no tocar lo que la persona está editando.
   function aplicarDoc(d, { conservar = false } = {}) {
     S.doc = d; S.local = null;
@@ -108,7 +130,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   // hay en pantalla (lo que la persona venía editando no se pierde).
   async function refrescarAlcance() {
     try {
-      const r = await api(`entregables?ws=${enc(tool.ws)}&slug=${enc(slug)}&tool=${enc(tool.id)}`);
+      const r = await api(rutaLista());
       if (!alive()) return;
       S.alcance = { abierto: r.alcance?.abierto !== false, code: r.alcance?.code || '', texto: r.alcance?.texto || '' };
       S.puede = { editar: Boolean(r.puede?.editar), aprobar: Boolean(r.puede?.aprobar) };
@@ -129,14 +151,21 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   // ---------- Pintar ----------
   function pintarHead() {
     const d = S.doc, est = estadoDe(), el = $('#tsh-head', root); if (!el) return;
-    const opciones = S.items.map((x) => html`<option value="${x.id}" ${d?.id === x.id ? raw('selected') : ''}>${x.titulo || tool.nombre}${x.ciclo ? ` · ${x.ciclo}` : ''} · v${x.version} · ${x.estado}</option>`);
+    const opciones = S.items.map((x) => html`<option value="${x.id}" ${d?.id === x.id ? raw('selected') : ''}>${x.titulo || tool.nombre}${x.ciclo && !String(x.titulo || '').includes(x.ciclo) ? ` · ${x.ciclo}` : ''} · v${x.version} · ${x.estado}</option>`);
+    // Con ciclo es uno por mes: si el mes ya tiene su entregable no se ofrece otro Borrador nuevo (se archiva y se empieza de nuevo).
+    const otro = !conCiclo || !S.items.length ? html`<option value="__nuevo" ${d ? '' : raw('selected')}>${d ? '+ Borrador nuevo' : 'Borrador nuevo (sin guardar)'}</option>` : '';
     const selector = escribe() && (S.items.length || d)
-      ? html`<select class="in tsh-doc" data-act="tsh-abrir" aria-label="Elegir entregable">${opciones}<option value="__nuevo" ${d ? '' : raw('selected')}>${d ? '+ Borrador nuevo' : 'Borrador nuevo (sin guardar)'}</option></select>` : '';
+      ? html`<select class="in tsh-doc" data-act="tsh-abrir" aria-label="Elegir entregable">${opciones}${otro}</select>` : '';
+    let selMes = '';
+    if (conCiclo) {
+      const meses = mesesDeCiclo(today(), 12); if (S.ciclo && !meses.includes(S.ciclo)) meses.push(S.ciclo);
+      selMes = html`<select class="in tsh-doc tsh-ciclo" data-act="tsh-ciclo" aria-label="Mes del entregable">${meses.map((m) => html`<option value="${m}" ${m === S.ciclo ? raw('selected') : ''}>${nombreMes(m)}</option>`)}</select>`;
+    }
     mount(el, html`<header class="tsh-head"><div class="tsh-head-t"><h2>${ico(tool.icono || 'target', 16)} ${tool.nombre}</h2><span class="tsh-cli">${b?.name || slug}</span></div>
       <div class="tsh-head-m"><span class="chip tsh-estado" data-estado="${est}">${est}</span>
         ${d ? html`<span class="tsh-ver">v${d.version}</span>` : ''}
         ${!d || S.sucio ? html`<span class="chip tsh-sucio">Sin guardar</span>` : ''}
-        <span class="tsh-dueno" title="Quién aprueba esta herramienta">Dueño · ${aprueba()}</span>${selector}</div></header>`);
+        <span class="tsh-dueno" title="Quién aprueba esta herramienta">Dueño · ${aprueba()}</span>${selMes}${selector}</div></header>`);
   }
   function pintarBanner() {
     const a = S.alcance, el = $('#tsh-banner', root); if (!el) return;
@@ -280,9 +309,9 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   }
 
   // ---------- Guardar ----------
-  const tituloNuevo = () => `${tool.nombre} · ${b?.name || slug}`.slice(0, 120);
+  const tituloNuevo = () => (conCiclo && mesDeTrabajo() ? `${tool.nombre} · ${mesDeTrabajo()}` : `${tool.nombre} · ${b?.name || slug}`).slice(0, 120);
   // Lo que se manda al servidor (que lo vuelve a limpiar con el mismo limpiar()): siempre el entregable completo.
-  const cuerpo = (contenido, { criterios, ia, doc } = {}) => ({ tool: tool.id, titulo: doc?.titulo || tituloNuevo(), client_slug: slug, ciclo: doc?.ciclo || '', project_id: doc?.project_id || '',
+  const cuerpo = (contenido, { criterios, ia, doc } = {}) => ({ tool: tool.id, titulo: doc?.titulo || tituloNuevo(), client_slug: slug, ciclo: doc?.ciclo || (conCiclo ? mesDeTrabajo() : ''), project_id: doc?.project_id || '',
     entradas: doc?.entradas || [], contenido, criterios: criterios || doc?.criterios || clon(SIN_CRITERIOS), ia: ia || doc?.ia || S.local?.ia || { via: 'manual', modelo: '' } });
   async function guardar(contenido = S.contenido, extra = {}) {
     if (!editable()) return;
@@ -292,7 +321,13 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
       : await api('entregables', { method: 'POST', body: cuerpo(contenido, extra) });
     if (!alive()) return;
     S.gen = extra.criterios ? null : S.gen;
-    aplicarDoc(d);
+    // El mes del contenido manda el ciclo: si la persona cambió el mes de un borrador nuevo, el selector lo sigue y la lista es la de ese mes.
+    if (conCiclo && cicloOk(d.ciclo) && d.ciclo !== S.ciclo) {
+      const mesAntes = S.ciclo; S.ciclo = d.ciclo;
+      try { await cargar({ abrir: d.id }); } catch { S.ciclo = mesAntes; aplicarDoc(d); toast('Guardado'); return; }
+      if (!alive()) return;
+      S.k = {}; marcarRuta(); pintarTodo();
+    } else aplicarDoc(d);
     toast(!antes ? 'Borrador guardado' : d.version > antes.version ? `Guardado como v${d.version}` : 'Guardado');
   }
 
@@ -309,8 +344,8 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     try {
       const ctx = await armarCtx(me, { tool, slug, entradas: S.doc?.entradas || [] });
       if (!alive() || !mio()) return;
-      S.ctx = ctx;
-      const out = await correrIA(me, { tool, ctx, signal: ctrl.signal, preferir,
+      S.ctx = conCiclo ? { ...ctx, mes: mesDeTrabajo() } : ctx;
+      const out = await correrIA(me, { tool, ctx: S.ctx, signal: ctrl.signal, preferir,
         onDelta: (t) => { if (!alive()) return ctrl.abort(); if (mio()) { S.gen.texto = t; verStream(); } },
         onTool: (p) => { if (mio()) { S.gen.paso = String(p || ''); verPaso(); } } });
       if (!alive() || !mio()) return;
@@ -423,6 +458,19 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     await haz(async () => { await cargar({ abrir: valor }); if (!alive()) return; S.gen = null; marcarRuta(); pintarTodo(); });
   }
 
+  // Con ciclo: otro mes → su entregable (el más reciente) o un borrador nuevo de ese mes.
+  async function cambiarCiclo(valor) {
+    if (!conCiclo || !cicloOk(valor) || valor === S.ciclo) return;
+    if (S.sucio && !(await confirmAsk('Tienes cambios sin guardar. ¿Los descarto?'))) { S.k = {}; pintarHead(); return; }
+    if (!alive()) return;
+    await haz(async () => {
+      const antes = S.ciclo; S.ciclo = valor;
+      try { await cargar(); } catch (e) { S.ciclo = antes; throw e; }
+      if (!alive()) return;
+      S.gen = null; marcarRuta(); pintarTodo();
+    });
+  }
+
   // ---------- Comparar versiones ----------
   async function comparar() {
     if (S.cmp) { S.cmp = null; return pintarCmp(); }
@@ -495,7 +543,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     'tsh-chat': () => abrirEnChat(me.email, { modo, slug }),
   }));
   acts(root, cada({
-    'tsh-abrir': (el) => abrir(el.value),
+    'tsh-abrir': (el) => abrir(el.value), 'tsh-ciclo': (el) => cambiarCiclo(el.value),
     'tsh-cmp-a': (el) => { if (S.cmp) { S.cmp.a = +el.value; verVersion(S.cmp.a); pintarCmp(); } },
     'tsh-cmp-b': (el) => { if (S.cmp) { S.cmp.b = +el.value; verVersion(S.cmp.b); pintarCmp(); } },
   }), 'change');

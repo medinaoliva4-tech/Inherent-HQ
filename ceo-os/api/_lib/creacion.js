@@ -1,12 +1,13 @@
 // App 01 · Marca › Crear › Formatos y Creación (servidor). Dos colecciones (área content), una marca por documento:
 //   formats  { profile, nombre, tipo: reel|story|ficha, esqueleto, mejor_para, duracion, partes: [{ nombre, seg, que }], notas, ref (Research), de (base), archivado }
-//   scripts  { profile, titulo, formato, avatar, angulo, consciencia, tramos: [{ nombre, seg, dice, pantalla, visual }], caption, estado, post, inspo, archivado }
+//   scripts  { profile, titulo, formato, avatar, angulo, consciencia, tramos: [{ nombre, seg, dice, pantalla, visual }], frames: [{ id, tramo, imagen, plano, movimiento, seg, texto, vo, archivado }],
+//              versiones: [{ v, en, por, via, nota, titulo, tramos, frames, caption }] (solo se agregan), caption, estado, post, inspo, archivado }
 // Las plantillas base viven en public/js/formatos.js (salen del método); aquí solo lo de cada marca. Nada se borra: se archiva.
 // «Pasar a Ideas» crea (o pone al día) la pieza del calendario con el guion enlazado.
 import * as db from './db.js';
 import { guard, scoper, edits } from './access.js';
 import { body } from './http.js';
-import { COLL_F, COLL_G, BASE, limpiarFormato, limpiarGuion, tramosDe } from '../../public/js/formatos.js';
+import { COLL_F, COLL_G, BASE, limpiarFormato, limpiarGuion, tramosDe, versionNueva, excesoFrames, avisoExceso } from '../../public/js/formatos.js';
 import { CONSCIENCIA } from '../../public/js/calendario-contenido.js';
 
 const slugOk = (s) => /^[\w-]{2,60}$/.test(String(s || ''));
@@ -65,18 +66,25 @@ export function rutas(on) {
   on('POST', 'guiones', async (req, res) => {
     const b = body(req), slug = String(b.profile || ''), u = await abre(req, res, slug, true); if (!u) return;
     const f = await formatoDe(String(b.formato || 'base-reel-acamara')); if (!f) return res.status(400).json({ error: 'Ese formato no existe' });
-    const g = limpiarGuion({ ...b, formato: f.id, tramos: b.tramos?.length ? b.tramos : tramosDe(f) });
+    const g = limpiarGuion({ ...b, formato: f.id, tramos: b.tramos?.length ? b.tramos : tramosDe(f), versiones: [] });
     if (!g.titulo) return res.status(400).json({ error: 'Ponle un título a la idea' });
     res.json(await db.create(COLL_G, { profile: slug, ...g }, u.email));
   });
   on('PUT', 'guiones/:id', async (req, res) => {
     const cur = await db.get(COLL_G, String(req.params.id || '')); if (!cur || cur.archivado) return res.status(404).json({ error: 'No existe' });
     const u = await abre(req, res, cur.profile, true); if (!u) return;
-    const b = body(req), next = limpiarGuion({ ...cur, ...b });
+    const b = body(req), next = limpiarGuion({ ...cur, ...b, versiones: cur.versiones });
     // Cambiar de formato: los tramos se reparten de nuevo (lo escrito se conserva por nombre de tramo).
     if (b.formato && b.formato !== cur.formato) { const f = await formatoDe(String(b.formato)); if (!f) return res.status(400).json({ error: 'Ese formato no existe' }); next.tramos = tramosDe(f).map((t) => ({ ...t, ...(cur.tramos || []).find((x) => x.nombre === t.nombre) || {}, nombre: t.nombre, seg: t.seg })); }
-    const d = await db.update(COLL_G, cur.id, { ...cur, ...next }, cur.v, u.email);
-    if (!d) return res.status(409).json({ error: 'Alguien lo cambió justo ahora. Recarga y vuelve a intentar.' });
+    // «Listo para grabar» con un frame de más contra la duración: avisa antes (409 EXCESO); con forzar:true pasa.
+    if (next.estado === 'Listo para grabar' && cur.estado !== 'Listo para grabar' && b.forzar !== true) {
+      const aviso = avisoExceso(excesoFrames(next, await formatoDe(next.formato))); if (aviso) return res.status(409).json({ error: aviso, code: 'EXCESO' });
+    }
+    // Una versión nueva se agrega (la foto de cómo queda el guion); las anteriores no se tocan ni se reciben del cliente.
+    if (b.nueva_version && typeof b.nueva_version === 'object') next.versiones = versionNueva(next, { por: u.email, via: b.nueva_version.via, nota: b.nueva_version.nota });
+    const v = b.v != null && Number.isInteger(Number(b.v)) ? Number(b.v) : cur.v;
+    const d = await db.update(COLL_G, cur.id, { ...cur, ...next }, v, u.email);
+    if (!d) return res.status(409).json({ error: 'Alguien lo cambió justo ahora. Recarga y vuelve a intentar.', code: 'CONFLICTO' });
     res.json(d);
   });
   on('POST', 'guiones/:id/archivar', async (req, res) => {

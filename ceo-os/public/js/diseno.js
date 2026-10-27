@@ -3,8 +3,8 @@
 // con el método de ⑥A Diseño gráfico; el repo es de solo lectura. Lo terminado se guarda en la idea del planner (Listo).
 
 export const FORMATOS = [['Carrusel', 'Varias láminas 4:5'], ['Estático', 'Una pieza 4:5'], ['Story', 'Una o varias 9:16'], ['Plantilla', 'Un molde nuevo del kit']];
-// Las sugerencias del inicio (un clic llena la caja).
-export const SUGERENCIAS = ['Estático de cifra', 'Stories de la semana', 'Plantilla nueva de carrusel', 'Retocar fotos con IA'];
+// Las sugerencias del inicio (un clic llena la caja). Las fotos no se retocan con IA: lo dice gd-imagen.
+export const SUGERENCIAS = ['Estático de cifra', 'Stories de la semana', 'Plantilla nueva de carrusel'];
 
 const una = (s, n = 400) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
 
@@ -55,6 +55,7 @@ export function textoFormatos(l = []) {
 // La primera vez lleva todo el método; después (la sesión sigue abierta) solo el pedido, lo nuevo del contexto y el cierre.
 export function promptDiseno(m) {
   const root = carpetaDe(m.slug);
+  const varTxt = m.variacion ? `ES LA VARIACIÓN ${m.variacion}: propón otra dirección visual, distinta de las anteriores${m.otras?.length ? ` (${m.otras.map((o) => `${o.id}: ${una(o.titulo, 60) || 'sin título'}`).join(' · ')})` : ''}. No toques lo que ya está en Figma de ellas.` : '';
   const ctx = m.contexto ? `CONTEXTO QUE AGREGÓ LA PERSONA:\n${String(m.contexto).slice(0, 30000)}` : null;
   const cierre = [
     'CUANDO TERMINES:',
@@ -69,6 +70,7 @@ export function promptDiseno(m) {
   if (!m.primera) {
     return [
       `Seguimos con ${m.marca} (${root}) en Figma.`,
+      varTxt || null,
       m.lamina ? `Sobre la lámina «${una(m.lamina.nombre, 80)}» (nodo ${una(m.lamina.id, 40)}).` : null,
       ctx ? `\n${ctx}` : null,
       '', cierre, '', `Pedido: ${una(m.pedido, 4000)}`,
@@ -92,6 +94,7 @@ export function promptDiseno(m) {
     '- No borres nada que ya esté en el archivo.',
     '',
     'REGLAS: sin emojis. No inventes datos: lo que no esté en la idea, el guion o la ficha va como [dice el cliente, sin verificar] o se pregunta.',
+    varTxt || null,
     ctx ? `\n${ctx}` : null,
     m.historial ? `\nLO QUE VENÍAMOS HABLANDO:\n${m.historial}` : null,
     '', cierre, '', `Pedido: ${una(m.pedido, 4000)}`,
@@ -118,15 +121,50 @@ export function leerDiseno(texto) {
 // Mientras llega el texto: lo que ya se puede mostrar (sin el bloque a medias).
 export const sinBloque = (t) => String(t || '').replace(/```diseno[\s\S]*?(```|$)/g, '').trim();
 
+// ---------- Variaciones A/B/C: cada pieza guarda todas las que se hicieron; elegir una no borra las otras ----------
+export const LETRAS = ['A', 'B', 'C', 'D', 'E', 'F'];
+// Lo guardado en la pieza → { variaciones[], elegida }. Una pieza vieja (solo laminas) cuenta como la variación A.
+export function variacionesDe(post) {
+  const d = post?.diseno || {};
+  if (Array.isArray(d.variaciones) && d.variaciones.length) return { variaciones: d.variaciones, elegida: d.elegida || d.variaciones[0].id };
+  if (Array.isArray(d.laminas) && d.laminas.length) return { variaciones: [{ id: 'A', titulo: post.title || '', formato: post.format || '', figma: d.figma || '', at: d.at || '', laminas: d.laminas, revision: [] }], elegida: 'A' };
+  return { variaciones: [], elegida: '' };
+}
+export const letraLibre = (vars = []) => LETRAS.find((l) => !vars.some((v) => v.id === l)) || '';
+const espejo = (p, v) => { p.diseno = { ...(p.diseno || {}), figma: v.figma || '', at: v.at, laminas: v.laminas, variaciones: p.diseno.variaciones, elegida: v.id }; };
 // Lo que se guarda en la pieza del planner al terminar. subidas = [{ nombre, drive_id, url }] (puede venir vacío si no hay Drive).
-export function piezaLista(post, r, subidas, ahora = new Date().toISOString()) {
+// opts.letra: la variación que se guarda (por defecto la siguiente libre). Nada se borra: una letra ya usada se conserva en versiones[].
+export function piezaLista(post, r, subidas, ahora = new Date().toISOString(), opts = {}) {
   // El formato es el de lo que se diseñó (una idea de Reel que se volvió carrusel queda como Carrusel).
   const p = { ...post, status: 'Listo', format: ['Carrusel', 'Estático', 'Story'].includes(r.formato) ? r.formato : post.format || 'Carrusel' };
-  p.diseno = { figma: r.figma || '', at: ahora, laminas: r.laminas.map((l, i) => ({ id: l.id, nombre: l.nombre, ...(subidas[i] ? { drive_id: subidas[i].drive_id, url: subidas[i].url } : {}) })) };
-  if (subidas[0]) { p.drive_id = subidas[0].drive_id; p.url = subidas[0].url; }
-  else if (!p.url && r.figma) p.url = r.figma;
+  const { variaciones, elegida } = variacionesDe(post);
+  const letra = opts.letra || letraLibre(variaciones) || 'A';
+  const nueva = { id: letra, titulo: r.titulo || '', formato: r.formato || '', figma: r.figma || '', at: ahora, revision: r.revision || [],
+    laminas: r.laminas.map((l, i) => ({ id: l.id, nombre: l.nombre, ...(subidas[i] ? { drive_id: subidas[i].drive_id, url: subidas[i].url } : {}) })) };
+  const previa = variaciones.find((v) => v.id === letra);
+  if (previa) nueva.versiones = [...(previa.versiones || []), { at: previa.at, figma: previa.figma, laminas: previa.laminas }];
+  p.diseno = { ...(post.diseno || {}), variaciones: [...variaciones.filter((v) => v.id !== letra), nueva].sort((a, z) => a.id.localeCompare(z.id)) };
+  const el = opts.elegir || !elegida ? letra : elegida;
+  espejo(p, p.diseno.variaciones.find((v) => v.id === el) || nueva);
+  const v = p.diseno.variaciones.find((x) => x.id === el) || nueva;
+  if (v.laminas[0]?.drive_id) { p.drive_id = v.laminas[0].drive_id; p.url = v.laminas[0].url; }
+  else if (!p.url && v.figma) p.url = v.figma;
   return p;
 }
+// Elegir una variación: solo cambia `elegida` y su espejo; las otras se quedan.
+export function elegirVariacion(post, letra, ahora = new Date().toISOString()) {
+  const { variaciones } = variacionesDe(post); const v = variaciones.find((x) => x.id === letra); if (!v) return post;
+  const p = { ...post, diseno: { ...(post.diseno || {}), variaciones } };
+  espejo(p, { ...v, at: v.at || ahora });
+  if (v.laminas[0]?.drive_id) { p.drive_id = v.laminas[0].drive_id; p.url = v.laminas[0].url; }
+  return p;
+}
+// La cola de piezas del mes: lo que se diseña (o ya se diseñó), en orden de fecha. Lo que falta, primero en la lista de pendientes.
+export function colaDelMes({ piezas = [], mes, estadoDe = (p) => p.status || 'Idea' }) {
+  return piezas.filter((p) => String(p.date || '').slice(0, 7) === mes && (DISENO.includes(p.format) || p.diseno)).sort((a, z) => String(a.date).localeCompare(String(z.date)))
+    .map((p) => { const e = estadoDe(p), n = variacionesDe(p).variaciones.length; return { id: p.id, titulo: una(p.title, 120) || 'Sin título', fecha: p.date, formato: p.format || '', estado: e, variaciones: n, falta: !n && ['Idea', 'En proceso'].includes(e) }; });
+}
+export const esStory = (f) => /story/i.test(String(f || ''));
 
 // El base64 de una imagen → los bytes (para subirla a Drive).
 export function bytesDe(b64) {

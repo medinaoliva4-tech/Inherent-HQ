@@ -3,9 +3,11 @@ import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 import { estadoDe, separar, conEstado, ESTADO_CLS, nombreDe } from '../element.js';
 import { investigacion } from '../investigacion.js';
-import { TIPOS_MARCA, eventosMarca } from '../calendario-vistas.js';
+import { TIPOS_MARCA, eventosMarca, redDe } from '../calendario-vistas.js';
 import { calendarioHtml, rango, porDia, diaHtml, hitoHtml } from '../calendario-trabajo.js';
-import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre } from '../calendario-contenido.js';
+import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre, bandasDelMes, bandasPorDia, slotDe, tituloSlot, metricasDe, resumenMetricas, motivoNoMover, moverEnLista, ponerPieza, falloAlMover } from '../calendario-contenido.js';
+import { rutaModulo } from '../herramientas.js';
+import { archivar } from '../production/planner.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
@@ -38,7 +40,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   const FIXED_TABS = [['research', 'Research'], ['postear', 'Ideas'], ['calendario', 'Calendario'], ['analytics', 'Analytics']];
   const tabs = embed?.only ? FIXED_TABS.filter(([k]) => embed.only.includes(k)) : fixed ? FIXED_TABS : resumen ? TABS.filter(([k]) => k === 'analytics') : TABS;
   let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : tabs[0]?.[0] || 'analytics';
-  let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
+  let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'semana', pdate = today();
   let parch = false, rs = null, shoots = null, ops = null, cvista = 'mes';
   // Los filtros del calendario de la marca: los que se apagaron quedan apagados (por persona).
@@ -46,7 +48,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
-    slug = data.profile.slug; week = null; posts = null; rs = null; shoots = null; ig = null; inbox = null; rf = null; shotMes = null; gstack = null; gfiles = null; gcur = null;
+    slug = data.profile.slug; week = null; posts = null; rs = null; shoots = null; ig = null; inbox = null; rf = null; gstack = null; gfiles = null; gcur = null;
     if (fixed) { if (slug !== fixed) return mount(el, fixed === 'personal' ? html`<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>` : html`<div class="empty"><b>Este cliente no tiene perfil de contenido</b>Se crea con su folder en clients/.</div>`); }
     else { data.profiles = (data.profiles || []).filter((x) => !isPersonal(x.slug)); try { localStorage.setItem('content.profile', slug); } catch {} }
     paint();
@@ -69,7 +71,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
 
       </div>
       <div id="cbody" class="swap"></div>`);
-    ({ shot, refs: refsTab, semana, postear, guiones, plan, bandeja, analytics, fuentes, research, calendario })[tab]($('#cbody', el));
+    ({ refs: refsTab, semana, postear, guiones, plan, bandeja, analytics, fuentes, research, calendario })[tab]($('#cbody', el));
   }
 
   // ---------- Semana: top 10 del nicho + los videos que agregaste ----------
@@ -98,44 +100,6 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   }
 
   // ---------- Ideas: reels y carruseles que propone Claude con lo que encontró el scraper ----------
-  // ---------- Shot list: lo que entregó ④ Creatividad en el repo (plan-de-contenido.csv + ideas-<formato>.md) ----------
-  // Para llegar a un video hay trabajo antes (estrategia, brief, BIG IDEA): aquí solo se despliega lo que ya está en el repo.
-  function shotData() {
-    const ms = (data.profile.months || []).filter((m) => m.files.some((f) => f.name === 'plan-de-contenido.csv'));
-    const m = ms.find((x) => x.mes === shotMes) || ms[0];
-    if (!m) return { ms, m: null, rows: [] };
-    const f = m.files.find((x) => x.name === 'plan-de-contenido.csv');
-    // Las 13 columnas del método; si un CSV viejo trae otros nombres (idea, titulo…), se leen igual.
-    const [head, ...body] = csv(f.content); const H = head.map((h) => h.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
-    const ALIAS = { concepto: ['concepto', 'idea', 'titulo', 'title'], campana: ['campana', 'campaign'] };
-    const val = (r, k) => { for (const a of ALIAS[k] || [k]) { const i = H.indexOf(a); if (i >= 0 && r[i]) return r[i].trim(); } return ''; };
-    const rows = body.filter((r) => r.some(Boolean)).map((r, i) => { const o = Object.fromEntries(['id', 'campana', 'fecha', 'canal', 'formato', 'pilar', 'funcion', 'concepto', 'mezcla', 'traza', 'material', 'estado', 'trial'].map((k) => [k, val(r, k)])); o.id ||= `#${i + 1}`; return o; });
-    return { ms, m, rows };
-  }
-  // La sección de una pieza en su ideas-<formato>.md: desde la línea con su id hasta la siguiente pieza.
-  function pieceText(m, row) {
-    const slugF = (x) => x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const f = m.files.find((x) => x.name === `ideas-${slugF(row.formato)}.md`) || m.files.find((x) => /^ideas-.*\.md$/.test(x.name) && x.content.includes(row.id));
-    if (!f) return null;
-    const L = f.content.split('\n'), i = L.findIndex((l) => /^#{1,4}\s/.test(l) && l.includes(row.id)); if (i < 0) return null;
-    const lvl = L[i].match(/^#+/)[0].length; let j = i + 1; while (j < L.length && !(new RegExp(`^#{1,${lvl}}\\s`).test(L[j]))) j++;
-    return L.slice(i, j).join('\n');
-  }
-  function shot(b) {
-    const { ms, m, rows } = shotData();
-    if (!m) return mount(b, html`<div class="empty"><b>Todavía no hay shot list de ${data.profile.name}</b>Lo entrega ④ Creatividad en el repo: <code>04-contenido/AAAA-MM/ideas/plan-de-contenido.csv</code> y un <code>ideas-&lt;formato&gt;.md</code> por formato. Antes van la estrategia, el brief y las BIG IDEAS del ciclo.</div>`);
-    const brief = m.files.find((x) => x.name === 'brief-del-ciclo.md');
-    const pend = rows.filter((r) => r.estado && r.estado !== 'listo').length, mat = (k) => rows.filter((r) => r.material === k).length;
-    mount(b, html`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        ${ms.length > 1 ? html`<select class="in" id="shotMes" style="width:auto">${ms.map((x) => html`<option ${x.mes === m.mes ? raw('selected') : ''}>${x.mes}</option>`)}</select>` : html`<span class="chip dark">${m.mes}</span>`}
-        <span class="chip">${rows.length} piezas</span>${mat('video') ? html`<span class="chip">${ico('video')} ${mat('video')} por grabar</span>` : ''}${mat('foto') ? html`<span class="chip">${ico('camera')} ${mat('foto')} fotos</span>` : ''}${pend ? html`<span class="chip amber">${pend} pendientes</span>` : ''}
-        <div class="sp"></div>${brief ? html`<button class="btn ghost xs" data-act="shotBrief">Brief del ciclo</button>` : ''}</div>
-      <div class="card tscroll"><table class="wktable shottbl"><thead><tr><th>Id</th><th>Fecha</th><th>Formato</th><th>Pilar</th><th>Concepto</th><th>Material</th><th>Estado</th></tr></thead><tbody>
-        ${rows.map((r) => html`<tr class="click" data-act="shotOpen" data-id="${r.id}"><td class="mut">${r.id}</td><td>${r.fecha ? fdate(r.fecha) : '—'}</td><td>${r.formato}</td><td>${r.pilar}</td><td style="min-width:220px">${r.concepto}</td><td>${{ video: html`${ico('video', 14)} video`, foto: html`${ico('camera', 14)} foto`, ninguno: '—' }[r.material] || r.material}</td><td><span class="chip ${r.estado === 'listo' ? 'green' : r.estado ? 'amber' : ''} sm2">${r.estado || '—'}</span></td></tr>`)}
-      </tbody></table></div>`);
-    const sm = $('#shotMes', b); if (sm) sm.onchange = () => { shotMes = sm.value; shot(b); };
-  }
-
   // ---------- Referencias por pilar: 5 videos por pilar → similares (Apify) → desglose con Claude ----------
   function refsTab(b) {
     if (rf === null) { mount(b, html`<p class="loading">Cargando referencias…</p>`); api(`content/refs?profile=${encodeURIComponent(slug)}`).then((r) => { rf = r; }).catch((e) => { rf = { error: e.message }; }).finally(() => alive() && tab === 'refs' && refsTab(b)); return; }
@@ -301,7 +265,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     if (shoots === null || ops === null) {
       mount(b, html`<p class="loading">Cargando…</p>`);
       Promise.all([C.list().catch(() => []), col('tasks').list().catch(() => []), col('projects').list().catch(() => [])])
-        .then(([l, t, pr]) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug); ops = { tasks: t, projects: pr }; })
+        .then(([l, t, pr]) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug && !x.archivado); ops = { tasks: t, projects: pr }; })
         .then(() => alive() && b.isConnected && calendario(b));
       return;
     }
@@ -312,11 +276,109 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       botones: html`<button class="btn ghost xs" data-act="snew" data-d="">+ Grabación</button><button class="btn xs" data-act="pnew" data-d="">+ Pieza</button>`,
       pie: html`<div class="wc-foot"><span class="mut sm"><b>Operativo:</b> grabaciones, tareas y reuniones de sus proyectos, y los días 1, 11 y 20 · <b>Planificación:</b> piezas en Idea o En proceso · <b>Programado:</b> lo listo, con hora y red. Lo atrasado sale en rojo.</span></div>` })}
       ${archivoHtml(separar(posts).archivo)}</div>`);
+    mejorarCalendario(b);
   }
   // El Archivo: lo publicado hace más de 30 días (o marcado «Archivado») sale del calendario solo. Se ve aquí y se puede recuperar.
   function archivoHtml(archivo) {
     return html`<div class="row el-archbar"><button class="chip ${parch ? 'dark' : ''}" data-act="parch" aria-pressed="${parch ? 'true' : 'false'}">${ico('folder', 13)} Archivo · ${archivo.length}</button><span class="mut sm">Lo publicado hace más de 30 días o marcado «Archivado» sale del calendario solo. Recuperar lo vuelve a poner como Listo.</span></div>
       ${parch ? (archivo.length ? html`<div class="el-arch">${archivo.sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).map((p) => html`<div class="el-arch-i"><button type="button" class="el-arch-t" data-act="pedit" data-id="${p.id}"><b>${p.title}</b><span class="mut sm">${p.format || 'Pieza'}${p.date ? ` · ${fdate(p.date)}` : ''}${(p.assets || []).length ? ` · ${p.assets.length} archivo${p.assets.length === 1 ? '' : 's'}` : ''}</span></button><button type="button" class="btn ghost xs" data-act="prec" data-id="${p.id}">${ico('repeat', 12)} Recuperar</button></div>`)}</div>` : html`<div class="mut sm" style="margin-top:8px">Nada archivado todavía: aquí llega lo que ya salió y cumplió su mes.</div>`) : ''}`;
+  }
+  // ---------- Calendario · Marketing (Fase 3b): arrastrar a otro día, bandas de campaña, badge de slot y métricas ----------
+  // Se agrega sobre el calendario de siempre (calendarioHtml no cambia): cada pieza es un .wc-ev con data-act="pedit" y cada día un
+  // .d (mes) o .wc-day (semana) con data-date. Si algo de esto no carga (campañas sin permiso, sin métricas), el calendario se ve igual.
+  // Las reglas (mover, bandas, slot, métricas) viven en calendario-contenido.js; el servidor decide si el movimiento entra (423 / 409).
+  let mkcamps = [], mkslug = null, arrastrando = null;
+  const moviendo = new Set();
+  const esTactil = () => { try { return matchMedia('(pointer: coarse)').matches; } catch { return false; } };
+  const piezaDe = (id) => (posts || []).find((x) => x.id === id);
+  function mejorarCalendario(b) { chipsPiezas(b); arrastre(b); bandas(b); cargarCampanas(b); }
+
+  // Las campañas (mk_campaigns) de esta marca, para las bandas. Se leen aparte y sin bloquear: el calendario sale primero y las
+  // bandas se acomodan cuando llegan. Sin acceso o sin campañas, no hay bandas (y nada se rompe).
+  function cargarCampanas(b) {
+    if (mkslug === slug) return;
+    const de = slug; mkslug = de; mkcamps = [];
+    api(`campanas/${encodeURIComponent(de)}`).then((r) => r.campanas || []).catch(() => [])
+      .then((l) => { if (de !== slug) return; mkcamps = l; if (alive() && tab === 'calendario' && b.isConnected) bandas(b); });
+  }
+  const bandaHtml = (x) => {
+    const cuando = x.ancla === x.hasta ? fdate(x.ancla) : `${fdate(x.ancla)} – ${fdate(x.hasta)}`, tit = `Campaña · ${x.nombre} · ${cuando} · ${x.estado}`;
+    const cls = ['cc-band', `cc-b-${/^[a-z]+$/.test(x.tipo) ? x.tipo : 'campana'}`, x.pos, x.estado === 'Borrador' ? 'borrador' : x.estado === 'Cerrada' ? 'cerrada' : '', x.sigueAntes ? 'sigue-antes' : '', x.sigueDespues ? 'sigue-despues' : ''].filter(Boolean).join(' ');
+    return html`<a class="${cls}" href="${rutaModulo(slug, 'campanas')}" data-act="go" title="${tit}" aria-label="${tit}">${x.rotulo ? html`<span class="cc-bn">${x.nombre}</span>` : ''}</a>`;
+  };
+  // Una franja por campaña sobre los días entre su ancla y su hasta (y una leyenda arriba, que en el cel sí cabe).
+  function bandas(b) {
+    b.querySelectorAll('.cc-bandas,.cc-leyenda').forEach((x) => x.remove());
+    if (mkslug !== slug || !mkcamps.length) return;
+    const R = rango(cvista, pdate), meses = [...new Set([R.from.slice(0, 7), R.to.slice(0, 7)])];
+    const lista = meses.flatMap((m) => bandasDelMes(mkcamps, m)).filter((x) => x.fin >= R.from && x.desde <= R.to), delDia = bandasPorDia(lista, { rotuloSiempre: cvista === 'semana' });
+    if (!lista.length) return;
+    b.querySelectorAll('.d[data-date], .wc-day[data-date]').forEach((c) => {
+      const l = delDia[c.dataset.date]; if (!l) return;
+      const franjas = Array.from({ length: Math.max(...l.map((x) => x.carril)) + 1 }, (_, i) => { const x = l.find((y) => y.carril === i); return x ? bandaHtml(x) : html`<span class="cc-band vacio" aria-hidden="true"></span>`; });
+      (c.querySelector('.wc-dh') || c.querySelector('.n'))?.insertAdjacentHTML('afterend', String(html`<div class="cc-bandas">${franjas}</div>`));
+    });
+    const unicas = [...new Map(lista.map((x) => [x.id || x.nombre, x])).values()];
+    b.querySelector('.wc-chips')?.insertAdjacentHTML('afterend', String(html`<div class="cc-leyenda" role="group" aria-label="Campañas en este calendario"><span class="mut sm">Campañas</span>${unicas.map((x) => html`<a class="chip cc-ley cc-b-${/^[a-z]+$/.test(x.tipo) ? x.tipo : 'campana'}" href="${rutaModulo(slug, 'campanas')}" data-act="go" title="${x.estado}">${x.nombre} · ${x.ancla === x.hasta ? fdate(x.ancla) : `${fdate(x.ancla)} – ${fdate(x.hasta)}`}</a>`)}</div>`));
+  }
+  // El slot del Plan (MK-xxx) al frente de la pieza y, si ya salió, sus métricas al final. Sin slot o sin métricas, nada.
+  function chipsPiezas(b) {
+    b.querySelectorAll('.wc-ev[data-act="pedit"][data-id]').forEach((ev) => {
+      const p = piezaDe(ev.dataset.id); if (!p) return;
+      ev.querySelectorAll('.cc-slot,.cc-met').forEach((x) => x.remove());
+      const sl = slotDe(p), ms = metricasDe(p);
+      if (sl) ev.insertAdjacentHTML('afterbegin', String(html`<span class="cc-slot ${sl.fuera ? 'fuera' : ''}" title="${tituloSlot(sl)}">${sl.id}</span> `));
+      if (ms.length) ev.insertAdjacentHTML('beforeend', String(html` <span class="cc-met" title="${ms.map((m) => `${m.l} ${m.t}`).join(' · ')}">${ico('chart', 11)} ${resumenMetricas(ms, 1)}</span>`));
+    });
+  }
+  // Arrastrar (HTML5 nativo, en la compu): la pieza a otro día. Lo que ya salió o está archivado no se arrastra. En el cel no hay
+  // arrastre nativo: ahí un toque abre la ficha de la pieza con «Mover a…» (fichaPieza).
+  function arrastre(b) {
+    b.querySelectorAll('.wc-ev[data-act="pedit"][data-id]').forEach((ev) => {
+      const p = piezaDe(ev.dataset.id); if (!p || motivoNoMover(p)) return;
+      ev.draggable = true; ev.classList.add('cc-mov');
+      ev.addEventListener('dragstart', (e) => { arrastrando = p.id; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', p.id); ev.classList.add('cc-arrastrando'); });
+      ev.addEventListener('dragend', () => { arrastrando = null; ev.classList.remove('cc-arrastrando'); b.querySelectorAll('.cc-sobre').forEach((x) => x.classList.remove('cc-sobre')); });
+    });
+    b.querySelectorAll('.d[data-date], .wc-day[data-date]').forEach((c) => {
+      c.addEventListener('dragover', (e) => { if (!arrastrando) return; e.preventDefault(); e.dataTransfer.dropEffect = 'move'; c.classList.add('cc-sobre'); });
+      c.addEventListener('dragleave', (e) => { if (!c.contains(e.relatedTarget)) c.classList.remove('cc-sobre'); });
+      c.addEventListener('drop', (e) => {
+        if (!arrastrando) return; e.preventDefault(); c.classList.remove('cc-sobre');
+        const id = arrastrando, fecha = c.dataset.date; arrastrando = null;
+        setTimeout(() => moverA(id, fecha), 0); // después del drop: así el calendario se vuelve a pintar con la pieza ya quieta
+      });
+    });
+  }
+  // Mover una pieza de día. Se ve de una vez en su día nuevo y se guarda por la ruta de siempre (PUT /api/db/content con la `v` que
+  // se leyó). Si el servidor dice que no (423: ese mes no tiene brief del ciclo; 409: alguien la cambió), vuelve a su día y se
+  // muestra el mensaje del servidor tal cual. Con 409 se vuelven a leer las piezas, porque la que teníamos ya estaba vieja.
+  async function moverA(id, fecha) {
+    if (!posts || moviendo.has(id)) return;
+    const p = piezaDe(id); if (!p) return;
+    const motivo = motivoNoMover(p); if (motivo) return toast(motivo, true);
+    const m = moverEnLista(posts, id, fecha); if (!m) return;
+    moviendo.add(id); posts = m.lista; if (tab === 'calendario') recal();
+    let msg = `«${p.title || 'La pieza'}» sale el ${fdate(fecha)}`, mal = false, recargar = false;
+    try { const r = await C.save(m.nueva); if (posts) posts = ponerPieza(posts, r); }
+    catch (e) { const f = falloAlMover(e); msg = f.mensaje; mal = true; recargar = f.recargar; if (posts) posts = ponerPieza(posts, m.antes); }
+    moviendo.delete(id); toast(msg, mal);
+    if (!alive() || !el.isConnected) return;
+    if (recargar) posts = null;
+    if (tab === 'calendario') recal();
+  }
+  // En el cel: la ficha de la pieza con «Mover a…» (una fecha), sus métricas si ya salió y «Editar».
+  function fichaPieza(p) {
+    const e = estadoDe(p), sl = slotDe(p), ms = metricasDe(p), motivo = motivoNoMover(p);
+    drawer(html`<div class="row"><span class="chip ${ESTADO_CLS[e] || ''}">${e}</span>${p.format ? html`<span class="chip">${p.format}</span>` : ''}${sl ? html`<span class="chip cc-slot ${sl.fuera ? 'fuera' : ''}" title="${tituloSlot(sl)}">${sl.id}</span>` : ''}<div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+      <h2>${p.title || 'Sin título'}</h2><div class="mut">${p.date ? `${e === 'Publicado' ? 'Salió' : 'Sale'} el ${fdate(p.date)}` : 'Sin fecha'}${redDe(p) ? ` · ${redDe(p)}` : ''}</div>
+      ${ms.length ? html`<b class="sm" style="display:block;margin-top:18px">Cómo le fue</b><div class="sp-kpis" style="margin-top:8px">${ms.map((m) => html`<div><span class="lbl">${m.l}</span><b>${m.t}</b></div>`)}</div>` : ''}
+      ${motivo ? html`<p class="mut sm" style="margin-top:18px">${motivo}.</p>` : html`<b class="sm" style="display:block;margin-top:18px">Mover a…</b>
+        <div class="row" style="gap:8px;margin-top:8px"><input class="in" type="date" id="cc-mover-fecha" value="${p.date || ''}" aria-label="Nueva fecha de ${p.title || 'la pieza'}" style="max-width:200px"><button class="btn" data-act="ccmover">${ico('calendar-days', 14)} Mover</button></div>`}
+      <div class="row" style="margin-top:22px"><button class="btn ghost" data-act="ccedit">Editar</button></div>`, {
+      ccmover: () => { const f = $('#cc-mover-fecha')?.value; if (!f) return toast('Elige la fecha', true); closeDrawer(); moverA(p.id, f); },
+      ccedit: async () => { closeDrawer(); const r = await editPost(slug, piezaDe(p.id) || p, pieceOpts()); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
+    }, { section: 'Calendario', title: p.title || 'Pieza' });
   }
   async function editShoot(x, date) {
     const v = await ask(x ? 'Grabación' : 'Nueva grabación', [
@@ -327,11 +389,12 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       { k: 'crew', l: 'Quién graba', v: x?.crew, half: true },
       { k: 'pieces', l: 'Piezas y tomas (una por línea)', t: 'textarea', v: x?.pieces },
       { k: 'notes', l: 'Notas', t: 'textarea', v: x?.notes },
-      ...(x ? [{ k: 'status', l: 'Estado', t: 'select', opts: [...SHOOT, ['__del', 'Eliminar esta grabación']], v: x.status || SHOOT[0] }] : []),
+      ...(x ? [{ k: 'status', l: 'Estado', t: 'select', opts: [...SHOOT, ['__del', 'Archivar esta grabación']], v: x.status || SHOOT[0] }] : []),
     ], x ? 'Guardar' : 'Agendar');
     if (!v) return;
     try {
-      if (v.status === '__del') { if (!(await confirmAsk(`¿Eliminar «${x.title}»?`))) return; await C.remove(x.id); shoots = shoots.filter((y) => y.id !== x.id); toast('Grabación eliminada'); }
+      // Nada se borra: la grabación se archiva (queda Cancelada y fuera del calendario; el Production Planner la guarda con su historial).
+      if (v.status === '__del') { if (!(await confirmAsk(`¿Archivar «${x.title}»?`))) return; await C.save({ ...x, ...archivar(x) }); shoots = shoots.filter((y) => y.id !== x.id); toast('Grabación archivada'); }
       else if (x) { const r = await C.save({ ...x, ...v }); shoots = shoots.map((y) => (y.id === r.id ? r : y)); toast('Guardado'); }
       else { const r = await C.create({ kind: 'shoot', profile: slug, status: SHOOT[0], ...v }); shoots = [...shoots, r]; toast('Grabación agendada'); }
       recal();
@@ -466,15 +529,15 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     mprev: () => { const d = new Date(pdate + 'T12:00'); if (cvista === 'mes') d.setMonth(d.getMonth() - 1, 1); else d.setDate(d.getDate() - 7); pdate = iso(d); recal(); },
     mnext: () => { const d = new Date(pdate + 'T12:00'); if (cvista === 'mes') d.setMonth(d.getMonth() + 1, 1); else d.setDate(d.getDate() + 7); pdate = iso(d); recal(); },
     mtoday: () => { pdate = today(); recal(); },
-    mrefresh: () => { posts = null; shoots = null; ops = null; recal(); },
+    mrefresh: () => { posts = null; shoots = null; ops = null; mkslug = null; recal(); },
     ctipo: (t) => { const k = t.dataset.t; coff.has(k) ? coff.delete(k) : coff.add(k); try { localStorage.setItem('os.cal.marca.off', JSON.stringify([...coff])); } catch {} recal(); },
     day: (t, e) => { if (e?.target?.closest('.wc-ev,.wc-more')) return; const d = t.dataset.date; if (d && cerrado(d).cerrado) return toast(`Sin brief del ciclo de ${mesNombre(d.slice(0, 7))}: no se crean piezas con fecha de ese mes`, true); editPost(slug, null, pieceOpts(d ? { date: d } : {})).then((r) => { if (r) { posts = [...posts, r]; recal(); } }); },
-    dayall: (t) => { const desde = (fn) => (x) => { closeDrawer(); fn(x); }; drawer(diaHtml(cdia?.[t.dataset.date] || []), { pedit: desde((x) => el.querySelector('#cbody') && posts && editPost(slug, posts.find((y) => y.id === x.dataset.id), pieceOpts()).then((r) => { if (r) { posts = posts.map((y) => (y.id === r.id ? r : y)); recal(); } })), sedit: desde((x) => { const y = shoots.find((z) => z.id === x.dataset.id); if (y) editShoot(y); }), go: () => closeDrawer(), hito: (x) => drawer(hitoHtml(x.dataset.d), {}, { section: 'Calendario', title: 'El ciclo' }) }, { section: 'Calendario', title: fdate(t.dataset.date) }); },
+    dayall: (t) => { const desde = (fn) => (x) => { closeDrawer(); fn(x); }; chipsPiezas(drawer(diaHtml(cdia?.[t.dataset.date] || []), { pedit: desde((x) => el.querySelector('#cbody') && posts && editPost(slug, posts.find((y) => y.id === x.dataset.id), pieceOpts()).then((r) => { if (r) { posts = posts.map((y) => (y.id === r.id ? r : y)); recal(); } })), sedit: desde((x) => { const y = shoots.find((z) => z.id === x.dataset.id); if (y) editShoot(y); }), go: () => closeDrawer(), hito: (x) => drawer(hitoHtml(x.dataset.d), {}, { section: 'Calendario', title: 'El ciclo' }) }, { section: 'Calendario', title: fdate(t.dataset.date) })); },
     hito: (t) => drawer(hitoHtml(t.dataset.d), {}, { section: 'Calendario', title: 'El ciclo' }),
     snew: (t, e) => { if (e?.target?.closest('.ppost')) return; editShoot(null, t.dataset.d); },
     sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },
     pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; if (t.dataset.d && cerrado(t.dataset.d).cerrado) return toast(`Sin brief del ciclo de ${mesNombre(t.dataset.d.slice(0, 7))}: no se crean piezas con fecha de ese mes`, true); const r = await editPost(slug, null, pieceOpts(t.dataset.d ? { date: t.dataset.d } : {})); if (r) { posts = [...posts, r]; recal(); } },
-    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p, pieceOpts()); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
+    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; if (tab === 'calendario' && t.classList.contains('wc-ev') && esTactil()) return fichaPieza(p); const r = await editPost(slug, p, pieceOpts()); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
     ccmix: (t) => { const k = t.dataset.f, v = t.dataset.v; ccf = { ...ccf, [k]: ccf[k] === v ? '' : v }; recal(); },
     ccclear: () => { ccf = {}; recal(); },
     briefOpen: async (t) => {
@@ -517,14 +580,6 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       const p = t.dataset.p, out = await claudeJSON(`Desglose · ${p}`, breakPrompt(p)); if (!out) return;
       try { const r = await api('content/refs/breakdown', { method: 'PUT', body: { profile: slug, pillar: p, items: out.videos || out } }); rf = { ...rf, breakdown: r.breakdown }; toast('Desglose guardado'); refsTab($('#cbody', el)); } catch (e) { toast(e.message, true); }
     },
-    shotOpen: (t) => {
-      const { m, rows } = shotData(), r = rows.find((x) => x.id === t.dataset.id); if (!r) return;
-      const txt = pieceText(m, r);
-      drawer(html`<div class="row"><span class="chip">${r.formato}</span><span class="chip">${r.pilar}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
-        <h2>${r.id} · ${r.concepto}</h2><div class="mut sm">${[r.fecha && fdate(r.fecha), r.canal, r.campana, r.funcion, r.material && 'material: ' + r.material].filter(Boolean).join(' · ')}</div>
-        <div class="mdbody" style="margin-top:14px">${txt ? md(txt) : html`<div class="mut">No encontré la sección de ${r.id} en ideas-${r.formato.toLowerCase()}.md.</div>`}</div>`);
-    },
-    shotBrief: () => { const { m } = shotData(); const f = m?.files.find((x) => x.name === 'brief-del-ciclo.md'); if (f) drawer(html`<div class="row"><span class="chip">Brief del ciclo · ${m.mes}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><div class="mdbody" style="margin-top:14px">${md(f.content)}</div>`); },
   });
   acts(el, { auto: (t) => saveCfg({ auto: t.checked }).then(() => toast(t.checked ? 'Se scrapea solo cada lunes' : 'Scrape semanal apagado')) }, 'change');
   mount(el, html`<p class="loading">Leyendo el repo…</p>`);

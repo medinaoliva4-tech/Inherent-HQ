@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { tieneIco } from '../public/js/iconos.js';
-import { WORKSPACES, FLUJO, HERRAMIENTAS, LEGACY_MODULO, LEGACY_BLOQUE, wsDe, pestanaDe, herramientaDe, deWorkspace, cadena, moduloDe, rutaHerramienta, rutaBloque, rutaChat, rutaModulo, wsDeRuta, puedeWs } from '../public/js/herramientas.js';
+import { WORKSPACES, FLUJO, HERRAMIENTAS, LEGACY_MODULO, LEGACY_BLOQUE, wsDe, pestanaDe, herramientaDe, deWorkspace, cadena, moduloDe, rutaHerramienta, rutaBloque, rutaChat, rutaModulo, wsDeRuta, puedeWs, mesesDeCiclo } from '../public/js/herramientas.js';
 import { cambiaBloqueado } from '../public/js/strategy/oferta.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -43,10 +43,10 @@ t('cada herramienta: ws válido, pestaña del ws, prioridad, estado, aprueba, gu
     assert.equal(typeof h.puede, 'function', `${h.id}: puede`);
     if (h.estado !== 'pronto') assert.ok(h.monta, `${h.id}: ${h.estado} sin monta`); else assert.equal(h.monta, null, `${h.id}: pronto con monta`);
   }
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.estado === 'lista').map((h) => h.id), ['customer-bullseye', 'customer-avatar-studio', 'business-xray', 'offer-architect', 'growth-roadmap', 'content-calendar'], 'las 5 de Strategy de la Fase 3a + el calendario');
-  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 19, '13 de la Fase 1 + las 6 de Consulting de la Fase 2');
-  assert.equal(HERRAMIENTAS.filter((h) => h.monta).length, 25, 'las 19 de la Fase 1 + las 6 del Tool Shell');
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye', 'shell'], ['customer-avatar-studio', 'avatar'], ['business-xray', 'shell'], ['offer-architect', 'shell'], ['growth-roadmap', 'roadmap'], ['viral-intelligence-lab', 'research'], ['content-strategy-studio', 'plan'], ['content-calendar', 'calendario'], ['campaign-architect', 'campanas'], ['funnel-builder', 'tech'], ['ads-intelligence', 'ads'], ['marketing-performance-center', 'analytics'], ['brand-dna-studio', 'brandBoard'], ['moodboard-studio', 'brandBoard'], ['creative-direction-lab', 'ideas'], ['visual-identity-builder', 'design'], ['design-studio', 'disenoChat'], ['business-health-assessment', 'shell'], ['root-cause-explorer', 'shell'], ['process-mapper', 'shell'], ['financial-scenario-lab', 'shell'], ['solution-blueprint-builder', 'shell'], ['impact-tracker', 'shell'], ['script-storyboard-studio', 'creacion'], ['post-production-workspace', 'video']]);
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.estado === 'lista').map((h) => h.id), ['customer-bullseye','customer-avatar-studio','competitor-radar','business-xray','commercial-diagnosis','opportunity-map','offer-architect','pricing-packages','growth-roadmap','viral-intelligence-lab','hook-laboratory','content-strategy-studio','copywriting-studio','content-calendar','campaign-architect','funnel-builder','ads-intelligence','marketing-performance-center','brand-dna-studio','moodboard-studio','creative-direction-lab','visual-identity-builder','design-studio','brand-consistency-checker','creative-performance-analyzer','automation-opportunity-finder','organization-architect','production-brief','script-storyboard-studio','shot-list-builder','production-planner','post-production-workspace','review-approval-studio','content-repurposing'], 'las de Strategy de la Fase 3a + las de Marketing de la 3b + las P1 de Creative de la 3c + las P1 de Production de la 3d + las 13 P2 de la 3e');
+  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 6, 'las 6 P1 de Consulting de la Fase 2 (la 3e pasó el Funnel Builder y las 2 P2 de Consulting a lista)');
+  assert.equal(HERRAMIENTAS.filter((h) => h.monta).length, 40, 'todas menos las 2 P3 (Growth Experiment Lab y AI Video Lab), que siguen Pronto con su ficha');
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye','shell'],['customer-avatar-studio','avatar'],['competitor-radar','shell'],['business-xray','shell'],['commercial-diagnosis','comercial'],['opportunity-map','shell'],['offer-architect','shell'],['pricing-packages','shell'],['growth-roadmap','roadmap'],['viral-intelligence-lab','viral'],['hook-laboratory','shell'],['content-strategy-studio','plan'],['copywriting-studio','shell'],['content-calendar','calendario'],['campaign-architect','campanas'],['funnel-builder','shell'],['ads-intelligence','adsIntel'],['marketing-performance-center','shell'],['brand-dna-studio','dna'],['moodboard-studio','moodboard'],['creative-direction-lab','shell'],['visual-identity-builder','design'],['design-studio','disenoChat'],['brand-consistency-checker','consistencia'],['creative-performance-analyzer','shell'],['business-health-assessment','shell'],['root-cause-explorer','shell'],['process-mapper','shell'],['financial-scenario-lab','shell'],['automation-opportunity-finder','shell'],['organization-architect','shell'],['solution-blueprint-builder','shell'],['impact-tracker','shell'],['production-brief','shell'],['script-storyboard-studio','creacion'],['shot-list-builder','shell'],['production-planner','planner'],['post-production-workspace','video'],['review-approval-studio','review'],['content-repurposing','shell']]);
   // Consulting lleva el nombre en español y el inglés como alias.
   for (const h of deWorkspace('consulting')) assert.ok(h.alias, `${h.id}: alias`);
   assert.equal(herramientaDe('business-health-assessment').nombre, 'Diagnóstico de crecimiento');
@@ -238,15 +238,15 @@ t('puedeAprobar: aprueba «ceo» solo el CEO; «coo», el CEO o el COO', () => {
 });
 
 t('faltas() bloquea aprobar: los «falta» del entregable más los de la herramienta', () => {
-  const h = herramientaDe('hook-laboratory'), antes = h.faltas;
+  const h = herramientaDe('growth-experiment-lab'), antes = h.faltas;
   try {
-    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'hook-laboratory', criterios: { cumple: ['x'], falta: [] } })), [], 'sin faltas se puede aprobar');
-    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'hook-laboratory', criterios: { cumple: [], falta: ['Falta la fuente'] } })), ['Falta la fuente']);
+    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'growth-experiment-lab', criterios: { cumple: ['x'], falta: [] } })), [], 'sin faltas se puede aprobar');
+    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'growth-experiment-lab', criterios: { cumple: [], falta: ['Falta la fuente'] } })), ['Falta la fuente']);
     assert.deepEqual(E.faltas(aprobadoDe({ tool: 'nada', criterios: { falta: ['Una'] } })), ['Una'], 'una herramienta que no existe no rompe');
-    assert.deepEqual(E.faltas({ tool: 'hook-laboratory' }), [], 'sin criterios tampoco');
+    assert.deepEqual(E.faltas({ tool: 'growth-experiment-lab' }), [], 'sin criterios tampoco');
     h.faltas = (c, extra) => [...(c.vacio ? ['Contenido vacío'] : []), ...(extra.capacidadRoja ? ['Capacidad en rojo'] : [])];
-    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'hook-laboratory', contenido: { vacio: true }, criterios: { falta: ['Una'] } }), { capacidadRoja: true }), ['Una', 'Contenido vacío', 'Capacidad en rojo']);
-    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'hook-laboratory', contenido: {} })), []);
+    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'growth-experiment-lab', contenido: { vacio: true }, criterios: { falta: ['Una'] } }), { capacidadRoja: true }), ['Una', 'Contenido vacío', 'Capacidad en rojo']);
+    assert.deepEqual(E.faltas(aprobadoDe({ tool: 'growth-experiment-lab', contenido: {} })), []);
   } finally { if (antes) h.faltas = antes; else delete h.faltas; }
 });
 
@@ -353,7 +353,7 @@ t('estáticas · entregables.js: sin upsert, todo db.update lleva v, sin { clien
   assert.ok(n >= 1, 'hay al menos un db.update');
   assert.ok(index.includes('entregables.rutas(on'), 'api/index.js registra entregables.rutas(on');
   assert.match(index, /import \* as entregables from '\.\/_lib\/entregables\.js'/);
-  assert.match(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'), /"test:consulting": "node scripts\/test-consulting\.mjs && node scripts\/test-consulting-dinero\.mjs"/);
+  assert.match(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'), /"test:consulting": "node scripts\/test-consulting\.mjs && node scripts\/test-consulting-dinero\.mjs && node scripts\/test-consulting-p2\.mjs"/);
 });
 
 t('estáticas · costos y versión: toda respuesta con un entregable pasa por salida(), aprobar exige v y el shell la manda', () => {
@@ -368,10 +368,9 @@ t('estáticas · costos y versión: toda respuesta con un entregable pasa por sa
   assert.match(apr, /b\.v == null[^\n]*400[^\n]*FALTA_V/); assert.match(apr, /Number\(b\.v\) !== cur\.v[^\n]*409[^\n]*CONFLICTO/);
   // El shell manda la versión que leyó en estado, tareas, siguiente, resultado y archivar.
   for (const ruta of ['estado', 'tareas', 'siguiente', 'resultado', 'archivar']) assert.match(shell, new RegExp('/' + ruta + '`, \\{ method: \'POST\', body: \\{ v: S\\.doc\\.v'), `tool-shell: /${ruta} manda v`);
-  // Solo el Money Model Lab tiene costos que ocultar.
-  assert.deepEqual(HERRAMIENTAS.filter((h) => typeof h.sinCostos === 'function' || typeof h.conCostos === 'function').map((h) => h.id), ['financial-scenario-lab']);
-  const h = herramientaDe('financial-scenario-lab');
-  assert.equal(typeof h.sinCostos, 'function'); assert.equal(typeof h.conCostos, 'function');
+  // Solo tres herramientas tienen costos que ocultar: las recomendaciones de pauta, el reporte del Performance Center y el Money Model Lab.
+  assert.deepEqual(HERRAMIENTAS.filter((h) => typeof h.sinCostos === 'function' || typeof h.conCostos === 'function').map((h) => h.id), ['pricing-packages', 'ads-intelligence', 'marketing-performance-center', 'financial-scenario-lab', 'shot-list-builder']);
+  for (const id of ['ads-intelligence', 'marketing-performance-center', 'financial-scenario-lab', 'shot-list-builder']) { const h = herramientaDe(id); assert.equal(typeof h.sinCostos, 'function', id); assert.equal(typeof h.conCostos, 'function', id); }
 });
 
 // ---------- Fase 2: las 6 herramientas reales de Consulting se montan en el Tool Shell ----------
@@ -393,7 +392,7 @@ t('Consulting: 6 herramientas con monta shell, su vista y las funciones de su m�
   }
   assert.equal(new Set(REALES.map(([id]) => herramientaDe(id).bloque)).size, 6, 'cada herramienta pide su propio bloque');
   assert.deepEqual(REALES.filter(([id]) => typeof herramientaDe(id).tareasDe === 'function').map(([id]) => id), ['root-cause-explorer', 'solution-blueprint-builder'], 'solo el Árbol (pruebas) y el Plan (primer paso) se vuelven tareas');
-  for (const id of ['automation-opportunity-finder', 'organization-architect']) { const h = herramientaDe(id); assert.equal(h.estado, 'pronto', id); assert.equal(h.monta, null, id); assert.equal(h.bloque, undefined, id); }
+  for (const [id, vista] of [['automation-opportunity-finder', 'automatizacion'], ['organization-architect', 'organizacion']]) { const h = herramientaDe(id); assert.equal(h.estado, 'lista', id); assert.equal(h.monta, 'shell', id); assert.equal(h.vista, vista, id); assert.equal(h.bloque, vista, id); }
 });
 
 t('Plan de 90 días: con la capacidad en rojo (extra o Diagnóstico en las entradas) la demanda antes que la capacidad no deja aprobar', () => {
@@ -425,8 +424,8 @@ t('Strategy 3a: diana, X-Ray y oferta con monta shell, su vista y las funciones 
     assert.ok(!('id' in l) && !('v' in l) && !('_meta' in l), `${id}: limpiar`);
   }
   assert.equal(new Set(ESTRATEGIA.map(([, , b]) => b)).size, 3, 'cada una pide su propio bloque de IA');
-  // Solo la diana y la oferta traen alUsar; solo la oferta se aprueba con su bloque.
-  assert.deepEqual(HERRAMIENTAS.filter((h) => typeof h.alUsar === 'function').map((h) => h.id), ['customer-bullseye', 'offer-architect']);
+  // Solo la diana y la oferta (Strategy) , el reporte del Performance Center (Marketing, 3b), el Funnel Builder y el Creative Performance Analyzer (3e) traen alUsar; solo la oferta se aprueba con su bloque.
+  assert.deepEqual(HERRAMIENTAS.filter((h) => typeof h.alUsar === 'function').map((h) => h.id), ['customer-bullseye', 'offer-architect', 'funnel-builder', 'marketing-performance-center', 'creative-performance-analyzer']);
   assert.deepEqual(HERRAMIENTAS.filter((h) => h.aprobarConBloque).map((h) => [h.id, h.aprobarConBloque]), [['offer-architect', 'oferta']]);
   assert.equal(herramientaDe('offer-architect').aprueba, 'ceo');
   assert.equal(herramientaDe('customer-bullseye').guarda.coll, 'sources'); assert.match(herramientaDe('customer-bullseye').guarda.nota, /PUT estrategia\/:slug\/bullseye/);
@@ -505,6 +504,285 @@ t('Strategy 3a · estáticas: el shell aprueba y reabre Offer Architect con su b
   assert.match(sh, /tool\.alUsar\(nuevo, clon\(S\.contenido\), S\.ctx\)/);
   // Cerrado (aprobado con su bloque): ni Generar ni Guardar.
   assert.match(sh, /const editable = \(\) => escribe\(\) && !cerrado\(\)/);
+});
+
+// ---------- Fase 3b: Marketing P1 ----------
+const M = await import('../public/js/marketing/reporte.js');
+const A = await import('../public/js/marketing/ads.js');
+const PAT = await import('../public/js/marketing/patrones.js');
+const leerSrc = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
+
+t('Marketing 3b: las 6 herramientas P1 quedan «lista» con su montaje; solo el Performance Center va al shell y solo él tiene ciclo', () => {
+  const montaje = { 'viral-intelligence-lab': 'viral', 'content-strategy-studio': 'plan', 'content-calendar': 'calendario', 'campaign-architect': 'campanas', 'ads-intelligence': 'adsIntel', 'marketing-performance-center': 'shell' };
+  for (const [id, monta] of Object.entries(montaje)) { const h = herramientaDe(id); assert.equal(h.estado, 'lista', id); assert.equal(h.monta, monta, id); assert.equal(h.ws, 'marketing', id); assert.ok(h.guarda.coll && h.guarda.nota, `${id}: guarda`); }
+  assert.equal(herramientaDe('marketing-performance-center').vista, 'rendimiento');
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.ciclo && h.ws === 'marketing').map((h) => h.id), ['marketing-performance-center'], 'en Marketing, un solo entregable por mes: solo el Performance Center');
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta === 'shell' && h.ws === 'marketing').map((h) => h.id), ['hook-laboratory', 'copywriting-studio', 'funnel-builder', 'marketing-performance-center']);
+  assert.equal(herramientaDe('campaign-architect').guarda.coll, 'mk_campaigns'); assert.equal(herramientaDe('content-strategy-studio').guarda.coll, 'plans'); assert.equal(herramientaDe('content-calendar').guarda.coll, 'content');
+  assert.equal(herramientaDe('growth-experiment-lab').estado, 'pronto', 'el Growth Experiment Lab (P3) sigue Pronto');
+});
+
+t('Marketing 3b: el Performance Center trae las funciones de reporte.js; su prompt pide su bloque y sus criterios y cabe en 5 000', () => {
+  const h = herramientaDe('marketing-performance-center');
+  assert.equal(h.bloque, 'reporte'); assert.equal(h.bloque, M.BLOQUE);
+  for (const f of ['vacio', 'prompt', 'leer', 'limpiar', 'faltas', 'aMd', 'tareasDe', 'alUsar', 'sinCostos', 'conCostos']) assert.equal(typeof h[f], 'function', `mpc.${f}`);
+  assert.equal(h.vacio, M.vacio); assert.equal(h.limpiar, M.limpiar); assert.equal(h.faltas, M.faltas); assert.equal(h.sinCostos, M.sinCostos); assert.equal(h.conCostos, M.conCostos); assert.equal(h.alUsar, M.alUsar); assert.equal(h.tareasDe, M.tareasDe);
+  const p = h.prompt({ hoy: '2026-10-27', cliente: { slug: 'akai', nombre: 'Akai', nivel: { id: 'medida', nombre: 'A la medida' } }, ficha: null, estrategia: { etapa: null, trabado: '', meta: '' }, entradas: [], aprendizajes: [] });
+  assert.ok(p.includes('reporte') && p.includes('criterios') && p.length < 5000, 'prompt');
+  const l = h.limpiar({ ...h.vacio('2026-10'), id: 'x', v: 9, _meta: { a: 1 } });
+  assert.ok(!('id' in l) && !('v' in l) && !('_meta' in l) && l.mes === '2026-10', 'limpiar');
+  // alUsar: el mes de la pantalla manda y los KPIs salen del contexto, nunca del modelo.
+  const u = h.alUsar({ mes: '2026-01', resumen: 'Algo', kpis: [{ id: 'alcance', valor: 999999, fuente: 'modelo' }] }, { mes: '2026-10', kpis: [] }, { kpis: [{ id: 'alcance', valor: 1200, fuente: 'Windsor' }] });
+  assert.equal(u.mes, '2026-10'); assert.deepEqual(u.kpis, [{ id: 'alcance', valor: 1200, fuente: 'Windsor' }]);
+});
+
+t('Marketing 3b: el Performance Center: quien no ve costos recibe el reporte sin gasto, CPA ni ROAS y al guardar no los pierde ni los escribe', () => {
+  const h = herramientaDe('marketing-performance-center');
+  const doc = { mes: '2026-10', resumen: 'Subió el alcance.', kpis: [{ id: 'alcance', valor: 1200, fuente: 'Windsor' }, { id: 'gasto', valor: 3400, fuente: 'Windsor' }, { id: 'cpa', valor: 85, fuente: 'Windsor' }],
+    hallazgos: [{ texto: 'El alcance subió 20%.', kpi: 'alcance' }, { texto: 'El CPA bajó a 85.', kpi: 'cpa' }], siguientes: [{ accion: 'Subir los reels', area: 'Marketing', fecha: '2026-11-03' }], nota_interna: 'Se lo dije al cliente.' };
+  const visto = h.sinCostos(doc);
+  assert.equal(visto.kpis.find((k) => k.id === 'gasto').valor, null); assert.equal(visto.kpis.find((k) => k.id === 'cpa').valor, null); assert.equal(visto.kpis.find((k) => k.id === 'alcance').valor, 1200);
+  assert.ok(!JSON.stringify(visto).includes('3400') && !JSON.stringify(visto).includes('85'), 'ningún monto viaja');
+  assert.equal(visto.hallazgos.length, 1, 'el hallazgo que cita el CPA no se ve');
+  const guardado = h.conCostos(doc, { ...visto, resumen: 'Subió el alcance y lo celebramos.' });
+  assert.equal(guardado.kpis.find((k) => k.id === 'gasto').valor, 3400, 'lo guardado vuelve'); assert.equal(guardado.hallazgos.length, 2); assert.equal(guardado.resumen, 'Subió el alcance y lo celebramos.');
+  const nuevo = h.conCostos(null, { ...doc, kpis: [{ id: 'gasto', valor: 1, fuente: 'yo' }] });
+  assert.ok(nuevo.kpis.every((k) => k.id !== 'gasto' || k.valor === null), 'quien no ve costos no escribe un monto nuevo');
+});
+
+t('Marketing 3b: Ads Intelligence trae limpiar y faltas de ads.js; una rec sin números no se aprueba; sin costos, sin montos y se conservan al guardar', () => {
+  const h = herramientaDe('ads-intelligence');
+  assert.equal(h.bloque, 'recs'); assert.equal(h.limpiar, A.limpiarRec); assert.equal(h.faltas, A.faltas); assert.equal(typeof h.vacio, 'function');
+  assert.equal(h.aprueba, 'ceo');
+  assert.ok(h.faltas({ tipo: 'pausar', accion: 'Pausar' }).length > 0, 'sin evidencia no se aprueba');
+  const rec = { tipo: 'pausar', donde: { nivel: 'campana', nombre: 'Verano' }, evidencia: { metrica: 'CPA', valor: 85, umbral: 60, periodo: 'últimos 30 días' }, detalle: 'CPA Q85 contra Q60', accion: 'Pausar Verano (gasto Q1,200)', origen: 'calculada' };
+  const l = h.limpiar(rec);
+  assert.deepEqual(h.faltas(l), []); assert.equal(l.requiere_ceo, true);
+  const visto = h.sinCostos(l);
+  assert.equal(visto.evidencia.valor, null); assert.equal(visto.evidencia.umbral, null); assert.ok(!/85|60|1,200/.test(JSON.stringify(visto)), 'ningún monto viaja');
+  const guardado = h.conCostos(l, { ...visto, estado: 'aplicada' });
+  assert.equal(guardado.estado, 'aplicada'); assert.equal(guardado.evidencia.valor, 85); assert.equal(guardado.evidencia.umbral, 60); assert.equal(guardado.detalle, 'CPA Q85 contra Q60'); assert.equal(guardado.accion, 'Pausar Verano (gasto Q1,200)');
+  const nueva = h.conCostos(null, rec);
+  assert.equal(nueva.evidencia.valor, null, 'quien no ve costos no escribe montos nuevos');
+  // Una rec sin monto (CTR) no se toca.
+  const ctr = h.limpiar({ tipo: 'fatiga', donde: { nivel: 'anuncio', nombre: 'A' }, evidencia: { metrica: 'CTR', valor: 0.8, umbral: 1, periodo: '7 días' }, accion: 'Rotar el creativo' });
+  assert.deepEqual(h.conCostos(ctr, { ...h.sinCostos(ctr), estado: 'descartada' }), { ...ctr, estado: 'descartada' });
+  // El servidor limpia el contenido con limpiar() de la herramienta y no guarda lo que no conoce.
+  const ent = E.limpiarEntregable({ tool: 'ads-intelligence', client_slug: 'akai', contenido: { ...rec, id: 'x', v: 3, _meta: {}, extra: 1 } }, h.limpiar);
+  assert.ok(!('id' in ent.contenido) && !('extra' in ent.contenido) && ent.contenido.tipo === 'pausar');
+});
+
+t('Marketing 3b: el Viral Lab trae limpiar, faltas, prompt y leer de patrones.js; un patrón necesita 2 posts reales para aprobarse', () => {
+  const h = herramientaDe('viral-intelligence-lab');
+  assert.equal(h.bloque, 'patrones'); assert.equal(h.bloque, PAT.BLOQUE);
+  for (const f of ['vacio', 'prompt', 'leer', 'limpiar', 'faltas', 'aMd']) assert.equal(typeof h[f], 'function', `viral.${f}`);
+  assert.equal(h.limpiar, PAT.limpiar); assert.equal(h.faltas, PAT.faltas);
+  const l = h.limpiar({ nombre: 'El antes y después', items: ['instagram:abc'], v: 4, _meta: { a: 1 }, raro: 1 }); // el patrón tiene su propio id; v, _meta y lo desconocido se caen
+  assert.ok(!('v' in l) && !('_meta' in l) && !('raro' in l));
+  assert.ok(h.faltas(l).length > 0, 'con menos de 2 posts reales no se aprueba');
+  assert.ok(h.prompt({ hoy: '2026-10-27', cliente: { slug: 'akai', nombre: 'Akai' }, items: [], patrones: [] }).length < 5000);
+});
+
+t('Marketing 3b: mesesDeCiclo da el actual y los 11 anteriores, también a través de un año; sin fecha válida, nada', () => {
+  const l = mesesDeCiclo('2026-10-27', 12);
+  assert.equal(l.length, 12); assert.equal(l[0], '2026-10'); assert.equal(l[1], '2026-09'); assert.equal(l[11], '2025-11'); assert.equal(new Set(l).size, 12);
+  assert.deepEqual(mesesDeCiclo('2026-01', 3), ['2026-01', '2025-12', '2025-11']);
+  assert.deepEqual(mesesDeCiclo('', 12), []); assert.deepEqual(mesesDeCiclo('2026-13-01', 12), []); assert.deepEqual(mesesDeCiclo(null), []);
+  assert.ok(l.every((m) => /^\d{4}-(0[1-9]|1[0-2])$/.test(m)));
+});
+
+t('Marketing 3b: quien tiene Contenido en «resumen» solo ve el Performance Center en Marketing; el equipo ve las demás', () => {
+  const resumen = { role: 'team', areas: ['content'], views: { content: 'resumen' } }, equipo = { role: 'team', areas: ['content'], views: {} }, akai = { slug: 'akai', personal: false, content: true, client: true };
+  assert.deepEqual(deWorkspace('marketing').filter((h) => h.puede(resumen, akai)).map((h) => h.id), ['marketing-performance-center']);
+  assert.deepEqual(deWorkspace('marketing').filter((h) => h.puede(equipo, akai)).map((h) => h.id), deWorkspace('marketing').map((h) => h.id));
+  // Por ruta: la herramienta de rendimiento abre con el mes al final.
+  assert.equal(rutaHerramienta('marketing', 'akai', 'marketing-performance-center', ['2026-09']), '#/ws/marketing/akai/analytics/marketing-performance-center/2026-09');
+  const r = wsDeRuta('#/ws/marketing/akai/analytics/marketing-performance-center/2026-09');
+  assert.equal(r.tool, 'marketing-performance-center'); assert.deepEqual(r.resto, ['2026-09']);
+  // Las rutas viejas de Investigación, Ads y Resultados siguen llegando a su herramienta.
+  assert.equal(wsDeRuta('#/marcas/akai/investigacion').ruta, 'ws/marketing/akai/audience/viral-intelligence-lab');
+  assert.equal(wsDeRuta('#/marcas/akai/ads').ruta, 'ws/marketing/akai/campaigns/ads-intelligence');
+  assert.equal(wsDeRuta('#/marcas/akai/resultados').ruta, 'ws/marketing/akai/analytics/marketing-performance-center');
+});
+
+t('Marketing 3b · estáticas: workspace.js monta el Viral Lab, Ads Intelligence y el rendimiento; pasa resto al plan y a las campañas', () => {
+  const ws = leerSrc('public/js/screens/workspace.js');
+  assert.match(ws, /rendimiento: \(\) => import\('\.\.\/marketing\/rendimiento-ui\.js'\)/, 'VISTAS.rendimiento');
+  assert.match(ws, /case 'viral': case 'adsIntel':[\s\S]*'\.\.\/marketing\/viral-ui\.js', 'viralTool'[\s\S]*'\.\.\/marketing\/ads-intel-ui\.js', 'adsIntelTool'[\s\S]*hoja\(host, \{ me, slug, b, alive, resto \}\)/, 'monta viralTool y adsIntelTool con { me, slug, b, alive, resto }');
+  assert.match(ws, /case 'campanas': return campanasUI\(host, \{ me, b, alive, resto \}\)/); assert.match(ws, /case 'plan': return planMesUI\(host, \{ me, b, alive, resto \}\)/);
+  assert.match(ws, /viral: 'investigacion'/); assert.match(ws, /adsIntel: 'ads'/);
+  assert.ok(!/case 'research'|case 'ads':|adsUI|analytics: 'resultados'/.test(ws), 'ya no hay montaje de las claves viejas research y ads');
+  assert.match(ws, /resto\[0\] === 'instagram'[\s\S]*embed\(sede, 'analytics'\)/, 'los analytics de Instagram de siempre siguen en el Performance Center');
+  // La diana y los avatares de Strategy solo se ofrecen (por link) a quien abre Strategy; quien ve solo el rendimiento pide solo esa herramienta.
+  assert.match(ws, /pestana\.id === 'audience' && veEstrategia\(me\)/);
+  assert.match(ws, /soloRendimiento \? '&tool=marketing-performance-center' : ''/);
+  assert.ok(fs.existsSync(new URL('../public/js/marketing/rendimiento-ui.js', import.meta.url)) && fs.existsSync(new URL('../public/js/marketing/viral-ui.js', import.meta.url)) && fs.existsSync(new URL('../public/js/marketing/ads-intel-ui.js', import.meta.url)));
+  assert.match(leerSrc('public/js/marketing/rendimiento-ui.js'), /export const vista = \{/); assert.match(leerSrc('public/js/marketing/viral-ui.js'), /export async function viralTool\(/); assert.match(leerSrc('public/js/marketing/ads-intel-ui.js'), /export async function adsIntelTool\(/);
+});
+
+t('Marketing 3b · estáticas: el shell con ciclo trae el selector de mes, pide la lista con ?ciclo=, guarda con el mes y recuerda el mes en la ruta', () => {
+  const sh = leerSrc('public/js/tool-shell.js');
+  assert.match(sh, /const conCiclo = Boolean\(tool\.ciclo\)/);
+  assert.match(sh, /conCiclo && S\.ciclo \? `&ciclo=\$\{enc\(S\.ciclo\)\}` : ''/, 'la lista se pide con &ciclo=<mes>');
+  assert.match(sh, /mesesDeCiclo\(today\(\), 12\)/, 'el actual y los 11 anteriores');
+  assert.match(sh, /data-act="tsh-ciclo"/); assert.match(sh, /'tsh-ciclo': \(el\) => cambiarCiclo\(el\.value\)/);
+  assert.match(sh, /ciclo: doc\?\.ciclo \|\| \(conCiclo \? mesDeTrabajo\(\) : ''\)/, 'el POST manda el ciclo');
+  assert.match(sh, /conCiclo \? \(S\.ciclo \? \[S\.ciclo\] : \[\]\) : S\.doc \? \[S\.doc\.id\] : \[\]/, 'la ruta lleva el mes (resto[0] = AAAA-MM)');
+  assert.match(sh, /`\$\{tool\.nombre\} · \$\{mesDeTrabajo\(\)\}`/, 'el título por defecto es «<herramienta> · <mes>»');
+  assert.match(sh, /S\.ctx = \{ \.\.\.S\.ctx, mes: S\.ciclo \}/, 'la IA recibe el mes elegido');
+  // Una herramienta sin ciclo se pide como siempre: sin ciclo en la URL.
+  assert.ok(sh.includes("`entregables?ws=${enc(tool.ws)}&slug=${enc(slug)}&tool=${enc(tool.id)}${conCiclo"), 'la URL de la lista es la de siempre más el ciclo opcional');
+});
+
+// ---------- Fase 3c: Creative ----------
+t('Creative 3c: las 5 P1 quedan «lista» con su montaje; solo el Creative Direction Lab va al shell y tiene ciclo; las 2 P2 siguen Pronto', () => {
+  const montaje = { 'brand-dna-studio': 'dna', 'moodboard-studio': 'moodboard', 'creative-direction-lab': 'shell', 'visual-identity-builder': 'design', 'design-studio': 'disenoChat' };
+  for (const [id, monta] of Object.entries(montaje)) { const h = herramientaDe(id); assert.equal(h.estado, 'lista', id); assert.equal(h.monta, monta, id); assert.equal(h.ws, 'creative', id); assert.ok(h.guarda.coll && h.guarda.nota, `${id}: guarda`); }
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta === 'shell' && h.ws === 'creative').map((h) => h.id), ['creative-direction-lab', 'creative-performance-analyzer']);
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.ciclo && h.ws === 'creative').map((h) => h.id), ['creative-direction-lab', 'creative-performance-analyzer']);
+  for (const id of ['brand-consistency-checker', 'creative-performance-analyzer']) assert.equal(herramientaDe(id).estado, 'lista', id);
+  assert.equal(herramientaDe('brand-dna-studio').guarda.coll, 'brand_boards'); assert.equal(herramientaDe('moodboard-studio').guarda.coll, 'brand_boards'); assert.equal(herramientaDe('creative-direction-lab').guarda.coll, 'deliverables');
+});
+
+t('Creative 3c: el Creative Direction Lab trae las funciones de direccion.js; su prompt pide su bloque y sus criterios y cabe en 5 000', () => {
+  const h = herramientaDe('creative-direction-lab');
+  assert.equal(h.vista, 'direccion'); assert.equal(h.bloque, 'direccion');
+  for (const f of ['vacio', 'prompt', 'leer', 'limpiar', 'faltas', 'aMd']) assert.equal(typeof h[f], 'function', f);
+  const p = h.prompt({ cliente: { nombre: 'X', slug: 'x' }, hoy: '2026-10-27', mes: '2026-10', entradas: [] });
+  assert.ok(p.includes('direccion') && p.includes('criterios') && p.length < 5000, 'prompt');
+  assert.match(p, /nunca leas ni cites inherent\/06-ECONOMIA/i, 'el prompt prohíbe leer los costos de Inherent');
+  assert.equal(h.limpiar(h.vacio()).conceptos.length, 0);
+});
+
+t('Creative 3c · estáticas: workspace.js monta la dirección, el DNA y el moodboard; Ideas y Formatos siguen como sub-vistas sin shell', () => {
+  const ws = leerSrc('public/js/screens/workspace.js');
+  assert.match(ws, /direccion: \(\) => import\('\.\.\/creative\/direccion-ui\.js'\)/, 'VISTAS.direccion');
+  assert.match(ws, /case 'dna': case 'moodboard':[\s\S]*'\.\.\/creative\/dna-ui\.js', 'dnaTool'[\s\S]*'\.\.\/creative\/moodboard-ui\.js', 'moodboardTool'[\s\S]*hoja\(host, \{ me, slug, b, alive, resto \}\)/, 'monta dnaTool y moodboardTool con { me, slug, b, alive, resto }');
+  assert.match(ws, /dna: 'marca', moodboard: 'marca'/, 'DNA y Moodboard piden el módulo Identidad de Marcas');
+  assert.match(ws, /t\.id === 'creative-direction-lab' && \['ideas', 'formatos'\]\.includes\(resto\[0\]\)/, 'ideas y formatos salen de resto[0]');
+  assert.match(ws, /if \(sv === 'ideas'\) return embed\(sede, 'postear'\);\s*if \(sv === 'formatos'\) return formatosUI\(sede, \{ me, b, alive \}\)/, 'Ideas y Formatos no pasan por el shell');
+  assert.match(ws, /case 'dna': case 'moodboard': \{\s*if \(b\.personal\) return meBrand\(/, 'la marca personal sigue en meBrand');
+  assert.ok(!/case 'ideas':/.test(ws), 'ya no hay montaje de la clave vieja ideas');
+  for (const f of ['direccion', 'dna', 'moodboard']) assert.ok(fs.existsSync(new URL(`../public/js/creative/${f}-ui.js`, import.meta.url)), `${f}-ui.js`);
+  assert.match(leerSrc('public/js/creative/direccion-ui.js'), /export const vista = \{/); assert.match(leerSrc('public/js/creative/dna-ui.js'), /export async function dnaTool\(/); assert.match(leerSrc('public/js/creative/moodboard-ui.js'), /export async function moodboardTool\(/);
+});
+
+t('Creative 3c · las rutas viejas de Ideas y Formatos siguen llegando al Creative Direction Lab', () => {
+  assert.equal(wsDeRuta('#/ws/creative/akai/concepts/creative-direction-lab/ideas').resto[0], 'ideas');
+  assert.equal(wsDeRuta('#/ws/creative/akai/concepts/creative-direction-lab/2026-10').resto[0], '2026-10');
+  assert.equal(wsDeRuta('#/ws/creative/akai/concepts/creative-direction-lab/formatos').tool, 'creative-direction-lab');
+});
+
+t('Creative 3c · estáticas: package.json trae test:creative y app.css el bloque de Creative solo con tokens --ui-*', () => {
+  const pk = JSON.parse(leerSrc('package.json')); assert.match(pk.scripts['test:creative'], /test-creative\.mjs.*test-creative-marca\.mjs/);
+  const css = leerSrc('public/app.css'); assert.match(css, /FASE 3c · Creative/);
+  for (const k of ['.dl{', '.dl-cons{', '.dz.dz3{', '.dz-cola{', '.dna,.mb{', '.dse{']) assert.ok(css.includes(k), k);
+  const bloque = css.slice(css.indexOf('FASE 3c · Creative'));
+  assert.ok(!/#[0-9a-f]{3,8}\b/i.test(bloque.replace(/\/\*[\s\S]*?\*\//g, '')), 'el bloque no trae colores sueltos: solo tokens --ui-*');
+});
+
+// ---------- Fase 3d: Production ----------
+t('Production 3d: las 5 P1 quedan «lista» con su montaje; el Brief y el Shot List van al shell con ciclo; de las otras 3 solo el AI Video Lab sigue Pronto', () => {
+  const montaje = { 'production-brief': 'shell', 'script-storyboard-studio': 'creacion', 'shot-list-builder': 'shell', 'post-production-workspace': 'video', 'review-approval-studio': 'review' };
+  for (const [id, monta] of Object.entries(montaje)) { const h = herramientaDe(id); assert.equal(h.estado, 'lista', id); assert.equal(h.monta, monta, id); assert.equal(h.ws, 'production', id); assert.ok(h.guarda.coll && h.guarda.nota, `${id}: guarda`); }
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta === 'shell' && h.ws === 'production').map((h) => h.id), ['production-brief', 'shot-list-builder', 'content-repurposing']);
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.ciclo && h.ws === 'production').map((h) => h.id), ['production-brief', 'shot-list-builder']);
+  assert.equal(herramientaDe('ai-video-lab').estado, 'pronto'); assert.equal(herramientaDe('ai-video-lab').monta, null); for (const id of ['production-planner', 'content-repurposing']) assert.equal(herramientaDe(id).estado, 'lista', id);
+  assert.equal(herramientaDe('production-brief').guarda.coll, 'deliverables'); assert.equal(herramientaDe('shot-list-builder').guarda.coll, 'deliverables');
+  assert.equal(herramientaDe('script-storyboard-studio').guarda.coll, 'scripts'); assert.equal(herramientaDe('post-production-workspace').guarda.coll, 'videos'); assert.equal(herramientaDe('review-approval-studio').guarda.coll, 'videos');
+});
+
+t('Production 3d: Brief y Shot List traen las funciones de su módulo puro; cada prompt pide su bloque y sus criterios, cabe en 5 000 y no toca costos', () => {
+  for (const [id, vista, bloque] of [['production-brief', 'brief', 'produccion'], ['shot-list-builder', 'shotlist', 'shotlist']]) {
+    const h = herramientaDe(id);
+    assert.equal(h.vista, vista, id); assert.equal(h.bloque, bloque, id);
+    for (const f of ['vacio', 'prompt', 'leer', 'limpiar', 'faltas', 'aMd']) assert.equal(typeof h[f], 'function', `${id}.${f}`);
+    const p = h.prompt({ cliente: { nombre: 'X', slug: 'x' }, hoy: '2026-10-27', mes: '2026-10', entradas: [] });
+    assert.ok(p.includes(bloque) && p.includes('criterios') && p.length < 5000, `${id}: prompt`);
+    assert.ok(!/06-ECONOMIA/.test(p.replace(/nunca leas ni cites inherent\/06-ECONOMIA/i, '')), `${id}: no pide la economía de Inherent`);
+  }
+  assert.equal(typeof herramientaDe('production-brief').tareasDe, 'function', 'el brief convierte las devueltas en tareas');
+  assert.equal(herramientaDe('production-brief').tareasDe({ devueltas: [] }).length, 0);
+  const sl = herramientaDe('shot-list-builder');
+  assert.equal(typeof sl.sinCostos, 'function'); assert.equal(typeof sl.conCostos, 'function');
+  const c = sl.limpiar({ escenas: [{ id: 'PR-001', id_creativo: 'C-01', costo_estimado: 250 }] });
+  assert.equal(sl.sinCostos(c).escenas[0].costo_estimado, null, 'quien no ve costos no lee el costo estimado');
+  assert.equal(sl.conCostos(c, sl.sinCostos(c)).escenas[0].costo_estimado, 250, 'ni lo pisa al guardar');
+});
+
+t('Production 3d: la cadena Bullseye → Offer → Campaign → Creative → Production Brief está en el registro y siguienteDe la arma con entradas', () => {
+  const cadenaTools = ['customer-bullseye', 'offer-architect', 'campaign-architect', 'creative-direction-lab', 'production-brief'];
+  for (let i = 0; i < cadenaTools.length - 1; i++) assert.ok(herramientaDe(cadenaTools[i]).va_a.includes(cadenaTools[i + 1]), `${cadenaTools[i]} → ${cadenaTools[i + 1]}`);
+  assert.ok(cadena('customer-bullseye').includes('production-brief'));
+  let doc = { id: 'd-0', tool: cadenaTools[0], estado: 'Aprobado', version: 1, aprobado: { version: 1 }, titulo: 'Diana', client_slug: 'akai', ciclo: '' };
+  for (const sig of cadenaTools.slice(1)) {
+    const n = E.siguienteDe(doc, sig);
+    assert.ok(n, `siguienteDe → ${sig}`); assert.equal(n.entradas[0].deliverable_id, doc.id); assert.equal(n.entradas[0].tool, doc.tool);
+    doc = { ...n, id: `d-${sig}`, estado: 'Aprobado', version: 1, aprobado: { version: 1 } };
+  }
+  assert.equal(doc.tool, 'production-brief');
+  const campanas = leerSrc('public/js/campanas-ui.js');
+  assert.match(campanas, /entradasDe\(S\.W\)[\s\S]*body: \{ \.\.\.base, entradas \}/, '«Enviar a Creative» lleva las entradas de la campaña (la Oferta aprobada)');
+});
+
+t('Production 3d · estáticas: workspace.js monta el brief, el shot list y el studio de revisión; el portal y el servidor montan sus rutas; Kit por cliente enlaza Post-production', () => {
+  const ws = leerSrc('public/js/screens/workspace.js');
+  assert.match(ws, /brief: \(\) => import\('\.\.\/production\/brief-ui\.js'\)/, 'VISTAS.brief');
+  assert.match(ws, /shotlist: \(\) => import\('\.\.\/production\/shotlist-ui\.js'\)/, 'VISTAS.shotlist');
+  assert.match(ws, /case 'review': \{[\s\S]*'\.\.\/production\/review-ui\.js'[\s\S]*reviewTool\(host, \{ me, slug, b, alive, resto \}\)/, 'monta reviewTool con { me, slug, b, alive, resto }');
+  assert.match(ws, /review: 'video'/, 'el studio de revisión pide el módulo Video de Marcas');
+  assert.match(leerSrc('api/index.js'), /portal\.rutasVideo\(\{ on, guard, body, slugOk \}\)/, 'las rutas de video del portal');
+  assert.match(leerSrc('public/js/screens/work.js'), /rutaHerramienta\('production', clientSel, 'post-production-workspace'\)/, 'Kit por cliente → Post-production');
+  const pk = JSON.parse(leerSrc('package.json')); assert.match(pk.scripts['test:produccion'], /test-produccion\.mjs.*test-shotlist\.mjs/);
+  const css = leerSrc('public/app.css'); assert.match(css, /FASE 3d · Production/);
+  for (const k of ['.pb{', '.pb-bar>span{', '.pb-bar[data-sobre="1"]>span{', '.pb-pie{', '.sl{', '.sl-gr{', '.sl-tablero{', '.vd-capas{', '.vd-v{', '.vd-coms{', '.cr-fr-ed{']) assert.ok(css.includes(k), k);
+  const bloque = css.slice(css.indexOf('FASE 3d · Production'));
+  assert.ok(!/#[0-9a-f]{3,8}\b/i.test(bloque.replace(/\/\*[\s\S]*?\*\//g, '')), 'el bloque no trae colores sueltos: solo tokens --ui-*');
+});
+
+// ---------- Fase 3e · P2: las 13 herramientas P2 quedan «lista» ----------
+t('Fase 3e P2: 13 herramientas «lista» con su montaje, su vista y su módulo puro; las 2 P3 siguen Pronto con su ficha', () => {
+  const shell = [['competitor-radar', 'radar', 'radar'], ['opportunity-map', 'oportunidades', 'oportunidades'], ['pricing-packages', 'precios', 'precios'], ['organization-architect', 'organizacion', 'organizacion'], ['automation-opportunity-finder', 'automatizacion', 'automatizacion'],
+    ['hook-laboratory', 'hooks', 'hooks'], ['copywriting-studio', 'copy', 'copy'], ['funnel-builder', 'funnel', 'funnel'], ['creative-performance-analyzer', 'rendimientoCreativo', 'rendimientoCreativo'], ['content-repurposing', 'repurposing', 'repurposing']];
+  for (const [id, vista, bloque] of shell) {
+    const h = herramientaDe(id);
+    assert.equal(h.estado, 'lista', id); assert.equal(h.monta, 'shell', id); assert.equal(h.vista, vista, id); assert.equal(h.bloque, bloque, id);
+    for (const f of ['vacio', 'prompt', 'leer', 'limpiar', 'faltas', 'aMd']) assert.equal(typeof h[f], 'function', `${id}.${f}`);
+    const dir = { radar: 'strategy', oportunidades: 'strategy', precios: 'strategy', organizacion: 'consulting', automatizacion: 'consulting', hooks: 'marketing', copy: 'marketing', funnel: 'marketing', rendimientoCreativo: 'creative', repurposing: 'production' }[vista];
+    const archivo = vista === 'rendimientoCreativo' ? 'rendimiento-creativo' : vista;
+    assert.ok(fs.existsSync(new URL(`../public/js/${dir}/${archivo}-ui.js`, import.meta.url)), `${id}: falta ${dir}/${archivo}-ui.js`);
+    assert.match(fs.readFileSync(new URL(`../public/js/${dir}/${archivo}-ui.js`, import.meta.url), 'utf8'), /export const vista = \{/, `${id}: exporta vista`);
+  }
+  for (const [id, monta, archivo, fn] of [['commercial-diagnosis', 'comercial', 'strategy/comercial-ui.js', 'comercialTool'], ['brand-consistency-checker', 'consistencia', 'creative/consistencia-ui.js', 'consistenciaTool'], ['production-planner', 'planner', 'production/planner-ui.js', 'plannerTool']]) {
+    const h = herramientaDe(id); assert.equal(h.estado, 'lista', id); assert.equal(h.monta, monta, id); assert.equal(h.vista, undefined, `${id}: sin shell, sin vista`);
+    assert.match(fs.readFileSync(new URL(`../public/js/${archivo}`, import.meta.url), 'utf8'), new RegExp(`export async function ${fn}\\(`), `${id}: exporta ${fn}`);
+  }
+  for (const id of ['growth-experiment-lab', 'ai-video-lab']) { const h = herramientaDe(id); assert.equal(h.estado, 'pronto', id); assert.equal(h.monta, null, id); assert.equal(h.prioridad, 'P3', id); }
+  assert.equal(herramientaDe('pricing-packages').sinCostos.name, 'sinCostos'); assert.equal(typeof herramientaDe('pricing-packages').conCostos, 'function', 'el servidor quita y conserva los costos con ellas');
+  assert.equal(herramientaDe('creative-performance-analyzer').ciclo, true, 'un entregable por marca y mes'); assert.ok(!herramientaDe('funnel-builder').ciclo && !herramientaDe('content-repurposing').ciclo);
+  assert.equal(typeof herramientaDe('funnel-builder').tareasDe, 'function'); assert.equal(typeof herramientaDe('funnel-builder').alUsar, 'function');
+  // Las faltas del Organization Architect leen los pasos del fundador del Mapa que el shell ya trajo.
+  const mapa = { tool: 'process-mapper', contenido: { hoy: [{ id: 'p1', nombre: 'Aprueba cada cotización', etapa: 'venta', rol: 'Fundador', fundador: true }] } };
+  const fs1 = herramientaDe('organization-architect').faltas({}, { ctx: { entradas: [mapa] } }).join(' ');
+  assert.ok(fs1.length > 0, 'faltas con el Mapa en el contexto no revienta');
+});
+
+t('Fase 3e P2 · estáticas: workspace.js monta las vistas nuevas, las hojas sin shell y el Funnel con sus «Sitios y landings»; package.json suma las pruebas; el CSS no trae colores sueltos', () => {
+  const ws = leerSrc('public/js/screens/workspace.js');
+  for (const [k, f] of [['radar', 'strategy/radar'], ['oportunidades', 'strategy/oportunidades'], ['precios', 'strategy/precios'], ['organizacion', 'consulting/organizacion'], ['automatizacion', 'consulting/automatizacion'], ['hooks', 'marketing/hooks'], ['copy', 'marketing/copy'], ['funnel', 'marketing/funnel'], ['rendimientoCreativo', 'creative/rendimiento-creativo'], ['repurposing', 'production/repurposing']])
+    assert.ok(ws.includes(`${k}: () => import('../${f}-ui.js')`), `VISTAS.${k}`);
+  assert.match(ws, /case 'comercial': case 'consistencia': case 'planner':[\s\S]*comercialTool[\s\S]*consistenciaTool[\s\S]*plannerTool[\s\S]*hoja\(host, \{ me, slug, b, alive, resto \}\)/, 'monta las 3 hojas sin shell con { me, slug, b, alive, resto }');
+  assert.match(ws, /t\.id === 'funnel-builder' && resto\[0\] === 'sitios'/, 'Sitios y landings: …/funnel-builder/sitios');
+  assert.match(ws, /if \(sitios\) return techUI\(sede, \{ me, b, alive \}\)/, 'Sitios y landings monta techUI sin shell');
+  assert.ok(!/case 'tech':/.test(ws), 'ya no hay montaje de la clave vieja tech');
+  const pk = JSON.parse(leerSrc('package.json'));
+  for (const [s, f] of [['test:consulting', 'test-consulting-p2'], ['test:strategy', 'test-strategy-p2'], ['test:strategy', 'test-strategy-radar'], ['test:marketing', 'test-marketing-p2'], ['test:produccion', 'test-produccion-p2'], ['test:creative', 'test-creative-p2']]) assert.ok(pk.scripts[s].includes(`${f}.mjs`), `${s} corre ${f}`);
+  const css = leerSrc('public/app.css'); assert.match(css, /Fase 3e · P2/);
+  const bloque = css.slice(css.indexOf('Fase 3e · P2')).replace(/\/\*[\s\S]*?\*\//g, '');
+  for (const k of ['.cd{', '.om-svg{', '.rd-svg{', '.pr-mx{', '.org-raci{', '.aut-mx{', '.hk-grid', '.cp-act{', '.fnl-canvas{', '.cns-g{', '.rcr-grid{', '.pl-tira{', '.pl-linea{', '.rp-tabla{']) assert.ok(bloque.includes(k.replace(/[{]$/, '')) || css.includes(k), k);
+  assert.ok(!/#[0-9a-f]{3,8}\b/i.test(bloque), 'el bloque de la 3e P2 no trae colores sueltos: solo tokens --ui-*');
+  assert.match(css, /\.rd-sd,\.pr-sd\)/, 'los «sin datos» del Radar y de Pricing usan el estilo ámbar');
+  const srv = leerSrc('api/_lib/entregables.js'); assert.match(srv, /cur\.tool === 'pricing-packages'\) return \{ nivelId/, 'las faltas de Pricing reciben el nivel del servidor');
 });
 
 console.log(`\n${ok} pruebas OK`);

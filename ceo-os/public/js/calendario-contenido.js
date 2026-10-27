@@ -3,6 +3,8 @@
 // Cada pieza (colección content, kind «post») guarda: pillar · campana · format · consciencia · replica_de (id de Research).
 // Arriba del calendario va una sola línea con la mezcla del mes (por pilar, por formato y por consciencia), en barras finas.
 // Arriba: funciones puras (las usan la pantalla, el conector y las pruebas). Abajo: cómo se pinta (solo en el navegador).
+import { estadoDe } from './element.js';
+import { campanasDelMes } from './campanas.js';
 const core = typeof document === 'undefined' ? null : await import('./core.js');
 
 // Los 5 niveles de consciencia (Schwartz), escritos literal como en ③ Marketing (mk-calendario § 1A).
@@ -90,6 +92,129 @@ export function candado(mes, conBrief = [], abiertos = []) {
   return ab ? { cerrado: false, por: 'ceo', abierto: ab } : { cerrado: true };
 }
 export const mesNombre = (mes) => new Date(mes + '-15T12:00').toLocaleDateString('es-GT', { month: 'long', year: 'numeric' });
+
+// ---------- Content Calendar · mejoras (Marketing, Fase 3b) ----------
+// Todo puro, sin DOM ni red: lo usan la pantalla (screens/content.js) y scripts/test-marketing-cal.mjs.
+//   · Mover una pieza a otro día (arrastrar en la compu, «Mover a…» en el cel): la pieza con su fecha nueva. El servidor decide:
+//     el candado del brief (423) y la `v` (409) siguen siendo suyos; aquí solo se arma lo que se guarda y cómo se revierte.
+//   · Las bandas de campaña: las mk_campaigns del mes como una franja sobre los días entre su ancla y su hasta.
+//   · El badge del slot del Plan del mes (MK-xxx) y las métricas de lo Publicado (solo las que la pieza ya trae).
+const FECHA = /^\d{4}-\d{2}-\d{2}$/;
+// Una fecha AAAA-MM-DD que existe (2026-02-31 no).
+export const fechaOk = (s) => { if (!FECHA.test(String(s || ''))) return false; const d = new Date(`${s}T12:00:00Z`); return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s; };
+const pad2 = (n) => String(n).padStart(2, '0');
+const ultimoDia = (mes) => { const [y, m] = mes.split('-').map(Number); return new Date(Date.UTC(y, m, 0)).getUTCDate(); };
+const entreDias = (a, z) => Math.round((Date.parse(`${z}T12:00:00Z`) - Date.parse(`${a}T12:00:00Z`)) / 864e5);
+const sumaDia = (iso, n) => { const d = new Date(`${iso}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const esLunes = (iso) => (new Date(`${iso}T12:00:00Z`).getUTCDay() + 6) % 7 === 0;
+
+// ---- Mover una pieza de día ----
+// Por qué una pieza no se mueve (o '' si sí). Lo que ya salió o está archivado no se reprograma desde el calendario.
+export function motivoNoMover(p) {
+  if (!p || typeof p !== 'object' || !p.id) return 'No encontré la pieza';
+  if (p.kind && p.kind !== 'post') return 'Solo se mueven las piezas';
+  const e = estadoDe(p);
+  if (e === 'Publicado') return 'Ya salió: no se mueve de día';
+  if (e === 'Archivado') return 'Está archivada: recupérala primero';
+  return '';
+}
+// La pieza con la fecha nueva (la `v` que se leyó viaja con ella). Nunca toca lo demás. Fecha que no existe o pieza que no se mueve → null.
+export function moverPieza(p, fecha) {
+  if (motivoNoMover(p) || !fechaOk(fecha)) return null;
+  return { ...p, date: fecha };
+}
+// La lista con ESA pieza reemplazada (por id). Sirve para las tres cosas: verla ya en su día, ponerle lo que devolvió el servidor
+// (con su `v` nueva) y revertirla a como estaba si el servidor dijo que no. Si la pieza ya no está en la lista, no se agrega.
+export const ponerPieza = (lista = [], pieza) => (pieza?.id ? lista.map((x) => (x.id === pieza.id ? pieza : x)) : lista);
+// Mover en la lista: { lista, nueva, antes } con la pieza ya en su día nuevo (y la de antes, para revertir); null si no se mueve, no cambia de día o no está.
+export function moverEnLista(lista = [], id, fecha) {
+  const p = lista.find((x) => x.id === id), nueva = p ? moverPieza(p, fecha) : null;
+  if (!nueva || nueva.date === p.date) return null;
+  return { lista: ponerPieza(lista, nueva), nueva, antes: p };
+}
+// Qué se le dice a la persona cuando el servidor rechaza el movimiento: su mensaje tal cual (423 sin brief del mes, 409 alguien la
+// cambió) y si hay que volver a leer las piezas (409: la que tenemos ya está vieja).
+export const falloAlMover = (e) => ({ mensaje: String(e?.message || 'No se pudo mover la pieza').slice(0, 300), recargar: e?.status === 409 });
+
+// ---- Bandas de campaña ----
+// Las campañas del mes (campanasDelMes) como franjas sobre los días entre su ancla y su hasta (sin hasta: solo el día del ancla),
+// recortadas al mes. Las archivadas no salen. Cada una lleva su carril (para que dos franjas del mismo día no se encimen).
+// mes = AAAA-MM → [{ id, nombre, tipo, estado, ancla, hasta, desde, fin, dias, desdeAntes, sigue, carril }]
+export function bandasDelMes(campanas = [], mes) {
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(String(mes || ''))) return [];
+  const ini = `${mes}-01`, fin = `${mes}-${pad2(ultimoDia(mes))}`;
+  // La anticipación se calcula con las fechas: solo entran las campañas que las traen bien (una mala no tumba el calendario).
+  const buenas = (campanas || []).filter((c) => c && typeof c === 'object' && fechaOk(c.ancla)).map((c) => ({ ...c, hasta: fechaOk(c.hasta) && c.hasta >= c.ancla ? c.hasta : '' }));
+  const out = [];
+  for (const c of campanasDelMes(buenas, mes)) {
+    const hasta = c.hasta || c.ancla;
+    if (hasta < ini || c.ancla > fin) continue; // su franja no toca este mes (solo lo avisó antes)
+    const desde = c.ancla < ini ? ini : c.ancla, topeMes = hasta > fin ? fin : hasta;
+    out.push({ id: String(c.id || ''), nombre: String(c.nombre || 'Campaña').slice(0, 60), tipo: String(c.tipo || 'campana'), estado: String(c.estado || 'Borrador'),
+      ancla: c.ancla, hasta, desde, fin: topeMes, dias: entreDias(desde, topeMes) + 1, desdeAntes: c.ancla < ini, sigue: hasta > fin });
+  }
+  out.sort((a, z) => a.desde.localeCompare(z.desde) || z.fin.localeCompare(a.fin) || a.nombre.localeCompare(z.nombre));
+  const libre = []; // el último día de cada carril
+  for (const b of out) { let i = libre.findIndex((f) => f < b.desde); if (i < 0) i = libre.length; libre[i] = b.fin; b.carril = i; }
+  return out;
+}
+// Las bandas repartidas por día: { 'AAAA-MM-DD': [{ id, nombre, tipo, estado, carril, ancla, hasta, pos, rotulo, sigueAntes, sigueDespues }] } en orden de carril.
+// pos: solo · ini · mid · fin. rotulo: dónde se escribe su nombre (el primer día y cada lunes, o todos los días con rotuloSiempre, para la vista de semana).
+export function bandasPorDia(bandas = [], { rotuloSiempre = false } = {}) {
+  const out = {};
+  for (const b of bandas) {
+    for (let d = b.desde, i = 0; d <= b.fin && i < 62; d = sumaDia(d, 1), i++) {
+      (out[d] ||= []).push({ id: b.id, nombre: b.nombre, tipo: b.tipo, estado: b.estado, carril: b.carril || 0, ancla: b.ancla, hasta: b.hasta,
+        pos: b.desde === b.fin ? 'solo' : d === b.desde ? 'ini' : d === b.fin ? 'fin' : 'mid', rotulo: rotuloSiempre || d === b.desde || esLunes(d),
+        sigueAntes: d === b.desde && Boolean(b.desdeAntes), sigueDespues: d === b.fin && Boolean(b.sigue) });
+    }
+  }
+  for (const d of Object.keys(out)) out[d].sort((a, z) => a.carril - z.carril);
+  return out;
+}
+
+// ---- El slot del Plan del mes ----
+// La pieza que viene de un slot (plan-mes.js · slotsAPiezas) guarda `slot: { plan, id: 'MK-001', semana, canal, … }`.
+// → { id, plan, mes, semana, canal, funcion, fuera } o null. `fuera`: ya no está en la semana (o el mes) que el plan le dio.
+export function slotDe(p) {
+  const s = p && typeof p === 'object' ? p.slot : null;
+  if (!s || typeof s !== 'object') return null;
+  const id = String(s.id ?? '').trim().slice(0, 12);
+  if (!id) return null;
+  const mes = /(\d{4}-\d{2})$/.exec(String(s.plan || ''))?.[1] || '', semana = Math.min(5, Math.max(0, Math.round(Number(s.semana) || 0)));
+  const f = FECHA.test(String(p.date || '')) ? p.date : '', real = f ? Math.min(5, Math.ceil(+f.slice(8, 10) / 7)) : 0;
+  const fuera = Boolean(f && ((mes && f.slice(0, 7) !== mes) || (semana && real !== semana)));
+  return { id, plan: String(s.plan || ''), mes, semana, canal: String(s.canal || '').slice(0, 40), funcion: String(s.funcion || '').slice(0, 20), fuera };
+}
+export const tituloSlot = (sl) => (sl ? [`Slot ${sl.id} del Plan del mes`, sl.semana && `semana ${sl.semana}`, sl.canal, sl.funcion, sl.fuera && 'ya no está en su semana del plan'].filter(Boolean).join(' · ') : '');
+
+// ---- Las métricas de lo Publicado ----
+// Solo las que la pieza YA trae: en p.metricas, p.metrics o p.analytics (objetos) o sueltas en la pieza. Lo que falta no sale
+// (nunca un 0 por un dato que falta; un 0 de verdad sí). Sin métricas, o si no está Publicada → [].
+const METRICAS = [
+  ['alcance', 'Alcance', ['alcance', 'reach']],
+  ['vistas', 'Vistas', ['vistas', 'views', 'plays']],
+  ['likes', 'Me gusta', ['likes', 'me_gusta', 'megusta']],
+  ['comentarios', 'Comentarios', ['comentarios', 'comments']],
+  ['guardados', 'Guardados', ['guardados', 'saves']],
+  ['compartidos', 'Compartidos', ['compartidos', 'shares']],
+];
+const numero = (v) => { if (typeof v === 'string' && v.trim() === '') return null; if (typeof v !== 'number' && typeof v !== 'string') return null; const n = Number(v); return Number.isFinite(n) && n >= 0 ? n : null; };
+// 1234 → «1.2K», 2500000 → «2.5M»
+export const compacto = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1).replace(/\.0$/, '')}M` : n >= 1e3 ? `${(n / 1e3).toFixed(1).replace(/\.0$/, '')}K` : String(Math.round(n)));
+export function metricasDe(p) {
+  if (!p || typeof p !== 'object' || estadoDe(p) !== 'Publicado') return [];
+  const fuentes = [p.metricas, p.metrics, p.analytics, p].filter((o) => o && typeof o === 'object' && !Array.isArray(o));
+  const out = [];
+  for (const [k, l, alias] of METRICAS) {
+    let v = null;
+    for (const f of fuentes) { for (const a of alias) { v = numero(f[a]); if (v != null) break; } if (v != null) break; }
+    if (v != null) out.push({ k, l, v, t: compacto(v) });
+  }
+  return out;
+}
+// «1.2K alcance · 340 me gusta» (las primeras n)
+export const resumenMetricas = (ms = [], n = 2) => ms.slice(0, n).map((m) => `${m.t} ${m.l.toLowerCase()}`).join(' · ');
 
 // ---------- Cómo se pinta (solo en el navegador) ----------
 // La línea de la mezcla: tres barras finas (pilar · formato · consciencia). Tocar un tramo filtra por él.

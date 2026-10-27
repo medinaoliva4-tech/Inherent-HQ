@@ -62,9 +62,76 @@ export function limpiarFicha(f = {}) {
     cortes: (Array.isArray(f.cortes) ? f.cortes : []).map((c) => ({ desde: num(seg(c?.desde) ?? c?.desde, 0, 3600), hasta: num(seg(c?.hasta) ?? c?.hasta, 0, 3600), toma: txt(c?.toma, 200), texto: txt(c?.texto, 200), nota: txt(c?.nota, 200) }))
       .filter((c) => c.toma || c.texto || c.nota || c.desde != null).slice(0, 80),
     transicion: txt(f.transicion, 40), musica: txt(f.musica, 300), notas: largo(f.notas, 2000),
-    post: /^[\w-]{1,120}$/.test(String(f.post || '')) ? String(f.post) : '',
+    post: idRef(f.post),
+    // Post-Production: la capa del pipeline, las versiones (solo se agregan), las escenas, el checklist QA y de qué master sale.
+    capa: CAPAS.some(([k]) => k === f.capa) ? f.capa : 'recepcion',
+    versiones: limpiarVersiones(f.versiones),
+    version: Math.max(1, Math.round(+f.version || 1), ...limpiarVersiones(f.versiones).map((x) => x.v)),
+    escenas: (Array.isArray(f.escenas) ? f.escenas : []).map((c) => ({ id: txt(c?.id, 30), desde: num(seg(c?.desde) ?? c?.desde, 0, 3600), hasta: num(seg(c?.hasta) ?? c?.hasta, 0, 3600), toma: txt(c?.toma, 200), texto: txt(c?.texto, 200) }))
+      .filter((c) => c.id || c.toma || c.texto || c.desde != null).slice(0, 80),
+    qa: limpiarQA(f.qa),
+    derivada_de: idRef(f.derivada_de),
   };
 }
+
+// ---------- Post-Production: capas, versiones, QA y revisión (puro) ----------
+const idRef = (v) => (/^[\w-]{1,120}$/.test(String(v || '')) ? String(v) : '');
+export const CAPAS = [['recepcion', 'Recepción'], ['armado', 'Armado'], ['marca-qa', 'Marca y QA'], ['derivadas', 'Derivadas'], ['export', 'Export']];
+export const QA_ITEMS = [['formato', 'Formato y resolución correctos'], ['duracion', 'Duración dentro de lo pedido'], ['safe_zones', 'Texto dentro de las safe zones'], ['audio', 'Audio limpio y a buen nivel'], ['sin_marca_agua', 'Sin marca de agua ni logos ajenos']];
+export const REVISION = ['', 'Pendiente', 'Cambios', 'Aprobado'];
+
+export function limpiarQA(q = {}) {
+  const o = {}; for (const [k] of QA_ITEMS) o[k] = q?.[k] === true;
+  return { ...o, motivo: txt(q?.motivo, 300) };
+}
+// Qué casillas del QA siguen sin marcarse (por su nombre).
+export const qaFaltas = (qa) => QA_ITEMS.filter(([k]) => !qa?.[k]).map(([, l]) => l);
+// «Enviar a revisión» pide el QA completo o un motivo por escrito. '' = puede.
+export function puedeEnviar(f) {
+  const qa = limpiarQA(f?.qa), n = qaFaltas(qa).length;
+  return n && !qa.motivo ? `Falta el QA (${n} de ${QA_ITEMS.length} casillas): márcalas o escribe el motivo de enviarlo así` : '';
+}
+export function limpiarVersiones(vs) {
+  const vistas = new Set();
+  return (Array.isArray(vs) ? vs : []).map((x) => ({ v: Math.round(+x?.v), link: https(x?.link), nota: txt(x?.nota, 300), por: txt(x?.por, 40), en: /^\d{4}-\d\d-\d\d/.test(String(x?.en || '')) ? String(x.en).slice(0, 30) : '', capa: CAPAS.some(([k]) => k === x?.capa) ? x.capa : '' }))
+    .filter((x) => x.v >= 1 && x.v <= 999 && !vistas.has(x.v) && vistas.add(x.v)).sort((a, z) => a.v - z.v).slice(0, 60);
+}
+// Las versiones se agregan, nunca se pisan: las que ya estaban se quedan tal cual y solo entran las que traen un número nuevo.
+export function fusionarVersiones(actuales, nuevas) {
+  const ya = limpiarVersiones(actuales), tengo = new Set(ya.map((x) => x.v));
+  return limpiarVersiones([...ya, ...limpiarVersiones(nuevas).filter((x) => !tengo.has(x.v))]);
+}
+export const siguienteVersion = (f) => { const vs = limpiarVersiones(f?.versiones); return vs.length ? Math.max(...vs.map((x) => x.v)) + 1 : 1; };
+
+export function limpiarComentario(c = {}) {
+  return { id: txt(c.id, 40), seg: num(seg(c.seg) ?? c.seg, 0, 36000), texto: txt(c.texto, 1000), interno: c.interno === true, por: txt(c.por, 40), en: txt(c.en, 30), version: Math.round(+c.version) || 1 };
+}
+export const limpiarComentarios = (cs) => (Array.isArray(cs) ? cs : []).map(limpiarComentario).filter((c) => c.texto).slice(-300);
+// El cliente solo ve los comentarios que no son internos.
+export const comentariosVisibles = (f, cliente) => limpiarComentarios(f?.comentarios).filter((c) => !cliente || !c.interno);
+
+// Aprobar o pedir cambios sobre una versión: devuelve { error, status } o { patch } (lo que cambia en la ficha).
+// Pedir cambios exige una nota o al menos un comentario de esa versión; aprobar solo vale sobre la versión vigente.
+export function decidirRevision(f, { accion, version, nota } = {}, quien = {}) {
+  if (accion !== 'aprobar' && accion !== 'cambios') return { status: 400, error: 'La acción es «aprobar» o «cambios»' };
+  if (f.estado !== 'En revisión' && f.revision !== 'Pendiente') return { status: 400, error: 'Este video todavía no está en revisión' };
+  const vigente = Math.max(+f.version || 1, ...limpiarVersiones(f.versiones).map((x) => x.v)), v = Math.round(+version || vigente);
+  const n = txt(nota, 1000), en = quien.en || new Date().toISOString();
+  if (accion === 'cambios') {
+    if (!n && !limpiarComentarios(f.comentarios).some((c) => c.version === v)) return { status: 400, error: 'Para pedir cambios deja una nota o un comentario' };
+    return { patch: { revision: 'Cambios', estado: 'En edición', aprobacion: null, revision_nota: n } };
+  }
+  if (v !== vigente) return { status: 409, error: `Esa es la v${v}; la vigente es la v${vigente}` };
+  return { patch: { revision: 'Aprobado', estado: 'Listo', aprobacion: { v, por: txt(quien.por, 40), en }, revision_nota: n } };
+}
+
+// El tablero: las fichas vivas agrupadas por capa, y de cada una el QA marcado y las versiones.
+export function tablero(fichas = []) {
+  const vivas = fichas.filter((f) => !f.archivado), por = Object.fromEntries(CAPAS.map(([k]) => [k, []]));
+  for (const f of vivas) (por[f.capa] || por.recepcion).push(f);
+  return CAPAS.map(([k, label]) => ({ k, label, fichas: por[k] }));
+}
+export const qaHechas = (qa) => QA_ITEMS.filter(([k]) => qa?.[k]).length;
 
 // Cuánto dura lo que hay en la línea de tiempo (el último «hasta», o la suma de los cortes).
 export function duracionCortes(cortes = []) {

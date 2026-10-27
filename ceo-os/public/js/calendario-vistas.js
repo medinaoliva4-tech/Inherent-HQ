@@ -3,9 +3,11 @@
 //                   las fases y reuniones de esos proyectos, y los días 1, 11 y 20 del ciclo.
 //   Planificación → las piezas que todavía no están listas (Idea o En proceso), en el día en que salen.
 //   Programado    → las piezas listas o ya publicadas, con su hora y su red (marca las que no las tienen).
-// Lo atrasado sale en rojo, igual que en Proyectos. Sin DOM: lo usan la pantalla y las pruebas.
+// Lo atrasado sale en rojo, igual que en Proyectos. Cada pieza lleva en su texto de ayuda el slot del Plan del mes (MK-xxx) y, si ya salió,
+// sus métricas (calendario-contenido.js · slotDe, metricasDe); la pantalla les pone su chip. Sin DOM: lo usan la pantalla y las pruebas.
 import { estadoDe } from './element.js';
 import { hitosCiclo } from './calendario-trabajo.js';
+import { slotDe, metricasDe, resumenMetricas } from './calendario-contenido.js';
 
 export const TIPOS_MARCA = [['operativo', 'Operativo'], ['planificacion', 'Planificación'], ['programado', 'Programado']];
 export const REDES = ['Instagram', 'TikTok', 'YouTube', 'LinkedIn', 'Facebook', 'WhatsApp'];
@@ -37,10 +39,12 @@ export function eventosMarca({ posts = [], shoots = [], tasks = [], projects = [
     if (!p || (p.kind && p.kind !== 'post') || !inR(p.date)) continue;
     const e = estadoDe(p);
     if (e === 'Archivado') continue;
-    if (e === 'Idea' || e === 'En proceso') out.push({ k: `p-${p.id}`, tipo: 'planificacion', date: p.date, time: '', title: p.title || 'Sin título', sub: [p.format, e].filter(Boolean).join(' · '), late: p.date < hoy, go: { act: 'pedit', id: p.id } });
+    // El slot del Plan del mes (MK-xxx) y, si ya salió, sus métricas: van en el texto de ayuda de la pieza (la pantalla les pone su chip).
+    const sl = slotDe(p), ms = metricasDe(p), extra = [sl && `Slot ${sl.id}${sl.fuera ? ' (fuera de su semana)' : ''}`, ms.length && resumenMetricas(ms, 3)].filter(Boolean);
+    if (e === 'Idea' || e === 'En proceso') out.push({ k: `p-${p.id}`, tipo: 'planificacion', date: p.date, time: '', title: p.title || 'Sin título', sub: [p.format, e, ...extra].filter(Boolean).join(' · '), late: p.date < hoy, go: { act: 'pedit', id: p.id } });
     else {
       const falta = [!p.time && 'sin hora', !redDe(p) && 'sin red'].filter(Boolean);
-      out.push({ k: `p-${p.id}`, tipo: 'programado', date: p.date, time: p.time || '', title: `${p.title || 'Sin título'}${falta.length && e === 'Listo' ? ` · ${falta.join(' y ')}` : ''}`, sub: [redDe(p), p.format, e === 'Publicado' ? 'ya salió' : ''].filter(Boolean).join(' · '), late: e === 'Listo' && p.date < hoy, falta: e === 'Listo' && falta.length > 0, go: { act: 'pedit', id: p.id } });
+      out.push({ k: `p-${p.id}`, tipo: 'programado', date: p.date, time: p.time || '', title: `${p.title || 'Sin título'}${falta.length && e === 'Listo' ? ` · ${falta.join(' y ')}` : ''}`, sub: [redDe(p), p.format, e === 'Publicado' ? 'ya salió' : '', ...extra].filter(Boolean).join(' · '), late: e === 'Listo' && p.date < hoy, falta: e === 'Listo' && falta.length > 0, go: { act: 'pedit', id: p.id } });
     }
   }
   const ORD = { operativo: 0, planificacion: 1, programado: 2 };

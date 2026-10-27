@@ -103,7 +103,7 @@ t('Ninguna ruta nueva usa { client: true } ni db.upsert en lo que lleva historia
   assert.ok(!/client: true/.test(ruta(estrategia, 'PUT', 'estrategia/:slug/bullseye')));
 });
 t('limpiarParche acepta roadmap.items y roadmap.hitos con el módulo puro del roadmap', () => {
-  assert.match(viva, /import \{ limpiarItems, limpiarHitos \} from '\.\/strategy\/roadmap\.js'/);
+  assert.match(viva, /import \{ limpiarItems, limpiarHitos(, areaDe)? \} from '\.\/strategy\/roadmap\.js'/);
   assert.match(viva, /limpiarItems\(rm\.items\)/); assert.match(viva, /limpiarHitos\(h\)/);
 });
 t('La diana de la herramienta pasa por cleanBullseye con la misma forma (los mensajes se quedan en el entregable)', () => {
