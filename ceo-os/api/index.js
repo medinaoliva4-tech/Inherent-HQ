@@ -2,7 +2,7 @@
 import * as db from './_lib/db.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
-import { guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
+import { seesCosts, guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
 import * as zernio from './_lib/zernio.js';
@@ -32,6 +32,7 @@ import * as internos from './_lib/internos.js';
 import * as video from './_lib/video.js';
 import * as adsStudio from './_lib/ads-studio.js';
 import * as tech from './_lib/tech.js';
+import * as marketing from './_lib/marketing.js';
 import * as ojo from './_lib/ojo.js';
 import * as guia from './_lib/guia.js';
 import * as avisos from './_lib/avisos.js';
@@ -919,7 +920,7 @@ const adsGuard = async (req, res) => { const u = await guard(req, res); if (!u) 
 on('GET', 'ads/report', async (req, res) => {
   const u = await adsGuard(req, res); if (!u) return;
   const sc = await scoper(u);
-  try { res.json({ ...(await ads.report(Math.min(90, Math.max(7, +req.query.days || 30)), { sc })), apify: ads.apifyOn() }); }
+  try { res.json({ ...(await ads.report(Math.min(90, Math.max(7, +req.query.days || 30)), { sc, costos: seesCosts(u) })), apify: ads.apifyOn() }); }
   catch (e) { res.status(502).json({ error: e.message }); }
 });
 on('GET', 'ads/competitors/:slug', async (req, res) => {
@@ -1165,6 +1166,8 @@ internos.rutas(on);
 video.rutas(on);
 adsStudio.rutas(on);
 tech.rutas(on);
+// ---------- Marketing Performance Center: los KPIs del mes de un cliente (solo lectura) ----------
+marketing.rutas(on);
 // ---------- El ojo visual: el contexto de la marca para el puente ----------
 ojo.rutas(on);
 guia.rutas(on);

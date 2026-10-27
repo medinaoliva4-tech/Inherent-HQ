@@ -39,8 +39,10 @@ export function rutas(on) {
     const { slug, mes } = req.params, id = idPlan(slug, mes);
     if (!(await estrategiaAprobada(slug))) return res.status(409).json(SIN_ESTRATEGIA);
     const cur = await db.get(COLL_P, id);
-    const { plan, cambiadas } = aplicarPlan(cur || { profile: slug, mes }, body(req).parche || {});
+    const b = body(req), { plan, cambiadas } = aplicarPlan(cur || { profile: slug, mes }, b.parche || {});
     if (!cambiadas.length) return res.json({ plan: cur, cambiadas });
+    // La v que leyó quien edita: si el plan cambió desde entonces, no se pisa (409). Sin v (el chat de Diseño), la de hoy.
+    if (cur && b.v != null && Number(b.v) !== cur.v) return res.status(409).json({ error: 'Alguien cambió el plan justo ahora. Recarga y vuelve a intentar.', code: 'CONFLICTO' });
     const out = cur ? await db.update(COLL_P, id, { ...plan, profile: slug, mes }, cur.v, u.email) : await db.create(COLL_P, { ...plan, profile: slug, mes }, u.email, id);
     if (!out) return res.status(409).json({ error: 'Alguien cambió el plan justo ahora. Recarga y vuelve a intentar.' });
     res.json({ plan: out, cambiadas });

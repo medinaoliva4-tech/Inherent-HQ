@@ -6,6 +6,9 @@
 // faltas, aMd…): con eso el shell, el servidor (que limpia y mide las faltas al aprobar) y las pruebas leen lo mismo.
 // Lo mismo hacen las de Strategy de la Fase 3a (public/js/strategy/<m>.js): la diana, el X-Ray y la oferta van al Tool Shell; el Growth
 // Roadmap tiene su propia hoja (monta 'roadmap': vive en viva.roadmap, no en deliverables) y el Avatar Studio sigue en avatar-ui.js.
+// Marketing (Fase 3b): las 6 herramientas P1 quedan «lista» (el calendario ya lo era). El Performance Center va al Tool Shell (vista 'rendimiento', un entregable por mes:
+// ciclo: true, el ciclo es contenido.mes); el Viral Lab y Ads Intelligence tienen su propia hoja (monta 'viral' y 'adsIntel') y traen aquí solo
+// lo que el servidor usa con su entregable (limpiar, faltas y, si llevan montos, sinCostos y conCostos).
 import * as salud from './consulting/salud.js';
 import * as causas from './consulting/causas.js';
 import * as procesos from './consulting/procesos.js';
@@ -15,6 +18,9 @@ import * as impacto from './consulting/impacto.js';
 import * as diana from './strategy/diana.js';
 import * as xray from './strategy/xray.js';
 import * as oferta from './strategy/oferta.js';
+import * as patrones from './marketing/patrones.js';
+import * as reporte from './marketing/reporte.js';
+import * as ads from './marketing/ads.js';
 
 // ---------- El flujo compartido (7 pasos) ----------
 export const FLUJO = [
@@ -75,7 +81,28 @@ const D = (nota) => ({ coll: 'deliverables', nota });
 // Una herramienta con entregable que se monta en el Tool Shell: m = su módulo puro, vista = la clave de su vista (consulting/<vista>-ui.js).
 // El shell pide bloque, prompt, leer, limpiar, faltas y aMd; tareasDe (opcional) enciende «Convertir en tareas».
 // sinCostos(contenido) y conCostos(actual, nuevo) (opcionales): el servidor los usa con quien no ve costos (quita los del cliente al leer y los conserva al guardar).
+// ciclo: true (opcional) = un entregable por mes: el shell pone un selector de mes (el actual y los 11 anteriores), pide la lista con ?ciclo= y el ciclo
+// del entregable es su contenido.mes (AAAA-MM).
 const SH = (m, vista, extra = {}) => ({ estado: 'parcial', monta: 'shell', vista, bloque: m.BLOQUE, vacio: m.vacio, prompt: m.prompt, leer: m.leer, limpiar: m.limpiar, faltas: m.faltas, aMd: m.aMd, ...extra });
+// Una herramienta con entregable que NO usa el shell (tiene su propia hoja): m = su módulo puro marketing/<m>.js. Con esto el servidor limpia el contenido
+// al guardar y mide las faltas al aprobar (sin limpiar guardaría lo que llegue). La hoja arma su propio pedido a la IA con el prompt y el bloque de su módulo.
+const HOJA = (m, extra = {}) => ({ bloque: m.BLOQUE, vacio: m.vacio, limpiar: m.limpiar, faltas: m.faltas, ...extra });
+// Meses AAAA-MM del selector de una herramienta con ciclo: los `n` que terminan en el de `hoy` (AAAA-MM-DD o AAAA-MM), del más reciente al más viejo.
+export function mesesDeCiclo(hoy, n = 12) {
+  const m = /^(\d{4})-(0[1-9]|1[0-2])/.exec(String(hoy ?? ''));
+  if (!m) return [];
+  const base = Number(m[1]) * 12 + Number(m[2]) - 1;
+  return Array.from({ length: n }, (_, i) => { const t = base - i; return `${Math.floor(t / 12)}-${String((t % 12) + 1).padStart(2, '0')}`; });
+}
+// Una recomendación de pauta lleva montos en su evidencia (CPA, gasto…): quien no ve costos la recibe sin ellos (ads.recSinMontos) y, al guardar,
+// conserva lo que ya estaba guardado: no escribe montos nuevos. Cada texto vuelve a su valor guardado si la persona no lo cambió.
+const conCostosRec = (actual, nuevo) => {
+  const n = ads.limpiarRec(nuevo), sinN = ads.recSinMontos(n);
+  if (!actual) return sinN;
+  const a = ads.limpiarRec(actual), vista = ads.recSinMontos(a);
+  return ads.limpiarRec({ ...sinN, evidencia: ads.esMonto(a.evidencia.metrica) && n.evidencia.metrica === a.evidencia.metrica ? a.evidencia : sinN.evidencia,
+    detalle: n.detalle === vista.detalle ? a.detalle : sinN.detalle, accion: n.accion === vista.accion ? a.accion : sinN.accion });
+};
 // El Plan de 90 días no recomienda demanda con la capacidad en rojo. El servidor pasa extra.capacidadRoja (del último Diagnóstico
 // aprobado); en pantalla el shell pasa las entradas leídas (extra.ctx.entradas), de donde se saca el mismo dato.
 const capacidadRojaDe = (extra = {}) => {
@@ -126,13 +153,14 @@ export const HERRAMIENTAS = [
 
   // Marketing — generar demanda, construir audiencias, adquirir y optimizar ingresos (10)
   H({ id: 'viral-intelligence-lab', ws: 'marketing', pestana: 'audience', nombre: 'Viral Intelligence Lab', produce: 'Trend Radar, Pattern Report y oportunidades de contenido',
-    estado: 'parcial', prioridad: 'P1', icono: 'flame', monta: 'research', guarda: D('un doc por patrón; research y sources/cfg siguen igual'),
+    ...HOJA(patrones, { prompt: patrones.prompt, leer: patrones.leer, aMd: patrones.aMd }), // la hoja viral-ui.js (Library, Trend Radar, Pattern Report y oportunidades)
+    estado: 'lista', prioridad: 'P1', icono: 'flame', monta: 'viral', guarda: D('un doc por patrón (tool viral-intelligence-lab); research y sources/cfg siguen igual'),
     va_a: ['customer-bullseye', 'hook-laboratory', 'content-strategy-studio'], puede: contenido }),
   H({ id: 'hook-laboratory', ws: 'marketing', pestana: 'content', nombre: 'Hook Laboratory', produce: 'Biblioteca de hooks y matriz de pruebas',
     prioridad: 'P2', icono: 'zap', guarda: D('los hooks salen del research sin reescribirlos'),
     va_a: ['copywriting-studio', 'creative-direction-lab'], puede: contenido }),
   H({ id: 'content-strategy-studio', ws: 'marketing', pestana: 'content', nombre: 'Content Strategy Studio', produce: 'El plan del mes: campaña, pilares a 100 y slots por semana y canal',
-    estado: 'parcial', prioridad: 'P1', icono: 'clipboard-list', monta: 'plan', guarda: { coll: 'plans', nota: 'por /api/plan con v' },
+    estado: 'lista', prioridad: 'P1', icono: 'clipboard-list', monta: 'plan', guarda: { coll: 'plans', nota: 'por /api/plan con v; la propuesta de la IA es un diff por sección y nada se escribe hasta aceptar' },
     va_a: ['creative-direction-lab', 'content-calendar'], puede: contenidoNoPersonal }),
   H({ id: 'copywriting-studio', ws: 'marketing', pestana: 'content', nombre: 'Copywriting Studio', produce: 'Marco de mensajes y variantes de copy con contador por canal',
     prioridad: 'P2', icono: 'pencil', guarda: D('la elegida va a ad_variants, al caption de la pieza o a la landing'),
@@ -141,16 +169,18 @@ export const HERRAMIENTAS = [
     estado: 'lista', prioridad: 'P1', icono: 'calendar', monta: 'calendario', guarda: { coll: 'content', nota: 'por /api/db/content; reglasPieza y el candado del brief aplican' },
     va_a: ['marketing-performance-center', 'production-planner'], puede: contenido }),
   H({ id: 'campaign-architect', ws: 'marketing', pestana: 'campaigns', nombre: 'Campaign Architect', produce: 'Blueprint de campaña, plan de canales por fase y briefs creativos',
-    estado: 'parcial', prioridad: 'P1', icono: 'calendar-days', monta: 'campanas', guarda: { coll: 'mk_campaigns', nota: 'extendido con canales, briefs y resultados' },
+    estado: 'lista', prioridad: 'P1', icono: 'calendar-days', monta: 'campanas', guarda: { coll: 'mk_campaigns', nota: 'extendido con canales, briefs y resultados, por sus rutas (PUT con v); «Enviar a Creative» crea el borrador de Creative Direction Lab' },
     va_a: ['creative-direction-lab', 'content-strategy-studio', 'funnel-builder', 'ads-intelligence'], puede: contenidoNoPersonal }),
   H({ id: 'funnel-builder', ws: 'marketing', pestana: 'campaigns', nombre: 'Funnel Builder', produce: 'El embudo con sus caídas por etapa; sitios y landings',
     estado: 'parcial', prioridad: 'P2', icono: 'funnel', monta: 'tech', guarda: D('las landings siguen en tech por sus rutas'),
     va_a: ['marketing-performance-center'], puede: contenidoNoPersonal }),
   H({ id: 'ads-intelligence', ws: 'marketing', pestana: 'campaigns', nombre: 'Ads Intelligence', produce: 'Dashboard de pauta, recomendaciones con evidencia y variaciones de anuncio',
-    estado: 'parcial', prioridad: 'P1', icono: 'megaphone', monta: 'ads', guarda: D('una recomendación por doc; nunca escribe a una plataforma de anuncios'),
+    ...HOJA(ads, { sinCostos: ads.recSinMontos, conCostos: conCostosRec }), // el servidor las usa con quien no ve costos: la evidencia de una rec lleva montos
+    estado: 'lista', prioridad: 'P1', icono: 'megaphone', monta: 'adsIntel', guarda: D('una recomendación por doc (tool ads-intelligence); nunca escribe a una plataforma de anuncios'),
     va_a: ['marketing-performance-center'], aprueba: 'ceo', puede: contenidoNoPersonal }),
   H({ id: 'marketing-performance-center', ws: 'marketing', pestana: 'analytics', nombre: 'Marketing Performance Center', produce: 'KPIs con su fuente, tabla por función, pilar y canal, y el reporte mensual',
-    estado: 'parcial', prioridad: 'P1', icono: 'chart-column', monta: 'analytics', guarda: D('uno por mes'),
+    ...SH(reporte, 'rendimiento', { estado: 'lista', ciclo: true, tareasDe: reporte.tareasDe, alUsar: reporte.alUsar, sinCostos: reporte.sinCostos, conCostos: reporte.conCostos }),
+    prioridad: 'P1', icono: 'chart-column', guarda: D('uno por mes (el ciclo AAAA-MM es contenido.mes); la versión del portal va sin costos ni notas internas'),
     va_a: ['growth-experiment-lab', 'creative-performance-analyzer'], puede: resultados }),
   H({ id: 'growth-experiment-lab', ws: 'marketing', pestana: 'analytics', nombre: 'Growth Experiment Lab', produce: 'Kanban de experimentos con su muestra mínima',
     prioridad: 'P3', icono: 'kanban', guarda: D('migra bx.calib'), puede: contenido }),

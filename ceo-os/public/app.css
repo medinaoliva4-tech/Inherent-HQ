@@ -6424,3 +6424,708 @@ a.btn.tsh-act-chat{text-decoration:none}
 :is(.dn-svg-w,.dn-calib,.xr-salud,.xr-trabado,.ofa-empujar,.ofa-ec,.ofa-stack,.ofa-propuesta,.ofa-vars,.ofa-esc,.grm-hitos){min-width:0}
 .btn:is(.dn-traer,.xr-usar){flex:none}
 .ofa-bloque:empty{display:none}
+
+/* ===================== FASE 3b · Marketing =====================
+   Las vistas nuevas de Marketing: Campaign Architect (.cma-, extiende el bloque «cm-» de Campañas y eventos), Content Strategy Studio (.pcs-),
+   Content Calendar (.cc-: bandas de campaña, badge de slot, métricas y arrastre), Ads Intelligence (.ain-), Marketing Performance Center (.rnd-)
+   y Viral Intelligence Lab (.vil-). Todo con tokens --ui-*: lo que se suma sale de mezclar un token con transparente o con --ui-surf, así que
+   sigue al tema (día y noche) solo. Lo vacío se pinta en ámbar (--ui-amb), nunca en rojo ni en cero; el rojo (--ui-bad) es lo que está mal.
+   Va al final del archivo a propósito: le gana a los bloques de antes (table, th, td, .in, .btn) sin subir la especificidad.
+   El selector de mes del Tool Shell (.tsh-ciclo) y «Reporte del mes | Instagram» (.ws-sub-tabs) reusan lo que ya existía. */
+/* Los botones de las barras de acción miden lo mismo que los del Tool Shell (.tsh-act): 32 px. Los .xs se quedan en 28 px. */
+:is(.cma-acts,.cma-gen,.cma-prop-bt,.pcs-acts,.pcs-gen,.pcs-prop,.pcs-bt,.vil-barra,.vil-gen,.vil-prop-bt,.vil-acts,.vil-ed-bt,.ain-rec-f,.ain-ia) .btn:not(.xs){height:32px;padding:0 12px;font-size:13px;gap:6px}
+:is(.cma-acts,.cma-gen,.cma-prop-bt,.pcs-acts,.pcs-gen,.pcs-prop,.pcs-bt,.vil-barra,.vil-gen,.vil-prop-bt,.vil-acts,.vil-ed-bt,.ain-rec-f,.ain-ia) .btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:auto;transform:none;filter:none}
+
+/* ---------- Marketing › Campaign Architect (campanas-ui.js): la campaña abierta. Extiende el bloque «cm-» de Campañas y eventos. ---------- */
+.cma{display:grid;gap:14px;min-width:0}
+.cma>div:empty{display:none}
+.cma-cab{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+.cma-cab-t{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-width:0}
+.cma-cab-t h2{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:20px;font-weight:600;letter-spacing:-.015em;line-height:1.2;overflow-wrap:anywhere}
+.cma-cab-t h2 .lni{color:var(--ui-m-marketing)}
+.cma-cab-t .cm-est{margin-left:0}
+.cma-acts{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.chip.cma-sucio{background:var(--ui-amb-bg);color:var(--ui-amb-t)}
+.cm-aviso.cma-ok{background:var(--ui-ok-bg);border-color:color-mix(in srgb,var(--ui-ok-f) 30%,transparent);color:var(--ui-ink)}
+.cm-aviso.cma-ok a{display:inline-flex;align-items:center;gap:4px;font-weight:600}
+ul.cma-falta{padding:10px 14px;border-radius:12px;background:var(--ui-amb-bg);border:1px solid color-mix(in srgb,var(--ui-amb-f) 28%,transparent)}
+.cma-cuerpo{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start}
+.cma-main{display:grid;gap:14px;min-width:0}
+.cma-sec{display:grid;gap:12px;align-content:start;min-width:0;padding:16px;border-radius:16px;background:var(--ui-surf);box-shadow:var(--ui-sh-1)}
+.cma-sec p{margin:0}
+.cma-sec-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.cma-sec-h h3,.cma-lado h3,.cma-entradas h3{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.cma-sec-h h3 .lni,.cma-lado h3 .lni,.cma-entradas h3 .lni{color:var(--ui-m-marketing)}
+.cma-entradas{display:grid;gap:10px}
+.cma-entradas>p{margin:0}
+/* Blueprint */
+.cma-bp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+.cma-campo{display:grid;gap:4px;align-content:start;min-width:0}
+.cma-campo.ancho{grid-column:1/-1}
+.cma-campo .lbl{font-size:12.5px;font-weight:600;color:var(--ui-ink2)}
+.cma-campo .in{width:100%}
+.cma-campo textarea.in{resize:vertical}
+.cma-ro{font-size:13.5px;line-height:1.4;color:var(--ui-ink);overflow-wrap:anywhere}
+.cma-ro[data-vacio="1"]{color:var(--ui-amb-t)}
+p.cma-sd{padding:6px 10px;border-radius:8px;background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
+.cma-sd{font-size:12.5px;line-height:1.4;color:var(--ui-amb-t)}
+.cma-sd a{color:inherit;text-decoration:underline}
+ul.cma-falta li{color:var(--ui-amb-t)}
+/* Anticipación (Gantt simple) */
+.cma-gantt{display:grid;gap:8px}
+.cma-g-eje{display:flex;justify-content:space-between;padding-left:130px;padding-right:130px;font-size:11.5px;color:var(--ui-mut)}
+.cma-g-fila{display:grid;grid-template-columns:120px minmax(0,1fr) 130px;align-items:center;gap:10px}
+.cma-g-n{font-size:12.5px;font-weight:600;color:var(--ui-ink2)}
+.cma-g-pista{position:relative;height:24px;border-radius:99px;background:var(--ui-fill)}
+.cma-g-barra{position:absolute;top:4px;bottom:4px;border-radius:99px;background:color-mix(in srgb,var(--ui-m-marketing) 38%,transparent)}
+.cma-g-barra[data-fase="recordatorio"]{background:color-mix(in srgb,var(--ui-m-marketing) 58%,transparent)}
+.cma-g-barra[data-fase="ultimo-empujon"]{background:var(--ui-m-marketing)}
+.cma-g-marca{position:absolute;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--ui-ink);border:2px solid var(--ui-surf)}
+.cma-g-marca.paso{opacity:.45}
+.cma-g-f{font-size:12px;color:var(--ui-ink2);white-space:nowrap}
+/* Plan de canales */
+.cma-sc{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.cma-tabla{width:100%;min-width:760px;border-collapse:separate;border-spacing:6px;table-layout:fixed}
+.cma-tabla :is(th,td){height:auto;border:0;font-size:13px;vertical-align:top;text-align:left}
+.cma-tabla thead th{position:static;background:transparent;padding:4px 6px;color:var(--ui-ink);font-weight:600}
+.cma-tabla thead th b{display:block;font-size:13.5px}
+.cma-tabla thead th .mut{display:block;font-weight:400}
+.cma-tabla thead td{padding:0;background:transparent}
+.cma-tabla tbody tr:hover{background:none}
+.cma-tabla thead>tr>:first-child,.cma-tabla th[scope="row"]{width:118px}
+.cma-tabla th[scope="row"]{position:sticky;left:0;z-index:1;padding:10px 6px 10px 0;background:var(--ui-surf);color:var(--ui-ink)}
+.cma-canal{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13.5px}
+.cma-canal .lni{color:var(--ui-m-marketing)}
+.cma-celda{padding:8px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--ui-line)}
+.cma-celda[data-activo="1"]{background:color-mix(in srgb,var(--ui-m-marketing) 9%,var(--ui-surf));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ui-m-marketing) 28%,transparent)}
+.cma-celda[data-sel="1"]{box-shadow:inset 0 0 0 2px var(--ui-m-marketing)}
+.cma-on{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ui-ink2);cursor:pointer}
+.cma-celda[data-activo="0"] .cma-on{font-weight:400;color:var(--ui-mut)}
+.cma-celda-in{display:grid;gap:6px;margin-top:8px}
+.cma-celda-in .in{width:100%;height:30px;padding:0 8px;font-size:12.5px}
+.cma-celda-in .cma-ro{font-size:12.5px}
+.cma-bt{justify-content:flex-start}
+.cma-sec>.btn{justify-self:start}
+.cma-monto{position:relative;display:block}
+.cma-monto>i{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-style:normal;font-size:12.5px;color:var(--ui-mut);pointer-events:none}
+.cma-monto>.in{padding-left:22px}
+.cma-bt[data-listo="1"]{color:var(--ui-ok-t)}
+.cma-bt-t{white-space:nowrap}
+.cma-total{font-size:13.5px;color:var(--ui-ink2)}
+.cma-total:empty{display:none}
+/* Brief creativo (panel lateral) */
+.cma-lado{position:sticky;top:12px;display:grid;gap:10px;align-content:start;min-width:0;padding:16px;border-radius:16px;background:var(--ui-surf);box-shadow:var(--ui-sh-1)}
+.cma-lado p{margin:0}
+.cma-lado-cab{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.cma-lado-l{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.cma-lado-r{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:8px 10px;border-radius:10px;border:1px solid var(--ui-line);background:var(--ui-surf);color:var(--ui-ink);font:inherit;font-size:13px;text-align:left;cursor:pointer}
+.cma-lado-r:hover{background:var(--ui-fill)}
+.cma-lado-n{display:inline-flex;align-items:center;gap:6px}
+.cma-lado-e{flex:none;font-size:12px;font-weight:600}
+.cma-lado-r[data-listo="1"] .cma-lado-e{color:var(--ui-ok-t)}
+.cma-lado-r[data-listo="0"] .cma-lado-e{color:var(--ui-amb-t)}
+/* Leads, pauta y resultados */
+.cma-leads>summary{cursor:pointer;font-size:13px;color:var(--ui-ink2)}
+.cma-leads .md{max-height:340px;margin-top:8px;overflow:auto;font-size:13.5px}
+.cma-pauta-d{margin:0}
+.cma-res{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.cma-res li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 14px;font-size:13px}
+.cma-res li>b{font-weight:600}
+/* Generar con IA */
+.cma-gen,.cma-prop{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1)}
+.cma-gen>header,.cma-prop>header{display:flex;align-items:center;gap:10px;min-height:32px}
+.cma-gen-t,.cma-prop>header h3{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:600}
+.cma-prop>header h3{flex:1;min-width:0}
+.cma-paso{flex:1;min-width:0;overflow:hidden;text-align:center;text-overflow:ellipsis;white-space:nowrap;color:var(--ui-mut)}
+.cma-gen>header>.btn{margin-left:auto}
+.cma-gen p,.cma-prop p{margin:0;font-size:13.5px}
+.cma-gen[data-fase="corriendo"]{border-color:color-mix(in srgb,var(--ui-m-marketing) 55%,transparent)}
+.cma-gen[data-fase="sin-bloque"]{border-color:color-mix(in srgb,var(--ui-amb-f) 45%,transparent);background:linear-gradient(var(--ui-amb-bg),var(--ui-amb-bg)),var(--ui-surf)}
+.cma-gen[data-fase="error"]{border-color:color-mix(in srgb,var(--ui-bad) 45%,transparent);background:linear-gradient(var(--ui-bad-bg),var(--ui-bad-bg)),var(--ui-surf)}
+.cma-prop[data-fase="propuesta"]{border-color:color-mix(in srgb,var(--ui-acc) 55%,transparent)}
+.cma-gen summary,.cma-prop-d>summary{cursor:pointer;font-size:13px;color:var(--ui-ink2)}
+.cma-stream{max-height:220px;margin:0;padding:10px 12px;overflow:auto;border-radius:10px;background:var(--ui-fill);font-size:12.5px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.cma-prop-l{display:grid;gap:6px;max-height:260px;margin:8px 0 0;padding:0;overflow:auto;list-style:none;font-size:13px;line-height:1.4}
+ul.cma-crit{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:13.5px}
+.cma-crit li{display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.cma-crit li>span[aria-hidden="true"]{flex:none;width:1.2em;font-weight:700;text-align:center}
+.cma-crit li.ok>span[aria-hidden="true"]{color:var(--ui-ok-t)}
+.cma-crit li.falta>span[aria-hidden="true"]{color:var(--ui-bad-t)}
+.cma-prop-bt{display:flex;flex-wrap:wrap;gap:8px}
+@media (prefers-reduced-motion:no-preference){.cma-gen[data-fase="corriendo"] .cma-gen-t .lni{animation:tshGira 1s linear infinite}}
+@media (max-width:1040px){.cma-cuerpo{grid-template-columns:minmax(0,1fr)}.cma-lado{position:static}}
+@media (max-width:720px){
+  .cma-bp{grid-template-columns:minmax(0,1fr)}
+  .cma-g-fila{grid-template-columns:minmax(0,1fr);gap:4px}
+  .cma-g-eje{padding:0}
+  .cma-acts>.btn{flex:1 1 auto;justify-content:center}
+  .cma-prop-bt>.btn{flex:1 1 auto;justify-content:center}
+}
+
+/* ---------- Marketing › Content Strategy Studio (plan-mes-ui.js, pcs-*): el plan del mes editable. ---------- */
+.pcs{--pcs-c:var(--ws-c,var(--ui-m-marketing));display:flex;flex-direction:column;gap:12px;width:100%;min-width:0;max-width:100%}
+.pcs :is(#pcs-top,#pcs-banner,#pcs-why,#pcs-gen,#pcs-techo):empty{display:none}
+/* Barra de acciones */
+.pcs-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 12px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1)}
+.pcs-acts .sp{flex:1}
+.pcs>.pmt-top{margin:0}
+.pmt-top.pcs-top .tabs,#pcs-top .tabs{max-width:100%;overflow-x:auto}
+/* Los meses son links (<a>), no botones: llevan el mismo aspecto que .tabs button. */
+#pcs-top .tabs a{display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:99px;font-size:13px;font-weight:500;color:var(--ui-ink2);text-decoration:none;white-space:nowrap}
+#pcs-top .tabs a:hover:not(.on){color:var(--ui-ink)}
+#pcs-top .tabs a.on{background:var(--ui-surf);color:var(--ui-ink);box-shadow:var(--ui-sh-1)}
+.pcs-grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.pcs-grp:empty{display:none}
+.pcs-acts .btn:disabled,.pcs .btn[disabled]{opacity:.45;cursor:not-allowed;pointer-events:auto;transform:none;filter:none}
+.pcs .pm-warn,.pcs .pm-tbl small.pm-warn{color:var(--ui-warn)}
+.pcs-why{display:flex;align-items:flex-start;gap:8px;margin:0;font-size:13px;line-height:1.4;color:var(--ui-warn)}
+.pcs-why .lni{flex:none;margin-top:2px}
+/* El candado (sin estrategia aprobada · sin ficha) */
+.pcs-ban{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:var(--r-3);background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
+.pcs-ban .lni{flex:none;margin-top:2px;color:var(--ui-amb-f)}
+.pcs-ban>div{display:grid;gap:2px;min-width:0;font-size:13.5px;line-height:1.45}
+.pcs-ban a{color:inherit;text-decoration:underline}
+/* El medidor del techo */
+.pcs-techo{display:grid;gap:6px;padding:12px 16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line)}
+.pcs-techo .lbl{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ui-mut)}
+.pcs-techo p{margin:0}
+.pcs-techo-t{font-size:13.5px;line-height:1.45}
+.pcs-techo-t.mal{color:var(--ui-warn)}
+.pcs-techo small{display:block;font-size:12px}
+.pcs-med{display:grid;gap:6px}
+.pcs-med-b{height:9px;border-radius:9px;background:var(--ui-fill);overflow:hidden}
+.pcs-med-b i{display:block;height:100%;border-radius:inherit;background:var(--pcs-c);transition:width .25s ease}
+.pcs-med.mal .pcs-med-b i{background:var(--ui-bad)}
+/* Secciones */
+.pcs-sec{min-width:0;padding:16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line)}
+.pcs-sec-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:12px}
+.pcs-sec-h h3{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.pcs-sin{background:color-mix(in srgb,var(--ui-amb-f) 16%,transparent);color:var(--ui-warn)}
+.pcs-sin[hidden]{display:none}
+.pcs-f{display:grid;gap:4px;min-width:0}
+.pcs-f .lbl{font-size:11.5px;color:var(--ui-mut)}
+.pcs-in{min-width:0}
+textarea.pcs-in{min-height:0;resize:vertical}
+.pcs-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pcs-g2 .pcs-ancho{grid-column:1/-1}
+.pcs-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:10px}
+/* Mensaje por consciencia */
+.pcs-nivs{display:grid;gap:8px}
+.pcs-niv{display:grid;grid-template-columns:minmax(150px,200px) minmax(0,1.2fr) minmax(0,1fr);align-items:center;gap:8px 10px}
+.pcs-niv.sin{grid-template-columns:minmax(150px,200px) minmax(0,1.2fr) minmax(0,1fr) auto auto}
+.pcs-niv-n{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ui-mut)}
+.pcs-niv-n b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ui-fill);color:var(--ui-ink2);font-size:11.5px;font-weight:600}
+.pcs-niv.on .pcs-niv-n{color:var(--ui-ink)}
+.pcs-niv.on .pcs-niv-n b{background:var(--pcs-c);color:var(--ui-acc-ink)}
+/* Pilares: barra (reusa .pm-pbar), suma y un range cada uno */
+.pcs-suma{margin:8px 0 12px;font-size:13px;color:var(--ui-ink2)}
+.pcs-suma.ok{color:var(--ui-ok)}
+.pcs-suma.mal{color:var(--ui-warn)}
+.pcs-pil{display:grid;gap:8px;margin:0 0 10px;padding:0;list-style:none}
+.pcs-pil-f{display:grid;grid-template-columns:auto minmax(120px,1fr) minmax(120px,1.2fr) 44px minmax(0,1.4fr) auto;align-items:center;gap:8px 10px}
+.pcs-dot{width:10px;height:10px;border-radius:3px}
+.pcs-rng{width:100%;min-width:0}
+.pcs-pct{font-variant-numeric:tabular-nums;font-size:13px;font-weight:600;text-align:right}
+.pcs-bt{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.pcs-can input.in{min-width:110px}
+/* Grilla semana × canal */
+.pcs-grid{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px;table-layout:fixed;min-width:640px}
+.pcs-grid th{font-weight:500;color:var(--ui-mut);text-align:left;padding:6px 8px;border-bottom:1px solid var(--ui-line);font-size:11.5px}
+.pcs-grid tbody th{width:110px;color:var(--ui-ink);white-space:normal;overflow-wrap:anywhere;vertical-align:top;padding-top:10px}
+.pcs-cel{vertical-align:top;padding:6px;border-bottom:1px solid var(--ui-line);border-left:1px solid var(--ui-line2);position:relative}
+.pcs-slot{display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%;margin-bottom:4px;padding:6px 8px;border-radius:var(--r-2);background:var(--ui-fill);border:1px solid var(--ui-line);color:var(--ui-ink);text-align:left;font-size:12px;cursor:pointer}
+.pcs-slot b{font-weight:600}
+.pcs-slot small{color:var(--ui-mut);font-size:10.5px}
+.pcs-slot:hover{border-color:var(--ui-line2)}
+.pcs-slot:is(.mal,.fuera) small{color:var(--ui-ink2)}
+.pcs-slot.on{outline:2px solid var(--pcs-c);outline-offset:1px}
+.pcs-slot.mal{border-color:color-mix(in srgb,var(--ui-bad) 50%,transparent);background:color-mix(in srgb,var(--ui-bad) 8%,var(--ui-surf))}
+.pcs-slot.fuera{border-style:dashed;border-color:var(--ui-bad);background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--ui-bad) 10%,var(--ui-surf)) 0 6px,var(--ui-surf) 6px 12px)}
+.pcs-slot-t{display:flex;align-items:center;gap:5px;min-width:0}
+.pcs-ico{display:inline-flex;color:var(--ui-bad)}
+.pcs-mas{display:grid;place-items:center;width:100%;height:24px;border-radius:var(--r-2);border:1px dashed var(--ui-line2);background:transparent;color:var(--ui-mut);cursor:pointer;opacity:.55}
+.pcs-cel:hover .pcs-mas,.pcs-mas:focus-visible{opacity:1}
+.pcs-avs{display:grid;gap:6px;margin:12px 0 0;padding:0;list-style:none;font-size:13px}
+.pcs-avs li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px}
+.pcs-avs small{display:inline}
+.pcs-lnk{padding:0;border:0;background:none;color:var(--ui-ink);font:inherit;font-weight:600;text-decoration:underline;cursor:pointer}
+.pcs-ed{margin-top:14px;padding:14px;border-radius:var(--r-3);background:var(--ui-fill);border:1px solid var(--ui-line)}
+.pcs-ed>header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+/* La propuesta de la IA: un diff por sección */
+.pcs-gen,.pcs-prop{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1)}
+.pcs-gen>header,.pcs-prop>header{display:flex;align-items:center;gap:10px;min-height:32px}
+.pcs-gen-t,.pcs-prop>header h3{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:600}
+.pcs-prop>header h3{flex:1;min-width:0}
+.pcs-paso{flex:1;min-width:0;overflow:hidden;text-align:center;text-overflow:ellipsis;white-space:nowrap;color:var(--ui-mut)}
+.pcs-gen p,.pcs-prop p{margin:0;font-size:13.5px}
+.pcs-prop[data-fase="propuesta"]{border-color:color-mix(in srgb,var(--ui-acc) 55%,transparent)}
+.pcs-gen[data-fase="sin-bloque"]{border-color:color-mix(in srgb,var(--ui-amb-f) 45%,transparent);background:linear-gradient(var(--ui-amb-bg),var(--ui-amb-bg)),var(--ui-surf)}
+.pcs-gen[data-fase="error"]{border-color:color-mix(in srgb,var(--ui-bad) 45%,transparent);background:linear-gradient(var(--ui-bad-bg),var(--ui-bad-bg)),var(--ui-surf)}
+.pcs-gen summary,.pcs-det summary{cursor:pointer;font-size:13px;color:var(--ui-ink2)}
+.pcs-det>p{max-height:240px;margin:8px 0 0;overflow:auto;font-size:13px;line-height:1.45;color:var(--ui-ink2);white-space:pre-wrap;overflow-wrap:anywhere}
+/* Lo que la IA pregunta antes de proponer */
+.pcs-prop p.pcs-pq{padding:8px 12px;border-radius:var(--r-2);background:var(--ui-info-bg);color:var(--ui-ink);line-height:1.45}
+pre.pcs-stream{max-height:220px;margin:0;padding:10px 12px;overflow:auto;border-radius:var(--r-2);background:var(--ui-fill);border:1px solid var(--ui-line);color:var(--ui-ink2);font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-word}
+.pcs-difs{display:grid;gap:10px}
+.pcs-dif{border:1px solid var(--ui-line);border-radius:var(--r-3);background:var(--ui-surf)}
+.pcs-dif>header{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:10px 12px}
+.pcs-dif>header b{font-size:14px}
+.pcs-dif.aceptada{border-color:color-mix(in srgb,var(--ui-ok) 45%,transparent)}
+.pcs-dif.descartada{opacity:.6}
+.pcs-hecho{color:var(--ui-ok)}
+.pcs-dif-b{padding:0 12px 12px;overflow-x:auto}
+.pcs-dif-l{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:13px;line-height:1.4}
+.pcs-dif-l li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;padding:6px 10px;border-radius:var(--r-2);background:var(--ui-fill);overflow-wrap:anywhere}
+.pcs-dif-l li>span[aria-hidden="true"]{flex:none;width:1em;font-weight:700;text-align:center}
+.pcs-dif-l li small{flex-basis:100%;color:var(--ui-mut);font-size:12px}
+.pcs-dif-l .mas{background:color-mix(in srgb,var(--ui-ok) 11%,var(--ui-surf))}
+.pcs-dif-l .mas>span[aria-hidden="true"]{color:var(--ui-ok-t)}
+.pcs-dif-l .menos{background:color-mix(in srgb,var(--ui-bad) 9%,var(--ui-surf))}
+.pcs-dif-l .menos>span[aria-hidden="true"]{color:var(--ui-bad-t)}
+.pcs-dif-t{width:100%;border-collapse:collapse;font-size:13px}
+.pcs-dif-t th,.pcs-dif-t td{padding:6px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--ui-line)}
+.pcs-dif-t thead th{font-size:11.5px;font-weight:500;color:var(--ui-mut)}
+.pcs-dif-t .antes{color:var(--ui-mut);text-decoration:line-through}
+.pcs-dif-t .despues{background:color-mix(in srgb,var(--ui-ok) 11%,transparent)}
+ul.pcs-crit{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:13.5px}
+.pcs-crit li{display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.pcs-crit li>span[aria-hidden="true"]{flex:none;width:1.2em;font-weight:700;text-align:center}
+.pcs-crit li.ok>span[aria-hidden="true"]{color:var(--ui-ok-t)}
+.pcs-crit li.falta>span[aria-hidden="true"]{color:var(--ui-bad-t)}
+.pcs-fin{display:flex;align-items:center;gap:8px;color:var(--ui-ok)}
+@media (prefers-reduced-motion:no-preference){.pcs-gen[data-fase="corriendo"] .pcs-gen-t .lni{animation:tshGira 1s linear infinite}}
+@media (max-width:900px){
+  .pcs-g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pcs-niv,.pcs-niv.sin{grid-template-columns:minmax(0,1fr)}
+  .pcs-pil-f{grid-template-columns:auto minmax(0,1fr) 44px auto;grid-template-areas:"d n p x" "r r r r" "q q q q"}
+  .pcs-pil-f .pcs-dot{grid-area:d}.pcs-pil-f>input:nth-of-type(1){grid-area:n}.pcs-pil-f .pcs-rng{grid-area:r}.pcs-pil-f .pcs-pct{grid-area:p}.pcs-pil-f>input:nth-of-type(3){grid-area:q}.pcs-pil-f>.btn{grid-area:x}
+}
+@media (max-width:600px){
+  .pcs-g2,.pcs-g3{grid-template-columns:minmax(0,1fr)}
+  .pcs-sec{padding:14px}
+  .pcs-acts{gap:8px}.pcs-acts .sp{display:none}
+  .pcs-grp:last-child .btn{width:100%;justify-content:center}
+}
+/* Clases que ya existen y esta vista reusa tal cual: .tabs, .pmt-top, .pm-pbar, .pm-tag, .pm-warn, .pm-tbl, .ev-vacio, .empty, .chip.sm2, .btn(.ghost/.sm/.xs), .in, .lbl, .sp, .sr-only, .mut/.sm. */
+
+/* ---------- Marketing › Content Calendar (screens/content.js, cc-*): bandas de campaña, badge de slot, métricas y arrastre. ---------- */
+/* Todo se inserta por DOM sobre el calendario de siempre (.wc-cal .d en el mes; .wc-week .wc-day en la semana, los dos con data-date).
+   Cada tipo de campaña lleva su color (--cc-c) del tema: terracota, verde, morado, ámbar, azul y verde azulado, con su par de noche ya en los --ui-m-*. */
+.cc-b-evento{--cc-c:var(--ui-m-marketing)}
+.cc-b-apertura{--cc-c:var(--ui-m-organizacion)}
+.cc-b-lanzamiento{--cc-c:var(--ui-m-diseno)}
+.cc-b-promocion{--cc-c:var(--ui-amb-f)}
+.cc-b-temporada{--cc-c:var(--ui-m-consulting)}
+.cc-b-campana{--cc-c:var(--ui-m-produccion)}
+/* El relleno de la celda: la franja llega de borde a borde para que se vea continua de un día al siguiente. */
+.wc-cal .d,.wc-day{--cc-pad:8px}
+.cc-bandas{display:grid;gap:2px;margin:0 calc(-1 * var(--cc-pad)) 4px}
+.cc-band{--cc-r:5px;display:block;height:14px;padding:0 6px;overflow:hidden;font-size:10px;line-height:14px;font-weight:500;white-space:nowrap;text-overflow:ellipsis;text-decoration:none;color:var(--ui-ink);
+  background:color-mix(in srgb,var(--cc-c,var(--ui-m-produccion)) 32%,var(--ui-surf));
+  margin-left:var(--cc-ml,0);margin-right:var(--cc-mr,-1px);border-radius:var(--cc-rl,0) var(--cc-rr,0) var(--cc-rr,0) var(--cc-rl,0)}
+.cc-band:hover{background:color-mix(in srgb,var(--cc-c,var(--ui-m-produccion)) 44%,var(--ui-surf))}
+.cc-band:focus-visible{outline:2px solid var(--ui-focus);outline-offset:-1px}
+.cc-band.ini{--cc-rl:var(--cc-r);--cc-ml:4px}
+.cc-band.fin{--cc-rr:var(--cc-r);--cc-mr:4px}
+.cc-band.solo{--cc-rl:var(--cc-r);--cc-rr:var(--cc-r);--cc-ml:4px;--cc-mr:4px}
+/* La campaña sigue fuera del mes: la franja no se cierra de ese lado. */
+.cc-band.sigue-antes{--cc-rl:0px;--cc-ml:0px}
+.cc-band.sigue-despues{--cc-rr:0px;--cc-mr:-1px}
+/* Borrador: sin relleno y con borde punteado (arriba y abajo en cada día; los lados solo en las puntas). Cerrada: apagada (más clara, con el texto en tinta suave; sin bajarle la opacidad al texto para que se siga leyendo). */
+.cc-band.borrador{background:transparent;line-height:12px;border:1px dashed color-mix(in srgb,var(--cc-c,var(--ui-m-produccion)) 75%,transparent)}
+.cc-band.borrador:hover{background:color-mix(in srgb,var(--cc-c,var(--ui-m-produccion)) 12%,transparent)}
+.cc-band.borrador:is(.mid,.fin,.sigue-antes){border-left-width:0}
+.cc-band.borrador:is(.mid,.ini,.sigue-despues){border-right-width:0}
+.cc-band.cerrada{background:color-mix(in srgb,var(--cc-c,var(--ui-m-produccion)) 16%,var(--ui-surf));color:var(--ui-ink2)}
+.cc-band.cerrada:hover{background:color-mix(in srgb,var(--cc-c,var(--ui-m-produccion)) 26%,var(--ui-surf))}
+/* El relleno de un carril libre: ocupa el mismo alto para que las franjas queden alineadas entre días. */
+.cc-band.vacio{visibility:hidden}
+.cc-bn{pointer-events:none}
+/* El conteo de cada filtro (Operativo 3, Planificación 2…) bajaba a .65 de opacidad: con .9 sigue siendo secundario y se lee (AA). */
+.cm-cal .wc-chip span{opacity:.9}
+/* La leyenda, justo debajo de los filtros: un chip por campaña con el punto de su color. */
+.cc-leyenda{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 14px}
+.wc-chips+.cc-leyenda{margin-top:-6px}
+.chip.cc-ley{gap:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis;text-decoration:none;color:var(--ui-ink);background:color-mix(in srgb,var(--cc-c,var(--ui-m-produccion)) 14%,var(--ui-surf));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cc-c,var(--ui-m-produccion)) 30%,transparent)}
+.chip.cc-ley::before{content:"";width:8px;height:8px;flex:none;border-radius:50%;background:var(--cc-c,var(--ui-m-produccion))}
+.chip.cc-ley:hover{background:color-mix(in srgb,var(--cc-c,var(--ui-m-produccion)) 24%,var(--ui-surf))}
+.chip.cc-ley:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+/* El slot del Plan del mes (MK-xxx) al frente de la pieza; fuera de su semana, en ámbar. */
+.cc-slot{display:inline-block;margin-right:4px;padding:0 3px;border:1px solid currentColor;border-radius:4px;font:600 9.5px/1.45 ui-monospace,Menlo,monospace;letter-spacing:.02em;vertical-align:1px}
+.cc-slot.fuera{color:color-mix(in srgb,var(--ui-warn) 85%,var(--ui-ink))}
+.chip.cc-slot{margin:0;padding:0 8px;min-height:24px;border-radius:99px;font-size:11px;line-height:22px;vertical-align:baseline;background:transparent}
+/* Lo que midió una pieza ya publicada, al final. En el mes no cabe (queda en su title); en la semana y en las listas sí. */
+.cc-met{display:inline-flex;align-items:center;gap:3px;margin-left:4px;font-size:9.5px;font-weight:500;white-space:nowrap;opacity:.78}
+.cc-met .lni{width:11px;height:11px}
+.wc-cal .cc-met{display:none}
+/* Arrastrar una pieza a otro día (en la compu): solo las que se pueden mover. El destino no mueve el layout. */
+/* Una pieza atrasada (.late) traía un rojo suelto sin par de noche: aquí sigue al tema (el --ui-bad-t de cada tema: rojo oscuro de día, rojo claro de noche) y se lee sobre su color. */
+.wc-ev.late{color:var(--ui-bad-t)}
+.wc-ev.cc-mov{cursor:grab}
+.wc-ev.cc-mov:active{cursor:grabbing}
+.cc-arrastrando{opacity:.45}
+.cal .d.cc-sobre,.wc-day.cc-sobre{background:color-mix(in srgb,var(--ui-acc) 10%,var(--ui-surf));outline:2px dashed var(--ui-acc);outline-offset:-2px}
+@media (pointer:coarse){.wc-ev.cc-mov{cursor:pointer}}
+/* El cel */
+@media (max-width:760px){
+  .wc-cal .d{--cc-pad:3px}
+  /* La semana en una columna: cada día es una fila con la fecha a la izquierda; las franjas van a la derecha, arriba de sus piezas. */
+  .wc-day>.cc-bandas{grid-column:2;margin:0 0 4px}
+  .wc-day:has(>.cc-bandas)>.wc-dh{grid-row:1 / span 2}
+  .wc-day:has(>.cc-bandas)>.wc-dl{grid-column:2}
+  .wc-day .cc-bandas .cc-band{margin-left:0;margin-right:0;border-radius:4px}
+  /* Los botones de arriba (+ Grabación, + Pieza) bajan de línea en vez de salirse de la tarjeta. */
+  .cm-cal .wc-nav{flex-wrap:wrap;gap:6px}
+}
+@media (max-width:640px){
+  /* El mes en el cel: la franja es solo una línea de color (los nombres los lleva la leyenda) y el slot solo avisa, con un punto, si está fuera de su semana. */
+  .wc-cal .cc-bandas{gap:2px;margin-bottom:3px}
+  .wc-cal .cc-band{--cc-r:3px;height:6px;padding:0;line-height:6px}
+  .wc-cal .cc-band.borrador{height:6px;line-height:4px}
+  .wc-cal .cc-bn{display:none}
+  .wc-cal .cc-slot:not(.fuera){display:none}
+  .wc-cal .cc-slot.fuera{display:inline-block;width:6px;height:6px;margin-right:3px;padding:0;overflow:hidden;border:0;border-radius:50%;background:var(--ui-warn);font-size:0;vertical-align:1px}
+}
+
+/* ---------- Marketing › Ads Intelligence (marketing/ads-intel-ui.js, ain-*): solo mira y recomienda; nada se escribe en una cuenta de anuncios. ---------- */
+.ain{display:flex;flex-direction:column;gap:var(--s3);width:100%;min-width:0}
+/* Las regiones que se llenan por JS apilan sus secciones con el mismo espacio que el resto. */
+.ain>#ain-cuerpo,.ain #ain-res{display:flex;flex-direction:column;gap:var(--s3);min-width:0}
+.ain #ain-res:empty,.ain-head-m:empty{display:none}
+.ain .tabs{margin:0}
+.ain-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+.ain-head-t{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;min-width:0}
+.ain-head-t h2{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:20px;font-weight:600;letter-spacing:-.015em;line-height:1.2}
+.ain-head-t h2 .lni{color:var(--ui-m-marketing)}
+.ain-cli{font-size:13.5px;color:var(--ui-mut)}
+.ain-head-m{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
+/* Positivo (Windsor conectado, hay OK del CEO, tarea creada): verde, no el gris del .chip.lime de antes. */
+.ain-head-m .chip.lime,.ain-rec-f .chip.lime{background:var(--ui-ok-bg);color:var(--ui-ok-t);font-weight:600}
+.ain-aviso{display:flex;align-items:flex-start;gap:6px;margin:0;font-size:12.5px;line-height:1.4;color:var(--ui-mut)}
+.ain-aviso .lni{flex:none;margin-top:2px}
+.ain-subs{align-self:flex-start;max-width:100%;overflow-x:auto}
+/* Una sección es una tarjeta (como .card.wkbox: radio 20, relleno 14 × 16). */
+.ain-sec{display:flex;flex-direction:column;gap:var(--s3);min-width:0;padding:14px 16px;border-radius:20px;background:var(--ui-surf);box-shadow:var(--ui-sh-1)}
+.ain-sec>p{margin:0}
+.ain-sec-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px}
+.ain-sec-h :is(h3,h4){margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.ain-sec-h h4{font-size:14px}
+.ain-sec-h h4 .mut{font-weight:400;letter-spacing:0}
+.ain-dias{flex:none}
+.ain .tabs button .mut{color:var(--ui-ink2)}
+/* Los KPIs: 4 mini tarjetas. De 375 px, de dos en dos. */
+.ain-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--s3)}
+.ain-kpi{display:flex;flex-direction:column;gap:4px;min-width:0;padding:12px 14px;border:1px solid var(--ui-line);border-radius:16px;background:var(--ui-surf)}
+.ain-kpi .lbl{font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ui-mut)}
+.ain-kpi-v{font-size:24px;font-weight:400;line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+/* Cuando no hay dato el valor dice ⚠️ SIN DATOS y le sigue «sale de …»: más chico y en ámbar. Sin dato porque no ve costos: se queda quieto. */
+.ain-kpi-v[data-sd="1"],.ain-kpi-v:has(+ .ain-sd:not(.ain-costos)){font-size:15px;font-weight:500;letter-spacing:0;color:var(--ui-amb-t)}
+.ain-kpi-v:has(+ .ain-costos){color:var(--ui-mut)}
+.ain-kpi>.mut{line-height:1.35}
+.ain-bar{width:100%;margin:6px 0 0}
+.ain-bar i{background:var(--ui-acc)}
+/* El «pasó el presupuesto» de la barra trae su color en línea (sin par de noche): se pinta con el rojo del tema. */
+.ain-bar i[style*="#654c38"]{background:var(--ui-bad)!important}
+.ain-sd{display:block;font-size:12px;line-height:1.35;color:var(--ui-acc)}
+.ain-costos{display:flex;align-items:center;gap:6px;color:var(--ui-acc)}
+.ain-costos .lni{flex:none}
+.ain-grafica{margin-top:var(--s2)}
+.ain-grafica .lbl{display:block;margin-bottom:6px}
+.ain-grafica .barlabels>span{min-width:0;overflow:hidden;font-size:10.5px;white-space:nowrap}
+/* La tabla por campaña, conjunto y anuncio: se desliza dentro de su tarjeta en el cel. */
+.ain-tabla{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ain-tabla .wktable{min-width:640px}
+.ain-tabla .wktable :is(th,td):first-child{min-width:180px}
+.ain-plat{margin-left:4px;vertical-align:1px}
+.ain-nota{margin:0;font-size:12px;line-height:1.4}
+/* Recomendaciones */
+h4.ain-sub-h{display:flex;align-items:center;gap:10px;margin:var(--s1) 0 0;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ui-mut)}
+h4.ain-sub-h::after{content:"";flex:1;height:1px;background:var(--ui-line)}
+.ain-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:var(--s3)}
+.ain-rec{display:flex;flex-direction:column;gap:8px;min-width:0;padding:14px;border:1px solid var(--ui-line);border-radius:16px;background:var(--ui-surf)}
+.ain-rec[data-ceo="1"]{padding-left:12px;border-left:3px solid var(--ui-warn)}
+.ain-rec-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.ain-rec-d{min-width:0;font-size:13.5px;font-weight:500;overflow-wrap:anywhere}
+.ain-rec-acc{margin:0;font-size:15px;font-weight:500;line-height:1.35}
+.ain-rec-ev{display:flex;align-items:flex-start;gap:6px;margin:0;font-size:13px;line-height:1.4;font-variant-numeric:tabular-nums;color:var(--ui-ink)}
+.ain-rec-ev .lni{flex:none;margin-top:3px;color:var(--ui-mut)}
+.ain-rec-regla{display:flex;align-items:flex-start;gap:6px;margin:0;font-size:12px;line-height:1.4;color:var(--ui-mut)}
+.ain-rec-regla .lni{flex:none;margin-top:2px}
+.ain-rec-f{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:auto;padding-top:4px}
+/* El estado de lo guardado: los mismos colores del chip de estado del shell (Borrador, En revisión, Aprobado, Entregado). */
+.ain-rec-h .chip[data-estado]{gap:6px;background:var(--ui-fill2);color:var(--ui-ink2);font-weight:600}
+.ain-rec-h .chip[data-estado]::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:currentColor}
+.ain-rec-h .chip[data-estado="En revisión"]{background:var(--ui-amb-bg);color:var(--ui-amb-t)}
+.ain-rec-h .chip[data-estado="Aprobado"]{background:var(--ui-ok-bg);color:var(--ui-ok-t)}
+.ain-rec-h .chip[data-estado="Entregado"]{background:var(--ui-info-bg);color:var(--ui-info-t)}
+.ain-ceo{display:flex;align-items:flex-start;gap:8px;margin:0;padding:8px 12px;border-radius:12px;background:var(--ui-amb-bg);border:1px solid color-mix(in srgb,var(--ui-amb-f) 28%,transparent);font-size:13px;line-height:1.4;color:var(--ui-ink)}
+.ain-ceo .lni{flex:none;margin-top:2px;color:var(--ui-amb-t)}
+.ain-ceo a{color:inherit;text-decoration:underline}
+/* La IA: leyendo (últimas líneas, sin scroll) y sus propuestas, que la persona revisa antes de guardar. */
+.ain-ia{display:grid;gap:8px;padding:12px;border:1px dashed color-mix(in srgb,var(--ui-acc) 55%,transparent);border-radius:12px}
+.ain-ia>.btn{justify-self:start}
+.ain-ia-t{display:flex;flex-direction:column-reverse;max-height:108px;margin:0;overflow:hidden;font:12px/1.5 ui-monospace,Menlo,monospace;color:var(--ui-ink2);white-space:pre-wrap;overflow-wrap:anywhere}
+.ain-ia-r{display:flex;flex-direction:column;gap:var(--s3);min-width:0;padding-left:12px;border-left:3px solid var(--ui-acc)}
+.ain-ia-r>p{margin:0}
+/* Competencia: la tarjeta de antes (.comp-box) ya va dentro de una sección: sin tarjeta dentro de tarjeta. */
+.ain-sec .comp-box{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.ain-sec .adsgrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))}
+@media (max-width:560px){
+  /* 30 días de barras en 300 px: las fechas del eje salen de tres en tres para que no se encimen. */
+  .ain-grafica .barlabels>span:not(:nth-child(3n+1)){visibility:hidden}
+  .ain-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ain-kpi{padding:10px 12px}
+  .ain-kpi-v{font-size:22px}
+  .ain-sec{padding:12px 14px}
+}
+
+/* ---------- MARKETING PERFORMANCE CENTER (.rnd-*): rendimiento-ui.js, el centro del Tool Shell con ciclo (un entregable por mes). ---------- */
+.rnd{display:flex;flex-direction:column;gap:16px;min-width:0}
+.rnd-sec{min-width:0;padding:16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line)}
+.rnd-t{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0 0 12px;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.rnd-t .lni{flex:none;color:var(--ui-ink2)}
+.rnd-t .mut,.rnd-t-m{font-size:12.5px;font-weight:400;letter-spacing:0;color:var(--ui-mut)}
+.rnd-h4{display:flex;align-items:center;gap:6px;margin:0 0 8px;font-size:13px;font-weight:600;color:var(--ui-ink2)}
+.rnd-h4 .lni{flex:none}
+.rnd-bloque{margin-top:16px;min-width:0}
+.rnd-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.rnd-kpi{display:flex;flex-direction:column;gap:4px;min-width:0;padding:12px 14px;border-radius:var(--r-2);background:var(--ui-fill);border:1px solid transparent}
+.rnd-kpi-n{font-size:12px;font-weight:600;color:var(--ui-mut)}
+.rnd-kpi-v{display:flex;align-items:center;gap:6px;font-size:22px;font-weight:600;line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.rnd-kpi-f,.rnd-kpi-nota{font-size:11.5px;line-height:1.35;overflow-wrap:anywhere}
+.rnd-kpi-nota{color:var(--ui-ink2)}
+.rnd-kpi[data-estado="sin-datos"]{background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
+.rnd-kpi[data-estado="sin-datos"] .rnd-kpi-v{font-size:13px;color:var(--ui-amb-t)}
+.rnd-kpi[data-estado="sin-datos"] :is(.rnd-kpi-n,.rnd-kpi-f,.rnd-kpi-nota),.rnd-emb[data-estado="sin-datos"] :is(.rnd-emb-m,.rnd-emb-f,.rnd-emb-p){color:var(--ui-ink2)}
+.rnd-kpi[data-estado="restringido"]{background:transparent;border:1px dashed var(--ui-line)}
+.rnd-kpi[data-estado="restringido"] .rnd-kpi-v{font-size:13px;font-weight:500;color:var(--ui-mut)}
+.rnd-embudo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.rnd-emb{position:relative;display:flex;flex-direction:column;gap:2px;min-width:0;padding:12px 14px;border-radius:var(--r-2);background:var(--ui-fill)}
+.rnd-emb:not(:last-child)::after{content:"→";position:absolute;top:50%;right:-12px;z-index:1;transform:translate(50%,-50%);color:var(--ui-mut);font-size:14px}
+.rnd-emb-e{font-size:11px;letter-spacing:.06em;color:var(--ui-ink2)}
+.rnd-emb-m{font-size:12px;color:var(--ui-mut)}
+.rnd-emb-v{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.rnd-emb[data-estado="sin-datos"]{background:var(--ui-amb-bg)}
+.rnd-emb[data-estado="sin-datos"] .rnd-emb-v{font-size:13px;color:var(--ui-amb-t)}
+.rnd-emb-f,.rnd-emb-p{font-size:11.5px;line-height:1.35;overflow-wrap:anywhere}
+.rnd-tablas{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.rnd-tabla-c{min-width:0;padding-bottom:1px;overflow-x:auto}
+.rnd-tabla-c h4{margin:0 0 6px;font-size:12.5px;font-weight:600;color:var(--ui-ink2)}
+.rnd-tabla{width:100%;border-collapse:collapse;font-size:12.5px}
+.rnd-tabla :is(th,td){padding:6px 8px;border-bottom:1px solid var(--ui-line);text-align:left;vertical-align:top}
+.rnd-tabla thead th{font-size:11.5px;font-weight:600;color:var(--ui-mut)}
+.rnd-tabla tbody th{font-weight:500;color:var(--ui-ink)}
+.rnd-tabla .n{text-align:right;font-variant-numeric:tabular-nums}
+.rnd-tabla tr[data-estado="sin-datos"] .n{color:var(--ui-amb-t)}
+.rnd-fuentes{display:flex;flex-direction:column;gap:2px;margin:12px 0 0;padding:0;list-style:none}
+.rnd-sd{margin:0;padding:6px 10px;border-radius:8px;background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent);font-size:12.5px;line-height:1.4;color:var(--ui-amb-t)}
+.rnd-err{margin:0}
+.rnd-campo{display:flex;flex-direction:column;gap:6px;min-width:0;margin-bottom:18px}
+.rnd-campo-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.rnd-campo .in{width:100%;min-width:0}
+.rnd-campo>.btn{align-self:flex-start}
+.rnd-mes-n{font-size:15px}
+.rnd-ro{margin:0;font-size:13.5px;line-height:1.5;overflow-wrap:anywhere}
+.rnd-lista{display:flex;flex-direction:column;gap:12px;margin:0;padding:0 0 0 20px}
+.rnd-fila{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px}
+.rnd-fila>label{display:flex;flex-direction:column;gap:4px;min-width:150px}
+.rnd-fila>.rnd-f-ancho{flex:1 1 280px;min-width:0}
+.rnd-fila .in{width:100%}
+.rnd-quitar{flex:none;align-self:flex-start}
+.rnd-cita{margin:4px 0 0}
+.rnd-av{display:flex;align-items:center;gap:6px;margin:4px 0 0;font-size:12.5px;color:var(--ui-amb-t)}
+.rnd-av .lni{flex:none}
+.rnd-cuenta{margin-left:auto;font-size:12px;font-weight:600;color:var(--ui-ok-t)}
+.rnd-cuenta[data-ok="0"]{color:var(--ui-amb-t)}
+.rnd-foto tr[data-estado="sin-datos"] td:first-of-type{color:var(--ui-amb-t)}
+.rnd-portal{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:12px 14px;border-radius:var(--r-2);background:var(--ui-fill);border:1px solid var(--ui-line)}
+.rnd-portal-t{display:flex;align-items:center;gap:6px;margin:0;font-size:13px;font-weight:600}
+.rnd-portal-prev{width:100%;font-size:12.5px}
+.rnd-portal-prev>summary{cursor:pointer;color:var(--ui-ink2)}
+.rnd-md{margin:8px 0 0;max-height:320px;overflow:auto;padding:10px;border-radius:8px;background:var(--ui-surf);border:1px solid var(--ui-line);font-size:12px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.rnd-res{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.rnd-res p,.rnd-res ul{margin:0}
+.rnd-res ul{padding-left:18px}
+.rnd-res-ch{display:inline-flex;flex-wrap:wrap;gap:6px}
+/* Se mide por el ancho del centro del shell (con la entrada abierta es mucho menor que el de la pantalla); el @media cubre el cel por si no hay contenedor. */
+@container vista (max-width:639px){
+  .rnd-embudo{grid-template-columns:1fr}
+  .rnd-emb:not(:last-child)::after{content:"↓";top:auto;right:50%;bottom:-12px;transform:translate(50%,50%)}
+  .rnd-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rnd-sec{padding:14px}
+}
+@media (max-width:640px){
+  .rnd-embudo{grid-template-columns:1fr}
+  .rnd-emb:not(:last-child)::after{content:"↓";top:auto;right:50%;bottom:-12px;transform:translate(50%,50%)}
+  .rnd-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* ---------- Marketing › Viral Intelligence Lab (marketing/viral-ui.js, vil-*): Library · Trend Radar · Pattern Report · Oportunidades. ---------- */
+.vil{display:flex;flex-direction:column;gap:var(--s3);width:100%;min-width:0}
+.vil>div:empty{display:none}
+.vil-panel{min-width:0}
+.vil-panel[hidden]{display:none}
+.vil-panel>div:empty{display:none}
+/* Cada panel apila sus regiones (la barra, la propuesta, el editor y la lista) con el mismo espacio. #vil-lib aloja el embed de Investigación y no se toca. */
+#vil-p-report,#vil-p-radar,#vil-p-oportunidades{display:flex;flex-direction:column;gap:var(--s3)}
+#vil-p-report[hidden],#vil-p-radar[hidden],#vil-p-oportunidades[hidden]{display:none}
+/* El aviso: sin ficha o solo lectura. Con código (SIN_FICHA, FUERA_DEL_ALCANCE) pide atención; sin código, solo informa. */
+.vil-aviso{display:flex;align-items:flex-start;gap:8px;margin:0;padding:10px 14px;border-radius:12px;background:var(--ui-fill);border:1px solid var(--ui-line);font-size:13.5px;line-height:1.4;color:var(--ui-ink2)}
+.vil-aviso .lni{flex:none;margin-top:2px}
+.vil-aviso:not([data-code=""]){background:var(--ui-amb-bg);border-color:color-mix(in srgb,var(--ui-amb-f) 28%,transparent);color:var(--ui-ink)}
+.vil-aviso:not([data-code=""]) .lni{color:var(--ui-amb-t)}
+.vil-aviso[data-code="FUERA_DEL_ALCANCE"]{background:var(--ui-bad-bg);border-color:color-mix(in srgb,var(--ui-bad) 30%,transparent)}
+.vil-aviso[data-code="FUERA_DEL_ALCANCE"] .lni{color:var(--ui-bad-t)}
+/* Las 4 pestañas: una píldora segmentada que se desliza en el cel. */
+.vil-tabs{display:flex;gap:2px;width:fit-content;max-width:100%;padding:3px;overflow-x:auto;border-radius:99px;background:var(--ui-fill);scrollbar-width:none}
+.vil-tabs::-webkit-scrollbar{display:none}
+.vil-tab{flex:none;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 14px;border-radius:99px;font-size:13px;font-weight:500;color:var(--ui-ink2);white-space:nowrap;transition:background var(--d-2) var(--e-out),color var(--d-2) var(--e-out)}
+.vil-tab:hover:not(.on){color:var(--ui-ink)}
+.vil-tab.on{background:var(--ui-surf);color:var(--ui-ink);box-shadow:var(--ui-sh-1)}
+.vil-tab:focus-visible{outline:2px solid var(--ui-focus);outline-offset:1px}
+.vil-n{display:inline-block;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--ui-fill2);color:var(--ui-ink2);font-size:11px;font-weight:700;line-height:18px;text-align:center;font-variant-numeric:tabular-nums}
+.vil-tab.on .vil-n{background:var(--ui-fill)}
+/* Pattern Report: la barra y las tarjetas de patrón */
+.vil-barra{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1)}
+.vil-barra .sp{flex:1}
+.vil-pats{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:var(--s3)}
+.vil-pat{display:flex;flex-direction:column;gap:10px;min-width:0;padding:16px;border-radius:16px;background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1)}
+.vil-pat.op{border-color:color-mix(in srgb,var(--ui-ok-f) 45%,transparent);border-left:3px solid var(--ui-ok-f);background:linear-gradient(var(--ui-ok-bg),var(--ui-ok-bg)),var(--ui-surf)}
+.vil-pat:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+.vil-pat-h{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:6px 10px}
+.vil-pat-h h3{flex:1 1 180px;min-width:0;margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em;overflow-wrap:anywhere}
+.vil-chips{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-width:0}
+.vil-x{background:var(--ui-info-bg);color:var(--ui-info-t);font-weight:600;font-variant-numeric:tabular-nums}
+.vil-pat .chip.lime,.vil-prop .chip.lime{background:var(--ui-ok-bg);color:var(--ui-ok-t);font-weight:600}
+.chip.vil-sd{background:var(--ui-amb-bg);color:var(--ui-amb-t)}
+/* El estado: los mismos 4 colores del chip de estado del shell. */
+.chip.vil-estado[data-estado]{gap:6px;background:var(--ui-fill2);color:var(--ui-ink2);font-weight:600}
+.chip.vil-estado[data-estado]::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:currentColor}
+.chip.vil-estado[data-estado="En revisión"]{background:var(--ui-amb-bg);color:var(--ui-amb-t)}
+.chip.vil-estado[data-estado="Aprobado"]{background:var(--ui-ok-bg);color:var(--ui-ok-t)}
+.chip.vil-estado[data-estado="Entregado"]{background:var(--ui-info-bg);color:var(--ui-info-t)}
+.vil-t{margin:0;font-size:13.5px;line-height:1.45;color:var(--ui-ink);overflow-wrap:anywhere}
+.vil-t>.lbl{display:block;margin-bottom:1px}
+.vil-niv b{font-weight:600}
+/* Lo que falta: ⚠️ SIN DATOS, en ámbar, legible en los dos temas. */
+.vil-sd{color:var(--ui-amb-t);font-size:12.5px;line-height:1.4}
+p.vil-sd{padding:6px 10px;border-radius:8px;background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
+ul.vil-fl{display:grid;gap:4px;margin:0;padding:8px 12px;list-style:none;border-radius:8px;background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
+ul.vil-fl:empty{display:none}
+ul.vil-fl>li{overflow-wrap:anywhere}
+/* Los ejemplos: links a los posts de la Biblioteca */
+.vil-ejs>summary{cursor:pointer;font-size:13px;color:var(--ui-ink2)}
+.vil-ejs>ul{display:grid;gap:8px;margin:8px 0 0;padding:0;list-style:none}
+.vil-ej{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.vil-ej>a{display:inline-flex;align-items:center;gap:4px;font-weight:500;color:var(--ui-ink);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--ui-ink) 30%,transparent);text-underline-offset:2px}
+.vil-ej>a:hover{text-decoration-color:currentColor}
+.vil-ej>a:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px;border-radius:4px}
+.vil-ej>.mut{flex:1 1 100%}
+.vil-laya{background:var(--ui-info-bg);color:var(--ui-info-t)}
+/* Un post que ya no está en la Biblioteca: se queda en la lista con un filo punteado ámbar para que se note que falta. */
+.vil-ej-falta{padding-left:8px;border-left:2px dashed color-mix(in srgb,var(--ui-amb-f) 55%,transparent)}
+.vil-acts{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:auto;padding-top:10px;border-top:1px solid var(--ui-line)}
+/* Propuesta y IA: un panel con borde, su encabezado y lo que se va a guardar */
+.vil-gen,.vil-prop{position:relative;display:flex;flex-direction:column;gap:10px;min-width:0;padding:14px 16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1)}
+.vil-gen>header,.vil-prop>header{display:flex;align-items:center;gap:10px;min-height:32px}
+.vil-gen-t,.vil-prop>header h3{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:600}
+.vil-prop>header h3{flex:1;min-width:0}
+.vil-prop>header .mut{flex:none;max-width:50%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vil-paso{flex:1;min-width:0;overflow:hidden;text-align:center;text-overflow:ellipsis;white-space:nowrap;color:var(--ui-mut)}
+.vil-gen>header>.btn{margin-left:auto}
+.vil-gen p,.vil-prop p{margin:0;font-size:13.5px}
+.vil-gen[data-fase="corriendo"]{border-color:color-mix(in srgb,var(--ui-m-marketing) 55%,transparent)}
+.vil-gen[data-fase="sin-bloque"]{border-color:color-mix(in srgb,var(--ui-amb-f) 45%,transparent);background:linear-gradient(var(--ui-amb-bg),var(--ui-amb-bg)),var(--ui-surf)}
+.vil-gen[data-fase="error"]{border-color:color-mix(in srgb,var(--ui-bad) 45%,transparent);background:linear-gradient(var(--ui-bad-bg),var(--ui-bad-bg)),var(--ui-surf)}
+.vil-prop[data-fase="propuesta"]{border-color:color-mix(in srgb,var(--ui-acc) 55%,transparent)}
+.vil-gen summary{cursor:pointer;font-size:13px;color:var(--ui-ink2)}
+pre.vil-stream{max-height:220px;margin:0;padding:10px 12px;overflow:auto;border-radius:var(--r-2);background:var(--ui-fill);border:1px solid var(--ui-line);color:var(--ui-ink2);font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-word}
+ul.vil-prop-l{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+li.vil-prop-it{display:grid;gap:6px;min-width:0;padding:12px;border-radius:var(--r-3);background:var(--ui-fill);border:1px solid var(--ui-line)}
+label.vil-pk{display:flex;flex-wrap:wrap;align-items:flex-start;gap:2px 8px;min-width:0;font-size:13.5px;cursor:pointer}
+label.vil-pk>input{flex:none;margin-top:3px}
+.vil-pk-t{flex:1 1 0;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;overflow-wrap:anywhere}
+label.vil-pk>.mut{flex:1 1 100%;padding-left:24px}
+label.vil-pk:has(>input:disabled){opacity:.65;cursor:default}
+ul.vil-crit{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:13.5px}
+.vil-crit li{display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.vil-crit li>span[aria-hidden="true"]{flex:none;width:1.2em;font-weight:700;text-align:center}
+.vil-crit li.ok>span[aria-hidden="true"]{color:var(--ui-ok-t)}
+.vil-crit li.falta>span[aria-hidden="true"]{color:var(--ui-bad-t)}
+.vil-prop-bt{display:flex;flex-wrap:wrap;gap:8px}
+@media (prefers-reduced-motion:no-preference){.vil-gen[data-fase="corriendo"] .vil-gen-t .lni{animation:tshGira 1s linear infinite}}
+/* El editor de un patrón */
+section.vil-ed{display:grid;gap:12px;min-width:0;padding:16px;border-radius:16px;background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1)}
+.vil-ed>h3{display:flex;align-items:center;gap:8px;margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.vil-ed>h3 .lni{color:var(--ui-m-marketing)}
+.vil-ed-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+label.vil-f{display:grid;gap:4px;align-content:start;min-width:0}
+.vil-f-w{grid-column:1/-1}
+.vil-ed-sen{margin:0}
+.vil-pick{display:grid;gap:8px;min-width:0}
+.vil-pick-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+label.vil-q{position:relative;display:block}
+label.vil-q>.lni{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ui-mut);pointer-events:none}
+label.vil-q>.in{padding-left:34px}
+ul.vil-pick-l{display:grid;gap:2px;max-height:280px;margin:0;padding:4px;overflow:auto;list-style:none;border-radius:12px;background:var(--ui-fill);border:1px solid var(--ui-line)}
+ul.vil-pick-l>li{padding:6px 8px;border-radius:8px}
+ul.vil-pick-l>li:hover{background:var(--ui-surf)}
+.vil-ed-bt{display:flex;flex-wrap:wrap;gap:8px}
+/* Trend Radar */
+.vil-radar-h>p{margin:0}
+.vil-sem{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px 12px}
+.vil-sem-r{width:100%;min-width:0}
+.vil-sem-o{font-size:12.5px;color:var(--ui-ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+p.vil-sem-n{margin:0;font-size:12.5px;color:var(--ui-mut)}
+/* La gráfica pinta con currentColor y fill-opacity: aquí se le dan los colores del tema (día y noche salen de los tokens). */
+svg.vil-svg{display:block;width:100%;max-width:720px;height:auto;color:var(--ui-ink2)}
+.vil-svg text{fill:var(--ui-mut);fill-opacity:1}
+.vil-svg .vil-quad-t{fill:var(--ui-ink2);font-weight:600}
+.vil-quad[data-q="oportunidad"]>rect{fill:var(--ui-ok-f);fill-opacity:.13}
+.vil-quad[data-q="competido"]>rect{fill:var(--ui-amb-f);fill-opacity:.09}
+.vil-quad[data-q="quemado"]>rect{fill:var(--ui-bad);fill-opacity:.08}
+.vil-pt{cursor:pointer}
+.vil-pt circle{fill:var(--ui-mut)}
+.vil-pt[data-q="oportunidad"] circle{fill:var(--ui-ok-f)}
+.vil-pt[data-q="competido"] circle{fill:var(--ui-amb-f)}
+.vil-pt[data-q="quemado"] circle{fill:var(--ui-bad)}
+.vil-pt:hover circle{stroke:var(--ui-ink);stroke-width:1.5}
+.vil-pt:focus{outline:none}
+.vil-pt:focus-visible{outline:2px solid var(--ui-focus);outline-offset:3px}
+.vil-pt:focus-visible circle{stroke:var(--ui-ink);stroke-width:2.5}
+.vil-svg .vil-pt-t{fill:var(--ui-ink);paint-order:stroke;stroke:var(--ui-surf);stroke-width:3px;stroke-linejoin:round}
+.vil-cuads{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:var(--s3)}
+section.vil-cuad{display:grid;gap:6px;align-content:start;min-width:0;padding:12px 14px;border-radius:var(--r-3);background:var(--ui-fill)}
+.vil-cuad[data-q="oportunidad"]{background:var(--ui-ok-bg)}
+.vil-cuad[data-q="competido"]{background:var(--ui-amb-bg)}
+.vil-cuad[data-q="quemado"]{background:var(--ui-bad-bg)}
+.vil-cuad>h3{display:flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:600}
+.vil-cuad>p{margin:0}
+.vil-cuad :is(.mut,p:not(.vil-sd)){color:var(--ui-ink2)}
+.vil-cuad>ul{display:grid;gap:4px;margin:0;padding:0;list-style:none;font-size:13px}
+.vil-cuad.vil-sin{background:transparent;border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
+.vil-cuad .vil-sd{padding:0;border:0;background:none}
+button.vil-link{display:inline;padding:0;border:0;background:none;color:var(--ui-ink);font:inherit;font-weight:600;text-align:left;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--ui-ink) 35%,transparent);text-underline-offset:3px;cursor:pointer}
+button.vil-link:hover{text-decoration-color:currentColor}
+button.vil-link:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px;border-radius:4px}
+/* Oportunidades */
+p.vil-op-s{margin:0;font-size:12.5px;color:var(--ui-mut)}
+.vil-pronto{background:transparent;color:var(--ui-mut);border:1px dashed var(--ui-line2);cursor:help}
+.vil-vacio{max-width:none}
+@media (max-width:720px){
+  .vil-ed-g{grid-template-columns:minmax(0,1fr)}
+  .vil-sem{grid-template-columns:minmax(0,1fr)}
+  .vil-sem-o{white-space:normal}
+  .vil-barra .sp{display:none}
+  .vil-barra>.mut{flex:1 1 100%}
+  .vil-prop-bt>.btn{flex:1 1 auto;justify-content:center}
+  .vil-prop>header .mut{max-width:40%}
+}
+@media (max-width:420px){
+  .vil-acts>.btn{flex:1 1 auto;justify-content:center}
+}
+
+/* Ganchos de las vistas de Marketing: secciones y envoltorios que solo necesitan poder encogerse dentro de su columna. */
+:is(.cm-cal,.ain-recs,.rnd-mes,.rnd-rep,.rnd-h,.rnd-s){min-width:0}
+.rnd-lista>li::marker{font-size:12.5px;font-weight:600;color:var(--ui-mut)}
+.rnd-lista>li{padding-left:4px}

@@ -3,9 +3,10 @@ import { bullseye, bullseyePrompt } from '../bullseye.js';
 import { loadPosts, postsBoard, editPost, loadConn, setConn, syncDrive, driveState } from '../posts.js';
 import { estadoDe, separar, conEstado, ESTADO_CLS, nombreDe } from '../element.js';
 import { investigacion } from '../investigacion.js';
-import { TIPOS_MARCA, eventosMarca } from '../calendario-vistas.js';
+import { TIPOS_MARCA, eventosMarca, redDe } from '../calendario-vistas.js';
 import { calendarioHtml, rango, porDia, diaHtml, hitoHtml } from '../calendario-trabajo.js';
-import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre } from '../calendario-contenido.js';
+import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre, bandasDelMes, bandasPorDia, slotDe, tituloSlot, metricasDe, resumenMetricas, motivoNoMover, moverEnLista, ponerPieza, falloAlMover } from '../calendario-contenido.js';
+import { rutaModulo } from '../herramientas.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
@@ -312,11 +313,109 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       botones: html`<button class="btn ghost xs" data-act="snew" data-d="">+ Grabación</button><button class="btn xs" data-act="pnew" data-d="">+ Pieza</button>`,
       pie: html`<div class="wc-foot"><span class="mut sm"><b>Operativo:</b> grabaciones, tareas y reuniones de sus proyectos, y los días 1, 11 y 20 · <b>Planificación:</b> piezas en Idea o En proceso · <b>Programado:</b> lo listo, con hora y red. Lo atrasado sale en rojo.</span></div>` })}
       ${archivoHtml(separar(posts).archivo)}</div>`);
+    mejorarCalendario(b);
   }
   // El Archivo: lo publicado hace más de 30 días (o marcado «Archivado») sale del calendario solo. Se ve aquí y se puede recuperar.
   function archivoHtml(archivo) {
     return html`<div class="row el-archbar"><button class="chip ${parch ? 'dark' : ''}" data-act="parch" aria-pressed="${parch ? 'true' : 'false'}">${ico('folder', 13)} Archivo · ${archivo.length}</button><span class="mut sm">Lo publicado hace más de 30 días o marcado «Archivado» sale del calendario solo. Recuperar lo vuelve a poner como Listo.</span></div>
       ${parch ? (archivo.length ? html`<div class="el-arch">${archivo.sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).map((p) => html`<div class="el-arch-i"><button type="button" class="el-arch-t" data-act="pedit" data-id="${p.id}"><b>${p.title}</b><span class="mut sm">${p.format || 'Pieza'}${p.date ? ` · ${fdate(p.date)}` : ''}${(p.assets || []).length ? ` · ${p.assets.length} archivo${p.assets.length === 1 ? '' : 's'}` : ''}</span></button><button type="button" class="btn ghost xs" data-act="prec" data-id="${p.id}">${ico('repeat', 12)} Recuperar</button></div>`)}</div>` : html`<div class="mut sm" style="margin-top:8px">Nada archivado todavía: aquí llega lo que ya salió y cumplió su mes.</div>`) : ''}`;
+  }
+  // ---------- Calendario · Marketing (Fase 3b): arrastrar a otro día, bandas de campaña, badge de slot y métricas ----------
+  // Se agrega sobre el calendario de siempre (calendarioHtml no cambia): cada pieza es un .wc-ev con data-act="pedit" y cada día un
+  // .d (mes) o .wc-day (semana) con data-date. Si algo de esto no carga (campañas sin permiso, sin métricas), el calendario se ve igual.
+  // Las reglas (mover, bandas, slot, métricas) viven en calendario-contenido.js; el servidor decide si el movimiento entra (423 / 409).
+  let mkcamps = [], mkslug = null, arrastrando = null;
+  const moviendo = new Set();
+  const esTactil = () => { try { return matchMedia('(pointer: coarse)').matches; } catch { return false; } };
+  const piezaDe = (id) => (posts || []).find((x) => x.id === id);
+  function mejorarCalendario(b) { chipsPiezas(b); arrastre(b); bandas(b); cargarCampanas(b); }
+
+  // Las campañas (mk_campaigns) de esta marca, para las bandas. Se leen aparte y sin bloquear: el calendario sale primero y las
+  // bandas se acomodan cuando llegan. Sin acceso o sin campañas, no hay bandas (y nada se rompe).
+  function cargarCampanas(b) {
+    if (mkslug === slug) return;
+    const de = slug; mkslug = de; mkcamps = [];
+    api(`campanas/${encodeURIComponent(de)}`).then((r) => r.campanas || []).catch(() => [])
+      .then((l) => { if (de !== slug) return; mkcamps = l; if (alive() && tab === 'calendario' && b.isConnected) bandas(b); });
+  }
+  const bandaHtml = (x) => {
+    const cuando = x.ancla === x.hasta ? fdate(x.ancla) : `${fdate(x.ancla)} – ${fdate(x.hasta)}`, tit = `Campaña · ${x.nombre} · ${cuando} · ${x.estado}`;
+    const cls = ['cc-band', `cc-b-${/^[a-z]+$/.test(x.tipo) ? x.tipo : 'campana'}`, x.pos, x.estado === 'Borrador' ? 'borrador' : x.estado === 'Cerrada' ? 'cerrada' : '', x.sigueAntes ? 'sigue-antes' : '', x.sigueDespues ? 'sigue-despues' : ''].filter(Boolean).join(' ');
+    return html`<a class="${cls}" href="${rutaModulo(slug, 'campanas')}" data-act="go" title="${tit}" aria-label="${tit}">${x.rotulo ? html`<span class="cc-bn">${x.nombre}</span>` : ''}</a>`;
+  };
+  // Una franja por campaña sobre los días entre su ancla y su hasta (y una leyenda arriba, que en el cel sí cabe).
+  function bandas(b) {
+    b.querySelectorAll('.cc-bandas,.cc-leyenda').forEach((x) => x.remove());
+    if (mkslug !== slug || !mkcamps.length) return;
+    const R = rango(cvista, pdate), meses = [...new Set([R.from.slice(0, 7), R.to.slice(0, 7)])];
+    const lista = meses.flatMap((m) => bandasDelMes(mkcamps, m)).filter((x) => x.fin >= R.from && x.desde <= R.to), delDia = bandasPorDia(lista, { rotuloSiempre: cvista === 'semana' });
+    if (!lista.length) return;
+    b.querySelectorAll('.d[data-date], .wc-day[data-date]').forEach((c) => {
+      const l = delDia[c.dataset.date]; if (!l) return;
+      const franjas = Array.from({ length: Math.max(...l.map((x) => x.carril)) + 1 }, (_, i) => { const x = l.find((y) => y.carril === i); return x ? bandaHtml(x) : html`<span class="cc-band vacio" aria-hidden="true"></span>`; });
+      (c.querySelector('.wc-dh') || c.querySelector('.n'))?.insertAdjacentHTML('afterend', String(html`<div class="cc-bandas">${franjas}</div>`));
+    });
+    const unicas = [...new Map(lista.map((x) => [x.id || x.nombre, x])).values()];
+    b.querySelector('.wc-chips')?.insertAdjacentHTML('afterend', String(html`<div class="cc-leyenda" role="group" aria-label="Campañas en este calendario"><span class="mut sm">Campañas</span>${unicas.map((x) => html`<a class="chip cc-ley cc-b-${/^[a-z]+$/.test(x.tipo) ? x.tipo : 'campana'}" href="${rutaModulo(slug, 'campanas')}" data-act="go" title="${x.estado}">${x.nombre} · ${x.ancla === x.hasta ? fdate(x.ancla) : `${fdate(x.ancla)} – ${fdate(x.hasta)}`}</a>`)}</div>`));
+  }
+  // El slot del Plan (MK-xxx) al frente de la pieza y, si ya salió, sus métricas al final. Sin slot o sin métricas, nada.
+  function chipsPiezas(b) {
+    b.querySelectorAll('.wc-ev[data-act="pedit"][data-id]').forEach((ev) => {
+      const p = piezaDe(ev.dataset.id); if (!p) return;
+      ev.querySelectorAll('.cc-slot,.cc-met').forEach((x) => x.remove());
+      const sl = slotDe(p), ms = metricasDe(p);
+      if (sl) ev.insertAdjacentHTML('afterbegin', String(html`<span class="cc-slot ${sl.fuera ? 'fuera' : ''}" title="${tituloSlot(sl)}">${sl.id}</span> `));
+      if (ms.length) ev.insertAdjacentHTML('beforeend', String(html` <span class="cc-met" title="${ms.map((m) => `${m.l} ${m.t}`).join(' · ')}">${ico('chart', 11)} ${resumenMetricas(ms, 1)}</span>`));
+    });
+  }
+  // Arrastrar (HTML5 nativo, en la compu): la pieza a otro día. Lo que ya salió o está archivado no se arrastra. En el cel no hay
+  // arrastre nativo: ahí un toque abre la ficha de la pieza con «Mover a…» (fichaPieza).
+  function arrastre(b) {
+    b.querySelectorAll('.wc-ev[data-act="pedit"][data-id]').forEach((ev) => {
+      const p = piezaDe(ev.dataset.id); if (!p || motivoNoMover(p)) return;
+      ev.draggable = true; ev.classList.add('cc-mov');
+      ev.addEventListener('dragstart', (e) => { arrastrando = p.id; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', p.id); ev.classList.add('cc-arrastrando'); });
+      ev.addEventListener('dragend', () => { arrastrando = null; ev.classList.remove('cc-arrastrando'); b.querySelectorAll('.cc-sobre').forEach((x) => x.classList.remove('cc-sobre')); });
+    });
+    b.querySelectorAll('.d[data-date], .wc-day[data-date]').forEach((c) => {
+      c.addEventListener('dragover', (e) => { if (!arrastrando) return; e.preventDefault(); e.dataTransfer.dropEffect = 'move'; c.classList.add('cc-sobre'); });
+      c.addEventListener('dragleave', (e) => { if (!c.contains(e.relatedTarget)) c.classList.remove('cc-sobre'); });
+      c.addEventListener('drop', (e) => {
+        if (!arrastrando) return; e.preventDefault(); c.classList.remove('cc-sobre');
+        const id = arrastrando, fecha = c.dataset.date; arrastrando = null;
+        setTimeout(() => moverA(id, fecha), 0); // después del drop: así el calendario se vuelve a pintar con la pieza ya quieta
+      });
+    });
+  }
+  // Mover una pieza de día. Se ve de una vez en su día nuevo y se guarda por la ruta de siempre (PUT /api/db/content con la `v` que
+  // se leyó). Si el servidor dice que no (423: ese mes no tiene brief del ciclo; 409: alguien la cambió), vuelve a su día y se
+  // muestra el mensaje del servidor tal cual. Con 409 se vuelven a leer las piezas, porque la que teníamos ya estaba vieja.
+  async function moverA(id, fecha) {
+    if (!posts || moviendo.has(id)) return;
+    const p = piezaDe(id); if (!p) return;
+    const motivo = motivoNoMover(p); if (motivo) return toast(motivo, true);
+    const m = moverEnLista(posts, id, fecha); if (!m) return;
+    moviendo.add(id); posts = m.lista; if (tab === 'calendario') recal();
+    let msg = `«${p.title || 'La pieza'}» sale el ${fdate(fecha)}`, mal = false, recargar = false;
+    try { const r = await C.save(m.nueva); if (posts) posts = ponerPieza(posts, r); }
+    catch (e) { const f = falloAlMover(e); msg = f.mensaje; mal = true; recargar = f.recargar; if (posts) posts = ponerPieza(posts, m.antes); }
+    moviendo.delete(id); toast(msg, mal);
+    if (!alive() || !el.isConnected) return;
+    if (recargar) posts = null;
+    if (tab === 'calendario') recal();
+  }
+  // En el cel: la ficha de la pieza con «Mover a…» (una fecha), sus métricas si ya salió y «Editar».
+  function fichaPieza(p) {
+    const e = estadoDe(p), sl = slotDe(p), ms = metricasDe(p), motivo = motivoNoMover(p);
+    drawer(html`<div class="row"><span class="chip ${ESTADO_CLS[e] || ''}">${e}</span>${p.format ? html`<span class="chip">${p.format}</span>` : ''}${sl ? html`<span class="chip cc-slot ${sl.fuera ? 'fuera' : ''}" title="${tituloSlot(sl)}">${sl.id}</span>` : ''}<div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+      <h2>${p.title || 'Sin título'}</h2><div class="mut">${p.date ? `${e === 'Publicado' ? 'Salió' : 'Sale'} el ${fdate(p.date)}` : 'Sin fecha'}${redDe(p) ? ` · ${redDe(p)}` : ''}</div>
+      ${ms.length ? html`<b class="sm" style="display:block;margin-top:18px">Cómo le fue</b><div class="sp-kpis" style="margin-top:8px">${ms.map((m) => html`<div><span class="lbl">${m.l}</span><b>${m.t}</b></div>`)}</div>` : ''}
+      ${motivo ? html`<p class="mut sm" style="margin-top:18px">${motivo}.</p>` : html`<b class="sm" style="display:block;margin-top:18px">Mover a…</b>
+        <div class="row" style="gap:8px;margin-top:8px"><input class="in" type="date" id="cc-mover-fecha" value="${p.date || ''}" aria-label="Nueva fecha de ${p.title || 'la pieza'}" style="max-width:200px"><button class="btn" data-act="ccmover">${ico('calendar-days', 14)} Mover</button></div>`}
+      <div class="row" style="margin-top:22px"><button class="btn ghost" data-act="ccedit">Editar</button></div>`, {
+      ccmover: () => { const f = $('#cc-mover-fecha')?.value; if (!f) return toast('Elige la fecha', true); closeDrawer(); moverA(p.id, f); },
+      ccedit: async () => { closeDrawer(); const r = await editPost(slug, piezaDe(p.id) || p, pieceOpts()); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
+    }, { section: 'Calendario', title: p.title || 'Pieza' });
   }
   async function editShoot(x, date) {
     const v = await ask(x ? 'Grabación' : 'Nueva grabación', [
@@ -466,15 +565,15 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     mprev: () => { const d = new Date(pdate + 'T12:00'); if (cvista === 'mes') d.setMonth(d.getMonth() - 1, 1); else d.setDate(d.getDate() - 7); pdate = iso(d); recal(); },
     mnext: () => { const d = new Date(pdate + 'T12:00'); if (cvista === 'mes') d.setMonth(d.getMonth() + 1, 1); else d.setDate(d.getDate() + 7); pdate = iso(d); recal(); },
     mtoday: () => { pdate = today(); recal(); },
-    mrefresh: () => { posts = null; shoots = null; ops = null; recal(); },
+    mrefresh: () => { posts = null; shoots = null; ops = null; mkslug = null; recal(); },
     ctipo: (t) => { const k = t.dataset.t; coff.has(k) ? coff.delete(k) : coff.add(k); try { localStorage.setItem('os.cal.marca.off', JSON.stringify([...coff])); } catch {} recal(); },
     day: (t, e) => { if (e?.target?.closest('.wc-ev,.wc-more')) return; const d = t.dataset.date; if (d && cerrado(d).cerrado) return toast(`Sin brief del ciclo de ${mesNombre(d.slice(0, 7))}: no se crean piezas con fecha de ese mes`, true); editPost(slug, null, pieceOpts(d ? { date: d } : {})).then((r) => { if (r) { posts = [...posts, r]; recal(); } }); },
-    dayall: (t) => { const desde = (fn) => (x) => { closeDrawer(); fn(x); }; drawer(diaHtml(cdia?.[t.dataset.date] || []), { pedit: desde((x) => el.querySelector('#cbody') && posts && editPost(slug, posts.find((y) => y.id === x.dataset.id), pieceOpts()).then((r) => { if (r) { posts = posts.map((y) => (y.id === r.id ? r : y)); recal(); } })), sedit: desde((x) => { const y = shoots.find((z) => z.id === x.dataset.id); if (y) editShoot(y); }), go: () => closeDrawer(), hito: (x) => drawer(hitoHtml(x.dataset.d), {}, { section: 'Calendario', title: 'El ciclo' }) }, { section: 'Calendario', title: fdate(t.dataset.date) }); },
+    dayall: (t) => { const desde = (fn) => (x) => { closeDrawer(); fn(x); }; chipsPiezas(drawer(diaHtml(cdia?.[t.dataset.date] || []), { pedit: desde((x) => el.querySelector('#cbody') && posts && editPost(slug, posts.find((y) => y.id === x.dataset.id), pieceOpts()).then((r) => { if (r) { posts = posts.map((y) => (y.id === r.id ? r : y)); recal(); } })), sedit: desde((x) => { const y = shoots.find((z) => z.id === x.dataset.id); if (y) editShoot(y); }), go: () => closeDrawer(), hito: (x) => drawer(hitoHtml(x.dataset.d), {}, { section: 'Calendario', title: 'El ciclo' }) }, { section: 'Calendario', title: fdate(t.dataset.date) })); },
     hito: (t) => drawer(hitoHtml(t.dataset.d), {}, { section: 'Calendario', title: 'El ciclo' }),
     snew: (t, e) => { if (e?.target?.closest('.ppost')) return; editShoot(null, t.dataset.d); },
     sedit: (t) => { const x = shoots.find((y) => y.id === t.dataset.id); if (x) editShoot(x); },
     pnew: async (t, e) => { if (e?.target?.closest('.ppost')) return; if (t.dataset.d && cerrado(t.dataset.d).cerrado) return toast(`Sin brief del ciclo de ${mesNombre(t.dataset.d.slice(0, 7))}: no se crean piezas con fecha de ese mes`, true); const r = await editPost(slug, null, pieceOpts(t.dataset.d ? { date: t.dataset.d } : {})); if (r) { posts = [...posts, r]; recal(); } },
-    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; const r = await editPost(slug, p, pieceOpts()); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
+    pedit: async (t) => { const p = posts.find((x) => x.id === t.dataset.id); if (!p) return; if (tab === 'calendario' && t.classList.contains('wc-ev') && esTactil()) return fichaPieza(p); const r = await editPost(slug, p, pieceOpts()); if (r) { posts = posts.map((x) => (x.id === r.id ? r : x)); recal(); } },
     ccmix: (t) => { const k = t.dataset.f, v = t.dataset.v; ccf = { ...ccf, [k]: ccf[k] === v ? '' : v }; recal(); },
     ccclear: () => { ccf = {}; recal(); },
     briefOpen: async (t) => {
