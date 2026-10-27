@@ -9,9 +9,11 @@
 #   2. Crea el perfil «inherent»: su propia memoria, config y SOUL.md (la identidad de Inherent, bajada del OS).
 #   3. Le pone el repo como carpeta de trabajo (la copia que mantiene el puente de Laya en ~/.inherent/laya/repo):
 #      así lee CLAUDE.md y el manual como contexto.
-#   4. Le conecta el conector de Inherent OS (MCP por OAuth): las acciones del OS, con el perfil de cada quien.
-#   5. Enciende su API local (http://127.0.0.1:8642) solo para el OS, con una llave que la app de Mac lee sola.
-#   6. Lo deja corriendo siempre (launchd) y revisa que /health responda.
+#   4. Guarda el conector de Inherent OS (MCP por OAuth): las acciones del OS, con el perfil de cada quien.
+#      El login con Google lo hace la persona una vez: `inherent mcp login inherent`.
+#   5. Enciende la API local solo para el OS, con una llave que la app de Mac lee sola. Hermes corre UN servicio por
+#      compu: la API la abre el perfil principal (127.0.0.1:8642) y atiende a «inherent» en /p/inherent/, con su llave.
+#   6. Lo deja corriendo siempre (launchd), revisa dónde contesta el perfil y lo deja escrito en ~/.inherent/hermes/api-url.
 # El modelo (ChatGPT, Claude, local) lo elige cada quien después: `inherent model` en la Terminal, o desde el OS.
 # Correrlo otra vez actualiza sin romper nada.
 #
@@ -54,9 +56,11 @@ main() {
   fi
 
   # 2 · El perfil
-  if ! hermes profile list 2>/dev/null | grep -qE "^\*? *$PERFIL\$"; then
+  # El perfil se reconoce por su carpeta: «hermes profile list» ahora es una tabla y leerla con grep fallaba, así que
+  # al correr el instalador otra vez intentaba crearlo de nuevo y el script se cortaba.
+  if [ ! -f "$PHOME/config.yaml" ]; then
     echo "→ Creando el perfil $PERFIL"
-    hermes profile create "$PERFIL" >/dev/null
+    hermes profile create "$PERFIL" >/dev/null 2>&1 || [ -f "$PHOME/config.yaml" ] || { echo "❌ No pude crear el perfil $PERFIL de Hermes"; return 1; }
   fi
   mkdir -p "$PHOME"
   echo "→ Poniendo la identidad de Inherent (SOUL.md)"
@@ -70,37 +74,63 @@ main() {
     hermes -p "$PERFIL" config set terminal.cwd "$REPO" >/dev/null || true
   fi
 
-  # 4 · El conector de Inherent OS (OAuth: la primera vez pide entrar con Google)
-  if ! hermes -p "$PERFIL" mcp list 2>/dev/null | grep -q "inherent"; then
-    echo "→ Conectando el conector de Inherent OS"
-    hermes -p "$PERFIL" mcp add inherent --url "$OS_URL/mcp" --auth oauth >/dev/null 2>&1 || echo "→ Aviso: el conector queda por autorizar. Después: inherent mcp login inherent"
-  fi
+  # 4 · El conector de Inherent OS (OAuth). Se guarda directo en la config: «hermes mcp add» pide contestar en la
+  #     Terminal y, sin respuesta (como aquí), no guarda nada. El login con Google lo hace la persona después.
+  echo "→ Guardando el conector de Inherent OS"
+  hermes -p "$PERFIL" config set mcp_servers.inherent.url "$OS_URL/mcp" >/dev/null
+  hermes -p "$PERFIL" config set mcp_servers.inherent.auth oauth >/dev/null
 
-  # 5 · La API local, solo para el OS
+  # 5 · La API local, solo para el OS.
+  #     La llave sale de openssl. Antes salía de «tr </dev/urandom | head -c 40»: con pipefail, el corte de head contaba
+  #     como error y el script se detenía aquí sin avisar (sin llave, sin API y sin servicio).
   local KEY
-  if [ -s "$DATOS/api-key" ]; then KEY="$(cat "$DATOS/api-key")"; else KEY="$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 40)"; (umask 077; printf '%s' "$KEY" >"$DATOS/api-key"); fi
-  printf 'http://127.0.0.1:%s' "$PUERTO" >"$DATOS/api-url"
-  hermes -p "$PERFIL" config set API_SERVER_ENABLED true >/dev/null
+  if [ -s "$DATOS/api-key" ] && [ "$(wc -c <"$DATOS/api-key" | tr -d ' ')" -ge 32 ]; then KEY="$(cat "$DATOS/api-key")"
+  else KEY="$(openssl rand -hex 32)"; (umask 077; printf '%s' "$KEY" >"$DATOS/api-key"); fi
+  #     El perfil solo pone su llave: con ella se entra a /p/<perfil>/ (no abre un puerto propio).
   hermes -p "$PERFIL" config set API_SERVER_KEY "$KEY" >/dev/null
-  hermes -p "$PERFIL" config set API_SERVER_PORT "$PUERTO" >/dev/null
-  hermes -p "$PERFIL" config set API_SERVER_HOST 127.0.0.1 >/dev/null
-  hermes -p "$PERFIL" config set API_SERVER_CORS_ORIGINS "$OS_URL,http://localhost:3000" >/dev/null
   hermes -p "$PERFIL" config set API_SERVER_MODEL_NAME inherent >/dev/null
+  #     El perfil principal abre el puerto, solo en esta compu y con su propia llave. Lo que ya tenía se respeta: su
+  #     llave, su puerto si ya estaba encendida y los orígenes CORS de otras apps (solo se suman los del OS).
+  local CORS o
+  if [ -z "$(hermes -p default config get API_SERVER_KEY 2>/dev/null || true)" ]; then
+    hermes -p default config set API_SERVER_KEY "$(openssl rand -hex 32)" >/dev/null
+  fi
+  if [ "$(hermes -p default config get API_SERVER_ENABLED 2>/dev/null || true)" = "true" ]; then
+    PUERTO="$(hermes -p default config get API_SERVER_PORT 2>/dev/null || true)"; PUERTO="${PUERTO:-8642}"
+  else
+    hermes -p default config set API_SERVER_ENABLED true >/dev/null
+    hermes -p default config set API_SERVER_HOST 127.0.0.1 >/dev/null
+    hermes -p default config set API_SERVER_PORT "$PUERTO" >/dev/null
+  fi
+  CORS="$(hermes -p default config get API_SERVER_CORS_ORIGINS 2>/dev/null || true)"
+  for o in "$OS_URL" "http://localhost:3000"; do case ",$CORS," in *",$o,"*) ;; *) CORS="${CORS:+$CORS,}$o" ;; esac; done
+  hermes -p default config set API_SERVER_CORS_ORIGINS "$CORS" >/dev/null
   # Sin terminal, ni código, ni navegador, ni control de la compu, ni tareas programadas: el Inherent LLM lee el repo
   # (la copia que el puente pone al día y limpia antes de cada turno) y trabaja en el OS por su conector.
   hermes -p "$PERFIL" config set agent.disabled_toolsets '["terminal", "code_execution", "browser", "computer_use", "cronjob"]' >/dev/null
 
-  # 6 · Siempre encendido
+  # 6 · Siempre encendido: el servicio del perfil principal atiende a todos los perfiles (Hermes ≥ 0.22; con uno
+  #     anterior, «inherent update» primero).
   echo "→ Dejándolo encendido (launchd)"
-  hermes -p "$PERFIL" gateway install >/dev/null 2>&1 || true
-  hermes -p "$PERFIL" gateway restart -y >/dev/null 2>&1 || hermes -p "$PERFIL" gateway start >/dev/null 2>&1 || true
-  local i
+  hermes gateway install >/dev/null 2>&1 || true
+  hermes gateway restart -y >/dev/null 2>&1 || hermes gateway start >/dev/null 2>&1 || true
+  # Dónde contesta el perfil con su llave: /p/<perfil> (un servicio por compu) o la raíz (un servicio por perfil).
+  local URL="" u i
   for i in $(seq 1 30); do
-    if curl -fsS -m 2 "http://127.0.0.1:$PUERTO/health" >/dev/null 2>&1; then echo "✓ Hermes responde en http://127.0.0.1:$PUERTO"; break; fi
+    for u in "http://127.0.0.1:$PUERTO/p/$PERFIL" "http://127.0.0.1:$PUERTO"; do
+      if curl -fsS -m 3 -o /dev/null -H "Authorization: Bearer $KEY" "$u/v1/capabilities" 2>/dev/null; then URL="$u"; break 2; fi
+    done
     sleep 2
-    [ "$i" = 30 ] && echo "→ Aviso: Hermes no respondió todavía en el puerto $PUERTO. Mira: hermes -p $PERFIL gateway status"
   done
-  echo "✓ Listo. Falta elegir el modelo: en la Terminal, «$PERFIL model» (ChatGPT con tu cuenta, Claude, o uno local)."
+  if [ -n "$URL" ]; then
+    printf '%s' "$URL" >"$DATOS/api-url"; echo "✓ Hermes responde en $URL"
+  else
+    printf 'http://127.0.0.1:%s/p/%s' "$PUERTO" "$PERFIL" >"$DATOS/api-url"
+    echo "→ Aviso: Hermes no respondió todavía en el puerto $PUERTO. Mira: hermes gateway status"
+  fi
+  echo "✓ Listo. Faltan dos pasos en la Terminal:"
+  echo "   1. «$PERFIL mcp login $PERFIL» → entra con tu Google y dale «Permitir» (el conector de Inherent OS)."
+  echo "   2. «$PERFIL model» si todavía no eliges el modelo (ChatGPT con tu cuenta, Claude, o uno local)."
 }
 
 main "$@"
